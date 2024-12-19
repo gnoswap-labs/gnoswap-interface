@@ -3,7 +3,7 @@ import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { Z_INDEX } from "@styles/zIndex";
 import { media } from "@styles/media";
-import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
+import { PriceImpactStatus } from "@hooks/swap/data/use-swap-handler";
 
 export const ConfirmSwapModalBackground = styled.div`
   z-index: ${Z_INDEX.modal};

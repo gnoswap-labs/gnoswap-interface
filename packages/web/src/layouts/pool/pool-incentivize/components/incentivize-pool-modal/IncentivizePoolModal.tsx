@@ -9,8 +9,8 @@ import DateTimeTooltip from "@components/common/date-time-tooltip/DateTimeToolti
 import IconClose from "@components/common/icons/IconCancel";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
+import { TokenAmountInputModel } from "@hooks/token/data/use-token-amount-input";
 import { PoolModel } from "@models/pool/pool-model";
 import { TokenModel } from "@models/token/token-model";
 import { DistributionPeriodDate } from "@states/earn";

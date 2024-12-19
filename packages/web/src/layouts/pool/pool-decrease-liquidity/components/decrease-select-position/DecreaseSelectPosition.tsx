@@ -10,7 +10,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 
-import { IPriceRange } from "../../hooks/use-decrease-handle";
+import { IPriceRange } from "@hooks/pool/data/use-decrease-handle";
 
 import { DecreaseSelectPositionWrapper } from "./DecreaseSelectPosition.styles";
 

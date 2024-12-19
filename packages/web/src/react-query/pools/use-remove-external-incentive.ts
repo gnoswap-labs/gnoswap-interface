@@ -2,7 +2,7 @@ import React from "react";
 
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 
 export const useRemoveExternalIncentive = (

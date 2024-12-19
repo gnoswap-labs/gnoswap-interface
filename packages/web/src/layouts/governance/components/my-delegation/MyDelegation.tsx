@@ -7,7 +7,7 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconSwap from "@components/common/icons/IconSwap";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { useTokenData } from "@hooks/token/use-token-data";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import { DelegateeInfo, MyDelegationInfo } from "@repositories/governance";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { toNumberFormat } from "@utils/number-utils";
@@ -18,7 +18,7 @@ import MyDelegationDelegateModal from "./my-delegation-modals/MyDelegationDelega
 import MyDelegationUndelegateModal from "./my-delegation-modals/MyDelegationUndelegateModal";
 
 import IconLinkOff from "@components/common/icons/IconLinkOff";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import {
   MyDelegationRewardTooltipContent,
   MyDelegationTooltipContent,

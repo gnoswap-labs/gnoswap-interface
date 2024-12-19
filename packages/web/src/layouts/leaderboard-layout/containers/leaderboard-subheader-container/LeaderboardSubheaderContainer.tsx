@@ -1,4 +1,4 @@
-import { useAddress } from "@hooks/address/use-address";
+import { useAddress } from "@hooks/common/use-address";
 
 import LeaderboardSubheader from "../../components/leaderboard-subheader/LeaderboardSubheader";
 

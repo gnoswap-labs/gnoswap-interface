@@ -1,7 +1,7 @@
 import ConnectWalletModal from "@components/common/connect-wallet-modal/ConnectWalletModal";
 import { useClearModal } from "@hooks/common/use-clear-modal";
-import { useConnectWalletStatusModal } from "@hooks/wallet/use-connect-status-wallet-modal";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useConnectWalletStatusModal } from "@hooks/wallet/ui/use-connect-status-wallet-modal";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import React, { useCallback, useEffect, useState } from "react";
 import useRouter from "@hooks/common/use-custom-router";
 

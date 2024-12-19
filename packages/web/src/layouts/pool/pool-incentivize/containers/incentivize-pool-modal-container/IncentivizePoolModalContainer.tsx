@@ -3,7 +3,7 @@ import { useAtom } from "jotai";
 import { useCallback } from "react";
 
 import { ERROR_VALUE } from "@common/errors/adena";
-import { useAddress } from "@hooks/address/use-address";
+import { useAddress } from "@hooks/common/use-address";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useRouter from "@hooks/common/use-custom-router";

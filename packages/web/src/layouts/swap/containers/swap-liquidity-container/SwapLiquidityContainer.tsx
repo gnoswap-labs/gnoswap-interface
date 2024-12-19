@@ -2,7 +2,7 @@ import { useAtom } from "jotai";
 import React, { useMemo } from "react";
 
 import useRouter from "@hooks/common/use-custom-router";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolModel } from "@models/pool/pool-model";
 import { useGetPoolList } from "@query/pools";
 import { SwapState } from "@states/index";

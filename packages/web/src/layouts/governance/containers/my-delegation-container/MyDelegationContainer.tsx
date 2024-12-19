@@ -1,11 +1,11 @@
 import React from "react";
 
-import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetDelegatees, useGetGovernanceSummary, useGetMyDelegation } from "@query/governance";
 import { nullMyDelegationInfo } from "@repositories/governance";
 
-import { useGovernanceTx } from "@layouts/governance/hooks/use-governance-tx";
+import { useGovernanceTx } from "@hooks/governance/data/use-governance-tx";
 import MyDelegation from "../../components/my-delegation/MyDelegation";
 
 const MyDelegationContainer: React.FC = () => {

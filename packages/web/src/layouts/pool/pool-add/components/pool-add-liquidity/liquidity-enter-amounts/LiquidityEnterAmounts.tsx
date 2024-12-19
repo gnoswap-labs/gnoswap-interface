@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 
 import IconAdd from "@components/common/icons/IconAdd";
 import TokenAmountInput from "@components/common/token-amount-input/TokenAmountInput";
-import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
+import { TokenAmountInputModel } from "@hooks/token/data/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
 
 import { LiquidityEnterAmountsWrapper } from "./LiquidityEnterAmounts.styles";

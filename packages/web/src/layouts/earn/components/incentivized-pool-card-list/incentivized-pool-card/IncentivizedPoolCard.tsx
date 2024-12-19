@@ -7,7 +7,7 @@ import IconStar from "@components/common/icons/IconStar";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import { INCENTIVE_TYPE_MAPPER, SwapFeeTierInfoMap } from "@constants/option.constant";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { IncentivizePoolCardInfo } from "@models/pool/info/pool-card-info";
 import { formatRate } from "@utils/new-number-utils";
 import { numberToFormat } from "@utils/string-utils";

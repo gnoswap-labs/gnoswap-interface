@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { SelectPool } from "@hooks/pool/use-select-pool";
+import { SelectPool } from "@hooks/pool/data/use-select-pool";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { numberToFormat } from "@utils/string-utils";

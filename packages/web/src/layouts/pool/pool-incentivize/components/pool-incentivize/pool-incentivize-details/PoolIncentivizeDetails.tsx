@@ -6,7 +6,7 @@ import { getDateUtcToLocal } from "@common/utils/date-util";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
 import { TokenModel } from "@models/token/token-model";
 import { DistributionPeriodDate } from "@states/earn";

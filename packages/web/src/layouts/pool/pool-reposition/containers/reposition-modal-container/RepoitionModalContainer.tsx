@@ -8,7 +8,7 @@ import { RepositionLiquidityFailedResponse, RepositionLiquiditySuccessResponse }
 import { SwapRouteFailedResponse, SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route-response";
 
 import RepositionModal from "../../components/reposition-modal/RepositionModal";
-import { IPriceRange } from "../../hooks/use-reposition-handle";
+import { IPriceRange } from "@hooks/pool/data/use-reposition-handle";
 
 interface Props {
   amountInfo: {

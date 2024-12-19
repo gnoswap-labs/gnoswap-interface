@@ -5,7 +5,7 @@ import IconInfo from "@components/common/icons/IconInfo";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { PriceRangeMeta, PriceRangeStr, PriceRangeTooltip } from "@constants/option.constant";
-import { SelectPool } from "@hooks/pool/use-select-pool";
+import { SelectPool } from "@hooks/pool/data/use-select-pool";
 import { TokenModel } from "@models/token/token-model";
 
 import SelectPriceRangeCustomReposition from "./select-price-range-custom/SelectPriceRangeCustomReposition";

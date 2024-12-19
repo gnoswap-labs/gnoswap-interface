@@ -6,7 +6,7 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 
-import { IPooledTokenInfo, IPriceRange } from "../../hooks/use-decrease-handle";
+import { IPooledTokenInfo, IPriceRange } from "@hooks/pool/data/use-decrease-handle";
 import DecreaseAmountPosition from "../decrease-select-position/DecreaseAmount";
 import DecreaseSelectPosition from "../decrease-select-position/DecreaseSelectPosition";
 

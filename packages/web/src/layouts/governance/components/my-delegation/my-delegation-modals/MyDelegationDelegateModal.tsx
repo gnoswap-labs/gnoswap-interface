@@ -2,7 +2,7 @@ import { useTheme } from "@emotion/react";
 import React, { Dispatch, SetStateAction, useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
@@ -18,7 +18,7 @@ import WarningCard from "@components/common/warning-card/WarningCard";
 import withLocalModal from "@components/hoc/with-local-modal";
 import { EXT_URL } from "@constants/external-url.contant";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
-import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
+import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
 import { DelegateeInfo, nullDelegateeInfo } from "@repositories/governance";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { isValidAddress } from "@utils/validation-utils";

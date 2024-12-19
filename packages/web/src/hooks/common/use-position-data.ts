@@ -1,5 +1,5 @@
-import { usePoolData } from "@hooks/pool/use-pool-data";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { usePoolData } from "@hooks/pool/data/use-pool-data";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useCallback, useEffect, useMemo } from "react";
 import { useGetPositionsByAddress, useMakePoolPositions } from "@query/positions";
 import { useLoading } from "./use-loading";

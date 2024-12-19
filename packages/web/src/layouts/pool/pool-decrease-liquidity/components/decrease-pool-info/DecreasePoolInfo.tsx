@@ -13,7 +13,7 @@ import { useGetWithdrawalFee } from "@query/pools";
 import { DEVICE_TYPE } from "@styles/media";
 import { removeTrailingZeros } from "@utils/number-utils";
 
-import { IPooledTokenInfo } from "../../hooks/use-decrease-handle";
+import { IPooledTokenInfo } from "@hooks/pool/data/use-decrease-handle";
 import { ToolTipContentWrapper } from "../decrease-select-position/DecreaseSelectPosition.styles";
 
 import { DecreasePoolInfoWrapper, GnotCollectSwitchWrapper } from "./DecreasePoolInfo.styles";

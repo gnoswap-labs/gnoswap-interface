@@ -3,7 +3,7 @@ import React from "react";
 import Footer from "@components/common/footer/Footer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import useCustomRouter from "@hooks/common/use-custom-router";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 
 import EarnMyPositionContainer from "./containers/earn-my-position-container/EarnMyPositionContainer";
 import IncentivizedPoolCardListContainer from "./containers/incentivized-pool-card-list-container/IncentivizedPoolCardListContainer";

@@ -2,8 +2,8 @@ import React from "react";
 
 import { LaunchpadParticipationModel, LaunchpadPoolModel } from "@models/launchpad";
 import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
-import { useWallet } from "@hooks/wallet/use-wallet";
-import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { useLaunchpadHandler } from "@hooks/launchpad/data/use-launchpad-handler";
 
 import LaunchpadMyParticipation from "../../components/launchpad-my-participation/LaunchpadMyParticipation";
 

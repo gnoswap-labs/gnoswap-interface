@@ -6,7 +6,7 @@ import IconClose from "@components/common/icons/IconCancel";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 
-import { IPooledTokenInfo } from "../../hooks/use-decrease-handle";
+import { IPooledTokenInfo } from "@hooks/pool/data/use-decrease-handle";
 import DecreasePoolInfo from "../decrease-pool-info/DecreasePoolInfo";
 import BalanceChange from "./balance-change/BalanceChange";
 import DecreaseMaxMin from "./decrease-max-min/DecreaseMaxMin";

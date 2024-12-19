@@ -3,7 +3,7 @@ import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 import { QUERY_KEY } from "../query-keys";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TransactionGroupsType } from "@models/notification";
 
 const REFETCH_INTERVAL = 10_000;

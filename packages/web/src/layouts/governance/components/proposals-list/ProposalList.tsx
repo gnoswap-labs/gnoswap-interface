@@ -10,7 +10,7 @@ import ProposalCardSkeleton from "./proposal-card/ProposalCardSekeleton";
 import ProposalHeader from "./proposal-header/ProposalHeader";
 import ViewProposalModal from "./view-proposal-modal/ViewProposalModal";
 
-import { CreateProposalModalOpenOption } from "@layouts/governance/hooks/use-create-proposal-modal";
+import { CreateProposalModalOpenOption } from "@hooks/governance/ui/use-create-proposal-modal";
 import { ProposalListWrapper } from "./ProposalList.styles";
 
 export interface ProposalListProps {

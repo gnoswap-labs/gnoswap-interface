@@ -13,7 +13,7 @@ import RewardTooltipContent, {
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { RewardType } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { RewardModel } from "@models/position/reward-model";
 import { TokenModel } from "@models/token/token-model";

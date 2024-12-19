@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { usePositionData } from "@hooks/common/use-position-data";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 
 import { wrapper } from "./WalletMyPositionsHeader.styles";
 

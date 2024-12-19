@@ -5,7 +5,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { EarnState } from "@states/index";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 
 import PoolIncentivize from "@layouts/pool/pool-incentivize/PoolIncentivize";

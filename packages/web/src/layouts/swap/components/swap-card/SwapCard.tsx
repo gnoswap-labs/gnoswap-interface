@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { IconTriangleWarningOutlined } from "@components/common/icons/IconTriangleWarningOutlined";
 import WarningCard from "@components/common/warning-card/WarningCard";
-import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
+import { PriceImpactStatus } from "@hooks/swap/data/use-swap-handler";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";

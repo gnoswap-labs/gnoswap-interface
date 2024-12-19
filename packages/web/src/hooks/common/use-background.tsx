@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useAtom } from "jotai";
 import { CommonState, EarnState, LaunchpadState, WalletState } from "@states/index";
-import { useTokenData } from "@hooks/token/use-token-data";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import useRouter from "@hooks/common/use-custom-router";
 import useScrollData from "./use-scroll-data";
 import { useLoading } from "./use-loading";

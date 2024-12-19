@@ -10,8 +10,8 @@ import { useLoading } from "@hooks/common/use-loading";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { useTokenData } from "@hooks/token/use-token-data";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { useGetAvgBlockTime } from "@query/address";
 import { useGetTokens } from "@query/token";
@@ -23,7 +23,7 @@ import { ASSET_FILTER_TYPE } from "../../components/asset-list/asset-list-header
 import { AssetSortOption, ASSET_HEAD, type Asset } from "../../components/asset-list/asset-list-table/AssetListTable";
 import AssetList from "../../components/asset-list/AssetList";
 import AssetSendModal from "../../components/asset-send-modal/AssetSendModal";
-import useSendAsset from "../../hooks/useSendAsset";
+import useSendAsset from "@hooks/wallet/data/useSendAsset";
 
 export const ASSET_TYPE = {
   NATIVE: "native",

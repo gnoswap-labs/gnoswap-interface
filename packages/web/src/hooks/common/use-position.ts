@@ -1,4 +1,4 @@
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionModel } from "@models/position/position-model";
 import BigNumber from "bignumber.js";

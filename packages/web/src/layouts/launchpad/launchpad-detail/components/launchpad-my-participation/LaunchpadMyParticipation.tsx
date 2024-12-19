@@ -2,7 +2,7 @@ import React from "react";
 import BigNumber from "bignumber.js";
 import { useTranslation } from "react-i18next";
 
-import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
+import { useLaunchpadHandler } from "@hooks/launchpad/data/use-launchpad-handler";
 import { LaunchpadParticipationModel, LaunchpadPoolModel } from "@models/launchpad";
 import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
 import { useGetLastedBlockHeight } from "@query/pools";

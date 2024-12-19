@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 
 import SettingMenuModal from "@components/common/setting-menu-modal/SettingMenuModal";
 import useCustomRouter from "@hooks/common/use-custom-router";
-import { useSwapHandler } from "@hooks/swap/use-swap-handler";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useSwapHandler } from "@hooks/swap/data/use-swap-handler";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
 import { useGetToken } from "@query/token";
 import { ThemeState } from "@states/index";

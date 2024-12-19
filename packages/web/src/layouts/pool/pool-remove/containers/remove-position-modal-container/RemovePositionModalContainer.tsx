@@ -9,7 +9,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useMessage } from "@hooks/common/use-message";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
@@ -17,7 +17,7 @@ import { DexEvent } from "@repositories/common";
 import { checkGnotPath } from "@utils/common";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 
-import { usePositionsRewards } from "../../../common/hooks/use-positions-rewards";
+import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
 import RemovePositionModal from "../../components/remove-position-modal/RemovePositionModal";
 
 interface RemovePositionModalContainerProps {

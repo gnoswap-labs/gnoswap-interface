@@ -14,7 +14,7 @@ import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSke
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { TokenModel } from "@models/token/token-model";

@@ -8,7 +8,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { StakingPeriodType, STAKING_PERIOS } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useIntersectionObserver } from "@hooks/common/use-interaction-observer";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 import { PoolPositionModel } from "@models/position/pool-position-model";

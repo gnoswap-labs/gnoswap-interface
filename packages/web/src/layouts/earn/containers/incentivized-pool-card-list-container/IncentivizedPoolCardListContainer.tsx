@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/common/use-position-data";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { useIncentivizePool } from "@hooks/pool/use-incentivize-pool";
+import { useIncentivizePool } from "@hooks/pool/data/use-incentivize-pool";
 import { ThemeState } from "@states/index";
 
 import IncentivizedPoolCardList from "../../components/incentivized-pool-card-list/IncentivizedPoolCardList";

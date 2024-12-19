@@ -13,7 +13,7 @@ import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatRate } from "@utils/new-number-utils";
 
-import { IPriceRange } from "../../../hooks/use-increase-handle";
+import { IPriceRange } from "@hooks/pool/data/use-increase-handle";
 
 import { IncreaseSelectPositionWrapper, ToolTipContentWrapper } from "./IncreaseSelectPosition.styles";
 

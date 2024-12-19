@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import IconNoPosition from "@components/common/icons/IconNoPosition";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
-import { useTokenData } from "@hooks/token/use-token-data";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import { AccountModel } from "@models/account/account-model";
 import { useGetAllTokenPrices } from "@query/token";
 import { convertToKMB } from "@utils/stake-position-utils";

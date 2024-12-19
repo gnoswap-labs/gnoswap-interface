@@ -1,8 +1,8 @@
 import React from "react";
 
 import useCustomRouter from "@hooks/common/use-custom-router";
-import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useLaunchpadHandler } from "@hooks/launchpad/data/use-launchpad-handler";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
 

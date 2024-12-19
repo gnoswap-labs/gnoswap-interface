@@ -4,7 +4,7 @@ import { useTheme } from "@emotion/react";
 
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { GNS_TOKEN_PATH } from "@constants/environment.constant";
-import { useTokenData } from "@hooks/token/use-token-data";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 
 import {
   IncentiveCreationDepositTooltipContent,

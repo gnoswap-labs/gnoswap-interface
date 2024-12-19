@@ -7,8 +7,8 @@ import { GNOT_TOKEN } from "@common/values/token-constant";
 
 import DecreaseLiquidity from "../../components/decrease-liquidity/DecreaseLiquidity";
 import DecreaseLiquidityLoading from "../../components/decrease-liquidity/DecreaseLiquidityLoading";
-import { useDecreaseHandle } from "../../hooks/use-decrease-handle";
-import { useDecreasePositionModal } from "../../hooks/use-decrease-position-modal";
+import { useDecreaseHandle } from "@hooks/pool/data/use-decrease-handle";
+import { useDecreasePositionModal } from "@hooks/pool/ui/use-decrease-position-modal";
 
 const DecreaseLiquidityContainer: React.FC = () => {
   const router = useRouter();

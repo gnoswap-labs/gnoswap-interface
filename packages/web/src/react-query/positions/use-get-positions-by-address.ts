@@ -2,7 +2,7 @@ import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PositionModel } from "@models/position/position-model";
 
 import { QUERY_KEY } from "../query-keys";
