@@ -3,7 +3,7 @@ import Image from "next/image";
 import BigNumber from "bignumber.js";
 
 import { GNS_TOKEN } from "@common/values/token-constant";
-import { useTokenData } from "@hooks/token/use-token-data";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import { ProjectRewardInfoModel } from "@layouts/launchpad/launchpad-detail/LaunchpadDetail";
 
 import { ClaimAllFieldWrapper } from "./LaunchpadClaimAmountField.styled";

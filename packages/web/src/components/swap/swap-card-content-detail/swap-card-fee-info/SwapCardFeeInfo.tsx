@@ -5,7 +5,7 @@ import IconInfo from "@components/common/icons/IconInfo";
 import IconRouter from "@components/common/icons/IconRouter";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
+import { PriceImpactStatus } from "@hooks/swap/data/use-swap-handler";
 import { swapDirectionToGuaranteedType, SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { toNumberFormat } from "@utils/number-utils";

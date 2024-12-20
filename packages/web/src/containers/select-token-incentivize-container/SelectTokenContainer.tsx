@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import SelectToken from "@components/common/select-token-incentivize/SelectTokenIncentivize";
 import { useClearModal } from "@hooks/common/use-clear-modal";
-import { useTokenData } from "@hooks/token/use-token-data";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import { TokenModel } from "@models/token/token-model";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";

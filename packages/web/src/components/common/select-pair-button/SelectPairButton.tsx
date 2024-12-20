@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 import { wrapper } from "./SelectPairButton.styles";
-import { useSelectTokenModal } from "@hooks/token/use-select-token-modal";
+import { useSelectTokenModal } from "@hooks/token/ui/use-select-token-modal";
 import { TokenModel } from "@models/token/token-model";
 import MissingLogo from "../missing-logo/MissingLogo";
 import { useTranslation } from "react-i18next";

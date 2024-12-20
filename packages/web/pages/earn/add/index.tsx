@@ -4,8 +4,8 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import useRouter from "@hooks/common/use-custom-router";
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { useTokenData } from "@hooks/token/use-token-data";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import { checkGnotPath } from "@utils/common";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 

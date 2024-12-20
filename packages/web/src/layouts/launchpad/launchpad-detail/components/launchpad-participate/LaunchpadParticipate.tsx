@@ -6,8 +6,8 @@ import { cx } from "@emotion/css";
 import { useTranslation, Trans } from "react-i18next";
 
 import { LaunchpadState } from "@states/index";
-import { useLaunchpadHandler } from "@hooks/launchpad/use-launchpad-handler";
-import { useTokenData } from "@hooks/token/use-token-data";
+import { useLaunchpadHandler } from "@hooks/launchpad/data/use-launchpad-handler";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import { isAmount } from "@common/utils/data-check-util";
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { GNS_TOKEN } from "@common/values/token-constant";

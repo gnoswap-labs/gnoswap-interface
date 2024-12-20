@@ -16,7 +16,7 @@ import { useGetUnstakingFee } from "@query/pools";
 import { formatOtherPrice, formatPoolPairAmount, formatRate } from "@utils/new-number-utils";
 import { isInRangePosition } from "@utils/stake-position-utils";
 
-import { usePositionsRewards } from "../../../common/hooks/use-positions-rewards";
+import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
 
 import {
   Divider,

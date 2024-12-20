@@ -8,7 +8,7 @@ import { IconTriangleWarningOutlined } from "@components/common/icons/IconTriang
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import SwapCardContentDetail from "@components/swap/swap-card-content-detail/SwapCardContentDetail";
 import { useTheme } from "@emotion/react";
-import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
+import { PriceImpactStatus } from "@hooks/swap/data/use-swap-handler";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";

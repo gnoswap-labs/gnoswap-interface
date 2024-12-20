@@ -5,12 +5,12 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { PriceRangeMeta, RANGE_STATUS_OPTION } from "@constants/option.constant";
-import { SelectPool } from "@hooks/pool/use-select-pool";
-import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
+import { SelectPool } from "@hooks/pool/data/use-select-pool";
+import { TokenAmountInputModel } from "@hooks/token/data/use-token-amount-input";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 
-import { IPriceRange, REPOSITION_BUTTON_TYPE } from "../../hooks/use-reposition-handle";
+import { IPriceRange, REPOSITION_BUTTON_TYPE } from "@hooks/pool/data/use-reposition-handle";
 import BalanceChange from "../balance-change/BalanceChange";
 import RepositionSelectPosition from "../reposition-select-position/RepositionSelectPosition";
 import RepositionSelectRange from "../reposition-select-range/RepositionSelectRange";

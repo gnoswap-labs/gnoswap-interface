@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { useConnection } from "@hooks/connection/use-connection";
+import { useConnection } from "@hooks/common/use-connection";
 
 import { Box } from "../../components/common/common.styles";
 import ConnectYourWallet from "../../components/connect-your-wallet/ConnectYourWallet";

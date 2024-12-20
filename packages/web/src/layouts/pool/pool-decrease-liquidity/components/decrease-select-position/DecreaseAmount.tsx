@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import Range from "@components/common/range/Range";
 import { TokenModel } from "@models/token/token-model";
 
-import { IPooledTokenInfo } from "../../hooks/use-decrease-handle";
+import { IPooledTokenInfo } from "@hooks/pool/data/use-decrease-handle";
 import DecreasePoolInfo from "../decrease-pool-info/DecreasePoolInfo";
 
 import { DecreaseSelectPositionWrapper } from "./DecreaseSelectPosition.styles";

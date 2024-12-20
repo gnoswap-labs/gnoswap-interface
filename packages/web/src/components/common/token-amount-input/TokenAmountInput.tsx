@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { TokenAmountInputWrapper } from "./TokenAmountInput.styles";
-import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
+import { TokenAmountInputModel } from "@hooks/token/data/use-token-amount-input";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { isAmount } from "@common/utils/data-check-util";
 import SelectPairIncentivizeButton from "../select-pair-button/SelectPairIncentivizeButton";

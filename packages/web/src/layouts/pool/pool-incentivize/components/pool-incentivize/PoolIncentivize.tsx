@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import TokenAmountInput from "@components/common/token-amount-input/TokenAmountInput";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
+import { TokenAmountInputModel } from "@hooks/token/data/use-token-amount-input";
 import { PoolSelectItemInfo } from "@models/pool/info/pool-select-item-info";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";

@@ -19,8 +19,8 @@ import {
   SwapFeeTierType,
 } from "@constants/option.constant";
 import { useLoading } from "@hooks/common/use-loading";
-import { SelectPool } from "@hooks/pool/use-select-pool";
-import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
+import { SelectPool } from "@hooks/pool/data/use-select-pool";
+import { TokenAmountInputModel } from "@hooks/token/data/use-token-amount-input";
 import { PoolModel } from "@models/pool/pool-model";
 import { TokenModel } from "@models/token/token-model";
 import { isEmptyObject } from "@utils/validation-utils";

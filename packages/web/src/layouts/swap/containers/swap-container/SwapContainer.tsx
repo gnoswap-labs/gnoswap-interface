@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 
 import { GNOT_TOKEN_DEFAULT } from "@common/values/token-constant";
 import useRouter from "@hooks/common/use-custom-router";
-import { useSwapHandler } from "@hooks/swap/use-swap-handler";
-import { useTokenData } from "@hooks/token/use-token-data";
+import { useSwapHandler } from "@hooks/swap/data/use-swap-handler";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import { ThemeState } from "@states/index";
 
 import SwapCard from "../../components/swap-card/SwapCard";

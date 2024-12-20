@@ -5,7 +5,7 @@ import { useClearModal } from "@hooks/common/use-clear-modal";
 import { TokenModel } from "@models/token/token-model";
 
 import DecreasePositionModal from "../../components/decrease-position-modal/DecreasePositionModal";
-import { IPooledTokenInfo } from "../../hooks/use-decrease-handle";
+import { IPooledTokenInfo } from "@hooks/pool/data/use-decrease-handle";
 
 interface Props {
   amountInfo: {

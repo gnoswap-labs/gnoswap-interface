@@ -14,7 +14,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useGetWithdrawalFee } from "@query/pools";
 import { formatOtherPrice, formatPoolPairAmount, formatRate } from "@utils/new-number-utils";
 
-import { usePositionsRewards } from "../../../common/hooks/use-positions-rewards";
+import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
 
 import {
   Divider,

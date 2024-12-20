@@ -4,10 +4,10 @@ import { useTranslation } from "react-i18next";
 
 import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
-import { useTokenData } from "@hooks/token/use-token-data";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
+import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
+import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { TokenBalanceInfo } from "@models/token/token-balance-info";
 import { TokenModel } from "@models/token/token-model";
@@ -17,7 +17,7 @@ import { EarnState } from "@states/index";
 
 import { GNS_DEPOSIT_AMOUNT } from "../../components/pool-incentivize/incentive-creation-deposit/IncentiveCreationDeposit";
 import PoolIncentivize from "../../components/pool-incentivize/PoolIncentivize";
-import { useIncentivizePoolModal } from "../../hooks/use-incentivize-pool-modal";
+import { useIncentivizePoolModal } from "@hooks/pool/ui/use-incentivize-pool-modal";
 
 const tokenBalances: TokenBalanceInfo[] = [];
 const periods = [90, 180, 365];

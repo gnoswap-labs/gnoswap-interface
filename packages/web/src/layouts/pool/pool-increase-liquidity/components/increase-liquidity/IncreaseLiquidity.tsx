@@ -3,10 +3,10 @@ import { useTranslation } from "react-i18next";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
-import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
+import { TokenAmountInputModel } from "@hooks/token/data/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
 
-import { INCREASE_BUTTON_TYPE, IPriceRange } from "../../hooks/use-increase-handle";
+import { INCREASE_BUTTON_TYPE, IPriceRange } from "@hooks/pool/data/use-increase-handle";
 import IncreaseAmountPosition from "./increase-select-position/IncreaseAmount";
 import IncreaseSelectPosition from "./increase-select-position/IncreaseSelectPosition";
 

@@ -11,7 +11,7 @@ import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatPrice } from "@utils/new-number-utils";
 
-import { IPriceRange } from "../../hooks/use-reposition-handle";
+import { IPriceRange } from "@hooks/pool/data/use-reposition-handle";
 
 import { RepositionSelectPositionWrapper } from "./RepositionSelectPosition.styles";
 

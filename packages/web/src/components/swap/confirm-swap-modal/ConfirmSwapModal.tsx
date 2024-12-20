@@ -10,7 +10,7 @@ import { IconTriangleWarningOutlined } from "@components/common/icons/IconTriang
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { useTheme } from "@emotion/react";
-import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
+import { PriceImpactStatus } from "@hooks/swap/data/use-swap-handler";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
 import { swapDirectionToGuaranteedType, SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";

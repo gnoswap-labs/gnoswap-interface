@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { TokenChangeInfo } from "@models/token/token-change-info";
 import { TokenModel } from "@models/token/token-model";
 import { useGetPoolList } from "@query/pools";

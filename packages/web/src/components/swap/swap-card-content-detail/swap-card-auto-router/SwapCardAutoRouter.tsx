@@ -4,7 +4,7 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { useTokenImage } from "@hooks/token/use-token-image";
+import { useTokenImage } from "@hooks/token/data/use-token-image";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 

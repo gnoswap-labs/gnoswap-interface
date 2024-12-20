@@ -14,7 +14,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import WarningCard from "@components/common/warning-card/WarningCard";
 import withLocalModal from "@components/hoc/with-local-modal";
 import { EXT_URL } from "@constants/external-url.contant";
-import { useTokenAmountInput } from "@hooks/token/use-token-amount-input";
+import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
 import { DelegationItemInfo, nullDelegationItemInfo } from "@repositories/governance";
 import { formatOtherPrice } from "@utils/new-number-utils";
 

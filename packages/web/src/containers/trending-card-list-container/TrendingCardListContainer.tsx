@@ -1,8 +1,8 @@
 import TrendingCardList from "@components/home/trending-card-list/TrendingCardList";
 import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { useTokenData } from "@hooks/token/use-token-data";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { UpDownType } from "@models/common/card-list-item-info";
 import { TokenModel } from "@models/token/token-model";
 import { useGetChainInfo, useGetTokens } from "@query/token";

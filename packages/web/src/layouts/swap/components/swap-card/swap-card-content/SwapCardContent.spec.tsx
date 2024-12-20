@@ -3,7 +3,7 @@ import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import SwapCardContent from "./SwapCardContent";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
-import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
+import { PriceImpactStatus } from "@hooks/swap/data/use-swap-handler";
 
 const swapTokenInfo: SwapTokenInfo = {
   tokenA: {

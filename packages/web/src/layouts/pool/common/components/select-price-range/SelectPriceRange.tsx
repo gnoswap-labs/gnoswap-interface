@@ -11,7 +11,7 @@ import {
   PriceRangeTooltip,
   PriceRangeType,
 } from "@constants/option.constant";
-import { SelectPool } from "@hooks/pool/use-select-pool";
+import { SelectPool } from "@hooks/pool/data/use-select-pool";
 import { TokenModel } from "@models/token/token-model";
 
 import SelectPriceRangeCustom from "./select-price-range-custom/SelectPriceRangeCustom";

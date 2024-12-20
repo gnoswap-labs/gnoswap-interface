@@ -1,6 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
-import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
+import { PriceImpactStatus } from "@hooks/swap/data/use-swap-handler";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 

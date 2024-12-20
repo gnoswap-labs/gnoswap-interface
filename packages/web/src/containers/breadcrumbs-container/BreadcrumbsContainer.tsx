@@ -4,7 +4,7 @@ import useRouter from "@hooks/common/use-custom-router";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useGetToken } from "@query/token";
 import { ITokenResponse } from "@repositories/token";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useTranslation } from "react-i18next";
 
 export type BreadcrumbTypes = "TOKEN_SYMBOL" | "LAUNCHPAD" | "OTHERs";

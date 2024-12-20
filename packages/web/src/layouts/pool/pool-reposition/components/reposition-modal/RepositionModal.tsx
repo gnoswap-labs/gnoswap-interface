@@ -10,7 +10,7 @@ import { RepositionLiquidityFailedResponse, RepositionLiquiditySuccessResponse }
 import { SwapRouteFailedResponse, SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route-response";
 
 import IncreaseMaxMin from "../../../common/components/increase-max-min/IncreaseMaxMin";
-import { IPriceRange } from "../../hooks/use-reposition-handle";
+import { IPriceRange } from "@hooks/pool/data/use-reposition-handle";
 import BalanceChange from "../balance-change/BalanceChange";
 import RepositionBroadcastProgress from "../reposition-broadcast-progress/RepositionBroadcastProgress";
 import RepositionInfo from "../reposition-info/RepositionInfo";

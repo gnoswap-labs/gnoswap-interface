@@ -5,7 +5,7 @@ import IconInfo from "@components/common/icons/IconInfo";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolModel } from "@models/pool/pool-model";
 import { TokenExchangeRateGraphResponse } from "@repositories/token/response/token-exchange-rate-response";
 

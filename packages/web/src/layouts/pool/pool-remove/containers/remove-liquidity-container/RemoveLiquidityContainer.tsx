@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo, useState } from "react";
 
 import useCustomRouter from "@hooks/common/use-custom-router";
-import { usePositionData } from "@hooks/common/use-position-data";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { usePositionData } from "@hooks/pool/data/use-position-data";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 
 import RemoveLiquidity from "../../components/remove-liquidity/RemoveLiquidity";
-import { useRemovePositionModal } from "../../hooks/use-remove-position-modal";
+import { useRemovePositionModal } from "@hooks/pool/ui/use-remove-position-modal";
 
 const RemoveLiquidityContainer: React.FC = () => {
   const router = useCustomRouter();

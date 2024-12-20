@@ -1,4 +1,4 @@
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import * as CommonState from "@states/common";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";

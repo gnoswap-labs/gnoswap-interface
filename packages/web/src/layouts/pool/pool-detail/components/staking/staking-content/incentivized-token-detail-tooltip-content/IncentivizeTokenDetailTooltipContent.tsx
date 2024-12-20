@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { getDateUtcToLocal } from "@common/utils/date-util";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { INCENTIVE_TYPE } from "@constants/option.constant";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 import { capitalize } from "@utils/string-utils";

@@ -1,7 +1,7 @@
 import React from "react";
 
-import { usePositionData } from "@hooks/common/use-position-data";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { usePositionData } from "@hooks/pool/data/use-position-data";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 
 import { wrapper } from "./WalletMyPositions.styles";
 

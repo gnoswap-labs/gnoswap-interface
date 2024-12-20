@@ -5,7 +5,7 @@ import { TokenError } from "@common/errors/token";
 import { DEFAULT_I18N_NS } from "@constants/common.constant";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useGetToken, useGetTokenPrices } from "@query/token";
 
 import TokenDetail from "@layouts/token-detail/TokenDetail";

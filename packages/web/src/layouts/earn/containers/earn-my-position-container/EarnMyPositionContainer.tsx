@@ -4,12 +4,12 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { DEFAULT_POOL_PATH } from "@constants/common.constant";
 import { QUERY_PARAMETER } from "@constants/page.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
-import { usePositionData } from "@hooks/common/use-position-data";
+import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { usePoolData } from "@hooks/pool/use-pool-data";
-import { useTokenData } from "@hooks/token/use-token-data";
-import { useConnectWalletModal } from "@hooks/wallet/use-connect-wallet-modal";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { usePoolData } from "@hooks/pool/data/use-pool-data";
+import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetUsernameByAddress } from "@query/address";
 import { EarnState, ThemeState } from "@states/index";
 import { PoolPositionModel } from "@models/position/pool-position-model";

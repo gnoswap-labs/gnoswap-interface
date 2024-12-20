@@ -7,12 +7,12 @@ import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useMessage } from "@hooks/common/use-message";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { DexEvent } from "@repositories/common";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 
-import { usePositionsRewards } from "../../../common/hooks/use-positions-rewards";
+import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
 import UnstakePositionModal from "../../components/unstake-position-modal/UnstakePositionModal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";

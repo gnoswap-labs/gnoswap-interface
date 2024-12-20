@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetPoolStakingListByAddress } from "@query/pools/use-get-pool-staking-list-by-address";
 import { ExtendedPoolStakingModel } from "@models/pool/pool-staking";
 

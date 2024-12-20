@@ -13,8 +13,8 @@ import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSke
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { StakingPeriodType, STAKING_PERIOD_INFO } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
-import { useTokenData } from "@hooks/token/use-token-data";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionModel } from "@models/position/position-model";
 import { useGetAllTokenPrices } from "@query/token";

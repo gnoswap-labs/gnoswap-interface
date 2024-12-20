@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 

@@ -5,7 +5,7 @@ import IconAlert from "@components/common/icons/IconAlert";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetNotifications } from "@query/common";
 import { CommonState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";

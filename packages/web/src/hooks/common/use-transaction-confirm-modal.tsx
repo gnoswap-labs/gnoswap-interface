@@ -2,7 +2,7 @@ import { useAtom } from "jotai";
 import { useCallback, useEffect } from "react";
 
 import TransactionConfirmModal from "@components/common/transaction-confirm-modal/TransactionConfirmModal";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { CommonState } from "@states/index";
 
 export interface TransactionConfirmModalResponse {

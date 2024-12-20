@@ -8,7 +8,7 @@ import HeaderContainer from "@containers/header-container/HeaderContainer";
 import useRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { DeviceSize } from "@styles/media";
 import { makeRouteUrl } from "@utils/page.utils";
 import { useGetPoolDetailByPath } from "src/react-query/pools";

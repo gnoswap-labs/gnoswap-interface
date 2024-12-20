@@ -9,7 +9,7 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { formatOtherPrice } from "@utils/new-number-utils";

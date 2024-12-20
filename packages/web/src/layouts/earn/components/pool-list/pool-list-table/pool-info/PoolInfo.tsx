@@ -5,7 +5,7 @@ import IconStar from "@components/common/icons/IconStar";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { POOL_INFO, POOL_INFO_MOBILE, POOL_INFO_SMALL_TABLET, POOL_INFO_TABLET } from "@constants/skeleton.constant";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";

@@ -4,8 +4,8 @@ import { SwapFeeTierType } from "@constants/option.constant";
 
 import IncreaseLiquidity from "../../components/increase-liquidity/IncreaseLiquidity";
 import IncreaseLiquidityLoading from "../../components/increase-liquidity/IncreaseLiquidityLoading";
-import { useIncreaseHandle } from "../../hooks/use-increase-handle";
-import { useIncreasePositionModal } from "../../hooks/use-increase-position-modal";
+import { useIncreaseHandle } from "@hooks/pool/data/use-increase-handle";
+import { useIncreasePositionModal } from "@hooks/pool/ui/use-increase-position-modal";
 
 const IncreaseLiquidityContainer: React.FC = () => {
   const {

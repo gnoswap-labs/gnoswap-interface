@@ -7,7 +7,7 @@ import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 import IconStrokeArrowUp from "@components/common/icons/IconStrokeArrowUp";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
+import { PriceImpactStatus } from "@hooks/swap/data/use-swap-handler";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";

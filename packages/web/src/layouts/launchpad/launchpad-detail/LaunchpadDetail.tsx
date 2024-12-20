@@ -5,10 +5,10 @@ import { useTranslation } from "react-i18next";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGetLaunchpadProjectDetails } from "@query/launchpad/use-get-launchpad-project-details";
 import { useGetLaunchpadParticipationInfos } from "@query/launchpad/use-get-launchpad-participation-infos";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { LaunchpadProjectDetailsModel } from "@models/launchpad";
 import { LaunchpadState } from "@states/index";
-import { useTokenData } from "@hooks/token/use-token-data";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 
 import LaunchpadDetailLayout from "./LaunchpadDetailLayout";
 import HeaderContainer from "@containers/header-container/HeaderContainer";

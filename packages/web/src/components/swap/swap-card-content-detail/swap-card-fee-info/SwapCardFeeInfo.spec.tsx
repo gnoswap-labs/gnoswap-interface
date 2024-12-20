@@ -4,7 +4,7 @@ import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapTheme
 import SwapCardFeeInfo from "./SwapCardFeeInfo";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
-import { PriceImpactStatus } from "@hooks/swap/use-swap-handler";
+import { PriceImpactStatus } from "@hooks/swap/data/use-swap-handler";
 
 const swapSummaryInfo: SwapSummaryInfo = {
   tokenA: {

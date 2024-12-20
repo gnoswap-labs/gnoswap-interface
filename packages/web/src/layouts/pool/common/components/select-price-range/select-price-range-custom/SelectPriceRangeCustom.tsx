@@ -18,8 +18,8 @@ import {
   SwapFeeTierPriceRange,
 } from "@constants/option.constant";
 import { MAX_TICK } from "@constants/swap.constant";
-import { SelectPool } from "@hooks/pool/use-select-pool";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { SelectPool } from "@hooks/pool/data/use-select-pool";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";

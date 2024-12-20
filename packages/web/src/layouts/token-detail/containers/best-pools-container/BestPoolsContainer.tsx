@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 import { SwapFeeTierType } from "@constants/option.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
-import { useGnotToGnot } from "@hooks/token/use-gnot-wugnot";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolModel } from "@models/pool/pool-model";
 import { useGetPoolList } from "@query/pools";
 import { useGetChainInfo, useGetToken, useGetTokenDetails, useGetTokens } from "@query/token";

@@ -1,7 +1,7 @@
 import HomeSwap from "@components/home/home-swap/HomeSwap";
 import { useSlippage } from "@hooks/common/use-slippage";
-import { useTokenData } from "@hooks/token/use-token-data";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";

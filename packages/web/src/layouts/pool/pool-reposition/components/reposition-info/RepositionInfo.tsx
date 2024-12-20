@@ -9,7 +9,7 @@ import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatRate } from "@utils/new-number-utils";
 
-import { IPriceRange } from "../../hooks/use-reposition-handle";
+import { IPriceRange } from "@hooks/pool/data/use-reposition-handle";
 
 import { RepositionInfoWrapper, ToolTipContentWrapper } from "./RepositionInfo.styles";
 

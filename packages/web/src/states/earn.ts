@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { atom } from "jotai";
 
-import { TokenAmountInputModel } from "@hooks/token/use-token-amount-input";
+import { TokenAmountInputModel } from "@hooks/token/data/use-token-amount-input";
 import { PoolModel } from "@models/pool/pool-model";
 import { TokenModel } from "@models/token/token-model";
 

@@ -1,11 +1,11 @@
 import { useMemo } from "react";
-import { useTokenData } from "@hooks/token/use-token-data";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useInitLoading } from "@query/common";
 import { useGetDashboardVolume } from "@query/dashboard";
 import { useGetPoolList } from "@query/pools";
 import { useGetChainInfo } from "@query/token";
 import { useGetPositionsByAddress } from "@query/positions";
-import { useAddress } from "@hooks/address/use-address";
+import { useAddress } from "@hooks/common/use-address";
 import { useGetLaunchpadActiveProjects } from "@query/launchpad/use-get-launchpad-active-projects";
 
 export const useLoading = () => {

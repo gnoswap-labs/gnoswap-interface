@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 
-import { usePoolData } from "@hooks/pool/use-pool-data";
+import { usePoolData } from "@hooks/pool/data/use-pool-data";
 
 import EarnIncentivizedPools from "../../components/earn-incentivized-pools/EarnIncentivizedPools";
 

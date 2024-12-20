@@ -7,14 +7,14 @@ import AssetReceiveModal from "@components/wallet/asset-receive-modal/AssetRecei
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useMessage } from "@hooks/common/use-message";
-import { usePosition } from "@hooks/common/use-position";
-import { usePositionData } from "@hooks/common/use-position-data";
+import { usePosition } from "@hooks/pool/data/use-position";
+import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { useTokenData } from "@hooks/token/use-token-data";
-import { useWallet } from "@hooks/wallet/use-wallet";
+import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { useGetAvgBlockTime } from "@query/address";
 import { useGetAllTokenPrices } from "@query/token";
@@ -25,7 +25,7 @@ import { isEmptyObject } from "@utils/validation-utils";
 
 import AssetSendModal from "../../components/asset-send-modal/AssetSendModal";
 import WalletBalance from "../../components/wallet-balance/WalletBalance";
-import useSendAsset from "../../hooks/useSendAsset";
+import useSendAsset from "@hooks/wallet/data/useSendAsset";
 
 const WalletBalanceContainer: React.FC = () => {
   const { connected, isSwitchNetwork, loadingConnect, account } = useWallet();

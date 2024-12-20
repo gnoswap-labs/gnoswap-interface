@@ -3,8 +3,8 @@ import React from "react";
 import { PriceRangeMeta, SwapFeeTierType } from "@constants/option.constant";
 
 import RepositionContent from "../../components/reposition-content/RepositionContent";
-import { useRepositionHandle } from "../../hooks/use-reposition-handle";
-import { useRepositionModalContainer } from "../../hooks/use-reposition-position-modal";
+import { useRepositionHandle } from "@hooks/pool/data/use-reposition-handle";
+import { useRepositionModalContainer } from "@hooks/pool/ui/use-reposition-position-modal";
 
 const PRICE_RANGES: PriceRangeMeta[] = [{ type: "Active" }, { type: "Passive" }, { type: "Custom" }];
 
