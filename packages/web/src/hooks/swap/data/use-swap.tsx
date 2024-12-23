@@ -49,6 +49,12 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     return false;
   }, [tokenA, tokenB]);
 
+  const hasValidSwapAmount = Boolean(swapAmount && swapAmount > 0);
+  const hasValidTokenPaths = Boolean(tokenA?.path) && Boolean(tokenB?.path);
+  const isDifferentTokens = !isSameToken;
+
+  const isEnabledQuery = shouldFetch && hasValidSwapAmount && hasValidTokenPaths && isDifferentTokens;
+
   const {
     data: estimatedSwapResult,
     isLoading: isEstimatedSwapLoading,
@@ -61,15 +67,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       tokenAmount: direction === "EXACT_IN" ? swapAmount : swapAmount ? swapAmount * exactOutPadding : swapAmount,
     },
     {
-      enabled:
-        shouldFetch &&
-        !!swapAmount &&
-        swapAmount > 0 &&
-        !!tokenA &&
-        !!tokenA.path &&
-        !!tokenB &&
-        !!tokenB.path &&
-        !isSameToken,
+      enabled: isEnabledQuery,
     },
   );
 
@@ -141,7 +139,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     if (!amount) return setSwapAmount(null);
 
     let newAmount = 0;
-    if (!amount || BigNumber(amount).isZero()) {
+    if (BigNumber(amount).isZero()) {
       newAmount = 0;
     }
     newAmount = BigNumber(amount).toNumber();
