@@ -1040,8 +1040,6 @@ export const useSwapHandler = () => {
         }
         return;
       }
-
-      return;
     }
   }, [swapState, estimatedAmount, type, tokenA, tokenB]);
 
