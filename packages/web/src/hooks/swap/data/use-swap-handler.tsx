@@ -144,6 +144,8 @@ export const useSwapHandler = () => {
     !defaultTokenAAmount ? (defaultTokenBAmount ? defaultTokenBAmount : undefined) : undefined,
   );
 
+  const prevPriceImpact = useRef<BigNumber>(BigNumber(0));
+
   const [submitted, setSubmitted] = useState(false);
 
   const [copied, setCopied] = useState(false);
@@ -256,6 +258,16 @@ export const useSwapHandler = () => {
       return BigNumber(0);
     }
 
+    if (estimatedAmount === null) {
+      return prevPriceImpact.current || BigNumber(0);
+    }
+
+    if (type === "EXACT_IN") {
+      setTokenBAmount(estimatedAmount);
+    } else {
+      setTokenAAmount(estimatedAmount);
+    }
+
     const hasUSDPrice =
       !!tokenPrices[checkGnotPath(tokenA.path)]?.usd && !!tokenPrices[checkGnotPath(tokenB.path)]?.usd;
 
@@ -285,6 +297,7 @@ export const useSwapHandler = () => {
       estimatedRoutes,
       (swapFee || 0) / 100,
     );
+    prevPriceImpact.current = BigNumber(priceImpactNum.toFixed(2));
     return BigNumber(priceImpactNum.toFixed(2));
   }, [estimatedRoutes, swapFee, tokenA, tokenAAmount, tokenB, tokenBAmount, tokenPrices]);
 
@@ -1029,14 +1042,6 @@ export const useSwapHandler = () => {
       }
 
       return;
-    }
-
-    if (type === "EXACT_IN") {
-      const amount = makeDisplayTokenAmount(tokenB, estimatedAmount || 0) || 0;
-      setTokenBAmount(amount.toString());
-    } else {
-      const amount = makeDisplayTokenAmount(tokenA, estimatedAmount || 0) || 0;
-      setTokenAAmount(amount.toString());
     }
   }, [swapState, estimatedAmount, type, tokenA, tokenB]);
 
