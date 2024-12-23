@@ -949,8 +949,8 @@ export const useSwapHandler = () => {
     const broadcastMessage = {
       tokenASymbol: tokenA.symbol,
       tokenBSymbol: tokenB.symbol,
-      tokenAAmount: isExactIn ? tokenAAmount : makeDisplayTokenAmount(tokenA, estimatedAmount || 0)?.toString() || "0",
-      tokenBAmount: isExactIn ? makeDisplayTokenAmount(tokenB, estimatedAmount || 0)?.toString() || "0" : tokenBAmount,
+      tokenAAmount: isExactIn ? tokenAAmount : (estimatedAmount || 0).toString(),
+      tokenBAmount: isExactIn ? (estimatedAmount || 0).toString() : tokenBAmount,
     };
 
     // Handle Wrap and Unwrap
