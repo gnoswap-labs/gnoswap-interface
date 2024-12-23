@@ -66,6 +66,14 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
 
   const isEnabledQuery = shouldFetch && hasValidSwapAmount && hasValidTokenPaths && isDifferentTokens;
 
+  const getTokenAmount = useMemo(() => {
+    if (direction === "EXACT_IN") {
+      return debouncedSwapAmount;
+    }
+
+    return debouncedSwapAmount ? debouncedSwapAmount * exactOutPadding : debouncedSwapAmount;
+  }, [debouncedSwapAmount, direction, exactOutPadding]);
+
   const {
     data: estimatedSwapResult,
     isLoading: isEstimatedSwapLoading,
@@ -75,12 +83,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       inputToken: tokenA,
       outputToken: tokenB,
       exactType: direction,
-      tokenAmount:
-        direction === "EXACT_IN"
-          ? debouncedSwapAmount
-          : debouncedSwapAmount
-          ? debouncedSwapAmount * exactOutPadding
-          : debouncedSwapAmount,
+      tokenAmount: getTokenAmount,
     },
     {
       enabled: isEnabledQuery,
