@@ -153,7 +153,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
         return 0;
       }
 
-      return tokenA ? makeDisplayTokenAmount(tokenA, tokenAmountLimit) || 0 : 0;
+      return tokenA ? tokenAmountLimit || 0 : 0;
     }
     return 0;
   }, [direction, estimatedAmount, slippage, tokenA]);
