@@ -26,5 +26,7 @@
 export const sortTokenPaths = (tokenA: string | undefined, tokenB: string | undefined): number => {
   const tokenAString = tokenA ?? "";
   const tokenBString = tokenB ?? "";
-  return tokenAString === tokenBString ? 0 : tokenAString > tokenBString ? 1 : -1;
+
+  if (tokenAString === tokenBString) return 0;
+  return tokenAString > tokenBString ? 1 : -1;
 };
