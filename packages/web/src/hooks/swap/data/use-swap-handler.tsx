@@ -32,6 +32,7 @@ import { formatPrice } from "@utils/new-number-utils";
 import { matchInputNumber } from "@utils/number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { isEmptyObject } from "@utils/validation-utils";
+import { nullish } from "@utils/nullish-utils";
 
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { rawBySqrtX96 } from "@utils/swap-utils";
@@ -949,8 +950,8 @@ export const useSwapHandler = () => {
     const broadcastMessage = {
       tokenASymbol: tokenA.symbol,
       tokenBSymbol: tokenB.symbol,
-      tokenAAmount: isExactIn ? tokenAAmount : (estimatedAmount || 0).toString(),
-      tokenBAmount: isExactIn ? (estimatedAmount || 0).toString() : tokenBAmount,
+      tokenAAmount: isExactIn ? tokenAAmount : nullish.handleFalsy(estimatedAmount, "0"),
+      tokenBAmount: isExactIn ? nullish.handleFalsy(estimatedAmount, "0") : tokenBAmount,
     };
 
     // Handle Wrap and Unwrap
