@@ -4,7 +4,7 @@ import Footer from "@components/common/footer/Footer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 
 import SwapContainer from "./containers/swap-container/SwapContainer";
-import SwapLiquidityContainer from "./containers/swap-liquidity-container/SwapLiquidityContainer";
+import SwapInfoChartContainer from "./containers/swap-info-chart-container/SwapInfoChartContainer";
 
 import SwapLayout from "./SwapLayout";
 
@@ -13,7 +13,7 @@ const Swap: React.FC = () => {
     <SwapLayout
       header={<HeaderContainer />}
       swap={<SwapContainer />}
-      liquidity={<SwapLiquidityContainer />}
+      chart={<SwapInfoChartContainer />}
       footer={<Footer />}
     />
   );
