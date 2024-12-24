@@ -1,8 +1,9 @@
-import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { formatPrice } from "@utils/new-number-utils";
 import React from "react";
+import { formatPrice } from "@utils/new-number-utils";
 
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { SwapTokenHeaderWrapper } from "./SwapTokenHeader.styles";
+import IconOpenLink from "@components/common/icons/IconOpenLink";
 
 interface TokenInfo {
   name: string;
@@ -29,7 +30,9 @@ const SwapTokenHeader = ({ tokenInfo, price }: SwapTokenHeaderProps) => {
         <div className="token-title">
           <div className="name">
             <div>{tokenInfo.name}</div>
-            <div className="link">{tokenInfo.path}</div>
+            <button className="link">
+              <span>{tokenInfo.path}</span> <IconOpenLink />
+            </button>
           </div>
           <div className="symbol">{tokenInfo.symbol}</div>
         </div>

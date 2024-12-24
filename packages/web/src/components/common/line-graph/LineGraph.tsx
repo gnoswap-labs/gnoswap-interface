@@ -82,6 +82,7 @@ export interface LineGraphProps {
   smooth?: boolean;
   width?: number;
   height?: number;
+  forcedHeight?: number;
   point?: boolean;
   firstPointColor?: string;
   typeOfChart?: string;
@@ -100,6 +101,7 @@ export interface LineGraphProps {
   baseLineLabelsStyle?: React.CSSProperties;
   displayLastDayAsNow?: boolean;
   popupYValueFormatter?: (value: string) => string;
+  hasNoLabel?: boolean;
 }
 
 export interface LineGraphRef {
@@ -148,6 +150,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   smooth,
   width = VIEWPORT_DEFAULT_WIDTH,
   height = VIEWPORT_DEFAULT_HEIGHT,
+  forcedHeight,
   point,
   customData = { height: 0, locationTooltip: 0 },
   showBaseLine = false,
@@ -163,6 +166,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   firstPointColor,
   displayLastDayAsNow = false,
   popupYValueFormatter,
+  hasNoLabel = false,
 }: LineGraphProps) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
@@ -509,6 +513,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
     }
     return points[0];
   }, [points]);
+
   const locationTooltipPosition = useMemo(() => {
     if ((chartPoint?.y || 0) > customHeight + height - 25) {
       if (width < (currentPoint?.x || 0) + locationTooltip) {
@@ -581,6 +586,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
       }}
       onTouchMove={onTouchMove}
       onTouchStart={onTouchStart}
+      forcedHeight={forcedHeight}
     >
       <FloatingTooltip
         className="chart-tooltip"
@@ -691,7 +697,13 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 />
               )}
               {isFocus() && currentPoint && (
-                <circle cx={currentPoint.x} cy={currentPoint.y + 24} r={3} stroke={color} fill={color} />
+                <circle
+                  cx={currentPoint.x}
+                  cy={hasNoLabel ? currentPoint.y : currentPoint.y + 24}
+                  r={3}
+                  stroke={color}
+                  fill={color}
+                />
               )}
             </g>
           }

@@ -26,10 +26,15 @@ export const SwapTokenHeaderWrapper = styled.div`
         color: ${({ theme }) => theme.color.text02};
         font-size: 18px;
         .link {
+          display: flex;
+          align-items: center;
+          gap: 2px;
           color: #596782;
           font-size: 10px;
           font-weight: 400;
           padding: 2px 4px;
+          border-radius: 4px;
+          background-color: ${({ theme }) => (theme.themeKey === "dark" ? "#0D121C" : "rgba(224, 232, 244, 0.40)")};
         }
       }
       .symbol {

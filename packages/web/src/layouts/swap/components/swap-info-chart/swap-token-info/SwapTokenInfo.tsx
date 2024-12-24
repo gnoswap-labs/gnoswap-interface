@@ -27,14 +27,14 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
     enabled: !!tokenData.path,
   });
 
-  const { data: { prices7d = [] } = {} } = useGetTokenDetails(tokenData.path as string, {
+  const { data: { prices7d = [] } = {}, isLoading } = useGetTokenDetails(tokenData.path as string, {
     enabled: !!tokenData.path,
   });
 
   return (
     <SwapTokenInfoWrapper>
       <SwapTokenHeader tokenInfo={tokenData} price={currentPrice} />
-      <SwapTokenChart data={prices7d} />
+      <SwapTokenChart data={prices7d} isLoading={isLoading} />
     </SwapTokenInfoWrapper>
   );
 };

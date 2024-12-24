@@ -4,13 +4,15 @@ import { IPriceResponse } from "@repositories/token";
 import { getLocalizeTime } from "@utils/chart";
 
 import LineGraph from "@components/common/line-graph/LineGraph";
-import { SwapTokenChartWrapper } from "./SwapTokenChart.styles";
+import { LoadingChart, SwapTokenChartWrapper } from "./SwapTokenChart.styles";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
 interface SwapTokenChartProps {
   data: IPriceResponse[];
+  isLoading: boolean;
 }
 
-const SwapTokenChart = ({ data = [] }: SwapTokenChartProps) => {
+const SwapTokenChart = ({ data = [], isLoading }: SwapTokenChartProps) => {
   const hasData = data && data.length > 0;
 
   const chartData = React.useMemo(() => {
@@ -25,9 +27,23 @@ const SwapTokenChart = ({ data = [] }: SwapTokenChartProps) => {
 
   return (
     <SwapTokenChartWrapper>
-      <div>
-        <LineGraph datas={chartData} width={400} height={50} color="#192EA2" strokeWidth={1} cursor smooth />
-      </div>
+      {isLoading && (
+        <LoadingChart>
+          <LoadingSpinner />
+        </LoadingChart>
+      )}
+      {hasData && (
+        <LineGraph
+          datas={chartData}
+          height={50}
+          forcedHeight={50}
+          color="#192EA2"
+          strokeWidth={1}
+          hasNoLabel={true}
+          cursor
+          smooth
+        />
+      )}
     </SwapTokenChartWrapper>
   );
 };
