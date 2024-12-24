@@ -9,7 +9,7 @@ export const SwapInfoChartWrapper = styled.div`
   justify-content: center;
   gap: 16px;
 
-  padding: 16px;
+  padding: 6px 16px;
   border-radius: 8px;
-  border: 1px solid #1c2230;
+  border: 1px solid ${({ theme }) => theme.color.border02};
 `;

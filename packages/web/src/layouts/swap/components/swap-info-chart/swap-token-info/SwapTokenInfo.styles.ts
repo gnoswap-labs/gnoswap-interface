@@ -5,4 +5,5 @@ export const SwapTokenInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 32px;
+  padding: 10px 0;
 `;

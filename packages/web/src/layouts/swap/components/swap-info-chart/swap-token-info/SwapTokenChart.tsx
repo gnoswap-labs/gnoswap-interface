@@ -4,16 +4,18 @@ import { IPriceResponse } from "@repositories/token";
 import { getLocalizeTime } from "@utils/chart";
 
 import LineGraph from "@components/common/line-graph/LineGraph";
-import { LoadingChart, SwapTokenChartWrapper } from "./SwapTokenChart.styles";
+import { ChartNotFound, LoadingChart, SwapTokenChartWrapper } from "./SwapTokenChart.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
 interface SwapTokenChartProps {
   data: IPriceResponse[];
   isLoading: boolean;
+  isFetched: boolean;
 }
 
-const SwapTokenChart = ({ data = [], isLoading }: SwapTokenChartProps) => {
-  const hasData = data && data.length > 0;
+const SwapTokenChart = ({ data = [], isLoading, isFetched }: SwapTokenChartProps) => {
+  const hasData = isFetched && data && data.length > 0;
+  const isNoData = isFetched && !isLoading && !data;
 
   const chartData = React.useMemo(() => {
     if (!hasData) return [];
@@ -32,6 +34,7 @@ const SwapTokenChart = ({ data = [], isLoading }: SwapTokenChartProps) => {
           <LoadingSpinner />
         </LoadingChart>
       )}
+      {isNoData && <ChartNotFound>No Data</ChartNotFound>}
       {hasData && (
         <LineGraph
           datas={chartData}
