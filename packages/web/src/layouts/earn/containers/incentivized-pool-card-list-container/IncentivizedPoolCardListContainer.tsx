@@ -125,19 +125,13 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
           ],
         );
 
-        let nextIndex = maybeNextDisplayIndex;
+        const distanceMap = {
+          [previousElementCenterXToScreenCenterX]: maybeNextDisplayIndex - 1,
+          [currentElementCenterXToScreenCenterX]: maybeNextDisplayIndex,
+          [nextElementCenterXToScreenCenterX]: maybeNextDisplayIndex + 1,
+        };
 
-        switch (minLength) {
-          case previousElementCenterXToScreenCenterX:
-            nextIndex = maybeNextDisplayIndex - 1;
-            break;
-          case nextElementCenterXToScreenCenterX:
-            nextIndex = maybeNextDisplayIndex + 1;
-            break;
-          case currentElementCenterXToScreenCenterX:
-            nextIndex = maybeNextDisplayIndex;
-            break;
-        }
+        const nextIndex = distanceMap[minLength];
 
         if (nextIndex > childrenLength) {
           setCurrentIndex(childrenLength);

@@ -27,6 +27,7 @@ import {
   priceToTick,
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
+import { sortTokenPaths } from "@utils/sort-utils";
 
 import PoolAddLiquidity, { PriceRangeSummary } from "../../components/pool-add-liquidity/PoolAddLiquidity";
 import { usePool } from "@hooks/pool/data/use-pool";
@@ -548,7 +549,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   useEffect(() => {
     if (pools.length > 0 && tokenA && tokenB && selectPool.compareToken) {
-      const tokenPair = [tokenA.wrappedPath, tokenB.wrappedPath].sort();
+      const tokenPair = [tokenA.wrappedPath, tokenB.wrappedPath].sort(sortTokenPaths);
       const compareToken = selectPool.compareToken;
       const reverse =
         tokenPair.findIndex(path => {
@@ -575,7 +576,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   useEffect(() => {
     const pair = [tokenA?.path, tokenB?.path]
       .filter(item => item !== undefined)
-      .sort()
+      .sort(sortTokenPaths)
       .join(":");
 
     const isDifferentPair = pair !== lastPoolPathRef.current;

@@ -7,9 +7,9 @@ export class WebStorageClient implements StorageClient {
     this.storageType = storageType;
   }
 
-  get storage() {
-    if (!window) {
-      return;
+  get storage(): Storage | null {
+    if (typeof window === "undefined") {
+      return null;
     }
     if (this.storageType === "LOCAL") {
       return window.localStorage;

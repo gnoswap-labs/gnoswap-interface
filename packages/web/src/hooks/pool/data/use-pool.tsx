@@ -8,6 +8,7 @@ import { PoolModel } from "@models/pool/pool-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { useGetPoolCreationFee, useGetRPCPoolsBy } from "@query/pools";
 import { checkGnotPath } from "@utils/common";
+import { sortTokenPaths } from "@utils/sort-utils";
 
 interface Props {
   compareToken: TokenModel | null;
@@ -29,7 +30,7 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
     const tokenATokenPath = checkGnotPath(tokenA.path) ? tokenA.wrappedPath : tokenA.path;
     const tokenBTokenPath = checkGnotPath(tokenB.path) ? tokenB.wrappedPath : tokenB.path;
 
-    const tokenPair = [tokenATokenPath, tokenBTokenPath].sort();
+    const tokenPair = [tokenATokenPath, tokenBTokenPath].sort(sortTokenPaths);
 
     return [
       SwapFeeTierInfoMap.FEE_100,

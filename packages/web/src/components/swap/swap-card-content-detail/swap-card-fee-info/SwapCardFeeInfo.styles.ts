@@ -97,12 +97,12 @@ export const PriceImpactStatusWrapper = styled.span<{
         return `color: ${theme.color.red01};`;
       case "LOW":
         return `color: ${theme.color.text10};`;
-      default:
-        return `color: ${theme.color.text04};`;
       case "POSITIVE":
         return `color: ${theme.color.green01};`;
       case "MEDIUM":
         return `color: ${theme.color.goldenrod};`;
+      default:
+        return `color: ${theme.color.text04};`;
     }
   }}
 `;
@@ -114,12 +114,13 @@ export const PriceImpactStrWrapper = styled.span<{
       case "HIGH":
         return `color: ${theme.color.red01};`;
       case "LOW":
-      default:
         return `color: ${theme.color.text04};`;
       case "POSITIVE":
         return `color: ${theme.color.green01};`;
       case "MEDIUM":
         return `color: ${theme.color.goldenrod};`;
+      default:
+        return `color: ${theme.color.text04};`;
     }
   }}
 `;

@@ -24,6 +24,7 @@ import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToTick, tickToPrice } from "@utils/swap-utils";
+import { sortTokenPaths } from "@utils/sort-utils";
 
 import PriceSteps from "./price-steps/PriceSteps";
 import StartingPrice from "./starting-price/StartingPrice";
@@ -91,7 +92,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
     const availSelect = Array.isArray(selectPool.liquidityOfTickPoints) && selectPool.renderState() === "DONE";
 
     const flip = useMemo(() => {
-      const compareTokenPaths = [checkGnotPath(tokenA.path), checkGnotPath(tokenB.path)].sort();
+      const compareTokenPaths = [checkGnotPath(tokenA.path), checkGnotPath(tokenB.path)].sort(sortTokenPaths);
       return compareTokenPaths[0] !== checkGnotPath(selectPool.compareToken?.path || "");
     }, [selectPool.compareToken, tokenA.path, tokenB.path]);
 

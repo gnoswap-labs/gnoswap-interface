@@ -132,7 +132,7 @@ export const useWallet = () => {
     if (adena !== null) {
       adena.initAdena();
     } else {
-      window.open("https://adena.app/");
+      window.open("https://adena.app/", "", "noopener,noreferrer");
     }
     setWalletClient(adena);
   }, [sessionId, loadingConnect]);

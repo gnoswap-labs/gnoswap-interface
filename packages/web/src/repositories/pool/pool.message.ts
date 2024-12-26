@@ -25,6 +25,7 @@ import { MAX_INT64, tickToSqrtPriceX96 } from "@utils/math.utils";
 import { isOrderedTokenPaths } from "@utils/pool-utils";
 import { priceToTick } from "@utils/swap-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
+import { sortTokenPaths } from "@utils/sort-utils";
 
 enum PoolTransactionMessageFunctionType {
   CreatePool = "CreatePool",
@@ -73,7 +74,7 @@ export function makeCreatePoolMessageWithApproves(
    */
   const isOrdered = isOrderedTokenPaths(tokenAPath, tokenBPath);
 
-  const [orderedPoolAPath, orderedPoolBPath] = [tokenAPath, tokenBPath].sort();
+  const [orderedPoolAPath, orderedPoolBPath] = [tokenAPath, tokenBPath].sort(sortTokenPaths);
   const orderedStartPriceNum = isOrdered || startPriceNum === 0 ? startPriceNum : 1 / startPriceNum;
   const startPriceSqrt = tickToSqrtPriceX96(priceToTick(orderedStartPriceNum));
 

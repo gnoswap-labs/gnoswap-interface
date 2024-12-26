@@ -8,6 +8,17 @@ interface Props {
   placeholderFontSize?: number;
 }
 
+const getFontSize = (width: number | undefined): string => {
+  if (!width) return "6";
+  if (width === 36) return "13";
+  if (width === 32) return "12";
+  if (width === 28) return "10";
+  if (width === 24) return "9";
+  if (width === 21) return "8";
+  if (width === 20) return "7";
+  return "6";
+};
+
 export const Image = styled.img<Props>`
   min-width: ${({ width }) => {
     return `${width}px`;
@@ -20,21 +31,7 @@ export const Image = styled.img<Props>`
   }};
   ${media.mobile} {
     font-size: ${({ mobileWidth }) => {
-      return `${
-        mobileWidth === 36
-          ? "13"
-          : mobileWidth === 32
-          ? "12"
-          : mobileWidth === 28
-          ? "10"
-          : mobileWidth === 24
-          ? "9"
-          : mobileWidth === 21
-          ? "8"
-          : mobileWidth === 20
-          ? "7"
-          : "6"
-      }px`;
+      return `${getFontSize(mobileWidth)}px`;
     }};
     height: ${({ mobileWidth }) => {
       return `${mobileWidth}px`;
@@ -67,42 +64,12 @@ export const LogoWrapper = styled.div<Props>`
   font-weight: 600;
   font-size: ${({ width, placeholderFontSize }) => {
     if (placeholderFontSize) return `${placeholderFontSize}px`;
-
-    return `${
-      width === 36
-        ? "13"
-        : width === 32
-        ? "12"
-        : width === 28
-        ? "10"
-        : width === 24
-        ? "9"
-        : width === 21
-        ? "8"
-        : width === 20
-        ? "7"
-        : "6"
-    }px`;
+    return `${getFontSize(width)}`;
   }};
   ${media.mobile} {
     font-size: ${({ mobileWidth, placeholderFontSize }) => {
       if (placeholderFontSize) return `${placeholderFontSize}px`;
-
-      return `${
-        mobileWidth === 36
-          ? "13"
-          : mobileWidth === 32
-          ? "12"
-          : mobileWidth === 28
-          ? "10"
-          : mobileWidth === 24
-          ? "9"
-          : mobileWidth === 21
-          ? "8"
-          : mobileWidth === 20
-          ? "7"
-          : "6"
-      }px`;
+      return `${getFontSize(mobileWidth)}`;
     }};
     height: ${({ mobileWidth }) => {
       return `${mobileWidth}px`;
