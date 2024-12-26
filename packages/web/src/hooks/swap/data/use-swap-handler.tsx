@@ -593,7 +593,9 @@ export const useSwapHandler = () => {
   const changeTokenAAmount = useCallback(
     (changed: string, none?: boolean) => {
       const value = handleAmount(changed, tokenA);
-      updateSwapAmount(value);
+      if (tokenA && tokenB) {
+        updateSwapAmount(value);
+      }
 
       if (isSameToken) {
         setTokenAAmount(value);

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import BigNumber from "bignumber.js";
 
 import { SwapDirectionType } from "@common/values";
@@ -21,10 +21,13 @@ interface UseSwapProps {
 export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: UseSwapProps) => {
   const { account } = useWallet();
   const { swapRouterRepository } = useGnoswapContext();
+
+  const SWAP_AMOUNT_DEBOUNCE_TIME_MS = 500;
   const [swapAmount, setSwapAmount] = useState<number | null>(null);
-  const debouncedAmount = useDebounce(swapAmount, 500);
+  const debouncedAmount = useDebounce(swapAmount, SWAP_AMOUNT_DEBOUNCE_TIME_MS);
   const [estimatedLiquidityMax, setEstimatedLiquidityMax] = useState<number | null>(null);
   const [isTyping, setIsTyping] = useState(false);
+  const typingTimeoutRef = useRef<NodeJS.Timeout>();
 
   const debouncedSwapAmount = useMemo(() => {
     if (!swapAmount || swapAmount === 0) {
@@ -35,11 +38,12 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
 
   const shouldFetchData = useCallback(
     (amount: number | null) => {
+      if (!tokenA || !tokenB) return false;
       if (!amount) return false;
       if (!estimatedLiquidityMax) return true;
       return amount < estimatedLiquidityMax;
     },
-    [estimatedLiquidityMax],
+    [estimatedLiquidityMax, tokenA, tokenB],
   );
   const shouldFetch = shouldFetchData(debouncedSwapAmount);
 
@@ -161,22 +165,35 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     return 0;
   }, [direction, estimatedAmount, slippage, tokenA]);
 
-  const updateSwapAmount = useCallback((amount: string) => {
-    if (!amount) {
-      setSwapAmount(null);
-      setIsTyping(false);
-      return;
-    }
+  const updateSwapAmount = useCallback(
+    (amount: string) => {
+      if (!amount) {
+        setSwapAmount(null);
+        setIsTyping(false);
+        return;
+      }
 
-    let newAmount = 0;
-    if (BigNumber(amount).isZero()) {
-      newAmount = 0;
-    }
-    newAmount = BigNumber(amount).toNumber();
+      let newAmount = 0;
+      if (BigNumber(amount).isZero()) {
+        newAmount = 0;
+      }
+      newAmount = BigNumber(amount).toNumber();
 
-    setSwapAmount(newAmount);
-    setIsTyping(true);
-  }, []);
+      setSwapAmount(newAmount);
+      if (tokenA && tokenB) {
+        setIsTyping(true);
+      }
+
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+
+      typingTimeoutRef.current = setTimeout(() => {
+        setIsTyping(false);
+      }, SWAP_AMOUNT_DEBOUNCE_TIME_MS + 100);
+    },
+    [tokenA, tokenB],
+  );
 
   useEffect(() => {
     if (debouncedSwapAmount !== null) {
@@ -238,7 +255,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
   );
 
   useEffect(() => {
-    if (estimatedRoutes === null) return;
+    if (estimatedRoutes === null || !tokenA || !tokenB) return;
 
     if (estimatedRoutes.length === 0) {
       if (!estimatedLiquidityMax) {
@@ -278,6 +295,10 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     updateSwapAmount,
     isEstimatedSwapLoading,
     isTyping,
-    resetSwapAmount: () => setSwapAmount(0),
+    resetSwapAmount: () => {
+      setSwapAmount(0);
+      setIsTyping(false);
+      setEstimatedLiquidityMax(null);
+    },
   };
 };
