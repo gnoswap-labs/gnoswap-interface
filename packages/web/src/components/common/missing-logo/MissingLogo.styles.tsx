@@ -64,12 +64,12 @@ export const LogoWrapper = styled.div<Props>`
   font-weight: 600;
   font-size: ${({ width, placeholderFontSize }) => {
     if (placeholderFontSize) return `${placeholderFontSize}px`;
-    return `${getFontSize(width)}`;
+    return `${getFontSize(width)}px`;
   }};
   ${media.mobile} {
     font-size: ${({ mobileWidth, placeholderFontSize }) => {
       if (placeholderFontSize) return `${placeholderFontSize}px`;
-      return `${getFontSize(mobileWidth)}`;
+      return `${getFontSize(mobileWidth)}px`;
     }};
     height: ${({ mobileWidth }) => {
       return `${mobileWidth}px`;
