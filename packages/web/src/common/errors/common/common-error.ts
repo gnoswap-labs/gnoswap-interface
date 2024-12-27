@@ -21,6 +21,10 @@ const ERROR_VALUE = {
     status: 404,
     type: "Failed to find data",
   },
+  FAILED_INITIALIZE_SOCIAL_WALLET: {
+    status: 405,
+    type: "Failed to initialize social wallet",
+  },
 };
 
 type ErrorType = keyof typeof ERROR_VALUE;

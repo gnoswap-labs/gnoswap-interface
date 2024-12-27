@@ -6,6 +6,8 @@ import IconAdenaLogo from "@components/common/icons/defaultIcon/IconAdenaLogo";
 import IconWalletConnect from "../icons/defaultIcon/IconWalletConnect";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 import { Trans, useTranslation } from "react-i18next";
+import { useSocialWalletContext } from "@hooks/common/use-social-wallet-context";
+import { SocialWalletLoginType } from "@providers/social-wallet-provider";
 
 interface Props {
   close: () => void;
@@ -14,7 +16,17 @@ interface Props {
 }
 
 const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect }) => {
+  const { connect: socialWalletConnect } = useSocialWalletContext();
   const { t } = useTranslation();
+
+  const handleSocialConnect = useCallback(
+    async (type: SocialWalletLoginType) => {
+      try {
+        await socialWalletConnect(type);
+      } catch {}
+    },
+    [socialWalletConnect],
+  );
 
   const onClickClose = useCallback(() => {
     close();
@@ -40,7 +52,10 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
                   <IconAdenaLogo />
                 )
               }
-              onClick={connect}
+              // onClick={connect}
+              onClick={() => {
+                handleSocialConnect("email");
+              }}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,

@@ -23,6 +23,7 @@ import GnoswapModalProvider from "@providers/gnoswap-modal-provider/GnoswapModal
 import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapServiceProvider";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import SnackbarProvider from "@providers/snackbar-provider/SnackbarProvider";
+import SocialWalletProvider from "@providers/social-wallet-provider";
 
 import nextI18nextConfig from "next-i18next.config";
 import Custom500 from "./500";
@@ -60,20 +61,22 @@ function App({ Component, pageProps }: AppProps) {
       <Hydrate state={pageProps.dehydratedState}>
         <JotaiProvider>
           <GnoswapServiceProvider>
-            <GnoswapThemeProvider>
-              <BackgroundContainer>
-                <SnackbarProvider>
-                  <ScrollTopWrapper>
-                    <ErrorBoundary fallback={<Custom500 />}>
-                      <Component {...pageProps} />
-                    </ErrorBoundary>
-                  </ScrollTopWrapper>
-                  <GnoswapModalProvider selector={"portal-root"}>
-                    <ModalContainer />
-                  </GnoswapModalProvider>
-                </SnackbarProvider>
-              </BackgroundContainer>
-            </GnoswapThemeProvider>
+            <SocialWalletProvider>
+              <GnoswapThemeProvider>
+                <BackgroundContainer>
+                  <SnackbarProvider>
+                    <ScrollTopWrapper>
+                      <ErrorBoundary fallback={<Custom500 />}>
+                        <Component {...pageProps} />
+                      </ErrorBoundary>
+                    </ScrollTopWrapper>
+                    <GnoswapModalProvider selector={"portal-root"}>
+                      <ModalContainer />
+                    </GnoswapModalProvider>
+                  </SnackbarProvider>
+                </BackgroundContainer>
+              </GnoswapThemeProvider>
+            </SocialWalletProvider>
           </GnoswapServiceProvider>
         </JotaiProvider>
       </Hydrate>
