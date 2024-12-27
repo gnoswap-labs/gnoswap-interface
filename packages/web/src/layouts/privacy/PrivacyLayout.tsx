@@ -194,7 +194,6 @@ const PrivacyLayout = ({ header, footer }: PrivacyLayoutProps) => {
             </li>
           </ul>
           <br />
-          <br />
           <h3>12. Data Retention</h3>
           <br />
           GnoSwap retains user data only as long as necessary to fulfill the purposes outlined in this Privacy Policy,

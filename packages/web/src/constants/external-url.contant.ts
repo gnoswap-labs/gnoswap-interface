@@ -13,8 +13,8 @@ export const EXT_URL = {
     },
     GOVERNANCE: "https://docs.gnoswap.io/core-concepts/governance",
     XGNS: "https://docs.gnoswap.io/gnoswap-token/xgns",
-    DISCLAIMER: "https://docs.gnoswap.io/disclaimer",
-    RISK: "https://docs.gnoswap.io/risk",
+    DISCLAIMER: "https://docs.gnoswap.io/disclaimer/general-disclaimer",
+    RISK: "https://docs.gnoswap.io/disclaimer/risk-and-security",
   },
   SOCIAL: {
     DISCORD: "https://discord.gg/u4bdGHStb2",

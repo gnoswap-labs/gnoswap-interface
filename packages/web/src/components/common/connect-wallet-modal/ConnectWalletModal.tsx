@@ -66,7 +66,7 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
           <Trans ns="Modal" i18nKey={"walletLogin.desc"}>
             By connecting a wallet, you agree to our
             <a href="/terms" target="_blank">
-              Terms of Service
+              Terms of Use
             </a>
             and consent to our
             <a href="/privacy" target="_blank">
