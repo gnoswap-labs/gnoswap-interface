@@ -1,13 +1,18 @@
-import { ConnectWalletModalWrapper } from "./ConnectWalletModal.styles";
 import React, { useCallback } from "react";
+import { Trans, useTranslation } from "react-i18next";
+
+import { useSocialWalletContext } from "@hooks/common/use-social-wallet-context";
+import { SocialWalletLoginType } from "@providers/social-wallet-provider";
+
+import { ConnectWalletModalWrapper } from "./ConnectWalletModal.styles";
+import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 import IconClose from "../icons/IconCancel";
 import Button, { ButtonHierarchy } from "../button/Button";
 import IconAdenaLogo from "@components/common/icons/defaultIcon/IconAdenaLogo";
-import IconWalletConnect from "../icons/defaultIcon/IconWalletConnect";
-import LoadingSpinner from "../loading-spinner/LoadingSpinner";
-import { Trans, useTranslation } from "react-i18next";
-import { useSocialWalletContext } from "@hooks/common/use-social-wallet-context";
-import { SocialWalletLoginType } from "@providers/social-wallet-provider";
+import IconArrowRight from "../icons/IconArrowRight";
+import IconGoogleLogo from "../icons/defaultIcon/IconGoogleLogo";
+import IconTwitterLogo from "../icons/defaultIcon/IconTwitterLogo";
+import ConnectWalletModalDivider from "./connect-wallet-modal-divider/ConnectWalletModalDivider";
 
 interface Props {
   close: () => void;
@@ -42,9 +47,53 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
           </div>
         </div>
         <div className="content">
+          {/* Email Login */}
+          <div className="login-section">
+            <div className="email-section">
+              <input placeholder="Email Address" />
+              <button
+                onClick={() => {
+                  handleSocialConnect("email");
+                }}
+              >
+                <IconArrowRight className="right-chevron" />
+              </button>
+            </div>
+          </div>
+
+          <ConnectWalletModalDivider />
+
+          {/* Social Logins */}
+          <div className="login-section">
+            <Button
+              text="Sign in With Google"
+              leftIcon={<IconGoogleLogo />}
+              onClick={() => handleSocialConnect("google")}
+              style={{
+                hierarchy: ButtonHierarchy.Dark,
+                fullWidth: true,
+              }}
+              className="button-connect"
+            />
+
+            <Button
+              text="Sign in With X"
+              leftIcon={<IconTwitterLogo />}
+              onClick={() => handleSocialConnect("twitter")}
+              style={{
+                hierarchy: ButtonHierarchy.Dark,
+                fullWidth: true,
+              }}
+              className="button-connect"
+            />
+          </div>
+
+          <ConnectWalletModalDivider />
+
+          {/* Adena Wallet */}
           <div>
             <Button
-              text={loadingConnect === "loading" || loadingConnect === "done" ? "" : "Adena"}
+              text={loadingConnect === "loading" || loadingConnect === "done" ? "" : "Adena Wallet"}
               leftIcon={
                 loadingConnect === "loading" || loadingConnect === "done" ? (
                   <LoadingSpinner className="loading-button" />
@@ -52,27 +101,11 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
                   <IconAdenaLogo />
                 )
               }
-              // onClick={connect}
-              onClick={() => {
-                handleSocialConnect("email");
-              }}
-              style={{
-                hierarchy: ButtonHierarchy.Primary,
-                fullWidth: true,
-              }}
-              className="button-connect"
-            />
-          </div>
-          <div>
-            <Button
-              leftIcon={<IconWalletConnect />}
-              text={t("Modal:walletLogin.btn.connect")}
               onClick={connect}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,
               }}
-              disabled
               className="button-connect"
             />
           </div>
