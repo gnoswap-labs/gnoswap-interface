@@ -30,6 +30,7 @@ const ConnectWalletContainer = () => {
 
   const connect = useCallback(() => {
     if (walletClient) {
+      connectAdenaClient();
       connectAccount();
     } else {
       connectAdenaClient();

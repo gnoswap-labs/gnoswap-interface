@@ -21,11 +21,12 @@ interface Props {
 }
 
 const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect }) => {
-  const { connect: socialWalletConnect } = useSocialWalletContext();
+  const { connect: socialWalletConnect, disconnect } = useSocialWalletContext();
   const { t } = useTranslation();
 
   const handleSocialConnect = useCallback(
     async (type: SocialWalletLoginType) => {
+      // disconnect();
       try {
         await socialWalletConnect(type);
       } catch {}
@@ -50,7 +51,13 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
           {/* Email Login */}
           <div className="login-section">
             <div className="email-section">
-              <input placeholder="Email Address" />
+              <input
+                placeholder="Email Address"
+                type="email"
+                inputMode="email"
+                autoComplete={"off"}
+                spellCheck={"false"}
+              />
               <button
                 onClick={() => {
                   handleSocialConnect("email");
@@ -80,6 +87,16 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
               text="Sign in With X"
               leftIcon={<IconTwitterLogo />}
               onClick={() => handleSocialConnect("twitter")}
+              style={{
+                hierarchy: ButtonHierarchy.Dark,
+                fullWidth: true,
+              }}
+              className="button-connect"
+            />
+
+            <Button
+              text="Disconnect"
+              onClick={disconnect}
               style={{
                 hierarchy: ButtonHierarchy.Dark,
                 fullWidth: true,
