@@ -90,6 +90,7 @@ export interface LineGraphProps {
   centerLineColor?: string;
   showBaseLine?: boolean;
   showBaseLineLabels?: boolean;
+  showPriceRangeLine?: boolean;
   renderBottom?: (baseLineNumberWidth: number) => React.ReactElement;
   isShowTooltip?: boolean;
   onMouseMove?: (LineGraphData?: LineGraphData, dateDisplay?: { date: string; time: string; value?: string }) => void;
@@ -159,6 +160,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   onMouseMove: onLineGraphMouseMove,
   onMouseOut: onLineGraphMouseOut,
   showBaseLineLabels = false,
+  showPriceRangeLine = true,
   baseLineMap = [true, true, true, true],
   baseLineLabelsPosition = "left",
   baseLineLabelsTransform,
@@ -707,7 +709,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
                   className="first-line"
                 />
               )}
-              {isFocus() && currentPoint && (
+              {isFocus() && currentPoint && showPriceRangeLine && (
                 <line
                   stroke={color}
                   strokeWidth={1}
