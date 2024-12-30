@@ -7,6 +7,7 @@ import { ComponentSize } from "@hooks/common/use-component-size";
 import { DEVICE_TYPE } from "@styles/media";
 
 import { TokenChartGraphWrapper, TokenChartGraphXLabel, YAxisLabelWrapper } from "./TokenChartGraph.styles";
+import { SWAP_TOKEN_CHART_COLORS } from "@constants/graph.constant";
 
 export interface TokenChartGraphProps {
   datas: {
@@ -182,6 +183,8 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
           width={size?.width || 0}
           height={(size?.height || 0) - (breakpoint !== DEVICE_TYPE.MOBILE ? 40 : 30) - customData.height}
           color="#192EA2"
+          gradientStartColor={SWAP_TOKEN_CHART_COLORS.GRADIENT.START}
+          gradientEndColor={SWAP_TOKEN_CHART_COLORS.GRADIENT.END}
           strokeWidth={1}
           datas={datas.map(data => ({
             value: data.amount.value,

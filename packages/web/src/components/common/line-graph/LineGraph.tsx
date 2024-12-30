@@ -537,28 +537,31 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
   const areaPath = useMemo(() => {
     if (!points || points.length === 0 || points.some(point => point === undefined)) {
-      return undefined; // Or render some fallback UI
+      return undefined;
     }
 
-    // Start at the first point of the line chart
-    let path = `M ${points[0].x},${points[0].y}`;
+    // Start at the first point's x coordinate at firstPoint.y level
+    let path = `M ${points[0].x},${firstPoint.y}`;
 
-    // Draw the line chart path
-    for (let i = 1; i < points.length; i++) {
-      path += smooth ? bezierCommand(points[i], i, points) : ` L ${points[i].x},${points[i].y}`;
+    // Draw the main line chart path
+    for (let i = 0; i < points.length; i++) {
+      const point = points[i];
+      // Plots the actual curve only when the current point is above firstPoint.y
+      if (point.y <= firstPoint.y) {
+        path +=
+          i === 0 ? ` L ${point.x},${point.y}` : smooth ? bezierCommand(point, i, points) : ` L ${point.x},${point.y}`;
+      } else {
+        // Move at the level of firstPoint.y if it is below firstPoint.y
+        path += ` L ${point.x},${firstPoint.y}`;
+      }
     }
 
-    // Draw a line straight down to the bottom of the chart
-    path += ` L ${points[points.length - 1].x},${height}`;
-
-    // Draw a line straight across to the bottom left corner
-    path += ` L ${points[0].x},${height}`;
-
-    // Close the path by connecting back to the start point
-    path += "Z";
+    // Close the path by drawing back to firstPoint.y level
+    path += ` L ${points[points.length - 1].x},${firstPoint.y}`;
+    path += " Z";
 
     return path;
-  }, [height, points, smooth]);
+  }, [points, smooth, firstPoint.y]);
 
   const isLightTheme = theme.themeKey === "light";
 

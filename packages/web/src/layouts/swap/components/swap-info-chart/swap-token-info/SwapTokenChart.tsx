@@ -4,8 +4,10 @@ import { IPriceResponse } from "@repositories/token";
 import { getLocalizeTime } from "@utils/chart";
 
 import LineGraph, { LineGraphData } from "@components/common/line-graph/LineGraph";
-import { ChartNotFound, LoadingChart, SwapTokenChartWrapper } from "./SwapTokenChart.styles";
+import { ChartNotFound, SwapTokenChartWrapper } from "./SwapTokenChart.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { loadingWrapper } from "./SwapTokenChart.styles";
+import { SWAP_TOKEN_CHART_COLORS } from "@constants/graph.constant";
 
 interface SwapTokenChartProps {
   data: IPriceResponse[];
@@ -21,32 +23,35 @@ const SwapTokenChart = ({ data = [], isLoading, isFetched, onMouseMove, onMouseO
 
   const chartData = React.useMemo(() => {
     if (!hasData) return [];
-    return data.map(item => {
-      return {
-        value: item.price,
-        time: getLocalizeTime(item.time),
-      };
-    });
+    return data
+      .map(item => {
+        return {
+          value: item.price,
+          time: getLocalizeTime(item.time),
+        };
+      })
+      .reverse();
   }, [hasData, data]);
 
   return (
     <SwapTokenChartWrapper>
       {isLoading && (
-        <LoadingChart>
+        <div css={loadingWrapper}>
           <LoadingSpinner />
-        </LoadingChart>
+        </div>
       )}
-      {isNoData && <ChartNotFound>No Data</ChartNotFound>}
+      {isNoData && <ChartNotFound>No price history</ChartNotFound>}
       {hasData && (
         <LineGraph
           datas={chartData}
           height={50}
           forcedHeight={50}
           color="#192EA2"
+          gradientStartColor={SWAP_TOKEN_CHART_COLORS.GRADIENT.START}
+          gradientEndColor={SWAP_TOKEN_CHART_COLORS.GRADIENT.END}
           strokeWidth={1}
           hasNoLabel={true}
           cursor
-          smooth
           isShowTooltip={false}
           onMouseMove={onMouseMove}
           onMouseOut={onMouseOut}
