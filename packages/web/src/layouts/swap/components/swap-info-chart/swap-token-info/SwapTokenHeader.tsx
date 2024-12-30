@@ -1,5 +1,6 @@
 import React from "react";
 import dayjs from "dayjs";
+import { useTranslation } from "react-i18next";
 
 import { formatPrice } from "@utils/new-number-utils";
 import { useTheme } from "@emotion/react";
@@ -27,6 +28,7 @@ interface SwapTokenHeaderProps {
 
 const SwapTokenHeader = ({ tokenInfo, currentPrice, chartData }: SwapTokenHeaderProps) => {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
 
@@ -44,14 +46,14 @@ const SwapTokenHeader = ({ tokenInfo, currentPrice, chartData }: SwapTokenHeader
   }, [chartData, currentPrice]);
 
   const displayDate = React.useMemo(() => {
-    if (!chartData) return "Today";
+    if (!chartData) return t("common:day.today");
 
     const timeFormat = "MMM DD";
     const today = dayjs().format(timeFormat);
     const chartDate = dayjs(chartData.time).format(timeFormat);
 
-    return chartDate === today ? "Today" : chartDate;
-  }, [chartData]);
+    return chartDate === today ? t("common:day.today") : chartDate;
+  }, [chartData, t]);
 
   const onClickPath = React.useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
