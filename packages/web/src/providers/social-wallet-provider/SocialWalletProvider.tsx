@@ -11,6 +11,11 @@ import {
   SOCIAL_WALLET_TWITTER_VERIFIER,
   SOCIAL_WALLET_WEB3AUTH_CLIENT_ID,
 } from "@constants/environment.constant";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useAtom } from "jotai";
+import { WalletState } from "@states/index";
+import { SocialWalletClient } from "@common/clients/wallet-client/social/social-wallet-client";
+import { ACCOUNT_SESSION_INFO_KEY } from "@states/common";
 
 interface SocialWalletConfig {
   chainId: string;
@@ -66,10 +71,13 @@ const getSocialWalletConfig = (type: SocialWalletLoginType): SocialWalletConfig 
 };
 
 export const SocialWalletProvider = ({ children }: { children: React.ReactNode }) => {
+  const { accountRepository } = useGnoswapContext();
   const [sdk, setSdk] = React.useState<AdenaSDK | null>(null);
   const [address, setAddress] = React.useState<string | null>(null);
   const [isConnecting, setIsConnecting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [, setWalletAccount] = useAtom(WalletState.account);
+  const [, setLoadingConnect] = useAtom(WalletState.loadingConnect);
 
   const createSocialWalletProvider = React.useCallback((type: SocialWalletLoginType) => {
     const config = getSocialWalletConfig(type);
@@ -88,16 +96,40 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
     async (type: SocialWalletLoginType) => {
       try {
         setIsConnecting(true);
+        setLoadingConnect("loading");
         setError(null);
 
-        const socialWallet = createSocialWalletProvider(type);
-        const newSdk = new AdenaSDK(socialWallet);
-        await newSdk.connectWallet();
+        const socialWalletClient = await SocialWalletClient.createSocialWalletClient(type);
+        if (!socialWalletClient) {
+          throw new Error("Failed to create socail wallet client");
+        }
 
-        const newAddress = await socialWallet.getWallet()?.getAddress();
+        accountRepository.setWalletClient(socialWalletClient);
 
-        setSdk(newSdk);
-        setAddress(newAddress || null);
+        const established = await accountRepository.addEstablishedSite().catch(() => null);
+
+        if (established === null) {
+          return;
+        }
+        if (established.code === 4000) {
+          throw new Error("Failed to established site");
+        }
+
+        if (established.code === 0 || established.code === 4001) {
+          const account = await accountRepository.getAccount();
+          if (!account) {
+            throw new Error("Failed to get account");
+          }
+
+          sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
+          // const availNetwork = SUPPORT_CHAIN_IDS.includes(account.chainId);
+          // if (!availNetwork) {
+          //   await accountRepository.switchNetwork(SUPPORT_CHAIN_IDS[0]);
+          // }
+          setWalletAccount(account);
+          accountRepository.setConnectedWallet(true);
+          setLoadingConnect("done");
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to connect Social Wallet");
       } finally {

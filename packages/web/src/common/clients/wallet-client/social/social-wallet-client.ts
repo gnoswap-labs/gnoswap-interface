@@ -45,7 +45,6 @@ export class SocialWalletClient implements WalletClient {
       this._type = type;
       await this.sdk.connectWallet();
 
-      // await this.provider.connect();
       // const wallet = await this.provider.getWallet();
       // if (wallet) {
       //   this.address = await wallet.getAddress();

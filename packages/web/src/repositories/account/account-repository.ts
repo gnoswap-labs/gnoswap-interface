@@ -1,3 +1,4 @@
+import { WalletClient } from "@common/clients/wallet-client";
 import {
   SendTransactionRequestParam,
   SendTransactionResponse,
@@ -30,6 +31,8 @@ export interface AccountRepository extends AccountNotificationRepository {
   switchNetwork: (chainId: string) => Promise<WalletResponse<SwitchNetworkResponse>>;
 
   getBalanceByKey: (address: string, tokenKey: string) => Promise<number | null>;
+
+  setWalletClient(client: WalletClient | null): void;
 
   // FIXME: it may goto new repository
   getAvgBlockTime: (request: { startBlock?: number }) => Promise<AvgBlockTime>;
