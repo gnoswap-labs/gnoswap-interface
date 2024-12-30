@@ -21,12 +21,13 @@ interface TokenInfo {
 }
 
 interface SwapTokenHeaderProps {
+  isMobile: boolean;
   tokenInfo: TokenInfo;
   currentPrice: string | undefined;
   chartData?: LineGraphData;
 }
 
-const SwapTokenHeader = ({ tokenInfo, currentPrice, chartData }: SwapTokenHeaderProps) => {
+const SwapTokenHeader = ({ isMobile, tokenInfo, currentPrice, chartData }: SwapTokenHeaderProps) => {
   const theme = useTheme();
   const { t } = useTranslation();
 
@@ -75,7 +76,8 @@ const SwapTokenHeader = ({ tokenInfo, currentPrice, chartData }: SwapTokenHeader
           <div className="name">
             <div>{tokenInfo.name}</div>
             <button className="link" onClick={onClickPath}>
-              <span>{displayPath}</span> <IconOpenLink fill={theme.color.text04} className="path-link-icon" />
+              {Boolean(!isMobile) && <span>{displayPath}</span>}
+              <IconOpenLink size="10px" fill={theme.color.text04} className="path-link-icon" />
             </button>
           </div>
           <div className="symbol">{tokenInfo.symbol}</div>

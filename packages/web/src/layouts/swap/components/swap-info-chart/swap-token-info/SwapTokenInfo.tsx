@@ -7,12 +7,14 @@ import { SwapTokenInfoWrapper } from "./SwapTokenInfo.styles";
 import SwapTokenHeader from "./SwapTokenHeader";
 import { useGetTokenDetails, useGetTokenPrices } from "@query/token";
 import SwapTokenChart from "./SwapTokenChart";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 interface SwapTokenInfoProps {
   token: TokenModel;
 }
 
 const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
+  const { isMobile } = useWindowSize();
   const [chartData, setChartData] = React.useState<LineGraphData | undefined>();
 
   const tokenData = React.useMemo(
@@ -56,7 +58,7 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
 
   return (
     <SwapTokenInfoWrapper>
-      <SwapTokenHeader tokenInfo={tokenData} currentPrice={currentPrice} chartData={chartData} />
+      <SwapTokenHeader isMobile={isMobile} tokenInfo={tokenData} currentPrice={currentPrice} chartData={chartData} />
       <SwapTokenChart
         data={prices7d}
         isLoading={isLoading}
