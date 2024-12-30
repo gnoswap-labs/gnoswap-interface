@@ -1,6 +1,7 @@
 import React from "react";
 
 import { TokenModel } from "@models/token/token-model";
+import { LineGraphData } from "@components/common/line-graph/LineGraph";
 
 import { SwapTokenInfoWrapper } from "./SwapTokenInfo.styles";
 import SwapTokenHeader from "./SwapTokenHeader";
@@ -12,6 +13,8 @@ interface SwapTokenInfoProps {
 }
 
 const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
+  const [chartData, setChartData] = React.useState<LineGraphData | undefined>();
+
   const tokenData = React.useMemo(
     () => ({
       name: token.name,
@@ -35,10 +38,22 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
     enabled: !!tokenData.path,
   });
 
+  const handleMouseMove = React.useCallback(
+    (data?: LineGraphData) => {
+      setChartData(data);
+    },
+    [tokenData.path],
+  );
+
+  // @dev If the selected token changes, reset the chart data.
+  React.useEffect(() => {
+    handleMouseMove(undefined);
+  }, [tokenData, handleMouseMove]);
+
   return (
     <SwapTokenInfoWrapper>
-      <SwapTokenHeader tokenInfo={tokenData} price={currentPrice} />
-      <SwapTokenChart data={prices7d} isLoading={isLoading} isFetched={isFetched} />
+      <SwapTokenHeader tokenInfo={tokenData} currentPrice={currentPrice} chartData={chartData} />
+      <SwapTokenChart data={prices7d} isLoading={isLoading} isFetched={isFetched} onMouseMove={handleMouseMove} />
     </SwapTokenInfoWrapper>
   );
 };

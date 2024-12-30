@@ -92,7 +92,7 @@ export interface LineGraphProps {
   showBaseLineLabels?: boolean;
   renderBottom?: (baseLineNumberWidth: number) => React.ReactElement;
   isShowTooltip?: boolean;
-  onMouseMove?: (LineGraphData?: LineGraphData) => void;
+  onMouseMove?: (LineGraphData?: LineGraphData, dateDisplay?: { date: string; time: string; value?: string }) => void;
   onMouseOut?: (active: boolean) => void;
   baseLineMap?: [boolean, boolean, boolean, boolean];
   baseLineLabelsPosition?: "left" | "right";
@@ -575,6 +575,25 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     return parseTimeTVL(datas[currentPointIndex]?.time);
   }, [currentPointIndex, datas, displayLastDayAsNow]);
+
+  useEffect(() => {
+    if (currentPointIndex >= 0) {
+      const currentDate =
+        displayLastDayAsNow && datas.length - 1 === currentPointIndex
+          ? parseTimeTVL(getLocalizeTime(new Date().toString()))
+          : parseTimeTVL(datas[currentPointIndex]?.time);
+
+      const formattedValue = popupYValueFormatter
+        ? popupYValueFormatter(datas[currentPointIndex]?.value)
+        : formatPrice(datas[currentPointIndex]?.value);
+      onLineGraphMouseMove?.(datas[currentPointIndex], {
+        ...currentDate,
+        value: formattedValue,
+      });
+    } else {
+      onLineGraphMouseMove?.(undefined, undefined);
+    }
+  }, [currentPointIndex, datas, displayLastDayAsNow, popupYValueFormatter]);
 
   return (
     <LineGraphWrapper

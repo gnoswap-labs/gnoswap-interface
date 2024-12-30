@@ -6,11 +6,11 @@ export const SwapTokenHeaderWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   .left {
-    width: 100%;
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
     gap: 8px;
+    flex: 1;
     .token-title {
       display: flex;
       flex-direction: column;
@@ -52,7 +52,6 @@ export const SwapTokenHeaderWrapper = styled.div`
     }
   }
   .right {
-    width: 100%;
     display: flex;
     justify-content: flex-end;
     align-items: center;

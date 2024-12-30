@@ -5,6 +5,7 @@ import { formatPrice } from "@utils/new-number-utils";
 import { useTheme } from "@emotion/react";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { STATIC_TEXT } from "@common/values";
+import { LineGraphData } from "@components/common/line-graph/LineGraph";
 
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { SwapTokenHeaderWrapper } from "./SwapTokenHeader.styles";
@@ -20,12 +21,11 @@ interface TokenInfo {
 
 interface SwapTokenHeaderProps {
   tokenInfo: TokenInfo;
-  price: string | undefined;
+  currentPrice: string | undefined;
+  chartData?: LineGraphData;
 }
 
-const SwapTokenHeader = ({ tokenInfo, price }: SwapTokenHeaderProps) => {
-  const [isHovered, setIsHovered] = React.useState(false);
-
+const SwapTokenHeader = ({ tokenInfo, currentPrice, chartData }: SwapTokenHeaderProps) => {
   const theme = useTheme();
 
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
@@ -39,12 +39,19 @@ const SwapTokenHeader = ({ tokenInfo, price }: SwapTokenHeaderProps) => {
   }, [tokenInfo]);
 
   const displayPrice = React.useMemo(() => {
+    const price = chartData?.value || currentPrice;
     return `${formatPrice(price, { lessThan1Significant: 2 })}`;
-  }, [price]);
+  }, [chartData, currentPrice]);
 
   const displayDate = React.useMemo(() => {
-    return isHovered ? dayjs().format("MMM DD") : "Today";
-  }, [isHovered]);
+    if (!chartData) return "Today";
+
+    const timeFormat = "MMM DD";
+    const today = dayjs().format(timeFormat);
+    const chartDate = dayjs(chartData.time).format(timeFormat);
+
+    return chartDate === today ? "Today" : chartDate;
+  }, [chartData]);
 
   const onClickPath = React.useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -75,9 +82,7 @@ const SwapTokenHeader = ({ tokenInfo, price }: SwapTokenHeaderProps) => {
       <div className="right">
         <div className="token-price">
           <div className="price">{displayPrice}</div>
-          <div className="date" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
-            {displayDate}
-          </div>
+          <div className="date">{displayDate}</div>
         </div>
       </div>
     </SwapTokenHeaderWrapper>

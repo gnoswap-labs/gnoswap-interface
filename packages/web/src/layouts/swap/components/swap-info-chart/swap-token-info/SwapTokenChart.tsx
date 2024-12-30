@@ -3,7 +3,7 @@ import React from "react";
 import { IPriceResponse } from "@repositories/token";
 import { getLocalizeTime } from "@utils/chart";
 
-import LineGraph from "@components/common/line-graph/LineGraph";
+import LineGraph, { LineGraphData } from "@components/common/line-graph/LineGraph";
 import { ChartNotFound, LoadingChart, SwapTokenChartWrapper } from "./SwapTokenChart.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
@@ -11,9 +11,10 @@ interface SwapTokenChartProps {
   data: IPriceResponse[];
   isLoading: boolean;
   isFetched: boolean;
+  onMouseMove: (data?: LineGraphData) => void;
 }
 
-const SwapTokenChart = ({ data = [], isLoading, isFetched }: SwapTokenChartProps) => {
+const SwapTokenChart = ({ data = [], isLoading, isFetched, onMouseMove }: SwapTokenChartProps) => {
   const hasData = isFetched && data && data.length > 0;
   const isNoData = isFetched && !isLoading && !data;
 
@@ -45,6 +46,8 @@ const SwapTokenChart = ({ data = [], isLoading, isFetched }: SwapTokenChartProps
           hasNoLabel={true}
           cursor
           smooth
+          isShowTooltip={false}
+          onMouseMove={onMouseMove}
         />
       )}
     </SwapTokenChartWrapper>
