@@ -48,7 +48,7 @@ const SwapTokenHeader = ({ tokenInfo, currentPrice, chartData }: SwapTokenHeader
   const displayDate = React.useMemo(() => {
     if (!chartData) return t("common:day.today");
 
-    const timeFormat = "MMM DD";
+    const timeFormat = "MMM DD, HH:mm";
     const today = dayjs().format(timeFormat);
     const chartDate = dayjs(chartData.time).format(timeFormat);
 
