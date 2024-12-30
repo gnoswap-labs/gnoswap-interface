@@ -45,15 +45,25 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
     [tokenData.path],
   );
 
+  const handleMouseOut = React.useCallback(() => {
+    handleMouseMove(undefined);
+  }, [tokenData.path]);
+
   // @dev If the selected token changes, reset the chart data.
   React.useEffect(() => {
-    handleMouseMove(undefined);
-  }, [tokenData, handleMouseMove]);
+    handleMouseOut();
+  }, [tokenData, handleMouseOut]);
 
   return (
     <SwapTokenInfoWrapper>
       <SwapTokenHeader tokenInfo={tokenData} currentPrice={currentPrice} chartData={chartData} />
-      <SwapTokenChart data={prices7d} isLoading={isLoading} isFetched={isFetched} onMouseMove={handleMouseMove} />
+      <SwapTokenChart
+        data={prices7d}
+        isLoading={isLoading}
+        isFetched={isFetched}
+        onMouseMove={handleMouseMove}
+        onMouseOut={handleMouseOut}
+      />
     </SwapTokenInfoWrapper>
   );
 };

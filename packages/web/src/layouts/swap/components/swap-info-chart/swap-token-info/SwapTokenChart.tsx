@@ -12,9 +12,10 @@ interface SwapTokenChartProps {
   isLoading: boolean;
   isFetched: boolean;
   onMouseMove: (data?: LineGraphData) => void;
+  onMouseOut: () => void;
 }
 
-const SwapTokenChart = ({ data = [], isLoading, isFetched, onMouseMove }: SwapTokenChartProps) => {
+const SwapTokenChart = ({ data = [], isLoading, isFetched, onMouseMove, onMouseOut }: SwapTokenChartProps) => {
   const hasData = isFetched && data && data.length > 0;
   const isNoData = isFetched && !isLoading && !data;
 
@@ -48,6 +49,7 @@ const SwapTokenChart = ({ data = [], isLoading, isFetched, onMouseMove }: SwapTo
           smooth
           isShowTooltip={false}
           onMouseMove={onMouseMove}
+          onMouseOut={onMouseOut}
         />
       )}
     </SwapTokenChartWrapper>
