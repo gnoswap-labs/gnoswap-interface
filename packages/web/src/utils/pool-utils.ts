@@ -21,7 +21,7 @@ export function makePoolPath(
   }
   const tokenAPath = tokenA.wrappedPath || tokenA.path || "";
   const tokenBPath = tokenB.wrappedPath || tokenB.path || "";
-  return [tokenAPath, tokenBPath].sort(sortTokenPaths).join(":") + ":" + SwapFeeTierInfoMap[swapFeeTier].fee;
+  return [...[tokenAPath, tokenBPath].sort(sortTokenPaths), SwapFeeTierInfoMap[swapFeeTier].fee].join(":");
 }
 
 export function isMaxTick(tick: number) {

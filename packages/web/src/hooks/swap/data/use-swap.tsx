@@ -5,7 +5,7 @@ import { TokenModel, isNativeToken } from "@models/token/token-model";
 import { EstimatedRoute } from "@models/swap/swap-route-info";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useGetRoutes } from "@query/router";
 
 interface UseSwapProps {
@@ -20,6 +20,17 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
   const { account } = useWallet();
   const { swapRouterRepository } = useGnoswapContext();
   const [swapAmount, setSwapAmount] = useState<number | null>(null);
+  const [estimatedLiquidityMax, setEstimatedLiquidityMax] = useState<number | null>(null);
+
+  const shouldFetchData = useCallback(
+    (amount: number | null) => {
+      if (!amount) return false;
+      if (!estimatedLiquidityMax) return true;
+      return amount < estimatedLiquidityMax;
+    },
+    [estimatedLiquidityMax],
+  );
+  const shouldFetch = shouldFetchData(swapAmount);
 
   const selectedTokenPair = tokenA !== null && tokenB !== null;
 
@@ -38,6 +49,12 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     return false;
   }, [tokenA, tokenB]);
 
+  const hasValidSwapAmount = Boolean(swapAmount && swapAmount > 0);
+  const hasValidTokenPaths = Boolean(tokenA?.path) && Boolean(tokenB?.path);
+  const isDifferentTokens = !isSameToken;
+
+  const isEnabledQuery = shouldFetch && hasValidSwapAmount && hasValidTokenPaths && isDifferentTokens;
+
   const {
     data: estimatedSwapResult,
     isLoading: isEstimatedSwapLoading,
@@ -50,7 +67,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       tokenAmount: direction === "EXACT_IN" ? swapAmount : swapAmount ? swapAmount * exactOutPadding : swapAmount,
     },
     {
-      enabled: !!swapAmount && swapAmount > 0 && !!tokenA && !!tokenA.path && !!tokenB && !!tokenB.path && !isSameToken,
+      enabled: isEnabledQuery,
     },
   );
 
@@ -63,7 +80,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       return "NONE";
     }
 
-    if (isEstimatedSwapLoading) {
+    if (isEstimatedSwapLoading && shouldFetch) {
       return "LOADING";
     }
 
@@ -74,8 +91,12 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     return "SUCCESS";
   }, [swapAmount, error, estimatedSwapResult?.amount, isEstimatedSwapLoading, isSameToken, selectedTokenPair]);
 
-  const estimatedRoutes: EstimatedRoute[] = useMemo(() => {
-    if (swapState !== "SUCCESS" || !estimatedSwapResult || !swapAmount) {
+  const estimatedRoutes: EstimatedRoute[] | null = useMemo(() => {
+    if (swapState === "LOADING" || !swapAmount) {
+      return null;
+    }
+
+    if (swapState !== "SUCCESS" || !estimatedSwapResult) {
       return [];
     }
 
@@ -115,8 +136,10 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
   }, [direction, estimatedAmount, slippage, tokenA]);
 
   const updateSwapAmount = useCallback((amount: string) => {
+    if (!amount) return setSwapAmount(null);
+
     let newAmount = 0;
-    if (!amount || BigNumber(amount).isZero()) {
+    if (BigNumber(amount).isZero()) {
       newAmount = 0;
     }
     newAmount = BigNumber(amount).toNumber();
@@ -176,6 +199,35 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     },
     [account, direction, selectedTokenPair, swapRouterRepository, tokenA, tokenAmountLimit, tokenB, exactOutPadding],
   );
+
+  useEffect(() => {
+    if (estimatedRoutes === null) return;
+
+    if (estimatedRoutes.length === 0) {
+      if (!estimatedLiquidityMax) {
+        setEstimatedLiquidityMax(swapAmount || null);
+      } else if (swapAmount && swapAmount < estimatedLiquidityMax) {
+        setEstimatedLiquidityMax(swapAmount);
+      }
+    } else {
+      setEstimatedLiquidityMax(null);
+    }
+  }, [estimatedRoutes, swapAmount, estimatedLiquidityMax]);
+
+  /**
+   * Reset estimatedLiquidityMax to null after specified delay
+   * This effect triggers when estimatedLiquidityMax changes and is not null
+   */
+  const ESTIMATED_LIQUIDITY_RESET_DELAY = 5000;
+  useEffect(() => {
+    if (estimatedLiquidityMax !== null) {
+      const timer = setTimeout(() => {
+        setEstimatedLiquidityMax(null);
+      }, ESTIMATED_LIQUIDITY_RESET_DELAY);
+
+      return () => clearTimeout(timer);
+    }
+  }, [estimatedLiquidityMax]);
 
   return {
     isSameToken,
