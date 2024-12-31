@@ -9,7 +9,7 @@ import { useLoading } from "./use-loading";
 
 export const useBackground = () => {
   const router = useRouter();
-  const { account, initSession, updateWalletEvents, connectAccount } = useWallet();
+  const { account, initSession } = useWallet();
   const [walletClient] = useAtom(WalletState.client);
   const [sessionId] = useAtom(CommonState.sessionId);
   const [isViewMorePositions, setIsViewMorePositions] = useAtom(EarnState.isViewMorePositions);
@@ -100,14 +100,15 @@ export const useBackground = () => {
     };
   }, [walletClient]);
 
-  useEffect(() => {
-    if (walletClient) {
-      if (account) {
-        connectAccount();
-      }
-      updateWalletEvents(walletClient);
-    }
-  }, [walletClient, String(account)]);
+  // @dev: This code reconnects you to Adena Wallet
+  // useEffect(() => {
+  //   if (walletClient) {
+  //     if (account) {
+  //       connectAccount();
+  //     }
+  //     updateWalletEvents(walletClient);
+  //   }
+  // }, [walletClient, String(account)]);
 
   useEffect(() => {
     if (account?.address && account?.chainId) {

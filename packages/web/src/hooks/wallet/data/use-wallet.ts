@@ -82,6 +82,7 @@ export const useWallet = () => {
   }, [setNetwork, walletAccount]);
 
   const disconnectWallet = useCallback(() => {
+    setWalletClient(null);
     setWalletAccount(null);
     setSessionId("");
     sessionStorage.removeItem(GNOSWAP_SESSION_ID_KEY);
@@ -140,6 +141,10 @@ export const useWallet = () => {
   const connectAccount = async () => {
     try {
       setLoadingConnect("loading");
+
+      const adena = AdenaClient.createAdenaClient();
+      setWalletClient(adena);
+
       const established = await accountRepository.addEstablishedSite().catch(() => null);
 
       if (established === null) {

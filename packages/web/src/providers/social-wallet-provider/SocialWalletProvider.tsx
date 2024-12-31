@@ -76,6 +76,7 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
   const [address, setAddress] = React.useState<string | null>(null);
   const [isConnecting, setIsConnecting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [, setWalletClient] = useAtom(WalletState.client);
   const [, setWalletAccount] = useAtom(WalletState.account);
   const [, setLoadingConnect] = useAtom(WalletState.loadingConnect);
 
@@ -92,6 +93,20 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
     }
   }, []);
 
+  // @dev SocialWalletClient connection logic will be used
+  // const connectSocialWalletClient = React.useCallback(
+  //   async (type: SocialWalletLoginType) => {
+  //     if (loadingConnect !== "initial") {
+  //       setLoadingConnect("loading");
+  //     }
+  //     const socialWallet = await SocialWalletClient.createSocialWalletClient(type);
+  //     if (socialWallet !== null) {
+  //       socialWallet.initSocialWallet(type);
+  //     }
+  //   },
+  //   [loadingConnect],
+  // );
+
   const connect = React.useCallback(
     async (type: SocialWalletLoginType) => {
       try {
@@ -104,6 +119,7 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
           throw new Error("Failed to create socail wallet client");
         }
 
+        setWalletClient(socialWalletClient);
         accountRepository.setWalletClient(socialWalletClient);
 
         const established = await accountRepository.addEstablishedSite().catch(() => null);

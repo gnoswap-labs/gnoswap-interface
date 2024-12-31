@@ -44,11 +44,6 @@ export class SocialWalletClient implements WalletClient {
       this.sdk = new AdenaSDK(provider);
       this._type = type;
       await this.sdk.connectWallet();
-
-      // const wallet = await this.provider.getWallet();
-      // if (wallet) {
-      //   this.address = await wallet.getAddress();
-      // }
     } catch (error) {
       console.error("Failed to initialize Social Wallet:", error);
       throw error;
@@ -85,21 +80,16 @@ export class SocialWalletClient implements WalletClient {
     return "SOCIAL_WALLET";
   }
 
+  public getLoginType(): SocialLoginType | null {
+    return this.type;
+  }
+
   public async getAddress(): Promise<string | null> {
     if (!this.address) {
       return this.getAccount().then(account => account.data?.address || null);
     }
     return this.address;
   }
-  // public async getAddress(): Promise<string | null> {
-  //   if (!this.address && this.provider) {
-  //     const wallet = await this.provider.getWallet();
-  //     if (wallet) {
-  //       this.address = await wallet.getAddress();
-  //     }
-  //   }
-  //   return this.address;
-  // }
 
   public async getAccount(): Promise<WalletResponse<AccountInfo>> {
     if (!this.sdk || !this.provider) {
@@ -125,7 +115,6 @@ export class SocialWalletClient implements WalletClient {
       message: response.message,
       data: response.data ? { hash: "" } : null,
     };
-    // return createTimeout(this.sdk.addEstablish({ siteName: sitename })) as Promise<WalletResponse>;
   };
 
   public sendTransaction = async <T = string[]>(
