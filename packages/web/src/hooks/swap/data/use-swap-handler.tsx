@@ -32,6 +32,7 @@ import { formatPrice } from "@utils/new-number-utils";
 import { matchInputNumber } from "@utils/number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { isEmptyObject } from "@utils/validation-utils";
+import { nullish } from "@utils/nullish-utils";
 
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { rawBySqrtX96 } from "@utils/swap-utils";
@@ -143,6 +144,8 @@ export const useSwapHandler = () => {
   const [tokenBAmount = "", setTokenBAmount] = useState(() =>
     !defaultTokenAAmount ? (defaultTokenBAmount ? defaultTokenBAmount : undefined) : undefined,
   );
+
+  const prevPriceImpact = useRef<BigNumber>(BigNumber(0));
 
   const [submitted, setSubmitted] = useState(false);
 
@@ -256,6 +259,16 @@ export const useSwapHandler = () => {
       return BigNumber(0);
     }
 
+    if (estimatedAmount === null) {
+      return prevPriceImpact.current || BigNumber(0);
+    }
+
+    if (type === "EXACT_IN") {
+      setTokenBAmount(estimatedAmount);
+    } else {
+      setTokenAAmount(estimatedAmount);
+    }
+
     const hasUSDPrice =
       !!tokenPrices[checkGnotPath(tokenA.path)]?.usd && !!tokenPrices[checkGnotPath(tokenB.path)]?.usd;
 
@@ -285,6 +298,7 @@ export const useSwapHandler = () => {
       estimatedRoutes,
       (swapFee || 0) / 100,
     );
+    prevPriceImpact.current = BigNumber(priceImpactNum.toFixed(2));
     return BigNumber(priceImpactNum.toFixed(2));
   }, [estimatedRoutes, swapFee, tokenA, tokenAAmount, tokenB, tokenBAmount, tokenPrices]);
 
@@ -936,8 +950,8 @@ export const useSwapHandler = () => {
     const broadcastMessage = {
       tokenASymbol: tokenA.symbol,
       tokenBSymbol: tokenB.symbol,
-      tokenAAmount: isExactIn ? tokenAAmount : makeDisplayTokenAmount(tokenA, estimatedAmount || 0)?.toString() || "0",
-      tokenBAmount: isExactIn ? makeDisplayTokenAmount(tokenB, estimatedAmount || 0)?.toString() || "0" : tokenBAmount,
+      tokenAAmount: isExactIn ? tokenAAmount : nullish.handleFalsy(estimatedAmount, "0"),
+      tokenBAmount: isExactIn ? nullish.handleFalsy(estimatedAmount, "0") : tokenBAmount,
     };
 
     // Handle Wrap and Unwrap
@@ -1027,16 +1041,6 @@ export const useSwapHandler = () => {
         }
         return;
       }
-
-      return;
-    }
-
-    if (type === "EXACT_IN") {
-      const amount = makeDisplayTokenAmount(tokenB, estimatedAmount || 0) || 0;
-      setTokenBAmount(amount.toString());
-    } else {
-      const amount = makeDisplayTokenAmount(tokenA, estimatedAmount || 0) || 0;
-      setTokenAAmount(amount.toString());
     }
   }, [swapState, estimatedAmount, type, tokenA, tokenB]);
 
