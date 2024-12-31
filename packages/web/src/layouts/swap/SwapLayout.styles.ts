@@ -85,9 +85,12 @@ export const SwapLayoutWrapper = styled.div`
     }
   }
 
-  .liquidity {
+  .data {
     max-width: 414px;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
     ${media.tablet} {
       max-width: 500px;
     }

@@ -252,6 +252,8 @@ export const TOKEN_SEARCH_WIDTH = [400];
 export const TOKEN_TD_WIDTH = [56, 199, 105, 85, 85, 85, 140, 140, 138, 201, 124];
 export const MOBILE_TOKEN_TD_WIDTH = [160, 160];
 
+export const TRANSACTION_TD_WIDTH = [96, 120, 198];
+
 export const LEADERBOARD_TD_WIDTH = [120, 400, 200, 200, 200, 240];
 export const MOBILE_LEADERBOARD_TD_WIDTH = [50, 150, 128];
 export const TABLET_LEADERBOARD_TD_WIDTH = [120, 300, 170, 170, 170, 170];

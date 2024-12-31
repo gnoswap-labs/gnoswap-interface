@@ -6,10 +6,11 @@ interface SwapLayoutProps {
   header: React.ReactNode;
   swap: React.ReactNode;
   chart: React.ReactNode;
+  info: React.ReactNode;
   footer: React.ReactNode;
 }
 
-const SwapLayout: React.FC<SwapLayoutProps> = ({ header, swap, chart, footer }) => {
+const SwapLayout: React.FC<SwapLayoutProps> = ({ header, swap, chart, info, footer }) => {
   const { t } = useTranslation();
 
   return (
@@ -20,7 +21,10 @@ const SwapLayout: React.FC<SwapLayoutProps> = ({ header, swap, chart, footer }) 
           <div className="page-name">{t("Swap:header")}</div>
           <div className="right-container">
             <div className="swap">{swap}</div>
-            <div className="liquidity">{chart}</div>
+            <div className="data">
+              {chart}
+              {info}
+            </div>
           </div>
         </div>
       </div>
