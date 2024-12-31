@@ -7,6 +7,7 @@ import { GetRoutesResponse } from "@repositories/swap/response/get-routes-respon
 import { wait } from "@utils/common";
 
 import { QUERY_KEY } from "../query-keys";
+import { useGetAllTokenPrices } from "@query/token";
 
 const REFETCH_INTERVAL = 10_000;
 const STALE_TIME = 10_000;
@@ -21,6 +22,7 @@ export const useGetRoutes = (
   options?: UseQueryOptions<GetRoutesResponse, Error>,
 ) => {
   const { swapRouterRepository } = useGnoswapContext();
+  const { refetch: refetchAllTokenPrices } = useGetAllTokenPrices();
 
   return useQuery<GetRoutesResponse, Error>({
     queryKey: [
@@ -58,6 +60,9 @@ export const useGetRoutes = (
       if (!result) {
         throw new SwapError("NOT_FOUND_SWAP_POOL");
       }
+
+      // Updating Swap Route Data while also updating token price information
+      refetchAllTokenPrices();
 
       const availRoute = result.estimatedRoutes.reduce((accumulated, current) => accumulated + current.quote, 0);
 
