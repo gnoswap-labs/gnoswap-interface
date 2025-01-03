@@ -83,11 +83,13 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     return response.data;
   };
 
+  //Todo: Implement this code
   public getDrySwap = async (request: DrySwapRequest): Promise<number> => {
     if (!this.rpcProvider) {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }
 
+    // Discuss if needed
     if (!PACKAGE_ROUTER_PATH) {
       throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
     }

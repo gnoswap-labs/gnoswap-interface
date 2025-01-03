@@ -256,6 +256,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
         return null;
       }
 
+      // check this args
       if (direction === "EXACT_IN") {
         return swapRouterRepository.sendExactInSwapRoute({
           inputToken: tokenA,
@@ -267,6 +268,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
         });
       }
 
+      // check this args
       if (direction === "EXACT_OUT") {
         return swapRouterRepository.sendExactOutSwapRoute({
           inputToken: tokenA,
