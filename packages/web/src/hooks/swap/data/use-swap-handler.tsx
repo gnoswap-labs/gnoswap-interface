@@ -104,6 +104,14 @@ function compareAmountFn(amountA: string | number | bigint, amountB: string | nu
 function handleAmount(changed: string, token: TokenModel | null) {
   let value = changed;
   const decimals = token?.decimals || 0;
+
+  // Check if input exceeds decimal places
+  const parts = changed.split(".");
+  if (parts.length > 1 && parts[1].length > decimals) {
+    // Signal invalid input
+    return { isValid: false, value: changed };
+  }
+
   if (!value || BigNumber(value).isZero()) {
     value = changed;
   } else {
@@ -117,7 +125,7 @@ function handleAmount(changed: string, token: TokenModel | null) {
     }
   }
 
-  return value;
+  return { isValid: true, value };
 }
 
 export const useSwapHandler = () => {
@@ -592,18 +600,25 @@ export const useSwapHandler = () => {
 
   const changeTokenAAmount = useCallback(
     (changed: string, none?: boolean) => {
-      const value = handleAmount(changed, tokenA);
+      const result = handleAmount(changed, tokenA);
+
+      // If invalid decimal places, don't update or trigger loading
+      if (!result.isValid) {
+        setIsLoading(false);
+        return;
+      }
+
       if (tokenA && tokenB) {
-        updateSwapAmount(value);
+        updateSwapAmount(result.value);
       }
 
       if (isSameToken) {
-        setTokenAAmount(value);
-        setTokenBAmount(value);
+        setTokenAAmount(result.value);
+        setTokenBAmount(result.value);
         setSwapValue(prev => ({
           ...prev,
-          tokenAAmount: value,
-          tokenBAmount: value,
+          tokenAAmount: result.value,
+          tokenBAmount: result.value,
           type: "EXACT_IN",
         }));
         return;
@@ -613,10 +628,10 @@ export const useSwapHandler = () => {
         setIsLoading(false);
         return;
       }
-      if (!matchInputNumber(value)) {
+      if (!matchInputNumber(result.value)) {
         return;
       }
-      if (!!Number(value) && tokenB?.symbol) {
+      if (!!Number(result.value) && tokenB?.symbol) {
         setIsLoading(true);
       } else {
         setTokenBAmount("0");
@@ -626,7 +641,7 @@ export const useSwapHandler = () => {
         ...prev,
         type: "EXACT_IN",
       }));
-      setTokenAAmount(value);
+      setTokenAAmount(result.value);
     },
     [isSameToken, setSwapValue, tokenA, tokenB?.symbol],
   );
@@ -641,15 +656,20 @@ export const useSwapHandler = () => {
 
   const changeTokenBAmount = useCallback(
     (changed: string, none?: boolean) => {
-      const value = handleAmount(changed, tokenB);
+      const result = handleAmount(changed, tokenB);
+
+      if (!result.isValid) {
+        setIsLoading(false);
+        return;
+      }
 
       if (isSameToken) {
-        setTokenAAmount(value);
-        setTokenBAmount(value);
+        setTokenAAmount(result.value);
+        setTokenBAmount(result.value);
         setSwapValue(prev => ({
           ...prev,
-          tokenAAmount: value,
-          tokenBAmount: value,
+          tokenAAmount: result.value,
+          tokenBAmount: result.value,
           type: "EXACT_IN",
         }));
         return;
@@ -660,11 +680,11 @@ export const useSwapHandler = () => {
         return;
       }
 
-      if (!matchInputNumber(value)) {
+      if (!matchInputNumber(result.value)) {
         return;
       }
 
-      if (!!Number(value) && tokenA?.symbol) {
+      if (!!Number(result.value) && tokenA?.symbol) {
         setIsLoading(true);
       } else {
         setTokenAAmount("0");
@@ -674,8 +694,8 @@ export const useSwapHandler = () => {
         ...prev,
         type: "EXACT_OUT",
       }));
-      updateSwapAmount(value);
-      setTokenBAmount(value);
+      updateSwapAmount(result.value);
+      setTokenBAmount(result.value);
     },
     [isSameToken, tokenA, tokenB],
   );
