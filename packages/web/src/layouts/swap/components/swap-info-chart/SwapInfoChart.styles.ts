@@ -7,7 +7,6 @@ export const SwapInfoChartWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
 
   padding: 6px 16px;
   border-radius: 8px;

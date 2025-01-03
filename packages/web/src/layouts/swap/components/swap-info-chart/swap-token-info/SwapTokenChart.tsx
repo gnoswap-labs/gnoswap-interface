@@ -55,7 +55,6 @@ const SwapTokenChart = ({ data = [], isLoading, isFetched, onMouseMove, onMouseO
           isShowTooltip={false}
           onMouseMove={onMouseMove}
           onMouseOut={onMouseOut}
-          showPriceRangeLine={false}
         />
       )}
     </SwapTokenChartWrapper>

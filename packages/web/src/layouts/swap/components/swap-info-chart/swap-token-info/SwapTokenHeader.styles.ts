@@ -28,7 +28,7 @@ export const SwapTokenHeaderWrapper = styled.div`
         .link {
           display: flex;
           align-items: center;
-          gap: 2px;
+          gap: 6px;
           color: ${({ theme }) => theme.color.text04};
           font-size: 10px;
           font-weight: 400;

@@ -17,7 +17,6 @@ export const ChartNotFound = styled.div`
   align-items: center;
   width: 100%;
   height: 50px;
-  background-color: ${({ theme }) => theme.color.background15};
   border-radius: 8px;
   color: ${({ theme }) => theme.color.text04};
   font-size: 14px;
@@ -34,12 +33,12 @@ export const loadingWrapper = (theme: Theme) => css`
     ${fonts.body11}
   }
   > div {
-    width: 48px;
-    height: 48px;
+    width: 36px;
+    height: 36px;
     &::before {
       background-color: ${theme.color.background01};
-      width: 38px;
-      height: 38px;
+      width: 26px;
+      height: 26px;
     }
   }
 `;

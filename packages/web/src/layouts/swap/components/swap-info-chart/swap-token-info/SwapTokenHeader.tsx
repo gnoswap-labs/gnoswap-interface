@@ -71,7 +71,7 @@ const SwapTokenHeader = ({ isMobile, tokenInfo, currentPrice, chartData }: SwapT
   return (
     <SwapTokenHeaderWrapper>
       <div className="left">
-        <MissingLogo url={tokenInfo.logoURI} symbol={tokenInfo.symbol} width={24} />
+        <MissingLogo url={tokenInfo.logoURI} symbol={tokenInfo.symbol} width={32} />
         <div className="token-title">
           <div className="name">
             <div>{tokenInfo.name}</div>
