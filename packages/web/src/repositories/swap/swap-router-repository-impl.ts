@@ -14,17 +14,19 @@ import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { DEFAULT_GAS_FEE } from "@common/values";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { GetRoutesRequest } from "./request/get-routes-request";
-import { SwapRouteRequest } from "./request/swap-route-request";
+import { SwapRouteRequest, DrySwapRequest } from "./request/swap-route-request";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
 import { WrapTokenRequest } from "./request/wrap-token-request";
 import { GetRoutesResponse } from "./response/get-routes-response";
 import { SwapRouteFailedResponse, SwapRouteSuccessResponse } from "./response/swap-route-response";
 import { SwapRouterRepository } from "./swap-router-repository";
 import {
-  makeSwapRouteMessageWithApproves,
+  makeExactInSwapRouteMessageWithApproves,
+  makeExactOutSwapRouteMessageWithApproves,
   makeUnwrapTokenMessages,
   makeWrapTokenMessages,
 } from "./swap-router.message";
+import { drySwap } from "@common/clients/gno-provider/methods/dry-swap";
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
@@ -81,7 +83,19 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     return response.data;
   };
 
-  public sendSwapRoute = async (
+  public getDrySwap = async (request: DrySwapRequest): Promise<number> => {
+    if (!this.rpcProvider) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
+    if (!PACKAGE_ROUTER_PATH) {
+      throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
+    }
+
+    return await drySwap(this.rpcProvider, PACKAGE_ROUTER_PATH, request);
+  };
+
+  public sendExactInSwapRoute = async (
     request: SwapRouteRequest,
   ): Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>> => {
     if (this.rpcProvider === null) {
@@ -90,7 +104,40 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const address = await this.getAddress();
 
-    const messages = await makeSwapRouteMessageWithApproves(
+    // Dry SWAP implement
+    // const drySwapResponse = await this.getDrySwap(request);
+    // if (drySwapResponse.status !== 200) {
+    //   throw new SwapError("SWAP_FAILED");
+    // }
+
+    const messages = await makeExactInSwapRouteMessageWithApproves(
+      { ...request, caller: address },
+      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    );
+
+    return await this.walletClient!.sendTransaction({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      memo: "",
+    });
+  };
+
+  public sendExactOutSwapRoute = async (
+    request: SwapRouteRequest,
+  ): Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>> => {
+    if (this.rpcProvider === null) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
+    const address = await this.getAddress();
+
+    // Dry SWAP implement
+    // const drySwapResponse = await this.getDrySwap(request);
+    // if (drySwapResponse.status !== 200) {
+    //   throw new SwapError("SWAP_FAILED");
+    // }
+
+    const messages = await makeExactOutSwapRouteMessageWithApproves(
       { ...request, caller: address },
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
