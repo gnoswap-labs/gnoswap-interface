@@ -41,6 +41,7 @@ export const TransactionListTableList = styled.div`
   align-items: center;
   justify-content: flex-start;
   width: 100%;
+  padding-bottom: 4px;
 `;
 
 export const TransactionListTableRow = styled.div`
@@ -61,7 +62,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 6px;
+  gap: 4px;
   width: ${({ tdWidth }) => `${tdWidth}px`};
   height: 100%;
 
@@ -103,5 +104,8 @@ export const TokenPairWrapper = styled.div`
   .arrow {
     width: 14px;
     height: 14px;
+    * {
+      fill: ${({ theme }) => (theme.themeKey === "dark" ? "#596782" : "#90a2c0")};
+    }
   }
 `;
