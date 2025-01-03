@@ -88,7 +88,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
 export const TokenPairWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 
   .token-amount {
     display: flex;
