@@ -73,6 +73,14 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     justify-content: flex-start;
   }
 
+  .path-link-icon {
+    &:hover {
+      path {
+        fill: ${({ theme }) => theme.color.text03};
+      }
+    }
+  }
+
   @media screen and (max-width: 768px) {
     &.left {
       width: auto;

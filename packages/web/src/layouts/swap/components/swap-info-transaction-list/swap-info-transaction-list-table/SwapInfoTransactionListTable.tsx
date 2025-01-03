@@ -86,7 +86,7 @@ const TransactionListTableRow = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) =>
           <span>1s ago</span>
         </DateTimeTooltip>
         <button>
-          <IconOpenLink size="10px" />
+          <IconOpenLink size="10px" className="path-link-icon" />
         </button>
       </TableColumn>
       {!isMobile && <TableColumn tdWidth={widths[1]}>$12.05</TableColumn>}
