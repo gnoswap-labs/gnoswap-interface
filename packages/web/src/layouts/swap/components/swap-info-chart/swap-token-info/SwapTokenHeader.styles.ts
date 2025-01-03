@@ -57,6 +57,7 @@ export const SwapTokenHeaderWrapper = styled.div`
     align-items: center;
     gap: 8px;
     .token-price {
+      position: relative;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -67,7 +68,15 @@ export const SwapTokenHeaderWrapper = styled.div`
         font-size: 18px;
         font-weight: 500;
       }
+      .blank {
+        min-height: 17px;
+        font-size: 14px;
+      }
       .date {
+        position: absolute;
+        min-width: 100px;
+        text-align: end;
+        top: 22px;
         color: #596782;
         font-size: 14px;
         font-weight: 400;
