@@ -173,24 +173,27 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
         return;
       }
 
+      const processedAmount = amount.endsWith(".") ? amount.slice(0, -1) : amount;
+
       let newAmount = 0;
-      if (BigNumber(amount).isZero()) {
+      if (BigNumber(processedAmount).isZero()) {
         newAmount = 0;
       }
-      newAmount = BigNumber(amount).toNumber();
+      newAmount = BigNumber(processedAmount).toNumber();
 
       setSwapAmount(newAmount);
-      if (tokenA && tokenB) {
+
+      if (tokenA && tokenB && !amount.endsWith(".")) {
         setIsTyping(true);
-      }
 
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-      }
+        if (typingTimeoutRef.current) {
+          clearTimeout(typingTimeoutRef.current);
+        }
 
-      typingTimeoutRef.current = setTimeout(() => {
-        setIsTyping(false);
-      }, SWAP_AMOUNT_DEBOUNCE_TIME_MS + 100);
+        typingTimeoutRef.current = setTimeout(() => {
+          setIsTyping(false);
+        }, SWAP_AMOUNT_DEBOUNCE_TIME_MS + 100);
+      }
     },
     [tokenA, tokenB],
   );
