@@ -1,8 +1,15 @@
 import React from "react";
 import { cx } from "@emotion/css";
 
-import { TABLE_HEAD } from "@layouts/swap/containers/swap-info-transaction-list-container/SwapInfoTransactionListContainer";
-import { TRANSACTION_TD_WIDTH } from "@constants/skeleton.constant";
+import {
+  MOBILE_TABLE_HEAD,
+  TABLE_HEAD,
+} from "@layouts/swap/containers/swap-info-transaction-list-container/SwapInfoTransactionListContainer";
+import {
+  TRANSACTION_TD_WIDTH,
+  TABLET_TRANSACTION_TD_WIDTH,
+  MOBILE_TRANSACTION_TD_WIDTH,
+} from "@constants/skeleton.constant";
 
 import {
   TableHeader,
@@ -17,17 +24,40 @@ import IconRightArrow from "@components/common/icons/IconRightArrow";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { GNOT_TOKEN_DEFAULT } from "@common/values/token-constant";
 import DateTimeTooltip from "@components/common/date-time-tooltip/DateTimeTooltip";
+import { DEVICE_TYPE } from "@styles/media";
 
-const SwapInfoTransactionListTable = () => {
+interface SwapInfoTransactionListTableProps {
+  breakpoint: DEVICE_TYPE;
+}
+
+const getTableWidths = (breakpoint: DEVICE_TYPE) => {
+  if (breakpoint === DEVICE_TYPE.MOBILE) {
+    return MOBILE_TRANSACTION_TD_WIDTH;
+  }
+  if (breakpoint === DEVICE_TYPE.TABLET || breakpoint === DEVICE_TYPE.TABLET_M || breakpoint === DEVICE_TYPE.TABLET_S) {
+    return TABLET_TRANSACTION_TD_WIDTH;
+  }
+  return TRANSACTION_TD_WIDTH;
+};
+
+const SwapInfoTransactionListTable = ({ breakpoint }: SwapInfoTransactionListTableProps) => {
+  const getTableHeaders = React.useCallback(() => {
+    if (breakpoint === DEVICE_TYPE.MOBILE) {
+      return MOBILE_TABLE_HEAD;
+    }
+
+    return TABLE_HEAD;
+  }, [breakpoint]);
+
   return (
     <>
       <TransactionListTableHeader>
-        {Object.values(TABLE_HEAD).map((head, idx) => {
+        {Object.values(getTableHeaders()).map((head, idx) => {
           return (
             <TableHeader
               key={`table-header-${head}`}
               className={cx({ left: idx === 0 })}
-              tdWidth={TRANSACTION_TD_WIDTH[idx]}
+              tdWidth={getTableWidths(breakpoint)[idx]}
             >
               <span>{head}</span>
             </TableHeader>
@@ -36,22 +66,22 @@ const SwapInfoTransactionListTable = () => {
       </TransactionListTableHeader>
 
       <TransactionListTableList>
-        <TransactionListTableRow />
-        <TransactionListTableRow />
-        <TransactionListTableRow />
-        <TransactionListTableRow />
-        <TransactionListTableRow />
+        {[...Array(5)].map((_, index) => (
+          <TransactionListTableRow key={index} breakpoint={breakpoint} />
+        ))}
       </TransactionListTableList>
-      <TransactionListTableRow />
     </>
   );
 };
 
-const TransactionListTableRow = () => {
+const TransactionListTableRow = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   const today = new Date();
+  const widths = getTableWidths(breakpoint);
+  const isMobile = breakpoint === DEVICE_TYPE.MOBILE;
+
   return (
     <TransactionListTableRowWrapper>
-      <TableColumn className="left" tdWidth={TRANSACTION_TD_WIDTH[0]}>
+      <TableColumn className="left" tdWidth={widths[0]}>
         <DateTimeTooltip date={today}>
           <span>1s ago</span>
         </DateTimeTooltip>
@@ -59,8 +89,8 @@ const TransactionListTableRow = () => {
           <IconOpenLink size="10px" />
         </button>
       </TableColumn>
-      <TableColumn tdWidth={TRANSACTION_TD_WIDTH[1]}>$12.05</TableColumn>
-      <TableColumn tdWidth={TRANSACTION_TD_WIDTH[2]}>
+      {!isMobile && <TableColumn tdWidth={widths[1]}>$12.05</TableColumn>}
+      <TableColumn tdWidth={isMobile ? widths[1] : widths[2]}>
         <TokenPairWrapper>
           <div className="token-amount">
             <span>152.15</span>

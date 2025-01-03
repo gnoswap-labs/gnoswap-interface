@@ -22,6 +22,17 @@ export const TableHeader = styled.div<{ tdWidth: number }>`
     flex-shrink: 0;
     justify-content: flex-start;
   }
+
+  @media screen and (max-width: 768px) {
+    &.left {
+      width: auto;
+      flex: 1;
+    }
+    &:last-child {
+      width: auto;
+      flex: 2;
+    }
+  }
 `;
 
 export const TransactionListTableList = styled.div`
@@ -59,6 +70,17 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   &.left {
     flex-shrink: 0;
     justify-content: flex-start;
+  }
+
+  @media screen and (max-width: 768px) {
+    &.left {
+      width: auto;
+      flex: 1;
+    }
+    &:last-child {
+      width: auto;
+      flex: 2;
+    }
   }
 `;
 

@@ -44,6 +44,7 @@ const SwapTokenChart = ({ data = [], isLoading, isFetched, onMouseMove, onMouseO
       {hasData && (
         <LineGraph
           datas={chartData}
+          width={500}
           height={50}
           forcedHeight={50}
           color="#192EA2"
