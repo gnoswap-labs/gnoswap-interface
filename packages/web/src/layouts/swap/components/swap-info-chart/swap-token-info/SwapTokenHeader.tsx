@@ -30,7 +30,7 @@ interface SwapTokenHeaderProps {
 }
 
 const DETERMIN_SHORT_SIZE_WEB = 160 as const;
-const DETERMIN_SHORT_SIZE_TABLET = 60 as const;
+const DETERMIN_SHORT_SIZE_TABLET = 200 as const;
 
 const SwapTokenHeader = ({ breakpoint, isMobile, tokenInfo, currentPrice, chartData }: SwapTokenHeaderProps) => {
   const elementId = React.useMemo(() => `${tokenInfo.name}`, [tokenInfo.name]);
