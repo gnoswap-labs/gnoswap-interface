@@ -88,7 +88,7 @@ const LiquidityEnterAmounts: React.FC<LiquidityEnterAmountsProps> = ({
             connected={connected}
             changeToken={changeTokenB}
             changeAmount={changeTokenBAmount}
-            isVisibleMaxButton={false}
+            isVisibleMaxButton={true}
           />
           <div className="arrow">
             <div className="shape">

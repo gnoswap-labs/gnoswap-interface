@@ -20,6 +20,7 @@ import {
   SwapDetailSectionWrapper,
 } from "./SwapCardContent.styles";
 import IconWallet from "@components/common/icons/IconWallet";
+import { useTranslation } from "react-i18next";
 
 interface ContentProps {
   swapTokenInfo: SwapTokenInfo;
@@ -53,6 +54,8 @@ const SwapCardContent: React.FC<ContentProps> = ({
   priceImpactStatus,
   isSameToken,
 }) => {
+  const { t } = useTranslation();
+
   const theme = useTheme();
   const tokenA = swapTokenInfo.tokenA;
   const tokenB = swapTokenInfo.tokenB;
@@ -150,7 +153,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
             </span>
             {hasTokenABalance && (
               <button className="balance-max-button" onClick={handleAutoFillTokenA}>
-                Max
+                {t("common:max")}
               </button>
             )}
           </div>

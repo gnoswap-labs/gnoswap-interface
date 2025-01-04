@@ -172,7 +172,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               </span>
               {hasTokenABalance && (
                 <button className="balance-max-button" onClick={handleAutoFillTokenA}>
-                  Max
+                  {t("common:max")}
                 </button>
               )}
             </div>
