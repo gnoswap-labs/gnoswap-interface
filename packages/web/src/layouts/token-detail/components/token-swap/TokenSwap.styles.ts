@@ -106,7 +106,7 @@ export const wrapper = (theme: Theme) => css`
           color: #007aff;
           cursor: pointer;
           &:hover {
-            background: rgba(0, 89, 255, 0.1);
+            background: ${theme.themeKey === "dark" ? "rgba(0, 89, 255, 0.1)" : "rgba(0, 89, 255, 0.3)"};
           }
         }
       }
