@@ -12,6 +12,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { SwapTokenHeaderWrapper } from "./SwapTokenHeader.styles";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
+import { nullish } from "@utils/nullish-utils";
 
 interface TokenInfo {
   name: string;
@@ -29,8 +30,8 @@ interface SwapTokenHeaderProps {
   chartData?: LineGraphData;
 }
 
-const DETERMIN_SHORT_SIZE_WEB = 160 as const;
-const DETERMIN_SHORT_SIZE_TABLET = 200 as const;
+const DETERMIN_SHORT_SIZE_WEB = 160;
+const DETERMIN_SHORT_SIZE_TABLET = 200;
 
 const SwapTokenHeader = ({ breakpoint, isMobile, tokenInfo, currentPrice, chartData }: SwapTokenHeaderProps) => {
   const elementId = React.useMemo(() => `${tokenInfo.name}`, [tokenInfo.name]);
@@ -66,7 +67,7 @@ const SwapTokenHeader = ({ breakpoint, isMobile, tokenInfo, currentPrice, chartD
   }, [elementId, breakpoint]);
 
   const displayPrice = React.useMemo(() => {
-    const price = chartData?.value || currentPrice;
+    const price = nullish.handleFalsy(chartData?.value, currentPrice);
     return `${formatPrice(price, { lessThan1Significant: 2 })}`;
   }, [chartData, currentPrice]);
 
@@ -86,7 +87,7 @@ const SwapTokenHeader = ({ breakpoint, isMobile, tokenInfo, currentPrice, chartD
       if (tokenInfo.isNative) {
         window.open(getGnoscanUrl(), "_blank", "noopener,noreferrer");
       } else {
-        window.open(getTokenUrl(tokenInfo.path || ""), "_blank", "noopener,noreferrer");
+        window.open(getTokenUrl(nullish.handleFalsy(tokenInfo.path, "")), "_blank", "noopener,noreferrer");
       }
     },
     [tokenInfo],

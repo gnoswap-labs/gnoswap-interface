@@ -4,9 +4,8 @@ import { IPriceResponse } from "@repositories/token";
 import { getLocalizeTime } from "@utils/chart";
 
 import LineGraph, { LineGraphData } from "@components/common/line-graph/LineGraph";
-import { ChartNotFound, SwapTokenChartWrapper } from "./SwapTokenChart.styles";
+import { ChartNotFound, LoadingWrapper, SwapTokenChartWrapper } from "./SwapTokenChart.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
-import { loadingWrapper } from "./SwapTokenChart.styles";
 import { SWAP_TOKEN_CHART_COLORS } from "@constants/graph.constant";
 
 interface SwapTokenChartProps {
@@ -36,9 +35,9 @@ const SwapTokenChart = ({ data = [], isLoading, isFetched, onMouseMove, onMouseO
   return (
     <SwapTokenChartWrapper>
       {isLoading && (
-        <div css={loadingWrapper}>
+        <LoadingWrapper>
           <LoadingSpinner />
-        </div>
+        </LoadingWrapper>
       )}
       {isNoData && <ChartNotFound>No price history</ChartNotFound>}
       {hasData && (

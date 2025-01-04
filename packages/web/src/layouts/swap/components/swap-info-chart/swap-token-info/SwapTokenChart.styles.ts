@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
-import { css, type Theme } from "@emotion/react";
 import { fonts } from "@constants/font.constant";
 
 export const SwapTokenChartWrapper = styled.div`
@@ -22,21 +21,20 @@ export const ChartNotFound = styled.div`
   font-size: 14px;
 `;
 
-export const loadingWrapper = (theme: Theme) => css`
+export const LoadingWrapper = styled.div`
   ${mixins.flexbox("row", "flex-start", "center")}
   width: 100%;
-  background-color: ${theme.color.background01};
+  background-color: ${({ theme }) => theme.color.background01};
   border-radius: 8px;
   > span {
     margin-top: 6px;
-    color: ${theme.color.text04};
-    ${fonts.body11}
+    color: ${({ theme }) => theme.color.text04} ${fonts.body11};
   }
   > div {
     width: 36px;
     height: 36px;
     &::before {
-      background-color: ${theme.color.background01};
+      background-color: ${({ theme }) => theme.color.background01};
       width: 26px;
       height: 26px;
     }
