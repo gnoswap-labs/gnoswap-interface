@@ -231,6 +231,24 @@ export const AssetSendContent = styled.div`
   .info {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
+    .balance-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      .balance-max-button {
+        padding: 4px 6px;
+        border-radius: 36px;
+        background: rgba(0, 89, 255, 0.2);
+        font-size: 12px;
+        font-weight: 500;
+        color: #007aff;
+        cursor: pointer;
+        &:hover {
+          background: rgba(0, 89, 255, 0.1);
+        }
+      }
+    }
   }
 
   .amount-text {
@@ -263,7 +281,7 @@ export const AssetSendContent = styled.div`
   }
 
   .balance-text {
-    cursor: pointer;
+    /* cursor: pointer; */
   }
 `;
 
