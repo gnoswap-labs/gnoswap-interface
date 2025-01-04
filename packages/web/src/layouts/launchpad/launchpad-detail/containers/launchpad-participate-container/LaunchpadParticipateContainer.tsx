@@ -2,13 +2,13 @@ import React from "react";
 
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useLaunchpadHandler } from "@hooks/launchpad/data/use-launchpad-handler";
-import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
 
 import LaunchpadParticipate from "../../components/launchpad-participate/LaunchpadParticipate";
 
 interface LaunchpadParticipateContainerProps {
+  connected: boolean;
   poolInfo?: LaunchpadPoolModel;
   rewardInfo: ProjectRewardInfoModel;
   status: string;
@@ -18,6 +18,7 @@ interface LaunchpadParticipateContainerProps {
 }
 
 const LaunchpadParticipateContainer: React.FC<LaunchpadParticipateContainerProps> = ({
+  connected,
   poolInfo,
   rewardInfo,
   status,
@@ -27,7 +28,6 @@ const LaunchpadParticipateContainer: React.FC<LaunchpadParticipateContainerProps
   const router = useCustomRouter();
   const projectPath = router.getProjectPath();
 
-  const { connected } = useWallet();
   const { deposit } = useLaunchpadHandler();
 
   return (

@@ -58,7 +58,6 @@ export const LaunchpadParticipateWrapper = styled.div`
     align-self: stretch;
     .participate-price-text,
     .participate-balance-text {
-      cursor: pointer;
       ${fonts.body12};
       ${media.mobile} {
         ${fonts.p2};
@@ -76,6 +75,25 @@ export const LaunchpadParticipateWrapper = styled.div`
     }
     .participate-balance-text {
       flex-shrink: 0;
+    }
+
+    .balance-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      .balance-max-button {
+        padding: 4px 6px;
+        border-radius: 36px;
+        background: rgba(0, 89, 255, 0.2);
+        font-size: 12px;
+        font-weight: 500;
+        color: #007aff;
+        cursor: pointer;
+        &:hover {
+          background: rgba(0, 89, 255, 0.1);
+        }
+      }
     }
   }
   .participate-info-wrapper {
