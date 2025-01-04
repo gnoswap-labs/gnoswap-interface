@@ -74,6 +74,9 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   }
 
   .path-link-icon {
+    path {
+      fill: ${({ theme }) => theme.color.text04};
+    }
     &:hover {
       path {
         fill: ${({ theme }) => theme.color.text03};
