@@ -148,7 +148,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   strokeWidth = 2,
   gradientStartColor = `${color}66`,
   gradientEndColor = "transparent",
-  smooth,
+  smooth = false,
   width = VIEWPORT_DEFAULT_WIDTH,
   height = VIEWPORT_DEFAULT_HEIGHT,
   forcedHeight,
@@ -537,6 +537,12 @@ const LineGraph: React.FC<LineGraphProps> = ({
     onMouseMove(event);
   };
 
+  const getLineCommand = (point: Point, index: number, points: Point[], smooth: boolean) => {
+    const smoothCommand = smooth ? bezierCommand(point, index, points) : ` L ${point.x},${point.y}`;
+
+    return index === 0 ? ` L ${point.x},${point.y}` : smoothCommand;
+  };
+
   const areaPath = useMemo(() => {
     if (!points || points.length === 0 || points.some(point => point === undefined)) {
       return undefined;
@@ -550,8 +556,8 @@ const LineGraph: React.FC<LineGraphProps> = ({
       const point = points[i];
       // Plots the actual curve only when the current point is above firstPoint.y
       if (point.y <= firstPoint.y) {
-        path +=
-          i === 0 ? ` L ${point.x},${point.y}` : smooth ? bezierCommand(point, i, points) : ` L ${point.x},${point.y}`;
+        const lineCommand = getLineCommand(point, i, points, smooth);
+        path += lineCommand;
       } else {
         // Move at the level of firstPoint.y if it is below firstPoint.y
         path += ` L ${point.x},${firstPoint.y}`;
