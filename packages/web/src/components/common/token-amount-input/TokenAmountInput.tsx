@@ -9,12 +9,14 @@ import { DEFAULT_CONTRACT_USE_FEE, DEFAULT_GAS_FEE } from "@common/values";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { useTranslation } from "react-i18next";
+import IconWallet from "../icons/IconWallet";
 
 export interface TokenAmountInputProps extends TokenAmountInputModel {
   changable?: boolean;
   changeToken: (token: TokenModel) => void;
   connected: boolean;
   style?: React.CSSProperties;
+  isVisibleMaxButton?: boolean;
 }
 
 const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
@@ -27,6 +29,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   connected,
   amount,
   style,
+  isVisibleMaxButton = true,
 }) => {
   const { t } = useTranslation();
 
@@ -62,6 +65,12 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
       }
     }
   }, [connected, balance, token, changeAmount]);
+
+  const hasTokenBalance = useMemo(() => {
+    if (!connected || balance === "0") return false;
+
+    return true;
+  }, [connected, balance]);
 
   const balanceADisplay = useMemo(() => {
     if (!connected || balance === "0") {
@@ -101,9 +110,15 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
       </div>
       <div className="info">
         <span className="price-text disable-pointer ">{usdValue}</span>
-        <span className={`balance-text ${!connected ? "disable-pointer" : ""}`} onClick={handleFillBalance}>
-          {t("business:balance")}: {balanceADisplay}
-        </span>
+        <div className="balance-wrapper">
+          {connected && <IconWallet />}
+          <span className={`balance-text ${!connected ? "disable-pointer" : ""}`}>{balanceADisplay}</span>
+          {isVisibleMaxButton && hasTokenBalance && (
+            <button className="balance-max-button" onClick={handleFillBalance}>
+              {t("common:max")}
+            </button>
+          )}
+        </div>
       </div>
     </TokenAmountInputWrapper>
   );
