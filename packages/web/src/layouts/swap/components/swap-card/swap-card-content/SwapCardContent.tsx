@@ -91,13 +91,6 @@ const SwapCardContent: React.FC<ContentProps> = ({
     }
   }, [changeTokenAAmount, connectedWallet, swapTokenInfo]);
 
-  const handleAutoFillTokenB = useCallback(() => {
-    if (connectedWallet) {
-      const formatValue = parseFloat(swapTokenInfo.tokenBBalance.replace(/,/g, "")).toString();
-      changeTokenBAmount(formatValue);
-    }
-  }, [changeTokenBAmount, connectedWallet, swapTokenInfo]);
-
   const isShowInfoSection = useMemo(() => {
     return (
       !!(swapSummaryInfo && !!Number(swapTokenInfo.tokenAAmount) && !!Number(swapTokenInfo.tokenBAmount)) || isLoading
@@ -123,10 +116,6 @@ const SwapCardContent: React.FC<ContentProps> = ({
   const hasTokenABalance = useMemo(() => {
     return swapTokenInfo.tokenABalance !== "-" && swapTokenInfo.tokenABalance !== "0";
   }, [swapTokenInfo.tokenABalance]);
-
-  const hasTokenBBalance = useMemo(() => {
-    return swapTokenInfo.tokenBBalance !== "-" && swapTokenInfo.tokenBBalance !== "0";
-  }, [swapTokenInfo.tokenBBalance]);
 
   const showPriceImpact = useMemo(
     () => !isLoading && !!swapSummaryInfo?.priceImpact && swapRouteInfos.length > 0,
@@ -206,17 +195,9 @@ const SwapCardContent: React.FC<ContentProps> = ({
           </PriceInfoWrapper>
           <div className="balance-wrapper">
             {connectedWallet && <IconWallet />}
-            <span
-              className={`balance-text ${tokenB && connectedWallet && "balance-text-disabled"}`}
-              onClick={handleAutoFillTokenB}
-            >
+            <span className={`balance-text ${tokenB && connectedWallet && "balance-text-disabled"}`}>
               {swapTokenInfo.tokenBBalance}
             </span>
-            {hasTokenBBalance && (
-              <button className="balance-max-button" onClick={handleAutoFillTokenB}>
-                Max
-              </button>
-            )}
           </div>
         </div>
       </div>

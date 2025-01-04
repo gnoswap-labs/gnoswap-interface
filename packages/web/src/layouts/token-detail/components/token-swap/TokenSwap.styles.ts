@@ -92,6 +92,24 @@ export const wrapper = (theme: Theme) => css`
     .info {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
+      .balance-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        .balance-max-button {
+          padding: 4px 6px;
+          border-radius: 36px;
+          background: rgba(0, 89, 255, 0.2);
+          font-size: 12px;
+          font-weight: 500;
+          color: #007aff;
+          cursor: pointer;
+          &:hover {
+            background: rgba(0, 89, 255, 0.1);
+          }
+        }
+      }
     }
     .text-opacity {
       opacity: 0.5;
@@ -121,7 +139,6 @@ export const wrapper = (theme: Theme) => css`
       overflow: hidden;
     }
     .balance-text-disabled {
-      cursor: pointer;
     }
 
     .token {
