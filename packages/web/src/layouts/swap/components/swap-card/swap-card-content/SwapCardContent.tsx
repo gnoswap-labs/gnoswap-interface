@@ -1,6 +1,5 @@
 import BigNumber from "bignumber.js";
 import React, { useCallback, useMemo } from "react";
-import { useTranslation } from "react-i18next";
 
 import { isAmount } from "@common/utils/data-check-util";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
@@ -20,6 +19,7 @@ import {
   PriceInfoWrapper,
   SwapDetailSectionWrapper,
 } from "./SwapCardContent.styles";
+import IconWallet from "@components/common/icons/IconWallet";
 
 interface ContentProps {
   swapTokenInfo: SwapTokenInfo;
@@ -53,7 +53,6 @@ const SwapCardContent: React.FC<ContentProps> = ({
   priceImpactStatus,
   isSameToken,
 }) => {
-  const { t } = useTranslation();
   const theme = useTheme();
   const tokenA = swapTokenInfo.tokenA;
   const tokenB = swapTokenInfo.tokenB;
@@ -121,6 +120,14 @@ const SwapCardContent: React.FC<ContentProps> = ({
     return swapTokenInfo.tokenBAmount;
   }, [swapTokenInfo.tokenBAmount, tokenB?.decimals]);
 
+  const hasTokenABalance = useMemo(() => {
+    return swapTokenInfo.tokenABalance !== "-" && swapTokenInfo.tokenABalance !== "0";
+  }, [swapTokenInfo.tokenABalance]);
+
+  const hasTokenBBalance = useMemo(() => {
+    return swapTokenInfo.tokenBBalance !== "-" && swapTokenInfo.tokenBBalance !== "0";
+  }, [swapTokenInfo.tokenBBalance]);
+
   const showPriceImpact = useMemo(
     () => !isLoading && !!swapSummaryInfo?.priceImpact && swapRouteInfos.length > 0,
     [isLoading, swapRouteInfos.length, swapSummaryInfo?.priceImpact],
@@ -147,12 +154,17 @@ const SwapCardContent: React.FC<ContentProps> = ({
           <span className={`price-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}>
             {swapTokenInfo.tokenAUSDStr}
           </span>
-          <span
-            className={`balance-text ${tokenA && connectedWallet && "balance-text-disabled"}`}
-            onClick={handleAutoFillTokenA}
-          >
-            {t("business:balance")}: {swapTokenInfo.tokenABalance}
-          </span>
+          <div className="balance-wrapper">
+            {connectedWallet && <IconWallet />}
+            <span className={`balance-text ${tokenA && connectedWallet && "balance-text-disabled"}`}>
+              {swapTokenInfo.tokenABalance}
+            </span>
+            {hasTokenABalance && (
+              <button className="balance-max-button" onClick={handleAutoFillTokenA}>
+                Max
+              </button>
+            )}
+          </div>
         </div>
         <div className="arrow">
           <div className="shape" onClick={switchSwapDirection}>
@@ -192,12 +204,20 @@ const SwapCardContent: React.FC<ContentProps> = ({
               </PriceImpactWrapper>
             )}
           </PriceInfoWrapper>
-          <span
-            className={`balance-text ${tokenB && connectedWallet && "balance-text-disabled"}`}
-            onClick={handleAutoFillTokenB}
-          >
-            {t("business:balance")}: {swapTokenInfo.tokenBBalance}
-          </span>
+          <div className="balance-wrapper">
+            {connectedWallet && <IconWallet />}
+            <span
+              className={`balance-text ${tokenB && connectedWallet && "balance-text-disabled"}`}
+              onClick={handleAutoFillTokenB}
+            >
+              {swapTokenInfo.tokenBBalance}
+            </span>
+            {hasTokenBBalance && (
+              <button className="balance-max-button" onClick={handleAutoFillTokenB}>
+                Max
+              </button>
+            )}
+          </div>
         </div>
       </div>
       {!isSameToken && (

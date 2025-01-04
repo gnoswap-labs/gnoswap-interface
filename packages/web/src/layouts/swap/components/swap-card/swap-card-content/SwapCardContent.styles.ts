@@ -34,6 +34,7 @@ export const ContentWrapper = styled.div`
     align-self: stretch;
     color: ${({ theme }) => theme.color.text02};
   }
+
   .text-opacity {
     opacity: 0.5;
   }
@@ -70,6 +71,25 @@ export const ContentWrapper = styled.div`
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
     align-self: stretch;
+    .balance-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      .balance-max-button {
+        padding: 4px 6px;
+        border-radius: 36px;
+        background: rgba(0, 89, 255, 0.2);
+        font-size: 12px;
+        font-weight: 500;
+        color: #007aff;
+        cursor: pointer;
+        &:hover {
+          background: rgba(0, 89, 255, 0.1);
+        }
+      }
+    }
+
     .price-text,
     .balance-text {
       flex-shrink: 0;
@@ -90,7 +110,6 @@ export const ContentWrapper = styled.div`
       max-width: 100%;
     }
     .balance-text-disabled {
-      cursor: pointer;
     }
   }
 
