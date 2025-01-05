@@ -178,6 +178,7 @@ export const useSwapHandler = () => {
     updateSwapAmount,
     resetSwapAmount,
     isTyping,
+    isRefetching,
     handleResetEstimatedLiquidity,
   } = useSwap({
     tokenA,
@@ -1131,6 +1132,7 @@ export const useSwapHandler = () => {
     isSwitchNetwork,
     switchNetwork,
     isLoading: swapState === "LOADING" || isTyping,
+    isRefetching,
     setSwapValue,
     tokenA,
     tokenB,

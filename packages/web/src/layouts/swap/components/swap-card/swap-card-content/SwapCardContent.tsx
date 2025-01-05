@@ -38,6 +38,7 @@ interface ContentProps {
   isSwitchNetwork: boolean;
   priceImpactStatus: PriceImpactStatus;
   isSameToken: boolean;
+  isRefetching: boolean;
 }
 
 const SwapCardContent: React.FC<ContentProps> = ({
@@ -55,6 +56,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
   priceImpactStatus,
   isSameToken,
   resetEstimatedLiquidity,
+  isRefetching,
 }) => {
   const { t } = useTranslation();
 
@@ -134,7 +136,11 @@ const SwapCardContent: React.FC<ContentProps> = ({
         <div className="amount-container">
           <input
             id={tokenA?.priceID}
-            className={`amount-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}
+            className={`amount-text ${
+              (isLoading && direction !== "EXACT_IN") || (isRefetching && direction === "EXACT_OUT")
+                ? "text-opacity"
+                : ""
+            }`}
             value={tokenAAmount}
             onChange={onChangeTokenAAmount}
             placeholder="0"
@@ -171,7 +177,11 @@ const SwapCardContent: React.FC<ContentProps> = ({
         <div className="amount-container">
           <input
             id={tokenB?.priceID}
-            className={`amount-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}
+            className={`amount-text ${
+              (isLoading && direction === "EXACT_IN") || (isRefetching && direction === "EXACT_IN")
+                ? "text-opacity"
+                : ""
+            }`}
             value={tokenBAmount}
             onChange={onChangeTokenBAmount}
             placeholder="0"

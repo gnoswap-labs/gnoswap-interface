@@ -81,6 +81,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
   const {
     data: estimatedSwapResult,
     isLoading: isEstimatedSwapLoading,
+    isRefetching,
     error,
   } = useGetRoutes(
     {
@@ -309,6 +310,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     updateSwapAmount,
     isEstimatedSwapLoading,
     isTyping,
+    isRefetching,
     handleResetEstimatedLiquidity,
     resetSwapAmount: () => {
       setSwapAmount(0);
