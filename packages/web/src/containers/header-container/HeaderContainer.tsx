@@ -37,6 +37,7 @@ const HeaderContainer: React.FC = () => {
     loadingConnect,
     isLoadingGnotBalance,
     gnotBalance,
+    walletType,
   } = useWallet();
   const recentsData = useAtomValue(TokenState.recents);
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
@@ -297,6 +298,7 @@ const HeaderContainer: React.FC = () => {
       isLoadingGnotBalance={isLoadingGnotBalance}
       gnotToken={gnot}
       avgBlockTime={blockTimeData?.AvgBlockTime || 2.2}
+      walletType={walletType}
     />
   );
 };

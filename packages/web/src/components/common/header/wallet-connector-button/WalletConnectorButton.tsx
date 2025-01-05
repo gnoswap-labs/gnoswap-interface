@@ -4,7 +4,6 @@ import { useTranslation } from "next-i18next";
 import React, { useMemo } from "react";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import IconAdenaLogo from "@components/common/icons/defaultIcon/IconAdenaLogo";
 import IconFailed from "@components/common/icons/IconFailed";
 import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
@@ -19,6 +18,8 @@ import SelectLanguage from "./select-language/SelectLanguage";
 import WalletConnectorMenu from "./wallet-connector-menu/WalletConnectorMenu";
 
 import { FailNetworkTooltipContentWrap, WalletConnectorButtonWrapper } from "./WalletConnectorButton.styles";
+import { WalletTypeState } from "src/types/wallet.types";
+import RenderWalletIcon from "./RenderWalletIcon";
 
 interface WalletConnectProps {
   account: AccountModel | null;
@@ -32,6 +33,7 @@ interface WalletConnectProps {
   gnotBalance?: number | null;
   isLoadingGnotBalance?: boolean;
   gnotToken?: ITokenResponse;
+  walletType: WalletTypeState;
 }
 
 const ToolTipGlobalStyle = () => {
@@ -71,6 +73,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   gnotBalance,
   isLoadingGnotBalance,
   gnotToken,
+  walletType,
 }) => {
   const { t } = useTranslation();
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
@@ -127,7 +130,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
                 <IconFailed className="fail-icon" />
               </Tooltip>
             ) : (
-              <IconAdenaLogo />
+              <RenderWalletIcon isSwitchNetwork={isSwitchNetwork} walletType={walletType} />
             )
           }
           text={address}
@@ -174,6 +177,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
           gnotBalance={gnotBalance}
           isLoadingGnotBalance={isLoadingGnotBalance}
           gnotToken={gnotToken}
+          walletType={walletType}
         />
       )}
       {toggle.showLanguage && <SelectLanguage onClickChangeLanguage={onClickChangeLanguage} />}

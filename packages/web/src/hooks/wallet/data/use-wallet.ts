@@ -33,6 +33,16 @@ export const useWallet = () => {
     return walletClient;
   }, [connected, walletClient]);
 
+  const walletType = useMemo(() => {
+    if (!walletClient) return { type: null, socialType: null };
+
+    const currentWalletType = walletClient.getWalletType();
+    return {
+      type: currentWalletType,
+      socialType: currentWalletType === "SOCIAL_WALLET" ? walletClient.getLoginType?.() ?? null : null,
+    };
+  }, [walletClient]);
+
   const currentChainId = useMemo(() => {
     if (!walletAccount) {
       return DEFAULT_CHAIN_ID;
@@ -201,6 +211,7 @@ export const useWallet = () => {
 
   return {
     wallet,
+    walletType,
     account: walletAccount,
     connected,
     availNetwork,

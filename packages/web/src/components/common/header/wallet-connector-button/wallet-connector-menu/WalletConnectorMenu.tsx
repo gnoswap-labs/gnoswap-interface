@@ -4,7 +4,6 @@ import { useTranslation } from "next-i18next";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import IconAdenaLogo from "@components/common/icons/defaultIcon/IconAdenaLogo";
 import IconCopy from "@components/common/icons/IconCopy";
 import IconExit from "@components/common/icons/IconExit";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
@@ -16,7 +15,6 @@ import { ITokenResponse } from "@repositories/token";
 import { CommonState } from "@states/index";
 import { roundDownDecimalNumber } from "@utils/regex";
 import { formatAddress } from "@utils/string-utils";
-import IconFailed from "@components/common/icons/IconFailed";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 
@@ -29,6 +27,9 @@ import {
   ThemeSelector,
   WalletConnectorMenuWrapper,
 } from "./WalletConnectorMenu.styles";
+import SocialWalletNotification from "./SocialWalletNotification";
+import { WalletTypeState } from "src/types/wallet.types";
+import RenderWalletIcon from "../RenderWalletIcon";
 
 interface IconButtonClickProps {
   copyClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -81,6 +82,7 @@ interface WalletConnectorMenuProps {
   gnotBalance?: number | null;
   isLoadingGnotBalance?: boolean;
   gnotToken?: ITokenResponse;
+  walletType: WalletTypeState;
 }
 
 const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
@@ -95,6 +97,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   onClickChangeLanguage,
   gnotBalance,
   gnotToken,
+  walletType,
 }) => {
   const { i18n, t } = useTranslation();
   const { getAccountUrl } = useGnoscanUrl();
@@ -147,7 +150,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
         {connected ? (
           <div className="button-container">
             <MenuHeader>
-              {isSwitchNetwork ? <IconFailed className="fail-icon" /> : <IconAdenaLogo />}
+              <RenderWalletIcon isSwitchNetwork={isSwitchNetwork} walletType={walletType} />
               <span className="user-address">{formatAddress(account?.address || "")}</span>
               <IconButtonMaker
                 copyClick={copyClick}
@@ -157,6 +160,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
                 onClickDisconnect={onClickDisconnect}
               />
             </MenuHeader>
+            <SocialWalletNotification />
             {isSwitchNetwork ? (
               <Button
                 text={t("HeaderFooter:switchNetwork")}

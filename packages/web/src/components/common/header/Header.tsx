@@ -16,6 +16,7 @@ import { AccountModel } from "@models/account/account-model";
 import { ITokenResponse } from "@repositories/token";
 import { DeviceSize, DEVICE_TYPE } from "@styles/media";
 import useScrollData from "@hooks/common/use-scroll-data";
+import { WalletTypeState } from "src/types/wallet.types";
 
 import NotificationButton from "./notification-button/NotificationButton";
 import SearchMenuModal, { Token } from "./search-menu-modal/SearchMenuModal";
@@ -66,6 +67,7 @@ interface HeaderProps {
   isLoadingGnotBalance?: boolean;
   gnotToken?: ITokenResponse;
   avgBlockTime: number;
+  walletType: WalletTypeState;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -96,6 +98,7 @@ const Header: React.FC<HeaderProps> = ({
   isLoadingGnotBalance,
   gnotToken,
   avgBlockTime,
+  walletType,
 }) => {
   const { width } = useWindowSize();
   const router = useCustomRouter();
@@ -192,6 +195,7 @@ const Header: React.FC<HeaderProps> = ({
                 gnotBalance={gnotBalance}
                 isLoadingGnotBalance={isLoadingGnotBalance}
                 gnotToken={gnotToken}
+                walletType={walletType}
               />
             </SearchContainer>
 

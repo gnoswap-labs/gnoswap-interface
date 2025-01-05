@@ -31,7 +31,10 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
 
   return (
     <WalletBalanceSummaryWrapper>
-      <span className="total-balance-title">{t("Wallet:overral.totalBal")}</span>
+      <div className="total-balance-title-wrapper">
+        <span className="total-balance-title">{t("Wallet:overral.totalBal")}</span>
+        <div className="badge">Social Account Wallet</div>
+      </div>
       <div className="container">
         <WalletBalanceSummaryInfo balanceSummaryInfo={balanceSummaryInfo} connected={connected} />
         <div className="button-group">

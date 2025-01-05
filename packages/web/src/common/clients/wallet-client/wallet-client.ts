@@ -1,4 +1,4 @@
-import { WalletType } from "src/types/wallet.types";
+import { SocialLoginType, WalletType } from "src/types/wallet.types";
 import {
   WalletAccountMethod,
   WalletEventMethod,
@@ -15,4 +15,5 @@ export interface WalletClient
     WalletEventMethod {
   getAddress: () => Promise<string | null>;
   getWalletType(): WalletType;
+  getLoginType?(): SocialLoginType | null;
 }
