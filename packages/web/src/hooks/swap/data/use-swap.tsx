@@ -166,25 +166,20 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     return 0;
   }, [direction, estimatedAmount, slippage, tokenA]);
 
-  const updateSwapAmount = useCallback(
-    (amount: string) => {
-      if (!amount) {
-        setSwapAmount(null);
-        setIsTyping(false);
-        return;
-      }
+  const updateSwapAmount = (amount: string) => {
+    if (!amount) {
+      setSwapAmount(null);
+      setIsTyping(false);
+      return;
+    }
 
-      const processedAmount = amount.endsWith(".") ? amount.slice(0, -1) : amount;
+    const processedAmount = amount.endsWith(".") ? amount.slice(0, -1) : amount;
+    const newAmount = BigNumber(processedAmount).isZero() ? 0 : BigNumber(processedAmount).toNumber();
 
-      let newAmount = 0;
-      if (BigNumber(processedAmount).isZero()) {
-        newAmount = 0;
-      }
-      newAmount = BigNumber(processedAmount).toNumber();
+    setSwapAmount(prevAmount => {
+      const hasValueChanged = prevAmount !== newAmount;
 
-      setSwapAmount(newAmount);
-
-      if (tokenA && tokenB && !amount.endsWith(".")) {
+      if (hasValueChanged) {
         setIsTyping(true);
 
         if (typingTimeoutRef.current) {
@@ -195,9 +190,10 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           setIsTyping(false);
         }, SWAP_AMOUNT_DEBOUNCE_TIME_MS + 100);
       }
-    },
-    [tokenA, tokenB],
-  );
+
+      return hasValueChanged ? newAmount : prevAmount;
+    });
+  };
 
   useEffect(() => {
     if (debouncedSwapAmount !== null) {
