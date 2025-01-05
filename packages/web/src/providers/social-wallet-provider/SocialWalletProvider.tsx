@@ -31,7 +31,7 @@ interface SocialWalletConfig {
 interface SocialWalletContextType {
   sdk: AdenaSDK | null;
   address: string | null;
-  isConnecting: boolean;
+  connectingState: "initial" | "loading" | "error" | "done" | "";
   connect: (type: SocialWalletLoginType) => Promise<void>;
   disconnect: () => Promise<void>;
   error: string | null;
@@ -74,11 +74,12 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
   const { accountRepository } = useGnoswapContext();
   const [sdk, setSdk] = React.useState<AdenaSDK | null>(null);
   const [address, setAddress] = React.useState<string | null>(null);
-  const [isConnecting, setIsConnecting] = React.useState(false);
+  const [connectingState, setConnectingState] = React.useState<"initial" | "loading" | "error" | "done" | "">(
+    "initial",
+  );
   const [error, setError] = React.useState<string | null>(null);
   const [, setWalletClient] = useAtom(WalletState.client);
   const [, setWalletAccount] = useAtom(WalletState.account);
-  const [, setLoadingConnect] = useAtom(WalletState.loadingConnect);
 
   const createSocialWalletProvider = React.useCallback((type: SocialWalletLoginType) => {
     const config = getSocialWalletConfig(type);
@@ -110,8 +111,7 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
   const connect = React.useCallback(
     async (type: SocialWalletLoginType) => {
       try {
-        setIsConnecting(true);
-        setLoadingConnect("loading");
+        setConnectingState("loading");
         setError(null);
 
         const socialWalletClient = await SocialWalletClient.createSocialWalletClient(type);
@@ -144,12 +144,20 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
           // }
           setWalletAccount(account);
           accountRepository.setConnectedWallet(true);
-          setLoadingConnect("done");
+          setConnectingState("done");
+          setTimeout(() => {
+            setConnectingState("initial");
+          }, 1000);
+        } else {
+          accountRepository.setConnectedWallet(false);
+          setConnectingState("error");
+          setTimeout(() => {
+            setConnectingState("initial");
+          }, 1000);
         }
       } catch (err) {
+        setConnectingState("error");
         setError(err instanceof Error ? err.message : "Failed to connect Social Wallet");
-      } finally {
-        setIsConnecting(false);
       }
     },
     [createSocialWalletProvider],
@@ -168,7 +176,7 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
   }, [sdk]);
 
   return (
-    <SocialWalletContext.Provider value={{ sdk, address, isConnecting, connect, disconnect, error }}>
+    <SocialWalletContext.Provider value={{ sdk, address, connect, connectingState, disconnect, error }}>
       {children}
     </SocialWalletContext.Provider>
   );

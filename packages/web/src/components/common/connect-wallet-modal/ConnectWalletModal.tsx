@@ -14,6 +14,7 @@ import IconArrowRight from "../icons/IconArrowRight";
 import IconGoogleLogo from "../icons/defaultIcon/IconGoogleLogo";
 import IconTwitterLogo from "../icons/defaultIcon/IconTwitterLogo";
 import ConnectWalletModalDivider from "./connect-wallet-modal-divider/ConnectWalletModalDivider";
+import { useConnectSocialWalletModal } from "@hooks/wallet/ui/use-connect-social-wallet-modal";
 
 interface Props {
   close: () => void;
@@ -22,13 +23,15 @@ interface Props {
 }
 
 const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect }) => {
-  const { connect: socialWalletConnect, disconnect } = useSocialWalletContext();
+  const { connect: socialWalletConnect } = useSocialWalletContext();
   const { t } = useTranslation();
+  const { openModal: openSocialLoadingModal } = useConnectSocialWalletModal();
 
   const handleSocialConnect = useCallback(
     async (type: SocialWalletLoginType) => {
-      // disconnect();
       try {
+        close();
+        openSocialLoadingModal(type);
         await socialWalletConnect(type);
       } catch {}
     },
@@ -89,16 +92,6 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
               text="Sign in With X"
               leftIcon={<IconTwitterLogo />}
               onClick={() => handleSocialConnect("twitter")}
-              style={{
-                hierarchy: ButtonHierarchy.Dark,
-                fullWidth: true,
-              }}
-              className="button-connect"
-            />
-
-            <Button
-              text="Disconnect"
-              onClick={disconnect}
               style={{
                 hierarchy: ButtonHierarchy.Dark,
                 fullWidth: true,
