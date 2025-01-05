@@ -160,7 +160,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
                 onClickDisconnect={onClickDisconnect}
               />
             </MenuHeader>
-            <SocialWalletNotification />
+            {walletType.type === "SOCIAL_WALLET" && <SocialWalletNotification />}
             {isSwitchNetwork ? (
               <Button
                 text={t("HeaderFooter:switchNetwork")}

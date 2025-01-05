@@ -28,7 +28,7 @@ import WalletBalance from "../../components/wallet-balance/WalletBalance";
 import useSendAsset from "@hooks/wallet/data/useSendAsset";
 
 const WalletBalanceContainer: React.FC = () => {
-  const { connected, isSwitchNetwork, loadingConnect, account } = useWallet();
+  const { connected, isSwitchNetwork, loadingConnect, account, walletType } = useWallet();
   const [address] = useState("");
   const { breakpoint } = useWindowSize();
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
@@ -246,6 +246,7 @@ const WalletBalanceContainer: React.FC = () => {
         loadngTransactionClaim={loadngTransactionClaim}
         positions={positions}
         tokenPrices={tokenPrices}
+        walletType={walletType}
       />
       {isShowDepositModal && (
         <AssetReceiveModal

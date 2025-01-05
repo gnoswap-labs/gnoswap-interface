@@ -9,6 +9,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import WalletBalanceSummaryInfo, { BalanceSummaryInfo } from "./wallet-balance-summary-info/WalletBalanceSummaryInfo";
 
 import { WalletBalanceSummaryWrapper } from "./WalletBalanceSummary.styles";
+import { WalletTypeState } from "src/types/wallet.types";
 
 interface WalletBalanceSummaryProps {
   connected: boolean;
@@ -17,6 +18,7 @@ interface WalletBalanceSummaryProps {
   deposit: () => void;
   withdraw: () => void;
   breakpoint: DEVICE_TYPE;
+  walletType: WalletTypeState;
 }
 
 const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
@@ -26,14 +28,17 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
   withdraw,
   breakpoint,
   isSwitchNetwork,
+  walletType,
 }) => {
   const { t } = useTranslation();
+
+  const isConnectSocialWallet = connected && walletType.type === "SOCIAL_WALLET";
 
   return (
     <WalletBalanceSummaryWrapper>
       <div className="total-balance-title-wrapper">
         <span className="total-balance-title">{t("Wallet:overral.totalBal")}</span>
-        <div className="badge">Social Account Wallet</div>
+        {isConnectSocialWallet && <div className="badge">Social Account Wallet</div>}
       </div>
       <div className="container">
         <WalletBalanceSummaryInfo balanceSummaryInfo={balanceSummaryInfo} connected={connected} />
