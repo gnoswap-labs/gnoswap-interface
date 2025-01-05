@@ -52,7 +52,7 @@ export const ConnectWalletModalWrapper = styled.div`
       .login-section {
         width: 100%;
         ${mixins.flexbox("column", "flex-start", "flex-start")};
-        gap: 24px;
+        gap: var(--login-section-gap, 24px);
       }
 
       .email-section {
@@ -66,6 +66,10 @@ export const ConnectWalletModalWrapper = styled.div`
         border-radius: 8px;
         border: 1px solid ${({ theme }) => (theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA")};
         background-color: ${({ theme }) => (theme.themeKey === "dark" ? "#0A0E17" : "#C3D2EA")};
+
+        &.error {
+          border-color: ${({ theme }) => theme.color.red01};
+        }
 
         > input {
           width: 100%;
@@ -87,6 +91,11 @@ export const ConnectWalletModalWrapper = styled.div`
         ${media.mobile} {
           height: 50px;
         }
+      }
+
+      .validation-message {
+        color: ${({ theme }) => theme.color.red01};
+        font-weight: 500;
       }
 
       > div {

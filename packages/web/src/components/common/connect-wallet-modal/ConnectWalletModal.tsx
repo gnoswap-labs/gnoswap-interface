@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { Trans, useTranslation } from "react-i18next";
+import { cx } from "@emotion/css";
 
 import { useSocialWalletContext } from "@hooks/common/use-social-wallet-context";
 import { SocialWalletLoginType } from "@providers/social-wallet-provider";
@@ -49,8 +50,8 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
         </div>
         <div className="content">
           {/* Email Login */}
-          <div className="login-section">
-            <div className="email-section">
+          <div className="login-section" style={{ "--login-section-gap": "4px" } as React.CSSProperties}>
+            <div className={cx("email-section", { error: false })}>
               <input
                 placeholder="Email Address"
                 type="email"
@@ -66,6 +67,7 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
                 <IconArrowRight className="right-chevron" />
               </button>
             </div>
+            {false && <div className="validation-message">Please enter a valid email</div>}
           </div>
 
           <ConnectWalletModalDivider />
