@@ -12,11 +12,23 @@ interface SwapTokenChartProps {
   data: IPriceResponse[];
   isLoading: boolean;
   isFetched: boolean;
+  isChartHovered: boolean;
   onMouseMove: (data?: LineGraphData) => void;
   onMouseOut: () => void;
+  onMouseHover: () => void;
+  onMouseLeave: () => void;
 }
 
-const SwapTokenChart = ({ data = [], isLoading, isFetched, onMouseMove, onMouseOut }: SwapTokenChartProps) => {
+const SwapTokenChart = ({
+  data = [],
+  isLoading,
+  isFetched,
+  isChartHovered,
+  onMouseMove,
+  onMouseOut,
+  onMouseHover,
+  onMouseLeave,
+}: SwapTokenChartProps) => {
   const hasData = isFetched && data && data.length > 0;
   const isNoData = isFetched && !isLoading && !data;
 
@@ -32,8 +44,21 @@ const SwapTokenChart = ({ data = [], isLoading, isFetched, onMouseMove, onMouseO
       .reverse();
   }, [hasData, data]);
 
+  const handleMouseMove = React.useCallback(
+    (data?: LineGraphData) => {
+      onMouseMove(data);
+    },
+    [onMouseMove],
+  );
+
+  const handleMouseOut = React.useCallback(() => {
+    if (!isChartHovered) {
+      onMouseOut();
+    }
+  }, [onMouseOut, isChartHovered]);
+
   return (
-    <SwapTokenChartWrapper>
+    <SwapTokenChartWrapper onMouseEnter={onMouseHover} onMouseLeave={onMouseLeave}>
       {isLoading && (
         <LoadingWrapper>
           <LoadingSpinner />
@@ -53,8 +78,8 @@ const SwapTokenChart = ({ data = [], isLoading, isFetched, onMouseMove, onMouseO
           hasNoLabel={true}
           cursor
           isShowTooltip={false}
-          onMouseMove={onMouseMove}
-          onMouseOut={onMouseOut}
+          onMouseMove={handleMouseMove}
+          onMouseOut={handleMouseOut}
         />
       )}
     </SwapTokenChartWrapper>

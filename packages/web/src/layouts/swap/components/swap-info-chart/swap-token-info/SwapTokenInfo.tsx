@@ -16,6 +16,7 @@ interface SwapTokenInfoProps {
 const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
   const { isMobile, breakpoint } = useWindowSize();
   const [chartData, setChartData] = React.useState<LineGraphData | undefined>();
+  const [isChartHovered, setIsChartHovered] = React.useState(false);
 
   const tokenData = React.useMemo(
     () => ({
@@ -69,8 +70,11 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
         data={prices7d}
         isLoading={isLoading}
         isFetched={isFetched}
+        isChartHovered={isChartHovered}
         onMouseMove={handleMouseMove}
         onMouseOut={handleMouseOut}
+        onMouseHover={() => setIsChartHovered(true)}
+        onMouseLeave={() => setIsChartHovered(false)}
       />
     </SwapTokenInfoWrapper>
   );
