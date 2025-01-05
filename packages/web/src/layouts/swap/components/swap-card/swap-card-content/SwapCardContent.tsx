@@ -31,6 +31,7 @@ interface ContentProps {
   changeTokenB: (token: TokenModel) => void;
   changeTokenBAmount: (value: string, none?: boolean) => void;
   switchSwapDirection: () => void;
+  resetEstimatedLiquidity: () => void;
   connectedWallet: boolean;
   isLoading: boolean;
   setSwapRateAction: (type: "ATOB" | "BTOA") => void;
@@ -53,6 +54,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
   setSwapRateAction,
   priceImpactStatus,
   isSameToken,
+  resetEstimatedLiquidity,
 }) => {
   const { t } = useTranslation();
 
@@ -89,6 +91,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
 
   const handleAutoFillTokenA = useCallback(() => {
     if (connectedWallet) {
+      resetEstimatedLiquidity();
       const formatValue = parseFloat(swapTokenInfo.tokenABalance.replace(/,/g, "")).toString();
       changeTokenAAmount(formatValue);
     }

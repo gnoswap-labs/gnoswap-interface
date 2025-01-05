@@ -286,6 +286,17 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     }
   }, [estimatedLiquidityMax]);
 
+  const handleResetEstimatedLiquidity = () => {
+    setEstimatedLiquidityMax(null);
+  };
+  /**
+   * Reset estimatedLiquidityMax when tokens change
+   * This prevents stale liquidity max values from persisting across different token pairs
+   */
+  useEffect(() => {
+    handleResetEstimatedLiquidity();
+  }, [tokenA, tokenB]);
+
   return {
     isSameToken,
     tokenAmountLimit,
@@ -298,6 +309,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     updateSwapAmount,
     isEstimatedSwapLoading,
     isTyping,
+    handleResetEstimatedLiquidity,
     resetSwapAmount: () => {
       setSwapAmount(0);
       setIsTyping(false);

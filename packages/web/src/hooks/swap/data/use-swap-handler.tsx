@@ -178,6 +178,7 @@ export const useSwapHandler = () => {
     updateSwapAmount,
     resetSwapAmount,
     isTyping,
+    handleResetEstimatedLiquidity,
   } = useSwap({
     tokenA,
     tokenB,
@@ -1140,5 +1141,6 @@ export const useSwapHandler = () => {
     setTokenAAmount,
     priceImpactStatus,
     isSameToken,
+    handleResetEstimatedLiquidity,
   };
 };
