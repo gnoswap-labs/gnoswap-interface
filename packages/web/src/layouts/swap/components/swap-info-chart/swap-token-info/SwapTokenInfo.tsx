@@ -14,7 +14,7 @@ interface SwapTokenInfoProps {
 }
 
 const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
-  const { isMobile, breakpoint } = useWindowSize();
+  const { isMobile, breakpoint, width } = useWindowSize();
   const [chartData, setChartData] = React.useState<LineGraphData | undefined>();
   const [isChartHovered, setIsChartHovered] = React.useState(false);
 
@@ -65,6 +65,7 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
         tokenInfo={tokenData}
         currentPrice={currentPrice}
         chartData={chartData}
+        width={width}
       />
       <SwapTokenChart
         data={prices7d}

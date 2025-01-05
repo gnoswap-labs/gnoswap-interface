@@ -252,7 +252,7 @@ export const TOKEN_SEARCH_WIDTH = [400];
 export const TOKEN_TD_WIDTH = [56, 199, 105, 85, 85, 85, 140, 140, 138, 201, 124];
 export const MOBILE_TOKEN_TD_WIDTH = [160, 160];
 
-export const TRANSACTION_TD_WIDTH = [96, 120, 198];
+export const TRANSACTION_TD_WIDTH = [80, 100, 202];
 export const MOBILE_TRANSACTION_TD_WIDTH = [80, 216];
 export const TABLET_TRANSACTION_TD_WIDTH = [80, 150, 238];
 

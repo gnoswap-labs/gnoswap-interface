@@ -28,12 +28,16 @@ interface SwapTokenHeaderProps {
   tokenInfo: TokenInfo;
   currentPrice: string | undefined;
   chartData?: LineGraphData;
+  width: number;
 }
 
-const DETERMIN_SHORT_SIZE_WEB = 160;
+const DETERMIN_SHORT_SIZE_WEB = 140;
 const DETERMIN_SHORT_SIZE_TABLET = 200;
+const DETERMIN_SHORT_SIZE_MOBILE = 90;
 
-const SwapTokenHeader = ({ breakpoint, isMobile, tokenInfo, currentPrice, chartData }: SwapTokenHeaderProps) => {
+const MOBILE_CLIENT_SIZE_WIDTH = 414;
+
+const SwapTokenHeader = ({ breakpoint, tokenInfo, currentPrice, chartData, width }: SwapTokenHeaderProps) => {
   const elementId = React.useMemo(() => `${tokenInfo.name}`, [tokenInfo.name]);
   const [shortenPath, setShortenPath] = React.useState(false);
 
@@ -45,7 +49,7 @@ const SwapTokenHeader = ({ breakpoint, isMobile, tokenInfo, currentPrice, chartD
   React.useEffect(() => {
     const element = document.getElementById(elementId);
 
-    if (breakpoint === DEVICE_TYPE.MOBILE) {
+    if ((element?.clientWidth || 0) > DETERMIN_SHORT_SIZE_MOBILE && width < MOBILE_CLIENT_SIZE_WIDTH) {
       setShortenPath(true);
       return;
     }
@@ -64,7 +68,7 @@ const SwapTokenHeader = ({ breakpoint, isMobile, tokenInfo, currentPrice, chartD
     }
 
     setShortenPath(false);
-  }, [elementId, breakpoint]);
+  }, [elementId, breakpoint, width]);
 
   const displayPrice = React.useMemo(() => {
     const price = nullish.handleFalsy(chartData?.value, currentPrice);
@@ -109,7 +113,7 @@ const SwapTokenHeader = ({ breakpoint, isMobile, tokenInfo, currentPrice, chartD
     let replacedPath = tokenInfo.path?.replace("gno.land", "");
 
     if (replacedPath?.length > length) {
-      replacedPath = replacedPath.slice(0, length) + "...";
+      replacedPath = replacedPath;
     }
 
     return "...".concat(replacedPath);
@@ -121,9 +125,11 @@ const SwapTokenHeader = ({ breakpoint, isMobile, tokenInfo, currentPrice, chartD
         <MissingLogo url={tokenInfo.logoURI} symbol={tokenInfo.symbol} width={32} />
         <div className="token-title">
           <div className="name">
-            <div id={elementId}>{tokenInfo.name}</div>
+            <div id={elementId} style={{ flexShrink: 0 }}>
+              {tokenInfo.name}
+            </div>
             <button className="link" onClick={onClickPath}>
-              {Boolean(!isMobile) && <span>{tokenPathDisplay}</span>}
+              <span>{tokenPathDisplay}</span>
               <IconOpenLink size="10px" fill={theme.color.text04} className="path-link-icon" />
             </button>
           </div>

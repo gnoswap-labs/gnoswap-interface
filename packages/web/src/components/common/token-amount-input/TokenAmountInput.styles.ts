@@ -39,10 +39,14 @@ export const TokenAmountInputWrapper = styled.div`
       justify-content: center;
       gap: 4px;
       .balance-max-button {
-        padding: 4px 6px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1px 6px;
+        height: 14px;
         border-radius: 36px;
         background: rgba(0, 89, 255, 0.2);
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 500;
         color: #007aff;
         cursor: pointer;
