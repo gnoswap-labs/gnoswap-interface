@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { AdenaSDK, GnoSocialWalletProvider } from "@adena-wallet/sdk";
 
 import { SocialWalletLoginType } from "./types";
@@ -13,9 +13,10 @@ import {
 } from "@constants/environment.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useAtom } from "jotai";
-import { WalletState } from "@states/index";
+import { CommonState, WalletState } from "@states/index";
 import { SocialWalletClient } from "@common/clients/wallet-client/social/social-wallet-client";
-import { ACCOUNT_SESSION_INFO_KEY } from "@states/common";
+import { ACCOUNT_SESSION_INFO_KEY, GNOSWAP_SOCIAL_LOGIN_TYPE_KEY, GNOSWAP_WALLET_TYPE_KEY } from "@states/common";
+import { SocialLoginType } from "src/types/wallet.types";
 
 interface SocialWalletConfig {
   chainId: string;
@@ -35,6 +36,7 @@ interface SocialWalletContextType {
   connect: (type: SocialWalletLoginType) => Promise<void>;
   disconnect: () => Promise<void>;
   error: string | null;
+  connectSocialWalletClient: (loginType: SocialLoginType) => Promise<void>;
 }
 
 export const SocialWalletContext = React.createContext<SocialWalletContextType | null>(null);
@@ -77,6 +79,7 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
   const [connectingState, setConnectingState] = React.useState<"initial" | "loading" | "error" | "done" | "">(
     "initial",
   );
+  const [sessionId] = useAtom(CommonState.sessionId);
   const [error, setError] = React.useState<string | null>(null);
   const [, setWalletClient] = useAtom(WalletState.client);
   const [, setWalletAccount] = useAtom(WalletState.account);
@@ -108,6 +111,22 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
   //   [loadingConnect],
   // );
 
+  const connectSocialWalletClient = useCallback(
+    async (loginType: SocialLoginType) => {
+      if (connectingState !== "initial") {
+        setConnectingState("loading");
+      }
+      const socialWallet = await SocialWalletClient.createSocialWalletClient(loginType);
+      if (socialWallet !== null) {
+        sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "SOCIAL_WALLET");
+        sessionStorage.setItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY, loginType);
+        socialWallet.initSocialWallet(loginType);
+      }
+      setWalletClient(socialWallet);
+    },
+    [sessionId, connectingState],
+  );
+
   const connect = React.useCallback(
     async (type: SocialWalletLoginType) => {
       try {
@@ -119,6 +138,8 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
           throw new Error("Failed to create socail wallet client");
         }
 
+        sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "SOCIAL_WALLET");
+        sessionStorage.setItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY, type);
         setWalletClient(socialWalletClient);
         accountRepository.setWalletClient(socialWalletClient);
 
@@ -156,6 +177,7 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
           }, 1000);
         }
       } catch (err) {
+        sessionStorage.removeItem(GNOSWAP_WALLET_TYPE_KEY);
         setConnectingState("error");
         setError(err instanceof Error ? err.message : "Failed to connect Social Wallet");
       }
@@ -176,7 +198,9 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
   }, [sdk]);
 
   return (
-    <SocialWalletContext.Provider value={{ sdk, address, connect, connectingState, disconnect, error }}>
+    <SocialWalletContext.Provider
+      value={{ sdk, address, connect, connectSocialWalletClient, connectingState, disconnect, error }}
+    >
       {children}
     </SocialWalletContext.Provider>
   );
