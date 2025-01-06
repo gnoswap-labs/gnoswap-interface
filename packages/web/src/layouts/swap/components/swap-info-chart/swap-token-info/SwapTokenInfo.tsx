@@ -8,6 +8,7 @@ import SwapTokenHeader from "./SwapTokenHeader";
 import { useGetTokenDetails, useGetTokenPrices } from "@query/token";
 import SwapTokenChart from "./SwapTokenChart";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import useElementWidth from "@hooks/common/use-element-width";
 
 interface SwapTokenInfoProps {
   token: TokenModel;
@@ -17,6 +18,9 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
   const { isMobile, breakpoint, width } = useWindowSize();
   const [chartData, setChartData] = React.useState<LineGraphData | undefined>();
   const [isChartHovered, setIsChartHovered] = React.useState(false);
+
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const containerWidth = useElementWidth(containerRef);
 
   const tokenData = React.useMemo(
     () => ({
@@ -58,7 +62,7 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
   }, [tokenData, handleMouseOut]);
 
   return (
-    <SwapTokenInfoWrapper>
+    <SwapTokenInfoWrapper ref={containerRef}>
       <SwapTokenHeader
         breakpoint={breakpoint}
         isMobile={isMobile}
@@ -66,6 +70,7 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
         currentPrice={currentPrice}
         chartData={chartData}
         width={width}
+        containerWidth={containerWidth}
       />
       <SwapTokenChart
         data={prices7d}

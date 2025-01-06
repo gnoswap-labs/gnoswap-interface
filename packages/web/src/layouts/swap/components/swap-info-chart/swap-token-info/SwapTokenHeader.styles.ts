@@ -1,6 +1,12 @@
 import styled from "@emotion/styled";
 
-export const SwapTokenHeaderWrapper = styled.div`
+interface Props {
+  containerWidth: number;
+  priceWidth: number;
+  tokenNameWidth: number;
+}
+
+export const SwapTokenHeaderWrapper = styled.div<Props>`
   width: 100%;
   display: flex;
   align-items: center;
@@ -10,7 +16,8 @@ export const SwapTokenHeaderWrapper = styled.div`
     justify-content: flex-start;
     align-items: flex-start;
     gap: 8px;
-    flex: 1;
+    max-width: ${({ containerWidth, priceWidth }) => `calc(${containerWidth}px - ${priceWidth}px)`};
+    width: 100%;
     .token-title {
       display: flex;
       flex-direction: column;
@@ -26,7 +33,8 @@ export const SwapTokenHeaderWrapper = styled.div`
         color: ${({ theme }) => theme.color.text02};
         font-size: 18px;
         .link {
-          max-width: 140px;
+          max-width: ${({ containerWidth, tokenNameWidth, priceWidth }) =>
+            `calc(${containerWidth}px - 78px - ${tokenNameWidth}px - ${priceWidth}px)`};
           width: 100%;
           display: flex;
           align-items: center;
@@ -37,6 +45,12 @@ export const SwapTokenHeaderWrapper = styled.div`
           padding: 2px 4px;
           border-radius: 4px;
           background-color: ${({ theme }) => (theme.themeKey === "dark" ? "#0D121C" : "rgba(224, 232, 244, 0.40)")};
+          span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            direction: rtl;
+            white-space: nowrap;
+          }
           &:hover {
             color: ${({ theme }) => theme.color.text03};
             .path-link-icon {

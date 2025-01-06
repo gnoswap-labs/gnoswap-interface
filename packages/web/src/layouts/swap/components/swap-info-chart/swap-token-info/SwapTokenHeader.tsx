@@ -5,9 +5,9 @@ import { useTranslation } from "react-i18next";
 import { formatPrice } from "@utils/new-number-utils";
 import { useTheme } from "@emotion/react";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
-import { STATIC_TEXT } from "@common/values";
 import { LineGraphData } from "@components/common/line-graph/LineGraph";
 import { DEVICE_TYPE } from "@styles/media";
+import useElementWidth from "@hooks/common/use-element-width";
 
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { SwapTokenHeaderWrapper } from "./SwapTokenHeader.styles";
@@ -29,46 +29,22 @@ interface SwapTokenHeaderProps {
   currentPrice: string | undefined;
   chartData?: LineGraphData;
   width: number;
+  containerWidth: number;
 }
 
-const DETERMIN_SHORT_SIZE_WEB = 140;
-const DETERMIN_SHORT_SIZE_TABLET = 200;
-const DETERMIN_SHORT_SIZE_MOBILE = 90;
-
-const MOBILE_CLIENT_SIZE_WIDTH = 414;
-
-const SwapTokenHeader = ({ breakpoint, tokenInfo, currentPrice, chartData, width }: SwapTokenHeaderProps) => {
+const SwapTokenHeader = ({ tokenInfo, currentPrice, chartData, containerWidth }: SwapTokenHeaderProps) => {
   const elementId = React.useMemo(() => `${tokenInfo.name}`, [tokenInfo.name]);
-  const [shortenPath, setShortenPath] = React.useState(false);
+
+  const priceRef = React.useRef<HTMLDivElement>(null);
+  const tokenNameRef = React.useRef<HTMLDivElement>(null);
+
+  const priceWidth = useElementWidth(priceRef, [tokenInfo]);
+  const tokenNameWidth = useElementWidth(tokenNameRef, [tokenInfo]);
 
   const theme = useTheme();
   const { t } = useTranslation();
 
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
-
-  React.useEffect(() => {
-    const element = document.getElementById(elementId);
-
-    if ((element?.clientWidth || 0) > DETERMIN_SHORT_SIZE_MOBILE && width < MOBILE_CLIENT_SIZE_WIDTH) {
-      setShortenPath(true);
-      return;
-    }
-
-    if (
-      (element?.clientWidth || 0) > DETERMIN_SHORT_SIZE_TABLET &&
-      (breakpoint === DEVICE_TYPE.TABLET || breakpoint === DEVICE_TYPE.TABLET_M || breakpoint === DEVICE_TYPE.TABLET_S)
-    ) {
-      setShortenPath(true);
-      return;
-    }
-
-    if ((element?.clientWidth || 0) > DETERMIN_SHORT_SIZE_WEB) {
-      setShortenPath(true);
-      return;
-    }
-
-    setShortenPath(false);
-  }, [elementId, breakpoint, width]);
 
   const displayPrice = React.useMemo(() => {
     const price = nullish.handleFalsy(chartData?.value, currentPrice);
@@ -97,39 +73,17 @@ const SwapTokenHeader = ({ breakpoint, tokenInfo, currentPrice, chartData, width
     [tokenInfo],
   );
 
-  const length = React.useMemo(() => {
-    return breakpoint === DEVICE_TYPE.MOBILE ? 10 : 15;
-  }, [breakpoint]);
-
-  const tokenPathDisplay = React.useMemo(() => {
-    if (shortenPath) {
-      return "";
-    }
-    if (tokenInfo.isNative) {
-      return STATIC_TEXT.NATIVE_COIN;
-    }
-    if (!tokenInfo.path) return "";
-
-    let replacedPath = tokenInfo.path?.replace("gno.land", "");
-
-    if (replacedPath?.length > length) {
-      replacedPath = replacedPath;
-    }
-
-    return "...".concat(replacedPath);
-  }, [tokenInfo, length, shortenPath]);
-
   return (
-    <SwapTokenHeaderWrapper>
+    <SwapTokenHeaderWrapper containerWidth={containerWidth} priceWidth={priceWidth} tokenNameWidth={tokenNameWidth}>
       <div className="left">
         <MissingLogo url={tokenInfo.logoURI} symbol={tokenInfo.symbol} width={32} />
         <div className="token-title">
           <div className="name">
-            <div id={elementId} style={{ flexShrink: 0 }}>
+            <div id={elementId} style={{ flexShrink: 0 }} ref={tokenNameRef}>
               {tokenInfo.name}
             </div>
             <button className="link" onClick={onClickPath}>
-              <span>{tokenPathDisplay}</span>
+              <span>{tokenInfo.path}</span>
               <IconOpenLink size="10px" fill={theme.color.text04} className="path-link-icon" />
             </button>
           </div>
@@ -138,7 +92,9 @@ const SwapTokenHeader = ({ breakpoint, tokenInfo, currentPrice, chartData, width
       </div>
       <div className="right">
         <div className="token-price">
-          <div className="price">{displayPrice}</div>
+          <div className="price" ref={priceRef}>
+            {displayPrice}
+          </div>
           <div className="blank" />
           <div className="date">{displayDate}</div>
         </div>
