@@ -25,6 +25,7 @@ import {
   SearchWrapper,
   TokenInfoWrapper,
 } from "./SearchMenuModal.styles";
+import useElementWidth from "@hooks/common/use-element-width";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -77,23 +78,39 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   const { t } = useTranslation();
 
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
-
   const [, setRecentsData] = useAtom(TokenState.recents);
-  const [widthListPopular, setWidthListPopular] = useState<number[]>(popularTokens.map(() => 0));
-  const [widthListRecent, setWidthListRecent] = useState<number[]>(recents.map(() => 0));
-  const [tokenNameRecentWidthList, setTokenNameRecentWidthList] = useState<number[]>(recents.map(() => 0));
-  const [tokenNamePopularWidthList, setTokenNamePopularWidthList] = useState<number[]>(popularTokens.map(() => 0));
 
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const tokenNamePopularRef = useRef(popularTokens.map(() => React.createRef<HTMLSpanElement>()));
   const tokenNameRecentsRef = useRef(recents.map(() => React.createRef<HTMLSpanElement>()));
   const recentPriceRef = useRef(recents.map(() => React.createRef<HTMLDivElement>()));
   const popularPriceRef = useRef(popularTokens.map(() => React.createRef<HTMLDivElement>()));
+
+  const [widthListPopular, setWidthListPopular] = useState<number[]>(popularTokens.map(() => 0));
+  const [widthListRecent, setWidthListRecent] = useState<number[]>(recents.map(() => 0));
+  const [tokenNameRecentWidthList, setTokenNameRecentWidthList] = useState<number[]>(recents.map(() => 0));
+  const [tokenNamePopularWidthList, setTokenNamePopularWidthList] = useState<number[]>(popularTokens.map(() => 0));
 
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   const popularTokenKey = useMemo(() => popularTokens.map(token => token.path).join(","), [popularTokens]);
 
   const recentKey = useMemo(() => recents.map(token => token.path).join(","), [recents]);
+
+  const containerWidth = useElementWidth(containerRef, [
+    tokens,
+    recents,
+    popularPriceRef,
+    recentPriceRef,
+    popularTokenKey,
+    keyword,
+    popularTokens,
+    tokenNameRecentsRef,
+    recentKey,
+    tokenNamePopularRef,
+    popularTokenKey,
+  ]);
+
   const onClickItem = (item: Token) => {
     const current = recents.length > 0 ? [item, recents[0]] : [item];
 
@@ -186,21 +203,9 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
 
   const getTokenPathDisplay = useCallback(
     (path: string, isNative?: boolean) => {
-      const path_ = path;
-
       if (isNative) return STATIC_TEXT.NATIVE_COIN;
 
-      const tokenPathArr = path_?.split("/") ?? [];
-
-      if (tokenPathArr?.length <= 0) return path_;
-
-      const replacedPath = path_.replace("gno.land", "");
-
-      if (replacedPath.length >= length) {
-        return "..." + replacedPath.slice(replacedPath.length - length, replacedPath.length - 1);
-      }
-
-      return path_.replace("gno.land", "...");
+      return path;
     },
     [length],
   );
@@ -221,7 +226,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
               <IconSearch className="search-icon" />
             </SearchWrapper>
           </SearchContainer>
-          <ModalContainer>
+          <ModalContainer ref={containerRef}>
             <ul>
               {popularTokens.length === 0 && mostLiquidity.length === 0 && isFetched && (
                 <div className="no-data-found">{t("common:noDataFound")}</div>
@@ -244,6 +249,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           />
                           <TokenInfoWrapper
                             className="coin-info-detail"
+                            containerWidth={containerWidth}
                             maxWidth={widthListRecent[idx]}
                             tokenNameWidthList={tokenNameRecentWidthList[idx]}
                           >
@@ -259,7 +265,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                                   onClickPath(e, item.token.path)
                                 }
                               >
-                                <div>{getTokenPathDisplay(item.token.path, item.isNative)}</div>
+                                <div className="path">{getTokenPathDisplay(item.token.path, item.isNative)}</div>
                                 <IconNewTab />
                               </div>
                             </div>
@@ -322,6 +328,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                         />
                         <TokenInfoWrapper
                           className="coin-info-detail"
+                          containerWidth={containerWidth}
                           maxWidth={widthListPopular[idx]}
                           tokenNameWidthList={tokenNamePopularWidthList[idx]}
                         >

@@ -32,6 +32,12 @@ export const SwapTokenHeaderWrapper = styled.div<Props>`
 
         color: ${({ theme }) => theme.color.text02};
         font-size: 18px;
+        .token-name {
+          cursor: pointer;
+          &:hover {
+            color: ${({ theme }) => theme.color.text07};
+          }
+        }
         .link {
           max-width: ${({ containerWidth, tokenNameWidth, priceWidth }) =>
             `calc(${containerWidth}px - 78px - ${tokenNameWidth}px - ${priceWidth}px)`};

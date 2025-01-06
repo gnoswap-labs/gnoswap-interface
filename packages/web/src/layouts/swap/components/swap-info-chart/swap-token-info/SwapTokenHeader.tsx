@@ -14,6 +14,7 @@ import { SwapTokenHeaderWrapper } from "./SwapTokenHeader.styles";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import { nullish } from "@utils/nullish-utils";
 import { STATIC_TEXT } from "@common/values";
+import useCustomRouter from "@hooks/common/use-custom-router";
 
 interface TokenInfo {
   name: string;
@@ -34,6 +35,7 @@ interface SwapTokenHeaderProps {
 }
 
 const SwapTokenHeader = ({ tokenInfo, currentPrice, chartData, containerWidth }: SwapTokenHeaderProps) => {
+  const router = useCustomRouter();
   const elementId = React.useMemo(() => `${tokenInfo.name}`, [tokenInfo.name]);
 
   const priceRef = React.useRef<HTMLDivElement>(null);
@@ -55,7 +57,7 @@ const SwapTokenHeader = ({ tokenInfo, currentPrice, chartData, containerWidth }:
   const displayDate = React.useMemo(() => {
     if (!chartData) return t("common:day.today");
 
-    const timeFormat = "MMM DD, HH:mm";
+    const timeFormat = "MMM D, HH:mm";
     const today = dayjs().format(timeFormat);
     const chartDate = dayjs(chartData.time).format(timeFormat);
 
@@ -68,6 +70,11 @@ const SwapTokenHeader = ({ tokenInfo, currentPrice, chartData, containerWidth }:
     }
     return tokenInfo.path;
   }, [tokenInfo]);
+
+  const onClickTokenName = React.useCallback(() => {
+    if (!tokenInfo.path) return;
+    router.movePageWithTokenPath("TOKEN", tokenInfo.path);
+  }, [tokenInfo.path, router]);
 
   const onClickPath = React.useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -87,7 +94,13 @@ const SwapTokenHeader = ({ tokenInfo, currentPrice, chartData, containerWidth }:
         <MissingLogo url={tokenInfo.logoURI} symbol={tokenInfo.symbol} width={32} />
         <div className="token-title">
           <div className="name">
-            <div id={elementId} style={{ flexShrink: 0 }} ref={tokenNameRef}>
+            <div
+              className="token-name"
+              id={elementId}
+              style={{ flexShrink: 0 }}
+              ref={tokenNameRef}
+              onClick={onClickTokenName}
+            >
               {tokenInfo.name}
             </div>
             <button className="link" onClick={onClickPath}>

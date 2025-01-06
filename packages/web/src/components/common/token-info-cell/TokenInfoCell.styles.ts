@@ -2,7 +2,12 @@ import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
-export const TokenInfoCellWrapper = styled.div`
+interface Props {
+  containerWidth: number;
+  tokenNameWidth: number;
+}
+
+export const TokenInfoCellWrapper = styled.div<Props>`
   ${mixins.flexbox("row", "flex-start", "flex-start")};
   color: ${({ theme }) => theme.color.text01};
   gap: 2px;
@@ -34,6 +39,13 @@ export const TokenInfoCellWrapper = styled.div`
       }
 
       .token-link {
+        max-width: ${({ containerWidth, tokenNameWidth }) => `${containerWidth - tokenNameWidth - 44}px`};
+        span {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          direction: rtl;
+          white-space: nowrap;
+        }
         &:hover {
           color: ${({ theme }) => theme.color.text03};
           .path-link-icon {
@@ -52,6 +64,7 @@ export const TokenInfoCellWrapper = styled.div`
         white-space: nowrap;
 
         .path-link-icon {
+          flex-shrink: 0;
           width: 10px;
           height: 10px;
           fill: ${({ theme }) => theme.color.text04};
