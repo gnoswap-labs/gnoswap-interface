@@ -7,6 +7,7 @@ import { useTheme } from "@emotion/react";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { LineGraphData } from "@components/common/line-graph/LineGraph";
 import { DEVICE_TYPE } from "@styles/media";
+import { GNOT_TOKEN } from "@common/values/token-constant";
 import useElementWidth from "@hooks/common/use-element-width";
 
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -73,6 +74,10 @@ const SwapTokenHeader = ({ tokenInfo, currentPrice, chartData, containerWidth }:
 
   const onClickTokenName = React.useCallback(() => {
     if (!tokenInfo.path) return;
+    if (tokenInfo.isNative) {
+      router.movePageWithTokenPath("TOKEN", GNOT_TOKEN.path);
+      return;
+    }
     router.movePageWithTokenPath("TOKEN", tokenInfo.path);
   }, [tokenInfo.path, router]);
 

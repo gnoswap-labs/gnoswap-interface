@@ -27,7 +27,7 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
       name: token.name,
       symbol: token.symbol,
       logoURI: token.logoURI,
-      path: token.path,
+      path: token.type === "native" ? token.wrappedPath : token.path,
       isNative: token.type === "native",
     }),
     [token],
