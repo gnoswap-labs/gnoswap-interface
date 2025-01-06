@@ -534,6 +534,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
   const onTouchStart = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
     event.preventDefault();
+    setActivated(true);
     onMouseMove(event);
   };
 
