@@ -16,7 +16,7 @@ export const SwapTokenHeaderWrapper = styled.div<Props>`
     justify-content: flex-start;
     align-items: flex-start;
     gap: 8px;
-    max-width: ${({ containerWidth, priceWidth }) => `calc(${containerWidth}px - ${priceWidth}px)`};
+    max-width: ${({ containerWidth, priceWidth }) => `calc(${containerWidth}px - 10px - ${priceWidth}px)`};
     width: 100%;
     .token-title {
       display: flex;
@@ -40,7 +40,7 @@ export const SwapTokenHeaderWrapper = styled.div<Props>`
         }
         .link {
           max-width: ${({ containerWidth, tokenNameWidth, priceWidth }) =>
-            `calc(${containerWidth}px - 78px - ${tokenNameWidth}px - ${priceWidth}px)`};
+            `calc(${containerWidth}px - 58px - ${tokenNameWidth}px - ${priceWidth}px)`};
           width: 100%;
           display: flex;
           align-items: center;
@@ -56,6 +56,11 @@ export const SwapTokenHeaderWrapper = styled.div<Props>`
             text-overflow: ellipsis;
             direction: rtl;
             white-space: nowrap;
+          }
+          .path-link-icon {
+            width: 10px;
+            height: 10px;
+            flex-shrink: 0;
           }
           &:hover {
             color: ${({ theme }) => theme.color.text03};
