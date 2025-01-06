@@ -13,6 +13,7 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { SwapTokenHeaderWrapper } from "./SwapTokenHeader.styles";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import { nullish } from "@utils/nullish-utils";
+import { STATIC_TEXT } from "@common/values";
 
 interface TokenInfo {
   name: string;
@@ -61,6 +62,13 @@ const SwapTokenHeader = ({ tokenInfo, currentPrice, chartData, containerWidth }:
     return chartDate === today ? t("common:day.today") : chartDate;
   }, [chartData, t]);
 
+  const displayTokenPath = React.useMemo(() => {
+    if (tokenInfo.isNative) {
+      return STATIC_TEXT.NATIVE_COIN;
+    }
+    return tokenInfo.path;
+  }, [tokenInfo]);
+
   const onClickPath = React.useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       e.stopPropagation();
@@ -83,7 +91,7 @@ const SwapTokenHeader = ({ tokenInfo, currentPrice, chartData, containerWidth }:
               {tokenInfo.name}
             </div>
             <button className="link" onClick={onClickPath}>
-              <span>{tokenInfo.path}</span>
+              <span>{displayTokenPath}</span>
               <IconOpenLink size="10px" fill={theme.color.text04} className="path-link-icon" />
             </button>
           </div>
