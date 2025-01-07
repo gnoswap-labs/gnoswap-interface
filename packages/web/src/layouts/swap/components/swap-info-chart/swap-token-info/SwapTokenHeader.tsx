@@ -6,7 +6,6 @@ import { formatPrice } from "@utils/new-number-utils";
 import { useTheme } from "@emotion/react";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { LineGraphData } from "@components/common/line-graph/LineGraph";
-import { DEVICE_TYPE } from "@styles/media";
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import useElementWidth from "@hooks/common/use-element-width";
 
@@ -26,12 +25,9 @@ interface TokenInfo {
 }
 
 interface SwapTokenHeaderProps {
-  breakpoint: DEVICE_TYPE;
-  isMobile: boolean;
   tokenInfo: TokenInfo;
   currentPrice: string | undefined;
   chartData?: LineGraphData;
-  width: number;
   containerWidth: number;
 }
 
@@ -40,7 +36,7 @@ const SwapTokenHeader = ({ tokenInfo, currentPrice, chartData, containerWidth }:
   const elementId = React.useMemo(() => `${tokenInfo.name}`, [tokenInfo.name]);
 
   const priceRef = React.useRef<HTMLDivElement>(null);
-  const tokenNameRef = React.useRef<HTMLDivElement>(null);
+  const tokenNameRef = React.useRef<HTMLButtonElement>(null);
 
   const priceWidth = useElementWidth(priceRef, [tokenInfo]);
   const tokenNameWidth = useElementWidth(tokenNameRef, [tokenInfo]);
@@ -99,7 +95,7 @@ const SwapTokenHeader = ({ tokenInfo, currentPrice, chartData, containerWidth }:
         <MissingLogo url={tokenInfo.logoURI} symbol={tokenInfo.symbol} width={32} />
         <div className="token-title">
           <div className="name">
-            <div
+            <button
               className="token-name"
               id={elementId}
               style={{ flexShrink: 0 }}
@@ -107,7 +103,7 @@ const SwapTokenHeader = ({ tokenInfo, currentPrice, chartData, containerWidth }:
               onClick={onClickTokenName}
             >
               {tokenInfo.name}
-            </div>
+            </button>
             <button className="link" onClick={onClickPath}>
               <span>{displayTokenPath}</span>
               <IconOpenLink size="10px" fill={theme.color.text04} className="path-link-icon" />

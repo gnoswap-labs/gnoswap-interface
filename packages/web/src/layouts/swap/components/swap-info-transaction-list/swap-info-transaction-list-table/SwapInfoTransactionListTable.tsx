@@ -67,6 +67,7 @@ const SwapInfoTransactionListTable = ({ breakpoint }: SwapInfoTransactionListTab
 
       <TransactionListTableList>
         {[...Array(5)].map((_, index) => (
+          // temporarily use index as key for development phase only
           <TransactionListTableRow key={`transaction-list-table-list-${index}`} breakpoint={breakpoint} />
         ))}
       </TransactionListTableList>

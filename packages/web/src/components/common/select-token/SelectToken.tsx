@@ -24,7 +24,6 @@ export interface SelectTokenProps {
   changeToken: (token: TokenModel) => void;
   close: () => void;
   themeKey: "dark" | "light";
-  modalRef?: React.RefObject<HTMLDivElement>;
   breakpoint: DEVICE_TYPE;
   recents: TokenModel[];
   isSwitchNetwork: boolean;
