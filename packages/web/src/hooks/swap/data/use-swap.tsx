@@ -108,7 +108,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       return "LOADING";
     }
 
-    if (!!error || !estimatedSwapResult?.amount) {
+    if (estimatedSwapResult?.status === "NO_LIQUIDITY" || estimatedSwapResult?.status === "INVALID_PARAMS") {
       return "NO_LIQUIDITY";
     }
 
