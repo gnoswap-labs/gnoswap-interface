@@ -106,8 +106,7 @@ function handleAmount(changed: string, token: TokenModel | null) {
   const decimals = token?.decimals || 0;
 
   // Check if input exceeds decimal places
-  const parts = changed.split(".");
-  if (parts.length > 1 && parts[1].length > decimals) {
+  if (changed.includes(".") && changed.split(".")[1].length > decimals) {
     // Signal invalid input
     return { isValid: false, value: changed };
   }

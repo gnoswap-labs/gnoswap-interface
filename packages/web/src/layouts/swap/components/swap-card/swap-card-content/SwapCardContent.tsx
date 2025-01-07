@@ -121,6 +121,11 @@ const SwapCardContent: React.FC<ContentProps> = ({
     return swapTokenInfo.tokenBAmount;
   }, [swapTokenInfo.tokenBAmount, tokenB?.decimals]);
 
+  /**
+   * Ensure tokenABalance is a valid value (not empty (“-”) or zero)
+   * Note: Consider using includes when you have more than 3 comparisons
+   * return !(["-", "0", "undefined"].includes(swapTokenInfo.tokenABalance));
+   */
   const hasTokenABalance = useMemo(() => {
     return swapTokenInfo.tokenABalance !== "-" && swapTokenInfo.tokenABalance !== "0";
   }, [swapTokenInfo.tokenABalance]);
@@ -177,11 +182,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
         <div className="amount-container">
           <input
             id={tokenB?.priceID}
-            className={`amount-text ${
-              (isLoading && direction === "EXACT_IN") || (isRefetching && direction === "EXACT_IN")
-                ? "text-opacity"
-                : ""
-            }`}
+            className={`amount-text ${(isLoading || isRefetching) && direction === "EXACT_IN" ? "text-opacity" : ""}`}
             value={tokenBAmount}
             onChange={onChangeTokenBAmount}
             placeholder="0"

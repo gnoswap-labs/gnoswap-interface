@@ -109,6 +109,11 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
     }
   }, [changeTokenAAmount, connected, dataTokenInfo]);
 
+  /**
+   * Ensure tokenABalance is a valid value (not empty (“-”) or zero)
+   * Note: Consider using includes when you have more than 3 comparisons
+   * return !(["-", "0", "undefined"].includes(swapTokenInfo.tokenABalance));
+   */
   const hasTokenABalance = useMemo(() => {
     return swapTokenInfo.tokenABalance !== "-" && swapTokenInfo.tokenABalance !== "0";
   }, [swapTokenInfo.tokenABalance]);
