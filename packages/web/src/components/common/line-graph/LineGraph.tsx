@@ -588,22 +588,24 @@ const LineGraph: React.FC<LineGraphProps> = ({
   }, [currentPointIndex, datas, displayLastDayAsNow]);
 
   useEffect(() => {
-    if (currentPointIndex >= 0) {
-      const currentDate =
-        displayLastDayAsNow && datas.length - 1 === currentPointIndex
-          ? parseTimeTVL(getLocalizeTime(new Date().toString()))
-          : parseTimeTVL(datas[currentPointIndex]?.time);
-
-      const formattedValue = popupYValueFormatter
-        ? popupYValueFormatter(datas[currentPointIndex]?.value)
-        : formatPrice(datas[currentPointIndex]?.value);
-      onLineGraphMouseMove?.(datas[currentPointIndex], {
-        ...currentDate,
-        value: formattedValue,
-      });
-    } else {
+    if (currentPointIndex < 0) {
       onLineGraphMouseMove?.(undefined, undefined);
+      return;
     }
+
+    const currentDate =
+      displayLastDayAsNow && datas.length - 1 === currentPointIndex
+        ? parseTimeTVL(getLocalizeTime(new Date().toString()))
+        : parseTimeTVL(datas[currentPointIndex]?.time);
+
+    const formattedValue = popupYValueFormatter
+      ? popupYValueFormatter(datas[currentPointIndex]?.value)
+      : formatPrice(datas[currentPointIndex]?.value);
+
+    onLineGraphMouseMove?.(datas[currentPointIndex], {
+      ...currentDate,
+      value: formattedValue,
+    });
   }, [currentPointIndex, datas, displayLastDayAsNow, popupYValueFormatter]);
 
   return (
