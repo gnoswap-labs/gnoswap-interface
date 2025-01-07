@@ -67,7 +67,7 @@ export const useGetRoutes = (
 
       return result;
     },
-    retry: false,
+    retry: 1,
     refetchInterval: REFETCH_INTERVAL,
     staleTime: STALE_TIME,
     enabled: !!request?.inputToken?.path && !!request?.outputToken?.path,

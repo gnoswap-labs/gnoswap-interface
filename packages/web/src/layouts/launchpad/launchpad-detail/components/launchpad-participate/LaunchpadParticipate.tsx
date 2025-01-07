@@ -27,6 +27,7 @@ import DepositConditionsTooltip from "@components/common/launchpad-tooltip/depos
 import LaunchpadTooltip from "../common/launchpad-tooltip/LaunchpadTooltip";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import LaunchpadDepositModal from "@components/common/launchpad-modal/launchpad-deposit-modal/LaunchpadDepositModal";
+import IconWallet from "@components/common/icons/IconWallet";
 
 const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
@@ -92,10 +93,15 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     [setParticipateAmount, status],
   );
 
-  const currentGnsBalance = React.useMemo(
-    () => displayBalanceMap?.[DEFAULT_DEPOSIT_TOKEN?.path ?? ""] ?? null,
-    [displayBalanceMap],
-  );
+  const currentGnsBalance = React.useMemo(() => {
+    if (!isWalletConnected) return null;
+    return displayBalanceMap?.[DEFAULT_DEPOSIT_TOKEN?.path ?? ""] ?? null;
+  }, [displayBalanceMap, isWalletConnected]);
+
+  const hasTokenBalance = React.useMemo(() => {
+    return !!currentGnsBalance;
+  }, [currentGnsBalance]);
+
   const estimatePrice = React.useMemo(
     () =>
       DEFAULT_DEPOSIT_TOKEN?.wrappedPath &&
@@ -207,14 +213,21 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
 
         <div className="participate-amount-info">
           <span className="participate-price-text">{estimatePrice}</span>
-          <span
-            className={cx("participate-balance-text", {
-              upcoming: status === "UPCOMING",
-            })}
-            onClick={handleAutoFillMaxAmount}
-          >
-            {t("Launchpad:participate.balance")}: {currentGnsBalance ? toNumberFormat(currentGnsBalance, 2) : "-"}
-          </span>
+          <div className="balance-wrapper">
+            {isWalletConnected && <IconWallet />}
+            <span
+              className={cx("participate-balance-text", {
+                upcoming: status === "UPCOMING",
+              })}
+            >
+              {currentGnsBalance ? toNumberFormat(currentGnsBalance, 2) : "-"}
+            </span>
+            {hasTokenBalance && (
+              <button className="balance-max-button" onClick={handleAutoFillMaxAmount}>
+                {t("common:max")}
+              </button>
+            )}
+          </div>
         </div>
       </div>
 

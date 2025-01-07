@@ -81,6 +81,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
   const {
     data: estimatedSwapResult,
     isLoading: isEstimatedSwapLoading,
+    isRefetching,
     error,
   } = useGetRoutes(
     {
@@ -165,35 +166,34 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     return 0;
   }, [direction, estimatedAmount, slippage, tokenA]);
 
-  const updateSwapAmount = useCallback(
-    (amount: string) => {
-      if (!amount) {
-        setSwapAmount(null);
-        setIsTyping(false);
-        return;
-      }
+  const updateSwapAmount = (amount: string) => {
+    if (!amount) {
+      setSwapAmount(null);
+      setIsTyping(false);
+      return;
+    }
 
-      let newAmount = 0;
-      if (BigNumber(amount).isZero()) {
-        newAmount = 0;
-      }
-      newAmount = BigNumber(amount).toNumber();
+    const processedAmount = amount.endsWith(".") ? amount.slice(0, -1) : amount;
+    const newAmount = BigNumber(processedAmount).isZero() ? 0 : BigNumber(processedAmount).toNumber();
 
-      setSwapAmount(newAmount);
-      if (tokenA && tokenB) {
+    setSwapAmount(prevAmount => {
+      const hasValueChanged = prevAmount !== newAmount;
+
+      if (hasValueChanged) {
         setIsTyping(true);
+
+        if (typingTimeoutRef.current) {
+          clearTimeout(typingTimeoutRef.current);
+        }
+
+        typingTimeoutRef.current = setTimeout(() => {
+          setIsTyping(false);
+        }, SWAP_AMOUNT_DEBOUNCE_TIME_MS + 100);
       }
 
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-      }
-
-      typingTimeoutRef.current = setTimeout(() => {
-        setIsTyping(false);
-      }, SWAP_AMOUNT_DEBOUNCE_TIME_MS + 100);
-    },
-    [tokenA, tokenB],
-  );
+      return hasValueChanged ? newAmount : prevAmount;
+    });
+  };
 
   useEffect(() => {
     if (debouncedSwapAmount !== null) {
@@ -283,6 +283,17 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     }
   }, [estimatedLiquidityMax]);
 
+  const handleResetEstimatedLiquidity = () => {
+    setEstimatedLiquidityMax(null);
+  };
+  /**
+   * Reset estimatedLiquidityMax when tokens change
+   * This prevents stale liquidity max values from persisting across different token pairs
+   */
+  useEffect(() => {
+    handleResetEstimatedLiquidity();
+  }, [tokenA, tokenB]);
+
   return {
     isSameToken,
     tokenAmountLimit,
@@ -295,6 +306,8 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     updateSwapAmount,
     isEstimatedSwapLoading,
     isTyping,
+    isRefetching,
+    handleResetEstimatedLiquidity,
     resetSwapAmount: () => {
       setSwapAmount(0);
       setIsTyping(false);

@@ -2,27 +2,27 @@ import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
 
-export const LineGraphWrapper = styled.div`
+export const LineGraphWrapper = styled.div<{ forcedHeight?: number }>`
   position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 321px;
+  height: ${({ forcedHeight }) => (forcedHeight ? `${forcedHeight}px` : "321px")};
   overflow: visible;
   ${media.mobile} {
-    height: 252px;
+    height: ${({ forcedHeight }) => (forcedHeight ? `${forcedHeight}px` : "252px")};
   }
   & svg {
     display: flex;
     flex-direction: column;
     width: 100%;
-    height: 321px;
+    height: ${({ forcedHeight }) => (forcedHeight ? `${forcedHeight}px` : "321px")};
     overflow: visible;
     .center-line {
       transform: translateY(50%) !important;
     }
     ${media.mobile} {
-      height: 252px;
+      height: ${({ forcedHeight }) => (forcedHeight ? `${forcedHeight}px` : "252px")};
     }
     .y-axis-number {
       ${fonts.p6}

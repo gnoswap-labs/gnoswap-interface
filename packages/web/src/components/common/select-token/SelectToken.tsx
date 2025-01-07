@@ -24,7 +24,6 @@ export interface SelectTokenProps {
   changeToken: (token: TokenModel) => void;
   close: () => void;
   themeKey: "dark" | "light";
-  modalRef?: React.RefObject<HTMLDivElement>;
   breakpoint: DEVICE_TYPE;
   recents: TokenModel[];
   isSwitchNetwork: boolean;
@@ -39,7 +38,6 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   changeToken,
   close,
   themeKey,
-  modalRef,
   breakpoint,
   recents = [],
   isSwitchNetwork,
@@ -51,7 +49,6 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   const tokenNameRef = useRef(tokens.map(() => React.createRef<HTMLSpanElement>()));
   const [widthList, setWidthList] = useState<number[]>(tokens.map(() => 0));
   const [tokenNameWidthList, setTokenNameWidthList] = useState<number[]>(tokens.map(() => 0));
-  const [positionTop, setPositionTop] = useState(0);
   const [, setRecentsData] = useAtom(TokenState.selectRecents);
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
 
@@ -99,22 +96,6 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   );
 
   useEffect(() => {
-    const getPositionTop = () => {
-      const element = myElementRef.current;
-      if (element) {
-        const rect = element.getBoundingClientRect();
-        const temp = Math.max(positionTop, rect.top);
-        if (modalRef && modalRef.current) {
-          modalRef.current.style.top = `${temp}px`;
-          modalRef.current.style.transform = "translate(-50%, 0)";
-        }
-        setPositionTop(temp);
-      }
-    };
-    getPositionTop();
-  }, [positionTop]);
-
-  useEffect(() => {
     const temp: number[] = [];
     priceRefs.current.forEach(ref => {
       if (ref.current) {
@@ -123,7 +104,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       }
     });
     setWidthList(temp);
-  }, [priceRefs]);
+  }, [priceRefs, tokens]);
 
   useEffect(() => {
     const temp: number[] = [];

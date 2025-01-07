@@ -17,7 +17,6 @@ import { parseJson } from "@utils/common";
 interface SelectTokenContainerProps {
   changeToken?: (token: TokenModel) => void;
   callback?: (value: boolean) => void;
-  modalRef?: React.RefObject<HTMLDivElement>;
 }
 
 export interface SortedProps extends TokenModel {
@@ -75,7 +74,7 @@ const handleSort = (list: SortedProps[]) => {
   return [...rs, ...valueOfBalance, ...amountOfBalance, ...alphabest];
 };
 
-const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({ changeToken, callback, modalRef }) => {
+const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({ changeToken, callback }) => {
   const { breakpoint } = useWindowSize();
   const { tokens, balances, tokenPrices, displayBalanceMap } = useTokenData();
   const [keyword, setKeyword] = useState("");
@@ -169,7 +168,6 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({ changeToken
       changeToken={selectToken}
       close={close}
       themeKey={themeKey}
-      modalRef={modalRef}
       breakpoint={breakpoint}
       recents={recents}
       isSwitchNetwork={isSwitchNetwork}

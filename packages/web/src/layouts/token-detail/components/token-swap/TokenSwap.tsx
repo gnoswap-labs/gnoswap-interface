@@ -16,6 +16,7 @@ import { TokenModel } from "@models/token/token-model";
 import { DataTokenInfo } from "@models/token/token-swap-model";
 
 import { CopyTooltip, wrapper } from "./TokenSwap.styles";
+import IconWallet from "@components/common/icons/IconWallet";
 
 export interface TokenSwapProps {
   isSwitchNetwork: boolean;
@@ -108,12 +109,14 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
     }
   }, [changeTokenAAmount, connected, dataTokenInfo]);
 
-  const handleAutoFillTokenB = useCallback(() => {
-    if (connected) {
-      const formatValue = parseFloat(dataTokenInfo.tokenBBalance.replace(/,/g, "")).toString();
-      changeTokenBAmount(formatValue);
-    }
-  }, [changeTokenBAmount, connected, dataTokenInfo]);
+  /**
+   * Ensure tokenABalance is a valid value (not empty (“-”) or zero)
+   * Note: Consider using includes when you have more than 3 comparisons
+   * return !(["-", "0", "undefined"].includes(swapTokenInfo.tokenABalance));
+   */
+  const hasTokenABalance = useMemo(() => {
+    return swapTokenInfo.tokenABalance !== "-" && swapTokenInfo.tokenABalance !== "0";
+  }, [swapTokenInfo.tokenABalance]);
 
   const onClickConfirm = useCallback(() => {
     if (!connected || isSwitchNetwork) {
@@ -167,12 +170,17 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
             <span className={`price-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}>
               {dataTokenInfo.tokenAUSDStr}
             </span>
-            <span
-              className={`balance-text ${tokenA && connected && "balance-text-disabled"}`}
-              onClick={handleAutoFillTokenA}
-            >
-              {t("business:balance")}: {dataTokenInfo.tokenABalance}
-            </span>
+            <div className="balance-wrapper">
+              {connected && <IconWallet />}
+              <span className={`balance-text ${tokenA && connected && "balance-text-disabled"}`}>
+                {dataTokenInfo.tokenABalance}
+              </span>
+              {hasTokenABalance && (
+                <button className="balance-max-button" onClick={handleAutoFillTokenA}>
+                  {t("common:max")}
+                </button>
+              )}
+            </div>
           </div>
         </div>
         <div className="to">
@@ -193,12 +201,12 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
             <span className={`price-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}>
               {dataTokenInfo.tokenBUSDStr}
             </span>
-            <span
-              className={`balance-text ${tokenB && connected && "balance-text-disabled"}`}
-              onClick={handleAutoFillTokenB}
-            >
-              {t("business:balance")}: {dataTokenInfo.tokenBBalance}
-            </span>
+            <div className="balance-wrapper">
+              {connected && <IconWallet />}
+              <span className={`balance-text ${tokenB && connected && "balance-text-disabled"}`}>
+                {dataTokenInfo.tokenBBalance}
+              </span>
+            </div>
           </div>
         </div>
         <div className="arrow" onClick={switchSwapDirection}>

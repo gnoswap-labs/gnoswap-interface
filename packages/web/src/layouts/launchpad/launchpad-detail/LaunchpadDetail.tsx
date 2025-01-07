@@ -23,6 +23,7 @@ import LaunchpadDetailClickHereContainer from "./containers/launchpad-detail-cli
 import Footer from "@components/common/footer/Footer";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { PAGE_PATH } from "@constants/page.constant";
+import { useAddress } from "@hooks/common/use-address";
 
 export interface ProjectSummaryDataModel {
   totalAllocation: number;
@@ -59,6 +60,7 @@ export interface ProjectRewardInfoModel {
 
 const LaunchpadDetail: React.FC = () => {
   const { t } = useTranslation();
+  const { connected } = useAddress();
 
   const [selectPoolId, setSelectPoolId] = useAtom(LaunchpadState.selectLaunchpadPool);
   const [, setDepositConditions] = useAtom(LaunchpadState.depositConditions);
@@ -262,6 +264,7 @@ const LaunchpadDetail: React.FC = () => {
       aboutProject={<LaunchpadAboutProjectContainer data={projectDescriptionData} isLoading={isLoadingProjectDetail} />}
       participate={
         <LaunchpadParticipateContainer
+          connected={connected}
           poolInfo={currentSelectProjectPoolInfo}
           rewardInfo={projectRewardInfo}
           refetch={refetchProjectDetail}

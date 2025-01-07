@@ -82,6 +82,7 @@ export interface LineGraphProps {
   smooth?: boolean;
   width?: number;
   height?: number;
+  forcedHeight?: number;
   point?: boolean;
   firstPointColor?: string;
   typeOfChart?: string;
@@ -89,9 +90,10 @@ export interface LineGraphProps {
   centerLineColor?: string;
   showBaseLine?: boolean;
   showBaseLineLabels?: boolean;
+  showPriceRangeLine?: boolean;
   renderBottom?: (baseLineNumberWidth: number) => React.ReactElement;
   isShowTooltip?: boolean;
-  onMouseMove?: (LineGraphData?: LineGraphData) => void;
+  onMouseMove?: (LineGraphData?: LineGraphData, dateDisplay?: { date: string; time: string; value?: string }) => void;
   onMouseOut?: (active: boolean) => void;
   baseLineMap?: [boolean, boolean, boolean, boolean];
   baseLineLabelsPosition?: "left" | "right";
@@ -100,6 +102,7 @@ export interface LineGraphProps {
   baseLineLabelsStyle?: React.CSSProperties;
   displayLastDayAsNow?: boolean;
   popupYValueFormatter?: (value: string) => string;
+  hasNoLabel?: boolean;
 }
 
 export interface LineGraphRef {
@@ -148,6 +151,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   smooth,
   width = VIEWPORT_DEFAULT_WIDTH,
   height = VIEWPORT_DEFAULT_HEIGHT,
+  forcedHeight,
   point,
   customData = { height: 0, locationTooltip: 0 },
   showBaseLine = false,
@@ -156,6 +160,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   onMouseMove: onLineGraphMouseMove,
   onMouseOut: onLineGraphMouseOut,
   showBaseLineLabels = false,
+  showPriceRangeLine = true,
   baseLineMap = [true, true, true, true],
   baseLineLabelsPosition = "left",
   baseLineLabelsTransform,
@@ -163,6 +168,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   firstPointColor,
   displayLastDayAsNow = false,
   popupYValueFormatter,
+  hasNoLabel = false,
 }: LineGraphProps) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
@@ -509,6 +515,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
     }
     return points[0];
   }, [points]);
+
   const locationTooltipPosition = useMemo(() => {
     if ((chartPoint?.y || 0) > customHeight + height - 25) {
       if (width < (currentPoint?.x || 0) + locationTooltip) {
@@ -527,33 +534,42 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
   const onTouchStart = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
     event.preventDefault();
+    setActivated(true);
     onMouseMove(event);
   };
 
   const areaPath = useMemo(() => {
     if (!points || points.length === 0 || points.some(point => point === undefined)) {
-      return undefined; // Or render some fallback UI
+      return undefined;
     }
 
-    // Start at the first point of the line chart
-    let path = `M ${points[0].x},${points[0].y}`;
+    // Start at the first point's x coordinate at firstPoint.y level
+    let path = `M ${points[0].x},${firstPoint.y}`;
 
-    // Draw the line chart path
-    for (let i = 1; i < points.length; i++) {
-      path += smooth ? bezierCommand(points[i], i, points) : ` L ${points[i].x},${points[i].y}`;
+    // Draw the main line chart path
+    for (let i = 0; i < points.length; i++) {
+      const point = points[i];
+      // Plots the actual curve only when the current point is above firstPoint.y
+      if (point.y <= firstPoint.y) {
+        let pathSegment: string;
+        if (i === 0) {
+          pathSegment = ` L ${point.x},${point.y}`;
+        } else {
+          pathSegment = smooth ? bezierCommand(point, i, points) : ` L ${point.x},${point.y}`;
+        }
+        path += pathSegment;
+      } else {
+        // Move at the level of firstPoint.y if it is below firstPoint.y
+        path += ` L ${point.x},${firstPoint.y}`;
+      }
     }
 
-    // Draw a line straight down to the bottom of the chart
-    path += ` L ${points[points.length - 1].x},${height}`;
-
-    // Draw a line straight across to the bottom left corner
-    path += ` L ${points[0].x},${height}`;
-
-    // Close the path by connecting back to the start point
-    path += "Z";
+    // Close the path by drawing back to firstPoint.y level
+    path += ` L ${points[points.length - 1].x},${firstPoint.y}`;
+    path += " Z";
 
     return path;
-  }, [height, points, smooth]);
+  }, [points, smooth, firstPoint.y]);
 
   const isLightTheme = theme.themeKey === "light";
 
@@ -571,6 +587,27 @@ const LineGraph: React.FC<LineGraphProps> = ({
     return parseTimeTVL(datas[currentPointIndex]?.time);
   }, [currentPointIndex, datas, displayLastDayAsNow]);
 
+  useEffect(() => {
+    if (currentPointIndex < 0) {
+      onLineGraphMouseMove?.(undefined, undefined);
+      return;
+    }
+
+    const currentDate =
+      displayLastDayAsNow && datas.length - 1 === currentPointIndex
+        ? parseTimeTVL(getLocalizeTime(new Date().toString()))
+        : parseTimeTVL(datas[currentPointIndex]?.time);
+
+    const formattedValue = popupYValueFormatter
+      ? popupYValueFormatter(datas[currentPointIndex]?.value)
+      : formatPrice(datas[currentPointIndex]?.value);
+
+    onLineGraphMouseMove?.(datas[currentPointIndex], {
+      ...currentDate,
+      value: formattedValue,
+    });
+  }, [currentPointIndex, datas, displayLastDayAsNow, popupYValueFormatter]);
+
   return (
     <LineGraphWrapper
       className={className}
@@ -581,6 +618,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
       }}
       onTouchMove={onTouchMove}
       onTouchStart={onTouchStart}
+      forcedHeight={forcedHeight}
     >
       <FloatingTooltip
         className="chart-tooltip"
@@ -679,7 +717,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
                   className="first-line"
                 />
               )}
-              {isFocus() && currentPoint && (
+              {isFocus() && currentPoint && showPriceRangeLine && (
                 <line
                   stroke={color}
                   strokeWidth={1}
@@ -691,7 +729,13 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 />
               )}
               {isFocus() && currentPoint && (
-                <circle cx={currentPoint.x} cy={currentPoint.y + 24} r={3} stroke={color} fill={color} />
+                <circle
+                  cx={currentPoint.x}
+                  cy={hasNoLabel ? currentPoint.y : currentPoint.y + 24}
+                  r={3}
+                  stroke={color}
+                  fill={color}
+                />
               )}
             </g>
           }

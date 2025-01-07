@@ -30,6 +30,7 @@ import {
   AssetSendTooltipContent,
   AssetSendWarningContentWrapper,
 } from "./AssetSendModal.styles";
+import IconWallet from "@components/common/icons/IconWallet";
 
 const DEFAULT_WITHDRAW_GNOT = GNOT_TOKEN;
 
@@ -111,6 +112,10 @@ const AssetSendModal: React.FC<Props> = ({
     () => displayBalanceMap?.[withdrawInfo?.path ?? ""] ?? null,
     [displayBalanceMap, withdrawInfo?.path],
   );
+
+  const hasTokenBalance = useMemo(() => {
+    return !!currentAvailableBalance;
+  }, [currentAvailableBalance]);
 
   const isDisabledWithdraw =
     !Number(amount ?? 0) ||
@@ -208,16 +213,22 @@ const AssetSendModal: React.FC<Props> = ({
                 </div>
                 <div className="info">
                   <span className="price-text">{estimatePrice}</span>
-                  <span className="balance-text" onClick={handleEnterAllBalanceAvailable}>{`${t(
-                    "common:action.balance",
-                  )}: ${
-                    currentAvailableBalance
-                      ? formatPrice(currentAvailableBalance, {
-                          isKMB: false,
-                          usd: false,
-                        })
-                      : "-"
-                  }`}</span>
+                  <div className="balance-wrapper">
+                    {connected && <IconWallet />}
+                    <span className="balance-text">{` ${
+                      currentAvailableBalance
+                        ? formatPrice(currentAvailableBalance, {
+                            isKMB: false,
+                            usd: false,
+                          })
+                        : "-"
+                    }`}</span>
+                    {hasTokenBalance && (
+                      <button className="balance-max-button" onClick={handleEnterAllBalanceAvailable}>
+                        {t("common:max")}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             </AssetSendContent>

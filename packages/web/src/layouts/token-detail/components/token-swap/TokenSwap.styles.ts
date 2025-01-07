@@ -92,6 +92,29 @@ export const wrapper = (theme: Theme) => css`
     .info {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
+      .balance-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        .balance-max-button {
+          box-sizing: content-box;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 1px 6px;
+          height: 14px;
+          border-radius: 36px;
+          background: rgba(0, 89, 255, 0.2);
+          font-size: 11px;
+          font-weight: 500;
+          color: #007aff;
+          cursor: pointer;
+          &:hover {
+            background: ${theme.themeKey === "dark" ? "rgba(0, 89, 255, 0.1)" : "rgba(0, 89, 255, 0.3)"};
+          }
+        }
+      }
     }
     .text-opacity {
       opacity: 0.5;
@@ -121,7 +144,6 @@ export const wrapper = (theme: Theme) => css`
       overflow: hidden;
     }
     .balance-text-disabled {
-      cursor: pointer;
     }
 
     .token {

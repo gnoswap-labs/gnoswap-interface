@@ -80,6 +80,7 @@ const LiquidityEnterAmounts: React.FC<LiquidityEnterAmountsProps> = ({
             connected={connected}
             changeToken={changeTokenA}
             changeAmount={changeTokenAAmount}
+            isVisibleMaxButton={true}
           />
           <TokenAmountInput
             key={tokenBInput.token?.path}
@@ -87,6 +88,7 @@ const LiquidityEnterAmounts: React.FC<LiquidityEnterAmountsProps> = ({
             connected={connected}
             changeToken={changeTokenB}
             changeAmount={changeTokenBAmount}
+            isVisibleMaxButton={true}
           />
           <div className="arrow">
             <div className="shape">

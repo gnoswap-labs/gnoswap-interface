@@ -32,12 +32,14 @@ interface SwapCardProps {
   isSwitchNetwork: boolean;
   isLoading: boolean;
   isSameToken: boolean;
+  isRefetching: boolean;
 
   changeTokenA: (token: TokenModel) => void;
   changeTokenAAmount: (value: string, none?: boolean) => void;
   changeTokenB: (token: TokenModel) => void;
   changeTokenBAmount: (value: string, none?: boolean) => void;
   changeSlippage: (value: number) => void;
+  resetEstimatedLiquidity: () => void;
 
   switchSwapDirection: () => void;
   openConfirmModal: () => void;
@@ -63,6 +65,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
   changeTokenB,
   changeTokenBAmount,
   changeSlippage,
+  resetEstimatedLiquidity,
   switchSwapDirection,
   openConfirmModal,
   openConnectWallet,
@@ -74,6 +77,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
   setSwapRateAction,
   priceImpactStatus,
   isSameToken,
+  isRefetching,
 }) => {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -107,6 +111,8 @@ const SwapCard: React.FC<SwapCardProps> = ({
         isSwitchNetwork={isSwitchNetwork}
         priceImpactStatus={priceImpactStatus}
         isSameToken={isSameToken}
+        isRefetching={isRefetching}
+        resetEstimatedLiquidity={resetEstimatedLiquidity}
       />
       {shouldShowPriceImpactWarning && (
         <SwapWarningSection>
