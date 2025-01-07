@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
@@ -81,22 +81,34 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
   const [, setRecentsData] = useAtom(TokenState.recents);
 
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  const popularTokenKey = useMemo(() => popularTokens.map(token => token.path).join(","), [popularTokens]);
+
+  const recentKey = useMemo(() => recents.map(token => token.path).join(","), [recents]);
+
   const containerRef = useRef<HTMLDivElement | null>(null);
   const tokenNamePopularRef = useRef(popularTokens.map(() => React.createRef<HTMLSpanElement>()));
   const tokenNameRecentsRef = useRef(recents.map(() => React.createRef<HTMLSpanElement>()));
   const recentPriceRef = useRef(recents.map(() => React.createRef<HTMLDivElement>()));
   const popularPriceRef = useRef(popularTokens.map(() => React.createRef<HTMLDivElement>()));
 
-  const [widthListPopular, setWidthListPopular] = useElementWidthList(popularTokens);
-  const [widthListRecent, setWidthListRecent] = useElementWidthList(recents);
-  const [tokenNameRecentWidthList, setTokenNameRecentWidthList] = useElementWidthList(recents);
-  const [tokenNamePopularWidthList, setTokenNamePopularWidthList] = useElementWidthList(popularTokens);
-
-  const menuRef = useRef<HTMLDivElement | null>(null);
-
-  const popularTokenKey = useMemo(() => popularTokens.map(token => token.path).join(","), [popularTokens]);
-
-  const recentKey = useMemo(() => recents.map(token => token.path).join(","), [recents]);
+  const widthListPopular = useElementWidthList(popularTokens, popularPriceRef.current, [popularPriceRef]);
+  const widthListRecent = useElementWidthList(recents, recentPriceRef.current, [
+    recentPriceRef,
+    popularTokenKey,
+    keyword,
+  ]);
+  const tokenNameRecentWidthList = useElementWidthList(recents, tokenNameRecentsRef.current, [
+    tokenNameRecentsRef,
+    recentKey,
+    keyword,
+  ]);
+  const tokenNamePopularWidthList = useElementWidthList(popularTokens, tokenNamePopularRef.current, [
+    tokenNamePopularRef,
+    keyword,
+    popularTokenKey,
+  ]);
 
   const containerWidth = useElementWidth(containerRef, [
     tokens,
@@ -153,50 +165,6 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     },
     [getGnoscanUrl, getTokenUrl],
   );
-
-  useEffect(() => {
-    const widthValues: number[] = [];
-    popularPriceRef.current.forEach(ref => {
-      if (ref.current) {
-        const width = ref.current.getBoundingClientRect().width;
-        widthValues.push(width);
-      }
-    });
-    setWidthListPopular(widthValues);
-  }, [popularPriceRef]);
-
-  useEffect(() => {
-    const widthValues: number[] = [];
-    recentPriceRef.current.forEach(ref => {
-      if (ref.current) {
-        const width = ref.current.getBoundingClientRect().width;
-        widthValues.push(width);
-      }
-    });
-    setWidthListRecent(widthValues);
-  }, [recentPriceRef, popularTokenKey, keyword]);
-
-  useEffect(() => {
-    const widthValues: number[] = [];
-    tokenNameRecentsRef.current.forEach(ref => {
-      if (ref.current) {
-        const width = ref.current.getBoundingClientRect().width;
-        widthValues.push(width);
-      }
-    });
-    setTokenNameRecentWidthList(widthValues);
-  }, [tokenNameRecentsRef, recentKey, keyword]);
-
-  useEffect(() => {
-    const temp: number[] = [];
-    tokenNamePopularRef.current.forEach(ref => {
-      if (ref.current) {
-        const width = ref.current.getBoundingClientRect().width;
-        temp.push(width);
-      }
-    });
-    setTokenNamePopularWidthList(temp);
-  }, [tokenNamePopularRef, keyword, popularTokenKey]);
 
   const length = useMemo(() => {
     return breakpoint === DEVICE_TYPE.MOBILE ? 15 : 25;
