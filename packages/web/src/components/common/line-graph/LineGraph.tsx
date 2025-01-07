@@ -551,8 +551,13 @@ const LineGraph: React.FC<LineGraphProps> = ({
       const point = points[i];
       // Plots the actual curve only when the current point is above firstPoint.y
       if (point.y <= firstPoint.y) {
-        path +=
-          i === 0 ? ` L ${point.x},${point.y}` : smooth ? bezierCommand(point, i, points) : ` L ${point.x},${point.y}`;
+        let pathSegment: string;
+        if (i === 0) {
+          pathSegment = ` L ${point.x},${point.y}`;
+        } else {
+          pathSegment = smooth ? bezierCommand(point, i, points) : ` L ${point.x},${point.y}`;
+        }
+        path += pathSegment;
       } else {
         // Move at the level of firstPoint.y if it is below firstPoint.y
         path += ` L ${point.x},${firstPoint.y}`;
