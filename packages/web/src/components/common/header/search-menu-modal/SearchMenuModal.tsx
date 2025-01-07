@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
@@ -26,6 +26,7 @@ import {
   TokenInfoWrapper,
 } from "./SearchMenuModal.styles";
 import useElementWidth from "@hooks/common/use-element-width";
+import useElementWidthList from "@hooks/common/use-element-width-list";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -86,10 +87,10 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   const recentPriceRef = useRef(recents.map(() => React.createRef<HTMLDivElement>()));
   const popularPriceRef = useRef(popularTokens.map(() => React.createRef<HTMLDivElement>()));
 
-  const [widthListPopular, setWidthListPopular] = useState<number[]>(popularTokens.map(() => 0));
-  const [widthListRecent, setWidthListRecent] = useState<number[]>(recents.map(() => 0));
-  const [tokenNameRecentWidthList, setTokenNameRecentWidthList] = useState<number[]>(recents.map(() => 0));
-  const [tokenNamePopularWidthList, setTokenNamePopularWidthList] = useState<number[]>(popularTokens.map(() => 0));
+  const [widthListPopular, setWidthListPopular] = useElementWidthList(popularTokens);
+  const [widthListRecent, setWidthListRecent] = useElementWidthList(recents);
+  const [tokenNameRecentWidthList, setTokenNameRecentWidthList] = useElementWidthList(recents);
+  const [tokenNamePopularWidthList, setTokenNamePopularWidthList] = useElementWidthList(popularTokens);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
 
