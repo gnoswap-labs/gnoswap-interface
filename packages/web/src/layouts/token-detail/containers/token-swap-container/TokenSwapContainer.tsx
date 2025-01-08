@@ -46,6 +46,7 @@ const TokenSwapContainer: React.FC = () => {
     copyURL,
     isSwitchNetwork,
     isLoading,
+    isRefetching,
     swapValue,
     setSwapRateAction,
     setTokenAAmount,
@@ -155,6 +156,7 @@ const TokenSwapContainer: React.FC = () => {
         setSwapRateAction={setSwapRateAction}
         priceImpactStatus={priceImpactStatus}
         swapTokenInfo={swapTokenInfo}
+        isRefetching={isRefetching}
       />
       {openedSlippage && (
         <SettingMenuModal

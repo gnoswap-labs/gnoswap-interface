@@ -1,5 +1,6 @@
 import BigNumber from "bignumber.js";
 import React, { useCallback, useMemo } from "react";
+import { cx } from "@emotion/css";
 
 import { isAmount } from "@common/utils/data-check-util";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
@@ -135,17 +136,22 @@ const SwapCardContent: React.FC<ContentProps> = ({
     [isLoading, swapRouteInfos.length, swapSummaryInfo?.priceImpact],
   );
 
+  const isLoadingTokenA = useMemo(() => {
+    return (isLoading && direction !== "EXACT_IN") || (isRefetching && direction === "EXACT_OUT");
+  }, [isLoading, direction, isRefetching]);
+
+  const isLoadingTokenB = useMemo(() => {
+    return (isLoading || isRefetching) && direction === "EXACT_IN";
+  }, [isLoading, direction, isRefetching]);
+
   return (
     <ContentWrapper>
       <div className="first-section">
         <div className="amount-container">
           <input
             id={tokenA?.priceID}
-            className={`amount-text ${
-              (isLoading && direction !== "EXACT_IN") || (isRefetching && direction === "EXACT_OUT")
-                ? "text-opacity"
-                : ""
-            }`}
+            className={cx("amount-text", { "text-opacity": isLoadingTokenA })}
+            aria-busy={isLoadingTokenA}
             value={tokenAAmount}
             onChange={onChangeTokenAAmount}
             placeholder="0"
@@ -157,7 +163,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
           </div>
         </div>
         <div className="amount-info">
-          <span className={`price-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}>
+          <span className={cx("price-text", { "text-opacity": isLoadingTokenA })} aria-busy={isLoadingTokenA}>
             {swapTokenInfo.tokenAUSDStr}
           </span>
           <div className="balance-wrapper">
@@ -182,7 +188,8 @@ const SwapCardContent: React.FC<ContentProps> = ({
         <div className="amount-container">
           <input
             id={tokenB?.priceID}
-            className={`amount-text ${(isLoading || isRefetching) && direction === "EXACT_IN" ? "text-opacity" : ""}`}
+            className={cx("amount-text", { "text-opacity": isLoadingTokenB })}
+            aria-busy={isLoadingTokenB}
             value={tokenBAmount}
             onChange={onChangeTokenBAmount}
             placeholder="0"
@@ -195,9 +202,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
         </div>
         <div className="amount-info">
           <PriceInfoWrapper>
-            <span
-              className={`price-text second-price-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}
-            >
+            <span className={cx("price-text second-price-text", { "text-opacity": isLoadingTokenB })}>
               {swapTokenInfo.tokenBUSDStr}
             </span>
             {showPriceImpact && (
