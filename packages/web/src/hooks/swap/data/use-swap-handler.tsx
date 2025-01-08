@@ -1095,21 +1095,6 @@ export const useSwapHandler = () => {
       });
   }, []);
 
-  // useEffect to set the initial token amount
-  // Set the amount from the URL parameter or initialization, if any
-  useEffect(() => {
-    if (!tokenA?.symbol || !tokenB?.symbol) return;
-
-    // Run only if amount is provided in URL parameter or initial state
-    if (defaultTokenAAmount || defaultTokenBAmount) {
-      if (defaultTokenAAmount) {
-        changeTokenAAmount(defaultTokenAAmount);
-      } else if (defaultTokenBAmount) {
-        changeTokenBAmount(defaultTokenBAmount);
-      }
-    }
-  }, [tokenA?.symbol, tokenB?.symbol, defaultTokenAAmount, defaultTokenBAmount]);
-
   // useEffect to manage loading state when token amount changes
   useEffect(() => {
     if (!tokenA?.symbol || !tokenB?.symbol) return;
