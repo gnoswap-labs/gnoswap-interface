@@ -15,6 +15,7 @@ import IconGoogleLogo from "../icons/defaultIcon/IconGoogleLogo";
 import IconTwitterLogo from "../icons/defaultIcon/IconTwitterLogo";
 import ConnectWalletModalDivider from "./connect-wallet-modal-divider/ConnectWalletModalDivider";
 import { useConnectSocialWalletModal } from "@hooks/wallet/ui/use-connect-social-wallet-modal";
+import { useApproveTransactionModal } from "@hooks/wallet/ui/use-approve-transaction-modal";
 
 interface Props {
   close: () => void;
@@ -26,6 +27,7 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
   const { connect: socialWalletConnect } = useSocialWalletContext();
   const { t } = useTranslation();
   const { openModal: openSocialLoadingModal } = useConnectSocialWalletModal();
+  const { openModal: openApproveTransactionModal } = useApproveTransactionModal();
 
   const handleSocialConnect = useCallback(
     async (type: SocialWalletLoginType) => {
@@ -92,6 +94,16 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
               text="Sign in With X"
               leftIcon={<IconTwitterLogo />}
               onClick={() => handleSocialConnect("twitter")}
+              style={{
+                hierarchy: ButtonHierarchy.Dark,
+                fullWidth: true,
+              }}
+              className="button-connect"
+            />
+
+            <Button
+              text="Approve Transaction"
+              onClick={openApproveTransactionModal}
               style={{
                 hierarchy: ButtonHierarchy.Dark,
                 fullWidth: true,
