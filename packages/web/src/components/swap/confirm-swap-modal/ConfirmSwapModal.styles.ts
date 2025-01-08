@@ -125,6 +125,9 @@ export const ConfirmModal = styled.div`
           ${media.mobile} {
             ${fonts.body5}
           }
+          .loading {
+            opacity: 0.5;
+          }
         }
         .button-wrapper {
           ${mixins.flexbox("row", "center", "flex-start")};

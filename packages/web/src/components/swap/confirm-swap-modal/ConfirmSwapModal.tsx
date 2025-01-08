@@ -176,7 +176,9 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
           <div className="input-group">
             <div className="first-section">
               <div className="amount-container">
-                <span>{swapTokenInfo?.tokenAAmount}</span>
+                <span className={swapSummaryInfo?.swapDirection === "EXACT_OUT" && isRefetching ? "loading" : ""}>
+                  {swapTokenInfo?.tokenAAmount}
+                </span>
                 <div className="button-wrapper">
                   <MissingLogo
                     symbol={swapSummaryInfo?.tokenA.symbol || ""}
@@ -199,7 +201,9 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
             </div>
             <div className="second-section">
               <div className="amount-container">
-                <span>{swapTokenInfo?.tokenBAmount}</span>
+                <span className={swapSummaryInfo?.swapDirection === "EXACT_IN" && isRefetching ? "loading" : ""}>
+                  {swapTokenInfo?.tokenBAmount}
+                </span>
                 <div className="button-wrapper">
                   <MissingLogo
                     symbol={swapSummaryInfo?.tokenB.symbol || ""}
