@@ -54,15 +54,19 @@ const TokenSwapContainer: React.FC = () => {
   } = useSwapHandler();
 
   useEffect(() => {
-    setSwapValue({
-      tokenA: null,
-      tokenB: null,
-      type: "EXACT_IN",
-    });
-    setTokenAAmount("");
+    if (!router.query.tokenA && !router.query.path) {
+      setSwapValue({
+        tokenA: null,
+        tokenB: null,
+        type: "EXACT_IN",
+      });
+      setTokenAAmount("");
+    }
   }, []);
 
   useEffect(() => {
+    if (!tokenA && !tokenB) return;
+
     let request = {};
     if (tokenA && tokenB && tokenA.symbol !== tokenB?.symbol) {
       request = {

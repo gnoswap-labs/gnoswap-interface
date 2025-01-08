@@ -148,8 +148,6 @@ export const useSwapHandler = () => {
   const [swapRateAction, setSwapRateAction] = useState<"ATOB" | "BTOA">("BTOA");
   const [tokenAAmount = "", setTokenAAmount] = useState(defaultTokenAAmount ?? undefined);
 
-  const estimateFlagRef = useRef(0);
-
   const [tokenBAmount = "", setTokenBAmount] = useState(() =>
     !defaultTokenAAmount ? (defaultTokenBAmount ? defaultTokenBAmount : undefined) : undefined,
   );
@@ -1097,27 +1095,29 @@ export const useSwapHandler = () => {
       });
   }, []);
 
+  // useEffect to set the initial token amount
+  // Set the amount from the URL parameter or initialization, if any
   useEffect(() => {
-    if (!tokenA?.symbol || !tokenB?.symbol) {
-      return;
-    }
-    if (estimateFlagRef.current === 0) {
-      if (!!defaultTokenAAmount) {
-        estimateFlagRef.current += 1;
+    if (!tokenA?.symbol || !tokenB?.symbol) return;
+
+    // Run only if amount is provided in URL parameter or initial state
+    if (defaultTokenAAmount || defaultTokenBAmount) {
+      if (defaultTokenAAmount) {
         changeTokenAAmount(defaultTokenAAmount);
-        return;
-      }
-      if (!!defaultTokenBAmount) {
-        estimateFlagRef.current += 1;
+      } else if (defaultTokenBAmount) {
         changeTokenBAmount(defaultTokenBAmount);
-        return;
       }
     }
+  }, [tokenA?.symbol, tokenB?.symbol, defaultTokenAAmount, defaultTokenBAmount]);
+
+  // useEffect to manage loading state when token amount changes
+  useEffect(() => {
+    if (!tokenA?.symbol || !tokenB?.symbol) return;
 
     if (!!Number(tokenAAmount) || !!Number(tokenBAmount)) {
       setIsLoading(true);
     }
-  }, [defaultTokenBAmount, defaultTokenAAmount, tokenA?.symbol, tokenAAmount, tokenBAmount, type, tokenB?.symbol]);
+  }, [tokenA?.symbol, tokenB?.symbol, tokenAAmount, tokenBAmount]);
 
   return {
     slippage,
