@@ -140,19 +140,28 @@ export const ApproveTransactionDetails = styled.div`
   width: 100%;
 
   button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
     color: ${({ theme }) => theme.color.text04};
     font-size: 14px;
     font-weight: 400;
-    margin: 8px 0;
+    margin: 8px 0 0;
+    * {
+      fill: ${({ theme }) => theme.color.text04};
+    }
   }
   .transaction-messages {
     width: 100%;
     border-radius: 8px;
-    border: 1px solid transparent;
+    border: 0px solid transparent;
     background-color: transparent;
     overflow: scroll;
-    transition: all 0.3s ease-in-out;
+    transition: max-height 0.3s ease-in-out, border 0.3s ease-in-out;
+    margin-top: 0px;
     &.expanded {
+      margin-top: 8px;
       border: 1px solid ${({ theme }) => theme.color.border02};
       background-color: ${({ theme }) => theme.color.border12};
     }

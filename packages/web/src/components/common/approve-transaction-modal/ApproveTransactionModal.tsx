@@ -14,6 +14,8 @@ import {
 import IconClose from "@components/common/icons/IconCancel";
 import IconAdenaLogo from "../icons/defaultIcon/IconAdenaLogo";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import IconArrowDown from "../icons/IconArrowDown";
+import IconArrowUp from "../icons/IconArrowUp";
 
 const ApproveTransactionModal = () => {
   const [isExpanded, setIsExpanded] = React.useState(false);
@@ -63,7 +65,7 @@ const ApproveTransactionModal = () => {
           </ApproveTransactionSummary>
           <ApproveTransactionDetails>
             <button onClick={() => setIsExpanded(prev => !prev)} aria-expanded={isExpanded}>
-              View Transaction Data {isExpanded ? "▼" : "▲"}
+              View Transaction Data {isExpanded ? <IconArrowDown /> : <IconArrowUp />}
             </button>
 
             <div
