@@ -133,6 +133,8 @@ export const useSwapHandler = () => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
+  const [, setSwapConfirmModalState] = useAtom(SwapState.swapConfirmModalState);
+
   const {
     tokenA = null,
     tokenB = null,
@@ -526,6 +528,20 @@ export const useSwapHandler = () => {
     swapFee,
   ]);
 
+  // If the data required for the modal configuration is updated, update the modal data as well
+  useEffect(() => {
+    if (!swapTokenInfo || !swapSummaryInfo) return;
+
+    setSwapConfirmModalState(prev => ({
+      ...prev,
+      swapTokenInfo,
+      swapSummaryInfo,
+      isRefetching,
+      estimatedAmount,
+      tokenAmountLimit,
+    }));
+  }, [swapTokenInfo, swapSummaryInfo, isRefetching, estimatedAmount, tokenAmountLimit]);
+
   const isAvailSwap = useMemo(() => {
     return (
       swapButtonState === "SWAP" ||
@@ -543,8 +559,6 @@ export const useSwapHandler = () => {
     setModalContent(
       <ConfirmSwapModal
         submitted={true}
-        swapTokenInfo={swapTokenInfo}
-        swapSummaryInfo={swapSummaryInfo}
         swapResult={swapResult}
         swap={executeSwap}
         close={closeModal}
@@ -957,7 +971,7 @@ export const useSwapHandler = () => {
     return;
   };
 
-  function executeSwap() {
+  function executeSwap(swapTokenInfo: SwapTokenInfo, estimatedAmount: string) {
     if (!tokenA || !tokenB) {
       return;
     }
@@ -969,13 +983,13 @@ export const useSwapHandler = () => {
     setSubmitted(true);
 
     const isExactIn = type === "EXACT_IN";
-    const swapAmount = isExactIn ? tokenAAmount : tokenBAmount;
+    const swapAmount = isExactIn ? swapTokenInfo.tokenAAmount : swapTokenInfo.tokenBAmount;
 
     const broadcastMessage = {
       tokenASymbol: tokenA.symbol,
       tokenBSymbol: tokenB.symbol,
-      tokenAAmount: isExactIn ? tokenAAmount : nullish.handleFalsy(estimatedAmount, "0"),
-      tokenBAmount: isExactIn ? nullish.handleFalsy(estimatedAmount, "0") : tokenBAmount,
+      tokenAAmount: isExactIn ? swapTokenInfo.tokenAAmount : nullish.handleFalsy(estimatedAmount, "0"),
+      tokenBAmount: isExactIn ? nullish.handleFalsy(estimatedAmount, "0") : swapTokenInfo.tokenBAmount,
     };
 
     // Handle Wrap and Unwrap

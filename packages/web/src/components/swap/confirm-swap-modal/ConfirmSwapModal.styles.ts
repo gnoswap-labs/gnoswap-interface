@@ -274,6 +274,11 @@ export const ConfirmModal = styled.div`
       ${media.mobile} {
         height: 41px;
       }
+      button {
+        &:disabled {
+          background-color: ${({ theme }) => theme.color.background17};
+        }
+      }
     }
 
     .animation {

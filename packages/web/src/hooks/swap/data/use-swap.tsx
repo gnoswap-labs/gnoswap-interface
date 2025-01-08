@@ -9,6 +9,8 @@ import { EstimatedRoute } from "@models/swap/swap-route-info";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useGetRoutes } from "@query/router";
 import useDebounce from "@hooks/common/use-debounce";
+import { useAtomValue, useStore } from "jotai";
+import { SwapState } from "@states/index";
 
 interface UseSwapProps {
   tokenA: TokenModel | null;
@@ -19,8 +21,11 @@ interface UseSwapProps {
 }
 
 export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: UseSwapProps) => {
+  const store = useStore();
   const { account } = useWallet();
   const { swapRouterRepository } = useGnoswapContext();
+  const swapSummaryInfo = useAtomValue(SwapState.swapConfirmModalState);
+  const { tokenAmountLimit: currentTokenAmountLimit } = swapSummaryInfo;
 
   const SWAP_AMOUNT_DEBOUNCE_TIME_MS = 500;
   const [swapAmount, setSwapAmount] = useState<number | null>(null);
@@ -242,16 +247,29 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
         return null;
       }
 
+      const latestTokenAmountLimit = store.get(SwapState.swapConfirmModalState).tokenAmountLimit;
+
       return swapRouterRepository.sendSwapRoute({
         inputToken: tokenA,
         outputToken: tokenB,
         estimatedRoutes,
         exactType: direction,
         tokenAmount: direction === "EXACT_IN" ? Number(tokenAmount) : Number(tokenAmount) * exactOutPadding,
-        tokenAmountLimit,
+        tokenAmountLimit: latestTokenAmountLimit || tokenAmountLimit,
       });
     },
-    [account, direction, selectedTokenPair, swapRouterRepository, tokenA, tokenAmountLimit, tokenB, exactOutPadding],
+    [
+      account,
+      direction,
+      selectedTokenPair,
+      swapRouterRepository,
+      tokenA,
+      tokenAmountLimit,
+      currentTokenAmountLimit,
+      tokenB,
+      exactOutPadding,
+      store,
+    ],
   );
 
   useEffect(() => {
@@ -266,7 +284,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     } else {
       setEstimatedLiquidityMax(null);
     }
-  }, [estimatedRoutes, debouncedSwapAmount, estimatedLiquidityMax]);
+  }, [estimatedRoutes, debouncedSwapAmount, estimatedLiquidityMax, tokenA, tokenB]);
 
   /**
    * Reset estimatedLiquidityMax to null after specified delay
