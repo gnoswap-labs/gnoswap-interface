@@ -968,7 +968,7 @@ export const useSwapHandler = () => {
     return;
   };
 
-  function executeSwap(swapTokenInfo: SwapTokenInfo, estimatedAmount: string) {
+  function executeSwap(swapTokenInfo: SwapTokenInfo, estimatedAmount: string | null) {
     if (!tokenA || !tokenB) {
       return;
     }
