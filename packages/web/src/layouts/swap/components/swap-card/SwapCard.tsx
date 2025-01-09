@@ -46,7 +46,7 @@ interface SwapCardProps {
   openConnectWallet: () => void;
   closeModal: () => void;
   copyURL: () => void;
-  swap: () => void;
+  swap: (swapTokenInfo: SwapTokenInfo, estimatedAmount: string) => void;
   switchNetwork: () => void;
   setSwapRateAction: (type: "ATOB" | "BTOA") => void;
   priceImpactStatus: PriceImpactStatus;

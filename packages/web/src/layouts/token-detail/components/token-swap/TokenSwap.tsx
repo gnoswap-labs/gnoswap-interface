@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { cx } from "@emotion/css";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconLink from "@components/common/icons/IconLink";
@@ -30,6 +31,7 @@ export interface TokenSwapProps {
   swapSummaryInfo: SwapSummaryInfo | null;
   swapRouteInfos: SwapRouteInfo[];
   swapTokenInfo: SwapTokenInfo;
+  isRefetching: boolean;
 
   swapNow: () => void;
   handleSetting: () => void;
@@ -72,6 +74,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   setSwapRateAction,
   priceImpactStatus,
   swapTokenInfo,
+  isRefetching,
 }) => {
   const { t } = useTranslation();
   const tokenA = dataTokenInfo.tokenA;
@@ -130,6 +133,14 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
     return (!!Number(dataTokenInfo.tokenAAmount) && !!Number(dataTokenInfo.tokenBAmount)) || isLoading;
   }, [dataTokenInfo, isLoading]);
 
+  const isLoadingTokenA = useMemo((): boolean => {
+    return (isLoading && direction !== "EXACT_IN") || (isRefetching && direction === "EXACT_OUT");
+  }, [isLoading, direction, isRefetching]);
+
+  const isLoadingTokenB = useMemo((): boolean => {
+    return (isLoading || isRefetching) && direction === "EXACT_IN";
+  }, [isLoading, direction, isRefetching]);
+
   return (
     <div css={wrapper}>
       <div className="header">
@@ -155,7 +166,10 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
         <div className="from">
           <div className="amount">
             <input
-              className={`amount-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}
+              className={cx("amount-text", {
+                "text-opacity": isLoadingTokenA,
+              })}
+              aria-busy={isLoadingTokenA}
               value={dataTokenInfo.tokenAAmount}
               onChange={onChangeTokenAAmount}
               placeholder="0"
@@ -167,7 +181,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
             </div>
           </div>
           <div className="info">
-            <span className={`price-text ${isLoading && direction !== "EXACT_IN" ? "text-opacity" : ""}`}>
+            <span className={cx("price-text", { "text-opacity": isLoadingTokenA })} aria-busy={isLoadingTokenA}>
               {dataTokenInfo.tokenAUSDStr}
             </span>
             <div className="balance-wrapper">
@@ -186,7 +200,8 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
         <div className="to">
           <div className="amount">
             <input
-              className={`amount-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}
+              className={cx("amount-text", { "text-opacity": isLoadingTokenB })}
+              aria-busy={isLoadingTokenB}
               value={dataTokenInfo.tokenBAmount}
               onChange={onChangeTokenBAmount}
               placeholder="0"
@@ -198,7 +213,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
             </div>
           </div>
           <div className="info">
-            <span className={`price-text ${isLoading && direction === "EXACT_IN" ? "text-opacity" : ""}`}>
+            <span className={cx("price-text", { "text-opacity": isLoadingTokenB })} aria-busy={isLoadingTokenB}>
               {dataTokenInfo.tokenBUSDStr}
             </span>
             <div className="balance-wrapper">

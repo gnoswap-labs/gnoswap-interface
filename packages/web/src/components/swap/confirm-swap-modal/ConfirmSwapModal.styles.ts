@@ -125,6 +125,9 @@ export const ConfirmModal = styled.div`
           ${media.mobile} {
             ${fonts.body5}
           }
+          .loading {
+            opacity: 0.5;
+          }
         }
         .button-wrapper {
           ${mixins.flexbox("row", "center", "flex-start")};
@@ -273,6 +276,11 @@ export const ConfirmModal = styled.div`
       width: 100%;
       ${media.mobile} {
         height: 41px;
+      }
+      button {
+        &:disabled {
+          background-color: ${({ theme }) => theme.color.background17};
+        }
       }
     }
 

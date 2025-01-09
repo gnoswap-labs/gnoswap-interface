@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 import { isAmount } from "@common/utils/data-check-util";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -47,11 +47,7 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({ slippage, changeSli
   const TooltipFloatingContent = (
     <ModalTooltipWrap>
       <div className="tooltip-wrap">
-        <p
-          dangerouslySetInnerHTML={{
-            __html: t("common:settingModal.slipTolTooltip"),
-          }}
-        ></p>
+        <Trans i18nKey="common:settingModal.slipTolTooltip" components={{ br: <br /> }} />
       </div>
     </ModalTooltipWrap>
   );

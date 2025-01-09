@@ -8,8 +8,8 @@ import { GetRoutesResponse } from "@repositories/swap/response/get-routes-respon
 import { QUERY_KEY } from "../query-keys";
 import { useGetAllTokenPrices } from "@query/token";
 
-const REFETCH_INTERVAL = 10_000;
-const STALE_TIME = 10_000;
+const REFETCH_INTERVAL = 5_000;
+const STALE_TIME = 0;
 
 export const useGetRoutes = (
   request: {
@@ -53,7 +53,11 @@ export const useGetRoutes = (
         });
 
       if (!result) {
-        throw new SwapError("NOT_FOUND_SWAP_POOL");
+        return {
+          estimatedRoutes: [],
+          amount: "0",
+          status: "NO_LIQUIDITY",
+        };
       }
 
       // Updating Swap Route Data while also updating token price information
@@ -62,10 +66,16 @@ export const useGetRoutes = (
       const availRoute = result.estimatedRoutes.reduce((accumulated, current) => accumulated + current.quote, 0);
 
       if (availRoute < 100) {
-        throw new SwapError("NOT_FOUND_SWAP_POOL");
+        return {
+          ...result,
+          status: "NO_LIQUIDITY",
+        };
       }
 
-      return result;
+      return {
+        ...result,
+        status: "SUCCESS",
+      };
     },
     retry: 1,
     refetchInterval: REFETCH_INTERVAL,

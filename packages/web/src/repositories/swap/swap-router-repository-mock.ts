@@ -12,6 +12,7 @@ export class SwapRouterRepositoryMock implements SwapRouterRepository {
     return {
       estimatedRoutes: [],
       amount: "0",
+      status: "NO_LIQUIDITY",
     };
   };
 

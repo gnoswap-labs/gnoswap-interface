@@ -50,7 +50,7 @@ export const CopyTooltip = styled.div`
   top: -65px;
   .box {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
-    width: 155px;
+    width: 158px;
     padding: 16px;
     gap: 8px;
     flex-shrink: 0;
