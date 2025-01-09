@@ -1100,13 +1100,7 @@ export const useSwapHandler = () => {
       return;
     }
 
-    // Do not execute this logic if the user entered it directly
-    const isUserInput = tokenAAmount !== "" || tokenBAmount !== "";
-    if (isUserInput) {
-      return;
-    }
-
-    // Set default values only when there is no user input
+    // Handle default values when no user input exists
     if (estimateFlagRef.current === 0) {
       if (!!defaultTokenAAmount) {
         estimateFlagRef.current += 1;
@@ -1119,7 +1113,31 @@ export const useSwapHandler = () => {
         return;
       }
     }
-  }, [tokenA, tokenB, defaultTokenAAmount, defaultTokenBAmount, tokenAAmount, tokenBAmount]);
+
+    // Special handling for isSameToken case
+    if (isSameToken && tokenAAmount && !tokenBAmount) {
+      setTokenBAmount(tokenAAmount);
+      return;
+    }
+
+    // Check for user input only for non-same token cases
+    if (!isSameToken) {
+      const isUserInput = tokenAAmount !== "" || tokenBAmount !== "";
+      if (isUserInput) {
+        return;
+      }
+    }
+  }, [
+    tokenA,
+    tokenB,
+    defaultTokenAAmount,
+    defaultTokenBAmount,
+    tokenAAmount,
+    tokenBAmount,
+    isSameToken,
+    changeTokenAAmount,
+    changeTokenBAmount,
+  ]);
 
   // useEffect to manage loading state when token amount changes
   useEffect(() => {
