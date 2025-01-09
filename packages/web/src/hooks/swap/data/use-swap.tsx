@@ -121,6 +121,10 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
   }, [debouncedSwapAmount, error, estimatedSwapResult?.amount, isEstimatedSwapLoading, isSameToken, selectedTokenPair]);
 
   const estimatedRoutes: EstimatedRoute[] | null = useMemo(() => {
+    if (isSameToken) {
+      return [];
+    }
+
     if (swapState === "LOADING" || !debouncedSwapAmount || isTyping) {
       return null;
     }
@@ -130,7 +134,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     }
 
     return estimatedSwapResult.estimatedRoutes;
-  }, [swapState, estimatedSwapResult, debouncedSwapAmount, isTyping]);
+  }, [swapState, estimatedSwapResult, debouncedSwapAmount, isTyping, isSameToken]);
 
   const estimatedAmount: string | null = useMemo(() => {
     if (!tokenA || !tokenB) {
