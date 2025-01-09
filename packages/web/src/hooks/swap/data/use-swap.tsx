@@ -177,9 +177,14 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       setIsTyping(false);
       return;
     }
-
     const processedAmount = amount.endsWith(".") ? amount.slice(0, -1) : amount;
     const newAmount = BigNumber(processedAmount).isZero() ? 0 : BigNumber(processedAmount).toNumber();
+
+    if (!tokenA || !tokenB) {
+      setSwapAmount(newAmount);
+      setIsTyping(false);
+      return;
+    }
 
     setSwapAmount(prevAmount => {
       const hasValueChanged = prevAmount !== newAmount;
