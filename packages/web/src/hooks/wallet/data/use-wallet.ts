@@ -154,8 +154,15 @@ export const useWallet = () => {
       }
       setLoadingConnect("done");
     } catch {
-      // initialize adena client
-      connectAdenaClient();
+      const currentWalletType = sessionStorage.getItem(GNOSWAP_WALLET_TYPE_KEY);
+      const savedSocialLoginType = sessionStorage.getItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY);
+
+      // initialize Adena-client or Social-wallet-client
+      if (currentWalletType === "SOCIAL_WALLET" && savedSocialLoginType) {
+        await connectSocialWalletClient(savedSocialLoginType as SocialLoginType);
+      } else if (walletType.type === "ADENA") {
+        connectAdenaClient();
+      }
     }
   };
 

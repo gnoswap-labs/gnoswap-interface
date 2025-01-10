@@ -1,4 +1,5 @@
 import {
+  DEFAULT_CHAIN_RPC_URL,
   SOCIAL_WALLET_AUTH_CLIENT_ID,
   SOCIAL_WALLET_AUTH_DOMAIN,
   SOCIAL_WALLET_EMAIL_VERIFIER,
@@ -25,7 +26,7 @@ export const getSocialWalletConfig = (type: SocialLoginType): SocialWalletConfig
     clientId: SOCIAL_WALLET_WEB3AUTH_CLIENT_ID,
     authClientId: SOCIAL_WALLET_AUTH_CLIENT_ID,
     network: "testnet",
-    rpcTarget: "https://rpc.test4.gno.land",
+    rpcTarget: DEFAULT_CHAIN_RPC_URL,
     domain: SOCIAL_WALLET_AUTH_DOMAIN,
     name: "Adena Wallet",
     verifier: "",
