@@ -1,6 +1,9 @@
 import {
   AdenaSDK,
   GnoSocialWalletProvider,
+  SocialCustomConfigure,
+  SocialGoogleConfigure,
+  SocialTwitterConfigure,
   TransactionBuilder,
   TransactionMessage as SDKTransactionMessage,
   WalletResponseExecuteType,
@@ -8,7 +11,6 @@ import {
 import { createTimeout } from "@common/utils/client-util";
 import { DEFAULT_GAS_WANTED } from "@common/values";
 import { SocialLoginType, WalletType } from "src/types/wallet.types";
-import { SocialWalletConfig } from "./config";
 import {
   WalletResponse,
   AccountInfo,
@@ -55,14 +57,17 @@ export class SocialWalletClient implements WalletClient {
     return this.provider;
   }
 
-  private createSocialWalletProvider(loginType: SocialLoginType, config: SocialWalletConfig) {
+  private createSocialWalletProvider(
+    loginType: SocialLoginType,
+    config: SocialGoogleConfigure | SocialTwitterConfigure | SocialCustomConfigure,
+  ) {
     switch (loginType) {
       case "email":
-        return GnoSocialWalletProvider.createEmail(config);
+        return GnoSocialWalletProvider.createEmail(config as SocialCustomConfigure);
       case "google":
-        return GnoSocialWalletProvider.createGoogle(config);
+        return GnoSocialWalletProvider.createGoogle(config as SocialGoogleConfigure);
       case "twitter":
-        return GnoSocialWalletProvider.createTwitter(config);
+        return GnoSocialWalletProvider.createTwitter(config as SocialTwitterConfigure);
     }
   }
 
