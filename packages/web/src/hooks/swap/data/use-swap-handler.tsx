@@ -1102,12 +1102,12 @@ export const useSwapHandler = () => {
 
     // Handle default values when no user input exists
     if (estimateFlagRef.current === 0) {
-      if (!!defaultTokenAAmount) {
+      if (defaultTokenAAmount) {
         estimateFlagRef.current += 1;
         changeTokenAAmount(defaultTokenAAmount);
         return;
       }
-      if (!!defaultTokenBAmount) {
+      if (defaultTokenBAmount) {
         estimateFlagRef.current += 1;
         changeTokenBAmount(defaultTokenBAmount);
         return;
