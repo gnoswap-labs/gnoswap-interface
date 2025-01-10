@@ -1,4 +1,5 @@
 import {
+  DEFAULT_CHAIN_ID,
   DEFAULT_CHAIN_RPC_URL,
   SOCIAL_WALLET_AUTH_CLIENT_ID,
   SOCIAL_WALLET_AUTH_DOMAIN,
@@ -22,7 +23,7 @@ export interface SocialWalletConfig {
 
 export const getSocialWalletConfig = (type: SocialLoginType): SocialWalletConfig => {
   const baseConfig: SocialWalletConfig = {
-    chainId: "0x1",
+    chainId: DEFAULT_CHAIN_ID,
     clientId: SOCIAL_WALLET_WEB3AUTH_CLIENT_ID,
     authClientId: SOCIAL_WALLET_AUTH_CLIENT_ID,
     network: "testnet",

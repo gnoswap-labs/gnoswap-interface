@@ -3,6 +3,7 @@ import {
   GnoSocialWalletProvider,
   TransactionBuilder,
   TransactionMessage as SDKTransactionMessage,
+  WalletResponseExecuteType,
 } from "@adena-wallet/sdk";
 import { createTimeout } from "@common/utils/client-util";
 import { DEFAULT_GAS_WANTED } from "@common/values";
@@ -17,11 +18,13 @@ import {
   AddNetworkRequestParam,
   AddNetworkResponse,
   SwitchNetworkResponse,
+  DEFAULT_ACCOUNT_INFO,
 } from "../protocols";
 import { WalletClient } from "../wallet-client";
 import { getSocialWalletConfig } from "./config";
 import { parseTransactionResponse } from "../adena/adena-client.util";
 import { AdenaSendTransactionSuccessResponse } from "../adena/adena";
+import { DEFAULT_CHAIN_ID } from "@constants/environment.constant";
 
 export class SocialWalletClient implements WalletClient {
   private sdk: AdenaSDK | null;
@@ -36,18 +39,13 @@ export class SocialWalletClient implements WalletClient {
     this._type = null;
   }
 
-  public async initSocialWallet(type: SocialLoginType) {
-    try {
-      const config = getSocialWalletConfig(type);
-      const provider = this.createSocialWalletProvider(type, config);
-      this.provider = provider;
-      this.sdk = new AdenaSDK(provider);
-      this._type = type;
-      await this.sdk.connectWallet();
-    } catch (error) {
-      console.error("Failed to initialize Social Wallet:", error);
-      throw error;
-    }
+  public async initSocialWallet(loginType: SocialLoginType) {
+    const config = getSocialWalletConfig(loginType);
+    const provider = this.createSocialWalletProvider(loginType, config);
+    this.provider = provider;
+    this.sdk = new AdenaSDK(provider);
+    this._type = loginType;
+    await this.sdk.connectWallet();
   }
 
   private getSocialWallet() {
@@ -57,8 +55,8 @@ export class SocialWalletClient implements WalletClient {
     return this.provider;
   }
 
-  private createSocialWalletProvider(type: SocialLoginType, config: SocialWalletConfig) {
-    switch (type) {
+  private createSocialWalletProvider(loginType: SocialLoginType, config: SocialWalletConfig) {
+    switch (loginType) {
       case "email":
         return GnoSocialWalletProvider.createEmail(config);
       case "google":
@@ -72,16 +70,16 @@ export class SocialWalletClient implements WalletClient {
     return this.provider !== null && this.sdk !== null;
   };
 
-  public get type(): SocialLoginType | null {
-    return this._type;
-  }
-
   public getWalletType(): WalletType {
     return "SOCIAL_WALLET";
   }
 
   public getLoginType(): SocialLoginType | null {
-    return this.type;
+    return this._type;
+  }
+
+  public get type(): SocialLoginType | null {
+    return this._type;
   }
 
   public async getAddress(): Promise<string | null> {
@@ -92,18 +90,30 @@ export class SocialWalletClient implements WalletClient {
   }
 
   public async getAccount(): Promise<WalletResponse<AccountInfo>> {
-    if (!this.sdk || !this.provider) {
-      throw new Error("Social wallet not initialized");
+    const accountInfo = (await createTimeout(this.getSocialWallet().getAccount())) as WalletResponse<AccountInfo>;
+    if (!accountInfo.data && accountInfo.type === "NO_ACCOUNT") {
+      const newAddress = await this.provider?.getWallet()?.getAddress();
+      return {
+        status: "success",
+        code: 0,
+        type: WalletResponseExecuteType.GET_ACCOUNT,
+        message: "Account not found",
+        data: {
+          ...DEFAULT_ACCOUNT_INFO,
+          chainId: DEFAULT_CHAIN_ID || "",
+          address: newAddress || "",
+        },
+      };
     }
 
-    const accountInfo = (await createTimeout(this.getSocialWallet().getAccount())) as WalletResponse<AccountInfo>;
     if (accountInfo.data && !!accountInfo.data.address) {
       this.address = accountInfo.data?.address;
     }
+
     return accountInfo;
   }
 
-  public addEstablishedSite = async (sitename?: string): Promise<WalletResponse> => {
+  public addEstablishedSite = async (sitename: string): Promise<WalletResponse> => {
     if (!this.sdk) {
       throw new Error("Social wallet not initialized");
     }
@@ -151,22 +161,6 @@ export class SocialWalletClient implements WalletClient {
         ) as WalletResponse<SendTransactionResponse<T | null>>;
       }),
     );
-
-    // const response = await createTimeout(this.sdk.broadcastTransaction({ tx }));
-
-    // return {
-    //   status: response.status,
-    //   code: response.code,
-    //   type: WalletResponseExecuteType.DO_CONTRACT,
-    //   message: response.message,
-    //   data: response.data
-    //     ? {
-    //         hash: response.data.hash,
-    //         height: "",
-    //         data: null,
-    //       }
-    //     : null,
-    // };
   };
 
   public addEventChangedAccount = (callback: (accountId: string) => void) => {
@@ -192,23 +186,22 @@ export class SocialWalletClient implements WalletClient {
     });
   };
 
-  public static async createSocialWalletClient(type: SocialLoginType) {
+  public static async createSocialWalletClient(loginType: SocialLoginType) {
     if (typeof window === "undefined") {
       return null;
     }
 
     const client = new SocialWalletClient();
-
-    if (type) {
+    if (loginType) {
       try {
-        await client.initSocialWallet(type);
+        await client.initSocialWallet(loginType);
         return client;
       } catch (error) {
         console.error("Failed to initialize Social wallet:", error);
-
         return null;
       }
     }
+
     return new SocialWalletClient();
   }
 

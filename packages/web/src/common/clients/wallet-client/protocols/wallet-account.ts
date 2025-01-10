@@ -16,3 +16,16 @@ export interface AccountInfo {
   sequence: number;
   chainId: string;
 }
+
+export const DEFAULT_ACCOUNT_INFO: AccountInfo = {
+  address: "",
+  coins: "0ugnot",
+  chainId: "",
+  status: "IN_ACTIVE",
+  publicKey: {
+    "@type": "",
+    value: "",
+  },
+  accountNumber: 0,
+  sequence: 0,
+};
