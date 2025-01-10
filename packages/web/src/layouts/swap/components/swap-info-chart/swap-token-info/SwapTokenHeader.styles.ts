@@ -44,7 +44,7 @@ export const SwapTokenHeaderWrapper = styled.div<Props>`
           width: 100%;
           display: flex;
           align-items: center;
-          gap: 6px;
+          gap: 4px;
           color: ${({ theme }) => theme.color.text04};
           font-size: 10px;
           font-weight: 400;
