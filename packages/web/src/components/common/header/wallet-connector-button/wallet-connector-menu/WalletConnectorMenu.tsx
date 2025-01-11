@@ -1,7 +1,8 @@
 import BigNumber from "bignumber.js";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { useTranslation } from "next-i18next";
 import React, { useCallback, useMemo, useRef, useState } from "react";
+import { makeBankSendGNOTMessage } from "@common/clients/wallet-client/transaction-messages";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconCopy from "@components/common/icons/IconCopy";
@@ -12,7 +13,7 @@ import ThemeModeContainer from "@containers/theme-mode-container/ThemeModeContai
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { AccountModel } from "@models/account/account-model";
 import { ITokenResponse } from "@repositories/token";
-import { CommonState } from "@states/index";
+import { CommonState, WalletState } from "@states/index";
 import { roundDownDecimalNumber } from "@utils/regex";
 import { formatAddress } from "@utils/string-utils";
 import IconPolygon from "@components/common/icons/IconPolygon";
@@ -30,6 +31,7 @@ import {
 import SocialWalletNotification from "./SocialWalletNotification";
 import { WalletTypeState } from "src/types/wallet.types";
 import RenderWalletIcon from "../RenderWalletIcon";
+import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
 
 interface IconButtonClickProps {
   copyClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -99,6 +101,8 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   gnotToken,
   walletType,
 }) => {
+  const [walletClient] = useAtom(WalletState.client);
+
   const { i18n, t } = useTranslation();
   const { getAccountUrl } = useGnoscanUrl();
   const network = useAtomValue(CommonState.network);
@@ -143,6 +147,20 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
     onMenuToggle();
     connectAdenaClient();
   }, [connectAdenaClient]);
+
+  // SendTransaction Example
+  const swapTransaction = () => {
+    const messages = makeBankSendGNOTMessage({
+      from: "g1z5cvp07l80pvsu8rvyyncjrrktpzm8rek4nnnp",
+      to: "g1z5cvp07l80pvsu8rvyyncjrrktpzm8rek4nnnp",
+      sendAmount: "1000000",
+    });
+    walletClient
+      ?.sendTransaction({ messages: [messages], gasFee: DEFAULT_GAS_FEE, gasWanted: DEFAULT_GAS_WANTED })
+      .then(result => {
+        console.log(result, "result");
+      });
+  };
 
   return (
     <>
@@ -193,7 +211,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
             />
           </div>
         )}
-
+        <button onClick={swapTransaction}>TXTXTXTXTXT</button>
         <div className="theme-container">
           <ThemeSelector className="mt-16">
             <span>{t("HeaderFooter:language")}</span>

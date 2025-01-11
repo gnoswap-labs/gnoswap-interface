@@ -4,10 +4,11 @@ import {
   SocialCustomConfigure,
   SocialGoogleConfigure,
   SocialTwitterConfigure,
-  TransactionBuilder,
   TransactionMessage as SDKTransactionMessage,
   WalletResponseExecuteType,
 } from "@adena-wallet/sdk";
+import { base64ToUint8Array, Tx } from "@gnolang/tm2-js-client";
+
 import { createTimeout } from "@common/utils/client-util";
 import { DEFAULT_GAS_WANTED } from "@common/values";
 import { SocialLoginType, WalletType } from "src/types/wallet.types";
@@ -27,6 +28,7 @@ import { getSocialWalletConfig } from "./config";
 import { parseTransactionResponse } from "../adena/adena-client.util";
 import { AdenaSendTransactionSuccessResponse } from "../adena/adena";
 import { DEFAULT_CHAIN_ID } from "@constants/environment.constant";
+import { createDocument, documentToTx } from "@utils/messages.utils";
 
 export class SocialWalletClient implements WalletClient {
   private sdk: AdenaSDK | null;
@@ -135,10 +137,12 @@ export class SocialWalletClient implements WalletClient {
   public sendTransaction = async <T = string[]>(
     transaction: SendTransactionRequestParam,
   ): Promise<WalletResponse<SendTransactionResponse<T | null>>> => {
+    // Check if the SDK is initialized
     if (!this.sdk) {
       throw new Error("Social wallet not initialized");
     }
 
+    // Convert messages from an incoming transaction to SDK format
     const messages: SDKTransactionMessage[] = transaction.messages.map(message => {
       if (isContractMessage(message)) {
         return {
@@ -152,14 +156,40 @@ export class SocialWalletClient implements WalletClient {
       };
     });
 
-    const tx = TransactionBuilder.create()
-      .messages(...messages)
-      .gasWanted(transaction.gasWanted || DEFAULT_GAS_WANTED)
-      .memo(transaction.memo || "")
-      .build();
+    // Get Current account information
+    const account = await this.sdk.getAccount();
+    // Create a document from the account information and messages
+    const document = createDocument({
+      accountNumber: Number(account.data?.accountNumber) || 0,
+      accountSequence: Number(account.data?.sequence) || 0,
+      chainId: DEFAULT_CHAIN_ID || "",
+      messages,
+      gasWanted: transaction.gasWanted || DEFAULT_GAS_WANTED,
+      gasFee: transaction.gasFee || 1000000,
+    });
+    // Convert Document to Tx format (documentToTx)
+    const tx = documentToTx(document);
 
+    // Signing transactions with signTransaction in the SDK
+    const signedTxResponse = await this.sdk.signTransaction({ tx });
+    // Decode the signed transaction and broadcast it to the network using broadcastTransaction in the SDK
+    const decoded = base64ToUint8Array(signedTxResponse.data?.encodedTransaction || "");
+    if (!decoded) {
+      return {
+        status: "error",
+        code: 1,
+        type: WalletResponseExecuteType.SIGN_TX,
+        message: "Failed to sign transaction",
+        data: null,
+      };
+    }
+
+    // Binary data converted from base64-encoded transactions to Uint8Array
+    const signedTx = Tx.decode(decoded);
+
+    // Broadcasting transactions to the network with broadcastTransaction
     return createTimeout<WalletResponse<SendTransactionResponse<T | null>>>(
-      this.sdk.broadcastTransaction({ tx }).then(response => {
+      this.sdk.broadcastTransaction({ tx: signedTx }).then(response => {
         console.log("Social Wallet Response", response);
         return parseTransactionResponse(
           response as WalletResponse<AdenaSendTransactionSuccessResponse>,
