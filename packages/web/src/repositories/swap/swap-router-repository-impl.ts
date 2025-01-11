@@ -28,6 +28,7 @@ import {
   makeWrapTokenMessages,
 } from "./swap-router.message";
 import { calculateTotalAmountOut } from "@utils/swap-route-utils";
+import { withSocialWalletApproval } from "@hooks/wallet/ui/use-approve-transaction-modal";
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
@@ -137,11 +138,15 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    return await this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    return withSocialWalletApproval(this.walletClient!, async () => {
+      return this.walletClient!.sendTransaction({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
     });
+
+    // return await this.walletClient!.sendTransaction({
+    //   messages,
+    //   gasFee: DEFAULT_GAS_FEE,
+    //   memo: "",
+    // });
   };
 
   public sendWrapToken = async (request: WrapTokenRequest): Promise<WalletResponse<{ hash: string }>> => {

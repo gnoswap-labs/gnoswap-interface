@@ -17,7 +17,12 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconArrowDown from "../icons/IconArrowDown";
 import IconArrowUp from "../icons/IconArrowUp";
 
-const ApproveTransactionModal = () => {
+interface Props {
+  onConfirm: () => void;
+  onCancel: () => void;
+}
+
+const ApproveTransactionModal = ({ onConfirm, onCancel }: Props) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
 
   return (
@@ -26,7 +31,7 @@ const ApproveTransactionModal = () => {
         <ApproveTransactionModalHeader>
           <div className="title">Approve Transaction</div>
           <div className="close-wrapper">
-            <button className="close-button">
+            <button className="close-button" onClick={onCancel}>
               <IconClose className="close-icon" />
             </button>
           </div>
@@ -97,10 +102,12 @@ const ApproveTransactionModal = () => {
 
         <ApproveTransactionButtonWrapper>
           <Button
+            onClick={onConfirm}
             text={"Approve"}
             style={{ fullWidth: true, height: 57, fontType: "body7", hierarchy: ButtonHierarchy.Primary }}
           />
           <Button
+            onClick={onCancel}
             text={"Cancel"}
             style={{ fullWidth: true, height: 57, fontType: "body7", hierarchy: ButtonHierarchy.Dark }}
           />
