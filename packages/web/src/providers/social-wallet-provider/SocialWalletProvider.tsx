@@ -50,59 +50,110 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
     [sessionId, connectingState],
   );
 
-  const connect = React.useCallback(
-    async (loginType: SocialWalletLoginType) => {
-      try {
-        setConnectingState("loading");
-        setError(null);
+  const connect = async (loginType: SocialWalletLoginType) => {
+    try {
+      setConnectingState("loading");
+      setError(null);
 
-        const socialWalletClient = await SocialWalletClient.createSocialWalletClient(loginType);
-        if (!socialWalletClient) {
-          throw new Error("Failed to create socail wallet client");
-        }
-
-        sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "SOCIAL_WALLET");
-        sessionStorage.setItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY, loginType);
-        setWalletClient(socialWalletClient);
-        accountRepository.setWalletClient(socialWalletClient);
-
-        const established = await accountRepository.addEstablishedSite().catch(() => null);
-        if (!established || established.code === 4000) {
-          throw new Error("Failed to established site");
-        }
-
-        if (established.code === 0 || established.code === 4001) {
-          const account = await accountRepository.getAccount();
-          if (!account) {
-            throw new Error("Failed to get account");
-          }
-
-          sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
-          // const availNetwork = SUPPORT_CHAIN_IDS.includes(account.chainId);
-          // if (!availNetwork) {
-          //   await accountRepository.switchNetwork(SUPPORT_CHAIN_IDS[0]);
-          // }
-          setWalletAccount(account);
-          accountRepository.setConnectedWallet(true);
-          setConnectingState("done");
-          setTimeout(() => {
-            setConnectingState("initial");
-          }, 1000);
-        } else {
-          accountRepository.setConnectedWallet(false);
-          setConnectingState("error");
-          setTimeout(() => {
-            setConnectingState("initial");
-          }, 1000);
-        }
-      } catch (err) {
-        sessionStorage.removeItem(GNOSWAP_WALLET_TYPE_KEY);
-        setConnectingState("error");
-        setError(err instanceof Error ? err.message : "Failed to connect Social Wallet");
+      const socialWalletClient = await SocialWalletClient.createSocialWalletClient(loginType);
+      if (!socialWalletClient) {
+        throw new Error("Failed to create socail wallet client");
       }
-    },
-    [accountRepository, SocialWalletClient, setWalletClient, setWalletAccount],
-  );
+
+      sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "SOCIAL_WALLET");
+      sessionStorage.setItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY, loginType);
+      setWalletClient(socialWalletClient);
+      accountRepository.setWalletClient(socialWalletClient);
+
+      const established = await accountRepository.addEstablishedSite().catch(() => null);
+      if (!established || established.code === 4000) {
+        throw new Error("Failed to established site");
+      }
+
+      if (established.code === 0 || established.code === 4001) {
+        const account = await accountRepository.getAccount();
+        if (!account) {
+          throw new Error("Failed to get account");
+        }
+
+        sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
+        // const availNetwork = SUPPORT_CHAIN_IDS.includes(account.chainId);
+        // if (!availNetwork) {
+        //   await accountRepository.switchNetwork(SUPPORT_CHAIN_IDS[0]);
+        // }
+        setWalletAccount(account);
+        accountRepository.setConnectedWallet(true);
+        setConnectingState("done");
+        setTimeout(() => {
+          setConnectingState("initial");
+        }, 1000);
+      } else {
+        accountRepository.setConnectedWallet(false);
+        setConnectingState("error");
+        setTimeout(() => {
+          setConnectingState("initial");
+        }, 1000);
+      }
+    } catch (err) {
+      sessionStorage.removeItem(GNOSWAP_WALLET_TYPE_KEY);
+      setConnectingState("error");
+      setError(err instanceof Error ? err.message : "Failed to connect Social Wallet");
+    }
+  };
+
+  // const connect = React.useCallback(
+  //   async (loginType: SocialWalletLoginType) => {
+  //     try {
+  //       setConnectingState("loading");
+  //       setError(null);
+
+  //       const socialWalletClient = await SocialWalletClient.createSocialWalletClient(loginType);
+  //       if (!socialWalletClient) {
+  //         throw new Error("Failed to create socail wallet client");
+  //       }
+
+  //       sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "SOCIAL_WALLET");
+  //       sessionStorage.setItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY, loginType);
+  //       setWalletClient(socialWalletClient);
+  //       accountRepository.setWalletClient(socialWalletClient);
+
+  //       const established = await accountRepository.addEstablishedSite().catch(() => null);
+  //       if (!established || established.code === 4000) {
+  //         throw new Error("Failed to established site");
+  //       }
+
+  //       if (established.code === 0 || established.code === 4001) {
+  //         const account = await accountRepository.getAccount();
+  //         if (!account) {
+  //           throw new Error("Failed to get account");
+  //         }
+
+  //         sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
+  //         // const availNetwork = SUPPORT_CHAIN_IDS.includes(account.chainId);
+  //         // if (!availNetwork) {
+  //         //   await accountRepository.switchNetwork(SUPPORT_CHAIN_IDS[0]);
+  //         // }
+  //         setWalletAccount(account);
+  //         accountRepository.setConnectedWallet(true);
+  //         setConnectingState("done");
+  //         setTimeout(() => {
+  //           setConnectingState("initial");
+  //         }, 1000);
+  //       } else {
+  //         accountRepository.setConnectedWallet(false);
+  //         setConnectingState("error");
+  //         setTimeout(() => {
+  //           setConnectingState("initial");
+  //         }, 1000);
+  //       }
+  //     } catch (err) {
+  //       sessionStorage.removeItem(GNOSWAP_WALLET_TYPE_KEY);
+  //       setConnectingState("error");
+  //       setError(err instanceof Error ? err.message : "Failed to connect Social Wallet");
+  //     }
+  //   },
+  //   [accountRepository, SocialWalletClient, setWalletClient, setWalletAccount],
+  // );
 
   const disconnect = React.useCallback(async () => {
     try {

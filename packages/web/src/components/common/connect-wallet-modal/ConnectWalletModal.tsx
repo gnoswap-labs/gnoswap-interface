@@ -29,16 +29,38 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
   const { openModal: openSocialLoadingModal } = useConnectSocialWalletModal();
   const { openModal: openApproveTransactionModal } = useApproveTransactionModal();
 
-  const handleSocialConnect = useCallback(
-    async (type: SocialWalletLoginType) => {
-      try {
-        close();
-        openSocialLoadingModal(type);
-        await socialWalletConnect(type);
-      } catch {}
-    },
-    [socialWalletConnect],
-  );
+  const [email, setEmail] = React.useState<string>("");
+  const [isEmailValid, setIsEmailValid] = React.useState<boolean>(false);
+  const [isSubmitAttempted, setIsSubmitAttempted] = React.useState<boolean>(false);
+  const isEmailErrorVisible = !!email && !isEmailValid && isSubmitAttempted;
+
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEmail(value);
+    setIsEmailValid(isValidEmail(value));
+  };
+
+  const handleEmailSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitAttempted(true);
+
+    if (isEmailValid) {
+      handleSocialConnect("email");
+    }
+  };
+
+  const handleSocialConnect = async (type: SocialWalletLoginType) => {
+    try {
+      close();
+      openSocialLoadingModal(type);
+      await socialWalletConnect(type);
+    } catch {}
+  };
 
   const onClickClose = useCallback(() => {
     close();
@@ -56,23 +78,26 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
         <div className="content">
           {/* Email Login */}
           <div className="login-section" style={{ "--login-section-gap": "4px" } as React.CSSProperties}>
-            <div className={cx("email-section", { error: false })}>
+            <div className={cx("email-section", { error: isEmailErrorVisible })}>
               <input
                 placeholder="Email Address"
                 type="email"
                 inputMode="email"
                 autoComplete={"off"}
+                value={email}
+                onChange={handleEmailChange}
+                onKeyDown={e => {
+                  if (e.key === "Enter") {
+                    handleEmailSubmit(e);
+                  }
+                }}
                 spellCheck={"false"}
               />
-              <button
-                onClick={() => {
-                  handleSocialConnect("email");
-                }}
-              >
+              <button onClick={handleEmailSubmit}>
                 <IconArrowRight className="right-chevron" />
               </button>
             </div>
-            {false && <div className="validation-message">Please enter a valid email</div>}
+            {isEmailErrorVisible && <div className="validation-message">Please enter a valid email</div>}
           </div>
 
           <ConnectWalletModalDivider />
