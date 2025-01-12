@@ -1,23 +1,88 @@
-import { WalletTypeState } from "src/types/wallet.types";
+import { eventBus } from "@containers/modal-container/ModalContainer";
+import { WalletClient } from "@common/clients/wallet-client";
 
-type TransactionFunction = (...args: []) => Promise<unknown>;
+const TX_EVENTS = {
+  SHOW_MODAL: "show-approve-modal",
+  APPROVED: "transaction-approved",
+  REJECTED: "transaction-rejected",
+};
 
-export const withTransactionHandler =
-  (walletType: WalletTypeState, transactionFn: TransactionFunction) =>
-  async (...args: Parameters<TransactionFunction>) => {
-    if (walletType.type === "SOCIAL_WALLET") {
-      // const { openSocialTransactionModal, closeSocialTransactionModal } = useSocialWalletConnectingModal();
-      // try {
-      //   openSocialTransactionModal();
-      //   const result = await transactionFn(...args);
-      //   closeSocialTransactionModal();
-      //   return result;
-      // } catch (error) {
-      //   closeSocialTransactionModal();
-      //   throw error;
-      // }
+// type TransactionEvent = (typeof TX_EVENTS)[keyof typeof TX_EVENTS];
+
+/**
+ *
+ * When linked to a social wallet
+ * Brings up the transaction authorization modal and returns whether the user has authorized or not.
+ *
+ * Utility function to handle social wallet transaction approvals
+ *
+ * This function shows an approval modal for social wallet transactions
+ * and returns a promise that resolves with the user's decision
+ *
+ * @returns Whether the user is approved - Promise<boolean>
+ *
+ */
+export const showApproveTransactionModal = async (): Promise<boolean> => {
+  return new Promise((resolve, reject) => {
+    try {
+      const eventHandlers = {
+        handleApprove: () => {
+          cleanup();
+          resolve(true);
+        },
+        handleReject: () => {
+          cleanup();
+          resolve(false);
+        },
+      };
+
+      const cleanup = () => {
+        eventBus.off(TX_EVENTS.APPROVED, eventHandlers.handleApprove);
+        eventBus.off(TX_EVENTS.REJECTED, eventHandlers.handleReject);
+      };
+
+      eventBus.on(TX_EVENTS.APPROVED, eventHandlers.handleApprove);
+      eventBus.on(TX_EVENTS.REJECTED, eventHandlers.handleReject);
+
+      eventBus.emit(TX_EVENTS.SHOW_MODAL);
+
+      const TIMEOUT_MS = 1 * 60 * 1000;
+      setTimeout(() => {
+        cleanup();
+        reject(new Error("Transaction approval timeout"));
+      }, TIMEOUT_MS);
+    } catch (error) {
+      reject(error);
     }
+  });
+};
 
-    // Adena Wallet Transaction
-    return transactionFn(...args);
-  };
+/**
+ *
+ * Higher-order function that wraps a transaction execution with social-wallet approval flow
+ *
+ * If the wallet is a social-wallet, it will show an approval modal before executing the transaction
+ * If not, it will execute the transaction directly
+ *
+ * @param The WalletClient instance - walletClient
+ * @param The transaction function to execution - executeTransaction
+ * @returns Promise<T> - The result of the transaction execution
+ *
+ */
+export const withSocialWalletApproval = async <T>(
+  walletClient: WalletClient | null,
+  executeTransaction: () => Promise<T>,
+): Promise<T> => {
+  if (!walletClient) {
+    throw new Error("Wallet client is not initialized");
+  }
+
+  if (walletClient.getWalletType() === "SOCIAL_WALLET") {
+    const isApproved = await showApproveTransactionModal();
+    if (!isApproved) {
+      throw new Error("Transaction rejected");
+    }
+  }
+
+  return executeTransaction();
+};

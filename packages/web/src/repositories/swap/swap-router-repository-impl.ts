@@ -28,8 +28,8 @@ import {
   makeWrapTokenMessages,
 } from "./swap-router.message";
 import { calculateTotalAmountOut } from "@utils/swap-route-utils";
-import { withSocialWalletApproval } from "@hooks/wallet/ui/use-approve-transaction-modal";
 import { eventBus } from "@containers/modal-container/ModalContainer";
+import { withSocialWalletApproval } from "@utils/transaction-utils";
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
@@ -182,17 +182,12 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    if (this.walletClient?.getWalletType() === "SOCIAL_WALLET") {
-      const isApproved = await this.showApproveTransactionModal();
-      if (!isApproved) {
-        throw new Error("Transaction rejected by user");
-      }
-    }
-
-    return await this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    return withSocialWalletApproval(this.walletClient, () => {
+      return this.walletClient!.sendTransaction({
+        messages,
+        gasFee: DEFAULT_GAS_FEE,
+        memo: "",
+      });
     });
   };
 
