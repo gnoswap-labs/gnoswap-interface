@@ -29,6 +29,7 @@ import {
 } from "./swap-router.message";
 import { calculateTotalAmountOut } from "@utils/swap-route-utils";
 import { withSocialWalletApproval } from "@hooks/wallet/ui/use-approve-transaction-modal";
+import { eventBus } from "@containers/modal-container/ModalContainer";
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
@@ -99,6 +100,49 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     return await drySwap(this.rpcProvider, PACKAGE_ROUTER_PATH, request);
   };
 
+  private async showApproveTransactionModal(): Promise<boolean> {
+    return new Promise(resolve => {
+      const handleApprove = () => {
+        eventBus.off("transaction-approved", handleApprove);
+        eventBus.off("transaction-rejected", handleReject);
+        resolve(true);
+      };
+
+      const handleReject = () => {
+        eventBus.off("transaction-approved", handleApprove);
+        eventBus.off("transaction-rejected", handleReject);
+        resolve(false);
+      };
+
+      eventBus.on("transaction-approved", handleApprove);
+      eventBus.on("transaction-rejected", handleReject);
+      eventBus.emit("show-approve-modal");
+    });
+  }
+
+  public sendSwapRoute = async (
+    request: SwapRouteRequest,
+  ): Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>> => {
+    if (this.rpcProvider === null) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
+    const address = await this.getAddress();
+
+    await this.validateAndGetDrySwap(request, "EXACT_IN");
+
+    const messages = await makeExactInSwapRouteMessageWithApproves(
+      { ...request, caller: address },
+      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    );
+
+    return await this.walletClient!.sendTransaction({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      memo: "",
+    });
+  };
+
   public sendExactInSwapRoute = async (
     request: SwapRouteRequest,
   ): Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>> => {
@@ -138,15 +182,18 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    return withSocialWalletApproval(this.walletClient!, async () => {
-      return this.walletClient!.sendTransaction({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
-    });
+    if (this.walletClient?.getWalletType() === "SOCIAL_WALLET") {
+      const isApproved = await this.showApproveTransactionModal();
+      if (!isApproved) {
+        throw new Error("Transaction rejected by user");
+      }
+    }
 
-    // return await this.walletClient!.sendTransaction({
-    //   messages,
-    //   gasFee: DEFAULT_GAS_FEE,
-    //   memo: "",
-    // });
+    return await this.walletClient!.sendTransaction({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      memo: "",
+    });
   };
 
   public sendWrapToken = async (request: WrapTokenRequest): Promise<WalletResponse<{ hash: string }>> => {

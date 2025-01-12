@@ -21,9 +21,13 @@ export const openedModal = atom<boolean>(false);
 
 export const openedTransactionModal = atom<boolean>(false);
 
+export const openedApproveTransactionModal = atom<boolean>(false);
+
 export const modalContent = atom<React.ReactNode | null>(null);
 
 export const transactionModalContent = atom<React.ReactNode | null>(null);
+
+export const approveTransactinoModalContent = atom<React.ReactNode | null>(null);
 
 export const breakpoint = atom<DEVICE_TYPE>(DEVICE_TYPE.WEB);
 

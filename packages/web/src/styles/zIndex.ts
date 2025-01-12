@@ -5,5 +5,6 @@ export enum Z_INDEX {
   modalOverlay = 1040,
   modal = 1060,
   secondModal = 1070,
+  thirdModal = 1075,
   modalTooltip = 1080,
 }
