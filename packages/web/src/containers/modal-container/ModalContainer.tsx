@@ -79,7 +79,6 @@ const ModalContainer: React.FC = () => {
   }, []);
 
   const closeApproveTransactionModal = useCallback(() => {
-    closeTransactionModal();
     setOpenedApproveTransactionModal(false);
     setApproveTransactionModalContent(null);
   }, []);
@@ -92,6 +91,7 @@ const ModalContainer: React.FC = () => {
 
     const handleReject = () => {
       eventBus.emit("transaction-rejected");
+      closeTransactionModal();
       closeApproveTransactionModal();
     };
 
