@@ -21,6 +21,7 @@ import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import { IncentivizePoolModel, PoolModel } from "@models/pool/pool-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 import { evaluateExpressionToNumber, evaluateExpressionToObject, makeABCIParams } from "@utils/rpc-utils";
+import { withSocialWalletApproval } from "@utils/transaction-utils";
 import { PoolListResponse, PoolRepository, PoolResponse } from ".";
 import {
   makeCreateExternalIncentiveMessageWithApproves,
@@ -248,9 +249,12 @@ export class PoolRepositoryImpl implements PoolRepository {
 
     const messages = [...createPoolMessages, ...mintMessages, nftSetUriMessage];
 
-    return this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
+    return withSocialWalletApproval(this.walletClient, messages, () => {
+      return this.walletClient!.sendTransaction({
+        messages,
+        gasFee: DEFAULT_GAS_FEE,
+        memo: "",
+      });
     });
   };
 
@@ -274,9 +278,12 @@ export class PoolRepositoryImpl implements PoolRepository {
 
     const messages = [...mintMessages, nftSetUriMessage];
 
-    return this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
+    return withSocialWalletApproval(this.walletClient, messages, () => {
+      return this.walletClient!.sendTransaction({
+        messages,
+        gasFee: DEFAULT_GAS_FEE,
+        memo: "",
+      });
     });
   };
 

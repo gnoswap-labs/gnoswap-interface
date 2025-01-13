@@ -196,10 +196,12 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const messages = makeWrapTokenMessages({ ...request, caller: address });
 
-    return await this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    return withSocialWalletApproval(this.walletClient, messages, () => {
+      return this.walletClient!.sendTransaction({
+        messages,
+        gasFee: DEFAULT_GAS_FEE,
+        memo: "",
+      });
     });
   };
 
@@ -208,10 +210,12 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const messages = makeUnwrapTokenMessages({ ...request, caller: address });
 
-    return await this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    return withSocialWalletApproval(this.walletClient, messages, () => {
+      return this.walletClient!.sendTransaction({
+        messages,
+        gasFee: DEFAULT_GAS_FEE,
+        memo: "",
+      });
     });
   };
 

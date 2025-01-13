@@ -6,6 +6,7 @@ import { CommonError } from "@common/errors";
 import { DEFAULT_GAS_FEE } from "@common/values";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { makeQueryParameter } from "@utils/network.utils";
+import { withSocialWalletApproval } from "@utils/transaction-utils";
 import { LaunchpadRepository } from "./launchpad-repository";
 import {
   makeCollectRewardByDepositIdMessage,
@@ -109,10 +110,12 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
       (packagePath, owner, spender) => getGRC20Allowance(this.gnoProvider!, packagePath, owner, spender),
     );
 
-    return this.walletClient.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    return withSocialWalletApproval(this.walletClient, messages, () => {
+      return this.walletClient!.sendTransaction({
+        messages,
+        gasFee: DEFAULT_GAS_FEE,
+        memo: "",
+      });
     });
   }
 
@@ -123,10 +126,12 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
 
     const messages = makeCollectRewardByProjectIdMessage({ projectId, caller });
 
-    return this.walletClient.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    return withSocialWalletApproval(this.walletClient, messages, () => {
+      return this.walletClient!.sendTransaction({
+        messages,
+        gasFee: DEFAULT_GAS_FEE,
+        memo: "",
+      });
     });
   }
 
@@ -137,10 +142,12 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
 
     const messages = makeCollectRewardByDepositIdMessage({ depositId, caller });
 
-    return this.walletClient.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    return withSocialWalletApproval(this.walletClient, messages, () => {
+      return this.walletClient!.sendTransaction({
+        messages,
+        gasFee: DEFAULT_GAS_FEE,
+        memo: "",
+      });
     });
   }
 
@@ -151,10 +158,12 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
 
     const messages = makeCollectRewardWithDepositByProjectIdMessage({ projectId, caller });
 
-    return this.walletClient.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    return withSocialWalletApproval(this.walletClient, messages, () => {
+      return this.walletClient!.sendTransaction({
+        messages,
+        gasFee: DEFAULT_GAS_FEE,
+        memo: "",
+      });
     });
   }
 
@@ -165,10 +174,12 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
 
     const messages = makeCollectRewardWithDepositByDepositIdMessage({ depositId, caller });
 
-    return this.walletClient.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    return withSocialWalletApproval(this.walletClient, messages, () => {
+      return this.walletClient!.sendTransaction({
+        messages,
+        gasFee: DEFAULT_GAS_FEE,
+        memo: "",
+      });
     });
   }
 }
