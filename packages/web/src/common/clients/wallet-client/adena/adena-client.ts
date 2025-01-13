@@ -120,4 +120,9 @@ export class AdenaClient implements WalletClient {
   public addNetwork = (network: AddNetworkRequestParam): Promise<WalletResponse<AddNetworkResponse>> => {
     return createTimeout(this.getAdena().AddNetwork(network));
   };
+
+  public async disconnect(): Promise<void> {
+    this.adena = null;
+    this.address = null;
+  }
 }

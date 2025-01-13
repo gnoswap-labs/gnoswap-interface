@@ -1,5 +1,4 @@
 import React, { useCallback } from "react";
-import { AdenaSDK } from "@adena-wallet/sdk";
 
 import { SocialWalletLoginType } from "./types";
 
@@ -11,8 +10,6 @@ import { ACCOUNT_SESSION_INFO_KEY, GNOSWAP_SOCIAL_LOGIN_TYPE_KEY, GNOSWAP_WALLET
 import { SocialLoginType } from "src/types/wallet.types";
 
 interface SocialWalletContextType {
-  sdk: AdenaSDK | null;
-  address: string | null;
   connectingState: "initial" | "loading" | "error" | "done" | "";
   connect: (type: SocialWalletLoginType) => Promise<void>;
   disconnect: () => Promise<void>;
@@ -24,15 +21,29 @@ export const SocialWalletContext = React.createContext<SocialWalletContextType |
 
 export const SocialWalletProvider = ({ children }: { children: React.ReactNode }) => {
   const { accountRepository } = useGnoswapContext();
-  const [sdk, setSdk] = React.useState<AdenaSDK | null>(null);
-  const [address, setAddress] = React.useState<string | null>(null);
   const [connectingState, setConnectingState] = React.useState<"initial" | "loading" | "error" | "done" | "">(
     "initial",
   );
   const [sessionId] = useAtom(CommonState.sessionId);
   const [error, setError] = React.useState<string | null>(null);
-  const [, setWalletClient] = useAtom(WalletState.client);
+  const [walletClient, setWalletClient] = useAtom(WalletState.client);
   const [, setWalletAccount] = useAtom(WalletState.account);
+
+  const resetWalletState = () => {
+    setWalletClient(null);
+    setWalletAccount(null);
+    accountRepository.setConnectedWallet(false);
+
+    sessionStorage.removeItem(GNOSWAP_WALLET_TYPE_KEY);
+    sessionStorage.removeItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY);
+    sessionStorage.removeItem(ACCOUNT_SESSION_INFO_KEY);
+  };
+
+  const resetConnectingState = (delay = 1000) => {
+    setTimeout(() => {
+      setConnectingState("initial");
+    }, delay);
+  };
 
   const connectSocialWalletClient = useCallback(
     async (loginType: SocialLoginType) => {
@@ -84,93 +95,30 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
         setWalletAccount(account);
         accountRepository.setConnectedWallet(true);
         setConnectingState("done");
-        setTimeout(() => {
-          setConnectingState("initial");
-        }, 1000);
+        resetConnectingState();
       } else {
         accountRepository.setConnectedWallet(false);
         setConnectingState("error");
-        setTimeout(() => {
-          setConnectingState("initial");
-        }, 1000);
+        resetConnectingState();
       }
     } catch (err) {
-      sessionStorage.removeItem(GNOSWAP_WALLET_TYPE_KEY);
+      resetWalletState();
       setConnectingState("error");
       setError(err instanceof Error ? err.message : "Failed to connect Social Wallet");
     }
   };
 
-  // const connect = React.useCallback(
-  //   async (loginType: SocialWalletLoginType) => {
-  //     try {
-  //       setConnectingState("loading");
-  //       setError(null);
-
-  //       const socialWalletClient = await SocialWalletClient.createSocialWalletClient(loginType);
-  //       if (!socialWalletClient) {
-  //         throw new Error("Failed to create socail wallet client");
-  //       }
-
-  //       sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "SOCIAL_WALLET");
-  //       sessionStorage.setItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY, loginType);
-  //       setWalletClient(socialWalletClient);
-  //       accountRepository.setWalletClient(socialWalletClient);
-
-  //       const established = await accountRepository.addEstablishedSite().catch(() => null);
-  //       if (!established || established.code === 4000) {
-  //         throw new Error("Failed to established site");
-  //       }
-
-  //       if (established.code === 0 || established.code === 4001) {
-  //         const account = await accountRepository.getAccount();
-  //         if (!account) {
-  //           throw new Error("Failed to get account");
-  //         }
-
-  //         sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
-  //         // const availNetwork = SUPPORT_CHAIN_IDS.includes(account.chainId);
-  //         // if (!availNetwork) {
-  //         //   await accountRepository.switchNetwork(SUPPORT_CHAIN_IDS[0]);
-  //         // }
-  //         setWalletAccount(account);
-  //         accountRepository.setConnectedWallet(true);
-  //         setConnectingState("done");
-  //         setTimeout(() => {
-  //           setConnectingState("initial");
-  //         }, 1000);
-  //       } else {
-  //         accountRepository.setConnectedWallet(false);
-  //         setConnectingState("error");
-  //         setTimeout(() => {
-  //           setConnectingState("initial");
-  //         }, 1000);
-  //       }
-  //     } catch (err) {
-  //       sessionStorage.removeItem(GNOSWAP_WALLET_TYPE_KEY);
-  //       setConnectingState("error");
-  //       setError(err instanceof Error ? err.message : "Failed to connect Social Wallet");
-  //     }
-  //   },
-  //   [accountRepository, SocialWalletClient, setWalletClient, setWalletAccount],
-  // );
-
-  const disconnect = React.useCallback(async () => {
+  const disconnect = async () => {
     try {
-      if (sdk) {
-        await sdk.disconnectWallet();
-        setSdk(null);
-        setAddress(null);
+      if (walletClient) {
+        await walletClient.disconnect();
+        resetWalletState();
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to disconnect Social Wallet");
-    }
-  }, [sdk]);
+    } catch {}
+  };
 
   return (
-    <SocialWalletContext.Provider
-      value={{ sdk, address, connect, connectSocialWalletClient, connectingState, disconnect, error }}
-    >
+    <SocialWalletContext.Provider value={{ connect, connectSocialWalletClient, connectingState, disconnect, error }}>
       {children}
     </SocialWalletContext.Provider>
   );

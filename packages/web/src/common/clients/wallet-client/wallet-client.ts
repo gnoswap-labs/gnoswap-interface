@@ -16,4 +16,5 @@ export interface WalletClient
   getAddress: () => Promise<string | null>;
   getWalletType(): WalletType;
   getLoginType?(): SocialLoginType | null;
+  disconnect(): Promise<void>;
 }

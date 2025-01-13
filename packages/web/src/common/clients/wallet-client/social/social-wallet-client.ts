@@ -43,6 +43,20 @@ export class SocialWalletClient implements WalletClient {
     this._type = null;
   }
 
+  public async disconnect() {
+    try {
+      await this.sdk?.disconnectWallet();
+
+      this.sdk = null;
+      this.provider = null;
+      this.address = null;
+      this._type = null;
+    } catch (error) {
+      console.error("Failed to disconnect social wallet:", error);
+      throw error;
+    }
+  }
+
   public async initSocialWallet(loginType: SocialLoginType) {
     const config = getSocialWalletConfig(loginType);
     const provider = this.createSocialWalletProvider(loginType, config);

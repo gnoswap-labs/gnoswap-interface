@@ -23,6 +23,8 @@ const balanceQueryKey = ["token-balance", "ugnot"];
 
 export const useWallet = () => {
   const { accountRepository } = useGnoswapContext();
+  const { disconnect } = useSocialWalletContext();
+
   const [sessionId, setSessionId] = useAtom(CommonState.sessionId);
   const [walletClient, setWalletClient] = useAtom(WalletState.client);
   const [walletAccount, setWalletAccount] = useAtom(WalletState.account);
@@ -101,6 +103,7 @@ export const useWallet = () => {
   }, [setNetwork, walletAccount]);
 
   const disconnectWallet = useCallback(() => {
+    disconnect();
     setWalletClient(null);
     setWalletAccount(null);
     setSessionId("");
