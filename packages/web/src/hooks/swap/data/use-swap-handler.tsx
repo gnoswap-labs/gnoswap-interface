@@ -1115,17 +1115,16 @@ export const useSwapHandler = () => {
     }
 
     // Special handling for isSameToken case
-    if (isSameToken && tokenAAmount && !tokenBAmount) {
-      setTokenBAmount(tokenAAmount);
-      return;
-    }
-
-    // Check for user input only for non-same token cases
     if (!isSameToken) {
       const isUserInput = tokenAAmount !== "" || tokenBAmount !== "";
       if (isUserInput) {
         return;
       }
+    }
+    // Special handling for isSameToken case
+    if (tokenAAmount && !tokenBAmount) {
+      setTokenBAmount(tokenAAmount);
+      return;
     }
   }, [
     tokenA,
