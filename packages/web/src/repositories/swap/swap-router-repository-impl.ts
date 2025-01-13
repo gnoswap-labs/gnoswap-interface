@@ -182,7 +182,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    return withSocialWalletApproval(this.walletClient, () => {
+    return withSocialWalletApproval(this.walletClient, messages, () => {
       return this.walletClient!.sendTransaction({
         messages,
         gasFee: DEFAULT_GAS_FEE,

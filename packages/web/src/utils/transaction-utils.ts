@@ -1,5 +1,6 @@
 import { eventBus } from "@containers/modal-container/ModalContainer";
 import { WalletClient } from "@common/clients/wallet-client";
+import { TransactionMessage } from "@common/clients/wallet-client/protocols";
 
 const TX_EVENTS = {
   SHOW_MODAL: "show-approve-modal",
@@ -22,7 +23,7 @@ const TX_EVENTS = {
  * @returns Whether the user is approved - Promise<boolean>
  *
  */
-export const showApproveTransactionModal = async (): Promise<boolean> => {
+export const showApproveTransactionModal = async (messages: TransactionMessage[]): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     try {
       const eventHandlers = {
@@ -44,7 +45,7 @@ export const showApproveTransactionModal = async (): Promise<boolean> => {
       eventBus.on(TX_EVENTS.APPROVED, eventHandlers.handleApprove);
       eventBus.on(TX_EVENTS.REJECTED, eventHandlers.handleReject);
 
-      eventBus.emit(TX_EVENTS.SHOW_MODAL);
+      eventBus.emit(TX_EVENTS.SHOW_MODAL, messages);
 
       const TIMEOUT_MS = 1 * 60 * 1000;
       setTimeout(() => {
@@ -71,6 +72,7 @@ export const showApproveTransactionModal = async (): Promise<boolean> => {
  */
 export const withSocialWalletApproval = async <T>(
   walletClient: WalletClient | null,
+  messages: TransactionMessage[],
   executeTransaction: () => Promise<T>,
 ): Promise<T> => {
   if (!walletClient) {
@@ -78,7 +80,7 @@ export const withSocialWalletApproval = async <T>(
   }
 
   if (walletClient.getWalletType() === "SOCIAL_WALLET") {
-    const isApproved = await showApproveTransactionModal();
+    const isApproved = await showApproveTransactionModal(messages);
     if (!isApproved) {
       throw new Error("Transaction rejected");
     }

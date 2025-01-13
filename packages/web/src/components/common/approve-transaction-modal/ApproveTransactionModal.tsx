@@ -16,10 +16,12 @@ import IconAdenaLogo from "../icons/defaultIcon/IconAdenaLogo";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconArrowDown from "../icons/IconArrowDown";
 import IconArrowUp from "../icons/IconArrowUp";
+import { TransactionMessage } from "@common/clients/wallet-client/protocols";
 
 interface Props {
   onConfirm: () => void;
   onCancel: () => void;
+  messages: TransactionMessage[];
 }
 
 const ApproveTransactionModal = ({ onConfirm, onCancel }: Props) => {
