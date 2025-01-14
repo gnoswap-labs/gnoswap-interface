@@ -8,6 +8,7 @@ import useRouter from "@hooks/common/use-custom-router";
 import useScrollData from "./use-scroll-data";
 import { useLoading } from "./use-loading";
 import { useSocialWalletContext } from "./use-social-wallet-context";
+import { GNOSWAP_SOCIAL_LOGIN_TYPE_KEY, GNOSWAP_WALLET_TYPE_KEY } from "@states/common";
 
 export const useBackground = () => {
   const router = useRouter();
@@ -80,28 +81,53 @@ export const useBackground = () => {
     return () => window.removeEventListener("popstate", onPopPage);
   }, [router.pathname]);
 
+  /**
+   *
+   * Purpose:
+   * Maintains wallet connection even after browser refresh
+   * Only runs when there's no active wallet connection
+   *
+   * Initializes wallet by checking session storage and retrying if necessary
+   *
+   * This useEffect handles wallet initialization by checking saved wallet type in session
+   * and attempts to initialize appropriate wallet with retry mechanism.
+   *
+   * @dependency walletClient - Stops initialization if wallet client exists
+   * @dependency sessionId - Required for initialization check
+   * @dependency initSession - Callback to initialize wallet session
+   */
   useEffect(() => {
-    if (walletClient) {
-      return;
-    }
-    function initWalletBySession() {
-      if (window?.adena?.version) {
+    if (walletClient) return;
+
+    const MAX_RETRY = 5;
+    const RETRY_INTERVAL = 200;
+
+    const initWalletBySession = async () => {
+      const savedWalletType = sessionStorage.getItem(GNOSWAP_WALLET_TYPE_KEY);
+      const savedSocialLoginType = sessionStorage.getItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY);
+
+      const shouldInitSocialWallet = savedWalletType === "SOCIAL_WALLET" && savedSocialLoginType;
+      const shouldInitAdenaWallet = savedWalletType === "ADENA" && window?.adena?.version;
+
+      if (shouldInitSocialWallet || shouldInitAdenaWallet) {
         initSession();
       }
-    }
+    };
+
+    const retryInterval = setInterval(() => {
+      initWalletBySession();
+
+      const shouldClearInterval = count >= MAX_RETRY || walletClient || !sessionId;
+      if (shouldClearInterval) {
+        clearInterval(retryInterval);
+      }
+      count++;
+    }, RETRY_INTERVAL);
 
     let count = 0;
-    const interval = setInterval(() => {
-      initWalletBySession();
-      count += 1;
-      if (count > 5 || walletClient || !sessionId) {
-        clearInterval(interval);
-      }
-    }, 200);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [walletClient]);
+
+    return () => clearInterval(retryInterval);
+  }, [walletClient, sessionId, initSession]);
 
   /**
    *
