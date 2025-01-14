@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
-import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useAtom } from "jotai";
+
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { CommonState, EarnState, LaunchpadState, WalletState } from "@states/index";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import useRouter from "@hooks/common/use-custom-router";
 import useScrollData from "./use-scroll-data";
 import { useLoading } from "./use-loading";
+import { useSocialWalletContext } from "./use-social-wallet-context";
 
 export const useBackground = () => {
   const router = useRouter();
-  const { account, initSession } = useWallet();
+  const { account, initSession, connectAccount: connectAdenaAccount, updateWalletEvents } = useWallet();
+  const { connect: connectSocialAccount } = useSocialWalletContext();
   const [walletClient] = useAtom(WalletState.client);
   const [sessionId] = useAtom(CommonState.sessionId);
   const [isViewMorePositions, setIsViewMorePositions] = useAtom(EarnState.isViewMorePositions);
@@ -100,15 +103,37 @@ export const useBackground = () => {
     };
   }, [walletClient]);
 
-  // @dev: This code reconnects you to Adena Wallet
-  // useEffect(() => {
-  //   if (walletClient) {
-  //     if (account) {
-  //       connectAccount();
-  //     }
-  //     updateWalletEvents(walletClient);
-  //   }
-  // }, [walletClient, String(account)]);
+  /**
+   *
+   * Run when the wallet client changes or the account changes
+   * Perform appropriate connection handling based on wallet type
+   * Update wallet event listeners
+   *
+   * @dependency walletClient?.getWalletType() - When the wallet type changes
+   * @dependency String(account) - When the account changes
+   *
+   */
+  useEffect(() => {
+    if (!walletClient || !account) return;
+
+    const handleWalletConnection = async () => {
+      const walletType = walletClient.getWalletType();
+
+      if (walletType === "ADENA") {
+        await connectAdenaAccount();
+      }
+
+      if (walletType === "SOCIAL_WALLET") {
+        const socialLoginType = walletClient.getLoginType?.();
+        if (socialLoginType) {
+          await connectSocialAccount(socialLoginType);
+        }
+      }
+    };
+
+    handleWalletConnection();
+    updateWalletEvents(walletClient);
+  }, [walletClient?.getWalletType(), String(account)]);
 
   useEffect(() => {
     if (account?.address && account?.chainId) {
