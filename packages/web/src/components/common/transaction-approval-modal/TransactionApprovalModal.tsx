@@ -1,7 +1,7 @@
 import React from "react";
 import { cx } from "@emotion/css";
 
-import { Document, TransactionData } from "src/types/transaction-messages.types";
+import { Document } from "src/types/transaction-messages.types";
 
 import {
   TransactionApprovalButtonWrapper,
@@ -18,22 +18,25 @@ import IconAdenaLogo from "../icons/defaultIcon/IconAdenaLogo";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconArrowDown from "../icons/IconArrowDown";
 import IconArrowUp from "../icons/IconArrowUp";
+import { formatAddress } from "@utils/string-utils";
 
 interface Props {
   onConfirm: () => void;
   onCancel: () => void;
   document: Document;
-  transactionData?: TransactionData;
 
+  caller: string;
   contracts: {
     type: string;
     function: string;
-    value: string;
+    value: {
+      pkg_path: string;
+    };
   }[];
   transactionMessageRaw: string;
 }
 
-const TransactionApprovalModal = ({ onConfirm, onCancel, contracts, transactionMessageRaw }: Props) => {
+const TransactionApprovalModal = ({ onConfirm, onCancel, caller, contracts, transactionMessageRaw }: Props) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
 
   return (
@@ -56,18 +59,14 @@ const TransactionApprovalModal = ({ onConfirm, onCancel, contracts, transactionM
             </InfoCard>
             <InfoCard>
               <div className="label">Account</div>
-              <div className="value">g1as...aw1</div>
+              <div className="value">{formatAddress(caller)}</div>
             </InfoCard>
             {contracts.map((contract, index) => {
               return (
-                <InfoCard
-                  key={`${contract.type}-${contract.function}-${contract.value}-${index}`}
-                  flexDirection="column"
-                  gap={16}
-                >
+                <InfoCard key={`${contract.type}-${contract.function}-${index}`} flexDirection="column" gap={16}>
                   <div className="flex-box">
-                    <div className="label">Contract</div>
-                    <div className="value">{contract.type}</div>
+                    <div className="label">Realm</div>
+                    <div className="value">{contract.value.pkg_path}</div>
                   </div>
                   <div className="flex-box">
                     <div className="label">Function</div>

@@ -21,6 +21,7 @@ const TransactionApprovalModalContainer = ({ onApprove, onReject, document }: Pr
       onConfirm={onApprove}
       onCancel={onReject}
       document={document}
+      caller={transactionData?.contracts[0].value.caller || ""}
       contracts={transactionData?.contracts || []}
       transactionMessageRaw={JSON.stringify(document, null, 2)}
     />

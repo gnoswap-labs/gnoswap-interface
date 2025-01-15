@@ -10,7 +10,7 @@ import { TX_EVENTS, type TransactionApprovalModalHandlers } from "@utils/transac
 
 import { Z_INDEX } from "@styles/zIndex";
 import Modal from "@components/common/modal/Modal";
-import TransactionApprovalModalContainer from "@containers/approve-transaction-modal-container/ApproveTransactionModalContainer";
+import TransactionApprovalModalContainer from "@containers/transaction-approval-modal-container/TransactionApprovalModalContainer";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type EventCallback = (...args: any[]) => void;
