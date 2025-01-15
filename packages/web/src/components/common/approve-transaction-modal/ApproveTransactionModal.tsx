@@ -16,15 +16,23 @@ import IconAdenaLogo from "../icons/defaultIcon/IconAdenaLogo";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconArrowDown from "../icons/IconArrowDown";
 import IconArrowUp from "../icons/IconArrowUp";
-import { TransactionMessage } from "@common/clients/wallet-client/protocols";
+import { Document, TransactionData } from "src/types/transaction-messages.types";
 
 interface Props {
   onConfirm: () => void;
   onCancel: () => void;
-  messages: TransactionMessage[];
+  document: Document;
+  transactionData?: TransactionData;
+
+  contracts: {
+    type: string;
+    function: string;
+    value: string;
+  }[];
+  transactionMessageRaw: string;
 }
 
-const ApproveTransactionModal = ({ onConfirm, onCancel }: Props) => {
+const ApproveTransactionModal = ({ onConfirm, onCancel, contracts, transactionMessageRaw }: Props) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
 
   return (
@@ -49,16 +57,24 @@ const ApproveTransactionModal = ({ onConfirm, onCancel }: Props) => {
               <div className="label">Account</div>
               <div className="value">g1as...aw1</div>
             </InfoCard>
-            <InfoCard flexDirection="column" gap={16}>
-              <div className="flex-box">
-                <div className="label">Contract</div>
-                <div className="value">/vm.m_call</div>
-              </div>
-              <div className="flex-box">
-                <div className="label">Function</div>
-                <div className="value">Approve</div>
-              </div>
-            </InfoCard>
+            {contracts.map((contract, index) => {
+              return (
+                <InfoCard
+                  key={`${contract.type}-${contract.function}-${contract.value}-${index}`}
+                  flexDirection="column"
+                  gap={16}
+                >
+                  <div className="flex-box">
+                    <div className="label">Contract</div>
+                    <div className="value">{contract.type}</div>
+                  </div>
+                  <div className="flex-box">
+                    <div className="label">Function</div>
+                    <div className="value">{contract.function}</div>
+                  </div>
+                </InfoCard>
+              );
+            })}
             <InfoCard>
               <div className="label">Memo</div>
               <div className="value">
@@ -79,25 +95,7 @@ const ApproveTransactionModal = ({ onConfirm, onCancel }: Props) => {
               className={cx("transaction-messages", { expanded: isExpanded })}
               style={{ maxHeight: isExpanded ? 194 : 0 }}
             >
-              <pre className="json-viewer">
-                {JSON.stringify(
-                  {
-                    msgs: [
-                      {
-                        type: "/vm.m_call",
-                        value: {
-                          caller: "g1ukcrrrr4er2us84h2732sru76c9zl2nvkanc91",
-                          send: "",
-                          pkg_path: "gno.land/r/onbloc/usdc",
-                          func: "Approve",
-                        },
-                      },
-                    ],
-                  },
-                  null,
-                  2,
-                )}
-              </pre>
+              <pre className="json-viewer">{transactionMessageRaw}</pre>
             </div>
           </ApproveTransactionDetails>
         </ApproveTransactionModalContents>

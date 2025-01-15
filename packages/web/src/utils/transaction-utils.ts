@@ -1,6 +1,16 @@
 import { eventBus } from "@containers/modal-container/ModalContainer";
 import { WalletClient } from "@common/clients/wallet-client";
-import { TransactionMessage } from "@common/clients/wallet-client/protocols";
+
+import {
+  isContractMessage,
+  SendTransactionRequestParam,
+  TransactionMessage,
+} from "@common/clients/wallet-client/protocols";
+import { DEFAULT_CHAIN_ID } from "@constants/environment.constant";
+import { DEFAULT_GAS_WANTED } from "@common/values";
+import { Document } from "src/types/transaction-messages.types";
+
+import { createDocument } from "./messages.utils";
 
 const TX_EVENTS = {
   SHOW_MODAL: "show-approve-modal",
@@ -23,7 +33,7 @@ const TX_EVENTS = {
  * @returns Whether the user is approved - Promise<boolean>
  *
  */
-export const showApproveTransactionModal = async (messages: TransactionMessage[]): Promise<boolean> => {
+export const showApproveTransactionModal = async (document: Document): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     try {
       const eventHandlers = {
@@ -45,7 +55,7 @@ export const showApproveTransactionModal = async (messages: TransactionMessage[]
       eventBus.on(TX_EVENTS.APPROVED, eventHandlers.handleApprove);
       eventBus.on(TX_EVENTS.REJECTED, eventHandlers.handleReject);
 
-      eventBus.emit(TX_EVENTS.SHOW_MODAL, messages);
+      eventBus.emit(TX_EVENTS.SHOW_MODAL, document);
 
       const TIMEOUT_MS = 1 * 60 * 1000;
       setTimeout(() => {
@@ -66,21 +76,50 @@ export const showApproveTransactionModal = async (messages: TransactionMessage[]
  * If not, it will execute the transaction directly
  *
  * @param The WalletClient instance - walletClient
+ * @param @deprecated The transaction messages to execute - messages
  * @param The transaction function to execution - executeTransaction
+ * @param The transaction request parameters - transaction
  * @returns Promise<T> - The result of the transaction execution
  *
  */
 export const withSocialWalletApproval = async <T>(
   walletClient: WalletClient | null,
-  messages: TransactionMessage[],
+  messages: TransactionMessage[], // @deprecated
   executeTransaction: () => Promise<T>,
+  transaction?: SendTransactionRequestParam,
 ): Promise<T> => {
   if (!walletClient) {
     throw new Error("Wallet client is not initialized");
   }
 
   if (walletClient.getWalletType() === "SOCIAL_WALLET") {
-    const isApproved = await showApproveTransactionModal(messages);
+    const messagess =
+      transaction?.messages.map(msg => {
+        if (isContractMessage(msg)) {
+          return {
+            type: "/vm.m_call",
+            value: msg,
+          };
+        }
+        return {
+          type: "/bank.MsgSend",
+          value: msg,
+        };
+      }) || [];
+    const account = await walletClient.getAccount();
+    const { accountNumber = 0, sequence = 0 } = account.data || {};
+
+    const document = createDocument({
+      accountNumber: Number(accountNumber),
+      accountSequence: Number(sequence),
+      chainId: DEFAULT_CHAIN_ID || "",
+      messages: messagess,
+      gasWanted: transaction?.gasWanted || DEFAULT_GAS_WANTED,
+      gasFee: transaction?.gasFee || 1_000_000,
+      memo: transaction?.memo || "",
+    });
+
+    const isApproved = await showApproveTransactionModal(document);
     if (!isApproved) {
       throw new Error("Transaction rejected");
     }

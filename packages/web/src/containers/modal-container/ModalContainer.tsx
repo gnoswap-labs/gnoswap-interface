@@ -7,7 +7,7 @@ import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { Z_INDEX } from "@styles/zIndex";
 import useRouter from "@hooks/common/use-custom-router";
 import ApproveTransactionModalContainer from "@containers/approve-transaction-modal-container/ApproveTransactionModalContainer";
-import { TransactionMessage } from "@common/clients/wallet-client/protocols";
+import { Document } from "src/types/transaction-messages.types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type EventCallback = (...args: any[]) => void;
@@ -96,9 +96,9 @@ const ModalContainer: React.FC = () => {
       closeApproveTransactionModal();
     };
 
-    eventBus.on("show-approve-modal", (messages: TransactionMessage[]) => {
+    eventBus.on("show-approve-modal", (document: Document) => {
       setApproveTransactionModalContent(
-        <ApproveTransactionModalContainer messages={messages} onApprove={handleApprove} onReject={handleReject} />,
+        <ApproveTransactionModalContainer document={document} onApprove={handleApprove} onReject={handleReject} />,
       );
       setOpenedApproveTransactionModal(true);
     });

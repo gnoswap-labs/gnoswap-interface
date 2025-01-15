@@ -2,6 +2,7 @@ import { Any, PubKeySecp256k1, Tx, TxFee, TxSignature } from "@gnolang/tm2-js-cl
 import { MsgCall, MsgAddPackage, MsgSend, MsgEndpoint } from "@gnolang/gno-js-client";
 import { MemPackage, MemFile, MsgRun } from "@gnolang/gno-js-client/bin/proto/gno/vm";
 import { base64ToUint8Array } from "@gnolang/tm2-js-client";
+import { TransactionData } from "src/types/transaction-messages.types";
 
 export interface Document {
   chain_id: string;
@@ -154,6 +155,23 @@ export function documentToTx(document: Document): Tx {
 
 export function txToDocument(tx: Tx) {
   return Tx.toJSON(tx);
+}
+
+export function mappedTransactionData(document: Document): TransactionData {
+  return {
+    messages: document.msgs,
+    contracts: document.msgs.map(message => {
+      return {
+        type: message?.type || "",
+        function: message?.type === "/bank.MsgSend" ? "Transfer" : message?.value?.func || "",
+        value: message?.value || "",
+      };
+    }),
+    gasWanted: document.fee.gas,
+    gasFee: `${document.fee.amount[0].amount}${document.fee.amount[0].denom}`,
+    memo: `${document.memo || ""}`,
+    document,
+  };
 }
 
 export interface RawBankSendMessage {
