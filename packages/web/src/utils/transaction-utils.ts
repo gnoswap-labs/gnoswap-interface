@@ -12,15 +12,15 @@ import { Document } from "src/types/transaction-messages.types";
 
 import { createDocument } from "./messages.utils";
 
-const TX_EVENTS = {
+export const TX_EVENTS = {
   SHOW_MODAL: "show-approve-modal",
   APPROVED: "transaction-approved",
   REJECTED: "transaction-rejected",
 } as const;
 
-type TransactionEvent = (typeof TX_EVENTS)[keyof typeof TX_EVENTS];
+export type TransactionEvent = (typeof TX_EVENTS)[keyof typeof TX_EVENTS];
 
-interface TransactionApprovalModalHandlers {
+export interface TransactionApprovalModalHandlers {
   handleApprove: () => void;
   handleReject: () => void;
   cleanup: () => void;
@@ -168,8 +168,8 @@ export const withSocialWalletApproval = async <T>(
  * @param {Object} params - SendTransaction parameters
  * @param messages - Array of messages to be included in the transaction
  * @param gasFee - Transaction gas fee
- * @param gasWanted - Transaction gas wanted
- * @param memo - Transaction memo
+ * @param gasWanted? - Transaction gas wanted
+ * @param memo? - Transaction memo
  * @returns An object of parameters required to execute the transaction.
  *
  */

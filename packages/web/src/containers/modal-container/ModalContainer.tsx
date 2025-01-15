@@ -1,13 +1,16 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import Modal from "@components/common/modal/Modal";
 import { useAtom } from "jotai";
-import { CommonState, WalletState } from "@states/index";
+
+import useRouter from "@hooks/common/use-custom-router";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
-import { Z_INDEX } from "@styles/zIndex";
-import useRouter from "@hooks/common/use-custom-router";
-import ApproveTransactionModalContainer from "@containers/approve-transaction-modal-container/ApproveTransactionModalContainer";
+import { CommonState, WalletState } from "@states/index";
 import { Document } from "src/types/transaction-messages.types";
+import { TX_EVENTS, type TransactionApprovalModalHandlers } from "@utils/transaction-utils";
+
+import { Z_INDEX } from "@styles/zIndex";
+import Modal from "@components/common/modal/Modal";
+import ApproveTransactionModalContainer from "@containers/approve-transaction-modal-container/ApproveTransactionModalContainer";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type EventCallback = (...args: any[]) => void;
@@ -85,28 +88,35 @@ const ModalContainer: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const handleApprove = () => {
-      eventBus.emit("transaction-approved");
-      closeApproveTransactionModal();
+    const handlers: TransactionApprovalModalHandlers = {
+      handleApprove: () => {
+        eventBus.emit(TX_EVENTS.APPROVED);
+        closeApproveTransactionModal();
+      },
+      handleReject: () => {
+        eventBus.emit(TX_EVENTS.REJECTED);
+        closeTransactionModal();
+        closeApproveTransactionModal();
+      },
+      cleanup: () => {
+        eventBus.off(TX_EVENTS.SHOW_MODAL, () => {});
+      },
     };
 
-    const handleReject = () => {
-      eventBus.emit("transaction-rejected");
-      closeTransactionModal();
-      closeApproveTransactionModal();
-    };
-
-    eventBus.on("show-approve-modal", (document: Document) => {
+    const handleShowModal = (document: Document) => {
       setApproveTransactionModalContent(
-        <ApproveTransactionModalContainer document={document} onApprove={handleApprove} onReject={handleReject} />,
+        <ApproveTransactionModalContainer
+          document={document}
+          onApprove={handlers.handleApprove}
+          onReject={handlers.handleReject}
+        />,
       );
       setOpenedApproveTransactionModal(true);
-    });
-
-    return () => {
-      eventBus.off("show-approve-modal", () => {});
     };
-  }, []);
+
+    eventBus.on(TX_EVENTS.SHOW_MODAL, handleShowModal);
+    return handlers.cleanup;
+  }, [closeApproveTransactionModal, closeTransactionModal]);
 
   useEscCloseModal(closeTransactionModal);
 

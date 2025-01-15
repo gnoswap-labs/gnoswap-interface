@@ -1,6 +1,8 @@
 import React from "react";
 import { cx } from "@emotion/css";
 
+import { Document, TransactionData } from "src/types/transaction-messages.types";
+
 import {
   ApproveTransactionButtonWrapper,
   ApproveTransactionDetails,
@@ -16,7 +18,6 @@ import IconAdenaLogo from "../icons/defaultIcon/IconAdenaLogo";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconArrowDown from "../icons/IconArrowDown";
 import IconArrowUp from "../icons/IconArrowUp";
-import { Document, TransactionData } from "src/types/transaction-messages.types";
 
 interface Props {
   onConfirm: () => void;
