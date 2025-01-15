@@ -4,15 +4,15 @@ import { cx } from "@emotion/css";
 import { Document, TransactionData } from "src/types/transaction-messages.types";
 
 import {
-  ApproveTransactionButtonWrapper,
-  ApproveTransactionDetails,
-  ApproveTransactionModalBody,
-  ApproveTransactionModalContents,
-  ApproveTransactionModalHeader,
-  ApproveTransactionModalWrapper,
-  ApproveTransactionSummary,
+  TransactionApprovalButtonWrapper,
+  TransactionApprovalDetails,
+  TransactionApprovalModalBody,
+  TransactionApprovalModalContents,
+  TransactionApprovalModalHeader,
+  TransactionApprovalModalWrapper,
+  TransactionApprovalSummary,
   InfoCard,
-} from "./ApproveTransactionModal.styles";
+} from "./TransactionApprovalModal.styles";
 import IconClose from "@components/common/icons/IconCancel";
 import IconAdenaLogo from "../icons/defaultIcon/IconAdenaLogo";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -33,23 +33,23 @@ interface Props {
   transactionMessageRaw: string;
 }
 
-const ApproveTransactionModal = ({ onConfirm, onCancel, contracts, transactionMessageRaw }: Props) => {
+const TransactionApprovalModal = ({ onConfirm, onCancel, contracts, transactionMessageRaw }: Props) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
 
   return (
-    <ApproveTransactionModalWrapper>
-      <ApproveTransactionModalBody>
-        <ApproveTransactionModalHeader>
+    <TransactionApprovalModalWrapper>
+      <TransactionApprovalModalBody>
+        <TransactionApprovalModalHeader>
           <div className="title">Approve Transaction</div>
           <div className="close-wrapper">
             <button className="close-button" onClick={onCancel}>
               <IconClose className="close-icon" />
             </button>
           </div>
-        </ApproveTransactionModalHeader>
+        </TransactionApprovalModalHeader>
 
-        <ApproveTransactionModalContents>
-          <ApproveTransactionSummary>
+        <TransactionApprovalModalContents>
+          <TransactionApprovalSummary>
             <InfoCard justify="center" gap={8}>
               <IconAdenaLogo />
               <span className="value">{location.origin}</span>
@@ -86,8 +86,8 @@ const ApproveTransactionModal = ({ onConfirm, onCancel, contracts, transactionMe
               <div className="label">Network Fee</div>
               <div className="value">{"0.000001 GNOT (<$0.01)"}</div>
             </InfoCard>
-          </ApproveTransactionSummary>
-          <ApproveTransactionDetails>
+          </TransactionApprovalSummary>
+          <TransactionApprovalDetails>
             <button onClick={() => setIsExpanded(prev => !prev)} aria-expanded={isExpanded}>
               View Transaction Data {isExpanded ? <IconArrowDown /> : <IconArrowUp />}
             </button>
@@ -98,10 +98,10 @@ const ApproveTransactionModal = ({ onConfirm, onCancel, contracts, transactionMe
             >
               <pre className="json-viewer">{transactionMessageRaw}</pre>
             </div>
-          </ApproveTransactionDetails>
-        </ApproveTransactionModalContents>
+          </TransactionApprovalDetails>
+        </TransactionApprovalModalContents>
 
-        <ApproveTransactionButtonWrapper>
+        <TransactionApprovalButtonWrapper>
           <Button
             onClick={onConfirm}
             text={"Approve"}
@@ -112,10 +112,10 @@ const ApproveTransactionModal = ({ onConfirm, onCancel, contracts, transactionMe
             text={"Cancel"}
             style={{ fullWidth: true, height: 57, fontType: "body7", hierarchy: ButtonHierarchy.Dark }}
           />
-        </ApproveTransactionButtonWrapper>
-      </ApproveTransactionModalBody>
-    </ApproveTransactionModalWrapper>
+        </TransactionApprovalButtonWrapper>
+      </TransactionApprovalModalBody>
+    </TransactionApprovalModalWrapper>
   );
 };
 
-export default ApproveTransactionModal;
+export default TransactionApprovalModal;

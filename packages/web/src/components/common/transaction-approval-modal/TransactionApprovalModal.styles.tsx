@@ -2,7 +2,7 @@ import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
 
-export const ApproveTransactionModalWrapper = styled.div`
+export const TransactionApprovalModalWrapper = styled.div`
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
@@ -24,7 +24,7 @@ export const ApproveTransactionModalWrapper = styled.div`
   }
 `;
 
-export const ApproveTransactionModalBody = styled.div`
+export const TransactionApprovalModalBody = styled.div`
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
@@ -39,7 +39,7 @@ export const ApproveTransactionModalBody = styled.div`
   }
 `;
 
-export const ApproveTransactionModalHeader = styled.div`
+export const TransactionApprovalModalHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -74,7 +74,7 @@ export const ApproveTransactionModalHeader = styled.div`
   }
 `;
 
-export const ApproveTransactionModalContents = styled.div`
+export const TransactionApprovalModalContents = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
@@ -82,7 +82,7 @@ export const ApproveTransactionModalContents = styled.div`
   flex-direction: column;
 `;
 
-export const ApproveTransactionSummary = styled.div`
+export const TransactionApprovalSummary = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -133,7 +133,7 @@ export const InfoCard = styled.div<InfoCardProps>`
   }
 `;
 
-export const ApproveTransactionDetails = styled.div`
+export const TransactionApprovalDetails = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -179,7 +179,7 @@ export const ApproveTransactionDetails = styled.div`
   }
 `;
 
-export const ApproveTransactionButtonWrapper = styled.div`
+export const TransactionApprovalButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;

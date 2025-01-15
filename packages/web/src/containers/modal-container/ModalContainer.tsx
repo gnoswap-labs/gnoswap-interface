@@ -10,7 +10,7 @@ import { TX_EVENTS, type TransactionApprovalModalHandlers } from "@utils/transac
 
 import { Z_INDEX } from "@styles/zIndex";
 import Modal from "@components/common/modal/Modal";
-import ApproveTransactionModalContainer from "@containers/approve-transaction-modal-container/ApproveTransactionModalContainer";
+import TransactionApprovalModalContainer from "@containers/approve-transaction-modal-container/ApproveTransactionModalContainer";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type EventCallback = (...args: any[]) => void;
@@ -49,8 +49,8 @@ const ModalContainer: React.FC = () => {
   const [openedApproveTransactionModal, setOpenedApproveTransactionModal] = useAtom(
     CommonState.openedApproveTransactionModal,
   );
-  const [approveTransactionModalContent, setApproveTransactionModalContent] = useAtom(
-    CommonState.approveTransactinoModalContent,
+  const [transactionApprovalModalContent, setTransactionApprovalModalContent] = useAtom(
+    CommonState.transactionApprovalModalContent,
   );
 
   const visible = useMemo(() => {
@@ -62,8 +62,8 @@ const ModalContainer: React.FC = () => {
   }, [openedTransactionModal, transactionModalContent]);
 
   const visibleApproveTransactionModal = useMemo(() => {
-    return openedApproveTransactionModal && approveTransactionModalContent !== null;
-  }, [openedApproveTransactionModal, approveTransactionModalContent]);
+    return openedApproveTransactionModal && transactionApprovalModalContent !== null;
+  }, [openedApproveTransactionModal, transactionApprovalModalContent]);
 
   usePreventScroll(visible);
   usePreventScroll(visibleTransactionModal);
@@ -84,7 +84,7 @@ const ModalContainer: React.FC = () => {
 
   const closeApproveTransactionModal = useCallback(() => {
     setOpenedApproveTransactionModal(false);
-    setApproveTransactionModalContent(null);
+    setTransactionApprovalModalContent(null);
   }, []);
 
   useEffect(() => {
@@ -104,8 +104,8 @@ const ModalContainer: React.FC = () => {
     };
 
     const handleShowModal = (document: Document) => {
-      setApproveTransactionModalContent(
-        <ApproveTransactionModalContainer
+      setTransactionApprovalModalContent(
+        <TransactionApprovalModalContainer
           document={document}
           onApprove={handlers.handleApprove}
           onReject={handlers.handleReject}
@@ -151,7 +151,7 @@ const ModalContainer: React.FC = () => {
             zIndex: Z_INDEX.thirdModal,
           }}
         >
-          {approveTransactionModalContent}
+          {transactionApprovalModalContent}
         </Modal>
       )}
     </React.Fragment>

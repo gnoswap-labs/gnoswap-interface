@@ -1,4 +1,4 @@
-import ApproveTransactionModal from "@components/common/approve-transaction-modal/ApproveTransactionModal";
+import TransactionApprovalModal from "@components/common/transaction-approval-modal/TransactionApprovalModal";
 import { mappedTransactionData } from "@utils/messages.utils";
 import React from "react";
 import { Document, TransactionData } from "src/types/transaction-messages.types";
@@ -9,7 +9,7 @@ interface Props {
   document: Document;
 }
 
-const ApproveTransactionModalContainer = ({ onApprove, onReject, document }: Props) => {
+const TransactionApprovalModalContainer = ({ onApprove, onReject, document }: Props) => {
   const [transactionData, setTransactionData] = React.useState<TransactionData>();
 
   React.useEffect(() => {
@@ -17,7 +17,7 @@ const ApproveTransactionModalContainer = ({ onApprove, onReject, document }: Pro
   }, [document]);
 
   return (
-    <ApproveTransactionModal
+    <TransactionApprovalModal
       onConfirm={onApprove}
       onCancel={onReject}
       document={document}
@@ -27,4 +27,4 @@ const ApproveTransactionModalContainer = ({ onApprove, onReject, document }: Pro
   );
 };
 
-export default ApproveTransactionModalContainer;
+export default TransactionApprovalModalContainer;

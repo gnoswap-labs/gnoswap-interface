@@ -71,7 +71,7 @@ const createTransactionApprovalModalHandlers = (
  * @returns Whether the user is approved - Promise<boolean>
  *
  */
-export const showApproveTransactionModal = async (document: Document): Promise<boolean> => {
+export const showTransactionApprovalModal = async (document: Document): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     try {
       const { handleApprove, handleReject, cleanup } = createTransactionApprovalModalHandlers(resolve);
@@ -140,7 +140,7 @@ const generateTransactionDataDocument = async (
  * @returns Promise<T> - The result of the transaction execution
  *
  */
-export const withSocialWalletApproval = async <T>(
+export const withTransactionGuard = async <T>(
   walletClient: WalletClient | null,
   transaction: SendTransactionRequestParam,
   executeTransaction: () => Promise<T>,
@@ -151,7 +151,7 @@ export const withSocialWalletApproval = async <T>(
 
   if (walletClient.getWalletType() === "SOCIAL_WALLET") {
     const document = await generateTransactionDataDocument(walletClient, transaction);
-    const isApproved = await showApproveTransactionModal(document);
+    const isApproved = await showTransactionApprovalModal(document);
 
     if (!isApproved) {
       throw new Error("Transaction rejected");

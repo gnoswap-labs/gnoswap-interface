@@ -27,7 +27,7 @@ export const modalContent = atom<React.ReactNode | null>(null);
 
 export const transactionModalContent = atom<React.ReactNode | null>(null);
 
-export const approveTransactinoModalContent = atom<React.ReactNode | null>(null);
+export const transactionApprovalModalContent = atom<React.ReactNode | null>(null);
 
 export const breakpoint = atom<DEVICE_TYPE>(DEVICE_TYPE.WEB);
 

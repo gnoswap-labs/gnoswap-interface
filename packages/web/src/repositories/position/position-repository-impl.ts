@@ -43,7 +43,7 @@ import {
   RepositionLiquiditySuccessResponse,
 } from "./response";
 import { ClaimRequest } from "./request/claim-request";
-import { withSocialWalletApproval } from "@utils/transaction-utils";
+import { withTransactionGuard, generateSendTransactionParams } from "@utils/transaction-utils";
 
 export class PositionRepositoryImpl implements PositionRepository {
   private networkClient: NetworkClient | null;
@@ -134,12 +134,14 @@ export class PositionRepositoryImpl implements PositionRepository {
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    return withSocialWalletApproval(this.walletClient, messages, () => {
-      return this.walletClient!.sendTransaction({
-        messages,
-        gasFee: DEFAULT_GAS_FEE,
-        gasWanted: DEFAULT_GAS_WANTED,
-      });
+    const sendTransactionParams = generateSendTransactionParams({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      gasWanted: DEFAULT_GAS_WANTED,
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, () => {
+      return this.walletClient!.sendTransaction(sendTransactionParams);
     });
   };
 
@@ -160,12 +162,14 @@ export class PositionRepositoryImpl implements PositionRepository {
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    return withSocialWalletApproval(this.walletClient, messages, () => {
-      return this.walletClient!.sendTransaction({
-        messages,
-        gasFee: DEFAULT_GAS_FEE,
-        gasWanted: DEFAULT_GAS_WANTED,
-      });
+    const sendTransactionParams = generateSendTransactionParams({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      gasWanted: DEFAULT_GAS_WANTED,
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, () => {
+      return this.walletClient!.sendTransaction(sendTransactionParams);
     });
   };
 
@@ -178,12 +182,14 @@ export class PositionRepositoryImpl implements PositionRepository {
     const { lpTokenIds, caller } = request;
     const messages = makeStakePositionsMessagesWithApproves({ lpTokenIds, caller });
 
-    return withSocialWalletApproval(this.walletClient, messages, () => {
-      return this.walletClient!.sendTransaction({
-        messages,
-        gasFee: DEFAULT_GAS_FEE,
-        gasWanted: DEFAULT_GAS_WANTED,
-      });
+    const sendTransactionParams = generateSendTransactionParams({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      gasWanted: DEFAULT_GAS_WANTED,
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, () => {
+      return this.walletClient!.sendTransaction(sendTransactionParams);
     });
   };
 
@@ -202,12 +208,14 @@ export class PositionRepositoryImpl implements PositionRepository {
       getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    return withSocialWalletApproval(this.walletClient, messages, () => {
-      return this.walletClient!.sendTransaction({
-        messages,
-        gasFee: DEFAULT_GAS_FEE,
-        gasWanted: DEFAULT_GAS_WANTED,
-      });
+    const sendTransactionParams = generateSendTransactionParams({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      gasWanted: DEFAULT_GAS_WANTED,
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, () => {
+      return this.walletClient!.sendTransaction(sendTransactionParams);
     });
   };
 
@@ -226,12 +234,14 @@ export class PositionRepositoryImpl implements PositionRepository {
       getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    return withSocialWalletApproval(this.walletClient, messages, () => {
-      return this.walletClient!.sendTransaction({
-        messages,
-        gasFee: DEFAULT_GAS_FEE,
-        gasWanted: DEFAULT_GAS_WANTED,
-      });
+    const sendTransactionParams = generateSendTransactionParams({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      gasWanted: DEFAULT_GAS_WANTED,
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, () => {
+      return this.walletClient!.sendTransaction(sendTransactionParams);
     });
   };
 
@@ -250,12 +260,14 @@ export class PositionRepositoryImpl implements PositionRepository {
       getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    return withSocialWalletApproval(this.walletClient, messages, () => {
-      return this.walletClient!.sendTransaction({
-        messages,
-        gasFee: DEFAULT_GAS_FEE,
-        gasWanted: DEFAULT_GAS_WANTED,
-      });
+    const sendTransactionParams = generateSendTransactionParams({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      gasWanted: DEFAULT_GAS_WANTED,
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, () => {
+      return this.walletClient!.sendTransaction(sendTransactionParams);
     });
   };
 
@@ -274,12 +286,14 @@ export class PositionRepositoryImpl implements PositionRepository {
       getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    return withSocialWalletApproval(this.walletClient, messages, () => {
-      return this.walletClient!.sendTransaction({
-        messages,
-        gasFee: DEFAULT_GAS_FEE,
-        gasWanted: DEFAULT_GAS_WANTED,
-      });
+    const sendTransactionParams = generateSendTransactionParams({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      gasWanted: DEFAULT_GAS_WANTED,
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, () => {
+      return this.walletClient!.sendTransaction(sendTransactionParams);
     });
   };
 
@@ -298,12 +312,14 @@ export class PositionRepositoryImpl implements PositionRepository {
       getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    return withSocialWalletApproval(this.walletClient, messages, () => {
-      return this.walletClient!.sendTransaction({
-        messages,
-        gasFee: DEFAULT_GAS_FEE,
-        gasWanted: DEFAULT_GAS_WANTED,
-      });
+    const sendTransactionParams = generateSendTransactionParams({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      gasWanted: DEFAULT_GAS_WANTED,
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, () => {
+      return this.walletClient!.sendTransaction(sendTransactionParams);
     });
   };
 

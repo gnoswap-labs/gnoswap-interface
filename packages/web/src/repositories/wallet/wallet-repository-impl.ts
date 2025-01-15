@@ -3,7 +3,7 @@ import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
 import { isNativeToken, isNativeTokenByType } from "@models/token/token-model";
-import { withSocialWalletApproval } from "@utils/transaction-utils";
+import { withTransactionGuard, generateSendTransactionParams } from "@utils/transaction-utils";
 import { TransferGRC20TokenRequest } from "./request/transfer-grc20-token-request";
 import { TransferNativeTokenRequest } from "./request/transfer-native-token-request";
 import { TransferGRC20TokenResponse } from "./response/transfer-grc20-token-response";
@@ -31,12 +31,14 @@ export class WalletRepositoryImpl implements WalletRepository {
 
     const messages = makeTransferGNOTTokenMessages({ ...request });
 
-    return withSocialWalletApproval(this.walletClient, messages, () => {
-      return this.walletClient!.sendTransaction({
-        messages,
-        gasFee: DEFAULT_GAS_FEE,
-        gasWanted: DEFAULT_GAS_WANTED,
-      });
+    const sendTransactionParams = generateSendTransactionParams({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      gasWanted: DEFAULT_GAS_WANTED,
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, () => {
+      return this.walletClient!.sendTransaction(sendTransactionParams);
     });
   }
 
@@ -52,12 +54,14 @@ export class WalletRepositoryImpl implements WalletRepository {
 
     const messages = makeTransferGRC20TokenMessages({ ...request });
 
-    return withSocialWalletApproval(this.walletClient, messages, () => {
-      return this.walletClient!.sendTransaction({
-        messages,
-        gasFee: DEFAULT_GAS_FEE,
-        gasWanted: DEFAULT_GAS_WANTED,
-      });
+    const sendTransactionParams = generateSendTransactionParams({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      gasWanted: DEFAULT_GAS_WANTED,
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, () => {
+      return this.walletClient!.sendTransaction(sendTransactionParams);
     });
   }
 }
