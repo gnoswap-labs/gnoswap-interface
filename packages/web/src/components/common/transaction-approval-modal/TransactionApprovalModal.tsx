@@ -1,8 +1,6 @@
 import React from "react";
 import { cx } from "@emotion/css";
 
-import { Document } from "src/types/transaction-messages.types";
-
 import {
   TransactionApprovalButtonWrapper,
   TransactionApprovalDetails,
@@ -23,8 +21,6 @@ import { formatAddress } from "@utils/string-utils";
 interface Props {
   onConfirm: () => void;
   onCancel: () => void;
-  document: Document;
-
   caller: string;
   contracts: {
     type: string;
@@ -34,10 +30,25 @@ interface Props {
     };
   }[];
   transactionMessageRaw: string;
+  memo: string;
+  memoChangeHandler: (memo: string) => void;
 }
 
-const TransactionApprovalModal = ({ onConfirm, onCancel, caller, contracts, transactionMessageRaw }: Props) => {
+const TransactionApprovalModal = ({
+  onConfirm,
+  onCancel,
+  caller,
+  contracts,
+  transactionMessageRaw,
+  memo,
+  memoChangeHandler,
+}: Props) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
+
+  const onChangeMemo = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    memoChangeHandler(value);
+  };
 
   return (
     <TransactionApprovalModalWrapper>
@@ -78,7 +89,7 @@ const TransactionApprovalModal = ({ onConfirm, onCancel, caller, contracts, tran
             <InfoCard>
               <div className="label">Memo</div>
               <div className="value">
-                <input placeholder="(Optional)" />
+                <input placeholder="(Optional)" onChange={onChangeMemo} value={memo} />
               </div>
             </InfoCard>
             <InfoCard>
