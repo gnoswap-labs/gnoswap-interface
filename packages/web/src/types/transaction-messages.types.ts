@@ -13,8 +13,7 @@ export interface Document {
   };
   msgs: {
     type: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    value: any;
+    value: { caller: string; send: string; pkg_path: string; func: string; args: string[] };
   }[];
   memo: string;
 }
