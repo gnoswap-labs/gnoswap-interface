@@ -83,7 +83,7 @@ export const ConnectSocialWalletModalWrapper = styled.div`
         gap: 8px;
         height: 57px;
         span {
-          color: ${({ theme }) => theme.color.text01};
+          color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text01 : theme.color.text09)};
           ${fonts.body7}
         }
       }

@@ -107,7 +107,7 @@ export const InfoCard = styled.div<InfoCardProps>`
   color: ${({ theme }) => theme.color.text01};
   width: 100%;
   padding: 16px;
-  background-color: ${({ theme }) => theme.color.border12};
+  background-color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.border12 : "#FFF")};
 
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
@@ -163,7 +163,7 @@ export const TransactionApprovalDetails = styled.div`
     &.expanded {
       margin-top: 8px;
       border: 1px solid ${({ theme }) => theme.color.border02};
-      background-color: ${({ theme }) => theme.color.border12};
+      background-color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.border12 : "#FFF")};
     }
     .json-viewer {
       margin: 0;

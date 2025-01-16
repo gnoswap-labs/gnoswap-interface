@@ -64,8 +64,8 @@ export const ConnectWalletModalWrapper = styled.div`
 
         padding: 12px 16px;
         border-radius: 8px;
-        border: 1px solid ${({ theme }) => (theme.themeKey === "dark" ? "#1C2230" : "#C3D2EA")};
-        background-color: ${({ theme }) => (theme.themeKey === "dark" ? "#0A0E17" : "#C3D2EA")};
+        border: 1px solid ${({ theme }) => (theme.themeKey === "dark" ? "#1C2230" : "#E0E8F4")};
+        background-color: ${({ theme }) => (theme.themeKey === "dark" ? "#0A0E17" : "#FFF")};
 
         &.error {
           border-color: ${({ theme }) => theme.color.red01};
@@ -103,8 +103,13 @@ export const ConnectWalletModalWrapper = styled.div`
         .button-connect {
           gap: 8px;
           height: 57px;
+          &.adena {
+            span {
+              color: white;
+            }
+          }
           span {
-            color: ${({ theme }) => theme.color.text01};
+            color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text01 : theme.color.text03)};
             ${fonts.body7}
           }
           svg {

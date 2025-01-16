@@ -1,9 +1,11 @@
 import React, { useCallback } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { cx } from "@emotion/css";
+import { useTheme } from "@emotion/react";
 
 import { useSocialWalletContext } from "@hooks/common/use-social-wallet-context";
 import { SocialWalletLoginType } from "@providers/social-wallet-provider";
+import { useConnectSocialWalletModal } from "@hooks/wallet/ui/use-connect-social-wallet-modal";
 
 import { ConnectWalletModalWrapper } from "./ConnectWalletModal.styles";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
@@ -14,7 +16,6 @@ import IconArrowRight from "../icons/IconArrowRight";
 import IconGoogleLogo from "../icons/defaultIcon/IconGoogleLogo";
 import IconTwitterLogo from "../icons/defaultIcon/IconTwitterLogo";
 import ConnectWalletModalDivider from "./connect-wallet-modal-divider/ConnectWalletModalDivider";
-import { useConnectSocialWalletModal } from "@hooks/wallet/ui/use-connect-social-wallet-modal";
 
 interface Props {
   close: () => void;
@@ -23,6 +24,7 @@ interface Props {
 }
 
 const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect }) => {
+  const theme = useTheme();
   const { connect: socialWalletConnect } = useSocialWalletContext();
   const { t } = useTranslation();
   const { openModal: openSocialLoadingModal } = useConnectSocialWalletModal();
@@ -115,7 +117,7 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
 
             <Button
               text="Sign in With X"
-              leftIcon={<IconTwitterLogo />}
+              leftIcon={<IconTwitterLogo fill={theme.themeKey === "dark" ? "white" : "black"} />}
               onClick={() => handleSocialConnect("twitter")}
               style={{
                 hierarchy: ButtonHierarchy.Dark,
@@ -143,7 +145,7 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,
               }}
-              className="button-connect"
+              className="button-connect "
             />
           </div>
         </div>
