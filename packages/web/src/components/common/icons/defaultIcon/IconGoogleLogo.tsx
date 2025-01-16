@@ -1,6 +1,13 @@
-const IconGoogleLogo = () => {
+const IconGoogleLogo = ({ className }: { className?: string }) => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="21"
+      height="21"
+      viewBox="0 0 21 21"
+      fill="none"
+      className={className}
+    >
       <path
         d="M19.3 10.707C19.3 10.057 19.2417 9.43203 19.1333 8.83203H10.5V12.382H15.4333C15.2167 13.5237 14.5667 14.4904 13.5917 15.1404V17.4487H16.5667C18.3 15.8487 19.3 13.4987 19.3 10.707Z"
         fill="#4285F4"

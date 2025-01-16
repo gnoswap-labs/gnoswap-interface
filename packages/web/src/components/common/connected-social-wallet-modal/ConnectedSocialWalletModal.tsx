@@ -1,6 +1,8 @@
 import React from "react";
 import Link from "next/link";
 
+import { SOCIAL_WALLET_EXTERNAL_URL } from "@constants/external-url.contant";
+
 import { ConnectedSocialWalletModalWrapper } from "./ConnectedSocialWalletModal.styles";
 import Button, { ButtonHierarchy } from "../button/Button";
 import IconClose from "../icons/IconCancel";
@@ -13,11 +15,6 @@ interface Props {
   /** Callback function to handle the "Don't show again" button click */
   onDontShowAgain: () => void;
 }
-
-const EXTERNAL_URLS = {
-  ADENA_INSTALL_URL: "https://adena.app",
-  SOCIAL_WALLET_FAQ_URL: "https://docs.gnoswap.io/references/faq",
-} as const;
 
 const ConnectedSocialWalletModal = ({ close, onDontShowAgain }: Props) => {
   const handleConfirm = React.useCallback(() => close(), [close]);
@@ -57,12 +54,12 @@ const ConnectedSocialWalletModal = ({ close, onDontShowAgain }: Props) => {
             </div>
             <div className="link-wrapper">
               <div className="link">
-                <ExternalLink href={EXTERNAL_URLS.ADENA_INSTALL_URL}>
+                <ExternalLink href={SOCIAL_WALLET_EXTERNAL_URL.ADENA_INSTALL_URL}>
                   <div>Go to install Adena</div>
                 </ExternalLink>
               </div>
               <div className="link">
-                <ExternalLink href={EXTERNAL_URLS.SOCIAL_WALLET_FAQ_URL}>
+                <ExternalLink href={SOCIAL_WALLET_EXTERNAL_URL.SOCIAL_WALLET_FAQ_URL}>
                   <div>How does Social Wallets work?</div>
                 </ExternalLink>
               </div>

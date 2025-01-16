@@ -141,7 +141,6 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
             textColor: "text19",
             arrowColor: "text18",
             padding: "10px 16px",
-            gap: "8px",
             height: 36,
           }}
           onClick={onMenuToggle}

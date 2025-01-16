@@ -10,6 +10,7 @@ import WalletBalanceSummaryInfo, { BalanceSummaryInfo } from "./wallet-balance-s
 
 import { WalletBalanceSummaryWrapper } from "./WalletBalanceSummary.styles";
 import { WalletTypeState } from "src/types/wallet.types";
+import Badge from "@components/common/badge/Badge";
 
 interface WalletBalanceSummaryProps {
   connected: boolean;
@@ -38,7 +39,7 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
     <WalletBalanceSummaryWrapper>
       <div className="total-balance-title-wrapper">
         <span className="total-balance-title">{t("Wallet:overral.totalBal")}</span>
-        {isConnectSocialWallet && <div className="badge">Social Account Wallet</div>}
+        {isConnectSocialWallet && <Badge text="Social Account Wallet" type="darkDefault" className="badge" />}
       </div>
       <div className="container">
         <WalletBalanceSummaryInfo balanceSummaryInfo={balanceSummaryInfo} connected={connected} />

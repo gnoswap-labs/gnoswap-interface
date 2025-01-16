@@ -99,7 +99,7 @@ const TransactionApprovalModal = ({
           </TransactionApprovalSummary>
           <TransactionApprovalDetails>
             <button onClick={() => setIsExpanded(prev => !prev)} aria-expanded={isExpanded}>
-              View Transaction Data {isExpanded ? <IconArrowDown /> : <IconArrowUp />}
+              View Transaction Data {!isExpanded ? <IconArrowDown /> : <IconArrowUp />}
             </button>
 
             <div

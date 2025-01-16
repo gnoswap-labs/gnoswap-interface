@@ -56,7 +56,7 @@ export const ProposalDetailWrapper = styled.div`
       flex-wrap: nowrap;
       gap: 12px;
       .proposer {
-        ${mixins.flexbox("row", "center", "center")};\
+        ${mixins.flexbox("row", "center", "center")};
         gap: 4px;
         ${fonts.p4};
         white-space: nowrap;

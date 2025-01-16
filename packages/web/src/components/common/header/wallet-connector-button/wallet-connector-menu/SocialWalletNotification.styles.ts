@@ -9,7 +9,7 @@ export const SocialWalletNotificationWrapper = styled.div`
   gap: 12px;
 
   margin: 16px 0;
-  padding: 12px 16px;
+  padding: 12px 15.5px;
   border-radius: 8px;
   border: 1px solid rgba(249, 115, 22, 0.1);
   background: rgba(249, 115, 22, 0.08);
@@ -29,5 +29,9 @@ export const SocialWalletNotificationWrapper = styled.div`
 
   .content {
     font-weight: 400;
+  }
+
+  .margin-left {
+    margin-left: 2px;
   }
 `;

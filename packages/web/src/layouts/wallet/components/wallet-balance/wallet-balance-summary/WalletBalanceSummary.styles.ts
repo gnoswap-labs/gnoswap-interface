@@ -30,7 +30,7 @@ export const WalletBalanceSummaryWrapper = styled.div`
 
       border-radius: 4px;
       border: 1px solid ${({ theme }) => theme.color.border03};
-      color: ${({ theme }) => theme.color.text03};
+      /* color: ${({ theme }) => theme.color.text03}; */
       font-size: 12px;
       font-weight: 500;
     }

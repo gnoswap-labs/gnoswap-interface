@@ -14,22 +14,22 @@ interface RenderWalletIconProps {
 }
 
 const RenderWalletIcon = ({ isSwitchNetwork, walletType }: RenderWalletIconProps) => {
-  if (isSwitchNetwork) return <IconFailed className="fail-icon" />;
+  if (isSwitchNetwork) return <IconFailed className="fail-icon render-wallet-icon" />;
 
   if (walletType.type === "SOCIAL_WALLET") {
     switch (walletType.socialType) {
       case "email":
-        return <IconEmailLogo />;
+        return <IconEmailLogo className="render-wallet-icon" />;
       case "google":
-        return <IconGoogleLogo />;
+        return <IconGoogleLogo className="render-wallet-icon" />;
       case "twitter":
-        return <IconTwitterLogo />;
+        return <IconTwitterLogo className="render-wallet-icon" />;
       default:
         return null;
     }
   }
 
-  return <IconAdenaLogo />;
+  return <IconAdenaLogo className="render-wallet-icon" />;
 };
 
 export default RenderWalletIcon;
