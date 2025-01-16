@@ -180,6 +180,7 @@ export class SocialWalletClient implements WalletClient {
       messages,
       gasWanted: transaction.gasWanted || DEFAULT_GAS_WANTED,
       gasFee: transaction.gasFee || 1000000,
+      memo: transaction.memo || "",
     });
     // Convert Document to Tx format (documentToTx)
     const tx = documentToTx(document);

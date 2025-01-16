@@ -89,8 +89,8 @@ const ModalContainer: React.FC = () => {
 
   useEffect(() => {
     const handlers: TransactionApprovalModalHandlers = {
-      handleApprove: () => {
-        eventBus.emit(TX_EVENTS.APPROVED);
+      handleApprove: (document: Document) => {
+        eventBus.emit(TX_EVENTS.APPROVED, document);
         closeApproveTransactionModal();
       },
       handleReject: () => {

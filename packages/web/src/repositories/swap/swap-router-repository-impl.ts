@@ -182,10 +182,14 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+    const sendTransactionParams = generateSendTransactionParams({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      memo: "",
+    });
 
-    return withTransactionGuard(this.walletClient, sendTransactionParams, () => {
-      return this.walletClient!.sendTransaction(sendTransactionParams);
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedParams => {
+      return this.walletClient!.sendTransaction(updatedParams || sendTransactionParams);
     });
   };
 

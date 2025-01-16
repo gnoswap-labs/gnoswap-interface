@@ -21,7 +21,7 @@ export const TX_EVENTS = {
 export type TransactionEvent = (typeof TX_EVENTS)[keyof typeof TX_EVENTS];
 
 export interface TransactionApprovalModalHandlers {
-  handleApprove: () => void;
+  handleApprove: (document: Document) => void;
   handleReject: () => void;
   cleanup: () => void;
 }
@@ -38,16 +38,16 @@ type MessageType = {
  * Creates event handlers for the Transaction Approval Modal
  */
 const createTransactionApprovalModalHandlers = (
-  resolve: (value: boolean) => void,
+  resolve: (value: Document | false) => void,
 ): TransactionApprovalModalHandlers => {
   const cleanup = () => {
     eventBus.off(TX_EVENTS.APPROVED as TransactionEvent, handleApprove);
     eventBus.off(TX_EVENTS.REJECTED as TransactionEvent, handleReject);
   };
 
-  const handleApprove = () => {
+  const handleApprove = (updateDocument: Document) => {
     cleanup();
-    resolve(true);
+    resolve(updateDocument);
   };
 
   const handleReject = () => {
@@ -71,7 +71,7 @@ const createTransactionApprovalModalHandlers = (
  * @returns Whether the user is approved - Promise<boolean>
  *
  */
-export const showTransactionApprovalModal = async (document: Document): Promise<boolean> => {
+export const showTransactionApprovalModal = async (document: Document): Promise<Document | false> => {
   return new Promise((resolve, reject) => {
     try {
       const { handleApprove, handleReject, cleanup } = createTransactionApprovalModalHandlers(resolve);
@@ -143,7 +143,7 @@ const generateTransactionDataDocument = async (
 export const withTransactionGuard = async <T>(
   walletClient: WalletClient | null,
   transaction: SendTransactionRequestParam,
-  executeTransaction: () => Promise<T>,
+  executeTransaction: (updatedTransaction?: SendTransactionRequestParam) => Promise<T>,
 ): Promise<T> => {
   if (!walletClient) {
     throw new Error("Wallet client is not initialized");
@@ -151,14 +151,21 @@ export const withTransactionGuard = async <T>(
 
   if (walletClient.getWalletType() === "SOCIAL_WALLET") {
     const document = await generateTransactionDataDocument(walletClient, transaction);
-    const isApproved = await showTransactionApprovalModal(document);
+    const approved = await showTransactionApprovalModal(document);
 
-    if (!isApproved) {
+    if (approved === false) {
       throw new Error("Transaction rejected");
     }
+
+    const updatedTransaction = {
+      ...transaction,
+      memo: approved.memo,
+    };
+
+    return executeTransaction(updatedTransaction);
   }
 
-  return executeTransaction();
+  return executeTransaction(transaction);
 };
 
 /**

@@ -6,42 +6,26 @@ import { mappedTransactionData } from "@utils/messages.utils";
 import TransactionApprovalModal from "@components/common/transaction-approval-modal/TransactionApprovalModal";
 
 interface Props {
-  onApprove: () => void;
+  onApprove: (document: Document) => void;
   onReject: () => void;
   document: Document;
 }
 
 const TransactionApprovalModalContainer = ({ onApprove, onReject, document }: Props) => {
-  const [transactionDocument, setTransactionDocument] = React.useState<Document>();
+  const [transactionDocument, setTransactionDocument] = React.useState<Document>(document);
   const [transactionData, setTransactionData] = React.useState<TransactionData>();
   const [memo, setMemo] = React.useState<string>("");
 
-  const memoChangeHandler = (memo: string): void => {
-    setMemo(memo);
-    if (transactionDocument) {
-      setTransactionDocument(prev => {
-        if (!prev) {
-          return undefined;
-        }
-        return { ...document, memo };
-      });
-    }
+  const handleApprove = () => {
+    onApprove(transactionDocument);
   };
 
-  const updateTransactionData = (): void => {
-    if (!document) {
-      return;
-    }
-
-    const currentMemo = memo;
-
-    const updateDocument: Document = {
-      ...document,
-      memo: currentMemo,
-    };
-
-    setTransactionDocument(updateDocument);
-    setTransactionData(mappedTransactionData(document));
+  const memoChangeHandler = (memo: string): void => {
+    setMemo(memo);
+    setTransactionDocument(prev => ({
+      ...prev,
+      memo,
+    }));
   };
 
   /**
@@ -53,19 +37,12 @@ const TransactionApprovalModalContainer = ({ onApprove, onReject, document }: Pr
   React.useEffect(() => {
     setTransactionDocument(document);
     setTransactionData(mappedTransactionData(document));
-    setMemo(document.memo);
+    setMemo(document.memo || "");
   }, [document]);
-
-  /**
-   * Update transaction documents whenever memo state changes
-   */
-  React.useEffect(() => {
-    updateTransactionData();
-  }, [memo]);
 
   return (
     <TransactionApprovalModal
-      onConfirm={onApprove}
+      onConfirm={handleApprove}
       onCancel={onReject}
       caller={transactionData?.contracts[0].value.caller || ""}
       contracts={transactionData?.contracts || []}
