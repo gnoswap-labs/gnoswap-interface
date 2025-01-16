@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 
 export const ConnectSocialWalletModalWrapper = styled.div`
   display: flex;
@@ -61,6 +62,8 @@ export const ConnectSocialWalletModalWrapper = styled.div`
         flex-direction: column;
         align-items: center;
         gap: 8px;
+
+        text-align: center;
         .title {
           color: ${({ theme }) => theme.color.text01};
           font-size: 18px;
@@ -88,5 +91,9 @@ export const ConnectSocialWalletModalWrapper = styled.div`
         }
       }
     }
+  }
+  ${media.mobile} {
+    width: 328px;
+    padding: 15px 11px;
   }
 `;

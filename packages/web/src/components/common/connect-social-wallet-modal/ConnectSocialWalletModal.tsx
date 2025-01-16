@@ -15,6 +15,19 @@ interface ConnectSocialWalletModalProps {
 const ConnectSocialWalletModal = ({ close, loginType }: ConnectSocialWalletModalProps) => {
   const { connectingState } = useSocialWalletContext();
 
+  const displayLoginType = React.useMemo(() => {
+    switch (loginType) {
+      case "email":
+        return "Email";
+      case "google":
+        return "Google";
+      case "twitter":
+        return "X";
+      default:
+        return "Unknown";
+    }
+  }, [loginType]);
+
   React.useEffect(() => {
     if (connectingState === "done" || connectingState === "error") {
       close();
@@ -35,7 +48,7 @@ const ConnectSocialWalletModal = ({ close, loginType }: ConnectSocialWalletModal
             <LoadingSpinner />
           </div>
           <div className="description">
-            <div className="title">Connecting to {loginType}</div>
+            <div className="title">Connecting to {displayLoginType}</div>
             {loginType === "email" ? (
               <div className="text">Check your email to approve the connection.</div>
             ) : (

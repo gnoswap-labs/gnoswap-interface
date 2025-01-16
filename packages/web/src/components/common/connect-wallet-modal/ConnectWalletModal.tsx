@@ -112,7 +112,7 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
                 hierarchy: ButtonHierarchy.Dark,
                 fullWidth: true,
               }}
-              className="button-connect"
+              className="button-connect dark"
             />
 
             <Button
@@ -123,7 +123,7 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
                 hierarchy: ButtonHierarchy.Dark,
                 fullWidth: true,
               }}
-              className="button-connect"
+              className="button-connect dark"
             />
           </div>
 
@@ -145,7 +145,7 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,
               }}
-              className="button-connect "
+              className="button-connect primary"
             />
           </div>
         </div>

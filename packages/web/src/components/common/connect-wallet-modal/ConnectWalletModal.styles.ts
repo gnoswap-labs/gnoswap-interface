@@ -86,6 +86,11 @@ export const ConnectWalletModalWrapper = styled.div`
           * {
             fill: ${({ theme }) => theme.color.text05};
           }
+          &:hover {
+            * {
+              fill: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.background07 : theme.color.border07)};
+            }
+          }
         }
 
         ${media.mobile} {
@@ -96,6 +101,9 @@ export const ConnectWalletModalWrapper = styled.div`
       .validation-message {
         color: ${({ theme }) => theme.color.red01};
         font-weight: 500;
+        ${media.mobile} {
+          font-size: 14px;
+        }
       }
 
       > div {
@@ -103,7 +111,12 @@ export const ConnectWalletModalWrapper = styled.div`
         .button-connect {
           gap: 8px;
           height: 57px;
-          &.adena {
+          &.dark {
+            &:hover {
+              background-color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.hover02 : "")};
+            }
+          }
+          &.primary {
             span {
               color: white;
             }
