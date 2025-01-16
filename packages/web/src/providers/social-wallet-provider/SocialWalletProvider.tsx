@@ -8,6 +8,7 @@ import { CommonState, WalletState } from "@states/index";
 import { SocialWalletClient } from "@common/clients/wallet-client/social/social-wallet-client";
 import { ACCOUNT_SESSION_INFO_KEY, GNOSWAP_SOCIAL_LOGIN_TYPE_KEY, GNOSWAP_WALLET_TYPE_KEY } from "@states/common";
 import { SocialLoginType } from "src/types/wallet.types";
+import { useConnectedSocialWalletModal } from "@hooks/wallet/ui/use-connected-social-wallet-modal";
 
 interface SocialWalletContextType {
   connectingState: "initial" | "loading" | "error" | "done" | "";
@@ -29,7 +30,9 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
   const [walletClient, setWalletClient] = useAtom(WalletState.client);
   const [, setWalletAccount] = useAtom(WalletState.account);
 
-  const resetWalletState = () => {
+  const { openModal: openConnectedModal } = useConnectedSocialWalletModal();
+
+  const resetSocialWalletState = () => {
     setWalletClient(null);
     setWalletAccount(null);
     accountRepository.setConnectedWallet(false);
@@ -95,6 +98,9 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
         setWalletAccount(account);
         accountRepository.setConnectedWallet(true);
         setConnectingState("done");
+
+        openConnectedModal();
+
         resetConnectingState();
       } else {
         accountRepository.setConnectedWallet(false);
@@ -102,7 +108,7 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
         resetConnectingState();
       }
     } catch (err) {
-      resetWalletState();
+      resetSocialWalletState();
       setConnectingState("error");
       setError(err instanceof Error ? err.message : "Failed to connect Social Wallet");
     }
@@ -112,7 +118,7 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
     try {
       if (walletClient) {
         await walletClient.disconnect();
-        resetWalletState();
+        resetSocialWalletState();
       }
     } catch {}
   };

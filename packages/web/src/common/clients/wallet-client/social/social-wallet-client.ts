@@ -274,14 +274,4 @@ export class SocialWalletClient implements WalletClient {
     }
     return createTimeout(this.sdk.switchNetwork({ chainId })) as Promise<WalletResponse<SwitchNetworkResponse>>;
   };
-
-  public static async initializeSocialWalletClient(type: SocialLoginType) {
-    const client = new SocialWalletClient();
-    if (!client) {
-      return null;
-    }
-
-    await client.initSocialWallet(type);
-    return client;
-  }
 }

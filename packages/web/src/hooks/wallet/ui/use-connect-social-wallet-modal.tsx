@@ -7,7 +7,7 @@ import { useClearModal } from "@hooks/common/use-clear-modal";
 import ConnectSocialWalletContainer from "@containers/connect-wallet-container/ConnectSocialWalletContainer";
 import { SocialWalletLoginType } from "@providers/social-wallet-provider";
 
-export interface Props {
+interface Props {
   openModal: (loginType: SocialWalletLoginType) => void;
   closeModal: () => void;
 }
