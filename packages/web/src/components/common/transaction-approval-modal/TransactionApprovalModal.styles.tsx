@@ -36,6 +36,7 @@ export const TransactionApprovalModalBody = styled.div`
 
   ${media.mobile} {
     padding: 0 16px;
+    font-size: 14px;
   }
 `;
 
@@ -151,6 +152,9 @@ export const TransactionApprovalDetails = styled.div`
     * {
       fill: ${({ theme }) => theme.color.text04};
     }
+    ${media.mobile} {
+      font-size: 12px;
+    }
   }
   .transaction-messages {
     width: 100%;
@@ -186,4 +190,12 @@ export const TransactionApprovalButtonWrapper = styled.div`
   justify-content: center;
   width: 100%;
   gap: 16px;
+  ${media.mobile} {
+    button {
+      height: 41px;
+      span {
+        font-size: 16px;
+      }
+    }
+  }
 `;

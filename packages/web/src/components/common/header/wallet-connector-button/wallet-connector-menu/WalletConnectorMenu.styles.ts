@@ -84,10 +84,19 @@ export const MenuHeader = styled.div`
   ${media.mobile} {
     width: 100%;
   }
+  .render-wallet-icon {
+    ${media.mobile} {
+      width: 24px;
+      height: 24px;
+    }
+  }
   .user-address {
     ${fonts.p1};
     color: ${({ theme }) => theme.color.text02};
     margin: 0px auto 0px 8px;
+    ${media.mobile} {
+      font-size: 16px;
+    }
   }
 `;
 
@@ -97,10 +106,18 @@ export const IconButton = styled.button`
   height: 16px;
   margin-left: 8px;
   position: relative;
+  ${media.mobile} {
+    width: 18px;
+    height: 18px;
+  }
   svg * {
     fill: ${({ theme }) => theme.color.icon03};
   }
   .action-icon {
+    ${media.mobile} {
+      width: 18px;
+      height: 18px;
+    }
     &:hover * {
       fill: ${({ theme }) => theme.color.icon07};
     }
