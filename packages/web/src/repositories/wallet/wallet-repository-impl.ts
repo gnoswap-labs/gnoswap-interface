@@ -37,8 +37,8 @@ export class WalletRepositoryImpl implements WalletRepository {
       gasWanted: DEFAULT_GAS_WANTED,
     });
 
-    return withTransactionGuard(this.walletClient, sendTransactionParams, () => {
-      return this.walletClient!.sendTransaction(sendTransactionParams);
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   }
 
@@ -60,8 +60,8 @@ export class WalletRepositoryImpl implements WalletRepository {
       gasWanted: DEFAULT_GAS_WANTED,
     });
 
-    return withTransactionGuard(this.walletClient, sendTransactionParams, () => {
-      return this.walletClient!.sendTransaction(sendTransactionParams);
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   }
 }

@@ -188,8 +188,8 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       memo: "",
     });
 
-    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedParams => {
-      return this.walletClient!.sendTransaction(updatedParams || sendTransactionParams);
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -200,8 +200,8 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
 
-    return withTransactionGuard(this.walletClient, sendTransactionParams, () => {
-      return this.walletClient!.sendTransaction(sendTransactionParams);
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -212,8 +212,8 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
 
-    return withTransactionGuard(this.walletClient, sendTransactionParams, () => {
-      return this.walletClient!.sendTransaction(sendTransactionParams);
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 

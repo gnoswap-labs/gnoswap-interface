@@ -251,8 +251,8 @@ export class PoolRepositoryImpl implements PoolRepository {
 
     const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
 
-    return withTransactionGuard(this.walletClient, sendTransactionParams, () => {
-      return this.walletClient!.sendTransaction(sendTransactionParams);
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -278,8 +278,8 @@ export class PoolRepositoryImpl implements PoolRepository {
 
     const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
 
-    return withTransactionGuard(this.walletClient, sendTransactionParams, () => {
-      return this.walletClient!.sendTransaction(sendTransactionParams);
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
