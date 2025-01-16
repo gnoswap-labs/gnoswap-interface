@@ -2,7 +2,9 @@ import BigNumber from "bignumber.js";
 import { useAtomValue } from "jotai";
 import { useTranslation } from "next-i18next";
 import React, { useCallback, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 
+import { SOCIAL_WALLET_EXTERNAL_URL } from "@constants/external-url.contant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconCopy from "@components/common/icons/IconCopy";
 import IconExit from "@components/common/icons/IconExit";
@@ -18,6 +20,7 @@ import { formatAddress } from "@utils/string-utils";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 
+import { DEVICE_TYPE } from "@styles/media";
 import {
   AmountInfoBox,
   CopyTooltip,
@@ -25,11 +28,14 @@ import {
   MenuHeader,
   Overlay,
   ThemeSelector,
+  TooltipContent,
   WalletConnectorMenuWrapper,
 } from "./WalletConnectorMenu.styles";
 import SocialWalletNotification from "./SocialWalletNotification";
 import { WalletTypeState } from "src/types/wallet.types";
 import RenderWalletIcon from "../RenderWalletIcon";
+import IconInfo from "@components/common/icons/IconInfo";
+import Tooltip from "@components/common/tooltip/Tooltip";
 
 interface IconButtonClickProps {
   copyClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -71,6 +77,7 @@ const IconButtonMaker: React.FC<IconButtonClickProps> = ({
 
 interface WalletConnectorMenuProps {
   account: AccountModel | null;
+  breakpoint: DEVICE_TYPE;
   connected: boolean;
   connectAdenaClient: () => void;
   disconnectWallet: () => void;
@@ -87,6 +94,7 @@ interface WalletConnectorMenuProps {
 
 const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   account,
+  breakpoint,
   connected,
   connectAdenaClient,
   disconnectWallet,
@@ -151,7 +159,14 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
           <div className="button-container">
             <MenuHeader>
               <RenderWalletIcon isSwitchNetwork={isSwitchNetwork} walletType={walletType} />
-              <span className="user-address">{formatAddress(account?.address || "")}</span>
+              <span className="user-address">
+                {formatAddress(account?.address || "")}
+                {breakpoint === DEVICE_TYPE.MOBILE && (
+                  <Tooltip floatClassName="test" FloatingContent={<SocialWalletNotificationTooltip />} placement="top">
+                    <IconInfo className="tooltip" fill="#596782" size={16} />
+                  </Tooltip>
+                )}
+              </span>
               <IconButtonMaker
                 copyClick={copyClick}
                 openLinkClick={openLinkClick}
@@ -160,7 +175,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
                 onClickDisconnect={onClickDisconnect}
               />
             </MenuHeader>
-            {walletType.type === "SOCIAL_WALLET" && <SocialWalletNotification />}
+            {breakpoint !== DEVICE_TYPE.MOBILE && walletType.type === "SOCIAL_WALLET" && <SocialWalletNotification />}
             {isSwitchNetwork ? (
               <Button
                 text={t("HeaderFooter:switchNetwork")}
@@ -193,7 +208,6 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
             />
           </div>
         )}
-
         <div className="theme-container">
           <ThemeSelector className="mt-16">
             <span>{t("HeaderFooter:language")}</span>
@@ -211,6 +225,35 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
       </WalletConnectorMenuWrapper>
       <Overlay onClick={onMenuToggle} />
     </>
+  );
+};
+
+const SocialWalletNotificationTooltip = () => {
+  const ORANGE_COLOR = "#FF9F0A";
+  return (
+    <TooltipContent>
+      <div className="social-wallet-noti-header">
+        <IconInfo fill={ORANGE_COLOR} size={16} />
+        <div className="title">You’re Using a Social Wallet</div>
+      </div>
+
+      <div className="content">
+        To use the full wallet features, install
+        <br />
+        Adena
+        <Link href={SOCIAL_WALLET_EXTERNAL_URL.ADENA_INSTALL_URL} target="_blank">
+          <IconOpenLink fill={ORANGE_COLOR} className="margin-left" />
+        </Link>
+        & login with the same social.
+      </div>
+
+      <div className="guide">
+        How does Social Wallets work?{" "}
+        <Link href={SOCIAL_WALLET_EXTERNAL_URL.SOCIAL_WALLET_FAQ_URL} target="_blank">
+          <IconOpenLink fill={ORANGE_COLOR} />
+        </Link>
+      </div>
+    </TooltipContent>
   );
 };
 

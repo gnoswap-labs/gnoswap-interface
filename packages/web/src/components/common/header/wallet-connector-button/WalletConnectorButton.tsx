@@ -17,12 +17,14 @@ import { formatAddress } from "@utils/string-utils";
 import SelectLanguage from "./select-language/SelectLanguage";
 import WalletConnectorMenu from "./wallet-connector-menu/WalletConnectorMenu";
 
+import { DEVICE_TYPE } from "@styles/media";
 import { FailNetworkTooltipContentWrap, WalletConnectorButtonWrapper } from "./WalletConnectorButton.styles";
 import { WalletTypeState } from "src/types/wallet.types";
 import RenderWalletIcon from "./RenderWalletIcon";
 
 interface WalletConnectProps {
   account: AccountModel | null;
+  breakpoint: DEVICE_TYPE;
   connected: boolean;
   connectAdenaClient: () => void;
   themeKey: "dark" | "light";
@@ -63,6 +65,7 @@ const FailNetworkTooltipContent: React.FC = () => {
 
 const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   account,
+  breakpoint,
   connected,
   connectAdenaClient,
   themeKey,
@@ -165,6 +168,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
       {toggle.walletConnect && !toggle.showLanguage && (
         <WalletConnectorMenu
           account={account}
+          breakpoint={breakpoint}
           connected={connected}
           connectAdenaClient={connectAdenaClient}
           disconnectWallet={disconnectWallet}

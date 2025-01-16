@@ -185,6 +185,7 @@ const Header: React.FC<HeaderProps> = ({
               )}
               <WalletConnectorButton
                 account={account}
+                breakpoint={breakpoint}
                 connected={connected}
                 connectAdenaClient={connectAdenaClient}
                 themeKey={themeKey}
