@@ -3,6 +3,7 @@ import { useAtomValue } from "jotai";
 import { useTranslation } from "next-i18next";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { useTheme } from "@emotion/react";
 
 import { SOCIAL_WALLET_EXTERNAL_URL } from "@constants/external-url.contant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -111,6 +112,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   const { i18n, t } = useTranslation();
   const { getAccountUrl } = useGnoscanUrl();
   const network = useAtomValue(CommonState.network);
+  const theme = useTheme();
 
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
@@ -164,7 +166,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
                 {formatAddress(account?.address || "")}
                 {breakpoint === DEVICE_TYPE.MOBILE && (
                   <Tooltip floatClassName="test" FloatingContent={<SocialWalletNotificationTooltip />} placement="top">
-                    <IconInfo className="tooltip" fill="#596782" size={16} />
+                    <IconInfo className="tooltip" fill={theme.themeKey === "dark" ? "#596782" : "#90A2C0"} size={16} />
                   </Tooltip>
                 )}
               </span>

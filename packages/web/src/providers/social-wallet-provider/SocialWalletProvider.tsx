@@ -6,7 +6,12 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useAtom } from "jotai";
 import { CommonState, WalletState } from "@states/index";
 import { SocialWalletClient } from "@common/clients/wallet-client/social/social-wallet-client";
-import { ACCOUNT_SESSION_INFO_KEY, GNOSWAP_SOCIAL_LOGIN_TYPE_KEY, GNOSWAP_WALLET_TYPE_KEY } from "@states/common";
+import {
+  ACCOUNT_SESSION_INFO_KEY,
+  GNOSWAP_SOCIAL_LOGIN_TYPE_KEY,
+  GNOSWAP_WALLET_TYPE_KEY,
+  SOCIAL_WALLET_MODAL_SHOWN_IN_SESSION,
+} from "@states/common";
 import { SocialLoginType } from "src/types/wallet.types";
 import { useConnectedSocialWalletModal } from "@hooks/wallet/ui/use-connected-social-wallet-modal";
 
@@ -40,6 +45,7 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
     sessionStorage.removeItem(GNOSWAP_WALLET_TYPE_KEY);
     sessionStorage.removeItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY);
     sessionStorage.removeItem(ACCOUNT_SESSION_INFO_KEY);
+    sessionStorage.removeItem(SOCIAL_WALLET_MODAL_SHOWN_IN_SESSION);
   };
 
   const resetConnectingState = (delay = 1000) => {
