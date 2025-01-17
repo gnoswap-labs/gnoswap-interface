@@ -142,6 +142,9 @@ export const ConnectedSocialWalletModalWrapper = styled.div`
           height: 57px;
           span {
             ${fonts.body7}
+            ${media.mobile} {
+              font-size: 16px;
+            }
           }
         }
         .cancel-button {
@@ -154,7 +157,24 @@ export const ConnectedSocialWalletModalWrapper = styled.div`
             &:hover {
               color: ${({ theme }) => theme.color.text04};
             }
+            ${media.mobile} {
+              font-size: 14px;
+            }
           }
+        }
+      }
+    }
+  }
+
+  ${media.mobile} {
+    padding: 12px;
+    width: 328px;
+    .modal-body {
+      gap: 12px;
+      .content {
+        /* gap: 16px; */
+        .button-wrapper {
+          gap: 12px;
         }
       }
     }
