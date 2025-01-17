@@ -103,7 +103,7 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
           <ConnectWalletModalDivider />
 
           {/* Social Logins */}
-          <div className="login-section">
+          <div className="login-section social-login-section">
             <Button
               text="Sign in With Google"
               leftIcon={<IconGoogleLogo />}

@@ -94,6 +94,9 @@ export const ConnectSocialWalletModalWrapper = styled.div`
         span {
           color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text01 : theme.color.text09)};
           ${fonts.body7}
+          ${media.mobile} {
+            font-size: 16px;
+          }
         }
         ${media.mobile} {
           height: 41px;

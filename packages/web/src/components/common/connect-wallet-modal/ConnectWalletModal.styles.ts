@@ -53,6 +53,11 @@ export const ConnectWalletModalWrapper = styled.div`
         width: 100%;
         ${mixins.flexbox("column", "flex-start", "flex-start")};
         gap: var(--login-section-gap, 24px);
+        &.social-login-section {
+          ${media.mobile} {
+            gap: 16px;
+          }
+        }
       }
 
       .email-section {

@@ -29,7 +29,7 @@ const ConnectWalletErrorModal = ({ close }: Props) => {
           </div>
           <div className="button-wrapper">
             <Button
-              text="I understand"
+              text="Close"
               style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
               onClick={close}
               className="button-confirm"
