@@ -148,6 +148,8 @@ export const useSwapHandler = () => {
   const [swapRateAction, setSwapRateAction] = useState<"ATOB" | "BTOA">("BTOA");
   const [tokenAAmount = "", setTokenAAmount] = useState(defaultTokenAAmount ?? undefined);
 
+  const estimateFlagRef = useRef(0);
+
   const [tokenBAmount = "", setTokenBAmount] = useState(() =>
     !defaultTokenAAmount ? (defaultTokenBAmount ? defaultTokenBAmount : undefined) : undefined,
   );
@@ -621,10 +623,6 @@ export const useSwapHandler = () => {
         return;
       }
 
-      if (tokenA && tokenB) {
-        updateSwapAmount(result.value);
-      }
-
       if (isSameToken) {
         setTokenAAmount(result.value);
         setTokenBAmount(result.value);
@@ -654,6 +652,7 @@ export const useSwapHandler = () => {
         ...prev,
         type: "EXACT_IN",
       }));
+      updateSwapAmount(result.value);
       setTokenAAmount(result.value);
     },
     [isSameToken, setSwapValue, tokenA, tokenB?.symbol],
@@ -969,7 +968,7 @@ export const useSwapHandler = () => {
     return;
   };
 
-  function executeSwap(swapTokenInfo: SwapTokenInfo, estimatedAmount: string) {
+  function executeSwap(swapTokenInfo: SwapTokenInfo, estimatedAmount: string | null) {
     if (!tokenA || !tokenB) {
       return;
     }
@@ -1094,6 +1093,50 @@ export const useSwapHandler = () => {
         isKeepToken: false,
       });
   }, []);
+
+  useEffect(() => {
+    // Do not execute unless both tokens A and B are selected
+    if (!tokenA?.symbol || !tokenB?.symbol) {
+      return;
+    }
+
+    // Handle default values when no user input exists
+    if (estimateFlagRef.current === 0) {
+      if (defaultTokenAAmount) {
+        estimateFlagRef.current += 1;
+        changeTokenAAmount(defaultTokenAAmount);
+        return;
+      }
+      if (defaultTokenBAmount) {
+        estimateFlagRef.current += 1;
+        changeTokenBAmount(defaultTokenBAmount);
+        return;
+      }
+    }
+
+    // Special handling for isSameToken case
+    if (!isSameToken) {
+      const isUserInput = tokenAAmount !== "" || tokenBAmount !== "";
+      if (isUserInput) {
+        return;
+      }
+    }
+    // Special handling for isSameToken case
+    if (tokenAAmount && !tokenBAmount) {
+      setTokenBAmount(tokenAAmount);
+      return;
+    }
+  }, [
+    tokenA,
+    tokenB,
+    defaultTokenAAmount,
+    defaultTokenBAmount,
+    tokenAAmount,
+    tokenBAmount,
+    isSameToken,
+    changeTokenAAmount,
+    changeTokenBAmount,
+  ]);
 
   // useEffect to manage loading state when token amount changes
   useEffect(() => {

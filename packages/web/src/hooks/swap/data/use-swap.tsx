@@ -121,6 +121,10 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
   }, [debouncedSwapAmount, error, estimatedSwapResult?.amount, isEstimatedSwapLoading, isSameToken, selectedTokenPair]);
 
   const estimatedRoutes: EstimatedRoute[] | null = useMemo(() => {
+    if (isSameToken) {
+      return [];
+    }
+
     if (swapState === "LOADING" || !debouncedSwapAmount || isTyping) {
       return null;
     }
@@ -130,7 +134,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     }
 
     return estimatedSwapResult.estimatedRoutes;
-  }, [swapState, estimatedSwapResult, debouncedSwapAmount, isTyping]);
+  }, [swapState, estimatedSwapResult, debouncedSwapAmount, isTyping, isSameToken]);
 
   const estimatedAmount: string | null = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -177,9 +181,14 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       setIsTyping(false);
       return;
     }
-
     const processedAmount = amount.endsWith(".") ? amount.slice(0, -1) : amount;
     const newAmount = BigNumber(processedAmount).isZero() ? 0 : BigNumber(processedAmount).toNumber();
+
+    if (!tokenA || !tokenB) {
+      setSwapAmount(newAmount);
+      setIsTyping(false);
+      return;
+    }
 
     setSwapAmount(prevAmount => {
       const hasValueChanged = prevAmount !== newAmount;

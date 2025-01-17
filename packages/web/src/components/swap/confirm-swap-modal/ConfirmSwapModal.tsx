@@ -35,7 +35,7 @@ interface ConfirmSwapModalProps {
   isWrapOrUnwrap: boolean;
   priceImpactStatus: PriceImpactStatus;
 
-  swap: (swapTokenInfo: SwapTokenInfo, estimatedAmount: string) => void;
+  swap: (swapTokenInfo: SwapTokenInfo, estimatedAmount: string | null) => void;
   close: () => void;
 }
 
@@ -154,7 +154,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   }, [swapSummaryInfo, swapTokenInfo]);
 
   const handleSwap = useCallback(() => {
-    if (!swapTokenInfo || !estimatedAmount) return;
+    if (!swapTokenInfo) return;
     swap(swapTokenInfo, estimatedAmount);
   }, [swapTokenInfo, swap]);
 
