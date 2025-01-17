@@ -41,16 +41,11 @@ const ConnectedSocialWalletModal = ({ close, onDontShowAgain }: Props) => {
             <h5>Notice for Using Social Wallets</h5>
             <div className="description">
               You can use basic wallet features, such as transferring
-              <br />
-              assets and signing transactions, with a social wallet.
-              <br />
-              To access advanced wallet features, like exporting
-              <br />
-              private keys or changing networks, please install the
-              <br />
-              Adena wallet extensionand log in using the same social
-              <br />
-              account.
+              <br /> assets and signing transactions, with a social wallet.
+              <br /> To access advanced wallet features, like exporting
+              <br /> private keys or changing networks, please install the
+              <br /> Adena wallet extensionand log in using the same social
+              <br /> account.
             </div>
             <div className="link-wrapper">
               <div className="link">
