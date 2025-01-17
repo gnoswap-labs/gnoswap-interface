@@ -11,6 +11,7 @@ export const WalletConnectorButtonWrapper = styled.div`
   .arrow-icon {
     width: 16px;
     height: 16px;
+    margin-left: 8px;
   }
   .connected-button {
     background-color: ${({ theme }) => theme.color.background13};

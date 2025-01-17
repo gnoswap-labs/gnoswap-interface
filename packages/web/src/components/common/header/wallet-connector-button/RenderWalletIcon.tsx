@@ -1,4 +1,5 @@
 import React from "react";
+import { useTheme } from "@emotion/react";
 
 import { WalletTypeState } from "src/types/wallet.types";
 
@@ -14,6 +15,8 @@ interface RenderWalletIconProps {
 }
 
 const RenderWalletIcon = ({ isSwitchNetwork, walletType }: RenderWalletIconProps) => {
+  const theme = useTheme();
+
   if (isSwitchNetwork) return <IconFailed className="fail-icon render-wallet-icon" />;
 
   if (walletType.type === "SOCIAL_WALLET") {
@@ -23,7 +26,7 @@ const RenderWalletIcon = ({ isSwitchNetwork, walletType }: RenderWalletIconProps
       case "google":
         return <IconGoogleLogo className="render-wallet-icon" />;
       case "twitter":
-        return <IconTwitterLogo className="render-wallet-icon" />;
+        return <IconTwitterLogo className="render-wallet-icon" fill={theme.themeKey === "dark" ? "" : "black"} />;
       default:
         return null;
     }

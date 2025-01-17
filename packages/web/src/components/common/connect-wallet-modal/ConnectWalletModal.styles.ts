@@ -88,7 +88,7 @@ export const ConnectWalletModalWrapper = styled.div`
           }
           &:hover {
             * {
-              fill: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.background07 : theme.color.border07)};
+              fill: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.border07 : theme.color.background07)};
             }
           }
         }
@@ -113,7 +113,7 @@ export const ConnectWalletModalWrapper = styled.div`
           height: 57px;
           &.dark {
             &:hover {
-              background-color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.hover02 : "")};
+              background-color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.hover02 : "#E0E8F480")};
             }
           }
           &.primary {
