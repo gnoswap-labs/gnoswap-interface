@@ -35,9 +35,11 @@ import {
   WalletConnectorMenuWrapper,
 } from "./WalletConnectorMenu.styles";
 import SocialWalletNotification from "./SocialWalletNotification";
-import { WalletTypeState } from "src/types/wallet.types";
+import { SocialLoginType, WalletTypeState } from "src/types/wallet.types";
 import RenderWalletIcon from "../RenderWalletIcon";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import { LAST_CONNECTED_SOCIAL_LOGIN_TYPE } from "@states/common";
+import { useSocialWalletContext } from "@hooks/common/use-social-wallet-context";
 
 interface IconButtonClickProps {
   copyClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -114,6 +116,8 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   const network = useAtomValue(CommonState.network);
   const theme = useTheme();
 
+  const { connect: connectSocialWallet } = useSocialWalletContext();
+
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
     try {
@@ -151,8 +155,13 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   }, [disconnectWallet]);
 
   const connect = useCallback(() => {
-    onMenuToggle();
-    connectAdenaClient();
+    const lastLoginType = localStorage.getItem(LAST_CONNECTED_SOCIAL_LOGIN_TYPE);
+    if (lastLoginType) {
+      connectSocialWallet(lastLoginType as SocialLoginType);
+    } else {
+      onMenuToggle();
+      connectAdenaClient();
+    }
   }, [connectAdenaClient]);
 
   return (
