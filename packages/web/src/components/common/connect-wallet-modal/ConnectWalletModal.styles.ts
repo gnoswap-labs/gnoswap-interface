@@ -84,11 +84,11 @@ export const ConnectWalletModalWrapper = styled.div`
         }
         .right-chevron {
           * {
-            fill: ${({ theme }) => theme.color.text05};
+            fill: ${({ theme }) => theme.color.icon03};
           }
           &:hover {
             * {
-              fill: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.border07 : theme.color.background07)};
+              fill: ${({ theme }) => theme.color.icon07};
             }
           }
         }
