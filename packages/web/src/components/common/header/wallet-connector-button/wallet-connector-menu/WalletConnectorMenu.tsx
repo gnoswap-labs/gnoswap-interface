@@ -40,6 +40,7 @@ import RenderWalletIcon from "../RenderWalletIcon";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { LAST_CONNECTED_SOCIAL_LOGIN_TYPE } from "@states/common";
 import { useSocialWalletContext } from "@hooks/common/use-social-wallet-context";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
 interface IconButtonClickProps {
   copyClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -117,6 +118,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   const theme = useTheme();
 
   const { connect: connectSocialWallet } = useSocialWalletContext();
+  const [isConnectLoading, setIsConnectLoading] = useState(false);
 
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
@@ -154,10 +156,12 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
     disconnectWallet();
   }, [disconnectWallet]);
 
-  const connect = useCallback(() => {
+  const connect = useCallback(async () => {
     const lastLoginType = localStorage.getItem(LAST_CONNECTED_SOCIAL_LOGIN_TYPE);
     if (lastLoginType) {
-      connectSocialWallet(lastLoginType as SocialLoginType);
+      setIsConnectLoading(true);
+      await connectSocialWallet(lastLoginType as SocialLoginType);
+      setIsConnectLoading(false);
     } else {
       onMenuToggle();
       connectAdenaClient();
@@ -208,7 +212,8 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
         ) : (
           <div className="button-container">
             <Button
-              text={t("common:btn.walletLogin")}
+              text={!isConnectLoading && t("common:btn.walletLogin")}
+              leftIcon={isConnectLoading && <LoadingSpinner className="loading-button" />}
               onClick={connect}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
