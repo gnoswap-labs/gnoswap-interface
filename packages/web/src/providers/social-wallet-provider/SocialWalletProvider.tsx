@@ -15,7 +15,7 @@ import {
 } from "@states/common";
 import { SocialLoginType } from "src/types/wallet.types";
 import { useConnectedSocialWalletModal } from "@hooks/wallet/ui/use-connected-social-wallet-modal";
-import { useConnectWalletErrorModal } from "@hooks/wallet/ui/use-connect-wallet-error-modal";
+// import { useConnectWalletErrorModal } from "@hooks/wallet/ui/use-connect-wallet-error-modal";
 
 interface SocialWalletContextType {
   connectingState: "initial" | "loading" | "error" | "done" | "";
@@ -40,7 +40,7 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
   const [, setWalletAccount] = useAtom(WalletState.account);
 
   const { openModal: openConnectedModal } = useConnectedSocialWalletModal();
-  const { openModal: openConnectErrorModal } = useConnectWalletErrorModal();
+  // const { openModal: openConnectErrorModal } = useConnectWalletErrorModal();
 
   const resetSocialWalletState = () => {
     setWalletClient(null);
@@ -128,7 +128,7 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
     const timeoutPromise = new Promise((_, reject) => {
       setTimeout(() => {
         reject(new Error("Connection timeout after 5 minutes"));
-        openConnectErrorModal();
+        // openConnectErrorModal() Improve
       }, CONNECT_TIMEOUT_MS);
     });
 
