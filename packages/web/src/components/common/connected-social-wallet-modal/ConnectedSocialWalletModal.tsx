@@ -44,7 +44,7 @@ const ConnectedSocialWalletModal = ({ close, onDontShowAgain }: Props) => {
               <br /> assets and signing transactions, with a social wallet.
               <br /> To access advanced wallet features, like exporting
               <br /> private keys or changing networks, please install the
-              <br /> Adena wallet extensionand log in using the same social
+              <br /> Adena wallet extension and log in using the same social
               <br /> account.
             </div>
             <div className="link-wrapper">
