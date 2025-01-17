@@ -10,6 +10,7 @@ import {
   ACCOUNT_SESSION_INFO_KEY,
   GNOSWAP_SOCIAL_LOGIN_TYPE_KEY,
   GNOSWAP_WALLET_TYPE_KEY,
+  LAST_CONNECTED_SOCIAL_LOGIN_TYPE,
   SOCIAL_WALLET_MODAL_SHOWN_IN_SESSION,
 } from "@states/common";
 import { SocialLoginType } from "src/types/wallet.types";
@@ -46,6 +47,7 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
     setWalletAccount(null);
     accountRepository.setConnectedWallet(false);
 
+    localStorage.removeItem(LAST_CONNECTED_SOCIAL_LOGIN_TYPE);
     sessionStorage.removeItem(GNOSWAP_WALLET_TYPE_KEY);
     sessionStorage.removeItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY);
     sessionStorage.removeItem(ACCOUNT_SESSION_INFO_KEY);
@@ -84,6 +86,8 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
         if (!socialWalletClient) {
           throw new Error("Failed to create social wallet client");
         }
+
+        localStorage.setItem(LAST_CONNECTED_SOCIAL_LOGIN_TYPE, loginType);
 
         sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "SOCIAL_WALLET");
         sessionStorage.setItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY, loginType);
