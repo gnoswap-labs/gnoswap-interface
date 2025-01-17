@@ -2,6 +2,7 @@ import React from "react";
 import { useTheme } from "@emotion/react";
 
 import { WalletTypeState } from "src/types/wallet.types";
+import { GNOSWAP_WALLET_TYPE_KEY, GNOSWAP_SOCIAL_LOGIN_TYPE_KEY } from "@states/common";
 
 import IconAdenaLogo from "@components/common/icons/defaultIcon/IconAdenaLogo";
 import IconGoogleLogo from "@components/common/icons/defaultIcon/IconGoogleLogo";
@@ -14,13 +15,22 @@ interface RenderWalletIconProps {
   walletType: WalletTypeState;
 }
 
-const RenderWalletIcon = ({ isSwitchNetwork, walletType }: RenderWalletIconProps) => {
+const RenderWalletIcon = ({ isSwitchNetwork }: RenderWalletIconProps) => {
   const theme = useTheme();
+  const [walletType, setWalletType] = React.useState<string | null>(null);
+  const [socialType, setSocialType] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    const storedWalletType = sessionStorage.getItem(GNOSWAP_WALLET_TYPE_KEY);
+    const storedSocialType = sessionStorage.getItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY);
+    setWalletType(storedWalletType);
+    setSocialType(storedSocialType);
+  }, []);
 
   if (isSwitchNetwork) return <IconFailed className="fail-icon render-wallet-icon" />;
 
-  if (walletType.type === "SOCIAL_WALLET") {
-    switch (walletType.socialType) {
+  if (walletType === "SOCIAL_WALLET") {
+    switch (socialType) {
       case "email":
         return <IconEmailLogo className="render-wallet-icon" />;
       case "google":
@@ -32,7 +42,10 @@ const RenderWalletIcon = ({ isSwitchNetwork, walletType }: RenderWalletIconProps
     }
   }
 
-  return <IconAdenaLogo className="render-wallet-icon" />;
+  if (walletType === "ADENA") return <IconAdenaLogo className="render-wallet-icon" />;
+
+  // UI while loading wallet information
+  return <div style={{ width: 24, height: 20 }} />;
 };
 
 export default RenderWalletIcon;

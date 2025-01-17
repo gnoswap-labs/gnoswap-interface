@@ -85,6 +85,8 @@ export const MenuHeader = styled.div`
     width: 100%;
   }
   .render-wallet-icon {
+    width: 16px;
+    height: 16px;
     ${media.mobile} {
       width: 24px;
       height: 24px;
