@@ -5,6 +5,7 @@ import {
   isContractMessage,
   SendTransactionRequestParam,
   TransactionMessage,
+  WalletResponse,
 } from "@common/clients/wallet-client/protocols";
 import { DEFAULT_CHAIN_ID } from "@constants/environment.constant";
 import { DEFAULT_GAS_WANTED } from "@common/values";
@@ -143,8 +144,8 @@ const generateTransactionDataDocument = async (
 export const withTransactionGuard = async <T>(
   walletClient: WalletClient | null,
   transaction: SendTransactionRequestParam,
-  executeTransaction: (updatedTransaction?: SendTransactionRequestParam) => Promise<T>,
-): Promise<T> => {
+  executeTransaction: (updatedTransaction?: SendTransactionRequestParam) => Promise<WalletResponse<T>>,
+): Promise<WalletResponse<T>> => {
   if (!walletClient) {
     throw new Error("Wallet client is not initialized");
   }
@@ -154,7 +155,13 @@ export const withTransactionGuard = async <T>(
     const approved = await showTransactionApprovalModal(document);
 
     if (approved === false) {
-      throw new Error("Transaction rejected");
+      return {
+        code: 4000,
+        data: null,
+        message: "The transaction has been rejected by the user.",
+        status: "failure",
+        type: "TRANSACTION_REJECTED",
+      };
     }
 
     const updatedTransaction = {
