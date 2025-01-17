@@ -14,6 +14,7 @@ import {
 } from "@states/common";
 import { SocialLoginType } from "src/types/wallet.types";
 import { useConnectedSocialWalletModal } from "@hooks/wallet/ui/use-connected-social-wallet-modal";
+import { useConnectWalletErrorModal } from "@hooks/wallet/ui/use-connect-wallet-error-modal";
 
 interface SocialWalletContextType {
   connectingState: "initial" | "loading" | "error" | "done" | "";
@@ -22,6 +23,8 @@ interface SocialWalletContextType {
   error: string | null;
   connectSocialWalletClient: (loginType: SocialLoginType) => Promise<void>;
 }
+
+const CONNECT_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 
 export const SocialWalletContext = React.createContext<SocialWalletContextType | null>(null);
 
@@ -36,6 +39,7 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
   const [, setWalletAccount] = useAtom(WalletState.account);
 
   const { openModal: openConnectedModal } = useConnectedSocialWalletModal();
+  const { openModal: openConnectErrorModal } = useConnectWalletErrorModal();
 
   const resetSocialWalletState = () => {
     setWalletClient(null);
@@ -71,52 +75,68 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
   );
 
   const connect = async (loginType: SocialWalletLoginType) => {
-    try {
-      setConnectingState("loading");
-      setError(null);
+    const connectProcess = async () => {
+      try {
+        setConnectingState("loading");
+        setError(null);
 
-      const socialWalletClient = await SocialWalletClient.createSocialWalletClient(loginType);
-      if (!socialWalletClient) {
-        throw new Error("Failed to create socail wallet client");
-      }
-
-      sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "SOCIAL_WALLET");
-      sessionStorage.setItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY, loginType);
-      setWalletClient(socialWalletClient);
-      accountRepository.setWalletClient(socialWalletClient);
-
-      const established = await accountRepository.addEstablishedSite().catch(() => null);
-      if (!established || established.code === 4000) {
-        throw new Error("Failed to established site");
-      }
-
-      if (established.code === 0 || established.code === 4001) {
-        const account = await accountRepository.getAccount();
-        if (!account) {
-          throw new Error("Failed to get account");
+        const socialWalletClient = await SocialWalletClient.createSocialWalletClient(loginType);
+        if (!socialWalletClient) {
+          throw new Error("Failed to create social wallet client");
         }
 
-        sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
-        // const availNetwork = SUPPORT_CHAIN_IDS.includes(account.chainId);
-        // if (!availNetwork) {
-        //   await accountRepository.switchNetwork(SUPPORT_CHAIN_IDS[0]);
-        // }
-        setWalletAccount(account);
-        accountRepository.setConnectedWallet(true);
-        setConnectingState("done");
+        sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "SOCIAL_WALLET");
+        sessionStorage.setItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY, loginType);
+        setWalletClient(socialWalletClient);
+        accountRepository.setWalletClient(socialWalletClient);
 
-        openConnectedModal();
+        const established = await accountRepository.addEstablishedSite().catch(() => null);
+        if (!established || established.code === 4000) {
+          throw new Error("Failed to established site");
+        }
 
-        resetConnectingState();
-      } else {
-        accountRepository.setConnectedWallet(false);
+        if (established.code === 0 || established.code === 4001) {
+          const account = await accountRepository.getAccount();
+          if (!account) {
+            throw new Error("Failed to get account");
+          }
+
+          sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
+          setWalletAccount(account);
+          accountRepository.setConnectedWallet(true);
+          setConnectingState("done");
+
+          openConnectedModal();
+
+          resetConnectingState();
+        } else {
+          accountRepository.setConnectedWallet(false);
+          setConnectingState("error");
+          openConnectErrorModal();
+          resetConnectingState();
+        }
+      } catch (err) {
+        resetSocialWalletState();
         setConnectingState("error");
-        resetConnectingState();
+        openConnectErrorModal();
+        setError(err instanceof Error ? err.message : "Failed to connect Social Wallet");
       }
+    };
+
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => {
+        reject(new Error("Connection timeout after 5 minutes"));
+        openConnectErrorModal();
+      }, CONNECT_TIMEOUT_MS);
+    });
+
+    try {
+      await Promise.race([connectProcess(), timeoutPromise]);
     } catch (err) {
       resetSocialWalletState();
       setConnectingState("error");
-      setError(err instanceof Error ? err.message : "Failed to connect Social Wallet");
+      openConnectErrorModal();
+      setError(err instanceof Error ? err.message : "Connection timeout");
     }
   };
 
