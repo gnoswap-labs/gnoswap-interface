@@ -99,8 +99,8 @@ export const useBackground = () => {
   useEffect(() => {
     if (walletClient) return;
 
-    const MAX_RETRY = 5;
-    const RETRY_INTERVAL = 200;
+    const MAX_RETRY = 1;
+    const RETRY_INTERVAL = 1000;
 
     const initWalletBySession = async () => {
       const savedWalletType = sessionStorage.getItem(GNOSWAP_WALLET_TYPE_KEY);
@@ -127,7 +127,7 @@ export const useBackground = () => {
     let count = 0;
 
     return () => clearInterval(retryInterval);
-  }, [walletClient, sessionId, initSession]);
+  }, [walletClient?.getWalletType(), sessionId, initSession]);
 
   /**
    *

@@ -112,13 +112,11 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
         } else {
           accountRepository.setConnectedWallet(false);
           setConnectingState("error");
-          openConnectErrorModal();
           resetConnectingState();
         }
       } catch (err) {
         resetSocialWalletState();
         setConnectingState("error");
-        openConnectErrorModal();
         setError(err instanceof Error ? err.message : "Failed to connect Social Wallet");
       }
     };
@@ -135,8 +133,7 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
     } catch (err) {
       resetSocialWalletState();
       setConnectingState("error");
-      openConnectErrorModal();
-      setError(err instanceof Error ? err.message : "Connection timeout");
+      setError(err instanceof Error ? err.message : "Failed to connect Social Wallet");
     }
   };
 

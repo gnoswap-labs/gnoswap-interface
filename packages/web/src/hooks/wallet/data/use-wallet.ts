@@ -103,7 +103,6 @@ export const useWallet = () => {
   }, [setNetwork, walletAccount]);
 
   const disconnectWallet = useCallback(() => {
-    disconnect();
     setWalletClient(null);
     setWalletAccount(null);
     setSessionId("");
@@ -114,6 +113,7 @@ export const useWallet = () => {
     sessionStorage.removeItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY);
     accountRepository.setConnectedWallet(false);
     setLoadingConnect("initial");
+    disconnect();
   }, [accountRepository]);
 
   async function initSession() {
