@@ -6,8 +6,10 @@ import Link from "next/link";
 
 import { SOCIAL_WALLET_EXTERNAL_URL } from "@constants/external-url.contant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import IconCopy from "@components/common/icons/IconCopy";
-import IconExit from "@components/common/icons/IconExit";
+import IconInfo from "@components/common/icons/IconInfo";
+import IconHeaderCopy from "@components/common/icons/IconHeaderCopy";
+import IconHeaderOpenLink from "@components/common/icons/IconHeaderOpenLink";
+import IconHeaderExit from "@components/common/icons/IconHeaderExit";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import { LANGUAGES } from "@constants/common.constant";
 import ThemeModeContainer from "@containers/theme-mode-container/ThemeModeContainer";
@@ -34,7 +36,6 @@ import {
 import SocialWalletNotification from "./SocialWalletNotification";
 import { WalletTypeState } from "src/types/wallet.types";
 import RenderWalletIcon from "../RenderWalletIcon";
-import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 
 interface IconButtonClickProps {
@@ -55,7 +56,7 @@ const IconButtonMaker: React.FC<IconButtonClickProps> = ({
   return (
     <>
       <IconButton onClick={copyClick}>
-        <IconCopy className="action-icon" />
+        <IconHeaderCopy className="action-icon" />
         {copied && (
           <CopyTooltip>
             <div className={`box ${themeKey}-shadow`}>
@@ -66,10 +67,10 @@ const IconButtonMaker: React.FC<IconButtonClickProps> = ({
         )}
       </IconButton>
       <IconButton onClick={openLinkClick}>
-        <IconOpenLink className="action-icon" />
+        <IconHeaderOpenLink className="action-icon" />
       </IconButton>
       <IconButton onClick={onClickDisconnect}>
-        <IconExit className="action-icon" />
+        <IconHeaderExit className="action-icon" />
       </IconButton>
     </>
   );
