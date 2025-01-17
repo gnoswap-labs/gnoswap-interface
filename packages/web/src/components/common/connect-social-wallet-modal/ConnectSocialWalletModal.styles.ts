@@ -68,11 +68,17 @@ export const ConnectSocialWalletModalWrapper = styled.div`
           color: ${({ theme }) => theme.color.text01};
           font-size: 18px;
           font-weight: 500;
+          ${media.mobile} {
+            font-size: 16px;
+          }
         }
         .text {
           color: ${({ theme }) => theme.color.text03};
           font-size: 14px;
           font-weight: 400;
+          ${media.mobile} {
+            font-size: 13px;
+          }
         }
       }
     }
@@ -88,6 +94,9 @@ export const ConnectSocialWalletModalWrapper = styled.div`
         span {
           color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text01 : theme.color.text09)};
           ${fonts.body7}
+        }
+        ${media.mobile} {
+          height: 41px;
         }
       }
     }

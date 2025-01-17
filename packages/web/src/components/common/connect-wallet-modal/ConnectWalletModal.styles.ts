@@ -112,8 +112,10 @@ export const ConnectWalletModalWrapper = styled.div`
           gap: 8px;
           height: 57px;
           &.dark {
+            background-color: ${({ theme }) => (theme.themeKey === "dark" ? "" : "#E0E8F480")};
             &:hover {
-              background-color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.hover02 : "#E0E8F480")};
+              background-color: ${({ theme }) =>
+                theme.themeKey === "dark" ? theme.color.hover02 : theme.color.background12};
             }
           }
           &.primary {

@@ -61,6 +61,9 @@ export const ConnectedSocialWalletModalWrapper = styled.div`
         ${fonts.body7};
         color: ${({ theme }) => theme.color.text02};
         text-align: center;
+        ${media.mobile} {
+          font-size: 16px;
+        }
       }
       .detail {
         display: flex;
@@ -73,6 +76,12 @@ export const ConnectedSocialWalletModalWrapper = styled.div`
           text-align: center;
           ${fonts.body12};
           color: ${({ theme }) => theme.color.text04};
+          ${media.mobile} {
+            font-size: 13px;
+            br {
+              display: none;
+            }
+          }
         }
       }
       .link-wrapper {
@@ -145,6 +154,9 @@ export const ConnectedSocialWalletModalWrapper = styled.div`
             ${media.mobile} {
               font-size: 16px;
             }
+          }
+          ${media.mobile} {
+            height: 41px;
           }
         }
         .cancel-button {
