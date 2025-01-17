@@ -8,11 +8,13 @@ export const TransactionApprovalModalWrapper = styled.div`
   justify-content: flex-start;
   flex-direction: column;
   gap: 16px;
+  overflow-y: auto;
 
   position: relative;
   pointer-events: initial;
 
   width: 460px;
+  max-height: calc(100dvh - 150px);
   padding: 24px 0;
 
   border-radius: 8px;
