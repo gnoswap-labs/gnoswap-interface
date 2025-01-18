@@ -45,7 +45,7 @@ const RenderWalletIcon = ({ isSwitchNetwork }: RenderWalletIconProps) => {
   if (walletType === "ADENA") return <IconAdenaLogo className="render-wallet-icon" />;
 
   // UI while loading wallet information
-  return <div style={{ width: 24, height: 20 }} />;
+  return <div style={{ width: 16, height: 16 }} />;
 };
 
 export default RenderWalletIcon;
