@@ -86,7 +86,7 @@ const TransactionApprovalModal = ({
               <IconAdenaLogo />
               <span className="value">{location.origin}</span>
             </InfoCard>
-            {!isAllowedDomain && <div className="error-text">Invalid domain</div>}
+            {!isAllowedDomain && <div className="error-text">Warning: Possible phishing. Check domain carefully.</div>}
             <InfoCard>
               <div className="label">Account</div>
               <div className="value">{formatAddress(caller)}</div>

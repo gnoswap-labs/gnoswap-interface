@@ -95,11 +95,15 @@ export const TransactionApprovalSummary = styled.div`
   width: 100%;
   .error-text {
     color: ${({ theme }) => theme.color.red01};
+    font-size: 14px;
 
     display: flex;
     justify-content: flex-start;
     width: 100%;
     margin-bottom: 4px;
+    ${media.mobile} {
+      font-size: 13px;
+    }
   }
 `;
 
