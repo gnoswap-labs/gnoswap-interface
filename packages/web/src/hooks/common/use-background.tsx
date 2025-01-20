@@ -9,6 +9,7 @@ import useScrollData from "./use-scroll-data";
 import { useLoading } from "./use-loading";
 import { useSocialWalletContext } from "./use-social-wallet-context";
 import { GNOSWAP_SOCIAL_LOGIN_TYPE_KEY, GNOSWAP_WALLET_TYPE_KEY } from "@states/common";
+import { useAutoDisconnect } from "./use-auto-disconnect";
 
 export const useBackground = () => {
   const router = useRouter();
@@ -160,6 +161,23 @@ export const useBackground = () => {
     handleWalletConnection();
     updateWalletEvents(walletClient);
   }, [walletClient?.getWalletType(), String(account)]);
+
+  /**
+   *
+   * Automatically disconnects SOCIAL-WALLET after a period of inacitivity
+   *
+   * Purpose:
+   * Implements an auto-disconnect feature for enhanced security of social wallet users
+   * Tracks user activity and disconnects the wallet after a period of inactivity
+   *
+   * Behavior:
+   * Only activates for SOCIAL-WALLET type and when account exists
+   * Monitors user activities: mouse movements, keystrokes, scrolling, touches, clicks
+   * Resets timer on any user activity
+   * Disconnects wallet after 5 minutes of inactivity
+   *
+   */
+  useAutoDisconnect();
 
   useEffect(() => {
     if (account?.address && account?.chainId) {
