@@ -17,6 +17,7 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconArrowDown from "../icons/IconArrowDown";
 import IconArrowUp from "../icons/IconArrowUp";
 import { formatAddress } from "@utils/string-utils";
+import { ALLOWED_DOMAINS } from "@constants/environment.constant";
 
 interface Props {
   onConfirm: () => void;
@@ -44,11 +45,22 @@ const TransactionApprovalModal = ({
   memoChangeHandler,
 }: Props) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
+  const [isAllowedDomain, setIsAllowedDomain] = React.useState(true);
 
   const onChangeMemo = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     memoChangeHandler(value);
   };
+
+  React.useEffect(() => {
+    const hostname = window.location.hostname;
+
+    if (ALLOWED_DOMAINS.includes(hostname)) {
+      setIsAllowedDomain(true);
+    } else {
+      setIsAllowedDomain(false);
+    }
+  }, []);
 
   return (
     <TransactionApprovalModalWrapper>
@@ -64,10 +76,11 @@ const TransactionApprovalModal = ({
 
         <TransactionApprovalModalContents>
           <TransactionApprovalSummary>
-            <InfoCard justify="center" gap={8}>
+            <InfoCard className={cx({ red: !isAllowedDomain })} justify="center" gap={8}>
               <IconAdenaLogo />
               <span className="value">{location.origin}</span>
             </InfoCard>
+            {!isAllowedDomain && <div className="error-text">Invalid domain</div>}
             <InfoCard>
               <div className="label">Account</div>
               <div className="value">{formatAddress(caller)}</div>
@@ -116,11 +129,6 @@ const TransactionApprovalModal = ({
             onClick={onConfirm}
             text={"Approve"}
             style={{ fullWidth: true, height: 57, fontType: "body7", hierarchy: ButtonHierarchy.Primary }}
-          />
-          <Button
-            onClick={onCancel}
-            text={"Cancel"}
-            style={{ fullWidth: true, height: 57, fontType: "body7", hierarchy: ButtonHierarchy.Dark }}
           />
         </TransactionApprovalButtonWrapper>
       </TransactionApprovalModalBody>

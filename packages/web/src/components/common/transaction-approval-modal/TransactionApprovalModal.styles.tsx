@@ -93,6 +93,14 @@ export const TransactionApprovalSummary = styled.div`
   gap: 4px;
 
   width: 100%;
+  .error-text {
+    color: ${({ theme }) => theme.color.red01};
+
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    margin-bottom: 4px;
+  }
 `;
 
 interface InfoCardProps {
@@ -114,6 +122,9 @@ export const InfoCard = styled.div<InfoCardProps>`
 
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
+  &.red {
+    border: 1px solid ${({ theme }) => theme.color.red01};
+  }
   .flex-box {
     display: flex;
     align-items: center;

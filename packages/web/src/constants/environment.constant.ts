@@ -47,6 +47,7 @@ export const BLOCKED_PAGES = process.env.NEXT_PUBLIC_BLOCKED_PAGES?.split(",") |
 export const GNOSCAN_OFFICIAL_CHAIN_IDS = process.env.NEXT_PUBLIC_GNOSCAN_OFFICIAL_CHAIN_IDS?.split(",") || [];
 export const UMAMI_SCRIPT_URL = process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL;
 export const UMAMI_WEBSITE_ID = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
+export const ALLOWED_DOMAINS = process.env.NEXT_PUBLIC_ALLOWED_DOMAINS?.split(",") || [];
 
 // Social Wallet Config
 export const SOCIAL_WALLET_WEB3AUTH_CLIENT_ID = process.env.NEXT_PUBLIC_SOCIAL_WALLET_WEB3AUTH_CLIENT_ID || "";
