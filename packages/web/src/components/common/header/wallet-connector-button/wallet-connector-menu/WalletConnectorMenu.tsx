@@ -245,7 +245,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   );
 };
 
-const SocialWalletNotificationTooltip = () => {
+export const SocialWalletNotificationTooltip = () => {
   const ORANGE_COLOR = "#FF9F0A";
   return (
     <TooltipContent>
