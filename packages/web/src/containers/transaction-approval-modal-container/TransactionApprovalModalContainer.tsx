@@ -1,5 +1,6 @@
 import React from "react";
 
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { Document, TransactionData } from "src/types/transaction-messages.types";
 import { mappedTransactionData } from "@utils/messages.utils";
 
@@ -12,6 +13,8 @@ interface Props {
 }
 
 const TransactionApprovalModalContainer = ({ onApprove, onReject, document }: Props) => {
+  const { isSwitchNetwork, walletType } = useWallet();
+
   const [transactionDocument, setTransactionDocument] = React.useState<Document>(document);
   const [transactionData, setTransactionData] = React.useState<TransactionData>();
   const [memo, setMemo] = React.useState<string>("");
@@ -48,6 +51,8 @@ const TransactionApprovalModalContainer = ({ onApprove, onReject, document }: Pr
       contracts={transactionData?.contracts || []}
       transactionMessageRaw={JSON.stringify(transactionDocument, null, 2)}
       memo={memo}
+      isSwitchNetwork={isSwitchNetwork}
+      walletType={walletType}
       memoChangeHandler={memoChangeHandler}
     />
   );

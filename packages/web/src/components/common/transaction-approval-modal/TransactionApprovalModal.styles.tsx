@@ -140,6 +140,10 @@ export const InfoCard = styled.div<InfoCardProps>`
     font-weight: 400;
   }
   .value {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
     color: ${({ theme }) => theme.color.text01};
     font-weight: 500;
     input {
@@ -147,6 +151,10 @@ export const InfoCard = styled.div<InfoCardProps>`
       &::placeholder {
         color: ${({ theme }) => theme.color.text04};
       }
+    }
+    svg {
+      width: 24px;
+      height: 24px;
     }
   }
 `;

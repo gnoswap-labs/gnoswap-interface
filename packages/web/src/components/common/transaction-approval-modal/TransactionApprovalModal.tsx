@@ -1,6 +1,10 @@
 import React from "react";
 import { cx } from "@emotion/css";
 
+import { WalletTypeState } from "src/types/wallet.types";
+import { formatAddress } from "@utils/string-utils";
+import { ALLOWED_DOMAINS } from "@constants/environment.constant";
+
 import {
   TransactionApprovalButtonWrapper,
   TransactionApprovalDetails,
@@ -12,12 +16,11 @@ import {
   InfoCard,
 } from "./TransactionApprovalModal.styles";
 import IconClose from "@components/common/icons/IconCancel";
-import IconAdenaLogo from "../icons/defaultIcon/IconAdenaLogo";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconArrowDown from "../icons/IconArrowDown";
 import IconArrowUp from "../icons/IconArrowUp";
-import { formatAddress } from "@utils/string-utils";
-import { ALLOWED_DOMAINS } from "@constants/environment.constant";
+import RenderWalletIcon from "../header/wallet-connector-button/RenderWalletIcon";
+import IconGnoswapLogo from "../icons/defaultIcon/IconGnoswapLogo";
 
 interface Props {
   onConfirm: () => void;
@@ -32,6 +35,8 @@ interface Props {
   }[];
   transactionMessageRaw: string;
   memo: string;
+  isSwitchNetwork: boolean;
+  walletType: WalletTypeState;
   memoChangeHandler: (memo: string) => void;
 }
 
@@ -42,6 +47,8 @@ const TransactionApprovalModal = ({
   contracts,
   transactionMessageRaw,
   memo,
+  isSwitchNetwork,
+  walletType,
   memoChangeHandler,
 }: Props) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
@@ -83,13 +90,16 @@ const TransactionApprovalModal = ({
         <TransactionApprovalModalContents>
           <TransactionApprovalSummary>
             <InfoCard className={cx({ red: !isAllowedDomain })} justify="center" gap={8}>
-              <IconAdenaLogo />
+              <IconGnoswapLogo />
               <span className="value">{location.origin}</span>
             </InfoCard>
             {!isAllowedDomain && <div className="error-text">Warning: Possible phishing. Check domain carefully.</div>}
             <InfoCard>
               <div className="label">Account</div>
-              <div className="value">{formatAddress(caller)}</div>
+              <div className="value">
+                <RenderWalletIcon isSwitchNetwork={isSwitchNetwork} walletType={walletType} />
+                {formatAddress(caller)}
+              </div>
             </InfoCard>
             {contracts.map((contract, index) => {
               return (
