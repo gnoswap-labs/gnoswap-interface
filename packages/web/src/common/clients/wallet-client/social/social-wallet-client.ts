@@ -1,34 +1,36 @@
 import {
   AdenaSDK,
   GnoSocialWalletProvider,
+  TransactionMessage as SDKTransactionMessage,
   SocialCustomConfigure,
   SocialGoogleConfigure,
   SocialTwitterConfigure,
-  TransactionMessage as SDKTransactionMessage,
   WalletResponseExecuteType,
+  makeMsgCallMessage,
+  makeMsgSendMessage,
 } from "@adena-wallet/sdk";
-import { base64ToUint8Array, Tx } from "@gnolang/tm2-js-client";
+import { Tx, base64ToUint8Array } from "@gnolang/tm2-js-client";
 
 import { createTimeout } from "@common/utils/client-util";
 import { DEFAULT_GAS_WANTED } from "@common/values";
+import { DEFAULT_CHAIN_ID } from "@constants/environment.constant";
+import { createDocument, documentToTx } from "@utils/messages.utils";
 import { SocialLoginType, WalletType } from "src/types/wallet.types";
+import { AdenaSendTransactionSuccessResponse } from "../adena/adena";
+import { parseTransactionResponse } from "../adena/adena-client.util";
 import {
-  WalletResponse,
   AccountInfo,
-  SendTransactionRequestParam,
-  SendTransactionResponse,
-  isContractMessage,
   AddNetworkRequestParam,
   AddNetworkResponse,
-  SwitchNetworkResponse,
   DEFAULT_ACCOUNT_INFO,
+  SendTransactionRequestParam,
+  SendTransactionResponse,
+  SwitchNetworkResponse,
+  WalletResponse,
+  isContractMessage,
 } from "../protocols";
 import { WalletClient } from "../wallet-client";
 import { getSocialWalletConfig } from "./config";
-import { parseTransactionResponse } from "../adena/adena-client.util";
-import { AdenaSendTransactionSuccessResponse } from "../adena/adena";
-import { DEFAULT_CHAIN_ID } from "@constants/environment.constant";
-import { createDocument, documentToTx } from "@utils/messages.utils";
 
 export class SocialWalletClient implements WalletClient {
   private sdk: AdenaSDK | null;
@@ -159,15 +161,12 @@ export class SocialWalletClient implements WalletClient {
     // Convert messages from an incoming transaction to SDK format
     const messages: SDKTransactionMessage[] = transaction.messages.map(message => {
       if (isContractMessage(message)) {
-        return {
-          type: "/vm.m_call",
-          value: message,
-        };
+        return makeMsgCallMessage({
+          ...message,
+          args: message.args?.map(arg => `${arg}`) || null,
+        });
       }
-      return {
-        type: "/bank.MsgSend",
-        value: message,
-      };
+      return makeMsgSendMessage(message);
     });
 
     // Get Current account information
