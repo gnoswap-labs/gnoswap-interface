@@ -4,11 +4,12 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useAtom } from "jotai";
 import { WalletState } from "@states/index";
 import { useSessionExpiredModal } from "@hooks/wallet/ui/use-session-expired-modal";
-import { useSocialWalletContext } from "./use-social-wallet-context";
 
-const INACTIVITY_TIMEOUT_MS = 1 * 60 * 1000; // 5 minutes
+const INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 const BACKGROUND_CHECK_INTERVAL = 10 * 1000;
-const BACKGROUND_TIMEOUT_MS = 1 * 60 * 1000; // 5 minutes
+const BACKGROUND_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
+
+const OPENLOGIN_STORE_KEY = "openlogin_store";
 
 /**
  *
@@ -43,7 +44,6 @@ export const useAutoDisconnect = () => {
 
   const { openModal: openSessionExpiredModal } = useSessionExpiredModal();
   const { account, disconnectWallet } = useWallet();
-  const { disconnect: disconnectSocialWallet } = useSocialWalletContext();
 
   const inactivityTimerRef = React.useRef<NodeJS.Timeout>();
   const backgroundCheckIntervalRef = React.useRef<NodeJS.Timeout>();
@@ -53,12 +53,11 @@ export const useAutoDisconnect = () => {
    * Handles the wallet disconnection process
    * Shows the sesion expired modal and disconnects the wallet
    */
-  const handleDisconnect = () => {
-    openSessionExpiredModal();
-    walletClient?.disconnect();
-    disconnectSocialWallet();
+  const handleDisconnect = React.useCallback(() => {
+    sessionStorage.removeItem(OPENLOGIN_STORE_KEY);
     disconnectWallet();
-  };
+    openSessionExpiredModal();
+  }, [disconnectWallet, openSessionExpiredModal]);
 
   /**
    * Updates the last active timestamp and restarts the inactivity timer
