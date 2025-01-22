@@ -19,7 +19,6 @@ import { AccountModel } from "@models/account/account-model";
 import { ITokenResponse } from "@repositories/token";
 import { CommonState } from "@states/index";
 import { roundDownDecimalNumber } from "@utils/regex";
-import { formatAddress } from "@utils/string-utils";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 
@@ -95,6 +94,8 @@ interface WalletConnectorMenuProps {
   isLoadingGnotBalance?: boolean;
   gnotToken?: ITokenResponse;
   walletType: WalletTypeState;
+  displayAddress: string;
+  socialUserEmail: string;
 }
 
 const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
@@ -111,6 +112,8 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   gnotBalance,
   gnotToken,
   walletType,
+  displayAddress,
+  socialUserEmail,
 }) => {
   const { i18n, t } = useTranslation();
   const { getAccountUrl } = useGnoscanUrl();
@@ -119,11 +122,11 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
 
   const { connect: connectSocialWallet } = useSocialWalletContext();
   const [isConnectLoading, setIsConnectLoading] = useState(false);
-
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
     try {
-      await navigator.clipboard.writeText(account?.address || "");
+      const copyTarget = walletType.type === "ADENA" ? account?.address || "" : socialUserEmail;
+      await navigator.clipboard.writeText(copyTarget);
       setCopied(true);
       setTimeout(() => {
         setCopied(false);
@@ -176,7 +179,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
             <MenuHeader>
               <RenderWalletIcon isSwitchNetwork={isSwitchNetwork} walletType={walletType} />
               <span className="user-address">
-                {formatAddress(account?.address || "")}
+                {displayAddress}
                 {breakpoint === DEVICE_TYPE.MOBILE && (
                   <Tooltip floatClassName="test" FloatingContent={<SocialWalletNotificationTooltip />} placement="top">
                     <IconInfo className="tooltip" fill={theme.themeKey === "dark" ? "#596782" : "#90A2C0"} size={16} />

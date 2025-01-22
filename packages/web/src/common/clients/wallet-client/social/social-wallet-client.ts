@@ -273,4 +273,13 @@ export class SocialWalletClient implements WalletClient {
     }
     return createTimeout(this.sdk.switchNetwork({ chainId })) as Promise<WalletResponse<SwitchNetworkResponse>>;
   };
+
+  public getUserEmail = async () => {
+    if (!this.sdk) {
+      throw new Error("Social wallet not initialized");
+    }
+    const userInfo = await this.sdk.getSocialUserProfile();
+
+    return userInfo?.email || "";
+  };
 }

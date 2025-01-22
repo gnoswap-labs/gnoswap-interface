@@ -12,7 +12,6 @@ import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { AccountModel } from "@models/account/account-model";
 import { ITokenResponse } from "@repositories/token";
 import { CommonState } from "@states/index";
-import { formatAddress } from "@utils/string-utils";
 
 import SelectLanguage from "./select-language/SelectLanguage";
 import WalletConnectorMenu from "./wallet-connector-menu/WalletConnectorMenu";
@@ -36,6 +35,8 @@ interface WalletConnectProps {
   isLoadingGnotBalance?: boolean;
   gnotToken?: ITokenResponse;
   walletType: WalletTypeState;
+  displayAddress: string;
+  socialUserEmail: string;
 }
 
 const ToolTipGlobalStyle = () => {
@@ -77,6 +78,8 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   isLoadingGnotBalance,
   gnotToken,
   walletType,
+  displayAddress,
+  socialUserEmail,
 }) => {
   const { t } = useTranslation();
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
@@ -93,13 +96,6 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   };
 
   useEscCloseModal(() => handleESC());
-
-  const address = useMemo(() => {
-    if (account === null) {
-      return "";
-    }
-    return formatAddress(account.address);
-  }, [account]);
 
   const onMenuToggle = () => {
     setToggle(prev => ({
@@ -136,7 +132,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
               <RenderWalletIcon isSwitchNetwork={isSwitchNetwork} walletType={walletType} />
             )
           }
-          text={address}
+          text={displayAddress}
           rightIcon={<IconStrokeArrowDown className="arrow-icon" />}
           className={toggle.walletConnect ? "selected connected-button" : "connected-button"}
           style={{
@@ -181,6 +177,8 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
           isLoadingGnotBalance={isLoadingGnotBalance}
           gnotToken={gnotToken}
           walletType={walletType}
+          displayAddress={displayAddress}
+          socialUserEmail={socialUserEmail}
         />
       )}
       {toggle.showLanguage && <SelectLanguage onClickChangeLanguage={onClickChangeLanguage} />}

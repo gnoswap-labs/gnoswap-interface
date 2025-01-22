@@ -1,3 +1,4 @@
+import React from "react";
 import { WalletClient } from "@common/clients/wallet-client";
 import { AdenaClient } from "@common/clients/wallet-client/adena";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
@@ -25,6 +26,7 @@ export const useWallet = () => {
   const { accountRepository } = useGnoswapContext();
   const { disconnect } = useSocialWalletContext();
 
+  const [socialUserEmail, setSocialUserEmail] = React.useState("");
   const [sessionId, setSessionId] = useAtom(CommonState.sessionId);
   const [walletClient, setWalletClient] = useAtom(WalletState.client);
   const [walletAccount, setWalletAccount] = useAtom(WalletState.account);
@@ -245,6 +247,23 @@ export const useWallet = () => {
     }
   }, [walletClient]);
 
+  const fetchUserEmail = useCallback(async () => {
+    if (walletClient && walletType.type === "SOCIAL_WALLET" && walletClient.getUserEmail) {
+      try {
+        const email = await walletClient.getUserEmail();
+        setSocialUserEmail(email);
+      } catch (error) {
+        console.error("Failed to fetch user email:", error);
+      }
+    }
+  }, [walletClient, walletType.type]);
+
+  React.useEffect(() => {
+    if (connected) {
+      fetchUserEmail();
+    }
+  }, [connected, fetchUserEmail]);
+
   return {
     wallet,
     walletType,
@@ -262,6 +281,7 @@ export const useWallet = () => {
     loadingConnect,
     walletClient,
     setLoadingConnect,
+    socialUserEmail,
     gnotBalance: balance,
     isLoadingGnotBalance: isLoadingBalance || isBalanceStale,
     refetchGnotBalance: refetch,

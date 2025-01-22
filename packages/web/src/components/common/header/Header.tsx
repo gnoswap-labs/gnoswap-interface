@@ -68,6 +68,8 @@ interface HeaderProps {
   gnotToken?: ITokenResponse;
   avgBlockTime: number;
   walletType: WalletTypeState;
+  displayAddress: string;
+  socialUserEmail: string;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -99,6 +101,8 @@ const Header: React.FC<HeaderProps> = ({
   gnotToken,
   avgBlockTime,
   walletType,
+  displayAddress,
+  socialUserEmail,
 }) => {
   const { width } = useWindowSize();
   const router = useCustomRouter();
@@ -197,6 +201,8 @@ const Header: React.FC<HeaderProps> = ({
                 isLoadingGnotBalance={isLoadingGnotBalance}
                 gnotToken={gnotToken}
                 walletType={walletType}
+                displayAddress={displayAddress}
+                socialUserEmail={socialUserEmail}
               />
             </SearchContainer>
 
