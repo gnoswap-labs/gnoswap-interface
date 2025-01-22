@@ -6,7 +6,8 @@ import { WalletState } from "@states/index";
 import { useSessionExpiredModal } from "@hooks/wallet/ui/use-session-expired-modal";
 
 const INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
-const VISIBILITY_TIMEOUT_MS = 1 * 60 * 1000; // 5 minutes
+const BACKGROUND_CHECK_INTERVAL = 10 * 1000;
+const BACKGROUND_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 
 /**
  *
@@ -43,7 +44,8 @@ export const useAutoDisconnect = () => {
   const { account, disconnectWallet } = useWallet();
 
   const inactivityTimerRef = React.useRef<NodeJS.Timeout>();
-  const visibilityTimerRef = React.useRef<NodeJS.Timeout>();
+  const backgroundCheckIntervalRef = React.useRef<NodeJS.Timeout>();
+  const lastActiveTimestampRef = React.useRef<number>(Date.now());
 
   /**
    * Handles the wallet disconnection process
@@ -55,10 +57,11 @@ export const useAutoDisconnect = () => {
   };
 
   /**
-   * Restarts the inactivity timer when user activity is detected
-   * Clears existing timer and sets a new one
+   * Updates the last active timestamp and restarts the inactivity timer
    */
-  const restartInactivityTimer = React.useCallback(() => {
+  const updateLastActiveTimestamp = React.useCallback(() => {
+    lastActiveTimestampRef.current = Date.now();
+
     if (inactivityTimerRef.current) {
       clearTimeout(inactivityTimerRef.current);
     }
@@ -66,27 +69,17 @@ export const useAutoDisconnect = () => {
     inactivityTimerRef.current = setTimeout(() => {
       handleDisconnect();
     }, INACTIVITY_TIMEOUT_MS);
-  }, [handleDisconnect]);
+  }, []);
 
   /**
-   * Handles page visibility changes
-   * Sets a timer when page becomes hidden and clears it when visible again
+   * Checks if the user has been inactive for too long while in background
    */
-  const handleVisibilityChange = React.useCallback(() => {
-    if (document.hidden) {
-      console.log(document.hidden, "hidden?");
-      // Page is hidden (locked screen, switched apps, etc.)
-      visibilityTimerRef.current = setTimeout(() => {
-        handleDisconnect();
-      }, VISIBILITY_TIMEOUT_MS);
-    } else {
-      console.log(document.hidden, "hidden?");
-      // Page is visible again
-      if (visibilityTimerRef.current) {
-        clearTimeout(visibilityTimerRef.current);
-      }
-      // Restart inactivity timer when page becomes visible
-      restartInactivityTimer();
+  const checkBackgroundInactivity = React.useCallback(() => {
+    const now = Date.now();
+    const timeSinceLastActive = now - lastActiveTimestampRef.current;
+
+    if (timeSinceLastActive >= BACKGROUND_TIMEOUT_MS) {
+      handleDisconnect();
     }
   }, []);
 
@@ -106,25 +99,24 @@ export const useAutoDisconnect = () => {
     const userActivityEvents = ["mousedown", "mousemove", "keydown", "scroll", "touchstart", "click"];
 
     userActivityEvents.forEach(eventName => {
-      window.addEventListener(eventName, restartInactivityTimer);
+      window.addEventListener(eventName, updateLastActiveTimestamp);
     });
 
-    document.addEventListener("visibilitychange", handleVisibilityChange);
+    backgroundCheckIntervalRef.current = setInterval(checkBackgroundInactivity, BACKGROUND_CHECK_INTERVAL);
 
-    restartInactivityTimer();
+    updateLastActiveTimestamp();
 
     return () => {
       userActivityEvents.forEach(event => {
-        window.removeEventListener(event, restartInactivityTimer);
+        window.removeEventListener(event, updateLastActiveTimestamp);
       });
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
 
       if (inactivityTimerRef.current) {
         clearTimeout(inactivityTimerRef.current);
       }
-      if (visibilityTimerRef.current) {
-        clearTimeout(visibilityTimerRef.current);
+      if (backgroundCheckIntervalRef.current) {
+        clearTimeout(backgroundCheckIntervalRef.current);
       }
     };
-  }, [restartInactivityTimer, handleVisibilityChange, walletClient, account]);
+  }, [updateLastActiveTimestamp, checkBackgroundInactivity, walletClient, account]);
 };
