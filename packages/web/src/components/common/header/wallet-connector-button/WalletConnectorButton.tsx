@@ -36,7 +36,6 @@ interface WalletConnectProps {
   gnotToken?: ITokenResponse;
   walletType: WalletTypeState;
   displayAddress: string;
-  socialUserEmail: string;
 }
 
 const ToolTipGlobalStyle = () => {
@@ -79,7 +78,6 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   gnotToken,
   walletType,
   displayAddress,
-  socialUserEmail,
 }) => {
   const { t } = useTranslation();
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
@@ -177,8 +175,6 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
           isLoadingGnotBalance={isLoadingGnotBalance}
           gnotToken={gnotToken}
           walletType={walletType}
-          displayAddress={displayAddress}
-          socialUserEmail={socialUserEmail}
         />
       )}
       {toggle.showLanguage && <SelectLanguage onClickChangeLanguage={onClickChangeLanguage} />}

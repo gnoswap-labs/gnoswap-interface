@@ -102,7 +102,6 @@ const Header: React.FC<HeaderProps> = ({
   avgBlockTime,
   walletType,
   displayAddress,
-  socialUserEmail,
 }) => {
   const { width } = useWindowSize();
   const router = useCustomRouter();
@@ -202,7 +201,6 @@ const Header: React.FC<HeaderProps> = ({
                 gnotToken={gnotToken}
                 walletType={walletType}
                 displayAddress={displayAddress}
-                socialUserEmail={socialUserEmail}
               />
             </SearchContainer>
 

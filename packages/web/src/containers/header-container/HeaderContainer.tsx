@@ -46,7 +46,7 @@ const HeaderContainer: React.FC = () => {
 
   const displayAddress = useMemo(() => {
     if (walletClient?.getWalletType() === "SOCIAL_WALLET") {
-      return `${socialUserEmail.slice(0, 13)}...`;
+      return `${socialUserEmail.slice(0, 10)}...`;
     }
     return formatAddress(account?.address || "");
   }, [walletClient?.getWalletType(), socialUserEmail, account?.address]);

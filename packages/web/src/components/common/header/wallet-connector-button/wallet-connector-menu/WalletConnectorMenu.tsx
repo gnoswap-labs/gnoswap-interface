@@ -40,6 +40,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { LAST_CONNECTED_SOCIAL_LOGIN_TYPE } from "@states/common";
 import { useSocialWalletContext } from "@hooks/common/use-social-wallet-context";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { formatAddress } from "@utils/string-utils";
 
 interface IconButtonClickProps {
   copyClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -94,8 +95,6 @@ interface WalletConnectorMenuProps {
   isLoadingGnotBalance?: boolean;
   gnotToken?: ITokenResponse;
   walletType: WalletTypeState;
-  displayAddress: string;
-  socialUserEmail: string;
 }
 
 const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
@@ -112,8 +111,6 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   gnotBalance,
   gnotToken,
   walletType,
-  displayAddress,
-  socialUserEmail,
 }) => {
   const { i18n, t } = useTranslation();
   const { getAccountUrl } = useGnoscanUrl();
@@ -125,8 +122,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
     try {
-      const copyTarget = walletType.type === "ADENA" ? account?.address || "" : socialUserEmail;
-      await navigator.clipboard.writeText(copyTarget);
+      await navigator.clipboard.writeText(account?.address || "");
       setCopied(true);
       setTimeout(() => {
         setCopied(false);
@@ -179,7 +175,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
             <MenuHeader>
               <RenderWalletIcon isSwitchNetwork={isSwitchNetwork} walletType={walletType} />
               <span className="user-address">
-                {displayAddress}
+                {formatAddress(account?.address || "")}
                 {breakpoint === DEVICE_TYPE.MOBILE && (
                   <Tooltip floatClassName="test" FloatingContent={<SocialWalletNotificationTooltip />} placement="top">
                     <IconInfo className="tooltip" fill={theme.themeKey === "dark" ? "#596782" : "#90A2C0"} size={16} />
