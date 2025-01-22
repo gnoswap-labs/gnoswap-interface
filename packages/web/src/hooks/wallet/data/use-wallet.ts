@@ -11,6 +11,7 @@ import {
   ACCOUNT_SESSION_INFO_KEY,
   GNOSWAP_SESSION_ID_KEY,
   GNOSWAP_SOCIAL_LOGIN_TYPE_KEY,
+  GNOSWAP_SOCIAL_USER_EMAIL_KEY,
   GNOSWAP_WALLET_TYPE_KEY,
   GNOWSWAP_CONNECTED_KEY,
 } from "@states/common";
@@ -26,7 +27,12 @@ export const useWallet = () => {
   const { accountRepository } = useGnoswapContext();
   const { disconnect } = useSocialWalletContext();
 
-  const [socialUserEmail, setSocialUserEmail] = React.useState("");
+  const [socialUserEmail, setSocialUserEmail] = React.useState(() => {
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem(GNOSWAP_SOCIAL_USER_EMAIL_KEY) || "";
+    }
+    return "";
+  });
   const [sessionId, setSessionId] = useAtom(CommonState.sessionId);
   const [walletClient, setWalletClient] = useAtom(WalletState.client);
   const [walletAccount, setWalletAccount] = useAtom(WalletState.account);
@@ -108,11 +114,13 @@ export const useWallet = () => {
     setWalletClient(null);
     setWalletAccount(null);
     setSessionId("");
+    setSocialUserEmail("");
     sessionStorage.removeItem(GNOSWAP_SESSION_ID_KEY);
     sessionStorage.removeItem(ACCOUNT_SESSION_INFO_KEY);
     sessionStorage.removeItem(GNOWSWAP_CONNECTED_KEY);
     sessionStorage.removeItem(GNOSWAP_WALLET_TYPE_KEY);
     sessionStorage.removeItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY);
+    sessionStorage.removeItem(GNOSWAP_SOCIAL_USER_EMAIL_KEY);
     accountRepository.setConnectedWallet(false);
     setLoadingConnect("initial");
     disconnect();
@@ -252,6 +260,7 @@ export const useWallet = () => {
       try {
         const email = await walletClient.getUserEmail();
         setSocialUserEmail(email);
+        sessionStorage.setItem(GNOSWAP_SOCIAL_USER_EMAIL_KEY, email);
       } catch (error) {
         console.error("Failed to fetch user email:", error);
       }
@@ -262,7 +271,7 @@ export const useWallet = () => {
     if (connected) {
       fetchUserEmail();
     }
-  }, [connected, fetchUserEmail]);
+  }, [fetchUserEmail, walletType.type]);
 
   return {
     wallet,

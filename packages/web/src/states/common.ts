@@ -54,6 +54,7 @@ export const GNOSWAP_SOCIAL_LOGIN_TYPE_KEY = "gnoswap-social-login-type";
 export const SOCIAL_WALLET_MODAL_HIDE_EXPIRES_AT = "social-wallet-modal-hide-expires-at";
 export const SOCIAL_WALLET_MODAL_SHOWN_IN_SESSION = "social-wallet-modal-shown-in-session";
 export const LAST_CONNECTED_SOCIAL_LOGIN_TYPE = "last-connected-social-login-type";
+export const GNOSWAP_SOCIAL_USER_EMAIL_KEY = "gnoswap-social-user-email";
 
 export const sessionId = atom<string>("");
 

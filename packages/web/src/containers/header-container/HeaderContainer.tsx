@@ -45,7 +45,7 @@ const HeaderContainer: React.FC = () => {
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
 
   const displayAddress = useMemo(() => {
-    if (walletClient?.getWalletType() === "SOCIAL_WALLET") {
+    if (socialUserEmail) {
       return `${socialUserEmail.slice(0, 10)}...`;
     }
     return formatAddress(account?.address || "");
