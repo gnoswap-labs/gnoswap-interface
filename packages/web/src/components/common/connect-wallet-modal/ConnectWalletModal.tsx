@@ -6,9 +6,6 @@ import { useTheme } from "@emotion/react";
 import { useSocialWalletContext } from "@hooks/common/use-social-wallet-context";
 import { SocialWalletLoginType } from "@providers/social-wallet-provider";
 import { useConnectSocialWalletModal } from "@hooks/wallet/ui/use-connect-social-wallet-modal";
-import { LAST_CONNECTED_SOCIAL_LOGIN_TYPE } from "@states/common";
-import { SocialWalletClient } from "@common/clients/wallet-client/social/social-wallet-client";
-import { SocialLoginType } from "src/types/wallet.types";
 
 import { ConnectWalletModalWrapper } from "./ConnectWalletModal.styles";
 import LoadingSpinner from "../loading-spinner/LoadingSpinner";
@@ -60,12 +57,6 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
   const handleSocialConnect = async (type: SocialWalletLoginType) => {
     try {
       close();
-
-      const lastLoginType = localStorage.getItem(LAST_CONNECTED_SOCIAL_LOGIN_TYPE);
-      if (lastLoginType) {
-        const tempClient = await SocialWalletClient.createSocialWalletClient(lastLoginType as SocialLoginType);
-        await tempClient?.disconnect();
-      }
       openSocialLoadingModal(type);
       await socialWalletConnect(type);
     } catch {}

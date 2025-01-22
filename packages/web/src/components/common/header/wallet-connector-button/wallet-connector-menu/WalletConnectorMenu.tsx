@@ -34,12 +34,9 @@ import {
   WalletConnectorMenuWrapper,
 } from "./WalletConnectorMenu.styles";
 import SocialWalletNotification from "./SocialWalletNotification";
-import { SocialLoginType, WalletTypeState } from "src/types/wallet.types";
+import { WalletTypeState } from "src/types/wallet.types";
 import RenderWalletIcon from "../RenderWalletIcon";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { LAST_CONNECTED_SOCIAL_LOGIN_TYPE } from "@states/common";
-import { useSocialWalletContext } from "@hooks/common/use-social-wallet-context";
-import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { formatAddress } from "@utils/string-utils";
 
 interface IconButtonClickProps {
@@ -117,8 +114,6 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   const network = useAtomValue(CommonState.network);
   const theme = useTheme();
 
-  const { connect: connectSocialWallet } = useSocialWalletContext();
-  const [isConnectLoading, setIsConnectLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
     try {
@@ -156,15 +151,8 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   }, [disconnectWallet]);
 
   const connect = useCallback(async () => {
-    const lastLoginType = localStorage.getItem(LAST_CONNECTED_SOCIAL_LOGIN_TYPE);
-    if (lastLoginType) {
-      setIsConnectLoading(true);
-      await connectSocialWallet(lastLoginType as SocialLoginType);
-      setIsConnectLoading(false);
-    } else {
-      onMenuToggle();
-      connectAdenaClient();
-    }
+    onMenuToggle();
+    connectAdenaClient();
   }, [connectAdenaClient]);
 
   return (
@@ -211,8 +199,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
         ) : (
           <div className="button-container">
             <Button
-              text={!isConnectLoading && t("common:btn.walletLogin")}
-              leftIcon={isConnectLoading && <LoadingSpinner className="loading-button" />}
+              text={t("common:btn.walletLogin")}
               onClick={connect}
               style={{
                 hierarchy: ButtonHierarchy.Primary,

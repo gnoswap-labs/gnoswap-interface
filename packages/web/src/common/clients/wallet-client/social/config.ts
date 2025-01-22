@@ -30,18 +30,21 @@ export const getSocialWalletConfig = (
     case "google":
       return {
         ...baseConfig,
+        storageKey: "session",
         verifier: SOCIAL_WALLET_GOOGLE_VERIFIER,
         googleClientId: SOCIAL_WALLET_GOOGLE_CLIENT_ID,
       };
     case "email":
       return {
         ...baseConfig,
+        storageKey: "session",
         verifier: SOCIAL_WALLET_EMAIL_VERIFIER,
         domain: SOCIAL_WALLET_AUTH_DOMAIN,
       };
     case "twitter":
       return {
         ...baseConfig,
+        storageKey: "session",
         verifier: SOCIAL_WALLET_TWITTER_VERIFIER,
         domain: SOCIAL_WALLET_AUTH_DOMAIN,
       };
