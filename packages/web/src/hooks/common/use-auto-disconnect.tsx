@@ -55,8 +55,9 @@ export const useAutoDisconnect = () => {
    */
   const handleDisconnect = () => {
     openSessionExpiredModal();
-    disconnectWallet();
+    walletClient?.disconnect();
     disconnectSocialWallet();
+    disconnectWallet();
   };
 
   /**
