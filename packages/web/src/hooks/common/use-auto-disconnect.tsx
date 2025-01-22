@@ -5,11 +5,13 @@ import { useAtom } from "jotai";
 import { WalletState } from "@states/index";
 import { useSessionExpiredModal } from "@hooks/wallet/ui/use-session-expired-modal";
 
-const INACTIVITY_TIMEOUT_MINUTES = 5 * 60 * 1000; // 5 minutes
+const INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
+const VISIBILITY_TIMEOUT_MS = 1 * 60 * 1000; // 5 minutes
 
 /**
  *
  * Custom hook that manages automatic disconnection of social wallets after inactivity
+ * or when the page becomes hidden (mobile lock screen, app switching, etc.)
  *
  * @description
  * Implements an auto-disconnect security feature that monitors user activity and
@@ -41,6 +43,7 @@ export const useAutoDisconnect = () => {
   const { account, disconnectWallet } = useWallet();
 
   const inactivityTimerRef = React.useRef<NodeJS.Timeout>();
+  const visibilityTimerRef = React.useRef<NodeJS.Timeout>();
 
   /**
    * Handles the wallet disconnection process
@@ -62,7 +65,29 @@ export const useAutoDisconnect = () => {
 
     inactivityTimerRef.current = setTimeout(() => {
       handleDisconnect();
-    }, INACTIVITY_TIMEOUT_MINUTES);
+    }, INACTIVITY_TIMEOUT_MS);
+  }, [handleDisconnect]);
+
+  /**
+   * Handles page visibility changes
+   * Sets a timer when page becomes hidden and clears it when visible again
+   */
+  const handleVisibilityChange = React.useCallback(() => {
+    if (document.hidden) {
+      console.log(document.hidden, "hidden?");
+      // Page is hidden (locked screen, switched apps, etc.)
+      visibilityTimerRef.current = setTimeout(() => {
+        handleDisconnect();
+      }, VISIBILITY_TIMEOUT_MS);
+    } else {
+      console.log(document.hidden, "hidden?");
+      // Page is visible again
+      if (visibilityTimerRef.current) {
+        clearTimeout(visibilityTimerRef.current);
+      }
+      // Restart inactivity timer when page becomes visible
+      restartInactivityTimer();
+    }
   }, []);
 
   /**
@@ -84,15 +109,22 @@ export const useAutoDisconnect = () => {
       window.addEventListener(eventName, restartInactivityTimer);
     });
 
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     restartInactivityTimer();
 
     return () => {
       userActivityEvents.forEach(event => {
         window.removeEventListener(event, restartInactivityTimer);
       });
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+
       if (inactivityTimerRef.current) {
         clearTimeout(inactivityTimerRef.current);
       }
+      if (visibilityTimerRef.current) {
+        clearTimeout(visibilityTimerRef.current);
+      }
     };
-  }, [restartInactivityTimer, walletClient, account]);
+  }, [restartInactivityTimer, handleVisibilityChange, walletClient, account]);
 };
