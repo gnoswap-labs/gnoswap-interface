@@ -93,7 +93,7 @@ const TransactionApprovalModal = ({
               <IconGnoswapLogo />
               <span className="value">{location.origin}</span>
             </InfoCard>
-            {!isAllowedDomain && <div className="error-text">Warning: Possible phishing. Check domain carefully.</div>}
+            {!isAllowedDomain && <div className="error-text">Possible phishing warning. Check domain carefully.</div>}
             <InfoCard>
               <div className="label">Account</div>
               <div className="value">

@@ -153,8 +153,8 @@ export const InfoCard = styled.div<InfoCardProps>`
       }
     }
     svg {
-      width: 24px;
-      height: 24px;
+      width: 18px;
+      height: 18px;
     }
   }
 `;
