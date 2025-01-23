@@ -40,6 +40,7 @@ const HeaderContainer: React.FC = () => {
     gnotBalance,
     walletType,
     socialUserEmail,
+    resetWeb3authSession,
   } = useWallet();
   const recentsData = useAtomValue(TokenState.recents);
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
@@ -309,6 +310,7 @@ const HeaderContainer: React.FC = () => {
       isLoadingGnotBalance={isLoadingGnotBalance}
       gnotToken={gnot}
       avgBlockTime={blockTimeData?.AvgBlockTime || 2.2}
+      resetWeb3authSession={resetWeb3authSession}
       walletType={walletType}
     />
   );

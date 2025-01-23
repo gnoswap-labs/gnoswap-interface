@@ -9,7 +9,7 @@ const INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 const BACKGROUND_CHECK_INTERVAL = 10 * 1000;
 const BACKGROUND_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 
-const OPENLOGIN_STORE_KEY = "openlogin_store";
+export const AUTH_STORE_KEY = "auth_store";
 
 /**
  *
@@ -43,7 +43,7 @@ export const useAutoDisconnect = () => {
   const [walletClient] = useAtom(WalletState.client);
 
   const { openModal: openSessionExpiredModal } = useSessionExpiredModal();
-  const { account, disconnectWallet } = useWallet();
+  const { account, disconnectWallet, resetWeb3authSession } = useWallet();
 
   const inactivityTimerRef = React.useRef<NodeJS.Timeout>();
   const backgroundCheckIntervalRef = React.useRef<NodeJS.Timeout>();
@@ -54,8 +54,8 @@ export const useAutoDisconnect = () => {
    * Shows the sesion expired modal and disconnects the wallet
    */
   const handleDisconnect = React.useCallback(() => {
-    sessionStorage.removeItem(OPENLOGIN_STORE_KEY);
     disconnectWallet();
+    resetWeb3authSession();
     openSessionExpiredModal();
   }, [disconnectWallet, openSessionExpiredModal]);
 

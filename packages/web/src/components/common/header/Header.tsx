@@ -70,6 +70,7 @@ interface HeaderProps {
   walletType: WalletTypeState;
   displayAddress: string;
   socialUserEmail: string;
+  resetWeb3authSession: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -102,6 +103,7 @@ const Header: React.FC<HeaderProps> = ({
   avgBlockTime,
   walletType,
   displayAddress,
+  resetWeb3authSession,
 }) => {
   const { width } = useWindowSize();
   const router = useCustomRouter();
@@ -201,6 +203,7 @@ const Header: React.FC<HeaderProps> = ({
                 gnotToken={gnotToken}
                 walletType={walletType}
                 displayAddress={displayAddress}
+                resetWeb3authSession={resetWeb3authSession}
               />
             </SearchContainer>
 

@@ -18,10 +18,10 @@ import { useConnectedSocialWalletModal } from "@hooks/wallet/ui/use-connected-so
 
 interface SocialWalletContextType {
   connectingState: "initial" | "loading" | "error" | "done" | "";
-  connect: (type: SocialWalletLoginType) => Promise<void>;
+  connect: (type: SocialWalletLoginType, email?: string) => Promise<void>;
   disconnect: () => Promise<void>;
   error: string | null;
-  connectSocialWalletClient: (loginType: SocialLoginType) => Promise<void>;
+  connectSocialWalletClient: (loginType: SocialLoginType, email?: string) => Promise<void>;
 }
 
 const CONNECT_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
@@ -59,28 +59,28 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
   };
 
   const connectSocialWalletClient = useCallback(
-    async (loginType: SocialLoginType) => {
+    async (loginType: SocialLoginType, email?: string) => {
       if (connectingState !== "initial") {
         setConnectingState("loading");
       }
-      const socialWallet = await SocialWalletClient.createSocialWalletClient(loginType);
+      const socialWallet = await SocialWalletClient.createSocialWalletClient(loginType, email);
       if (socialWallet !== null) {
         sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "SOCIAL_WALLET");
         sessionStorage.setItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY, loginType);
-        socialWallet.initSocialWallet(loginType);
+        socialWallet.initSocialWallet(loginType, email);
       }
       setWalletClient(socialWallet);
     },
     [sessionId, connectingState],
   );
 
-  const connect = async (loginType: SocialWalletLoginType) => {
+  const connect = async (loginType: SocialWalletLoginType, email?: string) => {
     const connectProcess = async () => {
       try {
         setConnectingState("loading");
         setError(null);
 
-        const socialWalletClient = await SocialWalletClient.createSocialWalletClient(loginType);
+        const socialWalletClient = await SocialWalletClient.createSocialWalletClient(loginType, email);
         if (!socialWalletClient) {
           throw new Error("Failed to create social wallet client");
         }

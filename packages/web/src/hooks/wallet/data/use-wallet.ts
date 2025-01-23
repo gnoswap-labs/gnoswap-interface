@@ -20,6 +20,7 @@ import { SUPPORT_CHAIN_IDS, DEFAULT_CHAIN_ID } from "@constants/environment.cons
 import { useGetTokenBalancesFromChain } from "@query/address";
 import { useSocialWalletContext } from "@hooks/common/use-social-wallet-context";
 import { SocialLoginType } from "src/types/wallet.types";
+import { AUTH_STORE_KEY } from "@hooks/common/use-auto-disconnect";
 
 const balanceQueryKey = ["token-balance", "ugnot"];
 
@@ -121,6 +122,7 @@ export const useWallet = () => {
     sessionStorage.removeItem(GNOSWAP_WALLET_TYPE_KEY);
     sessionStorage.removeItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY);
     sessionStorage.removeItem(GNOSWAP_SOCIAL_USER_EMAIL_KEY);
+    resetWeb3authSession();
     accountRepository.setConnectedWallet(false);
     setLoadingConnect("initial");
     disconnect();
@@ -273,6 +275,10 @@ export const useWallet = () => {
     }
   }, [fetchUserEmail, walletType.type]);
 
+  const resetWeb3authSession = () => {
+    localStorage.removeItem(AUTH_STORE_KEY);
+  };
+
   return {
     wallet,
     walletType,
@@ -291,6 +297,7 @@ export const useWallet = () => {
     walletClient,
     setLoadingConnect,
     socialUserEmail,
+    resetWeb3authSession,
     gnotBalance: balance,
     isLoadingGnotBalance: isLoadingBalance || isBalanceStale,
     refetchGnotBalance: refetch,

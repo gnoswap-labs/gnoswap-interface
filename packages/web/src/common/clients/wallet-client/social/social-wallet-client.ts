@@ -2,7 +2,7 @@ import {
   AdenaSDK,
   GnoSocialWalletProvider,
   TransactionMessage as SDKTransactionMessage,
-  SocialCustomConfigure,
+  SocialEmailPasswordlessConfigure,
   SocialGoogleConfigure,
   SocialTwitterConfigure,
   WalletResponseExecuteType,
@@ -31,18 +31,21 @@ import {
 import { WalletClient } from "../wallet-client";
 import { getSocialWalletConfig } from "./config";
 import { GNOT_UNIT_DENOM } from "@common/values/token-constant";
+import { AUTH_STORE_KEY } from "@hooks/common/use-auto-disconnect";
 
 export class SocialWalletClient implements WalletClient {
   private sdk: AdenaSDK | null;
   private provider: GnoSocialWalletProvider | null;
   private address: string | null;
   private _type: SocialLoginType | null;
+  private _email: string | null;
 
   constructor() {
     this.sdk = null;
     this.provider = null;
     this.address = null;
     this._type = null;
+    this._email = null;
   }
 
   public async disconnect() {
@@ -53,15 +56,16 @@ export class SocialWalletClient implements WalletClient {
       this.provider = null;
       this.address = null;
       this._type = null;
+      localStorage.removeItem(AUTH_STORE_KEY);
     } catch (error) {
       console.error("Failed to disconnect social wallet:", error);
       throw error;
     }
   }
 
-  public async initSocialWallet(loginType: SocialLoginType) {
-    const config = getSocialWalletConfig(loginType);
-    const provider = this.createSocialWalletProvider(loginType, config);
+  public async initSocialWallet(loginType: SocialLoginType, email?: string) {
+    const config = getSocialWalletConfig(loginType, email);
+    const provider = await this.createSocialWalletProvider(loginType, config);
     this.provider = provider;
     this.sdk = new AdenaSDK(provider);
     this._type = loginType;
@@ -77,11 +81,11 @@ export class SocialWalletClient implements WalletClient {
 
   private createSocialWalletProvider(
     loginType: SocialLoginType,
-    config: SocialGoogleConfigure | SocialTwitterConfigure | SocialCustomConfigure,
+    config: SocialGoogleConfigure | SocialTwitterConfigure | SocialEmailPasswordlessConfigure,
   ) {
     switch (loginType) {
       case "email":
-        return GnoSocialWalletProvider.createEmail(config as SocialCustomConfigure);
+        return GnoSocialWalletProvider.createEmailPasswordless(config as SocialEmailPasswordlessConfigure);
       case "google":
         return GnoSocialWalletProvider.createGoogle(config as SocialGoogleConfigure);
       case "twitter":
@@ -220,7 +224,7 @@ export class SocialWalletClient implements WalletClient {
     });
   };
 
-  public static async createSocialWalletClient(loginType: SocialLoginType) {
+  public static async createSocialWalletClient(loginType: SocialLoginType, email?: string) {
     if (typeof window === "undefined") {
       return null;
     }
@@ -228,7 +232,7 @@ export class SocialWalletClient implements WalletClient {
     const client = new SocialWalletClient();
     if (loginType) {
       try {
-        await client.initSocialWallet(loginType);
+        await client.initSocialWallet(loginType, email);
         return client;
       } catch (error) {
         console.error("Failed to initialize Social wallet:", error);

@@ -92,6 +92,7 @@ interface WalletConnectorMenuProps {
   isLoadingGnotBalance?: boolean;
   gnotToken?: ITokenResponse;
   walletType: WalletTypeState;
+  resetWeb3authSession: () => void;
 }
 
 const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
@@ -108,6 +109,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   gnotBalance,
   gnotToken,
   walletType,
+  resetWeb3authSession,
 }) => {
   const { i18n, t } = useTranslation();
   const { getAccountUrl } = useGnoscanUrl();
@@ -148,9 +150,11 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
 
   const onClickDisconnect = useCallback(() => {
     disconnectWallet();
+    resetWeb3authSession();
   }, [disconnectWallet]);
 
   const connect = useCallback(async () => {
+    resetWeb3authSession();
     onMenuToggle();
     connectAdenaClient();
   }, [connectAdenaClient]);

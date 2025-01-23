@@ -50,15 +50,15 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
     setIsSubmitAttempted(true);
 
     if (isEmailValid) {
-      handleSocialConnect("email");
+      handleSocialConnect("email", email);
     }
   };
 
-  const handleSocialConnect = async (type: SocialWalletLoginType) => {
+  const handleSocialConnect = async (type: SocialWalletLoginType, email?: string) => {
     try {
       close();
       openSocialLoadingModal(type);
-      await socialWalletConnect(type);
+      await socialWalletConnect(type, email);
     } catch {}
   };
 

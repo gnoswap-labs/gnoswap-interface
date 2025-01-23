@@ -1,4 +1,4 @@
-import { SocialCustomConfigure, SocialGoogleConfigure, SocialTwitterConfigure } from "@adena-wallet/sdk";
+import { SocialEmailPasswordlessConfigure, SocialGoogleConfigure, SocialTwitterConfigure } from "@adena-wallet/sdk";
 
 import {
   DEFAULT_CHAIN_ID,
@@ -25,7 +25,8 @@ const baseConfig = {
 
 export const getSocialWalletConfig = (
   type: SocialLoginType,
-): SocialGoogleConfigure | SocialTwitterConfigure | SocialCustomConfigure => {
+  email?: string,
+): SocialGoogleConfigure | SocialTwitterConfigure | SocialEmailPasswordlessConfigure => {
   switch (type) {
     case "google":
       return {
@@ -37,6 +38,7 @@ export const getSocialWalletConfig = (
     case "email":
       return {
         ...baseConfig,
+        email: email?.toLowerCase() || "",
         storageKey: "session",
         verifier: SOCIAL_WALLET_EMAIL_VERIFIER,
         domain: SOCIAL_WALLET_AUTH_DOMAIN,
