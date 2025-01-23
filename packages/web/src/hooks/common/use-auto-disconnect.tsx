@@ -5,9 +5,8 @@ import { useAtom } from "jotai";
 import { WalletState } from "@states/index";
 import { useSessionExpiredModal } from "@hooks/wallet/ui/use-session-expired-modal";
 
-const INACTIVITY_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
+const SESSION_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 const BACKGROUND_CHECK_INTERVAL = 10 * 1000;
-const BACKGROUND_TIMEOUT_MS = 5 * 60 * 1000; // 5 minutes
 
 export const AUTH_STORE_KEY = "auth_store";
 
@@ -71,7 +70,7 @@ export const useAutoDisconnect = () => {
 
     inactivityTimerRef.current = setTimeout(() => {
       handleDisconnect();
-    }, INACTIVITY_TIMEOUT_MS);
+    }, SESSION_TIMEOUT_MS);
   }, []);
 
   /**
@@ -81,7 +80,7 @@ export const useAutoDisconnect = () => {
     const now = Date.now();
     const timeSinceLastActive = now - lastActiveTimestampRef.current;
 
-    if (timeSinceLastActive >= BACKGROUND_TIMEOUT_MS) {
+    if (timeSinceLastActive >= SESSION_TIMEOUT_MS) {
       handleDisconnect();
     }
   }, []);

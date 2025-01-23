@@ -75,6 +75,8 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
   );
 
   const connect = async (loginType: SocialWalletLoginType, email?: string) => {
+    let timeoutId: NodeJS.Timeout;
+
     const connectProcess = async () => {
       try {
         setConnectingState("loading");
@@ -115,23 +117,21 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
           resetConnectingState();
         }
       } catch (err) {
-        resetSocialWalletState();
+        clearTimeout(timeoutId);
         setConnectingState("error");
         setError(err instanceof Error ? err.message : "Failed to connect Social Wallet");
       }
     };
 
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => {
-        reject(new Error("Connection timeout after 5 minutes"));
-        // openConnectErrorModal() Improve
-      }, CONNECT_TIMEOUT_MS);
-    });
-
     try {
-      await Promise.race([connectProcess(), timeoutPromise]);
+      timeoutId = setTimeout(() => {
+        setConnectingState("error");
+        setError("Connection timeout after 5 minutes");
+      }, CONNECT_TIMEOUT_MS);
+
+      await connectProcess();
+      clearTimeout(timeoutId);
     } catch (err) {
-      resetSocialWalletState();
       setConnectingState("error");
       setError(err instanceof Error ? err.message : "Failed to connect Social Wallet");
     }
