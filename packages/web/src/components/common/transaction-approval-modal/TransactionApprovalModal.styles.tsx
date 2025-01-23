@@ -102,7 +102,7 @@ export const TransactionApprovalSummary = styled.div`
     width: 100%;
     margin-bottom: 4px;
     ${media.mobile} {
-      font-size: 13px;
+      font-size: 12px;
     }
   }
 `;

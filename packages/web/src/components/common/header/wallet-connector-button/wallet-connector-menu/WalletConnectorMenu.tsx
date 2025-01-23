@@ -148,8 +148,8 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
     return `${price} GNOT` || "0 GNOT";
   }, [account?.balances, gnotBalance, gnotToken?.decimals]);
 
-  const onClickDisconnect = useCallback(() => {
-    disconnectWallet();
+  const onClickDisconnect = useCallback(async () => {
+    await disconnectWallet();
     resetWeb3authSession();
   }, [disconnectWallet]);
 

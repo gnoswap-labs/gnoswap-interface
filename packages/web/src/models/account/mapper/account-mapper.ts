@@ -18,10 +18,11 @@ export class AccountMapper {
         sequence: 0,
         chainId: "",
         address: "",
+        email: "",
       };
     }
 
-    const { coins, address, status, accountNumber, chainId, publicKey, sequence } = response.data;
+    const { coins, address, status, accountNumber, chainId, publicKey, sequence, email } = response.data;
     const balances: AmountModel[] = notNullStringType(coins) ? textToBalances(coins) : [amountEmptyNumberInit];
 
     return {
@@ -33,6 +34,7 @@ export class AccountMapper {
       sequence,
       chainId,
       address,
+      email: email || "",
     };
   }
 }

@@ -53,10 +53,10 @@ export const useAutoDisconnect = () => {
    * Handles the wallet disconnection process
    * Shows the sesion expired modal and disconnects the wallet
    */
-  const handleDisconnect = React.useCallback(() => {
-    disconnectWallet();
-    resetWeb3authSession();
+  const handleDisconnect = React.useCallback(async () => {
     openSessionExpiredModal();
+    await disconnectWallet();
+    resetWeb3authSession();
   }, [disconnectWallet, openSessionExpiredModal]);
 
   /**

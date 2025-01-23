@@ -56,6 +56,7 @@ export class SocialWalletClient implements WalletClient {
       this.provider = null;
       this.address = null;
       this._type = null;
+      this._email = null;
       localStorage.removeItem(AUTH_STORE_KEY);
     } catch (error) {
       console.error("Failed to disconnect social wallet:", error);
@@ -82,7 +83,7 @@ export class SocialWalletClient implements WalletClient {
   private createSocialWalletProvider(
     loginType: SocialLoginType,
     config: SocialGoogleConfigure | SocialTwitterConfigure | SocialEmailPasswordlessConfigure,
-  ) {
+  ): Promise<GnoSocialWalletProvider> {
     switch (loginType) {
       case "email":
         return GnoSocialWalletProvider.createEmailPasswordless(config as SocialEmailPasswordlessConfigure);
@@ -118,6 +119,17 @@ export class SocialWalletClient implements WalletClient {
 
   public async getAccount(): Promise<WalletResponse<AccountInfo>> {
     const accountInfo = (await createTimeout(this.getSocialWallet().getAccount())) as WalletResponse<AccountInfo>;
+
+    let email = "";
+    if (this.sdk) {
+      try {
+        email = await this.getUserEmail();
+        this._email = email;
+      } catch (error) {
+        console.log("Failed to get user email: ", error);
+      }
+    }
+
     if (!accountInfo.data && accountInfo.type === "NO_ACCOUNT") {
       const newAddress = await this.provider?.getWallet()?.getAddress();
       return {
@@ -129,12 +141,14 @@ export class SocialWalletClient implements WalletClient {
           ...DEFAULT_ACCOUNT_INFO,
           chainId: DEFAULT_CHAIN_ID || "",
           address: newAddress || "",
+          email,
         },
       };
     }
 
     if (accountInfo.data && !!accountInfo.data.address) {
       this.address = accountInfo.data?.address;
+      accountInfo.data.email = email;
     }
 
     return accountInfo;

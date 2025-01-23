@@ -17,14 +17,23 @@ interface RenderWalletIconProps {
 
 const RenderWalletIcon = ({ isSwitchNetwork }: RenderWalletIconProps) => {
   const theme = useTheme();
-  const [walletType, setWalletType] = React.useState<string | null>(null);
-  const [socialType, setSocialType] = React.useState<string | null>(null);
+  const [walletType, setWalletType] = React.useState<string | null>(() =>
+    sessionStorage.getItem(GNOSWAP_WALLET_TYPE_KEY),
+  );
+  const [socialType, setSocialType] = React.useState<string | null>(() =>
+    sessionStorage.getItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY),
+  );
 
   React.useEffect(() => {
-    const storedWalletType = sessionStorage.getItem(GNOSWAP_WALLET_TYPE_KEY);
-    const storedSocialType = sessionStorage.getItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY);
-    setWalletType(storedWalletType);
-    setSocialType(storedSocialType);
+    const handleStorageChange = () => {
+      setWalletType(sessionStorage.getItem(GNOSWAP_WALLET_TYPE_KEY));
+      setSocialType(sessionStorage.getItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY));
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, []);
 
   if (isSwitchNetwork) return <IconFailed className="fail-icon render-wallet-icon" />;
@@ -48,4 +57,4 @@ const RenderWalletIcon = ({ isSwitchNetwork }: RenderWalletIconProps) => {
   return <div style={{ width: 16, height: 16 }} />;
 };
 
-export default RenderWalletIcon;
+export default React.memo(RenderWalletIcon);

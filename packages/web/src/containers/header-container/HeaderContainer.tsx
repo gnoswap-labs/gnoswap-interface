@@ -16,7 +16,7 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 import { useGetAvgBlockTime } from "@query/address";
 import { useGetPoolList } from "@query/pools";
 import { useGetAllTokenPrices, useGetTokens } from "@query/token";
-import { ThemeState, TokenState, WalletState } from "@states/index";
+import { ThemeState, TokenState } from "@states/index";
 import { checkPositivePrice, parseJson } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
 import { formatAddress, formatApr } from "@utils/string-utils";
@@ -28,7 +28,7 @@ const HeaderContainer: React.FC = () => {
   const [keyword, setKeyword] = useState("");
   const { breakpoint } = useWindowSize();
   const themeKey = useAtomValue(ThemeState.themeKey);
-  const walletClient = useAtomValue(WalletState.client);
+
   const {
     account,
     connected,
@@ -39,18 +39,17 @@ const HeaderContainer: React.FC = () => {
     isLoadingGnotBalance,
     gnotBalance,
     walletType,
-    socialUserEmail,
     resetWeb3authSession,
   } = useWallet();
   const recentsData = useAtomValue(TokenState.recents);
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
 
   const displayAddress = useMemo(() => {
-    if (socialUserEmail) {
-      return `${socialUserEmail.slice(0, 10)}...`;
+    if (account?.email) {
+      return `${account.email.slice(0, 10)}...`;
     }
     return formatAddress(account?.address || "");
-  }, [walletClient?.getWalletType(), socialUserEmail, account?.address]);
+  }, [account]);
 
   const { data: blockTimeData } = useGetAvgBlockTime();
   const { data: poolList = [] } = useGetPoolList({
@@ -281,7 +280,6 @@ const HeaderContainer: React.FC = () => {
   return (
     <Header
       account={account}
-      socialUserEmail={socialUserEmail}
       connected={connected}
       connectAdenaClient={handleConnectWallet}
       disconnectWallet={disconnectWallet}

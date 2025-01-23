@@ -163,6 +163,7 @@ export class AccountRepositoryMock implements AccountRepository {
       accountNumber: Math.round(generateNumberPlus()),
       sequence: Math.round(generateNumberPlus()),
       chainId: "test3",
+      email: "",
     };
   };
 

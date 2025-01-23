@@ -69,7 +69,6 @@ interface HeaderProps {
   avgBlockTime: number;
   walletType: WalletTypeState;
   displayAddress: string;
-  socialUserEmail: string;
   resetWeb3authSession: () => void;
 }
 

@@ -15,6 +15,7 @@ export interface AccountInfo {
   accountNumber: number;
   sequence: number;
   chainId: string;
+  email?: string;
 }
 
 export const DEFAULT_ACCOUNT_INFO: AccountInfo = {
