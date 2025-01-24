@@ -22,7 +22,7 @@ const SocialWalletNotification = () => {
         <br />
         Adena
         <Link href={SOCIAL_WALLET_EXTERNAL_URL.ADENA_INSTALL_URL} target="_blank">
-          <IconOpenLink fill={ORANGE_COLOR} className="margin-left" />
+          <IconOpenLink size="11" fill={ORANGE_COLOR} className="margin-left" />{" "}
         </Link>
         & login with the same social.
       </div>
@@ -30,7 +30,7 @@ const SocialWalletNotification = () => {
       <div className="guide">
         How does Social Wallets work?{" "}
         <Link href={SOCIAL_WALLET_EXTERNAL_URL.SOCIAL_WALLET_FAQ_URL} target="_blank">
-          <IconOpenLink fill={ORANGE_COLOR} />
+          <IconOpenLink size="11" fill={ORANGE_COLOR} />
         </Link>
       </div>
     </SocialWalletNotificationWrapper>
