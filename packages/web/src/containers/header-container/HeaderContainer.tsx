@@ -46,7 +46,7 @@ const HeaderContainer: React.FC = () => {
 
   const displayAddress = useMemo(() => {
     if (account?.email) {
-      return `${account.email.slice(0, 10)}...`;
+      return account.email.length > 10 ? `${account.email.slice(0, 10)}...` : account.email;
     }
     return formatAddress(account?.address || "");
   }, [account]);
