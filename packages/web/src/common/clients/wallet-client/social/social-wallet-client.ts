@@ -283,6 +283,6 @@ export class SocialWalletClient implements WalletClient {
     }
     const userInfo = await this.sdk.getSocialUserProfile();
 
-    return userInfo?.email || "";
+    return userInfo?.email || userInfo?.name || "";
   };
 }

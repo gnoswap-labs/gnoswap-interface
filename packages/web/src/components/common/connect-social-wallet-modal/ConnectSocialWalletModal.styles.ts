@@ -73,7 +73,7 @@ export const ConnectSocialWalletModalWrapper = styled.div`
           }
         }
         .text {
-          color: ${({ theme }) => theme.color.text03};
+          color: ${({ theme }) => theme.color.text04};
           font-size: 14px;
           font-weight: 400;
           ${media.mobile} {
