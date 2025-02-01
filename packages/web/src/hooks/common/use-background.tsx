@@ -128,7 +128,7 @@ export const useBackground = () => {
     let count = 0;
 
     return () => clearInterval(retryInterval);
-  }, [walletClient?.getWalletType(), sessionId, initSession]);
+  }, [walletClient]);
 
   /**
    *
