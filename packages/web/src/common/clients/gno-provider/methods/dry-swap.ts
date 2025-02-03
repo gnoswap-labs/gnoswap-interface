@@ -16,7 +16,7 @@ export async function drySwap(gnoProvider: GnoProvider, packagePath: string, req
   const routesQuery = makeRoutesQuery(estimatedRoutes, checkGnotPath(inputToken.path));
   const quotes = estimatedRoutes.map(route => route.quote).join(",");
 
-  const abciQueryParams = makeABCIParams("DrySwap", [
+  const abciQueryParams = makeABCIParams("DrySwapRoute", [
     inputToken.path,
     outputToken.path,
     tokenAmountRaw,
