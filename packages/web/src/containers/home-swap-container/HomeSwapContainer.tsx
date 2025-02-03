@@ -13,13 +13,15 @@ import { checkGnotPath } from "@utils/common";
 import { GNOT_TOKEN, GNS_TOKEN } from "@common/values/token-constant";
 import { formatPrice } from "@utils/new-number-utils";
 
+const DEFAULT_TOKEN_A_AMOUNT = "1000" as const;
+
 const HomeSwapContainer: React.FC = () => {
   const router = useRouter();
   const { tokenPrices, displayBalanceMap } = useTokenData();
-  const [tokenA, setTokenA] = useState<TokenModel | null>(GNOT_TOKEN);
-  const [tokenAAmount, setTokenAAmount] = useState<string>("");
-  const [tokenB, setTokenB] = useState<TokenModel | null>(GNS_TOKEN);
-  const [tokenBAmount, setTokenBAmount] = useState<string>("");
+  const [tokenA] = useState<TokenModel | null>(GNOT_TOKEN);
+  const [tokenAAmount] = useState<string>(DEFAULT_TOKEN_A_AMOUNT);
+  const [tokenB] = useState<TokenModel | null>(GNS_TOKEN);
+  const [tokenBAmount] = useState<string>("");
   const { slippage } = useSlippage();
   const { connected, isSwitchNetwork } = useWallet();
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
@@ -92,65 +94,27 @@ const HomeSwapContainer: React.FC = () => {
       return "EXACT_IN";
     })();
 
-    const queries = [
-      `from=${tokenA?.path}`,
-      `to=${tokenB?.path}`,
-      `direction=${direction}`,
-      ...(tokenAAmount ? [`token_a_amount=${tokenAAmount}`] : []),
-      ...(tokenBAmount ? [`token_b_amount=${tokenBAmount}`] : []),
-    ];
+    const queries = [`from=${tokenA?.path}`, `to=${tokenB?.path}`, `direction=${direction}`];
     const queriesString = queries.join("&");
-    if (!!tokenAAmount || !!tokenBAmount) {
+    if (!!tokenAAmount) {
       router.push(`/swap?${queriesString}`);
+      setSwapValue(prev => ({
+        ...prev,
+        tokenAAmount: "",
+      }));
     }
   }, [router, tokenA, tokenB, tokenAAmount, tokenBAmount]);
-
-  const onSubmitSwapValue = () => {
-    setTokenA(tokenB);
-    setTokenB(tokenA);
-    setTokenAAmount(tokenBAmount);
-    setTokenBAmount(tokenAAmount);
-  };
-
-  const changeTokenAAmount = useCallback((value: string) => {
-    setSwapValue(prev => ({
-      ...prev,
-      tokenAAmount: value,
-      tokenBAmount: "",
-    }));
-    setTokenAAmount(value);
-  }, []);
-
-  const changeTokenBAmount = useCallback((value: string) => {
-    setSwapValue(prev => ({
-      ...prev,
-      tokenBAmount: value,
-      tokenAAmount: "",
-      type: "EXACT_OUT",
-    }));
-    setTokenBAmount(value);
-  }, []);
 
   useEffect(() => {
     setSwapValue({
       tokenA: null,
       tokenB: null,
       type: "EXACT_IN",
-      tokenAAmount: "",
+      tokenAAmount: DEFAULT_TOKEN_A_AMOUNT,
       tokenBAmount: "",
     });
   }, []);
-  return (
-    <HomeSwap
-      swapTokenInfo={swapTokenInfo}
-      swapNow={swapNow}
-      swapValue={swapValue}
-      onSubmitSwapValue={onSubmitSwapValue}
-      changeTokenAAmount={changeTokenAAmount}
-      connected={connected}
-      changeTokenBAmount={changeTokenBAmount}
-    />
-  );
+  return <HomeSwap swapTokenInfo={swapTokenInfo} swapNow={swapNow} swapValue={swapValue} connected={connected} />;
 };
 
 export default HomeSwapContainer;

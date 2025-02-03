@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { wrapper } from "./HomeSwap.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
@@ -7,77 +7,22 @@ import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { SwapValue } from "@states/swap";
 import { useTranslation } from "next-i18next";
+import IconRightArrow from "@components/common/icons/IconRightArrow";
 
 interface HomeSwapProps {
-  changeTokenAAmount: (value: string) => void;
-  changeTokenBAmount: (value: string) => void;
   swapTokenInfo: SwapTokenInfo;
   swapNow: () => void;
-  onSubmitSwapValue: () => void;
   connected: boolean;
   swapValue: SwapValue;
 }
 
-function isAmount(str: string) {
-  const regex = /^\d+(\.\d*)?$/;
-  return regex.test(str);
-}
-
-const HomeSwap: React.FC<HomeSwapProps> = ({
-  swapTokenInfo,
-  swapNow,
-  onSubmitSwapValue,
-  changeTokenAAmount,
-  connected,
-  changeTokenBAmount,
-}) => {
+const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, connected, swapValue }) => {
   const { t } = useTranslation();
   const { breakpoint } = useWindowSize();
-  const [fromAmount, setFromAmount] = useState("");
-  const [toAmount, setToAmount] = useState("");
-
-  const onChangeFromAmount = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (value !== "" && !isAmount(value)) return;
-    const temp = value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1");
-    setFromAmount(temp);
-    changeTokenAAmount(temp);
-  }, []);
-
-  const onChangeToAmount = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-
-    if (value !== "" && !isAmount(value)) return;
-    const temp = value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1");
-    setToAmount(temp);
-    changeTokenBAmount(temp);
-  }, []);
 
   const onClickSwapNow = useCallback(() => {
     swapNow();
   }, [swapNow]);
-
-  const handleSwap = () => {
-    setFromAmount(toAmount);
-    setToAmount(fromAmount);
-    onSubmitSwapValue();
-  };
-
-  const handleAutoFillTokenA = useCallback(() => {
-    if (connected) {
-      const formatValue = parseFloat(swapTokenInfo.tokenABalance.replace(/,/g, "")).toString();
-      setFromAmount(formatValue);
-      changeTokenAAmount(formatValue);
-    }
-  }, [connected, swapTokenInfo.tokenABalance, changeTokenAAmount]);
-
-  const handleAutoFillTokenB = useCallback(() => {
-    if (connected) {
-      const formatValue = parseFloat(swapTokenInfo.tokenBBalance.replace(/,/g, "")).toString();
-      setToAmount(formatValue);
-      changeTokenBAmount(formatValue);
-    }
-  }, [swapTokenInfo.tokenBBalance, connected, setToAmount, changeTokenBAmount]);
 
   return breakpoint === "tablet" || breakpoint === "web" ? (
     <div css={wrapper}>
@@ -89,8 +34,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
           <div className="amount">
             <input
               className="amount-text"
-              value={fromAmount}
-              onChange={onChangeFromAmount}
+              value={swapValue.tokenAAmount}
               placeholder="0"
               autoComplete={"off"}
               spellCheck={"false"}
@@ -101,34 +45,27 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
           </div>
           <div className="info">
             <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
-            <span className={`balance-text ${connected ? "balance-text-disabled" : ""}`} onClick={handleAutoFillTokenA}>
+            <span className={`balance-text ${connected ? "balance-text-disabled" : ""}`}>
               {`${t("Main:bal")}: ${swapTokenInfo.tokenABalance}`}
             </span>
           </div>
         </div>
         <div className="to">
           <div className="amount">
-            <input
-              className="amount-text"
-              value={toAmount}
-              onChange={onChangeToAmount}
-              placeholder="0"
-              autoComplete={"off"}
-              spellCheck={"false"}
-            />
+            <input className="amount-text" value={"0"} placeholder="0" autoComplete={"off"} spellCheck={"false"} />
             <div className="token">
               <SelectPairButton token={swapTokenInfo.tokenB} hiddenModal isHiddenArrow />
             </div>
           </div>
           <div className="info">
             <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
-            <span className={`balance-text ${connected ? "balance-text-disabled" : ""}`} onClick={handleAutoFillTokenB}>
+            <span className={`balance-text ${connected ? "balance-text-disabled" : ""}`}>
               {t("Main:bal")}: {swapTokenInfo.tokenBBalance}
             </span>
           </div>
         </div>
         <div className="arrow">
-          <div className="shape" onClick={handleSwap}>
+          <div className="shape">
             <IconSwapArrowDown className="shape-icon" />
           </div>
         </div>
@@ -136,7 +73,12 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
 
       <div className="footer">
         <Button
-          text={t("Main:swapNowBtn")}
+          text={
+            <div className="swap-button">
+              Go to Swap <IconRightArrow />
+            </div>
+          }
+          // text={t("Main:swapNowBtn")}
           style={{
             fullWidth: true,
             height: 50,

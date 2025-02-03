@@ -103,7 +103,6 @@ export const wrapper = (theme: Theme) => css`
       overflow: hidden;
     }
     .balance-text-disabled {
-      cursor: pointer;
       z-index: 1;
     }
 
@@ -129,9 +128,8 @@ export const wrapper = (theme: Theme) => css`
         background-color: ${theme.color.background01};
         border: 1px solid ${theme.color.border02};
         border-radius: 50%;
-        cursor: pointer;
         :hover {
-          background-color: ${theme.color.backgroundGradient};
+          /* background-color: ${theme.color.backgroundGradient}; */
         }
         .shape-icon {
           width: 16px;
@@ -148,5 +146,15 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
     padding-top: 16px;
+    .swap-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
   }
 `;

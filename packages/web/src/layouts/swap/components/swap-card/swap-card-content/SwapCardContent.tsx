@@ -59,6 +59,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
   resetEstimatedLiquidity,
   isRefetching,
 }) => {
+  console.log(swapTokenInfo, "swapTokenINfo in swappagestate");
   const { t } = useTranslation();
 
   const theme = useTheme();
