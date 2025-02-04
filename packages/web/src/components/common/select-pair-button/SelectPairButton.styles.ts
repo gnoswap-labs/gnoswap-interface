@@ -17,10 +17,13 @@ export const wrapper = (hasToken: boolean, disabled?: boolean, isHiddenArrow?: b
         transition: 0.2s;
         &:hover { background-color: ${theme.color.backgroundGradient}; }
       `};
-    > div {
+    > .token-info {
       ${mixins.flexbox("row", "center", "center")}
       gap: 8px;
       ${isHiddenArrow && "padding-right: 6px;"}
+      &.isChanging {
+        animation: fadeInOut 0.5s ease-in-out;
+      }
     }
     span {
       ${fonts.body9};
@@ -43,5 +46,13 @@ export const wrapper = (hasToken: boolean, disabled?: boolean, isHiddenArrow?: b
     }
     .token-label-select {
       white-space: nowrap;
+    }
+    @keyframes fadeInOut {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
     }
   `;

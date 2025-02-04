@@ -12,19 +12,31 @@ import { SwapState } from "@states/index";
 import { checkGnotPath } from "@utils/common";
 import { GNOT_TOKEN, GNS_TOKEN } from "@common/values/token-constant";
 import { formatPrice } from "@utils/new-number-utils";
+import { useInterval } from "@hooks/common/use-interval";
 
 const DEFAULT_TOKEN_A_AMOUNT = "1000" as const;
+const TOKEN_ROTATION_INTERVAL = 2000 as const;
+
+interface TokenTransition {
+  isChanging: boolean;
+  prevToken: TokenModel | null;
+}
 
 const HomeSwapContainer: React.FC = () => {
   const router = useRouter();
-  const { tokenPrices, displayBalanceMap } = useTokenData();
+  const { tokenPrices, displayBalanceMap, tokens } = useTokenData();
   const [tokenA] = useState<TokenModel | null>(GNOT_TOKEN);
   const [tokenAAmount] = useState<string>(DEFAULT_TOKEN_A_AMOUNT);
-  const [tokenB] = useState<TokenModel | null>(GNS_TOKEN);
+  const [tokenB, setTokenB] = useState<TokenModel | null>(GNS_TOKEN);
+  const [currentTokenIndex, setCurrentTokenIndex] = React.useState(0);
+  const [tokenBTransition, setTokenBTransition] = useState<TokenTransition>({
+    isChanging: false,
+    prevToken: null,
+  });
   const [tokenBAmount] = useState<string>("");
   const { slippage } = useSlippage();
   const { connected, isSwitchNetwork } = useWallet();
-  const [swapValue, setSwapValue] = useAtom(SwapState.swap);
+  const [, setSwapValue] = useAtom(SwapState.swap);
 
   const tokenABalance = useMemo(() => {
     if (!connected || isSwitchNetwork || !tokenA) return "-";
@@ -47,14 +59,14 @@ const HomeSwapContainer: React.FC = () => {
   }, [isSwitchNetwork, connected, displayBalanceMap, tokenB]);
 
   const tokenAUSD = useMemo(() => {
-    if (!Number(tokenAAmount) || !tokenA || !tokenPrices[checkGnotPath(tokenA.priceID)]) {
+    if (!Number(DEFAULT_TOKEN_A_AMOUNT) || !tokenA || !tokenPrices[checkGnotPath(tokenA.priceID)]) {
       return null;
     }
-    const calculateValue = BigNumber(tokenAAmount)
+    const calculateValue = BigNumber(DEFAULT_TOKEN_A_AMOUNT)
       .multipliedBy(tokenPrices[checkGnotPath(tokenA.priceID)].usd)
       .toNumber();
     return isNaN(calculateValue) ? null : calculateValue;
-  }, [tokenA, tokenAAmount, tokenPrices]);
+  }, [tokenA, tokenPrices]);
 
   const tokenBUSD = useMemo(() => {
     if (!Number(tokenBAmount) || !tokenB || !tokenPrices[checkGnotPath(tokenB.priceID)]) {
@@ -65,6 +77,44 @@ const HomeSwapContainer: React.FC = () => {
       .toNumber();
     return isNaN(calculateValue) ? null : calculateValue;
   }, [tokenB, tokenBAmount, tokenPrices]);
+
+  useInterval(() => {
+    if (tokens && tokens.length > 0) {
+      const nextIndex = (currentTokenIndex + 1) % tokens.length;
+      setCurrentTokenIndex(nextIndex);
+      const nextToken = tokens[nextIndex];
+
+      if (nextToken.path !== tokenA?.path) {
+        setTokenB(nextToken);
+      } else {
+        setCurrentTokenIndex((nextIndex + 1) % tokens.length);
+        setTokenB(tokens[(nextIndex + 1) % tokens.length]);
+      }
+    }
+  }, TOKEN_ROTATION_INTERVAL);
+
+  useEffect(() => {
+    if (tokenB && tokenBTransition.prevToken && tokenBTransition.prevToken.path !== tokenB.path) {
+      setTokenBTransition(prev => ({
+        isChanging: true,
+        prevToken: prev.prevToken,
+      }));
+
+      const timer = setTimeout(() => {
+        setTokenBTransition({
+          isChanging: false,
+          prevToken: tokenB,
+        });
+      }, 500);
+
+      return () => clearTimeout(timer);
+    } else if (tokenB && !tokenBTransition.prevToken) {
+      setTokenBTransition({
+        isChanging: false,
+        prevToken: tokenB,
+      });
+    }
+  }, [tokenB]);
 
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
     return {
@@ -98,10 +148,6 @@ const HomeSwapContainer: React.FC = () => {
     const queriesString = queries.join("&");
     if (!!tokenAAmount) {
       router.push(`/swap?${queriesString}`);
-      setSwapValue(prev => ({
-        ...prev,
-        tokenAAmount: "",
-      }));
     }
   }, [router, tokenA, tokenB, tokenAAmount, tokenBAmount]);
 
@@ -110,11 +156,19 @@ const HomeSwapContainer: React.FC = () => {
       tokenA: null,
       tokenB: null,
       type: "EXACT_IN",
-      tokenAAmount: DEFAULT_TOKEN_A_AMOUNT,
+      tokenAAmount: "",
       tokenBAmount: "",
     });
   }, []);
-  return <HomeSwap swapTokenInfo={swapTokenInfo} swapNow={swapNow} swapValue={swapValue} connected={connected} />;
+  return (
+    <HomeSwap
+      swapTokenInfo={swapTokenInfo}
+      swapNow={swapNow}
+      connected={connected}
+      tokenBTransition={tokenBTransition}
+      defaultTokenAAmount={DEFAULT_TOKEN_A_AMOUNT}
+    />
+  );
 };
 
 export default HomeSwapContainer;

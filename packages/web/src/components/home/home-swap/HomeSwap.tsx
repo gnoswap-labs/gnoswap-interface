@@ -1,22 +1,33 @@
 import React, { useCallback } from "react";
+import { cx } from "@emotion/css";
 import { wrapper } from "./HomeSwap.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { SwapValue } from "@states/swap";
 import { useTranslation } from "next-i18next";
 import IconRightArrow from "@components/common/icons/IconRightArrow";
+import { TokenModel } from "@models/token/token-model";
 
 interface HomeSwapProps {
   swapTokenInfo: SwapTokenInfo;
   swapNow: () => void;
   connected: boolean;
-  swapValue: SwapValue;
+  tokenBTransition?: {
+    isChanging: boolean;
+    prevToken: TokenModel | null;
+  };
+  defaultTokenAAmount?: string;
 }
 
-const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, connected, swapValue }) => {
+const HomeSwap: React.FC<HomeSwapProps> = ({
+  swapTokenInfo,
+  swapNow,
+  connected,
+  tokenBTransition,
+  defaultTokenAAmount,
+}) => {
   const { t } = useTranslation();
   const { breakpoint } = useWindowSize();
 
@@ -32,13 +43,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, connected, 
       <div className="inputs">
         <div className="from">
           <div className="amount">
-            <input
-              className="amount-text"
-              value={swapValue.tokenAAmount}
-              placeholder="0"
-              autoComplete={"off"}
-              spellCheck={"false"}
-            />
+            <div className="amount-text">{defaultTokenAAmount}</div>
             <div className="token">
               <SelectPairButton token={swapTokenInfo.tokenA} hiddenModal isHiddenArrow />
             </div>
@@ -46,21 +51,31 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, connected, 
           <div className="info">
             <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
             <span className={`balance-text ${connected ? "balance-text-disabled" : ""}`}>
-              {`${t("Main:bal")}: ${swapTokenInfo.tokenABalance}`}
+              {swapTokenInfo.tokenA?.name}
             </span>
           </div>
         </div>
         <div className="to">
           <div className="amount">
-            <input className="amount-text" value={"0"} placeholder="0" autoComplete={"off"} spellCheck={"false"} />
+            <div className="skeleton" />
             <div className="token">
-              <SelectPairButton token={swapTokenInfo.tokenB} hiddenModal isHiddenArrow />
+              <SelectPairButton
+                token={swapTokenInfo.tokenB}
+                hiddenModal
+                isHiddenArrow
+                isChanging={tokenBTransition?.isChanging}
+              />
             </div>
           </div>
           <div className="info">
-            <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
-            <span className={`balance-text ${connected ? "balance-text-disabled" : ""}`}>
-              {t("Main:bal")}: {swapTokenInfo.tokenBBalance}
+            <div className="skeleton-small" />
+            <span
+              className={cx("balance-text", {
+                "balance-text-disabled": connected,
+                isChanging: tokenBTransition?.isChanging,
+              })}
+            >
+              {swapTokenInfo.tokenB?.name}
             </span>
           </div>
         </div>

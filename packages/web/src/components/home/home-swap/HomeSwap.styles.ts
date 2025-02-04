@@ -56,6 +56,14 @@ export const wrapper = (theme: Theme) => css`
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
       margin-bottom: 5px;
+      .skeleton {
+        width: 100px;
+        height: 24px;
+
+        border-radius: 2px;
+        background: linear-gradient(0deg, rgba(20, 26, 41, 0.5) 0%, rgba(20, 26, 41, 0.5) 100%);
+        box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
+      }
     }
 
     .token {
@@ -64,6 +72,11 @@ export const wrapper = (theme: Theme) => css`
         margin-right: 0;
       }
       > div {
+        border: 1px solid transparent;
+        transition: border 0.5s ease-in-out;
+        &.isChanging {
+          border: 1px solid var(--gradient-dark-border-gradient, #536cd7);
+        }
         padding: 5px 6px 5px 6px;
         height: 34px;
       }
@@ -90,10 +103,22 @@ export const wrapper = (theme: Theme) => css`
       }
     }
 
+    .skeleton-small {
+      width: 77px;
+      height: 17px;
+
+      border-radius: 2px;
+      background: linear-gradient(0deg, rgba(20, 26, 41, 0.5) 0%, rgba(20, 26, 41, 0.5) 100%);
+      box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
+    }
+
     .price-text,
     .balance-text {
       ${fonts.p1};
       color: ${theme.color.text04};
+      &.isChanging {
+        animation: fadeInOut 0.5s ease-in-out;
+      }
     }
     .price-text {
       flex-shrink: 0;
@@ -108,7 +133,6 @@ export const wrapper = (theme: Theme) => css`
 
     .token {
       ${mixins.flexbox("row", "center", "center")}
-      width: 112px;
       height: 30px;
       font-size: 15px;
       font-weight: 500;
@@ -155,6 +179,15 @@ export const wrapper = (theme: Theme) => css`
         width: 24px;
         height: 24px;
       }
+    }
+  }
+
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
     }
   }
 `;
