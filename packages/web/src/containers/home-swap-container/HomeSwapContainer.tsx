@@ -15,7 +15,7 @@ import { formatPrice } from "@utils/new-number-utils";
 import { useInterval } from "@hooks/common/use-interval";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 
-const DEFAULT_TOKEN_A_AMOUNT = "1000" as const;
+const DEFAULT_TOKEN_A_AMOUNT = "1000";
 const TOKEN_ROTATION_INTERVAL = 2000 as const;
 const TOKEN_TRANSITION_DURATION = 500 as const;
 
@@ -149,18 +149,11 @@ const HomeSwapContainer: React.FC = () => {
   }, [slippage, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
 
   const swapNow = useCallback(() => {
-    const direction = (() => {
-      if (tokenAAmount) return "EXACT_IN";
+    if (!tokenAAmount) return;
 
-      if (tokenBAmount) return "EXACT_OUT";
-
-      return "EXACT_IN";
-    })();
-
-    const queries = [`from=${tokenA?.path}`, `to=${tokenB?.path}`, `direction=${direction}`];
-    const queriesString = queries.join("&");
+    const queries = [`from=${tokenA?.path}`, `to=${tokenB?.path}`].join("&");
     if (!!tokenAAmount) {
-      router.push(`/swap?${queriesString}`);
+      router.push(`/swap?${queries}`);
     }
   }, [router, tokenA, tokenB, tokenAAmount, tokenBAmount]);
 
