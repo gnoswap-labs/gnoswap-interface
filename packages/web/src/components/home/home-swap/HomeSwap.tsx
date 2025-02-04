@@ -9,6 +9,8 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useTranslation } from "next-i18next";
 import IconRightArrow from "@components/common/icons/IconRightArrow";
 import { TokenModel } from "@models/token/token-model";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import IconWallet from "@components/common/icons/IconWallet";
 
 interface HomeSwapProps {
   swapTokenInfo: SwapTokenInfo;
@@ -51,13 +53,14 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
           <div className="info">
             <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
             <span className={`balance-text ${connected ? "balance-text-disabled" : ""}`}>
-              {swapTokenInfo.tokenA?.name}
+              <IconWallet />
+              {swapTokenInfo.tokenABalance}
             </span>
           </div>
         </div>
         <div className="to">
           <div className="amount">
-            <div className="skeleton" />
+            <div className="skeleton" css={pulseSkeletonStyle({ w: "100px", h: "32px" })} />
             <div className="token">
               <SelectPairButton
                 token={swapTokenInfo.tokenB}
@@ -68,15 +71,19 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
             </div>
           </div>
           <div className="info">
-            <div className="skeleton-small" />
-            <span
-              className={cx("balance-text", {
-                "balance-text-disabled": connected,
-                isChanging: tokenBTransition?.isChanging,
-              })}
-            >
-              {swapTokenInfo.tokenB?.name}
-            </span>
+            <div className="skeleton" css={pulseSkeletonStyle({ w: "77px", h: "16px" })} />
+            {tokenBTransition?.isChanging ? (
+              <div className="skeleton" css={pulseSkeletonStyle({ w: "50px", h: "16px" })} />
+            ) : (
+              <span
+                className={cx("balance-text", {
+                  "balance-text-disabled": connected,
+                  isChanging: tokenBTransition?.isChanging,
+                })}
+              >
+                <IconWallet />0
+              </span>
+            )}
           </div>
         </div>
         <div className="arrow">

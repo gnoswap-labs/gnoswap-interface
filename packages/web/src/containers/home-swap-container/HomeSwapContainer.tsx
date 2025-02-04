@@ -30,7 +30,7 @@ const HomeSwapContainer: React.FC = () => {
   const [tokenB, setTokenB] = useState<TokenModel | null>(GNS_TOKEN);
   const [currentTokenIndex, setCurrentTokenIndex] = React.useState(0);
   const [tokenBTransition, setTokenBTransition] = useState<TokenTransition>({
-    isChanging: false,
+    isChanging: true,
     prevToken: null,
   });
   const [tokenBAmount] = useState<string>("");

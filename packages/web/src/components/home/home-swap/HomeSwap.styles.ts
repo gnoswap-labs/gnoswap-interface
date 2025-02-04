@@ -58,8 +58,9 @@ export const wrapper = (theme: Theme) => css`
       margin-bottom: 5px;
       .skeleton {
         width: 100px;
-        height: 24px;
+        height: 32px;
 
+        margin-bottom: 6px;
         border-radius: 2px;
         background: linear-gradient(0deg, rgba(20, 26, 41, 0.5) 0%, rgba(20, 26, 41, 0.5) 100%);
         box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
@@ -105,7 +106,7 @@ export const wrapper = (theme: Theme) => css`
 
     .skeleton-small {
       width: 77px;
-      height: 17px;
+      height: 16px;
 
       border-radius: 2px;
       background: linear-gradient(0deg, rgba(20, 26, 41, 0.5) 0%, rgba(20, 26, 41, 0.5) 100%);
@@ -114,6 +115,9 @@ export const wrapper = (theme: Theme) => css`
 
     .price-text,
     .balance-text {
+      display: flex;
+      align-items: center;
+      gap: 4px;
       ${fonts.p1};
       color: ${theme.color.text04};
       &.isChanging {
