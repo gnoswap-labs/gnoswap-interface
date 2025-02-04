@@ -13,10 +13,13 @@ import { checkGnotPath } from "@utils/common";
 import { GNOT_TOKEN, GNS_TOKEN } from "@common/values/token-constant";
 import { formatPrice } from "@utils/new-number-utils";
 import { useInterval } from "@hooks/common/use-interval";
+import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 
 const DEFAULT_TOKEN_A_AMOUNT = "1000" as const;
 const TOKEN_ROTATION_INTERVAL = 2000 as const;
+const TOKEN_TRANSITION_DURATION = 500 as const;
 
+// Interface for animating token conversions
 interface TokenTransition {
   isChanging: boolean;
   prevToken: TokenModel | null;
@@ -28,7 +31,9 @@ const HomeSwapContainer: React.FC = () => {
   const [tokenA] = useState<TokenModel | null>(GNOT_TOKEN);
   const [tokenAAmount] = useState<string>(DEFAULT_TOKEN_A_AMOUNT);
   const [tokenB, setTokenB] = useState<TokenModel | null>(GNS_TOKEN);
+  // Index of the currently circulating token
   const [currentTokenIndex, setCurrentTokenIndex] = React.useState(0);
+  // Manage the transition state of token B (for animation purposes)
   const [tokenBTransition, setTokenBTransition] = useState<TokenTransition>({
     isChanging: true,
     prevToken: null,
@@ -78,36 +83,44 @@ const HomeSwapContainer: React.FC = () => {
     return isNaN(calculateValue) ? null : calculateValue;
   }, [tokenB, tokenBAmount, tokenPrices]);
 
+  // Token paths to exclude from circulation (tokenA and Wrapped GNOT)
+  const excludedTokenPaths = [tokenA?.path, WRAPPED_GNOT_PATH];
+
+  // Token auto-rotation logic
   useInterval(() => {
     if (tokens && tokens.length > 0) {
-      const nextIndex = (currentTokenIndex + 1) % tokens.length;
-      setCurrentTokenIndex(nextIndex);
-      const nextToken = tokens[nextIndex];
+      // Generate a list of available tokens by filtering out the ones you want to exclude
+      const availableTokens = tokens.filter(token => !excludedTokenPaths.includes(token.path));
 
-      if (nextToken.path !== tokenA?.path) {
-        setTokenB(nextToken);
-      } else {
-        setCurrentTokenIndex((nextIndex + 1) % tokens.length);
-        setTokenB(tokens[(nextIndex + 1) % tokens.length]);
+      if (availableTokens.length > 0) {
+        // Cycle to next token
+        const nextIndex = (currentTokenIndex + 1) % availableTokens.length;
+        setCurrentTokenIndex(nextIndex);
+        setTokenB(availableTokens[nextIndex]);
       }
     }
   }, TOKEN_ROTATION_INTERVAL);
 
+  // Animate the transition whenever token B changes
   useEffect(() => {
+    // when the token has actually changed
     if (tokenB && tokenBTransition.prevToken && tokenBTransition.prevToken.path !== tokenB.path) {
+      // Set transition to start state
       setTokenBTransition(prev => ({
         isChanging: true,
         prevToken: prev.prevToken,
       }));
 
+      // Change to transition complete after 500ms
       const timer = setTimeout(() => {
         setTokenBTransition({
           isChanging: false,
           prevToken: tokenB,
         });
-      }, 500);
+      }, TOKEN_TRANSITION_DURATION);
 
       return () => clearTimeout(timer);
+      // on initial token setup
     } else if (tokenB && !tokenBTransition.prevToken) {
       setTokenBTransition({
         isChanging: false,
