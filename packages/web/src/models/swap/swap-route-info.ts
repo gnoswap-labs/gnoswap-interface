@@ -1,5 +1,5 @@
-import { TokenModel } from "@models/token/token-model";
 import { AmountModel } from "@models/common/amount-model";
+import { TokenModel } from "@models/token/token-model";
 
 export interface Route {
   pools: RoutePoolInfo[];
@@ -25,7 +25,7 @@ export interface RoutePoolInfo {
   tokenA: string;
   tokenB: string;
   fee: number;
-  price: number;
+  // price: number;
   tokenABalance: number;
   tokenBBalance: number;
   poolPath: string;

@@ -8,7 +8,7 @@ export interface MostLiquidPool {
 export interface TokenModel {
   path: string;
 
-  type: "native" | "grc20";
+  type: "Native" | "GRC20";
 
   address?: string;
 

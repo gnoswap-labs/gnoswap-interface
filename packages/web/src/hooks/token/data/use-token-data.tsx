@@ -7,7 +7,7 @@ import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { CardListTokenInfo, UpDownType } from "@models/common/card-list-item-info";
-import { TokenModel } from "@models/token/token-model";
+import { isNativeTokenByType, TokenModel } from "@models/token/token-model";
 import { useGetAllTokenPrices, useGetTokens } from "@query/token";
 import { TokenState } from "@states/index";
 import { checkPositivePrice } from "@utils/common";
@@ -195,18 +195,17 @@ export const useTokenData = () => {
       if (!rpcProvider || !account || !availNetwork) {
         return null;
       }
-      if (token.type === "native") {
+      if (isNativeTokenByType(token.type)) {
         const res = await rpcProvider.getBalance(account.address, token.denom || "ugnot").catch(() => null);
         return res;
-      } else if (token.type === "grc20") {
-        const param = `BalanceOf("${account.address}")`;
-        const res = await rpcProvider
-          .evaluateExpression(token.path, param)
-          .then(evaluateExpressionToNumber)
-          .catch(() => null);
-        return res;
       }
-      return null;
+
+      const param = `BalanceOf("${account.address}")`;
+      const res = await rpcProvider
+        .evaluateExpression(token.path, param)
+        .then(evaluateExpressionToNumber)
+        .catch(() => null);
+      return res;
     },
     [account, availNetwork, rpcProvider],
   );

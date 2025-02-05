@@ -11,10 +11,11 @@ import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
 
 import { getGRC20Allowance } from "@common/clients/gno-provider";
+import { drySwap } from "@common/clients/gno-provider/methods/dry-swap";
 import { DEFAULT_GAS_FEE } from "@common/values";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { GetRoutesRequest } from "./request/get-routes-request";
-import { SwapRouteRequest, DrySwapRequest } from "./request/swap-route-request";
+import { DrySwapRequest, SwapRouteRequest } from "./request/swap-route-request";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
 import { WrapTokenRequest } from "./request/wrap-token-request";
 import { GetRoutesResponse } from "./response/get-routes-response";
@@ -26,7 +27,6 @@ import {
   makeUnwrapTokenMessages,
   makeWrapTokenMessages,
 } from "./swap-router.message";
-import { drySwap } from "@common/clients/gno-provider/methods/dry-swap";
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
@@ -76,7 +76,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       },
     });
 
-    if (response.status !== 201) {
+    if (response.status !== 200) {
       throw new SwapError("SWAP_FAILED");
     }
 
