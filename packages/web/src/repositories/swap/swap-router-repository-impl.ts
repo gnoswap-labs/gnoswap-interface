@@ -106,8 +106,18 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const address = await this.getAddress();
 
+    const drySwapRequest: DrySwapRequest = {
+      inputToken: request.inputToken,
+      outputToken: request.outputToken,
+      tokenAmount: request.tokenAmount,
+      estimatedRoutes: request.estimatedRoutes,
+      tokenAmountLimit: request.tokenAmountLimit,
+      exactType: "EXACT_IN",
+    };
+
     // Dry SWAP implement
-    // const drySwapResponse = await this.getDrySwap(request);
+    await this.getDrySwap(drySwapRequest);
+    // const drySwapResponse = await this.getDrySwap(drySwapRequest);
     // if (drySwapResponse.status !== 200) {
     //   throw new SwapError("SWAP_FAILED");
     // }
@@ -133,8 +143,18 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const address = await this.getAddress();
 
+    const drySwapRequest: DrySwapRequest = {
+      inputToken: request.inputToken,
+      outputToken: request.outputToken,
+      tokenAmount: request.tokenAmount,
+      estimatedRoutes: request.estimatedRoutes,
+      tokenAmountLimit: request.tokenAmountLimit,
+      exactType: "EXACT_OUT",
+    };
+
     // Dry SWAP implement
-    // const drySwapResponse = await this.getDrySwap(request);
+    await this.getDrySwap(drySwapRequest);
+    // const drySwapResponse = await this.getDrySwap(drySwapRequest);
     // if (drySwapResponse.status !== 200) {
     //   throw new SwapError("SWAP_FAILED");
     // }
