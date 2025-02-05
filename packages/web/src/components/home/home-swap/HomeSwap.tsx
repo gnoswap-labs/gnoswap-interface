@@ -54,7 +54,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
             <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
             <span className={`balance-text ${connected ? "balance-text-disabled" : ""}`}>
               <IconWallet />
-              {swapTokenInfo.tokenABalance}
+              1,000
             </span>
           </div>
         </div>
