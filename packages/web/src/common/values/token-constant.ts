@@ -4,7 +4,7 @@ import { TokenModel } from "@models/token/token-model";
 export const GNOT_UNIT_DENOM = "ugnot" as const;
 
 export const GNS_TOKEN: TokenModel = {
-  type: "grc20",
+  type: "GRC20",
   chainId: "dev.gnoswap",
   createdAt: "2024-01-24T15:12:21Z",
   name: "GnoSwap",
@@ -19,7 +19,7 @@ export const GNS_TOKEN: TokenModel = {
 };
 
 export const XGNS_TOKEN: TokenModel = {
-  type: "grc20",
+  type: "GRC20",
   chainId: "dev.gnoswap",
   createdAt: "0001-01-01T00:00:00Z",
   name: "GnoSwap",
@@ -33,7 +33,7 @@ export const XGNS_TOKEN: TokenModel = {
 };
 
 export const GNOT_TOKEN: TokenModel = {
-  type: "native",
+  type: "Native",
   chainId: "",
   createdAt: "0001-01-01T00:00:00Z",
   name: "Gnoland",
@@ -46,7 +46,7 @@ export const GNOT_TOKEN: TokenModel = {
 };
 
 export const GNOT_TOKEN_DEFAULT: TokenModel = {
-  type: "native",
+  type: "Native",
   chainId: "dev.gnoswap",
   createdAt: "0001-01-01T00:00:00Z",
   name: "Gnoland",
@@ -62,7 +62,7 @@ export const GNOT_TOKEN_DEFAULT: TokenModel = {
 };
 
 export const WUGNOT_TOKEN: TokenModel = {
-  type: "grc20",
+  type: "GRC20",
   chainId: "portal-loop",
   name: "wrapped GNOT",
   path: "gno.land/r/demo/wugnot",

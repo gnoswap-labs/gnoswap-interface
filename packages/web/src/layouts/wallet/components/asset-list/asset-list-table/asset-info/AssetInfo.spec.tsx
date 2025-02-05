@@ -1,15 +1,15 @@
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
+import { DEVICE_TYPE } from "@styles/media";
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
-import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import AssetInfo, { AssetInfoProps } from "./AssetInfo";
-import { DEVICE_TYPE } from "@styles/media";
 
 describe("AssetInfo Component", () => {
   it("AssetInfo render", () => {
     const mockProps: AssetInfoProps = {
       asset: {
         path: "gno.land/r/onbloc/gns",
-        type: "grc20",
+        type: "GRC20",
         chainId: "Gnoland",
         name: "Gnoswap",
         symbol: "GNS",

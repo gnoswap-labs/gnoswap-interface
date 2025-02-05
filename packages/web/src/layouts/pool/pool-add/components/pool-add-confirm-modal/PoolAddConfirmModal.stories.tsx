@@ -16,7 +16,7 @@ const tokenA: {
   usdPrice: string;
 } = {
   info: {
-    type: "grc20",
+    type: "GRC20",
     chainId: "dev.gnoswap",
     createdAt: "2023-12-08T03:57:43Z",
     name: "Foo",
@@ -37,7 +37,7 @@ const tokenB: {
   usdPrice: string;
 } = {
   info: {
-    type: "grc20",
+    type: "GRC20",
     chainId: "dev.gnoswap",
     createdAt: "2023-12-08T03:57:43Z",
     name: "Foo",

@@ -31,7 +31,7 @@ export const dummyActivityData: ActivityData = {
   txHash: "hNaBGE2oDb15Q08y68wpycjwwGaCcXcU2jnrRRfuUo0%3D",
   actionType: DexEvent.ADD,
   tokenA: {
-    type: "grc20",
+    type: "GRC20",
     chainId: "dev",
     createdAt: "",
     name: "gnoland",
@@ -42,7 +42,7 @@ export const dummyActivityData: ActivityData = {
     priceID: "gnot",
   },
   tokenB: {
-    type: "grc20",
+    type: "GRC20",
     chainId: "dev",
     createdAt: "",
     name: "gnoland",

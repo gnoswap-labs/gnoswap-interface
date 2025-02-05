@@ -1,13 +1,12 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import SwapCardFeeInfo from "./SwapCardFeeInfo";
 import { css } from "@emotion/react";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+import SwapCardFeeInfo from "./SwapCardFeeInfo";
 
 const swapSummaryInfo: SwapSummaryInfo = {
   tokenA: {
-    type: "grc20",
+    type: "GRC20",
     chainId: "dev.gnoswap",
     createdAt: "2023-12-08T03:57:43Z",
     name: "Foo",
@@ -19,7 +18,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
     address: "",
   },
   tokenB: {
-    type: "grc20",
+    type: "GRC20",
     chainId: "dev.gnoswap",
     createdAt: "2023-12-08T03:57:43Z",
     name: "Foo",
@@ -58,7 +57,7 @@ const swapTokenInfo: SwapTokenInfo = {
     decimals: 4,
     symbol: "FOO",
     logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-    type: "grc20",
+    type: "GRC20",
     priceID: "gno.land/r/foo",
   },
   tokenAAmount: "0",
@@ -74,7 +73,7 @@ const swapTokenInfo: SwapTokenInfo = {
     decimals: 4,
     symbol: "FOO",
     logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-    type: "grc20",
+    type: "GRC20",
     priceID: "gno.land/r/foo",
   },
   tokenBAmount: "0",

@@ -1,5 +1,4 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
 
 import SelectPairButton from "./SelectPairButton";
 
@@ -13,7 +12,7 @@ const Template: ComponentStory<typeof SelectPairButton> = args => <SelectPairBut
 export const Selected = Template.bind({});
 Selected.args = {
   token: {
-    type: "grc20",
+    type: "GRC20",
     chainId: "dev.gnoswap",
     createdAt: "2023-12-08T03:57:43Z",
     name: "Foo",

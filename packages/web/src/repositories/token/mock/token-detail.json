@@ -403,7 +403,7 @@
       "poolPath": "gno.land/r/bar:gnot:100",
       "fee": "100",
       "tokenA": {
-        "type": "grc20",
+        "type": "GRC20",
         "name": "Bar",
         "path": "gno.land/r/bar",
         "symbol": "BAR",
@@ -423,14 +423,14 @@
       "poolPath": "gno.land/r/bar:gno.land/r/baz:100",
       "fee": "100",
       "tokenA": {
-        "type": "grc20",
+        "type": "GRC20",
         "name": "Bar",
         "path": "gno.land/r/bar",
         "symbol": "BAR",
         "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg"
       },
       "tokenB": {
-        "type": "grc20",
+        "type": "GRC20",
         "name": "Baz",
         "path": "gno.land/r/baz",
         "symbol": "BAZ",

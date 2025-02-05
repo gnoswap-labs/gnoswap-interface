@@ -1,8 +1,8 @@
+import { TokenModel } from "@models/token/token-model";
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
-import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import TokenAmount, { TokenAmountProps } from "./TokenAmount";
-import { TokenModel } from "@models/token/token-model";
 
 const token: TokenModel = {
   chainId: "dev",
@@ -13,7 +13,7 @@ const token: TokenModel = {
   decimals: 4,
   symbol: "GNS",
   logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
-  type: "grc20",
+  type: "GRC20",
   priceID: "gno.land/r/gns",
 };
 

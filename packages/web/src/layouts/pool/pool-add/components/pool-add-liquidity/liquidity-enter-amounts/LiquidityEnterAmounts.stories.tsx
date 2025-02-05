@@ -1,9 +1,8 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
 
-import EnterAmounts from "./LiquidityEnterAmounts";
-import { action } from "@storybook/addon-actions";
 import { TokenModel } from "@models/token/token-model";
+import { action } from "@storybook/addon-actions";
+import EnterAmounts from "./LiquidityEnterAmounts";
 
 export default {
   title: "pool/pool-add/EnterAmounts",
@@ -17,7 +16,7 @@ const token: TokenModel = {
   isGasToken: false,
   description: "",
   websiteURL: "",
-  type: "grc20",
+  type: "GRC20",
   chainId: "dev.gnoswap",
   createdAt: "2023-12-08T03:57:43Z",
   name: "Foo",

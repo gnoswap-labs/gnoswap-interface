@@ -1,12 +1,11 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import SwapButtonTooltip from "./SwapButtonTooltip";
 import { css } from "@emotion/react";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+import SwapButtonTooltip from "./SwapButtonTooltip";
 
 const swapSummaryInfo: SwapSummaryInfo = {
   tokenA: {
-    type: "grc20",
+    type: "GRC20",
     chainId: "dev.gnoswap",
     createdAt: "2023-12-08T03:57:43Z",
     name: "Foo",
@@ -18,7 +17,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
     address: "",
   },
   tokenB: {
-    type: "grc20",
+    type: "GRC20",
     chainId: "dev.gnoswap",
     createdAt: "2023-12-08T03:57:43Z",
     name: "Foo",

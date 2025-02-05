@@ -1,7 +1,7 @@
 {
   "poolPath": "gno.land/r/gns:gno.land/r/qux:100",
   "tokenA": {
-    "type": "grc20",
+    "type": "GRC20",
     "chainId": "dev",
     "createdAt": "2023-12-06 12:34:56",
     "name": "bar",
@@ -12,7 +12,7 @@
     "priceID": "gno.land/r/gns"
   },
   "tokenB": {
-    "type": "grc20",
+    "type": "GRC20",
     "chainId": "dev",
     "createdAt": "2023-12-06 12:34:56",
     "name": "bar",

@@ -14,15 +14,16 @@ import SelectPairButton from "@components/common/select-pair-button/SelectPairBu
 import Tooltip from "@components/common/tooltip/Tooltip";
 import WarningCard from "@components/common/warning-card/WarningCard";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
-import { usePositionModal } from "@hooks/wallet/ui/use-position-modal";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { TokenModel } from "@models/token/token-model";
+import { usePositionModal } from "@hooks/wallet/ui/use-position-modal";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatPrice } from "@utils/new-number-utils";
 import { capitalize } from "@utils/string-utils";
 import { isValidAddress } from "@utils/validation-utils";
 
+import IconWallet from "@components/common/icons/IconWallet";
 import {
   AssetSendContent,
   AssetSendModalBackground,
@@ -30,7 +31,6 @@ import {
   AssetSendTooltipContent,
   AssetSendWarningContentWrapper,
 } from "./AssetSendModal.styles";
-import IconWallet from "@components/common/icons/IconWallet";
 
 const DEFAULT_WITHDRAW_GNOT = GNOT_TOKEN;
 
@@ -105,7 +105,7 @@ const AssetSendModal: React.FC<Props> = ({
 
   const nativeToken = useMemo(() => {
     if (!tokens || tokens.length === 0) return null;
-    return tokens.find(token => token.type === "native");
+    return tokens.find(isNativeToken);
   }, [tokens]);
 
   const currentAvailableBalance = useMemo(

@@ -46,7 +46,7 @@ export const initialPool: PoolModel = {
     decimals: 4,
     symbol: "",
     logoURI: "",
-    type: "native",
+    type: "Native",
     priceID: "",
   },
   tokenB: {
@@ -58,7 +58,7 @@ export const initialPool: PoolModel = {
     decimals: 4,
     symbol: "",
     logoURI: "",
-    type: "native",
+    type: "Native",
     priceID: "",
   },
   incentiveType: "INCENTIVIZED",

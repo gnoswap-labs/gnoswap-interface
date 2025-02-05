@@ -15,8 +15,8 @@ import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useTokenData } from "@hooks/token/data/use-token-data";
-import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
 import { EstimatedRoute, SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
@@ -29,13 +29,12 @@ import { SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route
 import { CommonState, SwapState } from "@states/index";
 import { checkGnotPath, isGNOTPath, toNativePath } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
+import { nullish } from "@utils/nullish-utils";
 import { matchInputNumber } from "@utils/number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { isEmptyObject } from "@utils/validation-utils";
-import { nullish } from "@utils/nullish-utils";
 
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { rawBySqrtX96 } from "@utils/swap-utils";
 import { useSwap } from "./use-swap";
 
 type SwapButtonStateType =
@@ -66,11 +65,11 @@ function estimatePriceImpactByRoutes(tokenInPath: string, routes: EstimatedRoute
       const isReversePrice = currentTokenInPath === pool.tokenB;
       if (isReversePrice) {
         currentTokenInPath = pool.tokenA;
-        return 1 / rawBySqrtX96(pool.price);
+        return 1 / pool.price;
       }
 
       currentTokenInPath = pool.tokenB;
-      return rawBySqrtX96(pool.price);
+      return pool.price;
     });
 
     const routePrice = poolTickPrices.reduce((price, poolTickPrice) => price * poolTickPrice, 1);
