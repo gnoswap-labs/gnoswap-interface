@@ -47,7 +47,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
           <div className="amount">
             <div className="amount-text">{defaultTokenAAmount}</div>
             <div className="token">
-              <SelectPairButton token={swapTokenInfo.tokenA} hiddenModal isHiddenArrow />
+              <SelectPairButton token={swapTokenInfo.tokenA} hiddenModal />
             </div>
           </div>
           <div className="info">
@@ -62,18 +62,13 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
           <div className="amount">
             <div className="skeleton" css={pulseSkeletonStyle({ w: "100px", h: "32px" })} />
             <div className="token">
-              <SelectPairButton
-                token={swapTokenInfo.tokenB}
-                hiddenModal
-                isHiddenArrow
-                isChanging={tokenBTransition?.isChanging}
-              />
+              <SelectPairButton token={swapTokenInfo.tokenB} hiddenModal isChanging={tokenBTransition?.isChanging} />
             </div>
           </div>
           <div className="info">
             <div className="skeleton" css={pulseSkeletonStyle({ w: "77px", h: "16px" })} />
             {tokenBTransition?.isChanging ? (
-              <div className="skeleton" css={pulseSkeletonStyle({ w: "50px", h: "16px" })} />
+              <div className="skeleton" css={pulseSkeletonStyle({ w: "40px", h: "16px" })} />
             ) : (
               <span
                 className={cx("balance-text", {
