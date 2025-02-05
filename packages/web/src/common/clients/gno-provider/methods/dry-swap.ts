@@ -36,5 +36,5 @@ export async function drySwap(gnoProvider: GnoProvider, packagePath: string, req
   } catch (e) {
     console.log(e);
   }
-  return -1;
+  return -2;
 }
