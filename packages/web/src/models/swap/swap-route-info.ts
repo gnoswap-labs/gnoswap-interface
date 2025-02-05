@@ -25,7 +25,7 @@ export interface RoutePoolInfo {
   tokenA: string;
   tokenB: string;
   fee: number;
-  // price: number;
+  price: number;
   tokenABalance: number;
   tokenBBalance: number;
   poolPath: string;

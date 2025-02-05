@@ -1,13 +1,12 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import SwapCardAutoRouter from "./SwapCardAutoRouter";
 import { css } from "@emotion/react";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+import SwapCardAutoRouter from "./SwapCardAutoRouter";
 
 const swapRouteInfos: SwapRouteInfo[] = [
   {
     from: {
-      type: "grc20",
+      type: "GRC20",
       chainId: "dev.gnoswap",
       createdAt: "2023-12-08T03:57:43Z",
       name: "Foo",
@@ -19,7 +18,7 @@ const swapRouteInfos: SwapRouteInfo[] = [
       address: "",
     },
     to: {
-      type: "grc20",
+      type: "GRC20",
       chainId: "dev.gnoswap",
       createdAt: "2023-12-08T03:57:43Z",
       name: "Foo",

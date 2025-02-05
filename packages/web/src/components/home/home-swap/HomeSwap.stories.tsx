@@ -1,8 +1,7 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
 
-import HomeSwap from "./HomeSwap";
 import { action } from "@storybook/addon-actions";
+import HomeSwap from "./HomeSwap";
 
 export default {
   title: "home/HomeSwap",
@@ -23,7 +22,7 @@ Default.args = {
       decimals: 4,
       symbol: "FOO",
       logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-      type: "grc20",
+      type: "GRC20",
       priceID: "gno.land/r/foo",
     },
     tokenAAmount: "0",
@@ -39,7 +38,7 @@ Default.args = {
       decimals: 4,
       symbol: "FOO",
       logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-      type: "grc20",
+      type: "GRC20",
       priceID: "gno.land/r/foo",
     },
     tokenBAmount: "0",

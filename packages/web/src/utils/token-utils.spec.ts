@@ -5,7 +5,7 @@ const DEFAULT_TOKEN: TokenModel = {
   decimals: 6,
   path: "",
   address: "",
-  type: "grc20",
+  type: "GRC20",
   priceID: "",
   chainId: "",
   name: "",

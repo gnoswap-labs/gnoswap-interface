@@ -1,9 +1,8 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
 
-import PoolAddLiquidity from "./PoolAddLiquidity";
-import { action } from "@storybook/addon-actions";
 import { TokenModel } from "@models/token/token-model";
+import { action } from "@storybook/addon-actions";
+import PoolAddLiquidity from "./PoolAddLiquidity";
 
 export default {
   title: "pool/pool-add/PoolAddLiquidity",
@@ -20,7 +19,7 @@ const tokenA: TokenModel = {
   decimals: 4,
   symbol: "GNS",
   logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
-  type: "grc20",
+  type: "GRC20",
   priceID: "gno.land/r/gns",
 };
 const tokenB: TokenModel = {
@@ -32,7 +31,7 @@ const tokenB: TokenModel = {
   decimals: 4,
   symbol: "GNS",
   logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
-  type: "grc20",
+  type: "GRC20",
   priceID: "gno.land/r/gns",
 };
 

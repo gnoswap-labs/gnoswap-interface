@@ -5,13 +5,13 @@ import { ERROR_VALUE } from "@common/errors/adena";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useMessage } from "@hooks/common/use-message";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import { DexEvent } from "@repositories/common";
 import { TransferGRC20TokenRequest, TransferNativeTokenRequest } from "@repositories/wallet/request";
 import { CommonState } from "@states/index";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { useTokenData } from "@hooks/token/data/use-token-data";
 
 type Request = TransferGRC20TokenRequest | TransferNativeTokenRequest;
 export type WithdrawResponse = {
@@ -35,11 +35,11 @@ const useSendAsset = () => {
 
   const { getMessage } = useMessage();
 
-  const onSubmit = async (request: Request, type: "native" | "grc20") => {
+  const onSubmit = async (request: Request, type: "Native" | "GRC20") => {
     setLoading(true);
 
     const callAction =
-      type === "native" ? walletRepository.transferGNOTToken(request) : walletRepository.transferGRC20Token(request);
+      type === "Native" ? walletRepository.transferGNOTToken(request) : walletRepository.transferGRC20Token(request);
 
     const tokenSymbol = request?.token?.symbol || "";
     const tokenAmount = formatPoolPairAmount(

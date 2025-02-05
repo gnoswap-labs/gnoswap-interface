@@ -47,6 +47,6 @@ export function isNativeToken(token: TokenModel): token is NativeTokenModel {
   return token.type?.toLowerCase() === "native";
 }
 
-export function isNativeTokenByType(type: "native" | string) {
+export function isNativeTokenByType(type: "Native" | string) {
   return type.toLowerCase() === "native";
 }

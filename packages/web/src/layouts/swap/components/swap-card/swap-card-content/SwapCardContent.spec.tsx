@@ -1,13 +1,13 @@
+import { PriceImpactStatus } from "@hooks/swap/data/use-swap-handler";
+import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
-import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import SwapCardContent from "./SwapCardContent";
-import { SwapTokenInfo } from "@models/swap/swap-token-info";
-import { PriceImpactStatus } from "@hooks/swap/data/use-swap-handler";
 
 const swapTokenInfo: SwapTokenInfo = {
   tokenA: {
-    type: "grc20",
+    type: "GRC20",
     chainId: "dev.gnoswap",
     createdAt: "2023-12-08T03:57:43Z",
     name: "Foo",
@@ -23,7 +23,7 @@ const swapTokenInfo: SwapTokenInfo = {
   tokenAUSD: 0,
   tokenAUSDStr: "0",
   tokenB: {
-    type: "grc20",
+    type: "GRC20",
     chainId: "dev.gnoswap",
     createdAt: "2023-12-08T03:57:43Z",
     name: "Foo",

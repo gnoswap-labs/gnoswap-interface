@@ -41,7 +41,7 @@
       "pool": {
         "name": "ETH-swETH",
         "tokenA": {
-          "type": "grc20",
+          "type": "GRC20",
           "chainId": "dev.gnoswap",
           "createdAt": "2023-12-08T03:57:43Z",
           "name": "Foo",
@@ -53,7 +53,7 @@
           "address": ""
         },
         "tokenB": {
-          "type": "grc20",
+          "type": "GRC20",
           "chainId": "dev.gnoswap",
           "createdAt": "2023-12-08T03:57:43Z",
           "name": "Foo",
@@ -115,7 +115,7 @@
         "finishAt": 999999999,
         "rewardBalance": 0.7354098495365948,
         "token": {
-          "type": "grc20",
+          "type": "GRC20",
           "chainId": "dev.gnoswap",
           "createdAt": "2023-12-08T03:57:43Z",
           "name": "Foo",

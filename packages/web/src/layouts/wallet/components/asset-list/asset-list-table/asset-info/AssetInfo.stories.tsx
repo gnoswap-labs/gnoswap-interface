@@ -1,9 +1,8 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
-import AssetInfo from "./AssetInfo";
 import { css, Theme } from "@emotion/react";
+import { action } from "@storybook/addon-actions";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { DEVICE_TYPE } from "@styles/media";
+import AssetInfo from "./AssetInfo";
 
 export default {
   title: "wallet/AssetList/AssetInfo",
@@ -19,7 +18,7 @@ const Template: ComponentStory<typeof AssetInfo> = args => (
 export const Default = Template.bind({});
 Default.args = {
   asset: {
-    type: "grc20",
+    type: "GRC20",
     chainId: "dev",
     createdAt: "2023-12-12 23:45:12",
     name: "Bar",

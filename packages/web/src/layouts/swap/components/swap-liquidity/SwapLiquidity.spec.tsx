@@ -1,13 +1,13 @@
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 
-import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { TokenModel } from "@models/token/token-model";
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 
 import SwapLiquidity, { dummyLiquidityList } from "./SwapLiquidity";
 
 const tokenA: TokenModel = {
-  type: "grc20",
+  type: "GRC20",
   chainId: "dev.gnoswap",
   createdAt: "2023-12-08T03:57:43Z",
   name: "Foo",
@@ -19,7 +19,7 @@ const tokenA: TokenModel = {
   address: "",
 };
 const tokenB: TokenModel = {
-  type: "grc20",
+  type: "GRC20",
   chainId: "dev.gnoswap",
   createdAt: "2023-12-08T03:57:43Z",
   name: "Foo",

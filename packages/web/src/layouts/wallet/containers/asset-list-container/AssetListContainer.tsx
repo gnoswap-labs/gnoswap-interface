@@ -7,9 +7,9 @@ import AssetReceiveModal from "@components/wallet/asset-receive-modal/AssetRecei
 import useClickOutside from "@hooks/common/use-click-outside";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
-import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
@@ -19,15 +19,15 @@ import { checkGnotPath } from "@utils/common";
 import { formatPoolPairAmount, formatPrice } from "@utils/new-number-utils";
 import { isEmptyObject } from "@utils/validation-utils";
 
+import useSendAsset from "@hooks/wallet/data/useSendAsset";
 import { ASSET_FILTER_TYPE } from "../../components/asset-list/asset-list-header/AssetListHeader";
-import { AssetSortOption, ASSET_HEAD, type Asset } from "../../components/asset-list/asset-list-table/AssetListTable";
+import { ASSET_HEAD, AssetSortOption, type Asset } from "../../components/asset-list/asset-list-table/AssetListTable";
 import AssetList from "../../components/asset-list/AssetList";
 import AssetSendModal from "../../components/asset-send-modal/AssetSendModal";
-import useSendAsset from "@hooks/wallet/data/useSendAsset";
 
 export const ASSET_TYPE = {
   NATIVE: "native",
-  GRC20: "grc20",
+  GRC20: "GRC20",
 } as const;
 
 export type ASSET_TYPE = ValuesType<typeof ASSET_TYPE>;
@@ -59,7 +59,7 @@ const DEPOSIT_INFO: TokenModel = {
   decimals: 4,
   symbol: "ATOM",
   logoURI: "/atom.svg",
-  type: "grc20",
+  type: "GRC20",
   priceID: "gno.land/r/gns",
 };
 
