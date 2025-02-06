@@ -21,7 +21,7 @@ import IconWallet from "@components/common/icons/IconWallet";
 
 export interface TokenSwapProps {
   isSwitchNetwork: boolean;
-  connected: boolean;
+  connectedWallet: boolean;
   copied: boolean;
   themeKey: "dark" | "light";
   dataTokenInfo: DataTokenInfo;
@@ -42,6 +42,7 @@ export interface TokenSwapProps {
   changeTokenB: (token: TokenModel) => void;
   changeTokenBAmount: (value: string, none?: boolean) => void;
   switchSwapDirection: () => void;
+  switchNetwork: () => void;
   setSwapRateAction: (type: "ATOB" | "BTOA") => void;
   priceImpactStatus: PriceImpactStatus;
 }
@@ -52,13 +53,14 @@ function isAmount(str: string) {
 }
 
 const TokenSwap: React.FC<TokenSwapProps> = ({
-  connected,
+  connectedWallet,
   connectWallet,
   swapNow,
   copied,
   handleCopied,
   themeKey,
   handleSetting,
+  switchNetwork,
   isSwitchNetwork,
   dataTokenInfo,
   changeTokenA,
@@ -106,11 +108,11 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   );
 
   const handleAutoFillTokenA = useCallback(() => {
-    if (connected) {
+    if (connectedWallet) {
       const formatValue = parseFloat(dataTokenInfo.tokenABalance.replace(/,/g, "")).toString();
       changeTokenAAmount(formatValue);
     }
-  }, [changeTokenAAmount, connected, dataTokenInfo]);
+  }, [changeTokenAAmount, connectedWallet, dataTokenInfo]);
 
   /**
    * Ensure tokenABalance is a valid value (not empty (“-”) or zero)
@@ -120,14 +122,6 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   const hasTokenABalance = useMemo(() => {
     return swapTokenInfo.tokenABalance !== "-" && swapTokenInfo.tokenABalance !== "0";
   }, [swapTokenInfo.tokenABalance]);
-
-  const onClickConfirm = useCallback(() => {
-    if (!connected || isSwitchNetwork) {
-      connectWallet();
-      return;
-    }
-    swapNow();
-  }, [connected, connectWallet, swapNow, isSwitchNetwork]);
 
   const isShowInfoSection = useMemo(() => {
     return (!!Number(dataTokenInfo.tokenAAmount) && !!Number(dataTokenInfo.tokenBAmount)) || isLoading;
@@ -185,8 +179,8 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               {dataTokenInfo.tokenAUSDStr}
             </span>
             <div className="balance-wrapper">
-              {connected && <IconWallet />}
-              <span className={`balance-text ${tokenA && connected && "balance-text-disabled"}`}>
+              {connectedWallet && <IconWallet />}
+              <span className={`balance-text ${tokenA && connectedWallet && "balance-text-disabled"}`}>
                 {dataTokenInfo.tokenABalance}
               </span>
               {hasTokenABalance && (
@@ -217,8 +211,8 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               {dataTokenInfo.tokenBUSDStr}
             </span>
             <div className="balance-wrapper">
-              {connected && <IconWallet />}
-              <span className={`balance-text ${tokenB && connected && "balance-text-disabled"}`}>
+              {connectedWallet && <IconWallet />}
+              <span className={`balance-text ${tokenB && connectedWallet && "balance-text-disabled"}`}>
                 {dataTokenInfo.tokenBBalance}
               </span>
             </div>
@@ -241,18 +235,94 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
         />
       )}
       <div className="footer">
-        <Button
+        <SwapButton
+          isSwitchNetwork={isSwitchNetwork}
+          connectedWallet={connectedWallet}
+          isAvailSwap={isAvailSwap}
+          openConfirmModal={swapNow}
+          openConnectWallet={connectWallet}
           text={swapButtonText}
-          style={{
-            fullWidth: true,
-            hierarchy: ButtonHierarchy.Primary,
-          }}
-          disabled={!isAvailSwap}
-          onClick={onClickConfirm}
-          className="confirm-button"
+          isLoading={isLoading}
+          switchNetwork={switchNetwork}
         />
       </div>
     </div>
+  );
+};
+
+interface SwapButtonProps {
+  connectedWallet: boolean;
+  isAvailSwap: boolean;
+  text: string;
+  isSwitchNetwork: boolean;
+  isLoading: boolean;
+
+  openConfirmModal: () => void;
+  openConnectWallet: () => void;
+  switchNetwork: () => void;
+}
+
+const SwapButton: React.FC<SwapButtonProps> = ({
+  connectedWallet,
+  isAvailSwap,
+  text,
+  openConfirmModal,
+  openConnectWallet,
+  isSwitchNetwork,
+  switchNetwork,
+  isLoading,
+}) => {
+  const defaultStyle = {
+    fullWidth: true,
+    hierarchy: ButtonHierarchy.Primary,
+  };
+
+  if (!connectedWallet) {
+    return (
+      <Button
+        text={text}
+        style={defaultStyle}
+        onClick={openConnectWallet}
+        className={`confirm-button button-swap ${isLoading ? "loading" : ""}`}
+        disabled={isLoading}
+      />
+    );
+  }
+
+  if (isSwitchNetwork) {
+    return (
+      <Button
+        text={text}
+        style={defaultStyle}
+        onClick={switchNetwork}
+        className={`confirm-button button-swap ${isLoading ? "loading" : ""}`}
+        disabled={isLoading}
+      />
+    );
+  }
+
+  if (!isAvailSwap) {
+    return (
+      <Button
+        text={text}
+        disabled={isLoading}
+        className={"confirm-button"}
+        style={{
+          ...defaultStyle,
+          hierarchy: ButtonHierarchy.Gray,
+        }}
+      />
+    );
+  }
+
+  return (
+    <Button
+      text={text}
+      style={defaultStyle}
+      onClick={openConfirmModal}
+      className={`confirm-button button-swap ${isLoading ? "loading" : ""}`}
+      disabled={isLoading}
+    />
   );
 };
 

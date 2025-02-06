@@ -27,7 +27,7 @@ const TOKEN_A: TokenModel = {
 export const Default = Template.bind({});
 Default.args = {
   isSwitchNetwork: false,
-  connected: false,
+  connectedWallet: false,
   isAvailSwap: false,
   swapButtonText: "Swap",
   isLoading: false,

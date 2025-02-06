@@ -1,7 +1,7 @@
 import IconGithub from "@components/common/icons/social/IconGithub";
 import IconGitbook from "@components/common/icons/social/IconGitbook";
 import IconMedium from "@components/common/icons/social/IconMedium";
-import IconTwitter from "@components/common/icons/social/IconTwitter";
+import IconX from "@components/common/icons/social/IconX";
 import IconDiscord from "@components/common/icons/social/IconDiscord";
 
 import { DEFAULT_POOL_PATH } from "./common.constant";
@@ -32,7 +32,7 @@ export const FOOTER_LEFT_NAV = {
     },
     {
       title: "twitter",
-      icon: <IconTwitter />,
+      icon: <IconX />,
       path: EXT_URL.SOCIAL.TWITTER,
     },
   ],

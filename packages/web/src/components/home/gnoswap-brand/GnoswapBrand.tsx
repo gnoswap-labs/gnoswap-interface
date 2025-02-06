@@ -1,7 +1,7 @@
 import IconGitbook from "@components/common/icons/social/IconGitbook";
 import IconGithub from "@components/common/icons/social/IconGithub";
 import IconMedium from "@components/common/icons/social/IconMedium";
-import IconTwitter from "@components/common/icons/social/IconTwitter";
+import IconX from "@components/common/icons/social/IconX";
 import IconDiscord from "@components/common/icons/social/IconDiscord";
 import { DeviceSize } from "@styles/media";
 import React, { useCallback } from "react";
@@ -70,7 +70,7 @@ const GnoswapBrand: React.FC<GnoswapBrandProps> = ({ onClickSns, windowSize }) =
               <IconMedium className="icon" />
             </button>
             <button onClick={onClickTwitter}>
-              <IconTwitter className="icon" />
+              <IconX className="icon" />
             </button>
           </div>
           <DescriptionTitle>
