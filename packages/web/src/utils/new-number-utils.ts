@@ -177,7 +177,8 @@ export const formatPrice = (
     return negativeSign + prefix + tempNum;
   }
 
-  return negativeSign + prefix + valueAsBigNum.toFormat(greaterThan1Decimals, BigNumber.ROUND_DOWN);
+  const formattedNumber = valueAsBigNum.toFormat(greaterThan1Decimals, BigNumber.ROUND_DOWN);
+  return negativeSign + prefix + (formattedNumber.endsWith(".00") ? formattedNumber.slice(0, -3) : formattedNumber);
 };
 
 export const formatOtherPrice = (
