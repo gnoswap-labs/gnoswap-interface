@@ -61,7 +61,7 @@ export const SIDE_EXTRA_MENU_NAV = [
   },
   {
     title: "HeaderFooter:legal",
-    path: "/",
+    path: "/privacy",
     iconType: "OPEN_LINK",
   },
 ] as const;
