@@ -17,7 +17,7 @@ export const wrapper = (hasToken: boolean, disabled?: boolean, isHiddenArrow?: b
         transition: 0.2s;
         &:hover { background-color: ${theme.color.backgroundGradient}; }
       `};
-    > .token-info {
+    > div {
       ${mixins.flexbox("row", "center", "center")}
       gap: 8px;
       ${isHiddenArrow && "padding-right: 6px;"}
