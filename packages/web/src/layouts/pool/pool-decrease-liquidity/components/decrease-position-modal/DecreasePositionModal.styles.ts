@@ -8,6 +8,10 @@ export const DecreasePositionModalWrapper = styled.div`
   width: 460px;
   padding: 23px;
   gap: 16px;
+  max-height: 800px;
+  height: 85dvh;
+  overflow-x: hidden;
+  overflow-y: scroll;
   .modal-body {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
