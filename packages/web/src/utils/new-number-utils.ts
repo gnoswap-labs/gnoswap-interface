@@ -1,6 +1,8 @@
 import BigNumber from "bignumber.js";
 import { toKMBFormat } from "./number-utils";
 
+export const removeTrailingZeros = (value: string) => value.replace(/\.?0+$/, "");
+
 export const formatPoolPairAmount = (
   amount?: number | BigNumber | string | null,
   {
@@ -143,11 +145,13 @@ export const formatPrice = (
     isKMB = true,
     lessThan1Significant = 3,
     greaterThan1Decimals = 2,
+    forcedDecimals = false,
   }: {
     usd?: boolean;
     isKMB?: boolean;
     lessThan1Significant?: number;
     greaterThan1Decimals?: number;
+    forcedDecimals?: boolean;
   } = {},
 ): string => {
   if (value === "" || value === null || value === undefined) {
@@ -178,7 +182,8 @@ export const formatPrice = (
   }
 
   const formattedNumber = valueAsBigNum.toFormat(greaterThan1Decimals, BigNumber.ROUND_DOWN);
-  return negativeSign + prefix + (formattedNumber.endsWith(".00") ? formattedNumber.slice(0, -3) : formattedNumber);
+
+  return negativeSign + prefix + (forcedDecimals ? formattedNumber : removeTrailingZeros(formattedNumber));
 };
 
 export const formatOtherPrice = (
