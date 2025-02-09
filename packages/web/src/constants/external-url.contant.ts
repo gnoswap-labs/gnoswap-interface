@@ -15,6 +15,8 @@ export const EXT_URL = {
     XGNS: "https://docs.gnoswap.io/gnoswap-token/xgns",
     DISCLAIMER: "https://docs.gnoswap.io/disclaimer/general-disclaimer",
     RISK: "https://docs.gnoswap.io/disclaimer/risk-and-security",
+    WITHDRAW: "https://docs.gnoswap.io/references/faq#how-does-the-withdraw-feature-work",
+    DEPOSIT: "https://docs.gnoswap.io/references/faq#how-do-i-deposit-tokens-into-my-wallet",
   },
   SOCIAL: {
     DISCORD: "https://discord.gg/u4bdGHStb2",

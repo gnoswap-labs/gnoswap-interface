@@ -1,4 +1,5 @@
 import { useTheme } from "@emotion/react";
+import Link from "next/link";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -31,6 +32,7 @@ import {
   AssetSendTooltipContent,
   AssetSendWarningContentWrapper,
 } from "./AssetSendModal.styles";
+import { EXT_URL } from "@constants/external-url.contant";
 
 const DEFAULT_WITHDRAW_GNOT = GNOT_TOKEN;
 
@@ -298,10 +300,10 @@ const AssetSendModal: React.FC<Props> = ({
                     <li>{t("Wallet:assetSendModal.warning.content3")}</li>
                   </ul>
 
-                  <a href="https://beta.gnoswap.io/" target="_blank" className="learn-more-box">
+                  <Link href={EXT_URL.DOCS.WITHDRAW} target="_blank" className="learn-more-box">
                     <p>{t("common:learnMore")}</p>
                     <IconNewTab color={theme.color.icon21} />
-                  </a>
+                  </Link>
                 </AssetSendWarningContentWrapper>
               }
             />
