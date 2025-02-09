@@ -84,11 +84,23 @@ const AssetSendModal: React.FC<Props> = ({
   const onChangeAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
+      const decimals = withdrawInfo?.decimals || 0;
 
-      if (value !== "" && !isAmount(value)) return;
+      if (value === "") {
+        setAmount("");
+        return;
+      }
+
+      if (!isAmount(value)) return;
+
+      if (value.includes(".")) {
+        const [, decimal] = value.split(".");
+        if (decimal && decimal.length > decimals) return;
+      }
+
       setAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     },
-    [setAmount],
+    [setAmount, withdrawInfo?.decimals],
   );
 
   const onChangeAddress = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
