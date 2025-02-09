@@ -113,8 +113,9 @@ export const LaunchpadDepositModalWrapper = styled.div`
         gap: 12px;
         width: 100%;
         border-radius: 8px;
-        border: 1px solid rgba(255, 159, 10, 0.1);
-        background: rgba(255, 159, 10, 0.08);
+        border: 1px solid rgba(249, 115, 22, 0.1);
+        background: rgba(249, 115, 22, 0.08);
+
         padding: 16px;
         ${media.mobile} {
           padding: 12px;
@@ -125,7 +126,7 @@ export const LaunchpadDepositModalWrapper = styled.div`
           font-size: 14px;
           font-weight: 500;
           /* color: ${({ theme }) => theme.color.text33}; */
-          color: #ff9f0a;
+          color: #f97316;
         }
         .contents {
           ${mixins.flexbox("column", "cener", "center")};
@@ -135,7 +136,7 @@ export const LaunchpadDepositModalWrapper = styled.div`
             position: relative;
             ${mixins.flexbox("row", "flex-start", "flex-start")};
             width: 100%;
-            color: #ff9f0a;
+            color: #f97316;
             font-size: 14px;
             font-weight: 400;
             line-height: 18.2px;
@@ -151,7 +152,8 @@ export const LaunchpadDepositModalWrapper = styled.div`
           ${mixins.flexbox("row", "center", "flex-start")}
           gap: 4px;
           width: 100%;
-          color: #ff9f0a;
+          color: #f97316;
+
           font-size: 14px;
           font-weight: 500;
         }

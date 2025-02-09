@@ -18,6 +18,7 @@ import Button, { ButtonHierarchy } from "../../button/Button";
 import LaunchpadPoolTierChip from "@layouts/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 import { getDateUtcToLocal } from "@common/utils/date-util";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { EXT_URL } from "@constants/external-url.contant";
 
 type LaunchpadPoolModelWithoutClaimableTime = Omit<LaunchpadPoolModel, "claimableTime">;
 
@@ -35,6 +36,8 @@ interface LaunchpadDepositModalProps {
   onSubmit: (projectPoolId: string, depositAmount: string) => void;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+const ORANGE_COLOR = "#F97316";
 
 const LaunchpadDepositModal = ({
   depositAmount,
@@ -128,7 +131,7 @@ const LaunchpadDepositModal = ({
 
           <div className="note">
             <div className="header">
-              <IconWarning /> {t("Launchpad:modal.deposit.note.title")}
+              <IconWarning color={ORANGE_COLOR} /> {t("Launchpad:modal.deposit.note.title")}
             </div>
             <ul className="contents">
               <li className="list">{t("Launchpad:modal.deposit.note.list1")}</li>
@@ -136,9 +139,9 @@ const LaunchpadDepositModal = ({
                 <Trans ns="Launchpad" components={{ br: <br /> }} i18nKey={"modal.deposit.note.list2"} />
               </li>
             </ul>
-            <Link href="https://docs.gnoswap.io/" target="_blank">
+            <Link href={EXT_URL.DOCS.LAUNCHPAD.FAQ} target="_blank">
               <div className="learn-more">
-                {t("Launchpad:modal.deposit.note.learnMore")} <IconOpenLink size="16" fill="#ff9f0a" />
+                {t("Launchpad:modal.deposit.note.learnMore")} <IconOpenLink size="16" fill={ORANGE_COLOR} />
               </div>
             </Link>
           </div>

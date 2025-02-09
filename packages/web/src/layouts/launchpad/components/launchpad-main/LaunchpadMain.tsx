@@ -56,7 +56,7 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({ data, isLoading, breakpoi
           )}
         </div>
         <div className="launchpad-button-wrapper">
-          <Link href={EXT_URL.DOCS.ROOT} target="_blank">
+          <Link href={EXT_URL.DOCS.LAUNCHPAD.PARTICIPATE} target="_blank">
             <Button
               text={t("Launchpad:main.button.howToParticipate")}
               style={defaultStyle}
