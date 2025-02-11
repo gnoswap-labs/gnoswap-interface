@@ -181,6 +181,12 @@ export const wrapper = (theme: Theme) => css`
     }
   }
 
+  .right-arrow {
+    * {
+      fill: ${theme.themeKey === "dark" ? "#E0E8F4" : "#FFFFFF"};
+    }
+  }
+
   @keyframes fadeInOut {
     0% {
       opacity: 0;
