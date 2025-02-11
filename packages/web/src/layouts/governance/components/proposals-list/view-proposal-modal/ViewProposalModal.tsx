@@ -63,6 +63,11 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   const { isMobile } = useWindowSize();
   const [selectedVote, setSelectedVote] = useState(proposalDetail.myVote?.type || "");
 
+  const hasVoted = useMemo(() => {
+    const { yes, no } = proposalDetail.votes;
+    return Boolean(yes) || Boolean(no);
+  }, [proposalDetail.votes]);
+
   const isMajorityVoted = useMemo(() => {
     const { yes, no, max } = proposalDetail.votes;
 
@@ -188,6 +193,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
             <div className="progress-value">
               <Tooltip
                 placement="top"
+                forcedClose={!hasVoted}
                 FloatingContent={
                   <ProposalTooltipContent>
                     <Trans ns="Governance" components={{ br: <br /> }} i18nKey={tooltipTextI18nKey} />
