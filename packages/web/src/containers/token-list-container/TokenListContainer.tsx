@@ -274,7 +274,7 @@ const TokenListContainer: React.FC = () => {
             decimals: 0,
             isKMB: false,
           }),
-          price: transferData.usd ? formatPrice(transferData.usd, { isKMB: false }) : "--",
+          price: transferData.usd ? formatPrice(transferData.usd, { isKMB: false, forcedDecimals: true }) : "--",
           priceOf1d: {
             status: data1day.status,
             value:

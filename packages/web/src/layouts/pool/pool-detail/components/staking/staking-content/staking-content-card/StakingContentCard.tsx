@@ -8,12 +8,10 @@ import IconInfo from "@components/common/icons/IconInfo";
 import IconLine from "@components/common/icons/IconLine";
 import IconLineLong from "@components/common/icons/IconLineLong";
 import IconStar from "@components/common/icons/IconStar";
-import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { StakingPeriodType, STAKING_PERIOD_INFO } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionModel } from "@models/position/position-model";
@@ -29,6 +27,7 @@ import {
   ToolTipContentWrapper,
   TooltipDivider,
 } from "./StakingContentCard.styles";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface StakingContentCardProps {
   period: StakingPeriodType;
@@ -41,7 +40,6 @@ interface StakingContentCardProps {
 const DAY_TIME = 24 * 60 * 60 * 1000;
 
 const PriceTooltipContent = ({ positions, period }: { positions: PoolPositionModel[]; period: number }) => {
-  const { getGnotPath } = useGnotToGnot();
   const { t } = useTranslation();
 
   const { data: tokenPrices = {} } = useGetAllTokenPrices();
@@ -73,19 +71,7 @@ const PriceTooltipContent = ({ positions, period }: { positions: PoolPositionMod
         return (
           <React.Fragment key={index}>
             <div className="list list-logo">
-              <OverlapTokenLogo
-                tokens={[
-                  {
-                    ...position.pool.tokenA,
-                    ...getGnotPath(position.pool.tokenA),
-                  },
-                  {
-                    ...position.pool.tokenB,
-                    ...getGnotPath(position.pool.tokenB),
-                  },
-                ]}
-                size={18}
-              />
+              <MissingLogo url={position.tokenUri} symbol={`ID #${position.id}`} width={18} mobileWidth={16} />
               <span className="title">ID #{position.lpTokenId}</span>
             </div>
             <div className="list">

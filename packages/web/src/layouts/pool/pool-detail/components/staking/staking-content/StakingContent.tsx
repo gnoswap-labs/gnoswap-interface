@@ -54,7 +54,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
   const [forcedShowAprGuide, setForceShowAprGuide] = useState(true);
   const { t } = useTranslation();
 
-  const { ref } = useIntersectionObserver();
+  const { ref, entry } = useIntersectionObserver();
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   const debounce = (func: Function, delay: number) => {
@@ -172,7 +172,12 @@ const StakingContent: React.FC<StakingContentProps> = ({
                 onChangeOpen={(open: boolean) => setForceShowAprGuide(!open)}
               >
                 <Tooltip
-                  forcedOpen={isVisible && forcedShowAprGuide}
+                  forcedOpen={
+                    entry?.isIntersecting &&
+                    (entry?.boundingClientRect.top || 20) > 20 &&
+                    isVisible &&
+                    forcedShowAprGuide
+                  }
                   forcedClose={!forcedShowAprGuide}
                   placement="top"
                   FloatingContent={<span>{t("Pool:staking.tooltip.hoverGuide")}</span>}

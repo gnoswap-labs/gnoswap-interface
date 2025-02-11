@@ -64,7 +64,11 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   const [selectedVote, setSelectedVote] = useState(proposalDetail.myVote?.type || "");
 
   const isMajorityVoted = useMemo(() => {
-    return proposalDetail.votes.yes + proposalDetail.votes.no >= proposalDetail.votes.max / 2;
+    const { yes, no, max } = proposalDetail.votes;
+
+    if (max === 0) return false;
+
+    return yes + no >= max / 2;
   }, [proposalDetail.votes]);
 
   const { yesVotes, noVotes } = useMemo(() => {
