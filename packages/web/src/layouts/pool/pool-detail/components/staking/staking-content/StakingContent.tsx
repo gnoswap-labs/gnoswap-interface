@@ -166,6 +166,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
             <AprStakingHeader $isMobile={mobile}>
               <Tooltip
                 FloatingContent={<IncentivizeTokenDetailTooltipContent poolStakings={poolStakings} />}
+                forcedClose={!poolStakings.length}
                 placement="top"
                 className="apr-text"
                 scroll
