@@ -281,6 +281,11 @@ export const ConfirmModal = styled.div`
         &:disabled {
           background-color: ${({ theme }) => theme.color.background17};
         }
+        span {
+          ${media.mobile} {
+            font-size: 16px;
+          }
+        }
       }
     }
 
