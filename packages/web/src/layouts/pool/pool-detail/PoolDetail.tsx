@@ -6,7 +6,7 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import useUrlParam from "@hooks/common/use-url-param";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { useGetPoolDetailByPath } from "@query/pools";
+import { useGetPoolDetailByPath, useGetPoolStakingListByPoolPath } from "@query/pools";
 import { isValidAddress } from "@utils/validation-utils";
 
 import MyLiquidityContainer from "./containers/my-liquidity-container/MyLiquidityContainer";
@@ -38,6 +38,14 @@ const PoolDetail: React.FC = () => {
       enabled: !!poolPath,
     },
   });
+
+  const { data: poolStakings = [] } = useGetPoolStakingListByPoolPath(poolPath || "", {
+    enabled: !!poolPath,
+  });
+
+  const hasPoolStaking = useMemo(() => {
+    return poolStakings.length > 0;
+  }, [poolStakings]);
 
   const isStakable = useMemo(() => {
     if (data?.incentiveType === "INCENTIVIZED") {
@@ -99,9 +107,9 @@ const PoolDetail: React.FC = () => {
   return (
     <PoolLayout
       header={<HeaderContainer />}
-      poolPairInformation={<PoolPairInformationContainer />}
+      poolPairInformation={<PoolPairInformationContainer hasPoolStaking={hasPoolStaking} />}
       liquidity={<MyLiquidityContainer address={address} isStakable={isStakable} />}
-      staking={isStakable ? <StakingContainer /> : null}
+      staking={isStakable ? <StakingContainer hasPoolStaking={hasPoolStaking} /> : null}
       footer={<Footer />}
       isStaking={isStakable}
     />

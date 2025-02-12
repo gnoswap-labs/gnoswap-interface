@@ -11,10 +11,11 @@ import { makeSwapFeeTier } from "@utils/swap-utils";
 import PoolPairInformation from "../../components/pool-pair-information/PoolPairInformation";
 
 interface PoolPairInformationContainerProps {
+  hasPoolStaking: boolean;
   address?: string | undefined;
 }
 
-const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> = ({ address }) => {
+const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> = ({ hasPoolStaking, address }) => {
   const router = useCustomRouter();
   const { getGnotPath } = useGnotToGnot();
   const poolPath = router.getPoolPath();
@@ -70,6 +71,7 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
         title: "business:pageHeader.earn",
         path: "/earn",
       }}
+      hasPoolStaking={hasPoolStaking}
       onClickPath={onClickPath}
       feeStr={feeStr}
       loading={loading || loadingPosition}

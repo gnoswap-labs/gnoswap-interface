@@ -12,6 +12,7 @@ import { PoolInfoHeaderWrapper } from "./PoolPairInfoHeader.styles";
 interface PoolPairInfoHeaderProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
+  hasPoolStaking: boolean;
   incentivizedType: INCENTIVE_TYPE;
   rewardTokens: TokenModel[];
   feeStr: string;
@@ -20,6 +21,7 @@ interface PoolPairInfoHeaderProps {
 const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
   tokenA,
   tokenB,
+  hasPoolStaking,
   feeStr,
   rewardTokens,
   incentivizedType,
@@ -68,7 +70,7 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
       </div>
       <div className="badge-wrap">
         <div className="badge">{feeStr}</div>
-        {incentivezedStr && (
+        {hasPoolStaking && incentivezedStr && (
           <div className="badge">
             {incentivezedStr}
             {rewardTokenLogos.length > 0 && <OverlapTokenLogo size={18} tokens={rewardTokenLogos} />}
