@@ -17,7 +17,11 @@ import Staking from "../../components/staking/Staking";
 
 const DAY_TIME = 24 * 60 * 60 * 1000;
 
-const StakingContainer: React.FC = () => {
+interface StakingContainerProps {
+  hasPoolStaking: boolean;
+}
+
+const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking }) => {
   const { account } = useWallet();
   const { breakpoint } = useWindowSize();
   const [mobile, setMobile] = useState(false);
@@ -172,6 +176,7 @@ const StakingContainer: React.FC = () => {
       handleClickUnStakeRedirect={handleClickUnStakeRedirect}
       loading={isLoadingPool || isLoadingPosition}
       isOtherPosition={!!((address && account?.address && address !== account?.address) || !account?.address)}
+      hasPoolStaking={hasPoolStaking}
     />
   );
 };
