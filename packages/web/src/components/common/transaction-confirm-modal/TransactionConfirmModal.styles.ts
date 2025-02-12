@@ -319,6 +319,9 @@ export const TransactionConfirmModalWrapper = styled.div`
         button {
           height: 41px;
           width: 304px;
+          span {
+            font-size: 16px;
+          }
         }
       }
     }
