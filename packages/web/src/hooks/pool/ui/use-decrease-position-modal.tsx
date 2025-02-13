@@ -22,6 +22,7 @@ import { makeDisplayTokenAmount } from "@utils/token-utils";
 import DecreasePositionModalContainer from "../../../layouts/pool/pool-decrease-liquidity/containers/decrease-position-modal-container/DecreasePositionModalContainer";
 import { IPooledTokenInfo } from "../data/use-decrease-handle";
 import { makePoolPath } from "@utils/pool-utils";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 
 export interface Props {
   openModal: () => void;
@@ -70,6 +71,7 @@ export const useDecreasePositionModal = ({
   const { enqueueEvent } = useTransactionEventStore();
 
   // Refetch functions
+  const { updateBalances } = useTokenData();
   const { refetch: refetchPools } = useGetPoolList();
   const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(makePoolPath(tokenA, tokenB, swapFeeTier));
 
@@ -208,6 +210,9 @@ export const useDecreasePositionModal = ({
             refetchPools();
             refetchPositions();
             refetchPoolDetails();
+          },
+          onUpdate: async () => {
+            updateBalances();
           },
         });
       }

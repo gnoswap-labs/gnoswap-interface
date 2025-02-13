@@ -99,6 +99,7 @@ export const usePoolAddLiquidityConfirmModal = ({
 
   // Refetch functions
   const { address } = useAddress();
+  const { updateBalances } = useTokenData();
   const { refetch: refetchAccountPositions } = useGetPositionsByAddress({
     address,
   });
@@ -367,6 +368,9 @@ export const usePoolAddLiquidityConfirmModal = ({
                 refetchAccountPositions();
                 refetchPoolPositions();
                 refetchPoolDetails();
+              },
+              onUpdate: async () => {
+                updateBalances();
               },
             });
           }
