@@ -85,8 +85,15 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (status !== "UPCOMING") {
         const value = e.target.value.replace(/,/g, "");
+        const decimals = DEFAULT_DEPOSIT_TOKEN?.decimals || 0;
 
-        if (value !== "" && !isAmount(value)) return;
+        if (!isAmount(value)) return;
+
+        if (value.includes(".")) {
+          const [, decimal] = value.split(".");
+          if (decimal && decimal.length > decimals) return;
+        }
+
         setParticipateAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
       }
     },
