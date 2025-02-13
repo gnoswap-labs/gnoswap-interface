@@ -151,7 +151,6 @@ const ProposalList: React.FC<ProposalListProps> = ({
           {proposalList.map((proposalDetail: ProposalItemInfo, index: number) => {
             const Card = index < proposalList.length - 1 ? ProposalCard : LastCard;
             const isMajorityVoted = calculateIsMajorityVoted(proposalDetail);
-            console.log(proposalDetail, "proposalDetail?");
             return (
               <Card
                 key={proposalDetail.id}

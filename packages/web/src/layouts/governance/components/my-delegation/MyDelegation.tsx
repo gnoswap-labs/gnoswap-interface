@@ -121,6 +121,10 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
     return !showUndel;
   }, [showUndel, undelegationInfos.length]);
 
+  const hasUnlockItem = useMemo(() => {
+    return undelegationInfos.some(info => info.unlockDate && new Date(info.unlockDate) < new Date());
+  }, [showUndel, undelegationInfos]);
+
   const visibleInfoTooltip = useMemo(() => {
     if (activatedDelegateInfoTab) {
       return hasVotingWeight;
@@ -263,7 +267,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                   : undefined
               }
               valueButton={
-                !activatedDelegateInfoTab
+                hasUnlockItem
                   ? {
                       text: t("Governance:myDel.undel.btn"),
                       onClick: () => collectUndelegated(toNumberFormat(myDelegationInfo.undelegatedAmount, 2)),
