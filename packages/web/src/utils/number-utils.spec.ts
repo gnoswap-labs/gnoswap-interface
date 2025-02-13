@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { mathSybmolAbsFormat, toMillionFormat, toNumberFormat, toUnitFormat } from "./number-utils";
+import { mathSybmolAbsFormat, rawToDisplayAmount, toMillionFormat, toNumberFormat, toUnitFormat } from "./number-utils";
 
 describe("bignumber.js convert to format string", () => {
   test("123123123.123123123 to 123,123,123.123123123", () => {
@@ -58,5 +58,44 @@ describe("toMillionFormat returns Million or FormatNumber", () => {
   test("\"\" to null", () => {
     const num = "";
     expect(toMillionFormat(num)).toBe(null);
+  });
+});
+
+describe("rawToDisplayAmount", () => {
+  it("should convert raw amount with decimals correctly", () => {
+    expect(rawToDisplayAmount("1000000", 6)).toBe(1);
+    expect(rawToDisplayAmount("1500000", 6)).toBe(1.5);
+    expect(rawToDisplayAmount("100", 6)).toBe(0.0001);
+    expect(rawToDisplayAmount("1234567", 6)).toBe(1.234567);
+  });
+
+  it("should handle different decimal places", () => {
+    expect(rawToDisplayAmount("1000", 3)).toBe(1);
+    expect(rawToDisplayAmount("1000000000", 9)).toBe(1);
+    expect(rawToDisplayAmount("1000000000000000000", 18)).toBe(1);
+  });
+
+  it("should handle string and number inputs", () => {
+    expect(rawToDisplayAmount("1000000", 6)).toBe(1);
+    expect(rawToDisplayAmount(1000000, 6)).toBe(1);
+  });
+
+  it("should handle zero values", () => {
+    expect(rawToDisplayAmount("0", 6)).toBe(0);
+    expect(rawToDisplayAmount(0, 6)).toBe(0);
+  });
+
+  it("should handle null and undefined values", () => {
+    expect(rawToDisplayAmount(null, 6)).toBe(0);
+    expect(rawToDisplayAmount(undefined, 6)).toBe(0);
+  });
+
+  it("should handle very small amounts", () => {
+    expect(rawToDisplayAmount("1", 6)).toBe(0.000001);
+    expect(rawToDisplayAmount("10", 6)).toBe(0.00001);
+  });
+
+  it("should handle very large amounts", () => {
+    expect(rawToDisplayAmount("1000000000000", 6)).toBe(1000000);
   });
 });

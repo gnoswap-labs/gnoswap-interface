@@ -88,6 +88,8 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
       }, 30);
     };
 
+    if (!delegatee.address) return;
+
     if (!isWalletConnected) {
       connectWallet();
       closeModal();
@@ -273,7 +275,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           hierarchy: ButtonHierarchy.Primary,
           fullWidth: true,
         }}
-        disabled={!gnsAmountInput.isAvailableDelegate}
+        disabled={!gnsAmountInput.isAvailableDelegate || delegatee.address === ""}
         className="button-confirm"
       />
     </>
