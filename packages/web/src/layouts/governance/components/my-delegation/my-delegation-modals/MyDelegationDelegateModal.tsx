@@ -88,8 +88,6 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
       }, 30);
     };
 
-    if (!delegatee.address) return;
-
     if (!isWalletConnected) {
       connectWallet();
       closeModal();
@@ -97,6 +95,8 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
         if (timeoutId) clearTimeout(timeoutId);
       };
     }
+
+    if (!delegatee.address) return;
 
     if (!gnsAmountInput.isAvailableDelegate) {
       closeModal();
@@ -268,16 +268,28 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
         }
       />
 
-      <Button
-        onClick={delegate}
-        text={gnsAmountInput.delegateButtonText}
-        style={{
-          hierarchy: ButtonHierarchy.Primary,
-          fullWidth: true,
-        }}
-        disabled={!gnsAmountInput.isAvailableDelegate || delegatee.address === ""}
-        className="button-confirm"
-      />
+      {isWalletConnected ? (
+        <Button
+          onClick={delegate}
+          text={gnsAmountInput.delegateButtonText}
+          style={{
+            hierarchy: ButtonHierarchy.Primary,
+            fullWidth: true,
+          }}
+          disabled={!gnsAmountInput.isAvailableDelegate || delegatee.address === ""}
+          className="button-confirm"
+        />
+      ) : (
+        <Button
+          onClick={delegate}
+          text={gnsAmountInput.delegateButtonText}
+          style={{
+            hierarchy: ButtonHierarchy.Primary,
+            fullWidth: true,
+          }}
+          className="button-confirm"
+        />
+      )}
     </>
   );
 
