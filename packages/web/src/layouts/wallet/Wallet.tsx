@@ -12,13 +12,22 @@ import WalletPositionCardListContainer from "./containers/wallet-position-card-l
 import WalletLayout from "./WalletLayout";
 
 const Wallet: React.FC = () => {
+  const [isShowClosedPosition, setIsShowClosedPosition] = React.useState(false);
+
+  const toggleShowClosedPosition = () => {
+    setIsShowClosedPosition(prev => !prev);
+  };
+
   return (
     <WalletLayout
       header={<HeaderContainer />}
       balance={<WalletBalanceContainer />}
       assets={<AssetListContainer />}
       positions={
-        <WalletMyPositions header={<WalletMyPositionsHeader />} cardList={<WalletPositionCardListContainer />} />
+        <WalletMyPositions
+          header={<WalletMyPositionsHeader toggleClosed={toggleShowClosedPosition} isClosed={isShowClosedPosition} />}
+          cardList={<WalletPositionCardListContainer isClosed={isShowClosedPosition} />}
+        />
       }
       footer={<Footer />}
     />

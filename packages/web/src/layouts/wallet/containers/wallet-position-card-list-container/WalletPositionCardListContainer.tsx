@@ -13,7 +13,7 @@ import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { ThemeState } from "@states/index";
 
-const WalletPositionCardListContainer: React.FC = () => {
+const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isClosed }) => {
   const { getGnotPath } = useGnotToGnot();
   const [currentIndex, setCurrentIndex] = useState(1);
   const router = useRouter();
@@ -32,7 +32,6 @@ const WalletPositionCardListContainer: React.FC = () => {
   const { pools, loading } = usePoolData();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
-  const { isSwitchNetwork } = useWallet();
   const { tokenPrices = {} } = useTokenData();
 
   const handleResize = () => {
@@ -102,12 +101,23 @@ const WalletPositionCardListContainer: React.FC = () => {
     return poolPositions;
   }, [pools, positionsData]);
 
-  const sortedData = positions.sort((x, y) => Number(y.positionUsdValue) - Number(x.positionUsdValue));
-  if (!isFetchedPosition || isSwitchNetwork) return null;
+  const openPosition = useMemo(() => {
+    return positions
+      .filter(item => !item.closed)
+      .sort((x, y) => Number(y.positionUsdValue) - Number(x.positionUsdValue));
+  }, [positions]);
+
+  const closedPosition = useMemo(() => {
+    return positions.filter(item => item.closed);
+  }, [positions]);
+
+  const showedPosition = useMemo(() => {
+    return [...openPosition, ...(isClosed ? closedPosition : [])];
+  }, [closedPosition, isClosed, openPosition]);
 
   return (
     <MyPositionCardList
-      positions={sortedData}
+      positions={showedPosition}
       loadMore={false}
       isFetched={isFetchedPosition}
       isLoading={loading || isLoadingPosition}
