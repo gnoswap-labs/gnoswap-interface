@@ -238,6 +238,7 @@ export const useSwapHandler = () => {
     return formatPrice(displayBalanceMap?.[tokenA.priceID], {
       isKMB: false,
       usd: false,
+      greaterThan1Decimals: 6,
     });
   }, [isSwitchNetwork, displayBalanceMap, tokenA]);
 
@@ -248,6 +249,7 @@ export const useSwapHandler = () => {
     return formatPrice(displayBalanceMap?.[tokenB.priceID], {
       isKMB: false,
       usd: false,
+      greaterThan1Decimals: 6,
     });
   }, [isSwitchNetwork, displayBalanceMap, tokenB]);
 
