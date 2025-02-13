@@ -47,12 +47,17 @@ export function makeShiftAmount(
   return number.shiftedBy(shift).toNumber();
 }
 
-export function formatTokenBalanceDisplay(balance: string, connectedWallet: boolean) {
-  const cleanBalance = balance.replace(/,/g, "");
-
-  if (!connectedWallet) {
+/**
+ * Functions to format token balances for display formatting
+ * @param balance
+ * @param connectedWallet
+ * @returns {string}
+ */
+export function formatTokenBalanceDisplay(balance: string, connectedWallet: boolean): string {
+  if (!connectedWallet || !balance) {
     return "-";
   }
 
+  const cleanBalance = balance.replace(/,/g, "");
   return formatOtherPrice(cleanBalance, { isKMB: false, usd: false });
 }
