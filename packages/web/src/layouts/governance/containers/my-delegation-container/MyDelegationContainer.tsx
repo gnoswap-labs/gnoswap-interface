@@ -7,12 +7,14 @@ import { nullMyDelegationInfo } from "@repositories/governance";
 
 import { useGovernanceTx } from "@hooks/governance/data/use-governance-tx";
 import MyDelegation from "../../components/my-delegation/MyDelegation";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 
 const MyDelegationContainer: React.FC = () => {
   const { account, connected } = useWallet();
   const { openModal } = useConnectWalletModal();
   const { delegateGNS, undelegateGNS, collectUndelegated, collectReward } = useGovernanceTx();
 
+  const { updateBalances } = useTokenData();
   const {
     data: governanceSummaryInfo,
     isFetched: isFetchedGovernanceSummaryInfo,
@@ -44,6 +46,7 @@ const MyDelegationContainer: React.FC = () => {
           await refetchSummary();
           await refetchMyDelegation();
           await refetchDelegatees();
+          updateBalances();
         })
       }
       undelegateGNS={(...params) =>
@@ -51,6 +54,7 @@ const MyDelegationContainer: React.FC = () => {
           await refetchSummary();
           await refetchMyDelegation();
           await refetchDelegatees();
+          updateBalances();
         })
       }
       collectUndelegated={(...params) =>
@@ -58,6 +62,7 @@ const MyDelegationContainer: React.FC = () => {
           await refetchSummary();
           await refetchDelegatees();
           await refetchMyDelegation();
+          updateBalances();
         })
       }
       collectReward={(...params) =>
@@ -65,6 +70,7 @@ const MyDelegationContainer: React.FC = () => {
           await refetchSummary();
           await refetchDelegatees();
           await refetchMyDelegation();
+          updateBalances();
         })
       }
     />
