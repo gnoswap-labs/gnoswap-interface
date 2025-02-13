@@ -2,19 +2,17 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { getDateUtcToLocal } from "@common/utils/date-util";
-import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import { TokenModel } from "@models/token/token-model";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
 import * as S from "./StakedPositinosTooltipContent.styles";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 type StakedPostionsTooltipContentProps = {
   poolStakings: {
-    tokenA: TokenModel;
-    tokenB: TokenModel;
     lpId: string;
     totalValue: string;
     stakedDate: string;
+    tokenUri: string;
   }[];
 };
 
@@ -28,7 +26,7 @@ const StakedPostionsTooltipContent: React.FC<StakedPostionsTooltipContentProps> 
           <>
             <S.TokenItem key={index}>
               <S.ItemHeader>
-                <DoubleLogo left={item.tokenA.logoURI} right={item.tokenB.logoURI} size={18} />
+                <MissingLogo url={item.tokenUri} symbol={`ID #${item.lpId}`} width={18} mobileWidth={16} />
                 <S.ItemHeaderSymbol>ID #{item.lpId}</S.ItemHeaderSymbol>
               </S.ItemHeader>
               <S.DataGrid>

@@ -59,10 +59,9 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
       .filter(item => item.staked === true)
       .map(item => ({
         lpId: item.lpTokenId,
-        tokenA: item.pool.tokenA,
-        tokenB: item.pool.tokenB,
         totalValue: item.stakedUsdValue,
         stakedDate: item.stakedAt,
+        tokenUri: item.tokenUri,
       }));
   }, [positions]);
 
@@ -216,8 +215,6 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
       },
     };
   }, [positions, tokenPrices]);
-
-  console.log(claimableRewardInfo, "claimableRewardInfo?");
 
   const hasInfo = (data: {
     [key in RewardType]: PositionRewardForTooltip[];
