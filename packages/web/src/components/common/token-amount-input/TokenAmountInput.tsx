@@ -7,9 +7,9 @@ import SelectPairIncentivizeButton from "../select-pair-button/SelectPairIncenti
 import BigNumber from "bignumber.js";
 import { DEFAULT_CONTRACT_USE_FEE, DEFAULT_GAS_FEE } from "@common/values";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { formatOtherPrice } from "@utils/new-number-utils";
 import { useTranslation } from "react-i18next";
 import IconWallet from "../icons/IconWallet";
+import { useTokenBalanceDisplay } from "@hooks/token/ui/use-token-balance-display";
 
 export interface TokenAmountInputProps extends TokenAmountInputModel {
   changable?: boolean;
@@ -32,6 +32,8 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   isVisibleMaxButton = true,
 }) => {
   const { t } = useTranslation();
+
+  const balanceADisplay = useTokenBalanceDisplay(balance, connected);
 
   const disabledSelectPair = useMemo(() => {
     return changable !== true;
@@ -71,14 +73,6 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
 
     return true;
   }, [connected, balance]);
-
-  const balanceADisplay = useMemo(() => {
-    if (!connected || balance === "0") {
-      return "-";
-    }
-
-    return formatOtherPrice(balance, { isKMB: false, usd: false });
-  }, [balance, connected]);
 
   const preventArrowKeys = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (["ArrowUp", "ArrowDown"].includes(e.key)) {

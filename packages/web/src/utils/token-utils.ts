@@ -1,5 +1,6 @@
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
+import { formatOtherPrice } from "./new-number-utils";
 import { roundDownDecimalNumber } from "./regex";
 
 export function makeRawTokenAmount(token: TokenModel, amount: string | number) {
@@ -44,4 +45,14 @@ export function makeShiftAmount(
   }
 
   return number.shiftedBy(shift).toNumber();
+}
+
+export function formatTokenBalanceDisplay(balance: string, connectedWallet: boolean) {
+  const cleanBalance = balance.replace(/,/g, "");
+
+  if (!connectedWallet) {
+    return "-";
+  }
+
+  return formatOtherPrice(cleanBalance, { isKMB: false, usd: false });
 }
