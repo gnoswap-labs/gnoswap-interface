@@ -210,12 +210,14 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         EXTERNAL: Object.values(claimedMap.EXTERNAL),
       },
       claimableRewardInfo: {
-        SWAP_FEE: Object.values(claimableMap.SWAP_FEE),
-        INTERNAL: Object.values(claimableMap.INTERNAL),
-        EXTERNAL: Object.values(claimableMap.EXTERNAL),
+        SWAP_FEE: Object.values(claimableMap.SWAP_FEE).filter(reward => reward.amount && reward.amount > 0),
+        INTERNAL: Object.values(claimableMap.INTERNAL).filter(reward => reward.amount && reward.amount > 0),
+        EXTERNAL: Object.values(claimableMap.EXTERNAL).filter(reward => reward.amount && reward.amount > 0),
       },
     };
   }, [positions, tokenPrices]);
+
+  console.log(claimableRewardInfo, "claimableRewardInfo?");
 
   const hasInfo = (data: {
     [key in RewardType]: PositionRewardForTooltip[];
