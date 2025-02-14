@@ -36,7 +36,7 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
         <WalletBalanceSummaryInfo balanceSummaryInfo={balanceSummaryInfo} connected={connected} />
         <div className="button-group">
           <Button
-            leftIcon={breakpoint !== DEVICE_TYPE.MOBILE && <IconDownload />}
+            leftIcon={<IconDownload />}
             style={{
               width: breakpoint !== DEVICE_TYPE.MOBILE ? 150 : "50%",
               hierarchy: ButtonHierarchy.Primary,
@@ -49,7 +49,7 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
             disabled={connected === false || isSwitchNetwork}
           />
           <Button
-            leftIcon={breakpoint !== DEVICE_TYPE.MOBILE && <IconUpload />}
+            leftIcon={<IconUpload />}
             style={{
               width: breakpoint !== DEVICE_TYPE.MOBILE ? 150 : "50%",
               hierarchy: ButtonHierarchy.Primary,
