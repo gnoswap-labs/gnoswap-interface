@@ -40,7 +40,7 @@ const LaunchpadDetailContentsHeader: React.FC<LaunchpadDetailContentsHeaderProps
                 symbol={rewardInfo.rewardTokenSymbol}
                 url={rewardInfo.rewardTokenLogoUrl}
                 width={36}
-                mobileWidth={36}
+                mobileWidth={24}
               />
             </div>
             <div className="project-name">{data.name}</div>
