@@ -184,7 +184,11 @@ const StakingContent: React.FC<StakingContentProps> = ({
                   }
                   forcedClose={!forcedShowAprGuide || !hasPoolStaking}
                   placement="top"
-                  FloatingContent={<span>{t("Pool:staking.tooltip.hoverGuide")}</span>}
+                  FloatingContent={
+                    <span style={{ fontSize: breakpoint === "mobile" ? 14 : 16 }}>
+                      {t("Pool:staking.tooltip.hoverGuide")}
+                    </span>
+                  }
                 >
                   <span id={"apr-text"}>{totalApr === "-" ? "-" : `${totalApr} APR`} </span>
                 </Tooltip>
