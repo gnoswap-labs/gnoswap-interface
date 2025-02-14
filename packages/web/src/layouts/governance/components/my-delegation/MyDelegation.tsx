@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
@@ -139,6 +139,15 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
     return rewardInfo.length > 0;
   }, [rewardInfo]);
 
+  /**
+   * Automatically switch to the voting weight tab if undelegationInfos is empty
+   */
+  useEffect(() => {
+    if (undelegationInfos.length === 0) {
+      setShowUndel(false);
+    }
+  }, [undelegationInfos.length]);
+
   return (
     <MyDelegationWrapper>
       <div className="header-wrapper">
@@ -267,7 +276,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                   : undefined
               }
               valueButton={
-                hasUnlockItem
+                hasUnlockItem && !activatedDelegateInfoTab
                   ? {
                       text: t("Governance:myDel.undel.btn"),
                       onClick: () => collectUndelegated(toNumberFormat(myDelegationInfo.undelegatedAmount, 2)),
