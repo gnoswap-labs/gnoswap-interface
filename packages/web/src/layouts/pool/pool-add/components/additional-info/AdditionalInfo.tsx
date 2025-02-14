@@ -8,8 +8,10 @@ import ExchangeRateGraph from "./exchange-rate-graph/ExchangeRateGraph";
 import QuickPoolInfo from "./quick-pool-info/QuickPoolInfo";
 
 import { AdditionalInfoDummy, AdditionalInfoWrapper } from "./AdditonalInfo.styles";
+import { DEVICE_TYPE } from "@styles/media";
 
 interface AdditionalInfoProps {
+  breakpoint: DEVICE_TYPE;
   tokenPair: string[];
   stakedPositions: PositionModel[];
   unstakedPositions: PositionModel[];
@@ -22,6 +24,7 @@ interface AdditionalInfoProps {
 }
 
 const AdditionalInfo: React.FC<AdditionalInfoProps> = ({
+  breakpoint,
   tokenPair,
   stakedPositions,
   unstakedPositions,
@@ -47,7 +50,12 @@ const AdditionalInfo: React.FC<AdditionalInfoProps> = ({
         isLoadingPool={isLoadingPool}
       />
       {isAnyPoolExist && (
-        <ExchangeRateGraph poolData={biggestPool} isLoading={isLoadingGraph} isReversed={isReversed} />
+        <ExchangeRateGraph
+          breakpoint={breakpoint}
+          poolData={biggestPool}
+          isLoading={isLoadingGraph}
+          isReversed={isReversed}
+        />
       )}
     </AdditionalInfoWrapper>
   );

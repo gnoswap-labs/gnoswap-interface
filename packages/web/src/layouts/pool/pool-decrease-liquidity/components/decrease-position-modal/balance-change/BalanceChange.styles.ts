@@ -91,6 +91,10 @@ export const BalanceChangeWrapper = styled.div<Props>`
         color: ${({ theme }) => theme.color.text03};
       }
     }
+
+    ${media.mobile} {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 `;
 
