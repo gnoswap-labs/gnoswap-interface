@@ -6,7 +6,7 @@ import { QUERY_KEY } from "../query-keys";
 import { IBalancesByAddressResponse } from "@repositories/token/response/balance-by-address-response";
 import { AccountError } from "@common/errors/account";
 
-export const useGetBalances = (
+export const useGetGrc20Balances = (
   address: string | null,
   options?: UseQueryOptions<IBalancesByAddressResponse, Error>,
 ) => {
@@ -18,7 +18,7 @@ export const useGetBalances = (
       if (!address) {
         throw new AccountError("NOT_FOUNT_ADDRESS");
       }
-      return tokenRepository.getBalancesByAddress(address);
+      return tokenRepository.getGrc20BalancesByAddress(address);
     },
     ...options,
   });

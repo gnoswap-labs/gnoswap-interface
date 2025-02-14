@@ -32,5 +32,5 @@ export interface TokenRepository {
 
   getExchangeRateGraph: () => Promise<TokenExchangeRateGraphResponse>;
 
-  getBalancesByAddress: (address: string) => Promise<IBalancesByAddressResponse>;
+  getGrc20BalancesByAddress: (address: string) => Promise<IBalancesByAddressResponse>;
 }

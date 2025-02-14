@@ -8,11 +8,10 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { CardListTokenInfo, UpDownType } from "@models/common/card-list-item-info";
 import { isNativeTokenByType, TokenModel } from "@models/token/token-model";
-import { useGetAllTokenPrices, useGetTokens } from "@query/token";
+import { useGetAllTokenPrices, useGetGrc20Balances, useGetTokens } from "@query/token";
 import { TokenState } from "@states/index";
 import { checkPositivePrice } from "@utils/common";
 import { toUnitFormat } from "@utils/number-utils";
-import { evaluateExpressionToNumber } from "@utils/rpc-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { isEmptyObject } from "@utils/validation-utils";
 
@@ -33,6 +32,12 @@ export const useTokenData = () => {
     refetch: refetchTokenPrices,
   } = useGetAllTokenPrices();
   const { account, availNetwork, refetchGnotBalance } = useWallet();
+  const {
+    data: grc20BalancesData,
+    isLoading: isLoadingGrc20Balances,
+    refetch: refetchGrc20Balances,
+  } = useGetGrc20Balances(account?.address || "", { enabled: !!account?.address });
+
   const { rpcProvider } = useGnoswapContext();
   const [balances, setBalances] = useAtom(TokenState.balances);
   const [loadingBalance, setLoadingBalance] = useAtom(TokenState.isLoadingBalances);
@@ -190,24 +195,48 @@ export const useTokenData = () => {
     refetchTokenPrices();
   }
 
-  const fetchTokenBalance = useCallback(
+  const fetchNativeTokenBalance = useCallback(
     async (token: TokenModel) => {
       if (!rpcProvider || !account || !availNetwork) {
         return null;
       }
-      if (isNativeTokenByType(token.type)) {
-        const res = await rpcProvider.getBalance(account.address, token.denom || "ugnot").catch(() => null);
-        return res;
-      }
 
-      const param = `BalanceOf("${account.address}")`;
-      const res = await rpcProvider
-        .evaluateExpression(token.path, param)
-        .then(evaluateExpressionToNumber)
-        .catch(() => null);
+      const res = await rpcProvider.getBalance(account.address, token.denom || "ugnot").catch(() => null);
       return res;
     },
     [account, availNetwork, rpcProvider],
+  );
+
+  const getGrc20Balance = useCallback(
+    (token: TokenModel) => {
+      if (!grc20BalancesData?.data) {
+        return 0;
+      }
+
+      const balance = grc20BalancesData.data.find(balance => balance.path === token.path);
+      return balance ? Number(balance.amount) : 0;
+    },
+    [grc20BalancesData],
+  );
+
+  const fetchTokenBalance = useCallback(
+    async (token: TokenModel) => {
+      try {
+        if (!rpcProvider || !account || !availNetwork) {
+          return null;
+        }
+
+        if (isNativeTokenByType(token.type)) {
+          return await fetchNativeTokenBalance(token);
+        }
+
+        return getGrc20Balance(token);
+      } catch (error) {
+        console.log(`Failed to fetch balance for token ${token.symbol}: `, error);
+        return null;
+      }
+    },
+    [account, availNetwork, rpcProvider, fetchNativeTokenBalance, getGrc20Balance],
   );
 
   const updateBalances = useCallback(async () => {
@@ -215,7 +244,7 @@ export const useTokenData = () => {
       return;
     }
 
-    if (isEmptyObject(balances) && loadingBalance) {
+    if ((isEmptyObject(balances) && loadingBalance) || isLoadingGrc20Balances) {
       setLoadingBalance(true);
     }
 
@@ -237,6 +266,7 @@ export const useTokenData = () => {
     });
     if (JSON.stringify(balancesData) !== JSON.stringify(balances) && !isEmptyObject(balancesData)) {
       refetchGnotBalance();
+      refetchGrc20Balances();
       setIsChangeBalancesToken(true);
       setBalances(balancesData);
     }
