@@ -144,6 +144,9 @@ export const PoolGraphTooltipContainer = styled.div`
 
     .price-range {
       width: 100%;
+      ${media.mobile} {
+        font-size: 12px;
+      }
     }
     .small-font {
       font-size: 12px;
@@ -151,6 +154,7 @@ export const PoolGraphTooltipContainer = styled.div`
 
     ${media.mobile} {
       max-width: max-content;
+      max-width: calc(100vw - 24px);
     }
 
     @media (max-width: 360px) {
