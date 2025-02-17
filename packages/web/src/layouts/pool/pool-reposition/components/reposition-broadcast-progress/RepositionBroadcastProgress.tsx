@@ -7,7 +7,10 @@ import IconRemovePositionCircle from "@components/common/icons/IconRemovePositio
 import IconSwapCircle from "@components/common/icons/IconSwapCircle";
 import { TokenModel } from "@models/token/token-model";
 import { RepositionLiquidityFailedResponse, RepositionLiquiditySuccessResponse } from "@repositories/position/response";
-import { SwapRouteFailedResponse, SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route-response";
+import {
+  SwapRouteFailedResponse,
+  SwapRouteSuccessResponse,
+} from "@repositories/swap-router/response/swap-route-response";
 import { wait } from "@utils/common";
 
 import { RepositionBroadcastProgressWrapper } from "./RepositionBroadcastProgress.styles";

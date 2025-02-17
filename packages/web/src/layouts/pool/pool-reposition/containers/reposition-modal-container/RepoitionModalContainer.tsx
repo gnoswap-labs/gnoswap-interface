@@ -5,7 +5,10 @@ import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import { TokenModel } from "@models/token/token-model";
 import { RepositionLiquidityFailedResponse, RepositionLiquiditySuccessResponse } from "@repositories/position/response";
-import { SwapRouteFailedResponse, SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route-response";
+import {
+  SwapRouteFailedResponse,
+  SwapRouteSuccessResponse,
+} from "@repositories/swap-router/response/swap-route-response";
 
 import RepositionModal from "../../components/reposition-modal/RepositionModal";
 import { IPriceRange } from "@hooks/pool/data/use-reposition-handle";

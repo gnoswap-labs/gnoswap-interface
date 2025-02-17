@@ -6,7 +6,10 @@ import { RANGE_STATUS_OPTION, SwapFeeTierInfoMap, SwapFeeTierType } from "@const
 import { TokenAmountInputModel } from "@hooks/token/data/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
 import { RepositionLiquidityFailedResponse, RepositionLiquiditySuccessResponse } from "@repositories/position/response";
-import { SwapRouteFailedResponse, SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route-response";
+import {
+  SwapRouteFailedResponse,
+  SwapRouteSuccessResponse,
+} from "@repositories/swap-router/response/swap-route-response";
 import { CommonState } from "@states/index";
 
 import RepositionModalContainer from "../../../layouts/pool/pool-reposition/containers/reposition-modal-container/RepoitionModalContainer";
