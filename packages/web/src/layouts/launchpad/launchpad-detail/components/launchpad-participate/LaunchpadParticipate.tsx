@@ -12,7 +12,6 @@ import { isAmount } from "@common/utils/data-check-util";
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
-import { toNumberFormat } from "@utils/number-utils";
 import { formatPrice } from "@utils/new-number-utils";
 import { getClaimableTime } from "@utils/launchpad-get-claimable";
 import { getDateUtcToLocal } from "@common/utils/date-util";
@@ -28,6 +27,7 @@ import LaunchpadTooltip from "../common/launchpad-tooltip/LaunchpadTooltip";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import LaunchpadDepositModal from "@components/common/launchpad-modal/launchpad-deposit-modal/LaunchpadDepositModal";
 import IconWallet from "@components/common/icons/IconWallet";
+import { useTokenBalanceDisplay } from "@hooks/token/ui/use-token-balance-display";
 
 const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
@@ -85,8 +85,15 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (status !== "UPCOMING") {
         const value = e.target.value.replace(/,/g, "");
+        const decimals = DEFAULT_DEPOSIT_TOKEN?.decimals || 0;
 
-        if (value !== "" && !isAmount(value)) return;
+        if (!isAmount(value)) return;
+
+        if (value.includes(".")) {
+          const [, decimal] = value.split(".");
+          if (decimal && decimal.length > decimals) return;
+        }
+
         setParticipateAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
       }
     },
@@ -94,9 +101,16 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
   );
 
   const currentGnsBalance = React.useMemo(() => {
-    if (!isWalletConnected) return null;
-    return displayBalanceMap?.[DEFAULT_DEPOSIT_TOKEN?.path ?? ""] ?? null;
+    if (!isWalletConnected) return "-";
+
+    return formatPrice(displayBalanceMap?.[DEFAULT_DEPOSIT_TOKEN.path], {
+      isKMB: false,
+      usd: false,
+      greaterThan1Decimals: 6,
+    });
   }, [displayBalanceMap, isWalletConnected]);
+
+  const displayGnsBalance = useTokenBalanceDisplay(currentGnsBalance, isWalletConnected);
 
   const hasTokenBalance = React.useMemo(() => {
     return !!currentGnsBalance;
@@ -126,7 +140,8 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
 
   const handleAutoFillMaxAmount = React.useCallback(() => {
     if (isWalletConnected && currentGnsBalance && status !== "UPCOMING") {
-      setParticipateAmount(toNumberFormat(currentGnsBalance, 2).replace(/,/g, ""));
+      const formatValue = parseFloat(currentGnsBalance.replace(/,/g, "")).toString();
+      setParticipateAmount(formatValue);
     }
   }, [currentGnsBalance, setParticipateAmount, isWalletConnected, status]);
 
@@ -220,7 +235,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
                 upcoming: status === "UPCOMING",
               })}
             >
-              {currentGnsBalance ? toNumberFormat(currentGnsBalance, 2) : "-"}
+              {displayGnsBalance}
             </span>
             {hasTokenBalance && (
               <button className="balance-max-button" onClick={handleAutoFillMaxAmount}>
@@ -277,11 +292,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
           {!isLoading && (
             <div className="participate-info-value">
               <Image src="/gns.svg" width={24} height={24} alt="GNS Symbol image" />
-              <span>
-                {participateAmount
-                  ? `${toNumberFormat(Number(participateAmount), 2)} ${DEFAULT_DEPOSIT_TOKEN.symbol}`
-                  : "-"}
-              </span>
+              <span>{participateAmount ? participateAmount : "-"}</span>
             </div>
           )}
           {isLoading && <div css={pulseSkeletonStyle({ w: 103, h: 24 })} />}

@@ -87,6 +87,11 @@ export const wrapper = (theme: Theme) => css`
         margin-right: 4px;
         color: ${theme.color.text04};
       }
+      &.total-amount-title {
+        ${media.mobile} {
+          font-size: 14px;
+        }
+      }
     }
   }
 

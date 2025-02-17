@@ -32,7 +32,7 @@ const LaunchpadActiveProjectCardHeader: React.FC<LaunchpadActiveProjectCardHeade
         <div className="text">{description}</div>
       </div>
       <div className="image-wrapper">
-        <MissingLogo symbol={rewardTokenSymbol} url={rewardTokenUrl} width={60} />
+        <MissingLogo symbol={rewardTokenSymbol} url={rewardTokenUrl} width={60} mobileWidth={48} />
       </div>
     </ActiveProjectCardHeader>
   );

@@ -16,6 +16,7 @@ import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
 import UnstakePositionModal from "../../components/unstake-position-modal/UnstakePositionModal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 
 interface UnstakePositionModalContainerProps {
   positions: PoolPositionModel[];
@@ -36,6 +37,7 @@ const UnstakePositionModalContainer = ({
   const { enqueueEvent } = useTransactionEventStore();
 
   // Refetch functions
+  const { updateBalances } = useTokenData();
   const { refetch: refetchPools } = useGetPoolList();
   const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(positions?.[0]?.poolPath);
 
@@ -102,6 +104,9 @@ const UnstakePositionModalContainer = ({
             refetchPools();
             refetchPositions();
             refetchPoolDetails();
+          },
+          onUpdate: async () => {
+            updateBalances();
           },
         });
       }

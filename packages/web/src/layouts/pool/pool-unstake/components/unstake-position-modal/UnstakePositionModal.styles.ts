@@ -109,6 +109,7 @@ export const UnstakePositionModalWrapper = styled.div`
             color: ${({ theme }) => theme.color.text02};
             ${media.mobile} {
               ${fonts.body12};
+              font-size: 16px;
             }
           }
           .unstake-bar {

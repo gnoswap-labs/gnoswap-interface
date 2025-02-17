@@ -19,6 +19,7 @@ import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
 import RemovePositionModal from "../../components/remove-position-modal/RemovePositionModal";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 
 interface RemovePositionModalContainerProps {
   selectedPositions: PoolPositionModel[];
@@ -42,6 +43,7 @@ const RemovePositionModalContainer = ({
   const { enqueueEvent } = useTransactionEventStore();
 
   // Refetch functions
+  const { updateBalances } = useTokenData();
   const { refetch: refetchPools } = useGetPoolList();
   const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(selectedPositions?.[0]?.poolPath);
   const { pooledTokenInfos, unclaimedFees } = usePositionsRewards({
@@ -146,6 +148,9 @@ const RemovePositionModalContainer = ({
             refetchPools();
             refetchPositions();
             refetchPoolDetails();
+          },
+          onUpdate: async () => {
+            updateBalances();
           },
         });
       }

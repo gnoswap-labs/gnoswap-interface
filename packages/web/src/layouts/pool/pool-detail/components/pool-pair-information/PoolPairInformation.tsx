@@ -18,6 +18,7 @@ interface PoolPairInformationProps {
     title: string;
     path: string;
   };
+  hasPoolStaking: boolean;
   feeStr: string | null;
   onClickPath: (path: string) => void;
   loading: boolean;
@@ -28,6 +29,7 @@ interface PoolPairInformationProps {
 const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
   pool,
   menu,
+  hasPoolStaking,
   feeStr,
   onClickPath,
   loading,
@@ -63,6 +65,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
           <PoolPairInfoHeader
             tokenA={pool.tokenA}
             tokenB={pool.tokenB}
+            hasPoolStaking={hasPoolStaking}
             incentivizedType={pool.incentiveType}
             rewardTokens={pool.rewardTokens}
             feeStr={feeStr || ""}

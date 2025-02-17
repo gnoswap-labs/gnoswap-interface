@@ -23,6 +23,7 @@ interface StakingProps {
   handleClickUnStakeRedirect: () => void;
   loading: boolean;
   isOtherPosition: boolean;
+  hasPoolStaking: boolean;
 }
 
 const Staking: React.FC<StakingProps> = ({
@@ -38,6 +39,7 @@ const Staking: React.FC<StakingProps> = ({
   handleClickUnStakeRedirect,
   loading,
   isOtherPosition,
+  hasPoolStaking,
 }) => {
   return (
     <>
@@ -61,6 +63,7 @@ const Staking: React.FC<StakingProps> = ({
           mobile={mobile}
           type={type}
           loading={loading}
+          hasPoolStaking={hasPoolStaking}
         />
       </StakingWrapper>
     </>

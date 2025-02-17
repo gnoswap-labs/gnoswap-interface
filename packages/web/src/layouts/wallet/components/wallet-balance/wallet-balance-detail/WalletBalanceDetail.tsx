@@ -59,10 +59,9 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
       .filter(item => item.staked === true)
       .map(item => ({
         lpId: item.lpTokenId,
-        tokenA: item.pool.tokenA,
-        tokenB: item.pool.tokenB,
         totalValue: item.stakedUsdValue,
         stakedDate: item.stakedAt,
+        tokenUri: item.tokenUri,
       }));
   }, [positions]);
 
@@ -210,9 +209,9 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         EXTERNAL: Object.values(claimedMap.EXTERNAL),
       },
       claimableRewardInfo: {
-        SWAP_FEE: Object.values(claimableMap.SWAP_FEE),
-        INTERNAL: Object.values(claimableMap.INTERNAL),
-        EXTERNAL: Object.values(claimableMap.EXTERNAL),
+        SWAP_FEE: Object.values(claimableMap.SWAP_FEE).filter(reward => reward.amount && reward.amount > 0),
+        INTERNAL: Object.values(claimableMap.INTERNAL).filter(reward => reward.amount && reward.amount > 0),
+        EXTERNAL: Object.values(claimableMap.EXTERNAL).filter(reward => reward.amount && reward.amount > 0),
       },
     };
   }, [positions, tokenPrices]);

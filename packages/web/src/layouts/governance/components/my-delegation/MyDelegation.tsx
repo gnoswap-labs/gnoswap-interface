@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
@@ -121,6 +121,10 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
     return !showUndel;
   }, [showUndel, undelegationInfos.length]);
 
+  const hasUnlockItem = useMemo(() => {
+    return undelegationInfos.some(info => info.unlockDate && new Date(info.unlockDate) < new Date());
+  }, [showUndel, undelegationInfos]);
+
   const visibleInfoTooltip = useMemo(() => {
     if (activatedDelegateInfoTab) {
       return hasVotingWeight;
@@ -134,6 +138,15 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   const visibleRewardInfoTooltip = useMemo(() => {
     return rewardInfo.length > 0;
   }, [rewardInfo]);
+
+  /**
+   * Automatically switch to the voting weight tab if undelegationInfos is empty
+   */
+  useEffect(() => {
+    if (undelegationInfos.length === 0) {
+      setShowUndel(false);
+    }
+  }, [undelegationInfos.length]);
 
   return (
     <MyDelegationWrapper>
@@ -263,7 +276,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                   : undefined
               }
               valueButton={
-                !activatedDelegateInfoTab
+                hasUnlockItem && !activatedDelegateInfoTab
                   ? {
                       text: t("Governance:myDel.undel.btn"),
                       onClick: () => collectUndelegated(toNumberFormat(myDelegationInfo.undelegatedAmount, 2)),

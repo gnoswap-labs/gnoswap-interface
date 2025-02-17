@@ -25,6 +25,8 @@ import {
   UnstakePositionModalWrapper,
   UnstakeWarningContentWrapper,
 } from "./UnstakePositionModal.styles";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { DEVICE_TYPE } from "@styles/media";
 
 interface Props {
   positions: PoolPositionModel[];
@@ -34,6 +36,7 @@ interface Props {
 
 const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) => {
   const { t } = useTranslation();
+  const { breakpoint } = useWindowSize();
   const { unclaimedRewards, totalLiquidityUSD } = usePositionsRewards({
     positions,
   });
@@ -99,7 +102,9 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
                       leftSymbol={position.pool.tokenA.symbol}
                       rightSymbol={position.pool.tokenB.symbol}
                     />
-                    <div>{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</div>
+                    {breakpoint !== DEVICE_TYPE.MOBILE && (
+                      <div>{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</div>
+                    )}
                     <Badge
                       className="unstake-bar"
                       type={BADGE_TYPE.DARK_DEFAULT}

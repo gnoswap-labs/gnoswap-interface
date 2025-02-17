@@ -16,6 +16,8 @@ import {
   PoolAddConfirmPriceRangeInfoWrapper,
   ToolTipContentWrapper,
 } from "./PoolAddConfirmPriceRangeInfo.styles";
+import { DEVICE_TYPE } from "@styles/media";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 export interface PoolAddConfirmPriceRangeInfoProps extends EarnAddConfirmAmountInfoProps {
   currentPrice: string;
@@ -42,6 +44,7 @@ const PoolAddConfirmPriceRangeInfo: React.FC<PoolAddConfirmPriceRangeInfoProps> 
   tokenA,
   tokenB,
 }) => {
+  const { breakpoint } = useWindowSize();
   const { t } = useTranslation();
 
   const [swap, setSwap] = useState(false);
@@ -62,6 +65,21 @@ const PoolAddConfirmPriceRangeInfo: React.FC<PoolAddConfirmPriceRangeInfoProps> 
   const rangeStatus = useMemo(() => {
     return inRange ? RANGE_STATUS_OPTION.IN : RANGE_STATUS_OPTION.OUT;
   }, [inRange]);
+
+  const displayPriceLabelMin = useMemo(() => {
+    if (breakpoint === DEVICE_TYPE.MOBILE) {
+      return `${tokenA.info.symbol} per ${tokenB.info.symbol}`;
+    }
+    return priceLabelMin;
+  }, [breakpoint, priceLabelMin, tokenA, tokenB]);
+
+  const displayPriceLabelMax = useMemo(() => {
+    if (breakpoint === DEVICE_TYPE.MOBILE) {
+      return `${tokenA.info.symbol} per ${tokenB.info.symbol}`;
+    }
+    return priceLabelMax;
+  }, [breakpoint, priceLabelMax, tokenA, tokenB]);
+
   return (
     <PoolAddConfirmPriceRangeInfoWrapper>
       <div className="range-title">
@@ -73,12 +91,12 @@ const PoolAddConfirmPriceRangeInfo: React.FC<PoolAddConfirmPriceRangeInfoProps> 
         <PoolAddConfirmPriceRangeInfoSection className="range-section">
           <span>{t("AddPosition:form.priceRange.minPrice")}</span>
           <span className="amount">{minPrice}</span>
-          <span className="label">{priceLabelMin}</span>
+          <span className="label">{displayPriceLabelMin}</span>
         </PoolAddConfirmPriceRangeInfoSection>
         <PoolAddConfirmPriceRangeInfoSection className="range-section">
           <span>{t("AddPosition:form.priceRange.maxPrice")}</span>
           <span className="amount">{maxPrice}</span>
-          <span className="label">{priceLabelMax}</span>
+          <span className="label">{displayPriceLabelMax}</span>
         </PoolAddConfirmPriceRangeInfoSection>
       </div>
 

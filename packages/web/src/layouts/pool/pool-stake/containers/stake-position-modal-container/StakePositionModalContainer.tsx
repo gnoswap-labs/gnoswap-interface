@@ -34,7 +34,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
   const { positionRepository } = useGnoswapContext();
   const router = useCustomRouter();
   const clearModal = useClearModal();
-  const { tokenPrices } = useTokenData();
+  const { updateBalances, tokenPrices } = useTokenData();
   const poolPath = router.getPoolPath();
   const { data: pool } = useGetPoolDetailByPath(poolPath, {
     enabled: !!poolPath,
@@ -129,6 +129,9 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
             refetchPools();
             refetchPositions();
             refetchPoolDetails();
+          },
+          onUpdate: async () => {
+            updateBalances();
           },
         });
       }

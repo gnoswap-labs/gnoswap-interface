@@ -26,6 +26,10 @@ const VotingProgressBar: React.FC<VotingProgressBarProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  const hasVoted = React.useMemo(() => {
+    return Boolean(yes) || Boolean(no);
+  }, [yes, no]);
+
   const yesRate = (100 * yes) / max;
   const noRate = (100 * no) / max;
 
@@ -54,6 +58,7 @@ const VotingProgressBar: React.FC<VotingProgressBarProps> = ({
       {!hideNumber && (
         <div className="progress-value">
           <Tooltip
+            forcedClose={!hasVoted}
             placement="top"
             FloatingContent={
               <ProposalTooltipContent>

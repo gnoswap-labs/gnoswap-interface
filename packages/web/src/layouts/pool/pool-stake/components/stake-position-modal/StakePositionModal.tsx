@@ -14,6 +14,8 @@ import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { isInRangePosition } from "@utils/stake-position-utils";
 
 import { Divider, StakePositionModalWrapper, ToolTipContentWrapper } from "./StakePositionModal.styles";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { DEVICE_TYPE } from "@styles/media";
 
 interface Props {
   positions: PoolPositionModel[];
@@ -24,6 +26,7 @@ interface Props {
 
 const StakePositionModal: React.FC<Props> = ({ positions, close, onSubmit, pool }) => {
   const { t } = useTranslation();
+  const { breakpoint } = useWindowSize();
 
   const totalLiquidityUSD = useMemo(() => {
     const totalLiquidity = positions.reduce((accum, position) => accum + Number(position.positionUsdValue), 0);
@@ -86,7 +89,9 @@ const StakePositionModal: React.FC<Props> = ({ positions, close, onSubmit, pool 
                       leftSymbol={position.pool.tokenA.symbol}
                       rightSymbol={position.pool.tokenB.symbol}
                     />
-                    <div>{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</div>
+                    {breakpoint !== DEVICE_TYPE.MOBILE && (
+                      <div>{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</div>
+                    )}
                     <Badge
                       className="position-bar"
                       text={`${Number(position.pool.fee) / 10000}%`}

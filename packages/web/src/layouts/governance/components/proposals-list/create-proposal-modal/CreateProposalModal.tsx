@@ -278,6 +278,26 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
     setIsOpenCreateModal(false);
   };
 
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    if (value === "" || value === ".") {
+      return;
+    }
+
+    if (isNaN(Number(value))) {
+      return;
+    }
+
+    const decimalIndex = value.indexOf(".");
+    if (decimalIndex !== -1) {
+      const decimals = value.slice(decimalIndex + 1);
+      if (decimals.length > 6) {
+        e.target.value = value.slice(0, decimalIndex + 7);
+      }
+    }
+  };
+
   return (
     <FormProvider methods={methods} onSubmit={sendTx}>
       <CreateProposalModalWrapper>
@@ -332,7 +352,9 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                   min={0}
                   placeholder="0"
                   errorText={errors?.amount ? errors.amount.message : undefined}
-                  {...register("amount")}
+                  {...register("amount", {
+                    onChange: handleAmountChange,
+                  })}
                 />
                 <div className="suffix-currency">
                   <TokenChip tokenInfo={GNS_TOKEN} />

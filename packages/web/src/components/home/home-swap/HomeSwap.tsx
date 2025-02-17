@@ -92,7 +92,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
         <Button
           text={
             <div className="swap-button">
-              Go to Swap <IconRightArrow />
+              Go to Swap <IconRightArrow className="right-arrow" />
             </div>
           }
           // text={t("Main:swapNowBtn")}

@@ -19,6 +19,7 @@ import IncreasePositionModalContainer from "../../../layouts/pool/pool-increase-
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 
 export interface Props {
   openModal: () => void;
@@ -65,6 +66,7 @@ export const useIncreasePositionModal = ({
   const [, setModalContent] = useAtom(CommonState.modalContent);
 
   // Refetch functions
+  const { updateBalances } = useTokenData();
   const { refetch: refetchPools } = useGetPoolList();
   const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(selectedPosition?.poolPath);
 
@@ -154,6 +156,9 @@ export const useIncreasePositionModal = ({
             refetchPools();
             refetchPositions();
             refetchPoolDetails();
+          },
+          onUpdate: async () => {
+            updateBalances();
           },
         });
       }

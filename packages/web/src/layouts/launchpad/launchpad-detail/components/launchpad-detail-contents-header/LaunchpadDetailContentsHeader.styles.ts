@@ -10,11 +10,8 @@ export const ContentsHeaderWrapper = styled.div`
     ${mixins.flexbox("column", "flex-start", "flex-start")};
   }
   .symbol-icon {
-    width: 36px;
-    height: 36px;
     img {
-      width: 100%;
-      height: 100%;
+      object-fit: cover;
     }
   }
   .project-header {

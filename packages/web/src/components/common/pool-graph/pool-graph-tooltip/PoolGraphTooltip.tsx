@@ -5,6 +5,8 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 import { TooltipInfo } from "../PoolGraph.types";
 import { PoolGraphTooltipContainer } from "./PoolGraphTooltip.styles";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { DEVICE_TYPE } from "@styles/media";
 
 function makeClassNameWithSmallFont(className: string, target: string, limitLength = 21) {
   const additionalClassName = "small-font";
@@ -25,18 +27,10 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
   isPosition,
   disabled,
 }) => {
+  const { breakpoint } = useWindowSize();
   const { t } = useTranslation();
 
-  const displayTooltipInfo: {
-    tokenAPrice: string;
-    tokenBPrice: string;
-    tokenAPriceRange: string;
-    tokenBPriceRange: string;
-    totalTokenAAmount: string;
-    totalTokenBAmount: string;
-    depositTokenAAmount: string;
-    depositTokenBAmount: string;
-  } = useMemo(() => {
+  const displayTooltipInfo = useMemo(() => {
     if (!tooltipInfo) {
       return {
         tokenAPrice: "-",
@@ -66,14 +60,20 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
     return {
       tokenAPrice: `${tokenAPrice} ${tokenB.symbol}`,
       tokenBPrice: `${tokenBPrice} ${tokenA.symbol}`,
-      tokenAPriceRange: `${tokenARange.min} - ${tokenARange.max} ${tokenB.symbol}`,
-      tokenBPriceRange: `${tokenBRange.max} - ${tokenBRange.min} ${tokenA.symbol}`,
+      tokenAPriceRange:
+        breakpoint === DEVICE_TYPE.MOBILE
+          ? `${tokenARange.min} - ${tokenARange.max}`
+          : `${tokenARange.min} - ${tokenARange.max} ${tokenB.symbol}`,
+      tokenBPriceRange:
+        breakpoint === DEVICE_TYPE.MOBILE
+          ? `${tokenBRange.max} - ${tokenBRange.min}`
+          : `${tokenBRange.max} - ${tokenBRange.min} ${tokenA.symbol}`,
       totalTokenAAmount: tokenAAmount || "0",
       totalTokenBAmount: tokenBAmount || "0",
       depositTokenAAmount: depositTokenAAmount || "0",
       depositTokenBAmount: depositTokenBAmount || "0",
     };
-  }, [tooltipInfo]);
+  }, [tooltipInfo, breakpoint]);
 
   const isDisplayPositionAmount = useMemo(() => {
     if (!!tooltipInfo?.disabled) {

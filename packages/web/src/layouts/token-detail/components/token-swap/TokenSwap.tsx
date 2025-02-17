@@ -18,6 +18,7 @@ import { DataTokenInfo } from "@models/token/token-swap-model";
 
 import { CopyTooltip, wrapper } from "./TokenSwap.styles";
 import IconWallet from "@components/common/icons/IconWallet";
+import { useTokenBalancesDisplay } from "@hooks/token/ui/use-token-balance-display";
 
 export interface TokenSwapProps {
   isSwitchNetwork: boolean;
@@ -82,6 +83,12 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   const tokenA = dataTokenInfo.tokenA;
   const tokenB = dataTokenInfo.tokenB;
   const direction = swapSummaryInfo?.swapDirection;
+
+  const { tokenA: balanceADisplay, tokenB: balanceBDisplay } = useTokenBalancesDisplay(
+    dataTokenInfo.tokenABalance,
+    dataTokenInfo.tokenBBalance,
+    connectedWallet,
+  );
 
   const onChangeTokenAAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -181,7 +188,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
             <div className="balance-wrapper">
               {connectedWallet && <IconWallet />}
               <span className={`balance-text ${tokenA && connectedWallet && "balance-text-disabled"}`}>
-                {dataTokenInfo.tokenABalance}
+                {balanceADisplay}
               </span>
               {hasTokenABalance && (
                 <button className="balance-max-button" onClick={handleAutoFillTokenA}>
@@ -213,7 +220,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
             <div className="balance-wrapper">
               {connectedWallet && <IconWallet />}
               <span className={`balance-text ${tokenB && connectedWallet && "balance-text-disabled"}`}>
-                {dataTokenInfo.tokenBBalance}
+                {balanceBDisplay}
               </span>
             </div>
           </div>

@@ -48,7 +48,7 @@ export const ActiveProjectCardHeader = styled.div`
       overflow: hidden;
       text-overflow: ellipsis;
       ${media.tablet} {
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 400;
         /* max-width: 406px; */
       }
@@ -56,11 +56,7 @@ export const ActiveProjectCardHeader = styled.div`
   }
   .image-wrapper {
     align-self: flex-start;
-    width: 60px;
-    height: 60px;
     img {
-      width: 100%;
-      height: 100%;
       object-fit: cover;
     }
   }
