@@ -45,6 +45,8 @@ export enum QUERY_KEY {
   positionBins = "positionBins",
   positionLazyBins = "positionLazyBins",
   positionDetail = "positionDetail",
+  // swap
+  swapHistory = "swap-history",
   // router
   router = "swap-estimate-router",
   swapFee = "swap-fee",
