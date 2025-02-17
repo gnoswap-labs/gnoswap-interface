@@ -32,6 +32,7 @@ import { sortTokenPaths } from "@utils/sort-utils";
 import PoolAddLiquidity, { PriceRangeSummary } from "../../components/pool-add-liquidity/PoolAddLiquidity";
 import { usePool } from "@hooks/pool/data/use-pool";
 import { usePoolAddLiquidityConfirmModal } from "@hooks/pool/ui/use-pool-add-liquidity-confirm-modal";
+import { isSameToken } from "@utils/common";
 
 export const SWAP_FEE_TIERS: SwapFeeTierType[] = ["FEE_100", "FEE_500", "FEE_3000", "FEE_10000"];
 
@@ -247,7 +248,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const changeTokenA = useCallback(
     (token: TokenModel) => {
       setSwapValue(prev => {
-        if (token.wrappedPath === prev.tokenB?.wrappedPath) {
+        if (isSameToken(token.path, prev.tokenB?.path || "")) {
           return {
             tokenA: token,
             tokenB: null,
@@ -275,7 +276,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const changeTokenB = useCallback(
     (token: TokenModel) => {
       setSwapValue(prev => {
-        if (token.wrappedPath === prev.tokenA?.wrappedPath) {
+        if (isSameToken(token.path, prev.tokenA?.path || "")) {
           return {
             tokenA: null,
             tokenB: token,
