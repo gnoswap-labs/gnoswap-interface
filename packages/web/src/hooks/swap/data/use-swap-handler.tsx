@@ -162,7 +162,8 @@ export const useSwapHandler = () => {
   const [openedConfirmModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { connected: connectedWallet, isSwitchNetwork, switchNetwork } = useWallet();
-  const { tokens, tokenPrices, displayBalanceMap, updateBalances, getTokenUSDPrice } = useTokenData();
+  const { tokens, tokenPrices, displayBalanceMap, updateBalances, getTokenUSDPrice, refetchGrc20Balances } =
+    useTokenData();
   const { slippage, changeSlippage } = useSlippage();
   const { openModal } = useConnectWalletModal();
   const { data: swapFee } = useGetSwapFee();
@@ -598,6 +599,7 @@ export const useSwapHandler = () => {
     setTokenAAmount("0");
     setTokenBAmount("0");
     resetSwapAmount();
+    refetchGrc20Balances();
     updateBalances();
     queryClient.removeQueries({
       queryKey: [QUERY_KEY.router],
@@ -877,7 +879,11 @@ export const useSwapHandler = () => {
                 };
               },
               onUpdate: async () => {
+                await refetchGrc20Balances();
                 await updateBalances();
+              },
+              onEmit: async () => {
+                await refetchGrc20Balances();
               },
             });
           }
@@ -927,7 +933,11 @@ export const useSwapHandler = () => {
               action: DexEvent.UNWRAP,
               formatData: () => messageData,
               onUpdate: async () => {
+                await refetchGrc20Balances();
                 await updateBalances();
+              },
+              onEmit: async () => {
+                await refetchGrc20Balances();
               },
             });
           }
@@ -1023,7 +1033,11 @@ export const useSwapHandler = () => {
                 };
               },
               onUpdate: async () => {
+                await refetchGrc20Balances();
                 await updateBalances();
+              },
+              onEmit: async () => {
+                await refetchGrc20Balances();
               },
             });
           }

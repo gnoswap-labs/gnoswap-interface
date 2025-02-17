@@ -6,6 +6,8 @@ import { QUERY_KEY } from "../query-keys";
 import { IBalancesByAddressResponse } from "@repositories/token/response/balance-by-address-response";
 import { AccountError } from "@common/errors/account";
 
+const REFETCH_INTERVAL = 5_000;
+
 export const useGetGrc20Balances = (
   address: string | null,
   options?: UseQueryOptions<IBalancesByAddressResponse, Error>,
@@ -20,6 +22,7 @@ export const useGetGrc20Balances = (
       }
       return tokenRepository.getGrc20BalancesByAddress(address);
     },
+    refetchInterval: REFETCH_INTERVAL,
     ...options,
   });
 };

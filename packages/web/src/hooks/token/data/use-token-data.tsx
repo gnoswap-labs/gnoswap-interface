@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 
 import { GNOT_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
@@ -212,7 +212,6 @@ export const useTokenData = () => {
       if (!grc20BalancesData?.data) {
         return 0;
       }
-
       const balance = grc20BalancesData.data.find(balance => balance.path === token.path);
       return balance ? Number(balance.amount) : 0;
     },
@@ -236,7 +235,7 @@ export const useTokenData = () => {
         return null;
       }
     },
-    [account, availNetwork, rpcProvider, fetchNativeTokenBalance, getGrc20Balance],
+    [account, availNetwork, rpcProvider, fetchNativeTokenBalance, getGrc20Balance, grc20BalancesData],
   );
 
   const updateBalances = useCallback(async () => {
@@ -271,7 +270,24 @@ export const useTokenData = () => {
       setBalances(balancesData);
     }
     setLoadingBalance(false);
-  }, [availNetwork, account, balances, fetchTokenBalance, loadingBalance, rpcProvider, tokens]);
+  }, [availNetwork, account, balances, fetchTokenBalance, loadingBalance, rpcProvider, tokens, grc20BalancesData]);
+
+  /**
+   * Update the overall balance whenever GRC20 token balance data changes
+   *
+   *  * Key trigger situations:
+   * 1. after completion of a transaction (SWAP, ADD LIQUIDITY, etc.)
+   * 2. automatic refetch of useGetGrc20Balances (every 5 seconds)
+   * 3. when calling refetchGrc20Balances manually
+   *.
+   * Update process:
+   * 1. Get Native Token (GNOT) balance.
+   * 2. Get all GRC20 token balances
+   * 3. compare with previous balance and update status only if there are changes
+   */
+  useEffect(() => {
+    updateBalances();
+  }, [grc20BalancesData]);
 
   return {
     gnotToken,
@@ -295,5 +311,6 @@ export const useTokenData = () => {
     isLoadingTokenPrice,
     isChangeBalancesToken,
     setIsChangeBalancesToken,
+    refetchGrc20Balances,
   };
 };
