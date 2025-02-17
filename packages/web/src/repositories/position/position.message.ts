@@ -213,7 +213,7 @@ export function makeStakePositionsMessagesWithApproves({
       send: "",
       func: TransactionMessageFunctionType.StakeToken,
       packagePath: PACKAGE_STAKER_PATH,
-      args: [lpTokenId.toString()],
+      args: [lpTokenId.toString(), ""], // Referral address
       caller,
     }),
   ]);
