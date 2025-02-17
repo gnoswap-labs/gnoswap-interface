@@ -66,6 +66,7 @@ export function makeExactInSwapRouteMessageWithApproves(
       `${quotes}`,
       tokenAmountLimitRaw,
       `${deadline}`,
+      "", // Referral address
     ],
     caller,
   });
@@ -139,6 +140,7 @@ export function makeExactOutSwapRouteMessageWithApproves(
       `${quotes}`,
       tokenAmountLimitRaw,
       `${deadline}`,
+      "", // Referral address
     ],
     caller,
   });

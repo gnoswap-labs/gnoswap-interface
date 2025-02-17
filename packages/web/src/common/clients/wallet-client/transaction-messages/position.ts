@@ -41,6 +41,7 @@ export function makePositionMintMessage(
       deadline,
       caller, // LP Token Receiver
       caller, // Replace OriginCaller
+      "", // Referral address
     ],
   });
 }
@@ -78,6 +79,7 @@ export function makePositionMintWithStakeMessage(
       BigNumber(tokenAAmount).multipliedBy(slippageRatio).toFixed(0),
       BigNumber(tokenBAmount).multipliedBy(slippageRatio).toFixed(0),
       deadline,
+      "", // Referral address
     ],
   });
 }
@@ -104,6 +106,7 @@ export function makePositionIncreaseLiquidityMessage(
       BigNumber(amount0Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum amount of tokenA to provide
       BigNumber(amount1Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum amount of tokenB to provide
       "9999999999", // Deadline UTC time
+      "", // Referral address
     ],
     caller,
   });
@@ -134,6 +137,7 @@ export function makePositionRepositionLiquidityMessage(
       `${amount1Desired}`, // Maximum amount of tokenB to offer
       BigNumber(amount0Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum amount of tokenA to provide
       BigNumber(amount1Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum amount of tokenB to provide
+      "", // Referral address
     ],
     caller,
   });
@@ -161,6 +165,7 @@ export function makePositionDecreaseLiquidityMessage(
       BigNumber(amount1Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum quantity of tokenB to decrease liquidity
       "9999999999", // Deadline UTC time
       `${!isGetWGNOT}`, // whether unwrap token : isGetWGNOT == true => wrap
+      "", // Referral address
     ],
     caller,
   });
@@ -174,6 +179,7 @@ export function makePositionCollectFeeMessage(lpTokenId: string, isGetWGNOT: boo
     args: [
       lpTokenId,
       `${!isGetWGNOT}`, // whether unwrap token, true will get GNOT : isGetWGNOT == true => wrap
+      "", // Referral address
     ],
     caller,
   });
