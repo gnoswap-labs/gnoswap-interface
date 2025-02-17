@@ -27,9 +27,8 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
     if (!tokenA || !tokenB) {
       return [];
     }
-    const tokenATokenPath = checkGnotPath(tokenA.path) ? tokenA.wrappedPath : tokenA.path;
-    const tokenBTokenPath = checkGnotPath(tokenB.path) ? tokenB.wrappedPath : tokenB.path;
-
+    const tokenATokenPath = tokenA.wrappedPath || tokenA.path;
+    const tokenBTokenPath = tokenB.wrappedPath || tokenB.path;
     const tokenPair = [tokenATokenPath, tokenBTokenPath].sort(sortTokenPaths);
 
     return [
