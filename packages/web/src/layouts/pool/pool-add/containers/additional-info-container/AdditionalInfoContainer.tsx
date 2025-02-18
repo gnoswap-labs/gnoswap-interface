@@ -98,12 +98,12 @@ const AdditionalInfoContainer: React.FC = () => {
 
   const stakedPositions = useMemo(() => {
     if (!poolPath || !account || !connected) return [];
-    return positions.filter(position => position.staked);
+    return positions.filter(position => position.poolPath === poolPath && position.staked);
   }, [poolPath, account, connected, positions]);
 
   const unstakedPositions = useMemo(() => {
     if (!poolPath || !account || !connected) return [];
-    return positions.filter(position => !position.staked);
+    return positions.filter(position => position.poolPath === poolPath && !position.staked);
   }, [poolPath, account, connected, positions]);
 
   const isReversed = useMemo(() => {
