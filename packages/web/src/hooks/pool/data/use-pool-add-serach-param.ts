@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 
 import useCustomRouter from "@hooks/common/use-custom-router";
-import { checkGnotPath } from "@utils/common";
 import { sortTokenPaths } from "@utils/sort-utils";
 
 export const usePoolAddSearchParams = () => {
@@ -17,7 +16,7 @@ export const usePoolAddSearchParams = () => {
       const poolPathSplit = poolPathParam?.split(":");
       return [poolPathSplit[0], poolPathSplit[1]];
     }
-    return [checkGnotPath(tokenAPath), checkGnotPath(tokenBPath)].sort(sortTokenPaths);
+    return [tokenAPath, tokenBPath].sort(sortTokenPaths);
   }, [poolPathParam, tokenAPath, tokenBPath]);
 
   const poolPath = useMemo(() => {
