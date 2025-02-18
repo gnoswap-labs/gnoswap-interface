@@ -27,11 +27,13 @@ import {
   makeUnwrapTokenMessages,
   makeWrapTokenMessages,
 } from "./swap-router.message";
+import { calculateTotalAmountOut } from "@utils/swap-route-utils";
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
   private networkClient: NetworkClient | null;
   private walletClient: WalletClient | null;
+  private readonly MAX_SWAP_ROUTE_ESTIMATION_DEVIATION = 0;
 
   constructor(rpcProvider: GnoProvider | null, walletClient: WalletClient | null, networkClient: NetworkClient | null) {
     this.rpcProvider = rpcProvider;
@@ -83,7 +85,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     return response.data;
   };
 
-  //Todo: Implement this code
   public getDrySwap = async (request: DrySwapRequest): Promise<number> => {
     if (!this.rpcProvider) {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
@@ -106,21 +107,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const address = await this.getAddress();
 
-    const drySwapRequest: DrySwapRequest = {
-      inputToken: request.inputToken,
-      outputToken: request.outputToken,
-      tokenAmount: request.tokenAmount,
-      estimatedRoutes: request.estimatedRoutes,
-      tokenAmountLimit: request.tokenAmountLimit,
-      exactType: "EXACT_IN",
-    };
-
-    // Dry SWAP implement
-    await this.getDrySwap(drySwapRequest);
-    // const drySwapResponse = await this.getDrySwap(drySwapRequest);
-    // if (drySwapResponse.status !== 200) {
-    //   throw new SwapError("SWAP_FAILED");
-    // }
+    await this.validateAndGetDrySwap(request, "EXACT_IN");
 
     const messages = await makeExactInSwapRouteMessageWithApproves(
       { ...request, caller: address },
@@ -143,21 +130,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const address = await this.getAddress();
 
-    const drySwapRequest: DrySwapRequest = {
-      inputToken: request.inputToken,
-      outputToken: request.outputToken,
-      tokenAmount: request.tokenAmount,
-      estimatedRoutes: request.estimatedRoutes,
-      tokenAmountLimit: request.tokenAmountLimit,
-      exactType: "EXACT_OUT",
-    };
-
-    // Dry SWAP implement
-    await this.getDrySwap(drySwapRequest);
-    // const drySwapResponse = await this.getDrySwap(drySwapRequest);
-    // if (drySwapResponse.status !== 200) {
-    //   throw new SwapError("SWAP_FAILED");
-    // }
+    await this.validateAndGetDrySwap(request, "EXACT_OUT");
 
     const messages = await makeExactOutSwapRouteMessageWithApproves(
       { ...request, caller: address },
@@ -222,5 +195,46 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     }
 
     return address;
+  }
+
+  private async validateAndGetDrySwap(request: SwapRouteRequest, exactType: "EXACT_IN" | "EXACT_OUT"): Promise<number> {
+    const drySwapRequest: DrySwapRequest = {
+      inputToken: request.inputToken,
+      outputToken: request.outputToken,
+      tokenAmount: request.tokenAmount,
+      estimatedRoutes: request.estimatedRoutes,
+      tokenAmountLimit: request.tokenAmountLimit,
+      exactType,
+    };
+
+    const apiEstimatedAmount = calculateTotalAmountOut(drySwapRequest.estimatedRoutes);
+    const drySwapAmount = await this.getDrySwap(drySwapRequest);
+
+    this.validateSwapRouteEstimation(apiEstimatedAmount, drySwapAmount);
+
+    return drySwapAmount;
+  }
+
+  private validateSwapRouteEstimation(apiEstimatedAmount: number, drySwapAmount: number): void {
+    const estimationDiff = Math.abs(
+      new BigNumber(apiEstimatedAmount).minus(drySwapAmount).div(apiEstimatedAmount).toNumber(),
+    );
+
+    if (estimationDiff > this.MAX_SWAP_ROUTE_ESTIMATION_DEVIATION) {
+      this.logSwapRouteEstimationComparison(apiEstimatedAmount, drySwapAmount, estimationDiff);
+      throw new SwapError("DRY_SWAP_DEVIATION_EXCEEDED");
+    }
+  }
+
+  private logSwapRouteEstimationComparison(
+    apiEstimatedAmount: number,
+    drySwapAmount: number,
+    estimationDiff: number,
+  ): void {
+    console.log("=== Swap Estimation Comparison ===");
+    console.log("API Estimated Amount:", apiEstimatedAmount.toString());
+    console.log("Dry Swap Amount:", drySwapAmount.toString());
+    console.log(`Estimation Diff Rate: ${(estimationDiff * 100).toFixed(4)}%`);
+    console.log("==================================");
   }
 }
