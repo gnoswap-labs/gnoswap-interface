@@ -7,7 +7,6 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolModel } from "@models/pool/pool-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { useGetPoolCreationFee, useGetRPCPoolsBy } from "@query/pools";
-import { checkGnotPath } from "@utils/common";
 import { sortTokenPaths } from "@utils/sort-utils";
 
 interface Props {
@@ -63,8 +62,8 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
       return [];
     }
 
-    const tokenATokenPath = checkGnotPath(tokenA.path) ? tokenA.wrappedPath : tokenA.path;
-    const tokenBTokenPath = checkGnotPath(tokenB.path) ? tokenB.wrappedPath : tokenB.path;
+    const tokenATokenPath = tokenA.wrappedPath || tokenA.path;
+    const tokenBTokenPath = tokenB.wrappedPath || tokenB.path;
 
     const tokenPairOfPaths = [tokenATokenPath, tokenBTokenPath];
     return pools?.filter(pool => {
