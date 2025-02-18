@@ -26,7 +26,7 @@ const useSendAsset = () => {
   const { enqueueEvent } = useTransactionEventStore();
 
   // Refetch functions
-  const { updateBalances } = useTokenData();
+  const { updateBalances, refetchGrc20Balances } = useTokenData();
 
   const [loading, setLoading] = useState(false);
   const [isConfirm, setIsConfirm] = useState(false);
@@ -68,7 +68,11 @@ const useSendAsset = () => {
               tokenAAmount: tokenAmount,
             }),
             onUpdate: async () => {
-              updateBalances();
+              await refetchGrc20Balances();
+              await updateBalances();
+            },
+            onEmit: async () => {
+              await refetchGrc20Balances();
             },
           });
         }

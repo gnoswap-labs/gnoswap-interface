@@ -46,7 +46,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address, is
   const [loadingTransactionClaim, setLoadingTransactionClaim] = useState(false);
   const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
   const { openModal } = useTransactionConfirmModal();
-  const { tokenPrices, updateBalances } = useTokenData();
+  const { tokenPrices, updateBalances, refetchGrc20Balances } = useTokenData();
 
   const { getMessage } = useMessage();
 
@@ -132,9 +132,11 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address, is
                 return messageData;
               },
               onUpdate: async () => {
+                await refetchGrc20Balances();
                 await updateBalances();
               },
               onEmit: async () => {
+                await refetchGrc20Balances();
                 await refetchPositions();
               },
             });
@@ -183,9 +185,11 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address, is
               return messageData;
             },
             onUpdate: async () => {
+              await refetchGrc20Balances();
               await updateBalances();
             },
             onEmit: async () => {
+              await refetchGrc20Balances();
               await refetchPositions();
             },
           });

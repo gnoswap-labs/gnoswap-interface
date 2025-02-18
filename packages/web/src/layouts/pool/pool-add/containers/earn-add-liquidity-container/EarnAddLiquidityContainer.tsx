@@ -65,7 +65,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const { connected: connectedWallet, account, switchNetwork, isSwitchNetwork } = useWallet();
   const { slippage, changeSlippage } = useSlippage();
-  const { updateBalances, updateTokenPrices, tokens, loading: isLoadingTokens } = useTokenData();
+  const { refetchGrc20Balances, updateBalances, updateTokenPrices, tokens, loading: isLoadingTokens } = useTokenData();
   const [createOption, setCreateOption] = useState<{
     startPrice: number | null;
     isCreate: boolean;
@@ -505,6 +505,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   useEffect(() => {
     if (account?.address) {
+      refetchGrc20Balances();
       updateBalances();
     }
   }, [account?.address]);

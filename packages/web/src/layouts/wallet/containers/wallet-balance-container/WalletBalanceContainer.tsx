@@ -39,7 +39,7 @@ const WalletBalanceContainer: React.FC = () => {
   const [sendAssetAmount, setSendAssetAmount] = useState("");
 
   const { data: blockTimeData } = useGetAvgBlockTime();
-  const { balances: balancesPrice, loadingBalance, updateBalances } = useTokenData();
+  const { balances: balancesPrice, loadingBalance, updateBalances, refetchGrc20Balances } = useTokenData();
 
   const { positions, loading: loadingPositions, refetch: refetchPositions } = usePositionData();
 
@@ -94,9 +94,11 @@ const WalletBalanceContainer: React.FC = () => {
             action: DexEvent.CLAIM_FEE,
             formatData: () => messageData,
             onUpdate: async () => {
+              await refetchGrc20Balances();
               await updateBalances();
             },
             onEmit: async () => {
+              await refetchGrc20Balances();
               await refetchPositions();
             },
           });
