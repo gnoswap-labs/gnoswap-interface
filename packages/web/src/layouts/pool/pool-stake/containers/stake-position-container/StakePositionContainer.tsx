@@ -31,7 +31,7 @@ const StakePositionContainer: React.FC = () => {
   const [checkedList, setCheckedList] = useState<number[]>(positionId ? [Number(positionId)] : []);
   // For this domain only show `closed = false` && `staked = false` position
   const unstakedPositions = useMemo(
-    () => allPositionData.filter(item => item.poolPath === poolPath).filter(item => !item.staked),
+    () => allPositionData.filter(position => position.poolPath === poolPath && !position.staked),
     [allPositionData],
   );
 
