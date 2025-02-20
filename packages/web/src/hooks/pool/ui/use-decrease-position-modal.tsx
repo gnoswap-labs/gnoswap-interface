@@ -37,7 +37,7 @@ export interface DecreasePositionModal {
   minPriceStr: string;
   maxPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
-  percent: number;
+  calculatedLiquidity: string;
   pooledTokenInfos: IPooledTokenInfo | null;
   isGetWGNOT: boolean;
   refetchPositions: () => Promise<void>;
@@ -52,7 +52,7 @@ export const useDecreasePositionModal = ({
   minPriceStr,
   maxPriceStr,
   rangeStatus,
-  percent,
+  calculatedLiquidity,
   pooledTokenInfos,
   isGetWGNOT,
   refetchPositions,
@@ -61,6 +61,8 @@ export const useDecreasePositionModal = ({
   const { address } = useAddress();
   const { positionRepository } = useGnoswapContext();
   const clearModal = useClearModal();
+
+  console.log(calculatedLiquidity, "use-decrease-position-modal");
 
   const onSuccessClose = useCallback(() => {
     clearModal();
@@ -158,7 +160,7 @@ export const useDecreasePositionModal = ({
     const result = await positionRepository
       .decreaseLiquidity({
         lpTokenId: positionId,
-        decreaseRatio: percent,
+        calculatedLiquidity,
         tokenA,
         tokenB,
         tokenAAmount: poolAmountA,
@@ -253,7 +255,17 @@ export const useDecreasePositionModal = ({
       }
     }
     return true;
-  }, [address, percent, pooledTokenInfos, positionId, positionRepository, router, tokenA, tokenB, willWrap]);
+  }, [
+    address,
+    calculatedLiquidity,
+    pooledTokenInfos,
+    positionId,
+    positionRepository,
+    router,
+    tokenA,
+    tokenB,
+    willWrap,
+  ]);
 
   const openModal = useCallback(() => {
     if (!amountInfo) {
@@ -266,7 +278,7 @@ export const useDecreasePositionModal = ({
         minPriceStr={minPriceStr}
         maxPriceStr={maxPriceStr}
         rangeStatus={rangeStatus}
-        percent={percent}
+        calculateLiquidity={calculatedLiquidity}
         pooledTokenInfos={pooledTokenInfos}
         confirm={confirm}
       />,

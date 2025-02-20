@@ -35,6 +35,7 @@ export interface IPooledTokenInfo {
   tokenBBalance: string;
   tokenARemainingAmount: string;
   tokenBRemainingAmount: string;
+  liquidity: string;
 }
 
 export type DeCREASE_BUTTON_TYPE = "ENTER_AMOUNT" | "INCREASE_LIQUIDITY";
@@ -254,6 +255,7 @@ export const useDecreaseHandle = () => {
             isKMB: false,
           })
         : "-",
+      liquidity: selectedPosition.liquidity.toString(),
     };
   }, [selectedPosition, tokenPrices, percent]);
 

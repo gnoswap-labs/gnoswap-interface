@@ -16,7 +16,7 @@ interface Props {
   minPriceStr: string;
   maxPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
-  percent: number;
+  calculateLiquidity: string;
   pooledTokenInfos: IPooledTokenInfo | null;
   confirm: () => void;
 }
@@ -27,7 +27,7 @@ const DecreasePositionModalContainer: React.FC<Props> = ({
   maxPriceStr,
   minPriceStr,
   rangeStatus,
-  percent,
+  calculateLiquidity,
   pooledTokenInfos,
 }) => {
   const clearModal = useClearModal();
@@ -35,6 +35,8 @@ const DecreasePositionModalContainer: React.FC<Props> = ({
   const close = useCallback(() => {
     clearModal();
   }, [clearModal]);
+
+  console.log(calculateLiquidity, "decreasepositionmodalconatiner");
 
   return (
     <DecreasePositionModal
@@ -44,7 +46,7 @@ const DecreasePositionModalContainer: React.FC<Props> = ({
       maxPriceStr={maxPriceStr}
       minPriceStr={minPriceStr}
       rangeStatus={rangeStatus}
-      percent={percent}
+      calculateLiquidity={calculateLiquidity}
       pooledTokenInfos={pooledTokenInfos}
     />
   );

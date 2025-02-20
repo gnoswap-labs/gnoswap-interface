@@ -349,7 +349,7 @@ export function makeIncreaseLiquidityMessagesWithApproves(
 export function makeDecreaseLiquidityMessagesWithApproves(
   {
     lpTokenId,
-    decreaseRatio,
+    calculatedLiquidity,
     tokenA,
     tokenB,
     tokenAAmount,
@@ -360,7 +360,7 @@ export function makeDecreaseLiquidityMessagesWithApproves(
     deadline = "9999999999",
   }: {
     lpTokenId: string;
-    decreaseRatio: number;
+    calculatedLiquidity: string;
     tokenA: TokenModel;
     tokenB: TokenModel;
     tokenAAmount: number;
@@ -374,9 +374,6 @@ export function makeDecreaseLiquidityMessagesWithApproves(
 ): Promise<TransactionMessage[]> {
   const tokenAWrappedPath = tokenA.wrappedPath || checkGnotPath(tokenA.path);
   const tokenBWrappedPath = tokenB.wrappedPath || checkGnotPath(tokenB.path);
-
-  const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
-  const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
 
   // Make Approve messages that can be managed by a Pool package of tokens.
   const approveMessageInfos: TokenApproveMessageInfo[] = [
@@ -412,9 +409,9 @@ export function makeDecreaseLiquidityMessagesWithApproves(
     packagePath: PACKAGE_POSITION_PATH,
     args: [
       lpTokenId, // LP Token ID
-      decreaseRatio?.toString(), // Percentage of liquidity to reduce (0 ~ 100)
-      BigNumber(tokenAAmountRaw).multipliedBy(slippageRatio).toFixed(0), // Minimum quantity of tokenA to decrease liquidity
-      BigNumber(tokenBAmountRaw).multipliedBy(slippageRatio).toFixed(0), // Minimum quantity of tokenB to decrease liquidity
+      BigNumber(calculatedLiquidity).multipliedBy(slippageRatio).toFixed(0), // liquidity to decrease value
+      BigNumber(tokenAAmount).multipliedBy(slippageRatio).toFixed(0), // Minimum quantity of tokenA to decrease liquidity
+      BigNumber(tokenBAmount).multipliedBy(slippageRatio).toFixed(0), // Minimum quantity of tokenB to decrease liquidity
       deadline, // Deadline UTC time
       `${!isGetWGNOT}`, // whether unwrap token : isGetWGNOT == true => wrap
     ],
