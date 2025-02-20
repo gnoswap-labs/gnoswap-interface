@@ -151,9 +151,6 @@ export const wrapper = (theme: Theme) => css`
         background-color: ${theme.color.background01};
         border: 1px solid ${theme.color.border02};
         border-radius: 50%;
-        :hover {
-          /* background-color: ${theme.color.backgroundGradient}; */
-        }
         .shape-icon {
           width: 16px;
           height: 16px;

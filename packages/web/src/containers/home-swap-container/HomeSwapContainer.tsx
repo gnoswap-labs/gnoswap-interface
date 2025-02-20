@@ -17,13 +17,6 @@ import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 
 const DEFAULT_TOKEN_A_AMOUNT = "1000";
 const TOKEN_ROTATION_INTERVAL = 2000 as const;
-const TOKEN_TRANSITION_DURATION = 500 as const;
-
-// Interface for animating token conversions
-interface TokenTransition {
-  isChanging: boolean;
-  prevToken: TokenModel | null;
-}
 
 const HomeSwapContainer: React.FC = () => {
   const router = useRouter();
@@ -33,11 +26,6 @@ const HomeSwapContainer: React.FC = () => {
   const [tokenB, setTokenB] = useState<TokenModel | null>(GNS_TOKEN);
   // Index of the currently circulating token
   const [currentTokenIndex, setCurrentTokenIndex] = React.useState(0);
-  // Manage the transition state of token B (for animation purposes)
-  const [tokenBTransition, setTokenBTransition] = useState<TokenTransition>({
-    isChanging: true,
-    prevToken: null,
-  });
   const [tokenBAmount] = useState<string>("");
   const { slippage } = useSlippage();
   const { connected, isSwitchNetwork } = useWallet();
@@ -101,34 +89,6 @@ const HomeSwapContainer: React.FC = () => {
     }
   }, TOKEN_ROTATION_INTERVAL);
 
-  // Animate the transition whenever token B changes
-  useEffect(() => {
-    // when the token has actually changed
-    if (tokenB && tokenBTransition.prevToken && tokenBTransition.prevToken.path !== tokenB.path) {
-      // Set transition to start state
-      setTokenBTransition(prev => ({
-        isChanging: true,
-        prevToken: prev.prevToken,
-      }));
-
-      // Change to transition complete after 500ms
-      const timer = setTimeout(() => {
-        setTokenBTransition({
-          isChanging: false,
-          prevToken: tokenB,
-        });
-      }, TOKEN_TRANSITION_DURATION);
-
-      return () => clearTimeout(timer);
-      // on initial token setup
-    } else if (tokenB && !tokenBTransition.prevToken) {
-      setTokenBTransition({
-        isChanging: false,
-        prevToken: tokenB,
-      });
-    }
-  }, [tokenB]);
-
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
     return {
       tokenA,
@@ -166,15 +126,7 @@ const HomeSwapContainer: React.FC = () => {
       tokenBAmount: "",
     });
   }, []);
-  return (
-    <HomeSwap
-      swapTokenInfo={swapTokenInfo}
-      swapNow={swapNow}
-      connected={connected}
-      tokenBTransition={tokenBTransition}
-      defaultTokenAAmount={DEFAULT_TOKEN_A_AMOUNT}
-    />
-  );
+  return <HomeSwap swapTokenInfo={swapTokenInfo} swapNow={swapNow} connected={connected} tokenB={tokenB} />;
 };
 
 export default HomeSwapContainer;

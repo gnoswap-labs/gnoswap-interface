@@ -20,18 +20,55 @@ interface HomeSwapProps {
     isChanging: boolean;
     prevToken: TokenModel | null;
   };
-  defaultTokenAAmount?: string;
+  tokenB: TokenModel | null;
 }
 
-const HomeSwap: React.FC<HomeSwapProps> = ({
-  swapTokenInfo,
-  swapNow,
-  connected,
-  tokenBTransition,
-  defaultTokenAAmount,
-}) => {
+// Interface for animating token conversions
+interface TokenTransition {
+  isChanging: boolean;
+  prevToken: TokenModel | null;
+}
+
+const UI_SAMPLE_MIN = 0;
+const UI_SAMPLE_VALUE = 1_000;
+const TOKEN_TRANSITION_DURATION = 500 as const;
+
+const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, connected, tokenB }) => {
   const { t } = useTranslation();
   const { breakpoint } = useWindowSize();
+
+  // Manage the transition state of token B (for animation purposes)
+  const [tokenBTransition, setTokenBTransition] = React.useState<TokenTransition>({
+    isChanging: true,
+    prevToken: null,
+  });
+
+  React.useEffect(() => {
+    // when the token has actually changed
+    if (tokenB && tokenBTransition.prevToken && tokenBTransition.prevToken.path !== tokenB.path) {
+      // Set transition to start state
+      setTokenBTransition(prev => ({
+        isChanging: true,
+        prevToken: prev.prevToken,
+      }));
+
+      // Change to transition complete after 500ms
+      const timer = setTimeout(() => {
+        setTokenBTransition({
+          isChanging: false,
+          prevToken: tokenB,
+        });
+      }, TOKEN_TRANSITION_DURATION);
+
+      return () => clearTimeout(timer);
+      // on initial token setup
+    } else if (tokenB && !tokenBTransition.prevToken) {
+      setTokenBTransition({
+        isChanging: false,
+        prevToken: tokenB,
+      });
+    }
+  }, [tokenB]);
 
   const onClickSwapNow = useCallback(() => {
     swapNow();
@@ -45,7 +82,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
       <div className="inputs">
         <div className="from">
           <div className="amount">
-            <div className="amount-text">{defaultTokenAAmount}</div>
+            <div className="amount-text">{UI_SAMPLE_VALUE}</div>
             <div className="token">
               <SelectPairButton token={swapTokenInfo.tokenA} hiddenModal />
             </div>
@@ -54,7 +91,7 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
             <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
             <span className={`balance-text ${connected ? "balance-text-disabled" : ""}`}>
               <IconWallet />
-              1,000
+              {UI_SAMPLE_VALUE.toLocaleString()}
             </span>
           </div>
         </div>
@@ -76,7 +113,8 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
                   isChanging: tokenBTransition?.isChanging,
                 })}
               >
-                <IconWallet />0
+                <IconWallet />
+                {UI_SAMPLE_MIN}
               </span>
             )}
           </div>
@@ -95,7 +133,6 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
               Go to Swap <IconRightArrow className="right-arrow" />
             </div>
           }
-          // text={t("Main:swapNowBtn")}
           style={{
             fullWidth: true,
             height: 50,
