@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 
@@ -28,6 +29,7 @@ import {
   AssetReceiveTooltipContent,
   DepositWarningContentWrapper,
 } from "./AssetReceiveModal.styles";
+import { EXT_URL } from "@constants/external-url.contant";
 
 export const DEFAULT_DEPOSIT_GNOT = GNOT_TOKEN;
 
@@ -158,10 +160,10 @@ const AssetReceiveModal: React.FC<Props> = ({ close, breakpoint, avgBlockTime, c
                     <li>{t("Modal:assetReceive.warning.content2")}</li>
                   </ul>
 
-                  <a href="https://beta.gnoswap.io/" target="_blank" className="learn-more-box">
+                  <Link href={EXT_URL.DOCS.DEPOSIT} target="_blank" className="learn-more-box">
                     <p>{t("common:learnMore")}</p>
                     <IconNewTab color={theme.color.icon21} />
-                  </a>
+                  </Link>
                 </DepositWarningContentWrapper>
               }
             />

@@ -1,4 +1,5 @@
 import { useTheme } from "@emotion/react";
+import Link from "next/link";
 import BigNumber from "bignumber.js";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -14,15 +15,16 @@ import SelectPairButton from "@components/common/select-pair-button/SelectPairBu
 import Tooltip from "@components/common/tooltip/Tooltip";
 import WarningCard from "@components/common/warning-card/WarningCard";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
-import { usePositionModal } from "@hooks/wallet/ui/use-position-modal";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { TokenModel } from "@models/token/token-model";
+import { usePositionModal } from "@hooks/wallet/ui/use-position-modal";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatPrice } from "@utils/new-number-utils";
 import { capitalize } from "@utils/string-utils";
 import { isValidAddress } from "@utils/validation-utils";
 
+import IconWallet from "@components/common/icons/IconWallet";
 import {
   AssetSendContent,
   AssetSendModalBackground,
@@ -30,7 +32,7 @@ import {
   AssetSendTooltipContent,
   AssetSendWarningContentWrapper,
 } from "./AssetSendModal.styles";
-import IconWallet from "@components/common/icons/IconWallet";
+import { EXT_URL } from "@constants/external-url.contant";
 
 const DEFAULT_WITHDRAW_GNOT = GNOT_TOKEN;
 
@@ -84,11 +86,23 @@ const AssetSendModal: React.FC<Props> = ({
   const onChangeAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
+      const decimals = withdrawInfo?.decimals || 0;
 
-      if (value !== "" && !isAmount(value)) return;
+      if (value === "") {
+        setAmount("");
+        return;
+      }
+
+      if (!isAmount(value)) return;
+
+      if (value.includes(".")) {
+        const [, decimal] = value.split(".");
+        if (decimal && decimal.length > decimals) return;
+      }
+
       setAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     },
-    [setAmount],
+    [setAmount, withdrawInfo?.decimals],
   );
 
   const onChangeAddress = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,7 +119,7 @@ const AssetSendModal: React.FC<Props> = ({
 
   const nativeToken = useMemo(() => {
     if (!tokens || tokens.length === 0) return null;
-    return tokens.find(token => token.type === "native");
+    return tokens.find(isNativeToken);
   }, [tokens]);
 
   const currentAvailableBalance = useMemo(
@@ -286,10 +300,10 @@ const AssetSendModal: React.FC<Props> = ({
                     <li>{t("Wallet:assetSendModal.warning.content3")}</li>
                   </ul>
 
-                  <a href="https://beta.gnoswap.io/" target="_blank" className="learn-more-box">
+                  <Link href={EXT_URL.DOCS.WITHDRAW} target="_blank" className="learn-more-box">
                     <p>{t("common:learnMore")}</p>
                     <IconNewTab color={theme.color.icon21} />
-                  </a>
+                  </Link>
                 </AssetSendWarningContentWrapper>
               }
             />

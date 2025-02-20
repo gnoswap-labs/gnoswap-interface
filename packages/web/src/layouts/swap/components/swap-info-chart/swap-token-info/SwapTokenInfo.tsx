@@ -1,13 +1,14 @@
 import React from "react";
 
-import { TokenModel } from "@models/token/token-model";
 import { LineGraphData } from "@components/common/line-graph/LineGraph";
+import { isNativeTokenByType, TokenModel } from "@models/token/token-model";
 
-import { SwapTokenInfoWrapper } from "./SwapTokenInfo.styles";
-import SwapTokenHeader from "./SwapTokenHeader";
+import useElementWidth from "@hooks/common/use-element-width";
 import { useGetTokenDetails, useGetTokenPrices } from "@query/token";
 import SwapTokenChart from "./SwapTokenChart";
-import useElementWidth from "@hooks/common/use-element-width";
+import SwapTokenHeader from "./SwapTokenHeader";
+import { SwapTokenInfoWrapper } from "./SwapTokenInfo.styles";
+import { formatPrice } from "@utils/new-number-utils";
 
 interface SwapTokenInfoProps {
   token: TokenModel;
@@ -25,15 +26,23 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
       name: token.name,
       symbol: token.symbol,
       logoURI: token.logoURI,
-      path: token.type === "native" ? token.wrappedPath : token.path,
-      isNative: token.type === "native",
+      path: isNativeTokenByType(token.type) ? token.wrappedPath : token.path,
+      isNative: isNativeTokenByType(token.type),
     }),
     [token],
   );
 
-  const { data: { usd: currentPrice } = {} } = useGetTokenPrices(tokenData.path as string, {
+  const { data: { usd: rawCurrentPrice } = {} } = useGetTokenPrices(tokenData.path as string, {
     enabled: !!tokenData.path,
   });
+
+  const currentPrice = React.useMemo(() => {
+    return formatPrice(rawCurrentPrice, {
+      isKMB: false,
+      greaterThan1Decimals: 2,
+      forcedDecimals: true,
+    });
+  }, [rawCurrentPrice]);
 
   const {
     data: { prices7d = [] } = {},

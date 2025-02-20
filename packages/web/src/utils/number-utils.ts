@@ -232,3 +232,11 @@ export function toShiftBitInt(value: string | number, shifted: number): bigint {
   const shiftedValue = BigNumber(value).shiftedBy(shifted).toNumber();
   return BigInt(Math.round(shiftedValue));
 }
+
+export function rawToDisplayAmount(amount: string | number | undefined | null, decimals: number) {
+  if (!amount) return 0;
+
+  const rawAmount = typeof amount === "string" ? amount : amount.toString();
+  console.log(Number(rawAmount) / Math.pow(10, decimals), "Number(rawAmount) / Math.pow(10, decimals)");
+  return Number(rawAmount) / Math.pow(10, decimals);
+}

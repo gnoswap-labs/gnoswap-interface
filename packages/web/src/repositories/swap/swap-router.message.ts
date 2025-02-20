@@ -15,33 +15,34 @@ import { makeRoutesQuery } from "@utils/swap-route-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
 
 enum TransactionMessageFunctionType {
-  SwapRoute = "SwapRoute",
   Deposit = "Deposit",
   Unwrap = "Withdraw",
+  ExactIn = "ExactInSwapRoute",
+  ExactOut = "ExactOutSwapRoute",
 }
 
-export function makeSwapRouteMessageWithApproves(
+export function makeExactInSwapRouteMessageWithApproves(
   {
     inputToken,
     outputToken,
     tokenAmount,
-    exactType,
     estimatedRoutes,
     tokenAmountLimit,
+    deadline,
     caller,
   }: {
     inputToken: TokenModel;
     outputToken: TokenModel;
     tokenAmount: number;
-    exactType: "EXACT_IN" | "EXACT_OUT";
     estimatedRoutes: EstimatedRoute[];
     tokenAmountLimit: number;
+    deadline: number;
     caller: string;
   },
   fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
-  const targetToken = exactType === "EXACT_IN" ? inputToken : outputToken;
-  const resultToken = exactType === "EXACT_IN" ? outputToken : inputToken;
+  const targetToken = inputToken;
+  const resultToken = outputToken;
   const tokenAmountRaw = makeRawTokenAmount(targetToken, tokenAmount) || "0";
   const tokenAmountLimitRaw = makeRawTokenAmount(resultToken, tokenAmountLimit) || "0";
   const routesQuery = makeRoutesQuery(estimatedRoutes, checkGnotPath(inputToken.path));
@@ -50,21 +51,96 @@ export function makeSwapRouteMessageWithApproves(
   const inputTokenWrappedPath = checkGnotPath(inputToken.path);
   const outputTokenWrappedPath = checkGnotPath(outputToken.path);
 
-  const sendTokenAmount = exactType === "EXACT_IN" ? tokenAmountRaw : tokenAmountLimitRaw;
+  const sendTokenAmount = tokenAmountRaw;
   const send = inputToken.path === GNOT_TOKEN.path ? makeGNOTSendAmount(sendTokenAmount) : "";
 
   const swapMessage = makeTransactionMessage({
     send,
     packagePath: PACKAGE_ROUTER_PATH,
-    func: TransactionMessageFunctionType.SwapRoute,
+    func: TransactionMessageFunctionType.ExactIn,
     args: [
       inputToken.path,
       outputToken.path,
       `${tokenAmountRaw || 0}`,
-      exactType,
       `${routesQuery}`,
       `${quotes}`,
       tokenAmountLimitRaw,
+      `${deadline}`,
+      "", // Referral address
+    ],
+    caller,
+  });
+
+  const approveInfos: TokenApproveMessageInfo[] = [
+    {
+      tokenPath: inputTokenWrappedPath,
+      targetAddress: PACKAGE_POOL_ADDRESS,
+      amount: MAX_INT64,
+      caller,
+    },
+    {
+      tokenPath: inputTokenWrappedPath,
+      targetAddress: PACKAGE_ROUTER_ADDRESS,
+      amount: MAX_INT64,
+      caller,
+    },
+    {
+      tokenPath: outputTokenWrappedPath,
+      targetAddress: PACKAGE_ROUTER_ADDRESS,
+      amount: MAX_INT64,
+      caller,
+    },
+  ];
+
+  return makeTransactionMessagesWithApproves([swapMessage], approveInfos, fetchAllowance);
+}
+
+export function makeExactOutSwapRouteMessageWithApproves(
+  {
+    inputToken,
+    outputToken,
+    tokenAmount,
+    estimatedRoutes,
+    tokenAmountLimit,
+    deadline,
+    caller,
+  }: {
+    inputToken: TokenModel;
+    outputToken: TokenModel;
+    tokenAmount: number;
+    estimatedRoutes: EstimatedRoute[];
+    tokenAmountLimit: number;
+    deadline: number;
+    caller: string;
+  },
+  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+): Promise<TransactionMessage[]> {
+  const targetToken = outputToken;
+  const resultToken = inputToken;
+  const tokenAmountRaw = makeRawTokenAmount(targetToken, tokenAmount) || "0";
+  const tokenAmountLimitRaw = makeRawTokenAmount(resultToken, tokenAmountLimit) || "0";
+  const routesQuery = makeRoutesQuery(estimatedRoutes, checkGnotPath(inputToken.path));
+  const quotes = estimatedRoutes.map(route => route.quote).join(",");
+
+  const inputTokenWrappedPath = checkGnotPath(inputToken.path);
+  const outputTokenWrappedPath = checkGnotPath(outputToken.path);
+
+  const sendTokenAmount = tokenAmountLimitRaw;
+  const send = inputToken.path === GNOT_TOKEN.path ? makeGNOTSendAmount(sendTokenAmount) : "";
+
+  const swapMessage = makeTransactionMessage({
+    send,
+    packagePath: PACKAGE_ROUTER_PATH,
+    func: TransactionMessageFunctionType.ExactOut,
+    args: [
+      inputToken.path,
+      outputToken.path,
+      `${tokenAmountRaw || 0}`,
+      `${routesQuery}`,
+      `${quotes}`,
+      tokenAmountLimitRaw,
+      `${deadline}`,
+      "", // Referral address
     ],
     caller,
   });

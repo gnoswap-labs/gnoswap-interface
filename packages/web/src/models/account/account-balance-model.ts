@@ -1,5 +1,5 @@
 export interface AccountBalanceModel {
-  type: "grc20" | "ibc-token" | "ibc-native";
+  type: "GRC20" | "ibc-token" | "ibc-native";
   address: string;
   path: string;
   balance: string;

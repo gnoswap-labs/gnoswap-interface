@@ -22,6 +22,7 @@ import { makeDisplayTokenAmount } from "@utils/token-utils";
 import DecreasePositionModalContainer from "../../../layouts/pool/pool-decrease-liquidity/containers/decrease-position-modal-container/DecreasePositionModalContainer";
 import { IPooledTokenInfo } from "../data/use-decrease-handle";
 import { makePoolPath } from "@utils/pool-utils";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 
 export interface Props {
   openModal: () => void;
@@ -36,7 +37,7 @@ export interface DecreasePositionModal {
   minPriceStr: string;
   maxPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
-  percent: number;
+  calculatedLiquidity: string;
   pooledTokenInfos: IPooledTokenInfo | null;
   isGetWGNOT: boolean;
   refetchPositions: () => Promise<void>;
@@ -51,7 +52,7 @@ export const useDecreasePositionModal = ({
   minPriceStr,
   maxPriceStr,
   rangeStatus,
-  percent,
+  calculatedLiquidity,
   pooledTokenInfos,
   isGetWGNOT,
   refetchPositions,
@@ -60,6 +61,8 @@ export const useDecreasePositionModal = ({
   const { address } = useAddress();
   const { positionRepository } = useGnoswapContext();
   const clearModal = useClearModal();
+
+  console.log(calculatedLiquidity, "use-decrease-position-modal");
 
   const onSuccessClose = useCallback(() => {
     clearModal();
@@ -70,6 +73,7 @@ export const useDecreasePositionModal = ({
   const { enqueueEvent } = useTransactionEventStore();
 
   // Refetch functions
+  const { updateBalances } = useTokenData();
   const { refetch: refetchPools } = useGetPoolList();
   const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(makePoolPath(tokenA, tokenB, swapFeeTier));
 
@@ -156,7 +160,7 @@ export const useDecreasePositionModal = ({
     const result = await positionRepository
       .decreaseLiquidity({
         lpTokenId: positionId,
-        decreaseRatio: percent,
+        calculatedLiquidity,
         tokenA,
         tokenB,
         tokenAAmount: poolAmountA,
@@ -209,6 +213,9 @@ export const useDecreasePositionModal = ({
             refetchPositions();
             refetchPoolDetails();
           },
+          onUpdate: async () => {
+            updateBalances();
+          },
         });
       }
 
@@ -248,7 +255,17 @@ export const useDecreasePositionModal = ({
       }
     }
     return true;
-  }, [address, percent, pooledTokenInfos, positionId, positionRepository, router, tokenA, tokenB, willWrap]);
+  }, [
+    address,
+    calculatedLiquidity,
+    pooledTokenInfos,
+    positionId,
+    positionRepository,
+    router,
+    tokenA,
+    tokenB,
+    willWrap,
+  ]);
 
   const openModal = useCallback(() => {
     if (!amountInfo) {
@@ -261,7 +278,7 @@ export const useDecreasePositionModal = ({
         minPriceStr={minPriceStr}
         maxPriceStr={maxPriceStr}
         rangeStatus={rangeStatus}
-        percent={percent}
+        calculateLiquidity={calculatedLiquidity}
         pooledTokenInfos={pooledTokenInfos}
         confirm={confirm}
       />,

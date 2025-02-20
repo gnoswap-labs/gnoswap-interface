@@ -11,25 +11,29 @@ import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
 
 import { getGRC20Allowance } from "@common/clients/gno-provider";
+import { drySwap } from "@common/clients/gno-provider/methods/dry-swap";
 import { DEFAULT_GAS_FEE } from "@common/values";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { GetRoutesRequest } from "./request/get-routes-request";
-import { SwapRouteRequest } from "./request/swap-route-request";
+import { DrySwapRequest, SwapRouteRequest } from "./request/swap-route-request";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
 import { WrapTokenRequest } from "./request/wrap-token-request";
 import { GetRoutesResponse } from "./response/get-routes-response";
 import { SwapRouteFailedResponse, SwapRouteSuccessResponse } from "./response/swap-route-response";
 import { SwapRouterRepository } from "./swap-router-repository";
 import {
-  makeSwapRouteMessageWithApproves,
+  makeExactInSwapRouteMessageWithApproves,
+  makeExactOutSwapRouteMessageWithApproves,
   makeUnwrapTokenMessages,
   makeWrapTokenMessages,
 } from "./swap-router.message";
+import { calculateTotalAmountOut } from "@utils/swap-route-utils";
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
   private networkClient: NetworkClient | null;
   private walletClient: WalletClient | null;
+  private readonly MAX_SWAP_ROUTE_ESTIMATION_DEVIATION = 0;
 
   constructor(rpcProvider: GnoProvider | null, walletClient: WalletClient | null, networkClient: NetworkClient | null) {
     this.rpcProvider = rpcProvider;
@@ -74,14 +78,27 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       },
     });
 
-    if (response.status !== 201) {
+    if (response.status !== 200) {
       throw new SwapError("SWAP_FAILED");
     }
 
     return response.data;
   };
 
-  public sendSwapRoute = async (
+  public getDrySwap = async (request: DrySwapRequest): Promise<number> => {
+    if (!this.rpcProvider) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
+    // Discuss if needed
+    if (!PACKAGE_ROUTER_PATH) {
+      throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
+    }
+
+    return await drySwap(this.rpcProvider, PACKAGE_ROUTER_PATH, request);
+  };
+
+  public sendExactInSwapRoute = async (
     request: SwapRouteRequest,
   ): Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>> => {
     if (this.rpcProvider === null) {
@@ -90,7 +107,32 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const address = await this.getAddress();
 
-    const messages = await makeSwapRouteMessageWithApproves(
+    await this.validateAndGetDrySwap(request, "EXACT_IN");
+
+    const messages = await makeExactInSwapRouteMessageWithApproves(
+      { ...request, caller: address },
+      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    );
+
+    return await this.walletClient!.sendTransaction({
+      messages,
+      gasFee: DEFAULT_GAS_FEE,
+      memo: "",
+    });
+  };
+
+  public sendExactOutSwapRoute = async (
+    request: SwapRouteRequest,
+  ): Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>> => {
+    if (this.rpcProvider === null) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
+    const address = await this.getAddress();
+
+    await this.validateAndGetDrySwap(request, "EXACT_OUT");
+
+    const messages = await makeExactOutSwapRouteMessageWithApproves(
       { ...request, caller: address },
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
@@ -153,5 +195,46 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     }
 
     return address;
+  }
+
+  private async validateAndGetDrySwap(request: SwapRouteRequest, exactType: "EXACT_IN" | "EXACT_OUT"): Promise<number> {
+    const drySwapRequest: DrySwapRequest = {
+      inputToken: request.inputToken,
+      outputToken: request.outputToken,
+      tokenAmount: request.tokenAmount,
+      estimatedRoutes: request.estimatedRoutes,
+      tokenAmountLimit: request.tokenAmountLimit,
+      exactType,
+    };
+
+    const apiEstimatedAmount = calculateTotalAmountOut(drySwapRequest.estimatedRoutes);
+    const drySwapAmount = await this.getDrySwap(drySwapRequest);
+
+    this.validateSwapRouteEstimation(apiEstimatedAmount, drySwapAmount);
+
+    return drySwapAmount;
+  }
+
+  private validateSwapRouteEstimation(apiEstimatedAmount: number, drySwapAmount: number): void {
+    const estimationDiff = Math.abs(
+      new BigNumber(apiEstimatedAmount).minus(drySwapAmount).div(apiEstimatedAmount).toNumber(),
+    );
+
+    if (estimationDiff > this.MAX_SWAP_ROUTE_ESTIMATION_DEVIATION) {
+      this.logSwapRouteEstimationComparison(apiEstimatedAmount, drySwapAmount, estimationDiff);
+      throw new SwapError("DRY_SWAP_DEVIATION_EXCEEDED");
+    }
+  }
+
+  private logSwapRouteEstimationComparison(
+    apiEstimatedAmount: number,
+    drySwapAmount: number,
+    estimationDiff: number,
+  ): void {
+    console.log("=== Swap Estimation Comparison ===");
+    console.log("API Estimated Amount:", apiEstimatedAmount.toString());
+    console.log("Dry Swap Amount:", drySwapAmount.toString());
+    console.log(`Estimation Diff Rate: ${(estimationDiff * 100).toFixed(4)}%`);
+    console.log("==================================");
   }
 }

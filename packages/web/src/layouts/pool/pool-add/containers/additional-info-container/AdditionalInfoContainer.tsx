@@ -16,9 +16,11 @@ import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import AdditionalInfo from "../../components/additional-info/AdditionalInfo";
 import { usePoolAddSearchParams } from "@hooks/pool/data/use-pool-add-serach-param";
 import { usePool } from "@hooks/pool/data/use-pool";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 const AdditionalInfoContainer: React.FC = () => {
   const router = useCustomRouter();
+  const { breakpoint } = useWindowSize();
   const { account, connected } = useWallet();
   const [compareToken] = useAtom(EarnState.currentCompareToken);
   const [{ isLoading: isLoadingRPCPoolInfo }] = useAtom(EarnState.poolInfoQuery);
@@ -96,12 +98,12 @@ const AdditionalInfoContainer: React.FC = () => {
 
   const stakedPositions = useMemo(() => {
     if (!poolPath || !account || !connected) return [];
-    return positions.filter(position => position.staked);
+    return positions.filter(position => position.poolPath === poolPath && position.staked);
   }, [poolPath, account, connected, positions]);
 
   const unstakedPositions = useMemo(() => {
     if (!poolPath || !account || !connected) return [];
-    return positions.filter(position => !position.staked);
+    return positions.filter(position => position.poolPath === poolPath && !position.staked);
   }, [poolPath, account, connected, positions]);
 
   const isReversed = useMemo(() => {
@@ -119,6 +121,7 @@ const AdditionalInfoContainer: React.FC = () => {
 
   return (
     <AdditionalInfo
+      breakpoint={breakpoint}
       tokenPair={tokenPair}
       stakedPositions={stakedPositions}
       unstakedPositions={unstakedPositions}

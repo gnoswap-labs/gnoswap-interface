@@ -84,10 +84,11 @@ export class TokenRepositoryMock implements TokenRepository {
     return true;
   };
 
-  public getBalancesByAddress = async (address: string): Promise<IBalancesByAddressResponse> => {
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  public getGrc20BalancesByAddress = async (address: string): Promise<IBalancesByAddressResponse> => {
     return {
-      address: address,
-      balances: [],
+      data: [],
+      message: "",
     };
   };
 }

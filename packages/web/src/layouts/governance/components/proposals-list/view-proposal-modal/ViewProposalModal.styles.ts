@@ -30,6 +30,14 @@ export const ViewProposalModalWrapper = styled.div`
     ${media.mobile} {
       padding: 0 0 12px 0;
     }
+
+    button {
+      span {
+        ${media.mobile} {
+          font-size: 16px;
+        }
+      }
+    }
   }
 `;
 

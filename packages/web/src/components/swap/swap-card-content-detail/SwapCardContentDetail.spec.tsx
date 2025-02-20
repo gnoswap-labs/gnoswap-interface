@@ -1,5 +1,5 @@
-import { Provider as JotaiProvider } from "jotai";
 import { render } from "@testing-library/react";
+import { Provider as JotaiProvider } from "jotai";
 
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
@@ -9,7 +9,7 @@ import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapTheme
 import SwapCardContentDetail, { SwapCardContentDetailProps } from "./SwapCardContentDetail";
 
 const tokenA: TokenModel = {
-  type: "grc20",
+  type: "GRC20",
   chainId: "dev.gnoswap",
   createdAt: "2023-12-08T03:57:43Z",
   name: "Foo",
@@ -22,7 +22,7 @@ const tokenA: TokenModel = {
 };
 
 const tokenB: TokenModel = {
-  type: "grc20",
+  type: "GRC20",
   chainId: "dev.gnoswap",
   createdAt: "2023-12-08T03:57:43Z",
   name: "Foo",

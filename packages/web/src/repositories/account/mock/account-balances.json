@@ -1,7 +1,7 @@
 {
   "balances": [
     {
-      "type": "grc20",
+      "type": "GRC20",
       "address": "0x0273cd08b80733f1c627f0cad7985aa77b507787",
       "path": "gno.land/r/demo/tong_token",
       "balance": "123456",

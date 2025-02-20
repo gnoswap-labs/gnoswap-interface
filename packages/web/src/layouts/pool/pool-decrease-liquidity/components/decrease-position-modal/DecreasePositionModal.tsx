@@ -24,7 +24,7 @@ interface Props {
   minPriceStr: string;
   maxPriceStr: string;
   rangeStatus: RANGE_STATUS_OPTION;
-  percent: number;
+  calculateLiquidity: string;
   pooledTokenInfos: IPooledTokenInfo | null;
 }
 

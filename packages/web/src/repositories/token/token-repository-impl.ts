@@ -101,12 +101,12 @@ export class TokenRepositoryImpl implements TokenRepository {
     return response.data.data;
   };
 
-  public getBalancesByAddress = async (address: string): Promise<IBalancesByAddressResponse> => {
+  public getGrc20BalancesByAddress = async (address: string): Promise<IBalancesByAddressResponse> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
     const response = await this.networkClient.get<IBalancesByAddressResponse>({
-      url: `/balances/${address}`,
+      url: `/users/${address}/balances`,
     });
     return response.data;
   };

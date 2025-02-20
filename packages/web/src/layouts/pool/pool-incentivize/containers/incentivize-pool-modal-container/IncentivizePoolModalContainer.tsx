@@ -18,6 +18,7 @@ import { DexEvent } from "@repositories/common";
 import { EarnState } from "@states/index";
 
 import IncentivizePoolModal from "../../components/incentivize-pool-modal/IncentivizePoolModal";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 
 const DAY_TIME = 24 * 60 * 60;
 const MILLISECONDS = 1000;
@@ -40,6 +41,7 @@ const IncentivizePoolModalContainer: React.FC<IncentivizePoolModalContainerProps
   const { address } = useAddress();
 
   // refetch functions
+  const { updateBalances } = useTokenData();
   const { refetch: refetchPositions } = usePositionData({ address });
 
   const { refetch: refetchPools } = useGetPoolList();
@@ -108,6 +110,9 @@ const IncentivizePoolModalContainer: React.FC<IncentivizePoolModalContainerProps
                 refetchIncentivizePools();
                 refetchPoolDetails();
                 refetchStakingList();
+              },
+              onUpdate: async () => {
+                updateBalances();
               },
             });
           }

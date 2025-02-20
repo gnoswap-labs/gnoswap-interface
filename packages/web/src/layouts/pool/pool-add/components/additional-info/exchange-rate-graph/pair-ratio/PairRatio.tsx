@@ -9,6 +9,7 @@ import { PoolModel } from "@models/pool/pool-model";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 
 import { PairRatioWrapper } from "./PairRatio.styles";
+import { DEVICE_TYPE } from "@styles/media";
 
 function replaceGnotSymbol(symbol: string) {
   if (symbol === "WGNOT") return "GNOT";
@@ -16,6 +17,7 @@ function replaceGnotSymbol(symbol: string) {
 }
 
 interface PairRatioProps {
+  breakpoint: DEVICE_TYPE;
   loading?: boolean;
   onSwap?: (swap: boolean) => void;
   isSwap?: boolean;
@@ -25,6 +27,7 @@ interface PairRatioProps {
 }
 
 export function PairRatio({
+  breakpoint,
   loading = false,
   isSwap = false,
   onSwap,
@@ -70,7 +73,7 @@ export function PairRatio({
       )}
       {!loading && (
         <div className="ratio-value">
-          1 {displayTokenSymbol} =&nbsp;
+          {breakpoint !== DEVICE_TYPE.MOBILE && <>1 {displayTokenSymbol}</>} =&nbsp;
           {formatExchangeRate(overrideValue || pool.price)}&nbsp;
           {secondTokenSymbol}
         </div>

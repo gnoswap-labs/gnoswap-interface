@@ -22,8 +22,10 @@ import {
   LoadingExchangeRateChartWrapper,
   TooltipContentWrapper,
 } from "./ExchangeRateGraph.styles";
+import { DEVICE_TYPE } from "@styles/media";
 
 interface ExchangeRateGraphProps {
+  breakpoint: DEVICE_TYPE;
   poolData: PoolModel;
   isReversed: boolean;
   data?: TokenExchangeRateGraphResponse;
@@ -31,7 +33,13 @@ interface ExchangeRateGraphProps {
   defaultScope?: CHART_DAY_SCOPE_TYPE;
 }
 
-const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({ poolData, isReversed, isLoading, defaultScope }) => {
+const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
+  breakpoint,
+  poolData,
+  isReversed,
+  isLoading,
+  defaultScope,
+}) => {
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
 
@@ -102,6 +110,7 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({ poolData, isRever
         <ExchangeRateGraphController>
           {hasData ? (
             <PairRatio
+              breakpoint={breakpoint}
               pool={changedPoolInfo}
               loading={isLoading}
               isSwap={isReversed}

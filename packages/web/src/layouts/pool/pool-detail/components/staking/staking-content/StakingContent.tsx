@@ -29,6 +29,7 @@ interface StakingContentProps {
   loading: boolean;
   pool: PoolDetailModel | null;
   poolStakings: PoolStakingModel[];
+  hasPoolStaking: boolean;
 }
 
 const TEXT_BTN = [
@@ -49,12 +50,13 @@ const StakingContent: React.FC<StakingContentProps> = ({
   loading,
   pool,
   poolStakings,
+  hasPoolStaking,
 }) => {
   const { getGnotPath } = useGnotToGnot();
   const [forcedShowAprGuide, setForceShowAprGuide] = useState(true);
   const { t } = useTranslation();
 
-  const { ref } = useIntersectionObserver();
+  const { ref, entry } = useIntersectionObserver();
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   const debounce = (func: Function, delay: number) => {
@@ -166,31 +168,44 @@ const StakingContent: React.FC<StakingContentProps> = ({
             <AprStakingHeader $isMobile={mobile}>
               <Tooltip
                 FloatingContent={<IncentivizeTokenDetailTooltipContent poolStakings={poolStakings} />}
+                forcedClose={!hasPoolStaking}
                 placement="top"
                 className="apr-text"
                 scroll
                 onChangeOpen={(open: boolean) => setForceShowAprGuide(!open)}
               >
                 <Tooltip
-                  forcedOpen={isVisible && forcedShowAprGuide}
-                  forcedClose={!forcedShowAprGuide}
+                  forcedOpen={
+                    hasPoolStaking &&
+                    entry?.isIntersecting &&
+                    (entry?.boundingClientRect.top || 20) > 20 &&
+                    isVisible &&
+                    forcedShowAprGuide
+                  }
+                  forcedClose={!forcedShowAprGuide || !hasPoolStaking}
                   placement="top"
-                  FloatingContent={<span>{t("Pool:staking.tooltip.hoverGuide")}</span>}
+                  FloatingContent={
+                    <span style={{ fontSize: breakpoint === "mobile" ? 14 : 16 }}>
+                      {t("Pool:staking.tooltip.hoverGuide")}
+                    </span>
+                  }
                 >
                   <span id={"apr-text"}>{totalApr === "-" ? "-" : `${totalApr} APR`} </span>
                 </Tooltip>
               </Tooltip>
-              <div
-                className="coin-info"
-                onMouseEnter={() => setForceShowAprGuide(false)}
-                onMouseLeave={() => setForceShowAprGuide(true)}
-              >
-                <OverlapTokenLogo
-                  tokens={rewardTokenLogos}
-                  size={mobile ? 20 : 36}
-                  tokenTooltipClassName={"coin-item-logo"}
-                />
-              </div>
+              {hasPoolStaking && (
+                <div
+                  className="coin-info"
+                  onMouseEnter={() => setForceShowAprGuide(false)}
+                  onMouseLeave={() => setForceShowAprGuide(true)}
+                >
+                  <OverlapTokenLogo
+                    tokens={rewardTokenLogos}
+                    size={mobile ? 20 : 36}
+                    tokenTooltipClassName={"coin-item-logo"}
+                  />
+                </div>
+              )}
             </AprStakingHeader>
           </AprNumberContainer>
         )}

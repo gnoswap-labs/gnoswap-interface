@@ -1,13 +1,12 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import SwapCardContentDetail from "./SwapCardContentDetail";
 import { css } from "@emotion/react";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
+import SwapCardContentDetail from "./SwapCardContentDetail";
 
 const swapSummaryInfo: SwapSummaryInfo = {
   tokenA: {
-    type: "grc20",
+    type: "GRC20",
     chainId: "dev.gnoswap",
     createdAt: "2023-12-08T03:57:43Z",
     name: "Foo",
@@ -19,7 +18,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
     address: "",
   },
   tokenB: {
-    type: "grc20",
+    type: "GRC20",
     chainId: "dev.gnoswap",
     createdAt: "2023-12-08T03:57:43Z",
     name: "Foo",
@@ -51,7 +50,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
 const swapRouteInfos: SwapRouteInfo[] = [
   {
     from: {
-      type: "grc20",
+      type: "GRC20",
       chainId: "dev.gnoswap",
       createdAt: "2023-12-08T03:57:43Z",
       name: "Foo",
@@ -63,7 +62,7 @@ const swapRouteInfos: SwapRouteInfo[] = [
       address: "",
     },
     to: {
-      type: "grc20",
+      type: "GRC20",
       chainId: "dev.gnoswap",
       createdAt: "2023-12-08T03:57:43Z",
       name: "Foo",

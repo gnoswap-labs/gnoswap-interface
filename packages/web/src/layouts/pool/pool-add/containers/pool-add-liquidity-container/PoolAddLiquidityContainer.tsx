@@ -70,7 +70,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
 
   const { connected: connectedWallet, account, switchNetwork, isSwitchNetwork } = useWallet();
   const { slippage, changeSlippage } = useSlippage();
-  const { tokens, updateTokens, updateBalances, updateTokenPrices } = useTokenData();
+  const { tokens, updateTokens, updateBalances, updateTokenPrices, refetchGrc20Balances } = useTokenData();
   const [createOption, setCreateOption] = useState<{
     startPrice: number | null;
     isCreate: boolean;
@@ -409,6 +409,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
 
   useEffect(() => {
     if (account?.address) {
+      refetchGrc20Balances();
       updateBalances();
     }
   }, [account?.address]);

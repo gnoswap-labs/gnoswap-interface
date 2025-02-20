@@ -5,6 +5,7 @@ import { PriceRangeMeta, SwapFeeTierType } from "@constants/option.constant";
 import RepositionContent from "../../components/reposition-content/RepositionContent";
 import { useRepositionHandle } from "@hooks/pool/data/use-reposition-handle";
 import { useRepositionModalContainer } from "@hooks/pool/ui/use-reposition-position-modal";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 
 const PRICE_RANGES: PriceRangeMeta[] = [{ type: "Active" }, { type: "Passive" }, { type: "Custom" }];
 
@@ -41,6 +42,8 @@ const RepositionContainer: React.FC = () => {
     refetchPositions,
   } = useRepositionHandle();
 
+  const { updateBalances } = useTokenData();
+
   const concentratedFeeApr =
     priceRangeSummary.feeBoost && priceRangeSummary.feeBoost !== "-"
       ? aprFee * Number(priceRangeSummary.feeBoost.replace("x", ""))
@@ -65,6 +68,7 @@ const RepositionContainer: React.FC = () => {
     isSkipSwap,
     refetchPositions: async () => {
       await refetchPositions();
+      updateBalances();
     },
   });
 

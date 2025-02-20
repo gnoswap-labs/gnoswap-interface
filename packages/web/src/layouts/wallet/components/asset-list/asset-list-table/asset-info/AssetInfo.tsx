@@ -50,7 +50,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({ asset, deposit, withdraw, moveTok
         {tokenInfoCell}
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO.list?.[1].width}>
-        <span className="chain">{type === "grc20" ? "Gnoland (GRC20)" : "Gnoland (Native)"}</span>
+        <span className="chain">{type === "GRC20" ? "Gnoland (GRC20)" : "Gnoland (Native)"}</span>
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO.list?.[2].width}>
         <span className="balance">{balance}</span>
@@ -75,7 +75,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({ asset, deposit, withdraw, moveTok
         {tokenInfoCell}
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO_TABLET.list[1].width}>
-        <span className="chain">{type === "grc20" ? "Gnoland (GRC20)" : "Gnoland (Native)"}</span>
+        <span className="chain">{type === "GRC20" ? "Gnoland (GRC20)" : "Gnoland (Native)"}</span>
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO_TABLET.list[2].width}>
         <span className="balance">{balance}</span>
@@ -100,7 +100,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({ asset, deposit, withdraw, moveTok
         {tokenInfoCell}
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO_MOBILE.list[1].width}>
-        <span className="chain">{type === "grc20" ? "Gnoland (GRC20)" : "Gnoland (Native)"}</span>
+        <span className="chain">{type === "GRC20" ? "Gnoland (GRC20)" : "Gnoland (Native)"}</span>
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO_MOBILE.list[2].width}>
         <span className="balance">{balance}</span>

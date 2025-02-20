@@ -15,8 +15,8 @@ import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useTokenData } from "@hooks/token/data/use-token-data";
-import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
 import { EstimatedRoute, SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
@@ -29,13 +29,12 @@ import { SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route
 import { CommonState, SwapState } from "@states/index";
 import { checkGnotPath, isGNOTPath, toNativePath } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
+import { nullish } from "@utils/nullish-utils";
 import { matchInputNumber } from "@utils/number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { isEmptyObject } from "@utils/validation-utils";
-import { nullish } from "@utils/nullish-utils";
 
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { rawBySqrtX96 } from "@utils/swap-utils";
 import { useSwap } from "./use-swap";
 
 type SwapButtonStateType =
@@ -66,11 +65,11 @@ function estimatePriceImpactByRoutes(tokenInPath: string, routes: EstimatedRoute
       const isReversePrice = currentTokenInPath === pool.tokenB;
       if (isReversePrice) {
         currentTokenInPath = pool.tokenA;
-        return 1 / rawBySqrtX96(pool.price);
+        return 1 / pool.price;
       }
 
       currentTokenInPath = pool.tokenB;
-      return rawBySqrtX96(pool.price);
+      return pool.price;
     });
 
     const routePrice = poolTickPrices.reduce((price, poolTickPrice) => price * poolTickPrice, 1);
@@ -163,7 +162,8 @@ export const useSwapHandler = () => {
   const [openedConfirmModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { connected: connectedWallet, isSwitchNetwork, switchNetwork } = useWallet();
-  const { tokens, tokenPrices, displayBalanceMap, updateBalances, getTokenUSDPrice } = useTokenData();
+  const { tokens, tokenPrices, displayBalanceMap, updateBalances, getTokenUSDPrice, refetchGrc20Balances } =
+    useTokenData();
   const { slippage, changeSlippage } = useSlippage();
   const { openModal } = useConnectWalletModal();
   const { data: swapFee } = useGetSwapFee();
@@ -239,6 +239,7 @@ export const useSwapHandler = () => {
     return formatPrice(displayBalanceMap?.[tokenA.priceID], {
       isKMB: false,
       usd: false,
+      greaterThan1Decimals: 6,
     });
   }, [isSwitchNetwork, displayBalanceMap, tokenA]);
 
@@ -249,6 +250,7 @@ export const useSwapHandler = () => {
     return formatPrice(displayBalanceMap?.[tokenB.priceID], {
       isKMB: false,
       usd: false,
+      greaterThan1Decimals: 6,
     });
   }, [isSwitchNetwork, displayBalanceMap, tokenB]);
 
@@ -597,6 +599,7 @@ export const useSwapHandler = () => {
     setTokenAAmount("0");
     setTokenBAmount("0");
     resetSwapAmount();
+    refetchGrc20Balances();
     updateBalances();
     queryClient.removeQueries({
       queryKey: [QUERY_KEY.router],
@@ -876,7 +879,11 @@ export const useSwapHandler = () => {
                 };
               },
               onUpdate: async () => {
+                await refetchGrc20Balances();
                 await updateBalances();
+              },
+              onEmit: async () => {
+                await refetchGrc20Balances();
               },
             });
           }
@@ -926,7 +933,11 @@ export const useSwapHandler = () => {
               action: DexEvent.UNWRAP,
               formatData: () => messageData,
               onUpdate: async () => {
+                await refetchGrc20Balances();
                 await updateBalances();
+              },
+              onEmit: async () => {
+                await refetchGrc20Balances();
               },
             });
           }
@@ -1022,7 +1033,11 @@ export const useSwapHandler = () => {
                 };
               },
               onUpdate: async () => {
+                await refetchGrc20Balances();
                 await updateBalances();
+              },
+              onEmit: async () => {
+                await refetchGrc20Balances();
               },
             });
           }
@@ -1054,7 +1069,15 @@ export const useSwapHandler = () => {
           hash: response?.data?.hash || "",
         });
       })
-      .catch(() => {
+      .catch(e => {
+        broadcastError(
+          getMessage(
+            DexEvent.SWAP,
+            "error",
+            broadcastMessage,
+            e.type === ERROR_VALUE.TRANSACTION_FAILED.type ? e.data?.hash : undefined,
+          ),
+        );
         setSwapResult({
           success: false,
           hash: "",

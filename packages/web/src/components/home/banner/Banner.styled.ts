@@ -85,7 +85,7 @@ export const BannerContent = styled.div`
     ${media.mobile} {
       padding: 8px;
       > span {
-        font-size: 8px;
+        font-size: 10px;
         font-weight: 500;
         line-height: 9.5px;
       }

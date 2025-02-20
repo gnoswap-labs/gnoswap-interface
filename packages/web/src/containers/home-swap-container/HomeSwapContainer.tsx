@@ -12,17 +12,24 @@ import { SwapState } from "@states/index";
 import { checkGnotPath } from "@utils/common";
 import { GNOT_TOKEN, GNS_TOKEN } from "@common/values/token-constant";
 import { formatPrice } from "@utils/new-number-utils";
+import { useInterval } from "@hooks/common/use-interval";
+import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
+
+const DEFAULT_TOKEN_A_AMOUNT = "1000";
+const TOKEN_ROTATION_INTERVAL = 2000 as const;
 
 const HomeSwapContainer: React.FC = () => {
   const router = useRouter();
-  const { tokenPrices, displayBalanceMap } = useTokenData();
-  const [tokenA, setTokenA] = useState<TokenModel | null>(GNOT_TOKEN);
-  const [tokenAAmount, setTokenAAmount] = useState<string>("");
+  const { tokenPrices, displayBalanceMap, tokens } = useTokenData();
+  const [tokenA] = useState<TokenModel | null>(GNOT_TOKEN);
+  const [tokenAAmount] = useState<string>(DEFAULT_TOKEN_A_AMOUNT);
   const [tokenB, setTokenB] = useState<TokenModel | null>(GNS_TOKEN);
-  const [tokenBAmount, setTokenBAmount] = useState<string>("");
+  // Index of the currently circulating token
+  const [currentTokenIndex, setCurrentTokenIndex] = React.useState(0);
+  const [tokenBAmount] = useState<string>("");
   const { slippage } = useSlippage();
   const { connected, isSwitchNetwork } = useWallet();
-  const [swapValue, setSwapValue] = useAtom(SwapState.swap);
+  const [, setSwapValue] = useAtom(SwapState.swap);
 
   const tokenABalance = useMemo(() => {
     if (!connected || isSwitchNetwork || !tokenA) return "-";
@@ -45,14 +52,14 @@ const HomeSwapContainer: React.FC = () => {
   }, [isSwitchNetwork, connected, displayBalanceMap, tokenB]);
 
   const tokenAUSD = useMemo(() => {
-    if (!Number(tokenAAmount) || !tokenA || !tokenPrices[checkGnotPath(tokenA.priceID)]) {
+    if (!Number(DEFAULT_TOKEN_A_AMOUNT) || !tokenA || !tokenPrices[checkGnotPath(tokenA.priceID)]) {
       return null;
     }
-    const calculateValue = BigNumber(tokenAAmount)
+    const calculateValue = BigNumber(DEFAULT_TOKEN_A_AMOUNT)
       .multipliedBy(tokenPrices[checkGnotPath(tokenA.priceID)].usd)
       .toNumber();
     return isNaN(calculateValue) ? null : calculateValue;
-  }, [tokenA, tokenAAmount, tokenPrices]);
+  }, [tokenA, tokenPrices]);
 
   const tokenBUSD = useMemo(() => {
     if (!Number(tokenBAmount) || !tokenB || !tokenPrices[checkGnotPath(tokenB.priceID)]) {
@@ -63,6 +70,24 @@ const HomeSwapContainer: React.FC = () => {
       .toNumber();
     return isNaN(calculateValue) ? null : calculateValue;
   }, [tokenB, tokenBAmount, tokenPrices]);
+
+  // Token paths to exclude from circulation (tokenA and Wrapped GNOT)
+  const excludedTokenPaths = [tokenA?.path, WRAPPED_GNOT_PATH];
+
+  // Token auto-rotation logic
+  useInterval(() => {
+    if (tokens && tokens.length > 0) {
+      // Generate a list of available tokens by filtering out the ones you want to exclude
+      const availableTokens = tokens.filter(token => !excludedTokenPaths.includes(token.path));
+
+      if (availableTokens.length > 0) {
+        // Cycle to next token
+        const nextIndex = (currentTokenIndex + 1) % availableTokens.length;
+        setCurrentTokenIndex(nextIndex);
+        setTokenB(availableTokens[nextIndex]);
+      }
+    }
+  }, TOKEN_ROTATION_INTERVAL);
 
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
     return {
@@ -84,52 +109,13 @@ const HomeSwapContainer: React.FC = () => {
   }, [slippage, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
 
   const swapNow = useCallback(() => {
-    const direction = (() => {
-      if (tokenAAmount) return "EXACT_IN";
+    if (!tokenAAmount) return;
 
-      if (tokenBAmount) return "EXACT_OUT";
-
-      return "EXACT_IN";
-    })();
-
-    const queries = [
-      `from=${tokenA?.path}`,
-      `to=${tokenB?.path}`,
-      `direction=${direction}`,
-      ...(tokenAAmount ? [`token_a_amount=${tokenAAmount}`] : []),
-      ...(tokenBAmount ? [`token_b_amount=${tokenBAmount}`] : []),
-    ];
-    const queriesString = queries.join("&");
-    if (!!tokenAAmount || !!tokenBAmount) {
-      router.push(`/swap?${queriesString}`);
+    const queries = [`from=${tokenA?.path}`, `to=${tokenB?.path}`].join("&");
+    if (!!tokenAAmount) {
+      router.push(`/swap?${queries}`);
     }
   }, [router, tokenA, tokenB, tokenAAmount, tokenBAmount]);
-
-  const onSubmitSwapValue = () => {
-    setTokenA(tokenB);
-    setTokenB(tokenA);
-    setTokenAAmount(tokenBAmount);
-    setTokenBAmount(tokenAAmount);
-  };
-
-  const changeTokenAAmount = useCallback((value: string) => {
-    setSwapValue(prev => ({
-      ...prev,
-      tokenAAmount: value,
-      tokenBAmount: "",
-    }));
-    setTokenAAmount(value);
-  }, []);
-
-  const changeTokenBAmount = useCallback((value: string) => {
-    setSwapValue(prev => ({
-      ...prev,
-      tokenBAmount: value,
-      tokenAAmount: "",
-      type: "EXACT_OUT",
-    }));
-    setTokenBAmount(value);
-  }, []);
 
   useEffect(() => {
     setSwapValue({
@@ -140,17 +126,7 @@ const HomeSwapContainer: React.FC = () => {
       tokenBAmount: "",
     });
   }, []);
-  return (
-    <HomeSwap
-      swapTokenInfo={swapTokenInfo}
-      swapNow={swapNow}
-      swapValue={swapValue}
-      onSubmitSwapValue={onSubmitSwapValue}
-      changeTokenAAmount={changeTokenAAmount}
-      connected={connected}
-      changeTokenBAmount={changeTokenBAmount}
-    />
-  );
+  return <HomeSwap swapTokenInfo={swapTokenInfo} swapNow={swapNow} connected={connected} tokenB={tokenB} />;
 };
 
 export default HomeSwapContainer;

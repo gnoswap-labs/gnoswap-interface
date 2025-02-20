@@ -1,3 +1,5 @@
+import BigNumber from "bignumber.js";
+
 import { EstimatedRoute } from "@models/swap/swap-route-info";
 
 export function makeRoutesQuery(routes: EstimatedRoute[], fromPath: string) {
@@ -18,3 +20,11 @@ export function makeRoutesQuery(routes: EstimatedRoute[], fromPath: string) {
     })
     .join(",");
 }
+
+export const calculateTotalAmountOut = (routes: EstimatedRoute[]): number => {
+  return routes
+    .reduce((acc, route) => {
+      return acc.plus(new BigNumber(route.amountOut.toString()));
+    }, new BigNumber(0))
+    .toNumber();
+};

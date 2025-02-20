@@ -64,7 +64,7 @@ const LaunchpadDetail: React.FC = () => {
 
   const [selectPoolId, setSelectPoolId] = useAtom(LaunchpadState.selectLaunchpadPool);
   const [, setDepositConditions] = useAtom(LaunchpadState.depositConditions);
-  const { updateBalances } = useTokenData();
+  const { updateBalances, refetchGrc20Balances } = useTokenData();
 
   const { breakpoint } = useWindowSize();
   const router = useCustomRouter();
@@ -213,11 +213,13 @@ const LaunchpadDetail: React.FC = () => {
   const refetchProjectDetail = async () => {
     await projectDetailRefetch();
     await myParticipationRefetch();
+    await refetchGrc20Balances();
     await updateBalances();
   };
   const refetchClaimAll = async () => {
     await projectDetailRefetch();
     await myParticipationRefetch();
+    await refetchGrc20Balances();
     await updateBalances();
   };
 

@@ -2,7 +2,7 @@ import { WalletClient } from "@common/clients/wallet-client";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
-import { isNativeToken } from "@models/token/token-model";
+import { isNativeToken, isNativeTokenByType } from "@models/token/token-model";
 import { TransferGRC20TokenRequest } from "./request/transfer-grc20-token-request";
 import { TransferNativeTokenRequest } from "./request/transfer-native-token-request";
 import { TransferGRC20TokenResponse } from "./response/transfer-grc20-token-response";
@@ -43,7 +43,7 @@ export class WalletRepositoryImpl implements WalletRepository {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
     }
-    if (request.token.type !== "grc20") {
+    if (isNativeTokenByType(request.token.type)) {
       throw new Error("Not a grc20 token");
     }
 

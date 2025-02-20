@@ -427,14 +427,28 @@ export const useRepositionHandle = () => {
       ? BigNumber(estimatedRepositionAmounts?.amountB || 0).minus(BigNumber(currentAmounts?.amountB || 0))
       : BigNumber(estimatedRepositionAmounts?.amountA || 0).minus(BigNumber(currentAmounts?.amountA || 0));
 
-    return swapRouterRepository
-      .sendSwapRoute({
-        ...estimateSwapRequest,
+    const deadline = Math.floor(Date.now() / 1000) + 300; // 5분
+
+    // estimateSwapRequest.exactType에 따라 분기
+    if (estimateSwapRequest.exactType === "EXACT_IN") {
+      return swapRouterRepository.sendExactInSwapRoute({
+        inputToken: estimateSwapRequest.inputToken,
+        outputToken: estimateSwapRequest.outputToken,
         estimatedRoutes: estimatedSwapResult.estimatedRoutes,
         tokenAmount: inputAmount.toNumber(),
         tokenAmountLimit: outputAmount.toNumber() * ((100 - DEFAULT_SLIPPAGE) / 100),
-      })
-      .catch(() => null);
+        deadline,
+      });
+    } else {
+      return swapRouterRepository.sendExactOutSwapRoute({
+        inputToken: estimateSwapRequest.inputToken,
+        outputToken: estimateSwapRequest.outputToken,
+        estimatedRoutes: estimatedSwapResult.estimatedRoutes,
+        tokenAmount: outputAmount.toNumber(),
+        tokenAmountLimit: inputAmount.toNumber() * ((100 + DEFAULT_SLIPPAGE) / 100),
+        deadline,
+      });
+    }
   }, [
     address,
     currentAmounts,

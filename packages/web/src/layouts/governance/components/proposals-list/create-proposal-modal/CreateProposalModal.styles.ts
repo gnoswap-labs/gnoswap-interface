@@ -26,6 +26,9 @@ export const CreateProposalModalWrapper = styled.div`
       height: 41px;
       border-top-left-radius: 0;
       border-top-right-radius: 0;
+      span {
+        font-size: 16px;
+      }
     }
   }
   .modal-body {

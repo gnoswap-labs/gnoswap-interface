@@ -31,7 +31,7 @@ export function makeDepositGNSMessageWithApproves(
     packagePath: PACKAGE_LAUNCHPAD_PATH,
     send: "",
     func: TransactionMessageFunctionType.DepositGns,
-    args: [poolId, gnsTokenAmount.toString()],
+    args: [poolId, gnsTokenAmount.toString(), ""], // Referral address
     caller,
   });
 
@@ -58,7 +58,7 @@ export function makeCollectRewardByProjectIdMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,
     send: "",
     func: TransactionMessageFunctionType.CollectRewardByProjectId,
-    args: [projectId],
+    args: [projectId, ""], // Referral address
     caller,
   });
 
@@ -76,7 +76,7 @@ export function makeCollectRewardByDepositIdMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,
     send: "",
     func: TransactionMessageFunctionType.CollectRewardByDepositId,
-    args: [depositId],
+    args: [depositId, ""], // Referral address
     caller,
   });
 
@@ -101,7 +101,7 @@ export function makeCollectRewardWithDepositByProjectIdMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,
     send: "",
     func: TransactionMessageFunctionType.CollectDepositGnsByProjectId,
-    args: [projectId],
+    args: [projectId, ""], // Referral address
     caller,
   });
 
@@ -119,14 +119,14 @@ export function makeCollectRewardWithDepositByDepositIdMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,
     send: "",
     func: TransactionMessageFunctionType.CollectRewardByDepositId,
-    args: [depositId],
+    args: [depositId, ""], // Referral address
     caller,
   });
   const collectDepositGnsByDepositIdMessage = makeTransactionMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,
     send: "",
     func: TransactionMessageFunctionType.CollectDepositGnsByDepositId,
-    args: [depositId],
+    args: [depositId, ""], // Referral address
     caller,
   });
 

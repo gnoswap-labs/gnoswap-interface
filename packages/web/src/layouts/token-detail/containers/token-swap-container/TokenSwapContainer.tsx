@@ -45,6 +45,7 @@ const TokenSwapContainer: React.FC = () => {
     openConnectWallet,
     copyURL,
     isSwitchNetwork,
+    switchNetwork,
     isLoading,
     isRefetching,
     swapValue,
@@ -138,7 +139,7 @@ const TokenSwapContainer: React.FC = () => {
   return (
     <>
       <TokenSwap
-        connected={connectedWallet}
+        connectedWallet={connectedWallet}
         connectWallet={openConnectWallet}
         swapNow={openConfirmModal}
         switchSwapDirection={handleSwitch}
@@ -147,6 +148,7 @@ const TokenSwapContainer: React.FC = () => {
         themeKey={themeKey}
         handleSetting={() => setOpenedSlippage(true)}
         isSwitchNetwork={isSwitchNetwork}
+        switchNetwork={switchNetwork}
         dataTokenInfo={swapTokenInfo}
         changeTokenA={handleChangeTokenA}
         changeTokenB={handleChangeTokenB}

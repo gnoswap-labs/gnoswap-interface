@@ -172,7 +172,7 @@ export function makeDelegateMessagesWithApproves(
     packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
     send: "",
     func: TransactionMessageFunctionType.Delegate,
-    args: [to, amount],
+    args: [to, amount, ""], // Referral address
     caller,
   });
 

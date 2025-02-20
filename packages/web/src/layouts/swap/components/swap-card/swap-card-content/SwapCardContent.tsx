@@ -22,6 +22,7 @@ import {
 } from "./SwapCardContent.styles";
 import IconWallet from "@components/common/icons/IconWallet";
 import { useTranslation } from "react-i18next";
+import { useTokenBalancesDisplay } from "@hooks/token/ui/use-token-balance-display";
 
 interface ContentProps {
   swapTokenInfo: SwapTokenInfo;
@@ -67,6 +68,12 @@ const SwapCardContent: React.FC<ContentProps> = ({
   const direction = swapSummaryInfo?.swapDirection;
 
   const digitRegex = useMemo(() => /^0+(?=\d)|(\.\d*)$/g, []);
+
+  const { tokenA: balanceADisplay, tokenB: balanceBDisplay } = useTokenBalancesDisplay(
+    swapTokenInfo.tokenABalance,
+    swapTokenInfo.tokenBBalance,
+    connectedWallet,
+  );
 
   const onChangeTokenAAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -169,7 +176,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
           <div className="balance-wrapper">
             {connectedWallet && <IconWallet />}
             <span className={`balance-text ${tokenA && connectedWallet && "balance-text-disabled"}`}>
-              {swapTokenInfo.tokenABalance}
+              {balanceADisplay}
             </span>
             {hasTokenABalance && (
               <button className="balance-max-button" onClick={handleAutoFillTokenA}>
@@ -218,7 +225,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
           <div className="balance-wrapper">
             {connectedWallet && <IconWallet />}
             <span className={`balance-text ${tokenB && connectedWallet && "balance-text-disabled"}`}>
-              {swapTokenInfo.tokenBBalance}
+              {balanceBDisplay}
             </span>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import { MockStorageClient } from "@common/clients/storage-client/mock-storage-client";
-import { TokenRepositoryMock } from "./token-repository-mock";
 import { TokenSearchLogModel } from "@models/token/token-search-log-model";
+import { TokenRepositoryMock } from "./token-repository-mock";
 
 const localStorageClient = new MockStorageClient("LOCAL");
 const tokenRepository = new TokenRepositoryMock(localStorageClient);
@@ -39,7 +39,7 @@ describe("createSearchLog", () => {
     token: {
       path: "path",
       address: "address",
-      type: "grc20",
+      type: "GRC20",
       priceID: "priceID",
       chainId: "chainId",
       name: "name",
@@ -73,7 +73,7 @@ describe("getSearchLogs", () => {
     token: {
       path: "path",
       address: "address",
-      type: "grc20",
+      type: "GRC20",
       priceID: "priceID",
       chainId: "chainId",
       name: "name",

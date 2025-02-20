@@ -256,16 +256,29 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
         return null;
       }
 
-      const latestTokenAmountLimit = store.get(SwapState.swapConfirmModalState).tokenAmountLimit;
+      // check this args
+      if (direction === "EXACT_IN") {
+        return swapRouterRepository.sendExactInSwapRoute({
+          inputToken: tokenA,
+          outputToken: tokenB,
+          tokenAmount: Number(tokenAmount),
+          estimatedRoutes: estimatedRoutes,
+          tokenAmountLimit: tokenAmountLimit,
+          deadline: Math.floor(Date.now() / 1000) + 60 * 20,
+        });
+      }
 
-      return swapRouterRepository.sendSwapRoute({
-        inputToken: tokenA,
-        outputToken: tokenB,
-        estimatedRoutes,
-        exactType: direction,
-        tokenAmount: direction === "EXACT_IN" ? Number(tokenAmount) : Number(tokenAmount) * exactOutPadding,
-        tokenAmountLimit: latestTokenAmountLimit || tokenAmountLimit,
-      });
+      // check this args
+      if (direction === "EXACT_OUT") {
+        return swapRouterRepository.sendExactOutSwapRoute({
+          inputToken: tokenA,
+          outputToken: tokenB,
+          tokenAmount: Number(tokenAmount) * exactOutPadding,
+          estimatedRoutes: estimatedRoutes,
+          tokenAmountLimit: tokenAmountLimit,
+          deadline: Math.floor(Date.now() / 1000) + 60 * 20,
+        });
+      }
     },
     [
       account,

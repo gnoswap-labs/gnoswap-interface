@@ -111,6 +111,7 @@ export const StakePositionModalWrapper = styled.div`
             color: ${({ theme }) => theme.color.text02};
             ${media.mobile} {
               ${fonts.body12};
+              font-size: 16px;
             }
           }
           .position-bar {

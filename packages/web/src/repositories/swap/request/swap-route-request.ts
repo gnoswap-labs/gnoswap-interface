@@ -1,7 +1,7 @@
 import { EstimatedRoute } from "@models/swap/swap-route-info";
 import { TokenModel } from "@models/token/token-model";
 
-export interface SwapRouteRequest {
+export interface DrySwapRequest {
   inputToken: TokenModel;
 
   outputToken: TokenModel;
@@ -13,4 +13,18 @@ export interface SwapRouteRequest {
   estimatedRoutes: EstimatedRoute[];
 
   tokenAmountLimit: number;
+}
+
+export interface SwapRouteRequest {
+  inputToken: TokenModel;
+
+  outputToken: TokenModel;
+
+  tokenAmount: number;
+
+  estimatedRoutes: EstimatedRoute[];
+
+  tokenAmountLimit: number;
+
+  deadline: number;
 }

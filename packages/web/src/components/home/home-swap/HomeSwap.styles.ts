@@ -56,6 +56,10 @@ export const wrapper = (theme: Theme) => css`
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
       margin-bottom: 5px;
+      .skeleton {
+        margin-bottom: 6px;
+        border-radius: 2px;
+      }
     }
 
     .token {
@@ -64,6 +68,11 @@ export const wrapper = (theme: Theme) => css`
         margin-right: 0;
       }
       > div {
+        border: 1px solid transparent;
+        transition: border 0.5s ease-in-out;
+        &.isChanging {
+          border: 1px solid var(--gradient-dark-border-gradient, #536cd7);
+        }
         padding: 5px 6px 5px 6px;
         height: 34px;
       }
@@ -90,10 +99,25 @@ export const wrapper = (theme: Theme) => css`
       }
     }
 
+    .skeleton-small {
+      width: 77px;
+      height: 16px;
+
+      border-radius: 2px;
+      background: linear-gradient(0deg, rgba(20, 26, 41, 0.5) 0%, rgba(20, 26, 41, 0.5) 100%);
+      box-shadow: 8px 8px 20px 0px rgba(0, 0, 0, 0.2);
+    }
+
     .price-text,
     .balance-text {
+      display: flex;
+      align-items: center;
+      gap: 4px;
       ${fonts.p1};
       color: ${theme.color.text04};
+      &.isChanging {
+        animation: fadeInOut 0.5s ease-in-out;
+      }
     }
     .price-text {
       flex-shrink: 0;
@@ -103,13 +127,11 @@ export const wrapper = (theme: Theme) => css`
       overflow: hidden;
     }
     .balance-text-disabled {
-      cursor: pointer;
       z-index: 1;
     }
 
     .token {
       ${mixins.flexbox("row", "center", "center")}
-      width: 112px;
       height: 30px;
       font-size: 15px;
       font-weight: 500;
@@ -129,10 +151,6 @@ export const wrapper = (theme: Theme) => css`
         background-color: ${theme.color.background01};
         border: 1px solid ${theme.color.border02};
         border-radius: 50%;
-        cursor: pointer;
-        :hover {
-          background-color: ${theme.color.backgroundGradient};
-        }
         .shape-icon {
           width: 16px;
           height: 16px;
@@ -148,5 +166,30 @@ export const wrapper = (theme: Theme) => css`
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
     padding-top: 16px;
+    .swap-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
+
+  .right-arrow {
+    * {
+      fill: ${theme.themeKey === "dark" ? "#E0E8F4" : "#FFFFFF"};
+    }
+  }
+
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
   }
 `;

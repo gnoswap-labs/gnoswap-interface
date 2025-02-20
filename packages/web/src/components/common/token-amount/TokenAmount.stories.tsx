@@ -1,6 +1,6 @@
-import TokenAmount, { type TokenAmountProps } from "./TokenAmount";
-import { Meta, StoryObj } from "@storybook/react";
 import { TokenModel } from "@models/token/token-model";
+import { Meta, StoryObj } from "@storybook/react";
+import TokenAmount, { type TokenAmountProps } from "./TokenAmount";
 
 export default {
   title: "common/TokenAmount",
@@ -16,7 +16,7 @@ const token: TokenModel = {
   decimals: 4,
   symbol: "GNS",
   logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
-  type: "grc20",
+  type: "GRC20",
   priceID: "gno.land/r/gns",
 };
 

@@ -33,6 +33,6 @@ export const StatusTimeChipWrapper = styled.div<ChipStyle>`
       `;
   }}
   ${media.mobile} {
-    font-size: 10px;
+    font-size: 12px;
   }
 `;

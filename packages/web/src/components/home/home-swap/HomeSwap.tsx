@@ -1,83 +1,78 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
+import { cx } from "@emotion/css";
 import { wrapper } from "./HomeSwap.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { SwapValue } from "@states/swap";
 import { useTranslation } from "next-i18next";
+import IconRightArrow from "@components/common/icons/IconRightArrow";
+import { TokenModel } from "@models/token/token-model";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import IconWallet from "@components/common/icons/IconWallet";
 
 interface HomeSwapProps {
-  changeTokenAAmount: (value: string) => void;
-  changeTokenBAmount: (value: string) => void;
   swapTokenInfo: SwapTokenInfo;
   swapNow: () => void;
-  onSubmitSwapValue: () => void;
   connected: boolean;
-  swapValue: SwapValue;
+  tokenBTransition?: {
+    isChanging: boolean;
+    prevToken: TokenModel | null;
+  };
+  tokenB: TokenModel | null;
 }
 
-function isAmount(str: string) {
-  const regex = /^\d+(\.\d*)?$/;
-  return regex.test(str);
+// Interface for animating token conversions
+interface TokenTransition {
+  isChanging: boolean;
+  prevToken: TokenModel | null;
 }
 
-const HomeSwap: React.FC<HomeSwapProps> = ({
-  swapTokenInfo,
-  swapNow,
-  onSubmitSwapValue,
-  changeTokenAAmount,
-  connected,
-  changeTokenBAmount,
-}) => {
+const UI_SAMPLE_MIN = 0;
+const UI_SAMPLE_VALUE = 1_000;
+const TOKEN_TRANSITION_DURATION = 500 as const;
+
+const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, connected, tokenB }) => {
   const { t } = useTranslation();
   const { breakpoint } = useWindowSize();
-  const [fromAmount, setFromAmount] = useState("");
-  const [toAmount, setToAmount] = useState("");
 
-  const onChangeFromAmount = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (value !== "" && !isAmount(value)) return;
-    const temp = value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1");
-    setFromAmount(temp);
-    changeTokenAAmount(temp);
-  }, []);
+  // Manage the transition state of token B (for animation purposes)
+  const [tokenBTransition, setTokenBTransition] = React.useState<TokenTransition>({
+    isChanging: true,
+    prevToken: null,
+  });
 
-  const onChangeToAmount = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
+  React.useEffect(() => {
+    // when the token has actually changed
+    if (tokenB && tokenBTransition.prevToken && tokenBTransition.prevToken.path !== tokenB.path) {
+      // Set transition to start state
+      setTokenBTransition(prev => ({
+        isChanging: true,
+        prevToken: prev.prevToken,
+      }));
 
-    if (value !== "" && !isAmount(value)) return;
-    const temp = value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1");
-    setToAmount(temp);
-    changeTokenBAmount(temp);
-  }, []);
+      // Change to transition complete after 500ms
+      const timer = setTimeout(() => {
+        setTokenBTransition({
+          isChanging: false,
+          prevToken: tokenB,
+        });
+      }, TOKEN_TRANSITION_DURATION);
+
+      return () => clearTimeout(timer);
+      // on initial token setup
+    } else if (tokenB && !tokenBTransition.prevToken) {
+      setTokenBTransition({
+        isChanging: false,
+        prevToken: tokenB,
+      });
+    }
+  }, [tokenB]);
 
   const onClickSwapNow = useCallback(() => {
     swapNow();
   }, [swapNow]);
-
-  const handleSwap = () => {
-    setFromAmount(toAmount);
-    setToAmount(fromAmount);
-    onSubmitSwapValue();
-  };
-
-  const handleAutoFillTokenA = useCallback(() => {
-    if (connected) {
-      const formatValue = parseFloat(swapTokenInfo.tokenABalance.replace(/,/g, "")).toString();
-      setFromAmount(formatValue);
-      changeTokenAAmount(formatValue);
-    }
-  }, [connected, swapTokenInfo.tokenABalance, changeTokenAAmount]);
-
-  const handleAutoFillTokenB = useCallback(() => {
-    if (connected) {
-      const formatValue = parseFloat(swapTokenInfo.tokenBBalance.replace(/,/g, "")).toString();
-      setToAmount(formatValue);
-      changeTokenBAmount(formatValue);
-    }
-  }, [swapTokenInfo.tokenBBalance, connected, setToAmount, changeTokenBAmount]);
 
   return breakpoint === "tablet" || breakpoint === "web" ? (
     <div css={wrapper}>
@@ -87,48 +82,45 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
       <div className="inputs">
         <div className="from">
           <div className="amount">
-            <input
-              className="amount-text"
-              value={fromAmount}
-              onChange={onChangeFromAmount}
-              placeholder="0"
-              autoComplete={"off"}
-              spellCheck={"false"}
-            />
+            <div className="amount-text">{UI_SAMPLE_VALUE}</div>
             <div className="token">
-              <SelectPairButton token={swapTokenInfo.tokenA} hiddenModal isHiddenArrow />
+              <SelectPairButton token={swapTokenInfo.tokenA} hiddenModal />
             </div>
           </div>
           <div className="info">
             <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
-            <span className={`balance-text ${connected ? "balance-text-disabled" : ""}`} onClick={handleAutoFillTokenA}>
-              {`${t("Main:bal")}: ${swapTokenInfo.tokenABalance}`}
+            <span className={`balance-text ${connected ? "balance-text-disabled" : ""}`}>
+              <IconWallet />
+              {UI_SAMPLE_VALUE.toLocaleString()}
             </span>
           </div>
         </div>
         <div className="to">
           <div className="amount">
-            <input
-              className="amount-text"
-              value={toAmount}
-              onChange={onChangeToAmount}
-              placeholder="0"
-              autoComplete={"off"}
-              spellCheck={"false"}
-            />
+            <div className="skeleton" css={pulseSkeletonStyle({ w: "100px", h: "32px" })} />
             <div className="token">
-              <SelectPairButton token={swapTokenInfo.tokenB} hiddenModal isHiddenArrow />
+              <SelectPairButton token={swapTokenInfo.tokenB} hiddenModal isChanging={tokenBTransition?.isChanging} />
             </div>
           </div>
           <div className="info">
-            <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
-            <span className={`balance-text ${connected ? "balance-text-disabled" : ""}`} onClick={handleAutoFillTokenB}>
-              {t("Main:bal")}: {swapTokenInfo.tokenBBalance}
-            </span>
+            <div className="skeleton" css={pulseSkeletonStyle({ w: "77px", h: "16px" })} />
+            {tokenBTransition?.isChanging ? (
+              <div className="skeleton" css={pulseSkeletonStyle({ w: "40px", h: "16px" })} />
+            ) : (
+              <span
+                className={cx("balance-text", {
+                  "balance-text-disabled": connected,
+                  isChanging: tokenBTransition?.isChanging,
+                })}
+              >
+                <IconWallet />
+                {UI_SAMPLE_MIN}
+              </span>
+            )}
           </div>
         </div>
         <div className="arrow">
-          <div className="shape" onClick={handleSwap}>
+          <div className="shape">
             <IconSwapArrowDown className="shape-icon" />
           </div>
         </div>
@@ -136,7 +128,11 @@ const HomeSwap: React.FC<HomeSwapProps> = ({
 
       <div className="footer">
         <Button
-          text={t("Main:swapNowBtn")}
+          text={
+            <div className="swap-button">
+              Go to Swap <IconRightArrow className="right-arrow" />
+            </div>
+          }
           style={{
             fullWidth: true,
             height: 50,

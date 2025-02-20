@@ -1,5 +1,5 @@
-import { TokenModel } from "@models/token/token-model";
 import { AmountModel } from "@models/common/amount-model";
+import { TokenModel } from "@models/token/token-model";
 
 export interface Route {
   pools: RoutePoolInfo[];

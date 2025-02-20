@@ -9,6 +9,7 @@ import DecreaseLiquidity from "../../components/decrease-liquidity/DecreaseLiqui
 import DecreaseLiquidityLoading from "../../components/decrease-liquidity/DecreaseLiquidityLoading";
 import { useDecreaseHandle } from "@hooks/pool/data/use-decrease-handle";
 import { useDecreasePositionModal } from "@hooks/pool/ui/use-decrease-position-modal";
+import BigNumber from "bignumber.js";
 
 const DecreaseLiquidityContainer: React.FC = () => {
   const router = useRouter();
@@ -32,6 +33,16 @@ const DecreaseLiquidityContainer: React.FC = () => {
     refetchPositions,
   } = useDecreaseHandle();
 
+  const calculatedLiquidity = React.useMemo(() => {
+    if (!pooledTokenInfos?.liquidity) return "0";
+
+    return BigNumber(pooledTokenInfos.liquidity)
+      .multipliedBy(percent)
+      .dividedBy(100)
+      .integerValue(BigNumber.ROUND_DOWN)
+      .toString();
+  }, [pooledTokenInfos?.liquidity, percent]);
+
   const { openModal } = useDecreasePositionModal({
     positionId,
     tokenA,
@@ -41,7 +52,7 @@ const DecreaseLiquidityContainer: React.FC = () => {
     minPriceStr,
     maxPriceStr,
     rangeStatus,
-    percent,
+    calculatedLiquidity,
     pooledTokenInfos,
     isGetWGNOT,
     refetchPositions: async () => {

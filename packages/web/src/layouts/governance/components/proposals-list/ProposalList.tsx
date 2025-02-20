@@ -109,24 +109,26 @@ const ProposalList: React.FC<ProposalListProps> = ({
 
   const getTooltipTextI18nKey = React.useCallback(
     (status: string, isMajorityVoted: boolean, yesVotes: number, noVotes: number) => {
-      if (!isMajorityVoted) {
-        return "proposal.tooltip.executed";
+      if (isMajorityVoted) {
+        switch (status) {
+          case "ACTIVE":
+            if (yesVotes >= noVotes) {
+              return "proposal.tooltip.passed";
+            } else {
+              return "proposal.tooltip.rejected";
+            }
+          case "PASSED":
+          case "EXECUTED":
+          case "EXPIRED":
+            return "proposal.tooltip.passed";
+          case "REJECTED":
+            return "proposal.tooltip.rejected";
+          default:
+            return "proposal.tooltip.executed";
+        }
       }
 
-      switch (status) {
-        case "ACTIVE":
-          if (yesVotes >= noVotes) {
-            return "proposal.tooltip.passed";
-          } else {
-            return "proposal.tooltip.rejected";
-          }
-        case "PASSED":
-          return "proposal.tooltip.passed";
-        case "REJECTED":
-          return "proposal.tooltip.rejected";
-        default:
-          return "proposal.tooltip.executed";
-      }
+      return "proposal.tooltip.executed";
     },
     [],
   );

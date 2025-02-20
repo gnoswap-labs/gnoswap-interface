@@ -335,6 +335,7 @@ function makePositionMintMessage(
       deadline,
       caller, // LP Token Receiver
       caller, // Replace OriginCaller
+      "", // Referral address
     ],
   });
 }
@@ -372,6 +373,7 @@ function makePositionMintWithStakeMessage(
       BigNumber(tokenAAmount).multipliedBy(slippageRatio).toFixed(0),
       BigNumber(tokenBAmount).multipliedBy(slippageRatio).toFixed(0),
       deadline,
+      "", // Referral address
     ],
   });
 }

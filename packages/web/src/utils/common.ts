@@ -231,6 +231,17 @@ export const toNativePath = (path: string) => {
   }
 };
 
+export const isGnotToken = (path: string): boolean => {
+  return path === "gnot" || path === WRAPPED_GNOT_PATH;
+};
+
+export const isSameToken = (tokenAPath: string, tokenBPath: string): boolean => {
+  if (!tokenAPath || !tokenBPath) return false;
+  if (tokenAPath === tokenBPath) return true;
+  if (isGnotToken(tokenAPath) && isGnotToken(tokenBPath)) return true;
+  return false;
+};
+
 export function removeDuplicatesByWrappedPath(arr: TokenModel[]) {
   const seen = new Set();
   return arr.filter(obj => {

@@ -7,7 +7,7 @@ import AssetListTable, { Asset } from "./AssetListTable";
 
 const dummyAssetList: Asset[] = [
   {
-    type: "grc20",
+    type: "GRC20",
     chainId: "dev",
     createdAt: "2023-12-12 23:45:12",
     name: "Bar",
@@ -21,7 +21,7 @@ const dummyAssetList: Asset[] = [
     price: "0",
   },
   {
-    type: "grc20",
+    type: "GRC20",
     chainId: "dev",
     createdAt: "2023-12-12 23:45:12",
     name: "Bar",

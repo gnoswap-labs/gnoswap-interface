@@ -14,6 +14,8 @@ import { formatRate } from "@utils/new-number-utils";
 import PoolInfoLazyChart from "./pool-info-lazy-chart/PoolInfoLazyChart";
 
 import { PoolInfoWrapper, TableColumn } from "./PoolInfo.styles";
+import { makePoolPath } from "@utils/pool-utils";
+import { useGetPoolStakingListByPoolPath } from "@query/pools";
 
 interface PoolInfoProps {
   pool: PoolListInfo;
@@ -24,8 +26,20 @@ interface PoolInfoProps {
 
 const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
   const { poolId, tokenA, tokenB, feeTier, apr, volume24h, fees24h, rewardTokens, tvl } = pool;
+  const poolPath = makePoolPath(tokenA, tokenB, feeTier);
+
+  const { data: poolStakings = [] } = useGetPoolStakingListByPoolPath(poolPath || "", {
+    enabled: !!poolPath,
+  });
+
+  const hasPoolStaking = React.useMemo(() => {
+    return poolStakings.length > 0;
+  }, [poolStakings]);
+
   const { getGnotPath } = useGnotToGnot();
   const rewardTokenLogos = useMemo(() => {
+    if (!hasPoolStaking) return null;
+
     const tokenData = rewardTokens.reduce((acc, current) => {
       const existToken = acc.some(item => item.path === getGnotPath(current).path);
 
@@ -42,7 +56,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
     }, [] as TokenModel[]);
 
     return <OverlapTokenLogo tokens={tokenData} size={20} />;
-  }, [getGnotPath, rewardTokens]);
+  }, [getGnotPath, rewardTokens, hasPoolStaking]);
 
   const cellWidths =
     breakpoint === DEVICE_TYPE.MOBILE

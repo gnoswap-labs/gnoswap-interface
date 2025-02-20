@@ -1,9 +1,8 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
 
-import TokenSwap from "./TokenSwap";
-import { action } from "@storybook/addon-actions";
 import { TokenModel } from "@models/token/token-model";
+import { action } from "@storybook/addon-actions";
+import TokenSwap from "./TokenSwap";
 
 export default {
   title: "token/TokenSwap",
@@ -21,14 +20,14 @@ const TOKEN_A: TokenModel = {
   decimals: 4,
   symbol: "GNS",
   logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
-  type: "grc20",
+  type: "GRC20",
   priceID: "gno.land/r/gns",
 };
 
 export const Default = Template.bind({});
 Default.args = {
   isSwitchNetwork: false,
-  connected: false,
+  connectedWallet: false,
   isAvailSwap: false,
   swapButtonText: "Swap",
   isLoading: false,

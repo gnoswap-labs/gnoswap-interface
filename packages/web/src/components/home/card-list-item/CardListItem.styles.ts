@@ -27,9 +27,13 @@ export const ListItem = styled.li<{ upDown: UpDownType; disabled?: boolean }>`
   }
   transition: background-color 0.3s ease;
   color: ${({ theme }) => theme.color.text01};
-  &:hover {
-    background-color: ${({ theme }) => theme.color.hover02};
-  }
+  ${({ disabled, theme }) =>
+    !disabled &&
+    `
+    &:hover {
+      background-color: ${theme.color.hover02};
+    }
+  `}
 
   .list-logo {
     width: 20px;

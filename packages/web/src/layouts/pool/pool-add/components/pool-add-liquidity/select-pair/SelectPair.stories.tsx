@@ -1,8 +1,7 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
 
-import SelectPair from "./SelectPair";
 import { TokenModel } from "@models/token/token-model";
+import SelectPair from "./SelectPair";
 
 export default {
   title: "pool/pool-add/SelectPair",
@@ -12,7 +11,7 @@ export default {
 const Template: ComponentStory<typeof SelectPair> = args => <SelectPair {...args} />;
 
 const tokenA: TokenModel = {
-  type: "grc20",
+  type: "GRC20",
   chainId: "dev.gnoswap",
   createdAt: "2023-12-08T03:57:43Z",
   name: "Foo",
@@ -25,7 +24,7 @@ const tokenA: TokenModel = {
 };
 
 const tokenB: TokenModel = {
-  type: "grc20",
+  type: "GRC20",
   chainId: "dev.gnoswap",
   createdAt: "2023-12-08T03:57:43Z",
   name: "Foo",

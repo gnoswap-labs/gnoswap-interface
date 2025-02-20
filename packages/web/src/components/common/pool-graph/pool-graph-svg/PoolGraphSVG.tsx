@@ -6,6 +6,7 @@ import { ThemeKeys } from "@styles/ThemeTypes";
 
 import { ReservedBin } from "../PoolGraph.types";
 import { PoolGraphSVGContainer } from "./PoolGraphSVG.styles";
+import { useTheme } from "@emotion/react";
 
 interface PoolGraphSVGProps {
   graphId: string;
@@ -70,6 +71,8 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
     },
     forwardedRef,
   ) => {
+    const theme = useTheme();
+
     const svgRef = useRef<SVGSVGElement>(null);
     useImperativeHandle(forwardedRef, () => svgRef.current as SVGSVGElement);
 
@@ -215,7 +218,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
       if (!!width && !!height && !!chartRef.current) {
         updateChart();
       }
-    }, [width, height, reservedBins, svgRef?.current, chartRef?.current, onMouseMove]);
+    }, [width, height, reservedBins, svgRef?.current, chartRef?.current, onMouseMove, theme]);
 
     return (
       <PoolGraphSVGContainer

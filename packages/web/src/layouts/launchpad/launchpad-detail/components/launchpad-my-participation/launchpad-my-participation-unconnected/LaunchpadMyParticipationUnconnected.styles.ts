@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 export const UnconnectedWrapper = styled.div`
@@ -20,5 +21,8 @@ export const UnconnectedWrapper = styled.div`
     color: ${({ theme }) => theme.color.text04};
     text-align: center;
     line-height: 20.8px;
+    ${media.mobile} {
+      font-size: 14px;
+    }
   }
 `;

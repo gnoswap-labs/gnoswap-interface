@@ -3,7 +3,7 @@ import { Trans, useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-import { XGNS_TOKEN } from "@common/values/token-constant";
+import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconClose from "@components/common/icons/IconCancel";
 import withLocalModal from "@components/hoc/with-local-modal";
@@ -11,6 +11,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { ProposalItemInfo } from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
 
+import { rawToDisplayAmount } from "@utils/number-utils";
 import StatusBadge from "../../status-badge/StatusBadge";
 import TokenChip from "../../token-chip/TokenChip";
 import TypeBadge from "../../type-badge/TypeBadge";
@@ -63,8 +64,17 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   const { isMobile } = useWindowSize();
   const [selectedVote, setSelectedVote] = useState(proposalDetail.myVote?.type || "");
 
+  const hasVoted = useMemo(() => {
+    const { yes, no } = proposalDetail.votes;
+    return Boolean(yes) || Boolean(no);
+  }, [proposalDetail.votes]);
+
   const isMajorityVoted = useMemo(() => {
-    return proposalDetail.votes.yes + proposalDetail.votes.no >= proposalDetail.votes.max / 2;
+    const { yes, no, max } = proposalDetail.votes;
+
+    if (max === 0) return false;
+
+    return yes + no >= max / 2;
   }, [proposalDetail.votes]);
 
   const { yesVotes, noVotes } = useMemo(() => {
@@ -158,7 +168,8 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
                 </div>
                 <div className="variable">
                   <div className="variable-type">{t("Governance:detailModal.content.amount")}</div>
-                  {proposalDetail.content.amount}
+                  {rawToDisplayAmount(proposalDetail.content.amount || 0, GNS_TOKEN.decimals).toLocaleString()}{" "}
+                  {GNS_TOKEN.symbol}
                 </div>
               </>
             )}
@@ -184,6 +195,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
             <div className="progress-value">
               <Tooltip
                 placement="top"
+                forcedClose={!hasVoted}
                 FloatingContent={
                   <ProposalTooltipContent>
                     <Trans ns="Governance" components={{ br: <br /> }} i18nKey={tooltipTextI18nKey} />

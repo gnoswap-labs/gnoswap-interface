@@ -1,10 +1,9 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { ComponentMeta, ComponentStory } from "@storybook/react";
 
-import PoolInfo from "./PoolInfo";
 import { css, Theme } from "@emotion/react";
-import { action } from "@storybook/addon-actions";
 import { IncentivizePoolCardInfo } from "@models/pool/info/pool-card-info";
+import { action } from "@storybook/addon-actions";
+import PoolInfo from "./PoolInfo";
 
 const pool: IncentivizePoolCardInfo = {
   poolId: "bar_foo_500",
@@ -17,7 +16,7 @@ const pool: IncentivizePoolCardInfo = {
     decimals: 4,
     symbol: "BAR",
     logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
-    type: "grc20",
+    type: "GRC20",
     priceID: "gno.land/r/bar",
   },
   tokenB: {
@@ -29,7 +28,7 @@ const pool: IncentivizePoolCardInfo = {
     decimals: 4,
     symbol: "FOO",
     logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-    type: "grc20",
+    type: "GRC20",
     priceID: "gno.land/r/foo",
   },
   feeTier: "FEE_500",
