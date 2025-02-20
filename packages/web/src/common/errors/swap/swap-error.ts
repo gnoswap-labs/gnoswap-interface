@@ -21,6 +21,10 @@ const ERROR_VALUE = {
     status: 4004,
     type: "Get slippage failed",
   },
+  DRY_SWAP_DEVIATION_EXCEEDED: {
+    status: 4005,
+    type: "DrySwap estimation deviation exceeded",
+  },
   INVALID_PARAMS: {
     status: 5000,
     type: "Invalid request parameters",

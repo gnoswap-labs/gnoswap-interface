@@ -1069,7 +1069,15 @@ export const useSwapHandler = () => {
           hash: response?.data?.hash || "",
         });
       })
-      .catch(() => {
+      .catch(e => {
+        broadcastError(
+          getMessage(
+            DexEvent.SWAP,
+            "error",
+            broadcastMessage,
+            e.type === ERROR_VALUE.TRANSACTION_FAILED.type ? e.data?.hash : undefined,
+          ),
+        );
         setSwapResult({
           success: false,
           hash: "",
