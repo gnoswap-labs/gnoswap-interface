@@ -1,5 +1,3 @@
 export interface SyncInfoResponse {
-  syncInfo: {
-    height: number;
-  };
+  height: number;
 }
