@@ -21,7 +21,7 @@ export const useEmitTransactionEvents = (options?: UseQueryOptions<Event<string[
 
       const result = await statusRepository.getSyncInfo().catch(() => null);
 
-      const blockHeight = result?.syncInfo.height;
+      const blockHeight = result?.height;
       if (!blockHeight) {
         return [];
       }

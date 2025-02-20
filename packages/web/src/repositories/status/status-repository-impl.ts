@@ -1,8 +1,8 @@
 import { NetworkClient } from "@common/clients/network-client";
+import { CommonError } from "@common/errors";
+import { APIResponse } from "@repositories/common";
 import { SyncInfoResponse } from "./response";
 import { StatusRepository } from "./status-repository";
-import { APIResponse } from "@repositories/common";
-import { CommonError } from "@common/errors";
 
 export class StatusRepositoryImpl implements StatusRepository {
   private networkClient: NetworkClient | null;
@@ -20,7 +20,7 @@ export class StatusRepositoryImpl implements StatusRepository {
       url: "/util/sync-info",
     });
 
-    if (!data || data.error.code !== undefined) {
+    if (!data) {
       throw new CommonError("NOT_FOUND_DATA");
     }
 
