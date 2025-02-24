@@ -406,6 +406,8 @@ export const useRepositionHandle = () => {
       return null;
     }
 
+    const deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString();
+
     return positionRepository
       .removeLiquidity({
         lpTokenIds: [selectedPosition.lpTokenId],
@@ -413,6 +415,7 @@ export const useRepositionHandle = () => {
         caller: address,
         tokenPaths: [selectedPosition.pool.tokenA.path, selectedPosition.pool.tokenB.path],
         isGetWGNOT: false,
+        deadline,
       })
       .catch(() => null);
   }, [selectedPosition, positionRepository, address]);

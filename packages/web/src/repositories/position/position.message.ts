@@ -500,12 +500,14 @@ export function makeRemoveLiquidityMessagesWithApproves(
     tokenPaths,
     caller,
     isGetWGNOT,
+    deadline = "9999999999",
   }: {
     lpTokenIds: string[];
     calculatedLiquidity: string;
     tokenPaths: string[];
     caller: string;
     isGetWGNOT: boolean;
+    deadline?: string;
   },
   fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
@@ -537,7 +539,7 @@ export function makeRemoveLiquidityMessagesWithApproves(
         calculatedLiquidity.toString(), // Percentage of liquidity to reduce (0 ~ 100)
         "0", // Minimum quantity of tokenA to decrease liquidity
         "0", // Minimum quantity of tokenB to decrease liquidity
-        "9999999999", // Deadline UTC time
+        deadline, // Deadline UTC time
         `${!isGetWGNOT}`, // whether unwrap token : isGetWGNOT == true => wrap
       ],
       caller,

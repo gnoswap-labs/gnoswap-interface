@@ -152,6 +152,8 @@ export const useDecreasePositionModal = ({
       }),
     );
 
+    const deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString();
+
     const poolAmountA = BigNumber(pooledTokenInfos?.poolAmountA ?? 0).toNumber();
     const poolAmountB = BigNumber(pooledTokenInfos?.poolAmountB ?? 0).toNumber();
 
@@ -166,6 +168,7 @@ export const useDecreasePositionModal = ({
         slippage,
         caller: address,
         isGetWGNOT: willWrap,
+        deadline,
       })
       .catch(() => null);
 
