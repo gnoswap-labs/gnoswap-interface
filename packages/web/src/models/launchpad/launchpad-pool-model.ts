@@ -5,7 +5,7 @@ export interface LaunchpadPoolModel {
 
   status: "NONE" | "UPCOMING" | "ENDED" | "ONGOING";
 
-  poolTier: "TIER30" | "TIER90" | "TIER180";
+  poolTier: "TIER_30" | "TIER_90" | "TIER_180";
 
   allocation: number;
 

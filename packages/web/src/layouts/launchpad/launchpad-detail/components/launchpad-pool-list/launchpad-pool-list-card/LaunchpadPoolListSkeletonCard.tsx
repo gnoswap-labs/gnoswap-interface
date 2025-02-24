@@ -11,9 +11,9 @@ export const LaunchpadPoolListSkeletonCard = ({ idx }: { idx: number }) => {
   const { t } = useTranslation();
 
   const data = [
-    { poolTier: "TIER180", status: "ONGOING", claimableDays: 14 },
-    { poolTier: "TIER90", status: "ONGOING", claimableDays: 7 },
-    { poolTier: "TIER30", status: "ONGOING", claimableDays: 3 },
+    { poolTier: "TIER_180", status: "ONGOING", claimableDays: 14 },
+    { poolTier: "TIER_90", status: "ONGOING", claimableDays: 7 },
+    { poolTier: "TIER_30", status: "ONGOING", claimableDays: 3 },
   ];
 
   return (
