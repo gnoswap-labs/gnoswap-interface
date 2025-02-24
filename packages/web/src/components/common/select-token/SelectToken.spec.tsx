@@ -5,6 +5,13 @@ import SelectToken, { SelectTokenProps } from "./SelectToken";
 import React from "react";
 import { DEVICE_TYPE } from "@styles/media";
 
+// Mock @adena-wallet/sdk
+jest.mock("@adena-wallet/sdk", () => ({
+  makeMsgCallMessage: jest.fn(),
+  makeMsgSendMessage: jest.fn(),
+  TransactionBuilder: jest.fn(),
+}));
+
 describe("SelectToken Component", () => {
   const modalRef = React.createRef();
   it("SelectToken render", () => {

@@ -12,6 +12,13 @@ import PoolPairInfoHeader from "./PoolPairInfoHeader";
 
 const poolRepository = new PoolRepositoryMock();
 
+// Mock @adena-wallet/sdk
+jest.mock("@adena-wallet/sdk", () => ({
+  makeMsgCallMessage: jest.fn(),
+  makeMsgSendMessage: jest.fn(),
+  TransactionBuilder: jest.fn(),
+}));
+
 describe("PoolPairInfoHeader Component", () => {
   it("PoolPairInfoHeader render", async () => {
     const pool = await poolRepository.getPoolDetailByPoolPath();

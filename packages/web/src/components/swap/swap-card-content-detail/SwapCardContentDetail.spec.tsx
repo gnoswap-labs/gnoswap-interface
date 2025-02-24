@@ -8,6 +8,13 @@ import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapTheme
 
 import SwapCardContentDetail, { SwapCardContentDetailProps } from "./SwapCardContentDetail";
 
+// Mock @adena-wallet/sdk
+jest.mock("@adena-wallet/sdk", () => ({
+  makeMsgCallMessage: jest.fn(),
+  makeMsgSendMessage: jest.fn(),
+  TransactionBuilder: jest.fn(),
+}));
+
 const tokenA: TokenModel = {
   type: "GRC20",
   chainId: "dev.gnoswap",

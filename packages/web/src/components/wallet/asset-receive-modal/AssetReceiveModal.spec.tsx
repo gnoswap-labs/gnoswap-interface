@@ -11,6 +11,13 @@ import { createMockRouter } from "@test/createMockRouter";
 import AssetReceiveModal, { DEFAULT_DEPOSIT_GNOT } from "./AssetReceiveModal";
 import SocialWalletProvider from "@providers/social-wallet-provider";
 
+// Mock @adena-wallet/sdk
+jest.mock("@adena-wallet/sdk", () => ({
+  makeMsgCallMessage: jest.fn(),
+  makeMsgSendMessage: jest.fn(),
+  TransactionBuilder: jest.fn(),
+}));
+
 describe("AssetReceiveModal Component", () => {
   it("AssetReceiveModal render", () => {
     const mockProps = {

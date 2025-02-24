@@ -11,6 +11,13 @@ import { createMockRouter } from "@test/createMockRouter";
 import NotificationButton from "./NotificationButton";
 import SocialWalletProvider from "@providers/social-wallet-provider";
 
+// Mock @adena-wallet/sdk
+jest.mock("@adena-wallet/sdk", () => ({
+  makeMsgCallMessage: jest.fn(),
+  makeMsgSendMessage: jest.fn(),
+  TransactionBuilder: jest.fn(),
+}));
+
 describe("NotificationButton Component", () => {
   it("Notification button", () => {
     const mockProps = {

@@ -6,6 +6,13 @@ import { DEVICE_TYPE } from "@styles/media";
 
 import WalletBalanceDetail, { WalletBalanceDetailProps } from "./WalletBalanceDetail";
 
+// Mock @adena-wallet/sdk
+jest.mock("@adena-wallet/sdk", () => ({
+  makeMsgCallMessage: jest.fn(),
+  makeMsgSendMessage: jest.fn(),
+  TransactionBuilder: jest.fn(),
+}));
+
 describe("WalletBalanceDetail Component", () => {
   it("WalletBalanceDetail render", () => {
     const mockProps: WalletBalanceDetailProps = {
