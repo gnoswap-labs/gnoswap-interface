@@ -264,7 +264,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           tokenAmount: Number(tokenAmount),
           estimatedRoutes: estimatedRoutes,
           tokenAmountLimit: tokenAmountLimit,
-          deadline: Math.floor(Date.now() / 1000) + 60 * 20,
+          deadline: Math.floor(Date.now() / 1000) + 60 * 5,
         });
       }
 
@@ -276,7 +276,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           tokenAmount: Number(tokenAmount) * exactOutPadding,
           estimatedRoutes: estimatedRoutes,
           tokenAmountLimit: tokenAmountLimit,
-          deadline: Math.floor(Date.now() / 1000) + 60 * 20,
+          deadline: Math.floor(Date.now() / 1000) + 60 * 5,
         });
       }
     },
