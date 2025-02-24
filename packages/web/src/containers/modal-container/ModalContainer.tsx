@@ -11,33 +11,7 @@ import { TX_EVENTS, type TransactionApprovalModalHandlers } from "@utils/transac
 import { Z_INDEX } from "@styles/zIndex";
 import Modal from "@components/common/modal/Modal";
 import TransactionApprovalModalContainer from "@containers/transaction-approval-modal-container/TransactionApprovalModalContainer";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type EventCallback = (...args: any[]) => void;
-
-class EventBus {
-  private events: { [key: string]: EventCallback[] } = {};
-
-  on(eventName: string, callback: EventCallback) {
-    if (!this.events[eventName]) {
-      this.events[eventName] = [];
-    }
-    this.events[eventName].push(callback);
-  }
-
-  off(eventName: string, callback: EventCallback) {
-    if (!this.events[eventName]) return;
-    this.events[eventName] = this.events[eventName].filter(cb => cb !== callback);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  emit(eventName: string, data?: any) {
-    if (!this.events[eventName]) return;
-    this.events[eventName].forEach(callback => callback(data));
-  }
-}
-
-export const eventBus = new EventBus();
+import { eventBus } from "@utils/event-bus";
 
 const ModalContainer: React.FC = () => {
   const router = useRouter();

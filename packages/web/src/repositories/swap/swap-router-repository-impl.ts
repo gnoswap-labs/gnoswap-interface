@@ -28,7 +28,7 @@ import {
   makeWrapTokenMessages,
 } from "./swap-router.message";
 import { calculateTotalAmountOut } from "@utils/swap-route-utils";
-import { eventBus } from "@containers/modal-container/ModalContainer";
+import { eventBus } from "@utils/event-bus";
 import { generateSendTransactionParams, withTransactionGuard } from "@utils/transaction-utils";
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {

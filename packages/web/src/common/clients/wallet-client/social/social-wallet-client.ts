@@ -202,16 +202,6 @@ export class SocialWalletClient implements WalletClient {
           response as WalletResponse<AdenaSendTransactionSuccessResponse>,
         ) as WalletResponse<SendTransactionResponse<T | null>>;
       }),
-      // .catch(e => {
-      //   console.log(e);
-      //   return {
-      //     code: 1,
-      //     status: "error",
-      //     type: WalletResponseExecuteType.DO_CONTRACT,
-      //     message: e.message,
-      //     data: null,
-      //   };
-      // }),
     );
   };
 
@@ -244,17 +234,14 @@ export class SocialWalletClient implements WalletClient {
     }
 
     const client = new SocialWalletClient();
-    if (loginType) {
-      try {
-        await client.initSocialWallet(loginType, email);
-        return client;
-      } catch (error) {
-        console.error("Failed to initialize Social wallet:", error);
-        return null;
-      }
-    }
 
-    return new SocialWalletClient();
+    try {
+      await client.initSocialWallet(loginType, email);
+      return client;
+    } catch (error) {
+      console.error("Failed to initialize Social wallet:", error);
+      return null;
+    }
   }
 
   public addNetwork = (network: AddNetworkRequestParam): Promise<WalletResponse<AddNetworkResponse>> => {

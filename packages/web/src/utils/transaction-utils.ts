@@ -1,4 +1,4 @@
-import { eventBus } from "@containers/modal-container/ModalContainer";
+import { eventBus } from "./event-bus";
 import { WalletClient } from "@common/clients/wallet-client";
 
 import {
