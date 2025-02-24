@@ -496,19 +496,19 @@ export function makeRepositionLiquidityMessagesWithApproves(
 export function makeRemoveLiquidityMessagesWithApproves(
   {
     lpTokenIds,
+    calculatedLiquidity,
     tokenPaths,
     caller,
     isGetWGNOT,
   }: {
     lpTokenIds: string[];
+    calculatedLiquidity: string;
     tokenPaths: string[];
     caller: string;
     isGetWGNOT: boolean;
   },
   fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
-  const decreaseLiquidityRatio = 100;
-
   // Make Approve messages that can be managed by a Pool package of tokens.
   const approveMessageInfos: TokenApproveMessageInfo[] = tokenPaths.map(tokenPath => ({
     tokenPath: wrapNativeTokenPath(tokenPath),
@@ -534,7 +534,7 @@ export function makeRemoveLiquidityMessagesWithApproves(
       packagePath: PACKAGE_POSITION_PATH,
       args: [
         lpTokenId, // LP Token ID
-        decreaseLiquidityRatio.toString(), // Percentage of liquidity to reduce (0 ~ 100)
+        calculatedLiquidity.toString(), // Percentage of liquidity to reduce (0 ~ 100)
         "0", // Minimum quantity of tokenA to decrease liquidity
         "0", // Minimum quantity of tokenB to decrease liquidity
         "9999999999", // Deadline UTC time

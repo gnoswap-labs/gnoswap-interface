@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
+import BigNumber from "bignumber.js";
 
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
@@ -26,15 +27,6 @@ const RemoveLiquidityContainer: React.FC = () => {
     },
   });
 
-  const { openModal } = useRemovePositionModal({
-    positions: positions,
-    selectedIds: checkedList,
-    isGetWGNOT,
-    refetchPositions: async () => {
-      await refetchPositions();
-    },
-  });
-
   const stakedPositions = useMemo(() => {
     if (!connected) return [];
     return positions.filter(position => position.poolPath === poolPath && position.staked);
@@ -44,6 +36,28 @@ const RemoveLiquidityContainer: React.FC = () => {
     if (!connected) return [];
     return positions.filter(position => position.poolPath === poolPath && !position.staked);
   }, [positions, connected, poolPath]);
+
+  const selectedPositions = useMemo(() => {
+    return unstakedPositions.filter(position => checkedList.includes(position.id));
+  }, [checkedList, unstakedPositions]);
+
+  const calculatedLiquidity = useMemo(() => {
+    return selectedPositions
+      .reduce((total, position) => {
+        return total.plus(BigNumber(position.liquidity.toString()));
+      }, BigNumber(0))
+      .toString();
+  }, [selectedPositions]);
+
+  const { openModal } = useRemovePositionModal({
+    positions: positions,
+    calculatedLiquidity,
+    selectedIds: checkedList,
+    isGetWGNOT,
+    refetchPositions: async () => {
+      await refetchPositions();
+    },
+  });
 
   const checkedAll = useMemo(() => {
     if (unstakedPositions.length === 0) {

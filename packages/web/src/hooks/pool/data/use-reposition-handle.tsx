@@ -403,6 +403,7 @@ export const useRepositionHandle = () => {
     return positionRepository
       .removeLiquidity({
         lpTokenIds: [selectedPosition.lpTokenId],
+        calculatedLiquidity: "0",
         caller: address,
         tokenPaths: [selectedPosition.pool.tokenA.path, selectedPosition.pool.tokenB.path],
         isGetWGNOT: false,
