@@ -120,29 +120,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     });
   }
 
-  public sendSwapRoute = async (
-    request: SwapRouteRequest,
-  ): Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>> => {
-    if (this.rpcProvider === null) {
-      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
-    }
-
-    const address = await this.getAddress();
-
-    await this.validateAndGetDrySwap(request, "EXACT_IN");
-
-    const messages = await makeExactInSwapRouteMessageWithApproves(
-      { ...request, caller: address },
-      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
-    );
-
-    return await this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
-    });
-  };
-
   public sendExactInSwapRoute = async (
     request: SwapRouteRequest,
   ): Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>> => {
@@ -159,10 +136,14 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    return await this.walletClient!.sendTransaction({
+    const sendTransactionParams = generateSendTransactionParams({
       messages,
       gasFee: DEFAULT_GAS_FEE,
       memo: "",
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
