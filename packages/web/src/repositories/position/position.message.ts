@@ -409,7 +409,7 @@ export function makeDecreaseLiquidityMessagesWithApproves(
     packagePath: PACKAGE_POSITION_PATH,
     args: [
       lpTokenId, // LP Token ID
-      BigNumber(calculatedLiquidity).multipliedBy(slippageRatio).toFixed(0), // liquidity to decrease value
+      BigNumber(calculatedLiquidity).toFixed(0), // liquidity to decrease value
       BigNumber(tokenAAmount).multipliedBy(slippageRatio).toFixed(0), // Minimum quantity of tokenA to decrease liquidity
       BigNumber(tokenBAmount).multipliedBy(slippageRatio).toFixed(0), // Minimum quantity of tokenB to decrease liquidity
       deadline, // Deadline UTC time

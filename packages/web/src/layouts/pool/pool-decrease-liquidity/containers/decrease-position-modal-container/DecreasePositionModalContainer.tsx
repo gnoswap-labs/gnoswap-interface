@@ -36,8 +36,6 @@ const DecreasePositionModalContainer: React.FC<Props> = ({
     clearModal();
   }, [clearModal]);
 
-  console.log(calculateLiquidity, "decreasepositionmodalconatiner");
-
   return (
     <DecreasePositionModal
       confirm={confirm}

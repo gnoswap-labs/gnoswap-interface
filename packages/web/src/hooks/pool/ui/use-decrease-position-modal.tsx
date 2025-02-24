@@ -62,8 +62,6 @@ export const useDecreasePositionModal = ({
   const { positionRepository } = useGnoswapContext();
   const clearModal = useClearModal();
 
-  console.log(calculatedLiquidity, "use-decrease-position-modal");
-
   const onSuccessClose = useCallback(() => {
     clearModal();
     router.back();
