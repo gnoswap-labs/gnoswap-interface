@@ -1,11 +1,21 @@
-import { ConnectWalletModalWrapper } from "./ConnectWalletModal.styles";
 import React, { useCallback } from "react";
+import { Trans, useTranslation } from "react-i18next";
+import { cx } from "@emotion/css";
+import { useTheme } from "@emotion/react";
+
+import { useSocialWalletContext } from "@hooks/common/use-social-wallet-context";
+import { SocialWalletLoginType } from "@providers/social-wallet-provider";
+import { useConnectSocialWalletModal } from "@hooks/wallet/ui/use-connect-social-wallet-modal";
+
+import { ConnectWalletModalWrapper } from "./ConnectWalletModal.styles";
+import LoadingSpinner from "../loading-spinner/LoadingSpinner";
 import IconClose from "../icons/IconCancel";
 import Button, { ButtonHierarchy } from "../button/Button";
 import IconAdenaLogo from "@components/common/icons/defaultIcon/IconAdenaLogo";
-import IconWalletConnect from "../icons/defaultIcon/IconWalletConnect";
-import LoadingSpinner from "../loading-spinner/LoadingSpinner";
-import { Trans, useTranslation } from "react-i18next";
+import IconArrowRight from "../icons/IconArrowRight";
+import IconGoogleLogo from "../icons/defaultIcon/IconGoogleLogo";
+import IconTwitterLogo from "../icons/defaultIcon/IconTwitterLogo";
+import ConnectWalletModalDivider from "./connect-wallet-modal-divider/ConnectWalletModalDivider";
 
 interface Props {
   close: () => void;
@@ -14,7 +24,43 @@ interface Props {
 }
 
 const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect }) => {
+  const theme = useTheme();
+  const { connect: socialWalletConnect } = useSocialWalletContext();
   const { t } = useTranslation();
+  const { openModal: openSocialLoadingModal } = useConnectSocialWalletModal();
+
+  const [email, setEmail] = React.useState<string>("");
+  const [isEmailValid, setIsEmailValid] = React.useState<boolean>(false);
+  const [isSubmitAttempted, setIsSubmitAttempted] = React.useState<boolean>(false);
+  const isEmailErrorVisible = !!email && !isEmailValid && isSubmitAttempted;
+
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEmail(value);
+    setIsEmailValid(isValidEmail(value));
+  };
+
+  const handleEmailSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitAttempted(true);
+
+    if (isEmailValid) {
+      handleSocialConnect("email", email);
+    }
+  };
+
+  const handleSocialConnect = async (type: SocialWalletLoginType, email?: string) => {
+    try {
+      close();
+      openSocialLoadingModal(type);
+      await socialWalletConnect(type, email);
+    } catch {}
+  };
 
   const onClickClose = useCallback(() => {
     close();
@@ -30,9 +76,63 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
           </div>
         </div>
         <div className="content">
+          {/* Email Login */}
+          <div className="login-section" style={{ "--login-section-gap": "4px" } as React.CSSProperties}>
+            <div className={cx("email-section", { error: isEmailErrorVisible })}>
+              <input
+                placeholder="Email Address"
+                type="email"
+                inputMode="email"
+                autoComplete={"off"}
+                value={email}
+                onChange={handleEmailChange}
+                onKeyDown={e => {
+                  if (e.key === "Enter") {
+                    handleEmailSubmit(e);
+                  }
+                }}
+                spellCheck={"false"}
+              />
+              <button onClick={handleEmailSubmit}>
+                <IconArrowRight className="right-chevron" />
+              </button>
+            </div>
+            {isEmailErrorVisible && <div className="validation-message">Please enter a valid email</div>}
+          </div>
+
+          <ConnectWalletModalDivider />
+
+          {/* Social Logins */}
+          <div className="login-section social-login-section">
+            <Button
+              text="Sign in With Google"
+              leftIcon={<IconGoogleLogo />}
+              onClick={() => handleSocialConnect("google")}
+              style={{
+                hierarchy: ButtonHierarchy.Dark,
+                fullWidth: true,
+              }}
+              className="button-connect dark"
+            />
+
+            <Button
+              text="Sign in With X"
+              leftIcon={<IconTwitterLogo fill={theme.themeKey === "dark" ? "white" : "black"} />}
+              onClick={() => handleSocialConnect("twitter")}
+              style={{
+                hierarchy: ButtonHierarchy.Dark,
+                fullWidth: true,
+              }}
+              className="button-connect dark"
+            />
+          </div>
+
+          <ConnectWalletModalDivider />
+
+          {/* Adena Wallet */}
           <div>
             <Button
-              text={loadingConnect === "loading" || loadingConnect === "done" ? "" : "Adena"}
+              text={loadingConnect === "loading" || loadingConnect === "done" ? "" : "Adena Wallet"}
               leftIcon={
                 loadingConnect === "loading" || loadingConnect === "done" ? (
                   <LoadingSpinner className="loading-button" />
@@ -45,20 +145,7 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
                 hierarchy: ButtonHierarchy.Primary,
                 fullWidth: true,
               }}
-              className="button-connect"
-            />
-          </div>
-          <div>
-            <Button
-              leftIcon={<IconWalletConnect />}
-              text={t("Modal:walletLogin.btn.connect")}
-              onClick={connect}
-              style={{
-                hierarchy: ButtonHierarchy.Primary,
-                fullWidth: true,
-              }}
-              disabled
-              className="button-connect"
+              className="button-connect primary"
             />
           </div>
         </div>

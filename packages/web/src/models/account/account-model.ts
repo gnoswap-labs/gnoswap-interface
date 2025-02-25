@@ -9,4 +9,5 @@ export interface AccountModel {
   accountNumber: number;
   sequence: number;
   chainId: string;
+  email: string;
 }

@@ -2,6 +2,13 @@ import { PoolRepository, PoolRepositoryMock } from ".";
 
 let poolRepository: PoolRepository;
 
+// Mock @adena-wallet/sdk
+jest.mock("@adena-wallet/sdk", () => ({
+  makeMsgCallMessage: jest.fn(),
+  makeMsgSendMessage: jest.fn(),
+  TransactionBuilder: jest.fn(),
+}));
+
 beforeEach(() => {
   poolRepository = new PoolRepositoryMock();
 });

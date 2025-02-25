@@ -4,6 +4,13 @@ import { Provider as JotaiProvider } from "jotai";
 
 import ProposalList, { ProposalListProps } from "./ProposalList";
 
+// Mock @adena-wallet/sdk
+jest.mock("@adena-wallet/sdk", () => ({
+  makeMsgCallMessage: jest.fn(),
+  makeMsgSendMessage: jest.fn(),
+  TransactionBuilder: jest.fn(),
+}));
+
 describe("ProposalList Component", () => {
   it("ProposalList render", () => {
     const mockProps: ProposalListProps = {

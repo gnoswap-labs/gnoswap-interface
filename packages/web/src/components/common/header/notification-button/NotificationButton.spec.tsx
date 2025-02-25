@@ -9,6 +9,14 @@ import { DEVICE_TYPE } from "@styles/media";
 import { createMockRouter } from "@test/createMockRouter";
 
 import NotificationButton from "./NotificationButton";
+import SocialWalletProvider from "@providers/social-wallet-provider";
+
+// Mock @adena-wallet/sdk
+jest.mock("@adena-wallet/sdk", () => ({
+  makeMsgCallMessage: jest.fn(),
+  makeMsgSendMessage: jest.fn(),
+  TransactionBuilder: jest.fn(),
+}));
 
 describe("NotificationButton Component", () => {
   it("Notification button", () => {
@@ -31,9 +39,11 @@ describe("NotificationButton Component", () => {
         <QueryClientProvider client={queryClient}>
           <JotaiProvider>
             <GnoswapServiceProvider>
-              <GnoswapThemeProvider>
-                <NotificationButton {...mockProps} />
-              </GnoswapThemeProvider>
+              <SocialWalletProvider>
+                <GnoswapThemeProvider>
+                  <NotificationButton {...mockProps} />
+                </GnoswapThemeProvider>
+              </SocialWalletProvider>
             </GnoswapServiceProvider>
           </JotaiProvider>
         </QueryClientProvider>

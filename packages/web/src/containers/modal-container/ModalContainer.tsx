@@ -1,11 +1,17 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import Modal from "@components/common/modal/Modal";
 import { useAtom } from "jotai";
-import { CommonState, WalletState } from "@states/index";
+
+import useRouter from "@hooks/common/use-custom-router";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
+import { CommonState, WalletState } from "@states/index";
+import { Document } from "src/types/transaction-messages.types";
+import { TX_EVENTS, type TransactionApprovalModalHandlers } from "@utils/transaction-utils";
+
 import { Z_INDEX } from "@styles/zIndex";
-import useRouter from "@hooks/common/use-custom-router";
+import Modal from "@components/common/modal/Modal";
+import TransactionApprovalModalContainer from "@containers/transaction-approval-modal-container/TransactionApprovalModalContainer";
+import { eventBus } from "@utils/event-bus";
 
 const ModalContainer: React.FC = () => {
   const router = useRouter();
@@ -14,6 +20,12 @@ const ModalContainer: React.FC = () => {
   const [openedTransactionModal, setOpendTransactionModal] = useAtom(CommonState.openedTransactionModal);
   const [transactionModalContent, setTransactionModalContent] = useAtom(CommonState.transactionModalContent);
   const [, setWalletAccount] = useAtom(WalletState.loadingConnect);
+  const [openedApproveTransactionModal, setOpenedApproveTransactionModal] = useAtom(
+    CommonState.openedApproveTransactionModal,
+  );
+  const [transactionApprovalModalContent, setTransactionApprovalModalContent] = useAtom(
+    CommonState.transactionApprovalModalContent,
+  );
 
   const visible = useMemo(() => {
     return openedModal && modalContent !== null;
@@ -23,8 +35,13 @@ const ModalContainer: React.FC = () => {
     return openedTransactionModal && transactionModalContent !== null;
   }, [openedTransactionModal, transactionModalContent]);
 
+  const visibleApproveTransactionModal = useMemo(() => {
+    return openedApproveTransactionModal && transactionApprovalModalContent !== null;
+  }, [openedApproveTransactionModal, transactionApprovalModalContent]);
+
   usePreventScroll(visible);
   usePreventScroll(visibleTransactionModal);
+  usePreventScroll(visibleApproveTransactionModal);
 
   const closeModal = useCallback(() => {
     setOpendModal(false);
@@ -38,6 +55,42 @@ const ModalContainer: React.FC = () => {
     setOpendTransactionModal(false);
     setTransactionModalContent(null);
   }, []);
+
+  const closeApproveTransactionModal = useCallback(() => {
+    setOpenedApproveTransactionModal(false);
+    setTransactionApprovalModalContent(null);
+  }, []);
+
+  useEffect(() => {
+    const handlers: TransactionApprovalModalHandlers = {
+      handleApprove: (document: Document) => {
+        eventBus.emit(TX_EVENTS.APPROVED, document);
+        closeApproveTransactionModal();
+      },
+      handleReject: () => {
+        eventBus.emit(TX_EVENTS.REJECTED);
+        closeTransactionModal();
+        closeApproveTransactionModal();
+      },
+      cleanup: () => {
+        eventBus.off(TX_EVENTS.SHOW_MODAL, () => {});
+      },
+    };
+
+    const handleShowModal = (document: Document) => {
+      setTransactionApprovalModalContent(
+        <TransactionApprovalModalContainer
+          document={document}
+          onApprove={handlers.handleApprove}
+          onReject={handlers.handleReject}
+        />,
+      );
+      setOpenedApproveTransactionModal(true);
+    };
+
+    eventBus.on(TX_EVENTS.SHOW_MODAL, handleShowModal);
+    return handlers.cleanup;
+  }, [closeApproveTransactionModal, closeTransactionModal]);
 
   useEscCloseModal(closeTransactionModal);
 
@@ -64,6 +117,15 @@ const ModalContainer: React.FC = () => {
           }}
         >
           {transactionModalContent}
+        </Modal>
+      )}
+      {visibleApproveTransactionModal && (
+        <Modal
+          style={{
+            zIndex: Z_INDEX.thirdModal,
+          }}
+        >
+          {transactionApprovalModalContent}
         </Modal>
       )}
     </React.Fragment>

@@ -28,6 +28,8 @@ import {
   makeWrapTokenMessages,
 } from "./swap-router.message";
 import { calculateTotalAmountOut } from "@utils/swap-route-utils";
+import { eventBus } from "@utils/event-bus";
+import { generateSendTransactionParams, withTransactionGuard } from "@utils/transaction-utils";
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
@@ -98,6 +100,26 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     return await drySwap(this.rpcProvider, PACKAGE_ROUTER_PATH, request);
   };
 
+  private async showApproveTransactionModal(): Promise<boolean> {
+    return new Promise(resolve => {
+      const handleApprove = () => {
+        eventBus.off("transaction-approved", handleApprove);
+        eventBus.off("transaction-rejected", handleReject);
+        resolve(true);
+      };
+
+      const handleReject = () => {
+        eventBus.off("transaction-approved", handleApprove);
+        eventBus.off("transaction-rejected", handleReject);
+        resolve(false);
+      };
+
+      eventBus.on("transaction-approved", handleApprove);
+      eventBus.on("transaction-rejected", handleReject);
+      eventBus.emit("show-approve-modal");
+    });
+  }
+
   public sendExactInSwapRoute = async (
     request: SwapRouteRequest,
   ): Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>> => {
@@ -114,10 +136,14 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    return await this.walletClient!.sendTransaction({
+    const sendTransactionParams = generateSendTransactionParams({
       messages,
       gasFee: DEFAULT_GAS_FEE,
       memo: "",
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -137,10 +163,14 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    return await this.walletClient!.sendTransaction({
+    const sendTransactionParams = generateSendTransactionParams({
       messages,
       gasFee: DEFAULT_GAS_FEE,
       memo: "",
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -149,10 +179,10 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const messages = makeWrapTokenMessages({ ...request, caller: address });
 
-    return await this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -161,10 +191,10 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const messages = makeUnwrapTokenMessages({ ...request, caller: address });
 
-    return await this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 

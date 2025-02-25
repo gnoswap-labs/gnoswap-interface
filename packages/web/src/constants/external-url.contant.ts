@@ -34,3 +34,8 @@ export const EXT_URL = {
   },
   AUDIT: "https://github.com/gnoswap-labs/gnoswap/tree/main/audits",
 } as const;
+
+export const SOCIAL_WALLET_EXTERNAL_URL = {
+  ADENA_INSTALL_URL: "https://adena.app",
+  SOCIAL_WALLET_FAQ_URL: "https://docs.gnoswap.io/references/faq",
+} as const;

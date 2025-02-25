@@ -17,6 +17,24 @@ export const WalletBalanceSummaryWrapper = styled.div`
   ${media.mobile} {
     padding: 11px;
   }
+  .total-balance-title-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .badge {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 6px;
+
+      border-radius: 4px;
+      border: 1px solid ${({ theme }) => theme.color.border03};
+      /* color: ${({ theme }) => theme.color.text03}; */
+      font-size: 12px;
+      font-weight: 500;
+    }
+  }
   .total-balance-title {
     ${fonts.body4};
     color: ${({ theme }) => theme.color.text04};

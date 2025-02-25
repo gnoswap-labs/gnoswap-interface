@@ -4,7 +4,6 @@ import { useTranslation } from "next-i18next";
 import React, { useMemo } from "react";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import IconAdenaLogo from "@components/common/icons/defaultIcon/IconAdenaLogo";
 import IconFailed from "@components/common/icons/IconFailed";
 import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
@@ -13,15 +12,18 @@ import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { AccountModel } from "@models/account/account-model";
 import { ITokenResponse } from "@repositories/token";
 import { CommonState } from "@states/index";
-import { formatAddress } from "@utils/string-utils";
 
 import SelectLanguage from "./select-language/SelectLanguage";
 import WalletConnectorMenu from "./wallet-connector-menu/WalletConnectorMenu";
 
+import { DEVICE_TYPE } from "@styles/media";
 import { FailNetworkTooltipContentWrap, WalletConnectorButtonWrapper } from "./WalletConnectorButton.styles";
+import { WalletTypeState } from "src/types/wallet.types";
+import RenderWalletIcon from "./RenderWalletIcon";
 
 interface WalletConnectProps {
   account: AccountModel | null;
+  breakpoint: DEVICE_TYPE;
   connected: boolean;
   connectAdenaClient: () => void;
   themeKey: "dark" | "light";
@@ -32,6 +34,9 @@ interface WalletConnectProps {
   gnotBalance?: number | null;
   isLoadingGnotBalance?: boolean;
   gnotToken?: ITokenResponse;
+  walletType: WalletTypeState;
+  displayAddress: string;
+  resetWeb3authSession: () => void;
 }
 
 const ToolTipGlobalStyle = () => {
@@ -61,6 +66,7 @@ const FailNetworkTooltipContent: React.FC = () => {
 
 const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   account,
+  breakpoint,
   connected,
   connectAdenaClient,
   themeKey,
@@ -71,6 +77,9 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   gnotBalance,
   isLoadingGnotBalance,
   gnotToken,
+  walletType,
+  displayAddress,
+  resetWeb3authSession,
 }) => {
   const { t } = useTranslation();
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
@@ -87,13 +96,6 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
   };
 
   useEscCloseModal(() => handleESC());
-
-  const address = useMemo(() => {
-    if (account === null) {
-      return "";
-    }
-    return formatAddress(account.address);
-  }, [account]);
 
   const onMenuToggle = () => {
     setToggle(prev => ({
@@ -127,10 +129,10 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
                 <IconFailed className="fail-icon" />
               </Tooltip>
             ) : (
-              <IconAdenaLogo />
+              <RenderWalletIcon isSwitchNetwork={isSwitchNetwork} walletType={walletType} />
             )
           }
-          text={address}
+          text={displayAddress}
           rightIcon={<IconStrokeArrowDown className="arrow-icon" />}
           className={toggle.walletConnect ? "selected connected-button" : "connected-button"}
           style={{
@@ -138,7 +140,6 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
             textColor: "text19",
             arrowColor: "text18",
             padding: "10px 16px",
-            gap: "8px",
             height: 36,
           }}
           onClick={onMenuToggle}
@@ -163,6 +164,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
       {toggle.walletConnect && !toggle.showLanguage && (
         <WalletConnectorMenu
           account={account}
+          breakpoint={breakpoint}
           connected={connected}
           connectAdenaClient={connectAdenaClient}
           disconnectWallet={disconnectWallet}
@@ -174,6 +176,8 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
           gnotBalance={gnotBalance}
           isLoadingGnotBalance={isLoadingGnotBalance}
           gnotToken={gnotToken}
+          walletType={walletType}
+          resetWeb3authSession={resetWeb3authSession}
         />
       )}
       {toggle.showLanguage && <SelectLanguage onClickChangeLanguage={onClickChangeLanguage} />}

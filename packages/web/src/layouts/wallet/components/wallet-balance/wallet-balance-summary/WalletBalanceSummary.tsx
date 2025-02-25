@@ -9,6 +9,10 @@ import { DEVICE_TYPE } from "@styles/media";
 import WalletBalanceSummaryInfo, { BalanceSummaryInfo } from "./wallet-balance-summary-info/WalletBalanceSummaryInfo";
 
 import { WalletBalanceSummaryWrapper } from "./WalletBalanceSummary.styles";
+import { WalletTypeState } from "src/types/wallet.types";
+import Badge from "@components/common/badge/Badge";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import { SocialWalletNotificationTooltip } from "@components/common/header/wallet-connector-button/wallet-connector-menu/WalletConnectorMenu";
 
 interface WalletBalanceSummaryProps {
   connected: boolean;
@@ -17,6 +21,7 @@ interface WalletBalanceSummaryProps {
   deposit: () => void;
   withdraw: () => void;
   breakpoint: DEVICE_TYPE;
+  walletType: WalletTypeState;
 }
 
 const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
@@ -26,12 +31,22 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
   withdraw,
   breakpoint,
   isSwitchNetwork,
+  walletType,
 }) => {
   const { t } = useTranslation();
 
+  const isConnectSocialWallet = connected && walletType.type === "SOCIAL_WALLET";
+
   return (
     <WalletBalanceSummaryWrapper>
-      <span className="total-balance-title">{t("Wallet:overral.totalBal")}</span>
+      <div className="total-balance-title-wrapper">
+        <span className="total-balance-title">{t("Wallet:overral.totalBal")}</span>
+        {isConnectSocialWallet && (
+          <Tooltip FloatingContent={<SocialWalletNotificationTooltip />} placement="top">
+            <Badge text="Social Account Wallet" type="darkDefault" className="badge" />
+          </Tooltip>
+        )}
+      </div>
       <div className="container">
         <WalletBalanceSummaryInfo balanceSummaryInfo={balanceSummaryInfo} connected={connected} />
         <div className="button-group">

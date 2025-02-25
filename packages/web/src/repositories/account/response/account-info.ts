@@ -9,4 +9,5 @@ export interface AccountInfoResponse {
   accountNumber: number;
   sequence: number;
   chainId: string;
+  email?: string;
 }

@@ -4,13 +4,22 @@ import { media } from "@styles/media";
 
 export const WalletConnectorButtonWrapper = styled.div`
   position: relative;
+  button {
+    min-width: 0;
+  }
+
   .arrow-icon {
-    margin-left: 8px;
     width: 16px;
     height: 16px;
+    margin-left: 8px;
   }
   .connected-button {
     background-color: ${({ theme }) => theme.color.background13};
+    .render-wallet-icon {
+      margin-right: 8px;
+      width: 16px;
+      height: 16px;
+    }
     &:hover {
       background-color: ${({ theme }) => theme.color.backgroundGradient};
     }

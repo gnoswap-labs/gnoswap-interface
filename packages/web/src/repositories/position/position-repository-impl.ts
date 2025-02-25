@@ -43,6 +43,7 @@ import {
   RepositionLiquiditySuccessResponse,
 } from "./response";
 import { ClaimRequest } from "./request/claim-request";
+import { withTransactionGuard, generateSendTransactionParams } from "@utils/transaction-utils";
 
 export class PositionRepositoryImpl implements PositionRepository {
   private networkClient: NetworkClient | null;
@@ -133,10 +134,14 @@ export class PositionRepositoryImpl implements PositionRepository {
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    return this.walletClient.sendTransaction({
+    const sendTransactionParams = generateSendTransactionParams({
       messages,
       gasFee: DEFAULT_GAS_FEE,
       gasWanted: DEFAULT_GAS_WANTED,
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -157,10 +162,14 @@ export class PositionRepositoryImpl implements PositionRepository {
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    return this.walletClient.sendTransaction({
+    const sendTransactionParams = generateSendTransactionParams({
       messages,
       gasFee: DEFAULT_GAS_FEE,
       gasWanted: DEFAULT_GAS_WANTED,
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -173,10 +182,14 @@ export class PositionRepositoryImpl implements PositionRepository {
     const { lpTokenIds, caller } = request;
     const messages = makeStakePositionsMessagesWithApproves({ lpTokenIds, caller });
 
-    return this.walletClient.sendTransaction({
+    const sendTransactionParams = generateSendTransactionParams({
       messages,
       gasFee: DEFAULT_GAS_FEE,
       gasWanted: DEFAULT_GAS_WANTED,
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -195,10 +208,14 @@ export class PositionRepositoryImpl implements PositionRepository {
       getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    return this.walletClient.sendTransaction({
+    const sendTransactionParams = generateSendTransactionParams({
       messages,
       gasFee: DEFAULT_GAS_FEE,
       gasWanted: DEFAULT_GAS_WANTED,
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -217,10 +234,14 @@ export class PositionRepositoryImpl implements PositionRepository {
       getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    return this.walletClient.sendTransaction({
+    const sendTransactionParams = generateSendTransactionParams({
       messages,
       gasFee: DEFAULT_GAS_FEE,
       gasWanted: DEFAULT_GAS_WANTED,
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -239,10 +260,14 @@ export class PositionRepositoryImpl implements PositionRepository {
       getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    return this.walletClient.sendTransaction({
+    const sendTransactionParams = generateSendTransactionParams({
       messages,
       gasFee: DEFAULT_GAS_FEE,
       gasWanted: DEFAULT_GAS_WANTED,
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -261,10 +286,14 @@ export class PositionRepositoryImpl implements PositionRepository {
       getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    return this.walletClient.sendTransaction({
+    const sendTransactionParams = generateSendTransactionParams({
       messages,
       gasFee: DEFAULT_GAS_FEE,
       gasWanted: DEFAULT_GAS_WANTED,
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -283,10 +312,14 @@ export class PositionRepositoryImpl implements PositionRepository {
       getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    return this.walletClient.sendTransaction({
+    const sendTransactionParams = generateSendTransactionParams({
       messages,
       gasFee: DEFAULT_GAS_FEE,
       gasWanted: DEFAULT_GAS_WANTED,
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 

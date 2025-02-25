@@ -21,9 +21,13 @@ export const openedModal = atom<boolean>(false);
 
 export const openedTransactionModal = atom<boolean>(false);
 
+export const openedApproveTransactionModal = atom<boolean>(false);
+
 export const modalContent = atom<React.ReactNode | null>(null);
 
 export const transactionModalContent = atom<React.ReactNode | null>(null);
+
+export const transactionApprovalModalContent = atom<React.ReactNode | null>(null);
 
 export const breakpoint = atom<DEVICE_TYPE>(DEVICE_TYPE.WEB);
 
@@ -45,6 +49,10 @@ export const transactionModalData = atom<{
 export const GNOSWAP_SESSION_ID_KEY = "session_id";
 export const ACCOUNT_SESSION_INFO_KEY = "account_info";
 export const GNOWSWAP_CONNECTED_KEY = "connected-wallet";
+export const GNOSWAP_WALLET_TYPE_KEY = "gnoswap-wallet-type";
+export const GNOSWAP_SOCIAL_LOGIN_TYPE_KEY = "gnoswap-social-login-type";
+export const SOCIAL_WALLET_MODAL_HIDE_EXPIRES_AT = "social-wallet-modal-hide-expires-at";
+export const SOCIAL_WALLET_MODAL_SHOWN_IN_SESSION = "social-wallet-modal-shown-in-session";
 
 export const sessionId = atom<string>("");
 

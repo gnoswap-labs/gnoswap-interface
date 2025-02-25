@@ -4,6 +4,13 @@ import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import TokenAmount, { TokenAmountProps } from "./TokenAmount";
 
+// Mock @adena-wallet/sdk
+jest.mock("@adena-wallet/sdk", () => ({
+  makeMsgCallMessage: jest.fn(),
+  makeMsgSendMessage: jest.fn(),
+  TransactionBuilder: jest.fn(),
+}));
+
 const token: TokenModel = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",

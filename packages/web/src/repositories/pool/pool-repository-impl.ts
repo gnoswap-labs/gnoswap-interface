@@ -21,6 +21,7 @@ import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import { IncentivizePoolModel, PoolModel } from "@models/pool/pool-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 import { evaluateExpressionToNumber, evaluateExpressionToObject, makeABCIParams } from "@utils/rpc-utils";
+import { withTransactionGuard, generateSendTransactionParams } from "@utils/transaction-utils";
 import { PoolListResponse, PoolRepository, PoolResponse } from ".";
 import {
   makeCreateExternalIncentiveMessageWithApproves,
@@ -248,9 +249,10 @@ export class PoolRepositoryImpl implements PoolRepository {
 
     const messages = [...createPoolMessages, ...mintMessages, nftSetUriMessage];
 
-    return this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
+    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -274,9 +276,10 @@ export class PoolRepositoryImpl implements PoolRepository {
 
     const messages = [...mintMessages, nftSetUriMessage];
 
-    return this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
+    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -297,6 +300,7 @@ export class PoolRepositoryImpl implements PoolRepository {
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
+    // Todo: Social Wallet approval process must be applied
     const response = await this.walletClient!.sendTransaction({
       messages,
       gasFee: DEFAULT_GAS_FEE,
@@ -323,6 +327,7 @@ export class PoolRepositoryImpl implements PoolRepository {
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
+    // Todo: Social Wallet approval process must be applied
     const response = await this.walletClient!.sendTransaction({
       messages,
       gasFee: DEFAULT_GAS_FEE,

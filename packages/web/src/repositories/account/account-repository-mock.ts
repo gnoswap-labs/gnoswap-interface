@@ -11,6 +11,7 @@ import { generateAddress, generateNumber, generateNumberPlus, generateTime } fro
 import { AccountRepository, AccountTransactionResponse } from ".";
 import AccountBalancesData from "./mock/account-balances.json";
 import { AvgBlockTime } from "./response/get-avg-block-time-response";
+import { WalletClient } from "@common/clients/wallet-client";
 
 export class AccountRepositoryMock implements AccountRepository {
   private localStorageClient: StorageClient;
@@ -162,6 +163,7 @@ export class AccountRepositoryMock implements AccountRepository {
       accountNumber: Math.round(generateNumberPlus()),
       sequence: Math.round(generateNumberPlus()),
       chainId: "test3",
+      email: "",
     };
   };
 
@@ -203,6 +205,11 @@ export class AccountRepositoryMock implements AccountRepository {
   public getBalanceByKey: (address: string, tokenKey: string) => Promise<number | null> = async () => {
     return 0;
   };
+
+  public setWalletClient(client: WalletClient | null): void {
+    // Mock implementation - intentionally empty
+    void client;
+  }
 
   public getAvgBlockTime: (request: { startBlock?: number | undefined }) => Promise<AvgBlockTime> = async () => {
     const dummyData: AvgBlockTime = {

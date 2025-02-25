@@ -205,6 +205,10 @@ export class AccountRepositoryImpl implements AccountRepository {
     return response;
   };
 
+  public setWalletClient(client: WalletClient | null): void {
+    this.walletClient = client;
+  }
+
   public async getAvgBlockTime(request: { startBlock?: number }): Promise<AvgBlockTime> {
     if (this.networkClient === null) {
       throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");

@@ -9,6 +9,7 @@ import { BalanceSummaryInfo } from "./wallet-balance-summary/wallet-balance-summ
 import WalletBalanceSummary from "./wallet-balance-summary/WalletBalanceSummary";
 
 import { WalletBalanceWrapper } from "./WalletBalance.styles";
+import { WalletTypeState } from "src/types/wallet.types";
 
 interface WalletBalanceProps {
   connected: boolean;
@@ -18,6 +19,7 @@ interface WalletBalanceProps {
   loadngTransactionClaim: boolean;
   positions: PoolPositionModel[];
   tokenPrices: Record<string, TokenPriceModel>;
+  walletType: WalletTypeState;
 
   deposit: () => void;
   withdraw: () => void;
@@ -37,6 +39,7 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({
   loadngTransactionClaim,
   positions,
   tokenPrices,
+  walletType,
 }) => {
   return (
     <WalletBalanceWrapper>
@@ -47,6 +50,7 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({
         withdraw={withdraw}
         breakpoint={breakpoint}
         isSwitchNetwork={isSwitchNetwork}
+        walletType={walletType}
       />
       <WalletBalanceDetail
         connected={connected}

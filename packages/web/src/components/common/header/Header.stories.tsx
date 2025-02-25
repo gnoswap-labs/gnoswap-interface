@@ -16,6 +16,7 @@ const defaultAccountInfo: AccountModel = {
   accountNumber: 1,
   sequence: 1,
   chainId: "test3",
+  email: "",
 };
 
 export default {

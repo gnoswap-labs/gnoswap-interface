@@ -5,6 +5,13 @@ import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import SwapCardContent from "./SwapCardContent";
 
+// Mock @adena-wallet/sdk
+jest.mock("@adena-wallet/sdk", () => ({
+  makeMsgCallMessage: jest.fn(),
+  makeMsgSendMessage: jest.fn(),
+  TransactionBuilder: jest.fn(),
+}));
+
 const swapTokenInfo: SwapTokenInfo = {
   tokenA: {
     type: "GRC20",

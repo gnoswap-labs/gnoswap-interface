@@ -11,7 +11,7 @@ export const ConnectWalletModalWrapper = styled.div`
   .modal-body {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;
-    gap: 16px;
+    gap: 24px;
     .header {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
@@ -47,13 +47,89 @@ export const ConnectWalletModalWrapper = styled.div`
     .content {
       width: 100%;
       ${mixins.flexbox("column", "flex-start", "flex-start")};
-      gap: 16px;
+      gap: 24px;
+
+      .login-section {
+        width: 100%;
+        ${mixins.flexbox("column", "flex-start", "flex-start")};
+        gap: var(--login-section-gap, 24px);
+        &.social-login-section {
+          ${media.mobile} {
+            gap: 16px;
+          }
+        }
+      }
+
+      .email-section {
+        width: 100%;
+        height: 57px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        padding: 12px 16px;
+        border-radius: 8px;
+        border: 1px solid ${({ theme }) => (theme.themeKey === "dark" ? "#1C2230" : "#E0E8F4")};
+        background-color: ${({ theme }) => (theme.themeKey === "dark" ? "#0A0E17" : "#FFF")};
+
+        &.error {
+          border-color: ${({ theme }) => theme.color.red01};
+        }
+
+        > input {
+          width: 100%;
+          height: 100%;
+          color: ${({ theme }) => theme.color.text01};
+          &::placeholder {
+            color: ${({ theme }) => theme.color.text05};
+          }
+        }
+        > button {
+          font-size: 0;
+        }
+        .right-chevron {
+          * {
+            fill: ${({ theme }) => theme.color.icon03};
+          }
+          &:hover {
+            * {
+              fill: ${({ theme }) => theme.color.icon07};
+            }
+          }
+        }
+
+        ${media.mobile} {
+          height: 50px;
+        }
+      }
+
+      .validation-message {
+        color: ${({ theme }) => theme.color.red01};
+        font-weight: 500;
+        ${media.mobile} {
+          font-size: 14px;
+        }
+      }
+
       > div {
         width: 100%;
         .button-connect {
           gap: 8px;
           height: 57px;
+          &.dark {
+            background-color: ${({ theme }) => (theme.themeKey === "dark" ? "" : "#E0E8F480")};
+            &:hover {
+              background-color: ${({ theme }) =>
+                theme.themeKey === "dark" ? theme.color.hover02 : theme.color.background12};
+            }
+          }
+          &.primary {
+            span {
+              color: white;
+            }
+          }
           span {
+            color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text01 : theme.color.text03)};
             ${fonts.body7}
           }
           svg {
@@ -95,7 +171,7 @@ export const ConnectWalletModalWrapper = styled.div`
     .modal-body {
       gap: 12px;
       .content {
-        gap: 8px;
+        gap: 16px;
         > div {
           .button-connect {
             height: 44px;

@@ -1,5 +1,6 @@
 import { createTimeout } from "@common/utils/client-util";
 import { DEFAULT_GAS_WANTED } from "@common/values";
+import { WalletType } from "src/types/wallet.types";
 import {
   AccountInfo,
   SendTransactionRequestParam,
@@ -39,6 +40,10 @@ export class AdenaClient implements WalletClient {
     this.initAdena();
     return this.adena !== null;
   };
+
+  public getWalletType(): WalletType {
+    return "ADENA";
+  }
 
   public async getAddress(): Promise<string | null> {
     if (!this.address) {
@@ -115,4 +120,9 @@ export class AdenaClient implements WalletClient {
   public addNetwork = (network: AddNetworkRequestParam): Promise<WalletResponse<AddNetworkResponse>> => {
     return createTimeout(this.getAdena().AddNetwork(network));
   };
+
+  public async disconnect(): Promise<void> {
+    this.adena = null;
+    this.address = null;
+  }
 }

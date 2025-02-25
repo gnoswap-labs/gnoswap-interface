@@ -6,20 +6,32 @@ import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";
 import { NetworkData } from "@constants/chains.constant";
 import * as uuid from "uuid";
-import { ACCOUNT_SESSION_INFO_KEY, GNOSWAP_SESSION_ID_KEY, GNOWSWAP_CONNECTED_KEY } from "@states/common";
+import {
+  ACCOUNT_SESSION_INFO_KEY,
+  GNOSWAP_SESSION_ID_KEY,
+  GNOSWAP_SOCIAL_LOGIN_TYPE_KEY,
+  GNOSWAP_WALLET_TYPE_KEY,
+  GNOWSWAP_CONNECTED_KEY,
+} from "@states/common";
 import { useQueryClient } from "@tanstack/react-query";
 import { SUPPORT_CHAIN_IDS, DEFAULT_CHAIN_ID } from "@constants/environment.constant";
 import { useGetTokenBalancesFromChain } from "@query/address";
+import { useSocialWalletContext } from "@hooks/common/use-social-wallet-context";
+import { SocialLoginType } from "src/types/wallet.types";
+import { AUTH_STORE_KEY } from "@hooks/common/use-auto-disconnect";
 
 const balanceQueryKey = ["token-balance", "ugnot"];
 
 export const useWallet = () => {
   const { accountRepository } = useGnoswapContext();
+  const { disconnect } = useSocialWalletContext();
+
   const [sessionId, setSessionId] = useAtom(CommonState.sessionId);
   const [walletClient, setWalletClient] = useAtom(WalletState.client);
   const [walletAccount, setWalletAccount] = useAtom(WalletState.account);
   const [, setNetwork] = useAtom(CommonState.network);
   const [loadingConnect, setLoadingConnect] = useAtom(WalletState.loadingConnect);
+  const { connectSocialWalletClient } = useSocialWalletContext();
   const queryClient = useQueryClient();
 
   const connected = useMemo(() => {
@@ -32,6 +44,16 @@ export const useWallet = () => {
     }
     return walletClient;
   }, [connected, walletClient]);
+
+  const walletType = useMemo(() => {
+    if (!walletClient) return { type: null, socialType: null };
+
+    const currentWalletType = walletClient.getWalletType();
+    return {
+      type: currentWalletType,
+      socialType: currentWalletType === "SOCIAL_WALLET" ? walletClient.getLoginType?.() ?? null : null,
+    };
+  }, [walletClient]);
 
   const currentChainId = useMemo(() => {
     if (!walletAccount) {
@@ -81,23 +103,41 @@ export const useWallet = () => {
     }
   }, [setNetwork, walletAccount]);
 
-  const disconnectWallet = useCallback(() => {
+  const disconnectWallet = useCallback(async () => {
+    setWalletClient(null);
     setWalletAccount(null);
     setSessionId("");
     sessionStorage.removeItem(GNOSWAP_SESSION_ID_KEY);
     sessionStorage.removeItem(ACCOUNT_SESSION_INFO_KEY);
     sessionStorage.removeItem(GNOWSWAP_CONNECTED_KEY);
+    sessionStorage.removeItem(GNOSWAP_WALLET_TYPE_KEY);
+    sessionStorage.removeItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY);
+    resetWeb3authSession();
     accountRepository.setConnectedWallet(false);
     setLoadingConnect("initial");
+    await disconnect();
   }, [accountRepository]);
 
   async function initSession() {
     try {
-      const adena = AdenaClient.createAdenaClient();
-      const data = await adena?.getAccount();
-      if (data?.status === "failure") {
-        disconnectWallet();
+      const savedAccount = sessionStorage.getItem(ACCOUNT_SESSION_INFO_KEY);
+      const savedWalletType = sessionStorage.getItem(GNOSWAP_WALLET_TYPE_KEY);
+      const savedSocialLoginType = sessionStorage.getItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY);
+
+      if (!savedAccount || !savedWalletType) return;
+
+      if (savedWalletType === "SOCIAL_WALLET" && savedSocialLoginType) {
+        await connectSocialWalletClient(savedSocialLoginType as SocialLoginType);
         return;
+      }
+
+      if (savedWalletType === "ADENA") {
+        const adena = AdenaClient.createAdenaClient();
+        const data = await adena?.getAccount();
+        if (data?.status === "failure") {
+          disconnectWallet();
+          return;
+        }
       }
 
       if (walletClient === null) {
@@ -119,8 +159,15 @@ export const useWallet = () => {
       }
       setLoadingConnect("done");
     } catch {
-      // initialize adena client
-      connectAdenaClient();
+      const currentWalletType = sessionStorage.getItem(GNOSWAP_WALLET_TYPE_KEY);
+      const savedSocialLoginType = sessionStorage.getItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY);
+
+      // initialize Adena-client or Social-wallet-client
+      if (currentWalletType === "SOCIAL_WALLET" && savedSocialLoginType) {
+        await connectSocialWalletClient(savedSocialLoginType as SocialLoginType);
+      } else if (walletType.type === "ADENA") {
+        connectAdenaClient();
+      }
     }
   };
 
@@ -130,6 +177,7 @@ export const useWallet = () => {
     }
     const adena = AdenaClient.createAdenaClient();
     if (adena !== null) {
+      sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "ADENA");
       adena.initAdena();
     } else {
       window.open("https://adena.app/", "", "noopener,noreferrer");
@@ -140,6 +188,10 @@ export const useWallet = () => {
   const connectAccount = async () => {
     try {
       setLoadingConnect("loading");
+
+      const adena = AdenaClient.createAdenaClient();
+      setWalletClient(adena);
+
       const established = await accountRepository.addEstablishedSite().catch(() => null);
 
       if (established === null) {
@@ -153,6 +205,7 @@ export const useWallet = () => {
       if (established.code === 0 || established.code === 4001) {
         const account = await accountRepository.getAccount();
         sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
+        sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "ADENA");
         const availNetwork = SUPPORT_CHAIN_IDS.includes(account.chainId);
         if (!availNetwork) {
           switchNetwork();
@@ -194,8 +247,13 @@ export const useWallet = () => {
     }
   }, [walletClient]);
 
+  const resetWeb3authSession = () => {
+    localStorage.removeItem(AUTH_STORE_KEY);
+  };
+
   return {
     wallet,
+    walletType,
     account: walletAccount,
     connected,
     availNetwork,
@@ -210,6 +268,7 @@ export const useWallet = () => {
     loadingConnect,
     walletClient,
     setLoadingConnect,
+    resetWeb3authSession,
     gnotBalance: balance,
     isLoadingGnotBalance: isLoadingBalance || isBalanceStale,
     refetchGnotBalance: refetch,

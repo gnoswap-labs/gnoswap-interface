@@ -9,6 +9,14 @@ import { DEVICE_TYPE } from "@styles/media";
 import { createMockRouter } from "@test/createMockRouter";
 
 import AssetReceiveModal, { DEFAULT_DEPOSIT_GNOT } from "./AssetReceiveModal";
+import SocialWalletProvider from "@providers/social-wallet-provider";
+
+// Mock @adena-wallet/sdk
+jest.mock("@adena-wallet/sdk", () => ({
+  makeMsgCallMessage: jest.fn(),
+  makeMsgSendMessage: jest.fn(),
+  TransactionBuilder: jest.fn(),
+}));
 
 describe("AssetReceiveModal Component", () => {
   it("AssetReceiveModal render", () => {
@@ -37,7 +45,9 @@ describe("AssetReceiveModal Component", () => {
           <JotaiProvider>
             <GnoswapThemeProvider>
               <GnoswapServiceProvider>
-                <AssetReceiveModal {...mockProps} />
+                <SocialWalletProvider>
+                  <AssetReceiveModal {...mockProps} />
+                </SocialWalletProvider>
               </GnoswapServiceProvider>
             </GnoswapThemeProvider>
           </JotaiProvider>

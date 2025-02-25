@@ -84,10 +84,26 @@ export const MenuHeader = styled.div`
   ${media.mobile} {
     width: 100%;
   }
+  .render-wallet-icon {
+    width: 16px;
+    height: 16px;
+    ${media.mobile} {
+      width: 24px;
+      height: 24px;
+    }
+  }
   .user-address {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
     ${fonts.p1};
     color: ${({ theme }) => theme.color.text02};
     margin: 0px auto 0px 8px;
+    ${media.mobile} {
+      font-size: 16px;
+    }
   }
 `;
 
@@ -97,10 +113,18 @@ export const IconButton = styled.button`
   height: 16px;
   margin-left: 8px;
   position: relative;
+  ${media.mobile} {
+    width: 18px;
+    height: 18px;
+  }
   svg * {
     fill: ${({ theme }) => theme.color.icon03};
   }
   .action-icon {
+    ${media.mobile} {
+      width: 18px;
+      height: 18px;
+    }
     &:hover * {
       fill: ${({ theme }) => theme.color.icon07};
     }
@@ -170,4 +194,26 @@ export const Overlay = styled.div`
   height: 100%;
   overflow: hidden;
   z-index: ${Z_INDEX.modalOverlay};
+`;
+
+export const TooltipContent = styled.div`
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+
+  font-size: 14px;
+  font-weight: 400;
+  color: #ff9f0a;
+  .margin-left {
+    margin-left: 2px;
+  }
+
+  .social-wallet-noti-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 4px;
+  }
 `;

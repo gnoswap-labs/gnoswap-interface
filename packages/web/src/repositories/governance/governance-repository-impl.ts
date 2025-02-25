@@ -35,6 +35,7 @@ import {
   GetMyDelegationResponse,
   GetProposalsResponse,
 } from "./response";
+import { generateSendTransactionParams, withTransactionGuard } from "@utils/transaction-utils";
 
 import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { DEFAULT_GAS_FEE } from "@common/values";
@@ -165,10 +166,10 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     const caller = await this.getAddress();
     const messages = makeProposalTextMessages({ ...request, caller });
 
-    return this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -178,10 +179,10 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     const caller = await this.getAddress();
     const messages = makeProposeCommunityPoolSpendMessages({ ...request, caller });
 
-    return this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -191,10 +192,10 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     const caller = await this.getAddress();
     const messages = makeProposeParameterChangeMessages({ ...request, caller });
 
-    return this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -202,10 +203,10 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     const caller = await this.getAddress();
     const messages = makeVoteMessages({ ...request, caller });
 
-    return this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -213,10 +214,10 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     const caller = await this.getAddress();
     const messages = makeCancelMessages({ ...request, caller });
 
-    return this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -224,10 +225,10 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     const caller = await this.getAddress();
     const messages = makeExecuteMessages({ ...request, caller });
 
-    return this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -241,10 +242,10 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
       getGRC20Allowance(this.gnoProvider!, packagePath, owner, spender),
     );
 
-    return this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -252,10 +253,10 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     const caller = await this.getAddress();
     const messages = makeUnDelegateMessages({ ...request, caller });
 
-    return this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -269,10 +270,10 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
       getGRC20Allowance(this.gnoProvider!, packagePath, owner, spender),
     );
 
-    return this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -280,10 +281,10 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     const caller = await this.getAddress();
     const messages = makeCollectUnDelegatedGNSMessages({ caller });
 
-    return this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 
@@ -291,10 +292,10 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     const caller = await this.getAddress();
     const messages = makeCollectRewardMessages({ caller });
 
-    return this.walletClient!.sendTransaction({
-      messages,
-      gasFee: DEFAULT_GAS_FEE,
-      memo: "",
+    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     });
   };
 

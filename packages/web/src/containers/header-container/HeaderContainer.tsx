@@ -19,7 +19,7 @@ import { useGetAllTokenPrices, useGetTokens } from "@query/token";
 import { ThemeState, TokenState } from "@states/index";
 import { checkPositivePrice, parseJson } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
-import { formatApr } from "@utils/string-utils";
+import { formatAddress, formatApr } from "@utils/string-utils";
 
 const HeaderContainer: React.FC = () => {
   const { pathname, movePageWithTokenPath, movePageWithPoolPath } = useRouter();
@@ -28,6 +28,7 @@ const HeaderContainer: React.FC = () => {
   const [keyword, setKeyword] = useState("");
   const { breakpoint } = useWindowSize();
   const themeKey = useAtomValue(ThemeState.themeKey);
+
   const {
     account,
     connected,
@@ -37,9 +38,18 @@ const HeaderContainer: React.FC = () => {
     loadingConnect,
     isLoadingGnotBalance,
     gnotBalance,
+    walletType,
+    resetWeb3authSession,
   } = useWallet();
   const recentsData = useAtomValue(TokenState.recents);
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
+
+  const displayAddress = useMemo(() => {
+    if (account?.email) {
+      return account.email.length > 10 ? `${account.email.slice(0, 10)}...` : account.email;
+    }
+    return formatAddress(account?.address || "");
+  }, [account]);
 
   const { data: blockTimeData } = useGetAvgBlockTime();
   const { data: poolList = [] } = useGetPoolList({
@@ -273,6 +283,7 @@ const HeaderContainer: React.FC = () => {
       connected={connected}
       connectAdenaClient={handleConnectWallet}
       disconnectWallet={disconnectWallet}
+      displayAddress={displayAddress}
       pathname={pathname}
       sideMenuToggle={sideMenuToggle}
       onSideMenuToggle={onSideMenuToggle}
@@ -297,6 +308,8 @@ const HeaderContainer: React.FC = () => {
       isLoadingGnotBalance={isLoadingGnotBalance}
       gnotToken={gnot}
       avgBlockTime={blockTimeData?.AvgBlockTime || 2.2}
+      resetWeb3authSession={resetWeb3authSession}
+      walletType={walletType}
     />
   );
 };

@@ -2,11 +2,15 @@ import BigNumber from "bignumber.js";
 import { useAtomValue } from "jotai";
 import { useTranslation } from "next-i18next";
 import React, { useCallback, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import { useTheme } from "@emotion/react";
 
+import { SOCIAL_WALLET_EXTERNAL_URL } from "@constants/external-url.contant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import IconAdenaLogo from "@components/common/icons/defaultIcon/IconAdenaLogo";
-import IconCopy from "@components/common/icons/IconCopy";
-import IconExit from "@components/common/icons/IconExit";
+import IconInfo from "@components/common/icons/IconInfo";
+import IconHeaderCopy from "@components/common/icons/IconHeaderCopy";
+import IconHeaderOpenLink from "@components/common/icons/IconHeaderOpenLink";
+import IconHeaderExit from "@components/common/icons/IconHeaderExit";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import { LANGUAGES } from "@constants/common.constant";
 import ThemeModeContainer from "@containers/theme-mode-container/ThemeModeContainer";
@@ -15,11 +19,10 @@ import { AccountModel } from "@models/account/account-model";
 import { ITokenResponse } from "@repositories/token";
 import { CommonState } from "@states/index";
 import { roundDownDecimalNumber } from "@utils/regex";
-import { formatAddress } from "@utils/string-utils";
-import IconFailed from "@components/common/icons/IconFailed";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 
+import { DEVICE_TYPE } from "@styles/media";
 import {
   AmountInfoBox,
   CopyTooltip,
@@ -27,8 +30,14 @@ import {
   MenuHeader,
   Overlay,
   ThemeSelector,
+  TooltipContent,
   WalletConnectorMenuWrapper,
 } from "./WalletConnectorMenu.styles";
+import SocialWalletNotification from "./SocialWalletNotification";
+import { WalletTypeState } from "src/types/wallet.types";
+import RenderWalletIcon from "../RenderWalletIcon";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import { formatAddress } from "@utils/string-utils";
 
 interface IconButtonClickProps {
   copyClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -48,7 +57,7 @@ const IconButtonMaker: React.FC<IconButtonClickProps> = ({
   return (
     <>
       <IconButton onClick={copyClick}>
-        <IconCopy className="action-icon" />
+        <IconHeaderCopy className="action-icon" />
         {copied && (
           <CopyTooltip>
             <div className={`box ${themeKey}-shadow`}>
@@ -59,10 +68,10 @@ const IconButtonMaker: React.FC<IconButtonClickProps> = ({
         )}
       </IconButton>
       <IconButton onClick={openLinkClick}>
-        <IconOpenLink className="action-icon" />
+        <IconHeaderOpenLink className="action-icon" />
       </IconButton>
       <IconButton onClick={onClickDisconnect}>
-        <IconExit className="action-icon" />
+        <IconHeaderExit className="action-icon" />
       </IconButton>
     </>
   );
@@ -70,6 +79,7 @@ const IconButtonMaker: React.FC<IconButtonClickProps> = ({
 
 interface WalletConnectorMenuProps {
   account: AccountModel | null;
+  breakpoint: DEVICE_TYPE;
   connected: boolean;
   connectAdenaClient: () => void;
   disconnectWallet: () => void;
@@ -81,10 +91,13 @@ interface WalletConnectorMenuProps {
   gnotBalance?: number | null;
   isLoadingGnotBalance?: boolean;
   gnotToken?: ITokenResponse;
+  walletType: WalletTypeState;
+  resetWeb3authSession: () => void;
 }
 
 const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   account,
+  breakpoint,
   connected,
   connectAdenaClient,
   disconnectWallet,
@@ -95,10 +108,13 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   onClickChangeLanguage,
   gnotBalance,
   gnotToken,
+  walletType,
+  resetWeb3authSession,
 }) => {
   const { i18n, t } = useTranslation();
   const { getAccountUrl } = useGnoscanUrl();
   const network = useAtomValue(CommonState.network);
+  const theme = useTheme();
 
   const [copied, setCopied] = useState(false);
   const copyClick = async () => {
@@ -132,11 +148,13 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
     return `${price} GNOT` || "0 GNOT";
   }, [account?.balances, gnotBalance, gnotToken?.decimals]);
 
-  const onClickDisconnect = useCallback(() => {
-    disconnectWallet();
+  const onClickDisconnect = useCallback(async () => {
+    await disconnectWallet();
+    resetWeb3authSession();
   }, [disconnectWallet]);
 
-  const connect = useCallback(() => {
+  const connect = useCallback(async () => {
+    resetWeb3authSession();
     onMenuToggle();
     connectAdenaClient();
   }, [connectAdenaClient]);
@@ -147,8 +165,15 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
         {connected ? (
           <div className="button-container">
             <MenuHeader>
-              {isSwitchNetwork ? <IconFailed className="fail-icon" /> : <IconAdenaLogo />}
-              <span className="user-address">{formatAddress(account?.address || "")}</span>
+              <RenderWalletIcon isSwitchNetwork={isSwitchNetwork} walletType={walletType} />
+              <span className="user-address">
+                {formatAddress(account?.address || "")}
+                {breakpoint === DEVICE_TYPE.MOBILE && (
+                  <Tooltip floatClassName="test" FloatingContent={<SocialWalletNotificationTooltip />} placement="top">
+                    <IconInfo className="tooltip" fill={theme.themeKey === "dark" ? "#596782" : "#90A2C0"} size={16} />
+                  </Tooltip>
+                )}
+              </span>
               <IconButtonMaker
                 copyClick={copyClick}
                 openLinkClick={openLinkClick}
@@ -157,6 +182,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
                 onClickDisconnect={onClickDisconnect}
               />
             </MenuHeader>
+            {breakpoint !== DEVICE_TYPE.MOBILE && walletType.type === "SOCIAL_WALLET" && <SocialWalletNotification />}
             {isSwitchNetwork ? (
               <Button
                 text={t("HeaderFooter:switchNetwork")}
@@ -189,7 +215,6 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
             />
           </div>
         )}
-
         <div className="theme-container">
           <ThemeSelector className="mt-16">
             <span>{t("HeaderFooter:language")}</span>
@@ -207,6 +232,35 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
       </WalletConnectorMenuWrapper>
       <Overlay onClick={onMenuToggle} />
     </>
+  );
+};
+
+export const SocialWalletNotificationTooltip = () => {
+  const ORANGE_COLOR = "#FF9F0A";
+  return (
+    <TooltipContent>
+      <div className="social-wallet-noti-header">
+        <IconInfo fill={ORANGE_COLOR} size={16} />
+        <div className="title">You’re Using a Social Wallet</div>
+      </div>
+
+      <div className="content">
+        To use the full wallet features, install
+        <br />
+        Adena
+        <Link href={SOCIAL_WALLET_EXTERNAL_URL.ADENA_INSTALL_URL} target="_blank">
+          <IconOpenLink size="12" fill={ORANGE_COLOR} className="margin-left" />{" "}
+        </Link>
+        & login with the same social.
+      </div>
+
+      <div className="guide">
+        How does Social Wallets work?{" "}
+        <Link href={SOCIAL_WALLET_EXTERNAL_URL.SOCIAL_WALLET_FAQ_URL} target="_blank">
+          <IconOpenLink size="12" fill={ORANGE_COLOR} />
+        </Link>
+      </div>
+    </TooltipContent>
   );
 };
 
