@@ -1,8 +1,8 @@
-export type TierType = "TIER30" | "TIER90" | "TIER180" | null | undefined;
+export type TierType = "TIER_30" | "TIER_90" | "TIER_180" | null | undefined;
 
 export const getTierNumber = (tier: TierType): number => {
   if (!tier) return 0;
-  return parseInt(tier.replace("TIER", ""));
+  return parseInt(tier.split("_")[1]);
 };
 
 export const getTierDuration = (
@@ -12,20 +12,20 @@ export const getTierDuration = (
 ) => {
   if (isUpperCase) {
     switch (tier) {
-      case "TIER30":
+      case "TIER_30":
         return format("Launchpad:common.time.monthUpperCase", { count: 1 });
-      case "TIER90":
+      case "TIER_90":
         return format("Launchpad:common.time.monthUpperCase", { count: 3 });
-      case "TIER180":
+      case "TIER_180":
         return format("Launchpad:common.time.monthUpperCase", { count: 6 });
     }
   } else {
     switch (tier) {
-      case "TIER30":
+      case "TIER_30":
         return format("Launchpad:common.time.month", { count: 1 });
-      case "TIER90":
+      case "TIER_90":
         return format("Launchpad:common.time.month", { count: 3 });
-      case "TIER180":
+      case "TIER_180":
         return format("Launchpad:common.time.month", { count: 6 });
     }
   }
@@ -33,11 +33,11 @@ export const getTierDuration = (
 
 export const getTierValue = (tier: TierType) => {
   switch (tier) {
-    case "TIER30":
+    case "TIER_30":
       return 1;
-    case "TIER90":
+    case "TIER_90":
       return 3;
-    case "TIER180":
+    case "TIER_180":
       return 6;
     default:
       return 0;

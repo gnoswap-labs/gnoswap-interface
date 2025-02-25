@@ -58,6 +58,7 @@ const LaunchpadDepositModal = ({
     : null;
 
   const poolDuration = getTierNumber(poolInfo?.poolTier);
+  console.log(poolDuration, "poolDuration");
 
   const confirm = React.useCallback(() => {
     setIsOpen(false);

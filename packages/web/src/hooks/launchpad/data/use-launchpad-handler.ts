@@ -109,6 +109,7 @@ export const useLaunchpadHandler = () => {
     if (!account) {
       return;
     }
+    console.log(projectPoolId, "projectPoolId");
 
     const displayAmount = Number(depositAmount).toLocaleString("en");
     const unitAmount = makeRawTokenAmount(GNS_TOKEN, depositAmount) || "0";
