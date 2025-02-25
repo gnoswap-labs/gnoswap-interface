@@ -287,7 +287,7 @@ export function makeIncreaseLiquidityMessagesWithApproves(
     tokenBAmount,
     caller,
     slippage,
-    deadline = "9999999999",
+    deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString(),
   }: {
     lpTokenId: string;
     tokenA: TokenModel;
@@ -357,7 +357,7 @@ export function makeDecreaseLiquidityMessagesWithApproves(
     slippage,
     caller,
     isGetWGNOT,
-    deadline = "9999999999",
+    deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString(),
   }: {
     lpTokenId: string;
     calculatedLiquidity: string;
@@ -500,7 +500,7 @@ export function makeRemoveLiquidityMessagesWithApproves(
     tokenPaths,
     caller,
     isGetWGNOT,
-    deadline = "9999999999",
+    deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString(),
   }: {
     lpTokenIds: string[];
     calculatedLiquidity: string;
