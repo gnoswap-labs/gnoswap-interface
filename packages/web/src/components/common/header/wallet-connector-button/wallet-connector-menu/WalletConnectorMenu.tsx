@@ -1,9 +1,9 @@
 import BigNumber from "bignumber.js";
 import { useAtomValue } from "jotai";
-import { useTranslation } from "next-i18next";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useTheme } from "@emotion/react";
+import { Trans, useTranslation } from "next-i18next";
 
 import { SOCIAL_WALLET_EXTERNAL_URL } from "@constants/external-url.contant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -236,26 +236,30 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
 };
 
 export const SocialWalletNotificationTooltip = () => {
+  const { t } = useTranslation();
   const ORANGE_COLOR = "#FF9F0A";
   return (
     <TooltipContent>
       <div className="social-wallet-noti-header">
         <IconInfo fill={ORANGE_COLOR} size={16} />
-        <div className="title">You’re Using a Social Wallet</div>
+        <div className="title">{t("common:social.notification.title")}</div>
       </div>
 
       <div className="content">
-        To use the full wallet features, install
-        <br />
-        Adena
-        <Link href={SOCIAL_WALLET_EXTERNAL_URL.ADENA_INSTALL_URL} target="_blank">
-          <IconOpenLink size="12" fill={ORANGE_COLOR} className="margin-left" />{" "}
-        </Link>
-        & login with the same social.
+        <Trans
+          i18nKey={"common:social.notification.content"}
+          components={{
+            link: (
+              <Link href={SOCIAL_WALLET_EXTERNAL_URL.ADENA_INSTALL_URL} target="_blank">
+                <IconOpenLink size="11" fill={ORANGE_COLOR} className="margin-left" />{" "}
+              </Link>
+            ),
+          }}
+        />
       </div>
 
       <div className="guide">
-        How does Social Wallets work?{" "}
+        {t("common:social.notification.footer")}{" "}
         <Link href={SOCIAL_WALLET_EXTERNAL_URL.SOCIAL_WALLET_FAQ_URL} target="_blank">
           <IconOpenLink size="12" fill={ORANGE_COLOR} />
         </Link>

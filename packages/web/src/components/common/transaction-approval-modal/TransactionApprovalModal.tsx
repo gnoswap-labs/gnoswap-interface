@@ -21,6 +21,7 @@ import IconArrowDown from "../icons/IconArrowDown";
 import IconArrowUp from "../icons/IconArrowUp";
 import RenderWalletIcon from "../header/wallet-connector-button/RenderWalletIcon";
 import IconGnoswapLogo from "../icons/defaultIcon/IconGnoswapLogo";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   onConfirm: () => void;
@@ -51,6 +52,8 @@ const TransactionApprovalModal = ({
   walletType,
   memoChangeHandler,
 }: Props) => {
+  const { t } = useTranslation();
+
   const [isExpanded, setIsExpanded] = React.useState(false);
   const [isAllowedDomain, setIsAllowedDomain] = React.useState(true);
 
@@ -79,7 +82,7 @@ const TransactionApprovalModal = ({
     <TransactionApprovalModalWrapper>
       <TransactionApprovalModalBody>
         <TransactionApprovalModalHeader>
-          <div className="title">Approve Transaction</div>
+          <div className="title">{t("common:social.modal.transaction.title")}</div>
           <div className="close-wrapper">
             <button className="close-button" onClick={onCancel}>
               <IconClose className="close-icon" />
@@ -93,9 +96,11 @@ const TransactionApprovalModal = ({
               <IconGnoswapLogo />
               <span className="value">{location.origin}</span>
             </InfoCard>
-            {!isAllowedDomain && <div className="error-text">Check your domain again. Possible phishing.</div>}
+            {!isAllowedDomain && (
+              <div className="error-text">{t("common:social.modal.transaction.validation.domain")}</div>
+            )}
             <InfoCard>
-              <div className="label">Account</div>
+              <div className="label">{t("common:social.modal.transaction.column.account")}</div>
               <div className="value">
                 <RenderWalletIcon isSwitchNetwork={isSwitchNetwork} walletType={walletType} />
                 {formatAddress(caller)}
@@ -105,30 +110,34 @@ const TransactionApprovalModal = ({
               return (
                 <InfoCard key={`${contract.type}-${contract.function}-${index}`} flexDirection="column" gap={16}>
                   <div className="flex-box">
-                    <div className="label">Realm</div>
+                    <div className="label">{t("common:social.modal.transaction.column.realm")}</div>
                     <div className="value">{contract.value.pkg_path}</div>
                   </div>
                   <div className="flex-box">
-                    <div className="label">Function</div>
+                    <div className="label">{t("common:social.modal.transaction.column.function")}</div>
                     <div className="value">{contract.function}</div>
                   </div>
                 </InfoCard>
               );
             })}
             <InfoCard>
-              <div className="label">Memo</div>
+              <div className="label">{t("common:social.modal.transaction.column.memo")}</div>
               <div className="value">
-                <input placeholder="(Optional)" onChange={onChangeMemo} value={memo} />
+                <input
+                  placeholder={t("common:social.modal.transaction.placeholder.optional")}
+                  onChange={onChangeMemo}
+                  value={memo}
+                />
               </div>
             </InfoCard>
             <InfoCard>
-              <div className="label">Network Fee</div>
+              <div className="label">{t("common:social.modal.transaction.column.networkFee")}</div>
               <div className="value">{"0.000001 GNOT (<$0.01)"}</div>
             </InfoCard>
           </TransactionApprovalSummary>
           <TransactionApprovalDetails>
             <button onClick={() => setIsExpanded(prev => !prev)} aria-expanded={isExpanded}>
-              View Transaction Data {!isExpanded ? <IconArrowDown /> : <IconArrowUp />}
+              {t("common:social.modal.transaction.view")} {!isExpanded ? <IconArrowDown /> : <IconArrowUp />}
             </button>
 
             <div
@@ -143,7 +152,7 @@ const TransactionApprovalModal = ({
         <TransactionApprovalButtonWrapper>
           <Button
             onClick={handleConfirm}
-            text={"Approve"}
+            text={t("common:social.modal.transaction.approve")}
             style={{ fullWidth: true, height: 57, fontType: "body7", hierarchy: ButtonHierarchy.Primary }}
             disabled={isAllowedDomain}
           />

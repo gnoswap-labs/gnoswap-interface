@@ -25,11 +25,11 @@ export async function getStaticProps({ locale }: { locale: string }) {
 }
 
 export default function Page() {
-  const { i18n } = useTranslation(["HeaderFooter", "common", "Main", "business"], {
+  const { i18n } = useTranslation(["HeaderFooter", "common", "Main", "business", "SocialWallet"], {
     bindI18n: "languageChanged loaded",
   });
   useEffect(() => {
-    i18n.reloadResources(i18n.resolvedLanguage, ["HeaderFooter", "common", "Main", "business"]);
+    i18n.reloadResources(i18n.resolvedLanguage, ["HeaderFooter", "common", "Main", "business", "SocialWallet"]);
   }, []);
 
   return (
