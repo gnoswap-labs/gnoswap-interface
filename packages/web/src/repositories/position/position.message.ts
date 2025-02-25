@@ -536,7 +536,7 @@ export function makeRemoveLiquidityMessagesWithApproves(
       packagePath: PACKAGE_POSITION_PATH,
       args: [
         lpTokenId, // LP Token ID
-        calculatedLiquidity.toString(), // Percentage of liquidity to reduce (0 ~ 100)
+        calculatedLiquidity.toString(), // Liquidity amount to remove (100%)
         "0", // Minimum quantity of tokenA to decrease liquidity
         "0", // Minimum quantity of tokenB to decrease liquidity
         deadline, // Deadline UTC time

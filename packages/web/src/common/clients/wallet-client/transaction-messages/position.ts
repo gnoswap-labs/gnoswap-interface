@@ -60,7 +60,7 @@ export function makePositionMintWithStakeMessage(
 ) {
   const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
   const slippageRatio = (100 - slippage) / 100;
-  const deadline = (Math.floor(Date.now() / 1000) + 60 * 20).toString();
+  const deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString();
   const send = makeGNOTSendAmount(sendAmount);
 
   return makeTransactionMessage({
@@ -95,7 +95,7 @@ export function makePositionIncreaseLiquidityMessage(
   const slippageRatio = (100 - slippage) / 100;
   const send = makeGNOTSendAmount(sendAmount);
 
-  const deadline = (Math.floor(Date.now() / 1000) + 60 * 20).toString();
+  const deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString();
 
   return makeTransactionMessage({
     send,
@@ -156,7 +156,7 @@ export function makePositionDecreaseLiquidityMessage(
 ) {
   const slippageRatio = (10_000 - MAX_SLIPPAGE) / 10_000;
 
-  const deadline = (Math.floor(Date.now() / 1000) + 60 * 20).toString();
+  const deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString();
 
   return makeTransactionMessage({
     send: "",
