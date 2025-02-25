@@ -147,14 +147,14 @@ export function makePositionRepositionLiquidityMessage(
 
 export function makePositionDecreaseLiquidityMessage(
   lpTokenId: string,
-  liquidityRatio: number,
+  liquidityAmount: number,
   amount0Desired: string,
   amount1Desired: string,
   slippage: number,
   isGetWGNOT: boolean,
   caller: string,
 ) {
-  const slippageRatio = (100 - MAX_SLIPPAGE) / 100;
+  const slippageRatio = (10_000 - MAX_SLIPPAGE) / 10_000;
 
   const deadline = (Math.floor(Date.now() / 1000) + 60 * 20).toString();
 
@@ -164,7 +164,7 @@ export function makePositionDecreaseLiquidityMessage(
     packagePath: PACKAGE_POSITION_PATH,
     args: [
       lpTokenId, // LP Token ID
-      `${liquidityRatio}`, // Percentage of liquidity to reduce (0 ~ 100)
+      `${liquidityAmount}`, // Liquidity amount to decrease
       BigNumber(amount0Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum quantity of tokenA to decrease liquidity
       BigNumber(amount1Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum quantity of tokenB to decrease liquidity
       deadline, // Deadline UTC time

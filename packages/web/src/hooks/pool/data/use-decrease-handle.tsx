@@ -215,6 +215,7 @@ export const useDecreaseHandle = () => {
     const minTick = tickToPrice(selectedPosition.tickLower);
     const maxTick = tickToPrice(selectedPosition.tickUpper);
     const liquidityAmounts = getDepositAmountsByLiquidity(currentPrice, minTick, maxTick, selectedPosition.liquidity);
+
     const { amountA: tokenALiquidity, amountB: tokenBLiquidity } = liquidityAmounts;
 
     const tokenAPrice = tokenPrices[checkGnotPath(tokenA.priceID)]?.usd || 0;
