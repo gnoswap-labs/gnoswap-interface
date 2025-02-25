@@ -287,7 +287,7 @@ export function makeIncreaseLiquidityMessagesWithApproves(
     tokenBAmount,
     caller,
     slippage,
-    deadline = "9999999999",
+    deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString(),
   }: {
     lpTokenId: string;
     tokenA: TokenModel;
@@ -357,7 +357,7 @@ export function makeDecreaseLiquidityMessagesWithApproves(
     slippage,
     caller,
     isGetWGNOT,
-    deadline = "9999999999",
+    deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString(),
   }: {
     lpTokenId: string;
     calculatedLiquidity: string;
@@ -409,7 +409,7 @@ export function makeDecreaseLiquidityMessagesWithApproves(
     packagePath: PACKAGE_POSITION_PATH,
     args: [
       lpTokenId, // LP Token ID
-      BigNumber(calculatedLiquidity).multipliedBy(slippageRatio).toFixed(0), // liquidity to decrease value
+      BigNumber(calculatedLiquidity).toFixed(0), // liquidity to decrease value
       BigNumber(tokenAAmount).multipliedBy(slippageRatio).toFixed(0), // Minimum quantity of tokenA to decrease liquidity
       BigNumber(tokenBAmount).multipliedBy(slippageRatio).toFixed(0), // Minimum quantity of tokenB to decrease liquidity
       deadline, // Deadline UTC time
@@ -496,19 +496,21 @@ export function makeRepositionLiquidityMessagesWithApproves(
 export function makeRemoveLiquidityMessagesWithApproves(
   {
     lpTokenIds,
+    calculatedLiquidity,
     tokenPaths,
     caller,
     isGetWGNOT,
+    deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString(),
   }: {
     lpTokenIds: string[];
+    calculatedLiquidity: string;
     tokenPaths: string[];
     caller: string;
     isGetWGNOT: boolean;
+    deadline?: string;
   },
   fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
-  const decreaseLiquidityRatio = 100;
-
   // Make Approve messages that can be managed by a Pool package of tokens.
   const approveMessageInfos: TokenApproveMessageInfo[] = tokenPaths.map(tokenPath => ({
     tokenPath: wrapNativeTokenPath(tokenPath),
@@ -534,10 +536,10 @@ export function makeRemoveLiquidityMessagesWithApproves(
       packagePath: PACKAGE_POSITION_PATH,
       args: [
         lpTokenId, // LP Token ID
-        decreaseLiquidityRatio.toString(), // Percentage of liquidity to reduce (0 ~ 100)
+        calculatedLiquidity.toString(), // Liquidity amount to remove (100%)
         "0", // Minimum quantity of tokenA to decrease liquidity
         "0", // Minimum quantity of tokenB to decrease liquidity
-        "9999999999", // Deadline UTC time
+        deadline, // Deadline UTC time
         `${!isGetWGNOT}`, // whether unwrap token : isGetWGNOT == true => wrap
       ],
       caller,

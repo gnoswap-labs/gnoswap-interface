@@ -65,6 +65,12 @@ export const useRepositionHandle = () => {
     [defaultPosition, positionId, positions],
   );
 
+  const calculatedLiquidity = useMemo(() => {
+    if (!selectedPosition?.liquidity) return "0";
+
+    return BigNumber(selectedPosition.liquidity.toString()).integerValue(BigNumber.ROUND_DOWN).toString();
+  }, [selectedPosition?.liquidity]);
+
   const defaultPositionMinPrice = useMemo(() => {
     if (!selectedPosition) {
       return null;
@@ -400,12 +406,16 @@ export const useRepositionHandle = () => {
       return null;
     }
 
+    const deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString();
+
     return positionRepository
       .removeLiquidity({
         lpTokenIds: [selectedPosition.lpTokenId],
+        calculatedLiquidity,
         caller: address,
         tokenPaths: [selectedPosition.pool.tokenA.path, selectedPosition.pool.tokenB.path],
         isGetWGNOT: false,
+        deadline,
       })
       .catch(() => null);
   }, [selectedPosition, positionRepository, address]);

@@ -60,7 +60,7 @@ export function makePositionMintWithStakeMessage(
 ) {
   const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
   const slippageRatio = (100 - slippage) / 100;
-  const deadline = DEFAULT_TRANSACTION_DEADLINE;
+  const deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString();
   const send = makeGNOTSendAmount(sendAmount);
 
   return makeTransactionMessage({
@@ -95,6 +95,8 @@ export function makePositionIncreaseLiquidityMessage(
   const slippageRatio = (100 - slippage) / 100;
   const send = makeGNOTSendAmount(sendAmount);
 
+  const deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString();
+
   return makeTransactionMessage({
     send,
     func: "IncreaseLiquidity",
@@ -105,7 +107,7 @@ export function makePositionIncreaseLiquidityMessage(
       amount1Desired, // Maximum amount of tokenB to offer
       BigNumber(amount0Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum amount of tokenA to provide
       BigNumber(amount1Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum amount of tokenB to provide
-      "9999999999", // Deadline UTC time
+      deadline, // Deadline UTC time
       "", // Referral address
     ],
     caller,
@@ -145,14 +147,16 @@ export function makePositionRepositionLiquidityMessage(
 
 export function makePositionDecreaseLiquidityMessage(
   lpTokenId: string,
-  liquidityRatio: number,
+  liquidityAmount: number,
   amount0Desired: string,
   amount1Desired: string,
   slippage: number,
   isGetWGNOT: boolean,
   caller: string,
 ) {
-  const slippageRatio = (100 - MAX_SLIPPAGE) / 100;
+  const slippageRatio = (10_000 - MAX_SLIPPAGE) / 10_000;
+
+  const deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString();
 
   return makeTransactionMessage({
     send: "",
@@ -160,10 +164,10 @@ export function makePositionDecreaseLiquidityMessage(
     packagePath: PACKAGE_POSITION_PATH,
     args: [
       lpTokenId, // LP Token ID
-      `${liquidityRatio}`, // Percentage of liquidity to reduce (0 ~ 100)
+      `${liquidityAmount}`, // Liquidity amount to decrease
       BigNumber(amount0Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum quantity of tokenA to decrease liquidity
       BigNumber(amount1Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum quantity of tokenB to decrease liquidity
-      "9999999999", // Deadline UTC time
+      deadline, // Deadline UTC time
       `${!isGetWGNOT}`, // whether unwrap token : isGetWGNOT == true => wrap
       "", // Referral address
     ],

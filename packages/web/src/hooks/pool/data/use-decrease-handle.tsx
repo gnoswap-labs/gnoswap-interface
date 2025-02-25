@@ -14,7 +14,7 @@ import { TokenModel } from "@models/token/token-model";
 import { IncreaseState } from "@states/index";
 import { checkGnotPath } from "@utils/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
-import { isEndTickBy, tickToPriceStr } from "@utils/swap-utils";
+import { getDepositAmountsByLiquidity, isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -203,12 +203,20 @@ export const useDecreaseHandle = () => {
     if (!selectedPosition) {
       return null;
     }
+
     const tokenA = selectedPosition.pool.tokenA;
     const tokenB = selectedPosition.pool.tokenB;
     const pooledTokenAAmount = selectedPosition.tokenABalance;
     const pooledTokenBAmount = selectedPosition.tokenBBalance;
     const unClaimTokenA = selectedPosition.unclaimedFeeAAmount;
     const unClaimTokenB = selectedPosition.unclaimedFeeBAmount;
+
+    const currentPrice = tickToPrice(selectedPosition.pool.currentTick);
+    const minTick = tickToPrice(selectedPosition.tickLower);
+    const maxTick = tickToPrice(selectedPosition.tickUpper);
+    const liquidityAmounts = getDepositAmountsByLiquidity(currentPrice, minTick, maxTick, selectedPosition.liquidity);
+
+    const { amountA: tokenALiquidity, amountB: tokenBLiquidity } = liquidityAmounts;
 
     const tokenAPrice = tokenPrices[checkGnotPath(tokenA.priceID)]?.usd || 0;
     const tokenBPrice = tokenPrices[checkGnotPath(tokenB.priceID)]?.usd || 0;
@@ -219,7 +227,7 @@ export const useDecreaseHandle = () => {
     const unClaimTokenBAmount = Number(unClaimTokenB) || 0;
 
     return {
-      poolAmountA: BigNumber(tokenAAmount).multipliedBy(percent).dividedBy(100).toNumber().toString(),
+      poolAmountA: BigNumber(tokenALiquidity.toString()).multipliedBy(percent).dividedBy(100).toString(),
       poolAmountUSDA: tokenAPrice
         ? formatOtherPrice((tokenAAmount * Number(tokenAPrice) * percent) / 100, {
             isKMB: false,
@@ -237,7 +245,7 @@ export const useDecreaseHandle = () => {
         .dividedBy(100)
         .toNumber()
         .toString(),
-      poolAmountB: BigNumber(tokenBAmount).multipliedBy(percent).dividedBy(100).toNumber().toString(),
+      poolAmountB: BigNumber(tokenBLiquidity.toString()).multipliedBy(percent).dividedBy(100).toString(),
       poolAmountUSDB: tokenBPrice
         ? formatOtherPrice((tokenBAmount * Number(tokenBPrice) * percent) / 100, {
             isKMB: false,

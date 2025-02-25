@@ -25,6 +25,7 @@ interface RemovePositionModalContainerProps {
   selectedPositions: PoolPositionModel[];
   allPosition: PoolPositionModel[];
   isGetWGNOT: boolean;
+  calculatedLiquidity: string;
   refetchPositions: () => Promise<void>;
 }
 
@@ -32,6 +33,7 @@ const RemovePositionModalContainer = ({
   selectedPositions,
   allPosition,
   isGetWGNOT,
+  calculatedLiquidity,
   refetchPositions,
 }: RemovePositionModalContainerProps) => {
   const { account } = useWallet();
@@ -126,6 +128,7 @@ const RemovePositionModalContainer = ({
     const result = await positionRepository
       .removeLiquidity({
         lpTokenIds,
+        calculatedLiquidity,
         tokenPaths: approveTokenPaths,
         caller: address,
         isGetWGNOT: willWrap,

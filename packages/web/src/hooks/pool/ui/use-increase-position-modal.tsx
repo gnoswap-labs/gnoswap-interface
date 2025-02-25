@@ -120,6 +120,8 @@ export const useIncreasePositionModal = ({
       }),
     );
 
+    const deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString();
+
     const result = await positionRepository
       .increaseLiquidity({
         lpTokenId: selectedPosition.id.toString(),
@@ -129,6 +131,7 @@ export const useIncreasePositionModal = ({
         tokenBAmount: Number(tokenBAmountInput.amount),
         slippage: slippage,
         caller: address,
+        deadline,
       })
       .catch(() => null);
 
