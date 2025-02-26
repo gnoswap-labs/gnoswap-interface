@@ -94,17 +94,10 @@ export const SEOInfo: Record<
       if (params.length === 3) {
         const [tokenASymbol, tokenBSymbol, feeTier] = params;
 
-        return {
-          i18nKey: "Metatag(title):seo.title.earnAdd",
-          values: {
-            tokenA: tokenASymbol ?? "",
-            tokenB: tokenBSymbol ?? "",
-            feeTier: feeTier ?? "",
-          },
-        };
+        return `Add Position to ${tokenASymbol}/${tokenBSymbol} ${feeTier}`;
       }
 
-      return "Metatag(title):seo.title.earnAddDefault";
+      return "Add Position to GnoSwap Pools";
     },
     desc: () => "Create your own positions and provide liquidity to earn trading fees.",
   },
