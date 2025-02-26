@@ -103,7 +103,7 @@ export const FOOTER_RIGHT_NAV = [
         newTab: true,
       },
       {
-        title: "User Guide",
+        title: "HeaderFooter:helpSection.item.userGuide",
         path: EXT_URL.DOCS.USER_GUIDE.ROOT,
         newTab: true,
       },

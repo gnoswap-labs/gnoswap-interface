@@ -4,14 +4,14 @@ import SwapInfoTransactionList from "@layouts/swap/components/swap-info-transact
 import { useWindowSize } from "@hooks/common/use-window-size";
 
 export const TABLE_HEAD = {
-  TIME: "Time",
-  VALUE: "Value",
-  Swap: "Swap",
+  TIME: "Dashboard:onchainActi.col.time",
+  VALUE: "Pool:position.card.history.col.value",
+  Swap: "Swap:header",
 };
 
 export const MOBILE_TABLE_HEAD = {
-  TIME: "Time",
-  Swap: "Swap",
+  TIME: "Dashboard:onChainActi.col.time",
+  Swap: "Swap:header",
 };
 
 const SwapInfoTransactionListContainer = () => {

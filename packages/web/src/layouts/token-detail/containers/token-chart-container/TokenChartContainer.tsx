@@ -21,7 +21,7 @@ import { formatPrice } from "@utils/new-number-utils";
 
 import TokenChart, { ChartInfo, TokenInfo } from "../../components/token-chart/TokenChart";
 
-const TokenChartGraphPeriods: Readonly<string[]> = ["1D", "7D", "1M", "1Y", "ALL"] as const;
+const TokenChartGraphPeriods: Readonly<string[]> = ["1D", "7D", "1M", "1Y", "All"] as const;
 export type TokenChartGraphPeriodType = (typeof TokenChartGraphPeriods)[number];
 
 const DEFAULT_PADDING = 12;

@@ -114,12 +114,12 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const validationProps: any = useMemo(() => {
     if (type === ProposalOption[1]) {
-      return getCreateProposalCommunityPoolSpendValidation();
+      return getCreateProposalCommunityPoolSpendValidation(t);
     }
     if (type === ProposalOption[2]) {
-      return getCreateProposalChangeParameterValidation();
+      return getCreateProposalChangeParameterValidation(t);
     }
-    return getCreateProposalValidation();
+    return getCreateProposalValidation(t);
   }, [type]);
 
   const methods = useForm<FormValues>({
@@ -169,7 +169,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   const { data: paramErrors = {}, refetch: validateParams } = useQuery({
     queryKey: ["validate/fields", JSON.stringify(control._formValues)],
     queryFn: () => {
-      return getCreateProposalParameterValidation(executableFunctions)
+      return getCreateProposalParameterValidation(t, executableFunctions)
         .validate(control?._formValues?.variable || [], { abortEarly: false })
         .then<{
           variable?: {

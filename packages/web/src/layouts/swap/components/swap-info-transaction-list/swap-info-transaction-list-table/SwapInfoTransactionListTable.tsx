@@ -25,6 +25,7 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { GNOT_TOKEN_DEFAULT } from "@common/values/token-constant";
 import DateTimeTooltip from "@components/common/date-time-tooltip/DateTimeTooltip";
 import { DEVICE_TYPE } from "@styles/media";
+import { useTranslation } from "react-i18next";
 
 interface SwapInfoTransactionListTableProps {
   breakpoint: DEVICE_TYPE;
@@ -41,6 +42,8 @@ const getTableWidths = (breakpoint: DEVICE_TYPE) => {
 };
 
 const SwapInfoTransactionListTable = ({ breakpoint }: SwapInfoTransactionListTableProps) => {
+  const { t } = useTranslation();
+
   const getTableHeaders = React.useCallback(() => {
     if (breakpoint === DEVICE_TYPE.MOBILE) {
       return MOBILE_TABLE_HEAD;
@@ -59,7 +62,7 @@ const SwapInfoTransactionListTable = ({ breakpoint }: SwapInfoTransactionListTab
               className={cx({ left: idx === 0 })}
               tdWidth={getTableWidths(breakpoint)[idx]}
             >
-              <span>{head}</span>
+              <span>{t(head)}</span>
             </TableHeader>
           );
         })}
