@@ -1,6 +1,6 @@
 import React from "react";
 
-import { SEOInfo, TranslationWithValues } from "@constants/common.constant";
+import { SEOInfo, TranslationKey, TranslationWithValues } from "@constants/common.constant";
 import { nullish } from "@utils/nullish-utils";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
@@ -13,7 +13,7 @@ interface BaseSEOProps {
   titleParams?: (string | undefined)[];
   descParams?: (string | undefined)[];
   ogTitleParams?: (string | undefined)[];
-  customTitle?: string;
+  customTitle?: string | TranslationKey;
 }
 
 export const BaseSEOContainer = ({
@@ -34,10 +34,10 @@ export const BaseSEOContainer = ({
       return t(content);
     }
 
-    return content;
+    return String(content);
   };
 
-  const title = nullish.handleFalsy(customTitle, getTranslatedContent(seoInfo.title(titleParams)));
+  const title = String(nullish.handleFalsy(customTitle, getTranslatedContent(seoInfo.title(titleParams))));
 
   return (
     <SEOHeader
