@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 import useRouter from "@hooks/common/use-custom-router";
-import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
+import { DEFAULT_I18N_NS } from "@constants/common.constant";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/data/use-token-data";
@@ -36,21 +36,21 @@ export default function Page() {
     return SwapFeeTierInfoMap[makeSwapFeeTier(feeTier)]?.rateStr;
   }, [feeTier]);
 
-  const seoInfo = useMemo(() => SEOInfo["/earn/add"], []);
-
-  const title = useMemo(() => {
+  const titleParams = useMemo(() => {
     const tokenAPath = query.tokenA as string | undefined;
     const tokenBPath = query.tokenB as string | undefined;
 
     const tokenA = getGnotPath(tokenAPath ? tokens.find(item => item.path === checkGnotPath(tokenAPath)) : undefined);
     const tokenB = getGnotPath(tokenBPath ? tokens.find(item => item.path === checkGnotPath(tokenBPath)) : undefined);
 
-    return seoInfo.title([tokenA?.symbol, tokenB?.symbol, feeStr].filter(item => item) as string[]);
-  }, [feeStr, query.tokenA, query.tokenB, seoInfo, tokens, getGnotPath]);
+    if (tokenA?.symbol && tokenB?.symbol && feeStr) {
+      return [tokenA.symbol, tokenB.symbol, feeStr];
+    }
+  }, [feeStr, query.tokenA, query.tokenB, tokens, getGnotPath]);
 
   return (
     <>
-      <EarnAddSEOContainer customTitle={title} />
+      <EarnAddSEOContainer titleParams={titleParams} />
       <PoolAdd useDedicatedPool={false} />
     </>
   );

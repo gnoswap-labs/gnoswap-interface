@@ -1,1 +1,1 @@
-{"seo":{"default":{"title":"ワンストップのグノランドDeFiプラットフォーム｜GnoSwap"},"earn":{"title":"稼ぐ｜グノスワップ"},"swap":{"title":"スワップ｜GnoSwap"}}}
+{"seo":{"title":{"dashboard":"ダッシュボード｜GnoSwap","default":"ワンストップのグノランドDeFiプラットフォーム｜GnoSwap","earn":"稼ぐ｜グノスワップ","earnAdd":"{{tokenASymbol}}/{{tokenBSymbol}} にポジションを追加{{feeTier}}","earnAddDefault":"GnoSwapプールへのポジション追加","governance":"ガバナンス｜GnoSwap","launchpad":"ランチパッド｜GnoSwap","leaderboard":"リーダーボード｜GnoSwap","privacy":"プライバシーポリシー｜GnoSwap","swap":"スワップ｜GnoSwap","terms":"利用規約｜GnoSwap","wallet":"ウォレット｜グノスワップ"}}}

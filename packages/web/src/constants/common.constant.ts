@@ -1,6 +1,14 @@
 import { GNS_TOKEN_PATH, WRAPPED_GNOT_PATH } from "./environment.constant";
 import { sortTokenPaths } from "@utils/sort-utils";
 
+// i18n type
+export interface TranslationWithValues {
+  i18nKey: string;
+  values: Record<string, string>;
+}
+
+export type TranslationKey = string | TranslationWithValues;
+
 export const DEFAULT_NETWORK_ID = "portal-loop";
 
 export const PATH = ["/earn"];
@@ -45,17 +53,17 @@ export type PageKey =
 
 export type StringParamsArr = (string | undefined)[];
 
-export type StringWithParamsArr = (params?: StringParamsArr) => string;
+export type StringWithParamsArr = (params?: StringParamsArr) => TranslationKey;
 
-export const DefaultTitle = "The One-stop Gnoland DeFi Platform | GnoSwap";
+export const DefaultTitle = "Metatag(title):seo.title.default";
 
 export const SEOInfo: Record<
   PageKey,
   {
-    title: StringWithParamsArr;
-    desc: StringWithParamsArr;
-    ogTitle?: StringWithParamsArr;
-    ogDesc?: StringWithParamsArr;
+    title: (params?: StringParamsArr) => TranslationKey;
+    desc: (params?: StringParamsArr) => string;
+    ogTitle?: (params?: StringParamsArr) => string;
+    ogDesc?: () => string;
   }
 > = {
   "/": {
@@ -67,7 +75,7 @@ export const SEOInfo: Record<
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
   "/earn": {
-    title: () => "Earn | GnoSwap",
+    title: () => "Metatag(title):seo.title.earn",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
@@ -85,9 +93,18 @@ export const SEOInfo: Record<
     title: (params = []) => {
       if (params.length === 3) {
         const [tokenASymbol, tokenBSymbol, feeTier] = params;
-        return `Add Position to ${tokenASymbol}/${tokenBSymbol} ${feeTier}`;
+
+        return {
+          i18nKey: "Metatag(title):seo.title.earnAdd",
+          values: {
+            tokenA: tokenASymbol ?? "",
+            tokenB: tokenBSymbol ?? "",
+            feeTier: feeTier ?? "",
+          },
+        };
       }
-      return "Add Position to GnoSwap Pools";
+
+      return "Metatag(title):seo.title.earnAddDefault";
     },
     desc: () => "Create your own positions and provide liquidity to earn trading fees.",
   },
@@ -242,17 +259,17 @@ export const SEOInfo: Record<
     desc: () => "Page Unavailable!",
   },
   "/dashboard": {
-    title: () => "Dashboard | GnoSwap",
+    title: () => "Metatag(title):seo.title.dashboard",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
   "/governance": {
-    title: () => "Governance | GnoSwap",
+    title: () => "Metatag(title):seo.title.governance",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
   "/leaderboard": {
-    title: () => "Leaderboard | GnoSwap",
+    title: () => "Metatag(title):seo.title.leaderboard",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
@@ -262,18 +279,18 @@ export const SEOInfo: Record<
         const [tokenASymbol, tokenBSymbol] = params;
         return `Swap ${tokenASymbol} to ${tokenBSymbol} | GnoSwap`;
       }
-      return "Swap | GnoSwap";
+      return "Metatag(title):seo.title.swap";
     },
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
   "/wallet": {
-    title: () => "Wallet | GnoSwap",
+    title: () => "Metatag(title):seo.title.wallet",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
   "/launchpad": {
-    title: () => "Launchpad | GnoSwap",
+    title: () => "Metatag(title):seo.title.launchpad",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
@@ -283,12 +300,12 @@ export const SEOInfo: Record<
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
   "/privacy": {
-    title: () => "Privacy Policy | GnoSwap",
+    title: () => "Metatag(title):seo.title.privacy",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
   "/terms": {
-    title: () => "Terms of Use | GnoSwap",
+    title: () => "Metatag(title):seo.title.terms",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },

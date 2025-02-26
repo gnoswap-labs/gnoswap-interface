@@ -1,1 +1,1 @@
-{"seo":{"default":{"title":"원스톱 지노랜드 디파이 플랫폼 | 지노스왑"},"earn":{"title":"적립 | GnoSwap"},"swap":{"title":"스왑 | 지노스왑"}}}
+{"seo":{"title":{"dashboard":"대시보드 | GnoSwap","default":"원스톱 지노랜드 디파이 플랫폼 | 지노스왑","earn":"적립 | GnoSwap","earnAdd":"{{tokenASymbol}}/{{tokenBSymbol}} 에 포지션 추가 {{feeTier}}","earnAddDefault":"지노스왑 풀에 포지션 추가하기","governance":"거버넌스 | 지노스왑","launchpad":"런치패드 | 지노스왑","leaderboard":"리더보드 | 지노스왑","privacy":"개인정보 보호정책 | GnoSwap","swap":"스왑 | 지노스왑","terms":"이용 약관 | 지노스왑","wallet":"지갑 | 지노스왑"}}}

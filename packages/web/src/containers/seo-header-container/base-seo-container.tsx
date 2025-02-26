@@ -1,9 +1,10 @@
 import React from "react";
 
-import { SEOInfo } from "@constants/common.constant";
+import { SEOInfo, TranslationWithValues } from "@constants/common.constant";
 import { nullish } from "@utils/nullish-utils";
 
 import SEOHeader from "@components/common/seo-header/seo-header";
+import { useTranslation } from "react-i18next";
 
 type PageKey = keyof typeof SEOInfo;
 
@@ -22,11 +23,25 @@ export const BaseSEOContainer = ({
   ogTitleParams = [],
   customTitle,
 }: BaseSEOProps) => {
+  const { t } = useTranslation();
   const seoInfo = SEOInfo[path];
+
+  const getTranslatedContent = (content: string | TranslationWithValues): string => {
+    if (typeof content === "object" && "i18nKey" in content) {
+      return t(content.i18nKey, content.values);
+    }
+    if (content.startsWith("Metatag")) {
+      return t(content);
+    }
+
+    return content;
+  };
+
+  const title = nullish.handleFalsy(customTitle, getTranslatedContent(seoInfo.title(titleParams)));
 
   return (
     <SEOHeader
-      title={nullish.handleFalsy(customTitle, seoInfo.title(titleParams))}
+      title={title}
       pageDescription={seoInfo.desc(descParams)}
       ogTitle={seoInfo.ogTitle?.(ogTitleParams)}
       ogDescription={seoInfo.ogDesc?.()}
