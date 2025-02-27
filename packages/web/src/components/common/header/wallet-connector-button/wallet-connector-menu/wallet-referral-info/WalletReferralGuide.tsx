@@ -10,12 +10,12 @@ const WalletReferralGuide = () => {
   const { t } = useTranslation();
 
   return (
-    <S.ReferralGuideWrapper>
-      <div className="text">{t("Learn how referrals work")}</div>
-      <Link href={EXT_URL.DOCS.USER_GUIDE.REFERRAL_REWARD} target="_blank" rel="noreferrer">
+    <Link href={EXT_URL.DOCS.USER_GUIDE.REFERRAL_REWARD} target="_blank" rel="noreferrer">
+      <S.ReferralGuideWrapper>
+        <div className="text">{t("Learn how referrals work")}</div>
         <IconOpenLink />
-      </Link>
-    </S.ReferralGuideWrapper>
+      </S.ReferralGuideWrapper>
+    </Link>
   );
 };
 

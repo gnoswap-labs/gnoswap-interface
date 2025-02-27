@@ -80,4 +80,15 @@ export const ReferralGuideWrapper = styled.div`
     font-size: 13px;
     font-weight: 400;
   }
+  * {
+    fill: ${({ theme }) => theme.color.text05};
+  }
+  &:hover {
+    & > .text {
+      color: ${({ theme }) => theme.color.text03};
+    }
+    * {
+      fill: ${({ theme }) => theme.color.text03};
+    }
+  }
 `;
