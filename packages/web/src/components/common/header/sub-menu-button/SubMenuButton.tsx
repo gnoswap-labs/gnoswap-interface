@@ -11,10 +11,11 @@ import { SubMenuButtonWrapper } from "./SubMenuButton.styles";
 
 interface SubMenuButtonProps {
   sideMenuToggle: boolean;
+  isCollapseNav: boolean;
   onSideMenuToggle: (value: boolean) => void;
 }
 
-const SubMenuButton: React.FC<SubMenuButtonProps> = ({ sideMenuToggle, onSideMenuToggle }) => {
+const SubMenuButton: React.FC<SubMenuButtonProps> = ({ sideMenuToggle, isCollapseNav, onSideMenuToggle }) => {
   const theme = useTheme();
   const buttonRef = useRef<HTMLDivElement>(null);
 
@@ -57,7 +58,7 @@ const SubMenuButton: React.FC<SubMenuButtonProps> = ({ sideMenuToggle, onSideMen
       {sideMenuToggle && (
         <>
           <FakeSpaceWrapper></FakeSpaceWrapper>
-          <SubMenu onSideMenuToggle={() => onSideMenuToggle(false)} />
+          <SubMenu isCollapseNav={isCollapseNav} onSideMenuToggle={() => onSideMenuToggle(false)} />
         </>
       )}
     </SubMenuButtonWrapper>

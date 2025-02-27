@@ -14,8 +14,26 @@ export const HEADER_NAV = [
     subPath: ["/earn/pool/", "/earn/add", "/earn/stake"],
   },
   {
-    title: "HeaderFooter:wallet",
+    title: "HeaderFooter:portfolio",
     path: "/wallet",
+    iconType: null,
+    subPath: [],
+  },
+  {
+    title: "HeaderFooter:explore",
+    path: "/dashboard",
+    iconType: null,
+    subPath: [],
+  },
+  {
+    title: "HeaderFooter:leaderboard",
+    path: "/leaderboard",
+    iconType: null,
+    subPath: [],
+  },
+  {
+    title: "HeaderFooter:governance",
+    path: "/governance",
     iconType: null,
     subPath: [],
   },
@@ -28,12 +46,13 @@ export const HEADER_NAV = [
 ];
 
 export const SIDE_MENU_NAV = [
-  // {
-  //   title: "HeaderFooter:leaderboard",
-  //   path: "/leaderboard",
-  //   iconType: "PULSE",
-  //   subPath: [],
-  // },
+  // Example
+  {
+    title: "HeaderFooter:leaderboard",
+    path: "/leaderboard",
+    iconType: "LEADERBOARD",
+    subPath: [],
+  },
   {
     title: "HeaderFooter:governance",
     path: "/governance",
@@ -41,9 +60,9 @@ export const SIDE_MENU_NAV = [
     subPath: [],
   },
   {
-    title: "HeaderFooter:dashboard",
-    path: "/dashboard",
-    iconType: "PULSE",
+    title: "HeaderFooter:launchpad",
+    path: "/launchpad",
+    iconType: "LAUNCHPAD",
     subPath: [],
   },
 ] as const;

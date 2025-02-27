@@ -72,6 +72,10 @@ interface HeaderProps {
   resetWeb3authSession: () => void;
 }
 
+export const TABLET_HIDDEN_NAV_PATHS: string[] = ["/leaderboard", "/governance", "/launchpad"];
+
+const HEADER_NAVIGATION_LAYOUT_COLLAPSE_WIDTH = 1300; // 1300px threshold: a threshold to prevent UI layout from being warped
+
 const Header: React.FC<HeaderProps> = ({
   pathname = "/",
   sideMenuToggle,
@@ -110,10 +114,20 @@ const Header: React.FC<HeaderProps> = ({
   const { t } = useTranslation();
   const { saveCurrentScrollHeight } = useScrollData();
 
+  const isCollapseNav = useMemo(() => {
+    return width < HEADER_NAVIGATION_LAYOUT_COLLAPSE_WIDTH;
+  }, [width]);
+
   const navigationItems = useMemo(() => {
     const blockedPaths = BLOCKED_PAGES.map(page => "/" + page);
+    if (isCollapseNav) {
+      return HEADER_NAV.filter(
+        item => !blockedPaths.includes(item.path) && !TABLET_HIDDEN_NAV_PATHS.includes(item.path),
+      );
+    }
+
     return HEADER_NAV.filter(item => !blockedPaths.includes(item.path));
-  }, []);
+  }, [isCollapseNav]);
 
   const changeTokenDeposit = useCallback(() => {
     setIsShowDepositModal(true);
@@ -160,7 +174,11 @@ const Header: React.FC<HeaderProps> = ({
                       </Link>
                     ))}
                   </ul>
-                  <SubMenuButton sideMenuToggle={sideMenuToggle} onSideMenuToggle={onSideMenuToggle} />
+                  <SubMenuButton
+                    sideMenuToggle={sideMenuToggle}
+                    onSideMenuToggle={onSideMenuToggle}
+                    isCollapseNav={isCollapseNav}
+                  />
                 </React.Fragment>
               )}
             </Navigation>
@@ -222,7 +240,11 @@ const Header: React.FC<HeaderProps> = ({
                   <Link href={item.path}>{t(item.title)}</Link>
                 </BottomNavItem>
               ))}
-              <SubMenuButton sideMenuToggle={sideMenuToggle} onSideMenuToggle={onSideMenuToggle} />
+              <SubMenuButton
+                sideMenuToggle={sideMenuToggle}
+                onSideMenuToggle={onSideMenuToggle}
+                isCollapseNav={isCollapseNav}
+              />
             </BottomNavContainer>
           </BottomNavWrapper>
         )}

@@ -25,7 +25,7 @@ export const WalletConnectorMenuWrapper = styled.div<WalletMenuProps>`
     return width && width < 768 && "0px";
   }};
   @media (min-width: 1521px) {
-    left: 0;
+    right: 0;
   }
 
   ${media.tablet} {
