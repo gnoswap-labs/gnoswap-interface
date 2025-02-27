@@ -17,23 +17,34 @@ import {
   RightIconMenu,
   SubMenuWrapper,
 } from "./SubMenu.styles";
+
+import { TABLET_HIDDEN_NAV_PATHS } from "../../Header";
 import Link from "next/link";
+import IconLeaderboard from "@components/common/icons/IconLeaderboard";
+import IconLaunchpad from "@components/common/icons/IconLaunchpad";
 
 interface HeaderSideMenuModalProps {
+  isCollapseNav: boolean;
   onSideMenuToggle: () => void;
 }
 
-const SubMenu: React.FC<HeaderSideMenuModalProps> = ({ onSideMenuToggle }) => {
+const SubMenu: React.FC<HeaderSideMenuModalProps> = ({ isCollapseNav, onSideMenuToggle }) => {
   const router = useCustomRouter();
   const menuRef = useRef<HTMLDivElement | null>(null);
   const { t } = useTranslation();
 
+  // Todo: A menu may be added.
   const navigationItems = useMemo(() => {
-    // Make path by page name
     const blockedPaths = BLOCKED_PAGES.map(page => "/" + page);
-    const allPaths = SIDE_MENU_NAV.filter(item => !blockedPaths.includes(item.path));
-    return allPaths;
-  }, []);
+
+    if (!isCollapseNav) {
+      return [];
+    }
+
+    return SIDE_MENU_NAV.filter(
+      item => !blockedPaths.includes(item.path) && TABLET_HIDDEN_NAV_PATHS.includes(item.path),
+    );
+  }, [isCollapseNav]);
 
   const extraNavigationItems = useMemo(() => {
     // Make path by page name
@@ -47,6 +58,10 @@ const SubMenu: React.FC<HeaderSideMenuModalProps> = ({ onSideMenuToggle }) => {
         return <IconPulse className="left-icon" />;
       case "ACCOUNT_USER":
         return <IconAccountUser className="left-icon" />;
+      case "LEADERBOARD":
+        return <IconLeaderboard className="left-icon" />;
+      case "LAUNCHPAD":
+        return <IconLaunchpad className="left-icon" />;
       case "OPEN_LINK":
         return <IconOpenLink className="right-icon" />;
       default:
@@ -58,25 +73,29 @@ const SubMenu: React.FC<HeaderSideMenuModalProps> = ({ onSideMenuToggle }) => {
     <SubMenuWrapper ref={menuRef} id="sub-item">
       <Navigation>
         <ul>
-          {navigationItems.length > 0 &&
-            navigationItems.map((item, index) => (
-              <Link href={`/${item.path}`} key={index}>
-                <li
-                  className="header-side-menu-item"
-                  onClick={() => {
-                    onSideMenuToggle();
-                  }}
-                >
-                  <div>
-                    <LeftIconMenu>
-                      <LeftIcon>{getIcon(item.iconType)}</LeftIcon>
-                      {t(item.title)}
-                    </LeftIconMenu>
-                  </div>
-                </li>
-              </Link>
-            ))}
-          <MenuDivider />
+          {/* // Todo: A menu may be added. */}
+          {navigationItems.length > 0 && (
+            <>
+              {navigationItems.map((item, index) => (
+                <Link href={`/${item.path}`} key={index}>
+                  <li
+                    className="header-side-menu-item"
+                    onClick={() => {
+                      onSideMenuToggle();
+                    }}
+                  >
+                    <div>
+                      <LeftIconMenu>
+                        <LeftIcon>{getIcon(item.iconType)}</LeftIcon>
+                        {t(item.title)}
+                      </LeftIconMenu>
+                    </div>
+                  </li>
+                </Link>
+              ))}
+              <MenuDivider />
+            </>
+          )}
           {extraNavigationItems.map((item, index) => (
             <li
               key={index}
