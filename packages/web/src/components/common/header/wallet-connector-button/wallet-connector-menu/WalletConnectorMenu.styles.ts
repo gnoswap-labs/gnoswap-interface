@@ -45,7 +45,18 @@ export const WalletConnectorMenuWrapper = styled.div<WalletMenuProps>`
     gap: 0;
   }
 
+  .wallet-connector-container {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+  }
+
   .button-container {
+    width: 100%;
     ${media.mobile} {
       ${mixins.flexbox("column", "center", "flex-start")};
       width: 100%;

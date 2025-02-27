@@ -32,6 +32,9 @@ import { WalletTypeState } from "src/types/wallet.types";
 import RenderWalletIcon from "../RenderWalletIcon";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { formatAddress } from "@utils/string-utils";
+import WalletReferralInfo from "./wallet-referral-info/WalletReferralInfo";
+import WalletReferralBanner from "./wallet-referral-info/WalletReferralBanner";
+import WalletReferralGuide from "./wallet-referral-info/WalletReferralGuide";
 
 interface IconButtonClickProps {
   copyClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -146,42 +149,58 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
     <>
       <WalletConnectorMenuWrapper ref={menuRef} width={window?.innerWidth}>
         {connected && (
-          <div className="button-container">
-            <MenuHeader>
-              <RenderWalletIcon isSwitchNetwork={isSwitchNetwork} walletType={walletType} />
-              <span className="user-address">
-                {formatAddress(account?.address || "")}
-                {breakpoint === DEVICE_TYPE.MOBILE && (
-                  <Tooltip floatClassName="test" FloatingContent={<SocialWalletNotificationTooltip />} placement="top">
-                    <IconInfo className="tooltip" fill={theme.themeKey === "dark" ? "#596782" : "#90A2C0"} size={16} />
-                  </Tooltip>
-                )}
-              </span>
-              <IconButtonMaker
-                copyClick={copyClick}
-                openLinkClick={openLinkClick}
-                themeKey={themeKey}
-                copied={copied}
-                onClickDisconnect={onClickDisconnect}
-              />
-            </MenuHeader>
-            {breakpoint !== DEVICE_TYPE.MOBILE && walletType.type === "SOCIAL_WALLET" && <SocialWalletNotification />}
-            {isSwitchNetwork ? (
-              <Button
-                text={t("HeaderFooter:switchNetwork")}
-                onClick={switchNetwork}
-                style={{
-                  hierarchy: ButtonHierarchy.Primary,
-                  fontType: "body9",
-                  fullWidth: true,
-                  height: 41,
-                  justify: "center",
-                }}
-                className="switch-network"
-              />
-            ) : (
-              <AmountInfoBox>{balanceText}</AmountInfoBox>
-            )}
+          <div className="wallet-connector-container">
+            <div className="button-container">
+              <MenuHeader>
+                <RenderWalletIcon isSwitchNetwork={isSwitchNetwork} walletType={walletType} />
+                <span className="user-address">
+                  {formatAddress(account?.address || "")}
+                  {breakpoint === DEVICE_TYPE.MOBILE && (
+                    <Tooltip
+                      floatClassName="test"
+                      FloatingContent={<SocialWalletNotificationTooltip />}
+                      placement="top"
+                    >
+                      <IconInfo
+                        className="tooltip"
+                        fill={theme.themeKey === "dark" ? "#596782" : "#90A2C0"}
+                        size={16}
+                      />
+                    </Tooltip>
+                  )}
+                </span>
+                <IconButtonMaker
+                  copyClick={copyClick}
+                  openLinkClick={openLinkClick}
+                  themeKey={themeKey}
+                  copied={copied}
+                  onClickDisconnect={onClickDisconnect}
+                />
+              </MenuHeader>
+              {breakpoint !== DEVICE_TYPE.MOBILE && walletType.type === "SOCIAL_WALLET" && <SocialWalletNotification />}
+              {isSwitchNetwork ? (
+                <Button
+                  text={t("HeaderFooter:switchNetwork")}
+                  onClick={switchNetwork}
+                  style={{
+                    hierarchy: ButtonHierarchy.Primary,
+                    fontType: "body9",
+                    fullWidth: true,
+                    height: 41,
+                    justify: "center",
+                  }}
+                  className="switch-network"
+                />
+              ) : (
+                <AmountInfoBox>{balanceText}</AmountInfoBox>
+              )}
+            </div>
+
+            <WalletReferralInfo account={account} />
+
+            <WalletReferralBanner />
+
+            <WalletReferralGuide />
           </div>
         )}
       </WalletConnectorMenuWrapper>
