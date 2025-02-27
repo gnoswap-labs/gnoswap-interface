@@ -145,17 +145,6 @@ export const AmountInfoBox = styled.div`
   }
 `;
 
-export const ThemeSelector = styled.div`
-  ${mixins.flexbox("row", "center", "space-between")};
-  ${fonts.p2};
-  color: ${({ theme }) => theme.color.text05};
-  width: 100%;
-  height: 36px;
-  &.mt-16 {
-    margin-top: 16px;
-  }
-`;
-
 export const CopyTooltip = styled.div`
   ${mixins.flexbox("column", "center", "flex-start")};
   position: absolute;
