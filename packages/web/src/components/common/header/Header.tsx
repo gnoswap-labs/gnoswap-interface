@@ -37,6 +37,7 @@ import {
   SearchButton,
   SearchContainer,
 } from "./Header.styles";
+import SettingUiButton from "./setting-ui-button/SettingUiButton";
 
 interface HeaderProps {
   pathname?: string;
@@ -224,7 +225,9 @@ const Header: React.FC<HeaderProps> = ({
               />
             </SearchContainer>
 
-            <NotificationButton breakpoint={breakpoint} />
+            {connected && <NotificationButton breakpoint={breakpoint} />}
+
+            <SettingUiButton />
           </RightSection>
         </HeaderContainer>
         {breakpoint === DEVICE_TYPE.MOBILE && (

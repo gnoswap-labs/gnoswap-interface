@@ -9,12 +9,14 @@ interface HeaderToggleProps {
   walletConnect: boolean;
   notification: boolean;
   showLanguage: boolean;
+  settingUI: boolean;
 }
 
 export const headerToggle = atom<HeaderToggleProps>({
   walletConnect: false,
   notification: false,
   showLanguage: false,
+  settingUI: false,
 });
 
 export const openedModal = atom<boolean>(false);
