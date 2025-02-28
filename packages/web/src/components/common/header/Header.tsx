@@ -182,6 +182,7 @@ const Header: React.FC<HeaderProps> = ({
                     ))}
                   </ul>
                   <SubMenuButton
+                    onNavigation={handleNavigation}
                     sideMenuToggle={sideMenuToggle}
                     onSideMenuToggle={onSideMenuToggle}
                     isCollapseNav={isCollapseNav}
@@ -246,13 +247,16 @@ const Header: React.FC<HeaderProps> = ({
                     pathname === item.path || (item.subPath || []).some(_ => pathname.includes(_)) ? "selected" : ""
                   }
                 >
-                  <Link href={item.path}>{t(item.title)}</Link>
+                  <Link href={item.path} onClick={e => handleNavigation(e, item.path)}>
+                    {t(item.title)}
+                  </Link>
                 </BottomNavItem>
               ))}
               <SubMenuButton
                 sideMenuToggle={sideMenuToggle}
                 onSideMenuToggle={onSideMenuToggle}
                 isCollapseNav={isCollapseNav}
+                onNavigation={handleNavigation}
               />
             </BottomNavContainer>
           </BottomNavWrapper>

@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
 import mixins from "@styles/mixins";
 import { Z_INDEX } from "@styles/zIndex";
+import { media } from "@styles/media";
 
 export interface SettingUiMenuProps {
   width?: number;
@@ -18,6 +19,12 @@ export const SettingUiMenuWrapper = styled.div<SettingUiMenuProps>`
   padding: 16px;
   z-index: ${Z_INDEX.modal};
   right: 0;
+  ${media.mobile} {
+    position: fixed;
+    width: 100%;
+    height: 150px;
+    top: calc(100% - 150px);
+  }
 `;
 
 export const SettingUiMenuContent = styled.div`

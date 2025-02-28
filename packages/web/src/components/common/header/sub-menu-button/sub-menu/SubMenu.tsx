@@ -26,9 +26,10 @@ import IconLaunchpad from "@components/common/icons/IconLaunchpad";
 interface HeaderSideMenuModalProps {
   isCollapseNav: boolean;
   onSideMenuToggle: () => void;
+  onNavigation: (e: React.MouseEvent, path: string) => void;
 }
 
-const SubMenu: React.FC<HeaderSideMenuModalProps> = ({ isCollapseNav, onSideMenuToggle }) => {
+const SubMenu: React.FC<HeaderSideMenuModalProps> = ({ isCollapseNav, onSideMenuToggle, onNavigation }) => {
   const router = useCustomRouter();
   const menuRef = useRef<HTMLDivElement | null>(null);
   const { t } = useTranslation();
@@ -77,7 +78,7 @@ const SubMenu: React.FC<HeaderSideMenuModalProps> = ({ isCollapseNav, onSideMenu
           {navigationItems.length > 0 && (
             <>
               {navigationItems.map((item, index) => (
-                <Link href={`/${item.path}`} key={index}>
+                <Link href={`/${item.path}`} key={index} onClick={e => onNavigation(e, item.path)}>
                   <li
                     className="header-side-menu-item"
                     onClick={() => {
