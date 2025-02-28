@@ -35,6 +35,11 @@ export const WalletReferralInfoColumn = styled.div<{ isEditing?: boolean }>`
 `;
 
 export const InfoColumnKey = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
   color: ${({ theme }) => theme.color.border05};
   font-size: 13px;
   font-weight: 400;
@@ -55,6 +60,9 @@ export const InfoColumnValue = styled.div`
   .copy-icon {
     width: 16px;
     height: 16px;
+    * {
+      fill: ${({ theme }) => theme.color.text01};
+    }
   }
 `;
 
@@ -73,7 +81,7 @@ export const InfoColumnIconSet = styled.div`
   }
 `;
 
-export const ReferralInfoBanner = styled.div`
+export const ReferralBannerContentWrapper = styled.div`
   width: 100%;
 
   display: flex;
@@ -81,9 +89,6 @@ export const ReferralInfoBanner = styled.div`
   justify-content: center;
   gap: 8px;
 
-  padding: 16px;
-  border-radius: 8px;
-  background-color: ${({ theme }) => theme.color.backgroundOpacity};
   & > .text {
     color: ${({ theme }) => theme.color.text05};
     font-size: 12px;
@@ -93,6 +98,13 @@ export const ReferralInfoBanner = styled.div`
       font-weight: 600;
     }
   }
+`;
+
+export const ReferralInfoBanner = styled.div`
+  width: 100%;
+  padding: 16px;
+  border-radius: 8px;
+  background-color: ${({ theme }) => theme.color.backgroundOpacity};
 `;
 
 export const ReferralGuideWrapper = styled.div`
@@ -145,6 +157,15 @@ export const IconButton = styled.button<{ isActive?: boolean; isError?: boolean 
       if (isError) return theme.color.red01;
       return theme.themeKey === "dark" ? theme.color.text05 : theme.color.background12;
     }};
+  }
+
+  &.edit-icon {
+    svg * {
+      fill: ${({ theme }) => theme.color.icon03};
+    }
+    &:hover:not(:disabled) svg * {
+      fill: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : theme.color.background17)};
+    }
   }
 
   &:disabled {

@@ -4,9 +4,9 @@ import { Trans } from "react-i18next";
 import * as S from "./WalletReferralInfo.styles";
 import IconFlare from "@components/common/icons/IconFlare";
 
-const WalletReferralBanner = () => {
+export const ReferralBannerContent = () => {
   return (
-    <S.ReferralInfoBanner>
+    <S.ReferralBannerContentWrapper>
       <IconFlare />
       <div className="text">
         <Trans>
@@ -15,6 +15,14 @@ const WalletReferralBanner = () => {
           <span className="highlight">Earn 10%, Give 10%</span>
         </Trans>
       </div>
+    </S.ReferralBannerContentWrapper>
+  );
+};
+
+const WalletReferralBanner = () => {
+  return (
+    <S.ReferralInfoBanner>
+      <ReferralBannerContent />
     </S.ReferralInfoBanner>
   );
 };

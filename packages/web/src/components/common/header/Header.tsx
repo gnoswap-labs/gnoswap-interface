@@ -130,6 +130,12 @@ const Header: React.FC<HeaderProps> = ({
     return HEADER_NAV.filter(item => !blockedPaths.includes(item.path));
   }, [isCollapseNav]);
 
+  const handleNavigation = (e: React.MouseEvent, path: string) => {
+    e.preventDefault();
+    saveCurrentScrollHeight(window?.location?.pathname);
+    router.push(path);
+  };
+
   const changeTokenDeposit = useCallback(() => {
     setIsShowDepositModal(true);
   }, []);
@@ -159,7 +165,7 @@ const Header: React.FC<HeaderProps> = ({
                 <React.Fragment>
                   <ul>
                     {navigationItems.map(item => (
-                      <Link href={item.path} key={item.title}>
+                      <Link href={item.path} key={item.title} onClick={e => handleNavigation(e, item.path)}>
                         <li
                           key={t(item.title)}
                           className={

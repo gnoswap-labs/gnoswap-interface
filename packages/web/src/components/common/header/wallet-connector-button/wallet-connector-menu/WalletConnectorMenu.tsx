@@ -155,7 +155,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
                 <RenderWalletIcon isSwitchNetwork={isSwitchNetwork} walletType={walletType} />
                 <span className="user-address">
                   {formatAddress(account?.address || "")}
-                  {breakpoint === DEVICE_TYPE.MOBILE && (
+                  {breakpoint === DEVICE_TYPE.MOBILE && walletType.type === "SOCIAL_WALLET" && (
                     <Tooltip
                       floatClassName="test"
                       FloatingContent={<SocialWalletNotificationTooltip />}
@@ -196,9 +196,9 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
               )}
             </div>
 
-            <WalletReferralInfo account={account} />
+            <WalletReferralInfo account={account} breakpoint={breakpoint} />
 
-            <WalletReferralBanner />
+            {breakpoint !== DEVICE_TYPE.MOBILE && <WalletReferralBanner />}
 
             <WalletReferralGuide />
           </div>
