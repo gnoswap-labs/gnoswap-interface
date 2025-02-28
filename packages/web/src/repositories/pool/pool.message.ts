@@ -101,6 +101,7 @@ export function makePositionMintMessageWithApproves(
     slippage,
     caller,
     withStaking,
+    referrerAddress,
   }: {
     tokenA: TokenModel;
     tokenB: TokenModel;
@@ -112,6 +113,7 @@ export function makePositionMintMessageWithApproves(
     slippage: number;
     caller: string;
     withStaking?: boolean;
+    referrerAddress: string | null;
   },
   fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
@@ -174,6 +176,7 @@ export function makePositionMintMessageWithApproves(
     slippage,
     caller,
     wrappedAmount,
+    referrerAddress,
   );
 
   return makeTransactionMessagesWithApproves([mintMessage], approveMessageInfos, fetchAllowance);
@@ -311,6 +314,7 @@ function makePositionMintMessage(
   slippage: number,
   caller: string,
   sendAmount: string | null,
+  referrerAddress: string | null,
 ) {
   const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
   const slippageRatio = (100 - slippage) / 100;
@@ -335,7 +339,7 @@ function makePositionMintMessage(
       deadline,
       caller, // LP Token Receiver
       caller, // Replace OriginCaller
-      "", // Referral address
+      referrerAddress || "", // Referral address
     ],
   });
 }
@@ -351,6 +355,7 @@ function makePositionMintWithStakeMessage(
   slippage: number,
   caller: string,
   sendAmount: string | null,
+  referrerAddress: string | null,
 ) {
   const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
   const slippageRatio = (100 - slippage) / 100;
@@ -373,7 +378,7 @@ function makePositionMintWithStakeMessage(
       BigNumber(tokenAAmount).multipliedBy(slippageRatio).toFixed(0),
       BigNumber(tokenBAmount).multipliedBy(slippageRatio).toFixed(0),
       deadline,
-      "", // Referral address
+      referrerAddress || "", // Referral address
     ],
   });
 }

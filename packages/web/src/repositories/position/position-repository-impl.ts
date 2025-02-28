@@ -179,8 +179,8 @@ export class PositionRepositoryImpl implements PositionRepository {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
-    const { lpTokenIds, caller } = request;
-    const messages = makeStakePositionsMessagesWithApproves({ lpTokenIds, caller });
+    const { lpTokenIds, caller, referrerAddress } = request;
+    const messages = makeStakePositionsMessagesWithApproves({ lpTokenIds, caller, referrerAddress });
 
     const sendTransactionParams = generateSendTransactionParams({
       messages,

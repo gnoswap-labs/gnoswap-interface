@@ -12,8 +12,12 @@ import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confir
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { DexEvent, DexEventType } from "@repositories/common";
+import useCustomRouter from "@hooks/common/use-custom-router";
 
 export const useGovernanceTx = () => {
+  const router = useCustomRouter();
+  const referrerAddress = router.getReferrerParameter();
+
   const { t } = useTranslation();
   const { account } = useWallet();
   const { governanceRepository } = useGnoswapContext();
@@ -104,6 +108,7 @@ export const useGovernanceTx = () => {
         governanceRepository.sendDelegate({
           to: toAddress,
           amount: unitAmount.toString(),
+          referrerAddress,
         }),
       DexEvent.DELEGATE,
       messageData,

@@ -12,4 +12,5 @@ export interface AddLiquidityRequest {
   slippage: number;
   caller: string;
   withStaking?: boolean;
+  referrerAddress: string | null;
 }

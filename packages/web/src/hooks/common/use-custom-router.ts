@@ -121,6 +121,7 @@ const useCustomRouter = () => {
     push,
     replace,
     getAddress,
+    getReferrerParameter,
     getParamsWithReferrer,
     getParameter,
     getTokenPath,

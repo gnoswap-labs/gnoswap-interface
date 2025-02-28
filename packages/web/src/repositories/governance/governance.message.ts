@@ -161,10 +161,12 @@ export function makeDelegateMessagesWithApproves(
     to,
     amount,
     caller,
+    referrerAddress,
   }: {
     to: string;
     amount: string;
     caller: string;
+    referrerAddress: string | null;
   },
   fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
@@ -172,7 +174,7 @@ export function makeDelegateMessagesWithApproves(
     packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
     send: "",
     func: TransactionMessageFunctionType.Delegate,
-    args: [to, amount, ""], // Referral address
+    args: [to, amount, referrerAddress || ""], // Referral address
     caller,
   });
 

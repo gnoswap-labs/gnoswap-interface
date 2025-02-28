@@ -27,4 +27,6 @@ export interface SwapRouteRequest {
   tokenAmountLimit: number;
 
   deadline: number;
+
+  referrerAddress: string | null;
 }

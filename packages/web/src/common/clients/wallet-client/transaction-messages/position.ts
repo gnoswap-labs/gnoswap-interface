@@ -17,6 +17,7 @@ export function makePositionMintMessage(
   slippage: number,
   caller: string,
   sendAmount: string | null,
+  referrerAddress: string | null,
 ) {
   const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
   const slippageRatio = (100 - slippage) / 100;
@@ -41,7 +42,7 @@ export function makePositionMintMessage(
       deadline,
       caller, // LP Token Receiver
       caller, // Replace OriginCaller
-      "", // Referral address
+      referrerAddress || "", // Referral address
     ],
   });
 }
@@ -57,6 +58,7 @@ export function makePositionMintWithStakeMessage(
   slippage: number,
   caller: string,
   sendAmount: string | null,
+  referrerAddress: string | null,
 ) {
   const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
   const slippageRatio = (100 - slippage) / 100;
@@ -79,7 +81,7 @@ export function makePositionMintWithStakeMessage(
       BigNumber(tokenAAmount).multipliedBy(slippageRatio).toFixed(0),
       BigNumber(tokenBAmount).multipliedBy(slippageRatio).toFixed(0),
       deadline,
-      "", // Referral address
+      referrerAddress || "", // Referral address
     ],
   });
 }
@@ -91,6 +93,7 @@ export function makePositionIncreaseLiquidityMessage(
   slippage: number,
   caller: string,
   sendAmount: string | null,
+  referrerAddress: string | null,
 ) {
   const slippageRatio = (100 - slippage) / 100;
   const send = makeGNOTSendAmount(sendAmount);
@@ -108,7 +111,7 @@ export function makePositionIncreaseLiquidityMessage(
       BigNumber(amount0Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum amount of tokenA to provide
       BigNumber(amount1Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum amount of tokenB to provide
       deadline, // Deadline UTC time
-      "", // Referral address
+      referrerAddress || "", // Referral address
     ],
     caller,
   });
@@ -123,6 +126,7 @@ export function makePositionRepositionLiquidityMessage(
   slippage: number,
   caller: string,
   sendAmount: string | null,
+  referrerAddress: string | null,
 ) {
   const send = makeGNOTSendAmount(sendAmount);
   const slippageRatio = (100 - slippage) / 100;
@@ -139,7 +143,7 @@ export function makePositionRepositionLiquidityMessage(
       `${amount1Desired}`, // Maximum amount of tokenB to offer
       BigNumber(amount0Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum amount of tokenA to provide
       BigNumber(amount1Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum amount of tokenB to provide
-      "", // Referral address
+      referrerAddress || "", // Referral address
     ],
     caller,
   });
@@ -153,6 +157,7 @@ export function makePositionDecreaseLiquidityMessage(
   slippage: number,
   isGetWGNOT: boolean,
   caller: string,
+  referrerAddress: string | null,
 ) {
   const slippageRatio = (10_000 - MAX_SLIPPAGE) / 10_000;
 
@@ -169,13 +174,18 @@ export function makePositionDecreaseLiquidityMessage(
       BigNumber(amount1Desired).multipliedBy(slippageRatio).toFixed(0), // Minimum quantity of tokenB to decrease liquidity
       deadline, // Deadline UTC time
       `${!isGetWGNOT}`, // whether unwrap token : isGetWGNOT == true => wrap
-      "", // Referral address
+      referrerAddress || "", // Referral address
     ],
     caller,
   });
 }
 
-export function makePositionCollectFeeMessage(lpTokenId: string, isGetWGNOT: boolean, caller: string) {
+export function makePositionCollectFeeMessage(
+  lpTokenId: string,
+  isGetWGNOT: boolean,
+  caller: string,
+  referrerAddress: string | null,
+) {
   return makeTransactionMessage({
     send: "",
     func: "CollectFee",
@@ -183,7 +193,7 @@ export function makePositionCollectFeeMessage(lpTokenId: string, isGetWGNOT: boo
     args: [
       lpTokenId,
       `${!isGetWGNOT}`, // whether unwrap token, true will get GNOT : isGetWGNOT == true => wrap
-      "", // Referral address
+      referrerAddress || "", // Referral address
     ],
     caller,
   });
