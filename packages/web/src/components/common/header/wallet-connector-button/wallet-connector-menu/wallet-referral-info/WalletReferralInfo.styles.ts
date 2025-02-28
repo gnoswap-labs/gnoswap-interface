@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { css } from "@emotion/react";
 
 export const WalletReferralInfoWrapper = styled.div`
   width: 100%;
@@ -8,7 +9,6 @@ export const WalletReferralInfoWrapper = styled.div`
   justify-content: center;
   flex-direction: column;
 
-  padding: 0px 9px;
   border-radius: 8px;
   border: ${({ theme }) => `1px solid ${theme.color.border02}`};
   & > div {
@@ -16,12 +16,22 @@ export const WalletReferralInfoWrapper = styled.div`
   }
 `;
 
-export const WalletReferralInfoColumn = styled.div`
+export const WalletReferralInfoColumn = styled.div<{ isEditing?: boolean }>`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 5px;
 
-  padding: 8px 0;
+  padding: 8px 9px;
+  border: 1px solid transparent;
+
+  ${({ isEditing, theme }) =>
+    isEditing &&
+    css`
+      background-color: ${theme.color.backgroundOpacity};
+      border: 1px solid ${theme.color.border02};
+      border-radius: 8px;
+    `}
 `;
 
 export const InfoColumnKey = styled.div`
@@ -35,7 +45,7 @@ export const InfoColumnValue = styled.div`
   align-items: center;
   gap: 4px;
 
-  color: ${({ theme }) => theme.color.border07};
+  color: ${({ theme }) => theme.color.text01};
   font-size: 13px;
   font-weight: 400;
   button {
@@ -43,6 +53,21 @@ export const InfoColumnValue = styled.div`
     font-size: 0;
   }
   .copy-icon {
+    width: 16px;
+    height: 16px;
+  }
+`;
+
+export const InfoReferrerDisplayText = styled.span<{ hasRegisteredReferrer?: boolean }>`
+  color: ${({ theme, hasRegisteredReferrer }) => (hasRegisteredReferrer ? theme.color.text01 : theme.color.text05)};
+`;
+
+export const InfoColumnIconSet = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  svg {
     width: 16px;
     height: 16px;
   }
@@ -91,4 +116,44 @@ export const ReferralGuideWrapper = styled.div`
       fill: ${({ theme }) => theme.color.text03};
     }
   }
+`;
+
+export const ReferralInput = styled.input`
+  color: ${({ theme }) => theme.color.text01};
+  flex: 1;
+  font-size: 13px;
+  &::placeholder {
+    color: ${({ theme }) => theme.color.border05};
+  }
+`;
+
+export const IconButton = styled.button<{ isActive?: boolean; isError?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+  font-size: 0;
+  svg * {
+    fill: ${({ theme, isActive, isError }) => {
+      if (isError) return theme.color.red01;
+      return isActive ? theme.color.icon07 : theme.color.icon03;
+    }};
+  }
+  &:hover:not(:disabled) * {
+    fill: ${({ theme, isError }) => {
+      if (isError) return theme.color.red01;
+      return theme.themeKey === "dark" ? theme.color.text05 : theme.color.background12;
+    }};
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+`;
+
+export const ErrorText = styled.div`
+  color: ${({ theme }) => theme.color.red01};
+  font-size: 11px;
+  font-weight: 400;
 `;
