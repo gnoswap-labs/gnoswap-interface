@@ -113,8 +113,8 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
   );
 
   const isSubmittable = React.useMemo(() => {
-    return inputReferralAddress.length > 0;
-  }, [inputReferralAddress]);
+    return true;
+  }, []);
 
   const handleInputReferralAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (uiState.showError) setUIState(prev => ({ ...prev, showError: false }));
@@ -133,12 +133,14 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
   const handleSubmit = () => {
     if (!isSubmittable || uiState.showError) return;
 
-    if (!isValidAddress(inputReferralAddress) || account?.address === inputReferralAddress) {
+    const trimmedAddress = inputReferralAddress.trim();
+
+    if (trimmedAddress && (!isValidAddress(trimmedAddress) || account?.address === trimmedAddress)) {
       setUIState(prev => ({ ...prev, showError: true }));
       return;
     }
 
-    saveReferralInfo(inputReferralAddress);
+    saveReferralInfo(trimmedAddress);
     handleEditExit();
   };
 
@@ -186,7 +188,7 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
                   onClick={handleSubmit}
                   isActive={isSubmittable}
                   isError={uiState.showError}
-                  disabled={!isSubmittable || !inputReferralAddress}
+                  disabled={!isSubmittable}
                 >
                   {uiState.showError ? <IconReferredFail /> : <IconReferredEnter />}
                 </S.IconButton>
