@@ -1,7 +1,10 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { useTheme } from "@emotion/react";
 
 import { isValidAddress } from "@utils/validation-utils";
+import { QUERY_PARAMETER } from "@constants/page.constant";
+import { DEVICE_TYPE } from "@styles/media";
 
 import * as S from "./WalletReferralInfo.styles";
 import { AccountModel } from "@models/account/account-model";
@@ -12,9 +15,13 @@ import IconReferredEdit from "@components/common/icons/IconReferredEdit";
 import IconReferredEnter from "@components/common/icons/IconReferredEnter";
 import IconReferredCancel from "@components/common/icons/IconReferredCancel";
 import IconReferredFail from "@components/common/icons/IconReferredFail";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import IconInfo from "@components/common/icons/IconInfo";
+import { ReferralBannerContent } from "./WalletReferralBanner";
 
 interface WalletReferralInfoProps {
   account: AccountModel | null;
+  breakpoint: DEVICE_TYPE;
 }
 
 interface UIState {
@@ -33,10 +40,11 @@ const STORAGE_KEY = {
 
 const COPY_SUCCESS_NOTIFICATION_DURATION = 3_000;
 
-const WalletReferralInfo = ({ account }: WalletReferralInfoProps) => {
+const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) => {
   const { t } = useTranslation();
-  const [copied, setCopied] = React.useState<boolean>(false);
+  const theme = useTheme();
 
+  const [copied, setCopied] = React.useState<boolean>(false);
   const [uiState, setUIState] = React.useState<UIState>({
     isEditing: false,
     showError: false,
@@ -63,7 +71,7 @@ const WalletReferralInfo = ({ account }: WalletReferralInfoProps) => {
     if (typeof window === "undefined" || !account?.address) return "";
 
     const url = new URL(window.location.origin);
-    url.searchParams.set("ref", account.address);
+    url.searchParams.set(QUERY_PARAMETER.REFERRER, account.address);
     return url.toString();
   }, [account?.address]);
 
@@ -138,7 +146,14 @@ const WalletReferralInfo = ({ account }: WalletReferralInfoProps) => {
     <S.WalletReferralInfoWrapper>
       {/* My Referral Link */}
       <S.WalletReferralInfoColumn>
-        <S.InfoColumnKey>{t("My Referral Link")}</S.InfoColumnKey>
+        <S.InfoColumnKey>
+          {t("My Referral Link")}
+          {breakpoint === DEVICE_TYPE.MOBILE && (
+            <Tooltip FloatingContent={<ReferralBannerContent />} placement="top">
+              <IconInfo fill={theme.themeKey === "dark" ? "#596782" : "#90A2C0"} size={16} />
+            </Tooltip>
+          )}
+        </S.InfoColumnKey>
         <S.InfoColumnValue>
           <span>{displayReferralLink}</span>
           <button onClick={handleCopy}>
@@ -191,7 +206,7 @@ const WalletReferralInfo = ({ account }: WalletReferralInfoProps) => {
                   : t("Not registered yet")}
               </S.InfoReferrerDisplayText>
               <S.InfoColumnIconSet>
-                <S.IconButton aria-label="edit" onClick={handleEdit}>
+                <S.IconButton aria-label="edit" onClick={handleEdit} className="edit-icon">
                   <IconReferredEdit />
                 </S.IconButton>
               </S.InfoColumnIconSet>
