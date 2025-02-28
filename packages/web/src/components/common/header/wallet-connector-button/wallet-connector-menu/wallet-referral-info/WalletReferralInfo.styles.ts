@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
+import { media } from "@styles/media";
 
 export const WalletReferralInfoWrapper = styled.div`
   width: 100%;
@@ -90,12 +91,15 @@ export const ReferralBannerContentWrapper = styled.div`
   gap: 8px;
 
   & > .text {
-    color: ${({ theme }) => theme.color.text05};
+    color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : theme.color.text03)};
     font-size: 12px;
     font-weight: 400;
     line-height: 18.2px;
     .highlight {
       font-weight: 600;
+    }
+    ${media.mobile} {
+      font-size: 14px;
     }
   }
 `;
@@ -113,19 +117,19 @@ export const ReferralGuideWrapper = styled.div`
   justify-content: center;
   gap: 4px;
   & > .text {
-    color: ${({ theme }) => theme.color.text05};
+    color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : theme.color.text03)};
     font-size: 13px;
     font-weight: 400;
   }
   * {
-    fill: ${({ theme }) => theme.color.text05};
+    fill: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : theme.color.text03)};
   }
   &:hover {
     & > .text {
-      color: ${({ theme }) => theme.color.text03};
+      color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text03 : theme.color.text05)};
     }
     * {
-      fill: ${({ theme }) => theme.color.text03};
+      fill: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text03 : theme.color.text05)};
     }
   }
 `;

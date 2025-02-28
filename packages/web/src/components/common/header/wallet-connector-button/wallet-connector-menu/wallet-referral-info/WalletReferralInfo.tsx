@@ -122,6 +122,9 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
   };
 
   const handleEdit = () => {
+    if (storedReferrer) {
+      setInputReferralAddress(storedReferrer);
+    }
     setUIState(prev => ({ ...prev, isEditing: true }));
   };
 
