@@ -66,7 +66,7 @@ export const LeftSection = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
   max-width: 895px;
   width: 100%;
-  gap: 50px;
+  gap: 40px;
   ${media.tablet} {
     max-width: 422px;
     gap: 32px;
@@ -113,7 +113,7 @@ export const Navigation = styled.nav`
   }
   ul {
     ${mixins.flexbox("row", "center", "center")};
-    gap: 40px;
+    gap: 30px;
     ${media.tablet} {
       gap: 16px;
     }
