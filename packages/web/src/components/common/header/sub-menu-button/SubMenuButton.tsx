@@ -13,9 +13,15 @@ interface SubMenuButtonProps {
   sideMenuToggle: boolean;
   isCollapseNav: boolean;
   onSideMenuToggle: (value: boolean) => void;
+  onNavigation: (e: React.MouseEvent, path: string) => void;
 }
 
-const SubMenuButton: React.FC<SubMenuButtonProps> = ({ sideMenuToggle, isCollapseNav, onSideMenuToggle }) => {
+const SubMenuButton: React.FC<SubMenuButtonProps> = ({
+  sideMenuToggle,
+  isCollapseNav,
+  onSideMenuToggle,
+  onNavigation,
+}) => {
   const theme = useTheme();
   const buttonRef = useRef<HTMLDivElement>(null);
 
@@ -58,7 +64,11 @@ const SubMenuButton: React.FC<SubMenuButtonProps> = ({ sideMenuToggle, isCollaps
       {sideMenuToggle && (
         <>
           <FakeSpaceWrapper></FakeSpaceWrapper>
-          <SubMenu isCollapseNav={isCollapseNav} onSideMenuToggle={() => onSideMenuToggle(false)} />
+          <SubMenu
+            onNavigation={onNavigation}
+            isCollapseNav={isCollapseNav}
+            onSideMenuToggle={() => onSideMenuToggle(false)}
+          />
         </>
       )}
     </SubMenuButtonWrapper>
