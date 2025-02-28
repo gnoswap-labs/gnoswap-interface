@@ -30,6 +30,7 @@ export function makeExactInSwapRouteMessageWithApproves(
     tokenAmountLimit,
     deadline,
     caller,
+    referrerAddress,
   }: {
     inputToken: TokenModel;
     outputToken: TokenModel;
@@ -38,6 +39,7 @@ export function makeExactInSwapRouteMessageWithApproves(
     tokenAmountLimit: number;
     deadline: number;
     caller: string;
+    referrerAddress: string | null;
   },
   fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
@@ -66,7 +68,7 @@ export function makeExactInSwapRouteMessageWithApproves(
       `${quotes}`,
       tokenAmountLimitRaw,
       `${deadline}`,
-      "", // Referral address
+      referrerAddress || "", // Referral address
     ],
     caller,
   });
@@ -104,6 +106,7 @@ export function makeExactOutSwapRouteMessageWithApproves(
     tokenAmountLimit,
     deadline,
     caller,
+    referrerAddress,
   }: {
     inputToken: TokenModel;
     outputToken: TokenModel;
@@ -112,6 +115,7 @@ export function makeExactOutSwapRouteMessageWithApproves(
     tokenAmountLimit: number;
     deadline: number;
     caller: string;
+    referrerAddress: string | null;
   },
   fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
@@ -140,7 +144,7 @@ export function makeExactOutSwapRouteMessageWithApproves(
       `${quotes}`,
       tokenAmountLimitRaw,
       `${deadline}`,
-      "", // Referral address
+      referrerAddress || "", // Referral address
     ],
     caller,
   });

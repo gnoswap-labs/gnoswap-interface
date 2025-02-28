@@ -41,6 +41,7 @@ export type REPOSITION_BUTTON_TYPE = "REPOSITION" | "LOADING" | "NON_SELECTED_RA
 
 export const useRepositionHandle = () => {
   const router = useRouter();
+  const referrerAddress = router.getReferrerParameter();
   const poolPath = router.getPoolPath();
   const positionId = router.getPositionId();
 
@@ -439,7 +440,6 @@ export const useRepositionHandle = () => {
 
     const deadline = Math.floor(Date.now() / 1000) + 300; // 5분
 
-    // estimateSwapRequest.exactType에 따라 분기
     if (estimateSwapRequest.exactType === "EXACT_IN") {
       return swapRouterRepository.sendExactInSwapRoute({
         inputToken: estimateSwapRequest.inputToken,
@@ -448,6 +448,7 @@ export const useRepositionHandle = () => {
         tokenAmount: inputAmount.toNumber(),
         tokenAmountLimit: outputAmount.toNumber() * ((100 - DEFAULT_SLIPPAGE) / 100),
         deadline,
+        referrerAddress,
       });
     } else {
       return swapRouterRepository.sendExactOutSwapRoute({
@@ -457,6 +458,7 @@ export const useRepositionHandle = () => {
         tokenAmount: outputAmount.toNumber(),
         tokenAmountLimit: inputAmount.toNumber() * ((100 + DEFAULT_SLIPPAGE) / 100),
         deadline,
+        referrerAddress,
       });
     }
   }, [

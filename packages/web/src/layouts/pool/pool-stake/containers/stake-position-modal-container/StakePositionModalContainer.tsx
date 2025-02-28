@@ -33,6 +33,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
 
   const { positionRepository } = useGnoswapContext();
   const router = useCustomRouter();
+  const referrerAddress = router.getReferrerParameter();
   const clearModal = useClearModal();
   const { updateBalances, tokenPrices } = useTokenData();
   const poolPath = router.getPoolPath();
@@ -104,6 +105,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
       .stakePositions({
         lpTokenIds,
         caller: address,
+        referrerAddress,
       })
       .catch(() => null);
 

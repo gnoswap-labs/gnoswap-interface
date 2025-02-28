@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import BigNumber from "bignumber.js";
+import useCustomRouter from "@hooks/common/use-custom-router";
 
 import { SwapDirectionType } from "@common/values";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
@@ -21,6 +22,9 @@ interface UseSwapProps {
 }
 
 export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: UseSwapProps) => {
+  const router = useCustomRouter();
+  const referrerAddress = router.getReferrerParameter();
+
   const store = useStore();
   const { account } = useWallet();
   const { swapRouterRepository } = useGnoswapContext();
@@ -256,7 +260,6 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
         return null;
       }
 
-      // check this args
       if (direction === "EXACT_IN") {
         return swapRouterRepository.sendExactInSwapRoute({
           inputToken: tokenA,
@@ -265,10 +268,10 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           estimatedRoutes: estimatedRoutes,
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + 60 * 5,
+          referrerAddress: referrerAddress,
         });
       }
 
-      // check this args
       if (direction === "EXACT_OUT") {
         return swapRouterRepository.sendExactOutSwapRoute({
           inputToken: tokenA,
@@ -277,6 +280,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           estimatedRoutes: estimatedRoutes,
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + 60 * 5,
+          referrerAddress: referrerAddress,
         });
       }
     },
@@ -291,6 +295,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       tokenB,
       exactOutPadding,
       store,
+      referrerAddress,
     ],
   );
 

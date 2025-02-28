@@ -203,9 +203,11 @@ export function makeClaimAllMessageWithApproves(
 export function makeStakePositionsMessagesWithApproves({
   lpTokenIds,
   caller,
+  referrerAddress,
 }: {
   lpTokenIds: string[];
   caller: string;
+  referrerAddress: string | null;
 }): TransactionMessage[] {
   const messages: TransactionMessage[] = lpTokenIds.flatMap(lpTokenId => [
     makeNFTApproveMessage(PACKAGE_STAKER_ADDRESS, lpTokenId, caller),
@@ -213,7 +215,7 @@ export function makeStakePositionsMessagesWithApproves({
       send: "",
       func: TransactionMessageFunctionType.StakeToken,
       packagePath: PACKAGE_STAKER_PATH,
-      args: [lpTokenId.toString(), ""], // Referral address
+      args: [lpTokenId.toString(), referrerAddress || ""], // Referral address
       caller,
     }),
   ]);

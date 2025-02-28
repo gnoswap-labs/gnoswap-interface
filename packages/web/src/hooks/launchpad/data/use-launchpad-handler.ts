@@ -20,6 +20,7 @@ import { LaunchpadState } from "@states/index";
 import { formatPrice } from "@utils/new-number-utils";
 import { toUnitFormat } from "@utils/number-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
+import useCustomRouter from "@hooks/common/use-custom-router";
 
 type DepositButtonStateType =
   | "WALLET_LOGIN"
@@ -43,6 +44,9 @@ function calculateUSDValueBy(
 }
 
 export const useLaunchpadHandler = () => {
+  const router = useCustomRouter();
+  const referrerAddress = router.getReferrerParameter();
+
   const participateAmount = useAtomValue(LaunchpadState.participateAmount);
   const depositConditions = useAtomValue(LaunchpadState.depositConditions);
   const [, setIsShowConditionTooltip] = useAtom(LaunchpadState.isShowConditionTooltip);
@@ -120,7 +124,8 @@ export const useLaunchpadHandler = () => {
     };
 
     processTx(
-      () => launchpadRepository.depositLaunchpadPoolBy(projectPoolId, BigInt(unitAmount), account.address),
+      () =>
+        launchpadRepository.depositLaunchpadPoolBy(projectPoolId, BigInt(unitAmount), account.address, referrerAddress),
       DexEvent.LAUNCHPAD_DEPOSIT,
       messageData,
       response => {
@@ -172,9 +177,17 @@ export const useLaunchpadHandler = () => {
     processTx(
       () => {
         if (isWithdrawable) {
-          return launchpadRepository.collectRewardWithDepositByDepositId(participationInfo.depositId, account.address);
+          return launchpadRepository.collectRewardWithDepositByDepositId(
+            participationInfo.depositId,
+            account.address,
+            referrerAddress,
+          );
         }
-        return launchpadRepository.collectRewardByDepositId(participationInfo.depositId, account.address);
+        return launchpadRepository.collectRewardByDepositId(
+          participationInfo.depositId,
+          account.address,
+          referrerAddress,
+        );
       },
       DexEvent.LAUNCHPAD_COLLECT_REWARD,
       messageData,
@@ -245,9 +258,17 @@ export const useLaunchpadHandler = () => {
     processTx(
       () => {
         if (isWithdrawable) {
-          return launchpadRepository.collectRewardWithDepositByProjectId(participationInfo.projectId, account.address);
+          return launchpadRepository.collectRewardWithDepositByProjectId(
+            participationInfo.projectId,
+            account.address,
+            referrerAddress,
+          );
         }
-        return launchpadRepository.collectRewardByProjectId(participationInfo.projectId, account.address);
+        return launchpadRepository.collectRewardByProjectId(
+          participationInfo.projectId,
+          account.address,
+          referrerAddress,
+        );
       },
       DexEvent.LAUNCHPAD_COLLECT_REWARD,
       messageData,
