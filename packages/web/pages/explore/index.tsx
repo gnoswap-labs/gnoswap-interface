@@ -3,7 +3,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { DEFAULT_I18N_NS } from "@constants/common.constant";
 
 import Dashboard from "@layouts/dashboard/Dashboard";
-import { DashboardSEOContainer } from "@containers/seo-header-container";
+import { ExploreSEOContainer } from "@containers/seo-header-container";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -16,7 +16,7 @@ export async function getStaticProps({ locale }: { locale: string }) {
 export default function Page() {
   return (
     <>
-      <DashboardSEOContainer />
+      <ExploreSEOContainer />
       <Dashboard />
     </>
   );
