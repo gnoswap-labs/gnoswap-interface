@@ -4,7 +4,7 @@ import { CommonError } from "@common/errors";
 import { APIResponse } from "@repositories/common";
 import { makeQueryParameter } from "@utils/network.utils";
 import { SwapHistoryRequest } from "./request/swap-history-request";
-import { SwapHistoryResponse } from "./response/swap-history-response";
+import { SwapHistoryItem } from "./response/swap-history-response";
 import { SwapRepository } from "./swap-repository";
 
 export class SwapRepositoryImpl implements SwapRepository {
@@ -16,7 +16,7 @@ export class SwapRepositoryImpl implements SwapRepository {
     this.walletClient = walletClient;
   }
 
-  public getSwapHistory = async (params: SwapHistoryRequest): Promise<SwapHistoryResponse[]> => {
+  public getSwapHistory = async (params: SwapHistoryRequest): Promise<SwapHistoryItem[]> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -24,7 +24,7 @@ export class SwapRepositoryImpl implements SwapRepository {
     const requestParams = makeQueryParameter({ ...params });
 
     return this.networkClient
-      .get<APIResponse<SwapHistoryResponse[]>>({
+      .get<APIResponse<SwapHistoryItem[]>>({
         url: `/swap/history${requestParams}`,
       })
       .then(result => result.data?.data);

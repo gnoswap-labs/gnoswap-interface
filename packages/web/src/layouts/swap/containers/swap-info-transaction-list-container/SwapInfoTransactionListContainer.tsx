@@ -23,15 +23,25 @@ const SwapInfoTransactionListContainer = () => {
   const swapValue = useAtomValue(SwapState.swap);
   const { tokenA, tokenB } = swapValue;
 
+  const tokenPairParams = React.useMemo(
+    () => ({
+      tokenAPath: tokenA?.wrappedPath || tokenA?.path || "",
+      tokenBPath: tokenB?.wrappedPath || tokenB?.path || "",
+    }),
+    [tokenA?.wrappedPath, tokenA?.path, tokenB?.wrappedPath, tokenB?.path],
+  );
+
   const isTokenPairSelected = Boolean(tokenA?.path && tokenB?.path);
 
-  const { data } = useGetSwapHistory(
-    { tokenAPath: tokenA?.path || "", tokenBPath: tokenB?.path || "" },
-    { enabled: isTokenPairSelected },
-  );
-  console.log(data, "data?");
+  const { data: swapHistory } = useGetSwapHistory(tokenPairParams, {
+    enabled: isTokenPairSelected,
+  });
 
-  return <SwapInfoTransactionList breakpoint={breakpoint} />;
+  if (!swapHistory || swapHistory?.length === 0) {
+    return null;
+  }
+
+  return <SwapInfoTransactionList breakpoint={breakpoint} swapHistory={swapHistory} />;
 };
 
 export default SwapInfoTransactionListContainer;

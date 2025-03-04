@@ -15,7 +15,3 @@ export interface SwapHistoryItem {
 
   txHash: string;
 }
-
-export interface SwapHistoryResponse {
-  swaps: SwapHistoryItem[];
-}

@@ -3,22 +3,18 @@ import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { QUERY_KEY } from "@query/query-keys";
 import { SwapHistoryRequest } from "@repositories/swap/request/swap-history-request";
-import { SwapHistoryResponse } from "@repositories/swap/response/swap-history-response";
+import { SwapHistoryItem } from "@repositories/swap/response/swap-history-response";
 
-const REFETCH_INTERVAL = 10_000;
+const REFETCH_INTERVAL = 5_000;
 
-export const useGetSwapHistory = (
-  params: SwapHistoryRequest,
-  options?: UseQueryOptions<SwapHistoryResponse[] | null>,
-) => {
+export const useGetSwapHistory = (params: SwapHistoryRequest, options?: UseQueryOptions<SwapHistoryItem[] | null>) => {
   const { swapRepository } = useGnoswapContext();
 
-  return useQuery<SwapHistoryResponse[] | null>({
+  return useQuery<SwapHistoryItem[] | null>({
     queryKey: [QUERY_KEY.swapHistory, params.tokenAPath, params.tokenBPath],
     queryFn: async () => {
-      return swapRepository.getSwapHistory({ ...params }).then(response => ({
-        ...response,
-      }));
+      const response = await swapRepository.getSwapHistory({ ...params });
+      return response;
     },
     refetchInterval: REFETCH_INTERVAL,
     refetchOnMount: true,

@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import { cx } from "@emotion/css";
 
 import {
@@ -22,12 +23,16 @@ import {
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import IconRightArrow from "@components/common/icons/IconRightArrow";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { GNOT_TOKEN_DEFAULT } from "@common/values/token-constant";
 import DateTimeTooltip from "@components/common/date-time-tooltip/DateTimeTooltip";
 import { DEVICE_TYPE } from "@styles/media";
+import { SwapHistoryItem } from "@repositories/swap/response/swap-history-response";
+import { formatTimeDisplay, getTimeDiffInSeconds } from "@common/utils/date-util";
+import { formatPrice, formatTokenAmount, removeTrailingZeros } from "@utils/new-number-utils";
+import { DEFAULT_CHAIN_SCANNER_URL } from "@constants/environment.constant";
 
 interface SwapInfoTransactionListTableProps {
   breakpoint: DEVICE_TYPE;
+  swapHistory: SwapHistoryItem[];
 }
 
 const getTableWidths = (breakpoint: DEVICE_TYPE) => {
@@ -40,7 +45,32 @@ const getTableWidths = (breakpoint: DEVICE_TYPE) => {
   return TRANSACTION_TD_WIDTH;
 };
 
-const SwapInfoTransactionListTable = ({ breakpoint }: SwapInfoTransactionListTableProps) => {
+const SwapInfoTransactionListTable = ({ breakpoint, swapHistory }: SwapInfoTransactionListTableProps) => {
+  const prevSwapHistoryRef = React.useRef<SwapHistoryItem[]>([]);
+  const [newTransactions, setNewTransactions] = React.useState<Set<string>>(new Set());
+
+  React.useEffect(() => {
+    if (swapHistory) {
+      const prevTxHashes = new Set(prevSwapHistoryRef.current.map(item => item.txHash));
+      const newTransactions = new Set<string>();
+
+      swapHistory.forEach(item => {
+        if (!prevTxHashes.has(item.txHash)) {
+          newTransactions.add(item.txHash);
+        }
+      });
+
+      if (newTransactions.size > 0) {
+        setNewTransactions(newTransactions);
+        setTimeout(() => {
+          setNewTransactions(new Set());
+        }, 3000);
+      }
+
+      prevSwapHistoryRef.current = swapHistory;
+    }
+  }, [swapHistory]);
+
   const getTableHeaders = React.useCallback(() => {
     if (breakpoint === DEVICE_TYPE.MOBILE) {
       return MOBILE_TABLE_HEAD;
@@ -66,41 +96,67 @@ const SwapInfoTransactionListTable = ({ breakpoint }: SwapInfoTransactionListTab
       </TransactionListTableHeader>
 
       <TransactionListTableList>
-        {[...Array(5)].map((_, index) => (
-          // temporarily use index as key for development phase only
-          <TransactionListTableRow key={`transaction-list-table-list-${index}`} breakpoint={breakpoint} />
-        ))}
+        {swapHistory.slice(0, 10).map((item: SwapHistoryItem, index: number) => {
+          return (
+            <TransactionListTableRow
+              key={`transaction-list-table-list-${index}`}
+              data={item}
+              breakpoint={breakpoint}
+              isNewTransaction={newTransactions.has(item.txHash)}
+            />
+          );
+        })}
       </TransactionListTableList>
     </>
   );
 };
 
-const TransactionListTableRow = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
-  const today = new Date();
+const TransactionListTableRow = ({
+  breakpoint,
+  data,
+  isNewTransaction,
+}: {
+  breakpoint: DEVICE_TYPE;
+  data: SwapHistoryItem;
+  isNewTransaction?: boolean;
+}) => {
   const widths = getTableWidths(breakpoint);
   const isMobile = breakpoint === DEVICE_TYPE.MOBILE;
+  const txDate = new Date(data.time);
+
+  const diffInSeconds = getTimeDiffInSeconds(txDate);
+  const timeDisplay = formatTimeDisplay(diffInSeconds);
+
+  const formatSwapAmount = (amount: string) => {
+    const formatted = formatTokenAmount(amount, {
+      decimals: 2,
+      minLimit: 0.01,
+      isKMB: true,
+    });
+    return removeTrailingZeros(formatted);
+  };
 
   return (
-    <TransactionListTableRowWrapper>
+    <TransactionListTableRowWrapper className={cx({ highlight: isNewTransaction })}>
       <TableColumn className="left" tdWidth={widths[0]}>
-        <DateTimeTooltip date={today}>
-          <span>1s ago</span>
+        <DateTimeTooltip date={txDate}>
+          <span>{timeDisplay}</span>
         </DateTimeTooltip>
-        <button>
+        <Link href={`${DEFAULT_CHAIN_SCANNER_URL}/transactions/details?txhash=${data.txHash}`} target={"_blank"}>
           <IconOpenLink size="10px" className="path-link-icon" />
-        </button>
+        </Link>
       </TableColumn>
-      {!isMobile && <TableColumn tdWidth={widths[1]}>$12.05</TableColumn>}
+      {!isMobile && <TableColumn tdWidth={widths[1]}> {data.totalUsd ? formatPrice(data.totalUsd) : "-"}</TableColumn>}
       <TableColumn tdWidth={isMobile ? widths[1] : widths[2]}>
         <TokenPairWrapper>
           <div className="token-amount">
-            <span>152.15</span>
-            <MissingLogo symbol={GNOT_TOKEN_DEFAULT.symbol} width={14} url={GNOT_TOKEN_DEFAULT.logoURI} />
+            <span>{formatSwapAmount(data.fromTokenAmount)}</span>
+            <MissingLogo symbol={data.fromToken.symbol} width={14} url={data.fromToken.logoURI} />
           </div>
           <IconRightArrow className="arrow" />
           <div className="token-amount">
-            <span>5.15K</span>
-            <MissingLogo symbol={GNOT_TOKEN_DEFAULT.symbol} width={14} url={GNOT_TOKEN_DEFAULT.logoURI} />
+            <span>{formatSwapAmount(data.toTokenAmount)}</span>
+            <MissingLogo symbol={data.toToken.symbol} width={14} url={data.toToken.logoURI} />
           </div>
         </TokenPairWrapper>
       </TableColumn>

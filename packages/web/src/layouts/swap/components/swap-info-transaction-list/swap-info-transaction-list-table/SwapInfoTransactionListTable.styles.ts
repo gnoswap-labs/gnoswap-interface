@@ -56,6 +56,33 @@ export const TransactionListTableRowWrapper = styled.div`
   justify-content: flex-start;
   width: 100%;
   padding: 12px 0;
+  &.highlight {
+    animation: shake 0.7s ease-in-out;
+  }
+
+  @keyframes shake {
+    0% {
+      transform: translateX(0);
+    }
+    15% {
+      transform: translateX(-5px);
+    }
+    30% {
+      transform: translateX(5px);
+    }
+    45% {
+      transform: translateX(-5px);
+    }
+    60% {
+      transform: translateX(5px);
+    }
+    75% {
+      transform: translateX(-5px);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
 `;
 
 export const TableColumn = styled.div<{ tdWidth: number }>`
