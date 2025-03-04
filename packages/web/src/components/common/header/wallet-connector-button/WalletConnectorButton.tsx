@@ -103,13 +103,20 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
     }));
   };
 
+  const handleCloseWalletConnectToggle = () => {
+    setToggle(prev => ({
+      ...prev,
+      walletConnect: false,
+    }));
+  };
+
   const isLoading = useMemo(() => {
     return loadingConnect === "loading";
   }, [loadingConnect]);
 
   const connect = useCallback(() => {
     resetWeb3authSession();
-    onMenuToggle();
+    handleCloseWalletConnectToggle();
     connectAdenaClient();
   }, [connectAdenaClient]);
 
