@@ -62,7 +62,7 @@ const SubMenu: React.FC<HeaderSideMenuModalProps> = ({ isCollapseNav, onSideMenu
       case "LEADERBOARD":
         return <IconLeaderboard className="left-icon" />;
       case "LAUNCHPAD":
-        return <IconLaunchpad className="left-icon" />;
+        return <IconLaunchpad className="left-icon launchpad" />;
       case "OPEN_LINK":
         return <IconOpenLink className="right-icon" />;
       default:
