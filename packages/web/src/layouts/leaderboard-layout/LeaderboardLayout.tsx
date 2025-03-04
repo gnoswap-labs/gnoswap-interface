@@ -4,11 +4,13 @@ import { LayoutWrapper, ListContainer, ListSection, Section, Title, TitleWrapper
 const LeaderboardLayout = ({
   header,
   subheader,
+  banner,
   list,
   footer,
 }: {
   header: React.ReactNode;
   subheader: React.ReactNode;
+  banner: React.ReactNode;
   list: React.ReactNode;
   footer: React.ReactNode;
 }) => {
@@ -19,6 +21,7 @@ const LeaderboardLayout = ({
         <TitleWrapper>
           <Title>Leaderboard</Title>
           {subheader}
+          {banner}
         </TitleWrapper>
       </Section>
 

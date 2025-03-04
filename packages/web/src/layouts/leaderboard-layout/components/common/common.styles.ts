@@ -22,7 +22,24 @@ export const FontSize16 = styled.div`
   }
 `;
 
-export const Box = styled.div``;
+export const Box = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  .search-icon {
+    width: 24px;
+    height: 24px;
+    * {
+      fill: ${({ theme }) => theme.color.icon08};
+    }
+  }
+  .search-icon:hover {
+    * {
+      fill: ${({ theme }) => theme.color.icon02};
+    }
+  }
+`;
 
 export const P = styled.p<{ color: keyof ThemeColorType }>`
   color: ${({ theme, color }) => theme.color[color]};

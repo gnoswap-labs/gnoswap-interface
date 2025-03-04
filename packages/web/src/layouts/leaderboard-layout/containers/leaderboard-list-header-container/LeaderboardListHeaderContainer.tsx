@@ -6,8 +6,27 @@ import { Box } from "../../components/common/common.styles";
 import ConnectYourWallet from "../../components/connect-your-wallet/ConnectYourWallet";
 import NextUpdate from "../../components/next-update/NextUpdate";
 import { ListHeaderWrapper } from "./LeaderboardListHeaderContainer.styles";
+import SearchInput from "@components/common/search-input/SearchInput";
+import { DEVICE_TYPE } from "@styles/media";
+import IconSearch from "@components/common/icons/IconSearch";
 
-const LeaderboardListHeaderContainer = () => {
+interface LeaderboardListHeaderContainerProps {
+  breakpoint: DEVICE_TYPE;
+  keyword: string;
+  isViewSearchIcon: boolean;
+  searchRef: React.RefObject<HTMLDivElement>;
+  onToggleSearch: () => void;
+  onChangeKeyword: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+const LeaderboardListHeaderContainer = ({
+  breakpoint,
+  keyword,
+  isViewSearchIcon,
+  searchRef,
+  onToggleSearch,
+  onChangeKeyword,
+}: LeaderboardListHeaderContainerProps) => {
   const { connected } = useConnection();
   const [checked, setChecked] = useState(true);
   const onSwitch = () => setChecked(v => !v);
@@ -57,7 +76,19 @@ const LeaderboardListHeaderContainer = () => {
       </Box>
 
       <Box ref={rightRef}>
-        <NextUpdate />
+        {breakpoint !== DEVICE_TYPE.MOBILE || !isViewSearchIcon ? <NextUpdate /> : null}
+
+        {breakpoint === DEVICE_TYPE.WEB ? (
+          <SearchInput width={300} value={keyword} onChange={onChangeKeyword} />
+        ) : isViewSearchIcon ? (
+          <div ref={searchRef as unknown as React.RefObject<HTMLDivElement>}>
+            <SearchInput width={200} height={40} value={keyword} onChange={onChangeKeyword} />
+          </div>
+        ) : (
+          <div onClick={onToggleSearch}>
+            <IconSearch className="search-icon" />
+          </div>
+        )}
       </Box>
     </ListHeaderWrapper>
   );
