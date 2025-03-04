@@ -6,7 +6,7 @@ export const PAGE_PATH = {
   GOVERNANCE: "/governance",
   LEADERBOARD: "/leaderboard",
   SWAP: "/swap",
-  WALLET: "/wallet",
+  PORTFOLIO: "/portfolio",
   LAUNCHPAD: "/launchpad",
   PROJECT: "/launchpad/project",
   POOL: "/earn/pool",
@@ -18,7 +18,7 @@ export const PAGE_PATH = {
   POSITION_REPOSITION: "/earn/pool/position/reposition",
   POSITION_INCREASE_LIQUIDITY: "/earn/pool/position/increase-liquidity",
   POSITION_DECREASE_LIQUIDITY: "/earn/pool/position/decrease-liquidity",
-  DASHBOARD: "/dashboard",
+  EXPLORE: "/explore",
   "404": "/404",
   "500": "/500",
 } as const;

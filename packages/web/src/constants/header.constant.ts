@@ -15,13 +15,13 @@ export const HEADER_NAV = [
   },
   {
     title: "HeaderFooter:Portfolio",
-    path: "/wallet",
+    path: "/portfolio",
     iconType: null,
     subPath: [],
   },
   {
     title: "HeaderFooter:Explore",
-    path: "/dashboard",
+    path: "/explore",
     iconType: null,
     subPath: [],
   },

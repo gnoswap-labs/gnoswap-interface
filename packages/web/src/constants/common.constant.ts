@@ -6,7 +6,13 @@ export const DEFAULT_NETWORK_ID = "portal-loop";
 export const PATH = ["/earn"];
 // 10SECOND/60SECOND is the specific time for data refetching cycles. `useGetPositionsByAddress` will refetch after these specific time
 export const PATH_10SECOND = ["/token"];
-export const PATH_60SECOND = ["/wallet", "/earn/pool/stake", "/earn/pool/unstake", "/earn/pool", "/earn/pool/remove"];
+export const PATH_60SECOND = [
+  "/portfolio",
+  "/earn/pool/stake",
+  "/earn/pool/unstake",
+  "/earn/pool",
+  "/earn/pool/remove",
+];
 
 export const HTTP_5XX_ERROR = [500, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511];
 
@@ -33,11 +39,11 @@ export type PageKey =
   | "/token"
   | "/404"
   | "/500"
-  | "/dashboard"
+  | "/explore"
   | "/governance"
   | "/leaderboard"
   | "/swap"
-  | "/wallet"
+  | "/portfolio"
   | "/launchpad"
   | "/launchpad/project"
   | "/privacy"
@@ -241,8 +247,8 @@ export const SEOInfo: Record<
     title: () => "Page Unavailable!",
     desc: () => "Page Unavailable!",
   },
-  "/dashboard": {
-    title: () => "Dashboard | GnoSwap",
+  "/explore": {
+    title: () => "Explore | GnoSwap",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
@@ -267,8 +273,8 @@ export const SEOInfo: Record<
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
-  "/wallet": {
-    title: () => "Wallet | GnoSwap",
+  "/portfolio": {
+    title: () => "Portfolio | GnoSwap",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
