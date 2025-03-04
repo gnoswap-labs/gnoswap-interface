@@ -27,9 +27,12 @@ export const WalletConnectorButtonWrapper = styled.div`
   .fail-icon {
     width: 16px;
     height: 16px;
+    &.tooltip {
+      margin-right: 8px;
+    }
   }
   .switch-network {
-    margin: 16px 0;
+    margin: 16px 0 0;
   }
   .loading-button {
     width: 20px;

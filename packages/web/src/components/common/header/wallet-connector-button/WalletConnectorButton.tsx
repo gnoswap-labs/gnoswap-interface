@@ -124,7 +124,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
                 placement="left"
                 FloatingContent={<FailNetworkTooltipContent />}
               >
-                <IconFailed className="fail-icon" />
+                <IconFailed className="fail-icon tooltip" />
               </Tooltip>
             ) : (
               <RenderWalletIcon isSwitchNetwork={isSwitchNetwork} walletType={walletType} />
@@ -145,15 +145,13 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
       ) : (
         <Button
           text={isLoading ? "" : t("common:btn.walletLogin")}
-          rightIcon={
-            isLoading ? <LoadingSpinner className="loading-button" /> : <IconStrokeArrowDown className="arrow-icon" />
-          }
+          rightIcon={isLoading ? <LoadingSpinner className="loading-button" /> : null}
           style={{
             hierarchy: ButtonHierarchy.Primary,
             fontType: "p1",
             minWidth: "136px",
             height: 36,
-            padding: isLoading ? "8.5px 16px 7.5px 20px" : "10px 16px 10px 20px",
+            padding: isLoading ? "8.5px 16px 7.5px 16px" : "10px 16px",
             justify: "space-between",
           }}
           onClick={connect}
