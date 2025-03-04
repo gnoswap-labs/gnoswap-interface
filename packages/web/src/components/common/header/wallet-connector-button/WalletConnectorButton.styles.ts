@@ -7,6 +7,9 @@ export const WalletConnectorButtonWrapper = styled.div`
   button {
     min-width: 0;
   }
+  .connector-button {
+    min-width: 108px;
+  }
 
   .arrow-icon {
     width: 16px;
