@@ -66,6 +66,18 @@ const SwapContainer: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const query = router.query;
+    if (!query.from && !query.to) {
+      setSwapValue({
+        tokenA: GNOT_TOKEN_DEFAULT,
+        tokenB: null,
+        type: "EXACT_IN",
+      });
+      setTokenAAmount("");
+    }
+  }, []);
+
+  useEffect(() => {
     if (!initialized) {
       return;
     }
