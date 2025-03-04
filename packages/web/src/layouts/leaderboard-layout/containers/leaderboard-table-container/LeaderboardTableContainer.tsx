@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTheme } from "@emotion/react";
 
 import Pagination from "@components/common/pagination/Pagination";
 import { useWindowSize } from "@hooks/common/use-window-size";
@@ -17,6 +18,8 @@ interface LeaderboardTableContainerProps {
 }
 
 export default function LeaderboardTableContainer({ breakpoint, keyword }: LeaderboardTableContainerProps) {
+  const theme = useTheme();
+
   const [page, setPage] = useState(0);
   const movePage = (page: number) => setPage(page);
 
@@ -40,13 +43,32 @@ export default function LeaderboardTableContainer({ breakpoint, keyword }: Leade
   return (
     <>
       <LeaderboardTableWrapper>
-        {breakpoint === DEVICE_TYPE.MOBILE && (
-          <MobileLeaderboardTable myLeader={meQuery.data?.leader} leaders={filteredLeaders} isMobile={isMobile} />
+        {filteredLeaders.length === 0 ? (
+          <Box
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "100%",
+              height: "120px",
+              color: theme.color.text04,
+            }}
+          >
+            No users found
+          </Box>
+        ) : (
+          <>
+            {breakpoint === DEVICE_TYPE.MOBILE && (
+              <MobileLeaderboardTable myLeader={meQuery.data?.leader} leaders={filteredLeaders} isMobile={isMobile} />
+            )}
+            {isTablet && (
+              <TabletLeaderboardTable myLeader={meQuery.data?.leader} leaders={filteredLeaders} isMobile={isMobile} />
+            )}
+            {isWeb && (
+              <WebLeaderboardTable myLeader={meQuery.data?.leader} leaders={filteredLeaders} isMobile={isMobile} />
+            )}
+          </>
         )}
-        {isTablet && (
-          <TabletLeaderboardTable myLeader={meQuery.data?.leader} leaders={filteredLeaders} isMobile={isMobile} />
-        )}
-        {isWeb && <WebLeaderboardTable myLeader={meQuery.data?.leader} leaders={filteredLeaders} isMobile={isMobile} />}
       </LeaderboardTableWrapper>
 
       {totalPage > 1 && (

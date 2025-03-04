@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { media } from "@styles/media";
 
 export const BannerWrapper = styled.div`
   display: flex;
@@ -30,6 +31,9 @@ export const BannerTitle = styled.div`
   font-size: 24px;
   font-weight: 600;
   text-align: center;
+  ${media.mobile} {
+    font-size: 16px;
+  }
   & > strong {
     color: transparent;
     background: linear-gradient(269deg, #536cd7 0.82%, #a7b9f8 34.45%);
@@ -44,6 +48,9 @@ export const BannerDescription = styled.div`
   font-size: 14px;
   font-weight: 400;
   text-align: center;
+  ${media.mobile} {
+    font-size: 13px;
+  }
   & > strong {
     color: transparent;
     background: linear-gradient(269deg, #536cd7 0.82%, #a7b9f8 34.45%);
