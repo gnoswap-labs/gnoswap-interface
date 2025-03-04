@@ -39,6 +39,7 @@ export const SettingUiMenuTitle = styled.div`
   color: ${({ theme }) => theme.color.text02};
   font-size: 16px;
   font-weight: 500;
+  padding: 0 9px;
 `;
 
 export const SettingUiMenuList = styled.div`
@@ -47,8 +48,6 @@ export const SettingUiMenuList = styled.div`
   align-items: center;
   justify-content: center;
   flex-direction: column;
-
-  padding-top: 8px;
   & > .ui-setting-menu {
     width: 100%;
     padding: 0 9px;
