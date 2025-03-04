@@ -186,6 +186,7 @@ const Header: React.FC<HeaderProps> = ({
                     sideMenuToggle={sideMenuToggle}
                     onSideMenuToggle={onSideMenuToggle}
                     isCollapseNav={isCollapseNav}
+                    isBottomNav={false}
                   />
                 </React.Fragment>
               )}
@@ -257,6 +258,7 @@ const Header: React.FC<HeaderProps> = ({
                 onSideMenuToggle={onSideMenuToggle}
                 isCollapseNav={isCollapseNav}
                 onNavigation={handleNavigation}
+                isBottomNav={true}
               />
             </BottomNavContainer>
           </BottomNavWrapper>
