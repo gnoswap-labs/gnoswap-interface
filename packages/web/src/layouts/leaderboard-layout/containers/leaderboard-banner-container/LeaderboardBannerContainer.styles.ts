@@ -24,6 +24,10 @@ export const BannerWrapper = styled.div`
     rgba(2, 135, 199, 1) 100%,
     rgba(2, 135, 199, 1) 100%
   );
+  ${media.mobile} {
+    padding: 24px;
+    height: unset;
+  }
 `;
 
 export const BannerTitle = styled.div`
