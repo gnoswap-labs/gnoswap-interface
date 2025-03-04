@@ -77,8 +77,13 @@ export const Navigation = styled.nav`
       padding: 8px 16px;
       color: ${({ theme }) => theme.color.text04};
 
-      .left-icon * {
-        stroke: ${({ theme }) => theme.color.text04};
+      .left-icon {
+        &.launchpad path {
+          fill: ${({ theme }) => theme.color.text04};
+        }
+        &:not(.launchpad) * {
+          stroke: ${({ theme }) => theme.color.text04};
+        }
       }
 
       &.selected,
@@ -86,8 +91,13 @@ export const Navigation = styled.nav`
         background-color: ${({ theme }) => theme.color.hover04};
         > div {
           color: ${({ theme }) => theme.color.text16};
-          .left-icon * {
-            stroke: ${({ theme }) => theme.color.text16};
+          .left-icon {
+            &.launchpad path {
+              fill: ${({ theme }) => theme.color.text16};
+            }
+            &:not(.launchpad) * {
+              stroke: ${({ theme }) => theme.color.text16};
+            }
           }
           .right-icon {
             fill: ${({ theme }) => theme.color.text16};
