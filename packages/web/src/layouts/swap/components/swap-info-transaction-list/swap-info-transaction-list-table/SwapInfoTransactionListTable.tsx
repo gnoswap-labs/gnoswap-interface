@@ -45,6 +45,8 @@ interface TransactionListTableRowProps {
 
 const HIGHLIGHT_DURATION = 1_000;
 
+const TIME_UPDATE_INTERVAL = 1_000;
+
 const getTableWidths = (breakpoint: DEVICE_TYPE) => {
   if (breakpoint === DEVICE_TYPE.MOBILE) {
     return MOBILE_TRANSACTION_TD_WIDTH;
@@ -145,18 +147,29 @@ const TransactionListTableRow = ({ breakpoint, data, isNewTransaction }: Transac
   const widths = getTableWidths(breakpoint);
   const isMobile = breakpoint === DEVICE_TYPE.MOBILE;
   const txDate = new Date(data.time);
+  const [timeDisplay, setTimeDisplay] = React.useState("");
 
-  const diffInSeconds = getTimeDiffInSeconds(txDate);
-  const timeDisplay = formatTimeDisplay(diffInSeconds);
+  React.useEffect(() => {
+    const updateTimeDisplay = () => {
+      const diffInSeconds = getTimeDiffInSeconds(txDate);
+      setTimeDisplay(formatTimeDisplay(diffInSeconds));
+    };
 
-  const formatSwapAmount = (amount: string) => {
+    updateTimeDisplay();
+
+    const intervalId = setInterval(updateTimeDisplay, TIME_UPDATE_INTERVAL);
+
+    return () => clearInterval(intervalId);
+  }, [txDate, data.time]);
+
+  const formatSwapAmount = React.useCallback((amount: string) => {
     const formatted = formatTokenAmount(amount, {
       decimals: 2,
       minLimit: 0.01,
       isKMB: true,
     });
     return removeTrailingZeros(formatted);
-  };
+  }, []);
 
   return (
     <TransactionListTableRowWrapper className={cx({ highlight: isNewTransaction })}>

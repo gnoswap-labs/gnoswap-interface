@@ -93,7 +93,7 @@ const TIME_CONSTANTS = {
 export function formatTimeDisplay(diffInSeconds: number) {
   const absDiff = Math.abs(diffInSeconds);
 
-  if (absDiff < TIME_CONSTANTS.SECONDS_IN_MINUTE) return "1s ago";
+  if (absDiff < TIME_CONSTANTS.SECONDS_IN_MINUTE) return `${Math.floor(absDiff)}s ago`;
   if (absDiff < TIME_CONSTANTS.SECONDS_IN_HOUR) return `${Math.floor(absDiff / TIME_CONSTANTS.SECONDS_IN_MINUTE)}m ago`;
   if (absDiff < TIME_CONSTANTS.SECONDS_IN_DAY) return `${Math.floor(absDiff / TIME_CONSTANTS.SECONDS_IN_HOUR)}h ago`;
   if (absDiff < TIME_CONSTANTS.SECONDS_IN_WEEK) return `${Math.floor(absDiff / TIME_CONSTANTS.SECONDS_IN_DAY)}d ago`;
