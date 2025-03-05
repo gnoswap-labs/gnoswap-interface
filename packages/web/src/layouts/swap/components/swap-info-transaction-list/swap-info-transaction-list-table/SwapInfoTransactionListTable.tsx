@@ -12,6 +12,11 @@ import {
   TABLET_TRANSACTION_TD_WIDTH,
   MOBILE_TRANSACTION_TD_WIDTH,
 } from "@constants/skeleton.constant";
+import { DEVICE_TYPE } from "@styles/media";
+import { SwapHistoryItem } from "@repositories/swap/response/swap-history-response";
+import { formatTimeDisplay, getTimeDiffInSeconds } from "@common/utils/date-util";
+import { formatPrice, formatTokenAmount, removeTrailingZeros } from "@utils/new-number-utils";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 
 import {
   TableHeader,
@@ -25,11 +30,6 @@ import IconOpenLink from "@components/common/icons/IconOpenLink";
 import IconRightArrow from "@components/common/icons/IconRightArrow";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import DateTimeTooltip from "@components/common/date-time-tooltip/DateTimeTooltip";
-import { DEVICE_TYPE } from "@styles/media";
-import { SwapHistoryItem } from "@repositories/swap/response/swap-history-response";
-import { formatTimeDisplay, getTimeDiffInSeconds } from "@common/utils/date-util";
-import { formatPrice, formatTokenAmount, removeTrailingZeros } from "@utils/new-number-utils";
-import { DEFAULT_CHAIN_SCANNER_URL } from "@constants/environment.constant";
 
 interface SwapInfoTransactionListTableProps {
   breakpoint: DEVICE_TYPE;
@@ -144,6 +144,8 @@ const SwapInfoTransactionListTable = ({
 };
 
 const TransactionListTableRow = ({ breakpoint, data, isNewTransaction }: TransactionListTableRowProps) => {
+  const { getTxUrl } = useGnoscanUrl();
+
   const widths = getTableWidths(breakpoint);
   const isMobile = breakpoint === DEVICE_TYPE.MOBILE;
   const txDate = new Date(data.time);
@@ -177,11 +179,7 @@ const TransactionListTableRow = ({ breakpoint, data, isNewTransaction }: Transac
         <DateTimeTooltip date={txDate}>
           <span>{timeDisplay}</span>
         </DateTimeTooltip>
-        <Link
-          href={`${DEFAULT_CHAIN_SCANNER_URL}/transactions/details?txhash=${data.txHash}`}
-          target={"_blank"}
-          aria-label={`Transaction ${data.txHash} details link`}
-        >
+        <Link href={getTxUrl(data.txHash)} target={"_blank"} aria-label={`Transaction ${data.txHash} details link`}>
           <IconOpenLink size="10px" className="path-link-icon" />
         </Link>
       </TableColumn>
