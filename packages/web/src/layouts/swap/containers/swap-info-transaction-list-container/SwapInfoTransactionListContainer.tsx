@@ -17,13 +17,18 @@ export const MOBILE_TABLE_HEAD = {
   Swap: "Swap",
 };
 
+export interface TokenPairParams {
+  tokenAPath: string;
+  tokenBPath: string;
+}
+
 const SwapInfoTransactionListContainer = () => {
   const { breakpoint } = useWindowSize();
 
   const swapValue = useAtomValue(SwapState.swap);
   const { tokenA, tokenB } = swapValue;
 
-  const tokenPairParams = React.useMemo(
+  const tokenPairParams = React.useMemo<TokenPairParams>(
     () => ({
       tokenAPath: tokenA?.wrappedPath || tokenA?.path || "",
       tokenBPath: tokenB?.wrappedPath || tokenB?.path || "",
@@ -41,7 +46,9 @@ const SwapInfoTransactionListContainer = () => {
     return null;
   }
 
-  return <SwapInfoTransactionList breakpoint={breakpoint} swapHistory={swapHistory} />;
+  return (
+    <SwapInfoTransactionList breakpoint={breakpoint} swapHistory={swapHistory} tokenPairParams={tokenPairParams} />
+  );
 };
 
 export default SwapInfoTransactionListContainer;

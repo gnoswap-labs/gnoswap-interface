@@ -5,6 +5,7 @@ import { cx } from "@emotion/css";
 import {
   MOBILE_TABLE_HEAD,
   TABLE_HEAD,
+  TokenPairParams,
 } from "@layouts/swap/containers/swap-info-transaction-list-container/SwapInfoTransactionListContainer";
 import {
   TRANSACTION_TD_WIDTH,
@@ -33,7 +34,16 @@ import { DEFAULT_CHAIN_SCANNER_URL } from "@constants/environment.constant";
 interface SwapInfoTransactionListTableProps {
   breakpoint: DEVICE_TYPE;
   swapHistory: SwapHistoryItem[];
+  tokenPairParams: TokenPairParams;
 }
+
+interface TransactionListTableRowProps {
+  breakpoint: DEVICE_TYPE;
+  data: SwapHistoryItem;
+  isNewTransaction?: boolean;
+}
+
+const HIGHLIGHT_DURATION = 1_000;
 
 const getTableWidths = (breakpoint: DEVICE_TYPE) => {
   if (breakpoint === DEVICE_TYPE.MOBILE) {
@@ -45,12 +55,32 @@ const getTableWidths = (breakpoint: DEVICE_TYPE) => {
   return TRANSACTION_TD_WIDTH;
 };
 
-const SwapInfoTransactionListTable = ({ breakpoint, swapHistory }: SwapInfoTransactionListTableProps) => {
+const SwapInfoTransactionListTable = ({
+  breakpoint,
+  swapHistory,
+  tokenPairParams,
+}: SwapInfoTransactionListTableProps) => {
   const prevSwapHistoryRef = React.useRef<SwapHistoryItem[]>([]);
   const [newTransactions, setNewTransactions] = React.useState<Set<string>>(new Set());
+  const skipAnimationRef = React.useRef(true); // Skip animation on initial load or token pair change
 
+  // Reset animation when changing token pairs
+  React.useEffect(() => {
+    skipAnimationRef.current = true;
+    setNewTransactions(new Set());
+  }, [tokenPairParams]);
+
+  // Detect and highlight new transactions
   React.useEffect(() => {
     if (swapHistory) {
+      // Skip animations during initial load or token pair changes
+      if (skipAnimationRef.current) {
+        prevSwapHistoryRef.current = swapHistory;
+        skipAnimationRef.current = false;
+        return;
+      }
+
+      // Find new transactions by comparing them to the list of previous transactions
       const prevTxHashes = new Set(prevSwapHistoryRef.current.map(item => item.txHash));
       const newTransactions = new Set<string>();
 
@@ -64,14 +94,14 @@ const SwapInfoTransactionListTable = ({ breakpoint, swapHistory }: SwapInfoTrans
         setNewTransactions(newTransactions);
         setTimeout(() => {
           setNewTransactions(new Set());
-        }, 3000);
+        }, HIGHLIGHT_DURATION);
       }
 
       prevSwapHistoryRef.current = swapHistory;
     }
   }, [swapHistory]);
 
-  const getTableHeaders = React.useCallback(() => {
+  const getTableHeaders = React.useMemo(() => {
     if (breakpoint === DEVICE_TYPE.MOBILE) {
       return MOBILE_TABLE_HEAD;
     }
@@ -82,7 +112,7 @@ const SwapInfoTransactionListTable = ({ breakpoint, swapHistory }: SwapInfoTrans
   return (
     <>
       <TransactionListTableHeader>
-        {Object.values(getTableHeaders()).map((head, idx) => {
+        {Object.values(getTableHeaders).map((head, idx) => {
           return (
             <TableHeader
               key={`table-header-${head}`}
@@ -111,15 +141,7 @@ const SwapInfoTransactionListTable = ({ breakpoint, swapHistory }: SwapInfoTrans
   );
 };
 
-const TransactionListTableRow = ({
-  breakpoint,
-  data,
-  isNewTransaction,
-}: {
-  breakpoint: DEVICE_TYPE;
-  data: SwapHistoryItem;
-  isNewTransaction?: boolean;
-}) => {
+const TransactionListTableRow = ({ breakpoint, data, isNewTransaction }: TransactionListTableRowProps) => {
   const widths = getTableWidths(breakpoint);
   const isMobile = breakpoint === DEVICE_TYPE.MOBILE;
   const txDate = new Date(data.time);
@@ -142,7 +164,11 @@ const TransactionListTableRow = ({
         <DateTimeTooltip date={txDate}>
           <span>{timeDisplay}</span>
         </DateTimeTooltip>
-        <Link href={`${DEFAULT_CHAIN_SCANNER_URL}/transactions/details?txhash=${data.txHash}`} target={"_blank"}>
+        <Link
+          href={`${DEFAULT_CHAIN_SCANNER_URL}/transactions/details?txhash=${data.txHash}`}
+          target={"_blank"}
+          aria-label={`Transaction ${data.txHash} details link`}
+        >
           <IconOpenLink size="10px" className="path-link-icon" />
         </Link>
       </TableColumn>
