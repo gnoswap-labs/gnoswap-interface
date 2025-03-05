@@ -32,12 +32,11 @@ export function wait<T>(runner: () => Promise<T>, waitTime = 1000, finishTime = 
 }
 
 export function makeId(value: string) {
-  // return CryptoJS.SHA256(value, "gnot").toString();
-  return value?.replace(/\//g, "_");
+  return encodeURIComponent(value);
 }
 
 export function encryptId(value: string) {
-  return (value || "").replace(/_/g, "/");
+  return decodeURIComponent(value);
 }
 
 export function makeRandomId() {
