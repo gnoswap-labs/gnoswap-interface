@@ -90,7 +90,7 @@ const TIME_CONSTANTS = {
   SECONDS_IN_WEEK: 60 * 60 * 24 * 7, // 604,800
 } as const;
 
-export function formatTimeDisplay(diffInSeconds: number) {
+export function formatDisplayTime(diffInSeconds: number) {
   const absDiff = Math.abs(diffInSeconds);
 
   if (absDiff < TIME_CONSTANTS.SECONDS_IN_MINUTE) return `${Math.floor(absDiff)}s ago`;

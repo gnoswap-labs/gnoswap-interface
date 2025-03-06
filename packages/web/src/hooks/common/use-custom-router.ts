@@ -8,6 +8,12 @@ export type QueryParameter = {
   [key in string]: string | number | null | undefined;
 };
 
+interface PathParams {
+  pathname: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  query?: any;
+}
+
 const useCustomRouter = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -22,14 +28,39 @@ const useCustomRouter = () => {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function push(pathname: string, as?: any, options?: any) {
+  function push(pathname: string | PathParams, as?: any, options?: any) {
     saveCurrentScrollHeight(window?.location?.pathname);
-    router.push(pathname, as, options);
+    const referrer = getReferrerParameter();
+
+    if (typeof pathname === "string") {
+      const hasQuery = pathname.includes("?");
+      const referrerQuery = referrer ? `${hasQuery ? "&" : "?"}${QUERY_PARAMETER.REFERRER}=${referrer}` : "";
+      router.push(`${pathname}${referrerQuery}`, as, options);
+    } else {
+      const query = {
+        ...pathname.query,
+        ...(referrer ? { referrer } : {}),
+      };
+      router.push({ ...pathname, query }, as, options);
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function replace(pathname: string, as?: any, options?: any) {
     router.replace(pathname, as, options);
+  }
+
+  function getReferrerParameter(): string | null {
+    return searchParams.get(QUERY_PARAMETER.REFERRER);
+  }
+
+  function getParamsWithReferrer(params?: QueryParameter): QueryParameter {
+    const referrer = getReferrerParameter();
+    if (!referrer) return params || {};
+    return {
+      ...params,
+      referrer,
+    };
   }
 
   function getParameter(key: string): string | null {
@@ -90,6 +121,8 @@ const useCustomRouter = () => {
     push,
     replace,
     getAddress,
+    getReferrerParameter,
+    getParamsWithReferrer,
     getParameter,
     getTokenPath,
     getPoolPath,

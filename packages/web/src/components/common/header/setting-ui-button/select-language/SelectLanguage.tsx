@@ -6,7 +6,7 @@ import IconCircleInCheck from "@components/common/icons/IconCircleInCheck";
 import IconStrokeArrowLeft from "@components/common/icons/IconStrokeArrowLeft";
 import { LANGUAGES } from "@constants/common.constant";
 
-import { Overlay } from "../wallet-connector-menu/WalletConnectorMenu.styles";
+import { Overlay } from "../../wallet-connector-button/wallet-connector-menu/WalletConnectorMenu.styles";
 import { SelectLanguageWrapper } from "./SelectLanguage.styles";
 
 interface Props {

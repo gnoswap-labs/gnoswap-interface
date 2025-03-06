@@ -8,14 +8,14 @@ export const TitleWrapper = styled.div`
   max-width: ${ContainerWidth.WEB_CONTAINER};
   width: 100%;
   padding: 0px 40px 0px 40px;
-  gap: 16px;
+  gap: 36px;
 
   ${media.tablet} {
-    gap: 16px;
+    gap: 24px;
   }
   ${media.mobile} {
     padding: 0px 0px 0px 0px;
-    gap: 10px;
+    gap: 24px;
   }
 `;
 
@@ -35,6 +35,13 @@ export const Section = styled.section`
   padding: 100px 0px 36px 0px;
 
   gap: 36px;
+
+  ${media.tablet} {
+    width: 100%;
+    padding: 100px 0px 24px 0px;
+
+    gap: 24px;
+  }
 
   ${media.mobile} {
     max-width: ${ContainerWidth.MOBILE_CONTAINER};

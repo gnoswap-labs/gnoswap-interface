@@ -1,7 +1,7 @@
 import { css, Global } from "@emotion/react";
 import { useAtom } from "jotai";
 import { useTranslation } from "next-i18next";
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconFailed from "@components/common/icons/IconFailed";
@@ -13,7 +13,6 @@ import { AccountModel } from "@models/account/account-model";
 import { ITokenResponse } from "@repositories/token";
 import { CommonState } from "@states/index";
 
-import SelectLanguage from "./select-language/SelectLanguage";
 import WalletConnectorMenu from "./wallet-connector-menu/WalletConnectorMenu";
 
 import { DEVICE_TYPE } from "@styles/media";
@@ -104,16 +103,22 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
     }));
   };
 
+  const handleCloseWalletConnectToggle = () => {
+    setToggle(prev => ({
+      ...prev,
+      walletConnect: false,
+    }));
+  };
+
   const isLoading = useMemo(() => {
     return loadingConnect === "loading";
   }, [loadingConnect]);
 
-  const onClickChangeLanguage = () => {
-    setToggle(prev => ({
-      ...prev,
-      showLanguage: !prev.showLanguage,
-    }));
-  };
+  const connect = useCallback(() => {
+    resetWeb3authSession();
+    handleCloseWalletConnectToggle();
+    connectAdenaClient();
+  }, [connectAdenaClient]);
 
   return (
     <WalletConnectorButtonWrapper>
@@ -126,7 +131,7 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
                 placement="left"
                 FloatingContent={<FailNetworkTooltipContent />}
               >
-                <IconFailed className="fail-icon" />
+                <IconFailed className="fail-icon tooltip" />
               </Tooltip>
             ) : (
               <RenderWalletIcon isSwitchNetwork={isSwitchNetwork} walletType={walletType} />
@@ -146,33 +151,30 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
         />
       ) : (
         <Button
+          className="connector-button"
           text={isLoading ? "" : t("common:btn.walletLogin")}
-          rightIcon={
-            isLoading ? <LoadingSpinner className="loading-button" /> : <IconStrokeArrowDown className="arrow-icon" />
-          }
+          rightIcon={isLoading ? <LoadingSpinner className="loading-button" /> : null}
           style={{
             hierarchy: ButtonHierarchy.Primary,
             fontType: "p1",
             minWidth: "136px",
             height: 36,
-            padding: isLoading ? "8.5px 16px 7.5px 20px" : "10px 16px 10px 20px",
+            padding: isLoading ? "8.5px 16px 7.5px 16px" : "10px 16px",
             justify: "space-between",
           }}
-          onClick={onMenuToggle}
+          onClick={connect}
         />
       )}
-      {toggle.walletConnect && !toggle.showLanguage && (
+      {connected && toggle.walletConnect && (
         <WalletConnectorMenu
           account={account}
           breakpoint={breakpoint}
           connected={connected}
-          connectAdenaClient={connectAdenaClient}
           disconnectWallet={disconnectWallet}
           onMenuToggle={onMenuToggle}
           themeKey={themeKey}
           switchNetwork={switchNetwork}
           isSwitchNetwork={isSwitchNetwork}
-          onClickChangeLanguage={onClickChangeLanguage}
           gnotBalance={gnotBalance}
           isLoadingGnotBalance={isLoadingGnotBalance}
           gnotToken={gnotToken}
@@ -180,7 +182,6 @@ const WalletConnectorButton: React.FC<WalletConnectProps> = ({
           resetWeb3authSession={resetWeb3authSession}
         />
       )}
-      {toggle.showLanguage && <SelectLanguage onClickChangeLanguage={onClickChangeLanguage} />}
       <ToolTipGlobalStyle />
     </WalletConnectorButtonWrapper>
   );

@@ -14,7 +14,7 @@ import {
 } from "@constants/skeleton.constant";
 import { DEVICE_TYPE } from "@styles/media";
 import { SwapHistoryItem } from "@repositories/swap/response/swap-history-response";
-import { formatTimeDisplay, getTimeDiffInSeconds } from "@common/utils/date-util";
+import { formatDisplayTime, getTimeDiffInSeconds } from "@common/utils/date-util";
 import { formatPrice, formatTokenAmount, removeTrailingZeros } from "@utils/new-number-utils";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 
@@ -154,7 +154,7 @@ const TransactionListTableRow = ({ breakpoint, data, isNewTransaction }: Transac
   React.useEffect(() => {
     const updateTimeDisplay = () => {
       const diffInSeconds = getTimeDiffInSeconds(txDate);
-      setTimeDisplay(formatTimeDisplay(diffInSeconds));
+      setTimeDisplay(formatDisplayTime(diffInSeconds));
     };
 
     updateTimeDisplay();

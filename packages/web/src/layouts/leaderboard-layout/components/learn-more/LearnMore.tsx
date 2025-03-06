@@ -6,7 +6,7 @@ import { Anchor, Flex } from "./LearnMore.styles";
 
 export default function LearnMore() {
   return (
-    <Anchor href={EXT_URL.DOCS.ROOT} target="_blank" rel="noreferrer">
+    <Anchor href={EXT_URL.DOCS.USER_GUIDE.LEADERBOARD} target="_blank" rel="noreferrer">
       <Flex>
         <P as="span" color="text30">
           Learn More

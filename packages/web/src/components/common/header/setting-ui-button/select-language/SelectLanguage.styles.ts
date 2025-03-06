@@ -17,20 +17,7 @@ export const SelectLanguageWrapper = styled.div<Props>`
   box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
   padding: 15px;
   z-index: ${Z_INDEX.modal};
-  right: ${({ width }) => {
-    return width && width < 1521 && "0px";
-  }};
-  left: ${({ width }) => {
-    return width && width < 768 && "0px";
-  }};
-  @media (min-width: 1521px) {
-    left: 0;
-  }
-
-  ${media.tablet} {
-    top: 46px;
-    right: -50px;
-  }
+  right: 0;
   ${media.mobile} {
     ${mixins.flexbox("column", "center", "flex-start")};
     position: fixed;

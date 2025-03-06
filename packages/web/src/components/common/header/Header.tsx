@@ -17,6 +17,7 @@ import { ITokenResponse } from "@repositories/token";
 import { DeviceSize, DEVICE_TYPE } from "@styles/media";
 import useScrollData from "@hooks/common/use-scroll-data";
 import { WalletTypeState } from "src/types/wallet.types";
+import useNavigation from "@hooks/common/use-navigation";
 
 import NotificationButton from "./notification-button/NotificationButton";
 import SearchMenuModal, { Token } from "./search-menu-modal/SearchMenuModal";
@@ -37,6 +38,7 @@ import {
   SearchButton,
   SearchContainer,
 } from "./Header.styles";
+import SettingUiButton from "./setting-ui-button/SettingUiButton";
 
 interface HeaderProps {
   pathname?: string;
@@ -71,6 +73,10 @@ interface HeaderProps {
   displayAddress: string;
   resetWeb3authSession: () => void;
 }
+
+export const TABLET_HIDDEN_NAV_PATHS: string[] = ["/leaderboard", "/governance", "/launchpad"];
+
+const HEADER_NAVIGATION_LAYOUT_COLLAPSE_WIDTH = 1300; // 1300px threshold: a threshold to prevent UI layout from being warped
 
 const Header: React.FC<HeaderProps> = ({
   pathname = "/",
@@ -109,11 +115,22 @@ const Header: React.FC<HeaderProps> = ({
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
   const { t } = useTranslation();
   const { saveCurrentScrollHeight } = useScrollData();
+  const { handleNavigation } = useNavigation();
+
+  const isCollapseNav = useMemo(() => {
+    return width < HEADER_NAVIGATION_LAYOUT_COLLAPSE_WIDTH;
+  }, [width]);
 
   const navigationItems = useMemo(() => {
     const blockedPaths = BLOCKED_PAGES.map(page => "/" + page);
+    if (isCollapseNav) {
+      return HEADER_NAV.filter(
+        item => !blockedPaths.includes(item.path) && !TABLET_HIDDEN_NAV_PATHS.includes(item.path),
+      );
+    }
+
     return HEADER_NAV.filter(item => !blockedPaths.includes(item.path));
-  }, []);
+  }, [isCollapseNav]);
 
   const changeTokenDeposit = useCallback(() => {
     setIsShowDepositModal(true);
@@ -144,7 +161,7 @@ const Header: React.FC<HeaderProps> = ({
                 <React.Fragment>
                   <ul>
                     {navigationItems.map(item => (
-                      <Link href={item.path} key={item.title}>
+                      <Link href={item.path} key={item.title} onClick={e => handleNavigation(e, item.path)}>
                         <li
                           key={t(item.title)}
                           className={
@@ -160,7 +177,13 @@ const Header: React.FC<HeaderProps> = ({
                       </Link>
                     ))}
                   </ul>
-                  <SubMenuButton sideMenuToggle={sideMenuToggle} onSideMenuToggle={onSideMenuToggle} />
+                  <SubMenuButton
+                    onNavigation={handleNavigation}
+                    sideMenuToggle={sideMenuToggle}
+                    onSideMenuToggle={onSideMenuToggle}
+                    isCollapseNav={isCollapseNav}
+                    isBottomNav={false}
+                  />
                 </React.Fragment>
               )}
             </Navigation>
@@ -206,7 +229,9 @@ const Header: React.FC<HeaderProps> = ({
               />
             </SearchContainer>
 
-            <NotificationButton breakpoint={breakpoint} />
+            {connected && <NotificationButton breakpoint={breakpoint} />}
+
+            <SettingUiButton />
           </RightSection>
         </HeaderContainer>
         {breakpoint === DEVICE_TYPE.MOBILE && (
@@ -219,10 +244,18 @@ const Header: React.FC<HeaderProps> = ({
                     pathname === item.path || (item.subPath || []).some(_ => pathname.includes(_)) ? "selected" : ""
                   }
                 >
-                  <Link href={item.path}>{t(item.title)}</Link>
+                  <Link href={item.path} onClick={e => handleNavigation(e, item.path)}>
+                    {t(item.title)}
+                  </Link>
                 </BottomNavItem>
               ))}
-              <SubMenuButton sideMenuToggle={sideMenuToggle} onSideMenuToggle={onSideMenuToggle} />
+              <SubMenuButton
+                sideMenuToggle={sideMenuToggle}
+                onSideMenuToggle={onSideMenuToggle}
+                isCollapseNav={isCollapseNav}
+                onNavigation={handleNavigation}
+                isBottomNav={true}
+              />
             </BottomNavContainer>
           </BottomNavWrapper>
         )}

@@ -4,7 +4,7 @@ export * from "./home-seo-container";
 
 export * from "./token-seo-container";
 
-export * from "./dashboard-seo-container";
+export * from "./explore-seo-container";
 
 export * from "./earn";
 
@@ -20,4 +20,4 @@ export * from "./terms-seo-container";
 
 export * from "./swap-seo-container";
 
-export * from "./wallet-seo-container";
+export * from "./portfolio-seo-container";

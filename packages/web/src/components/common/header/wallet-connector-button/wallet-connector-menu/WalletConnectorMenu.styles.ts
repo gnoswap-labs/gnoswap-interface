@@ -25,7 +25,7 @@ export const WalletConnectorMenuWrapper = styled.div<WalletMenuProps>`
     return width && width < 768 && "0px";
   }};
   @media (min-width: 1521px) {
-    left: 0;
+    right: 0;
   }
 
   ${media.tablet} {
@@ -45,7 +45,18 @@ export const WalletConnectorMenuWrapper = styled.div<WalletMenuProps>`
     gap: 0;
   }
 
+  .wallet-connector-container {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+  }
+
   .button-container {
+    width: 100%;
     ${media.mobile} {
       ${mixins.flexbox("column", "center", "flex-start")};
       width: 100%;
@@ -142,17 +153,6 @@ export const AmountInfoBox = styled.div`
   margin-top: 16px;
   ${media.mobile} {
     height: 63px;
-  }
-`;
-
-export const ThemeSelector = styled.div`
-  ${mixins.flexbox("row", "center", "space-between")};
-  ${fonts.p2};
-  color: ${({ theme }) => theme.color.text05};
-  width: 100%;
-  height: 36px;
-  &.mt-16 {
-    margin-top: 16px;
   }
 `;
 

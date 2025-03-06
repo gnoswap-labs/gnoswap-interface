@@ -1,5 +1,4 @@
 import BigNumber from "bignumber.js";
-import { useAtomValue } from "jotai";
 import { useTranslation } from "next-i18next";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import Link from "next/link";
@@ -12,15 +11,11 @@ import IconHeaderCopy from "@components/common/icons/IconHeaderCopy";
 import IconHeaderOpenLink from "@components/common/icons/IconHeaderOpenLink";
 import IconHeaderExit from "@components/common/icons/IconHeaderExit";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
-import { LANGUAGES } from "@constants/common.constant";
-import ThemeModeContainer from "@containers/theme-mode-container/ThemeModeContainer";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { AccountModel } from "@models/account/account-model";
 import { ITokenResponse } from "@repositories/token";
-import { CommonState } from "@states/index";
 import { roundDownDecimalNumber } from "@utils/regex";
 import IconPolygon from "@components/common/icons/IconPolygon";
-import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 
 import { DEVICE_TYPE } from "@styles/media";
 import {
@@ -29,7 +24,6 @@ import {
   IconButton,
   MenuHeader,
   Overlay,
-  ThemeSelector,
   TooltipContent,
   WalletConnectorMenuWrapper,
 } from "./WalletConnectorMenu.styles";
@@ -38,6 +32,9 @@ import { WalletTypeState } from "src/types/wallet.types";
 import RenderWalletIcon from "../RenderWalletIcon";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { formatAddress } from "@utils/string-utils";
+import WalletReferralInfo from "./wallet-referral-info/WalletReferralInfo";
+import WalletReferralBanner from "./wallet-referral-info/WalletReferralBanner";
+import WalletReferralGuide from "./wallet-referral-info/WalletReferralGuide";
 
 interface IconButtonClickProps {
   copyClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -81,13 +78,11 @@ interface WalletConnectorMenuProps {
   account: AccountModel | null;
   breakpoint: DEVICE_TYPE;
   connected: boolean;
-  connectAdenaClient: () => void;
   disconnectWallet: () => void;
   onMenuToggle: () => void;
   themeKey: "dark" | "light";
   switchNetwork: () => void;
   isSwitchNetwork: boolean;
-  onClickChangeLanguage: () => void;
   gnotBalance?: number | null;
   isLoadingGnotBalance?: boolean;
   gnotToken?: ITokenResponse;
@@ -99,21 +94,18 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
   account,
   breakpoint,
   connected,
-  connectAdenaClient,
   disconnectWallet,
   onMenuToggle,
   themeKey,
   switchNetwork,
   isSwitchNetwork,
-  onClickChangeLanguage,
   gnotBalance,
   gnotToken,
   walletType,
   resetWeb3authSession,
 }) => {
-  const { i18n, t } = useTranslation();
+  const { t } = useTranslation();
   const { getAccountUrl } = useGnoscanUrl();
-  const network = useAtomValue(CommonState.network);
   const theme = useTheme();
 
   const [copied, setCopied] = useState(false);
@@ -153,82 +145,64 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
     resetWeb3authSession();
   }, [disconnectWallet]);
 
-  const connect = useCallback(async () => {
-    resetWeb3authSession();
-    onMenuToggle();
-    connectAdenaClient();
-  }, [connectAdenaClient]);
-
   return (
     <>
       <WalletConnectorMenuWrapper ref={menuRef} width={window?.innerWidth}>
-        {connected ? (
-          <div className="button-container">
-            <MenuHeader>
-              <RenderWalletIcon isSwitchNetwork={isSwitchNetwork} walletType={walletType} />
-              <span className="user-address">
-                {formatAddress(account?.address || "")}
-                {breakpoint === DEVICE_TYPE.MOBILE && (
-                  <Tooltip floatClassName="test" FloatingContent={<SocialWalletNotificationTooltip />} placement="top">
-                    <IconInfo className="tooltip" fill={theme.themeKey === "dark" ? "#596782" : "#90A2C0"} size={16} />
-                  </Tooltip>
-                )}
-              </span>
-              <IconButtonMaker
-                copyClick={copyClick}
-                openLinkClick={openLinkClick}
-                themeKey={themeKey}
-                copied={copied}
-                onClickDisconnect={onClickDisconnect}
-              />
-            </MenuHeader>
-            {breakpoint !== DEVICE_TYPE.MOBILE && walletType.type === "SOCIAL_WALLET" && <SocialWalletNotification />}
-            {isSwitchNetwork ? (
-              <Button
-                text={t("HeaderFooter:switchNetwork")}
-                onClick={switchNetwork}
-                style={{
-                  hierarchy: ButtonHierarchy.Primary,
-                  fontType: "body9",
-                  fullWidth: true,
-                  height: 41,
-                  justify: "center",
-                }}
-                className="switch-network"
-              />
-            ) : (
-              <AmountInfoBox>{balanceText}</AmountInfoBox>
-            )}
-          </div>
-        ) : (
-          <div className="button-container">
-            <Button
-              text={t("common:btn.walletLogin")}
-              onClick={connect}
-              style={{
-                hierarchy: ButtonHierarchy.Primary,
-                fontType: "body9",
-                fullWidth: true,
-                height: 41,
-                justify: "center",
-              }}
-            />
+        {connected && (
+          <div className="wallet-connector-container">
+            <div className="button-container">
+              <MenuHeader>
+                <RenderWalletIcon isSwitchNetwork={isSwitchNetwork} walletType={walletType} />
+                <span className="user-address">
+                  {formatAddress(account?.address || "")}
+                  {breakpoint === DEVICE_TYPE.MOBILE && walletType.type === "SOCIAL_WALLET" && (
+                    <Tooltip
+                      floatClassName="test"
+                      FloatingContent={<SocialWalletNotificationTooltip />}
+                      placement="top"
+                    >
+                      <IconInfo
+                        className="tooltip"
+                        fill={theme.themeKey === "dark" ? "#596782" : "#90A2C0"}
+                        size={16}
+                      />
+                    </Tooltip>
+                  )}
+                </span>
+                <IconButtonMaker
+                  copyClick={copyClick}
+                  openLinkClick={openLinkClick}
+                  themeKey={themeKey}
+                  copied={copied}
+                  onClickDisconnect={onClickDisconnect}
+                />
+              </MenuHeader>
+              {breakpoint !== DEVICE_TYPE.MOBILE && walletType.type === "SOCIAL_WALLET" && <SocialWalletNotification />}
+              {isSwitchNetwork ? (
+                <Button
+                  text={t("HeaderFooter:switchNetwork")}
+                  onClick={switchNetwork}
+                  style={{
+                    hierarchy: ButtonHierarchy.Primary,
+                    fontType: "body9",
+                    fullWidth: true,
+                    height: 41,
+                    justify: "center",
+                  }}
+                  className="switch-network"
+                />
+              ) : (
+                <AmountInfoBox>{balanceText}</AmountInfoBox>
+              )}
+            </div>
+
+            <WalletReferralInfo account={account} breakpoint={breakpoint} />
+
+            {breakpoint !== DEVICE_TYPE.MOBILE && <WalletReferralBanner />}
+
+            <WalletReferralGuide />
           </div>
         )}
-        <div className="theme-container">
-          <ThemeSelector className="mt-16">
-            <span>{t("HeaderFooter:language")}</span>
-            <div className="language" onClick={onClickChangeLanguage}>
-              {LANGUAGES.find(item => item.code === i18n.language)?.name} <IconStrokeArrowRight />
-            </div>
-          </ThemeSelector>
-        </div>
-        <div className="theme-container">
-          <ThemeSelector>
-            <span title={network.chainId}>{t("HeaderFooter:theme")}</span>
-            <ThemeModeContainer />
-          </ThemeSelector>
-        </div>
       </WalletConnectorMenuWrapper>
       <Overlay onClick={onMenuToggle} />
     </>

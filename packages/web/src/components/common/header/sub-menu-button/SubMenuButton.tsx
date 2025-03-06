@@ -11,10 +11,19 @@ import { SubMenuButtonWrapper } from "./SubMenuButton.styles";
 
 interface SubMenuButtonProps {
   sideMenuToggle: boolean;
+  isCollapseNav: boolean;
   onSideMenuToggle: (value: boolean) => void;
+  onNavigation: (e: React.MouseEvent, path: string) => void;
+  isBottomNav: boolean;
 }
 
-const SubMenuButton: React.FC<SubMenuButtonProps> = ({ sideMenuToggle, onSideMenuToggle }) => {
+const SubMenuButton: React.FC<SubMenuButtonProps> = ({
+  sideMenuToggle,
+  isCollapseNav,
+  onSideMenuToggle,
+  onNavigation,
+  isBottomNav,
+}) => {
   const theme = useTheme();
   const buttonRef = useRef<HTMLDivElement>(null);
 
@@ -47,17 +56,28 @@ const SubMenuButton: React.FC<SubMenuButtonProps> = ({ sideMenuToggle, onSideMen
     };
   }, []);
 
+  const ArrowIcon = isBottomNav
+    ? sideMenuToggle
+      ? IconStrokeArrowDown
+      : IconStrokeArrowUp
+    : sideMenuToggle
+    ? IconStrokeArrowUp
+    : IconStrokeArrowDown;
+
   return (
     <SubMenuButtonWrapper ref={buttonRef} className={`${sideMenuToggle ? "selected" : ""}`}>
-      {sideMenuToggle ? (
-        <IconStrokeArrowUp className="popup-icon-button" svgProps={{ fill: theme.color.text16 }} />
-      ) : (
-        <IconStrokeArrowDown className="popup-icon-button" svgProps={{ fill: theme.color.text04 }} />
-      )}
+      <ArrowIcon
+        className="popup-icon-button"
+        svgProps={{ fill: sideMenuToggle ? theme.color.text16 : theme.color.text04 }}
+      />
       {sideMenuToggle && (
         <>
           <FakeSpaceWrapper></FakeSpaceWrapper>
-          <SubMenu onSideMenuToggle={() => onSideMenuToggle(false)} />
+          <SubMenu
+            onNavigation={onNavigation}
+            isCollapseNav={isCollapseNav}
+            onSideMenuToggle={() => onSideMenuToggle(false)}
+          />
         </>
       )}
     </SubMenuButtonWrapper>

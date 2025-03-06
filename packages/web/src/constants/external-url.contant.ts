@@ -10,6 +10,8 @@ export const EXT_URL = {
       ROOT: "https://docs.gnoswap.io/user-guide/getting-started",
       STAKE_POSITIONS: "https://docs.gnoswap.io/user-guide/staking/stake-positions",
       PROVIDING_LIQUIDITY: "https://docs.gnoswap.io/user-guide/providing-liquidity/create-a-position",
+      LEADERBOARD: "https://docs.gnoswap.io/references/leaderboard",
+      REFERRAL_REWARD: "https://docs.gnoswap.io/references/leaderboard#referral-rewards",
     },
     GOVERNANCE: "https://docs.gnoswap.io/core-concepts/governance",
     XGNS: "https://docs.gnoswap.io/gnoswap-token/xgns",

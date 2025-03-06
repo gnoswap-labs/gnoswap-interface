@@ -50,7 +50,6 @@ export const BottomNavItem = styled.div`
 
 export const HeaderContainer = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
-  max-width: ${ContainerWidth.WEB_CONTAINER};
   width: 100%;
   padding: 17px 40px;
   ${media.tablet} {
@@ -67,7 +66,7 @@ export const LeftSection = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
   max-width: 895px;
   width: 100%;
-  gap: 50px;
+  gap: 40px;
   ${media.tablet} {
     max-width: 422px;
     gap: 32px;
@@ -114,7 +113,7 @@ export const Navigation = styled.nav`
   }
   ul {
     ${mixins.flexbox("row", "center", "center")};
-    gap: 40px;
+    gap: 30px;
     ${media.tablet} {
       gap: 16px;
     }

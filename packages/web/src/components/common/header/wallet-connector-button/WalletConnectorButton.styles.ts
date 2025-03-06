@@ -7,6 +7,9 @@ export const WalletConnectorButtonWrapper = styled.div`
   button {
     min-width: 0;
   }
+  .connector-button {
+    min-width: 108px;
+  }
 
   .arrow-icon {
     width: 16px;
@@ -27,9 +30,12 @@ export const WalletConnectorButtonWrapper = styled.div`
   .fail-icon {
     width: 16px;
     height: 16px;
+    &.tooltip {
+      margin-right: 8px;
+    }
   }
   .switch-network {
-    margin: 16px 0;
+    margin: 16px 0 0;
   }
   .loading-button {
     width: 20px;
