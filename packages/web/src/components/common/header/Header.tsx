@@ -17,6 +17,7 @@ import { ITokenResponse } from "@repositories/token";
 import { DeviceSize, DEVICE_TYPE } from "@styles/media";
 import useScrollData from "@hooks/common/use-scroll-data";
 import { WalletTypeState } from "src/types/wallet.types";
+import useNavigation from "@hooks/common/use-navigation";
 
 import NotificationButton from "./notification-button/NotificationButton";
 import SearchMenuModal, { Token } from "./search-menu-modal/SearchMenuModal";
@@ -114,6 +115,7 @@ const Header: React.FC<HeaderProps> = ({
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
   const { t } = useTranslation();
   const { saveCurrentScrollHeight } = useScrollData();
+  const { handleNavigation } = useNavigation();
 
   const isCollapseNav = useMemo(() => {
     return width < HEADER_NAVIGATION_LAYOUT_COLLAPSE_WIDTH;
@@ -129,12 +131,6 @@ const Header: React.FC<HeaderProps> = ({
 
     return HEADER_NAV.filter(item => !blockedPaths.includes(item.path));
   }, [isCollapseNav]);
-
-  const handleNavigation = (e: React.MouseEvent, path: string) => {
-    e.preventDefault();
-    saveCurrentScrollHeight(window?.location?.pathname);
-    router.push(path);
-  };
 
   const changeTokenDeposit = useCallback(() => {
     setIsShowDepositModal(true);

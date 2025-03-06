@@ -10,6 +10,14 @@ jest.mock("@adena-wallet/sdk", () => ({
   TransactionBuilder: jest.fn(),
 }));
 
+// Mock the navigation hook
+jest.mock("../../../../hooks/common/use-navigation", () => ({
+  useNavigation: () => ({
+    handleNavigation: jest.fn(),
+    shouldOpenInNewTab: jest.fn(),
+  }),
+}));
+
 describe("SubMenuButton Component", () => {
   it("SubMenuButton render", () => {
     const args = {
