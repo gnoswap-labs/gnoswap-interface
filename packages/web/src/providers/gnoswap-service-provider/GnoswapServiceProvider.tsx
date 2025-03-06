@@ -19,11 +19,13 @@ import { NotificationRepository, NotificationRepositoryImpl } from "@repositorie
 import { PoolRepository, PoolRepositoryImpl } from "@repositories/pool";
 import { PositionRepository, PositionRepositoryImpl } from "@repositories/position";
 import { StatusRepository, StatusRepositoryImpl } from "@repositories/status";
-import { SwapRouterRepository, SwapRouterRepositoryImpl } from "@repositories/swap";
+import { SwapRouterRepository, SwapRouterRepositoryImpl } from "@repositories/swap-router";
 import { TokenRepository, TokenRepositoryImpl } from "@repositories/token";
 import { WalletRepository, WalletRepositoryImpl } from "@repositories/wallet";
 import { ACCOUNT_SESSION_INFO_KEY, GNOSWAP_SESSION_ID_KEY, GNOWSWAP_CONNECTED_KEY } from "@states/common";
 import { CommonState, WalletState } from "@states/index";
+import { SwapRepository } from "@repositories/swap/swap-repository";
+import { SwapRepositoryImpl } from "@repositories/swap/swap-repository-impl";
 
 interface GnoswapContextProps {
   initialized: boolean;
@@ -32,6 +34,7 @@ interface GnoswapContextProps {
   gnoswapApiClient: NetworkClient | null;
   accountRepository: AccountRepository;
   poolRepository: PoolRepository;
+  swapRepository: SwapRepository;
   swapRouterRepository: SwapRouterRepository;
   tokenRepository: TokenRepository;
   positionRepository: PositionRepository;
@@ -163,6 +166,10 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
     return new PoolRepositoryImpl(gnoswapApiClient, rpcProvider, walletClient);
   }, [gnoswapApiClient, rpcProvider, walletClient]);
 
+  const swapRepository = useMemo(() => {
+    return new SwapRepositoryImpl(gnoswapApiClient, walletClient);
+  }, [gnoswapApiClient, walletClient]);
+
   const swapRouterRepository = useMemo(() => {
     return new SwapRouterRepositoryImpl(rpcProvider, walletClient, routerApiClient);
   }, [rpcProvider, walletClient, routerApiClient]);
@@ -220,6 +227,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
         accountRepository,
         poolRepository,
         tokenRepository,
+        swapRepository,
         swapRouterRepository,
         positionRepository,
         dashboardRepository,

@@ -82,3 +82,20 @@ export function getTimeDiffInSeconds(endDate: string | number | Date, startDate?
 export function getTimeDiffInMilliseconds(endDate: string | number | Date, startDate?: string | number | Date) {
   return new Date(endDate).getTime() - new Date(startDate || Date.now()).getTime();
 }
+
+const TIME_CONSTANTS = {
+  SECONDS_IN_MINUTE: 60,
+  SECONDS_IN_HOUR: 60 * 60, // 3,600
+  SECONDS_IN_DAY: 60 * 60 * 24, // 86,400
+  SECONDS_IN_WEEK: 60 * 60 * 24 * 7, // 604,800
+} as const;
+
+export function formatTimeDisplay(diffInSeconds: number) {
+  const absDiff = Math.abs(diffInSeconds);
+
+  if (absDiff < TIME_CONSTANTS.SECONDS_IN_MINUTE) return `${Math.floor(absDiff)}s ago`;
+  if (absDiff < TIME_CONSTANTS.SECONDS_IN_HOUR) return `${Math.floor(absDiff / TIME_CONSTANTS.SECONDS_IN_MINUTE)}m ago`;
+  if (absDiff < TIME_CONSTANTS.SECONDS_IN_DAY) return `${Math.floor(absDiff / TIME_CONSTANTS.SECONDS_IN_HOUR)}h ago`;
+  if (absDiff < TIME_CONSTANTS.SECONDS_IN_WEEK) return `${Math.floor(absDiff / TIME_CONSTANTS.SECONDS_IN_DAY)}d ago`;
+  return ">7d ago";
+}

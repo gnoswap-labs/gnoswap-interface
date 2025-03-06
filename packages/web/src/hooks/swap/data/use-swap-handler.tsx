@@ -25,7 +25,7 @@ import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { QUERY_KEY } from "@query/query-keys";
 import { useGetSwapFee } from "@query/router";
 import { DexEvent } from "@repositories/common";
-import { SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route-response";
+import { SwapRouteSuccessResponse } from "@repositories/swap-router/response/swap-route-response";
 import { CommonState, SwapState } from "@states/index";
 import { checkGnotPath, isGNOTPath, toNativePath } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";

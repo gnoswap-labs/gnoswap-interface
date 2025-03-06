@@ -3,7 +3,7 @@ import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { SwapError } from "@common/errors/swap";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { TokenModel } from "@models/token/token-model";
-import { GetRoutesResponse } from "@repositories/swap/response/get-routes-response";
+import { GetRoutesResponse } from "@repositories/swap-router/response/get-routes-response";
 
 import { QUERY_KEY } from "../query-keys";
 import { useGetAllTokenPrices } from "@query/token";

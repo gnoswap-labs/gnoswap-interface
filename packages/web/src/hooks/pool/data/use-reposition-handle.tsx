@@ -23,7 +23,10 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { useGetRoutes } from "@query/router";
 import { RepositionLiquidityFailedResponse, RepositionLiquiditySuccessResponse } from "@repositories/position/response";
-import { SwapRouteFailedResponse, SwapRouteSuccessResponse } from "@repositories/swap/response/swap-route-response";
+import {
+  SwapRouteFailedResponse,
+  SwapRouteSuccessResponse,
+} from "@repositories/swap-router/response/swap-route-response";
 import { IncreaseState } from "@states/index";
 import { checkGnotPath } from "@utils/common";
 import { subscriptFormat } from "@utils/number-utils";
