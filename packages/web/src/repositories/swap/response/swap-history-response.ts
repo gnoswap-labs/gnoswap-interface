@@ -9,6 +9,10 @@ export interface SwapHistoryItem {
 
   toTokenAmount: string;
 
+  fromUsdValue: string;
+
+  toUsdValue: string;
+
   time: string;
 
   totalUsd: string;

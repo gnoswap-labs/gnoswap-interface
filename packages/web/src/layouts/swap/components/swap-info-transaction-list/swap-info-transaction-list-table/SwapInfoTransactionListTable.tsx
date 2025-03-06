@@ -183,7 +183,9 @@ const TransactionListTableRow = ({ breakpoint, data, isNewTransaction }: Transac
           <IconOpenLink size="10px" className="path-link-icon" />
         </Link>
       </TableColumn>
-      {!isMobile && <TableColumn tdWidth={widths[1]}> {data.totalUsd ? formatPrice(data.totalUsd) : "-"}</TableColumn>}
+      {!isMobile && (
+        <TableColumn tdWidth={widths[1]}> {data.toUsdValue ? formatPrice(data.toUsdValue) : "-"}</TableColumn>
+      )}
       <TableColumn tdWidth={isMobile ? widths[1] : widths[2]}>
         <TokenPairWrapper>
           <div className="token-amount">
