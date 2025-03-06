@@ -26,7 +26,7 @@ export const MyDelegationModalWrapper = styled.div`
     padding: 24px;
     overflow: auto;
     ${media.mobile} {
-      padding: 24px 16px;
+      padding: 16px;
     }
   }
 

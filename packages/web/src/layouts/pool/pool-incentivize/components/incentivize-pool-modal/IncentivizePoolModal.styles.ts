@@ -115,7 +115,7 @@ export const IncentivizePoolModalWrapper = styled.div`
     }
   }
   ${media.mobile} {
-    padding: 15px;
+    padding: 16px 15px;
     width: 328px;
     .modal-body {
       gap: 12px;
