@@ -229,7 +229,7 @@ export const SocialWalletNotificationTooltip = () => {
       </div>
 
       <div className="guide">
-        How does Social Wallets work?{" "}
+        How do Social Wallets work?{" "}
         <Link href={SOCIAL_WALLET_EXTERNAL_URL.SOCIAL_WALLET_FAQ_URL} target="_blank">
           <IconOpenLink size="12" fill={ORANGE_COLOR} />
         </Link>
