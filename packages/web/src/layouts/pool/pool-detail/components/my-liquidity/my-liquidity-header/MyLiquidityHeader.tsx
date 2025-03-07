@@ -10,8 +10,7 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { ThemeState } from "@states/index";
 
-import { CopyTooltip } from "../my-detailed-position-card/MyDetailedPositionCard.styles";
-import { HeaderWrapper } from "./MyLiquidityHeader.styles";
+import { CopyTooltip, HeaderWrapper } from "./MyLiquidityHeader.styles";
 
 interface MyLiquidityHeaderProps {
   isOtherPosition: boolean;
@@ -163,7 +162,6 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
             padding: "10px 16px",
             fontType: "p1",
           }}
-          className={!showClosePositionButton || !isShowRemovePositionButton ? "full-width" : ""}
         />
       </div>
     </HeaderWrapper>
