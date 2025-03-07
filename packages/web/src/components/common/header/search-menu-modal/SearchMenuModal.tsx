@@ -27,6 +27,7 @@ import {
 } from "./SearchMenuModal.styles";
 import useElementWidth from "@hooks/common/use-element-width";
 import useElementWidthList from "@hooks/common/use-element-width-list";
+import { formatTokenPath } from "@utils/token-utils";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -171,10 +172,8 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   }, [breakpoint]);
 
   const getTokenPathDisplay = useCallback(
-    (path: string, isNative?: boolean) => {
-      if (isNative) return STATIC_TEXT.NATIVE_COIN;
-
-      return path;
+    (path: string, isNative: boolean) => {
+      return formatTokenPath(path, isNative, STATIC_TEXT.NATIVE_COIN);
     },
     [length],
   );
