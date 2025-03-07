@@ -228,7 +228,12 @@ export const useIncreaseHandle = () => {
     (amount: string) => {
       tokenAAmountInput.changeAmount(amount);
 
-      if (!selectPool || !tokenA || !tokenB || Number.isNaN(amount) || Number(amount) <= 0) {
+      if (!amount || amount === "0" || Number.isNaN(Number(amount)) || Number(amount) <= 0) {
+        tokenBAmountInput.changeAmount("0");
+        return;
+      }
+
+      if (!selectPool || !tokenA || !tokenB) {
         return;
       }
       const amountAAmountRaw = makeRawTokenAmount(tokenA, amount) || "0";
@@ -249,7 +254,12 @@ export const useIncreaseHandle = () => {
     (amount: string) => {
       tokenBAmountInput.changeAmount(amount);
 
-      if (!selectPool || !tokenA || !tokenB || Number.isNaN(amount) || Number(amount) <= 0) {
+      if (!amount || amount === "0" || Number.isNaN(Number(amount)) || Number(amount) <= 0) {
+        tokenAAmountInput.changeAmount("0");
+        return;
+      }
+
+      if (!selectPool || !tokenA || !tokenB) {
         return;
       }
 
