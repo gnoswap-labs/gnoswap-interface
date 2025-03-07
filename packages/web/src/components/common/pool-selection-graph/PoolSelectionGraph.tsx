@@ -791,6 +791,15 @@ function makeLeftBadge(
   reverse = false,
   selectionColor: SelectionColor,
 ) {
+  refer
+    .append("rect")
+    .attr("x", "-12")
+    .attr("y", "0")
+    .attr("width", "30")
+    .attr("height", "100%")
+    .style("fill", "transparent")
+    .style("cursor", "ew-resize");
+
   const badge = refer
     .append("svg")
     .attr("x", "-12")
@@ -814,6 +823,15 @@ function makeRightBadge(
   reverse = false,
   selectionColor: SelectionColor,
 ) {
+  refer
+    .append("rect")
+    .attr("x", "-12")
+    .attr("y", "0")
+    .attr("width", "30")
+    .attr("height", "100%")
+    .style("fill", "transparent")
+    .style("cursor", "ew-resize");
+
   const badge = refer
     .append("svg")
     .attr("x", "1")
