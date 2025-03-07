@@ -11,7 +11,7 @@ export const LocalModalBackground = styled.div`
   left: 0px;
   right: 0px;
   width: 100%;
-  height: 100lvh;
+  height: 100dvh;
   z-index: ${Z_INDEX.modal};
   pointer-events: none;
 
@@ -22,7 +22,7 @@ export const LocalModalBackground = styled.div`
     transform: translate(-50%, -50%);
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     max-width: 100%;
-    max-height: calc(100dvh - 32px);
+    max-height: 85dvh;
     margin: 0 auto;
 
     pointer-events: initial;

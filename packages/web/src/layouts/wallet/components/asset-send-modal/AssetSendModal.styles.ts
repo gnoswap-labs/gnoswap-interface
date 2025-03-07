@@ -11,7 +11,7 @@ export const AssetSendModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   position: fixed;
   overflow: auto;
-  max-height: 100vh;
+  max-height: 85dvh;
   width: 500px;
   border-radius: 8px;
   padding: 23px;

@@ -9,8 +9,7 @@ export const MyDelegationModalWrapper = styled.div`
   min-width: 328px;
   max-width: 500px;
   width: 90vw;
-  max-height: 800px;
-  height: 85dvh;
+  max-height: 85dvh;
   overflow: visible;
 
   .modal-wrapper {
@@ -31,9 +30,9 @@ export const MyDelegationModalWrapper = styled.div`
   }
 
   &.selector-box {
-    height: 490px;
     > .modal-wrapper {
-      overflow: visible;
+      overflow: auto;
+      max-height: 85dvh;
     }
   }
 
