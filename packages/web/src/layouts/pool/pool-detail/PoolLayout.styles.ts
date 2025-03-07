@@ -113,5 +113,9 @@ export const PoolLayoutWrapper = styled.div`
         }
       }
     }
+
+    &.noStakable {
+      margin-top: -24px;
+    }
   }
 `;
