@@ -76,6 +76,7 @@ export const LeftSection = styled.div`
   }
 
   .link {
+    font-size: 15px;
     cursor: pointer;
   }
 `;
