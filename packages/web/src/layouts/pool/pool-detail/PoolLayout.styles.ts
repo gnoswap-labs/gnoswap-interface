@@ -65,7 +65,6 @@ export const PoolLayoutWrapper = styled.div`
     max-width: ${ContainerWidth.WEB_CONTAINER};
     width: 100%;
     padding: 0px 40px;
-    gap: 36px;
 
     ${media.tablet} {
       align-self: stretch;
@@ -76,6 +75,7 @@ export const PoolLayoutWrapper = styled.div`
 
     .button {
       ${mixins.flexbox("row", "center", "flex-start")};
+      margin-top: 36px;
       @media (max-width: 400px) {
         flex-direction: column;
         align-self: stretch;
@@ -115,7 +115,16 @@ export const PoolLayoutWrapper = styled.div`
     }
 
     &.noStakable {
-      margin-top: -24px;
+      margin-top: -44px;
+      ${media.tablet} {
+        margin-top: -24px;
+      }
+      ${media.mobile} {
+        margin-top: 4px;
+      }
+      .button {
+        margin-top: 0;
+      }
     }
   }
 `;
