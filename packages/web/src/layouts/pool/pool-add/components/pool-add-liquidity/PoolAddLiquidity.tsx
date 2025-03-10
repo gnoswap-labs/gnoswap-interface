@@ -226,6 +226,9 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
       if (tokenA && tokenA.path !== token.path) {
         setOpenedFeeTier(true);
         setOpenedPriceRange(true);
+
+        changeTokenAAmount("");
+        changeTokenBAmount("");
       }
       changeTokenB(token);
     },
@@ -237,6 +240,9 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
       if (tokenB && tokenB.path !== token.path) {
         setOpenedFeeTier(true);
         setOpenedPriceRange(true);
+
+        changeTokenAAmount("");
+        changeTokenBAmount("");
       }
       changeTokenA(token);
     },
