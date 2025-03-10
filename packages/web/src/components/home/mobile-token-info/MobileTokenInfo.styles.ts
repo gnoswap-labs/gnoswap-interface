@@ -78,7 +78,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   }
 
   &.price-col {
-    padding-left: 28px;
+    padding-left: 30px;
     ${mixins.flexbox("column", "flex-end", "center")};
     > div {
       ${mixins.flexbox("row", "center", "center")};
