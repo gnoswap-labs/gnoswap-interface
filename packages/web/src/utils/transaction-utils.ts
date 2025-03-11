@@ -172,6 +172,9 @@ export const withTransactionGuard = async <T>(
     return executeTransaction(updatedTransaction);
   }
 
+  // Handle locked wallet state for Adena v1.15.0+ auto-lock compatibility
+  const SITE_NAME = "Gnoswap";
+  await walletClient.addEstablishedSite(SITE_NAME);
   return executeTransaction(transaction);
 };
 
