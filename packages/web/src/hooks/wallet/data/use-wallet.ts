@@ -132,16 +132,14 @@ export const useWallet = () => {
       }
 
       if (savedWalletType === "ADENA") {
+        connectAdenaClient();
+
         const adena = AdenaClient.createAdenaClient();
         const data = await adena?.getAccount();
         if (data?.status === "failure") {
           disconnectWallet();
           return;
         }
-      }
-
-      if (walletClient === null) {
-        connectAdenaClient();
       }
     } catch (err) {
       console.log(err);
@@ -175,6 +173,7 @@ export const useWallet = () => {
     if (loadingConnect !== "initial") {
       setLoadingConnect("loading");
     }
+
     const adena = AdenaClient.createAdenaClient();
     if (adena !== null) {
       sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "ADENA");
@@ -189,8 +188,11 @@ export const useWallet = () => {
     try {
       setLoadingConnect("loading");
 
-      const adena = AdenaClient.createAdenaClient();
-      setWalletClient(adena);
+      if (walletClient === null) {
+        const adena = AdenaClient.createAdenaClient();
+        setWalletClient(adena);
+        return;
+      }
 
       const established = await accountRepository.addEstablishedSite().catch(() => null);
 

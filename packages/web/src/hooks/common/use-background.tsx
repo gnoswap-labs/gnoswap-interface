@@ -141,7 +141,7 @@ export const useBackground = () => {
    *
    */
   useEffect(() => {
-    if (!walletClient || !account) return;
+    if (!walletClient) return;
 
     const handleWalletConnection = async () => {
       const walletType = walletClient.getWalletType();
@@ -160,7 +160,7 @@ export const useBackground = () => {
 
     handleWalletConnection();
     updateWalletEvents(walletClient);
-  }, [walletClient?.getWalletType(), String(account)]);
+  }, [walletClient]);
 
   /**
    *
