@@ -451,6 +451,21 @@ export const useSwapHandler = () => {
     };
   }, [slippage, type, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
 
+  const initializeSwapTokenInputAmount = useCallback(() => {
+    setSwapValue(prev => ({
+      ...prev,
+      type: "EXACT_IN",
+      tokenAAmount: "",
+      tokenBAmount: "",
+      isEarnChanged: false,
+      isReverted: false,
+      isKeepToken: false,
+    }));
+    setTokenAAmount("");
+    setTokenBAmount("");
+    resetSwapAmount();
+  }, [resetSwapAmount, setSwapValue]);
+
   const swapSummaryInfo: SwapSummaryInfo | null = useMemo(() => {
     if (!tokenA || !tokenB) {
       return null;
@@ -1214,5 +1229,6 @@ export const useSwapHandler = () => {
     priceImpactStatus,
     isSameToken,
     handleResetEstimatedLiquidity,
+    initializeSwapTokenInputAmount,
   };
 };
