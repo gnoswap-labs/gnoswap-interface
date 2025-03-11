@@ -61,3 +61,17 @@ export function formatTokenBalanceDisplay(balance: string, connectedWallet: bool
   const cleanBalance = balance.replace(/,/g, "");
   return formatOtherPrice(cleanBalance, { isKMB: false, usd: false });
 }
+
+/**
+ * Formats the token path by removing the 'gno.land/' prefix if present
+ * @param path - The original token path
+ * @param isNative - Whether the token is native
+ * @param nativeCoinText - The text to display for native coins
+ * @returns Formatted token path
+ */
+export function formatTokenPath(path: string, isNative: boolean, nativeCoinText: string): string {
+  if (isNative) return nativeCoinText;
+
+  // Remove 'gno.land/' prefix if present
+  return path.replace(/^gno\.land\//, "");
+}

@@ -41,7 +41,7 @@ export const ConfirmModal = styled.div`
   }
   ${media.mobile} {
     width: 328px;
-    padding: 15px 0px;
+    padding: 16px 0px;
   }
 
   .modal-body {

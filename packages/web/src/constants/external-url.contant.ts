@@ -39,5 +39,5 @@ export const EXT_URL = {
 
 export const SOCIAL_WALLET_EXTERNAL_URL = {
   ADENA_INSTALL_URL: "https://adena.app",
-  SOCIAL_WALLET_FAQ_URL: "https://docs.gnoswap.io/references/faq",
+  SOCIAL_WALLET_FAQ_URL: "https://docs.gnoswap.io/references/faq#social-login",
 } as const;

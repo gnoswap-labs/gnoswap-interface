@@ -9,8 +9,7 @@ export const MyDelegationModalWrapper = styled.div`
   min-width: 328px;
   max-width: 500px;
   width: 90vw;
-  max-height: 800px;
-  height: 85dvh;
+  max-height: 85dvh;
   overflow: visible;
 
   .modal-wrapper {
@@ -26,14 +25,14 @@ export const MyDelegationModalWrapper = styled.div`
     padding: 24px;
     overflow: auto;
     ${media.mobile} {
-      padding: 24px 16px;
+      padding: 16px;
     }
   }
 
   &.selector-box {
-    height: 490px;
     > .modal-wrapper {
-      overflow: visible;
+      overflow: auto;
+      max-height: 85dvh;
     }
   }
 

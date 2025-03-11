@@ -50,7 +50,7 @@ export const EarnAddConfirmWrapper = styled.div`
   }
   ${media.mobile} {
     width: 328px;
-    padding: 15px;
+    padding: 16px 15px;
     gap: 12px;
     span {
       ${fonts.body7}

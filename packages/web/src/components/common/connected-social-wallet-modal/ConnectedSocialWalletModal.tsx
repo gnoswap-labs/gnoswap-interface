@@ -55,7 +55,7 @@ const ConnectedSocialWalletModal = ({ close, onDontShowAgain }: Props) => {
               </div>
               <div className="link">
                 <ExternalLink href={SOCIAL_WALLET_EXTERNAL_URL.SOCIAL_WALLET_FAQ_URL}>
-                  <div>How does Social Wallets work?</div>
+                  <div>How do Social Wallets work?</div>
                 </ExternalLink>
               </div>
             </div>

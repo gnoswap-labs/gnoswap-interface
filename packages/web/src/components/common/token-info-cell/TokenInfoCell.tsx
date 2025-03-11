@@ -2,14 +2,15 @@ import { useTheme } from "@emotion/react";
 import { useCallback, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
-import IconOpenLink from "@components/common/icons/IconOpenLink";
-import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { DEVICE_TYPE } from "@styles/media";
-
+import { formatTokenPath } from "@utils/token-utils";
 import { STATIC_TEXT } from "@common/values";
-import { TokenInfoCellWrapper } from "./TokenInfoCell.styles";
 import useElementWidth from "@hooks/common/use-element-width";
+
+import { TokenInfoCellWrapper } from "./TokenInfoCell.styles";
+import IconOpenLink from "@components/common/icons/IconOpenLink";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 export interface TokenInfoCellProps {
   token: {
@@ -36,9 +37,7 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
   const tokenNameWidth = useElementWidth(tokenNameRef, [token]);
 
   const tokenPathDisplay = useMemo(() => {
-    if (isNative) return STATIC_TEXT.NATIVE_COIN;
-
-    return path;
+    return formatTokenPath(path, isNative, STATIC_TEXT.NATIVE_COIN);
   }, [isNative, path, t]);
 
   const onClickPath = useCallback(

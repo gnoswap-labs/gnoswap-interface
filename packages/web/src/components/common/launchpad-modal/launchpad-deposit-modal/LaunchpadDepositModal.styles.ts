@@ -20,6 +20,7 @@ export const LaunchpadDepositModalWrapper = styled.div`
     box-shadow: ${({ theme }) => theme.color.shadow01};
     overflow: auto;
     width: 100%;
+    max-height: 85dvh;
     gap: 16px;
     padding: 24px;
     ${media.mobile} {

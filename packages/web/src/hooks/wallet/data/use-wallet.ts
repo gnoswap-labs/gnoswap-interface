@@ -146,10 +146,17 @@ export const useWallet = () => {
     }
   }
 
-  const switchNetwork = async (network?: string) => {
+  const switchNetwork = async () => {
     try {
       setLoadingConnect("loading");
-      const res = await accountRepository.switchNetwork(network || DEFAULT_CHAIN_ID);
+      const adena = AdenaClient.createAdenaClient();
+      if (!adena) {
+        setLoadingConnect("error");
+        return;
+      }
+
+      const res = await adena?.switchNetwork(DEFAULT_CHAIN_ID);
+
       if (res.code === 0) {
         const account = await accountRepository.getAccount();
         setWalletAccount(account);
