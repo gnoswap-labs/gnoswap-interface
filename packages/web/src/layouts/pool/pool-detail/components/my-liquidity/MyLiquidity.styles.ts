@@ -25,7 +25,6 @@ export const MyLiquidityWrapper = styled.div`
     width: 100%;
     gap: 12px;
     ${media.mobile} {
-      overflow-x: auto;
     }
     .box-slider {
       ${mixins.flexbox("row", "flex-start", "flex-start")};

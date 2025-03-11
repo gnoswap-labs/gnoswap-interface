@@ -83,7 +83,7 @@ export const HeaderWrapper = styled.div`
     ${media.mobile} {
       width: 100%;
       button {
-        width: 50%;
+        width: 100%;
       }
     }
   }
