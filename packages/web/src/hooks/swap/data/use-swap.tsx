@@ -33,7 +33,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
 
   const SWAP_AMOUNT_DEBOUNCE_TIME_MS = 500;
   const [swapAmount, setSwapAmount] = useState<number | null>(null);
-  const debouncedAmount = useDebounce(swapAmount, SWAP_AMOUNT_DEBOUNCE_TIME_MS);
+  const debouncedAmount = useDebounce(swapAmount, swapAmount ? SWAP_AMOUNT_DEBOUNCE_TIME_MS : 0);
   const [estimatedLiquidityMax, setEstimatedLiquidityMax] = useState<number | null>(null);
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeoutRef = useRef<NodeJS.Timeout>();
