@@ -22,7 +22,11 @@ const WalletMyPositionsHeader: React.FC<{ toggleClosed: () => void; isClosed: bo
     return !isClosed ? positions.filter(position => !position.closed).length : positions.length;
   }, [positions, isClosed]);
 
-  if (!isFetchedPosition || isSwitchNetwork) return null;
+  const hasClosedPositions = React.useMemo(() => {
+    return positions.some(position => position.closed);
+  }, [positions]);
+
+  if (!isFetchedPosition || isSwitchNetwork || !hasClosedPositions) return null;
 
   return (
     <div css={wrapper}>
