@@ -40,7 +40,7 @@ export default function NextUpdate() {
         </Tooltip>
         <TextWrapper>
           <FontSize16>
-            <P color="text10">{`Next update in ${secondsToTime(seconds!)}`}</P>
+            <P>{`Next update in ${secondsToTime(seconds!)}`}</P>
           </FontSize16>
         </TextWrapper>
       </Flex>
