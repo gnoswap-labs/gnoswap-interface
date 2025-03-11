@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
 import { ContainerWidth, media } from "@styles/media";
 
-export const WalletLayoutWrapper = styled.div`
+export const PortfolioLayoutWrapper = styled.div`
   ${mixins.flexbox("column", "center", "flex-start")};
   width: 100%;
   background-color: ${({ theme }) => theme.color.background01};
