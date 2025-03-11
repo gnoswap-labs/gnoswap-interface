@@ -53,7 +53,10 @@ const ProposalListContainer: React.FC = () => {
       return [];
     }
 
-    return governanceSummaryInfo.changeParamOptions.packages;
+    const allPackages = governanceSummaryInfo.changeParamOptions.packages;
+    return allPackages.filter(
+      (package_, index) => allPackages.findIndex(p => p.pkgPath === package_.pkgPath) === index,
+    );
   }, [governanceSummaryInfo?.changeParamOptions.packages]);
 
   const executableFunctions = useMemo(() => {
