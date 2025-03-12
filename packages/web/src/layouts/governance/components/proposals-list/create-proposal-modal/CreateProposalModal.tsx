@@ -200,7 +200,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
     value: string;
   }[] = useMemo(() => {
     return executablePackages.map(pkg => ({
-      displayValue: pkg.pkgName,
+      displayValue: makeDisplayPackagePath(pkg.pkgPath),
       value: pkg.pkgPath,
     }));
   }, [executableFunctions, executablePackages]);
