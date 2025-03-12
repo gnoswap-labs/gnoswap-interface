@@ -26,17 +26,19 @@ const WalletMyPositionsHeader: React.FC<{ toggleClosed: () => void; isClosed: bo
     return positions.some(position => position.closed);
   }, [positions]);
 
-  if (!isFetchedPosition || isSwitchNetwork || !hasClosedPositions) return null;
+  if (!isFetchedPosition || isSwitchNetwork) return null;
 
   return (
     <div css={wrapper}>
       {positions.length > 0 && <h2>{`${t("Wallet:myPosi")} (${displayPositionsCount})`}</h2>}
-      <Switch
-        checked={isClosed}
-        onChange={toggleClosed}
-        hasLabel={true}
-        labelText={t("Earn:positions.showClosedSwitch")}
-      />
+      {hasClosedPositions && (
+        <Switch
+          checked={isClosed}
+          onChange={toggleClosed}
+          hasLabel={true}
+          labelText={t("Earn:positions.showClosedSwitch")}
+        />
+      )}
     </div>
   );
 };
