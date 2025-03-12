@@ -1,4 +1,5 @@
 import React from "react";
+import { Trans, useTranslation } from "react-i18next";
 
 import { SessionExpiredModalWrapper } from "./SessionExpiredModal.styles";
 import IconClose from "../icons/IconCancel";
@@ -10,6 +11,8 @@ interface Props {
 }
 
 const SessionExpiredModal = ({ close }: Props) => {
+  const { t } = useTranslation();
+
   return (
     <SessionExpiredModalWrapper>
       <div className="modal-body">
@@ -24,15 +27,14 @@ const SessionExpiredModal = ({ close }: Props) => {
         <div className="content">
           <IconFailed className="warning-logo" />
           <div className="detail">
-            <h5>Session Expired</h5>
+            <h5>{t("common:social.modal.expiredSession.title")}</h5>
             <div className="description">
-              Your session has expired due to inactivity.
-              <br /> Please log in again to continue.
+              <Trans i18nKey={"common:social.modal.expiredSession.desc"} components={{ br: <br /> }} />
             </div>
           </div>
           <div className="button-wrapper">
             <Button
-              text="Close"
+              text={t("common:action.cancel")}
               style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
               onClick={close}
               className="button-confirm"

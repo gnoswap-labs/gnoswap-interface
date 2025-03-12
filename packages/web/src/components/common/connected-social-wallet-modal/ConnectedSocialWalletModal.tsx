@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import { Trans, useTranslation } from "react-i18next";
 
 import { SOCIAL_WALLET_EXTERNAL_URL } from "@constants/external-url.contant";
 
@@ -17,6 +18,7 @@ interface Props {
 }
 
 const ConnectedSocialWalletModal = ({ close, onDontShowAgain }: Props) => {
+  const { t } = useTranslation();
   const handleConfirm = React.useCallback(() => close(), [close]);
 
   const handleDontShowAgain = React.useCallback(() => {
@@ -38,37 +40,31 @@ const ConnectedSocialWalletModal = ({ close, onDontShowAgain }: Props) => {
         <div className="content">
           <IconFailed className="warning-logo" />
           <div className="detail">
-            <h5>Notice for Using Social Wallets</h5>
+            <h5>{t("common:social.modal.warning.title")}</h5>{" "}
             <div className="description">
-              You can use basic wallet features, such as transferring
-              <br /> assets and signing transactions, with a social wallet.
-              <br /> To access advanced wallet features, like exporting
-              <br /> private keys or changing networks, please install the
-              <br /> Adena wallet extension and log in using the same social
-              <br /> account.
+              <Trans i18nKey={"common:social.modal.warning.desc"} components={{ br: <br /> }} />
             </div>
             <div className="link-wrapper">
               <div className="link">
                 <ExternalLink href={SOCIAL_WALLET_EXTERNAL_URL.ADENA_INSTALL_URL}>
-                  <div>Go to install Adena</div>
+                  <div>{t("common:social.modal.warning.link.adena")}</div>
                 </ExternalLink>
               </div>
               <div className="link">
                 <ExternalLink href={SOCIAL_WALLET_EXTERNAL_URL.SOCIAL_WALLET_FAQ_URL}>
-                  <div>How do Social Wallets work?</div>
+                  <div>{t("common:social.modal.warning.link.faq")}</div>
                 </ExternalLink>
               </div>
             </div>
-
             <div className="button-wrapper">
               <Button
-                text="I understand"
+                text={t("Modal:tokenTradingWarn.understand")}
                 style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
                 onClick={handleConfirm}
                 className="button-confirm"
               />
               <div className="cancel-button" onClick={handleDontShowAgain} role="button" tabIndex={0}>
-                <span>Don’t show again for 30 days</span>
+                <span>{t("common:social.modal.warning.dontShow")}</span>
               </div>
             </div>
           </div>

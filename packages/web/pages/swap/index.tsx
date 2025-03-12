@@ -11,7 +11,7 @@ import { SwapSEOContainer } from "@containers/seo-header-container";
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "Swap"])),
+      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "Swap", "Dashboard", "Pool"])),
     },
   };
 }

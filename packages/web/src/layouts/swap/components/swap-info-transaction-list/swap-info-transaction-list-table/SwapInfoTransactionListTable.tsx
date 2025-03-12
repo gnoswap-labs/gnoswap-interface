@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { cx } from "@emotion/css";
+import { useTranslation } from "react-i18next";
 
 import {
   MOBILE_TABLE_HEAD,
@@ -62,6 +63,7 @@ const SwapInfoTransactionListTable = ({
   swapHistory,
   tokenPairParams,
 }: SwapInfoTransactionListTableProps) => {
+  const { t } = useTranslation();
   const prevSwapHistoryRef = React.useRef<SwapHistoryItem[]>([]);
   const [newTransactions, setNewTransactions] = React.useState<Set<string>>(new Set());
   const skipAnimationRef = React.useRef(true); // Skip animation on initial load or token pair change
@@ -121,7 +123,7 @@ const SwapInfoTransactionListTable = ({
               className={cx({ left: idx === 0 })}
               tdWidth={getTableWidths(breakpoint)[idx]}
             >
-              <span>{head}</span>
+              <span>{t(head)}</span>
             </TableHeader>
           );
         })}

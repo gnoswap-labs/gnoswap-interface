@@ -45,7 +45,8 @@ export default function Page() {
     const tokenA = getGnotPath(tokenAPath ? tokens.find(item => item.path === checkGnotPath(tokenAPath)) : undefined);
     const tokenB = getGnotPath(tokenBPath ? tokens.find(item => item.path === checkGnotPath(tokenBPath)) : undefined);
 
-    return seoInfo.title([tokenA?.symbol, tokenB?.symbol, feeStr].filter(item => item) as string[]);
+    const result = seoInfo.title([tokenA?.symbol, tokenB?.symbol, feeStr].filter(item => item) as string[]);
+    return String(result);
   }, [feeStr, query.tokenA, query.tokenB, seoInfo, tokens, getGnotPath]);
 
   return (

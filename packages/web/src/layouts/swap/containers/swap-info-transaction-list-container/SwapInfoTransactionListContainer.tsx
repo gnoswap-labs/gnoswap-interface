@@ -7,14 +7,14 @@ import { SwapState } from "@states/index";
 import { useGetSwapHistory } from "@query/swap";
 
 export const TABLE_HEAD = {
-  TIME: "Time",
-  VALUE: "Value",
-  Swap: "Swap",
+  TIME: "Dashboard:onchainActi.col.time",
+  VALUE: "Pool:position.card.history.col.value",
+  Swap: "Swap:header",
 };
 
 export const MOBILE_TABLE_HEAD = {
-  TIME: "Time",
-  Swap: "Swap",
+  TIME: "Dashboard:onChainActi.col.time",
+  Swap: "Swap:header",
 };
 
 export interface TokenPairParams {
