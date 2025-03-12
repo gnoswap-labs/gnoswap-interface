@@ -14,13 +14,13 @@ export const HEADER_NAV = [
     subPath: ["/earn/pool/", "/earn/add", "/earn/stake"],
   },
   {
-    title: "HeaderFooter:Portfolio",
+    title: "HeaderFooter:portfolio",
     path: "/portfolio",
     iconType: null,
     subPath: [],
   },
   {
-    title: "HeaderFooter:Explore",
+    title: "HeaderFooter:explore",
     path: "/explore",
     iconType: null,
     subPath: [],

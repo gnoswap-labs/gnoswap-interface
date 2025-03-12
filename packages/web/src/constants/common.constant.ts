@@ -41,11 +41,11 @@ export type PageKey =
   | "/token"
   | "/404"
   | "/500"
-  | "/dashboard"
+  | "/explore"
   | "/governance"
   | "/leaderboard"
   | "/swap"
-  | "/wallet"
+  | "/portfolio"
   | "/launchpad"
   | "/launchpad/project"
   | "/privacy"
@@ -251,8 +251,8 @@ export const SEOInfo: Record<
     title: () => "Page Unavailable!",
     desc: () => "Page Unavailable!",
   },
-  "/dashboard": {
-    title: () => "Metatag(title):seo.title.dashboard",
+  "/explore": {
+    title: () => "Metatag(title):seo.title.explore",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
@@ -277,8 +277,8 @@ export const SEOInfo: Record<
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
-  "/wallet": {
-    title: () => "Metatag(title):seo.title.wallet",
+  "/portfolio": {
+    title: () => "Metatag(title):seo.title.portfolio",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
