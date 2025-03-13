@@ -2,7 +2,6 @@ import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
-import { ThemeColorType } from "@styles/ThemeTypes";
 
 export const FontSize16 = styled.div`
   font-size: 16px;
@@ -41,8 +40,8 @@ export const Box = styled.div`
   }
 `;
 
-export const P = styled.p<{ color: keyof ThemeColorType }>`
-  color: ${({ theme, color }) => theme.color[color]};
+export const P = styled.p`
+  color: ${({ theme }) => (theme.themeKey === "dark" ? "#596782" : "#90A2C0")};
 `;
 
 export const Hover = styled.div`
