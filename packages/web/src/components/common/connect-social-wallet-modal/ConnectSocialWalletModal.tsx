@@ -1,4 +1,5 @@
 import React from "react";
+import { Trans, useTranslation } from "react-i18next";
 
 import { ConnectSocialWalletModalWrapper } from "./ConnectSocialWalletModal.styles";
 import IconClose from "../icons/IconCancel";
@@ -13,6 +14,7 @@ interface ConnectSocialWalletModalProps {
 }
 
 const ConnectSocialWalletModal = ({ close, loginType }: ConnectSocialWalletModalProps) => {
+  const { t } = useTranslation();
   const { connectingState } = useSocialWalletContext();
 
   const displayLoginType = React.useMemo(() => {
@@ -48,16 +50,22 @@ const ConnectSocialWalletModal = ({ close, loginType }: ConnectSocialWalletModal
             <LoadingSpinner />
           </div>
           <div className="description">
-            <div className="title">Connecting to {displayLoginType}</div>
+            <div className="title">
+              <Trans i18nKey={"common:social.connecting.title"} values={{ loginType: displayLoginType }} />
+            </div>
             {loginType === "email" ? (
-              <div className="text">Check your email to approve the connection.</div>
+              <div className="text">{t("common:social.connecting.desc.email")}</div>
             ) : (
-              <div className="text">Authorize the connection in the popup window.</div>
+              <div className="text">{t("common:social.connecting.desc.sns")}</div>
             )}
           </div>
         </div>
         <div className="cancel-button">
-          <Button style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }} text="Cancel" onClick={close} />
+          <Button
+            style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
+            text={t("common:action.cancel")}
+            onClick={close}
+          />
         </div>
       </div>
     </ConnectSocialWalletModalWrapper>

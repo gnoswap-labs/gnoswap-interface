@@ -43,7 +43,7 @@ const WalletBalanceSummary: React.FC<WalletBalanceSummaryProps> = ({
         <span className="total-balance-title">{t("Wallet:overral.totalBal")}</span>
         {isConnectSocialWallet && (
           <Tooltip FloatingContent={<SocialWalletNotificationTooltip />} placement="top">
-            <Badge text="Social Account Wallet" type="darkDefault" className="badge" />
+            <Badge text={t("Wallet:socialwallet.badge")} type="darkDefault" className="badge" />
           </Tooltip>
         )}
       </div>

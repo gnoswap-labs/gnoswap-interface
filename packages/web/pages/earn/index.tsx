@@ -9,7 +9,7 @@ import { EarnSEOContainer } from "@containers/seo-header-container";
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "Earn"])),
+      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "Earn", "SocialWallet"])),
     },
   };
 }

@@ -80,7 +80,7 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
           <div className="login-section" style={{ "--login-section-gap": "4px" } as React.CSSProperties}>
             <div className={cx("email-section", { error: isEmailErrorVisible })}>
               <input
-                placeholder="Email Address"
+                placeholder={t("common:social.connect.email.placeholder")}
                 type="email"
                 inputMode="email"
                 autoComplete={"off"}
@@ -97,7 +97,9 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
                 <IconArrowRight className="right-chevron" />
               </button>
             </div>
-            {isEmailErrorVisible && <div className="validation-message">Please enter a valid email</div>}
+            {isEmailErrorVisible && (
+              <div className="validation-message">{t("common:social.connect.email.invalid")}</div>
+            )}
           </div>
 
           <ConnectWalletModalDivider />
@@ -105,7 +107,7 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
           {/* Social Logins */}
           <div className="login-section social-login-section">
             <Button
-              text="Sign in With Google"
+              text={t("common:social.connect.sign.google")}
               leftIcon={<IconGoogleLogo />}
               onClick={() => handleSocialConnect("google")}
               style={{
@@ -116,7 +118,7 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
             />
 
             <Button
-              text="Sign in With X"
+              text={t("common:social.connect.sign.x")}
               leftIcon={<IconTwitterLogo fill={theme.themeKey === "dark" ? "white" : "black"} />}
               onClick={() => handleSocialConnect("twitter")}
               style={{

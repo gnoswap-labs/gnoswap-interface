@@ -1,27 +1,31 @@
 import * as yup from "yup";
 import { isValidAddress } from "./validation-utils";
+import { TFunction } from "i18next";
 
-export const getCreateProposalValidation = () =>
+export const getCreateProposalValidation = (t: TFunction) =>
   yup
     .object()
     .shape({
-      title: yup.string().trim().required("Title is required"),
-      description: yup.string().trim().required("Description is required"),
+      title: yup.string().trim().required(t("Governance:proposal.validation.required.title")),
+      description: yup.string().trim().required(t("Governance:proposal.validation.required.desc")),
     })
     .required();
 
-export const getCreateProposalCommunityPoolSpendValidation = () =>
+export const getCreateProposalCommunityPoolSpendValidation = (t: TFunction) =>
   yup
     .object()
     .shape({
-      title: yup.string().trim().required("Title is required"),
-      description: yup.string().trim().required("Description is required"),
+      title: yup.string().trim().required(t("Governance:proposal.validation.required.title")),
+      description: yup.string().trim().required(t("Governance:proposal.validation.required.desc")),
       recipientAddress: yup
         .string()
         .trim()
-        .required("Recipient is required")
-        .test("is-valid", "Address is not valid", value => isValidAddress(value)),
-      amount: yup.number().typeError("Amount is required").required("Amount is required"),
+        .required(t("Governance:proposal.validation.required.recipient"))
+        .test("is-valid", t("Governance:proposal.validation.invalid.address"), value => isValidAddress(value)),
+      amount: yup
+        .number()
+        .typeError(t("Governance:proposal.validation.required.amount"))
+        .required(t("Governance:proposal.validation.required.amount")),
     })
     .required();
 
@@ -31,16 +35,17 @@ const variableSchema = {
   param: yup.string(),
 };
 
-export const getCreateProposalChangeParameterValidation = () =>
+export const getCreateProposalChangeParameterValidation = (t: TFunction) =>
   yup
     .object()
     .shape({
-      title: yup.string().trim().required("Title is required"),
-      description: yup.string().trim().required("Description is required"),
+      title: yup.string().trim().required(t("Governance:proposal.validation.required.title")),
+      description: yup.string().trim().required(t("Governance:proposal.validation.required.desc")),
     })
     .required();
 
 export const getCreateProposalParameterValidation = (
+  t: TFunction,
   executableFunctions: {
     pkgPath: string;
     funcName: string;
@@ -49,12 +54,12 @@ export const getCreateProposalParameterValidation = (
 ) =>
   yup
     .array()
-    .min(1, "At least one change is reqruied")
+    .min(1, t("Governance:proposal.validation.required.oneChange"))
     .of(
       yup
         .object()
         .shape(variableSchema)
-        .test("check-valid", "Argument is required", item => {
+        .test("check-valid", t("Governance:proposal.validation.required.argument"), item => {
           if (!item) return true;
 
           if (
@@ -69,7 +74,7 @@ export const getCreateProposalParameterValidation = (
 
           return true;
         })
-        .test("check-parameter", "Argument is not valid", item => {
+        .test("check-parameter", t("Governance:proposal.validation.invalid.argument"), item => {
           if (!item.param) {
             return true;
           }

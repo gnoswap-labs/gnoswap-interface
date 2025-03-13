@@ -19,7 +19,7 @@ import { HomeSEOContainer } from "@containers/seo-header-container";
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "Main"])),
+      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "Main", "Metatag(title)"])),
     },
   };
 }
@@ -29,7 +29,14 @@ export default function Page() {
     bindI18n: "languageChanged loaded",
   });
   useEffect(() => {
-    i18n.reloadResources(i18n.resolvedLanguage, ["HeaderFooter", "common", "Main", "business"]);
+    i18n.reloadResources(i18n.resolvedLanguage, [
+      "HeaderFooter",
+      "common",
+      "Main",
+      "business",
+      "SocialWallet",
+      "Metatag(title)",
+    ]);
   }, []);
 
   return (
