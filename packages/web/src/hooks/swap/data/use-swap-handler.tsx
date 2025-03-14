@@ -270,7 +270,8 @@ export const useSwapHandler = () => {
 
   const getValidUSDValue = (token: TokenModel) => {
     const bnValue = BigNumber(tokenPrices[checkGnotPath(token.path)]?.usd);
-    return bnValue.isNaN() || !bnValue.gt(0) ? null : bnValue.toNumber();
+    if (bnValue.isNaN() || !bnValue.gt(0)) return null;
+    return bnValue.toNumber();
   };
 
   const priceImpact = useMemo(() => {
