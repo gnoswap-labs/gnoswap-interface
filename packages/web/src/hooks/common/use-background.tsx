@@ -14,7 +14,7 @@ import { useAutoDisconnect } from "./use-auto-disconnect";
 export const useBackground = () => {
   const router = useRouter();
   const { account, initSession, connectAccount: connectAdenaAccount, updateWalletEvents } = useWallet();
-  const { connect: connectSocialAccount } = useSocialWalletContext();
+  const { connect: connectSocialAccount, connectingState } = useSocialWalletContext();
   const [walletClient] = useAtom(WalletState.client);
   const [sessionId] = useAtom(CommonState.sessionId);
   const [isViewMorePositions, setIsViewMorePositions] = useAtom(EarnState.isViewMorePositions);
@@ -152,7 +152,7 @@ export const useBackground = () => {
 
       if (walletType === "SOCIAL_WALLET") {
         const socialLoginType = walletClient.getLoginType?.();
-        if (socialLoginType) {
+        if (socialLoginType && connectingState !== "error" && connectingState !== "done") {
           await connectSocialAccount(socialLoginType);
         }
       }

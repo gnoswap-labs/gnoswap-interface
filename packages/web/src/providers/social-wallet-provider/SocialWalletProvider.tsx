@@ -64,7 +64,7 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
         setConnectingState("loading");
       }
       const socialWallet = await SocialWalletClient.createSocialWalletClient(loginType, email);
-      if (socialWallet !== null) {
+      if (sessionStorage.getItem(GNOSWAP_WALLET_TYPE_KEY) !== "ADENA" && socialWallet !== null) {
         sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "SOCIAL_WALLET");
         sessionStorage.setItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY, loginType);
         socialWallet.initSocialWallet(loginType, email);
@@ -87,9 +87,6 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
           throw new Error("Failed to create social wallet client");
         }
 
-        sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "SOCIAL_WALLET");
-        sessionStorage.setItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY, loginType);
-        setWalletClient(socialWalletClient);
         accountRepository.setWalletClient(socialWalletClient);
 
         const established = await accountRepository.addEstablishedSite().catch(() => null);
@@ -103,9 +100,14 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
             throw new Error("Failed to get account");
           }
 
-          sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
+          setWalletClient(socialWalletClient);
           setWalletAccount(account);
           accountRepository.setConnectedWallet(true);
+
+          sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "SOCIAL_WALLET");
+          sessionStorage.setItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY, loginType);
+          sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
+
           setConnectingState("done");
 
           openConnectedModal();
