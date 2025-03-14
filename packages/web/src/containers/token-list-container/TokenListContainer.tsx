@@ -220,10 +220,11 @@ const TokenListContainer: React.FC = () => {
         const data1day = checkPositivePrice(transferData.pricesBefore?.latestPrice, transferData.pricesBefore?.price1d);
 
         const data7day = checkPositivePrice(transferData.pricesBefore?.latestPrice, transferData.pricesBefore?.price7d);
-        const graphStatus = checkPositivePrice(
-          transferData.pricesBefore?.latestPrice,
-          tempTokenPrice.last7d?.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime())?.[0].price,
-        ).status;
+        const latestGraphPrice =
+          tempTokenPrice.last7d.length > 0
+            ? tempTokenPrice.last7d[tempTokenPrice.last7d.length - 1].price
+            : tempTokenPrice.pricesBefore.latestPrice;
+        const graphStatus = checkPositivePrice(transferData.pricesBefore?.latestPrice, latestGraphPrice).status;
 
         const data30D = checkPositivePrice(transferData.pricesBefore?.latestPrice, transferData.pricesBefore?.price30d);
 
