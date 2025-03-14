@@ -268,6 +268,11 @@ export const useSwapHandler = () => {
     return BigNumber(tokenBAmount).multipliedBy(tokenPrices[checkGnotPath(tokenB.priceID)].usd).toNumber();
   }, [tokenB, tokenBAmount, tokenPrices]);
 
+  const getValidUSDValue = (token: TokenModel) => {
+    const usdValue = tokenPrices[checkGnotPath(token.path)]?.usd;
+    return typeof usdValue === "number" && usdValue > 0 ? usdValue : null;
+  };
+
   const priceImpact = useMemo(() => {
     if (!tokenA || !tokenB) {
       return BigNumber(0);
@@ -283,15 +288,15 @@ export const useSwapHandler = () => {
       setTokenAAmount(estimatedAmount);
     }
 
-    const hasUSDPrice =
-      !!tokenPrices[checkGnotPath(tokenA.path)]?.usd && !!tokenPrices[checkGnotPath(tokenB.path)]?.usd;
+    const tokenAUSDValue = getValidUSDValue(tokenA);
+    const tokenBUSDValue = getValidUSDValue(tokenB);
+    const hasUSDPrice = tokenAUSDValue !== null && tokenBUSDValue !== null;
 
     if (hasUSDPrice) {
       const tokenAUSDValue = tokenPrices[checkGnotPath(tokenA.path)]?.usd || 0;
       const tokenBUSDValue = tokenPrices[checkGnotPath(tokenB.path)]?.usd || 0;
 
       const tokenAUSDAmount = (makeDisplayTokenAmount(tokenA, tokenAAmount) || 0) * Number(tokenAUSDValue);
-
       const tokenBUSDAmount = (makeDisplayTokenAmount(tokenB, tokenBAmount) || 0) * Number(tokenBUSDValue);
 
       const priceImpactNum =
