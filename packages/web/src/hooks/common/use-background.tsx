@@ -152,7 +152,8 @@ export const useBackground = () => {
 
       if (walletType === "SOCIAL_WALLET") {
         const socialLoginType = walletClient.getLoginType?.();
-        if (socialLoginType && connectingState !== "error" && connectingState !== "done") {
+        const invalidStates = ["error", "done"];
+        if (socialLoginType && !invalidStates.includes(connectingState)) {
           await connectSocialAccount(socialLoginType);
         }
       }
