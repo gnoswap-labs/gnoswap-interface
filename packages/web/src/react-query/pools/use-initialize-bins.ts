@@ -44,7 +44,7 @@ export const useInitializeBins = (
           };
           return [minBin, maxBin];
         })
-        .sort(bin => bin.minTick);
+        .sort((a, b) => a.minTick - b.minTick);
 
       return bins;
     },
