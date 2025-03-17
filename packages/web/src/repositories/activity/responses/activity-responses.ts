@@ -27,6 +27,18 @@ export interface OnchainToken {
   priceID: string;
 }
 
+export const emptyToken: OnchainToken = {
+  type: "",
+  chainId: "",
+  createdAt: "",
+  name: "",
+  path: "",
+  decimals: 6,
+  symbol: "-",
+  logoURI: "",
+  priceID: "",
+};
+
 export const dummyActivityData: ActivityData = {
   txHash: "hNaBGE2oDb15Q08y68wpycjwwGaCcXcU2jnrRRfuUo0%3D",
   actionType: DexEvent.ADD,
