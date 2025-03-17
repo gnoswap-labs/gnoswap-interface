@@ -9,7 +9,7 @@ import IconOpenLink from "@components/common/icons/IconOpenLink";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { ACTIVITY_INFO, MOBILE_ACTIVITY_INFO } from "@constants/skeleton.constant";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
-import { ActivityData } from "@repositories/activity/responses/activity-responses";
+import { ActivityData, emptyToken } from "@repositories/activity/responses/activity-responses";
 import { DexEvent } from "@repositories/common";
 import { formatOtherPrice, formatPoolPairAmount } from "@utils/new-number-utils";
 import { formatAddress } from "@utils/string-utils";
@@ -142,8 +142,11 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
 export default ActivityInfo;
 
 const formatActivity = (res: ActivityData, t: TFunction<"translation", undefined>, explorerUrl: string): Activity => {
-  const tokenASymbol = res.tokenA.symbol;
-  const tokenBSymbol = res.tokenB.symbol;
+  const tokenA = res.tokenA || emptyToken;
+  const tokenB = res.tokenB || emptyToken;
+
+  const tokenASymbol = tokenA.symbol;
+  const tokenBSymbol = tokenB.symbol;
   const shouldShowTokenAAmount =
     (res.actionType !== DexEvent.CLAIM_FEE || (!!res.tokenAAmount && !!Number(res.tokenAAmount))) &&
     res.actionType !== DexEvent.PROPOSE_TEXT &&
@@ -288,15 +291,15 @@ const formatActivity = (res: ActivityData, t: TFunction<"translation", undefined
   const tokenAAmount =
     tokenASymbol && shouldShowTokenAAmount
       ? `${formatPoolPairAmount(res.tokenAAmount, {
-          decimals: res.tokenA.decimals,
-        })} ${res.tokenA.symbol}`
+          decimals: tokenA.decimals,
+        })} ${tokenA.symbol}`
       : "-";
 
   const tokenBAmount =
     tokenBSymbol && shouldShowTokenBAmount
       ? `${formatPoolPairAmount(res.tokenBAmount, {
-          decimals: res.tokenB.decimals,
-        })} ${res.tokenB.symbol}`
+          decimals: tokenB.decimals,
+        })} ${tokenB.symbol}`
       : "-";
 
   return {
