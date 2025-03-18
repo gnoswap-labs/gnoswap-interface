@@ -13,6 +13,7 @@ const FONT_SIZES = {
   24: "9px",
   21: "8px",
   20: "7px",
+  16: "6.5px",
 } as const;
 
 type SizeKey = keyof typeof FONT_SIZES;

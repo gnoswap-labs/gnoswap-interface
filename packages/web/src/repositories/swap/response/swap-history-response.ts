@@ -15,7 +15,5 @@ export interface SwapHistoryItem {
 
   time: string;
 
-  totalUsd: string;
-
   txHash: string;
 }

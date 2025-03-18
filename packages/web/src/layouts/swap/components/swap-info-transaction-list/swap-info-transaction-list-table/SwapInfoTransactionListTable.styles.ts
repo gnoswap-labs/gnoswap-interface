@@ -9,6 +9,7 @@ export const TransactionListTableHeader = styled.div`
   justify-content: center;
   ${fonts.body12};
   color: ${({ theme }) => theme.color.text04};
+  margin-bottom: 6px;
 `;
 
 export const TableHeader = styled.div<{ tdWidth: number }>`
@@ -55,7 +56,7 @@ export const TransactionListTableRowWrapper = styled.div`
   align-items: center;
   justify-content: flex-start;
   width: 100%;
-  padding: 12px 0;
+  padding: 10px 0;
   &.highlight {
     animation: shake 0.7s ease-in-out;
   }

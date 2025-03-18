@@ -1,0 +1,55 @@
+import { SwapHistoryItem } from "@repositories/swap/response/swap-history-response";
+import { GNOT_TOKEN, GNS_TOKEN } from "@common/values/token-constant";
+
+export const mockSwapHistory: SwapHistoryItem[] = [
+  {
+    fromToken: GNOT_TOKEN,
+    toToken: GNS_TOKEN,
+    fromTokenAmount: "1100.123123",
+    toTokenAmount: "2000.21",
+    fromUsdValue: "1",
+    toUsdValue: "1.2312",
+    time: new Date().toISOString(),
+    txHash: "",
+  },
+  {
+    fromToken: GNOT_TOKEN,
+    toToken: GNS_TOKEN,
+    fromTokenAmount: "100",
+    toTokenAmount: "200.12",
+    fromUsdValue: "1",
+    toUsdValue: "2",
+    time: new Date().toISOString(),
+    txHash: "",
+  },
+  {
+    fromToken: GNOT_TOKEN,
+    toToken: GNS_TOKEN,
+    fromTokenAmount: "40.123123",
+    toTokenAmount: "60.21",
+    fromUsdValue: "1",
+    toUsdValue: "1111.12",
+    time: new Date().toISOString(),
+    txHash: "",
+  },
+  {
+    fromToken: GNOT_TOKEN,
+    toToken: GNS_TOKEN,
+    fromTokenAmount: "1500.123123",
+    toTokenAmount: "2010.21",
+    fromUsdValue: "1",
+    toUsdValue: "7777777.12",
+    time: new Date().toISOString(),
+    txHash: "",
+  },
+  {
+    fromToken: GNOT_TOKEN,
+    toToken: GNS_TOKEN,
+    fromTokenAmount: "1.123123",
+    toTokenAmount: "2.21",
+    fromUsdValue: "1",
+    toUsdValue: "888888888888.12",
+    time: new Date().toISOString(),
+    txHash: "",
+  },
+];

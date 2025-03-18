@@ -52,6 +52,7 @@ const TokenSwapContainer: React.FC = () => {
     setSwapRateAction,
     setTokenAAmount,
     priceImpactStatus,
+    initializeSwapTokenInputAmount,
   } = useSwapHandler();
 
   useEffect(() => {
@@ -117,6 +118,13 @@ const TokenSwapContainer: React.FC = () => {
       };
     });
   }, [tokenB, tokenA, swapValue?.tokenA?.symbol]);
+
+  // Initialize token information when component mounts/unmounts
+  useEffect(() => {
+    initializeSwapTokenInputAmount();
+
+    return () => initializeSwapTokenInputAmount();
+  }, []);
 
   const handleChangeTokenB = (token: TokenModel) => {
     if (token.path === swapTokenInfo.tokenB?.path) return;

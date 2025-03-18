@@ -47,6 +47,7 @@ const SwapContainer: React.FC = () => {
     setTokenAAmount,
     isSameToken,
     handleResetEstimatedLiquidity,
+    initializeSwapTokenInputAmount,
   } = useSwapHandler();
 
   useEffect(() => {
@@ -102,6 +103,13 @@ const SwapContainer: React.FC = () => {
       tokenBAmount: tokenBAmountQuery,
     });
   }, [initialized, router.query, tokens]);
+
+  // Initialize token information when component mounts/unmounts
+  useEffect(() => {
+    initializeSwapTokenInputAmount();
+
+    return () => initializeSwapTokenInputAmount();
+  }, []);
 
   return (
     <SwapCard

@@ -145,6 +145,7 @@ export const SelectTokenWrapper = styled.div`
     width: 100%;
     gap: 4px;
     max-height: 306px;
+    min-height: 306px;
     &.token-list-wrapper-auto-height {
       height: auto;
     }
@@ -157,7 +158,10 @@ export const SelectTokenWrapper = styled.div`
       color: ${({ theme }) => theme.color.text04};
       ${fonts.body12};
       width: 100%;
-      height: 120px;
+      height: 306px;
+      ${media.mobile} {
+        height: 248px;
+      }
     }
     .list {
       ${mixins.flexbox("row", "center", "space-between")};

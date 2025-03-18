@@ -7,6 +7,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { useTokenImage } from "@hooks/token/data/use-token-image";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
+import { removeTrailingZeros } from "@utils/new-number-utils";
 
 import { AutoRoutePoolInfoWrapper, AutoRouterWrapper, DotLine } from "./SwapCardAutoRouter.styles";
 
@@ -56,7 +57,7 @@ const SwapCardAutoRouterItem: React.FC<SwapCardAutoRouterItemProps> = ({ swapRou
       currentFromToken = toToken;
 
       return {
-        fee: `${(Number(fee) / 10000).toFixed(2)}%`,
+        fee: `${removeTrailingZeros((Number(fee) / 10000).toFixed(2))}%`,
         fromToken,
         toToken,
       };
