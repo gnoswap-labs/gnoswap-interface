@@ -81,7 +81,7 @@ export const ConnectWalletModalWrapper = styled.div`
           height: 100%;
           color: ${({ theme }) => theme.color.text01};
           &::placeholder {
-            color: ${({ theme }) => theme.color.text05};
+            color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.icon03 : theme.color.text05)};
           }
         }
         > button {

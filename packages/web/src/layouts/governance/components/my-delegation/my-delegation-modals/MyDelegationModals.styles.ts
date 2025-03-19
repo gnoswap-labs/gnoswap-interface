@@ -174,14 +174,14 @@ export const MyDelegationModalWrapper = styled.div`
         flex-shrink: 0;
         justify-content: flex-start;
         min-width: 88px;
-        color: ${({ theme }) => theme.color.text03};
+        color: ${({ theme }) => theme.color.text04};
         ${fonts.body13}
       }
       .value {
         ${mixins.flexbox("row", "center", "center")};
         gap: 4px;
         text-align: end;
-        color: ${({ theme }) => theme.color.text03};
+        color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : "#596782")};
         ${fonts.body13}
         max-width: 60%;
         span {

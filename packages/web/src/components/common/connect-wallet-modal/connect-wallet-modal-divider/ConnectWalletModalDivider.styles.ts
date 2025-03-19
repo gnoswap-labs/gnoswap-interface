@@ -29,7 +29,7 @@ export const DividerWrapper = styled.div`
   }
 
   span {
-    ${fonts.body12}color: ${({ theme }) => theme.color.text01};
+    ${fonts.body12}color: #596782;
     font-size: 12px;
     font-weight: 500;
   }
