@@ -8,7 +8,7 @@ import { PortfolioSEOContainer } from "@containers/seo-header-container";
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "Earn", "Wallet"])),
+      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "Earn", "Wallet", "Metatag(title)"])),
     },
   };
 }

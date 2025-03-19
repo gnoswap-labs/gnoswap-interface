@@ -8,7 +8,13 @@ import { GovernanceSEOContainer } from "@containers/seo-header-container";
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ["Governance", "Wallet", "common", ...DEFAULT_I18N_NS])),
+      ...(await serverSideTranslations(locale, [
+        "Governance",
+        "Wallet",
+        "common",
+        "Metatag(title)",
+        ...DEFAULT_I18N_NS,
+      ])),
     },
   };
 }

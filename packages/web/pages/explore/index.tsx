@@ -8,7 +8,7 @@ import { ExploreSEOContainer } from "@containers/seo-header-container";
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "Dashboard"])),
+      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "Dashboard", "Metatag(title)"])),
     },
   };
 }
