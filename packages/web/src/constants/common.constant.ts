@@ -252,7 +252,7 @@ export const SEOInfo: Record<
     desc: () => "Page Unavailable!",
   },
   "/explore": {
-    title: () => "Metatag(title):seo.title.dashboard",
+    title: () => "Metatag(title):seo.title.explore",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
@@ -278,7 +278,7 @@ export const SEOInfo: Record<
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
   "/portfolio": {
-    title: () => "Metatag(title):seo.title.wallet",
+    title: () => "Metatag(title):seo.title.portfolio",
     desc: () =>
       "Swap and earn on the most powerful decentralized exchange (DEX) built on Gno.land with concentrated liquidity.",
   },
