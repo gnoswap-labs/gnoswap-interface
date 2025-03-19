@@ -97,13 +97,13 @@ export const LaunchpadDepositModalWrapper = styled.div`
               font-size: 13px;
             }
             .key {
-              color: ${({ theme }) => theme.color.text04};
+              color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text04 : "#90A2C0")};
               ${media}
             }
             .value {
               ${mixins.flexbox("row", "center", "center")};
               gap: 4px;
-              color: ${({ theme }) => theme.color.text03};
+              color: ${({ theme }) => (theme.themeKey === "dark" ? "#90A2C0" : "#596782")};
             }
           }
         }

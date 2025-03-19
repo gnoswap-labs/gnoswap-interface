@@ -57,8 +57,7 @@ export const CardWrapper = styled.div`
   }
 
   .card-description {
-    /* color: ${({ theme }) => theme.color.text03}; */
-    color: ${({ theme }) => (theme.themeKey === "dark" ? "#596782" : theme.color.text03)};
+    color: ${({ theme }) => (theme.themeKey === "dark" ? "#596782" : "#90A2C0")};
     width: 100%;
     font-size: 14px;
     font-weight: 500;

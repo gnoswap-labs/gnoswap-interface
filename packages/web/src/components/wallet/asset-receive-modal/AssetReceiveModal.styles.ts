@@ -137,7 +137,7 @@ export const DepositBoxContent = styled.div`
       gap: 30px;
 
       .address {
-        color: ${({ theme }) => theme.color.text04};
+        color: ${({ theme }) => (theme.themeKey === "dark" ? "#90A2C0" : "#596782")};
         font-size: 14px;
         font-style: normal;
         font-weight: 400;
