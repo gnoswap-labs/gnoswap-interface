@@ -2,7 +2,6 @@ import RecentlyAddedCardList from "@components/home/recently-added-card-list/Rec
 import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { CardListKeyStats } from "@models/common/card-list-item-info";
-import { useGetDashboardVolume } from "@query/dashboard";
 import { useGetChainInfo } from "@query/token";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import React, { useCallback } from "react";
@@ -13,11 +12,8 @@ const RecentlyAddedCardListContainer: React.FC = () => {
   const router = useCustomRouter();
   const { breakpoint } = useWindowSize();
   const { isLoadingDashboardStats } = useLoading();
-  const { data } = useGetDashboardVolume();
   const { data: chainData } = useGetChainInfo();
   const { t } = useTranslation();
-
-  const { fees24hUsd } = data || {};
 
   const list: CardListKeyStats[] = [
     {
@@ -26,11 +22,11 @@ const RecentlyAddedCardListContainer: React.FC = () => {
     },
     {
       label: t("Main:keyStatCard.swapVol24"),
-      content: formatOtherPrice(chainData?.stat?.volume24hUsd),
+      content: formatOtherPrice(chainData?.stat?.swapVolume24Usd),
     },
     {
       label: t("Main:keyStatCard.swapFee24"),
-      content: formatOtherPrice(fees24hUsd),
+      content: formatOtherPrice(chainData?.stat?.swapFees24Usd),
     },
   ];
 

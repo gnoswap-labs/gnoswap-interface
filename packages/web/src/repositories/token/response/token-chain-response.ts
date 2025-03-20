@@ -24,7 +24,8 @@ export interface ILoser {
 }
 
 export interface IChainStat {
-  allTimeVolumeUsd: string;
   tvlUsd: string;
   volume24hUsd: string;
+  swapVolume24Usd: string;
+  swapFees24Usd: string;
 }

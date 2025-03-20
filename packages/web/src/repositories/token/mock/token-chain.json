@@ -2,7 +2,8 @@
   "stat": {
     "tvlUsd": "136106186.1658715",
     "volume24hUsd": "98608.617",
-    "allTimeVolumeUsd": "10816.1597819619"
+    "swapVolume24Usd": "10816.1597819619",
+    "swapFees24Usd": "13457.978242"
   },
   "trending": [
     {
