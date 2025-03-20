@@ -11,7 +11,7 @@ import { formatOtherPrice } from "@utils/new-number-utils";
 const RecentlyAddedCardListContainer: React.FC = () => {
   const router = useCustomRouter();
   const { breakpoint } = useWindowSize();
-  const { isLoadingDashboardStats } = useLoading();
+  const { isLoadingChainData } = useLoading();
   const { data: chainData } = useGetChainInfo();
   const { t } = useTranslation();
 
@@ -45,12 +45,7 @@ const RecentlyAddedCardListContainer: React.FC = () => {
   );
 
   return (
-    <RecentlyAddedCardList
-      list={list}
-      device={breakpoint}
-      onClickItem={onClickItem}
-      loading={isLoadingDashboardStats}
-    />
+    <RecentlyAddedCardList list={list} device={breakpoint} onClickItem={onClickItem} loading={isLoadingChainData} />
   );
 };
 
