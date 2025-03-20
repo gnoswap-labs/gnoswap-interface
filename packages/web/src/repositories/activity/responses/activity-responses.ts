@@ -13,6 +13,7 @@ export interface ActivityData {
   usedTokens?: number;
   account: string;
   time: string;
+  success: boolean;
 }
 
 export interface OnchainToken {
@@ -70,4 +71,5 @@ export const dummyActivityData: ActivityData = {
   usedTokens: 2,
   account: "",
   time: "",
+  success: true,
 };

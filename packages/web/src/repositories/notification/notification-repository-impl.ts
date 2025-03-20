@@ -98,10 +98,10 @@ export class NotificationRepositoryImpl implements NotificationRepository {
       }
 
       const txModel: TransactionModel = {
-        txType: tx.tokenB.name ? 1 : 0,
+        txType: tx.tokenB?.name ? 1 : 0,
         txHash: tx.txHash,
         tokenInfo: { tokenA: tx.tokenA, tokenB: tx.tokenB },
-        status: "SUCCESS",
+        status: tx.success ? "SUCCESS" : "FAILED",
         createdAt: tx.time,
         isRead: seenTxs.includes(tx.txHash), // * Check if transaction is already seen
         rawValue: tx,
