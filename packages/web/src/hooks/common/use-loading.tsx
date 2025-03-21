@@ -11,6 +11,7 @@ import { useGetLaunchpadActiveProjects } from "@query/launchpad/use-get-launchpa
 export const useLoading = () => {
   const { address } = useAddress();
   const { data: initialized } = useInitLoading();
+  const { isFetched: isFetchedChainData } = useGetChainInfo();
   const { isFetched: isFetchedTokenData, isFetchedTokenPrices } = useTokenData();
   const { isFetched: isFetchedChainList } = useGetChainInfo({ enabled: false });
   const { isFetched: isFetchedPoolData } = useGetPoolList({ enabled: false });
@@ -64,6 +65,14 @@ export const useLoading = () => {
     return !isFetchedPoolData;
   }, [initialized, isFetchedPoolData]);
 
+  const isLoadingChainData = useMemo(() => {
+    if (!initialized) {
+      return true;
+    }
+
+    return !isFetchedChainData;
+  }, [initialized]);
+
   const isLoadingDashboardStats = useMemo(() => {
     if (!initialized) {
       return true;
@@ -94,6 +103,7 @@ export const useLoading = () => {
     isLoadingPools,
     isLoadingTrendingTokens,
     isLoadingHighestAPRPools,
+    isLoadingChainData,
     isLoadingDashboardStats,
     isLoadingPositions,
     isLoadingLaunchpadProjectList,

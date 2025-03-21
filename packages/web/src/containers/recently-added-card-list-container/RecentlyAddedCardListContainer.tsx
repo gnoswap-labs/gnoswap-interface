@@ -2,7 +2,6 @@ import RecentlyAddedCardList from "@components/home/recently-added-card-list/Rec
 import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { CardListKeyStats } from "@models/common/card-list-item-info";
-import { useGetDashboardVolume } from "@query/dashboard";
 import { useGetChainInfo } from "@query/token";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import React, { useCallback } from "react";
@@ -12,13 +11,10 @@ import { formatOtherPrice } from "@utils/new-number-utils";
 const RecentlyAddedCardListContainer: React.FC = () => {
   const router = useCustomRouter();
   const { breakpoint } = useWindowSize();
-  const { isLoadingDashboardStats } = useLoading();
-  const { data } = useGetDashboardVolume();
+  const { isLoadingChainData } = useLoading();
   const { data: chainData } = useGetChainInfo();
   const { t } = useTranslation();
-
-  const { fees24hUsd } = data || {};
-
+  console.log(chainData, "chain");
   const list: CardListKeyStats[] = [
     {
       label: t("Main:keyStatCard.totalValueLocked"),
@@ -26,11 +22,11 @@ const RecentlyAddedCardListContainer: React.FC = () => {
     },
     {
       label: t("Main:keyStatCard.swapVol24"),
-      content: formatOtherPrice(chainData?.stat?.volume24hUsd),
+      content: formatOtherPrice(chainData?.stat?.swapVolume24hUsd),
     },
     {
       label: t("Main:keyStatCard.swapFee24"),
-      content: formatOtherPrice(fees24hUsd),
+      content: formatOtherPrice(chainData?.stat?.swapFees24hUsd),
     },
   ];
 
@@ -49,12 +45,7 @@ const RecentlyAddedCardListContainer: React.FC = () => {
   );
 
   return (
-    <RecentlyAddedCardList
-      list={list}
-      device={breakpoint}
-      onClickItem={onClickItem}
-      loading={isLoadingDashboardStats}
-    />
+    <RecentlyAddedCardList list={list} device={breakpoint} onClickItem={onClickItem} loading={isLoadingChainData} />
   );
 };
 
