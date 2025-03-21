@@ -14,7 +14,7 @@ const RecentlyAddedCardListContainer: React.FC = () => {
   const { isLoadingChainData } = useLoading();
   const { data: chainData } = useGetChainInfo();
   const { t } = useTranslation();
-
+  console.log(chainData, "chain");
   const list: CardListKeyStats[] = [
     {
       label: t("Main:keyStatCard.totalValueLocked"),
@@ -22,11 +22,11 @@ const RecentlyAddedCardListContainer: React.FC = () => {
     },
     {
       label: t("Main:keyStatCard.swapVol24"),
-      content: formatOtherPrice(chainData?.stat?.swapVolume24Usd),
+      content: formatOtherPrice(chainData?.stat?.swapVolume24hUsd),
     },
     {
       label: t("Main:keyStatCard.swapFee24"),
-      content: formatOtherPrice(chainData?.stat?.swapFees24Usd),
+      content: formatOtherPrice(chainData?.stat?.swapFees24hUsd),
     },
   ];
 
