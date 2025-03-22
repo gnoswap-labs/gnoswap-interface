@@ -14,7 +14,7 @@ const RecentlyAddedCardListContainer: React.FC = () => {
   const { isLoadingChainData } = useLoading();
   const { data: chainData } = useGetChainInfo();
   const { t } = useTranslation();
-  console.log(chainData, "chain");
+
   const list: CardListKeyStats[] = [
     {
       label: t("Main:keyStatCard.totalValueLocked"),

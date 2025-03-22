@@ -18,6 +18,7 @@ import { SwapHistoryItem } from "@repositories/swap/response/swap-history-respon
 import { formatDisplayTime, getTimeDiffInSeconds } from "@common/utils/date-util";
 import { formatPrice, formatTokenAmount, removeTrailingZeros } from "@utils/new-number-utils";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { useTokenImage } from "@hooks/token/data/use-token-image";
 
 import {
   TableHeader,
@@ -64,6 +65,7 @@ const SwapInfoTransactionListTable = ({
   tokenPairParams,
 }: SwapInfoTransactionListTableProps) => {
   const { t } = useTranslation();
+
   const prevSwapHistoryRef = React.useRef<SwapHistoryItem[]>([]);
   const [newTransactions, setNewTransactions] = React.useState<Set<string>>(new Set());
   const skipAnimationRef = React.useRef(true); // Skip animation on initial load or token pair change
@@ -146,6 +148,7 @@ const SwapInfoTransactionListTable = ({
 };
 
 const TransactionListTableRow = ({ breakpoint, data, isNewTransaction }: TransactionListTableRowProps) => {
+  const { getTokenImage } = useTokenImage();
   const { getTxUrl } = useGnoscanUrl();
 
   const widths = getTableWidths(breakpoint);
@@ -195,12 +198,12 @@ const TransactionListTableRow = ({ breakpoint, data, isNewTransaction }: Transac
         <TokenPairWrapper>
           <div className="token-amount">
             <span>{formatSwapAmount(data.fromTokenAmount)}</span>
-            <MissingLogo symbol={data.fromToken.symbol} width={14} url={data.fromToken.logoURI} />
+            <MissingLogo symbol={data.fromToken.symbol} width={14} url={getTokenImage(data.fromToken.path) || ""} />
           </div>
           <IconRightArrow className="arrow" />
           <div className="token-amount">
             <span>{formatSwapAmount(data.toTokenAmount)}</span>
-            <MissingLogo symbol={data.toToken.symbol} width={14} url={data.toToken.logoURI} />
+            <MissingLogo symbol={data.toToken.symbol} width={14} url={getTokenImage(data.toToken.path) || ""} />
           </div>
         </TokenPairWrapper>
       </TableColumn>
