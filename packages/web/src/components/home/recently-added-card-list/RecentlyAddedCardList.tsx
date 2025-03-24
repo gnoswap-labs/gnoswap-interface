@@ -35,7 +35,7 @@ const RecentlyAddedCardList: React.FC<RecentlyAddedCardListProps> = ({ list, dev
           <h2>
             <IconPieChart className="icon-clock" /> {t("Main:keyStatCard.title")}
           </h2>
-          <Link href="/dashboard" className="link-to-dashboard">
+          <Link href="/explore" className="link-to-dashboard">
             {t("Main:keyStatCard.toDashBoardBtnText")}
             <IconStrokeArrowRight />
           </Link>
