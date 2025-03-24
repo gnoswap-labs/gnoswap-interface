@@ -17,7 +17,7 @@ export const usePosition = (positions: PositionModel[]) => {
 
     const claimablePositions = positions.filter(
       position =>
-        position.reward.reduce(
+        position.rewards.reduce(
           (accum, currReward) =>
             BigNumber(accum)
               .plus(Number(currReward.claimableAmount ?? "0"))

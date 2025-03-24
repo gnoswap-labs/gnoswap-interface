@@ -144,7 +144,7 @@ export const useDecreaseHandle = () => {
 
   const aprFee = useMemo(() => {
     if (!selectedPosition) return 0;
-    return selectedPosition?.reward.reduce((acc, item) => acc + Number(item.apr || 0), 0);
+    return selectedPosition?.rewards.reduce((acc, item) => acc + Number(item.apr || 0), 0);
   }, [selectedPosition]);
 
   const selectPool = useSelectPool({

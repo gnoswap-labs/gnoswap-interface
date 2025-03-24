@@ -103,12 +103,12 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       [key in RewardType]: { [key in string]: PositionRewardForTooltip };
     } = {
       SWAP_FEE: {},
-      INTERNAL: {},
-      EXTERNAL: {},
+      INTERNAL_REWARD: {},
+      EXTERNAL_REWARD: {},
     };
 
     positions
-      .flatMap(position => position.reward)
+      .flatMap(position => position.rewards)
       .map(reward => ({
         token: reward.rewardToken,
         rewardType: reward.rewardType,
@@ -181,8 +181,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
     return {
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
-      INTERNAL: Object.values(infoMap["INTERNAL"]),
-      EXTERNAL: Object.values(infoMap["EXTERNAL"]),
+      INTERNAL_REWARD: Object.values(infoMap["INTERNAL_REWARD"]),
+      EXTERNAL_REWARD: Object.values(infoMap["EXTERNAL_REWARD"]),
     };
   }, [canShowData, positions, tokenPrices]);
 
@@ -194,8 +194,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       [key in RewardType]: { [key in string]: PositionAPRInfo };
     } = {
       SWAP_FEE: {},
-      INTERNAL: {},
-      EXTERNAL: {},
+      INTERNAL_REWARD: {},
+      EXTERNAL_REWARD: {},
     };
 
     const totalLiquidity = positions.reduce((accum, current) => {
@@ -205,7 +205,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
     positions
       .flatMap<RewardModel & { liquidity: bigint }, PoolPositionModel>(position =>
-        position.reward.map(item => ({
+        position.rewards.map(item => ({
           ...item,
           liquidity: position.liquidity,
         })),
@@ -286,16 +286,16 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
     return {
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
-      INTERNAL: Object.values(infoMap["INTERNAL"]),
-      EXTERNAL: Object.values(infoMap["EXTERNAL"]),
+      INTERNAL_REWARD: Object.values(infoMap["INTERNAL_REWARD"]),
+      EXTERNAL_REWARD: Object.values(infoMap["EXTERNAL_REWARD"]),
     };
   }, [canShowData, positions, tokenPrices]);
 
   const isShowRewardInfoTooltip = useMemo(() => {
     return (
       aprRewardInfo !== null &&
-      (aprRewardInfo?.EXTERNAL.length !== 0 ||
-        aprRewardInfo?.INTERNAL.length !== 0 ||
+      (aprRewardInfo?.EXTERNAL_REWARD.length !== 0 ||
+        aprRewardInfo?.INTERNAL_REWARD.length !== 0 ||
         aprRewardInfo?.SWAP_FEE.length !== 0)
     );
   }, [aprRewardInfo]);
@@ -330,7 +330,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     }
     const infoMap: { [key in string]: PositionRewardForTooltip } = {};
     positions
-      .flatMap(position => position.reward)
+      .flatMap(position => position.rewards)
       .map(reward => ({
         token: reward.rewardToken,
         rewardType: reward.rewardType,
@@ -433,8 +433,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   const isShowClaimableRewardInfo = useMemo(() => {
     return (
       claimableRewardInfo &&
-      (claimableRewardInfo?.EXTERNAL.length !== 0 ||
-        claimableRewardInfo?.INTERNAL.length !== 0 ||
+      (claimableRewardInfo?.EXTERNAL_REWARD.length !== 0 ||
+        claimableRewardInfo?.INTERNAL_REWARD.length !== 0 ||
         claimableRewardInfo?.SWAP_FEE.length !== 0)
     );
   }, [claimableRewardInfo]);
@@ -446,7 +446,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   const usd = useMemo(() => {
     const isEmpty = positions
       .filter(item => !item.closed)
-      .flatMap(item => item.reward)
+      .flatMap(item => item.rewards)
       .every(item => !item.claimableUsd);
 
     if (!canShowData || !isDisplayPrice || isEmpty) {
@@ -573,7 +573,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [claimableRewardInfo?.SWAP_FEE, getGnotPath]);
 
   const logoReward = useMemo(() => {
-    const internalRewardToken = claimableRewardInfo?.INTERNAL.map(item => item.token) ?? [];
+    const internalRewardToken = claimableRewardInfo?.INTERNAL_REWARD.map(item => item.token) ?? [];
     const rewardTokens = positionData?.rewardTokens || [];
     const tokenList = [...internalRewardToken, ...rewardTokens];
     const currentRewardTokens = tokenList.reduce<TokenModel[]>((acc: TokenModel[], current) => {
@@ -588,10 +588,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       ...token,
       ...getGnotPath(token),
     }));
-  }, [claimableRewardInfo?.INTERNAL, getGnotPath, positionData?.rewardTokens]);
+  }, [claimableRewardInfo?.INTERNAL_REWARD, getGnotPath, positionData?.rewardTokens]);
 
   const rewardDaily = useMemo(() => {
-    const rewards = [...(aprRewardInfo?.INTERNAL ?? []), ...(aprRewardInfo?.EXTERNAL ?? [])];
+    const rewards = [...(aprRewardInfo?.INTERNAL_REWARD ?? []), ...(aprRewardInfo?.EXTERNAL_REWARD ?? [])];
 
     const sumUSD = rewards?.reduce((accum: number | null, current) => {
       if ((accum === null || accum === undefined) && current.accuReward1DPrice === null) return null;
@@ -610,10 +610,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     if (!canShowData || !isDisplayPrice) return "-";
 
     return formatOtherPrice(sumUSD, { isKMB: false });
-  }, [aprRewardInfo?.EXTERNAL, aprRewardInfo?.INTERNAL, canShowData, isDisplayPrice]);
+  }, [aprRewardInfo?.EXTERNAL_REWARD, aprRewardInfo?.INTERNAL_REWARD, canShowData, isDisplayPrice]);
 
   const rewardClaim = useMemo(() => {
-    const rewards = [...(claimableRewardInfo?.EXTERNAL ?? []), ...(claimableRewardInfo?.INTERNAL ?? [])];
+    const rewards = [...(claimableRewardInfo?.EXTERNAL_REWARD ?? []), ...(claimableRewardInfo?.INTERNAL_REWARD ?? [])];
 
     const sumUSD = rewards?.reduce((accum: number | null, current) => {
       if (accum === null && current.usd === null) return null;
@@ -634,7 +634,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     if (!canShowData || !isDisplayPrice || isEmpty) return "-";
 
     return formatOtherPrice(sumUSD, { isKMB: false });
-  }, [claimableRewardInfo?.EXTERNAL, claimableRewardInfo?.INTERNAL, canShowData, isDisplayPrice]);
+  }, [claimableRewardInfo?.EXTERNAL_REWARD, claimableRewardInfo?.INTERNAL_REWARD, canShowData, isDisplayPrice]);
 
   const renderTotalBalance = () => {
     return (

@@ -47,7 +47,7 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
 
   const { feeApr, totalApr } = useMemo(() => {
     const positionAprs = positions.map(position => {
-      const aprs = position.reward.reduce(
+      const aprs = position.rewards.reduce(
         (accum, currentReward) => {
           if (currentReward.rewardType === "SWAP_FEE") {
             accum.fee += currentReward.apr || 0;

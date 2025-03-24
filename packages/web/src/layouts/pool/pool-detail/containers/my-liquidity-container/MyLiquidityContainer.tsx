@@ -112,7 +112,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address, is
     async (position: PoolPositionModel) => {
       if (!position) return;
 
-      const amount = position.reward.reduce((acc, item) => acc + Number(item.claimableUsd || 0), 0);
+      const amount = position.rewards.reduce((acc, item) => acc + Number(item.claimableUsd || 0), 0);
 
       const messageData = {
         tokenAAmount: formatOtherPrice(amount, { isKMB: false }),
@@ -164,7 +164,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address, is
   const claimAllReward = () => {
     const amount = openedPosition
       .filter(item => !item.closed)
-      .flatMap(item => item.reward)
+      .flatMap(item => item.rewards)
       .reduce((acc, item) => acc + Number(item.claimableUsd), 0);
 
     const messageData = {
