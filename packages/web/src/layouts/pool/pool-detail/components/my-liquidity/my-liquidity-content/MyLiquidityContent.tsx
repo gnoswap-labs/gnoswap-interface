@@ -104,7 +104,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     } = {
       SWAP_FEE: {},
       INTERNAL_REWARD: {},
-      EXTERNAL_REWARD: {},
+      EXTERNAL: {},
     };
 
     positions
@@ -182,7 +182,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     return {
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
       INTERNAL_REWARD: Object.values(infoMap["INTERNAL_REWARD"]),
-      EXTERNAL_REWARD: Object.values(infoMap["EXTERNAL_REWARD"]),
+      EXTERNAL: Object.values(infoMap["EXTERNAL"]),
     };
   }, [canShowData, positions, tokenPrices]);
 
@@ -195,7 +195,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     } = {
       SWAP_FEE: {},
       INTERNAL_REWARD: {},
-      EXTERNAL_REWARD: {},
+      EXTERNAL: {},
     };
 
     const totalLiquidity = positions.reduce((accum, current) => {
@@ -287,14 +287,14 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     return {
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
       INTERNAL_REWARD: Object.values(infoMap["INTERNAL_REWARD"]),
-      EXTERNAL_REWARD: Object.values(infoMap["EXTERNAL_REWARD"]),
+      EXTERNAL: Object.values(infoMap["EXTERNAL"]),
     };
   }, [canShowData, positions, tokenPrices]);
 
   const isShowRewardInfoTooltip = useMemo(() => {
     return (
       aprRewardInfo !== null &&
-      (aprRewardInfo?.EXTERNAL_REWARD.length !== 0 ||
+      (aprRewardInfo?.EXTERNAL.length !== 0 ||
         aprRewardInfo?.INTERNAL_REWARD.length !== 0 ||
         aprRewardInfo?.SWAP_FEE.length !== 0)
     );
@@ -433,7 +433,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   const isShowClaimableRewardInfo = useMemo(() => {
     return (
       claimableRewardInfo &&
-      (claimableRewardInfo?.EXTERNAL_REWARD.length !== 0 ||
+      (claimableRewardInfo?.EXTERNAL.length !== 0 ||
         claimableRewardInfo?.INTERNAL_REWARD.length !== 0 ||
         claimableRewardInfo?.SWAP_FEE.length !== 0)
     );
@@ -591,7 +591,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [claimableRewardInfo?.INTERNAL_REWARD, getGnotPath, positionData?.rewardTokens]);
 
   const rewardDaily = useMemo(() => {
-    const rewards = [...(aprRewardInfo?.INTERNAL_REWARD ?? []), ...(aprRewardInfo?.EXTERNAL_REWARD ?? [])];
+    const rewards = [...(aprRewardInfo?.INTERNAL_REWARD ?? []), ...(aprRewardInfo?.EXTERNAL ?? [])];
 
     const sumUSD = rewards?.reduce((accum: number | null, current) => {
       if ((accum === null || accum === undefined) && current.accuReward1DPrice === null) return null;
@@ -610,10 +610,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     if (!canShowData || !isDisplayPrice) return "-";
 
     return formatOtherPrice(sumUSD, { isKMB: false });
-  }, [aprRewardInfo?.EXTERNAL_REWARD, aprRewardInfo?.INTERNAL_REWARD, canShowData, isDisplayPrice]);
+  }, [aprRewardInfo?.EXTERNAL, aprRewardInfo?.INTERNAL_REWARD, canShowData, isDisplayPrice]);
 
   const rewardClaim = useMemo(() => {
-    const rewards = [...(claimableRewardInfo?.EXTERNAL_REWARD ?? []), ...(claimableRewardInfo?.INTERNAL_REWARD ?? [])];
+    const rewards = [...(claimableRewardInfo?.EXTERNAL ?? []), ...(claimableRewardInfo?.INTERNAL_REWARD ?? [])];
 
     const sumUSD = rewards?.reduce((accum: number | null, current) => {
       if (accum === null && current.usd === null) return null;
@@ -634,7 +634,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     if (!canShowData || !isDisplayPrice || isEmpty) return "-";
 
     return formatOtherPrice(sumUSD, { isKMB: false });
-  }, [claimableRewardInfo?.EXTERNAL_REWARD, claimableRewardInfo?.INTERNAL_REWARD, canShowData, isDisplayPrice]);
+  }, [claimableRewardInfo?.EXTERNAL, claimableRewardInfo?.INTERNAL_REWARD, canShowData, isDisplayPrice]);
 
   const renderTotalBalance = () => {
     return (

@@ -72,7 +72,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
     const initRewardTypeMap = () => ({
       SWAP_FEE: {},
       INTERNAL_REWARD: {},
-      EXTERNAL_REWARD: {},
+      EXTERNAL: {},
     });
 
     const claimableMap: {
@@ -88,12 +88,12 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         claimedRewardInfo: {
           SWAP_FEE: [],
           INTERNAL_REWARD: [],
-          EXTERNAL_REWARD: [],
+          EXTERNAL: [],
         },
         claimableRewardInfo: {
           SWAP_FEE: [],
           INTERNAL_REWARD: [],
-          EXTERNAL_REWARD: [],
+          EXTERNAL: [],
         },
       };
     }
@@ -206,16 +206,14 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
       claimedRewardInfo: {
         SWAP_FEE: Object.values(claimedMap.SWAP_FEE),
         INTERNAL_REWARD: Object.values(claimedMap.INTERNAL_REWARD),
-        EXTERNAL_REWARD: Object.values(claimedMap.EXTERNAL_REWARD),
+        EXTERNAL: Object.values(claimedMap.EXTERNAL),
       },
       claimableRewardInfo: {
         SWAP_FEE: Object.values(claimableMap.SWAP_FEE).filter(reward => reward.amount && reward.amount > 0),
         INTERNAL_REWARD: Object.values(claimableMap.INTERNAL_REWARD).filter(
           reward => reward.amount && reward.amount > 0,
         ),
-        EXTERNAL_REWARD: Object.values(claimableMap.EXTERNAL_REWARD).filter(
-          reward => reward.amount && reward.amount > 0,
-        ),
+        EXTERNAL: Object.values(claimableMap.EXTERNAL).filter(reward => reward.amount && reward.amount > 0),
       },
     };
   }, [positions, tokenPrices]);
@@ -223,8 +221,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
   const hasInfo = (data: {
     [key in RewardType]: PositionRewardForTooltip[];
   }): boolean => {
-    if (data.SWAP_FEE.length === 0 && data.INTERNAL_REWARD.length === 0 && data.EXTERNAL_REWARD.length === 0)
-      return false;
+    if (data.SWAP_FEE.length === 0 && data.INTERNAL_REWARD.length === 0 && data.EXTERNAL.length === 0) return false;
     return true;
   };
 
