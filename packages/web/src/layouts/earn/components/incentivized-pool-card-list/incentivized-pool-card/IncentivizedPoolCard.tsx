@@ -68,7 +68,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
   }, [getGnotPath, pool.rewardTokens]);
 
   const isHideBar = useMemo(() => {
-    const isAllReserveZeroBin40 = pool.bins40.every(
+    const isAllReserveZeroBin40 = pool?.bins40?.every(
       item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
     );
 
