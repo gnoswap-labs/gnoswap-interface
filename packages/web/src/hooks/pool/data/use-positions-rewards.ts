@@ -152,7 +152,7 @@ export const usePositionsRewards = ({ positions }: PositionsRewardsProps) => {
 
           position.rewards.forEach(rewardInfo => {
             if (rewardInfo.rewardToken.path === rewardTokenPath) {
-              if (rewardInfo.rewardType !== "SWAP_FEE") {
+              if (rewardInfo.rewardToken.rewardType !== "SWAP_FEE") {
                 newAccum.rewards.amount += Number(rewardInfo.claimableAmount);
                 newAccum.rewards.usd +=
                   Number(rewardInfo.claimableUsd) || Number(rewardInfo.claimableAmount) * tokenPrice;

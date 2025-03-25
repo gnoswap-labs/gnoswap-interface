@@ -197,18 +197,19 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       [key in RewardType]: PositionRewardForTooltip[];
     }>(
       (accum, current) => {
-        if (!accum[current.rewardType]) {
-          accum[current.rewardType] = [];
+        const rewardType = current.rewardToken.rewardType;
+        if (!accum[rewardType]) {
+          accum[rewardType] = [];
         }
 
-        const index = accum[current.rewardType].findIndex(item => item.token.priceID === current.rewardToken.priceID);
+        const index = accum[rewardType].findIndex(item => item.token.priceID === current.rewardToken.priceID);
 
         const tokenPrice = tokenPrices[current.rewardToken.priceID].usd
           ? Number(tokenPrices[current.rewardToken.priceID].usd)
           : null;
 
         if (index !== -1) {
-          const existReward = accum[current.rewardType][index];
+          const existReward = accum[rewardType][index];
           const accuReward1D = (() => {
             if (existReward.accumulatedRewardOf1d === null && !current.accuReward1D) {
               return null;
@@ -226,31 +227,31 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
           })();
           const accuReward1DUsd = accuReward1D !== null && tokenPrice !== null ? accuReward1D * tokenPrice : null;
           const usd = (() => {
-            if (accum[current.rewardType][index].usd === null && !current.claimableUsd) {
+            if (accum[rewardType][index].usd === null && !current.claimableUsd) {
               return null;
             }
 
-            if (accum[current.rewardType][index].usd === null) {
+            if (accum[rewardType][index].usd === null) {
               return Number(current.claimableUsd);
             }
 
             if (!current.claimableUsd) {
-              return accum[current.rewardType][index].usd;
+              return accum[rewardType][index].usd;
             }
 
-            return (accum[current.rewardType][index].usd || 0) + Number(current.claimableUsd);
+            return (accum[rewardType][index].usd || 0) + Number(current.claimableUsd);
           })();
 
-          accum[current.rewardType][index] = {
+          accum[rewardType][index] = {
             ...existReward,
-            amount: (accum[current.rewardType][index].amount || 0) + Number(current.claimableAmount),
+            amount: (accum[rewardType][index].amount || 0) + Number(current.claimableAmount),
             usd: usd,
             accumulatedRewardOf1dUsd: accuReward1DUsd,
             accumulatedRewardOf1d: accuReward1D,
           };
         } else {
-          accum[current.rewardType].push({
-            rewardType: current.rewardType,
+          accum[rewardType].push({
+            rewardType: rewardType,
             token: current.rewardToken,
             amount: Number(current.claimableAmount) || 0,
             usd: current.claimableUsd ? Number(current.claimableUsd) : null,
@@ -341,17 +342,18 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       [key in RewardType]: PositionAPRInfo[];
     }>(
       (accum, current) => {
-        const currentTypeRewards = accum[current.rewardType];
+        const rewardType = current.rewardToken.rewardType;
+        const currentTypeRewards = accum[rewardType];
         const tokenPrice = tokenPrices[current.rewardToken.priceID].usd
           ? Number(tokenPrices[current.rewardToken.priceID].usd)
           : null;
 
         if (!currentTypeRewards) {
-          accum[current.rewardType] = [];
+          accum[rewardType] = [];
         }
-        const index = accum[current.rewardType].findIndex(item => item.token.priceID === current.rewardToken.priceID);
+        const index = accum[rewardType].findIndex(item => item.token.priceID === current.rewardToken.priceID);
         if (index != -1) {
-          const existReward = accum[current.rewardType][index];
+          const existReward = accum[rewardType][index];
           const accuReward1D = (() => {
             if (existReward.accuReward1D === null && !current.accuReward1D) {
               return null;
@@ -384,16 +386,16 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
           })();
           const accuReward1DUsd = accuReward1D !== null && tokenPrice !== null ? accuReward1D * tokenPrice : null;
 
-          accum[current.rewardType][index] = {
+          accum[rewardType][index] = {
             ...existReward,
             accuReward1D,
             accuReward1DPrice: accuReward1DUsd,
             apr: apr,
           };
         } else {
-          accum[current.rewardType].push({
+          accum[rewardType].push({
             token: current.rewardToken,
-            rewardType: current.rewardType,
+            rewardType: rewardType,
             accuReward1D: current.accuReward1D ? Number(current.accuReward1D) : null,
             accuReward1DPrice:
               current.accuReward1D && tokenPrice !== null ? Number(current.accuReward1D) * tokenPrice : null,
