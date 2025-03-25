@@ -87,7 +87,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     const response = await this.networkClient.get<{
       data: PoolStakingResponse[];
     }>({
-      url: `/staking/${poolPath}`,
+      url: `/staking/${poolPath}?all=true`,
     });
     const pools = response?.data?.data ? response.data.data.map(PoolStakingMapper.fromResponse) : [];
     return pools;
