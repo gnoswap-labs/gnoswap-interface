@@ -45,7 +45,7 @@ const RemovePositionModal: React.FC<Props> = ({ selectedPositions, close, onSubm
     const positionAprs = selectedPositions.map(position => {
       const aprs = position.rewards.reduce(
         (accum, currentReward) => {
-          if (currentReward.rewardType === "SWAP_FEE") {
+          if (currentReward.rewardToken.rewardType === "SWAP_FEE") {
             accum.fee += currentReward.apr || 0;
           }
           accum.rewards += currentReward.apr || 0;

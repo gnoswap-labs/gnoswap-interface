@@ -115,8 +115,8 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
       positions
         .flatMap(position => position.rewards)
         .forEach(reward => {
-          if (!claimableMap[reward.rewardType]) {
-            console.warn(`Invalid rewardType: ${reward.rewardType}`);
+          if (!claimableMap[reward.rewardToken.rewardType]) {
+            console.warn(`Invalid rewardType: ${reward.rewardToken.rewardType}`);
             return;
           }
 
@@ -126,7 +126,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
 
           const rewardInfo: PositionRewardForTooltip = {
             token: reward.rewardToken,
-            rewardType: reward.rewardType as RewardType,
+            rewardType: reward.rewardToken.rewardType as RewardType,
             amount: reward.claimableAmount ? Number(reward.claimableAmount) : null,
             usd: reward.claimableUsd ? Number(reward.claimableUsd) : null,
             accumulatedRewardOf1d: reward.accuReward1D ? Number(reward.accuReward1D) : null,

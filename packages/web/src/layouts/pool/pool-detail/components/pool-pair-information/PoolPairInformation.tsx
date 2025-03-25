@@ -66,7 +66,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
             tokenA={pool.tokenA}
             tokenB={pool.tokenB}
             hasPoolStaking={hasPoolStaking}
-            incentivizedType={pool.incentiveType}
+            incentivzed={pool.incentivized}
             rewardTokens={pool.rewardTokens}
             feeStr={feeStr || ""}
           />
