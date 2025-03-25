@@ -1,9 +1,4 @@
-import {
-  INCENTIVE_TYPE,
-  SwapFeeTierInfoMap,
-  SwapFeeTierMaxPriceRangeMap,
-  SwapFeeTierType,
-} from "@constants/option.constant";
+import { SwapFeeTierInfoMap, SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 import { tickToPriceStr } from "./swap-utils";
 import { sortTokenPaths } from "./sort-utils";
@@ -46,8 +41,8 @@ export function toMinPriceStr(tick: number) {
   return tickToPriceStr(tick, { decimals: 6 });
 }
 
-export function checkPoolStakingRewards(type?: INCENTIVE_TYPE) {
-  return ["INCENTIVIZED", "EXTERNAL"].includes(type || "");
+export function checkPoolStakingRewards(incentivized?: boolean) {
+  return incentivized === true;
 }
 
 export function isOrderedTokenPaths(tokenAPath: string, tokenBPath: string): boolean {

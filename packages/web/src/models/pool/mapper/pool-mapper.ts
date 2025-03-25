@@ -1,6 +1,6 @@
 import { PoolListInfo } from "../info/pool-list-info";
 import { IncentivizePoolModel, PoolModel } from "../pool-model";
-import { INCENTIVE_TYPE, SwapFeeTierInfoMap } from "@constants/option.constant";
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { IncentivizePoolCardInfo } from "../info/pool-card-info";
 import { PoolSelectItemInfo } from "../info/pool-select-item-info";
 import { PoolResponse } from "@repositories/pool";
@@ -11,7 +11,7 @@ export class PoolMapper {
   public static toListInfo(poolModel: PoolModel): PoolListInfo {
     const {
       id,
-      incentiveType,
+      incentivized,
       currentTick,
       price,
       tokenA,
@@ -28,7 +28,7 @@ export class PoolMapper {
 
     return {
       poolId: id,
-      incentiveType,
+      incentivized,
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
@@ -60,7 +60,7 @@ export class PoolMapper {
     const {
       id,
       currentTick,
-      incentiveType,
+      incentivized,
       price,
       tokenA,
       tokenB,
@@ -71,13 +71,12 @@ export class PoolMapper {
       poolPath,
       rewardTokens,
       feeUsd24h,
-      bins40,
     } = poolModel;
     const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(info => `${info.fee}` === fee.toString());
 
     return {
       poolId: id,
-      incentiveType,
+      incentivized,
       tokenA,
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
@@ -88,7 +87,6 @@ export class PoolMapper {
       rewardTokens,
       currentTick,
       price,
-      bins40: bins40,
       poolPath: poolPath,
       tvl: tvl.toString(),
     };
@@ -99,7 +97,7 @@ export class PoolMapper {
     return {
       ...pool,
       id,
-      incentiveType: pool.incentiveType as INCENTIVE_TYPE,
+      incentivized: pool.incentivized,
       rewardTokens: pool.rewardTokens || [],
       apr: pool.totalApr,
       liquidity: pool.liquidity,
@@ -113,10 +111,9 @@ export class PoolMapper {
     return {
       ...pool,
       id,
-      incentiveType: pool.incentiveType as INCENTIVE_TYPE,
+      incentivized: pool.incentivized,
       rewardTokens: pool.rewardTokens || [],
       apr: pool.totalApr,
-      bins40: pool.bins40,
       liquidity: pool.liquidity,
       allTimeVolumeUsd: pool.allTimeVolumeUsd,
       price: Number(pool.price),
@@ -128,7 +125,7 @@ export class PoolMapper {
     return {
       ...pool,
       id,
-      incentiveType: pool.incentiveType as INCENTIVE_TYPE,
+      incentivized: pool.incentivized,
       rewardTokens: pool.rewardTokens || [],
       apr: pool.totalApr ?? "",
       totalApr: pool.totalApr,

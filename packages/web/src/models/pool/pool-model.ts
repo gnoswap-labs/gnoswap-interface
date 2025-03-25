@@ -1,6 +1,4 @@
-import { INCENTIVE_TYPE } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
-import { PoolBinModel } from "./pool-bin-model";
 
 export interface PoolModel {
   poolPath: string;
@@ -16,7 +14,7 @@ export interface PoolModel {
   priceRatio: IPoolPriceRatio;
   fee: string;
 
-  incentiveType: INCENTIVE_TYPE;
+  incentivized: boolean;
   rewardTokens: TokenModel[];
 
   tvl: string;
@@ -61,7 +59,7 @@ export const initialPool: PoolModel = {
     type: "Native",
     priceID: "",
   },
-  incentiveType: "INCENTIVIZED",
+  incentivized: true,
   tvl: "0",
   tvlChange: 0,
   volume24h: 0,
@@ -89,9 +87,7 @@ export const initialPool: PoolModel = {
   },
 };
 
-export interface IncentivizePoolModel extends PoolModel {
-  bins40: PoolBinModel[];
-}
+export type IncentivizePoolModel = PoolModel
 
 export interface IPoolDetailResponse {
   poolPath: string;

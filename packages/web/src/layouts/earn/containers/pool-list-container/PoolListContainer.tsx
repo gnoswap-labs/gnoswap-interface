@@ -1,7 +1,6 @@
 import { useAtom, useAtomValue } from "jotai";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import { INCENTIVE_TYPE } from "@constants/option.constant";
 import { EARN_POOL_LIST_SIZE } from "@constants/table.constant";
 import useClickOutside from "@hooks/common/use-click-outside";
 import useCustomRouter from "@hooks/common/use-custom-router";
@@ -59,12 +58,12 @@ const PoolListContainer: React.FC = () => {
     return Number(value);
   };
 
-  const filteredPoolType = useCallback((poolType: POOL_TYPE, incentivizedType: INCENTIVE_TYPE) => {
+  const filteredPoolType = useCallback((poolType: POOL_TYPE, incentivized: boolean) => {
     switch (poolType) {
       case POOL_TYPE.INCENTIVIZED:
-        return incentivizedType !== "NONE_INCENTIVIZED";
+        return incentivized === true;
       case POOL_TYPE.NONE_INCENTIVIZED:
-        return incentivizedType === "NONE_INCENTIVIZED";
+        return incentivized === false;
       default:
         break;
     }
@@ -127,7 +126,7 @@ const PoolListContainer: React.FC = () => {
       temp.sort((a: PoolListInfo, b: PoolListInfo) => -sortValueTransform(a.tvl) + sortValueTransform(b.tvl));
     }
     return temp
-      .filter(info => filteredPoolType(poolType, info.incentiveType))
+      .filter(info => filteredPoolType(poolType, info.incentivized))
       .map(item => ({
         ...item,
         liquidity: !anyEmptyPrice(item.tokenA, item.tokenB)

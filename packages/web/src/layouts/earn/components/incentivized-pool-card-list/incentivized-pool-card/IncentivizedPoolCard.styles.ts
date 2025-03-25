@@ -145,6 +145,13 @@ export const PoolCardWrapper = styled.div`
     align-items: center;
     cursor: default;
 
+    .bins-loading-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 80px;
+    }
+
     .pool-rate-wrapper {
       display: flex;
       width: 100%;

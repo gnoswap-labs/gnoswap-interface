@@ -48,18 +48,17 @@ const PoolDetail: React.FC = () => {
   }, [poolStakings]);
 
   const isStakable = useMemo(() => {
-    if (data?.incentiveType === "INCENTIVIZED") {
+    if (data?.incentivized === true) {
       return true;
     }
+
     const stakedPositions = positions.filter(position => position.staked);
     if (stakedPositions.length > 0) {
       return true;
     }
-    if (data?.incentiveType === "EXTERNAL") {
-      return true;
-    }
+
     return false;
-  }, [data?.incentiveType, positions]);
+  }, [data?.incentivized, positions]);
 
   const isElementInDOM = (element: HTMLElement | null): boolean => {
     return !!(element && document.body.contains(element));

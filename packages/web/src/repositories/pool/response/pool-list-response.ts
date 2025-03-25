@@ -12,7 +12,7 @@ export interface PoolListResponse {
 export interface PoolResponse {
   poolPath: string;
 
-  incentiveType?: string;
+  incentivized: boolean;
 
   price: number;
 
@@ -28,9 +28,9 @@ export interface PoolResponse {
 
   currentTick: number;
 
-  bins: PoolBinModel[];
+  bins: PoolBinModel[]; // ToDo: Delete
 
-  bins40: PoolBinModel[];
+  bins40: PoolBinModel[]; // ToDo: Delete
 
   tvl: string;
 

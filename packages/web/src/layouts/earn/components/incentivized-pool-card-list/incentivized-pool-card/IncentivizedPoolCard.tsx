@@ -6,13 +6,15 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconStar from "@components/common/icons/IconStar";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
-import { INCENTIVE_TYPE_MAPPER, SwapFeeTierInfoMap } from "@constants/option.constant";
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { IncentivizePoolCardInfo } from "@models/pool/info/pool-card-info";
 import { formatRate } from "@utils/new-number-utils";
 import { numberToFormat } from "@utils/string-utils";
+import { useGetBinsByPath } from "@query/pools";
 
 import { PoolCardWrapper, PoolCardWrapperWrapperBorder } from "./IncentivizedPoolCard.styles";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
 export interface IncentivizedPoolCardProps {
   pool: IncentivizePoolCardInfo;
@@ -21,9 +23,16 @@ export interface IncentivizedPoolCardProps {
   checkStakedPool: (poolPath: string | null) => boolean;
 }
 
+const BINS_DATA_DEFAULT_LENGTH = 40;
+
 const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, routeItem, themeKey, checkStakedPool }) => {
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
+
+  const { data: bins40, isLoading: isLoadingBins40 } = useGetBinsByPath(pool.poolPath || "", BINS_DATA_DEFAULT_LENGTH, {
+    enabled: !!pool.poolPath,
+  });
+
   const staked = useMemo(() => {
     return checkStakedPool(pool.poolPath || null);
   }, [checkStakedPool, pool.poolPath]);
@@ -31,13 +40,6 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
   const pairName = useMemo(() => {
     return `${pool.tokenA.symbol}/${pool.tokenB.symbol}`;
   }, [pool.tokenA.symbol, pool.tokenB.symbol]);
-
-  const incentivizedLabel = useMemo(() => {
-    if (pool.incentiveType === "NONE_INCENTIVIZED") {
-      return null;
-    }
-    return INCENTIVE_TYPE_MAPPER["INCENTIVIZED"];
-  }, [pool.incentiveType]);
 
   const rewardTokensInfo = useMemo(() => {
     const allRewardTokens = pool.rewardTokens.map(item => ({
@@ -68,12 +70,12 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
   }, [getGnotPath, pool.rewardTokens]);
 
   const isHideBar = useMemo(() => {
-    const isAllReserveZeroBin40 = pool?.bins40?.every(
+    const isAllReserveZeroBin40 = bins40?.every(
       item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
     );
 
     return isAllReserveZeroBin40;
-  }, [pool]);
+  }, [pool, bins40]);
 
   const aprStr = useMemo(() => {
     if (!pool.apr) return "-";
@@ -103,7 +105,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
                 <span>{pairName}</span>
                 <div className="box-group">
                   <Badge type={BADGE_TYPE.DARK_DEFAULT} text={`${SwapFeeTierInfoMap[pool.feeTier].rateStr}`} />
-                  {incentivizedLabel && (
+                  {pool.incentivized && (
                     <Badge
                       type={BADGE_TYPE.DARK_DEFAULT}
                       text={<OverlapTokenLogo tokens={rewardTokensInfo} size={16} />}
@@ -135,20 +137,26 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
               </div>
             </div>
             <div className="pool-content" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
-              <PoolGraph
-                tokenA={pool.tokenA}
-                tokenB={pool.tokenB}
-                bins={pool.bins40 ?? []}
-                currentTick={pool.currentTick}
-                width={258}
-                height={80}
-                mouseover
-                themeKey={themeKey}
-                position="top"
-                offset={40}
-                poolPrice={pool?.price || 1}
-                disabled={isHideBar}
-              />
+              {isLoadingBins40 ? (
+                <div className="bins-loading-wrapper">
+                  <LoadingSpinner size="MEDIUM" />
+                </div>
+              ) : (
+                <PoolGraph
+                  tokenA={pool.tokenA}
+                  tokenB={pool.tokenB}
+                  bins={bins40 ?? []}
+                  currentTick={pool.currentTick}
+                  width={258}
+                  height={80}
+                  mouseover
+                  themeKey={themeKey}
+                  position="top"
+                  offset={40}
+                  poolPrice={pool?.price || 1}
+                  disabled={isHideBar}
+                />
+              )}
               <div className="price-section">
                 <span className="label-text">{t("Earn:incentiPools.card.current.price")}</span>
                 <span className="label-text">{`1 ${pool.tokenA.symbol} = ${numberToFormat(pool.price, {
