@@ -168,7 +168,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
             <AprStakingHeader $isMobile={mobile}>
               <Tooltip
                 FloatingContent={<IncentivizeTokenDetailTooltipContent poolStakings={poolStakings} />}
-                forcedClose={!hasPoolStaking}
+                forcedClose={!pool?.incentivized || pool.rewardTokens.length === 0 || !hasPoolStaking}
                 placement="top"
                 className="apr-text"
                 scroll
@@ -193,7 +193,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
                   <span id={"apr-text"}>{totalApr === "-" ? "-" : `${totalApr} APR`} </span>
                 </Tooltip>
               </Tooltip>
-              {hasPoolStaking && (
+              {pool?.incentivized && (
                 <div
                   className="coin-info"
                   onMouseEnter={() => setForceShowAprGuide(false)}

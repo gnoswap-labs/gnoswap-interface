@@ -106,7 +106,7 @@ const PoolDetail: React.FC = () => {
   return (
     <PoolLayout
       header={<HeaderContainer />}
-      poolPairInformation={<PoolPairInformationContainer hasPoolStaking={hasPoolStaking} />}
+      poolPairInformation={<PoolPairInformationContainer />}
       liquidity={<MyLiquidityContainer address={address} isStakable={isStakable} />}
       staking={isStakable ? <StakingContainer hasPoolStaking={hasPoolStaking} /> : null}
       footer={<Footer />}

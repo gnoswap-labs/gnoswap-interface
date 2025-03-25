@@ -11,7 +11,6 @@ import { PoolInfoHeaderWrapper } from "./PoolPairInfoHeader.styles";
 interface PoolPairInfoHeaderProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
-  hasPoolStaking: boolean;
   incentivzed: boolean;
   rewardTokens: TokenModel[];
   feeStr: string;
@@ -20,7 +19,6 @@ interface PoolPairInfoHeaderProps {
 const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
   tokenA,
   tokenB,
-  hasPoolStaking,
   feeStr,
   rewardTokens,
   incentivzed,
@@ -29,13 +27,6 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
   const { getGnotPath } = useGnotToGnot();
   const incentivezedStr = useMemo(() => {
     return incentivzed ? t("business:incentive") : "";
-    // if (incentivizedType === "INCENTIVIZED") {
-    //   return t("business:incentive");
-    // }
-    // if (incentivizedType === "EXTERNAL") {
-    //   return t("business:incentive");
-    // }
-    // return "";
   }, [incentivzed, t]);
 
   const rewardTokenLogos = useMemo(() => {
@@ -70,7 +61,7 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
       </div>
       <div className="badge-wrap">
         <div className="badge">{feeStr}</div>
-        {hasPoolStaking && incentivezedStr && (
+        {incentivezedStr && (
           <div className="badge">
             {incentivezedStr}
             {rewardTokenLogos.length > 0 && <OverlapTokenLogo size={18} tokens={rewardTokenLogos} />}
