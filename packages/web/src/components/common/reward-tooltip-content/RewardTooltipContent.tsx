@@ -42,10 +42,10 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({ rewardInfo 
   }, [rewardInfo]);
 
   const externalRewards = useMemo(() => {
-    if (!rewardInfo || rewardInfo.EXTERNAL.length === 0) {
+    if (!rewardInfo || rewardInfo.EXTERNAL_REWARD.length === 0) {
       return null;
     }
-    return rewardInfo.EXTERNAL.sort((a, b) => (b.usd || 0) - (a.usd || 0));
+    return rewardInfo.EXTERNAL_REWARD.sort((a, b) => (b.usd || 0) - (a.usd || 0));
   }, [rewardInfo]);
 
   const swapFeeRewardUSD = useMemo(() => {

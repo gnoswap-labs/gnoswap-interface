@@ -40,11 +40,11 @@ export const DailyEarningTooltipContent: React.FC<DailyEarningTooltipContentProp
   }, [rewardInfo.INTERNAL_REWARD]);
 
   const externalRewards = useMemo(() => {
-    if (rewardInfo.EXTERNAL.length === 0) {
+    if (rewardInfo.EXTERNAL_REWARD.length === 0) {
       return null;
     }
-    return rewardInfo.EXTERNAL;
-  }, [rewardInfo.EXTERNAL]);
+    return rewardInfo.EXTERNAL_REWARD;
+  }, [rewardInfo.EXTERNAL_REWARD]);
 
   return (
     <StatTooltipContentWrapper>

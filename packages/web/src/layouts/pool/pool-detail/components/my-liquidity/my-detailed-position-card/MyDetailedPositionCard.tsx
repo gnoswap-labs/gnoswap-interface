@@ -264,7 +264,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       },
       {
         SWAP_FEE: [],
-        EXTERNAL: [],
+        EXTERNAL_REWARD: [],
         INTERNAL_REWARD: [],
       },
     );
@@ -406,7 +406,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       },
       {
         SWAP_FEE: [],
-        EXTERNAL: [],
+        EXTERNAL_REWARD: [],
         INTERNAL_REWARD: [],
       },
     );
@@ -626,7 +626,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   const isShowRewardInfoTooltip = useMemo(() => {
     return (
       aprRewardInfo !== null &&
-      (aprRewardInfo?.EXTERNAL.length !== 0 ||
+      (aprRewardInfo?.EXTERNAL_REWARD.length !== 0 ||
         aprRewardInfo?.INTERNAL_REWARD.length !== 0 ||
         aprRewardInfo?.SWAP_FEE.length !== 0)
     );
@@ -635,7 +635,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   const isShowTotalRewardInfo = useMemo(() => {
     return (
       totalRewardInfo &&
-      (totalRewardInfo?.EXTERNAL.length !== 0 ||
+      (totalRewardInfo?.EXTERNAL_REWARD.length !== 0 ||
         totalRewardInfo?.INTERNAL_REWARD.length !== 0 ||
         totalRewardInfo?.SWAP_FEE.length !== 0)
     );
