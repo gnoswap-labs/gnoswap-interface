@@ -4,4 +4,6 @@ export interface GetRoutesResponse {
   estimatedRoutes: EstimatedRoute[];
   amount: string;
   status: "SUCCESS" | "NO_LIQUIDITY" | "INVALID_PARAMS";
+  calculatedInputAmount: string;
+  calculatedOutputAmount: string;
 }

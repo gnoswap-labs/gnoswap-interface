@@ -153,20 +153,23 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       return null;
     }
 
-    const amount = estimatedSwapResult.amount;
+    const amount = direction === "EXACT_IN" ? estimatedSwapResult.amount : estimatedSwapResult.calculatedInputAmount;
     return direction === "EXACT_IN"
       ? makeDisplayTokenAmount(tokenB, amount)?.toString() || null
       : makeDisplayTokenAmount(tokenA, amount)?.toString() || null;
   }, [debouncedSwapAmount, error, swapState, estimatedSwapResult, isTyping]);
 
+  const swapFeeRate = useMemo(() => (swapFee || 0) / 100, [swapFee]);
+
   const tokenAmountLimit = useMemo(() => {
     if (estimatedAmount && !Number.isNaN(slippage)) {
+      const amountWithSwapFee = BigNumber(estimatedAmount.toString()).multipliedBy(1 - swapFeeRate / 100);
       const tokenAmountLimit =
         direction === "EXACT_IN"
-          ? BigNumber(estimatedAmount)
+          ? BigNumber(amountWithSwapFee)
               .multipliedBy((100 - slippage) / 100)
               .toNumber()
-          : BigNumber(estimatedAmount)
+          : BigNumber(amountWithSwapFee)
               .multipliedBy((100 + slippage) / 100)
               .toNumber();
 
