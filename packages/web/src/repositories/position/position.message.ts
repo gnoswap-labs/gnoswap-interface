@@ -26,7 +26,7 @@ enum TransactionMessageFunctionType {
   CollectFee = "CollectFee",
   CollectReward = "CollectReward",
   StakeToken = "StakeToken",
-  UnstakeToken = "UnstakeToken",
+  UnStakeToken = "UnStakeToken",
   IncreaseLiquidity = "IncreaseLiquidity",
   DecreaseLiquidity = "DecreaseLiquidity",
   Reposition = "Reposition",
@@ -267,7 +267,7 @@ export function makeUnStakePositionsMessagesWithApproves(
   const unstakeMessages = positions.map(position =>
     makeTransactionMessage({
       send: "",
-      func: TransactionMessageFunctionType.UnstakeToken,
+      func: TransactionMessageFunctionType.UnStakeToken,
       packagePath: PACKAGE_STAKER_PATH,
       args: [
         position.lpTokenId.toString(),
