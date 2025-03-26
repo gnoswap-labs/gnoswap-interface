@@ -33,18 +33,18 @@ export const DailyEarningTooltipContent: React.FC<DailyEarningTooltipContentProp
   }, [rewardInfo.SWAP_FEE]);
 
   const internalRewards = useMemo(() => {
-    if (rewardInfo.INTERNAL.length === 0) {
+    if (rewardInfo.INTERNAL_REWARD.length === 0) {
       return null;
     }
-    return rewardInfo.INTERNAL;
-  }, [rewardInfo.INTERNAL]);
+    return rewardInfo.INTERNAL_REWARD;
+  }, [rewardInfo.INTERNAL_REWARD]);
 
   const externalRewards = useMemo(() => {
-    if (rewardInfo.EXTERNAL.length === 0) {
+    if (rewardInfo.EXTERNAL_REWARD.length === 0) {
       return null;
     }
-    return rewardInfo.EXTERNAL;
-  }, [rewardInfo.EXTERNAL]);
+    return rewardInfo.EXTERNAL_REWARD;
+  }, [rewardInfo.EXTERNAL_REWARD]);
 
   return (
     <StatTooltipContentWrapper>

@@ -188,7 +188,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   ]);
 
   const totalRewardInfo = useMemo((): { [key in RewardType]: PositionRewardForTooltip[] } | null => {
-    const rewards = position.reward;
+    const rewards = position.rewards;
     if (rewards.length === 0) {
       return null;
     }
@@ -263,20 +263,20 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       },
       {
         SWAP_FEE: [],
-        EXTERNAL: [],
-        INTERNAL: [],
+        EXTERNAL_REWARD: [],
+        INTERNAL_REWARD: [],
       },
     );
 
     return totalRewardInfo;
-  }, [getTokenPrice, isDisplay, position.reward, tokenPrices]);
+  }, [getTokenPrice, isDisplay, position.rewards, tokenPrices]);
 
   const totalRewardUSD = useMemo(() => {
     if (!isDisplay) {
       return "-";
     }
 
-    const usdValue = position.reward.reduce<number | null>((acc, current) => {
+    const usdValue = position.rewards.reduce<number | null>((acc, current) => {
       if (acc === null && current === null) {
         return null;
       }
@@ -293,23 +293,23 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     }, null);
 
     return formatOtherPrice(usdValue, { isKMB: false });
-  }, [isDisplay, position.reward]);
+  }, [isDisplay, position.rewards]);
 
   const isClaimable = useMemo(() => {
-    if (!isDisplay || position.reward.length === 0) {
+    if (!isDisplay || position.rewards.length === 0) {
       return false;
     }
 
-    const totalClaimableUsd = position.reward.reduce((acc, current) => {
+    const totalClaimableUsd = position.rewards.reduce((acc, current) => {
       const claimableUsd = Number(current.claimableUsd || 0);
       return acc + claimableUsd;
     }, 0);
 
     return totalClaimableUsd > 0;
-  }, [isDisplay, position.reward]);
+  }, [isDisplay, position.rewards]);
 
   const totalDailyEarning = useMemo(() => {
-    const isEmpty = !totalRewardInfo || position.reward.length === 0;
+    const isEmpty = !totalRewardInfo || position.rewards.length === 0;
 
     if (!isDisplay || isEmpty) {
       return "-";
@@ -334,10 +334,10 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       }, null);
 
     return formatOtherPrice(totalDailyEarningValue, { isKMB: false });
-  }, [isDisplay, position.reward.length, totalRewardInfo]);
+  }, [isDisplay, position.rewards.length, totalRewardInfo]);
 
   const aprRewardInfo: { [key in RewardType]: PositionAPRInfo[] } | null = useMemo(() => {
-    const aprRewardInfo = position.reward.reduce<{
+    const aprRewardInfo = position.rewards.reduce<{
       [key in RewardType]: PositionAPRInfo[];
     }>(
       (accum, current) => {
@@ -404,12 +404,12 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       },
       {
         SWAP_FEE: [],
-        EXTERNAL: [],
-        INTERNAL: [],
+        EXTERNAL_REWARD: [],
+        INTERNAL_REWARD: [],
       },
     );
     return aprRewardInfo;
-  }, [position.reward, tokenPrices]);
+  }, [position.rewards, tokenPrices]);
 
   const stringPrice = useMemo(() => {
     const price = tickToPrice(position?.pool?.currentTick);
@@ -624,8 +624,8 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   const isShowRewardInfoTooltip = useMemo(() => {
     return (
       aprRewardInfo !== null &&
-      (aprRewardInfo?.EXTERNAL.length !== 0 ||
-        aprRewardInfo?.INTERNAL.length !== 0 ||
+      (aprRewardInfo?.EXTERNAL_REWARD.length !== 0 ||
+        aprRewardInfo?.INTERNAL_REWARD.length !== 0 ||
         aprRewardInfo?.SWAP_FEE.length !== 0)
     );
   }, [aprRewardInfo]);
@@ -633,8 +633,8 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   const isShowTotalRewardInfo = useMemo(() => {
     return (
       totalRewardInfo &&
-      (totalRewardInfo?.EXTERNAL.length !== 0 ||
-        totalRewardInfo?.INTERNAL.length !== 0 ||
+      (totalRewardInfo?.EXTERNAL_REWARD.length !== 0 ||
+        totalRewardInfo?.INTERNAL_REWARD.length !== 0 ||
         totalRewardInfo?.SWAP_FEE.length !== 0)
     );
   }, [totalRewardInfo]);

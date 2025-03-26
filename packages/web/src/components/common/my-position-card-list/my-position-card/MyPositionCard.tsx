@@ -279,7 +279,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [getMaxTick, maxTickRate]);
 
   const claimableUSD = useMemo(() => {
-    const result = position.reward.reduce((acc: number | null, cur) => {
+    const result = position.rewards.reduce((acc: number | null, cur) => {
       if (acc === -1 || !cur.claimableUsd || cur.claimableUsd === "") return -1;
 
       if (acc === null) return Number(cur.claimableUsd);
@@ -290,10 +290,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     if (result === null || result === -1) return "-";
 
     return formatOtherPrice(result);
-  }, [position.reward]);
+  }, [position.rewards]);
 
   const dailyEarning = useMemo(() => {
-    const result = position.reward.reduce((acc: number | null, current) => {
+    const result = position.rewards.reduce((acc: number | null, current) => {
       const tokenPrice = tokenPrices?.[current.rewardToken.priceID].usd
         ? Number(tokenPrices?.[current.rewardToken.priceID].usd)
         : null;
@@ -311,7 +311,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     if (result === null || result === -1) return "-";
 
     return formatOtherPrice(result);
-  }, [position.reward, tokenPrices]);
+  }, [position.rewards, tokenPrices]);
 
   const boxHeaderId = useMemo(() => position.id + "-box-header", [position.id]);
 

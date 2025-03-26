@@ -33,7 +33,7 @@ export interface PositionResponse {
 
   stakedAt?: string;
 
-  reward?: RewardResponse[];
+  rewards?: RewardResponse[];
 
   claimedRewards?: ClaimedRewardModel[];
 

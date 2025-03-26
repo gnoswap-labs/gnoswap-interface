@@ -49,7 +49,7 @@ export function makeClaimMessageWithApproves(
   let hasStakingReward = false;
   let isGnotApproved = false;
 
-  position.reward.forEach(reward => {
+  position.rewards.forEach(reward => {
     const rewardTokenWrappedPath = checkGnotPath(reward.rewardToken.path);
     // Reward token approve to Pool
     if (reward.rewardType === "SWAP_FEE") {
@@ -132,7 +132,7 @@ export function makeClaimAllMessageWithApproves(
 
     const collectMessages: TransactionMessage[] = [];
 
-    position.reward.forEach(reward => {
+    position.rewards.forEach(reward => {
       const rewardTokenWrappedPath = checkGnotPath(reward.rewardToken.path);
       // Reward token approve to Pool
       if (reward.rewardType === "SWAP_FEE") {
@@ -239,7 +239,7 @@ export function makeUnStakePositionsMessagesWithApproves(
 
   // Reward token approve to Pool and Staker(When GNOT token)
   const collectRewardApproveMessageInfos = positions.flatMap(position =>
-    position.reward.flatMap(reward => {
+    position.rewards.flatMap(reward => {
       const messages: TokenApproveMessageInfo[] = [];
 
       messages.push({

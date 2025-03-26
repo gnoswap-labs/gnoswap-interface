@@ -45,7 +45,7 @@ export class PositionMapper {
       apr: `${position.apr}` ?? "",
       stakedAt: position.stakedAt || "",
       stakedUsdValue: position.stakedUsd || "",
-      reward: position.reward?.map(PositionMapper.rewardFromResponse) || [],
+      rewards: position.rewards?.map(PositionMapper.rewardFromResponse) || [],
       claimedRewards: position.claimedRewards || [],
       closed: position.closed,
       totalDailyRewardsUsd: toUnitFormat(position.totalDailyRewardsUsd, true, true),

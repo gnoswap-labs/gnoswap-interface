@@ -77,7 +77,7 @@ const WalletBalanceContainer: React.FC = () => {
   }, [connected, address]);
 
   const claimAllReward = useCallback(() => {
-    const amount = positions.flatMap(item => item.reward).reduce((acc, item) => acc + Number(item.claimableUsd), 0);
+    const amount = positions.flatMap(item => item.rewards).reduce((acc, item) => acc + Number(item.claimableUsd), 0);
 
     const messageData = {
       tokenAAmount: toUnitFormat(amount, true, false),
@@ -164,7 +164,7 @@ const WalletBalanceContainer: React.FC = () => {
           .toNumber();
       }
 
-      curPosition.reward.forEach(rewardInfo => {
+      curPosition.rewards.forEach(rewardInfo => {
         acc.claimableRewards = BigNumber(acc.claimableRewards)
           .plus(Number(rewardInfo.claimableUsd ?? "0"))
           .toNumber();

@@ -101,9 +101,9 @@ export const usePositionsRewards = ({ positions }: PositionsRewardsProps) => {
     const rewardTokenList: string[] = [];
 
     for (let i = 0; i < positions.length; i++) {
-      for (let j = 0; j < positions[i].reward.length; j++) {
-        if (!rewardTokenList.includes(positions[i].reward[j].rewardToken.path))
-          rewardTokenList.push(positions[i].reward[j].rewardToken.path);
+      for (let j = 0; j < positions[i].rewards.length; j++) {
+        if (!rewardTokenList.includes(positions[i].rewards[j].rewardToken.path))
+          rewardTokenList.push(positions[i].rewards[j].rewardToken.path);
         if (rewardTokenList.length >= 4) break;
       }
       if (rewardTokenList.length >= 4) break;
@@ -137,7 +137,7 @@ export const usePositionsRewards = ({ positions }: PositionsRewardsProps) => {
           } | null,
           position,
         ) => {
-          if (accum === null && !position.reward) return null;
+          if (accum === null && !position.rewards) return null;
 
           const newAccum = accum ?? {
             fee: {
@@ -150,7 +150,7 @@ export const usePositionsRewards = ({ positions }: PositionsRewardsProps) => {
             },
           };
 
-          position.reward.forEach(rewardInfo => {
+          position.rewards.forEach(rewardInfo => {
             if (rewardInfo.rewardToken.path === rewardTokenPath) {
               if (rewardInfo.rewardType !== "SWAP_FEE") {
                 newAccum.rewards.amount += Number(rewardInfo.claimableAmount);
