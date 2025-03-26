@@ -272,29 +272,23 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const selectionColor = getSelectionColor(startRate >= 0 ? "1" : "-1", endRate >= 0 ? "1" : "-1");
 
     const brushElement = d3.select(brushRef.current);
+
+    const startLine = brushElement.select("#start");
     if (event.type === "start") {
-      /** Start Line */
-      brushElement.select("#start").selectChildren().remove();
-      const startLineElement = brushElement.select("#start").insert("svg");
-      startLineElement
-        .append("line")
-        .attr("y1", 0)
-        .attr("y2", boundsHeight)
-        .style("stroke", selectionColor.lineStart)
-        .attr("stroke-width", 2);
-      makeLeftBadge(startLineElement, false, selectionColor);
+      if (startLine.select("svg").empty()) {
+        const startSvg = startLine.append("svg");
+        startSvg.append("line").attr("y1", 0).attr("y2", boundsHeight).attr("stroke-width", 2);
+        makeLeftBadge(startSvg, false, selectionColor);
+      }
+    }
 
-      /** End Line */
-      brushElement.select("#end").selectChildren().remove();
-      const endLineElement = brushElement.select("#end").insert("svg");
-      endLineElement
-        .append("line")
-        .attr("y1", boundsHeight)
-        .attr("y2", 0)
-        .style("stroke", selectionColor.lineEnd)
-        .attr("stroke-width", 2);
-
-      makeRightBadge(endLineElement, fullRange, selectionColor);
+    const endLine = brushElement.select("#end");
+    if (event.type === "start") {
+      if (endLine.select("svg").empty()) {
+        const endSvg = endLine.append("svg");
+        endSvg.append("line").attr("y1", boundsHeight).attr("y2", 0).attr("stroke-width", 2);
+        makeRightBadge(endSvg, fullRange, selectionColor);
+      }
     }
 
     brushElement.selectAll(".resize").attr("x", data => (data === "w" ? startPosition : endPosition));
@@ -303,16 +297,58 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const isRightEndLine = endPosition + 75 < boundsWidth;
 
     setSelectionColor(selectionColor);
-    changeLine(brushElement, "start", startPosition as number, startRate, isRightStartLine, fullRange, selectionColor);
-    changeLine(
-      brushElement,
-      "end",
-      endPosition as number,
-      endRate,
-      isRightEndLine,
-      fullRange, //selectedFullRange,
-      selectionColor,
-    );
+
+    updateLine(brushElement, "start", startPosition, startRate, isRightStartLine, fullRange, selectionColor);
+    updateLine(brushElement, "end", endPosition, endRate, isRightEndLine, fullRange, selectionColor);
+  }
+
+  function updateLine(
+    selectionElement: d3.Selection<SVGGElement, unknown, null, undefined>,
+    type: "start" | "end",
+    x: number,
+    rate: number,
+    right = false,
+    selectedFullRange = false,
+    selectionColor: SelectionColor,
+  ) {
+    const hidden = type === "end" && selectedFullRange === true;
+    const rateStr = `${rate > 0 ? "+" : ""}${Math.round(rate).toFixed(0)}%`;
+    const lineColor = type === "start" ? selectionColor.lineStart : selectionColor.lineEnd;
+
+    const lineElement = selectionElement.select(`#${type}`).attr("x", x);
+
+    lineElement.select("svg").attr("x", 0).select("line").style("stroke", lineColor);
+
+    const priceID = `${type}-price`;
+    const color = type === "start" ? selectionColor.badgeStart : selectionColor.badgeEnd;
+    const margin = right === false ? (type === "end" ? -51 : -62) : type === "end" ? 12 : 1;
+
+    const labelWrapper = lineElement.select(`#${priceID}`);
+    const labelText = !selectedFullRange ? rateStr : type === "start" ? "-100%" : "∞";
+
+    labelWrapper
+      .select("rect")
+      .attr("x", margin)
+      .attr("y", "0")
+      .attr("width", "50")
+      .attr("height", "23")
+      .attr("rx", 5)
+      .style("fill", color);
+
+    labelWrapper
+      .select("text")
+      .attr("x", margin + 25)
+      .attr("y", "0")
+      .attr("dy", "15")
+      .attr("text-anchor", "middle")
+      .style("fill", "#FFF")
+      .text(labelText);
+
+    if (hidden) {
+      labelWrapper.attr("display", "none");
+    } else {
+      labelWrapper.attr("display", null);
+    }
   }
 
   function onBrushEnd(this: SVGGElement, event: d3.D3BrushEvent<unknown>) {
@@ -621,7 +657,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     if (!!width && !!height && !!scaleX && !!scaleY) {
       updateChart();
     }
-  }, [width, height, svgRef?.current, chartRef?.current, resolvedDisplayBins]);
+  }, [width, height, svgRef?.current, chartRef?.current, resolvedDisplayBins, hoverBarIndex]);
 
   // Brush settings, on currentPrice change, zoom, move ...
   useEffect(() => {
@@ -791,6 +827,15 @@ function makeLeftBadge(
   reverse = false,
   selectionColor: SelectionColor,
 ) {
+  refer
+    .append("rect")
+    .attr("x", "-12")
+    .attr("y", "0")
+    .attr("width", "30")
+    .attr("height", "100%")
+    .style("fill", "transparent")
+    .style("cursor", "ew-resize");
+
   const badge = refer
     .append("svg")
     .attr("x", "-12")
@@ -814,6 +859,15 @@ function makeRightBadge(
   reverse = false,
   selectionColor: SelectionColor,
 ) {
+  refer
+    .append("rect")
+    .attr("x", "-12")
+    .attr("y", "0")
+    .attr("width", "30")
+    .attr("height", "100%")
+    .style("fill", "transparent")
+    .style("cursor", "ew-resize");
+
   const badge = refer
     .append("svg")
     .attr("x", "1")
@@ -862,49 +916,4 @@ function makeLabel(
     .attr("dy", "15")
     .attr("text-anchor", "middle")
     .style("fill", "#FFF");
-}
-
-function changeLine(
-  selectionElement: d3.Selection<SVGGElement, unknown, null, undefined>,
-  type: "start" | "end",
-  x: number,
-  rate: number,
-  right = false,
-  selectedFullRange = false,
-  selectionColor: SelectionColor,
-) {
-  const hidden = type === "end" && selectedFullRange === true;
-  const rateStr = `${rate > 0 ? "+" : ""}${Math.round(rate).toFixed(0)}%`;
-  const lineColor = type === "start" ? selectionColor.lineStart : selectionColor.lineEnd;
-  const lineElement = selectionElement.select(`#${type}`).attr("x", x);
-  lineElement.select("svg").attr("x", 0);
-  lineElement.select("svg").select("line").style("stroke", lineColor);
-
-  const priceID = `${type}-price`;
-  const color = type === "start" ? selectionColor.badgeStart : selectionColor.badgeEnd;
-
-  const margin = right === false ? (type === "end" ? -51 : -62) : type === "end" ? 12 : 1;
-  const labelWrapper = lineElement.select(`#${priceID}`);
-
-  const labelText = !selectedFullRange ? rateStr : type === "start" ? "-100%" : "∞";
-
-  labelWrapper
-    .select("rect")
-    .attr("x", margin)
-    .attr("y", "0")
-    .attr("width", "50")
-    .attr("height", "23")
-    .attr("rx", 5)
-    .style("fill", color);
-  labelWrapper
-    .select("text")
-    .attr("x", margin + 25)
-    .attr("y", "0")
-    .attr("dy", "15")
-    .attr("text-anchor", "middle")
-    .style("fill", "#FFF")
-    .html(labelText);
-  if (hidden) {
-    labelWrapper.attr("display", "none");
-  }
 }

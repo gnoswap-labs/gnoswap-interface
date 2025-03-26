@@ -83,13 +83,55 @@ export const HeaderWrapper = styled.div`
     ${media.mobile} {
       width: 100%;
       button {
-        width: 50%;
-      }
-    }
-    .full-width {
-      ${media.mobile} {
         width: 100%;
       }
+    }
+  }
+`;
+
+export const CopyTooltip = styled.div`
+  ${mixins.flexbox("column", "center", "flex-start")};
+  position: absolute;
+  top: -65px;
+  left: -45px;
+  z-index: 2;
+  .box {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    width: 115px;
+    padding: 16px;
+    gap: 8px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    ${fonts.body12};
+    color: ${({ theme }) => theme.color.text02};
+    background-color: ${({ theme }) => theme.color.background02};
+    & > span {
+      white-space: nowrap;
+    }
+  }
+  .dark-shadow {
+    box-shadow: 10px 14px 60px rgba(0, 0, 0, 0.4);
+  }
+  .light-shadow {
+    box-shadow: 10px 14px 48px 0px rgba(0, 0, 0, 0.12);
+  }
+
+  .polygon-icon * {
+    fill: ${({ theme }) => theme.color.background02};
+  }
+
+  ${media.mobile} {
+    ${mixins.flexbox("column", "center", "flex-start")};
+    top: -60px;
+    left: -40px;
+    z-index: 2;
+    .box {
+      padding: 12px;
+    }
+
+    & .rotate-90 {
+      transform: rotate(90deg);
+      margin-right: -10px;
     }
   }
 `;

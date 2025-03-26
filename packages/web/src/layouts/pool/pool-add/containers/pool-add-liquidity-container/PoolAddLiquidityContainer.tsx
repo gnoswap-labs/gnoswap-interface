@@ -242,6 +242,12 @@ const PoolAddLiquidityContainer: React.FC = () => {
     (amount: string) => {
       tokenAAmountInput.changeAmount(amount);
       setExactType("EXACT_IN");
+
+      if (!amount || amount === "0") {
+        tokenBAmountInput.changeAmount("0");
+        return;
+      }
+
       updateTokenBAmountByTokenA(amount);
     },
     [tokenAAmountInput],
@@ -251,6 +257,12 @@ const PoolAddLiquidityContainer: React.FC = () => {
     (amount: string) => {
       tokenBAmountInput.changeAmount(amount);
       setExactType("EXACT_OUT");
+
+      if (!amount || amount === "0") {
+        tokenAAmountInput.changeAmount("0");
+        return;
+      }
+
       updateTokenAAmountByTokenB(amount);
     },
     [tokenBAmountInput],

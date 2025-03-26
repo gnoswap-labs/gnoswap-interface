@@ -1,5 +1,6 @@
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import React from "react";
+import { cx } from "@emotion/css";
 import { PoolLayoutWrapper } from "./PoolLayout.styles";
 import useRouter from "@hooks/common/use-custom-router";
 import { useTranslation } from "react-i18next";
@@ -37,7 +38,7 @@ const PoolLayout: React.FC<PoolLayoutProps> = ({
       <div className="pool-section">
         <div className="summury-container">{poolPairInformation}</div>
         <div className="positions-container">{liquidity}</div>
-        <div id="staking-container" className="staking-container">
+        <div id="staking-container" className={cx("staking-container", { noStakable: !isStaking })}>
           {staking}
           <div className="button">
             <span>

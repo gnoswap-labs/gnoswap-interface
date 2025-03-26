@@ -190,9 +190,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
 
     useEffect(() => {
       //  D3 - Draw bin and define interaction
-      if (!svgRef?.current) {
-        return;
-      }
+      if (!svgRef?.current) return;
 
       const svgElement = d3
         .select(svgRef?.current)
@@ -203,17 +201,21 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
         .on("mousemove", onMouseMove)
         .on("mouseout", onMouseOut);
 
-      if (svgElement.select("defs").empty()) {
-        svgElement.selectAll("defs").remove();
-      }
+      svgElement.selectAll("defs.clip-def").remove();
 
-      svgElement
-        .append("defs")
+      const defs = svgElement.append("defs").attr("class", "clip-def");
+
+      defs
         .append("clipPath")
-        .attr("id", "clip")
+        .attr("id", `clip-${graphId}`)
         .append("rect")
         .attr("width", width)
-        .attr("height", height);
+        .attr("height", height)
+        .attr("x", margin.left)
+        .attr("y", margin.top);
+
+      const rects = d3.select(chartRef.current);
+      rects.attr("clip-path", `url(#clip-${graphId})`);
 
       if (!!width && !!height && !!chartRef.current) {
         updateChart();

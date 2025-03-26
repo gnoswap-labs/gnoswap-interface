@@ -427,21 +427,15 @@ export const CopyTooltip = styled.div`
   }
 
   ${media.mobile} {
-    ${mixins.flexbox("row", "center", "flex-start")};
-    top: -40px;
-    left: -40px;
-    z-index: 2;
+    ${mixins.flexbox("column", "center", "flex-start")};
+    top: -60px;
+    left: -45px;
     .box {
       padding: 12px;
     }
 
-    & .rotate-90 {
-      transform: rotate(90deg);
-      margin-right: -10px;
-    }
-
     .polygon-icon * {
-      fill: unset;
+      fill: ${({ theme }) => theme.color.background02};
     }
   }
 `;

@@ -726,11 +726,10 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
                     <IconLinkPage className="icon-link" />
                     {copied && (
                       <CopyTooltip>
-                        {breakpoint === DEVICE_TYPE.MOBILE && <IconPolygon className="polygon-icon rotate-90" />}
                         <div className={`box ${themeKey}-shadow`}>
                           <span>{t("common:urlCopied")}</span>
                         </div>
-                        {breakpoint !== DEVICE_TYPE.MOBILE && <IconPolygon className="polygon-icon" />}
+                        <IconPolygon className="polygon-icon" />
                       </CopyTooltip>
                     )}
                   </div>

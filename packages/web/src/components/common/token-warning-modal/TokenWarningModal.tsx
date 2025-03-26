@@ -67,9 +67,6 @@ const TokenWarningModal: React.FC<TokenWarningModalProps> = ({
               className="button-confirm"
               onClick={onClickConfirm}
             />
-            <div className="cancel-button">
-              <span onClick={onClickClose}>{t("common:action.cancel")}</span>
-            </div>
           </div>
         </div>
       </div>

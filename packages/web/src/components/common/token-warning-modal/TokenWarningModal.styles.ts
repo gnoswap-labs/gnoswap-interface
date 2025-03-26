@@ -110,7 +110,6 @@ export const TokenTradingModalWrapper = styled.div`
       > div {
         width: 100%;
         .button-confirm {
-          margin-bottom: 16px;
           gap: 8px;
           height: 57px;
           span {
