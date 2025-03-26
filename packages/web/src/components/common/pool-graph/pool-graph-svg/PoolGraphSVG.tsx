@@ -86,6 +86,8 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
     const { defaultMinX, minX, maxX } = d3Position;
     const centerX = currentTick ?? (minX && maxX ? (minX + maxX) / 2 : 0);
 
+    const hasCurrentTick = React.useMemo(() => currentTick !== null && currentTick !== undefined, [currentTick]);
+
     /** Update Chart by data */
     function updateChart() {
       const centerPosition = scaleX(centerX - defaultMinX) - binSpacing / 2;
@@ -107,7 +109,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
           );
         }
         if (isBlackBar) return themeKey === "dark" ? "#1C2230" : "#E0E8F4";
-        if (currentTick && bin.minTick < Number(currentTick - defaultMinX)) {
+        if (hasCurrentTick && bin.minTick < Number(currentTick! - defaultMinX)) {
           return `url(#gradient-bar-green-${graphId})`;
         }
         return `url(#gradient-bar-red-${graphId})`;
@@ -119,7 +121,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
 
       // D3 - Draw Current tick (middle line)
       rects.select("line").remove();
-      if (currentTick && rects.select("line").empty()) {
+      if (hasCurrentTick && rects.select("line").empty()) {
         rects
           .append("line")
           .attr("x1", centerPosition + binSpacing / 2)
