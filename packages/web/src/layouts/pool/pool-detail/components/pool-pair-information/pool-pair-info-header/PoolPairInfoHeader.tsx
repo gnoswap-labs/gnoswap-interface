@@ -5,6 +5,8 @@ import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
+import { RewardTokenModel } from "@models/position/reward-model";
+import { getUniqueRewardTokensByPath } from "@utils/token-utils";
 
 import { PoolInfoHeaderWrapper } from "./PoolPairInfoHeader.styles";
 
@@ -12,7 +14,7 @@ interface PoolPairInfoHeaderProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
   incentivzed: boolean;
-  rewardTokens: TokenModel[];
+  rewardTokens: RewardTokenModel[];
   feeStr: string;
 }
 
@@ -30,20 +32,7 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
   }, [incentivzed, t]);
 
   const rewardTokenLogos = useMemo(() => {
-    return rewardTokens.reduce((acc, current) => {
-      const existToken = acc.some(item => item.path === getGnotPath(current).path);
-
-      if (!existToken) {
-        acc.push({
-          ...current,
-          logoURI: getGnotPath(current).logoURI,
-          symbol: getGnotPath(current).symbol,
-          path: getGnotPath(current).path,
-        });
-      }
-
-      return acc;
-    }, [] as TokenModel[]);
+    return getUniqueRewardTokensByPath(rewardTokens, getGnotPath);
   }, [getGnotPath, rewardTokens]);
 
   return (

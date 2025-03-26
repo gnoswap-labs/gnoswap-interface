@@ -15,6 +15,7 @@ import { useGetBinsByPath } from "@query/pools";
 
 import { PoolCardWrapper, PoolCardWrapperWrapperBorder } from "./IncentivizedPoolCard.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { getUniqueRewardTokensByPath } from "@utils/token-utils";
 
 export interface IncentivizedPoolCardProps {
   pool: IncentivizePoolCardInfo;
@@ -41,33 +42,13 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
     return `${pool.tokenA.symbol}/${pool.tokenB.symbol}`;
   }, [pool.tokenA.symbol, pool.tokenB.symbol]);
 
-  const rewardTokensInfo = useMemo(() => {
-    const allRewardTokens = pool.rewardTokens.map(item => ({
-      ...item,
-      logoURI: getGnotPath(item).logoURI,
-      path: getGnotPath(item).path,
-      symbol: getGnotPath(item).symbol,
-      name: getGnotPath(item).name,
-    }));
-    const temp = allRewardTokens.map(item => {
-      return {
-        ...item,
-        logoURI: getGnotPath(item).logoURI,
-        path: getGnotPath(item).path,
-        symbol: getGnotPath(item).symbol,
-        name: getGnotPath(item).name,
-      };
-    });
-    const uniqueLogoURIs = new Set();
-    const filteredArray = temp.filter(obj => {
-      if (!uniqueLogoURIs.has(obj.logoURI)) {
-        uniqueLogoURIs.add(obj.logoURI);
-        return true;
-      }
-      return false;
-    });
-    return filteredArray;
-  }, [getGnotPath, pool.rewardTokens]);
+  const rewardTokenLogos = useMemo(() => {
+    if (!pool.incentivized) return null;
+
+    const tokenData = getUniqueRewardTokensByPath(pool.rewardTokens, getGnotPath);
+
+    return <OverlapTokenLogo tokens={tokenData} size={16} />;
+  }, [getGnotPath, pool.rewardTokens, pool.incentivized]);
 
   const isHideBar = useMemo(() => {
     const isAllReserveZeroBin40 = bins40?.every(
@@ -105,12 +86,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
                 <span>{pairName}</span>
                 <div className="box-group">
                   <Badge type={BADGE_TYPE.DARK_DEFAULT} text={`${SwapFeeTierInfoMap[pool.feeTier].rateStr}`} />
-                  {pool.incentivized && (
-                    <Badge
-                      type={BADGE_TYPE.DARK_DEFAULT}
-                      text={<OverlapTokenLogo tokens={rewardTokensInfo} size={16} />}
-                    />
-                  )}
+                  {pool.incentivized && <Badge type={BADGE_TYPE.DARK_DEFAULT} text={rewardTokenLogos} />}
                 </div>
               </div>
             </div>

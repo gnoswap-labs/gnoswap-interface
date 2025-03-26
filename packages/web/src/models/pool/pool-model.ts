@@ -1,3 +1,4 @@
+import { RewardTokenModel } from "@models/position/reward-model";
 import { TokenModel } from "@models/token/token-model";
 
 export interface PoolModel {
@@ -15,7 +16,7 @@ export interface PoolModel {
   fee: string;
 
   incentivized: boolean;
-  rewardTokens: TokenModel[];
+  rewardTokens: RewardTokenModel[];
 
   tvl: string;
   tvlChange: number;
@@ -87,7 +88,7 @@ export const initialPool: PoolModel = {
   },
 };
 
-export type IncentivizePoolModel = PoolModel
+export type IncentivizePoolModel = PoolModel;
 
 export interface IPoolDetailResponse {
   poolPath: string;
