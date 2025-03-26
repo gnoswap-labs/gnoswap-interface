@@ -13,9 +13,21 @@ const LOADING_SIZE_MAP = {
     mobileContainer: 30,
     mobileCircle: 22,
   },
+  MEDIUM: {
+    container: 60,
+    circle: 48,
+    mobileContainer: 50,
+    mobileCircle: 38,
+  },
 } as const;
 
-const LoadingSpinner = ({ className, size = "DEFAULT" }: { className?: string; size?: "DEFAULT" | "SMALL" }) => {
+const LoadingSpinner = ({
+  className,
+  size = "DEFAULT",
+}: {
+  className?: string;
+  size?: "DEFAULT" | "SMALL" | "MEDIUM";
+}) => {
   return <LoadingSpinnerWrapper className={className} {...LOADING_SIZE_MAP[size]} />;
 };
 

@@ -604,8 +604,8 @@ const PoolAddLiquidityContainer: React.FC = () => {
   }, [isFetchingPools, isLoadingCommon]);
 
   const showOneClickStaking = useMemo(
-    () => checkPoolStakingRewards(selectPool.poolInfo?.dbData?.incentiveType),
-    [selectPool.poolInfo?.dbData?.incentiveType],
+    () => checkPoolStakingRewards(selectPool.poolInfo?.dbData?.incentivized),
+    [selectPool.poolInfo?.dbData?.incentivized],
   );
 
   return (

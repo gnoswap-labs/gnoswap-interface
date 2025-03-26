@@ -1,10 +1,10 @@
-import { INCENTIVE_TYPE, SwapFeeTierType } from "@constants/option.constant";
+import { SwapFeeTierType } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 
 export interface PoolListInfo {
   poolId: string;
 
-  incentiveType: INCENTIVE_TYPE;
+  incentivized: boolean;
 
   tokenA: TokenModel;
 

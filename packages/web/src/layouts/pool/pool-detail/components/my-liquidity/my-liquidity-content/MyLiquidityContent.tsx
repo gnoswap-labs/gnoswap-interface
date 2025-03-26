@@ -111,7 +111,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       .flatMap(position => position.rewards)
       .map(reward => ({
         token: reward.rewardToken,
-        rewardType: reward.rewardType,
+        rewardType: reward.rewardToken.rewardType,
         balance: reward.totalAmount || 0,
         balanceUSD:
           makeDisplayTokenAmount(
@@ -212,7 +212,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       )
       .map(reward => ({
         token: reward.rewardToken,
-        rewardType: reward.rewardType,
+        rewardType: reward.rewardToken.rewardType,
         accuReward1D: reward.accuReward1D ? Number(reward.accuReward1D) : null,
         apr: reward.apr ? Number(reward.apr) : null,
         liquidity: reward.liquidity,
@@ -333,7 +333,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       .flatMap(position => position.rewards)
       .map(reward => ({
         token: reward.rewardToken,
-        rewardType: reward.rewardType,
+        rewardType: reward.rewardToken.rewardType,
         amount: reward.claimableAmount ? makeDisplayTokenAmount(reward.rewardToken, reward.claimableAmount) : null,
         usd: reward.claimableUsd ? Number(reward.claimableUsd) : null,
         accumulatedRewardOf1d: reward.accuReward1D

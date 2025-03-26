@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
-import { INCENTIVE_TYPE } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
 
@@ -12,8 +11,7 @@ import { PoolInfoHeaderWrapper } from "./PoolPairInfoHeader.styles";
 interface PoolPairInfoHeaderProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
-  hasPoolStaking: boolean;
-  incentivizedType: INCENTIVE_TYPE;
+  incentivzed: boolean;
   rewardTokens: TokenModel[];
   feeStr: string;
 }
@@ -21,22 +19,15 @@ interface PoolPairInfoHeaderProps {
 const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
   tokenA,
   tokenB,
-  hasPoolStaking,
   feeStr,
   rewardTokens,
-  incentivizedType,
+  incentivzed,
 }) => {
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
   const incentivezedStr = useMemo(() => {
-    if (incentivizedType === "INCENTIVIZED") {
-      return t("business:incentive");
-    }
-    if (incentivizedType === "EXTERNAL") {
-      return t("business:incentive");
-    }
-    return "";
-  }, [incentivizedType, t]);
+    return incentivzed ? t("business:incentive") : "";
+  }, [incentivzed, t]);
 
   const rewardTokenLogos = useMemo(() => {
     return rewardTokens.reduce((acc, current) => {
@@ -70,7 +61,7 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
       </div>
       <div className="badge-wrap">
         <div className="badge">{feeStr}</div>
-        {hasPoolStaking && incentivezedStr && (
+        {incentivezedStr && (
           <div className="badge">
             {incentivezedStr}
             {rewardTokenLogos.length > 0 && <OverlapTokenLogo size={18} tokens={rewardTokenLogos} />}

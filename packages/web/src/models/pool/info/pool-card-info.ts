@@ -1,6 +1,5 @@
-import { INCENTIVE_TYPE, SwapFeeTierType } from "@constants/option.constant";
+import { SwapFeeTierType } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
-import { PoolBinModel } from "../pool-bin-model";
 
 /**
  * Todo: Change data structure
@@ -8,7 +7,7 @@ import { PoolBinModel } from "../pool-bin-model";
 export interface IncentivizePoolCardInfo {
   poolId: string;
 
-  incentiveType: INCENTIVE_TYPE;
+  incentivized: boolean;
 
   tokenA: TokenModel;
 
@@ -29,8 +28,6 @@ export interface IncentivizePoolCardInfo {
   price: number;
 
   currentTick: number;
-
-  bins40: PoolBinModel[];
 
   poolPath?: string;
 

@@ -49,7 +49,7 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
     const positionAprs = positions.map(position => {
       const aprs = position.rewards.reduce(
         (accum, currentReward) => {
-          if (currentReward.rewardType === "SWAP_FEE") {
+          if (currentReward.rewardToken.rewardType === "SWAP_FEE") {
             accum.fee += currentReward.apr || 0;
           }
           accum.rewards += currentReward.apr || 0;

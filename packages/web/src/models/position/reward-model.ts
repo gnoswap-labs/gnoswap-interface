@@ -1,10 +1,12 @@
 import { RewardType } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 
-export interface RewardModel {
+export interface RewardTokenModel extends TokenModel {
   rewardType: RewardType;
+}
 
-  rewardToken: TokenModel;
+export interface RewardModel {
+  rewardToken: RewardTokenModel;
 
   totalAmount: string;
 

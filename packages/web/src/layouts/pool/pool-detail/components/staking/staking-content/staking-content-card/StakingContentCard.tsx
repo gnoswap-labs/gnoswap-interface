@@ -141,9 +141,9 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
 
   const totalStakedRewardUSD = useMemo(() => {
     const tempTotalStakedRewardUSD = positionRewards
-      .filter(_ => ["EXTERNAL", "INTERNAL"].includes(_.rewardType))
+      .filter(_ => ["EXTERNAL", "INTERNAL"].includes(_.rewardToken.rewardType))
       .reduce((accum, current) => {
-        if (current.rewardType !== "INTERNAL_REWARD") {
+        if (current.rewardToken.rewardType !== "INTERNAL_REWARD") {
           return accum;
         }
         const tokenUSD = tokenPrices[current.rewardToken.priceID]?.usd || 0;
@@ -314,7 +314,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({ period, checkPoints, pos
 
   const totalStakedRewardUSD = useMemo(() => {
     const tempTotalStakedRewardUSD = positionRewards.reduce((accum, current) => {
-      if (current.rewardType !== "INTERNAL_REWARD") {
+      if (current.rewardToken.rewardType !== "INTERNAL_REWARD") {
         return accum;
       }
       const tokenUSD = tokenPrices[current.rewardToken.priceID]?.usd || 0;

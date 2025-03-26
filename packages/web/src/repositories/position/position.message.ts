@@ -52,7 +52,7 @@ export function makeClaimMessageWithApproves(
   position.rewards.forEach(reward => {
     const rewardTokenWrappedPath = checkGnotPath(reward.rewardToken.path);
     // Reward token approve to Pool
-    if (reward.rewardType === "SWAP_FEE") {
+    if (reward.rewardToken.rewardType === "SWAP_FEE") {
       hasFee = true;
       approveMessageInfos.push({
         tokenPath: reward.rewardToken.path,
@@ -135,7 +135,7 @@ export function makeClaimAllMessageWithApproves(
     position.rewards.forEach(reward => {
       const rewardTokenWrappedPath = checkGnotPath(reward.rewardToken.path);
       // Reward token approve to Pool
-      if (reward.rewardType === "SWAP_FEE") {
+      if (reward.rewardToken.rewardType === "SWAP_FEE") {
         hasFee = true;
         approveMessageInfos.push({
           tokenPath: reward.rewardToken.path,

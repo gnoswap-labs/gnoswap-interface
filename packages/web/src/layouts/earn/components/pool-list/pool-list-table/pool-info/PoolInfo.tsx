@@ -25,7 +25,7 @@ interface PoolInfoProps {
 }
 
 const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
-  const { poolId, tokenA, tokenB, feeTier, apr, volume24h, fees24h, rewardTokens, tvl } = pool;
+  const { poolId, tokenA, tokenB, feeTier, apr, volume24h, fees24h, rewardTokens, tvl, incentivized } = pool;
   const poolPath = makePoolPath(tokenA, tokenB, feeTier);
 
   const { data: poolStakings = [] } = useGetPoolStakingListByPoolPath(poolPath || "", {
@@ -38,7 +38,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
 
   const { getGnotPath } = useGnotToGnot();
   const rewardTokenLogos = useMemo(() => {
-    if (!hasPoolStaking) return null;
+    if (!incentivized) return null;
 
     const tokenData = rewardTokens.reduce((acc, current) => {
       const existToken = acc.some(item => item.path === getGnotPath(current).path);
@@ -56,7 +56,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
     }, [] as TokenModel[]);
 
     return <OverlapTokenLogo tokens={tokenData} size={20} />;
-  }, [getGnotPath, rewardTokens, hasPoolStaking]);
+  }, [getGnotPath, rewardTokens, incentivized, hasPoolStaking]);
 
   const cellWidths =
     breakpoint === DEVICE_TYPE.MOBILE
