@@ -86,7 +86,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
     const { defaultMinX, minX, maxX } = d3Position;
     const centerX = currentTick ?? (minX && maxX ? (minX + maxX) / 2 : 0);
 
-    const hasCurrentTick = React.useMemo(() => currentTick !== null && currentTick !== undefined, [currentTick]);
+    const hasCurrentTick = React.useMemo(() => currentTick != null, [currentTick]);
 
     /** Update Chart by data */
     function updateChart() {

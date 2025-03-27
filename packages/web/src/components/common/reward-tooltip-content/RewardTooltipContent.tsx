@@ -68,11 +68,7 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({ rewardInfo 
         return current.usd;
       }
 
-      if (current.usd === null) {
-        return accum;
-      }
-
-      return accum + current.usd;
+      return accum + (current.usd ?? 0);
     }, null);
     return formatOtherPrice(sumUSD, {
       isKMB: false,
