@@ -297,12 +297,7 @@ export type AddLiquiditySubmitType =
   | "SELECT_TOKEN"
   | "AMOUNT_TOO_LOW";
 
-export type RewardType =
-  | "SWAP_FEE"
-  | "EXTERNAL_REWARD"
-  | "INTERNAL_REWARD_TIER1"
-  | "INTERNAL_REWARD_TIER2"
-  | "INTERNAL_REWARD_TIER3";
+export type RewardType = "SWAP_FEE" | "EXTERNAL_REWARD" | "INTERNAL_TIER_1" | "INTERNAL_TIER_2" | "INTERNAL_TIER_3";
 
 export type DisplayRewardType = "SWAP_FEE" | "EXTERNAL_REWARD" | "INTERNAL_REWARD" | "NONE";
 

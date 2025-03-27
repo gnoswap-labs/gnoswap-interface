@@ -47,6 +47,13 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({ rewardInfo 
     return rewardInfo.EXTERNAL_REWARD.sort((a, b) => (b.usd || 0) - (a.usd || 0));
   }, [rewardInfo]);
 
+  const noneRewards = useMemo(() => {
+    if (!rewardInfo || rewardInfo.NONE.length === 0) {
+      return null;
+    }
+    return rewardInfo.NONE.sort((a, b) => (b.usd || 0) - (a.usd || 0));
+  }, [rewardInfo]);
+
   const swapFeeRewardUSD = useMemo(() => {
     const isEmpty = !swapFeeRewards || swapFeeRewards?.length === 0;
 
@@ -122,10 +129,36 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({ rewardInfo 
     });
   }, [externalRewards]);
 
+  const noneRewardUSD = useMemo(() => {
+    const isEmpty = !noneRewards || noneRewards?.length === 0;
+
+    if (isEmpty) return "-";
+
+    const sumUSD = noneRewards.reduce((accum: null | number, current) => {
+      if (accum === null && current.usd === null) {
+        return null;
+      }
+
+      if (accum === null) {
+        return current.usd;
+      }
+
+      if (current.usd === null) {
+        return accum;
+      }
+
+      return accum + current.usd;
+    }, null);
+    return formatOtherPrice(sumUSD, {
+      isKMB: false,
+    });
+  }, [noneRewards]);
+
   const rewardsData = [
     { type: "SWAP_FEE", rewards: swapFeeRewards, totalUSD: swapFeeRewardUSD },
-    { type: "INTERNAL", rewards: internalRewards, totalUSD: internalRewardUSD },
-    { type: "EXTERNAL", rewards: externalRewards, totalUSD: externalRewardUSD },
+    { type: "INTERNAL_REWARD", rewards: internalRewards, totalUSD: internalRewardUSD },
+    { type: "EXTERNAL_REWARD", rewards: externalRewards, totalUSD: externalRewardUSD },
+    { type: "NONE", rewards: noneRewards, totalUSD: noneRewardUSD },
   ].filter(({ rewards }) => rewards);
 
   return (
