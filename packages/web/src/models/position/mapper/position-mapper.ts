@@ -6,7 +6,7 @@ import { PoolPositionModel } from "../pool-position-model";
 import { PositionModel } from "../position-model";
 import { RewardModel } from "../reward-model";
 import { toUnitFormat } from "@utils/number-utils";
-import { INCENTIVE_TYPE } from "@constants/option.constant";
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
 
 export class PositionMapper {
   public static toTokenPairAmount(position: PoolPositionModel): TokenPairAmountInfo {
@@ -52,7 +52,6 @@ export class PositionMapper {
       bins40: [],
       totalClaimedUsd: position.totalClaimedUsd,
       usdValue: Number(position.usdValue),
-      incentiveType: position.incentiveType as INCENTIVE_TYPE,
       tokenUri: position.tokenUri,
     };
   }
@@ -74,8 +73,10 @@ export class PositionMapper {
   }
 
   public static makePoolPosition(positionModel: PositionModel, poolModel: PoolModel): PoolPositionModel {
+    const feeTierInfo = Object.values(SwapFeeTierInfoMap).find(info => `${info.fee}` === poolModel.fee.toString());
     return {
       ...positionModel,
+      feeTier: feeTierInfo?.type || "NONE",
       pool: poolModel,
     };
   }

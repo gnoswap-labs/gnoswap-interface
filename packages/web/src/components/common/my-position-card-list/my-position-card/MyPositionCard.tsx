@@ -5,7 +5,7 @@ import RangeBadge from "@components/common/range-badge/RangeBadge";
 import { MyPositionCardWrapper, MyPositionCardWrapperBorder } from "./MyPositionCard.styles";
 import BarAreaGraph from "../../bar-area-graph/BarAreaGraph";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { isEndTickBy, makeSwapFeeTierByTickSpacing, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
+import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { isMaxTick, isMinTick } from "@utils/pool-utils";
 import IconStrokeArrowUp from "../../icons/IconStrokeArrowUp";
 import IconStrokeArrowDown from "../../icons/IconStrokeArrowDown";
@@ -92,7 +92,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [pool.currentTick, position.tickLower, position.tickUpper, position.closed]);
 
   const feeRateStr = useMemo(() => {
-    const rateStr = SwapFeeTierInfoMap[makeSwapFeeTierByTickSpacing(pool.tickSpacing)].rateStr;
+    const rateStr = SwapFeeTierInfoMap[position.feeTier].rateStr;
     return `${rateStr}`;
   }, [pool.tickSpacing]);
 

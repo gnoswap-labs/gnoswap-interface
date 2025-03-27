@@ -43,8 +43,6 @@ export interface PositionResponse {
 
   totalClaimedUsd: string;
 
-  incentiveType: string;
-
   unclaimedFeeAUsd: string;
 
   unclaimedFeeBUsd: string;

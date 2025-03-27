@@ -1,6 +1,5 @@
 import { ClaimedRewardModel, RewardModel } from "./reward-model";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
-import { INCENTIVE_TYPE } from "@constants/option.constant";
 
 export interface PositionModel {
   id: number;
@@ -44,8 +43,6 @@ export interface PositionModel {
   totalClaimedUsd: string;
 
   usdValue: number;
-
-  incentiveType: INCENTIVE_TYPE;
 
   tokenUri: string;
 
