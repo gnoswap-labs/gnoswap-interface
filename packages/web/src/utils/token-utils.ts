@@ -1,3 +1,4 @@
+import { RewardTokenModel } from "@models/position/reward-model";
 import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 import { formatOtherPrice } from "./new-number-utils";
@@ -74,4 +75,38 @@ export function formatTokenPath(path: string, isNative: boolean, nativeCoinText:
 
   // Remove 'gno.land/' prefix if present
   return path.replace(/^gno\.land\//, "");
+}
+
+/**
+ * Removes duplicates from the reward token array and returns token information converted to GNOT paths.
+ *
+ * @param rewardTokens Array of tokens to process
+ * @param getGnotPath GNOT path conversion function
+ */
+export function getUniqueRewardTokensByPath<
+  T extends { path?: string; name?: string; logoURI?: string; symbol?: string },
+>(
+  rewardTokens: RewardTokenModel[],
+  getGnotPath: (token: T | null | undefined) => {
+    path: string;
+    name: string;
+    symbol: string;
+    logoURI: string;
+    wrappedPath: string;
+  },
+) {
+  return rewardTokens.reduce((acc, current) => {
+    const existToken = acc.some(item => item.path === getGnotPath(current as unknown as T).path);
+
+    if (!existToken) {
+      acc.push({
+        ...current,
+        logoURI: getGnotPath(current as unknown as T).logoURI,
+        symbol: getGnotPath(current as unknown as T).symbol,
+        path: getGnotPath(current as unknown as T).path,
+      });
+    }
+
+    return acc;
+  }, [] as RewardTokenModel[]);
 }

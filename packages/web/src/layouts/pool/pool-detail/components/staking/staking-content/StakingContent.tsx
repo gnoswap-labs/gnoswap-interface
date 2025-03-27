@@ -12,8 +12,8 @@ import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
+import { getUniqueRewardTokensByPath } from "@utils/token-utils";
 
 import IncentivizeTokenDetailTooltipContent from "./incentivized-token-detail-tooltip-content/IncentivizeTokenDetailTooltipContent";
 import StakingContentCard, { SummuryApr } from "./staking-content-card/StakingContentCard";
@@ -95,24 +95,9 @@ const StakingContent: React.FC<StakingContentProps> = ({
   }, [handleScroll]);
 
   const rewardTokenLogos = useMemo(() => {
-    const rewardData = pool?.rewardTokens || [];
-    const rewardLogo =
-      rewardData?.map(item => ({
-        ...item,
-        logoURI: getGnotPath(item).logoURI,
-        symbol: getGnotPath(item).symbol,
-        path: getGnotPath(item).path,
-        name: getGnotPath(item).name,
-      })) || [];
-
-    return [...rewardLogo].reduce((acc: TokenModel[], current) => {
-      if (!acc.find(item => item.logoURI === current.logoURI)) {
-        acc.push(current);
-      }
-
-      return acc;
-    }, []) as TokenModel[];
-  }, [pool?.rewardTokens, getGnotPath]);
+    const rewardTokens = pool?.rewardTokens || [];
+    return getUniqueRewardTokensByPath(rewardTokens, getGnotPath);
+  }, [getGnotPath, pool?.rewardTokens]);
 
   const stakingPositionMap = useMemo(() => {
     return stakedPosition.reduce<{

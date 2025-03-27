@@ -8,9 +8,10 @@ import IconInfo from "@components/common/icons/IconInfo";
 import IconLine from "@components/common/icons/IconLine";
 import IconLineLong from "@components/common/icons/IconLineLong";
 import IconStar from "@components/common/icons/IconStar";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { StakingPeriodType, STAKING_PERIOD_INFO } from "@constants/option.constant";
+import { StakingPeriodType, STAKING_PERIOD_INFO, RewardType } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
@@ -20,6 +21,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import { checkGnotPath } from "@utils/common";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { toUnitFormat } from "@utils/number-utils";
+import { isInternalRewardType, mapToDisplayRewardType } from "@utils/reward-utils";
 
 import {
   PriceTooltipContentWrapper,
@@ -27,7 +29,6 @@ import {
   ToolTipContentWrapper,
   TooltipDivider,
 } from "./StakingContentCard.styles";
-import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface StakingContentCardProps {
   period: StakingPeriodType;
@@ -141,9 +142,14 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
 
   const totalStakedRewardUSD = useMemo(() => {
     const tempTotalStakedRewardUSD = positionRewards
-      .filter(_ => ["EXTERNAL", "INTERNAL"].includes(_.rewardToken.rewardType))
+      .filter(reward => {
+        const rewardType = reward.rewardToken.rewardType as RewardType;
+        const displayType = mapToDisplayRewardType(rewardType);
+        return displayType === "EXTERNAL_REWARD" || displayType === "INTERNAL_REWARD";
+      })
       .reduce((accum, current) => {
-        if (current.rewardToken.rewardType !== "INTERNAL_REWARD") {
+        const rewardType = current.rewardToken.rewardType as RewardType;
+        if (!isInternalRewardType(rewardType)) {
           return accum;
         }
         const tokenUSD = tokenPrices[current.rewardToken.priceID]?.usd || 0;
@@ -314,7 +320,8 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({ period, checkPoints, pos
 
   const totalStakedRewardUSD = useMemo(() => {
     const tempTotalStakedRewardUSD = positionRewards.reduce((accum, current) => {
-      if (current.rewardToken.rewardType !== "INTERNAL_REWARD") {
+      const rewardType = current.rewardToken.rewardType as RewardType;
+      if (!isInternalRewardType(rewardType)) {
         return accum;
       }
       const tokenUSD = tokenPrices[current.rewardToken.priceID]?.usd || 0;

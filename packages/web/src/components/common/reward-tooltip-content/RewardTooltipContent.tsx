@@ -3,15 +3,14 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { RewardType } from "@constants/option.constant";
+import { DisplayRewardType, RewardType } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
 import { formatOtherPrice, formatPoolPairAmount } from "@utils/new-number-utils";
-
 import { RewardTooltipContentWrapper } from "./RewardTooltipContent.styles";
 
 export interface PositionRewardForTooltip {
-  rewardType: RewardType;
+  rewardType: RewardType | DisplayRewardType;
   token: TokenModel;
   amount: number | null;
   usd: number | null;
@@ -20,7 +19,7 @@ export interface PositionRewardForTooltip {
 }
 
 export interface RewardTooltipContentProps {
-  rewardInfo: { [key in RewardType]: PositionRewardForTooltip[] } | null;
+  rewardInfo: { [key in DisplayRewardType]: PositionRewardForTooltip[] } | null;
 }
 
 const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({ rewardInfo }) => {
@@ -48,6 +47,13 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({ rewardInfo 
     return rewardInfo.EXTERNAL_REWARD.sort((a, b) => (b.usd || 0) - (a.usd || 0));
   }, [rewardInfo]);
 
+  const noneRewards = useMemo(() => {
+    if (!rewardInfo || rewardInfo.NONE.length === 0) {
+      return null;
+    }
+    return rewardInfo.NONE.sort((a, b) => (b.usd || 0) - (a.usd || 0));
+  }, [rewardInfo]);
+
   const swapFeeRewardUSD = useMemo(() => {
     const isEmpty = !swapFeeRewards || swapFeeRewards?.length === 0;
 
@@ -62,11 +68,7 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({ rewardInfo 
         return current.usd;
       }
 
-      if (current.usd === null) {
-        return accum;
-      }
-
-      return accum + current.usd;
+      return accum + (current.usd ?? 0);
     }, null);
     return formatOtherPrice(sumUSD, {
       isKMB: false,
@@ -123,10 +125,36 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({ rewardInfo 
     });
   }, [externalRewards]);
 
+  const noneRewardUSD = useMemo(() => {
+    const isEmpty = !noneRewards || noneRewards?.length === 0;
+
+    if (isEmpty) return "-";
+
+    const sumUSD = noneRewards.reduce((accum: null | number, current) => {
+      if (accum === null && current.usd === null) {
+        return null;
+      }
+
+      if (accum === null) {
+        return current.usd;
+      }
+
+      if (current.usd === null) {
+        return accum;
+      }
+
+      return accum + current.usd;
+    }, null);
+    return formatOtherPrice(sumUSD, {
+      isKMB: false,
+    });
+  }, [noneRewards]);
+
   const rewardsData = [
     { type: "SWAP_FEE", rewards: swapFeeRewards, totalUSD: swapFeeRewardUSD },
-    { type: "INTERNAL", rewards: internalRewards, totalUSD: internalRewardUSD },
-    { type: "EXTERNAL", rewards: externalRewards, totalUSD: externalRewardUSD },
+    { type: "INTERNAL_REWARD", rewards: internalRewards, totalUSD: internalRewardUSD },
+    { type: "EXTERNAL_REWARD", rewards: externalRewards, totalUSD: externalRewardUSD },
+    { type: "NONE", rewards: noneRewards, totalUSD: noneRewardUSD },
   ].filter(({ rewards }) => rewards);
 
   return (

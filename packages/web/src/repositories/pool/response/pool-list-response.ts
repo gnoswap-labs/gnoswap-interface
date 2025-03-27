@@ -1,5 +1,6 @@
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { IPoolPriceRatio } from "@models/pool/pool-model";
+import { RewardTokenModel } from "@models/position/reward-model";
 import { TokenModel } from "@models/token/token-model";
 
 export interface PoolListResponse {
@@ -46,7 +47,7 @@ export interface PoolResponse {
 
   totalApr: string;
 
-  rewardTokens?: TokenModel[];
+  rewardTokens?: RewardTokenModel[];
 
   priceRatio: IPoolPriceRatio;
 

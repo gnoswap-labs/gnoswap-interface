@@ -170,7 +170,7 @@ export class PoolRepositoryImpl implements PoolRepository {
       return [];
     }
     const response = await this.networkClient.get<PoolListResponse>({
-      url: "/incentivize/pools",
+      url: "/pools?incentivized=true",
     });
 
     const pools = response?.data?.data ? response.data.data.map(PoolMapper.toIncentivePool) : [];
