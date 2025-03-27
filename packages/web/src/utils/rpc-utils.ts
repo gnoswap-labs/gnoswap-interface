@@ -31,6 +31,15 @@ export function evaluateExpressionToObject<T extends object>(evaluateExpression:
   }
 }
 
+export function evaluateExpressionToStrings(evaluateExpression: string): string[] {
+  try {
+    const result = matchStringValues(evaluateExpression);
+    return result.map(value => parseABCIValue(value)).map(value => value.replace(/^"(.*)"$/, "$1"));
+  } catch {
+    return [];
+  }
+}
+
 function matchNumberValues(str: string): string[] {
   const regex = /\((?:"([^"]+)"|(\d+))\s+\w+\)/g;
   const results: string[] = [];
@@ -47,7 +56,7 @@ function matchNumberValues(str: string): string[] {
   return results;
 }
 
-function matchStringValues(str: string): string[] {
+export function matchStringValues(str: string): string[] {
   const regexp = /\((.*)\)/g;
   const result = str.match(regexp);
   if (result === null || result.length < 1) {

@@ -97,6 +97,8 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
     }
 
+    console.log(drySwap(this.rpcProvider, PACKAGE_ROUTER_PATH, request), "!!!!!!!!!!!!!!!!!!!!");
+
     return await drySwap(this.rpcProvider, PACKAGE_ROUTER_PATH, request);
   };
 
@@ -239,6 +241,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const apiEstimatedAmount = calculateTotalAmountOut(drySwapRequest.estimatedRoutes);
     const drySwapAmount = await this.getDrySwap(drySwapRequest);
+    console.log(drySwapAmount, "drySwapAmount?!!!!!!!!!!!");
 
     this.validateSwapRouteEstimation(apiEstimatedAmount, drySwapAmount);
 
