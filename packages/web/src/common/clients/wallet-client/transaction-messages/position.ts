@@ -180,12 +180,7 @@ export function makePositionDecreaseLiquidityMessage(
   });
 }
 
-export function makePositionCollectFeeMessage(
-  lpTokenId: string,
-  isGetWGNOT: boolean,
-  caller: string,
-  referrerAddress: string | null,
-) {
+export function makePositionCollectFeeMessage(lpTokenId: string, isGetWGNOT: boolean, caller: string) {
   return makeTransactionMessage({
     send: "",
     func: "CollectFee",
@@ -193,7 +188,6 @@ export function makePositionCollectFeeMessage(
     args: [
       lpTokenId,
       `${!isGetWGNOT}`, // whether unwrap token, true will get GNOT : isGetWGNOT == true => wrap
-      referrerAddress || "", // Referral address
     ],
     caller,
   });
