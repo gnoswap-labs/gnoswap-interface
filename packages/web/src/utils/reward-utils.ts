@@ -6,12 +6,18 @@ import { RewardType, DisplayRewardType } from "@constants/option.constant";
  * @returns Reward types for display
  */
 export const mapToDisplayRewardType = (rewardType: RewardType): DisplayRewardType => {
-  if (rewardType === "SWAP_FEE") return "SWAP_FEE";
-  if (rewardType === "EXTERNAL_REWARD") return "EXTERNAL_REWARD";
-  if (rewardType === "INTERNAL_TIER_1" || rewardType === "INTERNAL_TIER_2" || rewardType === "INTERNAL_TIER_3") {
-    return "INTERNAL_REWARD";
+  switch (rewardType) {
+    case "SWAP_FEE":
+      return "SWAP_FEE";
+    case "EXTERNAL_REWARD":
+      return "EXTERNAL_REWARD";
+    case "INTERNAL_TIER_1":
+    case "INTERNAL_TIER_2":
+    case "INTERNAL_TIER_3":
+      return "INTERNAL_REWARD";
+    default:
+      return "NONE";
   }
-  return "NONE";
 };
 
 /**
