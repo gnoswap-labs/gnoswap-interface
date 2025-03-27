@@ -5,19 +5,19 @@ import { useTranslation } from "react-i18next";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
-import { PoolPositionModel } from "@models/position/pool-position-model";
-import { TokenPriceModel } from "@models/token/token-price-model";
-import { DEVICE_TYPE } from "@styles/media";
-import { RewardType } from "@constants/option.constant";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import RewardTooltipContent, {
   PositionRewardForTooltip,
 } from "@components/common/reward-tooltip-content/RewardTooltipContent";
+import { RewardType, DisplayRewardType } from "@constants/option.constant";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { TokenPriceModel } from "@models/token/token-price-model";
+import { DEVICE_TYPE } from "@styles/media";
+import { mapToDisplayRewardType } from "@utils/reward-utils";
 
+import StakedPostionsTooltipContent from "./sateked-positions-tooltip/StakedPositinosTooltipContent";
 import WalletBalanceDetailInfo from "./wallet-balance-detail-info/WalletBalanceDetailInfo";
 
 import { WalletBalanceDetailWrapper } from "./WalletBalanceDetail.styles";
-import StakedPostionsTooltipContent from "./sateked-positions-tooltip/StakedPositinosTooltipContent";
 
 export interface BalanceDetailInfo {
   availableBalance: string;
@@ -66,21 +66,22 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
   }, [positions]);
 
   const { claimedRewardInfo, claimableRewardInfo } = useMemo((): {
-    claimedRewardInfo: { [key in RewardType]: PositionRewardForTooltip[] };
-    claimableRewardInfo: { [key in RewardType]: PositionRewardForTooltip[] };
+    claimedRewardInfo: { [key in DisplayRewardType]: PositionRewardForTooltip[] };
+    claimableRewardInfo: { [key in DisplayRewardType]: PositionRewardForTooltip[] };
   } => {
     const initRewardTypeMap = () => ({
       SWAP_FEE: {},
       INTERNAL_REWARD: {},
       EXTERNAL_REWARD: {},
+      NONE: {},
     });
 
     const claimableMap: {
-      [key in RewardType]: { [key in string]: PositionRewardForTooltip };
+      [key in DisplayRewardType]: { [key in string]: PositionRewardForTooltip };
     } = initRewardTypeMap();
 
     const claimedMap: {
-      [key in RewardType]: { [key in string]: PositionRewardForTooltip };
+      [key in DisplayRewardType]: { [key in string]: PositionRewardForTooltip };
     } = initRewardTypeMap();
 
     if (!positions || positions.length === 0) {
@@ -89,11 +90,13 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
           SWAP_FEE: [],
           INTERNAL_REWARD: [],
           EXTERNAL_REWARD: [],
+          NONE: [],
         },
         claimableRewardInfo: {
           SWAP_FEE: [],
           INTERNAL_REWARD: [],
           EXTERNAL_REWARD: [],
+          NONE: [],
         },
       };
     }
@@ -115,8 +118,11 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
       positions
         .flatMap(position => position.rewards)
         .forEach(reward => {
-          if (!claimableMap[reward.rewardToken.rewardType]) {
-            console.warn(`Invalid rewardType: ${reward.rewardToken.rewardType}`);
+          const rewardType = reward.rewardToken.rewardType as RewardType;
+          const displayRewardType = mapToDisplayRewardType(rewardType);
+
+          if (!claimableMap[displayRewardType]) {
+            console.warn(`Invalid rewardType: ${rewardType}, mapped to ${displayRewardType}`);
             return;
           }
 
@@ -126,7 +132,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
 
           const rewardInfo: PositionRewardForTooltip = {
             token: reward.rewardToken,
-            rewardType: reward.rewardToken.rewardType as RewardType,
+            rewardType: displayRewardType,
             amount: reward.claimableAmount ? Number(reward.claimableAmount) : null,
             usd: reward.claimableUsd ? Number(reward.claimableUsd) : null,
             accumulatedRewardOf1d: reward.accuReward1D ? Number(reward.accuReward1D) : null,
@@ -134,14 +140,14 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
               reward.accuReward1D && tokenPrice ? Number(reward.accuReward1D) * tokenPrice : null,
           };
 
-          const existingReward = claimableMap[rewardInfo.rewardType]?.[reward.rewardToken.priceID];
+          const existingReward = claimableMap[displayRewardType]?.[reward.rewardToken.priceID];
 
           if (existingReward) {
             const accumulatedRewardOf1d = getAccumulatedRewardOf1d(existingReward, reward);
             const accumulatedRewardOf1dUsd =
               accumulatedRewardOf1d !== null && tokenPrice !== null ? accumulatedRewardOf1d * tokenPrice : null;
 
-            claimableMap[rewardInfo.rewardType][reward.rewardToken.priceID] = {
+            claimableMap[displayRewardType][reward.rewardToken.priceID] = {
               ...existingReward,
               amount: (existingReward.amount || 0) + (rewardInfo.amount || 0),
               usd:
@@ -152,7 +158,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
               accumulatedRewardOf1dUsd,
             };
           } else {
-            claimableMap[rewardInfo.rewardType][reward.rewardToken.priceID] = rewardInfo;
+            claimableMap[displayRewardType][reward.rewardToken.priceID] = rewardInfo;
           }
         });
     };
@@ -161,8 +167,11 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
       positions
         .flatMap(position => position.claimedRewards)
         .forEach(claimed => {
-          if (!claimedMap[claimed.rewardType]) {
-            console.warn(`Invalid rewardType: ${claimed.rewardType}`);
+          const rewardType = claimed.rewardType as RewardType;
+          const displayRewardType = mapToDisplayRewardType(rewardType);
+
+          if (!claimedMap[displayRewardType]) {
+            console.warn(`Invalid rewardType: ${rewardType}, mapped to ${displayRewardType}`);
             return;
           }
 
@@ -175,17 +184,17 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
 
           const rewardInfo: PositionRewardForTooltip = {
             token: claimed.rewardToken,
-            rewardType: claimed.rewardType,
+            rewardType: displayRewardType,
             amount: claimedAmount,
             usd: claimedUsd,
             accumulatedRewardOf1d: null,
             accumulatedRewardOf1dUsd: null,
           };
 
-          const existingReward = claimedMap[rewardInfo.rewardType]?.[claimed.rewardToken.priceID];
+          const existingReward = claimedMap[displayRewardType]?.[claimed.rewardToken.priceID];
 
           if (existingReward) {
-            claimedMap[rewardInfo.rewardType][claimed.rewardToken.priceID] = {
+            claimedMap[displayRewardType][claimed.rewardToken.priceID] = {
               ...existingReward,
               amount: (existingReward.amount || 0) + claimedAmount,
               usd:
@@ -194,7 +203,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
                   : existingReward.usd || claimedUsd,
             };
           } else {
-            claimedMap[rewardInfo.rewardType][claimed.rewardToken.priceID] = rewardInfo;
+            claimedMap[displayRewardType][claimed.rewardToken.priceID] = rewardInfo;
           }
         });
     };
@@ -207,6 +216,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         SWAP_FEE: Object.values(claimedMap.SWAP_FEE),
         INTERNAL_REWARD: Object.values(claimedMap.INTERNAL_REWARD),
         EXTERNAL_REWARD: Object.values(claimedMap.EXTERNAL_REWARD),
+        NONE: Object.values(claimedMap.NONE),
       },
       claimableRewardInfo: {
         SWAP_FEE: Object.values(claimableMap.SWAP_FEE).filter(reward => reward.amount && reward.amount > 0),
@@ -216,12 +226,13 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         EXTERNAL_REWARD: Object.values(claimableMap.EXTERNAL_REWARD).filter(
           reward => reward.amount && reward.amount > 0,
         ),
+        NONE: Object.values(claimableMap.NONE).filter(reward => reward.amount && reward.amount > 0),
       },
     };
   }, [positions, tokenPrices]);
 
   const hasInfo = (data: {
-    [key in RewardType]: PositionRewardForTooltip[];
+    [key in DisplayRewardType]: PositionRewardForTooltip[];
   }): boolean => {
     if (data.SWAP_FEE.length === 0 && data.INTERNAL_REWARD.length === 0 && data.EXTERNAL_REWARD.length === 0)
       return false;

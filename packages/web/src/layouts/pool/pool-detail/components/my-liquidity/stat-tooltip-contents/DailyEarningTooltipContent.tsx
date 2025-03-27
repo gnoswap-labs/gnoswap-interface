@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { RewardType } from "@constants/option.constant";
+import { DisplayRewardType, RewardType } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
@@ -11,14 +11,14 @@ import { StatTooltipContentWrapper } from "./StatTooltipContents.styles";
 
 export interface PositionAPRInfo {
   token: TokenModel;
-  rewardType: RewardType;
+  rewardType: RewardType | DisplayRewardType;
   accuReward1D: number | null;
   accuReward1DPrice: number | null;
   apr: number | null;
 }
 
 export interface DailyEarningTooltipContentProps {
-  rewardInfo: { [key in RewardType]: PositionAPRInfo[] };
+  rewardInfo: { [key in DisplayRewardType]: PositionAPRInfo[] };
 }
 
 export const DailyEarningTooltipContent: React.FC<DailyEarningTooltipContentProps> = ({ rewardInfo }) => {

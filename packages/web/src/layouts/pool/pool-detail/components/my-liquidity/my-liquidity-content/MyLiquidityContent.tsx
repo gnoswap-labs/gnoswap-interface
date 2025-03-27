@@ -11,7 +11,7 @@ import RewardTooltipContent, {
   PositionRewardForTooltip,
 } from "@components/common/reward-tooltip-content/RewardTooltipContent";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { RewardType } from "@constants/option.constant";
+import { RewardType, DisplayRewardType } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolPositionModel } from "@models/position/pool-position-model";
@@ -22,6 +22,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import { isGNOTPath } from "@utils/common";
 import { formatOtherPrice, formatPoolPairAmount } from "@utils/new-number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { mapToDisplayRewardType } from "@utils/reward-utils";
 
 import { DailyEarningTooltipContent, PositionAPRInfo } from "../stat-tooltip-contents/DailyEarningTooltipContent";
 
@@ -95,23 +96,24 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     return formatOtherPrice(balance, { isKMB: false });
   }, [canShowData, isDisplayPrice, positions]);
 
-  const claimableRewardInfo = useMemo((): { [key in RewardType]: PositionRewardForTooltip[] } | null => {
+  const claimableRewardInfo = useMemo((): { [key in DisplayRewardType]: PositionRewardForTooltip[] } | null => {
     if (!canShowData) {
       return null;
     }
     const infoMap: {
-      [key in RewardType]: { [key in string]: PositionRewardForTooltip };
+      [key in DisplayRewardType]: { [key in string]: PositionRewardForTooltip };
     } = {
       SWAP_FEE: {},
       INTERNAL_REWARD: {},
       EXTERNAL_REWARD: {},
+      NONE: {},
     };
 
     positions
       .flatMap(position => position.rewards)
       .map(reward => ({
         token: reward.rewardToken,
-        rewardType: reward.rewardToken.rewardType,
+        rewardType: reward.rewardToken.rewardType as RewardType,
         balance: reward.totalAmount || 0,
         balanceUSD:
           makeDisplayTokenAmount(
@@ -124,9 +126,11 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         claimableUsdValue: reward.claimableUsd ? Number(reward.claimableUsd) : null,
       }))
       .forEach(rewardInfo => {
-        const existReward = infoMap[rewardInfo.rewardType]?.[rewardInfo.token.priceID];
-        const tokenPrice = tokenPrices[rewardInfo.token.priceID].usd
-          ? Number(tokenPrices[rewardInfo.token.priceID].usd)
+        const mappedRewardType = mapToDisplayRewardType(rewardInfo.rewardType);
+
+        const existReward = infoMap[mappedRewardType]?.[rewardInfo.token.priceID];
+        const tokenPrice = tokenPrices[rewardInfo.token.priceID]?.usd
+          ? Number(tokenPrices[rewardInfo.token.priceID]?.usd)
           : null;
         if (existReward) {
           const accumulatedRewardOf1d = (() => {
@@ -147,7 +151,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           const accumulatedRewardOf1dUsd =
             accumulatedRewardOf1d !== null && tokenPrice !== null ? accumulatedRewardOf1d * tokenPrice : null;
 
-          infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
+          infoMap[mappedRewardType][rewardInfo.token.priceID] = {
             ...existReward,
             usd: (() => {
               if (existReward.usd === null && rewardInfo.usd === null) {
@@ -169,7 +173,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             accumulatedRewardOf1dUsd: accumulatedRewardOf1dUsd,
           };
         } else {
-          infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
+          infoMap[mappedRewardType][rewardInfo.token.priceID] = {
             ...rewardInfo,
             accumulatedRewardOf1dUsd:
               rewardInfo.accumulatedRewardOf1d !== null && tokenPrice !== null
@@ -183,19 +187,21 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
       INTERNAL_REWARD: Object.values(infoMap["INTERNAL_REWARD"]),
       EXTERNAL_REWARD: Object.values(infoMap["EXTERNAL_REWARD"]),
+      NONE: Object.values(infoMap["NONE"]),
     };
   }, [canShowData, positions, tokenPrices]);
 
-  const aprRewardInfo = useMemo((): { [key in RewardType]: PositionAPRInfo[] } | null => {
+  const aprRewardInfo = useMemo((): { [key in DisplayRewardType]: PositionAPRInfo[] } | null => {
     if (!canShowData) {
       return null;
     }
     const infoMap: {
-      [key in RewardType]: { [key in string]: PositionAPRInfo };
+      [key in DisplayRewardType]: { [key in string]: PositionAPRInfo };
     } = {
       SWAP_FEE: {},
       INTERNAL_REWARD: {},
       EXTERNAL_REWARD: {},
+      NONE: {},
     };
 
     const totalLiquidity = positions.reduce((accum, current) => {
@@ -212,13 +218,15 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       )
       .map(reward => ({
         token: reward.rewardToken,
-        rewardType: reward.rewardToken.rewardType,
+        rewardType: reward.rewardToken.rewardType as RewardType,
         accuReward1D: reward.accuReward1D ? Number(reward.accuReward1D) : null,
         apr: reward.apr ? Number(reward.apr) : null,
         liquidity: reward.liquidity,
       }))
       .forEach(rewardInfo => {
-        const existReward = infoMap[rewardInfo.rewardType]?.[rewardInfo.token.priceID];
+        const mappedRewardType = mapToDisplayRewardType(rewardInfo.rewardType);
+
+        const existReward = infoMap[mappedRewardType]?.[rewardInfo.token.priceID];
         const tokenPrice = tokenPrices[rewardInfo.token.priceID]?.usd
           ? Number(tokenPrices[rewardInfo.token.priceID]?.usd)
           : null;
@@ -258,14 +266,14 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
             return Number(existReward.apr) + Number(BigInt((rewardInfo.apr * 1000).toFixed(0)) * rewardInfo.liquidity);
           })();
 
-          infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
+          infoMap[mappedRewardType][rewardInfo.token.priceID] = {
             ...existReward,
             accuReward1D,
             accuReward1DPrice,
             apr: apr,
           };
         } else {
-          infoMap[rewardInfo.rewardType][rewardInfo.token.priceID] = {
+          infoMap[mappedRewardType][rewardInfo.token.priceID] = {
             ...rewardInfo,
             accuReward1DPrice:
               rewardInfo.accuReward1D !== null && tokenPrice !== null
@@ -277,7 +285,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       });
 
     Object.keys(infoMap).forEach((typeKey: string) => {
-      const categorizedMap = infoMap[typeKey as RewardType];
+      const categorizedMap = infoMap[typeKey as DisplayRewardType];
       Object.keys(categorizedMap).forEach((positionKey: string) => {
         const multipliedApr = categorizedMap[positionKey].apr;
         categorizedMap[positionKey].apr = multipliedApr ? Number(BigInt(multipliedApr) / totalLiquidity) / 1000 : null;
@@ -288,6 +296,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
       INTERNAL_REWARD: Object.values(infoMap["INTERNAL_REWARD"]),
       EXTERNAL_REWARD: Object.values(infoMap["EXTERNAL_REWARD"]),
+      NONE: Object.values(infoMap["NONE"]),
     };
   }, [canShowData, positions, tokenPrices]);
 
@@ -333,7 +342,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       .flatMap(position => position.rewards)
       .map(reward => ({
         token: reward.rewardToken,
-        rewardType: reward.rewardToken.rewardType,
+        rewardType: reward.rewardToken.rewardType as RewardType,
         amount: reward.claimableAmount ? makeDisplayTokenAmount(reward.rewardToken, reward.claimableAmount) : null,
         usd: reward.claimableUsd ? Number(reward.claimableUsd) : null,
         accumulatedRewardOf1d: reward.accuReward1D
