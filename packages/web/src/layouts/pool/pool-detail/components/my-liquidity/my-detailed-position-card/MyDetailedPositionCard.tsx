@@ -123,7 +123,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   }, [position.pool.tokenB]);
 
   const currentTick = useMemo(() => {
-    return position.pool.currentTick || null;
+    return position.pool.currentTick ?? null;
   }, [position.pool.currentTick]);
 
   const price = useMemo(() => {
