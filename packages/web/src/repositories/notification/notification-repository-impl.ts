@@ -90,13 +90,6 @@ export class NotificationRepositoryImpl implements NotificationRepository {
        **/
       if (removedTxs.includes(tx.txHash)) continue;
 
-      /**
-       * *If tx both amounts are `0` ignore it
-       **/
-      if (!Number(tx.tokenAAmount) && !Number(tx.tokenBAmount)) {
-        continue;
-      }
-
       const txModel: TransactionModel = {
         txType: tx.tokenB?.name ? 1 : 0,
         txHash: tx.txHash,
