@@ -153,7 +153,8 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       return null;
     }
 
-    const amount = direction === "EXACT_IN" ? estimatedSwapResult.amount : estimatedSwapResult.calculatedInputAmount;
+    const amount = estimatedSwapResult.amount;
+
     return direction === "EXACT_IN"
       ? makeDisplayTokenAmount(tokenB, amount)?.toString() || null
       : makeDisplayTokenAmount(tokenA, amount)?.toString() || null;
