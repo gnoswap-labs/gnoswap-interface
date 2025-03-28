@@ -56,7 +56,7 @@ function matchNumberValues(str: string): string[] {
   return results;
 }
 
-export function matchStringValues(str: string): string[] {
+function matchStringValues(str: string): string[] {
   const regexp = /\((.*)\)/g;
   const result = str.match(regexp);
   if (result === null || result.length < 1) {

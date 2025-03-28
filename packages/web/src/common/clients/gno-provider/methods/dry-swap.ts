@@ -56,7 +56,7 @@ export async function drySwap(gnoProvider: GnoProvider, packagePath: string, req
     const response = makeDrySwapResponse(abciResponse);
 
     // ToDo: Delete this code. This is for debugging.
-    console.log(response, "dryswap abci_response");
+    console.log(response, "dryswap abci_response for TEST");
 
     return isExactIn ? response.exactOutAmount : response.exactInAmount;
   } catch (e) {
