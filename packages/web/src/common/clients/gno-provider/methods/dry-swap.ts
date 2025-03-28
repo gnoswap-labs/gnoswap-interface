@@ -1,10 +1,34 @@
 import { GnoProvider } from "@gnolang/gno-js-client";
 
-import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
+import { evaluateExpressionToStrings, makeABCIParams } from "@utils/rpc-utils";
 import { DrySwapRequest } from "@repositories/swap-router/request/swap-route-request";
 import { makeRawTokenAmount } from "@utils/token-utils";
 import { makeRoutesQuery } from "@utils/swap-route-utils";
 import { checkGnotPath } from "@utils/common";
+import BigNumber from "bignumber.js";
+
+interface DrySwapResponse {
+  inputAmount: number;
+  outputAmount: number;
+  available: boolean;
+}
+
+function makeDrySwapResponse(abciResponse: string): DrySwapResponse {
+  const drySwapResponse = evaluateExpressionToStrings(abciResponse);
+
+  if (drySwapResponse.length !== 3) {
+    console.warn(abciResponse, "DrySwap Error: Invalid DrySwap response format.");
+    return { available: false, inputAmount: 0, outputAmount: 0 };
+  }
+
+  const [inputAmount, outputAmount, available] = drySwapResponse;
+
+  return {
+    inputAmount: BigNumber(inputAmount).toNumber(),
+    outputAmount: BigNumber(outputAmount).toNumber(),
+    available: available === "true",
+  };
+}
 
 export async function drySwap(gnoProvider: GnoProvider, packagePath: string, request: DrySwapRequest): Promise<number> {
   const { inputToken, outputToken, tokenAmount, exactType, estimatedRoutes, tokenAmountLimit } = request;
@@ -28,7 +52,13 @@ export async function drySwap(gnoProvider: GnoProvider, packagePath: string, req
 
   try {
     const abciResponse = await gnoProvider.evaluateExpression(packagePath, abciQueryParams);
-    return evaluateExpressionToNumber(abciResponse);
+    const isExactIn = exactType === "EXACT_IN";
+    const response = makeDrySwapResponse(abciResponse);
+
+    // ToDo: Delete this code. This is for debugging.
+    console.log(response, "dryswap abci_response for TEST");
+
+    return isExactIn ? response.outputAmount : response.inputAmount;
   } catch (e) {
     console.log(e);
   }
