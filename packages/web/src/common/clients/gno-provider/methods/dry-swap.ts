@@ -8,8 +8,8 @@ import { checkGnotPath } from "@utils/common";
 import BigNumber from "bignumber.js";
 
 interface DrySwapResponse {
-  exactInAmount: number;
-  exactOutAmount: number;
+  inputAmount: number;
+  outputAmount: number;
   available: boolean;
 }
 
@@ -18,14 +18,14 @@ function makeDrySwapResponse(abciResponse: string): DrySwapResponse {
 
   if (drySwapResponse.length !== 3) {
     console.warn(abciResponse, "DrySwap Error: Invalid DrySwap response format.");
-    return { available: false, exactInAmount: 0, exactOutAmount: 0 };
+    return { available: false, inputAmount: 0, outputAmount: 0 };
   }
 
-  const [exactInAmount, exactOutAmount, available] = drySwapResponse;
+  const [inputAmount, outputAmount, available] = drySwapResponse;
 
   return {
-    exactInAmount: BigNumber(exactInAmount).toNumber(),
-    exactOutAmount: BigNumber(exactOutAmount).toNumber(),
+    inputAmount: BigNumber(inputAmount).toNumber(),
+    outputAmount: BigNumber(outputAmount).toNumber(),
     available: available === "true",
   };
 }
@@ -58,7 +58,7 @@ export async function drySwap(gnoProvider: GnoProvider, packagePath: string, req
     // ToDo: Delete this code. This is for debugging.
     console.log(response, "dryswap abci_response for TEST");
 
-    return isExactIn ? response.exactOutAmount : response.exactInAmount;
+    return isExactIn ? response.outputAmount : response.inputAmount;
   } catch (e) {
     console.log(e);
   }
