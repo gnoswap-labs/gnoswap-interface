@@ -57,8 +57,6 @@ export const useGetRoutes = (
           estimatedRoutes: [],
           amount: "0",
           status: "NO_LIQUIDITY",
-          calculatedInputAmount: "0",
-          calculatedOutputAmount: "0",
         };
       }
 
