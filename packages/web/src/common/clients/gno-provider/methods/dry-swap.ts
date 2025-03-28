@@ -17,7 +17,7 @@ function makeDrySwapResponse(abciResponse: string): DrySwapResponse {
   const drySwapResponse = evaluateExpressionToStrings(abciResponse);
 
   if (drySwapResponse.length !== 3) {
-    console.warn(abciResponse, "drySwap error ABCI_Response");
+    console.warn(abciResponse, "DrySwap Error: Invalid DrySwap response format.");
     return { available: false, exactInAmount: 0, exactOutAmount: 0 };
   }
 
