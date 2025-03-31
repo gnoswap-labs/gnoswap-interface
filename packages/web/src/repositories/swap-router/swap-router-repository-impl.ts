@@ -27,7 +27,6 @@ import {
   makeUnwrapTokenMessages,
   makeWrapTokenMessages,
 } from "./swap-router.message";
-import { calculateTotalAmountOut } from "@utils/swap-route-utils";
 import { eventBus } from "@utils/event-bus";
 import { generateSendTransactionParams, withTransactionGuard } from "@utils/transaction-utils";
 
@@ -35,7 +34,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
   private networkClient: NetworkClient | null;
   private walletClient: WalletClient | null;
-  private readonly MAX_SWAP_ROUTE_ESTIMATION_DEVIATION = 0;
 
   constructor(rpcProvider: GnoProvider | null, walletClient: WalletClient | null, networkClient: NetworkClient | null) {
     this.rpcProvider = rpcProvider;
@@ -233,24 +231,25 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       outputToken: request.outputToken,
       tokenAmount: request.tokenAmount,
       estimatedRoutes: request.estimatedRoutes,
+      slippage: request.slippage,
+      originAmount: request.originAmount,
       tokenAmountLimit: request.tokenAmountLimit,
       exactType,
     };
 
-    const apiEstimatedAmount = calculateTotalAmountOut(drySwapRequest.estimatedRoutes);
     const drySwapAmount = await this.getDrySwap(drySwapRequest);
 
-    this.validateSwapRouteEstimation(apiEstimatedAmount, drySwapAmount);
+    this.validateSwapRouteEstimation(drySwapRequest.originAmount, drySwapAmount, drySwapRequest.slippage);
 
     return drySwapAmount;
   }
 
-  private validateSwapRouteEstimation(apiEstimatedAmount: number, drySwapAmount: number): void {
+  private validateSwapRouteEstimation(apiEstimatedAmount: number, drySwapAmount: number, slippage: number): void {
     const estimationDiff = Math.abs(
       new BigNumber(apiEstimatedAmount).minus(drySwapAmount).div(apiEstimatedAmount).toNumber(),
     );
 
-    if (estimationDiff > this.MAX_SWAP_ROUTE_ESTIMATION_DEVIATION) {
+    if (estimationDiff > slippage) {
       this.logSwapRouteEstimationComparison(apiEstimatedAmount, drySwapAmount, estimationDiff);
       throw new SwapError("DRY_SWAP_DEVIATION_EXCEEDED");
     }

@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { ERROR_VALUE } from "@common/errors/adena";
+import { ERROR_VALUE as SWAP_ERROR_VALUE } from "@common/errors/swap";
 import { DEFAULT_GAS_FEE, MINIMUM_GNOT_SWAP_AMOUNT } from "@common/values";
 import ConfirmSwapModal from "@components/swap/confirm-swap-modal/ConfirmSwapModal";
 import { PAGE_PATH } from "@constants/page.constant";
@@ -1091,14 +1092,22 @@ export const useSwapHandler = () => {
         });
       })
       .catch(e => {
-        broadcastError(
-          getMessage(
-            DexEvent.SWAP,
-            "error",
-            broadcastMessage,
-            e.type === ERROR_VALUE.TRANSACTION_FAILED.type ? e.data?.hash : undefined,
-          ),
-        );
+        if (e.status === SWAP_ERROR_VALUE.DRY_SWAP_DEVIATION_EXCEEDED.status) {
+          broadcastError({
+            title: "Slippage Tolerance Exceeded",
+            description: "Expected output is outside the allowed slippage range. Try again or adjust tolerance.",
+            txHash: undefined,
+          });
+        } else {
+          broadcastError(
+            getMessage(
+              DexEvent.SWAP,
+              "error",
+              broadcastMessage,
+              e.type === ERROR_VALUE.TRANSACTION_FAILED.type ? e.data?.hash : undefined,
+            ),
+          );
+        }
         setSwapResult({
           success: false,
           hash: "",

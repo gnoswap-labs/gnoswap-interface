@@ -10,6 +10,7 @@ export interface TransactionConfirmModalResponse {
   closeModal: () => void;
   update: (
     status: CommonState.TransactionConfirmStatus,
+    title: string | null,
     description: string | null,
     txHash: string | null,
     callback?: (() => void) | undefined,
@@ -50,12 +51,14 @@ export const useTransactionConfirmModal = (
   const update = useCallback(
     (
       status: CommonState.TransactionConfirmStatus,
+      title: string | null,
       description: string | null,
       txHash: string | null,
       callback?: (() => void) | undefined,
     ) => {
       setTransactionModalData({
         status,
+        title,
         description,
         txHash,
         callback,
@@ -73,6 +76,7 @@ export const useTransactionConfirmModal = (
       setModalContent(
         <TransactionConfirmModal
           status={transactionModalData.status}
+          title={transactionModalData.title}
           description={transactionModalData.description}
           txHash={transactionModalData.txHash}
           confirm={confirm}

@@ -449,6 +449,8 @@ export const useRepositionHandle = () => {
         outputToken: estimateSwapRequest.outputToken,
         estimatedRoutes: estimatedSwapResult.estimatedRoutes,
         tokenAmount: inputAmount.toNumber(),
+        slippage: slippage,
+        originAmount: estimatedSwapResult.originAmount,
         tokenAmountLimit: outputAmount.toNumber() * ((100 - DEFAULT_SLIPPAGE) / 100),
         deadline,
         referrerAddress,
@@ -459,6 +461,8 @@ export const useRepositionHandle = () => {
         outputToken: estimateSwapRequest.outputToken,
         estimatedRoutes: estimatedSwapResult.estimatedRoutes,
         tokenAmount: outputAmount.toNumber(),
+        slippage: slippage,
+        originAmount: estimatedSwapResult.originAmount,
         tokenAmountLimit: inputAmount.toNumber() * ((100 + DEFAULT_SLIPPAGE) / 100),
         deadline,
         referrerAddress,
@@ -525,7 +529,7 @@ export const useRepositionHandle = () => {
         })
         .then(result => {
           if (result.code === 0) {
-            updateConfirmModalData("success", "Reposition Complete", "", () => router.back());
+            updateConfirmModalData("success", "Reposition Complete", "", null, () => router.back());
             openConfirmModal();
           }
           return result;

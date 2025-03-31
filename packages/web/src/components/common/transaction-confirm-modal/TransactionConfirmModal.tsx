@@ -13,6 +13,7 @@ import { Trans, useTranslation } from "react-i18next";
 
 interface TransactionConfirmModalProps {
   status: TransactionConfirmStatus;
+  title: string | null;
   description: string | null;
   txHash: string | null;
   confirm: () => void;
@@ -21,6 +22,7 @@ interface TransactionConfirmModalProps {
 
 const TransactionConfirmModal: React.FC<TransactionConfirmModalProps> = ({
   status,
+  title,
   description,
   txHash,
   confirm,
@@ -40,7 +42,7 @@ const TransactionConfirmModal: React.FC<TransactionConfirmModalProps> = ({
         </div>
         {status === "loading" && <TransactionConfirmLoading description={description} />}
         {status === "success" && <TransactionConfirmSubmitted confirm={confirm} txHash={txHash} close={close} />}
-        {status === "error" && <TransactionConfirmFailed close={close} />}
+        {status === "error" && <TransactionConfirmFailed title={title} description={description} close={close} />}
         {status === "rejected" && <TransactionConfirmRejected close={close} />}
       </div>
     </TransactionConfirmModalWrapper>
@@ -116,9 +118,11 @@ const TransactionConfirmSubmitted: React.FC<TransactionConfirmSubmittedProps> = 
 };
 
 interface TransactionConfirmFailedProps {
+  title: string | null;
+  description: string | null;
   close: () => void;
 }
-const TransactionConfirmFailed: React.FC<TransactionConfirmFailedProps> = ({ close }) => {
+const TransactionConfirmFailed: React.FC<TransactionConfirmFailedProps> = ({ title, description, close }) => {
   const { t } = useTranslation();
 
   return (
@@ -127,14 +131,17 @@ const TransactionConfirmFailed: React.FC<TransactionConfirmFailedProps> = ({ clo
         <IconFailed className="animation-logo" />
       </div>
       <div className="transaction-state">
-        <span className="submitted">{t("Modal:confirm.general.failed.title")}</span>
+        <span className="submitted">{title || t("Modal:confirm.general.failed.title")}</span>
         <div className="view-transaction">
-          <span>
-            <Trans ns="Modal" i18nKey={"Modal:confirm.general.failed.desc"}>
-              Your transaction has not been broadcasted. <br className="br" />
-              Please try again.
-            </Trans>
-          </span>
+          {description ? (
+            <span dangerouslySetInnerHTML={{ __html: description }} />
+          ) : (
+            <span>
+              <Trans ns="Modal" i18nKey={"Modal:confirm.general.failed.desc"}>
+                Your transaction has not been broadcasted. <br className="br" /> Please try again.
+              </Trans>
+            </span>
+          )}
         </div>
       </div>
       <div className="close-button">

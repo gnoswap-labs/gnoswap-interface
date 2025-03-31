@@ -160,17 +160,14 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       : makeDisplayTokenAmount(tokenA, amount)?.toString() || null;
   }, [debouncedSwapAmount, error, swapState, estimatedSwapResult, isTyping]);
 
-  const swapFeeRate = useMemo(() => (swapFee || 0) / 100, [swapFee]);
-
   const tokenAmountLimit = useMemo(() => {
     if (estimatedAmount && !Number.isNaN(slippage)) {
-      const amountWithSwapFee = BigNumber(estimatedAmount.toString()).multipliedBy(1 - swapFeeRate / 100);
       const tokenAmountLimit =
         direction === "EXACT_IN"
-          ? BigNumber(amountWithSwapFee)
+          ? BigNumber(estimatedAmount)
               .multipliedBy((100 - slippage) / 100)
               .toNumber()
-          : BigNumber(amountWithSwapFee)
+          : BigNumber(estimatedAmount)
               .multipliedBy((100 + slippage) / 100)
               .toNumber();
 
@@ -270,6 +267,8 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           outputToken: tokenB,
           tokenAmount: Number(tokenAmount),
           estimatedRoutes: estimatedRoutes,
+          slippage: slippage,
+          originAmount: estimatedSwapResult?.originAmount || 0,
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + 60 * 5,
           referrerAddress: referrerAddress,
@@ -282,6 +281,8 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           outputToken: tokenB,
           tokenAmount: Number(tokenAmount) * exactOutPadding,
           estimatedRoutes: estimatedRoutes,
+          slippage: slippage,
+          originAmount: estimatedSwapResult?.originAmount || 0,
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + 60 * 5,
           referrerAddress: referrerAddress,
@@ -294,6 +295,8 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       selectedTokenPair,
       swapRouterRepository,
       tokenA,
+      estimatedSwapResult?.originAmount,
+      slippage,
       tokenAmountLimit,
       currentTokenAmountLimit,
       tokenB,

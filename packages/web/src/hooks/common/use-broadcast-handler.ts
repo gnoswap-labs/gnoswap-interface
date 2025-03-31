@@ -54,6 +54,7 @@ export const useBroadcastHandler = () => {
     (content?: SnackbarContent) => {
       setTransactionModalData({
         status: "loading",
+        title: content?.title || null,
         description: content?.description || null,
         txHash: content?.txHash || null,
       });
@@ -66,6 +67,7 @@ export const useBroadcastHandler = () => {
     (content?: SnackbarContent, callback?: () => void) => {
       setTransactionModalData({
         status: "success",
+        title: content?.title || null,
         description: content?.description || null,
         txHash: content?.txHash || null,
         callback,
@@ -81,6 +83,7 @@ export const useBroadcastHandler = () => {
     (content?: SnackbarContent, callback?: () => void) => {
       setTransactionModalData({
         status: "error",
+        title: content?.title || null,
         description: content?.description || null,
         txHash: content?.txHash || null,
         callback,
@@ -93,6 +96,7 @@ export const useBroadcastHandler = () => {
     (content?: SnackbarContent, callback?: () => void) => {
       setTransactionModalData({
         status: "rejected",
+        title: content?.title || null,
         description: content?.description || null,
         txHash: content?.txHash || null,
         callback,
