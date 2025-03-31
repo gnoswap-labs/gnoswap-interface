@@ -12,6 +12,10 @@ export interface DrySwapRequest {
 
   estimatedRoutes: EstimatedRoute[];
 
+  slippage: number;
+
+  originAmount: number;
+
   tokenAmountLimit: number;
 }
 
@@ -23,6 +27,10 @@ export interface SwapRouteRequest {
   tokenAmount: number;
 
   estimatedRoutes: EstimatedRoute[];
+
+  slippage: number;
+
+  originAmount: number;
 
   tokenAmountLimit: number;
 
