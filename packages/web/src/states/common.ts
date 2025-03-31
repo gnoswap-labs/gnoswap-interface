@@ -43,6 +43,7 @@ export type TransactionConfirmStatus = "loading" | "rejected" | "success" | "err
 
 export const transactionModalData = atom<{
   status: TransactionConfirmStatus;
+  title: string | null;
   description: string | null;
   txHash: string | null;
   callback?: () => void;

@@ -1,6 +1,6 @@
 import { BaseError } from "@common/errors";
 
-const ERROR_VALUE = {
+export const ERROR_VALUE = {
   AMOUNT_TYPE_CHECK_ERROR: {
     status: 4000,
     type: "Amount Data check Error",
@@ -22,7 +22,7 @@ const ERROR_VALUE = {
     type: "Get slippage failed",
   },
   DRY_SWAP_DEVIATION_EXCEEDED: {
-    status: 4005,
+    status: 4006,
     type: "DrySwap estimation deviation exceeded",
   },
   INVALID_PARAMS: {
