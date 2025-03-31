@@ -529,7 +529,7 @@ export const useRepositionHandle = () => {
         })
         .then(result => {
           if (result.code === 0) {
-            updateConfirmModalData("success", "Reposition Complete", "", () => router.back());
+            updateConfirmModalData("success", "Reposition Complete", "", null, () => router.back());
             openConfirmModal();
           }
           return result;
