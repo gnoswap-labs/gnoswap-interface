@@ -223,7 +223,7 @@ const TokenListContainer: React.FC = () => {
         const latestGraphPrice =
           tempTokenPrice?.last7d?.length > 0
             ? tempTokenPrice.last7d[tempTokenPrice.last7d.length - 1].price
-            : tempTokenPrice.pricesBefore.latestPrice;
+            : tempTokenPrice.pricesBefore?.latestPrice;
         const graphStatus = checkPositivePrice(transferData.pricesBefore?.latestPrice, latestGraphPrice).status;
 
         const data30D = checkPositivePrice(transferData.pricesBefore?.latestPrice, transferData.pricesBefore?.price30d);
