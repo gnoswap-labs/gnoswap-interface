@@ -1,4 +1,4 @@
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import {} from "next/router";
 
 export function createMockRouter(router: Partial<AppRouterInstance>): AppRouterInstance {
