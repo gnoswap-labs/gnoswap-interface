@@ -48,7 +48,7 @@ const SwapTokenHeader = ({ tokenInfo, currentPrice, chartData, containerWidth }:
 
   const displayPrice = React.useMemo(() => {
     const price = nullish.handleFalsy(chartData?.value, currentPrice);
-    return `${formatPrice(price, { lessThan1Significant: 2 })}`;
+    return `${formatPrice(price, { isKMB: false, lessThan1Significant: 2, forcedDecimals: true })}`;
   }, [chartData, currentPrice]);
 
   const displayDate = React.useMemo(() => {
