@@ -207,7 +207,7 @@ export function randomData() {
 }
 
 export const checkGnotPath = (path: string) => {
-  if (path === "gnot") {
+  if (path === GNOT_TOKEN.path) {
     return WRAPPED_GNOT_PATH;
   } else {
     return path;
@@ -215,7 +215,7 @@ export const checkGnotPath = (path: string) => {
 };
 
 export const isGNOTPath = (path: string) => {
-  return path === WRAPPED_GNOT_PATH || path === "gnot";
+  return path === WRAPPED_GNOT_PATH || path === GNOT_TOKEN.path;
 };
 
 export const isWrapped = (path: string) => {
@@ -224,14 +224,14 @@ export const isWrapped = (path: string) => {
 
 export const toNativePath = (path: string) => {
   if (isWrapped(path)) {
-    return "gnot";
+    return GNOT_TOKEN.path;
   } else {
     return path;
   }
 };
 
 export const isGnotToken = (path: string): boolean => {
-  return path === "gnot" || path === WRAPPED_GNOT_PATH;
+  return path === GNOT_TOKEN.path || path === WRAPPED_GNOT_PATH;
 };
 
 export const isSameToken = (tokenAPath: string, tokenBPath: string): boolean => {
