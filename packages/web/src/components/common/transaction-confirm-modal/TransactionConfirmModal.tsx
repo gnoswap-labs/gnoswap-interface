@@ -131,15 +131,15 @@ const TransactionConfirmFailed: React.FC<TransactionConfirmFailedProps> = ({ tit
         <IconFailed className="animation-logo" />
       </div>
       <div className="transaction-state">
-        <span className="submitted">{title || t("Modal:confirm.general.failed.title")}</span>
+        <span className="submitted">{title ? t(title) : t("Modal:confirm.general.failed.title")}</span>
         <div className="view-transaction">
           {description ? (
-            <span dangerouslySetInnerHTML={{ __html: description }} />
+            <span>
+              <Trans ns="Modal" i18nKey={description} components={{ br: <br /> }} />
+            </span>
           ) : (
             <span>
-              <Trans ns="Modal" i18nKey={"Modal:confirm.general.failed.desc"}>
-                Your transaction has not been broadcasted. <br className="br" /> Please try again.
-              </Trans>
+              <Trans ns="Modal" i18nKey={"Modal:confirm.general.failed.desc"} components={{ br: <br /> }} />
             </span>
           )}
         </div>

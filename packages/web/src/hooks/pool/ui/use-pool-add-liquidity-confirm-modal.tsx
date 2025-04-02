@@ -34,6 +34,7 @@ import { useTransactionEventStore } from "@hooks/common/use-transaction-event-st
 import { useGetPositionsByAddress } from "@query/positions";
 import OneClickStakingModal from "@layouts/pool/pool-add/components/one-click-staking-modal/OneClickStakingModal";
 import PoolAddConfirmModal from "@layouts/pool/pool-add/components/pool-add-confirm-modal/PoolAddConfirmModal";
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -411,23 +412,7 @@ export const usePoolAddLiquidityConfirmModal = ({
               }),
             );
           } else {
-            broadcastError(
-              getMessage(
-                DexEvent.ADD,
-                "error",
-                {
-                  tokenASymbol: tokenA?.symbol,
-                  tokenBSymbol: tokenB?.symbol,
-                  tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
-                    maximumFractionDigits: tokenA.decimals,
-                  }),
-                  tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
-                    maximumFractionDigits: tokenB.decimals,
-                  }),
-                },
-                result?.data?.hash,
-              ),
-            );
+            broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
           }
         }
       });

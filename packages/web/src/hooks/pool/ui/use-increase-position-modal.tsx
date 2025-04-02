@@ -20,6 +20,7 @@ import { useTransactionEventStore } from "@hooks/common/use-transaction-event-st
 import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useTokenData } from "@hooks/token/data/use-token-data";
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 
 export interface Props {
   openModal: () => void;
@@ -205,23 +206,7 @@ export const useIncreasePositionModal = ({
           }),
         );
       } else {
-        broadcastError(
-          getMessage(
-            DexEvent.ADD,
-            "error",
-            {
-              tokenASymbol: tokenA.symbol,
-              tokenBSymbol: tokenB.symbol,
-              tokenAAmount: Number(tokenAAmountInput.amount).toLocaleString("en-US", {
-                maximumFractionDigits: tokenA.decimals,
-              }),
-              tokenBAmount: Number(tokenBAmountInput.amount).toLocaleString("en-US", {
-                maximumFractionDigits: tokenB.decimals,
-              }),
-            },
-            result?.data?.hash,
-          ),
-        );
+        broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
       }
     }
     return true;

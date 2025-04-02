@@ -17,6 +17,7 @@ import { formatOtherPrice } from "@utils/new-number-utils";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import MyLiquidity from "../../components/my-liquidity/MyLiquidity";
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 
 interface MyLiquidityContainerProps {
   address?: string | undefined;
@@ -152,7 +153,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address, is
             openModal();
           } else {
             openModal();
-            broadcastError(getMessage(DexEvent.CLAIM_FEE, "error", messageData, response?.data?.hash));
+            broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
             setLoadingTransactionClaim(false);
           }
         }
@@ -205,7 +206,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address, is
           openModal();
         } else {
           openModal();
-          broadcastError(getMessage(DexEvent.CLAIM_FEE, "error", messageData, response?.data?.hash));
+          broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
           setLoadingTransactionClaim(false);
         }
       }

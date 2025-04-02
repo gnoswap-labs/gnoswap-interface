@@ -17,6 +17,7 @@ import UnstakePositionModal from "../../components/unstake-position-modal/Unstak
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
 import { useTokenData } from "@hooks/token/data/use-token-data";
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 
 interface UnstakePositionModalContainerProps {
   positions: PoolPositionModel[];
@@ -150,25 +151,7 @@ const UnstakePositionModalContainer = ({
         );
         openModal();
       } else {
-        broadcastError(
-          getMessage(
-            DexEvent.UNSTAKE,
-            "error",
-            {
-              tokenASymbol: tokenA?.token?.symbol,
-              tokenBSymbol: tokenB?.token?.symbol,
-              tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
-                decimals: tokenA?.token?.decimals,
-                isKMB: false,
-              }),
-              tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
-                decimals: tokenA?.token?.decimals,
-                isKMB: false,
-              }),
-            },
-            result.data?.hash,
-          ),
-        );
+        broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
         openModal();
       }
     }

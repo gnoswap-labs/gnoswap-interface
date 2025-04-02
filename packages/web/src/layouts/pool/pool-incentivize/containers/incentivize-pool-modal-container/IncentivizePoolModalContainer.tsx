@@ -19,6 +19,7 @@ import { EarnState } from "@states/index";
 
 import IncentivizePoolModal from "../../components/incentivize-pool-modal/IncentivizePoolModal";
 import { useTokenData } from "@hooks/token/data/use-token-data";
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 
 const DAY_TIME = 24 * 60 * 60;
 const MILLISECONDS = 1000;
@@ -140,17 +141,7 @@ const IncentivizePoolModalContainer: React.FC<IncentivizePoolModalContainerProps
             );
             openTransactionConfirmModal();
           } else {
-            broadcastError(
-              getMessage(
-                DexEvent.ADD_INCENTIVE,
-                "error",
-                {
-                  tokenAAmount: displayAmount,
-                  tokenASymbol: dataModal?.token?.symbol,
-                },
-                response.data?.hash,
-              ),
-            );
+            broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
             openTransactionConfirmModal();
           }
         }

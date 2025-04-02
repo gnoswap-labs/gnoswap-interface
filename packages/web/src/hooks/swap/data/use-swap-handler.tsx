@@ -37,6 +37,7 @@ import { isEmptyObject } from "@utils/validation-utils";
 
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useSwap } from "./use-swap";
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 
 type SwapButtonStateType =
   | "WALLET_LOGIN"
@@ -933,7 +934,7 @@ export const useSwapHandler = () => {
             broadcastRejected(getMessage(DexEvent.WRAP, "error", messageData));
             openTransactionConfirmModal();
           } else {
-            broadcastError(getMessage(DexEvent.WRAP, "error", messageData, response?.data?.hash));
+            broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
             openTransactionConfirmModal();
           }
         })
@@ -988,7 +989,7 @@ export const useSwapHandler = () => {
             openTransactionConfirmModal();
           } else {
             openTransactionConfirmModal();
-            broadcastError(getMessage(DexEvent.UNWRAP, "error", messageData, response?.data?.hash));
+            broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
           }
         })
         .catch(() => {
@@ -1074,14 +1075,7 @@ export const useSwapHandler = () => {
             broadcastRejected(getMessage(DexEvent.SWAP, "error", broadcastMessage, response.data?.hash));
             openTransactionConfirmModal();
           } else {
-            broadcastError(
-              getMessage(
-                DexEvent.SWAP,
-                "error",
-                broadcastMessage,
-                response.type === ERROR_VALUE.TRANSACTION_FAILED.type ? response.data?.hash : undefined,
-              ),
-            );
+            broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
             openTransactionConfirmModal();
           }
         }
@@ -1093,20 +1087,9 @@ export const useSwapHandler = () => {
       })
       .catch(e => {
         if (e.status === SWAP_ERROR_VALUE.DRY_SWAP_DEVIATION_EXCEEDED.status) {
-          broadcastError({
-            title: "Slippage Tolerance Exceeded",
-            description: "Expected output is outside the allowed slippage range. Try again or adjust tolerance.",
-            txHash: undefined,
-          });
+          broadcastError(BROADCAST_ERROR_VALUE.SLIPPAGE_EXCEEDED);
         } else {
-          broadcastError(
-            getMessage(
-              DexEvent.SWAP,
-              "error",
-              broadcastMessage,
-              e.type === ERROR_VALUE.TRANSACTION_FAILED.type ? e.data?.hash : undefined,
-            ),
-          );
+          broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
         }
         setSwapResult({
           success: false,
