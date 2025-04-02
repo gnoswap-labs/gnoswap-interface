@@ -13,6 +13,7 @@ import { useTransactionEventStore } from "@hooks/common/use-transaction-event-st
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { DexEvent, DexEventType } from "@repositories/common";
 import useCustomRouter from "@hooks/common/use-custom-router";
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 
 export const useGovernanceTx = () => {
   const router = useCustomRouter();
@@ -81,7 +82,7 @@ export const useGovernanceTx = () => {
           broadcastRejected(getMessage(eventType, "error", messageData));
           openTransactionConfirmModal();
         } else {
-          broadcastError(getMessage(eventType, "error", messageData, response?.data?.hash));
+          broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
           openTransactionConfirmModal();
         }
       })

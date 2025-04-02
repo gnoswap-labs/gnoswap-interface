@@ -16,6 +16,7 @@ import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 import StakePositionModal from "../../components/stake-position-modal/StakePositionModal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 
 interface StakePositionModalContainerProps {
   positions: PoolPositionModel[];
@@ -175,25 +176,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
         );
       } else {
         openTransactionConfirmModal();
-        broadcastError(
-          getMessage(
-            DexEvent.STAKE,
-            "error",
-            {
-              tokenASymbol: tokenA?.token?.symbol,
-              tokenBSymbol: tokenB?.token?.symbol,
-              tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
-                decimals: tokenA?.token?.decimals,
-                isKMB: false,
-              }),
-              tokenBAmount: formatPoolPairAmount(tokenB.amount, {
-                decimals: tokenB?.token?.decimals,
-                isKMB: false,
-              }),
-            },
-            result.data?.hash,
-          ),
-        );
+        broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
       }
     }
     return result;

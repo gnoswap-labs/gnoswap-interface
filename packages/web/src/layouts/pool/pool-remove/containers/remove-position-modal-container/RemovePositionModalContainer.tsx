@@ -20,6 +20,7 @@ import { formatPoolPairAmount } from "@utils/new-number-utils";
 import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
 import RemovePositionModal from "../../components/remove-position-modal/RemovePositionModal";
 import { useTokenData } from "@hooks/token/data/use-token-data";
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 
 interface RemovePositionModalContainerProps {
   selectedPositions: PoolPositionModel[];
@@ -165,7 +166,7 @@ const RemovePositionModalContainer = ({
       } else if (
         result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
       ) {
-        broadcastError(getMessage(DexEvent.REMOVE, "error", { ...messageData }));
+        broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
         clearModal();
       } else {
         broadcastRejected(getMessage(DexEvent.REMOVE, "error", { ...messageData }, result?.data?.hash));

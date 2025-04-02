@@ -26,6 +26,7 @@ import { isEmptyObject } from "@utils/validation-utils";
 import AssetSendModal from "../../components/asset-send-modal/AssetSendModal";
 import WalletBalance from "../../components/wallet-balance/WalletBalance";
 import useSendAsset from "@hooks/wallet/data/useSendAsset";
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 
 const WalletBalanceContainer: React.FC = () => {
   const { connected, isSwitchNetwork, loadingConnect, account, walletType } = useWallet();
@@ -115,7 +116,7 @@ const WalletBalanceContainer: React.FC = () => {
           openModal();
         } else {
           openModal();
-          broadcastError(getMessage(DexEvent.CLAIM_FEE, "error", messageData, response?.data?.hash));
+          broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
           setLoadingTransactionClaim(false);
         }
       }

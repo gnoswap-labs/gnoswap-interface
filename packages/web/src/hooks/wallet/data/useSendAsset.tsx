@@ -12,6 +12,7 @@ import { TransferGRC20TokenRequest, TransferNativeTokenRequest } from "@reposito
 import { CommonState } from "@states/index";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 
 type Request = TransferGRC20TokenRequest | TransferNativeTokenRequest;
 export type WithdrawResponse = {
@@ -101,17 +102,7 @@ const useSendAsset = () => {
           );
           return false;
         } else {
-          broadcastError(
-            getMessage(
-              DexEvent.ASSET_SEND,
-              "error",
-              {
-                tokenASymbol: tokenSymbol,
-                tokenAAmount: tokenAmount,
-              },
-              response.data?.hash,
-            ),
-          );
+          broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
           return false;
         }
       })
