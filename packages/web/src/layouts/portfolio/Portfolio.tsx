@@ -9,9 +9,9 @@ import AssetListContainer from "./containers/asset-list-container/AssetListConta
 import WalletBalanceContainer from "./containers/wallet-balance-container/WalletBalanceContainer";
 import WalletPositionCardListContainer from "./containers/wallet-position-card-list-container/WalletPositionCardListContainer";
 
-import WalletLayout from "./WalletLayout";
+import WalletLayout from "./PortfolioLayout";
 
-const Wallet: React.FC = () => {
+const Portfolio: React.FC = () => {
   const [isShowClosedPosition, setIsShowClosedPosition] = React.useState(false);
 
   const toggleShowClosedPosition = () => {
@@ -33,4 +33,4 @@ const Wallet: React.FC = () => {
     />
   );
 };
-export default Wallet;
+export default Portfolio;

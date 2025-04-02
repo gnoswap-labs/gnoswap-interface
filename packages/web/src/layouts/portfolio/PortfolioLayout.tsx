@@ -3,9 +3,9 @@ import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import { DEFAULT_POOL_ADD_URI, getCanScrollUpId } from "@constants/common.constant";
-import { LinkButton, WalletLayoutWrapper } from "./WalletLayout.styles";
+import { LinkButton, PortfolioLayoutWrapper } from "./PortfolioLayout.styles";
 
-interface WalletLayoutProps {
+interface PortfolioProps {
   header: React.ReactNode;
   balance: React.ReactNode;
   assets: React.ReactNode;
@@ -13,11 +13,11 @@ interface WalletLayoutProps {
   footer: React.ReactNode;
 }
 
-const WalletLayout: React.FC<WalletLayoutProps> = ({ header, balance, assets, positions, footer }) => {
+const Portfolio: React.FC<PortfolioProps> = ({ header, balance, assets, positions, footer }) => {
   const { t } = useTranslation();
 
   return (
-    <WalletLayoutWrapper>
+    <PortfolioLayoutWrapper>
       {header}
       <section className="wallet-summary-section">
         <div className="summary-container">
@@ -43,8 +43,8 @@ const WalletLayout: React.FC<WalletLayoutProps> = ({ header, balance, assets, po
         </section>
       </div>
       {footer}
-    </WalletLayoutWrapper>
+    </PortfolioLayoutWrapper>
   );
 };
 
-export default WalletLayout;
+export default Portfolio;
