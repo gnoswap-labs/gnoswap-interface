@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
-import { AppRouterContext } from "next/dist/shared/lib/app-router-context";
+import { AppRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapServiceProvider";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
