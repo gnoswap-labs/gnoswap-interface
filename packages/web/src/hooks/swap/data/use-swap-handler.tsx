@@ -55,10 +55,15 @@ type SwapButtonStateType =
 
 export type PriceImpactStatus = "LOW" | "HIGH" | "MEDIUM" | "POSITIVE" | "NONE";
 
-function estimatePriceImpactByRoutes(tokenInPath: string, routes: EstimatedRoute[], swapFeeRate: number) {
+function estimatePriceImpactByRoutes(
+  tokenInPath: string,
+  routes: EstimatedRoute[],
+  swapFeeRate: number,
+  isExactOut: boolean,
+) {
   let amountInBN = BigNumber(0);
   let amountOutBN = BigNumber(0);
-  let estimatedAmountOutBN = BigNumber(0);
+  let estimatedAmountBN = BigNumber(0);
 
   for (const route of routes) {
     let currentTokenInPath = tokenInPath;
@@ -81,14 +86,24 @@ function estimatePriceImpactByRoutes(tokenInPath: string, routes: EstimatedRoute
     amountInBN = amountInBN.plus(route.amountIn.toString());
     amountOutBN = amountOutBN.plus(amountOutWithSwapFee);
 
-    estimatedAmountOutBN = estimatedAmountOutBN.plus(BigNumber(route.amountIn.toString()).multipliedBy(routePrice));
+    if (isExactOut) {
+      estimatedAmountBN = estimatedAmountBN.plus(BigNumber(route.amountOut.toString()).dividedBy(routePrice));
+    } else {
+      estimatedAmountBN = estimatedAmountBN.plus(BigNumber(route.amountIn.toString()).multipliedBy(routePrice));
+    }
   }
 
-  if (amountOutBN.isZero()) {
-    return BigNumber(0);
+  if (isExactOut) {
+    if (estimatedAmountBN.isZero()) {
+      return BigNumber(0);
+    }
+    return amountInBN.minus(estimatedAmountBN).multipliedBy(100).dividedBy(estimatedAmountBN);
+  } else {
+    if (amountOutBN.isZero()) {
+      return BigNumber(0);
+    }
+    return amountOutBN.minus(estimatedAmountBN).multipliedBy(100).dividedBy(estimatedAmountBN);
   }
-
-  return amountOutBN.minus(estimatedAmountOutBN).multipliedBy(100).dividedBy(estimatedAmountOutBN);
 }
 
 function compareAmountFn(amountA: string | number | bigint, amountB: string | number | bigint) {
@@ -319,6 +334,7 @@ export const useSwapHandler = () => {
       checkGnotPath(tokenA.path),
       estimatedRoutes,
       (swapFee || 0) / 100,
+      type === "EXACT_OUT",
     );
     prevPriceImpact.current = BigNumber(priceImpactNum.toFixed(2));
     return BigNumber(priceImpactNum.toFixed(2));
