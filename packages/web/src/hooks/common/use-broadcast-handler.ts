@@ -10,6 +10,7 @@ import { useMessage } from "./use-message";
 import { SnackbarContent, useSnackbar } from "./use-snackbar";
 import { useTransactionConfirmModal } from "./use-transaction-confirm-modal";
 import { useTransactionEventStore } from "./use-transaction-event-store";
+import { BroadcastErrorContent, BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 
 /**
  * PENDING
@@ -80,12 +81,12 @@ export const useBroadcastHandler = () => {
   );
 
   const broadcastError = useCallback(
-    (content?: SnackbarContent, callback?: () => void) => {
+    (errorContent: BroadcastErrorContent, callback?: () => void) => {
       setTransactionModalData({
         status: "error",
-        title: content?.title || null,
-        description: content?.description || null,
-        txHash: content?.txHash || null,
+        title: errorContent?.title || null,
+        description: errorContent?.description || null,
+        txHash: errorContent?.txHash || null,
         callback,
       });
     },
@@ -165,7 +166,7 @@ export const useBroadcastHandler = () => {
           broadcastRejected(getMessage(eventType, "error", messageData));
           openModal();
         } else {
-          broadcastError(getMessage(eventType, "error", messageData, response?.data?.hash));
+          broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
           openModal();
         }
       })
