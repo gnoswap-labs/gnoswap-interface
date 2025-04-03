@@ -1,8 +1,13 @@
 import { NetworkClient } from "@common/clients/network-client";
 import { CommonError } from "@common/errors";
 import { LeaderboardRepository } from "./leaderboard-repository";
-import { GetLeaderboardRequest } from "./request";
-import { GetLeaderboardResponse, GetLeaderboardByAddressResponse, nullLeaderboardInfo } from "./response";
+import { GetLeaderboardRequest, UpdateLeaderboardHiddenStateRequest } from "./request";
+import {
+  GetLeaderboardResponse,
+  GetLeaderboardByAddressResponse,
+  nullLeaderboardInfo,
+  UpdateLeaderboardHiddenStateResponse,
+} from "./response";
 
 export class LeaderboardRepositoryImpl implements LeaderboardRepository {
   private networkClient: NetworkClient | null;
@@ -49,5 +54,28 @@ export class LeaderboardRepositoryImpl implements LeaderboardRepository {
 
     const data: GetLeaderboardByAddressResponse = response.data.data;
     return data;
+  };
+
+  public updateLeaderboardHiddenState = async (
+    request: UpdateLeaderboardHiddenStateRequest,
+  ): Promise<UpdateLeaderboardHiddenStateResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await this.networkClient.put<{ hidden: boolean }, { data: { success: boolean } }>({
+      url: `/leaderboard/${request.address}`,
+      body: {
+        hidden: request.request.hidden,
+      },
+    });
+
+    if (!response?.data) {
+      return {
+        success: false,
+      };
+    }
+    console.log(response.data, "response.dataresponse.dataresponse.dataresponse.data");
+    return response.data.data;
   };
 }

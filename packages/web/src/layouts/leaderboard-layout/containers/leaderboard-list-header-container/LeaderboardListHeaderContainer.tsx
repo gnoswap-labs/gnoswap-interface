@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 
-import { useConnection } from "@hooks/common/use-connection";
+import { DEVICE_TYPE } from "@styles/media";
+import { useGetLeaderboardByAddress, useUpdateLeaderboardHiddenState } from "@query/leaderboard";
+import { useAddress } from "@hooks/common/use-address";
 
 import { Box } from "../../components/common/common.styles";
 import ConnectYourWallet from "../../components/connect-your-wallet/ConnectYourWallet";
 import NextUpdate from "../../components/next-update/NextUpdate";
 import { ListHeaderWrapper } from "./LeaderboardListHeaderContainer.styles";
 import SearchInput from "@components/common/search-input/SearchInput";
-import { DEVICE_TYPE } from "@styles/media";
 import IconSearch from "@components/common/icons/IconSearch";
 
 interface LeaderboardListHeaderContainerProps {
@@ -27,9 +28,28 @@ const LeaderboardListHeaderContainer = ({
   onToggleSearch,
   onChangeKeyword,
 }: LeaderboardListHeaderContainerProps) => {
-  const { connected } = useConnection();
+  const { address, connected } = useAddress();
+  const { data: leaderboardMyInfo } = useGetLeaderboardByAddress(address || "");
+  const isHidden = leaderboardMyInfo?.hiddenYn === "Y";
+
   const [checked, setChecked] = useState(true);
-  const onSwitch = () => setChecked(v => !v);
+
+  const updateHiddenState = useUpdateLeaderboardHiddenState();
+
+  useEffect(() => {
+    if (leaderboardMyInfo) {
+      setChecked(isHidden);
+    }
+  }, [leaderboardMyInfo]);
+
+  const handleToggleHidden = () => {
+    if (address) {
+      updateHiddenState.mutate({
+        address,
+        request: { hidden: !checked },
+      });
+    }
+  };
 
   const divRef = useRef<HTMLDivElement | null>(null);
   const leftRef = useRef<HTMLDivElement | null>(null);
@@ -72,7 +92,7 @@ const LeaderboardListHeaderContainer = ({
   return (
     <ListHeaderWrapper ref={divRef}>
       <Box ref={leftRef}>
-        <ConnectYourWallet connected={connected} isMobile={isMobile} checked={checked} onSwitch={onSwitch} />
+        <ConnectYourWallet connected={connected} isMobile={isMobile} checked={checked} onSwitch={handleToggleHidden} />
       </Box>
 
       <Box ref={rightRef}>
