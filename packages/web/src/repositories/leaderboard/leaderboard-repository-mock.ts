@@ -3,8 +3,8 @@ import dayjs from "dayjs";
 import { generateAddress } from "@test/generate-utils";
 
 import { LeaderboardRepository } from "./leaderboard-repository";
-import { GetNextUpdateTimeRequest, UpdateLeaderByAddressRequest } from "./request";
-import { GetLeaderboardResponse, GetNextUpdateTimeResponse, UpdateLeaderByAddressResponse } from "./response";
+import { GetNextUpdateTimeRequest, UpdateLeaderboardHiddenStateRequest } from "./request";
+import { GetLeaderboardResponse, GetNextUpdateTimeResponse, UpdateLeaderboardHiddenStateResponse } from "./response";
 import { GetLeaderboardByAddressResponse } from "./response/get-leaderboard-by-address-response";
 import { LeaderboardVisibilityStatus } from "./response/common/types";
 
@@ -84,14 +84,13 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
     };
   };
 
-  public updateLeaderByAddress = async (
-    request: UpdateLeaderByAddressRequest,
-  ): Promise<UpdateLeaderByAddressResponse> => {
-    console.log(`request.address : ${request.address}`);
+  public updateLeaderboardHiddenState = async (
+    request: UpdateLeaderboardHiddenStateRequest,
+  ): Promise<UpdateLeaderboardHiddenStateResponse> => {
+    console.log(`Update leaderboard hidden state - Address: ${request.address}, Hidden: ${request.request.hidden}`);
 
     return {
-      address: request.address,
-      hide: !request.hide,
+      success: true,
     };
   };
 
