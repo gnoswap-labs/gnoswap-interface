@@ -33,22 +33,47 @@ const LeaderboardListHeaderContainer = ({
   const isHidden = leaderboardMyInfo?.hiddenYn === "Y";
 
   const [checked, setChecked] = useState(true);
+  const [isOptimisticUpdate, setIsOptimisticUpdate] = useState(false);
+  const [isToggleDisabled, setIsToggleDisabled] = useState(false);
 
   const updateHiddenState = useUpdateLeaderboardHiddenState();
 
   useEffect(() => {
-    if (leaderboardMyInfo) {
+    if (leaderboardMyInfo && !isOptimisticUpdate) {
       setChecked(isHidden);
     }
-  }, [leaderboardMyInfo]);
+  }, [leaderboardMyInfo, isHidden, isOptimisticUpdate]);
 
   const handleToggleHidden = () => {
-    if (address) {
-      updateHiddenState.mutate({
+    if (!address) return;
+
+    setIsToggleDisabled(true);
+    // 낙관적 업데이트 시작
+    setIsOptimisticUpdate(true);
+    // UI 즉시 업데이트
+    setChecked(!checked);
+
+    updateHiddenState.mutate(
+      {
         address,
         request: { hidden: !checked },
-      });
-    }
+      },
+      {
+        onSettled: () => {
+          // 성공이든 실패든 서버 상태 재확인을 위해 낙관적 업데이트 종료
+          setTimeout(() => {
+            setIsOptimisticUpdate(false);
+            setIsToggleDisabled(false);
+          }, 1000);
+        },
+        onError: () => {
+          // 에러 발생 시 원래 상태로 되돌림
+          setTimeout(() => {
+            setChecked(isHidden);
+          }, 1000);
+        },
+      },
+    );
   };
 
   const divRef = useRef<HTMLDivElement | null>(null);
@@ -92,7 +117,13 @@ const LeaderboardListHeaderContainer = ({
   return (
     <ListHeaderWrapper ref={divRef}>
       <Box ref={leftRef}>
-        <ConnectYourWallet connected={connected} isMobile={isMobile} checked={checked} onSwitch={handleToggleHidden} />
+        <ConnectYourWallet
+          connected={connected}
+          isMobile={isMobile}
+          checked={checked}
+          onSwitch={handleToggleHidden}
+          disabled={isToggleDisabled || updateHiddenState.isLoading}
+        />
       </Box>
 
       <Box ref={rightRef}>
