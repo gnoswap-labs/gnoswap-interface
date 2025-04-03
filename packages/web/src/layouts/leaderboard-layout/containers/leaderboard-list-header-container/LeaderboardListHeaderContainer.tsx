@@ -20,6 +20,8 @@ interface LeaderboardListHeaderContainerProps {
   onChangeKeyword: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
+const OPTIMISTIC_UI_RESET_DELAY_MS = 1000;
+
 const LeaderboardListHeaderContainer = ({
   breakpoint,
   keyword,
@@ -62,12 +64,12 @@ const LeaderboardListHeaderContainer = ({
           setTimeout(() => {
             setIsOptimisticUpdate(false);
             setIsToggleDisabled(false);
-          }, 1000);
+          }, OPTIMISTIC_UI_RESET_DELAY_MS);
         },
         onError: () => {
           setTimeout(() => {
             setChecked(isHidden);
-          }, 1000);
+          }, OPTIMISTIC_UI_RESET_DELAY_MS);
         },
       },
     );
