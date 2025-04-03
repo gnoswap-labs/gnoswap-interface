@@ -48,9 +48,7 @@ const LeaderboardListHeaderContainer = ({
     if (!address) return;
 
     setIsToggleDisabled(true);
-    // 낙관적 업데이트 시작
     setIsOptimisticUpdate(true);
-    // UI 즉시 업데이트
     setChecked(!checked);
 
     updateHiddenState.mutate(
@@ -60,14 +58,12 @@ const LeaderboardListHeaderContainer = ({
       },
       {
         onSettled: () => {
-          // 성공이든 실패든 서버 상태 재확인을 위해 낙관적 업데이트 종료
           setTimeout(() => {
             setIsOptimisticUpdate(false);
             setIsToggleDisabled(false);
           }, 1000);
         },
         onError: () => {
-          // 에러 발생 시 원래 상태로 되돌림
           setTimeout(() => {
             setChecked(isHidden);
           }, 1000);
