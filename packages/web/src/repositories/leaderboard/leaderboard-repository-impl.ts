@@ -39,7 +39,7 @@ export class LeaderboardRepositoryImpl implements LeaderboardRepository {
     return data;
   };
 
-  public getLeaderboardByAddress = async (address: string) => {
+  public getLeaderboardByAddress = async (address: string): Promise<GetLeaderboardByAddressResponse | null> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -75,7 +75,8 @@ export class LeaderboardRepositoryImpl implements LeaderboardRepository {
         success: false,
       };
     }
-    console.log(response.data, "response.dataresponse.dataresponse.dataresponse.data");
-    return response.data.data;
+
+    const data: UpdateLeaderboardHiddenStateResponse = response.data.data;
+    return data;
   };
 }

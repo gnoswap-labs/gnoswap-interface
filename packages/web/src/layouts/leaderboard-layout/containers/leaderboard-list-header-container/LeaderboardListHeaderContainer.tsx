@@ -29,10 +29,11 @@ const LeaderboardListHeaderContainer = ({
   onChangeKeyword,
 }: LeaderboardListHeaderContainerProps) => {
   const { address, connected } = useAddress();
-  const { data: leaderboardMyInfo } = useGetLeaderboardByAddress(address || "");
+  const { data: leaderboardMyInfo, isLoading: isLoadingLeaderboardMyInfo } = useGetLeaderboardByAddress(address || "");
+
   const isHidden = leaderboardMyInfo?.hiddenYn === "Y";
 
-  const [checked, setChecked] = useState(true);
+  const [checked, setChecked] = useState(false);
   const [isOptimisticUpdate, setIsOptimisticUpdate] = useState(false);
   const [isToggleDisabled, setIsToggleDisabled] = useState(false);
 
@@ -113,13 +114,15 @@ const LeaderboardListHeaderContainer = ({
   return (
     <ListHeaderWrapper ref={divRef}>
       <Box ref={leftRef}>
-        <ConnectYourWallet
-          connected={connected}
-          isMobile={isMobile}
-          checked={checked}
-          onSwitch={handleToggleHidden}
-          disabled={isToggleDisabled || updateHiddenState.isLoading}
-        />
+        {!isLoadingLeaderboardMyInfo && leaderboardMyInfo && (
+          <ConnectYourWallet
+            connected={connected}
+            isMobile={isMobile}
+            checked={checked}
+            onSwitch={handleToggleHidden}
+            disabled={isToggleDisabled || updateHiddenState.isLoading}
+          />
+        )}
       </Box>
 
       <Box ref={rightRef}>
