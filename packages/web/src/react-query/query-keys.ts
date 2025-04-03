@@ -21,6 +21,7 @@ export enum QUERY_KEY {
   governanceExecutableFunctions = "governanceExecutableFunctions",
   // leaderboard
   leaderboardList = "leaderboardList",
+  leaderboardListByAddress = "leaderboardListByAddress",
   updateLeaderboardHiddenState = "updateLeaderboardHiddenState",
   leaderboard = "leaderboard",
   // pools

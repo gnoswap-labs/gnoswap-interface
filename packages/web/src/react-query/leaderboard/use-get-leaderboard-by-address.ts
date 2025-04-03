@@ -7,7 +7,7 @@ export const useGetLeaderboardByAddress = (address: string) => {
   const { leaderboardRepository } = useGnoswapContext();
 
   return useQuery({
-    queryKey: [QUERY_KEY.leaderboardList, address],
+    queryKey: [QUERY_KEY.leaderboardListByAddress, address],
     enabled: !!address,
     queryFn: async () => {
       const data = await leaderboardRepository.getLeaderboardByAddress(address);

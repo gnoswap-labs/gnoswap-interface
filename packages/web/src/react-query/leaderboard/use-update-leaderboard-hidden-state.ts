@@ -14,7 +14,7 @@ export const useUpdateLeaderboardHiddenState = () => {
     },
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY.leaderboardList] });
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.leaderboardList, variables.address] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY.leaderboardListByAddress, variables.address] });
     },
   });
 };
