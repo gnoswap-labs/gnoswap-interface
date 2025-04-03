@@ -1,21 +1,48 @@
+import React from "react";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import { numberToFormat } from "@utils/string-utils";
 import { ContentWrapper, Flex, FontWeight500, FrontWeight, Label, Title, Wrapper } from "./PointComposition.styles";
 
 const PointComposition = ({
-  points,
+  totalPoint,
   swapPoint,
   positionPoint,
   stakingPoint,
   referralPoint,
   isMobile,
 }: {
-  points: string;
+  totalPoint: string;
   swapPoint: string;
   positionPoint: string;
   stakingPoint: string;
   referralPoint: string;
   isMobile: boolean;
 }) => {
+  const displayTotalPoint = React.useMemo(() => {
+    if (!totalPoint) return "-";
+    return `${numberToFormat(totalPoint)}`;
+  }, [totalPoint]);
+
+  const displaySwapPoint = React.useMemo(() => {
+    if (!swapPoint) return "-";
+    return `${numberToFormat(swapPoint)}`;
+  }, [swapPoint]);
+
+  const displayPositionPoint = React.useMemo(() => {
+    if (!positionPoint) return "-";
+    return `${numberToFormat(positionPoint)}`;
+  }, [positionPoint]);
+
+  const displayStakingPoint = React.useMemo(() => {
+    if (!stakingPoint) return "-";
+    return `${numberToFormat(stakingPoint)}`;
+  }, [stakingPoint]);
+
+  const displayReferralPoint = React.useMemo(() => {
+    if (!referralPoint) return "-";
+    return `${numberToFormat(referralPoint)}`;
+  }, [referralPoint]);
+
   return (
     <Tooltip
       placement="top"
@@ -25,25 +52,25 @@ const PointComposition = ({
           <ContentWrapper>
             <Flex>
               <Label>Swap</Label>
-              <FontWeight500>{swapPoint}</FontWeight500>
+              <FontWeight500>{displaySwapPoint}</FontWeight500>
             </Flex>
             <Flex>
               <Label>Position</Label>
-              <FontWeight500>{positionPoint}</FontWeight500>
+              <FontWeight500>{displayPositionPoint}</FontWeight500>
             </Flex>
             <Flex>
               <Label>Staking</Label>
-              <FontWeight500>{stakingPoint}</FontWeight500>
+              <FontWeight500>{displayStakingPoint}</FontWeight500>
             </Flex>
             <Flex>
               <Label>Referral</Label>
-              <FontWeight500>{referralPoint}</FontWeight500>
+              <FontWeight500>{displayReferralPoint}</FontWeight500>
             </Flex>
           </ContentWrapper>
         </Wrapper>
       }
     >
-      <FrontWeight>{points}</FrontWeight>
+      <FrontWeight>{displayTotalPoint}</FrontWeight>
     </Tooltip>
   );
 };

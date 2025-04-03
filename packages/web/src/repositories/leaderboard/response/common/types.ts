@@ -1,17 +1,22 @@
-export interface Leader {
+export enum LeaderboardVisibilityStatus {
+  HIDDEN = "Y",
+  VISIBLE = "N",
+}
+
+export interface LeaderboardUser {
+  accountAddress: string;
+  accountName: string;
+  governanceRewardsPoint: string;
+  governanceRewardsUsd: string;
+  hiddenYn: LeaderboardVisibilityStatus;
+  paidSwapFeePoint: string;
+  providedLiquidityFeePoint: string;
+  providedLiquidityFeeUsd: string;
   rank: number;
-
-  address: string;
-
-  hide: boolean;
-
-  swapVolume: number;
-  positionValue: number;
-  stakingValue: number;
-
-  pointSum: number;
-  swapFeePoint: number;
-  poolRewardPoint: number;
-  stakingRewardPoint: number;
-  referralRewardPoint: number;
+  referralPoint: string;
+  referrerAddress: string;
+  stakingRewardsPoint: string;
+  stakingRewardsUsd: string;
+  swapFeeUsd: string;
+  totalPoint: string;
 }

@@ -65,7 +65,7 @@ export default function LeaderboardList() {
         />
 
         <Suspense fallback={<LeaderboardTableSkeletonContainer />}>
-          <LeaderboardTableContainer breakpoint={breakpoint} keyword={keyword} />
+          <LeaderboardTableContainer keyword={keyword} />
         </Suspense>
       </ErrorBoundary>
     </Wrapper>

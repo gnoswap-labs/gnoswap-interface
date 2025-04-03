@@ -4,6 +4,9 @@ import IconMeLogo from "@components/common/icons/IconMeLogo";
 import IconSilverMedal from "@components/common/icons/IconSilverMedal";
 import styled from "@emotion/styled";
 import useRouter from "@hooks/common/use-custom-router";
+import { LeaderboardUser } from "@repositories/leaderboard/response/common/types";
+import { isLeaderboardHidden } from "@utils/leaderboard-utils";
+import { formatAddress } from "@utils/string-utils";
 import { HTMLAttributes } from "react";
 import { TableColumn } from "../leaderboard-table-row/LeaderboardTableRow.styles";
 
@@ -13,33 +16,29 @@ const Flex = styled.div`
 `;
 
 const UserColumn = ({
-  rank,
   user,
-  address,
-  hide,
   isMe = false,
   ...rest
 }: {
-  rank: number;
-  user: string;
-  address: string;
-  hide: boolean;
+  user: LeaderboardUser;
   isMe?: boolean;
   tdWidth?: number;
 } & HTMLAttributes<HTMLDivElement>) => {
   const { push } = useRouter();
+
+  const formattedAddress = formatAddress(user.accountAddress || "");
   return (
     <TableColumn
       {...rest}
       onClick={() => {
-        if (!hide) push(`/earn?addr=${address}`);
+        if (!isLeaderboardHidden(user.hiddenYn)) push(`/earn?addr=${user.accountAddress}`);
       }}
     >
       <Flex>
-        {rank === 1 && <IconGoldMedal />}
-        {rank === 2 && <IconSilverMedal />}
-        {rank === 3 && <IconBronzeMedal />}
-        {user}
+        {user.rank === 1 && <IconGoldMedal />}
+        {user.rank === 2 && <IconSilverMedal />}
+        {user.rank === 3 && <IconBronzeMedal />}
+        {formattedAddress}
         {isMe && <IconMeLogo />}
       </Flex>
     </TableColumn>
