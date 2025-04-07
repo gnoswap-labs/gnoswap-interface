@@ -2,9 +2,8 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 
-import { isValidAddress } from "@utils/validation-utils";
-import { QUERY_PARAMETER } from "@constants/page.constant";
 import { DEVICE_TYPE } from "@styles/media";
+import { useReferral } from "@hooks/common/use-referral";
 
 import * as S from "./WalletReferralInfo.styles";
 import { AccountModel } from "@models/account/account-model";
@@ -29,15 +28,6 @@ interface UIState {
   showError: boolean;
 }
 
-interface StoredReferralInfo {
-  referrerAddress: string;
-  updatedAt: number;
-}
-
-const STORAGE_KEY = {
-  REFERRAL: "wallet_referral_info",
-};
-
 const COPY_SUCCESS_NOTIFICATION_DURATION = 3_000;
 
 const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) => {
@@ -50,30 +40,10 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
     showError: false,
   });
 
-  const [storedReferrer, setStoredReferrer] = React.useState<string>("");
   const [inputReferralAddress, setInputReferralAddress] = React.useState<string>("");
+  const { storedReferralCode, saveReferrerAddress, generateReferralLink } = useReferral();
 
-  React.useEffect(() => {
-    if (!account?.address) return;
-
-    const storedData = localStorage.getItem(`${STORAGE_KEY.REFERRAL}_${account.address}`);
-    if (storedData) {
-      try {
-        const parsed: StoredReferralInfo = JSON.parse(storedData);
-        setStoredReferrer(parsed.referrerAddress);
-      } catch (e) {
-        console.error("Failed to parse stored referral data:", e);
-      }
-    }
-  }, [account?.address]);
-
-  const referralLink = React.useMemo(() => {
-    if (typeof window === "undefined" || !account?.address) return "";
-
-    const url = new URL(window.location.origin);
-    url.searchParams.set(QUERY_PARAMETER.REFERRER, account.address);
-    return url.toString();
-  }, [account?.address]);
+  const referralLink = React.useMemo(() => generateReferralLink(), [generateReferralLink]);
 
   const displayReferralLink = React.useMemo(() => {
     if (!account?.address) return "";
@@ -97,21 +67,6 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
     earnedPoints: 0,
   };
 
-  const saveReferralInfo = React.useCallback(
-    (referrerAddress: string) => {
-      if (!account?.address) return;
-
-      const data: StoredReferralInfo = {
-        referrerAddress,
-        updatedAt: Date.now(),
-      };
-
-      localStorage.setItem(`${STORAGE_KEY.REFERRAL}_${account.address}`, JSON.stringify(data));
-      setStoredReferrer(referrerAddress);
-    },
-    [account?.address],
-  );
-
   const isSubmittable = React.useMemo(() => {
     return true;
   }, []);
@@ -122,8 +77,8 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
   };
 
   const handleEdit = () => {
-    if (storedReferrer) {
-      setInputReferralAddress(storedReferrer);
+    if (storedReferralCode) {
+      setInputReferralAddress(storedReferralCode);
     }
     setUIState(prev => ({ ...prev, isEditing: true }));
   };
@@ -136,14 +91,13 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
   const handleSubmit = () => {
     if (!isSubmittable || uiState.showError) return;
 
-    const trimmedAddress = inputReferralAddress.trim();
+    const result = saveReferrerAddress(inputReferralAddress);
 
-    if (trimmedAddress && (!isValidAddress(trimmedAddress) || account?.address === trimmedAddress)) {
+    if (!result.success) {
       setUIState(prev => ({ ...prev, showError: true }));
       return;
     }
 
-    saveReferralInfo(trimmedAddress);
     handleEditExit();
   };
 
@@ -205,9 +159,9 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
           <>
             <S.InfoColumnKey>{t("Referred by")}</S.InfoColumnKey>
             <S.InfoColumnValue>
-              <S.InfoReferrerDisplayText hasRegisteredReferrer={!!storedReferrer}>
-                {storedReferrer
-                  ? `${storedReferrer.slice(0, 5)}...${storedReferrer.slice(-5)}`
+              <S.InfoReferrerDisplayText hasRegisteredReferrer={!!storedReferralCode}>
+                {storedReferralCode
+                  ? `${storedReferralCode.slice(0, 5)}...${storedReferralCode.slice(-5)}`
                   : t("Not registered yet")}
               </S.InfoReferrerDisplayText>
               <S.InfoColumnIconSet>
