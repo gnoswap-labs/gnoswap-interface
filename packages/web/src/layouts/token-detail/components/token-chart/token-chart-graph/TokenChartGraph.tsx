@@ -8,6 +8,7 @@ import { DEVICE_TYPE } from "@styles/media";
 
 import { TokenChartGraphWrapper, TokenChartGraphXLabel, YAxisLabelWrapper } from "./TokenChartGraph.styles";
 import { SWAP_TOKEN_CHART_COLORS } from "@constants/graph.constant";
+import { getLocalizeTime } from "@utils/chart";
 
 export interface TokenChartGraphProps {
   datas: {
@@ -174,6 +175,19 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
     return xAxisLabels.filter(label => label.position > minimumXAxis && label.position < size.width - minimumXAxis);
   }, [currentTab, size.width, xAxisLabels]);
 
+  const hasData = datas && datas.length > 0;
+
+  const chartData = useMemo(() => {
+    if (!hasData) return [];
+
+    const sortedData = [...datas].sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+
+    return sortedData.map(item => ({
+      value: item.amount.value,
+      time: getLocalizeTime(item.time),
+    }));
+  }, [datas]);
+
   return (
     <TokenChartGraphWrapper>
       <div className="data-wrapper" ref={componentRef}>
@@ -186,10 +200,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
           gradientStartColor={SWAP_TOKEN_CHART_COLORS.GRADIENT.START}
           gradientEndColor={SWAP_TOKEN_CHART_COLORS.GRADIENT.END}
           strokeWidth={1}
-          datas={datas.map(data => ({
-            value: data.amount.value,
-            time: data.time,
-          }))}
+          datas={chartData}
           firstPointColor={theme.color.border05}
           customData={customData}
           displayLastDayAsNow
