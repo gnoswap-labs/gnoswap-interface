@@ -3,6 +3,21 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { numberToFormat } from "@utils/string-utils";
 import { ContentWrapper, Flex, FontWeight500, FrontWeight, Label, Title, Wrapper } from "./PointComposition.styles";
 
+interface PointCompositionProps {
+  totalPoint: string;
+  swapPoint: string;
+  positionPoint: string;
+  stakingPoint: string;
+  governancePoint: string;
+  referralPoint: string;
+  isMobile: boolean;
+}
+
+const formatPoint = (point: string): string => {
+  if (!point) return "-";
+  return numberToFormat(point);
+};
+
 const PointComposition = ({
   totalPoint,
   swapPoint,
@@ -11,44 +26,25 @@ const PointComposition = ({
   governancePoint,
   referralPoint,
   isMobile,
-}: {
-  totalPoint: string;
-  swapPoint: string;
-  positionPoint: string;
-  stakingPoint: string;
-  governancePoint: string;
-  referralPoint: string;
-  isMobile: boolean;
-}) => {
-  const displayTotalPoint = React.useMemo(() => {
-    if (!totalPoint) return "-";
-    return `${numberToFormat(totalPoint)}`;
-  }, [totalPoint]);
+}: PointCompositionProps) => {
+  const displayPoints = React.useMemo(() => {
+    return {
+      totalPoint: formatPoint(totalPoint),
+      swapPoint: formatPoint(swapPoint),
+      positionPoint: formatPoint(positionPoint),
+      stakingPoint: formatPoint(stakingPoint),
+      governancePoint: formatPoint(governancePoint),
+      referralPoint: formatPoint(referralPoint),
+    };
+  }, [totalPoint, swapPoint, positionPoint, stakingPoint, governancePoint, referralPoint]);
 
-  const displaySwapPoint = React.useMemo(() => {
-    if (!swapPoint) return "-";
-    return `${numberToFormat(swapPoint)}`;
-  }, [swapPoint]);
-
-  const displayPositionPoint = React.useMemo(() => {
-    if (!positionPoint) return "-";
-    return `${numberToFormat(positionPoint)}`;
-  }, [positionPoint]);
-
-  const displayPositionStakingPoint = React.useMemo(() => {
-    if (!stakingPoint) return "-";
-    return `${numberToFormat(stakingPoint)}`;
-  }, [stakingPoint]);
-
-  const displayXGNSPoint = React.useMemo(() => {
-    if (!governancePoint) return "-";
-    return `${numberToFormat(governancePoint)}`;
-  }, [governancePoint]);
-
-  const displayReferralPoint = React.useMemo(() => {
-    if (!referralPoint) return "-";
-    return `${numberToFormat(referralPoint)}`;
-  }, [referralPoint]);
+  const pointItems = [
+    { label: "Swap", value: displayPoints.swapPoint },
+    { label: "Position", value: displayPoints.positionPoint },
+    { label: "Position Staking", value: displayPoints.stakingPoint },
+    { label: "xGNS Staking", value: displayPoints.governancePoint },
+    { label: "Referral", value: displayPoints.referralPoint },
+  ];
 
   return (
     <Tooltip
@@ -57,31 +53,19 @@ const PointComposition = ({
         <Wrapper>
           {!isMobile && <Title>Point Composition</Title>}
           <ContentWrapper>
-            <Flex>
-              <Label>Swap</Label>
-              <FontWeight500>{displaySwapPoint}</FontWeight500>
-            </Flex>
-            <Flex>
-              <Label>Position</Label>
-              <FontWeight500>{displayPositionPoint}</FontWeight500>
-            </Flex>
-            <Flex>
-              <Label>Position Staking</Label>
-              <FontWeight500>{displayPositionStakingPoint}</FontWeight500>
-            </Flex>
-            <Flex>
-              <Label>xGNS Staking</Label>
-              <FontWeight500>{displayXGNSPoint}</FontWeight500>
-            </Flex>
-            <Flex>
-              <Label>Referral</Label>
-              <FontWeight500>{displayReferralPoint}</FontWeight500>
-            </Flex>
+            {pointItems.map(item => {
+              return (
+                <Flex key={item.label}>
+                  <Label>{item.label}</Label>
+                  <FontWeight500>{item.value}</FontWeight500>
+                </Flex>
+              );
+            })}
           </ContentWrapper>
         </Wrapper>
       }
     >
-      <FrontWeight>{displayTotalPoint}</FrontWeight>
+      <FrontWeight>{displayPoints.totalPoint}</FrontWeight>
     </Tooltip>
   );
 };
