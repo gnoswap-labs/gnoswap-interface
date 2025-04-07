@@ -195,7 +195,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     }
     return this.networkClient
       .get<{ data: PoolBinModel[] }>({
-        url: `/pools/${encodeURIComponent(poolPath)}/bins?bins=${count || 40}`,
+        url: `/pools/${encodeURIComponent(poolPath)}/bins?binSize=${count || 40}`,
       })
       .then(response => response.data.data);
   };
