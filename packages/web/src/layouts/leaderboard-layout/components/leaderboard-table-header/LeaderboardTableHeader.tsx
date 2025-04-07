@@ -10,7 +10,6 @@ const LeaderboardTableHeader = ({ heads, headWidths }: { heads: TableHeadItem[];
         <TableHeader key={index} tdWidth={headWidths[index]}>
           {head.tooltip && (
             <Tooltip
-              forcedOpen
               placement="top"
               FloatingContent={<TableHeaderTooltipContent>{head.tooltip}</TableHeaderTooltipContent>}
             >
