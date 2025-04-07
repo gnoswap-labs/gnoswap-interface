@@ -14,9 +14,9 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 export const TABLE_HEAD = {
   INDEX: "Rank",
   USER: "User",
-  VOLUME: "Swap Volume",
-  POSITION: "Position Value",
-  STAKING: "Staking Value",
+  VOLUME: "Swap",
+  POSITION: "Position",
+  STAKING: "Staking",
   POINTS: "Points",
 } as const;
 

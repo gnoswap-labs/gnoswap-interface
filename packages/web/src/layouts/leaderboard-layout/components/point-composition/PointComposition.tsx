@@ -8,6 +8,7 @@ const PointComposition = ({
   swapPoint,
   positionPoint,
   stakingPoint,
+  governancePoint,
   referralPoint,
   isMobile,
 }: {
@@ -15,6 +16,7 @@ const PointComposition = ({
   swapPoint: string;
   positionPoint: string;
   stakingPoint: string;
+  governancePoint: string;
   referralPoint: string;
   isMobile: boolean;
 }) => {
@@ -33,10 +35,15 @@ const PointComposition = ({
     return `${numberToFormat(positionPoint)}`;
   }, [positionPoint]);
 
-  const displayStakingPoint = React.useMemo(() => {
+  const displayPositionStakingPoint = React.useMemo(() => {
     if (!stakingPoint) return "-";
     return `${numberToFormat(stakingPoint)}`;
   }, [stakingPoint]);
+
+  const displayXGNSPoint = React.useMemo(() => {
+    if (!governancePoint) return "-";
+    return `${numberToFormat(governancePoint)}`;
+  }, [governancePoint]);
 
   const displayReferralPoint = React.useMemo(() => {
     if (!referralPoint) return "-";
@@ -59,8 +66,12 @@ const PointComposition = ({
               <FontWeight500>{displayPositionPoint}</FontWeight500>
             </Flex>
             <Flex>
-              <Label>Staking</Label>
-              <FontWeight500>{displayStakingPoint}</FontWeight500>
+              <Label>Position Staking</Label>
+              <FontWeight500>{displayPositionStakingPoint}</FontWeight500>
+            </Flex>
+            <Flex>
+              <Label>xGNS Staking</Label>
+              <FontWeight500>{displayXGNSPoint}</FontWeight500>
             </Flex>
             <Flex>
               <Label>Referral</Label>

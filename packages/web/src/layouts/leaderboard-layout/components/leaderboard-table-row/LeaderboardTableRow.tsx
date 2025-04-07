@@ -37,9 +37,10 @@ const LeaderboardTableRow = ({
   }, [data.providedLiquidityFeeUsd]);
 
   const displayStakingValue = React.useMemo(() => {
-    if (!data.stakingRewardsUsd) return "-";
-    return `$${numberToFormat(data.stakingRewardsUsd)}`;
-  }, [data.stakingRewardsUsd]);
+    if (!data.stakingRewardsUsd && !data.governanceRewardsUsd) return "-";
+    const totalRewards = Number(data.stakingRewardsUsd) + Number(data.governanceRewardsUsd);
+    return `$${numberToFormat(totalRewards)}`;
+  }, [data.stakingRewardsUsd, data.governanceRewardsUsd]);
 
   return (
     <TableWrapper>
@@ -59,6 +60,7 @@ const LeaderboardTableRow = ({
             swapPoint={data.paidSwapFeePoint}
             positionPoint={data.providedLiquidityFeePoint}
             stakingPoint={data.stakingRewardsPoint}
+            governancePoint={data.governanceRewardsPoint}
             referralPoint={data.referralPoint}
             isMobile={isMobile}
           />
