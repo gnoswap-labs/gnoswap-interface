@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { generateAddress } from "@test/generate-utils";
 
 import { LeaderboardRepository } from "./leaderboard-repository";
-import { GetNextUpdateTimeRequest, UpdateLeaderboardHiddenStateRequest } from "./request";
+import { UpdateLeaderboardHiddenStateRequest } from "./request";
 import { GetLeaderboardResponse, GetNextUpdateTimeResponse, UpdateLeaderboardHiddenStateResponse } from "./response";
 import { GetLeaderboardByAddressResponse } from "./response/get-leaderboard-by-address-response";
 import { LeaderboardVisibilityStatus } from "./response/common/types";
@@ -94,11 +94,26 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
     };
   };
 
-  public getNextUpdateTime = async (request: GetNextUpdateTimeRequest): Promise<GetNextUpdateTimeResponse> => {
-    console.log(`request : ${request}`);
+  // Set to 3 minutes for testing
+  public getNextUpdateTime = async (): Promise<GetNextUpdateTimeResponse> => {
+    const now = new Date();
+
+    const nextUpdate = new Date(now);
+
+    const currentMinutes = nextUpdate.getMinutes();
+    const nextMinutes = Math.ceil((currentMinutes + 1) / 3) * 3;
+
+    nextUpdate.setMinutes(nextMinutes);
+    nextUpdate.setSeconds(0);
+    nextUpdate.setMilliseconds(0);
+
+    if (nextMinutes >= 60) {
+      nextUpdate.setHours(nextUpdate.getHours() + 1);
+      nextUpdate.setMinutes(nextMinutes - 60);
+    }
 
     return {
-      nextUpdateTime: dayjs(new Date(Date.now() + 1000 * 60 * 10)).format("YYYY-MM-DD HH:mm:ss"),
+      nextUpdateTime: nextUpdate.toISOString(),
     };
   };
 }
