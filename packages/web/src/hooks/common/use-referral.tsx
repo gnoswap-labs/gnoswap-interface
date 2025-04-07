@@ -22,10 +22,10 @@ export const useReferral = () => {
   const { account } = useWallet();
   const { data: leaderboardMyInfo } = useGetLeaderboardByAddress(account?.address || "");
 
-  const [referralCode, setReferralCode] = React.useState<string>("");
+  const [referralAddress, setReferralAddress] = React.useState<string>("");
 
-  const urlReferralCode = router.getReferrerParameter();
-  const [storedReferralCode, setStoredReferralCode] = React.useState<string>("");
+  const urlReferralAddress = router.getReferrerParameter();
+  const [storedReferralAddress, setStoredReferralAddress] = React.useState<string>("");
   const apiReferrerAddress = leaderboardMyInfo?.referrerAddress || "";
 
   const generateReferralLink = React.useCallback((): string => {
@@ -61,7 +61,7 @@ export const useReferral = () => {
       };
 
       sessionStorage.setItem(GNOSWAP_REFERRAL_CODE, JSON.stringify(data));
-      setStoredReferralCode(referrerAddress);
+      setStoredReferralAddress(referrerAddress);
     },
     [account?.address],
   );
@@ -95,36 +95,36 @@ export const useReferral = () => {
 
     const storedInfo = getStoredReferrerInfo();
     if (storedInfo?.referrerAddress) {
-      setStoredReferralCode(storedInfo.referrerAddress);
+      setStoredReferralAddress(storedInfo.referrerAddress);
     }
   }, [account?.address, getStoredReferrerInfo]);
 
   // Handling URL parameters and session storage priorities
   React.useEffect(() => {
     // Rank 1: URL parameters
-    if (urlReferralCode && isValidAddress(urlReferralCode)) {
-      setReferralCode(urlReferralCode);
+    if (urlReferralAddress && isValidAddress(urlReferralAddress)) {
+      setReferralAddress(urlReferralAddress);
       return;
     }
 
     // Rank 2: Session Storage
-    if (storedReferralCode && isValidAddress(storedReferralCode)) {
-      setReferralCode(storedReferralCode);
+    if (storedReferralAddress && isValidAddress(storedReferralAddress)) {
+      setReferralAddress(storedReferralAddress);
     }
 
     // Rank 3: API Resopnse(by leaderboard)
     if (apiReferrerAddress && isValidAddress(apiReferrerAddress) && apiReferrerAddress !== account?.address) {
-      setReferralCode(apiReferrerAddress);
+      setReferralAddress(apiReferrerAddress);
 
       if (account?.address) {
         saveToSessionStorage(apiReferrerAddress);
       }
     }
-  }, [urlReferralCode, storedReferralCode, apiReferrerAddress, saveToSessionStorage, account?.address]);
+  }, [urlReferralAddress, storedReferralAddress, apiReferrerAddress, saveToSessionStorage, account?.address]);
 
   return {
-    referralCode,
-    storedReferralCode,
+    referralAddress,
+    storedReferralAddress,
     saveReferrerAddress,
     generateReferralLink,
   };

@@ -20,7 +20,7 @@ import { LaunchpadState } from "@states/index";
 import { formatPrice } from "@utils/new-number-utils";
 import { toUnitFormat } from "@utils/number-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
-import useCustomRouter from "@hooks/common/use-custom-router";
+import { useReferral } from "@hooks/common/use-referral";
 
 type DepositButtonStateType =
   | "WALLET_LOGIN"
@@ -44,8 +44,7 @@ function calculateUSDValueBy(
 }
 
 export const useLaunchpadHandler = () => {
-  const router = useCustomRouter();
-  const referrerAddress = router.getReferrerParameter();
+  const { referralAddress } = useReferral();
 
   const participateAmount = useAtomValue(LaunchpadState.participateAmount);
   const depositConditions = useAtomValue(LaunchpadState.depositConditions);
@@ -125,7 +124,7 @@ export const useLaunchpadHandler = () => {
 
     processTx(
       () =>
-        launchpadRepository.depositLaunchpadPoolBy(projectPoolId, BigInt(unitAmount), account.address, referrerAddress),
+        launchpadRepository.depositLaunchpadPoolBy(projectPoolId, BigInt(unitAmount), account.address, referralAddress),
       DexEvent.LAUNCHPAD_DEPOSIT,
       messageData,
       response => {
@@ -180,13 +179,13 @@ export const useLaunchpadHandler = () => {
           return launchpadRepository.collectRewardWithDepositByDepositId(
             participationInfo.depositId,
             account.address,
-            referrerAddress,
+            referralAddress,
           );
         }
         return launchpadRepository.collectRewardByDepositId(
           participationInfo.depositId,
           account.address,
-          referrerAddress,
+          referralAddress,
         );
       },
       DexEvent.LAUNCHPAD_COLLECT_REWARD,
@@ -261,13 +260,13 @@ export const useLaunchpadHandler = () => {
           return launchpadRepository.collectRewardWithDepositByProjectId(
             participationInfo.projectId,
             account.address,
-            referrerAddress,
+            referralAddress,
           );
         }
         return launchpadRepository.collectRewardByProjectId(
           participationInfo.projectId,
           account.address,
-          referrerAddress,
+          referralAddress,
         );
       },
       DexEvent.LAUNCHPAD_COLLECT_REWARD,

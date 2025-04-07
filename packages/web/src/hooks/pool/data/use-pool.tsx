@@ -8,7 +8,7 @@ import { PoolModel } from "@models/pool/pool-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { useGetPoolCreationFee, useGetRPCPoolsBy } from "@query/pools";
 import { sortTokenPaths } from "@utils/sort-utils";
-import useCustomRouter from "@hooks/common/use-custom-router";
+import { useReferral } from "@hooks/common/use-referral";
 
 interface Props {
   compareToken: TokenModel | null;
@@ -18,8 +18,7 @@ interface Props {
 }
 
 export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Props) => {
-  const router = useCustomRouter();
-  const referrerAddress = router.getReferrerParameter();
+  const { referralAddress } = useReferral();
 
   const { account } = useWallet();
   const { poolRepository } = useGnoswapContext();
@@ -142,14 +141,14 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
           caller: account.address,
           withStaking,
           createPoolFee,
-          referrerAddress,
+          referrerAddress: referralAddress,
         })
         .catch(e => {
           console.error(e);
           return null;
         });
     },
-    [account, poolRepository, tokenA, tokenB, compareToken, createPoolFee, referrerAddress],
+    [account, poolRepository, tokenA, tokenB, compareToken, createPoolFee, referralAddress],
   );
 
   const addLiquidity = useCallback(
@@ -189,14 +188,14 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
           slippage: Number(slippage),
           caller: account.address,
           withStaking,
-          referrerAddress,
+          referrerAddress: referralAddress,
         })
         .catch(e => {
           console.error(e);
           return null;
         });
     },
-    [tokenA, tokenB, account, getCurrentTokenPairAmount, poolRepository, referrerAddress],
+    [tokenA, tokenB, account, getCurrentTokenPairAmount, poolRepository, referralAddress],
   );
 
   useEffect(() => {

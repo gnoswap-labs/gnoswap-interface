@@ -41,7 +41,7 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
   });
 
   const [inputReferralAddress, setInputReferralAddress] = React.useState<string>("");
-  const { storedReferralCode, saveReferrerAddress, generateReferralLink } = useReferral();
+  const { storedReferralAddress, saveReferrerAddress, generateReferralLink } = useReferral();
 
   const referralLink = React.useMemo(() => generateReferralLink(), [generateReferralLink]);
 
@@ -77,8 +77,8 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
   };
 
   const handleEdit = () => {
-    if (storedReferralCode) {
-      setInputReferralAddress(storedReferralCode);
+    if (storedReferralAddress) {
+      setInputReferralAddress(storedReferralAddress);
     }
     setUIState(prev => ({ ...prev, isEditing: true }));
   };
@@ -159,9 +159,9 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
           <>
             <S.InfoColumnKey>{t("Referred by")}</S.InfoColumnKey>
             <S.InfoColumnValue>
-              <S.InfoReferrerDisplayText hasRegisteredReferrer={!!storedReferralCode}>
-                {storedReferralCode
-                  ? `${storedReferralCode.slice(0, 5)}...${storedReferralCode.slice(-5)}`
+              <S.InfoReferrerDisplayText hasRegisteredReferrer={!!storedReferralAddress}>
+                {storedReferralAddress
+                  ? `${storedReferralAddress.slice(0, 5)}...${storedReferralAddress.slice(-5)}`
                   : t("Not registered yet")}
               </S.InfoReferrerDisplayText>
               <S.InfoColumnIconSet>

@@ -33,6 +33,7 @@ import { subscriptFormat } from "@utils/number-utils";
 import { getRepositionAmountsByPriceRange, getRepositionAmountsWithSwapSimulation } from "@utils/reposition-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
+import { useReferral } from "@hooks/common/use-referral";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -44,7 +45,7 @@ export type REPOSITION_BUTTON_TYPE = "REPOSITION" | "LOADING" | "NON_SELECTED_RA
 
 export const useRepositionHandle = () => {
   const router = useRouter();
-  const referrerAddress = router.getReferrerParameter();
+  const { referralAddress } = useReferral();
   const poolPath = router.getPoolPath();
   const positionId = router.getPositionId();
 
@@ -453,7 +454,7 @@ export const useRepositionHandle = () => {
         originAmount: estimatedSwapResult.originAmount,
         tokenAmountLimit: outputAmount.toNumber() * ((100 - DEFAULT_SLIPPAGE) / 100),
         deadline,
-        referrerAddress,
+        referrerAddress: referralAddress,
       });
     } else {
       return swapRouterRepository.sendExactOutSwapRoute({
@@ -465,7 +466,7 @@ export const useRepositionHandle = () => {
         originAmount: estimatedSwapResult.originAmount,
         tokenAmountLimit: inputAmount.toNumber() * ((100 + DEFAULT_SLIPPAGE) / 100),
         deadline,
-        referrerAddress,
+        referrerAddress: referralAddress,
       });
     }
   }, [

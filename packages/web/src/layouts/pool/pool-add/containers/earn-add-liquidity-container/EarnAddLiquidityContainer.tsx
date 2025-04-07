@@ -33,6 +33,7 @@ import PoolAddLiquidity, { PriceRangeSummary } from "../../components/pool-add-l
 import { usePool } from "@hooks/pool/data/use-pool";
 import { usePoolAddLiquidityConfirmModal } from "@hooks/pool/ui/use-pool-add-liquidity-confirm-modal";
 import { isSameToken } from "@utils/common";
+import { useReferral } from "@hooks/common/use-referral";
 
 export const SWAP_FEE_TIERS: SwapFeeTierType[] = ["FEE_100", "FEE_500", "FEE_3000", "FEE_10000"];
 
@@ -46,7 +47,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const { i18n } = useTranslation();
   const router = useCustomRouter();
   useRouterBack();
-  const referredAddress = router.getReferrerParameter();
+  const { referralAddress } = useReferral();
 
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
   const { tokenA = null, tokenB = null, type = "EXACT_IN", isReverted, isKeepToken = false } = swapValue;
@@ -656,7 +657,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
         price_range_type: computedPriceRange,
         tickLower: nextTickLower,
         tickUpper: nextTickUpper,
-        ...(referredAddress ? { referrer: referredAddress } : {}),
+        ...(referralAddress ? { referrer: referralAddress } : {}),
       };
       router.replace(makeRouteUrl(PAGE_PATH.EARN_ADD, query), undefined, {
         shallow: true,
