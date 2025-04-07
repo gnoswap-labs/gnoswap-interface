@@ -79,4 +79,18 @@ export class LeaderboardRepositoryImpl implements LeaderboardRepository {
     const data: UpdateLeaderboardHiddenStateResponse = response.data.data;
     return data;
   };
+
+  public getNextUpdateTime = async () => {
+    const now = new Date();
+
+    const nextHour = new Date(now);
+    nextHour.setHours(nextHour.getHours() + 1);
+    nextHour.setMinutes(0);
+    nextHour.setSeconds(0);
+    nextHour.setMilliseconds(0);
+
+    return {
+      nextUpdateTime: nextHour.toISOString(),
+    };
+  };
 }

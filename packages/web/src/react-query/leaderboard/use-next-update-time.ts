@@ -1,4 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
+
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { QUERY_KEY } from "@query/query-keys";
 
 export const refetchingOptions = {
   staleTime: 0,
@@ -9,28 +12,11 @@ export const refetchingOptions = {
 };
 
 export function useNextUpdateTime() {
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { leaderboardRepository } = useGnoswapContext();
 
-  // const query = useQuery({
-  //   queryKey: [QUERY_KEY.leaderboard],
-  //   queryFn: () => leaderboardRepository.getNextUpdateTime({}),
-
-  //   ...refetchingOptions,
-
-  //   onSuccess: data => {
-  //     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-
-  //     timeoutRef.current = setTimeout(() => {
-  //       queryClient.refetchQueries([QUERY_KEY.leaderboard]);
-  //     }, getTimeDiffInMilliseconds(data.nextUpdateTime));
-  //   },
-  // });
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, [timeoutRef]);
-
-  // return query;
+  return useQuery({
+    queryKey: [QUERY_KEY.leaderboardNextUpdate],
+    queryFn: () => leaderboardRepository.getNextUpdateTime(),
+    ...refetchingOptions,
+  });
 }

@@ -1,4 +1,4 @@
-import { GetNextUpdateTimeRequest, GetLeaderboardRequest, UpdateLeaderboardHiddenStateRequest } from "./request";
+import { GetLeaderboardRequest, UpdateLeaderboardHiddenStateRequest } from "./request";
 import { GetNextUpdateTimeResponse, GetLeaderboardResponse, UpdateLeaderboardHiddenStateResponse } from "./response";
 import { GetLeaderboardByAddressResponse } from "./response/get-leaderboard-by-address-response";
 
@@ -11,5 +11,5 @@ export interface LeaderboardRepository {
     request: UpdateLeaderboardHiddenStateRequest,
   ) => Promise<UpdateLeaderboardHiddenStateResponse>;
 
-  getNextUpdateTime?: (request: GetNextUpdateTimeRequest) => Promise<GetNextUpdateTimeResponse>;
+  getNextUpdateTime: () => Promise<GetNextUpdateTimeResponse>;
 }

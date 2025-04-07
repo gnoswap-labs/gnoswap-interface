@@ -23,6 +23,7 @@ export enum QUERY_KEY {
   leaderboardList = "leaderboardList",
   leaderboardListByAddress = "leaderboardListByAddress",
   updateLeaderboardHiddenState = "updateLeaderboardHiddenState",
+  leaderboardNextUpdate = "leaderboardNextUpdate",
   leaderboard = "leaderboard",
   // pools
   pools = "pools",
