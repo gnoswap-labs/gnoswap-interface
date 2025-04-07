@@ -51,6 +51,21 @@ export const useReferral = () => {
     }
   }, []);
 
+  const saveToSessionStorage = React.useCallback(
+    (referrerAddress: string) => {
+      if (!account?.address) return;
+
+      const data: StoredReferrerInfo = {
+        referrerAddress,
+        updatedAt: Date.now(),
+      };
+
+      sessionStorage.setItem(GNOSWAP_REFERRAL_CODE, JSON.stringify(data));
+      setStoredReferralCode(referrerAddress);
+    },
+    [account?.address],
+  );
+
   /**
    * Functions to store referrer addresses in session storage
    */
@@ -67,17 +82,11 @@ export const useReferral = () => {
         return { success: false, error: "SELF_REFERRAL" };
       }
 
-      const data: StoredReferrerInfo = {
-        referrerAddress: trimmedAddress,
-        updatedAt: Date.now(),
-      };
-
-      sessionStorage.setItem(GNOSWAP_REFERRAL_CODE, JSON.stringify(data));
-      setStoredReferralCode(trimmedAddress);
+      saveToSessionStorage(trimmedAddress);
 
       return { success: true };
     },
-    [account?.address],
+    [account?.address, saveToSessionStorage],
   );
 
   // Loading referrer information from session storage when mounting components
@@ -93,30 +102,25 @@ export const useReferral = () => {
   // Handling URL parameters and session storage priorities
   React.useEffect(() => {
     // Rank 1: URL parameters
-    if (urlReferralCode) {
+    if (urlReferralCode && isValidAddress(urlReferralCode)) {
       setReferralCode(urlReferralCode);
       return;
     }
 
     // Rank 2: Session Storage
-    if (storedReferralCode) {
+    if (storedReferralCode && isValidAddress(storedReferralCode)) {
       setReferralCode(storedReferralCode);
     }
 
     // Rank 3: API Resopnse(by leaderboard)
-    if (apiReferrerAddress) {
+    if (apiReferrerAddress && isValidAddress(apiReferrerAddress) && apiReferrerAddress !== account?.address) {
       setReferralCode(apiReferrerAddress);
 
       if (account?.address) {
-        const data: StoredReferrerInfo = {
-          referrerAddress: apiReferrerAddress,
-          updatedAt: Date.now(),
-        };
-        sessionStorage.setItem(GNOSWAP_REFERRAL_CODE, JSON.stringify(data));
-        setStoredReferralCode(apiReferrerAddress);
+        saveToSessionStorage(apiReferrerAddress);
       }
     }
-  }, [urlReferralCode, storedReferralCode, apiReferrerAddress, account?.address]);
+  }, [urlReferralCode, storedReferralCode, apiReferrerAddress, saveToSessionStorage, account?.address]);
 
   return {
     referralCode,
