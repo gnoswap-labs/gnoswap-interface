@@ -23,6 +23,13 @@ export const TableHeader = styled.div<{ tdWidth: number }>`
   padding: 16px;
 
   ${mixins.flexbox("row", "center", "flex-start")};
+  gap: 4px;
+
+  svg {
+    * {
+      fill: ${({ theme }) => theme.color.icon03};
+    }
+  }
 
   &:first-of-type {
     justify-content: center;
@@ -42,6 +49,27 @@ export const TableHeader = styled.div<{ tdWidth: number }>`
     &:last-child {
       justify-content: flex-end;
       padding-right: 16px;
+    }
+  }
+`;
+
+export const TableHeaderTooltipContent = styled.div`
+  max-width: 314px;
+  font-size: 14px;
+  line-height: 1.5;
+
+  li {
+    position: relative;
+
+    &::before {
+      content: "•";
+      position: absolute;
+      left: -16px;
+      color: currentColor;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
     }
   }
 `;

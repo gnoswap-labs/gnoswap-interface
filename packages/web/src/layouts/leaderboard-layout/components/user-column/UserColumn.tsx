@@ -2,6 +2,7 @@ import IconBronzeMedal from "@components/common/icons/IconBronzeMedal";
 import IconGoldMedal from "@components/common/icons/IconGoldMedal";
 import IconMeLogo from "@components/common/icons/IconMeLogo";
 import IconSilverMedal from "@components/common/icons/IconSilverMedal";
+import Tooltip from "@components/common/tooltip/Tooltip";
 import styled from "@emotion/styled";
 import useRouter from "@hooks/common/use-custom-router";
 import { LeaderboardUser } from "@repositories/leaderboard/response/common/types";
@@ -38,7 +39,13 @@ const UserColumn = ({
         {user.rank === 1 && <IconGoldMedal />}
         {user.rank === 2 && <IconSilverMedal />}
         {user.rank === 3 && <IconBronzeMedal />}
-        {formattedAddress}
+        {!isLeaderboardHidden(user.hiddenYn) ? (
+          <Tooltip placement="top" FloatingContent={<span style={{ fontSize: 14 }}>{user.accountAddress}</span>}>
+            <span>{formattedAddress}</span>
+          </Tooltip>
+        ) : (
+          <span>{formattedAddress}</span>
+        )}
         {isMe && <IconMeLogo />}
       </Flex>
     </TableColumn>
