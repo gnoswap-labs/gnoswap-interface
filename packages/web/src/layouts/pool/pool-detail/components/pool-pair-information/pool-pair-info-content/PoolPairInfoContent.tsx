@@ -69,16 +69,14 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({ pool, loading
   const depositRatioStrOfTokenA = useMemo(() => {
     if (Number.isNaN(depositRatio)) return "(0%)";
 
-    const depositStr = formatRate(depositRatio * 100, { decimals: 0 });
-
+    const depositStr = `${Math.round(depositRatio * 100)}%`;
     return `(${depositStr})`;
   }, [depositRatio]);
 
   const depositRatioStrOfTokenB = useMemo(() => {
     if (Number.isNaN(depositRatio)) return "(0%)";
 
-    const depositStr = formatRate((1 - depositRatio) * 100, { decimals: 0 });
-
+    const depositStr = `${Math.round((1 - depositRatio) * 100)}%`;
     return `(${depositStr})`;
   }, [depositRatio]);
 
