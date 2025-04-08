@@ -79,7 +79,7 @@ export const DailyEarningTooltipContent: React.FC<DailyEarningTooltipContentProp
       {internalRewards && (
         <React.Fragment>
           <div className="list">
-            <span className="title">{t("business:rewardType.internal")}</span>
+            <span className="title">{t("business:rewardType.internal_reward")}</span>
             <span className="title"></span>
           </div>
           {internalRewards.map((reward, index) => (
@@ -105,7 +105,7 @@ export const DailyEarningTooltipContent: React.FC<DailyEarningTooltipContentProp
       {externalRewards && (
         <React.Fragment>
           <div className="list">
-            <span className="title">{t("business:rewardType.external")}</span>
+            <span className="title">{t("business:rewardType.external_reward")}</span>
             <span className="title"></span>
           </div>
           {externalRewards.map((reward, index) => (
