@@ -90,7 +90,7 @@ export const useReferral = () => {
 
       return { success: true };
     },
-    [account?.address, saveToSessionStorage],
+    [account?.address],
   );
 
   // Handling URL parameters and session storage priorities
