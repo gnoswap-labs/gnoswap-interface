@@ -96,8 +96,8 @@ export const useReferral = () => {
   // Handling URL parameters and session storage priorities
   React.useEffect(() => {
     // Rank 1: URL parameters
-    const isUrlReferralAddressEmpty = urlReferralAddress === null || urlReferralAddress === undefined;
-    if (!isUrlReferralAddressEmpty && isValidAddress(urlReferralAddress)) {
+    const hasUrlReferralAddress = urlReferralAddress != null;
+    if (hasUrlReferralAddress && isValidAddress(urlReferralAddress)) {
       setReferralAddress(urlReferralAddress);
       return;
     }
@@ -108,8 +108,8 @@ export const useReferral = () => {
     setStoredReferralAddress(storedAddress);
 
     // Rank 2: Session Storage
-    const isStoredReferralAddressEmpty = storedAddress === null || storedAddress === undefined;
-    if (!isStoredReferralAddressEmpty) {
+    const hasStoredReferralAddress = storedAddress != null;
+    if (hasStoredReferralAddress) {
       if (storedAddress === "" || isValidAddress(storedAddress)) {
         setReferralAddress(storedAddress);
         return;
@@ -117,7 +117,7 @@ export const useReferral = () => {
     }
 
     // Rank 3: API Resopnse(by leaderboard)
-    if (isUrlReferralAddressEmpty && isStoredReferralAddressEmpty) {
+    if (!hasUrlReferralAddress && !hasStoredReferralAddress) {
       if (apiReferrerAddress && isValidAddress(apiReferrerAddress) && apiReferrerAddress !== account?.address) {
         setReferralAddress(apiReferrerAddress);
 
