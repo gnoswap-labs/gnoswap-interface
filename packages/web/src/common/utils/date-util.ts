@@ -5,6 +5,9 @@ const HOUR_TIME = 60 * 60 * 1000;
 const MIN_TIME = 60 * 1000;
 const SEC_TIME = 1000;
 
+const DATE_TIME_FORMAT = "YYYY-MM-DD HH:mm:ss";
+const EMPTY_DATE_PLACEHOLDER = "-";
+
 const isDateWithTimeZone = (date: string | Date) => {
   if (date.toString().includes("Z")) return true;
 
@@ -13,16 +16,26 @@ const isDateWithTimeZone = (date: string | Date) => {
   return false;
 };
 
-export const getDateUtcToLocal = (d: string | Date) => {
+export const getDateUtcToLocal = (date: string | Date | null | undefined) => {
   const timezoneOffset = new Date().getTimezoneOffset();
-  const hasTimezone = isDateWithTimeZone(d);
-  let currentDate = dayjs(d);
+  const offsetHours = -timezoneOffset / 60;
+
+  if (!date) {
+    return {
+      value: EMPTY_DATE_PLACEHOLDER,
+      offsetHours,
+    };
+  }
+
+  const hasTimezone = isDateWithTimeZone(date);
+  let currentDate = dayjs(date);
+
   if (!hasTimezone) {
     currentDate = currentDate.subtract(timezoneOffset, "minutes");
   }
   return {
-    value: currentDate.format("YYYY-MM-DD HH:mm:ss"),
-    offsetHours: -timezoneOffset / 60,
+    value: currentDate.format(DATE_TIME_FORMAT),
+    offsetHours,
   };
 };
 
