@@ -8,7 +8,6 @@ import { DEVICE_TYPE } from "@styles/media";
 
 import { TokenChartGraphWrapper, TokenChartGraphXLabel, YAxisLabelWrapper } from "./TokenChartGraph.styles";
 import { SWAP_TOKEN_CHART_COLORS } from "@constants/graph.constant";
-import { getLocalizeTime } from "@utils/chart";
 
 export interface TokenChartGraphProps {
   datas: {
@@ -184,7 +183,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
 
     return sortedData.map(item => ({
       value: item.amount.value,
-      time: getLocalizeTime(item.time),
+      time: item.time,
     }));
   }, [datas]);
 
