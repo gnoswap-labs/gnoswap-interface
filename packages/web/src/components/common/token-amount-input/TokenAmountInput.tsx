@@ -17,6 +17,7 @@ export interface TokenAmountInputProps extends TokenAmountInputModel {
   connected: boolean;
   style?: React.CSSProperties;
   isVisibleMaxButton?: boolean;
+  integersOnly?: boolean;
 }
 
 const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
@@ -30,6 +31,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   amount,
   style,
   isVisibleMaxButton = true,
+  integersOnly = false,
 }) => {
   const { t } = useTranslation();
 
@@ -44,14 +46,35 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   const onChangeAmountInput = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const value = event.target.value;
+
       if (value === "") {
         changeAmount("");
+        return;
       }
-      if (value !== "" && !isAmount(value)) return;
 
+      if (integersOnly) {
+        if (value.includes(".")) {
+          return;
+        }
+
+        if (!/^\d+$/.test(value)) {
+          return;
+        }
+
+        const parsedValue = value.replace(/^0+(?=\d)/, "");
+
+        if (parsedValue === "0") {
+          changeAmount("");
+        } else {
+          changeAmount(parsedValue);
+        }
+        return;
+      }
+
+      if (value !== "" && !isAmount(value)) return;
       changeAmount(value.replace(digitRegex, "$1"));
     },
-    [changeAmount, digitRegex],
+    [changeAmount, digitRegex, integersOnly],
   );
 
   const handleFillBalance = useCallback(() => {
@@ -61,12 +84,21 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
         const nativeFullBalance = BigNumber(formatValue)
           .minus(makeDisplayTokenAmount(token, DEFAULT_CONTRACT_USE_FEE + DEFAULT_GAS_FEE) || 0)
           .toString();
-        changeAmount(nativeFullBalance);
+
+        const finalAmount = integersOnly
+          ? BigNumber(nativeFullBalance).integerValue(BigNumber.ROUND_DOWN).toString()
+          : nativeFullBalance;
+
+        changeAmount(finalAmount);
       } else {
-        changeAmount(BigNumber(formatValue).toString());
+        const finalAmount = integersOnly
+          ? BigNumber(formatValue).integerValue(BigNumber.ROUND_DOWN).toString()
+          : BigNumber(formatValue).toString();
+
+        changeAmount(finalAmount);
       }
     }
-  }, [connected, balance, token, changeAmount]);
+  }, [connected, balance, token, changeAmount, integersOnly]);
 
   const hasTokenBalance = useMemo(() => {
     if (!connected || balance === "0") return false;
