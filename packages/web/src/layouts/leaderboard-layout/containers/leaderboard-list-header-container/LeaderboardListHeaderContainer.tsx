@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 
-import { useConnection } from "@hooks/common/use-connection";
+import { DEVICE_TYPE } from "@styles/media";
+import { useGetLeaderboardByAddress, useUpdateLeaderboardHiddenState } from "@query/leaderboard";
+import { useAddress } from "@hooks/common/use-address";
 
 import { Box } from "../../components/common/common.styles";
 import ConnectYourWallet from "../../components/connect-your-wallet/ConnectYourWallet";
 import NextUpdate from "../../components/next-update/NextUpdate";
 import { ListHeaderWrapper } from "./LeaderboardListHeaderContainer.styles";
 import SearchInput from "@components/common/search-input/SearchInput";
-import { DEVICE_TYPE } from "@styles/media";
 import IconSearch from "@components/common/icons/IconSearch";
 
 interface LeaderboardListHeaderContainerProps {
@@ -19,6 +20,8 @@ interface LeaderboardListHeaderContainerProps {
   onChangeKeyword: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
+const OPTIMISTIC_UI_RESET_DELAY_MS = 1000;
+
 const LeaderboardListHeaderContainer = ({
   breakpoint,
   keyword,
@@ -27,9 +30,50 @@ const LeaderboardListHeaderContainer = ({
   onToggleSearch,
   onChangeKeyword,
 }: LeaderboardListHeaderContainerProps) => {
-  const { connected } = useConnection();
-  const [checked, setChecked] = useState(true);
-  const onSwitch = () => setChecked(v => !v);
+  const { address, connected } = useAddress();
+  const { data: leaderboardMyInfo, isLoading: isLoadingLeaderboardMyInfo } = useGetLeaderboardByAddress(address || "");
+
+  const isHidden = leaderboardMyInfo?.hiddenYn === "Y";
+
+  const [checked, setChecked] = useState(false);
+  const [isOptimisticUpdate, setIsOptimisticUpdate] = useState(false);
+  const [isToggleDisabled, setIsToggleDisabled] = useState(false);
+
+  const updateHiddenState = useUpdateLeaderboardHiddenState();
+
+  useEffect(() => {
+    if (leaderboardMyInfo && !isOptimisticUpdate) {
+      setChecked(isHidden);
+    }
+  }, [leaderboardMyInfo, isHidden, isOptimisticUpdate]);
+
+  const handleToggleHidden = () => {
+    if (!address) return;
+
+    setIsToggleDisabled(true);
+    setIsOptimisticUpdate(true);
+    setChecked(!checked);
+
+    updateHiddenState.mutate(
+      {
+        address,
+        request: { hidden: !checked },
+      },
+      {
+        onSettled: () => {
+          setTimeout(() => {
+            setIsOptimisticUpdate(false);
+            setIsToggleDisabled(false);
+          }, OPTIMISTIC_UI_RESET_DELAY_MS);
+        },
+        onError: () => {
+          setTimeout(() => {
+            setChecked(isHidden);
+          }, OPTIMISTIC_UI_RESET_DELAY_MS);
+        },
+      },
+    );
+  };
 
   const divRef = useRef<HTMLDivElement | null>(null);
   const leftRef = useRef<HTMLDivElement | null>(null);
@@ -72,7 +116,15 @@ const LeaderboardListHeaderContainer = ({
   return (
     <ListHeaderWrapper ref={divRef}>
       <Box ref={leftRef}>
-        <ConnectYourWallet connected={connected} isMobile={isMobile} checked={checked} onSwitch={onSwitch} />
+        {!isLoadingLeaderboardMyInfo && leaderboardMyInfo && (
+          <ConnectYourWallet
+            connected={connected}
+            isMobile={isMobile}
+            checked={checked}
+            onSwitch={handleToggleHidden}
+            disabled={isToggleDisabled || updateHiddenState.isLoading}
+          />
+        )}
       </Box>
 
       <Box ref={rightRef}>

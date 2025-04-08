@@ -20,9 +20,11 @@ export enum QUERY_KEY {
   governanceDelegatees = "governanceDelegatees",
   governanceExecutableFunctions = "governanceExecutableFunctions",
   // leaderboard
+  leaderboardList = "leaderboardList",
+  leaderboardListByAddress = "leaderboardListByAddress",
+  updateLeaderboardHiddenState = "updateLeaderboardHiddenState",
+  leaderboardNextUpdate = "leaderboardNextUpdate",
   leaderboard = "leaderboard",
-  leaderboardLeader = "leaderboardLeader",
-  leaderboardLeaders = "leaderboardLeaders",
   // pools
   pools = "pools",
   rpcPools = "rpcPools",

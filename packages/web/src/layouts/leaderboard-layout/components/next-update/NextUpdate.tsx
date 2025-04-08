@@ -1,29 +1,80 @@
-import { getTimeDiffInSeconds, secondsToTime } from "@common/utils/date-util";
-import Tooltip from "@components/common/tooltip/Tooltip";
-import { useNextUpdateTime } from "@query/leaderboard";
-import { useEffect, useState } from "react";
+import React from "react";
+
+import { useGetLeaderboard, useGetLeaderboardByAddress, useNextUpdateTime } from "@query/leaderboard";
+import { getTimeDiffInMilliseconds, getTimeDiffInSeconds } from "@common/utils/date-util";
+import { secondsToTime } from "@common/utils/date-util";
+import { useAddress } from "@hooks/common/use-address";
+
 import { Flex, FontSize16, Hover, P, TooltipContent } from "../common/common.styles";
 import { StyledIconInfo } from "../common/styled-icon-info/StyledIconInfo";
 import { Height24, TextWrapper } from "./NextUpdate.styles";
+import Tooltip from "@components/common/tooltip/Tooltip";
 
 export default function NextUpdate() {
-  const { data, error } = useNextUpdateTime();
-  if (error) throw error;
+  const { address } = useAddress();
+  const { data, refetch: refetchNextUpdateTime } = useNextUpdateTime();
+  const [seconds, setSeconds] = React.useState<number | null>(null);
+  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
-  const [seconds, setSeconds] = useState<number>();
+  const { refetch: refetchLeaderboard } = useGetLeaderboard({});
+  const { refetch: refetchLeaderboardByAddress } = useGetLeaderboardByAddress(address || "");
 
-  useEffect(() => {
+  // Functions to run when it's time to update
+  const handleUpdate = () => {
+    // Refetch leaderboard data
+    refetchLeaderboard();
+
+    // If an address exists, refetch the leaderboard data for that address too
+    if (address) {
+      refetchLeaderboardByAddress();
+    }
+
+    // Refetch next update time information
+    refetchNextUpdateTime();
+  };
+
+  // Set a timer for the next update
+  React.useEffect(() => {
     if (!data) return;
-    const gap = 1;
-    setSeconds(() => getTimeDiffInSeconds(data.nextUpdateTime) + gap);
-  }, [data]);
 
-  useEffect(() => {
-    const second = 1000;
-    const interval = setInterval(() => setSeconds(p => (p || -1) - 1), second);
+    // Remove the old timer if it exists
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
 
-    return () => clearInterval(interval);
-  }, []);
+    // Calculate remaining time (in seconds)
+    const remainingSeconds = getTimeDiffInSeconds(data.nextUpdateTime);
+    setSeconds(remainingSeconds);
+
+    // Calculate remaining time (in Milliseconds)
+    const remainingMilliseconds = getTimeDiffInMilliseconds(data.nextUpdateTime);
+
+    // Run the update function when it's time to update
+    timeoutRef.current = setTimeout(() => {
+      handleUpdate();
+    }, remainingMilliseconds);
+
+    // Clean up timers when unmounting components
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [data, address]);
+
+  // Update remaining time every 1 second
+  React.useEffect(() => {
+    if (seconds === null) return;
+
+    const intervalId = setInterval(() => {
+      setSeconds(prev => {
+        if (prev === null || prev <= 0) return 0;
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [seconds]);
 
   return (
     <Height24>

@@ -17,6 +17,7 @@ import { formatPoolPairAmount } from "@utils/new-number-utils";
 import StakePositionModal from "../../components/stake-position-modal/StakePositionModal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { useReferral } from "@hooks/common/use-referral";
 
 interface StakePositionModalContainerProps {
   positions: PoolPositionModel[];
@@ -34,7 +35,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
 
   const { positionRepository } = useGnoswapContext();
   const router = useCustomRouter();
-  const referrerAddress = router.getReferrerParameter();
+  const { referralAddress } = useReferral();
   const clearModal = useClearModal();
   const { updateBalances, tokenPrices } = useTokenData();
   const poolPath = router.getPoolPath();
@@ -106,7 +107,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
       .stakePositions({
         lpTokenIds,
         caller: address,
-        referrerAddress,
+        referrerAddress: referralAddress,
       })
       .catch(() => null);
 

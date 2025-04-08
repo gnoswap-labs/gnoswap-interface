@@ -14,7 +14,7 @@ import { AccountRepository, AccountRepositoryImpl } from "@repositories/account"
 import { DashboardRepository, DashboardRepositoryImpl } from "@repositories/dashboard";
 import { GovernanceRepository, GovernanceRepositoryImpl } from "@repositories/governance";
 import { LaunchpadRepository, LaunchpadRepositoryImpl } from "@repositories/launchpad";
-import { LeaderboardRepository, LeaderboardRepositoryMock } from "@repositories/leaderboard";
+import { LeaderboardRepository, LeaderboardRepositoryImpl } from "@repositories/leaderboard";
 import { NotificationRepository, NotificationRepositoryImpl } from "@repositories/notification";
 import { PoolRepository, PoolRepositoryImpl } from "@repositories/pool";
 import { PositionRepository, PositionRepositoryImpl } from "@repositories/position";
@@ -199,8 +199,8 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
   }, [gnoswapApiClient, walletClient, rpcProvider]);
 
   const leaderboardRepository = useMemo(() => {
-    return new LeaderboardRepositoryMock();
-  }, []);
+    return new LeaderboardRepositoryImpl(gnoswapApiClient);
+  }, [gnoswapApiClient]);
 
   const statusRepository = useMemo(() => {
     return new StatusRepositoryImpl(gnoswapApiClient);

@@ -11,19 +11,40 @@ import LeaderboardTableSkeletonContainer from "../containers/leaderboard-table-s
 import { Wrapper } from "./LeaderboardList.styles";
 import { useWindowSize } from "@hooks/common/use-window-size";
 
+export interface TableHeadItem {
+  label: string;
+  tooltip?: React.ReactNode;
+}
+
 export const TABLE_HEAD = {
-  INDEX: "Rank",
-  USER: "User",
-  VOLUME: "Swap Volume",
-  POSITION: "Position Value",
-  STAKING: "Staking Value",
-  POINTS: "Points",
+  INDEX: { label: "Rank" },
+  USER: { label: "User" },
+  VOLUME: {
+    label: "Swap",
+    tooltip: "Swap Fees Paid in USD. Only counts if the pool is receiving $GNS incentives.",
+  },
+  POSITION: {
+    label: "Position",
+    tooltip: "Fees Earned in USD. Only counts if the pool is receiving $GNS incentives.",
+  },
+  STAKING: {
+    label: "Staking",
+    tooltip: (
+      <>
+        <ul style={{ margin: 0, paddingLeft: "16px" }}>
+          <li>Position Staking Rewards Earned in USD. Only counts if the pool has $GNS incentives.</li>
+          <li>Protocol Fees Earned in USD. Only counts if rewards have a USD price.</li>
+        </ul>
+      </>
+    ),
+  },
+  POINTS: { label: "Points" },
 } as const;
 
 export const TABLE_HEAD_MOBILE = {
-  INDEX: "Rank",
-  USER: "User",
-  POINTS: "Points",
+  INDEX: { label: "Rank" },
+  USER: { label: "User" },
+  POINTS: { label: "Points" },
 } as const;
 
 export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
@@ -65,7 +86,7 @@ export default function LeaderboardList() {
         />
 
         <Suspense fallback={<LeaderboardTableSkeletonContainer />}>
-          <LeaderboardTableContainer breakpoint={breakpoint} keyword={keyword} />
+          <LeaderboardTableContainer keyword={keyword} />
         </Suspense>
       </ErrorBoundary>
     </Wrapper>

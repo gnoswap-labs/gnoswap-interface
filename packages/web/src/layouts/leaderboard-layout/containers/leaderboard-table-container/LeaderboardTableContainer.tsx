@@ -3,47 +3,45 @@ import { useTheme } from "@emotion/react";
 
 import Pagination from "@components/common/pagination/Pagination";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { useGetLeaders, useGetMyLeader } from "@query/leaderboard";
 
 import { Box } from "../../components/common/common.styles";
 import LeaderboardTableWrapper from "../../components/leaderboard-table-wrapper/LeaderboardTableWrapper";
-import MobileLeaderboardTable from "../../components/leaderboard-table/mobile-leaderboard-table/MobileLeaderboardTable";
-import TabletLeaderboardTable from "../../components/leaderboard-table/tablet-leaderboard-table/TabletLeaderboardTable";
-import WebLeaderboardTable from "../../components/leaderboard-table/web-leaderboard-table/WebLeaderboardTable";
-import { DEVICE_TYPE } from "@styles/media";
+import LeaderboardTable from "@layouts/leaderboard-layout/components/leaderboard-table/LeaderboardTable";
+
+import { useAddress } from "@hooks/common/use-address";
+import { useGetLeaderboard, useGetLeaderboardByAddress } from "@query/leaderboard";
 
 interface LeaderboardTableContainerProps {
-  breakpoint: DEVICE_TYPE;
   keyword: string;
 }
 
-export default function LeaderboardTableContainer({ breakpoint, keyword }: LeaderboardTableContainerProps) {
+export default function LeaderboardTableContainer({ keyword }: LeaderboardTableContainerProps) {
   const theme = useTheme();
+  const { isMobile } = useWindowSize();
+  const { address: myAddress } = useAddress();
 
   const [page, setPage] = useState(0);
   const movePage = (page: number) => setPage(page);
 
-  const { isMobile, isTablet, isWeb } = useWindowSize();
-  const leadersQuery = useGetLeaders(page, 100);
+  const { data: leaderboardInfos } = useGetLeaderboard({ keyword: keyword });
+  const { data: leaderboardMyInfo } = useGetLeaderboardByAddress(myAddress || "");
 
-  const meQuery = useGetMyLeader();
+  const filteredData = React.useMemo(() => {
+    if (!leaderboardInfos?.users) return [];
+    if (!keyword) return leaderboardInfos.users;
 
-  const filteredLeaders = React.useMemo(() => {
-    if (!leadersQuery.data?.leaders) return [];
-    if (!keyword) return leadersQuery.data.leaders;
+    return leaderboardInfos.users.filter(user => user.accountAddress.toLowerCase().includes(keyword.toLowerCase()));
+  }, [leaderboardInfos, keyword]);
 
-    return leadersQuery.data.leaders.filter(leader => leader.address.toLowerCase().includes(keyword.toLowerCase()));
-  }, [leadersQuery.data?.leaders, keyword]);
-
-  const totalPage = React.useMemo(() => {
-    if (!filteredLeaders.length) return 0;
-    return Math.ceil(filteredLeaders.length / 100);
-  }, [filteredLeaders]);
+  const totalPages = React.useMemo(() => {
+    if (!leaderboardInfos?.pageInfo.totalPages) return 0;
+    return leaderboardInfos.pageInfo.totalPages;
+  }, [leaderboardInfos?.pageInfo.totalPages]);
 
   return (
     <>
       <LeaderboardTableWrapper>
-        {filteredLeaders.length === 0 ? (
+        {filteredData.length === 0 ? (
           <Box
             style={{
               display: "flex",
@@ -57,25 +55,15 @@ export default function LeaderboardTableContainer({ breakpoint, keyword }: Leade
             No users found
           </Box>
         ) : (
-          <>
-            {breakpoint === DEVICE_TYPE.MOBILE && (
-              <MobileLeaderboardTable myLeader={meQuery.data?.leader} leaders={filteredLeaders} isMobile={isMobile} />
-            )}
-            {isTablet && (
-              <TabletLeaderboardTable myLeader={meQuery.data?.leader} leaders={filteredLeaders} isMobile={isMobile} />
-            )}
-            {isWeb && (
-              <WebLeaderboardTable myLeader={meQuery.data?.leader} leaders={filteredLeaders} isMobile={isMobile} />
-            )}
-          </>
+          <LeaderboardTable currentUserData={leaderboardMyInfo} leaderboardEntries={filteredData} />
         )}
       </LeaderboardTableWrapper>
 
-      {totalPage > 1 && (
+      {totalPages > 1 && (
         <Box style={{ marginTop: "4px" }}>
           <Pagination
             currentPage={page}
-            totalPage={totalPage}
+            totalPage={totalPages}
             onPageChange={movePage}
             siblingCount={isMobile ? 1 : 2}
           />

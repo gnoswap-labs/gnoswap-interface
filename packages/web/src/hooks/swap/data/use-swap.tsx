@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import BigNumber from "bignumber.js";
-import useCustomRouter from "@hooks/common/use-custom-router";
 
 import { SwapDirectionType } from "@common/values";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
@@ -12,6 +11,7 @@ import { useGetRoutes } from "@query/router";
 import useDebounce from "@hooks/common/use-debounce";
 import { useAtomValue, useStore } from "jotai";
 import { SwapState } from "@states/index";
+import { useReferral } from "@hooks/common/use-referral";
 
 interface UseSwapProps {
   tokenA: TokenModel | null;
@@ -22,8 +22,7 @@ interface UseSwapProps {
 }
 
 export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: UseSwapProps) => {
-  const router = useCustomRouter();
-  const referrerAddress = router.getReferrerParameter();
+  const { referralAddress } = useReferral();
 
   const store = useStore();
   const { account } = useWallet();
@@ -271,7 +270,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           originAmount: estimatedSwapResult?.originAmount || 0,
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + 60 * 5,
-          referrerAddress: referrerAddress,
+          referrerAddress: referralAddress,
         });
       }
 
@@ -285,7 +284,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           originAmount: estimatedSwapResult?.originAmount || 0,
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + 60 * 5,
-          referrerAddress: referrerAddress,
+          referrerAddress: referralAddress,
         });
       }
     },
@@ -302,7 +301,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       tokenB,
       exactOutPadding,
       store,
-      referrerAddress,
+      referralAddress,
     ],
   );
 

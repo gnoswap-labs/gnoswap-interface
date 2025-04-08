@@ -11,10 +11,10 @@ import { TABLE_HEAD, TABLE_HEAD_MOBILE } from "../../leaderboard-list/Leaderboar
 export default function LeaderboardTableHeaderContainer() {
   const { isMobile, isTablet } = useWindowSize();
 
-  const heads = (isMobile && TABLE_HEAD_MOBILE) || TABLE_HEAD;
+  const headItems = isMobile ? TABLE_HEAD_MOBILE : TABLE_HEAD;
 
   const widths =
     (isMobile && MOBILE_LEADERBOARD_TD_WIDTH) || (isTablet && TABLET_LEADERBOARD_TD_WIDTH) || LEADERBOARD_TD_WIDTH;
 
-  return <LeaderboardTableHeader heads={Object.values(heads)} headWidths={widths} />;
+  return <LeaderboardTableHeader heads={Object.values(headItems)} headWidths={widths} />;
 }

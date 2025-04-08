@@ -1,22 +1,15 @@
-import {
-  GetLeadersRequest,
-  GetLeaderByAddressRequest,
-  UpdateLeaderByAddressRequest as UpdateLeaderByAddressRequest,
-  GetNextUpdateTimeRequest,
-} from "./request";
-import {
-  GetLeadersResponse,
-  GetLeaderByAddressResponse,
-  UpdateLeaderByAddressResponse as UpdateLeaderByAddressResponse,
-  GetNextUpdateTimeResponse,
-} from "./response";
+import { GetLeaderboardRequest, UpdateLeaderboardHiddenStateRequest } from "./request";
+import { GetNextUpdateTimeResponse, GetLeaderboardResponse, UpdateLeaderboardHiddenStateResponse } from "./response";
+import { GetLeaderboardByAddressResponse } from "./response/get-leaderboard-by-address-response";
 
 export interface LeaderboardRepository {
-  getLeaders: (request: GetLeadersRequest) => Promise<GetLeadersResponse>;
+  getLeaderboard: (request: GetLeaderboardRequest) => Promise<GetLeaderboardResponse>;
 
-  getLeaderByAddress: (request: GetLeaderByAddressRequest) => Promise<GetLeaderByAddressResponse>;
+  getLeaderboardByAddress: (address: string) => Promise<GetLeaderboardByAddressResponse | null>;
 
-  updateLeaderByAddress: (request: UpdateLeaderByAddressRequest) => Promise<UpdateLeaderByAddressResponse>;
+  updateLeaderboardHiddenState: (
+    request: UpdateLeaderboardHiddenStateRequest,
+  ) => Promise<UpdateLeaderboardHiddenStateResponse>;
 
-  getNextUpdateTime: (request: GetNextUpdateTimeRequest) => Promise<GetNextUpdateTimeResponse>;
+  getNextUpdateTime: () => Promise<GetNextUpdateTimeResponse>;
 }

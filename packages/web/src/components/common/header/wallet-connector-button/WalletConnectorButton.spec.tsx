@@ -3,6 +3,13 @@ import { render } from "@testing-library/react";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { Provider as JotaiProvider } from "jotai";
 
+// Mock @adena-wallet/sdk
+jest.mock("@adena-wallet/sdk", () => ({
+  makeMsgCallMessage: jest.fn(),
+  makeMsgSendMessage: jest.fn(),
+  TransactionBuilder: jest.fn(),
+}));
+
 describe("WalletConnectorButton Component", () => {
   it("WalletConnectorButton render", () => {
     render(
