@@ -23,9 +23,14 @@ export const useReferral = () => {
   const { data: leaderboardMyInfo } = useGetLeaderboardByAddress(account?.address || "");
 
   const [referralAddress, setReferralAddress] = React.useState<string>("");
+  const referralAddressRef = React.useRef(referralAddress);
+
+  React.useEffect(() => {
+    referralAddressRef.current = referralAddress;
+  }, [account?.address, referralAddress]);
 
   const urlReferralAddress = router.getReferrerParameter();
-  const [storedReferralAddress, setStoredReferralAddress] = React.useState<string>("");
+  const [storedReferralAddress, setStoredReferralAddress] = React.useState<string | null>(null);
   const apiReferrerAddress = leaderboardMyInfo?.referrerAddress || "";
 
   const generateReferralLink = React.useCallback((): string => {
@@ -41,7 +46,7 @@ export const useReferral = () => {
    */
   const getStoredReferrerInfo = React.useCallback((): StoredReferrerInfo | null => {
     try {
-      const storedData = sessionStorage.getItem(GNOSWAP_REFERRAL_CODE);
+      const storedData = sessionStorage.getItem(`${GNOSWAP_REFERRAL_CODE}_${account?.address}`);
       if (!storedData) return null;
 
       const parsed: StoredReferrerInfo = JSON.parse(storedData);
@@ -49,22 +54,19 @@ export const useReferral = () => {
     } catch {
       return null;
     }
-  }, []);
+  }, [account?.address]);
 
-  const saveToSessionStorage = React.useCallback(
-    (referrerAddress: string) => {
-      if (!account?.address) return;
+  const saveToSessionStorage = (referrerAddress: string) => {
+    if (!account?.address) return;
 
-      const data: StoredReferrerInfo = {
-        referrerAddress,
-        updatedAt: Date.now(),
-      };
+    const data: StoredReferrerInfo = {
+      referrerAddress,
+      updatedAt: Date.now(),
+    };
 
-      sessionStorage.setItem(GNOSWAP_REFERRAL_CODE, JSON.stringify(data));
-      setStoredReferralAddress(referrerAddress);
-    },
-    [account?.address],
-  );
+    sessionStorage.setItem(`${GNOSWAP_REFERRAL_CODE}_${account.address}`, JSON.stringify(data));
+    setStoredReferralAddress(referrerAddress);
+  };
 
   /**
    * Functions to store referrer addresses in session storage
@@ -74,11 +76,13 @@ export const useReferral = () => {
       if (!account?.address) return { success: false, error: "NO_ACCOUNT" };
 
       const trimmedAddress = referrerAddress.trim();
-      if (trimmedAddress && !isValidAddress(trimmedAddress)) {
+      const isNonEmptyAddress = trimmedAddress !== "";
+
+      if (isNonEmptyAddress && !isValidAddress(trimmedAddress)) {
         return { success: false, error: "INVALID_ADDRESS" };
       }
 
-      if (trimmedAddress === account.address) {
+      if (isNonEmptyAddress && trimmedAddress === account.address) {
         return { success: false, error: "SELF_REFERRAL" };
       }
 
@@ -86,38 +90,40 @@ export const useReferral = () => {
 
       return { success: true };
     },
-    [account?.address, saveToSessionStorage],
+    [account?.address],
   );
-
-  // Loading referrer information from session storage when mounting components
-  React.useEffect(() => {
-    if (!account?.address) return;
-
-    const storedInfo = getStoredReferrerInfo();
-    if (storedInfo?.referrerAddress) {
-      setStoredReferralAddress(storedInfo.referrerAddress);
-    }
-  }, [account?.address, getStoredReferrerInfo]);
 
   // Handling URL parameters and session storage priorities
   React.useEffect(() => {
     // Rank 1: URL parameters
-    if (urlReferralAddress && isValidAddress(urlReferralAddress)) {
+    const hasUrlReferralAddress = urlReferralAddress != null;
+    if (hasUrlReferralAddress && isValidAddress(urlReferralAddress)) {
       setReferralAddress(urlReferralAddress);
       return;
     }
 
+    const storedInfo = getStoredReferrerInfo();
+    const storedAddress = storedInfo?.referrerAddress ?? null;
+
+    setStoredReferralAddress(storedAddress);
+
     // Rank 2: Session Storage
-    if (storedReferralAddress && isValidAddress(storedReferralAddress)) {
-      setReferralAddress(storedReferralAddress);
+    const hasStoredReferralAddress = storedAddress != null;
+    if (hasStoredReferralAddress) {
+      if (storedAddress === "" || isValidAddress(storedAddress)) {
+        setReferralAddress(storedAddress);
+        return;
+      }
     }
 
     // Rank 3: API Resopnse(by leaderboard)
-    if (apiReferrerAddress && isValidAddress(apiReferrerAddress) && apiReferrerAddress !== account?.address) {
-      setReferralAddress(apiReferrerAddress);
+    if (!hasUrlReferralAddress && !hasStoredReferralAddress) {
+      if (apiReferrerAddress && isValidAddress(apiReferrerAddress) && apiReferrerAddress !== account?.address) {
+        setReferralAddress(apiReferrerAddress);
 
-      if (account?.address) {
-        saveToSessionStorage(apiReferrerAddress);
+        if (account?.address) {
+          saveToSessionStorage(apiReferrerAddress);
+        }
       }
     }
   }, [urlReferralAddress, storedReferralAddress, apiReferrerAddress, saveToSessionStorage, account?.address]);
@@ -127,5 +133,6 @@ export const useReferral = () => {
     storedReferralAddress,
     saveReferrerAddress,
     generateReferralLink,
+    getCurrentReferralAddress: () => referralAddressRef.current,
   };
 };

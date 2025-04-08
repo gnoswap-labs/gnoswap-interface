@@ -47,7 +47,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const { i18n } = useTranslation();
   const router = useCustomRouter();
   useRouterBack();
-  const { referralAddress } = useReferral();
+  const { getCurrentReferralAddress } = useReferral();
 
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
   const { tokenA = null, tokenB = null, type = "EXACT_IN", isReverted, isKeepToken = false } = swapValue;
@@ -649,6 +649,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
       return priceRange?.type;
     })()?.toString();
 
+    const currentReferralAddress = getCurrentReferralAddress();
+
     if (swapFeeTier && router.isReady) {
       const query = {
         tokenA: tokenA?.path,
@@ -657,7 +659,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
         price_range_type: computedPriceRange,
         tickLower: nextTickLower,
         tickUpper: nextTickUpper,
-        ...(referralAddress ? { referrer: referralAddress } : {}),
+        ...(currentReferralAddress ? { referrer: currentReferralAddress } : {}),
       };
       router.replace(makeRouteUrl(PAGE_PATH.EARN_ADD, query), undefined, {
         shallow: true,
@@ -669,6 +671,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     tokenB,
     selectPool.minPosition,
     selectPool.maxPosition,
+    getCurrentReferralAddress,
     priceRange?.type,
     router.query.fee_tier,
     router.isReady,

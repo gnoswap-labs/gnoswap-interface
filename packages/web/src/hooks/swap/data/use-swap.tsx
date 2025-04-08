@@ -22,7 +22,7 @@ interface UseSwapProps {
 }
 
 export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: UseSwapProps) => {
-  const { referralAddress } = useReferral();
+  const { getCurrentReferralAddress } = useReferral();
 
   const store = useStore();
   const { account } = useWallet();
@@ -260,6 +260,8 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
         return null;
       }
 
+      const currentReferralAddress = getCurrentReferralAddress();
+
       if (direction === "EXACT_IN") {
         return swapRouterRepository.sendExactInSwapRoute({
           inputToken: tokenA,
@@ -270,7 +272,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           originAmount: estimatedSwapResult?.originAmount || 0,
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + 60 * 5,
-          referrerAddress: referralAddress,
+          referrerAddress: currentReferralAddress,
         });
       }
 
@@ -284,7 +286,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           originAmount: estimatedSwapResult?.originAmount || 0,
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + 60 * 5,
-          referrerAddress: referralAddress,
+          referrerAddress: currentReferralAddress,
         });
       }
     },
@@ -301,7 +303,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       tokenB,
       exactOutPadding,
       store,
-      referralAddress,
+      getCurrentReferralAddress,
     ],
   );
 

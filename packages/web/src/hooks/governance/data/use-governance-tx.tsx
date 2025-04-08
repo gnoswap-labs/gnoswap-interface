@@ -16,7 +16,7 @@ import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error"
 import { useReferral } from "@hooks/common/use-referral";
 
 export const useGovernanceTx = () => {
-  const { referralAddress } = useReferral();
+  const { getCurrentReferralAddress } = useReferral();
 
   const { t } = useTranslation();
   const { account } = useWallet();
@@ -103,12 +103,14 @@ export const useGovernanceTx = () => {
       target: toName,
     };
 
+    const currentReferralAddress = getCurrentReferralAddress();
+
     processTx(
       () =>
         governanceRepository.sendDelegate({
           to: toAddress,
           amount: unitAmount.toString(),
-          referrerAddress: referralAddress,
+          referrerAddress: currentReferralAddress,
         }),
       DexEvent.DELEGATE,
       messageData,

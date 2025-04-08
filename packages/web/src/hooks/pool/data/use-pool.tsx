@@ -18,7 +18,7 @@ interface Props {
 }
 
 export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Props) => {
-  const { referralAddress } = useReferral();
+  const { getCurrentReferralAddress } = useReferral();
 
   const { account } = useWallet();
   const { poolRepository } = useGnoswapContext();
@@ -127,6 +127,7 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
       if (!currentTokenData) {
         return null;
       }
+      const currentReferralAddress = getCurrentReferralAddress();
       return poolRepository
         .createPool({
           tokenA: currentTokenData.tokenA,
@@ -141,14 +142,14 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
           caller: account.address,
           withStaking,
           createPoolFee,
-          referrerAddress: referralAddress,
+          referrerAddress: currentReferralAddress,
         })
         .catch(e => {
           console.error(e);
           return null;
         });
     },
-    [account, poolRepository, tokenA, tokenB, compareToken, createPoolFee, referralAddress],
+    [account, poolRepository, tokenA, tokenB, compareToken, createPoolFee, getCurrentReferralAddress],
   );
 
   const addLiquidity = useCallback(
@@ -176,6 +177,7 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
       if (!currentTokenData) {
         return null;
       }
+      const currentReferralAddress = getCurrentReferralAddress();
       return poolRepository
         .addLiquidity({
           tokenA: currentTokenData.tokenA,
@@ -188,14 +190,14 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
           slippage: Number(slippage),
           caller: account.address,
           withStaking,
-          referrerAddress: referralAddress,
+          referrerAddress: currentReferralAddress,
         })
         .catch(e => {
           console.error(e);
           return null;
         });
     },
-    [tokenA, tokenB, account, getCurrentTokenPairAmount, poolRepository, referralAddress],
+    [tokenA, tokenB, account, getCurrentTokenPairAmount, poolRepository, getCurrentReferralAddress],
   );
 
   useEffect(() => {
