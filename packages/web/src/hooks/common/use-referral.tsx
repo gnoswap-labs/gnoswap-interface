@@ -23,6 +23,11 @@ export const useReferral = () => {
   const { data: leaderboardMyInfo } = useGetLeaderboardByAddress(account?.address || "");
 
   const [referralAddress, setReferralAddress] = React.useState<string>("");
+  const referralAddressRef = React.useRef(referralAddress);
+
+  React.useEffect(() => {
+    referralAddressRef.current = referralAddress;
+  }, [account?.address, referralAddress]);
 
   const urlReferralAddress = router.getReferrerParameter();
   const [storedReferralAddress, setStoredReferralAddress] = React.useState<string | null>(null);
@@ -41,7 +46,7 @@ export const useReferral = () => {
    */
   const getStoredReferrerInfo = React.useCallback((): StoredReferrerInfo | null => {
     try {
-      const storedData = sessionStorage.getItem(GNOSWAP_REFERRAL_CODE);
+      const storedData = sessionStorage.getItem(`${GNOSWAP_REFERRAL_CODE}_${account?.address}`);
       if (!storedData) return null;
 
       const parsed: StoredReferrerInfo = JSON.parse(storedData);
@@ -49,7 +54,7 @@ export const useReferral = () => {
     } catch {
       return null;
     }
-  }, []);
+  }, [account?.address]);
 
   const saveToSessionStorage = (referrerAddress: string) => {
     if (!account?.address) return;
@@ -59,7 +64,7 @@ export const useReferral = () => {
       updatedAt: Date.now(),
     };
 
-    sessionStorage.setItem(GNOSWAP_REFERRAL_CODE, JSON.stringify(data));
+    sessionStorage.setItem(`${GNOSWAP_REFERRAL_CODE}_${account.address}`, JSON.stringify(data));
     setStoredReferralAddress(referrerAddress);
   };
 
@@ -128,5 +133,6 @@ export const useReferral = () => {
     storedReferralAddress,
     saveReferrerAddress,
     generateReferralLink,
+    getCurrentReferralAddress: () => referralAddressRef.current,
   };
 };

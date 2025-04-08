@@ -35,7 +35,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
 
   const { positionRepository } = useGnoswapContext();
   const router = useCustomRouter();
-  const { referralAddress } = useReferral();
+  const { getCurrentReferralAddress } = useReferral();
   const clearModal = useClearModal();
   const { updateBalances, tokenPrices } = useTokenData();
   const poolPath = router.getPoolPath();
@@ -89,6 +89,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
     const lpTokenIds = positions.map(position => position.id.toString());
     const tokenA = pooledTokenInfos?.[0];
     const tokenB = pooledTokenInfos?.[1];
+    const currentReferralAddress = getCurrentReferralAddress();
     broadcastLoading(
       getMessage(DexEvent.STAKE, "pending", {
         tokenASymbol: tokenA?.token?.symbol,
@@ -107,7 +108,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
       .stakePositions({
         lpTokenIds,
         caller: address,
-        referrerAddress: referralAddress,
+        referrerAddress: currentReferralAddress,
       })
       .catch(() => null);
 
@@ -181,7 +182,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
       }
     }
     return result;
-  }, [account?.address, positionRepository, positions, router]);
+  }, [account?.address, positionRepository, positions, router, getCurrentReferralAddress]);
 
   return <StakePositionModal positions={positions} close={clearModal} onSubmit={onSubmit} pool={pool} />;
 };

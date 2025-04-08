@@ -44,7 +44,7 @@ function calculateUSDValueBy(
 }
 
 export const useLaunchpadHandler = () => {
-  const { referralAddress } = useReferral();
+  const { getCurrentReferralAddress } = useReferral();
 
   const participateAmount = useAtomValue(LaunchpadState.participateAmount);
   const depositConditions = useAtomValue(LaunchpadState.depositConditions);
@@ -112,7 +112,6 @@ export const useLaunchpadHandler = () => {
     if (!account) {
       return;
     }
-    console.log(projectPoolId, "projectPoolId");
 
     const displayAmount = Number(depositAmount).toLocaleString("en");
     const unitAmount = makeRawTokenAmount(GNS_TOKEN, depositAmount) || "0";
@@ -122,9 +121,16 @@ export const useLaunchpadHandler = () => {
       tokenASymbol: GNS_TOKEN.symbol,
     };
 
+    const currentReferralAddress = getCurrentReferralAddress();
+
     processTx(
       () =>
-        launchpadRepository.depositLaunchpadPoolBy(projectPoolId, BigInt(unitAmount), account.address, referralAddress),
+        launchpadRepository.depositLaunchpadPoolBy(
+          projectPoolId,
+          BigInt(unitAmount),
+          account.address,
+          currentReferralAddress,
+        ),
       DexEvent.LAUNCHPAD_DEPOSIT,
       messageData,
       response => {
@@ -173,19 +179,21 @@ export const useLaunchpadHandler = () => {
       tokenAAmount: usdValueStr,
     };
 
+    const currentReferralAddress = getCurrentReferralAddress();
+
     processTx(
       () => {
         if (isWithdrawable) {
           return launchpadRepository.collectRewardWithDepositByDepositId(
             participationInfo.depositId,
             account.address,
-            referralAddress,
+            currentReferralAddress,
           );
         }
         return launchpadRepository.collectRewardByDepositId(
           participationInfo.depositId,
           account.address,
-          referralAddress,
+          currentReferralAddress,
         );
       },
       DexEvent.LAUNCHPAD_COLLECT_REWARD,
@@ -254,19 +262,21 @@ export const useLaunchpadHandler = () => {
       tokenAAmount: usdValueStr,
     };
 
+    const currentReferralAddress = getCurrentReferralAddress();
+
     processTx(
       () => {
         if (isWithdrawable) {
           return launchpadRepository.collectRewardWithDepositByProjectId(
             participationInfo.projectId,
             account.address,
-            referralAddress,
+            currentReferralAddress,
           );
         }
         return launchpadRepository.collectRewardByProjectId(
           participationInfo.projectId,
           account.address,
-          referralAddress,
+          currentReferralAddress,
         );
       },
       DexEvent.LAUNCHPAD_COLLECT_REWARD,

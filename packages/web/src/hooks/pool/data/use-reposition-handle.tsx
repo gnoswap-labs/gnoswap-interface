@@ -45,7 +45,7 @@ export type REPOSITION_BUTTON_TYPE = "REPOSITION" | "LOADING" | "NON_SELECTED_RA
 
 export const useRepositionHandle = () => {
   const router = useRouter();
-  const { referralAddress } = useReferral();
+  const { getCurrentReferralAddress } = useReferral();
   const poolPath = router.getPoolPath();
   const positionId = router.getPositionId();
 
@@ -443,6 +443,7 @@ export const useRepositionHandle = () => {
       : BigNumber(estimatedRepositionAmounts?.amountA || 0).minus(BigNumber(currentAmounts?.amountA || 0));
 
     const deadline = Math.floor(Date.now() / 1000) + 300; // 5분
+    const currentReferralAddress = getCurrentReferralAddress();
 
     if (estimateSwapRequest.exactType === "EXACT_IN") {
       return swapRouterRepository.sendExactInSwapRoute({
@@ -454,7 +455,7 @@ export const useRepositionHandle = () => {
         originAmount: estimatedSwapResult.originAmount,
         tokenAmountLimit: outputAmount.toNumber() * ((100 - DEFAULT_SLIPPAGE) / 100),
         deadline,
-        referrerAddress: referralAddress,
+        referrerAddress: currentReferralAddress,
       });
     } else {
       return swapRouterRepository.sendExactOutSwapRoute({
@@ -466,7 +467,7 @@ export const useRepositionHandle = () => {
         originAmount: estimatedSwapResult.originAmount,
         tokenAmountLimit: inputAmount.toNumber() * ((100 + DEFAULT_SLIPPAGE) / 100),
         deadline,
-        referrerAddress: referralAddress,
+        referrerAddress: currentReferralAddress,
       });
     }
   }, [
@@ -477,6 +478,7 @@ export const useRepositionHandle = () => {
     estimatedSwapResult,
     selectedPosition?.pool.tokenA,
     swapRouterRepository,
+    getCurrentReferralAddress,
   ]);
 
   const reposition = useCallback(
