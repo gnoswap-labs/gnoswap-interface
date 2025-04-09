@@ -38,9 +38,9 @@ const UserColumn = ({
       }}
     >
       <Flex>
-        {user.rank === 1 && <IconGoldMedal />}
-        {user.rank === 2 && <IconSilverMedal />}
-        {user.rank === 3 && <IconBronzeMedal />}
+        {user.rank == 1 && <IconGoldMedal />}
+        {user.rank == 2 && <IconSilverMedal />}
+        {user.rank == 3 && <IconBronzeMedal />}
         {!isLeaderboardHidden(user.hiddenYn) ? (
           <Tooltip
             placement="top"
