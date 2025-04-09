@@ -10,7 +10,11 @@ import { StyledIconInfo } from "../common/styled-icon-info/StyledIconInfo";
 import { Height24, TextWrapper } from "./NextUpdate.styles";
 import Tooltip from "@components/common/tooltip/Tooltip";
 
-export default function NextUpdate({ page }: { page: number }) {
+interface NextUpdateProps {
+  readonly page: number;
+}
+
+export default function NextUpdate({ page }: NextUpdateProps) {
   const { address } = useAddress();
   const { data, refetch: refetchNextUpdateTime } = useNextUpdateTime();
   const [seconds, setSeconds] = React.useState<number | null>(null);

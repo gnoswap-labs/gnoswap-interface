@@ -12,8 +12,8 @@ import { useAddress } from "@hooks/common/use-address";
 import { useGetLeaderboard, useGetLeaderboardByAddress } from "@query/leaderboard";
 
 interface LeaderboardTableContainerProps {
-  keyword: string;
-  page: number;
+  readonly keyword: string;
+  readonly page: number;
   movePage: (page: number) => void;
 }
 
