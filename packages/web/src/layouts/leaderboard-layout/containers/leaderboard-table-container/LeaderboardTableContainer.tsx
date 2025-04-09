@@ -23,7 +23,7 @@ export default function LeaderboardTableContainer({ keyword }: LeaderboardTableC
   const [page, setPage] = useState(0);
   const movePage = (page: number) => setPage(page);
 
-  const { data: leaderboardInfos } = useGetLeaderboard({ keyword: keyword });
+  const { data: leaderboardInfos } = useGetLeaderboard({ limit: 100 });
   const { data: leaderboardMyInfo } = useGetLeaderboardByAddress(myAddress || "");
 
   const filteredData = React.useMemo(() => {
@@ -55,7 +55,11 @@ export default function LeaderboardTableContainer({ keyword }: LeaderboardTableC
             No users found
           </Box>
         ) : (
-          <LeaderboardTable currentUserData={leaderboardMyInfo} leaderboardEntries={filteredData} />
+          <LeaderboardTable
+            myAddress={myAddress}
+            currentUserData={leaderboardMyInfo}
+            leaderboardEntries={filteredData}
+          />
         )}
       </LeaderboardTableWrapper>
 

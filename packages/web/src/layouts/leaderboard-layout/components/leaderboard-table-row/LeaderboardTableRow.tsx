@@ -10,19 +10,21 @@ import PointComposition from "../point-composition/PointComposition";
 import UserColumn from "../user-column/UserColumn";
 import { LeaderboardUser } from "@repositories/leaderboard/response/common/types";
 import { isLeaderboardHidden } from "@utils/leaderboard-utils";
-import { numberToInteger } from "@utils/string-utils";
+import { numberToFormat } from "@utils/string-utils";
 
 const formatUsdValue = (value: string | number) => {
-  if (value == null) return "-";
-  return `$${numberToInteger(value)}`;
+  if (value == null || value === "") return "-";
+  return `$${numberToFormat(value, { decimals: 2, forceDecimals: true })}`;
 };
 
 const LeaderboardTableRow = ({
+  myAddress,
   data,
   tdWidths,
   isMobile,
   isMe = false,
 }: {
+  myAddress: string | undefined;
   data: LeaderboardUser;
   tdWidths: number[];
   isMobile: boolean;
@@ -44,11 +46,22 @@ const LeaderboardTableRow = ({
     };
   }, [data.swapFeeUsd, data.providedLiquidityFeeUsd, data.stakingRewardsUsd, data.governanceRewardsUsd]);
 
+  const displayRank = React.useMemo(() => {
+    if (!data.rank) return "-";
+    return `#${data.rank}`;
+  }, [data.rank]);
+
   return (
     <TableWrapper>
-      <TableColumn tdWidth={tdWidths.at(0)}>#{data.rank}</TableColumn>
+      <TableColumn tdWidth={tdWidths.at(0)}>{displayRank}</TableColumn>
       <Hover style={isLeaderboardHidden(data.hiddenYn) ? { cursor: "auto" } : {}}>
-        <UserColumn user={data} isMe={isMe} tdWidth={tdWidths.at(1)} style={{ justifyContent: "flex-start" }} />
+        <UserColumn
+          myAddress={myAddress}
+          user={data}
+          isMe={isMe}
+          tdWidth={tdWidths.at(1)}
+          style={{ justifyContent: "flex-start" }}
+        />
       </Hover>
       <Hover style={{ cursor: "auto" }}>
         {!isMobile && (

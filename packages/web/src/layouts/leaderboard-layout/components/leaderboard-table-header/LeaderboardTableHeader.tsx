@@ -8,6 +8,7 @@ const LeaderboardTableHeader = ({ heads, headWidths }: { heads: TableHeadItem[];
     <ListHead>
       {heads.map((head, index) => (
         <TableHeader key={index} tdWidth={headWidths[index]}>
+          <span>{head.label}</span>
           {head.tooltip && (
             <Tooltip
               placement="top"
@@ -16,7 +17,6 @@ const LeaderboardTableHeader = ({ heads, headWidths }: { heads: TableHeadItem[];
               <IconInfo size={16} />
             </Tooltip>
           )}
-          <span>{head.label}</span>
         </TableHeader>
       ))}
     </ListHead>

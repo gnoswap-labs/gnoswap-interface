@@ -17,17 +17,19 @@ const Flex = styled.div`
 `;
 
 const UserColumn = ({
+  myAddress,
   user,
   isMe = false,
   ...rest
 }: {
+  myAddress: string | undefined;
   user: LeaderboardUser;
   isMe?: boolean;
   tdWidth?: number;
 } & HTMLAttributes<HTMLDivElement>) => {
   const { push } = useRouter();
 
-  const formattedAddress = formatAddress(user.accountAddress || "");
+  const formattedAddress = formatAddress(user.accountAddress || myAddress || "");
   return (
     <TableColumn
       {...rest}
@@ -40,7 +42,10 @@ const UserColumn = ({
         {user.rank === 2 && <IconSilverMedal />}
         {user.rank === 3 && <IconBronzeMedal />}
         {!isLeaderboardHidden(user.hiddenYn) ? (
-          <Tooltip placement="top" FloatingContent={<span style={{ fontSize: 14 }}>{user.accountAddress}</span>}>
+          <Tooltip
+            placement="top"
+            FloatingContent={<span style={{ fontSize: 14 }}>{user.accountAddress || myAddress}</span>}
+          >
             <span>{formattedAddress}</span>
           </Tooltip>
         ) : (

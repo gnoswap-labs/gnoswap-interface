@@ -16,7 +16,7 @@ export default function NextUpdate() {
   const [seconds, setSeconds] = React.useState<number | null>(null);
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
-  const { refetch: refetchLeaderboard } = useGetLeaderboard({});
+  const { refetch: refetchLeaderboard } = useGetLeaderboard({ limit: 100 });
   const { refetch: refetchLeaderboardByAddress } = useGetLeaderboardByAddress(address || "");
 
   // Functions to run when it's time to update
