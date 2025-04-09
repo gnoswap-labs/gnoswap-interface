@@ -51,12 +51,16 @@ const LeaderboardTableRow = ({
         <UserColumn user={data} isMe={isMe} tdWidth={tdWidths.at(1)} style={{ justifyContent: "flex-start" }} />
       </Hover>
       <Hover style={{ cursor: "auto" }}>
-        <TableColumn tdWidth={tdWidths.at(2)} style={{ justifyContent: "flex-start" }}>
-          {displayValues.swap}
-        </TableColumn>
-        <TableColumn tdWidth={tdWidths.at(3)}>{displayValues.position}</TableColumn>
-        <TableColumn tdWidth={tdWidths.at(4)}>{displayValues.staking}</TableColumn>
-        <TableColumn tdWidth={tdWidths.at(5)}>
+        {!isMobile && (
+          <>
+            <TableColumn tdWidth={tdWidths.at(2)} style={{ justifyContent: "flex-start" }}>
+              {displayValues.swap}
+            </TableColumn>
+            <TableColumn tdWidth={tdWidths.at(3)}>{displayValues.position}</TableColumn>
+            <TableColumn tdWidth={tdWidths.at(4)}>{displayValues.staking}</TableColumn>
+          </>
+        )}
+        <TableColumn tdWidth={tdWidths.at(isMobile ? 2 : 5)}>
           <PointComposition
             totalPoint={data.totalPoint}
             swapPoint={data.paidSwapFeePoint}

@@ -18,13 +18,30 @@ export const WrapperHoverBackground = styled(Wrapper)`
 `;
 
 export const HoverSection = styled.div`
-  ${mixins.flexbox("row", "center", "center", false)};
+  ${mixins.flexbox("row", "center", "flex-start", false)};
   transition: background-color 0.3s ease;
   cursor: pointer;
   height: 100%;
   overflow: hidden;
+  flex-grow: 2;
+
   &.disabled-pointer {
     pointer-events: none;
+  }
+  &:first-of-type {
+    flex-grow: 0;
+  }
+
+  &:last-child {
+    justify-content: flex-end;
+  }
+
+  ${media.mobile} {
+    flex-grow: 2;
+
+    &:first-of-type {
+      flex-grow: 0;
+    }
   }
 `;
 export const HoverOnBgSection = styled(HoverSection)`
@@ -42,6 +59,8 @@ export const TableColumn = styled.div<{ tdWidth?: number }>`
   padding: 16px;
 
   ${mixins.flexbox("row", "center", "flex-start")};
+
+  flex-grow: 2;
 
   &:first-of-type {
     justify-content: center;
