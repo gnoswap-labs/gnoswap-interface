@@ -42,7 +42,8 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
   });
 
   const [inputReferralAddress, setInputReferralAddress] = React.useState<string>("");
-  const { storedReferralAddress, apiReferrerAddress, saveReferrerAddress, generateReferralLink } = useReferral();
+  const { storedReferralAddress, apiReferrerAddress, referralEarnedPoints, saveReferrerAddress, generateReferralLink } =
+    useReferral();
 
   const referralLink = React.useMemo(() => generateReferralLink(), [generateReferralLink]);
 
@@ -71,10 +72,6 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
       throw new Error(`Copy Error! ${e}`);
     }
   }, [referralLink]);
-
-  const mockData = {
-    earnedPoints: 0,
-  };
 
   const isSubmittable = React.useMemo(() => {
     return true;
@@ -186,7 +183,7 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
       <S.WalletReferralInfoColumn>
         <S.InfoColumnKey>{t("Earned Points")}</S.InfoColumnKey>
         <S.InfoColumnValue>
-          <span>{mockData.earnedPoints.toLocaleString()}</span>
+          <span>{referralEarnedPoints.toLocaleString()}</span>
         </S.InfoColumnValue>
       </S.WalletReferralInfoColumn>
     </S.WalletReferralInfoWrapper>

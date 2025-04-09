@@ -33,6 +33,11 @@ export const useReferral = () => {
   const [storedReferralAddress, setStoredReferralAddress] = React.useState<string | null>(null);
   const apiReferrerAddress = leaderboardMyInfo?.referrerAddress || "";
 
+  const referralEarnedPoints = React.useMemo(() => {
+    if (!leaderboardMyInfo?.referralPoint) return 0;
+    return parseInt(leaderboardMyInfo.referralPoint) || 0;
+  }, [leaderboardMyInfo?.referralPoint]);
+
   const generateReferralLink = React.useCallback((): string => {
     if (typeof window === "undefined" || !account?.address) return "";
 
@@ -132,6 +137,7 @@ export const useReferral = () => {
     referralAddress,
     apiReferrerAddress,
     storedReferralAddress,
+    referralEarnedPoints,
     saveReferrerAddress,
     generateReferralLink,
     getCurrentReferralAddress: () => referralAddressRef.current,
