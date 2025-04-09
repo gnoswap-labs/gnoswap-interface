@@ -14,7 +14,7 @@ import { useGetLeaderboard, useGetLeaderboardByAddress } from "@query/leaderboar
 interface LeaderboardTableContainerProps {
   readonly keyword: string;
   readonly page: number;
-  movePage: (page: number) => void;
+  readonly movePage: (page: number) => void;
 }
 
 export default function LeaderboardTableContainer({ keyword, page, movePage }: LeaderboardTableContainerProps) {
