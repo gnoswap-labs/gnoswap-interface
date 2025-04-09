@@ -9,7 +9,6 @@ import IconSearch from "@components/common/icons/IconSearch";
 import AssetReceiveModal from "@components/wallet/asset-receive-modal/AssetReceiveModal";
 import { BLOCKED_PAGES } from "@constants/environment.constant";
 import { HEADER_NAV } from "@constants/header.constant";
-import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { AccountModel } from "@models/account/account-model";
@@ -111,7 +110,6 @@ const Header: React.FC<HeaderProps> = ({
   resetWeb3authSession,
 }) => {
   const { width } = useWindowSize();
-  const router = useCustomRouter();
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
   const { t } = useTranslation();
   const { saveCurrentScrollHeight } = useScrollData();
@@ -151,11 +149,11 @@ const Header: React.FC<HeaderProps> = ({
       <HeaderWrapper>
         <HeaderContainer>
           <LeftSection>
-            <span className="link" onClick={() => router.replace("/")}>
+            <Link className="link" href={"/"} onClick={e => handleNavigation(e, "/")}>
               <LogoLink>
                 <IconHeaderLogo className="header-main-logo" />
               </LogoLink>
-            </span>
+            </Link>
             <Navigation>
               {breakpoint !== DEVICE_TYPE.MOBILE && (
                 <React.Fragment>
