@@ -63,6 +63,14 @@ export function numberToFormat(
   return BigNumber(num).toFormat(decimal || 0);
 }
 
+export function numberToInteger(num: string | number): string {
+  if (!isNumber(Number(num))) {
+    return "0";
+  }
+
+  return BigNumber(num).integerValue(BigNumber.ROUND_DOWN).toFormat(0);
+}
+
 export function numberToRate(
   num: string | number | null | undefined,
   {
