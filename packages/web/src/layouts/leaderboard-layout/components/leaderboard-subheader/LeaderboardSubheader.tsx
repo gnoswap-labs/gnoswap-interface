@@ -3,7 +3,15 @@ import { Container, TitleWrapper } from "./LeaderboardSubheader.styles";
 import LearnMore from "../learn-more/LearnMore";
 import { FontSize16, P } from "../common/common.styles";
 
-const LeaderboardSubheader = ({ connected, address }: { connected: boolean; address?: string }) => {
+const LeaderboardSubheader = ({
+  connected,
+  address,
+  isMobile,
+}: {
+  connected: boolean;
+  isMobile: boolean;
+  address?: string;
+}) => {
   return (
     <Container>
       <TitleWrapper>
@@ -16,7 +24,7 @@ const LeaderboardSubheader = ({ connected, address }: { connected: boolean; addr
         </FontSize16>
       </TitleWrapper>
 
-      <CopyReferralLink connected={connected} address={address} />
+      <CopyReferralLink connected={connected} isMobile={isMobile} address={address} />
     </Container>
   );
 };

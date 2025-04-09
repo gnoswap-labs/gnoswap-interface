@@ -3,7 +3,15 @@ import { ButtonHierarchy } from "@components/common/button/Button";
 import { CopyReferralLinkButton, StyledIconLink, Text } from "./CopyReferralLink.styles";
 import { QUERY_PARAMETER } from "@constants/page.constant";
 
-const CopyReferralLink = ({ connected, address }: { connected: boolean; address?: string }) => {
+const CopyReferralLink = ({
+  connected,
+  isMobile,
+  address,
+}: {
+  connected: boolean;
+  isMobile: boolean;
+  address?: string;
+}) => {
   const [copied, setCopied] = useState(false);
 
   const referralLink = React.useMemo(() => {
@@ -22,7 +30,7 @@ const CopyReferralLink = ({ connected, address }: { connected: boolean; address?
   };
 
   return (
-    <div>
+    <div style={{ width: isMobile ? "100%" : "unset" }}>
       <CopyReferralLinkButton
         disabled={!connected}
         style={{
