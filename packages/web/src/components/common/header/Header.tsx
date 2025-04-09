@@ -17,6 +17,7 @@ import { DeviceSize, DEVICE_TYPE } from "@styles/media";
 import useScrollData from "@hooks/common/use-scroll-data";
 import { WalletTypeState } from "src/types/wallet.types";
 import useNavigation from "@hooks/common/use-navigation";
+import { TABLET_HIDDEN_NAV_PATHS } from "@constants/page.constant";
 
 import NotificationButton from "./notification-button/NotificationButton";
 import SearchMenuModal, { Token } from "./search-menu-modal/SearchMenuModal";
@@ -72,8 +73,6 @@ interface HeaderProps {
   displayAddress: string;
   resetWeb3authSession: () => void;
 }
-
-export const TABLET_HIDDEN_NAV_PATHS: string[] = ["/leaderboard", "/governance", "/launchpad"];
 
 const HEADER_NAVIGATION_LAYOUT_COLLAPSE_WIDTH = 1300; // 1300px threshold: a threshold to prevent UI layout from being warped
 

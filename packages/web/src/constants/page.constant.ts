@@ -1,3 +1,5 @@
+export const TABLET_HIDDEN_NAV_PATHS: string[] = ["/leaderboard", "/governance", "/launchpad"];
+
 export const PAGE_PATH = {
   HOME: "/",
   TOKEN: "/token",
