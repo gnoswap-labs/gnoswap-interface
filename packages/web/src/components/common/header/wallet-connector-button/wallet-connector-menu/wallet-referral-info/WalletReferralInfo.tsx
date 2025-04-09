@@ -4,6 +4,7 @@ import { useTheme } from "@emotion/react";
 
 import { DEVICE_TYPE } from "@styles/media";
 import { useReferral } from "@hooks/common/use-referral";
+import { formatAddress } from "@utils/string-utils";
 
 import * as S from "./WalletReferralInfo.styles";
 import { AccountModel } from "@models/account/account-model";
@@ -41,15 +42,23 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
   });
 
   const [inputReferralAddress, setInputReferralAddress] = React.useState<string>("");
-  const { storedReferralAddress, saveReferrerAddress, generateReferralLink } = useReferral();
+  const { storedReferralAddress, apiReferrerAddress, saveReferrerAddress, generateReferralLink } = useReferral();
 
   const referralLink = React.useMemo(() => generateReferralLink(), [generateReferralLink]);
 
   const displayReferralLink = React.useMemo(() => {
     if (!account?.address) return "";
 
-    return `.../${account?.address.slice(0, 4)}...${account?.address.slice(-4)}`;
+    return `.../${formatAddress(account?.address, 4)}`;
   }, [account?.address]);
+
+  const referrerAddressInfo = React.useMemo(() => {
+    const address = storedReferralAddress != null ? storedReferralAddress : apiReferrerAddress;
+
+    if (!address) return { fullAddress: null, shortAddress: null };
+
+    return { fullAddress: address, shortAddress: formatAddress(address, 5) };
+  }, [storedReferralAddress, apiReferrerAddress]);
 
   const handleCopy = React.useCallback(async () => {
     if (!referralLink) return;
@@ -77,8 +86,8 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
   };
 
   const handleEdit = () => {
-    if (storedReferralAddress) {
-      setInputReferralAddress(storedReferralAddress);
+    if (referrerAddressInfo.fullAddress) {
+      setInputReferralAddress(referrerAddressInfo.fullAddress);
     }
     setUIState(prev => ({ ...prev, isEditing: true }));
   };
@@ -159,10 +168,8 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
           <>
             <S.InfoColumnKey>{t("Referred by")}</S.InfoColumnKey>
             <S.InfoColumnValue>
-              <S.InfoReferrerDisplayText hasRegisteredReferrer={!!storedReferralAddress}>
-                {storedReferralAddress
-                  ? `${storedReferralAddress.slice(0, 5)}...${storedReferralAddress.slice(-5)}`
-                  : t("Not registered yet")}
+              <S.InfoReferrerDisplayText hasRegisteredReferrer={!!referrerAddressInfo.shortAddress}>
+                {referrerAddressInfo.shortAddress ? referrerAddressInfo.shortAddress : t("Not registered yet")}
               </S.InfoReferrerDisplayText>
               <S.InfoColumnIconSet>
                 <S.IconButton aria-label="edit" onClick={handleEdit} className="edit-icon">
