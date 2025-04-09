@@ -10,13 +10,13 @@ import { StyledIconInfo } from "../common/styled-icon-info/StyledIconInfo";
 import { Height24, TextWrapper } from "./NextUpdate.styles";
 import Tooltip from "@components/common/tooltip/Tooltip";
 
-export default function NextUpdate() {
+export default function NextUpdate({ page }: { page: number }) {
   const { address } = useAddress();
   const { data, refetch: refetchNextUpdateTime } = useNextUpdateTime();
   const [seconds, setSeconds] = React.useState<number | null>(null);
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
-  const { refetch: refetchLeaderboard } = useGetLeaderboard({ limit: 100 });
+  const { refetch: refetchLeaderboard } = useGetLeaderboard({ limit: 100, page });
   const { refetch: refetchLeaderboardByAddress } = useGetLeaderboardByAddress(address || "");
 
   // Functions to run when it's time to update

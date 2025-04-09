@@ -14,7 +14,7 @@ import { numberToFormat } from "@utils/string-utils";
 
 const formatUsdValue = (value: string | number) => {
   if (value == null || value === "") return "-";
-  return `$${numberToFormat(value, { decimals: 2, forceDecimals: true })}`;
+  return `$${numberToFormat(value, { decimals: 2, forceDecimals: true, truncateDecimals: true })}`;
 };
 
 const LeaderboardTableRow = ({

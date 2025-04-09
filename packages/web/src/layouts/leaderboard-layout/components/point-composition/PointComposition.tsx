@@ -15,7 +15,7 @@ interface PointCompositionProps {
 
 const formatPoint = (point: string): string => {
   if (!point) return "-";
-  return numberToFormat(point, { decimals: 1, forceDecimals: true });
+  return numberToFormat(point, { decimals: 1, forceDecimals: true, truncateDecimals: true });
 };
 
 const PointComposition = ({

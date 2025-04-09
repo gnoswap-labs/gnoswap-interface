@@ -37,16 +37,29 @@ export function numberToFormat(
     isRounding = true,
     forceDecimals,
     decimals,
+    truncateDecimals = false,
   }: {
     decimals?: number;
     forceDecimals?: boolean;
     isRounding?: boolean;
+    truncateDecimals?: boolean;
   } = {},
 ) {
   const decimal = forceDecimals ? decimals : Number.isInteger(Number(num)) ? 0 : decimals;
 
   if (!isNumber(Number(num))) {
     return "0";
+  }
+
+  if (truncateDecimals && decimal !== undefined) {
+    const multiplier = new BigNumber(10).pow(decimal);
+    const truncated = new BigNumber(num).times(multiplier).integerValue(BigNumber.ROUND_DOWN).dividedBy(multiplier);
+
+    if (!forceDecimals) {
+      return removeTrailingZeros(truncated.toFormat(decimal));
+    }
+
+    return truncated.toFormat(decimal);
   }
 
   if (!isRounding && decimal) {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useTheme } from "@emotion/react";
 
 import Pagination from "@components/common/pagination/Pagination";
@@ -13,17 +13,16 @@ import { useGetLeaderboard, useGetLeaderboardByAddress } from "@query/leaderboar
 
 interface LeaderboardTableContainerProps {
   keyword: string;
+  page: number;
+  movePage: (page: number) => void;
 }
 
-export default function LeaderboardTableContainer({ keyword }: LeaderboardTableContainerProps) {
+export default function LeaderboardTableContainer({ keyword, page, movePage }: LeaderboardTableContainerProps) {
   const theme = useTheme();
   const { isMobile } = useWindowSize();
   const { address: myAddress } = useAddress();
 
-  const [page, setPage] = useState(0);
-  const movePage = (page: number) => setPage(page);
-
-  const { data: leaderboardInfos } = useGetLeaderboard({ limit: 100 });
+  const { data: leaderboardInfos } = useGetLeaderboard({ limit: 100, page });
   const { data: leaderboardMyInfo } = useGetLeaderboardByAddress(myAddress || "");
 
   const filteredData = React.useMemo(() => {

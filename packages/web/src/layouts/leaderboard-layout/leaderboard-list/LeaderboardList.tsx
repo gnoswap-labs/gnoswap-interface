@@ -53,6 +53,8 @@ export default function LeaderboardList() {
   const { breakpoint } = useWindowSize();
 
   const [keyword, setKeyword] = React.useState<string>("");
+  const [page, setPage] = React.useState(1);
+  const movePage = (page: number) => setPage(page);
   const [isViewSearchIcon, setIsViewSearchIcon] = React.useState<boolean>(false);
   const [searchRef, isClickOutside, setIsInside] = useClickOutside();
 
@@ -79,6 +81,7 @@ export default function LeaderboardList() {
         <LeaderboardListHeaderContainer
           breakpoint={breakpoint}
           keyword={keyword}
+          page={page}
           onChangeKeyword={handleSearch}
           onToggleSearch={onToggleSearch}
           searchRef={searchRef}
@@ -86,7 +89,7 @@ export default function LeaderboardList() {
         />
 
         <Suspense fallback={<LeaderboardTableSkeletonContainer />}>
-          <LeaderboardTableContainer keyword={keyword} />
+          <LeaderboardTableContainer keyword={keyword} page={page} movePage={movePage} />
         </Suspense>
       </ErrorBoundary>
     </Wrapper>
