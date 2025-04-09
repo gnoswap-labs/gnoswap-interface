@@ -54,7 +54,7 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
   }, [account?.address]);
 
   const referrerAddressInfo = React.useMemo(() => {
-    const address = storedReferralAddress != null ? storedReferralAddress : apiReferrerAddress;
+    const address = storedReferralAddress ?? apiReferrerAddress;
 
     if (!address) return { fullAddress: null, shortAddress: null };
 
