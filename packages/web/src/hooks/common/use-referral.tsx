@@ -33,6 +33,11 @@ export const useReferral = () => {
   const [storedReferralAddress, setStoredReferralAddress] = React.useState<string | null>(null);
   const apiReferrerAddress = leaderboardMyInfo?.referrerAddress || "";
 
+  const referralEarnedPoints = React.useMemo(() => {
+    if (!leaderboardMyInfo?.referralPoint) return 0;
+    return parseInt(leaderboardMyInfo.referralPoint) || 0;
+  }, [leaderboardMyInfo?.referralPoint]);
+
   const generateReferralLink = React.useCallback((): string => {
     if (typeof window === "undefined" || !account?.address) return "";
 
@@ -95,17 +100,17 @@ export const useReferral = () => {
 
   // Handling URL parameters and session storage priorities
   React.useEffect(() => {
+    const storedInfo = getStoredReferrerInfo();
+    const storedAddress = storedInfo?.referrerAddress ?? null;
+
+    setStoredReferralAddress(storedAddress);
+
     // Rank 1: URL parameters
     const hasUrlReferralAddress = urlReferralAddress != null;
     if (hasUrlReferralAddress && isValidAddress(urlReferralAddress)) {
       setReferralAddress(urlReferralAddress);
       return;
     }
-
-    const storedInfo = getStoredReferrerInfo();
-    const storedAddress = storedInfo?.referrerAddress ?? null;
-
-    setStoredReferralAddress(storedAddress);
 
     // Rank 2: Session Storage
     const hasStoredReferralAddress = storedAddress != null;
@@ -130,7 +135,9 @@ export const useReferral = () => {
 
   return {
     referralAddress,
+    apiReferrerAddress,
     storedReferralAddress,
+    referralEarnedPoints,
     saveReferrerAddress,
     generateReferralLink,
     getCurrentReferralAddress: () => referralAddressRef.current,
