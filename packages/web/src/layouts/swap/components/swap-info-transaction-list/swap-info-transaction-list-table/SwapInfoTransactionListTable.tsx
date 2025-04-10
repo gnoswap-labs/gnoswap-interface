@@ -45,9 +45,19 @@ interface TransactionListTableRowProps {
   isNewTransaction?: boolean;
 }
 
-const HIGHLIGHT_DURATION = 1_000;
+const TIME_INTERVALS = {
+  SECOND: 1_000,
+  MINUTE: 60_000,
+  HOUR: 3_600_000,
+};
 
-const TIME_UPDATE_INTERVAL = 1_000;
+const TIME_THRESHOLDS = {
+  MINUTE: 60,
+  HOUR: 3_600,
+};
+
+const HIGHLIGHT_DURATION = 1_000;
+const MAX_DISPLAY_TRANSACTIONS = 10;
 
 const getTableWidths = (breakpoint: DEVICE_TYPE) => {
   if (breakpoint === DEVICE_TYPE.MOBILE) {
@@ -57,6 +67,16 @@ const getTableWidths = (breakpoint: DEVICE_TYPE) => {
     return TABLET_TRANSACTION_TD_WIDTH;
   }
   return TRANSACTION_TD_WIDTH;
+};
+
+const getNextUpdateInterval = (diffInSeconds: number): number => {
+  if (diffInSeconds < TIME_THRESHOLDS.MINUTE) {
+    return TIME_INTERVALS.SECOND;
+  } else if (diffInSeconds < TIME_THRESHOLDS.HOUR) {
+    return TIME_INTERVALS.MINUTE;
+  } else {
+    return TIME_INTERVALS.HOUR;
+  }
 };
 
 const SwapInfoTransactionListTable = ({
@@ -78,42 +98,40 @@ const SwapInfoTransactionListTable = ({
 
   // Detect and highlight new transactions
   React.useEffect(() => {
-    if (swapHistory) {
-      // Skip animations during initial load or token pair changes
-      if (skipAnimationRef.current) {
-        prevSwapHistoryRef.current = swapHistory;
-        skipAnimationRef.current = false;
-        return;
-      }
+    if (!swapHistory?.length) return;
 
-      // Find new transactions by comparing them to the list of previous transactions
-      const prevTxHashes = new Set(prevSwapHistoryRef.current.map(item => item.txHash));
-      const newTransactions = new Set<string>();
-
-      swapHistory.forEach(item => {
-        if (!prevTxHashes.has(item.txHash)) {
-          newTransactions.add(item.txHash);
-        }
-      });
-
-      if (newTransactions.size > 0) {
-        setNewTransactions(newTransactions);
-        setTimeout(() => {
-          setNewTransactions(new Set());
-        }, HIGHLIGHT_DURATION);
-      }
-
+    // Skip animations during initial load or token pair changes
+    if (skipAnimationRef.current) {
       prevSwapHistoryRef.current = swapHistory;
+      skipAnimationRef.current = false;
+      return;
     }
+
+    // Use hashmaps to improve search performance
+    const prevTxHashMap = new Map(prevSwapHistoryRef.current.map(item => [item.txHash, true]));
+
+    // Filter new transactions
+    const newTxHashes = swapHistory.filter(item => !prevTxHashMap.has(item.txHash)).map(item => item.txHash);
+
+    if (newTxHashes.length > 0) {
+      const newTxSet = new Set(newTxHashes);
+      setNewTransactions(newTxSet);
+
+      const timerId = setTimeout(() => {
+        setNewTransactions(new Set());
+      }, HIGHLIGHT_DURATION);
+
+      // Clean up timers when unmounting components
+      return () => clearTimeout(timerId);
+    }
+
+    prevSwapHistoryRef.current = swapHistory;
   }, [swapHistory]);
 
-  const getTableHeaders = React.useMemo(() => {
-    if (breakpoint === DEVICE_TYPE.MOBILE) {
-      return MOBILE_TABLE_HEAD;
-    }
-
-    return TABLE_HEAD;
-  }, [breakpoint]);
+  const getTableHeaders = React.useMemo(
+    () => (breakpoint === DEVICE_TYPE.MOBILE ? MOBILE_TABLE_HEAD : TABLE_HEAD),
+    [breakpoint],
+  );
 
   return (
     <>
@@ -132,10 +150,10 @@ const SwapInfoTransactionListTable = ({
       </TransactionListTableHeader>
 
       <TransactionListTableList>
-        {swapHistory.slice(0, 10).map((item: SwapHistoryItem, index: number) => {
+        {swapHistory.slice(0, MAX_DISPLAY_TRANSACTIONS).map((item: SwapHistoryItem) => {
           return (
             <TransactionListTableRow
-              key={`transaction-list-table-list-${index}`}
+              key={`transaction-list-${item.txHash}`}
               data={item}
               breakpoint={breakpoint}
               isNewTransaction={newTransactions.has(item.txHash)}
@@ -155,18 +173,33 @@ const TransactionListTableRow = ({ breakpoint, data, isNewTransaction }: Transac
   const isMobile = breakpoint === DEVICE_TYPE.MOBILE;
   const txDate = new Date(data.time);
   const [timeDisplay, setTimeDisplay] = React.useState("");
+  const intervalIdRef = React.useRef<NodeJS.Timeout | null>(null);
 
   React.useEffect(() => {
+    const isMounted = true;
+
     const updateTimeDisplay = () => {
-      const diffInSeconds = getTimeDiffInSeconds(txDate);
+      if (!isMounted) return;
+
+      const diffInSeconds = getTimeDiffInSeconds(Date.now(), txDate);
       setTimeDisplay(formatDisplayTime(diffInSeconds));
+
+      const nextUpdateInterval = getNextUpdateInterval(diffInSeconds);
+
+      if (intervalIdRef.current) {
+        clearTimeout(intervalIdRef.current);
+      }
+
+      intervalIdRef.current = setTimeout(updateTimeDisplay, nextUpdateInterval);
     };
 
     updateTimeDisplay();
 
-    const intervalId = setInterval(updateTimeDisplay, TIME_UPDATE_INTERVAL);
-
-    return () => clearInterval(intervalId);
+    return () => {
+      if (intervalIdRef.current) {
+        clearTimeout(intervalIdRef.current);
+      }
+    };
   }, [txDate, data.time]);
 
   const formatSwapAmount = React.useCallback((amount: string) => {
