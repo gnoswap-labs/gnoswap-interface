@@ -130,6 +130,7 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({ slippage, changeSli
                 ref={inputRef}
                 autoComplete={"off"}
                 spellCheck={"false"}
+                inputMode={"decimal"}
               />
               <span>%</span>
             </div>

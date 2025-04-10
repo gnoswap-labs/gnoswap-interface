@@ -164,6 +164,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
             placeholder="0"
             autoComplete={"off"}
             spellCheck={"false"}
+            inputMode={"decimal"}
           />
           <div className="token-selector">
             <SelectPairButton token={tokenA} changeToken={changeTokenA} />
@@ -202,6 +203,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
             placeholder="0"
             autoComplete={"off"}
             spellCheck={"false"}
+            inputMode={"decimal"}
           />
           <div className="token-selector">
             <SelectPairButton token={tokenB} changeToken={changeTokenB} />
