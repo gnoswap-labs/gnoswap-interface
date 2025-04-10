@@ -6,6 +6,13 @@ import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import SwapCardFeeInfo from "./SwapCardFeeInfo";
 
+// Mock @adena-wallet/sdk
+jest.mock("@adena-wallet/sdk", () => ({
+  makeMsgCallMessage: jest.fn(),
+  makeMsgSendMessage: jest.fn(),
+  TransactionBuilder: jest.fn(),
+}));
+
 const swapSummaryInfo: SwapSummaryInfo = {
   tokenA: {
     type: "GRC20",
@@ -47,6 +54,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
   swapRate1USD: 0,
   swapRateAction: SwapRateAction.ATOB,
   protocolFee: "",
+  routerFee: 0.15,
 };
 
 const swapTokenInfo: SwapTokenInfo = {
