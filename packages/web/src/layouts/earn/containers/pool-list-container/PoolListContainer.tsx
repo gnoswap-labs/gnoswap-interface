@@ -34,26 +34,41 @@ const PoolListContainer: React.FC = () => {
 
   const themeKey = useAtomValue(ThemeState.themeKey);
 
+  /**
+   * Checks if either token has missing price information
+   */
   const anyEmptyPrice = useCallback(
     (tokenA: TokenModel, tokenB: TokenModel) =>
       !tokenPrices?.[checkGnotPath(tokenA.priceID)]?.usd || !tokenPrices?.[checkGnotPath(tokenB.priceID)]?.usd,
     [tokenPrices],
   );
 
+  /**
+   * Fetch pool data on component mount
+   */
   useEffect(() => {
     updatePools();
   }, []);
 
+  /**
+   * Hide search icon when clicking outside and no keyword is entered
+   */
   useEffect(() => {
     if (!keyword && isClickOutside) {
       setSearchIcon(false);
     }
   }, [isClickOutside, keyword]);
 
+  /**
+   * Reset page to first page when filter criteria change
+   */
   useEffect(() => {
     setPage(0);
   }, [keyword, poolType]);
 
+  /**
+   * Format pool value with proper formatting or fallback to "-" when price data is missing
+   */
   const formatPoolValue = useCallback(
     (value: string | number | undefined, tokenA: TokenModel, tokenB: TokenModel) => {
       if (anyEmptyPrice(tokenA, tokenB)) return "-";
@@ -66,6 +81,9 @@ const PoolListContainer: React.FC = () => {
     [anyEmptyPrice],
   );
 
+  /**
+   * Check if pool info matches the search keyword
+   */
   const matchesKeyword = useCallback((info: PoolListInfo, keyword: string) => {
     if (!keyword) return true;
 
@@ -78,6 +96,9 @@ const PoolListContainer: React.FC = () => {
     );
   }, []);
 
+  /**
+   * Transform string values to numbers for sorting
+   */
   const sortValueTransform = (value: string) => {
     if (!value || value === "-") return -Infinity;
 
@@ -87,6 +108,9 @@ const PoolListContainer: React.FC = () => {
     return isNaN(number) ? -Infinity : number;
   };
 
+  /**
+   * Create sort function based on column and direction
+   */
   const getSortFunction = useCallback((key: TABLE_HEAD, direction: "asc" | "desc") => {
     return (a: PoolListInfo, b: PoolListInfo) => {
       const multiplier = direction === "asc" ? 1 : -1;
@@ -113,12 +137,18 @@ const PoolListContainer: React.FC = () => {
     };
   }, []);
 
+  /**
+   * Filter pools based on pool type
+   */
   const filteredPoolType = useCallback((poolType: POOL_TYPE, incentivized: boolean) => {
     if (poolType === POOL_TYPE.INCENTIVIZED) return incentivized === true;
     if (poolType === POOL_TYPE.NONE_INCENTIVIZED) return incentivized === false;
     return true;
   }, []);
 
+  /**
+   * Filter and format pool data based on search keyword and pool type
+   */
   const filteredPools = useMemo(() => {
     return poolListInfos
       .filter(info => matchesKeyword(info, keyword))
@@ -133,6 +163,9 @@ const PoolListContainer: React.FC = () => {
       }));
   }, [poolListInfos, keyword, poolType, anyEmptyPrice, matchesKeyword, filteredPoolType, formatPoolValue]);
 
+  /**
+   * Sort filtered pools based on current sort option
+   */
   const sortedPools = useMemo(() => {
     const temp = [...filteredPools];
     if (!sortOption) {
@@ -143,17 +176,31 @@ const PoolListContainer: React.FC = () => {
     return temp;
   }, [filteredPools, sortOption, getSortFunction]);
 
+  /**
+   * Calculate total number of pages
+   */
   const totalPage = useMemo(() => {
     return Math.ceil(sortedPools.length / EARN_POOL_LIST_SIZE);
   }, [sortedPools.length]);
 
+  /**
+   * Navigate to pool detail page
+   */
   const routeItem = (id: string) => {
     router.movePageWithPoolPath("POOL", id);
   };
+
+  /**
+   * Toggle search icon visibility
+   */
   const onTogleSearch = () => {
     setSearchIcon(prev => !prev);
     setIsInside(true);
   };
+
+  /**
+   * Change current pool type filter
+   */
   const changePoolType = useCallback((newType: string) => {
     switch (newType) {
       case POOL_TYPE.ALL:
@@ -170,15 +217,24 @@ const PoolListContainer: React.FC = () => {
     }
   }, []);
 
-  const search = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  /**
+   * Update search keyword from input
+   */
+  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
   }, []);
 
+  /**
+   * Navigate to specific page
+   */
   const movePage = useCallback((newPage: number) => {
     setPage(newPage);
   }, []);
 
-  const sort = useCallback(
+  /**
+   * Update sort option when column header is clicked
+   */
+  const handleSort = useCallback(
     (item: TABLE_HEAD) => {
       const key = item;
       const direction = sortOption?.key !== item ? "desc" : sortOption.direction === "asc" ? "desc" : "asc";
@@ -191,6 +247,9 @@ const PoolListContainer: React.FC = () => {
     [sortOption],
   );
 
+  /**
+   * Check if column supports sorting
+   */
   const isSortOption = useCallback((head: TABLE_HEAD) => {
     const disableItems = ["Earn:poolList.col.incentive", "Earn:poolList.col.liquidityPlot"];
     return !disableItems.includes(head);
@@ -202,13 +261,13 @@ const PoolListContainer: React.FC = () => {
       isFetched={!isLoadingPools}
       poolType={poolType}
       changePoolType={changePoolType}
-      search={search}
+      search={handleSearch}
       keyword={keyword}
       currentPage={page}
       totalPage={totalPage}
       movePage={movePage}
       sortOption={sortOption}
-      sort={sort}
+      sort={handleSort}
       isSortOption={isSortOption}
       breakpoint={breakpoint}
       routeItem={routeItem}
