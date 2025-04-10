@@ -115,6 +115,7 @@ const StartingPrice: React.FC<StartingPriceProps> = ({
         placeholder={t("AddPosition:createPool.placeholder")}
         autoComplete={"off"}
         spellCheck={"false"}
+        inputMode={"decimal"}
       />
     </StartingPriceWrapper>
   );

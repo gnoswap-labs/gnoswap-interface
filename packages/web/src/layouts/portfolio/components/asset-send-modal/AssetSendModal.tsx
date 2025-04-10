@@ -220,6 +220,7 @@ const AssetSendModal: React.FC<Props> = ({
                     placeholder="0"
                     autoComplete={"off"}
                     spellCheck={"false"}
+                    inputMode={"decimal"}
                   />
                   <div className="token">
                     <SelectPairButton token={withdrawInfo ?? null} changeToken={changeToken} callback={callback} />
