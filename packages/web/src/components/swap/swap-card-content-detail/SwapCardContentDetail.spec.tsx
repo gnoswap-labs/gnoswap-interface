@@ -1,6 +1,8 @@
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 
+import { SwapRateAction } from "@hooks/swap/data/use-swap-handler";
+
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { TokenModel } from "@models/token/token-model";
@@ -59,7 +61,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
   },
   gasFeeUSD: 0.1,
   protocolFee: "0.15",
-  swapRateAction: "ATOB",
+  swapRateAction: SwapRateAction.ATOB,
 };
 
 const swapTokenInfo: SwapTokenInfo = {
@@ -85,7 +87,7 @@ describe("SwapCardContentDetail Component", () => {
       swapSummaryInfo,
       swapRouteInfos: [],
       swapTokenInfo: swapTokenInfo,
-      setSwapRateAction: (type: "ATOB" | "BTOA") => {
+      setSwapRateAction: (type: SwapRateAction) => {
         console.log(type);
       },
       isLoading: false,

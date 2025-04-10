@@ -1,4 +1,5 @@
 import { SwapDirectionType } from "@common/values";
+import { SwapRateAction } from "@hooks/swap/data/use-swap-handler";
 import { AmountModel } from "@models/common/amount-model";
 import { TokenModel } from "@models/token/token-model";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
@@ -22,7 +23,7 @@ export interface SwapSummaryInfo {
 
   gasFeeUSD: number;
 
-  swapRateAction: "ATOB" | "BTOA";
+  swapRateAction: SwapRateAction;
 
   swapRate1USD: number;
 
