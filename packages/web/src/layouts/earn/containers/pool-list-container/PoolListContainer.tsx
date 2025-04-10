@@ -14,7 +14,7 @@ import { checkGnotPath } from "@utils/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
 import PoolList from "../../components/pool-list/PoolList";
-import { PoolSortOption, POOL_TYPE, TABLE_HEAD } from "../../components/pool-list/types";
+import { PoolSortOption, POOL_TYPE, TABLE_HEAD, SortDirection } from "../../components/pool-list/types";
 
 const PoolListContainer: React.FC = () => {
   const [poolType, setPoolType] = useState<POOL_TYPE>(POOL_TYPE.ALL);
@@ -22,7 +22,7 @@ const PoolListContainer: React.FC = () => {
   const [keyword, setKeyword] = useState("");
   const [sortOption, setTokenSortOption] = useState<PoolSortOption>({
     key: TABLE_HEAD.TVL,
-    direction: "desc",
+    direction: SortDirection.DESC,
   });
   const [searchIcon, setSearchIcon] = useState(false);
   const [breakpoint] = useAtom(CommonState.breakpoint);
@@ -99,7 +99,7 @@ const PoolListContainer: React.FC = () => {
   /**
    * Transform string values to numbers for sorting
    */
-  const sortValueTransform = (value: string) => {
+  const sortValueTransform = (value: string): number => {
     if (!value || value === "-") return -Infinity;
 
     const numericValue = value.replace(/[$,]/g, "");
@@ -111,18 +111,13 @@ const PoolListContainer: React.FC = () => {
   /**
    * Create sort function based on column and direction
    */
-  const getSortFunction = useCallback((key: TABLE_HEAD, direction: "asc" | "desc") => {
+  const getSortFunction = useCallback((key: TABLE_HEAD, direction: SortDirection) => {
     return (a: PoolListInfo, b: PoolListInfo) => {
-      const multiplier = direction === "asc" ? 1 : -1;
+      const multiplier = direction === SortDirection.ASC ? 1 : -1;
 
       switch (key) {
         case TABLE_HEAD.POOL_NAME:
-          return (
-            multiplier *
-            (direction === "asc"
-              ? b.tokenA.name.localeCompare(a.tokenA.name)
-              : a.tokenA.name.localeCompare(b.tokenA.name))
-          );
+          return multiplier * a.tokenA.name.localeCompare(b.tokenA.name);
         case TABLE_HEAD.TVL:
           return multiplier * (sortValueTransform(a.tvl) - sortValueTransform(b.tvl));
         case TABLE_HEAD.VOLUME:
@@ -141,9 +136,14 @@ const PoolListContainer: React.FC = () => {
    * Filter pools based on pool type
    */
   const filteredPoolType = useCallback((poolType: POOL_TYPE, incentivized: boolean) => {
-    if (poolType === POOL_TYPE.INCENTIVIZED) return incentivized === true;
-    if (poolType === POOL_TYPE.NONE_INCENTIVIZED) return incentivized === false;
-    return true;
+    switch (poolType) {
+      case POOL_TYPE.INCENTIVIZED:
+        return incentivized;
+      case POOL_TYPE.NONE_INCENTIVIZED:
+        return !incentivized;
+      default:
+        return true;
+    }
   }, []);
 
   /**
@@ -235,7 +235,12 @@ const PoolListContainer: React.FC = () => {
   const handleSort = useCallback(
     (item: TABLE_HEAD) => {
       const key = item;
-      const direction = sortOption?.key !== item ? "desc" : sortOption.direction === "asc" ? "desc" : "asc";
+      const direction =
+        sortOption?.key !== item
+          ? SortDirection.DESC
+          : sortOption.direction === SortDirection.ASC
+          ? SortDirection.DESC
+          : SortDirection.ASC;
 
       setTokenSortOption({
         key,
