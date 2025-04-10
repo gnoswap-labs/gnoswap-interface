@@ -7,7 +7,7 @@ import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 import IconStrokeArrowUp from "@components/common/icons/IconStrokeArrowUp";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { PriceImpactStatus } from "@hooks/swap/data/use-swap-handler";
+import { PriceImpactStatus, SwapRateAction } from "@hooks/swap/data/use-swap-handler";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
@@ -24,7 +24,7 @@ export interface SwapCardContentDetailProps {
   swapSummaryInfo: SwapSummaryInfo;
   swapRouteInfos: SwapRouteInfo[];
   isLoading: boolean;
-  setSwapRateAction: (type: "ATOB" | "BTOA") => void;
+  setSwapRateAction: (type: SwapRateAction) => void;
   priceImpactStatus: PriceImpactStatus;
   swapTokenInfo: SwapTokenInfo;
 }
@@ -48,7 +48,7 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
 
   const swapRateDescription = useMemo(() => {
     const { tokenA, tokenB, swapRate, swapRateAction } = swapSummaryInfo;
-    if (swapRateAction === "ATOB") {
+    if (swapRateAction === SwapRateAction.ATOB) {
       return (
         <>
           1 {tokenA.symbol} =&nbsp;
@@ -70,7 +70,7 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
   const unitSwapPrice = useMemo(() => {
     const { swapRateAction, swapRate } = swapSummaryInfo;
     const { tokenAUSD, tokenBUSD, tokenAAmount, tokenBAmount } = swapTokenInfo;
-    if (swapRateAction === "ATOB") {
+    if (swapRateAction === SwapRateAction.ATOB) {
       if (!tokenBUSD || tokenBUSD === 0) return "-";
       return convertToKMB(floorNumber((tokenBUSD / Number(tokenBAmount)) * swapRate).toFixed(3), {
         isIgnoreKFormat: true,
@@ -96,7 +96,9 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
   }, [openedDetailInfo]);
 
   const handleSwapRate = useCallback(() => {
-    setSwapRateAction(swapSummaryInfo.swapRateAction === "ATOB" ? "BTOA" : "ATOB");
+    setSwapRateAction(
+      swapSummaryInfo.swapRateAction === SwapRateAction.ATOB ? SwapRateAction.BTOA : SwapRateAction.ATOB,
+    );
   }, [swapSummaryInfo.swapRateAction]);
 
   return (

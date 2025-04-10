@@ -1,4 +1,4 @@
-import { PriceImpactStatus } from "@hooks/swap/data/use-swap-handler";
+import { PriceImpactStatus, SwapRateAction } from "@hooks/swap/data/use-swap-handler";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
@@ -45,7 +45,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
   },
   gasFeeUSD: 0.1,
   swapRate1USD: 0,
-  swapRateAction: "ATOB",
+  swapRateAction: SwapRateAction.ATOB,
   protocolFee: "",
 };
 

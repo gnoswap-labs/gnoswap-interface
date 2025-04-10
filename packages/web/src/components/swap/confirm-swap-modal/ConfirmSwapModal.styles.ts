@@ -194,6 +194,7 @@ export const ConfirmModal = styled.div`
           width: 100%;
           gap: 4px;
           .gnos-price {
+            cursor: pointer;
             display: flex;
             ${fonts.body12};
             ${media.mobile} {
