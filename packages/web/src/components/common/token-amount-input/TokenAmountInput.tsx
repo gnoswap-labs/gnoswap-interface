@@ -92,6 +92,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
           onKeyDown={preventArrowKeys}
           autoComplete={"off"}
           spellCheck={"false"}
+          inputMode={"decimal"}
         />
         <div className="token">
           <SelectPairIncentivizeButton

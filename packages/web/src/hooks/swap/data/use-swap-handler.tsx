@@ -55,6 +55,11 @@ type SwapButtonStateType =
 
 export type PriceImpactStatus = "LOW" | "HIGH" | "MEDIUM" | "POSITIVE" | "NONE";
 
+export enum SwapRateAction {
+  ATOB = "ATOB",
+  BTOA = "BTOA",
+}
+
 function estimatePriceImpactByRoutes(
   tokenInPath: string,
   routes: EstimatedRoute[],
@@ -161,7 +166,7 @@ export const useSwapHandler = () => {
   const { t } = useTranslation();
   const { enqueueEvent } = useTransactionEventStore();
 
-  const [swapRateAction, setSwapRateAction] = useState<"ATOB" | "BTOA">("BTOA");
+  const [swapRateAction, setSwapRateAction] = useState<SwapRateAction>(SwapRateAction.BTOA);
   const [tokenAAmount = "", setTokenAAmount] = useState(defaultTokenAAmount ?? undefined);
 
   const estimateFlagRef = useRef(0);
@@ -184,6 +189,7 @@ export const useSwapHandler = () => {
   const { slippage, changeSlippage } = useSlippage();
   const { openModal } = useConnectWalletModal();
   const { data: swapFee } = useGetSwapFee();
+
   const {
     isSameToken,
     estimatedRoutes,
@@ -489,11 +495,12 @@ export const useSwapHandler = () => {
       return null;
     }
     const swapRate1USD =
-      swapRateAction === "ATOB"
+      swapRateAction === SwapRateAction.ATOB
         ? getTokenUSDPrice(checkGnotPath(tokenA.path), 1) || 1
         : getTokenUSDPrice(checkGnotPath(tokenB.path), 1) || 1;
 
     const protocolFee = `${(swapFee || 0) / 100}%`;
+    const routerFee = (swapFee || 0) / 100;
 
     if (isSameToken) {
       return {
@@ -515,6 +522,7 @@ export const useSwapHandler = () => {
         swapRateAction,
         swapRate1USD,
         protocolFee,
+        routerFee,
       };
     }
 
@@ -522,7 +530,7 @@ export const useSwapHandler = () => {
     const tokenBUSDValue = tokenPrices[checkGnotPath(tokenB.path)]?.usd || 1;
 
     const swapRate =
-      swapRateAction === "ATOB"
+      swapRateAction === SwapRateAction.ATOB
         ? Number(tokenBAmount) / Number(tokenAAmount)
         : Number(tokenAAmount) / Number(tokenBAmount);
     const swapRateUSD =
@@ -550,6 +558,7 @@ export const useSwapHandler = () => {
       swapRate1USD,
       direction: type,
       protocolFee,
+      routerFee,
     };
   }, [
     tokenA,
@@ -601,6 +610,7 @@ export const useSwapHandler = () => {
       <ConfirmSwapModal
         submitted={true}
         swapResult={swapResult}
+        setSwapRateAction={setSwapRateAction}
         swap={executeSwap}
         close={closeModal}
         isWrapOrUnwrap={swapButtonState === "WRAP" || swapButtonState === "UNWRAP"}
@@ -621,7 +631,17 @@ export const useSwapHandler = () => {
         })()}
       />,
     );
-  }, [submitted, swapResult, swapSummaryInfo, swapTokenInfo, swapButtonState, priceImpactStatus, isLoading, t]);
+  }, [
+    submitted,
+    swapResult,
+    swapSummaryInfo,
+    swapTokenInfo,
+    swapButtonState,
+    priceImpactStatus,
+    isLoading,
+    setSwapRateAction,
+    t,
+  ]);
 
   const openConnectWallet = useCallback(() => {
     openModal();

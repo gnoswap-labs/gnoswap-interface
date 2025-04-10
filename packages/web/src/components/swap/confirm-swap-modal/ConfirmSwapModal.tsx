@@ -1,10 +1,11 @@
 import React, { useCallback, useMemo } from "react";
+import BigNumber from "bignumber.js";
 import { useTranslation } from "react-i18next";
 import { useAtomValue } from "jotai";
 import { useTheme } from "@emotion/react";
 
 import { SwapState } from "@states/index";
-import { PriceImpactStatus } from "@hooks/swap/data/use-swap-handler";
+import { PriceImpactStatus, SwapRateAction } from "@hooks/swap/data/use-swap-handler";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
 import { swapDirectionToGuaranteedType } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
@@ -35,6 +36,7 @@ interface ConfirmSwapModalProps {
   isWrapOrUnwrap: boolean;
   priceImpactStatus: PriceImpactStatus;
 
+  setSwapRateAction: (type: SwapRateAction) => void;
   swap: (swapTokenInfo: SwapTokenInfo, estimatedAmount: string | null) => void;
   close: () => void;
 }
@@ -45,6 +47,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   swap,
   close,
   title,
+  setSwapRateAction,
   isWrapOrUnwrap,
   priceImpactStatus,
 }) => {
@@ -59,7 +62,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
 
     const { tokenA, tokenB, swapRate, swapRateAction } = swapSummaryInfo;
 
-    if (swapRateAction === "ATOB") {
+    if (swapRateAction === SwapRateAction.ATOB) {
       return (
         <>
           1&nbsp;{tokenA.symbol}&nbsp;=&nbsp;
@@ -77,6 +80,12 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
       </>
     );
   }, [swapSummaryInfo]);
+
+  const handleSwapRateDescription = useCallback(() => {
+    setSwapRateAction(
+      swapSummaryInfo?.swapRateAction === SwapRateAction.ATOB ? SwapRateAction.BTOA : SwapRateAction.ATOB,
+    );
+  }, [swapSummaryInfo?.swapRateAction]);
 
   const priceImpactStr = useMemo(() => {
     if (!swapSummaryInfo) return;
@@ -140,7 +149,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
 
     const { swapRateAction, swapRate } = swapSummaryInfo;
     const { tokenAUSD, tokenBUSD, tokenAAmount, tokenBAmount } = swapTokenInfo;
-    if (swapRateAction === "ATOB") {
+    if (swapRateAction === SwapRateAction.ATOB) {
       if (!tokenBUSD || tokenBUSD === 0) return "-";
       return `($${convertToKMB(floorNumber((tokenBUSD / Number(tokenBAmount)) * swapRate).toFixed(3), {
         isIgnoreKFormat: true,
@@ -152,6 +161,49 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
       })})`;
     }
   }, [swapSummaryInfo, swapTokenInfo]);
+
+  const routerFeeStr = useMemo(() => {
+    if (!swapSummaryInfo || !swapTokenInfo) return "-";
+
+    if (swapSummaryInfo.routerFee == null) {
+      return swapSummaryInfo.protocolFee;
+    }
+
+    const { direction } = swapTokenInfo;
+    const isExactIn = direction === "EXACT_IN";
+
+    const tokenAmount = isExactIn ? swapTokenInfo.tokenAAmount : swapTokenInfo.tokenBAmount;
+    const tokenUSD = isExactIn ? swapTokenInfo.tokenAUSD : swapTokenInfo.tokenBUSD;
+    const tokenSymbol = isExactIn ? swapTokenInfo.tokenA?.symbol : swapTokenInfo.tokenB?.symbol;
+    const tokenDecimals = isExactIn ? swapTokenInfo.tokenADecimals : swapTokenInfo.tokenBDecimals;
+
+    if (!tokenAmount) {
+      return swapSummaryInfo.protocolFee;
+    }
+
+    const feeRate = swapSummaryInfo.routerFee / 100;
+
+    if (tokenUSD != null) {
+      const feeAmountUSD = BigNumber(tokenUSD).multipliedBy(feeRate).toNumber();
+      return feeAmountUSD < 0.01 ? "<$0.01" : `$${toNumberFormat(feeAmountUSD, 2)}`;
+    }
+
+    const feeAmount = BigNumber(tokenAmount).multipliedBy(feeRate).toNumber();
+    const decimals = tokenDecimals || 6;
+    return `${toNumberFormat(feeAmount, decimals)} ${tokenSymbol || ""}`;
+  }, [
+    swapSummaryInfo?.routerFee,
+    swapSummaryInfo?.protocolFee,
+    swapTokenInfo?.direction,
+    swapTokenInfo?.tokenAAmount,
+    swapTokenInfo?.tokenBAmount,
+    swapTokenInfo?.tokenAUSD,
+    swapTokenInfo?.tokenBUSD,
+    swapTokenInfo?.tokenA?.symbol,
+    swapTokenInfo?.tokenB?.symbol,
+    swapTokenInfo?.tokenADecimals,
+    swapTokenInfo?.tokenBDecimals,
+  ]);
 
   const handleSwap = useCallback(() => {
     if (!swapTokenInfo) return;
@@ -231,7 +283,9 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
           </div>
           <div className="swap-info">
             <div className="coin-info">
-              <span className="gnos-price">{swapRateDescription}</span>
+              <button className="gnos-price" onClick={handleSwapRateDescription}>
+                {swapRateDescription}
+              </button>
               <span className="exchange-price">{unitSwapPrice}</span>
             </div>
           </div>
@@ -273,7 +327,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                         <IconInfo />
                       </Tooltip>
                     </div>
-                    <span className="white-text">{swapSummaryInfo?.protocolFee}</span>
+                    <span className="white-text">{routerFeeStr}</span>
                   </div>
                 </div>
               </>

@@ -9,7 +9,7 @@ import IconSettings from "@components/common/icons/IconSettings";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import SwapCardContentDetail from "@components/swap/swap-card-content-detail/SwapCardContentDetail";
-import { PriceImpactStatus } from "@hooks/swap/data/use-swap-handler";
+import { PriceImpactStatus, SwapRateAction } from "@hooks/swap/data/use-swap-handler";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
@@ -44,7 +44,7 @@ export interface TokenSwapProps {
   changeTokenBAmount: (value: string, none?: boolean) => void;
   switchSwapDirection: () => void;
   switchNetwork: () => void;
-  setSwapRateAction: (type: "ATOB" | "BTOA") => void;
+  setSwapRateAction: (type: SwapRateAction) => void;
   priceImpactStatus: PriceImpactStatus;
 }
 
@@ -176,6 +176,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               placeholder="0"
               autoComplete={"off"}
               spellCheck={"false"}
+              inputMode={"decimal"}
             />
             <div className="token">
               <SelectPairButton token={tokenA} changeToken={changeTokenA} />
@@ -208,6 +209,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               placeholder="0"
               autoComplete={"off"}
               spellCheck={"false"}
+              inputMode={"decimal"}
             />
             <div className="token">
               <SelectPairButton token={tokenB} changeToken={changeTokenB} />

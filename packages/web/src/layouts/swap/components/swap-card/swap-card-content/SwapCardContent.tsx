@@ -8,7 +8,7 @@ import { IconTriangleWarningOutlined } from "@components/common/icons/IconTriang
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import SwapCardContentDetail from "@components/swap/swap-card-content-detail/SwapCardContentDetail";
 import { useTheme } from "@emotion/react";
-import { PriceImpactStatus } from "@hooks/swap/data/use-swap-handler";
+import { PriceImpactStatus, SwapRateAction } from "@hooks/swap/data/use-swap-handler";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
@@ -36,7 +36,7 @@ interface ContentProps {
   resetEstimatedLiquidity: () => void;
   connectedWallet: boolean;
   isLoading: boolean;
-  setSwapRateAction: (type: "ATOB" | "BTOA") => void;
+  setSwapRateAction: (type: SwapRateAction) => void;
   isSwitchNetwork: boolean;
   priceImpactStatus: PriceImpactStatus;
   isSameToken: boolean;
@@ -164,6 +164,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
             placeholder="0"
             autoComplete={"off"}
             spellCheck={"false"}
+            inputMode={"decimal"}
           />
           <div className="token-selector">
             <SelectPairButton token={tokenA} changeToken={changeTokenA} />
@@ -202,6 +203,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
             placeholder="0"
             autoComplete={"off"}
             spellCheck={"false"}
+            inputMode={"decimal"}
           />
           <div className="token-selector">
             <SelectPairButton token={tokenB} changeToken={changeTokenB} />

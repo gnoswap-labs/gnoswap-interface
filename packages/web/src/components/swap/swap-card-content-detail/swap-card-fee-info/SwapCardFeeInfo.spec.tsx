@@ -1,10 +1,17 @@
-import { PriceImpactStatus } from "@hooks/swap/data/use-swap-handler";
+import { PriceImpactStatus, SwapRateAction } from "@hooks/swap/data/use-swap-handler";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import SwapCardFeeInfo from "./SwapCardFeeInfo";
+
+// Mock @adena-wallet/sdk
+jest.mock("@adena-wallet/sdk", () => ({
+  makeMsgCallMessage: jest.fn(),
+  makeMsgSendMessage: jest.fn(),
+  TransactionBuilder: jest.fn(),
+}));
 
 const swapSummaryInfo: SwapSummaryInfo = {
   tokenA: {
@@ -45,8 +52,9 @@ const swapSummaryInfo: SwapSummaryInfo = {
   },
   gasFeeUSD: 0.1,
   swapRate1USD: 0,
-  swapRateAction: "ATOB",
+  swapRateAction: SwapRateAction.ATOB,
   protocolFee: "",
+  routerFee: 0.15,
 };
 
 const swapTokenInfo: SwapTokenInfo = {
