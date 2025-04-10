@@ -55,6 +55,11 @@ type SwapButtonStateType =
 
 export type PriceImpactStatus = "LOW" | "HIGH" | "MEDIUM" | "POSITIVE" | "NONE";
 
+export enum SwapRateAction {
+  ATOB = "ATOB",
+  BTOA = "BTOA",
+}
+
 function estimatePriceImpactByRoutes(
   tokenInPath: string,
   routes: EstimatedRoute[],
@@ -161,7 +166,7 @@ export const useSwapHandler = () => {
   const { t } = useTranslation();
   const { enqueueEvent } = useTransactionEventStore();
 
-  const [swapRateAction, setSwapRateAction] = useState<"ATOB" | "BTOA">("BTOA");
+  const [swapRateAction, setSwapRateAction] = useState<SwapRateAction>(SwapRateAction.BTOA);
   const [tokenAAmount = "", setTokenAAmount] = useState(defaultTokenAAmount ?? undefined);
 
   const estimateFlagRef = useRef(0);
@@ -489,7 +494,7 @@ export const useSwapHandler = () => {
       return null;
     }
     const swapRate1USD =
-      swapRateAction === "ATOB"
+      swapRateAction === SwapRateAction.ATOB
         ? getTokenUSDPrice(checkGnotPath(tokenA.path), 1) || 1
         : getTokenUSDPrice(checkGnotPath(tokenB.path), 1) || 1;
 
@@ -522,7 +527,7 @@ export const useSwapHandler = () => {
     const tokenBUSDValue = tokenPrices[checkGnotPath(tokenB.path)]?.usd || 1;
 
     const swapRate =
-      swapRateAction === "ATOB"
+      swapRateAction === SwapRateAction.ATOB
         ? Number(tokenBAmount) / Number(tokenAAmount)
         : Number(tokenAAmount) / Number(tokenBAmount);
     const swapRateUSD =
@@ -601,6 +606,7 @@ export const useSwapHandler = () => {
       <ConfirmSwapModal
         submitted={true}
         swapResult={swapResult}
+        setSwapRateAction={setSwapRateAction}
         swap={executeSwap}
         close={closeModal}
         isWrapOrUnwrap={swapButtonState === "WRAP" || swapButtonState === "UNWRAP"}
@@ -621,7 +627,17 @@ export const useSwapHandler = () => {
         })()}
       />,
     );
-  }, [submitted, swapResult, swapSummaryInfo, swapTokenInfo, swapButtonState, priceImpactStatus, isLoading, t]);
+  }, [
+    submitted,
+    swapResult,
+    swapSummaryInfo,
+    swapTokenInfo,
+    swapButtonState,
+    priceImpactStatus,
+    isLoading,
+    setSwapRateAction,
+    t,
+  ]);
 
   const openConnectWallet = useCallback(() => {
     openModal();

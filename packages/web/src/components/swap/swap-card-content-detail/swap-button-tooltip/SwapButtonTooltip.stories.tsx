@@ -1,4 +1,5 @@
 import { css } from "@emotion/react";
+import { SwapRateAction } from "@hooks/swap/data/use-swap-handler";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 import SwapButtonTooltip from "./SwapButtonTooltip";
@@ -41,7 +42,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
     currency: "GNOT",
   },
   gasFeeUSD: 0.1,
-  swapRateAction: "ATOB",
+  swapRateAction: SwapRateAction.ATOB,
   swapRate1USD: 1,
   protocolFee: "0%",
 };

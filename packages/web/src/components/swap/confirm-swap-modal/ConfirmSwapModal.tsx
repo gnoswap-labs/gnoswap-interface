@@ -4,7 +4,7 @@ import { useAtomValue } from "jotai";
 import { useTheme } from "@emotion/react";
 
 import { SwapState } from "@states/index";
-import { PriceImpactStatus } from "@hooks/swap/data/use-swap-handler";
+import { PriceImpactStatus, SwapRateAction } from "@hooks/swap/data/use-swap-handler";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
 import { swapDirectionToGuaranteedType } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
@@ -35,6 +35,7 @@ interface ConfirmSwapModalProps {
   isWrapOrUnwrap: boolean;
   priceImpactStatus: PriceImpactStatus;
 
+  setSwapRateAction: (type: SwapRateAction) => void;
   swap: (swapTokenInfo: SwapTokenInfo, estimatedAmount: string | null) => void;
   close: () => void;
 }
@@ -45,6 +46,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   swap,
   close,
   title,
+  setSwapRateAction,
   isWrapOrUnwrap,
   priceImpactStatus,
 }) => {
@@ -59,7 +61,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
 
     const { tokenA, tokenB, swapRate, swapRateAction } = swapSummaryInfo;
 
-    if (swapRateAction === "ATOB") {
+    if (swapRateAction === SwapRateAction.ATOB) {
       return (
         <>
           1&nbsp;{tokenA.symbol}&nbsp;=&nbsp;
@@ -77,6 +79,12 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
       </>
     );
   }, [swapSummaryInfo]);
+
+  const handleSwapRateDescription = useCallback(() => {
+    setSwapRateAction(
+      swapSummaryInfo?.swapRateAction === SwapRateAction.ATOB ? SwapRateAction.BTOA : SwapRateAction.ATOB,
+    );
+  }, [swapSummaryInfo?.swapRateAction]);
 
   const priceImpactStr = useMemo(() => {
     if (!swapSummaryInfo) return;
@@ -140,7 +148,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
 
     const { swapRateAction, swapRate } = swapSummaryInfo;
     const { tokenAUSD, tokenBUSD, tokenAAmount, tokenBAmount } = swapTokenInfo;
-    if (swapRateAction === "ATOB") {
+    if (swapRateAction === SwapRateAction.ATOB) {
       if (!tokenBUSD || tokenBUSD === 0) return "-";
       return `($${convertToKMB(floorNumber((tokenBUSD / Number(tokenBAmount)) * swapRate).toFixed(3), {
         isIgnoreKFormat: true,
@@ -231,7 +239,9 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
           </div>
           <div className="swap-info">
             <div className="coin-info">
-              <span className="gnos-price">{swapRateDescription}</span>
+              <span className="gnos-price" onClick={handleSwapRateDescription}>
+                {swapRateDescription}
+              </span>
               <span className="exchange-price">{unitSwapPrice}</span>
             </div>
           </div>

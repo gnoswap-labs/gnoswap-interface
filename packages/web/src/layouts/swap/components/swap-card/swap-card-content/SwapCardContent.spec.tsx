@@ -1,4 +1,4 @@
-import { PriceImpactStatus } from "@hooks/swap/data/use-swap-handler";
+import { PriceImpactStatus, SwapRateAction } from "@hooks/swap/data/use-swap-handler";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { render } from "@testing-library/react";
@@ -62,7 +62,7 @@ describe("SwapCardContent Component", () => {
       switchSwapDirection: () => null,
       connectedWallet: false,
       isLoading: false,
-      setSwapRateAction: (type: "ATOB" | "BTOA") => {
+      setSwapRateAction: (type: SwapRateAction) => {
         console.log(type);
       },
       isSwitchNetwork: false,
