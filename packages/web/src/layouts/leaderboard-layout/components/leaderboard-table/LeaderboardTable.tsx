@@ -10,9 +10,11 @@ import LeaderboardTableRow from "../leaderboard-table-row/LeaderboardTableRow";
 import { useConnection } from "@hooks/common/use-connection";
 
 export default function LeaderboardTable({
+  myAddress,
   currentUserData,
   leaderboardEntries,
 }: {
+  myAddress: string | undefined;
   currentUserData?: LeaderboardUser;
   leaderboardEntries: LeaderboardUser[];
 }) {
@@ -28,10 +30,17 @@ export default function LeaderboardTable({
   return (
     <>
       {connected && currentUserData && (
-        <LeaderboardTableRow data={currentUserData} tdWidths={widths} isMobile={isMobile} isMe={true} />
+        <LeaderboardTableRow
+          myAddress={myAddress}
+          data={currentUserData}
+          tdWidths={widths}
+          isMobile={isMobile}
+          isMe={true}
+        />
       )}
       {leaderboardEntries.map(leader => (
         <LeaderboardTableRow
+          myAddress={myAddress}
           key={`${leader.rank}:${leader.accountAddress}`}
           data={leader}
           tdWidths={widths}

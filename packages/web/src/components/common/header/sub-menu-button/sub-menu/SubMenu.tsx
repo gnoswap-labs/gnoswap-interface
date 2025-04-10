@@ -18,10 +18,10 @@ import {
   SubMenuWrapper,
 } from "./SubMenu.styles";
 
-import { TABLET_HIDDEN_NAV_PATHS } from "../../Header";
 import Link from "next/link";
 import IconLeaderboard from "@components/common/icons/IconLeaderboard";
 import IconLaunchpad from "@components/common/icons/IconLaunchpad";
+import { TABLET_HIDDEN_NAV_PATHS } from "@constants/page.constant";
 
 interface HeaderSideMenuModalProps {
   isCollapseNav: boolean;

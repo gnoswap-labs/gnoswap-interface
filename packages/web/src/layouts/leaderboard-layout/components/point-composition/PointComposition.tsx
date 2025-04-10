@@ -1,6 +1,6 @@
 import React from "react";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { numberToInteger } from "@utils/string-utils";
+import { numberToFormat } from "@utils/string-utils";
 import { ContentWrapper, Flex, FontWeight500, FrontWeight, Label, Title, Wrapper } from "./PointComposition.styles";
 
 interface PointCompositionProps {
@@ -15,7 +15,7 @@ interface PointCompositionProps {
 
 const formatPoint = (point: string): string => {
   if (!point) return "-";
-  return numberToInteger(point);
+  return numberToFormat(point, { decimals: 1, forceDecimals: true, truncateDecimals: true });
 };
 
 const PointComposition = ({

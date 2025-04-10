@@ -41,13 +41,10 @@ const Pagination: React.FC<PaginationProps> = ({
     [boundaryCount, totalPage],
   );
 
-  const siblingsStart = Math.max(
-    Math.min(currentPage + 1 - siblingCount, totalPage - siblingCount * 2),
-    boundaryCount + 1,
-  );
+  const siblingsStart = Math.max(Math.min(currentPage - siblingCount, totalPage - siblingCount * 2), boundaryCount + 1);
 
   const siblingsEnd = Math.min(
-    Math.max(currentPage + siblingCount + 1, boundaryCount + siblingCount * 2),
+    Math.max(currentPage + siblingCount, boundaryCount + siblingCount * 2),
     endPages.length > 0 ? endPages[0] - 1 : totalPage - 1,
   );
 
@@ -65,9 +62,9 @@ const Pagination: React.FC<PaginationProps> = ({
     typeof item === "number"
       ? {
           key: index,
-          onClick: () => onPageChange(item - 1),
+          onClick: () => onPageChange(item),
           disabled,
-          selected: item - 1 === currentPage,
+          selected: item === currentPage,
           item,
         }
       : {
@@ -76,7 +73,7 @@ const Pagination: React.FC<PaginationProps> = ({
           disabled:
             disabled ||
             item.indexOf("ellipsis") > -1 ||
-            (item === "next" ? currentPage >= totalPage - 1 : currentPage - 1 < 0),
+            (item === "next" ? currentPage >= totalPage : currentPage <= 1),
           selected: false,
           item,
         },

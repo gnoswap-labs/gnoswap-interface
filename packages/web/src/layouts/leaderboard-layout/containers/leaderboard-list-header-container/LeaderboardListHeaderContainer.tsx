@@ -13,6 +13,7 @@ import IconSearch from "@components/common/icons/IconSearch";
 
 interface LeaderboardListHeaderContainerProps {
   breakpoint: DEVICE_TYPE;
+  page: number;
   keyword: string;
   isViewSearchIcon: boolean;
   searchRef: React.RefObject<HTMLDivElement>;
@@ -24,6 +25,7 @@ const OPTIMISTIC_UI_RESET_DELAY_MS = 1000;
 
 const LeaderboardListHeaderContainer = ({
   breakpoint,
+  page,
   keyword,
   isViewSearchIcon,
   searchRef,
@@ -128,7 +130,7 @@ const LeaderboardListHeaderContainer = ({
       </Box>
 
       <Box ref={rightRef}>
-        {breakpoint !== DEVICE_TYPE.MOBILE || !isViewSearchIcon ? <NextUpdate /> : null}
+        {breakpoint !== DEVICE_TYPE.MOBILE || !isViewSearchIcon ? <NextUpdate page={page} /> : null}
 
         {breakpoint === DEVICE_TYPE.WEB ? (
           <SearchInput width={300} value={keyword} onChange={onChangeKeyword} />
