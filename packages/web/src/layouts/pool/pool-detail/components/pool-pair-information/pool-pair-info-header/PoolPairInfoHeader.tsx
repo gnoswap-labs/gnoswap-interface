@@ -53,7 +53,9 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
         {incentivezedStr && (
           <div className="badge">
             {incentivezedStr}
-            {rewardTokenLogos.length > 0 && <OverlapTokenLogo size={18} tokens={rewardTokenLogos} />}
+            {rewardTokenLogos.length > 0 && (
+              <OverlapTokenLogo size={18} tokens={rewardTokenLogos} showRewardType={true} />
+            )}
           </div>
         )}
       </div>

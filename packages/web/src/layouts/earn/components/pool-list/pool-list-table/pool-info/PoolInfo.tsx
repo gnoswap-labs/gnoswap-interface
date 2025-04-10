@@ -7,9 +7,9 @@ import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { POOL_INFO, POOL_INFO_MOBILE, POOL_INFO_SMALL_TABLET, POOL_INFO_TABLET } from "@constants/skeleton.constant";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
-import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatRate } from "@utils/new-number-utils";
+import { RewardTokenModel } from "@models/position/reward-model";
 
 import PoolInfoLazyChart from "./pool-info-lazy-chart/PoolInfoLazyChart";
 
@@ -53,9 +53,9 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
       }
 
       return acc;
-    }, [] as TokenModel[]);
+    }, [] as RewardTokenModel[]);
 
-    return <OverlapTokenLogo tokens={tokenData} size={20} />;
+    return <OverlapTokenLogo tokens={tokenData} size={20} showRewardType={true} />;
   }, [getGnotPath, rewardTokens, incentivized, hasPoolStaking]);
 
   const cellWidths =
