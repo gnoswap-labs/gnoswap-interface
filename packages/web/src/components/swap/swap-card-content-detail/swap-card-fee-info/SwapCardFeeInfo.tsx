@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import BigNumber from "bignumber.js";
 import { useTranslation } from "react-i18next";
 
 import IconInfo from "@components/common/icons/IconInfo";
@@ -25,6 +26,8 @@ interface ContentProps {
   swapTokenInfo: SwapTokenInfo;
 }
 
+const SkeletonLoader = () => <span css={pulseSkeletonStyle({ h: 18, w: "100px!important" })} />;
+
 const SwapCardFeeInfo: React.FC<ContentProps> = ({ swapSummaryInfo, isLoading, priceImpactStatus, swapTokenInfo }) => {
   const { t } = useTranslation();
 
@@ -34,32 +37,28 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({ swapSummaryInfo, isLoading, p
     return `${priceImpact}%`;
   }, [swapSummaryInfo.priceImpact]);
 
-  const guaranteedTypeStr = useMemo(() => {
+  const { guaranteedTypeStr, guaranteedStr } = useMemo(() => {
     const swapDirection = swapSummaryInfo.swapDirection;
-    return t(swapDirectionToGuaranteedType(swapDirection));
-  }, [swapSummaryInfo.swapDirection, t]);
-
-  const guaranteedStr = useMemo(() => {
     const { amount, currency } = swapSummaryInfo.guaranteedAmount;
-    return `${toNumberFormat(amount || 0, 6)} ${currency}`;
-  }, [swapSummaryInfo.guaranteedAmount]);
 
-  const gasFeeStr = useMemo(() => {
+    return {
+      guaranteedTypeStr: t(swapDirectionToGuaranteedType(swapDirection)),
+      guaranteedStr: `${toNumberFormat(amount || 0, 6)} ${currency}`,
+    };
+  }, [swapSummaryInfo.swapDirection, swapSummaryInfo.guaranteedAmount, t]);
+
+  const { gasFeeStr, gasFeeUSDStr } = useMemo(() => {
     const { amount, currency } = swapSummaryInfo.gasFee;
-    return `${toNumberFormat(amount)} ${currency}`;
-  }, [swapSummaryInfo.gasFee]);
-
-  const gasFeeUSDStr = useMemo(() => {
     const gasFeeUSD = swapSummaryInfo.gasFeeUSD;
 
-    if (Number(gasFeeUSD) < 0.01) return "<$0.01";
-
-    return `$${toNumberFormat(gasFeeUSD)}`;
-  }, [swapSummaryInfo.gasFeeUSD]);
+    return {
+      gasFeeStr: `${toNumberFormat(amount)} ${currency}`,
+      gasFeeUSDStr: Number(gasFeeUSD) < 0.01 ? "<$0.01" : `$${toNumberFormat(gasFeeUSD)}`,
+    };
+  }, [swapSummaryInfo.gasFee, swapSummaryInfo.gasFeeUSD]);
 
   const slippageStr = useMemo(() => {
-    const slippage = swapTokenInfo.slippage;
-    return `${slippage}%`;
+    return `${swapTokenInfo.slippage}%`;
   }, [swapTokenInfo.slippage]);
 
   const priceImpactStatusDisplay = useMemo(() => {
@@ -78,6 +77,34 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({ swapSummaryInfo, isLoading, p
     }
   }, [priceImpactStatus, t]);
 
+  const routerFeeStr = useMemo(() => {
+    const { direction } = swapTokenInfo;
+    const isExactIn = direction === "EXACT_IN";
+
+    const tokenAmount = isExactIn ? swapTokenInfo.tokenAAmount : swapTokenInfo.tokenBAmount;
+    const tokenUSD = isExactIn ? swapTokenInfo.tokenAUSD : swapTokenInfo.tokenBUSD;
+    const tokenSymbol = isExactIn ? swapTokenInfo.tokenA?.symbol : swapTokenInfo.tokenB?.symbol;
+    const tokenDecimals = isExactIn ? swapTokenInfo.tokenADecimals : swapTokenInfo.tokenBDecimals;
+    console.log(swapTokenInfo, "tokenAmount");
+
+    if (!tokenAmount || swapSummaryInfo.routerFee === undefined) {
+      return swapSummaryInfo.protocolFee;
+    }
+
+    const feeRate = swapSummaryInfo.routerFee / 100;
+
+    if (tokenUSD !== null) {
+      const feeAmountUSD = BigNumber(tokenUSD).multipliedBy(feeRate).toNumber();
+      if (feeAmountUSD < 0.01) {
+        return "<$0.01";
+      }
+      return `$${toNumberFormat(feeAmountUSD, 2)}`;
+    } else {
+      const feeAmount = BigNumber(tokenAmount).multipliedBy(feeRate).toNumber();
+      return `${toNumberFormat(feeAmount, tokenDecimals || 6)} ${tokenSymbol}`;
+    }
+  }, [swapSummaryInfo.routerFee, swapSummaryInfo.protocolFee, swapTokenInfo]);
+
   return (
     <FeeWrapper>
       <div className="swap-fee-row price-impact">
@@ -95,24 +122,16 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({ swapSummaryInfo, isLoading, p
             </PriceImpactStrWrapper>
           </span>
         ) : (
-          <span css={pulseSkeletonStyle({ h: 18, w: "100px!important" })} />
+          <SkeletonLoader />
         )}
       </div>
       <div className="swap-fee-row ">
         <span className=" gray-text">{t("Swap:swapInfo.slippageSet")}</span>
-        {!isLoading ? (
-          <span className="white-text">{slippageStr}</span>
-        ) : (
-          <span css={pulseSkeletonStyle({ h: 18, w: "100px!important" })} />
-        )}
+        {!isLoading ? <span className="white-text">{slippageStr}</span> : <SkeletonLoader />}
       </div>
       <div className="swap-fee-row received">
         <span className="gray-text">{guaranteedTypeStr}</span>
-        {isLoading ? (
-          <span css={pulseSkeletonStyle({ h: 18, w: "100px!important" })} />
-        ) : (
-          <span className="white-text">{guaranteedStr}</span>
-        )}
+        {isLoading ? <SkeletonLoader /> : <span className="white-text">{guaranteedStr}</span>}
       </div>
       <div className="swap-fee-row received">
         <div className="protocol">
@@ -124,17 +143,13 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({ swapSummaryInfo, isLoading, p
             <IconInfo />
           </Tooltip>
         </div>
-        {isLoading ? (
-          <span css={pulseSkeletonStyle({ h: 18, w: "100px!important" })} />
-        ) : (
-          <span className="white-text">{swapSummaryInfo.protocolFee}</span>
-        )}
+        {isLoading ? <SkeletonLoader /> : <span className="white-text">{routerFeeStr}</span>}
       </div>
       <div className="swap-fee-row  gas-fee">
         <span className="gray-text">{t("Swap:swapInfo.gasFee")}</span>
 
         {isLoading ? (
-          <span css={pulseSkeletonStyle({ h: 18, w: "100px!important" })} />
+          <SkeletonLoader />
         ) : (
           <span className="white-text">
             {gasFeeStr}

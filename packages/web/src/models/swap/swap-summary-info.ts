@@ -28,6 +28,8 @@ export interface SwapSummaryInfo {
   swapRate1USD: number;
 
   protocolFee: string;
+
+  routerFee: number;
 }
 
 export function swapDirectionToGuaranteedType(swapDirection: SwapDirectionType) {
