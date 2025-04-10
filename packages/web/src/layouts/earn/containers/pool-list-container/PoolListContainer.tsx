@@ -45,12 +45,38 @@ const PoolListContainer: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!keyword) {
-      if (isClickOutside) {
-        setSearchIcon(false);
-      }
+    if (!keyword && isClickOutside) {
+      setSearchIcon(false);
     }
   }, [isClickOutside, keyword]);
+
+  useEffect(() => {
+    setPage(0);
+  }, [keyword, poolType]);
+
+  const formatPoolValue = useCallback(
+    (value: string | number | undefined, tokenA: TokenModel, tokenB: TokenModel) => {
+      if (anyEmptyPrice(tokenA, tokenB)) return "-";
+
+      return formatOtherPrice(value || 0, {
+        isKMB: false,
+        decimals: 0,
+      });
+    },
+    [anyEmptyPrice],
+  );
+
+  const matchesKeyword = useCallback((info: PoolListInfo, keyword: string) => {
+    if (!keyword) return true;
+
+    const searchTerm = keyword.toLowerCase();
+    return (
+      info.tokenA.name.toLowerCase().includes(searchTerm) ||
+      info.tokenB.name.toLowerCase().includes(searchTerm) ||
+      info.tokenA.symbol.toLowerCase().includes(searchTerm) ||
+      info.tokenB.symbol.toLowerCase().includes(searchTerm)
+    );
+  }, []);
 
   const sortValueTransform = (value: string) => {
     if (!value || value === "-") return -Infinity;
@@ -61,112 +87,61 @@ const PoolListContainer: React.FC = () => {
     return isNaN(number) ? -Infinity : number;
   };
 
+  const getSortFunction = useCallback((key: TABLE_HEAD, direction: "asc" | "desc") => {
+    return (a: PoolListInfo, b: PoolListInfo) => {
+      const multiplier = direction === "asc" ? 1 : -1;
+
+      switch (key) {
+        case TABLE_HEAD.POOL_NAME:
+          return (
+            multiplier *
+            (direction === "asc"
+              ? b.tokenA.name.localeCompare(a.tokenA.name)
+              : a.tokenA.name.localeCompare(b.tokenA.name))
+          );
+        case TABLE_HEAD.TVL:
+          return multiplier * (sortValueTransform(a.tvl) - sortValueTransform(b.tvl));
+        case TABLE_HEAD.VOLUME:
+          return multiplier * (sortValueTransform(a.volume24h) - sortValueTransform(b.volume24h));
+        case TABLE_HEAD.FEES:
+          return multiplier * (sortValueTransform(a.fees24h) - sortValueTransform(b.fees24h));
+        case TABLE_HEAD.APR:
+          return multiplier * (sortValueTransform(a.apr) - sortValueTransform(b.apr));
+        default:
+          return -sortValueTransform(a.tvl) + sortValueTransform(b.tvl);
+      }
+    };
+  }, []);
+
   const filteredPoolType = useCallback((poolType: POOL_TYPE, incentivized: boolean) => {
-    switch (poolType) {
-      case POOL_TYPE.INCENTIVIZED:
-        return incentivized === true;
-      case POOL_TYPE.NONE_INCENTIVIZED:
-        return incentivized === false;
-      default:
-        break;
-    }
+    if (poolType === POOL_TYPE.INCENTIVIZED) return incentivized === true;
+    if (poolType === POOL_TYPE.NONE_INCENTIVIZED) return incentivized === false;
     return true;
   }, []);
 
   const filteredPools = useMemo(() => {
-    const temp = poolListInfos.filter(info => {
-      if (keyword !== "") {
-        return (
-          info.tokenA.name.toLowerCase().includes(keyword.toLowerCase()) ||
-          info.tokenB.name.toLowerCase().includes(keyword.toLowerCase()) ||
-          info.tokenA.symbol.toLowerCase().includes(keyword.toLowerCase()) ||
-          info.tokenB.symbol.toLowerCase().includes(keyword.toLowerCase())
-        );
-      }
-      return true;
-    });
-
-    return temp
+    return poolListInfos
+      .filter(info => matchesKeyword(info, keyword))
       .filter(info => filteredPoolType(poolType, info.incentivized))
       .map(item => ({
         ...item,
-        liquidity: !anyEmptyPrice(item.tokenA, item.tokenB)
-          ? formatOtherPrice(item.liquidity || 0, {
-              isKMB: false,
-              decimals: 0,
-            })
-          : "-",
-        volume24h: !anyEmptyPrice(item.tokenA, item.tokenB)
-          ? formatOtherPrice(item.volume24h || 0, {
-              isKMB: false,
-              decimals: 0,
-            })
-          : "-",
-        fees24h: !anyEmptyPrice(item.tokenA, item.tokenB)
-          ? formatOtherPrice(item.fees24h || 0, {
-              isKMB: false,
-              decimals: 0,
-            })
-          : "-",
-        tvl: !anyEmptyPrice(item.tokenA, item.tokenB)
-          ? formatOtherPrice(item.tvl || 0, {
-              isKMB: false,
-              decimals: 0,
-            })
-          : "-",
-        apr: !anyEmptyPrice(item.tokenA, item.tokenB) ? item.apr : "",
+        liquidity: formatPoolValue(item.liquidity, item.tokenA, item.tokenB),
+        volume24h: formatPoolValue(item.volume24h, item.tokenA, item.tokenB),
+        fees24h: formatPoolValue(item.fees24h, item.tokenA, item.tokenB),
+        tvl: formatPoolValue(item.tvl, item.tokenA, item.tokenB),
+        apr: anyEmptyPrice(item.tokenA, item.tokenB) ? "" : item.apr,
       }));
-  }, [poolListInfos, keyword, poolType, anyEmptyPrice]);
+  }, [poolListInfos, keyword, poolType, anyEmptyPrice, matchesKeyword, filteredPoolType, formatPoolValue]);
 
   const sortedPools = useMemo(() => {
     const temp = [...filteredPools];
-
-    if (sortOption) {
-      if (sortOption.key === TABLE_HEAD.POOL_NAME) {
-        if (sortOption.direction === "asc") {
-          temp.sort((a: PoolListInfo, b: PoolListInfo) => b.tokenA.name.localeCompare(a.tokenA.name));
-        } else {
-          temp.sort((a: PoolListInfo, b: PoolListInfo) => a.tokenA.name.localeCompare(b.tokenA.name));
-        }
-      } else if (sortOption.key === TABLE_HEAD.TVL) {
-        if (sortOption.direction === "asc") {
-          temp.sort((a: PoolListInfo, b: PoolListInfo) => sortValueTransform(a.tvl) - sortValueTransform(b.tvl));
-        } else {
-          temp.sort((a: PoolListInfo, b: PoolListInfo) => -sortValueTransform(a.tvl) + sortValueTransform(b.tvl));
-        }
-      } else if (sortOption.key === TABLE_HEAD.VOLUME) {
-        if (sortOption.direction === "asc") {
-          temp.sort(
-            (a: PoolListInfo, b: PoolListInfo) => sortValueTransform(a.volume24h) - sortValueTransform(b.volume24h),
-          );
-        } else {
-          temp.sort(
-            (a: PoolListInfo, b: PoolListInfo) => -sortValueTransform(a.volume24h) + sortValueTransform(b.volume24h),
-          );
-        }
-      } else if (sortOption.key === TABLE_HEAD.FEES) {
-        if (sortOption.direction === "asc") {
-          temp.sort(
-            (a: PoolListInfo, b: PoolListInfo) => sortValueTransform(a.fees24h) - sortValueTransform(b.fees24h),
-          );
-        } else {
-          temp.sort(
-            (a: PoolListInfo, b: PoolListInfo) => -sortValueTransform(a.fees24h) + sortValueTransform(b.fees24h),
-          );
-        }
-      } else if (sortOption.key === TABLE_HEAD.APR) {
-        if (sortOption.direction === "asc") {
-          temp.sort((a: PoolListInfo, b: PoolListInfo) => sortValueTransform(a.apr) - sortValueTransform(b.apr));
-        } else {
-          temp.sort((a: PoolListInfo, b: PoolListInfo) => -sortValueTransform(a.apr) + sortValueTransform(b.apr));
-        }
-      }
-    } else {
-      temp.sort((a: PoolListInfo, b: PoolListInfo) => -sortValueTransform(a.tvl) + sortValueTransform(b.tvl));
+    if (!sortOption) {
+      return temp.sort((a, b) => -sortValueTransform(a.tvl) + sortValueTransform(b.tvl));
     }
 
+    temp.sort(getSortFunction(sortOption?.key || TABLE_HEAD.TVL, sortOption?.direction || "desc"));
     return temp;
-  }, [filteredPools, sortOption]);
+  }, [filteredPools, sortOption, getSortFunction]);
 
   const totalPage = useMemo(() => {
     return Math.ceil(sortedPools.length / EARN_POOL_LIST_SIZE);
@@ -180,8 +155,6 @@ const PoolListContainer: React.FC = () => {
     setIsInside(true);
   };
   const changePoolType = useCallback((newType: string) => {
-    setPage(0);
-
     switch (newType) {
       case POOL_TYPE.ALL:
         setPoolType(POOL_TYPE.ALL);
@@ -199,7 +172,6 @@ const PoolListContainer: React.FC = () => {
 
   const search = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
-    setPage(0);
   }, []);
 
   const movePage = useCallback((newPage: number) => {
