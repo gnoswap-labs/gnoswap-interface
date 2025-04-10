@@ -53,9 +53,12 @@ const PoolListContainer: React.FC = () => {
   }, [isClickOutside, keyword]);
 
   const sortValueTransform = (value: string) => {
-    if (!value) return -1;
+    if (!value || value === "-") return -Infinity;
 
-    return Number(value);
+    const numericValue = value.replace(/[$,]/g, "");
+    const number = Number(numericValue);
+
+    return isNaN(number) ? -Infinity : number;
   };
 
   const filteredPoolType = useCallback((poolType: POOL_TYPE, incentivized: boolean) => {
@@ -70,7 +73,7 @@ const PoolListContainer: React.FC = () => {
     return true;
   }, []);
 
-  const sortedPoolListInfos = useMemo(() => {
+  const filteredPools = useMemo(() => {
     const temp = poolListInfos.filter(info => {
       if (keyword !== "") {
         return (
@@ -82,6 +85,42 @@ const PoolListContainer: React.FC = () => {
       }
       return true;
     });
+
+    return temp
+      .filter(info => filteredPoolType(poolType, info.incentivized))
+      .map(item => ({
+        ...item,
+        liquidity: !anyEmptyPrice(item.tokenA, item.tokenB)
+          ? formatOtherPrice(item.liquidity || 0, {
+              isKMB: false,
+              decimals: 0,
+            })
+          : "-",
+        volume24h: !anyEmptyPrice(item.tokenA, item.tokenB)
+          ? formatOtherPrice(item.volume24h || 0, {
+              isKMB: false,
+              decimals: 0,
+            })
+          : "-",
+        fees24h: !anyEmptyPrice(item.tokenA, item.tokenB)
+          ? formatOtherPrice(item.fees24h || 0, {
+              isKMB: false,
+              decimals: 0,
+            })
+          : "-",
+        tvl: !anyEmptyPrice(item.tokenA, item.tokenB)
+          ? formatOtherPrice(item.tvl || 0, {
+              isKMB: false,
+              decimals: 0,
+            })
+          : "-",
+        apr: !anyEmptyPrice(item.tokenA, item.tokenB) ? item.apr : "",
+      }));
+  }, [poolListInfos, keyword, poolType, anyEmptyPrice]);
+
+  const sortedPools = useMemo(() => {
+    const temp = [...filteredPools];
+
     if (sortOption) {
       if (sortOption.key === TABLE_HEAD.POOL_NAME) {
         if (sortOption.direction === "asc") {
@@ -125,41 +164,13 @@ const PoolListContainer: React.FC = () => {
     } else {
       temp.sort((a: PoolListInfo, b: PoolListInfo) => -sortValueTransform(a.tvl) + sortValueTransform(b.tvl));
     }
-    return temp
-      .filter(info => filteredPoolType(poolType, info.incentivized))
-      .map(item => ({
-        ...item,
-        liquidity: !anyEmptyPrice(item.tokenA, item.tokenB)
-          ? formatOtherPrice(item.liquidity || 0, {
-              isKMB: false,
-              decimals: 0,
-            })
-          : "-",
-        volume24h: !anyEmptyPrice(item.tokenA, item.tokenB)
-          ? formatOtherPrice(item.volume24h || 0, {
-              isKMB: false,
-              decimals: 0,
-            })
-          : "-",
-        fees24h: !anyEmptyPrice(item.tokenA, item.tokenB)
-          ? formatOtherPrice(item.fees24h || 0, {
-              isKMB: false,
-              decimals: 0,
-            })
-          : "-",
-        tvl: !anyEmptyPrice(item.tokenA, item.tokenB)
-          ? formatOtherPrice(item.tvl || 0, {
-              isKMB: false,
-              decimals: 0,
-            })
-          : "-",
-        apr: !anyEmptyPrice(item.tokenA, item.tokenB) ? item.apr : "",
-      }));
-  }, [poolListInfos, sortOption, keyword, filteredPoolType, poolType, anyEmptyPrice]);
+
+    return temp;
+  }, [filteredPools, sortOption]);
 
   const totalPage = useMemo(() => {
-    return Math.ceil(sortedPoolListInfos.length / EARN_POOL_LIST_SIZE);
-  }, [sortedPoolListInfos.length]);
+    return Math.ceil(sortedPools.length / EARN_POOL_LIST_SIZE);
+  }, [sortedPools.length]);
 
   const routeItem = (id: string) => {
     router.movePageWithPoolPath("POOL", id);
@@ -215,7 +226,7 @@ const PoolListContainer: React.FC = () => {
 
   return (
     <PoolList
-      pools={sortedPoolListInfos.slice(page * EARN_POOL_LIST_SIZE, (page + 1) * EARN_POOL_LIST_SIZE)}
+      pools={sortedPools.slice(page * EARN_POOL_LIST_SIZE, (page + 1) * EARN_POOL_LIST_SIZE)}
       isFetched={!isLoadingPools}
       poolType={poolType}
       changePoolType={changePoolType}
