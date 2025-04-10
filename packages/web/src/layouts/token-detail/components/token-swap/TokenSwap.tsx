@@ -176,6 +176,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               placeholder="0"
               autoComplete={"off"}
               spellCheck={"false"}
+              inputMode={"decimal"}
             />
             <div className="token">
               <SelectPairButton token={tokenA} changeToken={changeTokenA} />
@@ -208,6 +209,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               placeholder="0"
               autoComplete={"off"}
               spellCheck={"false"}
+              inputMode={"decimal"}
             />
             <div className="token">
               <SelectPairButton token={tokenB} changeToken={changeTokenB} />
