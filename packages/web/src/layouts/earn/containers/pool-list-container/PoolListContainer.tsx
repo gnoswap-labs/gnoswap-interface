@@ -167,13 +167,11 @@ const PoolListContainer: React.FC = () => {
    * Sort filtered pools based on current sort option
    */
   const sortedPools = useMemo(() => {
-    const temp = [...filteredPools];
     if (!sortOption) {
-      return temp.sort((a, b) => -sortValueTransform(a.tvl) + sortValueTransform(b.tvl));
+      return [...filteredPools].sort((a, b) => -sortValueTransform(a.tvl) + sortValueTransform(b.tvl));
     }
 
-    temp.sort(getSortFunction(sortOption?.key || TABLE_HEAD.TVL, sortOption?.direction || "desc"));
-    return temp;
+    return [...filteredPools].sort(getSortFunction(sortOption?.key || TABLE_HEAD.TVL, sortOption?.direction || "desc"));
   }, [filteredPools, sortOption, getSortFunction]);
 
   /**
