@@ -46,6 +46,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
   swapRateAction: SwapRateAction.ATOB,
   swapRate1USD: 1,
   protocolFee: "0%",
+  routerFee: 0.15,
 };
 
 const swapRouteInfos: SwapRouteInfo[] = [
