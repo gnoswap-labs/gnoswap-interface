@@ -189,6 +189,7 @@ export const useSwapHandler = () => {
   const { slippage, changeSlippage } = useSlippage();
   const { openModal } = useConnectWalletModal();
   const { data: swapFee } = useGetSwapFee();
+
   const {
     isSameToken,
     estimatedRoutes,
@@ -499,6 +500,7 @@ export const useSwapHandler = () => {
         : getTokenUSDPrice(checkGnotPath(tokenB.path), 1) || 1;
 
     const protocolFee = `${(swapFee || 0) / 100}%`;
+    const routerFee = (swapFee || 0) / 100;
 
     if (isSameToken) {
       return {
@@ -520,6 +522,7 @@ export const useSwapHandler = () => {
         swapRateAction,
         swapRate1USD,
         protocolFee,
+        routerFee,
       };
     }
 
@@ -555,6 +558,7 @@ export const useSwapHandler = () => {
       swapRate1USD,
       direction: type,
       protocolFee,
+      routerFee,
     };
   }, [
     tokenA,
