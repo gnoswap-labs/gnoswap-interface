@@ -13,7 +13,7 @@ export const TABLE_HEAD = {
 };
 
 export const MOBILE_TABLE_HEAD = {
-  TIME: "Dashboard:onChainActi.col.time",
+  TIME: "Dashboard:onchainActi.col.time",
   Swap: "Swap:header",
 };
 
