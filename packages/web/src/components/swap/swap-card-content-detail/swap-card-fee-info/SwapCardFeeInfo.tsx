@@ -78,6 +78,10 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({ swapSummaryInfo, isLoading, p
   }, [priceImpactStatus, t]);
 
   const routerFeeStr = useMemo(() => {
+    if (swapSummaryInfo.routerFee == null) {
+      return swapSummaryInfo.protocolFee;
+    }
+
     const { direction } = swapTokenInfo;
     const isExactIn = direction === "EXACT_IN";
 
@@ -85,25 +89,34 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({ swapSummaryInfo, isLoading, p
     const tokenUSD = isExactIn ? swapTokenInfo.tokenAUSD : swapTokenInfo.tokenBUSD;
     const tokenSymbol = isExactIn ? swapTokenInfo.tokenA?.symbol : swapTokenInfo.tokenB?.symbol;
     const tokenDecimals = isExactIn ? swapTokenInfo.tokenADecimals : swapTokenInfo.tokenBDecimals;
-    console.log(swapTokenInfo, "tokenAmount");
 
-    if (!tokenAmount || swapSummaryInfo.routerFee === undefined) {
+    if (!tokenAmount) {
       return swapSummaryInfo.protocolFee;
     }
 
     const feeRate = swapSummaryInfo.routerFee / 100;
 
-    if (tokenUSD !== null) {
+    if (tokenUSD != null) {
       const feeAmountUSD = BigNumber(tokenUSD).multipliedBy(feeRate).toNumber();
-      if (feeAmountUSD < 0.01) {
-        return "<$0.01";
-      }
-      return `$${toNumberFormat(feeAmountUSD, 2)}`;
-    } else {
-      const feeAmount = BigNumber(tokenAmount).multipliedBy(feeRate).toNumber();
-      return `${toNumberFormat(feeAmount, tokenDecimals || 6)} ${tokenSymbol}`;
+      return feeAmountUSD < 0.01 ? "<$0.01" : `$${toNumberFormat(feeAmountUSD, 2)}`;
     }
-  }, [swapSummaryInfo.routerFee, swapSummaryInfo.protocolFee, swapTokenInfo]);
+
+    const feeAmount = BigNumber(tokenAmount).multipliedBy(feeRate).toNumber();
+    const decimals = tokenDecimals || 6;
+    return `${toNumberFormat(feeAmount, decimals)} ${tokenSymbol || ""}`;
+  }, [
+    swapSummaryInfo.routerFee,
+    swapSummaryInfo.protocolFee,
+    swapTokenInfo.direction,
+    swapTokenInfo.tokenAAmount,
+    swapTokenInfo.tokenBAmount,
+    swapTokenInfo.tokenAUSD,
+    swapTokenInfo.tokenBUSD,
+    swapTokenInfo.tokenA?.symbol,
+    swapTokenInfo.tokenB?.symbol,
+    swapTokenInfo.tokenADecimals,
+    swapTokenInfo.tokenBDecimals,
+  ]);
 
   return (
     <FeeWrapper>
