@@ -1,8 +1,13 @@
 import { ValuesType } from "utility-types";
 
+export enum SortDirection {
+  ASC = "asc",
+  DESC = "desc",
+}
+
 export interface PoolSortOption {
   key: TABLE_HEAD;
-  direction: "asc" | "desc";
+  direction: SortDirection;
 }
 
 export const TABLE_HEAD = {
