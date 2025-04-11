@@ -82,13 +82,10 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({ swapSummaryInfo, isLoading, p
       return swapSummaryInfo.protocolFee;
     }
 
-    const { direction } = swapTokenInfo;
-    const isExactIn = direction === "EXACT_IN";
-
-    const tokenAmount = isExactIn ? swapTokenInfo.tokenAAmount : swapTokenInfo.tokenBAmount;
-    const tokenUSD = isExactIn ? swapTokenInfo.tokenAUSD : swapTokenInfo.tokenBUSD;
-    const tokenSymbol = isExactIn ? swapTokenInfo.tokenA?.symbol : swapTokenInfo.tokenB?.symbol;
-    const tokenDecimals = isExactIn ? swapTokenInfo.tokenADecimals : swapTokenInfo.tokenBDecimals;
+    const tokenAmount = swapTokenInfo.tokenBAmount;
+    const tokenUSD = swapTokenInfo.tokenBUSD;
+    const tokenSymbol = swapTokenInfo.tokenB?.symbol;
+    const tokenDecimals = swapTokenInfo.tokenBDecimals;
 
     if (!tokenAmount) {
       return swapSummaryInfo.protocolFee;
