@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo } from "react";
-import BigNumber from "bignumber.js";
 import { useTranslation } from "react-i18next";
 import { useAtomValue } from "jotai";
 import { useTheme } from "@emotion/react";
@@ -28,6 +27,7 @@ import {
   PriceImpactWrapper,
   ToolTipContentWrapper,
 } from "./ConfirmSwapModal.styles";
+import { formatRouterFeeStr } from "@utils/swap-utils";
 
 interface ConfirmSwapModalProps {
   submitted: boolean;
@@ -168,34 +168,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   }, [swapSummaryInfo?.protocolFee]);
 
   const routerFeeStr = useMemo(() => {
-    if (!swapSummaryInfo || !swapTokenInfo) return "-";
-
-    if (swapSummaryInfo.routerFee == null) {
-      return swapSummaryInfo.protocolFee;
-    }
-
-    const { direction } = swapTokenInfo;
-    const isExactIn = direction === "EXACT_IN";
-
-    const tokenAmount = isExactIn ? swapTokenInfo.tokenAAmount : swapTokenInfo.tokenBAmount;
-    const tokenUSD = isExactIn ? swapTokenInfo.tokenAUSD : swapTokenInfo.tokenBUSD;
-    const tokenSymbol = isExactIn ? swapTokenInfo.tokenA?.symbol : swapTokenInfo.tokenB?.symbol;
-    const tokenDecimals = isExactIn ? swapTokenInfo.tokenADecimals : swapTokenInfo.tokenBDecimals;
-
-    if (!tokenAmount) {
-      return swapSummaryInfo.protocolFee;
-    }
-
-    const feeRate = swapSummaryInfo.routerFee / 100;
-
-    if (tokenUSD != null) {
-      const feeAmountUSD = BigNumber(tokenUSD).multipliedBy(feeRate).toNumber();
-      return feeAmountUSD < 0.01 ? "<$0.01" : `$${toNumberFormat(feeAmountUSD, 2)}`;
-    }
-
-    const feeAmount = BigNumber(tokenAmount).multipliedBy(feeRate).toNumber();
-    const decimals = tokenDecimals || 6;
-    return `${toNumberFormat(feeAmount, decimals)} ${tokenSymbol || ""}`;
+    return formatRouterFeeStr(swapSummaryInfo, swapTokenInfo);
   }, [
     swapSummaryInfo?.routerFee,
     swapSummaryInfo?.protocolFee,
