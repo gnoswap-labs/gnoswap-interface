@@ -151,14 +151,14 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     const { tokenAUSD, tokenBUSD, tokenAAmount, tokenBAmount } = swapTokenInfo;
     if (swapRateAction === SwapRateAction.ATOB) {
       if (!tokenBUSD || tokenBUSD === 0) return "-";
-      return `($${convertToKMB(floorNumber((tokenBUSD / Number(tokenBAmount)) * swapRate).toFixed(3), {
+      return convertToKMB(floorNumber((tokenBUSD / Number(tokenBAmount)) * swapRate).toFixed(3), {
         isIgnoreKFormat: true,
-      })})`;
+      });
     } else {
       if (!tokenAUSD || tokenAUSD === 0) return "-";
-      return `($${convertToKMB(floorNumber((tokenAUSD / Number(tokenAAmount)) * swapRate).toFixed(3), {
+      return convertToKMB(floorNumber((tokenAUSD / Number(tokenAAmount)) * swapRate).toFixed(3), {
         isIgnoreKFormat: true,
-      })})`;
+      });
     }
   }, [swapSummaryInfo, swapTokenInfo]);
 
@@ -286,7 +286,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
               <button className="gnos-price" onClick={handleSwapRateDescription}>
                 {swapRateDescription}
               </button>
-              <span className="exchange-price">{unitSwapPrice}</span>
+              <span className="exchange-price">{`($${unitSwapPrice})`}</span>
             </div>
           </div>
           <div className="gas-info">
