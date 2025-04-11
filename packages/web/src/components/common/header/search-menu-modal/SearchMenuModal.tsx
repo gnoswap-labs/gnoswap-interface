@@ -15,7 +15,6 @@ import { TokenInfo } from "@models/token/token-info";
 import { TokenState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
 
-import { STATIC_TEXT } from "@common/values";
 import {
   InputStyle,
   ModalContainer,
@@ -173,7 +172,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
 
   const getTokenPathDisplay = useCallback(
     (path: string, isNative: boolean) => {
-      return formatTokenPath(path, isNative, STATIC_TEXT.NATIVE_COIN);
+      return formatTokenPath(path, isNative);
     },
     [length],
   );
