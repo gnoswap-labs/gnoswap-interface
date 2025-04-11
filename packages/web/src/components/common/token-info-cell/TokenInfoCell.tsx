@@ -1,11 +1,9 @@
 import { useTheme } from "@emotion/react";
 import { useCallback, useMemo, useRef } from "react";
-import { useTranslation } from "react-i18next";
 
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatTokenPath } from "@utils/token-utils";
-import { STATIC_TEXT } from "@common/values";
 import useElementWidth from "@hooks/common/use-element-width";
 
 import { TokenInfoCellWrapper } from "./TokenInfoCell.styles";
@@ -25,7 +23,6 @@ export interface TokenInfoCellProps {
 
 function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
   const { name, path, symbol, logoURI } = token;
-  const { t } = useTranslation();
   const theme = useTheme();
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
   const elementId = useMemo(() => `${token.path}`, [token.path]);
@@ -37,8 +34,8 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
   const tokenNameWidth = useElementWidth(tokenNameRef, [token]);
 
   const tokenPathDisplay = useMemo(() => {
-    return formatTokenPath(path, isNative, STATIC_TEXT.NATIVE_COIN);
-  }, [isNative, path, t]);
+    return formatTokenPath(path, isNative);
+  }, [isNative, path]);
 
   const onClickPath = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
