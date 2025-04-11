@@ -360,6 +360,14 @@ export const useSwapHandler = () => {
     return "NONE";
   }, [priceImpact]);
 
+  const formatPriceImpact = useCallback((priceImpact: BigNumber | null | undefined) => {
+    if (!priceImpact) return 0;
+
+    if (priceImpact.isLessThan(-100)) return -100;
+
+    return Number(priceImpact.toFixed(2));
+  }, []);
+
   const swapButtonState: SwapButtonStateType = useMemo(() => {
     if (!connectedWallet) {
       return "WALLET_LOGIN";
@@ -544,7 +552,8 @@ export const useSwapHandler = () => {
       swapDirection: type,
       swapRate,
       swapRateUSD,
-      priceImpact: priceImpact?.isGreaterThan(100) ? 100 : Number(priceImpact?.toFixed(2)),
+      priceImpact: formatPriceImpact(priceImpact),
+
       guaranteedAmount: {
         amount: tokenAmountLimit || 0,
         currency: (type === "EXACT_IN" ? tokenB : tokenA).symbol,
@@ -575,6 +584,7 @@ export const useSwapHandler = () => {
     gasFeeUSD,
     tokenPrices,
     priceImpact,
+    formatPriceImpact,
     swapFee,
   ]);
 
