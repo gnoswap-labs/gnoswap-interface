@@ -77,6 +77,11 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({ swapSummaryInfo, isLoading, p
     }
   }, [priceImpactStatus, t]);
 
+  const routerFeePercentageStr = useMemo(() => {
+    if (!swapSummaryInfo.protocolFee) return null;
+    return `(${swapSummaryInfo.protocolFee})`;
+  }, [swapSummaryInfo.protocolFee]);
+
   const routerFeeStr = useMemo(() => {
     if (swapSummaryInfo.routerFee == null) {
       return swapSummaryInfo.protocolFee;
@@ -145,7 +150,9 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({ swapSummaryInfo, isLoading, p
       </div>
       <div className="swap-fee-row received">
         <div className="protocol">
-          <span className="">{t("business:protocolFee.txt")}</span>
+          <span className="">
+            {t("business:protocolFee.txt")} {routerFeePercentageStr}
+          </span>
           <Tooltip
             placement="top"
             FloatingContent={<ToolTipContentWrapper>{t("Swap:swapInfo.tooltip.swapFee")}</ToolTipContentWrapper>}

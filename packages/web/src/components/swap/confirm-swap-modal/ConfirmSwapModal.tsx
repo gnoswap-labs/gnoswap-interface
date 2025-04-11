@@ -162,6 +162,11 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     }
   }, [swapSummaryInfo, swapTokenInfo]);
 
+  const routerFeePercentageStr = useMemo(() => {
+    if (!swapSummaryInfo?.protocolFee) return null;
+    return `(${swapSummaryInfo.protocolFee})`;
+  }, [swapSummaryInfo?.protocolFee]);
+
   const routerFeeStr = useMemo(() => {
     if (!swapSummaryInfo || !swapTokenInfo) return "-";
 
@@ -317,7 +322,9 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                 <div className="received">
                   <div className="protocol">
                     <div>
-                      <span className="">{t("business:protocolFee.txt")}</span>
+                      <span className="">
+                        {t("business:protocolFee.txt")} {routerFeePercentageStr}
+                      </span>
                       <Tooltip
                         placement="top"
                         FloatingContent={
