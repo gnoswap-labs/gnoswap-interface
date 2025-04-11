@@ -18,6 +18,7 @@ import { formatUsdNumber } from "@utils/stake-position-utils";
 
 import { Divider, QuickPoolInfoWrapper } from "./QuickPoolInfo.styles";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { RewardTokenModel } from "@models/position/reward-model";
 
 interface Props {
   tokenPair: string[];
@@ -109,7 +110,7 @@ const QuickPoolInfo: React.FC<Props> = ({
       }
 
       return acc;
-    }, [] as TokenModel[]);
+    }, [] as RewardTokenModel[]);
   }, [getGnotPath, pool?.rewardTokens]);
 
   const feeApr = useMemo(() => {

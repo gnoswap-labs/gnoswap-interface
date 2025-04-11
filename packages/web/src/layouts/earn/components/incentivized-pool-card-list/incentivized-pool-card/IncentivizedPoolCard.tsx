@@ -47,7 +47,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
 
     const tokenData = getUniqueRewardTokensByPath(pool.rewardTokens, getGnotPath);
 
-    return <OverlapTokenLogo tokens={tokenData} size={16} />;
+    return <OverlapTokenLogo tokens={tokenData} size={16} showRewardType={true} />;
   }, [getGnotPath, pool.rewardTokens, pool.incentivized]);
 
   const isHideBar = useMemo(() => {

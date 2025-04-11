@@ -1,4 +1,5 @@
 import { SwapFeeTierType } from "@constants/option.constant";
+import { RewardTokenModel } from "@models/position/reward-model";
 import { TokenModel } from "@models/token/token-model";
 
 export interface PoolListInfo {
@@ -20,7 +21,7 @@ export interface PoolListInfo {
 
   fees24h: string;
 
-  rewardTokens: TokenModel[];
+  rewardTokens: RewardTokenModel[];
 
   price: number;
 

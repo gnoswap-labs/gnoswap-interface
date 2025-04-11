@@ -187,6 +187,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
                   <OverlapTokenLogo
                     tokens={rewardTokenLogos}
                     size={mobile ? 20 : 36}
+                    showRewardType={true}
                     tokenTooltipClassName={"coin-item-logo"}
                   />
                 </div>
