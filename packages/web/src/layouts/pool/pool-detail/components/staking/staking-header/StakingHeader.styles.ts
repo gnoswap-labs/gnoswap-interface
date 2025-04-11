@@ -24,7 +24,7 @@ export const StakingHeaderWrapper = styled.div`
       margin-top: 7px;
       margin-bottom: 4px;
       cursor: pointer;
-      .lean-more {
+      .learn-more {
         ${fonts.body11};
         color: ${({ theme }) => theme.color.text04};
       }
@@ -37,7 +37,7 @@ export const StakingHeaderWrapper = styled.div`
         }
       }
       &:hover {
-        .lean-more {
+        .learn-more {
           color: ${({ theme }) => theme.color.text03};
         }
         svg {

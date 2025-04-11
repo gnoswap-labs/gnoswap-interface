@@ -33,7 +33,7 @@ const StakingHeader: React.FC<StakingHeaderProps> = ({
       <div className="left-wrap">
         <h2>{t("Pool:staking.title")}</h2>
         <div className="logo-wrap" onClick={() => window.open(EXT_URL.DOCS.USER_GUIDE.STAKE_POSITIONS, "_blank")}>
-          <span className="lean-more">{t("common:learnMore")}</span>
+          <span className="learn-more">{t("common:learnMore")}</span>
           <IconNote className="icon-logo" />
         </div>
       </div>
