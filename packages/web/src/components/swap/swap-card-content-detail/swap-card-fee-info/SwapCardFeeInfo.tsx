@@ -1,5 +1,4 @@
 import React, { useMemo } from "react";
-import BigNumber from "bignumber.js";
 import { useTranslation } from "react-i18next";
 
 import IconInfo from "@components/common/icons/IconInfo";
@@ -18,6 +17,7 @@ import {
   SwapDivider,
   ToolTipContentWrapper,
 } from "./SwapCardFeeInfo.styles";
+import { formatRouterFeeStr } from "@utils/swap-utils";
 
 interface ContentProps {
   swapSummaryInfo: SwapSummaryInfo;
@@ -83,29 +83,7 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({ swapSummaryInfo, isLoading, p
   }, [swapSummaryInfo.protocolFee]);
 
   const routerFeeStr = useMemo(() => {
-    if (swapSummaryInfo.routerFee == null) {
-      return swapSummaryInfo.protocolFee;
-    }
-
-    const tokenAmount = swapTokenInfo.tokenBAmount;
-    const tokenUSD = swapTokenInfo.tokenBUSD;
-    const tokenSymbol = swapTokenInfo.tokenB?.symbol;
-    const tokenDecimals = swapTokenInfo.tokenBDecimals;
-
-    if (!tokenAmount) {
-      return swapSummaryInfo.protocolFee;
-    }
-
-    const feeRate = swapSummaryInfo.routerFee / 100;
-
-    if (tokenUSD != null) {
-      const feeAmountUSD = BigNumber(tokenUSD).multipliedBy(feeRate).toNumber();
-      return feeAmountUSD < 0.01 ? "<$0.01" : `$${toNumberFormat(feeAmountUSD, 2)}`;
-    }
-
-    const feeAmount = BigNumber(tokenAmount).multipliedBy(feeRate).toNumber();
-    const decimals = tokenDecimals || 6;
-    return `${toNumberFormat(feeAmount, decimals)} ${tokenSymbol || ""}`;
+    return formatRouterFeeStr(swapSummaryInfo, swapTokenInfo);
   }, [
     swapSummaryInfo.routerFee,
     swapSummaryInfo.protocolFee,

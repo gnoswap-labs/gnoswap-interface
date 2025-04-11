@@ -1,6 +1,8 @@
+import BigNumber from "bignumber.js";
 import { SwapFeeTierInfoMap, SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import { MAX_TICK, MIN_TICK, Q96 } from "@constants/swap.constant";
-import BigNumber from "bignumber.js";
+import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
+import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import {
   getAmount0ForLiquidity,
   getAmount1ForLiquidity,
@@ -9,6 +11,7 @@ import {
   getLiquidityForAmount1,
 } from "./liquidity-utils";
 import { tickToSqrtPriceX96 } from "./math.utils";
+import { toNumberFormat } from "./number-utils";
 import { convertToKMB } from "./stake-position-utils";
 
 const LOG10001 = Math.log(1.0001);
@@ -257,4 +260,32 @@ export function getDepositAmountsByLiquidity(
     amountA: amount0,
     amountB: amount1,
   };
+}
+
+export function formatRouterFeeStr(swapSummaryInfo: SwapSummaryInfo | null, swapTokenInfo: SwapTokenInfo | null) {
+  if (!swapSummaryInfo || !swapTokenInfo) return "-";
+
+  if (swapSummaryInfo.routerFee == null) {
+    return swapSummaryInfo.protocolFee;
+  }
+
+  const tokenAmount = swapTokenInfo.tokenBAmount;
+  const tokenUSD = swapTokenInfo.tokenBUSD;
+  const tokenSymbol = swapTokenInfo.tokenB?.symbol;
+  const tokenDecimals = swapTokenInfo.tokenBDecimals;
+
+  if (!tokenAmount) {
+    return swapSummaryInfo.protocolFee;
+  }
+
+  const feeRate = swapSummaryInfo.routerFee / 100;
+
+  if (tokenUSD != null) {
+    const feeAmountUSD = BigNumber(tokenUSD).multipliedBy(feeRate).toNumber();
+    return feeAmountUSD < 0.01 ? "<$0.01" : `$${toNumberFormat(feeAmountUSD, 2)}`;
+  }
+
+  const feeAmount = BigNumber(tokenAmount).multipliedBy(feeRate).toNumber();
+  const decimals = tokenDecimals || 6;
+  return `${toNumberFormat(feeAmount, decimals)} ${tokenSymbol || ""}`;
 }
