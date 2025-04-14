@@ -13,7 +13,7 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { DEVICE_TYPE } from "@styles/media";
-import { getUniqueRewardTokensByPath } from "@utils/token-utils";
+import { getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils";
 
 import IncentivizeTokenDetailTooltipContent from "./incentivized-token-detail-tooltip-content/IncentivizeTokenDetailTooltipContent";
 import StakingContentCard, { SummuryApr } from "./staking-content-card/StakingContentCard";
@@ -96,7 +96,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
 
   const rewardTokenLogos = useMemo(() => {
     const rewardTokens = pool?.rewardTokens || [];
-    return getUniqueRewardTokensByPath(rewardTokens, getGnotPath);
+    return getUniqueRewardTokensWithMultipleRewardTypes(rewardTokens, getGnotPath);
   }, [getGnotPath, pool?.rewardTokens]);
 
   const stakingPositionMap = useMemo(() => {

@@ -15,10 +15,10 @@ import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { formatUsdNumber } from "@utils/stake-position-utils";
+import { getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils";
 
 import { Divider, QuickPoolInfoWrapper } from "./QuickPoolInfo.styles";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { RewardTokenModel } from "@models/position/reward-model";
 
 interface Props {
   tokenPair: string[];
@@ -97,20 +97,7 @@ const QuickPoolInfo: React.FC<Props> = ({
   }, [isLoadingPool, pool.feeUsd24h]);
 
   const rewardTokens = useMemo(() => {
-    return pool?.rewardTokens.reduce((acc, current) => {
-      const existToken = acc.some(item => item.path === getGnotPath(current).path);
-
-      if (!existToken) {
-        acc.push({
-          ...current,
-          logoURI: getGnotPath(current).logoURI,
-          symbol: getGnotPath(current).symbol,
-          path: getGnotPath(current).path,
-        });
-      }
-
-      return acc;
-    }, [] as RewardTokenModel[]);
+    return getUniqueRewardTokensWithMultipleRewardTypes(pool?.rewardTokens, getGnotPath);
   }, [getGnotPath, pool?.rewardTokens]);
 
   const feeApr = useMemo(() => {

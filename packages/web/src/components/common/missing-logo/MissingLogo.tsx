@@ -48,17 +48,33 @@ const MissingLogo: React.FC<Props> = ({
   };
 
   const tooltipContent = React.useMemo(() => {
-    if (showRewardType && rewardType) {
-      return `$${symbol} ${rewardTypeToDisplayText(rewardType)}`;
+    if (!showRewardType || !rewardType) {
+      return symbol;
     }
-    return symbol;
+
+    if (Array.isArray(rewardType)) {
+      const rewardTypesText = rewardType.map(rt => rewardTypeToDisplayText(rt)).join(", \n");
+      return `$${symbol} (${rewardTypesText})`;
+    }
+
+    return `$${symbol} (${rewardTypeToDisplayText(rewardType)})`;
   }, [showRewardType, rewardType, symbol]);
+
   return (
     <Tooltip
       placement="top"
       className={tokenTooltipClassName}
       forcedClose={!showTooltip}
-      FloatingContent={<TokenSymbolWrapper>{tooltipContent}</TokenSymbolWrapper>}
+      FloatingContent={
+        <TokenSymbolWrapper>
+          {tooltipContent.split("\n").map((line, i) => (
+            <React.Fragment key={i}>
+              {i > 0 && <br />}
+              {line}
+            </React.Fragment>
+          ))}
+        </TokenSymbolWrapper>
+      }
     >
       {url ? (
         <Image mobileWidth={mobileWidth} width={width} src={url} alt="logo" className={className} />

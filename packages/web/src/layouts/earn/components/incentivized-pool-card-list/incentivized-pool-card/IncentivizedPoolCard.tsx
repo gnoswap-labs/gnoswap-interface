@@ -12,10 +12,10 @@ import { IncentivizePoolCardInfo } from "@models/pool/info/pool-card-info";
 import { formatRate } from "@utils/new-number-utils";
 import { numberToFormat } from "@utils/string-utils";
 import { useGetBinsByPath } from "@query/pools";
+import { getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils";
 
 import { PoolCardWrapper, PoolCardWrapperWrapperBorder } from "./IncentivizedPoolCard.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
-import { getUniqueRewardTokensByPath } from "@utils/token-utils";
 
 export interface IncentivizedPoolCardProps {
   pool: IncentivizePoolCardInfo;
@@ -45,8 +45,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
   const rewardTokenLogos = useMemo(() => {
     if (!pool.incentivized) return null;
 
-    const tokenData = getUniqueRewardTokensByPath(pool.rewardTokens, getGnotPath);
-
+    const tokenData = getUniqueRewardTokensWithMultipleRewardTypes(pool.rewardTokens, getGnotPath);
     return <OverlapTokenLogo tokens={tokenData} size={16} showRewardType={true} />;
   }, [getGnotPath, pool.rewardTokens, pool.incentivized]);
 
