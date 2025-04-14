@@ -9,7 +9,7 @@ import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatRate } from "@utils/new-number-utils";
-import { RewardTokenModel } from "@models/position/reward-model";
+import { getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils";
 
 import PoolInfoLazyChart from "./pool-info-lazy-chart/PoolInfoLazyChart";
 
@@ -40,20 +40,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
   const rewardTokenLogos = useMemo(() => {
     if (!incentivized) return null;
 
-    const tokenData = rewardTokens.reduce((acc, current) => {
-      const existToken = acc.some(item => item.path === getGnotPath(current).path);
-
-      if (!existToken) {
-        acc.push({
-          ...current,
-          logoURI: getGnotPath(current).logoURI,
-          symbol: getGnotPath(current).symbol,
-          path: getGnotPath(current).path,
-        });
-      }
-
-      return acc;
-    }, [] as RewardTokenModel[]);
+    const tokenData = getUniqueRewardTokensWithMultipleRewardTypes(rewardTokens, getGnotPath);
 
     return <OverlapTokenLogo tokens={tokenData} size={20} showRewardType={true} />;
   }, [getGnotPath, rewardTokens, incentivized, hasPoolStaking]);

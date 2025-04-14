@@ -4,6 +4,11 @@ import BigNumber from "bignumber.js";
 import { formatOtherPrice } from "./new-number-utils";
 import { roundDownDecimalNumber } from "./regex";
 import { STATIC_TEXT } from "@common/values";
+import { RewardType } from "@constants/option.constant";
+
+export interface RewardTokenModelWithMultipleTypes extends Omit<RewardTokenModel, "rewardType"> {
+  rewardType: RewardType | RewardType[];
+}
 
 export function makeRawTokenAmount(token: TokenModel, amount: string | number) {
   const number = BigNumber(amount.toString());
@@ -110,6 +115,59 @@ export function getUniqueRewardTokensByPath<
 
     return acc;
   }, [] as RewardTokenModel[]);
+}
+
+/**
+ * Groups reward tokens by path and combines their reward types.
+ * Tokens with the same path but different reward types will be merged into a single token
+ * with an array of reward types.
+ *
+ * @param rewardTokens Array of tokens to process
+ * @param getGnotPath GNOT path conversion function
+ */
+export function getUniqueRewardTokensWithMultipleRewardTypes<
+  T extends { path?: string; name?: string; logoURI?: string; symbol?: string },
+>(
+  rewardTokens: RewardTokenModel[],
+  getGnotPath: (token: T | null | undefined) => {
+    path: string;
+    name: string;
+    symbol: string;
+    logoURI: string;
+    wrappedPath: string;
+  },
+): RewardTokenModelWithMultipleTypes[] {
+  const tokensByPath = rewardTokens.reduce((acc, current) => {
+    const tokenInfo = getGnotPath(current as unknown as T);
+
+    const convertedToken = {
+      ...current,
+      logoURI: tokenInfo.logoURI,
+      symbol: tokenInfo.symbol,
+      path: tokenInfo.path,
+    };
+
+    const path = convertedToken.path;
+    if (!acc[path]) {
+      acc[path] = [];
+    }
+    acc[path].push(convertedToken);
+
+    return acc;
+  }, {} as Record<string, RewardTokenModel[]>);
+
+  return Object.values(tokensByPath).map(tokens => {
+    const baseToken = tokens[0];
+
+    const uniqueRewardTypes = Array.from(
+      new Set(tokens.map(token => token.rewardType).filter(Boolean)),
+    ) as RewardType[];
+
+    return {
+      ...baseToken,
+      rewardType: uniqueRewardTypes.length > 1 ? uniqueRewardTypes : baseToken.rewardType,
+    } as RewardTokenModelWithMultipleTypes;
+  });
 }
 
 /**

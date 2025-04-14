@@ -84,5 +84,6 @@ export const LogoWrapper = styled.div<Props>`
 `;
 
 export const TokenSymbolWrapper = styled.div`
-  ${fonts.p1}
+  ${fonts.p1};
+  white-space: pre;
 `;
