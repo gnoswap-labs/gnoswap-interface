@@ -19,6 +19,7 @@ export type ASSET_FILTER_TYPE = ValuesType<typeof ASSET_FILTER_TYPE>;
 
 interface AssetListHeaderProps {
   assetType: ASSET_FILTER_TYPE;
+  connected: boolean;
   invisibleZeroBalance: boolean;
   keyword: string;
   changeAssetType: (newType: string) => void;
@@ -32,6 +33,7 @@ interface AssetListHeaderProps {
 
 const AssetListHeader: React.FC<AssetListHeaderProps> = ({
   assetType,
+  connected,
   invisibleZeroBalance,
   keyword,
   changeAssetType,
@@ -82,12 +84,14 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
       </div>
       {breakpoint !== DEVICE_TYPE.MOBILE ? (
         <div className="right-section">
-          <Switch
-            checked={invisibleZeroBalance}
-            onChange={toggleInvisibleZeroBalance}
-            hasLabel={true}
-            labelText={t("Wallet:assets.hideZeroAmt")}
-          />
+          {connected && (
+            <Switch
+              checked={invisibleZeroBalance}
+              onChange={toggleInvisibleZeroBalance}
+              hasLabel={true}
+              labelText={t("Wallet:assets.hideZeroAmt")}
+            />
+          )}
           <SearchInput width={300} value={keyword} onChange={search} className="assets-search" />
         </div>
       ) : (
