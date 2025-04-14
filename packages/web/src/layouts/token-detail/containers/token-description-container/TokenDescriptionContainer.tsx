@@ -4,19 +4,14 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { useLoading } from "@hooks/common/use-loading";
 import { useGetToken } from "@query/token";
+import { TokenModel } from "@models/token/token-model";
+import { GNS_TOKEN } from "@common/values/token-constant";
+import { formatTokenModelPath } from "@utils/token-utils";
 
 import TokenDescription from "../../components/token-description/TokenDescription";
 
 export interface DescriptionInfo {
-  token: {
-    name: string;
-    symbol: string;
-    image: string;
-    pkg_path: string;
-    decimals: number;
-    description: string;
-    website_url: string;
-  };
+  token: TokenModel;
   links: {
     Website: string;
     Gnoscan: string;
@@ -24,15 +19,7 @@ export interface DescriptionInfo {
 }
 
 export const descriptionInit: DescriptionInfo = {
-  token: {
-    pkg_path: "1",
-    name: "Bitcoin",
-    symbol: "BTC",
-    image: "/gns.svg",
-    decimals: 1,
-    description: "string",
-    website_url: "string",
-  },
+  token: GNS_TOKEN,
   links: {
     Website: "https://gnoswap.io",
     Gnoscan: "https://gnoscan.io/tokens/r/demo/wugnot",
@@ -48,11 +35,12 @@ const TokenDescriptionContainer: React.FC = () => {
   const { data: tokenB, isLoading } = useGetToken(path, {
     enabled: !!path,
   });
+
   const { isLoading: isLoadingCommon } = useLoading();
 
   const copyClick = async () => {
     try {
-      await navigator.clipboard.writeText(descriptionInfo.token.pkg_path);
+      await navigator.clipboard.writeText(descriptionInfo.token.path);
       setCopied(true);
       setTimeout(() => {
         setCopied(false);
@@ -61,17 +49,16 @@ const TokenDescriptionContainer: React.FC = () => {
       throw new Error("Copy Error!");
     }
   };
+
+  const displayTokenPath = React.useMemo(() => {
+    return formatTokenModelPath(descriptionInfo.token);
+  }, [descriptionInfo.token]);
+
   useEffect(() => {
     if (tokenB) {
       setDescriptionInfo(() => ({
         token: {
-          name: tokenB.name,
-          symbol: tokenB.symbol,
-          image: tokenB.logoURI,
-          pkg_path: tokenB.path,
-          decimals: 1,
-          description: tokenB.description || "",
-          website_url: tokenB.websiteURL || "",
+          ...tokenB,
         },
         links: {
           Website: tokenB.websiteURL || "",
@@ -85,9 +72,9 @@ const TokenDescriptionContainer: React.FC = () => {
     <TokenDescription
       tokenName={descriptionInfo.token.name}
       tokenSymbol={descriptionInfo.token.symbol}
-      content={descriptionInfo.token.description}
+      content={descriptionInfo.token.description || ""}
       links={descriptionInfo.links}
-      path={descriptionInfo.token.pkg_path}
+      path={displayTokenPath}
       loading={isLoading || isLoadingCommon}
       copyClick={copyClick}
       copied={copied}

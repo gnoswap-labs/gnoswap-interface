@@ -1,17 +1,14 @@
 import { EXT_URL } from "@constants/external-url.contant";
 
-import { P } from "../common/common.styles";
-import { StyledIconFile } from "../common/styled-icon-file/StyledIconFile";
 import { Anchor, Flex } from "./LearnMore.styles";
+import IconNote from "@components/common/icons/IconNote";
 
 export default function LearnMore() {
   return (
     <Anchor href={EXT_URL.DOCS.USER_GUIDE.LEADERBOARD} target="_blank" rel="noreferrer">
       <Flex>
-        <P as="span" color="text30">
-          Learn More
-        </P>
-        <StyledIconFile />
+        <span>Learn More</span>
+        <IconNote className="icon-logo" />
       </Flex>
     </Anchor>
   );

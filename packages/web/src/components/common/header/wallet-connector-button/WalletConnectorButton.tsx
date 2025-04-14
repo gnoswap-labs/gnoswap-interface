@@ -58,7 +58,7 @@ const ToolTipGlobalStyle = () => {
 const FailNetworkTooltipContent: React.FC = () => {
   return (
     <FailNetworkTooltipContentWrap>
-      Unsupported network. <br /> Switch your network to Gnoland.
+      Unsupported network. <br /> Switch your network to gno.land.
     </FailNetworkTooltipContentWrap>
   );
 };

@@ -6,6 +6,7 @@ import { AssetSendButton } from "@components/wallet/asset-button/AssetSendButton
 import { ASSET_INFO, ASSET_INFO_MOBILE, ASSET_INFO_TABLET } from "@constants/skeleton.constant";
 import { isNativeToken } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
+import { GNOT_TOKEN } from "@common/values/token-constant";
 
 import { Asset } from "../AssetListTable";
 
@@ -39,6 +40,10 @@ const AssetInfo: React.FC<AssetInfoProps> = ({ asset, deposit, withdraw, moveTok
     [asset, breakpoint],
   );
 
+  const displayTokenChain = useMemo(() => {
+    return `${GNOT_TOKEN.name} (${type})`;
+  }, [type]);
+
   return breakpoint === DEVICE_TYPE.WEB ? (
     <AssetInfoWrapper>
       <TableColumn
@@ -50,7 +55,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({ asset, deposit, withdraw, moveTok
         {tokenInfoCell}
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO.list?.[1].width}>
-        <span className="chain">{type === "GRC20" ? "Gnoland (GRC20)" : "Gnoland (Native)"}</span>
+        <span className="chain">{displayTokenChain}</span>
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO.list?.[2].width}>
         <span className="balance">{balance}</span>
@@ -75,7 +80,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({ asset, deposit, withdraw, moveTok
         {tokenInfoCell}
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO_TABLET.list[1].width}>
-        <span className="chain">{type === "GRC20" ? "Gnoland (GRC20)" : "Gnoland (Native)"}</span>
+        <span className="chain">{displayTokenChain}</span>
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO_TABLET.list[2].width}>
         <span className="balance">{balance}</span>
@@ -100,7 +105,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({ asset, deposit, withdraw, moveTok
         {tokenInfoCell}
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO_MOBILE.list[1].width}>
-        <span className="chain">{type === "GRC20" ? "Gnoland (GRC20)" : "Gnoland (Native)"}</span>
+        <span className="chain">{displayTokenChain}</span>
       </TableColumn>
       <TableColumn className="left" tdWidth={ASSET_INFO_MOBILE.list[2].width}>
         <span className="balance">{balance}</span>

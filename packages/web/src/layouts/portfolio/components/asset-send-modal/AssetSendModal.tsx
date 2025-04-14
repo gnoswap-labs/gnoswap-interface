@@ -258,7 +258,7 @@ const AssetSendModal: React.FC<Props> = ({
                 <div className="withdrawal-network">
                   <div className="network">
                     <img src={DEFAULT_WITHDRAW_GNOT.logoURI} alt="token logo" className="token-logo" />
-                    <span className="token-symbol">Gnoland (GRC20)</span>
+                    <span className="token-symbol">{GNOT_TOKEN.name} (GRC20)</span>
                   </div>
 
                   <div className="approximately">

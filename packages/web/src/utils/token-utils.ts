@@ -1,8 +1,9 @@
 import { RewardTokenModel } from "@models/position/reward-model";
-import { TokenModel } from "@models/token/token-model";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 import { formatOtherPrice } from "./new-number-utils";
 import { roundDownDecimalNumber } from "./regex";
+import { STATIC_TEXT } from "@common/values";
 
 export function makeRawTokenAmount(token: TokenModel, amount: string | number) {
   const number = BigNumber(amount.toString());
@@ -70,8 +71,8 @@ export function formatTokenBalanceDisplay(balance: string, connectedWallet: bool
  * @param nativeCoinText - The text to display for native coins
  * @returns Formatted token path
  */
-export function formatTokenPath(path: string, isNative: boolean, nativeCoinText: string): string {
-  if (isNative) return nativeCoinText;
+export function formatTokenPath(path: string, isNative: boolean): string {
+  if (isNative) return STATIC_TEXT.NATIVE_COIN;
 
   // Remove 'gno.land/' prefix if present
   return path.replace(/^gno\.land\//, "");
@@ -110,3 +111,13 @@ export function getUniqueRewardTokensByPath<
     return acc;
   }, [] as RewardTokenModel[]);
 }
+
+/**
+ *
+ * @param token TokenModel
+ * @returns Formatted token path
+ */
+export const formatTokenModelPath = (token: TokenModel): string => {
+  if (isNativeToken(token)) return STATIC_TEXT.NATIVE_COIN;
+  return token.path.replace(/^gno\.land\//, "");
+};

@@ -13,8 +13,8 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { SwapTokenHeaderWrapper } from "./SwapTokenHeader.styles";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import { nullish } from "@utils/nullish-utils";
-import { STATIC_TEXT } from "@common/values";
 import useCustomRouter from "@hooks/common/use-custom-router";
+import { formatTokenPath } from "@utils/token-utils";
 
 interface TokenInfo {
   name: string;
@@ -62,11 +62,9 @@ const SwapTokenHeader = ({ tokenInfo, currentPrice, chartData, containerWidth }:
   }, [chartData, t]);
 
   const displayTokenPath = React.useMemo(() => {
-    if (tokenInfo.isNative) {
-      return STATIC_TEXT.NATIVE_COIN;
-    }
-    return tokenInfo.path;
-  }, [tokenInfo]);
+    if (!tokenInfo.path) return null;
+    return formatTokenPath(tokenInfo.path, tokenInfo.isNative);
+  }, [tokenInfo.path, tokenInfo.isNative]);
 
   const onClickTokenName = React.useCallback(() => {
     if (!tokenInfo.path) return;

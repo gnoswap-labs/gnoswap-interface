@@ -1,12 +1,12 @@
-import { STATIC_TEXT } from "@common/values";
 import IconClose from "@components/common/icons/IconCancel";
 import IconSearch from "@components/common/icons/IconSearch";
 import { ORDER } from "@containers/select-token-container/SelectTokenContainer";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
-import { isNativeToken, TokenModel } from "@models/token/token-model";
+import { TokenModel } from "@models/token/token-model";
 import { TokenState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
 import { removeDuplicatesByWrappedPath } from "@utils/common";
+import { formatTokenModelPath } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -177,41 +177,44 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       <Divider />
       <div className={`token-list-wrapper ${tokens.length === 0 ? "token-list-wrapper-auto-height" : ""}`}>
         {tokens.length > 0 &&
-          tokens.map((token, index) => (
-            <div className="list" key={index} onClick={() => onClickToken(token)}>
-              <div className="token-info">
-                <MissingLogo
-                  symbol={token.symbol}
-                  url={token.logoURI}
-                  className="token-logo"
-                  width={32}
-                  mobileWidth={32}
-                />
-                <TokenInfoWrapper
-                  className="token-info-detail"
-                  maxWidth={widthList[index]}
-                  tokenNameWidthList={tokenNameWidthList[index]}
-                >
-                  <div>
-                    <span className="token-name" ref={tokenNameRef.current[index]}>
-                      {token.name.length > length ? `${token.name.slice(0, length)}...` : token.name}
-                    </span>
-                    <div
-                      className="token-path"
-                      onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, token.path)}
-                    >
-                      <div>{isNativeToken(token) ? STATIC_TEXT.NATIVE_COIN : token.path}</div>
-                      <IconNewTab />
+          tokens.map((token, index) => {
+            const displayTokenPath = formatTokenModelPath(token);
+            return (
+              <div className="list" key={index} onClick={() => onClickToken(token)}>
+                <div className="token-info">
+                  <MissingLogo
+                    symbol={token.symbol}
+                    url={token.logoURI}
+                    className="token-logo"
+                    width={32}
+                    mobileWidth={32}
+                  />
+                  <TokenInfoWrapper
+                    className="token-info-detail"
+                    maxWidth={widthList[index]}
+                    tokenNameWidthList={tokenNameWidthList[index]}
+                  >
+                    <div>
+                      <span className="token-name" ref={tokenNameRef.current[index]}>
+                        {token.name.length > length ? `${token.name.slice(0, length)}...` : token.name}
+                      </span>
+                      <div
+                        className="token-path"
+                        onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, token.path)}
+                      >
+                        <div>{displayTokenPath}</div>
+                        <IconNewTab />
+                      </div>
                     </div>
-                  </div>
-                  <span className="token-symbol">{token.symbol}</span>
-                </TokenInfoWrapper>
+                    <span className="token-symbol">{token.symbol}</span>
+                  </TokenInfoWrapper>
+                </div>
+                <span className="token-balance" ref={priceRefs.current[index]}>
+                  {getTokenPrice(token)}
+                </span>
               </div>
-              <span className="token-balance" ref={priceRefs.current[index]}>
-                {getTokenPrice(token)}
-              </span>
-            </div>
-          ))}
+            );
+          })}
         {tokens.length === 0 && <div className="no-data-found">{t("common:selectPairBtn.modal.noData")}</div>}
       </div>
     </SelectTokenWrapper>
