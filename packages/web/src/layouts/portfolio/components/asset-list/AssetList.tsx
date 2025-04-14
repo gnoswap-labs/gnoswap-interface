@@ -10,6 +10,7 @@ import { AssetListWrapper } from "./AssetList.styles";
 
 interface AssetListProps {
   assets: Asset[];
+  connected: boolean;
   isFetched: boolean;
   assetType?: ASSET_FILTER_TYPE;
   invisibleZeroBalance: boolean;
@@ -34,6 +35,7 @@ interface AssetListProps {
 
 const AssetList: React.FC<AssetListProps> = ({
   assets,
+  connected,
   isFetched,
   assetType = ASSET_FILTER_TYPE.ALL,
   invisibleZeroBalance,
@@ -58,6 +60,7 @@ const AssetList: React.FC<AssetListProps> = ({
   <AssetListWrapper>
     <AssetListHeader
       assetType={assetType}
+      connected={connected}
       invisibleZeroBalance={invisibleZeroBalance}
       keyword={keyword}
       changeAssetType={changeAssetType}

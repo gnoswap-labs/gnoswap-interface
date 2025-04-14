@@ -425,6 +425,7 @@ const AssetListContainer: React.FC = () => {
     <>
       <AssetList
         assets={[...fixedTokens, ...filteredTokens]}
+        connected={connected}
         isFetched={
           isFetched && !isLoadingTokens && !isLoadingPosition && !(isEmptyObject(balances) && account?.address)
         }
