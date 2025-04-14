@@ -56,6 +56,7 @@ export type StringParamsArr = (string | undefined)[];
 export type StringWithParamsArr = (params?: StringParamsArr) => TranslationKey;
 
 export const DefaultTitle = "Metatag(title):seo.title.default";
+export const DEFAULT_SEO_TITLE = "The One-stop Gnoland DeFi Platform | GnoSwap";
 
 export const SEOInfo: Record<
   PageKey,
@@ -117,7 +118,7 @@ export const SEOInfo: Record<
         const [tokenASymbol, tokenBSymbol, feeTier] = params;
         return `${tokenASymbol}/${tokenBSymbol} ${feeTier} | Earn on GnoSwap`;
       }
-      return DefaultTitle;
+      return DEFAULT_SEO_TITLE;
     },
     desc: () =>
       "Provide liquidity to earn trading fees and staking rewards. GnoSwap's concentrated liquidity maximizes your earnings by amplifying your capital efficiency.",
@@ -128,7 +129,7 @@ export const SEOInfo: Record<
         const [address, tokenASymbol, tokenBSymbol, feeTier] = params;
         return `${address} | ${tokenASymbol}/${tokenBSymbol} ${feeTier} | Earn on GnoSwap`;
       }
-      return DefaultTitle;
+      return DEFAULT_SEO_TITLE;
     },
     desc: () => "Create your own positions and provide liquidity to earn trading fees.",
   },
@@ -225,7 +226,7 @@ export const SEOInfo: Record<
 
       if (tokenName && tokenSymbol && tokenPrice) return titleDisplay;
 
-      return DefaultTitle;
+      return DEFAULT_SEO_TITLE;
     },
     desc: (params = []) => {
       if (params.length === 1) {
