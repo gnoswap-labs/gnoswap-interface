@@ -119,7 +119,8 @@ const LaunchpadDepositModal = ({
               <div className="data-row">
                 <div className="key">{t("Launchpad:modal.deposit.reward.col.network")}</div>
                 <div className="value">
-                  <Image src={GNOT_TOKEN.logoURI} width={24} height={24} alt="Gno.land Token symbol" /> Gnoland (GRC20)
+                  <Image src={GNOT_TOKEN.logoURI} width={24} height={24} alt="Gno.land Token symbol" />{" "}
+                  {GNOT_TOKEN.name} (GRC20)
                 </div>
               </div>
               <div className="data-row">

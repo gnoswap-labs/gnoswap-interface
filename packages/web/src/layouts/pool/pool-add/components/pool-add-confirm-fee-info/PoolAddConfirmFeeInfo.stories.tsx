@@ -10,7 +10,7 @@ export default {
 const token = {
   info: {
     path: "1",
-    name: "Gnoland",
+    name: "gno.land",
     symbol: "GNO.LAND",
     logoURI: "",
   },

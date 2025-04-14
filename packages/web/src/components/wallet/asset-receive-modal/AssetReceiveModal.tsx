@@ -109,7 +109,7 @@ const AssetReceiveModal: React.FC<Props> = ({ close, breakpoint, avgBlockTime, c
                 <div className="normal-box">
                   <div className="network">
                     <img src={DEFAULT_DEPOSIT_GNOT.logoURI} alt="token logo" className="token-logo" />
-                    <span className="token-symbol">Gnoland (GRC20)</span>
+                    <span className="token-symbol">{GNOT_TOKEN.name} (GRC20)</span>
                   </div>
 
                   <div className="approximately">
