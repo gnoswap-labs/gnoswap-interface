@@ -138,11 +138,13 @@ export function getUniqueRewardTokensWithMultipleRewardTypes<
   },
 ): RewardTokenModelWithMultipleTypes[] {
   const tokensByPath = rewardTokens.reduce((acc, current) => {
+    const tokenInfo = getGnotPath(current as unknown as T);
+
     const convertedToken = {
       ...current,
-      logoURI: getGnotPath(current as unknown as T).logoURI,
-      symbol: getGnotPath(current as unknown as T).symbol,
-      path: getGnotPath(current as unknown as T).path,
+      logoURI: tokenInfo.logoURI,
+      symbol: tokenInfo.symbol,
+      path: tokenInfo.path,
     };
 
     const path = convertedToken.path;
@@ -166,44 +168,6 @@ export function getUniqueRewardTokensWithMultipleRewardTypes<
       rewardType: uniqueRewardTypes.length > 1 ? uniqueRewardTypes : baseToken.rewardType,
     } as RewardTokenModelWithMultipleTypes;
   });
-}
-
-/**
- * Groups reward tokens by path and combines their reward types.
- * Tokens with the same path but different reward types will be merged into a single token
- * with an array of reward types.
- *
- * @param rewardTokens Array of tokens to process
- * @param getGnotPath GNOT path conversion function
- */
-export function getUniqueRewardTokensByPathWithTypes<
-  T extends { path?: string; name?: string; logoURI?: string; symbol?: string },
->(
-  rewardTokens: RewardTokenModel[],
-  getGnotPath: (token: T | null | undefined) => {
-    path: string;
-    name: string;
-    symbol: string;
-    logoURI: string;
-    wrappedPath: string;
-  },
-) {
-  return rewardTokens.reduce((acc, current) => {
-    const existToken = acc.some(
-      item => item.path === getGnotPath(current as unknown as T).path && item.rewardType === current.rewardType,
-    );
-
-    if (!existToken) {
-      acc.push({
-        ...current,
-        logoURI: getGnotPath(current as unknown as T).logoURI,
-        symbol: getGnotPath(current as unknown as T).symbol,
-        path: getGnotPath(current as unknown as T).path,
-      });
-    }
-
-    return acc;
-  }, [] as RewardTokenModel[]);
 }
 
 /**

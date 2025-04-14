@@ -65,16 +65,7 @@ const MissingLogo: React.FC<Props> = ({
       placement="top"
       className={tokenTooltipClassName}
       forcedClose={!showTooltip}
-      FloatingContent={
-        <TokenSymbolWrapper>
-          {tooltipContent.split("\n").map((line, i) => (
-            <React.Fragment key={i}>
-              {i > 0 && <br />}
-              {line}
-            </React.Fragment>
-          ))}
-        </TokenSymbolWrapper>
-      }
+      FloatingContent={<TokenSymbolWrapper>{tooltipContent}</TokenSymbolWrapper>}
     >
       {url ? (
         <Image mobileWidth={mobileWidth} width={width} src={url} alt="logo" className={className} />
