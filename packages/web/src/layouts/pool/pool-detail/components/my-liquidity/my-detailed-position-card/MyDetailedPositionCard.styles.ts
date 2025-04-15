@@ -253,8 +253,10 @@ export const MyPositionCardWrapper = styled.div<Props>`
         }
         cursor: default;
         transition: color 0.3s ease;
-        &:hover {
-          color: ${({ theme }) => theme.color.text07};
+        &.claimable {
+          &:hover {
+            color: ${({ theme }) => theme.color.text07};
+          }
         }
         color: ${({ theme, type }) => (type !== "closed" ? theme.color.text02 : theme.color.text10)};
         &.disabled {
