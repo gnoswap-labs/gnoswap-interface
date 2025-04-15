@@ -15,6 +15,7 @@ interface PoolPairInfoHeaderProps {
   tokenB: TokenModel;
   incentivzed: boolean;
   rewardTokens: RewardTokenModel[];
+  isMobile: boolean;
   feeStr: string;
 }
 
@@ -23,6 +24,7 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
   tokenB,
   feeStr,
   rewardTokens,
+  isMobile,
   incentivzed,
 }) => {
   const { t } = useTranslation();
@@ -35,6 +37,10 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
     return getUniqueRewardTokensWithMultipleRewardTypes(rewardTokens, getGnotPath);
   }, [getGnotPath, rewardTokens]);
 
+  const doubleLogoSize = useMemo(() => {
+    return isMobile ? 24 : 36;
+  }, [isMobile]);
+
   return (
     <PoolInfoHeaderWrapper>
       <div className="left-wrap">
@@ -43,6 +49,7 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
           right={tokenB.logoURI}
           leftSymbol={tokenA.symbol}
           rightSymbol={tokenB.symbol}
+          size={doubleLogoSize}
         />
         <h3>
           {tokenA.symbol}/{tokenB.symbol}

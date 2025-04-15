@@ -19,6 +19,7 @@ interface PoolPairInformationProps {
     path: string;
   };
   feeStr: string | null;
+  isMobile: boolean;
   onClickPath: (path: string) => void;
   loading: boolean;
   loadingBins: boolean;
@@ -29,6 +30,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
   pool,
   menu,
   feeStr,
+  isMobile,
   onClickPath,
   loading,
   loadingBins,
@@ -65,6 +67,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
             tokenB={pool.tokenB}
             incentivzed={pool.incentivized}
             rewardTokens={pool.rewardTokens}
+            isMobile={isMobile}
             feeStr={feeStr || ""}
           />
         )}

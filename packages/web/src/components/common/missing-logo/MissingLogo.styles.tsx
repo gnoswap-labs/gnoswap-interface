@@ -67,9 +67,9 @@ export const LogoWrapper = styled.div<Props>`
     return `${getFontSize(width)}px`;
   }};
   ${media.mobile} {
-    font-size: ${({ mobileWidth, placeholderFontSize }) => {
+    font-size: ${({ mobileWidth, width, placeholderFontSize }) => {
       if (placeholderFontSize) return `${placeholderFontSize}px`;
-      return `${getFontSize(mobileWidth)}px`;
+      return `${getFontSize(mobileWidth || width)}px`;
     }};
     height: ${({ mobileWidth }) => {
       return `${mobileWidth}px`;
