@@ -1,6 +1,7 @@
 import { useAtomValue } from "jotai";
 import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { cx } from "@emotion/css";
 
 import { WUGNOT_TOKEN } from "@common/values/token-constant";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
@@ -308,17 +309,15 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   }, [isDisplay, position.rewards]);
 
   const isClaimable = useMemo(() => {
-    if (!isDisplay || position.rewards.length === 0) {
+    if (position.rewards.length === 0) {
       return false;
     }
 
-    const totalClaimableUsd = position.rewards.reduce((acc, current) => {
-      const claimableUsd = Number(current.claimableUsd || 0);
-      return acc + claimableUsd;
-    }, 0);
-
-    return totalClaimableUsd > 0;
-  }, [isDisplay, position.rewards]);
+    return position.rewards.some(reward => {
+      const amount = parseFloat(reward.claimableAmount || "0");
+      return amount > 0;
+    });
+  }, [position.rewards]);
 
   const totalDailyEarning = useMemo(() => {
     const isEmpty = !totalRewardInfo || position.rewards.length === 0;
@@ -867,9 +866,10 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
           <div className="info-box-flex">
             <Tooltip
               placement="top"
+              forcedClose={!isClaimable}
               FloatingContent={<div>{totalRewardInfo && <RewardTooltipContent rewardInfo={totalRewardInfo} />}</div>}
             >
-              <span className="content-text">{totalRewardUSD}</span>
+              <span className={cx("content-text", { claimable: isClaimable })}>{totalRewardUSD}</span>
             </Tooltip>
             {isClaimable && <ClaimButton text={"Claim"} onClick={() => claim(position)} />}
           </div>
