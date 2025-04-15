@@ -498,14 +498,14 @@ export function makeRepositionLiquidityMessagesWithApproves(
 export function makeRemoveLiquidityMessagesWithApproves(
   {
     lpTokenIds,
-    calculatedLiquidity,
+    positionLiquidities,
     tokenPaths,
     caller,
     isGetWGNOT,
     deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString(),
   }: {
     lpTokenIds: string[];
-    calculatedLiquidity: string;
+    positionLiquidities: Record<string, BigNumber>;
     tokenPaths: string[];
     caller: string;
     isGetWGNOT: boolean;
@@ -531,22 +531,23 @@ export function makeRemoveLiquidityMessagesWithApproves(
     });
   }
 
-  const removeLiquidityMessages = lpTokenIds.map(lpTokenId =>
-    makeTransactionMessage({
+  const removeLiquidityMessages = lpTokenIds.map(lpTokenId => {
+    const positionLiquidity = positionLiquidities[lpTokenId] || new BigNumber(0);
+    return makeTransactionMessage({
       send: "",
       func: TransactionMessageFunctionType.DecreaseLiquidity,
       packagePath: PACKAGE_POSITION_PATH,
       args: [
         lpTokenId, // LP Token ID
-        calculatedLiquidity.toString(), // Liquidity amount to remove (100%)
+        positionLiquidity.toString(), // Liquidity amount to remove (100%)
         "0", // Minimum quantity of tokenA to decrease liquidity
         "0", // Minimum quantity of tokenB to decrease liquidity
         deadline, // Deadline UTC time
         `${!isGetWGNOT}`, // whether unwrap token : isGetWGNOT == true => wrap
       ],
       caller,
-    }),
-  );
+    });
+  });
 
   return makeTransactionMessagesWithApproves(removeLiquidityMessages, approveMessageInfos, fetchAllowance);
 }

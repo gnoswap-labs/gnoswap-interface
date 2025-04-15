@@ -22,6 +22,7 @@ import { DexEvent } from "@repositories/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { toUnitFormat } from "@utils/number-utils";
 import { isEmptyObject } from "@utils/validation-utils";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 
 import AssetSendModal from "../../components/asset-send-modal/AssetSendModal";
 import WalletBalance from "../../components/wallet-balance/WalletBalance";
@@ -44,9 +45,16 @@ const WalletBalanceContainer: React.FC = () => {
 
   const { positions, loading: loadingPositions, refetch: refetchPositions } = usePositionData();
 
+  const isClaimablePosition = (position: PoolPositionModel) => position.liquidity > 0 && !position.closed;
+
+  const claimablePositions = useMemo(() => {
+    if (!positions || positions.length === 0) return [];
+    return positions.filter(isClaimablePosition);
+  }, [positions]);
+
   const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);
 
-  const { claimAll } = usePosition(positions);
+  const { claimAll } = usePosition(claimablePositions);
   const { broadcastSuccess, broadcastError, broadcastRejected, broadcastLoading } = useBroadcastHandler();
   const { enqueueEvent } = useTransactionEventStore();
 
@@ -78,7 +86,9 @@ const WalletBalanceContainer: React.FC = () => {
   }, [connected, address]);
 
   const claimAllReward = useCallback(() => {
-    const amount = positions.flatMap(item => item.rewards).reduce((acc, item) => acc + Number(item.claimableUsd), 0);
+    const amount = claimablePositions
+      .flatMap(item => item.rewards)
+      .reduce((acc, item) => acc + Number(item.claimableUsd), 0);
 
     const messageData = {
       tokenAAmount: toUnitFormat(amount, true, false),
@@ -121,7 +131,7 @@ const WalletBalanceContainer: React.FC = () => {
         }
       }
     });
-  }, [claimAll, setLoadingTransactionClaim, positions, openModal]);
+  }, [claimAll, setLoadingTransactionClaim, claimablePositions, openModal]);
 
   const loadingTotalBalance = useMemo(() => {
     return (
@@ -149,7 +159,7 @@ const WalletBalanceContainer: React.FC = () => {
     return availableBalance;
   }, [availableBalance]);
 
-  const { stakedBalance, unStakedBalance, claimableRewards, totalClaimedRewards } = positions.reduce(
+  const { stakedBalance, unStakedBalance, claimableRewards, totalClaimedRewards } = claimablePositions.reduce(
     (acc, curPosition) => {
       acc.totalClaimedRewards = BigNumber(acc.totalClaimedRewards)
         .plus(Number(curPosition.totalClaimedUsd ?? "0"))

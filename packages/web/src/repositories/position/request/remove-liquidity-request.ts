@@ -1,7 +1,9 @@
+import BigNumber from "bignumber.js";
+
 export interface RemoveLiquidityRequest {
   lpTokenIds: string[];
 
-  calculatedLiquidity: string;
+  positionLiquidities: Record<string, BigNumber>;
 
   tokenPaths: string[];
 

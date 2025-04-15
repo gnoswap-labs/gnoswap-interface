@@ -41,17 +41,18 @@ const RemoveLiquidityContainer: React.FC = () => {
     return unstakedPositions.filter(position => checkedList.includes(position.id));
   }, [checkedList, unstakedPositions]);
 
-  const calculatedLiquidity = useMemo(() => {
-    return selectedPositions
-      .reduce((total, position) => {
-        return total.plus(BigNumber(position.liquidity.toString()));
-      }, BigNumber(0))
-      .toString();
+  const positionLiquidities = useMemo(() => {
+    const liquidityMap: { [key: string]: BigNumber } = {};
+
+    selectedPositions.forEach(position => {
+      liquidityMap[position.lpTokenId] = BigNumber(position.liquidity.toString());
+    });
+    return liquidityMap;
   }, [selectedPositions]);
 
   const { openModal } = useRemovePositionModal({
     positions: positions,
-    calculatedLiquidity,
+    positionLiquidities,
     selectedIds: checkedList,
     isGetWGNOT,
     refetchPositions: async () => {

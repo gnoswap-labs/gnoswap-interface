@@ -1,5 +1,6 @@
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
+import BigNumber from "bignumber.js";
 
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { CommonState } from "@states/index";
@@ -10,7 +11,7 @@ export interface Props {
   positions: PoolPositionModel[];
   selectedIds: number[];
   isGetWGNOT: boolean;
-  calculatedLiquidity: string;
+  positionLiquidities: Record<string, BigNumber>;
   refetchPositions: () => Promise<void>;
 }
 
@@ -18,7 +19,7 @@ export const useRemovePositionModal = ({
   positions,
   selectedIds,
   isGetWGNOT,
-  calculatedLiquidity,
+  positionLiquidities,
   refetchPositions,
 }: Props) => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
@@ -35,7 +36,7 @@ export const useRemovePositionModal = ({
         allPosition={positions}
         selectedPositions={selectedPositions}
         isGetWGNOT={isGetWGNOT}
-        calculatedLiquidity={calculatedLiquidity}
+        positionLiquidities={positionLiquidities}
         refetchPositions={refetchPositions}
       />,
     );
