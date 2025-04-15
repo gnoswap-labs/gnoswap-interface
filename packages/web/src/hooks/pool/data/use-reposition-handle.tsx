@@ -71,9 +71,9 @@ export const useRepositionHandle = () => {
   );
 
   const calculatedLiquidity = useMemo(() => {
-    if (!selectedPosition?.liquidity) return "0";
+    if (!selectedPosition?.liquidity) return BigNumber(0);
 
-    return BigNumber(selectedPosition.liquidity.toString()).integerValue(BigNumber.ROUND_DOWN).toString();
+    return BigNumber(selectedPosition.liquidity.toString());
   }, [selectedPosition?.liquidity]);
 
   const defaultPositionMinPrice = useMemo(() => {
@@ -413,10 +413,14 @@ export const useRepositionHandle = () => {
 
     const deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString();
 
+    const positionLiquidity = {
+      [selectedPosition.lpTokenId]: calculatedLiquidity,
+    };
+
     return positionRepository
       .removeLiquidity({
         lpTokenIds: [selectedPosition.lpTokenId],
-        calculatedLiquidity,
+        positionLiquidities: positionLiquidity,
         caller: address,
         tokenPaths: [selectedPosition.pool.tokenA.path, selectedPosition.pool.tokenB.path],
         isGetWGNOT: false,
