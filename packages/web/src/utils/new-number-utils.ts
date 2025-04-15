@@ -235,7 +235,7 @@ export const formatOtherPrice = (
     if (kmbNumber) return kmbNumber;
   }
 
-  const [integer, fraction] = valueAsBigNum.toFormat(decimals, BigNumber.ROUND_DOWN).split(".");
+  const [integer, fraction] = absValue.toFormat(decimals, BigNumber.ROUND_DOWN).split(".");
   let newFraction = "";
   if (fraction && Number(fraction) > 0) {
     newFraction = Number(`0.${fraction}`).toString().split(".")[1];
