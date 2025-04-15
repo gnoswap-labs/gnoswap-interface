@@ -7,6 +7,7 @@ import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { initialDetailPool } from "@models/pool/pool-detail-model";
 import { useGetBinsByPath, useGetPoolDetailByPath } from "@query/pools";
 import { makeSwapFeeTier } from "@utils/swap-utils";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 import PoolPairInformation from "../../components/pool-pair-information/PoolPairInformation";
 
@@ -18,6 +19,7 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
   const router = useCustomRouter();
   const { getGnotPath } = useGnotToGnot();
   const poolPath = router.getPoolPath();
+  const { isMobile } = useWindowSize();
   const { data = initialDetailPool, isLoading: loading } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
   });
@@ -70,6 +72,7 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
         title: "business:pageHeader.earn",
         path: "/earn",
       }}
+      isMobile={isMobile}
       onClickPath={onClickPath}
       feeStr={feeStr}
       loading={loading || loadingPosition}
