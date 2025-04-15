@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from "react";
+import BigNumber from "bignumber.js";
 
 import { ERROR_VALUE } from "@common/errors/adena";
 import { GNOT_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
@@ -26,7 +27,7 @@ interface RemovePositionModalContainerProps {
   selectedPositions: PoolPositionModel[];
   allPosition: PoolPositionModel[];
   isGetWGNOT: boolean;
-  calculatedLiquidity: string;
+  positionLiquidities: Record<string, BigNumber>;
   refetchPositions: () => Promise<void>;
 }
 
@@ -34,7 +35,7 @@ const RemovePositionModalContainer = ({
   selectedPositions,
   allPosition,
   isGetWGNOT,
-  calculatedLiquidity,
+  positionLiquidities,
   refetchPositions,
 }: RemovePositionModalContainerProps) => {
   const { account } = useWallet();
@@ -129,7 +130,7 @@ const RemovePositionModalContainer = ({
     const result = await positionRepository
       .removeLiquidity({
         lpTokenIds,
-        calculatedLiquidity,
+        positionLiquidities,
         tokenPaths: approveTokenPaths,
         caller: address,
         isGetWGNOT: willWrap,
