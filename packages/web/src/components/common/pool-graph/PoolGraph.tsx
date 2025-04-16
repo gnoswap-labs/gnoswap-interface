@@ -13,6 +13,7 @@ import PoolGraphSVG from "./pool-graph-svg/PoolGraphSVG";
 import PoolGraphTooltip from "./pool-graph-tooltip/PoolGraphTooltip";
 import { PoolGraphWrapper } from "./PoolGraph.styles";
 import { ReservedBin, TooltipInfo } from "./PoolGraph.types";
+// import { ZOOL_VALUES } from "@constants/graph.constant";
 
 export interface PoolGraphProps {
   tokenA: TokenModel;
@@ -41,6 +42,8 @@ export interface PoolGraphProps {
   binsMyAmount?: PoolBinModel[];
   isReversed?: boolean;
   disabled?: boolean;
+  shiftIndex: number;
+  zoomLevel?: number;
 }
 
 const PoolGraph: React.FC<PoolGraphProps> = ({
@@ -68,6 +71,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   binsMyAmount = [],
   isReversed = false,
   disabled = true,
+  // shiftIndex = 0,
+  // zoomLevel = 0,
 }) => {
   const graphIdRef = useRef(uuid.v4());
   const graphId = graphIdRef.current.toString();

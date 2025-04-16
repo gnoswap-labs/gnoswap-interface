@@ -24,6 +24,10 @@ interface PoolPairInformationProps {
   loading: boolean;
   loadingBins: boolean;
   poolBins: PoolBinModel[];
+  shiftIndex: number;
+  zoomLevel: number;
+  onZoomIn: () => void;
+  onZoomOut: () => void;
 }
 
 const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
@@ -35,6 +39,10 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
   loading,
   loadingBins,
   poolBins,
+  shiftIndex,
+  zoomLevel,
+  onZoomIn,
+  onZoomOut,
 }) => {
   const { t } = useTranslation();
 
@@ -71,7 +79,16 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
             feeStr={feeStr || ""}
           />
         )}
-        <PoolPairInfoContent poolBins={poolBins} pool={pool} loading={loading} loadingBins={loadingBins} />
+        <PoolPairInfoContent
+          poolBins={poolBins}
+          pool={pool}
+          loading={loading}
+          loadingBins={loadingBins}
+          shiftIndex={shiftIndex}
+          zoomLevel={zoomLevel}
+          onZoomIn={onZoomIn}
+          onZoomOut={onZoomOut}
+        />
       </div>
     </PoolPairInformationWrapper>
   );

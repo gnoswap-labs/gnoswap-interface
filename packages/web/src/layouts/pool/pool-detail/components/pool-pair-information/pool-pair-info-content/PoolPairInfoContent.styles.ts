@@ -23,12 +23,21 @@ export const ContentWrapper = styled.div`
     margin: 16px 24px 24px 24px;
     gap: 16px;
     .position-header {
-      ${mixins.flexbox("column", "center", "space-between")};
+      ${mixins.flexbox("row", "center", "center")};
       width: 100%;
       gap: 8px;
       color: ${({ theme }) => theme.color.text04};
       ${fonts.body12}
       position: relative;
+      .position-header-wrapper {
+        ${mixins.flexbox("column", "center", "space-between")};
+        width: 100%;
+        gap: 8px;
+      }
+      .zoom-controller {
+        ${mixins.flexbox("row", "center", "center")};
+        gap: 8px;
+      }
     }
     .swap-price {
       height: 20px;

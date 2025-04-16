@@ -10,12 +10,17 @@ import { makeSwapFeeTier } from "@utils/swap-utils";
 import { useWindowSize } from "@hooks/common/use-window-size";
 
 import PoolPairInformation from "../../components/pool-pair-information/PoolPairInformation";
+import { ZOOL_VALUES } from "@constants/graph.constant";
 
 interface PoolPairInformationContainerProps {
   address?: string | undefined;
 }
 
 const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> = ({ address }) => {
+  const [zoomLevel, setZoomLevel] = React.useState<number>(0);
+  const [shiftIndex, setShiftIndex] = React.useState<number>(0);
+  const binCount = React.useMemo(() => ZOOL_VALUES[zoomLevel], [zoomLevel]);
+
   const router = useCustomRouter();
   const { getGnotPath } = useGnotToGnot();
   const poolPath = router.getPoolPath();
@@ -30,8 +35,10 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
       enabled: !!poolPath,
     },
   });
-  const { data: bins = [], isLoading: isLoadingBins } = useGetBinsByPath(poolPath as string, 40, {
+  const { data: bins = [], isLoading: isLoadingBins } = useGetBinsByPath(poolPath as string, binCount, {
+    keepPreviousData: true,
     enabled: !!poolPath,
+    queryKey: ["poolPairInformationContainer/getBins", poolPath, zoomLevel],
   });
 
   const onClickPath = (path: string) => {
@@ -65,6 +72,20 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
     return SwapFeeTierInfoMap[makeSwapFeeTier(pool.fee)].rateStr;
   }, [pool?.fee]);
 
+  const handleZoomIn = React.useCallback(() => {
+    if (zoomLevel + 1 < ZOOL_VALUES.length) {
+      setZoomLevel(zoomLevel + 1);
+    }
+    setShiftIndex(0);
+  }, [zoomLevel]);
+
+  const handleZoomOut = React.useCallback(() => {
+    if (zoomLevel > 0) {
+      setZoomLevel(zoomLevel - 1);
+    }
+    setShiftIndex(0);
+  }, [zoomLevel]);
+
   return (
     <PoolPairInformation
       pool={pool}
@@ -74,6 +95,10 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
       }}
       isMobile={isMobile}
       onClickPath={onClickPath}
+      shiftIndex={shiftIndex}
+      zoomLevel={zoomLevel}
+      onZoomIn={handleZoomIn}
+      onZoomOut={handleZoomOut}
       feeStr={feeStr}
       loading={loading || loadingPosition}
       loadingBins={loading || loadingPosition || isLoadingBins}
