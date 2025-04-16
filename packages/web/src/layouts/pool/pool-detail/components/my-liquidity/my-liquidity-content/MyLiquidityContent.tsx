@@ -510,8 +510,12 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     if (sumOfBalances === 0) {
       return 0.5;
     }
-    return tokenABalance / (tokenABalance + tokenBBalance);
-  }, [tokenABalance, tokenBBalance]);
+
+    const DEFAULT_PRICE_FACTOR = 1;
+    const priceRatio = positionData?.price || DEFAULT_PRICE_FACTOR;
+
+    return tokenABalance / (tokenABalance + tokenBBalance / priceRatio);
+  }, [tokenABalance, tokenBBalance, positionData?.price]);
 
   const depositRatioStrOfTokenA = useMemo(() => {
     const depositStr = `${Math.round(depositRatio * 100)}%`;
