@@ -43,6 +43,7 @@ export interface PoolGraphProps {
   isReversed?: boolean;
   disabled?: boolean;
   shiftIndex: number;
+  displayBinCount?: number;
   zoomLevel?: number;
 }
 
@@ -71,7 +72,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   binsMyAmount = [],
   isReversed = false,
   disabled = true,
-  // shiftIndex = 0,
+  displayBinCount = 40,
+  shiftIndex = 0,
   // zoomLevel = 0,
 }) => {
   const graphIdRef = useRef(uuid.v4());
@@ -135,6 +137,21 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     }));
     return reverseReserveBins;
   }, [bins, isReversed, poolPrice, binsMyAmount.length]);
+
+  const displayBins = useMemo(() => {
+    const centerIndex = reservedBins.length / 2;
+    const displaySideBinCount = displayBinCount / 2;
+
+    const sliceStartIndex =
+      centerIndex - displaySideBinCount + shiftIndex >= 0 ? centerIndex - displaySideBinCount + shiftIndex : 0;
+
+    const sliceEndIndex =
+      centerIndex + displaySideBinCount + shiftIndex < reservedBins.length
+        ? centerIndex + displaySideBinCount + shiftIndex
+        : reservedBins.length;
+
+    return reservedBins.slice(sliceStartIndex, sliceEndIndex);
+  }, [reservedBins, displayBinCount, shiftIndex]);
 
   const maxHeight = d3.max(reservedBins, bin => bin.reserveTokenMap) || 0;
 
@@ -397,7 +414,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
           height={height}
           margin={margin}
           currentTick={currentTick}
-          reservedBins={reservedBins}
+          reservedBins={displayBins}
           maxTickPosition={maxTickPosition}
           minTickPosition={minTickPosition}
           isReversed={isReversed}

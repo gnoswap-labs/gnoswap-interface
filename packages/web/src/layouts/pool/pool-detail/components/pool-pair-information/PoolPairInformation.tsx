@@ -28,6 +28,8 @@ interface PoolPairInformationProps {
   zoomLevel: number;
   onZoomIn: () => void;
   onZoomOut: () => void;
+  onMoveLeft: () => void;
+  onMoveRight: () => void;
 }
 
 const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
@@ -43,6 +45,8 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
   zoomLevel,
   onZoomIn,
   onZoomOut,
+  onMoveLeft,
+  onMoveRight,
 }) => {
   const { t } = useTranslation();
 
@@ -88,6 +92,8 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
           zoomLevel={zoomLevel}
           onZoomIn={onZoomIn}
           onZoomOut={onZoomOut}
+          onMoveLeft={onMoveLeft}
+          onMoveRight={onMoveRight}
         />
       </div>
     </PoolPairInformationWrapper>

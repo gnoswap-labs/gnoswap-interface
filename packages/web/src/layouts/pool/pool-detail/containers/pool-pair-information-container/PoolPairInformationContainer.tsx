@@ -37,6 +37,7 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
   });
   const { data: bins = [], isLoading: isLoadingBins } = useGetBinsByPath(poolPath as string, binCount, {
     keepPreviousData: true,
+    staleTime: 60_000,
     enabled: !!poolPath,
     queryKey: ["poolPairInformationContainer/getBins", poolPath, zoomLevel],
   });
@@ -72,19 +73,49 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
     return SwapFeeTierInfoMap[makeSwapFeeTier(pool.fee)].rateStr;
   }, [pool?.fee]);
 
+  const availZoomIn = React.useMemo(() => {
+    return zoomLevel < ZOOL_VALUES.length - 1;
+  }, [zoomLevel]);
+
+  const availZoomOut = React.useMemo(() => {
+    return zoomLevel > 0;
+  }, [zoomLevel]);
+
+  const availMoveLeft = React.useMemo(() => {
+    const moveRange = bins.length / 2 - 20;
+    return shiftIndex + moveRange > 0;
+  }, [shiftIndex, bins]);
+
+  const availMoveRight = React.useMemo(() => {
+    const moveRange = bins.length / 2 - 20;
+    return moveRange - shiftIndex > 0;
+  }, [shiftIndex, bins.length]);
+
   const handleZoomIn = React.useCallback(() => {
-    if (zoomLevel + 1 < ZOOL_VALUES.length) {
+    if (availZoomIn && zoomLevel + 1 < ZOOL_VALUES.length) {
       setZoomLevel(zoomLevel + 1);
     }
     setShiftIndex(0);
-  }, [zoomLevel]);
+  }, [zoomLevel, availZoomIn]);
 
   const handleZoomOut = React.useCallback(() => {
-    if (zoomLevel > 0) {
+    if (availZoomOut && zoomLevel > 0) {
       setZoomLevel(zoomLevel - 1);
     }
     setShiftIndex(0);
-  }, [zoomLevel]);
+  }, [zoomLevel, availZoomOut]);
+
+  const handleMoveLeft = React.useCallback(() => {
+    if (availMoveLeft) {
+      setShiftIndex(value => value - 1);
+    }
+  }, [availMoveLeft]);
+
+  const handleMoveRight = React.useCallback(() => {
+    if (availMoveRight) {
+      setShiftIndex(value => value + 1);
+    }
+  }, [availMoveRight]);
 
   return (
     <PoolPairInformation
@@ -99,6 +130,8 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
       zoomLevel={zoomLevel}
       onZoomIn={handleZoomIn}
       onZoomOut={handleZoomOut}
+      onMoveLeft={handleMoveLeft}
+      onMoveRight={handleMoveRight}
       feeStr={feeStr}
       loading={loading || loadingPosition}
       loadingBins={loading || loadingPosition || isLoadingBins}

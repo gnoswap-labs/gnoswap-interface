@@ -46,6 +46,8 @@ interface PoolPairInfoContentProps {
   zoomLevel: number;
   onZoomIn: () => void;
   onZoomOut: () => void;
+  onMoveLeft: () => void;
+  onMoveRight: () => void;
 }
 
 const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
@@ -57,6 +59,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   zoomLevel,
   onZoomIn,
   onZoomOut,
+  onMoveLeft,
+  onMoveRight,
 }) => {
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
@@ -486,6 +490,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               </div>
             </div>
             <div className="zoom-controller">
+              <button onClick={onMoveLeft}>{"<"}</button>
+              <button onClick={onMoveRight}>{">"}</button>
               <button onClick={onZoomOut}>-</button>
               <button onClick={onZoomIn}>+</button>
             </div>
