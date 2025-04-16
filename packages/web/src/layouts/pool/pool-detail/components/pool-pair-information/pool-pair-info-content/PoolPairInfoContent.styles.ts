@@ -373,6 +373,20 @@ export const SectionWrapper = styled.section`
 export const TvlSectionWrapper = styled(SectionWrapper)``;
 export const VolumeSectionWrapper = styled(SectionWrapper)``;
 export const AprSectionWrapper = styled(SectionWrapper)`
+  .title-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+
+    svg {
+      width: 16px;
+      height: 16px;
+      * {
+        fill: ${({ theme }) => theme.color.icon03};
+      }
+    }
+  }
   .apr-content {
     &:hover {
       color: ${({ theme }) => theme.color.text07};
@@ -417,4 +431,10 @@ export const AprSectionWrapper = styled(SectionWrapper)`
       }
     }
   }
+`;
+
+export const ToolTipContentWrapper = styled.div`
+  width: 268px;
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text02};
 `;

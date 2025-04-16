@@ -11,13 +11,13 @@ export interface PoolSortOption {
 }
 
 export const TABLE_HEAD = {
-  POOL_NAME: "Earn:poolList.col.poolName",
-  TVL: "TVL",
-  VOLUME: "Earn:poolList.col.volume",
-  FEES: "Earn:poolList.col.fee",
-  APR: "APR",
-  REWARDS: "Earn:poolList.col.incentive",
-  LIQUIDITY_PLOT: "Earn:poolList.col.liquidityPlot",
+  POOL_NAME: { label: "Earn:poolList.col.poolName" },
+  TVL: { label: "TVL" },
+  VOLUME: { label: "Earn:poolList.col.volume" },
+  FEES: { label: "Earn:poolList.col.fee" },
+  APR: { label: "APR", tooltip: "business:positionPriceRangeInfo.feeApr.desc" },
+  REWARDS: { label: "Earn:poolList.col.incentive" },
+  LIQUIDITY_PLOT: { label: "Earn:poolList.col.liquidityPlot" },
 } as const;
 
 export const SORT_SUPPORT_HEAD = [

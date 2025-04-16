@@ -49,6 +49,16 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     display: inline-flex;
     align-items: center;
     white-space: pre;
+    &.hasTooltip {
+      svg {
+        margin-left: 4px;
+        width: 16px;
+        height: 16px;
+        * {
+          fill: ${({ theme }) => theme.color.icon03};
+        }
+      }
+    }
   }
 
   &.left span {
@@ -74,4 +84,10 @@ export const noDataText = (theme: Theme) => css`
   ${fonts.body12};
   width: 100%;
   height: 120px;
+`;
+
+export const ToolTipContentWrapper = styled.div`
+  width: 268px;
+  ${fonts.body12}
+  color: ${({ theme }) => theme.color.text02};
 `;
