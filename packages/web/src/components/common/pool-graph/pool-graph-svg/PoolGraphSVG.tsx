@@ -33,6 +33,7 @@ interface PoolGraphSVGProps {
     minX: number;
     maxX: number;
   };
+  zoomLevel: number;
   onMouseEnter?: (event: React.MouseEvent | React.TouchEvent) => void;
   onMouseLeave?: (event: React.MouseEvent) => void;
   onTouchStart?: (event: React.TouchEvent) => void;
@@ -68,6 +69,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
       onTouchStart,
       onMouseMove,
       onMouseOut,
+      zoomLevel,
     },
     forwardedRef,
   ) => {
@@ -222,7 +224,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
       if (!!width && !!height && !!chartRef.current) {
         updateChart();
       }
-    }, [width, height, reservedBins, svgRef?.current, chartRef?.current, onMouseMove, theme]);
+    }, [width, height, reservedBins, svgRef?.current, chartRef?.current, onMouseMove, theme, zoomLevel]);
 
     return (
       <PoolGraphSVGContainer

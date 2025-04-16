@@ -13,7 +13,6 @@ import PoolGraphSVG from "./pool-graph-svg/PoolGraphSVG";
 import PoolGraphTooltip from "./pool-graph-tooltip/PoolGraphTooltip";
 import { PoolGraphWrapper } from "./PoolGraph.styles";
 import { ReservedBin, TooltipInfo } from "./PoolGraph.types";
-// import { ZOOL_VALUES } from "@constants/graph.constant";
 
 export interface PoolGraphProps {
   tokenA: TokenModel;
@@ -74,7 +73,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   disabled = true,
   displayBinCount = 40,
   shiftIndex = 0,
-  // zoomLevel = 0,
+  zoomLevel = 0,
 }) => {
   const graphIdRef = useRef(uuid.v4());
   const graphId = graphIdRef.current.toString();
@@ -89,8 +88,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
   // D3 - Dimension Definition
   const defaultMinX = Math.min(...bins.map(bin => bin.minTick));
-  const minX = d3.min(bins, bin => bin.minTick - defaultMinX) || 0;
-  const maxX = d3.max(bins, bin => bin.maxTick - defaultMinX) || 0;
 
   const reservedBins: ReservedBin[] = useMemo(() => {
     const length = bins.length / 2;
@@ -153,7 +150,9 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     return reservedBins.slice(sliceStartIndex, sliceEndIndex);
   }, [reservedBins, displayBinCount, shiftIndex]);
 
-  const maxHeight = d3.max(reservedBins, bin => bin.reserveTokenMap) || 0;
+  const minX = useMemo(() => Math.min(...displayBins.map(bin => bin.minTick), 0), [displayBins]);
+  const maxX = useMemo(() => Math.max(...displayBins.map(bin => bin.maxTick), 0), [displayBins]);
+  const maxHeight = d3.max(displayBins, bin => bin.reserveTokenMap) || 0;
 
   // D3 - Scale Definition
   const defaultScaleX = d3
@@ -423,6 +422,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
           binSpacing={binSpacing}
           scaleX={scaleX}
           scaleY={scaleY}
+          zoomLevel={zoomLevel}
           d3Position={{
             minX,
             maxX,
