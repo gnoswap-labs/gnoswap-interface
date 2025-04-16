@@ -60,12 +60,18 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({ pool, loading
   }, [pool.tokenBBalance]);
 
   const depositRatio = useMemo(() => {
-    const sumOfBalances = Number(tokenABalance) + Number(tokenBBalance);
+    const tokenABalanceNum = Number(tokenABalance);
+    const tokenBBalanceNum = Number(tokenBBalance);
+    const sumOfBalances = tokenABalanceNum + tokenBBalanceNum;
+
     if (sumOfBalances === 0) {
       return 0.5;
     }
 
-    return Number(tokenABalance) / (Number(tokenABalance) + Number(tokenBBalance) / pool.price);
+    const DEFAULT_PRICE_FACTOR = 1;
+    const priceRatio = pool.price || DEFAULT_PRICE_FACTOR;
+
+    return tokenABalanceNum / (tokenABalanceNum + tokenBBalanceNum / priceRatio);
   }, [tokenABalance, tokenBBalance, pool.price]);
 
   const depositRatioStrOfTokenA = useMemo(() => {
