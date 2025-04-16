@@ -42,7 +42,7 @@ export interface PoolGraphProps {
   binsMyAmount?: PoolBinModel[];
   isReversed?: boolean;
   disabled?: boolean;
-  shiftIndex: number;
+  shiftIndex?: number;
   displayBinCount?: number;
   zoomLevel?: number;
 }
