@@ -63,8 +63,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({ pool, loading
       return 0.5;
     }
 
-    return Number(tokenABalance) / (Number(tokenABalance) + Number(tokenBBalance) / pool.price);
-  }, [tokenABalance, tokenBBalance, pool.price]);
+    return Number(tokenABalance) / (Number(tokenABalance) + Number(tokenBBalance));
+  }, [tokenABalance, tokenBBalance]);
 
   const depositRatioStrOfTokenA = useMemo(() => {
     if (Number.isNaN(depositRatio)) return "(0%)";
