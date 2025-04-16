@@ -30,10 +30,12 @@ import {
   LoadingChart,
   PoolPairInfoContentWrapper,
   TokenAmountTooltipContentWrapper,
+  ToolTipContentWrapper,
   TvlSectionWrapper,
   VolumeSectionWrapper,
 } from "./PoolPairInfoContent.styles";
 import TooltipAPR from "./TooltipAPR";
+import IconInfo from "@components/common/icons/IconInfo";
 
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
@@ -363,7 +365,17 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({ pool, loading
           </div>
         </VolumeSectionWrapper>
         <AprSectionWrapper>
-          <h4>{STATIC_TEXT.APR}</h4>
+          <div className="title-wrapper">
+            <h4>{STATIC_TEXT.APR}</h4>
+            <Tooltip
+              placement="top"
+              FloatingContent={
+                <ToolTipContentWrapper>{t("business:positionPriceRangeInfo.feeApr.desc")}</ToolTipContentWrapper>
+              }
+            >
+              <IconInfo />
+            </Tooltip>
+          </div>
           {!loading && (
             <Tooltip
               placement="top"

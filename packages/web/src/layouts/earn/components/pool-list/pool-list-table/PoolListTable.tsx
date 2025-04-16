@@ -13,7 +13,9 @@ import { PoolSortOption, SORT_SUPPORT_HEAD, TABLE_HEAD } from "../types";
 
 import PoolInfo from "./pool-info/PoolInfo";
 
-import { noDataText, TableColumn, TableWrapper } from "./PoolListTable.styles";
+import { noDataText, TableColumn, TableWrapper, ToolTipContentWrapper } from "./PoolListTable.styles";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import IconInfo from "@components/common/icons/IconInfo";
 
 interface PoolListTableProps {
   pools: PoolListInfo[];
@@ -76,7 +78,8 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
     <TableWrapper>
       <div className="pool-list-head">
         {Object.values(TABLE_HEAD).map((head, idx) => {
-          const canSort = SORT_SUPPORT_HEAD.includes(head);
+          const canSort = SORT_SUPPORT_HEAD.includes(head.label);
+          const hasTooltipContent = "tooltip" in head && head.tooltip;
 
           return (
             <TableColumn
@@ -88,7 +91,7 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
               tdWidth={poolInfo.list[idx].width}
             >
               <span
-                className={Object.keys(TABLE_HEAD)[idx].toLowerCase()}
+                className={cx(Object.keys(TABLE_HEAD)[idx].toLowerCase(), { hasTooltip: !!hasTooltipContent })}
                 onClick={canSort ? () => onClickTableHead(head) : undefined}
               >
                 {canSort && (
@@ -97,7 +100,15 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
                     {isDescendingOption(head) && <IconTriangleArrowDown className="icon desc" />}
                   </>
                 )}
-                {t(head)}
+                <span>{t(head.label)}</span>
+                {hasTooltipContent && (
+                  <Tooltip
+                    placement="top"
+                    FloatingContent={<ToolTipContentWrapper>{t(head.tooltip)}</ToolTipContentWrapper>}
+                  >
+                    <IconInfo />
+                  </Tooltip>
+                )}
               </span>
             </TableColumn>
           );

@@ -255,7 +255,7 @@ const PoolListContainer: React.FC = () => {
    */
   const isSortOption = useCallback((head: TABLE_HEAD) => {
     const disableItems = ["Earn:poolList.col.incentive", "Earn:poolList.col.liquidityPlot"];
-    return !disableItems.includes(head);
+    return !disableItems.includes(head.label);
   }, []);
 
   return (
