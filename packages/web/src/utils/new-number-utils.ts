@@ -7,7 +7,7 @@ export const formatPoolPairAmount = (
   amount?: number | BigNumber | string | null,
   {
     decimals,
-    minLimit,
+    minLimit = 0.01,
     isKMB = true,
     hasMinLimit = true,
   }: {
