@@ -73,23 +73,16 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
     return SwapFeeTierInfoMap[makeSwapFeeTier(pool.fee)].rateStr;
   }, [pool?.fee]);
 
-  const availZoomIn = React.useMemo(() => {
-    return zoomLevel < ZOOL_VALUES.length - 1;
-  }, [zoomLevel]);
-
-  const availZoomOut = React.useMemo(() => {
-    return zoomLevel > 0;
-  }, [zoomLevel]);
-
-  const availMoveLeft = React.useMemo(() => {
+  const { availZoomIn, availZoomOut, availMoveLeft, availMoveRight } = React.useMemo(() => {
     const moveRange = bins.length / 2 - 20;
-    return shiftIndex + moveRange > 0;
-  }, [shiftIndex, bins]);
 
-  const availMoveRight = React.useMemo(() => {
-    const moveRange = bins.length / 2 - 20;
-    return moveRange - shiftIndex > 0;
-  }, [shiftIndex, bins.length]);
+    return {
+      availZoomIn: zoomLevel < ZOOL_VALUES.length - 1,
+      availZoomOut: zoomLevel > 0,
+      availMoveLeft: shiftIndex + moveRange > 0,
+      availMoveRight: moveRange - shiftIndex > 0,
+    };
+  }, [zoomLevel, shiftIndex, bins.length]);
 
   const handleZoomIn = React.useCallback(() => {
     if (availZoomIn && zoomLevel + 1 < ZOOL_VALUES.length) {
