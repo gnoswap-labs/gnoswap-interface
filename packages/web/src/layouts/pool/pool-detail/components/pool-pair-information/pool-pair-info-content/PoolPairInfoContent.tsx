@@ -463,6 +463,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
       <section className="chart-chart-container">
         <div className="position-wrapper-chart">
           <div className="position-header">
+            <div aria-hidden="true" className="spacer"></div>
             <div className="position-header-wrapper">
               <div>{t("business:currentPrice")}</div>
               <div className="swap-price">

@@ -23,7 +23,9 @@ export const ContentWrapper = styled.div`
     margin: 16px 24px 24px 24px;
     gap: 16px;
     .position-header {
-      ${mixins.flexbox("row", "center", "center")};
+      display: grid;
+      grid-template-columns: 140px 1fr 140px;
+      align-items: center;
       width: 100%;
       gap: 8px;
       color: ${({ theme }) => theme.color.text04};
