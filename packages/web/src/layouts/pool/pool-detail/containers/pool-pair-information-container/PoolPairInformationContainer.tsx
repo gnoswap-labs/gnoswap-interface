@@ -21,6 +21,8 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
   const [shiftIndex, setShiftIndex] = React.useState<number>(0);
   const binCount = React.useMemo(() => ZOOL_VALUES[zoomLevel], [zoomLevel]);
 
+  const DISPLAY_BIN_COUNT = 40;
+
   const router = useCustomRouter();
   const { getGnotPath } = useGnotToGnot();
   const poolPath = router.getPoolPath();
@@ -74,15 +76,11 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
   }, [pool?.fee]);
 
   const availInfo = React.useMemo(() => {
-    // 표시되는 bin 개수의 절반 (한쪽에 표시되는 bin 수)
-    const displayBinCount = 40; // 기본값으로 40개 표시
-    const halfDisplayBinCount = displayBinCount / 2;
+    const halfDisplayBinCount = DISPLAY_BIN_COUNT / 2;
 
-    // 이동 가능한 최대 범위 계산
     const maxLeftShift = Math.floor(bins.length / 2) - halfDisplayBinCount;
     const maxRightShift = Math.floor(bins.length / 2) - halfDisplayBinCount;
 
-    // 현재 shiftIndex가 최대 이동 범위 내에 있는지 확인
     return {
       availZoomIn: zoomLevel < ZOOL_VALUES.length - 1,
       availZoomOut: zoomLevel > 0,
@@ -107,13 +105,13 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
 
   const handleMoveLeft = React.useCallback(() => {
     if (availInfo.availMoveLeft) {
-      setShiftIndex(value => value - 5);
+      setShiftIndex(value => value - 1);
     }
   }, [availInfo.availMoveLeft]);
 
   const handleMoveRight = React.useCallback(() => {
     if (availInfo.availMoveRight) {
-      setShiftIndex(value => value + 5);
+      setShiftIndex(value => value + 1);
     }
   }, [availInfo.availMoveRight]);
 
@@ -127,6 +125,7 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
       isMobile={isMobile}
       onClickPath={onClickPath}
       shiftIndex={shiftIndex}
+      displayBinCount={DISPLAY_BIN_COUNT}
       zoomLevel={zoomLevel}
       onZoomIn={handleZoomIn}
       onZoomOut={handleZoomOut}

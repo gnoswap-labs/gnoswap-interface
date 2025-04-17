@@ -25,6 +25,7 @@ interface PoolPairInformationProps {
   loadingBins: boolean;
   poolBins: PoolBinModel[];
   shiftIndex: number;
+  displayBinCount: number;
   zoomLevel: number;
   availInfo: {
     availMoveLeft: boolean;
@@ -48,6 +49,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
   loadingBins,
   poolBins,
   shiftIndex,
+  displayBinCount,
   zoomLevel,
   availInfo,
   onZoomIn,
@@ -96,6 +98,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
           loading={loading}
           loadingBins={loadingBins}
           shiftIndex={shiftIndex}
+          displayBinCount={displayBinCount}
           zoomLevel={zoomLevel}
           availInfo={availInfo}
           onZoomIn={onZoomIn}

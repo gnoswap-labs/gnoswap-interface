@@ -93,11 +93,9 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
 
     const hasCurrentTick = useMemo(() => currentTick != null, [currentTick]);
 
-    // 현재 틱의 위치 계산 - shiftIndex에 따라 이동
     const currentTickPosition = useMemo(() => {
       if (!currentTickRelative) return boundsWidth / 2;
 
-      // 현재 틱의 위치를 계산
       return scaleX(currentTickRelative);
     }, [boundsWidth, currentTickRelative, scaleX]);
 
@@ -121,9 +119,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
         }
         if (isBlackBar) return themeKey === "dark" ? "#1C2230" : "#E0E8F4";
 
-        // 현재 틱 위치를 기준으로 색상 결정
         if (hasCurrentTick && currentTickRelative !== null) {
-          // 중앙 라인을 기준으로 왼쪽은 녹색, 오른쪽은 빨간색
           if (bin.minTick < currentTickRelative) {
             return `url(#gradient-bar-green-${graphId})`;
           }
@@ -161,7 +157,6 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
           .attr("class", "bin-wrapper")
           .attr("id", bin => `pool-graph-bin-${graphId}-${bin.index}`)
           .each(function (bin) {
-            // 각 막대의 위치와 너비 계산
             const binX = scaleX(bin.minTick);
             const binWidth = Math.max(0.5, scaleX(bin.maxTick) - binX);
 
@@ -253,7 +248,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
       scaleX,
       scaleY,
       shiftIndex,
-      currentTickPosition, // 이 의존성을 추가하여 currentTickPosition이 변경될 때마다 차트가 업데이트되도록 함
+      currentTickPosition,
     ]);
 
     return (

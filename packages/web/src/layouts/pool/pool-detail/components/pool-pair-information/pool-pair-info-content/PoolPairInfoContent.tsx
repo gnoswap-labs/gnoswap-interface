@@ -48,6 +48,7 @@ interface PoolPairInfoContentProps {
   loadingBins: boolean;
   poolBins: PoolBinModel[];
   shiftIndex: number;
+  displayBinCount: number;
   zoomLevel: number;
   availInfo: {
     availMoveLeft: boolean;
@@ -67,6 +68,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   loadingBins,
   poolBins,
   shiftIndex,
+  displayBinCount,
   zoomLevel,
   availInfo,
   onZoomIn,
@@ -534,6 +536,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               poolPrice={tickToPrice(pool.currentTick) || 1}
               disabled={isHideBar}
               shiftIndex={shiftIndex}
+              displayBinCount={displayBinCount}
               zoomLevel={zoomLevel}
             />
           )}
