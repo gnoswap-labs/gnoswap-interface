@@ -2,6 +2,7 @@ import BigNumber from "bignumber.js";
 import { useAtomValue } from "jotai";
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { cx } from "@emotion/css";
 
 import { STATIC_TEXT } from "@common/values";
 import IconStar from "@components/common/icons/IconStar";
@@ -36,15 +37,45 @@ import {
 } from "./PoolPairInfoContent.styles";
 import TooltipAPR from "./TooltipAPR";
 import IconInfo from "@components/common/icons/IconInfo";
+import IconKeyboardArrowLeft from "@components/common/icons/IconKeyboardArrowLeft";
+import IconKeyboardArrowRight from "@components/common/icons/IconKeyboardArrowRight";
+import IconRemove from "@components/common/icons/IconRemove";
+import IconAdd from "@components/common/icons/IconAdd";
 
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
   loadingBins: boolean;
   poolBins: PoolBinModel[];
+  shiftIndex: number;
+  displayBinCount: number;
+  zoomLevel: number;
+  availInfo: {
+    availMoveLeft: boolean;
+    availMoveRight: boolean;
+    availZoomIn: boolean;
+    availZoomOut: boolean;
+  };
+  onZoomIn: () => void;
+  onZoomOut: () => void;
+  onMoveLeft: () => void;
+  onMoveRight: () => void;
 }
 
-const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({ pool, loading, loadingBins, poolBins }) => {
+const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
+  pool,
+  loading,
+  loadingBins,
+  poolBins,
+  shiftIndex,
+  displayBinCount,
+  zoomLevel,
+  availInfo,
+  onZoomIn,
+  onZoomOut,
+  onMoveLeft,
+  onMoveRight,
+}) => {
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -434,42 +465,61 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({ pool, loading
       <section className="chart-chart-container">
         <div className="position-wrapper-chart">
           <div className="position-header">
-            <div>{t("business:currentPrice")}</div>
-            <div className="swap-price">
-              {!loading && (
-                <div className="left">
-                  <MissingLogo
-                    symbol={pool?.tokenA?.symbol}
-                    url={pool?.tokenA?.logoURI}
-                    width={20}
-                    className="image-logo"
-                  />
-                  {width >= 768 && `1 ${pool?.tokenA?.symbol}`} = {currentPriceRatio} {pool?.tokenB?.symbol}
-                </div>
-              )}
-              {loading && (
-                <PulseSkeletonWrapper height={18} mobileHeight={18}>
-                  <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
-                </PulseSkeletonWrapper>
-              )}
-              <AprDivider className="divider" />
-              {loading && (
-                <PulseSkeletonWrapper height={18} mobileHeight={18}>
-                  <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
-                </PulseSkeletonWrapper>
-              )}
-              {!loading && (
-                <div className="right">
-                  <MissingLogo
-                    symbol={pool?.tokenB?.symbol}
-                    url={pool?.tokenB?.logoURI}
-                    width={20}
-                    className="image-logo"
-                  />
-                  {width >= 768 && `1 ${pool?.tokenB?.symbol}`} = {currentPriceReverse} {pool?.tokenA?.symbol}
-                </div>
-              )}
+            <div aria-hidden="true" className="spacer"></div>
+            <div className="position-header-wrapper">
+              <div>{t("business:currentPrice")}</div>
+              <div className="swap-price">
+                {!loading && (
+                  <div className="left">
+                    <MissingLogo
+                      symbol={pool?.tokenA?.symbol}
+                      url={pool?.tokenA?.logoURI}
+                      width={20}
+                      className="image-logo"
+                    />
+                    {width >= 768 && `1 ${pool?.tokenA?.symbol}`} = {currentPriceRatio} {pool?.tokenB?.symbol}
+                  </div>
+                )}
+                {loading && (
+                  <PulseSkeletonWrapper height={18} mobileHeight={18}>
+                    <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
+                  </PulseSkeletonWrapper>
+                )}
+                <AprDivider className="divider" />
+                {loading && (
+                  <PulseSkeletonWrapper height={18} mobileHeight={18}>
+                    <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
+                  </PulseSkeletonWrapper>
+                )}
+                {!loading && (
+                  <div className="right">
+                    <MissingLogo
+                      symbol={pool?.tokenB?.symbol}
+                      url={pool?.tokenB?.logoURI}
+                      width={20}
+                      className="image-logo"
+                    />
+                    {width >= 768 && `1 ${pool?.tokenB?.symbol}`} = {currentPriceReverse} {pool?.tokenA?.symbol}
+                  </div>
+                )}
+              </div>
             </div>
+            {!loadingBins && (
+              <div className="zoom-controller">
+                <button className={cx({ disabled: !availInfo.availMoveLeft })} onClick={onMoveLeft}>
+                  <IconKeyboardArrowLeft />
+                </button>
+                <button className={cx({ disabled: !availInfo.availMoveRight })} onClick={onMoveRight}>
+                  <IconKeyboardArrowRight />
+                </button>
+                <button className={cx({ disabled: !availInfo.availZoomOut })} onClick={onZoomOut}>
+                  <IconRemove />
+                </button>
+                <button className={cx({ disabled: !availInfo.availZoomIn })} onClick={onZoomIn}>
+                  <IconAdd />
+                </button>
+              </div>
+            )}
           </div>
           {!loadingBins && (
             <PoolGraph
@@ -485,6 +535,9 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({ pool, loading
               offset={40}
               poolPrice={tickToPrice(pool.currentTick) || 1}
               disabled={isHideBar}
+              shiftIndex={shiftIndex}
+              displayBinCount={displayBinCount}
+              zoomLevel={zoomLevel}
             />
           )}
           {loadingBins && (

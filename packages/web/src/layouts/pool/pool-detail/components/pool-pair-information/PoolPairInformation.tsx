@@ -24,6 +24,19 @@ interface PoolPairInformationProps {
   loading: boolean;
   loadingBins: boolean;
   poolBins: PoolBinModel[];
+  shiftIndex: number;
+  displayBinCount: number;
+  zoomLevel: number;
+  availInfo: {
+    availMoveLeft: boolean;
+    availMoveRight: boolean;
+    availZoomIn: boolean;
+    availZoomOut: boolean;
+  };
+  onZoomIn: () => void;
+  onZoomOut: () => void;
+  onMoveLeft: () => void;
+  onMoveRight: () => void;
 }
 
 const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
@@ -35,6 +48,14 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
   loading,
   loadingBins,
   poolBins,
+  shiftIndex,
+  displayBinCount,
+  zoomLevel,
+  availInfo,
+  onZoomIn,
+  onZoomOut,
+  onMoveLeft,
+  onMoveRight,
 }) => {
   const { t } = useTranslation();
 
@@ -71,7 +92,20 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
             feeStr={feeStr || ""}
           />
         )}
-        <PoolPairInfoContent poolBins={poolBins} pool={pool} loading={loading} loadingBins={loadingBins} />
+        <PoolPairInfoContent
+          poolBins={poolBins}
+          pool={pool}
+          loading={loading}
+          loadingBins={loadingBins}
+          shiftIndex={shiftIndex}
+          displayBinCount={displayBinCount}
+          zoomLevel={zoomLevel}
+          availInfo={availInfo}
+          onZoomIn={onZoomIn}
+          onZoomOut={onZoomOut}
+          onMoveLeft={onMoveLeft}
+          onMoveRight={onMoveRight}
+        />
       </div>
     </PoolPairInformationWrapper>
   );

@@ -10,12 +10,19 @@ import { makeSwapFeeTier } from "@utils/swap-utils";
 import { useWindowSize } from "@hooks/common/use-window-size";
 
 import PoolPairInformation from "../../components/pool-pair-information/PoolPairInformation";
+import { ZOOL_VALUES } from "@constants/graph.constant";
 
 interface PoolPairInformationContainerProps {
   address?: string | undefined;
 }
 
 const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> = ({ address }) => {
+  const [zoomLevel, setZoomLevel] = React.useState<number>(0);
+  const [shiftIndex, setShiftIndex] = React.useState<number>(0);
+  const binCount = React.useMemo(() => ZOOL_VALUES[zoomLevel], [zoomLevel]);
+
+  const DISPLAY_BIN_COUNT = 40;
+
   const router = useCustomRouter();
   const { getGnotPath } = useGnotToGnot();
   const poolPath = router.getPoolPath();
@@ -30,8 +37,11 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
       enabled: !!poolPath,
     },
   });
-  const { data: bins = [], isLoading: isLoadingBins } = useGetBinsByPath(poolPath as string, 40, {
+  const { data: bins = [], isLoading: isLoadingBins } = useGetBinsByPath(poolPath as string, binCount, {
+    keepPreviousData: true,
+    staleTime: 60_000,
     enabled: !!poolPath,
+    queryKey: ["poolPairInformationContainer/getBins", poolPath, zoomLevel],
   });
 
   const onClickPath = (path: string) => {
@@ -65,6 +75,46 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
     return SwapFeeTierInfoMap[makeSwapFeeTier(pool.fee)].rateStr;
   }, [pool?.fee]);
 
+  const availInfo = React.useMemo(() => {
+    const halfDisplayBinCount = DISPLAY_BIN_COUNT / 2;
+
+    const maxLeftShift = Math.floor(bins.length / 2) - halfDisplayBinCount;
+    const maxRightShift = Math.floor(bins.length / 2) - halfDisplayBinCount;
+
+    return {
+      availZoomIn: zoomLevel < ZOOL_VALUES.length - 1,
+      availZoomOut: zoomLevel > 0,
+      availMoveLeft: shiftIndex > -maxLeftShift,
+      availMoveRight: shiftIndex < maxRightShift,
+    };
+  }, [zoomLevel, shiftIndex, bins.length]);
+
+  const handleZoomIn = React.useCallback(() => {
+    if (availInfo.availZoomIn && zoomLevel + 1 < ZOOL_VALUES.length) {
+      setZoomLevel(zoomLevel + 1);
+    }
+    setShiftIndex(0);
+  }, [zoomLevel, availInfo.availZoomIn]);
+
+  const handleZoomOut = React.useCallback(() => {
+    if (availInfo.availZoomOut && zoomLevel > 0) {
+      setZoomLevel(zoomLevel - 1);
+    }
+    setShiftIndex(0);
+  }, [zoomLevel, availInfo.availZoomOut]);
+
+  const handleMoveLeft = React.useCallback(() => {
+    if (availInfo.availMoveLeft) {
+      setShiftIndex(value => value - 1);
+    }
+  }, [availInfo.availMoveLeft]);
+
+  const handleMoveRight = React.useCallback(() => {
+    if (availInfo.availMoveRight) {
+      setShiftIndex(value => value + 1);
+    }
+  }, [availInfo.availMoveRight]);
+
   return (
     <PoolPairInformation
       pool={pool}
@@ -74,6 +124,14 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
       }}
       isMobile={isMobile}
       onClickPath={onClickPath}
+      shiftIndex={shiftIndex}
+      displayBinCount={DISPLAY_BIN_COUNT}
+      zoomLevel={zoomLevel}
+      onZoomIn={handleZoomIn}
+      onZoomOut={handleZoomOut}
+      onMoveLeft={handleMoveLeft}
+      onMoveRight={handleMoveRight}
+      availInfo={availInfo}
       feeStr={feeStr}
       loading={loading || loadingPosition}
       loadingBins={loading || loadingPosition || isLoadingBins}

@@ -23,12 +23,67 @@ export const ContentWrapper = styled.div`
     margin: 16px 24px 24px 24px;
     gap: 16px;
     .position-header {
-      ${mixins.flexbox("column", "center", "space-between")};
+      display: grid;
+      grid-template-columns: 140px 1fr 140px;
+      align-items: center;
       width: 100%;
       gap: 8px;
       color: ${({ theme }) => theme.color.text04};
       ${fonts.body12}
       position: relative;
+      .position-header-wrapper {
+        ${mixins.flexbox("column", "center", "space-between")};
+        width: 100%;
+        gap: 8px;
+      }
+      .zoom-controller {
+        ${mixins.flexbox("row", "center", "center")};
+        gap: 4px;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -o-user-select: none;
+        user-select: none;
+        button {
+          display: flex;
+          padding: 2px;
+          width: 32px;
+          height: 32px;
+          border-radius: 4px;
+          justify-content: center;
+          align-items: center;
+          background: ${({ theme }) => theme.color.background05};
+          svg * {
+            fill: ${({ theme }) => theme.color.icon05};
+          }
+          line-height: 22px;
+          &:hover {
+            background: ${({ theme }) => theme.color.backgroundOpacity};
+          }
+          position: relative;
+          ${media.mobile} {
+            width: 24px;
+            height: 24px;
+            svg {
+              width: 16px;
+              height: 16px;
+            }
+          }
+          &.disabled {
+            pointer-events: none;
+            &::before {
+              position: absolute;
+              content: "";
+              width: 100%;
+              border-radius: 4px;
+              height: 100%;
+              top: 0;
+              background: ${({ theme }) => theme.color.backgroundOpacity8};
+              left: 0;
+            }
+          }
+        }
+      }
     }
     .swap-price {
       height: 20px;

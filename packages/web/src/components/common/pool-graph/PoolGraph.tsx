@@ -41,6 +41,9 @@ export interface PoolGraphProps {
   binsMyAmount?: PoolBinModel[];
   isReversed?: boolean;
   disabled?: boolean;
+  shiftIndex?: number;
+  displayBinCount?: number;
+  zoomLevel?: number;
 }
 
 const PoolGraph: React.FC<PoolGraphProps> = ({
@@ -68,6 +71,9 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   binsMyAmount = [],
   isReversed = false,
   disabled = true,
+  displayBinCount = 40,
+  shiftIndex = 0,
+  zoomLevel = 0,
 }) => {
   const graphIdRef = useRef(uuid.v4());
   const graphId = graphIdRef.current.toString();
@@ -81,9 +87,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const boundsHeight = height - margin.top - margin.bottom;
 
   // D3 - Dimension Definition
-  const defaultMinX = Math.min(...bins.map(bin => bin.minTick));
-  const minX = d3.min(bins, bin => bin.minTick - defaultMinX) || 0;
-  const maxX = d3.max(bins, bin => bin.maxTick - defaultMinX) || 0;
+  const defaultMinX = React.useMemo(() => Math.min(...bins.map(bin => bin.minTick)), [bins]);
 
   const reservedBins: ReservedBin[] = useMemo(() => {
     const length = bins.length / 2;
@@ -131,15 +135,49 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     return reverseReserveBins;
   }, [bins, isReversed, poolPrice, binsMyAmount.length]);
 
+  const displayBins = useMemo(() => {
+    const centerIndex = reservedBins.length / 2;
+    const displaySideBinCount = displayBinCount / 2;
+
+    const sliceStartIndex =
+      centerIndex - displaySideBinCount + shiftIndex >= 0 ? centerIndex - displaySideBinCount + shiftIndex : 0;
+
+    const sliceEndIndex =
+      centerIndex + displaySideBinCount + shiftIndex < reservedBins.length
+        ? centerIndex + displaySideBinCount + shiftIndex
+        : reservedBins.length;
+
+    return reservedBins.slice(sliceStartIndex, sliceEndIndex);
+  }, [reservedBins, displayBinCount, shiftIndex]);
+
+  const minX = useMemo(() => Math.min(...(displayBins.map(bin => bin.minTick) || 0)), [displayBins]);
+  const maxX = useMemo(() => Math.max(...(displayBins.map(bin => bin.maxTick) || 0)), [displayBins]);
   const maxHeight = d3.max(reservedBins, bin => bin.reserveTokenMap) || 0;
 
-  // D3 - Scale Definition
-  const defaultScaleX = d3
-    .scaleLinear()
-    .domain([0, maxX - minX])
-    .range([margin.left, boundsWidth]);
+  const currentTickRelative = useMemo(() => {
+    if (currentTick === null) return null;
+    return currentTick - defaultMinX;
+  }, [currentTick, defaultMinX]);
 
-  const scaleX = defaultScaleX.copy();
+  const scaleX = useMemo(() => {
+    if (currentTickRelative === null) {
+      return d3.scaleLinear().domain([minX, maxX]).range([margin.left, boundsWidth]);
+    }
+
+    const halfBinWidth = (maxX - minX) / displayBins.length / 2;
+    const binWidth = halfBinWidth * 2;
+    const halfDisplayRange = (displayBinCount / 2) * binWidth;
+
+    const shiftOffset = shiftIndex * binWidth;
+
+    return d3
+      .scaleLinear()
+      .domain([
+        currentTickRelative - halfDisplayRange + shiftOffset,
+        currentTickRelative + halfDisplayRange + shiftOffset,
+      ])
+      .range([margin.left, boundsWidth]);
+  }, [currentTickRelative, minX, maxX, boundsWidth, margin.left, displayBins.length, displayBinCount, shiftIndex]);
 
   const scaleY = useMemo(() => {
     return d3
@@ -160,12 +198,15 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     if (reservedBins.length === 2) {
       return 20;
     }
-    const spacing = scaleX(reservedBins[1].minTick) - scaleX(reservedBins[0].minTick);
+    if (displayBins.length < 2) {
+      return 0;
+    }
+    const spacing = Math.abs(scaleX(displayBins[1].minTick) - scaleX(displayBins[0].minTick));
     if (spacing < 2) {
       return spacing;
     }
     return spacing;
-  }, [reservedBins, scaleX]);
+  }, [displayBins, scaleX]);
 
   const tooltipPosition = useMemo((): FloatingPosition => {
     if (position) {
@@ -392,7 +433,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
           height={height}
           margin={margin}
           currentTick={currentTick}
-          reservedBins={reservedBins}
+          reservedBins={displayBins}
           maxTickPosition={maxTickPosition}
           minTickPosition={minTickPosition}
           isReversed={isReversed}
@@ -401,6 +442,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
           binSpacing={binSpacing}
           scaleX={scaleX}
           scaleY={scaleY}
+          zoomLevel={zoomLevel}
+          currentTickRelative={currentTickRelative}
           d3Position={{
             minX,
             maxX,
@@ -408,6 +451,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
           }}
           onMouseMove={onMouseMoveChartBin}
           onMouseOut={onMouseOutChartBin}
+          shiftIndex={shiftIndex}
         />
       </FloatingTooltip>
     </PoolGraphWrapper>
