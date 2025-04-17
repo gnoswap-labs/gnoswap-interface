@@ -87,7 +87,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const boundsHeight = height - margin.top - margin.bottom;
 
   // D3 - Dimension Definition
-  const defaultMinX = Math.min(...bins.map(bin => bin.minTick));
+  const defaultMinX = React.useMemo(() => Math.min(...bins.map(bin => bin.minTick)), [bins]);
 
   const reservedBins: ReservedBin[] = useMemo(() => {
     const length = bins.length / 2;
@@ -150,8 +150,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     return reservedBins.slice(sliceStartIndex, sliceEndIndex);
   }, [reservedBins, displayBinCount, shiftIndex]);
 
-  const minX = useMemo(() => Math.min(...displayBins.map(bin => bin.minTick), 0), [displayBins]);
-  const maxX = useMemo(() => Math.max(...displayBins.map(bin => bin.maxTick), 0), [displayBins]);
+  const minX = useMemo(() => Math.min(...(displayBins.map(bin => bin.minTick) || 0)), [displayBins]);
+  const maxX = useMemo(() => Math.max(...(displayBins.map(bin => bin.maxTick) || 0)), [displayBins]);
   const maxHeight = d3.max(displayBins, bin => bin.reserveTokenMap) || 0;
 
   // D3 - Scale Definition
