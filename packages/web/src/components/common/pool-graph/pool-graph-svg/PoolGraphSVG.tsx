@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import * as d3 from "d3";
 
 import { useColorGraph } from "@hooks/common/use-color-graph";
@@ -35,6 +35,7 @@ interface PoolGraphSVGProps {
   };
   zoomLevel: number;
   currentTickRelative: number | null;
+  shiftIndex: number;
   onMouseEnter?: (event: React.MouseEvent | React.TouchEvent) => void;
   onMouseLeave?: (event: React.MouseEvent) => void;
   onTouchStart?: (event: React.TouchEvent) => void;
@@ -72,6 +73,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
       onMouseMove,
       onMouseOut,
       zoomLevel,
+      shiftIndex,
     },
     forwardedRef,
   ) => {
@@ -89,9 +91,10 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
     // D3 - Dimension Definition
     const { maxX } = d3Position;
 
-    const hasCurrentTick = React.useMemo(() => currentTick != null, [currentTick]);
+    const hasCurrentTick = useMemo(() => currentTick != null, [currentTick]);
 
-    const centerPosition = React.useMemo(() => {
+    // 현재 틱의 중앙 위치 계산
+    const centerPosition = useMemo(() => {
       return boundsWidth / 2;
     }, [boundsWidth]);
 
@@ -115,7 +118,9 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
         }
         if (isBlackBar) return themeKey === "dark" ? "#1C2230" : "#E0E8F4";
 
+        // 현재 틱 위치를 기준으로 색상 결정
         if (hasCurrentTick && currentTickRelative !== null) {
+          // 중앙 라인을 기준으로 왼쪽은 녹색, 오른쪽은 빨간색
           if (bin.minTick < currentTickRelative) {
             return `url(#gradient-bar-green-${graphId})`;
           }
@@ -153,6 +158,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
           .attr("class", "bin-wrapper")
           .attr("id", bin => `pool-graph-bin-${graphId}-${bin.index}`)
           .each(function (bin) {
+            // 각 막대의 위치와 너비 계산
             const binX = scaleX(bin.minTick);
             const binWidth = Math.max(0.5, scaleX(bin.maxTick) - binX);
 
@@ -243,6 +249,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
       zoomLevel,
       scaleX,
       scaleY,
+      shiftIndex,
     ]);
 
     return (

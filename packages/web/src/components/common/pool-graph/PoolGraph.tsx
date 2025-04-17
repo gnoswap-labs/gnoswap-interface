@@ -154,26 +154,36 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const maxX = useMemo(() => Math.max(...(displayBins.map(bin => bin.maxTick) || 0)), [displayBins]);
   const maxHeight = d3.max(displayBins, bin => bin.reserveTokenMap) || 0;
 
+  // 현재 틱의 상대적 위치 계산 (defaultMinX로 조정된 값)
   const currentTickRelative = useMemo(() => {
     if (currentTick === null) return null;
     return currentTick - defaultMinX;
   }, [currentTick, defaultMinX]);
 
   // D3 - Scale Definition
+  // 현재 틱이 항상 중앙에 오도록 도메인 조정
   const scaleX = useMemo(() => {
     if (currentTickRelative === null) {
+      // 현재 틱이 없는 경우 기본 스케일 사용
       return d3.scaleLinear().domain([minX, maxX]).range([margin.left, boundsWidth]);
     }
 
+    // 현재 틱을 중심으로 displayBinCount/2 만큼의 범위를 보여줌
     const halfBinWidth = (maxX - minX) / displayBins.length / 2;
     const binWidth = halfBinWidth * 2;
     const halfDisplayRange = (displayBinCount / 2) * binWidth;
 
+    // shiftIndex를 반영하여 도메인 조정
+    const shiftOffset = shiftIndex * binWidth;
+
     return d3
       .scaleLinear()
-      .domain([currentTickRelative - halfDisplayRange, currentTickRelative + halfDisplayRange])
+      .domain([
+        currentTickRelative - halfDisplayRange + shiftOffset,
+        currentTickRelative + halfDisplayRange + shiftOffset,
+      ])
       .range([margin.left, boundsWidth]);
-  }, [currentTickRelative, minX, maxX, boundsWidth, margin.left, displayBins.length, displayBinCount]);
+  }, [currentTickRelative, minX, maxX, boundsWidth, margin.left, displayBins.length, displayBinCount, shiftIndex]);
 
   const scaleY = useMemo(() => {
     return d3
@@ -447,6 +457,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
           }}
           onMouseMove={onMouseMoveChartBin}
           onMouseOut={onMouseOutChartBin}
+          shiftIndex={shiftIndex}
         />
       </FloatingTooltip>
     </PoolGraphWrapper>
