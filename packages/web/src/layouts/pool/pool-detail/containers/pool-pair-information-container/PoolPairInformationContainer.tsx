@@ -74,13 +74,20 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
   }, [pool?.fee]);
 
   const availInfo = React.useMemo(() => {
-    const moveRange = bins.length / 2 - 20;
+    // 표시되는 bin 개수의 절반 (한쪽에 표시되는 bin 수)
+    const displayBinCount = 40; // 기본값으로 40개 표시
+    const halfDisplayBinCount = displayBinCount / 2;
 
+    // 이동 가능한 최대 범위 계산
+    const maxLeftShift = Math.floor(bins.length / 2) - halfDisplayBinCount;
+    const maxRightShift = Math.floor(bins.length / 2) - halfDisplayBinCount;
+
+    // 현재 shiftIndex가 최대 이동 범위 내에 있는지 확인
     return {
       availZoomIn: zoomLevel < ZOOL_VALUES.length - 1,
       availZoomOut: zoomLevel > 0,
-      availMoveLeft: shiftIndex + moveRange > 0,
-      availMoveRight: moveRange - shiftIndex > 0,
+      availMoveLeft: shiftIndex > -maxLeftShift,
+      availMoveRight: shiftIndex < maxRightShift,
     };
   }, [zoomLevel, shiftIndex, bins.length]);
 
@@ -100,13 +107,13 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
 
   const handleMoveLeft = React.useCallback(() => {
     if (availInfo.availMoveLeft) {
-      setShiftIndex(value => value - 1);
+      setShiftIndex(value => value - 5);
     }
   }, [availInfo.availMoveLeft]);
 
   const handleMoveRight = React.useCallback(() => {
     if (availInfo.availMoveRight) {
-      setShiftIndex(value => value + 1);
+      setShiftIndex(value => value + 5);
     }
   }, [availInfo.availMoveRight]);
 

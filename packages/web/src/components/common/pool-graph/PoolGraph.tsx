@@ -152,7 +152,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
   const minX = useMemo(() => Math.min(...(displayBins.map(bin => bin.minTick) || 0)), [displayBins]);
   const maxX = useMemo(() => Math.max(...(displayBins.map(bin => bin.maxTick) || 0)), [displayBins]);
-  const maxHeight = d3.max(displayBins, bin => bin.reserveTokenMap) || 0;
+  const maxHeight = d3.max(reservedBins, bin => bin.reserveTokenMap) || 0;
 
   // 현재 틱의 상대적 위치 계산 (defaultMinX로 조정된 값)
   const currentTickRelative = useMemo(() => {
