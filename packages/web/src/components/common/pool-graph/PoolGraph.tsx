@@ -161,14 +161,13 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   }, [currentTick, defaultMinX]);
 
   // D3 - Scale Definition
-  // 현재 틱이 항상 중앙에 오도록 도메인 조정
   const scaleX = useMemo(() => {
+    // 현재 틱이 없는 경우 기본 스케일 사용
     if (currentTickRelative === null) {
-      // 현재 틱이 없는 경우 기본 스케일 사용
       return d3.scaleLinear().domain([minX, maxX]).range([margin.left, boundsWidth]);
     }
 
-    // 현재 틱을 중심으로 displayBinCount/2 만큼의 범위를 보여줌
+    // 각 bin의 너비 계산
     const halfBinWidth = (maxX - minX) / displayBins.length / 2;
     const binWidth = halfBinWidth * 2;
     const halfDisplayRange = (displayBinCount / 2) * binWidth;
@@ -176,6 +175,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     // shiftIndex를 반영하여 도메인 조정
     const shiftOffset = shiftIndex * binWidth;
 
+    // 현재 틱을 기준으로 하되, shiftIndex에 따라 도메인 이동
     return d3
       .scaleLinear()
       .domain([

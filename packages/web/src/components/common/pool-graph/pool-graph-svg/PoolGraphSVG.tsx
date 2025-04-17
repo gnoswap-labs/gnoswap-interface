@@ -93,10 +93,13 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
 
     const hasCurrentTick = useMemo(() => currentTick != null, [currentTick]);
 
-    // 현재 틱의 중앙 위치 계산
-    const centerPosition = useMemo(() => {
-      return boundsWidth / 2;
-    }, [boundsWidth]);
+    // 현재 틱의 위치 계산 - shiftIndex에 따라 이동
+    const currentTickPosition = useMemo(() => {
+      if (!currentTickRelative) return boundsWidth / 2;
+
+      // 현재 틱의 위치를 계산
+      return scaleX(currentTickRelative);
+    }, [boundsWidth, currentTickRelative, scaleX]);
 
     /** Update Chart by data */
     function updateChart() {
@@ -138,8 +141,8 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
       if (hasCurrentTick && rects.select("line").empty()) {
         rects
           .append("line")
-          .attr("x1", centerPosition)
-          .attr("x2", centerPosition)
+          .attr("x1", currentTickPosition)
+          .attr("x2", currentTickPosition)
           .attr("y1", 0)
           .attr("y2", boundsHeight)
           .attr("stroke-dasharray", 3)
@@ -250,6 +253,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
       scaleX,
       scaleY,
       shiftIndex,
+      currentTickPosition, // 이 의존성을 추가하여 currentTickPosition이 변경될 때마다 차트가 업데이트되도록 함
     ]);
 
     return (
