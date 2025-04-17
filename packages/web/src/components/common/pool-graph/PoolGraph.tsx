@@ -154,13 +154,26 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const maxX = useMemo(() => Math.max(...(displayBins.map(bin => bin.maxTick) || 0)), [displayBins]);
   const maxHeight = d3.max(displayBins, bin => bin.reserveTokenMap) || 0;
 
-  // D3 - Scale Definition
-  const defaultScaleX = d3
-    .scaleLinear()
-    .domain([0, maxX - minX])
-    .range([margin.left, boundsWidth]);
+  const currentTickRelative = useMemo(() => {
+    if (currentTick === null) return null;
+    return currentTick - defaultMinX;
+  }, [currentTick, defaultMinX]);
 
-  const scaleX = defaultScaleX.copy();
+  // D3 - Scale Definition
+  const scaleX = useMemo(() => {
+    if (currentTickRelative === null) {
+      return d3.scaleLinear().domain([minX, maxX]).range([margin.left, boundsWidth]);
+    }
+
+    const halfBinWidth = (maxX - minX) / displayBins.length / 2;
+    const binWidth = halfBinWidth * 2;
+    const halfDisplayRange = (displayBinCount / 2) * binWidth;
+
+    return d3
+      .scaleLinear()
+      .domain([currentTickRelative - halfDisplayRange, currentTickRelative + halfDisplayRange])
+      .range([margin.left, boundsWidth]);
+  }, [currentTickRelative, minX, maxX, boundsWidth, margin.left, displayBins.length, displayBinCount]);
 
   const scaleY = useMemo(() => {
     return d3
@@ -181,12 +194,15 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     if (reservedBins.length === 2) {
       return 20;
     }
-    const spacing = scaleX(reservedBins[1].minTick) - scaleX(reservedBins[0].minTick);
+    if (displayBins.length < 2) {
+      return 0;
+    }
+    const spacing = Math.abs(scaleX(displayBins[1].minTick) - scaleX(displayBins[0].minTick));
     if (spacing < 2) {
       return spacing;
     }
     return spacing;
-  }, [reservedBins, scaleX]);
+  }, [displayBins, scaleX]);
 
   const tooltipPosition = useMemo((): FloatingPosition => {
     if (position) {
@@ -423,6 +439,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
           scaleX={scaleX}
           scaleY={scaleY}
           zoomLevel={zoomLevel}
+          currentTickRelative={currentTickRelative}
           d3Position={{
             minX,
             maxX,

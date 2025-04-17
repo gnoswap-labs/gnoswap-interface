@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useRef } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import * as d3 from "d3";
 
 import { useColorGraph } from "@hooks/common/use-color-graph";
@@ -34,6 +34,7 @@ interface PoolGraphSVGProps {
     maxX: number;
   };
   zoomLevel: number;
+  currentTickRelative: number | null;
   onMouseEnter?: (event: React.MouseEvent | React.TouchEvent) => void;
   onMouseLeave?: (event: React.MouseEvent) => void;
   onTouchStart?: (event: React.TouchEvent) => void;
@@ -54,6 +55,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
         bottom: 0,
       },
       currentTick,
+      currentTickRelative,
       binSpacing,
       maxTickPosition = 0,
       minTickPosition = 0,
@@ -85,15 +87,16 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
     const boundsHeight = height - margin.top - margin.bottom;
 
     // D3 - Dimension Definition
-    const { defaultMinX, minX, maxX } = d3Position;
-    const centerX = currentTick ?? (minX && maxX ? (minX + maxX) / 2 : 0);
+    const { maxX } = d3Position;
 
     const hasCurrentTick = React.useMemo(() => currentTick != null, [currentTick]);
 
+    const centerPosition = React.useMemo(() => {
+      return boundsWidth / 2;
+    }, [boundsWidth]);
+
     /** Update Chart by data */
     function updateChart() {
-      const centerPosition = scaleX(centerX - defaultMinX) - binSpacing / 2;
-
       // Retrieves the colour of the chart bar at the current tick.
       function fillByBin(bin: ReservedBin) {
         let isBlackBar = !!(
@@ -111,8 +114,12 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
           );
         }
         if (isBlackBar) return themeKey === "dark" ? "#1C2230" : "#E0E8F4";
-        if (hasCurrentTick && bin.minTick < Number(currentTick! - defaultMinX)) {
-          return `url(#gradient-bar-green-${graphId})`;
+
+        if (hasCurrentTick && currentTickRelative !== null) {
+          if (bin.minTick < currentTickRelative) {
+            return `url(#gradient-bar-green-${graphId})`;
+          }
+          return `url(#gradient-bar-red-${graphId})`;
         }
         return `url(#gradient-bar-red-${graphId})`;
       }
@@ -126,8 +133,8 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
       if (hasCurrentTick && rects.select("line").empty()) {
         rects
           .append("line")
-          .attr("x1", centerPosition + binSpacing / 2)
-          .attr("x2", centerPosition + binSpacing / 2)
+          .attr("x1", centerPosition)
+          .attr("x2", centerPosition)
           .attr("y1", 0)
           .attr("y2", boundsHeight)
           .attr("stroke-dasharray", 3)
@@ -144,15 +151,18 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
           .enter()
           .append("g")
           .attr("class", "bin-wrapper")
-          .attr("id", bin => getBinId(bin.index))
+          .attr("id", bin => `pool-graph-bin-${graphId}-${bin.index}`)
           .each(function (bin) {
+            const binX = scaleX(bin.minTick);
+            const binWidth = Math.max(0.5, scaleX(bin.maxTick) - binX);
+
             d3.select(this)
               .append("rect")
               .style("fill", "transparent")
               .attr("class", "bin-inner")
               .style("stroke-width", "0")
-              .attr("x", scaleX(bin.minTick))
-              .attr("width", scaleX(bin.maxTick - bin.minTick))
+              .attr("x", binX)
+              .attr("width", binWidth)
               .attr("y", () => {
                 const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
                 return scaleYComputation - (scaleYComputation > height - 3 && scaleYComputation !== height ? 3 : 0);
@@ -172,8 +182,8 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
               .style("fill", fillByBin(bin))
               .attr("class", "bin-inner")
               .style("stroke-width", "0")
-              .attr("x", scaleX(bin.minTick) + 1)
-              .attr("width", scaleX(bin.maxTick - bin.minTick) - 0.5)
+              .attr("x", binX + 1)
+              .attr("width", Math.max(0, binWidth - 0.5))
               .attr("y", () => {
                 const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
                 return scaleYComputation - (scaleYComputation > height - 3 && scaleYComputation !== height ? 3 : 0);
@@ -189,8 +199,6 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
           });
       }
     }
-
-    const getBinId = useCallback((index: number) => `pool-graph-bin-${graphId}-${index}`, [graphId]);
 
     useEffect(() => {
       //  D3 - Draw bin and define interaction
@@ -224,7 +232,18 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
       if (!!width && !!height && !!chartRef.current) {
         updateChart();
       }
-    }, [width, height, reservedBins, svgRef?.current, chartRef?.current, onMouseMove, theme, zoomLevel]);
+    }, [
+      width,
+      height,
+      reservedBins,
+      svgRef?.current,
+      chartRef?.current,
+      onMouseMove,
+      theme,
+      zoomLevel,
+      scaleX,
+      scaleY,
+    ]);
 
     return (
       <PoolGraphSVGContainer
