@@ -73,7 +73,7 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
     return SwapFeeTierInfoMap[makeSwapFeeTier(pool.fee)].rateStr;
   }, [pool?.fee]);
 
-  const { availZoomIn, availZoomOut, availMoveLeft, availMoveRight } = React.useMemo(() => {
+  const availInfo = React.useMemo(() => {
     const moveRange = bins.length / 2 - 20;
 
     return {
@@ -85,30 +85,30 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
   }, [zoomLevel, shiftIndex, bins.length]);
 
   const handleZoomIn = React.useCallback(() => {
-    if (availZoomIn && zoomLevel + 1 < ZOOL_VALUES.length) {
+    if (availInfo.availZoomIn && zoomLevel + 1 < ZOOL_VALUES.length) {
       setZoomLevel(zoomLevel + 1);
     }
     setShiftIndex(0);
-  }, [zoomLevel, availZoomIn]);
+  }, [zoomLevel, availInfo.availZoomIn]);
 
   const handleZoomOut = React.useCallback(() => {
-    if (availZoomOut && zoomLevel > 0) {
+    if (availInfo.availZoomOut && zoomLevel > 0) {
       setZoomLevel(zoomLevel - 1);
     }
     setShiftIndex(0);
-  }, [zoomLevel, availZoomOut]);
+  }, [zoomLevel, availInfo.availZoomOut]);
 
   const handleMoveLeft = React.useCallback(() => {
-    if (availMoveLeft) {
+    if (availInfo.availMoveLeft) {
       setShiftIndex(value => value - 1);
     }
-  }, [availMoveLeft]);
+  }, [availInfo.availMoveLeft]);
 
   const handleMoveRight = React.useCallback(() => {
-    if (availMoveRight) {
+    if (availInfo.availMoveRight) {
       setShiftIndex(value => value + 1);
     }
-  }, [availMoveRight]);
+  }, [availInfo.availMoveRight]);
 
   return (
     <PoolPairInformation
@@ -125,6 +125,7 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
       onZoomOut={handleZoomOut}
       onMoveLeft={handleMoveLeft}
       onMoveRight={handleMoveRight}
+      availInfo={availInfo}
       feeStr={feeStr}
       loading={loading || loadingPosition}
       loadingBins={loading || loadingPosition || isLoadingBins}

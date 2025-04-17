@@ -2,6 +2,7 @@ import BigNumber from "bignumber.js";
 import { useAtomValue } from "jotai";
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { cx } from "@emotion/css";
 
 import { STATIC_TEXT } from "@common/values";
 import IconStar from "@components/common/icons/IconStar";
@@ -36,6 +37,10 @@ import {
 } from "./PoolPairInfoContent.styles";
 import TooltipAPR from "./TooltipAPR";
 import IconInfo from "@components/common/icons/IconInfo";
+import IconKeyboardArrowLeft from "@components/common/icons/IconKeyboardArrowLeft";
+import IconKeyboardArrowRight from "@components/common/icons/IconKeyboardArrowRight";
+import IconRemove from "@components/common/icons/IconRemove";
+import IconAdd from "@components/common/icons/IconAdd";
 
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
@@ -44,6 +49,12 @@ interface PoolPairInfoContentProps {
   poolBins: PoolBinModel[];
   shiftIndex: number;
   zoomLevel: number;
+  availInfo: {
+    availMoveLeft: boolean;
+    availMoveRight: boolean;
+    availZoomIn: boolean;
+    availZoomOut: boolean;
+  };
   onZoomIn: () => void;
   onZoomOut: () => void;
   onMoveLeft: () => void;
@@ -57,6 +68,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   poolBins,
   shiftIndex,
   zoomLevel,
+  availInfo,
   onZoomIn,
   onZoomOut,
   onMoveLeft,
@@ -489,12 +501,22 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                 )}
               </div>
             </div>
-            <div className="zoom-controller">
-              <button onClick={onMoveLeft}>{"<"}</button>
-              <button onClick={onMoveRight}>{">"}</button>
-              <button onClick={onZoomOut}>-</button>
-              <button onClick={onZoomIn}>+</button>
-            </div>
+            {!loadingBins && (
+              <div className="zoom-controller">
+                <button className={cx({ disabled: !availInfo.availMoveLeft })} onClick={onMoveLeft}>
+                  <IconKeyboardArrowLeft />
+                </button>
+                <button className={cx({ disabled: !availInfo.availMoveRight })} onClick={onMoveRight}>
+                  <IconKeyboardArrowRight />
+                </button>
+                <button className={cx({ disabled: !availInfo.availZoomOut })} onClick={onZoomOut}>
+                  <IconRemove />
+                </button>
+                <button className={cx({ disabled: !availInfo.availZoomIn })} onClick={onZoomIn}>
+                  <IconAdd />
+                </button>
+              </div>
+            )}
           </div>
           {!loadingBins && (
             <PoolGraph
