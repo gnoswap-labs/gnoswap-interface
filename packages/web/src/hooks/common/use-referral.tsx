@@ -51,7 +51,7 @@ export const useReferral = () => {
    */
   const getStoredReferrerInfo = React.useCallback((): StoredReferrerInfo | null => {
     try {
-      const storedData = sessionStorage.getItem(`${GNOSWAP_REFERRAL_CODE}_${account?.address}`);
+      const storedData = localStorage.getItem(`${GNOSWAP_REFERRAL_CODE}_${account?.address}`);
       if (!storedData) return null;
 
       const parsed: StoredReferrerInfo = JSON.parse(storedData);
@@ -61,7 +61,7 @@ export const useReferral = () => {
     }
   }, [account?.address]);
 
-  const saveToSessionStorage = (referrerAddress: string) => {
+  const saveToLocalStorage = (referrerAddress: string) => {
     if (!account?.address) return;
 
     const data: StoredReferrerInfo = {
@@ -69,7 +69,7 @@ export const useReferral = () => {
       updatedAt: Date.now(),
     };
 
-    sessionStorage.setItem(`${GNOSWAP_REFERRAL_CODE}_${account.address}`, JSON.stringify(data));
+    localStorage.setItem(`${GNOSWAP_REFERRAL_CODE}_${account.address}`, JSON.stringify(data));
     setStoredReferralAddress(referrerAddress);
   };
 
@@ -91,15 +91,14 @@ export const useReferral = () => {
         return { success: false, error: "SELF_REFERRAL" };
       }
 
-      saveToSessionStorage(trimmedAddress);
+      saveToLocalStorage(trimmedAddress);
 
       return { success: true };
     },
     [account?.address],
   );
 
-  // Handling URL parameters and session storage priorities
-  React.useEffect(() => {
+  const refreshReferralData = React.useCallback(() => {
     const storedInfo = getStoredReferrerInfo();
     const storedAddress = storedInfo?.referrerAddress ?? null;
 
@@ -112,7 +111,7 @@ export const useReferral = () => {
       return;
     }
 
-    // Rank 2: Session Storage
+    // Rank 2: LocalStorage
     const hasStoredReferralAddress = storedAddress != null;
     if (hasStoredReferralAddress) {
       if (storedAddress === "" || isValidAddress(storedAddress)) {
@@ -125,13 +124,14 @@ export const useReferral = () => {
     if (!hasUrlReferralAddress && !hasStoredReferralAddress) {
       if (apiReferrerAddress && isValidAddress(apiReferrerAddress) && apiReferrerAddress !== account?.address) {
         setReferralAddress(apiReferrerAddress);
-
-        if (account?.address) {
-          saveToSessionStorage(apiReferrerAddress);
-        }
       }
     }
-  }, [urlReferralAddress, storedReferralAddress, apiReferrerAddress, saveToSessionStorage, account?.address]);
+  }, [urlReferralAddress, apiReferrerAddress, account?.address, getStoredReferrerInfo]);
+
+  // Handling URL parameters and LocalStorage priorities
+  React.useEffect(() => {
+    refreshReferralData();
+  }, [urlReferralAddress, storedReferralAddress, apiReferrerAddress, saveToLocalStorage, account?.address]);
 
   return {
     referralAddress,
@@ -141,5 +141,6 @@ export const useReferral = () => {
     saveReferrerAddress,
     generateReferralLink,
     getCurrentReferralAddress: () => referralAddressRef.current,
+    refreshReferralData,
   };
 };

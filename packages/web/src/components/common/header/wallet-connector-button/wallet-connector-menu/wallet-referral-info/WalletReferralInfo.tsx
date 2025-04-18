@@ -42,8 +42,50 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
   });
 
   const [inputReferralAddress, setInputReferralAddress] = React.useState<string>("");
-  const { storedReferralAddress, apiReferrerAddress, referralEarnedPoints, saveReferrerAddress, generateReferralLink } =
-    useReferral();
+  const {
+    storedReferralAddress,
+    apiReferrerAddress,
+    referralEarnedPoints,
+    saveReferrerAddress,
+    generateReferralLink,
+    refreshReferralData,
+  } = useReferral();
+
+  const componentRef = React.useRef<HTMLDivElement>(null);
+
+  // Refresh data when the entire browser window is reactivated
+  React.useEffect(() => {
+    const handleFocus = () => {
+      refreshReferralData();
+    };
+
+    window.addEventListener("focus", handleFocus);
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, [refreshReferralData]);
+
+  // Refreshes data when focus moves to this component from another element within the same page.
+  React.useEffect(() => {
+    const currentRef = componentRef.current;
+
+    if (currentRef) {
+      const handleComponentFocus = () => {
+        refreshReferralData();
+      };
+
+      currentRef.addEventListener("focusin", handleComponentFocus);
+
+      return () => {
+        currentRef.removeEventListener("focusin", handleComponentFocus);
+      };
+    }
+  }, [refreshReferralData]);
+
+  // Refreshes data when the account address changes.
+  React.useEffect(() => {
+    refreshReferralData();
+  }, [account?.address, refreshReferralData]);
 
   const referralLink = React.useMemo(() => generateReferralLink(), [generateReferralLink]);
 
@@ -83,6 +125,8 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
   };
 
   const handleEdit = () => {
+    refreshReferralData();
+
     if (referrerAddressInfo.fullAddress) {
       setInputReferralAddress(referrerAddressInfo.fullAddress);
     }
@@ -105,6 +149,7 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
     }
 
     handleEditExit();
+    refreshReferralData();
   };
 
   return (
