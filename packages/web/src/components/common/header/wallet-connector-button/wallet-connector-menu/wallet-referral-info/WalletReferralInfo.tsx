@@ -49,6 +49,7 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
     saveReferrerAddress,
     generateReferralLink,
     refreshReferralData,
+    refetchLeaderboardMyInfo,
   } = useReferral();
 
   const componentRef = React.useRef<HTMLDivElement>(null);
@@ -56,6 +57,7 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
   // Refresh data when the entire browser window is reactivated
   React.useEffect(() => {
     const handleFocus = () => {
+      refetchLeaderboardMyInfo();
       refreshReferralData();
     };
 
@@ -84,6 +86,7 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
 
   // Refreshes data when the account address changes.
   React.useEffect(() => {
+    refetchLeaderboardMyInfo();
     refreshReferralData();
   }, [account?.address, refreshReferralData]);
 

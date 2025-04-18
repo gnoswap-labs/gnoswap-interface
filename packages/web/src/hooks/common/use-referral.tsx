@@ -20,7 +20,9 @@ export interface SaveReferrerResult {
 export const useReferral = () => {
   const router = useCustomRouter();
   const { account } = useWallet();
-  const { data: leaderboardMyInfo } = useGetLeaderboardByAddress(account?.address || "");
+  const { data: leaderboardMyInfo, refetch: refetchLeaderboardMyInfo } = useGetLeaderboardByAddress(
+    account?.address || "",
+  );
 
   const [referralAddress, setReferralAddress] = React.useState<string>("");
   const referralAddressRef = React.useRef(referralAddress);
@@ -161,6 +163,7 @@ export const useReferral = () => {
     saveReferrerAddress,
     generateReferralLink,
     getCurrentReferralAddress: () => referralAddressRef.current,
+    refetchLeaderboardMyInfo,
     refreshReferralData,
     removeReferrerFromUrl,
   };
