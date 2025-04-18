@@ -57,8 +57,15 @@ export const SelectPriceRangeCustomWrapper = styled.div`
         ${fonts.body6}
         line-height: 22px;
         cursor: pointer;
-        &:hover {
-          background: ${({ theme }) => theme.color.backgroundOpacity};
+        @media (hover: hover) {
+          &:hover {
+            background: ${({ theme }) => theme.color.backgroundOpacity};
+          }
+        }
+        @media (hover: none) {
+          &:active {
+            background: ${({ theme }) => theme.color.backgroundOpacity};
+          }
         }
         position: relative;
         ${media.mobile} {
@@ -130,7 +137,7 @@ export const SelectPriceRangeCustomWrapper = styled.div`
     > div {
       ${fonts.body12}
     }
-    span.bold{
+    span.bold {
       ${fonts.body12}
       font-weight: 600;
     }
@@ -143,7 +150,7 @@ export const SelectPriceRangeCustomWrapper = styled.div`
     gap: 24px;
     position: relative;
     > * {
-      flex: 1
+      flex: 1;
       width: 50%;
     }
     .dim-content-3 {
