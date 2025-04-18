@@ -57,8 +57,15 @@ export const ContentWrapper = styled.div`
             fill: ${({ theme }) => theme.color.icon05};
           }
           line-height: 22px;
-          &:hover {
-            background: ${({ theme }) => theme.color.backgroundOpacity};
+          @media (hover: hover) {
+            &:hover {
+              background: ${({ theme }) => theme.color.backgroundOpacity};
+            }
+          }
+          @media (hover: none) {
+            &:active {
+              background: ${({ theme }) => theme.color.backgroundOpacity};
+            }
           }
           position: relative;
           ${media.mobile} {

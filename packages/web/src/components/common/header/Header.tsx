@@ -39,6 +39,8 @@ import {
   SearchContainer,
 } from "./Header.styles";
 import SettingUiButton from "./setting-ui-button/SettingUiButton";
+import { useAccountChange } from "@hooks/wallet/data/use-account-change";
+import { useReferral } from "@hooks/common/use-referral";
 
 interface HeaderProps {
   pathname?: string;
@@ -113,6 +115,16 @@ const Header: React.FC<HeaderProps> = ({
   const { t } = useTranslation();
   const { saveCurrentScrollHeight } = useScrollData();
   const { handleNavigation } = useNavigation();
+  const { removeReferrerFromUrl, refreshReferralData } = useReferral();
+
+  useAccountChange({
+    onAccountChange(prevAccount, currentAccount) {
+      if (prevAccount !== null && currentAccount !== null && prevAccount.address !== currentAccount.address) {
+        removeReferrerFromUrl();
+      }
+      setTimeout(() => refreshReferralData(), 0);
+    },
+  });
 
   const isCollapseNav = useMemo(() => {
     return width < HEADER_NAVIGATION_LAYOUT_COLLAPSE_WIDTH;

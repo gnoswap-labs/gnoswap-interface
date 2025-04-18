@@ -78,7 +78,7 @@ const SubMenu: React.FC<HeaderSideMenuModalProps> = ({ isCollapseNav, onSideMenu
           {navigationItems.length > 0 && (
             <>
               {navigationItems.map((item, index) => (
-                <Link href={`/${item.path}`} key={index} onClick={e => onNavigation(e, item.path)}>
+                <Link href={`${item.path}`} key={index} onClick={e => onNavigation(e, item.path)}>
                   <li
                     className="header-side-menu-item"
                     onClick={() => {
