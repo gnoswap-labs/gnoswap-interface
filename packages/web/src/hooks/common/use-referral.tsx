@@ -98,6 +98,26 @@ export const useReferral = () => {
     [account?.address],
   );
 
+  /**
+   * REFERRER query parameter stripping function
+   */
+  const removeReferrerFromUrl = React.useCallback(() => {
+    const referrer = router.getReferrerParameter();
+    if (!referrer) return;
+
+    const { pathname, query } = router;
+
+    const newQuery = { ...query };
+    delete newQuery[QUERY_PARAMETER.REFERRER];
+
+    const queryString = Object.entries(newQuery)
+      .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
+      .join("&");
+
+    const newUrl = queryString ? `${pathname}?${queryString}` : pathname;
+    router.replace(newUrl, undefined, { shallow: true });
+  }, [router]);
+
   const refreshReferralData = React.useCallback(() => {
     const storedInfo = getStoredReferrerInfo();
     const storedAddress = storedInfo?.referrerAddress ?? null;
@@ -142,5 +162,6 @@ export const useReferral = () => {
     generateReferralLink,
     getCurrentReferralAddress: () => referralAddressRef.current,
     refreshReferralData,
+    removeReferrerFromUrl,
   };
 };

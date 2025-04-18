@@ -46,8 +46,13 @@ const useCustomRouter = () => {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function replace(pathname: string, as?: any, options?: any) {
-    router.replace(pathname, as, options);
+  function replace(pathname: string | PathParams, as?: any, options?: any) {
+    // Modify to also handle pathnames in object form
+    if (typeof pathname === "string") {
+      router.replace(pathname, as, options);
+    } else {
+      router.replace(pathname, as, options);
+    }
   }
 
   function getReferrerParameter(): string | null {
