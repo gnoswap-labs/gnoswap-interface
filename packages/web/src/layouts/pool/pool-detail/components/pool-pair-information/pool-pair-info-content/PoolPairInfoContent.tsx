@@ -23,6 +23,7 @@ import { ThemeState } from "@states/index";
 import { formatOtherPrice, formatPoolPairAmount, formatRate } from "@utils/new-number-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { tickToPrice } from "@utils/swap-utils";
+import { DEFAULT_TOKEN_PRICE_RATIO } from "@common/values";
 
 import {
   AprDivider,
@@ -99,8 +100,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
       return 0.5;
     }
 
-    const DEFAULT_PRICE_FACTOR = 1;
-    const priceRatio = pool.price || DEFAULT_PRICE_FACTOR;
+    const priceRatio = pool.price || DEFAULT_TOKEN_PRICE_RATIO;
 
     return tokenABalanceNum / (tokenABalanceNum + tokenBBalanceNum / priceRatio);
   }, [tokenABalance, tokenBBalance, pool.price]);
