@@ -93,6 +93,7 @@ export const useReferral = () => {
         return { success: false, error: "SELF_REFERRAL" };
       }
 
+      removeReferrerFromUrl();
       saveToLocalStorage(trimmedAddress);
 
       return { success: true };
