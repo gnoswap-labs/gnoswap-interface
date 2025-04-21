@@ -43,7 +43,7 @@ export const BalanceTooltipContent: React.FC<BalanceTooltipContentProps> = ({ ba
               isKMB: false,
               decimals: balance.token.decimals,
             })}{" "}
-            ({balance.percent})
+            {balance.percent}
           </span>
         </div>
       ))}

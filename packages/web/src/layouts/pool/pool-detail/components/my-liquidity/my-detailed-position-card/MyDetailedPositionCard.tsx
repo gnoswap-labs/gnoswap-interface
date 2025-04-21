@@ -32,7 +32,7 @@ import { useGetPositionBins } from "@query/positions";
 import { ThemeState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
 import { isGNOTPath } from "@utils/common";
-import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
+import { formatOtherPrice } from "@utils/new-number-utils";
 import { makeRouteUrl } from "@utils/page.utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
@@ -43,6 +43,7 @@ import { BalanceTooltipContent, PositionBalanceInfo } from "./BalanceTooltipCont
 import ManageButton from "./manage-button/ManageButton";
 import PositionHistory from "./PositionHistory";
 import { mapToDisplayRewardType } from "@utils/reward-utils";
+import { DEFAULT_TOKEN_PRICE_RATIO } from "@common/values";
 
 import {
   CopyTooltip,
@@ -166,24 +167,53 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     return formatOtherPrice(position.positionUsdValue, { isKMB: false });
   }, [isDisplay, position.positionUsdValue]);
 
+  const getTokenBalance = useCallback((balance: string) => {
+    if (!balance) return 0;
+    return Number(balance);
+  }, []);
+
+  const tokenABalance = useMemo(() => {
+    return getTokenBalance(position.tokenABalance);
+  }, [position.tokenABalance]);
+
+  const tokenBBalance = useMemo(() => {
+    return getTokenBalance(position.tokenBBalance);
+  }, [position.tokenBBalance]);
+
+  const depositRatio = useMemo(() => {
+    const sumOfBalances = tokenABalance + tokenBBalance;
+    if (sumOfBalances === 0) {
+      return 0.5;
+    }
+
+    const priceRatio = position?.pool?.price || DEFAULT_TOKEN_PRICE_RATIO;
+
+    return tokenABalance / (tokenABalance + tokenBBalance / priceRatio);
+  }, [tokenABalance, tokenBBalance, position?.pool?.price]);
+
+  const depositRatioStrOfTokenA = useMemo(() => {
+    const depositStr = `${Math.round(depositRatio * 100)}%`;
+    return `(${depositStr})`;
+  }, [depositRatio]);
+
+  const depositRatioStrOfTokenB = useMemo(() => {
+    const depositStr = `${Math.round((1 - depositRatio) * 100)}%`;
+    return `(${depositStr})`;
+  }, [depositRatio]);
+
   const balances = useMemo((): PositionBalanceInfo[] => {
-    const sumOfBalances = Number(position.tokenABalance) + Number(position.tokenBBalance);
-    const tokenABalance = Number(position.tokenABalance);
-    const tokenBBalance = Number(position.tokenBBalance);
-    const depositRatio =
-      sumOfBalances === 0 ? 0.5 : tokenABalance / (tokenABalance + tokenBBalance / position?.pool?.price);
     return [
       {
         token: tokenA,
         balance: Number(position.tokenABalance),
         balanceUSD: tokenABalanceUSD,
-        percent: formatRate(depositRatio * 100, { decimals: 0 }),
+        percent: depositRatioStrOfTokenA,
       },
       {
         token: tokenB,
         balance: Number(position.tokenBBalance),
         balanceUSD: tokenBBalanceUSD,
-        percent: formatRate((1 - depositRatio) * 100, { decimals: 0 }),
+        percent: depositRatioStrOfTokenB,
       },
     ];
   }, [

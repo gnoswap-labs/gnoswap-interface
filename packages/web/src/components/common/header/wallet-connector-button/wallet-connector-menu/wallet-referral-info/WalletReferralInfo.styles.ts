@@ -39,11 +39,25 @@ export const InfoColumnKey = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 2px;
 
   color: ${({ theme }) => theme.color.border05};
   font-size: 13px;
   font-weight: 400;
+  & > div {
+    font-size: 0;
+  }
+  svg {
+    * {
+      fill: ${({ theme }) => theme.color.icon03};
+    }
+  }
+`;
+
+export const InfoColumnKeyTooltipContent = styled.div`
+  max-width: 314px;
+  font-size: 14px;
+  line-height: 1.5;
 `;
 
 export const InfoColumnValue = styled.div`

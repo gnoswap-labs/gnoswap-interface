@@ -25,6 +25,7 @@ export const DEFAULT_CONTRACT_USE_FEE = 1000000 as const;
 export const DEFAULT_GAS_FEE = 1 as const;
 export const DEFAULT_GAS_WANTED = 100_000_000 as const;
 export const DEFAULT_ALLOWANCE_LIMIT = 1_000_000_000_000_000_000 as const;
+export const DEFAULT_TOKEN_PRICE_RATIO = 1 as const;
 
 export const MINIMUM_GNOT_SWAP_AMOUNT = 0.001;
 

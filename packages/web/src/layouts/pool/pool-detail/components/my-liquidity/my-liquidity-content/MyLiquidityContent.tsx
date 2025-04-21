@@ -23,6 +23,7 @@ import { isGNOTPath } from "@utils/common";
 import { formatOtherPrice, formatPoolPairAmount } from "@utils/new-number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { mapToDisplayRewardType } from "@utils/reward-utils";
+import { DEFAULT_TOKEN_PRICE_RATIO } from "@common/values";
 
 import { DailyEarningTooltipContent, PositionAPRInfo } from "../stat-tooltip-contents/DailyEarningTooltipContent";
 
@@ -511,8 +512,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       return 0.5;
     }
 
-    const DEFAULT_PRICE_FACTOR = 1;
-    const priceRatio = positionData?.price || DEFAULT_PRICE_FACTOR;
+    const priceRatio = positionData?.price || DEFAULT_TOKEN_PRICE_RATIO;
 
     return tokenABalance / (tokenABalance + tokenBBalance / priceRatio);
   }, [tokenABalance, tokenBBalance, positionData?.price]);

@@ -94,10 +94,14 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
     const hasCurrentTick = useMemo(() => currentTick != null, [currentTick]);
 
     const currentTickPosition = useMemo(() => {
-      if (!currentTickRelative) return boundsWidth / 2;
+      // centred if reservedBins is empty or currentTickRelative is not present
+      if (reservedBins.length === 0 || !currentTickRelative) {
+        return boundsWidth / 2;
+      }
 
+      // Use calculated position in normal case
       return scaleX(currentTickRelative);
-    }, [boundsWidth, currentTickRelative, scaleX]);
+    }, [boundsWidth, currentTickRelative, scaleX, reservedBins.length]);
 
     /** Update Chart by data */
     function updateChart() {
@@ -148,7 +152,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
 
       // D3 - Draw reservedBins as bars
       rects.selectAll("g").remove();
-      if (!disabled && rects.selectAll("g").size() === 0) {
+      if (!disabled && rects.selectAll("g").size() === 0 && reservedBins.length > 0) {
         rects
           .selectAll("rects")
           .data(reservedBins)
