@@ -120,7 +120,7 @@ export function getUniqueRewardTokensByPath<
 /**
  * Groups reward tokens by path and combines their reward types.
  * Tokens with the same path but different reward types will be merged into a single token
- * with an array of reward types.
+ * with an array of reward types sorted by priority: INTERNAL_REWARD > EXTERNAL_REWARD > SWAP_FEE
  *
  * @param rewardTokens Array of tokens to process
  * @param getGnotPath GNOT path conversion function
@@ -137,6 +137,10 @@ export function getUniqueRewardTokensWithMultipleRewardTypes<
     wrappedPath: string;
   },
 ): RewardTokenModelWithMultipleTypes[] {
+  if (!rewardTokens.length) {
+    return [];
+  }
+
   const tokensByPath = rewardTokens.reduce((acc, current) => {
     const tokenInfo = getGnotPath(current as unknown as T);
 
@@ -163,10 +167,36 @@ export function getUniqueRewardTokensWithMultipleRewardTypes<
       new Set(tokens.map(token => token.rewardType).filter(Boolean)),
     ) as RewardType[];
 
+    const sortedRewardTypes = sortRewardTypesByPriority(uniqueRewardTypes);
+
     return {
       ...baseToken,
-      rewardType: uniqueRewardTypes.length > 1 ? uniqueRewardTypes : baseToken.rewardType,
+      rewardType: sortedRewardTypes.length > 1 ? sortedRewardTypes : baseToken.rewardType,
     } as RewardTokenModelWithMultipleTypes;
+  });
+}
+
+/**
+ * Sorts reward types by priority: INTERNAL_REWARD > EXTERNAL_REWARD > SWAP_FEE
+ * Internal tiers (INTERNAL_TIER_1, INTERNAL_TIER_2, INTERNAL_TIER_3) are considered as INTERNAL_REWARD
+ *
+ * @param rewardTypes Array of reward types to sort
+ * @returns Sorted array of reward types
+ */
+function sortRewardTypesByPriority(rewardTypes: RewardType[]): RewardType[] {
+  const priorityMap: Record<RewardType, number> = {
+    INTERNAL_TIER_1: 1,
+    INTERNAL_TIER_2: 1,
+    INTERNAL_TIER_3: 1,
+    EXTERNAL_REWARD: 2,
+    SWAP_FEE: 3,
+  };
+
+  return [...rewardTypes].sort((a, b) => {
+    const priorityA = priorityMap[a] ?? Infinity;
+    const priorityB = priorityMap[b] ?? Infinity;
+
+    return priorityA - priorityB;
   });
 }
 
