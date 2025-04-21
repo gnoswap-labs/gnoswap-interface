@@ -211,10 +211,26 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
           </>
         ) : (
           <>
-            <S.InfoColumnKey>{t("Referred by")}</S.InfoColumnKey>
+            <S.InfoColumnKey>
+              <span>{t("Referred by")}</span>
+              <Tooltip
+                FloatingContent={
+                  <S.InfoColumnKeyTooltipContent>
+                    {t(
+                      "Once registered, your referral code cannot be changed for the next 24 hours. Self-referral is not allowed.",
+                    )}
+                  </S.InfoColumnKeyTooltipContent>
+                }
+                placement="top"
+              >
+                <span>
+                  <IconInfo size={16} />
+                </span>
+              </Tooltip>
+            </S.InfoColumnKey>
             <S.InfoColumnValue>
               <S.InfoReferrerDisplayText hasRegisteredReferrer={!!referrerAddressInfo.shortAddress}>
-                {referrerAddressInfo.shortAddress ? referrerAddressInfo.shortAddress : t("Not registered yet")}
+                {referrerAddressInfo.shortAddress ? referrerAddressInfo.shortAddress : t("Not registered")}
               </S.InfoReferrerDisplayText>
               <S.InfoColumnIconSet>
                 <S.IconButton aria-label="edit" onClick={handleEdit} className="edit-icon">
