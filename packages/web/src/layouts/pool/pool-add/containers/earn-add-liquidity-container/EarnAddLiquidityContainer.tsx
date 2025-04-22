@@ -628,35 +628,44 @@ const EarnAddLiquidityContainer: React.FC = () => {
     });
   }, [setSwapValue]);
 
+  const nextTickLower = useMemo(() => {
+    if (selectPool.minPosition !== null) {
+      return priceToTick(selectPool.minPosition);
+    }
+    return null;
+  }, [selectPool.minPosition]);
+
+  const nextTickUpper = useMemo(() => {
+    if (selectPool.maxPosition !== null) {
+      return priceToTick(selectPool.maxPosition);
+    }
+    return null;
+  }, [selectPool.maxPosition]);
+
+  const computedFeeTier = useMemo(() => {
+    if (!initializedFeeTier.current) {
+      return router.query.fee_tier;
+    }
+
+    return swapFeeTier === "NONE" ? "" : (swapFeeTier || "").slice(4).toString();
+  }, [initializedFeeTier.current, router.query.fee_tier, swapFeeTier]);
+
+  const computedPriceRange = useMemo(() => {
+    if (!initializedPriceRange.current) {
+      return router.query.price_range_type;
+    }
+    return priceRange?.type.toString();
+  }, [initializedPriceRange.current, router.query.price_range_type, priceRange]);
+
+  const currentReferralAddress = getCurrentReferralAddress();
+
   useEffect(() => {
-    const nextTickLower = selectPool.minPosition !== null ? priceToTick(selectPool.minPosition) : null;
-
-    const nextTickUpper = selectPool.maxPosition !== null ? priceToTick(selectPool.maxPosition) : null;
-
-    const computedFeeTier = (() => {
-      if (!initializedFeeTier.current) {
-        return router.query.fee_tier;
-      }
-
-      return swapFeeTier === "NONE" ? "" : (swapFeeTier || "").slice(4);
-    })()?.toString();
-
-    const computedPriceRange = (() => {
-      if (!initializedPriceRange.current) {
-        return router.query.price_range_type;
-      }
-
-      return priceRange?.type;
-    })()?.toString();
-
-    const currentReferralAddress = getCurrentReferralAddress();
-
     if (swapFeeTier && router.isReady) {
       const query = {
         tokenA: tokenA?.path,
         tokenB: tokenB?.path,
-        fee_tier: computedFeeTier,
-        price_range_type: computedPriceRange,
+        fee_tier: typeof computedFeeTier === "string" ? computedFeeTier : undefined,
+        price_range_type: typeof computedPriceRange === "string" ? computedPriceRange : undefined,
         tickLower: nextTickLower,
         tickUpper: nextTickUpper,
         ...(currentReferralAddress ? { referrer: currentReferralAddress } : {}),
@@ -665,19 +674,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
         shallow: true,
       });
     }
-  }, [
-    swapFeeTier,
-    tokenA,
-    tokenB,
-    selectPool.minPosition,
-    selectPool.maxPosition,
-    getCurrentReferralAddress,
-    priceRange?.type,
-    router.query.fee_tier,
-    router.isReady,
-    router.query.price_range_type,
-    i18n.language,
-  ]);
+  }, [swapFeeTier, tokenA?.path, tokenB?.path, nextTickLower, nextTickUpper, currentReferralAddress, i18n.language]);
 
   const showDim = useMemo(() => {
     return isFetchedPools && !!(tokenA && tokenB && selectPool.isCreate && !createOption.startPrice);
