@@ -47,7 +47,10 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const { i18n } = useTranslation();
   const router = useCustomRouter();
   useRouterBack();
+
   const { getCurrentReferralAddress } = useReferral();
+  const referralFromUrl = router.getReferrerParameter();
+  const hasUrlReferralParameter = useMemo(() => referralFromUrl != null, [referralFromUrl]);
 
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
   const { tokenA = null, tokenB = null, type = "EXACT_IN", isReverted, isKeepToken = false } = swapValue;
@@ -668,13 +671,22 @@ const EarnAddLiquidityContainer: React.FC = () => {
         price_range_type: typeof computedPriceRange === "string" ? computedPriceRange : undefined,
         tickLower: nextTickLower,
         tickUpper: nextTickUpper,
-        ...(currentReferralAddress ? { referrer: currentReferralAddress } : {}),
+        ...(hasUrlReferralParameter ? { referrer: currentReferralAddress } : {}),
       };
       router.replace(makeRouteUrl(PAGE_PATH.EARN_ADD, query), undefined, {
         shallow: true,
       });
     }
-  }, [swapFeeTier, tokenA?.path, tokenB?.path, nextTickLower, nextTickUpper, currentReferralAddress, i18n.language]);
+  }, [
+    swapFeeTier,
+    tokenA?.path,
+    tokenB?.path,
+    nextTickLower,
+    nextTickUpper,
+    currentReferralAddress,
+    i18n.language,
+    hasUrlReferralParameter,
+  ]);
 
   const showDim = useMemo(() => {
     return isFetchedPools && !!(tokenA && tokenB && selectPool.isCreate && !createOption.startPrice);

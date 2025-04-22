@@ -57,7 +57,7 @@ const IncentivizePoolModalContainer: React.FC<IncentivizePoolModalContainerProps
 
     const pathName = router.pathname;
     if (pathName === "/earn/incentivize") {
-      router.push("/earn?back=q");
+      router.push("/earn");
     } else {
       router.push(router.asPath.replace("/incentivize", ""));
     }
