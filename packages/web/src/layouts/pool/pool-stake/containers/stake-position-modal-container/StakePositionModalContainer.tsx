@@ -49,7 +49,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
     clearModal();
     const pathName = router.pathname;
     if (pathName === "/earn/stake") {
-      router.push("/earn?back=q");
+      router.push("/earn");
     } else {
       router.push(router.asPath.replace("/stake", ""));
     }

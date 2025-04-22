@@ -275,7 +275,7 @@ export const usePoolAddLiquidityConfirmModal = ({
     close();
     const pathName = router.pathname;
     if (pathName === "/earn/add") {
-      router.push("/earn?back=q");
+      router.push("/earn");
     } else {
       router.push(router.asPath.replace("/add", ""));
     }
