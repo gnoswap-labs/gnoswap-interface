@@ -151,7 +151,7 @@ export const SelectPriceRangeCustomWrapper = styled.div`
     position: relative;
     > * {
       flex: 1;
-      width: 50%;
+      width: 100%;
     }
     .dim-content-3 {
       position: absolute;
