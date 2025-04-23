@@ -37,12 +37,12 @@ import { makeRouteUrl } from "@utils/page.utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { isClaimableReward, mapToDisplayRewardType } from "@utils/reward-utils";
 
 import { DailyEarningTooltipContent, PositionAPRInfo } from "../stat-tooltip-contents/DailyEarningTooltipContent";
 import { BalanceTooltipContent, PositionBalanceInfo } from "./BalanceTooltipContent";
 import ManageButton from "./manage-button/ManageButton";
 import PositionHistory from "./PositionHistory";
-import { mapToDisplayRewardType } from "@utils/reward-utils";
 import { DEFAULT_TOKEN_PRICE_RATIO } from "@common/values";
 
 import {
@@ -338,16 +338,16 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     return formatOtherPrice(usdValue, { isKMB: false });
   }, [isDisplay, position.rewards]);
 
-  const isClaimable = useMemo(() => {
-    if (position.rewards.length === 0) {
-      return false;
-    }
+  const positionWithClaimableRewards = useMemo(() => {
+    return {
+      ...position,
+      rewards: position.rewards.filter(isClaimableReward),
+    };
+  }, [position]);
 
-    return position.rewards.some(reward => {
-      const amount = parseFloat(reward.claimableAmount || "0");
-      return amount > 0;
-    });
-  }, [position.rewards]);
+  const isClaimable = useMemo(() => {
+    return positionWithClaimableRewards.rewards.length > 0;
+  }, [positionWithClaimableRewards.rewards]);
 
   const totalDailyEarning = useMemo(() => {
     const isEmpty = !totalRewardInfo || position.rewards.length === 0;
@@ -901,7 +901,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
             >
               <span className={cx("content-text", { claimable: isClaimable })}>{totalRewardUSD}</span>
             </Tooltip>
-            {isClaimable && <ClaimButton text={"Claim"} onClick={() => claim(position)} />}
+            {isClaimable && <ClaimButton text={"Claim"} onClick={() => claim(positionWithClaimableRewards)} />}
           </div>
         ) : (
           !loading && <span className="content-text disabled">{totalRewardUSD}</span>
