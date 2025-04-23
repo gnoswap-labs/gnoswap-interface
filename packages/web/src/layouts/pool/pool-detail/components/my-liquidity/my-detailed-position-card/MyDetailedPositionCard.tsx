@@ -37,13 +37,12 @@ import { makeRouteUrl } from "@utils/page.utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { isClaimableReward } from "@utils/reward-utils";
+import { isClaimableReward, mapToDisplayRewardType } from "@utils/reward-utils";
 
 import { DailyEarningTooltipContent, PositionAPRInfo } from "../stat-tooltip-contents/DailyEarningTooltipContent";
 import { BalanceTooltipContent, PositionBalanceInfo } from "./BalanceTooltipContent";
 import ManageButton from "./manage-button/ManageButton";
 import PositionHistory from "./PositionHistory";
-import { mapToDisplayRewardType } from "@utils/reward-utils";
 import { DEFAULT_TOKEN_PRICE_RATIO } from "@common/values";
 
 import {
@@ -347,14 +346,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   }, [position]);
 
   const isClaimable = useMemo(() => {
-    if (positionWithClaimableRewards.rewards.length === 0) {
-      return false;
-    }
-
-    return positionWithClaimableRewards.rewards.some(reward => {
-      const amount = parseFloat(reward.claimableAmount || "0");
-      return amount > 0;
-    });
+    return positionWithClaimableRewards.rewards.length > 0;
   }, [positionWithClaimableRewards.rewards]);
 
   const totalDailyEarning = useMemo(() => {

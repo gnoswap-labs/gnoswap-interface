@@ -48,6 +48,6 @@ export const hasRewardInfo = <T>(data: Record<DisplayRewardType, T[]>): boolean 
  * @returns boolean
  */
 export const isClaimableReward = (reward: RewardModel): boolean => {
-  const claimableAmount = BigNumber(reward.claimableAmount || 0);
-  return !claimableAmount.isNaN() && claimableAmount.isGreaterThan(0);
+  const claimableAmount = BigNumber(reward.claimableAmount ?? 0);
+  return claimableAmount.isGreaterThan(0);
 };
