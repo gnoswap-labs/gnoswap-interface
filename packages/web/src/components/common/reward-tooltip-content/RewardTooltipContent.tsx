@@ -23,112 +23,57 @@ export interface RewardTooltipContentProps {
   rewardInfo: { [key in DisplayRewardType]: PositionRewardForTooltip[] } | null;
 }
 
+interface RewardCategory {
+  type: DisplayRewardType;
+  rewards: PositionRewardForTooltip[] | null;
+  totalUSD: string;
+}
+
 const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({ rewardInfo }) => {
   const { getGnotPath } = useGnotToGnot();
   const { t } = useTranslation();
 
-  const swapFeeRewards = useMemo(() => {
-    if (!rewardInfo || rewardInfo.SWAP_FEE.length === 0) {
-      return null;
-    }
-    return rewardInfo.SWAP_FEE.sort((a, b) => (b.usd || 0) - (a.usd || 0));
-  }, [rewardInfo]);
+  const sortByUsd = React.useCallback(
+    (rewards: PositionRewardForTooltip[]) => rewards.sort((a, b) => (b.usd ?? 0) - (a.usd ?? 0)),
+    [],
+  );
 
-  const internalRewards = useMemo(() => {
-    if (!rewardInfo || rewardInfo.INTERNAL_REWARD.length === 0) {
-      return null;
-    }
-    return rewardInfo.INTERNAL_REWARD.sort((a, b) => (b.usd || 0) - (a.usd || 0));
-  }, [rewardInfo]);
+  const calculateTotalUsd = React.useCallback((rewards: PositionRewardForTooltip[] | null): string => {
+    if (!rewards || rewards.length === 0) return "-";
 
-  const externalRewards = useMemo(() => {
-    if (!rewardInfo || rewardInfo.EXTERNAL_REWARD.length === 0) {
-      return null;
-    }
-    return rewardInfo.EXTERNAL_REWARD.sort((a, b) => (b.usd || 0) - (a.usd || 0));
-  }, [rewardInfo]);
+    const sumUSD = rewards.reduce(
+      (accum, current) => (current.usd !== null ? accum.plus(current.usd) : accum),
+      new BigNumber(0),
+    );
 
-  const noneRewards = useMemo(() => {
-    if (!rewardInfo || rewardInfo.NONE.length === 0) {
-      return null;
-    }
-    return rewardInfo.NONE.sort((a, b) => (b.usd || 0) - (a.usd || 0));
-  }, [rewardInfo]);
+    return formatOtherPrice(sumUSD.toNumber(), { isKMB: false });
+  }, []);
 
-  const swapFeeRewardUSD = useMemo(() => {
-    const isEmpty = !swapFeeRewards || swapFeeRewards?.length === 0;
-
-    if (isEmpty) return "-";
-
-    const sumUSD = swapFeeRewards?.reduce((accum, current) => {
-      if (current.usd === null) {
-        return accum;
+  const processRewardsByType = React.useCallback(
+    (type: DisplayRewardType): { rewards: PositionRewardForTooltip[] | null; totalUSD: string } => {
+      if (!rewardInfo || rewardInfo[type].length === 0) {
+        return { rewards: null, totalUSD: "-" };
       }
-      return accum.plus(current.usd);
-    }, new BigNumber(0));
 
-    return formatOtherPrice(sumUSD.toNumber(), {
-      isKMB: false,
-    });
-  }, [swapFeeRewards]);
+      const sortedRewards = sortByUsd([...rewardInfo[type]]);
+      return {
+        rewards: sortedRewards,
+        totalUSD: calculateTotalUsd(sortedRewards),
+      };
+    },
+    [rewardInfo, sortByUsd, calculateTotalUsd],
+  );
 
-  const internalRewardUSD = useMemo(() => {
-    const isEmpty = !internalRewards;
+  const rewardsData = useMemo<RewardCategory[]>(() => {
+    const types: DisplayRewardType[] = ["SWAP_FEE", "INTERNAL_REWARD", "EXTERNAL_REWARD", "NONE"]; // Specify sort order
 
-    if (isEmpty) return "-";
-
-    const sumUSD = internalRewards.reduce((accum, current) => {
-      if (current.usd === null) {
-        return accum;
-      }
-      return accum.plus(current.usd);
-    }, new BigNumber(0));
-
-    return formatOtherPrice(sumUSD.toNumber(), {
-      isKMB: false,
-    });
-  }, [internalRewards]);
-
-  const externalRewardUSD = useMemo(() => {
-    const isEmpty = !externalRewards;
-
-    if (isEmpty) return "-";
-
-    const sumUSD = externalRewards.reduce((accum, current) => {
-      if (current.usd === null) {
-        return accum;
-      }
-      return accum.plus(current.usd);
-    }, new BigNumber(0));
-
-    return formatOtherPrice(sumUSD.toNumber(), {
-      isKMB: false,
-    });
-  }, [externalRewards]);
-
-  const noneRewardUSD = useMemo(() => {
-    const isEmpty = !noneRewards || noneRewards?.length === 0;
-
-    if (isEmpty) return "-";
-
-    const sumUSD = noneRewards.reduce((accum, current) => {
-      if (current.usd === null) {
-        return accum;
-      }
-      return accum.plus(current.usd);
-    }, new BigNumber(0));
-
-    return formatOtherPrice(sumUSD.toNumber(), {
-      isKMB: false,
-    });
-  }, [noneRewards]);
-
-  const rewardsData = [
-    { type: "SWAP_FEE", rewards: swapFeeRewards, totalUSD: swapFeeRewardUSD },
-    { type: "INTERNAL_REWARD", rewards: internalRewards, totalUSD: internalRewardUSD },
-    { type: "EXTERNAL_REWARD", rewards: externalRewards, totalUSD: externalRewardUSD },
-    { type: "NONE", rewards: noneRewards, totalUSD: noneRewardUSD },
-  ].filter(({ rewards }) => rewards);
+    return types
+      .map(type => {
+        const { rewards, totalUSD } = processRewardsByType(type);
+        return { type, rewards, totalUSD };
+      })
+      .filter(({ rewards }) => rewards !== null);
+  }, [processRewardsByType]);
 
   return (
     <RewardTooltipContentWrapper>
