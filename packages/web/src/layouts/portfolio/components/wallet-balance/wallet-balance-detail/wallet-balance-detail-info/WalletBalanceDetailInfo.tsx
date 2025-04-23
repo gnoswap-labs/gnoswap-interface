@@ -6,12 +6,12 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
-import { numberToFormat } from "@utils/string-utils";
 
 import {
   WalletBalanceDetailInfoTooltipContent,
   WalletBalanceDetailInfoWrapper,
 } from "./WalletBalanceDetailInfo.styles";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
 interface WalletBalanceDetailInfoProps {
   title: string;
@@ -24,6 +24,7 @@ interface WalletBalanceDetailInfoProps {
   breakpoint: DEVICE_TYPE;
   connected: boolean;
   isSwitchNetwork: boolean;
+  isClaimableAll?: boolean;
 }
 
 const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
@@ -35,8 +36,6 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
   loading,
   className,
   breakpoint,
-  connected,
-  isSwitchNetwork,
 }) => {
   const divRef = useRef<HTMLDivElement | null>(null);
   const valueRef = useRef<HTMLDivElement | null>(null);
@@ -60,12 +59,8 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
     if (BigNumber(value).isLessThan(0.01)) {
       return "<$0.01";
     }
-    return `$${numberToFormat(value, { decimals: 2, forceDecimals: true })}`;
+    return formatOtherPrice(value, { isKMB: false });
   }, [value]);
-
-  const isClaimableAll = useMemo(() => {
-    return value !== "0" && value !== "-" && !isSwitchNetwork && connected;
-  }, [value, isSwitchNetwork, connected]);
 
   return (
     <WalletBalanceDetailInfoWrapper className={className}>
@@ -89,9 +84,7 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
               </span>
             </Tooltip>
           )}
-          {breakpoint !== DEVICE_TYPE.MOBILE && button && isClaimableAll && (
-            <div className="button-wrapper">{button}</div>
-          )}
+          {breakpoint !== DEVICE_TYPE.MOBILE && button && <div className="button-wrapper">{button}</div>}
           {isClaim && (
             <span className="value hidden-value" ref={divRef}>
               {displayValue}

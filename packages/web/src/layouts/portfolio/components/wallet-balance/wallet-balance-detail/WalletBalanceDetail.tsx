@@ -167,7 +167,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
       positions
         .flatMap(position => position.claimedRewards)
         .forEach(claimed => {
-          const rewardType = claimed.rewardType as RewardType;
+          const rewardType = claimed.rewardToken.rewardType as RewardType;
           const displayRewardType = mapToDisplayRewardType(rewardType);
 
           if (!claimedMap[displayRewardType]) {
@@ -239,6 +239,11 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
     return true;
   };
 
+  const isClaimableAll = useMemo(() => {
+    if (balanceDetailInfo.loadingPositions) return false;
+    return hasInfo(claimableRewardInfo);
+  }, [claimableRewardInfo, balanceDetailInfo.loadingPositions]);
+
   return (
     <WalletBalanceDetailWrapper>
       <WalletBalanceDetailInfo
@@ -280,23 +285,23 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         value={balanceDetailInfo.claimableRewards}
         connected={connected}
         isSwitchNetwork={isSwitchNetwork}
-        valueTooltip={
-          hasInfo(claimableRewardInfo) ? <RewardTooltipContent rewardInfo={claimableRewardInfo} /> : undefined
-        }
+        valueTooltip={isClaimableAll ? <RewardTooltipContent rewardInfo={claimableRewardInfo} /> : undefined}
         className="claimable-rewards"
         button={
-          <Button
-            style={{
-              minWidth: 86,
-              fontType: "p1",
-              padding: loadngTransactionClaim ? "8px 16px" : "10px 16px",
-              hierarchy: ButtonHierarchy.Primary,
-            }}
-            text={loadngTransactionClaim ? "" : t("Wallet:overral.claimAll.btn")}
-            onClick={claimAll}
-            disabled={connected === false || isSwitchNetwork || Number(balanceDetailInfo.claimableRewards) === 0}
-            leftIcon={loadngTransactionClaim ? <LoadingSpinner className="loading-button" /> : undefined}
-          />
+          isClaimableAll ? (
+            <Button
+              style={{
+                minWidth: 86,
+                fontType: "p1",
+                padding: loadngTransactionClaim ? "8px 16px" : "10px 16px",
+                hierarchy: ButtonHierarchy.Primary,
+              }}
+              text={loadngTransactionClaim ? "" : t("Wallet:overral.claimAll.btn")}
+              onClick={claimAll}
+              disabled={!connected || isSwitchNetwork || !isClaimableAll || balanceDetailInfo.loadingPositions}
+              leftIcon={loadngTransactionClaim ? <LoadingSpinner className="loading-button" /> : undefined}
+            />
+          ) : undefined
         }
         breakpoint={breakpoint}
       />

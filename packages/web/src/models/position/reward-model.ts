@@ -22,7 +22,7 @@ export interface RewardModel {
 export interface ClaimedRewardModel {
   rewardType: RewardType;
 
-  rewardToken: TokenModel;
+  rewardToken: RewardTokenModel;
 
   claimedAmount: string;
 }
