@@ -167,7 +167,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
       positions
         .flatMap(position => position.claimedRewards)
         .forEach(claimed => {
-          const rewardType = claimed.rewardType as RewardType;
+          const rewardType = claimed.rewardToken.rewardType as RewardType;
           const displayRewardType = mapToDisplayRewardType(rewardType);
 
           if (!claimedMap[displayRewardType]) {
