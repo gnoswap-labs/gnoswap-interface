@@ -34,7 +34,7 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({ rewardInfo 
   const { t } = useTranslation();
 
   const sortByUsd = React.useCallback(
-    (rewards: PositionRewardForTooltip[]) => rewards.sort((a, b) => (b.usd ?? 0) - (a.usd ?? 0)),
+    (rewards: PositionRewardForTooltip[]) => [...rewards].sort((a, b) => (b.usd ?? 0) - (a.usd ?? 0)),
     [],
   );
 
