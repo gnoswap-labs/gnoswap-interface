@@ -37,6 +37,7 @@ import { makeRouteUrl } from "@utils/page.utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { isClaimableReward } from "@utils/reward-utils";
 
 import { DailyEarningTooltipContent, PositionAPRInfo } from "../stat-tooltip-contents/DailyEarningTooltipContent";
 import { BalanceTooltipContent, PositionBalanceInfo } from "./BalanceTooltipContent";
@@ -338,16 +339,23 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     return formatOtherPrice(usdValue, { isKMB: false });
   }, [isDisplay, position.rewards]);
 
+  const positionWithClaimableRewards = useMemo(() => {
+    return {
+      ...position,
+      rewards: position.rewards.filter(isClaimableReward),
+    };
+  }, [position]);
+
   const isClaimable = useMemo(() => {
-    if (position.rewards.length === 0) {
+    if (positionWithClaimableRewards.rewards.length === 0) {
       return false;
     }
 
-    return position.rewards.some(reward => {
+    return positionWithClaimableRewards.rewards.some(reward => {
       const amount = parseFloat(reward.claimableAmount || "0");
       return amount > 0;
     });
-  }, [position.rewards]);
+  }, [positionWithClaimableRewards.rewards]);
 
   const totalDailyEarning = useMemo(() => {
     const isEmpty = !totalRewardInfo || position.rewards.length === 0;
@@ -901,7 +909,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
             >
               <span className={cx("content-text", { claimable: isClaimable })}>{totalRewardUSD}</span>
             </Tooltip>
-            {isClaimable && <ClaimButton text={"Claim"} onClick={() => claim(position)} />}
+            {isClaimable && <ClaimButton text={"Claim"} onClick={() => claim(positionWithClaimableRewards)} />}
           </div>
         ) : (
           !loading && <span className="content-text disabled">{totalRewardUSD}</span>

@@ -1,3 +1,6 @@
+import BigNumber from "bignumber.js";
+
+import { RewardModel } from "@models/position/reward-model";
 import { RewardType, DisplayRewardType } from "@constants/option.constant";
 
 /**
@@ -36,4 +39,15 @@ export const isInternalRewardType = (rewardType: RewardType): boolean => {
  */
 export const hasRewardInfo = <T>(data: Record<DisplayRewardType, T[]>): boolean => {
   return data.SWAP_FEE.length > 0 || data.INTERNAL_REWARD.length > 0 || data.EXTERNAL_REWARD.length > 0;
+};
+
+/**
+ * Functions to check reward claimability
+ * Returns true if the reward's claimable amount is greater than 0, otherwise false
+ * @param reward
+ * @returns boolean
+ */
+export const isClaimableReward = (reward: RewardModel): boolean => {
+  const claimableAmount = BigNumber(reward.claimableAmount || 0);
+  return !claimableAmount.isNaN() && claimableAmount.isGreaterThan(0);
 };
