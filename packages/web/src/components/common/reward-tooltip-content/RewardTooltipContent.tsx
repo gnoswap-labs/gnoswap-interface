@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useMemo } from "react";
+import BigNumber from "bignumber.js";
 import { useTranslation } from "react-i18next";
 
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -59,18 +60,14 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({ rewardInfo 
 
     if (isEmpty) return "-";
 
-    const sumUSD = swapFeeRewards?.reduce((accum: null | number, current) => {
-      if (accum === null && current.usd === null) {
-        return null;
+    const sumUSD = swapFeeRewards?.reduce((accum, current) => {
+      if (current.usd === null) {
+        return accum;
       }
+      return accum.plus(current.usd);
+    }, new BigNumber(0));
 
-      if (accum === null) {
-        return current.usd;
-      }
-
-      return accum + (current.usd ?? 0);
-    }, null);
-    return formatOtherPrice(sumUSD, {
+    return formatOtherPrice(sumUSD.toNumber(), {
       isKMB: false,
     });
   }, [swapFeeRewards]);
@@ -80,22 +77,14 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({ rewardInfo 
 
     if (isEmpty) return "-";
 
-    const sumUSD = internalRewards.reduce((accum: null | number, current) => {
-      if (accum === null && current.usd === null) {
-        return null;
-      }
-
-      if (accum === null) {
-        return current.usd;
-      }
-
+    const sumUSD = internalRewards.reduce((accum, current) => {
       if (current.usd === null) {
         return accum;
       }
+      return accum.plus(current.usd);
+    }, new BigNumber(0));
 
-      return accum + current.usd;
-    }, null);
-    return formatOtherPrice(sumUSD, {
+    return formatOtherPrice(sumUSD.toNumber(), {
       isKMB: false,
     });
   }, [internalRewards]);
@@ -105,22 +94,14 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({ rewardInfo 
 
     if (isEmpty) return "-";
 
-    const sumUSD = externalRewards.reduce((accum: null | number, current) => {
-      if (accum === null && current.usd === null) {
-        return null;
-      }
-
-      if (accum === null) {
-        return current.usd;
-      }
-
+    const sumUSD = externalRewards.reduce((accum, current) => {
       if (current.usd === null) {
         return accum;
       }
+      return accum.plus(current.usd);
+    }, new BigNumber(0));
 
-      return accum + current.usd;
-    }, null);
-    return formatOtherPrice(sumUSD, {
+    return formatOtherPrice(sumUSD.toNumber(), {
       isKMB: false,
     });
   }, [externalRewards]);
@@ -130,22 +111,14 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({ rewardInfo 
 
     if (isEmpty) return "-";
 
-    const sumUSD = noneRewards.reduce((accum: null | number, current) => {
-      if (accum === null && current.usd === null) {
-        return null;
-      }
-
-      if (accum === null) {
-        return current.usd;
-      }
-
+    const sumUSD = noneRewards.reduce((accum, current) => {
       if (current.usd === null) {
         return accum;
       }
+      return accum.plus(current.usd);
+    }, new BigNumber(0));
 
-      return accum + current.usd;
-    }, null);
-    return formatOtherPrice(sumUSD, {
+    return formatOtherPrice(sumUSD.toNumber(), {
       isKMB: false,
     });
   }, [noneRewards]);
