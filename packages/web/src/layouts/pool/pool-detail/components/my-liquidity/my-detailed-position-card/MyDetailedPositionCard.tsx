@@ -972,6 +972,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
           binsMyAmount={positionBin}
           isReversed={isSwap}
           disabled={isHideBar}
+          disableBlackBars={false}
         />
       )}
       {loading && (
