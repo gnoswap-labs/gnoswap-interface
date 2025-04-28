@@ -36,6 +36,7 @@ interface PoolGraphSVGProps {
   zoomLevel: number;
   currentTickRelative: number | null;
   shiftIndex: number;
+  disableBlackBars?: boolean;
   onMouseEnter?: (event: React.MouseEvent | React.TouchEvent) => void;
   onMouseLeave?: (event: React.MouseEvent) => void;
   onTouchStart?: (event: React.TouchEvent) => void;
@@ -74,6 +75,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
       onMouseOut,
       zoomLevel,
       shiftIndex,
+      disableBlackBars,
     },
     forwardedRef,
   ) => {
@@ -107,16 +109,26 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
     function updateChart() {
       // Retrieves the colour of the chart bar at the current tick.
       function fillByBin(bin: ReservedBin) {
+        if (disableBlackBars) {
+          if (hasCurrentTick && currentTickRelative !== null) {
+            if (bin.minTick < currentTickRelative) {
+              return `url(#gradient-bar-green-${graphId})`;
+            }
+            return `url(#gradient-bar-red-${graphId})`;
+          }
+          return `url(#gradient-bar-red-${graphId})`;
+        }
+
         let isBlackBar = !!(
-          maxTickPosition &&
-          minTickPosition &&
+          maxTickPosition !== null &&
+          minTickPosition !== null &&
           (scaleX(bin.minTick) < minTickPosition - binSpacing || scaleX(bin.minTick) > maxTickPosition)
         );
 
         if (isReversed) {
           isBlackBar = !!(
-            maxTickPosition &&
-            minTickPosition &&
+            maxTickPosition !== null &&
+            minTickPosition !== null &&
             (scaleX(bin.minTick) < scaleX(maxX) - maxTickPosition - binSpacing ||
               scaleX(bin.minTick) > scaleX(maxX) - minTickPosition)
           );
@@ -253,6 +265,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
       scaleY,
       shiftIndex,
       currentTickPosition,
+      disableBlackBars,
     ]);
 
     return (

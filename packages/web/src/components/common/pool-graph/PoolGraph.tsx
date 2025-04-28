@@ -44,6 +44,7 @@ export interface PoolGraphProps {
   shiftIndex?: number;
   displayBinCount?: number;
   zoomLevel?: number;
+  disableBlackBars?: boolean;
 }
 
 const PoolGraph: React.FC<PoolGraphProps> = ({
@@ -74,6 +75,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   displayBinCount = 40,
   shiftIndex = 0,
   zoomLevel = 0,
+  disableBlackBars = false,
 }) => {
   const graphIdRef = useRef(uuid.v4());
   const graphId = graphIdRef.current.toString();
@@ -452,6 +454,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
           onMouseMove={onMouseMoveChartBin}
           onMouseOut={onMouseOutChartBin}
           shiftIndex={shiftIndex}
+          disableBlackBars={disableBlackBars}
         />
       </FloatingTooltip>
     </PoolGraphWrapper>
