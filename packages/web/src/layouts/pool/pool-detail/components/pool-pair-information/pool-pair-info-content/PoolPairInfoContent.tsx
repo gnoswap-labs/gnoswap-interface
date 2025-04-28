@@ -538,6 +538,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               shiftIndex={shiftIndex}
               displayBinCount={displayBinCount}
               zoomLevel={zoomLevel}
+              disableBlackBars={true}
             />
           )}
           {loadingBins && (
