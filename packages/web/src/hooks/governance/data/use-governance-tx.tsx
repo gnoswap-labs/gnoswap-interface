@@ -16,7 +16,7 @@ import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error"
 import { useReferral } from "@hooks/common/use-referral";
 
 export const useGovernanceTx = () => {
-  const { getCurrentReferralAddress } = useReferral();
+  const { getCurrentReferralAddress, removeReferrerFromLocalStorage } = useReferral();
 
   const { t } = useTranslation();
   const { account } = useWallet();
@@ -54,6 +54,7 @@ export const useGovernanceTx = () => {
       memo0?: string;
     },
     emitCallback?: () => Promise<void>,
+    onSuccess?: () => void,
   ) => {
     broadcastLoading(getMessage(eventType, "pending", messageData));
     openTransactionConfirmModal();
@@ -75,6 +76,10 @@ export const useGovernanceTx = () => {
         if (response?.code === 0) {
           openTransactionConfirmModal();
           broadcastSuccess(getMessage(eventType, "success", messageData, response.data?.hash));
+
+          if (onSuccess) {
+            onSuccess();
+          }
         } else if (
           response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
         ) {
@@ -125,6 +130,7 @@ export const useGovernanceTx = () => {
         };
       },
       emitCallback,
+      removeReferrerFromLocalStorage,
     );
   };
 

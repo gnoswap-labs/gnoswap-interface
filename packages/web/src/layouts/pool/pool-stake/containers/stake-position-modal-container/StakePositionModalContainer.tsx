@@ -35,7 +35,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
 
   const { positionRepository } = useGnoswapContext();
   const router = useCustomRouter();
-  const { getCurrentReferralAddress } = useReferral();
+  const { getCurrentReferralAddress, removeReferrerFromLocalStorage } = useReferral();
   const clearModal = useClearModal();
   const { updateBalances, tokenPrices } = useTokenData();
   const poolPath = router.getPoolPath();
@@ -161,6 +161,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
             result.data?.hash,
           ),
         );
+        removeReferrerFromLocalStorage();
       } else if (result.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
         broadcastRejected(
           getMessage(DexEvent.STAKE, "error", {

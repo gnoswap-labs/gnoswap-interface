@@ -49,7 +49,7 @@ export const useReferral = () => {
   }, [account?.address]);
 
   /**
-   * Get referrer information from session storage (internal function)
+   * Get referrer information from ClientStorage (internal function)
    */
   const getStoredReferrerInfo = React.useCallback((): StoredReferrerInfo | null => {
     try {
@@ -76,7 +76,7 @@ export const useReferral = () => {
   };
 
   /**
-   * Functions to store referrer addresses in session storage
+   * Functions to store referrer addresses in ClientStorage
    */
   const saveReferrerAddress = React.useCallback(
     (referrerAddress: string): SaveReferrerResult => {
@@ -121,6 +121,15 @@ export const useReferral = () => {
     router.replace(newUrl, undefined, { shallow: true });
   }, [router]);
 
+  /**
+   * Functions to remove referrer addresses from ClientStorage
+   */
+  const removeReferrerFromLocalStorage = React.useCallback(() => {
+    if (!account?.address) return;
+    localStorage.removeItem(`${GNOSWAP_REFERRAL_CODE}_${account.address}`);
+    setStoredReferralAddress(null);
+  }, [account?.address]);
+
   const refreshReferralData = React.useCallback(() => {
     const storedInfo = getStoredReferrerInfo();
     const storedAddress = storedInfo?.referrerAddress ?? null;
@@ -134,7 +143,7 @@ export const useReferral = () => {
       return;
     }
 
-    // Rank 2: LocalStorage
+    // Rank 2: ClientStorage
     const hasStoredReferralAddress = storedAddress != null;
     if (hasStoredReferralAddress) {
       if (storedAddress === "" || isValidAddress(storedAddress)) {
@@ -151,7 +160,7 @@ export const useReferral = () => {
     }
   }, [urlReferralAddress, apiReferrerAddress, account?.address, getStoredReferrerInfo]);
 
-  // Handling URL parameters and LocalStorage priorities
+  // Handling URL parameters and ClientStorage priorities
   React.useEffect(() => {
     refreshReferralData();
   }, [urlReferralAddress, storedReferralAddress, apiReferrerAddress, saveToLocalStorage, account?.address]);
@@ -167,5 +176,6 @@ export const useReferral = () => {
     refetchLeaderboardMyInfo,
     refreshReferralData,
     removeReferrerFromUrl,
+    removeReferrerFromLocalStorage,
   };
 };
