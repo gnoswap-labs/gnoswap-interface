@@ -32,6 +32,7 @@ export interface BarAreaGraphProps {
   pool: PoolModel;
   positionBins: PoolBinModel[];
   poolBins: PoolBinModel[];
+  disableBlackBars: boolean;
 }
 
 const VIEWPORT_DEFAULT_WIDTH = 400;
@@ -50,6 +51,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
   themeKey,
   pool,
   poolBins,
+  disableBlackBars,
 }) => {
   const isHideBar = useMemo(() => {
     const isAllReserveZeroBin40 = poolBins.every(
@@ -81,6 +83,7 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
         isPosition
         binsMyAmount={positionBins}
         disabled={isHideBar}
+        disableBlackBars={disableBlackBars}
       />
     </BarAreaGraphWrapper>
   );

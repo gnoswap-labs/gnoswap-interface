@@ -239,7 +239,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   };
 
   const getMinTick = useMemo(() => {
-    if (!minTickPosition) {
+    if (minTickPosition == null) {
       return null;
     }
     if (minTickPosition < 0) {
@@ -252,7 +252,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   }, [minTickPosition]);
 
   const getMaxTick = useMemo(() => {
-    if (!maxTickPosition) {
+    if (maxTickPosition == null) {
       return null;
     }
     if (maxTickPosition < 0) {
@@ -402,6 +402,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                     maxTickRate={maxTickRate}
                     pool={pool}
                     positionBins={positionBins}
+                    disableBlackBars={false}
                   />
                 </div>
                 <div className="min-max-price">

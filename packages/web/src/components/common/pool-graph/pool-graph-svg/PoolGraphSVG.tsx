@@ -120,15 +120,15 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
         }
 
         let isBlackBar = !!(
-          maxTickPosition !== null &&
-          minTickPosition !== null &&
+          maxTickPosition != null &&
+          minTickPosition != null &&
           (scaleX(bin.minTick) < minTickPosition - binSpacing || scaleX(bin.minTick) > maxTickPosition)
         );
 
         if (isReversed) {
           isBlackBar = !!(
-            maxTickPosition !== null &&
-            minTickPosition !== null &&
+            maxTickPosition != null &&
+            minTickPosition != null &&
             (scaleX(bin.minTick) < scaleX(maxX) - maxTickPosition - binSpacing ||
               scaleX(bin.minTick) > scaleX(maxX) - minTickPosition)
           );

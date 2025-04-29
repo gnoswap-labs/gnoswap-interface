@@ -309,14 +309,14 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       const depositTokenAAmountStr = currentBin?.reserveTokenAMyAmount;
       const depositTokenBAmountStr = currentBin?.reserveTokenBMyAmount;
       let disabledBin = !!(
-        maxTickPosition &&
-        minTickPosition &&
+        maxTickPosition != null &&
+        minTickPosition != null &&
         (scaleX(currentBin.minTick) < minTickPosition - binSpacing || scaleX(currentBin.minTick) > maxTickPosition)
       );
       if (isReversed) {
         disabledBin = !!(
-          maxTickPosition &&
-          minTickPosition &&
+          maxTickPosition != null &&
+          minTickPosition != null &&
           (scaleX(currentBin.minTick) < scaleX(maxX) - maxTickPosition - binSpacing ||
             scaleX(currentBin.minTick) > scaleX(maxX) - minTickPosition)
         );
