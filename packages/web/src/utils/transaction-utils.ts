@@ -7,7 +7,7 @@ import {
   TransactionMessage,
   WalletResponse,
 } from "@common/clients/wallet-client/protocols";
-import { DEFAULT_CHAIN_ID } from "@constants/environment.constant";
+import { DEFAULT_CHAIN_ID, WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { DEFAULT_GAS_WANTED } from "@common/values";
 import { Document } from "src/types/transaction-messages.types";
 
@@ -199,4 +199,32 @@ export const generateSendTransactionParams = (params: SendTransactionRequestPara
     ...(gasWanted && { gasWanted }),
     ...(memo && { memo }),
   };
+};
+
+/**
+ * Checks if the given token path corresponds to the wrapped GNOT token path
+ *
+ * @param path - The token path to check
+ * @returns True if the path matches wrapped GNOT path, false otherwise
+ */
+export const isWrappedGnotPath = (path: string) => path === WRAPPED_GNOT_PATH;
+
+/**
+ * Determines the appropriate send amount when trading with wrapped GNOT
+
+ * @param {string} tokenAWrappedPath - The wrapped path of token A
+ * @param {string} tokenBWrappedPath - The wrapped path of token B
+ * @param {string} tokenAAmountRaw - The raw amount of token A
+ * @param {string} tokenBAmountRaw - The raw amount of token B
+ * @returns {string|null} The raw token amount to send if one of the tokens is wrapped GNOT, null otherwise
+ */
+export const getSendAmount = (
+  tokenAWrappedPath: string,
+  tokenBWrappedPath: string,
+  tokenAAmountRaw: string,
+  tokenBAmountRaw: string,
+) => {
+  if (isWrappedGnotPath(tokenAWrappedPath)) return tokenAAmountRaw;
+  if (isWrappedGnotPath(tokenBWrappedPath)) return tokenBAmountRaw;
+  return null;
 };
