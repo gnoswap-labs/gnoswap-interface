@@ -20,6 +20,7 @@ import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath, isGNOTPath, wrapNativeTokenPath } from "@utils/common";
 import { MAX_INT64 } from "@utils/math.utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
+import { getSendAmount } from "@utils/transaction-utils";
 import BigNumber from "bignumber.js";
 
 enum TransactionMessageFunctionType {
@@ -308,8 +309,7 @@ export function makeIncreaseLiquidityMessagesWithApproves(
   const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
   const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
 
-  const sendAmount =
-    tokenAWrappedPath === WRAPPED_GNOT_PATH ? tokenAAmountRaw : tokenBWrappedPath ? tokenBAmountRaw : null;
+  const sendAmount = getSendAmount(tokenAWrappedPath, tokenBWrappedPath, tokenAAmountRaw, tokenBAmountRaw);
 
   // Make Approve messages that can be managed by a Pool package of tokens.
   const approveMessageInfos: TokenApproveMessageInfo[] = [
@@ -470,8 +470,7 @@ export function makeRepositionLiquidityMessagesWithApproves(
     },
   ];
 
-  const sendAmount =
-    tokenAWrappedPath === WRAPPED_GNOT_PATH ? tokenAAmountRaw : tokenBWrappedPath ? tokenBAmountRaw : null;
+  const sendAmount = getSendAmount(tokenAWrappedPath, tokenBWrappedPath, tokenAAmountRaw, tokenBAmountRaw);
   const send = makeGNOTSendAmount(sendAmount);
 
   const slippageRatio = (100 - slippage) / 100;
