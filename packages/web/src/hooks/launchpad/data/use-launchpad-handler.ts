@@ -44,7 +44,7 @@ function calculateUSDValueBy(
 }
 
 export const useLaunchpadHandler = () => {
-  const { getCurrentReferralAddress } = useReferral();
+  const { getCurrentReferralAddress, removeReferrerFromLocalStorage } = useReferral();
 
   const participateAmount = useAtomValue(LaunchpadState.participateAmount);
   const depositConditions = useAtomValue(LaunchpadState.depositConditions);
@@ -142,6 +142,8 @@ export const useLaunchpadHandler = () => {
         };
       },
       emitCallback,
+      undefined,
+      removeReferrerFromLocalStorage,
     );
   };
 

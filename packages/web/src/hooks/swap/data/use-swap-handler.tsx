@@ -34,6 +34,7 @@ import { nullish } from "@utils/nullish-utils";
 import { matchInputNumber } from "@utils/number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { isEmptyObject } from "@utils/validation-utils";
+import { useReferral } from "@hooks/common/use-referral";
 
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useSwap } from "./use-swap";
@@ -156,6 +157,7 @@ export const useSwapHandler = () => {
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
   const [, setSwapConfirmModalState] = useAtom(SwapState.swapConfirmModalState);
 
+  const { removeReferrerFromLocalStorage } = useReferral();
   const {
     tokenA = null,
     tokenB = null,
@@ -1115,6 +1117,7 @@ export const useSwapHandler = () => {
             const responseData = response?.data as SwapRouteSuccessResponse;
             openTransactionConfirmModal();
             broadcastSuccess(getMessage(DexEvent.SWAP, "success", broadcastMessage, responseData.hash), onFinishSwap);
+            removeReferrerFromLocalStorage();
           } else if (
             response.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
           ) {

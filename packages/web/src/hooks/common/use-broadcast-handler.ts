@@ -136,6 +136,7 @@ export const useBroadcastHandler = () => {
     },
     emitCallback?: () => Promise<void>,
     updateCallback?: () => Promise<void>,
+    onSuccess?: () => void,
   ) => {
     broadcastLoading(getMessage(eventType, "pending", messageData));
     openModal();
@@ -160,6 +161,10 @@ export const useBroadcastHandler = () => {
         if (response?.code === 0) {
           openModal();
           broadcastSuccess(getMessage(eventType, "success", messageData, response.data?.hash));
+
+          if (onSuccess) {
+            onSuccess();
+          }
         } else if (
           response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
         ) {

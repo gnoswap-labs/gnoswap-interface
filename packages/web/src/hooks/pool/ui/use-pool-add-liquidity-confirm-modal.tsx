@@ -28,6 +28,7 @@ import { subscriptFormat } from "@utils/number-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToNearTick } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { useReferral } from "@hooks/common/use-referral";
 
 import { useAddress } from "@hooks/common/use-address";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
@@ -91,6 +92,7 @@ export const usePoolAddLiquidityConfirmModal = ({
   const { t } = useTranslation();
   const { broadcastLoading, broadcastRejected, broadcastSuccess, broadcastError } = useBroadcastHandler();
   const { enqueueEvent } = useTransactionEventStore();
+  const { removeReferrerFromLocalStorage } = useReferral();
 
   const { getMessage } = useMessage();
 
@@ -396,6 +398,7 @@ export const usePoolAddLiquidityConfirmModal = ({
               ),
               moveToBack,
             );
+            removeReferrerFromLocalStorage();
           } else if (
             result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
           ) {
