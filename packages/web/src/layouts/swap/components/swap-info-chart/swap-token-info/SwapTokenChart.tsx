@@ -34,14 +34,12 @@ const SwapTokenChart = ({
 
   const chartData = React.useMemo(() => {
     if (!hasData) return [];
-    return data
-      .map(item => {
-        return {
-          value: item.price,
-          time: getLocalizeTime(item.time),
-        };
-      })
-      .reverse();
+    return data.map(item => {
+      return {
+        value: item.price,
+        time: getLocalizeTime(item.time),
+      };
+    });
   }, [hasData, data]);
 
   const handleMouseMove = React.useCallback(

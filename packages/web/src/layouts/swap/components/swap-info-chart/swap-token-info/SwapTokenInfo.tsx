@@ -4,7 +4,7 @@ import { LineGraphData } from "@components/common/line-graph/LineGraph";
 import { isNativeTokenByType, TokenModel } from "@models/token/token-model";
 
 import useElementWidth from "@hooks/common/use-element-width";
-import { useGetTokenDetails, useGetTokenPrices } from "@query/token";
+import { useGetTokenPrices } from "@query/token";
 import SwapTokenChart from "./SwapTokenChart";
 import SwapTokenHeader from "./SwapTokenHeader";
 import { SwapTokenInfoWrapper } from "./SwapTokenInfo.styles";
@@ -45,12 +45,10 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
   }, [rawCurrentPrice]);
 
   const {
-    data: { prices7d = [] } = {},
+    data: { last7d = [] } = {},
     isLoading,
     isFetched,
-  } = useGetTokenDetails(tokenData.path as string, {
-    enabled: !!tokenData.path,
-  });
+  } = useGetTokenPrices(tokenData.path as string, { enabled: !!tokenData.path });
 
   const handleMouseMove = React.useCallback(
     (data?: LineGraphData) => {
@@ -77,7 +75,7 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
         containerWidth={containerWidth}
       />
       <SwapTokenChart
-        data={prices7d}
+        data={last7d}
         isLoading={isLoading}
         isFetched={isFetched}
         isChartHovered={isChartHovered}
