@@ -8,6 +8,7 @@ import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolModel } from "@models/pool/pool-model";
 import { TokenExchangeRateGraphResponse } from "@repositories/token/response/token-exchange-rate-response";
+import { useGetPoolPriceByPath } from "@query/pools/use-get-pool-price-by-path";
 
 import ChartScopeSelectTab from "./chart-scope-select-tab/ChartScopeSelectTab";
 import ExchangeRateGraphContent from "./exchange-rate-graph-content/ExchangeRateGraphContent";
@@ -27,6 +28,7 @@ import { DEVICE_TYPE } from "@styles/media";
 interface ExchangeRateGraphProps {
   breakpoint: DEVICE_TYPE;
   poolData: PoolModel;
+  poolPath: string | null;
   isReversed: boolean;
   data?: TokenExchangeRateGraphResponse;
   isLoading: boolean;
@@ -36,6 +38,7 @@ interface ExchangeRateGraphProps {
 const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
   breakpoint,
   poolData,
+  poolPath,
   isReversed,
   isLoading,
   defaultScope,
@@ -46,6 +49,10 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
   const [currentPoint, setCurrentPoint] = useState<string | null>();
   const [active, setActive] = useState<boolean>(false);
   const [selectedScope, setSelectedScope] = useState<CHART_DAY_SCOPE_TYPE>(defaultScope ?? CHART_DAY_SCOPE_TYPE["7D"]);
+
+  const { data: { prices = [] } = {} } = useGetPoolPriceByPath(poolPath || "", selectedScope, {
+    enabled: !!poolPath,
+  });
 
   const changedPoolInfo = useMemo(() => {
     return isReversed === false
@@ -79,17 +86,17 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
   const showChart = () => {
     if (!hasData) return <ExchangeChartNotFound>{t("common:noData")}</ExchangeChartNotFound>;
     return (
-      <ExchangeRateGraphContent
-        poolData={changedPoolInfo}
-        selectedScope={selectedScope}
-        isReversed={isReversed}
-        onMouseMove={data => {
-          setCurrentPoint(data?.value);
-        }}
-        onMouseOut={active => {
-          setActive(active);
-        }}
-      />
+      <>
+        <ExchangeRateGraphContent
+          pricesData={prices}
+          onMouseMove={data => {
+            setCurrentPoint(data?.value);
+          }}
+          onMouseOut={active => {
+            setActive(active);
+          }}
+        />
+      </>
     );
   };
 

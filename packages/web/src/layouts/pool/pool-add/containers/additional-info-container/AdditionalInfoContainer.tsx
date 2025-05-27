@@ -127,6 +127,7 @@ const AdditionalInfoContainer: React.FC = () => {
       unstakedPositions={unstakedPositions}
       handleClickGotoStaking={handleClickGotoStaking}
       pool={data}
+      poolPath={poolPath}
       biggestPool={biggestPool}
       isLoadingPool={isLoadingRPCPoolInfo || isFetchingFeetierOfLiquidityMap || isLoadingPoolInfo || isLoadingPosition}
       isLoadingGraph={isLoadingBiggestPoolInfo}

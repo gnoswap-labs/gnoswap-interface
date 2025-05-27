@@ -17,6 +17,8 @@ export const useGetPoolPriceByPath = (
     queryFn: async () => {
       return poolRepository.getPoolPriceByPoolPath(path, period);
     },
+    cacheTime: 1 * 60 * 1000,
+    staleTime: 1 * 60 * 1000,
     refetchOnMount: true,
     refetchOnReconnect: true,
     ...options,

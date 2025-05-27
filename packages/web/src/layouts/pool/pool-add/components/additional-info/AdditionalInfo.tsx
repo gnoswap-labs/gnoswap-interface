@@ -17,6 +17,7 @@ interface AdditionalInfoProps {
   unstakedPositions: PositionModel[];
   handleClickGotoStaking: (type: PAGE_PATH_TYPE) => void;
   pool: PoolDetailModel;
+  poolPath: string | null;
   biggestPool: PoolDetailModel;
   isLoadingPool: boolean;
   isLoadingGraph: boolean;
@@ -30,6 +31,7 @@ const AdditionalInfo: React.FC<AdditionalInfoProps> = ({
   unstakedPositions,
   handleClickGotoStaking,
   pool,
+  poolPath,
   biggestPool,
   isLoadingPool,
   isLoadingGraph,
@@ -53,6 +55,7 @@ const AdditionalInfo: React.FC<AdditionalInfoProps> = ({
         <ExchangeRateGraph
           breakpoint={breakpoint}
           poolData={biggestPool}
+          poolPath={poolPath}
           isLoading={isLoadingGraph}
           isReversed={isReversed}
         />
