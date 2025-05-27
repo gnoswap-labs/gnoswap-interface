@@ -12,6 +12,7 @@ import { PoolError } from "@common/errors/pool";
 import { DEFAULT_GAS_FEE } from "@common/values";
 import { PACKAGE_POOL_PATH, PACKAGE_STAKER_PATH } from "@constants/environment.constant";
 import { GnoProvider } from "@gnolang/gno-js-client";
+import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
 import { PoolStakingMapper } from "@models/pool/mapper/pool-staking-mapper";
@@ -22,7 +23,7 @@ import { IncentivizePoolModel, PoolModel } from "@models/pool/pool-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 import { evaluateExpressionToNumber, evaluateExpressionToObject, makeABCIParams } from "@utils/rpc-utils";
 import { withTransactionGuard, generateSendTransactionParams } from "@utils/transaction-utils";
-import { PoolListResponse, PoolRepository, PoolResponse } from ".";
+import { PoolListResponse, PoolPricesResponse, PoolRepository, PoolResponse } from ".";
 import {
   makeCreateExternalIncentiveMessageWithApproves,
   makeCreatePoolMessageWithApproves,
@@ -196,6 +197,18 @@ export class PoolRepositoryImpl implements PoolRepository {
     return this.networkClient
       .get<{ data: PoolBinModel[] }>({
         url: `/pools/${encodeURIComponent(poolPath)}/bins?binSize=${count || 40}`,
+      })
+      .then(response => response.data.data);
+  };
+
+  getPoolPriceByPoolPath = async (poolPath: string, period?: CHART_DAY_SCOPE_TYPE): Promise<PoolPricesResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    return this.networkClient
+      .get<{ data: PoolPricesResponse }>({
+        url: `/pools/${encodeURIComponent(poolPath)}/prices?period=${period || CHART_DAY_SCOPE_TYPE["7D"]}`,
       })
       .then(response => response.data.data);
   };
