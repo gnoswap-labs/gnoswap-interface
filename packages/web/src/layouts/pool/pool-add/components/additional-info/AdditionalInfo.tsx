@@ -17,7 +17,7 @@ interface AdditionalInfoProps {
   unstakedPositions: PositionModel[];
   handleClickGotoStaking: (type: PAGE_PATH_TYPE) => void;
   pool: PoolDetailModel;
-  biggestPool: PoolDetailModel;
+  poolPath: string | null;
   isLoadingPool: boolean;
   isLoadingGraph: boolean;
   isReversed: boolean;
@@ -30,14 +30,14 @@ const AdditionalInfo: React.FC<AdditionalInfoProps> = ({
   unstakedPositions,
   handleClickGotoStaking,
   pool,
-  biggestPool,
+  poolPath,
   isLoadingPool,
   isLoadingGraph,
   isReversed,
 }) => {
   if (!tokenPair || tokenPair.length < 2 || !tokenPair[0] || !tokenPair[1]) return <AdditionalInfoDummy />;
 
-  const isAnyPoolExist = !!biggestPool.tokenA.path;
+  const isAnyPoolExist = !!pool.tokenA.path;
 
   return (
     <AdditionalInfoWrapper>
@@ -52,7 +52,8 @@ const AdditionalInfo: React.FC<AdditionalInfoProps> = ({
       {isAnyPoolExist && (
         <ExchangeRateGraph
           breakpoint={breakpoint}
-          poolData={biggestPool}
+          currentPoolData={pool}
+          poolPath={poolPath}
           isLoading={isLoadingGraph}
           isReversed={isReversed}
         />

@@ -1,4 +1,4 @@
-import { PoolRepository } from ".";
+import { PoolPricesResponse, PoolRepository } from ".";
 
 import { SendTransactionResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
 import { PoolError } from "@common/errors/pool";
@@ -12,6 +12,7 @@ import { PoolStakingModel } from "@models/pool/pool-staking";
 import PoolDetailDataByPath from "./mock/pool-detai-by-path.json";
 import PoolDetailData from "./mock/pool-detail.json";
 import rpcPools from "./mock/rpc-pools.json";
+import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 export class PoolRepositoryMock implements PoolRepository {
   getWithdrawalFee = async (): Promise<number> => {
     return 0;
@@ -70,6 +71,12 @@ export class PoolRepositoryMock implements PoolRepository {
     console.log(poolPath);
 
     return PoolDetailDataByPath as IPoolDetailResponse;
+  };
+
+  getPoolPriceByPoolPath = async (poolPath: string, period?: CHART_DAY_SCOPE_TYPE): Promise<PoolPricesResponse> => {
+    console.log(poolPath, period);
+
+    return { prices: [] };
   };
 
   createExternalIncentive = async (): Promise<WalletResponse<SendTransactionResponse<string[] | null>> | null> => {

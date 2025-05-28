@@ -3,15 +3,14 @@ import { useTranslation } from "react-i18next";
 
 import LineGraph from "@components/common/line-graph/LineGraph";
 import { LANGUAGE_CODE_MAP } from "@constants/common.constant";
-import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import { useTheme } from "@emotion/react";
 import useComponentSize from "@hooks/common/use-component-size";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { getLocalizeTime, parseDate } from "@utils/chart";
 
 import { ExchangeRateGraphContentWrapper, ExchangeRateGraphXAxisWrapper } from "./ExchangeRateGraphContent.styles";
+import { IPoolPriceRatioItem } from "@models/pool/pool-model";
 
 interface LineGraphData {
   value: string;
@@ -19,91 +18,32 @@ interface LineGraphData {
 }
 
 interface ExchangeRateGraphContentProps {
-  poolData: PoolDetailModel;
-  selectedScope: CHART_DAY_SCOPE_TYPE;
-  isReversed: boolean;
+  pricesData: IPoolPriceRatioItem[];
   onMouseMove?: (data?: LineGraphData) => void;
   onMouseOut?: (active: boolean) => void;
 }
 
-export function ExchangeRateGraphContent({
-  poolData,
-  selectedScope,
-  isReversed,
-  onMouseMove,
-  onMouseOut,
-}: ExchangeRateGraphContentProps) {
+export function ExchangeRateGraphContent({ pricesData, onMouseMove, onMouseOut }: ExchangeRateGraphContentProps) {
   const { i18n } = useTranslation();
   const theme = useTheme();
   const [componentRef, size] = useComponentSize();
   const { breakpoint } = useWindowSize();
 
-  const sortedRawDataByType = useMemo(() => {
-    const data = poolData.priceRatio;
-    let result = [];
-
-    switch (selectedScope) {
-      case "30D":
-        result = data?.["30d"];
-        break;
-      case "ALL":
-        result = data?.all;
-        break;
-      case "7D":
-      default:
-        result = data?.["7d"];
-        break;
-    }
-
-    return (result ?? [])?.sort((a, b) => {
-      return new Date(a.date).getTime() - new Date(b.date).getTime();
-    });
-  }, [poolData.priceRatio, selectedScope]);
-
-  const dataMemo = useMemo(() => {
-    const lastTime =
-      sortedRawDataByType.length >= 1 ? new Date(sortedRawDataByType[sortedRawDataByType.length - 1]?.date) : undefined;
-    const last2Time =
-      sortedRawDataByType.length >= 2 ? new Date(sortedRawDataByType[sortedRawDataByType.length - 2]?.date) : undefined;
-    const latestTimeGap = (() => {
-      if (lastTime && last2Time) return lastTime.getTime() - last2Time.getTime();
-    })();
-
-    const fakeLastTime = (() => {
-      if (lastTime && latestTimeGap) return new Date(lastTime.getTime() + latestTimeGap);
-
-      return new Date();
-    })();
-
-    const dataByType = [
-      ...sortedRawDataByType,
-      {
-        date: fakeLastTime.toString(),
-        ratio: poolData.price,
-      },
-    ];
-
-    return dataByType?.map((item, index) => {
-      const value = (() => {
-        if (!item.ratio || item.ratio === "0") return "0";
-
-        if (index === dataByType.length - 1) return item.ratio.toString();
-
-        return isReversed ? (1 / Number(item.ratio)).toString() : item.ratio.toString();
-      })();
-
+  const pricesChartData = useMemo(() => {
+    if (!pricesData) return [];
+    return [...pricesData].reverse().map(item => {
       return {
-        value: value,
+        value: item.ratio,
         time: getLocalizeTime(item.date),
       };
     });
-  }, [isReversed, poolData.price, sortedRawDataByType]);
+  }, [pricesData]);
 
   const xAxisLabels = useMemo(() => {
-    return sortedRawDataByType?.map(item => parseDate(item.date, LANGUAGE_CODE_MAP[i18n.language]));
-  }, [sortedRawDataByType, i18n.language]);
+    return pricesChartData?.map(item => parseDate(item.time, LANGUAGE_CODE_MAP[i18n.language]));
+  }, [pricesChartData, i18n.language]);
 
-  const hasSingleData = useMemo(() => dataMemo?.length === 1, [dataMemo]);
+  const hasSingleData = useMemo(() => pricesChartData?.length === 1, [pricesChartData]);
 
   const countXAxis = useMemo(() => {
     if (hasSingleData) return 1;
@@ -149,7 +89,7 @@ export function ExchangeRateGraphContent({
             height={size.height - 36}
             color={theme.color.background04Hover}
             strokeWidth={1}
-            datas={dataMemo ?? []}
+            datas={pricesChartData ?? []}
             typeOfChart="exchange-rate"
             customData={{
               height: 36,
@@ -157,7 +97,7 @@ export function ExchangeRateGraphContent({
             }}
             showBaseLine
             showBaseLineLabels
-            isShowTooltip={false}
+            isShowTooltip={true}
             renderBottom={renderXAxis}
             onMouseOut={onMouseOut}
           />
