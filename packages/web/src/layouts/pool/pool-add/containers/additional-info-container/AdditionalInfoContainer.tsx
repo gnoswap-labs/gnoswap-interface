@@ -46,11 +46,7 @@ const AdditionalInfoContainer: React.FC = () => {
     [getGnotPath, tokens, tokenPair],
   );
 
-  const {
-    pools,
-    feetierOfLiquidityMap,
-    fetching: isFetchingFeetierOfLiquidityMap,
-  } = usePool({ tokenA, tokenB, compareToken });
+  const { pools, fetching: isFetchingFeetierOfLiquidityMap } = usePool({ tokenA, tokenB, compareToken });
 
   const shouldFetchPool = useMemo(() => {
     return pools.some(pool => pool.poolPath === poolPath);
@@ -67,25 +63,6 @@ const AdditionalInfoContainer: React.FC = () => {
   const { data = initialDetailPool, isLoading: isLoadingPoolInfo } = useGetPoolDetailByPath(poolPath, {
     enabled: !!poolPath && shouldFetchPool,
   });
-
-  const biggestPoolPath = useMemo(() => {
-    if (!feetierOfLiquidityMap || feetierOfLiquidityMap.length === 0) return null;
-    let biggestFeeTier = "";
-    Object.keys(feetierOfLiquidityMap).forEach(feeTier => {
-      if (biggestFeeTier === "") biggestFeeTier = feeTier;
-      else {
-        if (feetierOfLiquidityMap[biggestFeeTier] < feetierOfLiquidityMap[feeTier]) biggestFeeTier = feeTier;
-      }
-    });
-    return [...tokenPair, biggestFeeTier].join(":");
-  }, [tokenPair, feetierOfLiquidityMap]);
-
-  const { data: biggestPool = initialDetailPool, isLoading: isLoadingBiggestPoolInfo } = useGetPoolDetailByPath(
-    biggestPoolPath,
-    {
-      enabled: !!biggestPoolPath && shouldFetchPool,
-    },
-  );
 
   const handleClickGotoStaking = useCallback(
     (type: PAGE_PATH_TYPE) => {
@@ -128,9 +105,8 @@ const AdditionalInfoContainer: React.FC = () => {
       handleClickGotoStaking={handleClickGotoStaking}
       pool={data}
       poolPath={poolPath}
-      biggestPool={biggestPool}
       isLoadingPool={isLoadingRPCPoolInfo || isFetchingFeetierOfLiquidityMap || isLoadingPoolInfo || isLoadingPosition}
-      isLoadingGraph={isLoadingBiggestPoolInfo}
+      isLoadingGraph={isLoadingPoolInfo}
       isReversed={isReversed}
     />
   );

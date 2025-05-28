@@ -1,9 +1,7 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import IconInfo from "@components/common/icons/IconInfo";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
-import Tooltip from "@components/common/tooltip/Tooltip";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolModel } from "@models/pool/pool-model";
@@ -21,13 +19,12 @@ import {
   ExchangeRateGraphTitleWrapper,
   ExchangeRateGraphWrapper,
   LoadingExchangeRateChartWrapper,
-  TooltipContentWrapper,
 } from "./ExchangeRateGraph.styles";
 import { DEVICE_TYPE } from "@styles/media";
 
 interface ExchangeRateGraphProps {
   breakpoint: DEVICE_TYPE;
-  poolData: PoolModel;
+  currentPoolData: PoolModel;
   poolPath: string | null;
   isReversed: boolean;
   data?: TokenExchangeRateGraphResponse;
@@ -37,7 +34,7 @@ interface ExchangeRateGraphProps {
 
 const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
   breakpoint,
-  poolData,
+  currentPoolData,
   poolPath,
   isReversed,
   isLoading,
@@ -57,29 +54,29 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
   const changedPoolInfo = useMemo(() => {
     return isReversed === false
       ? {
-          ...poolData,
+          ...currentPoolData,
           tokenA: {
-            ...poolData.tokenA,
-            ...getGnotPath(poolData.tokenA),
+            ...currentPoolData.tokenA,
+            ...getGnotPath(currentPoolData.tokenA),
           },
           tokenB: {
-            ...poolData.tokenB,
-            ...getGnotPath(poolData.tokenB),
+            ...currentPoolData.tokenB,
+            ...getGnotPath(currentPoolData.tokenB),
           },
         }
       : {
-          ...poolData,
+          ...currentPoolData,
           tokenA: {
-            ...poolData.tokenA,
-            ...getGnotPath(poolData.tokenA),
+            ...currentPoolData.tokenA,
+            ...getGnotPath(currentPoolData.tokenA),
           },
           tokenB: {
-            ...poolData.tokenB,
-            ...getGnotPath(poolData.tokenB),
+            ...currentPoolData.tokenB,
+            ...getGnotPath(currentPoolData.tokenB),
           },
-          price: 1 / poolData.price,
+          price: 1 / currentPoolData.price,
         };
-  }, [getGnotPath, poolData, isReversed]);
+  }, [getGnotPath, currentPoolData, isReversed]);
 
   const hasData = changedPoolInfo.tokenA.name !== undefined && changedPoolInfo.tokenA.name !== "";
 
@@ -105,14 +102,6 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
       <ExchangeRateGraphHeaderWrapper>
         <ExchangeRateGraphTitleWrapper>
           <p className="title">{t("AddPosition:rateGraph.title")}</p>
-          <div className="tooltip-wrap">
-            <Tooltip
-              placement="top"
-              FloatingContent={<TooltipContentWrapper>{t("AddPosition:rateGraph.tooltip")}</TooltipContentWrapper>}
-            >
-              <IconInfo className="tooltip-icon" />
-            </Tooltip>
-          </div>
         </ExchangeRateGraphTitleWrapper>
         <ExchangeRateGraphController>
           {hasData ? (
