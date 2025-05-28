@@ -48,34 +48,25 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
   const [selectedScope, setSelectedScope] = useState<CHART_DAY_SCOPE_TYPE>(defaultScope ?? CHART_DAY_SCOPE_TYPE["7D"]);
 
   const { data: { prices = [] } = {} } = useGetPoolPriceByPath(poolPath || "", selectedScope, {
-    enabled: !!poolPath,
+    enabled: Boolean(poolPath),
   });
 
   const changedPoolInfo = useMemo(() => {
-    return isReversed === false
-      ? {
-          ...currentPoolData,
-          tokenA: {
-            ...currentPoolData.tokenA,
-            ...getGnotPath(currentPoolData.tokenA),
-          },
-          tokenB: {
-            ...currentPoolData.tokenB,
-            ...getGnotPath(currentPoolData.tokenB),
-          },
-        }
-      : {
-          ...currentPoolData,
-          tokenA: {
-            ...currentPoolData.tokenA,
-            ...getGnotPath(currentPoolData.tokenA),
-          },
-          tokenB: {
-            ...currentPoolData.tokenB,
-            ...getGnotPath(currentPoolData.tokenB),
-          },
-          price: 1 / currentPoolData.price,
-        };
+    const processTokens = (poolData: typeof currentPoolData) => ({
+      ...poolData,
+      tokenA: {
+        ...poolData.tokenA,
+        ...getGnotPath(poolData.tokenA),
+      },
+      tokenB: {
+        ...poolData.tokenB,
+        ...getGnotPath(poolData.tokenB),
+      },
+    });
+
+    const processedPool = processTokens(currentPoolData);
+
+    return isReversed ? { ...processedPool, price: 1 / processedPool.price } : processedPool;
   }, [getGnotPath, currentPoolData, isReversed]);
 
   const hasData = changedPoolInfo.tokenA.name !== undefined && changedPoolInfo.tokenA.name !== "";

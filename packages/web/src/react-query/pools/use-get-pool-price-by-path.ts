@@ -6,6 +6,9 @@ import { QUERY_KEY } from "@query/query-keys";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import { PoolPricesResponse } from "@repositories/pool";
 
+const CACHE_TIME = 60_000;
+const STALE_TIME = 60_000;
+
 export const useGetPoolPriceByPath = (
   path: string,
   period?: CHART_DAY_SCOPE_TYPE,
@@ -17,8 +20,8 @@ export const useGetPoolPriceByPath = (
     queryFn: async () => {
       return poolRepository.getPoolPriceByPoolPath(path, period);
     },
-    cacheTime: 1 * 60 * 1000,
-    staleTime: 1 * 60 * 1000,
+    cacheTime: CACHE_TIME,
+    staleTime: STALE_TIME,
     refetchOnMount: true,
     refetchOnReconnect: true,
     ...options,
