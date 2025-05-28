@@ -556,7 +556,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   useEffect(() => {
     if (pools.length > 0 && tokenA && tokenB && selectPool.compareToken) {
-      const tokenPair = [tokenA.wrappedPath, tokenB.wrappedPath].sort(sortTokenPaths);
+      const tokenPair = [tokenA.wrappedPath || tokenA.path, tokenB.wrappedPath || tokenB.path].sort(sortTokenPaths);
       const compareToken = selectPool.compareToken;
       const reverse =
         tokenPair.findIndex(path => {
@@ -566,7 +566,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
           return false;
         }) === 1;
       const priceOfMaxLiquidity =
-        pools.sort((pool1: PoolModel, pool2: PoolModel) => Number(pool2.tvl) - Number(pool1.tvl)).at(0)?.price || null;
+        pools.sort((pool1: PoolModel, pool2: PoolModel) => Number(pool2.liquidity) - Number(pool1.liquidity)).at(0)
+          ?.price || null;
       if (priceOfMaxLiquidity) {
         const maxPrice = reverse ? 1 / priceOfMaxLiquidity : priceOfMaxLiquidity;
         setDefaultPrice(maxPrice);
