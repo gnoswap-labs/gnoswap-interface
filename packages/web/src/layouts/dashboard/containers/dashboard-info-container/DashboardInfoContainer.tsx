@@ -5,10 +5,12 @@ import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGetDashboardGovernanceOverview, useGetDashboardToken } from "@query/dashboard";
 import { formatOtherPrice, formatPrice } from "@utils/new-number-utils";
+import { SupplyOverviewInfo } from "@layouts/dashboard/components/dashboard-info/dashboard-overview/supply-overview/SupplyOverview";
 
-import { XGNS_TOKEN } from "@common/values/token-constant";
+import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import { numberToFormat } from "@utils/string-utils";
 import DashboardInfo from "../../components/dashboard-info/DashboardInfo";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 const formatDashboardPrice = (price?: string, unit?: string) => {
   if (!price || BigNumber(price).isNaN()) return "-";
@@ -51,6 +53,55 @@ const DashboardInfoContainer: React.FC = () => {
     return `${ratio}%`;
   }, [tokenData]);
 
+  const supplyOverviewInfo: SupplyOverviewInfo = useMemo(() => {
+    const DISTRIBUTION_RATIOS = {
+      LIQUIDITY_STAKING: 0.75, // 75%
+      DEV_OPS: 0.2, // 20%
+      COMMUNITY: 0.05, // 5%
+    };
+
+    const getTokenAmount = (rawAmount: string | number | undefined | null): number => {
+      if (typeof rawAmount === "string") {
+        const parsed = parseFloat(rawAmount);
+        rawAmount = isNaN(parsed) ? 0 : parsed;
+      }
+
+      return makeDisplayTokenAmount(GNS_TOKEN, rawAmount || 0) ?? 0;
+    };
+
+    const circulatingSupply = getTokenAmount(tokenData?.gnsCirculatingSupply);
+    const dailyBlockEmissions = getTokenAmount(tokenData?.gnsDailyBlockEmissions);
+    const totalSupply = getTokenAmount(tokenData?.gnsTotalSupply);
+    const totalStaked = getTokenAmount(tokenData?.gnsTotalStaked);
+
+    const emissionDistribution = {
+      liquidityStaking: dailyBlockEmissions * DISTRIBUTION_RATIOS.LIQUIDITY_STAKING,
+      devOps: dailyBlockEmissions * DISTRIBUTION_RATIOS.DEV_OPS,
+      community: dailyBlockEmissions * DISTRIBUTION_RATIOS.COMMUNITY,
+    };
+
+    const formatWithSymbol = (value: number, useKMB = true): string => {
+      return formatOtherPrice(value, { isKMB: useKMB, usd: false }) + ` ${GNS_TOKEN.symbol}`;
+    };
+
+    return {
+      circulatingSupply: formatDashboardPrice(String(circulatingSupply), GNS_TOKEN.symbol),
+      dailyBlockEmissions: formatWithSymbol(dailyBlockEmissions, false),
+      totalSupply: formatDashboardPrice(String(totalSupply), GNS_TOKEN.symbol),
+      totalStaked: formatWithSymbol(totalStaked, false),
+      progressBar: progressBar,
+      stakingRatio: stakingRatio,
+      dailyBlockEmissionsInfo: {
+        liquidityStaking: formatOtherPrice(Math.floor(emissionDistribution.liquidityStaking), {
+          isKMB: false,
+          usd: false,
+        }),
+        devOps: formatOtherPrice(Math.floor(emissionDistribution.devOps), { isKMB: false, usd: false }),
+        community: formatOtherPrice(Math.floor(emissionDistribution.community), { isKMB: false, usd: false }),
+      },
+    };
+  }, [tokenData, progressBar, stakingRatio]);
+
   const governanceOverviewInfo = useMemo(() => {
     if (!governanceOverview) {
       return null;
@@ -77,36 +128,7 @@ const DashboardInfoContainer: React.FC = () => {
           isKMB: false,
         }),
       }}
-      supplyOverviewInfo={{
-        circulatingSupply: formatDashboardPrice(tokenData?.gnsCirculatingSupply || "-", "GNS"),
-        dailyBlockEmissions:
-          formatOtherPrice(tokenData?.gnsDailyBlockEmissions, {
-            isKMB: false,
-            usd: false,
-          }) + " GNS",
-        totalSupply: formatDashboardPrice(tokenData?.gnsTotalSupply, "GNS"),
-        totalStaked:
-          formatOtherPrice(tokenData?.gnsTotalStaked, {
-            isKMB: false,
-            usd: false,
-          }) + " GNS",
-        progressBar: progressBar,
-        stakingRatio: stakingRatio,
-        dailyBlockEmissionsInfo: {
-          liquidityStaking: formatOtherPrice(Math.floor(Number(tokenData?.gnsDailyBlockEmissions) * 75) / 100, {
-            isKMB: false,
-            usd: false,
-          }),
-          devOps: formatOtherPrice(Math.floor(Number(tokenData?.gnsDailyBlockEmissions) * 20) / 100, {
-            isKMB: false,
-            usd: false,
-          }),
-          community: formatOtherPrice(Math.floor(Number(tokenData?.gnsDailyBlockEmissions) * 5) / 100, {
-            isKMB: false,
-            usd: false,
-          }),
-        },
-      }}
+      supplyOverviewInfo={supplyOverviewInfo}
       governanceOverviewInfo={governanceOverviewInfo}
       breakpoint={breakpoint}
       loading={isLoading}
