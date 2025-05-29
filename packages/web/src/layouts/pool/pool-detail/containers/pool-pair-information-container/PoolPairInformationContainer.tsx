@@ -14,6 +14,7 @@ import PoolPairInformation from "../../components/pool-pair-information/PoolPair
 import { ZOOL_VALUES } from "@constants/graph.constant";
 import { checkGnotPath } from "@utils/common";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 interface PoolPairInformationContainerProps {
   address?: string | undefined;
@@ -58,24 +59,28 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
     const tokenBPriceGrade =
       tokenPrices[checkGnotPath(data.tokenB.path || "")]?.priceGradeType || TOKEN_PRICE_GRADE_TYPE.NONE;
 
+    const tokenA = data.tokenA;
+    const tokenB = data.tokenB;
     return {
       ...data,
       tokenA: {
-        ...data.tokenA,
-        path: getGnotPath(data.tokenA).path,
-        name: getGnotPath(data.tokenA).name,
-        symbol: getGnotPath(data.tokenA).symbol,
-        logoURI: getGnotPath(data.tokenA).logoURI,
+        ...tokenA,
+        path: getGnotPath(tokenA).path,
+        name: getGnotPath(tokenA).name,
+        symbol: getGnotPath(tokenA).symbol,
+        logoURI: getGnotPath(tokenA).logoURI,
       },
       tokenB: {
-        ...data.tokenB,
-        path: getGnotPath(data.tokenB).path,
-        name: getGnotPath(data.tokenB).name,
-        symbol: getGnotPath(data.tokenB).symbol,
-        logoURI: getGnotPath(data.tokenB).logoURI,
+        ...tokenB,
+        path: getGnotPath(tokenB).path,
+        name: getGnotPath(tokenB).name,
+        symbol: getGnotPath(tokenB).symbol,
+        logoURI: getGnotPath(tokenB).logoURI,
       },
       tokenAPriceGrade,
       tokenBPriceGrade,
+      tokenABalance: makeDisplayTokenAmount(tokenA, data.tokenABalance) ?? 0,
+      tokenBBalance: makeDisplayTokenAmount(tokenA, data.tokenBBalance) ?? 0,
     };
   }, [data, bins, tokenPrices]);
 
