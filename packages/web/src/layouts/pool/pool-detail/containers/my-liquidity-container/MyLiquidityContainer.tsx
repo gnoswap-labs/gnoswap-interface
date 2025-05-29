@@ -60,9 +60,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address, is
   }, [account?.address, address]);
 
   const accountPositions: PoolPositionModel[] = useMemo(() => {
-    if (!address || !poolPath) {
-      return [];
-    }
+    if (!address || !poolPath) return [];
 
     const filteredPositions = positions.filter(position => position.poolPath === poolPath);
     return filteredPositions.map((position: PoolPositionModel) => {
@@ -71,6 +69,12 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address, is
         tokenABalance: String(makeDisplayTokenAmount(position.pool.tokenA, position.tokenABalance || 0) ?? 0),
         tokenBBalance: String(makeDisplayTokenAmount(position.pool.tokenB, position.tokenBBalance || 0) ?? 0),
 
+        claimedRewards: position.claimedRewards.map(reward => {
+          return {
+            ...reward,
+            claimedAmount: String(makeDisplayTokenAmount(reward.rewardToken, reward.claimedAmount || 0) ?? 0),
+          };
+        }),
         rewards: position.rewards.map(reward => {
           const rewardToken = reward.rewardToken;
 
@@ -84,7 +88,6 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address, is
       };
     });
   }, [address, poolPath, positions]);
-  console.log(accountPositions, "accountPositionsaccountPositions");
 
   const visiblePositions = useMemo(() => {
     if (!address) {

@@ -13,6 +13,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { mapToDisplayRewardType } from "@utils/reward-utils";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 import StakedPostionsTooltipContent from "./sateked-positions-tooltip/StakedPositinosTooltipContent";
 import WalletBalanceDetailInfo from "./wallet-balance-detail-info/WalletBalanceDetailInfo";
@@ -52,10 +53,39 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const stakedPositions = useMemo(() => {
-    if (!positions || positions.length === 0) return [];
+  const accountPositions: PoolPositionModel[] = useMemo(() => {
+    if (!positions) return [];
 
-    return positions
+    return positions.map((position: PoolPositionModel) => {
+      return {
+        ...position,
+        tokenABalance: String(makeDisplayTokenAmount(position.pool.tokenA, position.tokenABalance || 0) ?? 0),
+        tokenBBalance: String(makeDisplayTokenAmount(position.pool.tokenB, position.tokenBBalance || 0) ?? 0),
+
+        claimedRewards: position.claimedRewards.map(reward => {
+          return {
+            ...reward,
+            claimedAmount: String(makeDisplayTokenAmount(reward.rewardToken, reward.claimedAmount || 0) ?? 0),
+          };
+        }),
+        rewards: position.rewards.map(reward => {
+          const rewardToken = reward.rewardToken;
+
+          return {
+            ...reward,
+            accuReward1D: String(makeDisplayTokenAmount(rewardToken, reward.accuReward1D || 0) ?? 0),
+            claimableAmount: String(makeDisplayTokenAmount(rewardToken, reward.claimableAmount || 0) ?? 0),
+            totalAmount: String(makeDisplayTokenAmount(rewardToken, reward.totalAmount || 0) ?? 0),
+          };
+        }),
+      };
+    });
+  }, [positions]);
+
+  const stakedPositions = useMemo(() => {
+    if (!accountPositions || accountPositions.length === 0) return [];
+
+    return accountPositions
       .filter(item => item.staked === true)
       .map(item => ({
         lpId: item.lpTokenId,
@@ -63,7 +93,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         stakedDate: item.stakedAt,
         tokenUri: item.tokenUri,
       }));
-  }, [positions]);
+  }, [accountPositions]);
 
   const { claimedRewardInfo, claimableRewardInfo } = useMemo((): {
     claimedRewardInfo: { [key in DisplayRewardType]: PositionRewardForTooltip[] };
@@ -84,7 +114,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
       [key in DisplayRewardType]: { [key in string]: PositionRewardForTooltip };
     } = initRewardTypeMap();
 
-    if (!positions || positions.length === 0) {
+    if (!accountPositions || accountPositions.length === 0) {
       return {
         claimedRewardInfo: {
           SWAP_FEE: [],
@@ -115,7 +145,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
     };
 
     const processClaimableRewards = () => {
-      positions
+      accountPositions
         .flatMap(position => position.rewards)
         .forEach(reward => {
           const rewardType = reward.rewardToken.rewardType as RewardType;
@@ -164,7 +194,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
     };
 
     const processClaimedRewards = () => {
-      positions
+      accountPositions
         .flatMap(position => position.claimedRewards)
         .forEach(claimed => {
           const rewardType = claimed.rewardToken.rewardType as RewardType;
@@ -229,7 +259,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         NONE: Object.values(claimableMap.NONE).filter(reward => reward.amount && reward.amount > 0),
       },
     };
-  }, [positions, tokenPrices]);
+  }, [accountPositions, tokenPrices]);
 
   const hasInfo = (data: {
     [key in DisplayRewardType]: PositionRewardForTooltip[];
