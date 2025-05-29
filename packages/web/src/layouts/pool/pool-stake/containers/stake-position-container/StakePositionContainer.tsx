@@ -4,6 +4,8 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetPoolDetailByPath } from "@query/pools";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 
 import StakePosition from "../../components/stake-position/StakePosition";
 import { useStakePositionModal } from "@hooks/pool/ui/use-stake-position-modal";
@@ -14,7 +16,7 @@ const StakePositionContainer: React.FC = () => {
   const positionId = router.getPositionId();
   const { connected, connectAccount } = useWallet();
   const {
-    positions: allPositionData,
+    positions: allPosition,
     isFetchedPosition: isFetched,
     loading: isLoadingAllPositions,
     refetch: refetchPositions,
@@ -29,10 +31,39 @@ const StakePositionContainer: React.FC = () => {
     enabled: !!poolPath,
   });
   const [checkedList, setCheckedList] = useState<number[]>(positionId ? [Number(positionId)] : []);
+
+  const positionList: PoolPositionModel[] = useMemo(() => {
+    if (!allPosition) return [];
+
+    return allPosition.map((position: PoolPositionModel) => {
+      return {
+        ...position,
+        tokenABalance: String(makeDisplayTokenAmount(position.pool.tokenA, position.tokenABalance || 0)),
+        tokenBBalance: String(makeDisplayTokenAmount(position.pool.tokenB, position.tokenBBalance || 0)),
+
+        claimedRewards: position.claimedRewards.map(reward => {
+          return {
+            ...reward,
+            claimedAmount: String(makeDisplayTokenAmount(reward.rewardToken, reward.claimedAmount || 0) ?? 0),
+          };
+        }),
+        rewards: position.rewards.map(reward => {
+          const rewardToken = reward.rewardToken;
+
+          return {
+            ...reward,
+            accuReward1D: String(makeDisplayTokenAmount(rewardToken, reward.accuReward1D || 0) ?? 0),
+            claimableAmount: String(makeDisplayTokenAmount(rewardToken, reward.claimableAmount || 0) ?? 0),
+            totalAmount: String(makeDisplayTokenAmount(rewardToken, reward.totalAmount || 0) ?? 0),
+          };
+        }),
+      };
+    });
+  }, [allPosition]);
   // For this domain only show `closed = false` && `staked = false` position
   const unstakedPositions = useMemo(
-    () => allPositionData.filter(position => position.poolPath === poolPath && !position.staked),
-    [allPositionData],
+    () => positionList.filter(position => position.poolPath === poolPath && !position.staked),
+    [positionList],
   );
 
   const { openModal } = useStakePositionModal({

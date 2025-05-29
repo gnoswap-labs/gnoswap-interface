@@ -48,6 +48,7 @@ const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
   showWGNOTToggle,
 }) => {
   const { t } = useTranslation();
+  console.log(pooledTokenInfos, "pooledTokenInfos");
 
   return (
     <DecreaseLiquidityWrapper>

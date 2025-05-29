@@ -2,9 +2,11 @@ import React, { useCallback, useMemo, useState } from "react";
 
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 
 import UnstakeLiquidity from "../../components/unstake-liquidity/UnstakeLiquidity";
 import { useUnstakePositionModal } from "@hooks/pool/ui/use-unstake-position-modal";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 const UnstakeLiquidityContainer: React.FC = () => {
   const router = useCustomRouter();
@@ -20,10 +22,40 @@ const UnstakeLiquidityContainer: React.FC = () => {
       enabled: !!poolPath,
     },
   });
+
+  const positionList: PoolPositionModel[] = useMemo(() => {
+    if (!allPosition) return [];
+
+    return allPosition.map((position: PoolPositionModel) => {
+      return {
+        ...position,
+        tokenABalance: String(makeDisplayTokenAmount(position.pool.tokenA, position.tokenABalance || 0)),
+        tokenBBalance: String(makeDisplayTokenAmount(position.pool.tokenB, position.tokenBBalance || 0)),
+
+        claimedRewards: position.claimedRewards.map(reward => {
+          return {
+            ...reward,
+            claimedAmount: String(makeDisplayTokenAmount(reward.rewardToken, reward.claimedAmount || 0) ?? 0),
+          };
+        }),
+        rewards: position.rewards.map(reward => {
+          const rewardToken = reward.rewardToken;
+
+          return {
+            ...reward,
+            accuReward1D: String(makeDisplayTokenAmount(rewardToken, reward.accuReward1D || 0) ?? 0),
+            claimableAmount: String(makeDisplayTokenAmount(rewardToken, reward.claimableAmount || 0) ?? 0),
+            totalAmount: String(makeDisplayTokenAmount(rewardToken, reward.totalAmount || 0) ?? 0),
+          };
+        }),
+      };
+    });
+  }, [allPosition]);
+
   const [checkedList, setCheckedList] = useState<number[]>(positionId ? [Number(positionId)] : []);
   const [isGetWGNOT, setIsGetWGNOT] = useState(false);
 
-  const stakedPositions = useMemo(() => allPosition.filter(item => item.staked), [allPosition]);
+  const stakedPositions = useMemo(() => positionList.filter(item => item.staked), [positionList]);
 
   const { openModal } = useUnstakePositionModal({
     positions: stakedPositions,

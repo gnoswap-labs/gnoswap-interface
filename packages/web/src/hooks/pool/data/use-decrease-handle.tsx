@@ -15,6 +15,7 @@ import { IncreaseState } from "@states/index";
 import { checkGnotPath } from "@utils/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { getDepositAmountsByLiquidity, isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -223,11 +224,14 @@ export const useDecreaseHandle = () => {
 
     const tokenAAmount = Number(pooledTokenAAmount) || 0;
     const tokenBAmount = Number(pooledTokenBAmount) || 0;
-    const unClaimTokenAAmount = Number(unClaimTokenA) || 0;
-    const unClaimTokenBAmount = Number(unClaimTokenB) || 0;
+    const unClaimTokenAAmount = makeDisplayTokenAmount(tokenA, unClaimTokenA) || 0;
+    const unClaimTokenBAmount = makeDisplayTokenAmount(tokenB, unClaimTokenB) || 0;
 
     return {
-      poolAmountA: BigNumber(tokenALiquidity.toString()).multipliedBy(percent).dividedBy(100).toString(),
+      poolAmountA: BigNumber(makeDisplayTokenAmount(tokenA, tokenALiquidity.toString()) || 0)
+        .multipliedBy(percent)
+        .dividedBy(100)
+        .toString(),
       poolAmountUSDA: tokenAPrice
         ? formatOtherPrice((tokenAAmount * Number(tokenAPrice) * percent) / 100, {
             isKMB: false,
@@ -245,14 +249,17 @@ export const useDecreaseHandle = () => {
         .dividedBy(100)
         .toNumber()
         .toString(),
-      poolAmountB: BigNumber(tokenBLiquidity.toString()).multipliedBy(percent).dividedBy(100).toString(),
+      poolAmountB: BigNumber(makeDisplayTokenAmount(tokenB, tokenBLiquidity.toString()) || 0)
+        .multipliedBy(percent)
+        .dividedBy(100)
+        .toString(),
       poolAmountUSDB: tokenBPrice
         ? formatOtherPrice((tokenBAmount * Number(tokenBPrice) * percent) / 100, {
             isKMB: false,
           })
         : "-",
-      unClaimTokenAAmount: BigNumber(unClaimTokenAAmount).toFormat(),
-      unClaimTokenBAmount: BigNumber(unClaimTokenBAmount).toFormat(),
+      unClaimTokenAAmount: BigNumber(unClaimTokenAAmount || 0).toString(),
+      unClaimTokenBAmount: BigNumber(unClaimTokenBAmount || 0).toString(),
       unClaimTokenAAmountUSD: tokenAPrice
         ? formatOtherPrice(unClaimTokenAAmount * Number(tokenAPrice), {
             isKMB: false,
