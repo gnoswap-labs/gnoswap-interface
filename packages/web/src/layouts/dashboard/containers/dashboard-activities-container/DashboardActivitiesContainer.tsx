@@ -6,6 +6,8 @@ import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGetDashboardActivities } from "@query/dashboard/use-get-dashboard-activities";
 import { ActivityType } from "@repositories/dashboard";
+import { ActivityData } from "@repositories/activity/responses/activity-responses";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 import { ACTIVITY_TABLE_HEAD, SortOption } from "../../components/activity-list/activity-list-table/ActivityListTable";
 import ActivityList from "../../components/activity-list/ActivityList";
@@ -20,6 +22,18 @@ const DashboardActivitiesContainer: React.FC = () => {
   const { isLoading: isLoadingCommon } = useLoading();
 
   const { isFetched, error, data: activities = [] } = useGetDashboardActivities(activityType);
+
+  const activityList: ActivityData[] = React.useMemo(() => {
+    if (!activities) return [];
+
+    return activities.map((activity: ActivityData) => {
+      return {
+        ...activity,
+        tokenAAmount: String(makeDisplayTokenAmount(activity.tokenA, activity.tokenAAmount) ?? 0),
+        tokenBAmount: String(makeDisplayTokenAmount(activity.tokenB, activity.tokenBAmount) ?? 0),
+      };
+    });
+  }, [activities]);
 
   const changeActivityType = useCallback(({ key: newType }: { display: string; key: string }) => {
     const activityType = Object.values(ActivityType).find(type => type === newType) || ActivityType.ALL;
@@ -56,7 +70,7 @@ const DashboardActivitiesContainer: React.FC = () => {
 
   return (
     <ActivityList
-      activities={activities ?? []}
+      activities={activityList}
       isFetched={isFetched && !isLoadingCommon}
       error={error}
       activityType={activityType}
