@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { priceWarningStyle } from "@layouts/leaderboard-layout/components/common/common.styles";
 
 interface Props {
   containerWidth: number;
@@ -94,6 +95,9 @@ export const SwapTokenHeaderWrapper = styled.div<Props>`
         color: ${({ theme }) => theme.color.text02};
         font-size: 18px;
         font-weight: 500;
+        &.informational-price {
+          ${({ theme }) => priceWarningStyle(theme)}
+        }
       }
       .blank {
         min-height: 17px;

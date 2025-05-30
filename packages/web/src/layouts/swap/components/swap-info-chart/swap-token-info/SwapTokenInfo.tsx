@@ -21,16 +21,15 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const containerWidth = useElementWidth(containerRef);
 
-  const tokenData = React.useMemo(
-    () => ({
+  const tokenData = React.useMemo(() => {
+    return {
       name: token.name,
       symbol: token.symbol,
       logoURI: token.logoURI,
       path: isNativeTokenByType(token.type) ? token.wrappedPath : token.path,
       isNative: isNativeTokenByType(token.type),
-    }),
-    [token],
-  );
+    };
+  }, [token]);
 
   const { data: { usd: rawCurrentPrice } = {} } = useGetTokenPrices(tokenData.path as string, {
     enabled: !!tokenData.path,
@@ -45,7 +44,7 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
   }, [rawCurrentPrice]);
 
   const {
-    data: { last7d = [] } = {},
+    data: { priceGradeType, last7d = [] } = {},
     isLoading,
     isFetched,
   } = useGetTokenPrices(tokenData.path as string, { enabled: !!tokenData.path });
@@ -70,6 +69,7 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
     <SwapTokenInfoWrapper ref={containerRef}>
       <SwapTokenHeader
         tokenInfo={tokenData}
+        priceGradeType={priceGradeType || "NONE"}
         currentPrice={currentPrice}
         chartData={chartData}
         containerWidth={containerWidth}
