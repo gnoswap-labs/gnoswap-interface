@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
+import { priceWarningStyle } from "@layouts/leaderboard-layout/components/common/common.styles";
 
 export const TokenChartInfoWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -43,13 +44,7 @@ export const TokenChartInfoWrapper = styled.div`
         ${fonts.body1};
       }
       .informational-price {
-        display: flex;
-        align-items: center;
-        gap: 2px;
-        color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22)};
-        path {
-          fill: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22)};
-        }
+        ${({ theme }) => priceWarningStyle(theme)};
 
         svg {
           width: 21px;

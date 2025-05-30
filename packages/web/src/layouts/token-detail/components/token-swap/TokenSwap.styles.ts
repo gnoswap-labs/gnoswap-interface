@@ -3,6 +3,7 @@ import { css, Theme } from "@emotion/react";
 import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 import styled from "@emotion/styled";
+import { priceWarningStyle } from "@layouts/leaderboard-layout/components/common/common.styles";
 
 export const wrapper = (theme: Theme) => css`
   padding: 23px;
@@ -117,14 +118,7 @@ export const wrapper = (theme: Theme) => css`
       }
 
       .informational-price {
-        display: flex;
-        align-items: center;
-        gap: 2px;
-
-        color: ${theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22};
-        path {
-          fill: ${theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22};
-        }
+        ${priceWarningStyle(theme)};
       }
     }
     .text-opacity {

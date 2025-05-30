@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { priceWarningStyle } from "@layouts/leaderboard-layout/components/common/common.styles";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
@@ -190,14 +191,7 @@ export const PoolCardWrapper = styled.div`
   .value-text {
     ${fonts.body9};
     &.informational-price {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-
-      color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22)};
-      path {
-        fill: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22)};
-      }
+      ${({ theme }) => priceWarningStyle(theme)};
     }
 
     &.apr-value {
