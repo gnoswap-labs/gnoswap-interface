@@ -23,12 +23,12 @@ import { formatOtherPrice } from "@utils/new-number-utils";
 import { toUnitFormat } from "@utils/number-utils";
 import { isEmptyObject } from "@utils/validation-utils";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { convertPositionToDisplayFormat } from "@utils/position.utils";
 
 import AssetSendModal from "../../components/asset-send-modal/AssetSendModal";
 import WalletBalance from "../../components/wallet-balance/WalletBalance";
 import useSendAsset from "@hooks/wallet/data/useSendAsset";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 const WalletBalanceContainer: React.FC = () => {
   const { connected, isSwitchNetwork, loadingConnect, account, walletType } = useWallet();
@@ -52,24 +52,7 @@ const WalletBalanceContainer: React.FC = () => {
     if (!positions || positions.length === 0) return [];
 
     const filteredPositions = positions.filter(isClaimablePosition);
-    return filteredPositions.map((position: PoolPositionModel) => {
-      return {
-        ...position,
-        tokenABalance: String(makeDisplayTokenAmount(position.pool.tokenA, position.tokenABalance || 0) ?? 0),
-        tokenBBalance: String(makeDisplayTokenAmount(position.pool.tokenB, position.tokenBBalance || 0) ?? 0),
-
-        rewards: position.rewards.map(reward => {
-          const rewardToken = reward.rewardToken;
-
-          return {
-            ...reward,
-            accuReward1D: String(makeDisplayTokenAmount(rewardToken, reward.accuReward1D || 0) ?? 0),
-            claimableAmount: String(makeDisplayTokenAmount(rewardToken, reward.claimableAmount || 0) ?? 0),
-            totalAmount: String(makeDisplayTokenAmount(rewardToken, reward.totalAmount || 0) ?? 0),
-          };
-        }),
-      };
-    });
+    return filteredPositions.map(convertPositionToDisplayFormat);
   }, [positions, isClaimablePosition]);
 
   const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);

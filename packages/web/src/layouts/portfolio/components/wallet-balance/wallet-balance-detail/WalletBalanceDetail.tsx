@@ -13,7 +13,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { mapToDisplayRewardType } from "@utils/reward-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { convertPositionToDisplayFormat } from "@utils/position.utils";
 
 import StakedPostionsTooltipContent from "./sateked-positions-tooltip/StakedPositinosTooltipContent";
 import WalletBalanceDetailInfo from "./wallet-balance-detail-info/WalletBalanceDetailInfo";
@@ -56,30 +56,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
   const accountPositions: PoolPositionModel[] = useMemo(() => {
     if (!positions) return [];
 
-    return positions.map((position: PoolPositionModel) => {
-      return {
-        ...position,
-        tokenABalance: String(makeDisplayTokenAmount(position.pool.tokenA, position.tokenABalance || 0) ?? 0),
-        tokenBBalance: String(makeDisplayTokenAmount(position.pool.tokenB, position.tokenBBalance || 0) ?? 0),
-
-        claimedRewards: position.claimedRewards.map(reward => {
-          return {
-            ...reward,
-            claimedAmount: String(makeDisplayTokenAmount(reward.rewardToken, reward.claimedAmount || 0) ?? 0),
-          };
-        }),
-        rewards: position.rewards.map(reward => {
-          const rewardToken = reward.rewardToken;
-
-          return {
-            ...reward,
-            accuReward1D: String(makeDisplayTokenAmount(rewardToken, reward.accuReward1D || 0) ?? 0),
-            claimableAmount: String(makeDisplayTokenAmount(rewardToken, reward.claimableAmount || 0) ?? 0),
-            totalAmount: String(makeDisplayTokenAmount(rewardToken, reward.totalAmount || 0) ?? 0),
-          };
-        }),
-      };
-    });
+    return positions.map(convertPositionToDisplayFormat);
   }, [positions]);
 
   const stakedPositions = useMemo(() => {

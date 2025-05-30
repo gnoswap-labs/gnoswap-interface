@@ -13,12 +13,12 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetUsernameByAddress } from "@query/address";
 import { DexEvent } from "@repositories/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import MyLiquidity from "../../components/my-liquidity/MyLiquidity";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { convertPositionToDisplayFormat } from "@utils/position.utils";
 
 interface MyLiquidityContainerProps {
   address?: string | undefined;
@@ -63,30 +63,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address, is
     if (!address || !poolPath) return [];
 
     const filteredPositions = positions.filter(position => position.poolPath === poolPath);
-    return filteredPositions.map((position: PoolPositionModel) => {
-      return {
-        ...position,
-        tokenABalance: String(makeDisplayTokenAmount(position.pool.tokenA, position.tokenABalance || 0) ?? 0),
-        tokenBBalance: String(makeDisplayTokenAmount(position.pool.tokenB, position.tokenBBalance || 0) ?? 0),
-
-        claimedRewards: position.claimedRewards.map(reward => {
-          return {
-            ...reward,
-            claimedAmount: String(makeDisplayTokenAmount(reward.rewardToken, reward.claimedAmount || 0) ?? 0),
-          };
-        }),
-        rewards: position.rewards.map(reward => {
-          const rewardToken = reward.rewardToken;
-
-          return {
-            ...reward,
-            accuReward1D: String(makeDisplayTokenAmount(rewardToken, reward.accuReward1D || 0) ?? 0),
-            claimableAmount: String(makeDisplayTokenAmount(rewardToken, reward.claimableAmount || 0) ?? 0),
-            totalAmount: String(makeDisplayTokenAmount(rewardToken, reward.totalAmount || 0) ?? 0),
-          };
-        }),
-      };
-    });
+    return filteredPositions.map(convertPositionToDisplayFormat);
   }, [address, poolPath, positions]);
 
   const visiblePositions = useMemo(() => {
