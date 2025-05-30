@@ -29,6 +29,7 @@ Default.args = {
     tokenABalance: "0",
     tokenAUSD: 0,
     tokenAUSDStr: "0",
+    tokenAPriceGradeType: "NONE",
     tokenB: {
       chainId: "dev",
       createdAt: "2023-10-17T05:58:00+09:00",
@@ -45,6 +46,7 @@ Default.args = {
     tokenBBalance: "0",
     tokenBUSD: 0,
     tokenBUSDStr: "0",
+    tokenBPriceGradeType: "NONE",
     direction: "EXACT_IN",
     slippage: 0,
   },

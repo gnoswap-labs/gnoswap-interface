@@ -116,6 +116,16 @@ export const ContentWrapper = styled.div`
     }
     .balance-text-disabled {
     }
+    .informational-price {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+
+      color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22)};
+      path {
+        fill: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22)};
+      }
+    }
   }
 
   .second-section {
