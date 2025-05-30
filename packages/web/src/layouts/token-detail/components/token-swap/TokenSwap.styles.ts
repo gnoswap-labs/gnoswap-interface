@@ -115,6 +115,17 @@ export const wrapper = (theme: Theme) => css`
           }
         }
       }
+
+      .informational-price {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+
+        color: ${theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22};
+        path {
+          fill: ${theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22};
+        }
+      }
     }
     .text-opacity {
       opacity: 0.5;

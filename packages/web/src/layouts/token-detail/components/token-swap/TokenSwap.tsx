@@ -15,10 +15,12 @@ import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { TokenModel } from "@models/token/token-model";
 import { DataTokenInfo } from "@models/token/token-swap-model";
+import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
 
 import { CopyTooltip, wrapper } from "./TokenSwap.styles";
 import IconWallet from "@components/common/icons/IconWallet";
 import { useTokenBalancesDisplay } from "@hooks/token/ui/use-token-balance-display";
+import PriceWarning from "@components/common/price-warning/PriceWarning";
 
 export interface TokenSwapProps {
   isSwitchNetwork: boolean;
@@ -142,6 +144,14 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
     return (isLoading || isRefetching) && direction === "EXACT_IN";
   }, [isLoading, direction, isRefetching]);
 
+  const { priceStyle: tokenAPriceStyle, shouldShowPriceWarning: tokenAShouldShowPriceWarning } = useTokenPriceInfo({
+    priceGradeType: swapTokenInfo.tokenAPriceGrade,
+  });
+
+  const { priceStyle: tokenBPriceStyle, shouldShowPriceWarning: tokenBShouldShowPriceWarning } = useTokenPriceInfo({
+    priceGradeType: swapTokenInfo.tokenBPriceGrade,
+  });
+
   return (
     <div css={wrapper}>
       <div className="header">
@@ -183,8 +193,12 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
             </div>
           </div>
           <div className="info">
-            <span className={cx("price-text", { "text-opacity": isLoadingTokenA })} aria-busy={isLoadingTokenA}>
+            <span
+              className={cx("price-text", tokenAPriceStyle.className, { "text-opacity": isLoadingTokenA })}
+              aria-busy={isLoadingTokenA}
+            >
               {dataTokenInfo.tokenAUSDStr}
+              {tokenAShouldShowPriceWarning && dataTokenInfo.tokenAAmount && <PriceWarning type="PRICE" />}
             </span>
             <div className="balance-wrapper">
               {connectedWallet && <IconWallet />}
@@ -216,8 +230,12 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
             </div>
           </div>
           <div className="info">
-            <span className={cx("price-text", { "text-opacity": isLoadingTokenB })} aria-busy={isLoadingTokenB}>
+            <span
+              className={cx("price-text", tokenBPriceStyle.className, { "text-opacity": isLoadingTokenB })}
+              aria-busy={isLoadingTokenB}
+            >
               {dataTokenInfo.tokenBUSDStr}
+              {tokenBShouldShowPriceWarning && dataTokenInfo.tokenBAmount && <PriceWarning type="PRICE" />}
             </span>
             <div className="balance-wrapper">
               {connectedWallet && <IconWallet />}
