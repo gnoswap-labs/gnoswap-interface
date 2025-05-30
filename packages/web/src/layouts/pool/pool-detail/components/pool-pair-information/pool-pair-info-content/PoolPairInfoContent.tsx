@@ -42,6 +42,8 @@ import IconKeyboardArrowLeft from "@components/common/icons/IconKeyboardArrowLef
 import IconKeyboardArrowRight from "@components/common/icons/IconKeyboardArrowRight";
 import IconRemove from "@components/common/icons/IconRemove";
 import IconAdd from "@components/common/icons/IconAdd";
+import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
+import PriceWarning from "@components/common/price-warning/PriceWarning";
 
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
@@ -79,6 +81,15 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
 }) => {
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
+
+  const { priceStyle: tokenAPriceStyle, shouldShowPriceWarning: tokenAShouldShowPriceWarning } = useTokenPriceInfo({
+    priceGradeType: pool.tokenAPriceGrade,
+  });
+  const { priceStyle: tokenBPriceStyle, shouldShowPriceWarning: tokenBShouldShowPriceWarning } = useTokenPriceInfo({
+    priceGradeType: pool.tokenBPriceGrade,
+  });
+  const shouldShowPriceWarning = tokenAShouldShowPriceWarning || tokenBShouldShowPriceWarning;
+
   const themeKey = useAtomValue(ThemeState.themeKey);
   const { width } = useWindowSize();
   const GRAPWIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
@@ -131,7 +142,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     if (!pool.volumeChange24h) {
       return (
         <div>
-          <IconTriangleArrowUpV2 /> <span className={"positive"}> {"0.00%"}</span>
+          <IconTriangleArrowUpV2 className="arrow-icon" /> <span className={"positive"}> {"0.00%"}</span>
         </div>
       );
     }
@@ -140,7 +151,11 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
 
     return (
       <div>
-        {pool.volumeChange24h >= 0 ? <IconTriangleArrowUpV2 /> : <IconTriangleArrowDownV2 />}{" "}
+        {pool.volumeChange24h >= 0 ? (
+          <IconTriangleArrowUpV2 className="arrow-icon" />
+        ) : (
+          <IconTriangleArrowDownV2 className="arrow-icon" />
+        )}{" "}
         <span className={pool.volumeChange24h >= 0 ? "positive" : "negative"}> {volumeChangedStr}</span>
       </div>
     );
@@ -172,7 +187,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
     if (!pool.tvlChange) {
       return (
         <div>
-          <IconTriangleArrowUpV2 />
+          <IconTriangleArrowUpV2 className="arrow-icon" />
           <span className={pool.tvlChange >= 0 ? "positive" : "negative"}>0.00%</span>
         </div>
       );
@@ -182,7 +197,11 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
 
     return (
       <div>
-        {pool.tvlChange >= 0 ? <IconTriangleArrowUpV2 /> : <IconTriangleArrowDownV2 />}{" "}
+        {pool.tvlChange >= 0 ? (
+          <IconTriangleArrowUpV2 className="arrow-icon" />
+        ) : (
+          <IconTriangleArrowDownV2 className="arrow-icon" />
+        )}{" "}
         <span className={pool.tvlChange >= 0 ? "positive" : "negative"}> {liquidityChangedStr}</span>
       </div>
     );
@@ -276,18 +295,22 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
 
     return (
       <div className="wrapper-value">
-        <strong>{liquidityValue}</strong>
+        <span className={cx("tvl-info", tokenAPriceStyle.className, tokenBPriceStyle.className)}>
+          <strong>{liquidityValue}</strong>
+          {shouldShowPriceWarning && <PriceWarning type="TVL" />}
+        </span>
+
         {liquidityChangedValue}
       </div>
     );
-  }, [liquidityChangedValue, liquidityValue, loading]);
+  }, [liquidityChangedValue, liquidityValue, loading, shouldShowPriceWarning]);
 
   return (
     <ContentWrapper>
       <PoolPairInfoContentWrapper>
         <TvlSectionWrapper>
           <h4>{STATIC_TEXT.TVL}</h4>
-          {tvlDisplay}
+          <div className={cx("tvl-info", tokenAPriceStyle.className, tokenBPriceStyle.className)}>{tvlDisplay}</div>
           <div className="section-info">
             {!loading && (
               <>

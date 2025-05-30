@@ -1,5 +1,6 @@
 import { RewardTokenModel } from "@models/position/reward-model";
 import { TokenModel } from "@models/token/token-model";
+import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 
 export interface PoolModel {
   poolPath: string;
@@ -7,6 +8,8 @@ export interface PoolModel {
   tokenB: TokenModel;
   tokenABalance: number;
   tokenBBalance: number;
+  tokenAPriceGrade: TOKEN_PRICE_GRADE_TYPE;
+  tokenBPriceGrade: TOKEN_PRICE_GRADE_TYPE;
 
   liquidity: string;
   price: number;
@@ -60,6 +63,8 @@ export const initialPool: PoolModel = {
     type: "Native",
     priceID: "",
   },
+  tokenAPriceGrade: "NONE",
+  tokenBPriceGrade: "NONE",
   incentivized: true,
   tvl: "0",
   tvlChange: 0,

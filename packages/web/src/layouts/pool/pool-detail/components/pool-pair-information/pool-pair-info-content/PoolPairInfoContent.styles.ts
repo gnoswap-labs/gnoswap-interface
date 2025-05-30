@@ -410,11 +410,31 @@ export const SectionWrapper = styled.section`
       span {
         font-weight: 700 !important;
       }
-      svg {
+      .arrow-icon {
         width: 6px;
       }
       ${media.mobile} {
         margin-top: 6px;
+      }
+    }
+  }
+
+  .tvl-info {
+    display: flex;
+    .informational-price {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+
+      strong {
+        color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22)};
+      }
+      svg {
+        width: 20px;
+        height: 20px;
+        path {
+          fill: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22)};
+        }
       }
     }
   }
