@@ -12,6 +12,7 @@ import { TokenModel } from "@models/token/token-model";
 import { CommonState, ThemeState } from "@states/index";
 import { checkGnotPath } from "@utils/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
+import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 
 import PoolList from "../../components/pool-list/PoolList";
 import { PoolSortOption, POOL_TYPE, TABLE_HEAD, SortDirection } from "../../components/pool-list/types";
@@ -153,14 +154,23 @@ const PoolListContainer: React.FC = () => {
     return poolListInfos
       .filter(info => matchesKeyword(info, keyword))
       .filter(info => filteredPoolType(poolType, info.incentivized))
-      .map(item => ({
-        ...item,
-        liquidity: formatPoolValue(item.liquidity, item.tokenA, item.tokenB),
-        volume24h: formatPoolValue(item.volume24h, item.tokenA, item.tokenB),
-        fees24h: formatPoolValue(item.fees24h, item.tokenA, item.tokenB),
-        tvl: formatPoolValue(item.tvl, item.tokenA, item.tokenB),
-        apr: anyEmptyPrice(item.tokenA, item.tokenB) ? "" : item.apr,
-      }));
+      .map(item => {
+        const tokenAPriceGrade =
+          tokenPrices[checkGnotPath(item.tokenA?.path || "")]?.priceGradeType || TOKEN_PRICE_GRADE_TYPE.NONE;
+        const tokenBPriceGrade =
+          tokenPrices[checkGnotPath(item.tokenB?.path || "")]?.priceGradeType || TOKEN_PRICE_GRADE_TYPE.NONE;
+
+        return {
+          ...item,
+          liquidity: formatPoolValue(item.liquidity, item.tokenA, item.tokenB),
+          volume24h: formatPoolValue(item.volume24h, item.tokenA, item.tokenB),
+          fees24h: formatPoolValue(item.fees24h, item.tokenA, item.tokenB),
+          tvl: formatPoolValue(item.tvl, item.tokenA, item.tokenB),
+          apr: anyEmptyPrice(item.tokenA, item.tokenB) ? "" : item.apr,
+          tokenAPriceGrade,
+          tokenBPriceGrade,
+        };
+      });
   }, [poolListInfos, keyword, poolType, anyEmptyPrice, matchesKeyword, filteredPoolType, formatPoolValue]);
 
   /**

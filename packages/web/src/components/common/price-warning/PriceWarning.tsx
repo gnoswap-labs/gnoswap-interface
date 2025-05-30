@@ -18,9 +18,9 @@ const PRICE_TOOLTIP_CONTENT = (
 const TVL_TOOLTIP_CONTENT = (
   <>
     <b>Informational TVL:</b> This TVL does not meet our internal liquidity/TWAP standards and is shown for
-    informational purposes only. Please reference it with caution.
+    informational purposes only. Please reference it with caution.{" "}
     <Link href="/" target={"_blank"}>
-      /Learn more
+      Learn more
     </Link>
   </>
 );

@@ -23,6 +23,16 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     flex-shrink: 0;
     justify-content: flex-start;
   }
+  &.informational-price {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+
+    color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22)};
+    path {
+      fill: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22)};
+    }
+  }
 `;
 
 export const PoolInfoWrapper = styled.div`
