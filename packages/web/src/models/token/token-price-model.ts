@@ -1,4 +1,5 @@
 import { IPricesBefore } from "./token-prices-before";
+import { TOKEN_PRICE_GRADE_TYPE } from "./token-price-grade";
 
 export interface TokenPriceModel {
   path: string;
@@ -16,4 +17,5 @@ export interface TokenPriceModel {
   volumeUsd24h: string;
   feeUsd24h: string;
   lockedTokensUsd: string;
+  priceGradeType: TOKEN_PRICE_GRADE_TYPE;
 }
