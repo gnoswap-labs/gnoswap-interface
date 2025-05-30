@@ -65,9 +65,6 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
 
   const hasData = (value: string) => value !== "-" && Boolean(value);
   const hasTvl = React.useMemo(() => hasData(tvl), [tvl]);
-  const hasVolume = React.useMemo(() => hasData(volume24h), [volume24h]);
-  const hasFees = React.useMemo(() => hasData(fees24h), [fees24h]);
-  const hasApr = React.useMemo(() => hasData(apr), [apr]);
 
   const rewardTokenLogos = useMemo(() => {
     if (!incentivized) return null;
@@ -123,7 +120,6 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
         className={cx(tokenAPriceStyle.className, tokenBPriceStyle.className)}
       >
         <span className="volume">{volume24h}</span>
-        {shouldShowPriceWarning && hasVolume && <PriceWarning type="PRICE" />}
       </TableColumn>
       {/* Fee (24h) */}
       <TableColumn
@@ -131,7 +127,6 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
         className={cx(tokenAPriceStyle.className, tokenBPriceStyle.className)}
       >
         <span className="fees">{fees24h}</span>
-        {shouldShowPriceWarning && hasFees && <PriceWarning type="PRICE" />}
       </TableColumn>
       {/* APR */}
       <TableColumn
@@ -139,7 +134,6 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
         className={cx(tokenAPriceStyle.className, tokenBPriceStyle.className)}
       >
         <span className="apr">{aprDisplay}</span>
-        {shouldShowPriceWarning && hasApr && <PriceWarning type="PRICE" />}
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[5].width}>{rewardTokenLogos}</TableColumn>
       <TableColumn tdWidth={cellWidths.list[6].width} onClick={e => e.stopPropagation()}>
