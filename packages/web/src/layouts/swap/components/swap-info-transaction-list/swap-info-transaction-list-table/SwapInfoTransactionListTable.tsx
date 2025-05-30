@@ -224,7 +224,7 @@ const TransactionListTableRow = ({ breakpoint, data, isNewTransaction }: Transac
       {!isMobile && (
         <TableColumn tdWidth={widths[1]}>
           {" "}
-          {data.toUsdValue ? formatPrice(data.toUsdValue, { lessThan1Significant: 2 }) : "-"}
+          {data.toUsdValue ? formatPrice(data.fromUsdValue, { lessThan1Significant: 2 }) : "-"}
         </TableColumn>
       )}
       <TableColumn tdWidth={isMobile ? widths[1] : widths[2]}>
