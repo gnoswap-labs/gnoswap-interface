@@ -65,6 +65,16 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
 
   const hasData = (value: string) => value !== "-" && Boolean(value);
   const hasTvl = React.useMemo(() => hasData(tvl), [tvl]);
+  const hasVolume = React.useMemo(() => hasData(volume24h), [volume24h]);
+  const hasFees = React.useMemo(() => hasData(fees24h), [fees24h]);
+  const hasApr = React.useMemo(() => hasData(apr), [apr]);
+
+  const getColumnClassName = (hasValue: boolean) => {
+    return cx({
+      [tokenAPriceStyle.className || ""]: tokenAShouldShowPriceWarning && hasValue,
+      [tokenBPriceStyle.className || ""]: tokenBShouldShowPriceWarning && hasValue,
+    });
+  };
 
   const rewardTokenLogos = useMemo(() => {
     if (!incentivized) return null;
@@ -107,32 +117,20 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
         <span className="feeRate">{SwapFeeTierInfoMap[feeTier].rateStr}</span>
       </TableColumn>
       {/* TVL */}
-      <TableColumn
-        tdWidth={cellWidths.list[1].width}
-        className={cx(tokenAPriceStyle.className, tokenBPriceStyle.className)}
-      >
+      <TableColumn tdWidth={cellWidths.list[1].width} className={getColumnClassName(hasTvl)}>
         <span className="liquidity">{tvl}</span>
         {shouldShowPriceWarning && hasTvl && <PriceWarning type="TVL" />}
       </TableColumn>
       {/* Volume (24h) */}
-      <TableColumn
-        tdWidth={cellWidths.list[2].width}
-        className={cx(tokenAPriceStyle.className, tokenBPriceStyle.className)}
-      >
+      <TableColumn tdWidth={cellWidths.list[2].width} className={getColumnClassName(hasVolume)}>
         <span className="volume">{volume24h}</span>
       </TableColumn>
       {/* Fee (24h) */}
-      <TableColumn
-        tdWidth={cellWidths.list[3].width}
-        className={cx(tokenAPriceStyle.className, tokenBPriceStyle.className)}
-      >
+      <TableColumn tdWidth={cellWidths.list[3].width} className={getColumnClassName(hasFees)}>
         <span className="fees">{fees24h}</span>
       </TableColumn>
       {/* APR */}
-      <TableColumn
-        tdWidth={cellWidths.list[4].width}
-        className={cx(tokenAPriceStyle.className, tokenBPriceStyle.className)}
-      >
+      <TableColumn tdWidth={cellWidths.list[4].width} className={getColumnClassName(hasApr)}>
         <span className="apr">{aprDisplay}</span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[5].width}>{rewardTokenLogos}</TableColumn>
