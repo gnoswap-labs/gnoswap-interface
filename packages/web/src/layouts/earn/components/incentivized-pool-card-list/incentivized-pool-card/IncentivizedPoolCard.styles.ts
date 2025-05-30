@@ -189,6 +189,16 @@ export const PoolCardWrapper = styled.div`
   }
   .value-text {
     ${fonts.body9};
+    &.informational-price {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+
+      color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22)};
+      path {
+        fill: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22)};
+      }
+    }
 
     &.apr-value {
       ${mixins.flexbox("row", "center", "flex-end")};

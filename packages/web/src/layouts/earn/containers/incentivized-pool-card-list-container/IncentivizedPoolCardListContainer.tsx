@@ -6,8 +6,12 @@ import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useIncentivizePool } from "@hooks/pool/data/use-incentivize-pool";
 import { ThemeState } from "@states/index";
+import { useTokenData } from "@hooks/token/data/use-token-data";
+import { IncentivizePoolCardInfoWithPriceGrade } from "@models/pool/info/pool-card-info";
 
 import IncentivizedPoolCardList from "../../components/incentivized-pool-card-list/IncentivizedPoolCardList";
+import { checkGnotPath } from "@utils/common";
+import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 
 export interface PoolListProps {
   logo: string[];
@@ -30,10 +34,26 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
     isFetched: isFetchedIncentivizedPools,
     isLoading: isLoadingIncentivizedPool,
   } = useIncentivizePool();
+  const { tokenPrices } = useTokenData();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
   const { width } = useWindowSize();
   const { loading: isLoadingPosition, checkStakedPool } = usePositionData();
+
+  const incentivizePoolList: IncentivizePoolCardInfoWithPriceGrade[] = React.useMemo(() => {
+    return incentivizePools.map(pool => {
+      const tokenAPriceGrade =
+        tokenPrices[checkGnotPath(pool.tokenA.path || "")]?.priceGradeType || TOKEN_PRICE_GRADE_TYPE.NONE;
+      const tokenBPriceGrade =
+        tokenPrices[checkGnotPath(pool.tokenB.path || "")]?.priceGradeType || TOKEN_PRICE_GRADE_TYPE.NONE;
+
+      return {
+        ...pool,
+        tokenAPriceGrade,
+        tokenBPriceGrade,
+      };
+    });
+  }, [incentivizePools, tokenPrices]);
 
   const handleResize = () => {
     if (typeof window !== "undefined") {
@@ -158,7 +178,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
 
   return (
     <IncentivizedPoolCardList
-      incentivizedPools={incentivizePools}
+      incentivizedPools={incentivizePoolList}
       isPoolFetched={isFetchedIncentivizedPools}
       loadMore={!!loadMore}
       onClickLoadMore={handleClickLoadMore}
