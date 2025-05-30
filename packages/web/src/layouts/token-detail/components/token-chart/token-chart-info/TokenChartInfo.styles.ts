@@ -42,6 +42,25 @@ export const TokenChartInfoWrapper = styled.div`
         color: ${({ theme }) => theme.color.text01};
         ${fonts.body1};
       }
+      .informational-price {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22)};
+        path {
+          fill: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22)};
+        }
+
+        svg {
+          width: 21px;
+          height: 21px;
+        }
+
+        .price {
+          color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22)};
+          ${fonts.body1};
+        }
+      }
     }
     ${media.mobile} {
       height: auto;

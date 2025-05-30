@@ -11,6 +11,7 @@ import TokenChartGraph from "./token-chart-graph/TokenChartGraph";
 import TokenChartInfo from "./token-chart-info/TokenChartInfo";
 
 import { ChartNotFound, LoadingChart, TokenChartWrapper } from "./TokenChart.styles";
+import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 
 export interface TokenInfo {
   token: {
@@ -28,6 +29,7 @@ export interface TokenInfo {
       denom: string;
       status: MATH_NEGATIVE_TYPE;
     };
+    priceGradeType: TOKEN_PRICE_GRADE_TYPE;
     changedRate: string;
   };
 }
