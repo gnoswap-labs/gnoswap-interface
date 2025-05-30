@@ -1,11 +1,11 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
 import { css, Theme } from "@emotion/react";
-import { IncentivizePoolCardInfo } from "@models/pool/info/pool-card-info";
+import { IncentivizePoolCardInfoWithPriceGrade } from "@models/pool/info/pool-card-info";
 import { action } from "@storybook/addon-actions";
 import PoolInfo from "./PoolInfo";
 
-const pool: IncentivizePoolCardInfo = {
+const pool: IncentivizePoolCardInfoWithPriceGrade = {
   poolId: "bar_foo_500",
   tokenA: {
     chainId: "dev",
@@ -31,6 +31,8 @@ const pool: IncentivizePoolCardInfo = {
     type: "GRC20",
     priceID: "gno.land/r/foo",
   },
+  tokenAPriceGrade: "NONE",
+  tokenBPriceGrade: "NONE",
   feeTier: "FEE_500",
   liquidity: "$1,182,797",
   apr: "0.12%",

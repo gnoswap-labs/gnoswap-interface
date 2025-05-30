@@ -5,6 +5,7 @@ import { RefObject } from "react";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { IncentivizePoolModel } from "@models/pool/pool-model";
 import POOLS from "@repositories/pool/mock/pools.json";
+import { IncentivizePoolCardInfoWithPriceGrade } from "@models/pool/info/pool-card-info";
 
 import IncentivizedPoolCardList from "../incentivized-pool-card-list/IncentivizedPoolCardList";
 import EarnIncentivizedPools from "./EarnIncentivizedPools";
@@ -12,6 +13,11 @@ import EarnIncentivizedPools from "./EarnIncentivizedPools";
 const pool = POOLS.pools[0] as unknown as IncentivizePoolModel;
 
 const cardInfo = PoolMapper.toCardInfo(pool);
+const cardInfoWithPriceGrade: IncentivizePoolCardInfoWithPriceGrade = {
+  ...cardInfo,
+  tokenAPriceGrade: "NONE",
+  tokenBPriceGrade: "NONE",
+};
 
 export default {
   title: "earn/EarnIncentivizedPools",
@@ -25,7 +31,7 @@ Default.args = {
   cardList: (
     <IncentivizedPoolCardList
       currentIndex={1}
-      incentivizedPools={[cardInfo]}
+      incentivizedPools={[cardInfoWithPriceGrade]}
       isPoolFetched={true}
       routeItem={action("routeItem")}
       mobile={false}

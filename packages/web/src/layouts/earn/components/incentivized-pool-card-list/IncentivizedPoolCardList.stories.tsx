@@ -5,12 +5,18 @@ import { ComponentMeta, ComponentStory } from "@storybook/react";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { IncentivizePoolModel } from "@models/pool/pool-model";
 import POOLS from "@repositories/pool/mock/pools.json";
+import { IncentivizePoolCardInfoWithPriceGrade } from "@models/pool/info/pool-card-info";
 
 import IncentivizedPoolCardList from "./IncentivizedPoolCardList";
 
 const pool = POOLS.pools[0] as unknown as IncentivizePoolModel;
 
 const cardInfo = PoolMapper.toCardInfo(pool);
+const cardInfoWithPriceGrade: IncentivizePoolCardInfoWithPriceGrade = {
+  ...cardInfo,
+  tokenAPriceGrade: "NONE",
+  tokenBPriceGrade: "NONE",
+};
 
 export default {
   title: "earn/IncentivizedPoolCardList",
@@ -25,7 +31,7 @@ export default {
 
 const Template: ComponentStory<typeof IncentivizedPoolCardList> = args => (
   <div css={wrapper}>
-    <IncentivizedPoolCardList {...args} incentivizedPools={[cardInfo]} currentIndex={1} />
+    <IncentivizedPoolCardList {...args} incentivizedPools={[cardInfoWithPriceGrade]} currentIndex={1} />
   </div>
 );
 

@@ -21,6 +21,7 @@ const swapTokenInfo: SwapTokenInfo = {
   tokenABalance: "",
   tokenAUSD: 0,
   tokenAUSDStr: "0",
+  tokenAPriceGrade: "NONE",
   tokenB: {
     type: "GRC20",
     chainId: "dev.gnoswap",
@@ -37,6 +38,7 @@ const swapTokenInfo: SwapTokenInfo = {
   tokenBBalance: "",
   tokenBUSD: 0,
   tokenBUSDStr: "0",
+  tokenBPriceGrade: "NONE",
   direction: "EXACT_IN",
   slippage: 10,
 };
