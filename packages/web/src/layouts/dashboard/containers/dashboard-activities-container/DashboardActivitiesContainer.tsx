@@ -7,7 +7,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGetDashboardActivities } from "@query/dashboard/use-get-dashboard-activities";
 import { ActivityType } from "@repositories/dashboard";
 import { ActivityData } from "@repositories/activity/responses/activity-responses";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { ExploreDashboardConverter } from "@services/converters/explore-dashboard";
 
 import { ACTIVITY_TABLE_HEAD, SortOption } from "../../components/activity-list/activity-list-table/ActivityListTable";
 import ActivityList from "../../components/activity-list/ActivityList";
@@ -24,15 +24,7 @@ const DashboardActivitiesContainer: React.FC = () => {
   const { isFetched, error, data: activities = [] } = useGetDashboardActivities(activityType);
 
   const activityList: ActivityData[] = React.useMemo(() => {
-    if (!activities) return [];
-
-    return activities.map((activity: ActivityData) => {
-      return {
-        ...activity,
-        tokenAAmount: String(makeDisplayTokenAmount(activity.tokenA, activity.tokenAAmount) ?? 0),
-        tokenBAmount: String(makeDisplayTokenAmount(activity.tokenB, activity.tokenBAmount) ?? 0),
-      };
-    });
+    return ExploreDashboardConverter.convertDashboardActivityList(activities);
   }, [activities]);
 
   const changeActivityType = useCallback(({ key: newType }: { display: string; key: string }) => {

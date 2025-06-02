@@ -289,14 +289,14 @@ const formatActivity = (res: ActivityData, t: TFunction<"translation", undefined
   })();
 
   const tokenAAmount =
-    tokenASymbol && shouldShowTokenAAmount
+    tokenASymbol && shouldShowTokenAAmount && res.tokenAAmount !== "0"
       ? `${formatPoolPairAmount(res.tokenAAmount, {
           decimals: tokenA.decimals,
         })} ${tokenA.symbol}`
       : "-";
 
   const tokenBAmount =
-    tokenBSymbol && shouldShowTokenBAmount
+    tokenBSymbol && shouldShowTokenBAmount && res.tokenBAmount !== "0"
       ? `${formatPoolPairAmount(res.tokenBAmount, {
           decimals: tokenB.decimals,
         })} ${tokenB.symbol}`

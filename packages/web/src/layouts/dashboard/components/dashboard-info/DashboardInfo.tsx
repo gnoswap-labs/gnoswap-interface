@@ -23,7 +23,6 @@ const DashboardInfo: React.FC<DashboardInfoProps> = ({
   breakpoint,
   loading,
 }) => {
-  console.log(supplyOverviewInfo, "supplyOverviewInfosupplyOverviewInfo");
   return (
     <DashboardInfoWrapper>
       {!loading && <DashboardInfoTitle dashboardTokenInfo={dashboardTokenInfo} breakpoint={breakpoint} />}
