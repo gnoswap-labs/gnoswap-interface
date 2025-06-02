@@ -1,4 +1,4 @@
-import { AmountConverter } from "@services/converters";
+import { AmountConverter } from "@services/converters/common/amount";
 
 import { TransactionGroupsType } from "@models/notification";
 import { TransactionModel } from "@models/account/account-history-model";

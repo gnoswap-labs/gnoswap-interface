@@ -23,7 +23,7 @@ import { formatOtherPrice } from "@utils/new-number-utils";
 import { toUnitFormat } from "@utils/number-utils";
 import { isEmptyObject } from "@utils/validation-utils";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { PositionConverter } from "@services/position";
+import { PositionConverter } from "@services/converters/position";
 
 import AssetSendModal from "../../components/asset-send-modal/AssetSendModal";
 import WalletBalance from "../../components/wallet-balance/WalletBalance";

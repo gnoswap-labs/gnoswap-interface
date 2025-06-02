@@ -5,7 +5,7 @@ import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { PositionConverter } from "@services/position";
+import { PositionConverter } from "@services/converters/position";
 
 import StakePosition from "../../components/stake-position/StakePosition";
 import { useStakePositionModal } from "@hooks/pool/ui/use-stake-position-modal";

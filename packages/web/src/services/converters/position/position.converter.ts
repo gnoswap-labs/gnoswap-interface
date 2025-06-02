@@ -1,4 +1,4 @@
-import { AmountConverter } from "@services/converters";
+import { AmountConverter } from "@services/converters/common/amount";
 
 import { PoolPositionModel } from "@models/position/pool-position-model";
 

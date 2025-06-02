@@ -10,7 +10,7 @@ import { useGetNotifications } from "@query/common";
 import { CommonState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
 import { TransactionGroupsType } from "@models/notification";
-import { NotificationConverter } from "@services/notification";
+import { NotificationConverter } from "@services/converters/notification";
 
 import NotificationList from "./notification-list/NotificationList";
 

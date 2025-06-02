@@ -18,7 +18,7 @@ import { useTransactionEventStore } from "@hooks/common/use-transaction-event-st
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import MyLiquidity from "../../components/my-liquidity/MyLiquidity";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
-import { PositionConverter } from "@services/position";
+import { PositionConverter } from "@services/converters/position";
 
 interface MyLiquidityContainerProps {
   address?: string | undefined;

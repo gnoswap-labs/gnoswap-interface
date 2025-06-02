@@ -3,7 +3,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { PositionConverter } from "@services/position";
+import { PositionConverter } from "@services/converters/position";
 
 import UnstakeLiquidity from "../../components/unstake-liquidity/UnstakeLiquidity";
 import { useUnstakePositionModal } from "@hooks/pool/ui/use-unstake-position-modal";

@@ -13,7 +13,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { mapToDisplayRewardType } from "@utils/reward-utils";
-import { PositionConverter } from "@services/position";
+import { PositionConverter } from "@services/converters/position";
 
 import StakedPostionsTooltipContent from "./sateked-positions-tooltip/StakedPositinosTooltipContent";
 import WalletBalanceDetailInfo from "./wallet-balance-detail-info/WalletBalanceDetailInfo";
