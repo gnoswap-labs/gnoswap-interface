@@ -6,11 +6,11 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGetDashboardGovernanceOverview, useGetDashboardToken } from "@query/dashboard";
 import { formatOtherPrice, formatPrice } from "@utils/new-number-utils";
 import { SupplyOverviewInfo } from "@layouts/dashboard/components/dashboard-info/dashboard-overview/supply-overview/SupplyOverview";
+import { ExploreDashboardConverter } from "@services/converters/explore-dashboard";
 
 import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import { numberToFormat } from "@utils/string-utils";
 import DashboardInfo from "../../components/dashboard-info/DashboardInfo";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 const formatDashboardPrice = (price?: string, unit?: string) => {
   if (!price || BigNumber(price).isNaN()) return "-";
@@ -23,6 +23,10 @@ const DashboardInfoContainer: React.FC = () => {
   const { isLoading: isLoadingCommon } = useLoading();
 
   const { data: tokenData, isFetched: isFetchedDashboardToken } = useGetDashboardToken();
+  const convertedTokenData = React.useMemo(() => {
+    return ExploreDashboardConverter.convertDashboardToken(tokenData);
+  }, [tokenData]);
+
   const { data: governanceOverview = null, isFetched: isFetchedGovernanceOverview } =
     useGetDashboardGovernanceOverview();
 
@@ -35,23 +39,23 @@ const DashboardInfoContainer: React.FC = () => {
   }, [isFetchedDashboardToken, isFetchedGovernanceOverview, isLoadingCommon]);
 
   const progressBar = useMemo(() => {
-    if (!tokenData) return "0%";
-    const circSupply = Number(tokenData?.gnsCirculatingSupply);
-    const totalSupply = Number(tokenData?.gnsTotalSupply);
+    if (!convertedTokenData) return "0%";
+    const circSupply = Number(convertedTokenData?.gnsCirculatingSupply);
+    const totalSupply = Number(convertedTokenData?.gnsTotalSupply);
     if (totalSupply === 0) return "0%";
     const percent = Math.min((circSupply / totalSupply) * 100, 100);
     return `${percent}%`;
-  }, [tokenData]);
+  }, [convertedTokenData]);
   const stakingRatio = useMemo(() => {
-    if (!tokenData) return "-";
-    const circSupply = Number(tokenData?.gnsCirculatingSupply);
-    const totalStaked = Number(tokenData?.gnsTotalStaked);
+    if (!convertedTokenData) return "-";
+    const circSupply = Number(convertedTokenData?.gnsCirculatingSupply);
+    const totalStaked = Number(convertedTokenData?.gnsTotalStaked);
 
     if (totalStaked === 0 || circSupply === 0) return "0%";
     if ((totalStaked * 100) / circSupply < 0.01) return "<0.01%";
     const ratio = ((totalStaked / circSupply) * 100).toFixed(3);
     return `${ratio}%`;
-  }, [tokenData]);
+  }, [convertedTokenData]);
 
   const supplyOverviewInfo: SupplyOverviewInfo = useMemo(() => {
     const DISTRIBUTION_RATIOS = {
@@ -60,19 +64,10 @@ const DashboardInfoContainer: React.FC = () => {
       COMMUNITY: 0.05, // 5%
     };
 
-    const getTokenAmount = (rawAmount: string | number | undefined | null): number => {
-      if (typeof rawAmount === "string") {
-        const parsed = parseFloat(rawAmount);
-        rawAmount = isNaN(parsed) ? 0 : parsed;
-      }
-
-      return makeDisplayTokenAmount(GNS_TOKEN, rawAmount || 0) ?? 0;
-    };
-
-    const circulatingSupply = getTokenAmount(tokenData?.gnsCirculatingSupply);
-    const dailyBlockEmissions = getTokenAmount(tokenData?.gnsDailyBlockEmissions);
-    const totalSupply = getTokenAmount(tokenData?.gnsTotalSupply);
-    const totalStaked = getTokenAmount(tokenData?.gnsTotalStaked);
+    const circulatingSupply = convertedTokenData.gnsCirculatingSupply;
+    const totalSupply = convertedTokenData.gnsTotalSupply;
+    const totalStaked = Number(convertedTokenData.gnsTotalStaked);
+    const dailyBlockEmissions = Number(convertedTokenData.gnsDailyBlockEmissions);
 
     const emissionDistribution = {
       liquidityStaking: dailyBlockEmissions * DISTRIBUTION_RATIOS.LIQUIDITY_STAKING,
