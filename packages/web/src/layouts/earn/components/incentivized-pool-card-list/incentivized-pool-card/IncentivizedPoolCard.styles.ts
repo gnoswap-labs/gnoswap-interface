@@ -1,5 +1,6 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
+import { priceWarningStyle } from "@layouts/leaderboard-layout/components/common/common.styles";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
@@ -189,6 +190,9 @@ export const PoolCardWrapper = styled.div`
   }
   .value-text {
     ${fonts.body9};
+    &.informational-price {
+      ${({ theme }) => priceWarningStyle(theme)};
+    }
 
     &.apr-value {
       ${mixins.flexbox("row", "center", "flex-end")};

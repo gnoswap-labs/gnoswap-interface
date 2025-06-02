@@ -23,6 +23,7 @@ export const EXT_URL = {
     },
     WITHDRAW: "https://docs.gnoswap.io/references/faq#how-does-the-withdraw-feature-work",
     DEPOSIT: "https://docs.gnoswap.io/references/faq#how-do-i-deposit-tokens-into-my-wallet",
+    TWAP: "https://docs.gnoswap.io/references/twap",
   },
   SOCIAL: {
     DISCORD: "https://discord.gg/u4bdGHStb2",

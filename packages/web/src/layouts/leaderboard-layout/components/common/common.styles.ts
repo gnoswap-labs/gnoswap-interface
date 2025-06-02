@@ -1,4 +1,5 @@
 import { fonts } from "@constants/font.constant";
+import { css, Theme } from "@emotion/react";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
@@ -60,4 +61,17 @@ export const TooltipContent = styled.div`
 export const Flex = styled.div`
   ${mixins.flexbox("row", "center", "center")};
   gap: 4px;
+`;
+
+export const priceWarningStyle = (theme: Theme) => css`
+  display: flex;
+  align-items: center;
+  gap: 2px;
+
+  color: ${theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22};
+  .price-warning-icon {
+    path {
+      fill: ${theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22};
+    }
+  }
 `;

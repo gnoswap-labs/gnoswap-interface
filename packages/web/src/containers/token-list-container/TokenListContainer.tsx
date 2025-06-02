@@ -14,6 +14,7 @@ import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useLoading } from "@hooks/common/use-loading";
 import { MAIN_TOKEN_LIST_SIZE } from "@constants/table.constant";
 import { formatOtherPrice, formatPrice } from "@utils/new-number-utils";
+import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -41,6 +42,7 @@ export interface Token {
   idx: number;
   graphStatus: MATH_NEGATIVE_TYPE;
   isNative: boolean;
+  priceGradeType: TOKEN_PRICE_GRADE_TYPE;
 }
 
 export interface SortOption {
@@ -78,6 +80,7 @@ export type TOKEN_TYPE = ValuesType<typeof TOKEN_TYPE>;
 
 export const createDummyTokenList = (): Token[] => [
   {
+    priceGradeType: "ORACLE",
     path: Math.floor(Math.random() * 50 + 1).toString(),
     token: {
       path: "1",
@@ -230,6 +233,7 @@ const TokenListContainer: React.FC = () => {
 
         return {
           ...transferData,
+          priceGradeType: transferData.priceGradeType,
           token: {
             path: item.path,
             name: item.name,

@@ -14,6 +14,7 @@ import { GNOT_TOKEN, GNS_TOKEN } from "@common/values/token-constant";
 import { formatPrice } from "@utils/new-number-utils";
 import { useInterval } from "@hooks/common/use-interval";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
+import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 
 const DEFAULT_TOKEN_A_AMOUNT = "1000";
 const TOKEN_ROTATION_INTERVAL = 2000 as const;
@@ -90,17 +91,24 @@ const HomeSwapContainer: React.FC = () => {
   }, TOKEN_ROTATION_INTERVAL);
 
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
+    const tokenAPriceGrade =
+      tokenPrices[checkGnotPath(tokenA?.path || "")]?.priceGradeType || TOKEN_PRICE_GRADE_TYPE.NONE;
+    const tokenBPriceGrade =
+      tokenPrices[checkGnotPath(tokenB?.path || "")]?.priceGradeType || TOKEN_PRICE_GRADE_TYPE.NONE;
+
     return {
       tokenA,
       tokenAAmount,
       tokenABalance,
       tokenAUSD,
       tokenAUSDStr: formatPrice(tokenAUSD, { isKMB: false }),
+      tokenAPriceGrade,
       tokenB,
       tokenBAmount,
       tokenBBalance,
       tokenBUSD,
       tokenBUSDStr: formatPrice(tokenBUSD, { isKMB: false }),
+      tokenBPriceGrade,
       direction: "EXACT_IN",
       slippage,
       tokenADecimals: tokenA?.decimals,

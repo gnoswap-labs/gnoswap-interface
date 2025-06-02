@@ -1,6 +1,7 @@
 import { SwapFeeTierType } from "@constants/option.constant";
 import { RewardTokenModel } from "@models/position/reward-model";
 import { TokenModel } from "@models/token/token-model";
+import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 
 export interface PoolListInfo {
   poolId: string;
@@ -9,7 +10,11 @@ export interface PoolListInfo {
 
   tokenA: TokenModel;
 
+  tokenAPriceGrade: TOKEN_PRICE_GRADE_TYPE;
+
   tokenB: TokenModel;
+
+  tokenBPriceGrade: TOKEN_PRICE_GRADE_TYPE;
 
   feeTier: SwapFeeTierType;
 

@@ -66,6 +66,7 @@ const swapTokenInfo: SwapTokenInfo = {
   tokenABalance: "0",
   tokenAUSD: 0,
   tokenAUSDStr: "0",
+  tokenAPriceGrade: "NONE",
   tokenB: {
     chainId: "dev",
     createdAt: "2023-10-17T05:58:00+09:00",
@@ -82,6 +83,7 @@ const swapTokenInfo: SwapTokenInfo = {
   tokenBBalance: "0",
   tokenBUSD: 0,
   tokenBUSDStr: "0",
+  tokenBPriceGrade: "NONE",
   direction: "EXACT_IN",
   slippage: 0,
 };

@@ -25,6 +25,8 @@
       "type": "GRC20",
       "priceID": "gno.land/r/foo"
     },
+    "tokenAPriceGrade": "NONE",
+    "tokenBPriceGrade": "NONE",
     "incentivized": true,
     "tvl": "1182782.0",
     "tvlChange": 118278200.0,

@@ -12,6 +12,8 @@ import SimpleLineGraph from "@components/common/simple-line-graph/SimpleLineGrap
 import { Global, css } from "@emotion/react";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import TokenInfoCell from "@components/common/token-info-cell/TokenInfoCell";
+import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
+import PriceWarning from "@components/common/price-warning/PriceWarning";
 
 interface TokenInfoProps {
   item: Token;
@@ -53,8 +55,11 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     last7days,
     graphStatus,
     isNative,
+    priceGradeType,
   } = item;
   const router = useCustomRouter();
+
+  const { priceStyle, shouldShowPriceWarning } = useTokenPriceInfo({ priceGradeType });
 
   const onClickItem = (path: string) => {
     router.movePageWithTokenPath("TOKEN", path);
@@ -75,6 +80,10 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     return last7days.every(item => item === 0);
   }, [last7days]);
 
+  const renderPrice = (price: string | number) => {
+    return price === "--" ? <PriceValueWrapper>{price}</PriceValueWrapper> : <span>{price}</span>;
+  };
+
   return (
     <TokenInfoWrapper>
       <HoverSection onClick={() => onClickItem(token.path)}>
@@ -84,8 +93,9 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
         <TableColumn className="name-col left left-padding" tdWidth={TOKEN_TD_WIDTH[1]}>
           <TokenInfoCell token={token} isNative={isNative} />
         </TableColumn>
-        <TableColumn className="right-padding-16" tdWidth={TOKEN_TD_WIDTH[2]}>
-          {price === "--" ? <PriceValueWrapper>{price}</PriceValueWrapper> : price}
+        <TableColumn className={cx("right-padding-16", priceStyle.className)} tdWidth={TOKEN_TD_WIDTH[2]}>
+          {renderPrice(price)}
+          {shouldShowPriceWarning && <PriceWarning type={"PRICE"} />}
         </TableColumn>
         <TableColumn tdWidth={TOKEN_TD_WIDTH[3]} className={cx("right-padding-16", priceOf1d.status.toLowerCase())}>
           {renderToNegativeType(priceOf1d.status, priceOf1d.value)}
@@ -96,14 +106,14 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
         <TableColumn tdWidth={TOKEN_TD_WIDTH[5]} className={cx("right-padding-16", priceOf30d.status.toLowerCase())}>
           {renderToNegativeType(priceOf30d.status, priceOf30d.value)}
         </TableColumn>
-        <TableColumn className="right-padding-16" tdWidth={TOKEN_TD_WIDTH[6]}>
+        <TableColumn className={cx("right-padding-16", priceStyle.className)} tdWidth={TOKEN_TD_WIDTH[6]}>
           <span>{marketCap}</span>
         </TableColumn>
-        <TableColumn className="right-padding-12" tdWidth={TOKEN_TD_WIDTH[7]}>
+        <TableColumn className={cx("right-padding-12", priceStyle.className)} tdWidth={TOKEN_TD_WIDTH[7]}>
           <span>{liquidity}</span>
         </TableColumn>
 
-        <TableColumn className="right-padding-12" tdWidth={TOKEN_TD_WIDTH[8]}>
+        <TableColumn className={cx("right-padding-12", priceStyle.className)} tdWidth={TOKEN_TD_WIDTH[8]}>
           <span className="volume">{volume24h}</span>
         </TableColumn>
       </HoverSection>

@@ -8,9 +8,12 @@ import { initialDetailPool } from "@models/pool/pool-detail-model";
 import { useGetBinsByPath, useGetPoolDetailByPath } from "@query/pools";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 
 import PoolPairInformation from "../../components/pool-pair-information/PoolPairInformation";
 import { ZOOL_VALUES } from "@constants/graph.constant";
+import { checkGnotPath } from "@utils/common";
+import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 
 interface PoolPairInformationContainerProps {
   address?: string | undefined;
@@ -43,12 +46,18 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
     enabled: !!poolPath,
     queryKey: ["poolPairInformationContainer/getBins", poolPath, zoomLevel],
   });
+  const { tokenPrices } = useTokenData();
 
   const onClickPath = (path: string) => {
     router.push(path);
   };
 
   const pool = useMemo(() => {
+    const tokenAPriceGrade =
+      tokenPrices[checkGnotPath(data.tokenA.path || "")]?.priceGradeType || TOKEN_PRICE_GRADE_TYPE.NONE;
+    const tokenBPriceGrade =
+      tokenPrices[checkGnotPath(data.tokenB.path || "")]?.priceGradeType || TOKEN_PRICE_GRADE_TYPE.NONE;
+
     return {
       ...data,
       tokenA: {
@@ -65,8 +74,10 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
         symbol: getGnotPath(data.tokenB).symbol,
         logoURI: getGnotPath(data.tokenB).logoURI,
       },
+      tokenAPriceGrade,
+      tokenBPriceGrade,
     };
-  }, [data, bins]);
+  }, [data, bins, tokenPrices]);
 
   const feeStr = useMemo(() => {
     if (!pool?.fee) {

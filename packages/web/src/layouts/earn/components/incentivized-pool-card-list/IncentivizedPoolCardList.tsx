@@ -2,14 +2,14 @@ import React, { useMemo } from "react";
 
 import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { IncentivizePoolCardInfo } from "@models/pool/info/pool-card-info";
+import { IncentivizePoolCardInfoWithPriceGrade } from "@models/pool/info/pool-card-info";
 
 import IncentivizedPoolCard from "./incentivized-pool-card/IncentivizedPoolCard";
 
 import { BlankIncentivizedCard, IncentivizedWrapper, PoolListWrapper } from "./IncentivizedPoolCardList.styles";
 
 export interface IncentivizedPoolCardListProps {
-  incentivizedPools: IncentivizePoolCardInfo[];
+  incentivizedPools: IncentivizePoolCardInfoWithPriceGrade[];
   loadMore: boolean;
   isPoolFetched: boolean;
   onClickLoadMore?: () => void;

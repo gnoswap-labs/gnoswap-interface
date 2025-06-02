@@ -1,6 +1,7 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
+import { priceWarningStyle } from "@layouts/leaderboard-layout/components/common/common.styles";
 
 export const TableColumn = styled.div<{ tdWidth: number }>`
   width: ${({ tdWidth }) => `${tdWidth}px`};
@@ -22,6 +23,9 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   &.left {
     flex-shrink: 0;
     justify-content: flex-start;
+  }
+  &.informational-price {
+    ${({ theme }) => priceWarningStyle(theme)}
   }
 `;
 

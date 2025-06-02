@@ -1,6 +1,7 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
+import { priceWarningStyle } from "@layouts/leaderboard-layout/components/common/common.styles";
 
 export const TokenInfoWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
@@ -87,6 +88,10 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
 
   &.last7days-graph {
     display: flex;
+  }
+
+  &.informational-price {
+    ${({ theme }) => priceWarningStyle(theme)};
   }
 
   .fee-rate,

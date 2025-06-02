@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { cx } from "@emotion/css";
 
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
@@ -8,17 +9,19 @@ import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapToken
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
-import { IncentivizePoolCardInfo } from "@models/pool/info/pool-card-info";
+import { IncentivizePoolCardInfoWithPriceGrade } from "@models/pool/info/pool-card-info";
 import { formatRate } from "@utils/new-number-utils";
 import { numberToFormat } from "@utils/string-utils";
 import { useGetBinsByPath } from "@query/pools";
 import { getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils";
+import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
 
 import { PoolCardWrapper, PoolCardWrapperWrapperBorder } from "./IncentivizedPoolCard.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import PriceWarning from "@components/common/price-warning/PriceWarning";
 
 export interface IncentivizedPoolCardProps {
-  pool: IncentivizePoolCardInfo;
+  pool: IncentivizePoolCardInfoWithPriceGrade;
   routeItem: (id: string) => void;
   themeKey: "dark" | "light";
   checkStakedPool: (poolPath: string | null) => boolean;
@@ -68,6 +71,15 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
     );
   }, [pool.apr]);
 
+  const { priceStyle: tokenAPriceStyle, shouldShowPriceWarning: tokenAShouldShowPriceWarning } = useTokenPriceInfo({
+    priceGradeType: pool.tokenAPriceGrade,
+  });
+  const { priceStyle: tokenBPriceStyle, shouldShowPriceWarning: tokenBShouldShowPriceWarning } = useTokenPriceInfo({
+    priceGradeType: pool.tokenBPriceGrade,
+  });
+
+  const shouldShowPriceWarning = tokenAShouldShowPriceWarning || tokenBShouldShowPriceWarning;
+
   return (
     <PoolCardWrapperWrapperBorder className={`${staked ? "special-card" : ""}`}>
       <div className="base-border">
@@ -95,7 +107,10 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
                 <span className="label-text">APR</span>
               </div>
               <div className="list-content">
-                <span className="value-text">{pool.liquidity}</span>
+                <span className={cx("value-text", tokenAPriceStyle.className, tokenBPriceStyle.className)}>
+                  {pool.liquidity}
+                  {shouldShowPriceWarning && <PriceWarning type="TVL" />}
+                </span>
                 <span className="value-text apr-value">{aprStr}</span>
               </div>
             </div>

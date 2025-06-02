@@ -23,6 +23,8 @@ import {
 import IconWallet from "@components/common/icons/IconWallet";
 import { useTranslation } from "react-i18next";
 import { useTokenBalancesDisplay } from "@hooks/token/ui/use-token-balance-display";
+import PriceWarning from "@components/common/price-warning/PriceWarning";
+import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
 
 interface ContentProps {
   swapTokenInfo: SwapTokenInfo;
@@ -151,6 +153,13 @@ const SwapCardContent: React.FC<ContentProps> = ({
     return (isLoading || isRefetching) && direction === "EXACT_IN";
   }, [isLoading, direction, isRefetching]);
 
+  const { priceStyle: tokenAPriceStyle, shouldShowPriceWarning: tokenAShouldShowPriceWarning } = useTokenPriceInfo({
+    priceGradeType: swapTokenInfo.tokenAPriceGrade,
+  });
+  const { priceStyle: tokenBPriceStyle, shouldShowPriceWarning: tokenBShouldShowPriceWarning } = useTokenPriceInfo({
+    priceGradeType: swapTokenInfo.tokenBPriceGrade,
+  });
+
   return (
     <ContentWrapper>
       <div className="first-section">
@@ -171,8 +180,12 @@ const SwapCardContent: React.FC<ContentProps> = ({
           </div>
         </div>
         <div className="amount-info">
-          <span className={cx("price-text", { "text-opacity": isLoadingTokenA })} aria-busy={isLoadingTokenA}>
+          <span
+            className={cx("price-text", tokenAPriceStyle.className, { "text-opacity": isLoadingTokenA })}
+            aria-busy={isLoadingTokenA}
+          >
             {swapTokenInfo.tokenAUSDStr}
+            {tokenAShouldShowPriceWarning && swapTokenInfo.tokenAAmount && <PriceWarning type="PRICE" />}
           </span>
           <div className="balance-wrapper">
             {connectedWallet && <IconWallet />}
@@ -211,8 +224,13 @@ const SwapCardContent: React.FC<ContentProps> = ({
         </div>
         <div className="amount-info">
           <PriceInfoWrapper>
-            <span className={cx("price-text second-price-text", { "text-opacity": isLoadingTokenB })}>
+            <span
+              className={cx("price-text second-price-text", tokenBPriceStyle.className, {
+                "text-opacity": isLoadingTokenB,
+              })}
+            >
               {swapTokenInfo.tokenBUSDStr}
+              {tokenBShouldShowPriceWarning && swapTokenInfo.tokenBAmount && <PriceWarning type="PRICE" />}
             </span>
             {showPriceImpact && (
               <PriceImpactWrapper priceImpact={priceImpactStatus}>

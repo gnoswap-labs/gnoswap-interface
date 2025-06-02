@@ -7,6 +7,10 @@ import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 import { TokenChartInfoWrapper } from "./TokenChartInfo.styles";
+import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
+import PriceWarning from "@components/common/price-warning/PriceWarning";
+import { cx } from "@emotion/css";
+import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
 
 export interface TokenChartInfoProps {
   token: {
@@ -20,6 +24,7 @@ export interface TokenChartInfoProps {
       denom: string;
       status: MATH_NEGATIVE_TYPE;
     };
+    priceGradeType: TOKEN_PRICE_GRADE_TYPE;
     changedRate: string;
   };
   isEmpty: boolean;
@@ -64,6 +69,8 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({ token, priceInfo, loadi
     return priceInfo.changedRate;
   }, [isEmpty, priceInfo.changedRate]);
 
+  const { priceStyle, shouldShowPriceWarning } = useTokenPriceInfo({ priceGradeType: priceInfo.priceGradeType });
+
   return (
     <TokenChartInfoWrapper>
       <div className="token-info-wrapper">
@@ -80,7 +87,12 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({ token, priceInfo, loadi
           )}
         </div>
         <div className="price-info">
-          {<span className="price">{displayPrice}</span>}
+          {
+            <div className={cx(priceStyle.className)}>
+              <span className="price">{displayPrice}</span>
+              {shouldShowPriceWarning && <PriceWarning type="PRICE" />}
+            </div>
+          }
           {priceInfo.amount.value && !loading ? (
             <div className={`change-rate-wrapper ${rateClass}`}>
               {statusIcon}

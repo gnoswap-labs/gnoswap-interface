@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import { PriceImpactStatus } from "@hooks/swap/data/use-swap-handler";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
+import { priceWarningStyle } from "@layouts/leaderboard-layout/components/common/common.styles";
 
 export const ContentWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -115,6 +116,9 @@ export const ContentWrapper = styled.div`
       max-width: 100%;
     }
     .balance-text-disabled {
+    }
+    .informational-price {
+      ${({ theme }) => priceWarningStyle(theme)};
     }
   }
 

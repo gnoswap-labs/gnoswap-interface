@@ -1,5 +1,6 @@
 import { SwapDirectionType } from "@common/values";
 import { TokenModel } from "@models/token/token-model";
+import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 
 export interface SwapTokenInfo {
   tokenA: TokenModel | null;
@@ -12,6 +13,8 @@ export interface SwapTokenInfo {
 
   tokenAUSDStr: string;
 
+  tokenAPriceGrade: TOKEN_PRICE_GRADE_TYPE;
+
   tokenB: TokenModel | null;
 
   tokenBAmount: string;
@@ -21,6 +24,8 @@ export interface SwapTokenInfo {
   tokenBUSD: number | null;
 
   tokenBUSDStr: string;
+
+  tokenBPriceGrade: TOKEN_PRICE_GRADE_TYPE;
 
   direction: SwapDirectionType;
 

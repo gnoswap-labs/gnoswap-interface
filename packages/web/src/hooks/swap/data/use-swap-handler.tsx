@@ -39,6 +39,7 @@ import { useReferral } from "@hooks/common/use-referral";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useSwap } from "./use-swap";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 
 type SwapButtonStateType =
   | "WALLET_LOGIN"
@@ -467,23 +468,42 @@ export const useSwapHandler = () => {
   }, [swapButtonState, t]);
 
   const swapTokenInfo: SwapTokenInfo = useMemo(() => {
+    const tokenAPriceGrade =
+      tokenPrices[checkGnotPath(tokenA?.path || "")]?.priceGradeType || TOKEN_PRICE_GRADE_TYPE.NONE;
+    const tokenBPriceGrade =
+      tokenPrices[checkGnotPath(tokenB?.path || "")]?.priceGradeType || TOKEN_PRICE_GRADE_TYPE.NONE;
+
     return {
       tokenA,
       tokenAAmount,
       tokenABalance,
       tokenAUSD,
       tokenAUSDStr: formatPrice(tokenAUSD, { usd: true, isKMB: false }),
+      tokenAPriceGrade,
       tokenB,
       tokenBAmount,
       tokenBBalance,
       tokenBUSD,
       tokenBUSDStr: formatPrice(tokenBUSD, { usd: true, isKMB: false }),
+      tokenBPriceGrade,
       direction: type,
       slippage,
       tokenADecimals: tokenA?.decimals,
       tokenBDecimals: tokenB?.decimals,
     };
-  }, [slippage, type, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
+  }, [
+    slippage,
+    type,
+    tokenA,
+    tokenAAmount,
+    tokenABalance,
+    tokenAUSD,
+    tokenB,
+    tokenBAmount,
+    tokenBBalance,
+    tokenBUSD,
+    tokenPrices,
+  ]);
 
   const initializeSwapTokenInputAmount = useCallback(() => {
     setSwapValue(prev => ({

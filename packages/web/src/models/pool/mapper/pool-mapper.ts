@@ -40,6 +40,8 @@ export class PoolMapper {
       currentTick,
       price,
       tvl: tvl,
+      tokenAPriceGrade: "NONE",
+      tokenBPriceGrade: "NONE",
     };
   }
 
@@ -103,6 +105,8 @@ export class PoolMapper {
       liquidity: pool.liquidity,
       allTimeVolumeUsd: pool.allTimeVolumeUsd,
       price: Number(pool.price),
+      tokenAPriceGrade: "NONE",
+      tokenBPriceGrade: "NONE",
     };
   }
 
@@ -117,6 +121,8 @@ export class PoolMapper {
       liquidity: pool.liquidity,
       allTimeVolumeUsd: pool.allTimeVolumeUsd,
       price: Number(pool.price),
+      tokenAPriceGrade: "NONE",
+      tokenBPriceGrade: "NONE",
     };
   }
 
@@ -131,6 +137,8 @@ export class PoolMapper {
       totalApr: pool.totalApr,
       allTimeVolumeUsd: pool.allTimeVolumeUsd,
       price: Number(pool.price),
+      tokenAPriceGrade: "NONE",
+      tokenBPriceGrade: "NONE",
     };
   }
 }

@@ -59,6 +59,7 @@ export const dummyTokenInfo: TokenInfo = {
       denom: "",
       status: MATH_NEGATIVE_TYPE.NONE,
     },
+    priceGradeType: "NONE",
     changedRate: "0",
   },
 };
@@ -135,7 +136,7 @@ const TokenChartContainer: React.FC = () => {
     },
   );
 
-  const { data: { usd: currentPrice, pricesBefore = priceChangeDetailInit } = {} } = useGetTokenPrices(
+  const { data: { priceGradeType, usd: currentPrice, pricesBefore = priceChangeDetailInit } = {} } = useGetTokenPrices(
     path === "gnot" ? wugnotPath : path,
     {
       enabled: !!path,
@@ -165,6 +166,7 @@ const TokenChartContainer: React.FC = () => {
             denom: "USD",
             status: dataToday.status,
           },
+          priceGradeType: priceGradeType || "NONE",
           changedRate: dataToday.percentDisplay,
         },
       }));

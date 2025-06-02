@@ -20,6 +20,7 @@ export const Default: StoryObj<TokenChartInfoProps> = {
         denom: "UTC",
         status: MATH_NEGATIVE_TYPE.NONE,
       },
+      priceGradeType: "NONE",
       changedRate: "7.43%",
     },
   },

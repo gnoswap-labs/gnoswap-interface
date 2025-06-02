@@ -16,6 +16,9 @@ import PoolInfoLazyChart from "./pool-info-lazy-chart/PoolInfoLazyChart";
 import { PoolInfoWrapper, TableColumn } from "./PoolInfo.styles";
 import { makePoolPath } from "@utils/pool-utils";
 import { useGetPoolStakingListByPoolPath } from "@query/pools";
+import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
+import { cx } from "@emotion/css";
+import PriceWarning from "@components/common/price-warning/PriceWarning";
 
 interface PoolInfoProps {
   pool: PoolListInfo;
@@ -25,7 +28,20 @@ interface PoolInfoProps {
 }
 
 const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
-  const { poolId, tokenA, tokenB, feeTier, apr, volume24h, fees24h, rewardTokens, tvl, incentivized } = pool;
+  const {
+    poolId,
+    tokenA,
+    tokenB,
+    feeTier,
+    apr,
+    volume24h,
+    fees24h,
+    rewardTokens,
+    tvl,
+    incentivized,
+    tokenAPriceGrade,
+    tokenBPriceGrade,
+  } = pool;
   const poolPath = makePoolPath(tokenA, tokenB, feeTier);
 
   const { data: poolStakings = [] } = useGetPoolStakingListByPoolPath(poolPath || "", {
@@ -37,6 +53,32 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
   }, [poolStakings]);
 
   const { getGnotPath } = useGnotToGnot();
+
+  const { priceStyle: tokenAPriceStyle, shouldShowPriceWarning: tokenAShouldShowPriceWarning } = useTokenPriceInfo({
+    priceGradeType: tokenAPriceGrade,
+  });
+  const { priceStyle: tokenBPriceStyle, shouldShowPriceWarning: tokenBShouldShowPriceWarning } = useTokenPriceInfo({
+    priceGradeType: tokenBPriceGrade,
+  });
+
+  const shouldShowPriceWarning = tokenAShouldShowPriceWarning || tokenBShouldShowPriceWarning;
+
+  const hasPriceInformational = React.useMemo(() => {
+    if (tvl === "-" || tvl === "$0" || !Boolean(tvl)) return false;
+    return true;
+  }, [tvl]);
+
+  const getColumnClassName = () => {
+    if (!hasPriceInformational) return "";
+
+    return cx({
+      [tokenAPriceStyle.className || ""]: tokenAShouldShowPriceWarning,
+      [tokenBPriceStyle.className || ""]: tokenBShouldShowPriceWarning,
+    });
+  };
+
+  const columnClassName = getColumnClassName();
+
   const rewardTokenLogos = useMemo(() => {
     if (!incentivized) return null;
 
@@ -78,19 +120,20 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
         <span className="feeRate">{SwapFeeTierInfoMap[feeTier].rateStr}</span>
       </TableColumn>
       {/* TVL */}
-      <TableColumn tdWidth={cellWidths.list[1].width}>
+      <TableColumn tdWidth={cellWidths.list[1].width} className={columnClassName}>
         <span className="liquidity">{tvl}</span>
+        {shouldShowPriceWarning && hasPriceInformational && <PriceWarning type="TVL" />}
       </TableColumn>
       {/* Volume (24h) */}
-      <TableColumn tdWidth={cellWidths.list[2].width}>
+      <TableColumn tdWidth={cellWidths.list[2].width} className={columnClassName}>
         <span className="volume">{volume24h}</span>
       </TableColumn>
       {/* Fee (24h) */}
-      <TableColumn tdWidth={cellWidths.list[3].width}>
+      <TableColumn tdWidth={cellWidths.list[3].width} className={columnClassName}>
         <span className="fees">{fees24h}</span>
       </TableColumn>
       {/* APR */}
-      <TableColumn tdWidth={cellWidths.list[4].width}>
+      <TableColumn tdWidth={cellWidths.list[4].width} className={columnClassName}>
         <span className="apr">{aprDisplay}</span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[5].width}>{rewardTokenLogos}</TableColumn>

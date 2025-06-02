@@ -2,6 +2,7 @@ import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
+import { priceWarningStyle } from "@layouts/leaderboard-layout/components/common/common.styles";
 
 export const ContentWrapper = styled.div`
   background-color: ${({ theme }) => theme.color.backgroundOpacity9};
@@ -410,11 +411,26 @@ export const SectionWrapper = styled.section`
       span {
         font-weight: 700 !important;
       }
-      svg {
+      .arrow-icon {
         width: 6px;
       }
       ${media.mobile} {
         margin-top: 6px;
+      }
+    }
+  }
+
+  .tvl-info {
+    display: flex;
+    .informational-price {
+      ${({ theme }) => priceWarningStyle(theme)}
+
+      strong {
+        color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22)};
+      }
+      svg {
+        width: 20px;
+        height: 20px;
       }
     }
   }

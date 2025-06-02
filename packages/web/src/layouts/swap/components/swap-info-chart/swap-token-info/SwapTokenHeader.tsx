@@ -1,6 +1,7 @@
 import React from "react";
 import dayjs from "dayjs";
 import { useTranslation } from "react-i18next";
+import { cx } from "@emotion/css";
 
 import { formatPrice } from "@utils/new-number-utils";
 import { useTheme } from "@emotion/react";
@@ -8,6 +9,8 @@ import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { LineGraphData } from "@components/common/line-graph/LineGraph";
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import useElementWidth from "@hooks/common/use-element-width";
+import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
+import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
 
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { SwapTokenHeaderWrapper } from "./SwapTokenHeader.styles";
@@ -15,6 +18,8 @@ import IconOpenLink from "@components/common/icons/IconOpenLink";
 import { nullish } from "@utils/nullish-utils";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { formatTokenPath } from "@utils/token-utils";
+
+import PriceWarning from "@components/common/price-warning/PriceWarning";
 
 interface TokenInfo {
   name: string;
@@ -26,14 +31,23 @@ interface TokenInfo {
 
 interface SwapTokenHeaderProps {
   tokenInfo: TokenInfo;
+  priceGradeType: TOKEN_PRICE_GRADE_TYPE;
   currentPrice: string | undefined;
   chartData?: LineGraphData;
   containerWidth: number;
 }
 
-const SwapTokenHeader = ({ tokenInfo, currentPrice, chartData, containerWidth }: SwapTokenHeaderProps) => {
+const SwapTokenHeader = ({
+  tokenInfo,
+  priceGradeType,
+  currentPrice,
+  chartData,
+  containerWidth,
+}: SwapTokenHeaderProps) => {
   const router = useCustomRouter();
   const elementId = React.useMemo(() => `${tokenInfo.name}`, [tokenInfo.name]);
+
+  const { priceStyle, shouldShowPriceWarning } = useTokenPriceInfo({ priceGradeType });
 
   const priceRef = React.useRef<HTMLDivElement>(null);
   const tokenNameRef = React.useRef<HTMLButtonElement>(null);
@@ -112,8 +126,9 @@ const SwapTokenHeader = ({ tokenInfo, currentPrice, chartData, containerWidth }:
       </div>
       <div className="right">
         <div className="token-price">
-          <div className="price" ref={priceRef}>
+          <div className={cx("price", priceStyle.className)} ref={priceRef}>
             {displayPrice}
+            {shouldShowPriceWarning && <PriceWarning type="PRICE" />}
           </div>
           <div className="blank" />
           <div className="date">{displayDate}</div>
