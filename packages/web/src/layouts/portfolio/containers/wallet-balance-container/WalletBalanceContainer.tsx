@@ -23,7 +23,7 @@ import { formatOtherPrice } from "@utils/new-number-utils";
 import { toUnitFormat } from "@utils/number-utils";
 import { isEmptyObject } from "@utils/validation-utils";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { convertPositionToDisplayFormat } from "@utils/position.utils";
+import { PositionConverter } from "@services/position";
 
 import AssetSendModal from "../../components/asset-send-modal/AssetSendModal";
 import WalletBalance from "../../components/wallet-balance/WalletBalance";
@@ -52,7 +52,7 @@ const WalletBalanceContainer: React.FC = () => {
     if (!positions || positions.length === 0) return [];
 
     const filteredPositions = positions.filter(isClaimablePosition);
-    return filteredPositions.map(convertPositionToDisplayFormat);
+    return PositionConverter.convertPositions(filteredPositions);
   }, [positions, isClaimablePosition]);
 
   const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);

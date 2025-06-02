@@ -5,7 +5,7 @@ import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { convertPositionToDisplayFormat } from "@utils/position.utils";
+import { PositionConverter } from "@services/position";
 
 import StakePosition from "../../components/stake-position/StakePosition";
 import { useStakePositionModal } from "@hooks/pool/ui/use-stake-position-modal";
@@ -33,9 +33,7 @@ const StakePositionContainer: React.FC = () => {
   const [checkedList, setCheckedList] = useState<number[]>(positionId ? [Number(positionId)] : []);
 
   const positionList: PoolPositionModel[] = useMemo(() => {
-    if (!allPosition) return [];
-
-    return allPosition.map(convertPositionToDisplayFormat);
+    return PositionConverter.convertPositions(allPosition);
   }, [allPosition]);
   // For this domain only show `closed = false` && `staked = false` position
   const unstakedPositions = useMemo(

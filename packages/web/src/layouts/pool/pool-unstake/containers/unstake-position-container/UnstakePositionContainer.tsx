@@ -3,7 +3,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { convertPositionToDisplayFormat } from "@utils/position.utils";
+import { PositionConverter } from "@services/position";
 
 import UnstakeLiquidity from "../../components/unstake-liquidity/UnstakeLiquidity";
 import { useUnstakePositionModal } from "@hooks/pool/ui/use-unstake-position-modal";
@@ -24,9 +24,7 @@ const UnstakeLiquidityContainer: React.FC = () => {
   });
 
   const positionList: PoolPositionModel[] = useMemo(() => {
-    if (!allPosition) return [];
-
-    return allPosition.map(convertPositionToDisplayFormat);
+    return PositionConverter.convertPositions(allPosition);
   }, [allPosition]);
 
   const [checkedList, setCheckedList] = useState<number[]>(positionId ? [Number(positionId)] : []);

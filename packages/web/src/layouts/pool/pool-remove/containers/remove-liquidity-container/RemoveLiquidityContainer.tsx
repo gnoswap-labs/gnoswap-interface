@@ -5,7 +5,7 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { convertPositionToDisplayFormat } from "@utils/position.utils";
+import { PositionConverter } from "@services/position";
 
 import RemoveLiquidity from "../../components/remove-liquidity/RemoveLiquidity";
 import { useRemovePositionModal } from "@hooks/pool/ui/use-remove-position-modal";
@@ -30,9 +30,7 @@ const RemoveLiquidityContainer: React.FC = () => {
   });
 
   const positionList: PoolPositionModel[] = useMemo(() => {
-    if (!allPosition) return [];
-
-    return allPosition.map(convertPositionToDisplayFormat);
+    return PositionConverter.convertPositions(allPosition);
   }, [allPosition]);
 
   const stakedPositions = useMemo(() => {

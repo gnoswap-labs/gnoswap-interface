@@ -13,7 +13,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { mapToDisplayRewardType } from "@utils/reward-utils";
-import { convertPositionToDisplayFormat } from "@utils/position.utils";
+import { PositionConverter } from "@services/position";
 
 import StakedPostionsTooltipContent from "./sateked-positions-tooltip/StakedPositinosTooltipContent";
 import WalletBalanceDetailInfo from "./wallet-balance-detail-info/WalletBalanceDetailInfo";
@@ -54,9 +54,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
   const { t } = useTranslation();
 
   const accountPositions: PoolPositionModel[] = useMemo(() => {
-    if (!positions) return [];
-
-    return positions.map(convertPositionToDisplayFormat);
+    return PositionConverter.convertPositions(positions);
   }, [positions]);
 
   const stakedPositions = useMemo(() => {
