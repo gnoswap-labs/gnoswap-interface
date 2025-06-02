@@ -4,17 +4,16 @@ import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
-import { initialDetailPool } from "@models/pool/pool-detail-model";
 import { useGetBinsByPath, useGetPoolDetailByPath } from "@query/pools";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useTokenData } from "@hooks/token/data/use-token-data";
+import { PoolConverter } from "@services/converters/pool";
 
 import PoolPairInformation from "../../components/pool-pair-information/PoolPairInformation";
 import { ZOOL_VALUES } from "@constants/graph.constant";
 import { checkGnotPath } from "@utils/common";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 interface PoolPairInformationContainerProps {
   address?: string | undefined;
@@ -31,7 +30,7 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
   const { getGnotPath } = useGnotToGnot();
   const poolPath = router.getPoolPath();
   const { isMobile } = useWindowSize();
-  const { data = initialDetailPool, isLoading: loading } = useGetPoolDetailByPath(poolPath as string, {
+  const { data, isLoading: loading } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
   });
   const { loading: loadingPosition } = usePositionData({
@@ -53,16 +52,20 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
     router.push(path);
   };
 
+  const convertedPool = useMemo(() => {
+    return PoolConverter.convertPoolModel(data);
+  }, [data]);
+
   const pool = useMemo(() => {
     const tokenAPriceGrade =
-      tokenPrices[checkGnotPath(data.tokenA.path || "")]?.priceGradeType || TOKEN_PRICE_GRADE_TYPE.NONE;
+      tokenPrices[checkGnotPath(convertedPool.tokenA.path || "")]?.priceGradeType || TOKEN_PRICE_GRADE_TYPE.NONE;
     const tokenBPriceGrade =
-      tokenPrices[checkGnotPath(data.tokenB.path || "")]?.priceGradeType || TOKEN_PRICE_GRADE_TYPE.NONE;
+      tokenPrices[checkGnotPath(convertedPool.tokenB.path || "")]?.priceGradeType || TOKEN_PRICE_GRADE_TYPE.NONE;
 
-    const tokenA = data.tokenA;
-    const tokenB = data.tokenB;
+    const tokenA = convertedPool.tokenA;
+    const tokenB = convertedPool.tokenB;
     return {
-      ...data,
+      ...convertedPool,
       tokenA: {
         ...tokenA,
         path: getGnotPath(tokenA).path,
@@ -79,8 +82,6 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
       },
       tokenAPriceGrade,
       tokenBPriceGrade,
-      tokenABalance: makeDisplayTokenAmount(tokenA, data.tokenABalance) ?? 0,
-      tokenBBalance: makeDisplayTokenAmount(tokenA, data.tokenBBalance) ?? 0,
     };
   }, [data, bins, tokenPrices]);
 
