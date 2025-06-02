@@ -19,7 +19,6 @@ import { formatDisplayTime, getTimeDiffInSeconds } from "@common/utils/date-util
 import { formatPrice, formatTokenAmount, removeTrailingZeros } from "@utils/new-number-utils";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { useTokenImage } from "@hooks/token/data/use-token-image";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 import {
   TableHeader,
@@ -214,16 +213,6 @@ const TransactionListTableRow = ({ breakpoint, data, isNewTransaction }: Transac
     return removeTrailingZeros(formatted);
   }, []);
 
-  const displayFromTokenAmount = React.useMemo(() => {
-    const amount = makeDisplayTokenAmount(data.fromToken, data.fromTokenAmount);
-    return formatSwapAmount(amount);
-  }, [data.fromToken, data.fromTokenAmount]);
-
-  const displayToTokenAmount = React.useMemo(() => {
-    const amount = makeDisplayTokenAmount(data.toToken, data.toTokenAmount);
-    return formatSwapAmount(amount);
-  }, [data.toToken, data.toTokenAmount]);
-
   return (
     <TransactionListTableRowWrapper className={cx({ highlight: isNewTransaction })}>
       <TableColumn className="left" tdWidth={widths[0]}>
@@ -243,12 +232,12 @@ const TransactionListTableRow = ({ breakpoint, data, isNewTransaction }: Transac
       <TableColumn tdWidth={isMobile ? widths[1] : widths[2]}>
         <TokenPairWrapper>
           <div className="token-amount">
-            <span>{displayFromTokenAmount}</span>
+            <span>{formatSwapAmount(data.fromTokenAmount)}</span>
             <MissingLogo symbol={data.fromToken.symbol} width={14} url={getTokenImage(data.fromToken.path) || ""} />
           </div>
           <IconRightArrow className="arrow" />
           <div className="token-amount">
-            <span>{displayToTokenAmount}</span>
+            <span>{formatSwapAmount(data.toTokenAmount)}</span>
             <MissingLogo symbol={data.toToken.symbol} width={14} url={getTokenImage(data.toToken.path) || ""} />
           </div>
         </TokenPairWrapper>

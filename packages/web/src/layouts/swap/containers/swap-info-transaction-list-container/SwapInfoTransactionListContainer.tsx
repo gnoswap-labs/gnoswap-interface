@@ -5,6 +5,7 @@ import SwapInfoTransactionList from "@layouts/swap/components/swap-info-transact
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { SwapState } from "@states/index";
 import { useGetSwapHistory } from "@query/swap";
+import { SwapConverter } from "@services/converters/swap";
 
 export const TABLE_HEAD = {
   TIME: "Dashboard:onchainActi.col.time",
@@ -42,12 +43,16 @@ const SwapInfoTransactionListContainer = () => {
     enabled: isTokenPairSelected,
   });
 
+  const swapHistoryList = React.useMemo(() => {
+    return SwapConverter.convertSwapHistory(swapHistory);
+  }, [swapHistory]);
+
   if (!swapHistory || swapHistory?.length === 0) {
     return null;
   }
 
   return (
-    <SwapInfoTransactionList breakpoint={breakpoint} swapHistory={swapHistory} tokenPairParams={tokenPairParams} />
+    <SwapInfoTransactionList breakpoint={breakpoint} swapHistory={swapHistoryList} tokenPairParams={tokenPairParams} />
   );
 };
 
