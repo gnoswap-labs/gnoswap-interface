@@ -1,7 +1,7 @@
+import BigNumber from "bignumber.js";
+
 import { TokenModel } from "@models/token/token-model";
 import { OnchainToken } from "@repositories/activity/responses/activity-responses";
-
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 /**
  * Utility class responsible for converting token amounts
@@ -25,10 +25,28 @@ export class AmountConverter {
   static convertSingle(token: TokenModel | OnchainToken, rawAmount: string | number): string {
     if (!token || rawAmount == null) return "0";
 
-    if (typeof rawAmount === "number" && !isFinite(rawAmount)) {
-      return "0"; // Infinity, -Infinity, NaN processing
-    }
+    try {
+      const amount = new BigNumber(rawAmount);
 
-    return String(makeDisplayTokenAmount(token, rawAmount) ?? 0);
+      if (!amount.isFinite()) {
+        return "0";
+      }
+
+      const rawDecimals = token?.decimals || 0;
+      const normalizedDecimals = Math.abs(Math.floor(rawDecimals));
+
+      const divisor = new BigNumber(10).pow(normalizedDecimals);
+      const result = amount.dividedBy(divisor);
+
+      return result.toFixed();
+    } catch (error) {
+      console.warn("AmountConverter: Failed to convert token amount", {
+        tokenSymbol: token?.symbol,
+        rawAmount,
+        decimals: token?.decimals,
+        error: error instanceof Error ? error.message : error,
+      });
+      return "0";
+    }
   }
 }
