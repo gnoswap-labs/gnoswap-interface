@@ -1,6 +1,8 @@
 import { AmountConverter } from "@services/converters/common/amount";
 
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { IPositionHistoryModel } from "@models/position/position-history-model";
+import { TokenModel } from "@models/token/token-model";
 
 /**
  * Utility class responsible for converting pool position amounts
@@ -12,13 +14,6 @@ export class PositionConverter {
    *
    * @param positions - array of pool positions to convert (can be null/undefined)
    * @returns array of positions with converted amounts (empty array if input is invalid)
-   *
-   * @example
-   * // Convert multiple positions
-   * const displayPositions = PositionConverter.convertPositions(rawPositions);
-   *
-   * // Handle null/undefined input safely
-   * const safePositions = PositionConverter.convertPositions(null); // returns []
    */
   static convertPositions(positions: PoolPositionModel[] | null | undefined): PoolPositionModel[] {
     if (!positions || !Array.isArray(positions)) return [];
@@ -56,5 +51,32 @@ export class PositionConverter {
           totalAmount: AmountConverter.convertSingle(reward.rewardToken, reward.totalAmount || 0),
         })) || [],
     };
+  }
+
+  /**
+   * Convert raw amounts in position history items to display format
+   * Converts amountA and amountB using provided token models and returns as numbers
+   *
+   * @param historyList - array of position history items to convert (can be null/undefined)
+   * @param tokenA - token model for amountA conversion
+   * @param tokenB - token model for amountB conversion
+   * @returns array of history items with converted amounts (empty array if input is invalid)
+   */
+  static convertPositionHistory(
+    historyList: IPositionHistoryModel[] | null | undefined,
+    tokenA: TokenModel | null | undefined,
+    tokenB: TokenModel | null | undefined,
+  ): IPositionHistoryModel[] {
+    if (!historyList || !tokenA || !tokenB) return [];
+
+    return [...historyList].map((history: IPositionHistoryModel) => {
+      if (!history) return history;
+
+      return {
+        ...history,
+        amountA: Number(AmountConverter.convertSingle(tokenA, history.amountA)),
+        amountB: Number(AmountConverter.convertSingle(tokenB, history.amountB)),
+      };
+    });
   }
 }

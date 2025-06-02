@@ -6,7 +6,7 @@ import { useLoading } from "@hooks/common/use-loading";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { useGetPositionHistory } from "@query/positions";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { PositionConverter } from "@services/converters/position";
 
 import PositionHistoryList from "../../components/position-history-list/PositionHistoryList";
 
@@ -34,16 +34,11 @@ const PositionHistoryContainer: React.FC<PositionHistoryContainerProps> = ({ pos
   const { data: historyList = [], refetch, isFetched, isLoading } = useGetPositionHistory(position?.lpTokenId);
 
   const positionHistoryList: IPositionHistoryModel[] = React.useMemo(() => {
-    if (!historyList) return [];
+    const tokenA = position.pool.tokenA;
+    const tokenB = position.pool.tokenB;
 
-    return historyList.map((history: IPositionHistoryModel) => {
-      return {
-        ...history,
-        amountA: makeDisplayTokenAmount(position.pool.tokenA, history.amountA) ?? 0,
-        amountB: makeDisplayTokenAmount(position.pool.tokenB, history.amountB) ?? 0,
-      };
-    });
-  }, [historyList]);
+    return PositionConverter.convertPositionHistory(historyList, tokenA, tokenB);
+  }, [historyList, position.pool.tokenA, position.pool.tokenB]);
 
   useEffect(() => {
     refetch();
