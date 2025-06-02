@@ -69,7 +69,9 @@ export const priceWarningStyle = (theme: Theme) => css`
   gap: 2px;
 
   color: ${theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22};
-  path {
-    fill: ${theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22};
+  .price-warning-icon {
+    path {
+      fill: ${theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22};
+    }
   }
 `;

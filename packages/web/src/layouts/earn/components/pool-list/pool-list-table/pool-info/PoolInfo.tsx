@@ -63,18 +63,21 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
 
   const shouldShowPriceWarning = tokenAShouldShowPriceWarning || tokenBShouldShowPriceWarning;
 
-  const hasData = (value: string) => value !== "-" && Boolean(value);
-  const hasTvl = React.useMemo(() => hasData(tvl), [tvl]);
-  const hasVolume = React.useMemo(() => hasData(volume24h), [volume24h]);
-  const hasFees = React.useMemo(() => hasData(fees24h), [fees24h]);
-  const hasApr = React.useMemo(() => hasData(apr), [apr]);
+  const hasPriceInformational = React.useMemo(() => {
+    if (tvl === "-" || tvl === "$0" || !Boolean(tvl)) return false;
+    return true;
+  }, [tvl]);
 
-  const getColumnClassName = (hasValue: boolean) => {
+  const getColumnClassName = () => {
+    if (!hasPriceInformational) return "";
+
     return cx({
-      [tokenAPriceStyle.className || ""]: tokenAShouldShowPriceWarning && hasValue,
-      [tokenBPriceStyle.className || ""]: tokenBShouldShowPriceWarning && hasValue,
+      [tokenAPriceStyle.className || ""]: tokenAShouldShowPriceWarning,
+      [tokenBPriceStyle.className || ""]: tokenBShouldShowPriceWarning,
     });
   };
+
+  const columnClassName = getColumnClassName();
 
   const rewardTokenLogos = useMemo(() => {
     if (!incentivized) return null;
@@ -117,20 +120,20 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
         <span className="feeRate">{SwapFeeTierInfoMap[feeTier].rateStr}</span>
       </TableColumn>
       {/* TVL */}
-      <TableColumn tdWidth={cellWidths.list[1].width} className={getColumnClassName(hasTvl)}>
+      <TableColumn tdWidth={cellWidths.list[1].width} className={columnClassName}>
         <span className="liquidity">{tvl}</span>
-        {shouldShowPriceWarning && hasTvl && <PriceWarning type="TVL" />}
+        {shouldShowPriceWarning && hasPriceInformational && <PriceWarning type="TVL" />}
       </TableColumn>
       {/* Volume (24h) */}
-      <TableColumn tdWidth={cellWidths.list[2].width} className={getColumnClassName(hasVolume)}>
+      <TableColumn tdWidth={cellWidths.list[2].width} className={columnClassName}>
         <span className="volume">{volume24h}</span>
       </TableColumn>
       {/* Fee (24h) */}
-      <TableColumn tdWidth={cellWidths.list[3].width} className={getColumnClassName(hasFees)}>
+      <TableColumn tdWidth={cellWidths.list[3].width} className={columnClassName}>
         <span className="fees">{fees24h}</span>
       </TableColumn>
       {/* APR */}
-      <TableColumn tdWidth={cellWidths.list[4].width} className={getColumnClassName(hasApr)}>
+      <TableColumn tdWidth={cellWidths.list[4].width} className={columnClassName}>
         <span className="apr">{aprDisplay}</span>
       </TableColumn>
       <TableColumn tdWidth={cellWidths.list[5].width}>{rewardTokenLogos}</TableColumn>

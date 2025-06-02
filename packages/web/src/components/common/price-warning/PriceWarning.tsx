@@ -47,7 +47,7 @@ const PriceWarning = ({ type }: PriceWarningProps) => {
         }
         placement="top"
       >
-        <IconPriceWarning />
+        <IconPriceWarning className="price-warning-icon" />
       </Tooltip>
     </div>
   );
