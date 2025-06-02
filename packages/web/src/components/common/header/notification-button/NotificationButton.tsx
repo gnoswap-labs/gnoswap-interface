@@ -9,6 +9,9 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetNotifications } from "@query/common";
 import { CommonState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
+import { TransactionGroupsType } from "@models/notification";
+import { TransactionModel } from "@models/account/account-history-model";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 import NotificationList from "./notification-list/NotificationList";
 
@@ -32,12 +35,32 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
 
   const { data: transactionGroups, refetch, isFetched } = useGetNotifications();
 
+  const txGroups: TransactionGroupsType[] = useMemo(() => {
+    if (!transactionGroups) return [];
+
+    return [...transactionGroups].map((transactionGroup: TransactionGroupsType) => {
+      return {
+        ...transactionGroup,
+        txs: transactionGroup.txs.map((tx: TransactionModel) => {
+          return {
+            ...tx,
+            rawValue: {
+              ...tx.rawValue,
+              tokenAAmount: String(makeDisplayTokenAmount(tx.rawValue.tokenA, tx.rawValue.tokenAAmount) ?? 0),
+              tokenBAmount: String(makeDisplayTokenAmount(tx.rawValue.tokenB, tx.rawValue.tokenBAmount) ?? 0),
+            },
+          };
+        }),
+      };
+    });
+  }, [transactionGroups]);
+
   const txs = useMemo(() => {
-    return (transactionGroups ?? []).reduce((pre, next) => {
+    return (txGroups ?? []).reduce((pre, next) => {
       const allTxs = next.txs.flatMap(x => x.txHash);
       return [...pre, ...allTxs];
     }, [] as string[]);
-  }, [transactionGroups]);
+  }, [txGroups]);
 
   const handleClearAll = async () => {
     try {
@@ -68,11 +91,11 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
         }}
       >
         <IconAlert className="notification-icon" />
-        {showIcon && isFetched && transactionGroups?.length !== 0 ? <div className="point-unread" /> : null}
+        {showIcon && isFetched && txGroups?.length !== 0 ? <div className="point-unread" /> : null}
       </AlertButton>
       {toggle.notification && (
         <NotificationList
-          txsGroupsInformation={transactionGroups ?? []}
+          txsGroupsInformation={txGroups ?? []}
           onListToggle={() => {
             onListToggle();
           }}
