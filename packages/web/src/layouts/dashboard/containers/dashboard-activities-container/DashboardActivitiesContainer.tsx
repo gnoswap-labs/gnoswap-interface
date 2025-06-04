@@ -6,6 +6,8 @@ import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGetDashboardActivities } from "@query/dashboard/use-get-dashboard-activities";
 import { ActivityType } from "@repositories/dashboard";
+import { ActivityData } from "@repositories/activity/responses/activity-responses";
+import { ExploreDashboardConverter } from "@services/converters/explore-dashboard";
 
 import { ACTIVITY_TABLE_HEAD, SortOption } from "../../components/activity-list/activity-list-table/ActivityListTable";
 import ActivityList from "../../components/activity-list/ActivityList";
@@ -20,6 +22,10 @@ const DashboardActivitiesContainer: React.FC = () => {
   const { isLoading: isLoadingCommon } = useLoading();
 
   const { isFetched, error, data: activities = [] } = useGetDashboardActivities(activityType);
+
+  const activityList: ActivityData[] = React.useMemo(() => {
+    return ExploreDashboardConverter.convertDashboardActivityList(activities);
+  }, [activities]);
 
   const changeActivityType = useCallback(({ key: newType }: { display: string; key: string }) => {
     const activityType = Object.values(ActivityType).find(type => type === newType) || ActivityType.ALL;
@@ -56,7 +62,7 @@ const DashboardActivitiesContainer: React.FC = () => {
 
   return (
     <ActivityList
-      activities={activities ?? []}
+      activities={activityList}
       isFetched={isFetched && !isLoadingCommon}
       error={error}
       activityType={activityType}

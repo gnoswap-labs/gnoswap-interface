@@ -2,6 +2,8 @@ import React, { useCallback, useMemo, useState } from "react";
 
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { PositionConverter } from "@services/converters/position";
 
 import UnstakeLiquidity from "../../components/unstake-liquidity/UnstakeLiquidity";
 import { useUnstakePositionModal } from "@hooks/pool/ui/use-unstake-position-modal";
@@ -20,10 +22,15 @@ const UnstakeLiquidityContainer: React.FC = () => {
       enabled: !!poolPath,
     },
   });
+
+  const positionList: PoolPositionModel[] = useMemo(() => {
+    return PositionConverter.convertPositions(allPosition);
+  }, [allPosition]);
+
   const [checkedList, setCheckedList] = useState<number[]>(positionId ? [Number(positionId)] : []);
   const [isGetWGNOT, setIsGetWGNOT] = useState(false);
 
-  const stakedPositions = useMemo(() => allPosition.filter(item => item.staked), [allPosition]);
+  const stakedPositions = useMemo(() => positionList.filter(item => item.staked), [positionList]);
 
   const { openModal } = useUnstakePositionModal({
     positions: stakedPositions,

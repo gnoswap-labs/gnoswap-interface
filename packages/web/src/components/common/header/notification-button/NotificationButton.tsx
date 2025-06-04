@@ -9,6 +9,8 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetNotifications } from "@query/common";
 import { CommonState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
+import { TransactionGroupsType } from "@models/notification";
+import { NotificationConverter } from "@services/converters/notification";
 
 import NotificationList from "./notification-list/NotificationList";
 
@@ -32,12 +34,16 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
 
   const { data: transactionGroups, refetch, isFetched } = useGetNotifications();
 
+  const txGroups: TransactionGroupsType[] = useMemo(() => {
+    return NotificationConverter.convertTransactionGroups(transactionGroups);
+  }, [transactionGroups]);
+
   const txs = useMemo(() => {
-    return (transactionGroups ?? []).reduce((pre, next) => {
+    return (txGroups ?? []).reduce((pre, next) => {
       const allTxs = next.txs.flatMap(x => x.txHash);
       return [...pre, ...allTxs];
     }, [] as string[]);
-  }, [transactionGroups]);
+  }, [txGroups]);
 
   const handleClearAll = async () => {
     try {
@@ -68,11 +74,11 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
         }}
       >
         <IconAlert className="notification-icon" />
-        {showIcon && isFetched && transactionGroups?.length !== 0 ? <div className="point-unread" /> : null}
+        {showIcon && isFetched && txGroups?.length !== 0 ? <div className="point-unread" /> : null}
       </AlertButton>
       {toggle.notification && (
         <NotificationList
-          txsGroupsInformation={transactionGroups ?? []}
+          txsGroupsInformation={txGroups ?? []}
           onListToggle={() => {
             onListToggle();
           }}

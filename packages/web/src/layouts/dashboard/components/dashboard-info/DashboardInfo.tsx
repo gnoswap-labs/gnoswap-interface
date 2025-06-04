@@ -22,21 +22,23 @@ const DashboardInfo: React.FC<DashboardInfoProps> = ({
   governanceOverviewInfo,
   breakpoint,
   loading,
-}) => (
-  <DashboardInfoWrapper>
-    {!loading && <DashboardInfoTitle dashboardTokenInfo={dashboardTokenInfo} breakpoint={breakpoint} />}
-    {loading && (
-      <div className="loading-spining">
-        <span css={pulseSkeletonStyle({ w: "400px", mobileWidth: "150" })} />
-      </div>
-    )}
-    <DashboardOverview
-      supplyOverviewInfo={supplyOverviewInfo}
-      governanceOverviewInfo={governanceOverviewInfo}
-      breakpoint={breakpoint}
-      loading={loading}
-    />
-  </DashboardInfoWrapper>
-);
+}) => {
+  return (
+    <DashboardInfoWrapper>
+      {!loading && <DashboardInfoTitle dashboardTokenInfo={dashboardTokenInfo} breakpoint={breakpoint} />}
+      {loading && (
+        <div className="loading-spining">
+          <span css={pulseSkeletonStyle({ w: "400px", mobileWidth: "150" })} />
+        </div>
+      )}
+      <DashboardOverview
+        supplyOverviewInfo={supplyOverviewInfo}
+        governanceOverviewInfo={governanceOverviewInfo}
+        breakpoint={breakpoint}
+        loading={loading}
+      />
+    </DashboardInfoWrapper>
+  );
+};
 
 export default DashboardInfo;

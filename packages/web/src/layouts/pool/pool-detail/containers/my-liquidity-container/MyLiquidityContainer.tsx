@@ -18,6 +18,7 @@ import { useTransactionEventStore } from "@hooks/common/use-transaction-event-st
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import MyLiquidity from "../../components/my-liquidity/MyLiquidity";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { PositionConverter } from "@services/converters/position";
 
 interface MyLiquidityContainerProps {
   address?: string | undefined;
@@ -58,12 +59,11 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address, is
     return Boolean(address) && address !== account?.address;
   }, [account?.address, address]);
 
-  const accountPositions = useMemo(() => {
-    if (!address || !poolPath) {
-      return [];
-    }
+  const accountPositions: PoolPositionModel[] = useMemo(() => {
+    if (!address || !poolPath) return [];
 
-    return positions.filter(position => position.poolPath === poolPath);
+    const filteredPositions = positions.filter(position => position.poolPath === poolPath);
+    return PositionConverter.convertPositions(filteredPositions);
   }, [address, poolPath, positions]);
 
   const visiblePositions = useMemo(() => {

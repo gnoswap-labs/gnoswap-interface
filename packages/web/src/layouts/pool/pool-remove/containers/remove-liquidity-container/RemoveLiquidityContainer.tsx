@@ -4,6 +4,8 @@ import BigNumber from "bignumber.js";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { PositionConverter } from "@services/converters/position";
 
 import RemoveLiquidity from "../../components/remove-liquidity/RemoveLiquidity";
 import { useRemovePositionModal } from "@hooks/pool/ui/use-remove-position-modal";
@@ -16,7 +18,7 @@ const RemoveLiquidityContainer: React.FC = () => {
   const positionId = router.getPositionId();
   const [checkedList, setCheckedList] = useState<number[]>(positionId ? [Number(positionId)] : []);
   const {
-    positions,
+    positions: allPosition,
     loading: isLoadingPositions,
     refetch: refetchPositions,
   } = usePositionData({
@@ -27,15 +29,19 @@ const RemoveLiquidityContainer: React.FC = () => {
     },
   });
 
+  const positionList: PoolPositionModel[] = useMemo(() => {
+    return PositionConverter.convertPositions(allPosition);
+  }, [allPosition]);
+
   const stakedPositions = useMemo(() => {
     if (!connected) return [];
-    return positions.filter(position => position.poolPath === poolPath && position.staked);
-  }, [positions, connected]);
+    return positionList.filter(position => position.poolPath === poolPath && position.staked);
+  }, [positionList, connected]);
 
   const unstakedPositions = useMemo(() => {
     if (!connected) return [];
-    return positions.filter(position => position.poolPath === poolPath && !position.staked);
-  }, [positions, connected, poolPath]);
+    return positionList.filter(position => position.poolPath === poolPath && !position.staked);
+  }, [positionList, connected, poolPath]);
 
   const selectedPositions = useMemo(() => {
     return unstakedPositions.filter(position => checkedList.includes(position.id));
@@ -51,7 +57,7 @@ const RemoveLiquidityContainer: React.FC = () => {
   }, [selectedPositions]);
 
   const { openModal } = useRemovePositionModal({
-    positions: positions,
+    positions: positionList,
     positionLiquidities,
     selectedIds: checkedList,
     isGetWGNOT,

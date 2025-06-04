@@ -34,6 +34,7 @@ import { getRepositionAmountsByPriceRange, getRepositionAmountsWithSwapSimulatio
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
 import { useReferral } from "@hooks/common/use-referral";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -226,8 +227,8 @@ export const useRepositionHandle = () => {
     }
 
     return {
-      amountA: selectedPosition.tokenABalance,
-      amountB: selectedPosition.tokenBBalance,
+      amountA: String(makeDisplayTokenAmount(selectedPosition.pool.tokenA, selectedPosition.tokenABalance) ?? 0),
+      amountB: String(makeDisplayTokenAmount(selectedPosition.pool.tokenB, selectedPosition.tokenBBalance) ?? 0),
     };
   }, [selectedPosition]);
 

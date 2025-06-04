@@ -4,7 +4,9 @@ import { ValuesType } from "utility-types";
 
 import { useLoading } from "@hooks/common/use-loading";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { useGetPositionHistory } from "@query/positions";
+import { PositionConverter } from "@services/converters/position";
 
 import PositionHistoryList from "../../components/position-history-list/PositionHistoryList";
 
@@ -31,13 +33,20 @@ const PositionHistoryContainer: React.FC<PositionHistoryContainerProps> = ({ pos
   const { isLoading: isLoadingCommon } = useLoading();
   const { data: historyList = [], refetch, isFetched, isLoading } = useGetPositionHistory(position?.lpTokenId);
 
+  const positionHistoryList: IPositionHistoryModel[] = React.useMemo(() => {
+    const tokenA = position.pool.tokenA;
+    const tokenB = position.pool.tokenB;
+
+    return PositionConverter.convertPositionHistory(historyList, tokenA, tokenB);
+  }, [historyList, position.pool.tokenA, position.pool.tokenB]);
+
   useEffect(() => {
     refetch();
   }, []);
 
   return (
     <PositionHistoryList
-      list={historyList.filter(item => item.amountA || item.amountB)}
+      list={positionHistoryList.filter(item => item.amountA || item.amountB)}
       isLoading={isLoading || isLoadingCommon}
       isFetched={isFetched}
       breakpoint={breakpoint}

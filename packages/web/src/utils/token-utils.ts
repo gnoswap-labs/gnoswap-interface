@@ -5,6 +5,7 @@ import { formatOtherPrice } from "./new-number-utils";
 import { roundDownDecimalNumber } from "./regex";
 import { STATIC_TEXT } from "@common/values";
 import { RewardType } from "@constants/option.constant";
+import { OnchainToken } from "@repositories/activity/responses/activity-responses";
 
 export interface RewardTokenModelWithMultipleTypes extends Omit<RewardTokenModel, "rewardType"> {
   rewardType: RewardType | RewardType[];
@@ -19,7 +20,7 @@ export function makeRawTokenAmount(token: TokenModel, amount: string | number) {
 }
 
 export function makeDisplayTokenAmount(
-  token: TokenModel,
+  token: TokenModel | OnchainToken,
   amount: bigint | string | number,
   options?: { decimalsWithoutRounding?: number },
 ) {

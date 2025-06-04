@@ -13,6 +13,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { mapToDisplayRewardType } from "@utils/reward-utils";
+import { PositionConverter } from "@services/converters/position";
 
 import StakedPostionsTooltipContent from "./sateked-positions-tooltip/StakedPositinosTooltipContent";
 import WalletBalanceDetailInfo from "./wallet-balance-detail-info/WalletBalanceDetailInfo";
@@ -52,10 +53,14 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const stakedPositions = useMemo(() => {
-    if (!positions || positions.length === 0) return [];
+  const accountPositions: PoolPositionModel[] = useMemo(() => {
+    return PositionConverter.convertPositions(positions);
+  }, [positions]);
 
-    return positions
+  const stakedPositions = useMemo(() => {
+    if (!accountPositions || accountPositions.length === 0) return [];
+
+    return accountPositions
       .filter(item => item.staked === true)
       .map(item => ({
         lpId: item.lpTokenId,
@@ -63,7 +68,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         stakedDate: item.stakedAt,
         tokenUri: item.tokenUri,
       }));
-  }, [positions]);
+  }, [accountPositions]);
 
   const { claimedRewardInfo, claimableRewardInfo } = useMemo((): {
     claimedRewardInfo: { [key in DisplayRewardType]: PositionRewardForTooltip[] };
@@ -84,7 +89,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
       [key in DisplayRewardType]: { [key in string]: PositionRewardForTooltip };
     } = initRewardTypeMap();
 
-    if (!positions || positions.length === 0) {
+    if (!accountPositions || accountPositions.length === 0) {
       return {
         claimedRewardInfo: {
           SWAP_FEE: [],
@@ -115,7 +120,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
     };
 
     const processClaimableRewards = () => {
-      positions
+      accountPositions
         .flatMap(position => position.rewards)
         .forEach(reward => {
           const rewardType = reward.rewardToken.rewardType as RewardType;
@@ -164,7 +169,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
     };
 
     const processClaimedRewards = () => {
-      positions
+      accountPositions
         .flatMap(position => position.claimedRewards)
         .forEach(claimed => {
           const rewardType = claimed.rewardToken.rewardType as RewardType;
@@ -229,7 +234,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         NONE: Object.values(claimableMap.NONE).filter(reward => reward.amount && reward.amount > 0),
       },
     };
-  }, [positions, tokenPrices]);
+  }, [accountPositions, tokenPrices]);
 
   const hasInfo = (data: {
     [key in DisplayRewardType]: PositionRewardForTooltip[];

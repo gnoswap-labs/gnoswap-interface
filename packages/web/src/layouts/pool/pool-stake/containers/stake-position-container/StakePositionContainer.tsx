@@ -4,6 +4,8 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetPoolDetailByPath } from "@query/pools";
+import { PoolPositionModel } from "@models/position/pool-position-model";
+import { PositionConverter } from "@services/converters/position";
 
 import StakePosition from "../../components/stake-position/StakePosition";
 import { useStakePositionModal } from "@hooks/pool/ui/use-stake-position-modal";
@@ -14,7 +16,7 @@ const StakePositionContainer: React.FC = () => {
   const positionId = router.getPositionId();
   const { connected, connectAccount } = useWallet();
   const {
-    positions: allPositionData,
+    positions: allPosition,
     isFetchedPosition: isFetched,
     loading: isLoadingAllPositions,
     refetch: refetchPositions,
@@ -29,10 +31,14 @@ const StakePositionContainer: React.FC = () => {
     enabled: !!poolPath,
   });
   const [checkedList, setCheckedList] = useState<number[]>(positionId ? [Number(positionId)] : []);
+
+  const positionList: PoolPositionModel[] = useMemo(() => {
+    return PositionConverter.convertPositions(allPosition);
+  }, [allPosition]);
   // For this domain only show `closed = false` && `staked = false` position
   const unstakedPositions = useMemo(
-    () => allPositionData.filter(position => position.poolPath === poolPath && !position.staked),
-    [allPositionData],
+    () => positionList.filter(position => position.poolPath === poolPath && !position.staked),
+    [positionList],
   );
 
   const { openModal } = useStakePositionModal({

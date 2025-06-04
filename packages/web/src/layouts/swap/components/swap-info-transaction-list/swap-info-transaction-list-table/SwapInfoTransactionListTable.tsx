@@ -202,7 +202,9 @@ const TransactionListTableRow = ({ breakpoint, data, isNewTransaction }: Transac
     };
   }, [txDate, data.time]);
 
-  const formatSwapAmount = React.useCallback((amount: string) => {
+  const formatSwapAmount = React.useCallback((amount: string | number | null | undefined) => {
+    if (!amount) return "0";
+
     const formatted = formatTokenAmount(amount, {
       decimals: 2,
       minLimit: 0.01,
