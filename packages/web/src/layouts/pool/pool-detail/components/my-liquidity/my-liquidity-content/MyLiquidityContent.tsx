@@ -24,6 +24,7 @@ import { formatOtherPrice, formatPoolPairAmount } from "@utils/new-number-utils"
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { mapToDisplayRewardType } from "@utils/reward-utils";
 import { DEFAULT_TOKEN_PRICE_RATIO } from "@common/values";
+import { sortTokensByPoolOrder } from "@utils/pool-utils";
 
 import { DailyEarningTooltipContent, PositionAPRInfo } from "../stat-tooltip-contents/DailyEarningTooltipContent";
 
@@ -184,6 +185,22 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         }
       });
 
+    if (positionData) {
+      Object.keys(infoMap).forEach(key => {
+        const rewardType = key as DisplayRewardType;
+        const rewardsArray = Object.values(infoMap[rewardType]);
+        if (rewardsArray.length > 0) {
+          const sortedRewards = sortTokensByPoolOrder(rewardsArray, positionData.tokenA.path, positionData.tokenB.path);
+
+          infoMap[rewardType] = {};
+
+          sortedRewards.forEach(reward => {
+            infoMap[rewardType][reward.token.priceID] = reward;
+          });
+        }
+      });
+    }
+
     return {
       SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
       INTERNAL_REWARD: Object.values(infoMap["INTERNAL_REWARD"]),
@@ -291,6 +308,20 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         const multipliedApr = categorizedMap[positionKey].apr;
         categorizedMap[positionKey].apr = multipliedApr ? Number(BigInt(multipliedApr) / totalLiquidity) / 1000 : null;
       });
+
+      if (positionData) {
+        const rewardType = typeKey as DisplayRewardType;
+        const rewardsArray = Object.values(categorizedMap);
+        if (rewardsArray.length > 0) {
+          const sortedRewards = sortTokensByPoolOrder(rewardsArray, positionData.tokenA.path, positionData.tokenB.path);
+
+          infoMap[rewardType] = {};
+
+          sortedRewards.forEach(reward => {
+            infoMap[rewardType][reward.token.priceID] = reward;
+          });
+        }
+      }
     });
 
     return {
@@ -821,7 +852,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
     const claimableUsdComp =
       isShowClaimableRewardInfo || isShowUnclaimableRewardInfo ? (
-        <Tooltip placement="top" FloatingContent={<RewardTooltipContent rewardInfo={claimableRewardInfo} />}>
+        <Tooltip
+          placement="top"
+          FloatingContent={<RewardTooltipContent rewardInfo={claimableRewardInfo} sortByUsd={false} />}
+        >
           <span className="content-value">{usd}</span>
         </Tooltip>
       ) : (

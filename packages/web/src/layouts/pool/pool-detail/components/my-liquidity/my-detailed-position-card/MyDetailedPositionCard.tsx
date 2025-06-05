@@ -38,7 +38,7 @@ import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { isClaimableReward, mapToDisplayRewardType } from "@utils/reward-utils";
-import { checkGnotPath } from "@utils/common";
+import { sortTokensByPoolOrder } from "@utils/pool-utils";
 
 import { DailyEarningTooltipContent, PositionAPRInfo } from "../stat-tooltip-contents/DailyEarningTooltipContent";
 import { BalanceTooltipContent, PositionBalanceInfo } from "./BalanceTooltipContent";
@@ -202,22 +202,6 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     return `(${depositStr})`;
   }, [depositRatio]);
 
-  const sortTokensByPoolOrder = useCallback(
-    <T extends { token: { path: string } }>(items: T[]) => {
-      return [...items].sort((a, b) => {
-        // Make tokens matching tokenA come first
-        if (a.token.path === checkGnotPath(tokenA.path)) return -1;
-        if (b.token.path === checkGnotPath(tokenA.path)) return 1;
-        // Then make tokens matching tokenB come next
-        if (a.token.path === checkGnotPath(tokenB.path)) return -1;
-        if (b.token.path === checkGnotPath(tokenB.path)) return 1;
-        // Other tokens
-        return 0;
-      });
-    },
-    [tokenA.path, tokenB.path],
-  );
-
   const balances = useMemo((): PositionBalanceInfo[] => {
     return [
       {
@@ -331,12 +315,12 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     Object.keys(totalRewardInfo).forEach(key => {
       const rewardType = key as DisplayRewardType;
       if (totalRewardInfo[rewardType].length > 0) {
-        totalRewardInfo[rewardType] = sortTokensByPoolOrder(totalRewardInfo[rewardType]);
+        totalRewardInfo[rewardType] = sortTokensByPoolOrder(totalRewardInfo[rewardType], tokenA.path, tokenB.path);
       }
     });
 
     return totalRewardInfo;
-  }, [getTokenPrice, isDisplay, position.rewards, tokenPrices]);
+  }, [getTokenPrice, isDisplay, position.rewards, tokenPrices, tokenA.path, tokenB.path]);
 
   const totalRewardUSD = useMemo(() => {
     if (!isDisplay) {
@@ -487,12 +471,12 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     Object.keys(aprRewardInfo).forEach(key => {
       const rewardType = key as DisplayRewardType;
       if (aprRewardInfo[rewardType].length > 0) {
-        aprRewardInfo[rewardType] = sortTokensByPoolOrder(aprRewardInfo[rewardType]);
+        aprRewardInfo[rewardType] = sortTokensByPoolOrder(aprRewardInfo[rewardType], tokenA.path, tokenB.path);
       }
     });
 
     return aprRewardInfo;
-  }, [position.rewards, tokenPrices]);
+  }, [position.rewards, tokenPrices, tokenA.path, tokenB.path]);
 
   const stringPrice = useMemo(() => {
     const price = tickToPrice(position?.pool?.currentTick);

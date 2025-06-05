@@ -2,6 +2,7 @@ import { SwapFeeTierInfoMap, SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from
 import { TokenModel } from "@models/token/token-model";
 import { tickToPriceStr } from "./swap-utils";
 import { sortTokenPaths } from "./sort-utils";
+import { checkGnotPath } from "./common";
 
 const maxTicks = Object.values(SwapFeeTierMaxPriceRangeMap).map(range => range.maxTick);
 const minTicks = Object.values(SwapFeeTierMaxPriceRangeMap).map(range => range.maxTick);
@@ -47,4 +48,28 @@ export function checkPoolStakingRewards(incentivized?: boolean) {
 
 export function isOrderedTokenPaths(tokenAPath: string, tokenBPath: string): boolean {
   return [tokenAPath, tokenBPath].sort(sortTokenPaths)?.[0] === tokenAPath;
+}
+
+export function sortTokensByPoolOrder<T extends { token: { path: string } }>(
+  items: T[],
+  tokenAPath: string,
+  tokenBPath: string,
+): T[] {
+  return [...items].sort((a, b) => {
+    const itemACheckedPath = checkGnotPath(a.token.path);
+    const itemBCheckedPath = checkGnotPath(b.token.path);
+    const tokenACheckedPath = checkGnotPath(tokenAPath);
+    const tokenBCheckedPath = checkGnotPath(tokenBPath);
+
+    // Make tokens matching tokenA come first
+    if (itemACheckedPath === tokenACheckedPath) return -1;
+    if (itemBCheckedPath === tokenACheckedPath) return 1;
+
+    // Then make tokens matching tokenB come next
+    if (itemACheckedPath === tokenBCheckedPath) return -1;
+    if (itemBCheckedPath === tokenBCheckedPath) return 1;
+
+    // Other tokens
+    return 0;
+  });
 }
