@@ -38,6 +38,7 @@ import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { isClaimableReward, mapToDisplayRewardType } from "@utils/reward-utils";
+import { checkGnotPath } from "@utils/common";
 
 import { DailyEarningTooltipContent, PositionAPRInfo } from "../stat-tooltip-contents/DailyEarningTooltipContent";
 import { BalanceTooltipContent, PositionBalanceInfo } from "./BalanceTooltipContent";
@@ -201,6 +202,22 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     return `(${depositStr})`;
   }, [depositRatio]);
 
+  const sortTokensByPoolOrder = useCallback(
+    <T extends { token: { path: string } }>(items: T[]) => {
+      return [...items].sort((a, b) => {
+        // Make tokens matching tokenA come first
+        if (a.token.path === checkGnotPath(tokenA.path)) return -1;
+        if (b.token.path === checkGnotPath(tokenA.path)) return 1;
+        // Then make tokens matching tokenB come next
+        if (a.token.path === checkGnotPath(tokenB.path)) return -1;
+        if (b.token.path === checkGnotPath(tokenB.path)) return 1;
+        // Other tokens
+        return 0;
+      });
+    },
+    [tokenA.path, tokenB.path],
+  );
+
   const balances = useMemo((): PositionBalanceInfo[] => {
     return [
       {
@@ -310,6 +327,13 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         NONE: [],
       },
     );
+
+    Object.keys(totalRewardInfo).forEach(key => {
+      const rewardType = key as DisplayRewardType;
+      if (totalRewardInfo[rewardType].length > 0) {
+        totalRewardInfo[rewardType] = sortTokensByPoolOrder(totalRewardInfo[rewardType]);
+      }
+    });
 
     return totalRewardInfo;
   }, [getTokenPrice, isDisplay, position.rewards, tokenPrices]);
@@ -459,6 +483,14 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         NONE: [],
       },
     );
+
+    Object.keys(aprRewardInfo).forEach(key => {
+      const rewardType = key as DisplayRewardType;
+      if (aprRewardInfo[rewardType].length > 0) {
+        aprRewardInfo[rewardType] = sortTokensByPoolOrder(aprRewardInfo[rewardType]);
+      }
+    });
+
     return aprRewardInfo;
   }, [position.rewards, tokenPrices]);
 
@@ -897,7 +929,9 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
             <Tooltip
               placement="top"
               forcedClose={!isClaimable}
-              FloatingContent={<div>{totalRewardInfo && <RewardTooltipContent rewardInfo={totalRewardInfo} />}</div>}
+              FloatingContent={
+                <div>{totalRewardInfo && <RewardTooltipContent rewardInfo={totalRewardInfo} sortByUsd={false} />}</div>
+              }
             >
               <span className={cx("content-text", { claimable: isClaimable })}>{totalRewardUSD}</span>
             </Tooltip>
