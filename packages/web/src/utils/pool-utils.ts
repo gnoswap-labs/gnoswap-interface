@@ -55,21 +55,20 @@ export function sortTokensByPoolOrder<T extends { token: { path: string } }>(
   tokenAPath: string,
   tokenBPath: string,
 ): T[] {
+  const tokenACheckedPath = checkGnotPath(tokenAPath);
+  const tokenBCheckedPath = checkGnotPath(tokenBPath);
+
   return [...items].sort((a, b) => {
     const itemACheckedPath = checkGnotPath(a.token.path);
     const itemBCheckedPath = checkGnotPath(b.token.path);
-    const tokenACheckedPath = checkGnotPath(tokenAPath);
-    const tokenBCheckedPath = checkGnotPath(tokenBPath);
 
-    // Make tokens matching tokenA come first
-    if (itemACheckedPath === tokenACheckedPath) return -1;
-    if (itemBCheckedPath === tokenACheckedPath) return 1;
+    const groupA = itemACheckedPath === tokenACheckedPath ? 0 : itemACheckedPath === tokenBCheckedPath ? 1 : 2;
+    const groupB = itemBCheckedPath === tokenACheckedPath ? 0 : itemBCheckedPath === tokenBCheckedPath ? 1 : 2;
 
-    // Then make tokens matching tokenB come next
-    if (itemACheckedPath === tokenBCheckedPath) return -1;
-    if (itemBCheckedPath === tokenBCheckedPath) return 1;
+    if (groupA !== groupB) {
+      return groupA - groupB;
+    }
 
-    // Other tokens
-    return 0;
+    return itemACheckedPath.localeCompare(itemBCheckedPath);
   });
 }
