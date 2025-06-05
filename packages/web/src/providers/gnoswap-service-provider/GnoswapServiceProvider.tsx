@@ -26,6 +26,7 @@ import { ACCOUNT_SESSION_INFO_KEY, GNOSWAP_SESSION_ID_KEY, GNOWSWAP_CONNECTED_KE
 import { CommonState, WalletState } from "@states/index";
 import { SwapRepository } from "@repositories/swap/swap-repository";
 import { SwapRepositoryImpl } from "@repositories/swap/swap-repository-impl";
+import { TransactionService, TransactionServiceImpl } from "@services/transaction";
 
 interface GnoswapContextProps {
   initialized: boolean;
@@ -46,6 +47,7 @@ interface GnoswapContextProps {
   statusRepository: StatusRepository;
   launchpadRepository: LaunchpadRepository;
   localStorageClient: WebStorageClient;
+  transactionService: TransactionService;
 }
 
 const getSessionId = () => {
@@ -210,6 +212,10 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
     return new LaunchpadRepositoryImpl(gnoswapApiClient, walletClient, rpcProvider);
   }, [gnoswapApiClient, walletClient, rpcProvider]);
 
+  const transactionService = useMemo(() => {
+    return new TransactionServiceImpl(walletClient);
+  }, [walletClient]);
+
   useEffect(() => {
     if (window) {
       setLocalStorageClient(WebStorageClient.createLocalStorageClient());
@@ -238,6 +244,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
         statusRepository,
         launchpadRepository,
         localStorageClient,
+        transactionService,
       }}
     >
       {loadedProviders && children}
