@@ -82,24 +82,28 @@ export function sortTokensByPoolOrder<T extends { token: { path: string } }>(
 export function sortDisplayRewards<T extends { token: TokenModel }>(
   infoMap: { [key in DisplayRewardType]: { [key in string]: T } },
   positionData: PoolModel,
-) {
-  if (!positionData) return infoMap;
+): { [key in DisplayRewardType]: { [key in string]: T } } {
+  if (!positionData?.tokenA?.path || !positionData?.tokenB?.path) {
+    return infoMap;
+  }
+
+  const sortedInfoMap = { ...infoMap };
 
   Object.keys(infoMap).forEach(key => {
     const rewardType = key as DisplayRewardType;
-    const rewardsArray = Object.values(infoMap[rewardType]);
+    const rewardsArray = Object.values(sortedInfoMap[rewardType]);
 
     if (rewardsArray.length > 0) {
       const sortedRewards = sortTokensByPoolOrder(rewardsArray, positionData.tokenA.path, positionData.tokenB.path);
 
-      infoMap[rewardType] = {};
+      sortedInfoMap[rewardType] = {};
 
       sortedRewards.forEach(reward => {
         const priceID = reward.token.priceID || reward.token.path || "unknown-token-priceID";
-        infoMap[rewardType][priceID] = reward;
+        sortedInfoMap[rewardType][priceID] = reward;
       });
     }
   });
 
-  return infoMap;
+  return sortedInfoMap;
 }
