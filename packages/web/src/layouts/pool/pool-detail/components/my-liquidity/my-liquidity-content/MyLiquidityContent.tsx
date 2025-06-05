@@ -24,7 +24,7 @@ import { formatOtherPrice, formatPoolPairAmount } from "@utils/new-number-utils"
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { mapToDisplayRewardType } from "@utils/reward-utils";
 import { DEFAULT_TOKEN_PRICE_RATIO } from "@common/values";
-import { sortTokensByPoolOrder } from "@utils/pool-utils";
+import { sortDisplayRewards } from "@utils/pool-utils";
 
 import { DailyEarningTooltipContent, PositionAPRInfo } from "../stat-tooltip-contents/DailyEarningTooltipContent";
 
@@ -185,27 +185,13 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         }
       });
 
-    if (positionData) {
-      Object.keys(infoMap).forEach(key => {
-        const rewardType = key as DisplayRewardType;
-        const rewardsArray = Object.values(infoMap[rewardType]);
-        if (rewardsArray.length > 0) {
-          const sortedRewards = sortTokensByPoolOrder(rewardsArray, positionData.tokenA.path, positionData.tokenB.path);
-
-          infoMap[rewardType] = {};
-
-          sortedRewards.forEach(reward => {
-            infoMap[rewardType][reward.token.priceID] = reward;
-          });
-        }
-      });
-    }
+    const sortedInfoMap = sortDisplayRewards(infoMap, positionData);
 
     return {
-      SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
-      INTERNAL_REWARD: Object.values(infoMap["INTERNAL_REWARD"]),
-      EXTERNAL_REWARD: Object.values(infoMap["EXTERNAL_REWARD"]),
-      NONE: Object.values(infoMap["NONE"]),
+      SWAP_FEE: Object.values(sortedInfoMap["SWAP_FEE"]),
+      INTERNAL_REWARD: Object.values(sortedInfoMap["INTERNAL_REWARD"]),
+      EXTERNAL_REWARD: Object.values(sortedInfoMap["EXTERNAL_REWARD"]),
+      NONE: Object.values(sortedInfoMap["NONE"]),
     };
   }, [canShowData, positions, tokenPrices]);
 
@@ -308,27 +294,15 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         const multipliedApr = categorizedMap[positionKey].apr;
         categorizedMap[positionKey].apr = multipliedApr ? Number(BigInt(multipliedApr) / totalLiquidity) / 1000 : null;
       });
-
-      if (positionData) {
-        const rewardType = typeKey as DisplayRewardType;
-        const rewardsArray = Object.values(categorizedMap);
-        if (rewardsArray.length > 0) {
-          const sortedRewards = sortTokensByPoolOrder(rewardsArray, positionData.tokenA.path, positionData.tokenB.path);
-
-          infoMap[rewardType] = {};
-
-          sortedRewards.forEach(reward => {
-            infoMap[rewardType][reward.token.priceID] = reward;
-          });
-        }
-      }
     });
 
+    const sortedInfoMap = sortDisplayRewards(infoMap, positionData);
+
     return {
-      SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
-      INTERNAL_REWARD: Object.values(infoMap["INTERNAL_REWARD"]),
-      EXTERNAL_REWARD: Object.values(infoMap["EXTERNAL_REWARD"]),
-      NONE: Object.values(infoMap["NONE"]),
+      SWAP_FEE: Object.values(sortedInfoMap["SWAP_FEE"]),
+      INTERNAL_REWARD: Object.values(sortedInfoMap["INTERNAL_REWARD"]),
+      EXTERNAL_REWARD: Object.values(sortedInfoMap["EXTERNAL_REWARD"]),
+      NONE: Object.values(sortedInfoMap["NONE"]),
     };
   }, [canShowData, positions, tokenPrices]);
 

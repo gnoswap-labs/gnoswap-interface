@@ -1,8 +1,14 @@
-import { SwapFeeTierInfoMap, SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
+import {
+  DisplayRewardType,
+  SwapFeeTierInfoMap,
+  SwapFeeTierMaxPriceRangeMap,
+  SwapFeeTierType,
+} from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 import { tickToPriceStr } from "./swap-utils";
 import { sortTokenPaths } from "./sort-utils";
 import { checkGnotPath } from "./common";
+import { PoolModel } from "@models/pool/pool-model";
 
 const maxTicks = Object.values(SwapFeeTierMaxPriceRangeMap).map(range => range.maxTick);
 const minTicks = Object.values(SwapFeeTierMaxPriceRangeMap).map(range => range.maxTick);
@@ -71,4 +77,29 @@ export function sortTokensByPoolOrder<T extends { token: { path: string } }>(
 
     return itemACheckedPath.localeCompare(itemBCheckedPath);
   });
+}
+
+export function sortDisplayRewards<T extends { token: TokenModel }>(
+  infoMap: { [key in DisplayRewardType]: { [key in string]: T } },
+  positionData: PoolModel,
+) {
+  if (!positionData) return infoMap;
+
+  Object.keys(infoMap).forEach(key => {
+    const rewardType = key as DisplayRewardType;
+    const rewardsArray = Object.values(infoMap[rewardType]);
+
+    if (rewardsArray.length > 0) {
+      const sortedRewards = sortTokensByPoolOrder(rewardsArray, positionData.tokenA.path, positionData.tokenB.path);
+
+      infoMap[rewardType] = {};
+
+      sortedRewards.forEach(reward => {
+        const priceID = reward.token.priceID || reward.token.path || "unknown-token-priceID";
+        infoMap[rewardType][priceID] = reward;
+      });
+    }
+  });
+
+  return infoMap;
 }
