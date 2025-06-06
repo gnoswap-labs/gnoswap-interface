@@ -1,7 +1,14 @@
-import { SwapFeeTierInfoMap, SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
+import {
+  DisplayRewardType,
+  SwapFeeTierInfoMap,
+  SwapFeeTierMaxPriceRangeMap,
+  SwapFeeTierType,
+} from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 import { tickToPriceStr } from "./swap-utils";
 import { sortTokenPaths } from "./sort-utils";
+import { checkGnotPath } from "./common";
+import { PoolModel } from "@models/pool/pool-model";
 
 const maxTicks = Object.values(SwapFeeTierMaxPriceRangeMap).map(range => range.maxTick);
 const minTicks = Object.values(SwapFeeTierMaxPriceRangeMap).map(range => range.maxTick);
@@ -47,4 +54,56 @@ export function checkPoolStakingRewards(incentivized?: boolean) {
 
 export function isOrderedTokenPaths(tokenAPath: string, tokenBPath: string): boolean {
   return [tokenAPath, tokenBPath].sort(sortTokenPaths)?.[0] === tokenAPath;
+}
+
+export function sortTokensByPoolOrder<T extends { token: { path: string } }>(
+  items: T[],
+  tokenAPath: string,
+  tokenBPath: string,
+): T[] {
+  const tokenACheckedPath = checkGnotPath(tokenAPath);
+  const tokenBCheckedPath = checkGnotPath(tokenBPath);
+
+  return [...items].sort((a, b) => {
+    const itemACheckedPath = checkGnotPath(a.token.path);
+    const itemBCheckedPath = checkGnotPath(b.token.path);
+
+    const groupA = itemACheckedPath === tokenACheckedPath ? 0 : itemACheckedPath === tokenBCheckedPath ? 1 : 2;
+    const groupB = itemBCheckedPath === tokenACheckedPath ? 0 : itemBCheckedPath === tokenBCheckedPath ? 1 : 2;
+
+    if (groupA !== groupB) {
+      return groupA - groupB;
+    }
+
+    return itemACheckedPath.localeCompare(itemBCheckedPath);
+  });
+}
+
+export function sortDisplayRewards<T extends { token: TokenModel }>(
+  infoMap: { [key in DisplayRewardType]: { [key in string]: T } },
+  positionData: PoolModel,
+): { [key in DisplayRewardType]: { [key in string]: T } } {
+  if (!positionData?.tokenA?.path || !positionData?.tokenB?.path) {
+    return infoMap;
+  }
+
+  const sortedInfoMap = { ...infoMap };
+
+  Object.keys(infoMap).forEach(key => {
+    const rewardType = key as DisplayRewardType;
+    const rewardsArray = Object.values(sortedInfoMap[rewardType]);
+
+    if (rewardsArray.length > 0) {
+      const sortedRewards = sortTokensByPoolOrder(rewardsArray, positionData.tokenA.path, positionData.tokenB.path);
+
+      sortedInfoMap[rewardType] = {};
+
+      sortedRewards.forEach(reward => {
+        const priceID = reward.token.priceID || reward.token.path || "unknown-token-priceID";
+        sortedInfoMap[rewardType][priceID] = reward;
+      });
+    }
+  });
+
+  return sortedInfoMap;
 }

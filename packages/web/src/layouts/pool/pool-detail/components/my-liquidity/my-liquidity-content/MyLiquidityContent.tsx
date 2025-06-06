@@ -24,6 +24,7 @@ import { formatOtherPrice, formatPoolPairAmount } from "@utils/new-number-utils"
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { mapToDisplayRewardType } from "@utils/reward-utils";
 import { DEFAULT_TOKEN_PRICE_RATIO } from "@common/values";
+import { sortDisplayRewards } from "@utils/pool-utils";
 
 import { DailyEarningTooltipContent, PositionAPRInfo } from "../stat-tooltip-contents/DailyEarningTooltipContent";
 
@@ -184,11 +185,13 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         }
       });
 
+    const sortedInfoMap = sortDisplayRewards(infoMap, positionData);
+
     return {
-      SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
-      INTERNAL_REWARD: Object.values(infoMap["INTERNAL_REWARD"]),
-      EXTERNAL_REWARD: Object.values(infoMap["EXTERNAL_REWARD"]),
-      NONE: Object.values(infoMap["NONE"]),
+      SWAP_FEE: Object.values(sortedInfoMap["SWAP_FEE"]),
+      INTERNAL_REWARD: Object.values(sortedInfoMap["INTERNAL_REWARD"]),
+      EXTERNAL_REWARD: Object.values(sortedInfoMap["EXTERNAL_REWARD"]),
+      NONE: Object.values(sortedInfoMap["NONE"]),
     };
   }, [canShowData, positions, tokenPrices]);
 
@@ -293,11 +296,13 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       });
     });
 
+    const sortedInfoMap = sortDisplayRewards(infoMap, positionData);
+
     return {
-      SWAP_FEE: Object.values(infoMap["SWAP_FEE"]),
-      INTERNAL_REWARD: Object.values(infoMap["INTERNAL_REWARD"]),
-      EXTERNAL_REWARD: Object.values(infoMap["EXTERNAL_REWARD"]),
-      NONE: Object.values(infoMap["NONE"]),
+      SWAP_FEE: Object.values(sortedInfoMap["SWAP_FEE"]),
+      INTERNAL_REWARD: Object.values(sortedInfoMap["INTERNAL_REWARD"]),
+      EXTERNAL_REWARD: Object.values(sortedInfoMap["EXTERNAL_REWARD"]),
+      NONE: Object.values(sortedInfoMap["NONE"]),
     };
   }, [canShowData, positions, tokenPrices]);
 
@@ -821,7 +826,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
     const claimableUsdComp =
       isShowClaimableRewardInfo || isShowUnclaimableRewardInfo ? (
-        <Tooltip placement="top" FloatingContent={<RewardTooltipContent rewardInfo={claimableRewardInfo} />}>
+        <Tooltip
+          placement="top"
+          FloatingContent={<RewardTooltipContent rewardInfo={claimableRewardInfo} sortByUsd={false} />}
+        >
           <span className="content-value">{usd}</span>
         </Tooltip>
       ) : (

@@ -21,6 +21,7 @@ export interface PositionRewardForTooltip {
 
 export interface RewardTooltipContentProps {
   rewardInfo: { [key in DisplayRewardType]: PositionRewardForTooltip[] } | null;
+  sortByUsd?: boolean;
 }
 
 interface RewardCategory {
@@ -29,13 +30,18 @@ interface RewardCategory {
   totalUSD: string;
 }
 
-const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({ rewardInfo }) => {
+const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({ rewardInfo, sortByUsd = true }) => {
   const { getGnotPath } = useGnotToGnot();
   const { t } = useTranslation();
 
-  const sortByUsd = React.useCallback(
-    (rewards: PositionRewardForTooltip[]) => [...rewards].sort((a, b) => (b.usd ?? 0) - (a.usd ?? 0)),
-    [],
+  const sortByUsdFn = React.useCallback(
+    (rewards: PositionRewardForTooltip[]) => {
+      if (sortByUsd) {
+        return [...rewards].sort((a, b) => (b.usd ?? 0) - (a.usd ?? 0));
+      }
+      return rewards;
+    },
+    [sortByUsd],
   );
 
   const calculateTotalUsd = React.useCallback((rewards: PositionRewardForTooltip[] | null): string => {
@@ -55,7 +61,7 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({ rewardInfo 
         return { rewards: null, totalUSD: "-" };
       }
 
-      const sortedRewards = sortByUsd([...rewardInfo[type]]);
+      const sortedRewards = sortByUsdFn([...rewardInfo[type]]);
       return {
         rewards: sortedRewards,
         totalUSD: calculateTotalUsd(sortedRewards),

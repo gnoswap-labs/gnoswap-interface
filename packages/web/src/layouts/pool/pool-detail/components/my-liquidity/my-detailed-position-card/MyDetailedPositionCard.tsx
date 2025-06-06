@@ -38,6 +38,7 @@ import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { isClaimableReward, mapToDisplayRewardType } from "@utils/reward-utils";
+import { sortTokensByPoolOrder } from "@utils/pool-utils";
 
 import { DailyEarningTooltipContent, PositionAPRInfo } from "../stat-tooltip-contents/DailyEarningTooltipContent";
 import { BalanceTooltipContent, PositionBalanceInfo } from "./BalanceTooltipContent";
@@ -311,8 +312,15 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       },
     );
 
+    Object.keys(totalRewardInfo).forEach(key => {
+      const rewardType = key as DisplayRewardType;
+      if (totalRewardInfo[rewardType].length > 0) {
+        totalRewardInfo[rewardType] = sortTokensByPoolOrder(totalRewardInfo[rewardType], tokenA.path, tokenB.path);
+      }
+    });
+
     return totalRewardInfo;
-  }, [getTokenPrice, isDisplay, position.rewards, tokenPrices]);
+  }, [getTokenPrice, isDisplay, position.rewards, tokenPrices, tokenA.path, tokenB.path]);
 
   const totalRewardUSD = useMemo(() => {
     if (!isDisplay) {
@@ -459,8 +467,16 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         NONE: [],
       },
     );
+
+    Object.keys(aprRewardInfo).forEach(key => {
+      const rewardType = key as DisplayRewardType;
+      if (aprRewardInfo[rewardType].length > 0) {
+        aprRewardInfo[rewardType] = sortTokensByPoolOrder(aprRewardInfo[rewardType], tokenA.path, tokenB.path);
+      }
+    });
+
     return aprRewardInfo;
-  }, [position.rewards, tokenPrices]);
+  }, [position.rewards, tokenPrices, tokenA.path, tokenB.path]);
 
   const stringPrice = useMemo(() => {
     const price = tickToPrice(position?.pool?.currentTick);
@@ -897,7 +913,9 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
             <Tooltip
               placement="top"
               forcedClose={!isClaimable}
-              FloatingContent={<div>{totalRewardInfo && <RewardTooltipContent rewardInfo={totalRewardInfo} />}</div>}
+              FloatingContent={
+                <div>{totalRewardInfo && <RewardTooltipContent rewardInfo={totalRewardInfo} sortByUsd={false} />}</div>
+              }
             >
               <span className={cx("content-text", { claimable: isClaimable })}>{totalRewardUSD}</span>
             </Tooltip>
