@@ -1,6 +1,15 @@
+import { Provider, Tx, TxSignature } from "@gnolang/tm2-js-client";
+import { Document } from "src/types/transaction-messages.types";
 import { WalletResponse } from "./wallet-response";
 
 export interface WalletTransactionMethod {
+  sign: (
+    provider: Provider,
+    document: Document,
+  ) => Promise<{
+    signed: Tx;
+    signature: TxSignature[];
+  }>;
   sendTransaction: (
     transaction: SendTransactionRequestParam,
   ) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;

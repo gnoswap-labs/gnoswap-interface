@@ -79,7 +79,7 @@ export const WUGNOT_TOKEN: TokenModel = {
 
 export const LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN.symbol || "";
 
-export const GasToken: TokenModel = {
+export const GasToken: TokenModel & { denom: string } = {
   ...GNOT_TOKEN,
   denom: "ugnot",
 };

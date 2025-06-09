@@ -215,8 +215,8 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
   }, [gnoswapApiClient, walletClient, rpcProvider]);
 
   const transactionService = useMemo(() => {
-    return new TransactionServiceImpl(walletClient);
-  }, [walletClient]);
+    return new TransactionServiceImpl(rpcProvider, walletClient);
+  }, [rpcProvider, walletClient]);
 
   const transactionGasService = useMemo(() => {
     return new TransactionGasServiceImpl(rpcProvider, walletClient);
