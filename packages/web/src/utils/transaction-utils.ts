@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { eventBus } from "./event-bus";
 import { WalletClient } from "@common/clients/wallet-client";
 
@@ -12,6 +13,8 @@ import { DEFAULT_GAS_WANTED } from "@common/values";
 import { Document } from "src/types/transaction-messages.types";
 
 import { createDocument } from "./messages.utils";
+import { Tx } from "@gnolang/tm2-js-client";
+import { TransactionService } from "@services/transaction";
 
 export const TX_EVENTS = {
   SHOW_MODAL: "show-approve-modal",
@@ -240,3 +243,30 @@ export const getSendAmount = (
   if (isWrappedGnotPath(tokenBWrappedPath)) return tokenBAmountRaw;
   return null;
 };
+
+const DEFAULT_GAS_WANTED = 2_000_000_000;
+const MINIMUM_GAS_PRICE = 0.001 as const;
+
+export function makeGasInfoBy(
+  gasUsed: number | null | undefined,
+  gasPrice: number | null | undefined,
+): { gasWanted: number; gasFee: number } {
+  const gasFeeBN = BigNumber(gasUsed || 1000).multipliedBy(gasPrice || MINIMUM_GAS_PRICE);
+
+  return {
+    gasWanted: Number(DEFAULT_GAS_WANTED),
+    gasFee: Number(gasFeeBN.toFixed(0, BigNumber.ROUND_UP)),
+  };
+}
+
+export async function makeEstimateGasTransaction(
+  document: Document | null | undefined,
+  transactionService: TransactionService | null,
+  gasUsed: number,
+  gasPrice: number | null,
+): Promise<Tx | null> {
+  if (!document) return null;
+
+  const { gasFee, gasWanted } = makeGasInfoBy(gasUsed, gasPrice);
+  if (!transactionService || !gasFee || !gasWanted) return null;
+}
