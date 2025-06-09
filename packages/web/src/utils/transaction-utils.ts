@@ -146,36 +146,48 @@ export const withTransactionGuard = async <T>(
   transaction: SendTransactionRequestParam,
   executeTransaction: (updatedTransaction?: SendTransactionRequestParam) => Promise<WalletResponse<T>>,
 ): Promise<WalletResponse<T>> => {
-  if (!walletClient) {
-    throw new Error("Wallet client is not initialized");
-  }
-
-  if (walletClient.getWalletType() === "SOCIAL_WALLET") {
-    const document = await generateTransactionDataDocument(walletClient, transaction);
-    const approved = await showTransactionApprovalModal(document);
-
-    if (approved === false) {
-      return {
-        code: 4000,
-        data: null,
-        message: "The transaction has been rejected by the user.",
-        status: "failure",
-        type: "TRANSACTION_REJECTED",
-      };
+  try {
+    if (!walletClient) {
+      throw new Error("Wallet client is not initialized");
     }
 
-    const updatedTransaction = {
-      ...transaction,
-      memo: approved.memo,
+    const document = await generateTransactionDataDocument(walletClient, transaction);
+
+    if (walletClient.getWalletType() === "SOCIAL_WALLET") {
+      const approved = await showTransactionApprovalModal(document);
+
+      if (approved === false) {
+        return {
+          code: 4000,
+          data: null,
+          message: "The transaction has been rejected by the user.",
+          status: "failure",
+          type: "TRANSACTION_REJECTED",
+        };
+      }
+
+      const updatedTransaction = {
+        ...transaction,
+        memo: approved.memo,
+      };
+
+      return await executeTransaction(updatedTransaction);
+    }
+
+    // Handle locked wallet state for Adena v1.15.0+ auto-lock compatibility
+    const SITE_NAME = "Gnoswap";
+    await walletClient.addEstablishedSite(SITE_NAME);
+    return await executeTransaction(transaction);
+  } catch (error) {
+    console.error("Transaction guard error:", error);
+    return {
+      code: 5000,
+      data: null,
+      message: error instanceof Error ? error.message : "Unknown transaction error occurred",
+      status: "failure",
+      type: "TRANSACTION_ERROR",
     };
-
-    return executeTransaction(updatedTransaction);
   }
-
-  // Handle locked wallet state for Adena v1.15.0+ auto-lock compatibility
-  const SITE_NAME = "Gnoswap";
-  await walletClient.addEstablishedSite(SITE_NAME);
-  return executeTransaction(transaction);
 };
 
 /**
