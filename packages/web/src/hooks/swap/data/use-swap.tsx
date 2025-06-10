@@ -12,6 +12,11 @@ import useDebounce from "@hooks/common/use-debounce";
 import { useAtomValue, useStore } from "jotai";
 import { SwapState } from "@states/index";
 import { useReferral } from "@hooks/common/use-referral";
+import { useGetGasPrice } from "@hooks/gas";
+import { makeExactInSwapRouteMessageWithApproves } from "@repositories/swap-router/swap-router.message";
+import { getGRC20Allowance } from "@common/clients/gno-provider";
+import { TransactionMessage } from "@common/clients/wallet-client/protocols";
+import { Document } from "src/types/transaction-messages.types";
 
 interface UseSwapProps {
   tokenA: TokenModel | null;
@@ -26,9 +31,10 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
 
   const store = useStore();
   const { account } = useWallet();
-  const { swapRouterRepository } = useGnoswapContext();
+  const { transactionService, swapRouterRepository, rpcProvider } = useGnoswapContext();
   const swapSummaryInfo = useAtomValue(SwapState.swapConfirmModalState);
   const { tokenAmountLimit: currentTokenAmountLimit } = swapSummaryInfo;
+  const { data: gasPrice } = useGetGasPrice();
 
   const SWAP_AMOUNT_DEBOUNCE_TIME_MS = 500;
   const [swapAmount, setSwapAmount] = useState<number | null>(null);
@@ -36,7 +42,6 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
   const [estimatedLiquidityMax, setEstimatedLiquidityMax] = useState<number | null>(null);
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeoutRef = useRef<NodeJS.Timeout>();
-
   const debouncedSwapAmount = useMemo(() => {
     if (!swapAmount || swapAmount === 0) {
       return swapAmount;
@@ -273,6 +278,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + 60 * 5,
           referrerAddress: currentReferralAddress,
+          gasPrice: gasPrice ?? 0,
         });
       }
 
@@ -287,6 +293,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + 60 * 5,
           referrerAddress: currentReferralAddress,
+          gasPrice: gasPrice ?? 0,
         });
       }
     },
@@ -306,6 +313,89 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       getCurrentReferralAddress,
     ],
   );
+
+  const target = useMemo(() => {
+    const currentReferralAddress = getCurrentReferralAddress();
+
+    const tokenAmount =
+      direction === "EXACT_IN" ? Number(debouncedSwapAmount) : Number(debouncedSwapAmount) * exactOutPadding;
+
+    return {
+      inputToken: tokenA,
+      outputToken: tokenB,
+      tokenAmount,
+      estimatedRoutes: estimatedRoutes,
+      slippage: slippage,
+      originAmount: estimatedSwapResult?.originAmount || 0,
+      tokenAmountLimit: tokenAmountLimit,
+      deadline: Math.floor(Date.now() / 1000) + 60 * 5,
+      referrerAddress: currentReferralAddress,
+      gasPrice: gasPrice ?? 0,
+    };
+  }, [
+    direction,
+    tokenA,
+    tokenB,
+    debouncedSwapAmount,
+    estimatedRoutes,
+    slippage,
+    estimatedSwapResult?.originAmount,
+    tokenAmountLimit,
+    gasPrice,
+  ]);
+
+  const [transactionMessage, setTransactionMessage] = useState<TransactionMessage[] | null>(null);
+  const [, setTransactionDocument] = useState<Document | null>(null);
+
+  useEffect(() => {
+    if (!rpcProvider || !target.inputToken || !target.outputToken || !account?.address) {
+      setTransactionMessage(null);
+      return;
+    }
+
+    const fetchTransactionMessage = async () => {
+      try {
+        const message = await makeExactInSwapRouteMessageWithApproves(
+          {
+            ...target,
+            inputToken: target.inputToken as TokenModel,
+            outputToken: target.outputToken as TokenModel,
+            estimatedRoutes: target.estimatedRoutes || [],
+            caller: account.address,
+          },
+          async (packagePath, owner, spender) => {
+            try {
+              const allowance = await getGRC20Allowance(rpcProvider, packagePath, owner, spender);
+              return allowance;
+            } catch (error) {
+              console.error("Failed to fetch allowance:", error);
+              return 0;
+            }
+          },
+        );
+        setTransactionMessage(message);
+      } catch (error) {
+        console.error("트랜잭션 메시지 생성 오류:", error);
+        setTransactionMessage(null);
+      }
+    };
+
+    fetchTransactionMessage();
+    initTransactionData();
+  }, [account, target]);
+
+  const initTransactionData = async (): Promise<boolean> => {
+    if (!transactionMessage) {
+      return false;
+    }
+    try {
+      const document = await transactionService.createDocument({ messages: transactionMessage });
+      setTransactionDocument(document);
+      return true;
+    } catch {
+      return false;
+    }
+  };
 
   useEffect(() => {
     if (estimatedRoutes === null || !tokenA || !tokenB) return;

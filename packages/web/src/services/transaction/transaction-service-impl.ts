@@ -9,6 +9,9 @@ import { CommonError } from "@common/errors";
 import { EncodeTxSignature } from "./types";
 
 import { GasToken } from "@common/values/token-constant";
+import { mappedDocumentMessagesWithCaller } from "@utils/messages.utils";
+import { isContractMessage } from "@common/clients/wallet-client/protocols";
+import { makeMsgCallMessage, makeMsgSendMessage } from "@adena-wallet/sdk";
 
 export class TransactionServiceImpl implements TransactionService {
   private rpcProvider: GnoProvider | null;
@@ -20,7 +23,7 @@ export class TransactionServiceImpl implements TransactionService {
   }
 
   public createDocument = async ({
-    // messages,
+    messages,
     // gasFee,
     // gasWanted,
     memo,
@@ -33,8 +36,18 @@ export class TransactionServiceImpl implements TransactionService {
     const accountNumber = accountInfo?.data?.accountNumber ?? 0;
     const accountSequence = accountInfo?.data?.sequence ?? 0;
 
+    const processedMsgs = messages.map(message => {
+      if (isContractMessage(message)) {
+        return makeMsgCallMessage({
+          ...message,
+          args: message.args?.map(arg => `${arg}`) || null,
+        });
+      }
+      return makeMsgSendMessage(message);
+    });
+
     return {
-      msgs: [],
+      msgs: mappedDocumentMessagesWithCaller(processedMsgs, accountInfo.data?.address || ""),
       fee: {
         amount: [{ amount: "", denom: GasToken.denom as string }],
         gas: "",
