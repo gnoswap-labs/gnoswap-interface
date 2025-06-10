@@ -1,4 +1,4 @@
-import { GnoProvider } from "@gnolang/gno-js-client";
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { Tx } from "@gnolang/tm2-js-client";
 
 import { TransactionGasService } from "./transaction-gas-service";

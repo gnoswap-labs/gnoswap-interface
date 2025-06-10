@@ -9,7 +9,7 @@ import { WebStorageClient } from "@common/clients/storage-client";
 import { EventStore, TransactionEventStore } from "@common/modules/event-store";
 import { NetworkData } from "@constants/chains.constant";
 import { DEFAULT_CHAIN_ID, SUPPORT_CHAIN_IDS } from "@constants/environment.constant";
-import { GnoJSONRPCProvider, GnoProvider } from "@gnolang/gno-js-client";
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { AccountRepository, AccountRepositoryImpl } from "@repositories/account";
 import { DashboardRepository, DashboardRepositoryImpl } from "@repositories/dashboard";
 import { GovernanceRepository, GovernanceRepositoryImpl } from "@repositories/governance";
@@ -142,7 +142,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
       }),
     );
     setRouterApiClient(new AxiosClient(network.routerUrl));
-    setRPCProvider(new GnoJSONRPCProvider(network.rpcUrl || ""));
+    setRPCProvider(new GnoProvider(network.rpcUrl || ""));
   }, [loadedProviders, router, status, walletAccount, walletAccount?.chainId]);
 
   const eventStore = useMemo(() => {
