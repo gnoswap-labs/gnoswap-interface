@@ -10,6 +10,7 @@ import {
   makeMsgSendMessage,
 } from "@adena-wallet/sdk";
 import { TransactionBuilder } from "@adena-wallet/sdk";
+import { Tx, TxSignature } from "@gnolang/tm2-js-client";
 
 import { createTimeout } from "@common/utils/client-util";
 import { DEFAULT_GAS_WANTED } from "@common/values";
@@ -108,6 +109,15 @@ export class SocialWalletClient implements WalletClient {
 
   public get type(): SocialLoginType | null {
     return this._type;
+  }
+
+  public async sign(): // provider: Provider,
+  // document: Document,
+  Promise<{
+    signed: Tx;
+    signature: TxSignature[];
+  }> {
+    throw new Error("Sign method not implemented for Adena wallet");
   }
 
   public async getAddress(): Promise<string | null> {

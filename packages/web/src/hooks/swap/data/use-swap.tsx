@@ -278,7 +278,6 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + 60 * 5,
           referrerAddress: currentReferralAddress,
-          gasPrice: gasPrice ?? 0,
         });
       }
 
@@ -293,7 +292,6 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + 60 * 5,
           referrerAddress: currentReferralAddress,
-          gasPrice: gasPrice ?? 0,
         });
       }
     },
