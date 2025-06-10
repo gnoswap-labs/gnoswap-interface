@@ -202,6 +202,7 @@ export const useSwapHandler = () => {
     swap,
     wrap,
     unwrap,
+    displayNetworkFee,
     updateSwapAmount,
     resetSwapAmount,
     isTyping,
@@ -532,6 +533,8 @@ export const useSwapHandler = () => {
     const protocolFee = `${(swapFee || 0) / 100}%`;
     const routerFee = (swapFee || 0) / 100;
 
+    const networkFeeUSD = Number(displayNetworkFee?.usdValue ?? 0) || gasFeeUSD;
+
     if (isSameToken) {
       return {
         tokenA,
@@ -548,7 +551,7 @@ export const useSwapHandler = () => {
           amount: defaultGasFeeAmount,
           currency: "GNOT",
         },
-        gasFeeUSD,
+        gasFeeUSD: networkFeeUSD,
         swapRateAction,
         swapRate1USD,
         protocolFee,
@@ -584,7 +587,7 @@ export const useSwapHandler = () => {
         amount: defaultGasFeeAmount,
         currency: "GNOT",
       },
-      gasFeeUSD: gasFeeUSD,
+      gasFeeUSD: networkFeeUSD,
       swapRateAction,
       swapRate1USD,
       direction: type,
@@ -1256,6 +1259,7 @@ export const useSwapHandler = () => {
     slippage,
     connectedWallet,
     copied,
+    displayNetworkFee,
     swapTokenInfo,
     swapSummaryInfo,
     swapRouteInfos,

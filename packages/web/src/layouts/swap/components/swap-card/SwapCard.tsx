@@ -16,6 +16,7 @@ import SwapCardContent from "./swap-card-content/SwapCardContent";
 import SwapCardHeader from "./swap-card-header/SwapCardHeader";
 
 import { HighPriceWarningContentWrapper, SwapCardWrapper, SwapWarningSection } from "./SwapCard.styles";
+import { NetworkFee } from "@hooks/gas";
 
 interface SwapCardProps {
   connectedWallet: boolean;
@@ -33,6 +34,7 @@ interface SwapCardProps {
   isLoading: boolean;
   isSameToken: boolean;
   isRefetching: boolean;
+  displayNetworkFee: NetworkFee | null;
 
   changeTokenA: (token: TokenModel) => void;
   changeTokenAAmount: (value: string, none?: boolean) => void;
@@ -78,6 +80,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
   priceImpactStatus,
   isSameToken,
   isRefetching,
+  displayNetworkFee,
 }) => {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -113,6 +116,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
         isSameToken={isSameToken}
         isRefetching={isRefetching}
         resetEstimatedLiquidity={resetEstimatedLiquidity}
+        displayNetworkFee={displayNetworkFee}
       />
       {shouldShowPriceImpactWarning && (
         <SwapWarningSection>

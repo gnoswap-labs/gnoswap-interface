@@ -10,7 +10,12 @@ import { useReferral } from "@hooks/common/use-referral";
 import { useNetworkFee } from "@hooks/common/use-network-fee";
 import { useGetTokenPrices } from "@query/token";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { makeExactInSwapRouteMessageWithApproves } from "@repositories/swap-router/swap-router.message";
+import {
+  makeExactInSwapRouteMessageWithApproves,
+  makeExactOutSwapRouteMessageWithApproves,
+  makeUnwrapTokenMessages,
+  makeWrapTokenMessages,
+} from "@repositories/swap-router/swap-router.message";
 
 import { SwapDirectionType } from "@common/values";
 import { TokenModel, isNativeToken } from "@models/token/token-model";
@@ -325,8 +330,15 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
   const swapTransactionRequests = useMemo(() => {
     const currentReferralAddress = getCurrentReferralAddress();
 
-    const tokenAmount =
-      direction === "EXACT_IN" ? Number(debouncedSwapAmount) : Number(debouncedSwapAmount) * exactOutPadding;
+    let tokenAmount = 0;
+    if (isSameToken) {
+      tokenAmount = swapAmount || 0;
+    } else {
+      tokenAmount =
+        direction === "EXACT_IN"
+          ? Number(debouncedSwapAmount || 0)
+          : Number(debouncedSwapAmount || 0) * exactOutPadding;
+    }
 
     return {
       inputToken: tokenA,
@@ -376,8 +388,13 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       usdValue,
     };
   }, [transactionDocument, networkFee]);
-  console.log(displayNetworkFee);
 
+  /**
+   * Generate a transaction message based on the swapTransactionRequests and store it in the state,
+   * initialise the transactionDocument required for network fee calculation based on the message.
+   *
+   * - Does not work if there is no account, token information.
+   */
   useEffect(() => {
     if (
       !rpcProvider ||
@@ -391,24 +408,54 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
 
     const fetchTransactionMessage = async () => {
       try {
-        const message = await makeExactInSwapRouteMessageWithApproves(
-          {
-            ...swapTransactionRequests,
-            inputToken: swapTransactionRequests.inputToken as TokenModel,
-            outputToken: swapTransactionRequests.outputToken as TokenModel,
-            estimatedRoutes: swapTransactionRequests.estimatedRoutes || [],
-            caller: account.address,
-          },
-          async (packagePath, owner, spender) => {
-            try {
-              const allowance = await getGRC20Allowance(rpcProvider, packagePath, owner, spender);
-              return allowance;
-            } catch (error) {
-              console.error("Failed to fetch allowance:", error);
-              return 0;
-            }
-          },
-        );
+        let message: TransactionMessage[] | null = null;
+        const inputToken = swapTransactionRequests.inputToken as TokenModel;
+        const outputToken = swapTransactionRequests.outputToken as TokenModel;
+        const caller = account.address;
+        const tokenAmount = String(swapTransactionRequests.tokenAmount);
+
+        const commonProps = {
+          inputToken,
+          outputToken,
+          tokenAmount: swapTransactionRequests.tokenAmount,
+          estimatedRoutes: swapTransactionRequests.estimatedRoutes || [],
+          tokenAmountLimit: swapTransactionRequests.tokenAmountLimit,
+          deadline: swapTransactionRequests.deadline,
+          caller,
+          referrerAddress: swapTransactionRequests.referrerAddress,
+        };
+
+        const fetchAllowance = async (packagePath: string, owner: string, spender: string) => {
+          try {
+            return await getGRC20Allowance(rpcProvider, packagePath, owner, spender);
+          } catch (error) {
+            console.error("Failed to fetch allowance:", error);
+            return 0;
+          }
+        };
+
+        if (isSameToken && isNativeToken(inputToken)) {
+          // Wrap
+          message = makeWrapTokenMessages({
+            token: inputToken,
+            tokenAmount,
+            caller,
+          });
+        } else if (isSameToken && isNativeToken(outputToken)) {
+          // Unwrap
+          message = makeUnwrapTokenMessages({
+            token: inputToken,
+            tokenAmount,
+            caller,
+          });
+        } else if (direction === "EXACT_IN") {
+          // Exact-In
+          message = await makeExactInSwapRouteMessageWithApproves(commonProps, fetchAllowance);
+        } else if (direction === "EXACT_OUT") {
+          // Exact-Out
+          message = await makeExactOutSwapRouteMessageWithApproves(commonProps, fetchAllowance);
+        }
+
         setTransactionMessage(message);
       } catch (error) {
         console.error("Transaction message generation errors:", error);
@@ -418,7 +465,8 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
 
     fetchTransactionMessage();
     initTransactionData();
-  }, [account, swapTransactionRequests]);
+  }, [account, swapTransactionRequests, isSameToken, direction]);
+  console.log(transactionMessage, "transactionMessagetransactionMessage");
 
   useEffect(() => {
     if (estimatedRoutes === null || !tokenA || !tokenB) return;
@@ -469,6 +517,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     swap,
     wrap,
     unwrap,
+    displayNetworkFee,
     updateSwapAmount,
     isEstimatedSwapLoading,
     isTyping,
