@@ -6,3 +6,9 @@ export interface GasInfo {
   hasError?: boolean;
   simulateErrorMessage: string | null;
 }
+
+export interface NetworkFee {
+  amount: string;
+  denom: string;
+  usdValue?: string;
+}

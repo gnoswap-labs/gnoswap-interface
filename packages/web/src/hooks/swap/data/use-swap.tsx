@@ -1,22 +1,26 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useAtomValue, useStore } from "jotai";
 import BigNumber from "bignumber.js";
 
-import { SwapDirectionType } from "@common/values";
+import useDebounce from "@hooks/common/use-debounce";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { useGetRoutes } from "@query/router";
+import { useReferral } from "@hooks/common/use-referral";
+import { useNetworkFee } from "@hooks/common/use-network-fee";
+import { useGetTokenPrices } from "@query/token";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { makeExactInSwapRouteMessageWithApproves } from "@repositories/swap-router/swap-router.message";
+
+import { SwapDirectionType } from "@common/values";
 import { TokenModel, isNativeToken } from "@models/token/token-model";
 import { EstimatedRoute } from "@models/swap/swap-route-info";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { useGetRoutes } from "@query/router";
-import useDebounce from "@hooks/common/use-debounce";
-import { useAtomValue, useStore } from "jotai";
 import { SwapState } from "@states/index";
-import { useReferral } from "@hooks/common/use-referral";
-import { useGetGasPrice } from "@hooks/gas";
-import { makeExactInSwapRouteMessageWithApproves } from "@repositories/swap-router/swap-router.message";
+import { NetworkFee, useGetGasPrice } from "@hooks/gas";
 import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { TransactionMessage } from "@common/clients/wallet-client/protocols";
 import { Document } from "src/types/transaction-messages.types";
+import { GasToken } from "@common/values/token-constant";
 
 interface UseSwapProps {
   tokenA: TokenModel | null;
@@ -27,11 +31,17 @@ interface UseSwapProps {
 }
 
 export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: UseSwapProps) => {
+  const { transactionService, swapRouterRepository, rpcProvider } = useGnoswapContext();
   const { getCurrentReferralAddress } = useReferral();
+  const { data: gasTokenPrice } = useGetTokenPrices(GasToken.path);
+
+  const [transactionMessage, setTransactionMessage] = useState<TransactionMessage[] | null>(null);
+  const [transactionDocument, setTransactionDocument] = useState<Document | null>(null);
+  const useNetworkFeeReturn = useNetworkFee(transactionDocument);
+  const networkFee = useNetworkFeeReturn.networkFee;
 
   const store = useStore();
   const { account } = useWallet();
-  const { transactionService, swapRouterRepository, rpcProvider } = useGnoswapContext();
   const swapSummaryInfo = useAtomValue(SwapState.swapConfirmModalState);
   const { tokenAmountLimit: currentTokenAmountLimit } = swapSummaryInfo;
   const { data: gasPrice } = useGetGasPrice();
@@ -312,7 +322,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     ],
   );
 
-  const target = useMemo(() => {
+  const swapTransactionRequests = useMemo(() => {
     const currentReferralAddress = getCurrentReferralAddress();
 
     const tokenAmount =
@@ -342,11 +352,39 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     gasPrice,
   ]);
 
-  const [transactionMessage, setTransactionMessage] = useState<TransactionMessage[] | null>(null);
-  const [, setTransactionDocument] = useState<Document | null>(null);
+  const initTransactionData = async (): Promise<boolean> => {
+    if (!transactionMessage) {
+      return false;
+    }
+    try {
+      const document = await transactionService.createDocument({ messages: transactionMessage });
+      setTransactionDocument(document);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const displayNetworkFee: NetworkFee | null = useMemo(() => {
+    if (!transactionDocument || !networkFee) return null;
+
+    const usdValue = gasTokenPrice?.usd ? BigNumber(networkFee.amount).multipliedBy(gasTokenPrice.usd).toFixed(2) : "0";
+
+    return {
+      amount: networkFee.amount || "0",
+      denom: networkFee.denom || GasToken.symbol,
+      usdValue,
+    };
+  }, [transactionDocument, networkFee]);
+  console.log(displayNetworkFee);
 
   useEffect(() => {
-    if (!rpcProvider || !target.inputToken || !target.outputToken || !account?.address) {
+    if (
+      !rpcProvider ||
+      !swapTransactionRequests.inputToken ||
+      !swapTransactionRequests.outputToken ||
+      !account?.address
+    ) {
       setTransactionMessage(null);
       return;
     }
@@ -355,10 +393,10 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       try {
         const message = await makeExactInSwapRouteMessageWithApproves(
           {
-            ...target,
-            inputToken: target.inputToken as TokenModel,
-            outputToken: target.outputToken as TokenModel,
-            estimatedRoutes: target.estimatedRoutes || [],
+            ...swapTransactionRequests,
+            inputToken: swapTransactionRequests.inputToken as TokenModel,
+            outputToken: swapTransactionRequests.outputToken as TokenModel,
+            estimatedRoutes: swapTransactionRequests.estimatedRoutes || [],
             caller: account.address,
           },
           async (packagePath, owner, spender) => {
@@ -373,27 +411,14 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
         );
         setTransactionMessage(message);
       } catch (error) {
-        console.error("트랜잭션 메시지 생성 오류:", error);
+        console.error("Transaction message generation errors:", error);
         setTransactionMessage(null);
       }
     };
 
     fetchTransactionMessage();
     initTransactionData();
-  }, [account, target]);
-
-  const initTransactionData = async (): Promise<boolean> => {
-    if (!transactionMessage) {
-      return false;
-    }
-    try {
-      const document = await transactionService.createDocument({ messages: transactionMessage });
-      setTransactionDocument(document);
-      return true;
-    } catch {
-      return false;
-    }
-  };
+  }, [account, swapTransactionRequests]);
 
   useEffect(() => {
     if (estimatedRoutes === null || !tokenA || !tokenB) return;
