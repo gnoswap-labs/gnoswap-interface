@@ -28,7 +28,7 @@ export interface SwapCardContentDetailProps {
   setSwapRateAction: (type: SwapRateAction) => void;
   priceImpactStatus: PriceImpactStatus;
   swapTokenInfo: SwapTokenInfo;
-  displayNetworkFee: NetworkFee | null;
+  displayNetworkFee?: NetworkFee | null;
 }
 
 export const convertSwapRate = (value: number) => {
