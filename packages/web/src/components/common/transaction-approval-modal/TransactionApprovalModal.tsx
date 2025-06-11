@@ -72,9 +72,9 @@ const TransactionApprovalModal = ({
   }, []);
 
   const handleConfirm = () => {
-    if (!isAllowedDomain) {
-      onConfirm();
-    }
+    // if (!isAllowedDomain) {
+    onConfirm();
+    // }
   };
 
   return (
@@ -153,7 +153,7 @@ const TransactionApprovalModal = ({
             onClick={handleConfirm}
             text={t("common:social.modal.transaction.approve")}
             style={{ fullWidth: true, height: 57, fontType: "body7", hierarchy: ButtonHierarchy.Primary }}
-            disabled={isAllowedDomain}
+            // disabled={isAllowedDomain}
           />
         </TransactionApprovalButtonWrapper>
       </TransactionApprovalModalBody>

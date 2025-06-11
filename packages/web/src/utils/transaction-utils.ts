@@ -18,6 +18,7 @@ import { TransactionService } from "@services/transaction";
 import { GasToken } from "@common/values/token-constant";
 import { Any, MemFile, MemPackage, MsgAddPackage, MsgCall, MsgEndpoint, MsgSend } from "@gnolang/gno-js-client";
 import { MsgRun } from "@gnolang/gno-js-client/bin/proto/gno/vm";
+import { makeRawTokenAmount } from "./token-utils";
 
 export const TX_EVENTS = {
   SHOW_MODAL: "show-approve-modal",
@@ -220,10 +221,12 @@ export const withTransactionGuard = async <T>(
 export const generateSendTransactionParams = (params: SendTransactionRequestParam): SendTransactionRequestParam => {
   const { messages, gasFee, gasWanted = DEFAULT_GAS_WANTED, memo = "" } = params;
 
+  const gasFeeRaw = Number(makeRawTokenAmount(GasToken, gasFee));
+
   return {
     messages,
-    gasFee,
-    ...(gasWanted && { gasWanted }),
+    gasFee: gasFeeRaw,
+    ...(gasWanted && { gasWanted: 10000000 }),
     ...(memo && { memo }),
   };
 };

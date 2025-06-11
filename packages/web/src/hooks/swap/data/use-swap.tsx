@@ -293,6 +293,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + 60 * 5,
           referrerAddress: currentReferralAddress,
+          gasFee: networkFee?.amount,
         });
       }
 
@@ -307,6 +308,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + 60 * 5,
           referrerAddress: currentReferralAddress,
+          gasFee: networkFee?.amount,
         });
       }
     },
@@ -324,6 +326,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       exactOutPadding,
       store,
       getCurrentReferralAddress,
+      networkFee?.amount,
     ],
   );
 

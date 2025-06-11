@@ -16,6 +16,7 @@ export interface TransactionMessage {
   pkg_path: string;
   func: string;
   args: string[] | null;
+  gasFee?: string;
 }
 
 export interface TokenApproveMessageInfo {
@@ -49,12 +50,14 @@ export function makeTransactionMessage({
   packagePath,
   func,
   args,
+  gasFee,
 }: {
   caller: string;
   send: string;
   packagePath: string;
   func: string;
   args: string[] | null;
+  gasFee?: string;
 }): TransactionMessage {
   return {
     caller: caller,
@@ -62,6 +65,7 @@ export function makeTransactionMessage({
     pkg_path: packagePath,
     func: func,
     args: args ? args.map(arg => `${arg}`) : null,
+    gasFee: gasFee,
   };
 }
 

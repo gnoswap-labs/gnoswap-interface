@@ -129,14 +129,17 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     await this.validateAndGetDrySwap(request, "EXACT_IN");
 
+    const { gasFee, ...requests } = request;
+
     const messages = await makeExactInSwapRouteMessageWithApproves(
-      { ...request, caller: address },
+      { ...requests, caller: address },
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
     const sendTransactionParams = generateSendTransactionParams({
       messages,
-      gasFee: DEFAULT_GAS_FEE,
+      gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
+      gasWanted: 170306276,
       memo: "",
     });
 
