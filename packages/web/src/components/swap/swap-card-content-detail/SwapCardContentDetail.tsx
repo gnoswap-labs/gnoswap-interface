@@ -19,7 +19,6 @@ import SwapCardAutoRouter from "./swap-card-auto-router/SwapCardAutoRouter";
 import SwapCardFeeInfo from "./swap-card-fee-info/SwapCardFeeInfo";
 
 import { DetailWrapper, FeelWrapper } from "./SwapCardContentDetail.styles";
-import { NetworkFee } from "@hooks/gas";
 
 export interface SwapCardContentDetailProps {
   swapSummaryInfo: SwapSummaryInfo;
@@ -28,7 +27,6 @@ export interface SwapCardContentDetailProps {
   setSwapRateAction: (type: SwapRateAction) => void;
   priceImpactStatus: PriceImpactStatus;
   swapTokenInfo: SwapTokenInfo;
-  displayNetworkFee?: NetworkFee | null;
 }
 
 export const convertSwapRate = (value: number) => {
@@ -43,7 +41,6 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
   setSwapRateAction,
   priceImpactStatus,
   swapTokenInfo,
-  // displayNetworkFee,
 }) => {
   const { t } = useTranslation();
   const { breakpoint } = useWindowSize();

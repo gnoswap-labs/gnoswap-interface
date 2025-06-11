@@ -48,7 +48,6 @@ const SwapContainer: React.FC = () => {
     isSameToken,
     handleResetEstimatedLiquidity,
     initializeSwapTokenInputAmount,
-    displayNetworkFee,
   } = useSwapHandler();
 
   useEffect(() => {
@@ -144,7 +143,6 @@ const SwapContainer: React.FC = () => {
       resetEstimatedLiquidity={handleResetEstimatedLiquidity}
       isSameToken={isSameToken}
       isRefetching={isRefetching}
-      displayNetworkFee={displayNetworkFee}
     />
   );
 };

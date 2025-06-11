@@ -25,7 +25,6 @@ import { useTranslation } from "react-i18next";
 import { useTokenBalancesDisplay } from "@hooks/token/ui/use-token-balance-display";
 import PriceWarning from "@components/common/price-warning/PriceWarning";
 import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
-import { NetworkFee } from "@hooks/gas";
 
 interface ContentProps {
   swapTokenInfo: SwapTokenInfo;
@@ -44,7 +43,6 @@ interface ContentProps {
   priceImpactStatus: PriceImpactStatus;
   isSameToken: boolean;
   isRefetching: boolean;
-  displayNetworkFee: NetworkFee | null;
 }
 
 const SwapCardContent: React.FC<ContentProps> = ({
@@ -63,7 +61,6 @@ const SwapCardContent: React.FC<ContentProps> = ({
   isSameToken,
   resetEstimatedLiquidity,
   isRefetching,
-  displayNetworkFee,
 }) => {
   const { t } = useTranslation();
 
@@ -263,7 +260,6 @@ const SwapCardContent: React.FC<ContentProps> = ({
               setSwapRateAction={setSwapRateAction}
               priceImpactStatus={priceImpactStatus}
               swapTokenInfo={swapTokenInfo}
-              displayNetworkFee={displayNetworkFee}
             />
           )}
         </SwapDetailSectionWrapper>
