@@ -31,6 +31,7 @@ interface SwapCardProps {
   themeKey: "dark" | "light";
   isSwitchNetwork: boolean;
   isLoading: boolean;
+  isLoadingGasInfo: boolean;
   isSameToken: boolean;
   isRefetching: boolean;
 
@@ -74,6 +75,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
   isSwitchNetwork,
   switchNetwork,
   isLoading,
+  isLoadingGasInfo,
   setSwapRateAction,
   priceImpactStatus,
   isSameToken,
@@ -107,6 +109,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
         switchSwapDirection={switchSwapDirection}
         connectedWallet={connectedWallet}
         isLoading={isLoading}
+        isLoadingGasInfo={isLoadingGasInfo}
         setSwapRateAction={setSwapRateAction}
         isSwitchNetwork={isSwitchNetwork}
         priceImpactStatus={priceImpactStatus}

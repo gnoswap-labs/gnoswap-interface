@@ -7,6 +7,7 @@ import { makeEstimateGasTransaction } from "@utils/transaction-utils";
 
 import { Document } from "src/types/transaction-messages.types";
 import { GasInfo } from "@hooks/gas";
+import { QUERY_KEY } from "@query/query-keys";
 
 const REFETCH_INTERVAL = 5_000;
 
@@ -25,7 +26,7 @@ export const useGetEstimateGasInfo = (
   }
 
   return useQuery({
-    queryKey: [],
+    queryKey: [QUERY_KEY.gasInfo, document?.msgs],
     queryFn: async () => {
       if (!transactionService || !gasPrice) return null;
 

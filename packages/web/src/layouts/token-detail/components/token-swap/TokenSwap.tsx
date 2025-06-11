@@ -29,6 +29,7 @@ export interface TokenSwapProps {
   themeKey: "dark" | "light";
   dataTokenInfo: DataTokenInfo;
   isLoading: boolean;
+  isLoadingGasInfo: boolean;
   swapButtonText: string;
   isAvailSwap: boolean;
   swapSummaryInfo: SwapSummaryInfo | null;
@@ -72,6 +73,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   changeTokenBAmount,
   switchSwapDirection,
   isLoading,
+  isLoadingGasInfo,
   swapButtonText,
   isAvailSwap,
   swapSummaryInfo,
@@ -256,6 +258,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
           swapSummaryInfo={swapSummaryInfo}
           swapRouteInfos={swapRouteInfos}
           isLoading={isLoading}
+          isLoadingGasInfo={isLoadingGasInfo}
           setSwapRateAction={setSwapRateAction}
           priceImpactStatus={priceImpactStatus}
           swapTokenInfo={swapTokenInfo}

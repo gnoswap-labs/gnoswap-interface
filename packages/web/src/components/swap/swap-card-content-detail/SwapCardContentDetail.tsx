@@ -24,6 +24,7 @@ export interface SwapCardContentDetailProps {
   swapSummaryInfo: SwapSummaryInfo;
   swapRouteInfos: SwapRouteInfo[];
   isLoading: boolean;
+  isLoadingGasInfo: boolean;
   setSwapRateAction: (type: SwapRateAction) => void;
   priceImpactStatus: PriceImpactStatus;
   swapTokenInfo: SwapTokenInfo;
@@ -38,6 +39,7 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
   swapSummaryInfo,
   swapRouteInfos,
   isLoading,
+  isLoadingGasInfo,
   setSwapRateAction,
   priceImpactStatus,
   swapTokenInfo,
@@ -140,6 +142,7 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
               <SwapCardFeeInfo
                 swapSummaryInfo={swapSummaryInfo}
                 isLoading={isLoading}
+                isLoadingGasInfo={isLoadingGasInfo}
                 priceImpactStatus={priceImpactStatus}
                 swapTokenInfo={swapTokenInfo}
               />

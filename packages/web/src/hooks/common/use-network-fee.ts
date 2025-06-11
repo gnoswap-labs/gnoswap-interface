@@ -8,10 +8,15 @@ import { GasToken } from "@common/values/token-constant";
 export interface UseNetworkFeeReturn {
   currentGasInfo: GasInfo | null;
   networkFee: NetworkFee | null;
+  isLoading: boolean;
 }
 
 export const useNetworkFee = (document: Document | null, gasInfo?: GasInfo | null): UseNetworkFeeReturn => {
-  const { data: estimatedGasInfo } = useGetEstimateGasInfo(document, gasInfo?.gasUsed || 0);
+  const {
+    data: estimatedGasInfo,
+    isLoading: isLoadingGasInfo,
+    isFetching: isFetchingGasInfo,
+  } = useGetEstimateGasInfo(document, gasInfo?.gasUsed || 0);
 
   const currentGasInfo = React.useMemo(() => {
     if (!estimatedGasInfo) return null;
@@ -33,8 +38,15 @@ export const useNetworkFee = (document: Document | null, gasInfo?: GasInfo | nul
     };
   }, [currentGasInfo]);
 
+  const isLoading = React.useMemo(() => {
+    if (!document) return false;
+
+    return isFetchingGasInfo || isLoadingGasInfo;
+  }, [document, isFetchingGasInfo, isLoadingGasInfo]);
+
   return {
     currentGasInfo,
     networkFee,
+    isLoading,
   };
 };

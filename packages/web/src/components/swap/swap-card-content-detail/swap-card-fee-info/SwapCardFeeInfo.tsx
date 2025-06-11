@@ -22,13 +22,20 @@ import { formatRouterFeeStr } from "@utils/swap-utils";
 interface ContentProps {
   swapSummaryInfo: SwapSummaryInfo;
   isLoading: boolean;
+  isLoadingGasInfo: boolean;
   priceImpactStatus: PriceImpactStatus;
   swapTokenInfo: SwapTokenInfo;
 }
 
 const SkeletonLoader = () => <span css={pulseSkeletonStyle({ h: 18, w: "100px!important" })} />;
 
-const SwapCardFeeInfo: React.FC<ContentProps> = ({ swapSummaryInfo, isLoading, priceImpactStatus, swapTokenInfo }) => {
+const SwapCardFeeInfo: React.FC<ContentProps> = ({
+  swapSummaryInfo,
+  isLoading,
+  isLoadingGasInfo,
+  priceImpactStatus,
+  swapTokenInfo,
+}) => {
   const { t } = useTranslation();
 
   const priceImpactStr = useMemo(() => {
@@ -143,7 +150,7 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({ swapSummaryInfo, isLoading, p
       <div className="swap-fee-row  gas-fee">
         <span className="gray-text">{t("Swap:swapInfo.gasFee")}</span>
 
-        {isLoading ? (
+        {isLoading || isLoadingGasInfo ? (
           <SkeletonLoader />
         ) : (
           <span className="white-text">

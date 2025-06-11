@@ -366,6 +366,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
 
   const initTransactionData = async (): Promise<boolean> => {
     if (!transactionMessage) {
+      setTransactionDocument(null);
       return false;
     }
     try {
@@ -373,6 +374,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       setTransactionDocument(document);
       return true;
     } catch {
+      setTransactionDocument(null);
       return false;
     }
   };
@@ -402,6 +404,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       !swapTransactionRequests.outputToken ||
       !account?.address
     ) {
+      setTransactionDocument(null);
       setTransactionMessage(null);
       return;
     }
@@ -464,9 +467,12 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     };
 
     fetchTransactionMessage();
-    initTransactionData();
   }, [account, swapTransactionRequests, isSameToken, direction]);
-  console.log(transactionMessage, "transactionMessagetransactionMessage");
+
+  // Update transactionDocument whenever transactionMessage changes
+  useEffect(() => {
+    initTransactionData();
+  }, [transactionMessage]);
 
   useEffect(() => {
     if (estimatedRoutes === null || !tokenA || !tokenB) return;
@@ -522,6 +528,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     isEstimatedSwapLoading,
     isTyping,
     isRefetching,
+    isLoadingGasInfo: useNetworkFeeReturn.isLoading,
     handleResetEstimatedLiquidity,
     resetSwapAmount: () => {
       setSwapAmount(0);

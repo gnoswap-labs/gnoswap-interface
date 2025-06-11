@@ -73,4 +73,5 @@ export enum QUERY_KEY {
 
   // gas
   gasPrice = "gas_price",
+  gasInfo = "gas_info",
 }
