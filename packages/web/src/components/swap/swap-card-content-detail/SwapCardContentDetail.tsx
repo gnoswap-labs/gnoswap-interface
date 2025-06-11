@@ -19,6 +19,7 @@ import SwapCardAutoRouter from "./swap-card-auto-router/SwapCardAutoRouter";
 import SwapCardFeeInfo from "./swap-card-fee-info/SwapCardFeeInfo";
 
 import { DetailWrapper, FeelWrapper } from "./SwapCardContentDetail.styles";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 export interface SwapCardContentDetailProps {
   swapSummaryInfo: SwapSummaryInfo;
@@ -34,6 +35,8 @@ export const convertSwapRate = (value: number) => {
   if (value >= 0.00001) return value.toFixed(6);
   return value.toFixed(15);
 };
+
+const SkeletonLoader = () => <span css={pulseSkeletonStyle({ h: 18, w: "30px!important" })} />;
 
 const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
   swapSummaryInfo,
@@ -124,7 +127,7 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
             )}
             <div className="price-info">
               <IconGasFilled className="price-icon note-icon" />
-              <span>{gasFeeUSDStr}</span>
+              {isLoading || isLoadingGasInfo ? <SkeletonLoader /> : <span>{gasFeeUSDStr}</span>}
               {openedDetailInfo ? (
                 <IconStrokeArrowUp className="price-icon" onClick={toggleDetailInfo} />
               ) : (
