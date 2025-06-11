@@ -378,7 +378,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
   };
 
   const displayNetworkFee: NetworkFee | null = useMemo(() => {
-    if (!transactionDocument || !networkFee) return null;
+    if (!transactionDocument || !networkFee || !account?.address) return null;
 
     const usdValue = gasTokenPrice?.usd ? BigNumber(networkFee.amount).multipliedBy(gasTokenPrice.usd).toFixed(2) : "0";
 
@@ -387,7 +387,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       denom: networkFee.denom || GasToken.symbol,
       usdValue,
     };
-  }, [transactionDocument, networkFee]);
+  }, [account?.address, transactionDocument, networkFee]);
 
   /**
    * Generate a transaction message based on the swapTransactionRequests and store it in the state,

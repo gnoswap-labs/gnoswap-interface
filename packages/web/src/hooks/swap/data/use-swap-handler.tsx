@@ -533,6 +533,7 @@ export const useSwapHandler = () => {
     const protocolFee = `${(swapFee || 0) / 100}%`;
     const routerFee = (swapFee || 0) / 100;
 
+    const networkFeeAmount = Number(displayNetworkFee?.amount ?? 0) || defaultGasFeeAmount;
     const networkFeeUSD = Number(displayNetworkFee?.usdValue ?? 0) || gasFeeUSD;
 
     if (isSameToken) {
@@ -544,7 +545,7 @@ export const useSwapHandler = () => {
         swapRateUSD: getTokenUSDPrice(checkGnotPath(tokenA.path), 1) || 1,
         priceImpact: 0,
         guaranteedAmount: {
-          amount: Number(tokenAAmount),
+          amount: networkFeeAmount,
           currency: tokenB.symbol,
         },
         gasFee: {
@@ -584,7 +585,7 @@ export const useSwapHandler = () => {
         currency: (type === "EXACT_IN" ? tokenB : tokenA).symbol,
       },
       gasFee: {
-        amount: defaultGasFeeAmount,
+        amount: networkFeeAmount,
         currency: "GNOT",
       },
       gasFeeUSD: networkFeeUSD,
@@ -611,6 +612,7 @@ export const useSwapHandler = () => {
     priceImpact,
     formatPriceImpact,
     swapFee,
+    displayNetworkFee,
   ]);
 
   // If the data required for the modal configuration is updated, update the modal data as well
