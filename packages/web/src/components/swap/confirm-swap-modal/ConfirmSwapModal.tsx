@@ -35,6 +35,7 @@ interface ConfirmSwapModalProps {
   title: string;
   isWrapOrUnwrap: boolean;
   priceImpactStatus: PriceImpactStatus;
+  isLoading: boolean;
 
   setSwapRateAction: (type: SwapRateAction) => void;
   swap: (swapTokenInfo: SwapTokenInfo, estimatedAmount: string | null) => void;
@@ -50,6 +51,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   setSwapRateAction,
   isWrapOrUnwrap,
   priceImpactStatus,
+  isLoading,
 }) => {
   const swapConfirmModalState = useAtomValue(SwapState.swapConfirmModalState);
   const { swapSummaryInfo, swapTokenInfo, estimatedAmount, isRefetching } = swapConfirmModalState;
@@ -332,7 +334,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
               hierarchy: ButtonHierarchy.Primary,
             }}
             onClick={handleSwap}
-            disabled={isRefetching}
+            disabled={isRefetching || isLoading}
           />
         </div>
       </div>

@@ -272,7 +272,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
           openConfirmModal={swapNow}
           openConnectWallet={connectWallet}
           text={swapButtonText}
-          isLoading={isLoading}
+          isLoading={isLoading || isRefetching || isLoadingGasInfo}
           switchNetwork={switchNetwork}
         />
       </div>
