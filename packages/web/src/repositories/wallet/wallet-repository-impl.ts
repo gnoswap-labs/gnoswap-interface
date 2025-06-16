@@ -21,7 +21,6 @@ export class WalletRepositoryImpl implements WalletRepository {
   public async transferGNOTToken(
     request: TransferNativeTokenRequest,
   ): Promise<WalletResponse<TransferNativeTokenResponse>> {
-    console.log(request, "request in repository");
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
     }

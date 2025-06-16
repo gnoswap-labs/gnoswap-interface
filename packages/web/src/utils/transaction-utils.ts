@@ -130,7 +130,6 @@ const generateTransactionDataDocument = async (
   walletClient: WalletClient,
   transaction?: SendTransactionRequestParam,
 ): Promise<Document> => {
-  console.log(transaction, "?!");
   const account = await walletClient.getAccount();
   const { accountNumber = 0, sequence = 0 } = account.data || {};
 
