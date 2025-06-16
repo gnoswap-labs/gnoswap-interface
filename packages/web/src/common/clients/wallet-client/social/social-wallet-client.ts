@@ -207,7 +207,6 @@ export class SocialWalletClient implements WalletClient {
     // Broadcasting transactions to the network with broadcastTransaction
     return createTimeout<WalletResponse<SendTransactionResponse<T | null>>>(
       this.sdk.broadcastTransaction({ tx }).then(response => {
-        console.log("Social Wallet Response", response);
         return parseTransactionResponse(
           response as WalletResponse<AdenaSendTransactionSuccessResponse>,
         ) as WalletResponse<SendTransactionResponse<T | null>>;

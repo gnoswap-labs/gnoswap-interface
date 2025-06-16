@@ -42,13 +42,13 @@ export const createDocument = (args: {
     fee: {
       amount: [
         {
-          amount: "162686",
+          amount: String(162_686),
           // amount: String(args.gasFee),
           denom: "ugnot",
         },
       ],
-      gas: "162685490",
-      // gas: args.gasWanted.toString(),
+      gas: String(162_685_490),
+      // gas: Number(args.gasWanted ?? 0 * 1.1).toString(),
     },
     chain_id: args.chainId,
     memo: args.memo || "",

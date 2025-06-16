@@ -23,7 +23,7 @@ export type MathSymbolType = "NEGATIVE" | "POSITIVE" | "NAN";
 export const DEFAULT_TRANSACTION_DEADLINE = "7282571140" as const;
 export const DEFAULT_CONTRACT_USE_FEE = 1000000 as const;
 export const DEFAULT_GAS_FEE = 1 as const;
-export const DEFAULT_GAS_WANTED = 100_000_000 as const;
+export const DEFAULT_GAS_WANTED = 2_000_000_000 as const;
 export const DEFAULT_ALLOWANCE_LIMIT = 1_000_000_000_000_000_000 as const;
 export const DEFAULT_TOKEN_PRICE_RATIO = 1 as const;
 

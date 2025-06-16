@@ -226,7 +226,7 @@ export const generateSendTransactionParams = (params: SendTransactionRequestPara
   return {
     messages,
     gasFee: gasFeeRaw,
-    ...(gasWanted && { gasWanted: 10000000 }),
+    ...(gasWanted && { gasWanted: gasWanted }),
     ...(memo && { memo }),
   };
 };

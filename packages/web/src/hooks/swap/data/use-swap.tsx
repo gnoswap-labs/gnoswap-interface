@@ -44,6 +44,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
   const [transactionDocument, setTransactionDocument] = useState<Document | null>(null);
   const useNetworkFeeReturn = useNetworkFee(transactionDocument);
   const networkFee = useNetworkFeeReturn.networkFee;
+  const currentGasInfo = useNetworkFeeReturn.currentGasInfo;
 
   const store = useStore();
   const { account } = useWallet();
@@ -294,6 +295,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           deadline: Math.floor(Date.now() / 1000) + 60 * 5,
           referrerAddress: currentReferralAddress,
           gasFee: networkFee?.amount,
+          gasUsed: String(currentGasInfo?.gasUsed),
         });
       }
 

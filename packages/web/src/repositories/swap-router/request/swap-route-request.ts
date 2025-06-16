@@ -39,4 +39,6 @@ export interface SwapRouteRequest {
   referrerAddress: string | null;
 
   gasFee?: string;
+
+  gasUsed?: string;
 }

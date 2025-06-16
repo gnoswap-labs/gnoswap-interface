@@ -12,7 +12,7 @@ import { makeRawTokenAmount } from "@utils/token-utils";
 
 import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { drySwap } from "@common/clients/gno-provider/methods/dry-swap";
-import { DEFAULT_GAS_FEE } from "@common/values";
+import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { GetRoutesRequest } from "./request/get-routes-request";
 import { DrySwapRequest, SwapRouteRequest } from "./request/swap-route-request";
@@ -129,17 +129,20 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     await this.validateAndGetDrySwap(request, "EXACT_IN");
 
-    const { gasFee, ...requests } = request;
+    const { gasFee, gasUsed, ...requests } = request;
 
     const messages = await makeExactInSwapRouteMessageWithApproves(
       { ...requests, caller: address },
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
+    const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
+
     const sendTransactionParams = generateSendTransactionParams({
       messages,
       gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
-      gasWanted: 170306276,
+      // gasWanted: 170306276,
+      gasWanted: Number((gasWanted * 1.1).toFixed()),
       memo: "",
     });
 
