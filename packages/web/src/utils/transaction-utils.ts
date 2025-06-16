@@ -130,6 +130,7 @@ const generateTransactionDataDocument = async (
   walletClient: WalletClient,
   transaction?: SendTransactionRequestParam,
 ): Promise<Document> => {
+  console.log(transaction, "?!");
   const account = await walletClient.getAccount();
   const { accountNumber = 0, sequence = 0 } = account.data || {};
 
@@ -167,7 +168,9 @@ export const withTransactionGuard = async <T>(
       throw new Error("Wallet client is not initialized");
     }
 
+    console.log(transaction, "transactiontransaction documentdocument");
     const document = await generateTransactionDataDocument(walletClient, transaction);
+    console.log(document, "documentdocumentdocument");
 
     if (walletClient.getWalletType() === "SOCIAL_WALLET") {
       const approved = await showTransactionApprovalModal(document);

@@ -13,6 +13,8 @@ import { CommonState } from "@states/index";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { makeTransferGNOTTokenMessages, makeTransferGRC20TokenMessages } from "@repositories/wallet/wallet.message";
+import { useNetworkFee } from "@hooks/common/use-network-fee";
 
 type Request = TransferGRC20TokenRequest | TransferNativeTokenRequest;
 export type WithdrawResponse = {
@@ -22,12 +24,14 @@ export type WithdrawResponse = {
 } | null;
 
 const useSendAsset = () => {
-  const { walletRepository } = useGnoswapContext();
+  const { walletRepository, transactionService } = useGnoswapContext();
   const { broadcastLoading, broadcastSuccess, broadcastError, broadcastRejected } = useBroadcastHandler();
   const { enqueueEvent } = useTransactionEventStore();
 
   // Refetch functions
   const { updateBalances, refetchGrc20Balances } = useTokenData();
+
+  const { estimateNetworkFee } = useNetworkFee(null);
 
   const [loading, setLoading] = useState(false);
   const [isConfirm, setIsConfirm] = useState(false);
@@ -38,9 +42,24 @@ const useSendAsset = () => {
 
   const onSubmit = async (request: Request, type: "Native" | "GRC20") => {
     setLoading(true);
+    const isNativeTransfer = type === "Native";
+
+    const transactionMessage = isNativeTransfer
+      ? makeTransferGNOTTokenMessages({ ...request })
+      : makeTransferGRC20TokenMessages({ ...request });
+    const transactionDocument = await transactionService.createDocument({ messages: transactionMessage });
+    const { currentGasInfo, networkFee } = await estimateNetworkFee(transactionDocument);
+
+    const requestWithGasInfo = {
+      ...request,
+      gasFee: networkFee?.amount,
+      gasUsed: currentGasInfo?.gasUsed.toString(),
+    };
 
     const callAction =
-      type === "Native" ? walletRepository.transferGNOTToken(request) : walletRepository.transferGRC20Token(request);
+      type === "Native"
+        ? walletRepository.transferGNOTToken(requestWithGasInfo)
+        : walletRepository.transferGRC20Token(requestWithGasInfo);
 
     const tokenSymbol = request?.token?.symbol || "";
     const tokenAmount = formatPoolPairAmount(

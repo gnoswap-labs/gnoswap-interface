@@ -21,6 +21,7 @@ export class WalletRepositoryImpl implements WalletRepository {
   public async transferGNOTToken(
     request: TransferNativeTokenRequest,
   ): Promise<WalletResponse<TransferNativeTokenResponse>> {
+    console.log(request, "request in repository");
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
     }
@@ -29,12 +30,16 @@ export class WalletRepositoryImpl implements WalletRepository {
       throw new Error("Not a native token");
     }
 
-    const messages = makeTransferGNOTTokenMessages({ ...request });
+    const { gasFee, gasUsed, ...requests } = request;
+
+    const messages = makeTransferGNOTTokenMessages({ ...requests });
+
+    const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
 
     const sendTransactionParams = generateSendTransactionParams({
       messages,
-      gasFee: DEFAULT_GAS_FEE,
-      gasWanted: DEFAULT_GAS_WANTED,
+      gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
+      gasWanted: Number((gasWanted * 1.1).toFixed()),
     });
 
     return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
