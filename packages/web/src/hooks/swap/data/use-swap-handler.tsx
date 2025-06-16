@@ -546,11 +546,11 @@ export const useSwapHandler = () => {
         swapRateUSD: getTokenUSDPrice(checkGnotPath(tokenA.path), 1) || 1,
         priceImpact: 0,
         guaranteedAmount: {
-          amount: networkFeeAmount,
+          amount: Number(tokenAAmount),
           currency: tokenB.symbol,
         },
         gasFee: {
-          amount: defaultGasFeeAmount,
+          amount: networkFeeAmount,
           currency: "GNOT",
         },
         gasFeeUSD: networkFeeUSD,
@@ -734,6 +734,7 @@ export const useSwapHandler = () => {
           tokenBAmount: result.value,
           type: "EXACT_IN",
         }));
+        updateSwapAmount(result.value);
         return;
       }
 
