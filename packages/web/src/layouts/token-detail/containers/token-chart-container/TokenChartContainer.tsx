@@ -147,7 +147,7 @@ const TokenChartContainer: React.FC = () => {
 
   useEffect(() => {
     if (tokenB) {
-      const dataToday = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.priceToday, {
+      const dataToday = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.price1d, {
         displayStatusSign: false,
       });
       setTokenInfo(() => ({
