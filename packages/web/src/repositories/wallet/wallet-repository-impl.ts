@@ -38,7 +38,7 @@ export class WalletRepositoryImpl implements WalletRepository {
     const sendTransactionParams = generateSendTransactionParams({
       messages,
       gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
-      gasWanted: Number((gasWanted * 1.1).toFixed()),
+      gasWanted: Number(gasWanted.toFixed()),
     });
 
     return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
