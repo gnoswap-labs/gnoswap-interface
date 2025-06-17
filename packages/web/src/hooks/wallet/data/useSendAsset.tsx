@@ -48,6 +48,8 @@ const useSendAsset = () => {
       ? makeTransferGNOTTokenMessages({ ...request })
       : makeTransferGRC20TokenMessages({ ...request });
     const transactionDocument = await transactionService.createDocument({ messages: transactionMessage });
+    await transactionService.createTransaction(transactionDocument);
+
     const { currentGasInfo, networkFee } = await estimateNetworkFee(transactionDocument);
 
     const requestWithGasInfo = {

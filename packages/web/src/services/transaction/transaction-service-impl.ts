@@ -69,7 +69,8 @@ export class TransactionServiceImpl implements TransactionService {
     }
 
     const { signed, signature } = await this.walletClient.sign(this.rpcProvider, document);
-    const encodedSignature = signature.map(s => ({
+
+    const encodedSignature = (signature || []).map(s => ({
       pubKey: {
         typeUrl: s?.pubKey?.typeUrl,
         value: s?.pubKey?.value ? uint8ArrayToBase64(s.pubKey.value as Uint8Array) : undefined,

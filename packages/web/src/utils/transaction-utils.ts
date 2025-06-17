@@ -314,6 +314,19 @@ function modifyDocument(document: Document, gasWanted: number, gasFee: number): 
   };
 }
 
+export function documentToTx(document: Document): Tx {
+  const messages: Any[] = document.msgs.map(encodeMessageValue);
+  return {
+    messages,
+    fee: TxFee.create({
+      gasWanted: document.fee.gas || "0",
+      gasFee: document.fee.amount.map(feeAmount => `${feeAmount.amount}${feeAmount.denom}`).join(","),
+    }),
+    signatures: [],
+    memo: document.memo,
+  };
+}
+
 export function documentToDefaultTx(document: Document): Tx {
   const messages: Any[] = document.msgs.map(encodeMessageValue);
   return {

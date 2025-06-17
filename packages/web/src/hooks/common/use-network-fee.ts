@@ -1,11 +1,13 @@
 import React from "react";
 import BigNumber from "bignumber.js";
+import { useAtomValue } from "jotai";
 
 import { GasInfo, NetworkFee, useGetEstimateGasInfo, useGetGasPrice } from "@hooks/gas";
 import { Document } from "src/types/transaction-messages.types";
 import { GasToken } from "@common/values/token-constant";
 import { useGnoswapContext } from "./use-gnoswap-context";
 import { makeEstimateGasTransaction } from "@utils/transaction-utils";
+import { WalletState } from "@states/index";
 
 export interface UseNetworkFeeReturn {
   currentGasInfo: GasInfo | null;
@@ -18,6 +20,7 @@ export interface UseNetworkFeeReturn {
 }
 
 export const useNetworkFee = (document: Document | null, gasInfo?: GasInfo | null): UseNetworkFeeReturn => {
+  const walletClient = useAtomValue(WalletState.client);
   const { transactionService, transactionGasService } = useGnoswapContext();
   const { data: gasPrice } = useGetGasPrice();
 
@@ -47,14 +50,17 @@ export const useNetworkFee = (document: Document | null, gasInfo?: GasInfo | nul
     };
   }, [currentGasInfo]);
 
-  const isLoading = React.useMemo(() => {
-    if (!document) return false;
-
-    return isFetchingGasInfo || isLoadingGasInfo;
-  }, [document, isFetchingGasInfo, isLoadingGasInfo]);
-
   const estimateNetworkFee = async (document: Document) => {
-    if (!document || !transactionService || !transactionGasService || !gasPrice) {
+    const walletType = walletClient?.getWalletType();
+
+    if (
+      !document ||
+      !transactionService ||
+      !transactionGasService ||
+      !gasPrice ||
+      !walletType ||
+      walletType === "ADENA"
+    ) {
       return {
         currentGasInfo: null,
         networkFee: null,
@@ -62,7 +68,6 @@ export const useNetworkFee = (document: Document | null, gasInfo?: GasInfo | nul
     }
 
     try {
-      // 트랜잭션 시뮬레이션 생성
       const tx = await makeEstimateGasTransaction(document, transactionService, 0, gasPrice);
       if (!tx) {
         return {
@@ -71,7 +76,6 @@ export const useNetworkFee = (document: Document | null, gasInfo?: GasInfo | nul
         };
       }
 
-      // 가스 추정
       const resultGasUsed = await transactionGasService
         .estimateGas(tx)
         .then(gasUsed => ({
@@ -105,7 +109,6 @@ export const useNetworkFee = (document: Document | null, gasInfo?: GasInfo | nul
         simulateErrorMessage: resultGasUsed.errorMessage,
       };
 
-      // 네트워크 수수료 계산
       const networkFeeAmount = BigNumber(gasFee)
         .shiftedBy(-GasToken.decimals)
         .toFixed(GasToken.decimals)
@@ -127,6 +130,12 @@ export const useNetworkFee = (document: Document | null, gasInfo?: GasInfo | nul
       };
     }
   };
+
+  const isLoading = React.useMemo(() => {
+    if (!document) return false;
+
+    return isFetchingGasInfo || isLoadingGasInfo;
+  }, [document, isFetchingGasInfo, isLoadingGasInfo]);
 
   return {
     currentGasInfo,
