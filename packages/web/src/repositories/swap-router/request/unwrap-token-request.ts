@@ -4,4 +4,8 @@ export interface UnwrapTokenRequest {
   token: TokenModel;
 
   tokenAmount: string;
+
+  gasFee?: string;
+
+  gasUsed?: string;
 }

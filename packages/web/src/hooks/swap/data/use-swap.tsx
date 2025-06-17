@@ -251,9 +251,11 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       return swapRouterRepository.sendWrapToken({
         token: tokenA,
         tokenAmount,
+        gasFee: networkFee?.amount,
+        gasUsed: String(currentGasInfo?.gasUsed),
       });
     },
-    [account, selectedTokenPair, swapRouterRepository, tokenA],
+    [account, selectedTokenPair, swapRouterRepository, tokenA, networkFee?.amount, currentGasInfo?.gasWanted],
   );
 
   const unwrap = useCallback(
@@ -267,9 +269,11 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       return swapRouterRepository.sendUnwrapToken({
         token: tokenA,
         tokenAmount,
+        gasFee: networkFee?.amount,
+        gasUsed: String(currentGasInfo?.gasUsed),
       });
     },
-    [account, selectedTokenPair, swapRouterRepository, tokenA],
+    [account, selectedTokenPair, swapRouterRepository, tokenA, networkFee?.amount, currentGasInfo?.gasWanted],
   );
 
   const swap = useCallback(
@@ -283,6 +287,11 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
 
       const currentReferralAddress = getCurrentReferralAddress();
 
+      const gasInfo = {
+        gasFee: networkFee?.amount,
+        gasUsed: String(currentGasInfo?.gasUsed),
+      };
+
       if (direction === "EXACT_IN") {
         return swapRouterRepository.sendExactInSwapRoute({
           inputToken: tokenA,
@@ -294,8 +303,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + 60 * 5,
           referrerAddress: currentReferralAddress,
-          gasFee: networkFee?.amount,
-          gasUsed: String(currentGasInfo?.gasUsed),
+          ...gasInfo,
         });
       }
 
@@ -310,7 +318,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + 60 * 5,
           referrerAddress: currentReferralAddress,
-          gasFee: networkFee?.amount,
+          ...gasInfo,
         });
       }
     },
@@ -329,6 +337,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       store,
       getCurrentReferralAddress,
       networkFee?.amount,
+      currentGasInfo?.gasWanted,
     ],
   );
 

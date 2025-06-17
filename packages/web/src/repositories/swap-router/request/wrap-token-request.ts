@@ -4,4 +4,8 @@ export interface WrapTokenRequest {
   token: TokenModel;
 
   tokenAmount: string;
+
+  gasFee?: string;
+
+  gasUsed?: string;
 }
