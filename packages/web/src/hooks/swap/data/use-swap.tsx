@@ -16,13 +16,13 @@ import {
   makeUnwrapTokenMessages,
   makeWrapTokenMessages,
 } from "@repositories/swap-router/swap-router.message";
+import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
 
 import { SwapDirectionType } from "@common/values";
 import { TokenModel, isNativeToken } from "@models/token/token-model";
 import { EstimatedRoute } from "@models/swap/swap-route-info";
 import { SwapState } from "@states/index";
 import { NetworkFee, useGetGasPrice } from "@hooks/gas";
-import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { TransactionMessage } from "@common/clients/wallet-client/protocols";
 import { Document } from "src/types/transaction-messages.types";
 import { GasToken } from "@common/values/token-constant";
@@ -442,13 +442,8 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           referrerAddress: swapTransactionRequests.referrerAddress,
         };
 
-        const fetchAllowance = async (packagePath: string, owner: string, spender: string) => {
-          try {
-            return await getGRC20Allowance(rpcProvider, packagePath, owner, spender);
-          } catch (error) {
-            console.error("Failed to fetch allowance:", error);
-            return 0;
-          }
+        const getAllowance = (packagePath: string, owner: string, spender: string) => {
+          return fetchAllowance(rpcProvider, packagePath, owner, spender);
         };
 
         if (isSameToken && isNativeToken(inputToken)) {
@@ -467,10 +462,10 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           });
         } else if (direction === "EXACT_IN") {
           // Exact-In
-          message = await makeExactInSwapRouteMessageWithApproves(commonProps, fetchAllowance);
+          message = await makeExactInSwapRouteMessageWithApproves(commonProps, getAllowance);
         } else if (direction === "EXACT_OUT") {
           // Exact-Out
-          message = await makeExactOutSwapRouteMessageWithApproves(commonProps, fetchAllowance);
+          message = await makeExactOutSwapRouteMessageWithApproves(commonProps, getAllowance);
         }
 
         setTransactionMessage(message);
