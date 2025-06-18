@@ -15,4 +15,6 @@ export interface CreatePoolRequest {
   withStaking?: boolean;
   createPoolFee: number; // fee is Raw Amount
   referrerAddress: string | null;
+  gasFee?: string;
+  gasUsed?: string;
 }

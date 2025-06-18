@@ -55,6 +55,7 @@ export interface EarnAddLiquidityConfirmModalProps {
   swapFeeTier: SwapFeeTierType | null;
 
   createPool: (params: {
+    rpcProvider: GnoProvider | null;
     tokenAAmount: string;
     tokenBAmount: string;
     swapFeeTier: SwapFeeTierType;
@@ -320,6 +321,7 @@ export const usePoolAddLiquidityConfirmModal = ({
 
       const transaction = selectPool.isCreate
         ? createPool({
+            rpcProvider,
             tokenAAmount,
             tokenBAmount,
             minTick,

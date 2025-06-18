@@ -241,28 +241,41 @@ export class PoolRepositoryImpl implements PoolRepository {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }
 
-    const { caller } = request;
+    const { gasFee, gasUsed, caller, ...requests } = request;
+    const makeTxMessageRequests = {
+      caller,
+      ...requests,
+    };
 
     /**
      * Create GNS Token Approve for pool create fee
      * Add Create Pool message
      */
-    const createPoolMessages = await makeCreatePoolMessageWithApproves(request, (packagePath, owner, spender) =>
-      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    const createPoolMessages = await makeCreatePoolMessageWithApproves(
+      makeTxMessageRequests,
+      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
     /**
      * Add Position Mint message
      */
-    const mintMessages = await makePositionMintMessageWithApproves(request, (packagePath, owner, spender) =>
-      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    const mintMessages = await makePositionMintMessageWithApproves(
+      makeTxMessageRequests,
+      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    const nftSetUriMessage = makeNFTSetTokenUri(caller);
+    const nftSetUriMessage = makeNFTSetTokenUri(makeTxMessageRequests.caller);
 
     const messages = [...createPoolMessages, ...mintMessages, nftSetUriMessage];
 
-    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+    const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
+
+    const sendTransactionParams = generateSendTransactionParams({
+      messages,
+      gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
+      gasWanted: Number(gasWanted.toFixed()),
+      memo: "",
+    });
 
     return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
       return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);

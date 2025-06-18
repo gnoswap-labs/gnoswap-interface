@@ -10,16 +10,15 @@ import { useGetPoolCreationFee, useGetRPCPoolsBy } from "@query/pools";
 import { sortTokenPaths } from "@utils/sort-utils";
 import { useReferral } from "@hooks/common/use-referral";
 import { AddLiquidityRequest } from "@repositories/pool/request/add-liquidity-request";
-import { makePositionMintMessageWithApproves } from "@repositories/pool/pool.message";
+import { CreatePoolRequest } from "@repositories/pool/request/create-pool-request";
+import {
+  makeCreatePoolMessageWithApproves,
+  makePositionMintMessageWithApproves,
+} from "@repositories/pool/pool.message";
 import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { useNetworkFee } from "@hooks/common/use-network-fee";
 import { makeNFTSetTokenUri } from "@common/clients/wallet-client/transaction-messages/position";
-import { WalletResponse } from "@common/clients/wallet-client/protocols";
-import {
-  AddLiquidityFailedResponse,
-  AddLiquiditySuccessResponse,
-} from "@repositories/pool/response/add-liquidity-response";
 
 interface Props {
   compareToken: TokenModel | null;
@@ -113,8 +112,58 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
     [compareToken, tokenA, tokenB],
   );
 
+  const buildAdenaCreatePoolAction = async (
+    request: CreatePoolRequest,
+    poolRepository: ReturnType<typeof useGnoswapContext>["poolRepository"],
+  ) => {
+    try {
+      return await poolRepository.createPool(request);
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  };
+
+  const buildSocialCreatePoolAction = async (
+    rpcProvider: GnoProvider,
+    request: CreatePoolRequest,
+    transactionService: ReturnType<typeof useGnoswapContext>["transactionService"],
+    estimateNetworkFee: ReturnType<typeof useNetworkFee>["estimateNetworkFee"],
+    poolRepository: ReturnType<typeof useGnoswapContext>["poolRepository"],
+  ) => {
+    const fetchAllowance = async (packagePath: string, owner: string, spender: string) => {
+      try {
+        return await getGRC20Allowance(rpcProvider, packagePath, owner, spender);
+      } catch (error) {
+        console.error("Failed to fetch allowance", error);
+        return 0;
+      }
+    };
+
+    const createPoolMessages = await makeCreatePoolMessageWithApproves(request, fetchAllowance);
+    const mintMessages = await makePositionMintMessageWithApproves(request, fetchAllowance);
+    const nftSetUriMessage = makeNFTSetTokenUri(request.caller);
+    const txMessages = [...createPoolMessages, ...mintMessages, nftSetUriMessage];
+
+    const txDoc = await transactionService.createDocument({ messages: txMessages });
+    await transactionService.createTransaction(txDoc);
+
+    const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
+    const requestWithGasInfo: CreatePoolRequest = {
+      ...request,
+      gasFee: networkFee?.amount,
+      gasUsed: currentGasInfo?.gasUsed.toString(),
+    };
+
+    return poolRepository.createPool(requestWithGasInfo).catch(e => {
+      console.error(e);
+      return null;
+    });
+  };
+
   const createPool = useCallback(
     async ({
+      rpcProvider,
       tokenAAmount,
       tokenBAmount,
       swapFeeTier,
@@ -124,6 +173,7 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
       slippage,
       withStaking,
     }: {
+      rpcProvider: GnoProvider | null;
       tokenAAmount: string;
       tokenBAmount: string;
       swapFeeTier: SwapFeeTierType;
@@ -140,35 +190,56 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
       if (!currentTokenData) {
         return null;
       }
+
+      const walletType = walletClient?.getWalletType();
       const currentReferralAddress = getCurrentReferralAddress();
-      return poolRepository
-        .createPool({
-          tokenA: currentTokenData.tokenA,
-          tokenB: currentTokenData.tokenB,
-          tokenAAmount: currentTokenData.tokenAAmount,
-          tokenBAmount: currentTokenData.tokenBAmount,
-          feeTier: swapFeeTier,
-          startPrice,
-          minTick,
-          maxTick,
-          slippage,
-          caller: account.address,
-          withStaking,
-          createPoolFee,
-          referrerAddress: currentReferralAddress,
-        })
-        .catch(e => {
-          console.error(e);
-          return null;
-        });
+
+      const request: CreatePoolRequest = {
+        tokenA: currentTokenData.tokenA,
+        tokenB: currentTokenData.tokenB,
+        tokenAAmount: currentTokenData.tokenAAmount,
+        tokenBAmount: currentTokenData.tokenBAmount,
+        feeTier: swapFeeTier,
+        startPrice,
+        minTick,
+        maxTick,
+        slippage,
+        caller: account.address,
+        withStaking,
+        createPoolFee,
+        referrerAddress: currentReferralAddress,
+      };
+
+      if (walletType === "SOCIAL_WALLET" && rpcProvider) {
+        return buildSocialCreatePoolAction(
+          rpcProvider,
+          request,
+          transactionService,
+          estimateNetworkFee,
+          poolRepository,
+        );
+      }
+
+      return buildAdenaCreatePoolAction(request, poolRepository);
     },
-    [account, poolRepository, tokenA, tokenB, compareToken, createPoolFee, getCurrentReferralAddress],
+    [
+      tokenA,
+      tokenB,
+      account,
+      getCurrentTokenPairAmount,
+      poolRepository,
+      getCurrentReferralAddress,
+      transactionService,
+      estimateNetworkFee,
+      walletClient,
+      createPoolFee,
+    ],
   );
 
   const buildAdenaWalletAction = async (
     request: AddLiquidityRequest,
     poolRepository: ReturnType<typeof useGnoswapContext>["poolRepository"],
-  ): Promise<WalletResponse<AddLiquiditySuccessResponse | AddLiquidityFailedResponse> | null> => {
+  ) => {
     try {
       return await poolRepository.addLiquidity(request);
     } catch (e) {
@@ -195,9 +266,9 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
 
     const mintMessages = await makePositionMintMessageWithApproves(request, fetchAllowance);
     const nftSetUriMessage = makeNFTSetTokenUri(request.caller);
-    const txMessage = [...mintMessages, nftSetUriMessage];
+    const txMessages = [...mintMessages, nftSetUriMessage];
 
-    const txDoc = await transactionService.createDocument({ messages: txMessage });
+    const txDoc = await transactionService.createDocument({ messages: txMessages });
     await transactionService.createTransaction(txDoc);
 
     const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
