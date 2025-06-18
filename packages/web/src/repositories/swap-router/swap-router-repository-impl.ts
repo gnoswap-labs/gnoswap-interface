@@ -12,7 +12,7 @@ import { makeRawTokenAmount } from "@utils/token-utils";
 
 import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { drySwap } from "@common/clients/gno-provider/methods/dry-swap";
-import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED, GAS_WANTED_BUFFER_MULTIPLIER } from "@common/values";
+import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { GetRoutesRequest } from "./request/get-routes-request";
 import { DrySwapRequest, SwapRouteRequest } from "./request/swap-route-request";
@@ -123,7 +123,8 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       return DEFAULT_GAS_WANTED;
     }
 
-    return Math.ceil(Number(gasUsed) * GAS_WANTED_BUFFER_MULTIPLIER);
+    return Number(gasUsed);
+    // return Math.ceil(Number(gasUsed) * GAS_WANTED_BUFFER_MULTIPLIER);
   }
 
   public sendExactInSwapRoute = async (
