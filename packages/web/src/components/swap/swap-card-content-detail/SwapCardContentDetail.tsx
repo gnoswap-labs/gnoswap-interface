@@ -29,6 +29,7 @@ export interface SwapCardContentDetailProps {
   setSwapRateAction: (type: SwapRateAction) => void;
   priceImpactStatus: PriceImpactStatus;
   swapTokenInfo: SwapTokenInfo;
+  connectedWallet: boolean;
 }
 
 export const convertSwapRate = (value: number) => {
@@ -46,6 +47,7 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
   setSwapRateAction,
   priceImpactStatus,
   swapTokenInfo,
+  connectedWallet,
 }) => {
   const { t } = useTranslation();
   const { breakpoint } = useWindowSize();
@@ -125,15 +127,17 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
                 <LoadingSpinner /> {t("Swap:fetchingPrice")}
               </div>
             )}
-            <div className="price-info">
-              <IconGasFilled className="price-icon note-icon" />
-              {isLoading || isLoadingGasInfo ? <SkeletonLoader /> : <span>{gasFeeUSDStr}</span>}
-              {openedDetailInfo ? (
-                <IconStrokeArrowUp className="price-icon" onClick={toggleDetailInfo} />
-              ) : (
-                <IconStrokeArrowDown className="price-icon" onClick={toggleDetailInfo} />
-              )}
-            </div>
+            {connectedWallet && (
+              <div className="price-info">
+                <IconGasFilled className="price-icon note-icon" />
+                {isLoading || isLoadingGasInfo ? <SkeletonLoader /> : <span>{gasFeeUSDStr}</span>}
+                {openedDetailInfo ? (
+                  <IconStrokeArrowUp className="price-icon" onClick={toggleDetailInfo} />
+                ) : (
+                  <IconStrokeArrowDown className="price-icon" onClick={toggleDetailInfo} />
+                )}
+              </div>
+            )}
           </div>
         </div>
       </DetailWrapper>
@@ -148,6 +152,7 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
                 isLoadingGasInfo={isLoadingGasInfo}
                 priceImpactStatus={priceImpactStatus}
                 swapTokenInfo={swapTokenInfo}
+                connectedWallet={connectedWallet}
               />
             )}
             <SwapCardAutoRouter

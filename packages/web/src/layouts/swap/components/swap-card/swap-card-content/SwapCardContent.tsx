@@ -263,6 +263,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
               setSwapRateAction={setSwapRateAction}
               priceImpactStatus={priceImpactStatus}
               swapTokenInfo={swapTokenInfo}
+              connectedWallet={connectedWallet}
             />
           )}
         </SwapDetailSectionWrapper>

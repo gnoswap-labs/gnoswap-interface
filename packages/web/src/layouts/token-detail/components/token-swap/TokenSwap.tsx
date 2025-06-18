@@ -262,6 +262,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
           setSwapRateAction={setSwapRateAction}
           priceImpactStatus={priceImpactStatus}
           swapTokenInfo={swapTokenInfo}
+          connectedWallet={connectedWallet}
         />
       )}
       <div className="footer">
