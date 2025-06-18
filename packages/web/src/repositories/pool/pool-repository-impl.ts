@@ -290,16 +290,20 @@ export class PoolRepositoryImpl implements PoolRepository {
     }
 
     const { gasFee, gasUsed, caller, ...requests } = request;
+    const makeTxMessageRequests = {
+      caller,
+      ...requests,
+    };
 
     /**
      * Add Position Mint message
      */
     const mintMessages = await makePositionMintMessageWithApproves(
-      { caller, ...requests },
+      makeTxMessageRequests,
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    const nftSetUriMessage = makeNFTSetTokenUri(caller);
+    const nftSetUriMessage = makeNFTSetTokenUri(makeTxMessageRequests.caller);
 
     const messages = [...mintMessages, nftSetUriMessage];
 
