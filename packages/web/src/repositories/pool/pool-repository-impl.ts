@@ -9,7 +9,7 @@ import {
 import { makeNFTSetTokenUri } from "@common/clients/wallet-client/transaction-messages/position";
 import { CommonError } from "@common/errors";
 import { PoolError } from "@common/errors/pool";
-import { DEFAULT_GAS_FEE } from "@common/values";
+import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
 import { PACKAGE_POOL_PATH, PACKAGE_STAKER_PATH } from "@constants/environment.constant";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
@@ -276,20 +276,28 @@ export class PoolRepositoryImpl implements PoolRepository {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }
 
-    const { caller } = request;
+    const { gasFee, gasUsed, caller, ...requests } = request;
 
     /**
      * Add Position Mint message
      */
-    const mintMessages = await makePositionMintMessageWithApproves(request, (packagePath, owner, spender) =>
-      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    const mintMessages = await makePositionMintMessageWithApproves(
+      { caller, ...requests },
+      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
     const nftSetUriMessage = makeNFTSetTokenUri(caller);
 
     const messages = [...mintMessages, nftSetUriMessage];
 
-    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+    const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
+
+    const sendTransactionParams = generateSendTransactionParams({
+      messages,
+      gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
+      gasWanted: Number(gasWanted.toFixed()),
+      memo: "",
+    });
 
     return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
       return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
