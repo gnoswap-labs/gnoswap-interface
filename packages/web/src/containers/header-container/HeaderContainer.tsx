@@ -207,7 +207,7 @@ const HeaderContainer: React.FC = () => {
         const transferData = isGnot ? tempWuGnot : temp;
         const dataToday = checkPositivePrice(
           transferData.pricesBefore?.latestPrice,
-          transferData.pricesBefore?.priceToday,
+          transferData.pricesBefore?.price1d,
         );
         const price = formatPrice(transferData.usd);
 

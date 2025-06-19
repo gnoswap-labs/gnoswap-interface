@@ -83,7 +83,7 @@ const TokenInfoContentContainer: React.FC = () => {
   }, [currentPrice, pricesBefore.price1d, pricesBefore.price1h, pricesBefore.price30d, pricesBefore.price7d]);
 
   const pricePerformance = useMemo(() => {
-    const dataToday = checkPositivePrice(currentPrice, pricesBefore.priceToday);
+    const dataToday = checkPositivePrice(currentPrice, pricesBefore.price1d);
     const data30day = checkPositivePrice(currentPrice, pricesBefore.price30d);
     const data60day = checkPositivePrice(currentPrice, pricesBefore.price60d);
     const data90day = checkPositivePrice(currentPrice, pricesBefore.price90d);
