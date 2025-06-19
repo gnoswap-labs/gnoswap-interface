@@ -101,7 +101,7 @@ const useSendAsset = () => {
     const walletType = walletClient?.getWalletType();
     const { tokenSymbol, tokenAmount } = buildTokenInfo(request);
 
-    if (walletType !== "SOCIAL_WALLET") {
+    if (walletType === "ADENA") {
       broadcastLoading(
         getMessage(DexEvent.ASSET_SEND, "pending", {
           tokenASymbol: tokenSymbol,
@@ -111,9 +111,9 @@ const useSendAsset = () => {
     }
 
     try {
-      const response = await (walletType === "SOCIAL_WALLET"
-        ? buildSocialWalletAction(request, type)
-        : buildAdenaWalletAction(request, type));
+      const response = await (walletType === "ADENA"
+        ? buildAdenaWalletAction(request, type)
+        : buildSocialWalletAction(request, type));
 
       if (response.code === 0 || response.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
         enqueueEvent({

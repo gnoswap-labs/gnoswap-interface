@@ -179,13 +179,16 @@ export class PositionRepositoryImpl implements PositionRepository {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
-    const { lpTokenIds, caller, referrerAddress } = request;
-    const messages = makeStakePositionsMessagesWithApproves({ lpTokenIds, caller, referrerAddress });
+    const { gasFee, gasUsed, ...requests } = request;
+
+    const messages = makeStakePositionsMessagesWithApproves({ ...requests });
+
+    const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
 
     const sendTransactionParams = generateSendTransactionParams({
       messages,
-      gasFee: DEFAULT_GAS_FEE,
-      gasWanted: DEFAULT_GAS_WANTED,
+      gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
+      gasWanted: Number(gasWanted.toFixed()),
     });
 
     return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {

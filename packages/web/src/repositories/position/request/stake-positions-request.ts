@@ -4,4 +4,8 @@ export interface StakePositionsRequest {
   caller: string;
 
   referrerAddress: string | null;
+
+  gasFee?: string;
+
+  gasUsed?: string;
 }
