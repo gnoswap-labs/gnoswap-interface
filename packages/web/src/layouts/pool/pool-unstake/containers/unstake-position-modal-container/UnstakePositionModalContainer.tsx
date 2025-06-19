@@ -67,7 +67,7 @@ const UnstakePositionModalContainer = ({
 
   const buildSocialWalletAction = async (rpcProvider: GnoProvider | null, request: UnstakePositionsRequest) => {
     if (!rpcProvider) {
-      console.log(new CommonError("FAILED_INITIALIZE_GNO_PROVIDER"));
+      console.log("UnstakePosition: ", new CommonError("FAILED_INITIALIZE_GNO_PROVIDER"));
       return null;
     }
 
