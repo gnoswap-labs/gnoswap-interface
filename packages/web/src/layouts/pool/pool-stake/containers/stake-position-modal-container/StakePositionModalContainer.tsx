@@ -96,7 +96,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
     await transactionService.createTransaction(txDoc);
 
     const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
-    const requestWithGasInfo = {
+    const requestWithGasInfo: StakePositionsRequest = {
       ...request,
       gasFee: networkFee?.amount,
       gasUsed: currentGasInfo?.gasUsed.toString(),

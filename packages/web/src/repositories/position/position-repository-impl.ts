@@ -207,14 +207,18 @@ export class PositionRepositoryImpl implements PositionRepository {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }
 
-    const messages = await makeUnStakePositionsMessagesWithApproves({ ...request }, (packagePath, owner, spender) =>
+    const { gasFee, gasUsed, ...requests } = request;
+
+    const messages = await makeUnStakePositionsMessagesWithApproves({ ...requests }, (packagePath, owner, spender) =>
       getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
+    const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
+
     const sendTransactionParams = generateSendTransactionParams({
       messages,
-      gasFee: DEFAULT_GAS_FEE,
-      gasWanted: DEFAULT_GAS_WANTED,
+      gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
+      gasWanted: Number(gasWanted.toFixed()),
     });
 
     return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
