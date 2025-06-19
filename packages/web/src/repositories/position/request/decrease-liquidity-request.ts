@@ -20,4 +20,8 @@ export interface DecreaseLiquidityRequest {
   caller: string;
 
   isGetWGNOT: boolean;
+
+  gasFee?: string;
+
+  gasUsed?: string;
 }

@@ -271,7 +271,7 @@ export const useIncreasePositionModal = ({
         confirm={increaseLiquidity}
       />,
     );
-  }, [amountInfo, isDepositTokenA, isDepositTokenB, confirm]);
+  }, [amountInfo, isDepositTokenA, isDepositTokenB, increaseLiquidity]);
 
   return {
     openModal,
