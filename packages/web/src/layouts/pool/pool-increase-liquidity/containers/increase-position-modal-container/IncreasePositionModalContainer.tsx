@@ -5,6 +5,7 @@ import { useClearModal } from "@hooks/common/use-clear-modal";
 import { TokenModel } from "@models/token/token-model";
 
 import IncreasePositionModal from "../../components/increase-position-modal/IncreasePositionModal";
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 
 interface Props {
   amountInfo: {
@@ -25,7 +26,7 @@ interface Props {
   rangeStatus: RANGE_STATUS_OPTION;
   isDepositTokenA: boolean;
   isDepositTokenB: boolean;
-  confirm: () => void;
+  confirm: ({ rpcProvider }: { rpcProvider: GnoProvider | null }) => void;
 }
 
 const IncreasePositionModalContainer: React.FC<Props> = ({

@@ -10,9 +10,11 @@ import IncreaseMaxMin from "../../../common/components/increase-max-min/Increase
 import IncreaseAmountInfo from "./increase-amount-info/IncreaseAmountInfo";
 
 import { IncreasePositionModalWrapper } from "./IncreasePositionModal.styles";
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 interface Props {
-  confirm: () => void;
+  confirm: ({ rpcProvider }: { rpcProvider: GnoProvider | null }) => void;
   close: () => void;
   amountInfo: {
     tokenA: {
@@ -46,6 +48,8 @@ const IncreasePositionModal: React.FC<Props> = ({
 }) => {
   const { t } = useTranslation();
 
+  const { rpcProvider } = useGnoswapContext();
+
   const onClickClose = useCallback(() => {
     close();
   }, [close]);
@@ -73,7 +77,7 @@ const IncreasePositionModal: React.FC<Props> = ({
           </div>
           <div>
             <Button
-              onClick={confirm}
+              onClick={() => confirm({ rpcProvider })}
               text={t("IncreaseLiquidity:confirmIncreaseModal.title")}
               style={{
                 hierarchy: ButtonHierarchy.Primary,
