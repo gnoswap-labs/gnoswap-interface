@@ -208,7 +208,26 @@ const UnstakePositionModalContainer = ({
         broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
       }
     },
-    [account?.address, positionRepository, positions, router],
+    [
+      account?.address,
+      pooledTokenInfos,
+      walletClient,
+      positions,
+      isGetWGNOT,
+      buildAdenaWalletAction,
+      buildSocialWalletAction,
+      broadcastLoading,
+      broadcastSuccess,
+      broadcastRejected,
+      broadcastError,
+      getMessage,
+      enqueueEvent,
+      refetchPools,
+      refetchPositions,
+      refetchPoolDetails,
+      updateBalances,
+      openModal,
+    ],
   );
 
   return <UnstakePositionModal positions={positions} close={close} onSubmit={unstakeOnSubmit} />;
