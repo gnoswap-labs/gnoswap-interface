@@ -16,10 +16,12 @@ import { TokenModel } from "@models/token/token-model";
 import { DistributionPeriodDate } from "@states/earn";
 
 import { IncentivizePoolModalWrapper } from "./IncentivizePoolModal.styles";
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 interface Props {
   close: () => void;
-  onSubmit: () => void;
+  onSubmit: ({ rpcProvider }: { rpcProvider: GnoProvider | null }) => void;
   date: DistributionPeriodDate;
   period: number;
   data: TokenAmountInputModel | null;
@@ -35,6 +37,8 @@ function formatDate(myDate?: DistributionPeriodDate, days?: number): string {
 const IncentivizePoolModal: React.FC<Props> = ({ close, onSubmit, date, period, data, pool }) => {
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
+
+  const { rpcProvider } = useGnoswapContext();
 
   const onClickClose = useCallback(() => {
     close();
@@ -110,7 +114,7 @@ const IncentivizePoolModal: React.FC<Props> = ({ close, onSubmit, date, period, 
                 fullWidth: true,
               }}
               className="button-confirm"
-              onClick={onSubmit}
+              onClick={() => onSubmit({ rpcProvider })}
             />
           </div>
         </div>

@@ -330,21 +330,32 @@ export class PoolRepositoryImpl implements PoolRepository {
 
     const address = await this.getAddress();
 
+    const { gasFee, gasUsed, ...requests } = request;
+    const makeTxMessageRequests = {
+      caller: address,
+      ...requests,
+    };
+
     /**
      * Add create external incentive message
      */
     const messages = await makeCreateExternalIncentiveMessageWithApproves(
-      { ...request, caller: address },
+      makeTxMessageRequests,
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    // Todo: Social Wallet approval process must be applied
-    const response = await this.walletClient!.sendTransaction({
+    const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
+
+    const sendTransactionParams = generateSendTransactionParams({
       messages,
-      gasFee: DEFAULT_GAS_FEE,
+      gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
+      gasWanted: Number(gasWanted.toFixed()),
       memo: "",
     });
-    return response;
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
+    });
   };
 
   removeExternalIncentive = async (request: RemoveExternalIncentiveRequest): Promise<string | null> => {

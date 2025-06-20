@@ -10,4 +10,8 @@ export interface CreateExternalIncentiveRequest {
   startTime: number;
 
   endTime: number;
+
+  gasFee?: string;
+
+  gasUsed?: string;
 }
