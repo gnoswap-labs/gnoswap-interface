@@ -21,6 +21,7 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import { historyTooltipContent } from "./IncentivizePoolHistoryBox.styles";
 import { useRemoveExternalIncentive } from "@query/pools/use-remove-external-incentive";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 interface IncentivizePoolHistoryBoxProps {
   stakingData: ExtendedPoolStakingModel;
@@ -29,6 +30,7 @@ interface IncentivizePoolHistoryBoxProps {
 
 const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHistoryBoxProps) => {
   const { t } = useTranslation();
+  const { rpcProvider } = useGnoswapContext();
 
   const { rewardToken, startTimestamp, endTimestamp } = stakingData;
 
@@ -206,7 +208,7 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
             <Button
               text={"Claim"}
               style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
-              onClick={removeExternalIncentive}
+              onClick={() => removeExternalIncentive({ rpcProvider })}
             />
           </div>
         )}

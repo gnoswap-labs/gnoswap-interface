@@ -29,8 +29,10 @@ import AssetSendModal from "../../components/asset-send-modal/AssetSendModal";
 import WalletBalance from "../../components/wallet-balance/WalletBalance";
 import useSendAsset from "@hooks/wallet/data/useSendAsset";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 const WalletBalanceContainer: React.FC = () => {
+  const { rpcProvider } = useGnoswapContext();
   const { connected, isSwitchNetwork, loadingConnect, account, walletType } = useWallet();
   const [address] = useState("");
   const { breakpoint } = useWindowSize();
@@ -100,7 +102,7 @@ const WalletBalanceContainer: React.FC = () => {
     broadcastLoading(getMessage(DexEvent.CLAIM_FEE, "pending", messageData));
 
     setLoadingTransactionClaim(true);
-    claimAll().then(response => {
+    claimAll({ rpcProvider }).then(response => {
       if (response) {
         if (response?.code === 0 || response?.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
           enqueueEvent({

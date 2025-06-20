@@ -15,6 +15,8 @@ import { wait } from "@utils/common";
 
 import { RepositionBroadcastProgressWrapper } from "./RepositionBroadcastProgress.styles";
 import RepositionBroadcastProgressState, { ProgressStateType } from "./RepositionBroadcastProgressState";
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 export interface RepositionBroadcastProgressProps {
   tokenA: TokenModel;
@@ -23,6 +25,7 @@ export interface RepositionBroadcastProgressProps {
   removePosition: () => Promise<WalletResponse | null>;
   swapRemainToken: () => Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse> | null>;
   reposition: (
+    rpcProvider: GnoProvider | null,
     swapToken: TokenModel | null,
     swapAmount: string | null,
   ) => Promise<WalletResponse<RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse> | null>;
@@ -43,6 +46,7 @@ const RepositionBroadcastProgress: React.FC<RepositionBroadcastProgressProps> = 
   isSkipSwap,
 }) => {
   const { t } = useTranslation();
+  const { rpcProvider } = useGnoswapContext();
 
   const [removePositionState, setRemovePositionState] = useState<ProgressStateType>("NONE");
   const [swapState, setSwapState] = useState<ProgressStateType>("NONE");
@@ -138,7 +142,7 @@ const RepositionBroadcastProgress: React.FC<RepositionBroadcastProgressProps> = 
       return;
     }
 
-    reposition(swapResult?.resultToken || null, swapResult?.resultAmount || null).then(response => {
+    reposition(rpcProvider, swapResult?.resultToken || null, swapResult?.resultAmount || null).then(response => {
       if (!response) {
         setAddPositionState("FAIL");
         return;

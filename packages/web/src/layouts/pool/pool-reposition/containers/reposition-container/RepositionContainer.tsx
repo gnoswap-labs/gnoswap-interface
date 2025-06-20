@@ -6,6 +6,7 @@ import RepositionContent from "../../components/reposition-content/RepositionCon
 import { useRepositionHandle } from "@hooks/pool/data/use-reposition-handle";
 import { useRepositionModalContainer } from "@hooks/pool/ui/use-reposition-position-modal";
 import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 const PRICE_RANGES: PriceRangeMeta[] = [{ type: "Active" }, { type: "Passive" }, { type: "Custom" }];
 
@@ -41,6 +42,7 @@ const RepositionContainer: React.FC = () => {
     isSkipSwap,
     refetchPositions,
   } = useRepositionHandle();
+  const { rpcProvider } = useGnoswapContext();
 
   const { updateBalances } = useTokenData();
 
@@ -62,8 +64,8 @@ const RepositionContainer: React.FC = () => {
     aprFee: concentratedFeeApr,
     currentAmounts,
     repositionAmounts,
-    removePosition,
-    swapRemainToken,
+    removePosition: () => removePosition({ rpcProvider }),
+    swapRemainToken: () => swapRemainToken({ rpcProvider }),
     reposition,
     isSkipSwap,
     refetchPositions: async () => {

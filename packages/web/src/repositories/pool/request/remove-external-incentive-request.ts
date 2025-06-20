@@ -8,4 +8,8 @@ export interface RemoveExternalIncentiveRequest {
   startTimestamp: string;
 
   endTimestamp: string;
+
+  gasFee?: string;
+
+  gasUsed?: string;
 }

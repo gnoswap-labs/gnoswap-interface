@@ -19,6 +19,7 @@ import RepositionBroadcastProgress from "../reposition-broadcast-progress/Reposi
 import RepositionInfo from "../reposition-info/RepositionInfo";
 
 import { RepositionModalWrapper } from "./RepositionModal.styles";
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 
 interface Props {
   close: () => void;
@@ -45,6 +46,7 @@ interface Props {
   removePosition: () => Promise<WalletResponse | null>;
   swapRemainToken: () => Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse> | null>;
   reposition: (
+    rpcProvider: GnoProvider | null,
     swapToken: TokenModel | null,
     swapAmount: string | null,
   ) => Promise<WalletResponse<RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse> | null>;

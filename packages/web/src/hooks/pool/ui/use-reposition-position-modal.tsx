@@ -14,6 +14,7 @@ import { CommonState } from "@states/index";
 
 import RepositionModalContainer from "../../../layouts/pool/pool-reposition/containers/reposition-modal-container/RepoitionModalContainer";
 import { IPriceRange } from "@hooks/pool/data/use-reposition-handle";
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 
 export interface Props {
   openModal: () => void;
@@ -35,6 +36,7 @@ export interface RepositionModalProps {
   removePosition: () => Promise<WalletResponse | null>;
   swapRemainToken: () => Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse> | null>;
   reposition: (
+    rpcProvider: GnoProvider | null,
     swapToken: TokenModel | null,
     swapAmount: string | null,
   ) => Promise<WalletResponse<RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse> | null>;

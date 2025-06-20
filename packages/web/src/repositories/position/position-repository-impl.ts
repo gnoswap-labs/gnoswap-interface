@@ -128,16 +128,23 @@ export class PositionRepositoryImpl implements PositionRepository {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }
 
-    const { position, recipient } = request;
-    const messages = await makeClaimMessageWithApproves(
-      { position, caller: recipient },
-      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    const { gasFee, gasUsed, position, recipient } = request;
+    const makeTxMessageRequests = {
+      caller: recipient,
+      position,
+    };
+
+    const messages = await makeClaimMessageWithApproves(makeTxMessageRequests, (packagePath, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
+
+    const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
 
     const sendTransactionParams = generateSendTransactionParams({
       messages,
-      gasFee: DEFAULT_GAS_FEE,
-      gasWanted: DEFAULT_GAS_WANTED,
+      gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
+      gasWanted: Number(gasWanted.toFixed()),
+      memo: "",
     });
 
     return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
@@ -156,16 +163,23 @@ export class PositionRepositoryImpl implements PositionRepository {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }
 
-    const { positions, recipient } = request;
-    const messages = await makeClaimAllMessageWithApproves(
-      { positions, caller: recipient },
-      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    const { gasFee, gasUsed, positions, recipient } = request;
+    const makeTxMessageRequests = {
+      caller: recipient,
+      positions,
+    };
+
+    const messages = await makeClaimAllMessageWithApproves(makeTxMessageRequests, (packagePath, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
+
+    const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
 
     const sendTransactionParams = generateSendTransactionParams({
       messages,
-      gasFee: DEFAULT_GAS_FEE,
-      gasWanted: DEFAULT_GAS_WANTED,
+      gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
+      gasWanted: Number(gasWanted.toFixed()),
+      memo: "",
     });
 
     return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
@@ -297,14 +311,18 @@ export class PositionRepositoryImpl implements PositionRepository {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }
 
-    const messages = await makeRepositionLiquidityMessagesWithApproves({ ...request }, (packagePath, owner, spender) =>
+    const { gasFee, gasUsed, ...requests } = request;
+
+    const messages = await makeRepositionLiquidityMessagesWithApproves({ ...requests }, (packagePath, owner, spender) =>
       getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
+    const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
+
     const sendTransactionParams = generateSendTransactionParams({
       messages,
-      gasFee: DEFAULT_GAS_FEE,
-      gasWanted: DEFAULT_GAS_WANTED,
+      gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
+      gasWanted: Number(gasWanted.toFixed()),
     });
 
     return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
@@ -323,14 +341,18 @@ export class PositionRepositoryImpl implements PositionRepository {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }
 
-    const messages = await makeRemoveLiquidityMessagesWithApproves({ ...request }, (packagePath, owner, spender) =>
+    const { gasFee, gasUsed, ...requests } = request;
+
+    const messages = await makeRemoveLiquidityMessagesWithApproves({ ...requests }, (packagePath, owner, spender) =>
       getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
+    const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
+
     const sendTransactionParams = generateSendTransactionParams({
       messages,
-      gasFee: DEFAULT_GAS_FEE,
-      gasWanted: DEFAULT_GAS_WANTED,
+      gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
+      gasWanted: Number(gasWanted.toFixed()),
     });
 
     return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
