@@ -21,6 +21,17 @@ enum TransactionMessageFunctionType {
   ExactOut = "ExactOutSwapRoute",
 }
 
+export interface ExactSwapRouteMessageRequest {
+  inputToken: TokenModel;
+  outputToken: TokenModel;
+  tokenAmount: number;
+  estimatedRoutes: EstimatedRoute[];
+  tokenAmountLimit: number;
+  deadline: number;
+  caller: string;
+  referrerAddress: string | null;
+}
+
 export function makeExactInSwapRouteMessageWithApproves(
   {
     inputToken,
@@ -31,18 +42,7 @@ export function makeExactInSwapRouteMessageWithApproves(
     deadline,
     caller,
     referrerAddress,
-    gasFee,
-  }: {
-    inputToken: TokenModel;
-    outputToken: TokenModel;
-    tokenAmount: number;
-    estimatedRoutes: EstimatedRoute[];
-    tokenAmountLimit: number;
-    deadline: number;
-    caller: string;
-    referrerAddress: string | null;
-    gasFee?: string;
-  },
+  }: ExactSwapRouteMessageRequest,
   fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
   const targetToken = inputToken;
@@ -73,7 +73,6 @@ export function makeExactInSwapRouteMessageWithApproves(
       referrerAddress || "", // Referral address
     ],
     caller,
-    gasFee,
   });
 
   const approveInfos: TokenApproveMessageInfo[] = [
@@ -110,16 +109,7 @@ export function makeExactOutSwapRouteMessageWithApproves(
     deadline,
     caller,
     referrerAddress,
-  }: {
-    inputToken: TokenModel;
-    outputToken: TokenModel;
-    tokenAmount: number;
-    estimatedRoutes: EstimatedRoute[];
-    tokenAmountLimit: number;
-    deadline: number;
-    caller: string;
-    referrerAddress: string | null;
-  },
+  }: ExactSwapRouteMessageRequest,
   fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
   const targetToken = outputToken;

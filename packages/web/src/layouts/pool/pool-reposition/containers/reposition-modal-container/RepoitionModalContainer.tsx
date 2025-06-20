@@ -12,6 +12,7 @@ import {
 
 import RepositionModal from "../../components/reposition-modal/RepositionModal";
 import { IPriceRange } from "@hooks/pool/data/use-reposition-handle";
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 
 interface Props {
   amountInfo: {
@@ -37,6 +38,7 @@ interface Props {
   removePosition: () => Promise<WalletResponse | null>;
   swapRemainToken: () => Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse> | null>;
   reposition: (
+    rpcProvider: GnoProvider | null,
     swapToken: TokenModel | null,
     swapAmount: string | null,
   ) => Promise<WalletResponse<RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse> | null>;
