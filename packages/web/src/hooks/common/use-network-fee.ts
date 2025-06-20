@@ -30,22 +30,24 @@ export const useNetworkFee = (document: Document | null, gasInfo?: GasInfo | nul
     isFetching: isFetchingGasInfo,
   } = useGetEstimateGasInfo(document, gasInfo?.gasUsed || 0);
 
-  const currentGasInfo = React.useMemo(() => {
-    if (!estimatedGasInfo) return null;
-    return estimatedGasInfo;
-  }, [estimatedGasInfo]);
+  const currentGasInfo = React.useMemo(() => estimatedGasInfo || null, [estimatedGasInfo]);
 
-  const networkFee: NetworkFee | null = React.useMemo(() => {
-    if (!currentGasInfo) return null;
+  const formatNetworkFeeAmount = (gasFee: string | number): string => {
+    const fee = BigNumber(gasFee);
+    if (!fee.isFinite() || fee.isNaN()) return "0";
 
-    const networkFeeAmount = BigNumber(currentGasInfo.gasFee)
+    return fee
       .shiftedBy(-GasToken.decimals)
       .toFixed(GasToken.decimals)
       .replace(/(\.\d*?)0+$/, "$1")
       .replace(/\.$/, "");
+  };
+
+  const networkFee: NetworkFee | null = React.useMemo(() => {
+    if (!currentGasInfo) return null;
 
     return {
-      amount: networkFeeAmount,
+      amount: formatNetworkFeeAmount(currentGasInfo.gasFee),
       denom: GasToken.symbol,
     };
   }, [currentGasInfo]);
@@ -109,16 +111,10 @@ export const useNetworkFee = (document: Document | null, gasInfo?: GasInfo | nul
         simulateErrorMessage: resultGasUsed.errorMessage,
       };
 
-      const networkFeeAmount = BigNumber(gasFee)
-        .shiftedBy(-GasToken.decimals)
-        .toFixed(GasToken.decimals)
-        .replace(/(\.\d*?)0+$/, "$1")
-        .replace(/\.$/, "");
-
       return {
         currentGasInfo: gasInfoResult,
         networkFee: {
-          amount: networkFeeAmount,
+          amount: formatNetworkFeeAmount(gasFee),
           denom: GasToken.symbol,
         },
       };

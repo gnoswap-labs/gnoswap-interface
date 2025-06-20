@@ -124,7 +124,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     }
 
     return Number(gasUsed);
-    // return Math.ceil(Number(gasUsed) * GAS_WANTED_BUFFER_MULTIPLIER);
   }
 
   public sendExactInSwapRoute = async (
@@ -150,7 +149,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     const sendTransactionParams = generateSendTransactionParams({
       messages,
       gasWanted,
-      // gasWanted: 170306276,
       gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
       memo: "",
     });
@@ -183,7 +181,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     const sendTransactionParams = generateSendTransactionParams({
       messages,
       gasWanted,
-      // gasWanted: 170306276,
       gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
       memo: "",
     });
