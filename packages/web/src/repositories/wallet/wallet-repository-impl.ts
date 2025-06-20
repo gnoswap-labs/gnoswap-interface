@@ -29,12 +29,16 @@ export class WalletRepositoryImpl implements WalletRepository {
       throw new Error("Not a native token");
     }
 
-    const messages = makeTransferGNOTTokenMessages({ ...request });
+    const { gasFee, gasUsed, ...requests } = request;
+
+    const messages = makeTransferGNOTTokenMessages({ ...requests });
+
+    const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
 
     const sendTransactionParams = generateSendTransactionParams({
       messages,
-      gasFee: DEFAULT_GAS_FEE,
-      gasWanted: DEFAULT_GAS_WANTED,
+      gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
+      gasWanted: Number(gasWanted.toFixed()),
     });
 
     return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
@@ -52,12 +56,16 @@ export class WalletRepositoryImpl implements WalletRepository {
       throw new Error("Not a grc20 token");
     }
 
-    const messages = makeTransferGRC20TokenMessages({ ...request });
+    const { gasFee, gasUsed, ...requests } = request;
+
+    const messages = makeTransferGRC20TokenMessages({ ...requests });
+
+    const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
 
     const sendTransactionParams = generateSendTransactionParams({
       messages,
-      gasFee: DEFAULT_GAS_FEE,
-      gasWanted: DEFAULT_GAS_WANTED,
+      gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
+      gasWanted: Number(gasWanted.toFixed()),
     });
 
     return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {

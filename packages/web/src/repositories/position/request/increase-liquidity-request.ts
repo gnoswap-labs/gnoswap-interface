@@ -16,4 +16,8 @@ export interface IncreaseLiquidityRequest {
   slippage: number;
 
   deadline?: string;
+
+  gasFee?: string;
+
+  gasUsed?: string;
 }

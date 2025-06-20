@@ -12,7 +12,7 @@ import { makeRawTokenAmount } from "@utils/token-utils";
 
 import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { drySwap } from "@common/clients/gno-provider/methods/dry-swap";
-import { DEFAULT_GAS_FEE } from "@common/values";
+import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { GetRoutesRequest } from "./request/get-routes-request";
 import { DrySwapRequest, SwapRouteRequest } from "./request/swap-route-request";
@@ -118,6 +118,14 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     });
   }
 
+  private calculateGasWanted(gasUsed?: number): number {
+    if (!gasUsed || isNaN(Number(gasUsed)) || Number(gasUsed) <= 0) {
+      return DEFAULT_GAS_WANTED;
+    }
+
+    return Number(gasUsed);
+  }
+
   public sendExactInSwapRoute = async (
     request: SwapRouteRequest,
   ): Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>> => {
@@ -129,14 +137,19 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     await this.validateAndGetDrySwap(request, "EXACT_IN");
 
+    const { gasFee, gasUsed, ...requests } = request;
+
     const messages = await makeExactInSwapRouteMessageWithApproves(
-      { ...request, caller: address },
+      { ...requests, caller: address },
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
+    const gasWanted = this.calculateGasWanted(Number(gasUsed));
+
     const sendTransactionParams = generateSendTransactionParams({
       messages,
-      gasFee: DEFAULT_GAS_FEE,
+      gasWanted,
+      gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
       memo: "",
     });
 
@@ -156,14 +169,19 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     await this.validateAndGetDrySwap(request, "EXACT_OUT");
 
+    const { gasFee, gasUsed, ...requests } = request;
+
     const messages = await makeExactOutSwapRouteMessageWithApproves(
-      { ...request, caller: address },
+      { ...requests, caller: address },
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
+    const gasWanted = this.calculateGasWanted(Number(gasUsed));
+
     const sendTransactionParams = generateSendTransactionParams({
       messages,
-      gasFee: DEFAULT_GAS_FEE,
+      gasWanted,
+      gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
       memo: "",
     });
 
@@ -175,9 +193,18 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   public sendWrapToken = async (request: WrapTokenRequest): Promise<WalletResponse<{ hash: string }>> => {
     const address = await this.getAddress();
 
-    const messages = makeWrapTokenMessages({ ...request, caller: address });
+    const { gasFee, gasUsed, ...requests } = request;
 
-    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+    const messages = makeWrapTokenMessages({ ...requests, caller: address });
+
+    const gasWanted = this.calculateGasWanted(Number(gasUsed));
+
+    const sendTransactionParams = generateSendTransactionParams({
+      messages,
+      gasWanted,
+      gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
+      memo: "",
+    });
 
     return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
       return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
@@ -187,9 +214,18 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   public sendUnwrapToken = async (request: UnwrapTokenRequest): Promise<WalletResponse<{ hash: string }>> => {
     const address = await this.getAddress();
 
-    const messages = makeUnwrapTokenMessages({ ...request, caller: address });
+    const { gasFee, gasUsed, ...requests } = request;
 
-    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+    const messages = makeUnwrapTokenMessages({ ...requests, caller: address });
+
+    const gasWanted = this.calculateGasWanted(Number(gasUsed));
+
+    const sendTransactionParams = generateSendTransactionParams({
+      messages,
+      gasWanted,
+      gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
+      memo: "",
+    });
 
     return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
       return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);

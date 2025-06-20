@@ -12,9 +12,11 @@ import BalanceChange from "./balance-change/BalanceChange";
 import DecreaseMaxMin from "./decrease-max-min/DecreaseMaxMin";
 
 import { DecreasePositionModalWrapper } from "./DecreasePositionModal.styles";
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 interface Props {
-  confirm: () => void;
+  confirm: ({ rpcProvider }: { rpcProvider: GnoProvider | null }) => void;
   close: () => void;
   amountInfo: {
     tokenA: TokenModel;
@@ -38,6 +40,8 @@ const DecreasePositionModal: React.FC<Props> = ({
   pooledTokenInfos,
 }) => {
   const { t } = useTranslation();
+
+  const { rpcProvider } = useGnoswapContext();
 
   const onClickClose = useCallback(() => {
     close();
@@ -71,7 +75,7 @@ const DecreasePositionModal: React.FC<Props> = ({
           />
           <div>
             <Button
-              onClick={confirm}
+              onClick={() => confirm({ rpcProvider })}
               text={t("DecreaseLiquidity:confModal.title")}
               style={{
                 hierarchy: ButtonHierarchy.Primary,

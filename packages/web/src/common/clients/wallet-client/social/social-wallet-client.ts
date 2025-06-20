@@ -10,6 +10,7 @@ import {
   makeMsgSendMessage,
 } from "@adena-wallet/sdk";
 import { TransactionBuilder } from "@adena-wallet/sdk";
+import { base64ToUint8Array, Provider, Tx, TxSignature } from "@gnolang/tm2-js-client";
 
 import { createTimeout } from "@common/utils/client-util";
 import { DEFAULT_GAS_WANTED } from "@common/values";
@@ -32,6 +33,8 @@ import { WalletClient } from "../wallet-client";
 import { getSocialWalletConfig } from "./config";
 import { GNOT_UNIT_DENOM } from "@common/values/token-constant";
 import { AUTH_STORE_KEY } from "@hooks/common/use-auto-disconnect";
+import { documentToTx } from "@utils/transaction-utils";
+import { Document } from "src/types/transaction-messages.types";
 
 export class SocialWalletClient implements WalletClient {
   private sdk: AdenaSDK | null;
@@ -108,6 +111,30 @@ export class SocialWalletClient implements WalletClient {
 
   public get type(): SocialLoginType | null {
     return this._type;
+  }
+
+  public async sign(provider: Provider, document: Document): Promise<{ signed: Tx; signature: TxSignature[] }> {
+    if (!this.sdk) {
+      throw new Error("Social wallet not initialized");
+    }
+
+    const tx = documentToTx(document);
+    const { data } = await this.sdk.signTransaction({ tx });
+
+    if (!data?.encodedTransaction) {
+      return {
+        signed: tx,
+        signature: [],
+      };
+    }
+
+    const decodedTransaction = base64ToUint8Array(data.encodedTransaction);
+    const signedTx = Tx.decode(decodedTransaction);
+
+    return {
+      signed: signedTx,
+      signature: [],
+    };
   }
 
   public async getAddress(): Promise<string | null> {
@@ -197,7 +224,6 @@ export class SocialWalletClient implements WalletClient {
     // Broadcasting transactions to the network with broadcastTransaction
     return createTimeout<WalletResponse<SendTransactionResponse<T | null>>>(
       this.sdk.broadcastTransaction({ tx }).then(response => {
-        console.log("Social Wallet Response", response);
         return parseTransactionResponse(
           response as WalletResponse<AdenaSendTransactionSuccessResponse>,
         ) as WalletResponse<SendTransactionResponse<T | null>>;

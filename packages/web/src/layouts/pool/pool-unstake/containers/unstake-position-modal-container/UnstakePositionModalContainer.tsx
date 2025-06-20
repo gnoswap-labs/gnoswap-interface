@@ -18,6 +18,12 @@ import { useTransactionEventStore } from "@hooks/common/use-transaction-event-st
 import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { useNetworkFee } from "@hooks/common/use-network-fee";
+import { UnstakePositionsRequest } from "@repositories/position/request";
+import { makeUnStakePositionsMessagesWithApproves } from "@repositories/position/position.message";
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
+import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
+import { CommonError } from "@common/errors";
 
 interface UnstakePositionModalContainerProps {
   positions: PoolPositionModel[];
@@ -30,8 +36,10 @@ const UnstakePositionModalContainer = ({
   refetchPositions,
   isGetWGNOT,
 }: UnstakePositionModalContainerProps) => {
-  const { account } = useWallet();
-  const { positionRepository } = useGnoswapContext();
+  const { account, walletClient } = useWallet();
+  const { transactionService, positionRepository } = useGnoswapContext();
+  const { estimateNetworkFee } = useNetworkFee(null);
+
   const router = useRouter();
   const clearModal = useClearModal();
   const { broadcastRejected, broadcastSuccess, broadcastError, broadcastLoading } = useBroadcastHandler();
@@ -53,90 +61,56 @@ const UnstakePositionModalContainer = ({
     clearModal();
   }, [clearModal]);
 
-  const unstakeOnSubmit = useCallback(async () => {
-    const address = account?.address;
-    if (!address) {
+  const buildAdenaWalletAction = async (request: UnstakePositionsRequest) => {
+    return await positionRepository.unstakePositions(request).catch(() => null);
+  };
+
+  const buildSocialWalletAction = async (rpcProvider: GnoProvider | null, request: UnstakePositionsRequest) => {
+    if (!rpcProvider) {
+      console.log("UnstakePosition: ", new CommonError("FAILED_INITIALIZE_GNO_PROVIDER"));
       return null;
     }
 
-    const tokenA = pooledTokenInfos?.[0];
-    const tokenB = pooledTokenInfos?.[1];
+    const getAllowance = (packagePath: string, owner: string, spender: string) => {
+      return fetchAllowance(rpcProvider, packagePath, owner, spender);
+    };
 
-    broadcastLoading(
-      getMessage(DexEvent.UNSTAKE, "pending", {
-        tokenASymbol: tokenA?.token?.symbol,
-        tokenBSymbol: tokenB?.token?.symbol,
-        tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
-          decimals: tokenA?.token?.decimals,
-          isKMB: false,
-        }),
-        tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
-          decimals: tokenA?.token?.decimals,
-          isKMB: false,
-        }),
-      }),
-    );
-    const result = await positionRepository
-      .unstakePositions({
+    const txMessages = await makeUnStakePositionsMessagesWithApproves(request, getAllowance);
+
+    const txDoc = await transactionService.createDocument({ messages: txMessages });
+    await transactionService.createTransaction(txDoc);
+
+    const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
+    const requestWithGasInfo: UnstakePositionsRequest = {
+      ...request,
+      gasFee: networkFee?.amount,
+      gasUsed: currentGasInfo?.gasUsed.toString(),
+    };
+
+    return await positionRepository.unstakePositions(requestWithGasInfo).catch(() => null);
+  };
+
+  const unstakeOnSubmit = useCallback(
+    async ({ rpcProvider }: { rpcProvider: GnoProvider | null }) => {
+      const address = account?.address;
+      if (!address) {
+        return null;
+      }
+
+      const tokenA = pooledTokenInfos?.[0];
+      const tokenB = pooledTokenInfos?.[1];
+
+      const walletType = walletClient?.getWalletType();
+
+      const request: UnstakePositionsRequest = {
         positions,
         isGetWGNOT,
         caller: address,
-      })
-      .catch(() => null);
-    if (result) {
-      if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
-        enqueueEvent({
-          txHash: result.data?.hash,
-          action: DexEvent.UNSTAKE,
-          visibleEmitResult: true,
-          formatData: () => ({
-            tokenASymbol: tokenA?.token?.symbol,
-            tokenBSymbol: tokenB?.token?.symbol,
-            tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
-              decimals: tokenA?.token?.decimals,
-              isKMB: false,
-            }),
-            tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
-              decimals: tokenA?.token?.decimals,
-              isKMB: false,
-            }),
-          }),
-          onEmit: async () => {
-            refetchPools();
-            refetchPositions();
-            refetchPoolDetails();
-          },
-          onUpdate: async () => {
-            updateBalances();
-          },
-        });
-      }
-      if (result.code === 0) {
-        setTimeout(() => {
-          broadcastSuccess(
-            getMessage(
-              DexEvent.UNSTAKE,
-              "success",
-              {
-                tokenASymbol: tokenA?.token?.symbol,
-                tokenBSymbol: tokenB?.token?.symbol,
-                tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
-                  decimals: tokenA?.token?.decimals,
-                  isKMB: false,
-                }),
-                tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
-                  decimals: tokenA?.token?.decimals,
-                  isKMB: false,
-                }),
-              },
-              result.data?.hash,
-            ),
-          );
-          openModal();
-        }, 1000);
-      } else if (result.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
-        broadcastRejected(
-          getMessage(DexEvent.UNSTAKE, "error", {
+      };
+
+      if (walletType === "ADENA") {
+        broadcastLoading(
+          getMessage(DexEvent.UNSTAKE, "pending", {
             tokenASymbol: tokenA?.token?.symbol,
             tokenBSymbol: tokenB?.token?.symbol,
             tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
@@ -149,14 +123,112 @@ const UnstakePositionModalContainer = ({
             }),
           }),
         );
-        openModal();
-      } else {
-        broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
-        openModal();
       }
-    }
-    return result;
-  }, [account?.address, positionRepository, positions, router]);
+
+      try {
+        const result = await (walletType === "ADENA"
+          ? buildAdenaWalletAction(request)
+          : buildSocialWalletAction(rpcProvider, request));
+
+        if (result) {
+          if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
+            enqueueEvent({
+              txHash: result.data?.hash,
+              action: DexEvent.UNSTAKE,
+              visibleEmitResult: true,
+              formatData: () => ({
+                tokenASymbol: tokenA?.token?.symbol,
+                tokenBSymbol: tokenB?.token?.symbol,
+                tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
+                  decimals: tokenA?.token?.decimals,
+                  isKMB: false,
+                }),
+                tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
+                  decimals: tokenA?.token?.decimals,
+                  isKMB: false,
+                }),
+              }),
+              onEmit: async () => {
+                refetchPools();
+                refetchPositions();
+                refetchPoolDetails();
+              },
+              onUpdate: async () => {
+                updateBalances();
+              },
+            });
+          }
+          if (result.code === 0) {
+            setTimeout(() => {
+              broadcastSuccess(
+                getMessage(
+                  DexEvent.UNSTAKE,
+                  "success",
+                  {
+                    tokenASymbol: tokenA?.token?.symbol,
+                    tokenBSymbol: tokenB?.token?.symbol,
+                    tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
+                      decimals: tokenA?.token?.decimals,
+                      isKMB: false,
+                    }),
+                    tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
+                      decimals: tokenA?.token?.decimals,
+                      isKMB: false,
+                    }),
+                  },
+                  result.data?.hash,
+                ),
+              );
+              openModal();
+            }, 1000);
+          } else if (result.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
+            broadcastRejected(
+              getMessage(DexEvent.UNSTAKE, "error", {
+                tokenASymbol: tokenA?.token?.symbol,
+                tokenBSymbol: tokenB?.token?.symbol,
+                tokenAAmount: formatPoolPairAmount(tokenA?.amount, {
+                  decimals: tokenA?.token?.decimals,
+                  isKMB: false,
+                }),
+                tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
+                  decimals: tokenA?.token?.decimals,
+                  isKMB: false,
+                }),
+              }),
+            );
+            openModal();
+          } else {
+            broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
+            openModal();
+          }
+        }
+        return result;
+      } catch (err) {
+        console.log("UnStakePositions Error: ", err);
+        broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
+      }
+    },
+    [
+      account?.address,
+      pooledTokenInfos,
+      walletClient,
+      positions,
+      isGetWGNOT,
+      buildAdenaWalletAction,
+      buildSocialWalletAction,
+      broadcastLoading,
+      broadcastSuccess,
+      broadcastRejected,
+      broadcastError,
+      getMessage,
+      enqueueEvent,
+      refetchPools,
+      refetchPositions,
+      refetchPoolDetails,
+      updateBalances,
+      openModal,
+    ],
+  );
 
   return <UnstakePositionModal positions={positions} close={close} onSubmit={unstakeOnSubmit} />;
 };

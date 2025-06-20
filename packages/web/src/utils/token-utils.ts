@@ -6,6 +6,7 @@ import { roundDownDecimalNumber } from "./regex";
 import { STATIC_TEXT } from "@common/values";
 import { RewardType } from "@constants/option.constant";
 import { OnchainToken } from "@repositories/activity/responses/activity-responses";
+import { GNOT_TOKEN } from "@common/values/token-constant";
 
 export interface RewardTokenModelWithMultipleTypes extends Omit<RewardTokenModel, "rewardType"> {
   rewardType: RewardType | RewardType[];
@@ -210,3 +211,10 @@ export const formatTokenModelPath = (token: TokenModel): string => {
   if (isNativeToken(token)) return STATIC_TEXT.NATIVE_COIN;
   return token.path.replace(/^gno\.land\//, "");
 };
+
+export function parseTokenAmount(tokenAmount: string, denomination = GNOT_TOKEN.denom || "ugnot"): number {
+  const pattern = new RegExp(`^(\\d+)${denomination}$`);
+  const match = tokenAmount.match(pattern);
+
+  return match ? parseInt(match[1], 10) : 0;
+}

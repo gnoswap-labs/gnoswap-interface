@@ -31,6 +31,7 @@ export function makeExactInSwapRouteMessageWithApproves(
     deadline,
     caller,
     referrerAddress,
+    gasFee,
   }: {
     inputToken: TokenModel;
     outputToken: TokenModel;
@@ -40,6 +41,7 @@ export function makeExactInSwapRouteMessageWithApproves(
     deadline: number;
     caller: string;
     referrerAddress: string | null;
+    gasFee?: string;
   },
   fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
@@ -71,6 +73,7 @@ export function makeExactInSwapRouteMessageWithApproves(
       referrerAddress || "", // Referral address
     ],
     caller,
+    gasFee,
   });
 
   const approveInfos: TokenApproveMessageInfo[] = [

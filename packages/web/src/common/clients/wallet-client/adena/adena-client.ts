@@ -1,5 +1,6 @@
 import { createTimeout } from "@common/utils/client-util";
 import { DEFAULT_GAS_WANTED } from "@common/values";
+import { Tx, TxSignature } from "@gnolang/tm2-js-client";
 import { WalletType } from "src/types/wallet.types";
 import {
   AccountInfo,
@@ -60,6 +61,10 @@ export class AdenaClient implements WalletClient {
     }
 
     return accountInfo;
+  }
+
+  public async sign(): Promise<{ signed: Tx; signature: TxSignature[] }> {
+    throw new Error("Sign method not implemented for Adena wallet");
   }
 
   public addEstablishedSite = (sitename: string): Promise<WalletResponse> => {

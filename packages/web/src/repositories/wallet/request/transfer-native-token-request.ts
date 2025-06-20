@@ -9,4 +9,8 @@ export interface TransferNativeTokenRequest {
   fromAddress: string;
 
   toAddress: string;
+
+  gasFee?: string;
+
+  gasUsed?: string;
 }

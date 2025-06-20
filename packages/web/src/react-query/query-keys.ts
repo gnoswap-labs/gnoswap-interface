@@ -4,6 +4,7 @@ export enum QUERY_KEY {
   avgBlockTime = "avgBlockTime",
   notifications = "notifications",
   transactionEvents = "transactionEvents",
+  createTransactionDocument = "createTransactionDocuments",
   // address
   username = "username",
   accountGnotTokenBalance = "accountGnotTokenBalance",
@@ -69,4 +70,8 @@ export enum QUERY_KEY {
   launchpadProjects = "launchpad_projects",
   launchpadProjectDetails = "launchpad_project_details",
   launchpadParticipationInfos = "launchpad_participation_infos",
+
+  // gas
+  gasPrice = "gas_price",
+  gasInfo = "gas_info",
 }

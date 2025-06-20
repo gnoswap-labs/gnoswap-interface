@@ -1,17 +1,31 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useAtomValue, useStore } from "jotai";
 import BigNumber from "bignumber.js";
 
-import { SwapDirectionType } from "@common/values";
+import useDebounce from "@hooks/common/use-debounce";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { useGetRoutes } from "@query/router";
+import { useReferral } from "@hooks/common/use-referral";
+import { useNetworkFee } from "@hooks/common/use-network-fee";
+import { useGetTokenPrices } from "@query/token";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
+import {
+  makeExactInSwapRouteMessageWithApproves,
+  makeExactOutSwapRouteMessageWithApproves,
+  makeUnwrapTokenMessages,
+  makeWrapTokenMessages,
+} from "@repositories/swap-router/swap-router.message";
+import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
+
+import { SwapDirectionType } from "@common/values";
 import { TokenModel, isNativeToken } from "@models/token/token-model";
 import { EstimatedRoute } from "@models/swap/swap-route-info";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { useGetRoutes } from "@query/router";
-import useDebounce from "@hooks/common/use-debounce";
-import { useAtomValue, useStore } from "jotai";
 import { SwapState } from "@states/index";
-import { useReferral } from "@hooks/common/use-referral";
+import { NetworkFee, useGetGasPrice } from "@hooks/gas";
+import { TransactionMessage } from "@common/clients/wallet-client/protocols";
+import { Document } from "src/types/transaction-messages.types";
+import { GasToken } from "@common/values/token-constant";
 
 interface UseSwapProps {
   tokenA: TokenModel | null;
@@ -22,13 +36,21 @@ interface UseSwapProps {
 }
 
 export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: UseSwapProps) => {
+  const { transactionService, swapRouterRepository, rpcProvider } = useGnoswapContext();
   const { getCurrentReferralAddress } = useReferral();
+  const { data: gasTokenPrice } = useGetTokenPrices(GasToken.path);
+
+  const [transactionMessage, setTransactionMessage] = useState<TransactionMessage[] | null>(null);
+  const [transactionDocument, setTransactionDocument] = useState<Document | null>(null);
+  const useNetworkFeeReturn = useNetworkFee(transactionDocument);
+  const networkFee = useNetworkFeeReturn.networkFee;
+  const currentGasInfo = useNetworkFeeReturn.currentGasInfo;
 
   const store = useStore();
   const { account } = useWallet();
-  const { swapRouterRepository } = useGnoswapContext();
   const swapSummaryInfo = useAtomValue(SwapState.swapConfirmModalState);
   const { tokenAmountLimit: currentTokenAmountLimit } = swapSummaryInfo;
+  const { data: gasPrice } = useGetGasPrice();
 
   const SWAP_AMOUNT_DEBOUNCE_TIME_MS = 500;
   const [swapAmount, setSwapAmount] = useState<number | null>(null);
@@ -36,7 +58,6 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
   const [estimatedLiquidityMax, setEstimatedLiquidityMax] = useState<number | null>(null);
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeoutRef = useRef<NodeJS.Timeout>();
-
   const debouncedSwapAmount = useMemo(() => {
     if (!swapAmount || swapAmount === 0) {
       return swapAmount;
@@ -230,9 +251,11 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       return swapRouterRepository.sendWrapToken({
         token: tokenA,
         tokenAmount,
+        gasFee: networkFee?.amount,
+        gasUsed: String(currentGasInfo?.gasUsed),
       });
     },
-    [account, selectedTokenPair, swapRouterRepository, tokenA],
+    [account, selectedTokenPair, swapRouterRepository, tokenA, networkFee?.amount, currentGasInfo?.gasWanted],
   );
 
   const unwrap = useCallback(
@@ -246,9 +269,11 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       return swapRouterRepository.sendUnwrapToken({
         token: tokenA,
         tokenAmount,
+        gasFee: networkFee?.amount,
+        gasUsed: String(currentGasInfo?.gasUsed),
       });
     },
-    [account, selectedTokenPair, swapRouterRepository, tokenA],
+    [account, selectedTokenPair, swapRouterRepository, tokenA, networkFee?.amount, currentGasInfo?.gasWanted],
   );
 
   const swap = useCallback(
@@ -262,6 +287,11 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
 
       const currentReferralAddress = getCurrentReferralAddress();
 
+      const gasInfo = {
+        gasFee: networkFee?.amount,
+        gasUsed: String(currentGasInfo?.gasUsed),
+      };
+
       if (direction === "EXACT_IN") {
         return swapRouterRepository.sendExactInSwapRoute({
           inputToken: tokenA,
@@ -273,6 +303,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + 60 * 5,
           referrerAddress: currentReferralAddress,
+          ...gasInfo,
         });
       }
 
@@ -287,6 +318,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + 60 * 5,
           referrerAddress: currentReferralAddress,
+          ...gasInfo,
         });
       }
     },
@@ -304,8 +336,152 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       exactOutPadding,
       store,
       getCurrentReferralAddress,
+      networkFee?.amount,
+      currentGasInfo?.gasWanted,
     ],
   );
+
+  const swapTransactionRequests = useMemo(() => {
+    const currentReferralAddress = getCurrentReferralAddress();
+
+    let tokenAmount = 0;
+    if (isSameToken) {
+      tokenAmount = swapAmount || 0;
+    } else {
+      tokenAmount =
+        direction === "EXACT_IN"
+          ? Number(debouncedSwapAmount || 0)
+          : Number(debouncedSwapAmount || 0) * exactOutPadding;
+    }
+
+    return {
+      inputToken: tokenA,
+      outputToken: tokenB,
+      tokenAmount,
+      estimatedRoutes: estimatedRoutes,
+      slippage: slippage,
+      originAmount: estimatedSwapResult?.originAmount || 0,
+      tokenAmountLimit: tokenAmountLimit,
+      deadline: Math.floor(Date.now() / 1000) + 60 * 5,
+      referrerAddress: currentReferralAddress,
+      gasPrice: gasPrice ?? 0,
+    };
+  }, [
+    direction,
+    tokenA,
+    tokenB,
+    debouncedSwapAmount,
+    estimatedRoutes,
+    slippage,
+    estimatedSwapResult?.originAmount,
+    tokenAmountLimit,
+    gasPrice,
+  ]);
+
+  const initTransactionData = async (): Promise<boolean> => {
+    if (!transactionMessage) {
+      setTransactionDocument(null);
+      return false;
+    }
+    try {
+      const document = await transactionService.createDocument({ messages: transactionMessage });
+      setTransactionDocument(document);
+      return true;
+    } catch {
+      setTransactionDocument(null);
+      return false;
+    }
+  };
+
+  const displayNetworkFee: NetworkFee | null = useMemo(() => {
+    if (!transactionDocument || !networkFee || !account?.address) return null;
+
+    const usdValue = gasTokenPrice?.usd ? BigNumber(networkFee.amount).multipliedBy(gasTokenPrice.usd).toFixed(2) : "0";
+
+    return {
+      amount: networkFee.amount || "0",
+      denom: networkFee.denom || GasToken.symbol,
+      usdValue,
+    };
+  }, [account?.address, transactionDocument, networkFee]);
+
+  /**
+   * Generate a transaction message based on the swapTransactionRequests and store it in the state,
+   * initialise the transactionDocument required for network fee calculation based on the message.
+   *
+   * - Does not work if there is no account, token information.
+   */
+  useEffect(() => {
+    if (
+      !rpcProvider ||
+      !swapTransactionRequests.inputToken ||
+      !swapTransactionRequests.outputToken ||
+      !account?.address
+    ) {
+      setTransactionDocument(null);
+      setTransactionMessage(null);
+      return;
+    }
+
+    const fetchTransactionMessage = async () => {
+      try {
+        let message: TransactionMessage[] | null = null;
+        const inputToken = swapTransactionRequests.inputToken as TokenModel;
+        const outputToken = swapTransactionRequests.outputToken as TokenModel;
+        const caller = account.address;
+        const tokenAmount = String(swapTransactionRequests.tokenAmount);
+
+        const commonProps = {
+          inputToken,
+          outputToken,
+          tokenAmount: swapTransactionRequests.tokenAmount,
+          estimatedRoutes: swapTransactionRequests.estimatedRoutes || [],
+          tokenAmountLimit: swapTransactionRequests.tokenAmountLimit,
+          deadline: swapTransactionRequests.deadline,
+          caller,
+          referrerAddress: swapTransactionRequests.referrerAddress,
+        };
+
+        const getAllowance = (packagePath: string, owner: string, spender: string) => {
+          return fetchAllowance(rpcProvider, packagePath, owner, spender);
+        };
+
+        if (isSameToken && isNativeToken(inputToken)) {
+          // Wrap
+          message = makeWrapTokenMessages({
+            token: inputToken,
+            tokenAmount,
+            caller,
+          });
+        } else if (isSameToken && isNativeToken(outputToken)) {
+          // Unwrap
+          message = makeUnwrapTokenMessages({
+            token: inputToken,
+            tokenAmount,
+            caller,
+          });
+        } else if (direction === "EXACT_IN") {
+          // Exact-In
+          message = await makeExactInSwapRouteMessageWithApproves(commonProps, getAllowance);
+        } else if (direction === "EXACT_OUT") {
+          // Exact-Out
+          message = await makeExactOutSwapRouteMessageWithApproves(commonProps, getAllowance);
+        }
+
+        setTransactionMessage(message);
+      } catch (error) {
+        console.error("Transaction message generation errors:", error);
+        setTransactionMessage(null);
+      }
+    };
+
+    fetchTransactionMessage();
+  }, [account, swapTransactionRequests, isSameToken, direction]);
+
+  // Update transactionDocument whenever transactionMessage changes
+  useEffect(() => {
+    initTransactionData();
+  }, [transactionMessage]);
 
   useEffect(() => {
     if (estimatedRoutes === null || !tokenA || !tokenB) return;
@@ -356,10 +532,12 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     swap,
     wrap,
     unwrap,
+    displayNetworkFee,
     updateSwapAmount,
     isEstimatedSwapLoading,
     isTyping,
     isRefetching,
+    isLoadingGasInfo: useNetworkFeeReturn.isLoading,
     handleResetEstimatedLiquidity,
     resetSwapAmount: () => {
       setSwapAmount(0);

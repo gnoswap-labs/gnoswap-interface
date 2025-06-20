@@ -6,6 +6,7 @@ import { TokenModel } from "@models/token/token-model";
 
 import DecreasePositionModal from "../../components/decrease-position-modal/DecreasePositionModal";
 import { IPooledTokenInfo } from "@hooks/pool/data/use-decrease-handle";
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 
 interface Props {
   amountInfo: {
@@ -18,7 +19,7 @@ interface Props {
   rangeStatus: RANGE_STATUS_OPTION;
   calculateLiquidity: string;
   pooledTokenInfos: IPooledTokenInfo | null;
-  confirm: () => void;
+  confirm: ({ rpcProvider }: { rpcProvider: GnoProvider | null }) => void;
 }
 
 const DecreasePositionModalContainer: React.FC<Props> = ({

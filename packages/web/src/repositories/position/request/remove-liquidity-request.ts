@@ -12,4 +12,8 @@ export interface RemoveLiquidityRequest {
   isGetWGNOT: boolean;
 
   deadline?: string;
+
+  gasFee?: string;
+
+  gasUsed?: string;
 }

@@ -22,13 +22,22 @@ import { formatRouterFeeStr } from "@utils/swap-utils";
 interface ContentProps {
   swapSummaryInfo: SwapSummaryInfo;
   isLoading: boolean;
+  isLoadingGasInfo: boolean;
   priceImpactStatus: PriceImpactStatus;
   swapTokenInfo: SwapTokenInfo;
+  connectedWallet: boolean;
 }
 
 const SkeletonLoader = () => <span css={pulseSkeletonStyle({ h: 18, w: "100px!important" })} />;
 
-const SwapCardFeeInfo: React.FC<ContentProps> = ({ swapSummaryInfo, isLoading, priceImpactStatus, swapTokenInfo }) => {
+const SwapCardFeeInfo: React.FC<ContentProps> = ({
+  swapSummaryInfo,
+  isLoading,
+  isLoadingGasInfo,
+  priceImpactStatus,
+  swapTokenInfo,
+  connectedWallet,
+}) => {
   const { t } = useTranslation();
 
   const priceImpactStr = useMemo(() => {
@@ -140,18 +149,20 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({ swapSummaryInfo, isLoading, p
         </div>
         {isLoading ? <SkeletonLoader /> : <span className="white-text">{routerFeeStr}</span>}
       </div>
-      <div className="swap-fee-row  gas-fee">
-        <span className="gray-text">{t("Swap:swapInfo.gasFee")}</span>
+      {connectedWallet && (
+        <div className="swap-fee-row  gas-fee">
+          <span className="gray-text">{t("Swap:swapInfo.gasFee")}</span>
 
-        {isLoading ? (
-          <SkeletonLoader />
-        ) : (
-          <span className="white-text">
-            {gasFeeStr}
-            <span className="gray-text">{`(${gasFeeUSDStr})`}</span>
-          </span>
-        )}
-      </div>
+          {isLoading || isLoadingGasInfo ? (
+            <SkeletonLoader />
+          ) : (
+            <span className="white-text">
+              {gasFeeStr}
+              <span className="gray-text">{`(${gasFeeUSDStr})`}</span>
+            </span>
+          )}
+        </div>
+      )}
       <SwapDivider />
       <div className="auto-router">
         <div className="auto-wrapper">

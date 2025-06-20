@@ -9,4 +9,8 @@ export interface TransferGRC20TokenRequest {
   fromAddress: string;
 
   toAddress: string;
+
+  gasFee?: string;
+
+  gasUsed?: string;
 }

@@ -9,7 +9,7 @@ import { WebStorageClient } from "@common/clients/storage-client";
 import { EventStore, TransactionEventStore } from "@common/modules/event-store";
 import { NetworkData } from "@constants/chains.constant";
 import { DEFAULT_CHAIN_ID, SUPPORT_CHAIN_IDS } from "@constants/environment.constant";
-import { GnoJSONRPCProvider, GnoProvider } from "@gnolang/gno-js-client";
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { AccountRepository, AccountRepositoryImpl } from "@repositories/account";
 import { DashboardRepository, DashboardRepositoryImpl } from "@repositories/dashboard";
 import { GovernanceRepository, GovernanceRepositoryImpl } from "@repositories/governance";
@@ -26,6 +26,8 @@ import { ACCOUNT_SESSION_INFO_KEY, GNOSWAP_SESSION_ID_KEY, GNOWSWAP_CONNECTED_KE
 import { CommonState, WalletState } from "@states/index";
 import { SwapRepository } from "@repositories/swap/swap-repository";
 import { SwapRepositoryImpl } from "@repositories/swap/swap-repository-impl";
+import { TransactionService, TransactionServiceImpl } from "@services/transaction";
+import { TransactionGasService, TransactionGasServiceImpl } from "@services/transaction-gas";
 
 interface GnoswapContextProps {
   initialized: boolean;
@@ -46,6 +48,8 @@ interface GnoswapContextProps {
   statusRepository: StatusRepository;
   launchpadRepository: LaunchpadRepository;
   localStorageClient: WebStorageClient;
+  transactionService: TransactionService;
+  transactionGasService: TransactionGasService;
 }
 
 const getSessionId = () => {
@@ -138,7 +142,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
       }),
     );
     setRouterApiClient(new AxiosClient(network.routerUrl));
-    setRPCProvider(new GnoJSONRPCProvider(network.rpcUrl || ""));
+    setRPCProvider(new GnoProvider(network.rpcUrl || ""));
   }, [loadedProviders, router, status, walletAccount, walletAccount?.chainId]);
 
   const eventStore = useMemo(() => {
@@ -210,6 +214,14 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
     return new LaunchpadRepositoryImpl(gnoswapApiClient, walletClient, rpcProvider);
   }, [gnoswapApiClient, walletClient, rpcProvider]);
 
+  const transactionService = useMemo(() => {
+    return new TransactionServiceImpl(rpcProvider, walletClient);
+  }, [rpcProvider, walletClient]);
+
+  const transactionGasService = useMemo(() => {
+    return new TransactionGasServiceImpl(rpcProvider, walletClient);
+  }, [rpcProvider, walletClient]);
+
   useEffect(() => {
     if (window) {
       setLocalStorageClient(WebStorageClient.createLocalStorageClient());
@@ -238,6 +250,8 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
         statusRepository,
         launchpadRepository,
         localStorageClient,
+        transactionService,
+        transactionGasService,
       }}
     >
       {loadedProviders && children}

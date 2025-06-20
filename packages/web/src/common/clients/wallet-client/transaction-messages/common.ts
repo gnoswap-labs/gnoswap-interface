@@ -1,8 +1,11 @@
+import BigNumber from "bignumber.js";
+
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { TransactionMessageError } from "@common/errors";
 import { DEFAULT_ALLOWANCE_LIMIT } from "@common/values";
 import { PACKAGE_NFT_PATH } from "@constants/environment.constant";
 import { MAX_UINT64 } from "@utils/math.utils";
-import BigNumber from "bignumber.js";
+import { getGRC20Allowance } from "@common/clients/gno-provider";
 
 export interface TransactionBankMessage {
   from_address: string;
@@ -16,6 +19,7 @@ export interface TransactionMessage {
   pkg_path: string;
   func: string;
   args: string[] | null;
+  gasFee?: string;
 }
 
 export interface TokenApproveMessageInfo {
@@ -49,12 +53,14 @@ export function makeTransactionMessage({
   packagePath,
   func,
   args,
+  gasFee,
 }: {
   caller: string;
   send: string;
   packagePath: string;
   func: string;
   args: string[] | null;
+  gasFee?: string;
 }): TransactionMessage {
   return {
     caller: caller,
@@ -62,6 +68,7 @@ export function makeTransactionMessage({
     pkg_path: packagePath,
     func: func,
     args: args ? args.map(arg => `${arg}`) : null,
+    gasFee: gasFee,
   };
 }
 
@@ -203,4 +210,13 @@ export function makeGNOTSendAmount(amount: string | number | null): string {
     return "";
   }
   return BigNumber(amount).toString() + "ugnot";
+}
+
+export async function fetchAllowance(rpcProvider: GnoProvider, packagePath: string, owner: string, spender: string) {
+  try {
+    return await getGRC20Allowance(rpcProvider, packagePath, owner, spender);
+  } catch (error) {
+    console.error("Failed to fetch allowance", error);
+    return 0;
+  }
 }

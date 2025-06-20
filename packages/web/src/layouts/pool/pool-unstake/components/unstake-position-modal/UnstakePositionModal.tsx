@@ -17,6 +17,8 @@ import { formatOtherPrice, formatPoolPairAmount, formatRate } from "@utils/new-n
 import { isInRangePosition } from "@utils/stake-position-utils";
 
 import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 import {
   Divider,
@@ -31,11 +33,13 @@ import { DEVICE_TYPE } from "@styles/media";
 interface Props {
   positions: PoolPositionModel[];
   close: () => void;
-  onSubmit: () => void;
+  onSubmit: ({ rpcProvider }: { rpcProvider: GnoProvider | null }) => void;
 }
 
 const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) => {
   const { t } = useTranslation();
+
+  const { rpcProvider } = useGnoswapContext();
   const { breakpoint } = useWindowSize();
   const { unclaimedRewards, totalLiquidityUSD } = usePositionsRewards({
     positions,
@@ -204,7 +208,7 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
                 fullWidth: true,
               }}
               className="button-confirm"
-              onClick={onSubmit}
+              onClick={() => onSubmit({ rpcProvider })}
             />
           </div>
         </div>

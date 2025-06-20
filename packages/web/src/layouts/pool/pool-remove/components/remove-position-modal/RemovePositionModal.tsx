@@ -14,7 +14,10 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useGetWithdrawalFee } from "@query/pools";
 import { formatOtherPrice, formatPoolPairAmount, formatRate } from "@utils/new-number-utils";
 
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
+
 import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 import {
   Divider,
@@ -27,12 +30,13 @@ interface Props {
   selectedPositions: PoolPositionModel[];
   allPositions: PoolPositionModel[];
   close: () => void;
-  onSubmit: () => void;
+  onSubmit: ({ rpcProvider }: { rpcProvider: GnoProvider | null }) => void;
 }
 
 const RemovePositionModal: React.FC<Props> = ({ selectedPositions, close, onSubmit }) => {
   const { t } = useTranslation();
 
+  const { rpcProvider } = useGnoswapContext();
   const { unclaimedFees, totalLiquidityUSD } = usePositionsRewards({
     positions: selectedPositions,
   });
@@ -194,7 +198,7 @@ const RemovePositionModal: React.FC<Props> = ({ selectedPositions, close, onSubm
                   fullWidth: true,
                 }}
                 className="button-confirm"
-                onClick={onSubmit}
+                onClick={() => onSubmit({ rpcProvider })}
               />
             </div>
           </div>

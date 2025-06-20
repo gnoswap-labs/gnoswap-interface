@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from "react";
 import BigNumber from "bignumber.js";
 
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { GNOT_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
@@ -17,6 +18,11 @@ import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
 import { DexEvent } from "@repositories/common";
 import { checkGnotPath } from "@utils/common";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
+import { RemoveLiquidityRequest } from "@repositories/position/request";
+import { useNetworkFee } from "@hooks/common/use-network-fee";
+import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
+import { CommonError } from "@common/errors";
+import { makeRemoveLiquidityMessagesWithApproves } from "@repositories/position/position.message";
 
 import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
 import RemovePositionModal from "../../components/remove-position-modal/RemovePositionModal";
@@ -38,8 +44,9 @@ const RemovePositionModalContainer = ({
   positionLiquidities,
   refetchPositions,
 }: RemovePositionModalContainerProps) => {
-  const { account } = useWallet();
-  const { positionRepository } = useGnoswapContext();
+  const { account, walletClient } = useWallet();
+  const { transactionService, positionRepository } = useGnoswapContext();
+  const { estimateNetworkFee } = useNetworkFee(null);
 
   const router = useRouter();
   const clearModal = useClearModal();
@@ -96,101 +103,159 @@ const RemovePositionModalContainer = ({
     [willWrap],
   );
 
-  const onSubmit = useCallback(async () => {
-    const address = account?.address;
-    if (!address) {
+  const buildAdenaWalletAction = async (request: RemoveLiquidityRequest) => {
+    return await positionRepository.removeLiquidity(request).catch(() => null);
+  };
+
+  const buildSocialWalletAction = async (rpcProvider: GnoProvider | null, request: RemoveLiquidityRequest) => {
+    if (!rpcProvider) {
+      console.log("RemoveLiquidity: ", new CommonError("FAILED_INITIALIZE_GNO_PROVIDER"));
       return null;
     }
-    const lpTokenIds = selectedPositions.map(position => position.id.toString());
-    const approveTokenPaths = [
-      ...new Set(
-        selectedPositions.flatMap(position => [
-          position.pool.tokenA.wrappedPath || checkGnotPath(position.pool.tokenA.path),
-          position.pool.tokenB.wrappedPath || checkGnotPath(position.pool.tokenB.path),
-        ]),
-      ),
-    ];
 
-    const messageData = {
-      tokenASymbol: tokenTransform(pooledTokenInfos?.[0].token).symbol,
-      tokenBSymbol: tokenTransform(pooledTokenInfos?.[1]?.token).symbol,
-      tokenAAmount: formatPoolPairAmount(pooledTokenInfos?.[0]?.amount, {
-        decimals: pooledTokenInfos?.[0].token.decimals,
-        isKMB: false,
-      }),
-
-      tokenBAmount: formatPoolPairAmount(pooledTokenInfos?.[1]?.amount, {
-        decimals: pooledTokenInfos?.[1].token.decimals,
-        isKMB: false,
-      }),
+    const getAllowance = (packagePath: string, owner: string, spender: string) => {
+      return fetchAllowance(rpcProvider, packagePath, owner, spender);
     };
 
-    broadcastLoading(getMessage(DexEvent.REMOVE, "pending", messageData));
+    const txMessages = await makeRemoveLiquidityMessagesWithApproves(request, getAllowance);
 
-    const result = await positionRepository
-      .removeLiquidity({
+    const txDoc = await transactionService.createDocument({ messages: txMessages });
+    await transactionService.createTransaction(txDoc);
+
+    const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
+    const requestWithGasInfo: RemoveLiquidityRequest = {
+      ...request,
+      gasFee: networkFee?.amount,
+      gasUsed: currentGasInfo?.gasUsed.toString(),
+    };
+
+    return await positionRepository.removeLiquidity(requestWithGasInfo).catch(() => null);
+  };
+
+  const removeOnSubmit = useCallback(
+    async ({ rpcProvider }: { rpcProvider: GnoProvider | null }) => {
+      const address = account?.address;
+      if (!address) {
+        return null;
+      }
+
+      const lpTokenIds = selectedPositions.map(position => position.id.toString());
+      const approveTokenPaths = [
+        ...new Set(
+          selectedPositions.flatMap(position => [
+            position.pool.tokenA.wrappedPath || checkGnotPath(position.pool.tokenA.path),
+            position.pool.tokenB.wrappedPath || checkGnotPath(position.pool.tokenB.path),
+          ]),
+        ),
+      ];
+
+      const walletType = walletClient?.getWalletType();
+
+      const request: RemoveLiquidityRequest = {
         lpTokenIds,
         positionLiquidities,
         tokenPaths: approveTokenPaths,
         caller: address,
         isGetWGNOT: willWrap,
-      })
-      .catch(() => null);
+      };
 
-    if (result) {
-      if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
-        enqueueEvent({
-          txHash: result.data?.hash,
-          action: DexEvent.REMOVE,
-          visibleEmitResult: true,
-          formatData: response => {
-            if (!response) {
-              return messageData;
-            }
-            return messageData;
-          },
-          onEmit: async () => {
-            refetchPools();
-            refetchPositions();
-            refetchPoolDetails();
-          },
-          onUpdate: async () => {
-            updateBalances();
-          },
-        });
+      const broadcastMessageData = {
+        tokenASymbol: tokenTransform(pooledTokenInfos?.[0].token).symbol,
+        tokenBSymbol: tokenTransform(pooledTokenInfos?.[1]?.token).symbol,
+        tokenAAmount: formatPoolPairAmount(pooledTokenInfos?.[0]?.amount, {
+          decimals: pooledTokenInfos?.[0].token.decimals,
+          isKMB: false,
+        }),
+
+        tokenBAmount: formatPoolPairAmount(pooledTokenInfos?.[1]?.amount, {
+          decimals: pooledTokenInfos?.[1].token.decimals,
+          isKMB: false,
+        }),
+      };
+
+      if (walletType === "ADENA") {
+        broadcastLoading(getMessage(DexEvent.REMOVE, "pending", broadcastMessageData));
       }
-      if (result.code === 0) {
-        setTimeout(async () => {
-          broadcastSuccess(getMessage(DexEvent.REMOVE, "success", { ...messageData }, result.data?.hash));
-          openTransactionConfirmModal();
-        }, 1000);
-      } else if (
-        result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
-      ) {
+
+      try {
+        const result = await (walletType === "ADENA"
+          ? buildAdenaWalletAction(request)
+          : buildSocialWalletAction(rpcProvider, request));
+
+        if (result) {
+          if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
+            enqueueEvent({
+              txHash: result.data?.hash,
+              action: DexEvent.REMOVE,
+              visibleEmitResult: true,
+              formatData: response => {
+                if (!response) {
+                  return broadcastMessageData;
+                }
+                return broadcastMessageData;
+              },
+              onEmit: async () => {
+                refetchPools();
+                refetchPositions();
+                refetchPoolDetails();
+              },
+              onUpdate: async () => {
+                updateBalances();
+              },
+            });
+          }
+          if (result.code === 0) {
+            setTimeout(async () => {
+              broadcastSuccess(getMessage(DexEvent.REMOVE, "success", { ...broadcastMessageData }, result.data?.hash));
+              openTransactionConfirmModal();
+            }, 1000);
+          } else if (
+            result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
+          ) {
+            broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
+            clearModal();
+          } else {
+            broadcastRejected(getMessage(DexEvent.REMOVE, "error", { ...broadcastMessageData }, result?.data?.hash));
+          }
+        }
+        return result;
+      } catch (err) {
+        console.log("RemoveLiquidity Error: ", err);
         broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
-        clearModal();
-      } else {
-        broadcastRejected(getMessage(DexEvent.REMOVE, "error", { ...messageData }, result?.data?.hash));
       }
-    }
-  }, [
-    account?.address,
-    clearModal,
-    positionRepository,
-    selectedPositions,
-    router,
-    pooledTokenInfos,
-    gnotToken,
-    willWrap,
-    tokenTransform,
-  ]);
+    },
+    [
+      account?.address,
+      walletClient,
+      selectedPositions,
+      positionLiquidities,
+      willWrap,
+      tokenTransform,
+      pooledTokenInfos,
+      gnotToken,
+      broadcastLoading,
+      broadcastSuccess,
+      broadcastRejected,
+      broadcastError,
+      getMessage,
+      enqueueEvent,
+      refetchPools,
+      refetchPositions,
+      refetchPoolDetails,
+      updateBalances,
+      openTransactionConfirmModal,
+      buildAdenaWalletAction,
+      buildSocialWalletAction,
+      clearModal,
+    ],
+  );
 
   return (
     <RemovePositionModal
       selectedPositions={selectedPositions}
       allPositions={allPosition}
       close={clearModal}
-      onSubmit={onSubmit}
+      onSubmit={removeOnSubmit}
     />
   );
 };

@@ -36,6 +36,8 @@ import { useGetPositionsByAddress } from "@query/positions";
 import OneClickStakingModal from "@layouts/pool/pool-add/components/one-click-staking-modal/OneClickStakingModal";
 import PoolAddConfirmModal from "@layouts/pool/pool-add/components/pool-add-confirm-modal/PoolAddConfirmModal";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -53,6 +55,7 @@ export interface EarnAddLiquidityConfirmModalProps {
   swapFeeTier: SwapFeeTierType | null;
 
   createPool: (params: {
+    rpcProvider: GnoProvider | null;
     tokenAAmount: string;
     tokenBAmount: string;
     swapFeeTier: SwapFeeTierType;
@@ -64,6 +67,7 @@ export interface EarnAddLiquidityConfirmModalProps {
   }) => Promise<WalletResponse<CreatePoolSuccessResponse | CreatePoolFailedResponse> | null>;
 
   addLiquidity: (params: {
+    rpcProvider: GnoProvider | null;
     tokenAAmount: string;
     tokenBAmount: string;
     swapFeeTier: SwapFeeTierType;
@@ -90,6 +94,7 @@ export const usePoolAddLiquidityConfirmModal = ({
   addLiquidity,
 }: EarnAddLiquidityConfirmModalProps): SelectTokenModalModel => {
   const { t } = useTranslation();
+  const { rpcProvider } = useGnoswapContext();
   const { broadcastLoading, broadcastRejected, broadcastSuccess, broadcastError } = useBroadcastHandler();
   const { enqueueEvent } = useTransactionEventStore();
   const { removeReferrerFromLocalStorage } = useReferral();
@@ -316,6 +321,7 @@ export const usePoolAddLiquidityConfirmModal = ({
 
       const transaction = selectPool.isCreate
         ? createPool({
+            rpcProvider,
             tokenAAmount,
             tokenBAmount,
             minTick,
@@ -326,6 +332,7 @@ export const usePoolAddLiquidityConfirmModal = ({
             withStaking: options?.withStaking,
           })
         : addLiquidity({
+            rpcProvider,
             tokenAAmount,
             tokenBAmount,
             minTick,
@@ -435,6 +442,7 @@ export const usePoolAddLiquidityConfirmModal = ({
       tokenBAmount,
       slippage,
       createPool,
+      rpcProvider,
     ],
   );
 

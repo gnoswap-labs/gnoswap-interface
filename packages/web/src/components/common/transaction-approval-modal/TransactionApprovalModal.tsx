@@ -5,6 +5,9 @@ import { useTranslation } from "react-i18next";
 import { WalletTypeState } from "src/types/wallet.types";
 import { formatAddress } from "@utils/string-utils";
 import { ALLOWED_DOMAINS } from "@constants/environment.constant";
+import { DisplayGasFee } from "@containers/transaction-approval-modal-container/TransactionApprovalModalContainer";
+import { GasToken } from "@common/values/token-constant";
+import { toNumberFormat } from "@utils/number-utils";
 
 import {
   TransactionApprovalButtonWrapper,
@@ -38,8 +41,11 @@ interface Props {
   memo: string;
   isSwitchNetwork: boolean;
   walletType: WalletTypeState;
+  gasFee: DisplayGasFee | null;
   memoChangeHandler: (memo: string) => void;
 }
+
+const DEFAULT_GAS_TOKEN = GasToken;
 
 const TransactionApprovalModal = ({
   onConfirm,
@@ -51,31 +57,39 @@ const TransactionApprovalModal = ({
   isSwitchNetwork,
   walletType,
   memoChangeHandler,
+  gasFee,
 }: Props) => {
   const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = React.useState(false);
-  const [isAllowedDomain, setIsAllowedDomain] = React.useState(true);
+
+  const displayGasFee = React.useMemo(() => {
+    const amount = gasFee?.amount ?? "0";
+    const gasTokenSymbol = gasFee?.gasToken?.symbol ?? DEFAULT_GAS_TOKEN.symbol;
+    const usd =
+      gasFee?.usdValue == null
+        ? "0"
+        : Number(gasFee.usdValue) < 0.01
+        ? "<$0.01"
+        : `$${toNumberFormat(gasFee.usdValue)}`;
+
+    return { amount, gasTokenSymbol, usd };
+  }, [gasFee]);
+
+  const isAllowedDomain = React.useMemo(() => {
+    return ALLOWED_DOMAINS.includes(window.location.hostname);
+  }, []);
 
   const onChangeMemo = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     memoChangeHandler(value);
   };
 
-  React.useEffect(() => {
-    const hostname = window.location.hostname;
+  const handleConfirm = React.useCallback(() => {
+    if (!isAllowedDomain) return;
+    onConfirm();
+  }, [isAllowedDomain, onConfirm]);
 
-    if (ALLOWED_DOMAINS.includes(hostname)) {
-      setIsAllowedDomain(true);
-    } else {
-      setIsAllowedDomain(false);
-    }
-  }, []);
-
-  const handleConfirm = () => {
-    if (!isAllowedDomain) {
-      onConfirm();
-    }
-  };
+  const toggleExpand = React.useCallback(() => setIsExpanded(prev => !prev), []);
 
   return (
     <TransactionApprovalModalWrapper>
@@ -131,11 +145,11 @@ const TransactionApprovalModal = ({
             </InfoCard>
             <InfoCard>
               <div className="label">{t("common:social.modal.transaction.column.networkFee")}</div>
-              <div className="value">{"0.000001 GNOT (<$0.01)"}</div>
+              <div className="value">{`${displayGasFee.amount} ${displayGasFee.gasTokenSymbol} (${displayGasFee.usd})`}</div>
             </InfoCard>
           </TransactionApprovalSummary>
           <TransactionApprovalDetails>
-            <button onClick={() => setIsExpanded(prev => !prev)} aria-expanded={isExpanded}>
+            <button onClick={toggleExpand} aria-expanded={isExpanded}>
               {t("common:social.modal.transaction.view")} {!isExpanded ? <IconArrowDown /> : <IconArrowUp />}
             </button>
 
@@ -153,7 +167,7 @@ const TransactionApprovalModal = ({
             onClick={handleConfirm}
             text={t("common:social.modal.transaction.approve")}
             style={{ fullWidth: true, height: 57, fontType: "body7", hierarchy: ButtonHierarchy.Primary }}
-            disabled={isAllowedDomain}
+            disabled={!isAllowedDomain}
           />
         </TransactionApprovalButtonWrapper>
       </TransactionApprovalModalBody>

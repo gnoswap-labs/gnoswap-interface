@@ -18,7 +18,7 @@ import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { usePositionModal } from "@hooks/wallet/ui/use-position-modal";
-import { isNativeToken, TokenModel } from "@models/token/token-model";
+import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatPrice } from "@utils/new-number-utils";
 import { capitalize } from "@utils/string-utils";
@@ -78,7 +78,7 @@ const AssetSendModal: React.FC<Props> = ({
 
   const { account } = useWallet();
 
-  const { tokens, tokenPrices, displayBalanceMap } = useTokenData();
+  const { tokenPrices, displayBalanceMap } = useTokenData();
 
   useEscCloseModal(close);
   usePositionModal(modalRef);
@@ -117,11 +117,6 @@ const AssetSendModal: React.FC<Props> = ({
     handleSubmit(amount, address);
   };
 
-  const nativeToken = useMemo(() => {
-    if (!tokens || tokens.length === 0) return null;
-    return tokens.find(isNativeToken);
-  }, [tokens]);
-
   const currentAvailableBalance = useMemo(
     () => displayBalanceMap?.[withdrawInfo?.path ?? ""] ?? null,
     [displayBalanceMap, withdrawInfo?.path],
@@ -137,13 +132,6 @@ const AssetSendModal: React.FC<Props> = ({
     !withdrawInfo ||
     !isValidAddress(address) ||
     BigNumber(amount || "0").isGreaterThan(BigNumber(currentAvailableBalance || "0"));
-
-  const estimateFee = useMemo(() => 0.000001, []);
-
-  const estimateFeeUSD = useMemo(
-    () => 0.000001 * (Number(tokenPrices?.[nativeToken?.wrappedPath ?? ""]?.usd) || 0),
-    [nativeToken?.wrappedPath, tokenPrices],
-  );
 
   const estimatePrice = useMemo(
     () =>
@@ -186,12 +174,6 @@ const AssetSendModal: React.FC<Props> = ({
     if (!isValidAddress(address)) return t("Wallet:assetSendModal.btn.invalidAddr");
     return t("Wallet:assets.col.assetSend");
   }, [address, amount, currentAvailableBalance, withdrawInfo, t]);
-
-  const estimatedPrice = useMemo(() => {
-    if (estimateFeeUSD < 0.01) return " (<$0.01)";
-
-    return estimateFeeUSD !== 0 ? ` ($${estimateFeeUSD})` : "";
-  }, [estimateFeeUSD]);
 
   if (isConfirm) {
     return null;
@@ -308,12 +290,6 @@ const AssetSendModal: React.FC<Props> = ({
                 </AssetSendWarningContentWrapper>
               }
             />
-            <AssetSendContent>
-              <div className="estimate-box">
-                <p className="estimate-fee">{t("Wallet:assetSendModal.estNetFee")}</p>
-                <p className="tokens-fee">{`${estimateFee} GNOT${estimatedPrice}`}</p>
-              </div>
-            </AssetSendContent>
 
             <Button
               disabled={isDisabledWithdraw}

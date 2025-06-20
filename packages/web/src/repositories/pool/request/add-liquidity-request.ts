@@ -13,4 +13,6 @@ export interface AddLiquidityRequest {
   caller: string;
   withStaking?: boolean;
   referrerAddress: string | null;
+  gasFee?: string;
+  gasUsed?: string;
 }

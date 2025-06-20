@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { eventBus } from "./event-bus";
 import { WalletClient } from "@common/clients/wallet-client";
 
@@ -12,6 +13,12 @@ import { DEFAULT_GAS_WANTED } from "@common/values";
 import { Document } from "src/types/transaction-messages.types";
 
 import { createDocument } from "./messages.utils";
+import { Tx, TxFee } from "@gnolang/tm2-js-client";
+import { TransactionService } from "@services/transaction";
+import { GasToken } from "@common/values/token-constant";
+import { Any, MemFile, MemPackage, MsgAddPackage, MsgCall, MsgEndpoint, MsgSend } from "@gnolang/gno-js-client";
+import { MsgRun } from "@gnolang/gno-js-client/bin/proto/gno/vm";
+import { makeRawTokenAmount } from "./token-utils";
 
 export const TX_EVENTS = {
   SHOW_MODAL: "show-approve-modal",
@@ -34,6 +41,15 @@ type MessageType = {
   type: "/vm.m_call" | "/bank.MsgSend";
   value: unknown;
 };
+
+export interface RawMemPackage {
+  name: string;
+  path: string;
+  files: {
+    name: string;
+    body: string;
+  }[];
+}
 
 /**
  * Creates event handlers for the Transaction Approval Modal
@@ -146,36 +162,49 @@ export const withTransactionGuard = async <T>(
   transaction: SendTransactionRequestParam,
   executeTransaction: (updatedTransaction?: SendTransactionRequestParam) => Promise<WalletResponse<T>>,
 ): Promise<WalletResponse<T>> => {
-  if (!walletClient) {
-    throw new Error("Wallet client is not initialized");
-  }
-
-  if (walletClient.getWalletType() === "SOCIAL_WALLET") {
-    const document = await generateTransactionDataDocument(walletClient, transaction);
-    const approved = await showTransactionApprovalModal(document);
-
-    if (approved === false) {
-      return {
-        code: 4000,
-        data: null,
-        message: "The transaction has been rejected by the user.",
-        status: "failure",
-        type: "TRANSACTION_REJECTED",
-      };
+  try {
+    if (!walletClient) {
+      throw new Error("Wallet client is not initialized");
     }
 
-    const updatedTransaction = {
-      ...transaction,
-      memo: approved.memo,
+    const document = await generateTransactionDataDocument(walletClient, transaction);
+    // document.fee.amount[0].amount = String(49);
+
+    if (walletClient.getWalletType() === "SOCIAL_WALLET") {
+      const approved = await showTransactionApprovalModal(document);
+
+      if (approved === false) {
+        return {
+          code: 4000,
+          data: null,
+          message: "The transaction has been rejected by the user.",
+          status: "failure",
+          type: "TRANSACTION_REJECTED",
+        };
+      }
+
+      const updatedTransaction = {
+        ...transaction,
+        memo: approved.memo,
+      };
+
+      return await executeTransaction(updatedTransaction);
+    }
+
+    // Handle locked wallet state for Adena v1.15.0+ auto-lock compatibility
+    const SITE_NAME = "Gnoswap";
+    await walletClient.addEstablishedSite(SITE_NAME);
+    return await executeTransaction(transaction);
+  } catch (error) {
+    console.error("Transaction guard error:", error);
+    return {
+      code: 5000,
+      data: null,
+      message: error instanceof Error ? error.message : "Unknown transaction error occurred",
+      status: "failure",
+      type: "TRANSACTION_ERROR",
     };
-
-    return executeTransaction(updatedTransaction);
   }
-
-  // Handle locked wallet state for Adena v1.15.0+ auto-lock compatibility
-  const SITE_NAME = "Gnoswap";
-  await walletClient.addEstablishedSite(SITE_NAME);
-  return executeTransaction(transaction);
 };
 
 /**
@@ -193,10 +222,12 @@ export const withTransactionGuard = async <T>(
 export const generateSendTransactionParams = (params: SendTransactionRequestParam): SendTransactionRequestParam => {
   const { messages, gasFee, gasWanted = DEFAULT_GAS_WANTED, memo = "" } = params;
 
+  const gasFeeRaw = Number(makeRawTokenAmount(GasToken, gasFee));
+
   return {
     messages,
-    gasFee,
-    ...(gasWanted && { gasWanted }),
+    gasFee: gasFeeRaw,
+    ...(gasWanted && { gasWanted: gasWanted }),
     ...(memo && { memo }),
   };
 };
@@ -228,3 +259,160 @@ export const getSendAmount = (
   if (isWrappedGnotPath(tokenBWrappedPath)) return tokenBAmountRaw;
   return null;
 };
+
+const MINIMUM_GAS_PRICE = 0.001 as const;
+
+export function makeGasInfoBy(
+  gasUsed: number | null | undefined,
+  gasPrice: number | null | undefined,
+): { gasWanted: number; gasFee: number } {
+  const gasFeeBN = BigNumber(gasUsed || 1000).multipliedBy(gasPrice || MINIMUM_GAS_PRICE);
+
+  return {
+    gasWanted: Number(DEFAULT_GAS_WANTED),
+    gasFee: Number(gasFeeBN.toFixed(0, BigNumber.ROUND_UP)),
+  };
+}
+
+export async function makeEstimateGasTransaction(
+  document: Document | null | undefined,
+  transactionService: TransactionService | null,
+  gasUsed: number,
+  gasPrice: number | null,
+): Promise<Tx | null> {
+  if (!document) return null;
+
+  const { gasFee, gasWanted } = makeGasInfoBy(gasUsed, gasPrice);
+  if (!transactionService || !gasFee || !gasWanted) return null;
+
+  const modifedDocument = modifyDocument(document, gasWanted, gasFee);
+
+  const { signed } = await transactionService.createTransaction(modifedDocument).catch(() => {
+    return { signed: null };
+  });
+  if (!signed) {
+    return documentToDefaultTx(modifedDocument);
+  }
+
+  return signed;
+}
+
+function modifyDocument(document: Document, gasWanted: number, gasFee: number): Document {
+  return {
+    ...document,
+    fee: {
+      ...document.fee,
+      gas: gasWanted.toString(),
+      amount: [
+        {
+          denom: GasToken.denom,
+          amount: gasFee.toString(),
+        },
+      ],
+    },
+  };
+}
+
+export function documentToTx(document: Document): Tx {
+  const messages: Any[] = document.msgs.map(encodeMessageValue);
+  return {
+    messages,
+    fee: TxFee.create({
+      gasWanted: document.fee.gas || "0",
+      gasFee: document.fee.amount.map(feeAmount => `${feeAmount.amount}${feeAmount.denom}`).join(","),
+    }),
+    signatures: [],
+    memo: document.memo,
+  };
+}
+
+export function documentToDefaultTx(document: Document): Tx {
+  const messages: Any[] = document.msgs.map(encodeMessageValue);
+  return {
+    messages,
+    fee: TxFee.create({
+      gasWanted: document.fee.gas,
+      gasFee: document.fee.amount.map(feeAmount => `${feeAmount.amount}${feeAmount.denom}`).join(","),
+    }),
+    signatures: [
+      {
+        pubKey: {
+          typeUrl: "",
+          value: new Uint8Array(),
+        },
+        signature: new Uint8Array(),
+      },
+    ],
+    memo: document.memo,
+  };
+}
+
+function createMemPackage(memPackage: RawMemPackage) {
+  return MemPackage.create({
+    name: memPackage.name,
+    path: memPackage.path,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    files: memPackage.files.map((file: any) =>
+      MemFile.create({
+        name: file.name,
+        body: file.body,
+      }),
+    ),
+  });
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function encodeMessageValue(message: { type: string; value: any }) {
+  switch (message.type) {
+    case MsgEndpoint.MSG_ADD_PKG: {
+      const value = message.value;
+      const msgAddPackage = MsgAddPackage.create({
+        creator: value.creator,
+        deposit: value.deposit || null,
+        package: value.package ? createMemPackage(value.package) : undefined,
+      });
+      return Any.create({
+        typeUrl: MsgEndpoint.MSG_ADD_PKG,
+        value: MsgAddPackage.encode(msgAddPackage).finish(),
+      });
+    }
+    case MsgEndpoint.MSG_CALL: {
+      const args: string[] = message.value.args ? (message.value.args.length === 0 ? null : message.value.args) : null;
+      const result = MsgCall.create({
+        args: args,
+        caller: message.value.caller,
+        func: message.value.func,
+        pkg_path: message.value.pkg_path,
+        send: message.value.send || "",
+      });
+      return Any.create({
+        typeUrl: MsgEndpoint.MSG_CALL,
+        value: MsgCall.encode(result).finish(),
+      });
+    }
+    case MsgEndpoint.MSG_SEND: {
+      return Any.create({
+        typeUrl: MsgEndpoint.MSG_SEND,
+        value: MsgSend.encode(MsgSend.create(message.value)).finish(),
+      });
+    }
+    case MsgEndpoint.MSG_RUN: {
+      const value = message.value;
+      const msgRun = MsgRun.create({
+        caller: value.caller,
+        send: value.send || null,
+        package: value.package ? createMemPackage(value.package) : undefined,
+      });
+      return Any.create({
+        typeUrl: MsgEndpoint.MSG_RUN,
+        value: MsgRun.encode(msgRun).finish(),
+      });
+    }
+    default: {
+      return Any.create({
+        typeUrl: MsgEndpoint.MSG_CALL,
+        value: MsgCall.encode(MsgCall.fromJSON(message.value)).finish(),
+      });
+    }
+  }
+}

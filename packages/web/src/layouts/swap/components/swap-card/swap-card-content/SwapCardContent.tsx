@@ -38,6 +38,7 @@ interface ContentProps {
   resetEstimatedLiquidity: () => void;
   connectedWallet: boolean;
   isLoading: boolean;
+  isLoadingGasInfo: boolean;
   setSwapRateAction: (type: SwapRateAction) => void;
   isSwitchNetwork: boolean;
   priceImpactStatus: PriceImpactStatus;
@@ -56,6 +57,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
   switchSwapDirection,
   connectedWallet,
   isLoading,
+  isLoadingGasInfo,
   setSwapRateAction,
   priceImpactStatus,
   isSameToken,
@@ -257,9 +259,11 @@ const SwapCardContent: React.FC<ContentProps> = ({
               swapSummaryInfo={swapSummaryInfo}
               swapRouteInfos={swapRouteInfos}
               isLoading={isLoading}
+              isLoadingGasInfo={isLoadingGasInfo}
               setSwapRateAction={setSwapRateAction}
               priceImpactStatus={priceImpactStatus}
               swapTokenInfo={swapTokenInfo}
+              connectedWallet={connectedWallet}
             />
           )}
         </SwapDetailSectionWrapper>

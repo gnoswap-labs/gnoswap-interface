@@ -19,14 +19,17 @@ import SwapCardAutoRouter from "./swap-card-auto-router/SwapCardAutoRouter";
 import SwapCardFeeInfo from "./swap-card-fee-info/SwapCardFeeInfo";
 
 import { DetailWrapper, FeelWrapper } from "./SwapCardContentDetail.styles";
+import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 export interface SwapCardContentDetailProps {
   swapSummaryInfo: SwapSummaryInfo;
   swapRouteInfos: SwapRouteInfo[];
   isLoading: boolean;
+  isLoadingGasInfo: boolean;
   setSwapRateAction: (type: SwapRateAction) => void;
   priceImpactStatus: PriceImpactStatus;
   swapTokenInfo: SwapTokenInfo;
+  connectedWallet: boolean;
 }
 
 export const convertSwapRate = (value: number) => {
@@ -34,13 +37,17 @@ export const convertSwapRate = (value: number) => {
   return value.toFixed(15);
 };
 
+const SkeletonLoader = () => <span css={pulseSkeletonStyle({ h: 18, w: "30px!important" })} />;
+
 const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
   swapSummaryInfo,
   swapRouteInfos,
   isLoading,
+  isLoadingGasInfo,
   setSwapRateAction,
   priceImpactStatus,
   swapTokenInfo,
+  connectedWallet,
 }) => {
   const { t } = useTranslation();
   const { breakpoint } = useWindowSize();
@@ -120,15 +127,17 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
                 <LoadingSpinner /> {t("Swap:fetchingPrice")}
               </div>
             )}
-            <div className="price-info">
-              <IconGasFilled className="price-icon note-icon" />
-              <span>{gasFeeUSDStr}</span>
-              {openedDetailInfo ? (
-                <IconStrokeArrowUp className="price-icon" onClick={toggleDetailInfo} />
-              ) : (
-                <IconStrokeArrowDown className="price-icon" onClick={toggleDetailInfo} />
-              )}
-            </div>
+            {connectedWallet && (
+              <div className="price-info">
+                <IconGasFilled className="price-icon note-icon" />
+                {isLoading || isLoadingGasInfo ? <SkeletonLoader /> : <span>{gasFeeUSDStr}</span>}
+                {openedDetailInfo ? (
+                  <IconStrokeArrowUp className="price-icon" onClick={toggleDetailInfo} />
+                ) : (
+                  <IconStrokeArrowDown className="price-icon" onClick={toggleDetailInfo} />
+                )}
+              </div>
+            )}
           </div>
         </div>
       </DetailWrapper>
@@ -140,8 +149,10 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
               <SwapCardFeeInfo
                 swapSummaryInfo={swapSummaryInfo}
                 isLoading={isLoading}
+                isLoadingGasInfo={isLoadingGasInfo}
                 priceImpactStatus={priceImpactStatus}
                 swapTokenInfo={swapTokenInfo}
+                connectedWallet={connectedWallet}
               />
             )}
             <SwapCardAutoRouter
