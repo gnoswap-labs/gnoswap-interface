@@ -125,7 +125,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address, is
       broadcastLoading(getMessage(DexEvent.CLAIM_FEE, "pending", messageData));
 
       setLoadingTransactionClaim(true);
-      claim(position).then(response => {
+      claim(rpcProvider, position).then(response => {
         if (response) {
           if (response.code === 0 || response.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
             enqueueEvent({

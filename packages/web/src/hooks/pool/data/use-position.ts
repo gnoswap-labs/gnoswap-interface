@@ -5,8 +5,9 @@ import { useNetworkFee } from "@hooks/common/use-network-fee";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionModel } from "@models/position/position-model";
-import { makeClaimAllMessageWithApproves } from "@repositories/position/position.message";
+import { makeClaimAllMessageWithApproves, makeClaimMessageWithApproves } from "@repositories/position/position.message";
 import { ClaimAllRequest } from "@repositories/position/request";
+import { ClaimRequest } from "@repositories/position/request/claim-request";
 import BigNumber from "bignumber.js";
 import { useCallback } from "react";
 import { useGnoswapContext } from "../../common/use-gnoswap-context";
@@ -78,19 +79,56 @@ export const usePosition = (positions: PositionModel[]) => {
     [walletClient, account?.address, positionRepository, positions],
   );
 
+  const buildAdenaWalletClaimAction = async (request: ClaimRequest) => {
+    return positionRepository.sendClaim(request).catch(() => null);
+  };
+
+  const buildSocialWalletClaimAction = async (rpcProvider: GnoProvider | null, request: ClaimRequest) => {
+    if (!rpcProvider) {
+      console.log("Claim: ", new CommonError("FAILED_INITIALIZE_GNO_PROVIDER"));
+      return null;
+    }
+
+    const getAllowance = (packagePath: string, owner: string, spender: string) => {
+      return fetchAllowance(rpcProvider, packagePath, owner, spender);
+    };
+
+    const makeMessagesRequests = {
+      caller: request.recipient,
+      position: request.position,
+    };
+
+    const txMessages = await makeClaimMessageWithApproves(makeMessagesRequests, getAllowance);
+
+    const txDoc = await transactionService.createDocument({ messages: txMessages });
+    await transactionService.createTransaction(txDoc);
+
+    const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
+    const requestWithGasInfo: ClaimRequest = {
+      ...request,
+      gasFee: networkFee?.amount,
+      gasUsed: currentGasInfo?.gasUsed.toString(),
+    };
+
+    return positionRepository.sendClaim(requestWithGasInfo).catch(() => null);
+  };
+
   const claim = useCallback(
-    async (position: PoolPositionModel) => {
+    async (rpcProvider: GnoProvider | null, position: PoolPositionModel) => {
       const address = account?.address;
       if (!address) {
         return null;
       }
 
-      return positionRepository.sendClaim({
-        position: position,
-        recipient: address,
-      });
+      const walletType = walletClient?.getWalletType();
+
+      const request: ClaimRequest = { position: position, recipient: address };
+
+      return await (walletType === "ADENA"
+        ? buildAdenaWalletClaimAction(request)
+        : buildSocialWalletClaimAction(rpcProvider, request));
     },
-    [account?.address, positionRepository],
+    [walletClient, account?.address, positionRepository],
   );
 
   return {
