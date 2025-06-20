@@ -485,10 +485,11 @@ export const useRepositionHandle = () => {
     [address, selectedPosition, calculatedLiquidity, walletClient, positionRepository, estimateNetworkFee],
   );
 
-  const buildAdenaWalletSwapAction = async (request: SwapRouteRequest, isExactIn: boolean) => {
-    return isExactIn
-      ? swapRouterRepository.sendExactInSwapRoute(request)
-      : swapRouterRepository.sendExactOutSwapRoute(request);
+  const buildAdenaWalletExactInAction = async (request: SwapRouteRequest) => {
+    return swapRouterRepository.sendExactInSwapRoute(request);
+  };
+  const buildAdenaWalletExactOutAction = async (request: SwapRouteRequest) => {
+    return swapRouterRepository.sendExactOutSwapRoute(request);
   };
 
   const buildSocialWalletSwapAction = async (
@@ -578,7 +579,9 @@ export const useRepositionHandle = () => {
       };
 
       return await (walletType === "ADENA"
-        ? buildAdenaWalletSwapAction(request, isExactIn)
+        ? isExactIn
+          ? buildAdenaWalletExactInAction(request)
+          : buildAdenaWalletExactOutAction(request)
         : buildSocialWalletSwapAction(rpcProvider, request, isExactIn));
     },
     [
