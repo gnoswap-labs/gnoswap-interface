@@ -4,4 +4,8 @@ export interface ClaimAllRequest {
   positions: PositionModel[];
 
   recipient: string;
+
+  gasFee?: string;
+
+  gasUsed?: string;
 }
