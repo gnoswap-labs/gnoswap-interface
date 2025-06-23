@@ -536,6 +536,7 @@ export const useSwapHandler = () => {
 
     const networkFeeAmount = Number(displayNetworkFee?.amount ?? 0) || defaultGasFeeAmount;
     const networkFeeUSD = Number(displayNetworkFee?.usdValue ?? 0) || gasFeeUSD;
+    const gasEstimateSuccess = !!displayNetworkFee && displayNetworkFee.amount != "0";
 
     if (isSameToken) {
       return {
@@ -558,6 +559,7 @@ export const useSwapHandler = () => {
         swapRate1USD,
         protocolFee,
         routerFee,
+        gasEstimateSuccess,
       };
     }
 
@@ -595,6 +597,7 @@ export const useSwapHandler = () => {
       direction: type,
       protocolFee,
       routerFee,
+      gasEstimateSuccess,
     };
   }, [
     tokenA,
@@ -654,6 +657,7 @@ export const useSwapHandler = () => {
         isWrapOrUnwrap={swapButtonState === "WRAP" || swapButtonState === "UNWRAP"}
         isLoading={isRefetching}
         priceImpactStatus={priceImpactStatus}
+        connectedWallet={connectedWallet}
         title={(() => {
           switch (swapButtonState) {
             case "SWAP":
@@ -680,6 +684,7 @@ export const useSwapHandler = () => {
     isLoading,
     isLoadingGasInfo,
     setSwapRateAction,
+    connectedWallet,
     t,
   ]);
 

@@ -36,6 +36,7 @@ interface ConfirmSwapModalProps {
   isWrapOrUnwrap: boolean;
   priceImpactStatus: PriceImpactStatus;
   isLoading: boolean;
+  connectedWallet: boolean;
 
   setSwapRateAction: (type: SwapRateAction) => void;
   swap: (swapTokenInfo: SwapTokenInfo, estimatedAmount: string | null) => void;
@@ -52,6 +53,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   isWrapOrUnwrap,
   priceImpactStatus,
   isLoading,
+  connectedWallet,
 }) => {
   const swapConfirmModalState = useAtomValue(SwapState.swapConfirmModalState);
   const { swapSummaryInfo, swapTokenInfo, estimatedAmount, isRefetching } = swapConfirmModalState;
@@ -190,6 +192,10 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     swap(swapTokenInfo, estimatedAmount);
   }, [swapTokenInfo, swap]);
 
+  const gasEstimateSuccess = useMemo(() => {
+    return Boolean(swapSummaryInfo?.gasEstimateSuccess);
+  }, [swapSummaryInfo?.gasEstimateSuccess]);
+
   return (
     <ConfirmModal>
       <div
@@ -315,13 +321,15 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
               </>
             )}
 
-            <div className="gas-fee">
-              <span className="gray-text">{t("Swap:swapInfo.gasFee")}</span>
-              <span className="white-text">
-                {gasFeeStr}
-                <span className="gray-text">({gasFeeUSDStr})</span>
-              </span>
-            </div>
+            {connectedWallet && gasEstimateSuccess && (
+              <div className="gas-fee">
+                <span className="gray-text">{t("Swap:swapInfo.gasFee")}</span>
+                <span className="white-text">
+                  {gasFeeStr}
+                  <span className="gray-text">({gasFeeUSDStr})</span>
+                </span>
+              </div>
+            )}
           </div>
         </div>
         <div className="modal-button">

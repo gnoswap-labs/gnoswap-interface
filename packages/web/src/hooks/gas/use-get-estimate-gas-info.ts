@@ -1,4 +1,3 @@
-import BigNumber from "bignumber.js";
 import { useQuery, UseQueryOptions, UseQueryResult } from "@tanstack/react-query";
 
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
@@ -8,6 +7,8 @@ import { makeEstimateGasTransaction } from "@utils/transaction-utils";
 import { Document } from "src/types/transaction-messages.types";
 import { GasInfo } from "@hooks/gas";
 import { QUERY_KEY } from "@query/query-keys";
+import { GAS_WANTED_BUFFER_MULTIPLIER } from "@common/values";
+import { calculateAdjustedGasFee } from "@utils/gas-utils";
 
 const REFETCH_INTERVAL = 5_000;
 
@@ -52,13 +53,17 @@ export const useGetEstimateGasInfo = (
         };
       }
 
-      const gasFee = BigNumber(resultGasUsed.gasUsed).multipliedBy(gasPrice).toFixed(0, BigNumber.ROUND_UP);
+      const { gasFee, gasUsed, gasWanted } = calculateAdjustedGasFee(
+        resultGasUsed.gasUsed,
+        gasPrice,
+        GAS_WANTED_BUFFER_MULTIPLIER,
+      );
 
       return {
-        gasFee: Number(gasFee),
-        gasUsed: resultGasUsed.gasUsed,
-        gasWanted: resultGasUsed.gasUsed,
-        gasPrice: gasPrice,
+        gasFee,
+        gasUsed,
+        gasWanted,
+        gasPrice,
         hasError: resultGasUsed.errorMessage !== null,
         simulateErrorMessage: resultGasUsed.errorMessage,
       };

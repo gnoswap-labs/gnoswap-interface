@@ -30,6 +30,8 @@ export interface SwapSummaryInfo {
   protocolFee: string;
 
   routerFee: number;
+
+  gasEstimateSuccess: boolean;
 }
 
 export function swapDirectionToGuaranteedType(swapDirection: SwapDirectionType) {

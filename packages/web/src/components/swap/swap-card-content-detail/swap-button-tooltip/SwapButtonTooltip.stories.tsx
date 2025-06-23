@@ -46,6 +46,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
   swapRate1USD: 1,
   protocolFee: "0%",
   routerFee: 0.15,
+  gasEstimateSuccess: true,
 };
 
 export default {

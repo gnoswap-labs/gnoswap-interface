@@ -26,6 +26,7 @@ interface ContentProps {
   priceImpactStatus: PriceImpactStatus;
   swapTokenInfo: SwapTokenInfo;
   connectedWallet: boolean;
+  gasEstimateSuccess: boolean;
 }
 
 const SkeletonLoader = () => <span css={pulseSkeletonStyle({ h: 18, w: "100px!important" })} />;
@@ -37,6 +38,7 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
   priceImpactStatus,
   swapTokenInfo,
   connectedWallet,
+  gasEstimateSuccess,
 }) => {
   const { t } = useTranslation();
 
@@ -149,7 +151,7 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
         </div>
         {isLoading ? <SkeletonLoader /> : <span className="white-text">{routerFeeStr}</span>}
       </div>
-      {connectedWallet && (
+      {connectedWallet && gasEstimateSuccess && (
         <div className="swap-fee-row  gas-fee">
           <span className="gray-text">{t("Swap:swapInfo.gasFee")}</span>
 
