@@ -27,6 +27,7 @@ export const DEFAULT_GAS_WANTED = 2_000_000_000 as const;
 export const DEFAULT_ALLOWANCE_LIMIT = 1_000_000_000_000_000_000 as const;
 export const DEFAULT_TOKEN_PRICE_RATIO = 1 as const;
 export const GAS_WANTED_BUFFER_MULTIPLIER = 1.1 as const;
+export const GAS_WANTED_BUFFER_SAFE_MARGIN = 1.2 as const;
 
 export const MINIMUM_GNOT_SWAP_AMOUNT = 0.001;
 

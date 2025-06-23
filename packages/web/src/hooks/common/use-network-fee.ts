@@ -8,6 +8,7 @@ import { GasToken } from "@common/values/token-constant";
 import { useGnoswapContext } from "./use-gnoswap-context";
 import { makeEstimateGasTransaction } from "@utils/transaction-utils";
 import { WalletState } from "@states/index";
+import { DEFAULT_GAS_WANTED, GAS_WANTED_BUFFER_SAFE_MARGIN } from "@common/values";
 
 export interface UseNetworkFeeReturn {
   currentGasInfo: GasInfo | null;
@@ -100,12 +101,17 @@ export const useNetworkFee = (document: Document | null, gasInfo?: GasInfo | nul
         };
       }
 
-      const gasFee = BigNumber(resultGasUsed.gasUsed).multipliedBy(gasPrice).toFixed(0, BigNumber.ROUND_UP);
+      const adjustGasUsedBN = BigNumber(resultGasUsed.gasUsed || DEFAULT_GAS_WANTED).multipliedBy(
+        GAS_WANTED_BUFFER_SAFE_MARGIN,
+      );
+      const adjustGasUsed = adjustGasUsedBN.toFixed(0, BigNumber.ROUND_DOWN);
+      const adjustGasPriceBN = BigNumber(gasPrice);
+      const gasFee = adjustGasPriceBN.multipliedBy(adjustGasUsed).toFixed(0, BigNumber.ROUND_UP);
 
       const gasInfoResult: GasInfo = {
         gasFee: Number(gasFee),
-        gasUsed: resultGasUsed.gasUsed,
-        gasWanted: resultGasUsed.gasUsed,
+        gasUsed: Number(adjustGasUsed),
+        gasWanted: Number(adjustGasUsed),
         gasPrice: gasPrice,
         hasError: resultGasUsed.errorMessage !== null,
         simulateErrorMessage: resultGasUsed.errorMessage,
