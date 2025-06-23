@@ -108,6 +108,10 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
     );
   }, [swapSummaryInfo.swapRateAction]);
 
+  const gasEstimateSuccess = useMemo(() => {
+    return swapSummaryInfo.gasEstimateSuccess;
+  }, [swapSummaryInfo.gasEstimateSuccess]);
+
   return (
     <>
       <DetailWrapper opened={openedDetailInfo}>
@@ -129,8 +133,12 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
             )}
             {connectedWallet && (
               <div className="price-info">
-                <IconGasFilled className="price-icon note-icon" />
-                {isLoading || isLoadingGasInfo ? <SkeletonLoader /> : <span>{gasFeeUSDStr}</span>}
+                {gasEstimateSuccess && (
+                  <>
+                    <IconGasFilled className="price-icon note-icon" />
+                    {isLoading || isLoadingGasInfo ? <SkeletonLoader /> : <span>{gasFeeUSDStr}</span>}
+                  </>
+                )}
                 {openedDetailInfo ? (
                   <IconStrokeArrowUp className="price-icon" onClick={toggleDetailInfo} />
                 ) : (
@@ -153,6 +161,7 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
                 priceImpactStatus={priceImpactStatus}
                 swapTokenInfo={swapTokenInfo}
                 connectedWallet={connectedWallet}
+                gasEstimateSuccess={gasEstimateSuccess}
               />
             )}
             <SwapCardAutoRouter
