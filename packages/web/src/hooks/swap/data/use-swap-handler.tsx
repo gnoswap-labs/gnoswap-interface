@@ -657,6 +657,7 @@ export const useSwapHandler = () => {
         isWrapOrUnwrap={swapButtonState === "WRAP" || swapButtonState === "UNWRAP"}
         isLoading={isRefetching}
         priceImpactStatus={priceImpactStatus}
+        connectedWallet={connectedWallet}
         title={(() => {
           switch (swapButtonState) {
             case "SWAP":
@@ -683,6 +684,7 @@ export const useSwapHandler = () => {
     isLoading,
     isLoadingGasInfo,
     setSwapRateAction,
+    connectedWallet,
     t,
   ]);
 
