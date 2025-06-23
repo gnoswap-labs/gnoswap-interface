@@ -8,7 +8,7 @@ import { GasToken } from "@common/values/token-constant";
 import { useGnoswapContext } from "./use-gnoswap-context";
 import { makeEstimateGasTransaction } from "@utils/transaction-utils";
 import { WalletState } from "@states/index";
-import { GAS_WANTED_BUFFER_SAFE_MARGIN } from "@common/values";
+import { GAS_WANTED_BUFFER_MULTIPLIER } from "@common/values";
 import { calculateAdjustedGasFee } from "@utils/gas-utils";
 
 export interface UseNetworkFeeReturn {
@@ -105,7 +105,7 @@ export const useNetworkFee = (document: Document | null, gasInfo?: GasInfo | nul
       const { gasFee, gasUsed, gasWanted } = calculateAdjustedGasFee(
         resultGasUsed.gasUsed,
         gasPrice,
-        GAS_WANTED_BUFFER_SAFE_MARGIN,
+        GAS_WANTED_BUFFER_MULTIPLIER,
       );
 
       const gasInfoResult: GasInfo = {
