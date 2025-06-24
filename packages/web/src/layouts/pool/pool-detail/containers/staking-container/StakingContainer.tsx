@@ -14,6 +14,7 @@ import { formatRate } from "@utils/new-number-utils";
 import { isValidAddress } from "@utils/validation-utils";
 
 import Staking from "../../components/staking/Staking";
+import { PoolConverter } from "@services/converters/pool";
 
 const DAY_TIME = 24 * 60 * 60 * 1000;
 
@@ -53,6 +54,10 @@ const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking }) =
   const { data: poolStakings = [] } = useGetPoolStakingListByPoolPath(poolPath || "", {
     enabled: !!poolPath,
   });
+
+  const convertedPoolStakings = useMemo(() => {
+    return PoolConverter.convertPoolStakingModel(poolStakings);
+  }, [poolStakings]);
 
   const { getGnotPath } = useGnotToGnot();
 
@@ -167,7 +172,7 @@ const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking }) =
       pool={pool}
       totalApr={totalApr}
       stakedPosition={stakedPositions}
-      poolStakings={poolStakings}
+      poolStakings={convertedPoolStakings}
       breakpoint={breakpoint}
       mobile={mobile}
       isDisabledButton={isDisabledButton}
