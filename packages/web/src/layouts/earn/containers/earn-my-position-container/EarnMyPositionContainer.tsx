@@ -15,6 +15,7 @@ import { EarnState, ThemeState } from "@states/index";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 
 import EarnMyPositions from "../../components/earn-my-positions/EarnMyPositions";
+import { PositionConverter } from "@services/converters/position";
 
 interface EarnMyPositionContainerProps {
   loadMore?: boolean;
@@ -244,7 +245,9 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({ addre
   const updateDataMapping = useCallback(() => {
     setIsDataMappingLoading(true);
     const newMappedData = getMappedData();
-    setMappedData(newMappedData);
+    const convertedMappedData = PositionConverter.convertPositions(newMappedData);
+
+    setMappedData(convertedMappedData);
     setIsDataMappingLoading(false);
   }, [isViewMorePositions, width, showedPosition]);
 

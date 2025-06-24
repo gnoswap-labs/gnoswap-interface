@@ -364,7 +364,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             </div>
             <div className="list-content">
               <span>{dailyEarning}</span>
-              {claimableUSD}
+              <span>{claimableUSD}</span>
             </div>
           </div>
           <div className="view-my-range" onMouseOver={onMouseoverViewMyRange} onMouseOut={onMouseoutViewMyRange}>

@@ -12,6 +12,7 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { ThemeState } from "@states/index";
+import { PositionConverter } from "@services/converters/position";
 
 const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isClosed }) => {
   const { getGnotPath } = useGnotToGnot();
@@ -98,7 +99,8 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
         poolPositions.push(PositionMapper.makePoolPosition(position, temp));
       }
     });
-    return poolPositions;
+
+    return PositionConverter.convertPositions(poolPositions);
   }, [pools, positionsData]);
 
   const openPosition = useMemo(() => {
