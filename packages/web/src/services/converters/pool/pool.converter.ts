@@ -30,6 +30,7 @@ export class PoolConverter {
       return {
         ...data,
         incentivizedAmount: AmountConverter.convertSingle(data.rewardToken, data.incentivizedAmount),
+        remainingAmount: AmountConverter.convertSingle(data.rewardToken, data.remainingAmount),
       };
     });
   }
