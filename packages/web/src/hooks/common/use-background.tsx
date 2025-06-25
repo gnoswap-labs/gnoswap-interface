@@ -106,9 +106,10 @@ export const useBackground = () => {
     const initWalletBySession = async () => {
       const savedWalletType = sessionStorage.getItem(GNOSWAP_WALLET_TYPE_KEY);
       const savedSocialLoginType = sessionStorage.getItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY);
-
-      const shouldInitSocialWallet = savedWalletType === "SOCIAL_WALLET" && savedSocialLoginType;
-      const shouldInitAdenaWallet = savedWalletType === "ADENA" && window?.adena?.version;
+      const shouldInitSocialWallet =
+        savedWalletType === "SOCIAL_WALLET" && typeof savedSocialLoginType === "string" && !!savedSocialLoginType;
+      const shouldInitAdenaWallet =
+        savedWalletType === "ADENA" && typeof window !== "undefined" && !!window.adena?.version;
 
       if (shouldInitSocialWallet || shouldInitAdenaWallet) {
         initSession();
@@ -152,7 +153,7 @@ export const useBackground = () => {
 
       if (walletType === "SOCIAL_WALLET") {
         const socialLoginType = walletClient.getLoginType?.();
-        const invalidStates = ["error", "done"];
+        const invalidStates = ["error", "done", "loading"];
         if (socialLoginType && !invalidStates.includes(connectingState)) {
           await connectSocialAccount(socialLoginType);
         }
