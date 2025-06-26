@@ -76,6 +76,7 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
 
   const connect = async (loginType: SocialWalletLoginType, email?: string) => {
     let timeoutId: NodeJS.Timeout;
+    if (connectingState === "loading") return;
 
     const connectProcess = async () => {
       try {

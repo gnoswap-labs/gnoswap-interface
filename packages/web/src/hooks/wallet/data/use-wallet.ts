@@ -136,7 +136,7 @@ export const useWallet = () => {
 
         const adena = AdenaClient.createAdenaClient();
         const data = await adena?.getAccount();
-        if (data?.status === "failure") {
+        if (data?.status === "failure" && data.type !== "WALLET_LOCKED") {
           disconnectWallet();
           return;
         }
