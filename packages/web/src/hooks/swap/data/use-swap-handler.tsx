@@ -682,6 +682,7 @@ export const useSwapHandler = () => {
     swapButtonState,
     priceImpactStatus,
     isLoading,
+    isRefetching,
     isLoadingGasInfo,
     setSwapRateAction,
     connectedWallet,
