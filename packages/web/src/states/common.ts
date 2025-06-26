@@ -49,6 +49,7 @@ export const transactionModalData = atom<{
   callback?: () => void;
 } | null>(null);
 
+export const ADENA_SDK_CONNECTION_STATE_KEY = "adena-sdk-connection-state";
 export const GNOSWAP_SESSION_ID_KEY = "session_id";
 export const ACCOUNT_SESSION_INFO_KEY = "account_info";
 export const GNOWSWAP_CONNECTED_KEY = "connected-wallet";
