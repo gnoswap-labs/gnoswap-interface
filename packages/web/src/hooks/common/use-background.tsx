@@ -10,6 +10,7 @@ import { useLoading } from "./use-loading";
 import { useSocialWalletContext } from "./use-social-wallet-context";
 import { GNOSWAP_SOCIAL_LOGIN_TYPE_KEY, GNOSWAP_WALLET_TYPE_KEY } from "@states/common";
 import { useAutoDisconnect } from "./use-auto-disconnect";
+import { SocialLoginType, WalletType } from "src/types/wallet.types";
 
 export const useBackground = () => {
   const router = useRouter();
@@ -82,6 +83,22 @@ export const useBackground = () => {
     return () => window.removeEventListener("popstate", onPopPage);
   }, [router.pathname]);
 
+  function isAdenaWallet(type: WalletType | null): boolean {
+    return type === "ADENA" && typeof window !== "undefined" && !!window.adena?.version;
+  }
+
+  function isSocialWallet(type: WalletType | null, loginType: SocialLoginType | null): boolean {
+    return type === "SOCIAL_WALLET" && (loginType === "email" || loginType === "google" || loginType === "twitter");
+  }
+
+  function parseWalletType(raw: string | null): WalletType | null {
+    return raw === "ADENA" || raw === "SOCIAL_WALLET" ? raw : null;
+  }
+
+  function parseSocialLoginType(raw: string | null): SocialLoginType | null {
+    return raw === "email" || raw === "google" || raw === "twitter" ? raw : null;
+  }
+
   /**
    *
    * Purpose:
@@ -104,18 +121,15 @@ export const useBackground = () => {
     const RETRY_INTERVAL = 1000;
 
     const initWalletBySession = async () => {
-      const savedWalletType = sessionStorage.getItem(GNOSWAP_WALLET_TYPE_KEY);
-      const savedSocialLoginType = sessionStorage.getItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY);
-      const shouldInitSocialWallet =
-        savedWalletType === "SOCIAL_WALLET" && typeof savedSocialLoginType === "string" && !!savedSocialLoginType;
-      const shouldInitAdenaWallet =
-        savedWalletType === "ADENA" && typeof window !== "undefined" && !!window.adena?.version;
+      const savedWalletType = parseWalletType(sessionStorage.getItem(GNOSWAP_WALLET_TYPE_KEY));
+      const savedSocialLoginType = parseSocialLoginType(sessionStorage.getItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY));
 
-      if (shouldInitSocialWallet || shouldInitAdenaWallet) {
+      if (isAdenaWallet(savedWalletType) || isSocialWallet(savedWalletType, savedSocialLoginType)) {
         initSession();
       }
     };
 
+    let count = 0;
     const retryInterval = setInterval(() => {
       initWalletBySession();
 
@@ -125,8 +139,6 @@ export const useBackground = () => {
       }
       count++;
     }, RETRY_INTERVAL);
-
-    let count = 0;
 
     return () => clearInterval(retryInterval);
   }, [walletClient]);
