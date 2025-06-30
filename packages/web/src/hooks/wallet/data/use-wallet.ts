@@ -124,7 +124,6 @@ export const useWallet = () => {
       const savedAccount = sessionStorage.getItem(ACCOUNT_SESSION_INFO_KEY);
       const savedWalletType = sessionStorage.getItem(GNOSWAP_WALLET_TYPE_KEY);
       const savedSocialLoginType = sessionStorage.getItem(GNOSWAP_SOCIAL_LOGIN_TYPE_KEY);
-      console.log(savedAccount, savedWalletType, savedSocialLoginType, "?????");
 
       if (!savedAccount || !savedWalletType) return;
 
