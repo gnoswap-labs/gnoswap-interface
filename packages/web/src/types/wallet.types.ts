@@ -9,3 +9,10 @@ export interface WalletConnectParams {
   walletType: WalletType;
   socialLoginType?: SocialLoginType;
 }
+
+export enum AdenaSdkConnectionState {
+  DISCONNECTED,
+  CONNECTING,
+  CONNECTED,
+  ERROR,
+}

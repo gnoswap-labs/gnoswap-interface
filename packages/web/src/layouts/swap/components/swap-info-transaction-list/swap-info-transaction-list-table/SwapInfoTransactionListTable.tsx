@@ -150,10 +150,10 @@ const SwapInfoTransactionListTable = ({
       </TransactionListTableHeader>
 
       <TransactionListTableList>
-        {swapHistory.slice(0, MAX_DISPLAY_TRANSACTIONS).map((item: SwapHistoryItem) => {
+        {swapHistory.slice(0, MAX_DISPLAY_TRANSACTIONS).map((item: SwapHistoryItem, i) => {
           return (
             <TransactionListTableRow
-              key={`transaction-list-${item.txHash}`}
+              key={`transaction-list-${item.txHash}-${i}`}
               data={item}
               breakpoint={breakpoint}
               isNewTransaction={newTransactions.has(item.txHash)}

@@ -12,12 +12,13 @@ import {
   GNOSWAP_SOCIAL_LOGIN_TYPE_KEY,
   GNOSWAP_WALLET_TYPE_KEY,
   GNOWSWAP_CONNECTED_KEY,
+  ADENA_SDK_CONNECTION_STATE_KEY,
 } from "@states/common";
 import { useQueryClient } from "@tanstack/react-query";
 import { SUPPORT_CHAIN_IDS, DEFAULT_CHAIN_ID } from "@constants/environment.constant";
 import { useGetTokenBalancesFromChain } from "@query/address";
 import { useSocialWalletContext } from "@hooks/common/use-social-wallet-context";
-import { SocialLoginType } from "src/types/wallet.types";
+import { AdenaSdkConnectionState, SocialLoginType, WalletType } from "src/types/wallet.types";
 import { AUTH_STORE_KEY } from "@hooks/common/use-auto-disconnect";
 
 const balanceQueryKey = ["token-balance", "ugnot"];
@@ -256,7 +257,23 @@ export const useWallet = () => {
     }
   }, [walletClient]);
 
-  const resetWeb3authSession = () => {
+  /**
+   * Clears the Web3Auth session unless the adena SDK connection state is "2",
+   * or when forced by passing `force=true`.
+   *
+   * @param force - If true, always clear the session regardless of connection state.
+   */
+  const resetWeb3authSession = (forceReset: boolean = false) => {
+    if (!forceReset) {
+      const storedWalletType = sessionStorage.getItem(GNOSWAP_WALLET_TYPE_KEY);
+      const storedConnectionState = sessionStorage.getItem(ADENA_SDK_CONNECTION_STATE_KEY);
+
+      const walletType = storedWalletType === "ADENA" || "SOCIAL_WALLET" ? (storedWalletType as WalletType) : null;
+      const adenaSDKconnectionState =
+        storedConnectionState !== null ? (Number(storedConnectionState) as AdenaSdkConnectionState) : null;
+      if (walletType !== "SOCIAL_WALLET" || adenaSDKconnectionState === AdenaSdkConnectionState.CONNECTED) return;
+    }
+
     localStorage.removeItem(AUTH_STORE_KEY);
   };
 
