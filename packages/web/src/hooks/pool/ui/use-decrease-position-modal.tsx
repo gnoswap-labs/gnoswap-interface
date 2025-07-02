@@ -13,12 +13,14 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useMessage } from "@hooks/common/use-message";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { TokenModel } from "@models/token/token-model";
-import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
 import { DexEvent } from "@repositories/common";
 import { DecreaseLiquiditySuccessResponse } from "@repositories/position/response";
 import { CommonState } from "@states/index";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
+import { QUERY_KEY } from "@query/query-keys";
+import { wait } from "@utils/common";
 
 import DecreasePositionModalContainer from "../../../layouts/pool/pool-decrease-liquidity/containers/decrease-position-modal-container/DecreasePositionModalContainer";
 import { IPooledTokenInfo } from "../data/use-decrease-handle";
@@ -63,15 +65,15 @@ export const useDecreasePositionModal = ({
   calculatedLiquidity,
   pooledTokenInfos,
   isGetWGNOT,
-  refetchPositions,
 }: DecreasePositionModal): Props => {
-  const { walletClient } = useWallet();
+  const { walletClient, currentChainId } = useWallet();
   const router = useRouter();
   const { address } = useAddress();
   const clearModal = useClearModal();
 
   const { positionRepository, transactionService } = useGnoswapContext();
   const { estimateNetworkFee } = useNetworkFee(null);
+  const { invalidateQueryKey } = useInvalidateQueries();
 
   const onSuccessClose = useCallback(() => {
     clearModal();
@@ -81,13 +83,21 @@ export const useDecreasePositionModal = ({
   const { broadcastRejected, broadcastSuccess, broadcastLoading, broadcastError } = useBroadcastHandler();
   const { enqueueEvent } = useTransactionEventStore();
 
+  const poolPath = makePoolPath(tokenA, tokenB, swapFeeTier);
+
   // Refetch functions
   const { updateBalances } = useTokenData();
-  const { refetch: refetchPools } = useGetPoolList();
-  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(makePoolPath(tokenA, tokenB, swapFeeTier));
 
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
+
+  const handleRefreshData = useCallback(async () => {
+    invalidateQueryKey("DecreasePosition", [
+      [QUERY_KEY.pools],
+      [QUERY_KEY.positions, currentChainId, address],
+      [QUERY_KEY.poolDetail, poolPath],
+    ]);
+  }, [invalidateQueryKey, poolPath, currentChainId, address]);
 
   const { getMessage } = useMessage();
 
@@ -256,14 +266,14 @@ export const useDecreasePositionModal = ({
                 ),
               };
             },
-            onEmit: async () => {
-              refetchPools();
-              refetchPositions();
-              refetchPoolDetails();
-            },
             onUpdate: async () => {
               updateBalances();
             },
+            onEmit: async () => {
+              await wait(async () => true, 5000);
+              handleRefreshData();
+            },
+            onSuccess: handleRefreshData,
           });
         }
 

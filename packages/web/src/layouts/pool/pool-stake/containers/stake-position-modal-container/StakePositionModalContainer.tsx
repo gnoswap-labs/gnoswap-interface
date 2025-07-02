@@ -19,6 +19,10 @@ import { useReferral } from "@hooks/common/use-referral";
 import { StakePositionsRequest } from "@repositories/position/request";
 import { makeStakePositionsMessagesWithApproves } from "@repositories/position/position.message";
 import { useNetworkFee } from "@hooks/common/use-network-fee";
+import { useAddress } from "@hooks/common/use-address";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
+import { QUERY_KEY } from "@query/query-keys";
+import { wait } from "@utils/common";
 
 import StakePositionModal from "../../components/stake-position-modal/StakePositionModal";
 
@@ -28,26 +32,38 @@ interface StakePositionModalContainerProps {
 }
 
 const StakePositionModalContainer = ({ positions, refetchPositions }: StakePositionModalContainerProps) => {
-  const { account, walletClient } = useWallet();
+  const router = useCustomRouter();
+  const { account, walletClient, currentChainId } = useWallet();
+  const { address } = useAddress();
   const { broadcastRejected, broadcastSuccess, broadcastLoading, broadcastError } = useBroadcastHandler();
   const { enqueueEvent } = useTransactionEventStore();
 
+  const poolPath = router.getPoolPath();
+
   // Refetch functions
+  const { invalidateQueryKey } = useInvalidateQueries();
   const { refetch: refetchPools } = useGetPoolList();
-  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(positions?.[0]?.poolPath);
+  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(poolPath);
 
   const { transactionService, positionRepository } = useGnoswapContext();
   const { estimateNetworkFee } = useNetworkFee(null);
-  const router = useCustomRouter();
+
   const { getCurrentReferralAddress, removeReferrerFromLocalStorage } = useReferral();
   const clearModal = useClearModal();
   const { updateBalances, tokenPrices } = useTokenData();
-  const poolPath = router.getPoolPath();
   const { data: pool } = useGetPoolDetailByPath(poolPath, {
     enabled: !!poolPath,
   });
 
   const { getMessage } = useMessage();
+
+  const handleRefreshData = useCallback(async () => {
+    invalidateQueryKey("StakePosition", [
+      [QUERY_KEY.pools],
+      [QUERY_KEY.positions, currentChainId, address],
+      [QUERY_KEY.poolDetail, poolPath],
+    ]);
+  }, [invalidateQueryKey, poolPath, currentChainId, address]);
 
   const onCloseConfirmTransactionModal = useCallback(() => {
     clearModal();
@@ -164,14 +180,14 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
                 isKMB: false,
               }),
             }),
-            onEmit: async () => {
-              refetchPools();
-              refetchPositions();
-              refetchPoolDetails();
-            },
             onUpdate: async () => {
               updateBalances();
             },
+            onEmit: async () => {
+              await wait(async () => true, 5000);
+              handleRefreshData();
+            },
+            onSuccess: handleRefreshData,
           });
         }
         if (result.code === 0) {

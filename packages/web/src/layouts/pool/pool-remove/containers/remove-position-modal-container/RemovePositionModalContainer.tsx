@@ -23,6 +23,10 @@ import { useNetworkFee } from "@hooks/common/use-network-fee";
 import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
 import { CommonError } from "@common/errors";
 import { makeRemoveLiquidityMessagesWithApproves } from "@repositories/position/position.message";
+import { useAddress } from "@hooks/common/use-address";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
+import { QUERY_KEY } from "@query/query-keys";
+import { wait } from "@utils/common";
 
 import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
 import RemovePositionModal from "../../components/remove-position-modal/RemovePositionModal";
@@ -44,14 +48,18 @@ const RemovePositionModalContainer = ({
   positionLiquidities,
   refetchPositions,
 }: RemovePositionModalContainerProps) => {
-  const { account, walletClient } = useWallet();
+  const { account, walletClient, currentChainId } = useWallet();
+  const { address } = useAddress();
   const { transactionService, positionRepository } = useGnoswapContext();
   const { estimateNetworkFee } = useNetworkFee(null);
+  const { invalidateQueryKey } = useInvalidateQueries();
 
   const router = useRouter();
   const clearModal = useClearModal();
   const { broadcastRejected, broadcastSuccess, broadcastLoading, broadcastError } = useBroadcastHandler();
   const { enqueueEvent } = useTransactionEventStore();
+
+  const poolPath = selectedPositions?.[0]?.poolPath || "";
 
   // Refetch functions
   const { updateBalances } = useTokenData();
@@ -60,6 +68,14 @@ const RemovePositionModalContainer = ({
   const { pooledTokenInfos, unclaimedFees } = usePositionsRewards({
     positions: selectedPositions,
   });
+
+  const handleRefreshData = useCallback(async () => {
+    invalidateQueryKey("RemovePosition", [
+      [QUERY_KEY.pools],
+      [QUERY_KEY.positions, currentChainId, address],
+      [QUERY_KEY.poolDetail, poolPath],
+    ]);
+  }, [invalidateQueryKey, poolPath, currentChainId, address]);
 
   const onCloseConfirmTransactionModal = useCallback(() => {
     clearModal();
@@ -194,14 +210,14 @@ const RemovePositionModalContainer = ({
                 }
                 return broadcastMessageData;
               },
-              onEmit: async () => {
-                refetchPools();
-                refetchPositions();
-                refetchPoolDetails();
-              },
               onUpdate: async () => {
                 updateBalances();
               },
+              onEmit: async () => {
+                await wait(async () => true, 5000);
+                handleRefreshData();
+              },
+              onSuccess: handleRefreshData,
             });
           }
           if (result.code === 0) {
