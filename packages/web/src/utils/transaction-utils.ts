@@ -167,10 +167,8 @@ export const withTransactionGuard = async <T>(
       throw new Error("Wallet client is not initialized");
     }
 
-    const document = await generateTransactionDataDocument(walletClient, transaction);
-    // document.fee.amount[0].amount = String(49);
-
     if (walletClient.getWalletType() === "SOCIAL_WALLET") {
+      const document = await generateTransactionDataDocument(walletClient, transaction);
       const approved = await showTransactionApprovalModal(document);
 
       if (approved === false) {
