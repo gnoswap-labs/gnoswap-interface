@@ -2,7 +2,6 @@ import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useQueryClient } from "@tanstack/react-query";
 
 import { QUERY_KEY } from "@query/query-keys";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
@@ -32,6 +31,7 @@ import { priceToNearTick } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useReferral } from "@hooks/common/use-referral";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 
 import { useAddress } from "@hooks/common/use-address";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
@@ -98,7 +98,6 @@ export const usePoolAddLiquidityConfirmModal = ({
 }: EarnAddLiquidityConfirmModalProps): SelectTokenModalModel => {
   const { t } = useTranslation();
   const { rpcProvider } = useGnoswapContext();
-  const queryClient = useQueryClient();
   const { broadcastLoading, broadcastRejected, broadcastSuccess, broadcastError } = useBroadcastHandler();
   const { enqueueEvent } = useTransactionEventStore();
   const { removeReferrerFromLocalStorage } = useReferral();
@@ -116,22 +115,17 @@ export const usePoolAddLiquidityConfirmModal = ({
 
   const [openedModal, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
+  const { invalidateQueryKey } = useInvalidateQueries();
 
-  const invalidateAndRefreshPoolPositionData = useCallback(async () => {
+  const handleRefreshData = useCallback(async () => {
     const poolPath = selectPool.poolPath || "";
 
-    const results = await Promise.allSettled([
-      queryClient.invalidateQueries([QUERY_KEY.positions, currentChainId, address]),
-      queryClient.invalidateQueries([QUERY_KEY.pools]),
-      queryClient.invalidateQueries([QUERY_KEY.poolDetail, poolPath]),
+    invalidateQueryKey("AddLiquidity", [
+      [QUERY_KEY.positions, currentChainId, address],
+      [QUERY_KEY.pools],
+      [QUERY_KEY.poolDetail, poolPath],
     ]);
-
-    const errors = results
-      .map(result => (result.status === "rejected" ? result.reason : null))
-      .filter(error => error !== null);
-
-    errors.forEach((e, idx) => console.warn(`invalidateAndRefreshPoolData [${idx}]`, e.reason));
-  }, [queryClient, selectPool.poolPath, currentChainId, address]);
+  }, [invalidateQueryKey, selectPool.poolPath, currentChainId, address]);
 
   const tokenAAmount = useMemo(() => {
     const depositRatio = selectPool.depositRatio;
@@ -392,9 +386,9 @@ export const usePoolAddLiquidityConfirmModal = ({
               },
               onEmit: async () => {
                 await wait(async () => true, 5000);
-                invalidateAndRefreshPoolPositionData();
+                handleRefreshData();
               },
-              onSuccess: invalidateAndRefreshPoolPositionData,
+              onSuccess: handleRefreshData,
             });
           }
 

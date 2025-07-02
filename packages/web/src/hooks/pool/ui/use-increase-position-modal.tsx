@@ -14,10 +14,10 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { DexEvent } from "@repositories/common";
 import { CommonState } from "@states/index";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 
 import IncreasePositionModalContainer from "../../../layouts/pool/pool-increase-liquidity/containers/increase-position-modal-container/IncreasePositionModalContainer";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
@@ -28,6 +28,8 @@ import { fetchAllowance } from "@common/clients/wallet-client/transaction-messag
 import { makeIncreaseLiquidityMessagesWithApproves } from "@repositories/position/position.message";
 import { useNetworkFee } from "@hooks/common/use-network-fee";
 import { CommonError } from "@common/errors";
+import { QUERY_KEY } from "@query/query-keys";
+import { wait } from "@utils/common";
 
 export interface Props {
   openModal: () => void;
@@ -62,12 +64,12 @@ export const useIncreasePositionModal = ({
   rangeStatus,
   isDepositTokenA,
   isDepositTokenB,
-  refetchPositions,
 }: IncreasePositionModal): Props => {
-  const { walletClient } = useWallet();
+  const { walletClient, currentChainId } = useWallet();
   const { broadcastRejected, broadcastSuccess, broadcastLoading, broadcastError } = useBroadcastHandler();
   const { enqueueEvent } = useTransactionEventStore();
   const { estimateNetworkFee } = useNetworkFee(null);
+  const { invalidateQueryKey } = useInvalidateQueries();
 
   const router = useRouter();
   const { positionRepository, transactionService } = useGnoswapContext();
@@ -75,10 +77,18 @@ export const useIncreasePositionModal = ({
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
 
+  const poolPath = selectedPosition?.poolPath || "";
+
   // Refetch functions
   const { updateBalances } = useTokenData();
-  const { refetch: refetchPools } = useGetPoolList();
-  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(selectedPosition?.poolPath);
+
+  const handleRefreshData = useCallback(async () => {
+    invalidateQueryKey("IncreasePosition", [
+      [QUERY_KEY.pools],
+      [QUERY_KEY.positions, currentChainId, address],
+      [QUERY_KEY.poolDetail, poolPath],
+    ]);
+  }, [invalidateQueryKey, poolPath, currentChainId, address]);
 
   const onCloseConfirmTransactionModal = useCallback(() => {
     router.back();
@@ -199,14 +209,14 @@ export const useIncreasePositionModal = ({
               }),
             };
           },
-          onEmit: async () => {
-            refetchPools();
-            refetchPositions();
-            refetchPoolDetails();
-          },
           onUpdate: async () => {
             updateBalances();
           },
+          onEmit: async () => {
+            await wait(async () => true, 5000);
+            handleRefreshData();
+          },
+          onSuccess: handleRefreshData,
         });
       }
 
