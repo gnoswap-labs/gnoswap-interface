@@ -169,9 +169,9 @@ export const withTransactionGuard = async <T>(
 
     if (walletClient.getWalletType() === "SOCIAL_WALLET") {
       const document = await generateTransactionDataDocument(walletClient, transaction);
-      const approved = await showTransactionApprovalModal(document);
+      const approvedDocument = await showTransactionApprovalModal(document);
 
-      if (approved === false) {
+      if (!approvedDocument) {
         return {
           code: 4000,
           data: null,
@@ -183,7 +183,7 @@ export const withTransactionGuard = async <T>(
 
       const updatedTransaction = {
         ...transaction,
-        memo: approved.memo,
+        memo: approvedDocument.memo,
       };
 
       return await executeTransaction(updatedTransaction);
