@@ -22,7 +22,7 @@ import { useNetworkFee } from "@hooks/common/use-network-fee";
 import { useAddress } from "@hooks/common/use-address";
 import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { QUERY_KEY } from "@query/query-keys";
-import { wait } from "@utils/common";
+import { delay } from "@utils/common";
 
 import StakePositionModal from "../../components/stake-position-modal/StakePositionModal";
 
@@ -184,7 +184,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
               updateBalances();
             },
             onEmit: async () => {
-              await wait(async () => true, 5000);
+              await delay(5000);
               handleRefreshData();
             },
             onSuccess: handleRefreshData,

@@ -29,7 +29,7 @@ import { makeIncreaseLiquidityMessagesWithApproves } from "@repositories/positio
 import { useNetworkFee } from "@hooks/common/use-network-fee";
 import { CommonError } from "@common/errors";
 import { QUERY_KEY } from "@query/query-keys";
-import { wait } from "@utils/common";
+import { delay } from "@utils/common";
 
 export interface Props {
   openModal: () => void;
@@ -213,7 +213,7 @@ export const useIncreasePositionModal = ({
             updateBalances();
           },
           onEmit: async () => {
-            await wait(async () => true, 5000);
+            await delay(5000);
             handleRefreshData();
           },
           onSuccess: handleRefreshData,

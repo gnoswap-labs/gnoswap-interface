@@ -16,7 +16,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
 import { DexEvent } from "@repositories/common";
-import { checkGnotPath } from "@utils/common";
+import { checkGnotPath, delay } from "@utils/common";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 import { RemoveLiquidityRequest } from "@repositories/position/request";
 import { useNetworkFee } from "@hooks/common/use-network-fee";
@@ -26,7 +26,6 @@ import { makeRemoveLiquidityMessagesWithApproves } from "@repositories/position/
 import { useAddress } from "@hooks/common/use-address";
 import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { QUERY_KEY } from "@query/query-keys";
-import { wait } from "@utils/common";
 
 import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
 import RemovePositionModal from "../../components/remove-position-modal/RemovePositionModal";
@@ -214,7 +213,7 @@ const RemovePositionModalContainer = ({
                 updateBalances();
               },
               onEmit: async () => {
-                await wait(async () => true, 5000);
+                await delay(5000);
                 handleRefreshData();
               },
               onSuccess: handleRefreshData,

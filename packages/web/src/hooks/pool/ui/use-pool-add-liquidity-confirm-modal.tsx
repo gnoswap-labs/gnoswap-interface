@@ -40,7 +40,7 @@ import PoolAddConfirmModal from "@layouts/pool/pool-add/components/pool-add-conf
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
-import { wait } from "@utils/common";
+import { delay } from "@utils/common";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -385,7 +385,7 @@ export const usePoolAddLiquidityConfirmModal = ({
                 updateBalances();
               },
               onEmit: async () => {
-                await wait(async () => true, 5000);
+                await delay(5000);
                 handleRefreshData();
               },
               onSuccess: handleRefreshData,

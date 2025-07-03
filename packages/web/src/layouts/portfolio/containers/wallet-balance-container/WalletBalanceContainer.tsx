@@ -27,7 +27,7 @@ import { PositionConverter } from "@services/converters/position";
 import { useAddress } from "@hooks/common/use-address";
 import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { QUERY_KEY } from "@query/query-keys";
-import { wait } from "@utils/common";
+import { delay } from "@utils/common";
 
 import AssetSendModal from "../../components/asset-send-modal/AssetSendModal";
 import WalletBalance from "../../components/wallet-balance/WalletBalance";
@@ -127,7 +127,7 @@ const WalletBalanceContainer: React.FC = () => {
               updateBalances();
             },
             onEmit: async () => {
-              await wait(async () => true, 5000);
+              await delay(5000);
               handleRefreshData();
             },
             onSuccess: handleRefreshData,

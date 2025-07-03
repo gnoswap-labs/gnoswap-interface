@@ -15,7 +15,7 @@ import { DexEvent } from "@repositories/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { QUERY_KEY } from "@query/query-keys";
-import { wait } from "@utils/common";
+import { delay } from "@utils/common";
 
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { PoolPositionModel } from "@models/position/pool-position-model";
@@ -151,7 +151,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address = "
                 updateBalances();
               },
               onEmit: async () => {
-                await wait(async () => true, 5000);
+                await delay(5000);
                 handleRefreshData();
               },
               onSuccess: handleRefreshData,
@@ -205,7 +205,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address = "
               await updateBalances();
             },
             onEmit: async () => {
-              await wait(async () => true, 5000);
+              await delay(5000);
               handleRefreshData();
             },
             onSuccess: handleRefreshData,

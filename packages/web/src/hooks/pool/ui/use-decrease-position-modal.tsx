@@ -20,7 +20,7 @@ import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { QUERY_KEY } from "@query/query-keys";
-import { wait } from "@utils/common";
+import { delay } from "@utils/common";
 
 import DecreasePositionModalContainer from "../../../layouts/pool/pool-decrease-liquidity/containers/decrease-position-modal-container/DecreasePositionModalContainer";
 import { IPooledTokenInfo } from "../data/use-decrease-handle";
@@ -270,7 +270,7 @@ export const useDecreasePositionModal = ({
               updateBalances();
             },
             onEmit: async () => {
-              await wait(async () => true, 5000);
+              await delay(5000);
               handleRefreshData();
             },
             onSuccess: handleRefreshData,
