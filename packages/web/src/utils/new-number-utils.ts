@@ -146,12 +146,14 @@ export const formatPrice = (
     lessThan1Significant = 3,
     greaterThan1Decimals = 2,
     forcedDecimals = false,
+    approx = false,
   }: {
     usd?: boolean;
     isKMB?: boolean;
     lessThan1Significant?: number;
     greaterThan1Decimals?: number;
     forcedDecimals?: boolean;
+    approx?: boolean;
   } = {},
 ): string => {
   if (value === "" || value === null || value === undefined) {
@@ -177,13 +179,15 @@ export const formatPrice = (
 
   if (absValue.isLessThan(1)) {
     const tempNum = valueAsBigNum.toPrecision(lessThan1Significant, BigNumber.ROUND_DOWN);
+    const formattedValue = negativeSign + prefix + tempNum;
 
-    return negativeSign + prefix + tempNum;
+    return approx && formattedValue !== "-" ? `≈${formattedValue}` : formattedValue;
   }
 
   const formattedNumber = valueAsBigNum.toFormat(greaterThan1Decimals, BigNumber.ROUND_DOWN);
+  const finalNumber = negativeSign + prefix + (forcedDecimals ? formattedNumber : removeTrailingZeros(formattedNumber));
 
-  return negativeSign + prefix + (forcedDecimals ? formattedNumber : removeTrailingZeros(formattedNumber));
+  return approx && finalNumber !== "-" ? `≈${finalNumber}` : finalNumber;
 };
 
 export const formatOtherPrice = (
