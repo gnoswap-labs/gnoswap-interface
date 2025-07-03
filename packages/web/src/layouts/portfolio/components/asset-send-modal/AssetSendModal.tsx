@@ -133,21 +133,22 @@ const AssetSendModal: React.FC<Props> = ({
     !isValidAddress(address) ||
     BigNumber(amount || "0").isGreaterThan(BigNumber(currentAvailableBalance || "0"));
 
-  const estimatePrice = useMemo(
-    () =>
-      withdrawInfo?.wrappedPath && !!amount && amount !== "0"
-        ? formatPrice(
-            BigNumber(+amount)
-              .multipliedBy(Number(tokenPrices?.[withdrawInfo?.wrappedPath]?.usd ?? "0"))
-              .toString(),
-            {
-              usd: true,
-              isKMB: false,
-            },
-          )
-        : "-",
-    [amount, tokenPrices, withdrawInfo?.wrappedPath],
-  );
+  const estimatePrice = useMemo(() => {
+    const tokenPath = withdrawInfo?.wrappedPath || withdrawInfo?.path || "";
+
+    return tokenPath && !!amount && amount !== "0"
+      ? formatPrice(
+          BigNumber(+amount)
+            .multipliedBy(Number(tokenPrices?.[tokenPath]?.usd ?? "0"))
+            .toString(),
+          {
+            usd: true,
+            isKMB: false,
+            approx: true,
+          },
+        )
+      : "-";
+  }, [amount, tokenPrices, withdrawInfo?.wrappedPath, withdrawInfo?.path]);
 
   const handleEnterAllBalanceAvailable = () => {
     if (currentAvailableBalance) {
