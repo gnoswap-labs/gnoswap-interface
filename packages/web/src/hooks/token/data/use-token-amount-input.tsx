@@ -4,7 +4,7 @@ import BigNumber from "bignumber.js";
 import { TokenModel } from "@models/token/token-model";
 import { useTokenData } from "./use-token-data";
 import { checkGnotPath } from "@utils/common";
-import { formatOtherPrice } from "@utils/new-number-utils";
+import { formatPrice } from "@utils/new-number-utils";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useTranslation } from "react-i18next";
 
@@ -87,9 +87,7 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
 
     if (!tokenPrices[checkGnotPath(token.path)]?.usd) return "-";
 
-    return formatOtherPrice(usd, {
-      isKMB: false,
-    });
+    return formatPrice(usd, { usd: true, isKMB: false, approx: true });
   }, [tokenPrices, amount, token]);
 
   const changeAmount = useCallback(
