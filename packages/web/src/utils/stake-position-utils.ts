@@ -1,5 +1,6 @@
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import BigNumber from "bignumber.js";
+import { buildPricePrefix } from "./common";
 import { removeTrailingZeros, toKMBFormat } from "./number-utils";
 
 export const convertToMB = (price: string, maximumFractionDigits?: number) => {
@@ -205,6 +206,29 @@ export const convertToKMB = (
         maximumFractionDigits: options?.maximumFractionDigits ?? 2,
         minimumFractionDigits: options?.minimumFractionDigits ?? 2,
       });
+};
+
+export const convertToKMBWithPrefix = (
+  price: string,
+  options?: {
+    usd?: boolean;
+    approx?: boolean;
+    maximumFractionDigits?: number;
+    minimumFractionDigits?: number;
+    minimumSignificantDigits?: number;
+    maximumSignificantDigits?: number;
+    isIgnoreKFormat?: boolean;
+    ignoreSmallValueFormat?: boolean;
+    fixDisplayDecimals?: number;
+  },
+): string => {
+  const { usd = false, approx = false, ...restOptions } = options || {};
+
+  const formatted = convertToKMB(price, restOptions);
+
+  const prefix = buildPricePrefix({ usd, approx });
+
+  return prefix + formatted;
 };
 
 export const formatUsdNumber = (price: string, maximumFractionDigits?: number, isKMB?: boolean) => {

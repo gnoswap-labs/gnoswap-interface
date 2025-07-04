@@ -273,3 +273,17 @@ export const wrapNativeTokenPath = (path: string) => {
     return path;
   }
 };
+
+const PRICE_PREFIX_SYMBOL_MAP: Record<string, string> = {
+  approx: "≈",
+  usd: "$",
+};
+/**
+ * Helper to build the prefix string based on usd and approx flags.
+ */
+export function buildPricePrefix(flags: Partial<Record<keyof typeof PRICE_PREFIX_SYMBOL_MAP, boolean>>): string {
+  return (Object.keys(PRICE_PREFIX_SYMBOL_MAP) as Array<keyof typeof PRICE_PREFIX_SYMBOL_MAP>)
+    .filter(key => flags[key])
+    .map(key => PRICE_PREFIX_SYMBOL_MAP[key])
+    .join("");
+}
