@@ -34,7 +34,7 @@ const SessionExpiredModal = ({ close }: Props) => {
           </div>
           <div className="button-wrapper">
             <Button
-              text={t("common:action.cancel")}
+              text={t("common:action.close")}
               style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
               onClick={close}
               className="button-confirm"
