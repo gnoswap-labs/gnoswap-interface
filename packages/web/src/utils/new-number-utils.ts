@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+import { buildPricePrefix } from "./common";
 import { toKMBFormat } from "./number-utils";
 
 export const removeTrailingZeros = (value: string) => value.replace(/\.?0+$/, "");
@@ -162,11 +163,10 @@ export const formatPrice = (value?: BigNumber | string | number | null, options:
   }
 
   const valueWithoutComma = value.toString().replace(/,/g, "");
-
   const valueAsBigNum = BigNumber(valueWithoutComma);
   const absValue = valueAsBigNum.abs();
 
-  const prefix = usd ? "$" : "";
+  const prefix = buildPricePrefix({ usd, approx });
   const negativeSign = valueAsBigNum.isLessThan(0) ? "-" : "";
 
   if (absValue.isNaN()) return value.toString();
@@ -180,15 +180,16 @@ export const formatPrice = (value?: BigNumber | string | number | null, options:
 
   if (absValue.isLessThan(1)) {
     const tempNum = valueAsBigNum.toPrecision(lessThan1Significant, BigNumber.ROUND_DOWN);
-    const formattedValue = negativeSign + prefix + tempNum;
-
-    return approx && formattedValue !== "-" ? `≈${formattedValue}` : formattedValue;
+    const formattedValue = `${negativeSign}${prefix}${tempNum}`;
+    return formattedValue;
   }
 
   const formattedNumber = valueAsBigNum.toFormat(greaterThan1Decimals, BigNumber.ROUND_DOWN);
-  const finalNumber = negativeSign + prefix + (forcedDecimals ? formattedNumber : removeTrailingZeros(formattedNumber));
+  const finalNumber = `${negativeSign}${prefix}${
+    forcedDecimals ? formattedNumber : removeTrailingZeros(formattedNumber)
+  }`;
 
-  return approx && finalNumber !== "-" ? `≈${finalNumber}` : finalNumber;
+  return finalNumber;
 };
 
 export const formatOtherPrice = (
