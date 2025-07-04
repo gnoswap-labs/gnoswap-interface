@@ -161,22 +161,32 @@ const AssetSendModal: React.FC<Props> = ({
     return false;
   }, [amount, address, currentAvailableBalance, withdrawInfo]);
 
-  const estimatePrice = useMemo(() => {
-    const tokenPath = withdrawInfo?.wrappedPath || withdrawInfo?.path || "";
+  const estimatePrice = useMemo((): string => {
+    // If no token data or invalid amount, show placeholder
+    if (!withdrawInfo || !isValidAmount(amount)) {
+      return "-";
+    }
 
-    return tokenPath && !!amount && amount !== "0"
-      ? formatPrice(
-          BigNumber(+amount)
-            .multipliedBy(Number(tokenPrices?.[tokenPath]?.usd ?? "0"))
-            .toString(),
-          {
-            usd: true,
-            isKMB: false,
-            approx: true,
-          },
-        )
-      : "-";
-  }, [amount, tokenPrices, withdrawInfo?.wrappedPath, withdrawInfo?.path]);
+    // Determine the correct price key and retrieve USD price
+    const tokenPath = withdrawInfo.wrappedPath || withdrawInfo.path;
+    const rawPrice = tokenPrices?.[tokenPath]?.usd;
+    const priceInUsd = Number(rawPrice ?? "0");
+
+    // If price is zero or missing, show placeholder
+    if (priceInUsd === 0) {
+      return "-";
+    }
+
+    // Calculate total value: amount * priceInUsd
+    const totalValue = BigNumber(amount.toString()).multipliedBy(priceInUsd).toString();
+
+    // Format and return with USD symbol, no KMB, and approximation
+    return formatPrice(totalValue, {
+      usd: true,
+      isKMB: false,
+      approx: true,
+    });
+  }, [amount, tokenPrices, withdrawInfo]);
 
   const handleEnterAllBalanceAvailable = () => {
     if (currentAvailableBalance) {
