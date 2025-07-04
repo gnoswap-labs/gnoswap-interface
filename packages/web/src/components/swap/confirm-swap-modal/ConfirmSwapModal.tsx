@@ -9,7 +9,7 @@ import { SwapResultInfo } from "@models/swap/swap-result-info";
 import { swapDirectionToGuaranteedType } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { floorNumber, toNumberFormat } from "@utils/number-utils";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { convertToKMBWithPrefix } from "@utils/stake-position-utils";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
@@ -155,13 +155,17 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     const { tokenAUSD, tokenBUSD, tokenAAmount, tokenBAmount } = swapTokenInfo;
     if (swapRateAction === SwapRateAction.ATOB) {
       if (!tokenBUSD || tokenBUSD === 0) return "-";
-      return convertToKMB(floorNumber((tokenBUSD / Number(tokenBAmount)) * swapRate).toFixed(3), {
+      return convertToKMBWithPrefix(floorNumber((tokenBUSD / Number(tokenBAmount)) * swapRate).toFixed(3), {
         isIgnoreKFormat: true,
+        approx: true,
+        usd: true,
       });
     } else {
       if (!tokenAUSD || tokenAUSD === 0) return "-";
-      return convertToKMB(floorNumber((tokenAUSD / Number(tokenAAmount)) * swapRate).toFixed(3), {
+      return convertToKMBWithPrefix(floorNumber((tokenAUSD / Number(tokenAAmount)) * swapRate).toFixed(3), {
         isIgnoreKFormat: true,
+        approx: true,
+        usd: true,
       });
     }
   }, [swapSummaryInfo, swapTokenInfo]);
@@ -272,7 +276,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
               <button className="gnos-price" onClick={handleSwapRateDescription}>
                 {swapRateDescription}
               </button>
-              <span className="exchange-price">{`($${unitSwapPrice})`}</span>
+              <span className="exchange-price">{`(${unitSwapPrice})`}</span>
             </div>
           </div>
           <div className="gas-info">
