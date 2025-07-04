@@ -111,19 +111,22 @@ export const formatTokenExchangeRate = (
   return BigNumber(numberWithSignificant.replace(/,/g, "")).toFormat();
 };
 
-export const convertToKMB = (
-  price: string,
-  options?: {
-    maximumFractionDigits?: number;
-    minimumFractionDigits?: number;
-    minimumSignificantDigits?: number;
-    maximumSignificantDigits?: number;
-    isIgnoreKFormat?: boolean;
-    usd?: boolean;
-    ignoreSmallValueFormat?: boolean;
-    fixDisplayDecimals?: number;
-  },
-): string => {
+interface ConvertToKMBOptions {
+  maximumFractionDigits?: number;
+  minimumFractionDigits?: number;
+  minimumSignificantDigits?: number;
+  maximumSignificantDigits?: number;
+  isIgnoreKFormat?: boolean;
+  usd?: boolean;
+  approx?: boolean;
+  ignoreSmallValueFormat?: boolean;
+  fixDisplayDecimals?: number;
+}
+
+/**
+ * Converts pure numbers to K/M/B format strings.
+ */
+export const convertToKMB = (price: string, options?: ConvertToKMBOptions): string => {
   if (Number.isNaN(Number(price.replace(/,/g, "")))) return "-";
   const numberPrice = Number(price.replace(/,/g, ""));
 
@@ -208,20 +211,10 @@ export const convertToKMB = (
       });
 };
 
-export const convertToKMBWithPrefix = (
-  price: string,
-  options?: {
-    usd?: boolean;
-    approx?: boolean;
-    maximumFractionDigits?: number;
-    minimumFractionDigits?: number;
-    minimumSignificantDigits?: number;
-    maximumSignificantDigits?: number;
-    isIgnoreKFormat?: boolean;
-    ignoreSmallValueFormat?: boolean;
-    fixDisplayDecimals?: number;
-  },
-): string => {
+/**
+ * Prefix the convertToKMB result with a symbol (≈, $).
+ */
+export const convertToKMBWithPrefix = (price: string, options?: ConvertToKMBOptions): string => {
   const { usd = false, approx = false, ...restOptions } = options || {};
 
   const formatted = convertToKMB(price, restOptions);

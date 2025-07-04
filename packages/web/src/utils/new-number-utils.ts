@@ -138,24 +138,25 @@ export const formatTokenAmount = (
   return `${BigNumber(inputAsNumber).toFormat()}${internalSuffix}`;
 };
 
-export const formatPrice = (
-  value?: BigNumber | string | number | null,
-  {
-    usd = true,
+interface FormatPriceOptions {
+  usd?: boolean;
+  isKMB?: boolean;
+  lessThan1Significant?: number;
+  greaterThan1Decimals?: number;
+  forcedDecimals?: boolean;
+  approx?: boolean;
+}
+
+export const formatPrice = (value?: BigNumber | string | number | null, options: FormatPriceOptions = {}): string => {
+  const {
     isKMB = true,
+    usd = true,
+    approx = false,
     lessThan1Significant = 3,
     greaterThan1Decimals = 2,
     forcedDecimals = false,
-    approx = false,
-  }: {
-    usd?: boolean;
-    isKMB?: boolean;
-    lessThan1Significant?: number;
-    greaterThan1Decimals?: number;
-    forcedDecimals?: boolean;
-    approx?: boolean;
-  } = {},
-): string => {
+  } = options;
+
   if (value === "" || value === null || value === undefined) {
     return "-";
   }
