@@ -92,7 +92,7 @@ export class AdenaClient implements WalletClient {
     };
     return createTimeout<WalletResponse<SendTransactionResponse<T | null>>>(
       this.getAdena()
-        .DoContract(request)
+        .DoContract(request, false)
         .then(response => {
           console.log("Injection Response", response);
           return parseTransactionResponse(response) as WalletResponse<SendTransactionResponse<T | null>>;

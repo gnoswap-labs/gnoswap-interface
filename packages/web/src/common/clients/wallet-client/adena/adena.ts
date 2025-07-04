@@ -1,7 +1,10 @@
 export interface Adena {
   AddEstablish: (name: string) => Promise<Response>;
   GetAccount: () => Promise<Response<AccountInfo>>;
-  DoContract: (mesasage: SendTransactionRequestParam) => Promise<Response<AdenaSendTransactionResponse>>;
+  DoContract: (
+    mesasage: SendTransactionRequestParam,
+    withNotification: boolean,
+  ) => Promise<Response<AdenaSendTransactionResponse>>;
   Sign: (mesasage: SendTransactionRequestParam) => Promise<Response>;
   AddNetwork: (chain: AdenaAddNetworkRequestParam) => Promise<Response<AdenaAddNetworkResponse>>;
   SwitchNetwork: (chainId: string) => Promise<Response<AdenaSwitchNetworkResponse>>;
