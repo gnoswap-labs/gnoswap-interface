@@ -57,6 +57,29 @@ function isAmount(str: string) {
   return regex.test(str);
 }
 
+/**
+ * Parses the string-numeric form of amount as a number.
+ * All values other than undefined, NaN, and 0 are treated as 0.
+ */
+const parseAmount = (amount: string | number | undefined): number => Number(amount) || 0;
+
+/**
+ * Checks if it is a valid (greater than 0) amount.
+ */
+const isValidAmount = (amount: string | number | undefined): boolean => parseAmount(amount) > 0;
+
+/**
+ * compares the amount and availableBalance to a BigNumber
+ * and return whether the withdrawal is possible.
+ */
+const isBalanceSufficient = (
+  amount: string | number | undefined,
+  availableBalance: string | number | undefined,
+): boolean => {
+  if (!amount || !availableBalance) return false;
+  return BigNumber(amount.toString()).isLessThanOrEqualTo(BigNumber(availableBalance.toString()));
+};
+
 const AssetSendModal: React.FC<Props> = ({
   amount,
   setAmount,
@@ -126,28 +149,44 @@ const AssetSendModal: React.FC<Props> = ({
     return !!currentAvailableBalance;
   }, [currentAvailableBalance]);
 
-  const isDisabledWithdraw =
-    !Number(amount ?? 0) ||
-    !address ||
-    !withdrawInfo ||
-    !isValidAddress(address) ||
-    BigNumber(amount || "0").isGreaterThan(BigNumber(currentAvailableBalance || "0"));
+  const isDisabledWithdraw = useMemo((): boolean => {
+    if (!isValidAmount(amount)) return true;
 
-  const estimatePrice = useMemo(
-    () =>
-      withdrawInfo?.wrappedPath && !!amount && amount !== "0"
-        ? formatPrice(
-            BigNumber(+amount)
-              .multipliedBy(Number(tokenPrices?.[withdrawInfo?.wrappedPath]?.usd ?? "0"))
-              .toString(),
-            {
-              usd: true,
-              isKMB: false,
-            },
-          )
-        : "-",
-    [amount, tokenPrices, withdrawInfo?.wrappedPath],
-  );
+    if (!address || !isValidAddress(address)) return true;
+
+    if (!withdrawInfo) return true;
+
+    if (!isBalanceSufficient(amount, currentAvailableBalance ?? "0")) return true;
+
+    return false;
+  }, [amount, address, currentAvailableBalance, withdrawInfo]);
+
+  const estimatePrice = useMemo((): string => {
+    // If no token data or invalid amount, show placeholder
+    if (!withdrawInfo || !isValidAmount(amount)) {
+      return "-";
+    }
+
+    // Determine the correct price key and retrieve USD price
+    const tokenPath = withdrawInfo.wrappedPath || withdrawInfo.path;
+    const rawPrice = tokenPrices?.[tokenPath]?.usd;
+    const priceInUsd = Number(rawPrice ?? "0");
+
+    // If price is zero or missing, show placeholder
+    if (priceInUsd === 0) {
+      return "-";
+    }
+
+    // Calculate total value: amount * priceInUsd
+    const totalValue = BigNumber(amount.toString()).multipliedBy(priceInUsd).toString();
+
+    // Format and return with USD symbol, no KMB, and approximation
+    return formatPrice(totalValue, {
+      usd: true,
+      isKMB: false,
+      approx: true,
+    });
+  }, [amount, tokenPrices, withdrawInfo]);
 
   const handleEnterAllBalanceAvailable = () => {
     if (currentAvailableBalance) {
@@ -166,7 +205,7 @@ const AssetSendModal: React.FC<Props> = ({
     }
     if (
       (currentAvailableBalance && BigNumber(amount).isGreaterThan(BigNumber(currentAvailableBalance))) ||
-      !Number(amount || 0)
+      !Number(amount ?? 0)
     ) {
       return t("common:btn.insuffiBal");
     }

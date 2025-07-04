@@ -1,5 +1,6 @@
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import BigNumber from "bignumber.js";
+import { buildPricePrefix } from "./common";
 import { removeTrailingZeros, toKMBFormat } from "./number-utils";
 
 export const convertToMB = (price: string, maximumFractionDigits?: number) => {
@@ -110,19 +111,22 @@ export const formatTokenExchangeRate = (
   return BigNumber(numberWithSignificant.replace(/,/g, "")).toFormat();
 };
 
-export const convertToKMB = (
-  price: string,
-  options?: {
-    maximumFractionDigits?: number;
-    minimumFractionDigits?: number;
-    minimumSignificantDigits?: number;
-    maximumSignificantDigits?: number;
-    isIgnoreKFormat?: boolean;
-    usd?: boolean;
-    ignoreSmallValueFormat?: boolean;
-    fixDisplayDecimals?: number;
-  },
-): string => {
+interface ConvertToKMBOptions {
+  maximumFractionDigits?: number;
+  minimumFractionDigits?: number;
+  minimumSignificantDigits?: number;
+  maximumSignificantDigits?: number;
+  isIgnoreKFormat?: boolean;
+  usd?: boolean;
+  approx?: boolean;
+  ignoreSmallValueFormat?: boolean;
+  fixDisplayDecimals?: number;
+}
+
+/**
+ * Converts pure numbers to K/M/B format strings.
+ */
+export const convertToKMB = (price: string, options?: ConvertToKMBOptions): string => {
   if (Number.isNaN(Number(price.replace(/,/g, "")))) return "-";
   const numberPrice = Number(price.replace(/,/g, ""));
 
@@ -205,6 +209,19 @@ export const convertToKMB = (
         maximumFractionDigits: options?.maximumFractionDigits ?? 2,
         minimumFractionDigits: options?.minimumFractionDigits ?? 2,
       });
+};
+
+/**
+ * Prefix the convertToKMB result with a symbol (≈, $).
+ */
+export const convertToKMBWithPrefix = (price: string, options?: ConvertToKMBOptions): string => {
+  const { usd = false, approx = false, ...restOptions } = options || {};
+
+  const formatted = convertToKMB(price, restOptions);
+
+  const prefix = buildPricePrefix({ usd, approx });
+
+  return prefix + formatted;
 };
 
 export const formatUsdNumber = (price: string, maximumFractionDigits?: number, isKMB?: boolean) => {

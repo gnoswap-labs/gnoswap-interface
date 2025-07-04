@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+import { buildPricePrefix } from "./common";
 import { toKMBFormat } from "./number-utils";
 
 export const removeTrailingZeros = (value: string) => value.replace(/\.?0+$/, "");
@@ -138,32 +139,34 @@ export const formatTokenAmount = (
   return `${BigNumber(inputAsNumber).toFormat()}${internalSuffix}`;
 };
 
-export const formatPrice = (
-  value?: BigNumber | string | number | null,
-  {
-    usd = true,
+interface FormatPriceOptions {
+  usd?: boolean;
+  isKMB?: boolean;
+  lessThan1Significant?: number;
+  greaterThan1Decimals?: number;
+  forcedDecimals?: boolean;
+  approx?: boolean;
+}
+
+export const formatPrice = (value?: BigNumber | string | number | null, options: FormatPriceOptions = {}): string => {
+  const {
     isKMB = true,
+    usd = true,
+    approx = false,
     lessThan1Significant = 3,
     greaterThan1Decimals = 2,
     forcedDecimals = false,
-  }: {
-    usd?: boolean;
-    isKMB?: boolean;
-    lessThan1Significant?: number;
-    greaterThan1Decimals?: number;
-    forcedDecimals?: boolean;
-  } = {},
-): string => {
+  } = options;
+
   if (value === "" || value === null || value === undefined) {
     return "-";
   }
 
   const valueWithoutComma = value.toString().replace(/,/g, "");
-
   const valueAsBigNum = BigNumber(valueWithoutComma);
   const absValue = valueAsBigNum.abs();
 
-  const prefix = usd ? "$" : "";
+  const prefix = buildPricePrefix({ usd, approx });
   const negativeSign = valueAsBigNum.isLessThan(0) ? "-" : "";
 
   if (absValue.isNaN()) return value.toString();
@@ -177,13 +180,16 @@ export const formatPrice = (
 
   if (absValue.isLessThan(1)) {
     const tempNum = valueAsBigNum.toPrecision(lessThan1Significant, BigNumber.ROUND_DOWN);
-
-    return negativeSign + prefix + tempNum;
+    const formattedValue = `${negativeSign}${prefix}${tempNum}`;
+    return formattedValue;
   }
 
   const formattedNumber = valueAsBigNum.toFormat(greaterThan1Decimals, BigNumber.ROUND_DOWN);
+  const finalNumber = `${negativeSign}${prefix}${
+    forcedDecimals ? formattedNumber : removeTrailingZeros(formattedNumber)
+  }`;
 
-  return negativeSign + prefix + (forcedDecimals ? formattedNumber : removeTrailingZeros(formattedNumber));
+  return finalNumber;
 };
 
 export const formatOtherPrice = (

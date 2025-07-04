@@ -101,7 +101,7 @@ const HomeSwapContainer: React.FC = () => {
       tokenAAmount,
       tokenABalance,
       tokenAUSD,
-      tokenAUSDStr: formatPrice(tokenAUSD, { isKMB: false }),
+      tokenAUSDStr: formatPrice(tokenAUSD, { isKMB: false, approx: true }),
       tokenAPriceGrade,
       tokenB,
       tokenBAmount,

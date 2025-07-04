@@ -13,7 +13,7 @@ import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { DEVICE_TYPE } from "@styles/media";
 import { floorNumber, toNumberFormat } from "@utils/number-utils";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { convertToKMBWithPrefix } from "@utils/stake-position-utils";
 
 import SwapCardAutoRouter from "./swap-card-auto-router/SwapCardAutoRouter";
 import SwapCardFeeInfo from "./swap-card-fee-info/SwapCardFeeInfo";
@@ -79,13 +79,17 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
     const { tokenAUSD, tokenBUSD, tokenAAmount, tokenBAmount } = swapTokenInfo;
     if (swapRateAction === SwapRateAction.ATOB) {
       if (!tokenBUSD || tokenBUSD === 0) return "-";
-      return convertToKMB(floorNumber((tokenBUSD / Number(tokenBAmount)) * swapRate).toFixed(3), {
+      return convertToKMBWithPrefix(floorNumber((tokenBUSD / Number(tokenBAmount)) * swapRate).toFixed(3), {
         isIgnoreKFormat: true,
+        approx: true,
+        usd: true,
       });
     } else {
       if (!tokenAUSD || tokenAUSD === 0) return "-";
-      return convertToKMB(floorNumber((tokenAUSD / Number(tokenAAmount)) * swapRate).toFixed(3), {
+      return convertToKMBWithPrefix(floorNumber((tokenAUSD / Number(tokenAAmount)) * swapRate).toFixed(3), {
         isIgnoreKFormat: true,
+        approx: true,
+        usd: true,
       });
     }
   }, [swapSummaryInfo, swapTokenInfo]);
@@ -123,7 +127,7 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
                 <span className="swap-rate" onClick={handleSwapRate}>
                   {swapRateDescription}
                 </span>
-                {breakpoint !== DEVICE_TYPE.MOBILE && <span className="exchange-price">{`($${unitSwapPrice})`}</span>}
+                {breakpoint !== DEVICE_TYPE.MOBILE && <span className="exchange-price">{`(${unitSwapPrice})`}</span>}
               </div>
             )}
             {isLoading && (

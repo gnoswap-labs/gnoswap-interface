@@ -21,6 +21,7 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": "error",
     "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/no-unused-expressions": "error",
+    "no-duplicate-imports": "error",
     "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/no-empty-function": "warn",
     "@typescript-eslint/no-empty-interface": "warn",
