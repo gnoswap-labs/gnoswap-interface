@@ -13,6 +13,9 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetUsernameByAddress } from "@query/address";
 import { DexEvent } from "@repositories/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
+import { QUERY_KEY } from "@query/query-keys";
+import { delay } from "@utils/common";
 
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { PoolPositionModel } from "@models/position/pool-position-model";
@@ -26,13 +29,13 @@ interface MyLiquidityContainerProps {
   isStakable: boolean;
 }
 
-const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address, isStakable }) => {
+const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address = "", isStakable }) => {
   const { rpcProvider } = useGnoswapContext();
 
   const router = useRouter();
   const divRef = useRef<HTMLDivElement | null>(null);
   const { breakpoint } = useWindowSize();
-  const { connected: connectedWallet, isSwitchNetwork, account } = useWallet();
+  const { connected: connectedWallet, isSwitchNetwork, account, currentChainId } = useWallet();
   const [currentIndex, setCurrentIndex] = useState(1);
   const poolPath = router.getPoolPath();
   const {
@@ -46,6 +49,15 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address, is
       enabled: !!poolPath,
     },
   });
+
+  const { invalidateQueryKey } = useInvalidateQueries();
+
+  const handleRefreshData = useCallback(async () => {
+    invalidateQueryKey("MyLiquidity, Claim", [
+      [QUERY_KEY.tokenBalancesByAddress, address],
+      [QUERY_KEY.positions, currentChainId, address],
+    ]);
+  }, [invalidateQueryKey, currentChainId, address]);
 
   const { claimAll, claim } = usePosition(positions.filter(item => !item.closed));
   const [loadingTransactionClaim, setLoadingTransactionClaim] = useState(false);
@@ -136,13 +148,13 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address, is
                 return messageData;
               },
               onUpdate: async () => {
-                await refetchGrc20Balances();
-                await updateBalances();
+                updateBalances();
               },
               onEmit: async () => {
-                await refetchGrc20Balances();
-                await refetchPositions();
+                await delay(5000);
+                handleRefreshData();
               },
+              onSuccess: handleRefreshData,
             });
           }
 
@@ -193,9 +205,10 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address, is
               await updateBalances();
             },
             onEmit: async () => {
-              await refetchGrc20Balances();
-              await refetchPositions();
+              await delay(5000);
+              handleRefreshData();
             },
+            onSuccess: handleRefreshData,
           });
         }
 

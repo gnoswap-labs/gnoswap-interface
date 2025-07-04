@@ -3,6 +3,7 @@ import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
+import { QUERY_KEY } from "@query/query-keys";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { GNS_TOKEN } from "@common/values/token-constant";
@@ -16,7 +17,7 @@ import { SelectPool } from "@hooks/pool/data/use-select-pool";
 import { TokenAmountInputModel } from "@hooks/token/data/use-token-amount-input";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { TokenModel } from "@models/token/token-model";
-import { useGetPoolCreationFee, useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
+import { useGetPoolCreationFee } from "@query/pools";
 import { DexEvent } from "@repositories/common";
 import {
   AddLiquidityFailedResponse,
@@ -29,15 +30,17 @@ import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToNearTick } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { useReferral } from "@hooks/common/use-referral";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 
 import { useAddress } from "@hooks/common/use-address";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { useGetPositionsByAddress } from "@query/positions";
 import OneClickStakingModal from "@layouts/pool/pool-add/components/one-click-staking-modal/OneClickStakingModal";
 import PoolAddConfirmModal from "@layouts/pool/pool-add/components/pool-add-confirm-modal/PoolAddConfirmModal";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
+import { delay } from "@utils/common";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -98,6 +101,7 @@ export const usePoolAddLiquidityConfirmModal = ({
   const { broadcastLoading, broadcastRejected, broadcastSuccess, broadcastError } = useBroadcastHandler();
   const { enqueueEvent } = useTransactionEventStore();
   const { removeReferrerFromLocalStorage } = useReferral();
+  const { currentChainId } = useWallet();
 
   const { getMessage } = useMessage();
 
@@ -108,16 +112,20 @@ export const usePoolAddLiquidityConfirmModal = ({
   // Refetch functions
   const { address } = useAddress();
   const { updateBalances } = useTokenData();
-  const { refetch: refetchAccountPositions } = useGetPositionsByAddress({
-    address,
-  });
-  const { refetch: refetchPoolPositions } = useGetPositionsByAddress({
-    poolPath: selectPool.poolPath,
-  });
-  const { refetch: refetchPools } = useGetPoolList();
-  const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(selectPool.poolPath);
+
   const [openedModal, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
+  const { invalidateQueryKey } = useInvalidateQueries();
+
+  const handleRefreshData = useCallback(async () => {
+    const poolPath = selectPool.poolPath || "";
+
+    invalidateQueryKey("AddLiquidity", [
+      [QUERY_KEY.positions, currentChainId, address],
+      [QUERY_KEY.pools],
+      [QUERY_KEY.poolDetail, poolPath],
+    ]);
+  }, [invalidateQueryKey, selectPool.poolPath, currentChainId, address]);
 
   const tokenAAmount = useMemo(() => {
     const depositRatio = selectPool.depositRatio;
@@ -373,15 +381,14 @@ export const usePoolAddLiquidityConfirmModal = ({
                   }),
                 };
               },
-              onEmit: async () => {
-                refetchPools();
-                refetchAccountPositions();
-                refetchPoolPositions();
-                refetchPoolDetails();
-              },
               onUpdate: async () => {
                 updateBalances();
               },
+              onEmit: async () => {
+                await delay(5000);
+                handleRefreshData();
+              },
+              onSuccess: handleRefreshData,
             });
           }
 

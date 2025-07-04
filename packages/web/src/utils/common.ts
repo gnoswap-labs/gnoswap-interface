@@ -31,6 +31,10 @@ export function wait<T>(runner: () => Promise<T>, waitTime = 1000, finishTime = 
   });
 }
 
+export function delay<T = void>(ms: number, returnValue?: T): Promise<T> {
+  return new Promise(resolve => setTimeout(() => resolve(returnValue as T), ms));
+}
+
 export function makeId(value: string) {
   return encodeURIComponent(value);
 }

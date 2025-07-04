@@ -36,6 +36,7 @@ export const useTransactionEventStore = () => {
     formatData = () => ({}),
     onUpdate = async () => {},
     onEmit,
+    onSuccess,
   }: {
     txHash?: string;
     action: DexEventType;
@@ -49,6 +50,7 @@ export const useTransactionEventStore = () => {
     };
     onUpdate?: () => Promise<void>;
     onEmit?: () => Promise<void>;
+    onSuccess?: () => Promise<void>;
   }) {
     if (!txHash) {
       return;
@@ -71,6 +73,10 @@ export const useTransactionEventStore = () => {
         if (visibleEmitResult && event.status === "SUCCESS") {
           wait<boolean>(async () => true, TX_RESULT_SNACKBAR_TIMEOUT).then(() => {
             enqueue({ txHash: message.txHash }, updatingSnackbarConfig);
+
+            if (onSuccess !== undefined) {
+              onSuccess();
+            }
 
             if (alreadyEmitted) {
               change(updatingSnackbarConfig.id, "updating-done");

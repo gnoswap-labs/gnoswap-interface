@@ -24,6 +24,10 @@ import { toUnitFormat } from "@utils/number-utils";
 import { isEmptyObject } from "@utils/validation-utils";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionConverter } from "@services/converters/position";
+import { useAddress } from "@hooks/common/use-address";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
+import { QUERY_KEY } from "@query/query-keys";
+import { delay } from "@utils/common";
 
 import AssetSendModal from "../../components/asset-send-modal/AssetSendModal";
 import WalletBalance from "../../components/wallet-balance/WalletBalance";
@@ -33,7 +37,8 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 const WalletBalanceContainer: React.FC = () => {
   const { rpcProvider } = useGnoswapContext();
-  const { connected, isSwitchNetwork, loadingConnect, account, walletType } = useWallet();
+  const { connected, isSwitchNetwork, loadingConnect, account, walletType, currentChainId } = useWallet();
+  const { address: userAddress = "" } = useAddress();
   const [address] = useState("");
   const { breakpoint } = useWindowSize();
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
@@ -44,9 +49,18 @@ const WalletBalanceContainer: React.FC = () => {
   const [sendAssetAmount, setSendAssetAmount] = useState("");
 
   const { data: blockTimeData } = useGetAvgBlockTime();
-  const { balances: balancesPrice, loadingBalance, updateBalances, refetchGrc20Balances } = useTokenData();
+  const { balances: balancesPrice, loadingBalance, updateBalances } = useTokenData();
 
-  const { positions, loading: loadingPositions, refetch: refetchPositions } = usePositionData();
+  const { positions, loading: loadingPositions } = usePositionData();
+
+  const { invalidateQueryKey } = useInvalidateQueries();
+
+  const handleRefreshData = useCallback(async () => {
+    invalidateQueryKey("WalletBalance, ClaimAll", [
+      [QUERY_KEY.tokenBalancesByAddress, userAddress],
+      [QUERY_KEY.positions, currentChainId, userAddress],
+    ]);
+  }, [invalidateQueryKey, currentChainId, userAddress]);
 
   const isClaimablePosition = (position: PoolPositionModel) => position.liquidity > 0 && !position.closed;
 
@@ -110,13 +124,13 @@ const WalletBalanceContainer: React.FC = () => {
             action: DexEvent.CLAIM_FEE,
             formatData: () => messageData,
             onUpdate: async () => {
-              await refetchGrc20Balances();
-              await updateBalances();
+              updateBalances();
             },
             onEmit: async () => {
-              await refetchGrc20Balances();
-              await refetchPositions();
+              await delay(5000);
+              handleRefreshData();
             },
+            onSuccess: handleRefreshData,
           });
         }
         if (response?.code === 0) {
