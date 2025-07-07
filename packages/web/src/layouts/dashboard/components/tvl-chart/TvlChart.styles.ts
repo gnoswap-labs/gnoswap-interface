@@ -10,7 +10,7 @@ export const TvlChartWrapper = styled.div`
   padding: 23px;
   gap: 31px;
   ${media.mobile} {
-    padding: 11px 23px 11px 11px;
+    padding: 11px;
     gap: 16px;
   }
 `;
