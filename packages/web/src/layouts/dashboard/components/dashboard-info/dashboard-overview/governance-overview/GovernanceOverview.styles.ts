@@ -111,9 +111,12 @@ export const GovernanceWrapper = styled.div`
     gap: 4px;
     ${fonts.body7}
     a {
+      svg * {
+        fill: ${({ theme }) => theme.color.icon03};
+      }
       &:hover {
         * {
-          fill: #90a2c0;
+          fill: ${({ theme }) => theme.color.icon07};
         }
       }
     }
