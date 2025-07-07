@@ -8,6 +8,7 @@ import { getLocalizeTime } from "@utils/chart";
 import { convertToKMB } from "@utils/stake-position-utils";
 import { formatPrice } from "@utils/new-number-utils";
 import dayjs from "dayjs";
+import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
 
 interface DataItem {
   value: number;
@@ -83,6 +84,7 @@ export interface LineGraphProps {
   width?: number;
   height?: number;
   forcedHeight?: number;
+  forcedPosition?: FloatingPosition;
   point?: boolean;
   firstPointColor?: string;
   typeOfChart?: string;
@@ -152,6 +154,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   width = VIEWPORT_DEFAULT_WIDTH,
   height = VIEWPORT_DEFAULT_HEIGHT,
   forcedHeight,
+  forcedPosition,
   point,
   customData = { height: 0, locationTooltip: 0 },
   showBaseLine = false,
@@ -517,6 +520,8 @@ const LineGraph: React.FC<LineGraphProps> = ({
   }, [points]);
 
   const locationTooltipPosition = useMemo(() => {
+    if (forcedPosition) return forcedPosition;
+
     if ((chartPoint?.y || 0) > customHeight + height - 25) {
       if (width < (currentPoint?.x || 0) + locationTooltip) {
         return "top-end";
@@ -526,7 +531,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
     }
     if (width < (currentPoint?.x || 0) + locationTooltip) return "left";
     return "right";
-  }, [currentPoint, width, locationTooltip, height, chartPoint, customHeight]);
+  }, [currentPoint, width, locationTooltip, height, chartPoint, customHeight, forcedPosition]);
 
   const onTouchMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
     onMouseMove(event);

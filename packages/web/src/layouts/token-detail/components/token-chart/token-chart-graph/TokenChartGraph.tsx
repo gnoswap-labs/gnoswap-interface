@@ -202,6 +202,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
           datas={chartData}
           firstPointColor={theme.color.border05}
           customData={customData}
+          forcedPosition={"top"}
           displayLastDayAsNow
         />
         <div className={`xaxis-wrapper ${xAxisLabels.length === 1 ? "xaxis-wrapper-center" : ""}`}>

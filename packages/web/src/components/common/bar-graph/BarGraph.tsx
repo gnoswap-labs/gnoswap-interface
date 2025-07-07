@@ -7,6 +7,7 @@ import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
+import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
 
 export interface BarGraphProps {
   className?: string;
@@ -25,6 +26,7 @@ export interface BarGraphProps {
   times?: string[];
   fees: string[];
   radiusBorder?: number;
+  forcedPosition?: FloatingPosition;
 }
 
 interface Point {
@@ -75,6 +77,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
   times = [],
   radiusBorder = 0,
   fees,
+  forcedPosition,
 }) => {
   const { t } = useTranslation();
   const [activated, setActivated] = useState(false);
@@ -219,6 +222,8 @@ const BarGraph: React.FC<BarGraphProps> = ({
     }
   };
   const locationTooltipPosition = useMemo(() => {
+    if (forcedPosition) return forcedPosition;
+
     if ((chartPoint?.y || 0) > customHeight + height - 25) {
       if (width < (currentPoint?.x || 0) + locationTooltip) {
         return "top-end";
@@ -228,7 +233,7 @@ const BarGraph: React.FC<BarGraphProps> = ({
     }
     if (width < (currentPoint?.x || 0) + locationTooltip) return "left";
     return "right";
-  }, [currentPoint, width, locationTooltip, height, chartPoint, customHeight]);
+  }, [currentPoint, width, locationTooltip, height, chartPoint, customHeight, forcedPosition]);
 
   const onTouchMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent> | React.TouchEvent<HTMLDivElement>) => {
     onMouseMove(event);

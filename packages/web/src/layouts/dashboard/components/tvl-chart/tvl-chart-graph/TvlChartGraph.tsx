@@ -166,6 +166,7 @@ const TvlChartGraph: React.FC<TvlChartGraphProps> = ({ datas }) => {
                 isKMB: false,
               })
             }
+            forcedPosition={"top"}
           />
         </div>
         <div className={`xaxis-wrapper ${hasOnlyOneLabel ? "center" : ""}`}>
