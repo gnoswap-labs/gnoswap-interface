@@ -1,7 +1,8 @@
+import React from "react";
 import { DexEventType } from "@repositories/common";
 
 import { useGetNotifications } from "@query/common";
-import { makeRandomId, wait } from "@utils/common";
+import { makeRandomId } from "@utils/common";
 import { useGnoswapContext } from "./use-gnoswap-context";
 import { useMessage } from "./use-message";
 import { SnackbarOptions, SnackbarType, useSnackbar } from "./use-snackbar";
@@ -25,9 +26,36 @@ export const useTransactionEventStore = () => {
   const { getMessage } = useMessage();
   const { refetch: refetchNotifications } = useGetNotifications();
 
+  // ref to track the active timer
+  const activeTimersRef = React.useRef<Map<number, NodeJS.Timeout>>(new Map());
+
+  // Clean up all timers when unmounting components
+  React.useEffect(() => {
+    return () => {
+      activeTimersRef.current.forEach(timer => clearTimeout(timer));
+      activeTimersRef.current.clear();
+    };
+  }, []);
+
   async function onEmitCommon() {
     await refetchNotifications();
   }
+
+  // Function to safely set a timer
+  const safeSetTimeout = (callback: () => void, delay: number, id?: number) => {
+    // Remove the old timer if it exists
+    if (id && activeTimersRef.current.has(id)) {
+      clearTimeout(activeTimersRef.current.get(id)!);
+    }
+
+    const timer = setTimeout(() => {
+      if (id) activeTimersRef.current.delete(id);
+      callback();
+    }, delay);
+
+    if (id) activeTimersRef.current.set(id, timer);
+    return timer;
+  };
 
   function enqueueEvent({
     txHash,
@@ -56,10 +84,11 @@ export const useTransactionEventStore = () => {
       return;
     }
 
-    enqueue(undefined, makeSnackbarConfig("pending"));
+    const pendingSnackbarConfig = makeSnackbarConfig("pending");
+    enqueue(undefined, pendingSnackbarConfig);
 
     const updatingSnackbarConfig = makeSnackbarConfig("updating", UPDATING_SNACKBAR_TIMEOUT);
-
+    let updatingSnackbarEnqueued = false;
     let alreadyEmitted = false;
 
     eventStore.addEvent(
@@ -68,24 +97,30 @@ export const useTransactionEventStore = () => {
         const messageType = event.status === "SUCCESS" ? "success" : "error";
         const message = getMessage(action, messageType, formatData(event.data), txHash);
         enqueue(message, makeSnackbarConfig(messageType, TX_RESULT_SNACKBAR_TIMEOUT));
-        onUpdate();
+        await onUpdate();
 
         if (visibleEmitResult && event.status === "SUCCESS") {
-          wait<boolean>(async () => true, TX_RESULT_SNACKBAR_TIMEOUT).then(() => {
+          // Show updating snackbar after TX_RESULT_SNACKBAR_TIMEOUT
+          safeSetTimeout(() => {
             enqueue({ txHash: message.txHash }, updatingSnackbarConfig);
+            updatingSnackbarEnqueued = true;
 
-            if (onSuccess !== undefined) {
+            if (onSuccess) {
               onSuccess();
             }
 
             if (alreadyEmitted) {
+              // change to updating-done only if already emitted
               change(updatingSnackbarConfig.id, "updating-done");
 
-              wait<boolean>(async () => true, 3_000).then(() => {
-                dequeue(updatingSnackbarConfig.id);
-              });
+              // set a timer to allow enough time for the updating-done status to be displayed
+              safeSetTimeout(
+                () => dequeue(updatingSnackbarConfig.id),
+                DEFAULT_SNACKBAR_TIMEOUT,
+                updatingSnackbarConfig.id,
+              );
             }
-          });
+          }, TX_RESULT_SNACKBAR_TIMEOUT);
         }
       },
       async () => {
@@ -93,16 +128,16 @@ export const useTransactionEventStore = () => {
         alreadyEmitted = true;
         onEmitCommon();
 
-        if (onEmit !== undefined) {
-          onEmit();
+        if (onEmit) {
+          await onEmit();
         }
 
-        if (visibleEmitResult) {
+        if (visibleEmitResult && updatingSnackbarEnqueued) {
+          // Change state only if the snack bar is already visible
           change(updatingSnackbarConfig.id, "updating-done");
 
-          wait<boolean>(async () => true, 3_000).then(() => {
-            dequeue(updatingSnackbarConfig.id);
-          });
+          // If a timer was previously set, cancel it and set a new one
+          safeSetTimeout(() => dequeue(updatingSnackbarConfig.id), DEFAULT_SNACKBAR_TIMEOUT, updatingSnackbarConfig.id);
         }
       },
     );
