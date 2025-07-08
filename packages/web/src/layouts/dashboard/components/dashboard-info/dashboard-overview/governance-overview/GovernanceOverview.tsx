@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import Link from "next/link";
 
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
@@ -111,7 +111,9 @@ const GovernanceOverview: React.FC<GovernanceOverviewProps> = ({ governanceOverv
         <div className="community-pool">
           <div className="label-title">
             <div>{t("Dashboard:govOver.comPool.label")}</div>
-            <DashboardLabel tooltip={t("Dashboard:govOver.comPool.tooltip")} />
+            <DashboardLabel
+              tooltip={<Trans components={{ "<br/>": <br /> }} i18nKey={"Dashboard:govOver.comPool.tooltip"} />}
+            />
           </div>
           {!loading ? <div className="value">{overViewInfo.communityPool}</div> : <LoadingText />}
         </div>

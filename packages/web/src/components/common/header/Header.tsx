@@ -77,6 +77,7 @@ interface HeaderProps {
 }
 
 const HEADER_NAVIGATION_LAYOUT_COLLAPSE_WIDTH = 1300; // 1300px threshold: a threshold to prevent UI layout from being warped
+const HEADER_MOBILE_BREAKPOINT = 800;
 
 const Header: React.FC<HeaderProps> = ({
   pathname = "/",
@@ -111,6 +112,8 @@ const Header: React.FC<HeaderProps> = ({
   resetWeb3authSession,
 }) => {
   const { width } = useWindowSize();
+  const isMobileLayout = width <= HEADER_MOBILE_BREAKPOINT;
+
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
   const { t } = useTranslation();
   const { saveCurrentScrollHeight } = useScrollData();
@@ -166,7 +169,7 @@ const Header: React.FC<HeaderProps> = ({
               </LogoLink>
             </Link>
             <Navigation>
-              {breakpoint !== DEVICE_TYPE.MOBILE && (
+              {!isMobileLayout && (
                 <React.Fragment>
                   <ul>
                     {navigationItems.map(item => (
@@ -202,7 +205,7 @@ const Header: React.FC<HeaderProps> = ({
               <SearchButton onClick={onSearchMenuToggle}>
                 <IconSearch className="search-icon" />
               </SearchButton>
-              {connected && width > DeviceSize[DEVICE_TYPE.TABLET_S] && (
+              {connected && width > DeviceSize[DEVICE_TYPE.TABLET_M] && (
                 <Button
                   leftIcon={
                     <DepositIconWrapper>
@@ -243,7 +246,7 @@ const Header: React.FC<HeaderProps> = ({
             <SettingUiButton />
           </RightSection>
         </HeaderContainer>
-        {breakpoint === DEVICE_TYPE.MOBILE && (
+        {isMobileLayout && (
           <BottomNavWrapper>
             <BottomNavContainer>
               {navigationItems.map(item => (

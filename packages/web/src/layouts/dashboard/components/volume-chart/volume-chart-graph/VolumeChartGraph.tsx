@@ -87,6 +87,7 @@ const VolumeChartGraph: React.FC<VolumeChartGraphProps> = ({ datas, xAxisLabels,
             }}
             times={times}
             radiusBorder={currentData.length !== 91 ? 2 : 1}
+            forcedPosition={"top"}
           />
         </div>
         <div className={`xaxis-wrapper ${hasOnlyOneData ? "center" : ""}`}>
