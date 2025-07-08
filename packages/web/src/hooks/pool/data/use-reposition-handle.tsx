@@ -302,14 +302,14 @@ export const useRepositionHandle = () => {
       return {
         inputToken: selectedPosition.pool.tokenA,
         outputToken: selectedPosition.pool.tokenB,
-        tokenAmount: Number(amountA) - repositionAmountA || 0,
+        tokenAmount: BigNumber(amountA).minus(BigNumber(repositionAmountA)).toNumber() || 0,
         exactType: "EXACT_IN" as const,
       };
     }
     return {
       inputToken: selectedPosition.pool.tokenB,
       outputToken: selectedPosition.pool.tokenA,
-      tokenAmount: Number(amountB) - repositionAmountB || 0,
+      tokenAmount: BigNumber(amountB).minus(BigNumber(repositionAmountB)).toNumber() || 0,
       exactType: "EXACT_IN" as const,
     };
   }, [currentAmounts, initialEstimatedRepositionAmounts, selectedPosition]);
