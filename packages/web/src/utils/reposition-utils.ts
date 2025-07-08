@@ -94,7 +94,7 @@ export function getRepositionAmountsWithSwapSimulation(
   const isSwapAtoB = swapInputToken === tokenA;
 
   if (isSwapAtoB) {
-    const estimatedAmountA = repositionAmountA;
+    const estimatedAmountA = makeDisplayTokenAmount(tokenA, repositionAmountA) || 0;
     const estimatedAmountB = (makeDisplayTokenAmount(tokenB, swapOutputAmount) || 0) + Number(amountB);
 
     if (estimatedAmountA === 0) {
@@ -132,7 +132,7 @@ export function getRepositionAmountsWithSwapSimulation(
   }
 
   const estimatedAmountA = (makeDisplayTokenAmount(tokenA, swapOutputAmount) || 0) + Number(amountA);
-  const estimatedAmountB = repositionAmountB;
+  const estimatedAmountB = makeDisplayTokenAmount(tokenB, repositionAmountB) || 0;
 
   if (estimatedAmountB === 0) {
     return {

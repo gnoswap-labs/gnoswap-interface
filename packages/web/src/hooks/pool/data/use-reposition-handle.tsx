@@ -237,14 +237,14 @@ export const useRepositionHandle = () => {
   const tokenAAmountInput = useTokenAmountInput(tokenA);
   const tokenBAmountInput = useTokenAmountInput(tokenB);
 
-  const currentRawAmounts = useMemo(() => {
-    if (!selectedPosition) return null;
+  // const currentRawAmounts = useMemo(() => {
+  //   if (!selectedPosition) return null;
 
-    return {
-      amountA: selectedPosition.tokenABalance,
-      amountB: selectedPosition.tokenBBalance,
-    };
-  }, [selectedPosition]);
+  //   return {
+  //     amountA: selectedPosition.tokenABalance,
+  //     amountB: selectedPosition.tokenBBalance,
+  //   };
+  // }, [selectedPosition]);
 
   const currentAmounts = useMemo(() => {
     if (!selectedPosition) return null;
@@ -274,8 +274,8 @@ export const useRepositionHandle = () => {
       selectPool.maxPrice,
       tickToPrice(ordered ? selectedPosition.tickLower : selectedPosition.tickUpper * -1),
       tickToPrice(ordered ? selectedPosition.tickUpper : selectedPosition.tickLower * -1),
-      selectedPosition.tokenABalance,
-      selectedPosition.tokenBBalance,
+      String(makeDisplayTokenAmount(tokenA, selectedPosition.tokenABalance) || 0),
+      String(makeDisplayTokenAmount(tokenB, selectedPosition.tokenBBalance) || 0),
     );
 
     return repositionAmountsByNewPriceRange;
@@ -290,11 +290,11 @@ export const useRepositionHandle = () => {
   ]);
 
   const estimateSwapRequest = useMemo(() => {
-    if (!currentRawAmounts || !initialEstimatedRepositionAmounts || !selectedPosition) {
+    if (!currentAmounts || !initialEstimatedRepositionAmounts || !selectedPosition) {
       return null;
     }
 
-    const { amountA, amountB } = currentRawAmounts;
+    const { amountA, amountB } = currentAmounts;
     const { amountA: repositionAmountA, amountB: repositionAmountB } = initialEstimatedRepositionAmounts;
 
     const isSwapAtoB = BigNumber(amountA).isGreaterThan(repositionAmountA);
@@ -312,7 +312,7 @@ export const useRepositionHandle = () => {
       tokenAmount: Number(amountB) - repositionAmountB || 0,
       exactType: "EXACT_IN" as const,
     };
-  }, [currentRawAmounts, initialEstimatedRepositionAmounts, selectedPosition]);
+  }, [currentAmounts, initialEstimatedRepositionAmounts, selectedPosition]);
 
   const {
     data: estimatedSwapResult,
@@ -337,7 +337,7 @@ export const useRepositionHandle = () => {
 
   const estimatedRepositionAmounts = useMemo(() => {
     if (
-      !currentRawAmounts ||
+      !currentAmounts ||
       !initialEstimatedRepositionAmounts ||
       !selectedPosition ||
       selectPool.minPrice === null ||
@@ -348,8 +348,8 @@ export const useRepositionHandle = () => {
 
     if (estimateSwapRequest?.tokenAmount === 0) {
       return {
-        amountA: currentRawAmounts.amountA.toString(),
-        amountB: currentRawAmounts.amountB.toString(),
+        amountA: currentAmounts.amountA.toString(),
+        amountB: currentAmounts.amountB.toString(),
       };
     }
 
@@ -363,13 +363,13 @@ export const useRepositionHandle = () => {
       selectPool.maxPrice,
       selectedPosition.pool.tokenA,
       selectedPosition.pool.tokenB,
-      currentRawAmounts,
+      currentAmounts,
       initialEstimatedRepositionAmounts,
       estimateSwapRequest.inputToken,
       estimatedSwapResult.amount,
     );
   }, [
-    currentRawAmounts,
+    currentAmounts,
     estimateSwapRequest,
     estimatedSwapResult,
     isEstimatedRemainSwapLoading,
@@ -385,25 +385,25 @@ export const useRepositionHandle = () => {
       return true;
     }
     if (
-      Number(currentRawAmounts?.amountA) === Number(estimatedRepositionAmounts?.amountA) &&
+      Number(currentAmounts?.amountA) === Number(estimatedRepositionAmounts?.amountA) &&
       Number(estimatedRepositionAmounts?.amountA) === 0
     ) {
       return true;
     }
     if (
-      Number(currentRawAmounts?.amountB) === Number(estimatedRepositionAmounts?.amountB) &&
+      Number(currentAmounts?.amountB) === Number(estimatedRepositionAmounts?.amountB) &&
       Number(estimatedRepositionAmounts?.amountB) === 0
     ) {
       return true;
     }
-    if (Number(currentRawAmounts?.amountA) === 0 && estimatedRepositionAmounts?.amountA === null) {
+    if (Number(currentAmounts?.amountA) === 0 && estimatedRepositionAmounts?.amountA === null) {
       return true;
     }
-    if (Number(currentRawAmounts?.amountB) === 0 && estimatedRepositionAmounts?.amountB === null) {
+    if (Number(currentAmounts?.amountB) === 0 && estimatedRepositionAmounts?.amountB === null) {
       return true;
     }
     return false;
-  }, [estimateSwapRequest, currentRawAmounts, estimatedRepositionAmounts]);
+  }, [estimateSwapRequest, currentAmounts, estimatedRepositionAmounts]);
 
   const changeTokenAAmount = useCallback(
     (amount: string) => {
@@ -560,12 +560,12 @@ export const useRepositionHandle = () => {
       const isExactIn = estimateSwapRequest.exactType === "EXACT_IN";
 
       const inputAmount = isSwapAtoB
-        ? BigNumber(currentRawAmounts?.amountA || 0).minus(BigNumber(estimatedRepositionAmounts?.amountA || 0))
-        : BigNumber(currentRawAmounts?.amountB || 0).minus(BigNumber(estimatedRepositionAmounts?.amountB || 0));
+        ? BigNumber(currentAmounts?.amountA || 0).minus(BigNumber(estimatedRepositionAmounts?.amountA || 0))
+        : BigNumber(currentAmounts?.amountB || 0).minus(BigNumber(estimatedRepositionAmounts?.amountB || 0));
 
       const outputAmount = isSwapAtoB
-        ? BigNumber(estimatedRepositionAmounts?.amountB || 0).minus(BigNumber(currentRawAmounts?.amountB || 0))
-        : BigNumber(estimatedRepositionAmounts?.amountA || 0).minus(BigNumber(currentRawAmounts?.amountA || 0));
+        ? BigNumber(estimatedRepositionAmounts?.amountB || 0).minus(BigNumber(currentAmounts?.amountB || 0))
+        : BigNumber(estimatedRepositionAmounts?.amountA || 0).minus(BigNumber(currentAmounts?.amountA || 0));
 
       const deadline = Math.floor(Date.now() / 1000) + 300;
       const currentReferralAddress = getCurrentReferralAddress();
@@ -597,7 +597,7 @@ export const useRepositionHandle = () => {
       estimateSwapRequest,
       estimatedSwapResult,
       estimatedRepositionAmounts,
-      currentRawAmounts,
+      currentAmounts,
       selectedPosition?.pool.tokenA,
       swapRouterRepository,
       getCurrentReferralAddress,
@@ -662,7 +662,7 @@ export const useRepositionHandle = () => {
         !selectPool.feeTier ||
         selectPool.minPrice === null ||
         selectPool.maxPrice === null ||
-        currentRawAmounts === null ||
+        currentAmounts === null ||
         estimatedRepositionAmounts === null ||
         estimatedRepositionAmounts?.amountA === null ||
         estimatedRepositionAmounts?.amountB === null
@@ -674,13 +674,13 @@ export const useRepositionHandle = () => {
 
       let tokenAAmount = estimatedRepositionAmounts.amountA;
       let tokenBAmount = BigNumber.min(
-        BigNumber(currentRawAmounts.amountB).plus(swapAmount || 0),
+        BigNumber(currentAmounts.amountB).plus(swapAmount || 0),
         estimatedRepositionAmounts.amountB,
       ).toString();
 
       if (!isSwappedAtoB) {
         tokenAAmount = BigNumber.min(
-          BigNumber(currentRawAmounts.amountA).plus(swapAmount || 0),
+          BigNumber(currentAmounts.amountA).plus(swapAmount || 0),
           estimatedRepositionAmounts.amountA,
         ).toString();
         tokenBAmount = estimatedRepositionAmounts.amountB;
@@ -715,7 +715,7 @@ export const useRepositionHandle = () => {
       selectPool.minPrice,
       selectPool.maxPrice,
       selectPool.tickSpacing,
-      currentRawAmounts,
+      currentAmounts,
       estimatedRepositionAmounts,
       positionRepository,
       updateConfirmModalData,

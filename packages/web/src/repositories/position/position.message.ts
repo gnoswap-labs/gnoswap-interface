@@ -451,8 +451,8 @@ export function makeRepositionLiquidityMessagesWithApproves(
   const tokenAWrappedPath = tokenA.wrappedPath || checkGnotPath(tokenA.path);
   const tokenBWrappedPath = tokenB.wrappedPath || checkGnotPath(tokenB.path);
 
-  const tokenAAmountRaw = tokenAAmount || "0";
-  const tokenBAmountRaw = tokenBAmount || "0";
+  const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
+  const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
 
   // Make Approve messages that can be managed by a Pool package of tokens.
   const approveMessageInfos: TokenApproveMessageInfo[] = [
