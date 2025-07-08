@@ -1,16 +1,15 @@
 import { useQuery, UseQueryOptions, UseQueryResult } from "@tanstack/react-query";
 
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { useGetGasPrice } from "@hooks/gas";
+import { useGetGasPrice, GasInfo } from "@hooks/gas";
 import { makeEstimateGasTransaction } from "@utils/transaction-utils";
 
 import { Document } from "src/types/transaction-messages.types";
-import { GasInfo } from "@hooks/gas";
 import { QUERY_KEY } from "@query/query-keys";
 import { GAS_WANTED_BUFFER_MULTIPLIER } from "@common/values";
 import { calculateAdjustedGasFee } from "@utils/gas-utils";
 
-const REFETCH_INTERVAL = 5_000;
+const REFETCH_INTERVAL = 10_000;
 
 export const useGetEstimateGasInfo = (
   document: Document | null | undefined,

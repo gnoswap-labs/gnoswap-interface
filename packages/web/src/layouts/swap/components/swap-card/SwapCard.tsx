@@ -141,7 +141,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
           openConfirmModal={openConfirmModal}
           openConnectWallet={openConnectWallet}
           text={swapButtonText}
-          isLoading={isLoading || isLoadingGasInfo}
+          isLoading={isLoading || isRefetching}
           switchNetwork={switchNetwork}
         />
       </div>
