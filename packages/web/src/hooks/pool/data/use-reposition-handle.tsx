@@ -402,8 +402,16 @@ export const useRepositionHandle = () => {
     if (Number(currentAmounts?.amountB) === 0 && estimatedRepositionAmounts?.amountB === null) {
       return true;
     }
+    if (
+      Number(estimatedRepositionAmounts?.amountA).toFixed() === "0" &&
+      Number(estimatedRepositionAmounts?.amountB).toFixed() === "0"
+    ) {
+      return true;
+    }
+
     return false;
   }, [estimateSwapRequest, currentAmounts, estimatedRepositionAmounts]);
+  console.log(estimatedRepositionAmounts, "estimatedRepositionAmounts");
 
   const changeTokenAAmount = useCallback(
     (amount: string) => {
