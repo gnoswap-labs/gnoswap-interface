@@ -28,7 +28,7 @@ import {
   SwapRouteSuccessResponse,
 } from "@repositories/swap-router/response/swap-route-response";
 import { IncreaseState } from "@states/index";
-import { checkGnotPath } from "@utils/common";
+import { checkGnotPath, delay } from "@utils/common";
 import { subscriptFormat } from "@utils/number-utils";
 import { getRepositionAmountsByPriceRange, getRepositionAmountsWithSwapSimulation } from "@utils/reposition-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
@@ -53,6 +53,13 @@ import {
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { ERROR_VALUE as SWAP_ERROR_VALUE } from "@common/errors/swap";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
+import { ERROR_VALUE } from "@common/errors/adena";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { DexEvent } from "@repositories/common";
+import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
+import { QUERY_KEY } from "@query/query-keys";
+import { useMessage } from "@hooks/common/use-message";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -67,11 +74,14 @@ export const useRepositionHandle = () => {
   const { getCurrentReferralAddress } = useReferral();
   const poolPath = router.getPoolPath();
   const positionId = router.getPositionId();
-  const { broadcastError } = useBroadcastHandler();
+  const { broadcastError, broadcastSuccess, broadcastRejected } = useBroadcastHandler();
+  const { enqueueEvent } = useTransactionEventStore();
 
   const [defaultPosition] = useAtom(IncreaseState.selectedPosition);
+  const { getMessage } = useMessage();
 
   const { address } = useAddress();
+  const { updateBalances } = useTokenData();
   const { swapRouterRepository, positionRepository, transactionService } = useGnoswapContext();
   const { getGnotPath } = useGnotToGnot();
   const { slippage, changeSlippage } = useSlippage();
@@ -85,6 +95,7 @@ export const useRepositionHandle = () => {
     poolPath,
   });
   const { estimateNetworkFee } = useNetworkFee(null);
+  const { invalidateQueryKey } = useInvalidateQueries();
 
   const selectedPosition = useMemo(
     () => positions.find(item => item.id.toString() === positionId) || defaultPosition,
@@ -173,6 +184,15 @@ export const useRepositionHandle = () => {
     selectPool.setMinPosition(defaultPositionMinPrice);
     selectPool.setMaxPosition(defaultPositionMaxPrice);
   }, [selectPool]);
+
+  const handleRefreshData = useCallback(async () => {
+    invalidateQueryKey("Reposition", [
+      [QUERY_KEY.pools],
+      [QUERY_KEY.positions],
+      [QUERY_KEY.poolDetail],
+      [QUERY_KEY.positionBins],
+    ]);
+  }, [invalidateQueryKey]);
 
   useEffect(() => {
     if (initialized || selectPool.isLoading || !selectPool.poolPath) {
@@ -623,7 +643,15 @@ export const useRepositionHandle = () => {
       .catch(() => null);
   };
 
-  const buildSocialWalletRepositionAction = async (rpcProvider: GnoProvider, request: RepositionLiquidityRequest) => {
+  const buildSocialWalletRepositionAction = async (
+    rpcProvider: GnoProvider | null,
+    request: RepositionLiquidityRequest,
+  ) => {
+    if (!rpcProvider) {
+      console.log("Reposition: ", new CommonError("FAILED_INITIALIZE_GNO_PROVIDER"));
+      return null;
+    }
+
     const getAllowance = (packagePath: string, owner: string, spender: string) => {
       return fetchAllowance(rpcProvider, packagePath, owner, spender);
     };
@@ -692,6 +720,17 @@ export const useRepositionHandle = () => {
 
       const walletType = walletClient?.getWalletType();
 
+      const defaultMessageData = {
+        tokenASymbol: tokenA.symbol,
+        tokenBSymbol: tokenB.symbol,
+        tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
+          maximumFractionDigits: tokenA.decimals,
+        }),
+        tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
+          maximumFractionDigits: tokenB.decimals,
+        }),
+      };
+
       const request: RepositionLiquidityRequest = {
         lpTokenId: selectedPosition.lpTokenId,
         tokenA,
@@ -704,11 +743,53 @@ export const useRepositionHandle = () => {
         caller: address,
       };
 
-      if (walletType === "SOCIAL_WALLET" && rpcProvider) {
-        return buildSocialWalletRepositionAction(rpcProvider, request);
+      const result = await (walletType === "ADENA"
+        ? buildAdenaWalletRepositionAction(request)
+        : buildSocialWalletRepositionAction(rpcProvider, request));
+
+      if (result) {
+        if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
+          enqueueEvent({
+            txHash: result.data?.hash,
+            action: DexEvent.REPOSITION,
+            visibleEmitResult: true,
+            formatData: response => {
+              if (!response) {
+                return defaultMessageData;
+              }
+              return {
+                ...defaultMessageData,
+                tokenAAmount: Number(makeDisplayTokenAmount(tokenA, response[4])).toLocaleString("en-US", {
+                  maximumFractionDigits: tokenA.decimals,
+                }),
+                tokenBAmount: Number(makeDisplayTokenAmount(tokenB, response[5])).toLocaleString("en-US", {
+                  maximumFractionDigits: tokenB.decimals,
+                }),
+              };
+            },
+            onUpdate: async () => {
+              updateBalances();
+            },
+            onEmit: async () => {
+              await delay(5000);
+              handleRefreshData();
+            },
+            onSuccess: handleRefreshData,
+          });
+        }
+
+        if (result.code === 0 && result?.data) {
+          // const resultData = result?.data as RepositionLiquiditySuccessResponse;
+
+          broadcastSuccess(getMessage(DexEvent.REPOSITION, "success", {}));
+        } else if (result.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
+          broadcastRejected(getMessage(DexEvent.REPOSITION, "error", defaultMessageData));
+        } else {
+          broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
+        }
       }
 
-      return buildAdenaWalletRepositionAction(request);
+      return result;
     },
     [
       address,
