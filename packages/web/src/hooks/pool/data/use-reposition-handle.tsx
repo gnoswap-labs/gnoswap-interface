@@ -50,6 +50,9 @@ import {
   makeExactInSwapRouteMessageWithApproves,
   makeExactOutSwapRouteMessageWithApproves,
 } from "@repositories/swap-router/swap-router.message";
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { ERROR_VALUE as SWAP_ERROR_VALUE } from "@common/errors/swap";
+import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -64,6 +67,7 @@ export const useRepositionHandle = () => {
   const { getCurrentReferralAddress } = useReferral();
   const poolPath = router.getPoolPath();
   const positionId = router.getPositionId();
+  const { broadcastError } = useBroadcastHandler();
 
   const [defaultPosition] = useAtom(IncreaseState.selectedPosition);
 
@@ -267,8 +271,8 @@ export const useRepositionHandle = () => {
       selectPool.maxPrice,
       tickToPrice(ordered ? selectedPosition.tickLower : selectedPosition.tickUpper * -1),
       tickToPrice(ordered ? selectedPosition.tickUpper : selectedPosition.tickLower * -1),
-      selectedPosition.tokenABalance,
-      selectedPosition.tokenBBalance,
+      String(makeDisplayTokenAmount(tokenA, selectedPosition.tokenABalance)),
+      String(makeDisplayTokenAmount(tokenB, selectedPosition.tokenBBalance)),
     );
 
     return repositionAmountsByNewPriceRange;
@@ -582,7 +586,15 @@ export const useRepositionHandle = () => {
         ? isExactIn
           ? buildAdenaWalletExactInAction(request)
           : buildAdenaWalletExactOutAction(request)
-        : buildSocialWalletSwapAction(rpcProvider, request, isExactIn));
+        : buildSocialWalletSwapAction(rpcProvider, request, isExactIn)
+      ).catch(e => {
+        if (e.status === SWAP_ERROR_VALUE.DRY_SWAP_DEVIATION_EXCEEDED.status) {
+          broadcastError(BROADCAST_ERROR_VALUE.SLIPPAGE_EXCEEDED);
+        } else {
+          broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
+        }
+        return null;
+      });
     },
     [
       address,
