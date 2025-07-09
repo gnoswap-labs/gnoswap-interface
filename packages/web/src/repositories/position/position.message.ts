@@ -432,7 +432,6 @@ export function makeRepositionLiquidityMessagesWithApproves(
     tokenBAmount,
     minTick,
     maxTick,
-    slippage,
     caller,
   }: {
     lpTokenId: string;
@@ -473,8 +472,6 @@ export function makeRepositionLiquidityMessagesWithApproves(
   const sendAmount = getSendAmount(tokenAWrappedPath, tokenBWrappedPath, tokenAAmountRaw, tokenBAmountRaw);
   const send = makeGNOTSendAmount(sendAmount);
 
-  const slippageRatio = (100 - slippage) / 100;
-
   const repositionLiquidityMessage = makeTransactionMessage({
     send: send,
     func: TransactionMessageFunctionType.Reposition,
@@ -485,8 +482,8 @@ export function makeRepositionLiquidityMessagesWithApproves(
       `${maxTick}`, // position's maximal tick
       `${tokenAAmountRaw}`, // Maximum amount of tokenA to offer
       `${tokenBAmountRaw}`, // Maximum amount of tokenB to offer
-      BigNumber(tokenAAmountRaw).multipliedBy(slippageRatio).toFixed(0), // Minimum amount of tokenA to provide
-      BigNumber(tokenBAmountRaw).multipliedBy(slippageRatio).toFixed(0), // Minimum amount of tokenB to provide
+      "0", // Minimum amount of tokenA to provide (with buffer)
+      "0", // Minimum amount of tokenB to provide (with buffer)
     ],
     caller,
   });
