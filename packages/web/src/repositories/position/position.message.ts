@@ -482,8 +482,8 @@ export function makeRepositionLiquidityMessagesWithApproves(
       `${maxTick}`, // position's maximal tick
       `${tokenAAmountRaw}`, // Maximum amount of tokenA to offer
       `${tokenBAmountRaw}`, // Maximum amount of tokenB to offer
-      "0", // Minimum amount of tokenA to provide (with buffer)
-      "0", // Minimum amount of tokenB to provide (with buffer)
+      "0", // Minimum amount of tokenA to provide
+      "0", // Minimum amount of tokenB to provide
     ],
     caller,
   });
