@@ -1,7 +1,7 @@
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 
 import { GetRoutesRequest } from "./request/get-routes-request";
-import { DrySwapRequest, SwapRouteRequest } from "./request/swap-route-request";
+import { DrySwapRequest, SwapRouteOptions, SwapRouteRequest } from "./request/swap-route-request";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
 import { WrapTokenRequest } from "./request/wrap-token-request";
 import { GetRoutesResponse } from "./response/get-routes-response";
@@ -14,10 +14,12 @@ export interface SwapRouterRepository {
 
   sendExactInSwapRoute: (
     request: SwapRouteRequest,
+    options?: SwapRouteOptions,
   ) => Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>>;
 
   sendExactOutSwapRoute: (
     request: SwapRouteRequest,
+    options?: SwapRouteOptions,
   ) => Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>>;
 
   sendWrapToken: (request: WrapTokenRequest) => Promise<WalletResponse<{ hash: string }>>;

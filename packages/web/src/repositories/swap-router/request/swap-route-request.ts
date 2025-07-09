@@ -42,3 +42,7 @@ export interface SwapRouteRequest {
 
   gasUsed?: string;
 }
+
+export interface SwapRouteOptions {
+  runDrySwapEstimation?: boolean;
+}

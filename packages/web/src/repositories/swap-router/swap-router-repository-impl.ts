@@ -15,7 +15,7 @@ import { drySwap } from "@common/clients/gno-provider/methods/dry-swap";
 import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { GetRoutesRequest } from "./request/get-routes-request";
-import { DrySwapRequest, SwapRouteRequest } from "./request/swap-route-request";
+import { DrySwapRequest, SwapRouteOptions, SwapRouteRequest } from "./request/swap-route-request";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
 import { WrapTokenRequest } from "./request/wrap-token-request";
 import { GetRoutesResponse } from "./response/get-routes-response";
@@ -128,6 +128,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
   public sendExactInSwapRoute = async (
     request: SwapRouteRequest,
+    options?: SwapRouteOptions,
   ): Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>> => {
     if (this.rpcProvider === null) {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
@@ -135,7 +136,11 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const address = await this.getAddress();
 
-    await this.validateAndGetDrySwap(request, "EXACT_IN");
+    const { runDrySwapEstimation = true } = options || {};
+
+    if (runDrySwapEstimation) {
+      await this.validateAndGetDrySwap(request, "EXACT_IN");
+    }
 
     const { gasFee, gasUsed, ...requests } = request;
 
@@ -160,6 +165,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
   public sendExactOutSwapRoute = async (
     request: SwapRouteRequest,
+    options?: SwapRouteOptions,
   ): Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>> => {
     if (this.rpcProvider === null) {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
@@ -167,7 +173,11 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const address = await this.getAddress();
 
-    await this.validateAndGetDrySwap(request, "EXACT_OUT");
+    const { runDrySwapEstimation = true } = options || {};
+
+    if (runDrySwapEstimation) {
+      await this.validateAndGetDrySwap(request, "EXACT_OUT");
+    }
 
     const { gasFee, gasUsed, ...requests } = request;
 

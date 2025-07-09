@@ -502,10 +502,10 @@ export const useRepositionHandle = () => {
   );
 
   const buildAdenaWalletExactInAction = async (request: SwapRouteRequest) => {
-    return swapRouterRepository.sendExactInSwapRoute(request);
+    return swapRouterRepository.sendExactInSwapRoute(request, { runDrySwapEstimation: false });
   };
   const buildAdenaWalletExactOutAction = async (request: SwapRouteRequest) => {
-    return swapRouterRepository.sendExactOutSwapRoute(request);
+    return swapRouterRepository.sendExactOutSwapRoute(request, { runDrySwapEstimation: false });
   };
 
   const buildSocialWalletSwapAction = async (
@@ -550,8 +550,8 @@ export const useRepositionHandle = () => {
     };
 
     return isExactIn
-      ? swapRouterRepository.sendExactInSwapRoute(requestWithGasInfo)
-      : swapRouterRepository.sendExactOutSwapRoute(requestWithGasInfo);
+      ? swapRouterRepository.sendExactInSwapRoute(requestWithGasInfo, { runDrySwapEstimation: false })
+      : swapRouterRepository.sendExactOutSwapRoute(requestWithGasInfo, { runDrySwapEstimation: false });
   };
 
   const swapRemainToken = useCallback(
