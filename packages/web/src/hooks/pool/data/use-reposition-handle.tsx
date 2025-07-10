@@ -190,6 +190,8 @@ export const useRepositionHandle = () => {
       [QUERY_KEY.pools],
       [QUERY_KEY.positions],
       [QUERY_KEY.poolDetail],
+      [QUERY_KEY.bins],
+      [QUERY_KEY.lazyBins],
       [QUERY_KEY.positionBins],
     ]);
   }, [invalidateQueryKey]);
@@ -291,8 +293,8 @@ export const useRepositionHandle = () => {
       selectPool.maxPrice,
       tickToPrice(ordered ? selectedPosition.tickLower : selectedPosition.tickUpper * -1),
       tickToPrice(ordered ? selectedPosition.tickUpper : selectedPosition.tickLower * -1),
-      String(makeDisplayTokenAmount(tokenA, selectedPosition.tokenABalance)),
-      String(makeDisplayTokenAmount(tokenB, selectedPosition.tokenBBalance)),
+      String(makeDisplayTokenAmount(tokenA, selectedPosition.tokenABalance) ?? 0),
+      String(makeDisplayTokenAmount(tokenB, selectedPosition.tokenBBalance) ?? 0),
     );
 
     return repositionAmountsByNewPriceRange;
