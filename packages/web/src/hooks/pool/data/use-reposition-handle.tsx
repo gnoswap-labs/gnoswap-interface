@@ -635,11 +635,94 @@ export const useRepositionHandle = () => {
   const buildAdenaWalletRepositionAction = async (request: RepositionLiquidityRequest) => {
     return positionRepository
       .repositionLiquidity(request)
-      .then(result => {
-        if (result.code === 0) {
-          updateConfirmModalData("success", "Reposition Complete", "", null, () => router.back());
-          openConfirmModal();
+      .then(async result => {
+        const defaultMessageData = {
+          tokenASymbol: request.tokenA.symbol,
+          tokenBSymbol: request.tokenB.symbol,
+          tokenAAmount: Number(request.tokenAAmount).toLocaleString("en-US", {
+            maximumFractionDigits: request.tokenA.decimals,
+          }),
+          tokenBAmount: Number(request.tokenBAmount).toLocaleString("en-US", {
+            maximumFractionDigits: request.tokenB.decimals,
+          }),
+        };
+
+        if (result) {
+          if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
+            enqueueEvent({
+              txHash: result.data?.hash,
+              action: DexEvent.REPOSITION,
+              visibleEmitResult: true,
+              formatData: response => {
+                if (!response) {
+                  return defaultMessageData;
+                }
+                return {
+                  ...defaultMessageData,
+                  tokenAAmount: Number(makeDisplayTokenAmount(request.tokenA, response[3])).toLocaleString("en-US", {
+                    maximumFractionDigits: request.tokenA.decimals,
+                  }),
+                  tokenBAmount: Number(makeDisplayTokenAmount(request.tokenB, response[4])).toLocaleString("en-US", {
+                    maximumFractionDigits: request.tokenB.decimals,
+                  }),
+                };
+              },
+              onUpdate: async () => {
+                updateBalances();
+              },
+              onEmit: async () => {
+                await delay(5000);
+                handleRefreshData();
+              },
+              onSuccess: handleRefreshData,
+            });
+          }
+
+          if (result.code === 0) {
+            const resultData = result?.data as RepositionLiquiditySuccessResponse;
+            broadcastSuccess(
+              getMessage(
+                DexEvent.REPOSITION,
+                "success",
+                {
+                  tokenASymbol: request.tokenA.symbol || "",
+                  tokenBSymbol: request.tokenB.symbol || "",
+                  tokenAAmount: Number(makeDisplayTokenAmount(request.tokenA, request.tokenAAmount)).toLocaleString(
+                    "en-US",
+                    {
+                      maximumFractionDigits: request.tokenA.decimals,
+                    },
+                  ),
+                  tokenBAmount: Number(makeDisplayTokenAmount(request.tokenB, request.tokenBAmount)).toLocaleString(
+                    "en-US",
+                    {
+                      maximumFractionDigits: request.tokenB.decimals,
+                    },
+                  ),
+                },
+                resultData.hash,
+              ),
+            );
+            await updateConfirmModalData("success", "Reposition Complete", "", null, () => router.back());
+            openConfirmModal();
+          } else if (result.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
+            broadcastRejected(
+              getMessage(DexEvent.REPOSITION, "error", {
+                tokenASymbol: request.tokenA.symbol,
+                tokenBSymbol: request.tokenB.symbol,
+                tokenAAmount: Number(request.tokenAAmount).toLocaleString("en-US", {
+                  maximumFractionDigits: request.tokenA.decimals,
+                }),
+                tokenBAmount: Number(request.tokenBAmount).toLocaleString("en-US", {
+                  maximumFractionDigits: request.tokenB.decimals,
+                }),
+              }),
+            );
+          } else {
+            broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
+          }
         }
+
         return result;
       })
       .catch(() => null);
@@ -722,17 +805,6 @@ export const useRepositionHandle = () => {
 
       const walletType = walletClient?.getWalletType();
 
-      const defaultMessageData = {
-        tokenASymbol: tokenA.symbol,
-        tokenBSymbol: tokenB.symbol,
-        tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
-          maximumFractionDigits: tokenA.decimals,
-        }),
-        tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
-          maximumFractionDigits: tokenB.decimals,
-        }),
-      };
-
       const request: RepositionLiquidityRequest = {
         lpTokenId: selectedPosition.lpTokenId,
         tokenA,
@@ -745,53 +817,9 @@ export const useRepositionHandle = () => {
         caller: address,
       };
 
-      const result = await (walletType === "ADENA"
+      return walletType === "ADENA"
         ? buildAdenaWalletRepositionAction(request)
-        : buildSocialWalletRepositionAction(rpcProvider, request));
-
-      if (result) {
-        if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
-          enqueueEvent({
-            txHash: result.data?.hash,
-            action: DexEvent.REPOSITION,
-            visibleEmitResult: true,
-            formatData: response => {
-              if (!response) {
-                return defaultMessageData;
-              }
-              return {
-                ...defaultMessageData,
-                tokenAAmount: Number(makeDisplayTokenAmount(tokenA, response[4])).toLocaleString("en-US", {
-                  maximumFractionDigits: tokenA.decimals,
-                }),
-                tokenBAmount: Number(makeDisplayTokenAmount(tokenB, response[5])).toLocaleString("en-US", {
-                  maximumFractionDigits: tokenB.decimals,
-                }),
-              };
-            },
-            onUpdate: async () => {
-              updateBalances();
-            },
-            onEmit: async () => {
-              await delay(5000);
-              handleRefreshData();
-            },
-            onSuccess: handleRefreshData,
-          });
-        }
-
-        if (result.code === 0 && result?.data) {
-          // const resultData = result?.data as RepositionLiquiditySuccessResponse;
-
-          broadcastSuccess(getMessage(DexEvent.REPOSITION, "success", {}));
-        } else if (result.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
-          broadcastRejected(getMessage(DexEvent.REPOSITION, "error", defaultMessageData));
-        } else {
-          broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
-        }
-      }
-
-      return result;
+        : buildSocialWalletRepositionAction(rpcProvider, request);
     },
     [
       address,
