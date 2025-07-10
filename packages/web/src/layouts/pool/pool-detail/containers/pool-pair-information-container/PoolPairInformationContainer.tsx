@@ -14,6 +14,7 @@ import PoolPairInformation from "../../components/pool-pair-information/PoolPair
 import { ZOOL_VALUES } from "@constants/graph.constant";
 import { checkGnotPath } from "@utils/common";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
+import { QUERY_KEY } from "@query/query-keys";
 
 interface PoolPairInformationContainerProps {
   address?: string | undefined;
@@ -44,7 +45,7 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
     keepPreviousData: true,
     staleTime: 60_000,
     enabled: !!poolPath,
-    queryKey: ["poolPairInformationContainer/getBins", poolPath, zoomLevel],
+    queryKey: [QUERY_KEY.poolPairBins, poolPath, zoomLevel],
   });
   const { tokenPrices } = useTokenData();
 
