@@ -19,6 +19,7 @@ import { PositionModel } from "@models/position/position-model";
 import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath, isGNOTPath, wrapNativeTokenPath } from "@utils/common";
 import { MAX_INT64 } from "@utils/math.utils";
+import { calculateMinTokenAmount } from "@utils/reposition-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
 import { getSendAmount } from "@utils/transaction-utils";
 import BigNumber from "bignumber.js";
@@ -432,6 +433,7 @@ export function makeRepositionLiquidityMessagesWithApproves(
     tokenBAmount,
     minTick,
     maxTick,
+    slippage,
     caller,
   }: {
     lpTokenId: string;
@@ -452,6 +454,9 @@ export function makeRepositionLiquidityMessagesWithApproves(
 
   const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
   const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
+
+  const minTokenAAmount = calculateMinTokenAmount(tokenAAmountRaw, slippage);
+  const minTokenBAmount = calculateMinTokenAmount(tokenBAmountRaw, slippage);
 
   // Make Approve messages that can be managed by a Pool package of tokens.
   const approveMessageInfos: TokenApproveMessageInfo[] = [
@@ -482,8 +487,8 @@ export function makeRepositionLiquidityMessagesWithApproves(
       `${maxTick}`, // position's maximal tick
       `${tokenAAmountRaw}`, // Maximum amount of tokenA to offer
       `${tokenBAmountRaw}`, // Maximum amount of tokenB to offer
-      "0", // Minimum amount of tokenA to provide
-      "0", // Minimum amount of tokenB to provide
+      minTokenAAmount, // Minimum amount of tokenA to provide
+      minTokenBAmount, // Minimum amount of tokenB to provide
     ],
     caller,
   });
