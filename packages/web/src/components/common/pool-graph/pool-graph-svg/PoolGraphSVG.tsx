@@ -148,20 +148,6 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
       const rects = d3.select(chartRef.current);
       rects.attr("clip-path", "url(#clip)");
 
-      // D3 - Draw Current tick (middle line)
-      rects.select("line").remove();
-      if (hasCurrentTick && rects.select("line").empty()) {
-        rects
-          .append("line")
-          .attr("x1", currentTickPosition)
-          .attr("x2", currentTickPosition)
-          .attr("y1", 0)
-          .attr("y2", boundsHeight)
-          .attr("stroke-dasharray", 3)
-          .attr("stroke", `${themeKey === "dark" ? "#E0E8F4" : "#596782"}`)
-          .attr("stroke-width", 1);
-      }
-
       // D3 - Draw reservedBins as bars
       rects.selectAll("g").remove();
       if (!disabled && rects.selectAll("g").size() === 0 && reservedBins.length > 0) {
@@ -217,6 +203,20 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
                 );
               });
           });
+      }
+
+      // D3 - Draw Current tick (middle line)
+      rects.select("line").remove();
+      if (hasCurrentTick && rects.select("line").empty()) {
+        rects
+          .append("line")
+          .attr("x1", currentTickPosition)
+          .attr("x2", currentTickPosition)
+          .attr("y1", 0)
+          .attr("y2", boundsHeight)
+          .attr("stroke-dasharray", 3)
+          .attr("stroke", `${themeKey === "dark" ? "#E0E8F4" : "#596782"}`)
+          .attr("stroke-width", 1);
       }
     }
 
