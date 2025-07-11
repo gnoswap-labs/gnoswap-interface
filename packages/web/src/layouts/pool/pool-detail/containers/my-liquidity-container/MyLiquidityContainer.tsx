@@ -25,12 +25,21 @@ import { PositionConverter } from "@services/converters/position";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 interface MyLiquidityContainerProps {
-  address?: string | undefined;
+  addressContext: {
+    urlAddress: string;
+    connectAddress: string;
+    isOwner: boolean;
+  };
   isStakable: boolean;
 }
 
-const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address = "", isStakable }) => {
+const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable, addressContext }) => {
   const { rpcProvider } = useGnoswapContext();
+  const { urlAddress, connectAddress } = addressContext;
+
+  const address = useMemo(() => {
+    return urlAddress || connectAddress;
+  }, [urlAddress, connectAddress]);
 
   const router = useRouter();
   const divRef = useRef<HTMLDivElement | null>(null);
@@ -262,7 +271,8 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ address = "
 
   return (
     <MyLiquidity
-      address={address || account?.address || null}
+      address={address}
+      isOwnerAddress={addressContext.isOwner}
       addressName={addressName}
       isOtherPosition={isOtherPosition}
       openedPosition={visiblePositions ? openedPosition : []}

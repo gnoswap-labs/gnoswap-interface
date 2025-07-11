@@ -23,16 +23,26 @@ const PoolDetail: React.FC = () => {
 
   const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({ addr: undefined });
 
-  const address = useMemo(() => {
-    const address = initializedData?.addr;
-    if (!address || !isValidAddress(address)) {
-      return account?.address;
-    }
-    return address;
-  }, [initializedData, account]);
+  const urlAddress = useMemo(() => {
+    if (!initializedData?.addr) return "";
+
+    return isValidAddress(initializedData.addr) ? initializedData.addr : "";
+  }, [initializedData?.addr]);
+
+  const connectAddress = useMemo(() => {
+    return account?.address || "";
+  }, [account?.address]);
+
+  const addressContext = useMemo(() => {
+    return {
+      urlAddress,
+      connectAddress,
+      isOwner: urlAddress ? urlAddress === connectAddress : true,
+    };
+  }, [urlAddress, connectAddress]);
 
   const { isFetchedPosition, loading, positions } = usePositionData({
-    address,
+    address: urlAddress ?? connectAddress,
     poolPath,
     queryOption: {
       enabled: !!poolPath,
@@ -107,7 +117,7 @@ const PoolDetail: React.FC = () => {
     <PoolLayout
       header={<HeaderContainer />}
       poolPairInformation={<PoolPairInformationContainer />}
-      liquidity={<MyLiquidityContainer address={address} isStakable={isStakable} />}
+      liquidity={<MyLiquidityContainer addressContext={addressContext} isStakable={isStakable} />}
       staking={isStakable ? <StakingContainer hasPoolStaking={hasPoolStaking} /> : null}
       footer={<Footer />}
       isStaking={isStakable}
