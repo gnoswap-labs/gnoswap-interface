@@ -135,21 +135,19 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
                 <LoadingSpinner /> {t("Swap:fetchingPrice")}
               </div>
             )}
-            {connectedWallet && (
-              <div className="price-info">
-                {gasEstimateSuccess && (
-                  <>
-                    <IconGasFilled className="price-icon note-icon" />
-                    {isLoading || isLoadingGasInfo ? <SkeletonLoader /> : <span>{gasFeeUSDStr}</span>}
-                  </>
-                )}
-                {openedDetailInfo ? (
-                  <IconStrokeArrowUp className="price-icon" onClick={toggleDetailInfo} />
-                ) : (
-                  <IconStrokeArrowDown className="price-icon" onClick={toggleDetailInfo} />
-                )}
-              </div>
-            )}
+            <div className="price-info">
+              {gasEstimateSuccess && (
+                <>
+                  <IconGasFilled className="price-icon note-icon" />
+                  {isLoading || isLoadingGasInfo ? <SkeletonLoader /> : <span>{gasFeeUSDStr}</span>}
+                </>
+              )}
+              {openedDetailInfo ? (
+                <IconStrokeArrowUp className="price-icon" onClick={toggleDetailInfo} />
+              ) : (
+                <IconStrokeArrowDown className="price-icon" onClick={toggleDetailInfo} />
+              )}
+            </div>
           </div>
         </div>
       </DetailWrapper>
