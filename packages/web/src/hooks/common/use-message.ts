@@ -74,6 +74,12 @@ export const useMessage = () => {
             success: t("Modal:confirm.stake.status.success", data),
             error: t("Modal:confirm.stake.status.error", data),
           };
+        case DexEvent.REPOSITION:
+          return {
+            pending: "Repositioning",
+            success: "Repositioned",
+            error: "Failed to reposition",
+          };
         // Wallet
         case DexEvent.UNSTAKE:
           return {
@@ -183,6 +189,8 @@ export const useMessage = () => {
           return t("Modal:confirm.stake.title");
         case DexEvent.UNSTAKE:
           return t("Modal:confirm.unstake.title");
+        case DexEvent.REPOSITION:
+          return "Reposition";
         // Wallet
         case DexEvent.ASSET_SEND:
           return t("Modal:confirm.assetSend.title");

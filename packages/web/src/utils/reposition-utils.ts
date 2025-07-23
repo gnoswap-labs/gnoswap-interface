@@ -168,3 +168,15 @@ export function getRepositionAmountsWithSwapSimulation(
     amountB: makeShiftAmount(depositAmounts.amountB, tokenB.decimals * -1).toString(),
   };
 }
+
+export function calculateMinTokenAmount(tokenAmount: string, slippage: number): string {
+  if (!tokenAmount || tokenAmount === "0") return "0";
+
+  const tokenAmountBN = BigNumber(tokenAmount);
+  const slippageRatio = (100 - slippage) / 100;
+  const slippageBuffer = tokenAmountBN.multipliedBy(slippage * 2);
+
+  const calculatedMinTokenAmount = tokenAmountBN.multipliedBy(slippageRatio).minus(slippageBuffer);
+
+  return calculatedMinTokenAmount.isPositive() ? calculatedMinTokenAmount.toFixed(0) : "0";
+}

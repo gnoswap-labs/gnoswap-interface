@@ -32,6 +32,7 @@ export enum QUERY_KEY {
   poolCreationFee = "poolCreationFee",
   poolDetail = "pool_details",
   bins = "bins",
+  poolPairBins = "poolPairBins",
   prices = "prices",
   lazyBins = "lazyBins",
   initializeBins = "initializeBins",
