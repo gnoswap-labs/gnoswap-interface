@@ -128,7 +128,7 @@ const DecreasePoolInfo: React.FC<Props> = ({
         <div className="box-info">
           <div className="value">
             <p className="protocol-fee">
-              {t("business:protocolFee.txt")}
+              {t("business:withdrawalFee.txt")}
               <Tooltip
                 placement="top"
                 FloatingContent={
