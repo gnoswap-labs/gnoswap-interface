@@ -55,7 +55,7 @@ const Calendar: React.FC<CalendarProps> = ({
     const currentDateWithoutTime = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     const checkDateWithoutTime = new Date(checkDate.getFullYear(), checkDate.getMonth(), checkDate.getDate());
 
-    return currentDateWithoutTime <= checkDateWithoutTime;
+    return currentDateWithoutTime < checkDateWithoutTime;
   }
 
   const getCurrent = useCallback(() => {
