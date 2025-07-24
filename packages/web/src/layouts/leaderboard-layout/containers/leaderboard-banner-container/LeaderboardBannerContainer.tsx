@@ -7,14 +7,10 @@ const LeaderboardBannerContainer = () => {
   return (
     <S.BannerWrapper>
       <S.BannerTitle>
-        <Trans>
-          Boost Your Rank - <strong>Refer & Earn!</strong>
-        </Trans>
+        <Trans i18nKey={"Leaderboard:banner.title"} components={{ strong: <strong></strong> }} />
       </S.BannerTitle>
       <S.BannerDescription>
-        <Trans>
-          When you use a referral code, both you and your friend will receive a <strong>10% bonus.</strong>
-        </Trans>
+        <Trans i18nKey={"Leaderboard:banner.description"} components={{ strong: <strong></strong> }} />
       </S.BannerDescription>
     </S.BannerWrapper>
   );
