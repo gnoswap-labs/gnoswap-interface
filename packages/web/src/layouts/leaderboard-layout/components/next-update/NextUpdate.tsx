@@ -1,8 +1,8 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import { useGetLeaderboard, useGetLeaderboardByAddress, useNextUpdateTime } from "@query/leaderboard";
-import { getTimeDiffInMilliseconds, getTimeDiffInSeconds } from "@common/utils/date-util";
-import { secondsToTime } from "@common/utils/date-util";
+import { getTimeDiffInMilliseconds, getTimeDiffInSeconds, secondsToTime } from "@common/utils/date-util";
 import { useAddress } from "@hooks/common/use-address";
 
 import { Flex, FontSize16, Hover, P, TooltipContent } from "../common/common.styles";
@@ -15,6 +15,8 @@ interface NextUpdateProps {
 }
 
 export default function NextUpdate({ page }: NextUpdateProps) {
+  const { t } = useTranslation();
+
   const { address } = useAddress();
   const { data, refetch: refetchNextUpdateTime } = useNextUpdateTime();
   const [seconds, setSeconds] = React.useState<number | null>(null);
@@ -85,7 +87,7 @@ export default function NextUpdate({ page }: NextUpdateProps) {
       <Flex>
         <Tooltip
           placement="top"
-          FloatingContent={<TooltipContent>The leaderboard is updated on an hourly basis.</TooltipContent>}
+          FloatingContent={<TooltipContent>{t("Leaderboard:list.tooltip.nextUpdateTime")}</TooltipContent>}
         >
           <Hover>
             <Flex>
@@ -95,7 +97,7 @@ export default function NextUpdate({ page }: NextUpdateProps) {
         </Tooltip>
         <TextWrapper>
           <FontSize16>
-            <P>{`Next update in ${secondsToTime(seconds!)}`}</P>
+            <P>{`${t("Leaderboard:list.nextUpdateTime")} ${secondsToTime(seconds!)}`}</P>
           </FontSize16>
         </TextWrapper>
       </Flex>

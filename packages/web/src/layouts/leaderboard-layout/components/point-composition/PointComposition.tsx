@@ -1,4 +1,6 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
+
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { numberToFormat } from "@utils/string-utils";
 import { ContentWrapper, Flex, FontWeight500, FrontWeight, Label, Title, Wrapper } from "./PointComposition.styles";
@@ -29,6 +31,8 @@ const PointComposition = ({
   referralPoint,
   isMobile,
 }: PointCompositionProps) => {
+  const { t } = useTranslation();
+
   const displayPoints = React.useMemo(() => {
     return {
       totalPoint: formatPoint(totalPoint),
@@ -41,11 +45,11 @@ const PointComposition = ({
   }, [totalPoint, swapPoint, positionPoint, stakingPoint, governancePoint, referralPoint]);
 
   const pointItems = [
-    { label: "Swap", value: displayPoints.swapPoint },
-    { label: "Position", value: displayPoints.positionPoint },
-    { label: "Position Staking", value: displayPoints.stakingPoint },
-    { label: "xGNS Staking", value: displayPoints.governancePoint },
-    { label: "Referral", value: displayPoints.referralPoint },
+    { label: "Leaderboard:list.column.swap", value: displayPoints.swapPoint },
+    { label: "Leaderboard:list.column.position", value: displayPoints.positionPoint },
+    { label: "Leaderboard:list.column.staking", value: displayPoints.stakingPoint },
+    { label: "Leaderboard:list.column.xGNS", value: displayPoints.governancePoint },
+    { label: "Leaderboard:list.column.referral", value: displayPoints.referralPoint },
   ];
 
   return (
@@ -58,7 +62,7 @@ const PointComposition = ({
             {pointItems.map(item => {
               return (
                 <Flex key={item.label}>
-                  <Label>{item.label}</Label>
+                  <Label>{t(item.label)}</Label>
                   <FontWeight500>{item.value}</FontWeight500>
                 </Flex>
               );
