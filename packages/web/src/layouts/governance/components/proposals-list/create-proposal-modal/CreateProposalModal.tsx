@@ -4,6 +4,7 @@ import React, { useCallback, useMemo, useRef, useState } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
+import { useProposalDraft } from "@hooks/governance/ui/use-proposal-draft";
 import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import FormInput from "@components/common/form-input/FormInput";
@@ -147,7 +148,20 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
     register,
     formState: { errors, isDirty, isValid },
     control,
+    watch,
+    setValue,
   } = methods;
+
+  const { saveProposalDraft, clearProposalDraft, title, description } = useProposalDraft({
+    setValue,
+    watch,
+    isDirty,
+  });
+
+  const handleCloseModal = () => {
+    saveProposalDraft(title, description);
+    setIsOpenCreateModal(false);
+  };
 
   const { fields, append, remove, update } = useFieldArray({
     control,
@@ -253,6 +267,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   const sendTx: SubmitHandler<FormValues> = data => {
     if (type === ProposalOption[0]) {
       proposeTextProposal(data.title, data.description);
+      clearProposalDraft();
       setIsOpenCreateModal(false);
       return;
     } else if (type === ProposalOption[1]) {
@@ -263,6 +278,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
         data.recipientAddress,
         data.amount.toString(),
       );
+      clearProposalDraft();
       setIsOpenCreateModal(false);
       return;
     }
@@ -275,6 +291,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
     }
 
     proposeParamChangeProposal(data.title, data.description, variables);
+    clearProposalDraft();
     setIsOpenCreateModal(false);
   };
 
@@ -304,7 +321,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
         <div className={"modal-body"} ref={modalBodyRef}>
           <div className="header">
             <h6>{t("Governance:createModal.title")}</h6>
-            <div className="close-wrap" onClick={() => setIsOpenCreateModal(false)}>
+            <div className="close-wrap" onClick={handleCloseModal}>
               <IconClose className="close-icon" />
             </div>
           </div>
