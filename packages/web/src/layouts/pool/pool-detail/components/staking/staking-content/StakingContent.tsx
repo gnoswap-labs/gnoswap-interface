@@ -57,6 +57,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
   const { t } = useTranslation();
 
   const { ref, entry } = useIntersectionObserver();
+  const isTargetElementVisible = entry?.isIntersecting === true;
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   const debounce = (func: Function, delay: number) => {
@@ -153,7 +154,9 @@ const StakingContent: React.FC<StakingContentProps> = ({
             <AprStakingHeader $isMobile={mobile}>
               <Tooltip
                 FloatingContent={<IncentivizeTokenDetailTooltipContent poolStakings={poolStakings} />}
-                forcedClose={!pool?.incentivized || pool.rewardTokens.length === 0 || !hasPoolStaking}
+                forcedClose={
+                  !pool?.incentivized || pool.rewardTokens.length === 0 || !hasPoolStaking || !isTargetElementVisible
+                }
                 placement="top"
                 className="apr-text"
                 scroll
@@ -167,7 +170,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
                     isVisible &&
                     forcedShowAprGuide
                   }
-                  forcedClose={!forcedShowAprGuide || !hasPoolStaking}
+                  forcedClose={!forcedShowAprGuide || !hasPoolStaking || !isTargetElementVisible}
                   placement="top"
                   FloatingContent={
                     <span style={{ fontSize: breakpoint === "mobile" ? 14 : 16 }}>

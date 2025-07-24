@@ -90,7 +90,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
   // D3 - Dimension Definition
   const defaultMinX = React.useMemo(() => Math.min(...bins.map(bin => bin.minTick)), [bins]);
-
   const reservedBins: ReservedBin[] = useMemo(() => {
     const length = bins.length / 2;
     const fullLength = length * 2;
@@ -324,13 +323,13 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
       const tokenAAmount = tokenAAmountStr
         ? formatTokenExchangeRate(tokenAAmountStr.toString(), {
-            maxSignificantDigits: 6,
+            maxSignificantDigits: tokenA.decimals + 1,
             minLimit: 0.000001,
           })
         : "-";
       const tokenBAmount = tokenBAmountStr
         ? formatTokenExchangeRate(tokenBAmountStr.toString(), {
-            maxSignificantDigits: 6,
+            maxSignificantDigits: tokenB.decimals + 1,
             minLimit: 0.000001,
           })
         : "-";
@@ -340,7 +339,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
           : index > 19 && `${currentBin.reserveTokenAMyAmount}` === "0"
           ? "<0.000001"
           : formatTokenExchangeRate(depositTokenAAmountStr.toString(), {
-              maxSignificantDigits: 6,
+              maxSignificantDigits: tokenA.decimals + 1,
               minLimit: 0.000001,
             }) || "-";
       const depositTokenBAmount =
@@ -349,7 +348,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
           : index < 20 && `${currentBin.reserveTokenBMyAmount}` === "0"
           ? "<0.000001"
           : formatTokenExchangeRate(depositTokenBAmountStr.toString(), {
-              maxSignificantDigits: 6,
+              maxSignificantDigits: tokenB.decimals + 1,
               minLimit: 0.000001,
             }) || "-";
 
@@ -394,7 +393,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
               });
 
               acc[current] = formatTokenExchangeRate(priceStr, {
-                maxSignificantDigits: 6,
+                maxSignificantDigits: 7,
                 minLimit: 0.000001,
                 isInfinite: priceStr === "∞",
               });

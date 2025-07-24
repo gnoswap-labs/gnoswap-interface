@@ -657,7 +657,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     if (!!width && !!height && !!scaleX && !!scaleY) {
       updateChart();
     }
-  }, [width, height, svgRef?.current, chartRef?.current, resolvedDisplayBins, hoverBarIndex]);
+  }, [minPrice, maxPrice, width, height, svgRef?.current, chartRef?.current, resolvedDisplayBins, hoverBarIndex]);
 
   // Brush settings, on currentPrice change, zoom, move ...
   useEffect(() => {

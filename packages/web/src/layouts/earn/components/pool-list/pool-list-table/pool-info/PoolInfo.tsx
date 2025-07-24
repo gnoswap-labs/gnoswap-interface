@@ -8,7 +8,7 @@ import { POOL_INFO, POOL_INFO_MOBILE, POOL_INFO_SMALL_TABLET, POOL_INFO_TABLET }
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { DEVICE_TYPE } from "@styles/media";
-import { formatRate } from "@utils/new-number-utils";
+import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils";
 
 import PoolInfoLazyChart from "./pool-info-lazy-chart/PoolInfoLazyChart";
@@ -19,6 +19,9 @@ import { useGetPoolStakingListByPoolPath } from "@query/pools";
 import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
 import { cx } from "@emotion/css";
 import PriceWarning from "@components/common/price-warning/PriceWarning";
+import { TokenModel } from "@models/token/token-model";
+import { checkGnotPath } from "@utils/common";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 
 interface PoolInfoProps {
   pool: PoolListInfo;
@@ -28,6 +31,8 @@ interface PoolInfoProps {
 }
 
 const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
+  const { tokenPrices } = useTokenData();
+
   const {
     poolId,
     tokenA,
@@ -96,6 +101,43 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
       ? POOL_INFO_TABLET
       : POOL_INFO;
 
+  /**
+   * Checks if either token has missing price information
+   */
+  const anyEmptyPrice = React.useCallback(
+    (tokenA: TokenModel, tokenB: TokenModel) =>
+      !tokenPrices?.[checkGnotPath(tokenA.priceID)]?.usd || !tokenPrices?.[checkGnotPath(tokenB.priceID)]?.usd,
+    [tokenPrices],
+  );
+
+  /**
+   * Format pool value with proper formatting or fallback to "-" when price data is missing
+   */
+  const formatPoolValue = React.useCallback(
+    (value: string | number | undefined, tokenA: TokenModel, tokenB: TokenModel, decimals?: number) => {
+      if (anyEmptyPrice(tokenA, tokenB)) return "-";
+
+      return formatOtherPrice(value || 0, {
+        isKMB: false,
+        decimals: decimals ?? 0,
+      });
+    },
+    [anyEmptyPrice],
+  );
+
+  const tvlDisplay = useMemo(() => {
+    const decimals = Number(tvl) < 0.01 ? 2 : 0;
+    return formatPoolValue(tvl, tokenA, tokenB, decimals);
+  }, [tvl, tokenA, tokenB]);
+
+  const volume24hDisplay = useMemo(() => {
+    return formatPoolValue(volume24h, tokenA, tokenB);
+  }, [volume24h, tokenA, tokenB]);
+
+  const fees24hDisplay = useMemo(() => {
+    return formatPoolValue(fees24h, tokenA, tokenB);
+  }, [fees24h, tokenA, tokenB]);
+
   const aprDisplay = useMemo(() => {
     if (tvl === "<$0.01" && apr) return "0%";
     return (
@@ -121,16 +163,16 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
       </TableColumn>
       {/* TVL */}
       <TableColumn tdWidth={cellWidths.list[1].width} className={columnClassName}>
-        <span className="liquidity">{tvl}</span>
+        <span className="liquidity">{tvlDisplay}</span>
         {shouldShowPriceWarning && hasPriceInformational && <PriceWarning type="TVL" />}
       </TableColumn>
       {/* Volume (24h) */}
       <TableColumn tdWidth={cellWidths.list[2].width} className={columnClassName}>
-        <span className="volume">{volume24h}</span>
+        <span className="volume">{volume24hDisplay}</span>
       </TableColumn>
       {/* Fee (24h) */}
       <TableColumn tdWidth={cellWidths.list[3].width} className={columnClassName}>
-        <span className="fees">{fees24h}</span>
+        <span className="fees">{fees24hDisplay}</span>
       </TableColumn>
       {/* APR */}
       <TableColumn tdWidth={cellWidths.list[4].width} className={columnClassName}>

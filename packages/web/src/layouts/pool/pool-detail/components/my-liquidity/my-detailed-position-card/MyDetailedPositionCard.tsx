@@ -70,6 +70,7 @@ interface MyDetailedPositionCardProps {
   isHiddenAddPosition: boolean;
   connected: boolean;
   tokenPrices: Record<string, TokenPriceModel>;
+  isOwnerAddress: boolean;
 
   claim: (position: PoolPositionModel) => void;
 }
@@ -83,6 +84,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   isHiddenAddPosition,
   connected,
   tokenPrices,
+  isOwnerAddress,
   claim,
 }) => {
   const router = useRouter();
@@ -354,8 +356,8 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   }, [position]);
 
   const isClaimable = useMemo(() => {
-    return positionWithClaimableRewards.rewards.length > 0;
-  }, [positionWithClaimableRewards.rewards]);
+    return isOwnerAddress && positionWithClaimableRewards.rewards.length > 0;
+  }, [isOwnerAddress, positionWithClaimableRewards.rewards]);
 
   const totalDailyEarning = useMemo(() => {
     const isEmpty = !totalRewardInfo || position.rewards.length === 0;

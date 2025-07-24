@@ -11,7 +11,6 @@ import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { TokenModel } from "@models/token/token-model";
 import { CommonState, ThemeState } from "@states/index";
 import { checkGnotPath } from "@utils/common";
-import { formatOtherPrice } from "@utils/new-number-utils";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 
 import PoolList from "../../components/pool-list/PoolList";
@@ -66,21 +65,6 @@ const PoolListContainer: React.FC = () => {
   useEffect(() => {
     setPage(0);
   }, [keyword, poolType]);
-
-  /**
-   * Format pool value with proper formatting or fallback to "-" when price data is missing
-   */
-  const formatPoolValue = useCallback(
-    (value: string | number | undefined, tokenA: TokenModel, tokenB: TokenModel) => {
-      if (anyEmptyPrice(tokenA, tokenB)) return "-";
-
-      return formatOtherPrice(value || 0, {
-        isKMB: false,
-        decimals: 0,
-      });
-    },
-    [anyEmptyPrice],
-  );
 
   /**
    * Check if pool info matches the search keyword
@@ -162,16 +146,12 @@ const PoolListContainer: React.FC = () => {
 
         return {
           ...item,
-          liquidity: formatPoolValue(item.liquidity, item.tokenA, item.tokenB),
-          volume24h: formatPoolValue(item.volume24h, item.tokenA, item.tokenB),
-          fees24h: formatPoolValue(item.fees24h, item.tokenA, item.tokenB),
-          tvl: formatPoolValue(item.tvl, item.tokenA, item.tokenB),
           apr: anyEmptyPrice(item.tokenA, item.tokenB) ? "" : item.apr,
           tokenAPriceGrade,
           tokenBPriceGrade,
         };
       });
-  }, [poolListInfos, keyword, poolType, anyEmptyPrice, matchesKeyword, filteredPoolType, formatPoolValue]);
+  }, [poolListInfos, keyword, poolType, anyEmptyPrice, matchesKeyword, filteredPoolType]);
 
   /**
    * Sort filtered pools based on current sort option

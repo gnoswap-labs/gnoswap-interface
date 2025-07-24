@@ -12,6 +12,7 @@ import { MyLiquidityWrapper, MyLiquidityWrapperAnchor, PoolDivider } from "./MyL
 
 interface MyLiquidityProps {
   address: string | null;
+  isOwnerAddress: boolean;
   addressName: string;
   isOtherPosition: boolean;
   openedPosition: PoolPositionModel[];
@@ -40,6 +41,7 @@ interface MyLiquidityProps {
 const MyLiquidity: React.FC<MyLiquidityProps> = ({
   isOtherPosition,
   address,
+  isOwnerAddress,
   addressName,
   openedPosition,
   breakpoint,
@@ -119,6 +121,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
                 isHiddenAddPosition={isHiddenAddPosition}
                 connected={connected}
                 tokenPrices={tokenPrices}
+                isOwnerAddress={isOwnerAddress}
                 claim={claim}
               />
             ))}
@@ -138,6 +141,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
                     isHiddenAddPosition={isHiddenAddPosition}
                     connected={connected}
                     tokenPrices={tokenPrices}
+                    isOwnerAddress={isOwnerAddress}
                     claim={claim}
                   />
                 ))}

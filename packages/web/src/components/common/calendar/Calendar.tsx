@@ -49,9 +49,13 @@ const Calendar: React.FC<CalendarProps> = ({
   }
 
   function verifyDate(date: number) {
-    const crDate = new Date();
-    const checkDate = new Date(`${currentDate.year}-${currentDate.month}-${date}`);
-    return crDate <= checkDate;
+    const today = new Date();
+    const checkDate = new Date(currentDate.year, currentDate.month - 1, date);
+
+    const currentDateWithoutTime = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const checkDateWithoutTime = new Date(checkDate.getFullYear(), checkDate.getMonth(), checkDate.getDate());
+
+    return currentDateWithoutTime < checkDateWithoutTime;
   }
 
   const getCurrent = useCallback(() => {
