@@ -187,6 +187,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           changeAmount={gnsAmountInput.changeAmount}
           changeToken={() => {}}
           style={{ padding: "16px" }}
+          integersOnly={true}
         />
       </article>
 
