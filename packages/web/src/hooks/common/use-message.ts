@@ -76,9 +76,9 @@ export const useMessage = () => {
           };
         case DexEvent.REPOSITION:
           return {
-            pending: "Repositioning",
-            success: "Repositioned",
-            error: "Failed to reposition",
+            pending: t("Modal:confirm.reposition.status.pending", data),
+            success: t("Modal:confirm.reposition.status.success", data),
+            error: t("Modal:confirm.reposition.status.error", data),
           };
         // Wallet
         case DexEvent.UNSTAKE:
@@ -190,7 +190,7 @@ export const useMessage = () => {
         case DexEvent.UNSTAKE:
           return t("Modal:confirm.unstake.title");
         case DexEvent.REPOSITION:
-          return "Reposition";
+          return t("Modal:confirm.reposition.title");
         // Wallet
         case DexEvent.ASSET_SEND:
           return t("Modal:confirm.assetSend.title");
