@@ -20,6 +20,9 @@ export interface VariableSelectBoxProps {
   placeholder?: string;
   errorText?: string;
   disabled?: boolean;
+  dropdownId: string;
+  isOpen: boolean;
+  onToggle: (dropdownId: string, isOpen: boolean) => void;
 }
 
 const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
@@ -30,10 +33,13 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
   disabled,
   errorText,
   onChange,
+  dropdownId,
+  isOpen,
+  onToggle,
 }) => {
   const selectRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const [opened, setOpened] = useState(false);
+
   const [dropdownPosition, setDropdownPosition] = useState({
     width: 0,
     top: 0,
@@ -52,16 +58,35 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
     if (disabled === true) {
       return;
     }
-    setOpened(prev => !prev);
-  }, [disabled]);
+    onToggle(dropdownId, !isOpen);
+  }, [disabled, onToggle, dropdownId, isOpen]);
 
   const selectItem = useCallback(
     (value: string) => {
-      setOpened(false);
+      onToggle(dropdownId, false);
       onChange(value);
     },
-    [onChange],
+    [onChange, onToggle, dropdownId],
   );
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isOpen &&
+        selectRef.current &&
+        dropdownRef.current &&
+        !selectRef.current.contains(event.target as Node) &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        onToggle(dropdownId, false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, onToggle, dropdownId]);
 
   const adjustTextSize = useCallback((element: HTMLElement, container: HTMLElement, padding: number) => {
     const maxWidth = container.offsetWidth - padding;
@@ -84,7 +109,7 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
   }, [adjustTextSize, displayText, selectRef.current]);
 
   useEffect(() => {
-    if (opened && dropdownRef.current) {
+    if (isOpen && dropdownRef.current) {
       const options = dropdownRef.current.querySelectorAll<HTMLElement>(".display-value");
 
       options.forEach((option: HTMLElement) => {
@@ -106,7 +131,7 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
         }
       });
     }
-  }, [adjustTextSize, opened, items, dropdownPosition.width]);
+  }, [adjustTextSize, isOpen, items, dropdownPosition.width]);
 
   const renderSelectOptions = () => {
     const portalElement = document?.getElementById("portal-dropdown");
@@ -135,7 +160,7 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
 
   useEffect(() => {
     const handlePosition = () => {
-      if (selectRef.current && opened) {
+      if (selectRef.current && isOpen) {
         const rect = selectRef.current.getBoundingClientRect();
         setDropdownPosition({
           width: rect.width,
@@ -146,7 +171,7 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
     };
 
     const handleScroll = () => {
-      setOpened(false);
+      onToggle(dropdownId, false);
     };
 
     handlePosition();
@@ -155,17 +180,17 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
       // eslint-disable-next-line react-hooks/exhaustive-deps
       modalBodyRef?.current?.removeEventListener("scroll", handleScroll);
     };
-  }, [modalBodyRef, opened]);
+  }, [modalBodyRef, isOpen, onToggle, dropdownId]);
 
   return (
     <VariableSelectBoxWrapper className={disabled ? "disabled" : ""}>
       <div className="selected-item-wrapper" ref={selectRef} onClick={toggleOpenSelectBox}>
         <span className={"display-text"}>{displayText}</span>
-        {opened ? <IconArrowUp className="icon-arrow" /> : <IconArrowDown className="icon-arrow" />}
+        {isOpen ? <IconArrowUp className="icon-arrow" /> : <IconArrowDown className="icon-arrow" />}
       </div>
 
       {errorText && <div className="error-text">{errorText}</div>}
-      {opened && renderSelectOptions()}
+      {isOpen && renderSelectOptions()}
     </VariableSelectBoxWrapper>
   );
 };

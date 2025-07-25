@@ -125,6 +125,16 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   const [type, setType] = useState<string>(ProposalOption.TEXT);
   const modalBodyRef = useRef<HTMLDivElement>(null);
 
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+
+  const handleDropdownToggle = useCallback((dropdownId: string, isOpen: boolean) => {
+    if (isOpen) {
+      setOpenDropdownId(dropdownId);
+    } else {
+      setOpenDropdownId(null);
+    }
+  }, []);
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const validationProps: any = useMemo(() => {
     if (type === ProposalOption.COMMUNITY_POOL_SPEND) {
@@ -424,6 +434,9 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                         });
                       }}
                       placeholder={t("Governance:createModal.setVariable.placeholder.pkgPath")}
+                      dropdownId={`parameter-${index}`}
+                      isOpen={openDropdownId === `parameter-${index}`}
+                      onToggle={handleDropdownToggle}
                     />
                     <VariableSelectBox
                       modalBodyRef={modalBodyRef}
@@ -450,6 +463,9 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                       }}
                       placeholder={t("Governance:createModal.setVariable.placeholder.func")}
                       disabled={!item.pkgPath}
+                      dropdownId={`parameter2-${index}`}
+                      isOpen={openDropdownId === `parameter2-${index}`}
+                      onToggle={handleDropdownToggle}
                     />
                     <FormInput
                       placeholder={getParameterPlaceholder(item)}
