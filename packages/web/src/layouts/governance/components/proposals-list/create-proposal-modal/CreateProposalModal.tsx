@@ -154,18 +154,9 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
       title: "",
       description: "",
       recipientAddress: "",
-      variable: [
-        {
-          pkgPath: "",
-          func: "",
-          param: "",
-        },
-        {
-          pkgPath: "",
-          func: "",
-          param: "",
-        },
-      ],
+      variable: Array.from({ length: 2 }).map(() => {
+        return { pkgPath: "", func: "", param: "" };
+      }),
     },
   });
   const {
