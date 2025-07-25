@@ -48,7 +48,19 @@ interface FormValues {
   }[];
 }
 
-const ProposalOption = ["TEXT", "COMMUNITY_POOL_SPEND", "PARAMETER_CHANGE"];
+const ProposalOption = {
+  TEXT: "TEXT",
+  COMMUNITY_POOL_SPEND: "COMMUNITY_POOL_SPEND",
+  PARAMETER_CHANGE: "PARAMETER_CHANGE",
+};
+
+type ProposalOptionType = (typeof ProposalOption)[keyof typeof ProposalOption];
+
+const ProposalOptionList: ProposalOptionType[] = [
+  ProposalOption.TEXT,
+  ProposalOption.COMMUNITY_POOL_SPEND,
+  ProposalOption.PARAMETER_CHANGE,
+];
 
 const TypeTransMap: { [key: string]: string } = {
   TEXT: "Governance:proposal.type.text",
@@ -110,15 +122,15 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   proposeParamChangeProposal,
 }) => {
   const { t } = useTranslation();
-  const [type, setType] = useState<string>(ProposalOption[0]);
+  const [type, setType] = useState<string>(ProposalOption.TEXT);
   const modalBodyRef = useRef<HTMLDivElement>(null);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const validationProps: any = useMemo(() => {
-    if (type === ProposalOption[1]) {
+    if (type === ProposalOption.COMMUNITY_POOL_SPEND) {
       return getCreateProposalCommunityPoolSpendValidation(t);
     }
-    if (type === ProposalOption[2]) {
+    if (type === ProposalOption.PARAMETER_CHANGE) {
       return getCreateProposalChangeParameterValidation(t);
     }
     return getCreateProposalValidation(t);
@@ -266,12 +278,12 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   );
 
   const sendTx: SubmitHandler<FormValues> = data => {
-    if (type === ProposalOption[0]) {
+    if (type === ProposalOption.TEXT) {
       proposeTextProposal(data.title, data.description);
       clearProposalDraft();
       setIsOpenCreateModal(false);
       return;
-    } else if (type === ProposalOption[1]) {
+    } else if (type === ProposalOption.COMMUNITY_POOL_SPEND) {
       proposeCommunityPoolSpendProposal(
         data.title,
         data.description,
@@ -328,11 +340,11 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
           </div>
           <BoxContent label={t("Governance:createModal.type")}>
             <div className="type-tab">
-              {ProposalOption.map((item, index) => (
+              {ProposalOptionList.map((item, index) => (
                 <div
                   key={index}
-                  className={type === ProposalOption[index] ? "active-type-tab" : ""}
-                  onClick={() => setType(ProposalOption[index])}
+                  className={type === ProposalOptionList[index] ? "active-type-tab" : ""}
+                  onClick={() => setType(ProposalOptionList[index])}
                 >
                   {t(TypeTransMap[item])}
                 </div>
@@ -352,11 +364,11 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                 "\n\n",
               )}
               errorText={errors?.description ? errors.description.message : undefined}
-              rows={type === ProposalOption[0] ? 14 : 8}
+              rows={type === ProposalOption.TEXT ? 14 : 8}
               {...register("description")}
             />
           </BoxContent>
-          {type === ProposalOption[1] && (
+          {type === ProposalOption.COMMUNITY_POOL_SPEND && (
             <BoxContent label={t("Governance:createModal.setVariable.title")}>
               <FormInput
                 placeholder={t("Governance:createModal.setVariable.placeholder.recipient")}
@@ -380,7 +392,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
               </div>
             </BoxContent>
           )}
-          {type === ProposalOption[2] && (
+          {type === ProposalOption.PARAMETER_CHANGE && (
             <BoxContent label={t("Governance:createModal.setVariable.title")}>
               {fields.map((item, index) => (
                 <div className="multiple-variable" key={item.id}>
