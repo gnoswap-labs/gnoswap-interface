@@ -288,6 +288,22 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
     [executableFunctions, t],
   );
 
+  const getFieldName = (index: number, field: "pkgPath" | "func" | "param") => {
+    return `variable.${index}.${field}` as const;
+  };
+
+  const shouldShowErrorText = (index: number, forMobile: boolean) => {
+    const fieldName = getFieldName(index, "param");
+    const hasError = paramErrors?.variable?.[index];
+    const isTouched = touchedFields.has(fieldName);
+
+    return (
+      isTouched &&
+      hasError &&
+      ((forMobile && breakpoint === DEVICE_TYPE.MOBILE) || (!forMobile && breakpoint !== DEVICE_TYPE.MOBILE))
+    );
+  };
+
   const sendTx: SubmitHandler<FormValues> = data => {
     if (type === ProposalOption.TEXT) {
       proposeTextProposal(data.title, data.description);
@@ -419,9 +435,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                           : null
                       }
                       errorText={
-                        breakpoint !== DEVICE_TYPE.MOBILE && touchedFields.has(`variable.${index}.param`)
-                          ? paramErrors?.variable?.[index] || undefined
-                          : undefined
+                        shouldShowErrorText(index, false) ? paramErrors?.variable?.[index] || undefined : undefined
                       }
                       items={executablePackagePaths}
                       {...register(`variable.${index}.pkgPath`)}
@@ -474,15 +488,13 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                       placeholder={getParameterPlaceholder(item)}
                       {...register(`variable.${index}.param`)}
                       onBlur={() => {
-                        setTouchedFields(prev => new Set(prev).add(`variable.${index}.param`));
+                        setTouchedFields(prev => new Set(prev).add(getFieldName(index, "param")));
                         if (item.pkgPath && item.func) {
                           validateParams();
                         }
                       }}
                       errorText={
-                        breakpoint === DEVICE_TYPE.MOBILE && touchedFields.has(`variable.${index}.param`)
-                          ? paramErrors?.variable?.[index] || undefined
-                          : undefined
+                        shouldShowErrorText(index, true) ? paramErrors?.variable?.[index] || undefined : undefined
                       }
                     />
                   </div>
