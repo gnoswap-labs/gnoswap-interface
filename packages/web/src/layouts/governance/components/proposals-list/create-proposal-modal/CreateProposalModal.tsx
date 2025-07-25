@@ -32,6 +32,7 @@ import { BoxItem, CreateProposalModalWrapper, IconButton, ToolTipContentWrapper 
 
 interface BoxContentProps {
   label: string;
+  style?: React.CSSProperties;
   children?: React.ReactNode;
 }
 
@@ -458,7 +459,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
               ))}
             </BoxContent>
           )}
-          <BoxContent label="">
+          <BoxContent style={{ padding: "10.5px 16px" }} label="">
             <div className="minimum">
               <div className="title">
                 {t("Governance:createModal.minimum.title")}
