@@ -125,6 +125,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   const [type, setType] = useState<string>(ProposalOption.TEXT);
   const modalBodyRef = useRef<HTMLDivElement>(null);
 
+  const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
 
   const handleDropdownToggle = useCallback((dropdownId: string, isOpen: boolean) => {
@@ -418,7 +419,9 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                           : null
                       }
                       errorText={
-                        breakpoint !== DEVICE_TYPE.MOBILE ? paramErrors?.variable?.[index] || undefined : undefined
+                        breakpoint !== DEVICE_TYPE.MOBILE && touchedFields.has(`variable.${index}.param`)
+                          ? paramErrors?.variable?.[index] || undefined
+                          : undefined
                       }
                       items={executablePackagePaths}
                       {...register(`variable.${index}.pkgPath`)}
@@ -471,12 +474,15 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                       placeholder={getParameterPlaceholder(item)}
                       {...register(`variable.${index}.param`)}
                       onBlur={() => {
+                        setTouchedFields(prev => new Set(prev).add(`variable.${index}.param`));
                         if (item.pkgPath && item.func) {
                           validateParams();
                         }
                       }}
                       errorText={
-                        breakpoint === DEVICE_TYPE.MOBILE ? paramErrors?.variable?.[index] || undefined : undefined
+                        breakpoint === DEVICE_TYPE.MOBILE && touchedFields.has(`variable.${index}.param`)
+                          ? paramErrors?.variable?.[index] || undefined
+                          : undefined
                       }
                     />
                   </div>
