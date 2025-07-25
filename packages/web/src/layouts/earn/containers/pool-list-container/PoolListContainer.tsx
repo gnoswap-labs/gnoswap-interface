@@ -18,7 +18,7 @@ import { PoolSortOption, POOL_TYPE, TABLE_HEAD, SortDirection } from "../../comp
 
 const PoolListContainer: React.FC = () => {
   const [poolType, setPoolType] = useState<POOL_TYPE>(POOL_TYPE.ALL);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [keyword, setKeyword] = useState("");
   const [sortOption, setTokenSortOption] = useState<PoolSortOption>({
     key: TABLE_HEAD.TVL,
@@ -63,7 +63,7 @@ const PoolListContainer: React.FC = () => {
    * Reset page to first page when filter criteria change
    */
   useEffect(() => {
-    setPage(0);
+    setPage(1);
   }, [keyword, poolType]);
 
   /**
@@ -164,6 +164,13 @@ const PoolListContainer: React.FC = () => {
     return [...filteredPools].sort(getSortFunction(sortOption?.key || TABLE_HEAD.TVL, sortOption?.direction || "desc"));
   }, [filteredPools, sortOption, getSortFunction]);
 
+  const paginatedPools = useMemo(() => {
+    const startIndex = (page - 1) * EARN_POOL_LIST_SIZE;
+    const endIndex = page * EARN_POOL_LIST_SIZE;
+
+    return sortedPools.slice(startIndex, endIndex);
+  }, [sortedPools, page]);
+
   /**
    * Calculate total number of pages
    */
@@ -250,7 +257,7 @@ const PoolListContainer: React.FC = () => {
 
   return (
     <PoolList
-      pools={sortedPools.slice(page * EARN_POOL_LIST_SIZE, (page + 1) * EARN_POOL_LIST_SIZE)}
+      pools={paginatedPools}
       isFetched={!isLoadingPools}
       poolType={poolType}
       changePoolType={changePoolType}
