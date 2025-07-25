@@ -15,7 +15,7 @@ export const TABLE_HEAD = {
   TVL: { label: "TVL" },
   VOLUME: { label: "Earn:poolList.col.volume" },
   FEES: { label: "Earn:poolList.col.fee" },
-  APR: { label: "APR", tooltip: "business:positionPriceRangeInfo.feeApr.desc" },
+  APR: { label: "Earn:poolList.col.apr", tooltip: "business:positionPriceRangeInfo.feeApr.desc" },
   REWARDS: { label: "Earn:poolList.col.incentive" },
   LIQUIDITY_PLOT: { label: "Earn:poolList.col.liquidityPlot" },
 } as const;
