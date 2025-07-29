@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import { noDataText, TableColumn, TableWrapper } from "./LaunchpadProjectListTable.styles";
 
-import { TABLE_HEAD } from "../types";
+import { LaunchpadProjectSortOption, SORT_SUPPORT_HEAD, TABLE_HEAD } from "../types";
 import { LaunchpadProjectModel } from "@models/launchpad";
 import LaunchpadProjectInfo from "./launchpad-project-info/LaunchpadProjectInfo";
 import { DEVICE_TYPE } from "@styles/media";
@@ -16,6 +16,8 @@ import {
 } from "@constants/skeleton.constant";
 import TableSkeleton from "@components/common/table-skeleton/TableSkeleton";
 import withIntersection from "@components/hoc/with-intersection";
+import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
+import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 
 interface LaunchpadProjectListTableProps {
   breakpoint: DEVICE_TYPE;
@@ -25,6 +27,9 @@ interface LaunchpadProjectListTableProps {
   moveProjectDetail: (poolId: string) => void;
   moveRewardTokenSwapPage: (path: string) => void;
   fetchMore: () => void;
+
+  sortOption: LaunchpadProjectSortOption | null;
+  handleSort: (column: TABLE_HEAD) => void;
 }
 
 const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
@@ -34,6 +39,8 @@ const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
   moveProjectDetail,
   moveRewardTokenSwapPage,
   fetchMore,
+  sortOption,
+  handleSort,
 }) => {
   const { t } = useTranslation();
 
@@ -52,12 +59,33 @@ const LaunchpadProjectListTable: React.FC<LaunchpadProjectListTableProps> = ({
       ? PROJECT_INFO_TABLET
       : PROJECT_INFO;
 
+  const renderSortIcon = (head: TABLE_HEAD) => {
+    if (sortOption?.key === head) {
+      if (sortOption.direction === "asc") {
+        return <IconTriangleArrowUp className="icon asc" />;
+      }
+      if (sortOption.direction === "desc") {
+        return <IconTriangleArrowDown className="icon desc" />;
+      }
+    }
+
+    return null;
+  };
+
   return (
     <TableWrapper>
       <div className="project-list-head">
         {Object.values(TABLE_HEAD).map((head, idx) => {
+          const canSort = SORT_SUPPORT_HEAD.includes(head);
+
           return (
-            <TableColumn key={idx} className={cx({ left: isAlignLeft(head) })} tdWidth={projectInfo.list[idx].width}>
+            <TableColumn
+              key={idx}
+              className={cx({ left: isAlignLeft(head), sort: canSort })}
+              tdWidth={projectInfo.list[idx].width}
+              onClick={() => canSort && handleSort(head)}
+            >
+              {canSort && renderSortIcon(head)}
               <span>{t(head)}</span>
             </TableColumn>
           );

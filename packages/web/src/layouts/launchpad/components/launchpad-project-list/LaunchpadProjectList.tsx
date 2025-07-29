@@ -5,6 +5,7 @@ import LaunchpadProjectListHeader from "./launchpad-project-list-header/Laucnhpa
 import LaunchpadProjectListTable from "./launchpad-project-list-table/LaunchpadProjectListTable";
 import { ProjectListWrapper } from "./LaunchpadProjectList.styles";
 import { DEVICE_TYPE } from "@styles/media";
+import { LaunchpadProjectSortOption, TABLE_HEAD } from "./types";
 
 interface LaunchpadProjectListProps {
   breakpoint: DEVICE_TYPE;
@@ -19,6 +20,9 @@ interface LaunchpadProjectListProps {
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onToggleSearch: () => void;
   fetchMore: () => void;
+
+  sortOption: LaunchpadProjectSortOption | null;
+  handleSort: (column: TABLE_HEAD) => void;
 }
 
 const LaunchpadProjectList: React.FC<LaunchpadProjectListProps> = ({
@@ -33,6 +37,8 @@ const LaunchpadProjectList: React.FC<LaunchpadProjectListProps> = ({
   onToggleSearch,
   fetchMore,
   searchRef,
+  sortOption,
+  handleSort,
 }) => {
   return (
     <ProjectListWrapper>
@@ -51,6 +57,8 @@ const LaunchpadProjectList: React.FC<LaunchpadProjectListProps> = ({
         moveProjectDetail={moveProjectDetail}
         moveRewardTokenSwapPage={moveRewardTokenSwapPage}
         fetchMore={fetchMore}
+        sortOption={sortOption}
+        handleSort={handleSort}
       />
     </ProjectListWrapper>
   );
