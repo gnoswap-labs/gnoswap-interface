@@ -4,6 +4,7 @@ import React, { useCallback, useMemo, useRef, useState } from "react";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
+import { useProposalDraft } from "@hooks/governance/ui/use-proposal-draft";
 import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import FormInput from "@components/common/form-input/FormInput";
@@ -31,6 +32,7 @@ import { BoxItem, CreateProposalModalWrapper, IconButton, ToolTipContentWrapper 
 
 interface BoxContentProps {
   label: string;
+  style?: React.CSSProperties;
   children?: React.ReactNode;
 }
 
@@ -46,7 +48,19 @@ interface FormValues {
   }[];
 }
 
-const ProposalOption = ["TEXT", "COMMUNITY_POOL_SPEND", "PARAMETER_CHANGE"];
+const ProposalOption = {
+  TEXT: "TEXT",
+  COMMUNITY_POOL_SPEND: "COMMUNITY_POOL_SPEND",
+  PARAMETER_CHANGE: "PARAMETER_CHANGE",
+};
+
+type ProposalOptionType = (typeof ProposalOption)[keyof typeof ProposalOption];
+
+const ProposalOptionList: ProposalOptionType[] = [
+  ProposalOption.TEXT,
+  ProposalOption.COMMUNITY_POOL_SPEND,
+  ProposalOption.PARAMETER_CHANGE,
+];
 
 const TypeTransMap: { [key: string]: string } = {
   TEXT: "Governance:proposal.type.text",
@@ -108,15 +122,26 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   proposeParamChangeProposal,
 }) => {
   const { t } = useTranslation();
-  const [type, setType] = useState<string>(ProposalOption[0]);
+  const [type, setType] = useState<string>(ProposalOption.TEXT);
   const modalBodyRef = useRef<HTMLDivElement>(null);
+
+  const [touchedFields, setTouchedFields] = useState<Set<string>>(new Set());
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+
+  const handleDropdownToggle = useCallback((dropdownId: string, isOpen: boolean) => {
+    if (isOpen) {
+      setOpenDropdownId(dropdownId);
+    } else {
+      setOpenDropdownId(null);
+    }
+  }, []);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const validationProps: any = useMemo(() => {
-    if (type === ProposalOption[1]) {
+    if (type === ProposalOption.COMMUNITY_POOL_SPEND) {
       return getCreateProposalCommunityPoolSpendValidation(t);
     }
-    if (type === ProposalOption[2]) {
+    if (type === ProposalOption.PARAMETER_CHANGE) {
       return getCreateProposalChangeParameterValidation(t);
     }
     return getCreateProposalValidation(t);
@@ -129,25 +154,29 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
       title: "",
       description: "",
       recipientAddress: "",
-      variable: [
-        {
-          pkgPath: "",
-          func: "",
-          param: "",
-        },
-        {
-          pkgPath: "",
-          func: "",
-          param: "",
-        },
-      ],
+      variable: Array.from({ length: 2 }).map(() => {
+        return { pkgPath: "", func: "", param: "" };
+      }),
     },
   });
   const {
     register,
     formState: { errors, isDirty, isValid },
     control,
+    watch,
+    setValue,
   } = methods;
+
+  const { saveProposalDraft, clearProposalDraft, title, description } = useProposalDraft({
+    setValue,
+    watch,
+    isDirty,
+  });
+
+  const handleCloseModal = () => {
+    saveProposalDraft(title, description);
+    setIsOpenCreateModal(false);
+  };
 
   const { fields, append, remove, update } = useFieldArray({
     control,
@@ -250,12 +279,26 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
     [executableFunctions, t],
   );
 
+  const getFieldName = (index: number, field: "pkgPath" | "func" | "param") => {
+    return `variable.${index}.${field}` as const;
+  };
+
+  const shouldShowErrorText = (index: number, forMobile: boolean) => {
+    const fieldName = getFieldName(index, "param");
+    const hasError = paramErrors?.variable?.[index];
+    const isTouched = touchedFields.has(fieldName);
+    const isCorrectDevice = forMobile === (breakpoint === DEVICE_TYPE.MOBILE);
+
+    return isTouched && hasError && isCorrectDevice;
+  };
+
   const sendTx: SubmitHandler<FormValues> = data => {
-    if (type === ProposalOption[0]) {
+    if (type === ProposalOption.TEXT) {
       proposeTextProposal(data.title, data.description);
+      clearProposalDraft();
       setIsOpenCreateModal(false);
       return;
-    } else if (type === ProposalOption[1]) {
+    } else if (type === ProposalOption.COMMUNITY_POOL_SPEND) {
       proposeCommunityPoolSpendProposal(
         data.title,
         data.description,
@@ -263,6 +306,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
         data.recipientAddress,
         data.amount.toString(),
       );
+      clearProposalDraft();
       setIsOpenCreateModal(false);
       return;
     }
@@ -275,6 +319,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
     }
 
     proposeParamChangeProposal(data.title, data.description, variables);
+    clearProposalDraft();
     setIsOpenCreateModal(false);
   };
 
@@ -304,17 +349,17 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
         <div className={"modal-body"} ref={modalBodyRef}>
           <div className="header">
             <h6>{t("Governance:createModal.title")}</h6>
-            <div className="close-wrap" onClick={() => setIsOpenCreateModal(false)}>
+            <div className="close-wrap" onClick={handleCloseModal}>
               <IconClose className="close-icon" />
             </div>
           </div>
           <BoxContent label={t("Governance:createModal.type")}>
             <div className="type-tab">
-              {ProposalOption.map((item, index) => (
+              {ProposalOptionList.map((item, index) => (
                 <div
                   key={index}
-                  className={type === ProposalOption[index] ? "active-type-tab" : ""}
-                  onClick={() => setType(ProposalOption[index])}
+                  className={type === ProposalOptionList[index] ? "active-type-tab" : ""}
+                  onClick={() => setType(ProposalOptionList[index])}
                 >
                   {t(TypeTransMap[item])}
                 </div>
@@ -334,11 +379,11 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                 "\n\n",
               )}
               errorText={errors?.description ? errors.description.message : undefined}
-              rows={type === ProposalOption[0] ? 14 : 8}
+              rows={type === ProposalOption.TEXT ? 14 : 8}
               {...register("description")}
             />
           </BoxContent>
-          {type === ProposalOption[1] && (
+          {type === ProposalOption.COMMUNITY_POOL_SPEND && (
             <BoxContent label={t("Governance:createModal.setVariable.title")}>
               <FormInput
                 placeholder={t("Governance:createModal.setVariable.placeholder.recipient")}
@@ -362,7 +407,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
               </div>
             </BoxContent>
           )}
-          {type === ProposalOption[2] && (
+          {type === ProposalOption.PARAMETER_CHANGE && (
             <BoxContent label={t("Governance:createModal.setVariable.title")}>
               {fields.map((item, index) => (
                 <div className="multiple-variable" key={item.id}>
@@ -378,7 +423,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                           : null
                       }
                       errorText={
-                        breakpoint !== DEVICE_TYPE.MOBILE ? paramErrors?.variable?.[index] || undefined : undefined
+                        shouldShowErrorText(index, false) ? paramErrors?.variable?.[index] || undefined : undefined
                       }
                       items={executablePackagePaths}
                       {...register(`variable.${index}.pkgPath`)}
@@ -394,6 +439,9 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                         });
                       }}
                       placeholder={t("Governance:createModal.setVariable.placeholder.pkgPath")}
+                      dropdownId={`parameter-${index}`}
+                      isOpen={openDropdownId === `parameter-${index}`}
+                      onToggle={handleDropdownToggle}
                     />
                     <VariableSelectBox
                       modalBodyRef={modalBodyRef}
@@ -420,17 +468,21 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
                       }}
                       placeholder={t("Governance:createModal.setVariable.placeholder.func")}
                       disabled={!item.pkgPath}
+                      dropdownId={`parameter2-${index}`}
+                      isOpen={openDropdownId === `parameter2-${index}`}
+                      onToggle={handleDropdownToggle}
                     />
                     <FormInput
                       placeholder={getParameterPlaceholder(item)}
                       {...register(`variable.${index}.param`)}
                       onBlur={() => {
+                        setTouchedFields(prev => new Set(prev).add(getFieldName(index, "param")));
                         if (item.pkgPath && item.func) {
                           validateParams();
                         }
                       }}
                       errorText={
-                        breakpoint === DEVICE_TYPE.MOBILE ? paramErrors?.variable?.[index] || undefined : undefined
+                        shouldShowErrorText(index, true) ? paramErrors?.variable?.[index] || undefined : undefined
                       }
                     />
                   </div>
@@ -441,7 +493,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
               ))}
             </BoxContent>
           )}
-          <BoxContent label="">
+          <BoxContent style={{ padding: "10.5px 16px" }} label="">
             <div className="minimum">
               <div className="title">
                 {t("Governance:createModal.minimum.title")}

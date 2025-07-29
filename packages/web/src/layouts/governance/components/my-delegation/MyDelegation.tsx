@@ -294,7 +294,9 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                     <MyDelegationRewardTooltipContent>
                       <div className="reward-info-total">
                         <span className="label">{t("Governance:myDel.reward.title")}</span>
-                        <span className="value">${toNumberFormat(myDelegationInfo.claimableRewardsUsd, 2)}</span>
+                        <span className="value">
+                          {formatOtherPrice(myDelegationInfo.claimableRewardsUsd, { isKMB: false })}
+                        </span>
                       </div>
                       {rewardInfo.map((reward, index) => {
                         const { tokenInfo } = reward;
