@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 import CopyReferralLink from "../copy-referral-link/CopyReferralLink";
 import { Container, TitleWrapper } from "./LeaderboardSubheader.styles";
 import LearnMore from "../learn-more/LearnMore";
@@ -12,13 +14,14 @@ const LeaderboardSubheader = ({
   isMobile: boolean;
   address?: string;
 }) => {
+  const { t } = useTranslation();
+
   return (
     <Container>
       <TitleWrapper>
         <FontSize16>
           <P as="span" color="text04">
-            Climb up the leaderboard by collecting points for swapping, providing liquidity, staking, or inviting
-            friends. Every activity on GnoSwap counts!&nbsp;
+            {t("Leaderboard:subHeader.description")}&nbsp;
           </P>
           <LearnMore />
         </FontSize16>

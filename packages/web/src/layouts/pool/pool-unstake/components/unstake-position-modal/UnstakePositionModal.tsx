@@ -156,7 +156,7 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
                   <Divider />
                   <div className="protocol">
                     <div>
-                      <span className="">{t("business:protocolFee.txt")}</span>
+                      <span className="">{t("business:unstakingFee.txt")}</span>
                       <Tooltip
                         placement="top"
                         FloatingContent={

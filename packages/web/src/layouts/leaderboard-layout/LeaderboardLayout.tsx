@@ -1,4 +1,6 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
+
 import { LayoutWrapper, ListContainer, ListSection, Section, Title, TitleWrapper } from "./LeaderboardLayout.styles";
 
 const LeaderboardLayout = ({
@@ -14,12 +16,14 @@ const LeaderboardLayout = ({
   list: React.ReactNode;
   footer: React.ReactNode;
 }) => {
+  const { t } = useTranslation();
+
   return (
     <LayoutWrapper>
       {header}
       <Section>
         <TitleWrapper>
-          <Title>Leaderboard</Title>
+          <Title>{t("Leaderboard:header")}</Title>
           {subheader}
           {banner}
         </TitleWrapper>

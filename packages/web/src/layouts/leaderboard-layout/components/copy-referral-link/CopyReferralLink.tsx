@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import { ButtonHierarchy } from "@components/common/button/Button";
 import { CopyReferralLinkButton, StyledIconLink, Text } from "./CopyReferralLink.styles";
 import { QUERY_PARAMETER } from "@constants/page.constant";
@@ -12,6 +14,8 @@ const CopyReferralLink = ({
   isMobile: boolean;
   address?: string;
 }) => {
+  const { t } = useTranslation();
+
   const [copied, setCopied] = useState(false);
 
   const referralLink = React.useMemo(() => {
@@ -39,7 +43,7 @@ const CopyReferralLink = ({
           height: "36px",
         }}
         onClick={handleCopy}
-        text={<Text> {copied ? "Copied!" : "Copy My Referral"}</Text>}
+        text={<Text> {copied ? t("common:copied") : t("Leaderboard:subHeader.copyButton")}</Text>}
         leftIcon={copied || <StyledIconLink />}
       />
     </div>

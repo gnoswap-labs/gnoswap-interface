@@ -13,38 +13,31 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 
 export interface TableHeadItem {
   label: string;
-  tooltip?: React.ReactNode;
+  tooltip?: string;
 }
 
 export const TABLE_HEAD = {
-  INDEX: { label: "Rank" },
-  USER: { label: "User" },
+  INDEX: { label: "Leaderboard:list.column.rank" },
+  USER: { label: "Leaderboard:list.column.user" },
   VOLUME: {
-    label: "Swap",
-    tooltip: "Swap Fees Paid in USD. Only counts if the pool is receiving $GNS incentives.",
+    label: "Leaderboard:list.column.swap",
+    tooltip: "Leaderboard:list.column.tooltip.volume",
   },
   POSITION: {
-    label: "Position",
-    tooltip: "Fees Earned in USD. Only counts if the pool is receiving $GNS incentives.",
+    label: "Leaderboard:list.column.position",
+    tooltip: "Leaderboard:list.column.tooltip.position",
   },
   STAKING: {
-    label: "Staking",
-    tooltip: (
-      <>
-        <ul style={{ margin: 0, paddingLeft: "16px" }}>
-          <li>Position Staking Rewards Earned in USD. Only counts if the pool has $GNS incentives.</li>
-          <li>Protocol Fees Earned in USD. Only counts if rewards have a USD price.</li>
-        </ul>
-      </>
-    ),
+    label: "Leaderboard:list.column.staking",
+    tooltip: "Leaderboard:list.column.tooltip.staking",
   },
-  POINTS: { label: "Points" },
+  POINTS: { label: "Leaderboard:list.column.points" },
 } as const;
 
 export const TABLE_HEAD_MOBILE = {
-  INDEX: { label: "Rank" },
-  USER: { label: "User" },
-  POINTS: { label: "Points" },
+  INDEX: { label: "Leaderboard:list.column.rank" },
+  USER: { label: "Leaderboard:list.column.user" },
+  POINTS: { label: "Leaderboard:list.column.points" },
 } as const;
 
 export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;
