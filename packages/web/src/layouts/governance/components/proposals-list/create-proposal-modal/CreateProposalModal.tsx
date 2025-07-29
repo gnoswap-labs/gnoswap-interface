@@ -287,12 +287,9 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
     const fieldName = getFieldName(index, "param");
     const hasError = paramErrors?.variable?.[index];
     const isTouched = touchedFields.has(fieldName);
+    const isCorrectDevice = forMobile === (breakpoint === DEVICE_TYPE.MOBILE);
 
-    return (
-      isTouched &&
-      hasError &&
-      ((forMobile && breakpoint === DEVICE_TYPE.MOBILE) || (!forMobile && breakpoint !== DEVICE_TYPE.MOBILE))
-    );
+    return isTouched && hasError && isCorrectDevice;
   };
 
   const sendTx: SubmitHandler<FormValues> = data => {

@@ -53,10 +53,6 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
       }
 
       if (integersOnly) {
-        if (value.includes(".")) {
-          return;
-        }
-
         if (!/^\d+$/.test(value)) {
           return;
         }
