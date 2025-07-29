@@ -1,33 +1,27 @@
 import React from "react";
 import Image from "next/image";
 import { useAtom, useAtomValue } from "jotai";
-import BigNumber from "bignumber.js";
-import { cx } from "@emotion/css";
 import { useTranslation, Trans } from "react-i18next";
 
 import { LaunchpadState } from "@states/index";
 import { useLaunchpadHandler } from "@hooks/launchpad/data/use-launchpad-handler";
-import { useTokenData } from "@hooks/token/data/use-token-data";
-import { isAmount } from "@common/utils/data-check-util";
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
-import { formatPrice } from "@utils/new-number-utils";
 import { getClaimableTime } from "@utils/launchpad-get-claimable";
 import { getDateUtcToLocal } from "@common/utils/date-util";
 import { PROJECT_STATUS_TYPE } from "@common/values";
+import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
 
 import { Divider } from "@components/common/divider/divider";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import { LaunchpadParticipateWrapper } from "./LaunchpadParticipate.styles";
 import LaunchpadPoolTierChip from "@layouts/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 import DepositConditionsTooltip from "@components/common/launchpad-tooltip/deposit-conditions-tooltip/DepositConditionsTooltip";
 import LaunchpadTooltip from "../common/launchpad-tooltip/LaunchpadTooltip";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import LaunchpadDepositModal from "@components/common/launchpad-modal/launchpad-deposit-modal/LaunchpadDepositModal";
-import IconWallet from "@components/common/icons/IconWallet";
-import { useTokenBalanceDisplay } from "@hooks/token/ui/use-token-balance-display";
+import TokenAmountInput from "@components/common/token-amount-input/TokenAmountInput";
 
 const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
@@ -69,6 +63,8 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
   // Modal
   const [isOpenDepositConfirmModal, setIsOpenDepositConfirmModal] = React.useState(false);
 
+  const gnsAmountInput = useTokenAmountInput(DEFAULT_DEPOSIT_TOKEN);
+
   const {
     depositButtonText,
     openConnectWallet,
@@ -79,71 +75,9 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     showConditionTooltip,
     hideConditionTooltip,
   } = useLaunchpadHandler();
-  const { tokenPrices, displayBalanceMap } = useTokenData();
-
-  const onChangeParticipateAmount = React.useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (status !== "UPCOMING") {
-        const value = e.target.value.replace(/,/g, "");
-        const decimals = DEFAULT_DEPOSIT_TOKEN?.decimals || 0;
-
-        if (!isAmount(value)) return;
-
-        if (value.includes(".")) {
-          const [, decimal] = value.split(".");
-          if (decimal && decimal.length > decimals) return;
-        }
-
-        setParticipateAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
-      }
-    },
-    [setParticipateAmount, status],
-  );
-
-  const currentGnsBalance = React.useMemo(() => {
-    if (!isWalletConnected) return "-";
-
-    return formatPrice(displayBalanceMap?.[DEFAULT_DEPOSIT_TOKEN.path], {
-      isKMB: false,
-      usd: false,
-      greaterThan1Decimals: 6,
-    });
-  }, [displayBalanceMap, isWalletConnected]);
-
-  const displayGnsBalance = useTokenBalanceDisplay(currentGnsBalance, isWalletConnected);
-
-  const hasTokenBalance = React.useMemo(() => {
-    return !!currentGnsBalance;
-  }, [currentGnsBalance]);
-
-  const estimatePrice = React.useMemo(
-    () =>
-      DEFAULT_DEPOSIT_TOKEN?.wrappedPath &&
-      !!participateAmount &&
-      participateAmount !== "0" &&
-      !!tokenPrices?.[DEFAULT_DEPOSIT_TOKEN?.wrappedPath]?.usd
-        ? formatPrice(
-            BigNumber(+participateAmount)
-              .multipliedBy(Number(tokenPrices?.[DEFAULT_DEPOSIT_TOKEN?.wrappedPath]?.usd ?? "0"))
-              .toString(),
-            {
-              usd: true,
-              isKMB: false,
-            },
-          )
-        : "-",
-    [participateAmount, tokenPrices],
-  );
 
   const claimableTimeStamp = getClaimableTime(poolInfo?.claimableThreshold);
   const claimableTimeFormat = claimableTimeStamp ? getDateUtcToLocal(claimableTimeStamp).value : "-";
-
-  const handleAutoFillMaxAmount = React.useCallback(() => {
-    if (isWalletConnected && currentGnsBalance && status !== "UPCOMING") {
-      const formatValue = parseFloat(currentGnsBalance.replace(/,/g, "")).toString();
-      setParticipateAmount(formatValue);
-    }
-  }, [currentGnsBalance, setParticipateAmount, isWalletConnected, status]);
 
   // Initialize Page State
   React.useEffect(() => {
@@ -211,41 +145,14 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
         {isShowConditionTooltip && <DepositConditionsTooltip />}
       </div>
 
-      <div className="participate-input-wrapper">
-        <div className="participate-input-amount">
-          <input
-            className="participate-amount-text"
-            placeholder="0"
-            value={participateAmount}
-            onChange={onChangeParticipateAmount}
-            autoComplete={"off"}
-            spellCheck={"false"}
-            inputMode={"decimal"}
-          />
-          <div className="participate-token-selector">
-            <SelectPairButton token={DEFAULT_DEPOSIT_TOKEN} isHiddenArrow disabled />
-          </div>
-        </div>
-
-        <div className="participate-amount-info">
-          <span className="participate-price-text">{estimatePrice}</span>
-          <div className="balance-wrapper">
-            {isWalletConnected && <IconWallet />}
-            <span
-              className={cx("participate-balance-text", {
-                upcoming: status === "UPCOMING",
-              })}
-            >
-              {displayGnsBalance}
-            </span>
-            {hasTokenBalance && (
-              <button className="balance-max-button" onClick={handleAutoFillMaxAmount}>
-                {t("common:max")}
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
+      <TokenAmountInput
+        {...gnsAmountInput}
+        token={DEFAULT_DEPOSIT_TOKEN}
+        connected={isWalletConnected}
+        changeAmount={gnsAmountInput.changeAmount}
+        changeToken={() => {}}
+        style={{ padding: "16px 24px" }}
+      />
 
       <Divider />
 
