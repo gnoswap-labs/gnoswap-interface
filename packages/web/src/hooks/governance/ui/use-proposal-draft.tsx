@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { UseFormWatch, UseFormSetValue } from "react-hook-form";
+import { UseFormWatch, UseFormSetValue, FieldValues, Path } from "react-hook-form";
 
 const GNOSWAP_PROPOSAL_DRAFT_KEY = "gnoswap_proposal-drafts";
 
@@ -14,21 +14,19 @@ interface ProposalDraftData {
   description: string;
 }
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-interface UseProposalDraftProps {
-  setValue: UseFormSetValue<any>;
-  watch: UseFormWatch<any>;
+interface UseProposalDraftProps<T extends FieldValues> {
+  setValue: UseFormSetValue<T>;
+  watch: UseFormWatch<T>;
   isDirty: boolean;
 }
 
 /**
- *
  * @param setValue - react-hook-form (setValue function)
  * @param watch - react-hook-form (watch function)
  * @param isDirty - react-hook-form (Whether the form has changed)
  * @returns Draft management functions and their current values
  */
-export function useProposalDraft({ setValue, watch, isDirty }: UseProposalDraftProps) {
+export function useProposalDraft<T extends FieldValues>({ setValue, watch, isDirty }: UseProposalDraftProps<T>) {
   /**
    * Save proposal drafts to local storage
    */
@@ -75,15 +73,14 @@ export function useProposalDraft({ setValue, watch, isDirty }: UseProposalDraftP
   useEffect(() => {
     const draft = loadProposalDraft();
     if (draft) {
-      setValue("title", draft.title);
-      setValue("description", draft.description);
+      setValue("title" as Path<T>, draft.title as T[Path<T>]);
+      setValue("description" as Path<T>, draft.description as T[Path<T>]);
     }
   }, [loadProposalDraft, setValue]);
+  const title = watch("title" as Path<T>) as string;
+  const description = watch("description" as Path<T>) as string;
 
-  const title = watch("title");
-  const description = watch("description");
-
-  // Get the current form value
+  // Auto-save functionality
   useEffect(() => {
     const SAVE_DELAY = 1000;
 
