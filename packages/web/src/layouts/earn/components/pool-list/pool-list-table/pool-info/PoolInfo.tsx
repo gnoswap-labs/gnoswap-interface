@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import BigNumber from "bignumber.js";
 
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconStar from "@components/common/icons/IconStar";
@@ -126,8 +127,10 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
   );
 
   const tvlDisplay = useMemo(() => {
-    const decimals = Number(tvl) < 0.01 ? 2 : 0;
-    return formatPoolValue(tvl, tokenA, tokenB, decimals);
+    const tvlBN = BigNumber(tvl || "0");
+    const safeTvl = tvlBN.isFinite() ? tvlBN : BigNumber(0);
+    const decimals = safeTvl.isLessThan(1) ? 2 : 0;
+    return formatPoolValue(safeTvl.toString(), tokenA, tokenB, decimals);
   }, [tvl, tokenA, tokenB]);
 
   const volume24hDisplay = useMemo(() => {
