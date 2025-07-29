@@ -70,14 +70,24 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
   );
 
   useEffect(() => {
+    const isClickOutsideDropdown = (event: MouseEvent): boolean => {
+      const target = event.target as Node;
+      const isInsideSelect = selectRef.current?.contains(target) ?? false;
+      const isInsideDropdown = dropdownRef.current?.contains(target) ?? false;
+
+      return !isInsideSelect && !isInsideDropdown;
+    };
+
+    const hasRequiredRefs = (): boolean => {
+      return !!(selectRef.current && dropdownRef.current);
+    };
+
+    const shouldCloseDropdown = (event: MouseEvent): boolean => {
+      return isOpen && hasRequiredRefs() && isClickOutsideDropdown(event);
+    };
+
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        isOpen &&
-        selectRef.current &&
-        dropdownRef.current &&
-        !selectRef.current.contains(event.target as Node) &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      if (shouldCloseDropdown(event)) {
         onToggle(dropdownId, false);
       }
     };
