@@ -27,6 +27,11 @@ interface UseProposalDraftProps<T extends FieldValues> {
  * @returns Draft management functions and their current values
  */
 export function useProposalDraft<T extends FieldValues>({ setValue, watch, isDirty }: UseProposalDraftProps<T>) {
+  const FORM_FIELDS = {
+    title: "title" as Path<T>,
+    description: "description" as Path<T>,
+  } as const;
+
   /**
    * Save proposal drafts to local storage
    */
@@ -73,12 +78,12 @@ export function useProposalDraft<T extends FieldValues>({ setValue, watch, isDir
   useEffect(() => {
     const draft = loadProposalDraft();
     if (draft) {
-      setValue("title" as Path<T>, draft.title as T[Path<T>]);
-      setValue("description" as Path<T>, draft.description as T[Path<T>]);
+      setValue(FORM_FIELDS.title, draft.title as T[Path<T>]);
+      setValue(FORM_FIELDS.description, draft.description as T[Path<T>]);
     }
   }, [loadProposalDraft, setValue]);
-  const title = watch("title" as Path<T>) as string;
-  const description = watch("description" as Path<T>) as string;
+  const title = watch(FORM_FIELDS.title) as string;
+  const description = watch(FORM_FIELDS.description) as string;
 
   // Auto-save functionality
   useEffect(() => {
