@@ -2,6 +2,7 @@ import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
+import { priceWarningStyle } from "@layouts/leaderboard-layout/components/common/common.styles";
 
 export const TokenInfoWrapper = styled.div`
   ${mixins.flexbox("row", "center", "flex-start")};
@@ -95,6 +96,10 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
         }
       }
     }
+    > span {
+      ${mixins.flexbox("row", "center", "center")};
+      gap: 2px;
+    }
   }
   .liquid-symbol {
     margin: 0px 4px;
@@ -103,6 +108,10 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   &.last7days-graph {
     display: flex;
     padding: 16px;
+  }
+
+  &.informational-price {
+    ${({ theme }) => priceWarningStyle(theme)};
   }
 
   .token-index {

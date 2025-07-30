@@ -11,6 +11,8 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import { DEVICE_TYPE } from "@styles/media";
 
 import { HoverSection, PriceValueWrapper, TableColumn, TokenInfoWrapper } from "./MobileTokenInfo.styles";
+import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
+import PriceWarning from "@components/common/price-warning/PriceWarning";
 
 interface TokenInfoProps {
   item: Token;
@@ -29,8 +31,14 @@ const renderToNegativeType = (status: MATH_NEGATIVE_TYPE, value: string) => (
 );
 
 const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item }) => {
-  const { token, price, priceOf1d } = item;
+  const { token, price, priceOf1d, priceGradeType } = item;
   const router = useCustomRouter();
+
+  const { priceStyle, shouldShowPriceWarning } = useTokenPriceInfo({ priceGradeType });
+
+  const renderPrice = (price: string | number) => {
+    return price === "--" ? <PriceValueWrapper>{price}</PriceValueWrapper> : <span>{price}</span>;
+  };
 
   const onClickItem = (path: string) => {
     router.movePageWithTokenPath("TOKEN", path);
@@ -42,8 +50,11 @@ const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item }) => {
         <TableColumn className="name-col left" tdWidth={MOBILE_TOKEN_TD_WIDTH[1]}>
           <TokenInfoCell token={token} isNative={item.isNative} breakpoint={DEVICE_TYPE.MOBILE} />
         </TableColumn>
-        <TableColumn className="price-col" tdWidth={MOBILE_TOKEN_TD_WIDTH[2]}>
-          {price === "--" ? <PriceValueWrapper>{price}</PriceValueWrapper> : price}
+        <TableColumn className={cx("price-col", priceStyle.className)} tdWidth={MOBILE_TOKEN_TD_WIDTH[2]}>
+          <span>
+            {renderPrice(price)}
+            {shouldShowPriceWarning && <PriceWarning type={"PRICE"} />}
+          </span>
           <div className={cx(priceOf1d.status.toLowerCase())}>
             {renderToNegativeType(priceOf1d.status, priceOf1d.value)}
           </div>
