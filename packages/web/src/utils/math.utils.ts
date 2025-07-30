@@ -27,6 +27,8 @@ export const MAX_UINT256 = 11579208923731619542357098500868790785326998466564056
 
 export const MAX_UINT160 = 1461501637330902918203684832716283019655932542975n as const;
 
+export const MAX_INT64_STR = "9223372036854775807";
+
 export function MSB(x: number | bigint): bigint {
   let r = 0n;
   let calculated = BigInt(x);
