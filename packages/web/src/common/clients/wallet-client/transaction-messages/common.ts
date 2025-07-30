@@ -4,7 +4,7 @@ import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { TransactionMessageError } from "@common/errors";
 import { DEFAULT_ALLOWANCE_LIMIT } from "@common/values";
 import { PACKAGE_NFT_PATH } from "@constants/environment.constant";
-import { MAX_INT64 } from "@utils/math.utils";
+import { MAX_INT64_STR } from "@utils/math.utils";
 import { getGRC20Allowance } from "@common/clients/gno-provider";
 
 export interface TransactionBankMessage {
@@ -150,8 +150,8 @@ export async function makeTransactionMessagesWithApproves(
 
     const previousAmount = accumulated[current.tokenPath][current.targetAddress].amount || "0";
     const sumAmountBN = BigNumber(previousAmount).plus(current.amount.toString());
-    if (sumAmountBN.isGreaterThan(MAX_INT64.toString())) {
-      accumulated[current.tokenPath][current.targetAddress].amount = MAX_INT64.toString();
+    if (sumAmountBN.isGreaterThan(MAX_INT64_STR)) {
+      accumulated[current.tokenPath][current.targetAddress].amount = MAX_INT64_STR;
     } else {
       accumulated[current.tokenPath][current.targetAddress].amount = sumAmountBN.toString();
     }
