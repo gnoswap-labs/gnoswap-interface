@@ -151,6 +151,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
         connected={isWalletConnected}
         changeAmount={gnsAmountInput.changeAmount}
         changeToken={() => {}}
+        integersOnly={true}
         style={{ padding: "16px 24px" }}
       />
 
