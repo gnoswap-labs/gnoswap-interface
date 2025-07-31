@@ -19,7 +19,7 @@ const LaunchpadActiveProjectCard: React.FC<LaunchpadActiveProjectCardProps> = ({
   const { pools, status, projectId, rewardTokenSymbol, rewardTokenLogoUrl } = project;
 
   const FIRST_POOL = pools[0];
-  const LAST_POOL = pools[2];
+  const LAST_POOL = pools[Math.max(pools.length - 1, 0)];
 
   return (
     <ActiveProjectCardWrapper type={status} onClick={() => moveProjectDetail(projectId)}>
