@@ -225,7 +225,6 @@ export const ConfirmModal = styled.div`
         gap: 16px;
         ${media.mobile} {
           padding: 12px;
-          gap: 8px;
         }
         border-radius: 8px;
         background: ${({ theme }) => theme.color.background20};
