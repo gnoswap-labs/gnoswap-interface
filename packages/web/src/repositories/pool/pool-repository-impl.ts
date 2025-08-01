@@ -6,7 +6,6 @@ import {
   SendTransactionSuccessResponse,
   WalletResponse,
 } from "@common/clients/wallet-client/protocols";
-import { makeNFTSetTokenUri } from "@common/clients/wallet-client/transaction-messages/position";
 import { CommonError } from "@common/errors";
 import { PoolError } from "@common/errors/pool";
 import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
@@ -264,9 +263,7 @@ export class PoolRepositoryImpl implements PoolRepository {
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    const nftSetUriMessage = makeNFTSetTokenUri(makeTxMessageRequests.caller);
-
-    const messages = [...createPoolMessages, ...mintMessages, nftSetUriMessage];
+    const messages = [...createPoolMessages, ...mintMessages];
 
     const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
 
@@ -303,9 +300,7 @@ export class PoolRepositoryImpl implements PoolRepository {
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 
-    const nftSetUriMessage = makeNFTSetTokenUri(makeTxMessageRequests.caller);
-
-    const messages = [...mintMessages, nftSetUriMessage];
+    const messages = [...mintMessages];
 
     const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
 

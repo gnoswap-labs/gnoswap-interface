@@ -1,7 +1,7 @@
 import BigNumber from "bignumber.js";
 
 import { DEFAULT_TRANSACTION_DEADLINE } from "@common/values";
-import { PACKAGE_NFT_PATH, PACKAGE_POSITION_PATH, PACKAGE_STAKER_PATH } from "@constants/environment.constant";
+import { PACKAGE_POSITION_PATH, PACKAGE_STAKER_PATH } from "@constants/environment.constant";
 import { MAX_SLIPPAGE, SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 
 import { makeGNOTSendAmount, makeTransactionMessage } from "./common";
@@ -190,15 +190,5 @@ export function makePositionCollectFeeMessage(lpTokenId: string, isGetWGNOT: boo
       `${!isGetWGNOT}`, // whether unwrap token, true will get GNOT : isGetWGNOT == true => wrap
     ],
     caller,
-  });
-}
-
-export function makeNFTSetTokenUri(caller: string) {
-  return makeTransactionMessage({
-    caller,
-    send: "",
-    packagePath: PACKAGE_NFT_PATH,
-    func: "SetTokenURILast",
-    args: null,
   });
 }

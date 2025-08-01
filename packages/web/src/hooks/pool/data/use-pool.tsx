@@ -17,7 +17,6 @@ import {
 } from "@repositories/pool/pool.message";
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { useNetworkFee } from "@hooks/common/use-network-fee";
-import { makeNFTSetTokenUri } from "@common/clients/wallet-client/transaction-messages/position";
 import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
 
 interface Props {
@@ -137,8 +136,7 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
 
     const createPoolMessages = await makeCreatePoolMessageWithApproves(request, getAllowance);
     const mintMessages = await makePositionMintMessageWithApproves(request, getAllowance);
-    const nftSetUriMessage = makeNFTSetTokenUri(request.caller);
-    const txMessages = [...createPoolMessages, ...mintMessages, nftSetUriMessage];
+    const txMessages = [...createPoolMessages, ...mintMessages];
 
     const txDoc = await transactionService.createDocument({ messages: txMessages });
     await transactionService.createTransaction(txDoc);
@@ -255,8 +253,7 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
     };
 
     const mintMessages = await makePositionMintMessageWithApproves(request, getAllowance);
-    const nftSetUriMessage = makeNFTSetTokenUri(request.caller);
-    const txMessages = [...mintMessages, nftSetUriMessage];
+    const txMessages = [...mintMessages];
 
     const txDoc = await transactionService.createDocument({ messages: txMessages });
     await transactionService.createTransaction(txDoc);
