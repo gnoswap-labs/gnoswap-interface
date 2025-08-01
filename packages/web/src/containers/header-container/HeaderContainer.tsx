@@ -20,6 +20,8 @@ import { ThemeState, TokenState } from "@states/index";
 import { checkPositivePrice, parseJson } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
 import { formatAddress, formatApr } from "@utils/string-utils";
+import { Token } from "@components/common/header/search-menu-modal/SearchMenuModal";
+import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 
 const HeaderContainer: React.FC = () => {
   const { pathname, movePageWithTokenPath, movePageWithPoolPath } = useRouter();
@@ -60,7 +62,7 @@ const HeaderContainer: React.FC = () => {
     enabled: !!searchMenuToggle,
   });
 
-  const tokens = useMemo(() => {
+  const tokens: Token[] = useMemo(() => {
     return listTokens.map((item: TokenModel) => {
       const temp: TokenPriceModel = tokenPrices[item.path] ?? {};
       const isGnot = item.path === "gnot";
@@ -73,6 +75,7 @@ const HeaderContainer: React.FC = () => {
       const price = formatPrice(transferData.usd);
 
       return {
+        priceGradeType: transferData?.priceGradeType || TOKEN_PRICE_GRADE_TYPE.NONE,
         path: "",
         searchType: "",
         token: {
@@ -141,7 +144,7 @@ const HeaderContainer: React.FC = () => {
     });
   }, [recentsData, poolList, listTokens, tokenPrices]);
 
-  const mostLiquidity = useMemo(() => {
+  const mostLiquidity: Token[] = useMemo(() => {
     let temp = poolList;
     if (keyword) {
       temp = poolList.filter(
@@ -159,6 +162,7 @@ const HeaderContainer: React.FC = () => {
         const aprRate = formatApr(item.apr);
 
         return {
+          priceGradeType: TOKEN_PRICE_GRADE_TYPE.NONE,
           path: "",
           searchType: "popular",
           token: {
@@ -189,7 +193,7 @@ const HeaderContainer: React.FC = () => {
       .slice(0, 3);
   }, [poolList, keyword, tokenPrices, gnot]);
 
-  const popularTokens = useMemo(() => {
+  const popularTokens: Token[] = useMemo(() => {
     let temp = listTokens;
     if (keyword) {
       temp = listTokens.filter(
@@ -212,6 +216,7 @@ const HeaderContainer: React.FC = () => {
         const price = formatPrice(transferData.usd);
 
         return {
+          priceGradeType: transferData.priceGradeType,
           path: "",
           searchType: "",
           token: {
