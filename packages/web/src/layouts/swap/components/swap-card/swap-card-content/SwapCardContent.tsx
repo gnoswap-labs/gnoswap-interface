@@ -4,15 +4,14 @@ import { cx } from "@emotion/css";
 
 import { isAmount } from "@common/utils/data-check-util";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
-import { IconTriangleWarningOutlined } from "@components/common/icons/IconTriangleWarningOutlined";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import SwapCardContentDetail from "@components/swap/swap-card-content-detail/SwapCardContentDetail";
-import { useTheme } from "@emotion/react";
 import { PriceImpactStatus, SwapRateAction } from "@hooks/swap/data/use-swap-handler";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { TokenModel } from "@models/token/token-model";
+import { formatPriceImpact } from "@utils/string-utils";
 
 import {
   ContentWrapper,
@@ -66,7 +65,6 @@ const SwapCardContent: React.FC<ContentProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const theme = useTheme();
   const tokenA = swapTokenInfo.tokenA;
   const tokenB = swapTokenInfo.tokenB;
   const direction = swapSummaryInfo?.swapDirection;
@@ -236,11 +234,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
             </span>
             {showPriceImpact && (
               <PriceImpactWrapper priceImpact={priceImpactStatus}>
-                {priceImpactStatus === "HIGH" && <IconTriangleWarningOutlined stroke={theme.color.red01} />}
-                {"("}
-                {(swapSummaryInfo?.priceImpact || 0) > 0 ? "+" : ""}
-                {swapSummaryInfo?.priceImpact}
-                {"%)"}
+                {formatPriceImpact(swapSummaryInfo?.priceImpact || 0)}
               </PriceImpactWrapper>
             )}
           </PriceInfoWrapper>

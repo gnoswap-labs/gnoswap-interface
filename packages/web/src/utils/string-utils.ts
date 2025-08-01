@@ -186,3 +186,8 @@ export function displayTickNumber(range: number[], tick: number) {
 export const capitalize = (value: string) => {
   return (value && value[0].toUpperCase() + value.toLowerCase().slice(1)) || "";
 };
+
+export const formatPriceImpact = (impact: number): string => {
+  const sign = impact > 0 ? "+" : "";
+  return `(${sign}${impact}%)`;
+};

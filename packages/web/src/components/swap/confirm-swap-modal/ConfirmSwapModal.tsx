@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useAtomValue } from "jotai";
-import { useTheme } from "@emotion/react";
 
 import { SwapState } from "@states/index";
 import { PriceImpactStatus, SwapRateAction } from "@hooks/swap/data/use-swap-handler";
@@ -16,7 +15,6 @@ import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
 import IconClose from "@components/common/icons/IconCancel";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
-import { IconTriangleWarningOutlined } from "@components/common/icons/IconTriangleWarningOutlined";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { convertSwapRate } from "../swap-card-content-detail/SwapCardContentDetail";
@@ -28,6 +26,7 @@ import {
   ToolTipContentWrapper,
 } from "./ConfirmSwapModal.styles";
 import { formatRouterFeeStr } from "@utils/swap-utils";
+import { formatPriceImpact } from "@utils/string-utils";
 
 interface ConfirmSwapModalProps {
   submitted: boolean;
@@ -58,7 +57,6 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   const swapConfirmModalState = useAtomValue(SwapState.swapConfirmModalState);
   const { swapSummaryInfo, swapTokenInfo, estimatedAmount, isRefetching } = swapConfirmModalState;
 
-  const theme = useTheme();
   const { t } = useTranslation();
 
   const swapRateDescription = useMemo(() => {
@@ -261,11 +259,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                 <span className="price-text">{swapTokenInfo?.tokenBUSDStr}</span>
                 {showPriceImpact && (
                   <PriceImpactWrapper priceImpact={priceImpactStatus}>
-                    {priceImpactStatus === "HIGH" && <IconTriangleWarningOutlined stroke={theme.color.red01} />}
-                    {"("}
-                    {(swapSummaryInfo?.priceImpact || 0) > 0 ? "+" : ""}
-                    {swapSummaryInfo?.priceImpact}
-                    {"%)"}
+                    {formatPriceImpact(swapSummaryInfo?.priceImpact || 0)}
                   </PriceImpactWrapper>
                 )}
               </div>
