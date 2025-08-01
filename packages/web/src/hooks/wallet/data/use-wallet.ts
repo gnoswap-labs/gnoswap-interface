@@ -208,7 +208,6 @@ export const useWallet = () => {
         return;
       }
       if (established.code === 4000) {
-        disconnectWallet();
         return;
       }
 
