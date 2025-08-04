@@ -179,7 +179,7 @@ export const ConnectedSocialWalletModalWrapper = styled.div`
   }
 
   ${media.mobile} {
-    padding: 12px;
+    padding: 12px 16px 16px;
     width: 328px;
     .modal-body {
       gap: 12px;
