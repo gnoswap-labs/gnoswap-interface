@@ -5,6 +5,7 @@ import IconProgressSuccess from "@components/common/icons/IconProgressSuccess";
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { RepositionBroadcastProgressStateWrapper } from "./RepositionBroadcastProgressState.styles";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 export type ProgressStateType =
   | "NONE"
@@ -29,6 +30,7 @@ export interface RepositionBroadcastProgressStateProps {
 
 const RepositionBroadcastProgressState: React.FC<RepositionBroadcastProgressStateProps> = ({ state, retry, exit }) => {
   const { t } = useTranslation();
+  const { isMobile } = useWindowSize();
 
   const description: {
     text: string;
@@ -36,9 +38,13 @@ const RepositionBroadcastProgressState: React.FC<RepositionBroadcastProgressStat
   } = useMemo(() => {
     switch (state) {
       case "WAIT":
-        return { text: t("Reposition:repos.status.waitingConf") };
+        return {
+          text: isMobile ? t("Reposition:repos.status.waitingConfMobile") : t("Reposition:repos.status.waitingConf"),
+        };
       case "BROADCAST":
-        return { text: t("Reposition:repos.status.broadcasting") };
+        return {
+          text: isMobile ? t("Reposition:repos.status.broadcastingMobile") : t("Reposition:repos.status.broadcasting"),
+        };
       case "REJECTED":
         return {
           text: t("Reposition:repos.status.rejected"),
@@ -57,7 +63,7 @@ const RepositionBroadcastProgressState: React.FC<RepositionBroadcastProgressStat
       default:
         return { text: "" };
     }
-  }, [state, t]);
+  }, [state, isMobile, t]);
 
   return (
     <RepositionBroadcastProgressStateWrapper>
