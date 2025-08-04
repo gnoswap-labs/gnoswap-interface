@@ -91,6 +91,12 @@ const TransactionApprovalModal = ({
 
   const toggleExpand = React.useCallback(() => setIsExpanded(prev => !prev), []);
 
+  const truncateText = (text: string, maxLength: number = 28): string => {
+    if (text.length <= maxLength) return text;
+
+    return text.substring(0, maxLength) + "...";
+  };
+
   return (
     <TransactionApprovalModalWrapper>
       <TransactionApprovalModalBody>
@@ -124,11 +130,13 @@ const TransactionApprovalModal = ({
                 <InfoCard key={`${contract.type}-${contract.function}-${index}`} flexDirection="column" gap={16}>
                   <div className="flex-box">
                     <div className="label">{t("common:social.modal.transaction.column.realm")}</div>
-                    <div className="value">{contract.value.pkg_path}</div>
+                    <div className="value">
+                      <span>{truncateText(contract.value.pkg_path)}</span>
+                    </div>
                   </div>
                   <div className="flex-box">
                     <div className="label">{t("common:social.modal.transaction.column.function")}</div>
-                    <div className="value">{contract.function}</div>
+                    <div className="value">{truncateText(contract.function)}</div>
                   </div>
                 </InfoCard>
               );

@@ -146,6 +146,19 @@ export const InfoCard = styled.div<InfoCardProps>`
 
     color: ${({ theme }) => theme.color.text01};
     font-weight: 500;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 300px;
+
+    span {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      flex: 1;
+    }
     input {
       text-align: right;
       &::placeholder {

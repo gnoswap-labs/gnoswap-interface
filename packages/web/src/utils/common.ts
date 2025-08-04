@@ -275,7 +275,7 @@ export const wrapNativeTokenPath = (path: string) => {
 };
 
 const PRICE_PREFIX_SYMBOL_MAP: Record<string, string> = {
-  approx: "≈",
+  approx: "≈ ",
   usd: "$",
 };
 /**
