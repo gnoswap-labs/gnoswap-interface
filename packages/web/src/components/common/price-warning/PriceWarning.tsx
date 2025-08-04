@@ -29,9 +29,10 @@ const TVL_TOOLTIP_CONTENT = (
 
 interface PriceWarningProps {
   type: "PRICE" | "TVL";
+  size?: number;
 }
 
-const PriceWarning = ({ type }: PriceWarningProps) => {
+const PriceWarning = ({ type, size }: PriceWarningProps) => {
   const displayTooltipContent = React.useMemo(() => {
     if (type === "PRICE") return PRICE_TOOLTIP_CONTENT;
     return TVL_TOOLTIP_CONTENT;
@@ -47,7 +48,7 @@ const PriceWarning = ({ type }: PriceWarningProps) => {
         }
         placement="top"
       >
-        <IconPriceWarning className="price-warning-icon" />
+        <IconPriceWarning className="price-warning-icon" size={size} />
       </Tooltip>
     </div>
   );

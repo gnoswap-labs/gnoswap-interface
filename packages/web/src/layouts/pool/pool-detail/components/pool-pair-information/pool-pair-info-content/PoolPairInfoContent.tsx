@@ -4,7 +4,7 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { cx } from "@emotion/css";
 
-import { STATIC_TEXT } from "@common/values";
+import { STATIC_TEXT, DEFAULT_TOKEN_PRICE_RATIO } from "@common/values";
 import IconStar from "@components/common/icons/IconStar";
 import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
 import IconTriangleArrowUpV2 from "@components/common/icons/IconTriangleArrowUpV2";
@@ -23,7 +23,6 @@ import { ThemeState } from "@states/index";
 import { formatOtherPrice, formatPoolPairAmount, formatRate } from "@utils/new-number-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { tickToPrice } from "@utils/swap-utils";
-import { DEFAULT_TOKEN_PRICE_RATIO } from "@common/values";
 
 import {
   AprDivider,
@@ -91,7 +90,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const shouldShowPriceWarning = tokenAShouldShowPriceWarning || tokenBShouldShowPriceWarning;
 
   const themeKey = useAtomValue(ThemeState.themeKey);
-  const { width } = useWindowSize();
+  const { width, isMobile } = useWindowSize();
   const GRAPWIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
 
   const tokenABalance = useMemo(() => {
@@ -293,17 +292,19 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
       );
     }
 
+    const iconSize = isMobile ? 15 : 19;
+
     return (
       <div className="wrapper-value">
         <span className={cx("tvl-info", tokenAPriceStyle.className, tokenBPriceStyle.className)}>
           <strong>{liquidityValue}</strong>
-          {shouldShowPriceWarning && <PriceWarning type="TVL" />}
+          {shouldShowPriceWarning && <PriceWarning type="TVL" size={iconSize} />}
         </span>
 
         {liquidityChangedValue}
       </div>
     );
-  }, [liquidityChangedValue, liquidityValue, loading, shouldShowPriceWarning]);
+  }, [liquidityChangedValue, liquidityValue, loading, shouldShowPriceWarning, isMobile]);
 
   return (
     <ContentWrapper>
