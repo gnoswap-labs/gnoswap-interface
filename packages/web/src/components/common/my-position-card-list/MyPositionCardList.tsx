@@ -7,7 +7,8 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 
 import MyPositionCard from "./my-position-card/MyPositionCard";
 
-import { BlankPositionCard, CardListWrapper, GridWrapper } from "./MyPositionCardList.styles";
+import { BlankPositionCard, CardListWrapper } from "./MyPositionCardList.styles";
+import { HorizontalScrollWrapper } from "../scroll-wrapper";
 
 interface MyPositionCardListProps {
   loadMore: boolean;
@@ -45,7 +46,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   tokenPrices,
 }) => (
   <CardListWrapper $loading={isLoading}>
-    <GridWrapper ref={divRef} onScroll={onScroll} $loading={isLoading}>
+    <HorizontalScrollWrapper ref={divRef} onScroll={onScroll} loading={isLoading}>
       {!isLoading &&
         positions.length > 0 &&
         positions.map((position, idx) => (
@@ -71,7 +72,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
             <span key={idx} className="card-skeleton" css={pulseSkeletonStyle({ w: "100%", tone: "600" })} />
           ))
         : null}
-    </GridWrapper>
+    </HorizontalScrollWrapper>
     {!mobile && !isLoading && showLoadMore && onClickLoadMore && (
       <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
     )}
