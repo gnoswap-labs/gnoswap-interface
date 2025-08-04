@@ -140,6 +140,7 @@ export const InfoCard = styled.div<InfoCardProps>`
     font-weight: 400;
   }
   .value {
+    max-width: 300px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -147,12 +148,7 @@ export const InfoCard = styled.div<InfoCardProps>`
     color: ${({ theme }) => theme.color.text01};
     font-weight: 500;
 
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    max-width: 300px;
-
-    span {
+    .text {
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
