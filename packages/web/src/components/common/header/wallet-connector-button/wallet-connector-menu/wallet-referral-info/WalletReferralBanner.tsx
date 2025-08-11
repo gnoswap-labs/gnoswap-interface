@@ -9,11 +9,10 @@ export const ReferralBannerContent = () => {
     <S.ReferralBannerContentWrapper>
       <IconFlare />
       <div className="text">
-        <Trans>
-          Refer friends for bonus points.
-          <br />
-          <span className="highlight">Earn 10%, Give 10%</span>
-        </Trans>
+        <Trans
+          i18nKey={"HeaderFooter:referralSection.banner.content"}
+          components={{ span: <span className="highlight"></span>, br: <br /> }}
+        ></Trans>
       </div>
     </S.ReferralBannerContentWrapper>
   );

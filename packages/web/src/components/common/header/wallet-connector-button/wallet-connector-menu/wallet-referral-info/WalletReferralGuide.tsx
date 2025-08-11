@@ -12,7 +12,7 @@ const WalletReferralGuide = () => {
   return (
     <Link href={EXT_URL.DOCS.USER_GUIDE.REFERRAL_REWARD} target="_blank" rel="noreferrer">
       <S.ReferralGuideWrapper>
-        <div className="text">{t("Learn how referrals work")}</div>
+        <div className="text">{t("HeaderFooter:referralSection.footer.content")}</div>
         <IconOpenLink />
       </S.ReferralGuideWrapper>
     </Link>
