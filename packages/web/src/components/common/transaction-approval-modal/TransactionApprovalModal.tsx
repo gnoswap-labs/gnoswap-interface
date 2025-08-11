@@ -42,6 +42,7 @@ interface Props {
   isSwitchNetwork: boolean;
   walletType: WalletTypeState;
   gasFee: DisplayGasFee | null;
+  connectedWallet: boolean;
   memoChangeHandler: (memo: string) => void;
 }
 
@@ -58,6 +59,7 @@ const TransactionApprovalModal = ({
   walletType,
   memoChangeHandler,
   gasFee,
+  connectedWallet,
 }: Props) => {
   const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = React.useState(false);
@@ -90,6 +92,12 @@ const TransactionApprovalModal = ({
   }, [isAllowedDomain, onConfirm]);
 
   const toggleExpand = React.useCallback(() => setIsExpanded(prev => !prev), []);
+
+  const truncateText = (text: string, maxLength: number = 28): string => {
+    if (text.length <= maxLength) return text;
+
+    return text.substring(0, maxLength) + "...";
+  };
 
   return (
     <TransactionApprovalModalWrapper>
@@ -124,11 +132,15 @@ const TransactionApprovalModal = ({
                 <InfoCard key={`${contract.type}-${contract.function}-${index}`} flexDirection="column" gap={16}>
                   <div className="flex-box">
                     <div className="label">{t("common:social.modal.transaction.column.realm")}</div>
-                    <div className="value">{contract.value.pkg_path}</div>
+                    <div className="value">
+                      <span className="text">{truncateText(contract.value.pkg_path)}</span>
+                    </div>
                   </div>
                   <div className="flex-box">
                     <div className="label">{t("common:social.modal.transaction.column.function")}</div>
-                    <div className="value">{contract.function}</div>
+                    <div className="value">
+                      <span className="text">{truncateText(contract.function)}</span>
+                    </div>
                   </div>
                 </InfoCard>
               );
@@ -167,7 +179,7 @@ const TransactionApprovalModal = ({
             onClick={handleConfirm}
             text={t("common:social.modal.transaction.approve")}
             style={{ fullWidth: true, height: 57, fontType: "body7", hierarchy: ButtonHierarchy.Primary }}
-            disabled={!isAllowedDomain}
+            disabled={!isAllowedDomain || !connectedWallet || isSwitchNetwork}
           />
         </TransactionApprovalButtonWrapper>
       </TransactionApprovalModalBody>

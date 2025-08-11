@@ -3,6 +3,7 @@ import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { Z_INDEX } from "@styles/zIndex";
 import { media } from "@styles/media";
+import { priceWarningStyle } from "@layouts/leaderboard-layout/components/common/common.styles";
 
 export const SearchModalBackground = styled.div`
   z-index: ${Z_INDEX.modal};
@@ -227,6 +228,7 @@ export const ModalContainer = styled.div`
     }
     .token-price {
       ${mixins.flexbox("row", "center", "flex-end")};
+      gap: 2px;
       ${fonts.body9};
       color: ${({ theme }) => theme.color.text02};
       ${media.mobile} {
@@ -235,6 +237,19 @@ export const ModalContainer = styled.div`
       svg {
         height: 20px;
         width: auto;
+      }
+      &.informational-price {
+        ${({ theme }) => priceWarningStyle(theme)}
+      }
+      .price-warning-icon {
+        width: 14px;
+        height: 14px;
+        margin-bottom: 4px;
+        ${media.mobile} {
+          width: 12px;
+          height: 12px;
+          margin-bottom: 2px;
+        }
       }
     }
     .negative {

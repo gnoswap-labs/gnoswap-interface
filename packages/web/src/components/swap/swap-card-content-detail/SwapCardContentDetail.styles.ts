@@ -73,6 +73,9 @@ export const DetailWrapper = styled.div<WrapperProps>`
         color: ${({ theme }) => theme.color.text04};
         ${fonts.body12};
         gap: 4px;
+        ${media.mobile} {
+          font-size: 13px;
+        }
         .price-icon {
           cursor: pointer;
           width: 16px;

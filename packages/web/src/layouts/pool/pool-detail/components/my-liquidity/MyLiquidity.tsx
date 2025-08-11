@@ -9,6 +9,7 @@ import MyLiquidityContent from "./my-liquidity-content/MyLiquidityContent";
 import MyLiquidityHeader from "./my-liquidity-header/MyLiquidityHeader";
 
 import { MyLiquidityWrapper, MyLiquidityWrapperAnchor, PoolDivider } from "./MyLiquidity.styles";
+import { HorizontalScrollWrapper } from "@components/common/scroll-wrapper";
 
 interface MyLiquidityProps {
   address: string | null;
@@ -128,25 +129,27 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
           </>
         ) : (
           <>
-            <div className="slider-wrap clearfix" ref={divRef} onScroll={onScroll}>
-              <div className={"box-slider full-width"}>
-                {showedPositions.map((position: PoolPositionModel, index: number) => (
-                  <MyDetailedPositionCard
-                    key={index.toString() + position.id}
-                    position={position}
-                    isStakable={isStakable}
-                    breakpoint={breakpoint}
-                    loading={loading}
-                    address={address || ""}
-                    isHiddenAddPosition={isHiddenAddPosition}
-                    connected={connected}
-                    tokenPrices={tokenPrices}
-                    isOwnerAddress={isOwnerAddress}
-                    claim={claim}
-                  />
-                ))}
+            <HorizontalScrollWrapper loading={loading} onScroll={onScroll} ref={divRef}>
+              <div className="slider-wrap clearfix">
+                <div className={"box-slider full-width"}>
+                  {showedPositions.map((position: PoolPositionModel, index: number) => (
+                    <MyDetailedPositionCard
+                      key={index.toString() + position.id}
+                      position={position}
+                      isStakable={isStakable}
+                      breakpoint={breakpoint}
+                      loading={loading}
+                      address={address || ""}
+                      isHiddenAddPosition={isHiddenAddPosition}
+                      connected={connected}
+                      tokenPrices={tokenPrices}
+                      isOwnerAddress={isOwnerAddress}
+                      claim={claim}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
+            </HorizontalScrollWrapper>
             {showedPositions.length > 1 && (
               <div className="box-indicator">
                 <span className="current-page">{currentIndex}</span>

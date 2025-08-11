@@ -16,7 +16,6 @@ export const FeeWrapper = styled.div`
   }
   ${media.mobile} {
     padding: 0px;
-    gap: 8px;
     flex-direction: column;
   }
 

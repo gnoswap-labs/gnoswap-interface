@@ -1,6 +1,7 @@
 import { useAtom } from "jotai";
 import React, { useCallback, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { cx } from "@emotion/css";
 
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
@@ -14,6 +15,8 @@ import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { TokenInfo } from "@models/token/token-info";
 import { TokenState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
+import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
+import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 
 import {
   InputStyle,
@@ -27,6 +30,7 @@ import {
 import useElementWidth from "@hooks/common/use-element-width";
 import useElementWidthList from "@hooks/common/use-element-width-list";
 import { formatTokenPath } from "@utils/token-utils";
+import PriceWarning from "@components/common/price-warning/PriceWarning";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -45,6 +49,7 @@ export interface Token {
   volume?: string;
   liquidity: number;
   isNative: boolean;
+  priceGradeType: TOKEN_PRICE_GRADE_TYPE;
 }
 
 interface SearchMenuModalProps {
@@ -319,7 +324,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                         </TokenInfoWrapper>
                       </div>
                       <div className="coin-infor-value" ref={popularPriceRef.current[idx]}>
-                        <span className="token-price">{item.price}</span>
+                        <TokenPriceDisplay token={item} />
                         {item.priceOf1d.status !== "NEGATIVE" ? (
                           <span className="positive">
                             <IconTriangleArrowUpV2 />
@@ -369,6 +374,18 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
       </SearchModalBackground>
       <Overlay onClick={onSearchMenuToggle} />
     </>
+  );
+};
+
+const TokenPriceDisplay = ({ token }: { token: Token }) => {
+  const { price, priceGradeType } = token;
+  const { priceStyle, shouldShowPriceWarning } = useTokenPriceInfo({ priceGradeType });
+
+  return (
+    <span className={cx("token-price", priceStyle.className)}>
+      {price}
+      {shouldShowPriceWarning && <PriceWarning type="PRICE" />}
+    </span>
   );
 };
 

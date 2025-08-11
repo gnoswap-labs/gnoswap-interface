@@ -422,15 +422,14 @@ export const SectionWrapper = styled.section`
 
   .tvl-info {
     display: flex;
+    align-items: center;
+    gap: 4px;
+
     .informational-price {
       ${({ theme }) => priceWarningStyle(theme)}
 
       strong {
         color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : theme.color.text22)};
-      }
-      svg {
-        width: 20px;
-        height: 20px;
       }
     }
   }

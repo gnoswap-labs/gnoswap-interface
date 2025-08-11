@@ -140,12 +140,21 @@ export const InfoCard = styled.div<InfoCardProps>`
     font-weight: 400;
   }
   .value {
+    max-width: 300px;
     display: flex;
     align-items: center;
     gap: 8px;
 
     color: ${({ theme }) => theme.color.text01};
     font-weight: 500;
+
+    .text {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      flex: 1;
+    }
     input {
       text-align: right;
       &::placeholder {

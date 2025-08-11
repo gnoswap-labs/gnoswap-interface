@@ -25,7 +25,7 @@ export interface DisplayGasFee {
 }
 
 const TransactionApprovalModalContainer = ({ onApprove, onReject, document }: Props) => {
-  const { isSwitchNetwork, walletType } = useWallet();
+  const { isSwitchNetwork, walletType, connected } = useWallet();
   const { data: gasTokenPrice } = useGetTokenPrices(GasToken.path);
 
   const [transactionDocument, setTransactionDocument] = React.useState<Document>(document);
@@ -93,6 +93,7 @@ const TransactionApprovalModalContainer = ({ onApprove, onReject, document }: Pr
       walletType={walletType}
       memoChangeHandler={memoChangeHandler}
       gasFee={gasFee}
+      connectedWallet={connected}
     />
   );
 };
