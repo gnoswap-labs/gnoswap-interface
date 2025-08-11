@@ -160,7 +160,7 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
       {/* My Referral Link */}
       <S.WalletReferralInfoColumn>
         <S.InfoColumnKey>
-          {t("My Referral Link")}
+          {t("HeaderFooter:referralSection.item.myReferralLink")}
           {breakpoint === DEVICE_TYPE.MOBILE && (
             <Tooltip FloatingContent={<ReferralBannerContent />} placement="top">
               <IconInfo fill={theme.themeKey === "dark" ? "#596782" : "#90A2C0"} size={16} />
@@ -188,7 +188,7 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
         {uiState.isEditing ? (
           <>
             <S.ReferralInput
-              placeholder={t("Enter referrar’s address")}
+              placeholder={t("HeaderFooter:referralSection.input.placeholder")}
               value={inputReferralAddress}
               onChange={handleInputReferralAddressChange}
             />
@@ -212,13 +212,11 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
         ) : (
           <>
             <S.InfoColumnKey>
-              <span>{t("Referred by")}</span>
+              <span>{t("HeaderFooter:referralSection.item.referredBy")}</span>
               <Tooltip
                 FloatingContent={
                   <S.InfoColumnKeyTooltipContent>
-                    {t(
-                      "Once registered, your referral code cannot be changed for the next 24 hours. Self-referral is not allowed.",
-                    )}
+                    {t("HeaderFooter:referralSection.item.tooltip.referredBy")}
                   </S.InfoColumnKeyTooltipContent>
                 }
                 placement="top"
@@ -230,7 +228,9 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
             </S.InfoColumnKey>
             <S.InfoColumnValue>
               <S.InfoReferrerDisplayText hasRegisteredReferrer={!!referrerAddressInfo.shortAddress}>
-                {referrerAddressInfo.shortAddress ? referrerAddressInfo.shortAddress : t("Not registered")}
+                {referrerAddressInfo.shortAddress
+                  ? referrerAddressInfo.shortAddress
+                  : t("HeaderFooter:referralSection.input.notRegistered")}
               </S.InfoReferrerDisplayText>
               <S.InfoColumnIconSet>
                 <S.IconButton aria-label="edit" onClick={handleEdit} className="edit-icon">
@@ -241,11 +241,11 @@ const WalletReferralInfo = ({ account, breakpoint }: WalletReferralInfoProps) =>
           </>
         )}
       </S.WalletReferralInfoColumn>
-      {uiState.showError && <S.ErrorText>{t("Please enter a valid address")}</S.ErrorText>}
+      {uiState.showError && <S.ErrorText>{t("HeaderFooter:referralSection.input.invalidMessage")}</S.ErrorText>}
 
       {/* Earned Points */}
       <S.WalletReferralInfoColumn>
-        <S.InfoColumnKey>{t("Earned Points")}</S.InfoColumnKey>
+        <S.InfoColumnKey>{t("HeaderFooter:referralSection.item.earnedPoints")}</S.InfoColumnKey>
         <S.InfoColumnValue>
           <span>{referralEarnedPoints.toLocaleString()}</span>
         </S.InfoColumnValue>
