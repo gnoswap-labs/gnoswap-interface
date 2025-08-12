@@ -1,5 +1,5 @@
 import { amountEmptyNumberInit } from "@common/values/global-initial-value";
-import { notNullStringType } from "@common/utils/data-check-util";
+import { isNotNullString } from "@common/utils/data-check-util";
 import { textToBalances } from "@common/utils/denom-util";
 import { AccountInfoResponse } from "@repositories/account";
 import { AccountModel } from "@models/account/account-model";
@@ -23,7 +23,7 @@ export class AccountMapper {
     }
 
     const { coins, address, status, accountNumber, chainId, publicKey, sequence, email } = response.data;
-    const balances: AmountModel[] = notNullStringType(coins) ? textToBalances(coins) : [amountEmptyNumberInit];
+    const balances: AmountModel[] = isNotNullString(coins) ? textToBalances(coins) : [amountEmptyNumberInit];
 
     return {
       status: status === "ACTIVE" ? "ACTIVE" : "IN_ACTIVE",
