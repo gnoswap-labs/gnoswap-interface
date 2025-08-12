@@ -1,3 +1,4 @@
+// TODO(notJoon): Consider to use `Temporal` instead of `dayjs`.
 import dayjs from "dayjs";
 
 // Type-safe time constants with const assertion
@@ -161,4 +162,3 @@ export const formatDisplayTime = (diffInSeconds: number): TimeAgoFormat => {
 
   return ">7d ago";
 };
-

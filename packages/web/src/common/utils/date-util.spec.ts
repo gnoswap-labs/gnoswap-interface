@@ -10,7 +10,7 @@ import {
   formatDisplayTime,
 } from "./date-util";
 
-describe("date-util.improved", () => {
+describe("date-util", () => {
   // Mock timezone offset for consistent testing
   const originalGetTimezoneOffset = Date.prototype.getTimezoneOffset;
 
@@ -315,4 +315,3 @@ describe("date-util.improved", () => {
     });
   });
 });
-

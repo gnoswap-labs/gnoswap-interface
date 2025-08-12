@@ -11,12 +11,12 @@ import {
   validateAmount,
 } from "./denom-util";
 
-describe("denom-util.improved", () => {
+describe("denom-util", () => {
   // Test configuration
   const denomConfig = {
-    defaultDenom: "GNOT" as string,
+    defaultDenom: "GNOT" as string & { __brand: "DefaultDenom" },
     defaultRate: new BigNumber(1),
-    minimalDenom: "ugnot" as string,
+    minimalDenom: "ugnot" as string & { __brand: "MinimalDenom" },
     minimalRate: new BigNumber(1000000),
   };
 
@@ -314,7 +314,7 @@ describe("denom-util.improved", () => {
     });
 
     it("should handle null/undefined value", () => {
-      const amount = { value: null as unknown, denom: "GNOT" };
+      const amount = { value: null as unknown as BigNumber, denom: "GNOT" };
       const result = validateAmount(amount);
 
       expect(result.isValid).toBe(false);
@@ -322,4 +322,3 @@ describe("denom-util.improved", () => {
     });
   });
 });
-

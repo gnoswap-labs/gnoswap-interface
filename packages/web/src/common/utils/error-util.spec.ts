@@ -252,4 +252,3 @@ describe("error-util.improved", () => {
     });
   });
 });
-
