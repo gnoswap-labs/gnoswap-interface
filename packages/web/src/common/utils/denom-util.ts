@@ -214,11 +214,9 @@ export type AmountOf<D extends string = string> = Amount<D>;
  * const roundDown2 = createAmountTransformer(v => v.decimalPlaces(2, BigNumber.ROUND_DOWN));
  * const out = roundDown2(addFee(a));
  */
- export const createAmountTransformer = <
-   D extends string,
-   T extends AmountOf<D>
- >(operation: (value: BigNumber) => BigNumber) =>
-  (amount: T): T => ({ ...amount, value: operation(amount.value)});
+export const createAmountTransformer =
+  <D extends string, T extends AmountOf<D>>(operation: (value: BigNumber) => BigNumber) =>
+  (amount: T): T => ({ ...amount, value: operation(amount.value) });
 
 /**
  * Doubles an amount value

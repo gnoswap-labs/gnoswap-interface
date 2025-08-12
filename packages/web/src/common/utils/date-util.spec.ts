@@ -44,8 +44,16 @@ describe("date-util", () => {
       const result = getDateUtcToLocal(dateStr);
       expect(result.isEmpty).toBe(false);
       expect(result.offsetHours).toBe(9);
-      // The result should be in local time (UTC+9)
-      expect(result.value).toBe("2024-01-01 09:00:00");
+      // dayjs parses Z dates according to system timezone, not mocked timezone
+      // In CI (UTC), this will be "2024-01-01 00:00:00"
+      // In local (UTC+9), this will be "2024-01-01 09:00:00"
+      //
+      // Note: To simulate the CI environment, set the TZ environment variable to UTC before running tests (e.g., TZ=UTC yarn test)
+      const expectedDate = new Date("2024-01-01T00:00:00Z");
+      const expectedHours = expectedDate.getHours().toString().padStart(2, "0");
+      const expectedMinutes = expectedDate.getMinutes().toString().padStart(2, "0");
+      const expectedSeconds = expectedDate.getSeconds().toString().padStart(2, "0");
+      expect(result.value).toBe(`2024-01-01 ${expectedHours}:${expectedMinutes}:${expectedSeconds}`);
     });
 
     it("should handle date string without timezone", () => {
@@ -69,7 +77,12 @@ describe("date-util", () => {
     it("should format date with positive timezone offset", () => {
       const dateStr = "2024-01-01T00:00:00Z";
       const result = getLocalDateString(dateStr);
-      expect(result).toBe("2024-01-01 09:00:00 (UTC+9)");
+      // Extract the timezone part from result
+      const expectedDate = new Date("2024-01-01T00:00:00Z");
+      const expectedHours = expectedDate.getHours().toString().padStart(2, "0");
+      const expectedMinutes = expectedDate.getMinutes().toString().padStart(2, "0");
+      const expectedSeconds = expectedDate.getSeconds().toString().padStart(2, "0");
+      expect(result).toBe(`2024-01-01 ${expectedHours}:${expectedMinutes}:${expectedSeconds} (UTC+9)`);
     });
 
     it("should format date with UTC timezone", () => {
@@ -77,8 +90,12 @@ describe("date-util", () => {
       Date.prototype.getTimezoneOffset = jest.fn(() => 0);
       const dateStr = "2024-01-01T00:00:00Z";
       const result = getLocalDateString(dateStr);
-      // dayjs ignores mocked timezone for Z dates, always uses system timezone
-      expect(result).toBe("2024-01-01 09:00:00 (UTC)");
+      // dayjs parses dates according to actual system timezone
+      const expectedDate = new Date("2024-01-01T00:00:00Z");
+      const expectedHours = expectedDate.getHours().toString().padStart(2, "0");
+      const expectedMinutes = expectedDate.getMinutes().toString().padStart(2, "0");
+      const expectedSeconds = expectedDate.getSeconds().toString().padStart(2, "0");
+      expect(result).toBe(`2024-01-01 ${expectedHours}:${expectedMinutes}:${expectedSeconds} (UTC)`);
     });
 
     it("should format date with negative timezone offset", () => {
@@ -86,8 +103,12 @@ describe("date-util", () => {
       Date.prototype.getTimezoneOffset = jest.fn(() => 300);
       const dateStr = "2024-01-01T00:00:00Z";
       const result = getLocalDateString(dateStr);
-      // dayjs ignores mocked timezone for Z dates, always uses system timezone
-      expect(result).toBe("2024-01-01 09:00:00 (UTC-5)");
+      // dayjs parses dates according to actual system timezone
+      const expectedDate = new Date("2024-01-01T00:00:00Z");
+      const expectedHours = expectedDate.getHours().toString().padStart(2, "0");
+      const expectedMinutes = expectedDate.getMinutes().toString().padStart(2, "0");
+      const expectedSeconds = expectedDate.getSeconds().toString().padStart(2, "0");
+      expect(result).toBe(`2024-01-01 ${expectedHours}:${expectedMinutes}:${expectedSeconds} (UTC-5)`);
     });
   });
 
