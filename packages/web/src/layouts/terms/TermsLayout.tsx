@@ -21,10 +21,10 @@ const TermsLayout = ({ header, footer }: PrivacyLayoutProps) => {
         <section className="article-section">
           <h3>1. Introduction</h3>
           <br />
-          Welcome to GnoSwap, a decentralized application (DApp) built on the gno.land blockchain. <b>GnoSwap Labs Inc.</b>,
-          a company established in Panama, provides and maintains the platform interface but the core parts of the GnoSwap
-          service, such as smart contracts and governance, are controlled by the decentralized community of GNS token
-          holders through DAO governance. By accessing or using GnoSwap (
+          Welcome to GnoSwap, a decentralized application (DApp) built on the gno.land blockchain.{" "}
+          <b>GnoSwap Labs Inc.</b>, a company established in Panama, provides and maintains the platform interface but
+          the core parts of the GnoSwap service, such as smart contracts and governance, are controlled by the
+          decentralized community of GNS token holders through DAO governance. By accessing or using GnoSwap (
           <Link href={"/"} target={"_blank"}>
             https://gnoswap.io/
           </Link>
@@ -80,10 +80,10 @@ const TermsLayout = ({ header, footer }: PrivacyLayoutProps) => {
           <h3>4. Platform Use and Role</h3>
           <br />
           GnoSwap is a decentralized platform where GnoSwap Labs Inc. provides only the interface for user interactions.
-          The actual operations of the platform, including transaction execution, staking, liquidity provision,
-          and governance, are managed entirely through smart contracts on the gno.land blockchain and controlled by
-          the decentralized community of GNS token holders. GnoSwap Labs Inc. does not exercise control over user
-          transactions, which are executed autonomously by the platform's smart contracts.
+          The actual operations of the platform, including transaction execution, staking, liquidity provision, and
+          governance, are managed entirely through smart contracts on the gno.land blockchain and controlled by the
+          decentralized community of GNS token holders. GnoSwap Labs Inc. does not exercise control over user
+          transactions, which are executed autonomously by the platform&apos;s smart contracts.
           <br />
           <br />
           <ul>
@@ -190,9 +190,10 @@ const TermsLayout = ({ header, footer }: PrivacyLayoutProps) => {
               withdrawal may result in penalties.
             </li>
             <li>
-              <b>Regulatory Risks</b>: The legal and regulatory landscape for digital assets is subject to rapid changes,
-              and GnoSwap Labs Inc. cannot predict or guarantee the platform's compliance with laws in all jurisdictions.
-              Users are responsible for understanding the legal implications of their activities in their respective regions.
+              <b>Regulatory Risks</b>: The legal and regulatory landscape for digital assets is subject to rapid
+              changes, and GnoSwap Labs Inc. cannot predict or guarantee the platform&apos;s compliance with laws in all
+              jurisdictions. Users are responsible for understanding the legal implications of their activities in their
+              respective regions.
             </li>
           </ul>
           <br />
@@ -280,8 +281,8 @@ const TermsLayout = ({ header, footer }: PrivacyLayoutProps) => {
           <br />
           <h3>15. Third-Party Services</h3>
           <br />
-          By using third-party services integrated into GnoSwap, users acknowledge and accept that such services are beyond
-          the control of GnoSwap Labs Inc., and all risks associated with their use are solely borne by the user.
+          By using third-party services integrated into GnoSwap, users acknowledge and accept that such services are
+          beyond the control of GnoSwap Labs Inc., and all risks associated with their use are solely borne by the user.
           Users should review and understand the terms and privacy policies of these services before engaging with them.
           <br />
           <br />
@@ -294,9 +295,10 @@ const TermsLayout = ({ header, footer }: PrivacyLayoutProps) => {
           <br />
           <h3>17. Governing Law and Dispute Resolution</h3>
           <br />
-          These Terms of Use are governed by the laws of Panama. In the event of a dispute, users agree to resolve the matter
-          through binding arbitration conducted in accordance with the rules of the jurisdiction of Panama.By agreeing to these
-          terms, you waive your right to participate in any class-action lawsuits or similar collective legal actions.
+          These Terms of Use are governed by the laws of Panama. In the event of a dispute, users agree to resolve the
+          matter through binding arbitration conducted in accordance with the rules of the jurisdiction of Panama.By
+          agreeing to these terms, you waive your right to participate in any class-action lawsuits or similar
+          collective legal actions.
           <br />
           <br />
           <h3>18. Tax and Legal Compliance</h3>
