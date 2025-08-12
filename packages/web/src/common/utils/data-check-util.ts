@@ -27,7 +27,8 @@ type TypeName = (typeof TYPE_NAMES)[keyof typeof TYPE_NAMES];
  */
 export const getType = (target: unknown): TypeName => {
   const typeString = Object.prototype.toString.call(target);
-  return typeString.slice(8, -1) as TypeName;
+  const match = typeString.match(/\[object (\w+)\]/);
+  return (match?.[1] || "Unknown") as TypeName;
 };
 
 /**
