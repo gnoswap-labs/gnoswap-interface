@@ -245,7 +245,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           </TokenInfoWrapper>
                         </div>
                         <div className="coin-infor-value" ref={recentPriceRef.current[idx]}>
-                          <span className="token-price">{item.price}</span>
+                          <TokenPriceDisplay token={item} />
                           {item.priceOf1d.status !== "NEGATIVE" ? (
                             <span className="positive">
                               <IconTriangleArrowUpV2 />
@@ -275,7 +275,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           <Badge text={item.fee} type={BADGE_TYPE.DARK_DEFAULT} />
                         </div>
                         <div className="coin-infor-value">
-                          <span className="token-price">{item.price}</span>
+                          <TokenPriceDisplay token={item} />
                           <div className="token-price-apr">{item.apr}</div>
                         </div>
                       </li>
@@ -361,7 +361,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                         <Badge text={item.fee} type={BADGE_TYPE.DARK_DEFAULT} />
                       </div>
                       <div className="coin-infor-value">
-                        <span className="token-price">{item.price}</span>
+                        <TokenPriceDisplay token={item} />
                         <div className="token-price-apr">{item.apr}</div>
                       </div>
                     </li>
