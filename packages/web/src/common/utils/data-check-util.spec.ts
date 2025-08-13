@@ -9,6 +9,7 @@ import {
   isNumericString,
   isPositiveNumber,
   isArrayOf,
+  isArray,
 } from "./data-check-util";
 
 describe("data-check-util.improved", () => {
@@ -258,6 +259,37 @@ describe("data-check-util.improved", () => {
       if (isArrayOf(value, isNotNullString)) {
         // TypeScript should know value is string[] here
         expect(value[0].toUpperCase()).toBe("HELLO");
+      }
+    });
+  });
+
+  describe("isArray", () => {
+    it("should return true for arrays", () => {
+      expect(isArray([])).toBe(true);
+      expect(isArray([1, 2, 3])).toBe(true);
+      expect(isArray([])).toBe(true);
+      expect(isArray(new Array(5))).toBe(true);
+      expect(isArray(["a", 1, true, {}])).toBe(true);
+      expect(isArray([{}])).toBe(true);
+    });
+
+    it("should return false for non-arrays", () => {
+      expect(isArray({})).toBe(false);
+      expect(isArray("array")).toBe(false);
+      expect(isArray(123)).toBe(false);
+      expect(isArray(null)).toBe(false);
+      expect(isArray(undefined)).toBe(false);
+      expect(isArray(() => [])).toBe(false);
+      expect(isArray(new Set())).toBe(false);
+      expect(isArray(new Map())).toBe(false);
+    });
+
+    it("should work as type guard", () => {
+      const value: unknown = [1, 2, 3];
+      if (isArray(value)) {
+        // TypeScript should know value is an array here
+        expect(value.length).toBe(3);
+        expect(Array.isArray(value)).toBe(true);
       }
     });
   });
