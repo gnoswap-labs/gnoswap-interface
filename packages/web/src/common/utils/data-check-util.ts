@@ -86,6 +86,20 @@ export const isNonEmptyString = (value: unknown): value is string => {
 };
 
 /**
+ * Type guard that checks if a value is an array
+ * @param value - The value to check
+ * @returns true if the value is an array, false otherwise
+ * @example
+ * isArray([1, 2, 3]) // returns true
+ * isArray("hello") // returns false
+ * isArray({ key: "value" }) // returns false
+ * isArray(null) // returns false
+ */
+export const isArray = (value: unknown): value is unknown[] => {
+  return getType(value) === TYPE_NAMES.Array;
+};
+
+/**
  * Decimal separator types used in number formatting
  */
 enum DecimalSeparator {

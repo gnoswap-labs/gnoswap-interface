@@ -15,14 +15,13 @@ import { getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils
 import PoolInfoLazyChart from "./pool-info-lazy-chart/PoolInfoLazyChart";
 
 import { PoolInfoWrapper, TableColumn } from "./PoolInfo.styles";
-import { makePoolPath } from "@utils/pool-utils";
-import { useGetPoolStakingListByPoolPath } from "@query/pools";
 import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
 import { cx } from "@emotion/css";
 import PriceWarning from "@components/common/price-warning/PriceWarning";
 import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
 import { useTokenData } from "@hooks/token/data/use-token-data";
+import { isArray } from "@common/utils/data-check-util";
 
 interface PoolInfoProps {
   pool: PoolListInfo;
@@ -48,15 +47,11 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
     tokenAPriceGrade,
     tokenBPriceGrade,
   } = pool;
-  const poolPath = makePoolPath(tokenA, tokenB, feeTier);
 
-  const { data: poolStakings = [] } = useGetPoolStakingListByPoolPath(poolPath || "", {
-    enabled: !!poolPath,
-  });
-
-  const hasPoolStaking = React.useMemo(() => {
-    return poolStakings.length > 0;
-  }, [poolStakings]);
+  const hasIncentiveReward = React.useMemo(() => {
+    const safeArray = isArray(rewardTokens) ? rewardTokens : [];
+    return safeArray.length > 0;
+  }, [rewardTokens]);
 
   const { getGnotPath } = useGnotToGnot();
 
@@ -86,12 +81,12 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
   const columnClassName = getColumnClassName();
 
   const rewardTokenLogos = useMemo(() => {
-    if (!incentivized) return null;
+    if (!incentivized || !hasIncentiveReward) return null;
 
     const tokenData = getUniqueRewardTokensWithMultipleRewardTypes(rewardTokens, getGnotPath);
 
     return <OverlapTokenLogo tokens={tokenData} size={20} showRewardType={true} />;
-  }, [getGnotPath, rewardTokens, incentivized, hasPoolStaking]);
+  }, [getGnotPath, rewardTokens, incentivized, hasIncentiveReward]);
 
   const cellWidths =
     breakpoint === DEVICE_TYPE.MOBILE
