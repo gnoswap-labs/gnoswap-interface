@@ -90,17 +90,17 @@ describe("format token balance display", () => {
   });
 
   describe("Processing balance input values", () => {
-    test("should return \"-\" when balance is undefined", () => {
+    test("should return '-' when balance is undefined", () => {
       // @ts-expect-error: testing undefined case
       expect(formatTokenBalanceDisplay(undefined, true)).toBe("-");
     });
 
-    test("should return \"-\" when balance is null", () => {
+    test("should return '-' when balance is null", () => {
       // @ts-expect-error: testing null case
       expect(formatTokenBalanceDisplay(null, true)).toBe("-");
     });
 
-    test("should return \"-\" when balance is empty", () => {
+    test("should return '-' when balance is empty", () => {
       expect(formatTokenBalanceDisplay("", true)).toBe("-");
     });
 
