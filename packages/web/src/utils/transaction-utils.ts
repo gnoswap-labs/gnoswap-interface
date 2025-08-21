@@ -37,7 +37,6 @@ export interface TransactionApprovalModalHandlers {
 const TIMEOUT_MS = 1 * 60 * 1000; // 1 minute
 const DEFAULT_GAS_FEE = 1_000_000;
 
-
 export interface RawMemPackage {
   name: string;
   path: string;

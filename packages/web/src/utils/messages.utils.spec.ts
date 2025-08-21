@@ -1,4 +1,3 @@
-import { describe, it, expect } from "vitest";
 import { mappedTransactionData, createDocument, mappedDocumentMessagesWithCaller } from "./messages.utils";
 import { Document, ContractMessage } from "src/types/transaction-messages.types";
 import { MsgCall, MsgSend, MsgAddPackage } from "@gnolang/gno-js-client";
@@ -39,7 +38,7 @@ describe("messages.utils", () => {
               denom: "ugnot",
             },
           ],
-          gas: "1100000",
+          gas: "1000000",
         },
         chain_id: "test-chain",
         memo: "test memo",

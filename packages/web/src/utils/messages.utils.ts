@@ -6,17 +6,71 @@ export function mappedTransactionData(document: Document): TransactionData {
   return {
     messages: document.msgs,
     contracts: document.msgs.map(message => {
-      return {
+      // Create a base contract object with type-specific function name
+      const baseContract = {
         type: message?.type || "",
-        function: message.type === "/bank.MsgSend" ? "Transfer" : message.value.func,
-        value: {
-          caller: message.value.caller,
-          send: message.value.send,
-          pkg_path: message.value.pkg_path,
-          func: message.value.func,
-          args: message.value.args,
-        },
+        function: message.type === "/bank.MsgSend" ? "Transfer" : "",
       };
+
+      // Handle different message types with proper type narrowing
+      switch (message.type) {
+        case "/bank.MsgSend": {
+          const msgSend = message.value as MsgSend;
+          return {
+            ...baseContract,
+            function: "Transfer",
+            value: {
+              from_address: msgSend.from_address,
+              to_address: msgSend.to_address,
+              amount: msgSend.amount,
+            },
+          };
+        }
+        case "/vm.m_call": {
+          const msgCall = message.value as MsgCall;
+          return {
+            ...baseContract,
+            function: msgCall.func,
+            value: {
+              caller: msgCall.caller,
+              send: msgCall.send,
+              pkg_path: msgCall.pkg_path,
+              func: msgCall.func,
+              args: msgCall.args,
+            },
+          };
+        }
+        case "/vm.m_addpkg": {
+          const msgAddPkg = message.value as MsgAddPackage;
+          return {
+            ...baseContract,
+            function: "AddPackage",
+            value: {
+              creator: msgAddPkg.creator,
+              package: msgAddPkg.package,
+              deposit: msgAddPkg.deposit,
+            },
+          };
+        }
+        case "/vm.m_run": {
+          const msgRun = message.value as MsgRun;
+          return {
+            ...baseContract,
+            function: "Run",
+            value: {
+              caller: msgRun.caller,
+              send: msgRun.send,
+              package: msgRun.package,
+            },
+          };
+        }
+        default:
+          // Fallback for unknown message types
+          return {
+            ...baseContract,
+            value: {},
+          };
+      }
     }),
     gasWanted: document.fee.gas,
     gasFee: `${document.fee.amount[0].amount}${document.fee.amount[0].denom}`,
@@ -39,12 +93,10 @@ export const createDocument = (args: {
     fee: {
       amount: [
         {
-          // amount: String(162_686),
           amount: String(args.gasFee),
           denom: "ugnot",
         },
       ],
-      // gas: String(162_685_490),
       gas: Number(args.gasWanted ?? 0 * 1.1).toString(),
     },
     chain_id: args.chainId,
