@@ -3,6 +3,7 @@ import { cx } from "@emotion/css";
 import { useTranslation } from "react-i18next";
 
 import { WalletTypeState } from "src/types/wallet.types";
+import { TransactionData } from "src/types/transaction-messages.types";
 import { formatAddress } from "@utils/string-utils";
 import { ALLOWED_DOMAINS } from "@constants/environment.constant";
 import { DisplayGasFee } from "@containers/transaction-approval-modal-container/TransactionApprovalModalContainer";
@@ -30,13 +31,7 @@ interface Props {
   onConfirm: () => void;
   onCancel: () => void;
   caller: string;
-  contracts: {
-    type: string;
-    function: string;
-    value: {
-      pkg_path: string;
-    };
-  }[];
+  contracts: TransactionData["contracts"];
   transactionMessageRaw: string;
   memo: string;
   isSwitchNetwork: boolean;
@@ -130,12 +125,14 @@ const TransactionApprovalModal = ({
             {contracts.map((contract, index) => {
               return (
                 <InfoCard key={`${contract.type}-${contract.function}-${index}`} flexDirection="column" gap={16}>
-                  <div className="flex-box">
-                    <div className="label">{t("common:social.modal.transaction.column.realm")}</div>
-                    <div className="value">
-                      <span className="text">{truncateText(contract.value.pkg_path)}</span>
+                  {contract.value.pkg_path && (
+                    <div className="flex-box">
+                      <div className="label">{t("common:social.modal.transaction.column.realm")}</div>
+                      <div className="value">
+                        <span className="text">{truncateText(contract.value.pkg_path)}</span>
+                      </div>
                     </div>
-                  </div>
+                  )}
                   <div className="flex-box">
                     <div className="label">{t("common:social.modal.transaction.column.function")}</div>
                     <div className="value">
