@@ -38,7 +38,7 @@ describe("messages.utils", () => {
               denom: "ugnot",
             },
           ],
-          gas: "1000000",
+          gas: "1100000",
         },
         chain_id: "test-chain",
         memo: "test memo",
