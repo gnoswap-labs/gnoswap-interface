@@ -10,7 +10,7 @@ import {
 } from "@common/clients/wallet-client/protocols";
 import { DEFAULT_CHAIN_ID, WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { DEFAULT_GAS_WANTED } from "@common/values";
-import { Document } from "src/types/transaction-messages.types";
+import { ContractMessage, Document } from "src/types/transaction-messages.types";
 
 import { createDocument } from "./messages.utils";
 import { Tx, TxFee } from "@gnolang/tm2-js-client";
@@ -36,11 +36,6 @@ export interface TransactionApprovalModalHandlers {
 
 const TIMEOUT_MS = 1 * 60 * 1000; // 1 minute
 const DEFAULT_GAS_FEE = 1_000_000;
-
-type MessageType = {
-  type: "/vm.m_call" | "/bank.MsgSend";
-  value: unknown;
-};
 
 export interface RawMemPackage {
   name: string;
@@ -110,11 +105,30 @@ export const showTransactionApprovalModal = async (document: Document): Promise<
 /**
  * Transforms transaction messages to the required format
  */
-const transformMessages = (messages: TransactionMessage[]): MessageType[] => {
-  return messages.map(message => ({
-    type: isContractMessage(message) ? "/vm.m_call" : "/bank.MsgSend",
-    value: message,
-  }));
+const transformMessages = (messages: TransactionMessage[]): ContractMessage[] => {
+  return messages.map(message => {
+    if (isContractMessage(message)) {
+      return {
+        type: "/vm.m_call" as const,
+        value: {
+          caller: message.caller,
+          send: message.send,
+          pkg_path: message.pkg_path,
+          func: message.func,
+          args: message.args,
+        } as MsgCall,
+      };
+    } else {
+      return {
+        type: "/bank.MsgSend" as const,
+        value: {
+          from_address: message.from_address,
+          to_address: message.to_address,
+          amount: message.amount,
+        } as MsgSend,
+      };
+    }
+  });
 };
 
 /**
