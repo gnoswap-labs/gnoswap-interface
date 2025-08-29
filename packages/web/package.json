@@ -15,7 +15,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
-    "@adena-wallet/sdk": "^0.0.8",
+    "@adena-wallet/sdk": "^0.0.10",
     "@bufbuild/protobuf": "^2.2.3",
     "@emotion/css": "11.10.6",
     "@emotion/react": "11.10.6",
@@ -81,8 +81,8 @@
     "@types/d3": "^7.4.0",
     "@types/jest": "29.4.0",
     "@types/node": "18.14.6",
-    "@types/react": "18.0.28",
-    "@types/react-dom": "18.0.11",
+    "@types/react": "18.2.0",
+    "@types/react-dom": "18.2.0",
     "@types/uuid": "^9.0.7",
     "@typescript-eslint/parser": "^8.0.0",
     "babel-jest": "29.4.3",
