@@ -3,7 +3,9 @@ import crypto from "crypto";
 
 function toBech32AddressByPackagePath(prefix: string, packagePath: string): string {
   const bytes = Buffer.from("pkgPath:" + packagePath, "utf-8");
-  const hash = crypto.createHash("sha256").setEncoding("utf-8").update(bytes).digest();
+
+  const hash = crypto.createHash("sha256").update(bytes.toString("utf-8")).digest();
+
   return bech32.encode(prefix, bech32.toWords(hash.slice(0, 20)));
 }
 

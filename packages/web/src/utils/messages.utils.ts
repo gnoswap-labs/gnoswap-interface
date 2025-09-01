@@ -46,7 +46,7 @@ application-level representations clear.
 /**
  * Handlers for mapping blockchain messages {@link ContractMessage} into
  * UI-facing contract entries {@link TransactionData.contracts}.
- * 
+ *
  * @internal
  */
 const transactionDataHandlers: Record<
@@ -87,7 +87,6 @@ const transactionDataHandlers: Record<
       value: {
         creator: msg.creator,
         package: msg.package,
-        deposit: msg.deposit,
       },
     };
   },
@@ -111,7 +110,7 @@ const transactionDataHandlers: Record<
  * These are typically used when constructing a transaction to ensure that
  * messages always include a valid `caller`, `from_address`, or `creator`
  * (depending on the message type).
- * 
+ *
  * @internal
  */
 const callerFillHandlers: Record<EMessageType, (message: ContractMessage, currentAddress: string) => ContractMessage> =

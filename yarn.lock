@@ -2727,9 +2727,9 @@ __metadata:
     "@types/crypto-js": "npm:^4.2.1"
     "@types/d3": "npm:^7.4.0"
     "@types/jest": "npm:29.4.0"
-    "@types/node": "npm:18.14.6"
-    "@types/react": "npm:18.2.0"
-    "@types/react-dom": "npm:18.2.0"
+    "@types/node": "npm:20.10.0"
+    "@types/react": "npm:18.2.5"
+    "@types/react-dom": "npm:18.2.5"
     "@types/uuid": "npm:^9.0.7"
     "@typescript-eslint/parser": "npm:^8.0.0"
     axios: "npm:1.3.4"
@@ -6496,10 +6496,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:18.14.6":
-  version: 18.14.6
-  resolution: "@types/node@npm:18.14.6"
-  checksum: 10/9072f790c9ffc396a9db1276be82a8ae4f9307833b8c770f949a766bc67b07411c664cadb1e58be508306e87096cf498f0409dec4119cf3c8f15ba3234b357e8
+"@types/node@npm:20.10.0":
+  version: 20.10.0
+  resolution: "@types/node@npm:20.10.0"
+  dependencies:
+    undici-types: "npm:~5.26.4"
+  checksum: 10/c7d5ddbdbf3491e2363135c9611eb6bfae90eda2957279237fa232bcb29cd0df1cc3ee149d6de9915b754262a531ee2d57d33c9ecd58d763e8ad4856113822f3
   languageName: node
   linkType: hard
 
@@ -6561,12 +6563,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:18.2.0":
-  version: 18.2.0
-  resolution: "@types/react-dom@npm:18.2.0"
+"@types/react-dom@npm:18.2.5":
+  version: 18.2.5
+  resolution: "@types/react-dom@npm:18.2.5"
   dependencies:
     "@types/react": "npm:*"
-  checksum: 10/90f026936e3ea1658b0f9597e522d7e88abd3f107c830f238774cd7eb9387cff5ea322e62459b4a3dffc97359df5c2cfd3e4b36cb221a369fc24a1c6684ff993
+  checksum: 10/7373edc8acb63d1de78edb8aff3961b730d728648d6264667b1d004b712e6ba16eb471b9de1d70c1e5ddb58f7ccd69bd48ddd645ce50d6df99efb57fc532dcd4
   languageName: node
   linkType: hard
 
@@ -6588,14 +6590,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:18.2.0":
-  version: 18.2.0
-  resolution: "@types/react@npm:18.2.0"
+"@types/react@npm:18.2.5":
+  version: 18.2.5
+  resolution: "@types/react@npm:18.2.5"
   dependencies:
     "@types/prop-types": "npm:*"
     "@types/scheduler": "npm:*"
     csstype: "npm:^3.0.2"
-  checksum: 10/c5fe6b798ab0d4ba2c40173275fb7f1e85a67586d40c97b0bee25a514f44de032e7aa90a98482cc38e106e66102727cdf1be9a8413d29509b92cb384adf4864d
+  checksum: 10/dda71de3b6185ac1294bb83aed1ff542dbb7d842df662a377f6fc06e4fcb72df4b3847c72e28ab75027a3d7b26660685c73eaf032fbe32d7c639b233d53aa5a2
   languageName: node
   linkType: hard
 
@@ -22745,6 +22747,13 @@ __metadata:
     has-symbols: "npm:^1.1.0"
     which-boxed-primitive: "npm:^1.1.1"
   checksum: 10/fadb347020f66b2c8aeacf8b9a79826fa34cc5e5457af4eb0bbc4e79bd87fed0fa795949825df534320f7c13f199259516ad30abc55a6e7b91d8d996ca069e50
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~5.26.4":
+  version: 5.26.5
+  resolution: "undici-types@npm:5.26.5"
+  checksum: 10/0097779d94bc0fd26f0418b3a05472410408877279141ded2bd449167be1aed7ea5b76f756562cb3586a07f251b90799bab22d9019ceba49c037c76445f7cddd
   languageName: node
   linkType: hard
 

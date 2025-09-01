@@ -15,7 +15,9 @@ const GnoswapModalProvider: React.FC<PortalProps> = ({ children, selector }) => 
     setElement(document.getElementById(selector ?? "portal-root"));
   }, [selector]);
 
-  return <>{element ? createPortal(children, element) : null}</>;
+  // Only React components will come in here.
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  return <>{element ? createPortal(children as any, element) : null}</>;
 };
 
 export default GnoswapModalProvider;

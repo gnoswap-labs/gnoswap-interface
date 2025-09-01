@@ -16,7 +16,7 @@ import { createDocument } from "./messages.utils";
 import { Tx, TxFee } from "@gnolang/tm2-js-client";
 import { TransactionService } from "@services/transaction";
 import { GasToken } from "@common/values/token-constant";
-import { Any, MemFile, MemPackage, MsgAddPackage, MsgCall, MsgEndpoint, MsgSend } from "@gnolang/gno-js-client";
+import { Any, MsgAddPackage, MsgCall, MsgEndpoint, MsgSend } from "@gnolang/gno-js-client";
 import { MsgRun } from "@gnolang/gno-js-client/bin/proto/gno/vm";
 import { makeRawTokenAmount } from "./token-utils";
 
@@ -330,8 +330,8 @@ export function documentToTx(document: Document): Tx {
   return {
     messages,
     fee: TxFee.create({
-      gasWanted: document.fee.gas || "0",
-      gasFee: document.fee.amount.map(feeAmount => `${feeAmount.amount}${feeAmount.denom}`).join(","),
+      gas_wanted: document.fee.gas || "0",
+      gas_fee: document.fee.amount.map(feeAmount => `${feeAmount.amount}${feeAmount.denom}`).join(","),
     }),
     signatures: [],
     memo: document.memo,
@@ -343,13 +343,13 @@ export function documentToDefaultTx(document: Document): Tx {
   return {
     messages,
     fee: TxFee.create({
-      gasWanted: document.fee.gas,
-      gasFee: document.fee.amount.map(feeAmount => `${feeAmount.amount}${feeAmount.denom}`).join(","),
+      gas_wanted: document.fee.gas,
+      gas_fee: document.fee.amount.map(feeAmount => `${feeAmount.amount}${feeAmount.denom}`).join(","),
     }),
     signatures: [
       {
-        pubKey: {
-          typeUrl: "",
+        pub_key: {
+          type_url: "",
           value: new Uint8Array(),
         },
         signature: new Uint8Array(),
@@ -359,32 +359,34 @@ export function documentToDefaultTx(document: Document): Tx {
   };
 }
 
-function createMemPackage(memPackage: RawMemPackage) {
-  return MemPackage.create({
-    name: memPackage.name,
-    path: memPackage.path,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    files: memPackage.files.map((file: any) =>
-      MemFile.create({
-        name: file.name,
-        body: file.body,
-      }),
-    ),
-  });
-}
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function encodeMessageValue(message: { type: string; value: any }) {
   switch (message.type) {
     case MsgEndpoint.MSG_ADD_PKG: {
-      const value = message.value;
+      const value = message.value as MsgAddPackage;
+      const packageData = value.package
+        ? {
+            name: value.package.name,
+            path: value.package.path,
+            files: value.package.files.map(file => ({
+              name: file.name,
+              body: file.body,
+            })),
+          }
+        : undefined;
+
       const msgAddPackage = MsgAddPackage.create({
         creator: value.creator,
-        deposit: value.deposit || null,
-        package: value.package ? createMemPackage(value.package) : undefined,
+        package: packageData,
+        // deposit: value.deposit || null,
       });
+
+      //   creator: value.creator,
+      //   // deposit: value.deposit || null,
+      //   package: value.package ? createMemPackage(value.package) : undefined,
+      // });
       return Any.create({
-        typeUrl: MsgEndpoint.MSG_ADD_PKG,
+        type_url: MsgEndpoint.MSG_ADD_PKG,
         value: MsgAddPackage.encode(msgAddPackage).finish(),
       });
     }
@@ -398,31 +400,42 @@ function encodeMessageValue(message: { type: string; value: any }) {
         send: message.value.send || "",
       });
       return Any.create({
-        typeUrl: MsgEndpoint.MSG_CALL,
+        type_url: MsgEndpoint.MSG_CALL,
         value: MsgCall.encode(result).finish(),
       });
     }
     case MsgEndpoint.MSG_SEND: {
       return Any.create({
-        typeUrl: MsgEndpoint.MSG_SEND,
+        type_url: MsgEndpoint.MSG_SEND,
         value: MsgSend.encode(MsgSend.create(message.value)).finish(),
       });
     }
     case MsgEndpoint.MSG_RUN: {
-      const value = message.value;
+      const value = message.value as MsgRun;
+      const packageData = value.package
+        ? {
+            name: value.package.name,
+            path: value.package.path,
+            files: value.package.files.map(file => ({
+              name: file.name,
+              body: file.body,
+            })),
+          }
+        : undefined;
+
       const msgRun = MsgRun.create({
         caller: value.caller,
-        send: value.send || null,
-        package: value.package ? createMemPackage(value.package) : undefined,
+        package: packageData,
+        send: value.send || "0ugnot",
       });
       return Any.create({
-        typeUrl: MsgEndpoint.MSG_RUN,
+        type_url: MsgEndpoint.MSG_RUN,
         value: MsgRun.encode(msgRun).finish(),
       });
     }
     default: {
       return Any.create({
-        typeUrl: MsgEndpoint.MSG_CALL,
+        type_url: MsgEndpoint.MSG_CALL,
         value: MsgCall.encode(MsgCall.fromJSON(message.value)).finish(),
       });
     }
