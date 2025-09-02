@@ -19,7 +19,7 @@ import {
   WRAPPED_GNOT_PATH,
 } from "@constants/environment.constant";
 import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
-import { TokenModel } from "@models/token/token-model";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { checkGnotPath, isGNOTPath, toNativePath, wrapNativeTokenPath } from "@utils/common";
 import { MAX_INT64, tickToSqrtPriceX96 } from "@utils/math.utils";
 import { isOrderedTokenPaths } from "@utils/pool-utils";
@@ -129,9 +129,9 @@ export function makePositionMintMessageWithApproves(
   const approveMessageInfos: TokenApproveMessageInfo[] = [];
 
   // When GNOT, make a send to the pool contract.
-  const wrappedAmount: string | null = isGNOTPath(tokenAWrappedPath)
+  const sendAmount: string | null = isNativeToken(tokenA)
     ? tokenAAmountRaw
-    : isGNOTPath(tokenBWrappedPath)
+    : isNativeToken(tokenB)
     ? tokenBAmountRaw
     : null;
 
@@ -153,7 +153,7 @@ export function makePositionMintMessageWithApproves(
     });
   }
 
-  if (!!wrappedAmount) {
+  if (sendAmount && Number(sendAmount) > 0) {
     approveMessageInfos.push({
       tokenPath: WRAPPED_GNOT_PATH,
       targetAddress: PACKAGE_POSITION_ADDRESS,
@@ -175,7 +175,7 @@ export function makePositionMintMessageWithApproves(
     tokenBAmountRaw,
     slippage,
     caller,
-    wrappedAmount,
+    sendAmount,
     referrerAddress,
   );
 
