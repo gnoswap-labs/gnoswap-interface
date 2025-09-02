@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import ReactDOM from "react-dom";
+import { createPortal } from "react-dom";
 
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
@@ -149,21 +149,25 @@ const VariableSelectBox: React.FC<VariableSelectBoxProps> = ({
       return <React.Fragment />;
     }
 
-    return ReactDOM.createPortal(
-      <VariableSelectOptionsWrapper
-        ref={dropdownRef}
-        width={dropdownPosition.width}
-        top={dropdownPosition.top}
-        left={dropdownPosition.left}
-      >
-        <div className="select-list">
-          {items.map((item, index) => (
-            <span key={index} className={"display-value"} onClick={() => selectItem(item.value)}>
-              {item.displayValue}
-            </span>
-          ))}
-        </div>
-      </VariableSelectOptionsWrapper>,
+    return createPortal(
+      (
+        <React.Fragment>
+          <VariableSelectOptionsWrapper
+            ref={dropdownRef}
+            width={dropdownPosition.width}
+            top={dropdownPosition.top}
+            left={dropdownPosition.left}
+          >
+            <div className="select-list">
+              {items.map((item, index) => (
+                <span key={index} className={"display-value"} onClick={() => selectItem(item.value)}>
+                  {item.displayValue}
+                </span>
+              ))}
+            </div>
+          </VariableSelectOptionsWrapper>
+        </React.Fragment> // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ) as any,
       portalElement,
     );
   };

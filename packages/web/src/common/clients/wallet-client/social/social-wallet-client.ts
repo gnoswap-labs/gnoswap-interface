@@ -8,8 +8,8 @@ import {
   WalletResponseExecuteType,
   makeMsgCallMessage,
   makeMsgSendMessage,
+  TransactionBuilder,
 } from "@adena-wallet/sdk";
-import { TransactionBuilder } from "@adena-wallet/sdk";
 import { base64ToUint8Array, Provider, Tx, TxSignature } from "@gnolang/tm2-js-client";
 
 import { createTimeout } from "@common/utils/client-util";
@@ -208,6 +208,7 @@ export class SocialWalletClient implements WalletClient {
       if (isContractMessage(message)) {
         return makeMsgCallMessage({
           ...message,
+          max_deposit: "",
           args: message.args?.map(arg => `${arg}`) || null,
         });
       }

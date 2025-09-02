@@ -46,7 +46,7 @@ application-level representations clear.
 /**
  * Handlers for mapping blockchain messages {@link ContractMessage} into
  * UI-facing contract entries {@link TransactionData.contracts}.
- * 
+ *
  * @internal
  */
 const transactionDataHandlers: Record<
@@ -87,7 +87,6 @@ const transactionDataHandlers: Record<
       value: {
         creator: msg.creator,
         package: msg.package,
-        deposit: msg.deposit,
       },
     };
   },
@@ -111,7 +110,7 @@ const transactionDataHandlers: Record<
  * These are typically used when constructing a transaction to ensure that
  * messages always include a valid `caller`, `from_address`, or `creator`
  * (depending on the message type).
- * 
+ *
  * @internal
  */
 const callerFillHandlers: Record<EMessageType, (message: ContractMessage, currentAddress: string) => ContractMessage> =
@@ -199,7 +198,7 @@ export function mappedTransactionData(document: Document): TransactionData {
  *
  * @remarks
  * - Automatically stringifies numeric fields (`sequence`, `account_number`, etc.).
- * - Gas is multiplied by 1.1 (rounded up) to provide a buffer.
+ * - Gas is multiplied by 1.3 (rounded up) to provide a buffer.
  */
 export const createDocument = (args: {
   accountSequence: number;
@@ -223,7 +222,7 @@ export const createDocument = (args: {
     // - Floating-point operation results are directly converted to string
     // This caused issues where completely different values than expected were produced. Since gas values are typically represented as integers, using ceiling seemed advantageous.
     // If any related issues occur, revert this line.
-    gas: Math.ceil(args.gasWanted * 1.1).toString(),
+    gas: Math.ceil(args.gasWanted * 1.3).toString(),
   },
   chain_id: args.chainId,
   memo: args.memo || "",

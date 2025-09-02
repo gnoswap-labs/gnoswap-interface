@@ -42,7 +42,7 @@ export class PositionMapper {
       positionUsdValue: position.usdValue,
       unclaimedFeeAAmount: position.unclaimedFeeAAmount,
       unclaimedFeeBAmount: position.unclaimedFeeBAmount,
-      apr: `${position.apr}` ?? "",
+      apr: position.apr?.toString() ?? "",
       stakedAt: position.stakedAt || "",
       stakedUsdValue: position.stakedUsd || "",
       rewards: position.rewards?.map(PositionMapper.rewardFromResponse) || [],

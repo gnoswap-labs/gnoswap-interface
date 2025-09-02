@@ -40,6 +40,7 @@ export class TransactionServiceImpl implements TransactionService {
       if (isContractMessage(message)) {
         return makeMsgCallMessage({
           ...message,
+          max_deposit: "0ugnot",
           args: message.args?.map(arg => `${arg}`) || null,
         });
       }
@@ -72,8 +73,8 @@ export class TransactionServiceImpl implements TransactionService {
 
     const encodedSignature = (signature || []).map(s => ({
       pubKey: {
-        typeUrl: s?.pubKey?.typeUrl,
-        value: s?.pubKey?.value ? uint8ArrayToBase64(s.pubKey.value as Uint8Array) : undefined,
+        typeUrl: s?.pub_key?.type_url,
+        value: s?.pub_key?.value ? uint8ArrayToBase64(s.pub_key.value as Uint8Array) : undefined,
       },
       signature: uint8ArrayToBase64(s.signature),
     }));
