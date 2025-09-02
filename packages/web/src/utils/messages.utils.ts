@@ -198,7 +198,7 @@ export function mappedTransactionData(document: Document): TransactionData {
  *
  * @remarks
  * - Automatically stringifies numeric fields (`sequence`, `account_number`, etc.).
- * - Gas is multiplied by 1.1 (rounded up) to provide a buffer.
+ * - Gas is multiplied by 1.3 (rounded up) to provide a buffer.
  */
 export const createDocument = (args: {
   accountSequence: number;
