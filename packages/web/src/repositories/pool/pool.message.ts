@@ -153,7 +153,7 @@ export function makePositionMintMessageWithApproves(
     });
   }
 
-  if (!!sendAmount) {
+  if (sendAmount && Number(sendAmount) > 0) {
     approveMessageInfos.push({
       tokenPath: WRAPPED_GNOT_PATH,
       targetAddress: PACKAGE_POSITION_ADDRESS,
