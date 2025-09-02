@@ -16,8 +16,7 @@ import { createDocument } from "./messages.utils";
 import { Tx, TxFee } from "@gnolang/tm2-js-client";
 import { TransactionService } from "@services/transaction";
 import { GasToken } from "@common/values/token-constant";
-import { Any, MsgAddPackage, MsgCall, MsgEndpoint, MsgSend } from "@gnolang/gno-js-client";
-import { MsgRun } from "@gnolang/gno-js-client/bin/proto/gno/vm";
+import { Any, MsgAddPackage, MsgCall, MsgEndpoint, MsgSend, MsgRun } from "@gnolang/gno-js-client";
 import { makeRawTokenAmount } from "./token-utils";
 
 export const TX_EVENTS = {
@@ -398,6 +397,7 @@ function encodeMessageValue(message: { type: string; value: any }) {
         func: message.value.func,
         pkg_path: message.value.pkg_path,
         send: message.value.send || "",
+        max_deposit: "",
       });
       return Any.create({
         type_url: MsgEndpoint.MSG_CALL,

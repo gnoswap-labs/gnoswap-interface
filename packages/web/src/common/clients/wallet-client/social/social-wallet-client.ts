@@ -208,7 +208,7 @@ export class SocialWalletClient implements WalletClient {
       if (isContractMessage(message)) {
         return makeMsgCallMessage({
           ...message,
-          max_deposit: "0ugnot",
+          max_deposit: "",
           args: message.args?.map(arg => `${arg}`) || null,
         });
       }

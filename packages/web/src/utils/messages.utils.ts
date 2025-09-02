@@ -222,7 +222,7 @@ export const createDocument = (args: {
     // - Floating-point operation results are directly converted to string
     // This caused issues where completely different values than expected were produced. Since gas values are typically represented as integers, using ceiling seemed advantageous.
     // If any related issues occur, revert this line.
-    gas: Math.ceil(args.gasWanted * 1.1).toString(),
+    gas: Math.ceil(args.gasWanted * 1.3).toString(),
   },
   chain_id: args.chainId,
   memo: args.memo || "",
