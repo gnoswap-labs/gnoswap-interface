@@ -27,7 +27,6 @@ import {
   makeUnwrapTokenMessages,
   makeWrapTokenMessages,
 } from "./swap-router.message";
-import { eventBus } from "@utils/event-bus";
 import { generateSendTransactionParams, withTransactionGuard } from "@utils/transaction-utils";
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
@@ -97,26 +96,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     return await drySwap(this.rpcProvider, PACKAGE_ROUTER_PATH, request);
   };
-
-  private async showApproveTransactionModal(): Promise<boolean> {
-    return new Promise(resolve => {
-      const handleApprove = () => {
-        eventBus.off("transaction-approved", handleApprove);
-        eventBus.off("transaction-rejected", handleReject);
-        resolve(true);
-      };
-
-      const handleReject = () => {
-        eventBus.off("transaction-approved", handleApprove);
-        eventBus.off("transaction-rejected", handleReject);
-        resolve(false);
-      };
-
-      eventBus.on("transaction-approved", handleApprove);
-      eventBus.on("transaction-rejected", handleReject);
-      eventBus.emit("show-approve-modal");
-    });
-  }
 
   private calculateGasWanted(gasUsed?: number): number {
     if (!gasUsed || isNaN(Number(gasUsed)) || Number(gasUsed) <= 0) {

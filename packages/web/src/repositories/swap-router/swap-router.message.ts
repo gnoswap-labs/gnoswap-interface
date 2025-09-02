@@ -5,7 +5,6 @@ import {
   makeTransactionMessagesWithApproves,
   TokenApproveMessageInfo,
 } from "@common/clients/wallet-client/transaction-messages";
-import { GNOT_TOKEN } from "@common/values/token-constant";
 import { PACKAGE_POOL_ADDRESS, PACKAGE_ROUTER_ADDRESS, PACKAGE_ROUTER_PATH } from "@constants/environment.constant";
 import { EstimatedRoute } from "@models/swap/swap-route-info";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
@@ -55,8 +54,7 @@ export function makeExactInSwapRouteMessageWithApproves(
   const inputTokenWrappedPath = checkGnotPath(inputToken.path);
   const outputTokenWrappedPath = checkGnotPath(outputToken.path);
 
-  const sendTokenAmount = tokenAmountRaw;
-  const send = inputToken.path === GNOT_TOKEN.path ? makeGNOTSendAmount(sendTokenAmount) : "";
+  const send = isNativeToken(inputToken) ? makeGNOTSendAmount(tokenAmountRaw) : "";
 
   const swapMessage = makeTransactionMessage({
     send,
@@ -122,8 +120,7 @@ export function makeExactOutSwapRouteMessageWithApproves(
   const inputTokenWrappedPath = checkGnotPath(inputToken.path);
   const outputTokenWrappedPath = checkGnotPath(outputToken.path);
 
-  const sendTokenAmount = tokenAmountLimitRaw;
-  const send = inputToken.path === GNOT_TOKEN.path ? makeGNOTSendAmount(sendTokenAmount) : "";
+  const send = isNativeToken(inputToken) ? makeGNOTSendAmount(tokenAmountLimitRaw) : "";
 
   const swapMessage = makeTransactionMessage({
     send,
