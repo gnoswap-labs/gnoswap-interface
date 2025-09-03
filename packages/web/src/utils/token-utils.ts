@@ -213,8 +213,7 @@ export const formatTokenModelPath = (token: TokenModel): string => {
 };
 
 export const isNativeTokenPath = (token: TokenModel): boolean => {
-  if (token.path === GNOT_TOKEN.path) return true;
-  return false;
+  return token.path === GNOT_TOKEN.path;
 };
 
 export function parseTokenAmount(tokenAmount: string, denomination = GNOT_TOKEN.denom || "ugnot"): number {
