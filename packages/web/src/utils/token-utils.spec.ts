@@ -1,5 +1,11 @@
 import { TokenModel } from "@models/token/token-model";
-import { makeDisplayTokenAmount, makeRawTokenAmount, formatTokenBalanceDisplay } from "./token-utils";
+import {
+  makeDisplayTokenAmount,
+  makeRawTokenAmount,
+  formatTokenBalanceDisplay,
+  isNativeTokenPath,
+} from "./token-utils";
+import { GNOT_TOKEN } from "@common/values/token-constant";
 
 const DEFAULT_TOKEN: TokenModel = {
   decimals: 6,
@@ -144,5 +150,51 @@ describe("format token balance display", () => {
       expect(formatTokenBalanceDisplay("999999999999.99", true)).toBe("999,999,999,999.99");
       expect(formatTokenBalanceDisplay("999999999999.999999", true)).toBe("999,999,999,999.99");
     });
+  });
+});
+
+describe("isNativeTokenPath", () => {
+  it("should return true for native token (GNOT)", () => {
+    expect(isNativeTokenPath(GNOT_TOKEN)).toBe(true);
+  });
+
+  it("should return false for non-native tokens", () => {
+    const token = {
+      ...DEFAULT_TOKEN,
+      path: "gno.land/r/demo/token",
+    };
+    expect(isNativeTokenPath(token)).toBe(false);
+  });
+
+  it("should return false for empty path", () => {
+    const token = {
+      ...DEFAULT_TOKEN,
+      path: "",
+    };
+    expect(isNativeTokenPath(token)).toBe(false);
+  });
+
+  it("should return false for similar but not identical path", () => {
+    const token = {
+      ...DEFAULT_TOKEN,
+      path: GNOT_TOKEN.path + "/extra",
+    };
+    expect(isNativeTokenPath(token)).toBe(false);
+  });
+
+  it("should return false for path null", () => {
+    const token = {
+      ...DEFAULT_TOKEN,
+      path: null,
+    };
+    expect(isNativeTokenPath(token)).toBe(false);
+  });
+
+  it("should return false for path undefined", () => {
+    const token = {
+      ...DEFAULT_TOKEN,
+      path: undefined,
+    };
+    expect(isNativeTokenPath(token)).toBe(false);
   });
 });
