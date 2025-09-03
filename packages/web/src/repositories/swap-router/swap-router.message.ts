@@ -11,7 +11,7 @@ import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
 import { MAX_INT64 } from "@utils/math.utils";
 import { makeRoutesQuery } from "@utils/swap-route-utils";
-import { makeRawTokenAmount } from "@utils/token-utils";
+import { makeRawTokenAmount, isNativeTokenPath } from "@utils/token-utils";
 
 enum TransactionMessageFunctionType {
   Deposit = "Deposit",
@@ -54,7 +54,7 @@ export function makeExactInSwapRouteMessageWithApproves(
   const inputTokenWrappedPath = checkGnotPath(inputToken.path);
   const outputTokenWrappedPath = checkGnotPath(outputToken.path);
 
-  const send = isNativeToken(inputToken) ? makeGNOTSendAmount(tokenAmountRaw) : "";
+  const send = isNativeTokenPath(inputToken) ? makeGNOTSendAmount(tokenAmountRaw) : "";
 
   const swapMessage = makeTransactionMessage({
     send,
@@ -120,7 +120,7 @@ export function makeExactOutSwapRouteMessageWithApproves(
   const inputTokenWrappedPath = checkGnotPath(inputToken.path);
   const outputTokenWrappedPath = checkGnotPath(outputToken.path);
 
-  const send = isNativeToken(inputToken) ? makeGNOTSendAmount(tokenAmountLimitRaw) : "";
+  const send = isNativeTokenPath(inputToken) ? makeGNOTSendAmount(tokenAmountLimitRaw) : "";
 
   const swapMessage = makeTransactionMessage({
     send,

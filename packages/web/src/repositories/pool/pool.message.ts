@@ -19,12 +19,12 @@ import {
   WRAPPED_GNOT_PATH,
 } from "@constants/environment.constant";
 import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
-import { isNativeToken, TokenModel } from "@models/token/token-model";
+import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath, isGNOTPath, toNativePath, wrapNativeTokenPath } from "@utils/common";
 import { MAX_INT64, tickToSqrtPriceX96 } from "@utils/math.utils";
 import { isOrderedTokenPaths } from "@utils/pool-utils";
 import { priceToTick } from "@utils/swap-utils";
-import { makeRawTokenAmount } from "@utils/token-utils";
+import { isNativeTokenPath, makeRawTokenAmount } from "@utils/token-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
 
 enum PoolTransactionMessageFunctionType {
@@ -129,9 +129,9 @@ export function makePositionMintMessageWithApproves(
   const approveMessageInfos: TokenApproveMessageInfo[] = [];
 
   // When GNOT, make a send to the pool contract.
-  const sendAmount: string | null = isNativeToken(tokenA)
+  const sendAmount: string | null = isNativeTokenPath(tokenA)
     ? tokenAAmountRaw
-    : isNativeToken(tokenB)
+    : isNativeTokenPath(tokenB)
     ? tokenBAmountRaw
     : null;
 
