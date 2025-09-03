@@ -1,5 +1,5 @@
 {
-  "packageManager": "yarn@4.1.0",
+  "packageManager": "yarn@4.9.4",
   "workspaces": [
     "packages/*"
   ],
