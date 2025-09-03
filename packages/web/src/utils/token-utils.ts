@@ -212,6 +212,10 @@ export const formatTokenModelPath = (token: TokenModel): string => {
   return token.path.replace(/^gno\.land\//, "");
 };
 
+export const isNativeTokenPath = (token: TokenModel): boolean => {
+  return token.path === GNOT_TOKEN.path;
+};
+
 export function parseTokenAmount(tokenAmount: string, denomination = GNOT_TOKEN.denom || "ugnot"): number {
   const pattern = new RegExp(`^(\\d+)${denomination}$`);
   const match = tokenAmount.match(pattern);
