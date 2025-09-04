@@ -28,11 +28,14 @@ import {
   MyUnDelegatesInfo,
   nullProposals2Info,
   Proposals2Info,
+  ProposalDetailsInfo,
+  nullProposalDetailsInfo,
 } from "./model";
 import {
   GetMyDelegatesRequest,
   GetMyDelegationRequest,
   GetMyUnDelegatesRequest,
+  GetProposalDetailsRequest,
   GetProposalsReqeust,
   GetProposalsReqeust2,
   SendCancelReqeust,
@@ -79,6 +82,7 @@ import MockGovernanceMyDelegation2Response from "./mock/get-my-delegation2-respo
 import MockGovernanceMyDelegatesResponse from "./mock/get-my-delegates-response.json";
 import MockGovernanceMyUnDelegatesResponse from "./mock/get-my-undelegates-response.json";
 import MockGovernanceProposalsResponse from "./mock/get-proposals2-response.json";
+import MockGovernanceProposalDetails from "./mock/get-proposal-details-response.json";
 
 export class GovernanceRepositoryImpl implements GovernanceRepository {
   private networkClient: NetworkClient | null;
@@ -331,6 +335,38 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     }
 
     const data: Proposals2Info = response.data.data;
+
+    return data;
+  };
+
+  public getProposalDetails = async (request: GetProposalDetailsRequest): Promise<ProposalDetailsInfo> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await delay(1000).then(() => {
+      return {
+        data: {
+          data: MockGovernanceProposalDetails as ProposalDetailsInfo,
+        },
+      };
+    });
+    // const response = await this.networkClient
+    //   .get<{
+    //     data: ProposalDetailsInfo;
+    //   }>({
+    //     url: `governance/proposals/${request.proposalId}`,
+    //   })
+    //   .catch(e => {
+    //     console.error(e);
+    //     return null;
+    //   });
+
+    if (!response?.data?.data) {
+      return nullProposalDetailsInfo;
+    }
+
+    const data: ProposalDetailsInfo = response.data.data;
 
     return data;
   };

@@ -6,3 +6,4 @@ export * from "./proposals-info";
 
 export * from "./my-delegates-info";
 export * from "./proposals2-info";
+export * from "./proposal-details-info";

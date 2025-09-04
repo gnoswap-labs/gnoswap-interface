@@ -13,3 +13,4 @@ export * from "./send-vote-request";
 export * from "./get-my-delegates-request";
 export * from "./get-my-undelegates-request";
 export * from "./get-proposals2-request";
+export * from "./get-proposal-details-request";

@@ -10,6 +10,7 @@ import withLocalModal from "@components/hoc/with-local-modal";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { Proposal2ItemInfo, PROPOSAL_TYPE } from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
+import { useGetProposalDetails } from "@query/governance";
 
 import StatusBadge from "../../status-badge/StatusBadge";
 import TokenChip from "../../token-chip/TokenChip";
@@ -59,6 +60,9 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
       }),
     [setIsModalOpen],
   );
+
+  const { data } = useGetProposalDetails({ proposalId: 1 });
+  console.log(data, "dat?????!");
 
   const { numericVotingInfo, userVotingInfo } = useMemo(() => {
     const {
