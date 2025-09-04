@@ -15,13 +15,17 @@ import {
   MyDelegationInfo,
   MyDelegationInfo2,
   MyUnDelegatesInfo,
+  ProposalDetailsInfo,
+  Proposals2Info,
   ProposalsInfo,
 } from "./model";
 import {
   GetMyDelegatesRequest,
   GetMyDelegationRequest,
   GetMyUnDelegatesRequest,
+  GetProposalDetailsRequest,
   GetProposalsReqeust,
+  GetProposalsReqeust2,
   SendCancelReqeust,
   SendDelegateReqeust,
   SendExecuteReqeust,
@@ -43,6 +47,8 @@ import MockGovernanceSummary2Response from "./mock/get-governance-summary2-respo
 import MockGovernanceMyDelegation2Response from "./mock/get-my-delegation2-response.json";
 import MockGovernanceMyDelegatesResponse from "./mock/get-my-delegates-response.json";
 import MockGovernanceMyUnDelegatesResponse from "./mock/get-my-undelegates-response.json";
+import MockGovernanceProposals2Response from "./mock/get-proposals2-response.json";
+import MockGovernanceProposalDetailsResponse from "./mock/get-proposal-details-response.json";
 
 export class GovernanceRepositoryMock implements GovernanceRepository {
   public getGovernanceSummary = async (): Promise<GovernanceSummaryInfo> => {
@@ -108,6 +114,18 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
     };
     const result = res;
 
+    return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);
+  };
+
+  public getProposals2 = async (request: GetProposalsReqeust2): Promise<Proposals2Info> => {
+    console.log("Mock getProposals2:", request);
+    const result = MockGovernanceProposals2Response as Proposals2Info;
+    return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);
+  };
+
+  public getProposalDetails = async (request: GetProposalDetailsRequest): Promise<ProposalDetailsInfo> => {
+    console.log("Mock getProposalDetails:", request);
+    const result = MockGovernanceProposalDetailsResponse as ProposalDetailsInfo;
     return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);
   };
 
