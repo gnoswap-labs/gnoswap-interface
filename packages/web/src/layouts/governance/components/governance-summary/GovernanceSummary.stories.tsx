@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
 
-import { nullGovernanceSummaryInfo } from "@repositories/governance";
+import { nullGovernanceSummaryInfo2 } from "@repositories/governance";
 
 import GovernanceSummary from "./GovernanceSummary";
 
@@ -13,5 +13,5 @@ const Template: ComponentStory<typeof GovernanceSummary> = args => <GovernanceSu
 
 export const Default = Template.bind({});
 Default.args = {
-  governanceSummary: nullGovernanceSummaryInfo,
+  governanceSummary: nullGovernanceSummaryInfo2,
 };

@@ -1,5 +1,5 @@
-import { MyUndelegate } from "../model";
+import { MyUnDelegate } from "../model";
 
 export interface GetMyUnDelegatesResponse {
-  delegations: MyUndelegate[];
+  delegations: MyUnDelegate[];
 }

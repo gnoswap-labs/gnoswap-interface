@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { useGetGovernanceSummary, useGetMyDelegation, useGetProposals } from "@query/governance";
+import { useGetGovernanceSummary, useGetMyDelegation2, useGetProposals } from "@query/governance";
 
 import { useCreateProposalModal } from "@hooks/governance/ui/use-create-proposal-modal";
 import ProposalList from "../../components/proposals-list/ProposalList";
@@ -32,7 +32,7 @@ const ProposalListContainer: React.FC = () => {
 
   const { data: governanceSummaryInfo, isFetched: isFetchedGovernanceSummaryInfo } = useGetGovernanceSummary();
 
-  const { data: myDelegationInfo } = useGetMyDelegation({
+  const { data: myDelegationInfo } = useGetMyDelegation2({
     address: account?.address || "",
   });
 
@@ -99,7 +99,7 @@ const ProposalListContainer: React.FC = () => {
       switchNetwork={switchNetwork}
       isShowActiveOnly={isShowActiveOnly}
       toggleIsShowActiveOnly={toggleIsShowActiveOnly}
-      myVotingWeight={myDelegationInfo?.votingWeight || 0}
+      myVotingWeight={Number(myDelegationInfo?.votingWeight) || 0}
       proposalCreationThreshold={governanceSummaryInfo?.creationThreshold || 1000}
       proposalList={proposalsInfo?.pages.flatMap(item => item.proposals) || []}
       fetchMore={fetchNextItems}

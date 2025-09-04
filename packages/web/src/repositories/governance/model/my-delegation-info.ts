@@ -1,14 +1,14 @@
 /**
  * @deprecated
  */
-// export interface MyDelegationInfo {
-//   availableBalance: number;
-//   votingWeight: number;
-//   undelegatedAmount: number;
-//   claimableRewardsUsd: number;
-//   claimableRewards: ClaimableRewards[];
-//   delegations: DelegationItemInfo[];
-// }
+export interface MyDelegationInfo {
+  availableBalance: number;
+  votingWeight: number;
+  undelegatedAmount: number;
+  claimableRewardsUsd: number;
+  claimableRewards: ClaimableRewards[];
+  delegations: DelegationItemInfo[];
+}
 
 /**
  * @deprecated
@@ -35,26 +35,26 @@ export interface ClaimableRewards2 {
 /**
  * @deprecated
  */
-// export interface DelegationItemInfo {
-//   name: string;
-//   address: string;
-//   logoUrl: string;
-//   amount: number;
-//   updatedDate: string;
-//   unlockDate: string | null;
-// }
+export interface DelegationItemInfo {
+  name: string;
+  address: string;
+  logoUrl: string;
+  amount: number;
+  updatedDate: string;
+  unlockDate: string | null;
+}
 
 /**
  * @deprecated
  */
-// export const nullMyDelegationInfo: MyDelegationInfo = {
-//   availableBalance: 0,
-//   votingWeight: 0,
-//   undelegatedAmount: 0,
-//   claimableRewardsUsd: 0,
-//   claimableRewards: [],
-//   delegations: [],
-// };
+export const nullMyDelegationInfo: MyDelegationInfo = {
+  availableBalance: 0,
+  votingWeight: 0,
+  undelegatedAmount: 0,
+  claimableRewardsUsd: 0,
+  claimableRewards: [],
+  delegations: [],
+};
 
 export const nullMyDelegationInfo2: MyDelegationInfo2 = {
   availableBalance: "0",
@@ -65,11 +65,11 @@ export const nullMyDelegationInfo2: MyDelegationInfo2 = {
   votingWeight: "0",
 };
 
-// export const nullDelegationItemInfo: DelegationItemInfo = {
-//   name: "",
-//   address: "",
-//   logoUrl: "",
-//   amount: 0,
-//   updatedDate: "",
-//   unlockDate: null,
-// };
+export const nullDelegationItemInfo: DelegationItemInfo = {
+  name: "",
+  address: "",
+  logoUrl: "",
+  amount: 0,
+  updatedDate: "",
+  unlockDate: null,
+};

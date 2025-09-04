@@ -9,16 +9,10 @@ import {
   useGetDelegatees,
   useGetGovernanceSummary,
   useGetMyDelegates,
-  useGetMyDelegation,
   useGetMyDelegation2,
   useGetMyUnDelegates,
 } from "@query/governance";
-import {
-  nullMyDelegatesInfo,
-  nullMyDelegationInfo,
-  nullMyDelegationInfo2,
-  nullMyUnDelegatesInfo,
-} from "@repositories/governance";
+import { nullMyDelegatesInfo, nullMyDelegationInfo2, nullMyUnDelegatesInfo } from "@repositories/governance";
 
 import { useGovernanceTx } from "@hooks/governance/data/use-governance-tx";
 import MyDelegation from "../../components/my-delegation/MyDelegation";
@@ -39,11 +33,7 @@ const MyDelegationContainer: React.FC = () => {
     isFetched: isFetchedGovernanceSummaryInfo,
     refetch: refetchSummary,
   } = useGetGovernanceSummary();
-  const {
-    data: myDelegationInfo,
-    isFetched: isFetchedMyDelegation,
-    refetch: refetchMyDelegation,
-  } = useGetMyDelegation({ address });
+
   const { data: delegatees, isFetched: isFetchedDelegatees, refetch: refetchDelegatees } = useGetDelegatees();
 
   const {
@@ -74,13 +64,13 @@ const MyDelegationContainer: React.FC = () => {
       isLoadingCommon={
         (!isFetchedGovernanceSummaryInfo || !isFetchedDelegatees) && (!governanceSummaryInfo || !delegatees)
       }
-      isLoadingMyDelegation={!isFetchedMyDelegation && !MyDelegation}
+      isLoadingMyDelegation={!isFetchedMyDelegation2 && !MyDelegation}
       isWalletConnected={connected}
       connectWallet={openModal}
       delegateGNS={(...params) =>
         delegateGNS(...params, async () => {
           await refetchSummary();
-          await refetchMyDelegation();
+          await refetchMyDelegation2();
           await refetchDelegatees();
           updateBalances();
         })
@@ -88,7 +78,7 @@ const MyDelegationContainer: React.FC = () => {
       undelegateGNS={(...params) =>
         undelegateGNS(...params, async () => {
           await refetchSummary();
-          await refetchMyDelegation();
+          await refetchMyDelegation2();
           await refetchDelegatees();
           updateBalances();
         })
@@ -97,7 +87,7 @@ const MyDelegationContainer: React.FC = () => {
         collectUndelegated(...params, async () => {
           await refetchSummary();
           await refetchDelegatees();
-          await refetchMyDelegation();
+          await refetchMyDelegation2();
           updateBalances();
         })
       }
@@ -105,7 +95,7 @@ const MyDelegationContainer: React.FC = () => {
         collectReward(...params, async () => {
           await refetchSummary();
           await refetchDelegatees();
-          await refetchMyDelegation();
+          await refetchMyDelegation2();
           updateBalances();
         })
       }

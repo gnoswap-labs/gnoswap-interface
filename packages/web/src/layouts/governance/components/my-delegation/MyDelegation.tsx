@@ -13,7 +13,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import {
   DelegateeInfo,
-  DelegationItemInfo,
+  DelegationItemInfo2,
   MyDelegate,
   MyDelegatesInfo,
   MyDelegationInfo2,
@@ -76,7 +76,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   const { getTokenUSDPrice, tokens } = useTokenData();
   const [showUndel, setShowUndel] = useState(false);
 
-  const sortByAmountAndDate = useCallback((a: DelegationItemInfo, b: DelegationItemInfo) => {
+  const sortByAmountAndDate = useCallback((a: DelegationItemInfo2, b: DelegationItemInfo2) => {
     if (b.amount !== a.amount) {
       return b.amount - a.amount;
     }
@@ -85,10 +85,10 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
     return dateB.getTime() - dateA.getTime();
   }, []);
 
-  const myDelegatesInfo: DelegationItemInfo[] = useMemo(() => {
+  const myDelegatesInfo: DelegationItemInfo2[] = useMemo(() => {
     return myDelegates.delegates
       .map(
-        (item): DelegationItemInfo => ({
+        (item): DelegationItemInfo2 => ({
           address: item.address,
           name: item.name,
           logoUrl: item.logoURL,
@@ -101,10 +101,10 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
       .sort(sortByAmountAndDate);
   }, [myDelegates.delegates]);
 
-  const myUnDelegatesInfo: DelegationItemInfo[] = useMemo(() => {
+  const myUnDelegatesInfo: DelegationItemInfo2[] = useMemo(() => {
     return myUnDelegates.delegations
       .map(
-        (item): DelegationItemInfo => ({
+        (item): DelegationItemInfo2 => ({
           address: item.address,
           name: item.name,
           logoUrl: item.logoURL,

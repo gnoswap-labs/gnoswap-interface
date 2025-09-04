@@ -31,7 +31,7 @@ export const nullMyUnDelegatesInfo: MyUnDelegatesInfo = {
   delegations: [],
 };
 
-export interface DelegationItemInfo {
+export interface DelegationItemInfo2 {
   address: string;
   name: string;
   logoUrl: string;
@@ -48,7 +48,7 @@ export interface DelegationItemInfo {
   unDelegatedAt?: string;
 }
 
-export const nullDelegationItemInfo: DelegationItemInfo = {
+export const nullDelegationItemInfo2: DelegationItemInfo2 = {
   address: "0",
   name: "0",
   logoUrl: "0",

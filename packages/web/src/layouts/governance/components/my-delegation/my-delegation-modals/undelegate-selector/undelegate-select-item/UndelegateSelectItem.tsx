@@ -1,13 +1,13 @@
 import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
-import { DelegationItemInfo } from "@repositories/governance";
+import { DelegationItemInfo2 } from "@repositories/governance";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 import { UndelegateSelectItemDefaultWrapper, UndelegateSelectItemWrapper } from "./UndelegateSelectItem.styles";
 
 export interface UndelegateSelectItemProps {
-  delegationItemInfo: DelegationItemInfo | null;
+  delegationItemInfo: DelegationItemInfo2 | null;
   visibleAmount: boolean;
   onSelectedArea?: boolean;
   select: () => void;
