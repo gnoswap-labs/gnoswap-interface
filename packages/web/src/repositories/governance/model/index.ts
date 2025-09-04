@@ -5,4 +5,3 @@ export * from "./my-delegation-info";
 export * from "./proposals-info";
 
 export * from "./my-delegates-info";
-export * from "./my-undelegates-info";

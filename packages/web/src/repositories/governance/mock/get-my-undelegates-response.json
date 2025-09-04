@@ -1,34 +1,34 @@
 {
   "delegations": [
     {
-      "address": "0x1234567890abcdef1234567890abcdef12345678",
+      "address": "g1z5cvp07l80pvsu8rvyyncjrrktpzm8rek4nnnp",
+      "name": "Onbloc Node-1",
+      "logoURL": "/gns.svg",
       "unDelegateAmount": "10000.00",
-      "logoURL": "https://example.com/logos/validator-alpha.png",
-      "name": "Validator Alpha",
       "unlockTime": "2025-01-20T12:00:00Z",
       "unDelegatedAt": "2024-12-20T12:00:00Z"
     },
     {
-      "address": "0x9876543210fedcba9876543210fedcba98765432",
+      "address": "g1d8muzprhrzlv0fgj3sxepujgs3j02qerv3rak9",
+      "name": "Validator-Alpha",
+      "logoURL": "/gns.svg",
       "unDelegateAmount": "7500.50",
-      "logoURL": "https://example.com/logos/stakepool-beta.png",
-      "name": "StakePool Beta",
       "unlockTime": "2025-01-25T08:30:00Z",
       "unDelegatedAt": "2024-12-25T08:30:00Z"
     },
     {
-      "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+      "address": "g16a7etgm9z2r653ucl36rj0l2yqcxgrz2jyegzx",
+      "name": "Validator-Beta",
+      "logoURL": "/atom.svg",
       "unDelegateAmount": "5000.25",
-      "logoURL": "https://example.com/logos/node-gamma.png",
-      "name": "Node Gamma",
       "unlockTime": "2025-01-15T16:45:00Z",
       "unDelegatedAt": "2024-12-15T16:45:00Z"
     },
     {
-      "address": "0x5555666677778888999900001111222233334444",
+      "address": "g12d65636a6hyudpyc86q3e7p9ypp646ht4g8nxr",
+      "name": "Validator-1",
+      "logoURL": "/cosmos.svg",
       "unDelegateAmount": "12000.00",
-      "logoURL": "https://example.com/logos/secure-validator.png",
-      "name": "Secure Validator",
       "unlockTime": "2025-02-01T10:20:00Z",
       "unDelegatedAt": "2025-01-01T10:20:00Z"
     }

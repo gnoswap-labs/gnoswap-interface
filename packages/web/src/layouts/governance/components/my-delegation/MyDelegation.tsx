@@ -13,9 +13,9 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import {
   DelegateeInfo,
+  DelegationItemInfo,
   MyDelegate,
   MyDelegatesInfo,
-  MyDelegationInfo,
   MyDelegationInfo2,
   MyUnDelegate,
   MyUnDelegatesInfo,
@@ -35,23 +35,6 @@ import {
   MyDelegationTooltipContent,
   MyDelegationWrapper,
 } from "./MyDelegation.styles";
-
-interface UnifiedDelegationItem {
-  address: string;
-  name: string;
-  logoUrl: string;
-  amount: number;
-  updatedDate: string;
-
-  // MyDelegate
-  delegateAmount?: string;
-  delegatedAt?: string;
-
-  // MyUndelegate
-  unDelegateAmount?: string;
-  unlockTime?: string;
-  unDelegatedAt?: string;
-}
 
 interface MyDelegationProps {
   totalDelegatedAmount: number;
@@ -93,7 +76,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   const { getTokenUSDPrice, tokens } = useTokenData();
   const [showUndel, setShowUndel] = useState(false);
 
-  const sortByAmountAndDate = useCallback((a: UnifiedDelegationItem, b: UnifiedDelegationItem) => {
+  const sortByAmountAndDate = useCallback((a: DelegationItemInfo, b: DelegationItemInfo) => {
     if (b.amount !== a.amount) {
       return b.amount - a.amount;
     }
@@ -102,10 +85,10 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
     return dateB.getTime() - dateA.getTime();
   }, []);
 
-  const myDelegatesInfo: UnifiedDelegationItem[] = useMemo(() => {
+  const myDelegatesInfo: DelegationItemInfo[] = useMemo(() => {
     return myDelegates.delegates
       .map(
-        (item): UnifiedDelegationItem => ({
+        (item): DelegationItemInfo => ({
           address: item.address,
           name: item.name,
           logoUrl: item.logoURL,
@@ -118,10 +101,10 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
       .sort(sortByAmountAndDate);
   }, [myDelegates.delegates]);
 
-  const myUnDelegatesInfo: UnifiedDelegationItem[] = useMemo(() => {
+  const myUnDelegatesInfo: DelegationItemInfo[] = useMemo(() => {
     return myUnDelegates.delegations
       .map(
-        (item): UnifiedDelegationItem => ({
+        (item): DelegationItemInfo => ({
           address: item.address,
           name: item.name,
           logoUrl: item.logoURL,
@@ -401,7 +384,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
           </div>
         )}
       </div>
-      {/* {isOpenDelegateModal && (
+      {isOpenDelegateModal && (
         <MyDelegationDelegateModal
           currentDelegatedAmount={Number(myDelegationInfo.votingWeight)}
           totalDelegatedAmount={totalDelegatedAmount}
@@ -423,7 +406,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
           onSubmit={undelegateGNS}
           setIsOpen={setIsOpenUndelegateModal}
         />
-      )} */}
+      )}
     </MyDelegationWrapper>
   );
 };
