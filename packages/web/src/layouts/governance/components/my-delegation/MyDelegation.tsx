@@ -154,6 +154,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
       })
       .sort((a, b) => b.usdValue - a.usdValue);
   }, [myDelegationInfo.claimableRewards, getTokenUSDPrice, tokens, getGnotPath]);
+  console.log(rewardInfo, "rewardInforewardInfo");
 
   /**
    * A delimiter showing voting weight information or undelegation information.
@@ -331,31 +332,31 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
               value={
                 <Tooltip
                   forcedClose={!visibleRewardInfoTooltip}
+                  // FloatingContent={<></>}
                   FloatingContent={
-                    <></>
-                    // <MyDelegationRewardTooltipContent>
-                    //   <div className="reward-info-total">
-                    //     <span className="label">{t("Governance:myDel.reward.title")}</span>
-                    //     <span className="value">
-                    //       {formatOtherPrice(myDelegationInfo.claimableRewardsUsd, { isKMB: false })}
-                    //     </span>
-                    //   </div>
-                    //   {rewardInfo.map((reward, index) => {
-                    //     const { tokenInfo } = reward;
-                    //     return (
-                    //       <div key={`reward-item-${reward.tokenPath}-${index}`} className="tooltip-container">
-                    //         <div className="info-row">
-                    //           <div className="info-subject">
-                    //             <MissingLogo width={20} symbol={tokenInfo?.symbol || ""} url={tokenInfo?.logoURI} />
-                    //             {tokenInfo?.symbol}
-                    //           </div>
-                    //           <div className="info-value">{toNumberFormat(reward.amount, tokenInfo?.decimals)}</div>
-                    //         </div>
-                    //       </div>
-                    //     );
-                    //   })}
-                    //   {rewardInfo.length === 0 && <div className="no-data">{t("common:noData")}</div>}
-                    // </MyDelegationRewardTooltipContent>
+                    <MyDelegationRewardTooltipContent>
+                      <div className="reward-info-total">
+                        <span className="label">{t("Governance:myDel.reward.title")}</span>
+                        <span className="value">
+                          {formatOtherPrice(myDelegationInfo.claimableRewardUsd, { isKMB: false })}
+                        </span>
+                      </div>
+                      {rewardInfo.map((reward, index) => {
+                        const { tokenInfo } = reward;
+                        return (
+                          <div key={`reward-item-${reward.tokenPath}-${index}`} className="tooltip-container">
+                            <div className="info-row">
+                              <div className="info-subject">
+                                <MissingLogo width={20} symbol={tokenInfo?.symbol || ""} url={tokenInfo?.logoURI} />
+                                {tokenInfo?.symbol}
+                              </div>
+                              <div className="info-value">{toNumberFormat(reward.amount, tokenInfo?.decimals)}</div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                      {rewardInfo.length === 0 && <div className="no-data">{t("common:noData")}</div>}
+                    </MyDelegationRewardTooltipContent>
                   }
                   placement="top"
                 >
@@ -402,7 +403,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
       </div>
       {/* {isOpenDelegateModal && (
         <MyDelegationDelegateModal
-          currentDelegatedAmount={myDelegationInfo.votingWeight}
+          currentDelegatedAmount={Number(myDelegationInfo.votingWeight)}
           totalDelegatedAmount={totalDelegatedAmount}
           apy={apy}
           delegatees={delegatees}
@@ -414,10 +415,10 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
       )}
       {isOpenUndelegateModal && (
         <MyDelegationUndelegateModal
-          currentDelegatedAmount={myDelegationInfo.votingWeight}
+          currentDelegatedAmount={Number(myDelegationInfo.votingWeight)}
           totalDelegatedAmount={totalDelegatedAmount}
           apy={apy}
-          delegatedInfos={votingWeightInfos}
+          delegatedInfos={myDelegatesInfo}
           isWalletConnected={isWalletConnected}
           onSubmit={undelegateGNS}
           setIsOpen={setIsOpenUndelegateModal}

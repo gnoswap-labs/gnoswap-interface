@@ -3,15 +3,15 @@
   "claimableRewards": [
     {
       "amount": "1250.50",
-      "path": "governance"
+      "path": "gnot"
     },
     {
       "amount": "850.25",
-      "path": "launchpad"
+      "path": "gno.land/r/gnoswap/v1/test_token/usdc"
     },
     {
       "amount": "650.75",
-      "path": "staking"
+      "path": "gno.land/r/gnoswap/gns"
     }
   ],
   "claimableRewardUsd": "2751.50",
