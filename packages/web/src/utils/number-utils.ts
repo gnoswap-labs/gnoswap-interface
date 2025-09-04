@@ -237,6 +237,5 @@ export function rawToDisplayAmount(amount: string | number | undefined | null, d
   if (!amount) return 0;
 
   const rawAmount = typeof amount === "string" ? amount : amount.toString();
-  console.log(Number(rawAmount) / Math.pow(10, decimals), "Number(rawAmount) / Math.pow(10, decimals)");
   return Number(rawAmount) / Math.pow(10, decimals);
 }

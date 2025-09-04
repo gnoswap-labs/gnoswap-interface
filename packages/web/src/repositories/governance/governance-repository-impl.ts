@@ -344,7 +344,7 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
 
-    const response = await delay(1000).then(() => {
+    const response = await delay(1500).then(() => {
       return {
         data: {
           data: MockGovernanceProposalDetails as ProposalDetailsInfo,

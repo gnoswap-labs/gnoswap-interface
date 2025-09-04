@@ -137,7 +137,6 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
       })
       .sort((a, b) => b.usdValue - a.usdValue);
   }, [myDelegationInfo.claimableRewards, getTokenUSDPrice, tokens, getGnotPath]);
-  console.log(rewardInfo, "rewardInforewardInfo");
 
   /**
    * A delimiter showing voting weight information or undelegation information.

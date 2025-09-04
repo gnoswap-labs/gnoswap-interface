@@ -3,12 +3,12 @@ import { Trans, useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
+import { GNOT_TOKEN, GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconClose from "@components/common/icons/IconCancel";
 import withLocalModal from "@components/hoc/with-local-modal";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { Proposal2ItemInfo, PROPOSAL_TYPE } from "@repositories/governance";
+import { nullProposalDetailsInfo, PROPOSAL_TYPE } from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
 import { useGetProposalDetails } from "@query/governance";
 
@@ -29,10 +29,11 @@ import {
   VotingPowerWrapper,
 } from "./ViewProposalModal.styles";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import { rawToDisplayAmount } from "@utils/number-utils";
 
 export interface ViewProposalModalProps {
+  proposalId: number;
   breakpoint: DEVICE_TYPE;
-  proposalDetail: Proposal2ItemInfo;
   setIsModalOpen: (isOpen: boolean) => void;
   isConnected: boolean;
   isSwitchNetwork: boolean;
@@ -43,8 +44,8 @@ export interface ViewProposalModalProps {
 }
 
 const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
+  proposalId,
   breakpoint,
-  proposalDetail,
   setIsModalOpen,
   isSwitchNetwork,
   isConnected,
@@ -61,8 +62,16 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
     [setIsModalOpen],
   );
 
-  const { data } = useGetProposalDetails({ proposalId: 1 });
-  console.log(data, "dat?????!");
+  const { data, isLoading } = useGetProposalDetails({ proposalId });
+
+  const proposalDetail = useMemo(() => {
+    if (!data?.proposal) return nullProposalDetailsInfo.proposal;
+    return data.proposal;
+  }, [data]);
+
+  const proposalDetailContent = useMemo(() => {
+    return proposalDetail.content;
+  }, [proposalDetail]);
 
   const { numericVotingInfo, userVotingInfo } = useMemo(() => {
     const {
@@ -115,6 +124,24 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   if (!proposalDetail) return null;
 
   const hasVoteButton = ["UPCOMING", "ACTIVE"].includes(proposalDetail.status);
+
+  // Todo: loading component
+  if (isLoading) {
+    return (
+      <Modal>
+        <div className="modal-body">
+          <ModalHeaderWrapper>
+            <div className="header">
+              <div />
+              <div className="close-wrap" onClick={() => setIsModalOpen(false)}>
+                <IconClose className="close-icon" />
+              </div>
+            </div>
+          </ModalHeaderWrapper>
+        </div>
+      </Modal>
+    );
+  }
 
   return (
     <Modal>
@@ -185,11 +212,11 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
               <>
                 <div className="variable">
                   <div className="variable-type">{t("Governance:detailModal.content.recipient")}</div>
-                  {/* {proposalDetail.content.recipient} */}
+                  {proposalDetailContent.recipient}
                 </div>
                 <div className="variable">
                   <div className="variable-type">{t("Governance:detailModal.content.amount")}</div>
-                  {/* {rawToDisplayAmount(proposalDetail.content.amount || 0, GNS_TOKEN.decimals).toLocaleString()}{" "} */}
+                  {rawToDisplayAmount(proposalDetailContent.amount, GNOT_TOKEN.decimals).toLocaleString()}{" "}
                   {GNS_TOKEN.symbol}
                 </div>
               </>
@@ -197,16 +224,16 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
             {proposalDetail.proposalType === PROPOSAL_TYPE.PROPOSAL_PARAMETER_CHANGE && (
               <div className="variable">
                 <div className="variable-type">{t("Governance:detailModal.content.change")}</div>
-                {/* {proposalDetail.content.parameters?.map(item => (
+                {proposalDetailContent.parameters.map(item => (
                   <>
-                    {`Pkg Path: "${item.pkgPath}", Func: "${item.func}", Params: "${item.param}"`}
+                    {`Pkg Path: ${item.pkgPath}, Func: ${item.func}, Params: ${item.param}`}
                     <br />
                   </>
-                ))} */}
+                ))}
               </div>
             )}
             <ReactMarkdown remarkPlugins={[remarkGfm]} className="markdown-style">
-              {/* {`${proposalDetail.content.description.replaceAll("\\n", "\n")}`} */}
+              {`${proposalDetailContent.description.replaceAll("\\n", "\n")}`}
             </ReactMarkdown>
           </div>
         </ProposalContentWrapper>
