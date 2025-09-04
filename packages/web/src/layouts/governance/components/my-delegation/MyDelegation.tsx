@@ -1,3 +1,6 @@
+// Todo: Delete
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import dayjs from "dayjs";
 import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -8,7 +11,7 @@ import IconSwap from "@components/common/icons/IconSwap";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { useTokenData } from "@hooks/token/data/use-token-data";
-import { DelegateeInfo, MyDelegationInfo } from "@repositories/governance";
+import { DelegateeInfo, MyDelegationInfo, MyDelegationInfo2 } from "@repositories/governance";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { toNumberFormat } from "@utils/number-utils";
 
@@ -28,7 +31,7 @@ import {
 interface MyDelegationProps {
   totalDelegatedAmount: number;
   apy: number;
-  myDelegationInfo: MyDelegationInfo;
+  myDelegationInfo: MyDelegationInfo2;
   delegatees: DelegateeInfo[];
   isLoadingCommon: boolean;
   isLoadingMyDelegation: boolean;
@@ -61,45 +64,45 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   const { getTokenUSDPrice, tokens } = useTokenData();
   const [showUndel, setShowUndel] = useState(false);
 
-  const delegationInfo = useMemo(() => {
-    const votingWeightInfos = myDelegationInfo.delegations
-      .filter(item => !item.unlockDate || item.unlockDate === "")
-      .sort((a, b) => {
-        if (b.amount !== a.amount) {
-          return b.amount - a.amount;
-        }
+  // const delegationInfo = useMemo(() => {
+  //   const votingWeightInfos = myDelegationInfo.delegations
+  //     .filter(item => !item.unlockDate || item.unlockDate === "")
+  //     .sort((a, b) => {
+  //       if (b.amount !== a.amount) {
+  //         return b.amount - a.amount;
+  //       }
 
-        return a.updatedDate.localeCompare(b.updatedDate);
-      });
+  //       return a.updatedDate.localeCompare(b.updatedDate);
+  //     });
 
-    const undelegationInfos = myDelegationInfo.delegations
-      .filter(item => !!item.unlockDate)
-      .sort((a, b) => {
-        if (b.amount !== a.amount) {
-          return b.amount - a.amount;
-        }
+  //   const undelegationInfos = myDelegationInfo.delegations
+  //     .filter(item => !!item.unlockDate)
+  //     .sort((a, b) => {
+  //       if (b.amount !== a.amount) {
+  //         return b.amount - a.amount;
+  //       }
 
-        return a.updatedDate.localeCompare(b.updatedDate);
-      });
+  //       return a.updatedDate.localeCompare(b.updatedDate);
+  //     });
 
-    const hasVotingWeight = votingWeightInfos.length > 0;
-    const hasUndelgated = undelegationInfos.length > 0;
+  //   const hasVotingWeight = votingWeightInfos.length > 0;
+  //   const hasUndelgated = undelegationInfos.length > 0;
 
-    return {
-      votingWeightInfos,
-      undelegationInfos,
-      hasVotingWeight,
-      hasUndelgated,
-    };
-  }, [myDelegationInfo.delegations]);
+  //   return {
+  //     votingWeightInfos,
+  //     undelegationInfos,
+  //     hasVotingWeight,
+  //     hasUndelgated,
+  //   };
+  // }, [myDelegationInfo.delegations]);
 
-  const { votingWeightInfos, undelegationInfos, hasVotingWeight, hasUndelgated } = delegationInfo;
+  // const { votingWeightInfos, undelegationInfos, hasVotingWeight, hasUndelgated } = delegationInfo;
 
   const rewardInfo = useMemo(() => {
     return myDelegationInfo.claimableRewards
       .map(reward => {
-        const usdValue = getTokenUSDPrice(reward.tokenPath, reward.amount) || 0;
-        const tokenInfo = tokens.find(token => token.path === reward.tokenPath);
+        const usdValue = getTokenUSDPrice(reward.path, reward.amount) || 0;
+        const tokenInfo = tokens.find(token => token.path === reward.path);
         const unwrappedTokenInfo = { ...tokenInfo, ...getGnotPath(tokenInfo) };
 
         return {
@@ -114,23 +117,27 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   /**
    * A delimiter showing voting weight information or undelegation information.
    */
-  const activatedDelegateInfoTab = useMemo(() => {
-    if (undelegationInfos.length === 0) {
-      return true;
-    }
-    return !showUndel;
-  }, [showUndel, undelegationInfos.length]);
+  // const activatedDelegateInfoTab = useMemo(() => {
+  //   if (undelegationInfos.length === 0) {
+  //     return true;
+  //   }
+  //   return !showUndel;
+  // }, [showUndel, undelegationInfos.length]);
 
-  const hasUnlockItem = useMemo(() => {
-    return undelegationInfos.some(info => info.unlockDate && new Date(info.unlockDate) < new Date());
-  }, [showUndel, undelegationInfos]);
+  // const hasUnlockItem = useMemo(() => {
+  //   return undelegationInfos.some(info => info.unlockDate && new Date(info.unlockDate) < new Date());
+  // }, [showUndel, undelegationInfos]);
 
-  const visibleInfoTooltip = useMemo(() => {
-    if (activatedDelegateInfoTab) {
-      return hasVotingWeight;
-    }
-    return hasUndelgated;
-  }, [activatedDelegateInfoTab, hasUndelgated, hasVotingWeight]);
+  // const visibleInfoTooltip = useMemo(() => {
+  //   if (activatedDelegateInfoTab) {
+  //     return hasVotingWeight;
+  //   }
+  //   return hasUndelgated;
+  // }, [activatedDelegateInfoTab, hasUndelgated, hasVotingWeight]);
+  const visibleInfoTooltip = true;
+  const activatedDelegateInfoTab = true;
+  const hasUndelgated = true;
+  const hasUnlockItem = true;
 
   /**
    * A delimiter showing reward information.
@@ -142,18 +149,18 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   /**
    * Automatically switch to the voting weight tab if undelegationInfos is empty
    */
-  useEffect(() => {
-    if (undelegationInfos.length === 0) {
-      setShowUndel(false);
-    }
-  }, [undelegationInfos.length]);
+  // useEffect(() => {
+  //   if (undelegationInfos.length === 0) {
+  //     setShowUndel(false);
+  //   }
+  // }, [undelegationInfos.length]);
 
   return (
     <MyDelegationWrapper>
       <div className="header-wrapper">
         <div className="my-delegation-title">{t("Governance:myDel.title")}</div>
         <div className="delegate-buttons">
-          <Button
+          {/* <Button
             disabled={isLoadingCommon || isLoadingMyDelegation || !isWalletConnected || votingWeightInfos.length === 0}
             style={{
               hierarchy: ButtonHierarchy.Primary,
@@ -165,7 +172,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 ? () => setIsOpenUndelegateModal(true)
                 : undefined
             }
-          />
+          /> */}
           <Button
             disabled={isLoadingCommon}
             style={{
@@ -200,44 +207,45 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
               }
               value={
                 <Tooltip
-                  forcedClose={!visibleInfoTooltip}
-                  FloatingContent={
-                    <MyDelegationTooltipContent>
-                      {(showUndel ? undelegationInfos : votingWeightInfos).map((item, index) => (
-                        <div key={`del-item-${item.updatedDate}-${index}`} className="delegation-item">
-                          {index !== 0 && <div className="divider" />}
-                          <div className="info-row">
-                            <div className="info-subject">{t("Governance:myDel.delegate")}</div>
-                            <div className="info-value">
-                              <MissingLogo symbol={item.name} url={item.logoUrl} width={20} />
-                              {item.name || [item.address.slice(0, 8), item.address.slice(32, 40)].join("...")}
-                            </div>
-                          </div>
-                          <div className="info-row">
-                            <div className="info-subject">{t("Governance:myDel.tooltip.amount")}</div>
-                            <div className="info-value">
-                              {item.amount.toLocaleString("en")} {GNS_TOKEN.symbol}
-                            </div>
-                          </div>
-                          <div className="info-row">
-                            <div className="info-subject">
-                              {t(showUndel ? "Governance:myDel.tooltip.undelegated" : "Governance:myDel.tooltip.date")}
-                            </div>
-                            <div className="info-value">{dayjs(item.updatedDate).format("YYYY-MM-DD HH:mm:ss")}</div>
-                          </div>
-                          {item.unlockDate && (
-                            <div className="info-row">
-                              <div className="info-subject">{t("Governance:myDel.tooltip.unlockDate")}</div>
-                              <div className="info-value">{dayjs(item.unlockDate).format("YYYY-MM-DD HH:mm:ss")}</div>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                      {(activatedDelegateInfoTab ? votingWeightInfos : undelegationInfos).length === 0 ? (
-                        <div className="no-data">{t("common:noData")}</div>
-                      ) : null}
-                    </MyDelegationTooltipContent>
-                  }
+                  // forcedClose={!visibleInfoTooltip}
+                  FloatingContent={<></>}
+                  // FloatingContent={
+                  //   <MyDelegationTooltipContent>
+                  //     {(showUndel ? undelegationInfos : votingWeightInfos).map((item, index) => (
+                  //       <div key={`del-item-${item.updatedDate}-${index}`} className="delegation-item">
+                  //         {index !== 0 && <div className="divider" />}
+                  //         <div className="info-row">
+                  //           <div className="info-subject">{t("Governance:myDel.delegate")}</div>
+                  //           <div className="info-value">
+                  //             <MissingLogo symbol={item.name} url={item.logoUrl} width={20} />
+                  //             {item.name || [item.address.slice(0, 8), item.address.slice(32, 40)].join("...")}
+                  //           </div>
+                  //         </div>
+                  //         <div className="info-row">
+                  //           <div className="info-subject">{t("Governance:myDel.tooltip.amount")}</div>
+                  //           <div className="info-value">
+                  //             {item.amount.toLocaleString("en")} {GNS_TOKEN.symbol}
+                  //           </div>
+                  //         </div>
+                  //         <div className="info-row">
+                  //           <div className="info-subject">
+                  //             {t(showUndel ? "Governance:myDel.tooltip.undelegated" : "Governance:myDel.tooltip.date")}
+                  //           </div>
+                  //           <div className="info-value">{dayjs(item.updatedDate).format("YYYY-MM-DD HH:mm:ss")}</div>
+                  //         </div>
+                  //         {item.unlockDate && (
+                  //           <div className="info-row">
+                  //             <div className="info-subject">{t("Governance:myDel.tooltip.unlockDate")}</div>
+                  //             <div className="info-value">{dayjs(item.unlockDate).format("YYYY-MM-DD HH:mm:ss")}</div>
+                  //           </div>
+                  //         )}
+                  //       </div>
+                  //     ))}
+                  //     {(activatedDelegateInfoTab ? votingWeightInfos : undelegationInfos).length === 0 ? (
+                  //       <div className="no-data">{t("common:noData")}</div>
+                  //     ) : null}
+                  //   </MyDelegationTooltipContent>
+                  // }
                   placement="top"
                   scroll
                 >
@@ -247,7 +255,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                           isKMB: false,
                           usd: false,
                         })
-                      : formatOtherPrice(myDelegationInfo.undelegatedAmount, {
+                      : formatOtherPrice(myDelegationInfo.unDelegatedAmount, {
                           isKMB: false,
                           usd: false,
                         })}
@@ -279,7 +287,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 hasUnlockItem && !activatedDelegateInfoTab
                   ? {
                       text: t("Governance:myDel.undel.btn"),
-                      onClick: () => collectUndelegated(toNumberFormat(myDelegationInfo.undelegatedAmount, 2)),
+                      onClick: () => collectUndelegated(toNumberFormat(myDelegationInfo.unDelegatedAmount, 2)),
                     }
                   : undefined
               }
@@ -291,34 +299,35 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 <Tooltip
                   forcedClose={!visibleRewardInfoTooltip}
                   FloatingContent={
-                    <MyDelegationRewardTooltipContent>
-                      <div className="reward-info-total">
-                        <span className="label">{t("Governance:myDel.reward.title")}</span>
-                        <span className="value">
-                          {formatOtherPrice(myDelegationInfo.claimableRewardsUsd, { isKMB: false })}
-                        </span>
-                      </div>
-                      {rewardInfo.map((reward, index) => {
-                        const { tokenInfo } = reward;
-                        return (
-                          <div key={`reward-item-${reward.tokenPath}-${index}`} className="tooltip-container">
-                            <div className="info-row">
-                              <div className="info-subject">
-                                <MissingLogo width={20} symbol={tokenInfo?.symbol || ""} url={tokenInfo?.logoURI} />
-                                {tokenInfo?.symbol}
-                              </div>
-                              <div className="info-value">{toNumberFormat(reward.amount, tokenInfo?.decimals)}</div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                      {rewardInfo.length === 0 && <div className="no-data">{t("common:noData")}</div>}
-                    </MyDelegationRewardTooltipContent>
+                    <></>
+                    // <MyDelegationRewardTooltipContent>
+                    //   <div className="reward-info-total">
+                    //     <span className="label">{t("Governance:myDel.reward.title")}</span>
+                    //     <span className="value">
+                    //       {formatOtherPrice(myDelegationInfo.claimableRewardsUsd, { isKMB: false })}
+                    //     </span>
+                    //   </div>
+                    //   {rewardInfo.map((reward, index) => {
+                    //     const { tokenInfo } = reward;
+                    //     return (
+                    //       <div key={`reward-item-${reward.tokenPath}-${index}`} className="tooltip-container">
+                    //         <div className="info-row">
+                    //           <div className="info-subject">
+                    //             <MissingLogo width={20} symbol={tokenInfo?.symbol || ""} url={tokenInfo?.logoURI} />
+                    //             {tokenInfo?.symbol}
+                    //           </div>
+                    //           <div className="info-value">{toNumberFormat(reward.amount, tokenInfo?.decimals)}</div>
+                    //         </div>
+                    //       </div>
+                    //     );
+                    //   })}
+                    //   {rewardInfo.length === 0 && <div className="no-data">{t("common:noData")}</div>}
+                    // </MyDelegationRewardTooltipContent>
                   }
                   placement="top"
                 >
                   <div className={visibleRewardInfoTooltip ? "value-wrapper-for-hover" : "value-wrapper"}>
-                    {formatOtherPrice(myDelegationInfo.claimableRewardsUsd, {
+                    {formatOtherPrice(myDelegationInfo.claimableRewardUsd, {
                       isKMB: false,
                     })}
                   </div>
@@ -331,7 +340,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                       text: t("Governance:myDel.reward.btn"),
                       onClick: () => {
                         collectReward(
-                          formatOtherPrice(myDelegationInfo.claimableRewardsUsd, {
+                          formatOtherPrice(myDelegationInfo.claimableRewardUsd, {
                             isKMB: false,
                           }),
                         );
@@ -358,7 +367,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
           </div>
         )}
       </div>
-      {isOpenDelegateModal && (
+      {/* {isOpenDelegateModal && (
         <MyDelegationDelegateModal
           currentDelegatedAmount={myDelegationInfo.votingWeight}
           totalDelegatedAmount={totalDelegatedAmount}
@@ -380,7 +389,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
           onSubmit={undelegateGNS}
           setIsOpen={setIsOpenUndelegateModal}
         />
-      )}
+      )} */}
     </MyDelegationWrapper>
   );
 };

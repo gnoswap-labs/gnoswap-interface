@@ -1,3 +1,6 @@
+/**
+ * @deprecated
+ */
 export interface GovernanceSummaryInfo {
   totalDelegated: number;
   delegatedRatio: number;

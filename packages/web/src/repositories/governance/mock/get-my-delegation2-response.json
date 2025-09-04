@@ -1,0 +1,21 @@
+{
+  "availableBalance": "125500.75",
+  "claimableRewards": [
+    {
+      "amount": "1250.50",
+      "path": "governance"
+    },
+    {
+      "amount": "850.25",
+      "path": "launchpad"
+    },
+    {
+      "amount": "650.75",
+      "path": "staking"
+    }
+  ],
+  "claimableRewardUsd": "2751.50",
+  "unDelegatedAmount": "45000.00",
+  "withdrawableAmount": "32500.25",
+  "votingWeight": "87.5"
+}

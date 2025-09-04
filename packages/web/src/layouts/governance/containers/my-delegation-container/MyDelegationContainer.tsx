@@ -1,9 +1,12 @@
+// Todo: Delete
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import React from "react";
 
 import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { useGetDelegatees, useGetGovernanceSummary, useGetMyDelegation } from "@query/governance";
-import { nullMyDelegationInfo } from "@repositories/governance";
+import { useGetDelegatees, useGetGovernanceSummary, useGetMyDelegation, useGetMyDelegation2 } from "@query/governance";
+import { nullMyDelegationInfo, nullMyDelegationInfo2 } from "@repositories/governance";
 
 import { useGovernanceTx } from "@hooks/governance/data/use-governance-tx";
 import MyDelegation from "../../components/my-delegation/MyDelegation";
@@ -29,11 +32,19 @@ const MyDelegationContainer: React.FC = () => {
   });
   const { data: delegatees, isFetched: isFetchedDelegatees, refetch: refetchDelegatees } = useGetDelegatees();
 
+  const {
+    data: myDelegationInfo2,
+    isFetched: isFetchedMyDelegation2,
+    refetch: refetchMyDelegation2,
+  } = useGetMyDelegation2({
+    address: account?.address || "",
+  });
+
   return (
     <MyDelegation
       totalDelegatedAmount={governanceSummaryInfo?.totalDelegated || 0}
       apy={governanceSummaryInfo?.apy || 0}
-      myDelegationInfo={myDelegationInfo ?? nullMyDelegationInfo}
+      myDelegationInfo={myDelegationInfo2 ?? nullMyDelegationInfo2}
       delegatees={delegatees ?? []}
       isLoadingCommon={
         (!isFetchedGovernanceSummaryInfo || !isFetchedDelegatees) && (!governanceSummaryInfo || !delegatees)

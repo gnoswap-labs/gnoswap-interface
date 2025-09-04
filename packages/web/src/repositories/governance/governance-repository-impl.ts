@@ -1,3 +1,6 @@
+// Todo: Delete
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import { NetworkClient } from "@common/clients/network-client";
 import { WalletClient } from "@common/clients/wallet-client";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
@@ -5,17 +8,18 @@ import { CommonError } from "@common/errors";
 import { PACKAGE_GOVERNANCE_STAKER_PATH } from "@constants/environment.constant";
 
 import { GovernanceRepository } from "./governance-repository";
-import MockGovernanceSummary2Response from "./mock/get-governance-summary2-response.json";
 import {
   DelegateeInfo,
   ExecutableFunctionInfo,
   GovernanceSummaryInfo,
   GovernanceSummaryInfo2,
   MyDelegationInfo,
+  MyDelegationInfo2,
   nullDelegateeInfo,
   nullGovernanceSummaryInfo,
   nullGovernanceSummaryInfo2,
   nullMyDelegationInfo,
+  nullMyDelegationInfo2,
   nullProposalsInfo,
   ProposalsInfo,
 } from "./model";
@@ -36,6 +40,7 @@ import {
   GetDelegateesResponse,
   // GetGovernanceSummary2Response,
   GetGovernanceSummaryResponse,
+  GetMyDelegation2Response,
   GetMyDelegationResponse,
   GetProposalsResponse,
 } from "./response";
@@ -59,6 +64,9 @@ import {
 } from "./governance.message";
 import GetExecutableFunctionsResponseMock from "./mock/get-executable-functions-response.json";
 import { delay } from "@utils/common";
+
+import MockGovernanceSummary2Response from "./mock/get-governance-summary2-response.json";
+import MockGovernanceMyDelegation2Response from "./mock/get-my-delegation2-response.json";
 
 export class GovernanceRepositoryImpl implements GovernanceRepository {
   private networkClient: NetworkClient | null;
@@ -121,6 +129,9 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     return data;
   };
 
+  /**
+   * @deprecated
+   */
   public getMyDeligation = async (request: GetMyDelegationRequest): Promise<MyDelegationInfo> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
@@ -142,6 +153,38 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     }
 
     const data: MyDelegationInfo = response.data.data;
+
+    return data;
+  };
+
+  public getMyDelegation2 = async (request: GetMyDelegationRequest): Promise<MyDelegationInfo2> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await delay(1000).then(() => {
+      return {
+        data: {
+          data: MockGovernanceMyDelegation2Response,
+        },
+      };
+    });
+    // const response = await this.networkClient
+    //   .get<{
+    //     data: GetMyDelegation2Response;
+    //   }>({
+    //     url: `governance/delegations?address=${request.address}`,
+    //   })
+    //   .catch(e => {
+    //     console.error(e);
+    //     return null;
+    //   });
+
+    if (!response?.data?.data) {
+      return nullMyDelegationInfo2;
+    }
+
+    const data: MyDelegationInfo2 = response.data.data;
 
     return data;
   };

@@ -5,6 +5,7 @@ import {
   GovernanceSummaryInfo,
   GovernanceSummaryInfo2,
   MyDelegationInfo,
+  MyDelegationInfo2,
   ProposalsInfo,
 } from "./model";
 import {
@@ -29,7 +30,12 @@ export interface GovernanceRepository {
 
   getGovernanceSummary2: () => Promise<GovernanceSummaryInfo2>;
 
+  /**
+   * @deprecated
+   */
   getMyDeligation: (request: GetMyDelegationRequest) => Promise<MyDelegationInfo>;
+
+  getMyDelegation2: (request: GetMyDelegationRequest) => Promise<MyDelegationInfo2>;
 
   getProposals: (request: GetProposalsReqeust) => Promise<ProposalsInfo>;
 
