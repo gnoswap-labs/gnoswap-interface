@@ -7,10 +7,14 @@ import {
   MyDelegationInfo,
   MyDelegationInfo2,
   ProposalsInfo,
+  MyDelegatesInfo,
+  MyUnDelegatesInfo,
 } from "./model";
 import {
   GetMyDelegationRequest,
   GetProposalsReqeust,
+  GetMyDelegatesRequest,
+  GetMyUnDelegatesRequest,
   SendCancelReqeust,
   SendDelegateReqeust,
   SendExecuteReqeust,
@@ -36,6 +40,16 @@ export interface GovernanceRepository {
   getMyDeligation: (request: GetMyDelegationRequest) => Promise<MyDelegationInfo>;
 
   getMyDelegation2: (request: GetMyDelegationRequest) => Promise<MyDelegationInfo2>;
+
+  /**
+   * @new feature
+   */
+  getMyDelegates: (request: GetMyDelegatesRequest) => Promise<MyDelegatesInfo>;
+
+  /**
+   * @new feature
+   */
+  getMyUnDelegates: (request: GetMyUnDelegatesRequest) => Promise<MyUnDelegatesInfo>;
 
   getProposals: (request: GetProposalsReqeust) => Promise<ProposalsInfo>;
 

@@ -3,3 +3,6 @@ export * from "./executable-function-info";
 export * from "./governance-summary-info";
 export * from "./my-delegation-info";
 export * from "./proposals-info";
+
+export * from "./my-delegates-info";
+export * from "./my-undelegates-info";

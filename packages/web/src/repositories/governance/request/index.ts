@@ -9,3 +9,6 @@ export * from "./send-propose-text-request";
 export * from "./send-redelegate-request";
 export * from "./send-undelegate-request";
 export * from "./send-vote-request";
+
+export * from "./get-my-delegates-request";
+export * from "./get-my-undelegates-request";

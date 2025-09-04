@@ -13,6 +13,7 @@ import {
   ExecutableFunctionInfo,
   GovernanceSummaryInfo,
   GovernanceSummaryInfo2,
+  MyDelegatesInfo,
   MyDelegationInfo,
   MyDelegationInfo2,
   nullDelegateeInfo,
@@ -20,11 +21,16 @@ import {
   nullGovernanceSummaryInfo2,
   nullMyDelegationInfo,
   nullMyDelegationInfo2,
+  nullMyDelegatesInfo,
+  nullMyUnDelegatesInfo,
   nullProposalsInfo,
   ProposalsInfo,
+  MyUnDelegatesInfo,
 } from "./model";
 import {
+  GetMyDelegatesRequest,
   GetMyDelegationRequest,
+  GetMyUnDelegatesRequest,
   GetProposalsReqeust,
   SendCancelReqeust,
   SendDelegateReqeust,
@@ -67,6 +73,8 @@ import { delay } from "@utils/common";
 
 import MockGovernanceSummary2Response from "./mock/get-governance-summary2-response.json";
 import MockGovernanceMyDelegation2Response from "./mock/get-my-delegation2-response.json";
+import MockGovernanceMyDelegatesResponse from "./mock/get-my-delegates-response.json";
+import MockGovernanceMyUnDelegatesResponse from "./mock/get-my-undelegates-response.json";
 
 export class GovernanceRepositoryImpl implements GovernanceRepository {
   private networkClient: NetworkClient | null;
@@ -185,6 +193,75 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     }
 
     const data: MyDelegationInfo2 = response.data.data;
+
+    return data;
+  };
+
+  /**
+   * @new feature
+   */
+  public getMyDelegates = async (request: GetMyDelegatesRequest): Promise<MyDelegatesInfo> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await delay(1000).then(() => {
+      return {
+        data: {
+          data: MockGovernanceMyDelegatesResponse,
+        },
+      };
+    });
+    // const response = await this.networkClient
+    //   .get<{
+    //     data: GetMyDelegatesInfoResponse;
+    //   }>({
+    //     url: `governance/delegations/${request.address}/delegates`,
+    //   })
+    //   .catch(e => {
+    //     console.error(e);
+    //     return null;
+    //   });
+
+    if (!response?.data?.data) {
+      return nullMyDelegatesInfo;
+    }
+
+    const data: MyDelegatesInfo = response.data.data;
+
+    return data;
+  };
+
+  /**
+   * @new feature
+   */
+  public getMyUnDelegates = async (request: GetMyUnDelegatesRequest): Promise<MyUnDelegatesInfo> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await delay(1000).then(() => {
+      return {
+        data: {
+          data: MockGovernanceMyUnDelegatesResponse,
+        },
+      };
+    });
+    // const response = await this.networkClient
+    //   .get<{
+    //     data: GetMyUnDelegatesInfoResponse;
+    //   }>({
+    //     url: `governance/delegations/${request.address}/undelegates`,
+    //   })
+    //   .catch(e => {
+    //     console.error(e);
+    //     return null;
+    //   });
+    if (!response?.data?.data) {
+      return nullMyUnDelegatesInfo;
+    }
+
+    const data: MyUnDelegatesInfo = response.data.data;
 
     return data;
   };

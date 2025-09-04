@@ -1,0 +1,32 @@
+{
+  "delegates": [
+    {
+      "address": "0x1234567890abcdef1234567890abcdef12345678",
+      "name": "Validator Alpha",
+      "logoURL": "https://example.com/logos/validator-alpha.png",
+      "delegateAmount": "50000.00",
+      "delegatedAt": "2024-12-15T08:30:00Z"
+    },
+    {
+      "address": "0x9876543210fedcba9876543210fedcba98765432",
+      "name": "StakePool Beta",
+      "logoURL": "https://example.com/logos/stakepool-beta.png",
+      "delegateAmount": "25000.50",
+      "delegatedAt": "2024-12-10T14:20:00Z"
+    },
+    {
+      "address": "0xabcdef1234567890abcdef1234567890abcdef12",
+      "name": "Node Gamma",
+      "logoURL": "https://example.com/logos/node-gamma.png",
+      "delegateAmount": "15000.25",
+      "delegatedAt": "2024-12-08T09:45:00Z"
+    },
+    {
+      "address": "0x5555666677778888999900001111222233334444",
+      "name": "Secure Validator",
+      "logoURL": "https://example.com/logos/secure-validator.png",
+      "delegateAmount": "35000.00",
+      "delegatedAt": "2024-12-05T16:10:00Z"
+    }
+  ]
+}
