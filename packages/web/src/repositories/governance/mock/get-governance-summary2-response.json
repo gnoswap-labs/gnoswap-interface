@@ -1,0 +1,10 @@
+{
+  "delegationInfo": {
+    "totalDelegationAmount": "1250000",
+    "governanceDelegationAmount": "850000.25",
+    "launchpadDelegationAmount": "400000.25"
+  },
+  "delegatedRatio": "72.5",
+  "apy": "12.34",
+  "communityPoolUsd": "2500000.00"
+}

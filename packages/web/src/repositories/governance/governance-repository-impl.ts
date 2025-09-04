@@ -5,13 +5,16 @@ import { CommonError } from "@common/errors";
 import { PACKAGE_GOVERNANCE_STAKER_PATH } from "@constants/environment.constant";
 
 import { GovernanceRepository } from "./governance-repository";
+import MockGovernanceSummary2Response from "./mock/get-governance-summary2-response.json";
 import {
   DelegateeInfo,
   ExecutableFunctionInfo,
   GovernanceSummaryInfo,
+  GovernanceSummaryInfo2,
   MyDelegationInfo,
   nullDelegateeInfo,
   nullGovernanceSummaryInfo,
+  nullGovernanceSummaryInfo2,
   nullMyDelegationInfo,
   nullProposalsInfo,
   ProposalsInfo,
@@ -31,6 +34,7 @@ import {
 } from "./request";
 import {
   GetDelegateesResponse,
+  // GetGovernanceSummary2Response,
   GetGovernanceSummaryResponse,
   GetMyDelegationResponse,
   GetProposalsResponse,
@@ -54,6 +58,7 @@ import {
   makeVoteMessages,
 } from "./governance.message";
 import GetExecutableFunctionsResponseMock from "./mock/get-executable-functions-response.json";
+import { delay } from "@utils/common";
 
 export class GovernanceRepositoryImpl implements GovernanceRepository {
   private networkClient: NetworkClient | null;
@@ -66,6 +71,9 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     this.gnoProvider = gnoProvider;
   }
 
+  /**
+   * @deprecated
+   */
   public getGovernanceSummary = async (): Promise<GovernanceSummaryInfo> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
@@ -82,6 +90,33 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     }
 
     const data: GovernanceSummaryInfo = response.data.data;
+
+    return data;
+  };
+
+  public getGovernanceSummary2 = async (): Promise<GovernanceSummaryInfo2> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await delay(1000).then(() => {
+      return {
+        data: {
+          data: MockGovernanceSummary2Response,
+        },
+      };
+    });
+    // const response = await this.networkClient.get<{
+    //   data: GetGovernanceSummary2Response;
+    // }>({
+    //   url: "governance/summary",
+    // });
+
+    if (!response?.data?.data) {
+      return nullGovernanceSummaryInfo2;
+    }
+
+    const data: GovernanceSummaryInfo2 = response.data.data;
 
     return data;
   };

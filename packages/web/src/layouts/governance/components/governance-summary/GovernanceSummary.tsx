@@ -6,7 +6,7 @@ import { GNS_TOKEN } from "@common/values/token-constant";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import { EXT_URL } from "@constants/external-url.contant";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { GovernanceSummaryInfo } from "@repositories/governance";
+import { GovernanceSummaryInfo2 } from "@repositories/governance";
 
 import InfoBox from "../info-box/InfoBox";
 import TokenChip from "../token-chip/TokenChip";
@@ -19,7 +19,7 @@ import { toNumberFormat } from "@utils/number-utils";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 
 interface GovernanceSummaryProps {
-  governanceSummary: GovernanceSummaryInfo;
+  governanceSummary: GovernanceSummaryInfo2;
   isLoading: boolean;
 }
 
@@ -27,12 +27,16 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({ governanceSummary
   const { t } = useTranslation();
   const { isMobile } = useWindowSize();
 
+  const delegationinfo = React.useMemo(() => {
+    return governanceSummary.delegationInfo;
+  }, [governanceSummary.delegationInfo]);
+
   /**
    * A delimiter showing total delegated information.
    * @returns {boolean} A boolean value indicating whether to show the total delegated information.
    */
   const visibleTotalDelegateTooltip = React.useMemo(() => {
-    return governanceSummary.totalDelegated > 0;
+    return Number(governanceSummary.delegationInfo.totalDelegationAmount) > 0;
   }, [governanceSummary]);
   /**
    * A delimiter showing community pool information.
@@ -64,7 +68,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({ governanceSummary
                       <div className="key">{t("Governance:summary.tooltip.totalDelegated.delegatedGNS")}</div>
                       <div className="amount">
                         <MissingLogo symbol={GNS_TOKEN.symbol} width={20} url={GNS_TOKEN.logoURI} />
-                        {formatOtherPrice(governanceSummary.governanceDelegated, {
+                        {formatOtherPrice(delegationinfo.governanceDelegationAmount, {
                           isKMB: false,
                           usd: false,
                           decimals: 0,
@@ -82,7 +86,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({ governanceSummary
                       <div className="key">{t("Governance:summary.tooltip.totalDelegated.participatedGNS")}</div>
                       <div className="amount">
                         <MissingLogo symbol={GNS_TOKEN.symbol} width={20} url={GNS_TOKEN.logoURI} />
-                        {formatOtherPrice(governanceSummary.launchpadDelegated, {
+                        {formatOtherPrice(delegationinfo.launchpadDelegationAmount, {
                           isKMB: false,
                           usd: false,
                           decimals: 0,
@@ -94,7 +98,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({ governanceSummary
               }
             >
               <div className={visibleTotalDelegateTooltip ? "value-wrapper-for-hover" : "value-wrapper"}>
-                {formatOtherPrice(governanceSummary.totalDelegated, {
+                {formatOtherPrice(delegationinfo.totalDelegationAmount, {
                   isKMB: false,
                   usd: false,
                   decimals: 0,
@@ -135,7 +139,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({ governanceSummary
                   <div className="row">
                     <div className="label">
                       <span>{t("Governance:summary.tooltip.communityPool.title")}</span>
-                      <span>${toNumberFormat(governanceSummary.communityPool, 2)}</span>
+                      <span>${toNumberFormat(governanceSummary.communityPoolUsd, 2)}</span>
                     </div>
                     <div className="value">
                       <div className="key">
@@ -156,7 +160,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({ governanceSummary
               }
             >
               <div className={visibleCommunityPoolTooltip ? "value-wrapper-for-hover" : "value-wrapper"}>
-                {formatOtherPrice(governanceSummary.communityPool, {
+                {formatOtherPrice(governanceSummary.communityPoolUsd, {
                   isKMB: false,
                 })}
               </div>

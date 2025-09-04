@@ -1,5 +1,12 @@
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
-import { DelegateeInfo, ExecutableFunctionInfo, GovernanceSummaryInfo, MyDelegationInfo, ProposalsInfo } from "./model";
+import {
+  DelegateeInfo,
+  ExecutableFunctionInfo,
+  GovernanceSummaryInfo,
+  GovernanceSummaryInfo2,
+  MyDelegationInfo,
+  ProposalsInfo,
+} from "./model";
 import {
   GetMyDelegationRequest,
   GetProposalsReqeust,
@@ -15,7 +22,12 @@ import {
 } from "./request";
 
 export interface GovernanceRepository {
+  /**
+   * @deprecated
+   */
   getGovernanceSummary: () => Promise<GovernanceSummaryInfo>;
+
+  getGovernanceSummary2: () => Promise<GovernanceSummaryInfo2>;
 
   getMyDeligation: (request: GetMyDelegationRequest) => Promise<MyDelegationInfo>;
 
