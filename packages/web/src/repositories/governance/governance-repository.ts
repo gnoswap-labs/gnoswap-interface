@@ -9,6 +9,7 @@ import {
   ProposalsInfo,
   MyDelegatesInfo,
   MyUnDelegatesInfo,
+  Proposals2Info,
 } from "./model";
 import {
   GetMyDelegationRequest,
@@ -24,6 +25,7 @@ import {
   SendRedelegateReqeust,
   SendUndelegateReqeust,
   SendVoteReqeust,
+  GetProposalsReqeust2,
 } from "./request";
 
 export interface GovernanceRepository {
@@ -51,7 +53,12 @@ export interface GovernanceRepository {
    */
   getMyUnDelegates: (request: GetMyUnDelegatesRequest) => Promise<MyUnDelegatesInfo>;
 
+  /**
+   * @deprecated
+   */
   getProposals: (request: GetProposalsReqeust) => Promise<ProposalsInfo>;
+
+  getProposals2: (request: GetProposalsReqeust2) => Promise<Proposals2Info>;
 
   getExecutableFunctions: () => Promise<ExecutableFunctionInfo[]>;
 

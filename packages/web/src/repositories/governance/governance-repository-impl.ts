@@ -26,12 +26,15 @@ import {
   nullProposalsInfo,
   ProposalsInfo,
   MyUnDelegatesInfo,
+  nullProposals2Info,
+  Proposals2Info,
 } from "./model";
 import {
   GetMyDelegatesRequest,
   GetMyDelegationRequest,
   GetMyUnDelegatesRequest,
   GetProposalsReqeust,
+  GetProposalsReqeust2,
   SendCancelReqeust,
   SendDelegateReqeust,
   SendExecuteReqeust,
@@ -75,6 +78,7 @@ import MockGovernanceSummary2Response from "./mock/get-governance-summary2-respo
 import MockGovernanceMyDelegation2Response from "./mock/get-my-delegation2-response.json";
 import MockGovernanceMyDelegatesResponse from "./mock/get-my-delegates-response.json";
 import MockGovernanceMyUnDelegatesResponse from "./mock/get-my-undelegates-response.json";
+import MockGovernanceProposalsResponse from "./mock/get-proposals2-response.json";
 
 export class GovernanceRepositoryImpl implements GovernanceRepository {
   private networkClient: NetworkClient | null;
@@ -266,6 +270,9 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     return data;
   };
 
+  /**
+   * @deprecated
+   */
   public getProposals = async (request: GetProposalsReqeust): Promise<ProposalsInfo> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
@@ -289,6 +296,41 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     }
 
     const data: ProposalsInfo = response.data.data;
+
+    return data;
+  };
+
+  public getProposals2 = async (request: GetProposalsReqeust2): Promise<Proposals2Info> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await delay(1000).then(() => {
+      return {
+        data: {
+          data: MockGovernanceProposalsResponse as Proposals2Info,
+        },
+      };
+    });
+
+    // const queries = [
+    //   request.isActive !== undefined ? `isActive=${request.isActive}` : "",
+    //   request.address !== undefined ? `address=${request.address}` : "",
+    //   request.page !== undefined ? `page=${request.page}` : "",
+    //   request.size !== undefined ? `itemsPerPage=${request.size}` : "",
+    // ];
+
+    // const response = await this.networkClient.get<{
+    //   data: Proposals2Info;
+    // }>({
+    //   url: `governance/proposals?${queries.filter(item => !!item).join("&")}`,
+    // });
+
+    if (!response?.data?.data) {
+      return nullProposals2Info;
+    }
+
+    const data: Proposals2Info = response.data.data;
 
     return data;
   };

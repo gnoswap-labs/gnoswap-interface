@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 
 import withIntersection from "@components/hoc/with-intersection";
-import { nullProposalItemInfo, ProposalItemInfo } from "@repositories/governance";
+import { nullProposal2ItemInfo, Proposal2ItemInfo } from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
 
 import ProposalCard from "./proposal-card/ProposalCard";
@@ -25,7 +25,7 @@ export interface ProposalListProps {
   toggleIsShowActiveOnly: () => void;
   myVotingWeight: number;
   proposalCreationThreshold: number;
-  proposalList: ProposalItemInfo[];
+  proposalList: Proposal2ItemInfo[];
   fetchMore: () => void;
   selectedProposalId: number;
   setSelectedProposalId: Dispatch<SetStateAction<number>>;
@@ -104,7 +104,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
   };
 
   const selectedProposalDetail = React.useMemo(() => {
-    return proposalList.find(item => item.id === selectedProposalId) || nullProposalItemInfo;
+    return proposalList.find(item => item.id === selectedProposalId) || nullProposal2ItemInfo;
   }, [proposalList, selectedProposalId]);
 
   const getTooltipTextI18nKey = React.useCallback(
@@ -133,9 +133,10 @@ const ProposalList: React.FC<ProposalListProps> = ({
     [],
   );
 
-  const calculateIsMajorityVoted = (proposalDetail: ProposalItemInfo) => {
-    const totalVotes = proposalDetail.votes.yes + proposalDetail.votes.no;
-    return totalVotes >= proposalDetail.votes.max / 2;
+  const calculateIsMajorityVoted = (proposalDetail: Proposal2ItemInfo) => {
+    const { votingInfo } = proposalDetail;
+    const totalVoting = votingInfo.yesVotingWeight + votingInfo.noVotingWeight;
+    return totalVoting >= votingInfo.quorumAmount;
   };
 
   return (
@@ -148,7 +149,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
       />
       {proposalList && proposalList.length > 0 && (
         <>
-          {proposalList.map((proposalDetail: ProposalItemInfo, index: number) => {
+          {proposalList.map((proposalDetail: Proposal2ItemInfo, index: number) => {
             const Card = index < proposalList.length - 1 ? ProposalCard : LastCard;
             const isMajorityVoted = calculateIsMajorityVoted(proposalDetail);
             return (

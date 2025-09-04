@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconNewTab from "@components/common/icons/IconNewTab";
-import { ProposalItemInfo } from "@repositories/governance";
+import { Proposal2ItemInfo, PROPOSAL_TYPE } from "@repositories/governance";
 
 import StatusBadge from "../../status-badge/StatusBadge";
 import TypeBadge from "../../type-badge/TypeBadge";
@@ -21,7 +21,7 @@ dayjs.extend(relative);
 interface Props {
   address: string;
   breakpoint: DEVICE_TYPE;
-  proposalDetail: ProposalItemInfo;
+  proposalDetail: Proposal2ItemInfo;
   isMajorityVoted: boolean;
   getTooltipTextI18nKey: (status: string, isMajorityVoted: boolean, yesVotes: number, noVotes: number) => string;
   onClickCard: (id: string) => void;
@@ -52,7 +52,10 @@ const ProposalCard: React.FC<Props> = ({
       return false;
     }
 
-    if (!["PARAMETER_CHANGE", "COMMUNITY_POOL_SPEND"].includes(proposalDetail.type)) {
+    if (
+      proposalDetail.proposalType !== PROPOSAL_TYPE.PROPOSAL_PARAMETER_CHANGE &&
+      proposalDetail.proposalType !== PROPOSAL_TYPE.PROPOSAL_COMMUNITY_POOL_SPEND
+    ) {
       return false;
     }
 
@@ -95,10 +98,10 @@ const ProposalCard: React.FC<Props> = ({
       return { yesVotes: 0, noVotes: 0 };
     }
     return {
-      yesVotes: proposalDetail.votes.yes,
-      noVotes: proposalDetail.votes.no,
+      yesVotes: Number(proposalDetail.votingInfo.yesVotingWeight),
+      noVotes: Number(proposalDetail.votingInfo.noVotingWeight),
     };
-  }, [proposalDetail.status, proposalDetail.votes.yes, proposalDetail.votes.no]);
+  }, [proposalDetail.status, proposalDetail.votingInfo]);
 
   const tooltipTextI18nKey = React.useMemo(() => {
     return getTooltipTextI18nKey(proposalDetail.status, isMajorityVoted, yesVotes, noVotes);
@@ -110,7 +113,7 @@ const ProposalCard: React.FC<Props> = ({
         <div className="left-section">
           <div className="title">{`#${proposalDetail.id} ${proposalDetail.title}`}</div>
           <div className="badges">
-            <TypeBadge type={proposalDetail.type} />
+            <TypeBadge type={proposalDetail.proposalType} />
             {proposalDetail.status === "EXPIRED" && (
               <Badge
                 className="proposal-badge"
@@ -125,7 +128,7 @@ const ProposalCard: React.FC<Props> = ({
                 text={t("Governance:proposal.status.executed")}
               />
             )}
-            {proposalDetail.myVote && proposalDetail.myVote.type !== "" && (
+            {proposalDetail.userVotingInfo && proposalDetail.userVotingInfo.isVoted && (
               <Badge
                 className="proposal-badge"
                 type={BADGE_TYPE.DARK_DEFAULT}
@@ -194,12 +197,12 @@ const ProposalCard: React.FC<Props> = ({
           />
         )}
       <div className="active-wrapper">
-        <StatusBadge breakpoint={breakpoint} status={proposalDetail.status} time={proposalDetail.time} />
+        <StatusBadge breakpoint={breakpoint} status={proposalDetail.status} time={proposalDetail.expiredTime} />
       </div>
       <VotingProgressBar
-        max={proposalDetail.votes.max}
-        yes={proposalDetail.status === "CANCELLED" ? 0 : proposalDetail.votes.yes}
-        no={proposalDetail.status === "CANCELLED" ? 0 : proposalDetail.votes.no}
+        max={Number(proposalDetail.votingInfo.maxVotingWeight)}
+        yes={proposalDetail.status === "CANCELLED" ? 0 : Number(proposalDetail.votingInfo.yesVotingWeight)}
+        no={proposalDetail.status === "CANCELLED" ? 0 : Number(proposalDetail.votingInfo.noVotingWeight)}
         tooltipTextI18nKey={tooltipTextI18nKey}
         isMajorityVoted={isMajorityVoted}
       />

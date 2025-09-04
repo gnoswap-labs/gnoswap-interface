@@ -15,7 +15,7 @@ interface VoteButtonsWrapper {
   noCount: number;
   breakpoint?: DEVICE_TYPE;
   selectedVote: string;
-  setSelectedVote: Dispatch<SetStateAction<string>>;
+  setSelectedVote: Dispatch<SetStateAction<"YES" | "NO">>;
 }
 
 const VoteButtons: React.FC<VoteButtonsWrapper> = ({
