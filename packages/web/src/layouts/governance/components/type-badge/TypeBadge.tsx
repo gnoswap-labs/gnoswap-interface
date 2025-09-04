@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { BADGE_TYPE } from "@components/common/badge/Badge";
 
 import { TypeBadgeWrapper } from "./TypeBadge.styles";
+import { PROPOSAL_TYPE } from "@repositories/governance";
 
 interface VoteButtonsWrapper {
   type: string;
@@ -14,11 +15,11 @@ const TypeBadge: React.FC<VoteButtonsWrapper> = ({ type }) => {
 
   const badgeText = useMemo(() => {
     switch (type) {
-      case "TEXT":
+      case PROPOSAL_TYPE.PROPOSAL_TEXT:
         return t("Governance:proposal.type.text");
-      case "COMMUNITY_POOL_SPEND":
+      case PROPOSAL_TYPE.PROPOSAL_COMMUNITY_POOL_SPEND:
         return t("Governance:proposal.type.community");
-      case "PARAMETER_CHANGE":
+      case PROPOSAL_TYPE.PROPOSAL_PARAMETER_CHANGE:
         return t("Governance:proposal.type.paramChange");
       default:
         return "unsupport type";
