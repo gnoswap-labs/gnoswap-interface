@@ -4,11 +4,15 @@ import { useRouter } from "next/router";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { useGetGovernanceSummary, useGetMyDelegation2, useGetProposals, useGetProposals2 } from "@query/governance";
+import { useGetMyDelegation2, useGetProposalParameters, useGetProposals2 } from "@query/governance";
 
 import { useCreateProposalModal } from "@hooks/governance/ui/use-create-proposal-modal";
 import ProposalList from "../../components/proposals-list/ProposalList";
 import { useGovernanceTx } from "@hooks/governance/data/use-governance-tx";
+import { rawToDisplayAmount } from "@utils/number-utils";
+import { GNS_TOKEN } from "@common/values/token-constant";
+
+const DEFAULT_PROPOSAL_CREATION_THRESHOLD = 1000 as const;
 
 const ProposalListContainer: React.FC = () => {
   const router = useRouter();
@@ -30,48 +34,51 @@ const ProposalListContainer: React.FC = () => {
     cancelProposal,
   } = useGovernanceTx();
 
-  const { data: governanceSummaryInfo, isFetched: isFetchedGovernanceSummaryInfo } = useGetGovernanceSummary();
+  const { data: proposalParameterInfo, isFetched: isFetchedProposalParameterInfo } = useGetProposalParameters();
 
   const { data: myDelegationInfo } = useGetMyDelegation2({
     address: account?.address || "",
   });
 
   const {
-    // data: proposalsInfo,
+    data: proposals2Info,
     isFetched: isFetchedProposalsInfo,
     hasNextPage,
     fetchNextPage,
     refetch: refetchProposals,
-  } = useGetProposals({
-    isActive: isShowActiveOnly,
-    address: account?.address,
-    itemsPerPage: 20,
-  });
-
-  const { data: proposals2Info } = useGetProposals2({
+  } = useGetProposals2({
     isActive: isShowActiveOnly,
     address: account?.address,
     size: 20,
   });
 
   const executablePackages = useMemo(() => {
-    if (!governanceSummaryInfo) {
+    if (!proposalParameterInfo) {
       return [];
     }
 
-    const allPackages = governanceSummaryInfo.changeParamOptions.packages;
+    const allPackages = proposalParameterInfo.packages;
     return allPackages.filter(
       (package_, index) => allPackages.findIndex(p => p.pkgPath === package_.pkgPath) === index,
     );
-  }, [governanceSummaryInfo?.changeParamOptions.packages]);
+  }, [proposalParameterInfo?.packages]);
 
   const executableFunctions = useMemo(() => {
-    if (!governanceSummaryInfo) {
+    if (!proposalParameterInfo) {
       return [];
     }
 
-    return governanceSummaryInfo.changeParamOptions.functions;
-  }, [governanceSummaryInfo?.changeParamOptions.functions]);
+    return proposalParameterInfo.functions;
+  }, [proposalParameterInfo?.functions]);
+
+  const proposalCreationThreshold = useMemo(() => {
+    if (!proposalParameterInfo) return DEFAULT_PROPOSAL_CREATION_THRESHOLD;
+
+    return (
+      rawToDisplayAmount(proposalParameterInfo.proposalCreationThreshold, GNS_TOKEN.decimals) ||
+      DEFAULT_PROPOSAL_CREATION_THRESHOLD
+    );
+  }, [proposalParameterInfo?.proposalCreationThreshold]);
 
   const fetchNextItems = () => {
     if (hasNextPage) fetchNextPage();
@@ -97,7 +104,7 @@ const ProposalListContainer: React.FC = () => {
   return (
     <ProposalList
       breakpoint={breakpoint}
-      isLoading={!isFetchedProposalsInfo || !isFetchedGovernanceSummaryInfo}
+      isLoading={!isFetchedProposalsInfo || !isFetchedProposalParameterInfo}
       isConnected={connected}
       connectWallet={openModal}
       isSwitchNetwork={isSwitchNetwork}
@@ -106,7 +113,7 @@ const ProposalListContainer: React.FC = () => {
       isShowActiveOnly={isShowActiveOnly}
       toggleIsShowActiveOnly={toggleIsShowActiveOnly}
       myVotingWeight={Number(myDelegationInfo?.votingWeight) || 0}
-      proposalCreationThreshold={governanceSummaryInfo?.creationThreshold || 1000}
+      proposalCreationThreshold={proposalCreationThreshold}
       proposalList={proposals2Info?.pages.flatMap(item => item.proposals) || []}
       fetchMore={fetchNextItems}
       selectedProposalId={selectedProposalId}

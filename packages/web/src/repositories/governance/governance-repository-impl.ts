@@ -30,6 +30,8 @@ import {
   Proposals2Info,
   ProposalDetailsInfo,
   nullProposalDetailsInfo,
+  ProposalParameterInfo,
+  nullProposalParameterInfo,
 } from "./model";
 import {
   GetMyDelegatesRequest,
@@ -83,6 +85,7 @@ import MockGovernanceMyDelegatesResponse from "./mock/get-my-delegates-response.
 import MockGovernanceMyUnDelegatesResponse from "./mock/get-my-undelegates-response.json";
 import MockGovernanceProposalsResponse from "./mock/get-proposals2-response.json";
 import MockGovernanceProposalDetails from "./mock/get-proposal-details-response.json";
+import MockGovernanceProposalParameters from "./mock/get-proposal-parameters-response.json";
 
 export class GovernanceRepositoryImpl implements GovernanceRepository {
   private networkClient: NetworkClient | null;
@@ -367,6 +370,37 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     }
 
     const data: ProposalDetailsInfo = response.data.data;
+
+    return data;
+  };
+
+  public getProposalParameters = async (): Promise<ProposalParameterInfo> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await delay(1000).then(() => {
+      return {
+        data: {
+          data: MockGovernanceProposalParameters,
+        },
+      };
+    });
+    // const response = await this.networkClient
+    //   .get<{
+    //     data: ProposalParameterInfo;
+    //   }>({
+    //     url: `governance/proposals-parameters`,
+    //   })
+    //   .catch(e => {
+    //     console.error(e);
+    //     return null;
+    //   });
+    if (!response?.data?.data) {
+      return nullProposalParameterInfo;
+    }
+
+    const data: ProposalParameterInfo = response.data.data;
 
     return data;
   };

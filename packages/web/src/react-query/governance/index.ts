@@ -9,3 +9,4 @@ export * from "./use-get-my-delegates";
 export * from "./use-get-my-undelegates";
 export * from "./use-get-proposals2";
 export * from "./use-get-proposal-details";
+export * from "./use-get-proposal-parameters";

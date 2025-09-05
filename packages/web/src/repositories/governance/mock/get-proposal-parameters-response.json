@@ -1,0 +1,93 @@
+{
+  "proposalCreationThreshold": "100000000000",
+  "functions": [
+    {
+      "funcName": "TransferToken",
+      "paramNum": 1,
+      "pkgPath": "gno.land/r/gnoswap/v2/community_pool"
+    },
+    {
+      "funcName": "ChangeDistributionPct",
+      "paramNum": 1,
+      "pkgPath": "gno.land/r/gnoswap/v2/emission"
+    },
+    {
+      "funcName": "SetAvgBlockTimeInMs",
+      "paramNum": 1,
+      "pkgPath": "gno.land/r/gnoswap/v2/gns"
+    },
+    {
+      "funcName": "Reconfigure",
+      "paramNum": 1,
+      "pkgPath": "gno.land/r/gnoswap/v2/governance"
+    },
+    {
+      "funcName": "SetFeeProtocol",
+      "paramNum": 1,
+      "pkgPath": "gno.land/r/gnoswap/v2/pool"
+    },
+    {
+      "funcName": "SetPoolCreationFee",
+      "paramNum": 1,
+      "pkgPath": "gno.land/r/gnoswap/v2/pool"
+    },
+    {
+      "funcName": "SetWithdrawalFee",
+      "paramNum": 1,
+      "pkgPath": "gno.land/r/gnoswap/v2/pool"
+    },
+    {
+      "funcName": "SetDepositGnsAmount",
+      "paramNum": 1,
+      "pkgPath": "gno.land/r/gnoswap/v2/staker"
+    },
+    {
+      "funcName": "SetPoolTier",
+      "paramNum": 1,
+      "pkgPath": "gno.land/r/gnoswap/v2/staker"
+    },
+    {
+      "funcName": "SetHalt",
+      "paramNum": 1,
+      "pkgPath": "gno.land/r/gnoswap/v2/common"
+    }
+  ],
+  "packages": [
+    {
+      "pkgName": "Community Pool",
+      "pkgPath": "gno.land/r/gnoswap/v2/community_pool"
+    },
+    {
+      "pkgName": "Emission",
+      "pkgPath": "gno.land/r/gnoswap/v2/emission"
+    },
+    {
+      "pkgName": "GNS Token",
+      "pkgPath": "gno.land/r/gnoswap/v2/gns"
+    },
+    {
+      "pkgName": "Governance",
+      "pkgPath": "gno.land/r/gnoswap/v2/governance"
+    },
+    {
+      "pkgName": "Pool Management",
+      "pkgPath": "gno.land/r/gnoswap/v2/pool"
+    },
+    {
+      "pkgName": "Protocol Fee",
+      "pkgPath": "gno.land/r/gnoswap/v2/protocol_fee"
+    },
+    {
+      "pkgName": "Router",
+      "pkgPath": "gno.land/r/gnoswap/v2/router"
+    },
+    {
+      "pkgName": "Staker",
+      "pkgPath": "gno.land/r/gnoswap/v2/staker"
+    },
+    {
+      "pkgName": "Common Utils",
+      "pkgPath": "gno.land/r/gnoswap/v2/common"
+    }
+  ]
+}

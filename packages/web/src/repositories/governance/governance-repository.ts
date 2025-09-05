@@ -11,6 +11,7 @@ import {
   MyUnDelegatesInfo,
   Proposals2Info,
   ProposalDetailsInfo,
+  ProposalParameterInfo,
 } from "./model";
 import {
   GetMyDelegationRequest,
@@ -66,6 +67,11 @@ export interface GovernanceRepository {
    * @new feature
    */
   getProposalDetails: (request: GetProposalDetailsRequest) => Promise<ProposalDetailsInfo>;
+
+  /**
+   * @new feature
+   */
+  getProposalParameters: () => Promise<ProposalParameterInfo>;
 
   getExecutableFunctions: () => Promise<ExecutableFunctionInfo[]>;
 

@@ -7,3 +7,4 @@ export * from "./get-delegatees-response";
 
 export * from "./get-my-delegates-response";
 export * from "./get-my-undelegates-response";
+export * from "./get-proposal-parameters";
