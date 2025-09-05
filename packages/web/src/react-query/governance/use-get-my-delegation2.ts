@@ -3,7 +3,7 @@ import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { GetMyDelegationRequest, MyDelegationInfo2 } from "@repositories/governance";
 
-// import { QUERY_KEY } from "../query-keys";
+import { QUERY_KEY } from "../query-keys";
 
 const REFETCH_INTERVAL = 60_000;
 
@@ -14,7 +14,7 @@ export const useGetMyDelegation2 = (
   const { governanceRepository } = useGnoswapContext();
 
   return useQuery<MyDelegationInfo2, Error>({
-    queryKey: ["get-my-delegation2", request.address],
+    queryKey: [QUERY_KEY.governanceMyDelegation, request.address],
     queryFn: () => {
       return governanceRepository.getMyDelegation2(request);
     },

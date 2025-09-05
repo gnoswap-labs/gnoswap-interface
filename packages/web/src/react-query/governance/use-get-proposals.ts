@@ -7,6 +7,9 @@ import { QUERY_KEY } from "../query-keys";
 
 const REFETCH_INTERVAL = 60_000;
 
+/**
+ * @deprecated
+ */
 export const useGetProposals = (
   request: Omit<GetProposalsReqeust, "page">,
   options?: UseInfiniteQueryOptions<ProposalsInfo, Error>,
