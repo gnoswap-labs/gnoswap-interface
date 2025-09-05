@@ -31,6 +31,7 @@ import {
 } from "./ViewProposalModal.styles";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { safeParseTime } from "@utils/time.utils";
 
 export interface ViewProposalModalProps {
   address: string;
@@ -186,7 +187,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
             <StatusBadge
               breakpoint={breakpoint}
               status={proposalDetail.status}
-              time={proposalDetail.executableTime}
+              time={safeParseTime(proposalDetail.executableTime)}
               twoline={false}
             />
           </div>

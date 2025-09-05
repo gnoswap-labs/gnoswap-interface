@@ -18,11 +18,12 @@ dayjs.extend(duration);
 interface StatusBadgeProps {
   breakpoint: DEVICE_TYPE;
   status: string;
-  time: string;
+  time: number | null;
   twoline?: boolean;
 }
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({ breakpoint, status, time, twoline }) => {
+  console.log(time, "time?");
   const { t } = useTranslation();
 
   const getContent = () => {
@@ -69,23 +70,29 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ breakpoint, status, time, two
   };
 
   const getTimeInfo = () => {
+    if (time === null) {
+      return t("Governance:proposal.time.noTime", "Invalid Time");
+    }
+
     const timeString = dayjs(time).format("YYYY-MM-DD, HH:mm:ss");
+    const relativeTime = dayjs(time).fromNow();
+
     switch (status) {
       case "UPCOMING":
         return breakpoint === DEVICE_TYPE.MOBILE
           ? `${t("Governance:proposal.time.start", {
-              rel_time: dayjs(time).fromNow(),
+              rel_time: relativeTime,
             })}`
           : `${t("Governance:proposal.time.start", {
-              rel_time: dayjs(time).fromNow(),
+              rel_time: relativeTime,
             })} (${timeString})`;
       case "ACTIVE":
         return breakpoint === DEVICE_TYPE.MOBILE
           ? `${t("Governance:proposal.time.end", {
-              rel_time: dayjs(time).fromNow(),
+              rel_time: relativeTime,
             })}`
           : `${t("Governance:proposal.time.end", {
-              rel_time: dayjs(time).fromNow(),
+              rel_time: relativeTime,
             })} (${timeString})`;
       case "EXECUTED":
       case "EXPIRED":

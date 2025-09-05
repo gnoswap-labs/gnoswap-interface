@@ -7,6 +7,7 @@ import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconNewTab from "@components/common/icons/IconNewTab";
 import { ProposalItemInfo, PROPOSAL_TYPE } from "@repositories/governance";
+import { safeParseTime } from "@utils/time.utils";
 
 import StatusBadge from "../../status-badge/StatusBadge";
 import TypeBadge from "../../type-badge/TypeBadge";
@@ -63,16 +64,14 @@ const ProposalCard: React.FC<Props> = ({
   }, [address, proposalDetail]);
 
   const availExecutableButton = useMemo(() => {
-    if (!executable) {
+    if (!executable) return false;
+
+    const executableTime = safeParseTime(proposalDetail.executableTime);
+    const expiredTime = safeParseTime(proposalDetail.expiredTime);
+
+    if (executableTime === null || expiredTime === null) {
       return false;
     }
-
-    if (!proposalDetail.executableTime || !proposalDetail.expiredTime) {
-      return false;
-    }
-
-    const executableTime = new Date(new Date(proposalDetail.executableTime).toUTCString()).getTime();
-    const expiredTime = new Date(new Date(proposalDetail.expiredTime).toUTCString()).getTime();
 
     return expiredTime > currentTime && currentTime >= executableTime;
   }, [currentTime, executable, proposalDetail.executableTime, proposalDetail.expiredTime]);
@@ -197,7 +196,11 @@ const ProposalCard: React.FC<Props> = ({
           />
         )}
       <div className="active-wrapper">
-        <StatusBadge breakpoint={breakpoint} status={proposalDetail.status} time={proposalDetail.expiredTime} />
+        <StatusBadge
+          breakpoint={breakpoint}
+          status={proposalDetail.status}
+          time={safeParseTime(proposalDetail.expiredTime)}
+        />
       </div>
       <VotingProgressBar
         max={Number(proposalDetail.votingInfo.maxVotingWeight)}
