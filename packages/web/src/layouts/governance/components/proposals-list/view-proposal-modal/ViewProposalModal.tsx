@@ -36,6 +36,7 @@ import { safeParseTime } from "@utils/time.utils";
 export interface ViewProposalModalProps {
   address: string;
   proposalId: number;
+  myVotingWeight: number;
   breakpoint: DEVICE_TYPE;
   setIsModalOpen: (isOpen: boolean) => void;
   isConnected: boolean;
@@ -49,6 +50,7 @@ export interface ViewProposalModalProps {
 const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   address,
   proposalId,
+  myVotingWeight,
   breakpoint,
   setIsModalOpen,
   isSwitchNetwork,
@@ -271,7 +273,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
             <VotingPowerWrapper>
               <span>{t("Governance:detailModal.votingWeight")}</span>
               <div>
-                <div className="power-value">{(userVotingInfo.votingWeight || 0).toLocaleString()}</div>
+                <div className="power-value">{rawToDisplayAmount(myVotingWeight, XGNS_TOKEN.decimals)}</div>
                 <TokenChip tokenInfo={XGNS_TOKEN} />
               </div>
             </VotingPowerWrapper>
@@ -281,6 +283,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
               isSwitchNetwork={isSwitchNetwork}
               voteType={userVotingInfo.voteType}
               voteWeigth={userVotingInfo.votingWeight}
+              myVotingWeight={myVotingWeight}
               status={proposalDetail.status}
               selectedVote={selectedVote}
               handleVote={() => {

@@ -172,6 +172,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
         <ViewProposalModal
           address={address}
           proposalId={selectedProposalId}
+          myVotingWeight={myVotingWeight}
           breakpoint={breakpoint}
           setIsModalOpen={(isOpen: boolean) => setSelectedProposalId(isOpen ? selectedProposalId : 0)}
           isConnected={isConnected}

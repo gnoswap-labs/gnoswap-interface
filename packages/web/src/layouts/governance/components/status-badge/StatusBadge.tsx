@@ -23,7 +23,6 @@ interface StatusBadgeProps {
 }
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({ breakpoint, status, time, twoline }) => {
-  console.log(time, "time?");
   const { t } = useTranslation();
 
   const getContent = () => {
