@@ -1,8 +1,6 @@
 import { Meta, StoryObj } from "@storybook/react";
 import React from "react";
 
-import GetMyDelegationResposneMock from "@repositories/governance/mock/get-my-delegation-response.json";
-
 import UndelegateSelectItem, { type UndelegateSelectItemProps } from "./UndelegateSelectItem";
 
 const Template: React.FC<UndelegateSelectItemProps> = args => {
@@ -20,7 +18,7 @@ export default {
 
 export const Default: StoryObj<UndelegateSelectItemProps> = {
   args: {
-    delegationItemInfo: GetMyDelegationResposneMock.delegations[0],
+    delegationItemInfo: null,
     visibleAmount: true,
   },
 };

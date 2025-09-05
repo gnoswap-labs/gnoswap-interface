@@ -1,8 +1,7 @@
 import { ComponentStory, Meta } from "@storybook/react";
 import { useState } from "react";
 
-import { DelegationItemInfo } from "@repositories/governance";
-import GetMyDelegationResposneMock from "@repositories/governance/mock/get-my-delegation-response.json";
+import { DelegationItemInfo2 } from "@repositories/governance";
 
 import UndelegateSelect from "./UndelegateSelect";
 
@@ -12,7 +11,7 @@ export default {
 } as Meta<typeof UndelegateSelect>;
 
 const Template: ComponentStory<typeof UndelegateSelect> = args => {
-  const [selectedDelegationInfo, setSelectedDelegationInfo] = useState<DelegationItemInfo | null>(null);
+  const [selectedDelegationInfo, setSelectedDelegationInfo] = useState<DelegationItemInfo2 | null>(null);
 
   return (
     <UndelegateSelect
@@ -25,5 +24,5 @@ const Template: ComponentStory<typeof UndelegateSelect> = args => {
 
 export const Default = Template.bind({});
 Default.args = {
-  delegatedInfos: GetMyDelegationResposneMock.delegations,
+  delegatedInfos: [],
 };

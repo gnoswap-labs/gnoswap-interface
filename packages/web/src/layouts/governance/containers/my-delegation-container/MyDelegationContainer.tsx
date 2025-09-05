@@ -6,7 +6,7 @@ import React from "react";
 import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import {
-  useGetGovernanceSummary,
+  useGetGovernanceSummary2,
   useGetMyDelegates,
   useGetMyDelegation2,
   useGetMyUnDelegates,
@@ -32,7 +32,7 @@ const MyDelegationContainer: React.FC = () => {
     data: governanceSummaryInfo,
     isFetched: isFetchedGovernanceSummaryInfo,
     refetch: refetchSummary,
-  } = useGetGovernanceSummary();
+  } = useGetGovernanceSummary2();
 
   const {
     data: myDelegationInfo2,
@@ -65,8 +65,8 @@ const MyDelegationContainer: React.FC = () => {
 
   return (
     <MyDelegation
-      totalDelegatedAmount={governanceSummaryInfo?.totalDelegated || 0}
-      apy={governanceSummaryInfo?.apy || 0}
+      totalDelegatedAmount={Number(governanceSummaryInfo?.delegationInfo.totalDelegationAmount) || 0}
+      apy={Number(governanceSummaryInfo?.apy) || 0}
       myDelegationInfo={myDelegationInfo2 ?? nullMyDelegationInfo2}
       myDelegates={myDelegates ?? nullMyDelegatesInfo}
       myUnDelegates={myUnDelegates ?? nullMyUnDelegatesInfo}

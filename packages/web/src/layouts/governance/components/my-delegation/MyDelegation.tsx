@@ -12,7 +12,6 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import {
-  DelegateeInfo,
   DelegationItemInfo2,
   MyDelegate,
   MyDelegatesInfo,
