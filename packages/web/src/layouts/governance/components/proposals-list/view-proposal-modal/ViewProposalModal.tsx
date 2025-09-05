@@ -11,6 +11,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { nullProposalDetailsInfo, PROPOSAL_TYPE } from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
 import { useGetProposalDetails } from "@query/governance";
+import { rawToDisplayAmount } from "@utils/number-utils";
 
 import StatusBadge from "../../status-badge/StatusBadge";
 import TokenChip from "../../token-chip/TokenChip";
@@ -29,7 +30,7 @@ import {
   VotingPowerWrapper,
 } from "./ViewProposalModal.styles";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { rawToDisplayAmount } from "@utils/number-utils";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
 export interface ViewProposalModalProps {
   proposalId: number;
@@ -125,22 +126,8 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
 
   const hasVoteButton = ["UPCOMING", "ACTIVE"].includes(proposalDetail.status);
 
-  // Todo: loading component
   if (isLoading) {
-    return (
-      <Modal>
-        <div className="modal-body">
-          <ModalHeaderWrapper>
-            <div className="header">
-              <div />
-              <div className="close-wrap" onClick={() => setIsModalOpen(false)}>
-                <IconClose className="close-icon" />
-              </div>
-            </div>
-          </ModalHeaderWrapper>
-        </div>
-      </Modal>
-    );
+    return <LoadingModal onClose={() => setIsModalOpen(false)} />;
   }
 
   return (
@@ -307,3 +294,44 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
 };
 
 export default ViewProposalModal;
+
+interface LoadingModalProps {
+  onClose: () => void;
+}
+
+const LoadingModal = ({ onClose }: LoadingModalProps) => {
+  const Modal = useMemo(
+    () =>
+      withLocalModal(ViewProposalModalWrapper, (isOpen: boolean) => {
+        if (!isOpen) onClose();
+      }),
+    [onClose],
+  );
+
+  return (
+    <Modal>
+      <div className="modal-body">
+        <ModalHeaderWrapper>
+          <div className="header">
+            <div />
+            <div className="close-wrap" onClick={onClose}>
+              <IconClose className="close-icon" />
+            </div>
+          </div>
+        </ModalHeaderWrapper>
+        <ProposalContentWrapper
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            maxHeight: "100%",
+          }}
+        >
+          <div className="animation">
+            <LoadingSpinner />
+          </div>
+        </ProposalContentWrapper>
+      </div>
+    </Modal>
+  );
+};
