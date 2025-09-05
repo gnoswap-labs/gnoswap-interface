@@ -1,0 +1,32 @@
+{
+  "balances": [
+    {
+      "path": "gno.land/r/gnoswap/v1/test_token/bar",
+      "amount": 1500000
+    },
+    {
+      "path": "gno.land/r/demo/wugnot",
+      "amount": 5000000000
+    },
+    {
+      "path": "gno.land/r/gnoswap/v1/test_token/usdc",
+      "amount": 2500000000
+    },
+    {
+      "path": "gno.land/r/gnoswap/gns",
+      "amount": 800000000000000
+    },
+    {
+      "path": "gno.land/r/gnoswap/v1/test_token/obl",
+      "amount": 1200000000
+    },
+    {
+      "path": "gno.land/r/gnoswap/v1/test_token/bar",
+      "amount": 950000000
+    },
+    {
+      "path": "gno.land/r/gnoswap/v1/test_token/qux",
+      "amount": 350000000
+    }
+  ]
+}

@@ -9,3 +9,4 @@ export * from "./proposals2-info";
 export * from "./proposal-details-info";
 export * from "./proposal-parameter-info";
 export * from "./verified-delegates-info";
+export * from "./community-pool-balances-info";

@@ -11,3 +11,4 @@ export * from "./use-get-proposals2";
 export * from "./use-get-proposal-details";
 export * from "./use-get-proposal-parameters";
 export * from "./use-get-verified-delegates";
+export * from "./use-get-community-pool-balances";

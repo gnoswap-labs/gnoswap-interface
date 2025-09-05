@@ -7,6 +7,7 @@ import GetGovernanceSummaryResponseMock from "./mock/get-governance-summary-resp
 import GetMyDelegationResposneMock from "./mock/get-my-delegation-response.json";
 import GetProposalsResponseMock from "./mock/get-proposals-response.json";
 import {
+  CommunityPoolBalancesInfo,
   DelegateeInfo,
   ExecutableFunctionInfo,
   GovernanceSummaryInfo,
@@ -53,6 +54,7 @@ import MockGovernanceProposals2Response from "./mock/get-proposals2-response.jso
 import MockGovernanceProposalDetailsResponse from "./mock/get-proposal-details-response.json";
 import MockGovernanceProposalParametersResponse from "./mock/get-proposal-parameters-response.json";
 import MockGovernanceVerifiedDelegatesResponse from "./mock/get-verified-delegates-response.json";
+import MockGovernanceCommunityPoolBalancesResponse from "./mock/get-community-pool-balances-response.json";
 
 export class GovernanceRepositoryMock implements GovernanceRepository {
   public getGovernanceSummary = async (): Promise<GovernanceSummaryInfo> => {
@@ -142,6 +144,12 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
   public getVerifiedDelegates = async (): Promise<VerifiedDelegatesInfo> => {
     console.log("Mock getVerifiedDelegates:");
     const result = MockGovernanceVerifiedDelegatesResponse;
+    return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);
+  };
+
+  public getCommunityPoolBalances = async (): Promise<CommunityPoolBalancesInfo> => {
+    console.log("Mock getCommunityPoolBalances:");
+    const result = MockGovernanceCommunityPoolBalancesResponse;
     return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);
   };
 

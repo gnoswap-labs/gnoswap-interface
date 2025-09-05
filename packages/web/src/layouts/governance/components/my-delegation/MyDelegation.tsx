@@ -315,7 +315,6 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
               value={
                 <Tooltip
                   forcedClose={!visibleRewardInfoTooltip}
-                  // FloatingContent={<></>}
                   FloatingContent={
                     <MyDelegationRewardTooltipContent>
                       <div className="reward-info-total">

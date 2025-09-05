@@ -6,7 +6,7 @@ import { GNS_TOKEN } from "@common/values/token-constant";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import { EXT_URL } from "@constants/external-url.contant";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { GovernanceSummaryInfo2 } from "@repositories/governance";
+import { GovernanceSummaryInfo2, TokenBalance } from "@repositories/governance";
 
 import InfoBox from "../info-box/InfoBox";
 import TokenChip from "../token-chip/TokenChip";
@@ -15,17 +15,34 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { GovernanceSummaryWrapper, GovernanceSummaryTooltipContent } from "./GovernanceSummary.styles";
 import { Divider } from "@components/common/divider/divider";
-import { toNumberFormat } from "@utils/number-utils";
+import { rawToDisplayAmount, toNumberFormat } from "@utils/number-utils";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
+import { TokenModel } from "@models/token/token-model";
+
+export interface DisplayCommunityPoolBalance {
+  amount: number;
+  usdValue: number;
+  tokenInfo: TokenModel | null;
+}
 
 interface GovernanceSummaryProps {
   governanceSummary: GovernanceSummaryInfo2;
+  governanceCommunityPoolBalances: TokenBalance[];
   isLoading: boolean;
 }
 
-const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({ governanceSummary, isLoading }) => {
+const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
+  governanceSummary,
+  governanceCommunityPoolBalances,
+  isLoading,
+}) => {
   const { t } = useTranslation();
   const { isMobile } = useWindowSize();
+
+  const { getGnotPath } = useGnotToGnot();
+  const { getTokenUSDPrice, tokens } = useTokenData();
 
   const delegationinfo = React.useMemo(() => {
     return governanceSummary.delegationInfo;
@@ -43,11 +60,39 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({ governanceSummary
    * @returns {boolean} A boolean value indicating whether to show the community pool information.
    */
   const visibleCommunityPoolTooltip = React.useMemo(() => {
-    // return governanceSummary.communityPool > 0;
+    return governanceCommunityPoolBalances.length > 0;
+  }, [governanceCommunityPoolBalances]);
 
-    // Todo: API is not returning community pool information.
-    return false;
-  }, [governanceSummary]);
+  const communityPoolInfo: DisplayCommunityPoolBalance[] = React.useMemo(() => {
+    return governanceCommunityPoolBalances
+      .map(balance => {
+        const tokenInfo = tokens.find(token => token.path === balance.path);
+
+        if (!tokenInfo) {
+          return {
+            amount: 0,
+            usdValue: 0,
+            tokenInfo: null,
+          };
+        }
+
+        const gnotPathInfo = getGnotPath(tokenInfo);
+        const unwrappedTokenInfo: TokenModel = {
+          ...tokenInfo,
+          ...gnotPathInfo,
+        };
+
+        const displayAmount = rawToDisplayAmount(balance.amount, tokenInfo.decimals || 0);
+        const usdValue = getTokenUSDPrice(balance.path, displayAmount) || 0;
+
+        return {
+          amount: displayAmount,
+          usdValue,
+          tokenInfo: unwrappedTokenInfo,
+        };
+      })
+      .sort((a, b) => b.usdValue - a.usdValue);
+  }, [governanceCommunityPoolBalances]);
 
   return (
     <GovernanceSummaryWrapper>
@@ -141,20 +186,23 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({ governanceSummary
                       <span>{t("Governance:summary.tooltip.communityPool.title")}</span>
                       <span>${toNumberFormat(governanceSummary.communityPoolUsd, 2)}</span>
                     </div>
-                    <div className="value">
-                      <div className="key">
-                        <MissingLogo symbol="EXA" width={20} />
-                        <span>tokenSymbol</span>
-                      </div>
-                      <div className="amount"></div>
-                    </div>
-                    <div className="value">
-                      <div className="key">
-                        <MissingLogo symbol="EXA" width={20} />
-                        <span>tokenSymbol</span>
-                      </div>
-                      <div className="amount"></div>
-                    </div>
+                    {communityPoolInfo.map(balance => {
+                      const { tokenInfo } = balance;
+                      return (
+                        <div className="value" key={`${balance.tokenInfo?.symbol}-token`}>
+                          <div className="key">
+                            <MissingLogo
+                              url={tokenInfo?.logoURI || ""}
+                              symbol={tokenInfo?.symbol || "-"}
+                              width={20}
+                              mobileWidth={20}
+                            />
+                            <span>{tokenInfo?.symbol || "-"}</span>
+                          </div>
+                          <div className="amount">{toNumberFormat(balance.amount, 0)}</div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </GovernanceSummaryTooltipContent>
               }

@@ -34,6 +34,8 @@ import {
   nullProposalParameterInfo,
   nullVerifiedDelegatesInfo,
   VerifiedDelegatesInfo,
+  CommunityPoolBalancesInfo,
+  nullCommunityPoolBalancesInfo,
 } from "./model";
 import {
   GetMyDelegatesRequest,
@@ -90,6 +92,7 @@ import MockGovernanceProposalsResponse from "./mock/get-proposals2-response.json
 import MockGovernanceProposalDetails from "./mock/get-proposal-details-response.json";
 import MockGovernanceProposalParameters from "./mock/get-proposal-parameters-response.json";
 import MockGovernanceVerifiedDelegatesResponse from "./mock/get-verified-delegates-response.json";
+import MockGovernanceCommunityPoolBalancesResponse from "./mock/get-community-pool-balances-response.json";
 
 export class GovernanceRepositoryImpl implements GovernanceRepository {
   private networkClient: NetworkClient | null;
@@ -436,6 +439,37 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     }
 
     const data: VerifiedDelegatesInfo = response.data.data;
+
+    return data;
+  };
+
+  public getCommunityPoolBalances = async (): Promise<CommunityPoolBalancesInfo> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await delay(1000).then(() => {
+      return {
+        data: {
+          data: MockGovernanceCommunityPoolBalancesResponse,
+        },
+      };
+    });
+    // const response = await this.networkClient
+    //   .get<{
+    //     data: GetCommunityPoolBalacnesResponse;
+    //   }>({
+    //     url: `governance/community-pool/balances`,
+    //   })
+    //   .catch(e => {
+    //     console.error(e);
+    //     return null;
+    //   });
+    if (!response?.data?.data) {
+      return nullCommunityPoolBalancesInfo;
+    }
+
+    const data: CommunityPoolBalancesInfo = response.data.data;
 
     return data;
   };

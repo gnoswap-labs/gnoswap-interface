@@ -13,6 +13,7 @@ import {
   ProposalDetailsInfo,
   ProposalParameterInfo,
   VerifiedDelegatesInfo,
+  CommunityPoolBalancesInfo,
 } from "./model";
 import {
   GetMyDelegationRequest,
@@ -78,6 +79,11 @@ export interface GovernanceRepository {
    * @new feature
    */
   getVerifiedDelegates: () => Promise<VerifiedDelegatesInfo>;
+
+  /**
+   * @new feature
+   */
+  getCommunityPoolBalances: () => Promise<CommunityPoolBalancesInfo>;
 
   getExecutableFunctions: () => Promise<ExecutableFunctionInfo[]>;
 
