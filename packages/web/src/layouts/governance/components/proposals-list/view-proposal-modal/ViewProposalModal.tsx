@@ -208,8 +208,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
                 </div>
                 <div className="variable">
                   <div className="variable-type">{t("Governance:detailModal.content.amount")}</div>
-                  {rawToDisplayAmount(proposalDetailContent.amount, GNOT_TOKEN.decimals).toLocaleString()}{" "}
-                  {GNS_TOKEN.symbol}
+                  {rawToDisplayAmount(proposalDetailContent.amount, GNOT_TOKEN.decimals)} {GNS_TOKEN.symbol}
                 </div>
               </>
             )}
@@ -244,10 +243,10 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
               >
                 <span className={isMajorityVoted ? "passed" : ""}>
                   {isMajorityVoted && <IconPassed />}
-                  {(yesVotes + noVotes).toLocaleString()}
+                  {rawToDisplayAmount(yesVotes + noVotes, XGNS_TOKEN.decimals)}
                 </span>
               </Tooltip>
-              /<div>{numericVotingInfo.maxVotingWeight.toLocaleString()}</div>
+              /<div>{rawToDisplayAmount(numericVotingInfo.maxVotingWeight, XGNS_TOKEN.decimals)}</div>
             </div>
           </div>
           <VotingProgressBar
@@ -263,8 +262,8 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
           votedType={userVotingInfo.voteType || ""}
           isVoted={userVotingInfo.isVoted}
           isClickable={proposalDetail.status === "ACTIVE"}
-          yesCount={numericVotingInfo.yesVotingWeight}
-          noCount={numericVotingInfo.noVotingWeight}
+          yesCount={rawToDisplayAmount(numericVotingInfo.yesVotingWeight, XGNS_TOKEN.decimals)}
+          noCount={rawToDisplayAmount(numericVotingInfo.noVotingWeight, XGNS_TOKEN.decimals)}
           selectedVote={selectedVote}
           setSelectedVote={setSelectedVote}
         />
