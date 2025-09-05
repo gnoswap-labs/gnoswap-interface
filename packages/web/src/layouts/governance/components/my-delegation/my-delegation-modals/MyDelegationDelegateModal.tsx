@@ -30,6 +30,7 @@ import {
   MyDelWarningContentWrapper,
   ToolTipContentWrapper,
 } from "./MyDelegationModals.styles";
+import { rawToDisplayAmount } from "@utils/number-utils";
 
 interface MyDelegationDelegateModalProps {
   currentDelegatedAmount: number;
@@ -66,6 +67,11 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   const [tmpDelegatee, setTmpDelegatee] = useState<VerifiedDelegateInfo>(defaultDelegateeInfo);
   const [selfAddress, setSelfAddress] = useState("");
 
+  const safeDisplayAmount = (rawValue: string | number): number => {
+    const result = rawToDisplayAmount(rawValue, XGNS_TOKEN.decimals);
+    return isNaN(result) ? 0 : result;
+  };
+
   const isValidSelfAddress = useMemo(() => {
     return isValidAddress(selfAddress);
   }, [selfAddress]);
@@ -78,8 +84,10 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   }, [isValidSelfAddress, selfAddress, t]);
 
   const votingPowerPercentage = useMemo(() => {
-    const numericVotingPower = Number(tmpDelegatee.votingPower) || 0;
-    return totalDelegatedAmount ? (numericVotingPower * 100) / totalDelegatedAmount : 0;
+    const displayVotingPower = safeDisplayAmount(tmpDelegatee.votingPower);
+    const displayTotalDelegated = safeDisplayAmount(totalDelegatedAmount);
+
+    return displayTotalDelegated ? (displayVotingPower * 100) / displayTotalDelegated : 0;
   }, [tmpDelegatee.votingPower, totalDelegatedAmount]);
 
   const handleClickSelfDelegateeAddress = useCallback((address: string) => setSelfAddress(address), [delegatees]);
@@ -138,6 +146,28 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
     },
     [delegatees],
   );
+
+  const delegationCalculations = useMemo(() => {
+    const displayTotalDelegated = safeDisplayAmount(totalDelegatedAmount);
+    const displayCurrentDelegated = safeDisplayAmount(currentDelegatedAmount);
+    const inputAmount = Number(gnsAmountInput.amount) || 0;
+
+    const currentPercentage = displayTotalDelegated ? (displayCurrentDelegated / displayTotalDelegated) * 100 : 0;
+
+    const newPercentage =
+      displayTotalDelegated + inputAmount
+        ? Math.min(((displayCurrentDelegated + inputAmount) / displayTotalDelegated) * 100, 100)
+        : 0;
+
+    return {
+      displayCurrentDelegated,
+      displayTotalDelegated,
+      currentPercentage,
+      newPercentage,
+    };
+  }, [currentDelegatedAmount, totalDelegatedAmount, gnsAmountInput.amount]);
+
+  console.log(delegationCalculations, "delegationCalculations");
 
   const showDelegateInfo = () => (
     <>
@@ -202,7 +232,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           <div className="label">{t("Governance:myDel.delModal.step3.currentlyDel")}</div>
           <div className="value">
             <MissingLogo symbol={XGNS_TOKEN.symbol} url={XGNS_TOKEN.logoURI} width={24} />
-            {formatOtherPrice(currentDelegatedAmount, {
+            {formatOtherPrice(safeDisplayAmount(currentDelegatedAmount), {
               isKMB: false,
               usd: false,
             })}
@@ -226,15 +256,9 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
         <div className="info-rows">
           <div className="label">{t("Governance:myDel.delModal.step3.votingPowerShare")}</div>
           <div className="value">
-            {`${formatOtherPrice(totalDelegatedAmount ? (currentDelegatedAmount / totalDelegatedAmount) * 100 : 0, {
-              usd: false,
-            })}% -> ${formatOtherPrice(
-              totalDelegatedAmount + Number(gnsAmountInput.amount)
-                ? Math.min(((currentDelegatedAmount + Number(gnsAmountInput.amount)) / totalDelegatedAmount) * 100, 100)
-                : 0,
-              {
-                usd: false,
-              },
+            {`${formatOtherPrice(delegationCalculations.currentPercentage, { usd: false })}% -> ${formatOtherPrice(
+              delegationCalculations.newPercentage,
+              { usd: false },
             )}%`}
           </div>
         </div>
@@ -363,7 +387,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           <div className="label">{t("Governance:myDel.delModal.selectDel.votingPower")}</div>
           <div className="value no-wrap">
             <MissingLogo symbol="xGNS" url={XGNS_TOKEN.logoURI} width={24} />
-            {formatOtherPrice(tmpDelegatee.votingPower, {
+            {formatOtherPrice(safeDisplayAmount(tmpDelegatee.votingPower), {
               isKMB: false,
               usd: false,
             })}{" "}
