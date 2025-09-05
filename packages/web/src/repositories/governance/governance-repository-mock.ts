@@ -19,6 +19,7 @@ import {
   ProposalParameterInfo,
   Proposals2Info,
   ProposalsInfo,
+  VerifiedDelegatesInfo,
 } from "./model";
 import {
   GetMyDelegatesRequest,
@@ -51,6 +52,7 @@ import MockGovernanceMyUnDelegatesResponse from "./mock/get-my-undelegates-respo
 import MockGovernanceProposals2Response from "./mock/get-proposals2-response.json";
 import MockGovernanceProposalDetailsResponse from "./mock/get-proposal-details-response.json";
 import MockGovernanceProposalParametersResponse from "./mock/get-proposal-parameters-response.json";
+import MockGovernanceVerifiedDelegatesResponse from "./mock/get-verified-delegates-response.json";
 
 export class GovernanceRepositoryMock implements GovernanceRepository {
   public getGovernanceSummary = async (): Promise<GovernanceSummaryInfo> => {
@@ -134,6 +136,12 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
   public getProposalParameters = async (): Promise<ProposalParameterInfo> => {
     console.log("Mock getProposalParameters:");
     const result = MockGovernanceProposalParametersResponse;
+    return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);
+  };
+
+  public getVerifiedDelegates = async (): Promise<VerifiedDelegatesInfo> => {
+    console.log("Mock getVerifiedDelegates:");
+    const result = MockGovernanceVerifiedDelegatesResponse;
     return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);
   };
 

@@ -6,11 +6,11 @@ import React from "react";
 import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import {
-  useGetDelegatees,
   useGetGovernanceSummary,
   useGetMyDelegates,
   useGetMyDelegation2,
   useGetMyUnDelegates,
+  useGetVerifiedDelegates,
 } from "@query/governance";
 import { nullMyDelegatesInfo, nullMyDelegationInfo2, nullMyUnDelegatesInfo } from "@repositories/governance";
 
@@ -34,8 +34,6 @@ const MyDelegationContainer: React.FC = () => {
     refetch: refetchSummary,
   } = useGetGovernanceSummary();
 
-  const { data: delegatees, isFetched: isFetchedDelegatees, refetch: refetchDelegatees } = useGetDelegatees();
-
   const {
     data: myDelegationInfo2,
     isFetched: isFetchedMyDelegation2,
@@ -53,6 +51,18 @@ const MyDelegationContainer: React.FC = () => {
     refetch: refetchMyUnDelegates,
   } = useGetMyUnDelegates({ address });
 
+  const {
+    data: verifiedDelegates,
+    isFetched: isFetchedDelegatees,
+    refetch: refetchDelegatees,
+  } = useGetVerifiedDelegates();
+
+  const delegatees = React.useMemo(() => {
+    if (!verifiedDelegates) return [];
+
+    return verifiedDelegates.delegates;
+  }, [verifiedDelegates]);
+
   return (
     <MyDelegation
       totalDelegatedAmount={governanceSummaryInfo?.totalDelegated || 0}
@@ -60,7 +70,7 @@ const MyDelegationContainer: React.FC = () => {
       myDelegationInfo={myDelegationInfo2 ?? nullMyDelegationInfo2}
       myDelegates={myDelegates ?? nullMyDelegatesInfo}
       myUnDelegates={myUnDelegates ?? nullMyUnDelegatesInfo}
-      delegatees={delegatees ?? []}
+      delegatees={delegatees}
       isLoadingCommon={
         (!isFetchedGovernanceSummaryInfo || !isFetchedDelegatees) && (!governanceSummaryInfo || !delegatees)
       }

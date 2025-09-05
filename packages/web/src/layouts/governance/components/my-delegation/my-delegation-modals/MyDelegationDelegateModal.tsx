@@ -19,7 +19,7 @@ import withLocalModal from "@components/hoc/with-local-modal";
 import { EXT_URL } from "@constants/external-url.contant";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
-import { DelegateeInfo, nullDelegateeInfo } from "@repositories/governance";
+import { nullVerifiedDelegateInfo, VerifiedDelegateInfo } from "@repositories/governance";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { isValidAddress } from "@utils/validation-utils";
 
@@ -35,7 +35,7 @@ interface MyDelegationDelegateModalProps {
   currentDelegatedAmount: number;
   totalDelegatedAmount: number;
   apy: number;
-  delegatees: DelegateeInfo[];
+  delegatees: VerifiedDelegateInfo[];
   isWalletConnected: boolean;
   connectWallet: () => void;
   onSubmit: (toName: string, toAddress: string, amount: string) => void;
@@ -55,15 +55,15 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   const Modal = useMemo(() => withLocalModal(MyDelegationModalWrapper, setIsOpen), [setIsOpen]);
   const { t } = useTranslation();
   const selfDelegateName = t("Governance:myDel.delModal.selectDel.self.chip");
-  const defaultDelegateeInfo = { ...nullDelegateeInfo };
+  const defaultDelegateeInfo = { ...nullVerifiedDelegateInfo };
 
   const { account } = useWallet();
   const { getAccountUrl } = useGnoscanUrl();
   const theme = useTheme();
   const gnsAmountInput = useTokenAmountInput(GNS_TOKEN);
   const [stage, setStage] = useState<"MAIN" | "SELECT_DELEGATE">("MAIN");
-  const [delegatee, setDelegatee] = useState<DelegateeInfo>(defaultDelegateeInfo);
-  const [tmpDelegatee, setTmpDelegatee] = useState<DelegateeInfo>(defaultDelegateeInfo);
+  const [delegatee, setDelegatee] = useState<VerifiedDelegateInfo>(defaultDelegateeInfo);
+  const [tmpDelegatee, setTmpDelegatee] = useState<VerifiedDelegateInfo>(defaultDelegateeInfo);
   const [selfAddress, setSelfAddress] = useState("");
 
   const isValidSelfAddress = useMemo(() => {
@@ -76,6 +76,11 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
     }
     return t("Governance:myDel.delModal.selectDel.selectBtn");
   }, [isValidSelfAddress, selfAddress, t]);
+
+  const votingPowerPercentage = useMemo(() => {
+    const numericVotingPower = Number(tmpDelegatee.votingPower) || 0;
+    return totalDelegatedAmount ? (numericVotingPower * 100) / totalDelegatedAmount : 0;
+  }, [tmpDelegatee.votingPower, totalDelegatedAmount]);
 
   const handleClickSelfDelegateeAddress = useCallback((address: string) => setSelfAddress(address), [delegatees]);
 
@@ -126,7 +131,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
         }));
       } else {
         setTmpDelegatee(prev => ({
-          ...nullDelegateeInfo,
+          ...nullVerifiedDelegateInfo,
           name: prev.name,
         }));
       }
@@ -160,7 +165,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
             <div className="before-select">Select</div>
           ) : (
             <div className="selected-delegatee">
-              <MissingLogo url={delegatee.logoUrl} symbol={delegatee.name} width={24} />
+              <MissingLogo url={delegatee.logoURL} symbol={delegatee.name} width={24} />
               {delegatee.name}
               <div
                 className="addr"
@@ -310,20 +315,20 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           key="manual"
           showLogo={false}
           delegatee={{
-            ...nullDelegateeInfo,
+            ...nullVerifiedDelegateInfo,
             name: selfDelegateName,
           }}
           selected={tmpDelegatee.name === selfDelegateName}
           onClick={() => {
             setTmpDelegatee({
-              ...nullDelegateeInfo,
+              ...nullVerifiedDelegateInfo,
               name: selfDelegateName,
             });
             changeSelfDelegateeAddress(account?.address || "");
             handleClickSelfDelegateeAddress(account?.address || "");
           }}
         />
-        {delegatees.map((item: DelegateeInfo, index: number) => {
+        {delegatees.map((item: VerifiedDelegateInfo, index: number) => {
           return (
             <DelegateeChip
               key={index}
@@ -363,14 +368,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
               usd: false,
             })}{" "}
             {XGNS_TOKEN.symbol}
-            <span className="sub">
-              {` (${formatOtherPrice(
-                totalDelegatedAmount ? (tmpDelegatee.votingPower * 100) / totalDelegatedAmount : 0,
-                {
-                  usd: false,
-                },
-              )}%)`}
-            </span>
+            <span className="sub">{` (${formatOtherPrice(votingPowerPercentage, { usd: false })}%)`}</span>
           </div>
         </div>
         <div className="delegatee-info-rows">

@@ -19,6 +19,7 @@ import {
   MyDelegationInfo2,
   MyUnDelegate,
   MyUnDelegatesInfo,
+  VerifiedDelegateInfo,
 } from "@repositories/governance";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { toNumberFormat } from "@utils/number-utils";
@@ -42,7 +43,7 @@ interface MyDelegationProps {
   myDelegationInfo: MyDelegationInfo2;
   myDelegates: MyDelegatesInfo;
   myUnDelegates: MyUnDelegatesInfo;
-  delegatees: DelegateeInfo[];
+  delegatees: VerifiedDelegateInfo[];
   isLoadingCommon: boolean;
   isLoadingMyDelegation: boolean;
   isWalletConnected: boolean;

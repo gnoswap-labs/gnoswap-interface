@@ -32,6 +32,8 @@ import {
   nullProposalDetailsInfo,
   ProposalParameterInfo,
   nullProposalParameterInfo,
+  nullVerifiedDelegatesInfo,
+  VerifiedDelegatesInfo,
 } from "./model";
 import {
   GetMyDelegatesRequest,
@@ -57,6 +59,7 @@ import {
   GetMyDelegation2Response,
   GetMyDelegationResponse,
   GetProposalsResponse,
+  GetVerifiedDelegatesResponse,
 } from "./response";
 import { generateSendTransactionParams, withTransactionGuard } from "@utils/transaction-utils";
 
@@ -86,6 +89,7 @@ import MockGovernanceMyUnDelegatesResponse from "./mock/get-my-undelegates-respo
 import MockGovernanceProposalsResponse from "./mock/get-proposals2-response.json";
 import MockGovernanceProposalDetails from "./mock/get-proposal-details-response.json";
 import MockGovernanceProposalParameters from "./mock/get-proposal-parameters-response.json";
+import MockGovernanceVerifiedDelegatesResponse from "./mock/get-verified-delegates-response.json";
 
 export class GovernanceRepositoryImpl implements GovernanceRepository {
   private networkClient: NetworkClient | null;
@@ -401,6 +405,37 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     }
 
     const data: ProposalParameterInfo = response.data.data;
+
+    return data;
+  };
+
+  public getVerifiedDelegates = async (): Promise<VerifiedDelegatesInfo> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await delay(1000).then(() => {
+      return {
+        data: {
+          data: MockGovernanceVerifiedDelegatesResponse,
+        },
+      };
+    });
+    // const response = await this.networkClient
+    //   .get<{
+    //     data: GetVerifiedDelegatesResponse;
+    //   }>({
+    //     url: `governance/verified-delegates`,
+    //   })
+    //   .catch(e => {
+    //     console.error(e);
+    //     return null;
+    //   });
+    if (!response?.data?.data) {
+      return nullVerifiedDelegatesInfo;
+    }
+
+    const data: VerifiedDelegatesInfo = response.data.data;
 
     return data;
   };

@@ -1,12 +1,12 @@
 import React from "react";
 
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { DelegateeInfo } from "@repositories/governance";
+import { VerifiedDelegateInfo } from "@repositories/governance";
 
 import { DelegateeChipWrapper } from "./DelegateeChip.styles";
 
 interface GovernanceDetailProps {
-  delegatee: DelegateeInfo;
+  delegatee: VerifiedDelegateInfo;
   selected: boolean;
   onClick: () => void;
   showLogo?: boolean;
@@ -18,7 +18,7 @@ const DelegateeChip: React.FC<GovernanceDetailProps> = ({ delegatee, selected, o
       className={[selected ? "selected" : "", showLogo ? "" : "no-logo"].join(" ")}
       onClick={onClick}
     >
-      {showLogo && <MissingLogo symbol={delegatee.name} url={delegatee.logoUrl} width={24} />}
+      {showLogo && <MissingLogo symbol={delegatee.name} url={delegatee.logoURL} width={24} />}
       {delegatee.name}
     </DelegateeChipWrapper>
   );

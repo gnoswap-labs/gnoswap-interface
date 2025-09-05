@@ -12,6 +12,7 @@ import {
   Proposals2Info,
   ProposalDetailsInfo,
   ProposalParameterInfo,
+  VerifiedDelegatesInfo,
 } from "./model";
 import {
   GetMyDelegationRequest,
@@ -72,6 +73,11 @@ export interface GovernanceRepository {
    * @new feature
    */
   getProposalParameters: () => Promise<ProposalParameterInfo>;
+
+  /**
+   * @new feature
+   */
+  getVerifiedDelegates: () => Promise<VerifiedDelegatesInfo>;
 
   getExecutableFunctions: () => Promise<ExecutableFunctionInfo[]>;
 
