@@ -1,4 +1,4 @@
-export interface GetGovernanceSummary2Response {
+export interface GetGovernanceSummaryResponse {
   delegationInfo: {
     totalDelegationAmount: string;
     governanceDelegationAmount: string;

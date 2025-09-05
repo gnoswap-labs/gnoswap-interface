@@ -8,7 +8,7 @@ import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconClose from "@components/common/icons/IconCancel";
 import withLocalModal from "@components/hoc/with-local-modal";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { nullProposalDetailsInfo, PROPOSAL_TYPE } from "@repositories/governance";
+import { nullProposalDetailsInfo, nullUserVotingInfo, PROPOSAL_TYPE } from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
 import { useGetProposalDetails } from "@query/governance";
 import { rawToDisplayAmount } from "@utils/number-utils";
@@ -33,6 +33,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 
 export interface ViewProposalModalProps {
+  address: string;
   proposalId: number;
   breakpoint: DEVICE_TYPE;
   setIsModalOpen: (isOpen: boolean) => void;
@@ -45,6 +46,7 @@ export interface ViewProposalModalProps {
 }
 
 const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
+  address,
   proposalId,
   breakpoint,
   setIsModalOpen,
@@ -63,7 +65,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
     [setIsModalOpen],
   );
 
-  const { data, isLoading } = useGetProposalDetails({ proposalId });
+  const { data, isLoading } = useGetProposalDetails({ proposalId, address });
 
   const proposalDetail = useMemo(() => {
     if (!data?.proposal) return nullProposalDetailsInfo.proposal;
@@ -77,7 +79,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   const { numericVotingInfo, userVotingInfo } = useMemo(() => {
     const {
       votingInfo: { maxVotingWeight, yesVotingWeight, noVotingWeight, quorumAmount },
-      userVotingInfo,
+      userVotingInfo = nullUserVotingInfo,
     } = proposalDetail;
 
     return {
@@ -256,6 +258,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
         <VoteButtons
           breakpoint={breakpoint}
           votedType={userVotingInfo.voteType || ""}
+          isVoted={userVotingInfo.isVoted}
           isClickable={proposalDetail.status === "ACTIVE"}
           yesCount={numericVotingInfo.yesVotingWeight}
           noCount={numericVotingInfo.noVotingWeight}

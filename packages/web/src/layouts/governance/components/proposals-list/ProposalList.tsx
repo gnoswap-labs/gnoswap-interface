@@ -170,6 +170,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
       )}
       {selectedProposalId !== 0 && (
         <ViewProposalModal
+          address={address}
           proposalId={selectedProposalId}
           breakpoint={breakpoint}
           setIsModalOpen={(isOpen: boolean) => setSelectedProposalId(isOpen ? selectedProposalId : 0)}

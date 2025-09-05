@@ -11,6 +11,7 @@ import { VoteButtonsWrapper } from "./VoteButtons.styles";
 interface VoteButtonsWrapper {
   isClickable: boolean;
   votedType: string;
+  isVoted: boolean;
   yesCount: number;
   noCount: number;
   breakpoint?: DEVICE_TYPE;
@@ -22,6 +23,7 @@ const VoteButtons: React.FC<VoteButtonsWrapper> = ({
   isClickable,
   breakpoint,
   votedType,
+  isVoted,
   yesCount,
   noCount,
   selectedVote,
@@ -51,7 +53,7 @@ const VoteButtons: React.FC<VoteButtonsWrapper> = ({
       >
         <span>{t("Governance:vote.yes")}</span>
         <div>{yesCount.toLocaleString("en", { maximumFractionDigits: 0 })}</div>
-        {votedType === "YES" && votedBadge}
+        {isVoted && votedType === "YES" && votedBadge}
       </div>
       <div
         className={[
@@ -63,7 +65,7 @@ const VoteButtons: React.FC<VoteButtonsWrapper> = ({
       >
         <span>{t("Governance:vote.no")}</span>
         <div>{noCount.toLocaleString("en", { maximumFractionDigits: 0 })}</div>
-        {votedType === "NO" && votedBadge}
+        {isVoted && votedType === "NO" && votedBadge}
       </div>
     </VoteButtonsWrapper>
   );
