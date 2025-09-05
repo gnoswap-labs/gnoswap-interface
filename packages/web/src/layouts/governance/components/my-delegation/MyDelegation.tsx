@@ -1,6 +1,3 @@
-// Todo: Delete
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import dayjs from "dayjs";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -13,10 +10,8 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import {
   DelegationItemInfo,
-  MyDelegate,
   MyDelegatesInfo,
   MyDelegationInfo,
-  MyUnDelegate,
   MyUnDelegatesInfo,
   VerifiedDelegateInfo,
 } from "@repositories/governance";
