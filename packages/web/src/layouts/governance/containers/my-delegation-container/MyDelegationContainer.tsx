@@ -32,7 +32,7 @@ const MyDelegationContainer: React.FC = () => {
   } = useGetGovernanceSummary();
 
   const {
-    data: MyDelegationInfo,
+    data: myDelegationInfo,
     isFetched: isFetchedMyDelegation,
     refetch: refetchMyDelegation,
   } = useGetMyDelegation({ address });
@@ -65,7 +65,7 @@ const MyDelegationContainer: React.FC = () => {
     <MyDelegation
       totalDelegatedAmount={Number(governanceSummaryInfo?.delegationInfo.totalDelegationAmount) || 0}
       apy={Number(governanceSummaryInfo?.apy) || 0}
-      myDelegationInfo={MyDelegationInfo ?? nullMyDelegationInfo}
+      myDelegationInfo={myDelegationInfo ?? nullMyDelegationInfo}
       myDelegates={myDelegates ?? nullMyDelegatesInfo}
       myUnDelegates={myUnDelegates ?? nullMyUnDelegatesInfo}
       delegatees={delegatees}

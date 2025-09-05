@@ -16,7 +16,7 @@ import {
   VerifiedDelegateInfo,
 } from "@repositories/governance";
 import { formatOtherPrice } from "@utils/new-number-utils";
-import { toNumberFormat } from "@utils/number-utils";
+import { rawToDisplayAmount, toNumberFormat } from "@utils/number-utils";
 
 import InfoBox from "../info-box/InfoBox";
 import TokenChip from "../token-chip/TokenChip";
@@ -202,7 +202,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
               title={t("Governance:myDel.availBal.title")}
               value={
                 <>
-                  {formatOtherPrice(myDelegationInfo.availableBalance, {
+                  {formatOtherPrice(rawToDisplayAmount(myDelegationInfo.availableBalance, GNS_TOKEN.decimals), {
                     isKMB: false,
                     usd: false,
                   })}
@@ -235,7 +235,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                           <div className="info-row">
                             <div className="info-subject">{t("Governance:myDel.tooltip.amount")}</div>
                             <div className="info-value">
-                              {item.amount.toLocaleString("en")} {GNS_TOKEN.symbol}
+                              {rawToDisplayAmount(item.amount, GNS_TOKEN.decimals)} {GNS_TOKEN.symbol}
                             </div>
                           </div>
                           <div className="info-row">
@@ -262,11 +262,11 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 >
                   <div className={visibleInfoTooltip ? "value-wrapper-for-hover" : "value-wrapper"}>
                     {activatedDelegateInfoTab
-                      ? formatOtherPrice(myDelegationInfo.votingWeight, {
+                      ? formatOtherPrice(rawToDisplayAmount(myDelegationInfo.votingWeight, XGNS_TOKEN.decimals), {
                           isKMB: false,
                           usd: false,
                         })
-                      : formatOtherPrice(myDelegationInfo.unDelegatedAmount, {
+                      : formatOtherPrice(rawToDisplayAmount(myDelegationInfo.unDelegatedAmount, XGNS_TOKEN.decimals), {
                           isKMB: false,
                           usd: false,
                         })}
