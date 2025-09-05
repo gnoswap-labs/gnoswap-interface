@@ -16,6 +16,8 @@ import VotingProgressBar from "../../voting-progress-bar/VotingProgressBar";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { ProposalDetailWrapper } from "./ProposalCard.styles";
 import { DEVICE_TYPE } from "@styles/media";
+import { rawToDisplayAmount } from "@utils/number-utils";
+import { XGNS_TOKEN } from "@common/values/token-constant";
 
 dayjs.extend(relative);
 
@@ -43,6 +45,11 @@ const ProposalCard: React.FC<Props> = ({
   const { t } = useTranslation();
   const { getAccountUrl } = useGnoscanUrl();
   const [currentTime, setCurrentTime] = useState(new Date().getTime());
+
+  const safeDisplayAmount = (weight: string | number): number => {
+    const result = rawToDisplayAmount(weight, XGNS_TOKEN.decimals);
+    return isNaN(result) ? 0 : result;
+  };
 
   const executable = useMemo(() => {
     if (!address) {
@@ -76,6 +83,16 @@ const ProposalCard: React.FC<Props> = ({
     return expiredTime > currentTime && currentTime >= executableTime;
   }, [currentTime, executable, proposalDetail.executableTime, proposalDetail.expiredTime]);
 
+  const votingNumbers = useMemo(() => {
+    const isCancelled = proposalDetail.status === "CANCELLED";
+
+    return {
+      max: safeDisplayAmount(proposalDetail.votingInfo.maxVotingWeight),
+      yes: isCancelled ? 0 : safeDisplayAmount(proposalDetail.votingInfo.yesVotingWeight),
+      no: isCancelled ? 0 : safeDisplayAmount(proposalDetail.votingInfo.noVotingWeight),
+    };
+  }, [proposalDetail.status, proposalDetail.votingInfo]);
+
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
 
@@ -97,8 +114,8 @@ const ProposalCard: React.FC<Props> = ({
       return { yesVotes: 0, noVotes: 0 };
     }
     return {
-      yesVotes: Number(proposalDetail.votingInfo.yesVotingWeight),
-      noVotes: Number(proposalDetail.votingInfo.noVotingWeight),
+      yesVotes: Number(proposalDetail.votingInfo.yesVotingWeight) || 0,
+      noVotes: Number(proposalDetail.votingInfo.noVotingWeight) || 0,
     };
   }, [proposalDetail.status, proposalDetail.votingInfo]);
 
@@ -203,9 +220,9 @@ const ProposalCard: React.FC<Props> = ({
         />
       </div>
       <VotingProgressBar
-        max={Number(proposalDetail.votingInfo.maxVotingWeight)}
-        yes={proposalDetail.status === "CANCELLED" ? 0 : Number(proposalDetail.votingInfo.yesVotingWeight)}
-        no={proposalDetail.status === "CANCELLED" ? 0 : Number(proposalDetail.votingInfo.noVotingWeight)}
+        max={votingNumbers.max}
+        yes={votingNumbers.yes}
+        no={votingNumbers.no}
         tooltipTextI18nKey={tooltipTextI18nKey}
         isMajorityVoted={isMajorityVoted}
       />
