@@ -6,13 +6,13 @@ import React from "react";
 import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import {
-  useGetGovernanceSummary2,
+  useGetGovernanceSummary,
   useGetMyDelegates,
-  useGetMyDelegation2,
+  useGetMyDelegation,
   useGetMyUnDelegates,
   useGetVerifiedDelegates,
 } from "@query/governance";
-import { nullMyDelegatesInfo, nullMyDelegationInfo2, nullMyUnDelegatesInfo } from "@repositories/governance";
+import { nullMyDelegatesInfo, nullMyDelegationInfo, nullMyUnDelegatesInfo } from "@repositories/governance";
 
 import { useGovernanceTx } from "@hooks/governance/data/use-governance-tx";
 import MyDelegation from "../../components/my-delegation/MyDelegation";
@@ -32,13 +32,13 @@ const MyDelegationContainer: React.FC = () => {
     data: governanceSummaryInfo,
     isFetched: isFetchedGovernanceSummaryInfo,
     refetch: refetchSummary,
-  } = useGetGovernanceSummary2();
+  } = useGetGovernanceSummary();
 
   const {
-    data: myDelegationInfo2,
+    data: MyDelegationInfo,
     isFetched: isFetchedMyDelegation2,
     refetch: refetchMyDelegation2,
-  } = useGetMyDelegation2({ address });
+  } = useGetMyDelegation({ address });
 
   const {
     data: myDelegates,
@@ -67,7 +67,7 @@ const MyDelegationContainer: React.FC = () => {
     <MyDelegation
       totalDelegatedAmount={Number(governanceSummaryInfo?.delegationInfo.totalDelegationAmount) || 0}
       apy={Number(governanceSummaryInfo?.apy) || 0}
-      myDelegationInfo={myDelegationInfo2 ?? nullMyDelegationInfo2}
+      myDelegationInfo={MyDelegationInfo ?? nullMyDelegationInfo}
       myDelegates={myDelegates ?? nullMyDelegatesInfo}
       myUnDelegates={myUnDelegates ?? nullMyUnDelegatesInfo}
       delegatees={delegatees}

@@ -7,7 +7,7 @@ import {
   ProposerInfo,
   UserVotingInfo,
   VotingInfo,
-} from "./proposals2-info";
+} from "./proposals-info";
 
 export interface ProposalContent {
   amount: string;

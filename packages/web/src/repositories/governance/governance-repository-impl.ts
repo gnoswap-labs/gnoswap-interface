@@ -9,16 +9,16 @@ import { PACKAGE_GOVERNANCE_STAKER_PATH } from "@constants/environment.constant"
 
 import { GovernanceRepository } from "./governance-repository";
 import {
-  GovernanceSummaryInfo2,
+  GovernanceSummaryInfo,
   MyDelegatesInfo,
-  MyDelegationInfo2,
-  nullGovernanceSummaryInfo2,
-  nullMyDelegationInfo2,
+  MyDelegationInfo,
+  nullGovernanceSummaryInfo,
+  nullMyDelegationInfo,
   nullMyDelegatesInfo,
   nullMyUnDelegatesInfo,
   MyUnDelegatesInfo,
-  nullProposals2Info,
-  Proposals2Info,
+  nullProposalsInfo,
+  ProposalsInfo,
   ProposalDetailsInfo,
   nullProposalDetailsInfo,
   ProposalParameterInfo,
@@ -33,7 +33,7 @@ import {
   GetMyDelegationRequest,
   GetMyUnDelegatesRequest,
   GetProposalDetailsRequest,
-  GetProposalsReqeust2,
+  GetProposalsReqeust,
   SendCancelReqeust,
   SendDelegateReqeust,
   SendExecuteReqeust,
@@ -65,11 +65,11 @@ import {
 } from "./governance.message";
 import { delay } from "@utils/common";
 
-import MockGovernanceSummary2Response from "./mock/get-governance-summary2-response.json";
-import MockGovernanceMyDelegation2Response from "./mock/get-my-delegation2-response.json";
+import MockGovernanceSummaryResponse from "./mock/get-governance-summary-response.json";
+import MockGovernanceMyDelegationResponse from "./mock/get-my-delegation-response.json";
 import MockGovernanceMyDelegatesResponse from "./mock/get-my-delegates-response.json";
 import MockGovernanceMyUnDelegatesResponse from "./mock/get-my-undelegates-response.json";
-import MockGovernanceProposalsResponse from "./mock/get-proposals2-response.json";
+import MockGovernanceProposalsResponse from "./mock/get-proposals-response.json";
 import MockGovernanceProposalDetails from "./mock/get-proposal-details-response.json";
 import MockGovernanceProposalParameters from "./mock/get-proposal-parameters-response.json";
 import MockGovernanceVerifiedDelegatesResponse from "./mock/get-verified-delegates-response.json";
@@ -86,7 +86,7 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     this.gnoProvider = gnoProvider;
   }
 
-  public getGovernanceSummary2 = async (): Promise<GovernanceSummaryInfo2> => {
+  public getGovernanceSummary = async (): Promise<GovernanceSummaryInfo> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -94,7 +94,7 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     const response = await delay(1000).then(() => {
       return {
         data: {
-          data: MockGovernanceSummary2Response,
+          data: MockGovernanceSummaryResponse,
         },
       };
     });
@@ -105,15 +105,15 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     // });
 
     if (!response?.data?.data) {
-      return nullGovernanceSummaryInfo2;
+      return nullGovernanceSummaryInfo;
     }
 
-    const data: GovernanceSummaryInfo2 = response.data.data;
+    const data: GovernanceSummaryInfo = response.data.data;
 
     return data;
   };
 
-  public getMyDelegation2 = async (request: GetMyDelegationRequest): Promise<MyDelegationInfo2> => {
+  public getMyDelegation = async (request: GetMyDelegationRequest): Promise<MyDelegationInfo> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -121,7 +121,7 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     const response = await delay(1000).then(() => {
       return {
         data: {
-          data: MockGovernanceMyDelegation2Response,
+          data: MockGovernanceMyDelegationResponse,
         },
       };
     });
@@ -137,10 +137,10 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     //   });
 
     if (!response?.data?.data) {
-      return nullMyDelegationInfo2;
+      return nullMyDelegationInfo;
     }
 
-    const data: MyDelegationInfo2 = response.data.data;
+    const data: MyDelegationInfo = response.data.data;
 
     return data;
   };
@@ -214,7 +214,7 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     return data;
   };
 
-  public getProposals2 = async (request: GetProposalsReqeust2): Promise<Proposals2Info> => {
+  public getProposals = async (request: GetProposalsReqeust): Promise<ProposalsInfo> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -222,7 +222,7 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     const response = await delay(1000).then(() => {
       return {
         data: {
-          data: MockGovernanceProposalsResponse as Proposals2Info,
+          data: MockGovernanceProposalsResponse as ProposalsInfo,
         },
       };
     });
@@ -235,16 +235,16 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     // ];
 
     // const response = await this.networkClient.get<{
-    //   data: Proposals2Info;
+    //   data: ProposalsInfo;
     // }>({
     //   url: `governance/proposals?${queries.filter(item => !!item).join("&")}`,
     // });
 
     if (!response?.data?.data) {
-      return nullProposals2Info;
+      return nullProposalsInfo;
     }
 
-    const data: Proposals2Info = response.data.data;
+    const data: ProposalsInfo = response.data.data;
 
     return data;
   };

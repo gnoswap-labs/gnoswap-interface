@@ -1,4 +1,4 @@
-export interface GovernanceSummaryInfo2 {
+export interface GovernanceSummaryInfo {
   delegationInfo: {
     totalDelegationAmount: string;
     governanceDelegationAmount: string;
@@ -9,7 +9,7 @@ export interface GovernanceSummaryInfo2 {
   communityPoolUsd: string;
 }
 
-export const nullGovernanceSummaryInfo2: GovernanceSummaryInfo2 = {
+export const nullGovernanceSummaryInfo: GovernanceSummaryInfo = {
   delegationInfo: {
     totalDelegationAmount: "0",
     governanceDelegationAmount: "0",

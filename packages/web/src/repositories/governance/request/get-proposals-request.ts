@@ -1,4 +1,4 @@
-export interface GetProposalsReqeust2 {
+export interface GetProposalsReqeust {
   isActive?: boolean;
   page?: number;
   size?: number;

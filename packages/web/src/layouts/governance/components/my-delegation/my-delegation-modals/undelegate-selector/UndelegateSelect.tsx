@@ -6,16 +6,16 @@ import IconArrowUp from "@components/common/icons/IconArrowUp";
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import useModalCloseEvent from "@hooks/common/use-modal-close-event";
-import { DelegationItemInfo2 } from "@repositories/governance";
+import { DelegationItemInfo } from "@repositories/governance";
 
 import UndelegateSelectItem from "./undelegate-select-item/UndelegateSelectItem";
 
 import { ToolTipContentWrapper, UndelegateSelectBox, UndelegateSelectWrapper } from "./UndelegateSelect.styles";
 
 export interface UndelegateSelectProps {
-  selectedDelegationInfo: DelegationItemInfo2 | null;
-  delegatedInfos: DelegationItemInfo2[];
-  select: (item: DelegationItemInfo2) => void;
+  selectedDelegationInfo: DelegationItemInfo | null;
+  delegatedInfos: DelegationItemInfo[];
+  select: (item: DelegationItemInfo) => void;
   isDisabled?: boolean;
 }
 

@@ -6,7 +6,7 @@ export const PROPOSAL_TYPE = {
 
 export type ProposalType = (typeof PROPOSAL_TYPE)[keyof typeof PROPOSAL_TYPE];
 
-export interface Proposals2PageInfo {
+export interface ProposalsPageInfo {
   currentPage: number;
   totalItems: number;
   totalPages: number;
@@ -30,7 +30,7 @@ export interface UserVotingInfo {
   votingWeight: number;
 }
 
-export interface Proposal2ItemInfo {
+export interface ProposalItemInfo {
   id: number;
   proposalType: ProposalType;
   title: string;
@@ -43,12 +43,12 @@ export interface Proposal2ItemInfo {
   userVotingInfo: UserVotingInfo;
 }
 
-export interface Proposals2Info {
-  proposals: Proposal2ItemInfo[];
-  pageInfo: Proposals2PageInfo;
+export interface ProposalsInfo {
+  proposals: ProposalItemInfo[];
+  pageInfo: ProposalsPageInfo;
 }
 
-export const nullProposals2Info: Proposals2Info = {
+export const nullProposalsInfo: ProposalsInfo = {
   proposals: [],
   pageInfo: {
     totalItems: 0,
@@ -76,7 +76,7 @@ export const nullUserVotingInfo: UserVotingInfo = {
   votingWeight: 0,
 };
 
-export const nullProposal2ItemInfo: Proposal2ItemInfo = {
+export const nullProposalItemInfo: ProposalItemInfo = {
   id: 0,
   proposalType: PROPOSAL_TYPE.PROPOSAL_TEXT,
   title: "",

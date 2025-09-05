@@ -12,10 +12,10 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import {
-  DelegationItemInfo2,
+  DelegationItemInfo,
   MyDelegate,
   MyDelegatesInfo,
-  MyDelegationInfo2,
+  MyDelegationInfo,
   MyUnDelegate,
   MyUnDelegatesInfo,
   VerifiedDelegateInfo,
@@ -39,7 +39,7 @@ import {
 interface MyDelegationProps {
   totalDelegatedAmount: number;
   apy: number;
-  myDelegationInfo: MyDelegationInfo2;
+  myDelegationInfo: MyDelegationInfo;
   myDelegates: MyDelegatesInfo;
   myUnDelegates: MyUnDelegatesInfo;
   delegatees: VerifiedDelegateInfo[];
@@ -76,7 +76,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   const { getTokenUSDPrice, tokens } = useTokenData();
   const [showUndel, setShowUndel] = useState(false);
 
-  const sortByAmountAndDate = useCallback((a: DelegationItemInfo2, b: DelegationItemInfo2) => {
+  const sortByAmountAndDate = useCallback((a: DelegationItemInfo, b: DelegationItemInfo) => {
     if (b.amount !== a.amount) {
       return b.amount - a.amount;
     }
@@ -85,10 +85,10 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
     return dateB.getTime() - dateA.getTime();
   }, []);
 
-  const myDelegatesInfo: DelegationItemInfo2[] = useMemo(() => {
+  const myDelegatesInfo: DelegationItemInfo[] = useMemo(() => {
     return myDelegates.delegates
       .map(
-        (item): DelegationItemInfo2 => ({
+        (item): DelegationItemInfo => ({
           address: item.address,
           name: item.name,
           logoUrl: item.logoURL,
@@ -101,10 +101,10 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
       .sort(sortByAmountAndDate);
   }, [myDelegates.delegates]);
 
-  const myUnDelegatesInfo: DelegationItemInfo2[] = useMemo(() => {
+  const myUnDelegatesInfo: DelegationItemInfo[] = useMemo(() => {
     return myUnDelegates.delegations
       .map(
-        (item): DelegationItemInfo2 => ({
+        (item): DelegationItemInfo => ({
           address: item.address,
           name: item.name,
           logoUrl: item.logoURL,

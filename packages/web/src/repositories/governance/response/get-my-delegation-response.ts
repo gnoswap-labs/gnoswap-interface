@@ -1,8 +1,8 @@
-import { ClaimableRewards2 } from "../model";
+import { ClaimableRewards } from "../model";
 
 export interface GetMyDelegation2Response {
   availableBalance: string;
-  claimableRewards: ClaimableRewards2[];
+  claimableRewards: ClaimableRewards[];
   claimableRewardUsd: string;
   unDelegatedAmount: string;
   withdrawableAmount: string;

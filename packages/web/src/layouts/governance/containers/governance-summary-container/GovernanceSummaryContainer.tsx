@@ -1,12 +1,12 @@
 import React from "react";
 
-import { useGetGovernanceSummary2, useGetCommunityPoolBalances } from "@query/governance";
-import { nullGovernanceSummaryInfo2 } from "@repositories/governance";
+import { useGetGovernanceSummary, useGetCommunityPoolBalances } from "@query/governance";
+import { nullGovernanceSummaryInfo } from "@repositories/governance";
 
 import GovernanceSummary from "../../components/governance-summary/GovernanceSummary";
 
 const GovernanceSummaryContainer: React.FC = () => {
-  const { data: governanceSummaryInfo, isFetched } = useGetGovernanceSummary2();
+  const { data: governanceSummaryInfo, isFetched } = useGetGovernanceSummary();
   const { data: governanceCommunityPoolBalances } = useGetCommunityPoolBalances();
 
   const communityPoolBalacnes = React.useMemo(() => {
@@ -16,7 +16,7 @@ const GovernanceSummaryContainer: React.FC = () => {
 
   return (
     <GovernanceSummary
-      governanceSummary={governanceSummaryInfo ?? nullGovernanceSummaryInfo2}
+      governanceSummary={governanceSummaryInfo ?? nullGovernanceSummaryInfo}
       governanceCommunityPoolBalances={communityPoolBalacnes}
       isLoading={!isFetched && !governanceSummaryInfo}
     />

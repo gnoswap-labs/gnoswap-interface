@@ -1,18 +1,18 @@
-export interface MyDelegationInfo2 {
+export interface MyDelegationInfo {
   availableBalance: string;
-  claimableRewards: ClaimableRewards2[];
+  claimableRewards: ClaimableRewards[];
   claimableRewardUsd: string;
   unDelegatedAmount: string;
   withdrawableAmount: string;
   votingWeight: string;
 }
 
-export interface ClaimableRewards2 {
+export interface ClaimableRewards {
   amount: string;
   path: string;
 }
 
-export const nullMyDelegationInfo2: MyDelegationInfo2 = {
+export const nullMyDelegationInfo: MyDelegationInfo = {
   availableBalance: "0",
   claimableRewards: [],
   claimableRewardUsd: "0",

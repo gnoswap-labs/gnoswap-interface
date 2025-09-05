@@ -15,7 +15,7 @@ import WarningCard from "@components/common/warning-card/WarningCard";
 import withLocalModal from "@components/hoc/with-local-modal";
 import { EXT_URL } from "@constants/external-url.contant";
 import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
-import { DelegationItemInfo2, nullDelegationItemInfo2 } from "@repositories/governance";
+import { DelegationItemInfo, nullDelegationItemInfo } from "@repositories/governance";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
 import UndelegateSelect from "./undelegate-selector/UndelegateSelect";
@@ -30,7 +30,7 @@ interface MyDelegationUndelegateModalProps {
   currentDelegatedAmount: number;
   totalDelegatedAmount: number;
   apy: number;
-  delegatedInfos: DelegationItemInfo2[];
+  delegatedInfos: DelegationItemInfo[];
   isWalletConnected: boolean;
   onSubmit: (fromName: string, fromAddress: string, amount: string) => void;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -52,7 +52,7 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
   const gnsAmountInput = useTokenAmountInput(GNS_TOKEN);
 
   const accumedDelegationInfo = useMemo(() => {
-    return delegatedInfos.reduce((acc: DelegationItemInfo2[], item: DelegationItemInfo2) => {
+    return delegatedInfos.reduce((acc: DelegationItemInfo[], item: DelegationItemInfo) => {
       let accumed = false;
       for (const accumedItem of acc) {
         if (accumedItem.address === item.address) {
@@ -68,8 +68,8 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
     }, []);
   }, [delegatedInfos]);
 
-  const [selectedDelegatedInfo, setSelectedDelegatedInfo] = useState<DelegationItemInfo2>(
-    accumedDelegationInfo.sort((a, b) => b.amount - a.amount)[0] || nullDelegationItemInfo2,
+  const [selectedDelegatedInfo, setSelectedDelegatedInfo] = useState<DelegationItemInfo>(
+    accumedDelegationInfo.sort((a, b) => b.amount - a.amount)[0] || nullDelegationItemInfo,
   );
 
   const showDelegateInfo = () => (

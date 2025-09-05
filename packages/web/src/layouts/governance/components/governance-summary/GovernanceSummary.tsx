@@ -6,7 +6,7 @@ import { GNS_TOKEN } from "@common/values/token-constant";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import { EXT_URL } from "@constants/external-url.contant";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { GovernanceSummaryInfo2, TokenBalance } from "@repositories/governance";
+import { GovernanceSummaryInfo, TokenBalance } from "@repositories/governance";
 
 import InfoBox from "../info-box/InfoBox";
 import TokenChip from "../token-chip/TokenChip";
@@ -28,7 +28,7 @@ export interface DisplayCommunityPoolBalance {
 }
 
 interface GovernanceSummaryProps {
-  governanceSummary: GovernanceSummaryInfo2;
+  governanceSummary: GovernanceSummaryInfo;
   governanceCommunityPoolBalances: TokenBalance[];
   isLoading: boolean;
 }

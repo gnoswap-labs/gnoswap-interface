@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconNewTab from "@components/common/icons/IconNewTab";
-import { Proposal2ItemInfo, PROPOSAL_TYPE } from "@repositories/governance";
+import { ProposalItemInfo, PROPOSAL_TYPE } from "@repositories/governance";
 
 import StatusBadge from "../../status-badge/StatusBadge";
 import TypeBadge from "../../type-badge/TypeBadge";
@@ -21,7 +21,7 @@ dayjs.extend(relative);
 interface Props {
   address: string;
   breakpoint: DEVICE_TYPE;
-  proposalDetail: Proposal2ItemInfo;
+  proposalDetail: ProposalItemInfo;
   isMajorityVoted: boolean;
   getTooltipTextI18nKey: (status: string, isMajorityVoted: boolean, yesVotes: number, noVotes: number) => string;
   onClickCard: (id: string) => void;

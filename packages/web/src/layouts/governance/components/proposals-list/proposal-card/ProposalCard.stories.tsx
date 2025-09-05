@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory } from "@storybook/react";
-import GetProposals2ResponseMock from "@repositories/governance/mock/get-proposals2-response.json";
-import { Proposal2ItemInfo } from "@repositories/governance";
+import GetProposals2ResponseMock from "@repositories/governance/mock/get-proposals-response.json";
+import { ProposalItemInfo } from "@repositories/governance";
 
 import ProposalCard from "./ProposalCard";
 
@@ -13,5 +13,5 @@ const Template: ComponentStory<typeof ProposalCard> = args => <ProposalCard {...
 
 export const Default = Template.bind({});
 Default.args = {
-  proposalDetail: GetProposals2ResponseMock.proposals[0] as Proposal2ItemInfo,
+  proposalDetail: GetProposals2ResponseMock.proposals[0] as ProposalItemInfo,
 };

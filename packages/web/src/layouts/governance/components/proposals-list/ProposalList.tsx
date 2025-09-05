@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 
 import withIntersection from "@components/hoc/with-intersection";
-import { Proposal2ItemInfo } from "@repositories/governance";
+import { ProposalItemInfo } from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
 
 import ProposalCard from "./proposal-card/ProposalCard";
@@ -25,7 +25,7 @@ export interface ProposalListProps {
   toggleIsShowActiveOnly: () => void;
   myVotingWeight: number;
   proposalCreationThreshold: number;
-  proposalList: Proposal2ItemInfo[];
+  proposalList: ProposalItemInfo[];
   fetchMore: () => void;
   selectedProposalId: number;
   setSelectedProposalId: Dispatch<SetStateAction<number>>;
@@ -129,7 +129,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
     [],
   );
 
-  const calculateIsMajorityVoted = (proposalDetail: Proposal2ItemInfo) => {
+  const calculateIsMajorityVoted = (proposalDetail: ProposalItemInfo) => {
     const { votingInfo } = proposalDetail;
     const totalVoting = votingInfo.yesVotingWeight + votingInfo.noVotingWeight;
     return totalVoting >= votingInfo.quorumAmount;
@@ -145,7 +145,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
       />
       {proposalList && proposalList.length > 0 && (
         <>
-          {proposalList.map((proposalDetail: Proposal2ItemInfo, index: number) => {
+          {proposalList.map((proposalDetail: ProposalItemInfo, index: number) => {
             const Card = index < proposalList.length - 1 ? ProposalCard : LastCard;
             const isMajorityVoted = calculateIsMajorityVoted(proposalDetail);
             return (

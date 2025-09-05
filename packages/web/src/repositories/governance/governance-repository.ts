@@ -1,14 +1,14 @@
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import {
-  GovernanceSummaryInfo2,
-  MyDelegationInfo2,
+  MyDelegationInfo,
   MyDelegatesInfo,
   MyUnDelegatesInfo,
-  Proposals2Info,
+  ProposalsInfo,
   ProposalDetailsInfo,
   ProposalParameterInfo,
   VerifiedDelegatesInfo,
   CommunityPoolBalancesInfo,
+  GovernanceSummaryInfo,
 } from "./model";
 import {
   GetMyDelegationRequest,
@@ -23,45 +23,27 @@ import {
   SendRedelegateReqeust,
   SendUndelegateReqeust,
   SendVoteReqeust,
-  GetProposalsReqeust2,
+  GetProposalsReqeust,
   GetProposalDetailsRequest,
 } from "./request";
 
 export interface GovernanceRepository {
-  getGovernanceSummary2: () => Promise<GovernanceSummaryInfo2>;
+  getGovernanceSummary: () => Promise<GovernanceSummaryInfo>;
 
-  getMyDelegation2: (request: GetMyDelegationRequest) => Promise<MyDelegationInfo2>;
+  getMyDelegation: (request: GetMyDelegationRequest) => Promise<MyDelegationInfo>;
 
-  /**
-   * @new feature
-   */
   getMyDelegates: (request: GetMyDelegatesRequest) => Promise<MyDelegatesInfo>;
 
-  /**
-   * @new feature
-   */
   getMyUnDelegates: (request: GetMyUnDelegatesRequest) => Promise<MyUnDelegatesInfo>;
 
-  getProposals2: (request: GetProposalsReqeust2) => Promise<Proposals2Info>;
+  getProposals: (request: GetProposalsReqeust) => Promise<ProposalsInfo>;
 
-  /**
-   * @new feature
-   */
   getProposalDetails: (request: GetProposalDetailsRequest) => Promise<ProposalDetailsInfo>;
 
-  /**
-   * @new feature
-   */
   getProposalParameters: () => Promise<ProposalParameterInfo>;
 
-  /**
-   * @new feature
-   */
   getVerifiedDelegates: () => Promise<VerifiedDelegatesInfo>;
 
-  /**
-   * @new feature
-   */
   getCommunityPoolBalances: () => Promise<CommunityPoolBalancesInfo>;
 
   sendProposeText: (request: SendProposeTextReqeust) => Promise<WalletResponse<{ hash: string }>>;

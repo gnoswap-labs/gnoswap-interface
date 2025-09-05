@@ -12,7 +12,7 @@ import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { LaunchpadParticipationModel } from "@models/launchpad";
-import { useGetMyDelegation2 } from "@query/governance";
+import { useGetMyDelegation } from "@query/governance";
 import { useGetLastedBlockHeight } from "@query/pools";
 import { useGetAllTokenPrices } from "@query/token";
 import { DexEvent } from "@repositories/common";
@@ -59,7 +59,7 @@ export const useLaunchpadHandler = () => {
   const { data: tokenPriceMap } = useGetAllTokenPrices();
   const { t } = useTranslation();
   const { openModal } = useConnectWalletModal();
-  const { data: myDelegationInfo } = useGetMyDelegation2({
+  const { data: myDelegationInfo } = useGetMyDelegation({
     address: account?.address || "",
   });
   const xGnsBalance = myDelegationInfo?.votingWeight;
