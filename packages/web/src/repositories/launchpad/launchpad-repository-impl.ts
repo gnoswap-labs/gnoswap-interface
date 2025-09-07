@@ -27,6 +27,8 @@ import {
   nullLaunchpadSummaryInfo,
   LaunchpadProjectsInfo,
   nullLaunchpadProjectsInfo,
+  LaunchpadProjectDetailsInfo,
+  nullLaunchpadProjectDetailsInfo,
 } from "./model";
 
 interface APIResponse<T> {
@@ -92,19 +94,30 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
     return data;
   };
 
-  getLaunchpadProjectDetails(projectId: string): Promise<GetLaunchpadProjectDetailsResponse> {
+  getLaunchpadProjectDetails = async (projectId: string): Promise<LaunchpadProjectDetailsInfo> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
 
     const encodedProjectId = encodeURIComponent(projectId);
 
-    return this.networkClient
+    const response = await this.networkClient
       .get<APIResponse<GetLaunchpadProjectDetailsResponse>>({
         url: `launchpad/projects/${encodedProjectId}`,
       })
-      .then(result => result.data?.data);
-  }
+      .catch(e => {
+        console.error("Launchpad: Failed to fetch GetLaunchpadProjectDetailsError", e);
+        return null;
+      });
+
+    if (!response?.data?.data) {
+      return nullLaunchpadProjectDetailsInfo;
+    }
+
+    const data: LaunchpadProjectDetailsInfo = response.data.data;
+
+    return data;
+  };
 
   getLaunchpadParticipationInfos(projectId: string, address: string): Promise<GetLaunchpadParticipationInfosResponse> {
     if (!this.networkClient) {

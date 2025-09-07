@@ -55,9 +55,23 @@ export interface LaunchpadProjectsInfo {
   lastCursor: string | null;
 }
 
+// null objects
 export const nullLaunchpadProjectsInfo: LaunchpadProjectsInfo = {
   projects: [],
   lastCursor: null,
+};
+
+export const nullLaunchpadProjectInfo: LaunchpadProjectInfo = {
+  id: 0,
+  projectId: "",
+  status: LAUNCHPAD_STATUS.NONE,
+  name: "",
+  rewardTokenPath: "",
+  rewardTokenSymbol: "",
+  rewardTokenDecimals: 0,
+  rewardTokenLogoUrl: null,
+  description: null,
+  pools: [],
 };
 
 export interface LaunchpadParticipationInfo {
