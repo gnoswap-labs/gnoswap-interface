@@ -1,5 +1,5 @@
-import { LaunchpadProjectInfo } from "../model";
+import { LaunchpadProjectDetailsItemInfo } from "../model";
 
 export interface GetLaunchpadProjectDetailsResponse {
-  project: LaunchpadProjectInfo;
+  project: LaunchpadProjectDetailsItemInfo;
 }

@@ -13,11 +13,6 @@ export const POOL_TIER = {
 } as const;
 export type PoolTierType = (typeof POOL_TIER)[keyof typeof POOL_TIER];
 
-export interface LaunchpadProjectConditionInfo {
-  tokenPath: string;
-  leastTokenAmount: number;
-}
-
 export interface LaunchpadPoolInfo {
   id: number;
   projectPoolId: string;
