@@ -22,6 +22,12 @@ import {
   GetLaunchpadProjectsResponse,
   GetLaunchpadSummaryResponse,
 } from "./response";
+import {
+  LaunchpadSummaryInfo,
+  nullLaunchpadSummaryInfo,
+  LaunchpadProjectsInfo,
+  nullLaunchpadProjectsInfo,
+} from "./model";
 
 interface APIResponse<T> {
   data: T;
@@ -38,31 +44,53 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
     this.gnoProvider = gnoProvider;
   }
 
-  getLaunchpadSummary(): Promise<GetLaunchpadSummaryResponse> {
+  getLaunchpadSummary = async (): Promise<LaunchpadSummaryInfo> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
 
-    return this.networkClient
+    const response = await this.networkClient
       .get<APIResponse<GetLaunchpadSummaryResponse>>({
         url: "launchpad/summary",
       })
-      .then(result => result.data?.data);
-  }
+      .catch(e => {
+        console.error("Launchpad: Failed to fetch GetLaunchpadSummaryError", e);
+        return null;
+      });
 
-  getLaunchpadProjects(params: GetLaunchpadProjectsRequestParameters): Promise<GetLaunchpadProjectsResponse> {
+    if (!response?.data?.data) {
+      return nullLaunchpadSummaryInfo;
+    }
+
+    const data: LaunchpadSummaryInfo = response.data.data;
+
+    return data;
+  };
+
+  getLaunchpadProjects = async (params: GetLaunchpadProjectsRequestParameters): Promise<LaunchpadProjectsInfo> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
 
     const requestParams = makeQueryParameter({ ...params });
 
-    return this.networkClient
+    const response = await this.networkClient
       .get<APIResponse<GetLaunchpadProjectsResponse>>({
         url: `launchpad/projects${requestParams}`,
       })
-      .then(result => result.data?.data);
-  }
+      .catch(e => {
+        console.error("Launchpad: Failed to fetch GetLaunchpadProjectsError", e);
+        return null;
+      });
+
+    if (!response?.data?.data) {
+      return nullLaunchpadProjectsInfo;
+    }
+
+    const data: LaunchpadProjectsInfo = response.data.data;
+
+    return data;
+  };
 
   getLaunchpadProjectDetails(projectId: string): Promise<GetLaunchpadProjectDetailsResponse> {
     if (!this.networkClient) {
