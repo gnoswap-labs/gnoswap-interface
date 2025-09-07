@@ -44,9 +44,9 @@ describe("sortTokenPaths utility function test", () => {
   });
 
   test("Testing real-world use cases", () => {
-    const tokens = ["gno.land/r/gnoswap/v1/gns", "gno.land/r/demo/wugnot"];
+    const tokens = ["gno.land/r/gnoswap/v1/gns", "gno.land/r/gnoland/wugnot"];
     // Result of tokens.sort() as of 2024-12-17
-    const expectedSort = ["gno.land/r/demo/wugnot", "gno.land/r/gnoswap/v1/gns"];
+    const expectedSort = ["gno.land/r/gnoland/wugnot", "gno.land/r/gnoswap/v1/gns"];
 
     expect([...tokens].sort(sortTokenPaths)).toEqual(expectedSort);
   });
