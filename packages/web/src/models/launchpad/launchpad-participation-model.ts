@@ -1,4 +1,6 @@
 import { TokenModel } from "@models/token/token-model";
+import { LaunchpadStatusType } from "./launchpad-project-model";
+import { PoolTierType } from "./launchpad-pool-model";
 
 export interface LaunchpadParticipationModel {
   id: number;
@@ -9,9 +11,9 @@ export interface LaunchpadParticipationModel {
 
   depositId: string;
 
-  poolTier: "TIER_30" | "TIER_90" | "TIER_180";
+  poolTier: PoolTierType;
 
-  status: string;
+  status: LaunchpadStatusType;
 
   depositAmount: number;
 

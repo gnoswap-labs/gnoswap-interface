@@ -2,7 +2,7 @@ import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
-import { LaunchpadProjectDetailsItemInfo } from "@repositories/launchpad/model";
+import { LaunchpadProjectDetailsInfo } from "@repositories/launchpad/model";
 import { QUERY_KEY } from "../query-keys";
 import { LaunchpadError } from "@common/errors/launchpad";
 
@@ -10,11 +10,11 @@ const REFETCH_INTERVAL = 60_000;
 
 export const useGetLaunchpadProjectDetails = (
   projectId: string | null,
-  options?: UseQueryOptions<LaunchpadProjectDetailsItemInfo, Error>,
+  options?: UseQueryOptions<LaunchpadProjectDetailsInfo["project"], Error>,
 ) => {
   const { launchpadRepository } = useGnoswapContext();
 
-  return useQuery<LaunchpadProjectDetailsItemInfo, Error>({
+  return useQuery<LaunchpadProjectDetailsInfo["project"], Error>({
     queryKey: [QUERY_KEY.launchpadProjectDetails, projectId],
     queryFn: () => {
       if (!projectId) {

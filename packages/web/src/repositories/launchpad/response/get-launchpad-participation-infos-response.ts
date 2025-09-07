@@ -1,5 +1,5 @@
-import { LaunchpadParticipationResponse } from "./launchpad-response";
+import { LaunchpadParticipationModel } from "@models/launchpad";
 
 export interface GetLaunchpadParticipationInfosResponse {
-  participationInfos: LaunchpadParticipationResponse[];
+  participationInfos: LaunchpadParticipationModel[];
 }

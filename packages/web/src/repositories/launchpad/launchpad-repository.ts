@@ -1,14 +1,10 @@
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { GetLaunchpadProjectsRequestParameters } from "./request";
-import {
-  LaunchpadSummaryInfo,
-  LaunchpadProjectsInfo,
-  LaunchpadProjectDetailsInfo,
-  LaunchpadParticipationInfo,
-} from "./model";
+import { LaunchpadProjectSummaryModel } from "@models/launchpad";
+import { LaunchpadProjectsInfo, LaunchpadProjectDetailsInfo, LaunchpadParticipationInfo } from "./model";
 
 export interface LaunchpadRepository {
-  getLaunchpadSummary(): Promise<LaunchpadSummaryInfo>;
+  getLaunchpadSummary(): Promise<LaunchpadProjectSummaryModel>;
 
   getLaunchpadProjects(params: GetLaunchpadProjectsRequestParameters): Promise<LaunchpadProjectsInfo>;
 

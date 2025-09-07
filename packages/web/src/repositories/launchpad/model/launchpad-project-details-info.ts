@@ -1,25 +1,12 @@
-import { LaunchpadProjectItemInfo, nullLaunchpadProjectInfo } from "./launchpad-projects-info";
-
-export interface LaunchpadProjectConditionInfo {
-  tokenPath: string;
-  leastTokenAmount: number;
-}
-
-export interface LaunchpadProjectDetailsItemInfo extends LaunchpadProjectItemInfo {
-  conditions: LaunchpadProjectConditionInfo[];
-  descriptionDetails: string | null;
-  websiteUrl: string | null;
-  twitterUrl: string | null;
-  discordUrl: string | null;
-  docsUrl: string | null;
-}
+import { nullLaunchpadProjectInfo } from "./launchpad-projects-info";
+import { LaunchpadProjectDetailsModel } from "@models/launchpad";
 
 export interface LaunchpadProjectDetailsInfo {
-  project: LaunchpadProjectDetailsItemInfo;
+  project: LaunchpadProjectDetailsModel;
 }
 
 // null objects
-export const nullLaunchpadProjectDetailsIteminfo: LaunchpadProjectDetailsItemInfo = {
+export const nullLaunchpadProjectDetailsIteminfo: LaunchpadProjectDetailsModel = {
   ...nullLaunchpadProjectInfo,
   conditions: [],
   descriptionDetails: null,
@@ -28,6 +15,7 @@ export const nullLaunchpadProjectDetailsIteminfo: LaunchpadProjectDetailsItemInf
   discordUrl: null,
   docsUrl: null,
 };
+
 export const nullLaunchpadProjectDetailsInfo = {
   project: nullLaunchpadProjectDetailsIteminfo,
 };

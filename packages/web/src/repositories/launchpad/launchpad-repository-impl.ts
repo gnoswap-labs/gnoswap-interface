@@ -23,15 +23,15 @@ import {
   GetLaunchpadSummaryResponse,
 } from "./response";
 import {
-  LaunchpadSummaryInfo,
-  nullLaunchpadSummaryInfo,
   LaunchpadProjectsInfo,
   nullLaunchpadProjectsInfo,
   LaunchpadProjectDetailsInfo,
   nullLaunchpadProjectDetailsInfo,
   LaunchpadParticipationInfo,
   nullLaunchpadParticipationInfo,
+  nullLaunchpadSummaryInfo,
 } from "./model";
+import { LaunchpadProjectSummaryModel } from "@models/launchpad";
 
 interface APIResponse<T> {
   data: T;
@@ -48,7 +48,7 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
     this.gnoProvider = gnoProvider;
   }
 
-  getLaunchpadSummary = async (): Promise<LaunchpadSummaryInfo> => {
+  getLaunchpadSummary = async (): Promise<LaunchpadProjectSummaryModel> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -66,7 +66,7 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
       return nullLaunchpadSummaryInfo;
     }
 
-    const data: LaunchpadSummaryInfo = response.data.data;
+    const data: LaunchpadProjectSummaryModel = response.data.data;
 
     return data;
   };

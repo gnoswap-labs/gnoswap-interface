@@ -1,5 +1,8 @@
 type LaunchpadStatusType = "NONE" | "UPCOMING" | "ONGOING" | "ENDED";
 
+/**
+ * @deprecated
+ */
 export interface LaunchpadProjectResponse {
   id: number;
 
@@ -22,6 +25,9 @@ export interface LaunchpadProjectResponse {
   pools: LaunchpadPoolResponse[];
 }
 
+/**
+ * @deprecated
+ */
 export interface LaunchpadProjectDetailsResponse {
   id: number;
 
@@ -96,6 +102,9 @@ export interface LaunchpadProjectConditionResponse {
   leastTokenAmount: number;
 }
 
+/**
+ * @deprecated
+ */
 export interface LaunchpadParticipationResponse {
   id: number;
 
@@ -107,7 +116,7 @@ export interface LaunchpadParticipationResponse {
 
   poolTier: "TIER_30" | "TIER_90" | "TIER_180";
 
-  status: string;
+  status: LaunchpadStatusType;
 
   depositAmount: number;
 

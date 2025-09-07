@@ -1,6 +1,12 @@
 import { LaunchpadPoolModel } from "./launchpad-pool-model";
 
-type LaunchpadStatusType = "NONE" | "UPCOMING" | "ONGOING" | "ENDED";
+export const LAUNCHPAD_STATUS = {
+  NONE: "NONE",
+  UPCOMING: "UPCOMING",
+  ONGOING: "ONGOING",
+  ENDED: "ENDED",
+} as const;
+export type LaunchpadStatusType = (typeof LAUNCHPAD_STATUS)[keyof typeof LAUNCHPAD_STATUS];
 
 export interface LaunchpadProjectModel {
   id: number;
@@ -24,28 +30,8 @@ export interface LaunchpadProjectModel {
   pools: LaunchpadPoolModel[];
 }
 
-export interface LaunchpadProjectDetailsModel {
-  id: number;
-
-  projectId: string;
-
-  status: string;
-
-  name: string;
-
+export interface LaunchpadProjectDetailsModel extends LaunchpadProjectModel {
   conditions: LaunchpadProjectConditionModel[];
-
-  pools: LaunchpadPoolModel[];
-
-  rewardTokenPath: string;
-
-  rewardTokenSymbol: string;
-
-  rewardTokenDecimals: number;
-
-  rewardTokenLogoUrl: string | null;
-
-  description: string | null;
 
   descriptionDetails: string | null;
 
