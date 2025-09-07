@@ -7,6 +7,13 @@ import IconCheck from "@components/common/icons/IconCheck";
 import { DEVICE_TYPE } from "@styles/media";
 
 import { VoteButtonsWrapper } from "./VoteButtons.styles";
+import { ProposalDetailsItemInfo } from "@repositories/governance";
+
+interface VoteButtonInfo {
+  type: ProposalDetailsItemInfo["userVotingInfo"]["voteType"];
+  label: string;
+  count: number;
+}
 
 interface VoteButtonsWrapper {
   isClickable: boolean;
@@ -41,9 +48,9 @@ const VoteButtons: React.FC<VoteButtonsWrapper> = ({
     );
   }, [breakpoint]);
 
-  const buttons = [
-    { type: "YES" as const, label: t("Governance:vote.yes"), count: yesCount },
-    { type: "NO" as const, label: t("Governance:vote.no"), count: noCount },
+  const buttons: VoteButtonInfo[] = [
+    { type: "YES", label: t("Governance:vote.yes"), count: yesCount },
+    { type: "NO", label: t("Governance:vote.no"), count: noCount },
   ];
 
   return (
