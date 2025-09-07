@@ -66,15 +66,15 @@ export const WUGNOT_TOKEN: TokenModel = {
   type: "GRC20",
   chainId: "portal-loop",
   name: "wrapped GNOT",
-  path: "gno.land/r/demo/wugnot",
+  path: "gno.land/r/gnoland/wugnot",
   decimals: 6,
   symbol: "WUGNOT",
   logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_demo_wugnot.svg",
-  priceID: "gno.land/r/demo/wugnot",
+  priceID: "gno.land/r/gnoland/wugnot",
   description:
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc tincidunt ultricies. Nullam nec purus nec nunc tincidunt ultricies.",
-  websiteURL: "https://gno.land/r/demo/wugnot",
-  wrappedPath: "gno.land/r/demo/wugnot",
+  websiteURL: "https://gno.land/r/gnoland/wugnot",
+  wrappedPath: "gno.land/r/gnoland/wugnot",
   createdAt: "0001-01-01T00:00:00Z",
 };
 
