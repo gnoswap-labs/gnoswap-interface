@@ -8,10 +8,9 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 
 interface LaunchpadMainContainerProps {
   themeKey: ThemeKeys;
-  icon: React.ReactNode;
 }
 
-const LaunchpadMainContainer: React.FC<LaunchpadMainContainerProps> = ({ themeKey, icon }) => {
+const LaunchpadMainContainer: React.FC<LaunchpadMainContainerProps> = ({ themeKey }) => {
   const { data: launchpadSummary, isLoading: isLoadingSummary, isFetched: isFetchedSummary } = useGetLaunchpadSummary();
 
   const { breakpoint } = useWindowSize();
@@ -23,7 +22,6 @@ const LaunchpadMainContainer: React.FC<LaunchpadMainContainerProps> = ({ themeKe
       isFetched={isFetchedSummary}
       breakpoint={breakpoint}
       themeKey={themeKey}
-      icon={icon}
     />
   );
 };

@@ -14,6 +14,7 @@ import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { ThemeKeys } from "@styles/ThemeTypes";
 import { toNumberFormat } from "@utils/number-utils";
 import { Trans, useTranslation } from "react-i18next";
+import IconLaunchpadMain from "@components/common/icons/IconLaunchpadMain";
 
 interface LaunchpadMainProps {
   data?: LaunchpadProjectSummaryModel;
@@ -21,10 +22,9 @@ interface LaunchpadMainProps {
   isFetched: boolean;
   breakpoint: DEVICE_TYPE;
   themeKey: ThemeKeys;
-  icon: React.ReactNode;
 }
 
-const LaunchpadMain: React.FC<LaunchpadMainProps> = ({ data, isLoading, breakpoint, themeKey, icon }) => {
+const LaunchpadMain: React.FC<LaunchpadMainProps> = ({ data, isLoading, breakpoint, themeKey }) => {
   const { t } = useTranslation();
   const defaultStyle: ButtonStyleProps = {
     textColor: "text32",
@@ -121,7 +121,7 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({ data, isLoading, breakpoi
             <h3 className="mobile-title">{t("Launchpad:main.title")}</h3>
           </div>
         )}
-        {icon}
+        <IconLaunchpadMain themeKey={themeKey} className="icon-launchpad" />
       </div>
     </>
   );
