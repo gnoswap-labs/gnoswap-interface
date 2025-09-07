@@ -1,9 +1,7 @@
 import React from "react";
-import { useAtomValue } from "jotai";
 
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import Footer from "@components/common/footer/Footer";
-import { ThemeState } from "@states/index";
 
 import LaunchpadLayout from "./LaunchpadLayout";
 import LaunchpadActiveProjectContainer from "./containers/launchpad-active-project-container/LaunchpadActiveProjectContainer";
@@ -11,12 +9,10 @@ import LaunchpadMainContainer from "./containers/launchpad-main-container/Launch
 import LaunchpadProjectListContainer from "./containers/launchpad-project-list-container/LaunchpadProjectListContainer";
 
 const Launchpad: React.FC = () => {
-  const themeKey = useAtomValue(ThemeState.themeKey);
-
   return (
     <LaunchpadLayout
       header={<HeaderContainer />}
-      main={<LaunchpadMainContainer themeKey={themeKey} />}
+      main={<LaunchpadMainContainer />}
       activeProjects={<LaunchpadActiveProjectContainer />}
       projectList={<LaunchpadProjectListContainer />}
       footer={<Footer />}
