@@ -41,32 +41,28 @@ const VoteButtons: React.FC<VoteButtonsWrapper> = ({
     );
   }, [breakpoint]);
 
+  const buttons = [
+    { type: "YES" as const, label: t("Governance:vote.yes"), count: yesCount },
+    { type: "NO" as const, label: t("Governance:vote.no"), count: noCount },
+  ];
+
   return (
     <VoteButtonsWrapper>
-      <div
-        className={[
-          "vote-button",
-          isClickable && selectedVote === "YES" ? "active-button" : "",
-          isClickable && votedType === "" ? "use-hover" : "",
-        ].join(" ")}
-        onClick={() => !votedType && setSelectedVote("YES")}
-      >
-        <span>{t("Governance:vote.yes")}</span>
-        <div>{yesCount.toLocaleString("en", { maximumFractionDigits: 0 })}</div>
-        {isVoted && votedType === "YES" && votedBadge}
-      </div>
-      <div
-        className={[
-          "vote-button",
-          isClickable && selectedVote === "NO" ? "active-button" : "",
-          isClickable && votedType === "" ? "use-hover" : "",
-        ].join(" ")}
-        onClick={() => !votedType && setSelectedVote("NO")}
-      >
-        <span>{t("Governance:vote.no")}</span>
-        <div>{noCount.toLocaleString("en", { maximumFractionDigits: 0 })}</div>
-        {isVoted && votedType === "NO" && votedBadge}
-      </div>
+      {buttons.map(({ type, label, count }) => (
+        <div
+          key={type}
+          className={[
+            "vote-button",
+            isClickable && selectedVote === type ? "active-button" : "",
+            isClickable && votedType === "" ? "use-hover" : "",
+          ].join(" ")}
+          onClick={() => !votedType && setSelectedVote(type)}
+        >
+          <span>{label}</span>
+          <div>{count.toLocaleString("en", { maximumFractionDigits: 0 })}</div>
+          {isVoted && votedType === type && votedBadge}
+        </div>
+      ))}
     </VoteButtonsWrapper>
   );
 };

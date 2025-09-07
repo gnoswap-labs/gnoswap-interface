@@ -72,7 +72,7 @@ export const nullVotingInfo: VotingInfo = {
 
 export const nullUserVotingInfo: UserVotingInfo = {
   isVoted: false,
-  voteType: "NO",
+  voteType: "" as UserVotingInfo["voteType"],
   votingWeight: 0,
 };
 
