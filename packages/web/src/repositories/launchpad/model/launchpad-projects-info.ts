@@ -37,7 +37,7 @@ export interface LaunchpadPoolInfo {
   claimableThreshold: number;
 }
 
-export interface LaunchpadProjectInfo {
+export interface LaunchpadProjectItemInfo {
   id: number;
   projectId: string;
   status: LaunchpadStatusType;
@@ -51,7 +51,7 @@ export interface LaunchpadProjectInfo {
 }
 
 export interface LaunchpadProjectsInfo {
-  projects: LaunchpadProjectInfo[];
+  projects: LaunchpadProjectItemInfo[];
   lastCursor: string | null;
 }
 
@@ -61,7 +61,7 @@ export const nullLaunchpadProjectsInfo: LaunchpadProjectsInfo = {
   lastCursor: null,
 };
 
-export const nullLaunchpadProjectInfo: LaunchpadProjectInfo = {
+export const nullLaunchpadProjectInfo: LaunchpadProjectItemInfo = {
   id: 0,
   projectId: "",
   status: LAUNCHPAD_STATUS.NONE,
@@ -73,26 +73,3 @@ export const nullLaunchpadProjectInfo: LaunchpadProjectInfo = {
   description: null,
   pools: [],
 };
-
-export interface LaunchpadParticipationInfo {
-  id: number;
-  projectId: string;
-  projectPoolId: string;
-  depositId: string;
-  poolTier: PoolTierType;
-  status: string;
-  depositAmount: number;
-  rewardToken: string;
-  rewardTokenPath: string;
-  createTime: string;
-  startTime: string;
-  endTime: string;
-  claimableTime: string;
-  createBlockHeight: number;
-  startBlockHeight: number;
-  endBlockHeight: number;
-  claimableBlockHeight: number;
-  claimableRewardAmount: number;
-  claimedRewardAmount: number;
-  depositAPR: number | null;
-}

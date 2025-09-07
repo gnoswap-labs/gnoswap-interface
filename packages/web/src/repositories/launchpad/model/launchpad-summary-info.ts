@@ -4,6 +4,7 @@ export interface LaunchpadSummaryInfo {
   totalDistributedAmount: number;
 }
 
+// null objects
 export const nullLaunchpadSummaryInfo: LaunchpadSummaryInfo = {
   totalDepositedGNSAmount: 0,
   totalParticipants: 0,

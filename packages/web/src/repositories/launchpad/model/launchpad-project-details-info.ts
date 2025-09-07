@@ -1,9 +1,10 @@
-import { LaunchpadProjectInfo, nullLaunchpadProjectInfo } from "./launchpad-projects-info";
+import { LaunchpadProjectItemInfo, nullLaunchpadProjectInfo } from "./launchpad-projects-info";
 
 export interface LaunchpadProjectDetailsInfo {
-  project: LaunchpadProjectInfo;
+  project: LaunchpadProjectItemInfo;
 }
 
+// null objects
 export const nullLaunchpadProjectDetailsInfo = {
   project: nullLaunchpadProjectInfo,
 };
