@@ -5,6 +5,7 @@ import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { QUERY_KEY } from "../query-keys";
 
 const REFETCH_INTERVAL = 60_000;
+const PAGE_SIZE = 1_000;
 
 export const useGetLaunchpadActiveProjects = (options?: UseQueryOptions<LaunchpadProjectModel[], Error>) => {
   const { launchpadRepository } = useGnoswapContext();
@@ -14,7 +15,7 @@ export const useGetLaunchpadActiveProjects = (options?: UseQueryOptions<Launchpa
     queryFn: () => {
       return launchpadRepository
         .getLaunchpadProjects({
-          size: 1_000,
+          size: PAGE_SIZE,
           isActive: true,
         })
         .then(response => response.projects);
