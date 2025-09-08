@@ -38,6 +38,20 @@ export const ViewProposalModalWrapper = styled.div`
         }
       }
     }
+
+    .animation {
+      ${mixins.flexbox("row", "center", "center")};
+      width: 100%;
+      align-self: stretch;
+      .animation-logo {
+        width: 72px;
+        height: auto;
+        ${media.mobile} {
+          width: 60px;
+          height: 54px;
+        }
+      }
+    }
   }
 `;
 

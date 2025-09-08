@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from "react";
 import { useTranslation } from "react-i18next";
 
 import withIntersection from "@components/hoc/with-intersection";
-import { nullProposalItemInfo, ProposalItemInfo } from "@repositories/governance";
+import { ProposalItemInfo } from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
 
 import ProposalCard from "./proposal-card/ProposalCard";
@@ -103,10 +103,6 @@ const ProposalList: React.FC<ProposalListProps> = ({
     });
   };
 
-  const selectedProposalDetail = React.useMemo(() => {
-    return proposalList.find(item => item.id === selectedProposalId) || nullProposalItemInfo;
-  }, [proposalList, selectedProposalId]);
-
   const getTooltipTextI18nKey = React.useCallback(
     (status: string, isMajorityVoted: boolean, yesVotes: number, noVotes: number) => {
       if (isMajorityVoted) {
@@ -134,8 +130,9 @@ const ProposalList: React.FC<ProposalListProps> = ({
   );
 
   const calculateIsMajorityVoted = (proposalDetail: ProposalItemInfo) => {
-    const totalVotes = proposalDetail.votes.yes + proposalDetail.votes.no;
-    return totalVotes >= proposalDetail.votes.max / 2;
+    const { votingInfo } = proposalDetail;
+    const totalVoting = votingInfo.yesVotingWeight + votingInfo.noVotingWeight;
+    return totalVoting >= votingInfo.quorumAmount;
   };
 
   return (
@@ -173,8 +170,10 @@ const ProposalList: React.FC<ProposalListProps> = ({
       )}
       {selectedProposalId !== 0 && (
         <ViewProposalModal
+          address={address}
+          proposalId={selectedProposalId}
+          myVotingWeight={myVotingWeight}
           breakpoint={breakpoint}
-          proposalDetail={selectedProposalDetail}
           setIsModalOpen={(isOpen: boolean) => setSelectedProposalId(isOpen ? selectedProposalId : 0)}
           isConnected={isConnected}
           isSwitchNetwork={isSwitchNetwork}

@@ -80,13 +80,11 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
           <IconClose className="close-icon" />
         </div>
       </div>
-
       <UndelegateSelect
         delegatedInfos={accumedDelegationInfo}
         select={setSelectedDelegatedInfo}
         selectedDelegationInfo={selectedDelegatedInfo}
       />
-
       <article>
         <div className="section-title">{t("Governance:myDel.undelModal.step2.title")}</div>
         <TokenAmountInput
@@ -99,7 +97,6 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
           style={{ padding: "16px" }}
         />
       </article>
-
       <article>
         <div className="section-title">{t("Governance:myDel.undelModal.step3.title")}</div>
         <div className="info-rows">
@@ -154,7 +151,6 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
           }%`}</div>
         </div>
       </article>
-
       <WarningCard
         icon={<IconCircleExclamationMark />}
         title={t("Governance:myDel.undelModal.warning.title")}
@@ -168,7 +164,6 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
           </MyDelWarningContentWrapper>
         }
       />
-
       <Button
         onClick={() => {
           onSubmit(selectedDelegatedInfo.name, selectedDelegatedInfo.address, gnsAmountInput.amount);

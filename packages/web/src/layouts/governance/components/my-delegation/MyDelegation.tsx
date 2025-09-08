@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
@@ -8,9 +8,15 @@ import IconSwap from "@components/common/icons/IconSwap";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { useTokenData } from "@hooks/token/data/use-token-data";
-import { DelegateeInfo, MyDelegationInfo } from "@repositories/governance";
+import {
+  DelegationItemInfo,
+  MyDelegatesInfo,
+  MyDelegationInfo,
+  MyUnDelegatesInfo,
+  VerifiedDelegateInfo,
+} from "@repositories/governance";
 import { formatOtherPrice } from "@utils/new-number-utils";
-import { toNumberFormat } from "@utils/number-utils";
+import { rawToDisplayAmount, toNumberFormat } from "@utils/number-utils";
 
 import InfoBox from "../info-box/InfoBox";
 import TokenChip from "../token-chip/TokenChip";
@@ -29,7 +35,9 @@ interface MyDelegationProps {
   totalDelegatedAmount: number;
   apy: number;
   myDelegationInfo: MyDelegationInfo;
-  delegatees: DelegateeInfo[];
+  myDelegates: MyDelegatesInfo;
+  myUnDelegates: MyUnDelegatesInfo;
+  delegatees: VerifiedDelegateInfo[];
   isLoadingCommon: boolean;
   isLoadingMyDelegation: boolean;
   isWalletConnected: boolean;
@@ -44,6 +52,8 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   totalDelegatedAmount,
   apy,
   myDelegationInfo,
+  myDelegates,
+  myUnDelegates,
   delegatees,
   isLoadingCommon,
   isLoadingMyDelegation,
@@ -61,49 +71,62 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   const { getTokenUSDPrice, tokens } = useTokenData();
   const [showUndel, setShowUndel] = useState(false);
 
-  const delegationInfo = useMemo(() => {
-    const votingWeightInfos = myDelegationInfo.delegations
-      .filter(item => !item.unlockDate || item.unlockDate === "")
-      .sort((a, b) => {
-        if (b.amount !== a.amount) {
-          return b.amount - a.amount;
-        }
+  const sortByAmountAndDate = useCallback((a: DelegationItemInfo, b: DelegationItemInfo) => {
+    if (b.amount !== a.amount) {
+      return b.amount - a.amount;
+    }
+    const dateA = new Date(a.updatedDate || 0);
+    const dateB = new Date(b.updatedDate || 0);
+    return dateB.getTime() - dateA.getTime();
+  }, []);
 
-        return a.updatedDate.localeCompare(b.updatedDate);
-      });
+  const myDelegatesInfo: DelegationItemInfo[] = useMemo(() => {
+    return myDelegates.delegates
+      .map(
+        (item): DelegationItemInfo => ({
+          address: item.address,
+          name: item.name,
+          logoUrl: item.logoURL,
+          amount: Number(item.delegateAmount) || 0,
+          updatedDate: item.delegatedAt,
+          delegateAmount: item.delegateAmount,
+          delegatedAt: item.delegatedAt,
+        }),
+      )
+      .sort(sortByAmountAndDate);
+  }, [myDelegates.delegates]);
 
-    const undelegationInfos = myDelegationInfo.delegations
-      .filter(item => !!item.unlockDate)
-      .sort((a, b) => {
-        if (b.amount !== a.amount) {
-          return b.amount - a.amount;
-        }
+  const myUnDelegatesInfo: DelegationItemInfo[] = useMemo(() => {
+    return myUnDelegates.delegations
+      .map(
+        (item): DelegationItemInfo => ({
+          address: item.address,
+          name: item.name,
+          logoUrl: item.logoURL,
+          amount: Number(item.unDelegateAmount) || 0,
+          updatedDate: item.unDelegatedAt,
+          unDelegateAmount: item.unDelegateAmount,
+          unlockTime: item.unlockTime,
+          unDelegatedAt: item.unDelegatedAt,
+        }),
+      )
+      .sort(sortByAmountAndDate);
+  }, [myUnDelegates.delegations]);
 
-        return a.updatedDate.localeCompare(b.updatedDate);
-      });
-
-    const hasVotingWeight = votingWeightInfos.length > 0;
-    const hasUndelgated = undelegationInfos.length > 0;
-
-    return {
-      votingWeightInfos,
-      undelegationInfos,
-      hasVotingWeight,
-      hasUndelgated,
-    };
-  }, [myDelegationInfo.delegations]);
-
-  const { votingWeightInfos, undelegationInfos, hasVotingWeight, hasUndelgated } = delegationInfo;
+  const hasMyDelegates = myDelegatesInfo.length > 0;
+  const hasMyUnDelegates = myUnDelegatesInfo.length > 0;
 
   const rewardInfo = useMemo(() => {
     return myDelegationInfo.claimableRewards
       .map(reward => {
-        const usdValue = getTokenUSDPrice(reward.tokenPath, reward.amount) || 0;
-        const tokenInfo = tokens.find(token => token.path === reward.tokenPath);
+        const tokenInfo = tokens.find(token => token.path === reward.path);
+        const displayAmount = rawToDisplayAmount(reward.amount, tokenInfo?.decimals || 0);
+        const usdValue = getTokenUSDPrice(reward.path, displayAmount) || 0;
         const unwrappedTokenInfo = { ...tokenInfo, ...getGnotPath(tokenInfo) };
 
         return {
           ...reward,
+          amount: displayAmount,
           tokenPath: unwrappedTokenInfo.path,
           usdValue,
           tokenInfo: unwrappedTokenInfo,
@@ -111,26 +134,23 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
       })
       .sort((a, b) => b.usdValue - a.usdValue);
   }, [myDelegationInfo.claimableRewards, getTokenUSDPrice, tokens, getGnotPath]);
+
   /**
    * A delimiter showing voting weight information or undelegation information.
    */
-  const activatedDelegateInfoTab = useMemo(() => {
-    if (undelegationInfos.length === 0) {
-      return true;
-    }
+  const activatedDelegateInfoTab: boolean = useMemo(() => {
+    if (myUnDelegatesInfo.length === 0) return true;
     return !showUndel;
-  }, [showUndel, undelegationInfos.length]);
+  }, [showUndel, myUnDelegatesInfo.length]);
 
-  const hasUnlockItem = useMemo(() => {
-    return undelegationInfos.some(info => info.unlockDate && new Date(info.unlockDate) < new Date());
-  }, [showUndel, undelegationInfos]);
+  const hasUnlockItem: boolean = useMemo(() => {
+    return myUnDelegatesInfo.some(info => info.unlockTime && new Date(info.unlockTime) < new Date());
+  }, [showUndel, myUnDelegatesInfo]);
 
-  const visibleInfoTooltip = useMemo(() => {
-    if (activatedDelegateInfoTab) {
-      return hasVotingWeight;
-    }
-    return hasUndelgated;
-  }, [activatedDelegateInfoTab, hasUndelgated, hasVotingWeight]);
+  const visibleInfoTooltip: boolean = useMemo(() => {
+    if (activatedDelegateInfoTab) return hasMyDelegates;
+    return hasMyUnDelegates;
+  }, [activatedDelegateInfoTab, hasMyDelegates, hasMyUnDelegates]);
 
   /**
    * A delimiter showing reward information.
@@ -143,10 +163,10 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
    * Automatically switch to the voting weight tab if undelegationInfos is empty
    */
   useEffect(() => {
-    if (undelegationInfos.length === 0) {
+    if (myUnDelegatesInfo.length === 0) {
       setShowUndel(false);
     }
-  }, [undelegationInfos.length]);
+  }, [myUnDelegatesInfo.length]);
 
   return (
     <MyDelegationWrapper>
@@ -154,7 +174,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
         <div className="my-delegation-title">{t("Governance:myDel.title")}</div>
         <div className="delegate-buttons">
           <Button
-            disabled={isLoadingCommon || isLoadingMyDelegation || !isWalletConnected || votingWeightInfos.length === 0}
+            disabled={isLoadingCommon || isLoadingMyDelegation || !isWalletConnected || myDelegatesInfo.length === 0}
             style={{
               hierarchy: ButtonHierarchy.Primary,
               fontType: "p1",
@@ -184,10 +204,11 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
               title={t("Governance:myDel.availBal.title")}
               value={
                 <>
-                  {formatOtherPrice(myDelegationInfo.availableBalance, {
+                  {formatOtherPrice(rawToDisplayAmount(myDelegationInfo.availableBalance, GNS_TOKEN.decimals), {
                     isKMB: false,
                     usd: false,
                   })}
+
                   <TokenChip tokenInfo={GNS_TOKEN} />
                 </>
               }
@@ -203,7 +224,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                   forcedClose={!visibleInfoTooltip}
                   FloatingContent={
                     <MyDelegationTooltipContent>
-                      {(showUndel ? undelegationInfos : votingWeightInfos).map((item, index) => (
+                      {(showUndel ? myUnDelegatesInfo : myDelegatesInfo).map((item, index) => (
                         <div key={`del-item-${item.updatedDate}-${index}`} className="delegation-item">
                           {index !== 0 && <div className="divider" />}
                           <div className="info-row">
@@ -216,7 +237,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                           <div className="info-row">
                             <div className="info-subject">{t("Governance:myDel.tooltip.amount")}</div>
                             <div className="info-value">
-                              {item.amount.toLocaleString("en")} {GNS_TOKEN.symbol}
+                              {rawToDisplayAmount(item.amount, GNS_TOKEN.decimals)} {GNS_TOKEN.symbol}
                             </div>
                           </div>
                           <div className="info-row">
@@ -225,15 +246,15 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                             </div>
                             <div className="info-value">{dayjs(item.updatedDate).format("YYYY-MM-DD HH:mm:ss")}</div>
                           </div>
-                          {item.unlockDate && (
+                          {item.unlockTime && (
                             <div className="info-row">
                               <div className="info-subject">{t("Governance:myDel.tooltip.unlockDate")}</div>
-                              <div className="info-value">{dayjs(item.unlockDate).format("YYYY-MM-DD HH:mm:ss")}</div>
+                              <div className="info-value">{dayjs(item.unlockTime).format("YYYY-MM-DD HH:mm:ss")}</div>
                             </div>
                           )}
                         </div>
                       ))}
-                      {(activatedDelegateInfoTab ? votingWeightInfos : undelegationInfos).length === 0 ? (
+                      {(activatedDelegateInfoTab ? myDelegatesInfo : myUnDelegatesInfo).length === 0 ? (
                         <div className="no-data">{t("common:noData")}</div>
                       ) : null}
                     </MyDelegationTooltipContent>
@@ -243,11 +264,11 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 >
                   <div className={visibleInfoTooltip ? "value-wrapper-for-hover" : "value-wrapper"}>
                     {activatedDelegateInfoTab
-                      ? formatOtherPrice(myDelegationInfo.votingWeight, {
+                      ? formatOtherPrice(rawToDisplayAmount(myDelegationInfo.votingWeight, XGNS_TOKEN.decimals), {
                           isKMB: false,
                           usd: false,
                         })
-                      : formatOtherPrice(myDelegationInfo.undelegatedAmount, {
+                      : formatOtherPrice(rawToDisplayAmount(myDelegationInfo.unDelegatedAmount, XGNS_TOKEN.decimals), {
                           isKMB: false,
                           usd: false,
                         })}
@@ -261,7 +282,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                   : t("Governance:myDel.undel.tooltip")
               }
               titleButton={
-                hasUndelgated
+                hasMyUnDelegates
                   ? {
                       text: (
                         <div className="del-undel-switch">
@@ -279,7 +300,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 hasUnlockItem && !activatedDelegateInfoTab
                   ? {
                       text: t("Governance:myDel.undel.btn"),
-                      onClick: () => collectUndelegated(toNumberFormat(myDelegationInfo.undelegatedAmount, 2)),
+                      onClick: () => collectUndelegated(toNumberFormat(myDelegationInfo.unDelegatedAmount, 2)),
                     }
                   : undefined
               }
@@ -295,7 +316,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                       <div className="reward-info-total">
                         <span className="label">{t("Governance:myDel.reward.title")}</span>
                         <span className="value">
-                          {formatOtherPrice(myDelegationInfo.claimableRewardsUsd, { isKMB: false })}
+                          {formatOtherPrice(myDelegationInfo.claimableRewardUsd, { isKMB: false })}
                         </span>
                       </div>
                       {rewardInfo.map((reward, index) => {
@@ -318,7 +339,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                   placement="top"
                 >
                   <div className={visibleRewardInfoTooltip ? "value-wrapper-for-hover" : "value-wrapper"}>
-                    {formatOtherPrice(myDelegationInfo.claimableRewardsUsd, {
+                    {formatOtherPrice(myDelegationInfo.claimableRewardUsd, {
                       isKMB: false,
                     })}
                   </div>
@@ -331,7 +352,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                       text: t("Governance:myDel.reward.btn"),
                       onClick: () => {
                         collectReward(
-                          formatOtherPrice(myDelegationInfo.claimableRewardsUsd, {
+                          formatOtherPrice(myDelegationInfo.claimableRewardUsd, {
                             isKMB: false,
                           }),
                         );
@@ -360,7 +381,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
       </div>
       {isOpenDelegateModal && (
         <MyDelegationDelegateModal
-          currentDelegatedAmount={myDelegationInfo.votingWeight}
+          currentDelegatedAmount={Number(myDelegationInfo.votingWeight)}
           totalDelegatedAmount={totalDelegatedAmount}
           apy={apy}
           delegatees={delegatees}
@@ -372,10 +393,10 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
       )}
       {isOpenUndelegateModal && (
         <MyDelegationUndelegateModal
-          currentDelegatedAmount={myDelegationInfo.votingWeight}
+          currentDelegatedAmount={Number(myDelegationInfo.votingWeight)}
           totalDelegatedAmount={totalDelegatedAmount}
           apy={apy}
-          delegatedInfos={votingWeightInfos}
+          delegatedInfos={myDelegatesInfo}
           isWalletConnected={isWalletConnected}
           onSubmit={undelegateGNS}
           setIsOpen={setIsOpenUndelegateModal}

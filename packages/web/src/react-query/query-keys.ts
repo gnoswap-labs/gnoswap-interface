@@ -18,8 +18,14 @@ export enum QUERY_KEY {
   governanceSummary = "governanceSummary",
   governanceMyDelegation = "governanceMyDelegation",
   governanceProposals = "governanceProposals",
-  governanceDelegatees = "governanceDelegatees",
   governanceExecutableFunctions = "governanceExecutableFunctions",
+  governanceCommunityPoolBalances = "governanceCommunityPoolBalances",
+  governanceMyDelegates = "governanceMyDelegates",
+  governanceMyUnDelegates = "governanceMyUnDelegates",
+  governanceProposalDetails = "governanceProposalDetails",
+  governanceProposalParameters = "governanceProposalParameters",
+  governanceVerifiedDelegates = "governanceVerifiedDelegates",
+
   // leaderboard
   leaderboardList = "leaderboardList",
   leaderboardListByAddress = "leaderboardListByAddress",

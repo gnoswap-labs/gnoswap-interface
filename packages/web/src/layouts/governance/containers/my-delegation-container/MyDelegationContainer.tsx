@@ -2,8 +2,14 @@ import React from "react";
 
 import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { useGetDelegatees, useGetGovernanceSummary, useGetMyDelegation } from "@query/governance";
-import { nullMyDelegationInfo } from "@repositories/governance";
+import {
+  useGetGovernanceSummary,
+  useGetMyDelegates,
+  useGetMyDelegation,
+  useGetMyUnDelegates,
+  useGetVerifiedDelegates,
+} from "@query/governance";
+import { nullMyDelegatesInfo, nullMyDelegationInfo, nullMyUnDelegatesInfo } from "@repositories/governance";
 
 import { useGovernanceTx } from "@hooks/governance/data/use-governance-tx";
 import MyDelegation from "../../components/my-delegation/MyDelegation";
@@ -14,27 +20,55 @@ const MyDelegationContainer: React.FC = () => {
   const { openModal } = useConnectWalletModal();
   const { delegateGNS, undelegateGNS, collectUndelegated, collectReward } = useGovernanceTx();
 
+  const address = React.useMemo(() => {
+    return account?.address || "";
+  }, [account]);
+
   const { updateBalances } = useTokenData();
   const {
     data: governanceSummaryInfo,
     isFetched: isFetchedGovernanceSummaryInfo,
     refetch: refetchSummary,
   } = useGetGovernanceSummary();
+
   const {
     data: myDelegationInfo,
     isFetched: isFetchedMyDelegation,
     refetch: refetchMyDelegation,
-  } = useGetMyDelegation({
-    address: account?.address || "",
-  });
-  const { data: delegatees, isFetched: isFetchedDelegatees, refetch: refetchDelegatees } = useGetDelegatees();
+  } = useGetMyDelegation({ address });
+
+  const { data: myDelegates, refetch: refetchMyDelegates } = useGetMyDelegates({ address });
+  const { data: myUnDelegates, refetch: refetchMyUnDelegates } = useGetMyUnDelegates({ address });
+
+  const {
+    data: verifiedDelegates,
+    isFetched: isFetchedDelegatees,
+    refetch: refetchDelegatees,
+  } = useGetVerifiedDelegates();
+
+  const delegatees = React.useMemo(() => {
+    if (!verifiedDelegates) return [];
+
+    return verifiedDelegates.delegates;
+  }, [verifiedDelegates]);
+
+  const refetch = async () => {
+    await refetchSummary();
+    await refetchMyDelegation();
+    await refetchDelegatees();
+    await refetchMyDelegates();
+    await refetchMyUnDelegates();
+    updateBalances();
+  };
 
   return (
     <MyDelegation
-      totalDelegatedAmount={governanceSummaryInfo?.totalDelegated || 0}
-      apy={governanceSummaryInfo?.apy || 0}
+      totalDelegatedAmount={Number(governanceSummaryInfo?.delegationInfo.totalDelegationAmount) || 0}
+      apy={Number(governanceSummaryInfo?.apy) || 0}
       myDelegationInfo={myDelegationInfo ?? nullMyDelegationInfo}
-      delegatees={delegatees ?? []}
+      myDelegates={myDelegates ?? nullMyDelegatesInfo}
+      myUnDelegates={myUnDelegates ?? nullMyUnDelegatesInfo}
+      delegatees={delegatees}
       isLoadingCommon={
         (!isFetchedGovernanceSummaryInfo || !isFetchedDelegatees) && (!governanceSummaryInfo || !delegatees)
       }
@@ -43,33 +77,25 @@ const MyDelegationContainer: React.FC = () => {
       connectWallet={openModal}
       delegateGNS={(...params) =>
         delegateGNS(...params, async () => {
-          await refetchSummary();
-          await refetchMyDelegation();
-          await refetchDelegatees();
+          refetch();
           updateBalances();
         })
       }
       undelegateGNS={(...params) =>
         undelegateGNS(...params, async () => {
-          await refetchSummary();
-          await refetchMyDelegation();
-          await refetchDelegatees();
+          refetch();
           updateBalances();
         })
       }
       collectUndelegated={(...params) =>
         collectUndelegated(...params, async () => {
-          await refetchSummary();
-          await refetchDelegatees();
-          await refetchMyDelegation();
+          refetch();
           updateBalances();
         })
       }
       collectReward={(...params) =>
         collectReward(...params, async () => {
-          await refetchSummary();
-          await refetchDelegatees();
-          await refetchMyDelegation();
+          refetch();
           updateBalances();
         })
       }

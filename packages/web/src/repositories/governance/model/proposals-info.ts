@@ -1,44 +1,52 @@
-export interface ProposalsInfo {
-  proposals: ProposalItemInfo[];
-  pageInfo: {
-    totalItems: number;
-    totalPages: number;
-    currentPage: number;
-  };
+export const PROPOSAL_TYPE = {
+  PROPOSAL_TEXT: "PROPOSAL_TEXT",
+  PROPOSAL_COMMUNITY_POOL_SPEND: "PROPOSAL_COMMUNITY_POOL_SPEND",
+  PROPOSAL_PARAMETER_CHANGE: "PROPOSAL_PARAMETER_CHANGE",
+} as const;
+
+export type ProposalType = (typeof PROPOSAL_TYPE)[keyof typeof PROPOSAL_TYPE];
+
+export interface ProposalsPageInfo {
+  currentPage: number;
+  totalItems: number;
+  totalPages: number;
 }
 
-export type ProposalItemInfo = {
+export interface ProposerInfo {
+  address: string;
+  name: string;
+}
+
+export interface VotingInfo {
+  maxVotingWeight: string;
+  yesVotingWeight: string;
+  noVotingWeight: string;
+  quorumAmount: string;
+}
+
+export interface UserVotingInfo {
+  isVoted: boolean;
+  voteType: "YES" | "NO";
+  votingWeight: number;
+}
+
+export interface ProposalItemInfo {
   id: number;
-  status: string;
-  type: string;
+  proposalType: ProposalType;
   title: string;
-  content: {
-    description: string;
-    recipient?: string;
-    amount?: number;
-    parameters?: {
-      pkgPath: string;
-      func: string;
-      param: string;
-    }[];
-  };
-  proposer: {
-    name: string;
-    address: string;
-  };
-  time: string;
-  executableTime?: string | null;
-  expiredTime?: string | null;
-  myVote?: {
-    type: string;
-    weight: number;
-  };
-  votes: {
-    max: number;
-    yes: number;
-    no: number;
-  };
-};
+  proposer: ProposerInfo;
+  status: string;
+  executableTime: string;
+  expiredTime: string;
+  createdAt: string;
+  votingInfo: VotingInfo;
+  userVotingInfo: UserVotingInfo;
+}
+
+export interface ProposalsInfo {
+  proposals: ProposalItemInfo[];
+  pageInfo: ProposalsPageInfo;
+}
 
 export const nullProposalsInfo: ProposalsInfo = {
   proposals: [],
@@ -49,35 +57,34 @@ export const nullProposalsInfo: ProposalsInfo = {
   },
 };
 
+// Null-Objects
+export const nullProposerInfo: ProposerInfo = {
+  address: "",
+  name: "",
+};
+
+export const nullVotingInfo: VotingInfo = {
+  maxVotingWeight: "0",
+  yesVotingWeight: "0",
+  noVotingWeight: "0",
+  quorumAmount: "0",
+};
+
+export const nullUserVotingInfo: UserVotingInfo = {
+  isVoted: false,
+  voteType: "" as UserVotingInfo["voteType"],
+  votingWeight: 0,
+};
+
 export const nullProposalItemInfo: ProposalItemInfo = {
   id: 0,
-  status: "",
-  type: "",
+  proposalType: PROPOSAL_TYPE.PROPOSAL_TEXT,
   title: "",
-  content: {
-    description: "",
-    recipient: "",
-    amount: 0,
-    parameters: [
-      {
-        pkgPath: "",
-        func: "",
-        param: "",
-      },
-    ],
-  },
-  proposer: {
-    name: "",
-    address: "",
-  },
-  time: "",
-  myVote: {
-    type: "",
-    weight: 0,
-  },
-  votes: {
-    max: 0,
-    yes: 0,
-    no: 0,
-  },
+  proposer: nullProposerInfo,
+  status: "",
+  executableTime: "",
+  expiredTime: "",
+  createdAt: "",
+  votingInfo: nullVotingInfo,
+  userVotingInfo: nullUserVotingInfo,
 };

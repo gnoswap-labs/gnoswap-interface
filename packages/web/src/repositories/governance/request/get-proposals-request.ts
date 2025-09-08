@@ -1,6 +1,6 @@
 export interface GetProposalsReqeust {
-  isActive: boolean;
+  isActive?: boolean;
+  page?: number;
+  size?: number;
   address?: string;
-  page: number;
-  itemsPerPage: number;
 }

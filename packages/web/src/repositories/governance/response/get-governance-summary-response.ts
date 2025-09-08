@@ -1,20 +1,10 @@
 export interface GetGovernanceSummaryResponse {
-  totalDelegated: number;
-  delegatedRatio: number;
-  apy: number;
-  communityPool: number;
-  creationThreshold: number;
-  changeParamOptions: {
-    packages: {
-      pkgName: string;
-      pkgPath: string;
-    }[];
-    functions: {
-      pkgPath: string;
-      funcName: string;
-      paramNum: number;
-    }[];
+  delegationInfo: {
+    totalDelegationAmount: string;
+    governanceDelegationAmount: string;
+    launchpadDelegationAmount: string;
   };
-  governanceDelegated: string;
-  launchpadDelegated: string;
+  delegatedRatio: string;
+  apy: string;
+  communityPoolUsd: string;
 }

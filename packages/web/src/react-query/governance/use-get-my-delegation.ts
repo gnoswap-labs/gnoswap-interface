@@ -16,7 +16,7 @@ export const useGetMyDelegation = (
   return useQuery<MyDelegationInfo, Error>({
     queryKey: [QUERY_KEY.governanceMyDelegation, request.address],
     queryFn: () => {
-      return governanceRepository.getMyDeligation(request);
+      return governanceRepository.getMyDelegation(request);
     },
     refetchInterval: REFETCH_INTERVAL,
     refetchOnMount: true,

@@ -3,15 +3,16 @@ import { Trans, useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
+import { GNOT_TOKEN, GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconClose from "@components/common/icons/IconCancel";
 import withLocalModal from "@components/hoc/with-local-modal";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { ProposalItemInfo } from "@repositories/governance";
+import { nullProposalDetailsInfo, nullUserVotingInfo, PROPOSAL_TYPE } from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
-
+import { useGetProposalDetails } from "@query/governance";
 import { rawToDisplayAmount } from "@utils/number-utils";
+
 import StatusBadge from "../../status-badge/StatusBadge";
 import TokenChip from "../../token-chip/TokenChip";
 import TypeBadge from "../../type-badge/TypeBadge";
@@ -29,10 +30,14 @@ import {
   VotingPowerWrapper,
 } from "./ViewProposalModal.styles";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { safeParseTime } from "@utils/time.utils";
 
 export interface ViewProposalModalProps {
+  address: string;
+  proposalId: number;
+  myVotingWeight: number;
   breakpoint: DEVICE_TYPE;
-  proposalDetail: ProposalItemInfo;
   setIsModalOpen: (isOpen: boolean) => void;
   isConnected: boolean;
   isSwitchNetwork: boolean;
@@ -43,8 +48,10 @@ export interface ViewProposalModalProps {
 }
 
 const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
+  address,
+  proposalId,
+  myVotingWeight,
   breakpoint,
-  proposalDetail,
   setIsModalOpen,
   isSwitchNetwork,
   isConnected,
@@ -60,32 +67,61 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
       }),
     [setIsModalOpen],
   );
+
+  const { data, isLoading } = useGetProposalDetails({ proposalId, address });
+
+  const proposalDetail = useMemo(() => {
+    if (!data?.proposal) return nullProposalDetailsInfo.proposal;
+    return data.proposal;
+  }, [data]);
+
+  const proposalDetailContent = useMemo(() => {
+    return proposalDetail.content;
+  }, [proposalDetail]);
+
+  const { numericVotingInfo, userVotingInfo } = useMemo(() => {
+    const {
+      votingInfo: { maxVotingWeight, yesVotingWeight, noVotingWeight, quorumAmount },
+      userVotingInfo = nullUserVotingInfo,
+    } = proposalDetail;
+
+    return {
+      numericVotingInfo: {
+        maxVotingWeight: Number(maxVotingWeight) || 0,
+        yesVotingWeight: Number(yesVotingWeight) || 0,
+        noVotingWeight: Number(noVotingWeight) || 0,
+        quorumAmount: Number(quorumAmount) || 0,
+      },
+      userVotingInfo,
+    };
+  }, [proposalDetail]);
+
   const { t } = useTranslation();
   const { isMobile } = useWindowSize();
-  const [selectedVote, setSelectedVote] = useState(proposalDetail.myVote?.type || "");
+  const [selectedVote, setSelectedVote] = useState(userVotingInfo?.voteType || "");
 
   const hasVoted = useMemo(() => {
-    const { yes, no } = proposalDetail.votes;
-    return Boolean(yes) || Boolean(no);
-  }, [proposalDetail.votes]);
+    const { yesVotingWeight, noVotingWeight } = numericVotingInfo;
+    return Boolean(yesVotingWeight) || Boolean(noVotingWeight);
+  }, [numericVotingInfo]);
 
   const isMajorityVoted = useMemo(() => {
-    const { yes, no, max } = proposalDetail.votes;
+    const { yesVotingWeight, noVotingWeight, maxVotingWeight } = numericVotingInfo;
 
-    if (max === 0) return false;
+    if (maxVotingWeight === 0) return false;
 
-    return yes + no >= max / 2;
-  }, [proposalDetail.votes]);
+    return yesVotingWeight + noVotingWeight >= maxVotingWeight / 2;
+  }, [numericVotingInfo]);
 
   const { yesVotes, noVotes } = useMemo(() => {
     if (proposalDetail.status === "CANCELLED") {
       return { yesVotes: 0, noVotes: 0 };
     }
     return {
-      yesVotes: proposalDetail.votes.yes,
-      noVotes: proposalDetail.votes.no,
+      yesVotes: numericVotingInfo.yesVotingWeight,
+      noVotes: numericVotingInfo.noVotingWeight,
     };
-  }, [proposalDetail.status, proposalDetail.votes.yes, proposalDetail.votes.no]);
+  }, [proposalDetail.status, numericVotingInfo]);
 
   const tooltipTextI18nKey = React.useMemo(() => {
     return getTooltipTextI18nKey(proposalDetail.status, isMajorityVoted, yesVotes, noVotes);
@@ -94,6 +130,10 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   if (!proposalDetail) return null;
 
   const hasVoteButton = ["UPCOMING", "ACTIVE"].includes(proposalDetail.status);
+
+  if (isLoading) {
+    return <LoadingModal onClose={() => setIsModalOpen(false)} />;
+  }
 
   return (
     <Modal>
@@ -104,7 +144,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
               <span>{`#${proposalDetail.id} ${proposalDetail.title}`}</span>
               {breakpoint !== DEVICE_TYPE.MOBILE && (
                 <>
-                  <TypeBadge type={proposalDetail.type} />
+                  <TypeBadge type={proposalDetail.proposalType} />
                   {proposalDetail.status === "EXPIRED" && (
                     <Badge
                       className="proposal-badge"
@@ -128,7 +168,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
           </div>
           {breakpoint === DEVICE_TYPE.MOBILE && (
             <div className="mobile-badges">
-              <TypeBadge type={proposalDetail.type} />
+              <TypeBadge type={proposalDetail.proposalType} />
               {proposalDetail.status === "EXPIRED" && (
                 <Badge
                   className="proposal-badge"
@@ -149,7 +189,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
             <StatusBadge
               breakpoint={breakpoint}
               status={proposalDetail.status}
-              time={proposalDetail.time}
+              time={safeParseTime(proposalDetail.executableTime)}
               twoline={false}
             />
           </div>
@@ -160,32 +200,31 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
           }}
         >
           <div className="content">
-            {proposalDetail.type === "COMMUNITY_POOL_SPEND" && (
+            {proposalDetail.proposalType === PROPOSAL_TYPE.PROPOSAL_COMMUNITY_POOL_SPEND && (
               <>
                 <div className="variable">
                   <div className="variable-type">{t("Governance:detailModal.content.recipient")}</div>
-                  {proposalDetail.content.recipient}
+                  {proposalDetailContent.recipient}
                 </div>
                 <div className="variable">
                   <div className="variable-type">{t("Governance:detailModal.content.amount")}</div>
-                  {rawToDisplayAmount(proposalDetail.content.amount || 0, GNS_TOKEN.decimals).toLocaleString()}{" "}
-                  {GNS_TOKEN.symbol}
+                  {rawToDisplayAmount(proposalDetailContent.amount, GNOT_TOKEN.decimals)} {GNS_TOKEN.symbol}
                 </div>
               </>
             )}
-            {proposalDetail.type === "PARAMETER_CHANGE" && (
+            {proposalDetail.proposalType === PROPOSAL_TYPE.PROPOSAL_PARAMETER_CHANGE && (
               <div className="variable">
                 <div className="variable-type">{t("Governance:detailModal.content.change")}</div>
-                {proposalDetail.content.parameters?.map(item => (
+                {proposalDetailContent.parameters.map(item => (
                   <>
-                    {`Pkg Path: "${item.pkgPath}", Func: "${item.func}", Params: "${item.param}"`}
+                    {`Pkg Path: ${item.pkgPath}, Func: ${item.func}, Params: ${item.param}`}
                     <br />
                   </>
                 ))}
               </div>
             )}
             <ReactMarkdown remarkPlugins={[remarkGfm]} className="markdown-style">
-              {`${proposalDetail.content.description.replaceAll("\\n", "\n")}`}
+              {`${proposalDetailContent.description.replaceAll("\\n", "\n")}`}
             </ReactMarkdown>
           </div>
         </ProposalContentWrapper>
@@ -204,26 +243,27 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
               >
                 <span className={isMajorityVoted ? "passed" : ""}>
                   {isMajorityVoted && <IconPassed />}
-                  {(proposalDetail.votes.yes + proposalDetail.votes.no).toLocaleString()}
+                  {rawToDisplayAmount(yesVotes + noVotes, XGNS_TOKEN.decimals)}
                 </span>
               </Tooltip>
-              /<div>{proposalDetail.votes.max.toLocaleString()}</div>
+              /<div>{rawToDisplayAmount(numericVotingInfo.maxVotingWeight, XGNS_TOKEN.decimals)}</div>
             </div>
           </div>
           <VotingProgressBar
-            yes={proposalDetail.votes.yes}
-            no={proposalDetail.votes.no}
-            max={proposalDetail.votes.max}
+            yes={numericVotingInfo.yesVotingWeight}
+            no={numericVotingInfo.noVotingWeight}
+            max={numericVotingInfo.maxVotingWeight}
             isMajorityVoted={isMajorityVoted}
             hideNumber
           />
         </ModalQuorum>
         <VoteButtons
           breakpoint={breakpoint}
-          votedType={proposalDetail.myVote?.type || ""}
+          votedType={userVotingInfo.voteType || ""}
+          isVoted={userVotingInfo.isVoted}
           isClickable={proposalDetail.status === "ACTIVE"}
-          yesCount={proposalDetail.votes.yes}
-          noCount={proposalDetail.votes.no}
+          yesCount={rawToDisplayAmount(numericVotingInfo.yesVotingWeight, XGNS_TOKEN.decimals)}
+          noCount={rawToDisplayAmount(numericVotingInfo.noVotingWeight, XGNS_TOKEN.decimals)}
           selectedVote={selectedVote}
           setSelectedVote={setSelectedVote}
         />
@@ -232,7 +272,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
             <VotingPowerWrapper>
               <span>{t("Governance:detailModal.votingWeight")}</span>
               <div>
-                <div className="power-value">{(proposalDetail.myVote?.weight || 0).toLocaleString()}</div>
+                <div className="power-value">{rawToDisplayAmount(myVotingWeight, XGNS_TOKEN.decimals)}</div>
                 <TokenChip tokenInfo={XGNS_TOKEN} />
               </div>
             </VotingPowerWrapper>
@@ -240,8 +280,9 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
               breakpoint={breakpoint}
               isWalletConnected={isConnected}
               isSwitchNetwork={isSwitchNetwork}
-              voteType={proposalDetail.myVote?.type}
-              voteWeigth={proposalDetail.myVote?.weight}
+              voteType={userVotingInfo.voteType}
+              voteWeigth={userVotingInfo.votingWeight}
+              myVotingWeight={myVotingWeight}
               status={proposalDetail.status}
               selectedVote={selectedVote}
               handleVote={() => {
@@ -259,3 +300,44 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
 };
 
 export default ViewProposalModal;
+
+interface LoadingModalProps {
+  onClose: () => void;
+}
+
+const LoadingModal = ({ onClose }: LoadingModalProps) => {
+  const Modal = useMemo(
+    () =>
+      withLocalModal(ViewProposalModalWrapper, (isOpen: boolean) => {
+        if (!isOpen) onClose();
+      }),
+    [onClose],
+  );
+
+  return (
+    <Modal>
+      <div className="modal-body">
+        <ModalHeaderWrapper>
+          <div className="header">
+            <div />
+            <div className="close-wrap" onClick={onClose}>
+              <IconClose className="close-icon" />
+            </div>
+          </div>
+        </ModalHeaderWrapper>
+        <ProposalContentWrapper
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            maxHeight: "100%",
+          }}
+        >
+          <div className="animation">
+            <LoadingSpinner />
+          </div>
+        </ProposalContentWrapper>
+      </div>
+    </Modal>
+  );
+};

@@ -5,6 +5,7 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import { DEVICE_TYPE } from "@styles/media";
 
 interface VoteCtaButtonProps {
+  myVotingWeight: number;
   breakpoint: DEVICE_TYPE;
   isWalletConnected: boolean;
   isSwitchNetwork: boolean;
@@ -18,6 +19,7 @@ interface VoteCtaButtonProps {
 }
 
 const VoteCtaButton: React.FC<VoteCtaButtonProps> = ({
+  myVotingWeight,
   breakpoint,
   isWalletConnected,
   isSwitchNetwork,
@@ -79,7 +81,7 @@ const VoteCtaButton: React.FC<VoteCtaButtonProps> = ({
         text: t("Governance:proposal.status.passed"),
         action: null,
       };
-    if (!voteWeigth) {
+    if (!myVotingWeight) {
       return {
         disabled: true,
         text: t("Governance:detailModal.btn.noVoteWeight"),

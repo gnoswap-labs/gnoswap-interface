@@ -3,7 +3,7 @@ import { useInfiniteQuery, UseInfiniteQueryOptions } from "@tanstack/react-query
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { GetProposalsReqeust, ProposalsInfo } from "@repositories/governance";
 
-import { QUERY_KEY } from "../query-keys";
+import { QUERY_KEY } from "@query/query-keys";
 
 const REFETCH_INTERVAL = 60_000;
 
@@ -14,7 +14,7 @@ export const useGetProposals = (
   const { governanceRepository } = useGnoswapContext();
 
   return useInfiniteQuery<ProposalsInfo, Error>({
-    queryKey: [QUERY_KEY.governanceProposals, request.isActive, request.address, request.itemsPerPage],
+    queryKey: [QUERY_KEY.governanceProposals, request.isActive, request.address, request.size],
     queryFn: ({ pageParam = 1 }) => {
       return governanceRepository.getProposals({
         ...request,

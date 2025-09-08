@@ -1,5 +1,9 @@
 export * from "./get-my-delegation-request";
+export * from "./get-my-delegates-request";
+export * from "./get-my-undelegates-request";
 export * from "./get-proposals-request";
+export * from "./get-proposal-details-request";
+
 export * from "./send-cancel-request";
 export * from "./send-delegate-request";
 export * from "./send-execute-request";

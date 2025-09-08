@@ -1,0 +1,32 @@
+{
+  "proposal": {
+    "id": 5,
+    "proposalType": "PROPOSAL_COMMUNITY_POOL_SPEND",
+    "title": "Fund Infrastructure Development for Q2 2025",
+    "content": {
+      "amount": "250000000000",
+      "description": "# Infrastructure Development Proposal\n\nThis proposal requests funding from the community pool to enhance our network infrastructure for the second quarter of 2025.\n\n## Objectives\n\n- Upgrade server infrastructure\n- Implement new monitoring systems\n- Enhance security protocols\n- Improve network performance\n\n## Timeline\n\n- **Phase 1**: Infrastructure assessment (2 weeks)\n- **Phase 2**: Implementation (6 weeks)\n- **Phase 3**: Testing and optimization (2 weeks)\n\n## Expected Outcomes\n\n- 50% improvement in network throughput\n- Enhanced security monitoring\n- Better user experience\n- Reduced maintenance costs\n\n## Budget Breakdown\n\n| Item | Amount (GNS) |\n|------|-------------|\n| Hardware | 150,000 |\n| Software Licenses | 50,000 |\n| Development | 30,000 |\n| Testing & QA | 20,000 |\n\nThank you for considering this proposal.",
+      "parameters": [],
+      "recipient": "g1abc123def456ghi789jkl012mno345pqr678stu"
+    },
+    "proposer": {
+      "address": "g1xyz789abc012def345ghi678jkl901mno234pqr",
+      "name": "TechLead Alice"
+    },
+    "status": "ACTIVE",
+    "executableTime": "2025-02-01T10:00:00Z",
+    "expiredTime": "2025-02-08T10:00:00Z",
+    "createdAt": "2025-01-25T09:15:30Z",
+    "votingInfo": {
+      "maxVotingWeight": "2000000",
+      "yesVotingWeight": "1200000",
+      "noVotingWeight": "300000",
+      "quorumAmount": "1000000"
+    },
+    "userVotingInfo": {
+      "isVoted": true,
+      "voteType": "YES",
+      "votingWeight": 85000
+    }
+  }
+}

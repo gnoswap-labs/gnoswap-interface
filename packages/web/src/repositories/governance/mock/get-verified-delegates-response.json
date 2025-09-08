@@ -1,0 +1,28 @@
+{
+  "delegates": [
+    {
+      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5",
+      "description": "Experienced blockchain developer focused on DeFi protocols and governance systems. Committed to transparent decision-making and community engagement.",
+      "logoURL": "/gns.svg",
+      "name": "Onbloc-Validator",
+      "votingPower": "1250000000000",
+      "website": "https://www.onbloc.xyz"
+    },
+    {
+      "address": "g1u7y667z64x2h7vc6fmpcprgey4ck233jaww9zq",
+      "description": "Infrastructure specialist with 5+ years in blockchain networks. Advocates for sustainable growth and technical excellence.",
+      "logoURL": "/cosmos.svg",
+      "name": "Cosmos-Node",
+      "votingPower": "980000000000",
+      "website": "https://bobsnode.io"
+    },
+    {
+      "address": "g1mf3x6xpgc4c3y7q4y3l5m8n9p0q1r2s3t4u5v6",
+      "description": "Community-driven validator supporting education and adoption. Regular contributor to protocol improvements and documentation.",
+      "logoURL": "/atom.svg",
+      "name": "Atom",
+      "votingPower": "750000000000",
+      "website": "https://charlie-stake.org"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "delegations": [
+    {
+      "address": "g1z5cvp07l80pvsu8rvyyncjrrktpzm8rek4nnnp",
+      "name": "Onbloc Node-1",
+      "logoURL": "/gns.svg",
+      "unDelegateAmount": "10000.00",
+      "unlockTime": "2025-01-20T12:00:00Z",
+      "unDelegatedAt": "2024-12-20T12:00:00Z"
+    },
+    {
+      "address": "g1d8muzprhrzlv0fgj3sxepujgs3j02qerv3rak9",
+      "name": "Validator-Alpha",
+      "logoURL": "/gns.svg",
+      "unDelegateAmount": "7500.50",
+      "unlockTime": "2025-01-25T08:30:00Z",
+      "unDelegatedAt": "2024-12-25T08:30:00Z"
+    },
+    {
+      "address": "g16a7etgm9z2r653ucl36rj0l2yqcxgrz2jyegzx",
+      "name": "Validator-Beta",
+      "logoURL": "/atom.svg",
+      "unDelegateAmount": "5000.25",
+      "unlockTime": "2025-01-15T16:45:00Z",
+      "unDelegatedAt": "2024-12-15T16:45:00Z"
+    },
+    {
+      "address": "g12d65636a6hyudpyc86q3e7p9ypp646ht4g8nxr",
+      "name": "Validator-1",
+      "logoURL": "/cosmos.svg",
+      "unDelegateAmount": "12000.00",
+      "unlockTime": "2025-02-01T10:20:00Z",
+      "unDelegatedAt": "2025-01-01T10:20:00Z"
+    }
+  ]
+}
