@@ -1,6 +1,5 @@
 import { TokenModel } from "@models/token/token-model";
-import { LaunchpadStatusType } from "./launchpad-project-model";
-import { PoolTierType } from "./launchpad-pool-model";
+import { PoolTierType, LaunchpadStatusType } from "./types";
 
 export interface LaunchpadParticipationModel {
   id: number;

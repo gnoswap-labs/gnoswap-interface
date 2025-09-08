@@ -1,12 +1,5 @@
 import { LaunchpadPoolModel } from "./launchpad-pool-model";
-
-export const LAUNCHPAD_STATUS = {
-  NONE: "NONE",
-  UPCOMING: "UPCOMING",
-  ONGOING: "ONGOING",
-  ENDED: "ENDED",
-} as const;
-export type LaunchpadStatusType = (typeof LAUNCHPAD_STATUS)[keyof typeof LAUNCHPAD_STATUS];
+import { LaunchpadStatusType } from "./types";
 
 export interface LaunchpadProjectModel {
   id: number;
