@@ -1,5 +1,5 @@
-import { LaunchpadProjectDetailsResponse } from "./launchpad-response";
+import { LaunchpadProjectDetailsModel } from "@models/launchpad";
 
 export interface GetLaunchpadProjectDetailsResponse {
-  project: LaunchpadProjectDetailsResponse;
+  project: LaunchpadProjectDetailsModel;
 }

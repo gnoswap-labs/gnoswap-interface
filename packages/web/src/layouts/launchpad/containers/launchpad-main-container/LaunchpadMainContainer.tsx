@@ -1,17 +1,14 @@
 import React from "react";
+import { useAtomValue } from "jotai";
 
-import { ThemeKeys } from "@styles/ThemeTypes";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { ThemeState } from "@states/index";
 
 import { useGetLaunchpadSummary } from "@query/launchpad/use-get-launchpad-summary";
 import LaunchpadMain from "@layouts/launchpad/components/launchpad-main/LaunchpadMain";
-import { useWindowSize } from "@hooks/common/use-window-size";
 
-interface LaunchpadMainContainerProps {
-  themeKey: ThemeKeys;
-  icon: React.ReactNode;
-}
-
-const LaunchpadMainContainer: React.FC<LaunchpadMainContainerProps> = ({ themeKey, icon }) => {
+const LaunchpadMainContainer: React.FC = () => {
+  const themeKey = useAtomValue(ThemeState.themeKey);
   const { data: launchpadSummary, isLoading: isLoadingSummary, isFetched: isFetchedSummary } = useGetLaunchpadSummary();
 
   const { breakpoint } = useWindowSize();
@@ -23,7 +20,6 @@ const LaunchpadMainContainer: React.FC<LaunchpadMainContainerProps> = ({ themeKe
       isFetched={isFetchedSummary}
       breakpoint={breakpoint}
       themeKey={themeKey}
-      icon={icon}
     />
   );
 };

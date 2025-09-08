@@ -22,6 +22,16 @@ import {
   GetLaunchpadProjectsResponse,
   GetLaunchpadSummaryResponse,
 } from "./response";
+import {
+  LaunchpadProjectsInfo,
+  nullLaunchpadProjectsInfo,
+  LaunchpadProjectDetailsInfo,
+  nullLaunchpadProjectDetailsInfo,
+  LaunchpadParticipationInfo,
+  nullLaunchpadParticipationInfo,
+  nullLaunchpadSummaryInfo,
+} from "./model";
+import { LaunchpadProjectSummaryModel } from "@models/launchpad";
 
 interface APIResponse<T> {
   data: T;
@@ -38,59 +48,103 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
     this.gnoProvider = gnoProvider;
   }
 
-  getLaunchpadSummary(): Promise<GetLaunchpadSummaryResponse> {
+  getLaunchpadSummary = async (): Promise<LaunchpadProjectSummaryModel> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
 
-    return this.networkClient
+    const response = await this.networkClient
       .get<APIResponse<GetLaunchpadSummaryResponse>>({
         url: "launchpad/summary",
       })
-      .then(result => result.data?.data);
-  }
+      .catch(e => {
+        console.error("Launchpad: Failed to fetch GetLaunchpadSummaryError", e);
+        return null;
+      });
 
-  getLaunchpadProjects(params: GetLaunchpadProjectsRequestParameters): Promise<GetLaunchpadProjectsResponse> {
+    if (!response?.data?.data) {
+      return nullLaunchpadSummaryInfo;
+    }
+
+    const data: LaunchpadProjectSummaryModel = response.data.data;
+
+    return data;
+  };
+
+  getLaunchpadProjects = async (params: GetLaunchpadProjectsRequestParameters): Promise<LaunchpadProjectsInfo> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
 
     const requestParams = makeQueryParameter({ ...params });
 
-    return this.networkClient
+    const response = await this.networkClient
       .get<APIResponse<GetLaunchpadProjectsResponse>>({
         url: `launchpad/projects${requestParams}`,
       })
-      .then(result => result.data?.data);
-  }
+      .catch(e => {
+        console.error("Launchpad: Failed to fetch GetLaunchpadProjectsError", e);
+        return null;
+      });
 
-  getLaunchpadProjectDetails(projectId: string): Promise<GetLaunchpadProjectDetailsResponse> {
+    if (!response?.data?.data) {
+      return nullLaunchpadProjectsInfo;
+    }
+
+    const data: LaunchpadProjectsInfo = response.data.data;
+
+    return data;
+  };
+
+  getLaunchpadProjectDetails = async (projectId: string): Promise<LaunchpadProjectDetailsInfo> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
 
     const encodedProjectId = encodeURIComponent(projectId);
 
-    return this.networkClient
+    const response = await this.networkClient
       .get<APIResponse<GetLaunchpadProjectDetailsResponse>>({
         url: `launchpad/projects/${encodedProjectId}`,
       })
-      .then(result => result.data?.data);
-  }
+      .catch(e => {
+        console.error("Launchpad: Failed to fetch GetLaunchpadProjectDetailsError", e);
+        return null;
+      });
 
-  getLaunchpadParticipationInfos(projectId: string, address: string): Promise<GetLaunchpadParticipationInfosResponse> {
+    if (!response?.data?.data) {
+      return nullLaunchpadProjectDetailsInfo;
+    }
+
+    const data: LaunchpadProjectDetailsInfo = response.data.data;
+
+    return data;
+  };
+
+  getLaunchpadParticipationInfos = async (projectId: string, address: string): Promise<LaunchpadParticipationInfo> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
 
     const encodedProjectId = encodeURIComponent(projectId);
 
-    return this.networkClient
+    const response = await this.networkClient
       .get<APIResponse<GetLaunchpadParticipationInfosResponse>>({
         url: `launchpad/projects/${encodedProjectId}/participation/${address}`,
       })
-      .then(result => result.data?.data);
-  }
+      .catch(e => {
+        console.error("Launchpad: Failed to fetch GetLaunchpadParticipationInfos", e);
+        return null;
+      });
+
+    if (!response?.data?.data) {
+      return nullLaunchpadParticipationInfo;
+    }
+
+    const data: LaunchpadParticipationInfo = response.data.data;
+
+    return data;
+  };
 
   async depositLaunchpadPoolBy(
     poolId: string,

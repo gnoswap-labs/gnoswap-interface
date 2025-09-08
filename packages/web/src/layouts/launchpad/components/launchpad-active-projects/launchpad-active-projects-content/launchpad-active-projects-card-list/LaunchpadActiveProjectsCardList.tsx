@@ -1,6 +1,6 @@
 import React from "react";
 
-import { LaunchpadProjectResponse } from "@repositories/launchpad/response";
+import { LaunchpadProjectModel } from "@models/launchpad";
 
 import LaunchpadActiveProjectCard from "./launchpad-active-project-card/LaunchpadActiveProjectCard";
 import {
@@ -12,7 +12,7 @@ import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 interface LaunchpadActiveProjectsCardListProps {
-  activeProjectList: LaunchpadProjectResponse[];
+  activeProjectList: LaunchpadProjectModel[];
   showLoadMore: boolean;
   loadMore: boolean;
   isFetched: boolean;
@@ -46,7 +46,7 @@ const LaunchpadActiveProjectsCardList: React.FC<LaunchpadActiveProjectsCardListP
     <ActiveProjectsCardListWrapper>
       <ActiveProjectsGridWrapper ref={scrollRef} onScroll={onScroll}>
         {hasData &&
-          activeProjectList.map((project: LaunchpadProjectResponse) => {
+          activeProjectList.map((project: LaunchpadProjectModel) => {
             return (
               <LaunchpadActiveProjectCard key={project.id} project={project} moveProjectDetail={moveProjectDetail} />
             );

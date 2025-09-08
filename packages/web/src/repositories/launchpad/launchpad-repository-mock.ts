@@ -13,7 +13,7 @@ import {
 import { WalletClient } from "@common/clients/wallet-client";
 import MockLaunchpadParticipationListResponse from "./mock/launchpad-participation-list.json";
 import MockLaunchpadProjectListResponse from "./mock/launchpad-project-list.json";
-import MockLaunchpadProjectResponse from "./mock/launchpad-project.json";
+import MockLaunchpadProjectModel from "./mock/launchpad-project.json";
 import MockLaunchpadSummaryResponse from "./mock/launchpad-summary.json";
 
 export class LaunchpadRepositoryMock implements LaunchpadRepository {
@@ -43,7 +43,7 @@ export class LaunchpadRepositoryMock implements LaunchpadRepository {
     return new Promise(resolve =>
       setTimeout(resolve, LaunchpadRepositoryMock.LOADING_DURATION),
     ).then<GetLaunchpadProjectDetailsResponse>(
-      () => MockLaunchpadProjectResponse.data as unknown as GetLaunchpadProjectDetailsResponse,
+      () => MockLaunchpadProjectModel.data as unknown as GetLaunchpadProjectDetailsResponse,
     );
   }
 

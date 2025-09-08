@@ -1,6 +1,6 @@
-import { LaunchpadPoolResponse } from "./launchpad-response";
+import { LaunchpadPoolModel } from "@models/launchpad";
 
-export interface LaunchpadActiveProjectPool extends LaunchpadPoolResponse {
+export interface LaunchpadActiveProjectPool extends LaunchpadPoolModel {
   createBlockHeight: number;
   startBlockHeight: number;
   endBlockHeight: number;

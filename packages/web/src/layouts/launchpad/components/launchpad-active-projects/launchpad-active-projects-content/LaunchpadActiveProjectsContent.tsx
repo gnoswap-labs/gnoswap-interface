@@ -1,12 +1,12 @@
 import React from "react";
 
-import { LaunchpadProjectResponse } from "@repositories/launchpad/response";
+import { LaunchpadProjectModel } from "@models/launchpad";
 
 import LaunchpadActiveProjectsCardList from "./launchpad-active-projects-card-list/LaunchpadActiveProjectsCardList";
 import LaunchpadActiveProjectNoData from "./launchpad-active-project-no-data/LaunchpadActiveProjectNoData";
 
 export interface LaunchpadActiveProjectsContentProps {
-  activeProjectList: LaunchpadProjectResponse[];
+  activeProjectList: LaunchpadProjectModel[];
   showLoadMore: boolean;
   loadMore: boolean;
   isFetched: boolean;

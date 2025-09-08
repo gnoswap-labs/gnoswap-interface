@@ -1,11 +1,13 @@
+import { PoolTierType, LaunchpadStatusType } from "./types";
+
 export interface LaunchpadPoolModel {
   id: number;
 
   projectPoolId: string;
 
-  status: "NONE" | "UPCOMING" | "ENDED" | "ONGOING";
+  status: LaunchpadStatusType;
 
-  poolTier: "TIER_30" | "TIER_90" | "TIER_180";
+  poolTier: PoolTierType;
 
   allocation: number;
 

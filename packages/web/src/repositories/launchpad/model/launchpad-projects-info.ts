@@ -1,0 +1,25 @@
+import { LAUNCHPAD_STATUS, LaunchpadProjectModel } from "@models/launchpad";
+
+export interface LaunchpadProjectsInfo {
+  projects: LaunchpadProjectModel[];
+  lastCursor: string | null;
+}
+
+// null objects
+export const nullLaunchpadProjectsInfo: LaunchpadProjectsInfo = {
+  projects: [],
+  lastCursor: null,
+};
+
+export const nullLaunchpadProjectInfo: LaunchpadProjectModel = {
+  id: 0,
+  projectId: "",
+  status: LAUNCHPAD_STATUS.NONE,
+  name: "",
+  rewardTokenPath: "",
+  rewardTokenSymbol: "",
+  rewardTokenDecimals: 0,
+  rewardTokenLogoUrl: null,
+  description: null,
+  pools: [],
+};

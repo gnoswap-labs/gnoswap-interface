@@ -1,6 +1,6 @@
 import React from "react";
 
-import { LaunchpadProjectResponse } from "@repositories/launchpad/response";
+import { LaunchpadProjectModel } from "@models/launchpad";
 
 import { ActiveProjectCardWrapper } from "./LaunchpadActiveProjectCard.styles";
 import LaunchpadActiveProjectCardHeader from "./launchpad-active-project-card-header/LaunchpadActiveProjectCardHeader";
@@ -10,7 +10,7 @@ import { LaunchpadActiveProjectPool } from "@repositories/launchpad/response/get
 import LaunchpadStatusTimeChip from "@layouts/launchpad/launchpad-detail/components/common/launchpad-status-time-chip/LaunchpadStatusTimeChip";
 
 interface LaunchpadActiveProjectCardProps {
-  project: LaunchpadProjectResponse;
+  project: LaunchpadProjectModel;
 
   moveProjectDetail: (poolId: string) => void;
 }

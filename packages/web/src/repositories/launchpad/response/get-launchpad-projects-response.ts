@@ -1,7 +1,7 @@
-import { LaunchpadProjectResponse } from "./launchpad-response";
+import { LaunchpadProjectModel } from "@models/launchpad";
 
 export interface GetLaunchpadProjectsResponse {
   lastCursor: string | null;
 
-  projects: LaunchpadProjectResponse[];
+  projects: LaunchpadProjectModel[];
 }

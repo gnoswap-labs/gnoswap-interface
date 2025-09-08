@@ -1,20 +1,16 @@
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { GetLaunchpadProjectsRequestParameters } from "./request";
-import {
-  GetLaunchpadParticipationInfosResponse,
-  GetLaunchpadProjectDetailsResponse,
-  GetLaunchpadProjectsResponse,
-  GetLaunchpadSummaryResponse,
-} from "./response";
+import { LaunchpadProjectSummaryModel } from "@models/launchpad";
+import { LaunchpadProjectsInfo, LaunchpadProjectDetailsInfo, LaunchpadParticipationInfo } from "./model";
 
 export interface LaunchpadRepository {
-  getLaunchpadSummary(): Promise<GetLaunchpadSummaryResponse>;
+  getLaunchpadSummary(): Promise<LaunchpadProjectSummaryModel>;
 
-  getLaunchpadProjects(params: GetLaunchpadProjectsRequestParameters): Promise<GetLaunchpadProjectsResponse>;
+  getLaunchpadProjects(params: GetLaunchpadProjectsRequestParameters): Promise<LaunchpadProjectsInfo>;
 
-  getLaunchpadProjectDetails(projectId: string): Promise<GetLaunchpadProjectDetailsResponse>;
+  getLaunchpadProjectDetails(projectId: string): Promise<LaunchpadProjectDetailsInfo>;
 
-  getLaunchpadParticipationInfos(projectId: string, address: string): Promise<GetLaunchpadParticipationInfosResponse>;
+  getLaunchpadParticipationInfos(projectId: string, address: string): Promise<LaunchpadParticipationInfo>;
 
   depositLaunchpadPoolBy(
     projectPoolId: string,
