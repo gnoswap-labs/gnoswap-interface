@@ -1,62 +1,21 @@
 {
-  "availableBalance": 4225.12,
-  "votingWeight": 110102.23,
-  "undelegatedAmount": 422.12,
-  "claimableRewardsUsd": 4225.12,
+  "availableBalance": "125500.75",
   "claimableRewards": [
     {
-      "tokenPath": "gno.land/r/gnoswap/v2/gns",
-      "amount": "28.8297"
+      "amount": "1250.50",
+      "path": "gnot"
     },
     {
-      "tokenPath": "gno.land/r/gnoland/wugnot",
-      "amount": "0.00197"
+      "amount": "850.25",
+      "path": "gno.land/r/gnoswap/v1/test_token/usdc"
     },
     {
-      "tokenPath": "gno.land/r/onbloc/usdc",
-      "amount": "13.573002"
-    },
-    {
-      "tokenPath": "gno.land/r/onbloc/bar",
-      "amount": "26.889562"
-    },
-    {
-      "tokenPath": "gno.land/r/onbloc/baz",
-      "amount": "37.4392"
+      "amount": "650.75",
+      "path": "gno.land/r/gnoswap/gns"
     }
   ],
-  "delegations": [
-    {
-      "name": "Onbloc",
-      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234",
-      "logoUrl": "",
-      "amount": 10000,
-      "updatedDate": "2024-08-20 10:10:30",
-      "unlockDate": null
-    },
-    {
-      "name": "GovDao",
-      "address": "g13dmbtutu9khhfwc4nxmuhcpftf0pajdh3hcsj4",
-      "logoUrl": "",
-      "amount": 20000,
-      "updatedDate": "2024-08-21 11:11:31",
-      "unlockDate": null
-    },
-    {
-      "name": "Onbloc",
-      "address": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfv1234",
-      "logoUrl": "",
-      "amount": 400,
-      "updatedDate": "2024-08-22 12:12:32",
-      "unlockDate": "2024-08-29 12:12:32"
-    },
-    {
-      "name": "GnoSwap Foundation",
-      "address": "g139dn8glz9khhfwc4nxmuhcpftf0pajg8dzml8e",
-      "logoUrl": "",
-      "amount": 21354,
-      "updatedDate": "2024-08-22 12:12:32",
-      "unlockDate": "2024-08-29 12:12:32"
-    }
-  ]
+  "claimableRewardUsd": "2751.50",
+  "unDelegatedAmount": "45000.00",
+  "withdrawableAmount": "32500.25",
+  "votingWeight": "87.5"
 }
