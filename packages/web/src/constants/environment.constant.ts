@@ -16,8 +16,6 @@ export const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || ""
 export const GNS_TOKEN_PATH = process.env.NEXT_PUBLIC_GNS_TOKEN_PATH || "";
 export const XGNS_TOKEN_PATH = process.env.NEXT_PUBLIC_XGNS_TOKEN_PATH || "";
 
-export const PACKAGE_GNOSWAP_CONST_PATH = process.env.NEXT_PUBLIC_PACKAGE_GNOSWAP_CONST_PATH || "";
-
 export const PACKAGE_ROUTER_PATH = process.env.NEXT_PUBLIC_PACKAGE_ROUTER_PATH || "";
 export const PACKAGE_ROUTER_ADDRESS = getAddressByPackagePath(PACKAGE_ROUTER_PATH);
 
