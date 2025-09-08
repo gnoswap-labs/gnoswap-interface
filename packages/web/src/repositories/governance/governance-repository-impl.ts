@@ -185,7 +185,7 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
       request.isActive !== undefined ? `isActive=${request.isActive}` : "",
       request.address !== undefined ? `address=${request.address}` : "",
       request.page !== undefined ? `page=${request.page}` : "",
-      request.size !== undefined ? `itemsPerPage=${request.size}` : "",
+      request.size !== undefined ? `size=${request.size}` : "",
     ];
 
     const response = await this.networkClient.get<{
