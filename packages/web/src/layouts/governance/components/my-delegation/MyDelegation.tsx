@@ -119,12 +119,14 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   const rewardInfo = useMemo(() => {
     return myDelegationInfo.claimableRewards
       .map(reward => {
-        const usdValue = getTokenUSDPrice(reward.path, reward.amount) || 0;
         const tokenInfo = tokens.find(token => token.path === reward.path);
+        const displayAmount = rawToDisplayAmount(reward.amount, tokenInfo?.decimals || 0);
+        const usdValue = getTokenUSDPrice(reward.path, displayAmount) || 0;
         const unwrappedTokenInfo = { ...tokenInfo, ...getGnotPath(tokenInfo) };
 
         return {
           ...reward,
+          amount: displayAmount,
           tokenPath: unwrappedTokenInfo.path,
           usdValue,
           tokenInfo: unwrappedTokenInfo,
