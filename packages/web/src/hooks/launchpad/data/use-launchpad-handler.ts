@@ -17,7 +17,6 @@ import { useGetLastedBlockHeight } from "@query/pools";
 import { useGetAllTokenPrices } from "@query/token";
 import { DexEvent } from "@repositories/common";
 import { LaunchpadState } from "@states/index";
-import { formatPrice } from "@utils/new-number-utils";
 import { toUnitFormat } from "@utils/number-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
 import { useReferral } from "@hooks/common/use-referral";
@@ -70,15 +69,6 @@ export const useLaunchpadHandler = () => {
   const { processTx } = useBroadcastHandler();
 
   usePreventScroll(openedConfirmModal);
-
-  const tokenGnsBalance = useMemo(() => {
-    if (isSwitchNetwork) return "-";
-
-    return formatPrice(displayBalanceMap?.[GNS_TOKEN.path], {
-      isKMB: false,
-      usd: false,
-    });
-  }, [isSwitchNetwork, displayBalanceMap]);
 
   // Util function
   function compareAmountFn(amountA: string | number | bigint, amountB: string | number | bigint) {
@@ -309,7 +299,7 @@ export const useLaunchpadHandler = () => {
     if (!Number(gnsAmountInput.amount)) {
       return "ENTER_AMOUNT";
     }
-    if (compareAmountFn(gnsAmountInput.amount, tokenGnsBalance) > 0) {
+    if (compareAmountFn(gnsAmountInput.amount, gnsAmountInput.balance) > 0) {
       return "INSUFFICIENT_BALANCE";
     }
     if (selectPoolId === null) {
@@ -322,7 +312,7 @@ export const useLaunchpadHandler = () => {
       return "IS_NOT_DEPOSIT_ALLOWED";
     }
     return "DEPOSIT";
-  }, [selectPoolId, connectedWallet, gnsAmountInput, isSwitchNetwork, isDepositAllowed, tokenGnsBalance]);
+  }, [selectPoolId, connectedWallet, gnsAmountInput.amount, gnsAmountInput.balance, isSwitchNetwork, isDepositAllowed]);
 
   const depositButtonText = useMemo(() => {
     switch (depositButtonState) {
