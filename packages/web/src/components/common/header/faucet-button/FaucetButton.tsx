@@ -9,6 +9,8 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import IconDownload from "@components/common/icons/IconDownload";
 import IconPolygon from "@components/common/icons/IconPolygon";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 
 interface FaucetButtonProps {
   themeKey: "dark" | "light";
@@ -19,9 +21,14 @@ export const FaucetButton = ({ themeKey }: FaucetButtonProps) => {
   const { faucet, isLoading } = useFaucet();
   const [faucetTooltipContents, setFaucetTooltipContents] = React.useState("");
 
+  const { refetchGnotBalance } = useWallet();
+  const { refetchGrc20Balances } = useTokenData();
+
   const onClickFaucetButton = (): void => {
     if (isLoading) return;
     faucet().then(result => {
+      refetchGnotBalance();
+      refetchGrc20Balances();
       setFaucetTooltipContents(result.message);
       setTimeout(() => {
         setFaucetTooltipContents("");
