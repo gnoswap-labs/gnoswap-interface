@@ -2,8 +2,6 @@ import { atom } from "jotai";
 
 import { LaunchpadProjectConditionModel } from "@models/launchpad";
 
-export const participateAmount = atom<string>("");
-
 export const selectLaunchpadPool = atom<number | null>(null);
 
 export const depositConditions = atom<LaunchpadProjectConditionModel[]>([]);

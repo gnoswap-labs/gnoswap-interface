@@ -21,6 +21,7 @@ import { formatPrice } from "@utils/new-number-utils";
 import { toUnitFormat } from "@utils/number-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
 import { useReferral } from "@hooks/common/use-referral";
+import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
 
 type DepositButtonStateType =
   | "WALLET_LOGIN"
@@ -46,7 +47,8 @@ function calculateUSDValueBy(
 export const useLaunchpadHandler = () => {
   const { getCurrentReferralAddress, removeReferrerFromLocalStorage } = useReferral();
 
-  const participateAmount = useAtomValue(LaunchpadState.participateAmount);
+  const gnsAmountInput = useTokenAmountInput(GNS_TOKEN);
+
   const depositConditions = useAtomValue(LaunchpadState.depositConditions);
   const [, setIsShowConditionTooltip] = useAtom(LaunchpadState.isShowConditionTooltip);
   const selectPoolId = useAtomValue(LaunchpadState.selectLaunchpadPool);
@@ -304,23 +306,23 @@ export const useLaunchpadHandler = () => {
     if (isSwitchNetwork) {
       return "SWITCH_NETWORK";
     }
-    if (!Number(participateAmount)) {
+    if (!Number(gnsAmountInput.amount)) {
       return "ENTER_AMOUNT";
     }
-    if (compareAmountFn(participateAmount, tokenGnsBalance) > 0) {
+    if (compareAmountFn(gnsAmountInput.amount, tokenGnsBalance) > 0) {
       return "INSUFFICIENT_BALANCE";
     }
     if (selectPoolId === null) {
       return "SELECT_POOL";
     }
-    if (Number(participateAmount) < DEPOSIT_MIN_AMOUNT) {
+    if (Number(gnsAmountInput.amount) < DEPOSIT_MIN_AMOUNT) {
       return "AMOUNT_TOO_LOW";
     }
     if (!isDepositAllowed) {
       return "IS_NOT_DEPOSIT_ALLOWED";
     }
     return "DEPOSIT";
-  }, [selectPoolId, connectedWallet, participateAmount, isSwitchNetwork, isDepositAllowed, tokenGnsBalance]);
+  }, [selectPoolId, connectedWallet, gnsAmountInput, isSwitchNetwork, isDepositAllowed, tokenGnsBalance]);
 
   const depositButtonText = useMemo(() => {
     switch (depositButtonState) {
@@ -361,6 +363,7 @@ export const useLaunchpadHandler = () => {
   }, [setIsShowConditionTooltip]);
 
   return {
+    gnsAmountInput,
     deposit,
     claim,
     claimAll,
