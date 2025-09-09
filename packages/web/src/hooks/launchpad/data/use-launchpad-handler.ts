@@ -17,10 +17,10 @@ import { useGetLastedBlockHeight } from "@query/pools";
 import { useGetAllTokenPrices } from "@query/token";
 import { DexEvent } from "@repositories/common";
 import { LaunchpadState } from "@states/index";
-import { formatPrice } from "@utils/new-number-utils";
 import { toUnitFormat } from "@utils/number-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
 import { useReferral } from "@hooks/common/use-referral";
+import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
 
 type DepositButtonStateType =
   | "WALLET_LOGIN"
@@ -46,7 +46,8 @@ function calculateUSDValueBy(
 export const useLaunchpadHandler = () => {
   const { getCurrentReferralAddress, removeReferrerFromLocalStorage } = useReferral();
 
-  const participateAmount = useAtomValue(LaunchpadState.participateAmount);
+  const gnsAmountInput = useTokenAmountInput(GNS_TOKEN);
+
   const depositConditions = useAtomValue(LaunchpadState.depositConditions);
   const [, setIsShowConditionTooltip] = useAtom(LaunchpadState.isShowConditionTooltip);
   const selectPoolId = useAtomValue(LaunchpadState.selectLaunchpadPool);
@@ -68,15 +69,6 @@ export const useLaunchpadHandler = () => {
   const { processTx } = useBroadcastHandler();
 
   usePreventScroll(openedConfirmModal);
-
-  const tokenGnsBalance = useMemo(() => {
-    if (isSwitchNetwork) return "-";
-
-    return formatPrice(displayBalanceMap?.[GNS_TOKEN.path], {
-      isKMB: false,
-      usd: false,
-    });
-  }, [isSwitchNetwork, displayBalanceMap]);
 
   // Util function
   function compareAmountFn(amountA: string | number | bigint, amountB: string | number | bigint) {
@@ -104,11 +96,11 @@ export const useLaunchpadHandler = () => {
    * Deposit GNS tokens to Launchpad.
    * Deposits allow you to receive tokens distributed by Launchpad projects as rewards.
    *
-   * @param projectPoolId The Pool ID of the launchpad project.
+   * @param projectPoolID The Pool ID of the launchpad project.
    * @param depositAmount The amount of GNS tokens to deposit. Deposit the visible quantity, not in units. ex) 100.00123
    * @param emitCallback A callback function that runs when a transaction send event is successfully fired. You can proceed to update data with refetch.
    */
-  const deposit = (projectPoolId: string, depositAmount: string, emitCallback: () => Promise<void>) => {
+  const deposit = (projectPoolID: string, depositAmount: string, emitCallback: () => Promise<void>) => {
     if (!account) {
       return;
     }
@@ -126,7 +118,7 @@ export const useLaunchpadHandler = () => {
     processTx(
       () =>
         launchpadRepository.depositLaunchpadPoolBy(
-          projectPoolId,
+          projectPoolID,
           BigInt(unitAmount),
           account.address,
           currentReferralAddress,
@@ -270,13 +262,13 @@ export const useLaunchpadHandler = () => {
       () => {
         if (isWithdrawable) {
           return launchpadRepository.collectRewardWithDepositByProjectId(
-            participationInfo.projectId,
+            participationInfo.projectID,
             account.address,
             currentReferralAddress,
           );
         }
         return launchpadRepository.collectRewardByProjectId(
-          participationInfo.projectId,
+          participationInfo.projectID,
           account.address,
           currentReferralAddress,
         );
@@ -304,23 +296,23 @@ export const useLaunchpadHandler = () => {
     if (isSwitchNetwork) {
       return "SWITCH_NETWORK";
     }
-    if (!Number(participateAmount)) {
+    if (!Number(gnsAmountInput.amount)) {
       return "ENTER_AMOUNT";
     }
-    if (compareAmountFn(participateAmount, tokenGnsBalance) > 0) {
+    if (compareAmountFn(gnsAmountInput.amount, gnsAmountInput.balance) > 0) {
       return "INSUFFICIENT_BALANCE";
     }
     if (selectPoolId === null) {
       return "SELECT_POOL";
     }
-    if (Number(participateAmount) < DEPOSIT_MIN_AMOUNT) {
+    if (Number(gnsAmountInput.amount) < DEPOSIT_MIN_AMOUNT) {
       return "AMOUNT_TOO_LOW";
     }
     if (!isDepositAllowed) {
       return "IS_NOT_DEPOSIT_ALLOWED";
     }
     return "DEPOSIT";
-  }, [selectPoolId, connectedWallet, participateAmount, isSwitchNetwork, isDepositAllowed, tokenGnsBalance]);
+  }, [selectPoolId, connectedWallet, gnsAmountInput.amount, gnsAmountInput.balance, isSwitchNetwork, isDepositAllowed]);
 
   const depositButtonText = useMemo(() => {
     switch (depositButtonState) {
@@ -361,6 +353,7 @@ export const useLaunchpadHandler = () => {
   }, [setIsShowConditionTooltip]);
 
   return {
+    gnsAmountInput,
     deposit,
     claim,
     claimAll,

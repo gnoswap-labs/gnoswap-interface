@@ -5,7 +5,7 @@
     "projects": [
       {
         "id": 3,
-        "projectId": "PROJECT03",
+        "projectID": "PROJECT03",
         "status": "UPCOMING",
         "name": "GnoSwap",
         "rewardTokenPath": "gno.land/r/onbloc/usdc",
@@ -16,7 +16,7 @@
         "pools": [
           {
             "id": 1,
-            "projectPoolId": "POOL01",
+            "projectPoolID": "POOL01",
             "status": "UPCOMING",
             "poolTier": "TIER_30",
             "allocation": 50000000,
@@ -34,7 +34,7 @@
           },
           {
             "id": 2,
-            "projectPoolId": "POOL02",
+            "projectPoolID": "POOL02",
             "status": "UPCOMING",
             "poolTier": "TIER_90",
             "allocation": 70000000,
@@ -52,7 +52,7 @@
           },
           {
             "id": 3,
-            "projectPoolId": "POOL03",
+            "projectPoolID": "POOL03",
             "status": "UPCOMING",
             "poolTier": "TIER_180",
             "allocation": 90000000,
@@ -72,7 +72,7 @@
       },
       {
         "id": 1,
-        "projectId": "PROJECT01",
+        "projectID": "PROJECT01",
         "status": "ONGOING",
         "name": "USDC Project",
         "rewardTokenPath": "gno.land/r/onbloc/usdc",
@@ -83,7 +83,7 @@
         "pools": [
           {
             "id": 1,
-            "projectPoolId": "POOL01",
+            "projectPoolID": "POOL01",
             "status": "ONGOING",
             "poolTier": "TIER_30",
             "allocation": 50000000,
@@ -101,7 +101,7 @@
           },
           {
             "id": 2,
-            "projectPoolId": "POOL02",
+            "projectPoolID": "POOL02",
             "status": "ONGOING",
             "poolTier": "TIER_90",
             "allocation": 70000000,
@@ -119,7 +119,7 @@
           },
           {
             "id": 3,
-            "projectPoolId": "POOL03",
+            "projectPoolID": "POOL03",
             "status": "ONGOING",
             "poolTier": "TIER_180",
             "allocation": 90000000,
@@ -139,7 +139,7 @@
       },
       {
         "id": 4,
-        "projectId": "PROJECT04",
+        "projectID": "PROJECT04",
         "status": "ENDED",
         "name": "GnoSwap",
         "rewardTokenPath": "gno.land/r/gnoswap/v2/gns",
@@ -150,7 +150,7 @@
         "pools": [
           {
             "id": 1,
-            "projectPoolId": "POOL01",
+            "projectPoolID": "POOL01",
             "status": "ENDED",
             "poolTier": "TIER_30",
             "allocation": 50000000,
@@ -168,7 +168,7 @@
           },
           {
             "id": 2,
-            "projectPoolId": "POOL02",
+            "projectPoolID": "POOL02",
             "status": "ENDED",
             "poolTier": "TIER_90",
             "allocation": 70000000,
@@ -186,7 +186,7 @@
           },
           {
             "id": 3,
-            "projectPoolId": "POOL03",
+            "projectPoolID": "POOL03",
             "status": "ENDED",
             "poolTier": "TIER_180",
             "allocation": 90000000,

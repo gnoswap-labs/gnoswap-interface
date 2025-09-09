@@ -5,7 +5,7 @@ import { getSortFunction } from "./launchpad-sort-utils";
 
 const createMockPool = (overrides: Partial<LaunchpadPoolModel> = {}): LaunchpadPoolModel => ({
   id: 1,
-  projectPoolId: "pool_1",
+  projectPoolID: "pool_1",
   status: "ONGOING",
   poolTier: "TIER_30",
   allocation: 1000,
@@ -25,7 +25,7 @@ const createMockPool = (overrides: Partial<LaunchpadPoolModel> = {}): LaunchpadP
 
 const createMockProject = (overrides: Partial<LaunchpadProjectModel> = {}): LaunchpadProjectModel => ({
   id: 1,
-  projectId: "project_1",
+  projectID: "project_1",
   status: "ONGOING",
   name: "Test Project",
   rewardTokenPath: "gno.land/r/demo/test",

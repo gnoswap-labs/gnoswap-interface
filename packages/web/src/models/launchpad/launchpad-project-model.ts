@@ -4,7 +4,7 @@ import { LaunchpadStatusType } from "./types";
 export interface LaunchpadProjectModel {
   id: number;
 
-  projectId: string;
+  projectID: string;
 
   status: LaunchpadStatusType;
 

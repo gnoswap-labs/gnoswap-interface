@@ -5,10 +5,10 @@ import { useTranslation } from "next-i18next";
 
 import { LaunchpadParticipationModel } from "@models/launchpad";
 import { ParticipateButtonProps } from "../LaunchpadMyParticipation";
-import { LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN } from "@common/values/token-constant";
+import { GNS_TOKEN, LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN } from "@common/values/token-constant";
 import { ProjectRewardInfoModel } from "@layouts/launchpad/launchpad-detail/LaunchpadDetail";
 import { getDateUtcToLocal } from "@common/utils/date-util";
-import { toNumberFormat } from "@utils/number-utils";
+import { rawToDisplayAmount, toNumberFormat } from "@utils/number-utils";
 import { formatRate } from "@utils/new-number-utils";
 import { formatClaimableTime } from "@utils/launchpad-format-claimable-time";
 import { useGetLastedBlockHeight } from "@query/pools";
@@ -39,6 +39,15 @@ const LaunchpadMyParticipationBox = ({ item, idx, rewardInfo, handleClickClaim }
     refetchInterval: LAUNCHPAD_REFETCH_INTERVAL,
   });
 
+  const displayParticipationModel: LaunchpadParticipationModel = React.useMemo(() => {
+    return {
+      ...item,
+      depositAmount: rawToDisplayAmount(item.depositAmount, GNS_TOKEN.decimals),
+      claimableRewardAmount: rawToDisplayAmount(item.claimableRewardAmount, rewardInfo.rewardTokenDecimals),
+      claimedRewardAmount: rawToDisplayAmount(item.claimedRewardAmount, rewardInfo.rewardTokenDecimals),
+    };
+  }, [item]);
+
   const aprStr = item?.depositAPR ? (
     <>
       {Number(item.depositAPR) > 100 && "✨"}
@@ -53,21 +62,21 @@ const LaunchpadMyParticipationBox = ({ item, idx, rewardInfo, handleClickClaim }
 
     const currentBlockHeight = blockHeight;
 
-    return BigNumber(currentBlockHeight).isGreaterThan(item.claimableBlockHeight);
-  }, [item.claimableBlockHeight, blockHeight]);
+    return BigNumber(currentBlockHeight).isGreaterThan(displayParticipationModel.claimableBlockHeight);
+  }, [displayParticipationModel.claimableBlockHeight, blockHeight]);
 
   const isClaimed = React.useMemo(() => {
-    const isClaimedReward = Number(toNumberFormat(item.claimableRewardAmount, 2)) === 0;
-    const isClaimedDeposit = Number(toNumberFormat(item.depositAmount, 2)) === 0;
+    const isClaimedReward = Number(toNumberFormat(displayParticipationModel.claimableRewardAmount, 2)) === 0;
+    const isClaimedDeposit = Number(toNumberFormat(displayParticipationModel.depositAmount, 2)) === 0;
 
     return isClaimedReward && isClaimedDeposit;
-  }, [item]);
+  }, [displayParticipationModel]);
 
   return (
-    <MyParticipationBoxWrapper key={item.id}>
+    <MyParticipationBoxWrapper key={displayParticipationModel.id}>
       <div className="my-participation-box-header">
         <div className="participation-box-index">#{idx}</div>
-        <LaunchpadPoolTierChip poolTier={item.poolTier} />
+        <LaunchpadPoolTierChip poolTier={displayParticipationModel.poolTier} />
       </div>
 
       <div className="participation-box-data-wrapper">
@@ -75,7 +84,7 @@ const LaunchpadMyParticipationBox = ({ item, idx, rewardInfo, handleClickClaim }
           <div className="participation-box-data-key">{t("Launchpad:myParticipation.col.depositAmounts")}</div>
           <div className="participation-box-data-value">
             <Image src="/gns.svg" width={24} height={24} alt="GNS symbol image" />
-            {toNumberFormat(item.depositAmount, 2)} {LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}
+            {toNumberFormat(displayParticipationModel.depositAmount, 2)} {LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}
           </div>
         </div>
         <div className="participation-box-data">
@@ -92,7 +101,8 @@ const LaunchpadMyParticipationBox = ({ item, idx, rewardInfo, handleClickClaim }
               mobileWidth={24}
             />
             <>
-              {isClaimed ? 0 : toNumberFormat(item.claimableRewardAmount, 6)} {rewardInfo?.rewardTokenSymbol}
+              {isClaimed ? 0 : toNumberFormat(displayParticipationModel.claimableRewardAmount, 6)}{" "}
+              {rewardInfo?.rewardTokenSymbol}
             </>
           </div>
         </div>
@@ -100,7 +110,9 @@ const LaunchpadMyParticipationBox = ({ item, idx, rewardInfo, handleClickClaim }
           <>
             <div className="participation-box-data">
               <div className="participation-box-data-key">{t("Launchpad:myParticipation.col.claimableDate")}</div>
-              <div className="participation-box-data-value">{formatClaimableTime(item.claimableTime, t)}</div>
+              <div className="participation-box-data-value">
+                {formatClaimableTime(displayParticipationModel.claimableTime, t)}
+              </div>
             </div>
             <div className="participation-box-data">
               <div className="participation-box-data-key">{t("Launchpad:myParticipation.col.claimed")}</div>
@@ -112,13 +124,15 @@ const LaunchpadMyParticipationBox = ({ item, idx, rewardInfo, handleClickClaim }
                   mobileWidth={24}
                 />
                 <>
-                  {toNumberFormat(item.claimedRewardAmount, 6)} {rewardInfo?.rewardTokenSymbol}
+                  {toNumberFormat(displayParticipationModel.claimedRewardAmount, 6)} {rewardInfo?.rewardTokenSymbol}
                 </>
               </div>
             </div>
             <div className="participation-box-data">
               <div className="participation-box-data-key">{t("Launchpad:myParticipation.col.endDate")}</div>
-              <div className="participation-box-data-value">{getDateUtcToLocal(item.endTime).value}</div>
+              <div className="participation-box-data-value">
+                {getDateUtcToLocal(displayParticipationModel.endTime).value}
+              </div>
             </div>
             <div className="participation-box-button-wrapper">
               <ClaimButton

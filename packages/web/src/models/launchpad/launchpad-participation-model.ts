@@ -4,9 +4,9 @@ import { PoolTierType, LaunchpadStatusType } from "./types";
 export interface LaunchpadParticipationModel {
   id: number;
 
-  projectId: string;
+  projectID: string;
 
-  projectPoolId: string;
+  projectPoolID: string;
 
   depositId: string;
 

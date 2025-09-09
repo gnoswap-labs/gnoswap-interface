@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue } from "jotai";
 import { useTranslation, Trans } from "react-i18next";
 
 import { LaunchpadState } from "@states/index";
@@ -11,7 +11,6 @@ import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
 import { getClaimableTime } from "@utils/launchpad-get-claimable";
 import { getDateUtcToLocal } from "@common/utils/date-util";
 import { PROJECT_STATUS_TYPE } from "@common/values";
-import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
 
 import { Divider } from "@components/common/divider/divider";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -33,7 +32,7 @@ interface LaunchpadParticipateProps {
   isLoading: boolean;
   isWalletConnected: boolean;
 
-  depositGNS: (projectPoolId: string, depositAmount: string) => void;
+  depositGNS: (projectPoolID: string, depositAmount: string) => void;
   refetch: () => Promise<void>;
 }
 
@@ -57,15 +56,13 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
   // Global State
   const depositConditions = useAtomValue(LaunchpadState.depositConditions);
 
-  const [participateAmount, setParticipateAmount] = useAtom(LaunchpadState.participateAmount);
   const isShowConditionTooltip = useAtomValue(LaunchpadState.isShowConditionTooltip);
 
   // Modal
   const [isOpenDepositConfirmModal, setIsOpenDepositConfirmModal] = React.useState(false);
 
-  const gnsAmountInput = useTokenAmountInput(DEFAULT_DEPOSIT_TOKEN);
-
   const {
+    gnsAmountInput,
     depositButtonText,
     openConnectWallet,
     isSwitchNetwork,
@@ -87,8 +84,8 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
       hideConditionTooltip();
     }
 
-    setParticipateAmount("");
-  }, [showConditionTooltip, hideConditionTooltip, setParticipateAmount, depositConditions.length]);
+    gnsAmountInput.changeAmount("");
+  }, [showConditionTooltip, hideConditionTooltip, depositConditions.length]);
 
   const buttonRender = React.useCallback(() => {
     if (status === "UPCOMING") {
@@ -201,7 +198,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
           {!isLoading && (
             <div className="participate-info-value">
               <Image src="/gns.svg" width={24} height={24} alt="GNS Symbol image" />
-              <span>{participateAmount ? participateAmount : "-"}</span>
+              <span>{gnsAmountInput.amount ? gnsAmountInput.amount : "-"}</span>
             </div>
           )}
           {isLoading && <div css={pulseSkeletonStyle({ w: 103, h: 24 })} />}
@@ -212,7 +209,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
 
       {isOpenDepositConfirmModal && (
         <LaunchpadDepositModal
-          depositAmount={participateAmount}
+          depositAmount={gnsAmountInput.amount}
           poolInfo={poolInfo}
           rewardInfo={rewardInfo}
           projectPath={projectPath}

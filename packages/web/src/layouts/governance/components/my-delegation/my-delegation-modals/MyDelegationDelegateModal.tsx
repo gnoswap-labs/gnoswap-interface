@@ -167,8 +167,6 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
     };
   }, [currentDelegatedAmount, totalDelegatedAmount, gnsAmountInput.amount]);
 
-  console.log(delegationCalculations, "delegationCalculations");
-
   const showDelegateInfo = () => (
     <>
       <div className="modal-content-header">
