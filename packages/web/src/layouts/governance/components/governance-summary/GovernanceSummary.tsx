@@ -44,22 +44,40 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
   const { getGnotPath } = useGnotToGnot();
   const { getTokenUSDPrice, tokens } = useTokenData();
 
-  const delegationinfo = React.useMemo(() => {
-    return governanceSummary.delegationInfo;
-  }, [governanceSummary.delegationInfo]);
+  const displayGovernanceSummary: GovernanceSummaryInfo = React.useMemo(() => {
+    const { delegationInfo } = governanceSummary;
+    const GNS_TOKEN_DECIMALS = GNS_TOKEN.decimals;
+
+    return {
+      ...governanceSummary,
+      delegationInfo: {
+        totalDelegationAmount: String(rawToDisplayAmount(delegationInfo.totalDelegationAmount, GNS_TOKEN_DECIMALS)),
+        governanceDelegationAmount: String(
+          rawToDisplayAmount(delegationInfo.governanceDelegationAmount, GNS_TOKEN_DECIMALS),
+        ),
+        launchpadDelegationAmount: String(
+          rawToDisplayAmount(delegationInfo.launchpadDelegationAmount, GNS_TOKEN_DECIMALS),
+        ),
+      },
+    };
+  }, [governanceSummary]);
+
+  const delegationinfo: GovernanceSummaryInfo["delegationInfo"] = React.useMemo(() => {
+    return displayGovernanceSummary.delegationInfo;
+  }, [displayGovernanceSummary.delegationInfo]);
 
   /**
    * A delimiter showing total delegated information.
    * @returns {boolean} A boolean value indicating whether to show the total delegated information.
    */
-  const visibleTotalDelegateTooltip = React.useMemo(() => {
-    return Number(governanceSummary.delegationInfo.totalDelegationAmount) > 0;
-  }, [governanceSummary]);
+  const visibleTotalDelegateTooltip: boolean = React.useMemo(() => {
+    return Number(delegationinfo.totalDelegationAmount) > 0;
+  }, [delegationinfo]);
   /**
    * A delimiter showing community pool information.
    * @returns {boolean} A boolean value indicating whether to show the community pool information.
    */
-  const visibleCommunityPoolTooltip = React.useMemo(() => {
+  const visibleCommunityPoolTooltip: boolean = React.useMemo(() => {
     return governanceCommunityPoolBalances.length > 0;
   }, [governanceCommunityPoolBalances]);
 
