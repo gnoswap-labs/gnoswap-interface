@@ -4,7 +4,6 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { FaucetResponse } from "@repositories/faucet/response";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { delay } from "@utils/common";
 
 export interface UseFaucetReturn {
   isSupported: boolean;
@@ -26,7 +25,7 @@ export const useFaucet = (): UseFaucetReturn => {
   });
 
   const { isLoading, mutate } = useMutation({
-    mutationFn: (to: string) => delay(1000).then(() => faucetService.faucet(currentChainId, to, "10000000ugnot")),
+    mutationFn: (to: string) => faucetService.faucet(currentChainId, to, "10000000ugnot"),
   });
 
   const faucet = async (): Promise<FaucetResponse> => {
