@@ -21,7 +21,7 @@ interface LaunchpadProjectInfoProps {
   breakpoint: DEVICE_TYPE;
   project: LaunchpadProjectModel;
 
-  moveProjectDetail: (poolId: string) => void;
+  moveProjectDetail: (projectID: string) => void;
   moveRewardTokenSwapPage: (path: string) => void;
 }
 
@@ -32,7 +32,7 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
   moveProjectDetail,
   moveRewardTokenSwapPage,
 }) => {
-  const { status, name, pools, projectId, rewardTokenLogoUrl, rewardTokenSymbol, rewardTokenPath } = project;
+  const { status, name, pools, projectID, rewardTokenLogoUrl, rewardTokenSymbol, rewardTokenPath } = project;
 
   const highestApr = React.useMemo(() => {
     return pools.reduce((acc, current) => {
@@ -87,7 +87,7 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
       <TableColumn
         className="left clickable"
         tdWidth={cellWidths.list[0].width}
-        onClick={() => moveProjectDetail(projectId)}
+        onClick={() => moveProjectDetail(projectID)}
       >
         <MissingLogo symbol={rewardTokenSymbol} url={rewardTokenLogoUrl || undefined} width={24} mobileWidth={24} />
         <span className="ellipsis">{name}</span>

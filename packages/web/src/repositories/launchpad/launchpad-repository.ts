@@ -8,19 +8,19 @@ export interface LaunchpadRepository {
 
   getLaunchpadProjects(params: GetLaunchpadProjectsRequestParameters): Promise<LaunchpadProjectsInfo>;
 
-  getLaunchpadProjectDetails(projectId: string): Promise<LaunchpadProjectDetailsInfo>;
+  getLaunchpadProjectDetails(projectID: string): Promise<LaunchpadProjectDetailsInfo>;
 
-  getLaunchpadParticipationInfos(projectId: string, address: string): Promise<LaunchpadParticipationInfo>;
+  getLaunchpadParticipationInfos(projectID: string, address: string): Promise<LaunchpadParticipationInfo>;
 
   depositLaunchpadPoolBy(
-    projectPoolId: string,
+    projectPoolID: string,
     gnsTokenAmount: bigint,
     caller: string,
     referrerAddress: string | null,
   ): Promise<WalletResponse<{ hash: string }>>;
 
   collectRewardByProjectId(
-    projectId: string,
+    projectID: string,
     caller: string,
     referrerAddress: string | null,
   ): Promise<WalletResponse<{ hash: string }>>;
@@ -32,7 +32,7 @@ export interface LaunchpadRepository {
   ): Promise<WalletResponse<{ hash: string }>>;
 
   collectRewardWithDepositByProjectId(
-    projectId: string,
+    projectID: string,
     caller: string,
     referrerAddress: string | null,
   ): Promise<WalletResponse<{ hash: string }>>;

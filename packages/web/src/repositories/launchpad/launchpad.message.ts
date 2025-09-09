@@ -50,11 +50,11 @@ export function makeDepositGNSMessageWithApproves(
 }
 
 export function makeCollectRewardByProjectIdMessage({
-  projectId,
+  projectID,
   caller,
   referrerAddress,
 }: {
-  projectId: string;
+  projectID: string;
   caller: string;
   referrerAddress: string | null;
 }): TransactionMessage[] {
@@ -62,7 +62,7 @@ export function makeCollectRewardByProjectIdMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,
     send: "",
     func: TransactionMessageFunctionType.CollectRewardByProjectId,
-    args: [projectId, referrerAddress || ""], // Referral address
+    args: [projectID, referrerAddress || ""], // Referral address
     caller,
   });
 
@@ -90,11 +90,11 @@ export function makeCollectRewardByDepositIdMessage({
 }
 
 export function makeCollectRewardWithDepositByProjectIdMessage({
-  projectId,
+  projectID,
   caller,
   referrerAddress,
 }: {
-  projectId: string;
+  projectID: string;
   caller: string;
   referrerAddress: string | null;
 }): TransactionMessage[] {
@@ -102,14 +102,14 @@ export function makeCollectRewardWithDepositByProjectIdMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,
     send: "",
     func: TransactionMessageFunctionType.CollectRewardByProjectId,
-    args: [projectId],
+    args: [projectID],
     caller,
   });
   const collectDepositGnsByProjectIdMessage = makeTransactionMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,
     send: "",
     func: TransactionMessageFunctionType.CollectDepositGnsByProjectId,
-    args: [projectId, referrerAddress || ""], // Referral address
+    args: [projectID, referrerAddress || ""], // Referral address
     caller,
   });
 

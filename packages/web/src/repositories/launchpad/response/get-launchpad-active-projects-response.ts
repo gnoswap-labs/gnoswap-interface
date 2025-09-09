@@ -11,7 +11,7 @@ export interface LaunchpadActiveProjectPool extends LaunchpadPoolModel {
 
 export interface GetLaunchpadActiveProjectsResponse {
   id: number;
-  projectId: string;
+  projectID: string;
   status: "UPCOMING" | "ONGOING" | "ENDED";
   name: string;
   description: string;

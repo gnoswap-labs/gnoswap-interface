@@ -9,18 +9,18 @@ import { LaunchpadError } from "@common/errors/launchpad";
 const REFETCH_INTERVAL = 60_000;
 
 export const useGetLaunchpadProjectDetails = (
-  projectId: string | null,
+  projectID: string | null,
   options?: UseQueryOptions<LaunchpadProjectDetailsInfo["project"], Error>,
 ) => {
   const { launchpadRepository } = useGnoswapContext();
 
   return useQuery<LaunchpadProjectDetailsInfo["project"], Error>({
-    queryKey: [QUERY_KEY.launchpadProjectDetails, projectId],
+    queryKey: [QUERY_KEY.launchpadProjectDetails, projectID],
     queryFn: () => {
-      if (!projectId) {
+      if (!projectID) {
         throw new LaunchpadError("NOT_FOUND_PROJECT");
       }
-      return launchpadRepository.getLaunchpadProjectDetails(projectId).then(data => data.project);
+      return launchpadRepository.getLaunchpadProjectDetails(projectID).then(data => data.project);
     },
     refetchInterval: REFETCH_INTERVAL,
     refetchOnMount: true,

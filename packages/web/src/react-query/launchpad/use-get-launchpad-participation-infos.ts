@@ -10,7 +10,7 @@ import { QUERY_KEY } from "../query-keys";
 const REFETCH_INTERVAL = 60_000;
 
 export const useGetLaunchpadParticipationInfos = (
-  projectId: string,
+  projectID: string,
   address: string,
   options?: UseQueryOptions<LaunchpadParticipationModel[], Error>,
 ) => {
@@ -18,14 +18,14 @@ export const useGetLaunchpadParticipationInfos = (
   const { data: { tokens = [] } = {} } = useGetTokens();
 
   return useQuery<LaunchpadParticipationModel[], Error>({
-    queryKey: [QUERY_KEY.launchpadParticipationInfos, projectId, address, tokens.length],
+    queryKey: [QUERY_KEY.launchpadParticipationInfos, projectID, address, tokens.length],
     queryFn: () => {
       const tokenMap = tokens.reduce<{ [key in string]: TokenModel }>((tokenByPath, current) => {
         tokenByPath[current.path] = current;
         return tokenByPath;
       }, {});
 
-      return launchpadRepository.getLaunchpadParticipationInfos(projectId, address).then(response =>
+      return launchpadRepository.getLaunchpadParticipationInfos(projectID, address).then(response =>
         response.participationInfos.map(responseInfo => ({
           ...responseInfo,
           rewardToken: tokenMap[responseInfo.rewardTokenPath] || null,

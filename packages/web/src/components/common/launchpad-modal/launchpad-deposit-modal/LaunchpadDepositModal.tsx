@@ -6,8 +6,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { ProjectRewardInfoModel } from "@layouts/launchpad/launchpad-detail/LaunchpadDetail";
 import { getTierNumber } from "@utils/launchpad-get-tier-number";
-import { LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN } from "@common/values/token-constant";
-import { GNOT_TOKEN } from "@common/values/token-constant";
+import { LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN, GNOT_TOKEN } from "@common/values/token-constant";
 import withLocalModal from "@components/hoc/with-local-modal";
 
 import { LaunchpadDepositModalWrapper } from "./LaunchpadDepositModal.styles";
@@ -33,7 +32,7 @@ interface LaunchpadDepositModalProps {
   projectPath: string;
   isWalletConnected: boolean;
   refetch: () => Promise<void>;
-  onSubmit: (projectPoolId: string, depositAmount: string) => void;
+  onSubmit: (projectPoolID: string, depositAmount: string) => void;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 

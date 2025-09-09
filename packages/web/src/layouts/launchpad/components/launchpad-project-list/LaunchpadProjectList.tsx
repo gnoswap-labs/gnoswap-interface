@@ -15,7 +15,7 @@ interface LaunchpadProjectListProps {
   keyword: string;
   searchRef: React.RefObject<HTMLDivElement>;
 
-  moveProjectDetail: (poolId: string) => void;
+  moveProjectDetail: (projectID: string) => void;
   moveRewardTokenSwapPage: (path: string) => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onToggleSearch: () => void;

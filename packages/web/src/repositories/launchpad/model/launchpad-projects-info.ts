@@ -13,7 +13,7 @@ export const nullLaunchpadProjectsInfo: LaunchpadProjectsInfo = {
 
 export const nullLaunchpadProjectInfo: LaunchpadProjectModel = {
   id: 0,
-  projectId: "",
+  projectID: "",
   status: LAUNCHPAD_STATUS.NONE,
   name: "",
   rewardTokenPath: "",

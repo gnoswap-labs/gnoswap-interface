@@ -24,7 +24,7 @@ interface LaunchpadProjectListTableProps {
   projects: LaunchpadProjectModel[];
   isFetched: boolean;
 
-  moveProjectDetail: (poolId: string) => void;
+  moveProjectDetail: (projectID: string) => void;
   moveRewardTokenSwapPage: (path: string) => void;
   fetchMore: () => void;
 

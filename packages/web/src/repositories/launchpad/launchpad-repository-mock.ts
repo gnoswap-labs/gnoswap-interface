@@ -82,7 +82,7 @@ export class LaunchpadRepositoryMock implements LaunchpadRepository {
     });
   }
 
-  async collectRewardByProjectId(projectId: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
+  async collectRewardByProjectId(projectID: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -93,7 +93,7 @@ export class LaunchpadRepositoryMock implements LaunchpadRepository {
         packagePath: PACKAGE_LAUNCHPAD_PATH,
         send: "",
         func: "CollectRewardByProjectId",
-        args: [projectId],
+        args: [projectID],
         caller,
       }),
     );
@@ -128,7 +128,7 @@ export class LaunchpadRepositoryMock implements LaunchpadRepository {
     });
   }
 
-  collectRewardWithDepositByProjectId(projectId: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
+  collectRewardWithDepositByProjectId(projectID: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -139,14 +139,14 @@ export class LaunchpadRepositoryMock implements LaunchpadRepository {
         packagePath: PACKAGE_LAUNCHPAD_PATH,
         send: "",
         func: "CollectDepositGnsByProjectId",
-        args: [projectId],
+        args: [projectID],
         caller,
       }),
       makeTransactionMessage({
         packagePath: PACKAGE_LAUNCHPAD_PATH,
         send: "",
         func: "CollectRewardByProjectId",
-        args: [projectId],
+        args: [projectID],
         caller,
       }),
     );

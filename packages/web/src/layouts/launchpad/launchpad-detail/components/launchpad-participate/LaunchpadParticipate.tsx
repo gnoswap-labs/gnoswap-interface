@@ -33,7 +33,7 @@ interface LaunchpadParticipateProps {
   isLoading: boolean;
   isWalletConnected: boolean;
 
-  depositGNS: (projectPoolId: string, depositAmount: string) => void;
+  depositGNS: (projectPoolID: string, depositAmount: string) => void;
   refetch: () => Promise<void>;
 }
 

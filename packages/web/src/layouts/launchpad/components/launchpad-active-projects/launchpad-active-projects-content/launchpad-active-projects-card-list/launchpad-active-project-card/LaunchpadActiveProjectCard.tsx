@@ -16,13 +16,13 @@ interface LaunchpadActiveProjectCardProps {
 }
 
 const LaunchpadActiveProjectCard: React.FC<LaunchpadActiveProjectCardProps> = ({ project, moveProjectDetail }) => {
-  const { pools, status, projectId, rewardTokenSymbol, rewardTokenLogoUrl } = project;
+  const { pools, status, projectID, rewardTokenSymbol, rewardTokenLogoUrl } = project;
 
   const FIRST_POOL = pools[0];
   const LAST_POOL = pools[Math.max(pools.length - 1, 0)];
 
   return (
-    <ActiveProjectCardWrapper type={status} onClick={() => moveProjectDetail(projectId)}>
+    <ActiveProjectCardWrapper type={status} onClick={() => moveProjectDetail(projectID)}>
       <LaunchpadStatusTimeChip startTime={FIRST_POOL.startTime} endTime={LAST_POOL.endTime} status={project.status} />
       <LaunchpadActiveProjectCardHeader
         name={project.name}

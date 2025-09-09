@@ -78,8 +78,8 @@ const LaunchpadProjectListContainer: React.FC = () => {
   }, [projectList, keyword, filterProjectsByKeyword, sortOption, getSortFunction]);
 
   const moveProjectDetail = React.useCallback(
-    (projectId: string) => {
-      router.movePage("PROJECT", { [QUERY_PARAMETER.PROJECT_PATH]: projectId });
+    (projectID: string) => {
+      router.movePage("PROJECT", { [QUERY_PARAMETER.PROJECT_PATH]: projectID });
     },
     [router],
   );

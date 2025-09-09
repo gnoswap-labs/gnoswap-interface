@@ -3,7 +3,7 @@ import { PoolTierType, LaunchpadStatusType } from "./types";
 export interface LaunchpadPoolModel {
   id: number;
 
-  projectPoolId: string;
+  projectPoolID: string;
 
   status: LaunchpadStatusType;
 
