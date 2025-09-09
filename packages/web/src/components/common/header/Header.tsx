@@ -41,6 +41,8 @@ import {
 import SettingUiButton from "./setting-ui-button/SettingUiButton";
 import { useAccountChange } from "@hooks/wallet/data/use-account-change";
 import { useReferral } from "@hooks/common/use-referral";
+import { useFaucet } from "@hooks/faucet/use-faucet";
+import { FaucetButton } from "./faucet-button/FaucetButton";
 
 interface HeaderProps {
   pathname?: string;
@@ -120,6 +122,8 @@ const Header: React.FC<HeaderProps> = ({
   const { handleNavigation } = useNavigation();
   const { removeReferrerFromUrl, refreshReferralData } = useReferral();
 
+  const { isSupported } = useFaucet();
+
   useAccountChange({
     onAccountChange(prevAccount, currentAccount) {
       if (prevAccount !== null && currentAccount !== null && prevAccount.address !== currentAccount.address) {
@@ -155,6 +159,14 @@ const Header: React.FC<HeaderProps> = ({
   const callbackDeposit = (value: boolean) => {
     setIsShowDepositModal(value);
   };
+
+  const showFaucetButton = useMemo(() => {
+    return connected && width > DeviceSize[DEVICE_TYPE.TABLET_M] && isSupported;
+  }, [connected, width, isSupported]);
+
+  const showReceiveButton = useMemo(() => {
+    return connected && width > DeviceSize[DEVICE_TYPE.TABLET_M] && !isSupported;
+  }, [connected, width, isSupported]);
 
   usePreventScroll(isShowDepositModal);
 
@@ -205,7 +217,7 @@ const Header: React.FC<HeaderProps> = ({
               <SearchButton onClick={onSearchMenuToggle}>
                 <IconSearch className="search-icon" />
               </SearchButton>
-              {connected && width > DeviceSize[DEVICE_TYPE.TABLET_M] && (
+              {showReceiveButton && (
                 <Button
                   leftIcon={
                     <DepositIconWrapper>
@@ -213,7 +225,7 @@ const Header: React.FC<HeaderProps> = ({
                     </DepositIconWrapper>
                   }
                   text={t("HeaderFooter:receive")}
-                  onClick={() => changeTokenDeposit()}
+                  onClick={changeTokenDeposit}
                   style={{
                     hierarchy: ButtonHierarchy.Primary,
                     fontType: "p1",
@@ -222,6 +234,7 @@ const Header: React.FC<HeaderProps> = ({
                   }}
                 />
               )}
+              {showFaucetButton && <FaucetButton themeKey={themeKey} />}
               <WalletConnectorButton
                 account={account}
                 breakpoint={breakpoint}

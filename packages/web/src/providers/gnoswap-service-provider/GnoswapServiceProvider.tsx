@@ -28,6 +28,8 @@ import { SwapRepository } from "@repositories/swap/swap-repository";
 import { SwapRepositoryImpl } from "@repositories/swap/swap-repository-impl";
 import { TransactionService, TransactionServiceImpl } from "@services/transaction";
 import { TransactionGasService, TransactionGasServiceImpl } from "@services/transaction-gas";
+import { FaucetService, FaucetServiceImpl } from "@services/faucet";
+import { FaucetRepositoryImpl } from "@repositories/faucet";
 
 interface GnoswapContextProps {
   initialized: boolean;
@@ -50,6 +52,7 @@ interface GnoswapContextProps {
   localStorageClient: WebStorageClient;
   transactionService: TransactionService;
   transactionGasService: TransactionGasService;
+  faucetService: FaucetService;
 }
 
 const getSessionId = () => {
@@ -222,6 +225,16 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
     return new TransactionGasServiceImpl(rpcProvider, walletClient);
   }, [rpcProvider, walletClient]);
 
+  const axiosInstance = axios.create({ timeout: 20_000 });
+
+  const faucetRepository = useMemo(() => {
+    return new FaucetRepositoryImpl(axiosInstance);
+  }, [axiosInstance]);
+
+  const faucetService = useMemo(() => {
+    return new FaucetServiceImpl(faucetRepository);
+  }, [faucetRepository]);
+
   useEffect(() => {
     if (window) {
       setLocalStorageClient(WebStorageClient.createLocalStorageClient());
@@ -252,6 +265,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
         localStorageClient,
         transactionService,
         transactionGasService,
+        faucetService,
       }}
     >
       {loadedProviders && children}
