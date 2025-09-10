@@ -1,5 +1,11 @@
 /**
  * Union of accepted time-like inputs.
+ *
+ * @remark
+ * - `string`: must match one of the accepted formats described in {@link safeParseTime}.
+ * - `number`: interpreted as epoch miliseconds (ms).
+ * - `Date`: returns `data.getTime()` (already UTC-based).
+ * - `null | undefined`: yields `null`.
  */
 type TimeInput = string | number | Date | null | undefined;
 
@@ -17,6 +23,30 @@ const validYMD = (y: number, m1: number, d: number): boolean => {
 /**
  * Parses a variety of inputs into a **UTC epoch milliseconds** timestamp.
  * Returns `null` for invalid or unsupported inputs.
+ *
+ * @param input - A time-like value to parse. See {@link TimeInput}
+ * @returns The UTC epoch milliseconds, or `null` when parsing/validation fails
+ *
+ * @example
+ * ```ts
+ * safeParseTime("2024-01-15T10:30:00Z"); // epoch ms (number)
+ * ```
+ * @example
+ * ```ts
+ * // Numeric string: seconds vs milliseconds
+ * safeParseTime("1705315800");    // 1705315800000 (seconds → ms)
+ * safeParseTime("1705315800000"); // 1705315800000 (already ms)
+ * ```
+ * @example
+ * ```ts
+ * // Date-only is fixed to UTC midnight
+ * safeParseTime("2024-01-15"); // Date.UTC(2024, 0, 15)
+ * ```
+ * @example
+ * ```ts
+ * // Ambiguous local date-time (no offset) is rejected
+ * safeParseTime("2024-01-15T10:30:00"); // null
+ * ```
  */
 export const safeParseTime = (input: TimeInput): number | null => {
   if (input == null) return null;
@@ -47,10 +77,15 @@ export const safeParseTime = (input: TimeInput): number | null => {
     if (s === "") return null;
 
     // numeric-only string: seconds vs milliseconds policy
+    //
+    // Note: In tests, `new Date(date.toUTCString()).getTime()` is used to compare values
+    // in milliseconds. Therefore, we have consistently converted to ms form.
     if (/^\d+$/.test(s)) {
       const n = Number(s);
       if (!Number.isFinite(n)) return null;
-      const ms = s.length <= 10 ? n * 1000 : n; // <=10 digits -> seconds
+      // length is stable and cheaper than numeric threshold
+      // 11-digit seconds won't appear in real life for millennia.
+      const ms = s.length <= 10 ? n * 1000 : n;
       const d = new Date(ms);
       return Number.isNaN(d.getTime()) ? null : ms;
     }
@@ -74,14 +109,16 @@ export const safeParseTime = (input: TimeInput): number | null => {
       const hh = Number(mISO[4]);
       const mm = Number(mISO[5]);
       const ss = Number(mISO[6]);
-      // validate calendar + time ranges before letting Date normalize
+
+      // validate Data's overflow normalization from invalid calendar values
       if (!validYMD(y, m1, d)) return null;
       if (hh > 23 || mm > 59 || ss > 59) return null;
       const ms = Date.parse(s);
       return Number.isNaN(ms) ? null : ms;
     }
 
-    // reject anything else to avoid engine-dependent parsing
+    // Reject anything else to avoid engine-dependent parsing.
+    // Browser/engines may parse free-form data strings differently.
     return null;
   }
 
