@@ -216,7 +216,7 @@ const ProposalCard: React.FC<Props> = ({
         <StatusBadge
           breakpoint={breakpoint}
           status={proposalDetail.status}
-          time={safeParseTime(proposalDetail.expiredTime)}
+          time={safeParseTime(proposalDetail.statusTime)}
         />
       </div>
       <VotingProgressBar

@@ -36,6 +36,7 @@ export interface ProposalItemInfo {
   title: string;
   proposer: ProposerInfo;
   status: string;
+  statusTime: string;
   executableTime: string;
   expiredTime: string;
   createdAt: string;
@@ -82,6 +83,7 @@ export const nullProposalItemInfo: ProposalItemInfo = {
   title: "",
   proposer: nullProposerInfo,
   status: "",
+  statusTime: "",
   executableTime: "",
   expiredTime: "",
   createdAt: "",

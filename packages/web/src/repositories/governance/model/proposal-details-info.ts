@@ -29,6 +29,7 @@ export interface ProposalDetailsItemInfo {
   content: ProposalContent;
   proposer: ProposerInfo;
   status: string;
+  statusTime: string;
   executableTime: string;
   expiredTime: string;
   createdAt: string;
@@ -61,6 +62,7 @@ export const nullProposalDetailsItemInfo: ProposalDetailsItemInfo = {
   content: nullProposalContent,
   proposer: nullProposerInfo,
   status: "",
+  statusTime: "",
   executableTime: "",
   expiredTime: "",
   createdAt: "",

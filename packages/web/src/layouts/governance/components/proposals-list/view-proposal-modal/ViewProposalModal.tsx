@@ -189,7 +189,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
             <StatusBadge
               breakpoint={breakpoint}
               status={proposalDetail.status}
-              time={safeParseTime(proposalDetail.executableTime)}
+              time={safeParseTime(proposalDetail.statusTime)}
               twoline={false}
             />
           </div>
