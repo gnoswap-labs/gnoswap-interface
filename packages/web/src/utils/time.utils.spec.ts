@@ -120,8 +120,8 @@ describe("safeParseTime — additional cases", () => {
 
   // Note: clarify seconds vs milliseconds
   it("numeric string (seconds) vs (milliseconds) policy", () => {
-    const seconds = "1705315800";       // 2024-01-15T10:30:00Z (seconds)
-    const millis  = "1705315800000";    // Same instant (milliseconds)
+    const seconds = "1705315800"; // 2024-01-15T10:30:00Z (seconds)
+    const millis = "1705315800000"; // Same instant (milliseconds)
     // seconds are *1000, millis as-is
     const a = safeParseTime(seconds);
     const b = safeParseTime(millis);
@@ -146,8 +146,14 @@ describe("safeParseTime — additional cases", () => {
   it("does not trigger object ToPrimitive side-effects", () => {
     let sideEffect = 0;
     const evil = {
-      valueOf() { sideEffect += 1; return 1705315800000; },
-      toString() { sideEffect += 1; return "2024-01-15T10:30:00Z"; },
+      valueOf() {
+        sideEffect += 1;
+        return 1705315800000;
+      },
+      toString() {
+        sideEffect += 1;
+        return "2024-01-15T10:30:00Z";
+      },
     } as unknown as any;
 
     const result = safeParseTime(evil);
