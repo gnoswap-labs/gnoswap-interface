@@ -11,7 +11,9 @@ const FAUCET_AMOUNT = 10_000_000 + (GNOT_TOKEN?.denom || "ugnot");
 export interface UseFaucetReturn {
   isSupported: boolean;
   isLoading: boolean;
+  isLoading2: boolean;
   faucet: () => Promise<FaucetResponse>;
+  faucet2: () => Promise<FaucetResponse>;
 }
 
 export const useFaucet = (): UseFaucetReturn => {
@@ -29,6 +31,10 @@ export const useFaucet = (): UseFaucetReturn => {
 
   const { isLoading, mutate } = useMutation({
     mutationFn: (to: string) => faucetService.faucet(currentChainId, to, FAUCET_AMOUNT),
+  });
+
+  const { mutate: mutate2, isLoading: isLoading2 } = useMutation({
+    mutationFn: (to: string) => faucetService.faucetGRC20(currentChainId, to, "10_000_000"),
   });
 
   const faucet = async (): Promise<FaucetResponse> => {
@@ -50,9 +56,30 @@ export const useFaucet = (): UseFaucetReturn => {
     });
   };
 
+  const faucet2 = async (): Promise<FaucetResponse> => {
+    if (!currentAddress) {
+      return {
+        success: false,
+        message: "Unexpected Error.",
+      };
+    }
+    return new Promise(resolve => {
+      mutate2(currentAddress, {
+        onSuccess: data => resolve(data),
+        onError: () =>
+          resolve({
+            success: false,
+            message: "Unexpected Error.",
+          }),
+      });
+    });
+  };
+
   return {
     isSupported,
     isLoading,
+    isLoading2,
     faucet,
+    faucet2,
   };
 };

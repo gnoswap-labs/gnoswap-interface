@@ -5,5 +5,7 @@ export interface FaucetService {
 
   faucet: (chainId: string, to: string, amount: string) => Promise<FaucetResponse>;
 
+  faucetGRC20: (chainId: string, to: string, amount: string) => Promise<FaucetResponse>;
+
   getFaucetApiUrl: (chainId: string) => string;
 }

@@ -1,38 +1,41 @@
-import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { useFaucet } from "@hooks/faucet/use-faucet";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useSnackbar } from "@hooks/common/use-snackbar";
+import { makeRandomId } from "@utils/common";
 
-import { FaucetTooltip } from "./FaucetButton.styles";
 import { DepositIconWrapper } from "../Header.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import IconDownload from "@components/common/icons/IconDownload";
-import IconPolygon from "@components/common/icons/IconPolygon";
-import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { useTokenData } from "@hooks/token/data/use-token-data";
 
-interface FaucetButtonProps {
-  themeKey: "dark" | "light";
-}
-
-export const FaucetButton = ({ themeKey }: FaucetButtonProps) => {
+export const FaucetButton = () => {
   const { t } = useTranslation();
-  const { faucet, isLoading } = useFaucet();
-  const [faucetTooltipContents, setFaucetTooltipContents] = React.useState("");
+  const { enqueue } = useSnackbar();
+
+  const { faucet2, isLoading2 } = useFaucet();
 
   const { refetchGnotBalance } = useWallet();
   const { refetchGrc20Balances } = useTokenData();
 
   const onClickFaucetButton = (): void => {
-    if (isLoading) return;
-    faucet().then(result => {
+    if (isLoading2) return;
+    faucet2().then(result => {
       refetchGnotBalance();
       refetchGrc20Balances();
-      setFaucetTooltipContents(result.message);
-      setTimeout(() => {
-        setFaucetTooltipContents("");
-      }, 2000);
+      enqueue(
+        {
+          title: "Faucet Receive",
+          description: result.message,
+        },
+        {
+          id: makeRandomId(),
+          timeout: 3000,
+          type: result.success === true ? "success" : "error",
+        },
+      );
     });
   };
 
@@ -41,7 +44,7 @@ export const FaucetButton = ({ themeKey }: FaucetButtonProps) => {
       <Button
         leftIcon={
           <DepositIconWrapper>
-            {isLoading ? <LoadingSpinner className="loading-button" /> : <IconDownload />}
+            {isLoading2 ? <LoadingSpinner className="loading-button" /> : <IconDownload />}
           </DepositIconWrapper>
         }
         text={t("HeaderFooter:Faucet")}
@@ -53,14 +56,6 @@ export const FaucetButton = ({ themeKey }: FaucetButtonProps) => {
           gap: "8px",
         }}
       />
-      {faucetTooltipContents && (
-        <FaucetTooltip>
-          <IconPolygon className="polygon-icon" />
-          <div className={`box ${themeKey}-shadow`}>
-            <span>{faucetTooltipContents}</span>
-          </div>
-        </FaucetTooltip>
-      )}
     </>
   );
 };

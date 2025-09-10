@@ -28,4 +28,12 @@ export class FaucetServiceImpl implements FaucetService {
       amount,
     });
   }
+
+  public async faucetGRC20(chainId: string, to: string, amount: string): Promise<FaucetResponse> {
+    const apiUrl = this.getFaucetApiUrl(chainId);
+    return this.faucetRepository.postFaucetGRC20(apiUrl, {
+      to,
+      amount,
+    });
+  }
 }

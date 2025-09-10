@@ -234,7 +234,7 @@ const Header: React.FC<HeaderProps> = ({
                   }}
                 />
               )}
-              {showFaucetButton && <FaucetButton themeKey={themeKey} />}
+              {showFaucetButton && <FaucetButton />}
               <WalletConnectorButton
                 account={account}
                 breakpoint={breakpoint}

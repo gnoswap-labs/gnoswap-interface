@@ -34,6 +34,8 @@ export const DexEvent = {
   LAUNCHPAD_DEPOSIT: "DEPOSIT",
   LAUNCHPAD_COLLECT_DEPOSIT: "LAUNCHPAD_CLAIM_DEPOSIT",
   LAUNCHPAD_COLLECT_REWARD: "LAUNCHPAD_CLAIM_REWARD",
+  // faucet
+  FAUCET_RECEIVE: "FAUCET_RECEIVE",
 } as const;
 
 export type DexEventType = ValuesType<typeof DexEvent>;

@@ -7,4 +7,6 @@ export interface FaucetRepository {
   findFaucetApiUrl: (chainId: string) => string | null;
 
   postFaucet: (requestUrl: string, request: FaucetRequest) => Promise<FaucetResponse>;
+
+  postFaucetGRC20: (requestUrl: string, request: FaucetRequest) => Promise<FaucetResponse>;
 }
