@@ -14,6 +14,7 @@
       "name": "TechLead Alice"
     },
     "status": "ACTIVE",
+    "statusTime": "2025-02-03T10:00:00Z",
     "executableTime": "2025-02-01T10:00:00Z",
     "expiredTime": "2025-02-08T10:00:00Z",
     "createdAt": "2025-01-25T09:15:30Z",
