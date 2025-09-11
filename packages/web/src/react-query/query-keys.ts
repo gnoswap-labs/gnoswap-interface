@@ -71,7 +71,7 @@ export enum QUERY_KEY {
   tokenByPath = "token",
   tokenBalancesByAddress = "balances",
 
-  //launchpad
+  // launchpad
   launchpadSummary = "launchpad_summary",
   launchpadActiveProjects = "launchpad_active_projects",
   launchpadProjects = "launchpad_projects",
@@ -81,4 +81,8 @@ export enum QUERY_KEY {
   // gas
   gasPrice = "gas_price",
   gasInfo = "gas_info",
+
+  // faucet
+  faucetIsSupported = "faucet/isSupported",
+  faucetGRC20IsSupported = "faucetGRC20/isSupported",
 }

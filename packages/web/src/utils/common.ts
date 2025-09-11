@@ -287,3 +287,16 @@ export function buildPricePrefix(flags: Partial<Record<keyof typeof PRICE_PREFIX
     .map(key => PRICE_PREFIX_SYMBOL_MAP[key])
     .join("");
 }
+
+/**
+ * Generates a unique ID for JSON-RPC requests.
+ *
+ * Combines a timestamp with a cryptographically secure random value
+ * to ensure time ordering while preventing collisions during concurrent requests.
+ */
+export function generateJsonRpcRequestId(): number {
+  const timestamp = Date.now();
+  const array = new Uint16Array(1);
+  crypto.getRandomValues(array);
+  return timestamp * 100000 + array[0];
+}

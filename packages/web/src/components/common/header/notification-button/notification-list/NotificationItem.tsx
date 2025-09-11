@@ -94,6 +94,8 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
     [DexEvent.LAUNCHPAD_COLLECT_REWARD]: "Modal:notif.action.rewardsClaimed",
     [DexEvent.LAUNCHPAD_COLLECT_DEPOSIT]: "Modal:notif.action.claimedDeposit",
     [DexEvent.LAUNCHPAD_DEPOSIT]: "Modal:notif.action.deposited",
+    // Faucet
+    [DexEvent.FAUCET_RECEIVE]: "Faucet Receive",
   };
 
   const getNotificationMessage = useCallback(

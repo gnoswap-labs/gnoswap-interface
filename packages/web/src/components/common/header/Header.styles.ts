@@ -185,4 +185,15 @@ export const DepositIconWrapper = styled.div`
     width: 15px;
     height: 15px;
   }
+
+  .loading-button {
+    width: 15px;
+    height: 15px;
+    background: conic-gradient(from 0deg at 50% 50.63%, #ffffff 0deg, #233dbd 360deg);
+    &::before {
+      width: 12.4px;
+      height: 12.4px;
+      background-color: ${({ theme }) => theme.color.background04Hover};
+    }
+  }
 `;
