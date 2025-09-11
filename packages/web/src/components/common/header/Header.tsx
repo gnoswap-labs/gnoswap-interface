@@ -41,8 +41,8 @@ import {
 import SettingUiButton from "./setting-ui-button/SettingUiButton";
 import { useAccountChange } from "@hooks/wallet/data/use-account-change";
 import { useReferral } from "@hooks/common/use-referral";
-import { useFaucet } from "@hooks/faucet/use-faucet";
 import { FaucetButton } from "./faucet-button/FaucetButton";
+import { useFaucetGRC20 } from "@hooks/faucet/use-faucet-grc20";
 
 interface HeaderProps {
   pathname?: string;
@@ -122,7 +122,7 @@ const Header: React.FC<HeaderProps> = ({
   const { handleNavigation } = useNavigation();
   const { removeReferrerFromUrl, refreshReferralData } = useReferral();
 
-  const { isSupported } = useFaucet();
+  const { isSupported } = useFaucetGRC20();
 
   useAccountChange({
     onAccountChange(prevAccount, currentAccount) {
