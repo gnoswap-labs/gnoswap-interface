@@ -4,8 +4,17 @@ import { FaucetRepository } from "./faucet-repository";
 import { FaucetRequest } from "./request";
 import { FaucetResponse } from "./response";
 import { FAUCET_RESPONSE_MESSAGE } from "@common/errors/faucet/faucet-error";
+import { generateJsonRpcRequestId } from "@utils/common";
 
 import FaucetEndPoints from "./resources/faucet-api.json";
+
+interface JsonRpcRequest {
+  id: number;
+  jsonrpc: "2.0";
+  method: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  params?: any[];
+}
 
 interface JsonRpcSuccessResponse {
   jsonrpc: "2.0";
@@ -51,9 +60,9 @@ export class FaucetRepositoryImpl implements FaucetRepository {
       };
     }
 
-    const jsonRpcRequest = {
+    const jsonRpcRequest: JsonRpcRequest = {
       jsonrpc: "2.0",
-      id: Date.now(),
+      id: generateJsonRpcRequestId(),
       method: "drip",
       params: [requests.to, requests.amount.toString()],
     };
