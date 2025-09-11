@@ -75,7 +75,7 @@ export class FaucetRepositoryImpl implements FaucetRepository {
     if (this.isJsonRpcSuccessResponse(data)) {
       return {
         success: true,
-        message: FAUCET_RESPONSE_MESSAGE.SUCCESS.MESSAGE,
+        message: FAUCET_RESPONSE_MESSAGE.SUCCESS.DEFAULT,
       };
     }
 

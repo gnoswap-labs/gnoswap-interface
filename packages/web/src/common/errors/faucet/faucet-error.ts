@@ -1,6 +1,6 @@
 export const FAUCET_RESPONSE_MESSAGE = {
   SUCCESS: {
-    MESSAGE: "Go to the Portfolio page to check balances",
+    DEFAULT: "Go to the Portfolio page to check balances",
   },
   ERROR: {
     UNEXPECTED: "Unexpected Error",
