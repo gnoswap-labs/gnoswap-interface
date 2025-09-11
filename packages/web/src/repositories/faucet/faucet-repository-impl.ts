@@ -4,6 +4,7 @@ import { FaucetRepository } from "./faucet-repository";
 import { FaucetRequest } from "./request";
 import { FaucetResponse } from "./response";
 import { makeRandomId } from "@utils/common";
+import { FAUCET_RESPONSE_MESSAGE } from "@common/errors/faucet/faucet-error";
 
 import FaucetEndPoints from "./resources/faucet-api.json";
 
@@ -28,7 +29,7 @@ export class FaucetRepositoryImpl implements FaucetRepository {
     if (!this.networkClient) {
       return {
         success: false,
-        message: "NetworkClient is not available",
+        message: FAUCET_RESPONSE_MESSAGE.ERROR.NETWORK_CLIENT,
       };
     }
 
@@ -41,12 +42,12 @@ export class FaucetRepositoryImpl implements FaucetRepository {
         if (response?.data?.result) {
           return {
             success: true,
-            message: "Tokens successfully received!",
+            message: FAUCET_RESPONSE_MESSAGE.SUCCESS.MESSAGE,
           };
         }
         return {
           success: false,
-          message: "Unexpected Error.",
+          message: FAUCET_RESPONSE_MESSAGE.ERROR.UNEXPECTED,
         };
       })
       .catch(e => {
@@ -61,7 +62,7 @@ export class FaucetRepositoryImpl implements FaucetRepository {
         }
         return {
           success,
-          message: "Unexpected Error.",
+          message: FAUCET_RESPONSE_MESSAGE.ERROR.UNEXPECTED,
         };
       });
   }
@@ -70,13 +71,13 @@ export class FaucetRepositoryImpl implements FaucetRepository {
     if (!this.networkClient) {
       return {
         success: false,
-        message: "NetworkClient is not available",
+        message: FAUCET_RESPONSE_MESSAGE.ERROR.NETWORK_CLIENT,
       };
     }
 
     const jsonRpcRequest = {
       jsonrpc: "2.0",
-      id: makeRandomId(),
+      id: Math.floor(makeRandomId()),
       method: "drip",
       params: [requests.to, requests.amount.toString()],
     };
@@ -89,12 +90,12 @@ export class FaucetRepositoryImpl implements FaucetRepository {
         if (response?.data?.result) {
           return {
             success: true,
-            message: "Tokens successfully received!",
+            message: FAUCET_RESPONSE_MESSAGE.SUCCESS.MESSAGE,
           };
         }
         return {
           success: false,
-          message: "Unexpected Error.",
+          message: FAUCET_RESPONSE_MESSAGE.ERROR.UNEXPECTED,
         };
       })
       .catch(e => {
@@ -109,7 +110,7 @@ export class FaucetRepositoryImpl implements FaucetRepository {
         }
         return {
           success,
-          message: "Unexpected Error.",
+          message: FAUCET_RESPONSE_MESSAGE.ERROR.UNEXPECTED,
         };
       });
   }

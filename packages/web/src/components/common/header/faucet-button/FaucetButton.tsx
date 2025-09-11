@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-import { useFaucet } from "@hooks/faucet/use-faucet";
+import { useFaucetGRC20 } from "@hooks/faucet/use-faucet-grc20";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useSnackbar } from "@hooks/common/use-snackbar";
@@ -15,14 +15,14 @@ export const FaucetButton = () => {
   const { t } = useTranslation();
   const { enqueue } = useSnackbar();
 
-  const { faucet2, isLoading2 } = useFaucet();
+  const { faucetGRC20, isLoading } = useFaucetGRC20();
 
   const { refetchGnotBalance } = useWallet();
   const { refetchGrc20Balances } = useTokenData();
 
   const onClickFaucetButton = (): void => {
-    if (isLoading2) return;
-    faucet2().then(result => {
+    if (isLoading) return;
+    faucetGRC20().then(result => {
       refetchGnotBalance();
       refetchGrc20Balances();
       enqueue(
@@ -44,7 +44,7 @@ export const FaucetButton = () => {
       <Button
         leftIcon={
           <DepositIconWrapper>
-            {isLoading2 ? <LoadingSpinner className="loading-button" /> : <IconDownload />}
+            {isLoading ? <LoadingSpinner className="loading-button" /> : <IconDownload />}
           </DepositIconWrapper>
         }
         text={t("HeaderFooter:Faucet")}

@@ -7,17 +7,16 @@ import { FAUCET_RESPONSE_MESSAGE } from "@common/errors/faucet/faucet-error";
 import { FaucetResponse } from "@repositories/faucet/response";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { GNOT_TOKEN } from "@common/values/token-constant";
 
-const FAUCET_AMOUNT = 10_000_000 + (GNOT_TOKEN?.denom || "ugnot");
+const FAUCET_AMOUNT = 10_000_000;
 
-export interface UseFaucetReturn {
+export interface UseFaucetGRC20Return {
   isSupported: boolean;
   isLoading: boolean;
-  faucet: () => Promise<FaucetResponse>;
+  faucetGRC20: () => Promise<FaucetResponse>;
 }
 
-export const useFaucet = (): UseFaucetReturn => {
+export const useFaucetGRC20 = (): UseFaucetGRC20Return => {
   const { currentChainId, account } = useWallet();
   const { faucetService } = useGnoswapContext();
 
@@ -26,15 +25,15 @@ export const useFaucet = (): UseFaucetReturn => {
   }, [account]);
 
   const { data: isSupported = false } = useQuery<boolean>({
-    queryKey: [QUERY_KEY.faucetIsSupported, currentChainId],
+    queryKey: [QUERY_KEY.faucetGRC20IsSupported, currentChainId],
     queryFn: () => faucetService.availFaucet(currentChainId),
   });
 
-  const { isLoading, mutate } = useMutation({
-    mutationFn: (to: string) => faucetService.faucet(currentChainId, to, FAUCET_AMOUNT),
+  const { mutate, isLoading } = useMutation({
+    mutationFn: (to: string) => faucetService.faucetGRC20(currentChainId, to, FAUCET_AMOUNT.toString()),
   });
 
-  const faucet = async (): Promise<FaucetResponse> => {
+  const faucetGRC20 = async (): Promise<FaucetResponse> => {
     if (!currentAddress) {
       return {
         success: false,
@@ -56,6 +55,6 @@ export const useFaucet = (): UseFaucetReturn => {
   return {
     isSupported,
     isLoading,
-    faucet,
+    faucetGRC20,
   };
 };
