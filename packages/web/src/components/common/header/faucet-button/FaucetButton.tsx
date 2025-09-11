@@ -4,7 +4,6 @@ import { useFaucetGRC20 } from "@hooks/faucet/use-faucet-grc20";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useSnackbar } from "@hooks/common/use-snackbar";
-import { makeRandomId } from "@utils/common";
 
 import { DepositIconWrapper } from "../Header.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -31,31 +30,29 @@ export const FaucetButton = () => {
           description: result.message,
         },
         {
-          id: makeRandomId(),
+          id: Date.now(),
           timeout: 3000,
-          type: result.success === true ? "success" : "error",
+          type: result.success ? "success" : "error",
         },
       );
     });
   };
 
   return (
-    <>
-      <Button
-        leftIcon={
-          <DepositIconWrapper>
-            {isLoading ? <LoadingSpinner className="loading-button" /> : <IconDownload />}
-          </DepositIconWrapper>
-        }
-        text={t("HeaderFooter:Faucet")}
-        onClick={onClickFaucetButton}
-        style={{
-          hierarchy: ButtonHierarchy.Primary,
-          fontType: "p1",
-          padding: "10px 16px 10px 14px",
-          gap: "8px",
-        }}
-      />
-    </>
+    <Button
+      leftIcon={
+        <DepositIconWrapper>
+          {isLoading ? <LoadingSpinner className="loading-button" /> : <IconDownload />}
+        </DepositIconWrapper>
+      }
+      text={t("HeaderFooter:Faucet")}
+      onClick={onClickFaucetButton}
+      style={{
+        hierarchy: ButtonHierarchy.Primary,
+        fontType: "p1",
+        padding: "10px 16px 10px 14px",
+        gap: "8px",
+      }}
+    />
   );
 };
