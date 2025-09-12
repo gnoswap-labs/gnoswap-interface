@@ -259,6 +259,7 @@ const LaunchpadDetail: React.FC = () => {
       projectSummary={
         <LaunchpadProjectSummaryContainer
           tokenSymbol={projectDetailData?.rewardTokenSymbol || "-"}
+          rewardInfo={projectRewardInfo}
           data={projectSummaryData}
           isLoading={isLoadingProjectDetail}
         />

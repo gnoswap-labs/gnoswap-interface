@@ -49,7 +49,7 @@ const LaunchpadProjectList: React.FC<LaunchpadProjectListProps> = ({
         pools: project.pools.map(pool => {
           return {
             ...pool,
-            allocation: rawToDisplayAmount(pool.allocation, GNS_TOKEN.decimals),
+            allocation: rawToDisplayAmount(pool.allocation, project.rewardTokenDecimals),
             depositAmount: rawToDisplayAmount(pool.depositAmount, GNS_TOKEN.decimals),
           };
         }),

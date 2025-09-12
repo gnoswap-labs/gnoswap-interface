@@ -29,11 +29,11 @@ const LaunchpadPoolListContainer: React.FC<LaunchpadPoolListContainerProps> = ({
     return pools.map(pool => {
       return {
         ...pool,
-        allocation: rawToDisplayAmount(pool.allocation, GNS_TOKEN_DECIMALS),
+        allocation: rawToDisplayAmount(pool.allocation, rewardInfo.rewardTokenDecimals),
         depositAmount: rawToDisplayAmount(pool.depositAmount, GNS_TOKEN_DECIMALS),
       };
     });
-  }, [pools]);
+  }, [pools, rewardInfo]);
 
   return (
     <LaunchpadPoolList
