@@ -12,8 +12,11 @@ import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import IconDownload from "@components/common/icons/IconDownload";
 import { FAUCET_RESPONSE_MESSAGE } from "@common/errors/faucet/faucet-error";
 
-const FAUCET_SNACKBAR_TITLE = "Faucet Receive" as const;
-const FAUCET_SNACKBAR_TIMEOUT = 3000 as const;
+const FAUCET_SNACKBAR_TITLE = {
+  DEFAULT: "Faucet Receive",
+  PENDING: "Receiving Faucet",
+} as const;
+const FAUCET_SNACKBAR_TIMEOUT = 3000;
 
 export const FaucetButton = () => {
   const { t } = useTranslation();
@@ -42,7 +45,7 @@ export const FaucetButton = () => {
     if (promises.length === 0) {
       enqueue(
         {
-          title: FAUCET_SNACKBAR_TITLE,
+          title: FAUCET_SNACKBAR_TITLE.DEFAULT,
           description: FAUCET_RESPONSE_MESSAGE.ERROR.NO_SUPPORTED_FAUCET,
         },
         {
@@ -57,7 +60,7 @@ export const FaucetButton = () => {
     const pendingId = Date.now();
     enqueue(
       {
-        title: FAUCET_SNACKBAR_TITLE,
+        title: FAUCET_SNACKBAR_TITLE.PENDING,
         description: "Waiting for Request Confirmation",
       },
       {
@@ -86,7 +89,7 @@ export const FaucetButton = () => {
 
         enqueue(
           {
-            title: FAUCET_SNACKBAR_TITLE,
+            title: FAUCET_SNACKBAR_TITLE.DEFAULT,
             description: FAUCET_RESPONSE_MESSAGE.SUCCESS.DEFAULT,
           },
           {
@@ -104,7 +107,7 @@ export const FaucetButton = () => {
 
         enqueue(
           {
-            title: FAUCET_SNACKBAR_TITLE,
+            title: FAUCET_SNACKBAR_TITLE.DEFAULT,
             description: errorMessage,
           },
           {
@@ -127,7 +130,7 @@ export const FaucetButton = () => {
 
       enqueue(
         {
-          title: FAUCET_SNACKBAR_TITLE,
+          title: FAUCET_SNACKBAR_TITLE.DEFAULT,
           description: FAUCET_RESPONSE_MESSAGE.ERROR.UNEXPECTED,
         },
         {
@@ -146,9 +149,10 @@ export const FaucetButton = () => {
           {isLoading ? <LoadingSpinner className="loading-button" /> : <IconDownload />}
         </DepositIconWrapper>
       }
-      text={t("HeaderFooter:Faucet")}
+      text={isLoading ? null : t("HeaderFooter:Faucet")}
       onClick={onClickFaucetButton}
       style={{
+        minWidth: 95,
         hierarchy: ButtonHierarchy.Primary,
         fontType: "p1",
         padding: "10px 16px 10px 14px",
