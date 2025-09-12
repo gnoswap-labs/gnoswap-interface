@@ -17,7 +17,7 @@ const FAUCET_SNACKBAR_TIMEOUT = 3000 as const;
 
 export const FaucetButton = () => {
   const { t } = useTranslation();
-  const { enqueue } = useSnackbar();
+  const { enqueue, dequeue } = useSnackbar();
 
   const { faucetGRC20, isLoadingFaucetGRC20, isSupportedFaucetGRC20 } = useFaucetGRC20();
   const { faucetNative, isLoadingFaucetNative, isSupportedFaucetNative } = useFaucetNative();
@@ -54,14 +54,28 @@ export const FaucetButton = () => {
       return;
     }
 
+    const pendingId = Date.now();
+    enqueue(
+      {
+        title: FAUCET_SNACKBAR_TITLE,
+        description: "Waiting for Request Confirmation",
+      },
+      {
+        id: pendingId,
+        timeout: 30_000,
+        type: "pending",
+      },
+    );
+
     try {
       const results = await Promise.allSettled(promises);
 
       const successResults = results.filter(result => result.status === "fulfilled" && result.value.success);
-
       const failedResults = results.filter(
         result => result.status === "rejected" || (result.status === "fulfilled" && !result.value.success),
       );
+
+      dequeue(pendingId);
 
       if (successResults.length > 0) {
         setTimeout(() => {
@@ -108,6 +122,8 @@ export const FaucetButton = () => {
         supportedGRC20: isSupportedFaucetGRC20,
         supportedNative: isSupportedFaucetNative,
       });
+
+      dequeue(pendingId);
 
       enqueue(
         {
