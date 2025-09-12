@@ -218,25 +218,22 @@ export const useTokenData = () => {
     [grc20BalancesData],
   );
 
-  const fetchTokenBalance = useCallback(
-    async (token: TokenModel) => {
-      try {
-        if (!rpcProvider || !account || !availNetwork) {
-          return null;
-        }
-
-        if (isNativeTokenByType(token.type)) {
-          return await fetchNativeTokenBalance(token);
-        }
-
-        return getGrc20Balance(token);
-      } catch (error) {
-        console.log(`Failed to fetch balance for token ${token.symbol}: `, error);
+  const fetchTokenBalance = async (token: TokenModel) => {
+    try {
+      if (!rpcProvider || !account || !availNetwork) {
         return null;
       }
-    },
-    [account, availNetwork, rpcProvider, fetchNativeTokenBalance, getGrc20Balance, grc20BalancesData],
-  );
+
+      if (isNativeTokenByType(token.type)) {
+        return await fetchNativeTokenBalance(token);
+      }
+
+      return getGrc20Balance(token);
+    } catch (error) {
+      console.log(`Failed to fetch balance for token ${token.symbol}: `, error);
+      return null;
+    }
+  };
 
   const updateBalances = async () => {
     if (!rpcProvider || !account) {
