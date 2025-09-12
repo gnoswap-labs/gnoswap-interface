@@ -1,5 +1,5 @@
 export interface GetLaunchpadSummaryResponse {
-  totalDepositedGNSAmount: number;
+  totalDepositedGnsAmount: number;
 
   totalParticipants: number;
 

@@ -12,12 +12,13 @@ import IconRightArrow from "@components/common/icons/IconRightArrow";
 import { Divider } from "@components/common/divider/divider";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { ThemeKeys } from "@styles/ThemeTypes";
-import { toNumberFormat } from "@utils/number-utils";
+import { rawToDisplayAmount, toNumberFormat } from "@utils/number-utils";
 import { Trans, useTranslation } from "react-i18next";
 import IconLaunchpadMain from "@components/common/icons/IconLaunchpadMain";
+import { GNS_TOKEN } from "@common/values/token-constant";
 
 interface LaunchpadMainProps {
-  data?: LaunchpadProjectSummaryModel;
+  data: LaunchpadProjectSummaryModel;
   isLoading: boolean;
   isFetched: boolean;
   breakpoint: DEVICE_TYPE;
@@ -30,6 +31,13 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({ data, isLoading, breakpoi
     textColor: "text32",
     bgColor: themeKey === "dark" ? "border02" : "background04",
   };
+
+  const displayLaunchpadSummary: LaunchpadProjectSummaryModel = React.useMemo(() => {
+    return {
+      ...data,
+      totalDepositedGnsAmount: rawToDisplayAmount(data.totalDepositedGnsAmount, GNS_TOKEN.decimals),
+    };
+  }, [data]);
 
   return (
     <>
@@ -81,7 +89,9 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({ data, isLoading, breakpoi
             )}
             {!isLoading && (
               <span className="launchpad-data-value">
-                {data?.totalParticipants ? toNumberFormat(data.totalParticipants, 2) : "-"}
+                {displayLaunchpadSummary?.totalParticipants
+                  ? toNumberFormat(displayLaunchpadSummary.totalParticipants, 2)
+                  : "-"}
               </span>
             )}
             <span className="launchpad-data-key">{t("Launchpad:main.total.participants")}</span>
@@ -95,7 +105,9 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({ data, isLoading, breakpoi
             {!isLoading && (
               <span className="launchpad-data-value">
                 <img src="/gns.svg" alt="GnoSwap logo" />
-                {data?.totalDepositedGNSAmount ? toNumberFormat(data.totalDepositedGNSAmount, 2) : "-"}
+                {displayLaunchpadSummary?.totalDepositedGnsAmount
+                  ? toNumberFormat(displayLaunchpadSummary.totalDepositedGnsAmount, 2)
+                  : "-"}
               </span>
             )}
             <span className="launchpad-data-key">{t("Launchpad:main.total.deposited")}</span>
@@ -108,7 +120,9 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({ data, isLoading, breakpoi
             )}
             {!isLoading && (
               <span className="launchpad-data-value">
-                {data?.totalDistributedAmount ? `$${toNumberFormat(data.totalDistributedAmount, 2)}` : "-"}
+                {displayLaunchpadSummary?.totalDistributedAmount
+                  ? `$${toNumberFormat(displayLaunchpadSummary.totalDistributedAmount, 2)}`
+                  : "-"}
               </span>
             )}
             <span className="launchpad-data-key">{t("Launchpad:main.total.distributed")}</span>
