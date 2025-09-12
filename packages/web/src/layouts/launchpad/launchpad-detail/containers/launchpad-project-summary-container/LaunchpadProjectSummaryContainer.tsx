@@ -1,7 +1,10 @@
 import React from "react";
 
-import LaunchpadProjectSummary from "../../components/launchpad-project-summary/LaunchpadProjectSummary";
+import { rawToDisplayAmount } from "@utils/number-utils";
 import { ProjectSummaryDataModel } from "../../LaunchpadDetail";
+import { GNS_TOKEN } from "@common/values/token-constant";
+
+import LaunchpadProjectSummary from "../../components/launchpad-project-summary/LaunchpadProjectSummary";
 
 interface LaunchpadProjectSummaryContainerProps {
   data: ProjectSummaryDataModel;
@@ -14,7 +17,18 @@ const LaunchpadProjectSummaryContainer: React.FC<LaunchpadProjectSummaryContaine
   tokenSymbol,
   isLoading,
 }) => {
-  return <LaunchpadProjectSummary data={data} tokenSymbol={tokenSymbol} isLoading={isLoading} />;
+  const displaySummaryData: ProjectSummaryDataModel = React.useMemo(() => {
+    const GNS_TOKEN_DECIMALS = GNS_TOKEN.decimals;
+
+    return {
+      ...data,
+      totalAllocation: rawToDisplayAmount(data.totalAllocation, GNS_TOKEN_DECIMALS),
+      totalDeposited: rawToDisplayAmount(data.totalDeposited, GNS_TOKEN_DECIMALS),
+      totalDistributed: rawToDisplayAmount(data.totalDistributed, GNS_TOKEN_DECIMALS),
+    };
+  }, [data]);
+
+  return <LaunchpadProjectSummary data={displaySummaryData} tokenSymbol={tokenSymbol} isLoading={isLoading} />;
 };
 
 export default LaunchpadProjectSummaryContainer;

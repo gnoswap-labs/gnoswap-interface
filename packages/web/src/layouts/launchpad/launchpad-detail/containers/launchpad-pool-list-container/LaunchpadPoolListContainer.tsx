@@ -2,6 +2,8 @@ import React from "react";
 
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
+import { GNS_TOKEN } from "@common/values/token-constant";
+import { rawToDisplayAmount } from "@utils/number-utils";
 
 import LaunchpadPoolList from "../../components/launchpad-pool-list/LaunchpadPoolList";
 
@@ -21,9 +23,21 @@ const LaunchpadPoolListContainer: React.FC<LaunchpadPoolListContainerProps> = ({
   isLoading,
   selectProjectPool,
 }) => {
+  const displayLaunchpadPoolList: LaunchpadPoolModel[] = React.useMemo(() => {
+    const GNS_TOKEN_DECIMALS = GNS_TOKEN.decimals;
+
+    return pools.map(pool => {
+      return {
+        ...pool,
+        allocation: rawToDisplayAmount(pool.allocation, GNS_TOKEN_DECIMALS),
+        depositAmount: rawToDisplayAmount(pool.depositAmount, GNS_TOKEN_DECIMALS),
+      };
+    });
+  }, [pools]);
+
   return (
     <LaunchpadPoolList
-      pools={pools}
+      pools={displayLaunchpadPoolList}
       status={status}
       rewardInfo={rewardInfo}
       isLoading={isLoading}
