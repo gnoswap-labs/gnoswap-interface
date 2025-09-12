@@ -8,7 +8,7 @@ import { FaucetResponse } from "@repositories/faucet/response";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 
-const FAUCET_AMOUNT = 100_000_000 as const;
+const FAUCET_AMOUNT = 100_000_000;
 
 export interface UseFaucetGRC20Return {
   isSupportedFaucetGRC20: boolean;

@@ -8,7 +8,7 @@ import { FaucetResponse } from "@repositories/faucet/response";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 
-const NATIVE_FAUCET_AMOUNT = "10000000ugnot" as const;
+const NATIVE_FAUCET_AMOUNT = "10000000ugnot";
 
 export interface UseFaucetNativeReturn {
   isSupportedFaucetNative: boolean;
