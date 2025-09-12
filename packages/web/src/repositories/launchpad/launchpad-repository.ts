@@ -25,21 +25,13 @@ export interface LaunchpadRepository {
     referrerAddress: string | null,
   ): Promise<WalletResponse<{ hash: string }>>;
 
-  collectRewardByDepositId(
-    depositId: string,
+  collectRewardBydepositID(
+    depositID: string,
     caller: string,
     referrerAddress: string | null,
   ): Promise<WalletResponse<{ hash: string }>>;
 
-  collectRewardWithDepositByProjectId(
-    projectID: string,
-    caller: string,
-    referrerAddress: string | null,
-  ): Promise<WalletResponse<{ hash: string }>>;
+  collectRewardWithDepositByProjectId(projectID: string, caller: string): Promise<WalletResponse<{ hash: string }>>;
 
-  collectRewardWithDepositByDepositId(
-    depositId: string,
-    caller: string,
-    referrerAddress: string | null,
-  ): Promise<WalletResponse<{ hash: string }>>;
+  collectRewardWithDepositBydepositID(depositID: string, caller: string): Promise<WalletResponse<{ hash: string }>>;
 }

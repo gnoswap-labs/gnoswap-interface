@@ -6,6 +6,8 @@ import LaunchpadProjectListTable from "./launchpad-project-list-table/LaunchpadP
 import { ProjectListWrapper } from "./LaunchpadProjectList.styles";
 import { DEVICE_TYPE } from "@styles/media";
 import { LaunchpadProjectSortOption, TABLE_HEAD } from "./types";
+import { rawToDisplayAmount } from "@utils/number-utils";
+import { GNS_TOKEN } from "@common/values/token-constant";
 
 interface LaunchpadProjectListProps {
   breakpoint: DEVICE_TYPE;
@@ -40,6 +42,21 @@ const LaunchpadProjectList: React.FC<LaunchpadProjectListProps> = ({
   sortOption,
   handleSort,
 }) => {
+  const displayProjectList: LaunchpadProjectModel[] = React.useMemo(() => {
+    return projects.map(project => {
+      return {
+        ...project,
+        pools: project.pools.map(pool => {
+          return {
+            ...pool,
+            allocation: rawToDisplayAmount(pool.allocation, project.rewardTokenDecimals),
+            depositAmount: rawToDisplayAmount(pool.depositAmount, GNS_TOKEN.decimals),
+          };
+        }),
+      };
+    });
+  }, [projects]);
+
   return (
     <ProjectListWrapper>
       <LaunchpadProjectListHeader
@@ -52,7 +69,7 @@ const LaunchpadProjectList: React.FC<LaunchpadProjectListProps> = ({
       />
       <LaunchpadProjectListTable
         breakpoint={breakpoint}
-        projects={projects}
+        projects={displayProjectList}
         isFetched={isFetched}
         moveProjectDetail={moveProjectDetail}
         moveRewardTokenSwapPage={moveRewardTokenSwapPage}
