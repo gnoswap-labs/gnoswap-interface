@@ -238,7 +238,7 @@ export const useTokenData = () => {
     [account, availNetwork, rpcProvider, fetchNativeTokenBalance, getGrc20Balance, grc20BalancesData],
   );
 
-  const updateBalances = useCallback(async () => {
+  const updateBalances = async () => {
     if (!rpcProvider || !account) {
       return;
     }
@@ -248,6 +248,7 @@ export const useTokenData = () => {
     }
 
     if (tokens.length === 0) return;
+
     const fetchResults = await Promise.all(
       tokens.map(async token => {
         const result = await fetchTokenBalance(token);
@@ -257,20 +258,23 @@ export const useTokenData = () => {
         };
       }),
     );
+
     const balancesData: Record<string, number | null> = {};
     fetchResults.forEach((result, index) => {
       if (index < tokens.length) {
         balancesData[result.priceID] = result.balance;
       }
     });
+
     if (JSON.stringify(balancesData) !== JSON.stringify(balances) && !isEmptyObject(balancesData)) {
       refetchGnotBalance();
       refetchGrc20Balances();
       setIsChangeBalancesToken(true);
       setBalances(balancesData);
     }
+
     setLoadingBalance(false);
-  }, [availNetwork, account, balances, fetchTokenBalance, loadingBalance, rpcProvider, tokens, grc20BalancesData]);
+  };
 
   /**
    * Update the overall balance whenever GRC20 token balance data changes

@@ -43,6 +43,7 @@ import { useAccountChange } from "@hooks/wallet/data/use-account-change";
 import { useReferral } from "@hooks/common/use-referral";
 import { FaucetButton } from "./faucet-button/FaucetButton";
 import { useFaucetGRC20 } from "@hooks/faucet/use-faucet-grc20";
+import { useFaucetNative } from "@hooks/faucet/use-faucet-native";
 
 interface HeaderProps {
   pathname?: string;
@@ -122,7 +123,8 @@ const Header: React.FC<HeaderProps> = ({
   const { handleNavigation } = useNavigation();
   const { removeReferrerFromUrl, refreshReferralData } = useReferral();
 
-  const { isSupported } = useFaucetGRC20();
+  const { isSupportedFaucetGRC20 } = useFaucetGRC20();
+  const { isSupportedFaucetNative } = useFaucetNative();
 
   useAccountChange({
     onAccountChange(prevAccount, currentAccount) {
@@ -161,12 +163,12 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   const showFaucetButton = useMemo(() => {
-    return connected && width > DeviceSize[DEVICE_TYPE.TABLET_M] && isSupported;
-  }, [connected, width, isSupported]);
+    return connected && width > DeviceSize[DEVICE_TYPE.TABLET_M] && (isSupportedFaucetGRC20 || isSupportedFaucetNative);
+  }, [connected, width, isSupportedFaucetGRC20, isSupportedFaucetNative]);
 
   const showReceiveButton = useMemo(() => {
-    return connected && width > DeviceSize[DEVICE_TYPE.TABLET_M] && !isSupported;
-  }, [connected, width, isSupported]);
+    return connected && width > DeviceSize[DEVICE_TYPE.TABLET_M] && !isSupportedFaucetGRC20 && !isSupportedFaucetNative;
+  }, [connected, width, isSupportedFaucetGRC20, isSupportedFaucetNative]);
 
   usePreventScroll(isShowDepositModal);
 

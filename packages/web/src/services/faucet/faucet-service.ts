@@ -1,9 +1,12 @@
 import { FaucetResponse } from "@repositories/faucet/response";
+import { FaucetTokenType } from "@repositories/faucet/type";
 
 export interface FaucetService {
-  availFaucet: (chainId: string) => boolean;
+  availFaucet: (chainId: string, tokenType: FaucetTokenType) => boolean;
+
+  getFaucetApiUrl: (chainId: string, tokenType: FaucetTokenType) => string;
 
   faucetGRC20: (chainId: string, to: string, amount: string) => Promise<FaucetResponse>;
 
-  getFaucetApiUrl: (chainId: string) => string;
+  faucetNative: (chainId: string, to: string, amount: string) => Promise<FaucetResponse>;
 }

@@ -1,4 +1,10 @@
 {
-  "staging": "https://faucet.adena.app",
-  "test8": "https://beta.faucet.adena.app"
+  "staging": {
+    "grc20": "https://faucet.adena.app",
+    "native": null
+  },
+  "test8": {
+    "grc20": "https://beta.faucet.adena.app",
+    "native": "https://test8.faucet.adena.app"
+  }
 }

@@ -83,6 +83,6 @@ export enum QUERY_KEY {
   gasInfo = "gas_info",
 
   // faucet
-  faucetIsSupported = "faucet/isSupported",
+  faucetNativeIsSupported = "faucetNative/isSupported",
   faucetGRC20IsSupported = "faucetGRC20/isSupported",
 }
