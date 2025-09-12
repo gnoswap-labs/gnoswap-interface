@@ -1,5 +1,5 @@
 export interface LaunchpadProjectSummaryModel {
-  totalDepositedGNSAmount: number;
+  totalDepositedGnsAmount: number;
 
   totalParticipants: number;
 

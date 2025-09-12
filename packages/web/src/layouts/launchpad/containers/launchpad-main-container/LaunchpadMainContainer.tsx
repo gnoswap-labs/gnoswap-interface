@@ -3,8 +3,9 @@ import { useAtomValue } from "jotai";
 
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { ThemeState } from "@states/index";
-
 import { useGetLaunchpadSummary } from "@query/launchpad/use-get-launchpad-summary";
+import { nullLaunchpadSummaryInfo } from "@repositories/launchpad/model";
+
 import LaunchpadMain from "@layouts/launchpad/components/launchpad-main/LaunchpadMain";
 
 const LaunchpadMainContainer: React.FC = () => {
@@ -15,7 +16,7 @@ const LaunchpadMainContainer: React.FC = () => {
 
   return (
     <LaunchpadMain
-      data={launchpadSummary}
+      data={launchpadSummary ?? nullLaunchpadSummaryInfo}
       isLoading={isLoadingSummary}
       isFetched={isFetchedSummary}
       breakpoint={breakpoint}
