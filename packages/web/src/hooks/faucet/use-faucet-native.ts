@@ -8,15 +8,15 @@ import { FaucetResponse } from "@repositories/faucet/response";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 
-const FAUCET_AMOUNT = 100_000_000 as const;
+const NATIVE_FAUCET_AMOUNT = "10000000ugnot" as const;
 
-export interface UseFaucetGRC20Return {
-  isSupportedFaucetGRC20: boolean;
-  isLoadingFaucetGRC20: boolean;
-  faucetGRC20: () => Promise<FaucetResponse>;
+export interface UseFaucetNativeReturn {
+  isSupportedFaucetNative: boolean;
+  isLoadingFaucetNative: boolean;
+  faucetNative: () => Promise<FaucetResponse>;
 }
 
-export const useFaucetGRC20 = (): UseFaucetGRC20Return => {
+export const useFaucetNative = (): UseFaucetNativeReturn => {
   const { currentChainId, account } = useWallet();
   const { faucetService } = useGnoswapContext();
 
@@ -25,15 +25,15 @@ export const useFaucetGRC20 = (): UseFaucetGRC20Return => {
   }, [account]);
 
   const { data: isSupported = false } = useQuery<boolean>({
-    queryKey: [QUERY_KEY.faucetGRC20IsSupported, currentChainId],
-    queryFn: () => faucetService.availFaucet(currentChainId, "grc20"),
+    queryKey: [QUERY_KEY.faucetNativeIsSupported, currentChainId],
+    queryFn: () => faucetService.availFaucet(currentChainId, "native"),
   });
 
   const { mutate, isLoading } = useMutation({
-    mutationFn: (to: string) => faucetService.faucetGRC20(currentChainId, to, FAUCET_AMOUNT.toString()),
+    mutationFn: (to: string) => faucetService.faucetNative(currentChainId, to, NATIVE_FAUCET_AMOUNT),
   });
 
-  const faucetGRC20 = async (): Promise<FaucetResponse> => {
+  const faucetNative = async (): Promise<FaucetResponse> => {
     if (!currentAddress) {
       return {
         success: false,
@@ -53,8 +53,8 @@ export const useFaucetGRC20 = (): UseFaucetGRC20Return => {
   };
 
   return {
-    isSupportedFaucetGRC20: isSupported,
-    isLoadingFaucetGRC20: isLoading,
-    faucetGRC20,
+    isSupportedFaucetNative: isSupported,
+    isLoadingFaucetNative: isLoading,
+    faucetNative,
   };
 };

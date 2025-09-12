@@ -5,5 +5,7 @@ export const FAUCET_RESPONSE_MESSAGE = {
   ERROR: {
     UNEXPECTED: "Unexpected Error",
     NETWORK_CLIENT: "NetworkClient is not available",
+    NO_SUPPORTED_FAUCET: "No supported faucet available",
+    FAUCET_REQUEST_FAILED: "Faucet request failed",
   },
 };
