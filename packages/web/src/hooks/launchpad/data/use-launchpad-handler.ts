@@ -178,14 +178,10 @@ export const useLaunchpadHandler = () => {
     processTx(
       () => {
         if (isWithdrawable) {
-          return launchpadRepository.collectRewardWithDepositByDepositId(
-            participationInfo.depositId,
-            account.address,
-            currentReferralAddress,
-          );
+          return launchpadRepository.collectRewardWithDepositBydepositID(participationInfo.depositID, account.address);
         }
-        return launchpadRepository.collectRewardByDepositId(
-          participationInfo.depositId,
+        return launchpadRepository.collectRewardBydepositID(
+          participationInfo.depositID,
           account.address,
           currentReferralAddress,
         );
@@ -261,11 +257,7 @@ export const useLaunchpadHandler = () => {
     processTx(
       () => {
         if (isWithdrawable) {
-          return launchpadRepository.collectRewardWithDepositByProjectId(
-            participationInfo.projectID,
-            account.address,
-            currentReferralAddress,
-          );
+          return launchpadRepository.collectRewardWithDepositByProjectId(participationInfo.projectID, account.address);
         }
         return launchpadRepository.collectRewardByProjectId(
           participationInfo.projectID,

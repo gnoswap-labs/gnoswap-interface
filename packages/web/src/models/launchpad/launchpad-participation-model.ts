@@ -8,7 +8,7 @@ export interface LaunchpadParticipationModel {
 
   projectPoolID: string;
 
-  depositId: string;
+  depositID: string;
 
   poolTier: PoolTierType;
 

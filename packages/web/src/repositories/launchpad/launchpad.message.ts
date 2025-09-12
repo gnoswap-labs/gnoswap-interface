@@ -10,9 +10,9 @@ import { MAX_INT64 } from "@utils/math.utils";
 enum TransactionMessageFunctionType {
   DepositGns = "DepositGns",
   CollectRewardByProjectId = "CollectRewardByProjectId",
-  CollectRewardByDepositId = "CollectRewardByDepositId",
+  CollectRewardBydepositID = "CollectRewardByDepositId",
   CollectDepositGnsByProjectId = "CollectDepositGnsByProjectId",
-  CollectDepositGnsByDepositId = "CollectDepositGnsByDepositId",
+  CollectDepositGnsBydepositID = "CollectDepositGnsBydepositID",
 }
 
 export function makeDepositGNSMessageWithApproves(
@@ -52,51 +52,45 @@ export function makeDepositGNSMessageWithApproves(
 export function makeCollectRewardByProjectIdMessage({
   projectID,
   caller,
-  referrerAddress,
 }: {
   projectID: string;
   caller: string;
-  referrerAddress: string | null;
 }): TransactionMessage[] {
   const collectRewardByProjectIdMessage = makeTransactionMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,
     send: "",
     func: TransactionMessageFunctionType.CollectRewardByProjectId,
-    args: [projectID, referrerAddress || ""], // Referral address
+    args: [projectID],
     caller,
   });
 
   return [collectRewardByProjectIdMessage];
 }
 
-export function makeCollectRewardByDepositIdMessage({
-  depositId,
+export function makeCollectRewardBydepositIDMessage({
+  depositID,
   caller,
-  referrerAddress,
 }: {
-  depositId: string;
+  depositID: string;
   caller: string;
-  referrerAddress: string | null;
 }): TransactionMessage[] {
-  const collectRewardByDepositIdMessage = makeTransactionMessage({
+  const collectRewardBydepositIDMessage = makeTransactionMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,
     send: "",
-    func: TransactionMessageFunctionType.CollectRewardByDepositId,
-    args: [depositId, referrerAddress || ""], // Referral address
+    func: TransactionMessageFunctionType.CollectRewardBydepositID,
+    args: [depositID],
     caller,
   });
 
-  return [collectRewardByDepositIdMessage];
+  return [collectRewardBydepositIDMessage];
 }
 
 export function makeCollectRewardWithDepositByProjectIdMessage({
   projectID,
   caller,
-  referrerAddress,
 }: {
   projectID: string;
   caller: string;
-  referrerAddress: string | null;
 }): TransactionMessage[] {
   const collectRewardByProjectIdMessage = makeTransactionMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,
@@ -109,36 +103,34 @@ export function makeCollectRewardWithDepositByProjectIdMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,
     send: "",
     func: TransactionMessageFunctionType.CollectDepositGnsByProjectId,
-    args: [projectID, referrerAddress || ""], // Referral address
+    args: [projectID],
     caller,
   });
 
   return [collectRewardByProjectIdMessage, collectDepositGnsByProjectIdMessage];
 }
 
-export function makeCollectRewardWithDepositByDepositIdMessage({
-  depositId,
+export function makeCollectRewardWithDepositBydepositIDMessage({
+  depositID,
   caller,
-  referrerAddress,
 }: {
-  depositId: string;
+  depositID: string;
   caller: string;
-  referrerAddress: string | null;
 }): TransactionMessage[] {
-  const collectRewardByDepositIdMessage = makeTransactionMessage({
+  const collectRewardBydepositIDMessage = makeTransactionMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,
     send: "",
-    func: TransactionMessageFunctionType.CollectRewardByDepositId,
-    args: [depositId, referrerAddress || ""], // Referral address
+    func: TransactionMessageFunctionType.CollectRewardBydepositID,
+    args: [depositID],
     caller,
   });
-  const collectDepositGnsByDepositIdMessage = makeTransactionMessage({
+  const collectDepositGnsBydepositIDMessage = makeTransactionMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,
     send: "",
-    func: TransactionMessageFunctionType.CollectDepositGnsByDepositId,
-    args: [depositId, referrerAddress || ""], // Referral address
+    func: TransactionMessageFunctionType.CollectDepositGnsBydepositID,
+    args: [depositID],
     caller,
   });
 
-  return [collectRewardByDepositIdMessage, collectDepositGnsByDepositIdMessage];
+  return [collectRewardBydepositIDMessage, collectDepositGnsBydepositIDMessage];
 }
