@@ -87,7 +87,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
           address: item.address,
           name: item.name,
           logoUrl: item.logoURL,
-          amount: Number(item.delegateAmount) || 0,
+          amount: rawToDisplayAmount(Number(item.delegateAmount) || 0, GNS_TOKEN.decimals),
           updatedDate: item.delegatedAt,
           delegateAmount: item.delegateAmount,
           delegatedAt: item.delegatedAt,
@@ -103,7 +103,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
           address: item.address,
           name: item.name,
           logoUrl: item.logoURL,
-          amount: Number(item.unDelegateAmount) || 0,
+          amount: rawToDisplayAmount(Number(item.unDelegateAmount) || 0, GNS_TOKEN.decimals),
           updatedDate: item.unDelegatedAt,
           unDelegateAmount: item.unDelegateAmount,
           unlockTime: item.unlockTime,
@@ -237,7 +237,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                           <div className="info-row">
                             <div className="info-subject">{t("Governance:myDel.tooltip.amount")}</div>
                             <div className="info-value">
-                              {rawToDisplayAmount(item.amount, GNS_TOKEN.decimals)} {GNS_TOKEN.symbol}
+                              {item.amount.toLocaleString()} {GNS_TOKEN.symbol}
                             </div>
                           </div>
                           <div className="info-row">
