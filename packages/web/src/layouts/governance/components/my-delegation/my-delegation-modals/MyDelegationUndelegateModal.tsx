@@ -73,14 +73,14 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
   );
 
   const calculatedValues = useMemo(() => {
-    const inputAmount = Number(gnsAmountInput.amount);
+    const inputAmount = Number(gnsAmountInput.amount) || 0;
     const remainingAmount = Math.max(0, currentDelegatedAmount - inputAmount);
-    const newTotalDelegated = totalDelegatedAmount - inputAmount;
+    const newTotalDelegated = Math.max(0, totalDelegatedAmount - inputAmount);
 
     return {
       remainingAmount,
       newVotingWeight: newTotalDelegated > 0 ? (remainingAmount * 100) / newTotalDelegated : 0,
-      currentVotingWeight: (currentDelegatedAmount * 100) / totalDelegatedAmount,
+      currentVotingWeight: totalDelegatedAmount > 0 ? (currentDelegatedAmount * 100) / totalDelegatedAmount : 0,
       newApy: remainingAmount > 0 ? apy : 0,
     };
   }, [gnsAmountInput.amount, currentDelegatedAmount, totalDelegatedAmount, apy]);
