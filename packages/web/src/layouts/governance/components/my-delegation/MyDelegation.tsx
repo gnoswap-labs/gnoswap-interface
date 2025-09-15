@@ -135,6 +135,15 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
       .sort((a, b) => b.usdValue - a.usdValue);
   }, [myDelegationInfo.claimableRewards, getTokenUSDPrice, tokens, getGnotPath]);
 
+  const displayVotingWeight = useMemo(() => {
+    const votingWeight = Number(myDelegationInfo.votingWeight) || 0;
+    return rawToDisplayAmount(votingWeight, XGNS_TOKEN.decimals);
+  }, [myDelegationInfo.votingWeight]);
+
+  const displayTotalDelegatedAmount = useMemo(() => {
+    return rawToDisplayAmount(totalDelegatedAmount, XGNS_TOKEN.decimals);
+  }, [totalDelegatedAmount]);
+
   /**
    * A delimiter showing voting weight information or undelegation information.
    */
@@ -381,7 +390,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
       </div>
       {isOpenDelegateModal && (
         <MyDelegationDelegateModal
-          currentDelegatedAmount={Number(myDelegationInfo.votingWeight)}
+          currentDelegatedAmount={displayVotingWeight}
           totalDelegatedAmount={totalDelegatedAmount}
           apy={apy}
           delegatees={delegatees}
@@ -393,8 +402,8 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
       )}
       {isOpenUndelegateModal && (
         <MyDelegationUndelegateModal
-          currentDelegatedAmount={Number(myDelegationInfo.votingWeight)}
-          totalDelegatedAmount={totalDelegatedAmount}
+          currentDelegatedAmount={displayVotingWeight}
+          totalDelegatedAmount={displayTotalDelegatedAmount}
           apy={apy}
           delegatedInfos={myDelegatesInfo}
           isWalletConnected={isWalletConnected}
