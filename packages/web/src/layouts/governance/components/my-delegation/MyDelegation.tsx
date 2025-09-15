@@ -309,7 +309,10 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 hasUnlockItem && !activatedDelegateInfoTab
                   ? {
                       text: t("Governance:myDel.undel.btn"),
-                      onClick: () => collectUndelegated(toNumberFormat(myDelegationInfo.unDelegatedAmount, 2)),
+                      onClick: () =>
+                        collectUndelegated(
+                          toNumberFormat(rawToDisplayAmount(myDelegationInfo.unDelegatedAmount, GNS_TOKEN.decimals), 2),
+                        ),
                     }
                   : undefined
               }
