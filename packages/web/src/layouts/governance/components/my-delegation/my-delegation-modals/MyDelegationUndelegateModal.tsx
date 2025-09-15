@@ -72,6 +72,31 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
     accumedDelegationInfo.sort((a, b) => b.amount - a.amount)[0] || nullDelegationItemInfo,
   );
 
+  const calculatedValues = useMemo(() => {
+    const inputAmount = Number(gnsAmountInput.amount) || 0;
+    const remainingAmount = Math.max(0, currentDelegatedAmount - inputAmount);
+    const newTotalDelegated = Math.max(0, totalDelegatedAmount - inputAmount);
+
+    return {
+      remainingAmount,
+      newVotingWeight: newTotalDelegated > 0 ? (remainingAmount * 100) / newTotalDelegated : 0,
+      currentVotingWeight: totalDelegatedAmount > 0 ? (currentDelegatedAmount * 100) / totalDelegatedAmount : 0,
+      newApy: remainingAmount > 0 ? apy : 0,
+    };
+  }, [gnsAmountInput.amount, currentDelegatedAmount, totalDelegatedAmount, apy]);
+
+  const handleSubmit = () => {
+    onSubmit(selectedDelegatedInfo.name, selectedDelegatedInfo.address, gnsAmountInput.amount);
+    setTimeout(() => {
+      setIsOpen(false);
+    }, 20);
+  };
+
+  const isSubmitDisabled = useMemo(() => {
+    const amount = Number(gnsAmountInput.amount);
+    return amount === 0 || amount > selectedDelegatedInfo.amount || !selectedDelegatedInfo.address;
+  }, [gnsAmountInput.amount, selectedDelegatedInfo.amount, selectedDelegatedInfo.address]);
+
   const showDelegateInfo = () => (
     <>
       <div className="modal-content-header">
@@ -103,30 +128,21 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
           <div className="label">{t("Governance:myDel.undelModal.step3.remainXGns")}</div>
           <div className="value">
             <MissingLogo symbol={XGNS_TOKEN.symbol} url={XGNS_TOKEN.logoURI} width={24} />
-            {formatOtherPrice(
-              currentDelegatedAmount - Number(gnsAmountInput.amount) > 0
-                ? currentDelegatedAmount - Number(gnsAmountInput.amount)
-                : 0,
-              {
-                isKMB: false,
-                usd: false,
-              },
-            )}
+            {formatOtherPrice(calculatedValues.remainingAmount, {
+              isKMB: false,
+              usd: false,
+            })}
             {` ${XGNS_TOKEN.symbol}`}
           </div>
         </div>
         <div className="info-rows">
           <div className="label">{t("Governance:myDel.undelModal.step3.remainVotingWeight")}</div>
           <div className="value">
-            {`${formatOtherPrice((currentDelegatedAmount * 100) / totalDelegatedAmount, {
+            {`${formatOtherPrice(calculatedValues.currentVotingWeight, {
               usd: false,
-            })}% -> ${formatOtherPrice(
-              currentDelegatedAmount - Number(gnsAmountInput.amount) > 0
-                ? ((currentDelegatedAmount - Number(gnsAmountInput.amount)) * 100) /
-                    (totalDelegatedAmount - Number(gnsAmountInput.amount))
-                : 0,
-              { usd: false },
-            )}%`}
+            })}% -> ${formatOtherPrice(calculatedValues.newVotingWeight, {
+              usd: false,
+            })}%`}
           </div>
         </div>
         <div className="info-rows">
@@ -165,21 +181,13 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
         }
       />
       <Button
-        onClick={() => {
-          onSubmit(selectedDelegatedInfo.name, selectedDelegatedInfo.address, gnsAmountInput.amount);
-
-          const timeoutId = setTimeout(() => {
-            setIsOpen(false);
-          }, 20);
-
-          return () => clearTimeout(timeoutId);
-        }}
+        onClick={handleSubmit}
         text={t("Governance:myDel.undelModal.ctaBtn")}
         style={{
           hierarchy: ButtonHierarchy.Primary,
           fullWidth: true,
         }}
-        disabled={gnsAmountInput.amount === "0" || Number(gnsAmountInput.amount) > Number(selectedDelegatedInfo.amount)}
+        disabled={isSubmitDisabled}
         className="button-confirm"
       />
     </>

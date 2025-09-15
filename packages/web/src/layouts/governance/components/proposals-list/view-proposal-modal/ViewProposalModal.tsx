@@ -243,10 +243,10 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
               >
                 <span className={isMajorityVoted ? "passed" : ""}>
                   {isMajorityVoted && <IconPassed />}
-                  {rawToDisplayAmount(yesVotes + noVotes, XGNS_TOKEN.decimals)}
+                  {rawToDisplayAmount(yesVotes + noVotes, XGNS_TOKEN.decimals).toLocaleString()}
                 </span>
               </Tooltip>
-              /<div>{rawToDisplayAmount(numericVotingInfo.maxVotingWeight, XGNS_TOKEN.decimals)}</div>
+              /<div>{rawToDisplayAmount(numericVotingInfo.maxVotingWeight, XGNS_TOKEN.decimals).toLocaleString()}</div>
             </div>
           </div>
           <VotingProgressBar
@@ -272,7 +272,9 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
             <VotingPowerWrapper>
               <span>{t("Governance:detailModal.votingWeight")}</span>
               <div>
-                <div className="power-value">{rawToDisplayAmount(myVotingWeight, XGNS_TOKEN.decimals)}</div>
+                <div className="power-value">
+                  {rawToDisplayAmount(myVotingWeight, XGNS_TOKEN.decimals).toLocaleString()}
+                </div>
                 <TokenChip tokenInfo={XGNS_TOKEN} />
               </div>
             </VotingPowerWrapper>

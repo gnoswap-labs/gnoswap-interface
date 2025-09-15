@@ -87,7 +87,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
           address: item.address,
           name: item.name,
           logoUrl: item.logoURL,
-          amount: Number(item.delegateAmount) || 0,
+          amount: rawToDisplayAmount(Number(item.delegateAmount) || 0, GNS_TOKEN.decimals),
           updatedDate: item.delegatedAt,
           delegateAmount: item.delegateAmount,
           delegatedAt: item.delegatedAt,
@@ -103,7 +103,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
           address: item.address,
           name: item.name,
           logoUrl: item.logoURL,
-          amount: Number(item.unDelegateAmount) || 0,
+          amount: rawToDisplayAmount(Number(item.unDelegateAmount) || 0, GNS_TOKEN.decimals),
           updatedDate: item.unDelegatedAt,
           unDelegateAmount: item.unDelegateAmount,
           unlockTime: item.unlockTime,
@@ -134,6 +134,15 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
       })
       .sort((a, b) => b.usdValue - a.usdValue);
   }, [myDelegationInfo.claimableRewards, getTokenUSDPrice, tokens, getGnotPath]);
+
+  const displayVotingWeight = useMemo(() => {
+    const votingWeight = Number(myDelegationInfo.votingWeight) || 0;
+    return rawToDisplayAmount(votingWeight, XGNS_TOKEN.decimals);
+  }, [myDelegationInfo.votingWeight]);
+
+  const displayTotalDelegatedAmount = useMemo(() => {
+    return rawToDisplayAmount(totalDelegatedAmount, XGNS_TOKEN.decimals);
+  }, [totalDelegatedAmount]);
 
   /**
    * A delimiter showing voting weight information or undelegation information.
@@ -237,7 +246,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                           <div className="info-row">
                             <div className="info-subject">{t("Governance:myDel.tooltip.amount")}</div>
                             <div className="info-value">
-                              {rawToDisplayAmount(item.amount, GNS_TOKEN.decimals)} {GNS_TOKEN.symbol}
+                              {item.amount.toLocaleString()} {GNS_TOKEN.symbol}
                             </div>
                           </div>
                           <div className="info-row">
@@ -300,7 +309,10 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 hasUnlockItem && !activatedDelegateInfoTab
                   ? {
                       text: t("Governance:myDel.undel.btn"),
-                      onClick: () => collectUndelegated(toNumberFormat(myDelegationInfo.unDelegatedAmount, 2)),
+                      onClick: () =>
+                        collectUndelegated(
+                          toNumberFormat(rawToDisplayAmount(myDelegationInfo.unDelegatedAmount, GNS_TOKEN.decimals), 2),
+                        ),
                     }
                   : undefined
               }
@@ -381,7 +393,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
       </div>
       {isOpenDelegateModal && (
         <MyDelegationDelegateModal
-          currentDelegatedAmount={Number(myDelegationInfo.votingWeight)}
+          currentDelegatedAmount={displayVotingWeight}
           totalDelegatedAmount={totalDelegatedAmount}
           apy={apy}
           delegatees={delegatees}
@@ -393,8 +405,8 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
       )}
       {isOpenUndelegateModal && (
         <MyDelegationUndelegateModal
-          currentDelegatedAmount={Number(myDelegationInfo.votingWeight)}
-          totalDelegatedAmount={totalDelegatedAmount}
+          currentDelegatedAmount={displayVotingWeight}
+          totalDelegatedAmount={displayTotalDelegatedAmount}
           apy={apy}
           delegatedInfos={myDelegatesInfo}
           isWalletConnected={isWalletConnected}

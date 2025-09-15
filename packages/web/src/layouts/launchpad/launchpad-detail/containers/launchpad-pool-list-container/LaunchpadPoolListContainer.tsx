@@ -30,6 +30,7 @@ const LaunchpadPoolListContainer: React.FC<LaunchpadPoolListContainerProps> = ({
       return {
         ...pool,
         allocation: rawToDisplayAmount(pool.allocation, rewardInfo.rewardTokenDecimals),
+        distributedAmount: rawToDisplayAmount(pool.distributedAmount, rewardInfo.rewardTokenDecimals),
         depositAmount: rawToDisplayAmount(pool.depositAmount, GNS_TOKEN_DECIMALS),
       };
     });
