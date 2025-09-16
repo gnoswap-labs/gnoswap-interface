@@ -289,3 +289,36 @@ export function formatRouterFeeStr(swapSummaryInfo: SwapSummaryInfo | null, swap
   const decimals = tokenDecimals || 6;
   return `${toNumberFormat(feeAmount, decimals)} ${tokenSymbol || ""}`;
 }
+
+type BroadcastMessageData = {
+  tokenASymbol: string;
+  tokenBSymbol: string;
+  tokenAAmount: string;
+  tokenBAmount: string;
+};
+
+type SwapResponse = string[];
+
+/**
+ * Determines the correct token symbols and amounts based on swap direction.
+ *
+ * @param broadcastMessage - The original broadcast message containing token symbols
+ * @param isExactIn - Whether the swap is exact input (true) or exact output (false)
+ * @param response - Array containing the swap response amounts [amount0, amount1]
+ * @returns Object with swapped token symbols and amounts based on swap direction
+ */
+export function getSwappedTokenData(
+  broadcastMessage: BroadcastMessageData,
+  isExactIn: boolean,
+  response: SwapResponse,
+) {
+  const { tokenASymbol: originalTokenASymbol, tokenBSymbol: originalTokenBSymbol } = broadcastMessage;
+  const [amount0 = "0", amount1 = "0"] = response || [];
+
+  return {
+    token0Symbol: isExactIn ? originalTokenASymbol : originalTokenBSymbol,
+    token1Symbol: isExactIn ? originalTokenBSymbol : originalTokenASymbol,
+    token0Amount: isExactIn ? amount0 : amount1,
+    token1Amount: isExactIn ? amount1 : amount0,
+  };
+}

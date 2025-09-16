@@ -40,6 +40,7 @@ import { useTransactionEventStore } from "@hooks/common/use-transaction-event-st
 import { useSwap } from "./use-swap";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
+import { getSwappedTokenData } from "@utils/swap-utils";
 
 type SwapButtonStateType =
   | "WALLET_LOGIN"
@@ -1127,15 +1128,23 @@ export const useSwapHandler = () => {
                   return broadcastMessage;
                 }
 
-                const tokenAAmount = isExactIn ? response[0] : response[1];
-                const tokenBAmount = isExactIn ? response[1] : response[0];
+                const { token0Symbol, token1Symbol, token0Amount, token1Amount } = getSwappedTokenData(
+                  broadcastMessage,
+                  isExactIn,
+                  response,
+                );
+
+                const token0 = isExactIn ? tokenA : tokenB;
+                const token1 = isExactIn ? tokenB : tokenA;
 
                 return {
                   ...broadcastMessage,
+                  tokenASymbol: token0Symbol,
+                  tokenBSymbol: token1Symbol,
                   tokenAAmount:
-                    makeDisplayTokenAmount(tokenA, BigNumber(tokenAAmount).abs().toString())?.toString() || "0",
+                    makeDisplayTokenAmount(token0, BigNumber(token0Amount).abs().toString())?.toString() || "0",
                   tokenBAmount:
-                    makeDisplayTokenAmount(tokenB, BigNumber(tokenBAmount).abs().toString())?.toString() || "0",
+                    makeDisplayTokenAmount(token1, BigNumber(token1Amount).abs().toString())?.toString() || "0",
                 };
               },
               onUpdate: async () => {
