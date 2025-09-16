@@ -290,14 +290,14 @@ export function formatRouterFeeStr(swapSummaryInfo: SwapSummaryInfo | null, swap
   return `${toNumberFormat(feeAmount, decimals)} ${tokenSymbol || ""}`;
 }
 
-type BroadcastMessageData = {
+export type BroadcastMessageData = {
   tokenASymbol: string;
   tokenBSymbol: string;
   tokenAAmount: string;
   tokenBAmount: string;
 };
 
-type SwapResponse = string[];
+export type SwapResponse = string[];
 
 /**
  * Determines the correct token symbols and amounts based on swap direction.
