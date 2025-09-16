@@ -1,5 +1,15 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { tickToSqrtPriceX96 } from "./math.utils";
-import { feeBoostRateByPrices, isEndTickBy, priceToNearTick, priceToTick, tickToPrice } from "./swap-utils";
+import {
+  BroadcastMessageData,
+  feeBoostRateByPrices,
+  getSwappedTokenData,
+  isEndTickBy,
+  priceToNearTick,
+  priceToTick,
+  SwapResponse,
+  tickToPrice,
+} from "./swap-utils";
 
 describe("tick convert to price", () => {
   test("0 to 1", () => {
@@ -196,5 +206,137 @@ describe("determine end tick", () => {
     const tick = 0;
     const fee = "10000";
     expect(isEndTickBy(tick, fee)).toBeFalsy();
+  });
+});
+
+describe("getSwappedTokenData()", () => {
+  const mockBroadcastMessage: BroadcastMessageData = {
+    tokenASymbol: "GNOT",
+    tokenBSymbol: "USDC",
+    tokenAAmount: "100",
+    tokenBAmount: "200",
+  };
+
+  describe("ExactInSwap", () => {
+    it("should return original token order", () => {
+      const response: SwapResponse = ["150", "300"];
+
+      const result = getSwappedTokenData(mockBroadcastMessage, true, response);
+
+      expect(result).toEqual({
+        token0Symbol: "GNOT",
+        token1Symbol: "USDC",
+        token0Amount: "150",
+        token1Amount: "300",
+      });
+    });
+  });
+
+  describe("ExactOutSwap", () => {
+    it("should return swapped token order", () => {
+      const response: SwapResponse = ["150", "300"];
+
+      const result = getSwappedTokenData(mockBroadcastMessage, false, response);
+
+      expect(result).toEqual({
+        token0Symbol: "USDC",
+        token1Symbol: "GNOT",
+        token0Amount: "300",
+        token1Amount: "150",
+      });
+    });
+
+    it("should maintain correct symbol-amount relationship when swapped", () => {
+      const response: SwapResponse = ["100", "200"];
+
+      const result = getSwappedTokenData(mockBroadcastMessage, false, response);
+
+      // When ExactOutSwap, token0 should be original tokenB
+      expect(result.token0Symbol).toBe("USDC");
+      expect(result.token0Amount).toBe("200"); // response[1]
+
+      // And token1 should be original tokenA
+      expect(result.token1Symbol).toBe("GNOT");
+      expect(result.token1Amount).toBe("100"); // response[0]
+    });
+  });
+
+  describe("edge cases", () => {
+    it("should handle empty response array", () => {
+      const response: SwapResponse = [];
+
+      const result = getSwappedTokenData(mockBroadcastMessage, true, response);
+
+      expect(result).toEqual({
+        token0Symbol: "GNOT",
+        token1Symbol: "USDC",
+        token0Amount: "0", // default value
+        token1Amount: "0", // default value
+      });
+    });
+
+    it("should handle response array with only one element", () => {
+      const response: SwapResponse = ["150"];
+
+      const result = getSwappedTokenData(mockBroadcastMessage, true, response);
+
+      expect(result).toEqual({
+        token0Symbol: "GNOT",
+        token1Symbol: "USDC",
+        token0Amount: "150",
+        token1Amount: "0", // default value for missing element
+      });
+    });
+
+    it("should handle null/undefined response", () => {
+      const result1 = getSwappedTokenData(mockBroadcastMessage, true, null as any);
+      const result2 = getSwappedTokenData(mockBroadcastMessage, true, undefined as any);
+
+      const expectedResult = {
+        token0Symbol: "GNOT",
+        token1Symbol: "USDC",
+        token0Amount: "0",
+        token1Amount: "0",
+      };
+
+      expect(result1).toEqual(expectedResult);
+      expect(result2).toEqual(expectedResult);
+    });
+
+    it("should handle response with undefined elements", () => {
+      const response: SwapResponse = [undefined as any, "300"];
+
+      const result = getSwappedTokenData(mockBroadcastMessage, true, response);
+
+      expect(result).toEqual({
+        token0Symbol: "GNOT",
+        token1Symbol: "USDC",
+        token0Amount: "0", // default value for undefined
+        token1Amount: "300",
+      });
+    });
+  });
+
+  describe("consistency validation", () => {
+    it("should maintain token0/token1 relationship across different isExactIn values", () => {
+      const response: SwapResponse = ["100", "200"];
+
+      const exactInResult = getSwappedTokenData(mockBroadcastMessage, true, response);
+      const exactOutResult = getSwappedTokenData(mockBroadcastMessage, false, response);
+
+      // When isExactIn=true: token0 gets response[0], token1 gets response[1]
+      expect(exactInResult.token0Amount).toBe("100"); // response[0]
+      expect(exactInResult.token1Amount).toBe("200"); // response[1]
+
+      // When isExactIn=false: token0 gets response[1], token1 gets response[0]
+      expect(exactOutResult.token0Amount).toBe("200"); // response[1]
+      expect(exactOutResult.token1Amount).toBe("100"); // response[0]
+
+      // Symbols should be swapped accordingly
+      expect(exactInResult.token0Symbol).toBe(mockBroadcastMessage.tokenASymbol);
+      expect(exactInResult.token1Symbol).toBe(mockBroadcastMessage.tokenBSymbol);
+      expect(exactOutResult.token0Symbol).toBe(mockBroadcastMessage.tokenBSymbol);
+      expect(exactOutResult.token1Symbol).toBe(mockBroadcastMessage.tokenASymbol);
+    });
   });
 });

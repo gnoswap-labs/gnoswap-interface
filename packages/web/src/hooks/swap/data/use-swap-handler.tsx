@@ -1127,15 +1127,12 @@ export const useSwapHandler = () => {
                   return broadcastMessage;
                 }
 
-                const tokenAAmount = isExactIn ? response[0] : response[1];
-                const tokenBAmount = isExactIn ? response[1] : response[0];
+                const [amount0, amount1] = response;
 
                 return {
                   ...broadcastMessage,
-                  tokenAAmount:
-                    makeDisplayTokenAmount(tokenA, BigNumber(tokenAAmount).abs().toString())?.toString() || "0",
-                  tokenBAmount:
-                    makeDisplayTokenAmount(tokenB, BigNumber(tokenBAmount).abs().toString())?.toString() || "0",
+                  tokenAAmount: makeDisplayTokenAmount(tokenA, BigNumber(amount0).abs().toString())?.toString() || "0",
+                  tokenBAmount: makeDisplayTokenAmount(tokenB, BigNumber(amount1).abs().toString())?.toString() || "0",
                 };
               },
               onUpdate: async () => {
