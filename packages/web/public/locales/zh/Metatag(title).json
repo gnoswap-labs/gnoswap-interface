@@ -1,7 +1,7 @@
 {
   "seo": {
     "title": {
-      "default": "一站式 Gnoland DeFi 平台 | GnoSwap",
+      "default": "一站式 Gno.land DeFi 平台 | GnoSwap",
       "earn": "赚取",
       "earnAdd": "将位置添加到{{tokenASymbol}}/{{tokenBSymbol}} {{feeTier}}",
       "earnAddDefault": "将位置添加到 GnoSwap 池",

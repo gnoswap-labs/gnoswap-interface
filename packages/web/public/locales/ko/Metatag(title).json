@@ -1,7 +1,7 @@
 {
   "seo": {
     "title": {
-      "default": "원스톱 그노랜드 DeFi 플랫폼 | GnoSwap",
+      "default": "원스톱 Gno.land 디파이 플랫폼 | GnoSwap",
       "earn": "획득 | GnoSwap",
       "earnAdd": "{{tokenASymbol}}/{{tokenBSymbol}}  {{feeTier}} 에 포지션 추가",
       "earnAddDefault": "그노스왑 풀에 포지션 추가",
