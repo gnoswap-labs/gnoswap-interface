@@ -25,10 +25,15 @@ export const UndelegateSelectItemWrapper = styled.div<Props>`
     height: auto;
     gap: 8px;
     align-items: center;
+    overflow: hidden;
 
     .delegatee-name {
       color: ${({ theme }) => theme.color.text02};
       ${fonts.body9}
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
       ${media.mobile} {
         ${fonts.body11}
       }

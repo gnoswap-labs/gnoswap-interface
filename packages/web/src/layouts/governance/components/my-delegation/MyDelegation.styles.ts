@@ -144,13 +144,26 @@ export const MyDelegationTooltipContent = styled.div`
       width: 100%;
 
       > .info-subject {
+        min-width: 100px;
+        flex-shrink: 0;
         color: ${({ theme }) => theme.color.text04};
       }
 
       > .info-value {
-        ${mixins.flexbox("row", "center", "center")};
+        ${mixins.flexbox("row", "center", "flex-end")};
         gap: 4px;
         color: ${({ theme }) => theme.color.text02};
+        flex: 1;
+        min-width: 0;
+
+        > .text-content {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          min-width: 0;
+          flex: 1;
+          text-align: right;
+        }
       }
     }
   }

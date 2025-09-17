@@ -240,7 +240,9 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                             <div className="info-subject">{t("Governance:myDel.delegate")}</div>
                             <div className="info-value">
                               <MissingLogo symbol={item.name} url={item.logoUrl} width={20} />
-                              {item.name || [item.address.slice(0, 8), item.address.slice(32, 40)].join("...")}
+                              <div className="text-content">
+                                {item.name || [item.address.slice(0, 8), item.address.slice(32, 40)].join("...")}
+                              </div>
                             </div>
                           </div>
                           <div className="info-row">
