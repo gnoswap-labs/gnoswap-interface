@@ -21,7 +21,7 @@ const TermsLayout = ({ header, footer }: PrivacyLayoutProps) => {
         <section className="article-section">
           <h3>1. Introduction</h3>
           <br />
-          Welcome to GnoSwap, a decentralized application (DApp) built on the gno.land blockchain.{" "}
+          Welcome to GnoSwap, a decentralized application (DApp) built on the Gno.land blockchain.{" "}
           <b>GnoSwap Labs Inc.</b>, a company established in Panama, provides and maintains the platform interface but
           the core parts of the GnoSwap service, such as smart contracts and governance, are controlled by the
           decentralized community of GNS token holders through DAO governance. By accessing or using GnoSwap (
@@ -45,7 +45,7 @@ const TermsLayout = ({ header, footer }: PrivacyLayoutProps) => {
             </li>
             <li>
               <b>&quot;Smart Contracts&quot;</b>: Self-executing contracts where the terms are written into code and
-              automatically enforced on the gno.land blockchain.
+              automatically enforced on the Gno.land blockchain.
             </li>
             <li>
               <b>&quot;DAO&quot;</b>: Decentralized Autonomous Organization; the mechanism by which GNS token holders
@@ -81,7 +81,7 @@ const TermsLayout = ({ header, footer }: PrivacyLayoutProps) => {
           <br />
           GnoSwap is a decentralized platform where GnoSwap Labs Inc. provides only the interface for user interactions.
           The actual operations of the platform, including transaction execution, staking, liquidity provision, and
-          governance, are managed entirely through smart contracts on the gno.land blockchain and controlled by the
+          governance, are managed entirely through smart contracts on the Gno.land blockchain and controlled by the
           decentralized community of GNS token holders. GnoSwap Labs Inc. does not exercise control over user
           transactions, which are executed autonomously by the platform&apos;s smart contracts.
           <br />

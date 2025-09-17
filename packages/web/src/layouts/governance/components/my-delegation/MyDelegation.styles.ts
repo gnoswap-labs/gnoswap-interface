@@ -161,7 +161,6 @@ export const MyDelegationTooltipContent = styled.div`
           text-overflow: ellipsis;
           white-space: nowrap;
           min-width: 0;
-          flex: 1;
           text-align: right;
         }
       }

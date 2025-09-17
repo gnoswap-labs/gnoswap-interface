@@ -50,7 +50,7 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({ data, isLoading, breakpoi
                 Where Pioneers and Supporters United —<br />
                 Unveil Tomorrow&apos;s Breakthroughs on
                 <br />
-                gno.land, Powered by $GNS.
+                Gno.land, Powered by $GNS.
               </Trans>
             </h4>
           ) : (
@@ -58,7 +58,7 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({ data, isLoading, breakpoi
               <Trans ns="Launchpad" i18nKey={"main.subTitle"}>
                 Where Pioneers and Supporters United — Unveil Tomorrow&apos;s
                 <br />
-                Breakthroughs on gno.land, Powered by $GNS.
+                Breakthroughs on Gno.land, Powered by $GNS.
               </Trans>
             </h4>
           )}
