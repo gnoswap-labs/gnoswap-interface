@@ -1,1 +1,37 @@
-{"banner":{"description":"Cuando utilices un código de recomendación, tanto tú como tu amigo recibiréis una <strong>bonificación del 10%.</strong>","title":"Mejora tu posición - <strong>¡Recomienda y gana!</strong>"},"header":"Clasificación","list":{"column":{"points":"Puntos","position":"Posición","rank":"Rango","referral":"Remisión","staking":"Estacas","swap":"Intercambiar","tooltip":{"position":"Comisiones ganadas en USD. Solo cuenta si el pool recibe incentivos de $GNS.","staking":"<ul><li>Recompensas por posición ganadas en USD. Sólo cuenta si la posición tiene recompensas.</li><li>Comisiones de Protocolo Ganadas en USD. Sólo cuenta si las recompensas tienen valor en USD.</li></ul>","volume":"Cuotas de intercambio pagadas en USD. Sólo cuenta si el pool recibe incentivos en $GNS."},"user":"Usuario","xGNS":"Estacas xGNS"},"hideToggleButton":"Ocultar mi dirección o nombre de usuario","mobile":{"hideToggleButton":"Escóndeme"},"nextUpdateTime":"Próxima actualización en","tooltip":{"hideToggleButton":"Tu nombre de usuario o dirección estarán ocultos. Otros usuarios no podrán ver tus posiciones.","nextUpdateTime":"La clasificación se actualiza cada hora."}},"subHeader":{"copyButton":"Copiar mi recomendación","description":"Asciende en la clasificación acumulando puntos por intercambiar, proporcionar liquidez, apostar o invitar a amigos. ¡Cada actividad en GnoSwap cuenta!"}}
+{
+  "banner": {
+    "description": "Cuando utilices un código de recomendación, tanto tú como tu amigo recibiréis una <strong>bonificación del 10%.</strong>",
+    "title": "Mejora tu posición - <strong>¡Recomienda y gana!</strong>"
+  },
+  "header": "Clasificación",
+  "list": {
+    "column": {
+      "points": "Puntos",
+      "position": "Posición",
+      "rank": "Rango",
+      "referral": "Remisión",
+      "staking": "Estacas",
+      "swap": "Intercambiar",
+      "tooltip": {
+        "position": "Comisiones ganadas en USD. Solo cuenta si el pool recibe incentivos de $GNS.",
+        "staking": "<ul><li>Recompensas por posición ganadas en USD. Sólo cuenta si la posición tiene recompensas.</li><li>Comisiones de Protocolo Ganadas en USD. Sólo cuenta si las recompensas tienen valor en USD.</li></ul>",
+        "volume": "Cuotas de intercambio pagadas en USD. Sólo cuenta si el pool recibe incentivos en $GNS."
+      },
+      "user": "Usuario",
+      "xGNS": "Estacas xGNS"
+    },
+    "hideToggleButton": "Ocultar mi dirección o nombre de usuario",
+    "mobile": {
+      "hideToggleButton": "Escóndeme"
+    },
+    "nextUpdateTime": "Próxima actualización en",
+    "tooltip": {
+      "hideToggleButton": "Tu nombre de usuario o dirección estarán ocultos. Otros usuarios no podrán ver tus posiciones.",
+      "nextUpdateTime": "La clasificación se actualiza cada hora."
+    }
+  },
+  "subHeader": {
+    "copyButton": "Copiar mi recomendación",
+    "description": "Asciende en la clasificación acumulando puntos por intercambiar, proporcionar liquidez, apostar o invitar a amigos. ¡Cada actividad en GnoSwap cuenta!"
+  }
+}

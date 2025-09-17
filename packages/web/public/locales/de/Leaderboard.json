@@ -1,1 +1,37 @@
-{"banner":{"description":"Wenn Sie einen Empfehlungscode verwenden, erhalten sowohl Sie als auch Ihr Freund einen <strong>Bonus von 10 %.</strong>","title":"Steigern Sie Ihren Rang - <strong>Werben & Verdienen!</strong>"},"header":"Bestenliste","list":{"column":{"points":"Punkte","position":"Position","rank":"Rang","referral":"Verweis","staking":"Abstecken","swap":"Tauschen Sie","tooltip":{"position":"Verdiente Gebühren in USD. Zählt nur, wenn der Pool $GNS-Anreize erhält.","staking":"<ul><li>Verdiente Belohnungen für Positionseinsätze in USD. Zählt nur, wenn die Position Rewards hat.</li><li>Protokollgebühren Verdient in USD. Zählt nur, wenn Rewards einen USD-Wert haben.</li></ul>","volume":"In USD gezahlte Swap-Gebühren. Zählt nur, wenn der Pool $GNS-Anreize erhält."},"user":"Benutzer","xGNS":"xGNS Absteckung"},"hideToggleButton":"Meine Adresse oder meinen Benutzernamen verbergen","mobile":{"hideToggleButton":"Versteck mich"},"nextUpdateTime":"Nächste Aktualisierung in","tooltip":{"hideToggleButton":"Ihr Benutzername oder Ihre Adresse wird ausgeblendet. Andere Nutzer können Ihre Positionen nicht sehen.","nextUpdateTime":"Die Rangliste wird stündlich aktualisiert."}},"subHeader":{"copyButton":"Meine Empfehlung kopieren","description":"Steige in der Rangliste auf, indem du Punkte für das Tauschen, das Bereitstellen von Liquidität, das Einsetzen oder das Einladen von Freunden sammelst. Jede Aktivität auf GnoSwap zählt!"}}
+{
+  "banner": {
+    "description": "Wenn Sie einen Empfehlungscode verwenden, erhalten sowohl Sie als auch Ihr Freund einen <strong>Bonus von 10 %.</strong>",
+    "title": "Steigern Sie Ihren Rang - <strong>Werben & Verdienen!</strong>"
+  },
+  "header": "Bestenliste",
+  "list": {
+    "column": {
+      "points": "Punkte",
+      "position": "Position",
+      "rank": "Rang",
+      "referral": "Verweis",
+      "staking": "Abstecken",
+      "swap": "Tauschen Sie",
+      "tooltip": {
+        "position": "Verdiente Gebühren in USD. Zählt nur, wenn der Pool $GNS-Anreize erhält.",
+        "staking": "<ul><li>Verdiente Belohnungen für Positionseinsätze in USD. Zählt nur, wenn die Position Rewards hat.</li><li>Protokollgebühren Verdient in USD. Zählt nur, wenn Rewards einen USD-Wert haben.</li></ul>",
+        "volume": "In USD gezahlte Swap-Gebühren. Zählt nur, wenn der Pool $GNS-Anreize erhält."
+      },
+      "user": "Benutzer",
+      "xGNS": "xGNS Absteckung"
+    },
+    "hideToggleButton": "Meine Adresse oder meinen Benutzernamen verbergen",
+    "mobile": {
+      "hideToggleButton": "Versteck mich"
+    },
+    "nextUpdateTime": "Nächste Aktualisierung in",
+    "tooltip": {
+      "hideToggleButton": "Ihr Benutzername oder Ihre Adresse wird ausgeblendet. Andere Nutzer können Ihre Positionen nicht sehen.",
+      "nextUpdateTime": "Die Rangliste wird stündlich aktualisiert."
+    }
+  },
+  "subHeader": {
+    "copyButton": "Meine Empfehlung kopieren",
+    "description": "Steige in der Rangliste auf, indem du Punkte für das Tauschen, das Bereitstellen von Liquidität, das Einsetzen oder das Einladen von Freunden sammelst. Jede Aktivität auf GnoSwap zählt!"
+  }
+}

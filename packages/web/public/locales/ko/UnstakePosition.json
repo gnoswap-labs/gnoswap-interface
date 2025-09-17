@@ -1,1 +1,45 @@
-{"btn":{"selectPosi":"포지션 선택"},"confStakeModal":{"btn":"포지션 언스테이킹 확인","positionLst":"포지션","stakingReward":{"apr":{"label":"스테이킹 APR","tooltip":"예상 APR 범위는 스테이킹 기간 및 스테이킹 포지션에 대한 멀티플라이어가 적용되어 계산됩니다."},"title":"스테이킹 보상"},"title":"포지션 언스테이킹 확인","unstakingFee":{"tooltip":"청구된 포지션 스테이킹 보상(원금 제외)에 부과되는 수수료 중 프로토콜로 전달되는 비율입니다."},"warning":{"content":"APR이 {{currentPercent}} → <1>{{swapFeePercent}}</1>로 감소됩니다.","title":"중요 참고 사항"}},"overview":{"collectAsSwitch":"WGNOT으로 받기","pooled":"제공된","totalAmt":"총 수량","unclaimed":"미청구 보상"},"positionList":{"item":{"tooltip":{"tokenID":"포지션 ID"}}},"rewards":"보상","title":"포지션 언스테이킹","unclaimed":"미청구","unclaimedRewards":"미청구된 보상","warning":{"content":"이 작업을 수행하면 현재의 스테이킹 진행 상황이 완전히 초기화됩니다. 다시 스테이킹하면 최대 보상을 받기까지 30일을 다시 기다려야 합니다. 언스테이킹 전, warm-up 기간의 작동 방식을 반드시 이해하고 진행하세요.","title":"스테이킹 진행 상황이 초기화됩니다."}}
+{
+  "btn": {
+    "selectPosi": "포지션 선택"
+  },
+  "confStakeModal": {
+    "btn": "포지션 언스테이킹 확인",
+    "positionLst": "포지션",
+    "stakingReward": {
+      "apr": {
+        "label": "스테이킹 APR",
+        "tooltip": "예상 APR 범위는 스테이킹 기간 및 스테이킹 포지션에 대한 멀티플라이어가 적용되어 계산됩니다."
+      },
+      "title": "스테이킹 보상"
+    },
+    "title": "포지션 언스테이킹 확인",
+    "unstakingFee": {
+      "tooltip": "청구된 포지션 스테이킹 보상(원금 제외)에 부과되는 수수료 중 프로토콜로 전달되는 비율입니다."
+    },
+    "warning": {
+      "content": "APR이 {{currentPercent}} → <1>{{swapFeePercent}}</1>로 감소됩니다.",
+      "title": "중요 참고 사항"
+    }
+  },
+  "overview": {
+    "collectAsSwitch": "WGNOT으로 받기",
+    "pooled": "제공된",
+    "totalAmt": "총 수량",
+    "unclaimed": "미청구 보상"
+  },
+  "positionList": {
+    "item": {
+      "tooltip": {
+        "tokenID": "포지션 ID"
+      }
+    }
+  },
+  "rewards": "보상",
+  "title": "포지션 언스테이킹",
+  "unclaimed": "미청구",
+  "unclaimedRewards": "미청구된 보상",
+  "warning": {
+    "content": "이 작업을 수행하면 현재의 스테이킹 진행 상황이 완전히 초기화됩니다. 다시 스테이킹하면 최대 보상을 받기까지 30일을 다시 기다려야 합니다. 언스테이킹 전, warm-up 기간의 작동 방식을 반드시 이해하고 진행하세요.",
+    "title": "스테이킹 진행 상황이 초기화됩니다."
+  }
+}

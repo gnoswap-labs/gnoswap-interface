@@ -1,1 +1,91 @@
-{"addPosi":"포지션 추가","copied":"복사 완료!","developersSection":{"item":{"audit":"감사","bugBounty":"버그바운티","docs":"문서","github":"Github"},"title":"개발자"},"documentation":"문서","earn":"획득","explore":"탐색","featuresSection":{"item":{"addPosition":"포지션 추가","incentivizePool":"인센티브 풀","launchpad":"런치패드","stakePosition":"포지션 스테이킹","swap":"스왑"},"title":"기능"},"governance":"거버넌스","governanceSection":{"item":{"dashboard":"탐색","forum":"포럼","proposals":"제안서","vote":"투표","xgns":"xGNS"},"title":"거버넌스"},"helpCenter":"고객지원센터","helpSection":{"item":{"aboutUs":"회사 소개","faq":"FAQ","projectOnboarding":"온보딩","twitter":"Twitter (X)","userGuide":"사용자 가이드"},"title":"지원"},"introduction":"GnoSwap에 참여하세요 - Gnoland의 핵심 유동성 제공을 목표로 빠르게 성장하는 생태계입니다.","language":"언어","launchpad":"런치패드","leaderboard":"리더보드","legal":"법률 및 개인정보 보호","policySection":{"item":{"disclaimer":"면책 조항","privacyPolicy":"개인정보 보호정책","risk":"위험 및 보안","terms":"이용 약관"},"title":"정책"},"portfolio":"포트폴리오","projectOnboarding":"프로젝트 온보딩","receive":"받기","referralSection":{"banner":{"content":"친구 초대하고 보너스 포인트 받으세요! <br/><span>10%</span> 적립하면<span>, 친구도 10% 적립</span>"},"footer":{"content":"친구 추천 방법 알아보기 "},"input":{"invalidMessage":"유효한 주소를 입력해주세요.","notRegistered":"미등록","placeholder":"추천인 주소 입력"},"item":{"earnedPoints":"적립 포인트","myReferralLink":"내 추천 링크","referredBy":"추천인","tooltip":{"referredBy":"추천 코드 등록 후 24시간 동안은 변경할 수 없습니다. 또한, 자기 자신은 추천할 수 없습니다."}}},"stakePosi":"포지션 스테이킹","swap":"스왑","switchNetwork":"네트워크 변경","theFastest":"Gnoland의 핵심 유동성 제공을 목표로 빠르게 성장하는 생태계","theme":"테마"}
+{
+  "addPosi": "포지션 추가",
+  "copied": "복사 완료!",
+  "developersSection": {
+    "item": {
+      "audit": "감사",
+      "bugBounty": "버그바운티",
+      "docs": "문서",
+      "github": "Github"
+    },
+    "title": "개발자"
+  },
+  "documentation": "문서",
+  "earn": "획득",
+  "explore": "탐색",
+  "featuresSection": {
+    "item": {
+      "addPosition": "포지션 추가",
+      "incentivizePool": "인센티브 풀",
+      "launchpad": "런치패드",
+      "stakePosition": "포지션 스테이킹",
+      "swap": "스왑"
+    },
+    "title": "기능"
+  },
+  "governance": "거버넌스",
+  "governanceSection": {
+    "item": {
+      "dashboard": "탐색",
+      "forum": "포럼",
+      "proposals": "제안서",
+      "vote": "투표",
+      "xgns": "xGNS"
+    },
+    "title": "거버넌스"
+  },
+  "helpCenter": "고객지원센터",
+  "helpSection": {
+    "item": {
+      "aboutUs": "회사 소개",
+      "faq": "FAQ",
+      "projectOnboarding": "온보딩",
+      "twitter": "Twitter (X)",
+      "userGuide": "사용자 가이드"
+    },
+    "title": "지원"
+  },
+  "introduction": "GnoSwap에 참여하세요 - Gnoland의 핵심 유동성 제공을 목표로 빠르게 성장하는 생태계입니다.",
+  "language": "언어",
+  "launchpad": "런치패드",
+  "leaderboard": "리더보드",
+  "legal": "법률 및 개인정보 보호",
+  "policySection": {
+    "item": {
+      "disclaimer": "면책 조항",
+      "privacyPolicy": "개인정보 보호정책",
+      "risk": "위험 및 보안",
+      "terms": "이용 약관"
+    },
+    "title": "정책"
+  },
+  "portfolio": "포트폴리오",
+  "projectOnboarding": "프로젝트 온보딩",
+  "receive": "받기",
+  "referralSection": {
+    "banner": {
+      "content": "친구 초대하고 보너스 포인트 받으세요! <br/><span>10%</span> 적립하면<span>, 친구도 10% 적립</span>"
+    },
+    "footer": {
+      "content": "친구 추천 방법 알아보기 "
+    },
+    "input": {
+      "invalidMessage": "유효한 주소를 입력해주세요.",
+      "notRegistered": "미등록",
+      "placeholder": "추천인 주소 입력"
+    },
+    "item": {
+      "earnedPoints": "적립 포인트",
+      "myReferralLink": "내 추천 링크",
+      "referredBy": "추천인",
+      "tooltip": {
+        "referredBy": "추천 코드 등록 후 24시간 동안은 변경할 수 없습니다. 또한, 자기 자신은 추천할 수 없습니다."
+      }
+    }
+  },
+  "stakePosi": "포지션 스테이킹",
+  "swap": "스왑",
+  "switchNetwork": "네트워크 변경",
+  "theFastest": "Gnoland의 핵심 유동성 제공을 목표로 빠르게 성장하는 생태계",
+  "theme": "테마"
+}

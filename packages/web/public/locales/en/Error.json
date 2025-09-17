@@ -1,1 +1,6 @@
-{"goBackBtn":"Go Back","issues":"We’re currently experiencing technical issues.\nPlease check back soon.","notFound":"Page not found!","rightBack":"We’ll be right back."}
+{
+  "goBackBtn": "Go Back",
+  "issues": "We’re currently experiencing technical issues.\nPlease check back soon.",
+  "notFound": "Page not found!",
+  "rightBack": "We’ll be right back."
+}

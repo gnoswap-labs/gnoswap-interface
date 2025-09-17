@@ -1,1 +1,119 @@
-{"btn":{"addLiquidity":"유동성 추가","amtTooLow":"수량이 너무 적음","enterAmt":"수량을 입력하세요","invalidPair":"페어 선택","invalidRange":"유효하지 않은 범위","switch":"Gnoland로 전환"},"card":{"title":"포지션 추가"},"confirmAddModal":{"info":{"feeError":{"InsufBal":"잔액 부족"},"label":{"capEff":"자본 효율성","creationFee":{"title":"풀 생성 수수료","tooltip":"새로운 풀을 생성할 때 프로토콜에 지불하는 일회성 수수료입니다."},"feeApr":"수수료 APR","feeTier":"수수료 등급","stakingApr":"스테이킹 APR"},"section":{"priceRange":"가격 범위"},"tooltip":{"capEff":"당신이 설정한 가격 범위의 집중도에 따라 계산된 배율입니다. 동일한 자본을 기준으로 전체 범위 포지션에 비해 얼마나 더 많은 보상을 얻을 수 있는지를 나타냅니다.","feeApr":"스왑 수수료로부터 발생하는 예상 APR은 선택한 포지션의 가격 범위를 기준으로 계산됩니다.","stakingApr":"예상 APR 범위는 스테이킹 기간에 따라 스테이킹한 포지션에 배율을 적용하여 계산됩니다."}},"title":"포지션 추가 확인","title_oneClick":"원-클릭 스테이킹 "},"createPool":{"placeholder":"가격 입력","startingPrice":"시작 가격","tooltip":"동일한 페어에서 가장 유동성이 높은 풀의 현재 가격을 기준으로 한 권장 시작가입니다."},"fee":"수수료","feeTier":"수수료 등급","form":{"amount":{"label":"4. 수량 입력"},"feeTier":{"label":"2. 수수료 등급 선택","status":{"created":"{{percent}} 선택됨","notCreate":"생성되지 않음"}},"pairSection":{"label":"1. 페어 선택"},"priceRange":{"dim":{"content":"이 풀에 처음으로 포지션을 추가하는 사용자이므로 초기화를 진행해야 합니다. 풀의 <bold>시작 가격을 입력한</bold> 후 , 유동성을 위한 가격 범위와 예치 수량을 입력하세요.","title":"풀 개시"},"fullPrice":"전체 가격 범위","item":{"tooltip":{"active":{"100":"높은 수익과 높은 리스크를 감수하는 공격적인 가격 범위"},"passive":{"100":"적당한 수익과 리스크를 추구하는 안정적인 가격 범위"}}},"label":"3. 가격 범위 선택","maxPrice":"최대 가격","minPrice":"최소 가격"}},"oneClick":"원-클릭 스테이킹","outR":{"desc":"현재 설정한 범위로 포지션을 추가할 경우, 토큰 가격이 해당 범위 안으로 들어오기 전까지 수수료를 받을 수 없습니다.","title":"해당 포지션은 수수료를 획득할 수 없습니다."},"overralInfo":{"label":{"capitalEffi":"자본 효율성","depositR":"예치 비율","feeApr":"수수료 APR"},"tooltip":{"capitalEffi":"설정한 가격 범위에 따라 계산된 배율입니다. 동일한 자본을 기준으로 전체 범위 포지션에 비해 얼마나 더 많은 보상을 얻을 수 있는지를 나타냅니다.","depositR":"두 토큰의 예치 비율은 현재 가격과 설정한 가격 범위에 따라 결정됩니다.","feeApr":"선택한 포지션의 가격 범위를 기준으로 스왑 수수료에서 발생하는 예상 APR이 계산됩니다."}},"positionStat":{"label":{"fee24":"수수료 24h","feeApr":"수수료 APR","stakingApr":"스테이킹 APR","vol":"거래량 24h"},"staked":{"btn":"언스테이킹하러 가기","title":"나의 스테이킹 포지션"},"unstaked":{"btn":"스테이킹하러 가기","title":"내 언스테이킹 포지션"}},"rateGraph":{"title":"교환 비율","tooltip":"동일한 페어에서 가장 유동성이 많은 풀을 기준으로 제안된 교환 비율입니다."}}
+{
+  "btn": {
+    "addLiquidity": "유동성 추가",
+    "amtTooLow": "수량이 너무 적음",
+    "enterAmt": "수량을 입력하세요",
+    "invalidPair": "페어 선택",
+    "invalidRange": "유효하지 않은 범위",
+    "switch": "Gnoland로 전환"
+  },
+  "card": {
+    "title": "포지션 추가"
+  },
+  "confirmAddModal": {
+    "info": {
+      "feeError": {
+        "InsufBal": "잔액 부족"
+      },
+      "label": {
+        "capEff": "자본 효율성",
+        "creationFee": {
+          "title": "풀 생성 수수료",
+          "tooltip": "새로운 풀을 생성할 때 프로토콜에 지불하는 일회성 수수료입니다."
+        },
+        "feeApr": "수수료 APR",
+        "feeTier": "수수료 등급",
+        "stakingApr": "스테이킹 APR"
+      },
+      "section": {
+        "priceRange": "가격 범위"
+      },
+      "tooltip": {
+        "capEff": "당신이 설정한 가격 범위의 집중도에 따라 계산된 배율입니다. 동일한 자본을 기준으로 전체 범위 포지션에 비해 얼마나 더 많은 보상을 얻을 수 있는지를 나타냅니다.",
+        "feeApr": "스왑 수수료로부터 발생하는 예상 APR은 선택한 포지션의 가격 범위를 기준으로 계산됩니다.",
+        "stakingApr": "예상 APR 범위는 스테이킹 기간에 따라 스테이킹한 포지션에 배율을 적용하여 계산됩니다."
+      }
+    },
+    "title": "포지션 추가 확인",
+    "title_oneClick": "원-클릭 스테이킹 "
+  },
+  "createPool": {
+    "placeholder": "가격 입력",
+    "startingPrice": "시작 가격",
+    "tooltip": "동일한 페어에서 가장 유동성이 높은 풀의 현재 가격을 기준으로 한 권장 시작가입니다."
+  },
+  "fee": "수수료",
+  "feeTier": "수수료 등급",
+  "form": {
+    "amount": {
+      "label": "4. 수량 입력"
+    },
+    "feeTier": {
+      "label": "2. 수수료 등급 선택",
+      "status": {
+        "created": "{{percent}} 선택됨",
+        "notCreate": "생성되지 않음"
+      }
+    },
+    "pairSection": {
+      "label": "1. 페어 선택"
+    },
+    "priceRange": {
+      "dim": {
+        "content": "이 풀에 처음으로 포지션을 추가하는 사용자이므로 초기화를 진행해야 합니다. 풀의 <bold>시작 가격을 입력한</bold> 후 , 유동성을 위한 가격 범위와 예치 수량을 입력하세요.",
+        "title": "풀 개시"
+      },
+      "fullPrice": "전체 가격 범위",
+      "item": {
+        "tooltip": {
+          "active": {
+            "100": "높은 수익과 높은 리스크를 감수하는 공격적인 가격 범위"
+          },
+          "passive": {
+            "100": "적당한 수익과 리스크를 추구하는 안정적인 가격 범위"
+          }
+        }
+      },
+      "label": "3. 가격 범위 선택",
+      "maxPrice": "최대 가격",
+      "minPrice": "최소 가격"
+    }
+  },
+  "oneClick": "원-클릭 스테이킹",
+  "outR": {
+    "desc": "현재 설정한 범위로 포지션을 추가할 경우, 토큰 가격이 해당 범위 안으로 들어오기 전까지 수수료를 받을 수 없습니다.",
+    "title": "해당 포지션은 수수료를 획득할 수 없습니다."
+  },
+  "overralInfo": {
+    "label": {
+      "capitalEffi": "자본 효율성",
+      "depositR": "예치 비율",
+      "feeApr": "수수료 APR"
+    },
+    "tooltip": {
+      "capitalEffi": "설정한 가격 범위에 따라 계산된 배율입니다. 동일한 자본을 기준으로 전체 범위 포지션에 비해 얼마나 더 많은 보상을 얻을 수 있는지를 나타냅니다.",
+      "depositR": "두 토큰의 예치 비율은 현재 가격과 설정한 가격 범위에 따라 결정됩니다.",
+      "feeApr": "선택한 포지션의 가격 범위를 기준으로 스왑 수수료에서 발생하는 예상 APR이 계산됩니다."
+    }
+  },
+  "positionStat": {
+    "label": {
+      "fee24": "수수료 24h",
+      "feeApr": "수수료 APR",
+      "stakingApr": "스테이킹 APR",
+      "vol": "거래량 24h"
+    },
+    "staked": {
+      "btn": "언스테이킹하러 가기",
+      "title": "나의 스테이킹 포지션"
+    },
+    "unstaked": {
+      "btn": "스테이킹하러 가기",
+      "title": "내 언스테이킹 포지션"
+    }
+  },
+  "rateGraph": {
+    "title": "교환 비율",
+    "tooltip": "동일한 페어에서 가장 유동성이 많은 풀을 기준으로 제안된 교환 비율입니다."
+  }
+}

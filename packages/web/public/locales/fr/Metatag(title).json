@@ -1,1 +1,18 @@
-{"seo":{"title":{"default":"La plateforme unique Gnoland DeFi | GnoSwap","earn":"Gagner de l'argent | GnoSwap","earnAdd":"Ajouter une position à {{tokenASymbol}}/{{tokenBSymbol}} {{feeTier}}","earnAddDefault":"Ajouter un poste aux pools GnoSwap","explore":"Explorer | GnoSwap","governance":"Gouvernance | GnoSwap","launchpad":"Launchpad | GnoSwap","leaderboard":"Leaderboard | GnoSwap","portfolio":"Portfolio | GnoSwap","privacy":"Politique de confidentialité | GnoSwap","swap":"Swap | GnoSwap","terms":"Conditions d'utilisation | GnoSwap"}}}
+{
+  "seo": {
+    "title": {
+      "default": "La plateforme unique Gnoland DeFi | GnoSwap",
+      "earn": "Gagner de l'argent | GnoSwap",
+      "earnAdd": "Ajouter une position à {{tokenASymbol}}/{{tokenBSymbol}} {{feeTier}}",
+      "earnAddDefault": "Ajouter un poste aux pools GnoSwap",
+      "explore": "Explorer | GnoSwap",
+      "governance": "Gouvernance | GnoSwap",
+      "launchpad": "Launchpad | GnoSwap",
+      "leaderboard": "Leaderboard | GnoSwap",
+      "portfolio": "Portfolio | GnoSwap",
+      "privacy": "Politique de confidentialité | GnoSwap",
+      "swap": "Swap | GnoSwap",
+      "terms": "Conditions d'utilisation | GnoSwap"
+    }
+  }
+}

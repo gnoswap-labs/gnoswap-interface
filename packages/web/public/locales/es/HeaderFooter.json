@@ -1,1 +1,91 @@
-{"addPosi":"Añadir posición","copied":"¡Copiado!","developersSection":{"item":{"audit":"Auditoría","bugBounty":"Recompensas por fallos","docs":"Docs","github":"Github"},"title":"Desarrolladores"},"documentation":"Documentación","earn":"Ganar","explore":"Explore","featuresSection":{"item":{"addPosition":"Añadir posición","incentivizePool":"Incentivar la piscina","launchpad":"Launchpad","stakePosition":"Posición de la estaca","swap":"Intercambiar"},"title":"Características"},"governance":"Gobernanza","governanceSection":{"item":{"dashboard":"Explore","forum":"Foro","proposals":"Propuestas","vote":"Vote","xgns":"xGNS"},"title":"Gobernanza"},"helpCenter":"Centro de ayuda","helpSection":{"item":{"aboutUs":"Quiénes somos","faq":"PREGUNTAS FRECUENTES","projectOnboarding":"Incorporación","twitter":"Twitter (X)","userGuide":"Guía del usuario"},"title":"Ayuda"},"introduction":"Únete a GnoSwap: el ecosistema de mayor crecimiento que aspira a construir la fuente más profunda de liquidez en Gnoland.","language":"Idioma","launchpad":"Launchpad","leaderboard":"Clasificación","legal":"Legal y Privacidad","policySection":{"item":{"disclaimer":"Descargo de responsabilidad","privacyPolicy":"Política de privacidad","risk":"Riesgos y seguridad","terms":"Condiciones de uso"},"title":"Política"},"portfolio":"Cartera","projectOnboarding":"Incorporación de proyectos","receive":"Reciba","referralSection":{"banner":{"content":"Recomienda a tus amigos para conseguir puntos extra.<br/> Gana<span>un 10%, regala un 10%</span>."},"footer":{"content":"Aprenda cómo funcionan las referencias"},"input":{"invalidMessage":"Introduzca una dirección válida","notRegistered":"No registrado","placeholder":"Introduzca la dirección del remitente"},"item":{"earnedPoints":"Puntos ganados","myReferralLink":"Mi enlace de referencia","referredBy":"Remitido por","tooltip":{"referredBy":"Una vez registrado, su código de remisión no podrá modificarse durante las 24 horas siguientes. No se permite la autorreferencia."}}},"stakePosi":"Posición de la estaca","swap":"Intercambiar","switchNetwork":"Cambiar Red","theFastest":"el ecosistema de más rápido crecimiento que aspira a construir la fuente de liquidez más profunda en Gnoland.","theme":"Tema"}
+{
+  "addPosi": "Añadir posición",
+  "copied": "¡Copiado!",
+  "developersSection": {
+    "item": {
+      "audit": "Auditoría",
+      "bugBounty": "Recompensas por fallos",
+      "docs": "Docs",
+      "github": "Github"
+    },
+    "title": "Desarrolladores"
+  },
+  "documentation": "Documentación",
+  "earn": "Ganar",
+  "explore": "Explore",
+  "featuresSection": {
+    "item": {
+      "addPosition": "Añadir posición",
+      "incentivizePool": "Incentivar la piscina",
+      "launchpad": "Launchpad",
+      "stakePosition": "Posición de la estaca",
+      "swap": "Intercambiar"
+    },
+    "title": "Características"
+  },
+  "governance": "Gobernanza",
+  "governanceSection": {
+    "item": {
+      "dashboard": "Explore",
+      "forum": "Foro",
+      "proposals": "Propuestas",
+      "vote": "Vote",
+      "xgns": "xGNS"
+    },
+    "title": "Gobernanza"
+  },
+  "helpCenter": "Centro de ayuda",
+  "helpSection": {
+    "item": {
+      "aboutUs": "Quiénes somos",
+      "faq": "PREGUNTAS FRECUENTES",
+      "projectOnboarding": "Incorporación",
+      "twitter": "Twitter (X)",
+      "userGuide": "Guía del usuario"
+    },
+    "title": "Ayuda"
+  },
+  "introduction": "Únete a GnoSwap: el ecosistema de mayor crecimiento que aspira a construir la fuente más profunda de liquidez en Gnoland.",
+  "language": "Idioma",
+  "launchpad": "Launchpad",
+  "leaderboard": "Clasificación",
+  "legal": "Legal y Privacidad",
+  "policySection": {
+    "item": {
+      "disclaimer": "Descargo de responsabilidad",
+      "privacyPolicy": "Política de privacidad",
+      "risk": "Riesgos y seguridad",
+      "terms": "Condiciones de uso"
+    },
+    "title": "Política"
+  },
+  "portfolio": "Cartera",
+  "projectOnboarding": "Incorporación de proyectos",
+  "receive": "Reciba",
+  "referralSection": {
+    "banner": {
+      "content": "Recomienda a tus amigos para conseguir puntos extra.<br/> Gana<span>un 10%, regala un 10%</span>."
+    },
+    "footer": {
+      "content": "Aprenda cómo funcionan las referencias"
+    },
+    "input": {
+      "invalidMessage": "Introduzca una dirección válida",
+      "notRegistered": "No registrado",
+      "placeholder": "Introduzca la dirección del remitente"
+    },
+    "item": {
+      "earnedPoints": "Puntos ganados",
+      "myReferralLink": "Mi enlace de referencia",
+      "referredBy": "Remitido por",
+      "tooltip": {
+        "referredBy": "Una vez registrado, su código de remisión no podrá modificarse durante las 24 horas siguientes. No se permite la autorreferencia."
+      }
+    }
+  },
+  "stakePosi": "Posición de la estaca",
+  "swap": "Intercambiar",
+  "switchNetwork": "Cambiar Red",
+  "theFastest": "el ecosistema de más rápido crecimiento que aspira a construir la fuente de liquidez más profunda en Gnoland.",
+  "theme": "Tema"
+}

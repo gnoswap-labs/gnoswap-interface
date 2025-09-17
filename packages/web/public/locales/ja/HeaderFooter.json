@@ -1,1 +1,91 @@
-{"addPosi":"ポジション追加","copied":"コピーした！","developersSection":{"item":{"audit":"監査","bugBounty":"バグ報奨金","docs":"資料","github":"ギズブ"},"title":"開発者"},"documentation":"ドキュメント","earn":"獲得","explore":"エクスペリエンス","featuresSection":{"item":{"addPosition":"ポジション追加","incentivizePool":"プールにインセンティブを付与する","launchpad":"ランチパッド","stakePosition":"ステークポジション","swap":"スワップ"},"title":"特徴"},"governance":"ガバナンス","governanceSection":{"item":{"dashboard":"エクスペリエンス","forum":"フォーラム","proposals":"プロポーザル","vote":"投票","xgns":"エックスジーエヌエス"},"title":"ガバナンス"},"helpCenter":"ヘルプセンター","helpSection":{"item":{"aboutUs":"会社概要","faq":"よくあるご質問","projectOnboarding":"オンボーディング","twitter":"ツイッター（X）","userGuide":"ユーザーガイド"},"title":"ヘルプ"},"introduction":"GnoSwapに参加しましょう - 最も急成長しているエコシステムで、Gnolandで最も深い流動性の源を築くことを目指しています。","language":"言語","launchpad":"ランチパッド","leaderboard":"リーダーボード","legal":"法律とプライバシー","policySection":{"item":{"disclaimer":"免責事項","privacyPolicy":"プライバシーポリシー","risk":"リスクとセキュリティ","terms":"利用期間"},"title":"方針"},"portfolio":"ポートフォリオ","projectOnboarding":"プロジェクト・オンボーディング","receive":"受け取る","referralSection":{"banner":{"content":"<br/><span>、10％を稼ぎ、10％を贈る</span>。"},"footer":{"content":"紹介の仕組みを学ぶ"},"input":{"invalidMessage":"有効な住所を入力してください。","notRegistered":"未登録","placeholder":"紹介者のアドレスを入力"},"item":{"earnedPoints":"獲得ポイント","myReferralLink":"私の紹介リンク","referredBy":"紹介者","tooltip":{"referredBy":"一度登録された紹介コードは、その後24時間は変更できません。自己紹介はできません。"}}},"stakePosi":"ステークポジション","swap":"スワップ","switchNetwork":"ネットワークを切り替える","theFastest":"は、グノランドで最も流動性の高いソースの構築を目指す、急成長中のエコシステムです。","theme":"テーマ"}
+{
+  "addPosi": "ポジション追加",
+  "copied": "コピーした！",
+  "developersSection": {
+    "item": {
+      "audit": "監査",
+      "bugBounty": "バグ報奨金",
+      "docs": "資料",
+      "github": "ギズブ"
+    },
+    "title": "開発者"
+  },
+  "documentation": "ドキュメント",
+  "earn": "獲得",
+  "explore": "エクスペリエンス",
+  "featuresSection": {
+    "item": {
+      "addPosition": "ポジション追加",
+      "incentivizePool": "プールにインセンティブを付与する",
+      "launchpad": "ランチパッド",
+      "stakePosition": "ステークポジション",
+      "swap": "スワップ"
+    },
+    "title": "特徴"
+  },
+  "governance": "ガバナンス",
+  "governanceSection": {
+    "item": {
+      "dashboard": "エクスペリエンス",
+      "forum": "フォーラム",
+      "proposals": "プロポーザル",
+      "vote": "投票",
+      "xgns": "エックスジーエヌエス"
+    },
+    "title": "ガバナンス"
+  },
+  "helpCenter": "ヘルプセンター",
+  "helpSection": {
+    "item": {
+      "aboutUs": "会社概要",
+      "faq": "よくあるご質問",
+      "projectOnboarding": "オンボーディング",
+      "twitter": "ツイッター（X）",
+      "userGuide": "ユーザーガイド"
+    },
+    "title": "ヘルプ"
+  },
+  "introduction": "GnoSwapに参加しましょう - 最も急成長しているエコシステムで、Gnolandで最も深い流動性の源を築くことを目指しています。",
+  "language": "言語",
+  "launchpad": "ランチパッド",
+  "leaderboard": "リーダーボード",
+  "legal": "法律とプライバシー",
+  "policySection": {
+    "item": {
+      "disclaimer": "免責事項",
+      "privacyPolicy": "プライバシーポリシー",
+      "risk": "リスクとセキュリティ",
+      "terms": "利用期間"
+    },
+    "title": "方針"
+  },
+  "portfolio": "ポートフォリオ",
+  "projectOnboarding": "プロジェクト・オンボーディング",
+  "receive": "受け取る",
+  "referralSection": {
+    "banner": {
+      "content": "<br/><span>、10％を稼ぎ、10％を贈る</span>。"
+    },
+    "footer": {
+      "content": "紹介の仕組みを学ぶ"
+    },
+    "input": {
+      "invalidMessage": "有効な住所を入力してください。",
+      "notRegistered": "未登録",
+      "placeholder": "紹介者のアドレスを入力"
+    },
+    "item": {
+      "earnedPoints": "獲得ポイント",
+      "myReferralLink": "私の紹介リンク",
+      "referredBy": "紹介者",
+      "tooltip": {
+        "referredBy": "一度登録された紹介コードは、その後24時間は変更できません。自己紹介はできません。"
+      }
+    }
+  },
+  "stakePosi": "ステークポジション",
+  "swap": "スワップ",
+  "switchNetwork": "ネットワークを切り替える",
+  "theFastest": "は、グノランドで最も流動性の高いソースの構築を目指す、急成長中のエコシステムです。",
+  "theme": "テーマ"
+}

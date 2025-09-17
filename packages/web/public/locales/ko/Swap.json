@@ -1,1 +1,51 @@
-{"autoRouter":"자동 라우터","confirmSwapModal":{"confirmBtn":{"unwrap":"언래핑 확인","wrap":"래핑 확인"},"title":"스왑 확인"},"fetchingPrice":"최적 가격을 조회중...","header":"스왑","poolInfo":{"addPosBtn":"포지션 추가","col":{"feeTier":"수수료 등급","liquidity":"유동성","vol":"거래량 (24h)"},"noPool":"이 페어를 위한 풀이 존재하지 않습니다. 이 페어를 위한 유동성을 가장 먼저 추가해보세요."},"priceImpactStatus":{"high":"높음","low":"낮음","medium":"중간","positive":"긍정적"},"priceImpactWarn":"높은 프라이스 임팩트! 이 거래로 인해 가격이 급격히 변동될 수 있습니다.","swapButton":{"amtLow":"수량이 너무 적음","enterAmount":"수량 입력","insuffiLiq":"유동성 부족","review":"리뷰","selectToken":"토큰 선택","swap":"스왑","swapAnyway":"무시하고 스왑하기","switchNetwork":"Gnoland로 전환","unwrap":"언래핑","wrap":"래핑"},"swapInfo":{"gasFee":"네트워크 가스 수수료","maxSent":"최대 수량","minReceived":"최소 획득 수량","priceImpact":"프라이스 임팩트","slippageSet":"슬리피지 설정","tooltip":{"swapFee":"각 거래에 대해 프로토콜에 부과되는 수수료 비율입니다.\n스왑된 토큰으로 지불되며, 예상 견적에 미리 적용되어 있습니다."}},"swapURLCopied":"스왑 URL 복사 완료!"}
+{
+  "autoRouter": "자동 라우터",
+  "confirmSwapModal": {
+    "confirmBtn": {
+      "unwrap": "언래핑 확인",
+      "wrap": "래핑 확인"
+    },
+    "title": "스왑 확인"
+  },
+  "fetchingPrice": "최적 가격을 조회중...",
+  "header": "스왑",
+  "poolInfo": {
+    "addPosBtn": "포지션 추가",
+    "col": {
+      "feeTier": "수수료 등급",
+      "liquidity": "유동성",
+      "vol": "거래량 (24h)"
+    },
+    "noPool": "이 페어를 위한 풀이 존재하지 않습니다. 이 페어를 위한 유동성을 가장 먼저 추가해보세요."
+  },
+  "priceImpactStatus": {
+    "high": "높음",
+    "low": "낮음",
+    "medium": "중간",
+    "positive": "긍정적"
+  },
+  "priceImpactWarn": "높은 프라이스 임팩트! 이 거래로 인해 가격이 급격히 변동될 수 있습니다.",
+  "swapButton": {
+    "amtLow": "수량이 너무 적음",
+    "enterAmount": "수량 입력",
+    "insuffiLiq": "유동성 부족",
+    "review": "리뷰",
+    "selectToken": "토큰 선택",
+    "swap": "스왑",
+    "swapAnyway": "무시하고 스왑하기",
+    "switchNetwork": "Gnoland로 전환",
+    "unwrap": "언래핑",
+    "wrap": "래핑"
+  },
+  "swapInfo": {
+    "gasFee": "네트워크 가스 수수료",
+    "maxSent": "최대 수량",
+    "minReceived": "최소 획득 수량",
+    "priceImpact": "프라이스 임팩트",
+    "slippageSet": "슬리피지 설정",
+    "tooltip": {
+      "swapFee": "각 거래에 대해 프로토콜에 부과되는 수수료 비율입니다.\n스왑된 토큰으로 지불되며, 예상 견적에 미리 적용되어 있습니다."
+    }
+  },
+  "swapURLCopied": "스왑 URL 복사 완료!"
+}

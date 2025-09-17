@@ -1,1 +1,104 @@
-{"amount":"Montant","balance":"Équilibre","currentPrice":"Prix actuel","feeTierDesc":{"100":"Idéal pour les couples très stables","500":"Idéal pour les couples stables","3000":"Idéal pour la plupart des paires","10000":"Le meilleur pour les paires exotiques"},"incentive":"Incitation","liquidity":"Liquidité","maxPrice":"Prix maximum","minPrice":"Prix minimum","noPosition":"Pas de position","onchainActi":{"action":{"add":"Ajouter","cancel":"Annuler","claim":"Réclamation","claimDeposit":"Dépôt de garantie","claimFees":"Frais de réclamation","claimRewards":"Réclamer des récompenses","create":"Créer","decrease":"Diminution","delegate":"Délégué","deposit":"Dépôt","execute":"Exécuter","incentivize":"Inciter","increase":"Augmentation","remove":"Retirer","reposition":"Repositionnement","stake":"Enjeu","swap":"Échange","undelegate":"Non-délégué","unstake":"Déstockage","vote":"Vote"}},"pageHeader":{"addPosi":"Ajouter une position","dashboard":"Explorer","decreaseLiqui":"Diminution de la liquidité","earn":"Gagner","incentivzePool":"Incitation à la mise en commun","increaseLiqui":"Augmentation des liquidités","removePosi":"Retirer la position","reposition":"Repositionnement","stakePosition":"Position de l'enjeu","unstakePosition":"Déblocage de la position","wallet":"Le portefeuille"},"positionHistoryAction":{"claimFees":"Frais de réclamation","create":"Créer"},"positionPriceRangeInfo":{"capEff":{"desc":"Le multiplicateur calculé sur la base de la concentration de votre gamme. Il indique le nombre de récompenses supplémentaires que vous pouvez obtenir par rapport à une position de gamme complète avec le même capital.","label":"Efficacité du capital"},"depositR":{"desc":"Le ratio de dépôt des deux jetons est déterminé en fonction du prix actuel et de la fourchette de prix fixée.","label":"Ratio de dépôt"},"feeApr":{"desc":"Calculé sur la base des frais annualisés basés sur les données des dernières 24 heures. Vos récompenses réelles fluctueront en fonction des changements de TVL et du prix de la piscine.","label":"Frais APR"}},"priceRangeType":{"active":"Actif","custom":"Sur mesure","passive":"Passif"},"protocolFee":{"txt":"Frais de routeur"},"rangeStatus":{"inRange":"En cours de validité","inRange_short":"En","outRange":"Hors plage","outRange_short":"Sortie"},"rewardType":{"external_reward":"Récompenses externes","internal_reward":"Récompenses internes","swap_fee":"Frais de swap"},"selectAToken":"Sélectionner un jeton","staked":"Piquetage","stakingIncentiveType":{"external":"Externe","internal":"Interne"},"switchGnoland":"Passer à Gnoland","token":"Jeton","unstakingFee":{"txt":"Taxe de dépouillement"},"withdrawalFee":{"txt":"Frais de retrait"}}
+{
+  "amount": "Montant",
+  "balance": "Équilibre",
+  "currentPrice": "Prix actuel",
+  "feeTierDesc": {
+    "100": "Idéal pour les couples très stables",
+    "500": "Idéal pour les couples stables",
+    "3000": "Idéal pour la plupart des paires",
+    "10000": "Le meilleur pour les paires exotiques"
+  },
+  "incentive": "Incitation",
+  "liquidity": "Liquidité",
+  "maxPrice": "Prix maximum",
+  "minPrice": "Prix minimum",
+  "noPosition": "Pas de position",
+  "onchainActi": {
+    "action": {
+      "add": "Ajouter",
+      "cancel": "Annuler",
+      "claim": "Réclamation",
+      "claimDeposit": "Dépôt de garantie",
+      "claimFees": "Frais de réclamation",
+      "claimRewards": "Réclamer des récompenses",
+      "create": "Créer",
+      "decrease": "Diminution",
+      "delegate": "Délégué",
+      "deposit": "Dépôt",
+      "execute": "Exécuter",
+      "incentivize": "Inciter",
+      "increase": "Augmentation",
+      "remove": "Retirer",
+      "reposition": "Repositionnement",
+      "stake": "Enjeu",
+      "swap": "Échange",
+      "undelegate": "Non-délégué",
+      "unstake": "Déstockage",
+      "vote": "Vote"
+    }
+  },
+  "pageHeader": {
+    "addPosi": "Ajouter une position",
+    "dashboard": "Explorer",
+    "decreaseLiqui": "Diminution de la liquidité",
+    "earn": "Gagner",
+    "incentivzePool": "Incitation à la mise en commun",
+    "increaseLiqui": "Augmentation des liquidités",
+    "removePosi": "Retirer la position",
+    "reposition": "Repositionnement",
+    "stakePosition": "Position de l'enjeu",
+    "unstakePosition": "Déblocage de la position",
+    "wallet": "Le portefeuille"
+  },
+  "positionHistoryAction": {
+    "claimFees": "Frais de réclamation",
+    "create": "Créer"
+  },
+  "positionPriceRangeInfo": {
+    "capEff": {
+      "desc": "Le multiplicateur calculé sur la base de la concentration de votre gamme. Il indique le nombre de récompenses supplémentaires que vous pouvez obtenir par rapport à une position de gamme complète avec le même capital.",
+      "label": "Efficacité du capital"
+    },
+    "depositR": {
+      "desc": "Le ratio de dépôt des deux jetons est déterminé en fonction du prix actuel et de la fourchette de prix fixée.",
+      "label": "Ratio de dépôt"
+    },
+    "feeApr": {
+      "desc": "Calculé sur la base des frais annualisés basés sur les données des dernières 24 heures. Vos récompenses réelles fluctueront en fonction des changements de TVL et du prix de la piscine.",
+      "label": "Frais APR"
+    }
+  },
+  "priceRangeType": {
+    "active": "Actif",
+    "custom": "Sur mesure",
+    "passive": "Passif"
+  },
+  "protocolFee": {
+    "txt": "Frais de routeur"
+  },
+  "rangeStatus": {
+    "inRange": "En cours de validité",
+    "inRange_short": "En",
+    "outRange": "Hors plage",
+    "outRange_short": "Sortie"
+  },
+  "rewardType": {
+    "external_reward": "Récompenses externes",
+    "internal_reward": "Récompenses internes",
+    "swap_fee": "Frais de swap"
+  },
+  "selectAToken": "Sélectionner un jeton",
+  "staked": "Piquetage",
+  "stakingIncentiveType": {
+    "external": "Externe",
+    "internal": "Interne"
+  },
+  "switchGnoland": "Passer à Gnoland",
+  "token": "Jeton",
+  "unstakingFee": {
+    "txt": "Taxe de dépouillement"
+  },
+  "withdrawalFee": {
+    "txt": "Frais de retrait"
+  }
+}

@@ -1,1 +1,18 @@
-{"seo":{"title":{"default":"Единая платформа Gnoland DeFi | GnoSwap","earn":"Заработать | GnoSwap","earnAdd":"Добавить позицию на {{tokenASymbol}}/{{tokenBSymbol}} {{feeTier}}","earnAddDefault":"Добавить позицию в пулы GnoSwap","explore":"Исследуйте | GnoSwap","governance":"Управление | GnoSwap","launchpad":"Launchpad | GnoSwap","leaderboard":"Таблица лидеров | GnoSwap","portfolio":"Портфель | GnoSwap","privacy":"Политика конфиденциальности | GnoSwap","swap":"Обмен | GnoSwap","terms":"Условия использования | GnoSwap"}}}
+{
+  "seo": {
+    "title": {
+      "default": "Единая платформа Gnoland DeFi | GnoSwap",
+      "earn": "Заработать | GnoSwap",
+      "earnAdd": "Добавить позицию на {{tokenASymbol}}/{{tokenBSymbol}} {{feeTier}}",
+      "earnAddDefault": "Добавить позицию в пулы GnoSwap",
+      "explore": "Исследуйте | GnoSwap",
+      "governance": "Управление | GnoSwap",
+      "launchpad": "Launchpad | GnoSwap",
+      "leaderboard": "Таблица лидеров | GnoSwap",
+      "portfolio": "Портфель | GnoSwap",
+      "privacy": "Политика конфиденциальности | GnoSwap",
+      "swap": "Обмен | GnoSwap",
+      "terms": "Условия использования | GnoSwap"
+    }
+  }
+}

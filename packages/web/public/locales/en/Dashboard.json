@@ -1,1 +1,89 @@
-{"addAct":"Add","adds":"Adds","day":"Day","fees":"Fees","govOver":{"activeProp":{"label":"Active Proposals"},"comPool":{"label":"Community Pool","tooltip":"The total amount of assets in the<br/>Community Pool."},"holders":{"label":"Holders","tooltip":"Number of accounts with at least 1 xGNS."},"passedProp":{"label":"Passed Proposals"},"title":"Governance Overview","totalxGNS":{"label":"Total xGNS Issued","tooltip":"Total amount of xGNS currently issued by GNS staking."}},"noTokensfound\n":"No activities found","onchainActi":{"col":{"acc":"Account","action":"Action","time":"Time","tokenAmt":"Token Amount","totalVal":"Total Value"},"data":{"empty":"No activities found"},"switch":{"add":"Adds","all":"All","claim":"Claims","remove":"Removes","stake":"Stakes","swap":"Swaps","unstake":"Unstakes"},"title":"Onchain Activities"},"supOver":{"blocEmiss":{"tooltip":{"community":"Community Pool","devOps":"DevOps","liquiStaking":"Liquidity Staking","title":"Block Emissions"}},"circulSup":{"label":"Circulating Supply","tooltip":"The circulating token supply of GNS."},"dailyBlock":{"label":"Daily Block Emissions","tooltip":"Newly minted GNS on a daily basis."},"title":"Supply Overview","totalStaked":{"label":"Total Staked","stakeRatio":"Staking Ratio","tooltip":"The total amount of GNS staked in liquidity position and governance (xGNS)."},"totalSup":{"label":"Max Supply","tooltip":"The maximum token supply of GNS."}},"swapAct":"Swap","swaps":"Swaps","title":"Explore","totalVolChart":{"title":"Total Volume","totalFee":"Total Fees"},"totalvolumeFees":"Fees","tradingVolume":"Trading Volume","unstakeAct":"Unstake","unstakes":"Unstakes"}
+{
+  "addAct": "Add",
+  "adds": "Adds",
+  "day": "Day",
+  "fees": "Fees",
+  "govOver": {
+    "activeProp": {
+      "label": "Active Proposals"
+    },
+    "comPool": {
+      "label": "Community Pool",
+      "tooltip": "The total amount of assets in the<br/>Community Pool."
+    },
+    "holders": {
+      "label": "Holders",
+      "tooltip": "Number of accounts with at least 1 xGNS."
+    },
+    "passedProp": {
+      "label": "Passed Proposals"
+    },
+    "title": "Governance Overview",
+    "totalxGNS": {
+      "label": "Total xGNS Issued",
+      "tooltip": "Total amount of xGNS currently issued by GNS staking."
+    }
+  },
+  "noTokensfound\n": "No activities found",
+  "onchainActi": {
+    "col": {
+      "acc": "Account",
+      "action": "Action",
+      "time": "Time",
+      "tokenAmt": "Token Amount",
+      "totalVal": "Total Value"
+    },
+    "data": {
+      "empty": "No activities found"
+    },
+    "switch": {
+      "add": "Adds",
+      "all": "All",
+      "claim": "Claims",
+      "remove": "Removes",
+      "stake": "Stakes",
+      "swap": "Swaps",
+      "unstake": "Unstakes"
+    },
+    "title": "Onchain Activities"
+  },
+  "supOver": {
+    "blocEmiss": {
+      "tooltip": {
+        "community": "Community Pool",
+        "devOps": "DevOps",
+        "liquiStaking": "Liquidity Staking",
+        "title": "Block Emissions"
+      }
+    },
+    "circulSup": {
+      "label": "Circulating Supply",
+      "tooltip": "The circulating token supply of GNS."
+    },
+    "dailyBlock": {
+      "label": "Daily Block Emissions",
+      "tooltip": "Newly minted GNS on a daily basis."
+    },
+    "title": "Supply Overview",
+    "totalStaked": {
+      "label": "Total Staked",
+      "stakeRatio": "Staking Ratio",
+      "tooltip": "The total amount of GNS staked in liquidity position and governance (xGNS)."
+    },
+    "totalSup": {
+      "label": "Max Supply",
+      "tooltip": "The maximum token supply of GNS."
+    }
+  },
+  "swapAct": "Swap",
+  "swaps": "Swaps",
+  "title": "Explore",
+  "totalVolChart": {
+    "title": "Total Volume",
+    "totalFee": "Total Fees"
+  },
+  "totalvolumeFees": "Fees",
+  "tradingVolume": "Trading Volume",
+  "unstakeAct": "Unstake",
+  "unstakes": "Unstakes"
+}

@@ -1,1 +1,23 @@
-{"btn":{"enterAmount":"수량 입력"},"confirmIncreaseModal":{"increaseAmt":"추가 수량","section":{"posiDetail":{"label":"포지션 세부 정보"}},"title":"유동성 추가 확인"},"form":{"enterincreasingAmount":{"label":"2. 추가 수량 입력"},"selectPosition":{"label":"1. 포지션 선택"}},"title":"유동성 추가"}
+{
+  "btn": {
+    "enterAmount": "수량 입력"
+  },
+  "confirmIncreaseModal": {
+    "increaseAmt": "추가 수량",
+    "section": {
+      "posiDetail": {
+        "label": "포지션 세부 정보"
+      }
+    },
+    "title": "유동성 추가 확인"
+  },
+  "form": {
+    "enterincreasingAmount": {
+      "label": "2. 추가 수량 입력"
+    },
+    "selectPosition": {
+      "label": "1. 포지션 선택"
+    }
+  },
+  "title": "유동성 추가"
+}

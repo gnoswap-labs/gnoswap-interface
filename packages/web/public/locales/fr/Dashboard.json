@@ -1,1 +1,89 @@
-{"addAct":"Ajouter","adds":"Ajouts","day":"Jour","fees":"Honoraires","govOver":{"activeProp":{"label":"Propositions actives"},"comPool":{"label":"Pool communautaire","tooltip":"Le montant total des actifs de la piscine communautaire<br/>."},"holders":{"label":"Supports","tooltip":"Nombre de comptes avec au moins 1 xGNS."},"passedProp":{"label":"Propositions adoptées"},"title":"Aperçu de la gouvernance","totalxGNS":{"label":"Total des xGNS émis","tooltip":"Montant total des xGNS actuellement émis par le piquetage GNS."}},"noTokensfound\n":"Aucune activité trouvée","onchainActi":{"col":{"acc":"Compte","action":"Action","time":"L'heure","tokenAmt":"Montant du jeton","totalVal":"Valeur totale"},"data":{"empty":"Aucune activité trouvée"},"switch":{"add":"Ajouts","all":"Tous","claim":"Réclamations","remove":"Supprime","stake":"Enjeux","swap":"Swaps","unstake":"Sans enjeu"},"title":"Activités Onchain"},"supOver":{"blocEmiss":{"tooltip":{"community":"Piscine communautaire","devOps":"DevOps","liquiStaking":"Mise en jeu de la liquidité","title":"Émissions en bloc"}},"circulSup":{"label":"Alimentation en circulation","tooltip":"La réserve de jetons en circulation de GNS."},"dailyBlock":{"label":"Émissions quotidiennes par bloc","tooltip":"Les nouveaux GNS au quotidien."},"title":"Aperçu de l'offre","totalStaked":{"label":"Total mis en jeu","stakeRatio":"Ratio de piquetage","tooltip":"Le montant total de GNS mis en jeu dans la position de liquidité et la gouvernance (xGNS)."},"totalSup":{"label":"Alimentation maximale","tooltip":"L'offre maximale de jetons de GNS."}},"swapAct":"Échange","swaps":"Swaps","title":"Explorer","totalVolChart":{"title":"Volume total","totalFee":"Total des droits"},"totalvolumeFees":"Honoraires","tradingVolume":"Volume des échanges","unstakeAct":"Déstockage","unstakes":"Sans enjeu"}
+{
+  "addAct": "Ajouter",
+  "adds": "Ajouts",
+  "day": "Jour",
+  "fees": "Honoraires",
+  "govOver": {
+    "activeProp": {
+      "label": "Propositions actives"
+    },
+    "comPool": {
+      "label": "Pool communautaire",
+      "tooltip": "Le montant total des actifs de la piscine communautaire<br/>."
+    },
+    "holders": {
+      "label": "Supports",
+      "tooltip": "Nombre de comptes avec au moins 1 xGNS."
+    },
+    "passedProp": {
+      "label": "Propositions adoptées"
+    },
+    "title": "Aperçu de la gouvernance",
+    "totalxGNS": {
+      "label": "Total des xGNS émis",
+      "tooltip": "Montant total des xGNS actuellement émis par le piquetage GNS."
+    }
+  },
+  "noTokensfound\n": "Aucune activité trouvée",
+  "onchainActi": {
+    "col": {
+      "acc": "Compte",
+      "action": "Action",
+      "time": "L'heure",
+      "tokenAmt": "Montant du jeton",
+      "totalVal": "Valeur totale"
+    },
+    "data": {
+      "empty": "Aucune activité trouvée"
+    },
+    "switch": {
+      "add": "Ajouts",
+      "all": "Tous",
+      "claim": "Réclamations",
+      "remove": "Supprime",
+      "stake": "Enjeux",
+      "swap": "Swaps",
+      "unstake": "Sans enjeu"
+    },
+    "title": "Activités Onchain"
+  },
+  "supOver": {
+    "blocEmiss": {
+      "tooltip": {
+        "community": "Piscine communautaire",
+        "devOps": "DevOps",
+        "liquiStaking": "Mise en jeu de la liquidité",
+        "title": "Émissions en bloc"
+      }
+    },
+    "circulSup": {
+      "label": "Alimentation en circulation",
+      "tooltip": "La réserve de jetons en circulation de GNS."
+    },
+    "dailyBlock": {
+      "label": "Émissions quotidiennes par bloc",
+      "tooltip": "Les nouveaux GNS au quotidien."
+    },
+    "title": "Aperçu de l'offre",
+    "totalStaked": {
+      "label": "Total mis en jeu",
+      "stakeRatio": "Ratio de piquetage",
+      "tooltip": "Le montant total de GNS mis en jeu dans la position de liquidité et la gouvernance (xGNS)."
+    },
+    "totalSup": {
+      "label": "Alimentation maximale",
+      "tooltip": "L'offre maximale de jetons de GNS."
+    }
+  },
+  "swapAct": "Échange",
+  "swaps": "Swaps",
+  "title": "Explorer",
+  "totalVolChart": {
+    "title": "Volume total",
+    "totalFee": "Total des droits"
+  },
+  "totalvolumeFees": "Honoraires",
+  "tradingVolume": "Volume des échanges",
+  "unstakeAct": "Déstockage",
+  "unstakes": "Sans enjeu"
+}

@@ -1,1 +1,51 @@
-{"bestPool":{"col":{"apr":"APR","pair":"페어","tvl":"TVL"},"title":"{{symbol}}에 최적인 풀"},"description":{"empty":"토큰 정보 없음","links":"링크","realmPath":"Realm (컨트랙트) 경로","title":"{{name}} 정보"},"info":{"info":{"priceChange":"가격 변동 ({{period}})","title":"가격 정보"},"market":{"col":{"fee":"수수료 (24h)","marketCap":"시가총액","tvl":"TVL","volume":"거래량 (24h)"},"title":"거래 정보"},"performance":{"col":{"header":{"amount":"수량","change":"변동","period":"기간"}},"title":"가격 변동"}},"title":"스왑","topGainers":{"title":"상위 Top 3"},"topLosers":{"title":"하위 Top 3"},"trending":{"title":"인기 급상승 "}}
+{
+  "bestPool": {
+    "col": {
+      "apr": "APR",
+      "pair": "페어",
+      "tvl": "TVL"
+    },
+    "title": "{{symbol}}에 최적인 풀"
+  },
+  "description": {
+    "empty": "토큰 정보 없음",
+    "links": "링크",
+    "realmPath": "Realm (컨트랙트) 경로",
+    "title": "{{name}} 정보"
+  },
+  "info": {
+    "info": {
+      "priceChange": "가격 변동 ({{period}})",
+      "title": "가격 정보"
+    },
+    "market": {
+      "col": {
+        "fee": "수수료 (24h)",
+        "marketCap": "시가총액",
+        "tvl": "TVL",
+        "volume": "거래량 (24h)"
+      },
+      "title": "거래 정보"
+    },
+    "performance": {
+      "col": {
+        "header": {
+          "amount": "수량",
+          "change": "변동",
+          "period": "기간"
+        }
+      },
+      "title": "가격 변동"
+    }
+  },
+  "title": "스왑",
+  "topGainers": {
+    "title": "상위 Top 3"
+  },
+  "topLosers": {
+    "title": "하위 Top 3"
+  },
+  "trending": {
+    "title": "인기 급상승 "
+  }
+}
