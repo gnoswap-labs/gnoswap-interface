@@ -59,7 +59,7 @@ const PrivacyLayout = ({ header, footer }: PrivacyLayoutProps) => {
           <ul>
             <li>
               <b>Public Blockchain Data</b>: Wallet addresses and transaction details related to your interactions on
-              the gno.land blockchain. All transactions conducted via GnoSwap are publicly visible on the blockchain.
+              the Gno.land blockchain. All transactions conducted via GnoSwap are publicly visible on the blockchain.
             </li>
             <li>
               <b>Technical Data</b>: IP addresses, browser types, operating system details, device identifiers, and
@@ -144,7 +144,7 @@ const PrivacyLayout = ({ header, footer }: PrivacyLayoutProps) => {
             </li>
             <li>
               <b>Blockchain Network</b>: As a decentralized platform, all transactions conducted on GnoSwap are publicly
-              visible on the gno.land blockchain and may be accessible to third parties.
+              visible on the Gno.land blockchain and may be accessible to third parties.
             </li>
           </ul>
           <br />
@@ -202,7 +202,7 @@ const PrivacyLayout = ({ header, footer }: PrivacyLayoutProps) => {
           <br />
           <ul>
             <li>
-              <b>Blockchain Data</b>: All transactions recorded on the gno.land blockchain are permanent and immutable.
+              <b>Blockchain Data</b>: All transactions recorded on the Gno.land blockchain are permanent and immutable.
               This data cannot be modified or deleted once added to the blockchain.
             </li>
             <li>

@@ -56,7 +56,7 @@ export type StringParamsArr = (string | undefined)[];
 export type StringWithParamsArr = (params?: StringParamsArr) => TranslationKey;
 
 export const DefaultTitle = "Metatag(title):seo.title.default";
-export const DEFAULT_SEO_TITLE = "The One-stop Gnoland DeFi Platform | GnoSwap";
+export const DEFAULT_SEO_TITLE = "The One-stop Gno.land DeFi Platform | GnoSwap";
 
 export const SEOInfo: Record<
   PageKey,

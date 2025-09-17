@@ -1,7 +1,7 @@
 {
   "seo": {
     "title": {
-      "default": "The One-stop Gnoland DeFi Platform | GnoSwap",
+      "default": "The One-stop Gno.land DeFi Platform | GnoSwap",
       "earn": "Earn | GnoSwap",
       "earnAdd": "Add Position to {{tokenASymbol}}/{{tokenBSymbol}} {{feeTier}}",
       "earnAddDefault": "Add Position to GnoSwap Pools",

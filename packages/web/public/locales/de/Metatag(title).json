@@ -1,7 +1,7 @@
 {
   "seo": {
     "title": {
-      "default": "Die Gnoland DeFi-Plattform aus einer Hand | GnoSwap",
+      "default": "Die Gno.land DeFi-Plattform aus einer Hand | GnoSwap",
       "earn": "Verdienen | GnoSwap",
       "earnAdd": "Position hinzufügen zu {{tokenASymbol}}/{{tokenBSymbol}} {{feeTier}}",
       "earnAddDefault": "Position zu GnoSwap Pools hinzufügen",

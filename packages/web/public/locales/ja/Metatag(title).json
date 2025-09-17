@@ -1,7 +1,7 @@
 {
   "seo": {
     "title": {
-      "default": "ワンストップのグノランドDeFiプラットフォーム｜GnoSwap",
+      "default": "ワンストップのGno.land DeFiプラットフォーム｜GnoSwap",
       "earn": "稼ぐ｜グノスワップ",
       "earnAdd": "{{tokenASymbol}}/{{tokenBSymbol}} にポジションを追加{{feeTier}}",
       "earnAddDefault": "GnoSwapプールへのポジション追加",
