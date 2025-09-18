@@ -17,8 +17,11 @@ import IconStar from "../../icons/IconStar";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { useTranslation } from "react-i18next";
 import MissingLogo from "../../missing-logo/MissingLogo";
+import { QUERY_PARAMETER } from "@constants/page.constant";
+import { usePrefetchNavigation } from "@hooks/common/use-prefetch-navigation";
 
 interface MyPositionCardProps {
+  address?: string | null;
   position: PoolPositionModel;
   movePoolDetail: (poolId: string, positionId: number) => void;
   mobile: boolean;
@@ -34,6 +37,7 @@ export function estimateTick(tick: number, width: number) {
 }
 
 const MyPositionCard: React.FC<MyPositionCardProps> = ({
+  address,
   position,
   movePoolDetail,
   currentIndex,
@@ -53,6 +57,15 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const { data: bins40, isFetched: isFetchedBins } = useGetPositionBins(position.lpTokenId, 40, {
     enabled: isMouseoverGraph,
+  });
+
+  const { prefetch } = usePrefetchNavigation({
+    pageType: "POOL",
+    params: {
+      [QUERY_PARAMETER.POOL_PATH]: position.poolPath,
+      [QUERY_PARAMETER.ADDRESS]: address,
+    },
+    hash: position.id,
   });
 
   const onMouseoverViewMyRange = useCallback(() => {
@@ -315,6 +328,14 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
 
   const boxHeaderId = useMemo(() => position.id + "-box-header", [position.id]);
 
+  const handleMouseEnter = useCallback(() => {
+    prefetch();
+  }, [prefetch]);
+
+  const handleClick = useCallback(() => {
+    movePoolDetail(pool.id, position.id);
+  }, [movePoolDetail, pool.id, position.id]);
+
   useLayoutEffect(() => {
     const titleElement = document.getElementById(boxHeaderId);
     setShortenInRange((titleElement?.clientWidth || 0) > 210);
@@ -328,7 +349,8 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
       <div className="base-border">
         <MyPositionCardWrapper
           staked={position.staked}
-          onClick={() => movePoolDetail(pool.id, position.id)}
+          onClick={handleClick}
+          onMouseEnter={handleMouseEnter}
           viewMyRange={viewMyRange}
           disabled={inRange === null}
         >
