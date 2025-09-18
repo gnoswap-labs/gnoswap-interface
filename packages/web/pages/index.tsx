@@ -29,14 +29,7 @@ export default function Page() {
     bindI18n: "languageChanged loaded",
   });
   useEffect(() => {
-    i18n.reloadResources(i18n.resolvedLanguage, [
-      "HeaderFooter",
-      "common",
-      "Main",
-      "business",
-      "SocialWallet",
-      "Metatag(title)",
-    ]);
+    i18n.reloadResources(i18n.resolvedLanguage, ["HeaderFooter", "common", "Main", "business", "Metatag(title)"]);
   }, []);
 
   return (
