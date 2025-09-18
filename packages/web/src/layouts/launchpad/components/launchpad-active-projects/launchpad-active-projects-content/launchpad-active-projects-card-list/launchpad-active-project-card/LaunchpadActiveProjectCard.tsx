@@ -1,6 +1,8 @@
 import React from "react";
 
 import { LaunchpadProjectModel } from "@models/launchpad";
+import { usePrefetchNavigation } from "@hooks/common/use-prefetch-navigation";
+import { QUERY_PARAMETER } from "@constants/page.constant";
 
 import { ActiveProjectCardWrapper } from "./LaunchpadActiveProjectCard.styles";
 import LaunchpadActiveProjectCardHeader from "./launchpad-active-project-card-header/LaunchpadActiveProjectCardHeader";
@@ -18,11 +20,26 @@ interface LaunchpadActiveProjectCardProps {
 const LaunchpadActiveProjectCard: React.FC<LaunchpadActiveProjectCardProps> = ({ project, moveProjectDetail }) => {
   const { pools, status, projectID, rewardTokenSymbol, rewardTokenLogoUrl } = project;
 
+  const { prefetch } = usePrefetchNavigation({
+    pageType: "PROJECT",
+    params: {
+      [QUERY_PARAMETER.PROJECT_PATH]: projectID,
+    },
+  });
+
   const FIRST_POOL = pools[0];
   const LAST_POOL = pools[Math.max(pools.length - 1, 0)];
 
+  const handleClick = React.useCallback(() => {
+    moveProjectDetail(projectID);
+  }, [moveProjectDetail, projectID]);
+
+  const handleMouseEnter = React.useCallback(() => {
+    prefetch();
+  }, [prefetch]);
+
   return (
-    <ActiveProjectCardWrapper type={status} onClick={() => moveProjectDetail(projectID)}>
+    <ActiveProjectCardWrapper type={status} onClick={handleClick} onMouseEnter={handleMouseEnter}>
       <LaunchpadStatusTimeChip startTime={FIRST_POOL.startTime} endTime={LAST_POOL.endTime} status={project.status} />
       <LaunchpadActiveProjectCardHeader
         name={project.name}
