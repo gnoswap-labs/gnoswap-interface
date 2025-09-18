@@ -4,6 +4,18 @@ import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import AssetInfo, { AssetInfoProps } from "./AssetInfo";
 
+jest.mock("next/router", () => ({
+  useRouter: () => ({
+    prefetch: jest.fn(() => Promise.resolve()),
+    push: jest.fn(() => Promise.resolve(true)),
+    replace: jest.fn(() => Promise.resolve(true)),
+    pathname: "/test",
+    query: {},
+    asPath: "/test",
+    isReady: true,
+  }),
+}));
+
 describe("AssetInfo Component", () => {
   it("AssetInfo render", () => {
     const mockProps: AssetInfoProps = {
