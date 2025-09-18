@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { cx } from "@emotion/css";
 
@@ -15,6 +15,8 @@ import { numberToFormat } from "@utils/string-utils";
 import { useGetBinsByPath } from "@query/pools";
 import { getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils";
 import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
+import { usePrefetchNavigation } from "@hooks/common/use-prefetch-navigation";
+import { QUERY_PARAMETER } from "@constants/page.constant";
 
 import { PoolCardWrapper, PoolCardWrapperWrapperBorder } from "./IncentivizedPoolCard.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
@@ -32,6 +34,14 @@ const BINS_DATA_DEFAULT_LENGTH = 40;
 const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, routeItem, themeKey, checkStakedPool }) => {
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
+
+  const { prefetch } = usePrefetchNavigation({
+    pageType: "POOL",
+    params: {
+      [QUERY_PARAMETER.POOL_PATH]: pool.poolId,
+    },
+    enabled: Boolean(pool.poolId),
+  });
 
   const { data: bins40, isLoading: isLoadingBins40 } = useGetBinsByPath(pool.poolPath || "", BINS_DATA_DEFAULT_LENGTH, {
     enabled: !!pool.poolPath,
@@ -80,10 +90,18 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
 
   const shouldShowPriceWarning = tokenAShouldShowPriceWarning || tokenBShouldShowPriceWarning;
 
+  const handleMouseEnter = useCallback(() => {
+    prefetch();
+  }, [prefetch]);
+
+  const handleClick = useCallback(() => {
+    routeItem(pool.poolId);
+  }, [routeItem, pool.poolId]);
+
   return (
     <PoolCardWrapperWrapperBorder className={`${staked ? "special-card" : ""}`}>
       <div className="base-border">
-        <PoolCardWrapper onClick={() => routeItem(pool.poolId)}>
+        <PoolCardWrapper onClick={handleClick} onMouseEnter={handleMouseEnter}>
           <div className="pool-container">
             <div className="title-container">
               <div className="box-header">
