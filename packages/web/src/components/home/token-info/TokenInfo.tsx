@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
@@ -14,6 +14,8 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import TokenInfoCell from "@components/common/token-info-cell/TokenInfoCell";
 import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
 import PriceWarning from "@components/common/price-warning/PriceWarning";
+import { usePrefetchNavigation } from "@hooks/common/use-prefetch-navigation";
+import { QUERY_PARAMETER } from "@constants/page.constant";
 
 interface TokenInfoProps {
   item: Token;
@@ -59,6 +61,13 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
   } = item;
   const router = useCustomRouter();
 
+  const { prefetch } = usePrefetchNavigation({
+    pageType: "TOKEN",
+    params: {
+      [QUERY_PARAMETER.TOKEN_PATH]: token.path,
+    },
+  });
+
   const { priceStyle, shouldShowPriceWarning } = useTokenPriceInfo({ priceGradeType });
 
   const onClickItem = (path: string) => {
@@ -84,9 +93,17 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
     return price === "--" ? <PriceValueWrapper>{price}</PriceValueWrapper> : <span>{price}</span>;
   };
 
+  const handleClick = useCallback(() => {
+    onClickItem(token.path);
+  }, [onClickItem, token.path]);
+
+  const handleMouseEnter = useCallback(() => {
+    prefetch();
+  }, [prefetch]);
+
   return (
     <TokenInfoWrapper>
-      <HoverSection onClick={() => onClickItem(token.path)}>
+      <HoverSection onClick={handleClick} onMouseEnter={handleMouseEnter}>
         <TableColumn className="left" tdWidth={TOKEN_TD_WIDTH[0]}>
           <span className="token-index">{idx}</span>
         </TableColumn>
