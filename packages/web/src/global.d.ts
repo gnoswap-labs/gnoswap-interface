@@ -3,6 +3,7 @@
 
 import { ThemeColorType, WindowSizeType } from "@styles/ThemeTypes";
 import "@emotion/react";
+import { ConnectionType } from "@app-types/navigator";
 
 declare module "@emotion/react" {
   export interface Theme {
@@ -15,6 +16,17 @@ declare module "@emotion/react" {
 declare global {
   interface Window {
     adena?: any;
+  }
+
+  interface Navigator {
+    connection?: {
+      effectiveType: ConnectionType;
+      downlink: number;
+      rtt: number;
+      saveData: boolean;
+      addEventListener: (type: string, listener: EventListener) => void;
+      removeEventListener: (type: string, listener: EventListener) => void;
+    };
   }
 }
 
