@@ -150,7 +150,7 @@ export const usePrefetchNavigation = (options: UsePrefetchNavigationOptions) => 
     updateConnectionInfo();
 
     // Listen for network changes
-    if (connection && connection.addEventListener) {
+    if (connection?.addEventListener) {
       connection.addEventListener("change", updateConnectionInfo);
       return () => {
         connection.removeEventListener("change", updateConnectionInfo);
