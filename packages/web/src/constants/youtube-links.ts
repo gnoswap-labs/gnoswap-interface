@@ -1,9 +1,9 @@
 export const YOUTUBE_LINKS = {
-  POSITION: "dQw4w9WgXcQ",
-  STAKING: "abc123def45",
-  GOVERNANCE: "xyz789uvw12",
-  LAUNCHPAD: "def456ghi78",
-  LEADERBOARD: "ghi789jkl01",
+  POSITION: "gv0Xqq3DXFk",
+  STAKING: "gv0Xqq3DXFk",
+  GOVERNANCE: "gv0Xqq3DXFk",
+  LAUNCHPAD: "gv0Xqq3DXFk",
+  LEADERBOARD: "gv0Xqq3DXFk",
 } as const;
 
 export type YoutubeVideoType = keyof typeof YOUTUBE_LINKS;

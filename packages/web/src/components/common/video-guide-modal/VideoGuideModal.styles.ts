@@ -1,7 +1,9 @@
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
-import { fonts } from "@constants/font.constant";
+
+const PC_BREAKPOINT_PADDING = 24;
+const MOBILE_BREAKPOINT_PADDING = 12;
 
 export const VideoGuideModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -16,6 +18,7 @@ export const VideoGuideModalWrapper = styled.div`
   }
 
   .modal-body {
+    position: relative;
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     background-color: ${({ theme }) => theme.color.background06};
     border-radius: 8px;
@@ -23,67 +26,96 @@ export const VideoGuideModalWrapper = styled.div`
     box-shadow: ${({ theme }) => theme.color.shadow01};
     overflow: hidden;
     width: 100%;
-    gap: 0;
+    gap: 24px;
+    padding: ${PC_BREAKPOINT_PADDING}px;
+    ${media.mobile} {
+      padding: ${MOBILE_BREAKPOINT_PADDING}px;
+    }
 
-    .header {
-      ${mixins.flexbox("row", "center", "space-between")};
-      width: 100%;
-      padding: 16px 24px;
-      border-bottom: 1px solid ${({ theme }) => theme.color.border02};
-
-      > h6 {
-        ${fonts.h6}
-        color: ${({ theme }) => theme.color.text02};
-        margin: 0;
+    .header-actions {
+      ${mixins.flexbox("row", "center", "center")};
+      gap: 10px;
+      position: absolute;
+      top: ${PC_BREAKPOINT_PADDING}px;
+      right: ${PC_BREAKPOINT_PADDING}px;
+      ${media.mobile} {
+        top: ${MOBILE_BREAKPOINT_PADDING}px;
+        right: ${MOBILE_BREAKPOINT_PADDING}px;
       }
 
-      .close-wrap {
+      .icon-wrap {
         ${mixins.flexbox("row", "center", "center")};
-        cursor: pointer;
         width: 24px;
         height: 24px;
         padding: 4px;
 
-        .close-icon {
+        .header-action-icon {
           width: 24px;
           height: 24px;
-          color: ${({ theme }) => theme.color.text04};
-          transition: color 0.2s ease;
+
+          path {
+            fill: ${({ theme }) => theme.color.icon03};
+          }
 
           &:hover {
-            color: ${({ theme }) => theme.color.text01};
+            path {
+              fill: ${({ theme }) => theme.color.icon07};
+            }
           }
         }
       }
+    }
 
-      ${media.mobile} {
-        padding: 12px 16px;
-
-        > h6 {
-          ${fonts.body9}
-        }
+    .title-wrapper {
+      width: 100%;
+      ${mixins.flexbox("column", "center", "center")}
+      gap: 8px;
+      .title {
+        font-size: 24px;
+        font-weight: 500;
+        line-height: 33.6px;
       }
+      .sub-title {
+        color: ${({ theme }) => theme.color.text03};
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 18.2px;
+      }
+    }
+
+    .content-wrapper {
+      width: 100%;
     }
 
     .video-content {
       width: 100%;
 
       iframe {
-        width: 800px;
-        height: 450px;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16/9;
         border: none;
         display: block;
+        min-height: 200px;
 
         ${media.tablet} {
-          width: 700px;
           height: 394px;
         }
 
         ${media.mobile} {
-          width: 100%;
           height: 250px;
           min-height: 200px;
         }
+      }
+    }
+
+    .footer {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      gap: 24px;
+      width: 100%;
+      .button {
+        gap: 8px;
+        height: 57px;
       }
     }
   }
