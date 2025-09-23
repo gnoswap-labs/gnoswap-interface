@@ -1,8 +1,8 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { YOUTUBE_LINKS, YoutubeVideoType } from "@constants/youtube-links";
-import IconClose from "../icons/IconCancel";
+import { YOUTUBE_LINKS, VideoGuideType } from "@constants/youtube-links.constant";
+import { VIDEO_GUIDE_CONFIG } from "@constants/video-guide-config.constant";
 
 import { VideoGuideModalWrapper } from "./VideoGuideModal.styles";
 import withLocalModal from "@components/hoc/with-local-modal";
@@ -10,9 +10,10 @@ import Button, { ButtonHierarchy } from "../button/Button";
 import IconLink from "../icons/IconLink";
 import IconRightArrow from "../icons/IconRightArrow";
 import IconLearnMoreLink from "../icons/IconLearnMoreLink";
+import IconClose from "../icons/IconCancel";
 
 interface VideoGuideModalProps {
-  videoType: YoutubeVideoType;
+  videoType: VideoGuideType;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -21,6 +22,8 @@ const VideoGuideModal = ({ videoType, setIsOpen }: VideoGuideModalProps) => {
 
   const { t } = useTranslation();
   const iframeRef = React.useRef<HTMLIFrameElement>(null);
+
+  const config = VIDEO_GUIDE_CONFIG[videoType];
   const videoId = YOUTUBE_LINKS[videoType];
 
   const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0&modestbranding=1&enablejsapi=1`;
@@ -57,10 +60,8 @@ const VideoGuideModal = ({ videoType, setIsOpen }: VideoGuideModalProps) => {
         </div>
 
         <div className="title-wrapper">
-          <h1 className="title">What’s a Position?</h1>
-          <h6 className="sub-title">
-            {t("Learn about positions and how to provide liquidity to earn rewards on GnoSwap.")}
-          </h6>
+          <h1 className="title">{t(config.title.key)}</h1>
+          <h6 className="sub-title">{t(config.subtitle.key)}</h6>
         </div>
 
         <div className="content-wrapper">
@@ -77,13 +78,13 @@ const VideoGuideModal = ({ videoType, setIsOpen }: VideoGuideModalProps) => {
           <Button
             className="button"
             style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
-            text={"Learn More"}
+            text={t(config.externalLink.textKey)}
             rightIcon={<IconLearnMoreLink />}
           />
           <Button
             className="button"
             style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
-            text={"Create a Position"}
+            text={t(config.internalAction.textKey)}
             rightIcon={<IconRightArrow />}
           />
           <Button

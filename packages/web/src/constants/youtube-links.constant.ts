@@ -6,4 +6,4 @@ export const YOUTUBE_LINKS = {
   LEADERBOARD: "gv0Xqq3DXFk",
 } as const;
 
-export type YoutubeVideoType = keyof typeof YOUTUBE_LINKS;
+export type VideoGuideType = keyof typeof YOUTUBE_LINKS;
