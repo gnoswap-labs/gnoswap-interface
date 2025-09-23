@@ -113,6 +113,9 @@ export const VideoGuideModalWrapper = styled.div`
       ${mixins.flexbox("row", "center", "flex-start")};
       gap: 24px;
       width: 100%;
+      a {
+        width: 100%;
+      }
       .button {
         gap: 8px;
         height: 57px;

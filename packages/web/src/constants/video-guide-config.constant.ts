@@ -17,7 +17,7 @@ export const VIDEO_GUIDE_CONFIG: Record<VideoGuideType, VideoGuideConfigType> = 
     },
     externalLink: {
       textKey: "Learn More",
-      url: "https://docs.gnoswap.io",
+      url: "https://docs.gnoswap.io/user-guide/providing-liquidity/create-a-position",
     },
     internalAction: {
       textKey: "Create a Position",

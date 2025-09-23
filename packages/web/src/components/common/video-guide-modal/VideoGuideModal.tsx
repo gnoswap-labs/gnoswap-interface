@@ -1,8 +1,11 @@
 import React from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
 import { YOUTUBE_LINKS, VideoGuideType } from "@constants/youtube-links.constant";
 import { VIDEO_GUIDE_CONFIG } from "@constants/video-guide-config.constant";
+import { createYoutubeEmbedUrl } from "@utils/youtube.utils";
 
 import { VideoGuideModalWrapper } from "./VideoGuideModal.styles";
 import withLocalModal from "@components/hoc/with-local-modal";
@@ -18,15 +21,17 @@ interface VideoGuideModalProps {
 }
 
 const VideoGuideModal = ({ videoType, setIsOpen }: VideoGuideModalProps) => {
+  const router = useRouter();
+  const { t } = useTranslation();
+
   const Modal = React.useMemo(() => withLocalModal(VideoGuideModalWrapper, setIsOpen), [setIsOpen]);
 
-  const { t } = useTranslation();
   const iframeRef = React.useRef<HTMLIFrameElement>(null);
 
   const config = VIDEO_GUIDE_CONFIG[videoType];
   const videoId = YOUTUBE_LINKS[videoType];
 
-  const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=0&rel=0&modestbranding=1&enablejsapi=1`;
+  const embedUrl = createYoutubeEmbedUrl(videoId);
 
   const handleClose = React.useCallback(() => {
     if (iframeRef.current) {
@@ -35,11 +40,9 @@ const VideoGuideModal = ({ videoType, setIsOpen }: VideoGuideModalProps) => {
     setIsOpen(false);
   }, [setIsOpen]);
 
-  React.useEffect(() => {
+  const handleIframeLoad = React.useCallback(() => {
     if (iframeRef.current) {
-      setTimeout(() => {
-        iframeRef.current?.focus();
-      }, 100);
+      iframeRef.current.focus();
     }
   }, []);
 
@@ -67,7 +70,9 @@ const VideoGuideModal = ({ videoType, setIsOpen }: VideoGuideModalProps) => {
         <div className="content-wrapper">
           <div className="video-content">
             <iframe
+              ref={iframeRef}
               src={embedUrl}
+              onLoad={handleIframeLoad}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             />
@@ -75,16 +80,19 @@ const VideoGuideModal = ({ videoType, setIsOpen }: VideoGuideModalProps) => {
         </div>
 
         <div className="footer">
-          <Button
-            className="button"
-            style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
-            text={t(config.externalLink.textKey)}
-            rightIcon={<IconLearnMoreLink />}
-          />
+          <Link href={config.externalLink.url} target="_blank">
+            <Button
+              className="button"
+              style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
+              text={t(config.externalLink.textKey)}
+              rightIcon={<IconLearnMoreLink />}
+            />
+          </Link>
           <Button
             className="button"
             style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
             text={t(config.internalAction.textKey)}
+            onClick={() => router.push(config.internalAction.route)}
             rightIcon={<IconRightArrow />}
           />
           <Button
