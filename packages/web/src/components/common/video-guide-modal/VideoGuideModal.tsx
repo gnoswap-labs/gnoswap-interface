@@ -3,9 +3,8 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
-import { YOUTUBE_LINKS, VideoGuideType } from "@constants/youtube-links.constant";
-import { VIDEO_GUIDE_CONFIG } from "@constants/video-guide-config.constant";
-import { createYoutubeEmbedUrl } from "@utils/youtube.utils";
+import { YOUTUBE_LINKS, VideoGuideType, VIDEO_GUIDE_CONFIG } from "@constants/video-guide.constant";
+import { createYoutubeEmbedUrl } from "@utils/video-guide.utils";
 
 import { VideoGuideModalWrapper } from "./VideoGuideModal.styles";
 import withLocalModal from "@components/hoc/with-local-modal";

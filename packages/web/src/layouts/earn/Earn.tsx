@@ -4,6 +4,8 @@ import Footer from "@components/common/footer/Footer";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { VIDEO_GUIDE_TYPES, VideoGuideType } from "@constants/video-guide.constant";
+import { isValidVideoGuideType } from "@utils/video-guide.utils";
 
 import EarnMyPositionContainer from "./containers/earn-my-position-container/EarnMyPositionContainer";
 import IncentivizedPoolCardListContainer from "./containers/incentivized-pool-card-list-container/IncentivizedPoolCardListContainer";
@@ -17,72 +19,63 @@ const Earn: React.FC = () => {
   const { account } = useWallet();
   const router = useCustomRouter();
 
-  const [isVideoGuideOpen, setIsVideoGuideOpen] = React.useState(false);
-  const [videoGuideType, setVideoGuideType] = React.useState<"POSITION" | null>(null);
+  const [currentGuide, setCurrentGuide] = React.useState<string | null>(null);
+  const isVideoGuideOpen = currentGuide === VIDEO_GUIDE_TYPES.POSITION;
 
+  const addr = router.getAddress();
+  const isOtherPosition = !!(addr && addr !== account?.address);
+
+  const openVideoGuide = (type: VideoGuideType) => {
+    setCurrentGuide(type);
+    router.openVideoGuide(type);
+  };
+
+  const closeVideoGuide = (value: boolean) => {
+    if (!value) {
+      setCurrentGuide(null);
+      router.closeVideoGuide();
+    }
+  };
+
+  const updateCurrentGuide = (guide: string | null) => {
+    if (guide && !isValidVideoGuideType(guide)) {
+      console.warn(`Invalid video guide type: ${guide}`);
+      setCurrentGuide(null);
+    } else {
+      setCurrentGuide(guide);
+    }
+  };
+
+  /**
+   * @role
+   * When the page first loads,
+   * read parameters like `?guide=POSITION`
+   * from the URL to automatically open the modal.
+   */
   React.useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const guide = params.get(QUERY_PARAMETER.GUIDE);
-      if (guide === "POSITION") {
-        setIsVideoGuideOpen(true);
-        setVideoGuideType("POSITION");
-      }
+      updateCurrentGuide(guide);
     }
   }, []);
 
+  /**
+   * @role
+   * Synchronize the URL and modal state when the user presses the browser's back/forward buttons
+   */
   React.useEffect(() => {
     const handlePopState = () => {
       if (typeof window !== "undefined") {
         const params = new URLSearchParams(window.location.search);
         const guide = params.get(QUERY_PARAMETER.GUIDE);
-        if (guide === "POSITION") {
-          setIsVideoGuideOpen(true);
-          setVideoGuideType("POSITION");
-        } else {
-          setIsVideoGuideOpen(false);
-          setVideoGuideType(null);
-        }
+        updateCurrentGuide(guide);
       }
     };
 
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
-
-  // 비디오 가이드 열기 함수
-  const openVideoGuide = (type: "POSITION") => {
-    setIsVideoGuideOpen(true);
-    setVideoGuideType(type);
-
-    // URL 업데이트
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      params.set(QUERY_PARAMETER.GUIDE, type);
-      const newUrl = `${window.location.pathname}?${params.toString()}`;
-      window.history.pushState(null, "", newUrl);
-    }
-  };
-
-  // 비디오 가이드 닫기 함수
-  const closeVideoGuide = (value: boolean) => {
-    if (!value) {
-      setIsVideoGuideOpen(false);
-      setVideoGuideType(null);
-
-      // URL에서 guide 파라미터 제거
-      if (typeof window !== "undefined") {
-        const params = new URLSearchParams(window.location.search);
-        params.delete(QUERY_PARAMETER.GUIDE);
-        const search = params.toString();
-        const newUrl = search ? `${window.location.pathname}?${search}` : window.location.pathname;
-        window.history.pushState(null, "", newUrl);
-      }
-    }
-  };
-
-  const addr = router.getAddress();
-  const isOtherPosition = !!(addr && addr !== account?.address);
 
   return (
     <>
@@ -92,7 +85,7 @@ const Earn: React.FC = () => {
           <EarnMyPositionContainer
             isOtherPosition={isOtherPosition}
             address={(addr || "") as string}
-            onOpenVideoGuide={openVideoGuide} // 콜백 함수 전달
+            onOpenVideoGuide={openVideoGuide}
           />
         }
         incentivizedPools={
@@ -104,7 +97,9 @@ const Earn: React.FC = () => {
         poolList={<PoolListContainer />}
         footer={<Footer />}
       />
-      {isVideoGuideOpen && videoGuideType && <VideoGuideModal videoType={videoGuideType} setIsOpen={closeVideoGuide} />}
+      {isVideoGuideOpen && isValidVideoGuideType(currentGuide) && (
+        <VideoGuideModal videoType={currentGuide} setIsOpen={closeVideoGuide} />
+      )}
     </>
   );
 };

@@ -7,6 +7,7 @@ const MOBILE_BREAKPOINT_PADDING = 12;
 
 export const VideoGuideModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
+  color: ${({ theme }) => theme.color.text02};
   min-width: 328px;
   max-width: 850px;
   width: 90vw;

@@ -1,4 +1,20 @@
-import { VideoGuideType } from "./youtube-links.constant";
+export const VIDEO_GUIDE_TYPES = {
+  POSITION: "POSITION",
+  STAKING: "STAKING",
+  GOVERNANCE: "GOVERNANCE",
+  LAUNCHPAD: "LAUNCHPAD",
+  LEADERBOARD: "LEADERBOARD",
+} as const;
+
+export type VideoGuideType = keyof typeof VIDEO_GUIDE_TYPES;
+
+export const YOUTUBE_LINKS = {
+  [VIDEO_GUIDE_TYPES.POSITION]: "gv0Xqq3DXFk",
+  [VIDEO_GUIDE_TYPES.STAKING]: "gv0Xqq3DXFk",
+  [VIDEO_GUIDE_TYPES.GOVERNANCE]: "gv0Xqq3DXFk",
+  [VIDEO_GUIDE_TYPES.LEADERBOARD]: "gv0Xqq3DXFk",
+  [VIDEO_GUIDE_TYPES.LAUNCHPAD]: "gv0Xqq3DXFk",
+};
 
 export type VideoGuideConfigType = {
   title: { key: string };
