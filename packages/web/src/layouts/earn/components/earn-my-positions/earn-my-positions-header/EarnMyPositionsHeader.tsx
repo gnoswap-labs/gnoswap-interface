@@ -5,6 +5,7 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import Switch from "@components/common/switch/Switch";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { VIDEO_GUIDE_TYPES } from "@constants/video-guide.constant";
 
 import { HeaderTextWrapper, PositionsWrapper } from "./EarnMyPositionsHeader.styles";
 import VideoGuideTrigger from "@components/common/video-guide-trigger/VideoGuideTrigger";
@@ -45,7 +46,7 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
   const { t } = useTranslation();
 
   const handleOpenVideoGuide = useCallback(() => {
-    onOpenVideoGuide("POSITION");
+    onOpenVideoGuide(VIDEO_GUIDE_TYPES.POSITION);
   }, [onOpenVideoGuide]);
 
   const disabledStake = useMemo(() => {
