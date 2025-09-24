@@ -5,10 +5,8 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import Switch from "@components/common/switch/Switch";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import useCustomRouter from "@hooks/common/use-custom-router";
 
 import { HeaderTextWrapper, PositionsWrapper } from "./EarnMyPositionsHeader.styles";
-import VideoGuideModal from "@components/common/video-guide-modal/VideoGuideModal";
 import VideoGuideTrigger from "@components/common/video-guide-trigger/VideoGuideTrigger";
 
 export interface EarnMyPositionsHeaderProps {
@@ -25,6 +23,7 @@ export interface EarnMyPositionsHeaderProps {
   isClosed: boolean;
   handleChangeClosed: () => void;
   positions: PoolPositionModel[];
+  onOpenVideoGuide: (type: "POSITION") => void;
 }
 
 const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
@@ -40,26 +39,14 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
   moveEarnStake,
   isClosed,
   handleChangeClosed,
+  onOpenVideoGuide,
 }) => {
   const { getAccountUrl } = useGnoscanUrl();
   const { t } = useTranslation();
-  const { getGuide, openVideoGuide, closeVideoGuide } = useCustomRouter();
-
-  const currentGuide = getGuide();
-  const isOpenVideoGuide = currentGuide === "POSITION";
 
   const handleOpenVideoGuide = useCallback(() => {
-    openVideoGuide("POSITION");
-  }, [openVideoGuide]);
-
-  const handleCloseVideoGuide = useCallback(
-    (value: boolean) => {
-      if (!value) {
-        closeVideoGuide();
-      }
-    },
-    [closeVideoGuide],
-  );
+    onOpenVideoGuide("POSITION");
+  }, [onOpenVideoGuide]);
 
   const disabledStake = useMemo(() => {
     return !connected || isSwitchNetwork || !availableStake;
@@ -153,8 +140,6 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
           onClick={onClickNewPosition}
         />
       </div>
-
-      {isOpenVideoGuide && <VideoGuideModal videoType="POSITION" setIsOpen={handleCloseVideoGuide} />}
     </PositionsWrapper>
   );
 };

@@ -41,6 +41,7 @@ export interface EarnMyPositionsProps {
   handleChangeClosed: () => void;
   tokenPrices: Record<string, TokenPriceModel>;
   highestApr: number;
+  onOpenVideoGuide: (type: "POSITION") => void;
 }
 
 const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
@@ -75,6 +76,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
   handleChangeClosed,
   tokenPrices,
   highestApr,
+  onOpenVideoGuide,
 }) => (
   <EarnMyPositionswrapper>
     <EarnMyPositionsHeader
@@ -91,6 +93,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
       isClosed={isClosed}
       handleChangeClosed={handleChangeClosed}
       positions={positions}
+      onOpenVideoGuide={onOpenVideoGuide}
     />
     <EarnMyPositionsContent
       address={address}

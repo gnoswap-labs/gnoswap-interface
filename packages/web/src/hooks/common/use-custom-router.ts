@@ -93,6 +93,27 @@ const useCustomRouter = () => {
     return guide as VideoGuideType | null;
   }
 
+  function setGuideInUrl(videoType: VideoGuideType | null) {
+    if (typeof window === "undefined") return;
+
+    try {
+      const currentParams = new URLSearchParams(window.location.search);
+
+      if (videoType) {
+        currentParams.set(QUERY_PARAMETER.GUIDE, videoType);
+      } else {
+        currentParams.delete(QUERY_PARAMETER.GUIDE);
+      }
+
+      const search = currentParams.toString();
+      const newUrl = search ? `${window.location.pathname}?${search}` : window.location.pathname;
+
+      window.history.pushState(null, "", newUrl);
+    } catch (error) {
+      console.error("Failed to update URL:", error);
+    }
+  }
+
   function openVideoGuide(videoType: VideoGuideType) {
     const currentParams = new URLSearchParams(window.location.search);
     currentParams.set(QUERY_PARAMETER.GUIDE, videoType);
@@ -152,6 +173,7 @@ const useCustomRouter = () => {
     getPositionId,
     getProjectPath,
     getGuide,
+    setGuideInUrl,
     openVideoGuide,
     closeVideoGuide,
     movePage,
