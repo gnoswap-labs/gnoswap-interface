@@ -5,32 +5,38 @@ import { useTranslation } from "react-i18next";
 
 import { YOUTUBE_LINKS, VideoGuideType, VIDEO_GUIDE_CONFIG } from "@constants/video-guide.constant";
 import { createYoutubeEmbedUrl } from "@utils/video-guide.utils";
+import { QUERY_PARAMETER } from "@constants/page.constant";
 
 import { VideoGuideModalWrapper } from "./VideoGuideModal.styles";
 import withLocalModal from "@components/hoc/with-local-modal";
 import Button, { ButtonHierarchy } from "../button/Button";
+import { CopyTooltip } from "../header/wallet-connector-button/wallet-connector-menu/WalletConnectorMenu.styles";
 import IconLink from "../icons/IconLink";
 import IconRightArrow from "../icons/IconRightArrow";
 import IconLearnMoreLink from "../icons/IconLearnMoreLink";
 import IconClose from "../icons/IconCancel";
+import IconPolygon from "../icons/IconPolygon";
 
 interface VideoGuideModalProps {
   videoType: VideoGuideType;
   setIsOpen: (value: boolean) => void;
 }
 
+const COPY_SUCCESS_NOTIFICATION_DURATION = 3_000;
+
 const VideoGuideModal = ({ videoType, setIsOpen }: VideoGuideModalProps) => {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const Modal = React.useMemo(() => withLocalModal(VideoGuideModalWrapper, setIsOpen), [setIsOpen]);
-
   const iframeRef = React.useRef<HTMLIFrameElement>(null);
 
-  const config = VIDEO_GUIDE_CONFIG[videoType];
-  const videoId = YOUTUBE_LINKS[videoType];
+  const Modal = React.useMemo(() => withLocalModal(VideoGuideModalWrapper, setIsOpen), [setIsOpen]);
 
-  const embedUrl = createYoutubeEmbedUrl(videoId);
+  const config = React.useMemo(() => VIDEO_GUIDE_CONFIG[videoType], [videoType]);
+  const videoId = React.useMemo(() => YOUTUBE_LINKS[videoType], [videoType]);
+  const embedUrl = React.useMemo(() => createYoutubeEmbedUrl(videoId), [videoId]);
+
+  const [copied, setCopied] = React.useState<boolean>(false);
 
   const handleClose = React.useCallback(() => {
     if (iframeRef.current) {
@@ -45,13 +51,36 @@ const VideoGuideModal = ({ videoType, setIsOpen }: VideoGuideModalProps) => {
     }
   }, []);
 
+  const handleCopyLink = React.useCallback(async () => {
+    if (typeof window === "undefined") return;
+
+    const url = new URL(window.location.href);
+    url.searchParams.set(QUERY_PARAMETER.GUIDE, videoType);
+
+    try {
+      await navigator.clipboard.writeText(url.toString());
+      setCopied(true);
+      setTimeout(() => setCopied(false), COPY_SUCCESS_NOTIFICATION_DURATION);
+    } catch (err) {
+      console.error("Failed to copy the link:", err);
+    }
+  }, [videoType]);
+
   return (
     <Modal>
       <div className="modal-body">
         <div className="header-actions">
           <div className="icon-wrap">
-            <button onClick={handleClose}>
+            <button onClick={handleCopyLink}>
               <IconLink className="header-action-icon" />
+              {copied && (
+                <CopyTooltip>
+                  <div className="box dark-shadow">
+                    <span>Copied!</span>
+                  </div>
+                  <IconPolygon className="polygon-icon" />
+                </CopyTooltip>
+              )}
             </button>
           </div>
           <div className="icon-wrap">

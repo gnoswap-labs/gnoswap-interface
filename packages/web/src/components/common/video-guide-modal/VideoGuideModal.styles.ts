@@ -25,7 +25,7 @@ export const VideoGuideModalWrapper = styled.div`
     border-radius: 8px;
     border: 1px solid ${({ theme }) => theme.color.border02};
     box-shadow: ${({ theme }) => theme.color.shadow01};
-    overflow: hidden;
+    /* overflow: hidden; */
     width: 100%;
     gap: 24px;
     padding: ${PC_BREAKPOINT_PADDING}px;
