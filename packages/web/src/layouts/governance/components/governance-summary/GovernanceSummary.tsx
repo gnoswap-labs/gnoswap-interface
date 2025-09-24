@@ -1,12 +1,10 @@
 import React from "react";
-import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
 import { GNS_TOKEN } from "@common/values/token-constant";
-import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
-import { EXT_URL } from "@constants/external-url.contant";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { GovernanceSummaryInfo, TokenBalance } from "@repositories/governance";
+import { VIDEO_GUIDE_TYPES } from "@constants/video-guide.constant";
 
 import InfoBox from "../info-box/InfoBox";
 import TokenChip from "../token-chip/TokenChip";
@@ -20,6 +18,7 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
+import VideoGuideTrigger from "@components/common/video-guide-trigger/VideoGuideTrigger";
 
 export interface DisplayCommunityPoolBalance {
   amount: number;
@@ -31,12 +30,14 @@ interface GovernanceSummaryProps {
   governanceSummary: GovernanceSummaryInfo;
   governanceCommunityPoolBalances: TokenBalance[];
   isLoading: boolean;
+  onOpenVideoGuide: (type: "GOVERNANCE") => void;
 }
 
 const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
   governanceSummary,
   governanceCommunityPoolBalances,
   isLoading,
+  onOpenVideoGuide,
 }) => {
   const { t } = useTranslation();
   const { isMobile } = useWindowSize();
@@ -111,6 +112,10 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
       })
       .sort((a, b) => b.usdValue - a.usdValue);
   }, [governanceCommunityPoolBalances]);
+
+  const handleOpenVideoGuide = React.useCallback(() => {
+    onOpenVideoGuide(VIDEO_GUIDE_TYPES.GOVERNANCE);
+  }, [onOpenVideoGuide]);
 
   return (
     <GovernanceSummaryWrapper>
@@ -239,10 +244,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
       {!isMobile && (
         <div className="link-button">
           <div>{t("Governance:summary.guide.guide")}</div>
-          <Link href={EXT_URL.DOCS.XGNS} target="_blank">
-            {t("common:learnMore")}
-            <IconStrokeArrowRight className="link-icon" />
-          </Link>
+          <VideoGuideTrigger text={`${t("common:learnMore")} ▶`} onClick={handleOpenVideoGuide} />
         </div>
       )}
     </GovernanceSummaryWrapper>
