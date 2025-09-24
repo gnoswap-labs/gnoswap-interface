@@ -20,9 +20,10 @@ const DAY_TIME = 24 * 60 * 60 * 1000;
 
 interface StakingContainerProps {
   hasPoolStaking: boolean;
+  onOpenVideoGuide: (type: "STAKING") => void;
 }
 
-const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking }) => {
+const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking, onOpenVideoGuide }) => {
   const { account } = useWallet();
   const { breakpoint } = useWindowSize();
   const [mobile, setMobile] = useState(false);
@@ -182,6 +183,7 @@ const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking }) =
       loading={isLoadingPool || isLoadingPosition}
       isOtherPosition={!!((address && account?.address && address !== account?.address) || !account?.address)}
       hasPoolStaking={hasPoolStaking}
+      onOpenVideoGuide={onOpenVideoGuide}
     />
   );
 };

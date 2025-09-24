@@ -8,14 +8,22 @@ import useUrlParam from "@hooks/common/use-url-param";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetPoolDetailByPath, useGetPoolStakingListByPoolPath } from "@query/pools";
 import { isValidAddress } from "@utils/validation-utils";
+import { VIDEO_GUIDE_TYPES, VideoGuideType } from "@constants/video-guide.constant";
 
 import MyLiquidityContainer from "./containers/my-liquidity-container/MyLiquidityContainer";
 import PoolPairInformationContainer from "./containers/pool-pair-information-container/PoolPairInformationContainer";
 import StakingContainer from "./containers/staking-container/StakingContainer";
 import PoolLayout from "./PoolLayout";
+import { QUERY_PARAMETER } from "@constants/page.constant";
+import { isValidVideoGuideType } from "@utils/video-guide.utils";
+import VideoGuideModal from "@components/common/video-guide-modal/VideoGuideModal";
 
 const PoolDetail: React.FC = () => {
   const router = useCustomRouter();
+
+  const [currentGuide, setCurrentGuide] = React.useState<string | null>(null);
+  const isOpenVideoGuide = currentGuide === VIDEO_GUIDE_TYPES.STAKING;
+
   const { account } = useWallet();
   const poolPath = router.getPoolPath();
   const jumpFlagRef = useRef(false);
@@ -97,6 +105,39 @@ const PoolDetail: React.FC = () => {
     }
   };
 
+  const openVideoGuide = (type: VideoGuideType) => {
+    setCurrentGuide(type);
+  };
+
+  const closeVideoGuide = (value: boolean) => {
+    if (!value) {
+      setCurrentGuide(null);
+    }
+  };
+
+  const updateCurrentGuide = (guide: string | null) => {
+    if (guide && !isValidVideoGuideType(guide)) {
+      console.warn(`Invalid video guide type: ${guide}`);
+      setCurrentGuide(null);
+    } else {
+      setCurrentGuide(guide);
+    }
+  };
+
+  /**
+   * @role
+   * When the page first loads,
+   * read parameters like `?guide=POSITION`
+   * from the URL to automatically open the modal.
+   */
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const guide = params.get(QUERY_PARAMETER.GUIDE);
+      updateCurrentGuide(guide);
+    }
+  }, []);
+
   useEffect(() => {
     if (positions.length === 0) {
       window.scrollTo({ top: 0 });
@@ -114,14 +155,21 @@ const PoolDetail: React.FC = () => {
   }, [hash]);
 
   return (
-    <PoolLayout
-      header={<HeaderContainer />}
-      poolPairInformation={<PoolPairInformationContainer />}
-      liquidity={<MyLiquidityContainer addressContext={addressContext} isStakable={isStakable} />}
-      staking={isStakable ? <StakingContainer hasPoolStaking={hasPoolStaking} /> : null}
-      footer={<Footer />}
-      isStaking={isStakable}
-    />
+    <>
+      <PoolLayout
+        header={<HeaderContainer />}
+        poolPairInformation={<PoolPairInformationContainer />}
+        liquidity={<MyLiquidityContainer addressContext={addressContext} isStakable={isStakable} />}
+        staking={
+          isStakable ? <StakingContainer hasPoolStaking={hasPoolStaking} onOpenVideoGuide={openVideoGuide} /> : null
+        }
+        footer={<Footer />}
+        isStaking={isStakable}
+      />
+      {isOpenVideoGuide && isValidVideoGuideType(currentGuide) && (
+        <VideoGuideModal videoType={currentGuide} setIsOpen={closeVideoGuide} />
+      )}
+    </>
   );
 };
 
