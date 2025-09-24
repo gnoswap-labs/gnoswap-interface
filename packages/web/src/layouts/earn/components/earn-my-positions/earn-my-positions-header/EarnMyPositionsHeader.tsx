@@ -5,6 +5,7 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import Switch from "@components/common/switch/Switch";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import useCustomRouter from "@hooks/common/use-custom-router";
 
 import { HeaderTextWrapper, PositionsWrapper } from "./EarnMyPositionsHeader.styles";
 import VideoGuideModal from "@components/common/video-guide-modal/VideoGuideModal";
@@ -42,8 +43,23 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
 }) => {
   const { getAccountUrl } = useGnoscanUrl();
   const { t } = useTranslation();
+  const { getGuide, openVideoGuide, closeVideoGuide } = useCustomRouter();
 
-  const [isOpenVideoGuide, setIsOpenVideoGuide] = React.useState(false);
+  const currentGuide = getGuide();
+  const isOpenVideoGuide = currentGuide === "POSITION";
+
+  const handleOpenVideoGuide = useCallback(() => {
+    openVideoGuide("POSITION");
+  }, [openVideoGuide]);
+
+  const handleCloseVideoGuide = useCallback(
+    (value: boolean) => {
+      if (!value) {
+        closeVideoGuide();
+      }
+    },
+    [closeVideoGuide],
+  );
 
   const disabledStake = useMemo(() => {
     return !connected || isSwitchNetwork || !availableStake;
@@ -82,7 +98,7 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
     return (
       <div className="header-title">
         {getTitleText()}
-        <VideoGuideTrigger text={"What’s a Position? ▶"} onClick={() => setIsOpenVideoGuide(true)} />
+        <VideoGuideTrigger text={"What’s a Position? ▶"} onClick={handleOpenVideoGuide} />
       </div>
     );
   }, [isOtherPosition, connected, addressName, positionLength, onClickAddressPosition, t]);
@@ -138,7 +154,7 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
         />
       </div>
 
-      {isOpenVideoGuide && <VideoGuideModal videoType="POSITION" setIsOpen={setIsOpenVideoGuide} />}
+      {isOpenVideoGuide && <VideoGuideModal videoType="POSITION" setIsOpen={handleCloseVideoGuide} />}
     </PositionsWrapper>
   );
 };

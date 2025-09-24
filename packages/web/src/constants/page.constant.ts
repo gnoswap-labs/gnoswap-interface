@@ -34,6 +34,7 @@ export const QUERY_PARAMETER = {
   ADDRESS: "addr",
   PROJECT_PATH: "projectPath",
   REFERRER: "referrer",
+  GUIDE: "guide",
 } as const;
 
 export type QUERY_PARAMETER_TYPE = keyof typeof QUERY_PARAMETER;

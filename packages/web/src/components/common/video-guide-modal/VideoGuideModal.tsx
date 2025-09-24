@@ -17,7 +17,7 @@ import IconClose from "../icons/IconCancel";
 
 interface VideoGuideModalProps {
   videoType: VideoGuideType;
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOpen: (value: boolean) => void;
 }
 
 const VideoGuideModal = ({ videoType, setIsOpen }: VideoGuideModalProps) => {
