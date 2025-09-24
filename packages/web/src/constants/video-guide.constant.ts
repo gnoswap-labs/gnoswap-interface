@@ -53,7 +53,7 @@ export const VIDEO_GUIDE_CONFIG: Record<VideoGuideType, VideoGuideConfigType> = 
     },
     internalAction: {
       textKey: "Stake a Position",
-      route: "/earn/add",
+      route: "/earn/pool/stake?poolPath=",
     },
   },
   GOVERNANCE: {
@@ -69,7 +69,7 @@ export const VIDEO_GUIDE_CONFIG: Record<VideoGuideType, VideoGuideConfigType> = 
     },
     internalAction: {
       textKey: "Delegate GNS",
-      route: "/earn/add",
+      route: "",
     },
   },
   LAUNCHPAD: {
@@ -85,7 +85,7 @@ export const VIDEO_GUIDE_CONFIG: Record<VideoGuideType, VideoGuideConfigType> = 
     },
     internalAction: {
       textKey: "Participate Now",
-      route: "/earn/add",
+      route: "/launchpad#project-list",
     },
   },
   LEADERBOARD: {
@@ -101,7 +101,7 @@ export const VIDEO_GUIDE_CONFIG: Record<VideoGuideType, VideoGuideConfigType> = 
     },
     internalAction: {
       textKey: "Explore Now",
-      route: "/earn/add",
+      route: "/leaderboard",
     },
   },
 };

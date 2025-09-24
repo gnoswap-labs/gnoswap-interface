@@ -28,7 +28,7 @@ const LaunchpadProjectListHeader: React.FC<LaunchpadProjectListHeaderProps> = ({
   const { t } = useTranslation();
 
   return (
-    <ProjectListHeaderWrapper>
+    <ProjectListHeaderWrapper id="project-list">
       <div className="title-container">
         <h2>{t("Launchpad:projects.col.project")}</h2>
         {breakpoint !== DEVICE_TYPE.MOBILE ? (

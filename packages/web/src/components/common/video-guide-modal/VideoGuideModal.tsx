@@ -2,7 +2,8 @@ import React from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
-import { YOUTUBE_LINKS, VideoGuideType, VIDEO_GUIDE_CONFIG } from "@constants/video-guide.constant";
+import useCustomRouter from "@hooks/common/use-custom-router";
+import { YOUTUBE_LINKS, VideoGuideType, VIDEO_GUIDE_CONFIG, VIDEO_GUIDE_TYPES } from "@constants/video-guide.constant";
 import { createYoutubeEmbedUrl } from "@utils/video-guide.utils";
 import { QUERY_PARAMETER } from "@constants/page.constant";
 
@@ -19,11 +20,23 @@ import IconPolygon from "../icons/IconPolygon";
 interface VideoGuideModalProps {
   videoType: VideoGuideType;
   setIsOpen: (value: boolean) => void;
+  onInternalActionClick?: () => void;
 }
 
-const COPY_SUCCESS_NOTIFICATION_DURATION = 3_000;
+const TIMEOUTS = {
+  SCROLL_DELAY: 100,
+  SCROLL_BEHAVIOR_RESET: 500,
+  COPY_NOTIFICATION: 3_000,
+} as const;
 
-const VideoGuideModal = ({ videoType, setIsOpen }: VideoGuideModalProps) => {
+const MODAL_CLOSE_VIDEO_TYPES = new Set<VideoGuideType>([
+  VIDEO_GUIDE_TYPES.LAUNCHPAD,
+  VIDEO_GUIDE_TYPES.GOVERNANCE,
+  VIDEO_GUIDE_TYPES.LEADERBOARD,
+]);
+
+const VideoGuideModal = ({ videoType, setIsOpen, onInternalActionClick }: VideoGuideModalProps) => {
+  const router = useCustomRouter();
   const { t } = useTranslation();
 
   const iframeRef = React.useRef<HTMLIFrameElement>(null);
@@ -43,6 +56,50 @@ const VideoGuideModal = ({ videoType, setIsOpen }: VideoGuideModalProps) => {
     setIsOpen(false);
   }, [setIsOpen]);
 
+  const internalActionRoute = React.useMemo(() => {
+    if (videoType === "STAKING") {
+      const poolPath = router.getPoolPath();
+      return poolPath ? `${config.internalAction.route}${poolPath}` : "/earn";
+    }
+    return config.internalAction.route;
+  }, [router, videoType, config.internalAction.route]);
+
+  const handleSmoothScrollToHash = React.useCallback(() => {
+    document.documentElement.style.scrollBehavior = "smooth";
+
+    setTimeout(() => {
+      const hash = window.location.hash;
+      if (hash) {
+        const targetElement = document.querySelector(hash);
+        targetElement?.scrollIntoView({ block: "start" });
+      }
+
+      setTimeout(() => {
+        document.documentElement.style.scrollBehavior = "";
+      }, TIMEOUTS.SCROLL_BEHAVIOR_RESET);
+    }, TIMEOUTS.SCROLL_DELAY);
+  }, []);
+
+  const shouldCloseModal = MODAL_CLOSE_VIDEO_TYPES.has(videoType);
+
+  const handleInternalActionClick = React.useCallback(
+    (e: React.MouseEvent) => {
+      if (onInternalActionClick) {
+        e.preventDefault();
+        onInternalActionClick();
+      }
+
+      if (shouldCloseModal) {
+        handleClose();
+
+        if (videoType === VIDEO_GUIDE_TYPES.LAUNCHPAD) {
+          handleSmoothScrollToHash();
+        }
+      }
+    },
+    [onInternalActionClick, shouldCloseModal, handleClose, videoType, handleSmoothScrollToHash],
+  );
+
   const handleIframeLoad = React.useCallback(() => {
     if (iframeRef.current) {
       iframeRef.current.focus();
@@ -58,7 +115,7 @@ const VideoGuideModal = ({ videoType, setIsOpen }: VideoGuideModalProps) => {
     try {
       await navigator.clipboard.writeText(url.toString());
       setCopied(true);
-      setTimeout(() => setCopied(false), COPY_SUCCESS_NOTIFICATION_DURATION);
+      setTimeout(() => setCopied(false), TIMEOUTS.COPY_NOTIFICATION);
     } catch (err) {
       console.error("Failed to copy the link:", err);
     }
@@ -114,7 +171,7 @@ const VideoGuideModal = ({ videoType, setIsOpen }: VideoGuideModalProps) => {
               rightIcon={<IconLearnMoreLink />}
             />
           </Link>
-          <Link href={config.internalAction.route}>
+          <Link href={internalActionRoute} onClick={handleInternalActionClick} scroll={false}>
             <Button
               className="button"
               style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}

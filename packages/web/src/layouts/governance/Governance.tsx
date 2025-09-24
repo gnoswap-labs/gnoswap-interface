@@ -20,17 +20,29 @@ const Governance: React.FC = () => {
     openVideoGuide,
     closeVideoGuide,
   } = useVideoGuide(VIDEO_GUIDE_TYPES.GOVERNANCE);
+
+  const [isOpenDelegateModal, setIsOpenDelegateModal] = React.useState(false);
+
   return (
     <>
       <GovernanceLayout
         header={<HeaderContainer />}
         summary={<GovernanceContainer onOpenVideoGuide={openVideoGuide} />}
-        myDelegation={<MyDelegationContainer />}
+        myDelegation={
+          <MyDelegationContainer
+            isOpenDelegateModal={isOpenDelegateModal}
+            setIsOpenDelegateModal={setIsOpenDelegateModal}
+          />
+        }
         list={<ProposalListContainer />}
         footer={<Footer />}
       />
       {isOpenVideoGuide && isValidVideoGuideType(currentGuide) && (
-        <VideoGuideModal videoType={currentGuide} setIsOpen={closeVideoGuide} />
+        <VideoGuideModal
+          videoType={currentGuide}
+          setIsOpen={closeVideoGuide}
+          onInternalActionClick={() => setIsOpenDelegateModal(true)}
+        />
       )}
     </>
   );
