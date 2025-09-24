@@ -133,7 +133,7 @@ export const LaunchpadLayoutWrapper = styled.div`
     ${media.mobile} {
       gap: 8px;
     }
-    a {
+    .launchpad-guide-button {
       ${media.mobile} {
         width: 50%;
         height: 36px;

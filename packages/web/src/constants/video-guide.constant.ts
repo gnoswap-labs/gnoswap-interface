@@ -84,7 +84,7 @@ export const VIDEO_GUIDE_CONFIG: Record<VideoGuideType, VideoGuideConfigType> = 
       url: "https://docs.gnoswap.io/core-concepts/launchpad",
     },
     internalAction: {
-      textKey: "Create a Position",
+      textKey: "Participate Now",
       route: "/earn/add",
     },
   },
