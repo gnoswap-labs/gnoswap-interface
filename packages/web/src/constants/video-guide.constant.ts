@@ -42,46 +42,46 @@ export const VIDEO_GUIDE_CONFIG: Record<VideoGuideType, VideoGuideConfigType> = 
   },
   STAKING: {
     title: {
-      key: "What’s a Position?",
+      key: "How Does Staking Work?",
     },
     subtitle: {
-      key: "Learn about positions and how to provide liquidity to earn rewards on GnoSwap.",
+      key: "Learn about staking and how to stake your position to maximize rewards on GnoSwap.",
     },
     externalLink: {
       textKey: "Learn More",
-      url: "https://docs.gnoswap.io",
+      url: "https://docs.gnoswap.io/core-concepts/liquidity-mining",
     },
     internalAction: {
-      textKey: "Create a Position",
+      textKey: "Stake a Position",
       route: "/earn/add",
     },
   },
   GOVERNANCE: {
     title: {
-      key: "What’s a Position?",
+      key: "How Does GnoSwap Governance Work?",
     },
     subtitle: {
-      key: "Learn about positions and how to provide liquidity to earn rewards on GnoSwap.",
+      key: "Learn about GnoSwap Governance and how to obtain xGNS to earn a portion of protocol fees on GnoSwap.",
     },
     externalLink: {
       textKey: "Learn More",
-      url: "https://docs.gnoswap.io",
+      url: "https://docs.gnoswap.io/core-concepts/governance",
     },
     internalAction: {
-      textKey: "Create a Position",
+      textKey: "Delegate GNS",
       route: "/earn/add",
     },
   },
   LAUNCHPAD: {
     title: {
-      key: "What’s a Position?",
+      key: "How to Participate in GnoSwap Launchpad?",
     },
     subtitle: {
-      key: "Learn about positions and how to provide liquidity to earn rewards on GnoSwap.",
+      key: "Learn about GnoSwap Launchpad and how to participate to a project token launching on GnoSwap.",
     },
     externalLink: {
       textKey: "Learn More",
-      url: "https://docs.gnoswap.io",
+      url: "https://docs.gnoswap.io/core-concepts/launchpad",
     },
     internalAction: {
       textKey: "Create a Position",
@@ -90,17 +90,17 @@ export const VIDEO_GUIDE_CONFIG: Record<VideoGuideType, VideoGuideConfigType> = 
   },
   LEADERBOARD: {
     title: {
-      key: "What’s a Position?",
+      key: "What’s the Leaderboard?",
     },
     subtitle: {
-      key: "Learn about positions and how to provide liquidity to earn rewards on GnoSwap.",
+      key: "Learn about GnoSwap Leaderboard and how to rank up to earn potential rewards on GnoSwap.",
     },
     externalLink: {
       textKey: "Learn More",
-      url: "https://docs.gnoswap.io",
+      url: "https://docs.gnoswap.io/references/leaderboard",
     },
     internalAction: {
-      textKey: "Create a Position",
+      textKey: "Explore Now",
       route: "/earn/add",
     },
   },
