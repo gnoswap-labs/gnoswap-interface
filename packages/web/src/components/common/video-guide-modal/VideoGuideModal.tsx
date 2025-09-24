@@ -1,5 +1,4 @@
 import React from "react";
-import { useRouter } from "next/router";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
@@ -25,7 +24,6 @@ interface VideoGuideModalProps {
 const COPY_SUCCESS_NOTIFICATION_DURATION = 3_000;
 
 const VideoGuideModal = ({ videoType, setIsOpen }: VideoGuideModalProps) => {
-  const router = useRouter();
   const { t } = useTranslation();
 
   const iframeRef = React.useRef<HTMLIFrameElement>(null);
@@ -116,13 +114,14 @@ const VideoGuideModal = ({ videoType, setIsOpen }: VideoGuideModalProps) => {
               rightIcon={<IconLearnMoreLink />}
             />
           </Link>
-          <Button
-            className="button"
-            style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
-            text={t(config.internalAction.textKey)}
-            onClick={() => router.push(config.internalAction.route)}
-            rightIcon={<IconRightArrow />}
-          />
+          <Link href={config.internalAction.route}>
+            <Button
+              className="button"
+              style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
+              text={t(config.internalAction.textKey)}
+              rightIcon={<IconRightArrow />}
+            />
+          </Link>
           <Button
             className="button"
             style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}

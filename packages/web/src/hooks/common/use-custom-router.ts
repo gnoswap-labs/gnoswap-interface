@@ -3,7 +3,6 @@ import { useSearchParams } from "next/navigation";
 import { PAGE_PATH, PAGE_PATH_TYPE, QUERY_PARAMETER } from "@constants/page.constant";
 import useScrollData from "./use-scroll-data";
 import { makeRouteUrl } from "@utils/page.utils";
-import { VideoGuideType } from "@constants/video-guide.constant";
 
 export type QueryParameter = {
   [key in string]: string | number | null | undefined;
@@ -88,38 +87,6 @@ const useCustomRouter = () => {
     return getParameter(QUERY_PARAMETER["PROJECT_PATH"]);
   }
 
-  function getGuide(): VideoGuideType | null {
-    const guide = getParameter(QUERY_PARAMETER.GUIDE);
-    return guide as VideoGuideType | null;
-  }
-
-  function openVideoGuide(videoType: VideoGuideType) {
-    if (typeof window === "undefined") return;
-
-    try {
-      const currentParams = new URLSearchParams(window.location.search);
-      currentParams.set(QUERY_PARAMETER.GUIDE, videoType);
-      const newUrl = `${window.location.pathname}?${currentParams.toString()}`;
-      window.history.pushState(null, "", newUrl);
-    } catch (error) {
-      console.error("Failed to open guide:", error);
-    }
-  }
-
-  function closeVideoGuide() {
-    if (typeof window === "undefined") return;
-
-    try {
-      const currentParams = new URLSearchParams(window.location.search);
-      currentParams.delete(QUERY_PARAMETER.GUIDE);
-      const search = currentParams.toString();
-      const newUrl = search ? `${window.location.pathname}?${search}` : window.location.pathname;
-      window.history.pushState(null, "", newUrl);
-    } catch (error) {
-      console.error("Failed to close guide:", error);
-    }
-  }
-
   function pushByParams(url: string, params?: QueryParameter, hash?: string | number) {
     return push(makeRouteUrl(url, params, hash));
   }
@@ -161,9 +128,6 @@ const useCustomRouter = () => {
     getPoolPath,
     getPositionId,
     getProjectPath,
-    getGuide,
-    openVideoGuide,
-    closeVideoGuide,
     movePage,
     movePageWithTokenPath,
     movePageWithPoolPath,

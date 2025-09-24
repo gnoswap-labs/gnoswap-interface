@@ -20,20 +20,18 @@ const Earn: React.FC = () => {
   const router = useCustomRouter();
 
   const [currentGuide, setCurrentGuide] = React.useState<string | null>(null);
-  const isVideoGuideOpen = currentGuide === VIDEO_GUIDE_TYPES.POSITION;
+  const isOpenVideoGuide = currentGuide === VIDEO_GUIDE_TYPES.POSITION;
 
   const addr = router.getAddress();
   const isOtherPosition = !!(addr && addr !== account?.address);
 
   const openVideoGuide = (type: VideoGuideType) => {
     setCurrentGuide(type);
-    router.openVideoGuide(type);
   };
 
   const closeVideoGuide = (value: boolean) => {
     if (!value) {
       setCurrentGuide(null);
-      router.closeVideoGuide();
     }
   };
 
@@ -60,23 +58,6 @@ const Earn: React.FC = () => {
     }
   }, []);
 
-  /**
-   * @role
-   * Synchronize the URL and modal state when the user presses the browser's back/forward buttons
-   */
-  React.useEffect(() => {
-    const handlePopState = () => {
-      if (typeof window !== "undefined") {
-        const params = new URLSearchParams(window.location.search);
-        const guide = params.get(QUERY_PARAMETER.GUIDE);
-        updateCurrentGuide(guide);
-      }
-    };
-
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
-  }, []);
-
   return (
     <>
       <EarnLayout
@@ -97,7 +78,7 @@ const Earn: React.FC = () => {
         poolList={<PoolListContainer />}
         footer={<Footer />}
       />
-      {isVideoGuideOpen && isValidVideoGuideType(currentGuide) && (
+      {isOpenVideoGuide && isValidVideoGuideType(currentGuide) && (
         <VideoGuideModal videoType={currentGuide} setIsOpen={closeVideoGuide} />
       )}
     </>
