@@ -11,6 +11,7 @@ import { VideoGuideModalWrapper } from "./VideoGuideModal.styles";
 import withLocalModal from "@components/hoc/with-local-modal";
 import Button, { ButtonHierarchy } from "../button/Button";
 import { CopyTooltip } from "../header/wallet-connector-button/wallet-connector-menu/WalletConnectorMenu.styles";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import IconLink from "../icons/IconLink";
 import IconRightArrow from "../icons/IconRightArrow";
 import IconLearnMoreLink from "../icons/IconLearnMoreLink";
@@ -47,6 +48,7 @@ const VideoGuideModal = ({ videoType, setIsOpen, onInternalActionClick }: VideoG
   const videoId = React.useMemo(() => YOUTUBE_LINKS[videoType], [videoType]);
   const embedUrl = React.useMemo(() => createYoutubeEmbedUrl(videoId), [videoId]);
 
+  const [isLoadingIframe, setIsLoadingIframe] = React.useState(true);
   const [copied, setCopied] = React.useState<boolean>(false);
 
   const handleClose = React.useCallback(() => {
@@ -57,7 +59,7 @@ const VideoGuideModal = ({ videoType, setIsOpen, onInternalActionClick }: VideoG
   }, [setIsOpen]);
 
   const internalActionRoute = React.useMemo(() => {
-    if (videoType === "STAKING") {
+    if (videoType === VIDEO_GUIDE_TYPES.STAKING) {
       const poolPath = router.getPoolPath();
       return poolPath ? `${config.internalAction.route}${poolPath}` : "/earn";
     }
@@ -101,6 +103,7 @@ const VideoGuideModal = ({ videoType, setIsOpen, onInternalActionClick }: VideoG
   );
 
   const handleIframeLoad = React.useCallback(() => {
+    setIsLoadingIframe(false);
     if (iframeRef.current) {
       iframeRef.current.focus();
     }
@@ -156,9 +159,15 @@ const VideoGuideModal = ({ videoType, setIsOpen, onInternalActionClick }: VideoG
               ref={iframeRef}
               src={embedUrl}
               onLoad={handleIframeLoad}
+              className={isLoadingIframe ? "loading" : ""}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             />
+            {isLoadingIframe && (
+              <div className="loading-overlay">
+                <LoadingSpinner />
+              </div>
+            )}
           </div>
         </div>
 

@@ -90,6 +90,7 @@ export const VideoGuideModalWrapper = styled.div`
 
     .video-content {
       width: 100%;
+      position: relative;
 
       iframe {
         width: 100%;
@@ -99,14 +100,16 @@ export const VideoGuideModalWrapper = styled.div`
         display: block;
         min-height: 200px;
 
-        ${media.tablet} {
-          height: 394px;
+        &.loading {
+          visibility: hidden;
         }
+      }
 
-        ${media.mobile} {
-          height: 250px;
-          min-height: 200px;
-        }
+      .loading-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
       }
     }
 
