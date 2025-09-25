@@ -38,6 +38,33 @@
     "count_one": "1 día",
     "today": "Hoy"
   },
+  "guide": {
+    "governance": {
+      "action": "Delegado GNS",
+      "subtitle": "Infórmese sobre la gobernanza de GnoSwap y cómo obtener xGNS para ganar una parte de las tasas de protocolo en GnoSwap.",
+      "title": "¿Cómo funciona la gobernanza de GnoSwap?"
+    },
+    "launchpad": {
+      "action": "Participe ahora",
+      "subtitle": "Infórmese sobre GnoSwap Launchpad y cómo participar en el lanzamiento de una ficha de proyecto en GnoSwap.",
+      "title": "¿Cómo participar en GnoSwap Launchpad?"
+    },
+    "leaderboard": {
+      "action": "Explorar ahora",
+      "subtitle": "Infórmate sobre la tabla de clasificación de GnoSwap y sobre cómo subir de rango para ganar posibles recompensas en GnoSwap.",
+      "title": "¿Qué es la clasificación?"
+    },
+    "position": {
+      "action": "Crear una posición",
+      "subtitle": "Infórmese sobre las posiciones y cómo proporcionar liquidez para obtener recompensas en GnoSwap.",
+      "title": "¿Qué es un puesto?"
+    },
+    "staking": {
+      "action": "Fijar una posición",
+      "subtitle": "Aprenda a apostar y cómo apostar su posición para maximizar las recompensas en GnoSwap.",
+      "title": "¿Cómo funcionan las apuestas?"
+    }
+  },
   "imporNote": "Nota importante",
   "learnMore": "Más información",
   "localTimeComp": {

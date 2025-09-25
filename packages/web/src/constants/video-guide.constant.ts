@@ -26,81 +26,81 @@ export type VideoGuideConfigType = {
 export const VIDEO_GUIDE_CONFIG: Record<VideoGuideType, VideoGuideConfigType> = {
   POSITION: {
     title: {
-      key: "What’s a Position?",
+      key: "common:guide.position.title",
     },
     subtitle: {
-      key: "Learn about positions and how to provide liquidity to earn rewards on GnoSwap.",
+      key: "common:guide.position.subtitle",
     },
     externalLink: {
-      textKey: "Learn More",
+      textKey: "common:learnMore",
       url: "https://docs.gnoswap.io/user-guide/providing-liquidity/create-a-position",
     },
     internalAction: {
-      textKey: "Create a Position",
+      textKey: "common:guide.position.action",
       route: "/earn/add",
     },
   },
   STAKING: {
     title: {
-      key: "How Does Staking Work?",
+      key: "common:guide.staking.title",
     },
     subtitle: {
-      key: "Learn about staking and how to stake your position to maximize rewards on GnoSwap.",
+      key: "common:guide.staking.subtitle",
     },
     externalLink: {
-      textKey: "Learn More",
+      textKey: "common:learnMore",
       url: "https://docs.gnoswap.io/core-concepts/liquidity-mining",
     },
     internalAction: {
-      textKey: "Stake a Position",
+      textKey: "common:guide.staking.action",
       route: "/earn/pool/stake?poolPath=",
     },
   },
   GOVERNANCE: {
     title: {
-      key: "How Does GnoSwap Governance Work?",
+      key: "common:guide.governance.title",
     },
     subtitle: {
-      key: "Learn about GnoSwap Governance and how to obtain xGNS to earn a portion of protocol fees on GnoSwap.",
+      key: "common:guide.governance.subtitle",
     },
     externalLink: {
-      textKey: "Learn More",
+      textKey: "common:learnMore",
       url: "https://docs.gnoswap.io/core-concepts/governance",
     },
     internalAction: {
-      textKey: "Delegate GNS",
+      textKey: "common:guide.governance.action",
       route: "",
     },
   },
   LAUNCHPAD: {
     title: {
-      key: "How to Participate in GnoSwap Launchpad?",
+      key: "common:guide.launchpad.title",
     },
     subtitle: {
-      key: "Learn about GnoSwap Launchpad and how to participate to a project token launching on GnoSwap.",
+      key: "common:guide.launchpad.subtitle",
     },
     externalLink: {
-      textKey: "Learn More",
+      textKey: "common:learnMore",
       url: "https://docs.gnoswap.io/core-concepts/launchpad",
     },
     internalAction: {
-      textKey: "Participate Now",
+      textKey: "common:guide.launchpad.action",
       route: "/launchpad#project-list",
     },
   },
   LEADERBOARD: {
     title: {
-      key: "What’s the Leaderboard?",
+      key: "common:guide.leaderboard.title",
     },
     subtitle: {
-      key: "Learn about GnoSwap Leaderboard and how to rank up to earn potential rewards on GnoSwap.",
+      key: "common:guide.leaderboard.subtitle",
     },
     externalLink: {
-      textKey: "Learn More",
+      textKey: "common:learnMore",
       url: "https://docs.gnoswap.io/references/leaderboard",
     },
     internalAction: {
-      textKey: "Explore Now",
+      textKey: "common:guide.leaderboard.action",
       route: "/leaderboard",
     },
   },

@@ -37,6 +37,33 @@
     "count_other": "{{count}}일",
     "today": "오늘"
   },
+  "guide": {
+    "governance": {
+      "action": "GNS 위임",
+      "subtitle": "GnoSwap 거버넌스에 대해 알아보고 노스왑에서 프로토콜 수수료의 일부를 받기 위해 xGNS를 얻는 방법을 알아보세요.",
+      "title": "GnoSwap 거버넌스는 어떻게 작동하나요?"
+    },
+    "launchpad": {
+      "action": "지금 참여하기",
+      "subtitle": "GnoSwap 런치패드와 노스왑에서 프로젝트 토큰 런칭에 참여하는 방법에 대해 알아보세요.",
+      "title": "GnoSwap 런치패드에 어떻게 참여하나요?"
+    },
+    "leaderboard": {
+      "action": "지금 살펴보기",
+      "subtitle": "GnoSwap 순위표와 노스왑에서 잠재적인 보상을 받기 위해 순위를 올리는 방법에 대해 알아보세요.",
+      "title": "순위표란 무엇인가요?"
+    },
+    "position": {
+      "action": "포지션 만들기",
+      "subtitle": "포지션에 대해 알아보고 GnoSwap에서 보상을 받기 위해 유동성을 제공하는 방법을 알아보세요.",
+      "title": "포지션이란 무엇인가요?"
+    },
+    "staking": {
+      "action": "포지션 스테이킹",
+      "subtitle": "스테이킹에 대해 알아보고 GnoSwap에서 보상을 최대화하기 위해 포지션을 스테이킹하는 방법을 알아보세요.",
+      "title": "스테이킹은 어떻게 작동하나요?"
+    }
+  },
   "imporNote": "중요 참고 사항",
   "learnMore": "자세히 알아보기",
   "localTimeComp": {

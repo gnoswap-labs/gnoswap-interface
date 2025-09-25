@@ -86,7 +86,7 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
     return (
       <div className="header-title">
         {getTitleText()}
-        <VideoGuideTrigger text={"What’s a Position? ▶"} onClick={handleOpenVideoGuide} />
+        <VideoGuideTrigger text={`${t("common:guide.position.title")} ▶`} onClick={handleOpenVideoGuide} />
       </div>
     );
   }, [isOtherPosition, connected, addressName, positionLength, onClickAddressPosition, t]);

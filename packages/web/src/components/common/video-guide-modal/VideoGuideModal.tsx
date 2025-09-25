@@ -134,7 +134,7 @@ const VideoGuideModal = ({ videoType, setIsOpen, onInternalActionClick }: VideoG
               {copied && (
                 <CopyTooltip>
                   <div className="box dark-shadow">
-                    <span>Copied!</span>
+                    <span>{t("common:copied")}</span>
                   </div>
                   <IconPolygon className="polygon-icon" />
                 </CopyTooltip>
@@ -191,7 +191,7 @@ const VideoGuideModal = ({ videoType, setIsOpen, onInternalActionClick }: VideoG
           <Button
             className="button"
             style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
-            text={"Close"}
+            text={t("common:action.close")}
             onClick={handleClose}
           />
         </div>

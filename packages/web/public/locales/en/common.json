@@ -38,6 +38,33 @@
     "count_one": "1 day",
     "today": "Today"
   },
+  "guide": {
+    "governance": {
+      "action": "Delegate GNS",
+      "subtitle": "Learn about GnoSwap Governance and how to obtain xGNS to earn a portion of protocol fees on GnoSwap.",
+      "title": "How Does GnoSwap Governance Work?"
+    },
+    "launchpad": {
+      "action": "Participate Now",
+      "subtitle": "Learn about GnoSwap Launchpad and how to participate to a project token launching on GnoSwap.",
+      "title": "How to Participate in GnoSwap Launchpad?"
+    },
+    "leaderboard": {
+      "action": "Explore Now",
+      "subtitle": "Learn about GnoSwap Leaderboard and how to rank up to earn potential rewards on GnoSwap.",
+      "title": "What’s the Leaderboard?"
+    },
+    "position": {
+      "action": "Create a Position",
+      "subtitle": "Learn about positions and how to provide liquidity to earn rewards on GnoSwap.",
+      "title": "What’s a Position?"
+    },
+    "staking": {
+      "action": "Stake a Position",
+      "subtitle": "Learn about staking and how to stake your position to maximize rewards on GnoSwap.",
+      "title": "How Does Staking Work?"
+    }
+  },
   "imporNote": "Important Note",
   "learnMore": "Learn More",
   "localTimeComp": {

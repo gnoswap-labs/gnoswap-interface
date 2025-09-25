@@ -37,7 +37,7 @@ const StakingHeader: React.FC<StakingHeaderProps> = ({
     <StakingHeaderWrapper>
       <div className="left-wrap">
         <h2>{t("Pool:staking.title")}</h2>
-        <VideoGuideTrigger text="How Does Staking Work? ▶" onClick={handleOpenVideoGuide} />
+        <VideoGuideTrigger text={`${t("common:guide.staking.title")} ▶`} onClick={handleOpenVideoGuide} />
       </div>
       <div className="button-wrap">
         {canUnstake && !isOtherPosition && (
