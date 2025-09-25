@@ -31,6 +31,7 @@ export const VideoGuideModalWrapper = styled.div`
     padding: ${PC_BREAKPOINT_PADDING}px;
     ${media.mobile} {
       padding: ${MOBILE_BREAKPOINT_PADDING}px;
+      gap: 12px;
     }
 
     .header-actions {
@@ -42,6 +43,7 @@ export const VideoGuideModalWrapper = styled.div`
       ${media.mobile} {
         top: ${MOBILE_BREAKPOINT_PADDING}px;
         right: ${MOBILE_BREAKPOINT_PADDING}px;
+        gap: 4px;
       }
 
       .icon-wrap {
@@ -63,6 +65,11 @@ export const VideoGuideModalWrapper = styled.div`
               fill: ${({ theme }) => theme.color.icon07};
             }
           }
+
+          ${media.mobile} {
+            width: 20px;
+            height: 20px;
+          }
         }
       }
     }
@@ -75,12 +82,19 @@ export const VideoGuideModalWrapper = styled.div`
         font-size: 24px;
         font-weight: 500;
         line-height: 33.6px;
+        ${media.mobile} {
+          font-size: 18px;
+        }
       }
       .sub-title {
         color: ${({ theme }) => theme.color.text03};
+        text-align: center;
         font-size: 14px;
         font-weight: 400;
         line-height: 18.2px;
+        ${media.mobile} {
+          font-size: 13px;
+        }
       }
     }
 
@@ -123,6 +137,25 @@ export const VideoGuideModalWrapper = styled.div`
       .button {
         gap: 8px;
         height: 57px;
+        font-size: 18px;
+        ${media.mobile} {
+          height: 42px;
+          gap: 2px;
+          svg {
+            width: 16px;
+            height: 16px;
+          }
+        }
+        span {
+          font-size: 16px;
+          ${media.mobile} {
+            font-size: 14px;
+          }
+        }
+      }
+      ${media.mobile} {
+        flex-direction: column;
+        gap: 12px;
       }
     }
   }
