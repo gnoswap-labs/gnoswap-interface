@@ -32,7 +32,8 @@
       "@query/*": ["src/react-query/*"],
       "@context/*": ["src/context/*"],
       "@test/*": ["src/test-utils/*"],
-      "@services/*": ["src/services/*"]
+      "@services/*": ["src/services/*"],
+      "@app-types/*": ["src/types/*"]
     },
     "jsxImportSource": "@emotion/react"
   },

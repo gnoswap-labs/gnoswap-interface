@@ -22,6 +22,8 @@ import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { isArray } from "@common/utils/data-check-util";
+import { usePrefetchNavigation } from "@hooks/common/use-prefetch-navigation";
+import { QUERY_PARAMETER } from "@constants/page.constant";
 
 interface PoolInfoProps {
   pool: PoolListInfo;
@@ -47,6 +49,14 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
     tokenAPriceGrade,
     tokenBPriceGrade,
   } = pool;
+
+  const { prefetch } = usePrefetchNavigation({
+    pageType: "POOL",
+    params: {
+      [QUERY_PARAMETER.POOL_PATH]: poolId,
+    },
+    enabled: Boolean(poolId),
+  });
 
   const hasIncentiveReward = React.useMemo(() => {
     const safeArray = isArray(rewardTokens) ? rewardTokens : [];
@@ -146,8 +156,16 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
     );
   }, [apr, tvl]);
 
+  const handleMouseEnter = React.useCallback(() => {
+    prefetch();
+  }, [prefetch]);
+
+  const handleClick = React.useCallback(() => {
+    routeItem(poolId);
+  }, [routeItem, poolId]);
+
   return (
-    <PoolInfoWrapper onClick={() => routeItem(poolId)}>
+    <PoolInfoWrapper onClick={handleClick} onMouseEnter={handleMouseEnter}>
       <TableColumn className="left" tdWidth={cellWidths.list[0].width}>
         <DoubleLogo
           left={tokenA.logoURI}

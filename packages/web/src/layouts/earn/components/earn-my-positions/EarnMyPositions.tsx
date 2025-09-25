@@ -93,6 +93,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
       positions={positions}
     />
     <EarnMyPositionsContent
+      address={address}
       isOtherPosition={isOtherPosition}
       connected={connected}
       connect={connect}

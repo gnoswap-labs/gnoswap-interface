@@ -7,6 +7,8 @@ import { ASSET_INFO, ASSET_INFO_MOBILE, ASSET_INFO_TABLET } from "@constants/ske
 import { isNativeToken } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { GNOT_TOKEN } from "@common/values/token-constant";
+import { QUERY_PARAMETER } from "@constants/page.constant";
+import { usePrefetchNavigation } from "@hooks/common/use-prefetch-navigation";
 
 import { Asset } from "../AssetListTable";
 
@@ -23,9 +25,20 @@ export interface AssetInfoProps {
 const AssetInfo: React.FC<AssetInfoProps> = ({ asset, deposit, withdraw, moveTokenPage, breakpoint }) => {
   const { balance, type, path, price } = asset;
 
-  const onClickItem = useCallback((path: string) => {
+  const { prefetch } = usePrefetchNavigation({
+    pageType: "TOKEN",
+    params: {
+      [QUERY_PARAMETER.TOKEN_PATH]: path,
+    },
+  });
+
+  const handleClickItem = useCallback(() => {
     moveTokenPage(path);
-  }, []);
+  }, [moveTokenPage, path]);
+
+  const handleMouseEnter = useCallback(() => {
+    prefetch();
+  }, [prefetch]);
 
   const onClickDeposit = useCallback(() => {
     deposit(asset);
@@ -50,7 +63,8 @@ const AssetInfo: React.FC<AssetInfoProps> = ({ asset, deposit, withdraw, moveTok
         id={asset.symbol}
         className="name-col left pointer"
         tdWidth={ASSET_INFO.list?.[0].width}
-        onClick={() => onClickItem(path)}
+        onClick={handleClickItem}
+        onMouseEnter={handleMouseEnter}
       >
         {tokenInfoCell}
       </TableColumn>
@@ -75,7 +89,8 @@ const AssetInfo: React.FC<AssetInfoProps> = ({ asset, deposit, withdraw, moveTok
       <TableColumn
         className="name-col left"
         tdWidth={ASSET_INFO_TABLET.list[0].width}
-        onClick={() => onClickItem(path)}
+        onClick={handleClickItem}
+        onMouseEnter={handleMouseEnter}
       >
         {tokenInfoCell}
       </TableColumn>
@@ -100,7 +115,8 @@ const AssetInfo: React.FC<AssetInfoProps> = ({ asset, deposit, withdraw, moveTok
       <TableColumn
         className="name-col left"
         tdWidth={ASSET_INFO_MOBILE.list[0].width}
-        onClick={() => onClickItem(path)}
+        onClick={handleClickItem}
+        onMouseEnter={handleMouseEnter}
       >
         {tokenInfoCell}
       </TableColumn>

@@ -15,6 +15,8 @@ import { ProjectInfoWrapper, TableColumn } from "./LaunchpadProjectInfo.styles";
 import LaunchpadProjectInfoChip from "./launchpad-project-info-chip/LaunchpadProjectInfoChip";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import SwapPageButton from "@components/launchpad/swap-page-button/SwapPageButton";
+import { usePrefetchNavigation } from "@hooks/common/use-prefetch-navigation";
+import { QUERY_PARAMETER } from "@constants/page.constant";
 
 interface LaunchpadProjectInfoProps {
   border?: boolean;
@@ -33,6 +35,13 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
   moveRewardTokenSwapPage,
 }) => {
   const { status, name, pools, projectID, rewardTokenLogoUrl, rewardTokenSymbol, rewardTokenPath } = project;
+
+  const { prefetch } = usePrefetchNavigation({
+    pageType: "PROJECT",
+    params: {
+      [QUERY_PARAMETER.PROJECT_PATH]: projectID,
+    },
+  });
 
   const highestApr = React.useMemo(() => {
     return pools.reduce((acc, current) => {
@@ -82,12 +91,21 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
       ? PROJECT_INFO_TABLET
       : PROJECT_INFO;
 
+  const handleClick = React.useCallback(() => {
+    moveProjectDetail(projectID);
+  }, [moveProjectDetail, projectID]);
+
+  const handleMouseEnter = React.useCallback(() => {
+    prefetch();
+  }, [prefetch]);
+
   return (
     <ProjectInfoWrapper className={border ? "border-top" : ""}>
       <TableColumn
         className="left clickable"
         tdWidth={cellWidths.list[0].width}
-        onClick={() => moveProjectDetail(projectID)}
+        onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
       >
         <MissingLogo symbol={rewardTokenSymbol} url={rewardTokenLogoUrl || undefined} width={24} mobileWidth={24} />
         <span className="ellipsis">{name}</span>

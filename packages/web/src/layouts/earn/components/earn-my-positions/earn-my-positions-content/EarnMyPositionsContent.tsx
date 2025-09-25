@@ -10,6 +10,7 @@ import EarnMyPositionsUnconnected from "./earn-my-positions-unconnected/EarnMyPo
 import OtherPositionNoLiquidity from "./other-positions-no-liquidity/OtherPositionNoLiquidity";
 
 export interface EarnMyPositionContentProps {
+  address?: string | null;
   isOtherPosition: boolean;
   connected: boolean;
   fetched: boolean;
@@ -35,6 +36,7 @@ export interface EarnMyPositionContentProps {
 }
 
 const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
+  address,
   isOtherPosition,
   connected,
   fetched,
@@ -70,6 +72,7 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
 
   return (
     <MyPositionCardList
+      address={address}
       positions={positions}
       isFetched={fetched}
       isLoading={loading}

@@ -11,6 +11,7 @@ import { BlankPositionCard, CardListWrapper } from "./MyPositionCardList.styles"
 import { HorizontalScrollWrapper } from "../scroll-wrapper";
 
 interface MyPositionCardListProps {
+  address?: string | null;
   loadMore: boolean;
   isFetched: boolean;
   isLoading: boolean;
@@ -29,6 +30,7 @@ interface MyPositionCardListProps {
 }
 
 const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
+  address,
   loadMore,
   isFetched,
   isLoading,
@@ -51,6 +53,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
         positions.length > 0 &&
         positions.map((position, idx) => (
           <MyPositionCard
+            address={address}
             tokenPrices={tokenPrices}
             currentIndex={idx}
             position={position}
