@@ -87,6 +87,7 @@ interface TooltipProps {
   forcedOpen?: boolean;
   forcedClose?: boolean;
   scroll?: boolean;
+  useBasicZIndex?: boolean;
   onChangeOpen?: (open: boolean) => void;
 }
 
@@ -100,6 +101,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   forcedOpen = false,
   forcedClose = false,
   scroll = false,
+  useBasicZIndex = false,
   onChangeOpen = undefined,
 }) => {
   const theme = useTheme();
@@ -113,6 +115,8 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
 
   const showTooltip = forcedOpen || (open && !forcedClose);
   const showTooltipRef = useRef(showTooltip);
+
+  const zIndex = useBasicZIndex ? Z_INDEX.tooltip : Z_INDEX.modalTooltip;
 
   // trigger callback
   useEffect(() => {
@@ -181,7 +185,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
               top: y ?? 0,
               left: x ?? 0,
               visibility: x == null ? "hidden" : "visible",
-              zIndex: Z_INDEX.modalTooltip,
+              zIndex: zIndex,
             }}
             className={floatClassName}
           >
