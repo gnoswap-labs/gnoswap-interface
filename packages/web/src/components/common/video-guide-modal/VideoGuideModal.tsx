@@ -127,30 +127,32 @@ const VideoGuideModal = ({ videoType, setIsOpen, onInternalActionClick }: VideoG
   return (
     <Modal>
       <div className="modal-body">
-        <div className="header-actions">
-          <div className="icon-wrap">
-            <button onClick={handleCopyLink}>
-              <IconLink className="header-action-icon" />
-              {copied && (
-                <CopyTooltip>
-                  <div className="box dark-shadow">
-                    <span>{t("common:copied")}</span>
-                  </div>
-                  <IconPolygon className="polygon-icon" />
-                </CopyTooltip>
-              )}
-            </button>
+        <div className="header-wrapper">
+          <div className="header-actions">
+            <div className="icon-wrap">
+              <button onClick={handleCopyLink}>
+                <IconLink className="header-action-icon" />
+                {copied && (
+                  <CopyTooltip>
+                    <div className="box dark-shadow">
+                      <span>{t("common:copied")}</span>
+                    </div>
+                    <IconPolygon className="polygon-icon" />
+                  </CopyTooltip>
+                )}
+              </button>
+            </div>
+            <div className="icon-wrap">
+              <button onClick={handleClose}>
+                <IconClose className="header-action-icon" />
+              </button>
+            </div>
           </div>
-          <div className="icon-wrap">
-            <button onClick={handleClose}>
-              <IconClose className="header-action-icon" />
-            </button>
-          </div>
-        </div>
 
-        <div className="title-wrapper">
-          <h1 className="title">{t(config.title.key)}</h1>
-          <h6 className="sub-title">{t(config.subtitle.key)}</h6>
+          <div className="title-wrapper">
+            <h1 className="title">{t(config.title.key)}</h1>
+            <h6 className="sub-title">{t(config.subtitle.key)}</h6>
+          </div>
         </div>
 
         <div className="content-wrapper">
