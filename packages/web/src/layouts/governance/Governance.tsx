@@ -36,6 +36,7 @@ const Governance: React.FC = () => {
         }
         list={<ProposalListContainer />}
         footer={<Footer />}
+        onOpenVideoGuide={openVideoGuide}
       />
       {isOpenVideoGuide && isValidVideoGuideType(currentGuide) && (
         <VideoGuideModal
