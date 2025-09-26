@@ -50,7 +50,10 @@ export const VideoGuideModalWrapper = styled.div`
         ${mixins.flexbox("row", "center", "center")};
         width: 24px;
         height: 24px;
-        padding: 4px;
+        button {
+          width: 24px;
+          height: 24px;
+        }
 
         .header-action-icon {
           width: 24px;
@@ -64,11 +67,6 @@ export const VideoGuideModalWrapper = styled.div`
             path {
               fill: ${({ theme }) => theme.color.icon07};
             }
-          }
-
-          ${media.mobile} {
-            width: 20px;
-            height: 20px;
           }
         }
       }
@@ -84,10 +82,12 @@ export const VideoGuideModalWrapper = styled.div`
         line-height: 33.6px;
         ${media.mobile} {
           font-size: 18px;
+          line-height: 26.6px;
+          align-self: flex-start;
         }
       }
       .sub-title {
-        color: ${({ theme }) => theme.color.text03};
+        color: ${({ theme }) => (theme.themeKey === "dark" ? "#596782" : "#90A2C0")};
         text-align: center;
         font-size: 14px;
         font-weight: 400;
@@ -135,11 +135,11 @@ export const VideoGuideModalWrapper = styled.div`
         width: 100%;
       }
       .button {
-        gap: 8px;
-        height: 57px;
+        gap: 4px;
+        height: 50px;
         font-size: 18px;
         ${media.mobile} {
-          height: 42px;
+          height: 36px;
           gap: 2px;
           svg {
             width: 16px;
@@ -154,7 +154,6 @@ export const VideoGuideModalWrapper = styled.div`
         }
       }
       ${media.mobile} {
-        flex-direction: column;
         gap: 12px;
       }
     }

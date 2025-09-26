@@ -188,12 +188,6 @@ const VideoGuideModal = ({ videoType, setIsOpen, onInternalActionClick }: VideoG
               rightIcon={<IconRightArrow />}
             />
           </Link>
-          <Button
-            className="button"
-            style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
-            text={t("common:action.close")}
-            onClick={handleClose}
-          />
         </div>
       </div>
     </Modal>
