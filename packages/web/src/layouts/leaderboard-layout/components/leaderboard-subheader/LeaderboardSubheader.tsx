@@ -32,7 +32,7 @@ const LeaderboardSubheader = ({
           <P as="span" color="text04">
             {t("Leaderboard:subHeader.description")}&nbsp;
           </P>
-          <VideoGuideTrigger text={`${t("common:learnMore")} ▶`} onClick={handleOpenVideoGuide} />
+          <VideoGuideTrigger text={`${t("common:guide.learnMore")} ▶`} onClick={handleOpenVideoGuide} />
         </FontSize16>
       </TitleWrapper>
 

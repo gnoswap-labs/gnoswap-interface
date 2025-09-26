@@ -244,7 +244,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
       {!isMobile && (
         <div className="link-button">
           <div>{t("Governance:summary.guide.guide")}</div>
-          <VideoGuideTrigger text={`${t("common:learnMore")} ▶`} onClick={handleOpenVideoGuide} />
+          <VideoGuideTrigger text={`${t("common:guide.learnMore")} ▶`} onClick={handleOpenVideoGuide} />
         </div>
       )}
     </GovernanceSummaryWrapper>
