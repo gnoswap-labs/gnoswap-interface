@@ -2,7 +2,7 @@ import { VideoGuideType, YOUTUBE_LINKS } from "@constants/video-guide.constant";
 
 export const createYoutubeEmbedUrl = (videoId: string, options = {}) => {
   const defaultOptions = {
-    autoplay: "0",
+    autoplay: "1",
     rel: "0",
     modestbranding: "1",
     enablejsapi: "1",
