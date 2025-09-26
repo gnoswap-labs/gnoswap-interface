@@ -11,6 +11,7 @@ export const VideoGuideTriggerWrapper = styled.div`
 
   color: ${({ theme }) => theme.color.text04};
   ${fonts.body11};
+
   ${media.mobile} {
     ${fonts.p1};
   }

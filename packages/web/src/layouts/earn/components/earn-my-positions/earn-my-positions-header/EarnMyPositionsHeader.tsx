@@ -9,6 +9,7 @@ import { VIDEO_GUIDE_TYPES } from "@constants/video-guide.constant";
 
 import { HeaderTextWrapper, PositionsWrapper } from "./EarnMyPositionsHeader.styles";
 import VideoGuideTrigger from "@components/common/video-guide-trigger/VideoGuideTrigger";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 export interface EarnMyPositionsHeaderProps {
   address?: string | null;
@@ -44,6 +45,7 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
 }) => {
   const { getAccountUrl } = useGnoscanUrl();
   const { t } = useTranslation();
+  const { isMobile } = useWindowSize();
 
   const handleOpenVideoGuide = useCallback(() => {
     onOpenVideoGuide(VIDEO_GUIDE_TYPES.POSITION);
@@ -86,7 +88,11 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
     return (
       <div className="header-title">
         {getTitleText()}
-        <VideoGuideTrigger text={`${t("common:guide.position.title")} ▶`} onClick={handleOpenVideoGuide} />
+        <VideoGuideTrigger
+          text={`${t("common:guide.position.title")} ▶`}
+          onClick={handleOpenVideoGuide}
+          style={{ lineHeight: isMobile ? "20px" : "24px" }}
+        />
       </div>
     );
   }, [isOtherPosition, connected, addressName, positionLength, onClickAddressPosition, t]);

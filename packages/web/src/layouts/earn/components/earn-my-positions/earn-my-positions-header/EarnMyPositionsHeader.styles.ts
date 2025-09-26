@@ -31,9 +31,6 @@ export const PositionsWrapper = styled.div`
       display: flex;
       gap: 12px;
       align-items: flex-end;
-      ${media.mobile} {
-        gap: 4px;
-      }
     }
 
     h2 {
