@@ -159,9 +159,9 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
       (acc, info) => {
         const unlockTime = info.unlockTime ? new Date(info.unlockTime) : null;
 
-        if (unlockTime && !isNaN(unlockTime.getTime()) && unlockTime < now) {
+        if (unlockTime && !Number.isNaN(unlockTime.getTime()) && unlockTime < now) {
           const amount = Number(info.amount);
-          if (!isNaN(amount) && amount > 0) {
+          if (!Number.isNaN(amount) && amount > 0) {
             acc.hasUnlockItem = true;
             acc.totalUnlockAmount += amount;
           }
