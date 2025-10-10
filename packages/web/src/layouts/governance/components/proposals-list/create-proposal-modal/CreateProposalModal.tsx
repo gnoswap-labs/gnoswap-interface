@@ -252,9 +252,23 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   );
 
   const isDisableSubmit = useMemo(() => {
-    const isValidParameter = Object.keys(paramErrors.variable || {}).length === 0;
-    return !isDirty || !isValid || !isValidParameter || myVotingWeight < proposalCreationThreshold;
-  }, [isDirty, isValid, paramErrors, proposalCreationThreshold, myVotingWeight]);
+    if (!isDirty || !isValid || myVotingWeight < proposalCreationThreshold) {
+      return true;
+    }
+
+    if (type === ProposalOption.PARAMETER_CHANGE) {
+      const isValidParameter = Object.keys(paramErrors.variable || {}).length === 0;
+
+      const hasValidVariable = control._formValues.variable?.some(
+        (v: { pkgPath: string; func: string; param: string }) =>
+          v.pkgPath.trim().length > 0 && v.func.trim().length > 0 && v.param.trim().length > 0,
+      );
+
+      return !isValidParameter || !hasValidVariable;
+    }
+
+    return false;
+  }, [isDirty, isValid, paramErrors, proposalCreationThreshold, myVotingWeight, type, control._formValues.variable]);
 
   const getParameterPlaceholder = useCallback(
     (item: { pkgPath: string; func: string }): string => {

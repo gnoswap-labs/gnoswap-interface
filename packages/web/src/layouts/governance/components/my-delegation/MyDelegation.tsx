@@ -152,9 +152,27 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
     return !showUndel;
   }, [showUndel, myUnDelegatesInfo.length]);
 
-  const hasUnlockItem: boolean = useMemo(() => {
-    return myUnDelegatesInfo.some(info => info.unlockTime && new Date(info.unlockTime) < new Date());
-  }, [showUndel, myUnDelegatesInfo]);
+  const { hasUnlockItem, totalUnlockAmount } = useMemo(() => {
+    const now = new Date();
+
+    const result = myUnDelegatesInfo.reduce(
+      (acc, info) => {
+        const unlockTime = info.unlockTime ? new Date(info.unlockTime) : null;
+
+        if (unlockTime && !Number.isNaN(unlockTime.getTime()) && unlockTime < now) {
+          const amount = Number(info.amount);
+          if (!Number.isNaN(amount) && amount > 0) {
+            acc.hasUnlockItem = true;
+            acc.totalUnlockAmount += amount;
+          }
+        }
+        return acc;
+      },
+      { hasUnlockItem: false, totalUnlockAmount: 0 },
+    );
+
+    return result;
+  }, [myUnDelegatesInfo]);
 
   const visibleInfoTooltip: boolean = useMemo(() => {
     if (activatedDelegateInfoTab) return hasMyDelegates;
@@ -311,10 +329,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 hasUnlockItem && !activatedDelegateInfoTab
                   ? {
                       text: t("Governance:myDel.undel.btn"),
-                      onClick: () =>
-                        collectUndelegated(
-                          toNumberFormat(rawToDisplayAmount(myDelegationInfo.unDelegatedAmount, GNS_TOKEN.decimals), 2),
-                        ),
+                      onClick: () => collectUndelegated(toNumberFormat(totalUnlockAmount)),
                     }
                   : undefined
               }
