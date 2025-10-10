@@ -78,8 +78,8 @@ export function useProposalDraft<T extends FieldValues>({ setValue, watch, isDir
   useEffect(() => {
     const draft = loadProposalDraft();
     if (draft) {
-      setValue(FORM_FIELDS.title, draft.title as T[Path<T>]);
-      setValue(FORM_FIELDS.description, draft.description as T[Path<T>]);
+      setValue(FORM_FIELDS.title, draft.title as T[Path<T>], { shouldDirty: true, shouldValidate: true });
+      setValue(FORM_FIELDS.description, draft.description as T[Path<T>], { shouldDirty: true, shouldValidate: true });
     }
   }, [loadProposalDraft, setValue]);
   const title = watch(FORM_FIELDS.title) as string;
