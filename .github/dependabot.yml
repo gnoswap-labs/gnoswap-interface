@@ -1,0 +1,33 @@
+version: 2
+updates:
+  # Dependency updates
+  - package-ecosystem: npm
+    directory: /packages/web
+    target-branch: "develop"
+    schedule:
+      interval: weekly
+    ignore:
+      # ignore all patch upgrades
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
+    open-pull-requests-limit: 10
+    versioning-strategy: increase
+    pull-request-branch-name:
+      separator: "-"
+    groups:
+      eslint:
+        patterns:
+          - "eslint"
+          - "eslint-config-prettier"
+          - "@typescript-eslint/*"
+      types:
+        patterns:
+          - "@types/*"
+      prettier:
+        patterns:
+          - "prettier"
+      everything-else:
+        patterns:
+          - "*"
+    reviewers:
+      - "tfrg"
