@@ -62,7 +62,7 @@
     "@babel/core": "7.21.0",
     "@babel/preset-env": "7.20.2",
     "@babel/preset-typescript": "7.21.0",
-    "@babel/runtime": "7.21.0",
+    "@babel/runtime": "^7.26.10",
     "@emotion/babel-plugin": "11.10.6",
     "@emotion/babel-preset-css-prop": "11.10.0",
     "@faker-js/faker": "7.6.0",

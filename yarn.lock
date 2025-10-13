@@ -1951,6 +1951,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.26.10":
+  version: 7.28.4
+  resolution: "@babel/runtime@npm:7.28.4"
+  checksum: 10/6c9a70452322ea80b3c9b2a412bcf60771819213a67576c8cec41e88a95bb7bf01fc983754cda35dc19603eef52df22203ccbf7777b9d6316932f9fb77c25163
+  languageName: node
+  linkType: hard
+
 "@babel/runtime@npm:~7.5.4":
   version: 7.5.5
   resolution: "@babel/runtime@npm:7.5.5"
@@ -2602,7 +2609,7 @@ __metadata:
     "@babel/core": "npm:7.21.0"
     "@babel/preset-env": "npm:7.20.2"
     "@babel/preset-typescript": "npm:7.21.0"
-    "@babel/runtime": "npm:7.21.0"
+    "@babel/runtime": "npm:^7.26.10"
     "@bufbuild/protobuf": "npm:^2.2.3"
     "@emotion/babel-plugin": "npm:11.10.6"
     "@emotion/babel-preset-css-prop": "npm:11.10.0"
