@@ -2641,6 +2641,7 @@ __metadata:
     "@types/crypto-js": "npm:^4.2.1"
     "@types/d3": "npm:^7.4.0"
     "@types/jest": "npm:29.4.0"
+    "@types/micromatch": "npm:^4"
     "@types/node": "npm:^20.19.0"
     "@types/react": "npm:18.2.5"
     "@types/react-dom": "npm:18.2.5"
@@ -2667,6 +2668,7 @@ __metadata:
     jest-environment-jsdom: "npm:29.5.0"
     jotai: "npm:2.2.1"
     lint-staged: "npm:13.1.2"
+    micromatch: "npm:^4.0.8"
     next: "npm:15.5.2"
     next-i18next: "npm:^15.3.0"
     prettier: "npm:2.8.4"
@@ -5889,6 +5891,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/braces@npm:*":
+  version: 3.0.5
+  resolution: "@types/braces@npm:3.0.5"
+  checksum: 10/1c0091921cf7429f95404ee2a7fd7e52e52ddd160cf2eb3b1b841649debf47b062386209388877a7548d8aae906346a0832e41bae143f8e576710fd22314b69d
+  languageName: node
+  linkType: hard
+
 "@types/cacheable-request@npm:^6.0.1":
   version: 6.0.3
   resolution: "@types/cacheable-request@npm:6.0.3"
@@ -6433,6 +6442,15 @@ __metadata:
   dependencies:
     "@types/unist": "npm:*"
   checksum: 10/efe3ec11b9ee0015a396c4fb4cd1b6f31b51b8ae9783c59560e6fc0bf6c2fa1dcc7fccaf45fa09a6c8b3397fab9dc8d431433935cae3835caa70a18f7fc775f8
+  languageName: node
+  linkType: hard
+
+"@types/micromatch@npm:^4":
+  version: 4.0.9
+  resolution: "@types/micromatch@npm:4.0.9"
+  dependencies:
+    "@types/braces": "npm:*"
+  checksum: 10/324f4bcb4a7caa2048bdd650f442d2c24b5bf6bc95e4d63d4741bd234fdcf3cde140217bd477b2c02c7fb0034c7293037fd7b61429ace84e997dd3b4d3b2b2f7
   languageName: node
   linkType: hard
 
