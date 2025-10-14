@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import SelectTab from "./SelectTabV2";
 
 const meta = {
-  title: "common/SelectTab",
+  title: "common/SelectTabV2",
   component: SelectTab,
   tags: ["autodocs"],
 } satisfies Meta<typeof SelectTab>;
