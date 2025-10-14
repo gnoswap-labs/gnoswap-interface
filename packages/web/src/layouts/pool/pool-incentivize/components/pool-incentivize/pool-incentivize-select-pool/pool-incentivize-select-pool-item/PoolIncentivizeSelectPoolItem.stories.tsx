@@ -1,7 +1,7 @@
 import PoolIncentivizeSelectPoolItem, {
   type PoolIncentivizeSelectPoolItemProps,
 } from "./PoolIncentivizeSelectPoolItem";
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/nextjs";
 import React from "react";
 import { PoolRepositoryMock } from "@repositories/pool";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";

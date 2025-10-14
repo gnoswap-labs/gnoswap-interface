@@ -1,6 +1,7 @@
 import { css } from "@emotion/react";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import React from "react";
 import SwapCardAutoRouter from "./SwapCardAutoRouter";
 
 const swapRouteInfos: SwapRouteInfo[] = [
@@ -40,22 +41,30 @@ const swapRouteInfos: SwapRouteInfo[] = [
   },
 ];
 
-export default {
+const meta = {
   title: "swap/SwapCardAutoRouter",
   component: SwapCardAutoRouter,
-} as ComponentMeta<typeof SwapCardAutoRouter>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof SwapCardAutoRouter>;
 
-const Template: ComponentStory<typeof SwapCardAutoRouter> = args => (
-  <div css={wrapper}>
-    <div css={contentWrap}>
-      <SwapCardAutoRouter {...args} />
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof SwapCardAutoRouter>]: K extends "children"
+    ? React.ReactNode
+    : React.ComponentProps<typeof SwapCardAutoRouter>[K];
+}>;
+
+export const Default: Story = {
+  render: (args: React.ComponentProps<typeof SwapCardAutoRouter>) => (
+    <div css={wrapper}>
+      <div css={contentWrap}>
+        <SwapCardAutoRouter {...args} />
+      </div>
     </div>
-  </div>
-);
-
-export const Default = Template.bind({});
-Default.args = {
-  swapRouteInfos,
+  ),
+  args: {
+    swapRouteInfos,
+  },
 };
 
 const wrapper = () => css`

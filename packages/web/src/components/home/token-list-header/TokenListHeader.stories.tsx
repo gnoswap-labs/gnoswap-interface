@@ -1,25 +1,30 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
 import TokenListHeader from "./TokenListHeader";
 import { TOKEN_TYPE } from "@containers/token-list-container/TokenListContainer";
 import { DEVICE_TYPE } from "@styles/media";
 
-export default {
+const meta = {
   title: "home/TokenList/TokenListHeader",
   component: TokenListHeader,
-} as ComponentMeta<typeof TokenListHeader>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof TokenListHeader>;
 
-const Template: ComponentStory<typeof TokenListHeader> = args => <TokenListHeader {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof TokenListHeader>]?: React.ComponentProps<typeof TokenListHeader>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  tokenType: TOKEN_TYPE.ALL,
-  changeTokenType: action("changeTokenType"),
-  search: action("search"),
-  breakpoint: DEVICE_TYPE.WEB,
-  keyword: "",
-  searchIcon: true,
-  onTogleSearch: action("onTogleSearch"),
+export const Default: Story = {
+  args: {
+    tokenType: TOKEN_TYPE.ALL,
+    changeTokenType: fn(),
+    search: fn(),
+    breakpoint: DEVICE_TYPE.WEB,
+    keyword: "",
+    searchIcon: true,
+    onTogleSearch: fn(),
+  },
 };

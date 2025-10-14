@@ -1,32 +1,40 @@
-import React, { useCallback, useState } from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { useCallback, useState } from "react";
+
 import SelectLiquidityList from "./SelectLiquidityList";
 
-export default {
+const meta = {
   title: "stake/SelectLiquidityList",
   component: SelectLiquidityList,
-} as ComponentMeta<typeof SelectLiquidityList>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof SelectLiquidityList>;
 
-const Template: ComponentStory<typeof SelectLiquidityList> = args => {
-  const [checkedList, setCheckedList] = useState<number[]>([]);
-  const [checkedAll] = useState(false);
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof SelectLiquidityList>]: K extends "children"
+    ? React.ReactNode
+    : React.ComponentProps<typeof SelectLiquidityList>[K];
+}>;
 
-  const onCheckedItem = useCallback(
-    (isChecked: boolean, id: number) => {
-      if (isChecked) {
-        return setCheckedList((prev: number[]) => [...prev, id]);
-      }
-      if (!isChecked && checkedList.includes(id)) {
-        return setCheckedList(checkedList.filter(el => el !== id));
-      }
-    },
-    [checkedList],
-  );
+export const Default: Story = {
+  render: (args: React.ComponentProps<typeof SelectLiquidityList>) => {
+    const [checkedList, setCheckedList] = useState<number[]>([]);
+    const [checkedAll] = useState(false);
 
-  return (
-    <SelectLiquidityList {...args} checkedList={checkedList} onCheckedItem={onCheckedItem} checkedAll={checkedAll} />
-  );
+    const onCheckedItem = useCallback(
+      (isChecked: boolean, id: number) => {
+        if (isChecked) {
+          return setCheckedList((prev: number[]) => [...prev, id]);
+        }
+        if (!isChecked && checkedList.includes(id)) {
+          return setCheckedList(checkedList.filter(el => el !== id));
+        }
+      },
+      [checkedList],
+    );
+
+    return (
+      <SelectLiquidityList {...args} checkedList={checkedList} onCheckedItem={onCheckedItem} checkedAll={checkedAll} />
+    );
+  },
 };
-
-export const Default = Template.bind({});
-Default.args = {};

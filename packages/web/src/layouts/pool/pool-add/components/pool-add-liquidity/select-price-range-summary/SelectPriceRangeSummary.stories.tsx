@@ -1,5 +1,5 @@
 import SelectPriceRangeSummary, { type SelectPriceRangeSummaryProps } from "./SelectPriceRangeSummary";
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/nextjs";
 
 export default {
   title: "pool/pool-add/SelectPriceRangeSummary",

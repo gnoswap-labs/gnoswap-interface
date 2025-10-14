@@ -1,21 +1,21 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import WalletPositionCardListContainer from "../../containers/wallet-position-card-list-container/WalletPositionCardListContainer";
 import WalletMyPositionsHeader from "../wallet-my-positions-header/WalletMyPositionsHeader";
 import WalletMyPositions from "./WalletMyPositions";
 
-export default {
+const meta = {
   title: "wallet/WalletMyPositions",
   component: WalletMyPositions,
-} as ComponentMeta<typeof WalletMyPositions>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof WalletMyPositions>;
 
-const Template: ComponentStory<typeof WalletMyPositions> = args => (
-  <WalletMyPositions
-    {...args}
-    header={<WalletMyPositionsHeader isClosed={true} toggleClosed={() => {}} />}
-    cardList={<WalletPositionCardListContainer isClosed={true} />}
-  />
-);
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default = Template.bind({});
-Default.args = {};
+export const Default: Story = {
+  args: {
+    header: <WalletMyPositionsHeader isClosed={true} toggleClosed={() => {}} />,
+    cardList: <WalletPositionCardListContainer isClosed={true} />,
+  },
+};

@@ -1,16 +1,21 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import EarnMyPositionNoLiquidity from "./EarnMyPositionNoLiquidity";
 
-export default {
+const meta = {
   title: "earn/EarnMyPositionNoLiquidity",
   component: EarnMyPositionNoLiquidity,
-} as ComponentMeta<typeof EarnMyPositionNoLiquidity>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof EarnMyPositionNoLiquidity>;
 
-const Template: ComponentStory<typeof EarnMyPositionNoLiquidity> = args => <EarnMyPositionNoLiquidity {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof EarnMyPositionNoLiquidity>]?: React.ComponentProps<
+    typeof EarnMyPositionNoLiquidity
+  >[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  account: null,
+export const Default: Story = {
+  args: {
+    account: null,
+  },
 };

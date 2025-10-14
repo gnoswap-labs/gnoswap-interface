@@ -1,19 +1,27 @@
-import { action } from "@storybook/addon-actions";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
 import { CHART_TYPE } from "@constants/option.constant";
 
 import ChartScopeSelectTab from "./ChartScopeSelectTab";
 
-export default {
+const meta = {
   title: "earn/ChartScopeSelectTab",
   component: ChartScopeSelectTab,
-} as ComponentMeta<typeof ChartScopeSelectTab>;
+  tags: ["autodocs"],
+  parameters: {
+    backgrounds: { default: "light" },
+  },
+} satisfies Meta<typeof ChartScopeSelectTab>;
 
-const Template: ComponentStory<typeof ChartScopeSelectTab> = args => <ChartScopeSelectTab {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof ChartScopeSelectTab>]?: React.ComponentProps<typeof ChartScopeSelectTab>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  selected: CHART_TYPE["7D"],
-  onChange: action("changeVolumeChartType"),
+export const Default: Story = {
+  args: {
+    selected: CHART_TYPE["7D"],
+    onChange: fn(),
+  },
 };

@@ -1,20 +1,22 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
-
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 import { ActivityType } from "@repositories/dashboard";
-
 import ActivityListHeader from "./ActivityListHeader";
 
-export default {
+const meta = {
   title: "dashboard/ActivityListHeader",
   component: ActivityListHeader,
-} as ComponentMeta<typeof ActivityListHeader>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof ActivityListHeader>;
 
-const Template: ComponentStory<typeof ActivityListHeader> = args => <ActivityListHeader {...args} />;
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default = Template.bind({});
-Default.args = {
-  activityType: ActivityType.ALL,
-  changeActivityType: action("changeActivityType"),
+export const Default: Story = {
+  render: (args: React.ComponentProps<typeof ActivityListHeader>) => <ActivityListHeader {...args} />,
+  args: {
+    activityType: ActivityType.ALL,
+    changeActivityType: fn(),
+  },
 };

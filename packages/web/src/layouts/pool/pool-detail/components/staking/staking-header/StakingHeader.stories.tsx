@@ -1,16 +1,22 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import StakingHeader from "./StakingHeader";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+
 import { DEVICE_TYPE } from "@styles/media";
 
-export default {
+import StakingHeader from "./StakingHeader";
+
+const meta = {
   title: "pool/StakingHeader",
   component: StakingHeader,
-} as ComponentMeta<typeof StakingHeader>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof StakingHeader>;
 
-const Template: ComponentStory<typeof StakingHeader> = args => <StakingHeader {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof StakingHeader>]?: React.ComponentProps<typeof StakingHeader>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  breakpoint: DEVICE_TYPE.WEB,
+export const Default: Story = {
+  args: {
+    breakpoint: DEVICE_TYPE.WEB,
+  },
 };

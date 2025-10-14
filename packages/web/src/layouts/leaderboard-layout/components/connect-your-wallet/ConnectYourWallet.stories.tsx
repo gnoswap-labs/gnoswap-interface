@@ -1,17 +1,25 @@
-import ConnectYourWallet from "./ConnectYourWallet";
-import { ComponentMeta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
-export default {
+import ConnectYourWallet from "./ConnectYourWallet";
+
+const meta = {
   title: "leaderboard/ConnectYourWallet",
   component: ConnectYourWallet,
-} as ComponentMeta<typeof ConnectYourWallet>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof ConnectYourWallet>;
 
-export const Default: StoryObj<typeof ConnectYourWallet> = {
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof ConnectYourWallet>]?: React.ComponentProps<typeof ConnectYourWallet>[K];
+}>;
+
+export const Default: Story = {
   args: {
     connected: true,
     isMobile: true,
     checked: true,
-    onSwitch: () => console.log("ConnectYourWallet"),
+    onSwitch: fn(),
   },
   parameters: {
     backgrounds: { default: "light" },

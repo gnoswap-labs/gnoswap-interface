@@ -1,13 +1,13 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import LoadingSpinner from "./LoadingSpinner";
 
-export default {
+const meta = {
   title: "common/LoadingSpinner",
   component: LoadingSpinner,
-} as ComponentMeta<typeof LoadingSpinner>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof LoadingSpinner>;
 
-const Template: ComponentStory<typeof LoadingSpinner> = () => <LoadingSpinner />;
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default = Template.bind({});
-Default.args = {};
+export const Default: Story = {};

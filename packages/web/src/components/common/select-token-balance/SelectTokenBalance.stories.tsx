@@ -1,11 +1,14 @@
-import { action } from "@storybook/addon-actions";
+import { fn } from "@storybook/test";
 import SelectTokenBalance, { type SelectTokenBalanceProps } from "./SelectTokenBalance";
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/nextjs";
 
-export default {
+const meta = {
   title: "common/SelectTokenBalance",
   component: SelectTokenBalance,
-} as Meta<typeof SelectTokenBalance>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof SelectTokenBalance>;
+
+export default meta;
 
 const tokenA = {
   path: "0",
@@ -31,6 +34,6 @@ export const Default: StoryObj<SelectTokenBalanceProps> = {
   args: {
     current: tokens[0],
     tokens,
-    select: action("select"),
+    select: fn(),
   },
 };

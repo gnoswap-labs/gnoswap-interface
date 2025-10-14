@@ -1,5 +1,5 @@
 import BarAreaGraph, { type BarAreaGraphProps } from "./BarAreaGraph";
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/nextjs";
 
 export default {
   title: "common/BarAreaGraph",

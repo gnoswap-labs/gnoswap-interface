@@ -1,8 +1,8 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
-
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 import { css, Theme } from "@emotion/react";
+
 import { IncentivizePoolCardInfoWithPriceGrade } from "@models/pool/info/pool-card-info";
-import { action } from "@storybook/addon-actions";
 import PoolInfo from "./PoolInfo";
 
 const pool: IncentivizePoolCardInfoWithPriceGrade = {
@@ -45,20 +45,29 @@ const pool: IncentivizePoolCardInfoWithPriceGrade = {
   tvl: "0",
 };
 
-export default {
+const meta = {
   title: "earn/PoolList/PoolInfo",
   component: PoolInfo,
-} as ComponentMeta<typeof PoolInfo>;
+  tags: ["autodocs"],
+  decorators: [
+    (Story: React.ComponentType) => (
+      <div css={wrapper}>
+        <Story />
+      </div>
+    ),
+  ],
+} satisfies Meta<typeof PoolInfo>;
 
-const Template: ComponentStory<typeof PoolInfo> = args => (
-  <div css={wrapper}>
-    <PoolInfo {...args} pool={{ ...pool, tvl: "0" }} />
-  </div>
-);
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof PoolInfo>]?: React.ComponentProps<typeof PoolInfo>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  routeItem: action("routeItem"),
+export const Default: Story = {
+  args: {
+    pool: { ...pool, tvl: "0" },
+    routeItem: fn(),
+  },
 };
 
 const wrapper = (theme: Theme) => css`

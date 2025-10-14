@@ -1,17 +1,24 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
 import GnoswapBrand from "./GnoswapBrand";
-import { action } from "@storybook/addon-actions";
 
-export default {
+const meta = {
   title: "home/GnoswapBrand",
   component: GnoswapBrand,
-} as ComponentMeta<typeof GnoswapBrand>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof GnoswapBrand>;
 
-const Template: ComponentStory<typeof GnoswapBrand> = args => <GnoswapBrand {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof GnoswapBrand>]: K extends "children"
+    ? React.ReactNode
+    : React.ComponentProps<typeof GnoswapBrand>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  onClickSns: action("onClickSns"),
+export const Default: Story = {
+  args: {
+    onClickSns: fn(),
+  },
 };

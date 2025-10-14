@@ -1,16 +1,20 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import OverlapTokenLogo from "./OverlapTokenLogo";
 
-export default {
+const meta = {
   title: "common/OverlapTokenLogo",
   component: OverlapTokenLogo,
-} as ComponentMeta<typeof OverlapTokenLogo>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof OverlapTokenLogo>;
 
-const Template: ComponentStory<typeof OverlapTokenLogo> = args => <OverlapTokenLogo {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof OverlapTokenLogo>]?: React.ComponentProps<typeof OverlapTokenLogo>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  size: 36,
+export const Default: Story = {
+  args: {
+    size: 36,
+  },
 };

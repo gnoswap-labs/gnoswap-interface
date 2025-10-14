@@ -1,14 +1,20 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import WalletMyPositionsHeader from "./WalletMyPositionsHeader";
 
-export default {
+const meta = {
   title: "wallet/WalletMyPositionsHeader",
   component: WalletMyPositionsHeader,
-} as ComponentMeta<typeof WalletMyPositionsHeader>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof WalletMyPositionsHeader>;
 
-const Template: ComponentStory<typeof WalletMyPositionsHeader> = args => <WalletMyPositionsHeader {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof WalletMyPositionsHeader>]?: React.ComponentProps<
+    typeof WalletMyPositionsHeader
+  >[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {};
+export const Default: Story = {
+  args: {},
+};

@@ -1,21 +1,27 @@
-import SelectDistributionPeriodInput, {
-  type SelectDistributionPeriodInputProps,
-} from "./SelectDistributionPeriodInput";
-import { Meta, StoryObj } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
-export default {
-  title: "incentivize/SelectDistributionPeriodInput",
-  component: SelectDistributionPeriodInput,
-} as Meta<typeof SelectDistributionPeriodInput>;
+import SelectDistributionPeriodInput from "./SelectDistributionPeriodInput";
 
 const periods = [90, 120, 150, 180, 210, 240];
 
-export const Default: StoryObj<SelectDistributionPeriodInputProps> = {
+const meta = {
+  title: "incentivize/SelectDistributionPeriodInput",
+  component: SelectDistributionPeriodInput,
+  tags: ["autodocs"],
+  parameters: {
+    backgrounds: { default: "light" },
+  },
+} satisfies Meta<typeof SelectDistributionPeriodInput>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
   args: {
     title: "Distribution Period",
     period: 90,
     periods,
-    changePeriod: action("changePeriod"),
+    changePeriod: fn(),
   },
 };

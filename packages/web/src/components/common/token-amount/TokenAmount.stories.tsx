@@ -1,5 +1,5 @@
 import { TokenModel } from "@models/token/token-model";
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/nextjs";
 import TokenAmount, { type TokenAmountProps } from "./TokenAmount";
 
 export default {

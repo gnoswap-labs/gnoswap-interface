@@ -1,29 +1,37 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import { css, Theme } from "@emotion/react";
-import { action } from "@storybook/addon-actions";
+import { fn } from "@storybook/test";
 
 import SearchMenuModal from "./SearchMenuModal";
 
-export default {
+const meta = {
   title: "common/Header/SearchMenuModal",
   component: SearchMenuModal,
-} as ComponentMeta<typeof SearchMenuModal>;
+  tags: ["autodocs"],
+  decorators: [
+    (Story: React.ComponentType) => (
+      <div css={wrapper}>
+        <Story />
+      </div>
+    ),
+  ],
+} satisfies Meta<typeof SearchMenuModal>;
 
-const Template: ComponentStory<typeof SearchMenuModal> = args => (
-  <div css={wrapper}>
-    <SearchMenuModal {...args} />
-  </div>
-);
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof SearchMenuModal>]?: React.ComponentProps<typeof SearchMenuModal>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  onSearchMenuToggle: action("onSearchMenuToggle"),
-  search: action("search"),
-  keyword: "",
-  isFetched: true,
-  placeholder: "Search",
-  tokens: [],
+export const Default: Story = {
+  args: {
+    onSearchMenuToggle: fn(),
+    search: fn(),
+    keyword: "",
+    isFetched: true,
+    placeholder: "Search",
+    tokens: [],
+  },
 };
 
 const wrapper = (theme: Theme) => css`

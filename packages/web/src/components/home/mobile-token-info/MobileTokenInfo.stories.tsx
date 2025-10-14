@@ -1,23 +1,31 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { css, Theme } from "@emotion/react";
 
 import MobileTokenInfo from "./MobileTokenInfo";
-import { css, Theme } from "@emotion/react";
 import { createDummyTokenList } from "@containers/token-list-container/TokenListContainer";
 
-export default {
+const meta = {
   title: "home/TokenList/MobileTokenInfo",
   component: MobileTokenInfo,
-} as ComponentMeta<typeof MobileTokenInfo>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof MobileTokenInfo>;
 
-const Template: ComponentStory<typeof MobileTokenInfo> = args => (
-  <div css={wrapper}>
-    <MobileTokenInfo {...args} item={createDummyTokenList()[0]} idx={1} />
-  </div>
-);
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof MobileTokenInfo>]: K extends "children"
+    ? React.ReactNode
+    : React.ComponentProps<typeof MobileTokenInfo>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {};
+export const Default: Story = {
+  render: (args: React.ComponentProps<typeof MobileTokenInfo>) => (
+    <div css={wrapper}>
+      <MobileTokenInfo {...args} item={createDummyTokenList()[0]} idx={1} />
+    </div>
+  ),
+  args: {},
+};
 
 const wrapper = (theme: Theme) => css`
   color: ${theme.color.text02};

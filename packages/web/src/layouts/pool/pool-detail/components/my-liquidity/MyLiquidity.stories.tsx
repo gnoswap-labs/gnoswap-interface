@@ -1,25 +1,34 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import MyLiquidity from "./MyLiquidity";
 import { css } from "@emotion/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+
 import { DEVICE_TYPE } from "@styles/media";
 
-export default {
+import MyLiquidity from "./MyLiquidity";
+
+const meta = {
   title: "pool/MyLiquidity",
   component: MyLiquidity,
-} as ComponentMeta<typeof MyLiquidity>;
+  tags: ["autodocs"],
+  decorators: [
+    (Story: React.ComponentType) => (
+      <div css={wrapper}>
+        <div css={contentWrap}>
+          <Story />
+        </div>
+      </div>
+    ),
+  ],
+} satisfies Meta<typeof MyLiquidity>;
 
-const Template: ComponentStory<typeof MyLiquidity> = args => (
-  <div css={wrapper}>
-    <div css={contentWrap}>
-      <MyLiquidity {...args} />
-    </div>
-  </div>
-);
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof MyLiquidity>]?: React.ComponentProps<typeof MyLiquidity>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  breakpoint: DEVICE_TYPE.WEB,
+export const Default: Story = {
+  args: {
+    breakpoint: DEVICE_TYPE.WEB,
+  },
 };
 
 const wrapper = () => css`

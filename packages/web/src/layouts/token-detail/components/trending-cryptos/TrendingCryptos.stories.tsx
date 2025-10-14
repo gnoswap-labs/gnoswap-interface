@@ -1,17 +1,19 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import TrendingCryptos from "./TrendingCryptos";
 import TrendingCryptoCardListContainer from "../../containers/trending-crypto-card-list-container/TrendingCryptoCardListContainer";
 
-export default {
+const meta = {
   title: "token/TrendingCryptos",
   component: TrendingCryptos,
-} as ComponentMeta<typeof TrendingCryptos>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof TrendingCryptos>;
 
-const Template: ComponentStory<typeof TrendingCryptos> = args => (
-  <TrendingCryptos {...args} cardList={<TrendingCryptoCardListContainer />} />
-);
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default = Template.bind({});
-Default.args = {};
+export const Default: Story = {
+  args: {
+    cardList: <TrendingCryptoCardListContainer />,
+  },
+};

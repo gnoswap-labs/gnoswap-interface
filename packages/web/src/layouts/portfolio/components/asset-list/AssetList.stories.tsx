@@ -1,10 +1,10 @@
-import { action } from "@storybook/addon-actions";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
 import { DEVICE_TYPE } from "@styles/media";
 
-import { Asset } from "./asset-list-table/AssetListTable";
 import AssetList from "./AssetList";
+import { Asset } from "./asset-list-table/AssetListTable";
 
 const dummyAssetList: Asset[] = [
   {
@@ -37,29 +37,37 @@ const dummyAssetList: Asset[] = [
   },
 ];
 
-export default {
+const meta = {
   title: "wallet/AssetList",
   component: AssetList,
-} as ComponentMeta<typeof AssetList>;
+  tags: ["autodocs"],
+  parameters: {
+    backgrounds: { default: "light" },
+  },
+} satisfies Meta<typeof AssetList>;
 
-const Template: ComponentStory<typeof AssetList> = args => <AssetList {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof AssetList>]?: React.ComponentProps<typeof AssetList>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  assets: dummyAssetList,
-  isFetched: true,
-  assetType: "All",
-  invisibleZeroBalance: false,
-  keyword: "",
-  extended: false,
-  hasLoader: true,
-  changeAssetType: action("changeAssetType"),
-  search: action("search"),
-  toggleInvisibleZeroBalance: action("toggleInvisibleZeroBalance"),
-  toggleExtended: action("toggleExtended"),
-  deposit: action("deposit"),
-  withdraw: action("withdraw"),
-  breakpoint: DEVICE_TYPE.WEB,
-  searchIcon: true,
-  onTogleSearch: action("onTogleSearch"),
+export const Default: Story = {
+  args: {
+    assets: dummyAssetList,
+    isFetched: true,
+    assetType: "All",
+    invisibleZeroBalance: false,
+    keyword: "",
+    extended: false,
+    hasLoader: true,
+    changeAssetType: fn(),
+    search: fn(),
+    toggleInvisibleZeroBalance: fn(),
+    toggleExtended: fn(),
+    deposit: fn(),
+    withdraw: fn(),
+    breakpoint: DEVICE_TYPE.WEB,
+    searchIcon: true,
+    onTogleSearch: fn(),
+  },
 };

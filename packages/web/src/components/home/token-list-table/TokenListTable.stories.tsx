@@ -1,30 +1,37 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import TokenListTable from "./TokenListTable";
 import { createDummyTokenList } from "@containers/token-list-container/TokenListContainer";
 
-export default {
+const meta = {
   title: "home/TokenList/TokenListTable",
   component: TokenListTable,
-} as ComponentMeta<typeof TokenListTable>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof TokenListTable>;
 
-const Template: ComponentStory<typeof TokenListTable> = args => <TokenListTable {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof TokenListTable>]?: React.ComponentProps<typeof TokenListTable>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  tokens: createDummyTokenList(),
-  isFetched: true,
+export const Default: Story = {
+  args: {
+    tokens: createDummyTokenList(),
+    isFetched: true,
+  },
 };
 
-export const Skeleton = Template.bind({});
-Skeleton.args = {
-  tokens: [],
-  isFetched: false,
+export const Skeleton: Story = {
+  args: {
+    tokens: [],
+    isFetched: false,
+  },
 };
 
-export const NotFount = Template.bind({});
-NotFount.args = {
-  tokens: [],
-  isFetched: true,
+export const NotFound: Story = {
+  args: {
+    tokens: [],
+    isFetched: true,
+  },
 };

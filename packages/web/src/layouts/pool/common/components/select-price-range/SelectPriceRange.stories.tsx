@@ -1,18 +1,26 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import SelectPriceRange from "./SelectPriceRange";
-import { action } from "@storybook/addon-actions";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
-export default {
+import SelectPriceRange from "./SelectPriceRange";
+
+const meta = {
   title: "common/AddLiquidity/SelectPriceRange",
   component: SelectPriceRange,
-} as ComponentMeta<typeof SelectPriceRange>;
+  tags: ["autodocs"],
+  parameters: {
+    backgrounds: { default: "light" },
+  },
+} satisfies Meta<typeof SelectPriceRange>;
 
-const Template: ComponentStory<typeof SelectPriceRange> = args => <SelectPriceRange {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof SelectPriceRange>]?: React.ComponentProps<typeof SelectPriceRange>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  priceRanges: [],
-  priceRange: undefined,
-  changePriceRange: action("changePriceRange"),
+export const Default: Story = {
+  args: {
+    priceRanges: [],
+    priceRange: undefined,
+    changePriceRange: fn(),
+  },
 };

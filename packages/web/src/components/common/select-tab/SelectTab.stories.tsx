@@ -1,16 +1,21 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import SelectTab from "./SelectTab";
 
-export default {
+const meta = {
   title: "common/SelectTab",
   component: SelectTab,
-} as ComponentMeta<typeof SelectTab>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof SelectTab>;
 
-const Template: ComponentStory<typeof SelectTab> = args => <SelectTab {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof SelectTab>]: K extends "children"
+    ? React.ReactNode
+    : React.ComponentProps<typeof SelectTab>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  list: ["All", "Incentivized", "Non-Incentivized"],
+export const Default: Story = {
+  args: {
+    list: ["All", "Incentivized", "Non-Incentivized"],
+  },
 };

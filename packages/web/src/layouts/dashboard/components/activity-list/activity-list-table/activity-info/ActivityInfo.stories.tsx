@@ -1,24 +1,27 @@
+import React from "react";
 import { css, Theme } from "@emotion/react";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
-
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import { dummyActivityData } from "@repositories/activity/responses/activity-responses";
-
 import ActivityInfo from "./ActivityInfo";
 
-export default {
+const meta = {
   title: "dashboard/ActivityInfo",
   component: ActivityInfo,
-} as ComponentMeta<typeof ActivityInfo>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof ActivityInfo>;
 
-const Template: ComponentStory<typeof ActivityInfo> = args => (
-  <div css={wrapper}>
-    <ActivityInfo {...args} />
-  </div>
-);
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default = Template.bind({});
-Default.args = {
-  item: dummyActivityData,
+export const Default: Story = {
+  render: (args: React.ComponentProps<typeof ActivityInfo>) => (
+    <div css={wrapper}>
+      <ActivityInfo {...args} />
+    </div>
+  ),
+  args: {
+    item: dummyActivityData,
+  },
 };
 
 const wrapper = (theme: Theme) => css`

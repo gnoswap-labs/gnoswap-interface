@@ -1,7 +1,7 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import { css, Theme } from "@emotion/react";
-import { action } from "@storybook/addon-actions";
+import { fn } from "@storybook/test";
 
 import Header from "./Header";
 import { DEVICE_TYPE } from "@styles/media";
@@ -19,34 +19,42 @@ const defaultAccountInfo: AccountModel = {
   email: "",
 };
 
-export default {
+const meta = {
   title: "common/Header",
   component: Header,
-} as ComponentMeta<typeof Header>;
+  tags: ["autodocs"],
+  decorators: [
+    (Story: React.ComponentType) => (
+      <div css={wrapper}>
+        <Story />
+      </div>
+    ),
+  ],
+} satisfies Meta<typeof Header>;
 
-const Template: ComponentStory<typeof Header> = args => (
-  <div css={wrapper}>
-    <Header {...args} />
-  </div>
-);
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof Header>]?: React.ComponentProps<typeof Header>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  pathname: "/",
-  connected: false,
-  account: defaultAccountInfo,
-  connectAdenaClient: action("connectAdenaClient"),
-  disconnectWallet: action("disconnectWallet"),
-  sideMenuToggle: true,
-  onSideMenuToggle: action("onSideMenuToggle"),
-  searchMenuToggle: true,
-  onSearchMenuToggle: action("onSearchMenuToggle"),
-  tokens: [],
-  isFetched: true,
-  error: null,
-  search: action("search"),
-  keyword: "",
-  breakpoint: DEVICE_TYPE.WEB,
+export const Default: Story = {
+  args: {
+    pathname: "/",
+    connected: false,
+    account: defaultAccountInfo,
+    connectAdenaClient: fn(),
+    disconnectWallet: fn(),
+    sideMenuToggle: true,
+    onSideMenuToggle: fn(),
+    searchMenuToggle: true,
+    onSearchMenuToggle: fn(),
+    tokens: [],
+    isFetched: true,
+    error: null,
+    search: fn(),
+    keyword: "",
+    breakpoint: DEVICE_TYPE.WEB,
+  },
 };
 
 const wrapper = (theme: Theme) => css`

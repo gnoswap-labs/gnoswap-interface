@@ -1,25 +1,32 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import WalletBalanceDetailInfo from "./WalletBalanceDetailInfo";
 
-export default {
+const meta = {
   title: "wallet/WalletBalance/WalletBalanceDetail/WalletBalanceDetailInfo",
   component: WalletBalanceDetailInfo,
-} as ComponentMeta<typeof WalletBalanceDetailInfo>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof WalletBalanceDetailInfo>;
 
-const Template: ComponentStory<typeof WalletBalanceDetailInfo> = args => <WalletBalanceDetailInfo {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof WalletBalanceDetailInfo>]?: React.ComponentProps<
+    typeof WalletBalanceDetailInfo
+  >[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  title: "Default",
-  value: "$1.10",
-  tooltip: undefined,
+export const Default: Story = {
+  args: {
+    title: "Default",
+    value: "$1.10",
+    tooltip: undefined,
+  },
 };
 
-export const DefaultTooltip = Template.bind({});
-DefaultTooltip.args = {
-  title: "DefaultTooltip",
-  value: "$1.10",
-  tooltip: "Hello world",
+export const DefaultTooltip: Story = {
+  args: {
+    title: "DefaultTooltip",
+    value: "$1.10",
+    tooltip: "Hello world",
+  },
 };

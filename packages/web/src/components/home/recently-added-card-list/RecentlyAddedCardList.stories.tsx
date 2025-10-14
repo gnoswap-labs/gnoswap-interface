@@ -1,16 +1,23 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import RecentlyAddedCardList from "./RecentlyAddedCardList";
 
-export default {
+const meta = {
   title: "home/RecentlyAddedCardList",
   component: RecentlyAddedCardList,
-} as ComponentMeta<typeof RecentlyAddedCardList>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof RecentlyAddedCardList>;
 
-const Template: ComponentStory<typeof RecentlyAddedCardList> = args => <RecentlyAddedCardList {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof RecentlyAddedCardList>]: K extends "children"
+    ? React.ReactNode
+    : React.ComponentProps<typeof RecentlyAddedCardList>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  list: [],
+export const Default: Story = {
+  args: {
+    list: [],
+  },
 };

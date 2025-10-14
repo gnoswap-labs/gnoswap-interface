@@ -1,37 +1,46 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 import EarnMyPositionsContent from "./EarnMyPositionsContent";
 
-export default {
+const meta = {
   title: "earn/EarnMyPositionsContent",
   component: EarnMyPositionsContent,
-} as ComponentMeta<typeof EarnMyPositionsContent>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof EarnMyPositionsContent>;
 
-const Template: ComponentStory<typeof EarnMyPositionsContent> = args => <EarnMyPositionsContent {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof EarnMyPositionsContent>]?: React.ComponentProps<
+    typeof EarnMyPositionsContent
+  >[K];
+}>;
 
-export const UnConnected = Template.bind({});
-UnConnected.args = {
-  connected: false,
-  fetched: true,
-  positions: [],
-  connect: action("connect"),
-  movePoolDetail: action("movePoolDetail"),
+export const UnConnected: Story = {
+  args: {
+    connected: false,
+    fetched: true,
+    positions: [],
+    connect: fn(),
+    movePoolDetail: fn(),
+  },
 };
 
-export const NoLiquidity = Template.bind({});
-NoLiquidity.args = {
-  connected: true,
-  fetched: true,
-  positions: [],
-  connect: action("connect"),
-  movePoolDetail: action("movePoolDetail"),
+export const NoLiquidity: Story = {
+  args: {
+    connected: true,
+    fetched: true,
+    positions: [],
+    connect: fn(),
+    movePoolDetail: fn(),
+  },
 };
 
-export const CardList = Template.bind({});
-CardList.args = {
-  connected: true,
-  fetched: true,
-  positions: [],
-  connect: action("connect"),
-  movePoolDetail: action("movePoolDetail"),
+export const CardList: Story = {
+  args: {
+    connected: true,
+    fetched: true,
+    positions: [],
+    connect: fn(),
+    movePoolDetail: fn(),
+  },
 };

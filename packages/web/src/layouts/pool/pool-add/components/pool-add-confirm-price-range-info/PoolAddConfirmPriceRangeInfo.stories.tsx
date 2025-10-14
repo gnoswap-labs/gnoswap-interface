@@ -1,5 +1,5 @@
 import PoolAddConfirmPriceRangeInfo, { type PoolAddConfirmPriceRangeInfoProps } from "./PoolAddConfirmPriceRangeInfo";
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/nextjs";
 
 export default {
   title: "pool/pool-add/PoolAddConfirmPriceRangeInfo",

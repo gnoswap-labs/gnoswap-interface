@@ -1,25 +1,29 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
-import VolumeChart from "./VolumeChart";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 import { CHART_TYPE } from "@constants/option.constant";
+import VolumeChart from "./VolumeChart";
 
-export default {
+const meta = {
   title: "dashboard/VolumeChart",
   component: VolumeChart,
-} as ComponentMeta<typeof VolumeChart>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof VolumeChart>;
 
-const Template: ComponentStory<typeof VolumeChart> = args => <VolumeChart {...args} />;
-
-export const Default = Template.bind({});
-Default.args = {
-  volumeChartType: CHART_TYPE["7D"],
-  changeVolumeChartType: action("changeVolumeChartType"),
-  volumePriceInfo: { amount: "$100,450,000", fee: "$12,231" },
-  volumeChartInfo: {
-    datas: Array.from({ length: 24 }, (_, index) => `${index + 1}`),
-    xAxisLabels: ["09:00", "12:00", "15:00", "18:00", "21:00", "24:00"],
-    times: [],
-    fees: [],
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof VolumeChart>]?: React.ComponentProps<typeof VolumeChart>[K];
+}>;
+export const Default: Story = {
+  args: {
+    volumeChartType: CHART_TYPE["7D"],
+    changeVolumeChartType: fn(),
+    volumePriceInfo: { amount: "$100,450,000", fee: "$12,231" },
+    volumeChartInfo: {
+      datas: Array.from({ length: 24 }, (_, index) => `${index + 1}`),
+      xAxisLabels: ["09:00", "12:00", "15:00", "18:00", "21:00", "24:00"],
+      times: [],
+      fees: [],
+    },
   },
 };

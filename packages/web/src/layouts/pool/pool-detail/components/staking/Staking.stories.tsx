@@ -1,19 +1,23 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import { DEVICE_TYPE } from "@styles/media";
 
 import Staking from "./Staking";
 
-export default {
+const meta = {
   title: "pool/Staking",
   component: Staking,
-} as ComponentMeta<typeof Staking>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof Staking>;
 
-const Template: ComponentStory<typeof Staking> = args => <Staking {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof Staking>]?: React.ComponentProps<typeof Staking>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  breakpoint: DEVICE_TYPE.WEB,
-  mobile: false,
+export const Default: Story = {
+  args: {
+    breakpoint: DEVICE_TYPE.WEB,
+    mobile: false,
+  },
 };

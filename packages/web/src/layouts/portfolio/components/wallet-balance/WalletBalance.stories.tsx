@@ -1,78 +1,86 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
-import WalletBalance from "./WalletBalance";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
+
 import { DEVICE_TYPE } from "@styles/media";
 
-export default {
+import WalletBalance from "./WalletBalance";
+
+const meta = {
   title: "wallet/WalletBalance",
   component: WalletBalance,
-} as ComponentMeta<typeof WalletBalance>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof WalletBalance>;
 
-const Template: ComponentStory<typeof WalletBalance> = args => <WalletBalance {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof WalletBalance>]?: React.ComponentProps<typeof WalletBalance>[K];
+}>;
 
-export const ConnectionSucceeded = Template.bind({});
-ConnectionSucceeded.args = {
-  connected: true,
-  balanceSummaryInfo: {
-    amount: "$1,000.00",
-    changeRate: "+1.1%",
-    loading: false,
+export const ConnectionSucceeded: Story = {
+  args: {
+    connected: true,
+    balanceSummaryInfo: {
+      amount: "$1,000.00",
+      changeRate: "+1.1%",
+      loading: false,
+    },
+    balanceDetailInfo: {
+      availableBalance: "$1.10",
+      stakedLP: "$1.20",
+      unstakedLP: "$1.30",
+      claimableRewards: "$1.40",
+      loadingBalance: false,
+      loadingPositions: false,
+      totalClaimedRewards: "$1.50",
+    },
+    deposit: fn(),
+    withdraw: fn(),
+    claimAll: fn(),
+    breakpoint: DEVICE_TYPE.WEB,
   },
-  balanceDetailInfo: {
-    availableBalance: "$1.10",
-    stakedLP: "$1.20",
-    unstakedLP: "$1.30",
-    claimableRewards: "$1.40",
-    loadingBalance: false,
-    loadingPositions: false,
-    totalClaimedRewards: "$1.50",
-  },
-  deposit: action("deposit"),
-  withdraw: action("withdraw"),
-  claimAll: action("claimAll"),
-  breakpoint: DEVICE_TYPE.WEB,
 };
 
-export const ConnectionFailed = Template.bind({});
-ConnectionFailed.args = {
-  connected: false,
-  balanceSummaryInfo: {
-    amount: "$0.00",
-    changeRate: "+0%",
-    loading: false,
+export const ConnectionFailed: Story = {
+  args: {
+    connected: false,
+    balanceSummaryInfo: {
+      amount: "$0.00",
+      changeRate: "+0%",
+      loading: false,
+    },
+    balanceDetailInfo: {
+      availableBalance: "$0.00",
+      stakedLP: "$0.00",
+      unstakedLP: "$0.00",
+      claimableRewards: "$0.00",
+      loadingBalance: false,
+      loadingPositions: false,
+      totalClaimedRewards: "$1.50",
+    },
+    deposit: fn(),
+    withdraw: fn(),
   },
-  balanceDetailInfo: {
-    availableBalance: "$0.00",
-    stakedLP: "$0.00",
-    unstakedLP: "$0.00",
-    claimableRewards: "$0.00",
-    loadingBalance: false,
-    loadingPositions: false,
-    totalClaimedRewards: "$1.50",
-  },
-  deposit: action("deposit"),
-  withdraw: action("withdraw"),
 };
 
-export const LoadingData = Template.bind({});
-LoadingData.args = {
-  connected: true,
-  balanceSummaryInfo: {
-    amount: "$0.00",
-    changeRate: "+0%",
-    loading: false,
+export const LoadingData: Story = {
+  args: {
+    connected: true,
+    balanceSummaryInfo: {
+      amount: "$0.00",
+      changeRate: "+0%",
+      loading: false,
+    },
+    balanceDetailInfo: {
+      availableBalance: "$0.00",
+      stakedLP: "$0.00",
+      unstakedLP: "$0.00",
+      claimableRewards: "$0.00",
+      loadingBalance: false,
+      loadingPositions: false,
+      totalClaimedRewards: "$1.50",
+    },
+    deposit: fn(),
+    withdraw: fn(),
+    claimAll: fn(),
   },
-  balanceDetailInfo: {
-    availableBalance: "$0.00",
-    stakedLP: "$0.00",
-    unstakedLP: "$0.00",
-    claimableRewards: "$0.00",
-    loadingBalance: false,
-    loadingPositions: false,
-    totalClaimedRewards: "$1.50",
-  },
-  deposit: action("deposit"),
-  withdraw: action("withdraw"),
-  claimAll: action("claimAll"),
 };

@@ -1,5 +1,5 @@
 import LineGraph, { type LineGraphProps } from "./LineGraph";
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/nextjs";
 
 export default {
   title: "common/LineGraph",

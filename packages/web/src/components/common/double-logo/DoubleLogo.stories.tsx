@@ -1,19 +1,20 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import DoubleLogo from "./DoubleLogo";
 
-export default {
+const meta = {
   title: "common/DoubleLogo",
   component: DoubleLogo,
-} as ComponentMeta<typeof DoubleLogo>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof DoubleLogo>;
 
-const Template: ComponentStory<typeof DoubleLogo> = args => <DoubleLogo {...args} />;
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default = Template.bind({});
-Default.args = {
-  left: "https://picsum.photos/id/7/36/36",
-  right: "https://picsum.photos/id/101/36/36",
-  size: 36,
-  overlap: 8,
+export const Default: Story = {
+  args: {
+    left: "https://picsum.photos/id/7/36/36",
+    right: "https://picsum.photos/id/101/36/36",
+    size: 36,
+    overlap: 8,
+  },
 };

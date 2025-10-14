@@ -1,6 +1,6 @@
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import TokenChartInfo, { type TokenChartInfoProps } from "./TokenChartInfo";
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/nextjs";
 
 export default {
   title: "token/TokenChartInfo",

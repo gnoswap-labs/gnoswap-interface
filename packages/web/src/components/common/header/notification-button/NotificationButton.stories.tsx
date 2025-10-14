@@ -1,14 +1,15 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import NotificationButton from "./NotificationButton";
 import { DEVICE_TYPE } from "@styles/media";
 
-export default {
+const meta = {
   title: "common/NotificationButton",
   component: NotificationButton,
+  tags: ["autodocs"],
   decorators: [
-    Story => (
+    (Story: React.ComponentType) => (
       <div
         style={{
           position: "fixed",
@@ -21,11 +22,13 @@ export default {
       </div>
     ),
   ],
-} as ComponentMeta<typeof NotificationButton>;
+} satisfies Meta<typeof NotificationButton>;
 
-const Template: ComponentStory<typeof NotificationButton> = args => <NotificationButton {...args} />;
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default = Template.bind({});
-Default.args = {
-  breakpoint: DEVICE_TYPE.WEB,
+export const Default: Story = {
+  args: {
+    breakpoint: DEVICE_TYPE.WEB,
+  },
 };

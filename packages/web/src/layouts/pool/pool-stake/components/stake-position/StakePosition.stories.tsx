@@ -1,17 +1,22 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
-import StakePosition from "./StakePosition";
 import StakePositionContainer from "../../containers/stake-position-container/StakePositionContainer";
 
-export default {
+import StakePosition from "./StakePosition";
+
+const meta = {
   title: "stake/StakePosition",
   component: StakePosition,
-} as ComponentMeta<typeof StakePosition>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof StakePosition>;
 
-const Template: ComponentStory<typeof StakePosition> = () => {
-  return <StakePositionContainer />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof StakePosition>]: K extends "children"
+    ? React.ReactNode
+    : React.ComponentProps<typeof StakePosition>[K];
+}>;
+
+export const Default: Story = {
+  render: () => <StakePositionContainer />,
 };
-
-export const Default = Template.bind({});
-Default.args = {};

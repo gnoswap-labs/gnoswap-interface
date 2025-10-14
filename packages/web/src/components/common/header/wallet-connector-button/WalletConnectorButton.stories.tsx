@@ -1,7 +1,7 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 import WalletConnectorButton from "./WalletConnectorButton";
-import { action } from "@storybook/addon-actions";
 import { AccountModel } from "@models/account/account-model";
 
 const defaultAccountInfo: AccountModel = {
@@ -16,11 +16,12 @@ const defaultAccountInfo: AccountModel = {
   email: "",
 };
 
-export default {
+const meta = {
   title: "common/WalletConnector",
   component: WalletConnectorButton,
+  tags: ["autodocs"],
   decorators: [
-    Story => (
+    (Story: React.ComponentType) => (
       <div
         style={{
           position: "fixed",
@@ -33,22 +34,29 @@ export default {
       </div>
     ),
   ],
-} as ComponentMeta<typeof WalletConnectorButton>;
+} satisfies Meta<typeof WalletConnectorButton>;
 
-const Template: ComponentStory<typeof WalletConnectorButton> = args => <WalletConnectorButton {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof WalletConnectorButton>]?: React.ComponentProps<
+    typeof WalletConnectorButton
+  >[K];
+}>;
 
-export const Disconnected = Template.bind({});
-Disconnected.args = {
-  connected: false,
-  account: null,
-  connectAdenaClient: action("connectAdenaClient"),
-  disconnectWallet: action("disconnectWallet"),
+export const Disconnected: Story = {
+  args: {
+    connected: false,
+    account: null,
+    connectAdenaClient: fn(),
+    disconnectWallet: fn(),
+  },
 };
 
-export const Connected = Template.bind({});
-Connected.args = {
-  connected: true,
-  account: defaultAccountInfo,
-  connectAdenaClient: action("connectAdenaClient"),
-  disconnectWallet: action("disconnectWallet"),
+export const Connected: Story = {
+  args: {
+    connected: true,
+    account: defaultAccountInfo,
+    connectAdenaClient: fn(),
+    disconnectWallet: fn(),
+  },
 };

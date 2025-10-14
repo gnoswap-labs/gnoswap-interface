@@ -1,13 +1,19 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
-import TvlChart from "./TvlChart";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 import { CHART_TYPE } from "@constants/option.constant";
+import TvlChart from "./TvlChart";
 
-export default {
+const meta = {
   title: "dashboard/TvlChart",
   component: TvlChart,
-} as ComponentMeta<typeof TvlChart>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof TvlChart>;
+
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof TvlChart>]?: React.ComponentProps<typeof TvlChart>[K];
+}>;
 
 function createData(num: number) {
   return {
@@ -19,12 +25,11 @@ function createData(num: number) {
   };
 }
 
-const Template: ComponentStory<typeof TvlChart> = args => <TvlChart {...args} />;
-
-export const Default = Template.bind({});
-Default.args = {
-  tvlChartType: CHART_TYPE["7D"],
-  changeTvlChartType: action("changeTvlChartType"),
-  tvlPriceInfo: { amount: "$100,450,000" },
-  tvlChartDatas: [createData(1), createData(2), createData(3), createData(4), createData(5)],
+export const Default: Story = {
+  args: {
+    tvlChartType: CHART_TYPE["7D"],
+    changeTvlChartType: fn(),
+    tvlPriceInfo: { amount: "$100,450,000" },
+    tvlChartDatas: [createData(1), createData(2), createData(3), createData(4), createData(5)],
+  },
 };

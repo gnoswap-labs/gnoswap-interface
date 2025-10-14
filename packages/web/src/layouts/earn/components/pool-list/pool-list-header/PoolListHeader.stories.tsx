@@ -1,26 +1,46 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
 import { DEVICE_TYPE } from "@styles/media";
 
 import PoolListHeader from "./PoolListHeader";
 import { POOL_TYPE } from "../types";
 
-export default {
+const meta = {
   title: "earn/PoolList/PoolListHeader",
   component: PoolListHeader,
-} as ComponentMeta<typeof PoolListHeader>;
+  tags: ["autodocs"],
+  argTypes: {
+    poolType: {
+      control: "select",
+      options: Object.values(POOL_TYPE),
+      description: "현재 선택된 풀 타입",
+    },
+    breakpoint: {
+      control: "select",
+      options: Object.values(DEVICE_TYPE),
+      description: "디바이스 타입",
+    },
+    searchIcon: {
+      control: "boolean",
+      description: "검색 아이콘 표시 여부",
+    },
+  },
+} satisfies Meta<typeof PoolListHeader>;
 
-const Template: ComponentStory<typeof PoolListHeader> = args => <PoolListHeader {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof PoolListHeader>]?: React.ComponentProps<typeof PoolListHeader>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  poolType: POOL_TYPE.ALL,
-  changePoolType: action("changePoolType"),
-  search: action("search"),
-  keyword: "",
-  breakpoint: DEVICE_TYPE.WEB,
-  searchIcon: true,
-  onTogleSearch: action("onTogleSearch"),
+export const Default: Story = {
+  args: {
+    poolType: POOL_TYPE.ALL,
+    changePoolType: fn(),
+    search: fn(),
+    keyword: "",
+    breakpoint: DEVICE_TYPE.WEB,
+    searchIcon: true,
+    onTogleSearch: fn(),
+  },
 };

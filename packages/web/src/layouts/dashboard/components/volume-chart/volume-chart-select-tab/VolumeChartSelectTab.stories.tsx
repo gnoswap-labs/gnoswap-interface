@@ -1,20 +1,20 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
-
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 import { CHART_TYPE } from "@constants/option.constant";
-
 import VolumeChartSelectTab from "./VolumeChartSelectTab";
 
-export default {
+const meta = {
   title: "dashboard/VolumeChartSelectTab",
   component: VolumeChartSelectTab,
-} as ComponentMeta<typeof VolumeChartSelectTab>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof VolumeChartSelectTab>;
 
-const Template: ComponentStory<typeof VolumeChartSelectTab> = args => <VolumeChartSelectTab {...args} />;
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default = Template.bind({});
-Default.args = {
-  volumeChartType: CHART_TYPE["7D"],
-  changeVolumeChartType: action("changeVolumeChartType"),
+export const Default: Story = {
+  args: {
+    volumeChartType: CHART_TYPE["7D"],
+    changeVolumeChartType: fn(),
+  },
 };

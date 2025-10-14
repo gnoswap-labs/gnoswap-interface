@@ -14,7 +14,7 @@
     "postinstall": "husky"
   },
   "resolutions": {
-    "@storybook/react-docgen-typescript-plugin": "npm:react-docgen-typescript-plugin@1.0.5"
+    "@storybook/nextjs-docgen-typescript-plugin": "npm:react-docgen-typescript-plugin@1.0.5"
   },
   "devDependencies": {
     "@babel/core": "7.21.0",

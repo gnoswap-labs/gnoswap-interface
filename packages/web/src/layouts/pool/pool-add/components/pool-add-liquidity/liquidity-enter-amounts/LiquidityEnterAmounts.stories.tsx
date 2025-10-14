@@ -1,15 +1,23 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
 import { TokenModel } from "@models/token/token-model";
-import { action } from "@storybook/addon-actions";
+
 import EnterAmounts from "./LiquidityEnterAmounts";
 
-export default {
+const meta = {
   title: "pool/pool-add/EnterAmounts",
   component: EnterAmounts,
-} as ComponentMeta<typeof EnterAmounts>;
+  tags: ["autodocs"],
+  parameters: {
+    backgrounds: { default: "light" },
+  },
+} satisfies Meta<typeof EnterAmounts>;
 
-const Template: ComponentStory<typeof EnterAmounts> = args => <EnterAmounts {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof EnterAmounts>]?: React.ComponentProps<typeof EnterAmounts>[K];
+}>;
 
 const token: TokenModel = {
   isWrappedGasToken: false,
@@ -28,28 +36,29 @@ const token: TokenModel = {
   address: "",
 };
 
-export const Default = Template.bind({});
-Default.args = {
-  tokenAInput: {
-    token: token,
-    amount: "121",
-    usdValue: "$0.00",
-    balance: "0",
-    changeAmount: action("changeAmount"),
-    delegateButtonState: "DELEGATE",
-    delegateButtonText: "Delegate GNS",
-    isAvailableDelegate: true,
+export const Default: Story = {
+  args: {
+    tokenAInput: {
+      token: token,
+      amount: "121",
+      usdValue: "$0.00",
+      balance: "0",
+      changeAmount: fn(),
+      delegateButtonState: "DELEGATE",
+      delegateButtonText: "Delegate GNS",
+      isAvailableDelegate: true,
+    },
+    tokenBInput: {
+      token: token,
+      amount: "121",
+      usdValue: "$0.00",
+      balance: "0",
+      changeAmount: fn(),
+      delegateButtonState: "DELEGATE",
+      delegateButtonText: "Delegate GNS",
+      isAvailableDelegate: true,
+    },
+    changeTokenA: fn(),
+    changeTokenB: fn(),
   },
-  tokenBInput: {
-    token: token,
-    amount: "121",
-    usdValue: "$0.00",
-    balance: "0",
-    changeAmount: action("changeAmount"),
-    delegateButtonState: "DELEGATE",
-    delegateButtonText: "Delegate GNS",
-    isAvailableDelegate: true,
-  },
-  changeTokenA: action("changeTokenA"),
-  changeTokenB: action("changeTokenB"),
 };

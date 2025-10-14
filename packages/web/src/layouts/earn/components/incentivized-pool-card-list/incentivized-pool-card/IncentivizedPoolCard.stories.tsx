@@ -1,5 +1,5 @@
-import { action } from "@storybook/addon-actions";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { IncentivizePoolModel } from "@models/pool/pool-model";
@@ -17,16 +17,20 @@ const cardInfoWithPriceGrade: IncentivizePoolCardInfoWithPriceGrade = {
   tokenBPriceGrade: "NONE",
 };
 
-export default {
+const meta = {
   title: "earn/IncentivizedPoolCard",
   component: IncentivizedPoolCard,
-} as ComponentMeta<typeof IncentivizedPoolCard>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof IncentivizedPoolCard>;
 
-const Template: ComponentStory<typeof IncentivizedPoolCard> = args => {
-  return <IncentivizedPoolCard {...args} pool={cardInfoWithPriceGrade} />;
-};
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof IncentivizedPoolCard>]?: React.ComponentProps<typeof IncentivizedPoolCard>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  routeItem: action("routeItem"),
+export const Default: Story = {
+  args: {
+    pool: cardInfoWithPriceGrade,
+    routeItem: fn(),
+  },
 };

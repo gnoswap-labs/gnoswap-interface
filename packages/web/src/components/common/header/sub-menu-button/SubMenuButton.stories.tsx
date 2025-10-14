@@ -1,12 +1,13 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import SubMenuButton from "./SubMenuButton";
 
-export default {
+const meta = {
   title: "common/SubMenuButton",
   component: SubMenuButton,
+  tags: ["autodocs"],
   decorators: [
-    Story => (
+    (Story: React.ComponentType) => (
       <div
         style={{
           position: "fixed",
@@ -19,16 +20,21 @@ export default {
       </div>
     ),
   ],
-} as ComponentMeta<typeof SubMenuButton>;
+} satisfies Meta<typeof SubMenuButton>;
 
-const Template: ComponentStory<typeof SubMenuButton> = args => <SubMenuButton {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof SubMenuButton>]?: React.ComponentProps<typeof SubMenuButton>[K];
+}>;
 
-export const Disconnected = Template.bind({});
-Disconnected.args = {
-  sideMenuToggle: true,
+export const Disconnected: Story = {
+  args: {
+    sideMenuToggle: true,
+  },
 };
 
-export const Connected = Template.bind({});
-Connected.args = {
-  sideMenuToggle: false,
+export const Connected: Story = {
+  args: {
+    sideMenuToggle: false,
+  },
 };

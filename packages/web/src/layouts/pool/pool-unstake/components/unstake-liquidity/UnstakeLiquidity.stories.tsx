@@ -1,15 +1,18 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import UnstakeLiquidity from "./UnstakeLiquidity";
 
-export default {
+const meta = {
   title: "pool/pool-unstake/UnstakeLiquidity",
   component: UnstakeLiquidity,
-} as ComponentMeta<typeof UnstakeLiquidity>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof UnstakeLiquidity>;
 
-const Template: ComponentStory<typeof UnstakeLiquidity> = args => {
-  return <UnstakeLiquidity {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof UnstakeLiquidity>]?: React.ComponentProps<typeof UnstakeLiquidity>[K];
+}>;
+
+export const Default: Story = {
+  args: {},
 };
-
-export const Default = Template.bind({});
-Default.args = {};

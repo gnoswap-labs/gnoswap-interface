@@ -1,27 +1,33 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
 import { css } from "@emotion/react";
-import { action } from "@storybook/addon-actions";
+import { fn } from "@storybook/test";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import SettingMenuModal from "./SettingMenuModal";
 
-export default {
+const meta = {
   title: "swap/SettingMenuModal",
   component: SettingMenuModal,
-} as ComponentMeta<typeof SettingMenuModal>;
+  tags: ["autodocs"],
+  decorators: [
+    (Story: React.ComponentType) => (
+      <div css={wrapper}>
+        <div css={contentWrap}>
+          <Story />
+        </div>
+      </div>
+    ),
+  ],
+} satisfies Meta<typeof SettingMenuModal>;
 
-const Template: ComponentStory<typeof SettingMenuModal> = args => (
-  <div css={wrapper}>
-    <div css={contentWrap}>
-      <SettingMenuModal {...args} />
-    </div>
-  </div>
-);
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default = Template.bind({});
-Default.args = {
-  slippage: 0,
-  changeSlippage: action("changeSlippage"),
-  close: action("close"),
+export const Default: Story = {
+  args: {
+    slippage: 0,
+    changeSlippage: fn(),
+    close: fn(),
+  },
 };
 
 const wrapper = () => css`

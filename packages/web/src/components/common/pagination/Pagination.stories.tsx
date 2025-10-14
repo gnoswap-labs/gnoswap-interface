@@ -1,19 +1,20 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
-
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 import Pagination from "./Pagination";
 
-export default {
+const meta = {
   title: "common/Pagination",
   component: Pagination,
-} as ComponentMeta<typeof Pagination>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof Pagination>;
 
-const Template: ComponentStory<typeof Pagination> = args => <Pagination {...args} />;
+export default meta;
+type Story = StoryObj<typeof meta>;
 
-export const Default = Template.bind({});
-Default.args = {
-  totalPage: 100,
-  currentPage: 0,
-  onPageChange: action("onPageChange"),
+export const Default: Story = {
+  args: {
+    totalPage: 100,
+    currentPage: 0,
+    onPageChange: fn(),
+  },
 };

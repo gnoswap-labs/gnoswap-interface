@@ -1,16 +1,20 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import PricePerformanceList, { performanceInit } from "./PricePerformanceList";
 
-export default {
+const meta = {
   title: "token/PricePerformanceList",
   component: PricePerformanceList,
-} as ComponentMeta<typeof PricePerformanceList>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof PricePerformanceList>;
 
-const Template: ComponentStory<typeof PricePerformanceList> = args => <PricePerformanceList {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof PricePerformanceList>]?: React.ComponentProps<typeof PricePerformanceList>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  list: performanceInit,
+export const Default: Story = {
+  args: {
+    list: performanceInit,
+  },
 };

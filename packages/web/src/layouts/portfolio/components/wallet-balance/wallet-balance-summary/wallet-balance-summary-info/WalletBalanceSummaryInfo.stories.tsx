@@ -1,19 +1,26 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+
 import WalletBalanceSummaryInfo from "./WalletBalanceSummaryInfo";
 
-export default {
+const meta = {
   title: "wallet/WalletBalance/WalletBalanceSummary/WalletBalanceSummaryInfo",
   component: WalletBalanceSummaryInfo,
-} as ComponentMeta<typeof WalletBalanceSummaryInfo>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof WalletBalanceSummaryInfo>;
 
-const Template: ComponentStory<typeof WalletBalanceSummaryInfo> = args => <WalletBalanceSummaryInfo {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof WalletBalanceSummaryInfo>]?: React.ComponentProps<
+    typeof WalletBalanceSummaryInfo
+  >[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  balanceSummaryInfo: {
-    amount: "1,000.00",
-    changeRate: "+1.10%",
-    loading: false,
+export const Default: Story = {
+  args: {
+    balanceSummaryInfo: {
+      amount: "1,000.00",
+      changeRate: "+1.10%",
+      loading: false,
+    },
   },
 };

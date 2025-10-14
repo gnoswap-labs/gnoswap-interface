@@ -1,5 +1,4 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 
@@ -35,14 +34,21 @@ const trendingCryptoInit: TrendingCryptoInfo[] = [
 
 export const trendingCryptoListInit = [...trendingCryptoInit, ...trendingCryptoInit, trendingCryptoInit[0]];
 
-export default {
+const meta = {
   title: "token/TrendingCryptoCardList",
   component: TrendingCryptoCardList,
-} as ComponentMeta<typeof TrendingCryptoCardList>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof TrendingCryptoCardList>;
 
-const Template: ComponentStory<typeof TrendingCryptoCardList> = args => <TrendingCryptoCardList {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof TrendingCryptoCardList>]?: React.ComponentProps<
+    typeof TrendingCryptoCardList
+  >[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  list: trendingCryptoListInit,
+export const Default: Story = {
+  args: {
+    list: trendingCryptoListInit,
+  },
 };

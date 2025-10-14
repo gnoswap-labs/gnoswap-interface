@@ -1,13 +1,18 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+
 import SelectStakeResult from "./SelectStakeResult";
 
-export default {
+const meta = {
   title: "stake/SelectStakeResult",
   component: SelectStakeResult,
-} as ComponentMeta<typeof SelectStakeResult>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof SelectStakeResult>;
 
-const Template: ComponentStory<typeof SelectStakeResult> = args => <SelectStakeResult {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof SelectStakeResult>]?: React.ComponentProps<typeof SelectStakeResult>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {};
+export const Default: Story = {
+  args: {},
+};

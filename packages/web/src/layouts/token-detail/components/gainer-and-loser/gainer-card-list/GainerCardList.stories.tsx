@@ -1,5 +1,4 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 
@@ -43,14 +42,19 @@ export const gainersInit = [
   },
 ];
 
-export default {
+const meta = {
   title: "token/GainerCardList",
   component: GainerCardList,
-} as ComponentMeta<typeof GainerCardList>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof GainerCardList>;
 
-const Template: ComponentStory<typeof GainerCardList> = args => <GainerCardList {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof GainerCardList>]?: React.ComponentProps<typeof GainerCardList>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  gainers: gainersInit,
+export const Default: Story = {
+  args: {
+    gainers: gainersInit,
+  },
 };

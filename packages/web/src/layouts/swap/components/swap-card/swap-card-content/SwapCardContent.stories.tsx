@@ -1,7 +1,9 @@
 import { css } from "@emotion/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
+
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
-import { action } from "@storybook/addon-actions";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+
 import SwapCardContent from "./SwapCardContent";
 
 const swapTokenInfo: SwapTokenInfo = {
@@ -43,28 +45,36 @@ const swapTokenInfo: SwapTokenInfo = {
   slippage: 10,
 };
 
-export default {
+const meta = {
   title: "swap/SwapCardContent",
   component: SwapCardContent,
-} as ComponentMeta<typeof SwapCardContent>;
+  tags: ["autodocs"],
+  decorators: [
+    (Story: React.ComponentType) => (
+      <div css={wrapper}>
+        <div css={contentWrap}>
+          <Story />
+        </div>
+      </div>
+    ),
+  ],
+} satisfies Meta<typeof SwapCardContent>;
 
-const Template: ComponentStory<typeof SwapCardContent> = args => (
-  <div css={wrapper}>
-    <div css={contentWrap}>
-      <SwapCardContent {...args} />
-    </div>
-  </div>
-);
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof SwapCardContent>]?: React.ComponentProps<typeof SwapCardContent>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  swapTokenInfo,
-  swapSummaryInfo: null,
-  swapRouteInfos: [],
-  changeTokenA: action("changeTokenA"),
-  changeTokenAAmount: action("changeTokenAAmount"),
-  changeTokenB: action("changeTokenB"),
-  changeTokenBAmount: action("changeTokenBAmount"),
+export const Default: Story = {
+  args: {
+    swapTokenInfo,
+    swapSummaryInfo: null,
+    swapRouteInfos: [],
+    changeTokenA: fn(),
+    changeTokenAAmount: fn(),
+    changeTokenB: fn(),
+    changeTokenBAmount: fn(),
+  },
 };
 
 const wrapper = () => css`

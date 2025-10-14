@@ -1,22 +1,26 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import TokenDescription from "./TokenDescription";
 
-export default {
+const meta = {
   title: "token/TokenDescription",
   component: TokenDescription,
-} as ComponentMeta<typeof TokenDescription>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof TokenDescription>;
 
-const Template: ComponentStory<typeof TokenDescription> = args => <TokenDescription {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof TokenDescription>]?: React.ComponentProps<typeof TokenDescription>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  tokenName: "Bitcoin",
-  tokenSymbol: "BTC",
-  content: "description",
-  links: {
-    Website: "https://gnoswap.io",
-    Gnoscan: "https://gnoscan.io/tokens/r/demo/wugnot",
+export const Default: Story = {
+  args: {
+    tokenName: "Bitcoin",
+    tokenSymbol: "BTC",
+    content: "description",
+    links: {
+      Website: "https://gnoswap.io",
+      Gnoscan: "https://gnoscan.io/tokens/r/demo/wugnot",
+    },
   },
 };

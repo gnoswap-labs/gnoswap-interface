@@ -1,54 +1,61 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
-import { action } from "@storybook/addon-actions";
 import HomeSwap from "./HomeSwap";
 
-export default {
+const meta = {
   title: "home/HomeSwap",
   component: HomeSwap,
-} as ComponentMeta<typeof HomeSwap>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof HomeSwap>;
 
-const Template: ComponentStory<typeof HomeSwap> = args => <HomeSwap {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof HomeSwap>]: K extends "children"
+    ? React.ReactNode
+    : React.ComponentProps<typeof HomeSwap>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  swapTokenInfo: {
-    tokenA: {
-      chainId: "dev",
-      createdAt: "2023-10-17T05:58:00+09:00",
-      name: "Foo",
-      address: "g1evezrh92xaucffmtgsaa3rvmz5s8kedffsg469",
-      path: "gno.land/r/foo",
-      decimals: 4,
-      symbol: "FOO",
-      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-      type: "GRC20",
-      priceID: "gno.land/r/foo",
+export const Default: Story = {
+  args: {
+    swapTokenInfo: {
+      tokenA: {
+        chainId: "dev",
+        createdAt: "2023-10-17T05:58:00+09:00",
+        name: "Foo",
+        address: "g1evezrh92xaucffmtgsaa3rvmz5s8kedffsg469",
+        path: "gno.land/r/foo",
+        decimals: 4,
+        symbol: "FOO",
+        logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+        type: "GRC20",
+        priceID: "gno.land/r/foo",
+      },
+      tokenAAmount: "0",
+      tokenABalance: "0",
+      tokenAUSD: 0,
+      tokenAUSDStr: "0",
+      tokenAPriceGrade: "NONE",
+      tokenB: {
+        chainId: "dev",
+        createdAt: "2023-10-17T05:58:00+09:00",
+        name: "Foo",
+        address: "g1evezrh92xaucffmtgsaa3rvmz5s8kedffsg469",
+        path: "gno.land/r/foo",
+        decimals: 4,
+        symbol: "FOO",
+        logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+        type: "GRC20",
+        priceID: "gno.land/r/foo",
+      },
+      tokenBAmount: "0",
+      tokenBBalance: "0",
+      tokenBUSD: 0,
+      tokenBUSDStr: "0",
+      tokenBPriceGrade: "NONE",
+      direction: "EXACT_IN",
+      slippage: 0,
     },
-    tokenAAmount: "0",
-    tokenABalance: "0",
-    tokenAUSD: 0,
-    tokenAUSDStr: "0",
-    tokenAPriceGrade: "NONE",
-    tokenB: {
-      chainId: "dev",
-      createdAt: "2023-10-17T05:58:00+09:00",
-      name: "Foo",
-      address: "g1evezrh92xaucffmtgsaa3rvmz5s8kedffsg469",
-      path: "gno.land/r/foo",
-      decimals: 4,
-      symbol: "FOO",
-      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-      type: "GRC20",
-      priceID: "gno.land/r/foo",
-    },
-    tokenBAmount: "0",
-    tokenBBalance: "0",
-    tokenBUSD: 0,
-    tokenBUSDStr: "0",
-    tokenBPriceGrade: "NONE",
-    direction: "EXACT_IN",
-    slippage: 0,
+    swapNow: fn(),
   },
-  swapNow: action("swapNow"),
 };

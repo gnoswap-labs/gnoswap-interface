@@ -1,26 +1,39 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import MyDetailedPositionCard from "./MyDetailedPositionCard";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import { css } from "@emotion/react";
+
+import MyDetailedPositionCard from "./MyDetailedPositionCard";
 import { DEVICE_TYPE } from "@styles/media";
 
-export default {
+const meta = {
   title: "pool/MyDetailedPositionCard",
   component: MyDetailedPositionCard,
-} as ComponentMeta<typeof MyDetailedPositionCard>;
+  tags: ["autodocs"],
+  parameters: {
+    backgrounds: { default: "light" },
+  },
+  decorators: [
+    (Story: React.ComponentType) => (
+      <div css={wrapper}>
+        <Story />
+      </div>
+    ),
+  ],
+} satisfies Meta<typeof MyDetailedPositionCard>;
 
-const Template: ComponentStory<typeof MyDetailedPositionCard> = args => (
-  <div css={wrapper}>
-    <MyDetailedPositionCard {...args} />
-  </div>
-);
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof MyDetailedPositionCard>]?: React.ComponentProps<
+    typeof MyDetailedPositionCard
+  >[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  breakpoint: DEVICE_TYPE.WEB,
+export const Default: Story = {
+  args: {
+    breakpoint: DEVICE_TYPE.WEB,
+  },
 };
 
-const wrapper = () => css`
+const wrapper = css`
   display: flex;
   width: 100%;
   align-items: center;

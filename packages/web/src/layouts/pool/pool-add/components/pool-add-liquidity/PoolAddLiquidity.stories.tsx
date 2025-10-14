@@ -1,15 +1,24 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
 import { TokenModel } from "@models/token/token-model";
-import { action } from "@storybook/addon-actions";
+
 import PoolAddLiquidity from "./PoolAddLiquidity";
 
-export default {
+const meta = {
   title: "pool/pool-add/PoolAddLiquidity",
   component: PoolAddLiquidity,
-} as ComponentMeta<typeof PoolAddLiquidity>;
+  tags: ["autodocs"],
+  parameters: {
+    backgrounds: { default: "light" },
+  },
+} satisfies Meta<typeof PoolAddLiquidity>;
 
-const Template: ComponentStory<typeof PoolAddLiquidity> = args => <PoolAddLiquidity {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof PoolAddLiquidity>]?: React.ComponentProps<typeof PoolAddLiquidity>[K];
+}>;
+
 const tokenA: TokenModel = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",
@@ -22,6 +31,7 @@ const tokenA: TokenModel = {
   type: "GRC20",
   priceID: "gno.land/r/gns",
 };
+
 const tokenB: TokenModel = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",
@@ -35,12 +45,13 @@ const tokenB: TokenModel = {
   priceID: "gno.land/r/gns",
 };
 
-export const Default = Template.bind({});
-Default.args = {
-  tokenA: tokenA,
-  tokenB: tokenB,
-  feeTiers: [],
-  selectFeeTier: action("selectFeeTier"),
-  priceRanges: [],
-  changePriceRange: action("selectPriceRange"),
+export const Default: Story = {
+  args: {
+    tokenA: tokenA,
+    tokenB: tokenB,
+    feeTiers: [],
+    selectFeeTier: fn(),
+    priceRanges: [],
+    changePriceRange: fn(),
+  },
 };

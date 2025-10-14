@@ -1,32 +1,40 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import { css } from "@emotion/react";
-import { action } from "@storybook/addon-actions";
+import { fn } from "@storybook/test";
 
 import ConfirmSwapModal from "./ConfirmSwapModal";
 
-export default {
+const meta = {
   title: "swap/ConfirmSwapModal",
   component: ConfirmSwapModal,
-} as ComponentMeta<typeof ConfirmSwapModal>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof ConfirmSwapModal>;
 
-const Template: ComponentStory<typeof ConfirmSwapModal> = args => (
-  <div css={wrapper}>
-    <div css={contentWrap}>
-      <ConfirmSwapModal {...args} />
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof ConfirmSwapModal>]: K extends "children"
+    ? React.ReactNode
+    : React.ComponentProps<typeof ConfirmSwapModal>[K];
+}>;
+
+export const Default: Story = {
+  render: (args: React.ComponentProps<typeof ConfirmSwapModal>) => (
+    <div css={wrapper}>
+      <div css={contentWrap}>
+        <ConfirmSwapModal {...args} />
+      </div>
     </div>
-  </div>
-);
-
-export const Default = Template.bind({});
-Default.args = {
-  submitted: false,
-  // @dev:  add again if necessary
-  // swapTokenInfo,
-  // swapSummaryInfo,
-  swapResult: null,
-  swap: action("swap"),
-  close: action("close"),
+  ),
+  args: {
+    submitted: false,
+    // @dev: add again if necessary
+    // swapTokenInfo,
+    // swapSummaryInfo,
+    swapResult: null,
+    swap: fn(),
+    close: fn(),
+  },
 };
 
 const wrapper = () => css`

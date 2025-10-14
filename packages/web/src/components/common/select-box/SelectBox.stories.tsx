@@ -1,17 +1,21 @@
-import { action } from "@storybook/addon-actions";
+import { fn } from "@storybook/test";
 import SelectBox, { type SelectBoxProps } from "./SelectBox";
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/nextjs";
 
-export default {
+const meta = {
   title: "common/SelectBox",
-  component: SelectBox,
-} as Meta<typeof SelectBox>;
+  component: SelectBox<string>,
+  tags: ["autodocs"],
+} satisfies Meta<SelectBoxProps<string>>;
 
-export const Default: StoryObj<SelectBoxProps<string>> = {
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
   args: {
     current: "",
     items: ["1", "2", "3", "4"],
-    select: action("select"),
+    select: fn(),
     render: (item: string) => <span>{item}</span>,
   },
 };

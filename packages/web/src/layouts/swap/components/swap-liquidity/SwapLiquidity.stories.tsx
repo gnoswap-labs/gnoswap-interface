@@ -1,30 +1,39 @@
-import React from "react";
 import { css } from "@emotion/react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import SwapLiquidity, { dummyLiquidityList } from "./SwapLiquidity";
+import React from "react";
 
-export default {
+const meta = {
   title: "swap/SwapLiquidity",
   component: SwapLiquidity,
-} as ComponentMeta<typeof SwapLiquidity>;
+  tags: ["autodocs"],
+  decorators: [
+    (Story: React.ComponentType) => (
+      <div css={wrapper}>
+        <div>
+          <Story />
+        </div>
+      </div>
+    ),
+  ],
+} satisfies Meta<typeof SwapLiquidity>;
 
-const Template: ComponentStory<typeof SwapLiquidity> = args => (
-  <div css={wrapper}>
-    <div>
-      <SwapLiquidity {...args} />
-    </div>
-  </div>
-);
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof SwapLiquidity>]?: React.ComponentProps<typeof SwapLiquidity>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  liquiditys: dummyLiquidityList,
+export const Default: Story = {
+  args: {
+    liquiditys: dummyLiquidityList,
+  },
 };
 
-export const NoLiquidity = Template.bind({});
-NoLiquidity.args = {
-  liquiditys: [],
+export const NoLiquidity: Story = {
+  args: {
+    liquiditys: [],
+  },
 };
 
 const wrapper = () => css`

@@ -1,15 +1,22 @@
-import TokenChartGraphTab, { type TokenChartGraphTabProps } from "./TokenChartGraphTab";
-import { Meta, StoryObj } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
-export default {
+import TokenChartGraphTab from "./TokenChartGraphTab";
+
+const meta = {
   title: "token/TokenChartGraphTab",
   component: TokenChartGraphTab,
-} as Meta<typeof TokenChartGraphTab>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof TokenChartGraphTab>;
 
-export const Default: StoryObj<TokenChartGraphTabProps> = {
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof TokenChartGraphTab>]?: React.ComponentProps<typeof TokenChartGraphTab>[K];
+}>;
+
+export const Default: Story = {
   args: {
     currentTab: "1D",
-    changeTab: () => action("changeTab"),
+    changeTab: fn(),
   },
 };

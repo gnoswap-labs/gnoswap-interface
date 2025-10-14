@@ -1,31 +1,36 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
+import { css } from "@emotion/react";
 
 import CardList from "./CardList";
 import TrendingCardList from "@components/home/trending-card-list/TrendingCardList";
-import { css } from "@emotion/react";
 import HighestAprsCardList from "@components/home/highest-aprs-card-list/HighestAprsCardList";
 import RecentlyAddedCardList from "@components/home/recently-added-card-list/RecentlyAddedCardList";
 import { DEVICE_TYPE } from "@styles/media";
-import { action } from "@storybook/addon-actions";
 
-export default {
+const meta = {
   title: "home/CardList",
   component: CardList,
-} as ComponentMeta<typeof CardList>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof CardList>;
 
-const Template: ComponentStory<typeof CardList> = () => {
-  return (
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof CardList>]: K extends "children"
+    ? React.ReactNode
+    : React.ComponentProps<typeof CardList>[K];
+}>;
+
+export const Default: Story = {
+  render: () => (
     <div css={wrapper}>
-      <TrendingCardList list={[]} device={DEVICE_TYPE.WEB} onClickItem={action("click")} loading={false} />
-      <HighestAprsCardList list={[]} device={DEVICE_TYPE.WEB} onClickItem={action("click")} loading={false} />
-      <RecentlyAddedCardList list={[]} device={DEVICE_TYPE.WEB} onClickItem={action("click")} loading={false} />
+      <TrendingCardList list={[]} device={DEVICE_TYPE.WEB} onClickItem={fn()} loading={false} />
+      <HighestAprsCardList list={[]} device={DEVICE_TYPE.WEB} onClickItem={fn()} loading={false} />
+      <RecentlyAddedCardList list={[]} device={DEVICE_TYPE.WEB} onClickItem={fn()} loading={false} />
     </div>
-  );
+  ),
 };
-
-export const Default = Template.bind({});
-Default.args = {};
 
 const wrapper = css`
   width: 100%;

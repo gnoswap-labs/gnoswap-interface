@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
-import { action } from "@storybook/addon-actions";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { IncentivizePoolModel } from "@models/pool/pool-model";
@@ -18,31 +18,43 @@ const cardInfoWithPriceGrade: IncentivizePoolCardInfoWithPriceGrade = {
   tokenBPriceGrade: "NONE",
 };
 
-export default {
+const meta = {
   title: "earn/IncentivizedPoolCardList",
   component: IncentivizedPoolCardList,
+  tags: ["autodocs"],
   argTypes: {
-    isFetched: {
-      options: [true, false],
-      control: { type: "boolean" },
+    isPoolFetched: {
+      control: "boolean",
+      description: "풀 데이터 로딩 완료 여부",
     },
   },
-} as ComponentMeta<typeof IncentivizedPoolCardList>;
+  decorators: [
+    (Story: React.ComponentType) => (
+      <div css={wrapper}>
+        <Story />
+      </div>
+    ),
+  ],
+} satisfies Meta<typeof IncentivizedPoolCardList>;
 
-const Template: ComponentStory<typeof IncentivizedPoolCardList> = args => (
-  <div css={wrapper}>
-    <IncentivizedPoolCardList {...args} incentivizedPools={[cardInfoWithPriceGrade]} currentIndex={1} />
-  </div>
-);
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof IncentivizedPoolCardList>]?: React.ComponentProps<
+    typeof IncentivizedPoolCardList
+  >[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  isPoolFetched: true,
-  routeItem: action("routeItem"),
-  mobile: false,
-  page: 1,
-  width: 1440,
-  showPagination: false,
+export const Default: Story = {
+  args: {
+    incentivizedPools: [cardInfoWithPriceGrade],
+    currentIndex: 1,
+    isPoolFetched: true,
+    routeItem: fn(),
+    mobile: false,
+    page: 1,
+    width: 1440,
+    showPagination: false,
+  },
 };
 
 const wrapper = css`

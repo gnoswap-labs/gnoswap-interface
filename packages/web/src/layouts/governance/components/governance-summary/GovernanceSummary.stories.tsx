@@ -1,17 +1,25 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import { nullGovernanceSummaryInfo } from "@repositories/governance";
 
 import GovernanceSummary from "./GovernanceSummary";
 
-export default {
+const meta = {
   title: "governance/GovernanceSummary",
   component: GovernanceSummary,
-} as ComponentMeta<typeof GovernanceSummary>;
+  tags: ["autodocs"],
+  parameters: {
+    layout: "padded",
+  },
+} satisfies Meta<typeof GovernanceSummary>;
 
-const Template: ComponentStory<typeof GovernanceSummary> = args => <GovernanceSummary {...args} />;
+export default meta;
+type Story = StoryObj<{
+  [K in keyof React.ComponentProps<typeof GovernanceSummary>]?: React.ComponentProps<typeof GovernanceSummary>[K];
+}>;
 
-export const Default = Template.bind({});
-Default.args = {
-  governanceSummary: nullGovernanceSummaryInfo,
+export const Default: Story = {
+  args: {
+    governanceSummary: nullGovernanceSummaryInfo,
+  },
 };
