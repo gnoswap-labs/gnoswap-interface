@@ -15,9 +15,7 @@ const meta = {
 } satisfies Meta<typeof EnterAmounts>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof EnterAmounts>]?: React.ComponentProps<typeof EnterAmounts>[K];
-}>;
+type Story = StoryObj<typeof EnterAmounts>;
 
 const token: TokenModel = {
   isWrappedGasToken: false,

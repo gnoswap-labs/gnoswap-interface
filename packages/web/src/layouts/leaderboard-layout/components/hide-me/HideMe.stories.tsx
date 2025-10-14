@@ -12,7 +12,7 @@ const meta = {
 } satisfies Meta<typeof HideMe>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof HideMe>;
 
 export const Mobile: Story = {
   args: {

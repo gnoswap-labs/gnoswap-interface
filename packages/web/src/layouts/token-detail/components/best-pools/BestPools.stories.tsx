@@ -9,9 +9,7 @@ const meta = {
 } satisfies Meta<typeof BestPools>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof BestPools>]?: React.ComponentProps<typeof BestPools>[K];
-}>;
+type Story = StoryObj<typeof BestPools>;
 
 export const Default: Story = {
   args: {

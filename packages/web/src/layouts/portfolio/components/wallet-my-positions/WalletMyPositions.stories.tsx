@@ -11,10 +11,11 @@ const meta = {
 } satisfies Meta<typeof WalletMyPositions>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof WalletMyPositions>;
 
 export const Default: Story = {
   args: {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     header: <WalletMyPositionsHeader isClosed={true} toggleClosed={() => {}} />,
     cardList: <WalletPositionCardListContainer isClosed={true} />,
   },

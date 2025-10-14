@@ -14,9 +14,7 @@ const meta = {
 } satisfies Meta<typeof GovernanceSummary>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof GovernanceSummary>]?: React.ComponentProps<typeof GovernanceSummary>[K];
-}>;
+type Story = StoryObj<typeof GovernanceSummary>;
 
 export const Default: Story = {
   args: {

@@ -12,11 +12,7 @@ const meta = {
 } satisfies Meta<typeof ConfirmSwapModal>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof ConfirmSwapModal>]: K extends "children"
-    ? React.ReactNode
-    : React.ComponentProps<typeof ConfirmSwapModal>[K];
-}>;
+type Story = StoryObj<typeof ConfirmSwapModal>;
 
 export const Default: Story = {
   render: (args: React.ComponentProps<typeof ConfirmSwapModal>) => (

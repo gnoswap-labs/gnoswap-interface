@@ -19,9 +19,7 @@ const meta = {
 } satisfies Meta<typeof SearchMenuModal>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof SearchMenuModal>]?: React.ComponentProps<typeof SearchMenuModal>[K];
-}>;
+type Story = StoryObj<typeof SearchMenuModal>;
 
 export const Default: Story = {
   args: {

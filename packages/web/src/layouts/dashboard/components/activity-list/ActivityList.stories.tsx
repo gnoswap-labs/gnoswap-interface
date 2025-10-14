@@ -16,7 +16,7 @@ const meta = {
 } satisfies Meta<typeof ActivityList>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ActivityList>;
 
 export const Default: Story = {
   render: (args: React.ComponentProps<typeof ActivityList>) => (

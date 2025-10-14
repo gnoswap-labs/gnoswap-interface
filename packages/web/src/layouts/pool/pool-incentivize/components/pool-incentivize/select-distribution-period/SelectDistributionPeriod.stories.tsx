@@ -13,11 +13,7 @@ const meta = {
 } satisfies Meta<typeof SelectDistributionPeriod>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof SelectDistributionPeriod>]?: React.ComponentProps<
-    typeof SelectDistributionPeriod
-  >[K];
-}>;
+type Story = StoryObj<typeof SelectDistributionPeriod>;
 
 export const Default: Story = {
   args: {

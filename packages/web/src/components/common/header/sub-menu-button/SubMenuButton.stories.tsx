@@ -23,9 +23,7 @@ const meta = {
 } satisfies Meta<typeof SubMenuButton>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof SubMenuButton>]?: React.ComponentProps<typeof SubMenuButton>[K];
-}>;
+type Story = StoryObj<typeof SubMenuButton>;
 
 export const Disconnected: Story = {
   args: {

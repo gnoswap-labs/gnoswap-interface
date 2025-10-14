@@ -9,7 +9,7 @@ const meta = {
 } satisfies Meta<typeof Breadcrumbs>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Breadcrumbs>;
 
 export const Default: Story = {
   args: {

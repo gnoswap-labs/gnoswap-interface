@@ -59,9 +59,7 @@ const meta = {
 } satisfies Meta<typeof PoolInfo>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof PoolInfo>]?: React.ComponentProps<typeof PoolInfo>[K];
-}>;
+type Story = StoryObj<typeof PoolInfo>;
 
 export const Default: Story = {
   args: {

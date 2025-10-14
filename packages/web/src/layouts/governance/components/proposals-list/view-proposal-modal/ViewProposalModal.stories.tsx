@@ -12,9 +12,7 @@ const meta = {
 } satisfies Meta<typeof ViewProposalModal>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof ViewProposalModal>]?: React.ComponentProps<typeof ViewProposalModal>[K];
-}>;
+type Story = StoryObj<typeof ViewProposalModal>;
 
 export const Default: Story = {
   args: {

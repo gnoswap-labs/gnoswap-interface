@@ -48,11 +48,7 @@ const meta = {
 } satisfies Meta<typeof SwapCardAutoRouter>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof SwapCardAutoRouter>]: K extends "children"
-    ? React.ReactNode
-    : React.ComponentProps<typeof SwapCardAutoRouter>[K];
-}>;
+type Story = StoryObj<typeof SwapCardAutoRouter>;
 
 export const Default: Story = {
   render: (args: React.ComponentProps<typeof SwapCardAutoRouter>) => (

@@ -10,7 +10,7 @@ const meta = {
 } satisfies Meta<typeof VolumeChartSelectTab>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof VolumeChartSelectTab>;
 
 export const Default: Story = {
   args: {

@@ -57,7 +57,7 @@ const meta = {
 } satisfies Meta<typeof SwapButtonTooltip>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof SwapButtonTooltip>;
 
 export const Default: Story = {
   render: (args: React.ComponentProps<typeof SwapButtonTooltip>) => (

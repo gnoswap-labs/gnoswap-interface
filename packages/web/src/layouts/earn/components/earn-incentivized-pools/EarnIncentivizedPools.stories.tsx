@@ -26,11 +26,7 @@ const meta = {
 } satisfies Meta<typeof EarnIncentivizedPools>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof EarnIncentivizedPools>]?: React.ComponentProps<
-    typeof EarnIncentivizedPools
-  >[K];
-}>;
+type Story = StoryObj<typeof EarnIncentivizedPools>;
 
 export const Default: Story = {
   args: {

@@ -10,7 +10,7 @@ const meta = {
 } satisfies Meta<typeof DashboardLabel>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof DashboardLabel>;
 
 export const Default: Story = {
   render: (args: React.ComponentProps<typeof DashboardLabel>) => (

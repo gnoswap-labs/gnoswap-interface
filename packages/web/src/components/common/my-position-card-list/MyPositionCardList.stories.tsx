@@ -1,4 +1,3 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import MyPositionCardList from "./MyPositionCardList";
 import { fn } from "@storybook/test";
@@ -16,9 +15,7 @@ const meta = {
 } satisfies Meta<typeof MyPositionCardList>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof MyPositionCardList>]?: React.ComponentProps<typeof MyPositionCardList>[K];
-}>;
+type Story = StoryObj<typeof MyPositionCardList>;
 
 export const Default: Story = {
   args: {

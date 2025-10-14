@@ -11,7 +11,7 @@ const meta = {
 } satisfies Meta<typeof TrendingCryptoCard>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof TrendingCryptoCard>;
 
 export const Default: Story = {
   args: {

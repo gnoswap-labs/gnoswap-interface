@@ -20,7 +20,7 @@ const meta = {
 } satisfies Meta<typeof SettingMenuModal>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof SettingMenuModal>;
 
 export const Default: Story = {
   args: {

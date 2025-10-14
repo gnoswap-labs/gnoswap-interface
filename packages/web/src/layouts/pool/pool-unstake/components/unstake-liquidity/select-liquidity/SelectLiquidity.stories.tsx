@@ -9,9 +9,7 @@ const meta = {
 } satisfies Meta<typeof SelectLiquidity>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof SelectLiquidity>]?: React.ComponentProps<typeof SelectLiquidity>[K];
-}>;
+type Story = StoryObj<typeof SelectLiquidity>;
 
 export const Default: Story = {
   args: {},

@@ -12,11 +12,7 @@ const meta = {
 } satisfies Meta<typeof Switch>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof Switch>]: K extends "children"
-    ? React.ReactNode
-    : React.ComponentProps<typeof Switch>[K];
-}>;
+type Story = StoryObj<typeof Switch>;
 
 export const Default: Story = {
   args: {

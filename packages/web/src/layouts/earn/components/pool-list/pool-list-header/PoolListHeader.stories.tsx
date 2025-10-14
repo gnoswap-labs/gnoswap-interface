@@ -29,9 +29,7 @@ const meta = {
 } satisfies Meta<typeof PoolListHeader>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof PoolListHeader>]?: React.ComponentProps<typeof PoolListHeader>[K];
-}>;
+type Story = StoryObj<typeof PoolListHeader>;
 
 export const Default: Story = {
   args: {

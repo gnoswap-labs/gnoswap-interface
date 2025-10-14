@@ -10,9 +10,7 @@ const meta = {
 } satisfies Meta<typeof ProposalHeader>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof ProposalHeader>]?: React.ComponentProps<typeof ProposalHeader>[K];
-}>;
+type Story = StoryObj<typeof ProposalHeader>;
 
 export const Default: Story = {
   args: {

@@ -17,11 +17,7 @@ const meta = {
 } satisfies Meta<typeof PoolIncentivizeSelectPool>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof PoolIncentivizeSelectPool>]: K extends "children"
-    ? React.ReactNode
-    : React.ComponentProps<typeof PoolIncentivizeSelectPool>[K];
-}>;
+type Story = StoryObj<typeof PoolIncentivizeSelectPool>;
 
 export const Default: Story = {
   args: {

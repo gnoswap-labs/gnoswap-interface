@@ -46,9 +46,7 @@ const meta = {
 } satisfies Meta<typeof AssetListTable>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof AssetListTable>]?: React.ComponentProps<typeof AssetListTable>[K];
-}>;
+type Story = StoryObj<typeof AssetListTable>;
 
 export const Default: Story = {
   args: {

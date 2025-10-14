@@ -25,9 +25,7 @@ const meta = {
 } satisfies Meta<typeof TokenSwap>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof TokenSwap>]?: React.ComponentProps<typeof TokenSwap>[K];
-}>;
+type Story = StoryObj<typeof TokenSwap>;
 
 export const Default: Story = {
   args: {

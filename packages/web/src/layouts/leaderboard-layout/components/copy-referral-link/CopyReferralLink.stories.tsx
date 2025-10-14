@@ -12,9 +12,7 @@ const meta = {
 } satisfies Meta<typeof CopyReferralLink>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof CopyReferralLink>]?: React.ComponentProps<typeof CopyReferralLink>[K];
-}>;
+type Story = StoryObj<typeof CopyReferralLink>;
 
 export const Connected: Story = {
   args: {

@@ -23,9 +23,7 @@ const meta = {
 } satisfies Meta<typeof AssetInfo>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof AssetInfo>]?: React.ComponentProps<typeof AssetInfo>[K];
-}>;
+type Story = StoryObj<typeof AssetInfo>;
 
 export const Default: Story = {
   args: {

@@ -13,7 +13,7 @@ const meta = {
 } satisfies Meta<typeof SelectDistributionDateInput>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof SelectDistributionDateInput>;
 
 export const Default: Story = {
   args: {

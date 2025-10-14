@@ -15,7 +15,7 @@ const meta = {
 } satisfies Meta<typeof RangeBadge>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof RangeBadge>;
 
 export const Default: Story = {
   args: {

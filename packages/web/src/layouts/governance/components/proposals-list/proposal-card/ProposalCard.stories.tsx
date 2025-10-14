@@ -12,9 +12,7 @@ const meta = {
 } satisfies Meta<typeof ProposalCard>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof ProposalCard>]?: React.ComponentProps<typeof ProposalCard>[K];
-}>;
+type Story = StoryObj<typeof ProposalCard>;
 
 export const Default: Story = {
   args: {

@@ -10,9 +10,7 @@ const meta = {
 } satisfies Meta<typeof PriceInformation>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof PriceInformation>]?: React.ComponentProps<typeof PriceInformation>[K];
-}>;
+type Story = StoryObj<typeof PriceInformation>;
 
 export const Default: Story = {
   args: {

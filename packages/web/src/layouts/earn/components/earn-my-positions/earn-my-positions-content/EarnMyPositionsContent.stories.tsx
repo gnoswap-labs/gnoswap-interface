@@ -9,11 +9,7 @@ const meta = {
 } satisfies Meta<typeof EarnMyPositionsContent>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof EarnMyPositionsContent>]?: React.ComponentProps<
-    typeof EarnMyPositionsContent
-  >[K];
-}>;
+type Story = StoryObj<typeof EarnMyPositionsContent>;
 
 export const UnConnected: Story = {
   args: {

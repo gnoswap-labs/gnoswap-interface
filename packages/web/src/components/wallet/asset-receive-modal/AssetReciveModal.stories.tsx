@@ -11,7 +11,7 @@ const meta = {
 } satisfies Meta<typeof AssetReceiveModal>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof AssetReceiveModal>;
 
 export const Default: Story = {
   render: (args: React.ComponentProps<typeof AssetReceiveModal>) => <AssetReceiveModal {...args} />,

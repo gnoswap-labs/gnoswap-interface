@@ -9,9 +9,7 @@ const meta = {
 } satisfies Meta<typeof UnstakeLiquidity>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof UnstakeLiquidity>]?: React.ComponentProps<typeof UnstakeLiquidity>[K];
-}>;
+type Story = StoryObj<typeof UnstakeLiquidity>;
 
 export const Default: Story = {
   args: {},

@@ -8,7 +8,7 @@ const meta = {
 } satisfies Meta<typeof VolumeChartPriceInfo>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof VolumeChartPriceInfo>;
 
 export const Default: Story = {
   args: {

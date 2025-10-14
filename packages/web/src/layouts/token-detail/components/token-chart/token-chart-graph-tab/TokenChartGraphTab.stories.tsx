@@ -10,9 +10,7 @@ const meta = {
 } satisfies Meta<typeof TokenChartGraphTab>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof TokenChartGraphTab>]?: React.ComponentProps<typeof TokenChartGraphTab>[K];
-}>;
+type Story = StoryObj<typeof TokenChartGraphTab>;
 
 export const Default: Story = {
   args: {

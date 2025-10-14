@@ -95,11 +95,7 @@ const meta = {
 } satisfies Meta<typeof SwapCardContentDetail>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof SwapCardContentDetail>]: K extends "children"
-    ? React.ReactNode
-    : React.ComponentProps<typeof SwapCardContentDetail>[K];
-}>;
+type Story = StoryObj<typeof SwapCardContentDetail>;
 
 export const Default: Story = {
   render: (args: React.ComponentProps<typeof SwapCardContentDetail>) => (

@@ -11,11 +11,7 @@ const meta = {
 } satisfies Meta<typeof StakePosition>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof StakePosition>]: K extends "children"
-    ? React.ReactNode
-    : React.ComponentProps<typeof StakePosition>[K];
-}>;
+type Story = StoryObj<typeof StakePosition>;
 
 export const Default: Story = {
   render: () => <StakePositionContainer />,

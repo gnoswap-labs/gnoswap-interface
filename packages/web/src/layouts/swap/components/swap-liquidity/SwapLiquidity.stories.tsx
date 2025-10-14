@@ -20,9 +20,7 @@ const meta = {
 } satisfies Meta<typeof SwapLiquidity>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof SwapLiquidity>]?: React.ComponentProps<typeof SwapLiquidity>[K];
-}>;
+type Story = StoryObj<typeof SwapLiquidity>;
 
 export const Default: Story = {
   args: {

@@ -8,7 +8,7 @@ const meta = {
 } satisfies Meta<typeof TvlChartPriceInfo>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof TvlChartPriceInfo>;
 
 export const Default: Story = {
   args: {

@@ -21,11 +21,7 @@ const meta = {
 } satisfies Meta<typeof MyDetailedPositionCard>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof MyDetailedPositionCard>]?: React.ComponentProps<
-    typeof MyDetailedPositionCard
-  >[K];
-}>;
+type Story = StoryObj<typeof MyDetailedPositionCard>;
 
 export const Default: Story = {
   args: {

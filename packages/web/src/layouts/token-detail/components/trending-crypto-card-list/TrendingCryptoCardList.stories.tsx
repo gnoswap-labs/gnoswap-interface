@@ -41,11 +41,7 @@ const meta = {
 } satisfies Meta<typeof TrendingCryptoCardList>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof TrendingCryptoCardList>]?: React.ComponentProps<
-    typeof TrendingCryptoCardList
-  >[K];
-}>;
+type Story = StoryObj<typeof TrendingCryptoCardList>;
 
 export const Default: Story = {
   args: {

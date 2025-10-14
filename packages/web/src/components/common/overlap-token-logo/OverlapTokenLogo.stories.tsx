@@ -1,4 +1,3 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import OverlapTokenLogo from "./OverlapTokenLogo";
 
@@ -9,9 +8,7 @@ const meta = {
 } satisfies Meta<typeof OverlapTokenLogo>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof OverlapTokenLogo>]?: React.ComponentProps<typeof OverlapTokenLogo>[K];
-}>;
+type Story = StoryObj<typeof OverlapTokenLogo>;
 
 export const Default: Story = {
   args: {

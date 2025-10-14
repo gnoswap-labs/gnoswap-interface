@@ -24,9 +24,7 @@ const meta = {
 } satisfies Meta<typeof IncentivizedPoolCard>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof IncentivizedPoolCard>]?: React.ComponentProps<typeof IncentivizedPoolCard>[K];
-}>;
+type Story = StoryObj<typeof IncentivizedPoolCard>;
 
 export const Default: Story = {
   args: {

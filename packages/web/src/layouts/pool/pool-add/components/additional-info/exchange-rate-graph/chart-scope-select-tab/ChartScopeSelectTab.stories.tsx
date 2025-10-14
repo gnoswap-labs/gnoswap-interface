@@ -15,9 +15,7 @@ const meta = {
 } satisfies Meta<typeof ChartScopeSelectTab>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof ChartScopeSelectTab>]?: React.ComponentProps<typeof ChartScopeSelectTab>[K];
-}>;
+type Story = StoryObj<typeof ChartScopeSelectTab>;
 
 export const Default: Story = {
   args: {

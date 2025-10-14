@@ -8,11 +8,7 @@ const meta = {
 } satisfies Meta<typeof SelectTab>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof SelectTab>]: K extends "children"
-    ? React.ReactNode
-    : React.ComponentProps<typeof SelectTab>[K];
-}>;
+type Story = StoryObj<typeof SelectTab>;
 
 export const Default: Story = {
   args: {

@@ -15,9 +15,7 @@ const meta = {
 } satisfies Meta<typeof PoolAddLiquidity>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof PoolAddLiquidity>]?: React.ComponentProps<typeof PoolAddLiquidity>[K];
-}>;
+type Story = StoryObj<typeof PoolAddLiquidity>;
 
 const tokenA: TokenModel = {
   chainId: "dev",

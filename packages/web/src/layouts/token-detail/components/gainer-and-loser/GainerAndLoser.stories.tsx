@@ -11,9 +11,7 @@ const meta = {
 } satisfies Meta<typeof GainerAndLoser>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof GainerAndLoser>]?: React.ComponentProps<typeof GainerAndLoser>[K];
-}>;
+type Story = StoryObj<typeof GainerAndLoser>;
 
 export const Default: Story = {
   args: {

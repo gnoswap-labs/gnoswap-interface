@@ -19,9 +19,7 @@ const meta = {
 } satisfies Meta<typeof SubMenu>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof SubMenu>]?: React.ComponentProps<typeof SubMenu>[K];
-}>;
+type Story = StoryObj<typeof SubMenu>;
 
 export const Default: Story = {
   args: {

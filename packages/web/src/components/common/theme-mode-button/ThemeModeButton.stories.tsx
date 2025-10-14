@@ -1,4 +1,3 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import ThemeModeButton from "./ThemeModeButton";
 
@@ -9,11 +8,7 @@ const meta = {
 } satisfies Meta<typeof ThemeModeButton>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof ThemeModeButton>]: K extends "children"
-    ? React.ReactNode
-    : React.ComponentProps<typeof ThemeModeButton>[K];
-}>;
+type Story = StoryObj<typeof ThemeModeButton>;
 
 export const Default: Story = {
   args: {},

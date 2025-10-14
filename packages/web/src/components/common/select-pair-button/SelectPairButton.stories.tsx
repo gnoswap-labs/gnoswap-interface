@@ -8,11 +8,7 @@ const meta = {
 } satisfies Meta<typeof SelectPairButton>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof SelectPairButton>]: K extends "children"
-    ? React.ReactNode
-    : React.ComponentProps<typeof SelectPairButton>[K];
-}>;
+type Story = StoryObj<typeof SelectPairButton>;
 
 export const Selected: Story = {
   args: {

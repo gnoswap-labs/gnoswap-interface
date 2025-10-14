@@ -9,11 +9,7 @@ const meta = {
 } satisfies Meta<typeof WalletBalanceSummaryInfo>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof WalletBalanceSummaryInfo>]?: React.ComponentProps<
-    typeof WalletBalanceSummaryInfo
-  >[K];
-}>;
+type Story = StoryObj<typeof WalletBalanceSummaryInfo>;
 
 export const Default: Story = {
   args: {

@@ -15,9 +15,7 @@ const meta = {
 } satisfies Meta<typeof AssetSendModal>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof AssetSendModal>]?: React.ComponentProps<typeof AssetSendModal>[K];
-}>;
+type Story = StoryObj<typeof AssetSendModal>;
 
 export const Default: Story = {
   args: {

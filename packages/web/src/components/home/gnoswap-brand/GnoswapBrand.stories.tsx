@@ -1,4 +1,3 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import { fn } from "@storybook/test";
 
@@ -11,11 +10,7 @@ const meta = {
 } satisfies Meta<typeof GnoswapBrand>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof GnoswapBrand>]: K extends "children"
-    ? React.ReactNode
-    : React.ComponentProps<typeof GnoswapBrand>[K];
-}>;
+type Story = StoryObj<typeof GnoswapBrand>;
 
 export const Default: Story = {
   args: {

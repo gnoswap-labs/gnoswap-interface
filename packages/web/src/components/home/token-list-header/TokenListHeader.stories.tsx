@@ -1,4 +1,3 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import { fn } from "@storybook/test";
 
@@ -13,9 +12,7 @@ const meta = {
 } satisfies Meta<typeof TokenListHeader>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof TokenListHeader>]?: React.ComponentProps<typeof TokenListHeader>[K];
-}>;
+type Story = StoryObj<typeof TokenListHeader>;
 
 export const Default: Story = {
   args: {

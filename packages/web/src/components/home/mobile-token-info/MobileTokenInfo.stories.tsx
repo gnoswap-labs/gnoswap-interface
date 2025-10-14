@@ -12,11 +12,7 @@ const meta = {
 } satisfies Meta<typeof MobileTokenInfo>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof MobileTokenInfo>]: K extends "children"
-    ? React.ReactNode
-    : React.ComponentProps<typeof MobileTokenInfo>[K];
-}>;
+type Story = StoryObj<typeof MobileTokenInfo>;
 
 export const Default: Story = {
   render: (args: React.ComponentProps<typeof MobileTokenInfo>) => (

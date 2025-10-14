@@ -10,11 +10,7 @@ const meta = {
 } satisfies Meta<typeof GovernanceOverview>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof GovernanceOverview>]: K extends "children"
-    ? React.ReactNode
-    : React.ComponentProps<typeof GovernanceOverview>[K];
-}>;
+type Story = StoryObj<typeof GovernanceOverview>;
 
 export const Default: Story = {
   render: (args: React.ComponentProps<typeof GovernanceOverview>) => (

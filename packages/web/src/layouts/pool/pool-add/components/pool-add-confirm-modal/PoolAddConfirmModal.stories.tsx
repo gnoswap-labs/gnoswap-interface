@@ -15,7 +15,7 @@ const meta = {
 } satisfies Meta<typeof PoolAddConfirmModal>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof PoolAddConfirmModal>;
 
 const tokenA: {
   info: TokenModel;

@@ -12,9 +12,7 @@ const meta = {
 } satisfies Meta<typeof PointComposition>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof PointComposition>]?: React.ComponentProps<typeof PointComposition>[K];
-}>;
+type Story = StoryObj<typeof PointComposition>;
 
 const commonArgs = {
   points: "20000000",

@@ -12,11 +12,7 @@ const meta = {
 } satisfies Meta<typeof TokenInfo>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof TokenInfo>]: K extends "children"
-    ? React.ReactNode
-    : React.ComponentProps<typeof TokenInfo>[K];
-}>;
+type Story = StoryObj<typeof TokenInfo>;
 
 export const Default: Story = {
   render: (args: React.ComponentProps<typeof TokenInfo>) => (

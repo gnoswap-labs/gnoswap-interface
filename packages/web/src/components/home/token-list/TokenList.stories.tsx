@@ -1,4 +1,3 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import { fn } from "@storybook/test";
 
@@ -13,11 +12,7 @@ const meta = {
 } satisfies Meta<typeof TokenList>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof TokenList>]: K extends "children"
-    ? React.ReactNode
-    : React.ComponentProps<typeof TokenList>[K];
-}>;
+type Story = StoryObj<typeof TokenList>;
 
 export const Default: Story = {
   args: {

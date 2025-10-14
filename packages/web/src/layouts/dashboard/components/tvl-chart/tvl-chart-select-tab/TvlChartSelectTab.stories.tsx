@@ -10,7 +10,7 @@ const meta = {
 } satisfies Meta<typeof TvlChartSelectTab>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof TvlChartSelectTab>;
 
 export const Default: Story = {
   args: {

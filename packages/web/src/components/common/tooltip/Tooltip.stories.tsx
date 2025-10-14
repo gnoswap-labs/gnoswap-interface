@@ -9,11 +9,7 @@ const meta = {
 } satisfies Meta<typeof Tooltip>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof Tooltip>]: K extends "children"
-    ? React.ReactNode
-    : React.ComponentProps<typeof Tooltip>[K];
-}>;
+type Story = StoryObj<typeof Tooltip>;
 
 export const Default: Story = {
   args: {

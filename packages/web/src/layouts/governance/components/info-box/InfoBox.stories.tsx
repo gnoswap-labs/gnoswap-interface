@@ -9,9 +9,7 @@ const meta = {
 } satisfies Meta<typeof InfoBox>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof InfoBox>]?: React.ComponentProps<typeof InfoBox>[K];
-}>;
+type Story = StoryObj<typeof InfoBox>;
 
 export const Default: Story = {
   args: {

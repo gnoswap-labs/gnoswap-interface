@@ -11,7 +11,7 @@ const meta = {
 } satisfies Meta<typeof DashboardInfoTitle>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof DashboardInfoTitle>;
 
 export const Default: Story = {
   render: (args: React.ComponentProps<typeof DashboardInfoTitle>) => (

@@ -1,4 +1,3 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import TokenListTable from "./TokenListTable";
@@ -11,9 +10,7 @@ const meta = {
 } satisfies Meta<typeof TokenListTable>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof TokenListTable>]?: React.ComponentProps<typeof TokenListTable>[K];
-}>;
+type Story = StoryObj<typeof TokenListTable>;
 
 export const Default: Story = {
   args: {

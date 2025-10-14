@@ -11,11 +11,7 @@ const meta = {
 } satisfies Meta<typeof DashboardOverview>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof DashboardOverview>]: K extends "children"
-    ? React.ReactNode
-    : React.ComponentProps<typeof DashboardOverview>[K];
-}>;
+type Story = StoryObj<typeof DashboardOverview>;
 
 export const Default: Story = {
   render: (args: React.ComponentProps<typeof DashboardOverview>) => (

@@ -12,11 +12,7 @@ const meta = {
 } satisfies Meta<typeof LeaderboardTableHeader>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof LeaderboardTableHeader>]?: React.ComponentProps<
-    typeof LeaderboardTableHeader
-  >[K];
-}>;
+type Story = StoryObj<typeof LeaderboardTableHeader>;
 
 export const Default: Story = {
   args: {

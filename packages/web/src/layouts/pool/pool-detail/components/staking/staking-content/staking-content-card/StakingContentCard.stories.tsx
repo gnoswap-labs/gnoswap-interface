@@ -11,9 +11,7 @@ const meta = {
 } satisfies Meta<typeof StakingContentCard>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof StakingContentCard>]?: React.ComponentProps<typeof StakingContentCard>[K];
-}>;
+type Story = StoryObj<typeof StakingContentCard>;
 
 export const ActiveStaking: Story = {
   args: {

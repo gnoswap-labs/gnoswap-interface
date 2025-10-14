@@ -10,11 +10,7 @@ const meta = {
 } satisfies Meta<typeof HomeSwap>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof HomeSwap>]: K extends "children"
-    ? React.ReactNode
-    : React.ComponentProps<typeof HomeSwap>[K];
-}>;
+type Story = StoryObj<typeof HomeSwap>;
 
 export const Default: Story = {
   args: {

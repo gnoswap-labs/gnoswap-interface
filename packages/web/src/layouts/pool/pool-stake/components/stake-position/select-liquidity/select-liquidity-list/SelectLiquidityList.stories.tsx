@@ -10,11 +10,7 @@ const meta = {
 } satisfies Meta<typeof SelectLiquidityList>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof SelectLiquidityList>]: K extends "children"
-    ? React.ReactNode
-    : React.ComponentProps<typeof SelectLiquidityList>[K];
-}>;
+type Story = StoryObj<typeof SelectLiquidityList>;
 
 export const Default: Story = {
   render: (args: React.ComponentProps<typeof SelectLiquidityList>) => {

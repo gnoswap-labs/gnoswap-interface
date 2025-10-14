@@ -16,11 +16,7 @@ const meta = {
 } satisfies Meta<typeof CardList>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof CardList>]: K extends "children"
-    ? React.ReactNode
-    : React.ComponentProps<typeof CardList>[K];
-}>;
+type Story = StoryObj<typeof CardList>;
 
 export const Default: Story = {
   render: () => (

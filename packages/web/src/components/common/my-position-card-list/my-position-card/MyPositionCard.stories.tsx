@@ -1,4 +1,3 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import MyPositionCard from "./MyPositionCard";
 import { fn } from "@storybook/test";
@@ -10,9 +9,7 @@ const meta = {
 } satisfies Meta<typeof MyPositionCard>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof MyPositionCard>]?: React.ComponentProps<typeof MyPositionCard>[K];
-}>;
+type Story = StoryObj<typeof MyPositionCard>;
 
 export const Staked: Story = {
   args: {},

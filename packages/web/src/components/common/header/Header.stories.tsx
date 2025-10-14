@@ -33,9 +33,7 @@ const meta = {
 } satisfies Meta<typeof Header>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof Header>]?: React.ComponentProps<typeof Header>[K];
-}>;
+type Story = StoryObj<typeof Header>;
 
 export const Default: Story = {
   args: {

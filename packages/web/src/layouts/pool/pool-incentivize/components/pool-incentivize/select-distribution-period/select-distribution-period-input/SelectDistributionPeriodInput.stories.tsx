@@ -15,7 +15,7 @@ const meta = {
 } satisfies Meta<typeof SelectDistributionPeriodInput>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof SelectDistributionPeriodInput>;
 
 export const Default: Story = {
   args: {

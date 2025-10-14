@@ -10,7 +10,7 @@ const meta = {
 } satisfies Meta<typeof LoadMoreButton>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof LoadMoreButton>;
 
 export const LoadType: Story = {
   args: {

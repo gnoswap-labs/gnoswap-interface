@@ -25,7 +25,7 @@ const meta = {
 } satisfies Meta<typeof NotificationButton>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof NotificationButton>;
 
 export const Default: Story = {
   args: {

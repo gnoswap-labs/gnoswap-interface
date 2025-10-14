@@ -37,11 +37,7 @@ const meta = {
 } satisfies Meta<typeof WalletConnectorButton>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof WalletConnectorButton>]?: React.ComponentProps<
-    typeof WalletConnectorButton
-  >[K];
-}>;
+type Story = StoryObj<typeof WalletConnectorButton>;
 
 export const Disconnected: Story = {
   args: {

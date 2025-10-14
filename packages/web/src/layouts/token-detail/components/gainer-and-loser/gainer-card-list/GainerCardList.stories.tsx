@@ -49,9 +49,7 @@ const meta = {
 } satisfies Meta<typeof GainerCardList>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof GainerCardList>]?: React.ComponentProps<typeof GainerCardList>[K];
-}>;
+type Story = StoryObj<typeof GainerCardList>;
 
 export const Default: Story = {
   args: {

@@ -104,9 +104,7 @@ const meta = {
 } satisfies Meta<typeof SwapCard>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof SwapCard>]?: React.ComponentProps<typeof SwapCard>[K];
-}>;
+type Story = StoryObj<typeof SwapCard>;
 
 export const Default: Story = {
   args: {

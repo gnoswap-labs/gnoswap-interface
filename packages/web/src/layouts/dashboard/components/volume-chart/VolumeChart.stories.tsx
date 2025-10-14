@@ -1,4 +1,3 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import { fn } from "@storybook/test";
 import { CHART_TYPE } from "@constants/option.constant";
@@ -11,9 +10,8 @@ const meta = {
 } satisfies Meta<typeof VolumeChart>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof VolumeChart>]?: React.ComponentProps<typeof VolumeChart>[K];
-}>;
+type Story = StoryObj<typeof VolumeChart>;
+
 export const Default: Story = {
   args: {
     volumeChartType: CHART_TYPE["7D"],

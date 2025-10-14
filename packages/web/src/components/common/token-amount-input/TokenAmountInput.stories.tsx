@@ -1,4 +1,3 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import { fn } from "@storybook/test";
 import { TokenModel } from "@models/token/token-model";
@@ -11,11 +10,7 @@ const meta = {
 } satisfies Meta<typeof TokenAmountInput>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof TokenAmountInput>]: K extends "children"
-    ? React.ReactNode
-    : React.ComponentProps<typeof TokenAmountInput>[K];
-}>;
+type Story = StoryObj<typeof TokenAmountInput>;
 
 const token: TokenModel = {
   chainId: "dev",

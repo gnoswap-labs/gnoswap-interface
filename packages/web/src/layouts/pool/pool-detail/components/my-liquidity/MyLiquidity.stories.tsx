@@ -21,9 +21,7 @@ const meta = {
 } satisfies Meta<typeof MyLiquidity>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof MyLiquidity>]?: React.ComponentProps<typeof MyLiquidity>[K];
-}>;
+type Story = StoryObj<typeof MyLiquidity>;
 
 export const Default: Story = {
   args: {

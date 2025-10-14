@@ -9,9 +9,7 @@ const meta = {
 } satisfies Meta<typeof TokenDescription>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof TokenDescription>]?: React.ComponentProps<typeof TokenDescription>[K];
-}>;
+type Story = StoryObj<typeof TokenDescription>;
 
 export const Default: Story = {
   args: {

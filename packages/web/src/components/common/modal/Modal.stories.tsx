@@ -18,11 +18,6 @@ const meta = {
 } satisfies Meta<typeof Modal>;
 
 export default meta;
-// type Story = StoryObj<{
-//   [K in keyof React.ComponentProps<typeof Modal>]: K extends "children"
-//     ? React.ReactNode
-//     : React.ComponentProps<typeof Modal>[K];
-// }>;
 type Story = StoryObj<typeof Modal>;
 
 const ModalWrapper = (args: React.ComponentProps<typeof Modal>) => {

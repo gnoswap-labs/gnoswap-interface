@@ -9,7 +9,7 @@ const meta = {
 } satisfies Meta<typeof Calendar>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Calendar>;
 
 export const Default: Story = {
   args: {

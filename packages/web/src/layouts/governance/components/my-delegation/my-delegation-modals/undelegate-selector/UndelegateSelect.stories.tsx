@@ -12,11 +12,7 @@ const meta = {
 } satisfies Meta<typeof UndelegateSelect>;
 
 export default meta;
-type Story = StoryObj<{
-  [K in keyof React.ComponentProps<typeof UndelegateSelect>]: K extends "children"
-    ? React.ReactNode
-    : React.ComponentProps<typeof UndelegateSelect>[K];
-}>;
+type Story = StoryObj<typeof UndelegateSelect>;
 
 export const Default: Story = {
   args: {
