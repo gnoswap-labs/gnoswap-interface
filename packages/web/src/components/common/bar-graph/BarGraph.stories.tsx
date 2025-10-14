@@ -1,5 +1,5 @@
 import BarGraph, { type BarGraphProps } from "./BarGraph";
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/nextjs";
 
 export default {
   title: "common/BarGraph",

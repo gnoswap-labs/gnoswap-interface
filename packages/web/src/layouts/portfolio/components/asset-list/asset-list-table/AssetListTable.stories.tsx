@@ -1,5 +1,5 @@
-import { action } from "@storybook/addon-actions";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
 import { DEVICE_TYPE } from "@styles/media";
 
@@ -36,30 +36,38 @@ const dummyAssetList: Asset[] = [
   },
 ];
 
-export default {
+const meta = {
   title: "wallet/AssetList/AssetListTable",
   component: AssetListTable,
-} as ComponentMeta<typeof AssetListTable>;
+  tags: ["autodocs"],
+  parameters: {
+    backgrounds: { default: "light" },
+  },
+} satisfies Meta<typeof AssetListTable>;
 
-const Template: ComponentStory<typeof AssetListTable> = args => <AssetListTable {...args} />;
+export default meta;
+type Story = StoryObj<typeof AssetListTable>;
 
-export const Default = Template.bind({});
-Default.args = {
-  assets: dummyAssetList,
-  isFetched: true,
-  deposit: action("deposit"),
-  withdraw: action("withdraw"),
-  breakpoint: DEVICE_TYPE.WEB,
+export const Default: Story = {
+  args: {
+    assets: dummyAssetList,
+    isFetched: true,
+    deposit: fn(),
+    withdraw: fn(),
+    breakpoint: DEVICE_TYPE.WEB,
+  },
 };
 
-export const Skeleton = Template.bind({});
-Skeleton.args = {
-  assets: [],
-  isFetched: false,
+export const Skeleton: Story = {
+  args: {
+    assets: [],
+    isFetched: false,
+  },
 };
 
-export const NotFount = Template.bind({});
-NotFount.args = {
-  assets: [],
-  isFetched: true,
+export const NotFound: Story = {
+  args: {
+    assets: [],
+    isFetched: true,
+  },
 };

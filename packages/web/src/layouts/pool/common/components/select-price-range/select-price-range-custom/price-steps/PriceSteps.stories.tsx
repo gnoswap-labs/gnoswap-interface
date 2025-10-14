@@ -1,5 +1,5 @@
 import SelectPriceRangeCutomController, { type PriceStepsProps } from "./PriceSteps";
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/nextjs";
 
 export default {
   title: "common/AddLiquidity/PriceSteps",

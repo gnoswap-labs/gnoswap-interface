@@ -1,42 +1,55 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import Badge, { BADGE_TYPE } from "./Badge";
 import IconStaking from "@components/common/icons/IconStaking";
 
-export default {
-  title: "common/Badge",
+const meta = {
+  title: "Components/Common/Badge",
   component: Badge,
-} as ComponentMeta<typeof Badge>;
+  tags: ["autodocs"],
+  argTypes: {
+    type: {
+      control: "select",
+      options: Object.values(BADGE_TYPE),
+    },
+  },
+} satisfies Meta<typeof Badge>;
 
-const Template: ComponentStory<typeof Badge> = args => <Badge {...args} />;
+export default meta;
+type Story = StoryObj<typeof Badge>;
 
-export const Line = Template.bind({});
-Line.args = {
-  type: BADGE_TYPE.LINE,
-  text: "Line",
+export const Line: Story = {
+  args: {
+    type: BADGE_TYPE.LINE,
+    text: "Line",
+  },
 };
 
-export const Primary = Template.bind({});
-Primary.args = {
-  type: BADGE_TYPE.PRIMARY,
-  text: "Primary",
+export const Primary: Story = {
+  args: {
+    type: BADGE_TYPE.PRIMARY,
+    text: "Primary",
+  },
 };
 
-export const LightDefault = Template.bind({});
-LightDefault.args = {
-  type: BADGE_TYPE.LIGHT_DEFAULT,
-  text: "LightDefault",
+export const LightDefault: Story = {
+  args: {
+    type: BADGE_TYPE.LIGHT_DEFAULT,
+    text: "LightDefault",
+  },
 };
 
-export const DarkDefault = Template.bind({});
-DarkDefault.args = {
-  type: BADGE_TYPE.DARK_DEFAULT,
-  text: "DarkDefault",
+export const DarkDefault: Story = {
+  args: {
+    type: BADGE_TYPE.DARK_DEFAULT,
+    text: "DarkDefault",
+  },
 };
 
-export const LeftIcon = Template.bind({});
-LeftIcon.args = {
-  type: BADGE_TYPE.PRIMARY,
-  text: "Staked",
-  leftIcon: <IconStaking />,
+export const LeftIcon: Story = {
+  args: {
+    type: BADGE_TYPE.PRIMARY,
+    text: "Staked",
+    leftIcon: <IconStaking />,
+  },
 };

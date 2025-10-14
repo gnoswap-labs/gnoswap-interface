@@ -1,27 +1,30 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import MyPositionCardList from "./MyPositionCardList";
-import { action } from "@storybook/addon-actions";
+import { fn } from "@storybook/test";
 
-export default {
+const meta = {
   title: "common/MyPositionCardList",
   component: MyPositionCardList,
+  tags: ["autodocs"],
   argTypes: {
     isFetched: {
       options: [true, false],
       control: { type: "boolean" },
     },
   },
-} as ComponentMeta<typeof MyPositionCardList>;
+} satisfies Meta<typeof MyPositionCardList>;
 
-const Template: ComponentStory<typeof MyPositionCardList> = args => <MyPositionCardList {...args} positions={[]} />;
+export default meta;
+type Story = StoryObj<typeof MyPositionCardList>;
 
-export const Default = Template.bind({});
-Default.args = {
-  isFetched: true,
-  currentIndex: 1,
-  mobile: false,
-  loadMore: true,
-  movePoolDetail: action("movePoolDetail"),
-  onClickLoadMore: action("onClickLoadMore"),
+export const Default: Story = {
+  args: {
+    positions: [],
+    isFetched: true,
+    currentIndex: 1,
+    mobile: false,
+    loadMore: true,
+    movePoolDetail: fn(),
+    onClickLoadMore: fn(),
+  },
 };

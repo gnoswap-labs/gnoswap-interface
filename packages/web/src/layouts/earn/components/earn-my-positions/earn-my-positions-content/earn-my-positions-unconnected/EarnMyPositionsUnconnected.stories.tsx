@@ -1,16 +1,18 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 import EarnMyPositionsUnconnected from "./EarnMyPositionsUnconnected";
-import { action } from "@storybook/addon-actions";
 
-export default {
+const meta = {
   title: "earn/EarnMyPositionsUnconnected",
   component: EarnMyPositionsUnconnected,
-} as ComponentMeta<typeof EarnMyPositionsUnconnected>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof EarnMyPositionsUnconnected>;
 
-const Template: ComponentStory<typeof EarnMyPositionsUnconnected> = args => <EarnMyPositionsUnconnected {...args} />;
+export default meta;
+type Story = StoryObj<typeof EarnMyPositionsUnconnected>;
 
-export const Default = Template.bind({});
-Default.args = {
-  connect: action("connect"),
+export const Default: Story = {
+  args: {
+    connect: fn(),
+  },
 };

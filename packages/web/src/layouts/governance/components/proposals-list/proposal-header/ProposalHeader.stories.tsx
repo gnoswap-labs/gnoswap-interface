@@ -1,17 +1,20 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import ProposalHeader from "./ProposalHeader";
-import { action } from "@storybook/addon-actions";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
-export default {
+import ProposalHeader from "./ProposalHeader";
+
+const meta = {
   title: "governance/ProposalHeader",
   component: ProposalHeader,
-} as ComponentMeta<typeof ProposalHeader>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof ProposalHeader>;
 
-const Template: ComponentStory<typeof ProposalHeader> = args => <ProposalHeader {...args} />;
+export default meta;
+type Story = StoryObj<typeof ProposalHeader>;
 
-export const Default = Template.bind({});
-Default.args = {
-  isShowActiveOnly: true,
-  toggleIsShowActiveOnly: action("toggleIsShowActiveOnly"),
+export const Default: Story = {
+  args: {
+    isShowActiveOnly: true,
+    toggleIsShowActiveOnly: fn(),
+  },
 };

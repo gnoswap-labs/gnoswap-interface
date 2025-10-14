@@ -1,9 +1,8 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 
-import GainerCardList from "./LoserCardList";
+import LoserCardList from "./LoserCardList";
 
 export const losersInit = [
   {
@@ -43,14 +42,17 @@ export const losersInit = [
   },
 ];
 
-export default {
-  title: "token/GainerCardList",
-  component: GainerCardList,
-} as ComponentMeta<typeof GainerCardList>;
+const meta = {
+  title: "token/LoserCardList",
+  component: LoserCardList,
+  tags: ["autodocs"],
+} satisfies Meta<typeof LoserCardList>;
 
-const Template: ComponentStory<typeof GainerCardList> = args => <GainerCardList {...args} />;
+export default meta;
+type Story = StoryObj<typeof LoserCardList>;
 
-export const Default = Template.bind({});
-Default.args = {
-  losers: losersInit,
+export const Default: Story = {
+  args: {
+    losers: losersInit,
+  },
 };

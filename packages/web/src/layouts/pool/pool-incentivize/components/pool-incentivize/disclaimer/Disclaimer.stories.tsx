@@ -1,14 +1,16 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import Disclaimer from "./Disclaimer";
 
-export default {
+const meta = {
   title: "incentivize/Disclaimer",
   component: Disclaimer,
-} as ComponentMeta<typeof Disclaimer>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof Disclaimer>;
 
-const Template: ComponentStory<typeof Disclaimer> = args => <Disclaimer {...args} />;
+export default meta;
+type Story = StoryObj<typeof Disclaimer>;
 
-export const Default = Template.bind({});
-Default.args = {};
+export const Default: Story = {
+  args: {},
+};

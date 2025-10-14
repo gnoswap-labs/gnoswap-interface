@@ -1,18 +1,19 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 import EarnMyPositionsHeader from "./EarnMyPositionsHeader";
-import { action } from "@storybook/addon-actions";
 
-export default {
+const meta = {
   title: "earn/EarnMyPositionsHeader",
   component: EarnMyPositionsHeader,
-} as ComponentMeta<typeof EarnMyPositionsHeader>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof EarnMyPositionsHeader>;
 
-const Template: ComponentStory<typeof EarnMyPositionsHeader> = args => <EarnMyPositionsHeader {...args} />;
+export default meta;
+type Story = StoryObj<typeof EarnMyPositionsHeader>;
 
-export const Default = Template.bind({});
-Default.args = {
-  connected: true,
-  moveEarnAdd: action("moveEarnAdd"),
+export const Default: Story = {
+  args: {
+    connected: true,
+    moveEarnAdd: fn(),
+  },
 };

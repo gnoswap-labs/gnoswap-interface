@@ -1,19 +1,21 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import { gainersInit } from "./gainer-card-list/GainerCardList.stories";
 import GainerAndLoser from "./GainerAndLoser";
 import { losersInit } from "./loser-card-list/LoserCardList.stories";
 
-export default {
+const meta = {
   title: "token/GainerAndLoser",
   component: GainerAndLoser,
-} as ComponentMeta<typeof GainerAndLoser>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof GainerAndLoser>;
 
-const Template: ComponentStory<typeof GainerAndLoser> = args => <GainerAndLoser {...args} />;
+export default meta;
+type Story = StoryObj<typeof GainerAndLoser>;
 
-export const Default = Template.bind({});
-Default.args = {
-  gainers: gainersInit,
-  losers: losersInit,
+export const Default: Story = {
+  args: {
+    gainers: gainersInit,
+    losers: losersInit,
+  },
 };

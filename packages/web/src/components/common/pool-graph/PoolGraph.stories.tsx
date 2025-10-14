@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import PoolGraph, { type PoolGraphProps } from "./PoolGraph";
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/nextjs";
 import POOLS from "@repositories/pool/mock/pools.json";
 
 const pool = POOLS.pools[0] as any;

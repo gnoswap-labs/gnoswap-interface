@@ -1,23 +1,29 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import MyLiquidityHeader from "./MyLiquidityHeader";
 import { css } from "@emotion/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
-export default {
+import MyLiquidityHeader from "./MyLiquidityHeader";
+
+const meta = {
   title: "pool/MyLiquidityHeader",
   component: MyLiquidityHeader,
-} as ComponentMeta<typeof MyLiquidityHeader>;
+  tags: ["autodocs"],
+  decorators: [
+    (Story: React.ComponentType) => (
+      <div css={wrapper}>
+        <div css={contentWrap}>
+          <Story />
+        </div>
+      </div>
+    ),
+  ],
+} satisfies Meta<typeof MyLiquidityHeader>;
 
-const Template: ComponentStory<typeof MyLiquidityHeader> = args => (
-  <div css={wrapper}>
-    <div css={contentWrap}>
-      <MyLiquidityHeader {...args} />
-    </div>
-  </div>
-);
+export default meta;
+type Story = StoryObj<typeof MyLiquidityHeader>;
 
-export const Default = Template.bind({});
-Default.args = {};
+export const Default: Story = {
+  args: {},
+};
 
 const wrapper = () => css`
   display: flex;

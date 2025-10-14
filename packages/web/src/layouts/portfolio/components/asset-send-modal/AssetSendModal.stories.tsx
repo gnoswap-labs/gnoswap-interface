@@ -1,32 +1,61 @@
-import { action } from "@storybook/addon-actions";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
+
 import { DEVICE_TYPE } from "@styles/media";
+
 import AssetSendModal from "./AssetSendModal";
 
-export default {
+const meta = {
   title: "wallet/AssetSendModal",
   component: AssetSendModal,
-} as ComponentMeta<typeof AssetSendModal>;
-
-const Template: ComponentStory<typeof AssetSendModal> = args => <AssetSendModal {...args} />;
-
-export const Default = Template.bind({});
-Default.args = {
-  breakpoint: DEVICE_TYPE.WEB,
-  withdrawInfo: {
-    chainId: "dev",
-    createdAt: "2023-10-10T08:48:46+09:00",
-    name: "Gnoswap",
-    address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
-    path: "gno.land/r/gns",
-    decimals: 4,
-    symbol: "GNOT",
-    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/ugnot.svg",
-    type: "GRC20",
-    priceID: "gno.land/r/gns",
+  tags: ["autodocs"],
+  parameters: {
+    layout: "centered",
   },
-  avgBlockTime: 2.2,
-  connected: true,
-  changeToken: action("changeToken"),
-  close: action("close"),
+} satisfies Meta<typeof AssetSendModal>;
+
+export default meta;
+type Story = StoryObj<typeof AssetSendModal>;
+
+export const Default: Story = {
+  args: {
+    breakpoint: DEVICE_TYPE.WEB,
+    withdrawInfo: {
+      chainId: "dev",
+      createdAt: "2023-10-10T08:48:46+09:00",
+      name: "Gnoswap",
+      address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
+      path: "gno.land/r/gns",
+      decimals: 4,
+      symbol: "GNOT",
+      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/ugnot.svg",
+      type: "GRC20",
+      priceID: "gno.land/r/gns",
+    },
+    avgBlockTime: 2.2,
+    connected: true,
+    changeToken: fn(),
+    close: fn(),
+  },
+};
+
+export const Mobile: Story = {
+  args: {
+    ...Default.args,
+    breakpoint: DEVICE_TYPE.MOBILE,
+  },
+};
+
+export const Disconnected: Story = {
+  args: {
+    ...Default.args,
+    connected: false,
+  },
+};
+
+export const WithHighBlockTime: Story = {
+  args: {
+    ...Default.args,
+    avgBlockTime: 10.5,
+  },
 };

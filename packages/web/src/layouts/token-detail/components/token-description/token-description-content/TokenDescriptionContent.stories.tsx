@@ -1,16 +1,18 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import TokenDescriptionContent from "./TokenDescriptionContent";
 
-export default {
+const meta = {
   title: "token/TokenDescriptionContent",
   component: TokenDescriptionContent,
-} as ComponentMeta<typeof TokenDescriptionContent>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof TokenDescriptionContent>;
 
-const Template: ComponentStory<typeof TokenDescriptionContent> = args => <TokenDescriptionContent {...args} />;
+export default meta;
+type Story = StoryObj<typeof TokenDescriptionContent>;
 
-export const Default = Template.bind({});
-Default.args = {
-  content: "string",
+export const Default: Story = {
+  args: {
+    content: "string",
+  },
 };

@@ -1,16 +1,18 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import HighestAprsCardList from "./HighestAprsCardList";
 
-export default {
+const meta = {
   title: "home/HighestAprsCardList",
   component: HighestAprsCardList,
-} as ComponentMeta<typeof HighestAprsCardList>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof HighestAprsCardList>;
 
-const Template: ComponentStory<typeof HighestAprsCardList> = args => <HighestAprsCardList {...args} />;
+export default meta;
+type Story = StoryObj<typeof HighestAprsCardList>;
 
-export const Default = Template.bind({});
-Default.args = {
-  list: [],
+export const Default: Story = {
+  args: {
+    list: [],
+  },
 };

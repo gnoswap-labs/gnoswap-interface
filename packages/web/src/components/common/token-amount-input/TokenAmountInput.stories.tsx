@@ -1,12 +1,16 @@
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 import { TokenModel } from "@models/token/token-model";
-import { action } from "@storybook/addon-actions";
-import { Meta, StoryObj } from "@storybook/react";
-import TokenAmountInput, { type TokenAmountInputProps } from "./TokenAmountInput";
+import TokenAmountInput from "./TokenAmountInput";
 
-export default {
+const meta = {
   title: "common/TokenAmountInput",
   component: TokenAmountInput,
-} as Meta<typeof TokenAmountInput>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof TokenAmountInput>;
+
+export default meta;
+type Story = StoryObj<typeof TokenAmountInput>;
 
 const token: TokenModel = {
   chainId: "dev",
@@ -21,14 +25,14 @@ const token: TokenModel = {
   priceID: "gno.land/r/gns",
 };
 
-export const Default: StoryObj<TokenAmountInputProps> = {
+export const Default: Story = {
   args: {
     token,
     amount: "12,211",
     balance: "12,211",
     usdValue: "12.3",
     changable: true,
-    changeAmount: action("changeAmount"),
-    changeToken: action("changeToken"),
+    changeAmount: fn(),
+    changeToken: fn(),
   },
 };

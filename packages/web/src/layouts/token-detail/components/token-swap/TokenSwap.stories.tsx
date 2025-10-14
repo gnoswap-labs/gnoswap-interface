@@ -1,15 +1,9 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
 import { TokenModel } from "@models/token/token-model";
-import { action } from "@storybook/addon-actions";
+
 import TokenSwap from "./TokenSwap";
-
-export default {
-  title: "token/TokenSwap",
-  component: TokenSwap,
-} as ComponentMeta<typeof TokenSwap>;
-
-const Template: ComponentStory<typeof TokenSwap> = args => <TokenSwap {...args} />;
 
 const TOKEN_A: TokenModel = {
   chainId: "dev",
@@ -24,35 +18,45 @@ const TOKEN_A: TokenModel = {
   priceID: "gno.land/r/gns",
 };
 
-export const Default = Template.bind({});
-Default.args = {
-  isSwitchNetwork: false,
-  connectedWallet: false,
-  isAvailSwap: false,
-  swapButtonText: "Swap",
-  isLoading: false,
-  copied: false,
-  themeKey: "dark",
-  dataTokenInfo: {
-    tokenA: TOKEN_A,
-    tokenAAmount: "2,000,000",
-    tokenABalance: "0",
-    tokenB: TOKEN_A,
-    tokenBAmount: "2,000,000",
-    tokenBBalance: "0",
-    direction: "EXACT_IN",
-    tokenAUSDStr: "123",
-    tokenBUSDStr: "123",
+const meta = {
+  title: "token/TokenSwap",
+  component: TokenSwap,
+  tags: ["autodocs"],
+} satisfies Meta<typeof TokenSwap>;
+
+export default meta;
+type Story = StoryObj<typeof TokenSwap>;
+
+export const Default: Story = {
+  args: {
+    isSwitchNetwork: false,
+    connectedWallet: false,
+    isAvailSwap: false,
+    swapButtonText: "Swap",
+    isLoading: false,
+    copied: false,
+    themeKey: "dark",
+    dataTokenInfo: {
+      tokenA: TOKEN_A,
+      tokenAAmount: "2,000,000",
+      tokenABalance: "0",
+      tokenB: TOKEN_A,
+      tokenBAmount: "2,000,000",
+      tokenBBalance: "0",
+      direction: "EXACT_IN",
+      tokenAUSDStr: "123",
+      tokenBUSDStr: "123",
+    },
+    swapSummaryInfo: null,
+    swapRouteInfos: [],
+    connectWallet: fn(),
+    swapNow: fn(),
+    handleSetting: fn(),
+    handleCopied: fn(),
+    changeTokenA: fn(),
+    changeTokenAAmount: fn(),
+    changeTokenB: fn(),
+    changeTokenBAmount: fn(),
+    switchSwapDirection: fn(),
   },
-  swapSummaryInfo: null,
-  swapRouteInfos: [],
-  connectWallet: action("connectWallet"),
-  swapNow: action("swapNow"),
-  handleSetting: action("handleSetting"),
-  handleCopied: action("handleCopied"),
-  changeTokenA: action("changeTokenA"),
-  changeTokenAAmount: action("changeTokenAAmount"),
-  changeTokenB: action("changeTokenB"),
-  changeTokenBAmount: action("changeTokenBAmount"),
-  switchSwapDirection: action("switchSwapDirection"),
 };

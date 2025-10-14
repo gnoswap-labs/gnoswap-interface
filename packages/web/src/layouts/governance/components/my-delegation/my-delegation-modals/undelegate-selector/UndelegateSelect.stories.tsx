@@ -1,28 +1,32 @@
-import { ComponentStory, Meta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import { useState } from "react";
 
 import { DelegationItemInfo } from "@repositories/governance";
 
 import UndelegateSelect from "./UndelegateSelect";
 
-export default {
+const meta = {
   title: "governance/UndelegateModal/Select",
   component: UndelegateSelect,
-} as Meta<typeof UndelegateSelect>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof UndelegateSelect>;
 
-const Template: ComponentStory<typeof UndelegateSelect> = args => {
-  const [selectedDelegationInfo, setSelectedDelegationInfo] = useState<DelegationItemInfo | null>(null);
+export default meta;
+type Story = StoryObj<typeof UndelegateSelect>;
 
-  return (
-    <UndelegateSelect
-      {...args}
-      selectedDelegationInfo={selectedDelegationInfo}
-      select={() => setSelectedDelegationInfo(null)}
-    />
-  );
-};
+export const Default: Story = {
+  args: {
+    delegatedInfos: [],
+  },
+  render: (args: React.ComponentProps<typeof UndelegateSelect>) => {
+    const [selectedDelegationInfo, setSelectedDelegationInfo] = useState<DelegationItemInfo | null>(null);
 
-export const Default = Template.bind({});
-Default.args = {
-  delegatedInfos: [],
+    return (
+      <UndelegateSelect
+        {...args}
+        selectedDelegationInfo={selectedDelegationInfo}
+        select={() => setSelectedDelegationInfo(null)}
+      />
+    );
+  },
 };

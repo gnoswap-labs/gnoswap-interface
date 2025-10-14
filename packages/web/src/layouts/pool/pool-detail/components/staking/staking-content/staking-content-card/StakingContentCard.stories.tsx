@@ -1,23 +1,26 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import { DEVICE_TYPE } from "@styles/media";
 
 import StakingContentCard from "./StakingContentCard";
 
-export default {
+const meta = {
   title: "pool/StakingContentCard",
   component: StakingContentCard,
-} as ComponentMeta<typeof StakingContentCard>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof StakingContentCard>;
 
-const Template: ComponentStory<typeof StakingContentCard> = args => <StakingContentCard {...args} />;
+export default meta;
+type Story = StoryObj<typeof StakingContentCard>;
 
-export const ActiveStaking = Template.bind({});
-ActiveStaking.args = {
-  breakpoint: DEVICE_TYPE.WEB,
+export const ActiveStaking: Story = {
+  args: {
+    breakpoint: DEVICE_TYPE.WEB,
+  },
 };
 
-export const UnActiveStaking = Template.bind({});
-UnActiveStaking.args = {
-  breakpoint: DEVICE_TYPE.WEB,
+export const UnActiveStaking: Story = {
+  args: {
+    breakpoint: DEVICE_TYPE.WEB,
+  },
 };

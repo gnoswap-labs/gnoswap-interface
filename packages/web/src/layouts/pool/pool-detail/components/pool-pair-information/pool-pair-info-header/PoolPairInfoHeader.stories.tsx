@@ -1,32 +1,39 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import PoolPairInfoHeader from "./PoolPairInfoHeader";
 import { css } from "@emotion/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+
 import { PoolRepositoryMock } from "@repositories/pool";
+
+import PoolPairInfoHeader from "./PoolPairInfoHeader";
 
 const poolRepository = new PoolRepositoryMock();
 const pool = await poolRepository.getPoolDetailByPoolPath();
 
-export default {
+const meta = {
   title: "pool/PoolPairInfoHeader",
   component: PoolPairInfoHeader,
-} as ComponentMeta<typeof PoolPairInfoHeader>;
+  tags: ["autodocs"],
+  decorators: [
+    (Story: React.ComponentType) => (
+      <div css={wrapper}>
+        <div css={contentWrap}>
+          <Story />
+        </div>
+      </div>
+    ),
+  ],
+} satisfies Meta<typeof PoolPairInfoHeader>;
 
-const Template: ComponentStory<typeof PoolPairInfoHeader> = args => (
-  <div css={wrapper}>
-    <div css={contentWrap}>
-      <PoolPairInfoHeader {...args} />
-    </div>
-  </div>
-);
+export default meta;
+type Story = StoryObj<typeof PoolPairInfoHeader>;
 
-export const Default = Template.bind({});
-Default.args = {
-  tokenA: pool.tokenA,
-  tokenB: pool.tokenB,
-  feeStr: "0.01%",
-  incentivzed: true,
-  rewardTokens: [],
+export const Default: Story = {
+  args: {
+    tokenA: pool.tokenA,
+    tokenB: pool.tokenB,
+    feeStr: "0.01%",
+    incentivzed: true,
+    rewardTokens: [],
+  },
 };
 
 const wrapper = () => css`

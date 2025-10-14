@@ -1,15 +1,16 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import SelectUnstakeResult from "./SelectUnstakeResult";
 
-export default {
+const meta = {
   title: "pool/pool-unstake/SelectUnstakeResult",
   component: SelectUnstakeResult,
-} as ComponentMeta<typeof SelectUnstakeResult>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof SelectUnstakeResult>;
 
-const Template: ComponentStory<typeof SelectUnstakeResult> = args => {
-  return <SelectUnstakeResult {...args} />;
+export default meta;
+type Story = StoryObj<typeof SelectUnstakeResult>;
+
+export const Default: Story = {
+  args: {},
 };
-
-export const Default = Template.bind({});
-Default.args = {};

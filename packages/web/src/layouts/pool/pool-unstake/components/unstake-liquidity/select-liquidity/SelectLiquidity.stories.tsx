@@ -1,15 +1,16 @@
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import SelectLiquidity from "./SelectLiquidity";
 
-export default {
+const meta = {
   title: "pool/pool-unstake/SelectLiquidity",
   component: SelectLiquidity,
-} as ComponentMeta<typeof SelectLiquidity>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof SelectLiquidity>;
 
-const Template: ComponentStory<typeof SelectLiquidity> = args => {
-  return <SelectLiquidity {...args} />;
+export default meta;
+type Story = StoryObj<typeof SelectLiquidity>;
+
+export const Default: Story = {
+  args: {},
 };
-
-export const Default = Template.bind({});
-Default.args = {};

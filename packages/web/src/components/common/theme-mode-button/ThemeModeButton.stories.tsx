@@ -1,14 +1,15 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import ThemeModeButton from "./ThemeModeButton";
 
-export default {
+const meta = {
   title: "common/ThemeModeButton",
   component: ThemeModeButton,
-} as ComponentMeta<typeof ThemeModeButton>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof ThemeModeButton>;
 
-const Template: ComponentStory<typeof ThemeModeButton> = args => <ThemeModeButton {...args} />;
+export default meta;
+type Story = StoryObj<typeof ThemeModeButton>;
 
-export const Default = Template.bind({});
-Default.args = {};
+export const Default: Story = {
+  args: {},
+};

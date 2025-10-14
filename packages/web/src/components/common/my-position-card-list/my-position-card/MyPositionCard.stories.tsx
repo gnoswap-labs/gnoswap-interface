@@ -1,20 +1,22 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import MyPositionCard from "./MyPositionCard";
-import { action } from "@storybook/addon-actions";
+import { fn } from "@storybook/test";
 
-export default {
+const meta = {
   title: "common/MyPositionCard",
   component: MyPositionCard,
-} as ComponentMeta<typeof MyPositionCard>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof MyPositionCard>;
 
-const Template: ComponentStory<typeof MyPositionCard> = args => <MyPositionCard {...args} />;
+export default meta;
+type Story = StoryObj<typeof MyPositionCard>;
 
-export const Staked = Template.bind({});
-Staked.args = {};
+export const Staked: Story = {
+  args: {},
+};
 
-export const Unstaked = Template.bind({});
-Unstaked.args = {
-  movePoolDetail: action("movePoolDetail"),
+export const Unstaked: Story = {
+  args: {
+    movePoolDetail: fn(),
+  },
 };

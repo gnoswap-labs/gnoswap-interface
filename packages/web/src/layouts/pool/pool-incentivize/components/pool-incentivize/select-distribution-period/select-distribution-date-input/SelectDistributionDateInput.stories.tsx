@@ -1,13 +1,21 @@
-import SelectDistributionDateInput, { type SelectDistributionDateInputProps } from "./SelectDistributionDateInput";
-import { Meta, StoryObj } from "@storybook/react";
-import { action } from "@storybook/addon-actions";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
-export default {
+import SelectDistributionDateInput from "./SelectDistributionDateInput";
+
+const meta = {
   title: "incentivize/SelectDistributionDateInput",
   component: SelectDistributionDateInput,
-} as Meta<typeof SelectDistributionDateInput>;
+  tags: ["autodocs"],
+  parameters: {
+    backgrounds: { default: "light" },
+  },
+} satisfies Meta<typeof SelectDistributionDateInput>;
 
-export const Default: StoryObj<SelectDistributionDateInputProps> = {
+export default meta;
+type Story = StoryObj<typeof SelectDistributionDateInput>;
+
+export const Default: Story = {
   args: {
     title: "Start Date",
     date: {
@@ -15,6 +23,6 @@ export const Default: StoryObj<SelectDistributionDateInputProps> = {
       month: 10,
       date: 1,
     },
-    setDate: action("date"),
+    setDate: fn(),
   },
 };

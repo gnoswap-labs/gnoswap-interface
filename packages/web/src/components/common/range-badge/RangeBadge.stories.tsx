@@ -1,22 +1,24 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import RangeBadge from "./RangeBadge";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 
-export default {
+const meta = {
   title: "common/RangeBadge",
   component: RangeBadge,
+  tags: ["autodocs"],
   argTypes: {
     status: {
       options: ["IN", "OUT"],
       control: { type: "radio" },
     },
   },
-} as ComponentMeta<typeof RangeBadge>;
+} satisfies Meta<typeof RangeBadge>;
 
-const Template: ComponentStory<typeof RangeBadge> = args => <RangeBadge {...args} />;
+export default meta;
+type Story = StoryObj<typeof RangeBadge>;
 
-export const Default = Template.bind({});
-Default.args = {
-  status: RANGE_STATUS_OPTION.IN,
+export const Default: Story = {
+  args: {
+    status: RANGE_STATUS_OPTION.IN,
+  },
 };

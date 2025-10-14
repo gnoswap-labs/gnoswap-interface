@@ -1,8 +1,8 @@
 import SelectToken, { type SelectTokenIncentivizeProps } from "./SelectTokenIncentivize";
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/nextjs";
 
 export default {
-  title: "common/SelectToken",
+  title: "common/SelectTokenIncentivize",
   component: SelectToken,
 } as Meta<typeof SelectToken>;
 

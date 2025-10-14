@@ -2,7 +2,8 @@ import { css } from "@emotion/react";
 import { SwapRateAction } from "@hooks/swap/data/use-swap-handler";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import React from "react";
 import SwapCardFeeInfo from "./SwapCardFeeInfo";
 
 const swapSummaryInfo: SwapSummaryInfo = {
@@ -89,23 +90,27 @@ const swapTokenInfo: SwapTokenInfo = {
   slippage: 0,
 };
 
-export default {
+const meta = {
   title: "swap/SwapCardFeeInfo",
   component: SwapCardFeeInfo,
-} as ComponentMeta<typeof SwapCardFeeInfo>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof SwapCardFeeInfo>;
 
-const Template: ComponentStory<typeof SwapCardFeeInfo> = args => (
-  <div css={wrapper}>
-    <div css={contentWrap}>
-      <SwapCardFeeInfo {...args} />
+export default meta;
+type Story = StoryObj<typeof SwapCardFeeInfo>;
+
+export const Default: Story = {
+  render: (args: React.ComponentProps<typeof SwapCardFeeInfo>) => (
+    <div css={wrapper}>
+      <div css={contentWrap}>
+        <SwapCardFeeInfo {...args} />
+      </div>
     </div>
-  </div>
-);
-
-export const Default = Template.bind({});
-Default.args = {
-  swapSummaryInfo,
-  swapTokenInfo,
+  ),
+  args: {
+    swapSummaryInfo,
+    swapTokenInfo,
+  },
 };
 
 const wrapper = () => css`

@@ -1,39 +1,42 @@
+import React from "react";
 import { css, Theme } from "@emotion/react";
-import { action } from "@storybook/addon-actions";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
-
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 import { ActivityData, dummyActivityData } from "@repositories/activity/responses/activity-responses";
 import { ActivityType } from "@repositories/dashboard";
 import { DEVICE_TYPE } from "@styles/media";
-
 import ActivityList from "./ActivityList";
 
 const dummyTokenList: ActivityData[] = [dummyActivityData];
 
-export default {
+const meta = {
   title: "dashboard/ActivityList",
   component: ActivityList,
-} as ComponentMeta<typeof ActivityList>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof ActivityList>;
 
-const Template: ComponentStory<typeof ActivityList> = args => (
-  <div css={wrapper}>
-    <ActivityList {...args} />
-  </div>
-);
+export default meta;
+type Story = StoryObj<typeof ActivityList>;
 
-export const Default = Template.bind({});
-Default.args = {
-  activities: dummyTokenList,
-  isFetched: true,
-  error: null,
-  activityType: ActivityType.ALL,
-  changeActivityType: action("changeActivityType"),
-  currentPage: 0,
-  totalPage: 10,
-  movePage: action("movePage"),
-  isSortOption: () => true,
-  sort: action("sort"),
-  breakpoint: DEVICE_TYPE.WEB,
+export const Default: Story = {
+  render: (args: React.ComponentProps<typeof ActivityList>) => (
+    <div css={wrapper}>
+      <ActivityList {...args} />
+    </div>
+  ),
+  args: {
+    activities: dummyTokenList,
+    isFetched: true,
+    error: null,
+    activityType: ActivityType.ALL,
+    changeActivityType: fn(),
+    currentPage: 0,
+    totalPage: 10,
+    movePage: fn(),
+    isSortOption: () => true,
+    sort: fn(),
+    breakpoint: DEVICE_TYPE.WEB,
+  },
 };
 
 const wrapper = (theme: Theme) => css`

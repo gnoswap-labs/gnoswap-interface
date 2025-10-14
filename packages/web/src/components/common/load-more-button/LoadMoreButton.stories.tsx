@@ -1,26 +1,29 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
 import LoadMoreButton, { TEXT_TYPE } from "./LoadMoreButton";
-import { action } from "@storybook/addon-actions";
 
-export default {
+const meta = {
   title: "common/LoadMoreButton",
   component: LoadMoreButton,
-} as ComponentMeta<typeof LoadMoreButton>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof LoadMoreButton>;
 
-const Template: ComponentStory<typeof LoadMoreButton> = args => <LoadMoreButton {...args} />;
+export default meta;
+type Story = StoryObj<typeof LoadMoreButton>;
 
-export const LoadType = Template.bind({});
-LoadType.args = {
-  show: true,
-  onClick: action("onClick"),
-  text: TEXT_TYPE.LOAD,
+export const LoadType: Story = {
+  args: {
+    show: true,
+    onClick: fn(),
+    text: TEXT_TYPE.LOAD,
+  },
 };
 
-export const ShowType = Template.bind({});
-ShowType.args = {
-  show: true,
-  onClick: action("onClick"),
-  text: TEXT_TYPE.SHOW,
+export const ShowType: Story = {
+  args: {
+    show: true,
+    onClick: fn(),
+    text: TEXT_TYPE.SHOW,
+  },
 };

@@ -1,14 +1,21 @@
-import { action } from "@storybook/addon-actions";
-import { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
 import { TokenModel } from "@models/token/token-model";
 
-import PoolAddConfirmModal, { type PoolAddConfirmModalProps } from "./PoolAddConfirmModal";
+import PoolAddConfirmModal from "./PoolAddConfirmModal";
 
-export default {
+const meta = {
   title: "pool/pool-add/PoolAddConfirmModal",
   component: PoolAddConfirmModal,
-} as Meta<typeof PoolAddConfirmModal>;
+  tags: ["autodocs"],
+  parameters: {
+    backgrounds: { default: "light" },
+  },
+} satisfies Meta<typeof PoolAddConfirmModal>;
+
+export default meta;
+type Story = StoryObj<typeof PoolAddConfirmModal>;
 
 const tokenA: {
   info: TokenModel;
@@ -78,12 +85,12 @@ const feeInfo = {
   fee: "-500",
 };
 
-export const Default: StoryObj<PoolAddConfirmModalProps> = {
+export const Default: Story = {
   args: {
     amountInfo,
     priceRangeInfo,
     feeInfo,
-    confirm: action("confirm"),
-    close: action("close"),
+    confirm: fn(),
+    close: fn(),
   },
 };

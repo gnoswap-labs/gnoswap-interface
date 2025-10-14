@@ -1,14 +1,26 @@
 import React, { useState } from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import Modal from "./Modal";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 
-export default {
+const meta = {
   title: "common/Modal",
   component: Modal,
-} as ComponentMeta<typeof Modal>;
+  tags: ["autodocs"],
+  decorators: [
+    (Story: React.ComponentType) => (
+      <>
+        <Story />
+        <div id="storybook-portal" />
+      </>
+    ),
+  ],
+} satisfies Meta<typeof Modal>;
 
-const Template: ComponentStory<typeof Modal> = args => {
+export default meta;
+type Story = StoryObj<typeof Modal>;
+
+const ModalWrapper = (args: React.ComponentProps<typeof Modal>) => {
   const [open, setOpen] = useState(true);
   const toggle = () => {
     setOpen(prev => !prev);
@@ -25,7 +37,6 @@ const Template: ComponentStory<typeof Modal> = args => {
           hierarchy: ButtonHierarchy.Primary,
         }}
       />
-      <div id="storybook-portal" />
       {open && (
         <Modal
           {...args}
@@ -47,15 +58,21 @@ const Template: ComponentStory<typeof Modal> = args => {
   );
 };
 
-export const Default = Template.bind({});
-Default.args = {};
-
-export const LeftArrow = Template.bind({});
-LeftArrow.args = {
-  hasLeftArrow: true,
+export const Default: Story = {
+  render: (args: React.ComponentProps<typeof Modal>) => <ModalWrapper {...args} />,
+  args: {},
 };
 
-export const LeftText = Template.bind({});
-LeftText.args = {
-  leftText: "Modal Header",
+export const LeftArrow: Story = {
+  render: (args: React.ComponentProps<typeof Modal>) => <ModalWrapper {...args} />,
+  args: {
+    hasLeftArrow: true,
+  },
+};
+
+export const LeftText: Story = {
+  render: (args: React.ComponentProps<typeof Modal>) => <ModalWrapper {...args} />,
+  args: {
+    leftText: "Modal Header",
+  },
 };

@@ -1,16 +1,18 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import BestPoolCardList from "./BestPoolCardList";
 
-export default {
+const meta = {
   title: "token/BestPoolCardList",
   component: BestPoolCardList,
-} as ComponentMeta<typeof BestPoolCardList>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof BestPoolCardList>;
 
-const Template: ComponentStory<typeof BestPoolCardList> = args => <BestPoolCardList {...args} />;
+export default meta;
+type Story = StoryObj<typeof BestPoolCardList>;
 
-export const Default = Template.bind({});
-Default.args = {
-  list: [],
+export const Default: Story = {
+  args: {
+    list: [],
+  },
 };

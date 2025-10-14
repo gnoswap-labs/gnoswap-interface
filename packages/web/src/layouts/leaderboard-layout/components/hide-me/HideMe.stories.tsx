@@ -1,21 +1,27 @@
-import HideMe from "./HideMe";
-import { ComponentMeta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
-export default {
+import HideMe from "./HideMe";
+
+const meta = {
   title: "leaderboard/HideMe",
   component: HideMe,
-} as ComponentMeta<typeof HideMe>;
-
-export const Mobile: StoryObj<typeof HideMe> = {
-  args: { isMobile: true },
+  tags: ["autodocs"],
   parameters: {
     backgrounds: { default: "light" },
   },
+} satisfies Meta<typeof HideMe>;
+
+export default meta;
+type Story = StoryObj<typeof HideMe>;
+
+export const Mobile: Story = {
+  args: {
+    isMobile: true,
+  },
 };
 
-export const Web: StoryObj<typeof HideMe> = {
-  args: { isMobile: false },
-  parameters: {
-    backgrounds: { default: "light" },
+export const Web: Story = {
+  args: {
+    isMobile: false,
   },
 };

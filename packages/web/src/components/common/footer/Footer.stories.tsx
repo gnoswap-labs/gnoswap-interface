@@ -1,14 +1,13 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import Footer from "./Footer";
 
-export default {
+const meta = {
   title: "common/Footer",
   component: Footer,
-} as ComponentMeta<typeof Footer>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof Footer>;
 
-const Template: ComponentStory<typeof Footer> = args => <Footer />;
+export default meta;
+type Story = StoryObj<typeof Footer>;
 
-export const Default = Template.bind({});
-Default.args = {};
+export const Default: Story = {};

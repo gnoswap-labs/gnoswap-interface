@@ -1,21 +1,28 @@
-import CopyReferralLink from "./CopyReferralLink";
-import { ComponentMeta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
-export default {
+import CopyReferralLink from "./CopyReferralLink";
+
+const meta = {
   title: "leaderboard/CopyReferralLink",
   component: CopyReferralLink,
-} as ComponentMeta<typeof CopyReferralLink>;
-
-export const Connected: StoryObj<typeof CopyReferralLink> = {
-  args: { connected: true, address: "temp_addr" },
+  tags: ["autodocs"],
   parameters: {
     backgrounds: { default: "light" },
   },
+} satisfies Meta<typeof CopyReferralLink>;
+
+export default meta;
+type Story = StoryObj<typeof CopyReferralLink>;
+
+export const Connected: Story = {
+  args: {
+    connected: true,
+    address: "temp_addr",
+  },
 };
 
-export const NotConnected: StoryObj<typeof CopyReferralLink> = {
-  args: { connected: false },
-  parameters: {
-    backgrounds: { default: "light" },
+export const NotConnected: Story = {
+  args: {
+    connected: false,
   },
 };

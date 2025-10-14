@@ -1,19 +1,22 @@
-import { action } from "@storybook/addon-actions";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
 import { DEVICE_TYPE } from "@styles/media";
 
 import ViewProposalModal from "./ViewProposalModal";
 
-export default {
+const meta = {
   title: "governance/ViewProposalModal",
   component: ViewProposalModal,
-} as ComponentMeta<typeof ViewProposalModal>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof ViewProposalModal>;
 
-const Template: ComponentStory<typeof ViewProposalModal> = args => <ViewProposalModal {...args} />;
+export default meta;
+type Story = StoryObj<typeof ViewProposalModal>;
 
-export const Default = Template.bind({});
-Default.args = {
-  breakpoint: DEVICE_TYPE.WEB,
-  setIsModalOpen: action("setIsModalOpen"),
+export const Default: Story = {
+  args: {
+    breakpoint: DEVICE_TYPE.WEB,
+    setIsModalOpen: fn(),
+  },
 };

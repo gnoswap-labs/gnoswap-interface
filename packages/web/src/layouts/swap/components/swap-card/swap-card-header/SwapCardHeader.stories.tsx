@@ -1,28 +1,34 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import SwapCardHeader from "./SwapCardHeader";
 import { css } from "@emotion/react";
-import { action } from "@storybook/addon-actions";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
-export default {
+import SwapCardHeader from "./SwapCardHeader";
+
+const meta = {
   title: "swap/SwapCardHeader",
   component: SwapCardHeader,
-} as ComponentMeta<typeof SwapCardHeader>;
+  tags: ["autodocs"],
+  decorators: [
+    (Story: React.ComponentType) => (
+      <div css={wrapper}>
+        <div css={headerWrap}>
+          <Story />
+        </div>
+      </div>
+    ),
+  ],
+} satisfies Meta<typeof SwapCardHeader>;
 
-const Template: ComponentStory<typeof SwapCardHeader> = args => (
-  <div css={wrapper}>
-    <div css={headerWrap}>
-      <SwapCardHeader {...args} />
-    </div>
-  </div>
-);
+export default meta;
+type Story = StoryObj<typeof SwapCardHeader>;
 
-export const Default = Template.bind({});
-Default.args = {
-  copied: false,
-  copyURL: action("copyURL"),
-  slippage: 0,
-  changeSlippage: action("changeSlippage"),
+export const Default: Story = {
+  args: {
+    copied: false,
+    copyURL: fn(),
+    slippage: 0,
+    changeSlippage: fn(),
+  },
 };
 
 const wrapper = () => css`

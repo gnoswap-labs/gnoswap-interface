@@ -1,15 +1,17 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import TvlChartPriceInfo from "./TvlChartPriceInfo";
 
-export default {
+const meta = {
   title: "dashboard/TvlChartPriceInfo",
   component: TvlChartPriceInfo,
-} as ComponentMeta<typeof TvlChartPriceInfo>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof TvlChartPriceInfo>;
 
-const Template: ComponentStory<typeof TvlChartPriceInfo> = args => <TvlChartPriceInfo {...args} />;
+export default meta;
+type Story = StoryObj<typeof TvlChartPriceInfo>;
 
-export const Default = Template.bind({});
-Default.args = {
-  tvlPriceInfo: { amount: "$100,450,000" },
+export const Default: Story = {
+  args: {
+    tvlPriceInfo: { amount: "$100,450,000" },
+  },
 };

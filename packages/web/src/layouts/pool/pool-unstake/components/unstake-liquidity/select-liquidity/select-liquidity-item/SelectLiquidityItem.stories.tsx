@@ -1,27 +1,33 @@
-import { useState } from "react";
-import { action } from "@storybook/addon-actions";
-import { ComponentMeta, ComponentStory } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
 import SelectLiquidityItem from "./SelectLiquidityItem";
 
-export default {
+const meta = {
   title: "pool/pool-unstake/SelectLiquidityItem",
   component: SelectLiquidityItem,
-} as ComponentMeta<typeof SelectLiquidityItem>;
+  tags: ["autodocs"],
+  parameters: {
+    backgrounds: { default: "light" },
+  },
+} satisfies Meta<typeof SelectLiquidityItem>;
 
-const Template: ComponentStory<typeof SelectLiquidityItem> = args => {
-  const [checked, setChecked] = useState(false);
-  return (
-    <SelectLiquidityItem
-      {...args}
-      onCheckedItem={() => setChecked(prev => !prev)}
-      checkedList={checked ? [1111] : []}
-    />
-  );
-};
+export default meta;
+type Story = StoryObj<typeof SelectLiquidityItem>;
 
-export const Default = Template.bind({});
-Default.args = {
-  checkedList: [],
-  onCheckedItem: action("onCheckedItem"),
+export const Default: Story = {
+  args: {
+    checkedList: [],
+    onCheckedItem: fn(),
+  },
+  // render: (args: React.ComponentType<typeof SelectLiquidityItem>) => {
+  //   const [checked, setChecked] = useState(false);
+  //   return (
+  //     <SelectLiquidityItem
+  //       {...args}
+  //       onCheckedItem={() => setChecked(prev => !prev)}
+  //       checkedList={checked ? [1111] : []}
+  //     />
+  //   );
+  // },
 };

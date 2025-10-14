@@ -1,5 +1,5 @@
 import TokenChartGraph, { type TokenChartGraphProps } from "./TokenChartGraph";
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/nextjs";
 
 export default {
   title: "token/TokenChartGraph",

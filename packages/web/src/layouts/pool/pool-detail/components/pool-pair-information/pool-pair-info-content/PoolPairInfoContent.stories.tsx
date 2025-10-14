@@ -1,26 +1,34 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import PoolPairInfoContent from "./PoolPairInfoContent";
 import { css } from "@emotion/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+
 import { PoolRepositoryMock } from "@repositories/pool";
 
-export default {
-  title: "pool/PoolPairInfoContent",
-  component: PoolPairInfoContent,
-} as ComponentMeta<typeof PoolPairInfoContent>;
-
-const Template: ComponentStory<typeof PoolPairInfoContent> = args => (
-  <div css={wrapper}>
-    <PoolPairInfoContent {...args} />
-  </div>
-);
+import PoolPairInfoContent from "./PoolPairInfoContent";
+import React from "react";
 
 const poolRepository = new PoolRepositoryMock();
 const pool = await poolRepository.getPoolDetailByPoolPath();
 
-export const Default = Template.bind({});
-Default.args = {
-  pool,
+const meta = {
+  title: "pool/PoolPairInfoContent",
+  component: PoolPairInfoContent,
+  tags: ["autodocs"],
+  decorators: [
+    (Story: React.ComponentType) => (
+      <div css={wrapper}>
+        <Story />
+      </div>
+    ),
+  ],
+} satisfies Meta<typeof PoolPairInfoContent>;
+
+export default meta;
+type Story = StoryObj<typeof PoolPairInfoContent>;
+
+export const Default: Story = {
+  args: {
+    pool,
+  },
 };
 
 const wrapper = () => css`

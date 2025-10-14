@@ -1,35 +1,37 @@
-import PointComposition from "./PointComposition";
-import { ComponentMeta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
-export default {
+import PointComposition from "./PointComposition";
+
+const meta = {
   title: "leaderboard/PointComposition",
   component: PointComposition,
-} as ComponentMeta<typeof PointComposition>;
-
-export const Mobile: StoryObj<typeof PointComposition> = {
-  args: {
-    points: "20000000",
-    swapPoint: "20000000",
-    positionPoint: "20000000",
-    stakingPoint: "20000000",
-    referralPoint: "20000000",
-    isMobile: true,
-  },
+  tags: ["autodocs"],
   parameters: {
     backgrounds: { default: "light" },
+  },
+} satisfies Meta<typeof PointComposition>;
+
+export default meta;
+type Story = StoryObj<typeof PointComposition>;
+
+const commonArgs = {
+  points: "20000000",
+  swapPoint: "20000000",
+  positionPoint: "20000000",
+  stakingPoint: "20000000",
+  referralPoint: "20000000",
+};
+
+export const Mobile: Story = {
+  args: {
+    ...commonArgs,
+    isMobile: true,
   },
 };
 
-export const Web: StoryObj<typeof PointComposition> = {
+export const Web: Story = {
   args: {
-    points: "20000000",
-    swapPoint: "20000000",
-    positionPoint: "20000000",
-    stakingPoint: "20000000",
-    referralPoint: "20000000",
+    ...commonArgs,
     isMobile: false,
-  },
-  parameters: {
-    backgrounds: { default: "light" },
   },
 };

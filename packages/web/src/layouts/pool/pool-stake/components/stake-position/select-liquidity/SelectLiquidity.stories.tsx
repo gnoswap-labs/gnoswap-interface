@@ -1,30 +1,36 @@
-import React, { useCallback, useState } from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import { useCallback, useState } from "react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+
 import SelectLiquidity from "./SelectLiquidity";
 
-export default {
+const meta = {
   title: "stake/SelectLiquidity",
   component: SelectLiquidity,
-} as ComponentMeta<typeof SelectLiquidity>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof SelectLiquidity>;
 
-const Template: ComponentStory<typeof SelectLiquidity> = args => {
-  const [checkedList, setCheckedList] = useState<number[]>([]);
-  const [checkedAll] = useState(false);
+export default meta;
+type Story = StoryObj<typeof SelectLiquidity>;
 
-  const onCheckedItem = useCallback(
-    (isChecked: boolean, id: number) => {
-      if (isChecked) {
-        return setCheckedList((prev: number[]) => [...prev, id]);
-      }
-      if (!isChecked && checkedList.includes(id)) {
-        return setCheckedList(checkedList.filter(el => el !== id));
-      }
-    },
-    [checkedList],
-  );
+export const Default: Story = {
+  render: (args: React.ComponentProps<typeof SelectLiquidity>) => {
+    const [checkedList, setCheckedList] = useState<number[]>([]);
+    const [checkedAll] = useState(false);
 
-  return <SelectLiquidity {...args} checkedList={checkedList} onCheckedItem={onCheckedItem} checkedAll={checkedAll} />;
+    const onCheckedItem = useCallback(
+      (isChecked: boolean, id: number) => {
+        if (isChecked) {
+          return setCheckedList((prev: number[]) => [...prev, id]);
+        }
+        if (!isChecked && checkedList.includes(id)) {
+          return setCheckedList(checkedList.filter(el => el !== id));
+        }
+      },
+      [checkedList],
+    );
+
+    return (
+      <SelectLiquidity {...args} checkedList={checkedList} onCheckedItem={onCheckedItem} checkedAll={checkedAll} />
+    );
+  },
 };
-
-export const Default = Template.bind({});
-Default.args = {};

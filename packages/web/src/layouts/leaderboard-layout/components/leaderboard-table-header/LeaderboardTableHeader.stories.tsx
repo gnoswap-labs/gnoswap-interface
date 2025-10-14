@@ -1,17 +1,23 @@
-import LeaderboardTableHeader from "./LeaderboardTableHeader";
-import { ComponentMeta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
-export default {
+import LeaderboardTableHeader from "./LeaderboardTableHeader";
+
+const meta = {
   title: "leaderboard/LeaderboardTableHeader",
   component: LeaderboardTableHeader,
-} as ComponentMeta<typeof LeaderboardTableHeader>;
-
-export const Default: StoryObj<typeof LeaderboardTableHeader> = {
-  args: {
-    heads: ["Rank", "User", "Swap Volume", "Position Value", "Staking Value", "Points"],
-    headWidths: [120, 400, 200, 200, 200, 240],
-  },
+  tags: ["autodocs"],
   parameters: {
     backgrounds: { default: "light" },
+  },
+} satisfies Meta<typeof LeaderboardTableHeader>;
+
+export default meta;
+type Story = StoryObj<typeof LeaderboardTableHeader>;
+
+export const Default: Story = {
+  args: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    heads: ["Rank", "User", "Swap Volume", "Position Value", "Staking Value", "Points"] as any,
+    headWidths: [120, 400, 200, 200, 200, 240],
   },
 };

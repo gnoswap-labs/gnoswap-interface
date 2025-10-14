@@ -1,26 +1,34 @@
-import React, { useState } from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import SelectLiquidityListItem from "./SelectLiquidityListItem";
-import { action } from "@storybook/addon-actions";
+import { useState } from "react";
+import type { Meta, StoryObj } from "@storybook/nextjs";
+import { fn } from "@storybook/test";
 
-export default {
+import SelectLiquidityListItem from "./SelectLiquidityListItem";
+
+const meta = {
   title: "stake/SelectLiquidityListItem",
   component: SelectLiquidityListItem,
-} as ComponentMeta<typeof SelectLiquidityListItem>;
+  tags: ["autodocs"],
+  parameters: {
+    backgrounds: { default: "light" },
+  },
+} satisfies Meta<typeof SelectLiquidityListItem>;
 
-const Template: ComponentStory<typeof SelectLiquidityListItem> = args => {
-  const [checked, setChecked] = useState(false);
-  return (
-    <SelectLiquidityListItem
-      {...args}
-      onCheckedItem={() => setChecked(prev => !prev)}
-      checkedList={checked ? [111] : []}
-    />
-  );
-};
+export default meta;
+type Story = StoryObj<typeof SelectLiquidityListItem>;
 
-export const Default = Template.bind({});
-Default.args = {
-  checkedList: [],
-  onCheckedItem: action("onCheckedItem"),
+export const Default: Story = {
+  args: {
+    checkedList: [],
+    onCheckedItem: fn(),
+  },
+  render: (args: React.ComponentProps<typeof SelectLiquidityListItem>) => {
+    const [checked, setChecked] = useState(false);
+    return (
+      <SelectLiquidityListItem
+        {...args}
+        onCheckedItem={() => setChecked(prev => !prev)}
+        checkedList={checked ? [111] : []}
+      />
+    );
+  },
 };

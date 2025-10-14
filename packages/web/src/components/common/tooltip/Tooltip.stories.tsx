@@ -1,44 +1,47 @@
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import Tooltip from "./Tooltip";
 
-export default {
+const meta = {
   title: "common/Tooltip",
   component: Tooltip,
-} as ComponentMeta<typeof Tooltip>;
+  tags: ["autodocs"],
+} satisfies Meta<typeof Tooltip>;
 
-const Template: ComponentStory<typeof Tooltip> = ({ placement }) => (
-  <div
-    style={{
-      width: 200,
-      height: 300,
-      backgroundColor: "yellow",
-      overflowX: "hidden",
-      overflowY: "auto",
-    }}
-  >
+export default meta;
+type Story = StoryObj<typeof Tooltip>;
+
+export const Default: Story = {
+  args: {
+    placement: "top",
+  },
+  render: (args: React.ComponentProps<typeof Tooltip>) => (
     <div
       style={{
-        marginTop: 200,
-        height: 500,
+        width: 200,
+        height: 300,
+        backgroundColor: "yellow",
+        overflowX: "hidden",
+        overflowY: "auto",
       }}
     >
-      <Tooltip placement={placement} FloatingContent={<div>Hello Gnoswap</div>}>
-        <div
-          style={{
-            width: 200,
-            height: 100,
-            backgroundColor: "green",
-            textAlign: "center",
-          }}
-        />
-      </Tooltip>
+      <div
+        style={{
+          marginTop: 200,
+          height: 500,
+        }}
+      >
+        <Tooltip placement={args.placement} FloatingContent={<div>Hello Gnoswap</div>}>
+          <div
+            style={{
+              width: 200,
+              height: 100,
+              backgroundColor: "green",
+              textAlign: "center",
+            }}
+          />
+        </Tooltip>
+      </div>
     </div>
-  </div>
-);
-
-export const Default = Template.bind({});
-Default.args = {
-  placement: "top",
+  ),
 };
