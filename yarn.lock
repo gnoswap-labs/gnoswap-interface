@@ -2577,7 +2577,7 @@ __metadata:
     "@types/react": "npm:18.2.5"
     "@types/react-dom": "npm:18.2.5"
     "@types/uuid": "npm:^9.0.7"
-    "@typescript-eslint/parser": "npm:^8.0.0"
+    "@typescript-eslint/parser": "npm:^8.46.1"
     axios: "npm:1.12.0"
     babel-jest: "npm:29.4.3"
     babel-loader: "npm:9.1.2"
@@ -2589,7 +2589,7 @@ __metadata:
     dayjs: "npm:1.11.7"
     dotenv-cli: "npm:^10.0.0"
     eslint-config-next: "npm:13.2.3"
-    eslint-config-prettier: "npm:^9.1.0"
+    eslint-config-prettier: "npm:^10.1.8"
     eslint-plugin-storybook: "npm:9.1.10"
     i18next: "npm:^23.11.5"
     i18next-chained-backend: "npm:^4.6.2"
@@ -5475,7 +5475,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:8.46.1, @typescript-eslint/parser@npm:^8.0.0":
+"@typescript-eslint/parser@npm:8.46.1, @typescript-eslint/parser@npm:^8.0.0, @typescript-eslint/parser@npm:^8.46.1":
   version: 8.46.1
   resolution: "@typescript-eslint/parser@npm:8.46.1"
   dependencies:
@@ -9739,14 +9739,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:^9.1.0":
-  version: 9.1.2
-  resolution: "eslint-config-prettier@npm:9.1.2"
+"eslint-config-prettier@npm:^10.1.8":
+  version: 10.1.8
+  resolution: "eslint-config-prettier@npm:10.1.8"
   peerDependencies:
     eslint: ">=7.0.0"
   bin:
     eslint-config-prettier: bin/cli.js
-  checksum: 10/e4bba2d76df9dc6e2adca2866e544bfd1ff32232fc483743c04cedd93918a90a327b56d4a7e3f9d3fa32d90bd50b034d09df987860260064b18c026b8bbd15aa
+  checksum: 10/03f8e6ea1a6a9b8f9eeaf7c8c52a96499ec4b275b9ded33331a6cc738ed1d56de734097dbd0091f136f0e84bc197388bd8ec22a52a4658105883f8c8b7d8921a
   languageName: node
   linkType: hard
 
