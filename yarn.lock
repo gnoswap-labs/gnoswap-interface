@@ -92,7 +92,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.18.9, @babel/core@npm:^7.19.6, @babel/core@npm:^7.23.9, @babel/core@npm:^7.24.4":
+"@babel/core@npm:^7.11.6, @babel/core@npm:^7.12.3, @babel/core@npm:^7.18.9, @babel/core@npm:^7.19.6, @babel/core@npm:^7.22.0, @babel/core@npm:^7.23.9, @babel/core@npm:^7.24.4":
   version: 7.28.4
   resolution: "@babel/core@npm:7.28.4"
   dependencies:
@@ -2543,7 +2543,7 @@ __metadata:
   resolution: "@gnoswap-labs/web@workspace:packages/web"
   dependencies:
     "@adena-wallet/sdk": "npm:^0.0.11"
-    "@babel/core": "npm:7.21.0"
+    "@babel/core": "npm:^7.22.0"
     "@babel/preset-env": "npm:7.20.2"
     "@babel/preset-typescript": "npm:7.21.0"
     "@babel/runtime": "npm:^7.26.10"
