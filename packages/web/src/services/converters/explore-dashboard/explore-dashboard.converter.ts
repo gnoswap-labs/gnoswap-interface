@@ -87,6 +87,6 @@ export class ExploreDashboardConverter {
     }
 
     const converted = Number(value);
-    return isNaN(converted) ? 0 : converted;
+    return Number.isNaN(converted) ? 0 : converted;
   }
 }
