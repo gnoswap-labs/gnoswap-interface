@@ -1,11 +1,9 @@
 /** @type {import('next').NextConfig} */
 
-const path = require('path');
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { i18n } = require("./next-i18next.config");
 
 const nextConfig = {
-  output: 'standalone',
   reactStrictMode: true,
   i18n,
   webpack(config) {
