@@ -215,8 +215,9 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     if (Number.isNaN(currentPrice)) {
       return 0;
     }
-    return priceToTick(currentPrice);
-  }, [currentPrice]);
+    const tick = priceToTick(currentPrice);
+    return flip ? -tick : tick;
+  }, [currentPrice, flip]);
 
   const tooltipPosition = useMemo((): FloatingPosition => {
     if (position) {
@@ -386,7 +387,12 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
           return 0;
         }
 
-        const tick = Math.round((tickWithOffset + graphMinTick) / tickSpacing) * tickSpacing;
+        let tick = Math.round((tickWithOffset + graphMinTick) / tickSpacing) * tickSpacing;
+
+        if (flip) {
+          tick = -tick;
+        }
+
         if (tick <= swapFeeTierMaxPriceRange.minTick) {
           return 0;
         }
@@ -672,12 +678,12 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     if (fullRange) {
       brush.move(brushElement, [0, boundsWidth]);
     } else {
-      brush.move(brushElement, [
-        scaleX(priceToTick(minPrice) - graphMinTick),
-        scaleX(priceToTick(maxPrice) - graphMinTick),
-      ]);
+      const minTick = flip ? -priceToTick(maxPrice) : priceToTick(minPrice);
+      const maxTick = flip ? -priceToTick(minPrice) : priceToTick(maxPrice);
+
+      brush.move(brushElement, [scaleX(minTick - graphMinTick), scaleX(maxTick - graphMinTick)]);
     }
-  }, [minPrice, maxPrice, zoomLevel, shiftIndex, fullRange, displayBins]);
+  }, [minPrice, maxPrice, zoomLevel, shiftIndex, fullRange, displayBins, flip]);
 
   useEffect(() => {
     if (!brushRef.current) {
