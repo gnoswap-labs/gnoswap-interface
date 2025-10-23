@@ -8,9 +8,7 @@ const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
   i18n,
-  experimental: {
-    outputFileTracingRoot: path.join(__dirname, '../../'),
-  },
+  outputFileTracingRoot: path.join(__dirname, '../../'),
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/i,
