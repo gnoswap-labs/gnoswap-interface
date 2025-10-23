@@ -22,13 +22,17 @@ const DashboardInfoContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const { isLoading: isLoadingCommon } = useLoading();
 
-  const { data: tokenData, isFetched: isFetchedDashboardToken } = useGetDashboardToken();
-  const convertedTokenData = React.useMemo(() => {
-    return ExploreDashboardConverter.convertDashboardToken(tokenData);
-  }, [tokenData]);
+  const { data: dashboardTokenData, isFetched: isFetchedDashboardToken } = useGetDashboardToken();
+  const convertedDashboardTokenData = React.useMemo(() => {
+    return ExploreDashboardConverter.convertDashboardToken(dashboardTokenData);
+  }, [dashboardTokenData]);
 
   const { data: governanceOverview = null, isFetched: isFetchedGovernanceOverview } =
     useGetDashboardGovernanceOverview();
+
+  const convertedGovernanceOverview = React.useMemo(() => {
+    return ExploreDashboardConverter.convertGovernanceOverview(governanceOverview);
+  }, [governanceOverview]);
 
   const isLoading = useMemo(() => {
     if (isLoadingCommon) {
@@ -39,23 +43,23 @@ const DashboardInfoContainer: React.FC = () => {
   }, [isFetchedDashboardToken, isFetchedGovernanceOverview, isLoadingCommon]);
 
   const progressBar = useMemo(() => {
-    if (!convertedTokenData) return "0%";
-    const circSupply = Number(convertedTokenData?.gnsCirculatingSupply);
-    const totalSupply = Number(convertedTokenData?.gnsTotalSupply);
+    if (!convertedDashboardTokenData) return "0%";
+    const circSupply = Number(convertedDashboardTokenData?.gnsCirculatingSupply);
+    const totalSupply = Number(convertedDashboardTokenData?.gnsTotalSupply);
     if (totalSupply === 0) return "0%";
     const percent = Math.min((circSupply / totalSupply) * 100, 100);
     return `${percent}%`;
-  }, [convertedTokenData]);
+  }, [convertedDashboardTokenData]);
   const stakingRatio = useMemo(() => {
-    if (!convertedTokenData) return "-";
-    const circSupply = Number(convertedTokenData?.gnsCirculatingSupply);
-    const totalStaked = Number(convertedTokenData?.gnsTotalStaked);
+    if (!convertedDashboardTokenData) return "-";
+    const circSupply = Number(convertedDashboardTokenData?.gnsCirculatingSupply);
+    const totalStaked = Number(convertedDashboardTokenData?.gnsTotalStaked);
 
     if (totalStaked === 0 || circSupply === 0) return "0%";
     if ((totalStaked * 100) / circSupply < 0.01) return "<0.01%";
     const ratio = ((totalStaked / circSupply) * 100).toFixed(3);
     return `${ratio}%`;
-  }, [convertedTokenData]);
+  }, [convertedDashboardTokenData]);
 
   const supplyOverviewInfo: SupplyOverviewInfo = useMemo(() => {
     const DISTRIBUTION_RATIOS = {
@@ -64,10 +68,10 @@ const DashboardInfoContainer: React.FC = () => {
       COMMUNITY: 0.05, // 5%
     };
 
-    const circulatingSupply = convertedTokenData.gnsCirculatingSupply;
-    const totalSupply = convertedTokenData.gnsTotalSupply;
-    const totalStaked = Number(convertedTokenData.gnsTotalStaked);
-    const dailyBlockEmissions = Number(convertedTokenData.gnsDailyBlockEmissions);
+    const circulatingSupply = convertedDashboardTokenData.gnsCirculatingSupply;
+    const totalSupply = convertedDashboardTokenData.gnsTotalSupply;
+    const totalStaked = Number(convertedDashboardTokenData.gnsTotalStaked);
+    const dailyBlockEmissions = Number(convertedDashboardTokenData.gnsDailyBlockEmissions);
 
     const emissionDistribution = {
       liquidityStaking: dailyBlockEmissions * DISTRIBUTION_RATIOS.LIQUIDITY_STAKING,
@@ -95,31 +99,31 @@ const DashboardInfoContainer: React.FC = () => {
         community: formatOtherPrice(Math.floor(emissionDistribution.community), { isKMB: false, usd: false }),
       },
     };
-  }, [tokenData, progressBar, stakingRatio]);
+  }, [dashboardTokenData, progressBar, stakingRatio]);
 
   const governanceOverviewInfo = useMemo(() => {
-    if (!governanceOverview) {
+    if (!convertedGovernanceOverview) {
       return null;
     }
 
     return {
-      totalDelegated: `${numberToFormat(governanceOverview.totalDelegated)} ${XGNS_TOKEN.symbol}`,
-      holders: `${numberToFormat(governanceOverview.holders)}`,
-      passedCount: `${numberToFormat(governanceOverview.passedCount)}`,
-      activeCount: `${numberToFormat(governanceOverview.activeCount)} `,
-      communityPool: `${formatOtherPrice(governanceOverview.communityPool, {
+      totalDelegated: `${numberToFormat(convertedGovernanceOverview.totalDelegated)} ${XGNS_TOKEN.symbol}`,
+      holders: `${numberToFormat(convertedGovernanceOverview.holders)}`,
+      passedCount: `${numberToFormat(convertedGovernanceOverview.passedCount)}`,
+      activeCount: `${numberToFormat(convertedGovernanceOverview.activeCount)} `,
+      communityPool: `${formatOtherPrice(convertedGovernanceOverview.communityPool, {
         isKMB: false,
       })}`,
     };
-  }, [governanceOverview]);
+  }, [convertedGovernanceOverview]);
 
   return (
     <DashboardInfo
       dashboardTokenInfo={{
-        gnosAmount: formatPrice(tokenData?.gnsPrice, {
+        gnosAmount: formatPrice(dashboardTokenData?.gnsPrice, {
           isKMB: false,
         }),
-        gnotAmount: formatPrice(tokenData?.gnotPrice ?? "0", {
+        gnotAmount: formatPrice(dashboardTokenData?.gnotPrice ?? "0", {
           isKMB: false,
         }),
       }}
