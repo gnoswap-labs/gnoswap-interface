@@ -264,8 +264,16 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const startPosition = selection[0] as number;
     const endPosition = selection[1] as number;
 
-    const startPrice = tickToPrice(Math.round(scaleX.invert(startPosition) + graphMinTick));
-    const endPrice = tickToPrice(Math.round(scaleX.invert(endPosition) + graphMinTick));
+    let startTick = Math.round(scaleX.invert(startPosition) + graphMinTick);
+    let endTick = Math.round(scaleX.invert(endPosition) + graphMinTick);
+
+    if (flip) {
+      startTick = -startTick;
+      endTick = -endTick;
+    }
+
+    const startPrice = tickToPrice(startTick);
+    const endPrice = tickToPrice(endTick);
 
     const startRate = currentPrice ? ((Number(startPrice) - currentPrice) / currentPrice) * 100 : 0;
     const endRate = currentPrice ? ((Number(endPrice) - currentPrice) / currentPrice) * 100 : 0;
@@ -527,7 +535,15 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const mouseXTick = scaleX.invert(event.offsetX) + graphMinTick;
 
     if (minPrice && maxPrice) {
-      if (priceToTick(minPrice) < mouseXTick && priceToTick(maxPrice) > mouseXTick) {
+      let minTick = priceToTick(minPrice);
+      let maxTick = priceToTick(maxPrice);
+
+      if (flip) {
+        minTick = -minTick;
+        maxTick = -maxTick;
+      }
+
+      if (minTick < mouseXTick && maxTick > mouseXTick) {
         setTooltipInfo(null);
         setHoverBarIndex(null);
         return;
@@ -553,7 +569,6 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       return;
     }
 
-    // To reduce the computation of scaleY, the Y-axis condition check is done separately.
     if (mouseY < scaleY(bin.height)) {
       setPositionX(null);
       setPositionX(null);
