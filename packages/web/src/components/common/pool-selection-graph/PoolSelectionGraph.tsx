@@ -412,8 +412,12 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         return tickToPrice(tick);
       }
 
-      const minPrice = getPriceBy(startPosition);
-      const maxPrice = getPriceBy(endPosition);
+      let minPrice = getPriceBy(startPosition);
+      let maxPrice = getPriceBy(endPosition);
+
+      if (minPrice > maxPrice) {
+        [minPrice, maxPrice] = [maxPrice, minPrice];
+      }
 
       setSelectionColor(selectionColor);
       setMinPrice(minPrice);
@@ -693,10 +697,17 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     if (fullRange) {
       brush.move(brushElement, [0, boundsWidth]);
     } else {
-      const minTick = flip ? -priceToTick(maxPrice) : priceToTick(minPrice);
-      const maxTick = flip ? -priceToTick(minPrice) : priceToTick(maxPrice);
+      let minTick = flip ? -priceToTick(maxPrice) : priceToTick(minPrice);
+      let maxTick = flip ? -priceToTick(minPrice) : priceToTick(maxPrice);
 
-      brush.move(brushElement, [scaleX(minTick - graphMinTick), scaleX(maxTick - graphMinTick)]);
+      if (minTick > maxTick) {
+        [minTick, maxTick] = [maxTick, minTick];
+      }
+
+      const x0 = scaleX(minTick - graphMinTick);
+      const x1 = scaleX(maxTick - graphMinTick);
+
+      brush.move(brushElement, [x0, x1]);
     }
   }, [minPrice, maxPrice, zoomLevel, shiftIndex, fullRange, displayBins, flip]);
 
