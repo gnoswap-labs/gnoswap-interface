@@ -215,8 +215,9 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     if (Number.isNaN(currentPrice)) {
       return 0;
     }
-    return priceToTick(currentPrice);
-  }, [currentPrice]);
+    const tick = priceToTick(currentPrice);
+    return flip ? -tick : tick;
+  }, [currentPrice, flip]);
 
   const tooltipPosition = useMemo((): FloatingPosition => {
     if (position) {
@@ -263,8 +264,16 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const startPosition = selection[0] as number;
     const endPosition = selection[1] as number;
 
-    const startPrice = tickToPrice(Math.round(scaleX.invert(startPosition) + graphMinTick));
-    const endPrice = tickToPrice(Math.round(scaleX.invert(endPosition) + graphMinTick));
+    let startTick = Math.round(scaleX.invert(startPosition) + graphMinTick);
+    let endTick = Math.round(scaleX.invert(endPosition) + graphMinTick);
+
+    if (flip) {
+      startTick = -startTick;
+      endTick = -endTick;
+    }
+
+    const startPrice = tickToPrice(startTick);
+    const endPrice = tickToPrice(endTick);
 
     const startRate = currentPrice ? ((Number(startPrice) - currentPrice) / currentPrice) * 100 : 0;
     const endRate = currentPrice ? ((Number(endPrice) - currentPrice) / currentPrice) * 100 : 0;
@@ -386,7 +395,12 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
           return 0;
         }
 
-        const tick = Math.round((tickWithOffset + graphMinTick) / tickSpacing) * tickSpacing;
+        let tick = Math.round((tickWithOffset + graphMinTick) / tickSpacing) * tickSpacing;
+
+        if (flip) {
+          tick = -tick;
+        }
+
         if (tick <= swapFeeTierMaxPriceRange.minTick) {
           return 0;
         }
@@ -398,8 +412,12 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         return tickToPrice(tick);
       }
 
-      const minPrice = getPriceBy(startPosition);
-      const maxPrice = getPriceBy(endPosition);
+      let minPrice = getPriceBy(startPosition);
+      let maxPrice = getPriceBy(endPosition);
+
+      if (minPrice > maxPrice) {
+        [minPrice, maxPrice] = [maxPrice, minPrice];
+      }
 
       setSelectionColor(selectionColor);
       setMinPrice(minPrice);
@@ -521,7 +539,15 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const mouseXTick = scaleX.invert(event.offsetX) + graphMinTick;
 
     if (minPrice && maxPrice) {
-      if (priceToTick(minPrice) < mouseXTick && priceToTick(maxPrice) > mouseXTick) {
+      let minTick = priceToTick(minPrice);
+      let maxTick = priceToTick(maxPrice);
+
+      if (flip) {
+        minTick = -minTick;
+        maxTick = -maxTick;
+      }
+
+      if (minTick < mouseXTick && maxTick > mouseXTick) {
         setTooltipInfo(null);
         setHoverBarIndex(null);
         return;
@@ -547,7 +573,6 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       return;
     }
 
-    // To reduce the computation of scaleY, the Y-axis condition check is done separately.
     if (mouseY < scaleY(bin.height)) {
       setPositionX(null);
       setPositionX(null);
@@ -672,12 +697,19 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     if (fullRange) {
       brush.move(brushElement, [0, boundsWidth]);
     } else {
-      brush.move(brushElement, [
-        scaleX(priceToTick(minPrice) - graphMinTick),
-        scaleX(priceToTick(maxPrice) - graphMinTick),
-      ]);
+      let minTick = flip ? -priceToTick(maxPrice) : priceToTick(minPrice);
+      let maxTick = flip ? -priceToTick(minPrice) : priceToTick(maxPrice);
+
+      if (minTick > maxTick) {
+        [minTick, maxTick] = [maxTick, minTick];
+      }
+
+      const x0 = scaleX(minTick - graphMinTick);
+      const x1 = scaleX(maxTick - graphMinTick);
+
+      brush.move(brushElement, [x0, x1]);
     }
-  }, [minPrice, maxPrice, zoomLevel, shiftIndex, fullRange, displayBins]);
+  }, [minPrice, maxPrice, zoomLevel, shiftIndex, fullRange, displayBins, flip]);
 
   useEffect(() => {
     if (!brushRef.current) {
