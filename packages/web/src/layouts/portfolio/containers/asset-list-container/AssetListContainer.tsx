@@ -178,7 +178,6 @@ const AssetListContainer: React.FC = () => {
 
           if (
             !tokenPrice ||
-            tokenPrice === null ||
             Number.isNaN(tokenPrice) ||
             !tokenPrices[checkGnotPath(item?.path)]?.usd ||
             !balances[item.priceID]
