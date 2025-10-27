@@ -34,6 +34,8 @@ import WalletBalance from "../../components/wallet-balance/WalletBalance";
 import useSendAsset from "@hooks/wallet/data/useSendAsset";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { BalanceSummaryInfo } from "@layouts/portfolio/components/wallet-balance/wallet-balance-summary/wallet-balance-summary-info/WalletBalanceSummaryInfo";
+import { BalanceDetailInfo } from "@layouts/portfolio/components/wallet-balance/wallet-balance-detail/WalletBalanceDetail";
 
 const WalletBalanceContainer: React.FC = () => {
   const { rpcProvider } = useGnoswapContext();
@@ -250,24 +252,61 @@ const WalletBalanceContainer: React.FC = () => {
     );
     closeWithdraw();
   };
+
+  const balanceSummaryInfo: BalanceSummaryInfo = React.useMemo(() => {
+    if (!connected || isSwitchNetwork) {
+      return {
+        amount: "-",
+        changeRate: "-",
+        loading: false,
+      };
+    }
+
+    return {
+      amount: sumTotalBalance,
+      changeRate: "0.0%",
+      loading: loadingTotalBalance,
+    };
+  }, [connected, isSwitchNetwork, sumTotalBalance, loadingTotalBalance]);
+
+  const balanceDetailInfo: BalanceDetailInfo = React.useMemo(() => {
+    if (!connected || isSwitchNetwork) {
+      return {
+        availableBalance: "-",
+        claimableRewards: "-",
+        stakedLP: "-",
+        unstakedLP: "-",
+        loadingBalance: false,
+        loadingPositions: false,
+        totalClaimedRewards: "-",
+      };
+    }
+    return {
+      availableBalance: `${availableBalanceStr}`,
+      claimableRewards: `${claimableRewards}`,
+      stakedLP: `${stakedBalance}`,
+      unstakedLP: `${unStakedBalance}`,
+      loadingBalance: loadingTotalBalance,
+      loadingPositions: loadingTotalBalance,
+      totalClaimedRewards: `${totalClaimedRewards}`,
+    };
+  }, [
+    connected,
+    isSwitchNetwork,
+    availableBalanceStr,
+    claimableRewards,
+    stakedBalance,
+    unStakedBalance,
+    loadingTotalBalance,
+    totalClaimedRewards,
+  ]);
+
   return (
     <>
       <WalletBalance
         connected={connected}
-        balanceSummaryInfo={{
-          amount: isSwitchNetwork ? "$0" : sumTotalBalance,
-          changeRate: "0.0%",
-          loading: loadingTotalBalance,
-        }}
-        balanceDetailInfo={{
-          availableBalance: isSwitchNetwork ? "-" : `${availableBalanceStr}`,
-          claimableRewards: isSwitchNetwork ? "-" : `${claimableRewards}`,
-          stakedLP: isSwitchNetwork ? "-" : `${stakedBalance}`,
-          unstakedLP: unStakedBalance.toString(),
-          loadingBalance: loadingTotalBalance,
-          loadingPositions: loadingTotalBalance,
-          totalClaimedRewards: totalClaimedRewards.toString(),
-        }}
+        balanceSummaryInfo={balanceSummaryInfo}
+        balanceDetailInfo={balanceDetailInfo}
         deposit={deposit}
         withdraw={withdraw}
         claimAll={claimAllReward}

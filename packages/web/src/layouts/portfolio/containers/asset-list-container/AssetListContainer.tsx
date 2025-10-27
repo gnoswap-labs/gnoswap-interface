@@ -170,18 +170,20 @@ const AssetListContainer: React.FC = () => {
     return [gnot, wugnot, gns]
       .map(item => {
         const tokenPrice = balances[item.priceID];
-        if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
-          return {
-            price: "-",
-            balance: "-",
-            ...item,
-            tokenPrice: tokenPrice || 0,
-            sortPrice: "-",
-          };
-        }
 
         const price = (() => {
-          if (isSwitchNetwork || !tokenPrices[checkGnotPath(item?.path)]?.usd || !balances[item.priceID]) return "-";
+          if (!connected || isSwitchNetwork) {
+            return "-";
+          }
+
+          if (
+            !tokenPrice ||
+            Number.isNaN(tokenPrice) ||
+            !tokenPrices[checkGnotPath(item?.path)]?.usd ||
+            !balances[item.priceID]
+          ) {
+            return "$0";
+          }
 
           return formatPrice(
             BigNumber(tokenPrice)
@@ -213,7 +215,17 @@ const AssetListContainer: React.FC = () => {
       .filter(asset => invisibleZeroBalance === false || filterZeroBalance(asset))
       .filter(asset => filterKeyword(asset, keyword))
       .filter(asset => filterType(asset, assetType));
-  }, [balances, displayBalanceMap, invisibleZeroBalance, isSwitchNetwork, tokenPrices, tokens, keyword, assetType]);
+  }, [
+    balances,
+    displayBalanceMap,
+    invisibleZeroBalance,
+    isSwitchNetwork,
+    tokenPrices,
+    tokens,
+    keyword,
+    assetType,
+    connected,
+  ]);
 
   const filteredTokens = useMemo(() => {
     const COLLAPSED_LENGTH = 15;
@@ -221,18 +233,20 @@ const AssetListContainer: React.FC = () => {
       .filter(item => item.path !== GNOT_TOKEN.path && item.path !== GNS_TOKEN.path && item.path !== WUGNOT_TOKEN.path)
       .map(item => {
         const tokenPrice = balances[item.priceID];
-        if (!tokenPrice || Number.isNaN(tokenPrice)) {
-          return {
-            price: "-",
-            balance: "-",
-            ...item,
-            tokenPrice: tokenPrice || 0,
-            sortPrice: "-",
-          };
-        }
 
         const price = (() => {
-          if (isSwitchNetwork || !tokenPrices[checkGnotPath(item?.path)]?.usd || !balances[item.priceID]) return "-";
+          if (!connected || isSwitchNetwork) {
+            return "-";
+          }
+
+          if (
+            !tokenPrice ||
+            Number.isNaN(tokenPrice) ||
+            !tokenPrices[checkGnotPath(item?.path)]?.usd ||
+            !balances[item.priceID]
+          ) {
+            return "$0";
+          }
 
           return formatPrice(
             BigNumber(tokenPrice)
@@ -252,6 +266,7 @@ const AssetListContainer: React.FC = () => {
             decimals: item.decimals,
           });
         })();
+
         return {
           ...item,
           price: price,
@@ -318,7 +333,9 @@ const AssetListContainer: React.FC = () => {
     assetType,
     keyword,
     isSwitchNetwork,
+    connected,
   ]);
+
   const changeAssetType = useCallback((newType: string) => {
     switch (newType) {
       case ASSET_FILTER_TYPE.ALL:
