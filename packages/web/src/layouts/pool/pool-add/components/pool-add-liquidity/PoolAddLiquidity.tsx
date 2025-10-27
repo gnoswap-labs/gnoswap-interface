@@ -186,6 +186,8 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
   }, [tokenA, tokenB, openedPriceRange]);
 
   const activatedSubmit = useMemo(() => {
+    if (showDim) return false;
+
     switch (submitType) {
       case "CREATE_POOL":
       case "ADD_LIQUIDITY":
@@ -195,7 +197,7 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
       default:
         return false;
     }
-  }, [submitType]);
+  }, [submitType, showDim]);
 
   const submitButtonStr = useMemo(() => {
     switch (submitType) {
