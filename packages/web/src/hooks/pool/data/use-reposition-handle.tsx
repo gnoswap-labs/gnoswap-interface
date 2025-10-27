@@ -161,6 +161,10 @@ export const useRepositionHandle = () => {
     feeTier: `FEE_${fee}` as SwapFeeTierType,
   });
 
+  const sqrtPriceX96 = useMemo(() => {
+    return selectPool?.poolInfo?.chainData?.sqrtPriceX96 ?? null;
+  }, [selectPool]);
+
   const inRange = useMemo(() => {
     if (!selectedPosition) return false;
     const { pool } = selectedPosition;
@@ -280,6 +284,7 @@ export const useRepositionHandle = () => {
       !selectedPosition ||
       !selectPool.minPrice ||
       !selectPool.maxPrice ||
+      !sqrtPriceX96 ||
       !selectPool.compareToken ||
       !tokenA ||
       !tokenB
@@ -290,6 +295,7 @@ export const useRepositionHandle = () => {
 
     const repositionAmountsByNewPriceRange = getRepositionAmountsByPriceRange(
       ordered ? selectPool.currentPrice : 1 / selectPool.currentPrice,
+      sqrtPriceX96,
       selectPool.minPrice,
       selectPool.maxPrice,
       tickToPrice(ordered ? selectedPosition.tickLower : selectedPosition.tickUpper * -1),
@@ -360,7 +366,8 @@ export const useRepositionHandle = () => {
       !initialEstimatedRepositionAmounts ||
       !selectedPosition ||
       selectPool.minPrice === null ||
-      selectPool.maxPrice === null
+      selectPool.maxPrice === null ||
+      !sqrtPriceX96
     ) {
       return null;
     }
@@ -378,6 +385,7 @@ export const useRepositionHandle = () => {
 
     return getRepositionAmountsWithSwapSimulation(
       selectPool.currentPrice,
+      sqrtPriceX96,
       selectPool.minPrice,
       selectPool.maxPrice,
       selectedPosition.pool.tokenA,
@@ -394,6 +402,7 @@ export const useRepositionHandle = () => {
     isEstimatedRemainSwapLoading,
     initialEstimatedRepositionAmounts,
     selectPool.currentPrice,
+    sqrtPriceX96,
     selectPool.maxPrice,
     selectPool.minPrice,
     selectedPosition,

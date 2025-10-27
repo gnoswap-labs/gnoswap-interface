@@ -359,6 +359,10 @@ export const useSelectPool = ({
     return poolInfo.chainData?.price;
   }, [poolInfo]);
 
+  const sqrtPriceX96 = useMemo(() => {
+    return poolInfo?.chainData?.sqrtPriceX96 ?? null;
+  }, [poolInfo]);
+
   const minPrice = useMemo(() => {
     if (fullRange) {
       return swapFeeTierMaxPriceRangeMap?.minPrice;
@@ -374,7 +378,7 @@ export const useSelectPool = ({
   }, [fullRange, maxPosition, swapFeeTierMaxPriceRangeMap?.maxPrice]);
 
   const depositRatio = useMemo(() => {
-    if (!tokenA || !tokenB || minPrice === null || maxPrice === null || !compareToken) {
+    if (!tokenA || !tokenB || minPrice === null || maxPrice === null || !compareToken || !sqrtPriceX96) {
       return null;
     }
 
@@ -400,6 +404,7 @@ export const useSelectPool = ({
     const decimals = tokenB.decimals - tokenA.decimals;
     const { amountA, amountB } = getDepositAmountsByAmountA(
       BigNumber(currentPrice).shiftedBy(decimals).toNumber(),
+      sqrtPriceX96,
       BigNumber(currentMinPrice).shiftedBy(decimals).toNumber(),
       BigNumber(currentMaxPrice).shiftedBy(decimals).toNumber(),
       adjustAmountA,
@@ -410,7 +415,19 @@ export const useSelectPool = ({
 
     const sumOfAmounts = tokenAAmount + tokenBAmount;
     return BigNumber(tokenAAmount.toString()).dividedBy(sumOfAmounts.toString()).multipliedBy(100).toNumber();
-  }, [tokenA, tokenB, minPrice, maxPrice, swapFeeTierMaxPriceRangeMap, isCreate, startPrice, price, fullRange]);
+  }, [
+    sqrtPriceX96,
+    tokenA,
+    tokenB,
+    compareToken,
+    minPrice,
+    maxPrice,
+    swapFeeTierMaxPriceRangeMap,
+    isCreate,
+    startPrice,
+    price,
+    fullRange,
+  ]);
 
   const feeBoost = useMemo(() => {
     if (minPrice === null || maxPrice === null) {
