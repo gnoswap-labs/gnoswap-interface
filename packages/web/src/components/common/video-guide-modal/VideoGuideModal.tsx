@@ -164,6 +164,7 @@ const VideoGuideModal = ({ videoType, setIsOpen, onInternalActionClick }: VideoG
               className={isLoadingIframe ? "loading" : ""}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
+              loading="eager"
             />
             {isLoadingIframe && (
               <div className="loading-overlay">
