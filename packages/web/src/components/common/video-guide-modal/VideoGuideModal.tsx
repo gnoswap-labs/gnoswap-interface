@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useTranslation } from "react-i18next";
 
 import useCustomRouter from "@hooks/common/use-custom-router";
+import { useMobileDevice } from "@hooks/common/use-mobile-device";
 import { YOUTUBE_LINKS, VideoGuideType, VIDEO_GUIDE_CONFIG, VIDEO_GUIDE_TYPES } from "@constants/video-guide.constant";
 import { createYoutubeEmbedUrl } from "@utils/video-guide.utils";
 import { QUERY_PARAMETER } from "@constants/page.constant";
@@ -39,6 +40,7 @@ const MODAL_CLOSE_VIDEO_TYPES = new Set<VideoGuideType>([
 const VideoGuideModal = ({ videoType, setIsOpen, onInternalActionClick }: VideoGuideModalProps) => {
   const router = useCustomRouter();
   const { t } = useTranslation();
+  const { isMobileDevice } = useMobileDevice();
 
   const iframeRef = React.useRef<HTMLIFrameElement>(null);
 
@@ -46,7 +48,13 @@ const VideoGuideModal = ({ videoType, setIsOpen, onInternalActionClick }: VideoG
 
   const config = React.useMemo(() => VIDEO_GUIDE_CONFIG[videoType], [videoType]);
   const videoId = React.useMemo(() => YOUTUBE_LINKS[videoType], [videoType]);
-  const embedUrl = React.useMemo(() => createYoutubeEmbedUrl(videoId), [videoId]);
+  const embedUrl = React.useMemo(
+    () =>
+      createYoutubeEmbedUrl(videoId, {
+        mute: isMobileDevice ? "1" : "0",
+      }),
+    [videoId, isMobileDevice],
+  );
 
   const [isLoadingIframe, setIsLoadingIframe] = React.useState(true);
   const [copied, setCopied] = React.useState<boolean>(false);
