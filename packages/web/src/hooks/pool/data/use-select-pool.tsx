@@ -26,7 +26,6 @@ import {
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
-import { GNOT_TOKEN } from "@common/values/token-constant";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 
@@ -127,7 +126,7 @@ export const useSelectPool = ({
     return (
       tokenPair?.findIndex(path => {
         if (compareToken) {
-          return isNativeToken(compareToken) || compareToken.path === GNOT_TOKEN.path
+          return isNativeToken(compareToken) || compareToken.path === "gnot"
             ? compareToken.wrappedPath === path
             : compareToken.path === path;
         }
