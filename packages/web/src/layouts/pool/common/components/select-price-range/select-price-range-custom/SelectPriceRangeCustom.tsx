@@ -148,7 +148,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
         }
 
         if (startingPriceValue && !BigNumber(startingPriceValue).isNaN() && Number(startingPriceValue) !== 0) {
-          const reversedPrice = BigNumber(1).div(startingPriceValue).decimalPlaces(6, BigNumber.ROUND_DOWN).toString();
+          const reversedPrice = BigNumber(1).div(startingPriceValue).sd(6).toString();
           setStartingPriceValue(reversedPrice);
         }
         handleSwapValue();
