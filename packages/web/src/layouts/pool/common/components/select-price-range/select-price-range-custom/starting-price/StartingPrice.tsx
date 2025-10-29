@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import IconInfo from "@components/common/icons/IconInfo";
@@ -82,13 +82,6 @@ const StartingPrice: React.FC<StartingPriceProps> = ({
 
     return startingPriceValue;
   }, [startingPriceValue, tempPrice]);
-
-  // Automatically reset on token change
-  useEffect(() => {
-    setStartingPriceValue("");
-    setTempPrice("");
-    changeStartingPrice("");
-  }, [tokenASymbol, tokenBSymbol]);
 
   return (
     <StartingPriceWrapper className="starting-price-wrapper">
