@@ -1,5 +1,6 @@
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
+import BigNumber from "bignumber.js";
 
 import IconAdd from "@components/common/icons/IconAdd";
 import IconKeyboardArrowLeft from "@components/common/icons/IconKeyboardArrowLeft";
@@ -145,9 +146,14 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
         if (maxPosition !== null) {
           selectPool.setMinPosition(1 / maxPosition);
         }
+
+        if (startingPriceValue && !BigNumber(startingPriceValue).isNaN() && Number(startingPriceValue) !== 0) {
+          const reversedPrice = BigNumber(1).div(startingPriceValue).decimalPlaces(6, BigNumber.ROUND_DOWN).toString();
+          setStartingPriceValue(reversedPrice);
+        }
         handleSwapValue();
       },
-      [selectPool, tokenA, tokenB, handleSwapValue],
+      [selectPool, tokenA, tokenB, handleSwapValue, startingPriceValue],
     );
 
     const selectFullRange = useCallback(() => {
