@@ -147,13 +147,18 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
           selectPool.setMinPosition(1 / maxPosition);
         }
 
-        if (startingPriceValue && !BigNumber(startingPriceValue).isNaN() && Number(startingPriceValue) !== 0) {
-          const reversedPrice = BigNumber(1).div(startingPriceValue).sd(6).toString();
-          setStartingPriceValue(reversedPrice);
+        if (startingPriceValue) {
+          const startingPriceBN = BigNumber(startingPriceValue);
+
+          if (!startingPriceBN.isNaN() && !startingPriceBN.isZero()) {
+            const reversedPrice = BigNumber(1).div(startingPriceBN).sd(6).toString();
+            setStartingPriceValue(reversedPrice);
+          }
         }
+
         handleSwapValue();
       },
-      [selectPool, tokenA, tokenB, handleSwapValue, startingPriceValue],
+      [selectPool, tokenA, tokenB, handleSwapValue, startingPriceValue, setStartingPriceValue],
     );
 
     const selectFullRange = useCallback(() => {
