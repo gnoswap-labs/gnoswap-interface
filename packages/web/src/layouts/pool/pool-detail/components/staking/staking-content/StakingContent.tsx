@@ -172,6 +172,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
                   }
                   forcedClose={!forcedShowAprGuide || !hasPoolStaking || !isTargetElementVisible}
                   placement="top"
+                  useBasicZIndex={true}
                   FloatingContent={
                     <span style={{ fontSize: breakpoint === "mobile" ? 14 : 16 }}>
                       {t("Pool:staking.tooltip.hoverGuide")}

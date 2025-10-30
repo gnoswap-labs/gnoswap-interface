@@ -5,7 +5,11 @@ import { nullGovernanceSummaryInfo } from "@repositories/governance";
 
 import GovernanceSummary from "../../components/governance-summary/GovernanceSummary";
 
-const GovernanceSummaryContainer: React.FC = () => {
+interface GovernanceSummaryContainerProps {
+  onOpenVideoGuide: (type: "GOVERNANCE") => void;
+}
+
+const GovernanceSummaryContainer: React.FC<GovernanceSummaryContainerProps> = ({ onOpenVideoGuide }) => {
   const { data: governanceSummaryInfo, isFetched } = useGetGovernanceSummary();
   const { data: governanceCommunityPoolBalances } = useGetCommunityPoolBalances();
 
@@ -19,6 +23,7 @@ const GovernanceSummaryContainer: React.FC = () => {
       governanceSummary={governanceSummaryInfo ?? nullGovernanceSummaryInfo}
       governanceCommunityPoolBalances={communityPoolBalacnes}
       isLoading={!isFetched && !governanceSummaryInfo}
+      onOpenVideoGuide={onOpenVideoGuide}
     />
   );
 };

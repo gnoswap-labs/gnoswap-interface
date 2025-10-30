@@ -27,6 +27,12 @@ export const PositionsWrapper = styled.div`
       }
     }
 
+    .header-title {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+    }
+
     h2 {
       display: flex;
       flex-direction: row;

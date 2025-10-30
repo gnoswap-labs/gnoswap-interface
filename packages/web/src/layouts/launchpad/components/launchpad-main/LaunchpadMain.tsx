@@ -16,6 +16,7 @@ import { rawToDisplayAmount, toNumberFormat } from "@utils/number-utils";
 import { Trans, useTranslation } from "react-i18next";
 import IconLaunchpadMain from "@components/common/icons/IconLaunchpadMain";
 import { GNS_TOKEN } from "@common/values/token-constant";
+import { VIDEO_GUIDE_TYPES } from "@constants/video-guide.constant";
 
 interface LaunchpadMainProps {
   data: LaunchpadProjectSummaryModel;
@@ -23,9 +24,10 @@ interface LaunchpadMainProps {
   isFetched: boolean;
   breakpoint: DEVICE_TYPE;
   themeKey: ThemeKeys;
+  onOpenVideoGuide: (type: "LAUNCHPAD") => void;
 }
 
-const LaunchpadMain: React.FC<LaunchpadMainProps> = ({ data, isLoading, breakpoint, themeKey }) => {
+const LaunchpadMain: React.FC<LaunchpadMainProps> = ({ data, isLoading, breakpoint, themeKey, onOpenVideoGuide }) => {
   const { t } = useTranslation();
   const defaultStyle: ButtonStyleProps = {
     textColor: "text32",
@@ -38,6 +40,10 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({ data, isLoading, breakpoi
       totalDepositedGnsAmount: rawToDisplayAmount(data.totalDepositedGnsAmount, GNS_TOKEN.decimals),
     };
   }, [data]);
+
+  const handleOpenVideoGuide = React.useCallback(() => {
+    onOpenVideoGuide(VIDEO_GUIDE_TYPES.LAUNCHPAD);
+  }, [onOpenVideoGuide]);
 
   return (
     <>
@@ -64,20 +70,23 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({ data, isLoading, breakpoi
           )}
         </div>
         <div className="launchpad-button-wrapper">
-          <Link href={EXT_URL.DOCS.LAUNCHPAD.PARTICIPATE} target="_blank">
+          <span className="launchpad-guide-button">
             <Button
               text={t("Launchpad:main.button.howToParticipate")}
               style={defaultStyle}
               rightIcon={breakpoint !== DEVICE_TYPE.MOBILE && <IconRightArrow className="icon-right-arrow" />}
+              onClick={handleOpenVideoGuide}
             />
-          </Link>
-          <Link href={EXT_URL.DOCS.ROOT} target="_blank">
-            <Button
-              text={t("Launchpad:main.button.submitProject")}
-              style={defaultStyle}
-              rightIcon={breakpoint !== DEVICE_TYPE.MOBILE && <IconRightArrow className="icon-right-arrow" />}
-            />
-          </Link>
+          </span>
+          <span className="launchpad-guide-button">
+            <Link href={EXT_URL.DOCS.ROOT} target="_blank">
+              <Button
+                text={t("Launchpad:main.button.submitProject")}
+                style={defaultStyle}
+                rightIcon={breakpoint !== DEVICE_TYPE.MOBILE && <IconRightArrow className="icon-right-arrow" />}
+              />
+            </Link>
+          </span>
         </div>
         <Divider />
         <div className="launchpad-data-wrapper">

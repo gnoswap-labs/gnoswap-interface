@@ -37,6 +37,34 @@
     "count_other": "{{count}} 日",
     "today": "今日"
   },
+  "guide": {
+    "governance": {
+      "action": "GNS代表",
+      "subtitle": "GnoSwapガバナンスと、GnoSwapのプロトコル手数料の一部を得るためのxGNSの取得方法について説明します。",
+      "title": "GnoSwapガバナンスはどのように機能するのか？"
+    },
+    "launchpad": {
+      "action": "今すぐ参加する",
+      "subtitle": "GnoSwap Launchpadについて、またGnoSwapで立ち上げられるプロジェクト・トークンへの参加方法についてご紹介します。",
+      "title": "GnoSwap Launchpadに参加するには？"
+    },
+    "leaderboard": {
+      "action": "今を探る",
+      "subtitle": "GnoSwapリーダーボードと、GnoSwapで報酬を獲得するためのランクアップ方法についてご紹介します。",
+      "title": "リーダーボードとは？"
+    },
+    "learnMore": "さらに詳しく",
+    "position": {
+      "action": "ポジションの作成",
+      "subtitle": "GnoSwapで報酬を得るためのポジションと流動性の提供方法についてご覧ください。",
+      "title": "ポジションとは？"
+    },
+    "staking": {
+      "action": "ポジションを築く",
+      "subtitle": "GnoSwapで報酬を最大化するためのステーキングとポジションのステーキング方法について学びましょう。",
+      "title": "ステーキングの仕組み"
+    }
+  },
   "imporNote": "重要なお知らせ",
   "learnMore": "さらに詳しく",
   "localTimeComp": {

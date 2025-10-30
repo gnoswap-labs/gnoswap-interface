@@ -21,9 +21,14 @@ interface EarnMyPositionContainerProps {
   loadMore?: boolean;
   address?: string | undefined;
   isOtherPosition?: boolean;
+  onOpenVideoGuide: (type: "POSITION") => void;
 }
 
-const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({ address, isOtherPosition }) => {
+const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
+  address,
+  isOtherPosition,
+  onOpenVideoGuide,
+}) => {
   const router = useCustomRouter();
   const { connected, connectAdenaClient, isSwitchNetwork, switchNetwork, account } = useWallet();
   const { tokenPrices = {}, updateTokenPrices } = useTokenData();
@@ -297,6 +302,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({ addre
       handleChangeClosed={handleChangeClosed}
       tokenPrices={tokenPrices}
       highestApr={highestApr}
+      onOpenVideoGuide={onOpenVideoGuide}
     />
   );
 };

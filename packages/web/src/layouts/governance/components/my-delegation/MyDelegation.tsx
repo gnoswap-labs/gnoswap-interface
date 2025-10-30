@@ -41,6 +41,8 @@ interface MyDelegationProps {
   isLoadingCommon: boolean;
   isLoadingMyDelegation: boolean;
   isWalletConnected: boolean;
+  isOpenDelegateModal: boolean;
+  setIsOpenDelegateModal: React.Dispatch<React.SetStateAction<boolean>>;
   connectWallet: () => void;
   delegateGNS: (toName: string, toAddress: string, amount: string) => void;
   undelegateGNS: (fromName: string, fromAddress: string, amount: string) => void;
@@ -58,6 +60,8 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   isLoadingCommon,
   isLoadingMyDelegation,
   isWalletConnected,
+  isOpenDelegateModal,
+  setIsOpenDelegateModal,
   connectWallet,
   delegateGNS,
   undelegateGNS,
@@ -66,7 +70,6 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
 }) => {
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
-  const [isOpenDelegateModal, setIsOpenDelegateModal] = useState(false);
   const [isOpenUndelegateModal, setIsOpenUndelegateModal] = useState(false);
   const { getTokenUSDPrice, tokens } = useTokenData();
   const [showUndel, setShowUndel] = useState(false);

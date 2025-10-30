@@ -15,7 +15,15 @@ import { useGovernanceTx } from "@hooks/governance/data/use-governance-tx";
 import MyDelegation from "../../components/my-delegation/MyDelegation";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 
-const MyDelegationContainer: React.FC = () => {
+interface MyDelegationContainerProps {
+  isOpenDelegateModal: boolean;
+  setIsOpenDelegateModal: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const MyDelegationContainer: React.FC<MyDelegationContainerProps> = ({
+  isOpenDelegateModal,
+  setIsOpenDelegateModal,
+}) => {
   const { account, connected } = useWallet();
   const { openModal } = useConnectWalletModal();
   const { delegateGNS, undelegateGNS, collectUndelegated, collectReward } = useGovernanceTx();
@@ -75,6 +83,8 @@ const MyDelegationContainer: React.FC = () => {
       isLoadingMyDelegation={!isFetchedMyDelegation && !MyDelegation}
       isWalletConnected={connected}
       connectWallet={openModal}
+      isOpenDelegateModal={isOpenDelegateModal}
+      setIsOpenDelegateModal={setIsOpenDelegateModal}
       delegateGNS={(...params) =>
         delegateGNS(...params, async () => {
           refetch();

@@ -8,14 +8,26 @@ import useUrlParam from "@hooks/common/use-url-param";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetPoolDetailByPath, useGetPoolStakingListByPoolPath } from "@query/pools";
 import { isValidAddress } from "@utils/validation-utils";
+import { VIDEO_GUIDE_TYPES } from "@constants/video-guide.constant";
+import { useVideoGuide } from "@hooks/common/use-video-guide";
 
 import MyLiquidityContainer from "./containers/my-liquidity-container/MyLiquidityContainer";
 import PoolPairInformationContainer from "./containers/pool-pair-information-container/PoolPairInformationContainer";
 import StakingContainer from "./containers/staking-container/StakingContainer";
 import PoolLayout from "./PoolLayout";
+import { isValidVideoGuideType } from "@utils/video-guide.utils";
+import VideoGuideModal from "@components/common/video-guide-modal/VideoGuideModal";
 
 const PoolDetail: React.FC = () => {
   const router = useCustomRouter();
+
+  const {
+    currentGuide,
+    isOpen: isOpenVideoGuide,
+    openVideoGuide,
+    closeVideoGuide,
+  } = useVideoGuide(VIDEO_GUIDE_TYPES.STAKING);
+
   const { account } = useWallet();
   const poolPath = router.getPoolPath();
   const jumpFlagRef = useRef(false);
@@ -114,14 +126,21 @@ const PoolDetail: React.FC = () => {
   }, [hash]);
 
   return (
-    <PoolLayout
-      header={<HeaderContainer />}
-      poolPairInformation={<PoolPairInformationContainer />}
-      liquidity={<MyLiquidityContainer addressContext={addressContext} isStakable={isStakable} />}
-      staking={isStakable ? <StakingContainer hasPoolStaking={hasPoolStaking} /> : null}
-      footer={<Footer />}
-      isStaking={isStakable}
-    />
+    <>
+      <PoolLayout
+        header={<HeaderContainer />}
+        poolPairInformation={<PoolPairInformationContainer />}
+        liquidity={<MyLiquidityContainer addressContext={addressContext} isStakable={isStakable} />}
+        staking={
+          isStakable ? <StakingContainer hasPoolStaking={hasPoolStaking} onOpenVideoGuide={openVideoGuide} /> : null
+        }
+        footer={<Footer />}
+        isStaking={isStakable}
+      />
+      {isOpenVideoGuide && isValidVideoGuideType(currentGuide) && (
+        <VideoGuideModal videoType={currentGuide} setIsOpen={closeVideoGuide} />
+      )}
+    </>
   );
 };
 

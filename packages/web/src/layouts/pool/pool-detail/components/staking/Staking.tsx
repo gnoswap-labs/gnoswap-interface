@@ -24,6 +24,7 @@ interface StakingProps {
   loading: boolean;
   isOtherPosition: boolean;
   hasPoolStaking: boolean;
+  onOpenVideoGuide: (type: "STAKING") => void;
 }
 
 const Staking: React.FC<StakingProps> = ({
@@ -40,6 +41,7 @@ const Staking: React.FC<StakingProps> = ({
   loading,
   isOtherPosition,
   hasPoolStaking,
+  onOpenVideoGuide,
 }) => {
   return (
     <>
@@ -53,6 +55,7 @@ const Staking: React.FC<StakingProps> = ({
           canUnstake={stakedPosition.length > 0}
           isOtherPosition={isOtherPosition}
           canStake={(pool?.rewardTokens?.length || 0) > 0}
+          onOpenVideoGuide={onOpenVideoGuide}
         />
         <StakingContent
           pool={pool}

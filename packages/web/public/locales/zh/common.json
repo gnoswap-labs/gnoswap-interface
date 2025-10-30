@@ -37,6 +37,34 @@
     "count_other": "{{count}} 天数",
     "today": "今天"
   },
+  "guide": {
+    "governance": {
+      "action": "代表 GNS",
+      "subtitle": "了解 GnoSwap 治理以及如何获取 xGNS 以赚取 GnoSwap 上的部分协议费。",
+      "title": "GnoSwap 治理如何运作？"
+    },
+    "launchpad": {
+      "action": "立即参与",
+      "subtitle": "了解 GnoSwap Launchpad 以及如何参与在 GnoSwap 上发布项目令牌。",
+      "title": "如何参加 GnoSwap Launchpad？"
+    },
+    "leaderboard": {
+      "action": "立即探索",
+      "subtitle": "了解 GnoSwap 排行榜以及如何在 GnoSwap 上提升排名以获得潜在奖励。",
+      "title": "什么是排行榜？"
+    },
+    "learnMore": "了解更多",
+    "position": {
+      "action": "创建职位",
+      "subtitle": "了解仓位信息以及如何在 GnoSwap 上提供流动性以赚取奖励。",
+      "title": "什么是职位？"
+    },
+    "staking": {
+      "action": "定位",
+      "subtitle": "了解如何在 GnoSwap 上下注以及如何下注以获得最大回报。",
+      "title": "投注如何进行？"
+    }
+  },
   "imporNote": "重要说明",
   "learnMore": "了解更多",
   "localTimeComp": {

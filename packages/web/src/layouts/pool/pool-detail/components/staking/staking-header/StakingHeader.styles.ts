@@ -17,7 +17,7 @@ export const StakingHeaderWrapper = styled.div`
   }
   .left-wrap {
     ${mixins.flexbox("row", "center", "flex-start")};
-    gap: 20px;
+    gap: 12px;
     .logo-wrap {
       ${mixins.flexbox("row", "center", "flex-start")};
       gap: 4px;
@@ -47,11 +47,7 @@ export const StakingHeaderWrapper = styled.div`
         }
       }
     }
-    ${media.tablet} {
-      gap: 12px;
-    }
     ${media.mobile} {
-      gap: 10px;
       .logo-wrap {
         margin-top: 4px;
         margin-bottom: 0px;

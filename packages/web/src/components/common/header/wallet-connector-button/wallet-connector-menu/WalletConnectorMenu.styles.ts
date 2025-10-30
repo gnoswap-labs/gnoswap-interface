@@ -164,7 +164,6 @@ export const CopyTooltip = styled.div`
   z-index: ${Z_INDEX.modalTooltip};
   .box {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
-    width: 84px;
     padding: 16px;
     gap: 8px;
     flex-shrink: 0;

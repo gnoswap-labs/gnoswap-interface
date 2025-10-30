@@ -1,12 +1,15 @@
-import { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import Switch from "@components/common/switch/Switch";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { VIDEO_GUIDE_TYPES } from "@constants/video-guide.constant";
 
 import { HeaderTextWrapper, PositionsWrapper } from "./EarnMyPositionsHeader.styles";
+import VideoGuideTrigger from "@components/common/video-guide-trigger/VideoGuideTrigger";
+import { useWindowSize } from "@hooks/common/use-window-size";
 
 export interface EarnMyPositionsHeaderProps {
   address?: string | null;
@@ -22,6 +25,7 @@ export interface EarnMyPositionsHeaderProps {
   isClosed: boolean;
   handleChangeClosed: () => void;
   positions: PoolPositionModel[];
+  onOpenVideoGuide: (type: "POSITION") => void;
 }
 
 const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
@@ -37,9 +41,15 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
   moveEarnStake,
   isClosed,
   handleChangeClosed,
+  onOpenVideoGuide,
 }) => {
   const { getAccountUrl } = useGnoscanUrl();
   const { t } = useTranslation();
+  const { isMobile } = useWindowSize();
+
+  const handleOpenVideoGuide = useCallback(() => {
+    onOpenVideoGuide(VIDEO_GUIDE_TYPES.POSITION);
+  }, [onOpenVideoGuide]);
 
   const disabledStake = useMemo(() => {
     return !connected || isSwitchNetwork || !availableStake;
@@ -53,23 +63,39 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
     moveEarnAdd();
   }, [moveEarnAdd]);
 
-  const renderMyPositionTitle = () => {
-    if (isOtherPosition)
-      return (
-        <>
-          <span className="name" onClick={onClickAddressPosition}>
-            {addressName}
-          </span>
-          <span>{`${t("Earn:positions.title", {
-            context: "other",
-          })} (${positionLength})`}</span>
-        </>
-      );
+  const renderMyPositionTitle = useCallback(() => {
+    const getTitleText = () => {
+      if (isOtherPosition) {
+        return (
+          <>
+            <span className="name" onClick={onClickAddressPosition}>
+              {addressName}
+            </span>
+            <span>{`${t("Earn:positions.title", {
+              context: "other",
+            })} (${positionLength})`}</span>
+          </>
+        );
+      }
 
-    if (connected) return <span>{`${t("Earn:positions.title")} (${positionLength})`}</span>;
+      if (connected) {
+        return <span>{`${t("Earn:positions.title")} (${positionLength})`}</span>;
+      }
 
-    return <span>{t("Earn:positions.title")}</span>;
-  };
+      return <span>{t("Earn:positions.title")}</span>;
+    };
+
+    return (
+      <div className="header-title">
+        {getTitleText()}
+        <VideoGuideTrigger
+          text={`${t("common:guide.position.title")} ▶`}
+          onClick={handleOpenVideoGuide}
+          style={{ lineHeight: isMobile ? "20px" : "24px" }}
+        />
+      </div>
+    );
+  }, [isOtherPosition, connected, addressName, positionLength, onClickAddressPosition, t]);
 
   return (
     <PositionsWrapper>

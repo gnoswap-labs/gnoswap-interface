@@ -8,7 +8,11 @@ import { nullLaunchpadSummaryInfo } from "@repositories/launchpad/model";
 
 import LaunchpadMain from "@layouts/launchpad/components/launchpad-main/LaunchpadMain";
 
-const LaunchpadMainContainer: React.FC = () => {
+interface LaunchpadMainContainerProps {
+  onOpenVideoGuide: (type: "LAUNCHPAD") => void;
+}
+
+const LaunchpadMainContainer: React.FC<LaunchpadMainContainerProps> = ({ onOpenVideoGuide }) => {
   const themeKey = useAtomValue(ThemeState.themeKey);
   const { data: launchpadSummary, isLoading: isLoadingSummary, isFetched: isFetchedSummary } = useGetLaunchpadSummary();
 
@@ -21,6 +25,7 @@ const LaunchpadMainContainer: React.FC = () => {
       isFetched={isFetchedSummary}
       breakpoint={breakpoint}
       themeKey={themeKey}
+      onOpenVideoGuide={onOpenVideoGuide}
     />
   );
 };
