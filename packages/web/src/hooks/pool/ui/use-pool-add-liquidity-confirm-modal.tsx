@@ -124,6 +124,7 @@ export const usePoolAddLiquidityConfirmModal = ({
       [QUERY_KEY.positions, currentChainId, address],
       [QUERY_KEY.pools],
       [QUERY_KEY.poolDetail, poolPath],
+      [QUERY_KEY.poolPairBins],
     ]);
   }, [invalidateQueryKey, selectPool.poolPath, currentChainId, address]);
 

@@ -62,6 +62,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
       [QUERY_KEY.pools],
       [QUERY_KEY.positions, currentChainId, address],
       [QUERY_KEY.poolDetail, poolPath],
+      [QUERY_KEY.poolPairBins],
     ]);
   }, [invalidateQueryKey, poolPath, currentChainId, address]);
 
