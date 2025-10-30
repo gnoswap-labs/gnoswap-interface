@@ -83,12 +83,9 @@ const StartingPrice: React.FC<StartingPriceProps> = ({
     return startingPriceValue;
   }, [startingPriceValue, tempPrice]);
 
-  // Automatically reset on token change
   useEffect(() => {
-    setStartingPriceValue("");
     setTempPrice("");
-    changeStartingPrice("");
-  }, [tokenASymbol, tokenBSymbol]);
+  }, [startingPriceValue]);
 
   return (
     <StartingPriceWrapper className="starting-price-wrapper">

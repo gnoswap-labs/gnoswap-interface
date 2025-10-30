@@ -151,9 +151,9 @@ export const useSelectPool = ({
     queryKey: ["useSelectPool/getBins", calculatedPoolPath, zoomLevel, isCreate],
   });
 
-  const { data: initializeBins } = useInitializeBins(feeTier, startPrice, ZOOL_VALUES[zoomLevel], false, {
+  const { data: initializeBins } = useInitializeBins(feeTier, startPrice, ZOOL_VALUES[zoomLevel], isReverse, {
     enabled: !!feeTier && !!startPrice && !!isCreate,
-    queryKey: [QUERY_KEY.initializeBins, feeTier, startPrice, zoomLevel, false],
+    queryKey: [QUERY_KEY.initializeBins, feeTier, startPrice, zoomLevel, isReverse],
   });
 
   const { data: poolInfo, isLoading: isLoadingPoolInfo } = useQuery<
