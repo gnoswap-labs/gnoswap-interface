@@ -154,9 +154,10 @@ export const useReferral = () => {
 
     // Rank 3: API Resopnse(by leaderboard)
     if (!hasUrlReferralAddress && !hasStoredReferralAddress) {
-      if (apiReferrerAddress && isValidAddress(apiReferrerAddress) && apiReferrerAddress !== account?.address) {
-        setReferralAddress(apiReferrerAddress);
-      }
+      const isValidApiReferrer =
+        apiReferrerAddress && isValidAddress(apiReferrerAddress) && apiReferrerAddress !== account?.address;
+
+      setReferralAddress(isValidApiReferrer ? apiReferrerAddress : "");
     }
   }, [urlReferralAddress, apiReferrerAddress, account?.address, getStoredReferrerInfo]);
 
