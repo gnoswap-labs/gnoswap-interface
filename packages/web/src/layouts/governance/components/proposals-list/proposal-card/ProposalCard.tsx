@@ -123,6 +123,15 @@ const ProposalCard: React.FC<Props> = ({
     return getTooltipTextI18nKey(proposalDetail.status, isMajorityVoted, yesVotes, noVotes);
   }, [proposalDetail.status, getTooltipTextI18nKey, isMajorityVoted, yesVotes, noVotes]);
 
+  const showCancelButton = React.useMemo(() => {
+    return proposalDetail.status === "UPCOMING" && proposalDetail.proposer.address === address;
+  }, [proposalDetail.status, proposalDetail.proposer.address, address]);
+
+  const handleCancelClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    cancelProposal(proposalDetail.id);
+  };
+
   return (
     <ProposalDetailWrapper onClick={() => onClickCard(proposalDetail.id.toString())}>
       <div className="header">
@@ -179,39 +188,29 @@ const ProposalCard: React.FC<Props> = ({
               }}
             />
           )}
-          {breakpoint !== DEVICE_TYPE.MOBILE &&
-            proposalDetail.status === "UPCOMING" &&
-            proposalDetail.proposer.address === address && (
-              <Button
-                text={t("Governance:proposalList.cancelBtn")}
-                style={{
-                  hierarchy: ButtonHierarchy.Primary,
-                }}
-                onClick={e => {
-                  e.stopPropagation();
-                  cancelProposal(proposalDetail.id);
-                }}
-              />
-            )}
+          {showCancelButton && breakpoint !== DEVICE_TYPE.MOBILE && (
+            <Button
+              text={t("Governance:proposalList.cancelBtn")}
+              style={{
+                hierarchy: ButtonHierarchy.Primary,
+              }}
+              onClick={handleCancelClick}
+            />
+          )}
         </div>
       </div>
-      {breakpoint === DEVICE_TYPE.MOBILE &&
-        proposalDetail.status === "UPCOMING" &&
-        proposalDetail.proposer.address === address && (
-          <Button
-            text={t("Governance:proposalList.cancelBtn")}
-            style={{
-              width: "100%",
-              height: "36px",
-              fontType: "p1",
-              hierarchy: ButtonHierarchy.Primary,
-            }}
-            onClick={e => {
-              e.stopPropagation();
-              cancelProposal(proposalDetail.id);
-            }}
-          />
-        )}
+      {showCancelButton && breakpoint === DEVICE_TYPE.MOBILE && (
+        <Button
+          text={t("Governance:proposalList.cancelBtn")}
+          style={{
+            width: "100%",
+            height: "36px",
+            fontType: "p1",
+            hierarchy: ButtonHierarchy.Primary,
+          }}
+          onClick={handleCancelClick}
+        />
+      )}
       <div className="active-wrapper">
         <StatusBadge
           breakpoint={breakpoint}
