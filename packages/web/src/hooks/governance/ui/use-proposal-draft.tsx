@@ -34,6 +34,9 @@ export function useProposalDraft<T extends FieldValues>({ setValue, watch, isDir
     description: "description" as Path<T>,
   } as const;
 
+  /**
+   * Save proposal drafts to local storage
+   */
   const saveProposalDraft = useCallback((title: string, description: string) => {
     if (!title && !description) return;
     if (isSubmittedRef.current) return;
@@ -47,6 +50,9 @@ export function useProposalDraft<T extends FieldValues>({ setValue, watch, isDir
     localStorage.setItem(GNOSWAP_PROPOSAL_DRAFT_KEY, JSON.stringify(draft));
   }, []);
 
+  /**
+   * Load proposal drafts from local storage
+   */
   const loadProposalDraft = useCallback((): ProposalDraftData | null => {
     try {
       const draftJSON = localStorage.getItem(GNOSWAP_PROPOSAL_DRAFT_KEY);
@@ -64,6 +70,9 @@ export function useProposalDraft<T extends FieldValues>({ setValue, watch, isDir
     }
   }, []);
 
+  /**
+   * Deleting proposal drafts from local storage
+   */
   const clearProposalDraft = useCallback(() => {
     isSubmittedRef.current = true;
     localStorage.removeItem(GNOSWAP_PROPOSAL_DRAFT_KEY);
