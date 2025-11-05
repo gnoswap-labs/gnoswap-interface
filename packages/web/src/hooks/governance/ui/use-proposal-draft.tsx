@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { UseFormWatch, UseFormSetValue, FieldValues, Path } from "react-hook-form";
 
 const GNOSWAP_PROPOSAL_DRAFT_KEY = "gnoswap_proposal-drafts";
@@ -27,6 +27,8 @@ interface UseProposalDraftProps<T extends FieldValues> {
  * @returns Draft management functions and their current values
  */
 export function useProposalDraft<T extends FieldValues>({ setValue, watch, isDirty }: UseProposalDraftProps<T>) {
+  const isSubmittedRef = useRef(false);
+
   const FORM_FIELDS = {
     title: "title" as Path<T>,
     description: "description" as Path<T>,
@@ -37,6 +39,7 @@ export function useProposalDraft<T extends FieldValues>({ setValue, watch, isDir
    */
   const saveProposalDraft = useCallback((title: string, description: string) => {
     if (!title && !description) return;
+    if (isSubmittedRef.current) return;
 
     const draft: ProposalDraft = {
       title,
@@ -71,6 +74,7 @@ export function useProposalDraft<T extends FieldValues>({ setValue, watch, isDir
    * Deleting proposal drafts from local storage
    */
   const clearProposalDraft = useCallback(() => {
+    isSubmittedRef.current = true;
     localStorage.removeItem(GNOSWAP_PROPOSAL_DRAFT_KEY);
   }, []);
 
@@ -82,6 +86,7 @@ export function useProposalDraft<T extends FieldValues>({ setValue, watch, isDir
       setValue(FORM_FIELDS.description, draft.description as T[Path<T>], { shouldDirty: true, shouldValidate: true });
     }
   }, [loadProposalDraft, setValue]);
+
   const title = watch(FORM_FIELDS.title) as string;
   const description = watch(FORM_FIELDS.description) as string;
 
@@ -101,7 +106,7 @@ export function useProposalDraft<T extends FieldValues>({ setValue, watch, isDir
   // Save draft when component is unmounted
   useEffect(() => {
     return () => {
-      if (title || description) {
+      if (!isSubmittedRef.current && (title || description)) {
         saveProposalDraft(title, description);
       }
     };
