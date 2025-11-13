@@ -13,6 +13,7 @@ import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { ThemeState } from "@states/index";
 import { PositionConverter } from "@services/converters/position";
+import { positionCardListBreakPoints } from "@common/values/breakpoint.constant";
 
 const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isClosed }) => {
   const { getGnotPath } = useGnotToGnot();
@@ -130,12 +131,7 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
       return showedPosition;
     }
 
-    const breakpoints = [
-      { width: 1180, displayCount: 4 },
-      { width: 920, displayCount: 3 },
-    ];
-
-    for (const breakpoint of breakpoints) {
+    for (const breakpoint of positionCardListBreakPoints) {
       if (width > breakpoint.width) {
         return showedPosition.slice(0, breakpoint.displayCount);
       }
