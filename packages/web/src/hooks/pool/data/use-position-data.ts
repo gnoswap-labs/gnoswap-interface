@@ -10,6 +10,9 @@ export interface UsePositionDataOption {
   address?: string;
   isClosed?: boolean;
   poolPath?: string | null;
+  page?: number;
+  limit?: number;
+  withClosed?: boolean;
   queryOption?: UseQueryOptions<PositionModel[], Error, PositionModel[], QueryKey>;
 }
 
@@ -31,6 +34,9 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     address: fetchedAddress as string,
     isClosed: options?.isClosed,
     poolPath: options?.poolPath,
+    page: options?.page,
+    limit: options?.limit,
+    withClosed: options?.withClosed,
   });
 
   const { isLoading: isCommonLoading } = useLoading();
@@ -40,7 +46,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     isFetched: isFetchedPoolPositions,
     isLoading: isLoadingPoolPositions,
     refetch: refetchPooPositions,
-  } = useMakePoolPositions(data, pools, isFetchedPosition);
+  } = useMakePoolPositions(data?.positions || [], pools, isFetchedPosition);
 
   const availableStake = useMemo(() => {
     if (!isFetchedPoolPositions) {

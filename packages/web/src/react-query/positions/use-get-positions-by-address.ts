@@ -3,7 +3,7 @@ import { useMemo } from "react";
 
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { PositionModel } from "@models/position/position-model";
+import { GetPositionsByAddressResult } from "@repositories/position/response";
 
 import { QUERY_KEY } from "../query-keys";
 
@@ -13,11 +13,14 @@ interface UseGetPositionsByAddressProps {
   address?: string;
   isClosed?: boolean;
   poolPath?: string | null;
+  page?: number;
+  limit?: number;
+  withClosed?: boolean;
 }
 
 export const useGetPositionsByAddress = (
   props?: UseGetPositionsByAddressProps,
-  options?: UseQueryOptions<PositionModel[], Error>,
+  options?: UseQueryOptions<GetPositionsByAddressResult, Error>,
 ) => {
   const { positionRepository } = useGnoswapContext();
   const { account, currentChainId, availNetwork } = useWallet();
@@ -30,27 +33,43 @@ export const useGetPositionsByAddress = (
     return props?.poolPath || "";
   }, [props?.poolPath]);
 
-  return useQuery<PositionModel[], Error>({
-    queryKey: [QUERY_KEY.positions, currentChainId, address, poolPath],
+  return useQuery<GetPositionsByAddressResult, Error>({
+    queryKey: [
+      QUERY_KEY.positions,
+      currentChainId,
+      address,
+      poolPath,
+      props?.page,
+      props?.limit,
+      props?.withClosed,
+      props?.isClosed,
+    ],
     queryFn: async () => {
       if (!availNetwork || !address) {
-        return [];
+        return { positions: [], totalCount: 0 };
       }
 
       return await positionRepository
         .getPositionsByAddress(address, {
-          poolPath: encodeURIComponent(poolPath),
+          poolPath: poolPath ? encodeURIComponent(poolPath) : undefined,
+          page: props?.page,
+          limit: props?.limit,
+          withClosed: props?.withClosed,
+          isClosed: props?.isClosed,
         })
         .catch(e => {
           console.error(e);
-          return [];
+          return { positions: [], totalCount: 0 };
         });
     },
     select: data => {
       if (props?.isClosed === undefined) {
         return data;
       }
-      return data.filter(p => p.closed === props.isClosed);
+      return {
+        positions: data.positions.filter(p => p.closed === props.isClosed),
+        totalCount: data.totalCount,
+      };
     },
     refetchInterval: REFETCH_INTERVAL,
     refetchOnMount: true,

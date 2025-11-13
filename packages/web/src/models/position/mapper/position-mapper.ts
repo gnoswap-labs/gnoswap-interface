@@ -1,6 +1,6 @@
 import { PoolModel } from "@models/pool/pool-model";
 import { TokenPairAmountInfo } from "@models/token/token-pair-amount-info";
-import { PositionListResponse, PositionResponse } from "@repositories/position/response";
+import { PositionResponse } from "@repositories/position/response";
 import { RewardResponse } from "@repositories/position/response/reward-response";
 import { PoolPositionModel } from "../pool-position-model";
 import { PositionModel } from "../position-model";
@@ -56,7 +56,7 @@ export class PositionMapper {
     };
   }
 
-  public static fromList(positions: PositionListResponse): PositionModel[] {
+  public static fromList(positions: PositionResponse[]): PositionModel[] {
     return positions.map(PositionMapper.from);
   }
 

@@ -2,7 +2,10 @@ import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { ClaimedRewardModel } from "@models/position/reward-model";
 import { RewardResponse } from "./reward-response";
 
-export type PositionListResponse = PositionResponse[];
+export interface PositionListResponse {
+  positions: PositionResponse[];
+  totalCount: number;
+}
 
 export interface PositionResponse {
   lpTokenId: string;

@@ -97,14 +97,20 @@ export class PositionRepositoryImpl implements PositionRepository {
     options?: {
       isClosed?: boolean;
       poolPath?: string;
+      page?: number;
+      limit?: number;
+      withClosed?: boolean;
     },
-  ): Promise<PositionModel[]> => {
+  ): Promise<{ positions: PositionModel[]; totalCount: number }> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
     const queries = [
       options?.isClosed !== undefined ? `closed=${options.isClosed}` : "",
       options?.poolPath !== undefined ? `poolPath=${options.poolPath}` : "",
+      options?.page !== undefined ? `page=${options.page}` : "",
+      options?.limit !== undefined ? `limit=${options.limit}` : "",
+      options?.withClosed !== undefined ? `withClosed=${options.withClosed}` : "",
     ];
     const queryString = queries.filter(item => !!item).join("&");
 
@@ -113,10 +119,16 @@ export class PositionRepositoryImpl implements PositionRepository {
     }>({
       url: "/users/" + address + "/position" + (queryString ? `?${queryString}` : ""),
     });
+
     if (!response?.data?.data) {
-      return [];
+      return { positions: [], totalCount: 0 };
     }
-    return PositionMapper.fromList(response.data.data);
+
+    const { positions, totalCount } = response.data.data;
+    return {
+      positions: PositionMapper.fromList(positions),
+      totalCount,
+    };
   };
 
   sendClaim = async (request: ClaimRequest): Promise<WalletResponse<SendTransactionResponse<string[] | null>>> => {
