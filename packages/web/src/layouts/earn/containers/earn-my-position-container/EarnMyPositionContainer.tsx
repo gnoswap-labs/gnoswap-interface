@@ -13,7 +13,7 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetUsernameByAddress } from "@query/address";
 import { EarnState, ThemeState } from "@states/index";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { positionCardListBreakPoints } from "@common/values/breakpoint.constant";
+import { positionCardListBreakPoints } from "@common/values";
 
 import EarnMyPositions from "../../components/earn-my-positions/EarnMyPositions";
 import { PositionConverter } from "@services/converters/position";

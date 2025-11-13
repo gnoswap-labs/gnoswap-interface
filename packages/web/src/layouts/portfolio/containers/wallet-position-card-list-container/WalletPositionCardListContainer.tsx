@@ -13,7 +13,7 @@ import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { ThemeState } from "@states/index";
 import { PositionConverter } from "@services/converters/position";
-import { positionCardListBreakPoints } from "@common/values/breakpoint.constant";
+import { positionCardListBreakPoints } from "@common/values";
 
 const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isClosed }) => {
   const { getGnotPath } = useGnotToGnot();
