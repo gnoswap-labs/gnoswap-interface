@@ -13,7 +13,7 @@ import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { ThemeState } from "@states/index";
 import { PositionConverter } from "@services/converters/position";
-import { positionCardListBreakPoints } from "@common/values";
+import { POSITION_CARD_BREAKPOINTS, POSITION_CARD_DISPLAY_COUNT, POSITION_CARD_LIST_BREAKPOINTS } from "@common/values";
 
 const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isClosed }) => {
   const { getGnotPath } = useGnotToGnot();
@@ -22,13 +22,19 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
   const [mobile, setMobile] = useState(false);
   const { width } = useWindowSize();
   const { connected } = useWallet();
+  const [page, setPage] = useState(1);
+
   const {
     isFetchedPosition,
     loading: loadingPositions,
     positions: positionsData = [],
+    totalPositionCount,
   } = usePositionData({
     isClosed: false,
+    page,
+    limit: 20,
   });
+
   const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);
 
   const { pools, loading } = usePoolData();
@@ -50,6 +56,7 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
       else setMobile(false);
     }
   };
+
   useEffect(() => {
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -65,13 +72,13 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
     [router],
   );
 
-  const showPagination = useMemo(() => {
+  const showPositionIndicator = useMemo(() => {
     if (width >= 920) {
       return false;
     } else {
       return true;
     }
-  }, [positionsData, width]);
+  }, [width]);
 
   const poolPositions = useMemo(() => {
     const mappedPositions: PoolPositionModel[] = [];
@@ -114,14 +121,83 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
 
   const handleScroll = useCallback(() => {
     if (divRef.current) {
-      const container = divRef.current;
-      const currentScrollX = container.scrollLeft;
-      const maxScroll = container.scrollWidth - container.clientWidth;
+      const itemGap = 12;
+      const parentWidth = divRef.current.clientWidth;
+      const children = divRef.current.children;
+      const listChildWidth = divRef.current.children[0].clientWidth;
+      const childrenLength = showedPosition.length;
 
-      if (currentScrollX >= maxScroll - 1) {
-        setCurrentIndex(showedPosition.length);
-      } else {
-        setCurrentIndex(Math.min(Math.floor(currentScrollX / 322) + 1, showedPosition.length));
+      const totalItemWidth = childrenLength * listChildWidth;
+      const totalGapWidth = itemGap * (childrenLength - 1);
+
+      const maxScrollWidth = totalItemWidth + totalGapWidth - parentWidth;
+      const currentScrollX = divRef.current.scrollLeft;
+
+      const maybeNextDisplayIndex = Math.floor(currentScrollX / (listChildWidth + itemGap)) + 2;
+
+      const centerScreenX = document.body.clientWidth / 2;
+
+      if (currentScrollX === 0) {
+        setCurrentIndex(1);
+        return;
+      }
+
+      if (maxScrollWidth <= currentScrollX) {
+        setCurrentIndex(childrenLength);
+        return;
+      }
+
+      const getLengthFromElementCenterToScreenCenter = (element: Element | null) => {
+        if (element) return Math.abs(element?.getBoundingClientRect().x + listChildWidth / 2 - centerScreenX);
+
+        return -1;
+      };
+
+      const checkValidElement = (index: number) => {
+        if (index < childrenLength) {
+          return children[index];
+        }
+        return null;
+      };
+
+      if (childrenLength >= 3) {
+        const maybeNextIndex = maybeNextDisplayIndex - 1;
+
+        const previous1Element = checkValidElement(maybeNextIndex - 1);
+        const currentElement = checkValidElement(maybeNextIndex);
+        const next1Element = checkValidElement(maybeNextIndex + 1);
+
+        const previousElementCenterXToScreenCenterX = getLengthFromElementCenterToScreenCenter(previous1Element);
+        const currentElementCenterXToScreenCenterX = getLengthFromElementCenterToScreenCenter(currentElement);
+        const nextElementCenterXToScreenCenterX = getLengthFromElementCenterToScreenCenter(next1Element);
+
+        const minLength = Math.min(
+          ...[
+            previousElementCenterXToScreenCenterX,
+            currentElementCenterXToScreenCenterX,
+            nextElementCenterXToScreenCenterX,
+          ],
+        );
+
+        const distanceMap = {
+          [previousElementCenterXToScreenCenterX]: maybeNextDisplayIndex - 1,
+          [currentElementCenterXToScreenCenterX]: maybeNextDisplayIndex,
+          [nextElementCenterXToScreenCenterX]: maybeNextDisplayIndex + 1,
+        };
+
+        const nextIndex = distanceMap[minLength];
+
+        if (nextIndex > childrenLength) {
+          setCurrentIndex(childrenLength);
+          return;
+        }
+
+        if (nextIndex < 1) {
+          setCurrentIndex(1);
+          return;
+        }
+
+        setCurrentIndex(nextIndex);
       }
     }
   }, [showedPosition.length]);
@@ -131,7 +207,7 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
       return showedPosition;
     }
 
-    for (const breakpoint of positionCardListBreakPoints) {
+    for (const breakpoint of POSITION_CARD_LIST_BREAKPOINTS) {
       if (width > breakpoint.width) {
         return showedPosition.slice(0, breakpoint.displayCount);
       }
@@ -153,9 +229,37 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
     updateDataMapping();
   }, [updateDataMapping]);
 
+  /**
+   * Navigate to specific page
+   */
+  const movePage = useCallback((newPage: number) => {
+    setPage(newPage);
+  }, []);
+
+  /**
+   * Calculate total number of pages based on server total count
+   */
+  const totalPage = useMemo(() => {
+    return Math.ceil(totalPositionCount / 20);
+  }, [totalPositionCount]);
+
+  const maxDisplayCount = useMemo(() => {
+    const { DESKTOP_MIN, TABLET_MIN } = POSITION_CARD_BREAKPOINTS;
+    const { DESKTOP, TABLET } = POSITION_CARD_DISPLAY_COUNT;
+
+    return width < DESKTOP_MIN && width >= TABLET_MIN ? TABLET : DESKTOP;
+  }, [width]);
+
   const showLoadMore = useMemo(() => {
     return showedPosition.length > 4;
   }, [showedPosition]);
+
+  /**
+   * Reset page to first page when filter criteria change
+   */
+  useEffect(() => {
+    setPage(1);
+  }, [isClosed]);
 
   return (
     <MyPositionCardList
@@ -165,15 +269,19 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
       isLoading={loading || isLoadingPosition || isDataMappingLoading}
       movePoolDetail={movePoolDetail}
       currentIndex={currentIndex}
+      maxDisplayCount={maxDisplayCount}
       mobile={mobile}
       width={width}
-      showPagination={showPagination}
+      showPositionIndicator={showPositionIndicator}
       showLoadMore={showLoadMore}
       themeKey={themeKey}
       divRef={divRef}
       onScroll={handleScroll}
       tokenPrices={tokenPrices}
       onClickLoadMore={handleClickLoadMore}
+      currentPage={page}
+      totalPage={totalPage}
+      movePage={movePage}
     />
   );
 };

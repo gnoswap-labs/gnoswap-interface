@@ -24,7 +24,8 @@ export interface EarnMyPositionContentProps {
   divRef: React.RefObject<HTMLDivElement>;
   onScroll: () => void;
   currentIndex: number;
-  showPagination: boolean;
+  maxDisplayCount: number;
+  showPositionIndicator: boolean;
   showLoadMore: boolean;
   width: number;
   loadMore: boolean;
@@ -35,7 +36,7 @@ export interface EarnMyPositionContentProps {
   highestApr: number;
   currentPage?: number;
   totalPage?: number;
-  movePage?: (page: number) => void;
+  movePage: (page: number) => void;
 }
 
 const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
@@ -52,7 +53,8 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   divRef,
   onScroll,
   currentIndex,
-  showPagination,
+  maxDisplayCount,
+  showPositionIndicator,
   showLoadMore,
   width,
   loadMore,
@@ -83,11 +85,12 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
       isFetched={fetched}
       isLoading={loading}
       currentIndex={currentIndex}
+      maxDisplayCount={maxDisplayCount}
       movePoolDetail={movePoolDetail}
       mobile={mobile}
       divRef={divRef}
       onScroll={onScroll}
-      showPagination={showPagination}
+      showPositionIndicator={showPositionIndicator}
       showLoadMore={showLoadMore}
       width={width}
       loadMore={loadMore}

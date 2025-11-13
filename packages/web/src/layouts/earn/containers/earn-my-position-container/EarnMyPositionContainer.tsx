@@ -13,7 +13,7 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetUsernameByAddress } from "@query/address";
 import { EarnState, ThemeState } from "@states/index";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { positionCardListBreakPoints } from "@common/values";
+import { POSITION_CARD_BREAKPOINTS, POSITION_CARD_DISPLAY_COUNT, POSITION_CARD_LIST_BREAKPOINTS } from "@common/values";
 
 import EarnMyPositions from "../../components/earn-my-positions/EarnMyPositions";
 import { PositionConverter } from "@services/converters/position";
@@ -211,7 +211,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     }
   }, [showedPosition.length]);
 
-  const showPagination = useMemo(() => {
+  const showPositionIndicator = useMemo(() => {
     if (width >= 920) {
       return false;
     } else {
@@ -249,7 +249,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       return showedPosition;
     }
 
-    for (const breakpoint of positionCardListBreakPoints) {
+    for (const breakpoint of POSITION_CARD_LIST_BREAKPOINTS) {
       if (width > breakpoint.width) {
         return showedPosition.slice(0, breakpoint.displayCount);
       }
@@ -280,16 +280,23 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     }, Number(pools?.[0]?.totalApr ?? 0));
   }, [pools]);
 
-  const showLoadMore = useMemo(() => {
-    return showedPosition.length > 4;
-  }, [showedPosition]);
-
   /**
    * Calculate total number of pages based on server total count
    */
   const totalPage = useMemo(() => {
     return Math.ceil(totalPositionCount / 20);
   }, [totalPositionCount]);
+
+  const maxDisplayCount = useMemo(() => {
+    const { DESKTOP_MIN, TABLET_MIN } = POSITION_CARD_BREAKPOINTS;
+    const { DESKTOP, TABLET } = POSITION_CARD_DISPLAY_COUNT;
+
+    return width < DESKTOP_MIN && width >= TABLET_MIN ? TABLET : DESKTOP;
+  }, [width]);
+
+  const showLoadMore = useMemo(() => {
+    return showedPosition.length > maxDisplayCount;
+  }, [showedPosition, maxDisplayCount]);
 
   /**
    * Reset page to first page when filter criteria change
@@ -304,7 +311,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       addressName={addressName}
       isOtherPosition={!!isOtherPosition}
       visiblePositions={visiblePositions}
-      positionLength={showedPosition.length}
+      positionLength={totalPositionCount}
       connected={connected}
       availableStake={availableStake}
       connect={connect}
@@ -320,7 +327,8 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       onScroll={handleScroll}
       divRef={divRef}
       currentIndex={currentIndex}
-      showPagination={showPagination}
+      maxDisplayCount={maxDisplayCount}
+      showPositionIndicator={showPositionIndicator}
       showLoadMore={showLoadMore}
       width={width}
       loadMore={!isViewMorePositions}

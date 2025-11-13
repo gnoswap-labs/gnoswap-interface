@@ -30,7 +30,8 @@ export interface EarnMyPositionsProps {
   divRef: React.RefObject<HTMLDivElement>;
   onScroll: () => void;
   currentIndex: number;
-  showPagination: boolean;
+  maxDisplayCount: number;
+  showPositionIndicator: boolean;
   showLoadMore: boolean;
   width: number;
   loadMore: boolean;
@@ -44,7 +45,7 @@ export interface EarnMyPositionsProps {
   onOpenVideoGuide: (type: "POSITION") => void;
   currentPage?: number;
   totalPage?: number;
-  movePage?: (page: number) => void;
+  movePage: (page: number) => void;
 }
 
 const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
@@ -68,7 +69,8 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
   onScroll,
   divRef,
   currentIndex,
-  showPagination,
+  maxDisplayCount,
+  showPositionIndicator,
   showLoadMore,
   width,
   loadMore,
@@ -116,7 +118,8 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
       divRef={divRef}
       onScroll={onScroll}
       currentIndex={currentIndex}
-      showPagination={showPagination}
+      maxDisplayCount={maxDisplayCount}
+      showPositionIndicator={showPositionIndicator}
       showLoadMore={showLoadMore}
       width={width}
       loadMore={loadMore}

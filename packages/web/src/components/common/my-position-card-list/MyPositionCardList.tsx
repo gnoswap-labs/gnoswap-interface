@@ -4,7 +4,6 @@ import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
-import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
 
 import MyPositionCard from "./my-position-card/MyPositionCard";
@@ -21,18 +20,19 @@ interface MyPositionCardListProps {
   onClickLoadMore?: () => void;
   positions: PoolPositionModel[];
   currentIndex: number;
+  maxDisplayCount: number;
   movePoolDetail: (poolId: string, positionId: number) => void;
   mobile: boolean;
   divRef?: React.RefObject<HTMLDivElement>;
   onScroll?: () => void;
-  showPagination: boolean;
+  showPositionIndicator: boolean;
   showLoadMore: boolean;
   width: number;
   themeKey: "dark" | "light";
   tokenPrices: Record<string, TokenPriceModel>;
   currentPage?: number;
   totalPage?: number;
-  movePage?: (page: number) => void;
+  movePage: (page: number) => void;
 }
 
 const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
@@ -43,11 +43,12 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   onClickLoadMore,
   positions,
   currentIndex,
+  maxDisplayCount,
   movePoolDetail,
   mobile,
   divRef,
   onScroll,
-  showPagination,
+  showPositionIndicator,
   width,
   themeKey,
   showLoadMore,
@@ -56,20 +57,15 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   totalPage,
   movePage,
 }) => {
-  const { width: windowWidth } = useWindowSize();
-  const breakpoint = windowWidth >= 920 ? DEVICE_TYPE.WEB : DEVICE_TYPE.MOBILE;
+  const breakpoint = width >= 920 ? DEVICE_TYPE.WEB : DEVICE_TYPE.MOBILE;
 
   const hasPositions = positions.length > 0;
   const shouldShowSkeleton = isLoading || (!isFetched && !hasPositions);
   const shouldShowPositions = !isLoading && hasPositions;
   const shouldShowBlankCards = isFetched && !isLoading && hasPositions && positions.length < 4;
   const shouldShowLoadMoreButton = !mobile && !isLoading && showLoadMore && !!onClickLoadMore;
-  const shouldShowPagination = showPagination && isFetched && hasPositions && !isLoading;
-  const shouldShowPagePagination = totalPage && totalPage > 1 && movePage;
-
-  const maxDisplayCount = useMemo(() => {
-    return width <= 1180 && width >= 768 ? 3 : 4;
-  }, [width]);
+  const shouldShowPositionIndicator = showPositionIndicator && isFetched && hasPositions && !isLoading;
+  const shouldShowPagination = Boolean(totalPage && totalPage > 1 && !loadMore);
 
   const blankCardCount = useMemo(() => {
     if (!shouldShowBlankCards) return 0;
@@ -102,23 +98,23 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
           ))}
       </HorizontalScrollWrapper>
 
+      {shouldShowPagination && (
+        <Pagination
+          currentPage={currentPage || 1}
+          totalPage={totalPage || 1}
+          onPageChange={movePage}
+          siblingCount={breakpoint !== DEVICE_TYPE.MOBILE ? 2 : 1}
+        />
+      )}
+
       {shouldShowLoadMoreButton && <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />}
 
-      {shouldShowPagination && (
+      {shouldShowPositionIndicator && (
         <div className="box-indicator">
           <span className="current-page">{currentIndex}</span>
           <span>/</span>
           <span>{positions.length}</span>
         </div>
-      )}
-
-      {shouldShowPagePagination && (
-        <Pagination
-          currentPage={currentPage || 1}
-          totalPage={totalPage}
-          onPageChange={movePage}
-          siblingCount={breakpoint !== DEVICE_TYPE.MOBILE ? 2 : 1}
-        />
       )}
     </CardListWrapper>
   );
