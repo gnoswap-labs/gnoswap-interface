@@ -39,6 +39,8 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     withClosed: options?.withClosed,
   });
 
+  const { totalCount: totalPositionCount = 0, positions: rawPositions = [] } = data ?? {};
+
   const { isLoading: isCommonLoading } = useLoading();
 
   const {
@@ -46,7 +48,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     isFetched: isFetchedPoolPositions,
     isLoading: isLoadingPoolPositions,
     refetch: refetchPooPositions,
-  } = useMakePoolPositions(data?.positions || [], pools, isFetchedPosition);
+  } = useMakePoolPositions(rawPositions, pools, isFetchedPosition);
 
   const availableStake = useMemo(() => {
     if (!isFetchedPoolPositions) {
@@ -85,12 +87,13 @@ export const usePositionData = (options?: UsePositionDataOption) => {
 
   useEffect(() => {
     refetchPooPositions();
-  }, [data, pools]);
+  }, [data, pools, refetchPooPositions]);
 
   return {
     availableStake,
     isError,
     positions,
+    totalPositionCount,
     refetch,
     checkStakedPool,
     getPositions,

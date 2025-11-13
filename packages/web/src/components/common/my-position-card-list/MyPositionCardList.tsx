@@ -4,11 +4,14 @@ import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { DEVICE_TYPE } from "@styles/media";
 
 import MyPositionCard from "./my-position-card/MyPositionCard";
 
 import { BlankPositionCard, CardListWrapper } from "./MyPositionCardList.styles";
 import { HorizontalScrollWrapper } from "../scroll-wrapper";
+import Pagination from "../pagination/Pagination";
 
 interface MyPositionCardListProps {
   address?: string | null;
@@ -27,6 +30,9 @@ interface MyPositionCardListProps {
   width: number;
   themeKey: "dark" | "light";
   tokenPrices: Record<string, TokenPriceModel>;
+  currentPage?: number;
+  totalPage?: number;
+  movePage?: (page: number) => void;
 }
 
 const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
@@ -46,13 +52,20 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   themeKey,
   showLoadMore,
   tokenPrices,
+  currentPage,
+  totalPage,
+  movePage,
 }) => {
+  const { width: windowWidth } = useWindowSize();
+  const breakpoint = windowWidth >= 920 ? DEVICE_TYPE.WEB : DEVICE_TYPE.MOBILE;
+
   const hasPositions = positions.length > 0;
   const shouldShowSkeleton = isLoading || (!isFetched && !hasPositions);
   const shouldShowPositions = !isLoading && hasPositions;
   const shouldShowBlankCards = isFetched && !isLoading && hasPositions && positions.length < 4;
   const shouldShowLoadMoreButton = !mobile && !isLoading && showLoadMore && !!onClickLoadMore;
   const shouldShowPagination = showPagination && isFetched && hasPositions && !isLoading;
+  const shouldShowPagePagination = totalPage && totalPage > 1 && movePage;
 
   const maxDisplayCount = useMemo(() => {
     return width <= 1180 && width >= 768 ? 3 : 4;
@@ -88,6 +101,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
             <span key={idx} className="card-skeleton" css={pulseSkeletonStyle({ w: "100%", tone: "600" })} />
           ))}
       </HorizontalScrollWrapper>
+
       {shouldShowLoadMoreButton && <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />}
 
       {shouldShowPagination && (
@@ -96,6 +110,15 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
           <span>/</span>
           <span>{positions.length}</span>
         </div>
+      )}
+
+      {shouldShowPagePagination && (
+        <Pagination
+          currentPage={currentPage || 1}
+          totalPage={totalPage}
+          onPageChange={movePage}
+          siblingCount={breakpoint !== DEVICE_TYPE.MOBILE ? 2 : 1}
+        />
       )}
     </CardListWrapper>
   );

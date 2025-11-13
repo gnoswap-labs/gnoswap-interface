@@ -36,19 +36,26 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   const { isFetchedPools, loading: isLoadingPool, pools } = usePoolData();
   const { width } = useWindowSize();
   const { openModal } = useConnectWalletModal();
-  const {
-    isError,
-    availableStake,
-    isFetchedPosition,
-    loading: isLoadingPosition,
-    positions,
-  } = usePositionData({ address });
   const [isViewMorePositions, setIsViewMorePositions] = useAtom(EarnState.isViewMorePositions);
 
   const themeKey = useAtomValue(ThemeState.themeKey);
   const [currentIndex, setCurrentIndex] = useState(1);
   const [mobile, setMobile] = useState(false);
   const [isClosed, setIsClosed] = useState(false);
+  const [page, setPage] = useState(1);
+
+  const {
+    isError,
+    availableStake,
+    isFetchedPosition,
+    loading: isLoadingPosition,
+    positions,
+    totalPositionCount,
+  } = usePositionData({
+    address,
+    page,
+    limit: 20,
+  });
 
   const [mappedData, setMappedData] = useState<PoolPositionModel[]>([]);
   const [isDataMappingLoading, setIsDataMappingLoading] = useState(true);
@@ -218,7 +225,15 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
 
   const handleChangeClosed = () => {
     setIsClosed(!isClosed);
+    setPage(1);
   };
+
+  /**
+   * Navigate to specific page
+   */
+  const movePage = useCallback((newPage: number) => {
+    setPage(newPage);
+  }, []);
 
   const visiblePositions = useMemo(() => {
     const noClosedPosition = closedPosition.length <= 0;
@@ -269,6 +284,20 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     return showedPosition.length > 4;
   }, [showedPosition]);
 
+  /**
+   * Calculate total number of pages based on server total count
+   */
+  const totalPage = useMemo(() => {
+    return Math.ceil(totalPositionCount / 20);
+  }, [totalPositionCount]);
+
+  /**
+   * Reset page to first page when filter criteria change
+   */
+  useEffect(() => {
+    setPage(1);
+  }, [isClosed]);
+
   return (
     <EarnMyPositions
       address={address}
@@ -303,6 +332,9 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       tokenPrices={tokenPrices}
       highestApr={highestApr}
       onOpenVideoGuide={onOpenVideoGuide}
+      currentPage={page}
+      totalPage={totalPage}
+      movePage={movePage}
     />
   );
 };

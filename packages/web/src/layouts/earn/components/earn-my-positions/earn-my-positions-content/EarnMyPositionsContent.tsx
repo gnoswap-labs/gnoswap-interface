@@ -1,6 +1,5 @@
 import React from "react";
 
-import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
 import { AccountModel } from "@models/account/account-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
@@ -8,6 +7,7 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 import EarnMyPositionNoLiquidity from "./earn-my-positions-no-liquidity/EarnMyPositionNoLiquidity";
 import EarnMyPositionsUnconnected from "./earn-my-positions-unconnected/EarnMyPositionsUnconnected";
 import OtherPositionNoLiquidity from "./other-positions-no-liquidity/OtherPositionNoLiquidity";
+import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
 
 export interface EarnMyPositionContentProps {
   address?: string | null;
@@ -33,6 +33,9 @@ export interface EarnMyPositionContentProps {
   account: AccountModel | null;
   tokenPrices: Record<string, TokenPriceModel>;
   highestApr: number;
+  currentPage?: number;
+  totalPage?: number;
+  movePage?: (page: number) => void;
 }
 
 const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
@@ -58,6 +61,9 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   account,
   tokenPrices,
   highestApr,
+  currentPage,
+  totalPage,
+  movePage,
 }) => {
   if (isOtherPosition && positions.length === 0 && !loading) {
     return <OtherPositionNoLiquidity account={account} />;
@@ -88,6 +94,9 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
       onClickLoadMore={onClickLoadMore}
       themeKey={themeKey}
       tokenPrices={tokenPrices}
+      currentPage={currentPage}
+      totalPage={totalPage}
+      movePage={movePage}
     />
   );
 };

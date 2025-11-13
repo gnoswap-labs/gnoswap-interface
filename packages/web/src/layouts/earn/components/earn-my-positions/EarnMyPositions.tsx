@@ -42,6 +42,9 @@ export interface EarnMyPositionsProps {
   tokenPrices: Record<string, TokenPriceModel>;
   highestApr: number;
   onOpenVideoGuide: (type: "POSITION") => void;
+  currentPage?: number;
+  totalPage?: number;
+  movePage?: (page: number) => void;
 }
 
 const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
@@ -77,6 +80,9 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
   tokenPrices,
   highestApr,
   onOpenVideoGuide,
+  currentPage,
+  totalPage,
+  movePage,
 }) => (
   <EarnMyPositionswrapper>
     <EarnMyPositionsHeader
@@ -119,6 +125,9 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
       account={account}
       tokenPrices={tokenPrices}
       highestApr={highestApr}
+      currentPage={currentPage}
+      totalPage={totalPage}
+      movePage={movePage}
     />
   </EarnMyPositionswrapper>
 );
