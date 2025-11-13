@@ -269,6 +269,10 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     }, Number(pools?.[0]?.totalApr ?? 0));
   }, [pools]);
 
+  const showLoadMore = useMemo(() => {
+    return showedPosition.length > 4;
+  }, [showedPosition]);
+
   return (
     <EarnMyPositions
       address={address}
@@ -292,7 +296,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       divRef={divRef}
       currentIndex={currentIndex}
       showPagination={showPagination}
-      showLoadMore={showedPosition.length > 4}
+      showLoadMore={showLoadMore}
       width={width}
       loadMore={!isViewMorePositions}
       onClickLoadMore={handleClickLoadMore}

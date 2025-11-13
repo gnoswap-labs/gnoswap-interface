@@ -35,6 +35,14 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
   const divRef = useRef<HTMLDivElement | null>(null);
   const { tokenPrices = {} } = useTokenData();
 
+  const [isViewMorePositions, setIsViewMorePositions] = useState(false);
+  const [mappedData, setMappedData] = useState<PoolPositionModel[]>([]);
+  const [isDataMappingLoading, setIsDataMappingLoading] = useState(true);
+
+  const handleClickLoadMore = useCallback(() => {
+    setIsViewMorePositions(!isViewMorePositions);
+  }, [isViewMorePositions]);
+
   const handleResize = () => {
     if (typeof window !== "undefined") {
       if (window.innerWidth < 920) setMobile(true);
@@ -64,22 +72,8 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
     }
   }, [positionsData, width]);
 
-  const handleScroll = () => {
-    if (divRef.current) {
-      const container = divRef.current;
-      const currentScrollX = container.scrollLeft;
-      const maxScroll = container.scrollWidth - container.clientWidth;
-
-      if (currentScrollX >= maxScroll - 1) {
-        setCurrentIndex(positions.length);
-      } else {
-        setCurrentIndex(Math.min(Math.floor(currentScrollX / 322) + 1, positions.length));
-      }
-    }
-  };
-
-  const positions = useMemo(() => {
-    const poolPositions: PoolPositionModel[] = [];
+  const poolPositions = useMemo(() => {
+    const mappedPositions: PoolPositionModel[] = [];
     positionsData.forEach(position => {
       const pool = pools.find(pool => pool.poolPath === position.poolPath);
       if (pool) {
@@ -96,43 +90,94 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
             logoURI: getGnotPath(pool.tokenB).logoURI,
           },
         };
-        poolPositions.push(PositionMapper.makePoolPosition(position, temp));
+        mappedPositions.push(PositionMapper.makePoolPosition(position, temp));
       }
     });
 
-    return PositionConverter.convertPositions(poolPositions);
-  }, [pools, positionsData]);
+    return mappedPositions;
+  }, [pools, positionsData, getGnotPath]);
 
   const openPosition = useMemo(() => {
-    return positions
+    return poolPositions
       .filter(item => !item.closed)
       .sort((x, y) => Number(y.positionUsdValue) - Number(x.positionUsdValue));
-  }, [positions]);
+  }, [poolPositions]);
 
   const closedPosition = useMemo(() => {
-    return positions.filter(item => item.closed);
-  }, [positions]);
+    return poolPositions.filter(item => item.closed);
+  }, [poolPositions]);
 
   const showedPosition = useMemo(() => {
     return [...openPosition, ...(isClosed ? closedPosition : [])];
   }, [closedPosition, isClosed, openPosition]);
 
+  const handleScroll = useCallback(() => {
+    if (divRef.current) {
+      const container = divRef.current;
+      const currentScrollX = container.scrollLeft;
+      const maxScroll = container.scrollWidth - container.clientWidth;
+
+      if (currentScrollX >= maxScroll - 1) {
+        setCurrentIndex(showedPosition.length);
+      } else {
+        setCurrentIndex(Math.min(Math.floor(currentScrollX / 322) + 1, showedPosition.length));
+      }
+    }
+  }, [showedPosition.length]);
+
+  const getMappedData = (): PoolPositionModel[] => {
+    if (isViewMorePositions) {
+      return showedPosition;
+    }
+
+    const breakpoints = [
+      { width: 1180, displayCount: 4 },
+      { width: 920, displayCount: 3 },
+    ];
+
+    for (const breakpoint of breakpoints) {
+      if (width > breakpoint.width) {
+        return showedPosition.slice(0, breakpoint.displayCount);
+      }
+    }
+
+    return showedPosition;
+  };
+
+  const updateDataMapping = useCallback(() => {
+    setIsDataMappingLoading(true);
+    const newMappedData = getMappedData();
+    const convertedMappedData = PositionConverter.convertPositions(newMappedData);
+
+    setMappedData(convertedMappedData);
+    setIsDataMappingLoading(false);
+  }, [isViewMorePositions, width, showedPosition]);
+
+  useEffect(() => {
+    updateDataMapping();
+  }, [updateDataMapping]);
+
+  const showLoadMore = useMemo(() => {
+    return showedPosition.length > 4;
+  }, [showedPosition]);
+
   return (
     <MyPositionCardList
-      positions={showedPosition}
-      loadMore={false}
+      positions={mappedData}
+      loadMore={!isViewMorePositions}
       isFetched={isFetchedPosition}
-      isLoading={loading || isLoadingPosition}
+      isLoading={loading || isLoadingPosition || isDataMappingLoading}
       movePoolDetail={movePoolDetail}
       currentIndex={currentIndex}
       mobile={mobile}
       width={width}
       showPagination={showPagination}
-      showLoadMore={true}
+      showLoadMore={showLoadMore}
       themeKey={themeKey}
       divRef={divRef}
       onScroll={handleScroll}
       tokenPrices={tokenPrices}
+      onClickLoadMore={handleClickLoadMore}
     />
   );
 };
