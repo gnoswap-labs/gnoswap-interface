@@ -14,13 +14,13 @@ const WalletMyPositionsHeader: React.FC<{ toggleClosed: () => void; isClosed: bo
   const { t } = useTranslation();
   const { isSwitchNetwork } = useWallet();
 
-  const { positions, isFetchedPosition: isFetchedPosition } = usePositionData({
+  const {
+    positions,
+    isFetchedPosition: isFetchedPosition,
+    totalPositionCount,
+  } = usePositionData({
     isClosed: false,
   });
-
-  const displayPositionsCount = React.useMemo(() => {
-    return !isClosed ? positions.filter(position => !position.closed).length : positions.length;
-  }, [positions, isClosed]);
 
   const hasClosedPositions = React.useMemo(() => {
     return positions.some(position => position.closed);
@@ -30,7 +30,7 @@ const WalletMyPositionsHeader: React.FC<{ toggleClosed: () => void; isClosed: bo
 
   return (
     <div css={wrapper}>
-      {positions.length > 0 && <h2>{`${t("Wallet:myPosi")} (${displayPositionsCount})`}</h2>}
+      {totalPositionCount > 0 && <h2>{`${t("Wallet:myPosi")} (${totalPositionCount.toLocaleString()})`}</h2>}
       {hasClosedPositions && (
         <Switch
           checked={isClosed}
