@@ -250,8 +250,8 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
    * Calculate total number of pages based on server total count
    */
   const totalPage = useMemo(() => {
-    return Math.ceil(totalPositionCount / 20);
-  }, [totalPositionCount]);
+    return Math.ceil(totalPositionCount / limit);
+  }, [totalPositionCount, limit]);
 
   const maxDisplayCount = useMemo(() => {
     const { DESKTOP_MIN, TABLET_MIN } = POSITION_CARD_BREAKPOINTS;

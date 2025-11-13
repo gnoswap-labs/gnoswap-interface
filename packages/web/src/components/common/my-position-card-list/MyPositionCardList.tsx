@@ -68,7 +68,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   const shouldShowPositionIndicator = showPositionIndicator && isFetched && hasPositions && !isLoading;
   const shouldShowPagination = Boolean(totalPage && totalPage > 1 && !loadMore);
   const targetCount = shouldShowPagination && limit ? limit : maxDisplayCount;
-  const shouldShowBlankCards = isFetched && !isLoading && hasPositions && positions.length < targetCount;
+  const shouldShowBlankCards = isFetched && !isLoading && hasPositions && positions.length < maxDisplayCount;
 
   const blankCardCount = useMemo(() => {
     if (!shouldShowBlankCards) return 0;
