@@ -46,6 +46,7 @@ export interface EarnMyPositionsProps {
   currentPage?: number;
   totalPage?: number;
   movePage: (page: number) => void;
+  limit?: number;
 }
 
 const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
@@ -85,6 +86,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
   currentPage,
   totalPage,
   movePage,
+  limit,
 }) => (
   <EarnMyPositionswrapper>
     <EarnMyPositionsHeader
@@ -131,6 +133,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
       currentPage={currentPage}
       totalPage={totalPage}
       movePage={movePage}
+      limit={limit}
     />
   </EarnMyPositionswrapper>
 );

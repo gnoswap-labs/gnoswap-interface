@@ -71,6 +71,7 @@ export const useGetPositionsByAddress = (
         totalCount: data.totalCount,
       };
     },
+    keepPreviousData: true,
     refetchInterval: REFETCH_INTERVAL,
     refetchOnMount: true,
     refetchOnReconnect: true,

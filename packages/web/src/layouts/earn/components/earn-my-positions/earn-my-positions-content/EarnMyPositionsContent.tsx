@@ -37,6 +37,7 @@ export interface EarnMyPositionContentProps {
   currentPage?: number;
   totalPage?: number;
   movePage: (page: number) => void;
+  limit?: number;
 }
 
 const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
@@ -66,6 +67,7 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   currentPage,
   totalPage,
   movePage,
+  limit,
 }) => {
   if (isOtherPosition && positions.length === 0 && !loading) {
     return <OtherPositionNoLiquidity account={account} />;
@@ -100,6 +102,7 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
       currentPage={currentPage}
       totalPage={totalPage}
       movePage={movePage}
+      limit={limit}
     />
   );
 };

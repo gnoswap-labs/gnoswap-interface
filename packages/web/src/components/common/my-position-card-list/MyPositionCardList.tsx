@@ -33,6 +33,7 @@ interface MyPositionCardListProps {
   currentPage?: number;
   totalPage?: number;
   movePage: (page: number) => void;
+  limit?: number;
 }
 
 const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
@@ -56,21 +57,23 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   currentPage,
   totalPage,
   movePage,
+  limit,
 }) => {
   const breakpoint = width >= 920 ? DEVICE_TYPE.WEB : DEVICE_TYPE.MOBILE;
 
   const hasPositions = positions.length > 0;
   const shouldShowSkeleton = isLoading || (!isFetched && !hasPositions);
   const shouldShowPositions = !isLoading && hasPositions;
-  const shouldShowBlankCards = isFetched && !isLoading && hasPositions && positions.length < 4;
   const shouldShowLoadMoreButton = !mobile && !isLoading && showLoadMore && !!onClickLoadMore;
   const shouldShowPositionIndicator = showPositionIndicator && isFetched && hasPositions && !isLoading;
   const shouldShowPagination = Boolean(totalPage && totalPage > 1 && !loadMore);
+  const targetCount = shouldShowPagination && limit ? limit : maxDisplayCount;
+  const shouldShowBlankCards = isFetched && !isLoading && hasPositions && positions.length < targetCount;
 
   const blankCardCount = useMemo(() => {
     if (!shouldShowBlankCards) return 0;
-    return maxDisplayCount - positions.length;
-  }, [shouldShowBlankCards, maxDisplayCount, positions.length]);
+    return targetCount - positions.length;
+  }, [shouldShowBlankCards, targetCount, positions.length]);
 
   return (
     <CardListWrapper $loading={isLoading}>

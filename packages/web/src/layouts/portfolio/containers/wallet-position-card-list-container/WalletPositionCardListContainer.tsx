@@ -24,6 +24,16 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
   const { connected } = useWallet();
   const [page, setPage] = useState(1);
 
+  const limit = useMemo(() => {
+    const { DESKTOP_MIN, TABLET_MIN } = POSITION_CARD_BREAKPOINTS;
+    const { DESKTOP, TABLET } = POSITION_CARD_DISPLAY_COUNT;
+
+    if (width < DESKTOP_MIN && width >= TABLET_MIN) {
+      return TABLET * 7; // 3 * 7 = 21
+    }
+    return DESKTOP * 5; // 4 * 5 = 20
+  }, [width]);
+
   const {
     isFetchedPosition,
     loading: loadingPositions,
@@ -32,7 +42,7 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
   } = usePositionData({
     isClosed: false,
     page,
-    limit: 20,
+    limit,
   });
 
   const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);

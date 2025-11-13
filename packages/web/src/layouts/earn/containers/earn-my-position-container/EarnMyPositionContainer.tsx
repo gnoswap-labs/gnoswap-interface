@@ -44,6 +44,16 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   const [isClosed, setIsClosed] = useState(false);
   const [page, setPage] = useState(1);
 
+  const limit = useMemo(() => {
+    const { DESKTOP_MIN, TABLET_MIN } = POSITION_CARD_BREAKPOINTS;
+    const { DESKTOP, TABLET } = POSITION_CARD_DISPLAY_COUNT;
+
+    if (width < DESKTOP_MIN && width >= TABLET_MIN) {
+      return TABLET * 7; // 3 * 7 = 21
+    }
+    return DESKTOP * 5; // 4 * 5 = 20
+  }, [width]);
+
   const {
     isError,
     availableStake,
@@ -54,7 +64,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   } = usePositionData({
     address,
     page,
-    limit: 20,
+    limit,
   });
 
   const [mappedData, setMappedData] = useState<PoolPositionModel[]>([]);
@@ -343,6 +353,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       currentPage={page}
       totalPage={totalPage}
       movePage={movePage}
+      limit={limit}
     />
   );
 };
