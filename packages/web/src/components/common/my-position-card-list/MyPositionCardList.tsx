@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
@@ -46,48 +46,59 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   themeKey,
   showLoadMore,
   tokenPrices,
-}) => (
-  <CardListWrapper $loading={isLoading}>
-    <HorizontalScrollWrapper ref={divRef} onScroll={onScroll} loading={isLoading}>
-      {!isLoading &&
-        positions.length > 0 &&
-        positions.map((position, idx) => (
-          <MyPositionCard
-            address={address}
-            tokenPrices={tokenPrices}
-            currentIndex={idx}
-            position={position}
-            key={idx}
-            movePoolDetail={movePoolDetail}
-            mobile={mobile}
-            themeKey={themeKey}
-          />
-        ))}
-      {isFetched &&
-        !isLoading &&
-        positions.length > 0 &&
-        positions.length < 4 &&
-        Array((width <= 1180 && width >= 768 ? 3 : 4) - positions.length)
-          .fill(1)
-          .map((_, index) => <BlankPositionCard key={index} />)}
-      {(!isFetched && positions.length === 0) || isLoading
-        ? Array.from({ length: width <= 1180 && width >= 768 ? 3 : 4 }).map((_, idx) => (
-            <span key={idx} className="card-skeleton" css={pulseSkeletonStyle({ w: "100%", tone: "600" })} />
-          ))
-        : null}
-    </HorizontalScrollWrapper>
-    {!mobile && !isLoading && showLoadMore && onClickLoadMore && (
-      <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />
-    )}
+}) => {
+  const hasPositions = positions.length > 0;
+  const shouldShowSkeleton = isLoading || (!isFetched && !hasPositions);
+  const shouldShowPositions = !isLoading && hasPositions;
+  const shouldShowBlankCards = isFetched && !isLoading && hasPositions && positions.length < 4;
+  const shouldShowLoadMoreButton = !mobile && !isLoading && showLoadMore && !!onClickLoadMore;
+  const shouldShowPagination = showPagination && isFetched && hasPositions && !isLoading;
 
-    {showPagination && isFetched && positions.length !== 0 && !isLoading && (
-      <div className="box-indicator">
-        <span className="current-page">{currentIndex}</span>
-        <span>/</span>
-        <span>{positions.length}</span>
-      </div>
-    )}
-  </CardListWrapper>
-);
+  const maxDisplayCount = useMemo(() => {
+    return width <= 1180 && width >= 768 ? 3 : 4;
+  }, [width]);
+
+  const blankCardCount = useMemo(() => {
+    if (!shouldShowBlankCards) return 0;
+    return maxDisplayCount - positions.length;
+  }, [shouldShowBlankCards, maxDisplayCount, positions.length]);
+
+  return (
+    <CardListWrapper $loading={isLoading}>
+      <HorizontalScrollWrapper ref={divRef} onScroll={onScroll} loading={isLoading}>
+        {shouldShowPositions &&
+          positions.map((position, idx) => (
+            <MyPositionCard
+              address={address}
+              tokenPrices={tokenPrices}
+              currentIndex={idx}
+              position={position}
+              key={idx}
+              movePoolDetail={movePoolDetail}
+              mobile={mobile}
+              themeKey={themeKey}
+            />
+          ))}
+        {shouldShowBlankCards &&
+          Array(blankCardCount)
+            .fill(1)
+            .map((_, index) => <BlankPositionCard key={index} />)}
+        {shouldShowSkeleton &&
+          Array.from({ length: maxDisplayCount }).map((_, idx) => (
+            <span key={idx} className="card-skeleton" css={pulseSkeletonStyle({ w: "100%", tone: "600" })} />
+          ))}
+      </HorizontalScrollWrapper>
+      {shouldShowLoadMoreButton && <LoadMoreButton show={loadMore} onClick={onClickLoadMore} />}
+
+      {shouldShowPagination && (
+        <div className="box-indicator">
+          <span className="current-page">{currentIndex}</span>
+          <span>/</span>
+          <span>{positions.length}</span>
+        </div>
+      )}
+    </CardListWrapper>
+  );
+};
 
 export default MyPositionCardList;

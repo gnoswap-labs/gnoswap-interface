@@ -13,6 +13,7 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetUsernameByAddress } from "@query/address";
 import { EarnState, ThemeState } from "@states/index";
 import { PoolPositionModel } from "@models/position/pool-position-model";
+import { positionCardListBreakPoints } from "@common/values";
 
 import EarnMyPositions from "../../components/earn-my-positions/EarnMyPositions";
 import { PositionConverter } from "@services/converters/position";
@@ -233,12 +234,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       return showedPosition;
     }
 
-    const breakpoints = [
-      { width: 1180, displayCount: 4 },
-      { width: 920, displayCount: 3 },
-    ];
-
-    for (const breakpoint of breakpoints) {
+    for (const breakpoint of positionCardListBreakPoints) {
       if (width > breakpoint.width) {
         return showedPosition.slice(0, breakpoint.displayCount);
       }
@@ -269,6 +265,10 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     }, Number(pools?.[0]?.totalApr ?? 0));
   }, [pools]);
 
+  const showLoadMore = useMemo(() => {
+    return showedPosition.length > 4;
+  }, [showedPosition]);
+
   return (
     <EarnMyPositions
       address={address}
@@ -292,7 +292,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       divRef={divRef}
       currentIndex={currentIndex}
       showPagination={showPagination}
-      showLoadMore={showedPosition.length > 4}
+      showLoadMore={showLoadMore}
       width={width}
       loadMore={!isViewMorePositions}
       onClickLoadMore={handleClickLoadMore}
