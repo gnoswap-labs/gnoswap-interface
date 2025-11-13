@@ -10,6 +10,9 @@ export interface UsePositionDataOption {
   address?: string;
   isClosed?: boolean;
   poolPath?: string | null;
+  page?: number;
+  limit?: number;
+  withClosed?: boolean;
   queryOption?: UseQueryOptions<PositionModel[], Error, PositionModel[], QueryKey>;
 }
 
@@ -27,11 +30,18 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     isError,
     isFetched: isFetchedPosition,
     isLoading: isLoadingPosition,
+    isFetching: isFetchingPosition,
+    isPreviousData,
   } = useGetPositionsByAddress({
     address: fetchedAddress as string,
     isClosed: options?.isClosed,
     poolPath: options?.poolPath,
+    page: options?.page,
+    limit: options?.limit,
+    withClosed: options?.withClosed,
   });
+
+  const { totalCount: totalPositionCount = 0, positions: rawPositions = [] } = data ?? {};
 
   const { isLoading: isCommonLoading } = useLoading();
 
@@ -40,7 +50,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     isFetched: isFetchedPoolPositions,
     isLoading: isLoadingPoolPositions,
     refetch: refetchPooPositions,
-  } = useMakePoolPositions(data, pools, isFetchedPosition);
+  } = useMakePoolPositions(rawPositions, pools, isFetchedPosition);
 
   const availableStake = useMemo(() => {
     if (!isFetchedPoolPositions) {
@@ -79,17 +89,19 @@ export const usePositionData = (options?: UsePositionDataOption) => {
 
   useEffect(() => {
     refetchPooPositions();
-  }, [data, pools]);
+  }, [data, pools, refetchPooPositions]);
 
   return {
     availableStake,
     isError,
     positions,
+    totalPositionCount,
     refetch,
     checkStakedPool,
     getPositions,
     isFetchedPosition: isFetchedPosition && isFetchedPoolPositions,
     loading,
     isLoadingPool,
+    isPageChanging: isFetchingPosition && isPreviousData,
   };
 };

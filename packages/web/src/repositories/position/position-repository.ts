@@ -12,6 +12,7 @@ import { UnstakePositionsRequest } from "./request/unstake-positions-request";
 import {
   DecreaseLiquidityFailedResponse,
   DecreaseLiquiditySuccessResponse,
+  GetPositionsByAddressResult,
   IncreaseLiquidityFailedResponse,
   IncreaseLiquiditySuccessResponse,
   RepositionLiquidityFailedResponse,
@@ -21,8 +22,14 @@ import {
 export interface PositionRepository {
   getPositionsByAddress: (
     address: string,
-    options?: { isClosed?: boolean; poolPath?: string },
-  ) => Promise<PositionModel[]>;
+    options?: {
+      isClosed?: boolean;
+      poolPath?: string;
+      page?: number;
+      limit?: number;
+      withClosed?: boolean;
+    },
+  ) => Promise<GetPositionsByAddressResult>;
 
   getPositionBins: (lpTokenId: string, count: 20 | 40) => Promise<PositionBinModel[]>;
 

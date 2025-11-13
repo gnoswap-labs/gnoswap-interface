@@ -1,6 +1,5 @@
 import React from "react";
 
-import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
 import { AccountModel } from "@models/account/account-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
@@ -8,6 +7,7 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 import EarnMyPositionNoLiquidity from "./earn-my-positions-no-liquidity/EarnMyPositionNoLiquidity";
 import EarnMyPositionsUnconnected from "./earn-my-positions-unconnected/EarnMyPositionsUnconnected";
 import OtherPositionNoLiquidity from "./other-positions-no-liquidity/OtherPositionNoLiquidity";
+import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
 
 export interface EarnMyPositionContentProps {
   address?: string | null;
@@ -24,7 +24,8 @@ export interface EarnMyPositionContentProps {
   divRef: React.RefObject<HTMLDivElement>;
   onScroll: () => void;
   currentIndex: number;
-  showPagination: boolean;
+  maxDisplayCount: number;
+  showPositionIndicator: boolean;
   showLoadMore: boolean;
   width: number;
   loadMore: boolean;
@@ -33,6 +34,10 @@ export interface EarnMyPositionContentProps {
   account: AccountModel | null;
   tokenPrices: Record<string, TokenPriceModel>;
   highestApr: number;
+  currentPage?: number;
+  totalPage?: number;
+  movePage: (page: number) => void;
+  limit?: number;
 }
 
 const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
@@ -49,7 +54,8 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   divRef,
   onScroll,
   currentIndex,
-  showPagination,
+  maxDisplayCount,
+  showPositionIndicator,
   showLoadMore,
   width,
   loadMore,
@@ -58,6 +64,10 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   account,
   tokenPrices,
   highestApr,
+  currentPage,
+  totalPage,
+  movePage,
+  limit,
 }) => {
   if (isOtherPosition && positions.length === 0 && !loading) {
     return <OtherPositionNoLiquidity account={account} />;
@@ -77,17 +87,22 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
       isFetched={fetched}
       isLoading={loading}
       currentIndex={currentIndex}
+      maxDisplayCount={maxDisplayCount}
       movePoolDetail={movePoolDetail}
       mobile={mobile}
       divRef={divRef}
       onScroll={onScroll}
-      showPagination={showPagination}
+      showPositionIndicator={showPositionIndicator}
       showLoadMore={showLoadMore}
       width={width}
       loadMore={loadMore}
       onClickLoadMore={onClickLoadMore}
       themeKey={themeKey}
       tokenPrices={tokenPrices}
+      currentPage={currentPage}
+      totalPage={totalPage}
+      movePage={movePage}
+      limit={limit}
     />
   );
 };

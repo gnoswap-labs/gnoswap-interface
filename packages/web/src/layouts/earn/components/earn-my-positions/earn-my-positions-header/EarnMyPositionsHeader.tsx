@@ -73,13 +73,13 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
             </span>
             <span>{`${t("Earn:positions.title", {
               context: "other",
-            })} (${positionLength})`}</span>
+            })} (${positionLength.toLocaleString()})`}</span>
           </>
         );
       }
 
       if (connected) {
-        return <span>{`${t("Earn:positions.title")} (${positionLength})`}</span>;
+        return <span>{`${t("Earn:positions.title")} (${positionLength.toLocaleString()})`}</span>;
       }
 
       return <span>{t("Earn:positions.title")}</span>;

@@ -13,7 +13,7 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetUsernameByAddress } from "@query/address";
 import { EarnState, ThemeState } from "@states/index";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { positionCardListBreakPoints } from "@common/values";
+import { POSITION_CARD_BREAKPOINTS, POSITION_CARD_DISPLAY_COUNT, POSITION_CARD_LIST_BREAKPOINTS } from "@common/values";
 
 import EarnMyPositions from "../../components/earn-my-positions/EarnMyPositions";
 import { PositionConverter } from "@services/converters/position";
@@ -36,19 +36,36 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   const { isFetchedPools, loading: isLoadingPool, pools } = usePoolData();
   const { width } = useWindowSize();
   const { openModal } = useConnectWalletModal();
-  const {
-    isError,
-    availableStake,
-    isFetchedPosition,
-    loading: isLoadingPosition,
-    positions,
-  } = usePositionData({ address });
   const [isViewMorePositions, setIsViewMorePositions] = useAtom(EarnState.isViewMorePositions);
 
   const themeKey = useAtomValue(ThemeState.themeKey);
   const [currentIndex, setCurrentIndex] = useState(1);
   const [mobile, setMobile] = useState(false);
   const [isClosed, setIsClosed] = useState(false);
+  const [page, setPage] = useState(1);
+
+  const limit = useMemo(() => {
+    const { DESKTOP_MIN, TABLET_MIN } = POSITION_CARD_BREAKPOINTS;
+    const { DESKTOP, TABLET } = POSITION_CARD_DISPLAY_COUNT;
+
+    if (width < DESKTOP_MIN && width >= TABLET_MIN) {
+      return TABLET * 7; // 3 * 7 = 21
+    }
+    return DESKTOP * 5; // 4 * 5 = 20
+  }, [width]);
+
+  const {
+    isError,
+    availableStake,
+    isFetchedPosition,
+    loading: isLoadingPosition,
+    positions,
+    totalPositionCount,
+  } = usePositionData({
+    address,
+    page,
+    limit,
+  });
 
   const [mappedData, setMappedData] = useState<PoolPositionModel[]>([]);
   const [isDataMappingLoading, setIsDataMappingLoading] = useState(true);
@@ -204,7 +221,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     }
   }, [showedPosition.length]);
 
-  const showPagination = useMemo(() => {
+  const showPositionIndicator = useMemo(() => {
     if (width >= 920) {
       return false;
     } else {
@@ -218,7 +235,15 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
 
   const handleChangeClosed = () => {
     setIsClosed(!isClosed);
+    setPage(1);
   };
+
+  /**
+   * Navigate to specific page
+   */
+  const movePage = useCallback((newPage: number) => {
+    setPage(newPage);
+  }, []);
 
   const visiblePositions = useMemo(() => {
     const noClosedPosition = closedPosition.length <= 0;
@@ -234,7 +259,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       return showedPosition;
     }
 
-    for (const breakpoint of positionCardListBreakPoints) {
+    for (const breakpoint of POSITION_CARD_LIST_BREAKPOINTS) {
       if (width > breakpoint.width) {
         return showedPosition.slice(0, breakpoint.displayCount);
       }
@@ -265,9 +290,30 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     }, Number(pools?.[0]?.totalApr ?? 0));
   }, [pools]);
 
+  /**
+   * Calculate total number of pages based on server total count
+   */
+  const totalPage = useMemo(() => {
+    return Math.ceil(totalPositionCount / limit);
+  }, [totalPositionCount, limit]);
+
+  const maxDisplayCount = useMemo(() => {
+    const { DESKTOP_MIN, TABLET_MIN } = POSITION_CARD_BREAKPOINTS;
+    const { DESKTOP, TABLET } = POSITION_CARD_DISPLAY_COUNT;
+
+    return width < DESKTOP_MIN && width >= TABLET_MIN ? TABLET : DESKTOP;
+  }, [width]);
+
   const showLoadMore = useMemo(() => {
-    return showedPosition.length > 4;
-  }, [showedPosition]);
+    return showedPosition.length > maxDisplayCount;
+  }, [showedPosition, maxDisplayCount]);
+
+  /**
+   * Reset page to first page when filter criteria change
+   */
+  useEffect(() => {
+    setPage(1);
+  }, [isClosed]);
 
   return (
     <EarnMyPositions
@@ -275,7 +321,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       addressName={addressName}
       isOtherPosition={!!isOtherPosition}
       visiblePositions={visiblePositions}
-      positionLength={showedPosition.length}
+      positionLength={totalPositionCount}
       connected={connected}
       availableStake={availableStake}
       connect={connect}
@@ -291,7 +337,8 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       onScroll={handleScroll}
       divRef={divRef}
       currentIndex={currentIndex}
-      showPagination={showPagination}
+      maxDisplayCount={maxDisplayCount}
+      showPositionIndicator={showPositionIndicator}
       showLoadMore={showLoadMore}
       width={width}
       loadMore={!isViewMorePositions}
@@ -303,6 +350,10 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       tokenPrices={tokenPrices}
       highestApr={highestApr}
       onOpenVideoGuide={onOpenVideoGuide}
+      currentPage={page}
+      totalPage={totalPage}
+      movePage={movePage}
+      limit={limit}
     />
   );
 };
