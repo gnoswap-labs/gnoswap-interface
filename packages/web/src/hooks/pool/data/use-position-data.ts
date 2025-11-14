@@ -30,8 +30,6 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     isError,
     isFetched: isFetchedPosition,
     isLoading: isLoadingPosition,
-    isFetching: isFetchingPosition,
-    isPreviousData,
   } = useGetPositionsByAddress({
     address: fetchedAddress as string,
     isClosed: options?.isClosed,
@@ -102,6 +100,5 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     isFetchedPosition: isFetchedPosition && isFetchedPoolPositions,
     loading,
     isLoadingPool,
-    isPageChanging: isFetchingPosition && isPreviousData,
   };
 };

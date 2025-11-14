@@ -38,7 +38,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
   const { width } = useWindowSize();
-  const { loading: isLoadingPosition, checkStakedPool } = usePositionData();
+  const { checkStakedPool } = usePositionData();
 
   const incentivizePoolList: IncentivizePoolCardInfoWithPriceGrade[] = React.useMemo(() => {
     return incentivizePools.map(pool => {
@@ -191,7 +191,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
       onScroll={handleScroll}
       showPagination={showPagination}
       width={width}
-      isLoading={isLoadingIncentivizedPool || isLoadingPosition}
+      isLoading={isLoadingIncentivizedPool}
       checkStakedPool={checkStakedPool}
     />
   );

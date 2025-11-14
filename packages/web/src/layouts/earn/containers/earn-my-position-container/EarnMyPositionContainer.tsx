@@ -136,7 +136,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
 
   const showedPosition = useMemo(() => {
     return [...openPosition, ...(isClosed ? closedPosition : [])];
-  }, [closedPosition, isClosed, openPosition]);
+  }, [closedPosition, isClosed, openPosition, limit]);
 
   const handleScroll = useCallback(() => {
     if (divRef.current) {
@@ -275,7 +275,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
 
     setMappedData(convertedMappedData);
     setIsDataMappingLoading(false);
-  }, [isViewMorePositions, width, showedPosition]);
+  }, [isViewMorePositions, width, showedPosition, limit]);
 
   useEffect(() => {
     updateDataMapping();
@@ -315,6 +315,10 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     setPage(1);
   }, [isClosed]);
 
+  const loadingPositionCardList = useMemo(() => {
+    return isLoadingPool || isLoadingPosition || isDataMappingLoading;
+  }, [isLoadingPool, isLoadingPosition, isDataMappingLoading]);
+
   return (
     <EarnMyPositions
       address={address}
@@ -326,6 +330,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       availableStake={availableStake}
       connect={connect}
       loading={isLoadingPool || (connected ? isLoadingPosition || !isFetchedPosition : false) || isDataMappingLoading}
+      loadingPositionCardList={loadingPositionCardList}
       fetched={isFetchedPools && isFetchedPosition}
       isError={isError}
       positions={mappedData}

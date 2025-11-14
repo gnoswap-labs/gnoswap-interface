@@ -15,6 +15,7 @@ export interface EarnMyPositionContentProps {
   connected: boolean;
   fetched: boolean;
   loading: boolean;
+  loadingPositionCardList: boolean;
   isError: boolean;
   positions: PoolPositionModel[];
   connect: () => void;
@@ -46,6 +47,7 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   connected,
   fetched,
   loading,
+  loadingPositionCardList,
   positions,
   connect,
   movePoolDetail,
@@ -85,7 +87,7 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
       address={address}
       positions={positions}
       isFetched={fetched}
-      isLoading={loading}
+      isLoading={loadingPositionCardList}
       currentIndex={currentIndex}
       maxDisplayCount={maxDisplayCount}
       movePoolDetail={movePoolDetail}

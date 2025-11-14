@@ -66,7 +66,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   const shouldShowPositions = !isLoading && hasPositions;
   const shouldShowLoadMoreButton = !mobile && !isLoading && showLoadMore && !!onClickLoadMore;
   const shouldShowPositionIndicator = showPositionIndicator && isFetched && hasPositions && !isLoading;
-  const shouldShowPagination = Boolean(totalPage && totalPage > 1 && !loadMore);
+  const shouldShowPagination = Boolean(totalPage && totalPage > 1 && (mobile || !loadMore));
   const targetCount = shouldShowPagination && limit ? limit : maxDisplayCount;
   const shouldShowBlankCards = isFetched && !isLoading && hasPositions && positions.length < maxDisplayCount;
 

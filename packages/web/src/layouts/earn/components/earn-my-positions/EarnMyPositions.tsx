@@ -18,6 +18,7 @@ export interface EarnMyPositionsProps {
   connected: boolean;
   fetched: boolean;
   loading: boolean;
+  loadingPositionCardList: boolean;
   isError: boolean;
   positions: PoolPositionModel[];
   isSwitchNetwork: boolean;
@@ -60,6 +61,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
   connect,
   fetched,
   loading,
+  loadingPositionCardList,
   isError,
   positions,
   moveEarnAdd,
@@ -112,6 +114,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
       connect={connect}
       fetched={fetched}
       loading={loading}
+      loadingPositionCardList={loadingPositionCardList}
       isError={isError}
       positions={positions}
       movePoolDetail={movePoolDetail}

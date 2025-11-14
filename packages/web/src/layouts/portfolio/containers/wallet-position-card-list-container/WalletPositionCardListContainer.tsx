@@ -127,7 +127,7 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
 
   const showedPosition = useMemo(() => {
     return [...openPosition, ...(isClosed ? closedPosition : [])];
-  }, [closedPosition, isClosed, openPosition]);
+  }, [closedPosition, isClosed, openPosition, limit]);
 
   const handleScroll = useCallback(() => {
     if (divRef.current) {
@@ -233,7 +233,7 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
 
     setMappedData(convertedMappedData);
     setIsDataMappingLoading(false);
-  }, [isViewMorePositions, width, showedPosition]);
+  }, [isViewMorePositions, width, showedPosition, limit]);
 
   useEffect(() => {
     updateDataMapping();

@@ -4,12 +4,9 @@ import { useInitLoading } from "@query/common";
 import { useGetDashboardVolume } from "@query/dashboard";
 import { useGetPoolList } from "@query/pools";
 import { useGetChainInfo } from "@query/token";
-import { useGetPositionsByAddress } from "@query/positions";
-import { useAddress } from "@hooks/common/use-address";
 import { useGetLaunchpadActiveProjects } from "@query/launchpad/use-get-launchpad-active-projects";
 
 export const useLoading = () => {
-  const { address } = useAddress();
   const { data: initialized } = useInitLoading();
   const { isFetched: isFetchedChainData } = useGetChainInfo();
   const { isFetched: isFetchedTokenData, isFetchedTokenPrices } = useTokenData();
@@ -18,15 +15,6 @@ export const useLoading = () => {
   const { isFetched: isFetchedDashboardVolume } = useGetDashboardVolume({
     enabled: false,
   });
-
-  const { isFetched: isFetchedPosition } = useGetPositionsByAddress(
-    {
-      address: address || "",
-    },
-    {
-      enabled: false,
-    },
-  );
 
   const { isFetched: isFetchedLaunchpadProjectList } = useGetLaunchpadActiveProjects({ enabled: false });
 
@@ -80,16 +68,6 @@ export const useLoading = () => {
     return !isFetchedDashboardVolume;
   }, [initialized, isFetchedDashboardVolume]);
 
-  const isLoadingPositions = useMemo(() => {
-    if (!initialized) {
-      return true;
-    }
-    if (!address) {
-      return false;
-    }
-    return !isFetchedPosition;
-  }, [address, initialized, isFetchedPosition]);
-
   const isLoadingLaunchpadProjectList = useMemo(() => {
     if (!initialized) {
       return true;
@@ -105,7 +83,6 @@ export const useLoading = () => {
     isLoadingHighestAPRPools,
     isLoadingChainData,
     isLoadingDashboardStats,
-    isLoadingPositions,
     isLoadingLaunchpadProjectList,
   };
 };
