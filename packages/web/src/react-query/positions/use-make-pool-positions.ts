@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 
 import { GNOT_TOKEN } from "@common/values/token-constant";
@@ -15,8 +16,17 @@ export const useMakePoolPositions = (
   isFetchedPosition: boolean,
   options?: UseQueryOptions<PoolPositionModel[], Error>,
 ) => {
+  const positionIds = useMemo(() => {
+    return (
+      positions
+        ?.map(position => position.id)
+        .sort()
+        .join(",") || ""
+    );
+  }, [positions]);
+
   const query = useQuery<PoolPositionModel[], Error>({
-    queryKey: [QUERY_KEY.poolPositions],
+    queryKey: [QUERY_KEY.poolPositions, positionIds],
     queryFn: async () => {
       return new Promise(resolve => {
         const poolPositions: PoolPositionModel[] = [];
