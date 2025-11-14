@@ -13,6 +13,7 @@ export interface UsePositionDataOption {
   page?: number;
   limit?: number;
   withClosed?: boolean;
+  scopeId?: string;
   queryOption?: UseQueryOptions<PositionModel[], Error, PositionModel[], QueryKey>;
 }
 
@@ -48,7 +49,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     isFetched: isFetchedPoolPositions,
     isLoading: isLoadingPoolPositions,
     refetch: refetchPooPositions,
-  } = useMakePoolPositions(rawPositions, pools, isFetchedPosition);
+  } = useMakePoolPositions(rawPositions, pools, isFetchedPosition, options?.scopeId || "");
 
   const availableStake = useMemo(() => {
     if (!isFetchedPoolPositions) {

@@ -20,6 +20,7 @@ const WalletMyPositionsHeader: React.FC<{ toggleClosed: () => void; isClosed: bo
     totalPositionCount,
   } = usePositionData({
     isClosed: false,
+    scopeId: "WalletMyPositionsHeader",
   });
 
   const hasClosedPositions = React.useMemo(() => {
