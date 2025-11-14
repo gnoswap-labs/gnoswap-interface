@@ -16,14 +16,15 @@ export const useMakePoolPositions = (
   isFetchedPosition: boolean,
   options?: UseQueryOptions<PoolPositionModel[], Error>,
 ) => {
-  const positionIds = useMemo(() => {
-    return (
-      positions
-        ?.map(position => position.id)
-        .sort()
-        .join(",") || ""
-    );
+  const positionIdArray = useMemo(() => {
+    if (!positions || positions.length === 0) return [];
+    return positions.map(position => position.id);
   }, [positions]);
+
+  const positionIds = useMemo(() => {
+    if (positionIdArray.length === 0) return "";
+    return [...positionIdArray].sort((a, b) => a - b).join(",");
+  }, [positionIdArray]);
 
   const query = useQuery<PoolPositionModel[], Error>({
     queryKey: [QUERY_KEY.poolPositions, positionIds],

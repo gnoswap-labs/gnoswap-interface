@@ -315,6 +315,10 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     setPage(1);
   }, [isClosed]);
 
+  const loadingPositionCardList = useMemo(() => {
+    return isLoadingPool || isLoadingPosition || isDataMappingLoading;
+  }, [isLoadingPool, isLoadingPosition, isDataMappingLoading]);
+
   return (
     <EarnMyPositions
       address={address}
@@ -326,7 +330,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       availableStake={availableStake}
       connect={connect}
       loading={isLoadingPool || (connected ? isLoadingPosition || !isFetchedPosition : false) || isDataMappingLoading}
-      loadingPositionCardList={isLoadingPool || isLoadingPosition || isDataMappingLoading}
+      loadingPositionCardList={loadingPositionCardList}
       fetched={isFetchedPools && isFetchedPosition}
       isError={isError}
       positions={mappedData}
