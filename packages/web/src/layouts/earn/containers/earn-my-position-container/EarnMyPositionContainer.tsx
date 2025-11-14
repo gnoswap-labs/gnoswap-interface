@@ -65,6 +65,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     address,
     page,
     limit,
+    scopeId: "EarnMyPositionContainer",
   });
 
   const [mappedData, setMappedData] = useState<PoolPositionModel[]>([]);

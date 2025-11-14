@@ -52,7 +52,7 @@ const IncentivizePoolModalContainer: React.FC<IncentivizePoolModalContainerProps
 
   // refetch functions
   const { updateBalances } = useTokenData();
-  const { refetch: refetchPositions } = usePositionData({ address });
+  const { refetch: refetchPositions } = usePositionData({ address, scopeId: "IncentivizePoolModalContainer" });
 
   const { refetch: refetchPools } = useGetPoolList();
   const { refetch: refetchIncentivizePools } = useGetIncentivizePoolList();
