@@ -9,6 +9,8 @@ export class PoolRPCMapper {
     const sqrtPriceX96 = BigInt(responseData.sqrtPriceX96);
     const price = rawBySqrtX96(sqrtPriceX96);
 
+    this.validatePositions(data.positions);
+
     return {
       poolPath: responseData.poolPath,
       tokenAPath: responseData.token0Path,
@@ -33,7 +35,7 @@ export class PoolRPCMapper {
         acc[key] = value.toString();
         return acc;
       }, {}),
-      positions: responseData.positions.map(position => ({
+      positions: (responseData.positions || []).map(position => ({
         owner: position.owner,
         tickLower: position.tickLower,
         tickUpper: position.tickUpper,
@@ -49,6 +51,8 @@ export class PoolRPCMapper {
     const sqrtPriceX96 = BigInt(responseData.sqrtPriceX96);
     const price = rawBySqrtX96(sqrtPriceX96);
     const tickSpacing = responseData.tickSpacing;
+
+    this.validatePositions(data.positions);
 
     return {
       poolPath: responseData.poolPath,
@@ -74,7 +78,7 @@ export class PoolRPCMapper {
         acc[key] = value.toString();
         return acc;
       }, {}),
-      positions: data.positions.map(position => {
+      positions: (data.positions || []).map(position => {
         const tickLower = position.tickLower;
         const tickUpper = position.tickUpper;
         const tickCount = 1 + (tickUpper - tickLower) / tickSpacing;
@@ -95,9 +99,11 @@ export class PoolRPCMapper {
   public static toDetail(data: PoolRPCModel): PoolDetailRPCModel {
     const tickSpacing = data.tickSpacing;
 
+    this.validatePositions(data.positions);
+
     return {
       ...data,
-      positions: data.positions.map(position => {
+      positions: (data.positions || []).map(position => {
         const tickLower = position.tickLower;
         const tickUpper = position.tickUpper;
         const tickCount = 1 + (tickUpper - tickLower) / tickSpacing;
@@ -116,5 +122,13 @@ export class PoolRPCMapper {
     }
 
     return response.map(PoolRPCMapper.from);
+  }
+
+  private static validatePositions(positions: unknown): void {
+    if (positions === undefined || positions === null) {
+      console.warn("[PoolRPCMapper] positions field is missing in API response");
+    } else if (!Array.isArray(positions)) {
+      console.error("[PoolRPCMapper] positions field has invalid type:", typeof positions);
+    }
   }
 }
