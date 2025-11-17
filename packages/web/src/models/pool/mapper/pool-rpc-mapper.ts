@@ -33,7 +33,7 @@ export class PoolRPCMapper {
         acc[key] = value.toString();
         return acc;
       }, {}),
-      positions: responseData.positions.map(position => ({
+      positions: (responseData.positions || []).map(position => ({
         owner: position.owner,
         tickLower: position.tickLower,
         tickUpper: position.tickUpper,
@@ -74,7 +74,7 @@ export class PoolRPCMapper {
         acc[key] = value.toString();
         return acc;
       }, {}),
-      positions: data.positions.map(position => {
+      positions: (data.positions || []).map(position => {
         const tickLower = position.tickLower;
         const tickUpper = position.tickUpper;
         const tickCount = 1 + (tickUpper - tickLower) / tickSpacing;
@@ -97,7 +97,7 @@ export class PoolRPCMapper {
 
     return {
       ...data,
-      positions: data.positions.map(position => {
+      positions: (data.positions || []).map(position => {
         const tickLower = position.tickLower;
         const tickUpper = position.tickUpper;
         const tickCount = 1 + (tickUpper - tickLower) / tickSpacing;
