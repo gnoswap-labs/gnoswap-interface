@@ -103,7 +103,7 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({ data, idx
         <div className={cx("value", { ended: data.status === "ENDED" })}>
           <MissingLogo
             symbol={rewardInfo.rewardTokenSymbol}
-            url={rewardInfo.rewardTokenLogoUrl}
+            url={rewardInfo.rewardTokenLogoURL}
             width={24}
             mobileWidth={24}
           />

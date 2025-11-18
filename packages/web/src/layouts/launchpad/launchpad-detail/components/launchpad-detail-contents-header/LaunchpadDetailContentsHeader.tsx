@@ -38,7 +38,7 @@ const LaunchpadDetailContentsHeader: React.FC<LaunchpadDetailContentsHeaderProps
             <div className="symbol-icon">
               <MissingLogo
                 symbol={rewardInfo.rewardTokenSymbol}
-                url={rewardInfo.rewardTokenLogoUrl}
+                url={rewardInfo.rewardTokenLogoURL}
                 width={36}
                 mobileWidth={24}
               />

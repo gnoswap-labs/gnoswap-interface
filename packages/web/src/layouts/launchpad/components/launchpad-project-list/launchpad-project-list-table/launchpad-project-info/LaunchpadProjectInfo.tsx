@@ -34,7 +34,7 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
   moveProjectDetail,
   moveRewardTokenSwapPage,
 }) => {
-  const { status, name, pools, projectID, rewardTokenLogoUrl, rewardTokenSymbol, rewardTokenPath } = project;
+  const { status, name, pools, projectID, rewardTokenLogoURL, rewardTokenSymbol, rewardTokenPath } = project;
 
   const { prefetch } = usePrefetchNavigation({
     pageType: "PROJECT",
@@ -107,7 +107,7 @@ const LaunchpadProjectInfo: React.FC<LaunchpadProjectInfoProps> = ({
         onClick={handleClick}
         onMouseEnter={handleMouseEnter}
       >
-        <MissingLogo symbol={rewardTokenSymbol} url={rewardTokenLogoUrl || undefined} width={24} mobileWidth={24} />
+        <MissingLogo symbol={rewardTokenSymbol} url={rewardTokenLogoURL || undefined} width={24} mobileWidth={24} />
         <span className="ellipsis">{name}</span>
         <span className="reward-token-symbol">{rewardTokenSymbol}</span>
       </TableColumn>

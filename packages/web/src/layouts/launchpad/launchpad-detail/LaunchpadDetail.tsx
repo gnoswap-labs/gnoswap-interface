@@ -55,7 +55,7 @@ export interface ProjectRewardInfoModel {
   rewardTokenPath: string;
   rewardTokenDecimals: number;
   rewardTokenSymbol: string;
-  rewardTokenLogoUrl: string;
+  rewardTokenLogoURL: string;
 }
 
 const LaunchpadDetail: React.FC = () => {
@@ -185,7 +185,7 @@ const LaunchpadDetail: React.FC = () => {
       rewardTokenPath: "",
       rewardTokenDecimals: 0,
       rewardTokenSymbol: "",
-      rewardTokenLogoUrl: "",
+      rewardTokenLogoURL: "",
     };
 
     if (!projectDetailData) return initProjectRewardInfo;
@@ -194,7 +194,7 @@ const LaunchpadDetail: React.FC = () => {
       rewardTokenPath: projectDetailData.rewardTokenPath ?? initProjectRewardInfo.rewardTokenPath,
       rewardTokenDecimals: projectDetailData.rewardTokenDecimals ?? initProjectRewardInfo.rewardTokenDecimals,
       rewardTokenSymbol: projectDetailData.rewardTokenSymbol ?? initProjectRewardInfo.rewardTokenSymbol,
-      rewardTokenLogoUrl: projectDetailData.rewardTokenLogoUrl ?? initProjectRewardInfo.rewardTokenLogoUrl,
+      rewardTokenLogoURL: projectDetailData.rewardTokenLogoURL ?? initProjectRewardInfo.rewardTokenLogoURL,
     };
   }, [projectDetailData]);
 

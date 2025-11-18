@@ -19,7 +19,7 @@ export const nullLaunchpadProjectInfo: LaunchpadProjectModel = {
   rewardTokenPath: "",
   rewardTokenSymbol: "",
   rewardTokenDecimals: 0,
-  rewardTokenLogoUrl: null,
+  rewardTokenLogoURL: null,
   description: null,
   pools: [],
 };

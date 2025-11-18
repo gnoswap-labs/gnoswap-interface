@@ -11,7 +11,7 @@
         "rewardTokenPath": "gno.land/r/onbloc/usdc",
         "rewardTokenSymbol": "USDC",
         "rewardTokenDecimals": 6,
-        "rewardTokenLogoUrl": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_onbloc_usdc.svg",
+        "rewardTokenLogoURL": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_onbloc_usdc.svg",
         "description": "The first Dex on Gnoland with Concentrated Liquidity.",
         "pools": [
           {
@@ -78,7 +78,7 @@
         "rewardTokenPath": "gno.land/r/onbloc/usdc",
         "rewardTokenSymbol": "USDC",
         "rewardTokenDecimals": 6,
-        "rewardTokenLogoUrl": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_onbloc_usdc.svg",
+        "rewardTokenLogoURL": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_onbloc_usdc.svg",
         "description": "The first Dex on Gnoland with Concentrated Liquidity.",
         "pools": [
           {
@@ -145,7 +145,7 @@
         "rewardTokenPath": "gno.land/r/gnoswap/v2/gns",
         "rewardTokenSymbol": "GNS",
         "rewardTokenDecimals": 6,
-        "rewardTokenLogoUrl": null,
+        "rewardTokenLogoURL": null,
         "description": "The first Dex on Gnoland with Concentrated Liquidity.",
         "pools": [
           {

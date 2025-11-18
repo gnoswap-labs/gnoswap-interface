@@ -90,7 +90,7 @@ const LaunchpadMyParticipationBox = ({ item, idx, rewardInfo, handleClickClaim }
           <div className="participation-box-data-key">{t("Launchpad:myParticipation.col.claimable")}</div>
           <div className="participation-box-data-value">
             <MissingLogo
-              url={rewardInfo?.rewardTokenLogoUrl}
+              url={rewardInfo?.rewardTokenLogoURL}
               symbol={rewardInfo?.rewardTokenSymbol}
               width={24}
               mobileWidth={24}
@@ -113,7 +113,7 @@ const LaunchpadMyParticipationBox = ({ item, idx, rewardInfo, handleClickClaim }
               <div className="participation-box-data-key">{t("Launchpad:myParticipation.col.claimed")}</div>
               <div className="participation-box-data-value">
                 <MissingLogo
-                  url={rewardInfo?.rewardTokenLogoUrl}
+                  url={rewardInfo?.rewardTokenLogoURL}
                   symbol={rewardInfo?.rewardTokenSymbol}
                   width={24}
                   mobileWidth={24}
