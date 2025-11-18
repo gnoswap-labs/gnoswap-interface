@@ -16,7 +16,7 @@ export interface LaunchpadProjectModel {
 
   rewardTokenDecimals: number;
 
-  rewardTokenLogoUrl: string | null;
+  rewardTokenLogoURL: string | null;
 
   description: string | null;
 

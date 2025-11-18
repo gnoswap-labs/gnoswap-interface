@@ -18,7 +18,7 @@ interface LaunchpadActiveProjectCardProps {
 }
 
 const LaunchpadActiveProjectCard: React.FC<LaunchpadActiveProjectCardProps> = ({ project, moveProjectDetail }) => {
-  const { pools, status, projectID, rewardTokenSymbol, rewardTokenLogoUrl } = project;
+  const { pools, status, projectID, rewardTokenSymbol, rewardTokenLogoURL } = project;
 
   const { prefetch } = usePrefetchNavigation({
     pageType: "PROJECT",
@@ -45,7 +45,7 @@ const LaunchpadActiveProjectCard: React.FC<LaunchpadActiveProjectCardProps> = ({
         name={project.name}
         description={project.description || ""}
         rewardTokenSymbol={rewardTokenSymbol || ""}
-        rewardTokenUrl={rewardTokenLogoUrl || ""}
+        rewardTokenUrl={rewardTokenLogoURL || ""}
       />
       <Divider />
       <LaunchpadActiveProjectCardData pools={(pools as LaunchpadActiveProjectPool[]) || []} />

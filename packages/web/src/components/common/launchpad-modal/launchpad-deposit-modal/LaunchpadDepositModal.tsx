@@ -108,7 +108,7 @@ const LaunchpadDepositModal = ({
                 <div className="value">
                   <MissingLogo
                     symbol={rewardInfo.rewardTokenSymbol}
-                    url={rewardInfo.rewardTokenLogoUrl}
+                    url={rewardInfo.rewardTokenLogoURL}
                     width={24}
                     mobileWidth={24}
                   />{" "}

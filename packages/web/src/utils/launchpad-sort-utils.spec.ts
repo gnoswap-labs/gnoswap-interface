@@ -31,7 +31,7 @@ const createMockProject = (overrides: Partial<LaunchpadProjectModel> = {}): Laun
   rewardTokenPath: "gno.land/r/demo/test",
   rewardTokenSymbol: "TEST",
   rewardTokenDecimals: 6,
-  rewardTokenLogoUrl: "https://example.com/logo.png",
+  rewardTokenLogoURL: "https://example.com/logo.png",
   description: "Test project description",
   pools: [createMockPool()],
   ...overrides,
