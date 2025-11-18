@@ -20,7 +20,7 @@ import { toUnitFormat } from "@utils/number-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
 import { useReferral } from "@hooks/common/use-referral";
 import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
-import { safeParseTime } from "@utils/time.utils";
+import { isLaunchpadPoolEnded } from "@utils/launchpad-get-claimable";
 
 type DepositButtonStateType =
   | "WALLET_LOGIN"
@@ -84,14 +84,6 @@ export const useLaunchpadHandler = () => {
     }
 
     return amountValueA.isGreaterThan(amountValueB) ? 1 : -1;
-  }
-
-  function isLaunchpadPoolEnded(endTime: string | null | undefined): boolean {
-    const endTimestamp = safeParseTime(endTime);
-    if (endTimestamp == null) {
-      return false;
-    }
-    return Date.now() >= endTimestamp;
   }
 
   // Variables to determine if conditions are met to make a deposit
