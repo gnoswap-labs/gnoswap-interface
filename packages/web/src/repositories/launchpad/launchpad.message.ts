@@ -9,9 +9,24 @@ import { MAX_INT64 } from "@utils/math.utils";
 
 enum TransactionMessageFunctionType {
   DepositGns = "DepositGns",
+  CollectRewardByDepositId = "CollectRewardByDepositId",
+
+  /**
+   * @new
+   */
+  CollectDepositGns = "CollectDepositGns",
+
+  /**
+   * @deprecated
+   */
   CollectRewardByProjectId = "CollectRewardByProjectId",
-  CollectRewardBydepositID = "CollectRewardByDepositId",
+  /**
+   * @deprecated
+   */
   CollectDepositGnsByProjectId = "CollectDepositGnsByProjectId",
+  /**
+   * @deprecated
+   */
   CollectDepositGnsBydepositID = "CollectDepositGnsBydepositID",
 }
 
@@ -77,7 +92,7 @@ export function makeCollectRewardBydepositIDMessage({
   const collectRewardBydepositIDMessage = makeTransactionMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,
     send: "",
-    func: TransactionMessageFunctionType.CollectRewardBydepositID,
+    func: TransactionMessageFunctionType.CollectRewardByDepositId,
     args: [depositID],
     caller,
   });
@@ -120,17 +135,17 @@ export function makeCollectRewardWithDepositBydepositIDMessage({
   const collectRewardBydepositIDMessage = makeTransactionMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,
     send: "",
-    func: TransactionMessageFunctionType.CollectRewardBydepositID,
+    func: TransactionMessageFunctionType.CollectRewardByDepositId,
     args: [depositID],
     caller,
   });
-  const collectDepositGnsBydepositIDMessage = makeTransactionMessage({
+  const collectDepositGnsMessage = makeTransactionMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,
     send: "",
-    func: TransactionMessageFunctionType.CollectDepositGnsBydepositID,
+    func: TransactionMessageFunctionType.CollectDepositGns,
     args: [depositID],
     caller,
   });
 
-  return [collectRewardBydepositIDMessage, collectDepositGnsBydepositIDMessage];
+  return [collectRewardBydepositIDMessage, collectDepositGnsMessage];
 }
