@@ -9,11 +9,11 @@ import { makeQueryParameter } from "@utils/network.utils";
 import { withTransactionGuard, generateSendTransactionParams } from "@utils/transaction-utils";
 import { LaunchpadRepository } from "./launchpad-repository";
 import {
-  makeCollectRewardBydepositIDMessage,
-  makeCollectRewardByProjectIdMessage,
   makeCollectRewardWithDepositBydepositIDMessage,
-  makeCollectRewardWithDepositByProjectIdMessage,
   makeDepositGNSMessageWithApproves,
+  makeCollectRewardBydepositIdMessage,
+  makeCollectRewardByDepositIdsMessage,
+  makeCollectRewardWithDepositByDepositIdsMessage,
 } from "./launchpad.message";
 import { GetLaunchpadProjectsRequestParameters } from "./request";
 import {
@@ -172,12 +172,24 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
     });
   }
 
-  async collectRewardByProjectId(projectID: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
+  async collectRewardBydepositId(depositID: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
+    const messages = makeCollectRewardBydepositIdMessage({ depositID, caller });
+    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
+    });
+  }
+
+  async collectRewardByDepositIds(depositIDs: string[], caller: string): Promise<WalletResponse<{ hash: string }>> {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
 
-    const messages = makeCollectRewardByProjectIdMessage({ projectID, caller });
+    const messages = makeCollectRewardByDepositIdsMessage({ depositIDs, caller });
 
     const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
 
@@ -186,38 +198,40 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
     });
   }
 
-  async collectRewardBydepositID(depositID: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
-    if (this.walletClient === null) {
-      throw new CommonError("FAILED_INITIALIZE_WALLET");
-    }
-    const messages = makeCollectRewardBydepositIDMessage({ depositID, caller });
-    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
-
-    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
-      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
-    });
-  }
-
-  collectRewardWithDepositByProjectId(projectID: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
-    if (this.walletClient === null) {
-      throw new CommonError("FAILED_INITIALIZE_WALLET");
-    }
-
-    const messages = makeCollectRewardWithDepositByProjectIdMessage({ projectID, caller });
-
-    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
-
-    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
-      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
-    });
-  }
-
-  collectRewardWithDepositBydepositID(depositID: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
+  collectRewardWithDepositBydepositId(depositID: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
 
     const messages = makeCollectRewardWithDepositBydepositIDMessage({ depositID, caller });
+
+    const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
+    });
+  }
+
+  collectRewardWithDepositByDepositIds(
+    endedPoolDepositIDs: string[],
+    activePoolDepositIDs: string[],
+    caller: string,
+  ): Promise<WalletResponse<{ hash: string }>> {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
+
+    const endedPoolRewardMessages =
+      endedPoolDepositIDs.length > 0
+        ? makeCollectRewardWithDepositByDepositIdsMessage({ depositIDs: endedPoolDepositIDs, caller })
+        : [];
+
+    const activePoolRewardMessages =
+      activePoolDepositIDs.length > 0
+        ? makeCollectRewardByDepositIdsMessage({ depositIDs: activePoolDepositIDs, caller })
+        : [];
+
+    const messages = [...endedPoolRewardMessages, ...activePoolRewardMessages];
 
     const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
 

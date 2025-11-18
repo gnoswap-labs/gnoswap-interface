@@ -82,30 +82,7 @@ export class LaunchpadRepositoryMock implements LaunchpadRepository {
     });
   }
 
-  async collectRewardByProjectId(projectID: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
-    if (this.walletClient === null) {
-      throw new CommonError("FAILED_INITIALIZE_WALLET");
-    }
-
-    const messages = [];
-    messages.push(
-      makeTransactionMessage({
-        packagePath: PACKAGE_LAUNCHPAD_PATH,
-        send: "",
-        func: "CollectRewardByProjectId",
-        args: [projectID],
-        caller,
-      }),
-    );
-
-    return this.walletClient.sendTransaction({
-      messages,
-      gasFee: 1,
-      memo: "",
-    });
-  }
-
-  async collectRewardBydepositID(depositID: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
+  async collectRewardBydepositId(depositID: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -128,25 +105,17 @@ export class LaunchpadRepositoryMock implements LaunchpadRepository {
     });
   }
 
-  collectRewardWithDepositByProjectId(projectID: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
+  async collectRewardByDepositIds(depositIDs: string[], caller: string): Promise<WalletResponse<{ hash: string }>> {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
 
-    const messages = [];
-    messages.push(
+    const messages = depositIDs.map(depositID =>
       makeTransactionMessage({
         packagePath: PACKAGE_LAUNCHPAD_PATH,
         send: "",
-        func: "CollectDepositGnsByProjectId",
-        args: [projectID],
-        caller,
-      }),
-      makeTransactionMessage({
-        packagePath: PACKAGE_LAUNCHPAD_PATH,
-        send: "",
-        func: "CollectRewardByProjectId",
-        args: [projectID],
+        func: "CollectRewardByDepositId",
+        args: [depositID],
         caller,
       }),
     );
@@ -158,7 +127,10 @@ export class LaunchpadRepositoryMock implements LaunchpadRepository {
     });
   }
 
-  collectRewardWithDepositBydepositID(depositID: string, caller: string): Promise<WalletResponse<{ hash: string }>> {
+  async collectRewardWithDepositBydepositId(
+    depositID: string,
+    caller: string,
+  ): Promise<WalletResponse<{ hash: string }>> {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
@@ -168,7 +140,7 @@ export class LaunchpadRepositoryMock implements LaunchpadRepository {
       makeTransactionMessage({
         packagePath: PACKAGE_LAUNCHPAD_PATH,
         send: "",
-        func: "CollectDepositGnsBydepositID",
+        func: "CollectDepositGnsByDepositId",
         args: [depositID],
         caller,
       }),
@@ -180,6 +152,55 @@ export class LaunchpadRepositoryMock implements LaunchpadRepository {
         caller,
       }),
     );
+
+    return this.walletClient.sendTransaction({
+      messages,
+      gasFee: 1,
+      memo: "",
+    });
+  }
+
+  async collectRewardWithDepositByDepositIds(
+    endedPoolDepositIDs: string[],
+    activePoolDepositIDs: string[],
+    caller: string,
+  ): Promise<WalletResponse<{ hash: string }>> {
+    if (this.walletClient === null) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
+
+    const messages: ReturnType<typeof makeTransactionMessage>[] = [];
+
+    endedPoolDepositIDs.forEach(depositID => {
+      messages.push(
+        makeTransactionMessage({
+          packagePath: PACKAGE_LAUNCHPAD_PATH,
+          send: "",
+          func: "CollectDepositGnsByDepositId",
+          args: [depositID],
+          caller,
+        }),
+        makeTransactionMessage({
+          packagePath: PACKAGE_LAUNCHPAD_PATH,
+          send: "",
+          func: "CollectRewardByDepositId",
+          args: [depositID],
+          caller,
+        }),
+      );
+    });
+
+    activePoolDepositIDs.forEach(depositID => {
+      messages.push(
+        makeTransactionMessage({
+          packagePath: PACKAGE_LAUNCHPAD_PATH,
+          send: "",
+          func: "CollectRewardByDepositId",
+          args: [depositID],
+          caller,
+        }),
+      );
+    });
 
     return this.walletClient.sendTransaction({
       messages,
