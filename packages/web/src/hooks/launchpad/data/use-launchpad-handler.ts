@@ -13,7 +13,6 @@ import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { LaunchpadParticipationModel } from "@models/launchpad";
 import { useGetMyDelegation } from "@query/governance";
-import { useGetLastedBlockHeight } from "@query/pools";
 import { useGetAllTokenPrices } from "@query/token";
 import { DexEvent } from "@repositories/common";
 import { LaunchpadState } from "@states/index";
@@ -21,6 +20,7 @@ import { toUnitFormat } from "@utils/number-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
 import { useReferral } from "@hooks/common/use-referral";
 import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
+import { isLaunchpadPoolEnded } from "@utils/launchpad-get-claimable";
 
 type DepositButtonStateType =
   | "WALLET_LOGIN"
@@ -31,6 +31,11 @@ type DepositButtonStateType =
   | "SELECT_POOL"
   | "IS_NOT_DEPOSIT_ALLOWED"
   | "DEPOSIT";
+
+type DepositIDGroups = {
+  endedPoolDepositIDs: string[];
+  activePoolDepositIDs: string[];
+};
 
 function calculateUSDValueBy(
   amount: string | number | BigNumber,
@@ -56,7 +61,6 @@ export const useLaunchpadHandler = () => {
   const { displayBalanceMap } = useTokenData();
 
   const { launchpadRepository } = useGnoswapContext();
-  const { data: blockHeight, refetch: refetchBlockHeight } = useGetLastedBlockHeight();
   const { data: tokenPriceMap } = useGetAllTokenPrices();
   const { t } = useTranslation();
   const { openModal } = useConnectWalletModal();
@@ -147,14 +151,11 @@ export const useLaunchpadHandler = () => {
    * @param emitCallback A callback function that runs when a transaction send event is successfully fired. You can proceed to update data with refetch.
    */
   const claim = async (participationInfo: LaunchpadParticipationModel, emitCallback: () => Promise<void>) => {
-    if (!account || !blockHeight) {
+    if (!account) {
       return;
     }
 
-    const result = await refetchBlockHeight();
-    const currentBlockHeight = result?.data || blockHeight;
-
-    const isWithdrawable = BigNumber(currentBlockHeight).isGreaterThan(participationInfo.endBlockHeight);
+    const isWithdrawable = isLaunchpadPoolEnded(participationInfo.endTime);
 
     // Calculate the USD value of the Deposited USD available for withdrawal.
     const depositAmount = isWithdrawable ? participationInfo.depositAmount : 0;
@@ -173,18 +174,12 @@ export const useLaunchpadHandler = () => {
       tokenAAmount: usdValueStr,
     };
 
-    const currentReferralAddress = getCurrentReferralAddress();
-
     processTx(
       () => {
         if (isWithdrawable) {
-          return launchpadRepository.collectRewardWithDepositBydepositID(participationInfo.depositID, account.address);
+          return launchpadRepository.collectRewardWithDepositBydepositId(participationInfo.depositID, account.address);
         }
-        return launchpadRepository.collectRewardBydepositID(
-          participationInfo.depositID,
-          account.address,
-          currentReferralAddress,
-        );
+        return launchpadRepository.collectRewardBydepositId(participationInfo.depositID, account.address);
       },
       DexEvent.LAUNCHPAD_COLLECT_REWARD,
       messageData,
@@ -208,36 +203,37 @@ export const useLaunchpadHandler = () => {
    * @param emitCallback A callback function that runs when a transaction send event is successfully fired. You can proceed to update data with refetch.
    */
   const claimAll = async (participationInfos: LaunchpadParticipationModel[], emitCallback: () => Promise<void>) => {
-    if (!account || !blockHeight || participationInfos.length === 0) {
+    if (!account || participationInfos.length === 0) {
       return;
     }
 
-    const result = await refetchBlockHeight();
-    const currentBlockHeight = result?.data || blockHeight;
-
-    const isWithdrawable = participationInfos.some(participation =>
-      BigNumber(currentBlockHeight).isGreaterThan(participation.endBlockHeight),
-    );
-
     const participationInfo = participationInfos[0];
 
+    const { endedPoolDepositIDs, activePoolDepositIDs } = participationInfos.reduce<DepositIDGroups>(
+      (groups, info) => {
+        if (isLaunchpadPoolEnded(info.endTime)) {
+          groups.endedPoolDepositIDs.push(info.depositID);
+        } else {
+          groups.activePoolDepositIDs.push(info.depositID);
+        }
+        return groups;
+      },
+      { endedPoolDepositIDs: [], activePoolDepositIDs: [] },
+    );
+
+    const hasEndedPools = endedPoolDepositIDs.length > 0;
+
     // Calculate the USD value of the Deposited USD available for withdrawal.
-    const depositAmount = participationInfos.reduce((accumulated, current) => {
-      const isWithdrawable = BigNumber(currentBlockHeight).isGreaterThan(current.endBlockHeight);
-      if (!isWithdrawable) {
-        return accumulated;
-      }
-      return BigNumber(accumulated).plus(current.depositAmount);
+    const depositAmount = endedPoolDepositIDs.reduce((accumulated, depositID) => {
+      const info = participationInfos.find(p => p.depositID === depositID);
+      if (!info) return accumulated;
+      return BigNumber(accumulated).plus(info.depositAmount);
     }, BigNumber(0));
 
     const depositUSDValue = calculateUSDValueBy(depositAmount, tokenPriceMap?.[GNS_TOKEN.path]?.usd);
 
     // Calculate the USD value of the claimable reward.
     const rewardAmount = participationInfos.reduce((accumulated, current) => {
-      const isClaimable = BigNumber(currentBlockHeight).isGreaterThan(current.claimableBlockHeight);
-      if (!isClaimable) {
-        return accumulated;
-      }
       return BigNumber(accumulated).plus(current.claimableRewardAmount);
     }, BigNumber(0));
 
@@ -252,18 +248,16 @@ export const useLaunchpadHandler = () => {
       tokenAAmount: usdValueStr,
     };
 
-    const currentReferralAddress = getCurrentReferralAddress();
-
     processTx(
       () => {
-        if (isWithdrawable) {
-          return launchpadRepository.collectRewardWithDepositByProjectId(participationInfo.projectID, account.address);
+        if (hasEndedPools) {
+          return launchpadRepository.collectRewardWithDepositByDepositIds(
+            endedPoolDepositIDs,
+            activePoolDepositIDs,
+            account.address,
+          );
         }
-        return launchpadRepository.collectRewardByProjectId(
-          participationInfo.projectID,
-          account.address,
-          currentReferralAddress,
-        );
+        return launchpadRepository.collectRewardByDepositIds(activePoolDepositIDs, account.address);
       },
       DexEvent.LAUNCHPAD_COLLECT_REWARD,
       messageData,

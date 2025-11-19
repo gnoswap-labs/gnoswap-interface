@@ -9,10 +9,8 @@ import { MAX_INT64 } from "@utils/math.utils";
 
 enum TransactionMessageFunctionType {
   DepositGns = "DepositGns",
-  CollectRewardByProjectId = "CollectRewardByProjectId",
-  CollectRewardBydepositID = "CollectRewardByDepositId",
-  CollectDepositGnsByProjectId = "CollectDepositGnsByProjectId",
-  CollectDepositGnsBydepositID = "CollectDepositGnsBydepositID",
+  CollectRewardByDepositId = "CollectRewardByDepositId",
+  CollectDepositGns = "CollectDepositGns",
 }
 
 export function makeDepositGNSMessageWithApproves(
@@ -49,25 +47,27 @@ export function makeDepositGNSMessageWithApproves(
   return makeTransactionMessagesWithApproves([depositGNSMessage], approveMessageInfos, fetchAllowance);
 }
 
-export function makeCollectRewardByProjectIdMessage({
-  projectID,
+export function makeCollectRewardByDepositIdsMessage({
+  depositIDs,
   caller,
 }: {
-  projectID: string;
+  depositIDs: string[];
   caller: string;
 }): TransactionMessage[] {
-  const collectRewardByProjectIdMessage = makeTransactionMessage({
-    packagePath: PACKAGE_LAUNCHPAD_PATH,
-    send: "",
-    func: TransactionMessageFunctionType.CollectRewardByProjectId,
-    args: [projectID],
-    caller,
-  });
+  if (!depositIDs || depositIDs.length === 0) return [];
 
-  return [collectRewardByProjectIdMessage];
+  return depositIDs.map(depositID =>
+    makeTransactionMessage({
+      packagePath: PACKAGE_LAUNCHPAD_PATH,
+      send: "",
+      func: TransactionMessageFunctionType.CollectRewardByDepositId,
+      args: [depositID],
+      caller,
+    }),
+  );
 }
 
-export function makeCollectRewardBydepositIDMessage({
+export function makeCollectRewardBydepositIdMessage({
   depositID,
   caller,
 }: {
@@ -77,7 +77,7 @@ export function makeCollectRewardBydepositIDMessage({
   const collectRewardBydepositIDMessage = makeTransactionMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,
     send: "",
-    func: TransactionMessageFunctionType.CollectRewardBydepositID,
+    func: TransactionMessageFunctionType.CollectRewardByDepositId,
     args: [depositID],
     caller,
   });
@@ -85,29 +85,31 @@ export function makeCollectRewardBydepositIDMessage({
   return [collectRewardBydepositIDMessage];
 }
 
-export function makeCollectRewardWithDepositByProjectIdMessage({
-  projectID,
+export function makeCollectRewardWithDepositByDepositIdsMessage({
+  depositIDs,
   caller,
 }: {
-  projectID: string;
+  depositIDs: string[];
   caller: string;
 }): TransactionMessage[] {
-  const collectRewardByProjectIdMessage = makeTransactionMessage({
-    packagePath: PACKAGE_LAUNCHPAD_PATH,
-    send: "",
-    func: TransactionMessageFunctionType.CollectRewardByProjectId,
-    args: [projectID],
-    caller,
-  });
-  const collectDepositGnsByProjectIdMessage = makeTransactionMessage({
-    packagePath: PACKAGE_LAUNCHPAD_PATH,
-    send: "",
-    func: TransactionMessageFunctionType.CollectDepositGnsByProjectId,
-    args: [projectID],
-    caller,
-  });
+  if (!depositIDs || depositIDs.length === 0) return [];
 
-  return [collectRewardByProjectIdMessage, collectDepositGnsByProjectIdMessage];
+  return depositIDs.flatMap(depositID => [
+    makeTransactionMessage({
+      packagePath: PACKAGE_LAUNCHPAD_PATH,
+      send: "",
+      func: TransactionMessageFunctionType.CollectRewardByDepositId,
+      args: [depositID],
+      caller,
+    }),
+    makeTransactionMessage({
+      packagePath: PACKAGE_LAUNCHPAD_PATH,
+      send: "",
+      func: TransactionMessageFunctionType.CollectDepositGns,
+      args: [depositID],
+      caller,
+    }),
+  ]);
 }
 
 export function makeCollectRewardWithDepositBydepositIDMessage({
@@ -120,17 +122,17 @@ export function makeCollectRewardWithDepositBydepositIDMessage({
   const collectRewardBydepositIDMessage = makeTransactionMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,
     send: "",
-    func: TransactionMessageFunctionType.CollectRewardBydepositID,
+    func: TransactionMessageFunctionType.CollectRewardByDepositId,
     args: [depositID],
     caller,
   });
-  const collectDepositGnsBydepositIDMessage = makeTransactionMessage({
+  const collectDepositGnsMessage = makeTransactionMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,
     send: "",
-    func: TransactionMessageFunctionType.CollectDepositGnsBydepositID,
+    func: TransactionMessageFunctionType.CollectDepositGns,
     args: [depositID],
     caller,
   });
 
-  return [collectRewardBydepositIDMessage, collectDepositGnsBydepositIDMessage];
+  return [collectRewardBydepositIDMessage, collectDepositGnsMessage];
 }

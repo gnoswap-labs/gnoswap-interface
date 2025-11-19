@@ -19,19 +19,15 @@ export interface LaunchpadRepository {
     referrerAddress: string | null,
   ): Promise<WalletResponse<{ hash: string }>>;
 
-  collectRewardByProjectId(
-    projectID: string,
+  collectRewardBydepositId(depositID: string, caller: string): Promise<WalletResponse<{ hash: string }>>;
+
+  collectRewardByDepositIds(depositIDs: string[], caller: string): Promise<WalletResponse<{ hash: string }>>;
+
+  collectRewardWithDepositBydepositId(depositID: string, caller: string): Promise<WalletResponse<{ hash: string }>>;
+
+  collectRewardWithDepositByDepositIds(
+    endedPoolDepositIDs: string[],
+    activePoolDepositIDs: string[],
     caller: string,
-    referrerAddress: string | null,
   ): Promise<WalletResponse<{ hash: string }>>;
-
-  collectRewardBydepositID(
-    depositID: string,
-    caller: string,
-    referrerAddress: string | null,
-  ): Promise<WalletResponse<{ hash: string }>>;
-
-  collectRewardWithDepositByProjectId(projectID: string, caller: string): Promise<WalletResponse<{ hash: string }>>;
-
-  collectRewardWithDepositBydepositID(depositID: string, caller: string): Promise<WalletResponse<{ hash: string }>>;
 }

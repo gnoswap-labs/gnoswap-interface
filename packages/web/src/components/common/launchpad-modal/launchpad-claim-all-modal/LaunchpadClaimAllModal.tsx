@@ -5,13 +5,16 @@ import { useTranslation } from "react-i18next";
 import { LaunchpadParticipationModel } from "@models/launchpad";
 import { type TierType } from "@utils/launchpad-get-tier-number";
 import withLocalModal from "@components/hoc/with-local-modal";
+import { ProjectRewardInfoModel } from "@layouts/launchpad/launchpad-detail/LaunchpadDetail";
+import { safeParseTime } from "@utils/time.utils";
+import { rawToDisplayAmount } from "@utils/number-utils";
+import { GNS_TOKEN } from "@common/values/token-constant";
 
 import { LaunchpadClaimAllModalWrapper } from "./LaunchpadClaimAllModal.styles";
 import IconClose from "@components/common/icons/IconCancel";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import LaunchpadPoolTierChip from "@layouts/launchpad/components/launchpad-pool-tier-chip/LaunchpadPoolTierChip";
 import LaunchpadClaimAmountField from "./launchpad-claim-amount-field/LaunchpadClaimAmountField";
-import { ProjectRewardInfoModel } from "@layouts/launchpad/launchpad-detail/LaunchpadDetail";
 
 interface LaunchpadClaimAllModalProps {
   data: LaunchpadParticipationModel[];
@@ -33,13 +36,34 @@ const LaunchpadClaimAllModal = ({
 
   const Modal = React.useMemo(() => withLocalModal(LaunchpadClaimAllModalWrapper, setIsOpen), [setIsOpen]);
 
-  const filteredClaimableData = React.useMemo(() => {
-    return data.filter(item => {
-      const currentTime = new Date();
-      const claimableTime = new Date(item.claimableTime);
-      return currentTime > claimableTime;
+  const displayLaunchpadParticipations: LaunchpadParticipationModel[] = React.useMemo(() => {
+    if (!data) return [];
+
+    return data.map(participation => {
+      return {
+        ...participation,
+        claimableRewardAmount: rawToDisplayAmount(
+          participation.claimableRewardAmount,
+          participation.rewardToken?.decimals || 0,
+        ),
+        depositAmount: rawToDisplayAmount(participation.depositAmount, GNS_TOKEN.decimals),
+      };
     });
   }, [data]);
+
+  const claimableRewards: LaunchpadParticipationModel[] = React.useMemo(() => {
+    if (!displayLaunchpadParticipations) return [];
+
+    const currentTimestamp = Date.now();
+
+    return displayLaunchpadParticipations.filter(item => {
+      const claimableTimestamp = safeParseTime(item.claimableTime);
+
+      if (claimableTimestamp == null) return false;
+
+      return currentTimestamp >= claimableTimestamp;
+    });
+  }, [displayLaunchpadParticipations]);
 
   const confirm = React.useCallback(() => {
     setIsOpen(false);
@@ -48,8 +72,8 @@ const LaunchpadClaimAllModal = ({
       return;
     }
 
-    onSubmit(data);
-  }, [data, isWalletConnected, setIsOpen, onSubmit]);
+    onSubmit(claimableRewards);
+  }, [claimableRewards, isWalletConnected, setIsOpen, onSubmit]);
 
   const isEndTime = (item: { endTime: string }): boolean => {
     const now = new Date();
@@ -70,14 +94,14 @@ const LaunchpadClaimAllModal = ({
 
         <div className="content-wrapper">
           <div className="content">
-            {filteredClaimableData.map((item, idx) => {
+            {claimableRewards.map((item, idx) => {
               const endTimeReached = isEndTime(item);
 
               const isClaimedReward = BigNumber(item.claimableRewardAmount).isLessThan(0.01);
               const isClaimedDeposit = BigNumber(item.claimableRewardAmount).isLessThan(0.01);
               const isClaimed = isClaimedReward && isClaimedDeposit;
 
-              if (isClaimed) return <React.Fragment />;
+              if (isClaimed) return <React.Fragment key={item.id} />;
 
               return (
                 <div className="data" key={item.id}>
