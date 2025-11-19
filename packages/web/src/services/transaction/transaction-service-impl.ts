@@ -41,7 +41,7 @@ export class TransactionServiceImpl implements TransactionService {
         return makeMsgCallMessage({
           ...message,
           max_deposit: "0ugnot",
-          args: message.args?.map(arg => `${arg}`) || null,
+          args: message.args?.map(arg => `${arg}`) || [],
         });
       }
       return makeMsgSendMessage(message);
