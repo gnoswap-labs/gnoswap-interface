@@ -209,7 +209,7 @@ export class SocialWalletClient implements WalletClient {
         return makeMsgCallMessage({
           ...message,
           max_deposit: "",
-          args: message.args?.map(arg => `${arg}`) || null,
+          args: message.args?.map(arg => `${arg}`) || [],
         });
       }
       return makeMsgSendMessage(message);
