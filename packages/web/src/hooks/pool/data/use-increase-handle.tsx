@@ -145,6 +145,10 @@ export const useIncreaseHandle = () => {
       : null,
   });
 
+  const sqrtPriceX96 = useMemo(() => {
+    return selectPool?.poolInfo?.chainData?.sqrtPriceX96 ?? null;
+  }, [selectPool]);
+
   useEffect(() => {
     if (!selectedPosition?.tickLower || !selectedPosition?.tickUpper || !selectedPosition?.pool.fee || !selectPool)
       return;
@@ -233,12 +237,13 @@ export const useIncreaseHandle = () => {
         return;
       }
 
-      if (!selectPool || !tokenA || !tokenB) {
+      if (!selectPool || !tokenA || !tokenB || !sqrtPriceX96) {
         return;
       }
       const amountAAmountRaw = makeRawTokenAmount(tokenA, amount) || "0";
       const { amountB } = getDepositAmountsByAmountA(
         selectPool.currentPrice,
+        sqrtPriceX96,
         minPrice,
         maxPrice,
         BigInt(amountAAmountRaw),
@@ -247,7 +252,7 @@ export const useIncreaseHandle = () => {
       const tokenBAmount = makeDisplayTokenAmount(tokenB, amountB) || "0";
       tokenBAmountInput.changeAmount(tokenBAmount.toString());
     },
-    [tokenAAmountInput, selectPool.currentPrice, tokenA, tokenB, minPrice, maxPrice],
+    [tokenAAmountInput, sqrtPriceX96, selectPool.currentPrice, tokenA, tokenB, minPrice, maxPrice],
   );
 
   const changeTokenBAmount = useCallback(
@@ -259,13 +264,14 @@ export const useIncreaseHandle = () => {
         return;
       }
 
-      if (!selectPool || !tokenA || !tokenB) {
+      if (!selectPool || !tokenA || !tokenB || !sqrtPriceX96) {
         return;
       }
 
       const amountBAmountRaw = makeRawTokenAmount(tokenB, amount) || "0";
       const { amountA } = getDepositAmountsByAmountB(
         selectPool.currentPrice,
+        sqrtPriceX96,
         minPrice,
         maxPrice,
         BigInt(amountBAmountRaw),
@@ -274,7 +280,7 @@ export const useIncreaseHandle = () => {
       const tokenAAmount = makeDisplayTokenAmount(tokenA, amountA) || "0";
       tokenAAmountInput.changeAmount(tokenAAmount.toString());
     },
-    [tokenBAmountInput, selectPool.currentPrice, tokenA, tokenB, minPrice, maxPrice],
+    [tokenBAmountInput, sqrtPriceX96, selectPool.currentPrice, tokenA, tokenB, minPrice, maxPrice],
   );
 
   const buttonType: INCREASE_BUTTON_TYPE = useMemo(() => {

@@ -110,6 +110,10 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const { isLoading: isLoadingCommon } = useLoading();
 
+  const sqrtPriceX96 = useMemo(() => {
+    return selectPool?.poolInfo?.chainData?.sqrtPriceX96 ?? null;
+  }, [selectPool]);
+
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
     let depositRatio = "-";
     let feeBoost: string = "-";
@@ -336,7 +340,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      if (!selectPool.currentPrice) {
+      if (!selectPool.currentPrice || !sqrtPriceX96) {
         return;
       }
 
@@ -352,6 +356,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       const amountRaw = makeRawTokenAmount(tokenA, amount) || 0;
       const { amountB } = getDepositAmountsByAmountA(
         BigNumber(selectPool.currentPrice).shiftedBy(decimals).toNumber(),
+        sqrtPriceX96,
         BigNumber(selectPool.minPrice).shiftedBy(decimals).toNumber(),
         BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
         BigInt(amountRaw),
@@ -361,6 +366,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     },
     [
       selectPool.currentPrice,
+      sqrtPriceX96,
       selectPool.compareToken?.symbol,
       selectPool.minPrice,
       selectPool.maxPrice,
@@ -375,7 +381,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      if (!selectPool.currentPrice) {
+      if (!selectPool.currentPrice || !sqrtPriceX96) {
         return;
       }
 
@@ -391,6 +397,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       const amountRaw = makeRawTokenAmount(tokenB, amount) || 0;
       const { amountA } = getDepositAmountsByAmountB(
         BigNumber(selectPool.currentPrice).shiftedBy(decimals).toNumber(),
+        sqrtPriceX96,
         BigNumber(selectPool.minPrice).shiftedBy(decimals).toNumber(),
         BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
         BigInt(amountRaw),
@@ -398,7 +405,15 @@ const EarnAddLiquidityContainer: React.FC = () => {
       const expectedTokenAmount = makeDisplayTokenAmount(tokenA, amountA) || "0";
       tokenAAmountInput.changeAmount(expectedTokenAmount.toString());
     },
-    [selectPool.currentPrice, selectPool.minPrice, selectPool.maxPrice, tokenA, tokenB, tokenAAmountInput],
+    [
+      selectPool.currentPrice,
+      sqrtPriceX96,
+      selectPool.minPrice,
+      selectPool.maxPrice,
+      tokenA,
+      tokenB,
+      tokenAAmountInput,
+    ],
   );
 
   const changeTokenAAmount = useCallback(

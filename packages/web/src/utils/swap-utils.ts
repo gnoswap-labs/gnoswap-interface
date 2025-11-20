@@ -188,7 +188,13 @@ export function isEndTickBy(tick: number, fee: string): boolean {
   return tick === maxTick || tick === minTick;
 }
 
-export function getDepositAmountsByAmountA(currentPrice: number, minPrice: number, maxPrice: number, amount: bigint) {
+export function getDepositAmountsByAmountA(
+  currentPrice: number,
+  sqrtPriceX96: bigint,
+  minPrice: number,
+  maxPrice: number,
+  amount: bigint,
+) {
   if (maxPrice < currentPrice) {
     return {
       amountA: 0,
@@ -202,13 +208,12 @@ export function getDepositAmountsByAmountA(currentPrice: number, minPrice: numbe
     };
   }
 
-  const currentPriceX96 = tickToSqrtPriceX96(priceToTick(currentPrice));
   const minPriceX96 = tickToSqrtPriceX96(priceToTick(minPrice));
   const maxPriceX96 = tickToSqrtPriceX96(priceToTick(maxPrice));
 
-  const liquidity = getLiquidityForAmount0(currentPriceX96, maxPriceX96, amount);
+  const liquidity = getLiquidityForAmount0(sqrtPriceX96, maxPriceX96, amount);
 
-  const amountB = getAmount1ForLiquidity(currentPriceX96, minPriceX96, liquidity);
+  const amountB = getAmount1ForLiquidity(sqrtPriceX96, minPriceX96, liquidity);
 
   return {
     amountA: amount,
@@ -216,7 +221,13 @@ export function getDepositAmountsByAmountA(currentPrice: number, minPrice: numbe
   };
 }
 
-export function getDepositAmountsByAmountB(currentPrice: number, minPrice: number, maxPrice: number, amount: bigint) {
+export function getDepositAmountsByAmountB(
+  currentPrice: number,
+  sqrtPriceX96: bigint,
+  minPrice: number,
+  maxPrice: number,
+  amount: bigint,
+) {
   if (maxPrice < currentPrice) {
     return {
       amountA: 0,
@@ -230,13 +241,12 @@ export function getDepositAmountsByAmountB(currentPrice: number, minPrice: numbe
     };
   }
 
-  const currentPriceX96 = tickToSqrtPriceX96(priceToTick(currentPrice));
   const minPriceX96 = tickToSqrtPriceX96(priceToTick(minPrice));
   const maxPriceX96 = tickToSqrtPriceX96(priceToTick(maxPrice));
 
-  const liquidity = getLiquidityForAmount1(currentPriceX96, minPriceX96, amount);
+  const liquidity = getLiquidityForAmount1(sqrtPriceX96, minPriceX96, amount);
 
-  const amountA = getAmount0ForLiquidity(currentPriceX96, maxPriceX96, liquidity);
+  const amountA = getAmount0ForLiquidity(sqrtPriceX96, maxPriceX96, liquidity);
 
   return {
     amountA,

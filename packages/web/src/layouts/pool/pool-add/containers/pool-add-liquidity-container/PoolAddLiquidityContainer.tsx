@@ -105,6 +105,10 @@ const PoolAddLiquidityContainer: React.FC = () => {
   });
   const { isLoading: isLoadingCommon } = useLoading();
 
+  const sqrtPriceX96 = useMemo(() => {
+    return selectPool?.poolInfo?.chainData?.sqrtPriceX96 ?? null;
+  }, [selectPool]);
+
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
     let depositRatio = "-";
     let feeBoost: string = "-";
@@ -273,7 +277,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
       if (BigNumber(amount).isNaN() || !BigNumber(amount).isFinite()) {
         return;
       }
-      if (!selectPool.currentPrice) {
+      if (!selectPool.currentPrice || !sqrtPriceX96) {
         return;
       }
 
@@ -294,6 +298,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
       const amountRaw = makeRawTokenAmount(tokenA, amount) || 0;
       const { amountB } = getDepositAmountsByAmountA(
         BigNumber(selectPool.currentPrice).shiftedBy(decimals).toNumber(),
+        sqrtPriceX96,
         BigNumber(selectPool.minPrice).shiftedBy(decimals).toNumber(),
         BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
         BigInt(amountRaw),
@@ -303,6 +308,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
     },
     [
       selectPool.currentPrice,
+      sqrtPriceX96,
       selectPool.compareToken?.symbol,
       selectPool.minPrice,
       selectPool.maxPrice,
@@ -316,7 +322,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      if (!selectPool.currentPrice) {
+      if (!selectPool.currentPrice || !sqrtPriceX96) {
         return;
       }
 
@@ -332,6 +338,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
       const amountRaw = makeRawTokenAmount(tokenB, amount) || 0;
       const { amountA } = getDepositAmountsByAmountB(
         BigNumber(selectPool.currentPrice).shiftedBy(decimals).toNumber(),
+        sqrtPriceX96,
         BigNumber(selectPool.minPrice).shiftedBy(decimals).toNumber(),
         BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
         BigInt(amountRaw),
@@ -341,6 +348,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
     },
     [
       selectPool.currentPrice,
+      sqrtPriceX96,
       selectPool.compareToken?.symbol,
       selectPool.minPrice,
       selectPool.maxPrice,
