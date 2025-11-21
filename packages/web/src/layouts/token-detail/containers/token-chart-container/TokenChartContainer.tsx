@@ -18,6 +18,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import { getLabelChartV2, getLocalizeTime, getNumberOfAxis } from "@utils/chart";
 import { checkPositivePrice, generateDateSequence } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
+import { RefetchInterval } from "@common/values";
 
 import TokenChart, { ChartInfo, TokenInfo } from "../../components/token-chart/TokenChart";
 
@@ -140,7 +141,7 @@ const TokenChartContainer: React.FC = () => {
     path === "gnot" ? wugnotPath : path,
     {
       enabled: !!path,
-      refetchInterval: 5_000,
+      refetchInterval: RefetchInterval.Frequent,
     },
   );
 
