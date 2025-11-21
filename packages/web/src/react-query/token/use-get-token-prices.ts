@@ -19,6 +19,8 @@ export const useGetTokenPrices = (path: string | null, options?: UseQueryOptions
     },
     refetchOnMount: true,
     refetchOnReconnect: true,
+    cacheTime: 0,
+    staleTime: 0,
     ...options,
   });
 };
