@@ -140,6 +140,7 @@ const TokenChartContainer: React.FC = () => {
     path === "gnot" ? wugnotPath : path,
     {
       enabled: !!path,
+      refetchInterval: 5_000,
     },
   );
 
@@ -174,7 +175,16 @@ const TokenChartContainer: React.FC = () => {
         openWarningModal(tokenB);
       }
     }
-  }, [router.query, pricesBefore.latestPrice, currentPrice, tokenB, gnot, pricesBefore.priceToday, fromSelectToken]);
+  }, [
+    router.query,
+    pricesBefore.latestPrice,
+    currentPrice,
+    tokenB,
+    gnot,
+    pricesBefore.priceToday,
+    fromSelectToken,
+    priceGradeType,
+  ]);
 
   const changeTab = useCallback((tab: string) => {
     const currentTab = TokenChartGraphPeriods.find(period => `${period}` === tab) || "1D";

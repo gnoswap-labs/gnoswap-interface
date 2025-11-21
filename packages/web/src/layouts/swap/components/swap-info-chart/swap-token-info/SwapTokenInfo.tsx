@@ -47,7 +47,7 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
     data: { priceGradeType, last7d = [] } = {},
     isLoading,
     isFetched,
-  } = useGetTokenPrices(tokenData.path as string, { enabled: !!tokenData.path });
+  } = useGetTokenPrices(tokenData.path as string, { enabled: !!tokenData.path, refetchInterval: 5_000 });
 
   const handleMouseMove = React.useCallback(
     (data?: LineGraphData) => {
