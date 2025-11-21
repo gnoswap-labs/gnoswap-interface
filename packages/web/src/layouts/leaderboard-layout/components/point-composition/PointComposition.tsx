@@ -18,7 +18,7 @@ interface PointCompositionProps {
 
 const formatPoint = (point: string): string => {
   if (!point) return "-";
-  const formattedPoint = numberToFormat(point, { decimals: 1, forceDecimals: true, truncateDecimals: true });
+  const formattedPoint = numberToFormat(point, { decimals: 2, forceDecimals: true, truncateDecimals: true });
   return removeTrailingZeros(formattedPoint);
 };
 
