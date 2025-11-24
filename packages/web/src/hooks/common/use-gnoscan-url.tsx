@@ -8,7 +8,7 @@ export enum GnoscanDataType {
   Transactions = "/transactions",
   Realms = "/realms",
   Tokens = "/tokens",
-  Accounts = "/accounts",
+  Account = "/account",
 }
 
 const TEMP_RPC_URL = "https%3A%2F%2Fdev.rpc.gnoswap.io";
@@ -48,7 +48,7 @@ export const useGnoscanUrl = () => {
   };
 
   const getAccountUrl = (address: string) => {
-    return getGnoscanUrl(GnoscanDataType.Accounts, `${address}`);
+    return getGnoscanUrl(GnoscanDataType.Account, `${address}`);
   };
 
   return {
