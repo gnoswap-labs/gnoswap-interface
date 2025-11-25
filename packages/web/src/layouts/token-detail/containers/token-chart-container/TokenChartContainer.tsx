@@ -18,6 +18,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import { getLabelChartV2, getLocalizeTime, getNumberOfAxis } from "@utils/chart";
 import { checkPositivePrice, generateDateSequence } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
+import { RefetchInterval } from "@common/values";
 
 import TokenChart, { ChartInfo, TokenInfo } from "../../components/token-chart/TokenChart";
 
@@ -140,6 +141,7 @@ const TokenChartContainer: React.FC = () => {
     path === "gnot" ? wugnotPath : path,
     {
       enabled: !!path,
+      refetchInterval: RefetchInterval.Frequent,
     },
   );
 
@@ -174,7 +176,16 @@ const TokenChartContainer: React.FC = () => {
         openWarningModal(tokenB);
       }
     }
-  }, [router.query, pricesBefore.latestPrice, currentPrice, tokenB, gnot, pricesBefore.priceToday, fromSelectToken]);
+  }, [
+    router.query,
+    pricesBefore.latestPrice,
+    currentPrice,
+    tokenB,
+    gnot,
+    pricesBefore.priceToday,
+    fromSelectToken,
+    priceGradeType,
+  ]);
 
   const changeTab = useCallback((tab: string) => {
     const currentTab = TokenChartGraphPeriods.find(period => `${period}` === tab) || "1D";

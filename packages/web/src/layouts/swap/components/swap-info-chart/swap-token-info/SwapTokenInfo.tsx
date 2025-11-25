@@ -2,6 +2,7 @@ import React from "react";
 
 import { LineGraphData } from "@components/common/line-graph/LineGraph";
 import { isNativeTokenByType, TokenModel } from "@models/token/token-model";
+import { RefetchInterval } from "@common/values";
 
 import useElementWidth from "@hooks/common/use-element-width";
 import { useGetTokenPrices } from "@query/token";
@@ -47,7 +48,10 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
     data: { priceGradeType, last7d = [] } = {},
     isLoading,
     isFetched,
-  } = useGetTokenPrices(tokenData.path as string, { enabled: !!tokenData.path });
+  } = useGetTokenPrices(tokenData.path as string, {
+    enabled: !!tokenData.path,
+    refetchInterval: RefetchInterval.Frequent,
+  });
 
   const handleMouseMove = React.useCallback(
     (data?: LineGraphData) => {

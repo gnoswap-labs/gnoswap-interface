@@ -5,6 +5,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { QUERY_KEY } from "../query-keys";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { TokenError } from "@common/errors/token";
+import { CacheTime, StaleTime } from "@common/values";
 
 export const useGetTokenPrices = (path: string | null, options?: UseQueryOptions<TokenPriceModel, Error>) => {
   const { tokenRepository } = useGnoswapContext();
@@ -19,6 +20,8 @@ export const useGetTokenPrices = (path: string | null, options?: UseQueryOptions
     },
     refetchOnMount: true,
     refetchOnReconnect: true,
+    cacheTime: CacheTime.None,
+    staleTime: StaleTime.None,
     ...options,
   });
 };
