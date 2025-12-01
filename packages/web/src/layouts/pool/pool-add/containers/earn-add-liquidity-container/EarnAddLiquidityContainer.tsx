@@ -24,6 +24,7 @@ import {
   getDepositAmountsByAmountA,
   getDepositAmountsByAmountB,
   makeSwapFeeTier,
+  priceToSqrtX96,
   priceToTick,
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
@@ -340,7 +341,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      if (!selectPool.currentPrice || !sqrtPriceX96) {
+      if (!selectPool.currentPrice && !sqrtPriceX96) {
         return;
       }
 
@@ -353,10 +354,15 @@ const EarnAddLiquidityContainer: React.FC = () => {
       }
 
       const decimals = tokenB.decimals - tokenA.decimals;
+      const currentSqrtPriceX96 = selectPool.isCreate ? priceToSqrtX96(selectPool.currentPrice) : sqrtPriceX96;
+      if (!currentSqrtPriceX96) {
+        return null;
+      }
+
       const amountRaw = makeRawTokenAmount(tokenA, amount) || 0;
       const { amountB } = getDepositAmountsByAmountA(
         BigNumber(selectPool.currentPrice).shiftedBy(decimals).toNumber(),
-        sqrtPriceX96,
+        currentSqrtPriceX96,
         BigNumber(selectPool.minPrice).shiftedBy(decimals).toNumber(),
         BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
         BigInt(amountRaw),
@@ -365,6 +371,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       tokenBAmountInput.changeAmount(expectedTokenAmount.toString());
     },
     [
+      selectPool.isCreate,
       selectPool.currentPrice,
       sqrtPriceX96,
       selectPool.compareToken?.symbol,
@@ -381,7 +388,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      if (!selectPool.currentPrice || !sqrtPriceX96) {
+      if (!selectPool.currentPrice && !sqrtPriceX96) {
         return;
       }
 
@@ -394,10 +401,15 @@ const EarnAddLiquidityContainer: React.FC = () => {
       }
 
       const decimals = tokenB.decimals - tokenA.decimals;
+      const currentSqrtPriceX96 = selectPool.isCreate ? priceToSqrtX96(selectPool.currentPrice) : sqrtPriceX96;
+      if (!currentSqrtPriceX96) {
+        return null;
+      }
+
       const amountRaw = makeRawTokenAmount(tokenB, amount) || 0;
       const { amountA } = getDepositAmountsByAmountB(
         BigNumber(selectPool.currentPrice).shiftedBy(decimals).toNumber(),
-        sqrtPriceX96,
+        currentSqrtPriceX96,
         BigNumber(selectPool.minPrice).shiftedBy(decimals).toNumber(),
         BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
         BigInt(amountRaw),
@@ -406,6 +418,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       tokenAAmountInput.changeAmount(expectedTokenAmount.toString());
     },
     [
+      selectPool.isCreate,
       selectPool.currentPrice,
       sqrtPriceX96,
       selectPool.minPrice,

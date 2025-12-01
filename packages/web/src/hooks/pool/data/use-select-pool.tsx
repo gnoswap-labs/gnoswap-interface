@@ -22,6 +22,7 @@ import {
   getDepositAmountsByAmountA,
   isEndTickBy,
   priceToNearTick,
+  priceToSqrtX96,
   tickToPrice,
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
@@ -378,7 +379,7 @@ export const useSelectPool = ({
   }, [fullRange, maxPosition, swapFeeTierMaxPriceRangeMap?.maxPrice]);
 
   const depositRatio = useMemo(() => {
-    if (!tokenA || !tokenB || minPrice === null || maxPrice === null || !compareToken || !sqrtPriceX96) {
+    if (!tokenA || !tokenB || minPrice === null || maxPrice === null || !compareToken) {
       return null;
     }
 
@@ -402,9 +403,14 @@ export const useSelectPool = ({
     const adjustAmountA = 1_000_000_000n;
 
     const decimals = tokenB.decimals - tokenA.decimals;
+    const currentSqrtPriceX96 = isCreate ? priceToSqrtX96(currentPrice) : sqrtPriceX96;
+    if (!currentSqrtPriceX96) {
+      return null;
+    }
+
     const { amountA, amountB } = getDepositAmountsByAmountA(
       BigNumber(currentPrice).shiftedBy(decimals).toNumber(),
-      sqrtPriceX96,
+      currentSqrtPriceX96,
       BigNumber(currentMinPrice).shiftedBy(decimals).toNumber(),
       BigNumber(currentMaxPrice).shiftedBy(decimals).toNumber(),
       adjustAmountA,
