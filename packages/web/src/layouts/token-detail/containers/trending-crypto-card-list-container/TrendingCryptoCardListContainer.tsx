@@ -18,7 +18,7 @@ const TrendingCryptoCardListContainer: React.FC = () => {
   const { data: { tokens = [] } = {}, isLoading: isLoadingListToken } = useGetTokens();
   const { data: { trending = [] } = {}, isLoading } = useGetChainInfo();
   const { gnot, wugnotPath } = useGnotToGnot();
-  const { isLoading: isLoadingTokenDetail } = useGetTokenDetails(path === "gnot" ? wugnotPath : path, {
+  const { isLoading: isLoadingTokenDetail } = useGetTokenDetails(path === "ugnot" ? wugnotPath : path, {
     enabled: !!path,
   });
   const { isLoading: isLoadingGetPoolList } = useGetPoolList();

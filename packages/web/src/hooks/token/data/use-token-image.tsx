@@ -6,7 +6,7 @@ export const useTokenImage = () => {
   const { data: { tokens = [] } = {} } = useGetTokens();
   const getTokenImage = useCallback(
     (tokenId: string): string | null => {
-      const temp = tokenId === WRAPPED_GNOT_PATH ? "gnot" : tokenId;
+      const temp = tokenId === WRAPPED_GNOT_PATH ? "ugnot" : tokenId;
       return tokens.find(token => token.path === temp)?.logoURI || null;
     },
     [tokens],
@@ -14,7 +14,7 @@ export const useTokenImage = () => {
 
   const getTokenSymbol = useCallback(
     (tokenId: string): string | null => {
-      const temp = tokenId === WRAPPED_GNOT_PATH ? "gnot" : tokenId;
+      const temp = tokenId === WRAPPED_GNOT_PATH ? "ugnot" : tokenId;
       return tokens.find(token => token.path === temp)?.symbol || null;
     },
     [tokens],

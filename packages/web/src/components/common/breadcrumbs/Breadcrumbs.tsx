@@ -46,7 +46,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ steps, onClickPath }) => {
   const onClickTokenPath = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
       e.stopPropagation();
-      if (path === "gnot") {
+      if (path === "ugnot") {
         window.open(getGnoscanUrl(), "_blank");
       } else {
         window.open(getTokenUrl(path), "_blank");

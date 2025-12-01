@@ -35,7 +35,7 @@ export default function Page() {
     },
   });
   const { data: { usd: currentPrice } = {} } = useGetTokenPrices(
-    path === "gnot" ? WRAPPED_GNOT_PATH : (path as string),
+    path === "ugnot" ? WRAPPED_GNOT_PATH : (path as string),
     { enabled: !!path },
   );
   const { getGnotPath } = useGnotToGnot();

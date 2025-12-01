@@ -87,7 +87,7 @@ const AdditionalInfoContainer: React.FC = () => {
     return (
       tokenPair?.findIndex(path => {
         if (compareToken) {
-          return isNativeToken(compareToken) || compareToken.path === "gnot"
+          return isNativeToken(compareToken) || compareToken.path === "ugnot"
             ? compareToken.wrappedPath === path
             : compareToken.path === path;
         }
