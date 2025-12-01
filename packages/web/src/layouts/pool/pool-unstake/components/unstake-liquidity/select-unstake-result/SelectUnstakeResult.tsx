@@ -63,7 +63,7 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({ positions, is
             </li>
           );
         })}
-        {unclaimedRewards.find(item => item.token.path === "gnot") && (
+        {unclaimedRewards.find(item => item.token.path === "ugnot") && (
           <>
             <Divider />
             <GnotCollectSwitchWrapper>

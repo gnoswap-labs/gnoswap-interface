@@ -131,14 +131,14 @@ const TokenChartContainer: React.FC = () => {
     enabled: !!path,
   });
   const { data: { prices1d = [], prices7d = [], prices1m = [], prices1y = [] } = {}, isLoading } = useGetTokenDetails(
-    path === "gnot" ? wugnotPath : path,
+    path === "ugnot" ? wugnotPath : path,
     {
       enabled: !!path,
     },
   );
 
   const { data: { priceGradeType, usd: currentPrice, pricesBefore = priceChangeDetailInit } = {} } = useGetTokenPrices(
-    path === "gnot" ? wugnotPath : path,
+    path === "ugnot" ? wugnotPath : path,
     {
       enabled: !!path,
       refetchInterval: RefetchInterval.Frequent,

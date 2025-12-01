@@ -20,7 +20,7 @@ const GainerAndLoserContainer: React.FC = () => {
   const { data: { gainers = [], losers = [] } = {}, isLoading } = useGetChainInfo();
   const { gnot, wugnotPath } = useGnotToGnot();
   const { isLoading: isLoadingGetPoolList } = useGetPoolList();
-  const { isLoading: isLoadingTokenDetail } = useGetTokenDetails(path === "gnot" ? wugnotPath : path, {
+  const { isLoading: isLoadingTokenDetail } = useGetTokenDetails(path === "ugnot" ? wugnotPath : path, {
     enabled: !!path,
   });
   const { isLoading: isLoadingCommon } = useLoading();

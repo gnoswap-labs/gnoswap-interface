@@ -120,7 +120,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   const onClickPath = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
       e.stopPropagation();
-      if (path === "gnot") {
+      if (path === "ugnot") {
         window.open(getGnoscanUrl(), "_blank");
       } else {
         window.open(getTokenUrl(path), "_blank");

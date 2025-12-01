@@ -22,7 +22,7 @@ const EarnMyPositionNoLiquidity: React.FC<EarnMyPositionNoLiquidityProps> = ({ h
   const { data: tokenPrices = {} } = useGetAllTokenPrices();
   const availableBalance = useMemo(() => {
     return Object.entries(balancesPrice).reduce((acc, [key, value]) => {
-      const path = key === "gnot" ? WRAPPED_GNOT_PATH : key;
+      const path = key === "ugnot" ? WRAPPED_GNOT_PATH : key;
       const balance =
         BigNumber(value || 0)
           .multipliedBy(tokenPrices?.[path]?.pricesBefore?.latestPrice || 0)

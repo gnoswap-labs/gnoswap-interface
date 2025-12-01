@@ -17,7 +17,7 @@ const BestPoolsContainer: React.FC = () => {
   const { wugnotPath, getGnotPath } = useGnotToGnot();
   const router = useCustomRouter();
   const path = router.getTokenPath();
-  const { data: { bestPools = [] } = {}, isLoading } = useGetTokenDetails(path === "gnot" ? wugnotPath : path, {
+  const { data: { bestPools = [] } = {}, isLoading } = useGetTokenDetails(path === "ugnot" ? wugnotPath : path, {
     enabled: !!path,
   });
   const { data: pools = [], isLoading: isLoadingGetPoolList } = useGetPoolList();

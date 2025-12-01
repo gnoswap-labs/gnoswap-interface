@@ -45,7 +45,7 @@ export const useTokenData = () => {
   const { getGnotPath } = useGnotToGnot();
 
   const gnotToken = useMemo((): TokenModel => {
-    const token = tokens.find(token => token.path === "gnot");
+    const token = tokens.find(token => token.path === "ugnot");
     if (token) {
       return token;
     }

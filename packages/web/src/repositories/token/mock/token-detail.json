@@ -412,7 +412,7 @@
       "tokenB": {
         "type": "native",
         "name": "Gnoland",
-        "path": "gnot",
+        "path": "ugnot",
         "symbol": "GNOT",
         "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg"
       },

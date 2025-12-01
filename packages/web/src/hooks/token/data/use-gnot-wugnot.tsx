@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useGetToken } from "@query/token";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 
-const GNOT_PATH = "gnot";
+const GNOT_PATH = "ugnot";
 
 export const useGnotToGnot = () => {
   const { data: gnot, isFetched } = useGetToken(GNOT_PATH);

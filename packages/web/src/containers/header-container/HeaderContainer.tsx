@@ -65,7 +65,7 @@ const HeaderContainer: React.FC = () => {
   const tokens: Token[] = useMemo(() => {
     return listTokens.map((item: TokenModel) => {
       const temp: TokenPriceModel = tokenPrices[item.path] ?? {};
-      const isGnot = item.path === "gnot";
+      const isGnot = item.path === "ugnot";
       const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
       const transferData = isGnot ? tempWuGnot : temp;
       const dataToday = checkPositivePrice(
@@ -110,7 +110,7 @@ const HeaderContainer: React.FC = () => {
     return storageData.map((item: any) => {
       if (!item.isLiquid) {
         const temp: TokenPriceModel = tokenPrices[item?.token?.path] ?? {};
-        const isGnot = item?.token?.path === "gnot";
+        const isGnot = item?.token?.path === "ugnot";
         const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
         const transferData = isGnot ? tempWuGnot : temp;
         const dataToday = checkPositivePrice(
@@ -206,7 +206,7 @@ const HeaderContainer: React.FC = () => {
     return temp
       .map((item: TokenModel) => {
         const temp: TokenPriceModel = tokenPrices[item.path] ?? {};
-        const isGnot = item.path === "gnot";
+        const isGnot = item.path === "ugnot";
         const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
         const transferData = isGnot ? tempWuGnot : temp;
         const dataToday = checkPositivePrice(

@@ -25,8 +25,8 @@ const SwapLiquidityContainer: React.FC = () => {
   };
 
   const poolDetail: PoolModel[] = useMemo(() => {
-    const tokenAPath = tokenA?.path === "gnot" ? wugnotPath : tokenA?.path;
-    const tokenBPath = tokenB?.path === "gnot" ? wugnotPath : tokenB?.path;
+    const tokenAPath = tokenA?.path === "ugnot" ? wugnotPath : tokenA?.path;
+    const tokenBPath = tokenB?.path === "ugnot" ? wugnotPath : tokenB?.path;
     const pools: PoolModel[] = poolList.filter(
       (item: PoolModel) =>
         item.poolPath?.includes(`${tokenAPath}:${tokenBPath}`) ||
@@ -81,8 +81,8 @@ const SwapLiquidityContainer: React.FC = () => {
   }, [tokenB, gnot]);
 
   const checkDoubleGnot =
-    (tokenAData?.path === "gnot" && tokenBData?.path === "gnot") ||
-    (tokenBData?.path === "gnot" && tokenAData?.path === "gnot");
+    (tokenAData?.path === "ugnot" && tokenBData?.path === "ugnot") ||
+    (tokenBData?.path === "ugnot" && tokenAData?.path === "ugnot");
 
   if (!tokenAData || !tokenBData || isLoading || checkDoubleGnot) return null;
 

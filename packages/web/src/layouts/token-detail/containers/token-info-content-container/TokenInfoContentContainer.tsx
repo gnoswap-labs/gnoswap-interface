@@ -35,18 +35,18 @@ const TokenInfoContentContainer: React.FC = () => {
     data: { market = marketInformationInit } = {},
     isLoading,
     isStale: isStaleTokenDetails,
-  } = useGetTokenDetails(path === "gnot" ? WRAPPED_GNOT_PATH : (path as string), {
+  } = useGetTokenDetails(path === "ugnot" ? WRAPPED_GNOT_PATH : (path as string), {
     enabled: !!path,
   });
   const {
     data: { usd: currentPrice = "0", feeUsd24h, pricesBefore = priceChangeDetailInit, marketCap } = {},
     isStale: isStaleTokenPrices,
-  } = useGetTokenPrices(path === "gnot" ? WRAPPED_GNOT_PATH : (path as string), { enabled: !!path });
+  } = useGetTokenPrices(path === "ugnot" ? WRAPPED_GNOT_PATH : (path as string), { enabled: !!path });
   const { isLoading: isLoadingCommon } = useLoading();
   const { t } = useTranslation();
 
   const marketInformation = useMemo(() => {
-    const isGnot = path === "gnot";
+    const isGnot = path === "ugnot";
 
     return {
       popularity: formatOtherPrice(isGnot ? 1_000_000_000 * Number(currentPrice) : marketCap),

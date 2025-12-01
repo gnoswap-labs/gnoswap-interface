@@ -211,7 +211,7 @@ const TokenListContainer: React.FC = () => {
     let temp = tokens
       .filter((token: TokenModel) => token.path !== wugnotPath)
       .map((item: TokenModel) => {
-        const isGnot = item.path === "gnot";
+        const isGnot = item.path === "ugnot";
         const tempTokenPrice: TokenPriceModel = tokenPrices[isGnot ? wugnotPath : item.path] ?? {};
         const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
         const transferData = isGnot ? tempWuGnot : tempTokenPrice;
