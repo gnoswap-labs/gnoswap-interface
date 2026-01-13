@@ -13,14 +13,19 @@ import { PACKAGE_POOL_PATH, PACKAGE_STAKER_PATH } from "@constants/environment.c
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
-import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
 import { PoolStakingMapper } from "@models/pool/mapper/pool-staking-mapper";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import { IncentivizePoolModel, PoolModel } from "@models/pool/pool-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
-import { evaluateExpressionToNumber, evaluateExpressionToObject, makeABCIParams } from "@utils/rpc-utils";
+import {
+  evaluateExpressionToNumber,
+  evaluateExpressionToObject,
+  evaluateExpressionToStrings,
+  evaluateExpressionToUint256,
+  makeABCIParams,
+} from "@utils/rpc-utils";
 import { withTransactionGuard, generateSendTransactionParams } from "@utils/transaction-utils";
 import { PoolListResponse, PoolPricesResponse, PoolRepository, PoolResponse } from ".";
 import {
@@ -35,7 +40,6 @@ import { CreatePoolRequest } from "./request/create-pool-request";
 import { RemoveExternalIncentiveRequest } from "./request/remove-external-incentive-request";
 import { AddLiquidityFailedResponse, AddLiquiditySuccessResponse } from "./response/add-liquidity-response";
 import { CreatePoolFailedResponse, CreatePoolSuccessResponse } from "./response/create-pool-response";
-import { PoolRPCResponse } from "./response/pool-rpc-response";
 import { PoolStakingResponse } from "./response/pool-staking-response";
 
 export class PoolRepositoryImpl implements PoolRepository {
@@ -212,25 +216,99 @@ export class PoolRepositoryImpl implements PoolRepository {
       .then(response => response.data.data);
   };
 
-  getPoolDetailRPCByPoolPath = async (poolPath: string): Promise<PoolDetailRPCModel | null> => {
+  getPoolLiquidity = async (poolPath: string): Promise<string> => {
     try {
-      const poolPackagePath = PACKAGE_POOL_PATH;
-
-      if (!poolPackagePath || !this.rpcProvider) {
+      if (!PACKAGE_POOL_PATH || !this.rpcProvider) {
         throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
       }
 
-      const param = makeABCIParams("ApiGetPool", [poolPath]);
-      const res = await this.rpcProvider.evaluateExpression(poolPackagePath, param);
-      const responseData = evaluateExpressionToObject<{
-        response: PoolRPCResponse;
-      }>(res);
+      const param = makeABCIParams("GetPoolLiquidity", [poolPath]);
+      const response = await this.rpcProvider.evaluateExpression(PACKAGE_POOL_PATH, param);
 
-      return responseData ? PoolRPCMapper.detailFrom(responseData.response) : null;
+      const results = evaluateExpressionToStrings(response);
+      return results.length > 0 ? results[0] : "0";
     } catch (error) {
-      console.log(error);
-      return null;
+      console.error(error);
+      return "0";
     }
+  };
+
+  getPoolTicks = async (
+    poolPath: string,
+    tickLower: number = -887272,
+    tickUpper: number = 887272,
+  ): Promise<number[]> => {
+    try {
+      if (!PACKAGE_POOL_PATH || !this.rpcProvider) {
+        throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
+      }
+
+      const param = makeABCIParams("GetInitializedTicksInRange", [poolPath, tickLower, tickUpper]);
+      const response = await this.rpcProvider.evaluateExpression(PACKAGE_POOL_PATH, param);
+
+      return evaluateExpressionToObject<number[]>(response) || [];
+    } catch (error) {
+      console.error(error);
+      throw new PoolError("FAILED_TO_GET_TICKS");
+    }
+  };
+
+  getPoolTickSpacing = async (poolPath: string): Promise<number> => {
+    try {
+      if (!PACKAGE_POOL_PATH || !this.rpcProvider) {
+        throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
+      }
+
+      const param = makeABCIParams("GetTickSpacing", [poolPath]);
+      const response = await this.rpcProvider.evaluateExpression(PACKAGE_POOL_PATH, param);
+
+      return evaluateExpressionToNumber(response);
+    } catch (error) {
+      console.error(error);
+      throw new PoolError("FAILED_TO_GET_TICK_SPACING");
+    }
+  };
+
+  getPoolSqrtPriceX96 = async (poolPath: string): Promise<bigint> => {
+    try {
+      if (!PACKAGE_POOL_PATH || !this.rpcProvider) {
+        throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
+      }
+
+      const param = makeABCIParams("GetSlot0SqrtPriceX96", [poolPath]);
+      const response = await this.rpcProvider.evaluateExpression(PACKAGE_POOL_PATH, param);
+
+      return evaluateExpressionToUint256(response);
+    } catch (error) {
+      console.error(error);
+      throw new PoolError("FAILED_TO_GET_SQRT_PRICE_X96");
+    }
+  };
+
+  getPoolDetailRPCByPoolPath = async (poolPath: string): Promise<PoolDetailRPCModel | null> => {
+    console.warn("getPoolDetailRPCByPoolPath is deprecated. Use individual getters instead.");
+
+    return {
+      poolPath,
+      tokenAPath: "",
+      tokenBPath: "",
+      fee: 0,
+      tokenABalance: 0n,
+      tokenBBalance: 0n,
+      tickSpacing: 0,
+      maxLiquidityPerTick: 0,
+      price: 0,
+      sqrtPriceX96: 0n,
+      tick: 0,
+      feeProtocol: 0,
+      tokenAProtocolFee: 0,
+      tokenBProtocolFee: 0,
+      liquidity: 0n,
+      ticks: [],
+      tickDetails: {},
+      tickBitmaps: [],
+      positions: [],
+    };
   };
 
   createPool = async (

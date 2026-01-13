@@ -97,6 +97,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
     compareToken: selectPool.compareToken,
     isReverted,
   });
+
+  console.log(feetierOfLiquidityMap, "feetierOfLiquidityMap");
   const { openAddPositionModal, openAddPositionWithStakingModal } = usePoolAddLiquidityConfirmModal({
     tokenA,
     tokenB,
@@ -112,7 +114,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const { isLoading: isLoadingCommon } = useLoading();
 
   const sqrtPriceX96 = useMemo(() => {
-    return selectPool?.poolInfo?.chainData?.sqrtPriceX96 ?? null;
+    return selectPool?.sqrtPriceX96 ?? null;
   }, [selectPool]);
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
@@ -730,8 +732,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
   }, [isFetchingPools, isLoadingCommon]);
 
   const showOneClickStaking = useMemo(
-    () => checkPoolStakingRewards(selectPool.poolInfo?.dbData?.incentivized),
-    [selectPool.poolInfo?.dbData?.incentivized],
+    () => checkPoolStakingRewards(selectPool.poolFromDb?.incentivized),
+    [selectPool.poolFromDb?.incentivized],
   );
 
   return (

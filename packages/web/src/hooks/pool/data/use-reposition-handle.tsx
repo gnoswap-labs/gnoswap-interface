@@ -162,7 +162,7 @@ export const useRepositionHandle = () => {
   });
 
   const sqrtPriceX96 = useMemo(() => {
-    return selectPool?.poolInfo?.chainData?.sqrtPriceX96 ?? null;
+    return selectPool?.sqrtPriceX96 ?? null;
   }, [selectPool]);
 
   const inRange = useMemo(() => {
@@ -179,8 +179,8 @@ export const useRepositionHandle = () => {
     return selectedPosition?.closed
       ? RANGE_STATUS_OPTION.NONE
       : inRange
-      ? RANGE_STATUS_OPTION.IN
-      : RANGE_STATUS_OPTION.OUT;
+        ? RANGE_STATUS_OPTION.IN
+        : RANGE_STATUS_OPTION.OUT;
   }, [selectedPosition, inRange]);
 
   const resetRange = useCallback(() => {
@@ -614,11 +614,12 @@ export const useRepositionHandle = () => {
         referrerAddress: currentReferralAddress,
       };
 
-      return await (walletType === "ADENA"
-        ? isExactIn
-          ? buildAdenaWalletExactInAction(request)
-          : buildAdenaWalletExactOutAction(request)
-        : buildSocialWalletSwapAction(rpcProvider, request, isExactIn)
+      return await (
+        walletType === "ADENA"
+          ? isExactIn
+            ? buildAdenaWalletExactInAction(request)
+            : buildAdenaWalletExactOutAction(request)
+          : buildSocialWalletSwapAction(rpcProvider, request, isExactIn)
       ).catch(e => {
         if (e.status === SWAP_ERROR_VALUE.DRY_SWAP_DEVIATION_EXCEEDED.status) {
           broadcastError(BROADCAST_ERROR_VALUE.SLIPPAGE_EXCEEDED);
