@@ -6,14 +6,19 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ZOOL_VALUES } from "@constants/graph.constant";
 import { SwapFeeTierInfoMap, SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import { MAX_PRICE, MAX_TICK, MIN_PRICE, MIN_TICK } from "@constants/swap.constant";
-import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useLoading } from "@hooks/common/use-loading";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
-import { useGetBinsByPath, useInitializeBins } from "@query/pools";
-import { QUERY_KEY } from "@query/query-keys";
+import {
+  useGetBinsByPath,
+  useInitializeBins,
+  useGetPoolFromDb,
+  useGetPoolLiquidity,
+  useGetPoolTicks,
+  useGetPoolTickSpacing,
+  useGetPoolSqrtPriceX96,
+} from "@query/pools";
 import { EarnState } from "@states/index";
-import { useQuery } from "@tanstack/react-query";
 import { checkGnotPath, encryptId } from "@utils/common";
 import {
   feeBoostRateByPrices,
@@ -110,7 +115,6 @@ export const useSelectPool = ({
   const [interactionType, setInteractionType] = useState<"NONE" | "INTERACTION" | "TICK_UPDATE" | "FINISH">("NONE");
   const [isChangeMinMax, setIsChangeMinMax] = useState<boolean>(false);
 
-  const { poolRepository } = useGnoswapContext();
   const { isLoading } = useLoading();
 
   const tokenPair = useMemo(() => {
@@ -142,7 +146,8 @@ export const useSelectPool = ({
     return SwapFeeTierMaxPriceRangeMap[feeTier || "NONE"];
   }, [feeTier]);
 
-  // Bins queries
+  const shouldRefetch = ["/earn/pool/add", "/earn/add"].includes(router.pathname);
+
   const { data: bins } = useGetBinsByPath(calculatedPoolPath || "", ZOOL_VALUES[zoomLevel], {
     enabled: !!calculatedPoolPath && !isCreate,
     queryKey: ["useSelectPool/getBins", calculatedPoolPath, zoomLevel, isCreate],
@@ -150,95 +155,31 @@ export const useSelectPool = ({
 
   const { data: initializeBins } = useInitializeBins(feeTier, startPrice, ZOOL_VALUES[zoomLevel], isReverse, {
     enabled: !!feeTier && !!startPrice && !!isCreate,
-    queryKey: [QUERY_KEY.initializeBins, feeTier, startPrice, zoomLevel, isReverse],
   });
 
-  const { data: poolFromDb, isLoading: isLoadingPoolFromDb } = useQuery({
-    queryKey: ["poolFromDb", convertPath],
-    queryFn: async () => {
-      if (!convertPath) return null;
-      try {
-        return await poolRepository.getPoolDetailByPoolPath(convertPath);
-      } catch (error) {
-        console.error("Failed to get pool from DB:", error);
-        return null;
-      }
-    },
+  const { data: poolFromDb, isLoading: isLoadingPoolFromDb } = useGetPoolFromDb(convertPath, {
     enabled: !!convertPath && !isCreate,
-    staleTime: 5_000,
-    refetchInterval: () => {
-      return ["/earn/pool/add", "/earn/add"].includes(router.pathname) ? 10_000 : false;
-    },
+    refetchInterval: shouldRefetch ? 10_000 : false,
   });
 
-  const { data: liquidity, isLoading: isLoadingLiquidity } = useQuery({
-    queryKey: ["poolLiquidity", calculatedPoolPath],
-    queryFn: async () => {
-      if (!calculatedPoolPath) return 0n;
-      try {
-        const result = await poolRepository.getPoolLiquidity(calculatedPoolPath);
-        return BigInt(result);
-      } catch (error) {
-        console.error("Failed to get liquidity:", error);
-        return 0n;
-      }
-    },
+  const { data: liquidity, isLoading: isLoadingLiquidity } = useGetPoolLiquidity(calculatedPoolPath, {
     enabled: !!calculatedPoolPath && !isCreate,
-    staleTime: 5_000,
-    refetchInterval: () => {
-      return ["/earn/pool/add", "/earn/add"].includes(router.pathname) ? 10_000 : false;
-    },
+    refetchInterval: shouldRefetch ? 10_000 : false,
   });
 
-  console.log(liquidity, "liquidityliquidity");
-
-  const { data: ticks, isLoading: isLoadingTicks } = useQuery({
-    queryKey: ["poolTicks", calculatedPoolPath, isReverse],
-    queryFn: async () => {
-      if (!calculatedPoolPath) return [];
-      try {
-        const result = await poolRepository.getPoolTicks(calculatedPoolPath);
-        return result.map(tick => tick * (isReverse ? -1 : 1));
-      } catch (error) {
-        console.error("Failed to get ticks:", error);
-        return [];
-      }
-    },
+  const { data: ticks, isLoading: isLoadingTicks } = useGetPoolTicks(calculatedPoolPath, {
     enabled: !!calculatedPoolPath && !isCreate,
-    staleTime: 5_000,
+    isReverse,
   });
 
-  const { data: tickSpacing, isLoading: isLoadingTickSpacing } = useQuery({
-    queryKey: ["poolTickSpacing", calculatedPoolPath],
-    queryFn: async () => {
-      if (!calculatedPoolPath) return feeTier ? SwapFeeTierInfoMap[feeTier].tickSpacing : 1;
-      try {
-        return await poolRepository.getPoolTickSpacing(calculatedPoolPath);
-      } catch (error) {
-        console.error("Failed to get tick spacing:", error);
-        return feeTier ? SwapFeeTierInfoMap[feeTier].tickSpacing : 1;
-      }
-    },
+  const { data: tickSpacing, isLoading: isLoadingTickSpacing } = useGetPoolTickSpacing(calculatedPoolPath, {
     enabled: !!calculatedPoolPath && !isCreate,
-    staleTime: 5_000,
+    fallbackFeeTier: feeTier,
   });
 
-  const { data: sqrtPriceX96, isLoading: isLoadingSqrtPriceX96 } = useQuery({
-    queryKey: ["poolSqrtPriceX96", calculatedPoolPath],
-    queryFn: async () => {
-      if (!calculatedPoolPath) return null;
-      try {
-        return await poolRepository.getPoolSqrtPriceX96(calculatedPoolPath);
-      } catch (error) {
-        console.error("Failed to get sqrtPriceX96:", error);
-        return null;
-      }
-    },
+  const { data: sqrtPriceX96, isLoading: isLoadingSqrtPriceX96 } = useGetPoolSqrtPriceX96(calculatedPoolPath, {
     enabled: !!calculatedPoolPath && !isCreate,
-    staleTime: 5_000,
-    refetchInterval: () => {
-      return ["/earn/pool/add", "/earn/add"].includes(router.pathname) ? 10_000 : false;
-    },
+    refetchInterval: shouldRefetch ? 10_000 : false,
   });
 
   const isLoadingPoolInfo =
