@@ -1,11 +1,9 @@
 import { PoolPricesResponse, PoolRepository } from ".";
 
 import { SendTransactionResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
-import { PoolError } from "@common/errors/pool";
 import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import { IncentivizePoolModel, IPoolDetailResponse, PoolModel } from "@models/pool/pool-model";
 import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
@@ -49,10 +47,6 @@ export class PoolRepositoryMock implements PoolRepository {
 
   getCreationFee = async (): Promise<number> => {
     return 0;
-  };
-
-  getPoolDetailRPCByPoolPath = async (): Promise<PoolDetailRPCModel> => {
-    throw new PoolError("NOT_FOUND_POOL");
   };
 
   getPoolDetailByPoolPath = async (): Promise<PoolDetailModel> => {

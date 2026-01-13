@@ -16,7 +16,6 @@ import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { PoolStakingMapper } from "@models/pool/mapper/pool-staking-mapper";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import { IncentivizePoolModel, PoolModel } from "@models/pool/pool-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 import {
@@ -283,32 +282,6 @@ export class PoolRepositoryImpl implements PoolRepository {
       console.error(error);
       throw new PoolError("FAILED_TO_GET_SQRT_PRICE_X96");
     }
-  };
-
-  getPoolDetailRPCByPoolPath = async (poolPath: string): Promise<PoolDetailRPCModel | null> => {
-    console.warn("getPoolDetailRPCByPoolPath is deprecated. Use individual getters instead.");
-
-    return {
-      poolPath,
-      tokenAPath: "",
-      tokenBPath: "",
-      fee: 0,
-      tokenABalance: 0n,
-      tokenBBalance: 0n,
-      tickSpacing: 0,
-      maxLiquidityPerTick: 0,
-      price: 0,
-      sqrtPriceX96: 0n,
-      tick: 0,
-      feeProtocol: 0,
-      tokenAProtocolFee: 0,
-      tokenBProtocolFee: 0,
-      liquidity: 0n,
-      ticks: [],
-      tickDetails: {},
-      tickBitmaps: [],
-      positions: [],
-    };
   };
 
   createPool = async (

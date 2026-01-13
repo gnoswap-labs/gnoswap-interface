@@ -1,6 +1,5 @@
 import { PoolRPCResponse } from "@repositories/pool/response/pool-rpc-response";
 import { rawBySqrtX96 } from "@utils/swap-utils";
-import { PoolDetailRPCModel } from "../pool-detail-rpc-model";
 import { PoolRPCModel } from "../pool-rpc-model";
 
 export class PoolRPCMapper {
@@ -43,26 +42,6 @@ export class PoolRPCMapper {
         tokenAOwed: BigInt(position.token0Owed),
         tokenBOwed: BigInt(position.token1Owed),
       })),
-    };
-  }
-
-  public static toDetail(data: PoolRPCModel): PoolDetailRPCModel {
-    const tickSpacing = data.tickSpacing;
-
-    this.validatePositions(data.positions);
-
-    return {
-      ...data,
-      positions: (data.positions || []).map(position => {
-        const tickLower = position.tickLower;
-        const tickUpper = position.tickUpper;
-        const tickCount = 1 + (tickUpper - tickLower) / tickSpacing;
-        const liquidityOfTick = Number(position.liquidity) / tickCount;
-        return {
-          ...position,
-          liquidityOfTick,
-        };
-      }),
     };
   }
 
