@@ -98,7 +98,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     isReverted,
   });
 
-  console.log(feetierOfLiquidityMap, "feetierOfLiquidityMap");
   const { openAddPositionModal, openAddPositionWithStakingModal } = usePoolAddLiquidityConfirmModal({
     tokenA,
     tokenB,

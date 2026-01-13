@@ -222,7 +222,7 @@ export class PoolRepositoryImpl implements PoolRepository {
         throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
       }
 
-      const param = makeABCIParams("GetPoolLiquidity", [poolPath]);
+      const param = makeABCIParams("GetLiquidity", [poolPath]);
       const response = await this.rpcProvider.evaluateExpression(PACKAGE_POOL_PATH, param);
 
       const results = evaluateExpressionToStrings(response);

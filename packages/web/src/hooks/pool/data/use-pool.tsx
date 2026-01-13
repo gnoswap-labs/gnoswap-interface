@@ -53,7 +53,6 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
   }, [tokenA, tokenB]);
 
   const { data: rpcPools, isLoading: isLoadingRPCPools, refetch: refetchRPCPools } = useGetRPCPoolsBy(allPoolPaths);
-  console.log(rpcPools, "rpcPools!");
 
   const feetierOfLiquidityMap: { [key in string]: number } | null = useMemo(() => {
     if (!rpcPools) {
