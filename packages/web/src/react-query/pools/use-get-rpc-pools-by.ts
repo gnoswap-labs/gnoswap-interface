@@ -1,11 +1,10 @@
-import { useQuery } from "@tanstack/react-query";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { QUERY_KEY } from "@query/query-keys";
+import { useQuery } from "@tanstack/react-query";
 
 interface PoolRPCData {
   poolPath: string;
   liquidity: bigint;
-  sqrtPriceX96: bigint;
   fee: number;
 }
 
@@ -23,16 +22,11 @@ export const useGetRPCPoolsBy = (poolPaths: string[]) => {
         try {
           const parts = poolPath.split(":");
           const fee = parts.length === 3 ? parseInt(parts[2]) : 0;
-
-          const [liquidity, sqrtPriceX96] = await Promise.all([
-            poolRepository.getPoolLiquidity(poolPath).catch(() => "0"),
-            poolRepository.getPoolSqrtPriceX96(poolPath).catch(() => 0n),
-          ]);
+          const liquidity = await poolRepository.getPoolLiquidity(poolPath).catch(() => "0");
 
           return {
             poolPath,
             liquidity: BigInt(liquidity),
-            sqrtPriceX96,
             fee,
           };
         } catch (error) {
@@ -40,7 +34,6 @@ export const useGetRPCPoolsBy = (poolPaths: string[]) => {
           return {
             poolPath,
             liquidity: 0n,
-            sqrtPriceX96: 0n,
             fee: 0,
           };
         }

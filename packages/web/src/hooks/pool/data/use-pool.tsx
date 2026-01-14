@@ -7,6 +7,7 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolModel } from "@models/pool/pool-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { useGetPoolCreationFee, useGetRPCPoolsBy } from "@query/pools";
+import { checkGnotPath } from "@utils/common";
 import { sortTokenPaths } from "@utils/sort-utils";
 import { useReferral } from "@hooks/common/use-referral";
 import { AddLiquidityRequest } from "@repositories/pool/request/add-liquidity-request";
@@ -40,8 +41,8 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
     if (!tokenA || !tokenB) {
       return [];
     }
-    const tokenATokenPath = tokenA.wrappedPath || tokenA.path;
-    const tokenBTokenPath = tokenB.wrappedPath || tokenB.path;
+    const tokenATokenPath = checkGnotPath(tokenA.path);
+    const tokenBTokenPath = checkGnotPath(tokenB.path);
     const tokenPair = [tokenATokenPath, tokenBTokenPath].sort(sortTokenPaths);
 
     return [
