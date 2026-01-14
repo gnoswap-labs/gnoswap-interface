@@ -136,8 +136,11 @@ export const useSelectPool = ({
   }, [compareToken, tokenPair]);
 
   const calculatedPoolPath = useMemo(() => {
-    if (!tokenPair || !feeTier) return null;
-    return `${tokenPair.join(":")}:${SwapFeeTierInfoMap[feeTier].fee}`;
+    if (!tokenPair || !feeTier) {
+      return null;
+    }
+
+    return [...tokenPair, SwapFeeTierInfoMap[feeTier].fee].join(":");
   }, [tokenPair, feeTier]);
 
   const convertPath = useMemo(() => (calculatedPoolPath ? encryptId(calculatedPoolPath) : null), [calculatedPoolPath]);
