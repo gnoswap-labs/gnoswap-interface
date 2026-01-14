@@ -82,6 +82,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
     isCreate: createOption?.isCreate,
     startPrice: createOption?.startPrice,
   });
+
   const { updatePools } = usePoolData();
   const {
     pools,
@@ -106,7 +107,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
   const { isLoading: isLoadingCommon } = useLoading();
 
   const sqrtPriceX96 = useMemo(() => {
-    return selectPool?.poolInfo?.chainData?.sqrtPriceX96 ?? null;
+    return selectPool?.sqrtPriceX96 ?? null;
   }, [selectPool]);
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
@@ -612,8 +613,8 @@ const PoolAddLiquidityContainer: React.FC = () => {
   }, [isFetchingPools, isLoadingCommon]);
 
   const showOneClickStaking = useMemo(
-    () => checkPoolStakingRewards(selectPool.poolInfo?.dbData?.incentivized),
-    [selectPool.poolInfo?.dbData?.incentivized],
+    () => checkPoolStakingRewards(selectPool.poolFromDb?.incentivized),
+    [selectPool.poolFromDb?.incentivized],
   );
 
   return (

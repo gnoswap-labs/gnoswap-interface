@@ -122,8 +122,8 @@ export const useIncreaseHandle = () => {
     return selectedPosition?.closed
       ? RANGE_STATUS_OPTION.NONE
       : inRange
-      ? RANGE_STATUS_OPTION.IN
-      : RANGE_STATUS_OPTION.OUT;
+        ? RANGE_STATUS_OPTION.IN
+        : RANGE_STATUS_OPTION.OUT;
   }, [selectedPosition, inRange]);
 
   const aprFee = useMemo(() => {
@@ -146,7 +146,7 @@ export const useIncreaseHandle = () => {
   });
 
   const sqrtPriceX96 = useMemo(() => {
-    return selectPool?.poolInfo?.chainData?.sqrtPriceX96 ?? null;
+    return selectPool?.sqrtPriceX96 ?? null;
   }, [selectPool]);
 
   useEffect(() => {

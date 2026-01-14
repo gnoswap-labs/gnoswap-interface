@@ -13,6 +13,22 @@ const ERROR_VALUE = {
     status: 500,
     type: "Failed to remove incentive",
   },
+  FAILED_TO_GET_LIQUIDITY: {
+    status: 500,
+    type: "Failed to get pool liquidity",
+  },
+  FAILED_TO_GET_TICKS: {
+    status: 500,
+    type: "Failed to get pool ticks",
+  },
+  FAILED_TO_GET_TICK_SPACING: {
+    status: 500,
+    type: "Failed to get pool tick spacing",
+  },
+  FAILED_TO_GET_SQRT_PRICE_X96: {
+    status: 500,
+    type: "Failed to get pool sqrt price x96",
+  },
 };
 
 type ErrorType = keyof typeof ERROR_VALUE;

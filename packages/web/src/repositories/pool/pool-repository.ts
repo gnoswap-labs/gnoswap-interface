@@ -1,5 +1,4 @@
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
-import { PoolDetailRPCModel } from "@models/pool/pool-detail-rpc-model";
 import { IncentivizePoolModel, PoolModel } from "@models/pool/pool-model";
 import { AddLiquidityRequest } from "./request/add-liquidity-request";
 import { CreatePoolRequest } from "./request/create-pool-request";
@@ -23,8 +22,6 @@ export interface PoolRepository {
   getUnstakingFee: () => Promise<number>;
 
   getLatestBlockHeight: () => Promise<string>;
-
-  getPoolDetailRPCByPoolPath: (poolPath: string) => Promise<PoolDetailRPCModel | null>;
 
   getPoolDetailByPoolPath: (poolPath: string) => Promise<PoolDetailModel>;
 
@@ -51,4 +48,12 @@ export interface PoolRepository {
   getPoolStakingList: (poolPath: string) => Promise<PoolStakingModel[]>;
 
   getPoolStakingListByAddress: (address: string) => Promise<PoolStakingModel[]>;
+
+  getPoolLiquidity: (poolPath: string) => Promise<string>;
+
+  getPoolTicks: (poolPath: string, tickLower?: number, tickUpper?: number) => Promise<number[]>;
+
+  getPoolTickSpacing: (poolPath: string) => Promise<number>;
+
+  getPoolSqrtPriceX96: (poolPath: string) => Promise<bigint>;
 }

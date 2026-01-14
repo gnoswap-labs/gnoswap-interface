@@ -40,6 +40,32 @@ export function evaluateExpressionToStrings(evaluateExpression: string): string[
   }
 }
 
+export function evaluateExpressionToUint256(evaluateExpression: string): bigint {
+  try {
+    const matches = evaluateExpression.match(/\((\d+)\s+uint64\)/g);
+
+    if (!matches || matches.length === 0) {
+      console.error("Failed to parse uint64 array from response:", evaluateExpression);
+      return 0n;
+    }
+
+    const uint64Array = matches.map(match => {
+      const numMatch = match.match(/\((\d+)\s+uint64\)/);
+      return numMatch ? numMatch[1] : "0";
+    });
+
+    // result = uint64[0] + (uint64[1] << 64) + (uint64[2] << 128) + (uint64[3] << 192)
+    const result = uint64Array.reduce((acc, val, idx) => {
+      return acc + (BigInt(val) << BigInt(64 * idx));
+    }, 0n);
+
+    return result;
+  } catch (error) {
+    console.error("Parse Error (uint256):", evaluateExpression, error);
+    return 0n;
+  }
+}
+
 function matchNumberValues(str: string): string[] {
   const regex = /\((?:"([^"]+)"|(\d+))\s+\w+\)/g;
   const results: string[] = [];

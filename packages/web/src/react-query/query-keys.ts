@@ -49,6 +49,11 @@ export enum QUERY_KEY {
   poolStakingList = "pool_staking_list",
   lastedBlockHeight = "lasted_block_height",
   removeExternalIncentive = "remove_external_incentive",
+  poolLiquidity = "pool_liquidity",
+  poolTicks = "pool_ticks",
+  poolTickSpacing = "pool_tick_spacing",
+  poolSqrtPriceX96 = "pool_sqrt_price_x96",
+  poolFromDb = "pool_from_db",
   // positions
   positions = "positions",
   positionHistory = "positionHistory",
