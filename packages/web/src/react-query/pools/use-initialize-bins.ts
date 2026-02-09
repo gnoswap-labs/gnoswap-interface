@@ -1,8 +1,8 @@
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 
+import { SwapFeeTierType } from "@constants/option.constant";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { priceToTick } from "@utils/swap-utils";
-import { SwapFeeTierType } from "@constants/option.constant";
 
 export const useInitializeBins = (
   feeTier: SwapFeeTierType | null,
@@ -13,7 +13,7 @@ export const useInitializeBins = (
 ) => {
   return useQuery<PoolBinModel[], Error>({
     queryFn: async () => {
-      if (!feeTier || !startPrice) {
+      if (!feeTier || startPrice === null) {
         return [];
       }
       const price = isReverse ? 1 / startPrice : startPrice;
