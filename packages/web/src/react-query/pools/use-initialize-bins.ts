@@ -13,7 +13,7 @@ export const useInitializeBins = (
 ) => {
   return useQuery<PoolBinModel[], Error>({
     queryFn: async () => {
-      if (!feeTier || startPrice === null) {
+      if (!feeTier || !startPrice) {
         return [];
       }
       const price = isReverse ? 1 / startPrice : startPrice;

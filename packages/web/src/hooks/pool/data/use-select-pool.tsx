@@ -163,7 +163,7 @@ export const useSelectPool = ({
     isReverse,
     {
       enabled: !!feeTier && !!startPrice && !!isCreate,
-      queryKey: ["useSelectPool/initializeBins", feeTier, startPrice, zoomLevel, isReverse, isCreate, startPrice],
+      queryKey: ["useSelectPool/initializeBins", feeTier, startPrice, zoomLevel, isReverse, isCreate],
     },
   );
 
