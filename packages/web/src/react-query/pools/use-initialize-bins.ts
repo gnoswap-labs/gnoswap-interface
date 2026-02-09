@@ -1,8 +1,8 @@
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 
+import { SwapFeeTierType } from "@constants/option.constant";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { priceToTick } from "@utils/swap-utils";
-import { SwapFeeTierType } from "@constants/option.constant";
 
 export const useInitializeBins = (
   feeTier: SwapFeeTierType | null,

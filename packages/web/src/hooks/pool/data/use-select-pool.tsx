@@ -3,6 +3,7 @@ import { useAtom } from "jotai";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { GNOT_TOKEN } from "@common/values/token-constant";
 import { ZOOL_VALUES } from "@constants/graph.constant";
 import { SwapFeeTierInfoMap, SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import { MAX_PRICE, MAX_TICK, MIN_PRICE, MIN_TICK } from "@constants/swap.constant";
@@ -11,15 +12,16 @@ import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import {
   useGetBinsByPath,
-  useInitializeBins,
   useGetPoolFromDb,
   useGetPoolLiquidity,
+  useGetPoolSqrtPriceX96,
   useGetPoolTicks,
   useGetPoolTickSpacing,
-  useGetPoolSqrtPriceX96,
+  useInitializeBins,
 } from "@query/pools";
 import { EarnState } from "@states/index";
 import { checkGnotPath, encryptId } from "@utils/common";
+import { sortTokenPaths } from "@utils/sort-utils";
 import {
   feeBoostRateByPrices,
   getDepositAmountsByAmountA,
@@ -29,8 +31,6 @@ import {
   tickToPrice,
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { sortTokenPaths } from "@utils/sort-utils";
-import { GNOT_TOKEN } from "@common/values/token-constant";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 
@@ -156,9 +156,16 @@ export const useSelectPool = ({
     queryKey: ["useSelectPool/getBins", calculatedPoolPath, zoomLevel, isCreate],
   });
 
-  const { data: initializeBins } = useInitializeBins(feeTier, startPrice, ZOOL_VALUES[zoomLevel], isReverse, {
-    enabled: !!feeTier && !!startPrice && !!isCreate,
-  });
+  const { data: initializeBins, isLoading: isLoadingInitializeBins } = useInitializeBins(
+    feeTier,
+    startPrice,
+    ZOOL_VALUES[zoomLevel],
+    isReverse,
+    {
+      enabled: !!feeTier && !!startPrice && !!isCreate,
+      queryKey: ["useSelectPool/initializeBins", feeTier, startPrice, zoomLevel, isReverse, isCreate],
+    },
+  );
 
   const { data: poolFromDb, isLoading: isLoadingPoolFromDb } = useGetPoolFromDb(convertPath, {
     enabled: !!convertPath && !isCreate,
@@ -176,7 +183,7 @@ export const useSelectPool = ({
   });
 
   const { data: tickSpacing, isLoading: isLoadingTickSpacing } = useGetPoolTickSpacing(calculatedPoolPath, {
-    enabled: !!calculatedPoolPath && !isCreate,
+    enabled: !!calculatedPoolPath,
     fallbackFeeTier: feeTier,
   });
 
@@ -216,11 +223,34 @@ export const useSelectPool = ({
   const renderState = useCallback(
     (isIgnoreDefaultLoading = false) => {
       if (!tokenA || !tokenB || !feeTier) return "NONE";
-      if (isCreate && startPrice === null) return "CREATE";
-      if (isLoadingPoolInfo || (isIgnoreDefaultLoading ? isLoading : null)) return "LOADING";
+
+      if (isCreate) {
+        if (startPrice === null) {
+          return "CREATE";
+        }
+
+        if (isLoadingInitializeBins || initializeBins === undefined) {
+          return "LOADING";
+        }
+      } else {
+        if (isLoadingPoolInfo || (isIgnoreDefaultLoading ? isLoading : null)) {
+          return "LOADING";
+        }
+      }
+
       return "DONE";
     },
-    [feeTier, isCreate, startPrice, tokenA, tokenB, isLoading, isLoadingPoolInfo],
+    [
+      feeTier,
+      isCreate,
+      startPrice,
+      tokenA,
+      tokenB,
+      isLoading,
+      isLoadingPoolInfo,
+      isLoadingInitializeBins,
+      initializeBins,
+    ],
   );
 
   const minPrice = useMemo(() => {
