@@ -1,6 +1,6 @@
+import BigNumber from "bignumber.js";
 import React, { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import BigNumber from "bignumber.js";
 
 import IconAdd from "@components/common/icons/IconAdd";
 import IconKeyboardArrowLeft from "@components/common/icons/IconKeyboardArrowLeft";
@@ -23,9 +23,9 @@ import { SelectPool } from "@hooks/pool/data/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
+import { sortTokenPaths } from "@utils/sort-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToTick, tickToPrice } from "@utils/swap-utils";
-import { sortTokenPaths } from "@utils/sort-utils";
 
 import PriceSteps from "./price-steps/PriceSteps";
 import StartingPrice from "./starting-price/StartingPrice";
@@ -85,10 +85,10 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
 
     const isCustom = true;
 
-    const isLoading = useMemo(
-      () => selectPool.renderState() === "LOADING" || isLoadingSelectPriceRange,
-      [selectPool.renderState, isLoadingSelectPriceRange],
-    );
+    const isLoading = useMemo(() => selectPool.renderState() === "LOADING" || isLoadingSelectPriceRange, [
+      selectPool.renderState(),
+      isLoadingSelectPriceRange,
+    ]);
 
     const availSelect = Array.isArray(selectPool.liquidityOfTickPoints) && selectPool.renderState() === "DONE";
 
@@ -277,8 +277,12 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
     }, [tokenA]);
 
     useEffect(() => {
+      if (isLoading) {
+        return;
+      }
+
       resetRange(priceRangeType);
-    }, [selectPool.poolPath, selectPool.feeTier, selectPool.startPrice]);
+    }, [selectPool.poolPath, selectPool.feeTier, selectPool.startPrice, isLoading]);
 
     useEffect(() => {
       if (!selectPool.poolPath) {
