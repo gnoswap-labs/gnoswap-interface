@@ -20,7 +20,7 @@ const VolumeChartContainer: React.FC = () => {
 
   const { data: volumeEntity, isLoading } = useGetDashboardVolume();
 
-  const { volume: volumeData, allTimeVolumeUsd, allTimeFeeUsd, fee } = volumeEntity || {};
+  const { volume: volumeData, allTimeVolumeUsd, allTimeFeeUsd } = volumeEntity || {};
   const changeVolumeChartType = useCallback(({ key: newType }: { display: string; key: string }) => {
     const volumeChartType = Object.values(CHART_TYPE).find(type => type === newType) || CHART_TYPE["7D"];
     setVolumeChartType(volumeChartType);
@@ -34,33 +34,22 @@ const VolumeChartContainer: React.FC = () => {
         fees: [],
       } as VolumeChartInfo;
     let chartData = volumeData?.last7d;
-    let feeData = fee?.last7d;
 
     switch (volumeChartType) {
       case "30D":
         chartData = volumeData?.last30d;
-        feeData = fee?.last30d;
         break;
       case "90D":
         chartData = volumeData?.last90d;
-        feeData = fee?.last90d;
         break;
       case "ALL":
         chartData = volumeData?.all;
-        feeData = fee?.all;
         break;
       case "7D":
       default:
         chartData = volumeData?.last7d;
-        feeData = fee?.last7d;
         break;
     }
-
-    const fees = (feeData || [])
-      ?.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-      .reduce((pre, next) => {
-        return [...pre, next.feeUsd];
-      }, [] as string[]);
 
     return chartData
       ?.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
@@ -71,12 +60,12 @@ const VolumeChartContainer: React.FC = () => {
             xAxisLabels: [...pre.xAxisLabels, time],
             datas: [...pre.datas, next.volumeUsd],
             times: [...pre.times, next.date],
-            fees: fees,
+            fees: [...pre.fees, next.feeUsd],
           };
         },
         { xAxisLabels: [], datas: [], times: [], fees: [] } as VolumeChartInfo,
       );
-  }, [fee, volumeChartType, volumeData]);
+  }, [volumeChartType, volumeData]);
 
   return (
     <VolumeChart
