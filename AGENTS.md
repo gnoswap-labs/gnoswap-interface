@@ -1,4 +1,4 @@
-# CLAUDE.md
+# AGENT.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
@@ -35,7 +35,7 @@ yarn storybook              # Start on port 6006
 
 ### Layer Organization
 
-```
+```text
 packages/web/src/
 ├── pages/              # Next.js pages (SSG with getStaticProps for i18n)
 ├── layouts/            # Page composition — assembles containers into page layouts
