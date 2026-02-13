@@ -12,18 +12,6 @@ interface VolumeDataItem {
   feeUsd: string;
 }
 
-interface FeeDataItem {
-  date: string;
-  feeUsd: string;
-}
-
-export interface Fee {
-  last7d: FeeDataItem[];
-  last30d: FeeDataItem[];
-  last90d: FeeDataItem[];
-  all: FeeDataItem[];
-}
-
 export interface VolumeData {
   last7d: VolumeDataItem[];
   last30d: VolumeDataItem[];
