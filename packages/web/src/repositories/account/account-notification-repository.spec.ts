@@ -5,10 +5,10 @@ import { WalletClient } from "@common/clients/wallet-client";
 import { AdenaClient } from "@common/clients/wallet-client/adena/adena-client";
 import { NotificationType } from "@common/values/data-constant";
 import { TransactionModel } from "@models/account/account-history-model";
-import { generateTokenModel } from "@test/generate-utils";
 
 import { AccountNotificationRepository } from "./account-notification-repository";
 import { AccountRepositoryImpl } from "./account-repository-impl";
+import { mockActivityData, mockTokenPairInfo } from "./mock/mock-activity-data";
 
 let walletClient: WalletClient;
 let localStorageClient: StorageClient;
@@ -18,11 +18,13 @@ let accountNotificationRepository: AccountNotificationRepository;
 beforeEach(() => {
   walletClient = new AdenaClient();
   localStorageClient = new MockStorageClient("LOCAL");
+  sessionStorageClient = new MockStorageClient("SESSION");
   accountNotificationRepository = new AccountRepositoryImpl(
     walletClient,
     new AxiosClient(),
     localStorageClient,
     sessionStorageClient,
+    null,
   );
   jest.clearAllMocks();
 });
@@ -36,9 +38,10 @@ describe("get notifications by address", () => {
           {
             txType: NotificationType.AddIncentive,
             txHash: "1",
-            tokenInfo: { ...generateTokenModel() },
+            tokenInfo: mockTokenPairInfo,
             status: "SUCCESS",
             createdAt: "1900-01-01",
+            rawValue: mockActivityData,
           },
         ],
       },
@@ -94,9 +97,10 @@ describe("create notifications", () => {
     const data: TransactionModel = {
       txType: NotificationType.AddIncentive,
       txHash: "1",
-      tokenInfo: { ...generateTokenModel() },
+      tokenInfo: mockTokenPairInfo,
       status: "SUCCESS",
       createdAt: "1900-01-01",
+      rawValue: mockActivityData,
     };
 
     const beforeNotification = await accountNotificationRepository.getNotificationsByAddress(address);
@@ -115,9 +119,10 @@ describe("create notifications", () => {
     const data: TransactionModel = {
       txType: NotificationType.AddIncentive,
       txHash: "1",
-      tokenInfo: { ...generateTokenModel() },
+      tokenInfo: mockTokenPairInfo,
       status: "PENDING",
       createdAt: "1900-01-01",
+      rawValue: mockActivityData,
     };
 
     await accountNotificationRepository.createNotification(address, data);
@@ -136,9 +141,10 @@ describe("create notifications", () => {
     const data: TransactionModel = {
       txType: NotificationType.AddIncentive,
       txHash: "1",
-      tokenInfo: { ...generateTokenModel() },
+      tokenInfo: mockTokenPairInfo,
       status: "PENDING",
       createdAt: "1900-01-01",
+      rawValue: mockActivityData,
     };
 
     await accountNotificationRepository.createNotification(address, data);
@@ -159,9 +165,10 @@ describe("delete all notifications", () => {
     const data: TransactionModel = {
       txType: NotificationType.AddIncentive,
       txHash: "1",
-      tokenInfo: { ...generateTokenModel() },
+      tokenInfo: mockTokenPairInfo,
       status: "PENDING",
       createdAt: "1900-01-01",
+      rawValue: mockActivityData,
     };
 
     await accountNotificationRepository.createNotification(address, data);
