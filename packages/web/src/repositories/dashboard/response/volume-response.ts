@@ -1,7 +1,6 @@
 export interface IVolumeResponse {
   allTimeFeeUsd: string;
   allTimeVolumeUsd: string;
-  fee: Fee;
   fees24hUsd: string;
   volume: VolumeData;
   volume24hUsd: string;
@@ -10,6 +9,7 @@ export interface IVolumeResponse {
 interface VolumeDataItem {
   date: string;
   volumeUsd: string;
+  feeUsd: string;
 }
 
 interface FeeDataItem {
