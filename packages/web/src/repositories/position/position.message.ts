@@ -435,6 +435,7 @@ export function makeRepositionLiquidityMessagesWithApproves(
     maxTick,
     slippage,
     caller,
+    deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString(),
   }: {
     lpTokenId: string;
     tokenA: TokenModel;
@@ -445,6 +446,7 @@ export function makeRepositionLiquidityMessagesWithApproves(
     maxTick: number;
     slippage: number;
     caller: string;
+    deadline?: string;
     withStaking?: boolean;
   },
   fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
@@ -489,6 +491,7 @@ export function makeRepositionLiquidityMessagesWithApproves(
       `${tokenBAmountRaw}`, // Maximum amount of tokenB to offer
       minTokenAAmount, // Minimum amount of tokenA to provide
       minTokenBAmount, // Minimum amount of tokenB to provide
+      deadline, // Deadline UTC time
     ],
     caller,
   });
