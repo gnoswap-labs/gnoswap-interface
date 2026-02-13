@@ -13,3 +13,4 @@ node_modules
 .pnp.cjs
 .pnp.loader.mjs
 
+CLAUDE.md
