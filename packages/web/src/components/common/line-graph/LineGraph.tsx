@@ -118,6 +118,8 @@ interface Point {
 
 const VIEWPORT_DEFAULT_WIDTH = 400;
 const VIEWPORT_DEFAULT_HEIGHT = 200;
+const MIN_POINTS_FOR_RANGE_CHECK = 2;
+const HOVER_EDGE_MARGIN_PX = 5;
 
 const ChartGlobalTooltip = () => {
   return (
@@ -492,6 +494,17 @@ const LineGraph: React.FC<LineGraphProps> = ({
         setCurrentPointIndex(currentPointIndex);
       }
     }
+
+    const isOutsideDataRange =
+      points.length >= MIN_POINTS_FOR_RANGE_CHECK &&
+      (xPosition < points[0].x - HOVER_EDGE_MARGIN_PX ||
+        xPosition > points[points.length - 1].x + HOVER_EDGE_MARGIN_PX);
+
+    if (isOutsideDataRange) {
+      setCurrentPointIndex(-1);
+      return;
+    }
+
     if (currentPoint) {
       setChartPoint({ x: positionX, y: (clientY || 0) - top });
       setCurrentPoint(currentPoint);
