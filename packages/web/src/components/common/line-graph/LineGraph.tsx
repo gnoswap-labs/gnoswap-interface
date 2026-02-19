@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import React, { useCallback, useEffect, useRef, useState, useMemo } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { LineGraphTooltipWrapper, LineGraphWrapper } from "./LineGraph.styles";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { Global, css, useTheme } from "@emotion/react";
@@ -176,8 +176,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
   hasNoLabel = false,
 }: LineGraphProps) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
-  // DEBUG: Remove after investigation
-  const debugLastLogRef = useRef(0);
   const [activated, setActivated] = useState(false);
   const [currentPoint, setCurrentPoint] = useState<Point>();
   const [chartPoint, setChartPoint] = useState<Point>();
@@ -503,22 +501,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
       const averageGap = dataSpan / (points.length - 1);
       return minDistance > averageGap * HOVER_MAX_DISTANCE_MULTIPLIER;
     })();
-
-    // DEBUG: Remove after investigation (throttled to avoid console spam)
-    const now = Date.now();
-    if (now - debugLastLogRef.current > 500) {
-      debugLastLogRef.current = now;
-      console.log("[DEBUG:hover]", {
-        xPosition: Math.round(xPosition),
-        firstPointX: points[0]?.x != null ? Math.round(points[0].x) : null,
-        lastPointX: points[points.length - 1]?.x != null ? Math.round(points[points.length - 1].x) : null,
-        isTooFarFromData,
-        minDistance: Math.round(minDistance),
-        pointIndex: currentPointIndex,
-        pointValue: currentPoint ? datas[currentPointIndex]?.value : null,
-        pointTime: currentPoint ? datas[currentPointIndex]?.time : null,
-      });
-    }
 
     if (isTooFarFromData) {
       setCurrentPointIndex(-1);
