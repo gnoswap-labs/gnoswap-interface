@@ -1102,8 +1102,8 @@ export const useSwapHandler = () => {
     const broadcastMessage = {
       tokenASymbol: tokenA.symbol,
       tokenBSymbol: tokenB.symbol,
-      tokenAAmount: isExactIn ? swapTokenInfo.tokenAAmount : nullish.handleFalsy(estimatedAmount, "0"),
-      tokenBAmount: isExactIn ? nullish.handleFalsy(estimatedAmount, "0") : swapTokenInfo.tokenBAmount,
+      tokenAAmount: isExactIn ? swapTokenInfo.tokenAAmount : nullish.handleEmpty(estimatedAmount, "0"),
+      tokenBAmount: isExactIn ? nullish.handleEmpty(estimatedAmount, "0") : swapTokenInfo.tokenBAmount,
     };
 
     // Handle Wrap and Unwrap

@@ -38,7 +38,7 @@ export const BaseSEOContainer = ({
   };
 
   const title = String(
-    nullish.handleFalsy(getTranslatedContent(customTitle || ""), getTranslatedContent(seoInfo.title(titleParams))),
+    nullish.handleEmpty(getTranslatedContent(customTitle || ""), getTranslatedContent(seoInfo.title(titleParams))),
   );
 
   return (

@@ -579,7 +579,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   const isLightTheme = theme.themeKey === "light";
 
   const hasTooltipContent = useMemo(() => {
-    return datas[currentPointIndex]?.time && datas[currentPointIndex]?.value;
+    return datas[currentPointIndex]?.time && datas[currentPointIndex]?.value != null;
   }, [currentPointIndex, datas]);
 
   const hasOnlyOnePoint = useMemo(() => datas.length === 1, [datas.length]);

@@ -61,7 +61,7 @@ const SwapTokenHeader = ({
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
 
   const displayPrice = React.useMemo(() => {
-    const price = nullish.handleFalsy(chartData?.value, currentPrice);
+    const price = nullish.handle(chartData?.value, currentPrice);
     return `${formatPrice(price, { isKMB: false, lessThan1Significant: 2, forcedDecimals: true })}`;
   }, [chartData, currentPrice]);
 
@@ -95,7 +95,7 @@ const SwapTokenHeader = ({
       if (tokenInfo.isNative) {
         window.open(getGnoscanUrl(), "_blank", "noopener,noreferrer");
       } else {
-        window.open(getTokenUrl(nullish.handleFalsy(tokenInfo.path, "")), "_blank", "noopener,noreferrer");
+        window.open(getTokenUrl(nullish.handleEmpty(tokenInfo.path, "")), "_blank", "noopener,noreferrer");
       }
     },
     [tokenInfo],
