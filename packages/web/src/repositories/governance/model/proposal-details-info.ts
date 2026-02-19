@@ -35,6 +35,7 @@ export interface ProposalDetailsItemInfo {
   createdAt: string;
   votingInfo: VotingInfo;
   userVotingInfo: UserVotingInfo;
+  userVotingWeight: string;
 }
 
 export interface ProposalDetailsInfo {
@@ -68,6 +69,7 @@ export const nullProposalDetailsItemInfo: ProposalDetailsItemInfo = {
   createdAt: "",
   votingInfo: nullVotingInfo,
   userVotingInfo: nullUserVotingInfo,
+  userVotingWeight: "0",
 };
 
 export const nullProposalDetailsInfo: ProposalDetailsInfo = {

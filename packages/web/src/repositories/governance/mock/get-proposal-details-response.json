@@ -28,6 +28,7 @@
       "isVoted": true,
       "voteType": "YES",
       "votingWeight": 85000
-    }
+    },
+    "userVotingWeight": "90000"
   }
 }
