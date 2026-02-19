@@ -273,7 +273,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
               <span>{t("Governance:detailModal.votingWeight")}</span>
               <div>
                 <div className="power-value">
-                  {rawToDisplayAmount(myVotingWeight, XGNS_TOKEN.decimals).toLocaleString()}
+                  {myVotingWeight.toLocaleString()}
                 </div>
                 <TokenChip tokenInfo={XGNS_TOKEN} />
               </div>
