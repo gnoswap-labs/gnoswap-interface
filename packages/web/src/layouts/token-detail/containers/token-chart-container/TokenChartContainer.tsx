@@ -270,6 +270,18 @@ const TokenChartContainer: React.FC = () => {
       })),
     ].reverse();
 
+    // DEBUG: Remove after investigation
+    console.log("[DEBUG] currentTab:", currentTab);
+    console.log("[DEBUG] latestPrice:", pricesBefore.latestPrice);
+    console.log("[DEBUG] currentPrice (usd):", currentPrice);
+    console.log("[DEBUG] prices1d raw (first 5):", prices1d.slice(0, 5));
+    console.log("[DEBUG] prices1d raw (last 5):", prices1d.slice(-5));
+    console.log("[DEBUG] datas length:", datas.length);
+    console.log("[DEBUG] datas (first 5):", datas.slice(0, 5).map(d => ({ value: d.amount.value, time: d.time })));
+    console.log("[DEBUG] datas (last 5):", datas.slice(-5).map(d => ({ value: d.amount.value, time: d.time })));
+    console.log("[DEBUG] zero-price entries:", datas.filter(d => d.amount.value === "0" || d.amount.value === "").length);
+    console.log("[DEBUG] duplicate times:", datas.length - new Set(datas.map(d => d.time)).size);
+
     const yAxisLabels = getYAxisLabels(datas.map(item => BigNumber(item.amount.value).toFormat(6)));
     const chartInfo: ChartInfo = {
       xAxisLabels,

@@ -500,6 +500,21 @@ const LineGraph: React.FC<LineGraphProps> = ({
       (xPosition < points[0].x - HOVER_EDGE_MARGIN_PX ||
         xPosition > points[points.length - 1].x + HOVER_EDGE_MARGIN_PX);
 
+    // DEBUG: Remove after investigation (throttled to avoid console spam)
+    if (!onMouseMove._debugLastLog || Date.now() - onMouseMove._debugLastLog > 500) {
+      onMouseMove._debugLastLog = Date.now();
+      console.log("[DEBUG:hover]", {
+        xPosition: Math.round(xPosition),
+        firstPointX: points[0]?.x ? Math.round(points[0].x) : null,
+        lastPointX: points[points.length - 1]?.x ? Math.round(points[points.length - 1].x) : null,
+        isOutsideDataRange,
+        minDistance: Math.round(minDistance),
+        pointIndex: currentPointIndex,
+        pointValue: currentPoint ? datas[currentPointIndex]?.value : null,
+        pointTime: currentPoint ? datas[currentPointIndex]?.time : null,
+      });
+    }
+
     if (isOutsideDataRange) {
       setCurrentPointIndex(-1);
       return;
@@ -510,6 +525,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
       setCurrentPoint(currentPoint);
     }
   };
+  (onMouseMove as Record<string, unknown>)._debugLastLog = 0;
 
   const getGraphLine = useCallback(
     (smooth?: boolean, fill?: boolean) => {
