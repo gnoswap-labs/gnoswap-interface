@@ -35,7 +35,7 @@ export interface ProposalDetailsItemInfo {
   createdAt: string;
   votingInfo: VotingInfo;
   userVotingInfo: UserVotingInfo;
-  userVotingWeight?: string;
+  userVotingWeight: string;
 }
 
 export interface ProposalDetailsInfo {

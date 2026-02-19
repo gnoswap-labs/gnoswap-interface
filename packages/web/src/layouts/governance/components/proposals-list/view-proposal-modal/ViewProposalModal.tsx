@@ -36,7 +36,6 @@ import { safeParseTime } from "@utils/time.utils";
 export interface ViewProposalModalProps {
   address: string;
   proposalId: number;
-  myVotingWeight: number;
   breakpoint: DEVICE_TYPE;
   setIsModalOpen: (isOpen: boolean) => void;
   isConnected: boolean;
@@ -50,7 +49,6 @@ export interface ViewProposalModalProps {
 const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   address,
   proposalId,
-  myVotingWeight,
   breakpoint,
   setIsModalOpen,
   isSwitchNetwork,
@@ -124,12 +122,8 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   }, [proposalDetail.status, numericVotingInfo]);
 
   const proposalUserVotingWeight = useMemo(() => {
-    if (proposalDetail.userVotingWeight !== undefined && proposalDetail.userVotingWeight !== null) {
-      return Number(proposalDetail.userVotingWeight) || 0;
-    }
-
-    return myVotingWeight;
-  }, [proposalDetail.userVotingWeight, myVotingWeight]);
+    return Number(proposalDetail.userVotingWeight) || 0;
+  }, [proposalDetail.userVotingWeight]);
 
   const tooltipTextI18nKey = React.useMemo(() => {
     return getTooltipTextI18nKey(proposalDetail.status, isMajorityVoted, yesVotes, noVotes);
