@@ -118,8 +118,8 @@ interface Point {
 
 const VIEWPORT_DEFAULT_WIDTH = 400;
 const VIEWPORT_DEFAULT_HEIGHT = 200;
-const MIN_POINTS_FOR_RANGE_CHECK = 2;
-const HOVER_EDGE_MARGIN_PX = 5;
+const MIN_POINTS_FOR_DISTANCE_CHECK = 2;
+const HOVER_MAX_DISTANCE_MULTIPLIER = 1.5;
 
 const ChartGlobalTooltip = () => {
   return (
@@ -497,10 +497,12 @@ const LineGraph: React.FC<LineGraphProps> = ({
       }
     }
 
-    const isOutsideDataRange =
-      points.length >= MIN_POINTS_FOR_RANGE_CHECK &&
-      (xPosition < points[0].x - HOVER_EDGE_MARGIN_PX ||
-        xPosition > points[points.length - 1].x + HOVER_EDGE_MARGIN_PX);
+    const isTooFarFromData = (() => {
+      if (points.length < MIN_POINTS_FOR_DISTANCE_CHECK) return false;
+      const dataSpan = points[points.length - 1].x - points[0].x;
+      const averageGap = dataSpan / (points.length - 1);
+      return minDistance > averageGap * HOVER_MAX_DISTANCE_MULTIPLIER;
+    })();
 
     // DEBUG: Remove after investigation (throttled to avoid console spam)
     const now = Date.now();
@@ -508,9 +510,9 @@ const LineGraph: React.FC<LineGraphProps> = ({
       debugLastLogRef.current = now;
       console.log("[DEBUG:hover]", {
         xPosition: Math.round(xPosition),
-        firstPointX: points[0]?.x ? Math.round(points[0].x) : null,
-        lastPointX: points[points.length - 1]?.x ? Math.round(points[points.length - 1].x) : null,
-        isOutsideDataRange,
+        firstPointX: points[0]?.x != null ? Math.round(points[0].x) : null,
+        lastPointX: points[points.length - 1]?.x != null ? Math.round(points[points.length - 1].x) : null,
+        isTooFarFromData,
         minDistance: Math.round(minDistance),
         pointIndex: currentPointIndex,
         pointValue: currentPoint ? datas[currentPointIndex]?.value : null,
@@ -518,7 +520,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
       });
     }
 
-    if (isOutsideDataRange) {
+    if (isTooFarFromData) {
       setCurrentPointIndex(-1);
       return;
     }
