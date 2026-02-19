@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import { LineGraphTooltipWrapper, LineGraphWrapper } from "./LineGraph.styles";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { Global, css, useTheme } from "@emotion/react";
@@ -176,6 +176,8 @@ const LineGraph: React.FC<LineGraphProps> = ({
   hasNoLabel = false,
 }: LineGraphProps) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
+  // DEBUG: Remove after investigation
+  const debugLastLogRef = useRef(0);
   const [activated, setActivated] = useState(false);
   const [currentPoint, setCurrentPoint] = useState<Point>();
   const [chartPoint, setChartPoint] = useState<Point>();
@@ -501,8 +503,9 @@ const LineGraph: React.FC<LineGraphProps> = ({
         xPosition > points[points.length - 1].x + HOVER_EDGE_MARGIN_PX);
 
     // DEBUG: Remove after investigation (throttled to avoid console spam)
-    if (!onMouseMove._debugLastLog || Date.now() - onMouseMove._debugLastLog > 500) {
-      onMouseMove._debugLastLog = Date.now();
+    const now = Date.now();
+    if (now - debugLastLogRef.current > 500) {
+      debugLastLogRef.current = now;
       console.log("[DEBUG:hover]", {
         xPosition: Math.round(xPosition),
         firstPointX: points[0]?.x ? Math.round(points[0].x) : null,
@@ -525,7 +528,6 @@ const LineGraph: React.FC<LineGraphProps> = ({
       setCurrentPoint(currentPoint);
     }
   };
-  (onMouseMove as Record<string, unknown>)._debugLastLog = 0;
 
   const getGraphLine = useCallback(
     (smooth?: boolean, fill?: boolean) => {
