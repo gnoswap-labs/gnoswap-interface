@@ -10,7 +10,7 @@ import { useCreateProposalModal } from "@hooks/governance/ui/use-create-proposal
 import ProposalList from "../../components/proposals-list/ProposalList";
 import { useGovernanceTx } from "@hooks/governance/data/use-governance-tx";
 import { rawToDisplayAmount } from "@utils/number-utils";
-import { GNS_TOKEN } from "@common/values/token-constant";
+import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 
 const DEFAULT_PROPOSAL_CREATION_THRESHOLD = 1000 as const;
 
@@ -112,7 +112,7 @@ const ProposalListContainer: React.FC = () => {
       switchNetwork={switchNetwork}
       isShowActiveOnly={isShowActiveOnly}
       toggleIsShowActiveOnly={toggleIsShowActiveOnly}
-      myVotingWeight={Number(myDelegationInfo?.votingWeight) || 0}
+      myVotingWeight={rawToDisplayAmount(Number(myDelegationInfo?.votingWeight) || 0, XGNS_TOKEN.decimals)}
       proposalCreationThreshold={proposalCreationThreshold}
       proposalList={ProposalsInfo?.pages.flatMap(item => item.proposals) || []}
       fetchMore={fetchNextItems}
