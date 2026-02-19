@@ -123,6 +123,14 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
     };
   }, [proposalDetail.status, numericVotingInfo]);
 
+  const proposalUserVotingWeight = useMemo(() => {
+    if (proposalDetail.userVotingWeight !== undefined && proposalDetail.userVotingWeight !== null) {
+      return Number(proposalDetail.userVotingWeight) || 0;
+    }
+
+    return myVotingWeight;
+  }, [proposalDetail.userVotingWeight, myVotingWeight]);
+
   const tooltipTextI18nKey = React.useMemo(() => {
     return getTooltipTextI18nKey(proposalDetail.status, isMajorityVoted, yesVotes, noVotes);
   }, [proposalDetail.status, getTooltipTextI18nKey, isMajorityVoted, yesVotes, noVotes]);
@@ -272,9 +280,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
             <VotingPowerWrapper>
               <span>{t("Governance:detailModal.votingWeight")}</span>
               <div>
-                <div className="power-value">
-                  {myVotingWeight.toLocaleString()}
-                </div>
+                <div className="power-value">{rawToDisplayAmount(proposalUserVotingWeight, XGNS_TOKEN.decimals).toLocaleString()}</div>
                 <TokenChip tokenInfo={XGNS_TOKEN} />
               </div>
             </VotingPowerWrapper>
@@ -284,7 +290,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
               isSwitchNetwork={isSwitchNetwork}
               voteType={userVotingInfo.voteType}
               voteWeigth={userVotingInfo.votingWeight}
-              myVotingWeight={myVotingWeight}
+              myVotingWeight={proposalUserVotingWeight}
               status={proposalDetail.status}
               selectedVote={selectedVote}
               handleVote={() => {
