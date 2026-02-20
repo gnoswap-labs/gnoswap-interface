@@ -3,7 +3,7 @@ import { AmountConverter } from "@services/converters/common/amount";
 import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import { DashboardTokenResponse, GovernanceOverviewResponse } from "@repositories/dashboard";
 import { DEFAULT_DASHBOARD_TOKEN_INFO } from "@common/values/default-object/explore-dashboard/dashboard-token-info";
-import { ActivityData } from "@repositories/activity/responses/activity-responses";
+import { ActivityData, emptyToken } from "@repositories/activity/responses/activity-responses";
 import { DEFAULT_GOVERNANCE_OVERVIEW_INFO } from "@common/values/default-object/explore-dashboard/governance-overview-info";
 
 /**
@@ -64,7 +64,7 @@ export class ExploreDashboardConverter {
       return {
         ...activity,
         tokenAAmount: AmountConverter.convertSingle(activity.tokenA, activity.tokenAAmount),
-        tokenBAmount: AmountConverter.convertSingle(activity.tokenB, activity.tokenBAmount),
+        tokenBAmount: AmountConverter.convertSingle(activity.tokenB ?? emptyToken, activity.tokenBAmount),
       };
     });
   }

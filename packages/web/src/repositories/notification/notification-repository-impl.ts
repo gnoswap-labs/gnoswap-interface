@@ -5,7 +5,7 @@ import { StorageKeyType } from "@common/values";
 import { TransactionModel } from "@models/account/account-history-model";
 import { TransactionGroupsType } from "@models/notification";
 import { NotificationMapper } from "@models/notification/mapper/notification-mapper";
-import { ActivityResponse } from "@repositories/activity/responses/activity-responses";
+import { ActivityResponse, emptyToken } from "@repositories/activity/responses/activity-responses";
 
 import { NotificationRepository } from "./notification-repository";
 import { AccountActivityRequest } from "./request";
@@ -93,7 +93,7 @@ export class NotificationRepositoryImpl implements NotificationRepository {
       const txModel: TransactionModel = {
         txType: tx.tokenB?.name ? 1 : 0,
         txHash: tx.txHash,
-        tokenInfo: { tokenA: tx.tokenA, tokenB: tx.tokenB },
+        tokenInfo: { tokenA: tx.tokenA, tokenB: tx.tokenB ?? emptyToken },
         status: tx.success ? "SUCCESS" : "FAILED",
         createdAt: tx.time,
         isRead: seenTxs.includes(tx.txHash), // * Check if transaction is already seen
