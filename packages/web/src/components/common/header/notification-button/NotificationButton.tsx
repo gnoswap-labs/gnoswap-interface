@@ -49,15 +49,19 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   }, [txGroups]);
 
   const handleClearAll = () => {
+    if (!account?.address) {
+      return;
+    }
+
     const queryKey = [QUERY_KEY.notifications, currentChainId, account?.address];
-    notificationRepository.appendRemovedTx(txs);
+    const previousNotifications = queryClient.getQueryData(queryKey);
     queryClient.setQueryData(queryKey, []);
     notificationRepository
       .clearNotification({ address: account?.address })
       .then(() => refetch())
       .catch(e => {
         console.error("handleClearAll ~ clearNotification error:", e);
-        refetch();
+        queryClient.setQueryData(queryKey, previousNotifications);
       });
   };
 
