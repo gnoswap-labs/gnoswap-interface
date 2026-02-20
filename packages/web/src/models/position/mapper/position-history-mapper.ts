@@ -10,8 +10,8 @@ export class PositionHistoryMapper {
       type: res.actionType as PositionHistoryType,
       tokenASymbol: res.tokenA.symbol,
       tokenBSymbol: res.tokenB?.symbol ?? "",
-      amountA: Number(res.tokenAAmount ?? 0),
-      amountB: Number(res.tokenBAmount ?? 0),
+      amountA: Number(res.tokenAAmount),
+      amountB: Number(res.tokenBAmount),
       usdValue: Number(res.totalUsd),
     };
   }
