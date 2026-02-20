@@ -178,12 +178,13 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
         return;
       }
 
-      if (currentPrice && selectPool.feeTier && currentPriceRangeType) {
+      const effectivePrice = currentPrice || tickToPrice(0);
+      if (effectivePrice && selectPool.feeTier && currentPriceRangeType) {
         const priceRange = SwapFeeTierPriceRange[selectPool.feeTier][currentPriceRangeType];
 
         const getPriceWithTickSpacing = (range: number) => {
-          const rangeDiffAmount = currentPrice * (range / 100);
-          const currentTick = priceToTick(currentPrice + rangeDiffAmount);
+          const rangeDiffAmount = effectivePrice * (range / 100);
+          const currentTick = priceToTick(effectivePrice + rangeDiffAmount);
           const nearTick = Math.round(currentTick / selectPool.tickSpacing) * selectPool.tickSpacing;
           return tickToPrice(nearTick);
         };
