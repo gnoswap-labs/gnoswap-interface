@@ -8,10 +8,10 @@ export class PositionHistoryMapper {
       time: res.time,
       txHash: res.txHash,
       type: res.actionType as PositionHistoryType,
-      tokenASymbol: res.tokenA?.symbol ?? "",
+      tokenASymbol: res.tokenA.symbol,
       tokenBSymbol: res.tokenB?.symbol ?? "",
-      amountA: Number(res.tokenAAmount || 0),
-      amountB: Number(res.tokenBAmount || 0),
+      amountA: Number(res.tokenAAmount ?? 0),
+      amountB: Number(res.tokenBAmount ?? 0),
       usdValue: Number(res.totalUsd),
     };
   }
