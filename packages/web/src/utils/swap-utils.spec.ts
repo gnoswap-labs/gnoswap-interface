@@ -2,10 +2,12 @@
 import { tickToSqrtPriceX96 } from "./math.utils";
 import {
   BroadcastMessageData,
+  feeBoostByPrices,
   feeBoostRateByPrices,
   getSwappedTokenData,
   isEndTickBy,
   priceToNearTick,
+  priceToSqrtX96,
   priceToTick,
   SwapResponse,
   tickToPrice,
@@ -75,6 +77,16 @@ describe("price convert to tick", () => {
     const price = 0.60651549714;
     expect(priceToTick(price)).toBe(-5001);
   });
+
+  test("priceToTick(0) returns 0 instead of -Infinity", () => {
+    expect(priceToTick(0)).toBe(0);
+    expect(Number.isFinite(priceToTick(0))).toBe(true);
+  });
+
+  test("priceToTick(-1) returns 0 instead of NaN", () => {
+    expect(priceToTick(-1)).toBe(0);
+    expect(Number.isNaN(priceToTick(-1))).toBe(false);
+  });
 });
 
 describe("price convert to near tick", () => {
@@ -132,6 +144,24 @@ describe("fee boost by prices", () => {
   test("0.8976, 1.1041 to 19.82", () => {
     const feeBoost = feeBoostRateByPrices(0.8976, 1.1041);
     expect(feeBoost).toBe("19.82");
+  });
+
+  test("feeBoostByPrices(1, 1) returns null (same min/max causes Infinity)", () => {
+    expect(feeBoostByPrices(1, 1)).toBeNull();
+  });
+
+  test("feeBoostByPrices(0, 0) returns null", () => {
+    expect(feeBoostByPrices(0, 0)).toBeNull();
+  });
+});
+
+describe("priceToSqrtX96 edge cases", () => {
+  test("priceToSqrtX96(0) returns 0n", () => {
+    expect(priceToSqrtX96(0)).toBe(0n);
+  });
+
+  test("priceToSqrtX96(-1) returns 0n", () => {
+    expect(priceToSqrtX96(-1)).toBe(0n);
   });
 });
 
