@@ -6,7 +6,7 @@ export interface ActivityData {
   txHash: string;
   actionType: DexEventType;
   tokenA: OnchainToken;
-  tokenB: OnchainToken;
+  tokenB: OnchainToken | null;
   tokenAAmount: string;
   tokenBAmount: string;
   totalUsd: string;
