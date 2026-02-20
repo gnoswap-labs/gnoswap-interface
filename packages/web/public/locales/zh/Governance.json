@@ -100,7 +100,7 @@
     },
     "switch": {
       "toUndel": "我的卸任",
-      "toVotingWeight": "我的投票权重"
+      "toVotingWeight": "我的代表团"
     },
     "title": "我的代表团",
     "tooltip": {
@@ -140,7 +140,7 @@
       }
     },
     "votingWeight": {
-      "title": "投票权重",
+      "title": "代表团",
       "tooltip": "您授权的 xGNS 数量，代表您在 Gnoswap 治理中的投票权重。"
     }
   },
