@@ -100,7 +100,7 @@
     },
     "switch": {
       "toUndel": "Mi no delegación",
-      "toVotingWeight": "Mi peso en las votaciones"
+      "toVotingWeight": "Mi Delegación"
     },
     "title": "Mi Delegación",
     "tooltip": {
@@ -140,7 +140,7 @@
       }
     },
     "votingWeight": {
-      "title": "Peso del voto",
+      "title": "Delegación",
       "tooltip": "La cantidad de xGNS que ha delegado, que representa su peso de voto en el Gobierno de Gnoswap."
     }
   },

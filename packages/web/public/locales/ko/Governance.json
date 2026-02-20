@@ -100,7 +100,7 @@
     },
     "switch": {
       "toUndel": "내 위임 취소",
-      "toVotingWeight": "나의 투표 가중치"
+      "toVotingWeight": "내 위임"
     },
     "title": "나의 위임 정보",
     "tooltip": {
@@ -140,7 +140,7 @@
       }
     },
     "votingWeight": {
-      "title": "투표 가중치",
+      "title": "위임",
       "tooltip": "당신이 위임한 xGNS 수량으로, Gnoswap 거버넌스에서의 투표 권한 비율을 나타냅니다."
     }
   },

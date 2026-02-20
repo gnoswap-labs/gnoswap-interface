@@ -100,7 +100,7 @@
     },
     "switch": {
       "toUndel": "私の無所属",
-      "toVotingWeight": "私の投票体重"
+      "toVotingWeight": "私の代表団"
     },
     "title": "私の代表団",
     "tooltip": {
@@ -140,7 +140,7 @@
       }
     },
     "votingWeight": {
-      "title": "投票ウェイト",
+      "title": "代表団",
       "tooltip": "あなたが委任したxGNSの量。これはGnoswapガバナンスにおけるあなたの議決権の重みを表します。"
     }
   },
