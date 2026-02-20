@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { useMemo } from "react";
 
@@ -7,6 +8,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetNotifications } from "@query/common";
+import { QUERY_KEY } from "@query/query-keys";
 import { CommonState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
 import { TransactionGroupsType } from "@models/notification";
@@ -19,7 +21,8 @@ import { AlertButton, NotificationWrapper } from "./NotificationButton.styles";
 const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
   const [toggle, setToggle] = useAtom(CommonState.headerToggle);
   const { notificationRepository } = useGnoswapContext();
-  const { account } = useWallet();
+  const { account, currentChainId } = useWallet();
+  const queryClient = useQueryClient();
   const [notificationHash, setNotificationHash] = useAtom(CommonState.notificationHash);
   const handleESC = () => {
     setToggle(prev => {
@@ -45,16 +48,17 @@ const NotificationButton = ({ breakpoint }: { breakpoint: DEVICE_TYPE }) => {
     }, [] as string[]);
   }, [txGroups]);
 
-  const handleClearAll = async () => {
-    try {
-      notificationRepository.appendRemovedTx(txs);
-      await notificationRepository.clearNotification({
-        address: account?.address,
+  const handleClearAll = () => {
+    const queryKey = [QUERY_KEY.notifications, currentChainId, account?.address];
+    notificationRepository.appendRemovedTx(txs);
+    queryClient.setQueryData(queryKey, []);
+    notificationRepository
+      .clearNotification({ address: account?.address })
+      .then(() => refetch())
+      .catch(e => {
+        console.error("handleClearAll ~ clearNotification error:", e);
+        refetch();
       });
-      refetch();
-    } catch (e) {
-      console.log("handleClearAll ~ e:", e);
-    }
   };
 
   const onListToggle = () => {
