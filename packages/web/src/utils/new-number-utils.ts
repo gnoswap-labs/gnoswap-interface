@@ -4,7 +4,7 @@ import { toKMBFormat } from "./number-utils";
 
 // Values at or below 1e-6 are treated as zero to prevent floating-point
 // dust from displaying as "<$0.01" when the actual amount is effectively 0.
-const DUST_THRESHOLD = BigNumber(1e-6);
+const DUST_THRESHOLD = BigNumber("1e-6");
 
 export const removeTrailingZeros = (value: string) => value.replace(/\.?0+$/, "");
 
@@ -15,8 +15,7 @@ const toBigNumber = (value: string | number | BigNumber) => BigNumber(normalizeV
 const getInternalMinLimit = (minLimit?: number | null, decimals?: number) =>
   minLimit || (decimals ? 1 / Math.pow(10, decimals) : null);
 
-const isDustOrZero = (value: BigNumber) =>
-  value.isEqualTo(0) || value.abs().isLessThanOrEqualTo(DUST_THRESHOLD);
+const isDustOrZero = (value: BigNumber) => value.isEqualTo(0) || value.abs().isLessThanOrEqualTo(DUST_THRESHOLD);
 
 export const formatPoolPairAmount = (
   amount?: number | BigNumber | string | null,
