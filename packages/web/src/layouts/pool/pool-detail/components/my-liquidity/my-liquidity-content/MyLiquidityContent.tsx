@@ -225,7 +225,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       .map(reward => ({
         token: reward.rewardToken,
         rewardType: reward.rewardToken.rewardType as RewardType,
-        accuReward1D: reward.accuReward1D ? Number(reward.accuReward1D) : null,
+        accuReward1D: reward.accuReward1D
+          ? makeDisplayTokenAmount(reward.rewardToken, reward.accuReward1D)
+          : null,
         apr: reward.apr ? Number(reward.apr) : null,
         liquidity: reward.liquidity,
       }))
