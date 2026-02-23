@@ -124,7 +124,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           ) || 0,
         amount: reward.claimableAmount ? Number(reward.claimableAmount) : null,
         usd: reward.claimableUsd ? Number(reward.claimableUsd) : null,
-        accumulatedRewardOf1d: reward.accuReward1D ? Number(reward.accuReward1D) : null,
+        accumulatedRewardOf1d: reward.accuReward1D
+          ? makeDisplayTokenAmount(reward.rewardToken, reward.accuReward1D)
+          : null,
         claimableUsdValue: reward.claimableUsd ? Number(reward.claimableUsd) : null,
       }))
       .forEach(rewardInfo => {
