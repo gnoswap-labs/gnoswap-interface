@@ -131,7 +131,7 @@ const Header: React.FC<HeaderProps> = ({
       if (prevAccount !== null && currentAccount !== null && prevAccount.address !== currentAccount.address) {
         removeReferrerFromUrl();
       }
-      setTimeout(() => refreshReferralData(), 0);
+      refreshReferralData();
     },
   });
 
