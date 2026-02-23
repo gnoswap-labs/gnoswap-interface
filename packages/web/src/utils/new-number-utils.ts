@@ -8,6 +8,16 @@ const DUST_THRESHOLD = BigNumber(1e-6);
 
 export const removeTrailingZeros = (value: string) => value.replace(/\.?0+$/, "");
 
+const normalizeValue = (value: string | number | BigNumber) => value.toString().replace(/,/g, "");
+
+const toBigNumber = (value: string | number | BigNumber) => BigNumber(normalizeValue(value));
+
+const getInternalMinLimit = (minLimit?: number | null, decimals?: number) =>
+  minLimit || (decimals ? 1 / Math.pow(10, decimals) : null);
+
+const isDustOrZero = (value: BigNumber) =>
+  value.isEqualTo(0) || value.abs().isLessThanOrEqualTo(DUST_THRESHOLD);
+
 export const formatPoolPairAmount = (
   amount?: number | BigNumber | string | null,
   {
@@ -26,16 +36,16 @@ export const formatPoolPairAmount = (
     return "-";
   }
 
-  const valueWithoutComma = amount?.toString().replace(/,/g, "");
+  const valueWithoutComma = normalizeValue(amount);
   const bigNumberValue = BigNumber(valueWithoutComma);
 
   if (bigNumberValue.isNaN()) {
     return "-";
   }
 
-  if (bigNumberValue.isEqualTo(0) || bigNumberValue.abs().isLessThanOrEqualTo(DUST_THRESHOLD)) return "0";
+  if (isDustOrZero(bigNumberValue)) return "0";
 
-  const internalMinLimit = minLimit || (decimals ? 1 / Math.pow(10, decimals) : null);
+  const internalMinLimit = getInternalMinLimit(minLimit, decimals);
 
   if (hasMinLimit && internalMinLimit && bigNumberValue.isLessThan(internalMinLimit)) {
     return `<${internalMinLimit}`;
@@ -84,13 +94,13 @@ export const formatRate = (
     return "-";
   }
 
-  const valueWithoutComma = amount?.toString().replace(/,/g, "");
+  const valueWithoutComma = normalizeValue(amount);
   const bigNumberValue = BigNumber(valueWithoutComma);
   const sign = showSign ? (bigNumberValue.isLessThan(0) ? "-" : "+") : "";
 
-  const internalMinLimit = minLimit || (decimals ? 1 / Math.pow(10, decimals) : null);
+  const internalMinLimit = getInternalMinLimit(minLimit, decimals);
 
-  if (!allowZeroDecimals && (bigNumberValue.isEqualTo(0) || bigNumberValue.abs().isLessThanOrEqualTo(DUST_THRESHOLD))) {
+  if (!allowZeroDecimals && isDustOrZero(bigNumberValue)) {
     return sign + "0%";
   }
 
@@ -98,7 +108,7 @@ export const formatRate = (
     return `<${internalMinLimit}%`;
   }
 
-  return sign + BigNumber(amount).abs().toFormat(decimals, BigNumber.ROUND_DOWN) + "%";
+  return sign + bigNumberValue.abs().toFormat(decimals, BigNumber.ROUND_DOWN) + "%";
 };
 
 export const formatTokenAmount = (
@@ -119,14 +129,14 @@ export const formatTokenAmount = (
     return "-";
   }
 
-  const inputAsNumber = BigNumber(amount?.toString().replace(/,/g, ""));
+  const inputAsNumber = toBigNumber(amount);
   const internalSuffix = suffix ? " " + suffix : "";
 
   if (inputAsNumber.isNaN()) return amount.toString();
 
-  if (amount === 0 || inputAsNumber.abs().isLessThanOrEqualTo(DUST_THRESHOLD)) return "0" + internalSuffix;
+  if (isDustOrZero(inputAsNumber)) return "0" + internalSuffix;
 
-  const internalMinLimit = minLimit || (decimals ? 1 / Math.pow(10, decimals) : null);
+  const internalMinLimit = getInternalMinLimit(minLimit, decimals);
 
   if (internalMinLimit && inputAsNumber.isLessThan(internalMinLimit)) {
     return `<${internalMinLimit}${internalSuffix}`;
@@ -166,7 +176,7 @@ export const formatPrice = (value?: BigNumber | string | number | null, options:
     return "-";
   }
 
-  const valueWithoutComma = value.toString().replace(/,/g, "");
+  const valueWithoutComma = normalizeValue(value);
   const valueAsBigNum = BigNumber(valueWithoutComma);
   const absValue = valueAsBigNum.abs();
 
@@ -218,7 +228,7 @@ export const formatOtherPrice = (
     return "-";
   }
 
-  const valueWithoutComma = value.toString().replace(/,/g, "");
+  const valueWithoutComma = normalizeValue(value);
 
   const valueAsBigNum = BigNumber(valueWithoutComma);
   const absValue = valueAsBigNum.abs();
@@ -228,13 +238,13 @@ export const formatOtherPrice = (
 
   if (absValue.isNaN()) return "-";
 
-  if (absValue.isEqualTo(0) || absValue.isLessThanOrEqualTo(DUST_THRESHOLD)) {
+  if (isDustOrZero(absValue)) {
     if (zeroAsEmpty) return "-";
 
     return prefix + "0";
   }
 
-  const internalMinLimit = decimals ? 1 / Math.pow(10, decimals) : null;
+  const internalMinLimit = getInternalMinLimit(undefined, decimals);
 
   if (hasMinLimit && internalMinLimit && valueAsBigNum.isLessThan(internalMinLimit) && valueAsBigNum.isGreaterThan(0)) {
     return `<${prefix}${minLimit || internalMinLimit}`;
