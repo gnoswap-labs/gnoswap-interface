@@ -104,10 +104,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return pool.currentTick <= position.tickUpper && pool.currentTick >= position.tickLower;
   }, [pool.currentTick, position.tickLower, position.tickUpper, position.closed]);
 
-  const feeRateStr = useMemo(() => {
-    const rateStr = SwapFeeTierInfoMap[position.feeTier].rateStr;
-    return `${rateStr}`;
-  }, [pool.tickSpacing]);
+  const feeRateStr = SwapFeeTierInfoMap[position.feeTier].rateStr;
 
   const positionUsdValueStr = useMemo(() => {
     if (!position.positionUsdValue || position.positionUsdValue === "0") return "-";
