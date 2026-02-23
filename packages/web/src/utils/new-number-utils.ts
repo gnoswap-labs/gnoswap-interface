@@ -2,6 +2,10 @@ import BigNumber from "bignumber.js";
 import { buildPricePrefix } from "./common";
 import { toKMBFormat } from "./number-utils";
 
+// Values at or below 1e-6 are treated as zero to prevent floating-point
+// dust from displaying as "<$0.01" when the actual amount is effectively 0.
+const DUST_THRESHOLD = BigNumber(1e-6);
+
 export const removeTrailingZeros = (value: string) => value.replace(/\.?0+$/, "");
 
 export const formatPoolPairAmount = (
@@ -29,7 +33,7 @@ export const formatPoolPairAmount = (
     return "-";
   }
 
-  if (bigNumberValue.isEqualTo(0)) return "0";
+  if (bigNumberValue.isEqualTo(0) || bigNumberValue.abs().isLessThanOrEqualTo(DUST_THRESHOLD)) return "0";
 
   const internalMinLimit = minLimit || (decimals ? 1 / Math.pow(10, decimals) : null);
 
@@ -86,7 +90,7 @@ export const formatRate = (
 
   const internalMinLimit = minLimit || (decimals ? 1 / Math.pow(10, decimals) : null);
 
-  if (!allowZeroDecimals && bigNumberValue.isEqualTo(0)) {
+  if (!allowZeroDecimals && (bigNumberValue.isEqualTo(0) || bigNumberValue.abs().isLessThanOrEqualTo(DUST_THRESHOLD))) {
     return sign + "0%";
   }
 
@@ -120,7 +124,7 @@ export const formatTokenAmount = (
 
   if (inputAsNumber.isNaN()) return amount.toString();
 
-  if (amount === 0) return "0" + internalSuffix;
+  if (amount === 0 || inputAsNumber.abs().isLessThanOrEqualTo(DUST_THRESHOLD)) return "0" + internalSuffix;
 
   const internalMinLimit = minLimit || (decimals ? 1 / Math.pow(10, decimals) : null);
 
@@ -224,7 +228,7 @@ export const formatOtherPrice = (
 
   if (absValue.isNaN()) return "-";
 
-  if (absValue.isEqualTo(0)) {
+  if (absValue.isEqualTo(0) || absValue.isLessThanOrEqualTo(DUST_THRESHOLD)) {
     if (zeroAsEmpty) return "-";
 
     return prefix + "0";
