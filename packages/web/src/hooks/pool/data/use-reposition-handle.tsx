@@ -30,7 +30,11 @@ import {
 import { IncreaseState } from "@states/index";
 import { checkGnotPath, delay } from "@utils/common";
 import { subscriptFormat } from "@utils/number-utils";
-import { getRepositionAmountsByPriceRange, getRepositionAmountsWithSwapSimulation } from "@utils/reposition-utils";
+import {
+  getRepositionAmountsByPriceRange,
+  getRepositionAmountsWithSwapSimulation,
+  normalizeSwapTokenAmount,
+} from "@utils/reposition-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
 import { useReferral } from "@hooks/common/use-referral";
@@ -327,14 +331,14 @@ export const useRepositionHandle = () => {
       return {
         inputToken: selectedPosition.pool.tokenA,
         outputToken: selectedPosition.pool.tokenB,
-        tokenAmount: Number(amountA) - repositionAmountA || 0,
+        tokenAmount: normalizeSwapTokenAmount(Number(amountA) - repositionAmountA),
         exactType: "EXACT_IN" as const,
       };
     }
     return {
       inputToken: selectedPosition.pool.tokenB,
       outputToken: selectedPosition.pool.tokenA,
-      tokenAmount: Number(amountB) - repositionAmountB || 0,
+      tokenAmount: normalizeSwapTokenAmount(Number(amountB) - repositionAmountB),
       exactType: "EXACT_IN" as const,
     };
   }, [currentAmounts, initialEstimatedRepositionAmounts, selectedPosition]);
@@ -344,7 +348,7 @@ export const useRepositionHandle = () => {
     isLoading: isEstimatedRemainSwapLoading,
     isError: isErrorLiquidity,
   } = useGetRoutes(estimateSwapRequest, {
-    enabled: !!estimateSwapRequest && !!estimateSwapRequest.tokenAmount,
+    enabled: !!estimateSwapRequest && estimateSwapRequest.tokenAmount > 0,
   });
 
   const buttonType: REPOSITION_BUTTON_TYPE = useMemo(() => {

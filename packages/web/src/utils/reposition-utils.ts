@@ -187,6 +187,13 @@ export function getRepositionAmountsWithSwapSimulation(
   };
 }
 
+export function normalizeSwapTokenAmount(value: number): number {
+  if (!Number.isFinite(value)) {
+    return 0;
+  }
+  return Math.max(0, value);
+}
+
 export function calculateMinTokenAmount(tokenAmount: string, slippage: number): string {
   if (!tokenAmount || tokenAmount === "0") return "0";
 
