@@ -60,20 +60,12 @@ export const formatPoolPairAmount = (
     if (kmbNumber) return kmbNumber;
   }
 
-  let stringValue = "";
-
   if (decimals) {
-    stringValue = bigNumberValue.toFormat(decimals, decimals ? BigNumber.ROUND_DOWN : undefined);
-  } else {
-    stringValue = bigNumberValue.toFormat();
+    const formattedNumber = bigNumberValue.toFormat(decimals, BigNumber.ROUND_DOWN);
+    return removeTrailingZeros(formattedNumber);
   }
 
-  const [integerValue, fractionValue] = stringValue.split(".");
-  if (fractionValue) {
-    const fractionString = Number(`0.${fractionValue}`).toString().split(".")[1];
-    if (fractionString) return `${integerValue}.${fractionString}`;
-    return integerValue;
-  } else return stringValue;
+  return bigNumberValue.toFormat();
 };
 
 export const formatRate = (
@@ -255,11 +247,8 @@ export const formatOtherPrice = (
     if (kmbNumber) return kmbNumber;
   }
 
-  const [integer, fraction] = absValue.toFormat(decimals, BigNumber.ROUND_DOWN).split(".");
-  let newFraction = "";
-  if (fraction && Number(fraction) > 0) {
-    newFraction = Number(`0.${fraction}`).toString().split(".")[1];
-  }
+  const formattedNumber = absValue.toFormat(decimals, BigNumber.ROUND_DOWN);
+  const trimmedNumber = decimals > 0 ? removeTrailingZeros(formattedNumber) : formattedNumber;
 
-  return negativeSign + prefix + integer + (newFraction ? `.${newFraction.toString()}` : "");
+  return negativeSign + prefix + trimmedNumber;
 };
