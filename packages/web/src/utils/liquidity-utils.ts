@@ -1,7 +1,7 @@
 import { Q96 } from "./math.utils";
 
 export function getLiquidityForAmount0(sqrtRatioAX96: bigint, sqrtRatioBX96: bigint, amount0: bigint): bigint {
-  if (sqrtRatioAX96 === 0n || sqrtRatioBX96 === 0n) {
+  if (sqrtRatioAX96 <= 0n || sqrtRatioBX96 <= 0n) {
     return 0n;
   }
   if (sqrtRatioAX96 === sqrtRatioBX96) {
@@ -21,7 +21,7 @@ export function getLiquidityForAmount0(sqrtRatioAX96: bigint, sqrtRatioBX96: big
 }
 
 export function getLiquidityForAmount1(sqrtRatioAX96: bigint, sqrtRatioBX96: bigint, amount1: bigint): bigint {
-  if (sqrtRatioAX96 === 0n || sqrtRatioBX96 === 0n) {
+  if (sqrtRatioAX96 <= 0n || sqrtRatioBX96 <= 0n) {
     return 0n;
   }
   if (sqrtRatioAX96 === sqrtRatioBX96) {
@@ -72,7 +72,7 @@ export function getLiquidityForAmounts(
 }
 
 export function getAmount0ForLiquidity(sqrtRatioAX96: bigint, sqrtRatioBX96: bigint, liquidity: bigint): bigint {
-  if (sqrtRatioAX96 === 0n || sqrtRatioBX96 === 0n) {
+  if (sqrtRatioAX96 <= 0n || sqrtRatioBX96 <= 0n) {
     return 0n;
   }
   let currentSqrtRatioAX96 = sqrtRatioAX96;

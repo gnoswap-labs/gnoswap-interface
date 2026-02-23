@@ -339,16 +339,18 @@ export const useSelectPool = ({
     return Number(poolFromDb?.feeApr || 0) * Number(feeBoost ?? 0);
   }, [feeBoost, poolFromDb?.feeApr]);
 
-  const excuteInteraction = useCallback(
-    (callback: () => void) => {
-      if (interactionType === "INTERACTION") {
-        return;
-      }
-      setInteractionType("INTERACTION");
-      new Promise(resolve => resolve(callback())).then(() => setInteractionType("FINISH"));
-    },
-    [interactionType],
-  );
+  const interactionTypeRef = useRef(interactionType);
+  interactionTypeRef.current = interactionType;
+
+  const excuteInteraction = useCallback((callback: () => void) => {
+    if (interactionTypeRef.current === "INTERACTION") {
+      return;
+    }
+    setInteractionType("INTERACTION");
+    new Promise(resolve => resolve(callback()))
+      .catch(() => {})
+      .finally(() => setInteractionType("FINISH"));
+  }, []);
 
   const changeMinPosition = useCallback(
     (num: number | null) => {
