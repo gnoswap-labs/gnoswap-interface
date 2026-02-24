@@ -1,7 +1,7 @@
 export interface DashboardTokenResponse {
   gnsPrice: string;
   gnotPrice: string;
-  gnsMaxSupply: string;
+  gnsTotalSupply: string;
   gnsCirculatingSupply: string;
   gnsDailyBlockEmissions: string;
   gnsTotalStaked: string;

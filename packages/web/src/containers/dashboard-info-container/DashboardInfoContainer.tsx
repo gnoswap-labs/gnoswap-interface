@@ -87,7 +87,7 @@ const DashboardInfoContainer: React.FC = () => {
   const progressBar = useMemo(() => {
     if (!tokenData) return "0%";
     const circSupply = Number(tokenData?.gnsCirculatingSupply);
-    const totalSupply = Number(tokenData?.gnsMaxSupply);
+    const totalSupply = Number(tokenData?.gnsTotalSupply);
     if (totalSupply === 0) return "0%";
     const percent = Math.min((circSupply / totalSupply) * 100, 100);
     return `${percent}%`;
@@ -121,7 +121,7 @@ const DashboardInfoContainer: React.FC = () => {
           tokenData?.gnsDailyBlockEmissions,
           "GNS",
         ),
-        totalSupply: formatPrice(tokenData?.gnsMaxSupply, "GNS"),
+        totalSupply: formatPrice(tokenData?.gnsTotalSupply, "GNS"),
         totalStaked: (() => {
           if (isNaN(Number(tokenData?.gnsTotalStaked ?? 0))) return "-";
 
