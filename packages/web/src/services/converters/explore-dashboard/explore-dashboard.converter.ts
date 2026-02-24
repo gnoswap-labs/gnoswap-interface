@@ -27,7 +27,7 @@ export class ExploreDashboardConverter {
       ...data,
       gnsCirculatingSupply: AmountConverter.convertSingle(GNS_TOKEN, data.gnsCirculatingSupply),
       gnsDailyBlockEmissions: AmountConverter.convertSingle(GNS_TOKEN, data.gnsDailyBlockEmissions),
-      gnsTotalSupply: AmountConverter.convertSingle(GNS_TOKEN, data.gnsTotalSupply),
+      gnsMaxSupply: AmountConverter.convertSingle(GNS_TOKEN, data.gnsMaxSupply),
       gnsTotalStaked: AmountConverter.convertSingle(GNS_TOKEN, data.gnsTotalStaked),
     };
   }
