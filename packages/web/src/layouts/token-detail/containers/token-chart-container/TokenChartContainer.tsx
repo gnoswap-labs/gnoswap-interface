@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import { useAtom } from "jotai";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
+import { RefetchInterval } from "@common/values";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useComponentSize from "@hooks/common/use-component-size";
@@ -18,12 +19,11 @@ import { DEVICE_TYPE } from "@styles/media";
 import { getLabelChartV2, getLocalizeTime, getNumberOfAxis } from "@utils/chart";
 import { checkPositivePrice, generateDateSequence } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
-import { RefetchInterval } from "@common/values";
 
 import TokenChart, { ChartInfo, TokenInfo } from "../../components/token-chart/TokenChart";
 
 const TokenChartGraphPeriods: Readonly<string[]> = ["1D", "7D", "1M", "1Y", "All"] as const;
-export type TokenChartGraphPeriodType = (typeof TokenChartGraphPeriods)[number];
+export type TokenChartGraphPeriodType = typeof TokenChartGraphPeriods[number];
 
 const DEFAULT_PADDING = 12;
 const DEFAULT_X_LABEL_WIDTH = 82;
@@ -253,24 +253,17 @@ const TokenChartContainer: React.FC = () => {
       spaceBetweenLeftYAxisWithFirstLabel,
     );
 
-    const datas = [
-      {
-        amount: {
-          value: (pricesBefore.latestPrice || 0).toString(),
-          denom: "",
-        },
-        time: getLocalizeTime(new Date()),
-      },
-      ...chartData.map((item: IPriceResponse) => ({
+    const datas = chartData
+      .map((item: IPriceResponse) => ({
         amount: {
           value: `${item.price}`,
           denom: "",
         },
         time: getLocalizeTime(item.time),
-      })),
-    ].reverse();
+      }))
+      .reverse();
 
-    const yAxisLabels = getYAxisLabels(datas.map(item => BigNumber(item.amount.value).toFormat(6)));
+    const yAxisLabels = getYAxisLabels(datas.map(item => item.amount.value));
     const chartInfo: ChartInfo = {
       xAxisLabels,
       yAxisLabels,
@@ -288,43 +281,52 @@ const TokenChartContainer: React.FC = () => {
 
     const minPoint = minValue.minus(originalGap.multipliedBy(0.05));
     const maxPoint = maxValue.plus(originalGap.multipliedBy(0.05));
+    const dynamicPrecision = Math.min(6, Math.max(4, (maxPoint.minus(minPoint).decimalPlaces() ?? 0) + 2));
+    const formatYAxisValue = (value: BigNumber, precision = dynamicPrecision) =>
+      formatPrice(value, {
+        usd: false,
+        isKMB: false,
+        lessThan1Significant: precision,
+        greaterThan1Decimals: precision,
+      });
 
     if (datas.every(item => item === datas[0])) {
       return [
-        formatPrice(minValue.multipliedBy(0.95), {
-          usd: false,
-        }),
-        formatPrice(minValue, {
-          usd: false,
-        }),
-        formatPrice(minValue.multipliedBy(1.05), {
-          usd: false,
-        }),
+        formatYAxisValue(minValue.multipliedBy(0.95)),
+        formatYAxisValue(minValue),
+        formatYAxisValue(minValue.multipliedBy(1.05)),
       ];
     }
 
     const gap = maxPoint.minus(minPoint);
     const space = gap.dividedBy(5);
-    const temp = [
-      formatPrice(minPoint, {
-        usd: false,
-      }),
-    ];
+    const temp = [formatYAxisValue(minPoint)];
     for (let i = minPoint.plus(space); i.isLessThan(maxPoint); i = i.plus(space)) {
-      temp.push(
-        `${formatPrice(i, {
-          usd: false,
-        })}`,
-      );
+      temp.push(formatYAxisValue(i));
     }
-    temp.push(
-      formatPrice(maxPoint, {
-        usd: false,
-      }),
-    );
+    temp.push(formatYAxisValue(maxPoint));
 
     const uniqueLabel = [...new Set(temp)];
-    if (uniqueLabel.length === 1) uniqueLabel.unshift("0");
+    if (uniqueLabel.length === 1) {
+      const fallbackPrecision = Math.min(6, dynamicPrecision + 2);
+      const fallbackLabels = [
+        formatYAxisValue(minPoint, fallbackPrecision),
+        formatYAxisValue(minPoint.plus(maxPoint).dividedBy(2), fallbackPrecision),
+        formatYAxisValue(maxPoint, fallbackPrecision),
+      ];
+
+      const uniqueFallbackLabels = [...new Set(fallbackLabels)];
+      if (uniqueFallbackLabels.length > 1) {
+        return uniqueFallbackLabels;
+      }
+
+      return [
+        formatYAxisValue(minValue.multipliedBy(0.99), fallbackPrecision),
+        formatYAxisValue(minValue, fallbackPrecision),
+        formatYAxisValue(minValue.multipliedBy(1.01), fallbackPrecision),
+      ];
+    }
+
     return uniqueLabel;
   };
 
