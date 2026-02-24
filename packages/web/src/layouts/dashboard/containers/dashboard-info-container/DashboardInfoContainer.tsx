@@ -45,7 +45,7 @@ const DashboardInfoContainer: React.FC = () => {
   const progressBar = useMemo(() => {
     if (!convertedDashboardTokenData) return "0%";
     const circSupply = Number(convertedDashboardTokenData?.gnsCirculatingSupply);
-    const totalSupply = Number(convertedDashboardTokenData?.gnsTotalSupply);
+    const totalSupply = Number(convertedDashboardTokenData?.gnsMaxSupply);
     if (totalSupply === 0) return "0%";
     const percent = Math.min((circSupply / totalSupply) * 100, 100);
     return `${percent}%`;
@@ -69,7 +69,7 @@ const DashboardInfoContainer: React.FC = () => {
     };
 
     const circulatingSupply = convertedDashboardTokenData.gnsCirculatingSupply;
-    const totalSupply = convertedDashboardTokenData.gnsTotalSupply;
+    const totalSupply = convertedDashboardTokenData.gnsMaxSupply;
     const totalStaked = Number(convertedDashboardTokenData.gnsTotalStaked);
     const dailyBlockEmissions = Number(convertedDashboardTokenData.gnsDailyBlockEmissions);
 

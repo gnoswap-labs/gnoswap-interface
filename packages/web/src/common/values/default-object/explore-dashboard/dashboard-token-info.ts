@@ -7,5 +7,5 @@ export const DEFAULT_DASHBOARD_TOKEN_INFO: DashboardTokenResponse = {
   gnsDailyBlockEmissions: "0",
   gnsPrice: "0",
   gnsTotalStaked: "0",
-  gnsTotalSupply: "0",
+  gnsMaxSupply: "0",
 };
