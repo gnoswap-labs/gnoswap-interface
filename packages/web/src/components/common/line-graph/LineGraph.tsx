@@ -1,14 +1,14 @@
-import BigNumber from "bignumber.js";
-import React, { useCallback, useEffect, useState, useMemo } from "react";
-import { LineGraphTooltipWrapper, LineGraphWrapper } from "./LineGraph.styles";
-import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { Global, css, useTheme } from "@emotion/react";
-import { subscriptFormat } from "@utils/number-utils";
-import { getLocalizeTime } from "@utils/chart";
-import { convertToKMB } from "@utils/stake-position-utils";
-import { formatPrice } from "@utils/new-number-utils";
-import dayjs from "dayjs";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
+import { getLocalizeTime } from "@utils/chart";
+import { formatPrice } from "@utils/new-number-utils";
+import { subscriptFormat } from "@utils/number-utils";
+import { convertToKMB } from "@utils/stake-position-utils";
+import BigNumber from "bignumber.js";
+import dayjs from "dayjs";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import FloatingTooltip from "../tooltip/FloatingTooltip";
+import { LineGraphTooltipWrapper, LineGraphWrapper } from "./LineGraph.styles";
 
 interface DataItem {
   value: number;
@@ -105,6 +105,7 @@ export interface LineGraphProps {
   displayLastDayAsNow?: boolean;
   popupYValueFormatter?: (value: string) => string;
   hasNoLabel?: boolean;
+  referenceTimeForFirstLine?: string;
 }
 
 export interface LineGraphRef {
@@ -172,6 +173,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   displayLastDayAsNow = false,
   popupYValueFormatter,
   hasNoLabel = false,
+  referenceTimeForFirstLine,
 }: LineGraphProps) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
@@ -519,6 +521,19 @@ const LineGraph: React.FC<LineGraphProps> = ({
     return points[0];
   }, [points]);
 
+  const firstLineY = useMemo(() => {
+    if (!referenceTimeForFirstLine) {
+      return firstPoint.y;
+    }
+
+    const referenceIndex = datas.findIndex(item => item.time === referenceTimeForFirstLine);
+    if (referenceIndex < 0 || !points[referenceIndex]) {
+      return firstPoint.y;
+    }
+
+    return points[referenceIndex].y;
+  }, [datas, firstPoint.y, points, referenceTimeForFirstLine]);
+
   const locationTooltipPosition = useMemo(() => {
     if (forcedPosition) return forcedPosition;
 
@@ -715,9 +730,9 @@ const LineGraph: React.FC<LineGraphProps> = ({
                   stroke={firstPointColor ? firstPointColor : color}
                   strokeWidth={1}
                   x1={0}
-                  y1={firstPoint.y}
+                  y1={firstLineY}
                   x2={width}
-                  y2={firstPoint.y}
+                  y2={firstLineY}
                   strokeDasharray={3}
                   className="first-line"
                 />

@@ -201,6 +201,7 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
           strokeWidth={1}
           datas={chartData}
           firstPointColor={theme.color.border05}
+          referenceTimeForFirstLine={datas[0]?.time}
           customData={customData}
           forcedPosition={"top"}
           displayLastDayAsNow
