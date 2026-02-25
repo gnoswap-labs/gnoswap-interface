@@ -1,4 +1,14 @@
 import { renderHook } from "@testing-library/react";
+import { Provider as JotaiProvider } from "jotai";
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
+
+const wrapper = ({ children }: { children: React.ReactNode }) => (
+  <JotaiProvider>
+    <GnoswapThemeProvider>
+      {children}
+    </GnoswapThemeProvider>
+  </JotaiProvider>
+);
 
 const mockPositions: unknown[] = [];
 let mockSelectedPosition: unknown = null;
@@ -113,13 +123,13 @@ describe("useDecreaseHandle — derived values", () => {
   describe("loading", () => {
     it("returns true when selectedPosition is null", () => {
       mockSelectedPosition = null;
-      const { result } = renderHook(() => useDecreaseHandle());
+      const { result } = renderHook(() => useDecreaseHandle(), { wrapper });
       expect(result.current.loading).toBe(true);
     });
 
     it("returns false when selectedPosition exists", () => {
       mockSelectedPosition = makePosition(100, 50, 150);
-      const { result } = renderHook(() => useDecreaseHandle());
+      const { result } = renderHook(() => useDecreaseHandle(), { wrapper });
       expect(result.current.loading).toBe(false);
     });
   });

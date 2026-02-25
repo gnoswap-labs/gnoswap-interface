@@ -1,5 +1,15 @@
 import { renderHook, act } from "@testing-library/react";
+import { Provider as JotaiProvider } from "jotai";
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { useTokenAmountInput } from "./use-token-amount-input";
+
+const wrapper = ({ children }: { children: React.ReactNode }) => (
+  <JotaiProvider>
+    <GnoswapThemeProvider>
+      {children}
+    </GnoswapThemeProvider>
+  </JotaiProvider>
+);
 
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({
@@ -43,18 +53,22 @@ function makeToken(path: string, decimals = 6) {
 
 describe("useTokenAmountInput — balance derivation", () => {
   beforeEach(() => {
-    Object.keys(mockDisplayBalanceMap).forEach(k => delete mockDisplayBalanceMap[k]);
-    Object.keys(mockTokenPrices).forEach(k => delete mockTokenPrices[k]);
+    for (const k of Object.keys(mockDisplayBalanceMap)) {
+      delete mockDisplayBalanceMap[k];
+    }
+    for (const k of Object.keys(mockTokenPrices)) {
+      delete mockTokenPrices[k];
+    }
   });
 
   it("returns '0' when token is null", () => {
-    const { result } = renderHook(() => useTokenAmountInput(null));
+    const { result } = renderHook(() => useTokenAmountInput(null), { wrapper });
     expect(result.current.balance).toBe("0");
   });
 
   it("returns '0' when token.path is not in displayBalanceMap", () => {
     const token = makeToken("gno.land/r/demo/foo");
-    const { result } = renderHook(() => useTokenAmountInput(token));
+    const { result } = renderHook(() => useTokenAmountInput(token), { wrapper });
     expect(result.current.balance).toBe("0");
   });
 
@@ -62,13 +76,13 @@ describe("useTokenAmountInput — balance derivation", () => {
     const token = makeToken("gno.land/r/demo/foo");
     mockDisplayBalanceMap["gno.land/r/demo/foo"] = "123456.789";
 
-    const { result } = renderHook(() => useTokenAmountInput(token));
+    const { result } = renderHook(() => useTokenAmountInput(token), { wrapper });
     expect(result.current.balance).toBe("123,456.789");
   });
 
   it("returns '0' for amount initially and allows changing", () => {
     const token = makeToken("gno.land/r/demo/foo");
-    const { result } = renderHook(() => useTokenAmountInput(token));
+    const { result } = renderHook(() => useTokenAmountInput(token), { wrapper });
 
     expect(result.current.amount).toBe("0");
 
