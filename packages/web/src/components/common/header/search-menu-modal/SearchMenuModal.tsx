@@ -129,35 +129,38 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     popularTokenKey,
   ]);
 
-  const onClickItem = (item: Token) => {
-    const current = recents.length > 0 ? [item, recents[0]] : [item];
+  const onClickItem = useCallback(
+    (item: Token) => {
+      const current = recents.length > 0 ? [item, recents[0]] : [item];
 
-    setRecentsData(
-      JSON.stringify(
-        current
-          .filter(recentToken => tokens.some(token => token.token.path === recentToken.token.path))
-          .filter((_item, index) => {
-            const _value = JSON.stringify(_item);
-            return (
-              index ===
-              current.findIndex(obj => {
-                return JSON.stringify(obj) === _value;
-              })
-            );
-          }),
-      ),
-    );
-    onSearchMenuToggle();
-    if (item.isLiquid) {
-      const poolPath = `${item.token.path}:${item?.tokenB?.path}:${
-        Number(item.fee.slice(0, item.fee.length - 1)) * 10000
-      }`;
-      movePoolPage(poolPath);
-    } else {
-      const tokenPath = item.token.path;
-      moveTokenPage(tokenPath);
-    }
-  };
+      setRecentsData(
+        JSON.stringify(
+          current
+            .filter(recentToken => tokens.some(token => token.token.path === recentToken.token.path))
+            .filter((_item, index) => {
+              const _value = JSON.stringify(_item);
+              return (
+                index ===
+                current.findIndex(obj => {
+                  return JSON.stringify(obj) === _value;
+                })
+              );
+            }),
+        ),
+      );
+      onSearchMenuToggle();
+      if (item.isLiquid) {
+        const poolPath = `${item.token.path}:${item?.tokenB?.path}:${
+          Number(item.fee.slice(0, item.fee.length - 1)) * 10000
+        }`;
+        movePoolPage(poolPath);
+      } else {
+        const tokenPath = item.token.path;
+        moveTokenPage(tokenPath);
+      }
+    },
+    [recents, tokens, setRecentsData, onSearchMenuToggle, movePoolPage, moveTokenPage],
+  );
 
   const onClickPath = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
@@ -210,7 +213,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                   </div>
                   {recents.map((item, idx) =>
                     !item.isLiquid ? (
-                      <li key={idx} onClick={() => onClickItem(item)}>
+                      <li key={item.path} onClick={() => onClickItem(item)}>
                         <div className="coin-info-wrapper">
                           <MissingLogo
                             symbol={item.token.symbol}
@@ -260,7 +263,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                         </div>
                       </li>
                     ) : (
-                      <li key={idx} onClick={() => onClickItem(item)}>
+                      <li key={item.path} onClick={() => onClickItem(item)}>
                         <div className="coin-info">
                           <DoubleLogo
                             size={breakpoint !== DEVICE_TYPE.MOBILE ? 28 : 21}
@@ -289,7 +292,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                     {!keyword ? t("Modal:search.popular") : t("Modal:search.tokens")}
                   </div>
                   {popularTokens.map((item, idx) => (
-                    <li key={idx} onClick={() => onClickItem(item)}>
+                    <li key={item.path} onClick={() => onClickItem(item)}>
                       <div className="coin-info-wrapper">
                         <MissingLogo
                           symbol={item.token.symbol}
@@ -345,8 +348,8 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                   <div className="popular-tokens">
                     {!keyword ? t("Modal:search.mostLiquiPools") : t("Modal:search.pools")}
                   </div>
-                  {mostLiquidity.map((item, idx) => (
-                    <li key={idx} onClick={() => onClickItem(item)}>
+                  {mostLiquidity.map(item => (
+                    <li key={item.path} onClick={() => onClickItem(item)}>
                       <div className="coin-info">
                         <DoubleLogo
                           size={breakpoint !== DEVICE_TYPE.MOBILE ? 28 : 21}

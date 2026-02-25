@@ -150,10 +150,10 @@ const SwapInfoTransactionListTable = ({
       </TransactionListTableHeader>
 
       <TransactionListTableList>
-        {swapHistory.slice(0, MAX_DISPLAY_TRANSACTIONS).map((item: SwapHistoryItem, i) => {
+        {swapHistory.slice(0, MAX_DISPLAY_TRANSACTIONS).map((item: SwapHistoryItem) => {
           return (
             <TransactionListTableRow
-              key={`transaction-list-${item.txHash}-${i}`}
+              key={item.txHash}
               data={item}
               breakpoint={breakpoint}
               isNewTransaction={newTransactions.has(item.txHash)}
@@ -176,11 +176,7 @@ const TransactionListTableRow = ({ breakpoint, data, isNewTransaction }: Transac
   const intervalIdRef = React.useRef<NodeJS.Timeout | null>(null);
 
   React.useEffect(() => {
-    const isMounted = true;
-
     const updateTimeDisplay = () => {
-      if (!isMounted) return;
-
       const diffInSeconds = getTimeDiffInSeconds(Date.now(), txDate);
       setTimeDisplay(formatDisplayTime(diffInSeconds));
 
