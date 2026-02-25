@@ -22,6 +22,7 @@ import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
 import { nullVerifiedDelegateInfo, VerifiedDelegateInfo } from "@repositories/governance";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { isValidAddress } from "@utils/validation-utils";
+import { openExternalUrl } from "@utils/url-utils";
 
 import DelegateeChip from "./delegatee-chip/DelegateeChip";
 
@@ -199,7 +200,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
                 className="addr"
                 onClick={e => {
                   e.stopPropagation();
-                  window.open(getAccountUrl(delegatee.address));
+                  openExternalUrl(getAccountUrl(delegatee.address));
                 }}
               >
                 {[delegatee.address.slice(0, 8), delegatee.address.slice(32, 40)].join("...")}
@@ -288,7 +289,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
         content={
           <MyDelWarningContentWrapper>
             {t("Governance:myDel.delModal.warning.description")}
-            <a href={EXT_URL.DOCS.XGNS} target="_blank" className="learn-more-box">
+            <a href={EXT_URL.DOCS.XGNS} target="_blank" rel="noopener noreferrer" className="learn-more-box">
               <p>{t("common:learnMore")}</p>
               <IconNewTab color={theme.color.icon21} />
             </a>
@@ -400,7 +401,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
               className="value clickable"
               onClick={e => {
                 e.stopPropagation();
-                window.open(getAccountUrl(tmpDelegatee.address));
+                openExternalUrl(getAccountUrl(tmpDelegatee.address));
               }}
             >
               {[tmpDelegatee.address.slice(0, 8), tmpDelegatee.address.slice(32, 40)].join("...")}
@@ -421,7 +422,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
               className="value clickable"
               onClick={e => {
                 e.stopPropagation();
-                window.open(tmpDelegatee.website);
+                openExternalUrl(tmpDelegatee.website);
               }}
             >
               {tmpDelegatee.website}
