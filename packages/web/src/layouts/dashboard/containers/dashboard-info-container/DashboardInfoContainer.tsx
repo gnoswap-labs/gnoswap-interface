@@ -107,7 +107,7 @@ const DashboardInfoContainer: React.FC = () => {
     }
 
     return {
-      totalDelegated: `${numberToFormat(convertedGovernanceOverview.totalDelegated)} ${XGNS_TOKEN.symbol}`,
+      totalDelegated: `${numberToFormat(convertedGovernanceOverview.xgnsTotalSupply)} ${XGNS_TOKEN.symbol}`,
       holders: `${numberToFormat(convertedGovernanceOverview.holders)}`,
       passedCount: `${numberToFormat(convertedGovernanceOverview.passedCount)}`,
       activeCount: `${numberToFormat(convertedGovernanceOverview.activeCount)} `,

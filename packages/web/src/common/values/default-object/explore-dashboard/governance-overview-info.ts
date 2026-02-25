@@ -6,4 +6,5 @@ export const DEFAULT_GOVERNANCE_OVERVIEW_INFO: GovernanceOverviewResponse = {
   passedCount: 0,
   activeCount: 0,
   communityPool: 0,
+  xgnsTotalSupply: 0,
 };
