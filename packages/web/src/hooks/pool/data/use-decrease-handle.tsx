@@ -64,9 +64,7 @@ export const useDecreaseHandle = () => {
     },
   });
 
-  const loading = useMemo(() => {
-    return !selectedPosition;
-  }, [selectedPosition]);
+  const loading = !selectedPosition;
 
   useEffect(() => {
     if (!selectedPosition && positions.length > 0 && positionId) {
@@ -79,7 +77,7 @@ export const useDecreaseHandle = () => {
 
       setSelectedPosition(position);
     }
-  }, [selectedPosition, positions, positionId, poolPath, selectedPosition]);
+  }, [selectedPosition, positions, positionId, poolPath]);
 
   const { connected, account, loadingConnect } = useWallet();
   const minPriceStr = useMemo(() => {
@@ -125,15 +123,10 @@ export const useDecreaseHandle = () => {
     };
   }, [selectedPosition?.pool]);
 
-  const inRange = useMemo(() => {
-    if (!selectedPosition) return false;
-    const { tickLower, tickUpper, pool } = selectedPosition;
-    const currentTick = pool.currentTick;
-    if (currentTick < tickLower || currentTick > tickUpper) {
-      return false;
-    }
-    return true;
-  }, [selectedPosition]);
+  const inRange = !selectedPosition
+    ? false
+    : selectedPosition.pool.currentTick >= selectedPosition.tickLower &&
+      selectedPosition.pool.currentTick <= selectedPosition.tickUpper;
 
   const rangeStatus = useMemo(() => {
     return selectedPosition?.closed
