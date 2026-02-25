@@ -35,10 +35,9 @@ export const useReferral = () => {
   const [storedReferralAddress, setStoredReferralAddress] = React.useState<string | null>(null);
   const apiReferrerAddress = leaderboardMyInfo?.referrerAddress || "";
 
-  const referralEarnedPoints = React.useMemo(() => {
-    if (!leaderboardMyInfo?.referralPoint) return 0;
-    return parseInt(leaderboardMyInfo.referralPoint) || 0;
-  }, [leaderboardMyInfo?.referralPoint]);
+  const referralEarnedPoints = leaderboardMyInfo?.referralPoint
+    ? parseInt(leaderboardMyInfo.referralPoint) || 0
+    : 0;
 
   const generateReferralLink = React.useCallback((): string => {
     if (typeof window === "undefined" || !account?.address) return "";
