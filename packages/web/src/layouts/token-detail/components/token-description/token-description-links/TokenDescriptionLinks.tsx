@@ -5,6 +5,7 @@ import IconCopy from "@components/common/icons/IconCopy";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
+import { openExternalUrl } from "@utils/url-utils";
 
 import { copyTooltip, wrapper } from "./TokenDescriptionLinks.styles";
 
@@ -20,7 +21,7 @@ const TokenDescriptionLinks: React.FC<TokenDescriptionLinksProps> = ({ links, co
   const { t } = useTranslation();
 
   const onClickLink = (link: string) => {
-    return window.open(link, "_blank");
+    openExternalUrl(link);
   };
   return (
     <div css={wrapper}>
