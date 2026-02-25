@@ -6,6 +6,7 @@ import IconOpenLink from "@components/common/icons/IconOpenLink";
 import IconFailed from "@components/common/icons/IconFailed";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
+import { sanitizeHtml } from "@utils/sanitize-html";
 import { TransactionConfirmStatus } from "@states/common";
 import IconClose from "../icons/IconCancel";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
@@ -62,7 +63,7 @@ const TransactionConfirmLoading: React.FC<TransactionConfirmLoadingProps> = ({ d
       </div>
       <div className="transaction-state">
         <span className="submitted">{t("Modal:confirm.general.loading.title")}</span>
-        <div className="swap-message" dangerouslySetInnerHTML={{ __html: description || "" }} />
+        <div className="swap-message" dangerouslySetInnerHTML={{ __html: sanitizeHtml(description) }} />
         <div className="view-transaction">
           <span>{t("Modal:confirm.general.loading.desc")}</span>
         </div>

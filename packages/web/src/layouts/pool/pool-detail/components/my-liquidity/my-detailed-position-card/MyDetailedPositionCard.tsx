@@ -1,6 +1,7 @@
 import { useAtomValue } from "jotai";
 import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { sanitizeHtml } from "@utils/sanitize-html";
 import { cx } from "@emotion/css";
 
 import { WUGNOT_TOKEN } from "@common/values/token-constant";
@@ -1014,9 +1015,9 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
               FloatingContent={
                 <ToolTipContentWrapper
                   dangerouslySetInnerHTML={{
-                    __html: t("Pool:position.ratioTooltip", {
+                    __html: sanitizeHtml(t("Pool:position.ratioTooltip", {
                       symbol: (!isSwap ? tokenA : tokenB)?.symbol,
-                    }),
+                    })),
                   }}
                 />
               }
@@ -1036,9 +1037,9 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
               FloatingContent={
                 <ToolTipContentWrapper
                   dangerouslySetInnerHTML={{
-                    __html: t("Pool:position.ratioTooltip", {
+                    __html: sanitizeHtml(t("Pool:position.ratioTooltip", {
                       symbol: (!isSwap ? tokenB : tokenA)?.symbol,
-                    }),
+                    })),
                   }}
                 />
               }

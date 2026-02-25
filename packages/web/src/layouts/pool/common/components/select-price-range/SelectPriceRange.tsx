@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
+import { sanitizeHtml } from "@utils/sanitize-html";
 
 import IconInfo from "@components/common/icons/IconInfo";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
@@ -158,7 +159,7 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
           <Tooltip
             placement="top"
             FloatingContent={
-              <TooltipContentWrapper dangerouslySetInnerHTML={{ __html: tooltip }}></TooltipContentWrapper>
+              <TooltipContentWrapper dangerouslySetInnerHTML={{ __html: sanitizeHtml(tooltip) }}></TooltipContentWrapper>
             }
           >
             <IconInfo className="tooltip-icon" />

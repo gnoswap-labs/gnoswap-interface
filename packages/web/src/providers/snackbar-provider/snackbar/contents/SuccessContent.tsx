@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import IconNewTab from "@components/common/icons/IconNewTab";
 import IconSuccess from "@components/common/icons/IconSuccess";
 import { GnoscanDataType, useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { sanitizeHtml } from "@utils/sanitize-html";
 
 import { SnackbarContent } from "./type";
 
@@ -17,7 +18,7 @@ const SuccessContent: React.FC<{ content?: SnackbarContent }> = ({ content }) =>
         <h5>
           {content.title} - {t("Modal:toast.success.title")}
         </h5>
-        <div className="description" dangerouslySetInnerHTML={{ __html: content.description || "" }} />
+        <div className="description" dangerouslySetInnerHTML={{ __html: sanitizeHtml(content.description) }} />
         {content.txHash ? (
           <a href={getTxUrl(content.txHash)} target="_blank">
             {t("Modal:toast.success.viewTx")} <IconNewTab />
