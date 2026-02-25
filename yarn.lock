@@ -1842,6 +1842,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@braintree/sanitize-url@npm:^7.1.2":
+  version: 7.1.2
+  resolution: "@braintree/sanitize-url@npm:7.1.2"
+  checksum: 10/d9626ff8f8eb5e192cd055e6e743449c21102c76bb59e405b7028fe56230fa080bfcc80dfb1e21850a6876e75adda9f7b3c888cf0685942bb74da4d2866d6ec3
+  languageName: node
+  linkType: hard
+
 "@bufbuild/protobuf@npm:*, @bufbuild/protobuf@npm:^2.2.3":
   version: 2.9.0
   resolution: "@bufbuild/protobuf@npm:2.9.0"
@@ -2518,6 +2525,7 @@ __metadata:
     "@babel/preset-env": "npm:7.20.2"
     "@babel/preset-typescript": "npm:7.21.0"
     "@babel/runtime": "npm:^7.26.10"
+    "@braintree/sanitize-url": "npm:^7.1.2"
     "@bufbuild/protobuf": "npm:^2.2.3"
     "@emotion/babel-plugin": "npm:11.10.6"
     "@emotion/babel-preset-css-prop": "npm:11.10.0"
