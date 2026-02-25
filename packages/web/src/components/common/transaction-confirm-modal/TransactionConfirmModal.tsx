@@ -63,7 +63,7 @@ const TransactionConfirmLoading: React.FC<TransactionConfirmLoadingProps> = ({ d
       </div>
       <div className="transaction-state">
         <span className="submitted">{t("Modal:confirm.general.loading.title")}</span>
-        <div className="swap-message" dangerouslySetInnerHTML={{ __html: sanitizeHtml(description || "") }} />
+        <div className="swap-message" dangerouslySetInnerHTML={{ __html: sanitizeHtml(description) }} />
         <div className="view-transaction">
           <span>{t("Modal:confirm.general.loading.desc")}</span>
         </div>

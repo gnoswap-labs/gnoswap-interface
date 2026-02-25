@@ -9,7 +9,7 @@ const PURIFY_CONFIG = {
   ALLOW_DATA_ATTR: false,
 };
 
-export function sanitizeHtml(dirty: string): string {
+export function sanitizeHtml(dirty?: string | null): string {
   if (!dirty) return "";
 
   if (typeof window === "undefined") return "";
