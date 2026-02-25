@@ -2551,7 +2551,6 @@ __metadata:
     "@testing-library/user-event": "npm:14.4.3"
     "@types/crypto-js": "npm:^4.2.1"
     "@types/d3": "npm:^7.4.0"
-    "@types/dompurify": "npm:^3.2.0"
     "@types/jest": "npm:29.4.0"
     "@types/ms": "npm:^2.1.0"
     "@types/node": "npm:^20.19.0"
@@ -5065,15 +5064,6 @@ __metadata:
   version: 0.0.9
   resolution: "@types/doctrine@npm:0.0.9"
   checksum: 10/64ef06e6eea2f4f9684d259fedbcb8bf21c954630b96ea2e04875ca42763552b0ba3b01b3dd27ec0f9ea6f8b3b0dba4965d31d5a925cd4c6225fd13a93ae9354
-  languageName: node
-  linkType: hard
-
-"@types/dompurify@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "@types/dompurify@npm:3.2.0"
-  dependencies:
-    dompurify: "npm:*"
-  checksum: 10/0194dd9024e76e856f3373e8b080c7a5ac9910543ac1ee85db45277efbbea820b2f27fe22c8a6f02bb51833e0a8540d732be0d11d156efd16cb0b97f88e41ebf
   languageName: node
   linkType: hard
 
@@ -9090,7 +9080,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dompurify@npm:*, dompurify@npm:^3.3.1":
+"dompurify@npm:^3.3.1":
   version: 3.3.1
   resolution: "dompurify@npm:3.3.1"
   dependencies:
