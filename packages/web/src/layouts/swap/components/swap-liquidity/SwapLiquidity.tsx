@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { sanitizeHtml } from "@utils/sanitize-html";
 import { ValuesType } from "utility-types";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -117,7 +118,7 @@ const SwapLiquidity: React.FC<SwapLiquidityProps> = ({ liquiditys, tokenA, token
       </div>
       {liquiditys.length === 0 ? (
         <div className="list-wrap">
-          <p dangerouslySetInnerHTML={{ __html: t("Swap:poolInfo.noPool") }} />
+          <p dangerouslySetInnerHTML={{ __html: sanitizeHtml(t("Swap:poolInfo.noPool")) }} />
           <Button
             text={t("Swap:poolInfo.addPosBtn")}
             leftIcon={<IconAdd />}

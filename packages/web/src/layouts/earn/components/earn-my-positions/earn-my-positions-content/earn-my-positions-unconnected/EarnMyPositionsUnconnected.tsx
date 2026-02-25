@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { sanitizeHtml } from "@utils/sanitize-html";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconLinkOff from "@components/common/icons/IconLinkOff";
@@ -24,7 +25,7 @@ const EarnMyPositionsUnconnected: React.FC<EarnMyPositionsUnconnectedProps> = ({
       {!connected ? (
         <p
           dangerouslySetInnerHTML={{
-            __html: t("Earn:positions.unconnect.connect"),
+            __html: sanitizeHtml(t("Earn:positions.unconnect.connect")),
           }}
         />
       ) : (
