@@ -247,5 +247,8 @@ export const formatOtherPrice = (
     newFraction = Number(`0.${fraction}`).toString().split(".")[1];
   }
 
-  return negativeSign + prefix + integer + (newFraction ? `.${newFraction.toString()}` : "");
+  const formatted = integer + (newFraction ? `.${newFraction.toString()}` : "");
+  const sign = formatted === "0" ? "" : negativeSign;
+
+  return sign + prefix + formatted;
 };
