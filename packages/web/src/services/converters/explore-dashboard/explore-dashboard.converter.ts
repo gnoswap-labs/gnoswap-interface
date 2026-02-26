@@ -47,6 +47,7 @@ export class ExploreDashboardConverter {
     return {
       ...data,
       totalDelegated: this.safeConvertToNumber(AmountConverter.convertSingle(XGNS_TOKEN, data.totalDelegated)),
+      xgnsTotalSupply: this.safeConvertToNumber(AmountConverter.convertSingle(XGNS_TOKEN, data.xgnsTotalSupply)),
     };
   }
 

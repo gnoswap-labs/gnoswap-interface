@@ -4,4 +4,5 @@ export interface GovernanceOverviewResponse {
   passedCount: number;
   activeCount: number;
   communityPool: number;
+  xgnsTotalSupply: number;
 }
