@@ -148,6 +148,18 @@ describe("formatTokenAmount", () => {
     });
   });
 
+  describe("decimals=0 is honored", () => {
+    test("decimals=0 formats as integer", () => {
+      expect(formatTokenAmount(1234.56, { decimals: 0, isKMB: false })).toBe("1,234");
+    });
+
+    test("decimals=0 does not fall through to default toFormat", () => {
+      // Without the fix, decimals=0 is falsy and skips the decimals branch
+      const withDecimals0 = formatTokenAmount(1.999, { decimals: 0, isKMB: false });
+      expect(withDecimals0).toBe("1");
+    });
+  });
+
   describe("negative values with minLimit", () => {
     test("negative value does not trigger minLimit check", () => {
       // isGreaterThan(0) guard prevents negative values from matching
@@ -194,6 +206,12 @@ describe("formatRate", () => {
     });
   });
 
+  describe("decimals=0 is honored", () => {
+    test("decimals=0 formats as integer percent", () => {
+      expect(formatRate(5.75, { decimals: 0 })).toBe("5%");
+    });
+  });
+
   describe("basic formatting", () => {
     test("null returns '-'", () => {
       expect(formatRate(null)).toBe("-");
@@ -231,6 +249,16 @@ describe("formatPoolPairAmount", () => {
       const result = formatPoolPairAmount(-0.5, { minLimit: 0.01, decimals: 2, isKMB: false });
       // removeTrailingZeros strips the trailing 0
       expect(result).toBe("-0.5");
+    });
+  });
+
+  describe("decimals=0 is honored", () => {
+    test("decimals=0 formats as integer", () => {
+      expect(formatPoolPairAmount(1234.56, { decimals: 0, isKMB: false })).toBe("1,234");
+    });
+
+    test("decimals=0 with fractional value rounds down to integer", () => {
+      expect(formatPoolPairAmount(9.99, { decimals: 0, isKMB: false })).toBe("9");
     });
   });
 

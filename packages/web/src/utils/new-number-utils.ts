@@ -27,7 +27,7 @@ const parseToBigNumber = (value: NumericInput): ParsedBigNumber | null => {
 };
 
 const resolveMinLimit = (minLimit: number | null | undefined, decimals?: number): number | null => {
-  return minLimit ?? (decimals ? 1 / Math.pow(10, decimals) : null);
+  return minLimit ?? (decimals != null ? 1 / Math.pow(10, decimals) : null);
 };
 
 export const formatPoolPairAmount = (
@@ -61,7 +61,7 @@ export const formatPoolPairAmount = (
     if (kmbNumber) return kmbNumber;
   }
 
-  const stringValue = decimals
+  const stringValue = decimals != null
     ? bigNum.toFormat(decimals, BigNumber.ROUND_DOWN)
     : bigNum.toFormat();
 
@@ -141,7 +141,7 @@ export const formatTokenAmount = (
     if (kmbNumber) return kmbNumber;
   }
 
-  if (decimals) {
+  if (decimals != null) {
     return `${bigNum.toFormat(decimals, BigNumber.ROUND_DOWN)}${internalSuffix}`;
   }
 
