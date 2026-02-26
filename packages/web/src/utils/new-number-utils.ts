@@ -112,7 +112,7 @@ export const formatPoolPairAmount = (
 ) => {
   const parsed = parseToBigNumber(amount);
   if (!parsed) return "-";
-  const { bigNum, abs, raw } = parsed;
+  const { bigNum, abs } = parsed;
 
   if (abs.isEqualTo(0)) return "0";
 
@@ -123,13 +123,11 @@ export const formatPoolPairAmount = (
   }
 
   if (isKMB) {
-    const kmbNumber = toKMBFormat(raw);
+    const kmbNumber = toKMBFormat(abs);
     if (kmbNumber) return kmbNumber;
   }
 
-  const formatted = decimals != null
-    ? abs.toFormat(decimals, BigNumber.ROUND_DOWN)
-    : abs.toFormat();
+  const formatted = decimals != null ? abs.toFormat(decimals, BigNumber.ROUND_DOWN) : abs.toFormat();
   const cleaned = removeTrailingZeros(formatted);
   const sign = resolveSign(bigNum, cleaned);
 
@@ -208,9 +206,7 @@ export const formatTokenAmount = (
     if (kmbNumber) return kmbNumber;
   }
 
-  const formatted = decimals != null
-    ? abs.toFormat(decimals, BigNumber.ROUND_DOWN)
-    : abs.toFormat();
+  const formatted = decimals != null ? abs.toFormat(decimals, BigNumber.ROUND_DOWN) : abs.toFormat();
   const sign = resolveSign(bigNum, formatted);
 
   return `${sign}${formatted}${internalSuffix}`;
@@ -242,13 +238,13 @@ export const formatPrice = (value?: NumericInput, options: FormatPriceOptions = 
   const parsed = parseToBigNumber(value);
   if (!parsed) return value.toString();
 
-  const { bigNum, abs, raw } = parsed;
+  const { bigNum, abs } = parsed;
   const prefix = buildPricePrefix({ usd, approx });
 
   if (abs.isEqualTo(0)) return prefix + "0";
 
   if (isKMB) {
-    const kmbNumber = toKMBFormat(raw, { usd });
+    const kmbNumber = toKMBFormat(abs, { usd });
     if (kmbNumber) return kmbNumber;
   }
 
@@ -286,7 +282,7 @@ export const formatOtherPrice = (
   const parsed = parseToBigNumber(value);
   if (!parsed) return "-";
 
-  const { bigNum, abs, raw } = parsed;
+  const { bigNum, abs } = parsed;
   const prefix = usd ? "$" : "";
 
   if (abs.isEqualTo(0)) {
@@ -301,7 +297,7 @@ export const formatOtherPrice = (
   }
 
   if (isKMB) {
-    const kmbNumber = toKMBFormat(raw, { usd });
+    const kmbNumber = toKMBFormat(abs, { usd });
     if (kmbNumber) return kmbNumber;
   }
 
