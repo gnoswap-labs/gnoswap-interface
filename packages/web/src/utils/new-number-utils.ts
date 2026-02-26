@@ -9,8 +9,17 @@ export const removeTrailingZeros = (value: string) => {
 
 type NumericInput = string | number | BigNumber | null | undefined;
 
+/**
+ * Result of parsing a {@link NumericInput} into a validated BigNumber.
+ * Provides the original value, its absolute value, and the sanitized
+ * string form so that callers never need to re-parse or re-strip commas.
+ */
 interface ParsedBigNumber {
+  /** The parsed value with its original sign preserved. */
   bigNum: BigNumber;
+  /** Pre-computed absolute value (`bigNum.abs()`), used for formatting and comparison. */
+  abs: BigNumber;
+  /** Comma-stripped string form of the input, suitable for passing to `toKMBFormat` etc. */
   raw: string;
 }
 
@@ -23,7 +32,7 @@ const parseToBigNumber = (value: NumericInput): ParsedBigNumber | null => {
   const raw = value.toString().replace(/,/g, "");
   const bigNum = BigNumber(raw);
   if (bigNum.isNaN()) return null;
-  return { bigNum, raw };
+  return { bigNum, abs: bigNum.abs(), raw };
 };
 
 /**
@@ -69,6 +78,24 @@ const resolveMinLimit = (minLimit: number | null | undefined, decimals?: number)
   return null;
 };
 
+/**
+ * Determines the sign prefix for a formatted number.
+ *
+ * The sign is derived from the original value but suppressed when the
+ * formatted absolute value is "0" (i.e. a very small negative that
+ * rounds to zero should not display as "-$0").
+ *
+ * @param bigNum - The original parsed BigNumber (may be negative).
+ * @param formattedAbs - The formatted absolute value string (e.g. "1,234.56" or "0").
+ * @param showSign - When true, positive values get a "+" prefix.
+ */
+const resolveSign = (bigNum: BigNumber, formattedAbs: string, showSign = false): string => {
+  if (formattedAbs === "0") return "";
+  if (bigNum.isNegative()) return "-";
+  if (showSign) return "+";
+  return "";
+};
+
 export const formatPoolPairAmount = (
   amount?: NumericInput,
   {
@@ -85,13 +112,13 @@ export const formatPoolPairAmount = (
 ) => {
   const parsed = parseToBigNumber(amount);
   if (!parsed) return "-";
-  const { bigNum, raw } = parsed;
+  const { bigNum, abs, raw } = parsed;
 
-  if (bigNum.isEqualTo(0)) return "0";
+  if (abs.isEqualTo(0)) return "0";
 
   const internalMinLimit = resolveMinLimit(minLimit, decimals);
 
-  if (hasMinLimit && internalMinLimit && bigNum.isLessThan(internalMinLimit.value) && bigNum.isGreaterThan(0)) {
+  if (hasMinLimit && internalMinLimit && abs.isLessThan(internalMinLimit.value) && bigNum.isGreaterThan(0)) {
     return `<${internalMinLimit.display}`;
   }
 
@@ -100,11 +127,13 @@ export const formatPoolPairAmount = (
     if (kmbNumber) return kmbNumber;
   }
 
-  const stringValue = decimals != null
-    ? bigNum.toFormat(decimals, BigNumber.ROUND_DOWN)
-    : bigNum.toFormat();
+  const formatted = decimals != null
+    ? abs.toFormat(decimals, BigNumber.ROUND_DOWN)
+    : abs.toFormat();
+  const cleaned = removeTrailingZeros(formatted);
+  const sign = resolveSign(bigNum, cleaned);
 
-  return removeTrailingZeros(stringValue);
+  return sign + cleaned;
 };
 
 export const formatRate = (
@@ -123,23 +152,22 @@ export const formatRate = (
 ) => {
   const parsed = parseToBigNumber(amount);
   if (!parsed) return "-";
-  const { bigNum } = parsed;
+  const { bigNum, abs } = parsed;
 
-  const sign = showSign && !bigNum.isEqualTo(0)
-    ? (bigNum.isLessThan(0) ? "-" : "+")
-    : "";
-
-  const internalMinLimit = resolveMinLimit(minLimit, decimals);
-
-  if (!allowZeroDecimals && bigNum.isEqualTo(0)) {
+  if (!allowZeroDecimals && abs.isEqualTo(0)) {
     return "0%";
   }
 
-  if (internalMinLimit && bigNum.isLessThan(internalMinLimit.value) && bigNum.isGreaterThan(0)) {
+  const internalMinLimit = resolveMinLimit(minLimit, decimals);
+
+  if (internalMinLimit && abs.isLessThan(internalMinLimit.value) && bigNum.isGreaterThan(0)) {
     return `<${internalMinLimit.display}%`;
   }
 
-  return sign + bigNum.abs().toFormat(decimals, BigNumber.ROUND_DOWN) + "%";
+  const formatted = abs.toFormat(decimals, BigNumber.ROUND_DOWN);
+  const sign = resolveSign(bigNum, formatted, showSign);
+
+  return sign + formatted + "%";
 };
 
 export const formatTokenAmount = (
@@ -165,26 +193,27 @@ export const formatTokenAmount = (
 
   if (!parsed) return amount?.toString() ?? "-";
 
-  const { bigNum } = parsed;
+  const { bigNum, abs } = parsed;
 
-  if (bigNum.isEqualTo(0)) return "0" + internalSuffix;
+  if (abs.isEqualTo(0)) return "0" + internalSuffix;
 
   const internalMinLimit = resolveMinLimit(minLimit, decimals);
 
-  if (internalMinLimit && bigNum.isLessThan(internalMinLimit.value) && bigNum.isGreaterThan(0)) {
+  if (internalMinLimit && abs.isLessThan(internalMinLimit.value) && bigNum.isGreaterThan(0)) {
     return `<${internalMinLimit.display}${internalSuffix}`;
   }
 
   if (isKMB) {
-    const kmbNumber = toKMBFormat(bigNum);
+    const kmbNumber = toKMBFormat(abs);
     if (kmbNumber) return kmbNumber;
   }
 
-  if (decimals != null) {
-    return `${bigNum.toFormat(decimals, BigNumber.ROUND_DOWN)}${internalSuffix}`;
-  }
+  const formatted = decimals != null
+    ? abs.toFormat(decimals, BigNumber.ROUND_DOWN)
+    : abs.toFormat();
+  const sign = resolveSign(bigNum, formatted);
 
-  return `${bigNum.toFormat()}${internalSuffix}`;
+  return `${sign}${formatted}${internalSuffix}`;
 };
 
 interface FormatPriceOptions {
@@ -213,27 +242,27 @@ export const formatPrice = (value?: NumericInput, options: FormatPriceOptions = 
   const parsed = parseToBigNumber(value);
   if (!parsed) return value.toString();
 
-  const { bigNum, raw } = parsed;
-  const absValue = bigNum.abs();
+  const { bigNum, abs, raw } = parsed;
   const prefix = buildPricePrefix({ usd, approx });
-  const negativeSign = bigNum.isLessThan(0) ? "-" : "";
 
-  if (absValue.isEqualTo(0)) return prefix + "0";
+  if (abs.isEqualTo(0)) return prefix + "0";
 
   if (isKMB) {
     const kmbNumber = toKMBFormat(raw, { usd });
     if (kmbNumber) return kmbNumber;
   }
 
-  if (absValue.isLessThan(1)) {
-    const tempNum = bigNum.toPrecision(lessThan1Significant, BigNumber.ROUND_DOWN);
-    return `${negativeSign}${prefix}${tempNum}`;
+  if (abs.isLessThan(1)) {
+    const formatted = abs.toPrecision(lessThan1Significant, BigNumber.ROUND_DOWN);
+    const sign = resolveSign(bigNum, formatted);
+    return `${sign}${prefix}${formatted}`;
   }
 
-  const formattedNumber = bigNum.toFormat(greaterThan1Decimals, BigNumber.ROUND_DOWN);
-  return `${negativeSign}${prefix}${
-    forcedDecimals ? formattedNumber : removeTrailingZeros(formattedNumber)
-  }`;
+  const formatted = abs.toFormat(greaterThan1Decimals, BigNumber.ROUND_DOWN);
+  const cleaned = forcedDecimals ? formatted : removeTrailingZeros(formatted);
+  const sign = resolveSign(bigNum, cleaned);
+
+  return `${sign}${prefix}${cleaned}`;
 };
 
 export const formatOtherPrice = (
@@ -257,19 +286,17 @@ export const formatOtherPrice = (
   const parsed = parseToBigNumber(value);
   if (!parsed) return "-";
 
-  const { bigNum, raw } = parsed;
-  const absValue = bigNum.abs();
+  const { bigNum, abs, raw } = parsed;
   const prefix = usd ? "$" : "";
-  const negativeSign = bigNum.isLessThan(0) ? "-" : "";
 
-  if (absValue.isEqualTo(0)) {
+  if (abs.isEqualTo(0)) {
     if (zeroAsEmpty) return "-";
     return prefix + "0";
   }
 
   const resolvedMinLimit = resolveMinLimit(minLimit, decimals);
 
-  if (hasMinLimit && resolvedMinLimit && bigNum.isLessThan(resolvedMinLimit.value) && bigNum.isGreaterThan(0)) {
+  if (hasMinLimit && resolvedMinLimit && abs.isLessThan(resolvedMinLimit.value) && bigNum.isGreaterThan(0)) {
     return `<${prefix}${resolvedMinLimit.display}`;
   }
 
@@ -278,8 +305,8 @@ export const formatOtherPrice = (
     if (kmbNumber) return kmbNumber;
   }
 
-  const formatted = removeTrailingZeros(absValue.toFormat(decimals, BigNumber.ROUND_DOWN));
-  const sign = formatted === "0" ? "" : negativeSign;
+  const formatted = removeTrailingZeros(abs.toFormat(decimals, BigNumber.ROUND_DOWN));
+  const sign = resolveSign(bigNum, formatted);
 
   return sign + prefix + formatted;
 };
