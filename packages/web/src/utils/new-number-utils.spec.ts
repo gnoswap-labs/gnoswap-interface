@@ -299,6 +299,25 @@ describe("formatPoolPairAmount", () => {
   });
 });
 
+describe("resolveMinLimit precision with large decimals", () => {
+  test("decimals=18 produces exact threshold without floating point error", () => {
+    // 1 / Math.pow(10, 18) === 1e-18 (JS number) has precision issues
+    // BigNumber(1).div(BigNumber(10).pow(18)) produces exact "0.000000000000000001"
+    const result = formatTokenAmount("0.0000000000000000005", { decimals: 18, isKMB: false });
+    expect(result).toBe("<0.000000000000000001");
+  });
+
+  test("decimals=18 in formatPoolPairAmount produces exact threshold", () => {
+    const result = formatPoolPairAmount("0.0000000000000000005", {
+      decimals: 18,
+      isKMB: false,
+      hasMinLimit: true,
+      minLimit: null,
+    });
+    expect(result).toBe("<0.000000000000000001");
+  });
+});
+
 describe("cross-function consistency", () => {
   describe("trailing zero removal produces same results across functions", () => {
     test("value 1.1 formatted consistently", () => {

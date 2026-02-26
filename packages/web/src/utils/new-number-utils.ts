@@ -26,8 +26,47 @@ const parseToBigNumber = (value: NumericInput): ParsedBigNumber | null => {
   return { bigNum, raw };
 };
 
-const resolveMinLimit = (minLimit: number | null | undefined, decimals?: number): number | null => {
-  return minLimit ?? (decimals != null ? 1 / Math.pow(10, decimals) : null);
+/**
+ * Resolved minimum limit threshold used by formatting functions to determine
+ * when a value should be displayed as `<threshold` instead of the actual amount.
+ */
+interface ResolvedMinLimit {
+  /** BigNumber instance for precise comparison (e.g. `bigNum.isLessThan(value)`). */
+  value: BigNumber;
+  /**
+   * Fixed-point string for user-facing display (e.g. `"0.000000000000000001"`).
+   * Uses `toFixed()` instead of `toString()` to avoid exponential notation
+   * like `"1e-18"` that BigNumber's default stringification can produce.
+   */
+  display: string;
+}
+
+/**
+ * Resolves the minimum displayable limit from either an explicit `minLimit`
+ * or the number of `decimals`.
+ *
+ * Uses BigNumber arithmetic (`1 / 10^decimals`) instead of JavaScript's
+ * `Math.pow` to avoid IEEE 754 floating-point precision loss that occurs
+ * with large exponents (e.g. `1 / Math.pow(10, 18)` yields `1e-18` which
+ * cannot represent all intermediate values exactly).
+ *
+ * @param minLimit - Explicit threshold provided by the caller. When present
+ *   (including `0`), it takes precedence over the decimals-derived value.
+ * @param decimals - Number of decimal places. When `minLimit` is absent,
+ *   the threshold is computed as `10^(-decimals)`.
+ * @returns A {@link ResolvedMinLimit} with both comparison and display forms,
+ *   or `null` when neither `minLimit` nor `decimals` is provided.
+ */
+const resolveMinLimit = (minLimit: number | null | undefined, decimals?: number): ResolvedMinLimit | null => {
+  if (minLimit != null) {
+    const value = BigNumber(minLimit);
+    return { value, display: value.toFixed() };
+  }
+  if (decimals != null) {
+    const value = BigNumber(1).div(BigNumber(10).pow(decimals));
+    return { value, display: value.toFixed(decimals) };
+  }
+  return null;
 };
 
 export const formatPoolPairAmount = (
@@ -52,8 +91,8 @@ export const formatPoolPairAmount = (
 
   const internalMinLimit = resolveMinLimit(minLimit, decimals);
 
-  if (hasMinLimit && internalMinLimit && bigNum.isLessThan(internalMinLimit) && bigNum.isGreaterThan(0)) {
-    return `<${internalMinLimit}`;
+  if (hasMinLimit && internalMinLimit && bigNum.isLessThan(internalMinLimit.value) && bigNum.isGreaterThan(0)) {
+    return `<${internalMinLimit.display}`;
   }
 
   if (isKMB) {
@@ -96,8 +135,8 @@ export const formatRate = (
     return "0%";
   }
 
-  if (internalMinLimit && bigNum.isLessThan(internalMinLimit) && bigNum.isGreaterThan(0)) {
-    return `<${internalMinLimit}%`;
+  if (internalMinLimit && bigNum.isLessThan(internalMinLimit.value) && bigNum.isGreaterThan(0)) {
+    return `<${internalMinLimit.display}%`;
   }
 
   return sign + bigNum.abs().toFormat(decimals, BigNumber.ROUND_DOWN) + "%";
@@ -132,8 +171,8 @@ export const formatTokenAmount = (
 
   const internalMinLimit = resolveMinLimit(minLimit, decimals);
 
-  if (internalMinLimit && bigNum.isLessThan(internalMinLimit) && bigNum.isGreaterThan(0)) {
-    return `<${internalMinLimit}${internalSuffix}`;
+  if (internalMinLimit && bigNum.isLessThan(internalMinLimit.value) && bigNum.isGreaterThan(0)) {
+    return `<${internalMinLimit.display}${internalSuffix}`;
   }
 
   if (isKMB) {
@@ -230,8 +269,8 @@ export const formatOtherPrice = (
 
   const resolvedMinLimit = resolveMinLimit(minLimit, decimals);
 
-  if (hasMinLimit && resolvedMinLimit && bigNum.isLessThan(resolvedMinLimit) && bigNum.isGreaterThan(0)) {
-    return `<${prefix}${resolvedMinLimit}`;
+  if (hasMinLimit && resolvedMinLimit && bigNum.isLessThan(resolvedMinLimit.value) && bigNum.isGreaterThan(0)) {
+    return `<${prefix}${resolvedMinLimit.display}`;
   }
 
   if (isKMB) {
