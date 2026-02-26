@@ -12,14 +12,15 @@ import { useSlippage } from "@hooks/common/use-slippage";
 import { useSelectPool } from "@hooks/pool/data/use-select-pool";
 import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
 import { useTokenData } from "@hooks/token/data/use-token-data";
-import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { PoolModel } from "@models/pool/pool-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { SwapState } from "@states/index";
 import { formatRate } from "@utils/new-number-utils";
 import { makeRouteUrl } from "@utils/page.utils";
-import { checkPoolStakingRewards } from "@utils/pool-utils";
+import { checkPoolStakingRewards, invertSqrtPriceX96 } from "@utils/pool-utils";
+import { sortTokenPaths } from "@utils/sort-utils";
 import {
   getDepositAmountsByAmountA,
   getDepositAmountsByAmountB,
@@ -28,13 +29,12 @@ import {
   priceToTick,
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
-import { sortTokenPaths } from "@utils/sort-utils";
 
-import PoolAddLiquidity, { PriceRangeSummary } from "../../components/pool-add-liquidity/PoolAddLiquidity";
+import { useReferral } from "@hooks/common/use-referral";
 import { usePool } from "@hooks/pool/data/use-pool";
 import { usePoolAddLiquidityConfirmModal } from "@hooks/pool/ui/use-pool-add-liquidity-confirm-modal";
 import { isSameToken } from "@utils/common";
-import { useReferral } from "@hooks/common/use-referral";
+import PoolAddLiquidity, { PriceRangeSummary } from "../../components/pool-add-liquidity/PoolAddLiquidity";
 
 export const SWAP_FEE_TIERS: SwapFeeTierType[] = ["FEE_100", "FEE_500", "FEE_3000", "FEE_10000"];
 
@@ -113,8 +113,17 @@ const EarnAddLiquidityContainer: React.FC = () => {
   const { isLoading: isLoadingCommon } = useLoading();
 
   const sqrtPriceX96 = useMemo(() => {
-    return selectPool?.sqrtPriceX96 ?? null;
-  }, [selectPool]);
+    if (selectPool?.isOrderedPrice === undefined || selectPool?.isOrderedPrice === null) {
+      return null;
+    }
+
+    const sqrtPriceX96 = selectPool?.sqrtPriceX96 ?? 0n;
+    if (!selectPool.isOrderedPrice) {
+      return invertSqrtPriceX96(sqrtPriceX96);
+    }
+
+    return sqrtPriceX96;
+  }, [selectPool, selectPool.isOrderedPrice]);
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
     let depositRatio = "-";
@@ -730,10 +739,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
     return isFetchingPools || isLoadingCommon;
   }, [isFetchingPools, isLoadingCommon]);
 
-  const showOneClickStaking = useMemo(
-    () => checkPoolStakingRewards(selectPool.poolFromDb?.incentivized),
-    [selectPool.poolFromDb?.incentivized],
-  );
+  const showOneClickStaking = useMemo(() => checkPoolStakingRewards(selectPool.poolFromDb?.incentivized), [
+    selectPool.poolFromDb?.incentivized,
+  ]);
 
   return (
     <PoolAddLiquidity
