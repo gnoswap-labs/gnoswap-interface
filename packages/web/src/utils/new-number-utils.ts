@@ -2,10 +2,36 @@ import BigNumber from "bignumber.js";
 import { buildPricePrefix } from "./common";
 import { toKMBFormat } from "./number-utils";
 
-export const removeTrailingZeros = (value: string) => value.replace(/\.?0+$/, "");
+export const removeTrailingZeros = (value: string) => {
+  if (!value.includes(".")) return value;
+  return value.replace(/0+$/, "").replace(/\.$/, "");
+};
+
+type NumericInput = string | number | BigNumber | null | undefined;
+
+interface ParsedBigNumber {
+  bigNum: BigNumber;
+  raw: string;
+}
+
+/**
+ * Parses a numeric input into a BigNumber, stripping commas and validating.
+ * Returns null for empty, null, undefined, or NaN inputs.
+ */
+const parseToBigNumber = (value: NumericInput): ParsedBigNumber | null => {
+  if (value === "" || value === null || value === undefined) return null;
+  const raw = value.toString().replace(/,/g, "");
+  const bigNum = BigNumber(raw);
+  if (bigNum.isNaN()) return null;
+  return { bigNum, raw };
+};
+
+const resolveMinLimit = (minLimit: number | null | undefined, decimals?: number): number | null => {
+  return minLimit ?? (decimals ? 1 / Math.pow(10, decimals) : null);
+};
 
 export const formatPoolPairAmount = (
-  amount?: number | BigNumber | string | null,
+  amount?: NumericInput,
   {
     decimals,
     minLimit = 0.01,
@@ -18,52 +44,32 @@ export const formatPoolPairAmount = (
     hasMinLimit?: boolean;
   } = {},
 ) => {
-  if (amount === null || amount === undefined) {
-    return "-";
-  }
+  const parsed = parseToBigNumber(amount);
+  if (!parsed) return "-";
+  const { bigNum, raw } = parsed;
 
-  const valueWithoutComma = amount?.toString().replace(/,/g, "");
-  const bigNumberValue = BigNumber(valueWithoutComma);
+  if (bigNum.isEqualTo(0)) return "0";
 
-  if (bigNumberValue.isNaN()) {
-    return "-";
-  }
+  const internalMinLimit = resolveMinLimit(minLimit, decimals);
 
-  if (bigNumberValue.isEqualTo(0)) return "0";
-
-  const internalMinLimit = minLimit || (decimals ? 1 / Math.pow(10, decimals) : null);
-
-  if (hasMinLimit && internalMinLimit && bigNumberValue.isLessThan(internalMinLimit)) {
+  if (hasMinLimit && internalMinLimit && bigNum.isLessThan(internalMinLimit) && bigNum.isGreaterThan(0)) {
     return `<${internalMinLimit}`;
   }
 
-  if (minLimit && bigNumberValue.isLessThan(minLimit) && bigNumberValue.isGreaterThan(0)) {
-    return `<${minLimit}`;
-  }
-
   if (isKMB) {
-    const kmbNumber = toKMBFormat(valueWithoutComma);
+    const kmbNumber = toKMBFormat(raw);
     if (kmbNumber) return kmbNumber;
   }
 
-  let stringValue = "";
+  const stringValue = decimals
+    ? bigNum.toFormat(decimals, BigNumber.ROUND_DOWN)
+    : bigNum.toFormat();
 
-  if (decimals) {
-    stringValue = bigNumberValue.toFormat(decimals, decimals ? BigNumber.ROUND_DOWN : undefined);
-  } else {
-    stringValue = bigNumberValue.toFormat();
-  }
-
-  const [integerValue, fractionValue] = stringValue.split(".");
-  if (fractionValue) {
-    const fractionString = Number(`0.${fractionValue}`).toString().split(".")[1];
-    if (fractionString) return `${integerValue}.${fractionString}`;
-    return integerValue;
-  } else return stringValue;
+  return removeTrailingZeros(stringValue);
 };
 
 export const formatRate = (
-  amount?: number | BigNumber | string | null,
+  amount?: NumericInput,
   {
     decimals = 2,
     minLimit,
@@ -76,29 +82,29 @@ export const formatRate = (
     allowZeroDecimals?: boolean;
   } = {},
 ) => {
-  if (amount === null || amount === undefined || BigNumber(amount).isNaN()) {
-    return "-";
+  const parsed = parseToBigNumber(amount);
+  if (!parsed) return "-";
+  const { bigNum } = parsed;
+
+  const sign = showSign && !bigNum.isEqualTo(0)
+    ? (bigNum.isLessThan(0) ? "-" : "+")
+    : "";
+
+  const internalMinLimit = resolveMinLimit(minLimit, decimals);
+
+  if (!allowZeroDecimals && bigNum.isEqualTo(0)) {
+    return "0%";
   }
 
-  const valueWithoutComma = amount?.toString().replace(/,/g, "");
-  const bigNumberValue = BigNumber(valueWithoutComma);
-  const sign = showSign ? (bigNumberValue.isLessThan(0) ? "-" : "+") : "";
-
-  const internalMinLimit = minLimit || (decimals ? 1 / Math.pow(10, decimals) : null);
-
-  if (!allowZeroDecimals && bigNumberValue.isEqualTo(0)) {
-    return sign + "0%";
-  }
-
-  if (internalMinLimit && bigNumberValue.isLessThan(internalMinLimit) && bigNumberValue.isGreaterThan(0)) {
+  if (internalMinLimit && bigNum.isLessThan(internalMinLimit) && bigNum.isGreaterThan(0)) {
     return `<${internalMinLimit}%`;
   }
 
-  return sign + BigNumber(amount).abs().toFormat(decimals, BigNumber.ROUND_DOWN) + "%";
+  return sign + bigNum.abs().toFormat(decimals, BigNumber.ROUND_DOWN) + "%";
 };
 
 export const formatTokenAmount = (
-  amount: string | number | BigNumber | null,
+  amount: NumericInput,
   {
     decimals,
     minLimit,
@@ -115,28 +121,31 @@ export const formatTokenAmount = (
     return "-";
   }
 
-  const inputAsNumber = BigNumber(amount?.toString().replace(/,/g, ""));
+  const parsed = parseToBigNumber(amount);
   const internalSuffix = suffix ? " " + suffix : "";
 
-  if (inputAsNumber.isNaN()) return amount.toString();
+  if (!parsed) return amount?.toString() ?? "-";
 
-  if (amount === 0) return "0" + internalSuffix;
+  const { bigNum } = parsed;
 
-  const internalMinLimit = minLimit || (decimals ? 1 / Math.pow(10, decimals) : null);
+  if (bigNum.isEqualTo(0)) return "0" + internalSuffix;
 
-  if (internalMinLimit && inputAsNumber.isLessThan(internalMinLimit)) {
+  const internalMinLimit = resolveMinLimit(minLimit, decimals);
+
+  if (internalMinLimit && bigNum.isLessThan(internalMinLimit) && bigNum.isGreaterThan(0)) {
     return `<${internalMinLimit}${internalSuffix}`;
   }
 
   if (isKMB) {
-    const kmbNumber = toKMBFormat(inputAsNumber);
+    const kmbNumber = toKMBFormat(bigNum);
     if (kmbNumber) return kmbNumber;
   }
+
   if (decimals) {
-    return `${inputAsNumber.toFormat(decimals, BigNumber.ROUND_DOWN)}${internalSuffix}`;
+    return `${bigNum.toFormat(decimals, BigNumber.ROUND_DOWN)}${internalSuffix}`;
   }
 
-  return `${BigNumber(inputAsNumber).toFormat()}${internalSuffix}`;
+  return `${bigNum.toFormat()}${internalSuffix}`;
 };
 
 interface FormatPriceOptions {
@@ -148,7 +157,7 @@ interface FormatPriceOptions {
   approx?: boolean;
 }
 
-export const formatPrice = (value?: BigNumber | string | number | null, options: FormatPriceOptions = {}): string => {
+export const formatPrice = (value?: NumericInput, options: FormatPriceOptions = {}): string => {
   const {
     isKMB = true,
     usd = true,
@@ -162,38 +171,34 @@ export const formatPrice = (value?: BigNumber | string | number | null, options:
     return "-";
   }
 
-  const valueWithoutComma = value.toString().replace(/,/g, "");
-  const valueAsBigNum = BigNumber(valueWithoutComma);
-  const absValue = valueAsBigNum.abs();
+  const parsed = parseToBigNumber(value);
+  if (!parsed) return value.toString();
 
+  const { bigNum, raw } = parsed;
+  const absValue = bigNum.abs();
   const prefix = buildPricePrefix({ usd, approx });
-  const negativeSign = valueAsBigNum.isLessThan(0) ? "-" : "";
-
-  if (absValue.isNaN()) return value.toString();
+  const negativeSign = bigNum.isLessThan(0) ? "-" : "";
 
   if (absValue.isEqualTo(0)) return prefix + "0";
 
   if (isKMB) {
-    const kmbNumber = toKMBFormat(valueWithoutComma, { usd });
+    const kmbNumber = toKMBFormat(raw, { usd });
     if (kmbNumber) return kmbNumber;
   }
 
   if (absValue.isLessThan(1)) {
-    const tempNum = valueAsBigNum.toPrecision(lessThan1Significant, BigNumber.ROUND_DOWN);
-    const formattedValue = `${negativeSign}${prefix}${tempNum}`;
-    return formattedValue;
+    const tempNum = bigNum.toPrecision(lessThan1Significant, BigNumber.ROUND_DOWN);
+    return `${negativeSign}${prefix}${tempNum}`;
   }
 
-  const formattedNumber = valueAsBigNum.toFormat(greaterThan1Decimals, BigNumber.ROUND_DOWN);
-  const finalNumber = `${negativeSign}${prefix}${
+  const formattedNumber = bigNum.toFormat(greaterThan1Decimals, BigNumber.ROUND_DOWN);
+  return `${negativeSign}${prefix}${
     forcedDecimals ? formattedNumber : removeTrailingZeros(formattedNumber)
   }`;
-
-  return finalNumber;
 };
 
 export const formatOtherPrice = (
-  value?: BigNumber | string | number | null,
+  value?: NumericInput,
   {
     usd = true,
     isKMB = true,
@@ -210,44 +215,31 @@ export const formatOtherPrice = (
     zeroAsEmpty?: boolean;
   } = {},
 ): string => {
-  if (value === "" || value === null || value === undefined) {
-    return "-";
-  }
+  const parsed = parseToBigNumber(value);
+  if (!parsed) return "-";
 
-  const valueWithoutComma = value.toString().replace(/,/g, "");
-
-  const valueAsBigNum = BigNumber(valueWithoutComma);
-  const absValue = valueAsBigNum.abs();
-
+  const { bigNum, raw } = parsed;
+  const absValue = bigNum.abs();
   const prefix = usd ? "$" : "";
-  const negativeSign = valueAsBigNum.isLessThan(0) ? "-" : "";
-
-  if (absValue.isNaN()) return "-";
+  const negativeSign = bigNum.isLessThan(0) ? "-" : "";
 
   if (absValue.isEqualTo(0)) {
     if (zeroAsEmpty) return "-";
-
     return prefix + "0";
   }
 
-  const internalMinLimit = decimals ? 1 / Math.pow(10, decimals) : null;
+  const resolvedMinLimit = resolveMinLimit(minLimit, decimals);
 
-  if (hasMinLimit && internalMinLimit && valueAsBigNum.isLessThan(internalMinLimit) && valueAsBigNum.isGreaterThan(0)) {
-    return `<${prefix}${minLimit || internalMinLimit}`;
+  if (hasMinLimit && resolvedMinLimit && bigNum.isLessThan(resolvedMinLimit) && bigNum.isGreaterThan(0)) {
+    return `<${prefix}${resolvedMinLimit}`;
   }
 
   if (isKMB) {
-    const kmbNumber = toKMBFormat(valueWithoutComma, { usd });
+    const kmbNumber = toKMBFormat(raw, { usd });
     if (kmbNumber) return kmbNumber;
   }
 
-  const [integer, fraction] = absValue.toFormat(decimals, BigNumber.ROUND_DOWN).split(".");
-  let newFraction = "";
-  if (fraction && Number(fraction) > 0) {
-    newFraction = Number(`0.${fraction}`).toString().split(".")[1];
-  }
-
-  const formatted = integer + (newFraction ? `.${newFraction.toString()}` : "");
+  const formatted = removeTrailingZeros(absValue.toFormat(decimals, BigNumber.ROUND_DOWN));
   const sign = formatted === "0" ? "" : negativeSign;
 
   return sign + prefix + formatted;
