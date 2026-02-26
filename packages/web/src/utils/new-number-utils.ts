@@ -19,7 +19,11 @@ interface ParsedBigNumber {
   bigNum: BigNumber;
   /** Pre-computed absolute value (`bigNum.abs()`), used for formatting and comparison. */
   abs: BigNumber;
-  /** Comma-stripped string form of the input, suitable for passing to `toKMBFormat` etc. */
+  /**
+   * Comma-stripped string form of the input, suitable for passing to `toKMBFormat` etc.
+   *
+   * Note: debug purpose only.
+   */
   raw: string;
 }
 
@@ -28,10 +32,17 @@ interface ParsedBigNumber {
  * Returns null for empty, null, undefined, or NaN inputs.
  */
 const parseToBigNumber = (value: NumericInput): ParsedBigNumber | null => {
-  if (value === "" || value === null || value === undefined) return null;
+  if (value === "" || value === null || value === undefined) {
+    return null;
+  }
+
   const raw = value.toString().replace(/,/g, "");
   const bigNum = BigNumber(raw);
-  if (bigNum.isNaN()) return null;
+
+  if (!bigNum.isFinite() || bigNum.isNaN()) {
+    return null;
+  }
+
   return { bigNum, abs: bigNum.abs(), raw };
 };
 
@@ -90,10 +101,19 @@ const resolveMinLimit = (minLimit: number | null | undefined, decimals?: number)
  * @param showSign - When true, positive values get a "+" prefix.
  */
 const resolveSign = (bigNum: BigNumber, formattedAbs: string, showSign = false): string => {
-  if (formattedAbs === "0") return "";
-  if (bigNum.isNegative()) return "-";
-  if (showSign) return "+";
-  return "";
+  // formattedAbs may include commas
+  const noComma = formattedAbs.replace(/,/g, "");
+  const formattedBn = new BigNumber(noComma);
+
+  if (formattedBn.isZero()) {
+    return "";
+  }
+
+  if (bigNum.isNegative()) {
+    return "-";
+  }
+
+  return showSign ? "+" : "";
 };
 
 export const formatPoolPairAmount = (
@@ -203,7 +223,7 @@ export const formatTokenAmount = (
 
   if (isKMB) {
     const kmbNumber = toKMBFormat(abs);
-    if (kmbNumber) return kmbNumber;
+    if (kmbNumber) return kmbNumber + internalSuffix;
   }
 
   const formatted = decimals != null ? abs.toFormat(decimals, BigNumber.ROUND_DOWN) : abs.toFormat();
