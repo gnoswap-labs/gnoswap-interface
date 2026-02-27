@@ -277,8 +277,13 @@ export const useSelectPool = ({
       return true;
     }
 
-    const isOrderedTokenPath = checkGnotPath(tokenA.path) <= checkGnotPath(tokenB.path);
-    const isOrderedCompareTokenPath = checkGnotPath(compareToken.path) === checkGnotPath(tokenA.path);
+    const checkedTokenAPath = checkGnotPath(tokenA.path);
+    const checkedTokenBPath = checkGnotPath(tokenB.path);
+
+    const isOrderedTokenPath = [checkedTokenAPath, checkedTokenBPath].sort(sortTokenPaths)[0] === checkedTokenAPath;
+
+    const isOrderedCompareTokenPath = checkGnotPath(compareToken.path) === checkedTokenAPath;
+
     return isOrderedTokenPath === isOrderedCompareTokenPath;
   }, [isCreate, tokenA, tokenB, compareToken]);
 
@@ -288,7 +293,7 @@ export const useSelectPool = ({
     }
 
     const currentPrice = isCreate ? startPrice : isOrderedPrice ? price : 1 / price;
-    if (!currentPrice) {
+    if (!currentPrice || !Number.isFinite(currentPrice)) {
       return null;
     }
 
