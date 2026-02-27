@@ -21,6 +21,7 @@ import {
 } from "@query/pools";
 import { EarnState } from "@states/index";
 import { checkGnotPath, encryptId } from "@utils/common";
+import { isValidCurrentPrice } from "@utils/pool-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
 import {
   feeBoostRateByPrices,
@@ -83,6 +84,7 @@ export interface SelectPool {
   liquidityOfTickPoints: [number, number][];
   setInteractionType: (type: "NONE" | "INTERACTION" | "TICK_UPDATE" | "FINISH") => void;
   isChangeMinMax: boolean;
+  isOrderedPrice: boolean;
   setIsChangeMinMax: (value: boolean) => void;
   isLoading: boolean;
 }
@@ -267,27 +269,48 @@ export const useSelectPool = ({
     return maxPosition;
   }, [fullRange, maxPosition, swapFeeTierMaxPriceRangeMap?.maxPrice]);
 
+  const isOrderedPrice = useMemo(() => {
+    if (isCreate) {
+      return true;
+    }
+
+    if (!tokenA || !tokenB || !compareToken) {
+      return true;
+    }
+
+    const checkedTokenAPath = checkGnotPath(tokenA.path);
+    const checkedTokenBPath = checkGnotPath(tokenB.path);
+
+    const isOrderedTokenPath = [checkedTokenAPath, checkedTokenBPath].sort(sortTokenPaths)[0] === checkedTokenAPath;
+
+    const isOrderedCompareTokenPath = checkGnotPath(compareToken.path) === checkedTokenAPath;
+
+    return isOrderedTokenPath === isOrderedCompareTokenPath;
+  }, [isCreate, tokenA, tokenB, compareToken]);
+
   const depositRatio = useMemo(() => {
     if (!tokenA || !tokenB || minPrice === null || maxPrice === null || !compareToken) {
       return null;
     }
 
-    const ordered = checkGnotPath(compareToken.path) === checkGnotPath(tokenA.path);
-    const currentPrice = isCreate ? startPrice : ordered ? price : 1 / price;
-    if (!currentPrice) {
+    const currentPrice = isCreate ? startPrice : isOrderedPrice ? price : 1 / price;
+    if (!isValidCurrentPrice(currentPrice)) {
       return null;
     }
 
-    if (maxPrice < currentPrice) {
+    const orderedMinPrice = isOrderedPrice ? minPrice : 1 / maxPrice;
+    const orderedMaxPrice = isOrderedPrice ? maxPrice : 1 / minPrice;
+
+    if (orderedMaxPrice < currentPrice) {
       return 0;
     }
 
-    if (minPrice > currentPrice) {
+    if (orderedMinPrice > currentPrice) {
       return 100;
     }
 
-    const currentMinPrice = fullRange ? swapFeeTierMaxPriceRangeMap.minPrice : minPrice;
-    const currentMaxPrice = fullRange ? swapFeeTierMaxPriceRangeMap.maxPrice : maxPrice;
+    const currentMinPrice = fullRange ? swapFeeTierMaxPriceRangeMap.minPrice : orderedMinPrice;
+    const currentMaxPrice = fullRange ? swapFeeTierMaxPriceRangeMap.maxPrice : orderedMaxPrice;
 
     const adjustAmountA = 1_000_000_000n;
 
@@ -320,6 +343,7 @@ export const useSelectPool = ({
     swapFeeTierMaxPriceRangeMap,
     isCreate,
     startPrice,
+    isOrderedPrice,
     price,
     fullRange,
   ]);
@@ -543,6 +567,7 @@ export const useSelectPool = ({
     setInteractionType,
     isChangeMinMax,
     setIsChangeMinMax,
+    isOrderedPrice,
     isLoading: isLoading || isLoadingPoolInfo,
     currentPoolPath,
     poolFromDb,
