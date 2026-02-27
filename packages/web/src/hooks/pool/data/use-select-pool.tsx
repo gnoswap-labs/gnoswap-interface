@@ -21,6 +21,7 @@ import {
 } from "@query/pools";
 import { EarnState } from "@states/index";
 import { checkGnotPath, encryptId } from "@utils/common";
+import { isValidCurrentPrice } from "@utils/pool-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
 import {
   feeBoostRateByPrices,
@@ -293,7 +294,7 @@ export const useSelectPool = ({
     }
 
     const currentPrice = isCreate ? startPrice : isOrderedPrice ? price : 1 / price;
-    if (!currentPrice || !Number.isFinite(currentPrice)) {
+    if (!isValidCurrentPrice(currentPrice)) {
       return null;
     }
 

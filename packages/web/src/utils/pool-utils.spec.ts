@@ -1,4 +1,4 @@
-import { invertSqrtPriceX96, isOrderedTokenPaths } from "./pool-utils";
+import { invertSqrtPriceX96, isOrderedTokenPaths, isValidCurrentPrice } from "./pool-utils";
 
 const TWO_192 = BigInt("6277101735386680763835789423207666416102355444464034512896");
 
@@ -68,9 +68,7 @@ describe("isOrderedTokenPaths", () => {
 });
 
 describe("isOrderedPrice comparator consistency", () => {
-  // This test demonstrates the potential inconsistency between
-  // lexical `<=` comparison and `sortTokenPaths`
-  it("sortTokenPaths and <= should produce consistent ordering for distinct paths", () => {
+  it("isOrderedTokenPaths should agree with lexical <= for distinct paths", () => {
     const paths = [
       "gno.land/r/gnoswap/gns",
       "gno.land/r/gnoland/wugnot",
@@ -84,50 +82,53 @@ describe("isOrderedPrice comparator consistency", () => {
         if (pathA === pathB) continue;
 
         const lexicalOrder = pathA <= pathB;
-        const sortOrder =
-          [pathA, pathB].sort((a, b) => {
-            if (a === b) return 0;
-            return a > b ? 1 : -1;
-          })[0] === pathA;
+        const sortOrder = isOrderedTokenPaths(pathA, pathB);
 
         expect(lexicalOrder).toBe(sortOrder);
       }
     }
   });
 
-  // When paths are equal, `<=` returns true, but sortTokenPaths[0] === pathA is also true.
-  // This is fine. The real concern is whether checkGnotPath could introduce a case
-  // where GNOT -> wrappedPath changes the ordering result.
-  it("should handle equal paths correctly - both <= and sort return true", () => {
-    const samePath = "gno.land/r/gnoswap/gns";
-    expect(samePath <= samePath).toBe(true);
-    expect([samePath, samePath].sort()[0] === samePath).toBe(true);
+  it("should handle equal paths correctly", () => {
+    const samePathA = "gno.land/r/gnoswap/gns";
+    const samePathB = "gno.land/r/gnoswap/gns";
+    expect(samePathA <= samePathB).toBe(true);
+    expect(isOrderedTokenPaths(samePathA, samePathB)).toBe(true);
   });
 });
 
-describe("depositRatio price inversion edge cases", () => {
-  it("1 / 0 produces Infinity which is truthy", () => {
-    const price = 0;
-    const currentPrice = 1 / price;
-    // This demonstrates the bug: Infinity is truthy, so `!currentPrice` is false
-    expect(currentPrice).toBe(Infinity);
-    expect(!currentPrice).toBe(false); // Infinity passes the !currentPrice check
-    expect(Number.isFinite(currentPrice)).toBe(false); // but fails isFinite
+describe("isValidCurrentPrice", () => {
+  it("should reject null", () => {
+    expect(isValidCurrentPrice(null)).toBe(false);
   });
 
-  it("1 / -0 produces -Infinity which is also truthy", () => {
-    const price = -0;
-    const currentPrice = 1 / price;
-    expect(currentPrice).toBe(-Infinity);
-    expect(!currentPrice).toBe(false);
-    expect(Number.isFinite(currentPrice)).toBe(false);
+  it("should reject undefined", () => {
+    expect(isValidCurrentPrice(undefined)).toBe(false);
   });
 
-  it("Number.isFinite correctly guards against Infinity", () => {
-    expect(Number.isFinite(Infinity)).toBe(false);
-    expect(Number.isFinite(-Infinity)).toBe(false);
-    expect(Number.isFinite(NaN)).toBe(false);
-    expect(Number.isFinite(0)).toBe(true);
-    expect(Number.isFinite(1.5)).toBe(true);
+  it("should reject 0", () => {
+    expect(isValidCurrentPrice(0)).toBe(false);
+  });
+
+  it("should reject Infinity (1 / 0 case)", () => {
+    expect(isValidCurrentPrice(1 / 0)).toBe(false);
+  });
+
+  it("should reject -Infinity", () => {
+    expect(isValidCurrentPrice(-Infinity)).toBe(false);
+  });
+
+  it("should reject NaN", () => {
+    expect(isValidCurrentPrice(NaN)).toBe(false);
+  });
+
+  it("should accept positive finite numbers", () => {
+    expect(isValidCurrentPrice(1.5)).toBe(true);
+    expect(isValidCurrentPrice(0.001)).toBe(true);
+    expect(isValidCurrentPrice(1000000)).toBe(true);
+  });
+
+  it("should accept negative finite numbers", () => {
+    expect(isValidCurrentPrice(-1.5)).toBe(true);
   });
 });

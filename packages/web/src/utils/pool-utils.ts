@@ -62,6 +62,10 @@ export function checkPoolStakingRewards(incentivized?: boolean) {
   return incentivized === true;
 }
 
+export function isValidCurrentPrice(price: number | null | undefined): price is number {
+  return price !== null && price !== undefined && !!price && Number.isFinite(price);
+}
+
 export function isOrderedTokenPaths(tokenAPath: string, tokenBPath: string): boolean {
   return [tokenAPath, tokenBPath].sort(sortTokenPaths)?.[0] === tokenAPath;
 }
