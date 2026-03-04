@@ -56,7 +56,7 @@ const ProposalCard: React.FC<Props> = ({
       return false;
     }
 
-    if (proposalDetail.status !== "PASSED") {
+    if (proposalDetail.status !== "EXECUTABLE") {
       return false;
     }
 

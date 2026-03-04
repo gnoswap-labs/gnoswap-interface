@@ -114,6 +114,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
               return "proposal.tooltip.rejected";
             }
           case "PASSED":
+          case "EXECUTABLE":
           case "EXECUTED":
           case "EXPIRED":
             return "proposal.tooltip.passed";

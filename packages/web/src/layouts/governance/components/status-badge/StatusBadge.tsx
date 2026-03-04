@@ -50,6 +50,13 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ breakpoint, status, time, two
             {t("Governance:proposal.status.passed")}
           </div>
         );
+      case "EXECUTABLE":
+        return (
+          <div className="status passed">
+            <IconPass className="passed-icon status-icon" />
+            {t("Governance:proposal.status.passed")}
+          </div>
+        );
       case "REJECTED":
         return (
           <div className="status failed">
@@ -95,6 +102,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ breakpoint, status, time, two
             })} (${timeString})`;
       case "EXECUTED":
       case "EXPIRED":
+      case "EXECUTABLE":
       case "PASSED":
       case "REJECTED":
       case "CANCELLED":
