@@ -165,8 +165,12 @@
       "upcoming": "예정"
     },
     "time": {
+      "cancelled": "제안 취소됨 {{rel_time}}",
       "end": "{{rel_time}} 투표 종료",
       "ended": "투표 종료됨 {{rel_time}}",
+      "executable": "제안서 실행 가능 {{rel_time}}",
+      "executed": "제안 철회 {{rel_time}}",
+      "expired": "제안 만료 {{rel_time}}",
       "h": "{{time}}시간 후",
       "m": "{{time}}분 후",
       "start": "{{rel_time}} 투표 시작"
