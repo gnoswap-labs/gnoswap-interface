@@ -187,7 +187,7 @@ export const useTransactionEventStore = () => {
           return acc;
         }, 0);
 
-        if (wugnotChange === WUGNOT_CHANGE_THRESHOLD) {
+        if (wugnotChange < WUGNOT_CHANGE_THRESHOLD) {
           return;
         }
 
