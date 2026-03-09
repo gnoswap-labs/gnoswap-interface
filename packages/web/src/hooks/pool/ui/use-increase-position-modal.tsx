@@ -198,7 +198,7 @@ export const useIncreasePositionModal = ({
           visibleEmitResult: true,
           formatData: response => {
             const tokenAAmount = response ? makeDisplayTokenAmount(tokenA, response[2]) : tokenAAmountInput.amount;
-            const tokenBAmount = response ? makeDisplayTokenAmount(tokenA, response[3]) : tokenBAmountInput.amount;
+            const tokenBAmount = response ? makeDisplayTokenAmount(tokenB, response[3]) : tokenBAmountInput.amount;
             return {
               tokenASymbol: tokenA.symbol,
               tokenBSymbol: tokenB.symbol,

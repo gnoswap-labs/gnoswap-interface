@@ -31,7 +31,7 @@ const RemoveLiquidityContainer: React.FC = () => {
   const stakedPositions = useMemo(() => {
     if (!connected) return [];
     return positionList.filter(position => position.poolPath === poolPath && position.staked);
-  }, [positionList, connected]);
+  }, [positionList, connected, poolPath]);
 
   const unstakedPositions = useMemo(() => {
     if (!connected) return [];

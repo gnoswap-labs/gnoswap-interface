@@ -49,7 +49,7 @@ const Snackbar: FC<SnackbarProps> = ({
       isClosed.current = true;
     }, 500);
     return () => clearTimeout(timeout);
-  }, [onClose]);
+  }, [onClose, id]);
 
   const handleClick = useCallback(() => {
     handleClose();
@@ -70,7 +70,7 @@ const Snackbar: FC<SnackbarProps> = ({
     return () => {
       clearTimeout(autoCloseTimeout);
     };
-  }, [onClose]);
+  }, [onClose, timeout, id]);
 
   useEffect(() => {
     if (isClosing) {
