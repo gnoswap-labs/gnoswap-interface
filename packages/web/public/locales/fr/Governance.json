@@ -165,8 +165,12 @@
       "upcoming": "À venir"
     },
     "time": {
+      "cancelled": "Proposition annulée {{rel_time}}",
       "end": "Fin du vote {{rel_time}}",
       "ended": "Vote terminé {{rel_time}}",
+      "executable": "Proposition exécutable {{rel_time}}",
+      "executed": "Proposition excutée {{rel_time}}",
+      "expired": "Proposition expirée {{rel_time}}",
       "h": "dans {{time}}h",
       "m": "dans {{time}}m",
       "start": "Début du vote {{rel_time}}"

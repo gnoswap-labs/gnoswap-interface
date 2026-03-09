@@ -283,6 +283,11 @@
       "title": "Broadcasting-Transaktion",
       "viewTx": "Ansicht Transaktion"
     },
+    "receive-wugnot": {
+      "desc": "Klicken Sie hier, um zu konvertieren <span>{{tokenAAmount}}</span> zu GNOT",
+      "link": "Sie können auch über Swap einpacken/auspacken",
+      "title": "Sie haben GNOT eingewickelt!"
+    },
     "success": {
       "defaultDesc": "Ihr Auftrag wurde erfolgreich abgeschlossen",
       "desc": "Die Schnittstelle wurde aktualisiert",

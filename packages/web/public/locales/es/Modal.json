@@ -283,6 +283,11 @@
       "title": "Transacción de radiodifusión",
       "viewTx": "Ver transacción"
     },
+    "receive-wugnot": {
+      "desc": "Haga clic aquí para convertir <span>{{tokenAAmount}}</span> a GNOT",
+      "link": "También puede envolver/desenvolver a través de Swap",
+      "title": "¡Has envuelto a GNOT!"
+    },
     "success": {
       "defaultDesc": "Tu trabajo ha finalizado correctamente",
       "desc": "Se ha actualizado la interfaz",
