@@ -165,8 +165,12 @@
       "upcoming": "Demnächst"
     },
     "time": {
+      "cancelled": "Vorschlag gestrichen {{rel_time}}",
       "end": "Abstimmungen enden {{rel_time}}",
       "ended": "Abstimmen Beendet {{rel_time}}",
+      "executable": "Ausführbarer Vorschlag {{rel_time}}",
+      "executed": "Vorschlag ausgeschieden {{rel_time}}",
+      "expired": "Vorschlag Abgelaufen {{rel_time}}",
       "h": "in {{time}}h",
       "m": "in {{time}}m",
       "start": "Beginn der Abstimmungen {{rel_time}}"

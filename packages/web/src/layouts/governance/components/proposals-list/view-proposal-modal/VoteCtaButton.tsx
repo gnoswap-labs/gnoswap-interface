@@ -81,6 +81,12 @@ const VoteCtaButton: React.FC<VoteCtaButtonProps> = ({
         text: t("Governance:proposal.status.passed"),
         action: null,
       };
+    if (status === "EXECUTABLE")
+      return {
+        disabled: true,
+        text: t("Governance:proposal.status.passed"),
+        action: null,
+      };
     if (!myVotingWeight) {
       return {
         disabled: true,

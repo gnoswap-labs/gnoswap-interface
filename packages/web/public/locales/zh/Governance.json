@@ -165,8 +165,12 @@
       "upcoming": "即将推出"
     },
     "time": {
+      "cancelled": "取消提案{{rel_time}}",
       "end": "投票结束{{rel_time}}",
       "ended": "投票结束{{rel_time}}",
+      "executable": "提案可执行时间 {{rel_time}}",
+      "executed": "撤销提案{{rel_time}}",
+      "expired": "提案已过期{{rel_time}}",
       "h": "在{{time}}h",
       "m": "在{{time}}m",
       "start": "投票开始{{rel_time}}"

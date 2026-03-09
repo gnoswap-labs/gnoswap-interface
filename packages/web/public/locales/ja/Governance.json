@@ -165,8 +165,12 @@
       "upcoming": "今後の予定"
     },
     "time": {
+      "cancelled": "プロポーズ中止{{rel_time}}",
       "end": "投票終了{{rel_time}}",
       "ended": "投票終了{{rel_time}}",
+      "executable": "提案書の実行可能な時間 {{rel_time}}",
+      "executed": "提案却下{{rel_time}}",
+      "expired": "提案期限切れ{{rel_time}}",
       "h": "{{time}}h",
       "m": "{{time}}m",
       "start": "投票開始{{rel_time}}"

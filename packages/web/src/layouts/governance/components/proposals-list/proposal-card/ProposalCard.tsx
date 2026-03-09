@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconNewTab from "@components/common/icons/IconNewTab";
-import { ProposalItemInfo, PROPOSAL_TYPE } from "@repositories/governance";
+import { ProposalItemInfo } from "@repositories/governance";
 import { safeParseTime } from "@utils/time.utils";
 
 import StatusBadge from "../../status-badge/StatusBadge";
@@ -56,18 +56,7 @@ const ProposalCard: React.FC<Props> = ({
       return false;
     }
 
-    if (proposalDetail.status !== "PASSED") {
-      return false;
-    }
-
-    if (
-      proposalDetail.proposalType !== PROPOSAL_TYPE.PROPOSAL_PARAMETER_CHANGE &&
-      proposalDetail.proposalType !== PROPOSAL_TYPE.PROPOSAL_COMMUNITY_POOL_SPEND
-    ) {
-      return false;
-    }
-
-    return true;
+    return proposalDetail.status === "EXECUTABLE";
   }, [address, proposalDetail]);
 
   const availExecutableButton = useMemo(() => {
