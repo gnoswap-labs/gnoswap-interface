@@ -176,19 +176,21 @@ export const useTransactionEventStore = () => {
           return;
         }
 
-        const wugnotChange = transferHistory.reduce((acc, history): number => {
+        const wugnotChange = transferHistory.reduce((acc, history): BigNumber => {
+          const amount = new BigNumber(history.tokenAmount);
+
           if (account.address === history.fromAddress) {
-            return acc - BigNumber(history.tokenAmount).toNumber();
+            return acc.minus(amount);
           }
 
           if (account.address === history.toAddress) {
-            return acc + BigNumber(history.tokenAmount).toNumber();
+            return acc.plus(amount);
           }
 
           return acc;
-        }, 0);
+        }, BigNumber(0));
 
-        if (wugnotChange < WUGNOT_CHANGE_THRESHOLD) {
+        if (wugnotChange.isLessThan(WUGNOT_CHANGE_THRESHOLD)) {
           return;
         }
 
