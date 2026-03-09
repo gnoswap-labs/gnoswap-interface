@@ -507,7 +507,6 @@ export const useRepositionHandle = () => {
         positionLiquidities: positionLiquidity,
         tokenPaths: approveTokenPath,
         caller: address,
-        isGetWGNOT: false,
         deadline,
       };
 

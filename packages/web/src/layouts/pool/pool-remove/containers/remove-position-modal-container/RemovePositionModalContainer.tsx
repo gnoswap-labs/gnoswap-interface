@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
@@ -35,7 +35,6 @@ import RemovePositionModal from "../../components/remove-position-modal/RemovePo
 interface RemovePositionModalContainerProps {
   selectedPositions: PoolPositionModel[];
   allPosition: PoolPositionModel[];
-  isGetWGNOT: boolean;
   positionLiquidities: Record<string, BigNumber>;
   refetchPositions: () => Promise<void>;
 }
@@ -43,7 +42,6 @@ interface RemovePositionModalContainerProps {
 const RemovePositionModalContainer = ({
   selectedPositions,
   allPosition,
-  isGetWGNOT,
   positionLiquidities,
   refetchPositions,
 }: RemovePositionModalContainerProps) => {
@@ -64,7 +62,7 @@ const RemovePositionModalContainer = ({
   const { updateBalances } = useTokenData();
   const { refetch: refetchPools } = useGetPoolList();
   const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(selectedPositions?.[0]?.poolPath);
-  const { pooledTokenInfos, unclaimedFees } = usePositionsRewards({
+  const { pooledTokenInfos } = usePositionsRewards({
     positions: selectedPositions,
   });
 
@@ -88,36 +86,13 @@ const RemovePositionModalContainer = ({
 
   const { getMessage } = useMessage();
 
-  const gnotToken = useMemo(
-    () =>
-      selectedPositions.find(item => item.pool.tokenA.path === GNOT_TOKEN.path)?.pool.tokenA ||
-      selectedPositions.find(item => item.pool.tokenB.path === GNOT_TOKEN.path)?.pool.tokenB,
-    [selectedPositions],
-  );
+  const tokenTransform = useCallback((token: TokenModel) => {
+    if (token.path === GNOT_TOKEN.path) {
+      return WUGNOT_TOKEN;
+    }
 
-  const gnotAmount = useMemo(() => {
-    const pooledGnotTokenAmount = pooledTokenInfos
-      .find(item => item.token.path === gnotToken?.path)
-      ?.amount.replaceAll(",", "");
-    const unclaimedGnotTokenAmount = unclaimedFees.find(item => item.token.path === gnotToken?.path)?.amount;
-
-    return Number(pooledGnotTokenAmount || 0) + Number(unclaimedGnotTokenAmount || 0);
-  }, [gnotToken?.path, pooledTokenInfos, unclaimedFees]);
-
-  const willWrap = useMemo(() => isGetWGNOT && !!gnotToken && !!gnotAmount, [gnotAmount, gnotToken, isGetWGNOT]);
-
-  const tokenTransform = useCallback(
-    (token: TokenModel) => {
-      if (token.path === GNOT_TOKEN.path) {
-        if (willWrap) {
-          return WUGNOT_TOKEN;
-        }
-      }
-
-      return token;
-    },
-    [willWrap],
-  );
+    return token;
+  }, []);
 
   const buildAdenaWalletAction = async (request: RemoveLiquidityRequest) => {
     return await positionRepository.removeLiquidity(request).catch(() => null);
@@ -172,7 +147,6 @@ const RemovePositionModalContainer = ({
         positionLiquidities,
         tokenPaths: approveTokenPaths,
         caller: address,
-        isGetWGNOT: willWrap,
       };
 
       const broadcastMessageData = {
@@ -246,10 +220,8 @@ const RemovePositionModalContainer = ({
       walletClient,
       selectedPositions,
       positionLiquidities,
-      willWrap,
       tokenTransform,
       pooledTokenInfos,
-      gnotToken,
       broadcastLoading,
       broadcastSuccess,
       broadcastRejected,

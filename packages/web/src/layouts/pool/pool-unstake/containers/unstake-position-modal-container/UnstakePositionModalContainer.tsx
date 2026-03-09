@@ -27,15 +27,10 @@ import UnstakePositionModal from "../../components/unstake-position-modal/Unstak
 
 interface UnstakePositionModalContainerProps {
   positions: PoolPositionModel[];
-  isGetWGNOT: boolean;
   refetchPositions: () => Promise<void>;
 }
 
-const UnstakePositionModalContainer = ({
-  positions,
-  refetchPositions,
-  isGetWGNOT,
-}: UnstakePositionModalContainerProps) => {
+const UnstakePositionModalContainer = ({ positions, refetchPositions }: UnstakePositionModalContainerProps) => {
   const { account, walletClient } = useWallet();
   const { transactionService, positionRepository } = useGnoswapContext();
   const { estimateNetworkFee } = useNetworkFee(null);
@@ -104,7 +99,6 @@ const UnstakePositionModalContainer = ({
 
       const request: UnstakePositionsRequest = {
         positions,
-        isGetWGNOT,
         caller: address,
       };
 
@@ -214,7 +208,6 @@ const UnstakePositionModalContainer = ({
       pooledTokenInfos,
       walletClient,
       positions,
-      isGetWGNOT,
       buildAdenaWalletAction,
       buildSocialWalletAction,
       broadcastLoading,

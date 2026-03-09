@@ -49,7 +49,6 @@ export interface DecreasePositionModal {
   rangeStatus: RANGE_STATUS_OPTION;
   calculatedLiquidity: string;
   pooledTokenInfos: IPooledTokenInfo | null;
-  isGetWGNOT: boolean;
   refetchPositions: () => Promise<void>;
 }
 
@@ -64,7 +63,6 @@ export const useDecreasePositionModal = ({
   rangeStatus,
   calculatedLiquidity,
   pooledTokenInfos,
-  isGetWGNOT,
 }: DecreasePositionModal): Props => {
   const { walletClient, currentChainId } = useWallet();
   const router = useRouter();
@@ -102,48 +100,13 @@ export const useDecreasePositionModal = ({
 
   const { getMessage } = useMessage();
 
-  const gnotToken = useMemo(() => [tokenA, tokenB].find(item => item?.path === GNOT_TOKEN.path), [tokenA, tokenB]);
-
-  const gnotAmount = useMemo(() => {
-    if (tokenA?.path === gnotToken?.path) {
-      return (
-        Number(pooledTokenInfos?.poolAmountA.replaceAll(",", "") || 0) +
-        Number(pooledTokenInfos?.unClaimTokenAAmount.replaceAll(",", "") || 0)
-      );
+  const tokenTransform = useCallback((token: TokenModel) => {
+    if (token.path === GNOT_TOKEN.path) {
+      return WUGNOT_TOKEN;
     }
-    if (tokenB?.path === gnotToken?.path) {
-      return (
-        Number(pooledTokenInfos?.poolAmountB.replaceAll(",", "") || 0) +
-        Number(pooledTokenInfos?.unClaimTokenBAmount.replaceAll(",", "") || 0)
-      );
-    }
-    return 0;
-  }, [
-    gnotToken?.path,
-    pooledTokenInfos?.poolAmountA,
-    pooledTokenInfos?.poolAmountB,
-    pooledTokenInfos?.unClaimTokenAAmount,
-    pooledTokenInfos?.unClaimTokenBAmount,
-    tokenA?.path,
-    tokenB?.path,
-  ]);
 
-  const willWrap = useMemo(() => {
-    return isGetWGNOT && !!gnotToken && !!gnotAmount;
-  }, [gnotAmount, gnotToken, isGetWGNOT]);
-
-  const tokenTransform = useCallback(
-    (token: TokenModel) => {
-      if (token.path === GNOT_TOKEN.path) {
-        if (willWrap) {
-          return WUGNOT_TOKEN;
-        }
-      }
-
-      return token;
-    },
-    [willWrap],
-  );
+    return token;
+  }, []);
 
   const amountInfo = useMemo(() => {
     if (!tokenA || !tokenB || !swapFeeTier) {
@@ -233,7 +196,6 @@ export const useDecreasePositionModal = ({
         tokenBAmount: poolAmountB,
         slippage,
         caller: address,
-        isGetWGNOT: willWrap,
         deadline,
       };
 
@@ -314,7 +276,7 @@ export const useDecreasePositionModal = ({
       }
       return true;
     },
-    [address, calculatedLiquidity, pooledTokenInfos, positionId, positionRepository, router, tokenA, tokenB, willWrap],
+    [address, calculatedLiquidity, pooledTokenInfos, positionId, positionRepository, router, tokenA, tokenB],
   );
 
   const openModal = useCallback(() => {
