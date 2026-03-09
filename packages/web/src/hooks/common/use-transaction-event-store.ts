@@ -8,6 +8,7 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetNotifications } from "@query/common";
 import { makeRandomId } from "@utils/common";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import BigNumber from "bignumber.js";
 import { useGnoswapContext } from "./use-gnoswap-context";
 import { useMessage } from "./use-message";
 import { SnackbarOptions, SnackbarType, useSnackbar } from "./use-snackbar";
@@ -177,11 +178,11 @@ export const useTransactionEventStore = () => {
 
         const wugnotChange = transferHistory.reduce((acc, history): number => {
           if (account.address === history.fromAddress) {
-            return acc - Number(history.tokenAmount);
+            return acc - BigNumber(history.tokenAmount).toNumber();
           }
 
           if (account.address === history.toAddress) {
-            return acc + Number(history.tokenAmount);
+            return acc + BigNumber(history.tokenAmount).toNumber();
           }
 
           return acc;

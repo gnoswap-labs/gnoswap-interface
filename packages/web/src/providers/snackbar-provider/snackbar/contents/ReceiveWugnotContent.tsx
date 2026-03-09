@@ -7,7 +7,11 @@ import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { sanitizeHtml } from "@utils/sanitize-html";
 import { SnackbarContent } from "./type";
 
-const ReceiveWugnotContent: React.FC<{ content?: SnackbarContent; onClick: () => void }> = ({ content, onClick }) => {
+const ReceiveWugnotContent: React.FC<{ content?: SnackbarContent; onClick: () => void; close: () => void }> = ({
+  content,
+  onClick,
+  close,
+}) => {
   const { t } = useTranslation();
 
   const getUnwrapUrl = () => {
@@ -27,10 +31,18 @@ const ReceiveWugnotContent: React.FC<{ content?: SnackbarContent; onClick: () =>
         <div
           className="description"
           dangerouslySetInnerHTML={{
-            __html: sanitizeHtml(content?.description || t(t("Modal:toast.receive-wugnot.title"))),
+            __html: sanitizeHtml(content?.description || t("Modal:toast.receive-wugnot.title")),
           }}
         />
-        <a href={getUnwrapUrl()} target="_blank">
+        <a
+          href={getUnwrapUrl()}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={e => {
+            e.stopPropagation();
+            close();
+          }}
+        >
           {t("Modal:toast.receive-wugnot.link")} <IconArrowRight />
         </a>
       </div>

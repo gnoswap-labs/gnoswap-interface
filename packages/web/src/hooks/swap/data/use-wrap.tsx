@@ -38,7 +38,7 @@ export const useWrap = () => {
   const unwrapAll = useCallback(async () => {
     const wugnotBalance = await fetchWugnotBalance();
 
-    unwrap(wugnotBalance);
+    return unwrap(wugnotBalance);
   }, [unwrap, fetchWugnotBalance]);
 
   return {

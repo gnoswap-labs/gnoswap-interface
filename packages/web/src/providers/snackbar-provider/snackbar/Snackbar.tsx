@@ -85,7 +85,9 @@ const Snackbar: FC<SnackbarProps> = ({
       {type === "pending" && <PendingContent content={content} />}
       {type === "updating" && <UpdatingContent content={content} />}
       {type === "updating-done" && <UpdatingDoneContent content={content} />}
-      {type === "receive-wugnot" && <ReceiveWugnotContent content={content} onClick={handleClick} />}
+      {type === "receive-wugnot" && (
+        <ReceiveWugnotContent content={content} onClick={handleClick} close={handleClose} />
+      )}
       {closeable && (
         <div className="icon-close" onClick={handleClose}>
           <IconClose />
