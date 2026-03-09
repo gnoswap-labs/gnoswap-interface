@@ -1,38 +1,22 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { GNOT_TOKEN } from "@common/values/token-constant";
-import { Divider } from "@components/common/divider/divider";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import Switch from "@components/common/switch/Switch";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
 
-import { GnotCollectSwitchWrapper, RemoveLiquiditySelectResultWrapper } from "./RemoveLiquiditySelectResult.styles";
+import { RemoveLiquiditySelectResultWrapper } from "./RemoveLiquiditySelectResult.styles";
 
 interface RemoveLiquiditySelectResultProps {
   positions: PoolPositionModel[];
-  isGetWGNOT: boolean;
-  setIsGetWGNOT: () => void;
 }
 
-const RemoveLiquiditySelectResult: React.FC<RemoveLiquiditySelectResultProps> = ({
-  positions,
-  isGetWGNOT,
-  setIsGetWGNOT,
-}) => {
+const RemoveLiquiditySelectResult: React.FC<RemoveLiquiditySelectResultProps> = ({ positions }) => {
   const { t } = useTranslation();
 
   const { pooledTokenInfos, unclaimedFees, totalLiquidityUSD } = usePositionsRewards({ positions });
-
-  const hasGnotToken = useMemo(() => {
-    const anyGnotPooledToken = pooledTokenInfos.some(item => item.token.path === GNOT_TOKEN.path);
-    const anyGnotUnclaimedToken = unclaimedFees.some(item => item.token.path === GNOT_TOKEN.path);
-
-    return anyGnotPooledToken || anyGnotUnclaimedToken;
-  }, [pooledTokenInfos, unclaimedFees]);
 
   if (positions.length === 0) return <></>;
 
@@ -79,15 +63,6 @@ const RemoveLiquiditySelectResult: React.FC<RemoveLiquiditySelectResultProps> = 
             <span className="dallor">{pooledTokenInfo.amountUSD}</span>
           </li>
         ))}
-        {hasGnotToken && (
-          <>
-            <Divider />
-            <GnotCollectSwitchWrapper>
-              <div>{t("RemovePosition:overview.collectAsSwitch")}</div>
-              <Switch checked={isGetWGNOT} onChange={setIsGetWGNOT} />
-            </GnotCollectSwitchWrapper>
-          </>
-        )}
       </ul>
       <div className="total-section">
         <h5>{t("RemovePosition:totalAmt")}</h5>

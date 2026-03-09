@@ -1,21 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { SwapFeeTierType } from "@constants/option.constant";
 import useRouter from "@hooks/common/use-custom-router";
 import { useSlippage } from "@hooks/common/use-slippage";
-import { GNOT_TOKEN } from "@common/values/token-constant";
 
-import DecreaseLiquidity from "../../components/decrease-liquidity/DecreaseLiquidity";
-import DecreaseLiquidityLoading from "../../components/decrease-liquidity/DecreaseLiquidityLoading";
 import { useDecreaseHandle } from "@hooks/pool/data/use-decrease-handle";
 import { useDecreasePositionModal } from "@hooks/pool/ui/use-decrease-position-modal";
 import BigNumber from "bignumber.js";
+import DecreaseLiquidity from "../../components/decrease-liquidity/DecreaseLiquidity";
+import DecreaseLiquidityLoading from "../../components/decrease-liquidity/DecreaseLiquidityLoading";
 
 const DecreaseLiquidityContainer: React.FC = () => {
   const router = useRouter();
   const { slippage } = useSlippage();
   const positionId = router.getPositionId() || "";
-  const [isGetWGNOT, setIsGetWGNOT] = useState(false);
 
   const {
     loading,
@@ -54,16 +52,10 @@ const DecreaseLiquidityContainer: React.FC = () => {
     rangeStatus,
     calculatedLiquidity,
     pooledTokenInfos,
-    isGetWGNOT,
     refetchPositions: async () => {
       await refetchPositions();
     },
   });
-
-  const showWGNOTToggle = React.useMemo(() => {
-    if (!tokenA || !tokenB) return false;
-    return tokenA.symbol === GNOT_TOKEN.symbol || tokenB.symbol === GNOT_TOKEN.symbol;
-  }, [tokenA, tokenB]);
 
   if (!tokenA || !tokenB || loading) return <DecreaseLiquidityLoading />;
 
@@ -81,9 +73,6 @@ const DecreaseLiquidityContainer: React.FC = () => {
       percent={percent}
       handlePercent={(value: number) => setPercent(value)}
       pooledTokenInfos={pooledTokenInfos}
-      isGetWGNOT={isGetWGNOT}
-      setIsGetWGNOT={() => setIsGetWGNOT(prev => !prev)}
-      showWGNOTToggle={showWGNOTToggle}
     />
   );
 };

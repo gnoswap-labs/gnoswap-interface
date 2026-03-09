@@ -283,6 +283,11 @@
       "title": "放送取引",
       "viewTx": "取引を見る"
     },
+    "receive-wugnot": {
+      "desc": "ここをクリックして <span>{{tokenAAmount}}</span>GNOT",
+      "link": "また、スワップを介してラップ/アンラップすることもできます。",
+      "title": "あなたはGNOTをラップした！"
+    },
     "success": {
       "defaultDesc": "仕事は正常に終了しました",
       "desc": "インターフェイスが更新されました",

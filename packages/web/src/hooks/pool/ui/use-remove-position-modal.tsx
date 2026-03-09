@@ -1,6 +1,6 @@
+import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
-import BigNumber from "bignumber.js";
 
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { CommonState } from "@states/index";
@@ -10,18 +10,11 @@ import RemovePositionModalContainer from "../../../layouts/pool/pool-remove/cont
 export interface Props {
   positions: PoolPositionModel[];
   selectedIds: number[];
-  isGetWGNOT: boolean;
   positionLiquidities: Record<string, BigNumber>;
   refetchPositions: () => Promise<void>;
 }
 
-export const useRemovePositionModal = ({
-  positions,
-  selectedIds,
-  isGetWGNOT,
-  positionLiquidities,
-  refetchPositions,
-}: Props) => {
+export const useRemovePositionModal = ({ positions, selectedIds, positionLiquidities, refetchPositions }: Props) => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
 
@@ -35,12 +28,11 @@ export const useRemovePositionModal = ({
       <RemovePositionModalContainer
         allPosition={positions}
         selectedPositions={selectedPositions}
-        isGetWGNOT={isGetWGNOT}
         positionLiquidities={positionLiquidities}
         refetchPositions={refetchPositions}
       />,
     );
-  }, [positions, selectedPositions, setModalContent, setOpenedModal, refetchPositions, isGetWGNOT]);
+  }, [positions, selectedPositions, setModalContent, setOpenedModal, refetchPositions]);
 
   return {
     openModal,

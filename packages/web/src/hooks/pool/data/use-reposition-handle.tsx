@@ -2,7 +2,13 @@ import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
+import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
+import { CommonError } from "@common/errors";
+import { ERROR_VALUE } from "@common/errors/adena";
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { ERROR_VALUE as SWAP_ERROR_VALUE } from "@common/errors/swap";
 import {
   DEFAULT_SLIPPAGE,
   PriceRangeMeta,
@@ -11,55 +17,49 @@ import {
   SwapFeeTierType,
 } from "@constants/option.constant";
 import { useAddress } from "@hooks/common/use-address";
+import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { usePositionData } from "@hooks/pool/data/use-position-data";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
+import { useMessage } from "@hooks/common/use-message";
+import { useNetworkFee } from "@hooks/common/use-network-fee";
+import { useReferral } from "@hooks/common/use-referral";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useSelectPool } from "@hooks/pool/data/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
+import { QUERY_KEY } from "@query/query-keys";
 import { useGetRoutes } from "@query/router";
+import { DexEvent } from "@repositories/common";
+import {
+  makeRemoveLiquidityMessagesWithApproves,
+  makeRepositionLiquidityMessagesWithApproves,
+} from "@repositories/position/position.message";
+import { RemoveLiquidityRequest, RepositionLiquidityRequest } from "@repositories/position/request";
 import { RepositionLiquidityFailedResponse, RepositionLiquiditySuccessResponse } from "@repositories/position/response";
+import { SwapRouteRequest } from "@repositories/swap-router/request/swap-route-request";
 import {
   SwapRouteFailedResponse,
   SwapRouteSuccessResponse,
 } from "@repositories/swap-router/response/swap-route-response";
+import {
+  ExactSwapRouteMessageRequest,
+  makeExactInSwapRouteMessageWithApproves,
+  makeExactOutSwapRouteMessageWithApproves,
+} from "@repositories/swap-router/swap-router.message";
 import { IncreaseState } from "@states/index";
 import { checkGnotPath, delay } from "@utils/common";
 import { subscriptFormat } from "@utils/number-utils";
 import { getRepositionAmountsByPriceRange, getRepositionAmountsWithSwapSimulation } from "@utils/reposition-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
-import { useReferral } from "@hooks/common/use-referral";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { RemoveLiquidityRequest, RepositionLiquidityRequest } from "@repositories/position/request";
-import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
-import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
-import {
-  makeRemoveLiquidityMessagesWithApproves,
-  makeRepositionLiquidityMessagesWithApproves,
-} from "@repositories/position/position.message";
-import { useNetworkFee } from "@hooks/common/use-network-fee";
-import { CommonError } from "@common/errors";
-import { SwapRouteRequest } from "@repositories/swap-router/request/swap-route-request";
-import {
-  ExactSwapRouteMessageRequest,
-  makeExactInSwapRouteMessageWithApproves,
-  makeExactOutSwapRouteMessageWithApproves,
-} from "@repositories/swap-router/swap-router.message";
-import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
-import { ERROR_VALUE as SWAP_ERROR_VALUE } from "@common/errors/swap";
-import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
-import { ERROR_VALUE } from "@common/errors/adena";
-import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { DexEvent } from "@repositories/common";
-import { useTokenData } from "@hooks/token/data/use-token-data";
-import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
-import { QUERY_KEY } from "@query/query-keys";
-import { useMessage } from "@hooks/common/use-message";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -87,20 +87,17 @@ export const useRepositionHandle = () => {
   const { slippage, changeSlippage } = useSlippage();
   const { connected, account, walletClient } = useWallet();
   const [initialized, setInitialized] = useState(false);
-  const {
-    positions,
-    loading: isLoadingPosition,
-    refetch: refetchPositions,
-  } = usePositionData({
+  const { positions, loading: isLoadingPosition, refetch: refetchPositions } = usePositionData({
     poolPath,
   });
   const { estimateNetworkFee } = useNetworkFee(null);
   const { invalidateQueryKey } = useInvalidateQueries();
 
-  const selectedPosition = useMemo(
-    () => positions.find(item => item.id.toString() === positionId) || defaultPosition,
-    [defaultPosition, positionId, positions],
-  );
+  const selectedPosition = useMemo(() => positions.find(item => item.id.toString() === positionId) || defaultPosition, [
+    defaultPosition,
+    positionId,
+    positions,
+  ]);
 
   const calculatedLiquidity = useMemo(() => {
     if (!selectedPosition?.liquidity) return BigNumber(0);
@@ -179,8 +176,8 @@ export const useRepositionHandle = () => {
     return selectedPosition?.closed
       ? RANGE_STATUS_OPTION.NONE
       : inRange
-        ? RANGE_STATUS_OPTION.IN
-        : RANGE_STATUS_OPTION.OUT;
+      ? RANGE_STATUS_OPTION.IN
+      : RANGE_STATUS_OPTION.OUT;
   }, [selectedPosition, inRange]);
 
   const resetRange = useCallback(() => {
@@ -510,7 +507,6 @@ export const useRepositionHandle = () => {
         positionLiquidities: positionLiquidity,
         tokenPaths: approveTokenPath,
         caller: address,
-        isGetWGNOT: false,
         deadline,
       };
 
@@ -542,8 +538,15 @@ export const useRepositionHandle = () => {
       return fetchAllowance(rpcProvider, packagePath, owner, spender);
     };
 
-    const { inputToken, outputToken, tokenAmount, estimatedRoutes, tokenAmountLimit, deadline, referrerAddress } =
-      request;
+    const {
+      inputToken,
+      outputToken,
+      tokenAmount,
+      estimatedRoutes,
+      tokenAmountLimit,
+      deadline,
+      referrerAddress,
+    } = request;
     const makeMessageRequests: ExactSwapRouteMessageRequest = {
       inputToken,
       outputToken,
@@ -614,12 +617,11 @@ export const useRepositionHandle = () => {
         referrerAddress: currentReferralAddress,
       };
 
-      return await (
-        walletType === "ADENA"
-          ? isExactIn
-            ? buildAdenaWalletExactInAction(request)
-            : buildAdenaWalletExactOutAction(request)
-          : buildSocialWalletSwapAction(rpcProvider, request, isExactIn)
+      return await (walletType === "ADENA"
+        ? isExactIn
+          ? buildAdenaWalletExactInAction(request)
+          : buildAdenaWalletExactOutAction(request)
+        : buildSocialWalletSwapAction(rpcProvider, request, isExactIn)
       ).catch(e => {
         if (e.status === SWAP_ERROR_VALUE.DRY_SWAP_DEVIATION_EXCEEDED.status) {
           broadcastError(BROADCAST_ERROR_VALUE.SLIPPAGE_EXCEEDED);
@@ -664,6 +666,7 @@ export const useRepositionHandle = () => {
               txHash: result.data?.hash,
               action: DexEvent.REPOSITION,
               visibleEmitResult: true,
+              checkWugnotTransfer: true,
               formatData: response => {
                 if (!response) {
                   return defaultMessageData;

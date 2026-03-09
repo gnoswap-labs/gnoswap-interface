@@ -6,13 +6,14 @@ import {
   FailContent,
   PendingContent,
   SnackbarContent,
-  SuccessContent,
   SnackbarType,
+  SuccessContent,
   UpdatingContent,
 } from "./contents";
 
-import { SnackbarWrapper } from "./snackbar.styles";
+import { ReceiveWugnotContent } from "./contents/ReceiveWugnotContent";
 import { UpdatingDoneContent } from "./contents/UpdatingDoneContent";
+import { SnackbarWrapper } from "./snackbar.styles";
 
 interface SnackbarProps {
   id: number;
@@ -22,6 +23,7 @@ interface SnackbarProps {
   closeable?: boolean;
   isClosing?: boolean;
   onClose?: (id: number) => void;
+  onClick?: () => void;
 }
 
 const Snackbar: FC<SnackbarProps> = ({
@@ -32,6 +34,9 @@ const Snackbar: FC<SnackbarProps> = ({
   isClosing = false,
   content,
   onClose,
+  onClick = () => {
+    return;
+  },
 }) => {
   const isClosed = useRef(false);
   const [typeAnimation, setTypeAnimation] = useState<"toast-item" | "closing" | "">("toast-item");
@@ -44,9 +49,16 @@ const Snackbar: FC<SnackbarProps> = ({
       isClosed.current = true;
     }, 500);
     return () => clearTimeout(timeout);
-  }, [onClose]);
+  }, [onClose, id]);
+
+  const handleClick = useCallback(() => {
+    handleClose();
+    onClick?.();
+  }, [handleClose, onClick]);
 
   useEffect(() => {
+    if (timeout === 0) return;
+
     const autoCloseTimeout = setTimeout(() => {
       setTypeAnimation("closing");
       const animationTimeout = setTimeout(() => {
@@ -58,7 +70,7 @@ const Snackbar: FC<SnackbarProps> = ({
     return () => {
       clearTimeout(autoCloseTimeout);
     };
-  }, [onClose]);
+  }, [onClose, timeout, id]);
 
   useEffect(() => {
     if (isClosing) {
@@ -73,6 +85,9 @@ const Snackbar: FC<SnackbarProps> = ({
       {type === "pending" && <PendingContent content={content} />}
       {type === "updating" && <UpdatingContent content={content} />}
       {type === "updating-done" && <UpdatingDoneContent content={content} />}
+      {type === "receive-wugnot" && (
+        <ReceiveWugnotContent content={content} onClick={handleClick} close={handleClose} />
+      )}
       {closeable && (
         <div className="icon-close" onClick={handleClose}>
           <IconClose />

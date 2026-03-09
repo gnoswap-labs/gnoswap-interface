@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import IconInfo from "@components/common/icons/IconInfo";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { Divider } from "@components/common/select-token/SelectToken.styles";
-import Switch from "@components/common/switch/Switch";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { TokenModel } from "@models/token/token-model";
@@ -16,29 +15,16 @@ import { removeTrailingZeros } from "@utils/number-utils";
 import { IPooledTokenInfo } from "@hooks/pool/data/use-decrease-handle";
 import { ToolTipContentWrapper } from "../decrease-select-position/DecreaseSelectPosition.styles";
 
-import { DecreasePoolInfoWrapper, GnotCollectSwitchWrapper } from "./DecreasePoolInfo.styles";
+import { DecreasePoolInfoWrapper } from "./DecreasePoolInfo.styles";
 
 interface Props {
   tokenA: TokenModel;
   tokenB: TokenModel;
   isShowProtocolFee?: boolean;
   pooledTokenInfos: IPooledTokenInfo | null;
-  isGetWGNOT?: boolean;
-  setIsGetWGNOT?: () => void;
-  displayGnotSwitch?: boolean;
 }
 
-const DecreasePoolInfo: React.FC<Props> = ({
-  tokenA,
-  tokenB,
-  pooledTokenInfos,
-  isShowProtocolFee = false,
-  isGetWGNOT = false,
-  setIsGetWGNOT = () => {
-    return;
-  },
-  displayGnotSwitch = false,
-}) => {
+const DecreasePoolInfo: React.FC<Props> = ({ tokenA, tokenB, pooledTokenInfos, isShowProtocolFee = false }) => {
   const { t } = useTranslation();
 
   const { breakpoint } = useWindowSize();
@@ -143,15 +129,6 @@ const DecreasePoolInfo: React.FC<Props> = ({
             <p className="usd protocol-fee">{withdrawalFee ? `${(withdrawalFee || 0) / 100}%` : "-"}</p>
           </div>
         </div>
-      )}
-      {displayGnotSwitch && (
-        <>
-          <Divider />
-          <GnotCollectSwitchWrapper>
-            <div>{t("DecreaseLiquidity:form.collectWugnot.switch")}</div>
-            <Switch checked={isGetWGNOT} onChange={setIsGetWGNOT} />
-          </GnotCollectSwitchWrapper>
-        </>
       )}
     </DecreasePoolInfoWrapper>
   );

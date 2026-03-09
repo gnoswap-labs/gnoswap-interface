@@ -234,14 +234,14 @@ export const toNativePath = (path: string) => {
   }
 };
 
-export const isGnotToken = (path: string): boolean => {
-  return path === GNOT_TOKEN.path || path === WRAPPED_GNOT_PATH;
+export const isNativeToken = (path: string): boolean => {
+  return path === GNOT_TOKEN.path;
 };
 
 export const isSameToken = (tokenAPath: string, tokenBPath: string): boolean => {
   if (!tokenAPath || !tokenBPath) return false;
   if (tokenAPath === tokenBPath) return true;
-  if (isGnotToken(tokenAPath) && isGnotToken(tokenBPath)) return true;
+  if (isGNOTPath(tokenAPath) && isGNOTPath(tokenBPath)) return true;
   return false;
 };
 

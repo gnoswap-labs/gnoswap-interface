@@ -1,8 +1,14 @@
-import React from "react";
 import { DexEventType } from "@repositories/common";
+import React from "react";
 
+import { GNOT_TOKEN } from "@common/values/token-constant";
+import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
+import { useWrap } from "@hooks/swap/data/use-wrap";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetNotifications } from "@query/common";
 import { makeRandomId } from "@utils/common";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
+import BigNumber from "bignumber.js";
 import { useGnoswapContext } from "./use-gnoswap-context";
 import { useMessage } from "./use-message";
 import { SnackbarOptions, SnackbarType, useSnackbar } from "./use-snackbar";
@@ -10,6 +16,8 @@ import { SnackbarOptions, SnackbarType, useSnackbar } from "./use-snackbar";
 const DEFAULT_SNACKBAR_TIMEOUT = 3_000;
 const TX_RESULT_SNACKBAR_TIMEOUT = 4_000;
 const UPDATING_SNACKBAR_TIMEOUT = 60_000;
+const BADGE_SNACKBAR_TIMEOUT = 0;
+const WUGNOT_CHANGE_THRESHOLD = 10000;
 
 function makeSnackbarConfig(type: SnackbarType, timeout = DEFAULT_SNACKBAR_TIMEOUT): SnackbarOptions {
   return {
@@ -21,9 +29,11 @@ function makeSnackbarConfig(type: SnackbarType, timeout = DEFAULT_SNACKBAR_TIMEO
 }
 
 export const useTransactionEventStore = () => {
-  const { eventStore } = useGnoswapContext();
-  const { enqueue, dequeue, change } = useSnackbar();
-  const { getMessage } = useMessage();
+  const { account } = useWallet();
+  const { eventStore, tokenRepository } = useGnoswapContext();
+  const { hasBadgeSnackbar, enqueue, dequeue, change } = useSnackbar();
+  const { fetchWugnotBalance, unwrapAll } = useWrap();
+  const { getMessage, getReceiveWugnotMessage } = useMessage();
   const { refetch: refetchNotifications } = useGetNotifications();
 
   // ref to track the active timer
@@ -61,6 +71,7 @@ export const useTransactionEventStore = () => {
     txHash,
     action,
     visibleEmitResult = false,
+    checkWugnotTransfer = false,
     formatData = () => ({}),
     onUpdate = async () => {},
     onEmit,
@@ -69,7 +80,10 @@ export const useTransactionEventStore = () => {
     txHash?: string;
     action: DexEventType;
     visibleEmitResult?: boolean;
-    formatData?: (result: string[] | null) => {
+    checkWugnotTransfer?: boolean;
+    formatData?: (
+      result: string[] | null,
+    ) => {
       tokenASymbol?: string;
       tokenBSymbol?: string;
       tokenAAmount?: string;
@@ -88,6 +102,7 @@ export const useTransactionEventStore = () => {
     enqueue(undefined, pendingSnackbarConfig);
 
     const updatingSnackbarConfig = makeSnackbarConfig("updating", UPDATING_SNACKBAR_TIMEOUT);
+    const receiveWugnotSnackbarConfig = makeSnackbarConfig("receive-wugnot", BADGE_SNACKBAR_TIMEOUT);
     let updatingSnackbarEnqueued = false;
     let alreadyEmitted = false;
 
@@ -139,6 +154,56 @@ export const useTransactionEventStore = () => {
           // If a timer was previously set, cancel it and set a new one
           safeSetTimeout(() => dequeue(updatingSnackbarConfig.id), DEFAULT_SNACKBAR_TIMEOUT, updatingSnackbarConfig.id);
         }
+
+        // if the wugnot transfer is not checked or the account is not connected, return
+        if (!checkWugnotTransfer || !account || hasBadgeSnackbar) {
+          return;
+        }
+
+        // get the transfer history
+        const wugnotPath = WRAPPED_GNOT_PATH;
+        const transferHistoryResponse = await tokenRepository
+          .getGrc20TransferHistoryByTxHash(txHash, wugnotPath)
+          .catch(e => {
+            console.error(e);
+            return {
+              data: [],
+            };
+          });
+
+        const transferHistory = transferHistoryResponse.data;
+        if (transferHistory.length === 0) {
+          return;
+        }
+
+        const wugnotChange = transferHistory.reduce((acc, history): BigNumber => {
+          const amount = new BigNumber(history.tokenAmount);
+
+          if (account.address === history.fromAddress) {
+            return acc.minus(amount);
+          }
+
+          if (account.address === history.toAddress) {
+            return acc.plus(amount);
+          }
+
+          return acc;
+        }, BigNumber(0));
+
+        if (wugnotChange.isLessThan(WUGNOT_CHANGE_THRESHOLD)) {
+          return;
+        }
+
+        const wugnotBalance = await fetchWugnotBalance();
+
+        const tokenAAmount = (makeDisplayTokenAmount(GNOT_TOKEN, wugnotBalance.toString()) || 0).toLocaleString(
+          "en-US",
+          { maximumFractionDigits: 2 },
+        );
+        enqueue(
+          getReceiveWugnotMessage(txHash, tokenAAmount, () => unwrapAll()),
+          receiveWugnotSnackbarConfig,
+        );
       },
     );
   }

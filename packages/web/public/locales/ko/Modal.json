@@ -283,6 +283,11 @@
       "title": "트랜잭션 전송중",
       "viewTx": "트랜잭션 보기"
     },
+    "receive-wugnot": {
+      "desc": "변환하려면 여기를 클릭하세요. <span>{{tokenAAmount}}</span> 를 GNOT",
+      "link": "스왑을 통해 래핑/언래핑할 수도 있습니다.",
+      "title": "포장된 GNOT!"
+    },
     "success": {
       "defaultDesc": "작업이 성공적으로 완료되었습니다.",
       "desc": "인터페이스가 업데이트되었습니다.",

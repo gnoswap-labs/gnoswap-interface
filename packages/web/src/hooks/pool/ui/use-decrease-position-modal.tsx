@@ -10,29 +10,29 @@ import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { useMessage } from "@hooks/common/use-message";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
+import { QUERY_KEY } from "@query/query-keys";
 import { DexEvent } from "@repositories/common";
 import { DecreaseLiquiditySuccessResponse } from "@repositories/position/response";
 import { CommonState } from "@states/index";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
-import { QUERY_KEY } from "@query/query-keys";
 import { delay } from "@utils/common";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
-import DecreasePositionModalContainer from "../../../layouts/pool/pool-decrease-liquidity/containers/decrease-position-modal-container/DecreasePositionModalContainer";
-import { IPooledTokenInfo } from "../data/use-decrease-handle";
-import { makePoolPath } from "@utils/pool-utils";
-import { useTokenData } from "@hooks/token/data/use-token-data";
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
+import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
+import { CommonError } from "@common/errors";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { useNetworkFee } from "@hooks/common/use-network-fee";
-import { DecreaseLiquidityRequest } from "@repositories/position/request";
-import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
-import { CommonError } from "@common/errors";
-import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import { makeDecreaseLiquidityMessagesWithApproves } from "@repositories/position/position.message";
+import { DecreaseLiquidityRequest } from "@repositories/position/request";
+import { makePoolPath } from "@utils/pool-utils";
+import DecreasePositionModalContainer from "../../../layouts/pool/pool-decrease-liquidity/containers/decrease-position-modal-container/DecreasePositionModalContainer";
+import { IPooledTokenInfo } from "../data/use-decrease-handle";
 
 export interface Props {
   openModal: () => void;
@@ -49,7 +49,6 @@ export interface DecreasePositionModal {
   rangeStatus: RANGE_STATUS_OPTION;
   calculatedLiquidity: string;
   pooledTokenInfos: IPooledTokenInfo | null;
-  isGetWGNOT: boolean;
   refetchPositions: () => Promise<void>;
 }
 
@@ -64,7 +63,6 @@ export const useDecreasePositionModal = ({
   rangeStatus,
   calculatedLiquidity,
   pooledTokenInfos,
-  isGetWGNOT,
 }: DecreasePositionModal): Props => {
   const { walletClient, currentChainId } = useWallet();
   const router = useRouter();
@@ -102,48 +100,13 @@ export const useDecreasePositionModal = ({
 
   const { getMessage } = useMessage();
 
-  const gnotToken = useMemo(() => [tokenA, tokenB].find(item => item?.path === GNOT_TOKEN.path), [tokenA, tokenB]);
-
-  const gnotAmount = useMemo(() => {
-    if (tokenA?.path === gnotToken?.path) {
-      return (
-        Number(pooledTokenInfos?.poolAmountA.replaceAll(",", "") || 0) +
-        Number(pooledTokenInfos?.unClaimTokenAAmount.replaceAll(",", "") || 0)
-      );
+  const tokenTransform = useCallback((token: TokenModel) => {
+    if (token.path === GNOT_TOKEN.path) {
+      return WUGNOT_TOKEN;
     }
-    if (tokenB?.path === gnotToken?.path) {
-      return (
-        Number(pooledTokenInfos?.poolAmountB.replaceAll(",", "") || 0) +
-        Number(pooledTokenInfos?.unClaimTokenBAmount.replaceAll(",", "") || 0)
-      );
-    }
-    return 0;
-  }, [
-    gnotToken?.path,
-    pooledTokenInfos?.poolAmountA,
-    pooledTokenInfos?.poolAmountB,
-    pooledTokenInfos?.unClaimTokenAAmount,
-    pooledTokenInfos?.unClaimTokenBAmount,
-    tokenA?.path,
-    tokenB?.path,
-  ]);
 
-  const willWrap = useMemo(() => {
-    return isGetWGNOT && !!gnotToken && !!gnotAmount;
-  }, [gnotAmount, gnotToken, isGetWGNOT]);
-
-  const tokenTransform = useCallback(
-    (token: TokenModel) => {
-      if (token.path === GNOT_TOKEN.path) {
-        if (willWrap) {
-          return WUGNOT_TOKEN;
-        }
-      }
-
-      return token;
-    },
-    [willWrap],
-  );
+    return token;
+  }, []);
 
   const amountInfo = useMemo(() => {
     if (!tokenA || !tokenB || !swapFeeTier) {
@@ -233,7 +196,6 @@ export const useDecreasePositionModal = ({
         tokenBAmount: poolAmountB,
         slippage,
         caller: address,
-        isGetWGNOT: willWrap,
         deadline,
       };
 
@@ -247,6 +209,7 @@ export const useDecreasePositionModal = ({
             txHash: result.data?.hash,
             action: DexEvent.REMOVE,
             visibleEmitResult: true,
+            checkWugnotTransfer: true,
             formatData: response => {
               if (!response) {
                 return defaultMessageData;
@@ -282,14 +245,12 @@ export const useDecreasePositionModal = ({
           const resultData = result?.data as DecreaseLiquiditySuccessResponse;
 
           // Make display token amount
-          const tokenAAmount = (makeDisplayTokenAmount(tokenA, resultData.removedTokenAAmount) || 0).toLocaleString(
-            "en-US",
-            { maximumFractionDigits: tokenA.decimals },
-          );
-          const tokenBAmount = (makeDisplayTokenAmount(tokenB, resultData.removedTokenBAmount) || 0).toLocaleString(
-            "en-US",
-            { maximumFractionDigits: tokenB.decimals },
-          );
+          const tokenAAmount = (
+            makeDisplayTokenAmount(tokenA, resultData.removedTokenAAmount) || 0
+          ).toLocaleString("en-US", { maximumFractionDigits: tokenA.decimals });
+          const tokenBAmount = (
+            makeDisplayTokenAmount(tokenB, resultData.removedTokenBAmount) || 0
+          ).toLocaleString("en-US", { maximumFractionDigits: tokenB.decimals });
 
           broadcastSuccess(
             getMessage(
@@ -315,7 +276,26 @@ export const useDecreasePositionModal = ({
       }
       return true;
     },
-    [address, calculatedLiquidity, pooledTokenInfos, positionId, positionRepository, router, tokenA, tokenB, willWrap],
+    [
+      address,
+      tokenA,
+      tokenB,
+      pooledTokenInfos,
+      walletClient,
+      positionId,
+      calculatedLiquidity,
+      slippage,
+      getMessage,
+      tokenTransform,
+      enqueueEvent,
+      updateBalances,
+      handleRefreshData,
+      onSuccessClose,
+      broadcastLoading,
+      broadcastSuccess,
+      broadcastRejected,
+      broadcastError,
+    ],
   );
 
   const openModal = useCallback(() => {

@@ -283,6 +283,11 @@
       "title": "广播交易",
       "viewTx": "查看交易"
     },
+    "receive-wugnot": {
+      "desc": "单击此处转换 <span>{{tokenAAmount}}</span>转换为 GNOT",
+      "link": "您还可以通过 Swap 打包/拆包",
+      "title": "您已经包裹了 GNOT！"
+    },
     "success": {
       "defaultDesc": "您的工作已成功完成",
       "desc": "界面已更新",

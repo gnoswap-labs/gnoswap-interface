@@ -238,5 +238,14 @@ export const useMessage = () => {
     };
   }
 
-  return { getMessage };
+  function getReceiveWugnotMessage(txHash: string, tokenAAmount: string, onClick: () => void): SnackbarContent {
+    return {
+      title: t("Modal:toast.receive-wugnot.title"),
+      description: t("Modal:toast.receive-wugnot.desc", { tokenAAmount }),
+      txHash: txHash || "",
+      onClick,
+    };
+  }
+
+  return { getMessage, getReceiveWugnotMessage };
 };

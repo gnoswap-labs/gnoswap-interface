@@ -12,30 +12,25 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { DexEvent } from "@repositories/common";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 
-import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
-import UnstakePositionModal from "../../components/unstake-position-modal/UnstakePositionModal";
-import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
-import { useTokenData } from "@hooks/token/data/use-token-data";
-import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
-import { useNetworkFee } from "@hooks/common/use-network-fee";
-import { UnstakePositionsRequest } from "@repositories/position/request";
-import { makeUnStakePositionsMessagesWithApproves } from "@repositories/position/position.message";
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
 import { CommonError } from "@common/errors";
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { useNetworkFee } from "@hooks/common/use-network-fee";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
+import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
+import { makeUnStakePositionsMessagesWithApproves } from "@repositories/position/position.message";
+import { UnstakePositionsRequest } from "@repositories/position/request";
+import UnstakePositionModal from "../../components/unstake-position-modal/UnstakePositionModal";
 
 interface UnstakePositionModalContainerProps {
   positions: PoolPositionModel[];
-  isGetWGNOT: boolean;
   refetchPositions: () => Promise<void>;
 }
 
-const UnstakePositionModalContainer = ({
-  positions,
-  refetchPositions,
-  isGetWGNOT,
-}: UnstakePositionModalContainerProps) => {
+const UnstakePositionModalContainer = ({ positions, refetchPositions }: UnstakePositionModalContainerProps) => {
   const { account, walletClient } = useWallet();
   const { transactionService, positionRepository } = useGnoswapContext();
   const { estimateNetworkFee } = useNetworkFee(null);
@@ -104,7 +99,6 @@ const UnstakePositionModalContainer = ({
 
       const request: UnstakePositionsRequest = {
         positions,
-        isGetWGNOT,
         caller: address,
       };
 
@@ -136,6 +130,7 @@ const UnstakePositionModalContainer = ({
               txHash: result.data?.hash,
               action: DexEvent.UNSTAKE,
               visibleEmitResult: true,
+              checkWugnotTransfer: true,
               formatData: () => ({
                 tokenASymbol: tokenA?.token?.symbol,
                 tokenBSymbol: tokenB?.token?.symbol,
@@ -213,7 +208,6 @@ const UnstakePositionModalContainer = ({
       pooledTokenInfos,
       walletClient,
       positions,
-      isGetWGNOT,
       buildAdenaWalletAction,
       buildSocialWalletAction,
       broadcastLoading,

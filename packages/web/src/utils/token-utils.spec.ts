@@ -1,11 +1,11 @@
+import { GNOT_TOKEN } from "@common/values/token-constant";
 import { TokenModel } from "@models/token/token-model";
 import {
-  makeDisplayTokenAmount,
-  makeRawTokenAmount,
   formatTokenBalanceDisplay,
   isNativeTokenPath,
+  makeDisplayTokenAmount,
+  makeRawTokenAmount,
 } from "./token-utils";
-import { GNOT_TOKEN } from "@common/values/token-constant";
 
 const DEFAULT_TOKEN: TokenModel = {
   decimals: 6,
@@ -155,7 +155,7 @@ describe("format token balance display", () => {
 
 describe("isNativeTokenPath", () => {
   it("should return true for native token (GNOT)", () => {
-    expect(isNativeTokenPath(GNOT_TOKEN)).toBe(true);
+    expect(isNativeTokenPath(GNOT_TOKEN.path)).toBe(true);
   });
 
   it("should return false for non-native tokens", () => {
@@ -163,7 +163,7 @@ describe("isNativeTokenPath", () => {
       ...DEFAULT_TOKEN,
       path: "gno.land/r/demo/token",
     };
-    expect(isNativeTokenPath(token)).toBe(false);
+    expect(isNativeTokenPath(token.path)).toBe(false);
   });
 
   it("should return false for empty path", () => {
@@ -171,7 +171,7 @@ describe("isNativeTokenPath", () => {
       ...DEFAULT_TOKEN,
       path: "",
     };
-    expect(isNativeTokenPath(token)).toBe(false);
+    expect(isNativeTokenPath(token.path)).toBe(false);
   });
 
   it("should return false for similar but not identical path", () => {
@@ -179,22 +179,10 @@ describe("isNativeTokenPath", () => {
       ...DEFAULT_TOKEN,
       path: GNOT_TOKEN.path + "/extra",
     };
-    expect(isNativeTokenPath(token)).toBe(false);
+    expect(isNativeTokenPath(token.path)).toBe(false);
   });
 
   it("should return false for path null", () => {
-    const token = {
-      ...DEFAULT_TOKEN,
-      path: null,
-    };
-    expect(isNativeTokenPath(token)).toBe(false);
-  });
-
-  it("should return false for path undefined", () => {
-    const token = {
-      ...DEFAULT_TOKEN,
-      path: undefined,
-    };
-    expect(isNativeTokenPath(token)).toBe(false);
+    expect(isNativeTokenPath("")).toBe(false);
   });
 });

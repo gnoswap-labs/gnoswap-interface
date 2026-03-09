@@ -3,17 +3,17 @@ import { useTranslation } from "react-i18next";
 
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { ERROR_VALUE } from "@common/errors/adena";
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useMessage } from "@hooks/common/use-message";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
+import { useReferral } from "@hooks/common/use-referral";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { DexEvent, DexEventType } from "@repositories/common";
-import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
-import { useReferral } from "@hooks/common/use-referral";
 
 export const useGovernanceTx = () => {
   const { getCurrentReferralAddress, removeReferrerFromLocalStorage } = useReferral();
@@ -45,7 +45,9 @@ export const useGovernanceTx = () => {
       target?: string;
       memo0?: string;
     },
-    formatData: (result: string[] | null) => {
+    formatData: (
+      result: string[] | null,
+    ) => {
       tokenASymbol?: string;
       tokenBSymbol?: string;
       tokenAAmount?: string;
@@ -65,6 +67,7 @@ export const useGovernanceTx = () => {
           enqueueEvent({
             txHash: response?.data?.hash,
             action: eventType,
+            checkWugnotTransfer: true,
             formatData,
             visibleEmitResult: true,
             onEmit: async () => {

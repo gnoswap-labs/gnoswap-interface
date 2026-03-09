@@ -10,7 +10,7 @@ export const SnackbarList = styled.div`
   right: 30px;
   width: 380px;
 
-  z-index: ${Z_INDEX.modalTooltip};
+  z-index: ${Z_INDEX.snackbar};
   ${media.tablet} {
     top: 70px;
     right: 30px;

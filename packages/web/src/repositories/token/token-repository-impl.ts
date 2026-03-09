@@ -16,7 +16,7 @@ import { customSort } from "@containers/select-token-container/SelectTokenContai
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { TokenSearchLogModel } from "@models/token/token-search-log-model";
 import mockedExchangeRateGraph from "./mock/token-exchange-rate-graph.json";
-import { IBalancesByAddressResponse } from "./response/balance-by-address-response";
+import { IBalancesByAddressResponse, IGrc20TransferHistoryResponse } from "./response/balance-by-address-response";
 import { TokenExchangeRateGraphResponse } from "./response/token-exchange-rate-response";
 
 export class TokenRepositoryImpl implements TokenRepository {
@@ -107,6 +107,19 @@ export class TokenRepositoryImpl implements TokenRepository {
     }
     const response = await this.networkClient.get<IBalancesByAddressResponse>({
       url: `/users/${address}/balances`,
+    });
+    return response.data;
+  };
+
+  public getGrc20TransferHistoryByTxHash = async (
+    txHash: string,
+    tokenPath: string,
+  ): Promise<IGrc20TransferHistoryResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+    const response = await this.networkClient.get<IGrc20TransferHistoryResponse>({
+      url: `/activity/transfers?txHash=${encodeURIComponent(txHash)}&tokenPath=${encodeURIComponent(tokenPath)}`,
     });
     return response.data;
   };

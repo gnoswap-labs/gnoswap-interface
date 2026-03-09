@@ -5,18 +5,14 @@ import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionConverter } from "@services/converters/position";
 
-import UnstakeLiquidity from "../../components/unstake-liquidity/UnstakeLiquidity";
 import { useUnstakePositionModal } from "@hooks/pool/ui/use-unstake-position-modal";
+import UnstakeLiquidity from "../../components/unstake-liquidity/UnstakeLiquidity";
 
 const UnstakeLiquidityContainer: React.FC = () => {
   const router = useCustomRouter();
   const poolPath = router.getPoolPath();
   const positionId = router.getPositionId();
-  const {
-    positions: allPosition,
-    loading: isPositionsLoading,
-    refetch: refetchPositions,
-  } = usePositionData({
+  const { positions: allPosition, loading: isPositionsLoading, refetch: refetchPositions } = usePositionData({
     poolPath,
     queryOption: {
       enabled: !!poolPath,
@@ -28,14 +24,12 @@ const UnstakeLiquidityContainer: React.FC = () => {
   }, [allPosition]);
 
   const [checkedList, setCheckedList] = useState<number[]>(positionId ? [Number(positionId)] : []);
-  const [isGetWGNOT, setIsGetWGNOT] = useState(false);
 
   const stakedPositions = useMemo(() => positionList.filter(item => item.staked), [positionList]);
 
   const { openModal } = useUnstakePositionModal({
     positions: stakedPositions,
     selectedIds: checkedList,
-    isGetWGNOT: isGetWGNOT,
     refetchPositions: async () => {
       await refetchPositions();
     },
@@ -82,8 +76,6 @@ const UnstakeLiquidityContainer: React.FC = () => {
       checkedAll={checkedAll}
       handleConfirmUnstake={handleConfirmUnstake}
       isLoading={isPositionsLoading}
-      isGetWGNOT={isGetWGNOT}
-      setIsGetWGNOT={() => setIsGetWGNOT(prev => !prev)}
     />
   );
 };

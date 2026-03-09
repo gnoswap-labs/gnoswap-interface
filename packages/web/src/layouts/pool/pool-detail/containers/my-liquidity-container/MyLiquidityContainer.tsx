@@ -3,26 +3,26 @@ import React, { useCallback, useMemo, useRef, useState } from "react";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import useRouter from "@hooks/common/use-custom-router";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { useMessage } from "@hooks/common/use-message";
-import { usePosition } from "@hooks/pool/data/use-position";
-import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { usePosition } from "@hooks/pool/data/use-position";
+import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetUsernameByAddress } from "@query/address";
-import { DexEvent } from "@repositories/common";
-import { formatOtherPrice } from "@utils/new-number-utils";
-import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { QUERY_KEY } from "@query/query-keys";
+import { DexEvent } from "@repositories/common";
 import { delay } from "@utils/common";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import MyLiquidity from "../../components/my-liquidity/MyLiquidity";
-import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { PositionConverter } from "@services/converters/position";
-import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import MyLiquidity from "../../components/my-liquidity/MyLiquidity";
 
 interface MyLiquidityContainerProps {
   addressContext: {
@@ -47,11 +47,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   const { connected: connectedWallet, isSwitchNetwork, account, currentChainId } = useWallet();
   const [currentIndex, setCurrentIndex] = useState(1);
   const poolPath = router.getPoolPath();
-  const {
-    positions: positions,
-    loading: isLoadingPosition,
-    refetch: refetchPositions,
-  } = usePositionData({
+  const { positions: positions, loading: isLoadingPosition, refetch: refetchPositions } = usePositionData({
     address,
     poolPath,
     queryOption: {
@@ -154,6 +150,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
               txHash: response?.data?.hash,
               action: DexEvent.CLAIM_FEE,
               visibleEmitResult: true,
+              checkWugnotTransfer: true,
               formatData: () => {
                 return messageData;
               },
@@ -207,6 +204,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
             txHash: response?.data?.hash,
             action: DexEvent.CLAIM_FEE,
             visibleEmitResult: true,
+            checkWugnotTransfer: true,
             formatData: () => {
               return messageData;
             },

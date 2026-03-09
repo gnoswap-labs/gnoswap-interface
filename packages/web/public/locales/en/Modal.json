@@ -283,6 +283,11 @@
       "title": "Broadcasting Transaction",
       "viewTx": "View Transaction"
     },
+    "receive-wugnot": {
+      "desc": "Click here to convert <span>{{tokenAAmount}}</span> to GNOT",
+      "link": "You can also wrap/unwrap via Swap",
+      "title": "You have Wrapped GNOT!"
+    },
     "success": {
       "defaultDesc": "Your job was finished successfully",
       "desc": "The interface has been updated",
