@@ -10,29 +10,29 @@ import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { useMessage } from "@hooks/common/use-message";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
+import { QUERY_KEY } from "@query/query-keys";
 import { DexEvent } from "@repositories/common";
 import { DecreaseLiquiditySuccessResponse } from "@repositories/position/response";
 import { CommonState } from "@states/index";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
-import { QUERY_KEY } from "@query/query-keys";
 import { delay } from "@utils/common";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
-import DecreasePositionModalContainer from "../../../layouts/pool/pool-decrease-liquidity/containers/decrease-position-modal-container/DecreasePositionModalContainer";
-import { IPooledTokenInfo } from "../data/use-decrease-handle";
-import { makePoolPath } from "@utils/pool-utils";
-import { useTokenData } from "@hooks/token/data/use-token-data";
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
+import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
+import { CommonError } from "@common/errors";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { useNetworkFee } from "@hooks/common/use-network-fee";
-import { DecreaseLiquidityRequest } from "@repositories/position/request";
-import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
-import { CommonError } from "@common/errors";
-import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import { makeDecreaseLiquidityMessagesWithApproves } from "@repositories/position/position.message";
+import { DecreaseLiquidityRequest } from "@repositories/position/request";
+import { makePoolPath } from "@utils/pool-utils";
+import DecreasePositionModalContainer from "../../../layouts/pool/pool-decrease-liquidity/containers/decrease-position-modal-container/DecreasePositionModalContainer";
+import { IPooledTokenInfo } from "../data/use-decrease-handle";
 
 export interface Props {
   openModal: () => void;
@@ -247,6 +247,7 @@ export const useDecreasePositionModal = ({
             txHash: result.data?.hash,
             action: DexEvent.REMOVE,
             visibleEmitResult: true,
+            checkWugnotTransfer: true,
             formatData: response => {
               if (!response) {
                 return defaultMessageData;
@@ -282,14 +283,12 @@ export const useDecreasePositionModal = ({
           const resultData = result?.data as DecreaseLiquiditySuccessResponse;
 
           // Make display token amount
-          const tokenAAmount = (makeDisplayTokenAmount(tokenA, resultData.removedTokenAAmount) || 0).toLocaleString(
-            "en-US",
-            { maximumFractionDigits: tokenA.decimals },
-          );
-          const tokenBAmount = (makeDisplayTokenAmount(tokenB, resultData.removedTokenBAmount) || 0).toLocaleString(
-            "en-US",
-            { maximumFractionDigits: tokenB.decimals },
-          );
+          const tokenAAmount = (
+            makeDisplayTokenAmount(tokenA, resultData.removedTokenAAmount) || 0
+          ).toLocaleString("en-US", { maximumFractionDigits: tokenA.decimals });
+          const tokenBAmount = (
+            makeDisplayTokenAmount(tokenB, resultData.removedTokenBAmount) || 0
+          ).toLocaleString("en-US", { maximumFractionDigits: tokenB.decimals });
 
           broadcastSuccess(
             getMessage(

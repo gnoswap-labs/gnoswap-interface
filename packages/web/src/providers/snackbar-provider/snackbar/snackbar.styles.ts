@@ -1,9 +1,9 @@
 import { keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
 
+import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
-import { fonts } from "@constants/font.constant";
 
 const toastInRight = keyframes`
   from {
@@ -144,6 +144,29 @@ export const SnackbarWrapper = styled.div`
       }
       ${media.mobile} {
         padding-right: 24px;
+      }
+    }
+
+    &.clickable {
+      cursor: pointer;
+    }
+
+    .icon-wrap-wrapper {
+      display: flex;
+      width: 36px;
+      height: 36px;
+      background-color: ${({ theme }) => theme.color.point};
+      border-radius: 50%;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .icon-wrap {
+      display: flex;
+      width: 24px;
+      height: 24px;
+      * {
+        fill: ${({ theme }) => theme.color.background06};
       }
     }
   }

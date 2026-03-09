@@ -1,11 +1,12 @@
 import { createContext, FC, useCallback, useMemo, useState } from "react";
 
-import { Snackbar, SnackbarType, SnackbarContent } from "./snackbar";
+import { Snackbar, SnackbarContent, SnackbarType } from "./snackbar";
 import { SnackbarOptions } from "./type";
 
 import { SnackbarList } from "./snackbar-provider.styles";
 
 interface SnackbarContenxtProps {
+  hasBadgeSnackbar: boolean;
   enqueue: (content: SnackbarContent | undefined, options: SnackbarOptions) => void;
   change: (id: number, type: SnackbarType) => void;
   dequeue: (id: number) => void;
@@ -13,6 +14,7 @@ interface SnackbarContenxtProps {
 }
 
 export const SnackbarContext = createContext<SnackbarContenxtProps>({
+  hasBadgeSnackbar: false,
   enqueue: () => {
     console.error("Calling notice without notice context");
   },
@@ -35,8 +37,13 @@ const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
       timeout: number;
       content?: SnackbarContent;
       isClosing?: boolean;
+      onClick?: () => void;
     }[]
   >([]);
+
+  const hasBadgeSnackbar = useMemo(() => {
+    return snackbars.filter(item => item.timeout === 0).length > 0;
+  }, [snackbars]);
 
   const enqueue = useCallback<SnackbarContenxtProps["enqueue"]>(
     (content, options) => {
@@ -48,6 +55,7 @@ const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
           timeout: options.timeout,
           content,
           isClosing: false,
+          onClick: content?.onClick,
         },
       ]);
     },
@@ -99,12 +107,13 @@ const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const contextValue = useMemo(
     () => ({
+      hasBadgeSnackbar,
       enqueue,
       change,
       dequeue,
       clear,
     }),
-    [enqueue, change, dequeue, clear],
+    [hasBadgeSnackbar, enqueue, change, dequeue, clear],
   );
 
   return (
@@ -120,6 +129,7 @@ const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
                 timeout={item_.timeout}
                 content={item_.content}
                 isClosing={item_.isClosing}
+                onClick={item_.onClick}
                 onClose={handleClose}
               />
             );

@@ -1,36 +1,36 @@
-import { useCallback, useMemo } from "react";
 import BigNumber from "bignumber.js";
+import { useCallback, useMemo } from "react";
 
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
+import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
+import { CommonError } from "@common/errors";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { GNOT_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
+import { useAddress } from "@hooks/common/use-address";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { useMessage } from "@hooks/common/use-message";
+import { useNetworkFee } from "@hooks/common/use-network-fee";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
+import { QUERY_KEY } from "@query/query-keys";
 import { DexEvent } from "@repositories/common";
+import { makeRemoveLiquidityMessagesWithApproves } from "@repositories/position/position.message";
+import { RemoveLiquidityRequest } from "@repositories/position/request";
 import { checkGnotPath, delay } from "@utils/common";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
-import { RemoveLiquidityRequest } from "@repositories/position/request";
-import { useNetworkFee } from "@hooks/common/use-network-fee";
-import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
-import { CommonError } from "@common/errors";
-import { makeRemoveLiquidityMessagesWithApproves } from "@repositories/position/position.message";
-import { useAddress } from "@hooks/common/use-address";
-import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
-import { QUERY_KEY } from "@query/query-keys";
 
-import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
-import RemovePositionModal from "../../components/remove-position-modal/RemovePositionModal";
-import { useTokenData } from "@hooks/token/data/use-token-data";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
+import { useTokenData } from "@hooks/token/data/use-token-data";
+import RemovePositionModal from "../../components/remove-position-modal/RemovePositionModal";
 
 interface RemovePositionModalContainerProps {
   selectedPositions: PoolPositionModel[];
@@ -204,6 +204,7 @@ const RemovePositionModalContainer = ({
               txHash: result.data?.hash,
               action: DexEvent.REMOVE,
               visibleEmitResult: true,
+              checkWugnotTransfer: true,
               formatData: response => {
                 if (!response) {
                   return broadcastMessageData;

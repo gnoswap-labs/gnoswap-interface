@@ -1,31 +1,31 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useAtomValue, useStore } from "jotai";
 import BigNumber from "bignumber.js";
+import { useAtomValue, useStore } from "jotai";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
 import useDebounce from "@hooks/common/use-debounce";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useNetworkFee } from "@hooks/common/use-network-fee";
+import { useReferral } from "@hooks/common/use-referral";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetRoutes } from "@query/router";
-import { useReferral } from "@hooks/common/use-referral";
-import { useNetworkFee } from "@hooks/common/use-network-fee";
 import { useGetTokenPrices } from "@query/token";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import {
   makeExactInSwapRouteMessageWithApproves,
   makeExactOutSwapRouteMessageWithApproves,
   makeUnwrapTokenMessages,
   makeWrapTokenMessages,
 } from "@repositories/swap-router/swap-router.message";
-import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
-import { SwapDirectionType } from "@common/values";
-import { TokenModel, isNativeToken } from "@models/token/token-model";
-import { EstimatedRoute } from "@models/swap/swap-route-info";
-import { SwapState } from "@states/index";
-import { NetworkFee, useGetGasPrice } from "@hooks/gas";
 import { TransactionMessage } from "@common/clients/wallet-client/protocols";
-import { Document } from "src/types/transaction-messages.types";
+import { SwapDirectionType } from "@common/values";
 import { GasToken } from "@common/values/token-constant";
+import { NetworkFee, useGetGasPrice } from "@hooks/gas";
+import { EstimatedRoute } from "@models/swap/swap-route-info";
+import { TokenModel, isNativeToken } from "@models/token/token-model";
+import { SwapState } from "@states/index";
+import { Document } from "src/types/transaction-messages.types";
 
 interface UseSwapProps {
   tokenA: TokenModel | null;
@@ -107,12 +107,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     return debouncedSwapAmount ? debouncedSwapAmount * exactOutPadding : debouncedSwapAmount;
   }, [debouncedSwapAmount, direction, exactOutPadding]);
 
-  const {
-    data: estimatedSwapResult,
-    isLoading: isEstimatedSwapLoading,
-    isRefetching,
-    error,
-  } = useGetRoutes(
+  const { data: estimatedSwapResult, isLoading: isEstimatedSwapLoading, isRefetching, error } = useGetRoutes(
     {
       inputToken: tokenA,
       outputToken: tokenB,
@@ -251,8 +246,6 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       return swapRouterRepository.sendWrapToken({
         token: tokenA,
         tokenAmount,
-        gasFee: networkFee?.amount,
-        gasUsed: String(currentGasInfo?.gasUsed),
       });
     },
     [account, selectedTokenPair, swapRouterRepository, tokenA, networkFee?.amount, currentGasInfo?.gasWanted],

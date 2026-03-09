@@ -13,6 +13,7 @@ import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import useRouter from "@hooks/common/use-custom-router";
 import { useMessage } from "@hooks/common/use-message";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
+import { useReferral } from "@hooks/common/use-referral";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useTokenData } from "@hooks/token/data/use-token-data";
@@ -34,12 +35,11 @@ import { nullish } from "@utils/nullish-utils";
 import { matchInputNumber } from "@utils/number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { isEmptyObject } from "@utils/validation-utils";
-import { useReferral } from "@hooks/common/use-referral";
 
-import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { useSwap } from "./use-swap";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
+import { useSwap } from "./use-swap";
 
 type SwapButtonStateType =
   | "WALLET_LOGIN"
@@ -187,8 +187,14 @@ export const useSwapHandler = () => {
   const [openedConfirmModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { connected: connectedWallet, isSwitchNetwork, switchNetwork } = useWallet();
-  const { tokens, tokenPrices, displayBalanceMap, updateBalances, getTokenUSDPrice, refetchGrc20Balances } =
-    useTokenData();
+  const {
+    tokens,
+    tokenPrices,
+    displayBalanceMap,
+    updateBalances,
+    getTokenUSDPrice,
+    refetchGrc20Balances,
+  } = useTokenData();
   const { slippage, changeSlippage } = useSlippage();
   const { openModal } = useConnectWalletModal();
   const { data: swapFee } = useGetSwapFee();
@@ -232,10 +238,11 @@ export const useSwapHandler = () => {
         .toNumber(),
     [gnotToken?.decimals],
   );
-  const gasFeeUSD = useMemo(
-    () => getTokenUSDPrice(checkGnotPath(gnotToken?.path ?? ""), defaultGasFeeAmount) ?? 0,
-    [defaultGasFeeAmount, getTokenUSDPrice, gnotToken?.path],
-  );
+  const gasFeeUSD = useMemo(() => getTokenUSDPrice(checkGnotPath(gnotToken?.path ?? ""), defaultGasFeeAmount) ?? 0, [
+    defaultGasFeeAmount,
+    getTokenUSDPrice,
+    gnotToken?.path,
+  ]);
 
   const swapRouteInfos: SwapRouteInfo[] = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -1122,6 +1129,7 @@ export const useSwapHandler = () => {
             enqueueEvent({
               txHash: response?.data?.hash,
               action: DexEvent.SWAP,
+              checkWugnotTransfer: true,
               formatData: response => {
                 if (!response) {
                   return broadcastMessage;

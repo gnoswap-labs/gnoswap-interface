@@ -5,37 +5,37 @@ import { ERROR_VALUE } from "@common/errors/adena";
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import AssetReceiveModal from "@components/wallet/asset-receive-modal/AssetReceiveModal";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
+import { useAddress } from "@hooks/common/use-address";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { useMessage } from "@hooks/common/use-message";
-import { usePosition } from "@hooks/pool/data/use-position";
-import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { usePosition } from "@hooks/pool/data/use-position";
+import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { useGetAvgBlockTime } from "@query/address";
+import { QUERY_KEY } from "@query/query-keys";
 import { useGetAllTokenPrices } from "@query/token";
 import { DexEvent } from "@repositories/common";
+import { PositionConverter } from "@services/converters/position";
+import { delay } from "@utils/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { toUnitFormat } from "@utils/number-utils";
 import { isEmptyObject } from "@utils/validation-utils";
-import { PoolPositionModel } from "@models/position/pool-position-model";
-import { PositionConverter } from "@services/converters/position";
-import { useAddress } from "@hooks/common/use-address";
-import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
-import { QUERY_KEY } from "@query/query-keys";
-import { delay } from "@utils/common";
 
-import AssetSendModal from "../../components/asset-send-modal/AssetSendModal";
-import WalletBalance from "../../components/wallet-balance/WalletBalance";
-import useSendAsset from "@hooks/wallet/data/useSendAsset";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { BalanceSummaryInfo } from "@layouts/portfolio/components/wallet-balance/wallet-balance-summary/wallet-balance-summary-info/WalletBalanceSummaryInfo";
+import useSendAsset from "@hooks/wallet/data/useSendAsset";
 import { BalanceDetailInfo } from "@layouts/portfolio/components/wallet-balance/wallet-balance-detail/WalletBalanceDetail";
+import { BalanceSummaryInfo } from "@layouts/portfolio/components/wallet-balance/wallet-balance-summary/wallet-balance-summary-info/WalletBalanceSummaryInfo";
+import AssetSendModal from "../../components/asset-send-modal/AssetSendModal";
+import WalletBalance from "../../components/wallet-balance/WalletBalance";
 
 const WalletBalanceContainer: React.FC = () => {
   const { rpcProvider } = useGnoswapContext();
@@ -124,6 +124,7 @@ const WalletBalanceContainer: React.FC = () => {
           enqueueEvent({
             txHash: response?.data?.hash,
             action: DexEvent.CLAIM_FEE,
+            checkWugnotTransfer: true,
             formatData: () => messageData,
             onUpdate: async () => {
               updateBalances();

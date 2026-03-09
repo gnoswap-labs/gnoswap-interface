@@ -5,12 +5,12 @@ import { CommonState } from "@states/index";
 
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { ERROR_VALUE } from "@common/errors/adena";
+import { BROADCAST_ERROR_VALUE, BroadcastErrorContent } from "@common/errors/broadcast/broadcast-error";
 import { DexEventType } from "@repositories/common";
 import { useMessage } from "./use-message";
 import { SnackbarContent, useSnackbar } from "./use-snackbar";
 import { useTransactionConfirmModal } from "./use-transaction-confirm-modal";
 import { useTransactionEventStore } from "./use-transaction-event-store";
-import { BroadcastErrorContent, BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 
 /**
  * PENDING
@@ -126,7 +126,9 @@ export const useBroadcastHandler = () => {
       target?: string;
       memo0?: string;
     },
-    formatData: (result: string[] | null) => {
+    formatData: (
+      result: string[] | null,
+    ) => {
       tokenASymbol?: string;
       tokenBSymbol?: string;
       tokenAAmount?: string;
@@ -147,6 +149,7 @@ export const useBroadcastHandler = () => {
           enqueueEvent({
             txHash: response?.data?.hash,
             action: eventType,
+            checkWugnotTransfer: true,
             formatData,
             visibleEmitResult: true,
             onUpdate: async () => {
