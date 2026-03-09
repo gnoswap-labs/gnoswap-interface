@@ -1,6 +1,6 @@
+import { WalletClient } from "@common/clients/wallet-client";
 import BigNumber from "bignumber.js";
 import { eventBus } from "./event-bus";
-import { WalletClient } from "@common/clients/wallet-client";
 
 import {
   isContractMessage,
@@ -8,16 +8,16 @@ import {
   TransactionMessage,
   WalletResponse,
 } from "@common/clients/wallet-client/protocols";
-import { DEFAULT_CHAIN_ID, WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { DEFAULT_GAS_WANTED } from "@common/values";
+import { DEFAULT_CHAIN_ID, WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { ContractMessage, Document } from "src/types/transaction-messages.types";
 
-import { createDocument } from "./messages.utils";
+import { GasToken } from "@common/values/token-constant";
+import { Any, MsgAddPackage, MsgCall, MsgEndpoint, MsgRun, MsgSend } from "@gnolang/gno-js-client";
 import { Tx, TxFee } from "@gnolang/tm2-js-client";
 import { TransactionService } from "@services/transaction";
-import { GasToken } from "@common/values/token-constant";
-import { Any, MsgAddPackage, MsgCall, MsgEndpoint, MsgSend, MsgRun } from "@gnolang/gno-js-client";
-import { makeRawTokenAmount } from "./token-utils";
+import { createDocument } from "./messages.utils";
+import { isNativeTokenPath, makeRawTokenAmount } from "./token-utils";
 
 export const TX_EVENTS = {
   SHOW_MODAL: "show-approve-modal",
@@ -25,7 +25,7 @@ export const TX_EVENTS = {
   REJECTED: "transaction-rejected",
 } as const;
 
-export type TransactionEvent = (typeof TX_EVENTS)[keyof typeof TX_EVENTS];
+export type TransactionEvent = typeof TX_EVENTS[keyof typeof TX_EVENTS];
 
 export interface TransactionApprovalModalHandlers {
   handleApprove: (document: Document) => void;
@@ -269,6 +269,17 @@ export const getSendAmount = (
   if (isWrappedGnotPath(tokenAWrappedPath)) return tokenAAmountRaw;
   if (isWrappedGnotPath(tokenBWrappedPath)) return tokenBAmountRaw;
   return null;
+};
+
+export const getWrappedGNOTDepositAmount = (
+  tokenAPath: string,
+  tokenBPath: string,
+  tokenAAmount: string,
+  tokenBAmount: string,
+): string => {
+  if (isNativeTokenPath(tokenAPath)) return tokenAAmount;
+  if (isNativeTokenPath(tokenBPath)) return tokenBAmount;
+  return "0";
 };
 
 const MINIMUM_GAS_PRICE = 0.001 as const;

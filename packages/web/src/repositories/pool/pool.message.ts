@@ -1,11 +1,11 @@
 import BigNumber from "bignumber.js";
 
-import { TransactionMessage } from "@common/clients/wallet-client/protocols";
 import {
-  TokenApproveMessageInfo,
-  makeGNOTSendAmount,
+  makeDepositGNOTMessage,
   makeTransactionMessage,
   makeTransactionMessagesWithApproves,
+  TokenApproveMessageInfo,
+  TransactionMessage,
 } from "@common/clients/wallet-client/transaction-messages";
 import { DEFAULT_TRANSACTION_DEADLINE } from "@common/values";
 import {
@@ -23,9 +23,9 @@ import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath, isGNOTPath, toNativePath, wrapNativeTokenPath } from "@utils/common";
 import { MAX_INT64, tickToSqrtPriceX96 } from "@utils/math.utils";
 import { isOrderedTokenPaths } from "@utils/pool-utils";
+import { sortTokenPaths } from "@utils/sort-utils";
 import { priceToTick } from "@utils/swap-utils";
 import { isNativeTokenPath, makeRawTokenAmount } from "@utils/token-utils";
-import { sortTokenPaths } from "@utils/sort-utils";
 
 enum PoolTransactionMessageFunctionType {
   CreatePool = "CreatePool",
@@ -120,18 +120,15 @@ export function makePositionMintMessageWithApproves(
   const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
   const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
 
-  const tokenAPath = tokenA.path;
-  const tokenBPath = tokenB.path;
-
   const tokenAWrappedPath = tokenA.wrappedPath || wrapNativeTokenPath(tokenA.path);
   const tokenBWrappedPath = tokenB.wrappedPath || wrapNativeTokenPath(tokenB.path);
 
   const approveMessageInfos: TokenApproveMessageInfo[] = [];
 
-  // When GNOT, make a send to the pool contract.
-  const sendAmount: string | null = isNativeTokenPath(tokenA)
+  // When native GNOT is included, wrap it first via Deposit.
+  const sendAmount: string | null = isNativeTokenPath(tokenA.path)
     ? tokenAAmountRaw
-    : isNativeTokenPath(tokenB)
+    : isNativeTokenPath(tokenB.path)
     ? tokenBAmountRaw
     : null;
 
@@ -164,10 +161,18 @@ export function makePositionMintMessageWithApproves(
 
   // Make mint transaction message
   const makeMintMessage = withStaking ? makePositionMintWithStakeMessage : makePositionMintMessage;
+  const messages: TransactionMessage[] = [];
+
+  if (sendAmount && BigNumber(sendAmount).isGreaterThan(0)) {
+    const depositMessage = makeDepositGNOTMessage(sendAmount, caller);
+    if (depositMessage) {
+      messages.push(depositMessage);
+    }
+  }
 
   const mintMessage = makeMintMessage(
-    tokenAPath,
-    tokenBPath,
+    tokenAWrappedPath,
+    tokenBWrappedPath,
     feeTier,
     minTick,
     maxTick,
@@ -175,11 +180,11 @@ export function makePositionMintMessageWithApproves(
     tokenBAmountRaw,
     slippage,
     caller,
-    sendAmount,
     referrerAddress,
   );
+  messages.push(mintMessage);
 
-  return makeTransactionMessagesWithApproves([mintMessage], approveMessageInfos, fetchAllowance);
+  return makeTransactionMessagesWithApproves(messages, approveMessageInfos, fetchAllowance);
 }
 
 export function makeCreateExternalIncentiveMessageWithApproves(
@@ -229,6 +234,14 @@ export function makeCreateExternalIncentiveMessageWithApproves(
     });
   }
 
+  const messages: TransactionMessage[] = [];
+  if (isGNOT && BigNumber(rewardAmountRaw).isGreaterThan(0)) {
+    const depositMessage = makeDepositGNOTMessage(rewardAmountRaw, caller);
+    if (depositMessage) {
+      messages.push(depositMessage);
+    }
+  }
+
   const createIncentiveMessage = makeCreateIncentiveMessage(
     poolPath,
     rewardTokenPath,
@@ -238,8 +251,9 @@ export function makeCreateExternalIncentiveMessageWithApproves(
     caller,
     isGNOT,
   );
+  messages.push(createIncentiveMessage);
 
-  return makeTransactionMessagesWithApproves([createIncentiveMessage], approveMessageInfos, fetchAllowance);
+  return makeTransactionMessagesWithApproves(messages, approveMessageInfos, fetchAllowance);
 }
 
 export function makeRemoveExternalIncentiveMessageWithApproves(
@@ -291,11 +305,10 @@ function makeCreateIncentiveMessage(
   caller: string,
   isGNOT: boolean,
 ) {
-  const send = makeGNOTSendAmount(isGNOT ? rewardAmount : 0);
   const tokenPath = isGNOT ? toNativePath(rewardTokenPath) : rewardTokenPath;
 
   return makeTransactionMessage({
-    send: send,
+    send: "",
     func: PoolTransactionMessageFunctionType.CreateExternalIncentive,
     packagePath: PACKAGE_STAKER_PATH,
     args: [poolPath, tokenPath, rewardAmount, `${startTime}`, `${endTime}`],
@@ -313,17 +326,14 @@ function makePositionMintMessage(
   tokenBAmount: string,
   slippage: number,
   caller: string,
-  sendAmount: string | null,
   referrerAddress: string | null,
 ) {
   const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
   const slippageRatio = (100 - slippage) / 100;
   const deadline = DEFAULT_TRANSACTION_DEADLINE;
-  const send = makeGNOTSendAmount(sendAmount);
-
   return makeTransactionMessage({
     caller,
-    send,
+    send: "",
     packagePath: PACKAGE_POSITION_PATH,
     func: PoolTransactionMessageFunctionType.Mint,
     args: [
@@ -354,17 +364,14 @@ function makePositionMintWithStakeMessage(
   tokenBAmount: string,
   slippage: number,
   caller: string,
-  sendAmount: string | null,
   referrerAddress: string | null,
 ) {
   const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
   const slippageRatio = (100 - slippage) / 100;
   const deadline = DEFAULT_TRANSACTION_DEADLINE;
-  const send = makeGNOTSendAmount(sendAmount);
-
   return makeTransactionMessage({
     caller,
-    send,
+    send: "",
     packagePath: PACKAGE_STAKER_PATH,
     func: PoolTransactionMessageFunctionType.MintAndStake,
     args: [

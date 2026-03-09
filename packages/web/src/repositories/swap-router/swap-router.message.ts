@@ -1,17 +1,22 @@
-import { TransactionMessage } from "@common/clients/wallet-client/protocols";
 import {
+  makeDepositGNOTMessage,
   makeGNOTSendAmount,
   makeTransactionMessage,
   makeTransactionMessagesWithApproves,
   TokenApproveMessageInfo,
+  TransactionMessage,
 } from "@common/clients/wallet-client/transaction-messages";
-import { PACKAGE_POOL_ADDRESS, PACKAGE_ROUTER_ADDRESS, PACKAGE_ROUTER_PATH } from "@constants/environment.constant";
+import {
+  PACKAGE_POOL_ADDRESS,
+  PACKAGE_ROUTER_ADDRESS,
+  PACKAGE_ROUTER_PATH,
+} from "@constants/environment.constant";
 import { EstimatedRoute } from "@models/swap/swap-route-info";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
 import { MAX_INT64 } from "@utils/math.utils";
 import { makeRoutesQuery } from "@utils/swap-route-utils";
-import { makeRawTokenAmount, isNativeTokenPath } from "@utils/token-utils";
+import { isNativeTokenPath, makeRawTokenAmount } from "@utils/token-utils";
 
 enum TransactionMessageFunctionType {
   Deposit = "Deposit",
@@ -54,15 +59,21 @@ export function makeExactInSwapRouteMessageWithApproves(
   const inputTokenWrappedPath = checkGnotPath(inputToken.path);
   const outputTokenWrappedPath = checkGnotPath(outputToken.path);
 
-  const send = isNativeTokenPath(inputToken) ? makeGNOTSendAmount(tokenAmountRaw) : "";
+  const messages: TransactionMessage[] = [];
+  if (isNativeTokenPath(inputToken.path)) {
+    const depositMessage = makeDepositGNOTMessage(tokenAmountRaw, caller);
+    if (depositMessage) {
+      messages.push(depositMessage);
+    }
+  }
 
   const swapMessage = makeTransactionMessage({
-    send,
+    send: "",
     packagePath: PACKAGE_ROUTER_PATH,
     func: TransactionMessageFunctionType.ExactIn,
     args: [
-      inputToken.path,
-      outputToken.path,
+      inputTokenWrappedPath,
+      outputTokenWrappedPath,
       `${tokenAmountRaw || 0}`,
       `${routesQuery}`,
       `${quotes}`,
@@ -72,6 +83,7 @@ export function makeExactInSwapRouteMessageWithApproves(
     ],
     caller,
   });
+  messages.push(swapMessage);
 
   const approveInfos: TokenApproveMessageInfo[] = [
     {
@@ -94,7 +106,7 @@ export function makeExactInSwapRouteMessageWithApproves(
     },
   ];
 
-  return makeTransactionMessagesWithApproves([swapMessage], approveInfos, fetchAllowance);
+  return makeTransactionMessagesWithApproves(messages, approveInfos, fetchAllowance);
 }
 
 export function makeExactOutSwapRouteMessageWithApproves(
@@ -120,15 +132,21 @@ export function makeExactOutSwapRouteMessageWithApproves(
   const inputTokenWrappedPath = checkGnotPath(inputToken.path);
   const outputTokenWrappedPath = checkGnotPath(outputToken.path);
 
-  const send = isNativeTokenPath(inputToken) ? makeGNOTSendAmount(tokenAmountLimitRaw) : "";
+  const messages: TransactionMessage[] = [];
+  if (isNativeTokenPath(inputToken.path)) {
+    const depositMessage = makeDepositGNOTMessage(tokenAmountLimitRaw, caller);
+    if (depositMessage) {
+      messages.push(depositMessage);
+    }
+  }
 
   const swapMessage = makeTransactionMessage({
-    send,
+    send: "",
     packagePath: PACKAGE_ROUTER_PATH,
     func: TransactionMessageFunctionType.ExactOut,
     args: [
-      inputToken.path,
-      outputToken.path,
+      inputTokenWrappedPath,
+      outputTokenWrappedPath,
       `${tokenAmountRaw || 0}`,
       `${routesQuery}`,
       `${quotes}`,
@@ -138,6 +156,7 @@ export function makeExactOutSwapRouteMessageWithApproves(
     ],
     caller,
   });
+  messages.push(swapMessage);
 
   const approveInfos: TokenApproveMessageInfo[] = [
     {
@@ -160,7 +179,7 @@ export function makeExactOutSwapRouteMessageWithApproves(
     },
   ];
 
-  return makeTransactionMessagesWithApproves([swapMessage], approveInfos, fetchAllowance);
+  return makeTransactionMessagesWithApproves(messages, approveInfos, fetchAllowance);
 }
 
 export function makeWrapTokenMessages({

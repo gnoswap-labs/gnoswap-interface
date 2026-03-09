@@ -1,10 +1,10 @@
 import {
-  TokenApproveMessageInfo,
-  TransactionMessage,
-  makeGNOTSendAmount,
+  makeDepositGNOTMessage,
   makeNFTApproveMessage,
   makeTransactionMessage,
   makeTransactionMessagesWithApproves,
+  TokenApproveMessageInfo,
+  TransactionMessage,
 } from "@common/clients/wallet-client/transaction-messages";
 import {
   PACKAGE_POOL_ADDRESS,
@@ -21,7 +21,7 @@ import { checkGnotPath, isGNOTPath, wrapNativeTokenPath } from "@utils/common";
 import { MAX_INT64 } from "@utils/math.utils";
 import { calculateMinTokenAmount } from "@utils/reposition-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
-import { getSendAmount } from "@utils/transaction-utils";
+import { getWrappedGNOTDepositAmount } from "@utils/transaction-utils";
 import BigNumber from "bignumber.js";
 
 enum TransactionMessageFunctionType {
@@ -90,10 +90,7 @@ export function makeClaimMessageWithApproves(
         send: "",
         func: TransactionMessageFunctionType.CollectFee,
         packagePath: PACKAGE_POSITION_PATH,
-        args: [
-          position.lpTokenId.toString(),
-          "true", // whether unwrap token, false will get GNOT : isGetWGNOT == false => wrap
-        ],
+        args: [position.lpTokenId.toString()],
         caller,
       }),
     );
@@ -104,10 +101,7 @@ export function makeClaimMessageWithApproves(
         send: "",
         func: TransactionMessageFunctionType.CollectReward,
         packagePath: PACKAGE_STAKER_PATH,
-        args: [
-          position.lpTokenId.toString(),
-          "true", // unwrap wgnot, it's always true for now
-        ],
+        args: [position.lpTokenId.toString()],
         caller,
       }),
     );
@@ -173,10 +167,7 @@ export function makeClaimAllMessageWithApproves(
           send: "",
           func: TransactionMessageFunctionType.CollectFee,
           packagePath: PACKAGE_POSITION_PATH,
-          args: [
-            position.lpTokenId.toString(),
-            "true", // whether unwrap token, false will get GNOT : isGetWGNOT == false => wrap
-          ],
+          args: [position.lpTokenId.toString()],
           caller,
         }),
       );
@@ -187,10 +178,7 @@ export function makeClaimAllMessageWithApproves(
           send: "",
           func: TransactionMessageFunctionType.CollectReward,
           packagePath: PACKAGE_STAKER_PATH,
-          args: [
-            position.lpTokenId.toString(),
-            "true", // unwrap wgnot, it's always true for now
-          ],
+          args: [position.lpTokenId.toString()],
           caller,
         }),
       );
@@ -228,11 +216,9 @@ export function makeStakePositionsMessagesWithApproves({
 export function makeUnStakePositionsMessagesWithApproves(
   {
     positions,
-    isGetWGNOT,
     caller,
   }: {
     positions: PoolPositionModel[];
-    isGetWGNOT: boolean;
     caller: string;
   },
   fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
@@ -271,10 +257,7 @@ export function makeUnStakePositionsMessagesWithApproves(
       send: "",
       func: TransactionMessageFunctionType.UnStakeToken,
       packagePath: PACKAGE_STAKER_PATH,
-      args: [
-        position.lpTokenId.toString(),
-        `${!isGetWGNOT}`, // whether unwrap token, true will get GNOT : isGetWGNOT == true => wrap
-      ],
+      args: [position.lpTokenId.toString()],
       caller,
     }),
   );
@@ -310,8 +293,6 @@ export function makeIncreaseLiquidityMessagesWithApproves(
   const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
   const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
 
-  const sendAmount = getSendAmount(tokenAWrappedPath, tokenBWrappedPath, tokenAAmountRaw, tokenBAmountRaw);
-
   // Make Approve messages that can be managed by a Pool package of tokens.
   const approveMessageInfos: TokenApproveMessageInfo[] = [
     {
@@ -329,10 +310,19 @@ export function makeIncreaseLiquidityMessagesWithApproves(
   ];
 
   const slippageRatio = (100 - slippage) / 100;
-  const send = makeGNOTSendAmount(sendAmount);
+
+  const messages: TransactionMessage[] = [];
+
+  const depositAmount = getWrappedGNOTDepositAmount(tokenA.path, tokenB.path, tokenAAmountRaw, tokenBAmountRaw);
+  if (BigNumber(depositAmount).isGreaterThan(0)) {
+    const depositMessage = makeDepositGNOTMessage(depositAmount, caller);
+    if (depositMessage) {
+      messages.push(depositMessage);
+    }
+  }
 
   const increaseLiquidityMessage = makeTransactionMessage({
-    send,
+    send: "",
     func: TransactionMessageFunctionType.IncreaseLiquidity,
     packagePath: PACKAGE_POSITION_PATH,
     args: [
@@ -345,8 +335,9 @@ export function makeIncreaseLiquidityMessagesWithApproves(
     ],
     caller,
   });
+  messages.push(increaseLiquidityMessage);
 
-  return makeTransactionMessagesWithApproves([increaseLiquidityMessage], approveMessageInfos, fetchAllowance);
+  return makeTransactionMessagesWithApproves(messages, approveMessageInfos, fetchAllowance);
 }
 
 export function makeDecreaseLiquidityMessagesWithApproves(
@@ -359,7 +350,6 @@ export function makeDecreaseLiquidityMessagesWithApproves(
     tokenBAmount,
     slippage,
     caller,
-    isGetWGNOT,
     deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString(),
   }: {
     lpTokenId: string;
@@ -371,7 +361,6 @@ export function makeDecreaseLiquidityMessagesWithApproves(
     slippage: number;
     deadline?: string;
     caller: string;
-    isGetWGNOT: boolean;
   },
   fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
@@ -416,7 +405,6 @@ export function makeDecreaseLiquidityMessagesWithApproves(
       BigNumber(tokenAAmount).multipliedBy(slippageRatio).toFixed(0), // Minimum quantity of tokenA to decrease liquidity
       BigNumber(tokenBAmount).multipliedBy(slippageRatio).toFixed(0), // Minimum quantity of tokenB to decrease liquidity
       deadline, // Deadline UTC time
-      `${!isGetWGNOT}`, // whether unwrap token : isGetWGNOT == true => wrap
     ],
     caller,
   });
@@ -476,11 +464,17 @@ export function makeRepositionLiquidityMessagesWithApproves(
     },
   ];
 
-  const sendAmount = getSendAmount(tokenAWrappedPath, tokenBWrappedPath, tokenAAmountRaw, tokenBAmountRaw);
-  const send = makeGNOTSendAmount(sendAmount);
+  const messages: TransactionMessage[] = [];
+  const depositAmount = getWrappedGNOTDepositAmount(tokenA.path, tokenB.path, tokenAAmountRaw, tokenBAmountRaw);
+  if (BigNumber(depositAmount).isGreaterThan(0)) {
+    const depositMessage = makeDepositGNOTMessage(depositAmount, caller);
+    if (depositMessage) {
+      messages.push(depositMessage);
+    }
+  }
 
   const repositionLiquidityMessage = makeTransactionMessage({
-    send: send,
+    send: "",
     func: TransactionMessageFunctionType.Reposition,
     packagePath: PACKAGE_POSITION_PATH,
     args: [
@@ -495,8 +489,9 @@ export function makeRepositionLiquidityMessagesWithApproves(
     ],
     caller,
   });
+  messages.push(repositionLiquidityMessage);
 
-  return makeTransactionMessagesWithApproves([repositionLiquidityMessage], approveMessageInfos, fetchAllowance);
+  return makeTransactionMessagesWithApproves(messages, approveMessageInfos, fetchAllowance);
 }
 
 export function makeRemoveLiquidityMessagesWithApproves(
@@ -505,14 +500,12 @@ export function makeRemoveLiquidityMessagesWithApproves(
     positionLiquidities,
     tokenPaths,
     caller,
-    isGetWGNOT,
     deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString(),
   }: {
     lpTokenIds: string[];
     positionLiquidities: Record<string, BigNumber>;
     tokenPaths: string[];
     caller: string;
-    isGetWGNOT: boolean;
     deadline?: string;
   },
   fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
@@ -547,7 +540,6 @@ export function makeRemoveLiquidityMessagesWithApproves(
         "0", // Minimum quantity of tokenA to decrease liquidity
         "0", // Minimum quantity of tokenB to decrease liquidity
         deadline, // Deadline UTC time
-        `${!isGetWGNOT}`, // whether unwrap token : isGetWGNOT == true => wrap
       ],
       caller,
     });

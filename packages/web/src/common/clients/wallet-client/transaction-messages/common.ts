@@ -1,11 +1,11 @@
 import BigNumber from "bignumber.js";
 
+import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { TransactionMessageError } from "@common/errors";
 import { DEFAULT_ALLOWANCE_LIMIT } from "@common/values";
-import { PACKAGE_NFT_PATH } from "@constants/environment.constant";
+import { PACKAGE_NFT_PATH, WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { MAX_INT64_STR } from "@utils/math.utils";
-import { getGRC20Allowance } from "@common/clients/gno-provider";
 
 export interface TransactionBankMessage {
   from_address: string;
@@ -98,6 +98,21 @@ export function makeNFTApproveMessage(
     packagePath: PACKAGE_NFT_PATH,
     func: "Approve",
     args: [targetAddress, lpTokenId.toString()],
+  });
+}
+
+export function makeDepositGNOTMessage(amount: string | number | null, caller: string): TransactionMessage | null {
+  const minDepositAmount = 1000;
+  if (!amount || BigNumber(amount).isLessThan(minDepositAmount)) {
+    return null;
+  }
+
+  return makeTransactionMessage({
+    caller,
+    send: makeGNOTSendAmount(amount),
+    packagePath: WRAPPED_GNOT_PATH,
+    func: "Deposit",
+    args: null,
   });
 }
 
