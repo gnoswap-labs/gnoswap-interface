@@ -21,6 +21,11 @@ const ReceiveWugnotContent: React.FC<{ content?: SnackbarContent; onClick: () =>
     return `/swap?from=${fromPath}&to=${toPath}`;
   };
 
+  const onClickLink = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.stopPropagation();
+    close();
+  };
+
   return (
     <div className="notice-body clickable" onClick={onClick}>
       <div className="icon-wrap-wrapper">
@@ -31,18 +36,10 @@ const ReceiveWugnotContent: React.FC<{ content?: SnackbarContent; onClick: () =>
         <div
           className="description"
           dangerouslySetInnerHTML={{
-            __html: sanitizeHtml(content?.description || t("Modal:toast.receive-wugnot.title")),
+            __html: sanitizeHtml(content?.description || t("Modal:toast.receive-wugnot.desc")),
           }}
         />
-        <a
-          href={getUnwrapUrl()}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={e => {
-            e.stopPropagation();
-            close();
-          }}
-        >
+        <a href={getUnwrapUrl()} target="_blank" rel="noopener noreferrer" onClick={onClickLink}>
           {t("Modal:toast.receive-wugnot.link")} <IconArrowRight />
         </a>
       </div>

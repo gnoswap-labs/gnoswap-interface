@@ -276,7 +276,26 @@ export const useDecreasePositionModal = ({
       }
       return true;
     },
-    [address, calculatedLiquidity, pooledTokenInfos, positionId, positionRepository, router, tokenA, tokenB],
+    [
+      address,
+      tokenA,
+      tokenB,
+      pooledTokenInfos,
+      walletClient,
+      positionId,
+      calculatedLiquidity,
+      slippage,
+      getMessage,
+      tokenTransform,
+      enqueueEvent,
+      updateBalances,
+      handleRefreshData,
+      onSuccessClose,
+      broadcastLoading,
+      broadcastSuccess,
+      broadcastRejected,
+      broadcastError,
+    ],
   );
 
   const openModal = useCallback(() => {

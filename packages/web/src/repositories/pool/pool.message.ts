@@ -20,7 +20,7 @@ import {
 } from "@constants/environment.constant";
 import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
-import { checkGnotPath, isGNOTPath, toNativePath, wrapNativeTokenPath } from "@utils/common";
+import { checkGnotPath, isGNOTPath, wrapNativeTokenPath } from "@utils/common";
 import { MAX_INT64, tickToSqrtPriceX96 } from "@utils/math.utils";
 import { isOrderedTokenPaths } from "@utils/pool-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
@@ -305,13 +305,13 @@ function makeCreateIncentiveMessage(
   caller: string,
   isGNOT: boolean,
 ) {
-  const tokenPath = isGNOT ? toNativePath(rewardTokenPath) : rewardTokenPath;
+  const unwrappedRewardTokenPath = isGNOT ? WRAPPED_GNOT_PATH : rewardTokenPath;
 
   return makeTransactionMessage({
     send: "",
     func: PoolTransactionMessageFunctionType.CreateExternalIncentive,
     packagePath: PACKAGE_STAKER_PATH,
-    args: [poolPath, tokenPath, rewardAmount, `${startTime}`, `${endTime}`],
+    args: [poolPath, unwrappedRewardTokenPath, rewardAmount, `${startTime}`, `${endTime}`],
     caller,
   });
 }
