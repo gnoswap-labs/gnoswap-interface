@@ -42,10 +42,15 @@ export function evaluateExpressionToStrings(evaluateExpression: string): string[
 
 export function evaluateExpressionToUint256(evaluateExpression: string): bigint {
   try {
+    const stringMatches = evaluateExpression.match(/"(\d+)"/);
+    if (stringMatches?.[1]) {
+      return BigInt(stringMatches[1]);
+    }
+
     const matches = evaluateExpression.match(/\((\d+)\s+uint64\)/g);
 
     if (!matches || matches.length === 0) {
-      console.error("Failed to parse uint64 array from response:", evaluateExpression);
+      console.error("Failed to parse uint256 from response:", evaluateExpression);
       return 0n;
     }
 
