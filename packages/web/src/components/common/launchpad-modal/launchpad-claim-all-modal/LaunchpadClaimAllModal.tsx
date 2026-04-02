@@ -1,14 +1,16 @@
 import React from "react";
-import BigNumber from "bignumber.js";
 import { useTranslation } from "react-i18next";
 
 import { LaunchpadParticipationModel } from "@models/launchpad";
 import { type TierType } from "@utils/launchpad-get-tier-number";
 import withLocalModal from "@components/hoc/with-local-modal";
 import { ProjectRewardInfoModel } from "@layouts/launchpad/launchpad-detail/LaunchpadDetail";
-import { safeParseTime } from "@utils/time.utils";
 import { rawToDisplayAmount } from "@utils/number-utils";
 import { GNS_TOKEN } from "@common/values/token-constant";
+import {
+  isLaunchpadParticipationClaimable,
+  isLaunchpadParticipationClaimed,
+} from "@utils/launchpad-claimable-participation";
 
 import { LaunchpadClaimAllModalWrapper } from "./LaunchpadClaimAllModal.styles";
 import IconClose from "@components/common/icons/IconCancel";
@@ -54,15 +56,7 @@ const LaunchpadClaimAllModal = ({
   const claimableRewards: LaunchpadParticipationModel[] = React.useMemo(() => {
     if (!displayLaunchpadParticipations) return [];
 
-    const currentTimestamp = Date.now();
-
-    return displayLaunchpadParticipations.filter(item => {
-      const claimableTimestamp = safeParseTime(item.claimableTime);
-
-      if (claimableTimestamp == null) return false;
-
-      return currentTimestamp >= claimableTimestamp;
-    });
+    return displayLaunchpadParticipations.filter(item => isLaunchpadParticipationClaimable(item));
   }, [displayLaunchpadParticipations]);
 
   const confirm = React.useCallback(() => {
@@ -96,10 +90,7 @@ const LaunchpadClaimAllModal = ({
           <div className="content">
             {claimableRewards.map((item, idx) => {
               const endTimeReached = isEndTime(item);
-
-              const isClaimedReward = BigNumber(item.claimableRewardAmount).isLessThan(0.01);
-              const isClaimedDeposit = BigNumber(item.claimableRewardAmount).isLessThan(0.01);
-              const isClaimed = isClaimedReward && isClaimedDeposit;
+              const isClaimed = isLaunchpadParticipationClaimed(item);
 
               if (isClaimed) return <React.Fragment key={item.id} />;
 
