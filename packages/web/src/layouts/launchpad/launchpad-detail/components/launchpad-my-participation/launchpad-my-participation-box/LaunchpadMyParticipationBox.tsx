@@ -42,10 +42,10 @@ const LaunchpadMyParticipationBox = ({ item, idx, rewardInfo, handleClickClaim }
     };
   }, [item]);
 
-  const aprStr = item?.depositAPR ? (
+  const aprStr = item?.depositApr !== null && item?.depositApr !== undefined ? (
     <>
-      {Number(item.depositAPR) > 100 && "✨"}
-      {formatRate(item.depositAPR)} APR
+      {Number(item.depositApr) > 100 && "✨"}
+      {formatRate(item.depositApr)} APR
     </>
   ) : (
     "-"

@@ -21,7 +21,7 @@
         "claimableBlockHeight": 300,
         "claimableRewardAmount": 1249249,
         "claimedRewardAmount": 200,
-        "depositAPR": 5399.7217246
+        "depositApr": 5399.7217246
       },
       {
         "id": 1,
@@ -42,7 +42,7 @@
         "claimableBlockHeight": 300,
         "claimableRewardAmount": 1249249,
         "claimedRewardAmount": 200,
-        "depositAPR": 5399.7217246
+        "depositApr": 5399.7217246
       }
     ]
   }
