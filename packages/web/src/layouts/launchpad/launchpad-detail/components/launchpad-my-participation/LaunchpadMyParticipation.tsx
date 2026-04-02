@@ -1,21 +1,20 @@
 import React from "react";
-import BigNumber from "bignumber.js";
 import { useTranslation } from "react-i18next";
 
 import { useLaunchpadHandler } from "@hooks/launchpad/data/use-launchpad-handler";
 import { LaunchpadParticipationModel, LaunchpadPoolModel } from "@models/launchpad";
 import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
-import { useGetLastedBlockHeight } from "@query/pools";
-import { LAUNCHPAD_REFETCH_INTERVAL } from "@common/values";
+import { GNS_TOKEN } from "@common/values/token-constant";
 
 import { MyParticipationWrapper } from "./LaunchpadMyParticipation.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import LaunchpadMyParticipationBox from "./launchpad-my-participation-box/LaunchpadMyParticipationBox";
 import LaunchpadMyParticipationUnconnected from "./launchpad-my-participation-unconnected/LaunchpadMyParticipationUnconnected";
 import LaunchpadMyParticipationNoData from "./launchpad-my-participation-no-data/LaunchpadMyParticipationNoData";
-import { toNumberFormat } from "@utils/number-utils";
+import { rawToDisplayAmount } from "@utils/number-utils";
 import LaunchpadMyParticipationSkeleton from "./launchpad-my-participation-skeleton/LaunchpadMyParticipationSkeleton";
 import LaunchpadClaimAllModal from "@components/common/launchpad-modal/launchpad-claim-all-modal/LaunchpadClaimAllModal";
+import { isLaunchpadParticipationClaimable } from "@utils/launchpad-claimable-participation";
 
 interface LaunchpadMyParticipationProps {
   poolInfos: LaunchpadPoolModel[];
@@ -68,25 +67,15 @@ const LaunchpadMyParticipation = ({
     }, Number(poolInfos?.[0]?.apr ?? 0));
   }, [poolInfos]);
 
-  const { data: blockHeight } = useGetLastedBlockHeight({
-    refetchInterval: LAUNCHPAD_REFETCH_INTERVAL,
-  });
-
   const isShowClaimAllButton = React.useMemo(() => {
-    if (!blockHeight) return;
-
-    const currentBlockHeight = blockHeight;
-
     return data.some(item => {
-      const isClaimableBlockHeight = BigNumber(currentBlockHeight).isGreaterThan(item.claimableBlockHeight);
-
-      const isClaimedReward = Number(toNumberFormat(item.claimableRewardAmount, 2).replace(/,/g, "")) === 0;
-      const isClaimedDeposit = Number(toNumberFormat(item.depositAmount).replace(/,/g, "")) === 0;
-      const isClaimed = isClaimedReward && isClaimedDeposit;
-
-      return !isClaimed && isClaimableBlockHeight;
+      return isLaunchpadParticipationClaimable({
+        claimableTime: item.claimableTime,
+        claimableRewardAmount: rawToDisplayAmount(item.claimableRewardAmount, rewardInfo.rewardTokenDecimals),
+        depositAmount: rawToDisplayAmount(item.depositAmount, GNS_TOKEN.decimals),
+      });
     });
-  }, [data, blockHeight]);
+  }, [data, rewardInfo.rewardTokenDecimals]);
 
   // Conditional rendering
   if (isLoading || !isFetched) {

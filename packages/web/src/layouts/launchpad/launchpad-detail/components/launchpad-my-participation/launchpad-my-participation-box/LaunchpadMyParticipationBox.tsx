@@ -10,7 +10,10 @@ import { getDateUtcToLocal } from "@common/utils/date-util";
 import { rawToDisplayAmount, toNumberFormat } from "@utils/number-utils";
 import { formatRate } from "@utils/new-number-utils";
 import { formatClaimableTime } from "@utils/launchpad-format-claimable-time";
-import { safeParseTime } from "@utils/time.utils";
+import {
+  isLaunchpadParticipationClaimable,
+  isLaunchpadParticipationClaimed,
+} from "@utils/launchpad-claimable-participation";
 
 import { Divider } from "@components/common/divider/divider";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
@@ -40,7 +43,7 @@ const LaunchpadMyParticipationBox = ({ item, idx, rewardInfo, handleClickClaim }
       claimableRewardAmount: rawToDisplayAmount(item.claimableRewardAmount, rewardInfo.rewardTokenDecimals),
       claimedRewardAmount: rawToDisplayAmount(item.claimedRewardAmount, rewardInfo.rewardTokenDecimals),
     };
-  }, [item]);
+  }, [item, rewardInfo.rewardTokenDecimals]);
 
   const aprStr = item?.depositApr !== null && item?.depositApr !== undefined ? (
     <>
@@ -52,19 +55,11 @@ const LaunchpadMyParticipationBox = ({ item, idx, rewardInfo, handleClickClaim }
   );
 
   const isClaimable = React.useMemo(() => {
-    const claimableTimestamp = safeParseTime(displayParticipationModel.claimableTime);
-
-    if (claimableTimestamp == null) return false;
-
-    const currentTimestamp = Date.now();
-    return currentTimestamp >= claimableTimestamp;
-  }, [displayParticipationModel.claimableTime]);
+    return isLaunchpadParticipationClaimable(displayParticipationModel);
+  }, [displayParticipationModel]);
 
   const isClaimed = React.useMemo(() => {
-    const isClaimedReward = Number(toNumberFormat(displayParticipationModel.claimableRewardAmount, 2)) === 0;
-    const isClaimedDeposit = Number(toNumberFormat(displayParticipationModel.depositAmount, 2)) === 0;
-
-    return isClaimedReward && isClaimedDeposit;
+    return isLaunchpadParticipationClaimed(displayParticipationModel);
   }, [displayParticipationModel]);
 
   return (
