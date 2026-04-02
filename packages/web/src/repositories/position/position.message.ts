@@ -132,7 +132,13 @@ export function makeClaimAllMessageWithApproves(
       const rewardTokenWrappedPath = checkGnotPath(reward.rewardToken.path);
       // Reward token approve to Pool
       if (reward.rewardToken.rewardType === "SWAP_FEE") {
+        const claimableAmount = BigNumber(reward.claimableAmount).toNumber();
+        if (claimableAmount <= 0) {
+          return;
+        }
+
         hasFee = true;
+
         approveMessageInfos.push({
           tokenPath: reward.rewardToken.path,
           targetAddress: PACKAGE_POOL_ADDRESS,
@@ -146,6 +152,7 @@ export function makeClaimAllMessageWithApproves(
           caller,
         });
       }
+
       // Reward token approve to Staker(When GNOT token)
       else {
         hasStakingReward = true;
