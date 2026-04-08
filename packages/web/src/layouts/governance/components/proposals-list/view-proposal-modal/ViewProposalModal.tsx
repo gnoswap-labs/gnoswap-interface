@@ -6,6 +6,9 @@ import remarkGfm from "remark-gfm";
 import { GNOT_TOKEN, GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconClose from "@components/common/icons/IconCancel";
+import IconInfo from "@components/common/icons/IconInfo";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import Tooltip from "@components/common/tooltip/Tooltip";
 import withLocalModal from "@components/hoc/with-local-modal";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { nullProposalDetailsInfo, nullUserVotingInfo, PROPOSAL_TYPE } from "@repositories/governance";
@@ -27,10 +30,9 @@ import {
   ModalQuorum,
   ProposalContentWrapper,
   ViewProposalModalWrapper,
+  VotingPowerTooltipContent,
   VotingPowerWrapper,
 } from "./ViewProposalModal.styles";
-import Tooltip from "@components/common/tooltip/Tooltip";
-import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { safeParseTime } from "@utils/time.utils";
 
 export interface ViewProposalModalProps {
@@ -272,7 +274,17 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
         {hasVoteButton && (
           <>
             <VotingPowerWrapper>
-              <span>{t("Governance:detailModal.votingWeight")}</span>
+              <span className="title-wrapper">
+                {t("Governance:detailModal.votingWeight")}
+                <Tooltip
+                  placement="top"
+                  FloatingContent={
+                    <VotingPowerTooltipContent>{t("Governance:detailModal.tooltip.votingWeight")}</VotingPowerTooltipContent>
+                  }
+                >
+                  <IconInfo className="tooltip-icon" size={20} />
+                </Tooltip>
+              </span>
               <div>
                 <div className="power-value">{rawToDisplayAmount(proposalUserVotingWeight, XGNS_TOKEN.decimals).toLocaleString()}</div>
                 <TokenChip tokenInfo={XGNS_TOKEN} />

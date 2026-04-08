@@ -244,9 +244,19 @@ export const VotingPowerWrapper = styled.div`
   width: 100%;
   border-radius: 8px;
   height: 55px;
-  > span {
+  > .title-wrapper {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 4px;
     ${fonts.body12}
     color: ${({ theme }) => theme.color.text10};
+
+    .tooltip-icon {
+      flex-shrink: 0;
+
+      * {
+        fill: ${({ theme }) => theme.color.icon01};
+      }
+    }
   }
   > div {
     ${mixins.flexbox("row", "center", "center")};
@@ -266,4 +276,13 @@ export const VotingPowerWrapper = styled.div`
       ${fonts.body11}
     }
   }
+`;
+
+export const VotingPowerTooltipContent = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  width: auto;
+  max-width: calc(300px - 32px);
+  ${fonts.body12};
+  background-color: ${({ theme }) => theme.color.background02};
+  color: ${({ theme }) => theme.color.text02};
 `;
