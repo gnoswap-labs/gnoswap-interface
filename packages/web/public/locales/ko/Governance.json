@@ -45,6 +45,9 @@
       "recipient": "수령인"
     },
     "quorum": "정족수",
+    "tooltip": {
+      "votingWeight": "투표 가중치는 두 번의 스냅샷에서 xGNS 잔액의 평균으로 계산됩니다: 제안이 생성되기 24시간 전과 제안이 생성된 정확한 순간."
+    },
     "votingWeight": "나의 투표 가중치"
   },
   "header": "거버넌스",

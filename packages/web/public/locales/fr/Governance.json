@@ -45,6 +45,9 @@
       "recipient": "Destinataire"
     },
     "quorum": "Quorum",
+    "tooltip": {
+      "votingWeight": "La pondération des votes est calculée comme la moyenne de votre solde xGNS à deux moments précis : 24 heures avant la création de la proposition et au moment exact où elle a été créée."
+    },
     "votingWeight": "Votre poids dans le vote"
   },
   "header": "Gouvernance",

@@ -45,6 +45,9 @@
       "recipient": "Recipient"
     },
     "quorum": "Quorum",
+    "tooltip": {
+      "votingWeight": "Voting Weight is calculated as the average of your xGNS balance at two snapshots: 24 hours before the proposal was created, and at the exact moment it was created."
+    },
     "votingWeight": "Your Voting Weight"
   },
   "header": "Governance",

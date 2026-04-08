@@ -45,6 +45,9 @@
       "recipient": "Beneficiario"
     },
     "quorum": "Quórum",
+    "tooltip": {
+      "votingWeight": "El peso de la votación se calcula como la media de su saldo xGNS en dos instantáneas: 24 horas antes de que se creara la propuesta, y en el momento exacto en que se creó."
+    },
     "votingWeight": "Su peso en la votación"
   },
   "header": "Gobernanza",

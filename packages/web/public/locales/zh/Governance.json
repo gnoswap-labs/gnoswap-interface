@@ -45,6 +45,9 @@
       "recipient": "接受者"
     },
     "quorum": "法定人数",
+    "tooltip": {
+      "votingWeight": "投票权重的计算方法是您的 xGNS 余额在两次快照中的平均值：提案创建前 24 小时和提案创建时的平均值。"
+    },
     "votingWeight": "您的投票权重"
   },
   "header": "管理",
