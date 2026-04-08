@@ -28,6 +28,9 @@ export const PACKAGE_POSITION_ADDRESS = getAddressByPackagePath(PACKAGE_POSITION
 export const PACKAGE_STAKER_PATH = process.env.NEXT_PUBLIC_PACKAGE_STAKER_PATH || "";
 export const PACKAGE_STAKER_ADDRESS = getAddressByPackagePath(PACKAGE_STAKER_PATH);
 
+export const PACKAGE_REFERRAL_PATH = process.env.NEXT_PUBLIC_PACKAGE_REFERRAL_PATH || "";
+export const PACKAGE_REFERRAL_ADDRESS = getAddressByPackagePath(PACKAGE_REFERRAL_PATH);
+
 export const PACKAGE_NFT_PATH = process.env.NEXT_PUBLIC_PACKAGE_NFT_PATH || "";
 
 export const PACKAGE_GOVERNANCE_PATH = process.env.NEXT_PUBLIC_PACKAGE_GOVERNANCE_PATH || "";
