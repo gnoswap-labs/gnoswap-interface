@@ -34,8 +34,8 @@ import {
 import { rawToDisplayAmount } from "@utils/number-utils";
 
 interface MyDelegationDelegateModalProps {
-  currentDelegatedAmount: number;
-  totalDelegatedAmount: number;
+  currentDelegatedDisplayAmount: number;
+  totalDelegatedDisplayAmount: number;
   apy: number;
   delegatees: VerifiedDelegateInfo[];
   isWalletConnected: boolean;
@@ -45,8 +45,8 @@ interface MyDelegationDelegateModalProps {
 }
 
 const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
-  currentDelegatedAmount,
-  totalDelegatedAmount,
+  currentDelegatedDisplayAmount,
+  totalDelegatedDisplayAmount,
   apy,
   delegatees,
   isWalletConnected,
@@ -68,12 +68,12 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   const [tmpDelegatee, setTmpDelegatee] = useState<VerifiedDelegateInfo>(defaultDelegateeInfo);
   const [selfAddress, setSelfAddress] = useState("");
 
-  const safeDisplayAmount = (displayValue: string | number): number => {
+  const toSafeDisplayAmountNumber = (displayValue: string | number): number => {
     const result = Number(displayValue);
     return isNaN(result) ? 0 : result;
   };
 
-  const safeRawVotingPowerAmount = (rawValue: string | number): number => {
+  const toDisplayVotingPowerFromRaw = (rawValue: string | number): number => {
     const result = rawToDisplayAmount(rawValue, XGNS_TOKEN.decimals);
     return isNaN(result) ? 0 : result;
   };
@@ -90,11 +90,11 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   }, [isValidSelfAddress, selfAddress, t]);
 
   const votingPowerPercentage = useMemo(() => {
-    const displayVotingPower = safeRawVotingPowerAmount(tmpDelegatee.votingPower);
-    const displayTotalDelegated = safeDisplayAmount(totalDelegatedAmount);
+    const displayVotingPower = toDisplayVotingPowerFromRaw(tmpDelegatee.votingPower);
+    const displayTotalDelegated = toSafeDisplayAmountNumber(totalDelegatedDisplayAmount);
 
     return displayTotalDelegated ? (displayVotingPower * 100) / displayTotalDelegated : 0;
-  }, [tmpDelegatee.votingPower, totalDelegatedAmount]);
+  }, [tmpDelegatee.votingPower, totalDelegatedDisplayAmount]);
 
   const handleClickSelfDelegateeAddress = useCallback((address: string) => setSelfAddress(address), [delegatees]);
 
@@ -154,8 +154,8 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   );
 
   const delegationCalculations = useMemo(() => {
-    const displayTotalDelegated = safeDisplayAmount(totalDelegatedAmount);
-    const displayCurrentDelegated = safeDisplayAmount(currentDelegatedAmount);
+    const displayTotalDelegated = toSafeDisplayAmountNumber(totalDelegatedDisplayAmount);
+    const displayCurrentDelegated = toSafeDisplayAmountNumber(currentDelegatedDisplayAmount);
     const inputAmount = Number(gnsAmountInput.amount) || 0;
 
     const currentPercentage = displayTotalDelegated ? (displayCurrentDelegated / displayTotalDelegated) * 100 : 0;
@@ -171,7 +171,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
       currentPercentage,
       newPercentage,
     };
-  }, [currentDelegatedAmount, totalDelegatedAmount, gnsAmountInput.amount]);
+  }, [currentDelegatedDisplayAmount, totalDelegatedDisplayAmount, gnsAmountInput.amount]);
 
   const showDelegateInfo = () => (
     <>
@@ -236,7 +236,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           <div className="label">{t("Governance:myDel.delModal.step3.currentlyDel")}</div>
           <div className="value">
             <MissingLogo symbol={XGNS_TOKEN.symbol} url={XGNS_TOKEN.logoURI} width={24} />
-            {formatOtherPrice(safeDisplayAmount(currentDelegatedAmount), {
+            {formatOtherPrice(toSafeDisplayAmountNumber(currentDelegatedDisplayAmount), {
               isKMB: false,
               usd: false,
             })}
@@ -391,7 +391,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           <div className="label">{t("Governance:myDel.delModal.selectDel.votingPower")}</div>
           <div className="value no-wrap">
             <MissingLogo symbol="xGNS" url={XGNS_TOKEN.logoURI} width={24} />
-            {formatOtherPrice(safeRawVotingPowerAmount(tmpDelegatee.votingPower), {
+            {formatOtherPrice(toDisplayVotingPowerFromRaw(tmpDelegatee.votingPower), {
               isKMB: false,
               usd: false,
             })}{" "}
