@@ -48,7 +48,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
   const { transactionService, positionRepository } = useGnoswapContext();
   const { estimateNetworkFee } = useNetworkFee(null);
 
-  const { getCurrentReferralAddress, removeReferrerFromLocalStorage } = useReferral();
+  const { getNextReferralAddress, removeReferrerFromLocalStorage } = useReferral();
   const clearModal = useClearModal();
   const { updateBalances, tokenPrices } = useTokenData();
   const { data: pool } = useGetPoolDetailByPath(poolPath, {
@@ -64,7 +64,8 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
       [QUERY_KEY.poolDetail, poolPath],
       [QUERY_KEY.poolPairBins],
     ]);
-  }, [invalidateQueryKey, poolPath, currentChainId, address]);
+    await Promise.all([refetchPositions(), refetchPools(), refetchPoolDetails()]);
+  }, [invalidateQueryKey, poolPath, currentChainId, address, refetchPoolDetails, refetchPools, refetchPositions]);
 
   const onCloseConfirmTransactionModal = useCallback(() => {
     clearModal();
@@ -133,7 +134,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
     const tokenB = pooledTokenInfos?.[1];
 
     const walletType = walletClient?.getWalletType();
-    const currentReferralAddress = getCurrentReferralAddress();
+    const currentReferralAddress = getNextReferralAddress();
 
     const request: StakePositionsRequest = {
       lpTokenIds: lpTokenIds,
@@ -242,7 +243,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
     walletClient,
     account?.address,
     pooledTokenInfos,
-    getCurrentReferralAddress,
+    getNextReferralAddress,
     broadcastLoading,
     broadcastSuccess,
     broadcastError,

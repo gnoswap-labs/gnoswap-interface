@@ -71,7 +71,7 @@ export type REPOSITION_BUTTON_TYPE = "REPOSITION" | "LOADING" | "NON_SELECTED_RA
 
 export const useRepositionHandle = () => {
   const router = useRouter();
-  const { getCurrentReferralAddress } = useReferral();
+  const { getNextReferralAddress } = useReferral();
   const poolPath = router.getPoolPath();
   const positionId = router.getPositionId();
   const { broadcastError, broadcastSuccess, broadcastRejected } = useBroadcastHandler();
@@ -599,7 +599,7 @@ export const useRepositionHandle = () => {
         : BigNumber(estimatedRepositionAmounts?.amountA || 0).minus(BigNumber(currentAmounts?.amountA || 0));
 
       const deadline = Math.floor(Date.now() / 1000) + 300;
-      const currentReferralAddress = getCurrentReferralAddress();
+      const currentReferralAddress = getNextReferralAddress();
 
       const walletType = walletClient?.getWalletType();
 
@@ -639,7 +639,7 @@ export const useRepositionHandle = () => {
       currentAmounts,
       selectedPosition?.pool.tokenA,
       swapRouterRepository,
-      getCurrentReferralAddress,
+      getNextReferralAddress,
       walletClient,
       slippage,
     ],
