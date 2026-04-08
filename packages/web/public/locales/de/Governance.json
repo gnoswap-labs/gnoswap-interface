@@ -45,6 +45,9 @@
       "recipient": "Empfänger"
     },
     "quorum": "Quorum",
+    "tooltip": {
+      "votingWeight": "Die Stimmgewichtung wird als Durchschnitt Ihres xGNS-Saldos zu zwei Zeitpunkten berechnet: 24 Stunden vor der Erstellung des Vorschlags und zu dem Zeitpunkt, zu dem der Vorschlag erstellt wurde."
+    },
     "votingWeight": "Ihr Stimmgewicht"
   },
   "header": "Governance",
