@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
 
-import mixins from "@styles/mixins";
 import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
+import mixins from "@styles/mixins";
 
 export const ViewProposalModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
@@ -254,7 +254,7 @@ export const VotingPowerWrapper = styled.div`
       flex-shrink: 0;
 
       * {
-        fill: ${({ theme }) => theme.color.icon01};
+        fill: ${({ theme }) => theme.color.icon03};
       }
     }
   }
