@@ -162,7 +162,7 @@
       "tokensDistributed": "Tokens Distributed",
       "totalDeposits": "Total Deposit"
     },
-    "description": "Staking for {{month}}.<br/>\nRewards claimable starting<br/>\nafter {{day}} days.",
+    "description": "Staking for {{month}}.",
     "title": "Pool {{idx}}"
   },
   "projects": {

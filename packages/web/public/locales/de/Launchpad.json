@@ -162,7 +162,7 @@
       "tokensDistributed": "Verteilte Wertmarken",
       "totalDeposits": "Gesamte Einzahlung"
     },
-    "description": "Einsatz für {{month}}.<br/>Belohnungen können ab<br/>nach {{day}} Tagen beansprucht werden.",
+    "description": "Absteckung für {{month}}.",
     "title": "Pool {{idx}}"
   },
   "projects": {

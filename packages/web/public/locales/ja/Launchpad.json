@@ -157,7 +157,7 @@
       "tokensDistributed": "トークン配布",
       "totalDeposits": "預金総額"
     },
-    "description": "{{month}}<br/> <br/> {{day}} 日後より請求可能。",
+    "description": "{{month}} 。",
     "title": "プール{{idx}}"
   },
   "projects": {

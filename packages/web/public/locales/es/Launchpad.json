@@ -162,7 +162,7 @@
       "tokensDistributed": "Fichas distribuidas",
       "totalDeposits": "Depósito total"
     },
-    "description": "Apuesta por {{month}}.<br/>Recompensas reclamables a partir de<br/>después de {{day}} días.",
+    "description": "Estacas para {{month}}.",
     "title": "Piscina {{idx}}"
   },
   "projects": {
