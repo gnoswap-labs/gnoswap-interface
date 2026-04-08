@@ -110,14 +110,14 @@ export const useRepositionHandle = () => {
       return null;
     }
     return tickToPrice(selectedPosition.tickLower);
-  }, [selectedPosition?.tickLower]);
+  }, [selectedPosition]);
 
   const defaultPositionMaxPrice = useMemo(() => {
     if (!selectedPosition) {
       return null;
     }
     return tickToPrice(selectedPosition.tickUpper);
-  }, [selectedPosition?.tickUpper]);
+  }, [selectedPosition]);
 
   const { openModal: openConfirmModal, update: updateConfirmModalData } = useTransactionConfirmModal();
 
@@ -135,7 +135,7 @@ export const useRepositionHandle = () => {
       symbol: getGnotPath(selectedPosition?.pool.tokenA).symbol,
       logoURI: getGnotPath(selectedPosition?.pool.tokenA).logoURI,
     };
-  }, [selectedPosition?.pool, selectedPosition]);
+  }, [getGnotPath, selectedPosition]);
 
   const tokenB: TokenModel | null = useMemo(() => {
     if (!selectedPosition) return null;
@@ -145,7 +145,7 @@ export const useRepositionHandle = () => {
       symbol: getGnotPath(selectedPosition?.pool.tokenB).symbol,
       logoURI: getGnotPath(selectedPosition?.pool.tokenB).logoURI,
     };
-  }, [selectedPosition?.pool, selectedPosition]);
+  }, [getGnotPath, selectedPosition]);
 
   const aprFee = useMemo(() => {
     if (!selectedPosition) return 0;
@@ -184,7 +184,7 @@ export const useRepositionHandle = () => {
     selectPool.resetRange();
     selectPool.setMinPosition(defaultPositionMinPrice);
     selectPool.setMaxPosition(defaultPositionMaxPrice);
-  }, [selectPool]);
+  }, [defaultPositionMaxPrice, defaultPositionMinPrice, selectPool]);
 
   const handleRefreshData = useCallback(async () => {
     invalidateQueryKey("Reposition", [
@@ -208,7 +208,7 @@ export const useRepositionHandle = () => {
     setInitialized(true);
     selectPool.setMinPosition(defaultPositionMinPrice);
     selectPool.setMaxPosition(defaultPositionMaxPrice);
-  }, [defaultPositionMinPrice, defaultPositionMaxPrice, selectPool.poolPath]);
+  }, [defaultPositionMaxPrice, defaultPositionMinPrice, initialized, selectPool]);
 
   const formatPriceDisplay = useCallback(
     (price: number | string | BigNumber | null) => {
@@ -308,6 +308,7 @@ export const useRepositionHandle = () => {
     selectPool.maxPrice,
     selectPool.minPrice,
     selectedPosition,
+    sqrtPriceX96,
     tokenA,
     tokenB,
   ]);
@@ -456,37 +457,37 @@ export const useRepositionHandle = () => {
     [selectPool],
   );
 
-  const buildAdenaWalletRemovePositionAction = async (request: RemoveLiquidityRequest) => {
+  const buildAdenaWalletRemovePositionAction = useCallback(async (request: RemoveLiquidityRequest) => {
     return positionRepository.removeLiquidity(request).catch(() => null);
-  };
+  }, [positionRepository]);
 
-  const buildSocialWalletRemovePositionAction = async (
-    rpcProvider: GnoProvider | null,
-    request: RemoveLiquidityRequest,
-  ) => {
-    if (!rpcProvider) {
-      console.log("Reposition(RemoveLiquidity): ", new CommonError("FAILED_INITIALIZE_GNO_PROVIDER"));
-      return null;
-    }
+  const buildSocialWalletRemovePositionAction = useCallback(
+    async (rpcProvider: GnoProvider | null, request: RemoveLiquidityRequest) => {
+      if (!rpcProvider) {
+        console.log("Reposition(RemoveLiquidity): ", new CommonError("FAILED_INITIALIZE_GNO_PROVIDER"));
+        return null;
+      }
 
-    const getAllowance = (packagePath: string, owner: string, spender: string) => {
-      return fetchAllowance(rpcProvider, packagePath, owner, spender);
-    };
+      const getAllowance = (packagePath: string, owner: string, spender: string) => {
+        return fetchAllowance(rpcProvider, packagePath, owner, spender);
+      };
 
-    const txMessages = await makeRemoveLiquidityMessagesWithApproves(request, getAllowance);
+      const txMessages = await makeRemoveLiquidityMessagesWithApproves(request, getAllowance);
 
-    const txDoc = await transactionService.createDocument({ messages: txMessages });
-    await transactionService.createTransaction(txDoc);
+      const txDoc = await transactionService.createDocument({ messages: txMessages });
+      await transactionService.createTransaction(txDoc);
 
-    const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
-    const requestWithGasInfo: RemoveLiquidityRequest = {
-      ...request,
-      gasFee: networkFee?.amount,
-      gasUsed: currentGasInfo?.gasUsed.toString(),
-    };
+      const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
+      const requestWithGasInfo: RemoveLiquidityRequest = {
+        ...request,
+        gasFee: networkFee?.amount,
+        gasUsed: currentGasInfo?.gasUsed.toString(),
+      };
 
-    return positionRepository.removeLiquidity(requestWithGasInfo).catch(() => null);
-  };
+      return positionRepository.removeLiquidity(requestWithGasInfo).catch(() => null);
+    },
+    [estimateNetworkFee, positionRepository, transactionService],
+  );
 
   const removePosition = useCallback(
     async ({ rpcProvider }: { rpcProvider: GnoProvider | null }): Promise<WalletResponse | null> => {
@@ -514,68 +515,80 @@ export const useRepositionHandle = () => {
         ? buildAdenaWalletRemovePositionAction(request)
         : buildSocialWalletRemovePositionAction(rpcProvider, request));
     },
-    [address, selectedPosition, calculatedLiquidity, walletClient, positionRepository, estimateNetworkFee],
+    [
+      address,
+      buildAdenaWalletRemovePositionAction,
+      buildSocialWalletRemovePositionAction,
+      calculatedLiquidity,
+      selectedPosition,
+      walletClient,
+    ],
   );
 
-  const buildAdenaWalletExactInAction = async (request: SwapRouteRequest) => {
-    return swapRouterRepository.sendExactInSwapRoute(request);
-  };
-  const buildAdenaWalletExactOutAction = async (request: SwapRouteRequest) => {
-    return swapRouterRepository.sendExactOutSwapRoute(request);
-  };
+  const buildAdenaWalletExactInAction = useCallback(
+    async (request: SwapRouteRequest) => {
+      return swapRouterRepository.sendExactInSwapRoute(request);
+    },
+    [swapRouterRepository],
+  );
+  const buildAdenaWalletExactOutAction = useCallback(
+    async (request: SwapRouteRequest) => {
+      return swapRouterRepository.sendExactOutSwapRoute(request);
+    },
+    [swapRouterRepository],
+  );
 
-  const buildSocialWalletSwapAction = async (
-    rpcProvider: GnoProvider | null,
-    request: SwapRouteRequest,
-    isExactIn: boolean,
-  ) => {
-    if (!rpcProvider) {
-      console.log("Reposition(SwapRoute): ", new CommonError("FAILED_INITIALIZE_GNO_PROVIDER"));
-      return null;
-    }
+  const buildSocialWalletSwapAction = useCallback(
+    async (rpcProvider: GnoProvider | null, request: SwapRouteRequest, isExactIn: boolean) => {
+      if (!rpcProvider) {
+        console.log("Reposition(SwapRoute): ", new CommonError("FAILED_INITIALIZE_GNO_PROVIDER"));
+        return null;
+      }
 
-    const getAllowance = (packagePath: string, owner: string, spender: string) => {
-      return fetchAllowance(rpcProvider, packagePath, owner, spender);
-    };
+      const getAllowance = (packagePath: string, owner: string, spender: string) => {
+        return fetchAllowance(rpcProvider, packagePath, owner, spender);
+      };
 
-    const {
-      inputToken,
-      outputToken,
-      tokenAmount,
-      estimatedRoutes,
-      tokenAmountLimit,
-      deadline,
-      referrerAddress,
-    } = request;
-    const makeMessageRequests: ExactSwapRouteMessageRequest = {
-      inputToken,
-      outputToken,
-      tokenAmount,
-      estimatedRoutes,
-      tokenAmountLimit,
-      deadline,
-      caller: account?.address || "",
-      referrerAddress,
-    };
+      const {
+        inputToken,
+        outputToken,
+        tokenAmount,
+        estimatedRoutes,
+        tokenAmountLimit,
+        deadline,
+        referrerAddress,
+      } = request;
+      const makeMessageRequests: ExactSwapRouteMessageRequest = {
+        inputToken,
+        outputToken,
+        tokenAmount,
+        estimatedRoutes,
+        tokenAmountLimit,
+        deadline,
+        caller: account?.address || "",
+        referrerAddress,
+      };
 
-    const txMessages = isExactIn
-      ? await makeExactInSwapRouteMessageWithApproves(makeMessageRequests, getAllowance)
-      : await makeExactOutSwapRouteMessageWithApproves(makeMessageRequests, getAllowance);
+      const txMessages = isExactIn
+        ? await makeExactInSwapRouteMessageWithApproves(makeMessageRequests, getAllowance)
+        : await makeExactOutSwapRouteMessageWithApproves(makeMessageRequests, getAllowance);
 
-    const txDoc = await transactionService.createDocument({ messages: txMessages });
-    await transactionService.createTransaction(txDoc);
+      const txDoc = await transactionService.createDocument({ messages: txMessages });
+      await transactionService.createTransaction(txDoc);
 
-    const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
-    const requestWithGasInfo: SwapRouteRequest = {
-      ...request,
-      gasFee: networkFee?.amount,
-      gasUsed: currentGasInfo?.gasUsed.toString(),
-    };
+      const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
+      const requestWithGasInfo: SwapRouteRequest = {
+        ...request,
+        gasFee: networkFee?.amount,
+        gasUsed: currentGasInfo?.gasUsed.toString(),
+      };
 
-    return isExactIn
-      ? swapRouterRepository.sendExactInSwapRoute(requestWithGasInfo)
-      : swapRouterRepository.sendExactOutSwapRoute(requestWithGasInfo);
-  };
+      return isExactIn
+        ? swapRouterRepository.sendExactInSwapRoute(requestWithGasInfo)
+        : swapRouterRepository.sendExactOutSwapRoute(requestWithGasInfo);
+    },
+    [account?.address, estimateNetworkFee, swapRouterRepository, transactionService],
+  );
 
   const swapRemainToken = useCallback(
     async ({
@@ -638,146 +651,164 @@ export const useRepositionHandle = () => {
       estimatedRepositionAmounts,
       currentAmounts,
       selectedPosition?.pool.tokenA,
-      swapRouterRepository,
+      buildAdenaWalletExactInAction,
+      buildAdenaWalletExactOutAction,
+      broadcastError,
+      buildSocialWalletSwapAction,
       getNextReferralAddress,
       walletClient,
       slippage,
     ],
   );
 
-  const buildAdenaWalletRepositionAction = async (request: RepositionLiquidityRequest) => {
-    return positionRepository
-      .repositionLiquidity(request)
-      .then(async result => {
-        const defaultMessageData = {
-          tokenASymbol: request.tokenA.symbol,
-          tokenBSymbol: request.tokenB.symbol,
-          tokenAAmount: Number(request.tokenAAmount).toLocaleString("en-US", {
-            maximumFractionDigits: request.tokenA.decimals,
-          }),
-          tokenBAmount: Number(request.tokenBAmount).toLocaleString("en-US", {
-            maximumFractionDigits: request.tokenB.decimals,
-          }),
-        };
+  const buildAdenaWalletRepositionAction = useCallback(
+    async (request: RepositionLiquidityRequest) => {
+      return positionRepository
+        .repositionLiquidity(request)
+        .then(async result => {
+          const defaultMessageData = {
+            tokenASymbol: request.tokenA.symbol,
+            tokenBSymbol: request.tokenB.symbol,
+            tokenAAmount: Number(request.tokenAAmount).toLocaleString("en-US", {
+              maximumFractionDigits: request.tokenA.decimals,
+            }),
+            tokenBAmount: Number(request.tokenBAmount).toLocaleString("en-US", {
+              maximumFractionDigits: request.tokenB.decimals,
+            }),
+          };
 
-        if (result) {
-          if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
-            enqueueEvent({
-              txHash: result.data?.hash,
-              action: DexEvent.REPOSITION,
-              visibleEmitResult: true,
-              checkWugnotTransfer: true,
-              formatData: response => {
-                if (!response) {
-                  return defaultMessageData;
-                }
-                return {
-                  ...defaultMessageData,
-                  tokenAAmount: Number(makeDisplayTokenAmount(request.tokenA, response[3])).toLocaleString("en-US", {
+          if (result) {
+            if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
+              enqueueEvent({
+                txHash: result.data?.hash,
+                action: DexEvent.REPOSITION,
+                visibleEmitResult: true,
+                checkWugnotTransfer: true,
+                formatData: response => {
+                  if (!response) {
+                    return defaultMessageData;
+                  }
+                  return {
+                    ...defaultMessageData,
+                    tokenAAmount: Number(makeDisplayTokenAmount(request.tokenA, response[3])).toLocaleString("en-US", {
+                      maximumFractionDigits: request.tokenA.decimals,
+                    }),
+                    tokenBAmount: Number(makeDisplayTokenAmount(request.tokenB, response[4])).toLocaleString("en-US", {
+                      maximumFractionDigits: request.tokenB.decimals,
+                    }),
+                  };
+                },
+                onUpdate: async () => {
+                  updateBalances();
+                },
+                onEmit: async () => {
+                  await delay(5000);
+                  handleRefreshData();
+                },
+                onSuccess: handleRefreshData,
+              });
+            }
+
+            if (result.code === 0) {
+              const resultData = result?.data as RepositionLiquiditySuccessResponse;
+              broadcastSuccess(
+                getMessage(
+                  DexEvent.REPOSITION,
+                  "success",
+                  {
+                    tokenASymbol: request.tokenA.symbol || "",
+                    tokenBSymbol: request.tokenB.symbol || "",
+                    tokenAAmount: Number(makeDisplayTokenAmount(request.tokenA, request.tokenAAmount)).toLocaleString(
+                      "en-US",
+                      {
+                        maximumFractionDigits: request.tokenA.decimals,
+                      },
+                    ),
+                    tokenBAmount: Number(makeDisplayTokenAmount(request.tokenB, request.tokenBAmount)).toLocaleString(
+                      "en-US",
+                      {
+                        maximumFractionDigits: request.tokenB.decimals,
+                      },
+                    ),
+                  },
+                  resultData.hash,
+                ),
+              );
+              await updateConfirmModalData("success", "Reposition Complete", "", null, () => router.back());
+              openConfirmModal();
+            } else if (result.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
+              broadcastRejected(
+                getMessage(DexEvent.REPOSITION, "error", {
+                  tokenASymbol: request.tokenA.symbol,
+                  tokenBSymbol: request.tokenB.symbol,
+                  tokenAAmount: Number(request.tokenAAmount).toLocaleString("en-US", {
                     maximumFractionDigits: request.tokenA.decimals,
                   }),
-                  tokenBAmount: Number(makeDisplayTokenAmount(request.tokenB, response[4])).toLocaleString("en-US", {
+                  tokenBAmount: Number(request.tokenBAmount).toLocaleString("en-US", {
                     maximumFractionDigits: request.tokenB.decimals,
                   }),
-                };
-              },
-              onUpdate: async () => {
-                updateBalances();
-              },
-              onEmit: async () => {
-                await delay(5000);
-                handleRefreshData();
-              },
-              onSuccess: handleRefreshData,
-            });
+                }),
+              );
+            } else {
+              broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
+            }
           }
 
+          return result;
+        })
+        .catch(() => null);
+    },
+    [
+      broadcastError,
+      broadcastRejected,
+      broadcastSuccess,
+      enqueueEvent,
+      getMessage,
+      handleRefreshData,
+      openConfirmModal,
+      positionRepository,
+      router,
+      updateBalances,
+      updateConfirmModalData,
+    ],
+  );
+
+  const buildSocialWalletRepositionAction = useCallback(
+    async (rpcProvider: GnoProvider | null, request: RepositionLiquidityRequest) => {
+      if (!rpcProvider) {
+        console.log("Reposition: ", new CommonError("FAILED_INITIALIZE_GNO_PROVIDER"));
+        return null;
+      }
+
+      const getAllowance = (packagePath: string, owner: string, spender: string) => {
+        return fetchAllowance(rpcProvider, packagePath, owner, spender);
+      };
+
+      const txMessages = await makeRepositionLiquidityMessagesWithApproves(request, getAllowance);
+
+      const txDoc = await transactionService.createDocument({ messages: txMessages });
+      await transactionService.createTransaction(txDoc);
+
+      const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
+      const requestWithGasInfo: RepositionLiquidityRequest = {
+        ...request,
+        gasFee: networkFee?.amount,
+        gasUsed: currentGasInfo?.gasUsed.toString(),
+      };
+
+      return positionRepository
+        .repositionLiquidity(requestWithGasInfo)
+        .then(result => {
           if (result.code === 0) {
-            const resultData = result?.data as RepositionLiquiditySuccessResponse;
-            broadcastSuccess(
-              getMessage(
-                DexEvent.REPOSITION,
-                "success",
-                {
-                  tokenASymbol: request.tokenA.symbol || "",
-                  tokenBSymbol: request.tokenB.symbol || "",
-                  tokenAAmount: Number(makeDisplayTokenAmount(request.tokenA, request.tokenAAmount)).toLocaleString(
-                    "en-US",
-                    {
-                      maximumFractionDigits: request.tokenA.decimals,
-                    },
-                  ),
-                  tokenBAmount: Number(makeDisplayTokenAmount(request.tokenB, request.tokenBAmount)).toLocaleString(
-                    "en-US",
-                    {
-                      maximumFractionDigits: request.tokenB.decimals,
-                    },
-                  ),
-                },
-                resultData.hash,
-              ),
-            );
-            await updateConfirmModalData("success", "Reposition Complete", "", null, () => router.back());
+            updateConfirmModalData("success", "Reposition Complete", "", null, () => router.back());
             openConfirmModal();
-          } else if (result.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
-            broadcastRejected(
-              getMessage(DexEvent.REPOSITION, "error", {
-                tokenASymbol: request.tokenA.symbol,
-                tokenBSymbol: request.tokenB.symbol,
-                tokenAAmount: Number(request.tokenAAmount).toLocaleString("en-US", {
-                  maximumFractionDigits: request.tokenA.decimals,
-                }),
-                tokenBAmount: Number(request.tokenBAmount).toLocaleString("en-US", {
-                  maximumFractionDigits: request.tokenB.decimals,
-                }),
-              }),
-            );
-          } else {
-            broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
           }
-        }
-
-        return result;
-      })
-      .catch(() => null);
-  };
-
-  const buildSocialWalletRepositionAction = async (
-    rpcProvider: GnoProvider | null,
-    request: RepositionLiquidityRequest,
-  ) => {
-    if (!rpcProvider) {
-      console.log("Reposition: ", new CommonError("FAILED_INITIALIZE_GNO_PROVIDER"));
-      return null;
-    }
-
-    const getAllowance = (packagePath: string, owner: string, spender: string) => {
-      return fetchAllowance(rpcProvider, packagePath, owner, spender);
-    };
-
-    const txMessages = await makeRepositionLiquidityMessagesWithApproves(request, getAllowance);
-
-    const txDoc = await transactionService.createDocument({ messages: txMessages });
-    await transactionService.createTransaction(txDoc);
-
-    const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
-    const requestWithGasInfo: RepositionLiquidityRequest = {
-      ...request,
-      gasFee: networkFee?.amount,
-      gasUsed: currentGasInfo?.gasUsed.toString(),
-    };
-
-    return positionRepository
-      .repositionLiquidity(requestWithGasInfo)
-      .then(result => {
-        if (result.code === 0) {
-          updateConfirmModalData("success", "Reposition Complete", "", null, () => router.back());
-          openConfirmModal();
-        }
-        return result;
-      })
-      .catch(() => null);
-  };
+          return result;
+        })
+        .catch(() => null);
+    },
+    [estimateNetworkFee, openConfirmModal, positionRepository, router, transactionService, updateConfirmModalData],
+  );
 
   const reposition = useCallback(
     async (
@@ -846,10 +877,9 @@ export const useRepositionHandle = () => {
       selectPool.tickSpacing,
       currentAmounts,
       estimatedRepositionAmounts,
-      positionRepository,
-      updateConfirmModalData,
-      openConfirmModal,
-      router,
+      buildAdenaWalletRepositionAction,
+      buildSocialWalletRepositionAction,
+      walletClient,
     ],
   );
 
@@ -857,7 +887,7 @@ export const useRepositionHandle = () => {
     if (!account && poolPath) {
       router.push(`/earn/pool/${poolPath}`);
     }
-  }, [account, poolPath]);
+  }, [account, poolPath, router]);
 
   useEffect(() => {
     if (selectPool.isChangeMinMax) {
