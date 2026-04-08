@@ -344,14 +344,14 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
 
   useEffect(() => {
     updatePools();
-  }, []);
+  }, [updatePools]);
 
   useEffect(() => {
     if (!tokenA || !tokenB || isReverted) {
       return;
     }
     refetchRPCPools();
-  }, [tokenA, tokenB, isReverted]);
+  }, [tokenA, tokenB, isReverted, refetchRPCPools]);
 
   return {
     fetching: isLoadingRPCPools,
