@@ -172,7 +172,7 @@
       "tokensDistributed": "Распространение токенов",
       "totalDeposits": "Общий депозит"
     },
-    "description": "Ставка на {{month}}.<br/>Вознаграждение можно получить начиная с<br/>через {{day}} дней.",
+    "description": "Ставки для {{month}}.",
     "title": "Бассейн {{idx}}"
   },
   "projects": {
