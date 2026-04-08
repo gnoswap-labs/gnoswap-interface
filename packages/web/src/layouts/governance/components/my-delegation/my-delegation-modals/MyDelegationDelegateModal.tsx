@@ -68,7 +68,12 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   const [tmpDelegatee, setTmpDelegatee] = useState<VerifiedDelegateInfo>(defaultDelegateeInfo);
   const [selfAddress, setSelfAddress] = useState("");
 
-  const safeDisplayAmount = (rawValue: string | number): number => {
+  const safeDisplayAmount = (displayValue: string | number): number => {
+    const result = Number(displayValue);
+    return isNaN(result) ? 0 : result;
+  };
+
+  const safeRawVotingPowerAmount = (rawValue: string | number): number => {
     const result = rawToDisplayAmount(rawValue, XGNS_TOKEN.decimals);
     return isNaN(result) ? 0 : result;
   };
@@ -85,7 +90,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   }, [isValidSelfAddress, selfAddress, t]);
 
   const votingPowerPercentage = useMemo(() => {
-    const displayVotingPower = safeDisplayAmount(tmpDelegatee.votingPower);
+    const displayVotingPower = safeRawVotingPowerAmount(tmpDelegatee.votingPower);
     const displayTotalDelegated = safeDisplayAmount(totalDelegatedAmount);
 
     return displayTotalDelegated ? (displayVotingPower * 100) / displayTotalDelegated : 0;
@@ -386,7 +391,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           <div className="label">{t("Governance:myDel.delModal.selectDel.votingPower")}</div>
           <div className="value no-wrap">
             <MissingLogo symbol="xGNS" url={XGNS_TOKEN.logoURI} width={24} />
-            {formatOtherPrice(safeDisplayAmount(tmpDelegatee.votingPower), {
+            {formatOtherPrice(safeRawVotingPowerAmount(tmpDelegatee.votingPower), {
               isKMB: false,
               usd: false,
             })}{" "}

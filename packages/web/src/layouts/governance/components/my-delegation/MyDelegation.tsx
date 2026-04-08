@@ -414,7 +414,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
       {isOpenDelegateModal && (
         <MyDelegationDelegateModal
           currentDelegatedAmount={displayVotingWeight}
-          totalDelegatedAmount={totalDelegatedAmount}
+          totalDelegatedAmount={displayTotalDelegatedAmount}
           apy={apy}
           delegatees={delegatees}
           isWalletConnected={isWalletConnected}
