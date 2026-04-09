@@ -161,15 +161,21 @@ export const useReferral = () => {
     setReferralAddress(hasValidRegisteredReferrer(apiReferrerAddress, account?.address) ? apiReferrerAddress : "");
   }, [urlReferralAddress, apiReferrerAddress, account?.address, getStoredReferrerInfo]);
 
+  const nextReferralAddress = React.useMemo(
+    () =>
+      resolveReferralAddressForTransaction({
+        urlReferralAddress,
+        storedReferrerInfo,
+        apiReferrerAddress,
+        accountAddress: account?.address,
+        packageReferralAddress: PACKAGE_REFERRAL_ADDRESS,
+      }),
+    [urlReferralAddress, storedReferrerInfo, apiReferrerAddress, account?.address],
+  );
+
   React.useEffect(() => {
-    nextReferralAddressRef.current = resolveReferralAddressForTransaction({
-      urlReferralAddress,
-      storedReferrerInfo,
-      apiReferrerAddress,
-      accountAddress: account?.address,
-      packageReferralAddress: PACKAGE_REFERRAL_ADDRESS,
-    });
-  }, [urlReferralAddress, storedReferrerInfo, apiReferrerAddress, account?.address]);
+    nextReferralAddressRef.current = nextReferralAddress;
+  }, [nextReferralAddress]);
 
   React.useEffect(() => {
     refreshReferralData();
@@ -182,6 +188,7 @@ export const useReferral = () => {
     referralAddress,
     apiReferrerAddress,
     storedReferralAddress,
+    nextReferralAddress,
     referralEarnedPoints,
     saveReferrerAddress,
     generateReferralLink,

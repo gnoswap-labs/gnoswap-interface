@@ -35,7 +35,7 @@ interface UseSwapProps {
 
 export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: UseSwapProps) => {
   const { transactionService, swapRouterRepository, rpcProvider } = useGnoswapContext();
-  const { getNextReferralAddress } = useReferral();
+  const { getNextReferralAddress, nextReferralAddress } = useReferral();
   const { data: gasTokenPrice } = useGetTokenPrices(GasToken.path);
 
   const [transactionMessage, setTransactionMessage] = useState<TransactionMessage[] | null>(null);
@@ -328,8 +328,6 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
   );
 
   const swapTransactionRequests = useMemo(() => {
-    const currentReferralAddress = getNextReferralAddress();
-
     let tokenAmount = 0;
     if (isSameToken) {
       tokenAmount = swapAmount || 0;
@@ -349,7 +347,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       originAmount: estimatedSwapResult?.originAmount || 0,
       tokenAmountLimit: tokenAmountLimit,
       deadline: Math.floor(Date.now() / 1000) + 60 * 5,
-      referrerAddress: currentReferralAddress,
+      referrerAddress: nextReferralAddress,
       gasPrice: gasPrice ?? 0,
     };
   }, [
@@ -364,7 +362,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     estimatedSwapResult?.originAmount,
     tokenAmountLimit,
     gasPrice,
-    getNextReferralAddress,
+    nextReferralAddress,
     swapAmount,
   ]);
 
