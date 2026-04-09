@@ -1,8 +1,10 @@
 import React from "react";
+import { useAtom } from "jotai";
 
 import useCustomRouter from "./use-custom-router";
 import { PACKAGE_REFERRAL_ADDRESS } from "@constants/environment.constant";
 import { GNOSWAP_REFERRAL_CODE } from "@states/common";
+import { ReferralState } from "@states/index";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import {
   hasValidRegisteredReferrer,
@@ -27,7 +29,7 @@ export const useReferral = () => {
     account?.address || "",
   );
 
-  const [referralAddress, setReferralAddress] = React.useState<string>("");
+  const [referralAddress, setReferralAddress] = useAtom(ReferralState.referralAddress);
   const referralAddressRef = React.useRef(referralAddress);
   const nextReferralAddressRef = React.useRef("");
 
@@ -36,7 +38,7 @@ export const useReferral = () => {
   }, [account?.address, referralAddress]);
 
   const urlReferralAddress = router.getReferrerParameter();
-  const [storedReferrerInfo, setStoredReferrerInfo] = React.useState<StoredReferrerInfo | null>(null);
+  const [storedReferrerInfo, setStoredReferrerInfo] = useAtom(ReferralState.storedReferrerInfo);
   const storedReferralAddress = storedReferrerInfo?.referrerAddress ?? null;
   const apiReferrerAddress = leaderboardMyInfo?.referrerAddress || "";
 
@@ -78,7 +80,7 @@ export const useReferral = () => {
       localStorage.setItem(`${GNOSWAP_REFERRAL_CODE}_${account.address}`, JSON.stringify(data));
       setStoredReferrerInfo(data);
     },
-    [account?.address],
+    [account?.address, setStoredReferrerInfo],
   );
 
   const removeReferrerFromUrl = React.useCallback(() => {
@@ -130,7 +132,7 @@ export const useReferral = () => {
     if (!account?.address) return;
     localStorage.removeItem(`${GNOSWAP_REFERRAL_CODE}_${account.address}`);
     setStoredReferrerInfo(null);
-  }, [account?.address]);
+  }, [account?.address, setStoredReferrerInfo]);
 
   const refreshReferralData = React.useCallback(() => {
     const nextStoredReferrerInfo = getStoredReferrerInfo();
@@ -159,7 +161,7 @@ export const useReferral = () => {
     }
 
     setReferralAddress(hasValidRegisteredReferrer(apiReferrerAddress, account?.address) ? apiReferrerAddress : "");
-  }, [urlReferralAddress, apiReferrerAddress, account?.address, getStoredReferrerInfo]);
+  }, [urlReferralAddress, apiReferrerAddress, account?.address, getStoredReferrerInfo, setReferralAddress, setStoredReferrerInfo]);
 
   const nextReferralAddress = React.useMemo(
     () =>
