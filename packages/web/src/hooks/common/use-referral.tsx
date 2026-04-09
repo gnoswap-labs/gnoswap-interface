@@ -29,7 +29,7 @@ export const useReferral = () => {
 
   const [referralAddress, setReferralAddress] = React.useState<string>("");
   const referralAddressRef = React.useRef(referralAddress);
-  const transactionReferralAddressRef = React.useRef("");
+  const nextReferralAddressRef = React.useRef("");
 
   React.useEffect(() => {
     referralAddressRef.current = referralAddress;
@@ -162,7 +162,7 @@ export const useReferral = () => {
   }, [urlReferralAddress, apiReferrerAddress, account?.address, getStoredReferrerInfo]);
 
   React.useEffect(() => {
-    transactionReferralAddressRef.current = resolveReferralAddressForTransaction({
+    nextReferralAddressRef.current = resolveReferralAddressForTransaction({
       urlReferralAddress,
       storedReferrerInfo,
       apiReferrerAddress,
@@ -175,6 +175,9 @@ export const useReferral = () => {
     refreshReferralData();
   }, [urlReferralAddress, storedReferralAddress, apiReferrerAddress, refreshReferralData, account?.address]);
 
+  const getCurrentReferralAddress = React.useCallback(() => referralAddressRef.current, []);
+  const getNextReferralAddress = React.useCallback(() => nextReferralAddressRef.current, []);
+
   return {
     referralAddress,
     apiReferrerAddress,
@@ -182,8 +185,8 @@ export const useReferral = () => {
     referralEarnedPoints,
     saveReferrerAddress,
     generateReferralLink,
-    getCurrentReferralAddress: () => referralAddressRef.current,
-    getNextReferralAddress: () => transactionReferralAddressRef.current,
+    getCurrentReferralAddress,
+    getNextReferralAddress,
     refetchLeaderboardMyInfo,
     refreshReferralData,
     removeReferrerFromUrl,
