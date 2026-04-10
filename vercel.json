@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://beta.api.gnoswap.io/:path*"
+    }
+  ]
+}
