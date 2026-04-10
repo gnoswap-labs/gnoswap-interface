@@ -28,7 +28,7 @@ interface Props {
 }
 
 export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Props) => {
-  const { getCurrentReferralAddress } = useReferral();
+  const { getNextReferralAddress } = useReferral();
 
   const { account, walletClient } = useWallet();
   const { poolRepository, transactionService } = useGnoswapContext();
@@ -186,7 +186,7 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
       }
 
       const walletType = walletClient?.getWalletType();
-      const currentReferralAddress = getCurrentReferralAddress();
+      const currentReferralAddress = getNextReferralAddress();
 
       const request: CreatePoolRequest = {
         tokenA: currentTokenData.tokenA,
@@ -222,7 +222,7 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
       account,
       getCurrentTokenPairAmount,
       poolRepository,
-      getCurrentReferralAddress,
+      getNextReferralAddress,
       transactionService,
       estimateNetworkFee,
       walletClient,
@@ -301,7 +301,7 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
       }
 
       const walletType = walletClient?.getWalletType();
-      const currentReferralAddress = getCurrentReferralAddress();
+      const currentReferralAddress = getNextReferralAddress();
 
       const request: AddLiquidityRequest = {
         tokenA: currentTokenData.tokenA,
@@ -335,7 +335,7 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
       account,
       getCurrentTokenPairAmount,
       poolRepository,
-      getCurrentReferralAddress,
+      getNextReferralAddress,
       transactionService,
       estimateNetworkFee,
       walletClient,
@@ -344,14 +344,14 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
 
   useEffect(() => {
     updatePools();
-  }, []);
+  }, [updatePools]);
 
   useEffect(() => {
     if (!tokenA || !tokenB || isReverted) {
       return;
     }
     refetchRPCPools();
-  }, [tokenA, tokenB, isReverted]);
+  }, [tokenA, tokenB, isReverted, refetchRPCPools]);
 
   return {
     fetching: isLoadingRPCPools,

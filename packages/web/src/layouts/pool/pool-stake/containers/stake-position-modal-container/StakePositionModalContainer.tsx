@@ -48,9 +48,9 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
   const { transactionService, positionRepository } = useGnoswapContext();
   const { estimateNetworkFee } = useNetworkFee(null);
 
-  const { getCurrentReferralAddress, removeReferrerFromLocalStorage } = useReferral();
+  const { getNextReferralAddress, removeReferrerFromLocalStorage } = useReferral();
   const clearModal = useClearModal();
-  const { updateBalances, tokenPrices } = useTokenData();
+  const { updateBalances } = useTokenData();
   const { data: pool } = useGetPoolDetailByPath(poolPath, {
     enabled: !!poolPath,
   });
@@ -64,7 +64,8 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
       [QUERY_KEY.poolDetail, poolPath],
       [QUERY_KEY.poolPairBins],
     ]);
-  }, [invalidateQueryKey, poolPath, currentChainId, address]);
+    await Promise.all([refetchPositions(), refetchPools(), refetchPoolDetails()]);
+  }, [invalidateQueryKey, poolPath, currentChainId, address, refetchPoolDetails, refetchPools, refetchPositions]);
 
   const onCloseConfirmTransactionModal = useCallback(() => {
     clearModal();
@@ -100,13 +101,13 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
         amount: tokenBAmount,
       },
     ];
-  }, [positions, tokenPrices]);
+  }, [positions]);
 
-  const buildAdenaWalletAction = async (request: StakePositionsRequest) => {
+  const buildAdenaWalletAction = useCallback(async (request: StakePositionsRequest) => {
     return await positionRepository.stakePositions(request).catch(() => null);
-  };
+  }, [positionRepository]);
 
-  const buildSocialWalletAction = async (request: StakePositionsRequest) => {
+  const buildSocialWalletAction = useCallback(async (request: StakePositionsRequest) => {
     const txMessages = makeStakePositionsMessagesWithApproves(request);
 
     const txDoc = await transactionService.createDocument({ messages: txMessages });
@@ -120,7 +121,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
     };
 
     return await positionRepository.stakePositions(requestWithGasInfo).catch(() => null);
-  };
+  }, [estimateNetworkFee, positionRepository, transactionService]);
 
   const stakeOnSubmit = useCallback(async () => {
     const address = account?.address;
@@ -133,7 +134,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
     const tokenB = pooledTokenInfos?.[1];
 
     const walletType = walletClient?.getWalletType();
-    const currentReferralAddress = getCurrentReferralAddress();
+    const currentReferralAddress = getNextReferralAddress();
 
     const request: StakePositionsRequest = {
       lpTokenIds: lpTokenIds,
@@ -241,8 +242,12 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
   }, [
     walletClient,
     account?.address,
+    buildAdenaWalletAction,
+    buildSocialWalletAction,
+    handleRefreshData,
+    positions,
     pooledTokenInfos,
-    getCurrentReferralAddress,
+    getNextReferralAddress,
     broadcastLoading,
     broadcastSuccess,
     broadcastError,
@@ -250,14 +255,8 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
     getMessage,
     openTransactionConfirmModal,
     updateBalances,
-    refetchPositions,
-    refetchPools,
-    refetchPoolDetails,
     removeReferrerFromLocalStorage,
     enqueueEvent,
-    router.pathname,
-    router.asPath,
-    clearModal,
   ]);
 
   return <StakePositionModal positions={positions} close={clearModal} onSubmit={stakeOnSubmit} pool={pool} />;

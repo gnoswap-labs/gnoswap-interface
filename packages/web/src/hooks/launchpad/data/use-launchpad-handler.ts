@@ -49,7 +49,7 @@ function calculateUSDValueBy(
 }
 
 export const useLaunchpadHandler = () => {
-  const { getCurrentReferralAddress, removeReferrerFromLocalStorage } = useReferral();
+  const { getNextReferralAddress, removeReferrerFromLocalStorage } = useReferral();
 
   const gnsAmountInput = useTokenAmountInput(GNS_TOKEN);
 
@@ -117,7 +117,7 @@ export const useLaunchpadHandler = () => {
       tokenASymbol: GNS_TOKEN.symbol,
     };
 
-    const currentReferralAddress = getCurrentReferralAddress();
+    const currentReferralAddress = getNextReferralAddress();
 
     processTx(
       () =>

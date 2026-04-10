@@ -16,7 +16,7 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { DexEvent, DexEventType } from "@repositories/common";
 
 export const useGovernanceTx = () => {
-  const { getCurrentReferralAddress, removeReferrerFromLocalStorage } = useReferral();
+  const { getNextReferralAddress, removeReferrerFromLocalStorage } = useReferral();
 
   const { t } = useTranslation();
   const { account } = useWallet();
@@ -111,7 +111,7 @@ export const useGovernanceTx = () => {
       target: toName,
     };
 
-    const currentReferralAddress = getCurrentReferralAddress();
+    const currentReferralAddress = getNextReferralAddress();
 
     processTx(
       () =>
