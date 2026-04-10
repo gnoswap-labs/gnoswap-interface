@@ -7,7 +7,7 @@ const nextConfig = {
   reactStrictMode: true,
   i18n,
   async rewrites() {
-    const apiUrl = process.env.API_BASE_URL;
+    const apiUrl = process.env.API_BASE_URL || "http://localhost:8080";
 
     return [
       {
