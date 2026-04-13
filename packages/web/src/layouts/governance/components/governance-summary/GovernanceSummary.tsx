@@ -180,7 +180,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
         />
         <InfoBox
           title={t("Governance:summary.delRatio.title")}
-          value={`${formatOtherPrice(governanceSummary.delegatedRatio, {
+          value={`${formatOtherPrice(Number(governanceSummary.delegatedRatio) * 100, {
             isKMB: false,
             usd: false,
           })}%`}
