@@ -139,8 +139,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   }, [myDelegationInfo.claimableRewards, getTokenUSDPrice, tokens, getGnotPath]);
 
   const currentDelegatedDisplayAmount = useMemo(() => {
-    const votingWeight = Number(myDelegationInfo.votingWeight) || 0;
-    return rawToDisplayAmount(votingWeight, XGNS_TOKEN.decimals);
+    return rawToDisplayAmount(myDelegationInfo.votingWeight, XGNS_TOKEN.decimals);
   }, [myDelegationInfo.votingWeight]);
 
   const totalDelegatedDisplayAmount = useMemo(() => {

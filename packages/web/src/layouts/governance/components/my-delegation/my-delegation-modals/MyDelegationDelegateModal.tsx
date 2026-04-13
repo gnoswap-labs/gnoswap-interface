@@ -19,6 +19,7 @@ import withLocalModal from "@components/hoc/with-local-modal";
 import { EXT_URL } from "@constants/external-url.contant";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
+import { useGetMyDelegation } from "@query/governance";
 import { nullVerifiedDelegateInfo, VerifiedDelegateInfo } from "@repositories/governance";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { isValidAddress } from "@utils/validation-utils";
@@ -89,12 +90,49 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
     return t("Governance:myDel.delModal.selectDel.selectBtn");
   }, [isValidSelfAddress, selfAddress, t]);
 
+  const isSelfDelegateSelected = useMemo(() => {
+    return tmpDelegatee.name === selfDelegateName;
+  }, [tmpDelegatee.name, selfDelegateName]);
+
+  const selectedDelegateAddress = useMemo(() => {
+    if (tmpDelegatee.address !== "") {
+      return tmpDelegatee.address;
+    }
+
+    if (isSelfDelegateSelected) {
+      return selfAddress;
+    }
+
+    return "";
+  }, [tmpDelegatee.address, isSelfDelegateSelected, selfAddress]);
+
+  const isValidSelectedDelegateAddress = useMemo(() => {
+    return isValidAddress(selectedDelegateAddress);
+  }, [selectedDelegateAddress]);
+
+  const { data: selectedDelegateDelegationInfo } = useGetMyDelegation(
+    {
+      address: selectedDelegateAddress,
+    },
+    {
+      enabled: isValidSelectedDelegateAddress,
+    },
+  );
+
+  const selectedDelegateVotingPowerRaw = useMemo(() => {
+    if (selectedDelegateDelegationInfo?.votingWeight) {
+      return selectedDelegateDelegationInfo.votingWeight;
+    }
+
+    return tmpDelegatee.votingPower;
+  }, [selectedDelegateDelegationInfo?.votingWeight, tmpDelegatee.votingPower]);
+
   const votingPowerPercentage = useMemo(() => {
-    const displayVotingPower = toDisplayVotingPowerFromRaw(tmpDelegatee.votingPower);
+    const displayVotingPower = toDisplayVotingPowerFromRaw(selectedDelegateVotingPowerRaw);
     const displayTotalDelegated = toSafeDisplayAmountNumber(totalDelegatedDisplayAmount);
 
     return displayTotalDelegated ? (displayVotingPower * 100) / displayTotalDelegated : 0;
-  }, [tmpDelegatee.votingPower, totalDelegatedDisplayAmount]);
+  }, [selectedDelegateVotingPowerRaw, totalDelegatedDisplayAmount]);
 
   const handleClickSelfDelegateeAddress = useCallback((address: string) => setSelfAddress(address), [delegatees]);
 
@@ -391,7 +429,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           <div className="label">{t("Governance:myDel.delModal.selectDel.votingPower")}</div>
           <div className="value no-wrap">
             <MissingLogo symbol="xGNS" url={XGNS_TOKEN.logoURI} width={24} />
-            {formatOtherPrice(toDisplayVotingPowerFromRaw(tmpDelegatee.votingPower), {
+            {formatOtherPrice(toDisplayVotingPowerFromRaw(selectedDelegateVotingPowerRaw), {
               isKMB: false,
               usd: false,
             })}{" "}
@@ -401,15 +439,15 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
         </div>
         <div className="delegatee-info-rows">
           <div className="label">{t("Governance:myDel.delModal.selectDel.address")}</div>
-          {tmpDelegatee.address !== "" ? (
+          {selectedDelegateAddress !== "" ? (
             <div
               className="value clickable"
               onClick={e => {
                 e.stopPropagation();
-                openExternalUrl(getAccountUrl(tmpDelegatee.address));
+                openExternalUrl(getAccountUrl(selectedDelegateAddress));
               }}
             >
-              {[tmpDelegatee.address.slice(0, 8), tmpDelegatee.address.slice(32, 40)].join("...")}
+              {[selectedDelegateAddress.slice(0, 8), selectedDelegateAddress.slice(32, 40)].join("...")}
               <IconNewTab />
             </div>
           ) : (
