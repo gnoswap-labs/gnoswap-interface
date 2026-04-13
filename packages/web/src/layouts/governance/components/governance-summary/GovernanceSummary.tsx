@@ -113,6 +113,13 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
       .sort((a, b) => b.usdValue - a.usdValue);
   }, [governanceCommunityPoolBalances]);
 
+  const delegatedRatioValue = React.useMemo(() => {
+    return `${formatOtherPrice(Number(governanceSummary.delegatedRatio) * 100, {
+      isKMB: false,
+      usd: false,
+    })}%`;
+  }, [governanceSummary.delegatedRatio]);
+
   const handleOpenVideoGuide = React.useCallback(() => {
     onOpenVideoGuide(VIDEO_GUIDE_TYPES.GOVERNANCE);
   }, [onOpenVideoGuide]);
@@ -180,10 +187,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
         />
         <InfoBox
           title={t("Governance:summary.delRatio.title")}
-          value={`${formatOtherPrice(Number(governanceSummary.delegatedRatio) * 100, {
-            isKMB: false,
-            usd: false,
-          })}%`}
+          value={delegatedRatioValue}
           tooltip={t("Governance:summary.delRatio.tooltip")}
           isLoading={isLoading}
         />
