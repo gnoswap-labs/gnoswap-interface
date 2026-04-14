@@ -3,8 +3,8 @@
     "grc20": "https://faucet.adena.app",
     "native": null
   },
-  "test11": {
+  "test12": {
     "grc20": "https://beta.faucet.adena.app",
-    "native": "https://test11.faucet.adena.app"
+    "native": null
   }
 }
