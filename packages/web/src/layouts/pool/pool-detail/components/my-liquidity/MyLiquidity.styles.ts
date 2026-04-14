@@ -45,7 +45,7 @@ export const MyLiquidityWrapper = styled.div`
   }
 
   .view-more-wrap {
-    ${mixins.flexbox("row", "center", "flex-start")};
+    ${mixins.flexbox("row", "center", "center")};
     width: 100%;
   }
 `;

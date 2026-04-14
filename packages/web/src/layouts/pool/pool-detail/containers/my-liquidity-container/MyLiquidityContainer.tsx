@@ -52,6 +52,10 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   const [positionLimit, setPositionLimit] = useState(DEFAULT_POSITION_LIMIT);
   const poolPath = router.getPoolPath();
 
+  const positionScopeId = useMemo(() => {
+    return ["my-liquidity", address || "", poolPath || "", positionLimit].join("-");
+  }, [address, poolPath, positionLimit]);
+
   useEffect(() => {
     setPositionLimit(DEFAULT_POSITION_LIMIT);
     setIsViewAllPositions(false);
@@ -66,6 +70,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     address,
     poolPath,
     limit: positionLimit,
+    scopeId: positionScopeId,
     queryOption: {
       enabled: !!poolPath,
     },
