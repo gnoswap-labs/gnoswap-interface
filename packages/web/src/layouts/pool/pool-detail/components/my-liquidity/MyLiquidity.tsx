@@ -164,7 +164,11 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
             )}
           </>
         ))}
-      {showViewMorePositions && <LoadMoreButton show={true} onClick={handleViewMorePositions} />}
+      {showViewMorePositions && (
+        <div className="view-more-wrap">
+          <LoadMoreButton show={true} onClick={handleViewMorePositions} />
+        </div>
+      )}
     </MyLiquidityWrapper>
   );
 };

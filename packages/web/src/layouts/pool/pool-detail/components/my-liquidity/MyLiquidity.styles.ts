@@ -43,6 +43,11 @@ export const MyLiquidityWrapper = styled.div`
       color: ${({ theme }) => theme.color.text03};
     }
   }
+
+  .view-more-wrap {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    width: 100%;
+  }
 `;
 
 export const PoolDivider = styled.div`
