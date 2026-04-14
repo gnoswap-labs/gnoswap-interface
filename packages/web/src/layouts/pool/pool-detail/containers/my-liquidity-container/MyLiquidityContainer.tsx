@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { ERROR_VALUE } from "@common/errors/adena";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
@@ -24,6 +24,8 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionConverter } from "@services/converters/position";
 import MyLiquidity from "../../components/my-liquidity/MyLiquidity";
 
+const DEFAULT_POSITION_LIMIT = 20;
+
 interface MyLiquidityContainerProps {
   addressContext: {
     urlAddress: string;
@@ -46,10 +48,24 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   const { breakpoint } = useWindowSize();
   const { connected: connectedWallet, isSwitchNetwork, account, currentChainId } = useWallet();
   const [currentIndex, setCurrentIndex] = useState(1);
+  const [isViewAllPositions, setIsViewAllPositions] = useState(false);
+  const [positionLimit, setPositionLimit] = useState(DEFAULT_POSITION_LIMIT);
   const poolPath = router.getPoolPath();
-  const { positions: positions, loading: isLoadingPosition, refetch: refetchPositions } = usePositionData({
+
+  useEffect(() => {
+    setPositionLimit(DEFAULT_POSITION_LIMIT);
+    setIsViewAllPositions(false);
+  }, [address, poolPath]);
+
+  const {
+    positions: positions,
+    loading: isLoadingPosition,
+    refetch: refetchPositions,
+    totalPositionCount,
+  } = usePositionData({
     address,
     poolPath,
+    limit: positionLimit,
     queryOption: {
       enabled: !!poolPath,
     },
@@ -268,6 +284,15 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     return haveNotClosedPosition;
   }, [connectedWallet, haveNotClosedPosition, isSwitchNetwork]);
 
+  const showViewMorePositions = useMemo(() => {
+    return !isViewAllPositions && totalPositionCount > DEFAULT_POSITION_LIMIT;
+  }, [isViewAllPositions, totalPositionCount]);
+
+  const handleViewMorePositions = useCallback(() => {
+    setPositionLimit(Math.max(totalPositionCount, DEFAULT_POSITION_LIMIT));
+    setIsViewAllPositions(true);
+  }, [totalPositionCount]);
+
   return (
     <MyLiquidity
       address={address}
@@ -295,6 +320,8 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
       isHiddenAddPosition={!!((address && account?.address && address !== account?.address) || !account?.address)}
       showClosePositionButton={showClosePositionButton}
       tokenPrices={tokenPrices}
+      showViewMorePositions={showViewMorePositions}
+      handleViewMorePositions={handleViewMorePositions}
     />
   );
 };
