@@ -48,17 +48,18 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   const { breakpoint } = useWindowSize();
   const { connected: connectedWallet, isSwitchNetwork, account, currentChainId } = useWallet();
   const [currentIndex, setCurrentIndex] = useState(1);
-  const [isViewAllPositions, setIsViewAllPositions] = useState(false);
-  const [positionLimit, setPositionLimit] = useState(DEFAULT_POSITION_LIMIT);
+  const [positionPage, setPositionPage] = useState(1);
+  const [loadedPositions, setLoadedPositions] = useState<PoolPositionModel[]>([]);
   const poolPath = router.getPoolPath();
+  const normalizedAddress = useMemo(() => (address || "").toLowerCase(), [address]);
 
   const positionScopeId = useMemo(() => {
-    return ["my-liquidity", address || "", poolPath || "", positionLimit].join("-");
-  }, [address, poolPath, positionLimit]);
+    return ["my-liquidity", address || "", poolPath || "", DEFAULT_POSITION_LIMIT, positionPage].join("-");
+  }, [address, poolPath, positionPage]);
 
   useEffect(() => {
-    setPositionLimit(DEFAULT_POSITION_LIMIT);
-    setIsViewAllPositions(false);
+    setPositionPage(1);
+    setLoadedPositions([]);
   }, [address, poolPath]);
 
   const {
@@ -69,12 +70,38 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   } = usePositionData({
     address,
     poolPath,
-    limit: positionLimit,
+    page: positionPage,
+    limit: DEFAULT_POSITION_LIMIT,
     scopeId: positionScopeId,
     queryOption: {
       enabled: !!poolPath,
     },
   });
+
+  useEffect(() => {
+    if (!address || !poolPath || positions.length === 0) {
+      return;
+    }
+
+    const currentPagePositions = positions.filter(
+      position => position.poolPath === poolPath && position.owner.toLowerCase() === normalizedAddress,
+    );
+
+    if (currentPagePositions.length === 0) {
+      return;
+    }
+
+    setLoadedPositions(prev => {
+      const loadedPositionIds = new Set(prev.map(position => position.id));
+      const nextPositions = currentPagePositions.filter(position => !loadedPositionIds.has(position.id));
+
+      if (nextPositions.length === 0) {
+        return prev;
+      }
+
+      return [...prev, ...nextPositions];
+    });
+  }, [address, poolPath, positions, normalizedAddress]);
 
   const { invalidateQueryKey } = useInvalidateQueries();
 
@@ -86,7 +113,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     ]);
   }, [invalidateQueryKey, currentChainId, address]);
 
-  const { claimAll, claim } = usePosition(positions.filter(item => !item.closed));
+  const { claimAll, claim } = usePosition(loadedPositions.filter(item => !item.closed));
   const [loadingTransactionClaim, setLoadingTransactionClaim] = useState(false);
   const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
   const { openModal } = useTransactionConfirmModal();
@@ -104,9 +131,9 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   const accountPositions: PoolPositionModel[] = useMemo(() => {
     if (!address || !poolPath) return [];
 
-    const filteredPositions = positions.filter(position => position.poolPath === poolPath);
+    const filteredPositions = loadedPositions.filter(position => position.poolPath === poolPath);
     return PositionConverter.convertPositions(filteredPositions);
-  }, [address, poolPath, positions]);
+  }, [address, poolPath, loadedPositions]);
 
   const visiblePositions = useMemo(() => {
     if (!address) {
@@ -290,13 +317,16 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   }, [connectedWallet, haveNotClosedPosition, isSwitchNetwork]);
 
   const showViewMorePositions = useMemo(() => {
-    return !isViewAllPositions && totalPositionCount > DEFAULT_POSITION_LIMIT;
-  }, [isViewAllPositions, totalPositionCount]);
+    return accountPositions.length > 0 && accountPositions.length < totalPositionCount;
+  }, [accountPositions.length, totalPositionCount]);
 
   const handleViewMorePositions = useCallback(() => {
-    setPositionLimit(Math.max(totalPositionCount, DEFAULT_POSITION_LIMIT));
-    setIsViewAllPositions(true);
-  }, [totalPositionCount]);
+    if (accountPositions.length >= totalPositionCount) {
+      return;
+    }
+
+    setPositionPage(prev => prev + 1);
+  }, [accountPositions.length, totalPositionCount]);
 
   return (
     <MyLiquidity
