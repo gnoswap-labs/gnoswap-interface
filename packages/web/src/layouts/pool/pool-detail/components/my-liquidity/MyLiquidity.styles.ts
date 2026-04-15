@@ -47,6 +47,10 @@ export const MyLiquidityWrapper = styled.div`
   .view-more-wrap {
     ${mixins.flexbox("row", "center", "center")};
     width: 100%;
+    margin-top: 8px;
+    ${media.mobile} {
+      margin-top: 4px;
+    }
   }
 `;
 
