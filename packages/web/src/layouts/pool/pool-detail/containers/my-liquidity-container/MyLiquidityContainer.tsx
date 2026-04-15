@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { ERROR_VALUE } from "@common/errors/adena";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
@@ -24,6 +24,8 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionConverter } from "@services/converters/position";
 import MyLiquidity from "../../components/my-liquidity/MyLiquidity";
 
+const DEFAULT_POSITION_LIMIT = 20;
+
 interface MyLiquidityContainerProps {
   addressContext: {
     urlAddress: string;
@@ -46,14 +48,62 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   const { breakpoint } = useWindowSize();
   const { connected: connectedWallet, isSwitchNetwork, account, currentChainId } = useWallet();
   const [currentIndex, setCurrentIndex] = useState(1);
+  const [positionPage, setPositionPage] = useState(1);
+  const [positionLimit, setPositionLimit] = useState(DEFAULT_POSITION_LIMIT);
+  const [loadedPositions, setLoadedPositions] = useState<PoolPositionModel[]>([]);
   const poolPath = router.getPoolPath();
-  const { positions: positions, loading: isLoadingPosition, refetch: refetchPositions } = usePositionData({
+  const normalizedAddress = useMemo(() => (address || "").toLowerCase(), [address]);
+
+  const positionScopeId = useMemo(() => {
+    return ["my-liquidity", address || "", poolPath || "", positionLimit, positionPage].join("-");
+  }, [address, poolPath, positionLimit, positionPage]);
+
+  useEffect(() => {
+    setPositionPage(1);
+    setPositionLimit(DEFAULT_POSITION_LIMIT);
+    setLoadedPositions([]);
+  }, [address, poolPath]);
+
+  const {
+    positions: positions,
+    loading: isLoadingPosition,
+    refetch: refetchPositions,
+    totalPositionCount,
+  } = usePositionData({
     address,
     poolPath,
+    page: positionPage,
+    limit: positionLimit,
+    scopeId: positionScopeId,
     queryOption: {
       enabled: !!poolPath,
     },
   });
+
+  useEffect(() => {
+    if (!address || !poolPath || positions.length === 0) {
+      return;
+    }
+
+    const currentPagePositions = positions.filter(
+      position => position.poolPath === poolPath && position.owner.toLowerCase() === normalizedAddress,
+    );
+
+    if (currentPagePositions.length === 0) {
+      return;
+    }
+
+    setLoadedPositions(prev => {
+      const loadedPositionIds = new Set(prev.map(position => position.id));
+      const nextPositions = currentPagePositions.filter(position => !loadedPositionIds.has(position.id));
+
+      if (nextPositions.length === 0) {
+        return prev;
+      }
+
+      return [...prev, ...nextPositions];
+    });
+  }, [address, poolPath, positions, normalizedAddress]);
 
   const { invalidateQueryKey } = useInvalidateQueries();
 
@@ -65,7 +115,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     ]);
   }, [invalidateQueryKey, currentChainId, address]);
 
-  const { claimAll, claim } = usePosition(positions.filter(item => !item.closed));
+  const { claimAll, claim } = usePosition(loadedPositions.filter(item => !item.closed));
   const [loadingTransactionClaim, setLoadingTransactionClaim] = useState(false);
   const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
   const { openModal } = useTransactionConfirmModal();
@@ -83,9 +133,9 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   const accountPositions: PoolPositionModel[] = useMemo(() => {
     if (!address || !poolPath) return [];
 
-    const filteredPositions = positions.filter(position => position.poolPath === poolPath);
+    const filteredPositions = loadedPositions.filter(position => position.poolPath === poolPath);
     return PositionConverter.convertPositions(filteredPositions);
-  }, [address, poolPath, positions]);
+  }, [address, poolPath, loadedPositions]);
 
   const visiblePositions = useMemo(() => {
     if (!address) {
@@ -268,6 +318,19 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     return haveNotClosedPosition;
   }, [connectedWallet, haveNotClosedPosition, isSwitchNetwork]);
 
+  const showViewMorePositions = useMemo(() => {
+    return accountPositions.length > 0 && accountPositions.length < totalPositionCount;
+  }, [accountPositions.length, totalPositionCount]);
+
+  const handleViewMorePositions = useCallback(() => {
+    if (accountPositions.length >= totalPositionCount) {
+      return;
+    }
+
+    setPositionPage(1);
+    setPositionLimit(Math.max(totalPositionCount, DEFAULT_POSITION_LIMIT));
+  }, [accountPositions.length, totalPositionCount]);
+
   return (
     <MyLiquidity
       address={address}
@@ -295,6 +358,8 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
       isHiddenAddPosition={!!((address && account?.address && address !== account?.address) || !account?.address)}
       showClosePositionButton={showClosePositionButton}
       tokenPrices={tokenPrices}
+      showViewMorePositions={showViewMorePositions}
+      handleViewMorePositions={handleViewMorePositions}
     />
   );
 };

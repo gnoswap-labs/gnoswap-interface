@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 
+import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { DEVICE_TYPE } from "@styles/media";
@@ -37,6 +38,8 @@ interface MyLiquidityProps {
   isHiddenAddPosition: boolean;
   showClosePositionButton: boolean;
   tokenPrices: Record<string, TokenPriceModel>;
+  showViewMorePositions: boolean;
+  handleViewMorePositions: () => void;
 }
 
 const MyLiquidity: React.FC<MyLiquidityProps> = ({
@@ -65,6 +68,8 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   showClosePositionButton,
   tokenPrices,
   closedPosition,
+  showViewMorePositions,
+  handleViewMorePositions,
 }) => {
   const showedPositions = useMemo(() => {
     if (!isShowClosePosition) {
@@ -159,6 +164,11 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
             )}
           </>
         ))}
+      {showViewMorePositions && (
+        <div className="view-more-wrap">
+          <LoadMoreButton show={true} onClick={handleViewMorePositions} />
+        </div>
+      )}
     </MyLiquidityWrapper>
   );
 };
