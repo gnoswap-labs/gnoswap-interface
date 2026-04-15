@@ -339,6 +339,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
       isOtherPosition={isOtherPosition}
       openedPosition={visiblePositions ? openedPosition : []}
       closedPosition={closedPosition}
+      totalPositionCount={totalPositionCount}
       breakpoint={breakpoint}
       connected={connectedWallet}
       isSwitchNetwork={isSwitchNetwork}

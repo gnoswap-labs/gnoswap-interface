@@ -19,6 +19,7 @@ interface MyLiquidityProps {
   isOtherPosition: boolean;
   openedPosition: PoolPositionModel[];
   closedPosition: PoolPositionModel[];
+  totalPositionCount: number;
   breakpoint: DEVICE_TYPE;
   connected: boolean;
   isSwitchNetwork: boolean;
@@ -48,6 +49,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   isOwnerAddress,
   addressName,
   openedPosition,
+  totalPositionCount,
   breakpoint,
   connected,
   isSwitchNetwork,
@@ -89,7 +91,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
           isSwitchNetwork={isSwitchNetwork}
           address={address}
           addressName={addressName}
-          positionLength={showedPositions.length}
+          positionLength={totalPositionCount}
           isShowRemovePositionButton={isShowRemovePositionButton}
           handleClickAddPosition={handleClickAddPosition}
           handleClickRemovePosition={handleClickRemovePosition}

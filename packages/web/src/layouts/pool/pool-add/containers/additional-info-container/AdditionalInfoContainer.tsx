@@ -18,6 +18,8 @@ import { usePoolAddSearchParams } from "@hooks/pool/data/use-pool-add-serach-par
 import { usePool } from "@hooks/pool/data/use-pool";
 import { useWindowSize } from "@hooks/common/use-window-size";
 
+const DEFAULT_POSITION_LIMIT = 20;
+
 const AdditionalInfoContainer: React.FC = () => {
   const router = useCustomRouter();
   const { breakpoint } = useWindowSize();
@@ -52,9 +54,30 @@ const AdditionalInfoContainer: React.FC = () => {
     return pools.some(pool => pool.poolPath === poolPath);
   }, [poolPath, pools]);
 
+  const {
+    totalPositionCount,
+    loading: isLoadingTotalPositionCount,
+  } = usePositionData({
+    isClosed: false,
+    poolPath: poolPath || "",
+    limit: 1,
+    queryOption: {
+      enabled: !!poolPath,
+    },
+  });
+
+  const positionLimit = useMemo(() => {
+    if (!totalPositionCount) {
+      return DEFAULT_POSITION_LIMIT;
+    }
+
+    return totalPositionCount;
+  }, [totalPositionCount]);
+
   const { positions, loading: isLoadingPosition } = usePositionData({
     isClosed: false,
     poolPath: poolPath || "",
+    limit: positionLimit,
     queryOption: {
       enabled: !!poolPath,
     },
@@ -105,7 +128,13 @@ const AdditionalInfoContainer: React.FC = () => {
       handleClickGotoStaking={handleClickGotoStaking}
       pool={data}
       poolPath={poolPath}
-      isLoadingPool={isLoadingRPCPoolInfo || isFetchingFeetierOfLiquidityMap || isLoadingPoolInfo || isLoadingPosition}
+      isLoadingPool={
+        isLoadingRPCPoolInfo ||
+        isFetchingFeetierOfLiquidityMap ||
+        isLoadingPoolInfo ||
+        isLoadingPosition ||
+        isLoadingTotalPositionCount
+      }
       isLoadingGraph={isLoadingPoolInfo}
       isReversed={isReversed}
     />
