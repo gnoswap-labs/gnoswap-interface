@@ -52,9 +52,30 @@ const AdditionalInfoContainer: React.FC = () => {
     return pools.some(pool => pool.poolPath === poolPath);
   }, [poolPath, pools]);
 
+  const {
+    totalPositionCount,
+    loading: isLoadingTotalPositionCount,
+  } = usePositionData({
+    isClosed: false,
+    poolPath: poolPath || "",
+    limit: 1,
+    queryOption: {
+      enabled: !!poolPath,
+    },
+  });
+
+  const positionLimit = useMemo(() => {
+    if (!totalPositionCount) {
+      return 20;
+    }
+
+    return totalPositionCount;
+  }, [totalPositionCount]);
+
   const { positions, loading: isLoadingPosition } = usePositionData({
     isClosed: false,
     poolPath: poolPath || "",
+    limit: positionLimit,
     queryOption: {
       enabled: !!poolPath,
     },
@@ -105,7 +126,13 @@ const AdditionalInfoContainer: React.FC = () => {
       handleClickGotoStaking={handleClickGotoStaking}
       pool={data}
       poolPath={poolPath}
-      isLoadingPool={isLoadingRPCPoolInfo || isFetchingFeetierOfLiquidityMap || isLoadingPoolInfo || isLoadingPosition}
+      isLoadingPool={
+        isLoadingRPCPoolInfo ||
+        isFetchingFeetierOfLiquidityMap ||
+        isLoadingPoolInfo ||
+        isLoadingPosition ||
+        isLoadingTotalPositionCount
+      }
       isLoadingGraph={isLoadingPoolInfo}
       isReversed={isReversed}
     />

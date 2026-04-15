@@ -47,7 +47,12 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   const { connected: connectedWallet, isSwitchNetwork, account, currentChainId } = useWallet();
   const [currentIndex, setCurrentIndex] = useState(1);
   const poolPath = router.getPoolPath();
-  const { positions: positions, loading: isLoadingPosition, refetch: refetchPositions } = usePositionData({
+  const {
+    positions: positions,
+    totalPositionCount,
+    loading: isLoadingPosition,
+    refetch: refetchPositions,
+  } = usePositionData({
     address,
     poolPath,
     queryOption: {
@@ -276,6 +281,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
       isOtherPosition={isOtherPosition}
       openedPosition={visiblePositions ? openedPosition : []}
       closedPosition={closedPosition}
+      totalPositionCount={totalPositionCount}
       breakpoint={breakpoint}
       connected={connectedWallet}
       isSwitchNetwork={isSwitchNetwork}
