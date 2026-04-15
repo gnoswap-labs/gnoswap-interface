@@ -18,6 +18,8 @@ import { usePoolAddSearchParams } from "@hooks/pool/data/use-pool-add-serach-par
 import { usePool } from "@hooks/pool/data/use-pool";
 import { useWindowSize } from "@hooks/common/use-window-size";
 
+const DEFAULT_POSITION_LIMIT = 20;
+
 const AdditionalInfoContainer: React.FC = () => {
   const router = useCustomRouter();
   const { breakpoint } = useWindowSize();
@@ -66,7 +68,7 @@ const AdditionalInfoContainer: React.FC = () => {
 
   const positionLimit = useMemo(() => {
     if (!totalPositionCount) {
-      return 20;
+      return DEFAULT_POSITION_LIMIT;
     }
 
     return totalPositionCount;
