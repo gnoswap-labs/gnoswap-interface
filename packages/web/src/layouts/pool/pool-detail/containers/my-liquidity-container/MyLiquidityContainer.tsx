@@ -49,16 +49,18 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   const { connected: connectedWallet, isSwitchNetwork, account, currentChainId } = useWallet();
   const [currentIndex, setCurrentIndex] = useState(1);
   const [positionPage, setPositionPage] = useState(1);
+  const [positionLimit, setPositionLimit] = useState(DEFAULT_POSITION_LIMIT);
   const [loadedPositions, setLoadedPositions] = useState<PoolPositionModel[]>([]);
   const poolPath = router.getPoolPath();
   const normalizedAddress = useMemo(() => (address || "").toLowerCase(), [address]);
 
   const positionScopeId = useMemo(() => {
-    return ["my-liquidity", address || "", poolPath || "", DEFAULT_POSITION_LIMIT, positionPage].join("-");
-  }, [address, poolPath, positionPage]);
+    return ["my-liquidity", address || "", poolPath || "", positionLimit, positionPage].join("-");
+  }, [address, poolPath, positionLimit, positionPage]);
 
   useEffect(() => {
     setPositionPage(1);
+    setPositionLimit(DEFAULT_POSITION_LIMIT);
     setLoadedPositions([]);
   }, [address, poolPath]);
 
@@ -71,7 +73,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     address,
     poolPath,
     page: positionPage,
-    limit: DEFAULT_POSITION_LIMIT,
+    limit: positionLimit,
     scopeId: positionScopeId,
     queryOption: {
       enabled: !!poolPath,
@@ -325,7 +327,8 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
       return;
     }
 
-    setPositionPage(prev => prev + 1);
+    setPositionPage(1);
+    setPositionLimit(Math.max(totalPositionCount, DEFAULT_POSITION_LIMIT));
   }, [accountPositions.length, totalPositionCount]);
 
   return (
