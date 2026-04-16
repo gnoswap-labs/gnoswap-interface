@@ -3,8 +3,8 @@ import { CommonError } from "@common/errors";
 import { LeaderboardRepository } from "./leaderboard-repository";
 import { GetLeaderboardRequest, UpdateLeaderboardHiddenStateRequest } from "./request";
 import {
-  GetLeaderboardResponse,
   GetLeaderboardByAddressResponse,
+  GetLeaderboardResponse,
   nullLeaderboardInfo,
   UpdateLeaderboardHiddenStateResponse,
 } from "./response";
@@ -84,8 +84,7 @@ export class LeaderboardRepositoryImpl implements LeaderboardRepository {
     const now = new Date();
 
     const nextHour = new Date(now);
-    nextHour.setHours(nextHour.getHours() + 1);
-    nextHour.setMinutes(0);
+    nextHour.setMinutes(nextHour.getMinutes() + 10);
     nextHour.setSeconds(0);
     nextHour.setMilliseconds(0);
 
