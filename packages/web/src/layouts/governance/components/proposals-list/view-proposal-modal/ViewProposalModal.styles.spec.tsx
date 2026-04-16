@@ -1,3 +1,5 @@
+import "@testing-library/jest-dom";
+
 import { render, screen, waitFor } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 
@@ -6,23 +8,6 @@ import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapTheme
 import { GNOSWAP_THEME_KEY } from "@states/theme";
 
 import { ProposalContentWrapper } from "./ViewProposalModal.styles";
-
-const hexToRgb = (hexColor: string) => {
-  const hex = hexColor.replace("#", "");
-  const normalized =
-    hex.length === 3
-      ? hex
-          .split("")
-          .map(value => value + value)
-          .join("")
-      : hex;
-
-  const red = Number.parseInt(normalized.slice(0, 2), 16);
-  const green = Number.parseInt(normalized.slice(2, 4), 16);
-  const blue = Number.parseInt(normalized.slice(4, 6), 16);
-
-  return `rgb(${red}, ${green}, ${blue})`;
-};
 
 const renderProposalContent = (themeKey: "dark" | "light") => {
   localStorage.setItem(GNOSWAP_THEME_KEY, JSON.stringify(themeKey));
@@ -71,9 +56,9 @@ describe("ProposalContentWrapper markdown heading hierarchy", () => {
       const heading = screen.getByRole("heading", { level: 1, name: "Markdown Heading" });
       const content = screen.getByTestId("markdown-content");
 
-      expect(getComputedStyle(heading).color).toBe(hexToRgb(headingColor));
-      expect(getComputedStyle(content).color).toBe(hexToRgb(bodyColor));
-      expect(getComputedStyle(heading).color).not.toBe(getComputedStyle(content).color);
+      expect(heading).toHaveStyle({ color: headingColor });
+      expect(content).toHaveStyle({ color: bodyColor });
+      expect(headingColor).not.toBe(bodyColor);
     },
   );
 });
