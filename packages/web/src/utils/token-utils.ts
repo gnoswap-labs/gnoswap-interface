@@ -191,6 +191,7 @@ export function getUniqueRewardTokensWithMultipleRewardTypes<
  */
 function sortRewardTypesByPriority(rewardTypes: RewardType[]): RewardType[] {
   const priorityMap: Record<RewardType, number> = {
+    INTERNAL_REWARD: 1,
     INTERNAL_TIER_1: 1,
     INTERNAL_TIER_2: 1,
     INTERNAL_TIER_3: 1,

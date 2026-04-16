@@ -36,6 +36,8 @@ const MissingLogo: React.FC<Props> = ({
         return "Swap Fee";
       case RewardTypeEnum.EXTERNAL_REWARD:
         return "External Reward";
+      case RewardTypeEnum.INTERNAL_REWARD:
+        return "Internal Reward";
       case RewardTypeEnum.INTERNAL_TIER_1:
         return "Internal Reward-Tier1";
       case RewardTypeEnum.INTERNAL_TIER_2:
