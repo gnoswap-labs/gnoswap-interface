@@ -1,27 +1,25 @@
-import React from "react";
-import Link from "next/link";
-import { useTranslation, Trans } from "react-i18next";
 import { css } from "@emotion/react";
+import Link from "next/link";
+import React from "react";
+import { Trans, useTranslation } from "react-i18next";
 
-import { ExtendedPoolStakingModel } from "@models/pool/pool-staking";
-import { capitalize } from "@utils/string-utils";
-import { useGetPoolDetailByPath } from "@query/pools";
 import { getDateUtcToLocal } from "@common/utils/date-util";
-import { toNumberFormat } from "@utils/number-utils";
-import { PoolMapper } from "@models/pool/mapper/pool-mapper";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { GNS_TOKEN } from "@common/values/token-constant";
+import { PoolMapper } from "@models/pool/mapper/pool-mapper";
+import { ExtendedPoolStakingModel } from "@models/pool/pool-staking";
+import { useGetPoolDetailByPath } from "@query/pools";
+import { toNumberFormat } from "@utils/number-utils";
+import { capitalize } from "@utils/string-utils";
 
-import { IncentivizePoolHistoryBoxWrapper } from "./IncentivizePoolHistoryBox.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import IconInfo from "@components/common/icons/IconInfo";
-import Tooltip from "@components/common/tooltip/Tooltip";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import IconInfo from "@components/common/icons/IconInfo";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
-import { historyTooltipContent } from "./IncentivizePoolHistoryBox.styles";
-import { useRemoveExternalIncentive } from "@query/pools/use-remove-external-incentive";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import Tooltip from "@components/common/tooltip/Tooltip";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useRemoveExternalIncentive } from "@query/pools/use-remove-external-incentive";
+import { historyTooltipContent, IncentivizePoolHistoryBoxWrapper } from "./IncentivizePoolHistoryBox.styles";
 
 interface IncentivizePoolHistoryBoxProps {
   stakingData: ExtendedPoolStakingModel;
@@ -63,10 +61,10 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
     return currentPool?.feeRate ? currentPool.feeRate : "-";
   }, [currentPool]);
 
-  const formatAmount = (amount: string | null) => {
+  const formatAmount = (amount: string | null, decimals: number = GNS_TOKEN.decimals) => {
     if (amount == null || amount === "") return "-";
 
-    return toNumberFormat(Number(makeDisplayTokenAmount(GNS_TOKEN, amount)), GNS_TOKEN.decimals);
+    return toNumberFormat(Number(amount), decimals);
   };
 
   const isClaimableTime = React.useMemo(() => {
@@ -123,7 +121,7 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
             </Tooltip>
           </div>
           <div className="value">
-            {toNumberFormat(stakingData.incentivizedAmount, 6)} {rewardToken.symbol}
+            {formatAmount(stakingData.incentivizedAmount, rewardToken.decimals)} {rewardToken.symbol}
           </div>
         </div>
         <div className="row">
@@ -145,7 +143,7 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
             </Tooltip>
           </div>
           <div className="value">
-            {toNumberFormat(stakingData.remainingAmount, 6)} {rewardToken.symbol}
+            {formatAmount(stakingData.remainingAmount, rewardToken.decimals)} {rewardToken.symbol}
           </div>
         </div>
         <div className="row">
@@ -177,7 +175,9 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
               <IconInfo size={16} />
             </Tooltip>
           </div>
-          <div className="value">-</div>
+          <div className="value">
+            {formatAmount(stakingData.unvestedAmount, rewardToken.decimals)} {rewardToken.symbol}
+          </div>
         </div>
 
         <div className="row">
@@ -199,7 +199,7 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
             </Tooltip>
           </div>
           <div className="value">
-            {formatAmount(stakingData.depositGnsAmount)} {GNS_TOKEN.symbol}
+            {formatAmount(stakingData.depositGnsAmount, GNS_TOKEN.decimals)} {GNS_TOKEN.symbol}
           </div>
         </div>
 
