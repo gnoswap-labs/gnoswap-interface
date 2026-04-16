@@ -2,6 +2,7 @@ import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
 import { CommonError } from "@common/errors";
 import { useNetworkFee } from "@hooks/common/use-network-fee";
+import { getGasUsed } from "@hooks/gas";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionModel } from "@models/position/position-model";
@@ -44,7 +45,7 @@ export const usePosition = (positions: PositionModel[]) => {
     const requestWithGasInfo: ClaimAllRequest = {
       ...request,
       gasFee: networkFee?.amount,
-      gasUsed: currentGasInfo?.gasUsed.toString(),
+      gasUsed: getGasUsed(currentGasInfo).toString(),
     };
 
     return positionRepository.sendClaimAll(requestWithGasInfo).catch(() => null);
@@ -107,7 +108,7 @@ export const usePosition = (positions: PositionModel[]) => {
     const requestWithGasInfo: ClaimRequest = {
       ...request,
       gasFee: networkFee?.amount,
-      gasUsed: currentGasInfo?.gasUsed.toString(),
+      gasUsed: getGasUsed(currentGasInfo).toString(),
     };
 
     return positionRepository.sendClaim(requestWithGasInfo).catch(() => null);

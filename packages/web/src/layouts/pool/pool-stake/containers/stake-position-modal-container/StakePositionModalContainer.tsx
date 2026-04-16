@@ -21,6 +21,7 @@ import { makeStakePositionsMessagesWithApproves } from "@repositories/position/p
 import { useNetworkFee } from "@hooks/common/use-network-fee";
 import { useAddress } from "@hooks/common/use-address";
 import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
+import { getGasUsed } from "@hooks/gas";
 import { QUERY_KEY } from "@query/query-keys";
 import { delay } from "@utils/common";
 
@@ -117,7 +118,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
     const requestWithGasInfo: StakePositionsRequest = {
       ...request,
       gasFee: networkFee?.amount,
-      gasUsed: currentGasInfo?.gasUsed.toString(),
+      gasUsed: getGasUsed(currentGasInfo).toString(),
     };
 
     return await positionRepository.stakePositions(requestWithGasInfo).catch(() => null);

@@ -27,6 +27,7 @@ import { useReferral } from "@hooks/common/use-referral";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { getGasUsed } from "@hooks/gas";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useSelectPool } from "@hooks/pool/data/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
@@ -481,7 +482,7 @@ export const useRepositionHandle = () => {
       const requestWithGasInfo: RemoveLiquidityRequest = {
         ...request,
         gasFee: networkFee?.amount,
-        gasUsed: currentGasInfo?.gasUsed.toString(),
+        gasUsed: getGasUsed(currentGasInfo).toString(),
       };
 
       return positionRepository.removeLiquidity(requestWithGasInfo).catch(() => null);
@@ -580,7 +581,7 @@ export const useRepositionHandle = () => {
       const requestWithGasInfo: SwapRouteRequest = {
         ...request,
         gasFee: networkFee?.amount,
-        gasUsed: currentGasInfo?.gasUsed.toString(),
+        gasUsed: getGasUsed(currentGasInfo).toString(),
       };
 
       return isExactIn
@@ -793,7 +794,7 @@ export const useRepositionHandle = () => {
       const requestWithGasInfo: RepositionLiquidityRequest = {
         ...request,
         gasFee: networkFee?.amount,
-        gasUsed: currentGasInfo?.gasUsed.toString(),
+        gasUsed: getGasUsed(currentGasInfo).toString(),
       };
 
       return positionRepository

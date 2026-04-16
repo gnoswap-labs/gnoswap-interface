@@ -17,6 +17,7 @@ import { fetchAllowance } from "@common/clients/wallet-client/transaction-messag
 import { CommonError } from "@common/errors";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { useNetworkFee } from "@hooks/common/use-network-fee";
+import { getGasUsed } from "@hooks/gas";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
 import { useTokenData } from "@hooks/token/data/use-token-data";
@@ -79,7 +80,7 @@ const UnstakePositionModalContainer = ({ positions, refetchPositions }: UnstakeP
     const requestWithGasInfo: UnstakePositionsRequest = {
       ...request,
       gasFee: networkFee?.amount,
-      gasUsed: currentGasInfo?.gasUsed.toString(),
+      gasUsed: getGasUsed(currentGasInfo).toString(),
     };
 
     return await positionRepository.unstakePositions(requestWithGasInfo).catch(() => null);

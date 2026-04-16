@@ -17,6 +17,7 @@ import {
   makePositionMintMessageWithApproves,
 } from "@repositories/pool/pool.message";
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
+import { getGasUsed } from "@hooks/gas";
 import { useNetworkFee } from "@hooks/common/use-network-fee";
 import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
 
@@ -146,7 +147,7 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
     const requestWithGasInfo: CreatePoolRequest = {
       ...request,
       gasFee: networkFee?.amount,
-      gasUsed: currentGasInfo?.gasUsed.toString(),
+      gasUsed: getGasUsed(currentGasInfo).toString(),
     };
 
     return poolRepository.createPool(requestWithGasInfo).catch(e => {
@@ -263,7 +264,7 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
     const requestWithGasInfo: AddLiquidityRequest = {
       ...request,
       gasFee: networkFee?.amount,
-      gasUsed: currentGasInfo?.gasUsed.toString(),
+      gasUsed: getGasUsed(currentGasInfo).toString(),
     };
 
     return poolRepository.addLiquidity({ ...requestWithGasInfo }).catch(e => {
