@@ -1,11 +1,20 @@
+import BigNumber from "bignumber.js";
+
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { ExtendedPoolStakingModel } from "@models/pool/pool-staking";
+import { TokenModel } from "@models/token/token-model";
 import { useGetPoolStakingListByAddress } from "@query/pools/use-get-pool-staking-list-by-address";
 
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import IncentivizePoolHistory from "../../components/incentivize-pool-history/IncentivizePoolHistory";
+
+// String/BigNumber-based shift so raw integer amounts keep full precision even beyond
+const shiftToDisplay = (token: Pick<TokenModel, "decimals">, amount: string) => {
+  const bn = new BigNumber(amount);
+  if (bn.isNaN()) return "0";
+  return bn.shiftedBy(-(token.decimals || 0)).toFixed();
+};
 
 const IncentivizePoolHistoryContainer = () => {
   const { account } = useWallet();
@@ -28,12 +37,10 @@ const IncentivizePoolHistoryContainer = () => {
       return {
         ...item,
         rewardToken: displayToken,
-        remainingAmount: String(makeDisplayTokenAmount(displayToken, item.remainingAmount || "0") ?? "0"),
-        incentivizedAmount: String(makeDisplayTokenAmount(displayToken, item.incentivizedAmount || "0") ?? "0"),
-        unvestedAmount: String(makeDisplayTokenAmount(displayToken, item.unvestedAmount || "0") ?? "0"),
-        depositGnsAmount: String(
-          makeDisplayTokenAmount(GNS_TOKEN, (item as ExtendedPoolStakingModel).depositGnsAmount || "0") ?? "0",
-        ),
+        remainingAmount: shiftToDisplay(displayToken, item.remainingAmount || "0"),
+        incentivizedAmount: shiftToDisplay(displayToken, item.incentivizedAmount || "0"),
+        unvestedAmount: shiftToDisplay(displayToken, item.unvestedAmount || "0"),
+        depositGnsAmount: shiftToDisplay(GNS_TOKEN, (item as ExtendedPoolStakingModel).depositGnsAmount || "0"),
       };
     })
     .sort((a, b) => {

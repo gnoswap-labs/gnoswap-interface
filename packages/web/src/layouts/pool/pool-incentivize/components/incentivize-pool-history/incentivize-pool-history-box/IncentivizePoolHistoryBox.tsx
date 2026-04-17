@@ -36,7 +36,7 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
     enabled: !!poolPath,
   });
 
-  const { removeExternalIncentive } = useRemoveExternalIncentive(poolPath, incentiveId);
+  const { removeExternalIncentive } = useRemoveExternalIncentive(poolPath, incentiveId ?? "");
 
   const currentPool = React.useMemo(() => {
     const temp = pool ? PoolMapper.toPoolSelectItemInfo(pool) : null;
@@ -203,7 +203,7 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
           </div>
         </div>
 
-        {isClaimableTime && (
+        {isClaimableTime && !!incentiveId && (
           <div className="button-wrapper">
             <Button
               text={"Claim"}
