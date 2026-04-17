@@ -64,7 +64,7 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
   const formatAmount = (amount: string | null, decimals: number = GNS_TOKEN.decimals) => {
     if (amount == null || amount === "") return "-";
 
-    return toNumberFormat(Number(amount), decimals);
+    return toNumberFormat(amount, decimals);
   };
 
   const isClaimableTime = React.useMemo(() => {

@@ -28,9 +28,9 @@ const IncentivizePoolHistoryContainer = () => {
       return {
         ...item,
         rewardToken: displayToken,
-        remainingAmount: String(makeDisplayTokenAmount(item.rewardToken, item.remainingAmount || "0") ?? "0"),
-        incentivizedAmount: String(makeDisplayTokenAmount(item.rewardToken, item.incentivizedAmount || "0") ?? "0"),
-        unvestedAmount: String(makeDisplayTokenAmount(item.rewardToken, item.unvestedAmount || "0") ?? "0"),
+        remainingAmount: String(makeDisplayTokenAmount(displayToken, item.remainingAmount || "0") ?? "0"),
+        incentivizedAmount: String(makeDisplayTokenAmount(displayToken, item.incentivizedAmount || "0") ?? "0"),
+        unvestedAmount: String(makeDisplayTokenAmount(displayToken, item.unvestedAmount || "0") ?? "0"),
         depositGnsAmount: String(
           makeDisplayTokenAmount(GNS_TOKEN, (item as ExtendedPoolStakingModel).depositGnsAmount || "0") ?? "0",
         ),
