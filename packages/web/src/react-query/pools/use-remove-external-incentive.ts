@@ -1,6 +1,7 @@
 import React from "react";
 
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { getGasUsed } from "@hooks/gas";
 
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
@@ -46,7 +47,7 @@ export const useRemoveExternalIncentive = (poolPath: string, incentiveID: string
     const requestWithGasInfo: RemoveExternalIncentiveRequest = {
       ...request,
       gasFee: networkFee?.amount,
-      gasUsed: currentGasInfo?.gasUsed.toString(),
+      gasUsed: getGasUsed(currentGasInfo).toString(),
     };
 
     return poolRepository.removeExternalIncentive(requestWithGasInfo);

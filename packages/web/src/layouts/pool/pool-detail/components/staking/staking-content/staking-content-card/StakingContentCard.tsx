@@ -233,6 +233,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
               <span>
                 <Tooltip
                   placement="top"
+                  scroll
                   FloatingContent={
                     <div>
                       <PriceTooltipContent positions={positions} period={periodInfo.period} />
@@ -400,6 +401,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({ period, checkPoints, pos
               <span>
                 <Tooltip
                   placement="top"
+                  scroll
                   FloatingContent={
                     <div>
                       <PriceTooltipContent positions={positions} period={periodInfo.period} />

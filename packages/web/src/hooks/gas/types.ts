@@ -1,11 +1,15 @@
-export interface GasInfo {
-  gasFee: number;
-  gasUsed: number;
-  gasWanted: number;
-  gasPrice: number;
-  hasError?: boolean;
-  simulateErrorMessage: string | null;
-}
+export type GasInfo =
+  | {
+      status: "success";
+      gasFee: number;
+      gasUsed: number;
+      gasWanted: number;
+      gasPrice: number;
+    }
+  | {
+      status: "error";
+      simulateErrorMessage: string;
+    };
 
 export interface NetworkFee {
   amount: string;

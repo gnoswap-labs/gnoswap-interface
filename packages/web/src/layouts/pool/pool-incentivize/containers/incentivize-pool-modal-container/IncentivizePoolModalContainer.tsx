@@ -20,6 +20,7 @@ import { EarnState } from "@states/index";
 import IncentivizePoolModal from "../../components/incentivize-pool-modal/IncentivizePoolModal";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { getGasUsed } from "@hooks/gas";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useNetworkFee } from "@hooks/common/use-network-fee";
 import { CreateExternalIncentiveRequest } from "@repositories/pool/request/create-external-incentive-request";
@@ -107,7 +108,7 @@ const IncentivizePoolModalContainer: React.FC<IncentivizePoolModalContainerProps
     const requestWithGasInfo: CreateExternalIncentiveRequest = {
       ...request,
       gasFee: networkFee?.amount,
-      gasUsed: currentGasInfo?.gasUsed.toString(),
+      gasUsed: getGasUsed(currentGasInfo).toString(),
     };
 
     return poolRepository.createExternalIncentive(requestWithGasInfo);

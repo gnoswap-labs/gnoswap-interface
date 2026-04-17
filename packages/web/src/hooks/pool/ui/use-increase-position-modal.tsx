@@ -21,6 +21,7 @@ import { fetchAllowance } from "@common/clients/wallet-client/transaction-messag
 import { CommonError } from "@common/errors";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { useNetworkFee } from "@hooks/common/use-network-fee";
+import { getGasUsed } from "@hooks/gas";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
@@ -143,7 +144,7 @@ export const useIncreasePositionModal = ({
     const requestWithGasInfo: IncreaseLiquidityRequest = {
       ...request,
       gasFee: networkFee?.amount,
-      gasUsed: currentGasInfo?.gasUsed.toString(),
+      gasUsed: getGasUsed(currentGasInfo).toString(),
     };
 
     return await positionRepository.increaseLiquidity(requestWithGasInfo).catch(() => null);

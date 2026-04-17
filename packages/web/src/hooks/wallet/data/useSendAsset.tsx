@@ -15,6 +15,7 @@ import { formatPoolPairAmount } from "@utils/new-number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { makeTransferGNOTTokenMessages, makeTransferGRC20TokenMessages } from "@repositories/wallet/wallet.message";
 import { useNetworkFee } from "@hooks/common/use-network-fee";
+import { getGasUsed } from "@hooks/gas";
 
 type Request = TransferGRC20TokenRequest | TransferNativeTokenRequest;
 export type WithdrawResponse = {
@@ -73,7 +74,7 @@ const useSendAsset = () => {
       const requestWithGasInfo = {
         ...request,
         gasFee: networkFee?.amount,
-        gasUsed: currentGasInfo?.gasUsed.toString(),
+        gasUsed: getGasUsed(currentGasInfo).toString(),
       } as Request & { gasFee?: string; gasUsed?: string };
 
       return isNativeTransfer
