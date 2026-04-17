@@ -2,7 +2,7 @@ import { INCENTIVE_TYPE } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 
 export interface PoolStakingModel {
-  incentiveId: string;
+  incentiveId: string | null;
   incentiveType: INCENTIVE_TYPE;
   tier: string;
   poolPath: string;
