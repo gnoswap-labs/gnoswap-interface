@@ -83,13 +83,14 @@ export class LeaderboardRepositoryImpl implements LeaderboardRepository {
   public getNextUpdateTime = async () => {
     const now = new Date();
 
-    const nextHour = new Date(now);
-    nextHour.setMinutes(nextHour.getMinutes() + 10);
-    nextHour.setSeconds(0);
-    nextHour.setMilliseconds(0);
+    const next = new Date(now);
+    const nextMinute = Math.floor(now.getMinutes() / 10) * 10 + 10;
+    next.setMinutes(nextMinute);
+    next.setSeconds(0);
+    next.setMilliseconds(0);
 
     return {
-      nextUpdateTime: nextHour.toISOString(),
+      nextUpdateTime: next.toISOString(),
     };
   };
 }
