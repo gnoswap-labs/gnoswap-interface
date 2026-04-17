@@ -30,13 +30,13 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
   const { t } = useTranslation();
   const { rpcProvider } = useGnoswapContext();
 
-  const { rewardToken, startTimestamp, endTimestamp } = stakingData;
+  const { rewardToken, incentiveId } = stakingData;
 
   const { data: pool = null } = useGetPoolDetailByPath(poolPath, {
     enabled: !!poolPath,
   });
 
-  const { removeExternalIncentive } = useRemoveExternalIncentive(poolPath, rewardToken, startTimestamp, endTimestamp);
+  const { removeExternalIncentive } = useRemoveExternalIncentive(poolPath, incentiveId);
 
   const currentPool = React.useMemo(() => {
     const temp = pool ? PoolMapper.toPoolSelectItemInfo(pool) : null;

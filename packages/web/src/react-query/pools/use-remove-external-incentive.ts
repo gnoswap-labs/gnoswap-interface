@@ -2,21 +2,15 @@ import React from "react";
 
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
-import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { TokenModel } from "@models/token/token-model";
-import { useNetworkFee } from "@hooks/common/use-network-fee";
-import { RemoveExternalIncentiveRequest } from "@repositories/pool/request/remove-external-incentive-request";
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
-import { CommonError } from "@common/errors";
 import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
+import { CommonError } from "@common/errors";
+import { useNetworkFee } from "@hooks/common/use-network-fee";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { makeRemoveExternalIncentiveMessageWithApproves } from "@repositories/pool/pool.message";
+import { RemoveExternalIncentiveRequest } from "@repositories/pool/request/remove-external-incentive-request";
 
-export const useRemoveExternalIncentive = (
-  poolPath: string,
-  rewardToken: TokenModel,
-  startTimestamp: string,
-  endTimestamp: string,
-) => {
+export const useRemoveExternalIncentive = (poolPath: string, incentiveID: string) => {
   const { poolRepository, transactionService } = useGnoswapContext();
   const { account, walletClient } = useWallet();
   const { estimateNetworkFee } = useNetworkFee(null);
@@ -67,9 +61,7 @@ export const useRemoveExternalIncentive = (
 
       const request: RemoveExternalIncentiveRequest = {
         poolPath,
-        rewardToken,
-        startTimestamp,
-        endTimestamp,
+        incentiveID,
       };
 
       const walletType = walletClient?.getWalletType();
@@ -78,7 +70,7 @@ export const useRemoveExternalIncentive = (
         ? buildAdenaWalletRemoveIncentiveAction(request)
         : buildSocialWalletRemoveIncentiveAction(rpcProvider, request, address);
     },
-    [walletClient, account?.address, poolRepository, poolPath, rewardToken],
+    [walletClient, account?.address, poolRepository, poolPath, incentiveID],
   );
 
   return { removeExternalIncentive };
