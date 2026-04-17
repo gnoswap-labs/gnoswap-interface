@@ -20,7 +20,7 @@ import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { TransactionMessage } from "@common/clients/wallet-client/protocols";
 import { SwapDirectionType } from "@common/values";
 import { GasToken } from "@common/values/token-constant";
-import { NetworkFee, useGetGasPrice } from "@hooks/gas";
+import { NetworkFee, getGasUsed, useGetGasPrice } from "@hooks/gas";
 import { EstimatedRoute } from "@models/swap/swap-route-info";
 import { TokenModel, isNativeToken } from "@models/token/token-model";
 import { Document } from "src/types/transaction-messages.types";
@@ -43,6 +43,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
   const useNetworkFeeReturn = useNetworkFee(transactionDocument);
   const networkFee = useNetworkFeeReturn.networkFee;
   const currentGasInfo = useNetworkFeeReturn.currentGasInfo;
+  const currentGasUsed = getGasUsed(currentGasInfo);
 
   const { account } = useWallet();
   const { data: gasPrice } = useGetGasPrice();
@@ -258,10 +259,10 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
         token: tokenA,
         tokenAmount,
         gasFee: networkFee?.amount,
-        gasUsed: String(currentGasInfo?.gasUsed),
+        gasUsed: String(currentGasUsed),
       });
     },
-    [account, selectedTokenPair, swapRouterRepository, tokenA, networkFee?.amount, currentGasInfo?.gasUsed],
+    [account, selectedTokenPair, swapRouterRepository, tokenA, networkFee?.amount, currentGasUsed],
   );
 
   const swap = useCallback(
@@ -277,7 +278,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
 
       const gasInfo = {
         gasFee: networkFee?.amount,
-        gasUsed: String(currentGasInfo?.gasUsed),
+        gasUsed: String(currentGasUsed),
       };
 
       if (direction === "EXACT_IN") {
@@ -323,7 +324,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       exactOutPadding,
       getNextReferralAddress,
       networkFee?.amount,
-      currentGasInfo?.gasUsed,
+      currentGasUsed,
     ],
   );
 

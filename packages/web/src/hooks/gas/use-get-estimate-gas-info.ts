@@ -6,8 +6,7 @@ import { makeEstimateGasTransaction } from "@utils/transaction-utils";
 
 import { Document } from "src/types/transaction-messages.types";
 import { QUERY_KEY } from "@query/query-keys";
-import { GAS_WANTED_BUFFER_MULTIPLIER } from "@common/values";
-import { calculateAdjustedGasFee } from "@utils/gas-utils";
+import { buildGasInfo } from "./build-gas-info";
 
 const REFETCH_INTERVAL = 10_000;
 
@@ -25,7 +24,7 @@ export const useGetEstimateGasInfo = (
     return makeEstimateGasTransaction(document, transactionService, gasUsed, gasPrice);
   }
 
-  return useQuery({
+  return useQuery<GasInfo | null, Error>({
     queryKey: [QUERY_KEY.gasInfo, document?.msgs],
     queryFn: async () => {
       if (!transactionService || !gasPrice) return null;
@@ -41,31 +40,7 @@ export const useGetEstimateGasInfo = (
         }))
         .catch(() => null);
 
-      if (!resultGasUsed) {
-        return {
-          gasFee: 0,
-          gasUsed: 0,
-          gasWanted: 0,
-          gasPrice: 0,
-          hasError: true,
-          simulateErrorMessage: "",
-        };
-      }
-
-      const { gasFee, gasUsed, gasWanted } = calculateAdjustedGasFee(
-        resultGasUsed.gasUsed,
-        gasPrice,
-        GAS_WANTED_BUFFER_MULTIPLIER,
-      );
-
-      return {
-        gasFee,
-        gasUsed,
-        gasWanted,
-        gasPrice,
-        hasError: resultGasUsed.errorMessage !== null,
-        simulateErrorMessage: resultGasUsed.errorMessage,
-      };
+      return buildGasInfo(resultGasUsed, gasPrice);
     },
     refetchInterval: REFETCH_INTERVAL,
     keepPreviousData: true,

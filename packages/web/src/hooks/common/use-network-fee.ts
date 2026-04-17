@@ -2,14 +2,12 @@ import React from "react";
 import BigNumber from "bignumber.js";
 import { useAtomValue } from "jotai";
 
-import { GasInfo, NetworkFee, useGetEstimateGasInfo, useGetGasPrice } from "@hooks/gas";
+import { GasInfo, NetworkFee, buildGasInfo, getGasUsed, useGetEstimateGasInfo, useGetGasPrice } from "@hooks/gas";
 import { Document } from "src/types/transaction-messages.types";
 import { GasToken } from "@common/values/token-constant";
 import { useGnoswapContext } from "./use-gnoswap-context";
 import { makeEstimateGasTransaction } from "@utils/transaction-utils";
 import { WalletState } from "@states/index";
-import { GAS_WANTED_BUFFER_MULTIPLIER } from "@common/values";
-import { calculateAdjustedGasFee } from "@utils/gas-utils";
 
 export interface UseNetworkFeeReturn {
   currentGasInfo: GasInfo | null;
@@ -30,7 +28,7 @@ export const useNetworkFee = (document: Document | null, gasInfo?: GasInfo | nul
     data: estimatedGasInfo,
     isLoading: isLoadingGasInfo,
     isFetching: isFetchingGasInfo,
-  } = useGetEstimateGasInfo(document, gasInfo?.gasUsed || 0);
+  } = useGetEstimateGasInfo(document, getGasUsed(gasInfo));
 
   const currentGasInfo = React.useMemo(() => estimatedGasInfo || null, [estimatedGasInfo]);
 
@@ -46,7 +44,7 @@ export const useNetworkFee = (document: Document | null, gasInfo?: GasInfo | nul
   };
 
   const networkFee: NetworkFee | null = React.useMemo(() => {
-    if (!currentGasInfo) return null;
+    if (!currentGasInfo || currentGasInfo.status !== "success") return null;
 
     return {
       amount: formatNetworkFeeAmount(currentGasInfo.gasFee),
@@ -88,41 +86,17 @@ export const useNetworkFee = (document: Document | null, gasInfo?: GasInfo | nul
         }))
         .catch(() => null);
 
-      if (!resultGasUsed) {
-        return {
-          currentGasInfo: {
-            gasFee: 0,
-            gasUsed: 0,
-            gasWanted: 0,
-            gasPrice: 0,
-            hasError: true,
-            simulateErrorMessage: "",
-          },
-          networkFee: null,
-        };
-      }
-
-      const { gasFee, gasUsed, gasWanted } = calculateAdjustedGasFee(
-        resultGasUsed.gasUsed,
-        gasPrice,
-        GAS_WANTED_BUFFER_MULTIPLIER,
-      );
-
-      const gasInfoResult: GasInfo = {
-        gasFee,
-        gasUsed,
-        gasWanted,
-        gasPrice,
-        hasError: resultGasUsed.errorMessage !== null,
-        simulateErrorMessage: resultGasUsed.errorMessage,
-      };
+      const gasInfoResult = buildGasInfo(resultGasUsed, gasPrice);
 
       return {
         currentGasInfo: gasInfoResult,
-        networkFee: {
-          amount: formatNetworkFeeAmount(gasFee),
-          denom: GasToken.symbol,
-        },
+        networkFee:
+          gasInfoResult.status === "success"
+            ? {
+                amount: formatNetworkFeeAmount(gasInfoResult.gasFee),
+                denom: GasToken.symbol,
+              }
+            : null,
       };
     } catch (error) {
       console.error("Error estimating network fee:", error);

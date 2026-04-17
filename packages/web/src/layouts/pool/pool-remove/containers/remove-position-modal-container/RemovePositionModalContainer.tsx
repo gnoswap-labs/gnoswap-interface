@@ -28,6 +28,7 @@ import { checkGnotPath, delay } from "@utils/common";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { getGasUsed } from "@hooks/gas";
 import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import RemovePositionModal from "../../components/remove-position-modal/RemovePositionModal";
@@ -117,7 +118,7 @@ const RemovePositionModalContainer = ({
     const requestWithGasInfo: RemoveLiquidityRequest = {
       ...request,
       gasFee: networkFee?.amount,
-      gasUsed: currentGasInfo?.gasUsed.toString(),
+      gasUsed: getGasUsed(currentGasInfo).toString(),
     };
 
     return await positionRepository.removeLiquidity(requestWithGasInfo).catch(() => null);

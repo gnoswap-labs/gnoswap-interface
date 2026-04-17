@@ -1,6 +1,7 @@
 import React from "react";
 
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { getGasUsed } from "@hooks/gas";
 
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
@@ -52,7 +53,7 @@ export const useRemoveExternalIncentive = (
     const requestWithGasInfo: RemoveExternalIncentiveRequest = {
       ...request,
       gasFee: networkFee?.amount,
-      gasUsed: currentGasInfo?.gasUsed.toString(),
+      gasUsed: getGasUsed(currentGasInfo).toString(),
     };
 
     return poolRepository.removeExternalIncentive(requestWithGasInfo);
