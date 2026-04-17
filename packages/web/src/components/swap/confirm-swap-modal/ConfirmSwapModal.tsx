@@ -27,6 +27,7 @@ import {
 } from "./ConfirmSwapModal.styles";
 import { formatRouterFeeStr } from "@utils/swap-utils";
 import { formatPriceImpact } from "@utils/string-utils";
+import { SwapConfirmModalState } from "@states/swap";
 
 interface ConfirmSwapModalProps {
   submitted: boolean;
@@ -43,6 +44,22 @@ interface ConfirmSwapModalProps {
 }
 
 const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
+  ...props
+}) => {
+  const swapConfirmModalState = useAtomValue(SwapState.swapConfirmModalState);
+
+  if (swapConfirmModalState.status !== "ready") {
+    return null;
+  }
+
+  return <ConfirmSwapModalContent {...props} swapConfirmModalState={swapConfirmModalState} />;
+};
+
+interface ConfirmSwapModalContentProps extends ConfirmSwapModalProps {
+  swapConfirmModalState: Extract<SwapConfirmModalState, { status: "ready" }>;
+}
+
+const ConfirmSwapModalContent: React.FC<ConfirmSwapModalContentProps> = ({
   submitted,
   swapResult,
   swap,
@@ -53,15 +70,13 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   priceImpactStatus,
   isLoading,
   connectedWallet,
+  swapConfirmModalState,
 }) => {
-  const swapConfirmModalState = useAtomValue(SwapState.swapConfirmModalState);
   const { swapSummaryInfo, swapTokenInfo, estimatedAmount, isRefetching } = swapConfirmModalState;
 
   const { t } = useTranslation();
 
   const swapRateDescription = useMemo(() => {
-    if (!swapSummaryInfo) return;
-
     const { tokenA, tokenB, swapRate, swapRateAction } = swapSummaryInfo;
 
     if (swapRateAction === SwapRateAction.ATOB) {
@@ -84,51 +99,43 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   }, [swapSummaryInfo]);
 
   const handleSwapRateDescription = useCallback(() => {
-    setSwapRateAction(
-      swapSummaryInfo?.swapRateAction === SwapRateAction.ATOB ? SwapRateAction.BTOA : SwapRateAction.ATOB,
-    );
-  }, [swapSummaryInfo?.swapRateAction]);
+    setSwapRateAction(swapSummaryInfo.swapRateAction === SwapRateAction.ATOB ? SwapRateAction.BTOA : SwapRateAction.ATOB);
+  }, [setSwapRateAction, swapSummaryInfo.swapRateAction]);
 
   const priceImpactStr = useMemo(() => {
-    if (!swapSummaryInfo) return;
     const priceImpact = swapSummaryInfo.priceImpact;
     return `${priceImpact}%`;
-  }, [swapSummaryInfo?.priceImpact]);
+  }, [swapSummaryInfo.priceImpact]);
 
   const slippageStr = useMemo(() => {
-    if (!swapTokenInfo) return;
     const slippage = swapTokenInfo.slippage;
     return `${slippage}%`;
-  }, [swapTokenInfo?.slippage]);
+  }, [swapTokenInfo.slippage]);
 
   const guaranteedTypeStr = useMemo(() => {
-    if (!swapSummaryInfo) return;
     const swapDirection = swapSummaryInfo.swapDirection;
     return t(swapDirectionToGuaranteedType(swapDirection));
-  }, [swapSummaryInfo?.swapDirection, t]);
+  }, [swapSummaryInfo.swapDirection, t]);
 
   const guaranteedStr = useMemo(() => {
-    if (!swapSummaryInfo) return;
     const { amount, currency } = swapSummaryInfo.guaranteedAmount;
     return `${toNumberFormat(amount, 6)} ${currency}`;
-  }, [swapSummaryInfo?.guaranteedAmount]);
+  }, [swapSummaryInfo.guaranteedAmount]);
 
   const gasFeeStr = useMemo(() => {
-    if (!swapSummaryInfo) return;
     const { amount, currency } = swapSummaryInfo.gasFee;
     return `${toNumberFormat(amount)} ${currency}`;
-  }, [swapSummaryInfo?.gasFee]);
+  }, [swapSummaryInfo.gasFee]);
 
   const gasFeeUSDStr = useMemo(() => {
-    if (!swapSummaryInfo) return;
     const gasFeeUSD = swapSummaryInfo.gasFeeUSD;
 
     if (Number(gasFeeUSD) < 0.01) return "<$0.01";
 
     return `$${toNumberFormat(gasFeeUSD)}`;
-  }, [swapSummaryInfo?.gasFeeUSD]);
+  }, [swapSummaryInfo.gasFeeUSD]);
 
-  const showPriceImpact = useMemo(() => !!swapSummaryInfo?.priceImpact, [swapSummaryInfo?.priceImpact]);
+  const showPriceImpact = useMemo(() => !!swapSummaryInfo.priceImpact, [swapSummaryInfo.priceImpact]);
 
   const priceImpactStatusDisplay = useMemo(() => {
     switch (priceImpactStatus) {
@@ -147,8 +154,6 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   }, [priceImpactStatus, t]);
 
   const unitSwapPrice = useMemo(() => {
-    if (!swapSummaryInfo || !swapTokenInfo) return "-";
-
     const { swapRateAction, swapRate } = swapSummaryInfo;
     const { tokenAUSD, tokenBUSD, tokenAAmount, tokenBAmount } = swapTokenInfo;
     if (swapRateAction === SwapRateAction.ATOB) {
@@ -169,34 +174,21 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   }, [swapSummaryInfo, swapTokenInfo]);
 
   const routerFeePercentageStr = useMemo(() => {
-    if (!swapSummaryInfo?.protocolFee) return null;
+    if (!swapSummaryInfo.protocolFee) return null;
     return `(${swapSummaryInfo.protocolFee})`;
-  }, [swapSummaryInfo?.protocolFee]);
+  }, [swapSummaryInfo.protocolFee]);
 
   const routerFeeStr = useMemo(() => {
     return formatRouterFeeStr(swapSummaryInfo, swapTokenInfo);
-  }, [
-    swapSummaryInfo?.routerFee,
-    swapSummaryInfo?.protocolFee,
-    swapTokenInfo?.direction,
-    swapTokenInfo?.tokenAAmount,
-    swapTokenInfo?.tokenBAmount,
-    swapTokenInfo?.tokenAUSD,
-    swapTokenInfo?.tokenBUSD,
-    swapTokenInfo?.tokenA?.symbol,
-    swapTokenInfo?.tokenB?.symbol,
-    swapTokenInfo?.tokenADecimals,
-    swapTokenInfo?.tokenBDecimals,
-  ]);
+  }, [swapSummaryInfo, swapTokenInfo]);
 
   const handleSwap = useCallback(() => {
-    if (!swapTokenInfo) return;
     swap(swapTokenInfo, estimatedAmount);
-  }, [swapTokenInfo, swap]);
+  }, [estimatedAmount, swap, swapTokenInfo]);
 
   const gasEstimateSuccess = useMemo(() => {
-    return Boolean(swapSummaryInfo?.gasEstimateSuccess);
-  }, [swapSummaryInfo?.gasEstimateSuccess]);
+    return Boolean(swapSummaryInfo.gasEstimateSuccess);
+  }, [swapSummaryInfo.gasEstimateSuccess]);
 
   return (
     <ConfirmModal>
@@ -216,22 +208,22 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
           <div className="input-group">
             <div className="first-section">
               <div className="amount-container">
-                <span className={swapSummaryInfo?.swapDirection === "EXACT_OUT" && isRefetching ? "loading" : ""}>
-                  {swapTokenInfo?.tokenAAmount}
+                <span className={swapSummaryInfo.swapDirection === "EXACT_OUT" && isRefetching ? "loading" : ""}>
+                  {swapTokenInfo.tokenAAmount}
                 </span>
                 <div className="button-wrapper">
                   <MissingLogo
-                    symbol={swapSummaryInfo?.tokenA.symbol || ""}
-                    url={swapSummaryInfo?.tokenA.logoURI}
+                    symbol={swapSummaryInfo.tokenA.symbol}
+                    url={swapSummaryInfo.tokenA.logoURI}
                     className="coin-logo"
                     width={24}
                     mobileWidth={24}
                   />
-                  <span>{swapSummaryInfo?.tokenA.symbol}</span>
+                  <span>{swapSummaryInfo.tokenA.symbol}</span>
                 </div>
               </div>
               <div className="amount-info">
-                <span className="price-text">{swapTokenInfo?.tokenAUSDStr}</span>
+                <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
               </div>
               <div className="arrow">
                 <div className="shape">
@@ -241,25 +233,25 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
             </div>
             <div className="second-section">
               <div className="amount-container">
-                <span className={swapSummaryInfo?.swapDirection === "EXACT_IN" && isRefetching ? "loading" : ""}>
-                  {swapTokenInfo?.tokenBAmount}
+                <span className={swapSummaryInfo.swapDirection === "EXACT_IN" && isRefetching ? "loading" : ""}>
+                  {swapTokenInfo.tokenBAmount}
                 </span>
                 <div className="button-wrapper">
                   <MissingLogo
-                    symbol={swapSummaryInfo?.tokenB.symbol || ""}
-                    url={swapSummaryInfo?.tokenB.logoURI}
+                    symbol={swapSummaryInfo.tokenB.symbol}
+                    url={swapSummaryInfo.tokenB.logoURI}
                     className="coin-logo"
                     width={24}
                     mobileWidth={24}
                   />
-                  <span>{swapSummaryInfo?.tokenB.symbol}</span>
+                  <span>{swapSummaryInfo.tokenB.symbol}</span>
                 </div>
               </div>
               <div className="amount-info">
-                <span className="price-text">{swapTokenInfo?.tokenBUSDStr}</span>
+                <span className="price-text">{swapTokenInfo.tokenBUSDStr}</span>
                 {showPriceImpact && (
                   <PriceImpactWrapper priceImpact={priceImpactStatus}>
-                    {formatPriceImpact(swapSummaryInfo?.priceImpact || 0)}
+                    {formatPriceImpact(swapSummaryInfo.priceImpact)}
                   </PriceImpactWrapper>
                 )}
               </div>
@@ -284,7 +276,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                     </PriceImpactStatusWrapper>{" "}
                     <PriceImpactStrWrapper priceImpact={priceImpactStatus}>
                       {"("}
-                      {(swapSummaryInfo?.priceImpact || 0) > 0 ? "+" : ""}
+                      {swapSummaryInfo.priceImpact > 0 ? "+" : ""}
                       {priceImpactStr}
                       {")"}
                     </PriceImpactStrWrapper>

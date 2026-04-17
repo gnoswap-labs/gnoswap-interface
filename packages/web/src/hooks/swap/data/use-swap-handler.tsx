@@ -630,14 +630,14 @@ export const useSwapHandler = () => {
   useEffect(() => {
     if (!swapTokenInfo || !swapSummaryInfo) return;
 
-    setSwapConfirmModalState(prev => ({
-      ...prev,
+    setSwapConfirmModalState({
+      status: "ready",
       swapTokenInfo,
       swapSummaryInfo,
       isRefetching,
       estimatedAmount,
       tokenAmountLimit,
-    }));
+    });
   }, [swapTokenInfo, swapSummaryInfo, isRefetching, estimatedAmount, tokenAmountLimit]);
 
   const isAvailSwap = useMemo(() => {
