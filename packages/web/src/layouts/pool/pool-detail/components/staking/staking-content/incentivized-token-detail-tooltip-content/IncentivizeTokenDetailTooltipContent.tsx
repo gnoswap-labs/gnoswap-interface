@@ -19,7 +19,7 @@ const IncentivizeTokenDetailTooltipContent: React.FC<Props> = ({ poolStakings }:
   const { getGnotPath } = useGnotToGnot();
   const { t } = useTranslation();
 
-  const displayRemainingAmount = (staking: PoolStakingModel) => {
+  const displayDistributableAmount = (staking: PoolStakingModel) => {
     return staking.incentiveType !== "INTERNAL";
   };
 
@@ -67,11 +67,11 @@ const IncentivizeTokenDetailTooltipContent: React.FC<Props> = ({ poolStakings }:
                     })}
                   </S.ItemDataGridValue>
                 </S.DataGridItem>
-                {displayRemainingAmount(item) && (
+                {displayDistributableAmount(item) && (
                   <S.DataGridItem>
                     <S.ItemDataGridLabel>{t("Pool:staking.tooltip.rewardInfo.remainingAmt")}</S.ItemDataGridLabel>
                     <S.ItemDataGridValue>
-                      {formatPoolPairAmount(item.remainingAmount, {
+                      {formatPoolPairAmount(item.distributableAmount, {
                         isKMB: false,
                         decimals: item.rewardToken.decimals,
                       })}

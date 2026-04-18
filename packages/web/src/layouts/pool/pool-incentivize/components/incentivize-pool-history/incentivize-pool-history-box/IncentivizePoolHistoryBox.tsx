@@ -12,14 +12,13 @@ import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { GNS_TOKEN } from "@common/values/token-constant";
 
-import { IncentivizePoolHistoryBoxWrapper } from "./IncentivizePoolHistoryBox.styles";
+import { IncentivizePoolHistoryBoxWrapper, historyTooltipContent } from "./IncentivizePoolHistoryBox.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
-import { historyTooltipContent } from "./IncentivizePoolHistoryBox.styles";
 import { useRemoveExternalIncentive } from "@query/pools/use-remove-external-incentive";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
@@ -145,7 +144,7 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
             </Tooltip>
           </div>
           <div className="value">
-            {toNumberFormat(stakingData.remainingAmount, 6)} {rewardToken.symbol}
+            {toNumberFormat(stakingData.distributableAmount, 6)} {rewardToken.symbol}
           </div>
         </div>
         <div className="row">
