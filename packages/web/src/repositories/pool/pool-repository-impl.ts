@@ -10,8 +10,8 @@ import { CommonError } from "@common/errors";
 import { PoolError } from "@common/errors/pool";
 import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
 import { PACKAGE_POOL_PATH, PACKAGE_STAKER_PATH } from "@constants/environment.constant";
-import { GnoProvider } from "@gnolang/gno-js-client";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
+import { GnoProvider } from "@gnolang/gno-js-client";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { PoolStakingMapper } from "@models/pool/mapper/pool-staking-mapper";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
@@ -25,7 +25,7 @@ import {
   evaluateExpressionToUint256,
   makeABCIParams,
 } from "@utils/rpc-utils";
-import { withTransactionGuard, generateSendTransactionParams } from "@utils/transaction-utils";
+import { generateSendTransactionParams, withTransactionGuard } from "@utils/transaction-utils";
 import { PoolListResponse, PoolPricesResponse, PoolRepository, PoolResponse } from ".";
 import {
   makeCreateExternalIncentiveMessageWithApproves,
@@ -103,7 +103,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     const response = await this.networkClient.get<{
       data: PoolStakingResponse[];
     }>({
-      url: `/staking/?provider=${address}`,
+      url: `/staking?address=${address}`,
     });
     const pools = response?.data?.data ? response.data.data.map(PoolStakingMapper.fromResponse) : [];
     return pools;

@@ -1,6 +1,7 @@
 import { TokenModel } from "@models/token/token-model";
 
 export interface PoolStakingResponse {
+  incentiveId: string;
   incentiveType: string;
   tier: string;
   poolPath: string;
@@ -10,5 +11,6 @@ export interface PoolStakingResponse {
   startTimestamp: string;
   endTimestamp: string;
   unvestedAmount: string;
+  penaltyAmount: string;
   createdBlockHeight: string;
 }

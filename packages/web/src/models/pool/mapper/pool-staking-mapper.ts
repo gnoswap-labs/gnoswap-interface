@@ -10,6 +10,8 @@ export class PoolStakingMapper {
   public static fromResponse(poolStaking: PoolStakingResponse): PoolStakingModel {
     return {
       ...poolStaking,
+      incentiveId: poolStaking?.incentiveId || null,
+      unvestedAmount: poolStaking.penaltyAmount || poolStaking.unvestedAmount || "0",
       incentiveType: poolStaking.incentiveType as INCENTIVE_TYPE,
     };
   }
