@@ -6,6 +6,7 @@ export interface PoolStakingResponse {
   poolPath: string;
   rewardToken: TokenModel;
   incentivizedAmount: string;
+  distributableAmount: string;
   remainingAmount: string;
   startTimestamp: string;
   endTimestamp: string;
