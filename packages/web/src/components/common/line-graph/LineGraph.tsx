@@ -401,11 +401,14 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
     const optimizeValue = function (value: number, height: number) {
       if (hasExternalYRange) {
-        if (minMaxGap.isZero()) {
+        // Derive gap from the explicit external bounds so the mapping stays correct
+        // for single-point data and for callers that may pass a negative yAxisMin.
+        const externalGap = maxValueBigNumber.minus(minValueBigNumber);
+        if (externalGap.isZero()) {
           return height / 2;
         }
 
-        return height - ((value - minValue) * height) / minMaxGap.toNumber();
+        return height - ((value - minValue) * height) / externalGap.toNumber();
       }
 
       // The base line wrapper will > top and bottom of graph 10 % so the height will be 110% of graph height

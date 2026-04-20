@@ -143,6 +143,99 @@ function truncateToSignificantDigits(value: BigNumber, significantDigits: number
   return negative ? `-${normalized}` : normalized;
 }
 
+function getYAxisInfo(
+  datas: string[],
+  tokenPrice?: number,
+): { labels: string[]; minValue: string; maxValue: string } {
+  const Y_AXIS_LABEL_COUNT = 6;
+  const Y_AXIS_STEP_COUNT = Y_AXIS_LABEL_COUNT - 1;
+  // Fall back to fixed-decimal formatting until the price query resolves to avoid
+  // a visible flicker where high-priced tokens briefly render with significant
+  // digits before switching.
+  const useSignificantFormat = tokenPrice !== undefined && tokenPrice < 1;
+
+  // Derive the number of decimals from the step unit so narrow ranges on tokens
+  // priced >= $1 still get distinct labels (e.g., step 0.001 -> 3 decimals).
+  const formatYAxisValue = (value: BigNumber, scaleUnit?: BigNumber) => {
+    if (useSignificantFormat) {
+      return truncateToSignificantDigits(value, 3);
+    }
+    const unitDecimals = scaleUnit ? Math.max(0, -(scaleUnit.e ?? 0)) : 0;
+    const decimals = Math.max(2, unitDecimals);
+    return value.toFixed(decimals);
+  };
+
+  const numericDatas = datas.map(item => new BigNumber(item)).filter(item => !item.isNaN());
+
+  if (numericDatas.length === 0) {
+    return {
+      labels: new Array(Y_AXIS_LABEL_COUNT).fill(formatYAxisValue(new BigNumber(0))),
+      minValue: "0",
+      maxValue: "0",
+    };
+  }
+
+  const lowest = BigNumber.min(...numericDatas);
+  const highest = BigNumber.max(...numericDatas);
+
+  if (highest.isZero() && lowest.isZero()) {
+    return {
+      labels: new Array(Y_AXIS_LABEL_COUNT).fill(formatYAxisValue(new BigNumber(0))),
+      minValue: "0",
+      maxValue: "0",
+    };
+  }
+
+  const targetMax = highest.multipliedBy(1.2);
+  const targetMin = lowest.multipliedBy(0.8);
+  const targetRange = targetMax.minus(targetMin);
+
+  // Pick the smallest allowed scale unit so the window [minPoint..maxPoint] covers
+  let scaleUnit = findAllowedScaleUnit(targetRange.dividedBy(Y_AXIS_STEP_COUNT));
+
+  let maxPoint = roundToMultiple(targetMax, scaleUnit, "ceil");
+  let minPoint = roundToMultiple(targetMin, scaleUnit, "floor");
+  let actualSteps = maxPoint.minus(minPoint).dividedBy(scaleUnit).integerValue(BigNumber.ROUND_HALF_UP).toNumber();
+
+  for (let attempt = 0; attempt < 16 && actualSteps > Y_AXIS_STEP_COUNT; attempt++) {
+    scaleUnit = findAllowedScaleUnit(scaleUnit, false);
+    maxPoint = roundToMultiple(targetMax, scaleUnit, "ceil");
+    minPoint = roundToMultiple(targetMin, scaleUnit, "floor");
+    actualSteps = maxPoint.minus(minPoint).dividedBy(scaleUnit).integerValue(BigNumber.ROUND_HALF_UP).toNumber();
+  }
+
+  // If the snapped window fits in fewer than 5 steps, expand so we always render
+  while (
+    maxPoint.minus(minPoint).dividedBy(scaleUnit).integerValue(BigNumber.ROUND_HALF_UP).toNumber() < Y_AXIS_STEP_COUNT
+  ) {
+    const topSlack = maxPoint.minus(targetMax).abs();
+    const bottomSlack = targetMin.minus(minPoint).abs();
+
+    if (topSlack.isLessThanOrEqualTo(bottomSlack)) {
+      maxPoint = maxPoint.plus(scaleUnit);
+    } else {
+      const candidateMin = minPoint.minus(scaleUnit);
+      if (lowest.isGreaterThanOrEqualTo(0) && candidateMin.isLessThan(0)) {
+        maxPoint = maxPoint.plus(scaleUnit);
+      } else {
+        minPoint = candidateMin;
+      }
+    }
+  }
+
+  const labels: string[] = [];
+  for (let i = 0; i <= Y_AXIS_STEP_COUNT; i++) {
+    const value = minPoint.plus(scaleUnit.multipliedBy(i));
+    labels.push(formatYAxisValue(value, scaleUnit));
+  }
+
+  return {
+    labels,
+    minValue: minPoint.toFixed(),
+    maxValue: maxPoint.toFixed(),
+  };
+}
+
 const priceChangeDetailInit = {
   latestPrice: "",
   priceToday: "",
@@ -272,7 +365,7 @@ const TokenChartContainer: React.FC = () => {
     }));
   }, [prices1d, prices7d, prices1m, prices1y, currentTab]);
 
-  const getChartInfo = useCallback(() => {
+  const chartInfo = useMemo<ChartInfo>(() => {
     // You will ask me why the code is like this. old data it needs like that
     const length =
       currentTab === TokenChartGraphPeriods[0]
@@ -318,108 +411,21 @@ const TokenChartContainer: React.FC = () => {
 
     const { labels: yAxisLabels, minValue: yAxisMin, maxValue: yAxisMax } = getYAxisInfo(
       datas.map(item => item.amount.value),
-      currentPrice ? Number(currentPrice) : undefined,
+      currentPrice !== undefined ? Number(currentPrice) : undefined,
     );
-    const chartInfo: ChartInfo = {
+    return {
       xAxisLabels,
       yAxisLabels,
       yAxisMin,
       yAxisMax,
       datas: datas,
     };
-    return chartInfo;
-  }, [currentTab, chartData, countXAxis, breakpoint, currentPrice]);
-
-  const getYAxisInfo = (
-    datas: string[],
-    tokenPrice?: number,
-  ): { labels: string[]; minValue: string; maxValue: string } => {
-    const Y_AXIS_LABEL_COUNT = 6;
-    const Y_AXIS_STEP_COUNT = Y_AXIS_LABEL_COUNT - 1;
-    const useSignificantFormat = (tokenPrice ?? 0) < 1;
-
-    const formatYAxisValue = (value: BigNumber) => {
-      if (useSignificantFormat) {
-        return truncateToSignificantDigits(value, 3);
-      }
-      return value.toFixed(2);
-    };
-
-    const numericDatas = datas.map(item => new BigNumber(item)).filter(item => !item.isNaN());
-
-    if (numericDatas.length === 0) {
-      return {
-        labels: new Array(Y_AXIS_LABEL_COUNT).fill(formatYAxisValue(new BigNumber(0))),
-        minValue: "0",
-        maxValue: "0",
-      };
-    }
-
-    const lowest = BigNumber.min(...numericDatas);
-    const highest = BigNumber.max(...numericDatas);
-
-    if (highest.isZero() && lowest.isZero()) {
-      return {
-        labels: new Array(Y_AXIS_LABEL_COUNT).fill(formatYAxisValue(new BigNumber(0))),
-        minValue: "0",
-        maxValue: "0",
-      };
-    }
-
-    const targetMax = highest.multipliedBy(1.2);
-    const targetMin = lowest.multipliedBy(0.8);
-    const targetRange = targetMax.minus(targetMin);
-
-    // Pick the smallest allowed scale unit so the window [minPoint..maxPoint] covers
-    let scaleUnit = findAllowedScaleUnit(targetRange.dividedBy(Y_AXIS_STEP_COUNT));
-
-    let maxPoint = roundToMultiple(targetMax, scaleUnit, "ceil");
-    let minPoint = roundToMultiple(targetMin, scaleUnit, "floor");
-    let actualSteps = maxPoint.minus(minPoint).dividedBy(scaleUnit).integerValue(BigNumber.ROUND_HALF_UP).toNumber();
-
-    for (let attempt = 0; attempt < 16 && actualSteps > Y_AXIS_STEP_COUNT; attempt++) {
-      scaleUnit = findAllowedScaleUnit(scaleUnit, false);
-      maxPoint = roundToMultiple(targetMax, scaleUnit, "ceil");
-      minPoint = roundToMultiple(targetMin, scaleUnit, "floor");
-      actualSteps = maxPoint.minus(minPoint).dividedBy(scaleUnit).integerValue(BigNumber.ROUND_HALF_UP).toNumber();
-    }
-
-    // If the snapped window fits in fewer than 5 steps, expand so we always render
-    while (
-      maxPoint.minus(minPoint).dividedBy(scaleUnit).integerValue(BigNumber.ROUND_HALF_UP).toNumber() < Y_AXIS_STEP_COUNT
-    ) {
-      const topSlack = maxPoint.minus(targetMax).abs();
-      const bottomSlack = targetMin.minus(minPoint).abs();
-
-      if (topSlack.isLessThanOrEqualTo(bottomSlack)) {
-        maxPoint = maxPoint.plus(scaleUnit);
-      } else {
-        const candidateMin = minPoint.minus(scaleUnit);
-        if (lowest.isGreaterThanOrEqualTo(0) && candidateMin.isLessThan(0)) {
-          maxPoint = maxPoint.plus(scaleUnit);
-        } else {
-          minPoint = candidateMin;
-        }
-      }
-    }
-
-    const labels: string[] = [];
-    for (let i = 0; i <= Y_AXIS_STEP_COUNT; i++) {
-      const value = minPoint.plus(scaleUnit.multipliedBy(i));
-      labels.push(formatYAxisValue(value));
-    }
-
-    return {
-      labels,
-      minValue: minPoint.toFixed(),
-      maxValue: maxPoint.toFixed(),
-    };
-  };
+  }, [currentTab, chartData, countXAxis, breakpoint, currentPrice, size.width]);
 
   return (
     <TokenChart
       tokenInfo={tokenInfo}
-      chartInfo={getChartInfo()}
+      chartInfo={chartInfo}
       tabs={TokenChartGraphPeriods}
       currentTab={currentTab}
       changeTab={changeTab}
