@@ -106,6 +106,9 @@ export interface LineGraphProps {
   popupYValueFormatter?: (value: string) => string;
   hasNoLabel?: boolean;
   referenceTimeForFirstLine?: string;
+  yAxisMin?: string;
+  yAxisMax?: string;
+  fillAreaBelowLine?: boolean;
 }
 
 export interface LineGraphRef {
@@ -174,6 +177,9 @@ const LineGraph: React.FC<LineGraphProps> = ({
   popupYValueFormatter,
   hasNoLabel = false,
   referenceTimeForFirstLine,
+  yAxisMin,
+  yAxisMax,
+  fillAreaBelowLine = false,
 }: LineGraphProps) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
@@ -193,7 +199,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
   useEffect(() => {
     updatePoints(datas, width, height);
-  }, [datas, width, height, baseLineNumberWidth]);
+  }, [datas, width, height, baseLineNumberWidth, yAxisMin, yAxisMax]);
 
   useEffect(() => {
     onLineGraphMouseMove?.(datas[currentPointIndex]);
@@ -213,6 +219,12 @@ const LineGraph: React.FC<LineGraphProps> = ({
     let minTime: number;
     let maxTime: number;
 
+    const hasExternalYRange =
+      yAxisMin !== undefined &&
+      yAxisMax !== undefined &&
+      !new BigNumber(yAxisMin).isNaN() &&
+      !new BigNumber(yAxisMax).isNaN();
+
     const mappedDatas = (() => {
       const newDatas = datas.map(item => ({
         value: new BigNumber(item.value).toNumber(),
@@ -222,8 +234,8 @@ const LineGraph: React.FC<LineGraphProps> = ({
       const values = newDatas.map(data => data.value);
       const times = newDatas.map(data => data.time);
 
-      minValue = Math.min(...values);
-      maxValue = Math.max(...values);
+      minValue = hasExternalYRange ? new BigNumber(yAxisMin as string).toNumber() : Math.min(...values);
+      maxValue = hasExternalYRange ? new BigNumber(yAxisMax as string).toNumber() : Math.max(...values);
       minTime = Math.min(...times);
       maxTime = Math.max(...times);
 
@@ -388,6 +400,17 @@ const LineGraph: React.FC<LineGraphProps> = ({
     setBaseLineNumberWidth(baseLineNumberWidthComputation);
 
     const optimizeValue = function (value: number, height: number) {
+      if (hasExternalYRange) {
+        // Derive gap from the explicit external bounds so the mapping stays correct
+        // for single-point data and for callers that may pass a negative yAxisMin.
+        const externalGap = maxValueBigNumber.minus(minValueBigNumber);
+        if (externalGap.isZero()) {
+          return height / 2;
+        }
+
+        return height - ((value - minValue) * height) / externalGap.toNumber();
+      }
+
       // The base line wrapper will > top and bottom of graph 10 % so the height will be 110% of graph height
       const graphHeight = (() => {
         if (showBaseLine) {
@@ -563,6 +586,21 @@ const LineGraph: React.FC<LineGraphProps> = ({
       return undefined;
     }
 
+    // When enabled, the gradient area fills from the price line down to the bottom of
+    // the chart so the fill never escapes the curve.
+    if (fillAreaBelowLine) {
+      const bottomY = height + (customHeight || 0);
+      let path = `M ${points[0].x},${bottomY}`;
+      path += ` L ${points[0].x},${points[0].y}`;
+      for (let i = 1; i < points.length; i++) {
+        const point = points[i];
+        path += smooth ? " " + bezierCommand(point, i, points) : ` L ${point.x},${point.y}`;
+      }
+      path += ` L ${points[points.length - 1].x},${bottomY}`;
+      path += " Z";
+      return path;
+    }
+
     // Start at the first point's x coordinate at firstPoint.y level
     let path = `M ${points[0].x},${firstPoint.y}`;
 
@@ -589,7 +627,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
     path += " Z";
 
     return path;
-  }, [points, smooth, firstPoint.y]);
+  }, [points, smooth, firstPoint.y, fillAreaBelowLine, height, customHeight]);
 
   const isLightTheme = theme.themeKey === "light";
 

@@ -37,6 +37,8 @@ export interface TokenInfo {
 export interface ChartInfo {
   xAxisLabels: string[];
   yAxisLabels: string[];
+  yAxisMin?: string;
+  yAxisMax?: string;
   datas: {
     amount: {
       value: string;
@@ -94,6 +96,8 @@ const TokenChart: React.FC<TokenChartProps> = ({
         <TokenChartGraph
           xAxisLabels={chartInfo?.xAxisLabels || []}
           yAxisLabels={chartInfo?.yAxisLabels || []}
+          yAxisMin={chartInfo?.yAxisMin}
+          yAxisMax={chartInfo?.yAxisMax}
           datas={chartInfo?.datas || []}
           currentTab={currentTab}
           componentRef={componentRef}
