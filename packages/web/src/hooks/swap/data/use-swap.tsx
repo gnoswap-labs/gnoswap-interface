@@ -33,7 +33,7 @@ interface UseSwapProps {
   swapFee?: number;
 }
 
-export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: UseSwapProps) => {
+export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) => {
   const { transactionService, swapRouterRepository, rpcProvider } = useGnoswapContext();
   const { getNextReferralAddress, nextReferralAddress } = useReferral();
   const { data: gasTokenPrice } = useGetTokenPrices(GasToken.path);
@@ -74,8 +74,6 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
 
   const selectedTokenPair = tokenA !== null && tokenB !== null;
 
-  const exactOutPadding = 1 / (1 - swapFee / 10000);
-
   const isSameToken = useMemo(() => {
     if (!tokenA || !tokenB) {
       return false;
@@ -100,8 +98,8 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       return debouncedSwapAmount;
     }
 
-    return debouncedSwapAmount ? debouncedSwapAmount * exactOutPadding : debouncedSwapAmount;
-  }, [debouncedSwapAmount, direction, exactOutPadding]);
+    return debouncedSwapAmount;
+  }, [debouncedSwapAmount, direction]);
 
   const { data: estimatedSwapResult, isLoading: isEstimatedSwapLoading, isRefetching, error } = useGetRoutes(
     {
@@ -133,7 +131,14 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     }
 
     return "SUCCESS";
-  }, [debouncedSwapAmount, estimatedSwapResult?.status, isEstimatedSwapLoading, isSameToken, selectedTokenPair, shouldFetch]);
+  }, [
+    debouncedSwapAmount,
+    estimatedSwapResult?.status,
+    isEstimatedSwapLoading,
+    isSameToken,
+    selectedTokenPair,
+    shouldFetch,
+  ]);
 
   const estimatedRoutes: EstimatedRoute[] | null = useMemo(() => {
     if (isSameToken) {
@@ -300,7 +305,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
         return swapRouterRepository.sendExactOutSwapRoute({
           inputToken: tokenA,
           outputToken: tokenB,
-          tokenAmount: Number(tokenAmount) * exactOutPadding,
+          tokenAmount: Number(tokenAmount),
           estimatedRoutes: estimatedRoutes,
           slippage: slippage,
           originAmount: estimatedSwapResult?.originAmount || 0,
@@ -321,7 +326,6 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       slippage,
       tokenAmountLimit,
       tokenB,
-      exactOutPadding,
       getNextReferralAddress,
       networkFee?.amount,
       currentGasUsed,
@@ -333,10 +337,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     if (isSameToken) {
       tokenAmount = swapAmount || 0;
     } else {
-      tokenAmount =
-        direction === "EXACT_IN"
-          ? Number(debouncedSwapAmount || 0)
-          : Number(debouncedSwapAmount || 0) * exactOutPadding;
+      tokenAmount = direction === "EXACT_IN" ? Number(debouncedSwapAmount || 0) : Number(debouncedSwapAmount || 0);
     }
 
     return {
@@ -353,7 +354,6 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     };
   }, [
     direction,
-    exactOutPadding,
     isSameToken,
     tokenA,
     tokenB,

@@ -14,6 +14,7 @@ import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { drySwap } from "@common/clients/gno-provider/methods/dry-swap";
 import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
 import { GnoProvider } from "@gnolang/gno-js-client";
+import { generateSendTransactionParams, withTransactionGuard } from "@utils/transaction-utils";
 import { GetRoutesRequest } from "./request/get-routes-request";
 import { DrySwapRequest, SwapRouteRequest } from "./request/swap-route-request";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
@@ -27,7 +28,6 @@ import {
   makeUnwrapTokenMessages,
   makeWrapTokenMessages,
 } from "./swap-router.message";
-import { generateSendTransactionParams, withTransactionGuard } from "@utils/transaction-utils";
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
