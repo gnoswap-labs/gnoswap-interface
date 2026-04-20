@@ -199,7 +199,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
   useEffect(() => {
     updatePoints(datas, width, height);
-  }, [datas, width, height, baseLineNumberWidth]);
+  }, [datas, width, height, baseLineNumberWidth, yAxisMin, yAxisMax]);
 
   useEffect(() => {
     onLineGraphMouseMove?.(datas[currentPointIndex]);
