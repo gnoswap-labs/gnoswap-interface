@@ -18,6 +18,7 @@ import IconOpenLink from "@components/common/icons/IconOpenLink";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useRemoveExternalIncentive } from "@query/pools/use-remove-external-incentive";
 import { historyTooltipContent, IncentivizePoolHistoryBoxWrapper } from "./IncentivizePoolHistoryBox.styles";
 
@@ -37,11 +38,28 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
   });
 
   const { removeExternalIncentive } = useRemoveExternalIncentive(poolPath, incentiveId ?? "");
+  const { getGnotPath } = useGnotToGnot();
 
   const currentPool = React.useMemo(() => {
-    const temp = pool ? PoolMapper.toPoolSelectItemInfo(pool) : null;
-    return temp;
-  }, [pool]);
+    if (!pool) {
+      return null;
+    }
+
+    const poolInfo = PoolMapper.toPoolSelectItemInfo(pool);
+    return {
+      ...poolInfo,
+      tokenA: {
+        ...poolInfo.tokenA,
+        symbol: getGnotPath(poolInfo.tokenA).symbol,
+        logoURI: getGnotPath(poolInfo.tokenA).logoURI,
+      },
+      tokenB: {
+        ...poolInfo.tokenB,
+        symbol: getGnotPath(poolInfo.tokenB).symbol,
+        logoURI: getGnotPath(poolInfo.tokenB).logoURI,
+      },
+    };
+  }, [pool, getGnotPath]);
 
   const isSelected = currentPool != null;
 
