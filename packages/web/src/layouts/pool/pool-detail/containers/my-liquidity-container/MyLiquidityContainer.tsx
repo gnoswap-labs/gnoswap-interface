@@ -7,7 +7,7 @@ import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { useMessage } from "@hooks/common/use-message";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { usePosition } from "@hooks/pool/data/use-position";
+import { buildClaimAllInputFromPositions, usePosition } from "@hooks/pool/data/use-position";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
@@ -247,7 +247,8 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     broadcastLoading(getMessage(DexEvent.CLAIM_FEE, "pending", messageData));
 
     setLoadingTransactionClaim(true);
-    claimAll({ rpcProvider }).then(response => {
+    const claimAllInput = buildClaimAllInputFromPositions(openedPosition.filter(item => !item.closed));
+    claimAll({ rpcProvider, input: claimAllInput }).then(response => {
       if (response) {
         if (response.code === 0 || response.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
           enqueueEvent({

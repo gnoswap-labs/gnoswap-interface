@@ -15,6 +15,7 @@ import {
   GetPositionsByAddressResult,
   IncreaseLiquidityFailedResponse,
   IncreaseLiquiditySuccessResponse,
+  PositionRewardsResponse,
   RepositionLiquidityFailedResponse,
   RepositionLiquiditySuccessResponse,
 } from "./response";
@@ -30,6 +31,8 @@ export interface PositionRepository {
       withClosed?: boolean;
     },
   ) => Promise<GetPositionsByAddressResult>;
+
+  getPositionRewardsByAddress: (address: string) => Promise<PositionRewardsResponse | null>;
 
   getPositionBins: (lpTokenId: string, count: 20 | 40) => Promise<PositionBinModel[]>;
 

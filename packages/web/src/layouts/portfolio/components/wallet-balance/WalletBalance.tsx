@@ -1,7 +1,9 @@
 import React from "react";
 
-import { PoolPositionModel } from "@models/position/pool-position-model";
+import { PositionModel } from "@models/position/position-model";
+import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
+import { PositionRewardsResponse } from "@repositories/position/response";
 import { DEVICE_TYPE } from "@styles/media";
 
 import WalletBalanceDetail, { BalanceDetailInfo } from "./wallet-balance-detail/WalletBalanceDetail";
@@ -17,7 +19,9 @@ interface WalletBalanceProps {
   balanceDetailInfo: BalanceDetailInfo;
   isSwitchNetwork: boolean;
   loadngTransactionClaim: boolean;
-  positions: PoolPositionModel[];
+  positions: PositionModel[];
+  positionRewards: PositionRewardsResponse | null;
+  tokens: TokenModel[];
   tokenPrices: Record<string, TokenPriceModel>;
   walletType: WalletTypeState;
 
@@ -38,6 +42,8 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({
   isSwitchNetwork,
   loadngTransactionClaim,
   positions,
+  positionRewards,
+  tokens,
   tokenPrices,
   walletType,
 }) => {
@@ -60,6 +66,8 @@ const WalletBalance: React.FC<WalletBalanceProps> = ({
         isSwitchNetwork={isSwitchNetwork}
         loadngTransactionClaim={loadngTransactionClaim}
         positions={positions}
+        positionRewards={positionRewards}
+        tokens={tokens}
         tokenPrices={tokenPrices}
       />
     </WalletBalanceWrapper>

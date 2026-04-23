@@ -1,7 +1,11 @@
-import { PositionModel } from "@models/position/position-model";
-
 export interface ClaimAllRequest {
-  positions: PositionModel[];
+  swapFeeTokenPaths: string[];
+
+  hasGnotStakingReward: boolean;
+
+  positionsWithSwapFee: string[];
+
+  positionsWithStakingReward: string[];
 
   recipient: string;
 

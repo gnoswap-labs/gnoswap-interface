@@ -33,6 +33,8 @@ describe("WalletBalance Component", () => {
       isSwitchNetwork: false,
       loadngTransactionClaim: false,
       positions: [],
+      positionRewards: null,
+      tokens: [],
       tokenPrices: {},
       walletType: {
         type: "ADENA" as WalletType,

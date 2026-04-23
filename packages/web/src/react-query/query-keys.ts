@@ -56,6 +56,7 @@ export enum QUERY_KEY {
   poolFromDb = "pool_from_db",
   // positions
   positions = "positions",
+  positionRewards = "positionRewards",
   positionHistory = "positionHistory",
   poolPositions = "poolPositions",
   estimateReposition = "estimateReposition",
