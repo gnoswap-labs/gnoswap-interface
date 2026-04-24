@@ -40,7 +40,7 @@ const IncentivizePoolHistoryContainer = () => {
         remainingAmount: shiftToDisplay(displayToken, item.remainingAmount || "0"),
         incentivizedAmount: shiftToDisplay(displayToken, item.incentivizedAmount || "0"),
         unvestedAmount: shiftToDisplay(displayToken, item.unvestedAmount || "0"),
-        claimablePenaltyAmount: shiftToDisplay(displayToken, item.claimablePenaltyAmount || "0"),
+        claimableUnvestedAmount: shiftToDisplay(displayToken, item.claimableUnvestedAmount || "0"),
         depositGnsAmount: shiftToDisplay(GNS_TOKEN, (item as ExtendedPoolStakingModel).depositGnsAmount || "0"),
       };
     })
