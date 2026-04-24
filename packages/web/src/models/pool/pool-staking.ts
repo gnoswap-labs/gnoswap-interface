@@ -12,7 +12,7 @@ export interface PoolStakingModel {
   startTimestamp: string;
   endTimestamp: string;
   unvestedAmount: string;
-  claimableAmount: string;
+  claimablePenaltyAmount: string;
   createdBlockHeight: string;
 }
 
