@@ -31,7 +31,7 @@ export class PoolConverter {
         ...data,
         incentivizedAmount: AmountConverter.convertSingle(data.rewardToken, data.incentivizedAmount),
         remainingAmount: AmountConverter.convertSingle(data.rewardToken, data.remainingAmount),
-        claimableUnvestedAmount: AmountConverter.convertSingle(data.rewardToken, data.claimableUnvestedAmount),
+        claimableAmount: AmountConverter.convertSingle(data.rewardToken, data.claimableAmount),
       };
     });
   }
