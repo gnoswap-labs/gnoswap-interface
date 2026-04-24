@@ -11,8 +11,8 @@ export class PoolStakingMapper {
     return {
       ...poolStaking,
       incentiveId: poolStaking?.incentiveId || null,
-      unvestedAmount: poolStaking.estimatedPenaltyAmount || poolStaking.penaltyAmount || "0",
-      claimableUnvestedAmount: poolStaking.claimablePenaltyAmount || "0",
+      unvestedAmount: poolStaking.unvestedAmount || "0",
+      claimableUnvestedAmount: poolStaking.claimableUnvestedAmount || "0",
       incentiveType: poolStaking.incentiveType as INCENTIVE_TYPE,
     };
   }
