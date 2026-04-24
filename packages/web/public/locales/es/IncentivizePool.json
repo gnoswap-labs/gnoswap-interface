@@ -68,6 +68,7 @@
         "claim": "Reclamación"
       },
       "label": {
+        "claimableUnvestedAmount": "Importe reclamable no adquirido",
         "depositAmount": "Importe del depósito",
         "endDate": "Fecha final",
         "incentivizedAmount": "Importe incentivado",
@@ -78,6 +79,7 @@
         "unvestedAmount": "Importe no invertido"
       },
       "tooltip": {
+        "claimableUnvestedAmount": "El importe que puede reclamar actualmente el proveedor una vez finalizada la incentivación.",
         "depositAmount": "La cantidad de tokens depositados cuando<br />\nse creó este incentivo. Es totalmente<br />\nreembolsable al finalizar la<br />\nincentivación.",
         "incentivizedAmount": "La cantidad de tokens incentivados al<br />\npool.",
         "remainingAmount": "La cantidad de fichas que quedan en la<br />\nreserva.",

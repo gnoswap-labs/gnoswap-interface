@@ -68,6 +68,7 @@
         "claim": "Réclamation"
       },
       "label": {
+        "claimableUnvestedAmount": "Montant réclamable non acquis",
         "depositAmount": "Montant du dépôt",
         "endDate": "Date de fin",
         "incentivizedAmount": "Montant incitatif",
@@ -78,6 +79,7 @@
         "unvestedAmount": "Montant non acquis"
       },
       "tooltip": {
+        "claimableUnvestedAmount": "Le montant actuellement réclamé par le prestataire après la fin de l'incitation.",
         "depositAmount": "Le montant des jetons déposés lorsque<br />\ncette incitation a été créée. Il est entièrement<br />\nremboursable à l'issue de l'incitation<br />\nincitation.",
         "incentivizedAmount": "Le montant des tokens incités à rejoindre le<br />\npool.",
         "remainingAmount": "La quantité de jetons restants dans le<br />\npool.",

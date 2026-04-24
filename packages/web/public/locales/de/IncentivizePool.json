@@ -68,6 +68,7 @@
         "claim": "Anspruch"
       },
       "label": {
+        "claimableUnvestedAmount": "Anspruchsberechtigter unverfallbarer Betrag",
         "depositAmount": "Einzahlungsbetrag",
         "endDate": "Enddatum",
         "incentivizedAmount": "Angereicherter Betrag",
@@ -78,6 +79,7 @@
         "unvestedAmount": "Unverfallbarer Betrag"
       },
       "tooltip": {
+        "claimableUnvestedAmount": "Der Betrag, den der Anbieter nach Beendigung der Incentivierung derzeit beanspruchen kann.",
         "depositAmount": "Die Menge der Token, die hinterlegt wurde, als<br />\ndiese Incentivierung erstellt wurde. Er ist vollständig<br />\nwird nach Abschluss der Incentivierung<br />\nIncentivierung.",
         "incentivizedAmount": "Die Menge der Token, die in den<br />\nPool.",
         "remainingAmount": "Die Anzahl der im Pool verbleibenden Token<br />\nPool.",

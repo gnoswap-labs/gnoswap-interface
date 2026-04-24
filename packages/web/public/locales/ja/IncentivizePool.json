@@ -68,6 +68,7 @@
         "claim": "クレーム"
       },
       "label": {
+        "claimableUnvestedAmount": "請求可能な未投資額",
         "depositAmount": "預金額",
         "endDate": "終了日",
         "incentivizedAmount": "インセンティブ額",
@@ -78,6 +79,7 @@
         "unvestedAmount": "未給付額"
       },
       "tooltip": {
+        "claimableUnvestedAmount": "インセンティブ終了後、プロバイダーが現在請求可能な金額。",
         "depositAmount": "このインセンティブが設定されたときに預けられたトークンの量。<br />\nこのインセンティブが作成されたこの金額は<br />\n払い戻し可能です。<br />\n払い戻されます。",
         "incentivizedAmount": "トークンの量。<br />\nプールへのトークンの量。",
         "remainingAmount": "プールに残っているトークンの量。<br />\nプールに残っているトークンの量。",

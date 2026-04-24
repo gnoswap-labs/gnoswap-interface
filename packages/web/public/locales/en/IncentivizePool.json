@@ -68,6 +68,7 @@
         "claim": "Claim"
       },
       "label": {
+        "claimableUnvestedAmount": "Claimable Unvested Amount",
         "depositAmount": "Deposit Amount",
         "claimableUnvestedAmount": "Claimable Unvested Amount",
         "endDate": "End Date",
@@ -79,6 +80,7 @@
         "unvestedAmount": "Unvested Amount"
       },
       "tooltip": {
+        "claimableUnvestedAmount": "The amount currently claimable by the provider after the incentivization has been ended.",
         "depositAmount": "The amount of tokens deposited when<br />\nthis incentivization was created. It’s fully<br />\nrefundable upon the completion of the<br />\nincentivization.",
         "claimableUnvestedAmount": "The amount currently claimable by the provider after the incentivization has been ended.",
         "incentivizedAmount": "The amount of tokens incentivized to the<br />\npool.",
