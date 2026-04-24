@@ -171,12 +171,12 @@ export const useSelectPool = ({
 
   const { data: poolFromDb, isLoading: isLoadingPoolFromDb } = useGetPoolFromDb(convertPath, {
     enabled: !!convertPath && !isCreate,
-    refetchInterval: shouldRefetch ? 10_000 : false,
+    refetchInterval: shouldRefetch ? 5_000 : false,
   });
 
   const { data: liquidity, isLoading: isLoadingLiquidity } = useGetPoolLiquidity(calculatedPoolPath, {
     enabled: !!calculatedPoolPath && !isCreate,
-    refetchInterval: shouldRefetch ? 10_000 : false,
+    refetchInterval: shouldRefetch ? 5_000 : false,
   });
 
   const { data: ticks, isLoading: isLoadingTicks } = useGetPoolTicks(calculatedPoolPath, {
@@ -191,7 +191,7 @@ export const useSelectPool = ({
 
   const { data: sqrtPriceX96, isLoading: isLoadingSqrtPriceX96 } = useGetPoolSqrtPriceX96(calculatedPoolPath, {
     enabled: !!calculatedPoolPath && !isCreate,
-    refetchInterval: shouldRefetch ? 10_000 : false,
+    refetchInterval: shouldRefetch ? 5_000 : false,
   });
 
   const isLoadingPoolInfo =

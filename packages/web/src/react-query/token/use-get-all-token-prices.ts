@@ -5,7 +5,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { QUERY_KEY } from "../query-keys";
 
-const REFETCH_INTERVAL = 10_000;
+const REFETCH_INTERVAL = 5_000;
 
 export const useGetAllTokenPrices = (options?: UseQueryOptions<Record<string, TokenPriceModel>, Error>) => {
   const { tokenRepository } = useGnoswapContext();
