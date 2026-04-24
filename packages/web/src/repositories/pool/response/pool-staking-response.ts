@@ -12,5 +12,6 @@ export interface PoolStakingResponse {
   endTimestamp: string;
   unvestedAmount: string;
   penaltyAmount: string;
+  claimableUnvestedAmount: string;
   createdBlockHeight: string;
 }

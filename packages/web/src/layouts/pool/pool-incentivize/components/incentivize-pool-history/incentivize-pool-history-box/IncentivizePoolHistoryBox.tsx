@@ -182,6 +182,25 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
 
         <div className="row">
           <div className="label">
+            {t("IncentivizePool:incentiPool.history.label.claimableUnvestedAmount")}
+            <Tooltip
+              FloatingContent={
+                <span css={historyTooltipContent}>
+                  <Trans ns="IncentivizePool" components={{ br: <br /> }} i18nKey={"incentiPool.history.tooltip.claimableUnvestedAmount"} />
+                </span>
+              }
+              placement="top"
+            >
+              <IconInfo size={16} />
+            </Tooltip>
+          </div>
+          <div className="value">
+            {formatAmount(stakingData.claimableUnvestedAmount, rewardToken.decimals)} {rewardToken.symbol}
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="label">
             {t("IncentivizePool:incentiPool.history.label.depositAmount")}
             <Tooltip
               FloatingContent={
