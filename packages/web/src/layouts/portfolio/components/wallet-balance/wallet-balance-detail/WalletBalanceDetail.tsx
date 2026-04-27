@@ -1,5 +1,3 @@
-// Todo: Delete this code
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -8,12 +6,16 @@ import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import RewardTooltipContent, {
   PositionRewardForTooltip,
 } from "@components/common/reward-tooltip-content/RewardTooltipContent";
-import { RewardType, DisplayRewardType } from "@constants/option.constant";
-import { PoolPositionModel } from "@models/position/pool-position-model";
+import { DisplayRewardType } from "@constants/option.constant";
+import { PositionModel } from "@models/position/position-model";
+import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
+import {
+  PositionRewardTokenAmount,
+  PositionRewardsGroupResponse,
+  PositionRewardsResponse,
+} from "@repositories/position/response";
 import { DEVICE_TYPE } from "@styles/media";
-import { mapToDisplayRewardType } from "@utils/reward-utils";
-import { PositionConverter } from "@services/converters/position";
 
 import StakedPostionsTooltipContent from "./sateked-positions-tooltip/StakedPositinosTooltipContent";
 import WalletBalanceDetailInfo from "./wallet-balance-detail-info/WalletBalanceDetailInfo";
@@ -37,9 +39,26 @@ export interface WalletBalanceDetailProps {
   claimAll: () => void;
   breakpoint: DEVICE_TYPE;
   loadngTransactionClaim: boolean;
-  positions: PoolPositionModel[];
+  positions: PositionModel[];
+  positionRewards: PositionRewardsResponse | null;
+  tokens: TokenModel[];
   tokenPrices: Record<string, TokenPriceModel>;
 }
+
+type RewardGroupKey = "swapFee" | "internalReward" | "externalReward";
+
+const REWARD_GROUP_TO_DISPLAY: Record<RewardGroupKey, DisplayRewardType> = {
+  swapFee: "SWAP_FEE",
+  internalReward: "INTERNAL_REWARD",
+  externalReward: "EXTERNAL_REWARD",
+};
+
+const emptyTooltipInfo = (): { [key in DisplayRewardType]: PositionRewardForTooltip[] } => ({
+  SWAP_FEE: [],
+  INTERNAL_REWARD: [],
+  EXTERNAL_REWARD: [],
+  NONE: [],
+});
 
 const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
   balanceDetailInfo,
@@ -49,199 +68,78 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
   isSwitchNetwork,
   loadngTransactionClaim,
   positions,
-  tokenPrices,
+  positionRewards,
+  tokens,
 }) => {
   const { t } = useTranslation();
 
-  const accountPositions: PoolPositionModel[] = useMemo(() => {
-    return PositionConverter.convertPositions(positions);
-  }, [positions]);
+  const tokenByPath = useMemo(() => {
+    const map: Record<string, TokenModel> = {};
+    tokens.forEach(token => {
+      map[token.path] = token;
+    });
+    return map;
+  }, [tokens]);
 
   const stakedPositions = useMemo(() => {
-    if (!accountPositions || accountPositions.length === 0) return [];
+    if (!positions || positions.length === 0) return [];
 
-    return accountPositions
-      .filter(item => item.staked === true)
+    return positions
+      .filter(item => item.staked && !item.closed)
       .map(item => ({
         lpId: item.lpTokenId,
         totalValue: item.stakedUsdValue,
         stakedDate: item.stakedAt,
         tokenUri: item.tokenUri,
       }));
-  }, [accountPositions]);
+  }, [positions]);
 
-  const { claimedRewardInfo, claimableRewardInfo } = useMemo((): {
-    claimedRewardInfo: { [key in DisplayRewardType]: PositionRewardForTooltip[] };
-    claimableRewardInfo: { [key in DisplayRewardType]: PositionRewardForTooltip[] };
-  } => {
-    const initRewardTypeMap = () => ({
-      SWAP_FEE: {},
-      INTERNAL_REWARD: {},
-      EXTERNAL_REWARD: {},
-      NONE: {},
+  const buildRewardInfo = (group: PositionRewardsGroupResponse) => {
+    const result = emptyTooltipInfo();
+
+    (Object.keys(REWARD_GROUP_TO_DISPLAY) as RewardGroupKey[]).forEach(groupKey => {
+      const displayType = REWARD_GROUP_TO_DISPLAY[groupKey];
+      const items: PositionRewardTokenAmount[] = group[groupKey] ?? [];
+
+      const tooltipItems: PositionRewardForTooltip[] = [];
+
+      items.forEach(item => {
+        const token = tokenByPath[item.tokenPath];
+        if (!token) return;
+
+        tooltipItems.push({
+          rewardType: displayType,
+          token,
+          amount: Number(item.amount),
+          usd: Number(item.usdValue),
+          accumulatedRewardOf1d: null,
+          accumulatedRewardOf1dUsd: null,
+        });
+      });
+
+      result[displayType] = tooltipItems;
     });
 
-    const claimableMap: {
-      [key in DisplayRewardType]: { [key in string]: PositionRewardForTooltip };
-    } = initRewardTypeMap();
+    return result;
+  };
 
-    const claimedMap: {
-      [key in DisplayRewardType]: { [key in string]: PositionRewardForTooltip };
-    } = initRewardTypeMap();
-
-    if (!accountPositions || accountPositions.length === 0) {
+  const { claimableRewardInfo, claimedRewardInfo } = useMemo(() => {
+    if (!positionRewards) {
       return {
-        claimedRewardInfo: {
-          SWAP_FEE: [],
-          INTERNAL_REWARD: [],
-          EXTERNAL_REWARD: [],
-          NONE: [],
-        },
-        claimableRewardInfo: {
-          SWAP_FEE: [],
-          INTERNAL_REWARD: [],
-          EXTERNAL_REWARD: [],
-          NONE: [],
-        },
+        claimableRewardInfo: emptyTooltipInfo(),
+        claimedRewardInfo: emptyTooltipInfo(),
       };
     }
 
-    const getAccumulatedRewardOf1d = (cached: PositionRewardForTooltip, current: { accuReward1D: string | null }) => {
-      if (cached.accumulatedRewardOf1d === null) {
-        if (current.accuReward1D === null) {
-          return null;
-        }
-        return Number(current.accuReward1D);
-      }
-      if (current.accuReward1D === null) {
-        return cached.accumulatedRewardOf1d;
-      }
-      return cached.accumulatedRewardOf1d + Number(current.accuReward1D);
-    };
-
-    const processClaimableRewards = () => {
-      accountPositions
-        .flatMap(position => position.rewards)
-        .forEach(reward => {
-          const rewardType = reward.rewardToken.rewardType as RewardType;
-          const displayRewardType = mapToDisplayRewardType(rewardType);
-
-          if (!claimableMap[displayRewardType]) {
-            console.warn(`Invalid rewardType: ${rewardType}, mapped to ${displayRewardType}`);
-            return;
-          }
-
-          const tokenPrice = tokenPrices[reward.rewardToken.priceID]?.usd
-            ? Number(tokenPrices[reward.rewardToken.priceID].usd)
-            : null;
-
-          const rewardInfo: PositionRewardForTooltip = {
-            token: reward.rewardToken,
-            rewardType: displayRewardType,
-            amount: reward.claimableAmount ? Number(reward.claimableAmount) : null,
-            usd: reward.claimableUsd ? Number(reward.claimableUsd) : null,
-            accumulatedRewardOf1d: reward.accuReward1D ? Number(reward.accuReward1D) : null,
-            accumulatedRewardOf1dUsd:
-              reward.accuReward1D && tokenPrice ? Number(reward.accuReward1D) * tokenPrice : null,
-          };
-
-          const existingReward = claimableMap[displayRewardType]?.[reward.rewardToken.priceID];
-
-          if (existingReward) {
-            const accumulatedRewardOf1d = getAccumulatedRewardOf1d(existingReward, reward);
-            const accumulatedRewardOf1dUsd =
-              accumulatedRewardOf1d !== null && tokenPrice !== null ? accumulatedRewardOf1d * tokenPrice : null;
-
-            claimableMap[displayRewardType][reward.rewardToken.priceID] = {
-              ...existingReward,
-              amount: (existingReward.amount || 0) + (rewardInfo.amount || 0),
-              usd:
-                existingReward.usd !== null && rewardInfo.usd !== null
-                  ? existingReward.usd + rewardInfo.usd
-                  : existingReward.usd || rewardInfo.usd,
-              accumulatedRewardOf1d,
-              accumulatedRewardOf1dUsd,
-            };
-          } else {
-            claimableMap[displayRewardType][reward.rewardToken.priceID] = rewardInfo;
-          }
-        });
-    };
-
-    const processClaimedRewards = () => {
-      accountPositions
-        .flatMap(position => position.claimedRewards)
-        .forEach(claimed => {
-          const rewardType = claimed.rewardToken.rewardType as RewardType;
-          const displayRewardType = mapToDisplayRewardType(rewardType);
-
-          if (!claimedMap[displayRewardType]) {
-            console.warn(`Invalid rewardType: ${rewardType}, mapped to ${displayRewardType}`);
-            return;
-          }
-
-          const tokenPrice = tokenPrices[claimed.rewardToken.priceID]?.usd
-            ? Number(tokenPrices[claimed.rewardToken.priceID].usd)
-            : null;
-
-          const claimedAmount = Number(claimed.claimedAmount);
-          const claimedUsd = tokenPrice ? claimedAmount * tokenPrice : null;
-
-          const rewardInfo: PositionRewardForTooltip = {
-            token: claimed.rewardToken,
-            rewardType: displayRewardType,
-            amount: claimedAmount,
-            usd: claimedUsd,
-            accumulatedRewardOf1d: null,
-            accumulatedRewardOf1dUsd: null,
-          };
-
-          const existingReward = claimedMap[displayRewardType]?.[claimed.rewardToken.priceID];
-
-          if (existingReward) {
-            claimedMap[displayRewardType][claimed.rewardToken.priceID] = {
-              ...existingReward,
-              amount: (existingReward.amount || 0) + claimedAmount,
-              usd:
-                existingReward.usd !== null && claimedUsd !== null
-                  ? existingReward.usd + claimedUsd
-                  : existingReward.usd || claimedUsd,
-            };
-          } else {
-            claimedMap[displayRewardType][claimed.rewardToken.priceID] = rewardInfo;
-          }
-        });
-    };
-
-    processClaimableRewards();
-    processClaimedRewards();
-
     return {
-      claimedRewardInfo: {
-        SWAP_FEE: Object.values(claimedMap.SWAP_FEE),
-        INTERNAL_REWARD: Object.values(claimedMap.INTERNAL_REWARD),
-        EXTERNAL_REWARD: Object.values(claimedMap.EXTERNAL_REWARD),
-        NONE: Object.values(claimedMap.NONE),
-      },
-      claimableRewardInfo: {
-        SWAP_FEE: Object.values(claimableMap.SWAP_FEE).filter(reward => reward.amount && reward.amount > 0),
-        INTERNAL_REWARD: Object.values(claimableMap.INTERNAL_REWARD).filter(
-          reward => reward.amount && reward.amount > 0,
-        ),
-        EXTERNAL_REWARD: Object.values(claimableMap.EXTERNAL_REWARD).filter(
-          reward => reward.amount && reward.amount > 0,
-        ),
-        NONE: Object.values(claimableMap.NONE).filter(reward => reward.amount && reward.amount > 0),
-      },
+      claimableRewardInfo: buildRewardInfo(positionRewards.claimable),
+      claimedRewardInfo: buildRewardInfo(positionRewards.claimed),
     };
-  }, [accountPositions, tokenPrices]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [positionRewards, tokenByPath]);
 
-  const hasInfo = (data: {
-    [key in DisplayRewardType]: PositionRewardForTooltip[];
-  }): boolean => {
-    if (data.SWAP_FEE.length === 0 && data.INTERNAL_REWARD.length === 0 && data.EXTERNAL_REWARD.length === 0)
-      return false;
-    return true;
+  const hasInfo = (data: { [key in DisplayRewardType]: PositionRewardForTooltip[] }): boolean => {
+    return data.SWAP_FEE.length > 0 || data.INTERNAL_REWARD.length > 0 || data.EXTERNAL_REWARD.length > 0;
   };
 
   const isClaimableAll = useMemo(() => {
@@ -272,7 +170,6 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         }
         breakpoint={breakpoint}
       />
-      {/* Todo: Change to claimableRewardInfo -> claimedRewardInfo */}
       <WalletBalanceDetailInfo
         loading={balanceDetailInfo.loadingPositions}
         title={t("Wallet:overral.totalClaimed.label")}

@@ -17,7 +17,7 @@ import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { PositionRepository } from "./position-repository";
 import {
-  makeClaimAllMessageWithApproves,
+  makeClaimAllMessageWithApprovesByIds,
   makeClaimMessageWithApproves,
   makeDecreaseLiquidityMessagesWithApproves,
   makeIncreaseLiquidityMessagesWithApproves,
@@ -39,6 +39,7 @@ import {
   PositionBinResponse,
   PositionListResponse,
   PositionResponse,
+  PositionRewardsResponse,
   RepositionLiquidityFailedResponse,
   RepositionLiquiditySuccessResponse,
 } from "./response";
@@ -131,6 +132,20 @@ export class PositionRepositoryImpl implements PositionRepository {
     };
   };
 
+  getPositionRewardsByAddress = async (address: string): Promise<PositionRewardsResponse | null> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await this.networkClient.get<{
+      data: PositionRewardsResponse;
+    }>({
+      url: "/users/" + address + "/position/reward",
+    });
+
+    return response?.data?.data ?? null;
+  };
+
   sendClaim = async (request: ClaimRequest): Promise<WalletResponse<SendTransactionResponse<string[] | null>>> => {
     if (this.walletClient === null) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
@@ -175,13 +190,24 @@ export class PositionRepositoryImpl implements PositionRepository {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }
 
-    const { gasFee, gasUsed, positions, recipient } = request;
+    const {
+      gasFee,
+      gasUsed,
+      swapFeeTokenPaths,
+      hasGnotStakingReward,
+      positionsWithSwapFee,
+      positionsWithStakingReward,
+      recipient,
+    } = request;
     const makeTxMessageRequests = {
       caller: recipient,
-      positions,
+      swapFeeTokenPaths,
+      hasGnotStakingReward,
+      positionsWithSwapFee,
+      positionsWithStakingReward,
     };
 
-    const messages = await makeClaimAllMessageWithApproves(makeTxMessageRequests, (packagePath, owner, spender) =>
+    const messages = await makeClaimAllMessageWithApprovesByIds(makeTxMessageRequests, (packagePath, owner, spender) =>
       getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
 

@@ -110,6 +110,77 @@ export function makeClaimMessageWithApproves(
   return makeTransactionMessagesWithApproves(messages, approveMessageInfos, fetchAllowance);
 }
 
+export function makeClaimAllMessageWithApprovesByIds(
+  {
+    swapFeeTokenPaths,
+    hasGnotStakingReward,
+    positionsWithSwapFee,
+    positionsWithStakingReward,
+    caller,
+  }: {
+    swapFeeTokenPaths: string[];
+    hasGnotStakingReward: boolean;
+    positionsWithSwapFee: string[];
+    positionsWithStakingReward: string[];
+    caller: string;
+  },
+  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+): Promise<TransactionMessage[]> {
+  const approveMessageInfos: TokenApproveMessageInfo[] = [];
+
+  swapFeeTokenPaths.forEach(tokenPath => {
+    approveMessageInfos.push({
+      tokenPath,
+      targetAddress: PACKAGE_POOL_ADDRESS,
+      amount: MAX_INT64,
+      caller,
+    });
+    approveMessageInfos.push({
+      tokenPath,
+      targetAddress: PACKAGE_POSITION_ADDRESS,
+      amount: MAX_INT64,
+      caller,
+    });
+  });
+
+  if (hasGnotStakingReward) {
+    approveMessageInfos.push({
+      tokenPath: WRAPPED_GNOT_PATH,
+      targetAddress: PACKAGE_STAKER_ADDRESS,
+      amount: MAX_INT64,
+      caller,
+    });
+  }
+
+  const messages: TransactionMessage[] = [];
+
+  positionsWithSwapFee.forEach(lpTokenId => {
+    messages.push(
+      makeTransactionMessage({
+        send: "",
+        func: TransactionMessageFunctionType.CollectFee,
+        packagePath: PACKAGE_POSITION_PATH,
+        args: [lpTokenId.toString()],
+        caller,
+      }),
+    );
+  });
+
+  positionsWithStakingReward.forEach(lpTokenId => {
+    messages.push(
+      makeTransactionMessage({
+        send: "",
+        func: TransactionMessageFunctionType.CollectReward,
+        packagePath: PACKAGE_STAKER_PATH,
+        args: [lpTokenId.toString()],
+        caller,
+      }),
+    );
+  });
+
+  return makeTransactionMessagesWithApproves(messages, approveMessageInfos, fetchAllowance);
+}
+
 export function makeClaimAllMessageWithApproves(
   {
     positions,

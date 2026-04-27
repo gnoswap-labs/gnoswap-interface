@@ -1,19 +1,58 @@
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
 import { CommonError } from "@common/errors";
+import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { useNetworkFee } from "@hooks/common/use-network-fee";
 import { getGasUsed } from "@hooks/gas";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionModel } from "@models/position/position-model";
-import { makeClaimAllMessageWithApproves, makeClaimMessageWithApproves } from "@repositories/position/position.message";
+import { makeClaimAllMessageWithApprovesByIds, makeClaimMessageWithApproves } from "@repositories/position/position.message";
 import { ClaimAllRequest } from "@repositories/position/request";
 import { ClaimRequest } from "@repositories/position/request/claim-request";
-import BigNumber from "bignumber.js";
+import { checkGnotPath } from "@utils/common";
 import { useCallback } from "react";
 import { useGnoswapContext } from "../../common/use-gnoswap-context";
 
-export const usePosition = (positions: PositionModel[]) => {
+export interface ClaimAllInput {
+  swapFeeTokenPaths: string[];
+  hasGnotStakingReward: boolean;
+  positionsWithSwapFee: string[];
+  positionsWithStakingReward: string[];
+}
+
+export const buildClaimAllInputFromPositions = (positions: PositionModel[]): ClaimAllInput => {
+  const swapFeeTokenPathSet = new Set<string>();
+  const positionsWithSwapFeeSet = new Set<string>();
+  const positionsWithStakingRewardSet = new Set<string>();
+  let hasGnotStakingReward = false;
+
+  positions.forEach(position => {
+    position.rewards.forEach(reward => {
+      if (Number(reward.claimableAmount ?? "0") <= 0) return;
+
+      if (reward.rewardToken.rewardType === "SWAP_FEE") {
+        swapFeeTokenPathSet.add(reward.rewardToken.path);
+        positionsWithSwapFeeSet.add(position.lpTokenId);
+      } else {
+        positionsWithStakingRewardSet.add(position.lpTokenId);
+        if (checkGnotPath(reward.rewardToken.path) === WRAPPED_GNOT_PATH) {
+          hasGnotStakingReward = true;
+        }
+      }
+    });
+  });
+
+  return {
+    swapFeeTokenPaths: Array.from(swapFeeTokenPathSet),
+    hasGnotStakingReward,
+    positionsWithSwapFee: Array.from(positionsWithSwapFeeSet),
+    positionsWithStakingReward: Array.from(positionsWithStakingRewardSet),
+  };
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const usePosition = (_positions?: PositionModel[]) => {
   const { transactionService, positionRepository } = useGnoswapContext();
   const { walletClient, account } = useWallet();
   const { estimateNetworkFee } = useNetworkFee(null);
@@ -34,9 +73,12 @@ export const usePosition = (positions: PositionModel[]) => {
 
     const makeMessagesRequests = {
       caller: request.recipient,
-      positions: request.positions,
+      swapFeeTokenPaths: request.swapFeeTokenPaths,
+      hasGnotStakingReward: request.hasGnotStakingReward,
+      positionsWithSwapFee: request.positionsWithSwapFee,
+      positionsWithStakingReward: request.positionsWithStakingReward,
     };
-    const txMessages = await makeClaimAllMessageWithApproves(makeMessagesRequests, getAllowance);
+    const txMessages = await makeClaimAllMessageWithApprovesByIds(makeMessagesRequests, getAllowance);
 
     const txDoc = await transactionService.createDocument({ messages: txMessages });
     await transactionService.createTransaction(txDoc);
@@ -52,32 +94,31 @@ export const usePosition = (positions: PositionModel[]) => {
   };
 
   const claimAll = useCallback(
-    async ({ rpcProvider }: { rpcProvider: GnoProvider | null }) => {
+    async ({ rpcProvider, input }: { rpcProvider: GnoProvider | null; input: ClaimAllInput }) => {
       const address = account?.address;
       if (!address) {
         return null;
       }
 
-      const claimablePositions = positions.filter(
-        position =>
-          position.rewards.reduce(
-            (accum, currReward) =>
-              BigNumber(accum)
-                .plus(Number(currReward.claimableAmount ?? "0"))
-                .toNumber(),
-            0,
-          ) > 0,
-      );
+      if (input.positionsWithSwapFee.length === 0 && input.positionsWithStakingReward.length === 0) {
+        return null;
+      }
 
       const walletType = walletClient?.getWalletType();
 
-      const request: ClaimAllRequest = { positions: claimablePositions, recipient: address };
+      const request: ClaimAllRequest = {
+        swapFeeTokenPaths: input.swapFeeTokenPaths,
+        hasGnotStakingReward: input.hasGnotStakingReward,
+        positionsWithSwapFee: input.positionsWithSwapFee,
+        positionsWithStakingReward: input.positionsWithStakingReward,
+        recipient: address,
+      };
 
       return await (walletType === "ADENA"
         ? buildAdenaWalletClaimAllAction(request)
         : buildSocialWalletClaimAllAction(rpcProvider, request));
     },
-    [walletClient, account?.address, positionRepository, positions],
+    [walletClient, account?.address, positionRepository],
   );
 
   const buildAdenaWalletClaimAction = async (request: ClaimRequest) => {
