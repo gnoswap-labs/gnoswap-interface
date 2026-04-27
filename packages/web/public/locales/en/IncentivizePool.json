@@ -70,7 +70,6 @@
       "label": {
         "claimableUnvestedAmount": "Claimable Unvested Amount",
         "depositAmount": "Deposit Amount",
-        "claimableUnvestedAmount": "Claimable Unvested Amount",
         "endDate": "End Date",
         "incentivizedAmount": "Incentivized Amount",
         "pool": "Pool",
@@ -80,12 +79,11 @@
         "unvestedAmount": "Unvested Amount"
       },
       "tooltip": {
-        "claimableUnvestedAmount": "The amount currently claimable by the provider after the incentivization has been ended.",
-        "depositAmount": "The amount of tokens deposited when<br />\nthis incentivization was created. It’s fully<br />\nrefundable upon the completion of the<br />\nincentivization.",
-        "claimableUnvestedAmount": "The amount currently claimable by the provider after the incentivization has been ended.",
-        "incentivizedAmount": "The amount of tokens incentivized to the<br />\npool.",
-        "remainingAmount": "The amount of tokens remaining in the<br />\npool.",
-        "unvestedAmount": "The amount of tokens unvested due to<br />\nwarm-up period <link/>. This amount will be shown<br/>\nup and claimable by the provider address upon<br />\nthe completion of the incentivization."
+        "claimableUnvestedAmount": "The amount the provider can claim after the incentivization ends.",
+        "depositAmount": "The amount of GNS deposited when this incentivization was created. It is fully refundable once the incentivization is complete.",
+        "incentivizedAmount": "The amount of tokens allocated to this pool as incentives.",
+        "remainingAmount": "The amount of tokens still remaining in this incentivization.",
+        "unvestedAmount": "The amount of tokens that remains unvested during the warm-up period<link/>. Once the incentivization ends, this amount becomes claimable by the provider."
       }
     }
   },

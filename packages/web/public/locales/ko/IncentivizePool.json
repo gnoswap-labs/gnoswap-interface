@@ -68,9 +68,8 @@
         "claim": "청구하기"
       },
       "label": {
-        "claimableUnvestedAmount": "청구 가능한 미투자 금액",
-        "depositAmount": "예치 수량",
         "claimableUnvestedAmount": "청구 가능 미분배 수량",
+        "depositAmount": "예치 수량",
         "endDate": "종료 날짜",
         "incentivizedAmount": "인센티브 수량",
         "pool": "풀",
@@ -80,12 +79,11 @@
         "unvestedAmount": "미분배 수량"
       },
       "tooltip": {
-        "claimableUnvestedAmount": "인센티브가 종료된 후 현재 공급자가 청구할 수 있는 금액입니다.",
-        "depositAmount": "인센티브가 생성될 때 예치된 토큰의 수량입니다. <br />\n인센티브 기간이 종료되면 전액 환급받을 수 있습니다.",
-        "claimableUnvestedAmount": "인센티브 종료 후 제공자가 현재 청구할 수 있는 미분배 수량입니다.",
+        "claimableUnvestedAmount": "인센티브 종료 후 제공자가 청구할 수 있는 미분배 수량입니다.",
+        "depositAmount": "이 인센티브를 생성할 때 예치한 GNS 수량입니다. 인센티브가 종료되면 전액 환급받을 수 있습니다.",
         "incentivizedAmount": "풀에 인센티브로 제공되는 토큰의 수량입니다.",
-        "remainingAmount": "풀에 남은 토큰의 수량입니다.",
-        "unvestedAmount": "Warm-up 기간 <link/>으로 인해 아직 분배되지 않은 토큰 수량입니다. <br/>이 수량은 인센티브가 종료되면 제공자의 주소에서 확인되며<br/>청구할 수 있습니다."
+        "remainingAmount": "이 인센티브에 아직 남아 있는 토큰 수량입니다.",
+        "unvestedAmount": "Warm-up 기간<link/> 동안 아직 분배되지 않은 토큰 수량입니다. 인센티브가 종료되면 이 수량은 제공자가 청구할 수 있습니다."
       }
     }
   },
