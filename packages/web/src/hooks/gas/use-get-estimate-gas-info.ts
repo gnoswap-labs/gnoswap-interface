@@ -8,7 +8,7 @@ import { Document } from "src/types/transaction-messages.types";
 import { QUERY_KEY } from "@query/query-keys";
 import { buildGasInfo } from "./build-gas-info";
 
-const REFETCH_INTERVAL = 10_000;
+const REFETCH_INTERVAL = 5_000;
 
 export const useGetEstimateGasInfo = (
   document: Document | null | undefined,
