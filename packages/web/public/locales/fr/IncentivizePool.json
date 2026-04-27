@@ -68,6 +68,7 @@
         "claim": "Réclamation"
       },
       "label": {
+        "claimableUnvestedAmount": "Montant réclamable non acquis",
         "depositAmount": "Montant du dépôt",
         "endDate": "Date de fin",
         "incentivizedAmount": "Montant incitatif",
@@ -78,10 +79,11 @@
         "unvestedAmount": "Montant non acquis"
       },
       "tooltip": {
-        "depositAmount": "Le montant des jetons déposés lorsque<br />\ncette incitation a été créée. Il est entièrement<br />\nremboursable à l'issue de l'incitation<br />\nincitation.",
-        "incentivizedAmount": "Le montant des tokens incités à rejoindre le<br />\npool.",
-        "remainingAmount": "La quantité de jetons restants dans le<br />\npool.",
-        "unvestedAmount": "Le montant des jetons non acquis en raison de la période d'échauffement.<br />\npériode d'échauffement <link/>. Ce montant sera affiché sur<br/>et pourra être réclamé par l'adresse du fournisseur à la fin de la période d'incitation.<br />\nl'achèvement de l'incitation."
+        "claimableUnvestedAmount": "Le montant actuellement réclamé par le prestataire après la fin de l'incitation.",
+        "depositAmount": "Le montant des jetons déposés lors de la création de cette incitation. Il est entièrement remboursable à l'issue de l'incitation.",
+        "incentivizedAmount": "Le montant des jetons incités au pool.",
+        "remainingAmount": "La quantité de jetons restants dans la réserve.",
+        "unvestedAmount": "Le montant des jetons non acquis en raison de la période d'échauffement <link/>. Ce montant sera affiché et pourra être réclamé par l'adresse du fournisseur à l'issue de l'incitation."
       }
     }
   },

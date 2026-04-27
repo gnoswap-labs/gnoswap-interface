@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import Link from "next/link";
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -107,12 +106,8 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
             {t("IncentivizePool:incentiPool.history.label.incentivizedAmount")}
             <Tooltip
               FloatingContent={
-                <span css={tooltipConent}>
-                  <Trans
-                    ns="IncentivizePool"
-                    components={{ br: <br /> }}
-                    i18nKey={"incentiPool.history.tooltip.incentivizedAmount"}
-                  />
+                <span css={historyTooltipContent}>
+                  {t("IncentivizePool:incentiPool.history.tooltip.incentivizedAmount")}
                 </span>
               }
               placement="top"
@@ -129,12 +124,8 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
             {t("IncentivizePool:incentiPool.history.label.remainingAmount")}
             <Tooltip
               FloatingContent={
-                <span css={tooltipConent}>
-                  <Trans
-                    ns="IncentivizePool"
-                    components={{ br: <br /> }}
-                    i18nKey={"incentiPool.history.tooltip.remainingAmount"}
-                  />
+                <span css={historyTooltipContent}>
+                  {t("IncentivizePool:incentiPool.history.tooltip.remainingAmount")}
                 </span>
               }
               placement="top"
@@ -153,10 +144,8 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
               FloatingContent={
                 <span css={historyTooltipContent}>
                   <Trans
-                    className="test"
                     ns="IncentivizePool"
                     components={{
-                      br: <br />,
                       link: (
                         <Link
                           href="https://docs.gnoswap.io/core-concepts/liquidity-mining#warm-up-periods"
@@ -182,15 +171,30 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
 
         <div className="row">
           <div className="label">
+            {t("IncentivizePool:incentiPool.history.label.claimableUnvestedAmount")}
+            <Tooltip
+              FloatingContent={
+                <span css={historyTooltipContent}>
+                  {t("IncentivizePool:incentiPool.history.tooltip.claimableUnvestedAmount")}
+                </span>
+              }
+              placement="top"
+            >
+              <IconInfo size={16} />
+            </Tooltip>
+          </div>
+          <div className="value">
+            {formatAmount(stakingData.claimableUnvestedAmount, rewardToken.decimals)} {rewardToken.symbol}
+          </div>
+        </div>
+
+        <div className="row">
+          <div className="label">
             {t("IncentivizePool:incentiPool.history.label.depositAmount")}
             <Tooltip
               FloatingContent={
-                <span css={tooltipConent}>
-                  <Trans
-                    ns="IncentivizePool"
-                    components={{ br: <br /> }}
-                    i18nKey={"incentiPool.history.tooltip.depositAmount"}
-                  />
+                <span css={historyTooltipContent}>
+                  {t("IncentivizePool:incentiPool.history.tooltip.depositAmount")}
                 </span>
               }
               placement="top"
@@ -218,10 +222,6 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
 
   return <IncentivizePoolHistoryBoxWrapper>{renderDataMapping()}</IncentivizePoolHistoryBoxWrapper>;
 };
-
-const tooltipConent = css`
-  font-size: 14px;
-`;
 
 interface ChipProps {
   text: string;

@@ -68,6 +68,7 @@
         "claim": "索赔"
       },
       "label": {
+        "claimableUnvestedAmount": "可申请的未归属金额",
         "depositAmount": "存款金额",
         "endDate": "结束日期",
         "incentivizedAmount": "奖励金额",
@@ -78,10 +79,11 @@
         "unvestedAmount": "未归属金额"
       },
       "tooltip": {
-        "depositAmount": "创建此激励机制时存入的代币数量。<br />\n创建该激励机制时存入的代币数量。在<br />\n可在完成<br />\n奖励。",
-        "incentivizedAmount": "代币池中的代币数量。<br />\n池。",
-        "remainingAmount": "代币池中剩余的代币数量。<br />\n池中剩余的代币数量。",
-        "unvestedAmount": "由于热身期而未归属的代币数量<br />\n<link/> 。该金额将显示为<br/>，并可在奖励完成后由提供者地址申请。<br />\n在奖励完成后，提供方地址将显示并可领取。"
+        "claimableUnvestedAmount": "奖励结束后，医疗服务提供者目前可报销的金额。",
+        "depositAmount": "创建此奖励时存入的代币金额。奖励完成后可全额退还。",
+        "incentivizedAmount": "激励入池的代币数量。",
+        "remainingAmount": "代币池中剩余的代币数量。",
+        "unvestedAmount": "由于热身期而未归属的代币数量<link/> 。奖励结束后，提供方地址将显示并申领该金额。"
       }
     }
   },

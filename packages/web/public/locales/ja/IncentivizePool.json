@@ -68,6 +68,7 @@
         "claim": "クレーム"
       },
       "label": {
+        "claimableUnvestedAmount": "請求可能な未投資額",
         "depositAmount": "預金額",
         "endDate": "終了日",
         "incentivizedAmount": "インセンティブ額",
@@ -78,10 +79,11 @@
         "unvestedAmount": "未給付額"
       },
       "tooltip": {
-        "depositAmount": "このインセンティブが設定されたときに預けられたトークンの量。<br />\nこのインセンティブが作成されたこの金額は<br />\n払い戻し可能です。<br />\n払い戻されます。",
-        "incentivizedAmount": "トークンの量。<br />\nプールへのトークンの量。",
-        "remainingAmount": "プールに残っているトークンの量。<br />\nプールに残っているトークンの量。",
-        "unvestedAmount": "により未投資となったトークンの量。<br />\nウォームアップ期間<link/> 。この金額は、<br/>に表示され、インセンティブが完了した時点でプロバイダーのアドレスに請求できる。<br />\nに請求可能です。"
+        "claimableUnvestedAmount": "インセンティブ終了後、プロバイダーが現在請求可能な金額。",
+        "depositAmount": "このインセンティブが作成されたときに預けられたトークンの量。インセンティブが完了すると全額返金されます。",
+        "incentivizedAmount": "プールに奨励されたトークンの量。",
+        "remainingAmount": "プールに残っているトークンの量。",
+        "unvestedAmount": "ウォームアップ期間（<link/> ）により未確定のトークン量。この金額は、インセンティブ付与の完了時に、提供者のアドレスに表示され、請求可能となる。"
       }
     }
   },
