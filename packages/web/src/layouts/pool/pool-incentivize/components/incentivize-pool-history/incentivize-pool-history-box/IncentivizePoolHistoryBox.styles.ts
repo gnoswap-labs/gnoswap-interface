@@ -65,7 +65,7 @@ export const IncentivizePoolHistoryBoxWrapper = styled.div`
 
 export const historyTooltipContent = (theme: Theme) => css`
   display: block;
-  width: min(320px, calc(100vw - 42px));
+  width: auto;
   max-width: 320px;
   font-size: 14px;
   line-height: 1.5;
