@@ -80,10 +80,10 @@
       },
       "tooltip": {
         "claimableUnvestedAmount": "Der Betrag, den der Anbieter nach Beendigung der Incentivierung derzeit beanspruchen kann.",
-        "depositAmount": "Die Menge der Token, die hinterlegt wurde, als<br />\ndiese Incentivierung erstellt wurde. Er ist vollständig<br />\nwird nach Abschluss der Incentivierung<br />\nIncentivierung.",
-        "incentivizedAmount": "Die Menge der Token, die in den<br />\nPool.",
-        "remainingAmount": "Die Anzahl der im Pool verbleibenden Token<br />\nPool.",
-        "unvestedAmount": "Die Anzahl der Token, die aufgrund der<br />\nAufwärmphase <link/>. Dieser Betrag wird auf<br/>angezeigt und kann von der Anbieteradresse nach<br />\nnach Abschluss der Incentivierung."
+        "depositAmount": "Der Betrag der Token, der bei der Erstellung dieser Incentivierung eingezahlt wurde. Er wird nach Abschluss der Incentivierung vollständig zurückerstattet.",
+        "incentivizedAmount": "Die Menge der Token, die dem Pool zugeführt werden.",
+        "remainingAmount": "Die Anzahl der im Pool verbleibenden Token.",
+        "unvestedAmount": "Der Betrag der Token, der aufgrund der Aufwärmphase nicht investiert wurde <link/>. Dieser Betrag wird von der Anbieteradresse nach Abschluss der Incentivierung angezeigt und kann eingefordert werden."
       }
     }
   },

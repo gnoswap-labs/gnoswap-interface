@@ -80,10 +80,10 @@
       },
       "tooltip": {
         "claimableUnvestedAmount": "El importe que puede reclamar actualmente el proveedor una vez finalizada la incentivación.",
-        "depositAmount": "La cantidad de tokens depositados cuando<br />\nse creó este incentivo. Es totalmente<br />\nreembolsable al finalizar la<br />\nincentivación.",
-        "incentivizedAmount": "La cantidad de tokens incentivados al<br />\npool.",
-        "remainingAmount": "La cantidad de fichas que quedan en la<br />\nreserva.",
-        "unvestedAmount": "La cantidad de fichas no invertidas debido al<br />\nperiodo de calentamiento <link/>. Esta cantidad aparecerá en<br/>y podrá ser reclamada por la dirección del proveedor una vez finalizada la incentivación.<br />\nla finalización de la incentivación."
+        "depositAmount": "La cantidad de tokens depositados cuando se creó esta incentivación. Es totalmente reembolsable al finalizar la incentivación.",
+        "incentivizedAmount": "La cantidad de fichas incentivadas al pool.",
+        "remainingAmount": "La cantidad de fichas que quedan en la reserva.",
+        "unvestedAmount": "La cantidad de tokens no invertidos debido al periodo de calentamiento <link/>. Esta cantidad será mostrada y reclamable por la dirección del proveedor al finalizar la incentivación."
       }
     }
   },
