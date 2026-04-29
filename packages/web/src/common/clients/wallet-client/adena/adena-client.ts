@@ -17,10 +17,12 @@ import { parseTransactionResponse } from "./adena-client.util";
 export class AdenaClient implements WalletClient {
   private adena: Adena | null;
   private address: string | null;
+  private defaultMemo: string | null;
 
-  constructor() {
+  constructor(defaultMemo?: string) {
     this.adena = null;
     this.address = null;
+    this.defaultMemo = defaultMemo || null;
   }
 
   public initAdena = () => {
@@ -89,6 +91,7 @@ export class AdenaClient implements WalletClient {
         };
       }),
       gasWanted: transaction.gasWanted || DEFAULT_GAS_WANTED,
+      memo: transaction.memo || this.defaultMemo || "",
     };
     return createTimeout<WalletResponse<SendTransactionResponse<T | null>>>(
       this.getAdena()
@@ -111,11 +114,11 @@ export class AdenaClient implements WalletClient {
     this.getAdena().On("changedNetwork", callback);
   };
 
-  public static createAdenaClient() {
+  public static createAdenaClient(defaultMemo?: string) {
     if (typeof window === "undefined" || typeof window.adena === "undefined") {
       return null;
     }
-    return new AdenaClient();
+    return new AdenaClient(defaultMemo);
   }
 
   public switchNetwork = (chainId: string): Promise<WalletResponse<SwitchNetworkResponse>> => {
