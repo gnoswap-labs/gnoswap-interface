@@ -151,7 +151,7 @@ export const useWallet = () => {
   const switchNetwork = async () => {
     try {
       setLoadingConnect("loading");
-      const adena = AdenaClient.createAdenaClient();
+      const adena = AdenaClient.createAdenaClient(defaultGnoswapMemo);
       if (!adena) {
         setLoadingConnect("error");
         return;
@@ -183,7 +183,7 @@ export const useWallet = () => {
       setLoadingConnect("loading");
     }
 
-    const adena = AdenaClient.createAdenaClient();
+    const adena = AdenaClient.createAdenaClient(defaultGnoswapMemo);
     if (adena !== null) {
       sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "ADENA");
       adena.initAdena();
@@ -198,7 +198,7 @@ export const useWallet = () => {
       setLoadingConnect("loading");
 
       if (walletClient === null) {
-        const adena = AdenaClient.createAdenaClient();
+        const adena = AdenaClient.createAdenaClient(defaultGnoswapMemo);
         setWalletClient(adena);
         return;
       }
