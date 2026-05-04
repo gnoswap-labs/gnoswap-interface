@@ -33,6 +33,7 @@ enum PoolTransactionMessageFunctionType {
   MintAndStake = "MintAndStake",
   CreateExternalIncentive = "CreateExternalIncentive",
   EndExternalIncentive = "EndExternalIncentive",
+  CollectExternalIncentivePenalty = "CollectExternalIncentivePenalty",
 }
 
 export function makeCreatePoolMessageWithApproves(
@@ -271,8 +272,44 @@ export function makeRemoveExternalIncentiveMessageWithApproves(
   const approveMessageInfos: TokenApproveMessageInfo[] = [];
 
   const removeExternalIncentiveMessage = makeRemoveIncentiveMessage(poolPath, incentiveID, caller);
+  const collectExternalIncentivePenaltyMessage = makeCollectExternalIncentivePenaltyMessage(
+    poolPath,
+    incentiveID,
+    caller,
+  );
 
-  return makeTransactionMessagesWithApproves([removeExternalIncentiveMessage], approveMessageInfos, fetchAllowance);
+  return makeTransactionMessagesWithApproves(
+    [removeExternalIncentiveMessage, collectExternalIncentivePenaltyMessage],
+    approveMessageInfos,
+    fetchAllowance,
+  );
+}
+
+export function makeCollectExternalIncentivePenaltyMessageWithApproves(
+  {
+    poolPath,
+    incentiveID,
+    caller,
+  }: {
+    poolPath: string;
+    incentiveID: string;
+    caller: string;
+  },
+  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+): Promise<TransactionMessage[]> {
+  const approveMessageInfos: TokenApproveMessageInfo[] = [];
+
+  const collectExternalIncentivePenaltyMessage = makeCollectExternalIncentivePenaltyMessage(
+    poolPath,
+    incentiveID,
+    caller,
+  );
+
+  return makeTransactionMessagesWithApproves(
+    [collectExternalIncentivePenaltyMessage],
+    approveMessageInfos,
+    fetchAllowance,
+  );
 }
 
 function makeCreateIncentiveMessage(
@@ -373,6 +410,16 @@ function makeRemoveIncentiveMessage(poolPath: string, incentiveID: string, calle
   return makeTransactionMessage({
     send: "",
     func: PoolTransactionMessageFunctionType.EndExternalIncentive,
+    packagePath: PACKAGE_STAKER_PATH,
+    args: [poolPath, incentiveID, caller],
+    caller,
+  });
+}
+
+function makeCollectExternalIncentivePenaltyMessage(poolPath: string, incentiveID: string, caller: string) {
+  return makeTransactionMessage({
+    send: "",
+    func: PoolTransactionMessageFunctionType.CollectExternalIncentivePenalty,
     packagePath: PACKAGE_STAKER_PATH,
     args: [poolPath, incentiveID, caller],
     caller,

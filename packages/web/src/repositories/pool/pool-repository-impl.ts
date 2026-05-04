@@ -28,12 +28,14 @@ import {
 import { generateSendTransactionParams, withTransactionGuard } from "@utils/transaction-utils";
 import { PoolListResponse, PoolPricesResponse, PoolRepository, PoolResponse } from ".";
 import {
+  makeCollectExternalIncentivePenaltyMessageWithApproves,
   makeCreateExternalIncentiveMessageWithApproves,
   makeCreatePoolMessageWithApproves,
   makePositionMintMessageWithApproves,
   makeRemoveExternalIncentiveMessageWithApproves,
 } from "./pool.message";
 import { AddLiquidityRequest } from "./request/add-liquidity-request";
+import { CollectExternalIncentivePenaltyRequest } from "./request/collect-external-incentive-penalty-request";
 import { CreateExternalIncentiveRequest } from "./request/create-external-incentive-request";
 import { CreatePoolRequest } from "./request/create-pool-request";
 import { RemoveExternalIncentiveRequest } from "./request/remove-external-incentive-request";
@@ -58,7 +60,8 @@ export class PoolRepositoryImpl implements PoolRepository {
         throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
       }
 
-      const response = await (await this.rpcProvider.getStatus()).sync_info.latest_block_height;
+      const status = await this.rpcProvider.getStatus();
+      const response = status.sync_info.latest_block_height;
 
       return response;
     } catch (error) {
@@ -438,7 +441,45 @@ export class PoolRepositoryImpl implements PoolRepository {
       return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     }).then(response => {
       if (response.code !== 0 || !response.data) {
-        throw new PoolError("FAILED_TO_CREATE_INCENTIVE");
+        throw new PoolError("FAILED_TO_REMOVE_INCENTIVE");
+      }
+      const data = response?.data as SendTransactionSuccessResponse<string[]>;
+      return data?.hash || null;
+    });
+  };
+
+  collectExternalIncentivePenalty = async (request: CollectExternalIncentivePenaltyRequest): Promise<string | null> => {
+    if (!this.rpcProvider) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
+    const address = await this.getAddress();
+
+    const { gasFee, gasUsed, ...requests } = request;
+    const makeTxMessageRequests = {
+      caller: address,
+      ...requests,
+    };
+
+    const messages = await makeCollectExternalIncentivePenaltyMessageWithApproves(
+      makeTxMessageRequests,
+      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    );
+
+    const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
+
+    const sendTransactionParams = generateSendTransactionParams({
+      messages,
+      gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
+      gasWanted: Number(gasWanted.toFixed()),
+      memo: "",
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
+    }).then(response => {
+      if (response.code !== 0 || !response.data) {
+        throw new PoolError("FAILED_TO_COLLECT_INCENTIVE");
       }
       const data = response?.data as SendTransactionSuccessResponse<string[]>;
       return data?.hash || null;
