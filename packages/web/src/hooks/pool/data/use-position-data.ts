@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo } from "react";
 import { useGetPositionsByAddress, useMakePoolPositions } from "@query/positions";
 import { useLoading } from "@hooks/common/use-loading";
 import { QueryKey, UseQueryOptions } from "@tanstack/react-query";
-import { PositionModel } from "@models/position/position-model";
+import { GetPositionsByAddressResult } from "@repositories/position/response/get-positions-by-address-result";
 
 export interface UsePositionDataOption {
   address?: string;
@@ -14,7 +14,7 @@ export interface UsePositionDataOption {
   limit?: number;
   withClosed?: boolean;
   scopeId?: string;
-  queryOption?: UseQueryOptions<PositionModel[], Error, PositionModel[], QueryKey>;
+  queryOption?: UseQueryOptions<GetPositionsByAddressResult, Error, GetPositionsByAddressResult, QueryKey>;
 }
 
 export const usePositionData = (options?: UsePositionDataOption) => {
@@ -31,14 +31,20 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     isError,
     isFetched: isFetchedPosition,
     isLoading: isLoadingPosition,
-  } = useGetPositionsByAddress({
-    address: fetchedAddress as string,
-    isClosed: options?.isClosed,
-    poolPath: options?.poolPath,
-    page: options?.page,
-    limit: options?.limit,
-    withClosed: options?.withClosed,
-  });
+  } = useGetPositionsByAddress(
+    {
+      address: fetchedAddress,
+      isClosed: options?.isClosed,
+      poolPath: options?.poolPath,
+      page: options?.page,
+      limit: options?.limit,
+      withClosed: options?.withClosed,
+    },
+    {
+      ...options?.queryOption,
+      enabled: !!fetchedAddress && (options?.queryOption?.enabled ?? true),
+    },
+  );
 
   const { totalCount: totalPositionCount = 0, positions: rawPositions = [] } = data ?? {};
 

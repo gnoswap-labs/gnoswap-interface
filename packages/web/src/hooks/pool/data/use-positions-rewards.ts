@@ -79,7 +79,7 @@ export const usePositionsRewards = ({ positions }: PositionsRewardsProps) => {
       {
         token: tokenB,
         amount: formatPoolPairAmount(pooledTokenBAmount, {
-          decimals: tokenA.decimals,
+          decimals: tokenB.decimals,
           isKMB: false,
         }),
         amountUSD:
@@ -202,7 +202,7 @@ export const usePositionsRewards = ({ positions }: PositionsRewardsProps) => {
       rewards: rewards.filter(item => item.type === "STAKING_REWARDS"),
       fees: rewards.filter(item => item.type === "SWAP_FEE"),
     };
-  }, [getGnotPath, positions, tokens]);
+  }, [getGnotPath, positions, tokens, tokenPrices]);
 
   const totalLiquidityUSD = useMemo(() => {
     if (positions.length === 0) {
