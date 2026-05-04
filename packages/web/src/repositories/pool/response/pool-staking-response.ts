@@ -14,5 +14,6 @@ export interface PoolStakingResponse {
   totalPenaltyAmount: string;
   collectedPenaltyAmount: string;
   claimableUnvestedAmount: string;
+  activeYn: string;
   createdBlockHeight: string;
 }

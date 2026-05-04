@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import Link from "next/link";
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -32,11 +33,12 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
 
   const { rewardToken, incentiveId } = stakingData;
 
-  const { data: pool = null } = useGetPoolDetailByPath(poolPath, {
-    enabled: !!poolPath,
-  });
+  const { data: pool = null } = useGetPoolDetailByPath(poolPath || null);
 
-  const { removeExternalIncentive } = useRemoveExternalIncentive(poolPath, incentiveId ?? "");
+  const { removeExternalIncentive, collectExternalIncentivePenalty } = useRemoveExternalIncentive(
+    poolPath,
+    incentiveId ?? "",
+  );
   const { getGnotPath } = useGnotToGnot();
 
   const currentPool = React.useMemo(() => {
@@ -89,6 +91,35 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
     const now = new Date();
     return now > endDate;
   }, [stakingData]);
+
+  const hasClaimableUnvestedAmount = React.useMemo(() => {
+    return new BigNumber(stakingData.claimableUnvestedAmount || "0").isGreaterThan(0);
+  }, [stakingData.claimableUnvestedAmount]);
+
+  const isExternalIncentiveActive = stakingData.activeYn === "Y";
+  const isExternalIncentiveEnded = stakingData.activeYn === "N";
+  const hasKnownExternalIncentiveActiveState = isExternalIncentiveActive || isExternalIncentiveEnded;
+
+  const isClaimDisabled = !hasClaimableUnvestedAmount || !hasKnownExternalIncentiveActiveState;
+
+  const handleClaim = React.useCallback(() => {
+    if (isClaimDisabled) {
+      return;
+    }
+
+    if (isExternalIncentiveEnded) {
+      void collectExternalIncentivePenalty({ rpcProvider });
+      return;
+    }
+
+    void removeExternalIncentive({ rpcProvider });
+  }, [
+    collectExternalIncentivePenalty,
+    isClaimDisabled,
+    isExternalIncentiveEnded,
+    removeExternalIncentive,
+    rpcProvider,
+  ]);
 
   const renderDataMapping = () => {
     return (
@@ -230,7 +261,8 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
             <Button
               text={"Claim"}
               style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
-              onClick={() => removeExternalIncentive({ rpcProvider })}
+              disabled={isClaimDisabled}
+              onClick={handleClaim}
             />
           </div>
         )}
