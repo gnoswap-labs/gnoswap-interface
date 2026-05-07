@@ -24,16 +24,18 @@ const StakePositionContent: React.FC<{ content?: SnackbarContent; onClick: () =>
         <Image mobileWidth={24} width={36} src={content?.logoUrl || ""} alt="logo" />
       </div>
       <div>
-        <h5>{content?.title ? content.title : t("Modal:toast.stake-position.title")}</h5>
-        <p
-          className="description"
-          dangerouslySetInnerHTML={{
-            __html: sanitizeHtml(content?.description || t("Modal:toast.stake-position.desc")),
-          }}
-        />
-        <a onClick={onClickLink}>
-          {t("Modal:toast.stake-position.link")} <IconArrowRight />
-        </a>
+        <div>
+          <h5>{content?.title ? content.title : t("Modal:toast.stake-position.title")}</h5>
+          <p
+            className="description"
+            dangerouslySetInnerHTML={{
+              __html: sanitizeHtml(content?.description || t("Modal:toast.stake-position.desc")),
+            }}
+          />
+          <a onClick={onClickLink}>
+            {t("Modal:toast.stake-position.link")} <IconArrowRight />
+          </a>
+        </div>
       </div>
     </div>
   );
