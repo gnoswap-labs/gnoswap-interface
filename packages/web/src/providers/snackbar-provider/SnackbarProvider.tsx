@@ -7,6 +7,7 @@ import { SnackbarList } from "./snackbar-provider.styles";
 
 interface SnackbarContenxtProps {
   hasBadgeSnackbar: boolean;
+  hasStakePositionSnackbar: boolean;
   enqueue: (content: SnackbarContent | undefined, options: SnackbarOptions) => void;
   change: (id: number, type: SnackbarType) => void;
   dequeue: (id: number) => void;
@@ -15,6 +16,7 @@ interface SnackbarContenxtProps {
 
 export const SnackbarContext = createContext<SnackbarContenxtProps>({
   hasBadgeSnackbar: false,
+  hasStakePositionSnackbar: false,
   enqueue: () => {
     console.error("Calling notice without notice context");
   },
@@ -42,13 +44,31 @@ const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   >([]);
 
   const hasBadgeSnackbar = useMemo(() => {
-    return snackbars.filter(item => item.timeout === 0).length > 0;
+    return snackbars.filter(item => item.type === "receive-wugnot" && item.timeout === 0).length > 0;
+  }, [snackbars]);
+
+  const hasStakePositionSnackbar = useMemo(() => {
+    return snackbars.filter(item => item.type === "stake-position" && item.timeout === 0).length > 0;
   }, [snackbars]);
 
   const enqueue = useCallback<SnackbarContenxtProps["enqueue"]>(
     (content, options) => {
-      setSnackbars(prev => [
-        ...prev,
+      let previousSnackbars = [...snackbars];
+      if (options.type === "stake-position") {
+        previousSnackbars = previousSnackbars.map(item => {
+          if (item.type === "stake-position") {
+            return {
+              ...item,
+              isClosing: true,
+            };
+          }
+
+          return item;
+        });
+      }
+
+      setSnackbars([
+        ...previousSnackbars,
         {
           id: options.id,
           type: options.type,
@@ -108,12 +128,13 @@ const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const contextValue = useMemo(
     () => ({
       hasBadgeSnackbar,
+      hasStakePositionSnackbar,
       enqueue,
       change,
       dequeue,
       clear,
     }),
-    [hasBadgeSnackbar, enqueue, change, dequeue, clear],
+    [hasBadgeSnackbar, hasStakePositionSnackbar, enqueue, change, dequeue, clear],
   );
 
   return (

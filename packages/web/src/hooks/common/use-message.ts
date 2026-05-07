@@ -247,5 +247,19 @@ export const useMessage = () => {
     };
   }
 
-  return { getMessage, getReceiveWugnotMessage };
+  function getStakePositionMessage(
+    positionId: string,
+    apr: string,
+    positionLogoUrl: string,
+    onClick: () => void,
+  ): SnackbarContent {
+    return {
+      title: t("Modal:toast.stake-position.title"),
+      description: t("Modal:toast.stake-position.desc", { positionId, apr }),
+      logoUrl: positionLogoUrl,
+      onClick,
+    };
+  }
+
+  return { getMessage, getReceiveWugnotMessage, getStakePositionMessage };
 };

@@ -350,6 +350,7 @@ export const usePoolAddLiquidityConfirmModal = ({
             txHash: result.data?.hash,
             action: DexEvent.ADD,
             visibleEmitResult: true,
+            checkStakePosition: true,
             formatData: response => {
               if (!response) {
                 return {
