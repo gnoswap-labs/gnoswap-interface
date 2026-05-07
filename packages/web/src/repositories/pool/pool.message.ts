@@ -30,7 +30,6 @@ import { isNativeTokenPath, makeRawTokenAmount } from "@utils/token-utils";
 enum PoolTransactionMessageFunctionType {
   CreatePool = "CreatePool",
   Mint = "Mint",
-  MintAndStake = "MintAndStake",
   CreateExternalIncentive = "CreateExternalIncentive",
   EndExternalIncentive = "EndExternalIncentive",
 }
@@ -100,7 +99,6 @@ export function makePositionMintMessageWithApproves(
     maxTick,
     slippage,
     caller,
-    withStaking,
     referrerAddress,
   }: {
     tokenA: TokenModel;
@@ -112,7 +110,6 @@ export function makePositionMintMessageWithApproves(
     maxTick: number;
     slippage: number;
     caller: string;
-    withStaking?: boolean;
     referrerAddress: string | null;
   },
   fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
@@ -159,8 +156,6 @@ export function makePositionMintMessageWithApproves(
     });
   }
 
-  // Make mint transaction message
-  const makeMintMessage = withStaking ? makePositionMintWithStakeMessage : makePositionMintMessage;
   const messages: TransactionMessage[] = [];
 
   if (sendAmount && BigNumber(sendAmount).isGreaterThan(0)) {
@@ -170,7 +165,7 @@ export function makePositionMintMessageWithApproves(
     }
   }
 
-  const mintMessage = makeMintMessage(
+  const mintMessage = makePositionMintMessage(
     tokenAWrappedPath,
     tokenBWrappedPath,
     feeTier,
@@ -328,42 +323,6 @@ function makePositionMintMessage(
       deadline,
       caller, // LP Token Receiver
       caller, // Replace OriginCaller
-      referrerAddress || "", // Referral address
-    ],
-  });
-}
-
-function makePositionMintWithStakeMessage(
-  tokenAPath: string,
-  tokenBPath: string,
-  feeTier: SwapFeeTierType,
-  minTick: number,
-  maxTick: number,
-  tokenAAmount: string,
-  tokenBAmount: string,
-  slippage: number,
-  caller: string,
-  referrerAddress: string | null,
-) {
-  const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
-  const slippageRatio = (100 - slippage) / 100;
-  const deadline = DEFAULT_TRANSACTION_DEADLINE;
-  return makeTransactionMessage({
-    caller,
-    send: "",
-    packagePath: PACKAGE_STAKER_PATH,
-    func: PoolTransactionMessageFunctionType.MintAndStake,
-    args: [
-      tokenAPath,
-      tokenBPath,
-      fee,
-      `${minTick}`,
-      `${maxTick}`,
-      tokenAAmount,
-      tokenBAmount,
-      BigNumber(tokenAAmount).multipliedBy(slippageRatio).toFixed(0),
-      BigNumber(tokenBAmount).multipliedBy(slippageRatio).toFixed(0),
-      deadline,
       referrerAddress || "", // Referral address
     ],
   });

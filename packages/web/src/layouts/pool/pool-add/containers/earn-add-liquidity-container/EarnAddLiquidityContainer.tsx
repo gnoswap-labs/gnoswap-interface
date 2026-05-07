@@ -19,7 +19,7 @@ import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { SwapState } from "@states/index";
 import { formatRate } from "@utils/new-number-utils";
 import { makeRouteUrl } from "@utils/page.utils";
-import { checkPoolStakingRewards, invertSqrtPriceX96 } from "@utils/pool-utils";
+import { invertSqrtPriceX96 } from "@utils/pool-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
 import {
   getDepositAmountsByAmountA,
@@ -98,7 +98,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     isReverted,
   });
 
-  const { openAddPositionModal, openAddPositionWithStakingModal } = usePoolAddLiquidityConfirmModal({
+  const { openAddPositionModal } = usePoolAddLiquidityConfirmModal({
     tokenA,
     tokenB,
     tokenAAmountInput,
@@ -484,33 +484,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     switchNetwork,
   ]);
 
-  const submitOneClickStaking = useCallback(() => {
-    if (submitType === "CONNECT_WALLET") {
-      openConnectWalletModal();
-      return;
-    }
-    if (submitType === "SWITCH_NETWORK") {
-      switchNetwork();
-      return;
-    }
-    if (submitType !== "CREATE_POOL") {
-      return;
-    }
-    if (!tokenA || !tokenB || !priceRange || !swapFeeTier) {
-      return;
-    }
-    openAddPositionWithStakingModal();
-  }, [
-    submitType,
-    tokenA,
-    tokenB,
-    priceRange,
-    swapFeeTier,
-    openAddPositionWithStakingModal,
-    openConnectWalletModal,
-    switchNetwork,
-  ]);
-
   useEffect(() => {
     if (exactType === "EXACT_IN") {
       updateTokenBAmountByTokenA(tokenAAmountInput.amount);
@@ -739,10 +712,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
     return isFetchingPools || isLoadingCommon;
   }, [isFetchingPools, isLoadingCommon]);
 
-  const showOneClickStaking = useMemo(() => checkPoolStakingRewards(selectPool.poolFromDb?.incentivized), [
-    selectPool.poolFromDb?.incentivized,
-  ]);
-
   return (
     <PoolAddLiquidity
       isLoadingTokens={isLoadingTokens}
@@ -771,7 +740,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
       connected={connectedWallet}
       slippage={slippage}
       changeSlippage={changeSlippage}
-      submitOneClickStaking={submitOneClickStaking}
       selectPool={selectPool}
       changeStartingPrice={changeStartingPrice}
       createOption={createOption}
@@ -785,7 +753,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
       showDim={showDim}
       isLoadingSelectFeeTier={isLoadingSelectFeeTier}
       isLoadingSelectPriceRange={isLoadingSelectPriceRange}
-      showOneClickStaking={showOneClickStaking}
     />
   );
 };

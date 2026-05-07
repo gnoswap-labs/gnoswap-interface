@@ -19,8 +19,6 @@ export interface RepositionLiquidityRequest {
 
   caller: string;
 
-  withStaking?: boolean;
-
   gasFee?: string;
 
   gasUsed?: string;

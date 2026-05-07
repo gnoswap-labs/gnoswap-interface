@@ -19,13 +19,13 @@ import { useSelectPool } from "@hooks/pool/data/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
 import { useTokenData } from "@hooks/token/data/use-token-data";
-import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { SwapState } from "@states/index";
 import { formatRate } from "@utils/new-number-utils";
 import { makeRouteUrl } from "@utils/page.utils";
-import { checkPoolStakingRewards } from "@utils/pool-utils";
+import { sortTokenPaths } from "@utils/sort-utils";
 import {
   getDepositAmountsByAmountA,
   getDepositAmountsByAmountB,
@@ -35,11 +35,10 @@ import {
   tickToPrice,
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
-import { sortTokenPaths } from "@utils/sort-utils";
 
-import PoolAddLiquidity, { PriceRangeSummary } from "../../components/pool-add-liquidity/PoolAddLiquidity";
 import { usePool } from "@hooks/pool/data/use-pool";
 import { usePoolAddLiquidityConfirmModal } from "@hooks/pool/ui/use-pool-add-liquidity-confirm-modal";
+import PoolAddLiquidity, { PriceRangeSummary } from "../../components/pool-add-liquidity/PoolAddLiquidity";
 
 export const SWAP_FEE_TIERS: SwapFeeTierType[] = ["FEE_100", "FEE_500", "FEE_3000", "FEE_10000"];
 
@@ -93,7 +92,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
     fetching: isFetchingFeetierOfLiquidityMap,
   } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken });
 
-  const { openAddPositionModal, openAddPositionWithStakingModal } = usePoolAddLiquidityConfirmModal({
+  const { openAddPositionModal } = usePoolAddLiquidityConfirmModal({
     tokenA,
     tokenB,
     tokenAAmountInput,
@@ -384,33 +383,6 @@ const PoolAddLiquidityContainer: React.FC = () => {
     switchNetwork,
   ]);
 
-  const submitOneClickStaking = useCallback(() => {
-    if (submitType === "CONNECT_WALLET") {
-      openConnectWalletModal();
-      return;
-    }
-    if (submitType === "SWITCH_NETWORK") {
-      switchNetwork();
-      return;
-    }
-    if (submitType !== "CREATE_POOL") {
-      return;
-    }
-    if (!tokenA || !tokenB || !priceRange || !swapFeeTier) {
-      return;
-    }
-    openAddPositionWithStakingModal();
-  }, [
-    submitType,
-    tokenA,
-    tokenB,
-    priceRange,
-    swapFeeTier,
-    openAddPositionWithStakingModal,
-    openConnectWalletModal,
-    switchNetwork,
-  ]);
-
   useEffect(() => {
     updatePools();
     updateTokenPrices();
@@ -612,11 +584,6 @@ const PoolAddLiquidityContainer: React.FC = () => {
     return isFetchingPools || isLoadingCommon;
   }, [isFetchingPools, isLoadingCommon]);
 
-  const showOneClickStaking = useMemo(
-    () => checkPoolStakingRewards(selectPool.poolFromDb?.incentivized),
-    [selectPool.poolFromDb?.incentivized],
-  );
-
   return (
     <PoolAddLiquidity
       defaultPrice={defaultPrice}
@@ -644,7 +611,6 @@ const PoolAddLiquidityContainer: React.FC = () => {
       connected={connectedWallet}
       slippage={slippage}
       changeSlippage={changeSlippage}
-      submitOneClickStaking={submitOneClickStaking}
       selectPool={selectPool}
       changeStartingPrice={changeStartingPrice}
       createOption={{
@@ -659,7 +625,6 @@ const PoolAddLiquidityContainer: React.FC = () => {
       showDim={showDim}
       isLoadingSelectFeeTier={isLoadingSelectFeeTier}
       isLoadingSelectPriceRange={isLoadingSelectPriceRange}
-      showOneClickStaking={showOneClickStaking}
     />
   );
 };

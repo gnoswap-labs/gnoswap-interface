@@ -12,7 +12,6 @@ export interface CreatePoolRequest {
   maxTick: number;
   slippage: number;
   caller: string;
-  withStaking?: boolean;
   createPoolFee: number; // fee is Raw Amount
   referrerAddress: string | null;
   gasFee?: string;
