@@ -1,16 +1,39 @@
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 
-import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolError } from "@common/errors/pool";
 import useCustomRouter from "@hooks/common/use-custom-router";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
 
-import { QUERY_KEY } from "../query-keys";
 import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
+import { QUERY_KEY } from "../query-keys";
 
 const REFETCH_INTERVAL = 60_000;
 
-export const useGetPoolDetailByPath = (path: string | null, options?: UseQueryOptions<PoolDetailModel, Error>) => {
+export const useGetPoolDetailByPathWithEmptyPath = (
+  path: string | null,
+  options?: UseQueryOptions<PoolDetailModel, Error>,
+) => {
+  const { data, isLoading, isError } = useGetPoolDetailByPath(
+    path,
+    {
+      ...options,
+      enabled: !!path,
+    },
+    false,
+  );
+  if (!path) {
+    return { data: null, isLoading: false, isError: false };
+  }
+
+  return { data: path ? data : null, isLoading, isError };
+};
+
+export const useGetPoolDetailByPath = (
+  path: string | null,
+  options?: UseQueryOptions<PoolDetailModel, Error>,
+  redirect: boolean = true,
+) => {
   const { poolRepository } = useGnoswapContext();
   const router = useCustomRouter();
 
@@ -24,9 +47,11 @@ export const useGetPoolDetailByPath = (path: string | null, options?: UseQueryOp
       return data;
     },
     onError: (err: Error) => {
-      if (err instanceof PoolError) {
-        router.movePage("EARN");
-        return;
+      if (redirect) {
+        if (err instanceof PoolError) {
+          router.movePage("EARN");
+          return;
+        }
       }
     },
     refetchOnMount: true,

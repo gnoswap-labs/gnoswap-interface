@@ -1,10 +1,9 @@
-import IconGithub from "@components/common/icons/social/IconGithub";
+import IconDiscord from "@components/common/icons/social/IconDiscord";
 import IconGitbook from "@components/common/icons/social/IconGitbook";
+import IconGithub from "@components/common/icons/social/IconGithub";
 import IconMedium from "@components/common/icons/social/IconMedium";
 import IconX from "@components/common/icons/social/IconX";
-import IconDiscord from "@components/common/icons/social/IconDiscord";
 
-import { DEFAULT_POOL_PATH } from "./common.constant";
 import { EXT_URL } from "./external-url.contant";
 
 export const FOOTER_LEFT_NAV = {
@@ -54,7 +53,7 @@ export const FOOTER_RIGHT_NAV = [
       },
       {
         title: "HeaderFooter:featuresSection.item.stakePosition",
-        path: `/earn/pool?poolPath=${DEFAULT_POOL_PATH}#staking`,
+        path: "/earn/pool/stake",
         newTab: false,
       },
       {

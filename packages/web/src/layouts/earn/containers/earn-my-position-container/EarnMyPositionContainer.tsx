@@ -1,22 +1,21 @@
 import { useAtom, useAtomValue } from "jotai";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { DEFAULT_POOL_PATH } from "@constants/common.constant";
+import { POSITION_CARD_BREAKPOINTS, POSITION_CARD_DISPLAY_COUNT, POSITION_CARD_LIST_BREAKPOINTS } from "@common/values";
 import { QUERY_PARAMETER } from "@constants/page.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
-import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePoolData } from "@hooks/pool/data/use-pool-data";
+import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useTokenData } from "@hooks/token/data/use-token-data";
-import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useGetUsernameByAddress } from "@query/address";
 import { EarnState, ThemeState } from "@states/index";
-import { PoolPositionModel } from "@models/position/pool-position-model";
-import { POSITION_CARD_BREAKPOINTS, POSITION_CARD_DISPLAY_COUNT, POSITION_CARD_LIST_BREAKPOINTS } from "@common/values";
 
-import EarnMyPositions from "../../components/earn-my-positions/EarnMyPositions";
 import { PositionConverter } from "@services/converters/position";
+import EarnMyPositions from "../../components/earn-my-positions/EarnMyPositions";
 
 interface EarnMyPositionContainerProps {
   loadMore?: boolean;
@@ -122,7 +121,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   );
 
   const moveEarnStake = useCallback(() => {
-    router.movePageWithPoolPath("POOL", DEFAULT_POOL_PATH, "staking");
+    router.movePage("POOL_STAKE");
   }, [router]);
 
   const openPosition = useMemo(() => {

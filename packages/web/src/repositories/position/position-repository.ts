@@ -29,6 +29,7 @@ export interface PositionRepository {
       page?: number;
       limit?: number;
       withClosed?: boolean;
+      withAvailableStake?: boolean;
     },
   ) => Promise<GetPositionsByAddressResult>;
 

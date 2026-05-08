@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import { PoolModel } from "@models/pool/pool-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 
 import SelectLiquidity from "./select-liquidity/SelectLiquidity";
@@ -21,7 +20,6 @@ interface StakePositionProps {
   isEmpty: boolean;
   isLoading: boolean;
   connected: boolean;
-  pool?: PoolModel;
 }
 
 const StakePosition: React.FC<StakePositionProps> = ({
@@ -34,7 +32,6 @@ const StakePosition: React.FC<StakePositionProps> = ({
   isEmpty,
   isLoading,
   connected,
-  pool,
 }) => {
   const { t } = useTranslation();
 
@@ -59,7 +56,7 @@ const StakePosition: React.FC<StakePositionProps> = ({
         isEmpty={isEmpty}
         isLoading={isLoading}
       />
-      <SelectStakeResult positions={selectedPositions} isHiddenBadge pool={pool} />
+      <SelectStakeResult positions={selectedPositions} isHiddenBadge />
       <Button
         className="button-stake-position"
         text={

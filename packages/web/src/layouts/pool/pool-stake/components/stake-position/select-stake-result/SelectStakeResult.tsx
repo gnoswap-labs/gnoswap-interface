@@ -5,54 +5,118 @@ import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconInfo from "@components/common/icons/IconInfo";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { PoolModel } from "@models/pool/pool-model";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { formatRate } from "@utils/new-number-utils";
-
-import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
+import { TokenModel } from "@models/token/token-model";
+import { checkGnotPath } from "@utils/common";
+import { formatOtherPrice, formatPoolPairAmount, formatRate } from "@utils/new-number-utils";
 
 import { HoverTextWrapper, wrapper } from "./SelectStakeResult.styles";
 
 interface SelectStakeResultProps {
   positions: PoolPositionModel[];
   isHiddenBadge?: boolean;
-  pool?: PoolModel;
 }
 
-const SelectStakeResult: React.FC<SelectStakeResultProps> = ({ positions, isHiddenBadge = false, pool }) => {
+interface PooledTokenEntry {
+  token: TokenModel;
+  amount: number;
+  usd: number | null;
+}
+
+const SelectStakeResult: React.FC<SelectStakeResultProps> = ({ positions, isHiddenBadge = false }) => {
   const { t } = useTranslation();
-  const { pooledTokenInfos, totalLiquidityUSD } = usePositionsRewards({
-    positions,
-  });
+  const { tokenPrices } = useTokenData();
+
+  const pooledTokenEntries = useMemo<PooledTokenEntry[]>(() => {
+    const entries = new Map<string, PooledTokenEntry>();
+
+    const addContribution = (token: TokenModel, balance: string | number | null | undefined) => {
+      const amount = Number(balance ?? 0);
+      if (!token?.path || !amount) return;
+
+      const priceId = checkGnotPath(token.priceID);
+      const rawPrice = tokenPrices[priceId]?.usd;
+      const price = rawPrice ? Number(rawPrice) : null;
+
+      const existing = entries.get(token.path);
+      if (existing) {
+        existing.amount += amount;
+        if (price !== null) {
+          existing.usd = (existing.usd ?? 0) + amount * price;
+        }
+      } else {
+        entries.set(token.path, {
+          token,
+          amount,
+          usd: price !== null ? amount * price : null,
+        });
+      }
+    };
+
+    for (const position of positions) {
+      addContribution(position.pool.tokenA, position.tokenABalance);
+      addContribution(position.pool.tokenB, position.tokenBBalance);
+    }
+
+    return Array.from(entries.values());
+  }, [positions, tokenPrices]);
+
+  const totalLiquidityUSD = useMemo(() => {
+    if (positions.length === 0) return "-";
+
+    const total = positions.reduce<number | null>((acc, position) => {
+      const value = Number(position.positionUsdValue ?? 0);
+      if (!value) return acc;
+      return (acc ?? 0) + value;
+    }, null);
+
+    return formatOtherPrice(total, { isKMB: false });
+  }, [positions]);
 
   const stakingAPR = useMemo(() => {
-    if (!pool?.stakingApr) return "-";
+    // Sum staking APR across the unique pools represented in the selection.
+    const seen = new Set<string>();
+    let totalApr = 0;
+    let hasApr = false;
 
-    if (!Number(pool?.stakingApr || 0)) return "0%";
+    for (const position of positions) {
+      const positionPool = position.pool;
+      const poolPath = positionPool?.poolPath;
+      if (!poolPath || seen.has(poolPath)) continue;
+      seen.add(poolPath);
 
-    return `${formatRate(Number(pool?.stakingApr || 0) * 0.3)} ~ ${formatRate(pool?.stakingApr)}`;
-  }, [pool?.stakingApr]);
+      const aprValue = Number(positionPool?.stakingApr ?? 0);
+      if (Number.isFinite(aprValue) && aprValue > 0) {
+        totalApr += aprValue;
+        hasApr = true;
+      }
+    }
+
+    if (!hasApr) return "-";
+    return `${formatRate(totalApr * 0.3)} ~ ${formatRate(totalApr)}`;
+  }, [positions]);
 
   if (positions.length === 0) return null;
 
   return (
     <div css={wrapper}>
       <ul className="pooled-section">
-        {pooledTokenInfos.map((pooledTokenInfo, index) => (
-          <li key={index}>
+        {pooledTokenEntries.map(entry => (
+          <li key={entry.token.path}>
             <div className="main-info">
-              <MissingLogo
-                symbol={pooledTokenInfo.token.symbol}
-                url={pooledTokenInfo.token.logoURI}
-                width={24}
-                mobileWidth={24}
-              />
+              <MissingLogo symbol={entry.token.symbol} url={entry.token.logoURI} width={24} mobileWidth={24} />
               <p>
-                {t("StakePosition:overview.pooled")} {pooledTokenInfo.token.symbol}
+                {t("StakePosition:overview.pooled")} {entry.token.symbol}
               </p>
-              <strong>{pooledTokenInfo.amount}</strong>
+              <strong>
+                {formatPoolPairAmount(entry.amount, {
+                  decimals: entry.token.decimals,
+                  isKMB: false,
+                })}
+              </strong>
             </div>
-            <span className="dallor">{pooledTokenInfo.amountUSD}</span>
+            <span className="dallor">{entry.usd !== null ? formatOtherPrice(entry.usd, { isKMB: false }) : "-"}</span>
           </li>
         ))}
       </ul>

@@ -13,6 +13,7 @@ export interface UsePositionDataOption {
   page?: number;
   limit?: number;
   withClosed?: boolean;
+  withAvailableStake?: boolean;
   scopeId?: string;
   queryOption?: UseQueryOptions<PositionModel[], Error, PositionModel[], QueryKey>;
 }
@@ -38,6 +39,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     page: options?.page,
     limit: options?.limit,
     withClosed: options?.withClosed,
+    withAvailableStake: options?.withAvailableStake,
   });
 
   const { totalCount: totalPositionCount = 0, positions: rawPositions = [] } = data ?? {};

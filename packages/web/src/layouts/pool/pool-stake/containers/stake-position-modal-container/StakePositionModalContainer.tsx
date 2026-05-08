@@ -70,13 +70,10 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
 
   const onCloseConfirmTransactionModal = useCallback(() => {
     clearModal();
-    const pathName = router.pathname;
-    if (pathName === "/earn/stake") {
-      router.push("/earn");
-    } else {
-      router.push(router.asPath.replace("/stake", ""));
+    if (poolPath) {
+      router.push(`/earn/pool?poolPath=${poolPath}`);
     }
-  }, [clearModal, router]);
+  }, [clearModal, router, poolPath]);
 
   const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal({
     confirmCallback: onCloseConfirmTransactionModal,

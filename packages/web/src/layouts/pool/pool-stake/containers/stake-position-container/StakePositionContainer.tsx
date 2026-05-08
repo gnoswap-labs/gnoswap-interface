@@ -3,12 +3,11 @@ import React, { useCallback, useMemo, useState } from "react";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { useGetPoolDetailByPath } from "@query/pools";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionConverter } from "@services/converters/position";
 
-import StakePosition from "../../components/stake-position/StakePosition";
 import { useStakePositionModal } from "@hooks/pool/ui/use-stake-position-modal";
+import StakePosition from "../../components/stake-position/StakePosition";
 
 const StakePositionContainer: React.FC = () => {
   const router = useCustomRouter();
@@ -22,24 +21,23 @@ const StakePositionContainer: React.FC = () => {
     refetch: refetchPositions,
   } = usePositionData({
     isClosed: false,
-    poolPath,
-    queryOption: {
-      enabled: !!poolPath,
-    },
-  });
-  const { data: poolDetail } = useGetPoolDetailByPath(poolPath, {
-    enabled: !!poolPath,
+    poolPath: poolPath || undefined,
+    withAvailableStake: true,
   });
   const [checkedList, setCheckedList] = useState<number[]>(positionId ? [Number(positionId)] : []);
 
   const positionList: PoolPositionModel[] = useMemo(() => {
     return PositionConverter.convertPositions(allPosition);
   }, [allPosition]);
+
   // For this domain only show `closed = false` && `staked = false` position
-  const unstakedPositions = useMemo(
-    () => positionList.filter(position => position.poolPath === poolPath && !position.staked),
-    [positionList],
-  );
+  const unstakedPositions = useMemo(() => {
+    const baseList = positionList.filter(position => !position.staked);
+    if (!poolPath) {
+      return baseList;
+    }
+    return baseList.filter(position => position.poolPath === poolPath);
+  }, [positionList, poolPath]);
 
   const { openModal } = useStakePositionModal({
     positions: unstakedPositions,
@@ -101,7 +99,6 @@ const StakePositionContainer: React.FC = () => {
       isEmpty={isEmpty}
       isLoading={isLoadingAllPositions}
       connected={connected}
-      pool={poolDetail}
     />
   );
 };
