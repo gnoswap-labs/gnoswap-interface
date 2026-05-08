@@ -7,7 +7,7 @@ import { GetPositionsByAddressResult } from "@repositories/position/response";
 
 import { QUERY_KEY } from "../query-keys";
 
-const REFETCH_INTERVAL = 60_000;
+const REFETCH_INTERVAL = 5_000;
 
 interface UseGetPositionsByAddressProps {
   address?: string;
