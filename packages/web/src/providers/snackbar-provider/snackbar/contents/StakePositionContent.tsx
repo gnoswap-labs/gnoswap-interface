@@ -32,7 +32,7 @@ const StakePositionContent: React.FC<{ content?: SnackbarContent; onClick: () =>
               __html: sanitizeHtml(content?.description || t("Modal:toast.stake-position.desc")),
             }}
           />
-          <a onClick={onClickLink}>
+          <a onClick={content?.onClickLink || onClickLink}>
             {t("Modal:toast.stake-position.link")} <IconArrowRight />
           </a>
         </div>

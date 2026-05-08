@@ -15,4 +15,5 @@ export interface SnackbarContent {
   txHash?: string;
   logoUrl?: string;
   onClick?: () => void;
+  onClickLink?: () => void;
 }

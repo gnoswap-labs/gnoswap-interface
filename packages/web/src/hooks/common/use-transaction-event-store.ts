@@ -256,9 +256,12 @@ export const useTransactionEventStore = () => {
     })();
 
     const onClick = () => {
+      router.push(`${PAGE_PATH.POOL_STAKE}?poolPath=${poolPath}&positionId=${positionId}`);
+    };
+    const onClickLink = () => {
       router.push(`${PAGE_PATH.POOL}?poolPath=${poolPath}#staking`);
     };
-    enqueue(getStakePositionMessage(positionId, apr, positionLogoUrl, onClick), config);
+    enqueue(getStakePositionMessage(positionId, apr, positionLogoUrl, onClick, onClickLink), config);
   }
 
   return { enqueueEvent };
