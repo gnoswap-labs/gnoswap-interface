@@ -35,13 +35,15 @@ const StakePosition: React.FC<StakePositionProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const isEmptyCheckList = useMemo(() => {
-    return checkedList.length === 0 && connected;
-  }, [checkedList, connected]);
-
   const selectedPositions = useMemo(() => {
     return unstakedPositions.filter(position => checkedList.includes(position.id));
   }, [checkedList, unstakedPositions]);
+
+  // Use derived selectedPositions length, not raw checkedList length —
+  // stale ids that no longer match unstakedPositions must not enable submit.
+  const isEmptyCheckList = useMemo(() => {
+    return selectedPositions.length === 0 && connected;
+  }, [selectedPositions.length, connected]);
 
   return (
     <div css={wrapper}>
