@@ -14,8 +14,14 @@ const StakePositionContent: React.FC<{ content?: SnackbarContent; onClick: () =>
 
   const onClickLink = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.stopPropagation();
-    onClick();
     close();
+
+    if (content?.onClickLink) {
+      content.onClickLink();
+      return;
+    }
+
+    onClick();
   };
 
   return (
@@ -32,7 +38,7 @@ const StakePositionContent: React.FC<{ content?: SnackbarContent; onClick: () =>
               __html: sanitizeHtml(content?.description || t("Modal:toast.stake-position.desc")),
             }}
           />
-          <a onClick={content?.onClickLink || onClickLink}>
+          <a onClick={onClickLink}>
             {t("Modal:toast.stake-position.link")} <IconArrowRight />
           </a>
         </div>
