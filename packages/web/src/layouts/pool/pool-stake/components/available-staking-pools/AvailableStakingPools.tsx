@@ -71,8 +71,8 @@ const AvailableStakingPools: React.FC<AvailableStakingPoolsProps> = ({
 
   return (
     <section css={wrapper}>
-      <h5 className="section-title">{t("StakePosition:availablePools.title")}</h5>
       <div className="pools-card">
+        <h5 className="section-title">{t("StakePosition:availablePools.title")}</h5>
         <div className="pools-row header">
           <SortableHeader
             label={t("StakePosition:availablePools.column.poolName")}
