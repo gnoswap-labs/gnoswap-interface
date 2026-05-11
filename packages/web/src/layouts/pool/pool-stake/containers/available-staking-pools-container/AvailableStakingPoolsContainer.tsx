@@ -53,9 +53,10 @@ const AvailableStakingPoolsContainer: React.FC = () => {
       if (prev.key !== key) {
         return { key, direction: "asc" };
       }
-      // Same column cycle: ASC -> DESC -> DEFAULT (TVL desc).
-      if (prev.direction === "asc") {
-        return { key, direction: "desc" };
+      // Same column cycle: DESC -> ASC -> DEFAULT (TVL desc).
+      // Starting from DESC lets a click on the default-sorted column toggle to ASC immediately.
+      if (prev.direction === "desc") {
+        return { key, direction: "asc" };
       }
       return DEFAULT_SORT;
     });

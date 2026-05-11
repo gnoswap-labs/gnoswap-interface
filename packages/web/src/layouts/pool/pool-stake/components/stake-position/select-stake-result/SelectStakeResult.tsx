@@ -75,26 +75,24 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({ positions, isHidd
   }, [positions]);
 
   const stakingAPR = useMemo(() => {
-    // Sum staking APR across the unique pools represented in the selection.
-    const seen = new Set<string>();
-    let totalApr = 0;
-    let hasApr = false;
+    // Liquidity-weighted average staking APR across the selected positions.
+    // Summing pool APRs would inflate the displayed rate once the selection spans multiple pools.
+    let weightedSum = 0;
+    let totalWeight = 0;
 
     for (const position of positions) {
-      const positionPool = position.pool;
-      const poolPath = positionPool?.poolPath;
-      if (!poolPath || seen.has(poolPath)) continue;
-      seen.add(poolPath);
+      const aprValue = Number(position.pool?.stakingApr ?? 0);
+      const weight = Number(position.positionUsdValue ?? 0);
+      if (!Number.isFinite(aprValue) || aprValue <= 0) continue;
+      if (!Number.isFinite(weight) || weight <= 0) continue;
 
-      const aprValue = Number(positionPool?.stakingApr ?? 0);
-      if (Number.isFinite(aprValue) && aprValue > 0) {
-        totalApr += aprValue;
-        hasApr = true;
-      }
+      weightedSum += aprValue * weight;
+      totalWeight += weight;
     }
 
-    if (!hasApr) return "-";
-    return `${formatRate(totalApr * 0.3)} ~ ${formatRate(totalApr)}`;
+    if (totalWeight <= 0) return "-";
+    const averageApr = weightedSum / totalWeight;
+    return `${formatRate(averageApr * 0.3)} ~ ${formatRate(averageApr)}`;
   }, [positions]);
 
   if (positions.length === 0) return null;

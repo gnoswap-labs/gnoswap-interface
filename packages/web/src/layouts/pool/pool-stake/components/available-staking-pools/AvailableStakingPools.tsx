@@ -37,12 +37,22 @@ interface SortableHeaderProps {
 const SortableHeader: React.FC<SortableHeaderProps> = ({ label, align = "left", columnKey, activeKey, onClick }) => {
   const isActive = activeKey === columnKey;
   const handleClick = onClick ? () => onClick(columnKey) : undefined;
+  const handleKeyDown = onClick
+    ? (e: React.KeyboardEvent<HTMLSpanElement>) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick(columnKey);
+        }
+      }
+    : undefined;
 
   return (
     <span
       className={cx("sortable", `align-${align}`, { active: isActive, clickable: !!onClick })}
       onClick={handleClick}
+      onKeyDown={handleKeyDown}
       role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
     >
       {label}
     </span>
@@ -93,12 +103,25 @@ const AvailableStakingPools: React.FC<AvailableStakingPoolsProps> = ({
               const aprValue = Number(pool.apr);
               const showStar = aprValue > 100;
               const poolPath = pool.poolPath;
+              const isSelectable = !!(onSelectPool && poolPath);
+              const handleRowClick = isSelectable ? () => onSelectPool!(poolPath!) : undefined;
+              const handleRowKeyDown = isSelectable
+                ? (e: React.KeyboardEvent<HTMLDivElement>) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      onSelectPool!(poolPath!);
+                    }
+                  }
+                : undefined;
+              const feeRateStr = SwapFeeTierInfoMap[pool.feeTier]?.rateStr ?? "-";
               return (
                 <div
                   key={poolPath ?? pool.poolId}
                   className="pools-row"
-                  onClick={onSelectPool && poolPath ? () => onSelectPool(poolPath) : undefined}
-                  role={onSelectPool && poolPath ? "button" : undefined}
+                  onClick={handleRowClick}
+                  onKeyDown={handleRowKeyDown}
+                  role={isSelectable ? "button" : undefined}
+                  tabIndex={isSelectable ? 0 : undefined}
                 >
                   <div className="pool-name">
                     <DoubleLogo
@@ -111,7 +134,7 @@ const AvailableStakingPools: React.FC<AvailableStakingPoolsProps> = ({
                     <span className="pair">
                       {pool.tokenA.symbol}/{pool.tokenB.symbol}
                     </span>
-                    <span className="fee">{SwapFeeTierInfoMap[pool.feeTier].rateStr}</span>
+                    <span className="fee">{feeRateStr}</span>
                   </div>
                   <div className="incentive-cell">
                     <OverlapTokenLogo tokens={tokenData} size={20} showRewardType />
