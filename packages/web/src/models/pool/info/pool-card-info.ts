@@ -21,6 +21,8 @@ export interface IncentivizePoolCardInfo {
 
   apr: string;
 
+  stakingApr: string;
+
   volume24h: string;
 
   fees24h: string;

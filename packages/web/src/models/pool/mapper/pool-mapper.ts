@@ -1,11 +1,11 @@
-import { PoolListInfo } from "../info/pool-list-info";
-import { IncentivizePoolModel, PoolModel } from "../pool-model";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
-import { IncentivizePoolCardInfo } from "../info/pool-card-info";
-import { PoolSelectItemInfo } from "../info/pool-select-item-info";
 import { PoolResponse } from "@repositories/pool";
-import { PoolDetailModel } from "../pool-detail-model";
 import { formatOtherPrice } from "@utils/new-number-utils";
+import { IncentivizePoolCardInfo } from "../info/pool-card-info";
+import { PoolListInfo } from "../info/pool-list-info";
+import { PoolSelectItemInfo } from "../info/pool-select-item-info";
+import { PoolDetailModel } from "../pool-detail-model";
+import { IncentivizePoolModel, PoolModel } from "../pool-model";
 
 export class PoolMapper {
   public static toListInfo(poolModel: PoolModel): PoolListInfo {
