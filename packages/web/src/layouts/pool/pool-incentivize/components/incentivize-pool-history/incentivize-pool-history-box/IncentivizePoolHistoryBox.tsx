@@ -4,6 +4,7 @@ import React from "react";
 import { Trans, useTranslation } from "react-i18next";
 
 import { getDateUtcToLocal } from "@common/utils/date-util";
+import { YN_TYPE } from "@common/types/global-prop-types";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { ExtendedPoolStakingModel } from "@models/pool/pool-staking";
@@ -96,8 +97,8 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
     return new BigNumber(stakingData.claimableUnvestedAmount || "0").isGreaterThan(0);
   }, [stakingData.claimableUnvestedAmount]);
 
-  const isExternalIncentiveActive = stakingData.activeYn === "Y";
-  const isExternalIncentiveEnded = stakingData.activeYn === "N";
+  const isExternalIncentiveActive = stakingData.activeYn === YN_TYPE.YES;
+  const isExternalIncentiveEnded = stakingData.activeYn === YN_TYPE.NO;
   const hasKnownExternalIncentiveActiveState = isExternalIncentiveActive || isExternalIncentiveEnded;
 
   const isClaimDisabled = !hasClaimableUnvestedAmount || !hasKnownExternalIncentiveActiveState;
