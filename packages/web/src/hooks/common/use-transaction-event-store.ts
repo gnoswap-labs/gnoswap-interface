@@ -249,10 +249,17 @@ export const useTransactionEventStore = () => {
       return;
     }
 
-    const apr = (() => {
-      if (!pool.apr) return "0%";
+    // Only enqueue staking guidance for pools that actually have a staking incentive.
+    const hasStakingIncentive = pool.incentivized || (pool.rewardTokens && pool.rewardTokens.length > 0);
+    if (!hasStakingIncentive) {
+      return;
+    }
 
-      return formatRate(pool.apr);
+    const apr = (() => {
+      if (!pool.stakingApr) return "-";
+      if (!Number(pool.stakingApr)) return "0%";
+
+      return formatRate(pool.stakingApr);
     })();
 
     const onClick = () => {
