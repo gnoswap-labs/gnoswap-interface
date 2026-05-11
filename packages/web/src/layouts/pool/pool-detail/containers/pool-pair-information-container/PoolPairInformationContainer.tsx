@@ -42,13 +42,19 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
     },
   });
 
+  // Gate the bins query on `data?.currentTick` being defined. Bins are server-centered
+  // on the current tick, so firing before pool detail arrives would (1) issue an
+  // initial request without a tick, then (2) immediately invalidate and refetch
+  // once the tick comes in — producing two slightly different payloads on first
+  // mount and a visible re-layout of the graph just after entry.
+  const currentTick = data?.currentTick;
   const { data: binsResult, isLoading: isLoadingBins } = useGetBinsByPath(
     poolPath as string,
     binCount,
-    data?.currentTick,
+    currentTick,
     {
-      enabled: !!poolPath,
-      queryKey: [QUERY_KEY.poolPairBins, poolPath, zoomLevel, data?.currentTick ?? null],
+      enabled: !!poolPath && currentTick !== undefined,
+      queryKey: [QUERY_KEY.poolPairBins, poolPath, zoomLevel, currentTick ?? null],
     },
   );
   const bins = binsResult?.bins ?? [];
