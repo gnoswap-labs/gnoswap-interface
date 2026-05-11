@@ -48,20 +48,16 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   const { breakpoint } = useWindowSize();
   const { connected: connectedWallet, isSwitchNetwork, account, currentChainId } = useWallet();
   const [currentIndex, setCurrentIndex] = useState(1);
-  const [positionPage, setPositionPage] = useState(1);
   const [positionLimit, setPositionLimit] = useState(DEFAULT_POSITION_LIMIT);
-  const [loadedPositions, setLoadedPositions] = useState<PoolPositionModel[]>([]);
   const poolPath = router.getPoolPath();
   const normalizedAddress = useMemo(() => (address || "").toLowerCase(), [address]);
 
   const positionScopeId = useMemo(() => {
-    return ["my-liquidity", address || "", poolPath || "", positionLimit, positionPage].join("-");
-  }, [address, poolPath, positionLimit, positionPage]);
+    return ["my-liquidity", address || "", poolPath || "", positionLimit].join("-");
+  }, [address, poolPath, positionLimit]);
 
   useEffect(() => {
-    setPositionPage(1);
     setPositionLimit(DEFAULT_POSITION_LIMIT);
-    setLoadedPositions([]);
   }, [address, poolPath]);
 
   const {
@@ -72,7 +68,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   } = usePositionData({
     address,
     poolPath,
-    page: positionPage,
+    page: 1,
     limit: positionLimit,
     scopeId: positionScopeId,
     queryOption: {
@@ -80,29 +76,14 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     },
   });
 
-  useEffect(() => {
-    if (!address || !poolPath || positions.length === 0) {
-      return;
+  const loadedPositions = useMemo<PoolPositionModel[]>(() => {
+    if (!address || !poolPath) {
+      return [];
     }
 
-    const currentPagePositions = positions.filter(
+    return positions.filter(
       position => position.poolPath === poolPath && position.owner.toLowerCase() === normalizedAddress,
     );
-
-    if (currentPagePositions.length === 0) {
-      return;
-    }
-
-    setLoadedPositions(prev => {
-      const loadedPositionIds = new Set(prev.map(position => position.id));
-      const nextPositions = currentPagePositions.filter(position => !loadedPositionIds.has(position.id));
-
-      if (nextPositions.length === 0) {
-        return prev;
-      }
-
-      return [...prev, ...nextPositions];
-    });
   }, [address, poolPath, positions, normalizedAddress]);
 
   const { invalidateQueryKey } = useInvalidateQueries();
@@ -328,7 +309,6 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
       return;
     }
 
-    setPositionPage(1);
     setPositionLimit(Math.max(totalPositionCount, DEFAULT_POSITION_LIMIT));
   }, [accountPositions.length, totalPositionCount]);
 

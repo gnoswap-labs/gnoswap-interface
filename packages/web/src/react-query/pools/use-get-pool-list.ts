@@ -5,7 +5,7 @@ import { PoolModel } from "@models/pool/pool-model";
 
 import { QUERY_KEY } from "../query-keys";
 
-const REFETCH_INTERVAL = 60_000;
+const REFETCH_INTERVAL = 5_000;
 
 export const useGetPoolList = (options?: UseQueryOptions<PoolModel[], Error>) => {
   const { poolRepository } = useGnoswapContext();
