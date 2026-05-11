@@ -75,18 +75,22 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({ positions, isHidd
   }, [positions]);
 
   const stakingAPR = useMemo(() => {
-    // Liquidity-weighted average staking APR across the selected positions.
-    // Summing pool APRs would inflate the displayed rate once the selection spans multiple pools.
+    // USD-Value-weighted average of each position's pool staking APR:
+    //   APR = Σ (pool_APR_i × USD_i) / Σ USD_j
+    // A position with 0% APR still contributes its USD value to the denominator,
+    // so the displayed rate stays consistent with the spec when the selection
+    // mixes incentivized and non-incentivized pools.
     let weightedSum = 0;
     let totalWeight = 0;
 
     for (const position of positions) {
-      const aprValue = Number(position.pool?.stakingApr ?? 0);
       const weight = Number(position.positionUsdValue ?? 0);
-      if (!Number.isFinite(aprValue) || aprValue <= 0) continue;
       if (!Number.isFinite(weight) || weight <= 0) continue;
 
-      weightedSum += aprValue * weight;
+      const aprValue = Number(position.pool?.stakingApr ?? 0);
+      const contribution = Number.isFinite(aprValue) && aprValue > 0 ? aprValue : 0;
+
+      weightedSum += contribution * weight;
       totalWeight += weight;
     }
 
