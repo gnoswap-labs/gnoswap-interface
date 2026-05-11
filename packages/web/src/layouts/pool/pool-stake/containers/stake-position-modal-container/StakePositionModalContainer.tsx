@@ -1,29 +1,29 @@
 import { useCallback, useMemo } from "react";
 
 import { ERROR_VALUE } from "@common/errors/adena";
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { useAddress } from "@hooks/common/use-address";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { useMessage } from "@hooks/common/use-message";
+import { useNetworkFee } from "@hooks/common/use-network-fee";
+import { useReferral } from "@hooks/common/use-referral";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { getGasUsed } from "@hooks/gas";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
-import { DexEvent } from "@repositories/common";
-import { formatPoolPairAmount } from "@utils/new-number-utils";
-import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
-import { useReferral } from "@hooks/common/use-referral";
-import { StakePositionsRequest } from "@repositories/position/request";
-import { makeStakePositionsMessagesWithApproves } from "@repositories/position/position.message";
-import { useNetworkFee } from "@hooks/common/use-network-fee";
-import { useAddress } from "@hooks/common/use-address";
-import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
-import { getGasUsed } from "@hooks/gas";
 import { QUERY_KEY } from "@query/query-keys";
+import { DexEvent } from "@repositories/common";
+import { makeStakePositionsMessagesWithApproves } from "@repositories/position/position.message";
+import { StakePositionsRequest } from "@repositories/position/request";
 import { delay } from "@utils/common";
+import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 import StakePositionModal from "../../components/stake-position-modal/StakePositionModal";
 
@@ -85,8 +85,8 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
 
     const add = (token: typeof positions[number]["pool"]["tokenA"], balance: string | number | null | undefined) => {
       if (!token?.path) return;
-      const amount = Number(balance ?? 0);
-      if (!Number.isFinite(amount) || amount === 0) return;
+      const rawAmount = Number(balance ?? 0);
+      const amount = Number.isFinite(rawAmount) ? rawAmount : 0;
 
       const existing = grouped.get(token.path);
       if (existing) {
@@ -104,25 +104,31 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
     return Array.from(grouped.values());
   }, [positions]);
 
-  const buildAdenaWalletAction = useCallback(async (request: StakePositionsRequest) => {
-    return await positionRepository.stakePositions(request).catch(() => null);
-  }, [positionRepository]);
+  const buildAdenaWalletAction = useCallback(
+    async (request: StakePositionsRequest) => {
+      return await positionRepository.stakePositions(request).catch(() => null);
+    },
+    [positionRepository],
+  );
 
-  const buildSocialWalletAction = useCallback(async (request: StakePositionsRequest) => {
-    const txMessages = makeStakePositionsMessagesWithApproves(request);
+  const buildSocialWalletAction = useCallback(
+    async (request: StakePositionsRequest) => {
+      const txMessages = makeStakePositionsMessagesWithApproves(request);
 
-    const txDoc = await transactionService.createDocument({ messages: txMessages });
-    await transactionService.createTransaction(txDoc);
+      const txDoc = await transactionService.createDocument({ messages: txMessages });
+      await transactionService.createTransaction(txDoc);
 
-    const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
-    const requestWithGasInfo: StakePositionsRequest = {
-      ...request,
-      gasFee: networkFee?.amount,
-      gasUsed: getGasUsed(currentGasInfo).toString(),
-    };
+      const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
+      const requestWithGasInfo: StakePositionsRequest = {
+        ...request,
+        gasFee: networkFee?.amount,
+        gasUsed: getGasUsed(currentGasInfo).toString(),
+      };
 
-    return await positionRepository.stakePositions(requestWithGasInfo).catch(() => null);
-  }, [estimateNetworkFee, positionRepository, transactionService]);
+      return await positionRepository.stakePositions(requestWithGasInfo).catch(() => null);
+    },
+    [estimateNetworkFee, positionRepository, transactionService],
+  );
 
   const stakeOnSubmit = useCallback(async () => {
     const address = account?.address;
@@ -152,7 +158,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
             decimals: tokenA?.token?.decimals,
             isKMB: false,
           }),
-          tokenBAmount: formatPoolPairAmount(tokenB.amount, {
+          tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
             decimals: tokenB?.token?.decimals,
             isKMB: false,
           }),
@@ -178,7 +184,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
                 decimals: tokenA?.token?.decimals,
                 isKMB: false,
               }),
-              tokenBAmount: formatPoolPairAmount(tokenB.amount, {
+              tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
                 decimals: tokenB?.token?.decimals,
                 isKMB: false,
               }),
@@ -206,7 +212,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
                   decimals: tokenA?.token?.decimals,
                   isKMB: false,
                 }),
-                tokenBAmount: formatPoolPairAmount(tokenB.amount, {
+                tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
                   decimals: tokenB?.token?.decimals,
                   isKMB: false,
                 }),
@@ -224,7 +230,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
                 decimals: tokenA?.token?.decimals,
                 isKMB: false,
               }),
-              tokenBAmount: formatPoolPairAmount(tokenB.amount, {
+              tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
                 decimals: tokenB?.token?.decimals,
                 isKMB: false,
               }),
