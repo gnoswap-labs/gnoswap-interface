@@ -359,7 +359,6 @@ function makePositionMintMessage(
       BigNumber(tokenBAmount).multipliedBy(slippageRatio).toFixed(0),
       deadline,
       caller, // LP Token Receiver
-      caller, // Replace OriginCaller
       referrerAddress || "", // Referral address
     ],
   });
