@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import { PoolModel } from "@models/pool/pool-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 
 import SelectLiquidity from "./select-liquidity/SelectLiquidity";
@@ -21,7 +20,6 @@ interface StakePositionProps {
   isEmpty: boolean;
   isLoading: boolean;
   connected: boolean;
-  pool?: PoolModel;
 }
 
 const StakePosition: React.FC<StakePositionProps> = ({
@@ -34,17 +32,18 @@ const StakePosition: React.FC<StakePositionProps> = ({
   isEmpty,
   isLoading,
   connected,
-  pool,
 }) => {
   const { t } = useTranslation();
-
-  const isEmptyCheckList = useMemo(() => {
-    return checkedList.length === 0 && connected;
-  }, [checkedList, connected]);
 
   const selectedPositions = useMemo(() => {
     return unstakedPositions.filter(position => checkedList.includes(position.id));
   }, [checkedList, unstakedPositions]);
+
+  // Use derived selectedPositions length, not raw checkedList length —
+  // stale ids that no longer match unstakedPositions must not enable submit.
+  const isEmptyCheckList = useMemo(() => {
+    return selectedPositions.length === 0 && connected;
+  }, [selectedPositions.length, connected]);
 
   return (
     <div css={wrapper}>
@@ -59,7 +58,7 @@ const StakePosition: React.FC<StakePositionProps> = ({
         isEmpty={isEmpty}
         isLoading={isLoading}
       />
-      <SelectStakeResult positions={selectedPositions} isHiddenBadge pool={pool} />
+      <SelectStakeResult positions={selectedPositions} isHiddenBadge />
       <Button
         className="button-stake-position"
         text={

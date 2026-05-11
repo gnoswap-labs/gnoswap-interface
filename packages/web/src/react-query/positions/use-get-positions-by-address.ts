@@ -16,6 +16,7 @@ interface UseGetPositionsByAddressProps {
   page?: number;
   limit?: number;
   withClosed?: boolean;
+  withAvailableStake?: boolean;
 }
 
 export const useGetPositionsByAddress = (
@@ -43,6 +44,7 @@ export const useGetPositionsByAddress = (
       props?.limit,
       props?.withClosed,
       props?.isClosed,
+      props?.withAvailableStake,
     ],
     queryFn: async () => {
       if (!availNetwork || !address) {
@@ -56,6 +58,7 @@ export const useGetPositionsByAddress = (
           limit: props?.limit,
           withClosed: props?.withClosed,
           isClosed: props?.isClosed,
+          withAvailableStake: props?.withAvailableStake,
         })
         .catch(e => {
           console.error(e);

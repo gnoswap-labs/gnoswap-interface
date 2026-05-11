@@ -101,6 +101,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       page?: number;
       limit?: number;
       withClosed?: boolean;
+      withAvailableStake?: boolean;
     },
   ): Promise<{ positions: PositionModel[]; totalCount: number }> => {
     if (!this.networkClient) {
@@ -112,6 +113,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       options?.page !== undefined ? `page=${options.page}` : "",
       options?.limit !== undefined ? `limit=${options.limit}` : "",
       options?.withClosed !== undefined ? `withClosed=${options.withClosed}` : "",
+      options?.withAvailableStake !== undefined ? `withAvailableStake=${options.withAvailableStake}` : "",
     ];
     const queryString = queries.filter(item => !!item).join("&");
 
