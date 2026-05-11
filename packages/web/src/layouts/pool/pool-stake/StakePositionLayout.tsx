@@ -6,10 +6,17 @@ interface StakePositionLayoutProps {
   header: React.ReactNode;
   breadcrumbs: React.ReactNode;
   stakeLiquidity: React.ReactNode;
+  availablePools?: React.ReactNode;
   footer: React.ReactNode;
 }
 
-const StakePositionLayout: React.FC<StakePositionLayoutProps> = ({ header, breadcrumbs, stakeLiquidity, footer }) => {
+const StakePositionLayout: React.FC<StakePositionLayoutProps> = ({
+  header,
+  breadcrumbs,
+  stakeLiquidity,
+  availablePools,
+  footer,
+}) => {
   const { t } = useTranslation();
 
   return (
@@ -20,7 +27,10 @@ const StakePositionLayout: React.FC<StakePositionLayoutProps> = ({ header, bread
           <h3 className="title">{t("business:pageHeader.earn")}</h3>
           <div className="breadcrumbs">{breadcrumbs}</div>
         </div>
-        <div className="stake-liquidity-section">{stakeLiquidity}</div>
+        <div className="right-container">
+          <div className="stake-liquidity-section">{stakeLiquidity}</div>
+          {availablePools && <aside className="available-pools-section">{availablePools}</aside>}
+        </div>
       </main>
       {footer}
     </div>

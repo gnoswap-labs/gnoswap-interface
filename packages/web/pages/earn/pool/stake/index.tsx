@@ -22,7 +22,9 @@ export async function getStaticProps({ locale }: { locale: string }) {
 export default function Page() {
   const router = useRouter();
   const poolPath = router.getPoolPath();
-  const { data } = useGetPoolDetailByPath(poolPath as string);
+  const { data } = useGetPoolDetailByPath(poolPath as string, {
+    enabled: !!poolPath,
+  });
   const { getGnotPath } = useGnotToGnot();
 
   const feeStr = useMemo(() => {

@@ -1,11 +1,11 @@
-import { PoolListInfo } from "../info/pool-list-info";
-import { IncentivizePoolModel, PoolModel } from "../pool-model";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
-import { IncentivizePoolCardInfo } from "../info/pool-card-info";
-import { PoolSelectItemInfo } from "../info/pool-select-item-info";
 import { PoolResponse } from "@repositories/pool";
-import { PoolDetailModel } from "../pool-detail-model";
 import { formatOtherPrice } from "@utils/new-number-utils";
+import { IncentivizePoolCardInfo } from "../info/pool-card-info";
+import { PoolListInfo } from "../info/pool-list-info";
+import { PoolSelectItemInfo } from "../info/pool-select-item-info";
+import { PoolDetailModel } from "../pool-detail-model";
+import { IncentivizePoolModel, PoolModel } from "../pool-model";
 
 export class PoolMapper {
   public static toListInfo(poolModel: PoolModel): PoolListInfo {
@@ -70,6 +70,7 @@ export class PoolMapper {
       volume24h,
       fee,
       apr,
+      stakingApr,
       poolPath,
       rewardTokens,
       feeUsd24h,
@@ -83,6 +84,7 @@ export class PoolMapper {
       tokenB,
       feeTier: feeTierInfo?.type || "NONE",
       apr: apr,
+      stakingApr,
       liquidity: formatOtherPrice(tvl),
       volume24h: formatOtherPrice(volume24h),
       fees24h: formatOtherPrice(feeUsd24h),
@@ -96,12 +98,15 @@ export class PoolMapper {
 
   public static fromResponse(pool: PoolResponse): PoolModel {
     const id = pool.id ?? pool.poolPath;
+    // The pool list APIs do not return stakingApr separately, so fall back to totalApr.
+    const stakingApr = pool.stakingApr ?? pool.totalApr ?? "";
     return {
       ...pool,
       id,
       incentivized: pool.incentivized,
       rewardTokens: pool.rewardTokens || [],
       apr: pool.totalApr,
+      stakingApr,
       liquidity: pool.liquidity,
       allTimeVolumeUsd: pool.allTimeVolumeUsd,
       price: Number(pool.price),
@@ -112,12 +117,14 @@ export class PoolMapper {
 
   public static toIncentivePool(pool: PoolResponse): IncentivizePoolModel {
     const id = pool.id ?? pool.poolPath;
+    const stakingApr = pool.stakingApr ?? pool.totalApr ?? "";
     return {
       ...pool,
       id,
       incentivized: pool.incentivized,
       rewardTokens: pool.rewardTokens || [],
       apr: pool.totalApr,
+      stakingApr,
       liquidity: pool.liquidity,
       allTimeVolumeUsd: pool.allTimeVolumeUsd,
       price: Number(pool.price),
@@ -128,12 +135,14 @@ export class PoolMapper {
 
   public static detailFromResponse(pool: PoolResponse): PoolDetailModel {
     const id = pool.id ?? pool.poolPath;
+    const stakingApr = pool.stakingApr ?? pool.totalApr ?? "";
     return {
       ...pool,
       id,
       incentivized: pool.incentivized,
       rewardTokens: pool.rewardTokens || [],
       apr: pool.totalApr ?? "",
+      stakingApr,
       totalApr: pool.totalApr,
       allTimeVolumeUsd: pool.allTimeVolumeUsd,
       price: Number(pool.price),

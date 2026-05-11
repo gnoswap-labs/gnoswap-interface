@@ -36,6 +36,7 @@ const pool: IncentivizePoolCardInfoWithPriceGrade = {
   feeTier: "FEE_500",
   liquidity: "$1,182,797",
   apr: "0.12%",
+  stakingApr: "0",
   volume24h: "$1,182,797",
   fees24h: "$131.937491",
   rewardTokens: [],
