@@ -28,7 +28,7 @@ export const wrapper = (theme: Theme) => css`
     background-color: ${theme.color.background20};
     border: 1px solid ${theme.color.border02};
     border-radius: 8px;
-    padding: 12px 15px;
+    padding: 24px;
     gap: 4px;
 
     ${media.mobile} {
