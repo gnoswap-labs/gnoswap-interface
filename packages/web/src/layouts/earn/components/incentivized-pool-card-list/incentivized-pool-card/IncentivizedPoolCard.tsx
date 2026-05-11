@@ -43,9 +43,15 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
     enabled: Boolean(pool.poolId),
   });
 
-  const { data: bins40, isLoading: isLoadingBins40 } = useGetBinsByPath(pool.poolPath || "", BINS_DATA_DEFAULT_LENGTH, {
-    enabled: !!pool.poolPath,
-  });
+  const { data: bins40Result, isLoading: isLoadingBins40 } = useGetBinsByPath(
+    pool.poolPath || "",
+    BINS_DATA_DEFAULT_LENGTH,
+    undefined,
+    {
+      enabled: !!pool.poolPath,
+    },
+  );
+  const bins40 = bins40Result?.bins;
 
   const staked = useMemo(() => {
     return checkStakedPool(pool.poolPath || null);

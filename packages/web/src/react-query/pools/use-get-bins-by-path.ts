@@ -5,15 +5,27 @@ import { PoolBinModel } from "@models/pool/pool-bin-model";
 
 import { QUERY_KEY } from "../query-keys";
 
-export const useGetBinsByPath = (path: string, count?: number, options?: UseQueryOptions<PoolBinModel[], Error>) => {
+export interface PoolBinsResult {
+  bins: PoolBinModel[];
+  pairedTick: number | null;
+}
+
+export const useGetBinsByPath = (
+  path: string,
+  count?: number,
+  currentTick?: number | null,
+  options?: UseQueryOptions<PoolBinsResult, Error>,
+) => {
   const { poolRepository } = useGnoswapContext();
-  return useQuery<PoolBinModel[], Error>({
-    queryKey: [QUERY_KEY.bins, path],
+  return useQuery<PoolBinsResult, Error>({
+    queryKey: [QUERY_KEY.bins, path, currentTick ?? null],
     queryFn: async () => {
-      return poolRepository.getBinsOfPoolByPath(path, count);
+      const bins = await poolRepository.getBinsOfPoolByPath(path, count);
+      return { bins, pairedTick: currentTick ?? null };
     },
     refetchOnMount: true,
     refetchOnReconnect: true,
+    keepPreviousData: true,
     ...options,
   });
 };

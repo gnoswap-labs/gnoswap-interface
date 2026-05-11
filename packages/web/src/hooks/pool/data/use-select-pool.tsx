@@ -153,10 +153,11 @@ export const useSelectPool = ({
 
   const shouldRefetch = ["/earn/pool/add", "/earn/add"].includes(router.pathname);
 
-  const { data: bins } = useGetBinsByPath(calculatedPoolPath || "", ZOOL_VALUES[zoomLevel], {
+  const { data: binsResult } = useGetBinsByPath(calculatedPoolPath || "", ZOOL_VALUES[zoomLevel], undefined, {
     enabled: !!calculatedPoolPath && !isCreate,
     queryKey: ["useSelectPool/getBins", calculatedPoolPath, zoomLevel, isCreate],
   });
+  const bins = binsResult?.bins;
 
   const { data: initializeBins, isLoading: isLoadingInitializeBins } = useInitializeBins(
     feeTier,
