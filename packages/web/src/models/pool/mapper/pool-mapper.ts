@@ -98,12 +98,15 @@ export class PoolMapper {
 
   public static fromResponse(pool: PoolResponse): PoolModel {
     const id = pool.id ?? pool.poolPath;
+    // The pool list APIs do not return stakingApr separately, so fall back to totalApr.
+    const stakingApr = pool.stakingApr ?? pool.totalApr ?? "";
     return {
       ...pool,
       id,
       incentivized: pool.incentivized,
       rewardTokens: pool.rewardTokens || [],
       apr: pool.totalApr,
+      stakingApr,
       liquidity: pool.liquidity,
       allTimeVolumeUsd: pool.allTimeVolumeUsd,
       price: Number(pool.price),
@@ -114,12 +117,14 @@ export class PoolMapper {
 
   public static toIncentivePool(pool: PoolResponse): IncentivizePoolModel {
     const id = pool.id ?? pool.poolPath;
+    const stakingApr = pool.stakingApr ?? pool.totalApr ?? "";
     return {
       ...pool,
       id,
       incentivized: pool.incentivized,
       rewardTokens: pool.rewardTokens || [],
       apr: pool.totalApr,
+      stakingApr,
       liquidity: pool.liquidity,
       allTimeVolumeUsd: pool.allTimeVolumeUsd,
       price: Number(pool.price),
@@ -130,12 +135,14 @@ export class PoolMapper {
 
   public static detailFromResponse(pool: PoolResponse): PoolDetailModel {
     const id = pool.id ?? pool.poolPath;
+    const stakingApr = pool.stakingApr ?? pool.totalApr ?? "";
     return {
       ...pool,
       id,
       incentivized: pool.incentivized,
       rewardTokens: pool.rewardTokens || [],
       apr: pool.totalApr ?? "",
+      stakingApr,
       totalApr: pool.totalApr,
       allTimeVolumeUsd: pool.allTimeVolumeUsd,
       price: Number(pool.price),
