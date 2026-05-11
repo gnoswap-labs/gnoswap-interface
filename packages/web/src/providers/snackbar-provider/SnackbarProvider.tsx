@@ -53,31 +53,24 @@ const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const enqueue = useCallback<SnackbarContenxtProps["enqueue"]>(
     (content, options) => {
-      let previousSnackbars = [...snackbars];
-      if (options.type === "stake-position") {
-        previousSnackbars = previousSnackbars.map(item => {
-          if (item.type === "stake-position") {
-            return {
-              ...item,
-              isClosing: true,
-            };
-          }
+      setSnackbars(prev => {
+        const previousSnackbars =
+          options.type === "stake-position"
+            ? prev.map(item => (item.type === "stake-position" ? { ...item, isClosing: true } : item))
+            : prev;
 
-          return item;
-        });
-      }
-
-      setSnackbars([
-        ...previousSnackbars,
-        {
-          id: options.id,
-          type: options.type,
-          timeout: options.timeout,
-          content,
-          isClosing: false,
-          onClick: content?.onClick,
-        },
-      ]);
+        return [
+          ...previousSnackbars,
+          {
+            id: options.id,
+            type: options.type,
+            timeout: options.timeout,
+            content,
+            isClosing: false,
+            onClick: content?.onClick,
+          },
+        ];
+      });
     },
     [setSnackbars],
   );
