@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useAddress } from "@hooks/common/use-address";
 import { useGetLeaderboardByAddress, useUpdateLeaderboardHiddenState } from "@query/leaderboard";
 import { DEVICE_TYPE } from "@styles/media";
+import { isLeaderboardHidden } from "@utils/leaderboard-utils";
 
 import IconSearch from "@components/common/icons/IconSearch";
 import SearchInput from "@components/common/search-input/SearchInput";
@@ -35,7 +36,7 @@ const LeaderboardListHeaderContainer = ({
   const { address, connected } = useAddress();
   const { data: leaderboardMyInfo, isLoading: isLoadingLeaderboardMyInfo } = useGetLeaderboardByAddress(address || "");
 
-  const isHidden = leaderboardMyInfo?.hiddenYn === "Y";
+  const isHidden = !!leaderboardMyInfo && isLeaderboardHidden(leaderboardMyInfo.hiddenYn);
 
   const [checked, setChecked] = useState(false);
   const [isOptimisticUpdate, setIsOptimisticUpdate] = useState(false);
