@@ -288,6 +288,11 @@
       "link": "您还可以通过 Swap 打包/拆包",
       "title": "您已经包裹了 GNOT！"
     },
+    "stake-position": {
+      "desc": "点击赚取高达{{apr}} 的职位年利率 #{{positionId}}",
+      "link": "查看投注奖励",
+      "title": "站稳脚跟"
+    },
     "success": {
       "defaultDesc": "您的工作已成功完成",
       "desc": "界面已更新",

@@ -288,6 +288,11 @@
       "link": "You can also wrap/unwrap via Swap",
       "title": "You have Wrapped GNOT!"
     },
+    "stake-position": {
+      "desc": "Click to earn up to {{apr}} APR on Position #{{positionId}}",
+      "link": "View staking rewards",
+      "title": "Stake your position!"
+    },
     "success": {
       "defaultDesc": "Your job was finished successfully",
       "desc": "The interface has been updated",

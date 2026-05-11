@@ -8,7 +8,7 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { useForceRefetchQuery } from "@hooks/common/useForceRefetchQuery";
 import { QUERY_KEY } from "../query-keys";
 
-const REFETCH_INTERVAL = 60_000;
+const REFETCH_INTERVAL = 5_000;
 
 export const useGetPoolDetailByPathWithEmptyPath = (
   path: string | null,

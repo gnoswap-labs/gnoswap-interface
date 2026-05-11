@@ -7,6 +7,7 @@ import { SnackbarList } from "./snackbar-provider.styles";
 
 interface SnackbarContenxtProps {
   hasBadgeSnackbar: boolean;
+  hasStakePositionSnackbar: boolean;
   enqueue: (content: SnackbarContent | undefined, options: SnackbarOptions) => void;
   change: (id: number, type: SnackbarType) => void;
   dequeue: (id: number) => void;
@@ -15,6 +16,7 @@ interface SnackbarContenxtProps {
 
 export const SnackbarContext = createContext<SnackbarContenxtProps>({
   hasBadgeSnackbar: false,
+  hasStakePositionSnackbar: false,
   enqueue: () => {
     console.error("Calling notice without notice context");
   },
@@ -42,22 +44,33 @@ const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   >([]);
 
   const hasBadgeSnackbar = useMemo(() => {
-    return snackbars.filter(item => item.timeout === 0).length > 0;
+    return snackbars.filter(item => item.type === "receive-wugnot" && item.timeout === 0).length > 0;
+  }, [snackbars]);
+
+  const hasStakePositionSnackbar = useMemo(() => {
+    return snackbars.filter(item => item.type === "stake-position" && item.timeout === 0).length > 0;
   }, [snackbars]);
 
   const enqueue = useCallback<SnackbarContenxtProps["enqueue"]>(
     (content, options) => {
-      setSnackbars(prev => [
-        ...prev,
-        {
-          id: options.id,
-          type: options.type,
-          timeout: options.timeout,
-          content,
-          isClosing: false,
-          onClick: content?.onClick,
-        },
-      ]);
+      setSnackbars(prev => {
+        const previousSnackbars =
+          options.type === "stake-position"
+            ? prev.map(item => (item.type === "stake-position" ? { ...item, isClosing: true } : item))
+            : prev;
+
+        return [
+          ...previousSnackbars,
+          {
+            id: options.id,
+            type: options.type,
+            timeout: options.timeout,
+            content,
+            isClosing: false,
+            onClick: content?.onClick,
+          },
+        ];
+      });
     },
     [setSnackbars],
   );
@@ -108,12 +121,13 @@ const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const contextValue = useMemo(
     () => ({
       hasBadgeSnackbar,
+      hasStakePositionSnackbar,
       enqueue,
       change,
       dequeue,
       clear,
     }),
-    [hasBadgeSnackbar, enqueue, change, dequeue, clear],
+    [hasBadgeSnackbar, hasStakePositionSnackbar, enqueue, change, dequeue, clear],
   );
 
   return (

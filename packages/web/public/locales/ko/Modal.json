@@ -288,6 +288,11 @@
       "link": "스왑을 통해 래핑/언래핑할 수도 있습니다.",
       "title": "포장된 GNOT!"
     },
+    "stake-position": {
+      "desc": "클릭하여 포지션 #에서 최대 {{apr}} APR을 적립하세요.{{positionId}}",
+      "link": "스테이킹 보상 보기",
+      "title": "위치를 파악하세요!"
+    },
     "success": {
       "defaultDesc": "작업이 성공적으로 완료되었습니다.",
       "desc": "인터페이스가 업데이트되었습니다.",
