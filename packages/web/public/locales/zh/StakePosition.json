@@ -1,4 +1,13 @@
 {
+  "availablePools": {
+    "column": {
+      "incentive": "奖励",
+      "poolName": "泳池名称",
+      "stakingApr": "定标 APR"
+    },
+    "empty": "无泳池",
+    "title": "可用桩池"
+  },
   "btn": {
     "selectPosi": "选择位置"
   },

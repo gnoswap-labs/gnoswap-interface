@@ -289,7 +289,7 @@
       "title": "포장된 GNOT!"
     },
     "stake-position": {
-      "desc": "클릭하여 포지션 #에서 최대 {{apr}} APR을 적립하세요.{{positionId}}",
+      "desc": "클릭하여 <span>포지션 #에서</span> 최대 <span>{{apr}} APR을</span> 적립하세요. <span>{{positionId}}</span>",
       "link": "스테이킹 보상 보기",
       "title": "위치를 파악하세요!"
     },

@@ -289,7 +289,7 @@
       "title": "You have Wrapped GNOT!"
     },
     "stake-position": {
-      "desc": "Click to earn up to {{apr}} APR on Position #{{positionId}}",
+      "desc": "Click to earn up to <span>{{apr}} APR</span> on <span>Position #{{positionId}}</span>",
       "link": "View staking rewards",
       "title": "Stake your position!"
     },

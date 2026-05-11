@@ -289,7 +289,7 @@
       "title": "¡Has envuelto a GNOT!"
     },
     "stake-position": {
-      "desc": "Haga clic para ganar hasta {{apr}} TAE en Posición #{{positionId}}",
+      "desc": "Haga clic para ganar hasta <span>{{apr}} TAE</span> en <span>Posición #{{positionId}}</span>",
       "link": "Ver las recompensas de las apuestas",
       "title": "Defiende tu posición."
     },

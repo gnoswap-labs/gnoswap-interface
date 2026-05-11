@@ -8,7 +8,6 @@ import IconClose from "@components/common/icons/IconCancel";
 import IconInfo from "@components/common/icons/IconInfo";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { PoolModel } from "@models/pool/pool-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { isInRangePosition } from "@utils/stake-position-utils";
@@ -21,10 +20,9 @@ interface Props {
   positions: PoolPositionModel[];
   close: () => void;
   onSubmit: () => void;
-  pool?: PoolModel;
 }
 
-const StakePositionModal: React.FC<Props> = ({ positions, close, onSubmit, pool }) => {
+const StakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) => {
   const { t } = useTranslation();
   const { breakpoint } = useWindowSize();
 
@@ -38,12 +36,31 @@ const StakePositionModal: React.FC<Props> = ({ positions, close, onSubmit, pool 
   }, [close]);
 
   const stakingAPR = useMemo(() => {
-    if (!pool?.stakingApr) return "-";
+    // USD-Value-weighted average of each selected position's pool staking APR:
+    //   APR = Σ (pool_APR_i × USD_i) / Σ USD_j
+    // Mirrors SelectStakeResult so the value the user reviews before opening
+    // the confirm modal matches the value they confirm. Computed from the
+    // selection itself (not the single `pool` prop) because mixed-pool selection
+    // is allowed and the URL-bound pool may be undefined on `/earn/stake`.
+    let weightedSum = 0;
+    let totalWeight = 0;
 
-    if (Number(pool.stakingApr) === 0) return "0%";
+    for (const position of positions) {
+      const weight = Number(position.positionUsdValue ?? 0);
+      if (!Number.isFinite(weight) || weight <= 0) continue;
 
-    return `${formatRate(Number(pool?.stakingApr || 0) * 0.3)} ~ ${formatRate(pool?.stakingApr)}`;
-  }, [pool?.stakingApr]);
+      const aprValue = Number(position.pool?.stakingApr ?? 0);
+      const contribution = Number.isFinite(aprValue) && aprValue > 0 ? aprValue : 0;
+
+      weightedSum += contribution * weight;
+      totalWeight += weight;
+    }
+
+    if (totalWeight <= 0) return "-";
+    const averageApr = weightedSum / totalWeight;
+    if (averageApr === 0) return "0%";
+    return `${formatRate(averageApr * 0.3)} ~ ${formatRate(averageApr)}`;
+  }, [positions]);
 
   const inRange = useCallback((position: PoolPositionModel) => isInRangePosition(position), []);
 

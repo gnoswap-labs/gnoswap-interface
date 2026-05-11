@@ -1,4 +1,13 @@
 {
+  "availablePools": {
+    "column": {
+      "incentive": "Incitation",
+      "poolName": "Nom de la piscine",
+      "stakingApr": "Piquetage APR"
+    },
+    "empty": "Pas de piscine",
+    "title": "Pools de piquetage disponibles"
+  },
   "btn": {
     "selectPosi": "Sélectionner la position"
   },

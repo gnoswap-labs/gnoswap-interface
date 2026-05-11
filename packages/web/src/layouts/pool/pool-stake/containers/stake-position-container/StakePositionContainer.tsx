@@ -48,16 +48,12 @@ const StakePositionContainer: React.FC = () => {
     });
   }, [unstakedPositions]);
 
-  // Source of truth for what will be staked. The modal/toast aggregates token amounts
+  // Source of truth for what will be staked. Mixed-pool selection is allowed —
+  // downstream consumers (modal token list, toast) group by pool/token path
+  // rather than assuming a single shared pool.
   const selectedPositions = useMemo(() => {
     return unstakedPositions.filter(position => checkedList.includes(position.id));
   }, [unstakedPositions, checkedList]);
-
-  // Enforce same-pool selection: the first selected position fixes the active pool,
-  // and any item from a different pool is non-selectable until the user clears.
-  const activePoolPath = useMemo(() => {
-    return selectedPositions[0]?.poolPath ?? null;
-  }, [selectedPositions]);
 
   const { openModal } = useStakePositionModal({
     positions: selectedPositions,
@@ -67,40 +63,27 @@ const StakePositionContainer: React.FC = () => {
     },
   });
 
-  const selectablePositions = useMemo(() => {
-    if (!activePoolPath) {
-      return unstakedPositions;
-    }
-    return unstakedPositions.filter(position => position.poolPath === activePoolPath);
-  }, [unstakedPositions, activePoolPath]);
-
   const checkedAll = useMemo(() => {
-    if (selectablePositions.length === 0) {
+    if (unstakedPositions.length === 0) {
       return false;
     }
-    return selectablePositions.length === selectedPositions.length;
-  }, [selectablePositions.length, selectedPositions.length]);
+    return unstakedPositions.length === selectedPositions.length;
+  }, [unstakedPositions.length, selectedPositions.length]);
 
-  const onCheckedItem = useCallback(
-    (isChecked: boolean, id: number) => {
-      if (isChecked) {
-        const target = unstakedPositions.find(position => position.id === id);
-        if (!target) return;
-        if (activePoolPath && target.poolPath !== activePoolPath) return;
-        return setCheckedList(prev => (prev.includes(id) ? prev : [...prev, id]));
-      }
-      return setCheckedList(prev => prev.filter(el => el !== id));
-    },
-    [unstakedPositions, activePoolPath],
-  );
+  const onCheckedItem = useCallback((isChecked: boolean, id: number) => {
+    if (isChecked) {
+      return setCheckedList(prev => (prev.includes(id) ? prev : [...prev, id]));
+    }
+    return setCheckedList(prev => prev.filter(el => el !== id));
+  }, []);
 
   const onCheckedAll = useCallback(() => {
     if (checkedAll) {
       setCheckedList([]);
       return;
     }
-    setCheckedList(selectablePositions.map(position => position.id));
-  }, [checkedAll, selectablePositions]);
+    setCheckedList(unstakedPositions.map(position => position.id));
+  }, [checkedAll, unstakedPositions]);
 
   const submitPosition = useCallback(() => {
     if (!connected) {

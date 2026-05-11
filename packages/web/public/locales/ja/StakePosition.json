@@ -1,4 +1,13 @@
 {
+  "availablePools": {
+    "column": {
+      "incentive": "インセンティブ",
+      "poolName": "プール名",
+      "stakingApr": "ステーキング APR"
+    },
+    "empty": "プールなし",
+    "title": "利用可能な杭打ちプール"
+  },
   "btn": {
     "selectPosi": "ポジションを選択"
   },

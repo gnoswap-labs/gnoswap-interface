@@ -1,4 +1,13 @@
 {
+  "availablePools": {
+    "column": {
+      "incentive": "인센티브",
+      "poolName": "풀 이름",
+      "stakingApr": "APR 스테이킹"
+    },
+    "empty": "풀 없음",
+    "title": "사용 가능한 스테이킹 풀"
+  },
   "btn": {
     "selectPosi": "포지션 선택"
   },

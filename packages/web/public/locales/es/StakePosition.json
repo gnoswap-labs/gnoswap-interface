@@ -1,4 +1,13 @@
 {
+  "availablePools": {
+    "column": {
+      "incentive": "Incentivo",
+      "poolName": "Nombre de la piscina",
+      "stakingApr": "Estaca APR"
+    },
+    "empty": "Sin piscina",
+    "title": "Piscinas de estacas disponibles"
+  },
   "btn": {
     "selectPosi": "Seleccionar posición"
   },

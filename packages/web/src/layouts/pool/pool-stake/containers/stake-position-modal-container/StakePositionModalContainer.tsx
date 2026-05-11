@@ -1,29 +1,29 @@
 import { useCallback, useMemo } from "react";
 
 import { ERROR_VALUE } from "@common/errors/adena";
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { useAddress } from "@hooks/common/use-address";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { useMessage } from "@hooks/common/use-message";
+import { useNetworkFee } from "@hooks/common/use-network-fee";
+import { useReferral } from "@hooks/common/use-referral";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { getGasUsed } from "@hooks/gas";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { useGetPoolDetailByPath, useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
-import { DexEvent } from "@repositories/common";
-import { formatPoolPairAmount } from "@utils/new-number-utils";
-import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
-import { useReferral } from "@hooks/common/use-referral";
-import { StakePositionsRequest } from "@repositories/position/request";
-import { makeStakePositionsMessagesWithApproves } from "@repositories/position/position.message";
-import { useNetworkFee } from "@hooks/common/use-network-fee";
-import { useAddress } from "@hooks/common/use-address";
-import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
-import { getGasUsed } from "@hooks/gas";
+import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
 import { QUERY_KEY } from "@query/query-keys";
+import { DexEvent } from "@repositories/common";
+import { makeStakePositionsMessagesWithApproves } from "@repositories/position/position.message";
+import { StakePositionsRequest } from "@repositories/position/request";
 import { delay } from "@utils/common";
+import { formatPoolPairAmount } from "@utils/new-number-utils";
 
 import StakePositionModal from "../../components/stake-position-modal/StakePositionModal";
 
@@ -52,9 +52,6 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
   const { getNextReferralAddress, removeReferrerFromLocalStorage } = useReferral();
   const clearModal = useClearModal();
   const { updateBalances } = useTokenData();
-  const { data: pool } = useGetPoolDetailByPath(poolPath, {
-    enabled: !!poolPath,
-  });
 
   const { getMessage } = useMessage();
 
@@ -79,47 +76,59 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
     confirmCallback: onCloseConfirmTransactionModal,
   });
 
+  // Group balances by token path across the selected positions. With same-pool
+  // selection this collapses to the pool's tokenA/tokenB exactly as before;
+  // with a mixed-pool selection it keeps the (symbol, amount) pairs consistent
+  // instead of mislabeling sums under positions[0]'s tokens.
   const pooledTokenInfos = useMemo(() => {
-    if (positions.length === 0) {
-      return [];
-    }
-    const tokenA = positions[0].pool.tokenA;
-    const tokenB = positions[0].pool.tokenB;
-    const pooledTokenAAmount = positions.reduce((accum, position) => accum + Number(position.tokenABalance), 0);
-    const pooledTokenBAmount = positions.reduce((accum, position) => accum + Number(position.tokenBBalance), 0);
-    const tokenAAmount = Number(pooledTokenAAmount) || 0;
-    const tokenBAmount = Number(pooledTokenBAmount) || 0;
-    return [
-      {
-        token: tokenA,
-        amount: tokenAAmount,
-      },
-      {
-        token: tokenB,
-        amount: tokenBAmount,
-      },
-    ];
-  }, [positions]);
+    const grouped = new Map<string, { token: typeof positions[number]["pool"]["tokenA"]; amount: number }>();
 
-  const buildAdenaWalletAction = useCallback(async (request: StakePositionsRequest) => {
-    return await positionRepository.stakePositions(request).catch(() => null);
-  }, [positionRepository]);
+    const add = (token: typeof positions[number]["pool"]["tokenA"], balance: string | number | null | undefined) => {
+      if (!token?.path) return;
+      const rawAmount = Number(balance ?? 0);
+      const amount = Number.isFinite(rawAmount) ? rawAmount : 0;
 
-  const buildSocialWalletAction = useCallback(async (request: StakePositionsRequest) => {
-    const txMessages = makeStakePositionsMessagesWithApproves(request);
-
-    const txDoc = await transactionService.createDocument({ messages: txMessages });
-    await transactionService.createTransaction(txDoc);
-
-    const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
-    const requestWithGasInfo: StakePositionsRequest = {
-      ...request,
-      gasFee: networkFee?.amount,
-      gasUsed: getGasUsed(currentGasInfo).toString(),
+      const existing = grouped.get(token.path);
+      if (existing) {
+        existing.amount += amount;
+      } else {
+        grouped.set(token.path, { token, amount });
+      }
     };
 
-    return await positionRepository.stakePositions(requestWithGasInfo).catch(() => null);
-  }, [estimateNetworkFee, positionRepository, transactionService]);
+    for (const position of positions) {
+      add(position.pool.tokenA, position.tokenABalance);
+      add(position.pool.tokenB, position.tokenBBalance);
+    }
+
+    return Array.from(grouped.values());
+  }, [positions]);
+
+  const buildAdenaWalletAction = useCallback(
+    async (request: StakePositionsRequest) => {
+      return await positionRepository.stakePositions(request).catch(() => null);
+    },
+    [positionRepository],
+  );
+
+  const buildSocialWalletAction = useCallback(
+    async (request: StakePositionsRequest) => {
+      const txMessages = makeStakePositionsMessagesWithApproves(request);
+
+      const txDoc = await transactionService.createDocument({ messages: txMessages });
+      await transactionService.createTransaction(txDoc);
+
+      const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
+      const requestWithGasInfo: StakePositionsRequest = {
+        ...request,
+        gasFee: networkFee?.amount,
+        gasUsed: getGasUsed(currentGasInfo).toString(),
+      };
+
+      return await positionRepository.stakePositions(requestWithGasInfo).catch(() => null);
+    },
+    [estimateNetworkFee, positionRepository, transactionService],
+  );
 
   const stakeOnSubmit = useCallback(async () => {
     const address = account?.address;
@@ -149,7 +158,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
             decimals: tokenA?.token?.decimals,
             isKMB: false,
           }),
-          tokenBAmount: formatPoolPairAmount(tokenB.amount, {
+          tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
             decimals: tokenB?.token?.decimals,
             isKMB: false,
           }),
@@ -175,7 +184,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
                 decimals: tokenA?.token?.decimals,
                 isKMB: false,
               }),
-              tokenBAmount: formatPoolPairAmount(tokenB.amount, {
+              tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
                 decimals: tokenB?.token?.decimals,
                 isKMB: false,
               }),
@@ -203,7 +212,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
                   decimals: tokenA?.token?.decimals,
                   isKMB: false,
                 }),
-                tokenBAmount: formatPoolPairAmount(tokenB.amount, {
+                tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
                   decimals: tokenB?.token?.decimals,
                   isKMB: false,
                 }),
@@ -221,7 +230,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
                 decimals: tokenA?.token?.decimals,
                 isKMB: false,
               }),
-              tokenBAmount: formatPoolPairAmount(tokenB.amount, {
+              tokenBAmount: formatPoolPairAmount(tokenB?.amount, {
                 decimals: tokenB?.token?.decimals,
                 isKMB: false,
               }),
@@ -257,7 +266,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
     enqueueEvent,
   ]);
 
-  return <StakePositionModal positions={positions} close={clearModal} onSubmit={stakeOnSubmit} pool={pool} />;
+  return <StakePositionModal positions={positions} close={clearModal} onSubmit={stakeOnSubmit} />;
 };
 
 export default StakePositionModalContainer;

@@ -1,7 +1,7 @@
 import { fonts } from "@constants/font.constant";
 import { css, type Theme } from "@emotion/react";
-import mixins from "@styles/mixins";
 import { media } from "@styles/media";
+import mixins from "@styles/mixins";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "stretch", "stretch")};
@@ -19,6 +19,7 @@ export const wrapper = (theme: Theme) => css`
   .section-title {
     ${fonts.body9}
     color: ${theme.color.text02};
+    margin-bottom: 8px;
   }
 
   .pools-card {
@@ -27,8 +28,8 @@ export const wrapper = (theme: Theme) => css`
     background-color: ${theme.color.background20};
     border: 1px solid ${theme.color.border02};
     border-radius: 8px;
-    padding: 12px 15px;
-    gap: 8px;
+    padding: 24px;
+    gap: 4px;
 
     ${media.mobile} {
       padding: 11px;
@@ -42,9 +43,10 @@ export const wrapper = (theme: Theme) => css`
 
   .pools-row {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-columns: 170px 75px 97px;
+    justify-content: space-between;
     align-items: center;
-    column-gap: 16px;
+    column-gap: 12px;
     height: 36px;
     color: ${theme.color.text02};
     ${fonts.body12};
@@ -106,13 +108,11 @@ export const wrapper = (theme: Theme) => css`
 
   .incentive-cell {
     ${mixins.flexbox("row", "center", "flex-end")};
-    min-width: 56px;
   }
 
   .apr-cell {
     ${mixins.flexbox("row", "center", "flex-end")};
     gap: 4px;
-    min-width: 80px;
     color: ${theme.color.text02};
     ${fonts.body12};
   }
