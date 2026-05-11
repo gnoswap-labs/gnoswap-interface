@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
@@ -41,13 +41,29 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
       enabled: !!poolPath,
     },
   });
-  const { data: bins = [], isLoading: isLoadingBins } = useGetBinsByPath(poolPath as string, binCount, {
+  const {
+    data: bins = [],
+    isLoading: isLoadingBins,
+    isFetching: isFetchingBins,
+    dataUpdatedAt: binsUpdatedAt,
+  } = useGetBinsByPath(poolPath as string, binCount, {
     keepPreviousData: true,
     staleTime: 60_000,
     enabled: !!poolPath,
     queryKey: [QUERY_KEY.poolPairBins, poolPath, zoomLevel],
   });
   const { tokenPrices } = useTokenData();
+
+  // Snapshot of pool.currentTick that is paired with the currently-displayed bins.
+  // The bar chart (bins) and the current-price marker (currentTick) must move together —
+  // without this, pool detail refetches every 5s update the tick while bins stay stale,
+  // causing the dashed current-price line to drift away from the bars after a swap.
+  const [pairedTick, setPairedTick] = useState<number | null>(null);
+  useEffect(() => {
+    if (!isFetchingBins && data) {
+      setPairedTick(data.currentTick);
+    }
+  }, [binsUpdatedAt, isFetchingBins, data]);
 
   const onClickPath = (path: string) => {
     router.push(path);
@@ -67,6 +83,7 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
     const tokenB = convertedPool.tokenB;
     return {
       ...convertedPool,
+      currentTick: pairedTick ?? convertedPool.currentTick,
       tokenA: {
         ...tokenA,
         path: getGnotPath(tokenA).path,
@@ -84,7 +101,7 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
       tokenAPriceGrade,
       tokenBPriceGrade,
     };
-  }, [data, bins, tokenPrices]);
+  }, [convertedPool, tokenPrices, getGnotPath, pairedTick]);
 
   const feeStr = useMemo(() => {
     if (!pool?.fee) {
