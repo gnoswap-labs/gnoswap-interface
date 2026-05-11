@@ -116,7 +116,7 @@ export const SnackbarWrapper = styled.div`
         color: ${({ theme }) => theme.color.text22};
         span {
           color: ${({ theme }) => theme.color.text16};
-          font-weight: 500;
+          font-weight: 700;
         }
         ${media.mobile} {
           ${fonts.p2}

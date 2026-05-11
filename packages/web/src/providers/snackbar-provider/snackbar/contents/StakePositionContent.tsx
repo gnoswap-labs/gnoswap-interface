@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-import IconArrowRight from "@components/common/icons/IconArrowRight";
+import IconArrowRightLine from "@components/common/icons/IconArrowRightLine";
 import { Image } from "@components/common/missing-logo/MissingLogo.styles";
 import { sanitizeHtml } from "@utils/sanitize-html";
 import { SnackbarContent } from "./type";
@@ -39,7 +39,7 @@ const StakePositionContent: React.FC<{ content?: SnackbarContent; onClick: () =>
             }}
           />
           <a onClick={onClickLink}>
-            {t("Modal:toast.stake-position.link")} <IconArrowRight />
+            {t("Modal:toast.stake-position.link")} <IconArrowRightLine />
           </a>
         </div>
       </div>
