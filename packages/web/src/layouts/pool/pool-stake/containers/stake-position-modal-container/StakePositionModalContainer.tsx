@@ -79,26 +79,32 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
     confirmCallback: onCloseConfirmTransactionModal,
   });
 
+  // Group balances by token path across the selected positions. With same-pool
+  // selection this collapses to the pool's tokenA/tokenB exactly as before;
+  // with a mixed-pool selection it keeps the (symbol, amount) pairs consistent
+  // instead of mislabeling sums under positions[0]'s tokens.
   const pooledTokenInfos = useMemo(() => {
-    if (positions.length === 0) {
-      return [];
+    const grouped = new Map<string, { token: typeof positions[number]["pool"]["tokenA"]; amount: number }>();
+
+    const add = (token: typeof positions[number]["pool"]["tokenA"], balance: string | number | null | undefined) => {
+      if (!token?.path) return;
+      const amount = Number(balance ?? 0);
+      if (!Number.isFinite(amount) || amount === 0) return;
+
+      const existing = grouped.get(token.path);
+      if (existing) {
+        existing.amount += amount;
+      } else {
+        grouped.set(token.path, { token, amount });
+      }
+    };
+
+    for (const position of positions) {
+      add(position.pool.tokenA, position.tokenABalance);
+      add(position.pool.tokenB, position.tokenBBalance);
     }
-    const tokenA = positions[0].pool.tokenA;
-    const tokenB = positions[0].pool.tokenB;
-    const pooledTokenAAmount = positions.reduce((accum, position) => accum + Number(position.tokenABalance), 0);
-    const pooledTokenBAmount = positions.reduce((accum, position) => accum + Number(position.tokenBBalance), 0);
-    const tokenAAmount = Number(pooledTokenAAmount) || 0;
-    const tokenBAmount = Number(pooledTokenBAmount) || 0;
-    return [
-      {
-        token: tokenA,
-        amount: tokenAAmount,
-      },
-      {
-        token: tokenB,
-        amount: tokenBAmount,
-      },
-    ];
+
+    return Array.from(grouped.values());
   }, [positions]);
 
   const buildAdenaWalletAction = useCallback(async (request: StakePositionsRequest) => {
