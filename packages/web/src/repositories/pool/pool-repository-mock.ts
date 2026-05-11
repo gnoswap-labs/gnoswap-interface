@@ -83,6 +83,10 @@ export class PoolRepositoryMock implements PoolRepository {
     return "hash";
   };
 
+  collectExternalIncentivePenalty = async (): Promise<string> => {
+    return "hash";
+  };
+
   getPoolSqrtPriceX96 = async (poolPath: string): Promise<bigint> => {
     console.log("Mock getPoolSqrtPriceX96:", poolPath);
     return 79228162514264337593543950336n;

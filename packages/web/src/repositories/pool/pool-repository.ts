@@ -3,6 +3,7 @@ import { IncentivizePoolModel, PoolModel } from "@models/pool/pool-model";
 import { AddLiquidityRequest } from "./request/add-liquidity-request";
 import { CreatePoolRequest } from "./request/create-pool-request";
 import { CreateExternalIncentiveRequest } from "./request/create-external-incentive-request";
+import { CollectExternalIncentivePenaltyRequest } from "./request/collect-external-incentive-penalty-request";
 import { RemoveExternalIncentiveRequest } from "./request/remove-external-incentive-request";
 import { AddLiquidityFailedResponse, AddLiquiditySuccessResponse } from "./response/add-liquidity-response";
 import { CreatePoolFailedResponse, CreatePoolSuccessResponse } from "./response/create-pool-response";
@@ -44,6 +45,8 @@ export interface PoolRepository {
   ) => Promise<WalletResponse<SendTransactionResponse<string[] | null>> | null>;
 
   removeExternalIncentive: (request: RemoveExternalIncentiveRequest) => Promise<string | null>;
+
+  collectExternalIncentivePenalty: (request: CollectExternalIncentivePenaltyRequest) => Promise<string | null>;
 
   getPoolStakingList: (poolPath: string) => Promise<PoolStakingModel[]>;
 

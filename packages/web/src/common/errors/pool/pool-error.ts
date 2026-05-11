@@ -13,6 +13,10 @@ const ERROR_VALUE = {
     status: 500,
     type: "Failed to remove incentive",
   },
+  FAILED_TO_COLLECT_INCENTIVE: {
+    status: 500,
+    type: "Failed to collect incentive",
+  },
   FAILED_TO_GET_LIQUIDITY: {
     status: 500,
     type: "Failed to get pool liquidity",

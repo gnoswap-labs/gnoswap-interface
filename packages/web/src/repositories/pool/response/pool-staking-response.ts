@@ -1,3 +1,4 @@
+import { YnType } from "@common/types/global-prop-types";
 import { TokenModel } from "@models/token/token-model";
 
 export interface PoolStakingResponse {
@@ -14,5 +15,6 @@ export interface PoolStakingResponse {
   totalPenaltyAmount: string;
   collectedPenaltyAmount: string;
   claimableUnvestedAmount: string;
+  activeYn: YnType;
   createdBlockHeight: string;
 }
