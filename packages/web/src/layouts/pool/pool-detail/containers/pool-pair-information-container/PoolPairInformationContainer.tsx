@@ -2,19 +2,19 @@ import React, { useMemo } from "react";
 
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
+import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
-import { useGetBinsByPath, useGetPoolDetailByPath } from "@query/pools";
-import { makeSwapFeeTier } from "@utils/swap-utils";
-import { useWindowSize } from "@hooks/common/use-window-size";
 import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useGetBinsByPath, useGetPoolDetailByPath } from "@query/pools";
 import { PoolConverter } from "@services/converters/pool";
+import { makeSwapFeeTier } from "@utils/swap-utils";
 
-import PoolPairInformation from "../../components/pool-pair-information/PoolPairInformation";
 import { ZOOL_VALUES } from "@constants/graph.constant";
-import { checkGnotPath } from "@utils/common";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 import { QUERY_KEY } from "@query/query-keys";
+import { checkGnotPath } from "@utils/common";
+import PoolPairInformation from "../../components/pool-pair-information/PoolPairInformation";
 
 interface PoolPairInformationContainerProps {
   address?: string | undefined;
@@ -41,12 +41,24 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
       enabled: !!poolPath,
     },
   });
-  const { data: bins = [], isLoading: isLoadingBins } = useGetBinsByPath(poolPath as string, binCount, {
-    keepPreviousData: true,
-    staleTime: 60_000,
-    enabled: !!poolPath,
-    queryKey: [QUERY_KEY.poolPairBins, poolPath, zoomLevel],
-  });
+
+  // Gate the bins query on `data?.currentTick` being defined. Bins are server-centered
+  // on the current tick, so firing before pool detail arrives would (1) issue an
+  // initial request without a tick, then (2) immediately invalidate and refetch
+  // once the tick comes in — producing two slightly different payloads on first
+  // mount and a visible re-layout of the graph just after entry.
+  const currentTick = data?.currentTick;
+  const { data: binsResult, isLoading: isLoadingBins } = useGetBinsByPath(
+    poolPath as string,
+    binCount,
+    currentTick,
+    {
+      enabled: !!poolPath && currentTick !== undefined,
+      queryKey: [QUERY_KEY.poolPairBins, poolPath, zoomLevel, currentTick ?? null],
+    },
+  );
+  const bins = binsResult?.bins ?? [];
+  const pairedTick = binsResult?.pairedTick ?? null;
   const { tokenPrices } = useTokenData();
 
   const onClickPath = (path: string) => {
@@ -67,6 +79,7 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
     const tokenB = convertedPool.tokenB;
     return {
       ...convertedPool,
+      currentTick: pairedTick ?? convertedPool.currentTick,
       tokenA: {
         ...tokenA,
         path: getGnotPath(tokenA).path,
@@ -84,7 +97,7 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
       tokenAPriceGrade,
       tokenBPriceGrade,
     };
-  }, [data, bins, tokenPrices]);
+  }, [convertedPool, tokenPrices, getGnotPath, pairedTick]);
 
   const feeStr = useMemo(() => {
     if (!pool?.fee) {
