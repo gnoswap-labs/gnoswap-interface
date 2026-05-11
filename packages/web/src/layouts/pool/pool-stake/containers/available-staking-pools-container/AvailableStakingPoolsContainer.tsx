@@ -38,7 +38,7 @@ const AvailableStakingPoolsContainer: React.FC = () => {
         case "poolName":
           return compareString(a.poolPath ?? "", b.poolPath ?? "", sort.direction);
         case "stakingApr":
-          return compareNumber(Number(a.apr) || 0, Number(b.apr) || 0, sort.direction);
+          return compareNumber(Number(a.stakingApr) || 0, Number(b.stakingApr) || 0, sort.direction);
         case "tvl":
         default:
           return compareNumber(Number(a.tvl) || 0, Number(b.tvl) || 0, sort.direction);
