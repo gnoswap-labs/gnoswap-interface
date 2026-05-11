@@ -1,3 +1,4 @@
+import { PoolStakingActiveYn } from "@models/pool/pool-staking";
 import { TokenModel } from "@models/token/token-model";
 
 export interface PoolStakingResponse {
@@ -14,6 +15,6 @@ export interface PoolStakingResponse {
   totalPenaltyAmount: string;
   collectedPenaltyAmount: string;
   claimableUnvestedAmount: string;
-  activeYn: string;
+  activeYn: PoolStakingActiveYn;
   createdBlockHeight: string;
 }
