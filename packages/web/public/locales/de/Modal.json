@@ -288,6 +288,11 @@
       "link": "Sie können auch über Swap einpacken/auspacken",
       "title": "Sie haben GNOT eingewickelt!"
     },
+    "stake-position": {
+      "desc": "Klicken Sie hier, um bis zu {{apr}} APR auf Position # zu verdienen.{{positionId}}",
+      "link": "Einsatzprämien ansehen",
+      "title": "Sichern Sie Ihre Position!"
+    },
     "success": {
       "defaultDesc": "Ihr Auftrag wurde erfolgreich abgeschlossen",
       "desc": "Die Schnittstelle wurde aktualisiert",

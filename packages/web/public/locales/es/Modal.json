@@ -288,6 +288,11 @@
       "link": "También puede envolver/desenvolver a través de Swap",
       "title": "¡Has envuelto a GNOT!"
     },
+    "stake-position": {
+      "desc": "Haga clic para ganar hasta {{apr}} TAE en Posición #{{positionId}}",
+      "link": "Ver las recompensas de las apuestas",
+      "title": "Defiende tu posición."
+    },
     "success": {
       "defaultDesc": "Tu trabajo ha finalizado correctamente",
       "desc": "Se ha actualizado la interfaz",

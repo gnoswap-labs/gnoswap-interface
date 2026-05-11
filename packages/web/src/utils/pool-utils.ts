@@ -58,10 +58,6 @@ export function toMinPriceStr(tick: number) {
   return tickToPriceStr(tick, { decimals: 6 });
 }
 
-export function checkPoolStakingRewards(incentivized?: boolean) {
-  return incentivized === true;
-}
-
 export function isValidCurrentPrice(price: number | null | undefined): price is number {
   return price !== null && price !== undefined && !!price && Number.isFinite(price);
 }

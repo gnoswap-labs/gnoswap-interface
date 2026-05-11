@@ -288,6 +288,11 @@
       "link": "Vous pouvez également emballer/déballer via Swap",
       "title": "Vous avez enveloppé GNOT !"
     },
+    "stake-position": {
+      "desc": "Cliquez pour gagner jusqu'à {{apr}} APR sur Position #{{positionId}}",
+      "link": "Voir les récompenses de mise",
+      "title": "Prenez position !"
+    },
     "success": {
       "defaultDesc": "Votre travail a été terminé avec succès",
       "desc": "L'interface a été mise à jour",

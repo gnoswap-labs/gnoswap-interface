@@ -12,6 +12,7 @@ import {
 } from "./contents";
 
 import { ReceiveWugnotContent } from "./contents/ReceiveWugnotContent";
+import { StakePositionContent } from "./contents/StakePositionContent";
 import { UpdatingDoneContent } from "./contents/UpdatingDoneContent";
 import { SnackbarWrapper } from "./snackbar.styles";
 
@@ -87,6 +88,9 @@ const Snackbar: FC<SnackbarProps> = ({
       {type === "updating-done" && <UpdatingDoneContent content={content} />}
       {type === "receive-wugnot" && (
         <ReceiveWugnotContent content={content} onClick={handleClick} close={handleClose} />
+      )}
+      {type === "stake-position" && (
+        <StakePositionContent content={content} onClick={handleClick} close={handleClose} />
       )}
       {closeable && (
         <div className="icon-close" onClick={handleClose}>

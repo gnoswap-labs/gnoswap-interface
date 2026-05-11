@@ -3,7 +3,6 @@ import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
-import { QUERY_KEY } from "@query/query-keys";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { GNS_TOKEN } from "@common/values/token-constant";
@@ -12,12 +11,16 @@ import { SwapFeeTierInfoMap, SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from
 import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import useRouter from "@hooks/common/use-custom-router";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { useMessage } from "@hooks/common/use-message";
+import { useReferral } from "@hooks/common/use-referral";
 import { SelectPool } from "@hooks/pool/data/use-select-pool";
 import { TokenAmountInputModel } from "@hooks/token/data/use-token-amount-input";
 import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { useGetPoolCreationFee } from "@query/pools";
+import { QUERY_KEY } from "@query/query-keys";
 import { DexEvent } from "@repositories/common";
 import {
   AddLiquidityFailedResponse,
@@ -29,17 +32,13 @@ import { subscriptFormat } from "@utils/number-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToNearTick } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { useReferral } from "@hooks/common/use-referral";
-import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 
-import { useAddress } from "@hooks/common/use-address";
-import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import OneClickStakingModal from "@layouts/pool/pool-add/components/one-click-staking-modal/OneClickStakingModal";
-import PoolAddConfirmModal from "@layouts/pool/pool-add/components/pool-add-confirm-modal/PoolAddConfirmModal";
-import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
-import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { useAddress } from "@hooks/common/use-address";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import PoolAddConfirmModal from "@layouts/pool/pool-add/components/pool-add-confirm-modal/PoolAddConfirmModal";
 import { delay } from "@utils/common";
 
 export interface EarnAddLiquidityConfirmModalProps {
@@ -66,7 +65,6 @@ export interface EarnAddLiquidityConfirmModalProps {
     minTick: number;
     maxTick: number;
     slippage: number;
-    withStaking?: boolean;
   }) => Promise<WalletResponse<CreatePoolSuccessResponse | CreatePoolFailedResponse> | null>;
 
   addLiquidity: (params: {
@@ -77,12 +75,10 @@ export interface EarnAddLiquidityConfirmModalProps {
     minTick: number;
     maxTick: number;
     slippage: number;
-    withStaking?: boolean;
   }) => Promise<WalletResponse<AddLiquiditySuccessResponse | AddLiquidityFailedResponse> | null>;
 }
 export interface SelectTokenModalModel {
   openAddPositionModal: () => void;
-  openAddPositionWithStakingModal: () => void;
 }
 
 export const usePoolAddLiquidityConfirmModal = ({
@@ -297,80 +293,66 @@ export const usePoolAddLiquidityConfirmModal = ({
     }
   }, [close, router]);
 
-  const confirm = useCallback(
-    (options?: { withStaking?: boolean }) => {
-      if (!tokenA || !tokenB || !swapFeeTier) {
-        return;
+  const confirm = useCallback(() => {
+    if (!tokenA || !tokenB || !swapFeeTier) {
+      return;
+    }
+
+    const minTickMod = Math.abs(MIN_TICK) % selectPool.tickSpacing;
+    const maxTickMod = Math.abs(MAX_TICK) % selectPool.tickSpacing;
+    let minTick = MIN_TICK + minTickMod;
+    let maxTick = MAX_TICK - maxTickMod;
+
+    if (selectPool.minPrice != null && selectPool.maxPrice != null) {
+      if (!selectPool.selectedFullRange) {
+        minTick = priceToNearTick(selectPool.minPrice, selectPool.tickSpacing);
+        maxTick = priceToNearTick(selectPool.maxPrice, selectPool.tickSpacing);
       }
+    }
 
-      const minTickMod = Math.abs(MIN_TICK) % selectPool.tickSpacing;
-      const maxTickMod = Math.abs(MAX_TICK) % selectPool.tickSpacing;
-      let minTick = MIN_TICK + minTickMod;
-      let maxTick = MAX_TICK - maxTickMod;
-
-      if (selectPool.minPrice != null && selectPool.maxPrice != null) {
-        if (!selectPool.selectedFullRange) {
-          minTick = priceToNearTick(selectPool.minPrice, selectPool.tickSpacing);
-          maxTick = priceToNearTick(selectPool.maxPrice, selectPool.tickSpacing);
-        }
-      }
-
-      broadcastLoading(
-        getMessage(DexEvent.ADD, "pending", {
-          tokenASymbol: tokenA?.symbol,
-          tokenBSymbol: tokenB?.symbol,
-          tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
-            maximumFractionDigits: tokenA.decimals,
-          }),
-          tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
-            maximumFractionDigits: tokenB.decimals,
-          }),
+    broadcastLoading(
+      getMessage(DexEvent.ADD, "pending", {
+        tokenASymbol: tokenA?.symbol,
+        tokenBSymbol: tokenB?.symbol,
+        tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
+          maximumFractionDigits: tokenA.decimals,
         }),
-      );
+        tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
+          maximumFractionDigits: tokenB.decimals,
+        }),
+      }),
+    );
 
-      const transaction = selectPool.isCreate
-        ? createPool({
-            rpcProvider,
-            tokenAAmount,
-            tokenBAmount,
-            minTick,
-            maxTick,
-            slippage,
-            startPrice: `${selectPool.startPrice || 1}`,
-            swapFeeTier,
-            withStaking: options?.withStaking,
-          })
-        : addLiquidity({
-            rpcProvider,
-            tokenAAmount,
-            tokenBAmount,
-            minTick,
-            maxTick,
-            slippage,
-            swapFeeTier,
-            withStaking: options?.withStaking,
-          });
-      transaction.then(result => {
-        if (result) {
-          if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
-            enqueueEvent({
-              txHash: result.data?.hash,
-              action: DexEvent.ADD,
-              visibleEmitResult: true,
-              formatData: response => {
-                if (!response) {
-                  return {
-                    tokenASymbol: tokenA?.symbol,
-                    tokenBSymbol: tokenB?.symbol,
-                    tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
-                      maximumFractionDigits: tokenA.decimals,
-                    }),
-                    tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
-                      maximumFractionDigits: tokenB.decimals,
-                    }),
-                  };
-                }
-
+    const transaction = selectPool.isCreate
+      ? createPool({
+          rpcProvider,
+          tokenAAmount,
+          tokenBAmount,
+          minTick,
+          maxTick,
+          slippage,
+          startPrice: `${selectPool.startPrice || 1}`,
+          swapFeeTier,
+        })
+      : addLiquidity({
+          rpcProvider,
+          tokenAAmount,
+          tokenBAmount,
+          minTick,
+          maxTick,
+          slippage,
+          swapFeeTier,
+        });
+    transaction.then(result => {
+      if (result) {
+        if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
+          enqueueEvent({
+            txHash: result.data?.hash,
+            action: DexEvent.ADD,
+            visibleEmitResult: true,
+            checkStakePosition: true,
+            formatData: response => {
+              if (!response) {
                 return {
                   tokenASymbol: tokenA?.symbol,
                   tokenBSymbol: tokenB?.symbol,
@@ -381,44 +363,9 @@ export const usePoolAddLiquidityConfirmModal = ({
                     maximumFractionDigits: tokenB.decimals,
                   }),
                 };
-              },
-              onUpdate: async () => {
-                updateBalances();
-              },
-              onEmit: async () => {
-                await delay(5000);
-                handleRefreshData();
-              },
-              onSuccess: handleRefreshData,
-            });
-          }
+              }
 
-          if (result.code === 0) {
-            const resultData = result?.data as CreatePoolSuccessResponse;
-            broadcastSuccess(
-              getMessage(
-                DexEvent.ADD,
-                "success",
-                {
-                  tokenASymbol: tokenA?.symbol || "",
-                  tokenBSymbol: tokenB?.symbol || "",
-                  tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
-                    maximumFractionDigits: tokenA.decimals,
-                  }),
-                  tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
-                    maximumFractionDigits: tokenB.decimals,
-                  }),
-                },
-                resultData.hash,
-              ),
-              moveToBack,
-            );
-            removeReferrerFromLocalStorage();
-          } else if (
-            result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
-          ) {
-            broadcastRejected(
-              getMessage(DexEvent.ADD, "error", {
+              return {
                 tokenASymbol: tokenA?.symbol,
                 tokenBSymbol: tokenB?.symbol,
                 tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
@@ -427,32 +374,77 @@ export const usePoolAddLiquidityConfirmModal = ({
                 tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
                   maximumFractionDigits: tokenB.decimals,
                 }),
-              }),
-            );
-          } else {
-            broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
-          }
+              };
+            },
+            onUpdate: async () => {
+              updateBalances();
+            },
+            onEmit: async () => {
+              await delay(5000);
+              handleRefreshData();
+            },
+            onSuccess: handleRefreshData,
+          });
         }
-      });
-    },
-    [
-      tokenA,
-      tokenB,
-      swapFeeTier,
-      selectPool.tickSpacing,
-      selectPool.minPrice,
-      selectPool.maxPrice,
-      selectPool.isCreate,
-      selectPool.selectedFullRange,
-      selectPool.startPrice,
-      addLiquidity,
-      tokenAAmount,
-      tokenBAmount,
-      slippage,
-      createPool,
-      rpcProvider,
-    ],
-  );
+
+        if (result.code === 0) {
+          const resultData = result?.data as CreatePoolSuccessResponse;
+          broadcastSuccess(
+            getMessage(
+              DexEvent.ADD,
+              "success",
+              {
+                tokenASymbol: tokenA?.symbol || "",
+                tokenBSymbol: tokenB?.symbol || "",
+                tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
+                  maximumFractionDigits: tokenA.decimals,
+                }),
+                tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
+                  maximumFractionDigits: tokenB.decimals,
+                }),
+              },
+              resultData.hash,
+            ),
+            moveToBack,
+          );
+          removeReferrerFromLocalStorage();
+        } else if (
+          result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
+        ) {
+          broadcastRejected(
+            getMessage(DexEvent.ADD, "error", {
+              tokenASymbol: tokenA?.symbol,
+              tokenBSymbol: tokenB?.symbol,
+              tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
+                maximumFractionDigits: tokenA.decimals,
+              }),
+              tokenBAmount: Number(tokenBAmount).toLocaleString("en-US", {
+                maximumFractionDigits: tokenB.decimals,
+              }),
+            }),
+          );
+        } else {
+          broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
+        }
+      }
+    });
+  }, [
+    tokenA,
+    tokenB,
+    swapFeeTier,
+    selectPool.tickSpacing,
+    selectPool.minPrice,
+    selectPool.maxPrice,
+    selectPool.isCreate,
+    selectPool.selectedFullRange,
+    selectPool.startPrice,
+    addLiquidity,
+    tokenAAmount,
+    tokenBAmount,
+    slippage,
+    createPool,
+    rpcProvider,
+  ]);
 
   const openAddPositionModal = useCallback(() => {
     if (!amountInfo || !priceRangeInfo) {
@@ -471,23 +463,6 @@ export const usePoolAddLiquidityConfirmModal = ({
     );
   }, [amountInfo, close, confirm, feeInfo, priceRangeInfo, setModalContent, setOpenedModal, selectPool.isCreate]);
 
-  const openAddPositionWithStakingModal = useCallback(() => {
-    if (!amountInfo || !priceRangeInfo) {
-      return;
-    }
-    setOpenedModal(true);
-    setModalContent(
-      <OneClickStakingModal
-        isPoolCreation={selectPool.isCreate}
-        amountInfo={amountInfo}
-        priceRangeInfo={priceRangeInfo}
-        feeInfo={feeInfo}
-        confirm={() => confirm({ withStaking: true })}
-        close={close}
-      />,
-    );
-  }, [amountInfo, close, confirm, feeInfo, priceRangeInfo, setModalContent, setOpenedModal, selectPool.isCreate]);
-
   useEffect(() => {
     if (openedModal) {
       refetchGetPoolCreationFee();
@@ -496,6 +471,5 @@ export const usePoolAddLiquidityConfirmModal = ({
 
   return {
     openAddPositionModal,
-    openAddPositionWithStakingModal,
   };
 };

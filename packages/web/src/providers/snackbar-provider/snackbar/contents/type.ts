@@ -6,11 +6,14 @@ export type SnackbarType =
   | "updating-done"
   | "withdraw-success"
   | "withdraw-error"
-  | "receive-wugnot";
+  | "receive-wugnot"
+  | "stake-position";
 
 export interface SnackbarContent {
   title?: string;
   description?: string;
   txHash?: string;
+  logoUrl?: string;
   onClick?: () => void;
+  onClickLink?: () => void;
 }

@@ -1,25 +1,25 @@
 import { useCallback, useEffect, useMemo } from "react";
 
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
+import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
 import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useNetworkFee } from "@hooks/common/use-network-fee";
+import { useReferral } from "@hooks/common/use-referral";
+import { getGasUsed } from "@hooks/gas";
 import { usePoolData } from "@hooks/pool/data/use-pool-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolModel } from "@models/pool/pool-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { useGetPoolCreationFee, useGetRPCPoolsBy } from "@query/pools";
-import { checkGnotPath } from "@utils/common";
-import { sortTokenPaths } from "@utils/sort-utils";
-import { useReferral } from "@hooks/common/use-referral";
-import { AddLiquidityRequest } from "@repositories/pool/request/add-liquidity-request";
-import { CreatePoolRequest } from "@repositories/pool/request/create-pool-request";
 import {
   makeCreatePoolMessageWithApproves,
   makePositionMintMessageWithApproves,
 } from "@repositories/pool/pool.message";
-import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
-import { getGasUsed } from "@hooks/gas";
-import { useNetworkFee } from "@hooks/common/use-network-fee";
-import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
+import { AddLiquidityRequest } from "@repositories/pool/request/add-liquidity-request";
+import { CreatePoolRequest } from "@repositories/pool/request/create-pool-request";
+import { checkGnotPath } from "@utils/common";
+import { sortTokenPaths } from "@utils/sort-utils";
 
 interface Props {
   compareToken: TokenModel | null;
@@ -166,7 +166,6 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
       minTick,
       maxTick,
       slippage,
-      withStaking,
     }: {
       rpcProvider: GnoProvider | null;
       tokenAAmount: string;
@@ -176,7 +175,6 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
       minTick: number;
       maxTick: number;
       slippage: number;
-      withStaking?: boolean;
     }) => {
       if (!tokenA || !tokenB || !account || createPoolFee === undefined) {
         return null;
@@ -200,7 +198,6 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
         maxTick,
         slippage,
         caller: account.address,
-        withStaking,
         createPoolFee,
         referrerAddress: currentReferralAddress,
       };
@@ -282,7 +279,6 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
       minTick,
       maxTick,
       slippage,
-      withStaking,
     }: {
       rpcProvider: GnoProvider | null;
       tokenAAmount: string;
@@ -291,7 +287,6 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
       minTick: number;
       maxTick: number;
       slippage: number;
-      withStaking?: boolean;
     }) => {
       if (!tokenA || !tokenB || !account) {
         return null;
@@ -314,7 +309,6 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
         maxTick,
         slippage: Number(slippage),
         caller: account.address,
-        withStaking,
         referrerAddress: currentReferralAddress,
       };
 
