@@ -100,7 +100,7 @@ const AvailableStakingPools: React.FC<AvailableStakingPoolsProps> = ({
           {!isLoading &&
             pools.map(pool => {
               const tokenData = getUniqueRewardTokensWithMultipleRewardTypes(pool.rewardTokens, getGnotPath);
-              const aprValue = Number(pool.apr);
+              const aprValue = Number(pool.stakingApr);
               const showStar = aprValue > 100;
               const poolPath = pool.poolPath;
               const isSelectable = !!(onSelectPool && poolPath);
@@ -141,7 +141,7 @@ const AvailableStakingPools: React.FC<AvailableStakingPoolsProps> = ({
                   </div>
                   <div className="apr-cell">
                     {showStar && <IconStar size={16} />}
-                    {pool.apr ? formatRate(pool.apr) : "-"}
+                    {pool.stakingApr ? formatRate(pool.stakingApr) : "-"}
                   </div>
                 </div>
               );
