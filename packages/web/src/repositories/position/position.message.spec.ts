@@ -4,6 +4,7 @@ import type { PoolPositionModel } from "@models/position/pool-position-model";
 import type { PositionModel } from "@models/position/position-model";
 import type { RewardModel } from "@models/position/reward-model";
 import type { TokenModel } from "@models/token/token-model";
+import type { TransactionMessage } from "@common/clients/wallet-client/transaction-messages/common";
 import { MAX_INT64_STR } from "@utils/math.utils";
 import BigNumber from "bignumber.js";
 
@@ -108,10 +109,39 @@ const createPosition = (lpTokenId: string, rewards: RewardModel[]): PositionMode
 
 const createPoolPosition = (lpTokenId: string, rewards: RewardModel[]): PoolPositionModel => {
   return {
-    ...((createPosition(lpTokenId, rewards) as unknown) as PositionModel),
+    ...(createPosition(lpTokenId, rewards) as unknown as PositionModel),
     feeTier: "NONE",
-    pool: ({} as unknown) as PoolPositionModel["pool"],
+    pool: {} as unknown as PoolPositionModel["pool"],
   };
+};
+
+const splitMessagesByApproveReset = (
+  messages: TransactionMessage[],
+  approveCount: number,
+  resetCount: number = approveCount,
+) => {
+  return {
+    approveMessages: messages.slice(0, approveCount),
+    txMessages: messages.slice(approveCount, messages.length - resetCount),
+    resetMessages: resetCount > 0 ? messages.slice(messages.length - resetCount) : [],
+  };
+};
+
+const toResetApproveMessage = (message: TransactionMessage): TransactionMessage => {
+  const targetAddress = message.args?.[0];
+
+  if (message.func !== "Approve" || !targetAddress) {
+    throw new Error("Approve message must include a target address");
+  }
+
+  return {
+    ...message,
+    args: [targetAddress, "0"],
+  };
+};
+
+const expectResetMessages = (resetMessages: TransactionMessage[], approveMessages: TransactionMessage[]) => {
+  expect(resetMessages).toEqual(approveMessages.map(toResetApproveMessage));
 };
 
 describe("position.message.ts", () => {
@@ -186,8 +216,7 @@ describe("position.message.ts", () => {
       const fetchAllowance = jest.fn(async () => 0);
       const messages = await makeClaimMessageWithApproves({ position, caller }, fetchAllowance);
 
-      const approveMessages = messages.filter(m => m.func === "Approve");
-      const txMessages = messages.slice(approveMessages.length);
+      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 3);
 
       expect(approveMessages).toEqual(
         expect.arrayContaining([
@@ -236,6 +265,7 @@ describe("position.message.ts", () => {
           gasFee: undefined,
         },
       ]);
+      expectResetMessages(resetMessages, approveMessages);
     });
 
     it("filters out approve messages when allowance is above the limit", async () => {
@@ -246,14 +276,33 @@ describe("position.message.ts", () => {
 
       const fetchAllowance = jest.fn(async () => DEFAULT_ALLOWANCE_LIMIT * 2);
       const messages = await makeClaimMessageWithApproves({ position, caller }, fetchAllowance);
+      const { txMessages, resetMessages } = splitMessagesByApproveReset(messages, 0, 2);
 
-      expect(messages).toEqual([
+      expect(txMessages).toEqual([
         {
           caller,
           send: "",
           pkg_path: "position_path",
           func: "CollectFee",
           args: ["lp1"],
+          gasFee: undefined,
+        },
+      ]);
+      expect(resetMessages).toEqual([
+        {
+          caller,
+          send: "",
+          pkg_path: "fee_token",
+          func: "Approve",
+          args: ["pool_address", "0"],
+          gasFee: undefined,
+        },
+        {
+          caller,
+          send: "",
+          pkg_path: "fee_token",
+          func: "Approve",
+          args: ["position_address", "0"],
           gasFee: undefined,
         },
       ]);
@@ -273,8 +322,7 @@ describe("position.message.ts", () => {
       const fetchAllowance = jest.fn(async () => 0);
       const messages = await makeClaimAllMessageWithApproves({ positions, caller }, fetchAllowance);
 
-      const approveMessages = messages.filter(m => m.func === "Approve");
-      const txMessages = messages.slice(approveMessages.length);
+      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 1);
 
       expect(approveMessages).toEqual(
         expect.arrayContaining([
@@ -300,6 +348,7 @@ describe("position.message.ts", () => {
           gasFee: undefined,
         },
       ]);
+      expectResetMessages(resetMessages, approveMessages);
     });
 
     it("merges duplicate approveInfos across multiple positions (fee)", async () => {
@@ -317,8 +366,7 @@ describe("position.message.ts", () => {
       const fetchAllowance = jest.fn(async () => 0);
       const messages = await makeClaimAllMessageWithApproves({ positions, caller }, fetchAllowance);
 
-      const approveMessages = messages.filter(m => m.func === "Approve");
-      const txMessages = messages.slice(approveMessages.length);
+      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 2);
 
       // Expect exactly 2 approve messages for fee_token: pool + position_address.
       expect(approveMessages).toEqual(
@@ -361,6 +409,7 @@ describe("position.message.ts", () => {
           gasFee: undefined,
         },
       ]);
+      expectResetMessages(resetMessages, approveMessages);
     });
   });
 
@@ -380,8 +429,7 @@ describe("position.message.ts", () => {
       const fetchAllowance = jest.fn(async () => 0);
       const messages = await makeUnStakePositionsMessagesWithApproves({ positions, caller }, fetchAllowance);
 
-      const approveMessages = messages.filter(m => m.func === "Approve");
-      const txMessages = messages.slice(approveMessages.length);
+      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 2);
 
       expect(approveMessages).toEqual(
         expect.arrayContaining([
@@ -423,6 +471,7 @@ describe("position.message.ts", () => {
           gasFee: undefined,
         },
       ]);
+      expectResetMessages(resetMessages, approveMessages);
     });
   });
 
@@ -450,8 +499,7 @@ describe("position.message.ts", () => {
         fetchAllowance,
       );
 
-      const approveMessages = messages.filter(m => m.func === "Approve");
-      const txMessages = messages.slice(approveMessages.length);
+      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 2);
 
       expect(approveMessages).toHaveLength(2);
       expect(approveMessages).toEqual(
@@ -493,6 +541,7 @@ describe("position.message.ts", () => {
           gasFee: undefined,
         },
       ]);
+      expectResetMessages(resetMessages, approveMessages);
     });
   });
 
@@ -521,8 +570,7 @@ describe("position.message.ts", () => {
         fetchAllowance,
       );
 
-      const approveMessages = messages.filter(m => m.func === "Approve");
-      const txMessages = messages.slice(approveMessages.length);
+      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 2);
 
       // Base pool approves (wugnot + tokenB) + extra gnot approve should merge into a single wugnot->pool approve.
       expect(approveMessages).toHaveLength(2);
@@ -557,6 +605,7 @@ describe("position.message.ts", () => {
           gasFee: undefined,
         },
       ]);
+      expectResetMessages(resetMessages, approveMessages);
     });
   });
 
@@ -586,8 +635,7 @@ describe("position.message.ts", () => {
         fetchAllowance,
       );
 
-      const approveMessages = messages.filter(m => m.func === "Approve");
-      const txMessages = messages.slice(approveMessages.length);
+      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 2);
 
       expect(approveMessages).toHaveLength(2);
       expect(approveMessages).toEqual(
@@ -629,6 +677,7 @@ describe("position.message.ts", () => {
           gasFee: undefined,
         },
       ]);
+      expectResetMessages(resetMessages, approveMessages);
     });
   });
 
@@ -657,8 +706,7 @@ describe("position.message.ts", () => {
         fetchAllowance,
       );
 
-      const approveMessages = messages.filter(m => m.func === "Approve");
-      const txMessages = messages.slice(approveMessages.length);
+      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 3);
 
       // wugnot->pool, tokenB->pool, wugnot->position_address
       expect(approveMessages).toHaveLength(3);
@@ -709,6 +757,7 @@ describe("position.message.ts", () => {
           gasFee: undefined,
         },
       ]);
+      expectResetMessages(resetMessages, approveMessages);
     });
   });
 });
