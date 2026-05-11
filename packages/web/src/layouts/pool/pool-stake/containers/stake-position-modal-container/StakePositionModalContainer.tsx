@@ -10,7 +10,7 @@ import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confir
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { useGetPoolDetailByPath, useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
+import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
 import { DexEvent } from "@repositories/common";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
@@ -52,9 +52,6 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
   const { getNextReferralAddress, removeReferrerFromLocalStorage } = useReferral();
   const clearModal = useClearModal();
   const { updateBalances } = useTokenData();
-  const { data: pool } = useGetPoolDetailByPath(poolPath, {
-    enabled: !!poolPath,
-  });
 
   const { getMessage } = useMessage();
 
@@ -263,7 +260,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
     enqueueEvent,
   ]);
 
-  return <StakePositionModal positions={positions} close={clearModal} onSubmit={stakeOnSubmit} pool={pool} />;
+  return <StakePositionModal positions={positions} close={clearModal} onSubmit={stakeOnSubmit} />;
 };
 
 export default StakePositionModalContainer;
