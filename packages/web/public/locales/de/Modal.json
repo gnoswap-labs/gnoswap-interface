@@ -289,7 +289,7 @@
       "title": "Sie haben GNOT eingewickelt!"
     },
     "stake-position": {
-      "desc": "Klicken Sie hier, um bis zu {{apr}} APR auf Position # zu verdienen.{{positionId}}",
+      "desc": "Klicken Sie hier, um bis zu <span>{{apr}} APR</span> auf <span>Position #</span> zu verdienen. <span>{{positionId}}</span>",
       "link": "Einsatzprämien ansehen",
       "title": "Sichern Sie Ihre Position!"
     },

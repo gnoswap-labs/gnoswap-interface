@@ -289,7 +289,7 @@
       "title": "Vous avez enveloppé GNOT !"
     },
     "stake-position": {
-      "desc": "Cliquez pour gagner jusqu'à {{apr}} APR sur Position #{{positionId}}",
+      "desc": "Cliquez pour gagner jusqu'à <span>{{apr}} APR</span> sur <span>Position #{{positionId}}</span>",
       "link": "Voir les récompenses de mise",
       "title": "Prenez position !"
     },

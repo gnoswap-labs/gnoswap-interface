@@ -1,4 +1,13 @@
 {
+  "availablePools": {
+    "column": {
+      "incentive": "Incentive",
+      "poolName": "Pool Name",
+      "stakingApr": "Staking APR"
+    },
+    "empty": "No Pool",
+    "title": "Available Staking Pools"
+  },
   "btn": {
     "selectPosi": "Select Position"
   },

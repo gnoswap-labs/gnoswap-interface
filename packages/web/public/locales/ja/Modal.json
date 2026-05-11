@@ -289,7 +289,7 @@
       "title": "あなたはGNOTをラップした！"
     },
     "stake-position": {
-      "desc": "クリックすると、ポジション#で最高{{apr}} APRを獲得できます。{{positionId}}",
+      "desc": "クリックすると、<span>ポジション#で</span>最高<span>{{apr}} APRを</span>獲得できます。<span>{{positionId}}</span>",
       "link": "ステーク報酬を見る",
       "title": "自分のポジションを確立する！"
     },

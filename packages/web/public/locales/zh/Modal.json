@@ -289,7 +289,7 @@
       "title": "您已经包裹了 GNOT！"
     },
     "stake-position": {
-      "desc": "点击赚取高达{{apr}} 的职位年利率 #{{positionId}}",
+      "desc": "点击赚取高达<span>{{apr}} 的</span> <span>职位</span> <span>年利率</span> <span>#{{positionId}}</span>",
       "link": "查看投注奖励",
       "title": "站稳脚跟"
     },

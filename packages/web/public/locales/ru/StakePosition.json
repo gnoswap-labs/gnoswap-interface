@@ -1,4 +1,13 @@
 {
+  "availablePools": {
+    "column": {
+      "incentive": "Стимул",
+      "poolName": "Название бассейна",
+      "stakingApr": "Ставка APR"
+    },
+    "empty": "Нет бассейна",
+    "title": "Доступные бассейны для стачек"
+  },
   "btn": {
     "selectPosi": "Выберите позицию"
   },

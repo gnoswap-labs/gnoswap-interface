@@ -1,4 +1,13 @@
 {
+  "availablePools": {
+    "column": {
+      "incentive": "Anreiz",
+      "poolName": "Name des Pools",
+      "stakingApr": "Absteckung APR"
+    },
+    "empty": "Kein Pool",
+    "title": "Verfügbare Absteckpools"
+  },
   "btn": {
     "selectPosi": "Position wählen"
   },
