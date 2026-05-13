@@ -1,6 +1,6 @@
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { AdenaError, ERROR_VALUE } from "@common/errors/adena";
-import { isConnectedAccountResponse, isWalletLockedError, isWalletLockedResponse } from "./use-wallet.util";
+import { isWalletLockedError, isWalletLockedResponse } from "./use-wallet.util";
 
 describe("wallet login response helpers", () => {
   it("detects locked Adena responses before establish requests", () => {
@@ -29,17 +29,5 @@ describe("wallet login response helpers", () => {
 
   it("detects locked Adena errors from validated account responses", () => {
     expect(isWalletLockedError(new AdenaError("WALLET_LOCKED"))).toBe(true);
-  });
-
-  it("recognizes successful account preflight responses", () => {
-    const response: WalletResponse = {
-      code: 0,
-      status: "success",
-      type: "GET_ACCOUNT",
-      message: "Get account.",
-      data: {},
-    };
-
-    expect(isConnectedAccountResponse(response)).toBe(true);
   });
 });

@@ -5,7 +5,6 @@ import { DEFAULT_CHAIN_ID, SUPPORT_CHAIN_IDS } from "@constants/environment.cons
 import { AUTH_STORE_KEY } from "@hooks/common/use-auto-disconnect";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useSocialWalletContext } from "@hooks/common/use-social-wallet-context";
-import { AccountMapper } from "@models/account/mapper/account-mapper";
 import { useGetTokenBalancesFromChain } from "@query/address";
 import {
   ACCOUNT_SESSION_INFO_KEY,
@@ -21,7 +20,7 @@ import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";
 import { AdenaSdkConnectionState, SocialLoginType, WalletType } from "src/types/wallet.types";
 import * as uuid from "uuid";
-import { isConnectedAccountResponse, isWalletLockedError, isWalletLockedResponse } from "./use-wallet.util";
+import { isWalletLockedError, isWalletLockedResponse } from "./use-wallet.util";
 
 const balanceQueryKey = ["token-balance", "ugnot"];
 const defaultGnoswapMemo = "Executed through gnoswap.io";
@@ -215,35 +214,10 @@ export const useWallet = () => {
         return;
       }
 
-      const accountResponse = await currentWalletClient.getAccount().catch(() => null);
-
-      if (accountResponse === null) {
-        setLoadingConnect("initial");
-        return;
-      }
-
-      if (isWalletLockedResponse(accountResponse)) {
-        setLoadingConnect("initial");
-        return;
-      }
-
-      if (isConnectedAccountResponse(accountResponse)) {
-        const account = AccountMapper.fromResponse(accountResponse);
-        sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
-        sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "ADENA");
-        const availNetwork = SUPPORT_CHAIN_IDS.includes(account.chainId);
-        if (!availNetwork) {
-          switchNetwork();
-        }
-        setWalletAccount(account);
-        accountRepository.setConnectedWallet(true);
-        setLoadingConnect("done");
-        return;
-      }
-
       const established = await currentWalletClient.addEstablishedSite("Gnoswap").catch(() => null);
 
       if (established === null) {
+        setLoadingConnect("initial");
         return;
       }
       if (isWalletLockedResponse(established)) {
@@ -251,6 +225,7 @@ export const useWallet = () => {
         return;
       }
       if (established.code === 4000) {
+        setLoadingConnect("initial");
         return;
       }
 

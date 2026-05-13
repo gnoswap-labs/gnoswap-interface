@@ -8,7 +8,3 @@ export const isWalletLockedResponse = (response: Pick<WalletResponse, "code" | "
 export const isWalletLockedError = (error: unknown) => {
   return error instanceof AdenaError && error.getType() === ERROR_VALUE.WALLET_LOCKED.type;
 };
-
-export const isConnectedAccountResponse = <T>(response: WalletResponse<T> | null): response is WalletResponse<T> => {
-  return response?.code === 0 && response.type === "GET_ACCOUNT";
-};
