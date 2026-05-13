@@ -193,19 +193,27 @@ export const useWallet = () => {
       window.open("https://adena.app/", "", "noopener,noreferrer");
     }
     setWalletClient(adena);
+    return adena;
   }, [sessionId, loadingConnect]);
 
-  const connectAccount = async () => {
+  const connectAccount = async (targetWalletClient?: WalletClient | null) => {
     try {
       setLoadingConnect("loading");
 
-      if (walletClient === null) {
+      const currentWalletClient = targetWalletClient ?? walletClient;
+
+      if (currentWalletClient === null) {
         const adena = AdenaClient.createAdenaClient(defaultGnoswapMemo);
         setWalletClient(adena);
         return;
       }
 
-      const accountResponse = await walletClient.getAccount().catch(() => null);
+      const accountResponse = await currentWalletClient.getAccount().catch(() => null);
+
+      if (accountResponse === null) {
+        setLoadingConnect("initial");
+        return;
+      }
 
       if (isWalletLockedResponse(accountResponse)) {
         setLoadingConnect("initial");
@@ -226,7 +234,7 @@ export const useWallet = () => {
         return;
       }
 
-      const established = await accountRepository.addEstablishedSite().catch(() => null);
+      const established = await currentWalletClient.addEstablishedSite("Gnoswap").catch(() => null);
 
       if (established === null) {
         return;
