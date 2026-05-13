@@ -76,7 +76,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     const response = await this.networkClient.get<{
       data: PositionBinResponse[];
     }>({
-      url: "/positions/" + lpTokenId + `/bins?bins=${count}`,
+      url: "/positions/" + lpTokenId + `/bins?binSize=${count}`,
     });
     return PositionBinMapper.fromList(response.data.data);
   };
