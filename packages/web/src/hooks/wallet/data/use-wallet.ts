@@ -1,5 +1,6 @@
 import { WalletClient } from "@common/clients/wallet-client";
 import { AdenaClient } from "@common/clients/wallet-client/adena";
+import { AdenaError, ERROR_VALUE } from "@common/errors/adena";
 import { NetworkData } from "@constants/chains.constant";
 import { DEFAULT_CHAIN_ID, SUPPORT_CHAIN_IDS } from "@constants/environment.constant";
 import { AUTH_STORE_KEY } from "@hooks/common/use-auto-disconnect";
@@ -23,6 +24,14 @@ import * as uuid from "uuid";
 
 const balanceQueryKey = ["token-balance", "ugnot"];
 const defaultGnoswapMemo = "Executed through gnoswap.io";
+
+const isWalletLockedResponse = (response: { code: number; type: string } | null) => {
+  return response?.code === ERROR_VALUE.WALLET_LOCKED.status && response.type === ERROR_VALUE.WALLET_LOCKED.type;
+};
+
+const isWalletLockedError = (error: unknown) => {
+  return error instanceof AdenaError && error.getType() === ERROR_VALUE.WALLET_LOCKED.type;
+};
 
 export const useWallet = () => {
   const { accountRepository } = useGnoswapContext();
@@ -208,6 +217,10 @@ export const useWallet = () => {
       if (established === null) {
         return;
       }
+      if (isWalletLockedResponse(established)) {
+        setLoadingConnect("initial");
+        return;
+      }
       if (established.code === 4000) {
         return;
       }
@@ -228,6 +241,12 @@ export const useWallet = () => {
         setLoadingConnect("error");
       }
     } catch (error) {
+      if (isWalletLockedError(error)) {
+        setLoadingConnect("initial");
+        return;
+      }
+
+      setLoadingConnect("error");
       console.error(error);
     }
   };
