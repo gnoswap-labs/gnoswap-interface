@@ -1,10 +1,12 @@
 import { CLAIMABLE_DAYS } from "@common/values";
 import { safeParseTime } from "./time.utils";
 
-export const getClaimableTime = (threshold?: number) => {
-  if (threshold == null) return;
+const MILLISECONDS_PER_SECOND = 1000;
 
-  return new Date(Date.now() + threshold);
+export const getClaimableTime = (claimableThresholdSeconds?: number) => {
+  if (claimableThresholdSeconds == null) return;
+
+  return new Date(Date.now() + claimableThresholdSeconds * MILLISECONDS_PER_SECOND);
 };
 
 export const getClaimableDays = (poolTier: string): number => {
