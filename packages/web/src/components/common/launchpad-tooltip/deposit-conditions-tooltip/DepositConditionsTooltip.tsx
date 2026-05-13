@@ -3,7 +3,9 @@ import { useAtomValue } from "jotai";
 import { Placement } from "@floating-ui/react";
 
 import { XGNS_TOKEN_PATH } from "@constants/environment.constant";
+import { useGetTokens } from "@query/token";
 import { LaunchpadState } from "@states/index";
+import { formatLaunchpadConditionAmount, getLaunchpadConditionSymbol } from "@utils/launchpad-condition-utils";
 
 import IconWarning from "@components/common/icons/IconWarning";
 import Tooltip from "@components/common/tooltip/Tooltip";
@@ -18,20 +20,22 @@ const DepositConditionsTooltip = ({ placement }: DepositConditionsTooltipProps) 
   const { t } = useTranslation();
 
   const depositConditions = useAtomValue(LaunchpadState.depositConditions);
+  const { data: { tokens = [] } = {} } = useGetTokens();
 
   const renderConditions = () => {
     return depositConditions.map(condition => {
-      const { tokenPath, leastTokenAmount } = condition;
-      const tokenSymbol = tokenPath.split("/").pop();
+      const { tokenPath } = condition;
+      const tokenSymbol = getLaunchpadConditionSymbol(condition, tokens);
+      const displayAmount = formatLaunchpadConditionAmount(condition, tokens);
 
       return (
-        <>
+        <React.Fragment key={tokenPath}>
           {tokenPath === XGNS_TOKEN_PATH ? (
             <li>
               <Trans
                 ns="Launchpad"
                 i18nKey={"common.tooltip.conditions.xGNS"}
-                values={{ amount: leastTokenAmount.toLocaleString() }}
+                values={{ amount: displayAmount }}
                 components={{ br: <br /> }}
               />
             </li>
@@ -41,14 +45,14 @@ const DepositConditionsTooltip = ({ placement }: DepositConditionsTooltipProps) 
                 ns="Launchpad"
                 i18nKey={"common.tooltip.conditions.token"}
                 values={{
-                  amount: leastTokenAmount.toLocaleString(),
-                  symbol: tokenSymbol?.toUpperCase(),
+                  amount: displayAmount,
+                  symbol: tokenSymbol,
                 }}
                 components={{ br: <br /> }}
               />
             </li>
           )}
-        </>
+        </React.Fragment>
       );
     });
   };
