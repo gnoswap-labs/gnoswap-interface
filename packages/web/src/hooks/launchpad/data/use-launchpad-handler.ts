@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { XGNS_TOKEN_PATH } from "@constants/environment.constant";
-import { GNS_TOKEN } from "@common/values/token-constant";
+import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
@@ -21,6 +21,7 @@ import { makeRawTokenAmount } from "@utils/token-utils";
 import { useReferral } from "@hooks/common/use-referral";
 import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
 import { isLaunchpadPoolEnded } from "@utils/launchpad-get-claimable";
+import { getLaunchpadConditionDisplayAmount, getLaunchpadConditionToken } from "@utils/launchpad-condition-utils";
 
 type DepositButtonStateType =
   | "WALLET_LOGIN"
@@ -58,7 +59,7 @@ export const useLaunchpadHandler = () => {
   const selectPoolId = useAtomValue(LaunchpadState.selectLaunchpadPool);
 
   const { connected: connectedWallet, account, isSwitchNetwork, switchNetwork } = useWallet();
-  const { displayBalanceMap } = useTokenData();
+  const { displayBalanceMap, tokens } = useTokenData();
 
   const { launchpadRepository } = useGnoswapContext();
   const { data: tokenPriceMap } = useGetAllTokenPrices();
@@ -88,11 +89,16 @@ export const useLaunchpadHandler = () => {
 
   // Variables to determine if conditions are met to make a deposit
   const isDepositAllowed = depositConditions.every(condition => {
+    const conditionAmount = getLaunchpadConditionDisplayAmount(condition, tokens);
+
     if (condition.tokenPath === XGNS_TOKEN_PATH) {
-      return Number(xGnsBalance) >= condition.leastTokenAmount;
+      const displayXGnsBalance = BigNumber(xGnsBalance || 0).shiftedBy(-XGNS_TOKEN.decimals);
+      return displayXGnsBalance.isGreaterThanOrEqualTo(conditionAmount);
     } else {
-      const balance = displayBalanceMap[condition.tokenPath] || 0;
-      return balance >= condition.leastTokenAmount;
+      const token = getLaunchpadConditionToken(condition, tokens);
+      const balance =
+        displayBalanceMap[token?.priceID ?? condition.tokenPath] ?? displayBalanceMap[condition.tokenPath] ?? 0;
+      return BigNumber(balance).isGreaterThanOrEqualTo(conditionAmount);
     }
   });
 
