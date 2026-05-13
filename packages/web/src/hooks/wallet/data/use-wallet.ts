@@ -25,6 +25,7 @@ import { isConnectedAccountResponse, isWalletLockedError, isWalletLockedResponse
 
 const balanceQueryKey = ["token-balance", "ugnot"];
 const defaultGnoswapMemo = "Executed through gnoswap.io";
+let connectingAdenaAccount = false;
 
 export const useWallet = () => {
   const { accountRepository } = useGnoswapContext();
@@ -197,6 +198,12 @@ export const useWallet = () => {
   }, [sessionId, loadingConnect]);
 
   const connectAccount = async (targetWalletClient?: WalletClient | null) => {
+    if (connectingAdenaAccount) {
+      return;
+    }
+
+    connectingAdenaAccount = true;
+
     try {
       setLoadingConnect("loading");
 
@@ -270,6 +277,8 @@ export const useWallet = () => {
 
       setLoadingConnect("error");
       console.error(error);
+    } finally {
+      connectingAdenaAccount = false;
     }
   };
 
