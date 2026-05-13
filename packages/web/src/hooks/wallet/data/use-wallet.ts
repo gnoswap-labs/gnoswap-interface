@@ -5,6 +5,7 @@ import { DEFAULT_CHAIN_ID, SUPPORT_CHAIN_IDS } from "@constants/environment.cons
 import { AUTH_STORE_KEY } from "@hooks/common/use-auto-disconnect";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useSocialWalletContext } from "@hooks/common/use-social-wallet-context";
+import { AccountMapper } from "@models/account/mapper/account-mapper";
 import { useGetTokenBalancesFromChain } from "@query/address";
 import {
   ACCOUNT_SESSION_INFO_KEY,
@@ -150,10 +151,10 @@ export const useWallet = () => {
     }
   }
 
-  const switchNetwork = async () => {
+  const switchNetwork = async (targetWalletClient?: WalletClient | null) => {
     try {
       setLoadingConnect("loading");
-      const adena = AdenaClient.createAdenaClient(defaultGnoswapMemo);
+      const adena = targetWalletClient ?? AdenaClient.createAdenaClient(defaultGnoswapMemo);
       if (!adena) {
         setLoadingConnect("error");
         return;
@@ -162,7 +163,8 @@ export const useWallet = () => {
       const res = await adena?.switchNetwork(DEFAULT_CHAIN_ID);
 
       if (res.code === 0) {
-        const account = await accountRepository.getAccount();
+        const accountResponse = await adena.getAccount();
+        const account = AccountMapper.fromResponse(accountResponse);
         setWalletAccount(account);
         accountRepository.setConnectedWallet(true);
       }
@@ -230,12 +232,13 @@ export const useWallet = () => {
       }
 
       if (established.code === 0 || established.code === 4001) {
-        const account = await accountRepository.getAccount();
+        const accountResponse = await currentWalletClient.getAccount();
+        const account = AccountMapper.fromResponse(accountResponse);
         sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
         sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "ADENA");
         const availNetwork = SUPPORT_CHAIN_IDS.includes(account.chainId);
         if (!availNetwork) {
-          switchNetwork();
+          await switchNetwork(currentWalletClient);
         }
         setWalletAccount(account);
         accountRepository.setConnectedWallet(true);
