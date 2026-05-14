@@ -18,6 +18,7 @@ import LaunchpadPoolTierChip from "@layouts/launchpad/components/launchpad-pool-
 import { getDateUtcToLocal } from "@common/utils/date-util";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { EXT_URL } from "@constants/external-url.contant";
+import { getClaimableTime } from "@utils/launchpad-get-claimable";
 
 type LaunchpadPoolModelWithoutClaimableTime = Omit<LaunchpadPoolModel, "claimableTime">;
 
@@ -51,10 +52,7 @@ const LaunchpadDepositModal = ({
 
   const Modal = React.useMemo(() => withLocalModal(LaunchpadDepositModalWrapper, setIsOpen), [setIsOpen]);
 
-  const now = new Date();
-  const claimableTime = poolInfo?.claimableThreshold
-    ? new Date(now.getTime() + Number(poolInfo.claimableThreshold) * 1000)
-    : null;
+  const claimableTime = getClaimableTime(poolInfo?.claimableThreshold);
 
   const poolDuration = getTierNumber(poolInfo?.poolTier);
 

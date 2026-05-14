@@ -31,5 +31,6 @@ export interface LaunchpadPoolModel {
 
   endBlockHeight: number;
 
+  /** Seconds after deposit before rewards become claimable. */
   claimableThreshold: number;
 }
