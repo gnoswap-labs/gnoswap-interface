@@ -3,13 +3,13 @@ import { useTranslation } from "react-i18next";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import Switch from "@components/common/switch/Switch";
+import { VIDEO_GUIDE_TYPES } from "@constants/video-guide.constant";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { VIDEO_GUIDE_TYPES } from "@constants/video-guide.constant";
 
-import { HeaderTextWrapper, PositionsWrapper } from "./EarnMyPositionsHeader.styles";
 import VideoGuideTrigger from "@components/common/video-guide-trigger/VideoGuideTrigger";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { HeaderTextWrapper, PositionsWrapper } from "./EarnMyPositionsHeader.styles";
 
 export interface EarnMyPositionsHeaderProps {
   address?: string | null;
@@ -35,7 +35,6 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
   visiblePositions,
   positionLength,
   connected,
-  isSwitchNetwork,
   availableStake,
   moveEarnAdd,
   moveEarnStake,
@@ -52,8 +51,8 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
   }, [onOpenVideoGuide]);
 
   const disabledStake = useMemo(() => {
-    return !connected || isSwitchNetwork || !availableStake;
-  }, [availableStake, connected, isSwitchNetwork]);
+    return !availableStake;
+  }, [availableStake]);
 
   const onClickAddressPosition = useCallback(() => {
     if (address) window.open(getAccountUrl(address), "_blank");

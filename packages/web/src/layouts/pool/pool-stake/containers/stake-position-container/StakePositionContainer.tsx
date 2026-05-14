@@ -6,10 +6,15 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionConverter } from "@services/converters/position";
 
+import { VideoGuideType } from "@constants/video-guide.constant";
 import { useStakePositionModal } from "@hooks/pool/ui/use-stake-position-modal";
 import StakePosition from "../../components/stake-position/StakePosition";
 
-const StakePositionContainer: React.FC = () => {
+interface StakePositionContainerProps {
+  onOpenVideoGuide: (type: VideoGuideType) => void;
+}
+
+const StakePositionContainer: React.FC<StakePositionContainerProps> = ({ onOpenVideoGuide }) => {
   const router = useCustomRouter();
   const poolPath = router.getPoolPath();
   const positionId = router.getPositionId();
@@ -112,6 +117,7 @@ const StakePositionContainer: React.FC = () => {
       isEmpty={isEmpty}
       isLoading={isLoadingAllPositions}
       connected={connected}
+      onOpenVideoGuide={onOpenVideoGuide}
     />
   );
 };

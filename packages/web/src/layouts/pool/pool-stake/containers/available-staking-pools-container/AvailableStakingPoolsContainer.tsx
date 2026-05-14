@@ -49,12 +49,11 @@ const AvailableStakingPoolsContainer: React.FC = () => {
 
   const onChangeSort = useCallback((key: AvailableStakingPoolsSortKey) => {
     setSort(prev => {
-      // Different column: start at ASC.
+      // Different column: start at DESC.
       if (prev.key !== key) {
-        return { key, direction: "asc" };
+        return { key, direction: "desc" };
       }
       // Same column cycle: DESC -> ASC -> DEFAULT (TVL desc).
-      // Starting from DESC lets a click on the default-sorted column toggle to ASC immediately.
       if (prev.direction === "desc") {
         return { key, direction: "asc" };
       }
@@ -64,7 +63,7 @@ const AvailableStakingPoolsContainer: React.FC = () => {
 
   const onSelectPool = useCallback(
     (selectedPoolPath: string) => {
-      router.movePageWithPoolPath("POOL_STAKE", selectedPoolPath);
+      router.movePageWithPoolPath("POOL", selectedPoolPath, "staking");
     },
     [router],
   );

@@ -17,6 +17,11 @@ export const wrapper = (theme: Theme) => css`
   border: 1px solid ${theme.color.border02};
   box-shadow: ${theme.color.shadow01};
   padding: 23px;
+  .title-wrapper {
+    ${mixins.flexbox("row", "flex-end", "space-between")};
+    width: 100%;
+    gap: 12px;
+  }
   .title {
     ${fonts.h6};
   }

@@ -39,6 +39,7 @@ export const wrapper = (theme: Theme) => css`
   .pools-table {
     ${mixins.flexbox("column", "stretch", "stretch")};
     width: 100%;
+    gap: 4px;
   }
 
   .pools-row {
@@ -50,6 +51,19 @@ export const wrapper = (theme: Theme) => css`
     height: 36px;
     color: ${theme.color.text02};
     ${fonts.body12};
+  }
+
+  .pools-table .pools-row {
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+
+    &[role="button"] {
+      cursor: pointer;
+
+      &:hover {
+        background-color: ${theme.color.hover04};
+      }
+    }
   }
 
   .pools-row.header {
