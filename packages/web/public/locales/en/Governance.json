@@ -89,8 +89,8 @@
         "select": "Select a Delegate"
       },
       "warning": {
-        "description": "A lock-up period of 7 days is triggered once you undelegate your xGNS. During this period, the locked xGNS tokens will be ineligible to receive protocol rewards and have no voting powers. Be sure to understand the lock-up period before you proceed to delegate.",
-        "title": "Delegation will lock your funds for 7 days"
+        "description": "A lock-up period is triggered once you undelegate your xGNS. During this period, the locked xGNS tokens will be ineligible to receive protocol rewards and have no voting powers. Be sure to understand the lock-up period before you proceed to delegate.",
+        "title": "Undelegated funds are locked during the lock-up period"
       }
     },
     "login": {
@@ -138,8 +138,8 @@
         "title": "3. Your Balance"
       },
       "warning": {
-        "description": "A lock-up period of 7 days is triggered once you undelegate your xGNS. During this period, the locked xGNS tokens will be ineligible to receive protocol rewards and have no voting powers. Be sure to understand the lock-up period before you proceed to undelegate.",
-        "title": "Undelegation will lock your funds for 7 days"
+        "description": "A lock-up period is triggered once you undelegate your xGNS. During this period, the locked xGNS tokens will be ineligible to receive protocol rewards and have no voting powers. Be sure to understand the lock-up period before you proceed to undelegate.",
+        "title": "Undelegation will lock your funds during the lock-up period"
       }
     },
     "votingWeight": {
