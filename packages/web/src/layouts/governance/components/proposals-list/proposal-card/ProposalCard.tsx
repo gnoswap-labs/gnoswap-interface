@@ -76,7 +76,7 @@ const ProposalCard: React.FC<Props> = ({
     const isCancelled = proposalDetail.status === "CANCELLED";
 
     return {
-      max: safeDisplayAmount(proposalDetail.votingInfo.maxVotingWeight),
+      max: safeDisplayAmount(proposalDetail.votingInfo.quorumAmount),
       yes: isCancelled ? 0 : safeDisplayAmount(proposalDetail.votingInfo.yesVotingWeight),
       no: isCancelled ? 0 : safeDisplayAmount(proposalDetail.votingInfo.noVotingWeight),
     };

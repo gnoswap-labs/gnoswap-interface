@@ -14,6 +14,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { nullProposalDetailsInfo, nullUserVotingInfo, PROPOSAL_TYPE } from "@repositories/governance";
 import { DEVICE_TYPE } from "@styles/media";
 import { useGetProposalDetails } from "@query/governance";
+import { isQuorumReached } from "@utils/governance-utils";
 import { rawToDisplayAmount } from "@utils/number-utils";
 
 import StatusBadge from "../../status-badge/StatusBadge";
@@ -106,12 +107,8 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   }, [numericVotingInfo]);
 
   const isMajorityVoted = useMemo(() => {
-    const { yesVotingWeight, noVotingWeight, maxVotingWeight } = numericVotingInfo;
-
-    if (maxVotingWeight === 0) return false;
-
-    return yesVotingWeight + noVotingWeight >= maxVotingWeight / 2;
-  }, [numericVotingInfo]);
+    return isQuorumReached(proposalDetail.votingInfo);
+  }, [proposalDetail.votingInfo]);
 
   const { yesVotes, noVotes } = useMemo(() => {
     if (proposalDetail.status === "CANCELLED") {
@@ -250,13 +247,13 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
                   {rawToDisplayAmount(yesVotes + noVotes, XGNS_TOKEN.decimals).toLocaleString()}
                 </span>
               </Tooltip>
-              /<div>{rawToDisplayAmount(numericVotingInfo.maxVotingWeight, XGNS_TOKEN.decimals).toLocaleString()}</div>
+              /<div>{rawToDisplayAmount(numericVotingInfo.quorumAmount, XGNS_TOKEN.decimals).toLocaleString()}</div>
             </div>
           </div>
           <VotingProgressBar
             yes={numericVotingInfo.yesVotingWeight}
             no={numericVotingInfo.noVotingWeight}
-            max={numericVotingInfo.maxVotingWeight}
+            max={numericVotingInfo.quorumAmount}
             isMajorityVoted={isMajorityVoted}
             hideNumber
           />
