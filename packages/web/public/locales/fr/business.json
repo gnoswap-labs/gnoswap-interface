@@ -98,6 +98,7 @@
   "unstakingFee": {
     "txt": "Taxe de dépouillement"
   },
+  "value": "Valeur",
   "withdrawalFee": {
     "txt": "Frais de retrait"
   }

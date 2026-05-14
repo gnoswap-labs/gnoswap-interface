@@ -53,8 +53,8 @@
       },
       "pool": {
         "col": {
-          "liqui": "Liquidity",
-          "pools": "Pools"
+          "pools": "Pools",
+          "tvl": "TVL"
         },
         "label": "1. Select Pool",
         "searchPlaceHolder": "Search by Name, Symbol, or Path"

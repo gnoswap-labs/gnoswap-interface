@@ -53,8 +53,8 @@
       },
       "pool": {
         "col": {
-          "liqui": "流动性",
-          "pools": "游泳池"
+          "pools": "游泳池",
+          "tvl": "流动性"
         },
         "label": "1.选择池",
         "searchPlaceHolder": "按名称、符号或路径搜索"

@@ -2,7 +2,7 @@
   "bestPool": {
     "col": {
       "apr": "APR",
-      "pair": "Пара",
+      "pool": "Бассейн",
       "tvl": "TVL"
     },
     "title": "Лучшие пулы для {{symbol}}"

@@ -2,7 +2,7 @@
   "bestPool": {
     "col": {
       "apr": "年利率",
-      "pair": "成对",
+      "pool": "游泳池",
       "tvl": "TVL"
     },
     "title": "{{symbol}}最佳游泳池"

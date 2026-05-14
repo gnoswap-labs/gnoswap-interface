@@ -98,6 +98,7 @@
   "unstakingFee": {
     "txt": "언스테이킹 수수료"
   },
+  "value": "가치",
   "withdrawalFee": {
     "txt": "출금 수수료"
   }

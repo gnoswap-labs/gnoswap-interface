@@ -22,7 +22,6 @@
       "content": "Sie erhalten keine Swap-Gebührenprämien mehr von <1>{{percent}} APR</1>"
     }
   },
-  "liquidity": "Liquidität",
   "noPosi": "Keine Position",
   "overview": {
     "pooled": "Gepoolt",
@@ -41,5 +40,6 @@
     }
   },
   "title": "Pfahlstellung",
-  "totalAmt": "Gesamtbetrag"
+  "totalAmt": "Gesamtbetrag",
+  "value": "Wert"
 }

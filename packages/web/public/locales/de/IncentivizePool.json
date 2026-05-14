@@ -53,8 +53,8 @@
       },
       "pool": {
         "col": {
-          "liqui": "Liquidität",
-          "pools": "Schwimmbäder"
+          "pools": "Schwimmbäder",
+          "tvl": "Liquidität"
         },
         "label": "1. Pool auswählen",
         "searchPlaceHolder": "Suche nach Name, Symbol oder Pfad"

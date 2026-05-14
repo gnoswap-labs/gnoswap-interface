@@ -98,6 +98,7 @@
   "unstakingFee": {
     "txt": "アンステーキング・フィー"
   },
+  "value": "価値",
   "withdrawalFee": {
     "txt": "出金手数料"
   }

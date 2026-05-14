@@ -22,7 +22,6 @@
       "content": "<1>{{percent}} APR의</1> 스왑 수수료 보상 획득이 중단됩니다."
     }
   },
-  "liquidity": "유동성",
   "noPosi": "포지션 없음",
   "overview": {
     "pooled": "제공된",
@@ -41,5 +40,6 @@
     }
   },
   "title": "포지션 스테이킹",
-  "totalAmt": "총 수량"
+  "totalAmt": "총 수량",
+  "value": "가치"
 }
