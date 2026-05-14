@@ -5,7 +5,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 import { QUERY_KEY } from "../query-keys";
 
-const REFETCH_INTERVAL = 5_000;
+const REFETCH_INTERVAL = 1_000;
 
 export const useEmitTransactionEvents = (options?: UseQueryOptions<Event<string[]>[], Error>) => {
   const { statusRepository, eventStore } = useGnoswapContext();

@@ -21,8 +21,8 @@ import { fetchAllowance } from "@common/clients/wallet-client/transaction-messag
 import { CommonError } from "@common/errors";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { useNetworkFee } from "@hooks/common/use-network-fee";
-import { getGasUsed } from "@hooks/gas";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { getGasUsed } from "@hooks/gas";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { QUERY_KEY } from "@query/query-keys";
@@ -215,7 +215,7 @@ export const useIncreasePositionModal = ({
             updateBalances();
           },
           onEmit: async () => {
-            await delay(5000);
+            await delay(1000);
             handleRefreshData();
           },
           onSuccess: handleRefreshData,

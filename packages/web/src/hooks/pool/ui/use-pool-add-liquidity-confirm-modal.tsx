@@ -380,7 +380,7 @@ export const usePoolAddLiquidityConfirmModal = ({
               updateBalances();
             },
             onEmit: async () => {
-              await delay(5000);
+              await delay(1000);
               handleRefreshData();
             },
             onSuccess: handleRefreshData,
