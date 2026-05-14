@@ -55,9 +55,19 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const [isMouseoverGraph, setIsMouseoverGraph] = useState(false);
   const [shortenInRange, setShortenInRange] = useState(false);
 
-  const { data: bins40, isFetched: isFetchedBins } = useGetPositionBins(position.lpTokenId, 40, {
-    enabled: isMouseoverGraph,
-  });
+  const { data: bins40, isFetched: isFetchedBins } = useGetPositionBins(
+    position.lpTokenId,
+    40,
+    {
+      liquidity: position.liquidity,
+      poolCurrentTick: position.pool?.currentTick,
+      poolTokenABalance: position.pool?.tokenABalance,
+      poolTokenBBalance: position.pool?.tokenBBalance,
+    },
+    {
+      enabled: isMouseoverGraph,
+    },
+  );
 
   const { prefetch } = usePrefetchNavigation({
     pageType: "POOL",

@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 
 import useDebounce from "@hooks/common/use-debounce";
@@ -30,6 +32,21 @@ export const useGetBinsByPath = (
   const { poolRepository } = useGnoswapContext();
   const { queryKey: extraQueryKey, enabled: callerEnabled, ...restOptions } = options ?? {};
 
+  // Memoize the pool-state input object before handing it to `useDebounce`.
+  // `useDebounce` compares its `value` by reference, so a fresh object literal
+  // on every render would make the debounce timer re-arm endlessly: the timer
+  // fires -> setState -> re-render -> new object -> timer re-arms (a permanent
+  // 1s render loop). Keying the memo on the primitives keeps the reference
+  // stable until one of the values actually changes.
+  const poolStateInput = useMemo(
+    () => ({
+      currentTick,
+      poolDepositedTokenAAmount,
+      poolDepositedTokenBAmount,
+    }),
+    [currentTick, poolDepositedTokenAAmount, poolDepositedTokenBAmount],
+  );
+
   // Debounce the pool-state inputs so a state change waits `refetchDelay`
   // before it can drive a refetch. Consecutive changes collapse to the last
   // value, and the server gets a window to reflect the change in its bins.
@@ -37,14 +54,7 @@ export const useGetBinsByPath = (
     currentTick: debouncedCurrentTick,
     poolDepositedTokenAAmount: debouncedTokenAAmount,
     poolDepositedTokenBAmount: debouncedTokenBAmount,
-  } = useDebounce(
-    {
-      currentTick,
-      poolDepositedTokenAAmount,
-      poolDepositedTokenBAmount,
-    },
-    DEFAULT_DEBOUNCE_DELAY,
-  );
+  } = useDebounce(poolStateInput, DEFAULT_DEBOUNCE_DELAY);
 
   // Gate on the *debounced* tick, not the raw one: the query key is built from
   // debounced values, so enabling on the raw tick would let the first fetch go
