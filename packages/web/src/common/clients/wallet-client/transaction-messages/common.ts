@@ -123,7 +123,7 @@ export async function makeTransactionMessagesWithApproves(
   approveInfos: TokenApproveMessageInfo[],
   fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
   allowanceLimit: number = DEFAULT_ALLOWANCE_LIMIT,
-  withReset: boolean = false,
+  withReset: boolean = true,
 ): Promise<TransactionMessage[]> {
   if (!Array.isArray(transactionMessages)) {
     throw new TransactionMessageError("FAILED_PARSE_APPROVE_MESSAGE", transactionMessages);
