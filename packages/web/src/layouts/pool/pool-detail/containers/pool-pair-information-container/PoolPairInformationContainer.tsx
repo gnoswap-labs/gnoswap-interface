@@ -42,21 +42,30 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
     },
   });
 
-  // Gate the bins query on `data?.currentTick` being defined. Bins are server-centered
-  // on the current tick, so firing before pool detail arrives would (1) issue an
-  // initial request without a tick, then (2) immediately invalidate and refetch
-  // once the tick comes in — producing two slightly different payloads on first
-  // mount and a visible re-layout of the graph just after entry.
   const currentTick = data?.currentTick;
+  // Pass only the identifying prefix as `queryKey`; the hook appends the
+  // remaining dependencies (currentTick / token balances) itself so that a
+  // pool detail refetch with changed liquidity also refetches the bins.
+  // The hook debounces those inputs and gates the query on the debounced tick,
+  // so passing the raw values here (and only `!!poolPath` as `enabled`) is fine.
+  // The 60s `refetchInterval` is just a slow safety net for the rare case
+  // where the indexer lags and the pool-detail balances don't update in time.
   const { data: binsResult, isLoading: isLoadingBins } = useGetBinsByPath(
     poolPath as string,
     binCount,
     currentTick,
+    data?.tokenABalance,
+    data?.tokenBBalance,
     {
-      enabled: !!poolPath && currentTick !== undefined,
-      queryKey: [QUERY_KEY.poolPairBins, poolPath, zoomLevel, currentTick ?? null],
+      enabled: !!poolPath,
+      queryKey: [QUERY_KEY.poolPairBins, poolPath, zoomLevel],
+      refetchInterval: 60_000,
     },
   );
+
+  // Read bins and pairedTick from the same query result so they always stay a
+  // matched pair: the graph centers on `pairedTick`, and keepPreviousData swaps
+  // both together on refetch — no skewed layout from a tick/bins mismatch.
   const bins = binsResult?.bins ?? [];
   const pairedTick = binsResult?.pairedTick ?? null;
   const { tokenPrices } = useTokenData();
@@ -79,6 +88,8 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
     const tokenB = convertedPool.tokenB;
     return {
       ...convertedPool,
+      // Use the tick paired with the currently displayed bins. Falls back to
+      // the pool-detail tick until the first bins payload arrives.
       currentTick: pairedTick ?? convertedPool.currentTick,
       tokenA: {
         ...tokenA,
