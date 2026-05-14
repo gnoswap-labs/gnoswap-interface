@@ -89,8 +89,8 @@
         "select": "Seleccione un delegado"
       },
       "warning": {
-        "description": "Se activará un periodo de bloqueo de 7 días una vez que haya anulado la delegación de sus xGNS. Durante este periodo, los tokens xGNS bloqueados no podrán recibir recompensas del protocolo y no tendrán derecho a voto. Asegúrese de comprender el periodo de bloqueo antes de delegar.",
-        "title": "La delegación bloqueará sus fondos durante 7 días"
+        "description": "Se activará un periodo de bloqueo una vez que haya anulado la delegación de sus xGNS. Durante este periodo, los tokens xGNS bloqueados no podrán recibir recompensas del protocolo y no tendrán derecho a voto. Asegúrese de comprender el periodo de bloqueo antes de delegar.",
+        "title": "Los fondos no delegados se bloquearán durante el periodo de bloqueo"
       }
     },
     "login": {
@@ -138,8 +138,8 @@
         "title": "3. Su equilibrio"
       },
       "warning": {
-        "description": "Se activará un periodo de bloqueo de 7 días una vez que haya anulado la delegación de sus xGNS. Durante este periodo, los tokens xGNS bloqueados no podrán recibir recompensas del protocolo y no tendrán derecho a voto. Asegúrese de comprender el periodo de bloqueo antes de proceder a la anulación de la delegación.",
-        "title": "La no delegación bloqueará tus fondos durante 7 días"
+        "description": "Se activará un periodo de bloqueo una vez que haya anulado la delegación de sus xGNS. Durante este periodo, los tokens xGNS bloqueados no podrán recibir recompensas del protocolo y no tendrán derecho a voto. Asegúrese de comprender el periodo de bloqueo antes de proceder a la anulación de la delegación.",
+        "title": "La anulación de la delegación bloqueará tus fondos durante el periodo de bloqueo"
       }
     },
     "votingWeight": {

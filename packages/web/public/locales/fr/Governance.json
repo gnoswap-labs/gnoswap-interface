@@ -89,8 +89,8 @@
         "select": "Sélectionner un délégué"
       },
       "warning": {
-        "description": "Une période de blocage de 7 jours est déclenchée lorsque vous déléguez vos xGNS. Pendant cette période, les jetons xGNS bloqués ne pourront pas recevoir de récompenses du protocole et n'auront pas de droit de vote. Assurez-vous de bien comprendre la période de blocage avant de procéder à la délégation.",
-        "title": "La délégation bloquera vos fonds pendant 7 jours"
+        "description": "Une période de blocage est déclenchée lorsque vous annulez la délégation de vos xGNS. Pendant cette période, les jetons xGNS bloqués ne pourront pas recevoir de récompenses du protocole et n’auront pas de droit de vote. Assurez-vous de bien comprendre la période de blocage avant de procéder à la délégation.",
+        "title": "Les fonds non délégués sont bloqués pendant la période de blocage"
       }
     },
     "login": {
@@ -138,8 +138,8 @@
         "title": "3. Votre équilibre"
       },
       "warning": {
-        "description": "Une période de blocage de 7 jours est déclenchée lorsque vous déléguez vos xGNS. Pendant cette période, les jetons xGNS bloqués ne pourront pas recevoir de récompenses protocolaires et n'auront pas de droit de vote. Assurez-vous de bien comprendre la période de blocage avant de procéder à la délégation.",
-        "title": "L'undelegation bloque vos fonds pendant 7 jours."
+        "description": "Une période de blocage est déclenchée lorsque vous annulez la délégation de vos xGNS. Pendant cette période, les jetons xGNS bloqués ne pourront pas recevoir de récompenses protocolaires et n’auront pas de droit de vote. Assurez-vous de bien comprendre la période de blocage avant de procéder à l’annulation de la délégation.",
+        "title": "L’annulation de la délégation bloque vos fonds pendant la période de blocage"
       }
     },
     "votingWeight": {
