@@ -11,6 +11,7 @@ import ProposalHeader from "./proposal-header/ProposalHeader";
 import ViewProposalModal from "./view-proposal-modal/ViewProposalModal";
 
 import { CreateProposalModalOpenOption } from "@hooks/governance/ui/use-create-proposal-modal";
+import { isQuorumReached } from "@utils/governance-utils";
 import { ProposalListWrapper } from "./ProposalList.styles";
 
 export interface ProposalListProps {
@@ -132,8 +133,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
 
   const calculateIsMajorityVoted = (proposalDetail: ProposalItemInfo) => {
     const { votingInfo } = proposalDetail;
-    const totalVoting = votingInfo.yesVotingWeight + votingInfo.noVotingWeight;
-    return totalVoting >= votingInfo.quorumAmount;
+    return isQuorumReached(votingInfo);
   };
 
   return (
