@@ -89,8 +89,8 @@
         "select": "Wählen Sie einen Delegierten"
       },
       "warning": {
-        "description": "Eine Sperrfrist von 7 Tagen wird ausgelöst, sobald Sie Ihre xGNS nicht mehr delegieren. Während dieses Zeitraums sind die gesperrten xGNS-Token nicht berechtigt, Protokollbelohnungen zu erhalten und haben kein Stimmrecht. Vergewissern Sie sich, dass Sie die Sperrfrist verstanden haben, bevor Sie mit dem Delegieren fortfahren.",
-        "title": "Die Delegation sperrt Ihr Geld für 7 Tage"
+        "description": "Eine Sperrfrist wird ausgelöst, sobald Sie die Delegation Ihrer xGNS aufheben. Während dieses Zeitraums sind die gesperrten xGNS-Token nicht berechtigt, Protokollbelohnungen zu erhalten, und haben kein Stimmrecht. Vergewissern Sie sich, dass Sie die Sperrfrist verstanden haben, bevor Sie mit dem Delegieren fortfahren.",
+        "title": "Nicht delegierte Gelder werden während der Sperrfrist gesperrt"
       }
     },
     "login": {
@@ -138,8 +138,8 @@
         "title": "3. Ihr Gleichgewicht"
       },
       "warning": {
-        "description": "Eine Sperrfrist von 7 Tagen wird ausgelöst, sobald Sie Ihre xGNS nicht mehr delegieren. Während dieser Zeit sind die gesperrten xGNS-Token nicht berechtigt, Protokollbelohnungen zu erhalten und haben kein Stimmrecht. Vergewissern Sie sich, dass Sie die Sperrfrist verstanden haben, bevor Sie die Delegation aufheben.",
-        "title": "Bei Abberufung wird Ihr Guthaben für 7 Tage gesperrt."
+        "description": "Eine Sperrfrist wird ausgelöst, sobald Sie die Delegation Ihrer xGNS aufheben. Während dieser Zeit sind die gesperrten xGNS-Token nicht berechtigt, Protokollbelohnungen zu erhalten, und haben kein Stimmrecht. Vergewissern Sie sich, dass Sie die Sperrfrist verstanden haben, bevor Sie die Delegation aufheben.",
+        "title": "Bei Aufhebung der Delegation wird Ihr Guthaben während der Sperrfrist gesperrt"
       }
     },
     "votingWeight": {
