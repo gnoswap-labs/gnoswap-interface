@@ -65,10 +65,11 @@ const WalletBalanceContainer: React.FC = () => {
     ]);
   }, [invalidateQueryKey, currentChainId, userAddress]);
 
-  const isLoadingPosition = useMemo(
-    () => connected && (loadingPositions || loadingPositionRewards),
-    [connected, loadingPositions, loadingPositionRewards],
-  );
+  const isLoadingPosition = useMemo(() => connected && (loadingPositions || loadingPositionRewards), [
+    connected,
+    loadingPositions,
+    loadingPositionRewards,
+  ]);
 
   const { claimAll } = usePosition([]);
   const { broadcastSuccess, broadcastError, broadcastRejected, broadcastLoading } = useBroadcastHandler();
@@ -147,7 +148,7 @@ const WalletBalanceContainer: React.FC = () => {
               updateBalances();
             },
             onEmit: async () => {
-              await delay(5000);
+              await delay(1000);
               handleRefreshData();
             },
             onSuccess: handleRefreshData,

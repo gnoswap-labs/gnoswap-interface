@@ -189,7 +189,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
                 updateBalances();
               },
               onEmit: async () => {
-                await delay(5000);
+                await delay(1000);
                 handleRefreshData();
               },
               onSuccess: handleRefreshData,
@@ -245,7 +245,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
               await updateBalances();
             },
             onEmit: async () => {
-              await delay(5000);
+              await delay(1000);
               handleRefreshData();
             },
             onSuccess: handleRefreshData,

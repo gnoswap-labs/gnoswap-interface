@@ -458,9 +458,12 @@ export const useRepositionHandle = () => {
     [selectPool],
   );
 
-  const buildAdenaWalletRemovePositionAction = useCallback(async (request: RemoveLiquidityRequest) => {
-    return positionRepository.removeLiquidity(request).catch(() => null);
-  }, [positionRepository]);
+  const buildAdenaWalletRemovePositionAction = useCallback(
+    async (request: RemoveLiquidityRequest) => {
+      return positionRepository.removeLiquidity(request).catch(() => null);
+    },
+    [positionRepository],
+  );
 
   const buildSocialWalletRemovePositionAction = useCallback(
     async (rpcProvider: GnoProvider | null, request: RemoveLiquidityRequest) => {
@@ -703,7 +706,7 @@ export const useRepositionHandle = () => {
                   updateBalances();
                 },
                 onEmit: async () => {
-                  await delay(5000);
+                  await delay(1000);
                   handleRefreshData();
                 },
                 onSuccess: handleRefreshData,
