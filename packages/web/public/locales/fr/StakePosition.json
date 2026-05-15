@@ -22,7 +22,6 @@
       "content": "Vous ne bénéficierez plus des primes de frais d'échange de <1>{{percent}} TAEG</1>"
     }
   },
-  "liquidity": "Liquidité",
   "noPosi": "Pas de position",
   "overview": {
     "pooled": "Mise en commun",
@@ -41,5 +40,6 @@
     }
   },
   "title": "Position de l'enjeu",
-  "totalAmt": "Montant total"
+  "totalAmt": "Montant total",
+  "value": "Valeur"
 }

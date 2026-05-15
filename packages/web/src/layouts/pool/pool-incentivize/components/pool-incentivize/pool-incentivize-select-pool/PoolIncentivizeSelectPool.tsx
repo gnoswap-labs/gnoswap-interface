@@ -108,7 +108,7 @@ const PoolIncentivizeSelectPool: React.FC<PoolIncentivizeSelectPoolProps> = ({
           <div className="pool-list-wrapper">
             <div className="pool-list-headrer">
               <span className="total-info">{t("IncentivizePool:incentiPool.form.pool.col.pools")}</span>
-              <span className="liquidity-info"> {t("IncentivizePool:incentiPool.form.pool.col.liqui")}</span>
+              <span className="liquidity-info"> {t("IncentivizePool:incentiPool.form.pool.col.tvl")}</span>
             </div>
             <div className="pool-list-content">
               {filteredPools.map((pool, index) => (

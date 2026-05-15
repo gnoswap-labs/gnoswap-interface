@@ -98,6 +98,7 @@
   "unstakingFee": {
     "txt": "Entlastungsgebühr"
   },
+  "value": "Wert",
   "withdrawalFee": {
     "txt": "Gebühr für die Rücknahme"
   }

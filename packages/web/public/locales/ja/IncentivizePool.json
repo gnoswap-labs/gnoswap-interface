@@ -53,8 +53,8 @@
       },
       "pool": {
         "col": {
-          "liqui": "流動性",
-          "pools": "プール"
+          "pools": "プール",
+          "tvl": "流動性"
         },
         "label": "1.プールを選択",
         "searchPlaceHolder": "名前、記号、パスで検索"

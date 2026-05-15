@@ -53,8 +53,8 @@
       },
       "pool": {
         "col": {
-          "liqui": "유동성",
-          "pools": "풀"
+          "pools": "풀",
+          "tvl": "유동성"
         },
         "label": "1. 풀 선택",
         "searchPlaceHolder": "이름, 심볼 또는 경로로 검색"

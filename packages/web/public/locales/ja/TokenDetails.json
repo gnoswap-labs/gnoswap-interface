@@ -2,7 +2,7 @@
   "bestPool": {
     "col": {
       "apr": "APR",
-      "pair": "ペア",
+      "pool": "プール",
       "tvl": "TVL"
     },
     "title": "{{symbol}}のおすすめプール"

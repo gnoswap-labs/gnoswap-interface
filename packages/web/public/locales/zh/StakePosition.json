@@ -22,7 +22,6 @@
       "content": "您将不再获得<1>{{percent}} 年利率</1>的掉期费用奖励"
     }
   },
-  "liquidity": "流动性",
   "noPosi": "没有职位",
   "overview": {
     "pooled": "汇集",
@@ -41,5 +40,6 @@
     }
   },
   "title": "桩位",
-  "totalAmt": "总金额"
+  "totalAmt": "总金额",
+  "value": "价值"
 }

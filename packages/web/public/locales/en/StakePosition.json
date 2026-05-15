@@ -22,7 +22,6 @@
       "content": "You will stop earning swap fee rewards of <1>{{percent}} APR</1>"
     }
   },
-  "liquidity": "Liquidity",
   "noPosi": "No Position",
   "overview": {
     "pooled": "Pooled",
@@ -41,5 +40,6 @@
     }
   },
   "title": "Stake Position",
-  "totalAmt": "Total Amount"
+  "totalAmt": "Total Amount",
+  "value": "Value"
 }

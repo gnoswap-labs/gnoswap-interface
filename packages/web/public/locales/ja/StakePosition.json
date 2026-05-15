@@ -22,7 +22,6 @@
       "content": "<1>{{percent}} APRの</1>スワップ手数料特典の獲得が停止されます。"
     }
   },
-  "liquidity": "流動性",
   "noPosi": "ポジションなし",
   "overview": {
     "pooled": "プール",
@@ -41,5 +40,6 @@
     }
   },
   "title": "ステークポジション",
-  "totalAmt": "総額"
+  "totalAmt": "総額",
+  "value": "価値"
 }

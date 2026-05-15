@@ -22,7 +22,6 @@
       "content": "Dejarás de obtener las bonificaciones de las comisiones de canje de <1>{{percent}} TAE</1>."
     }
   },
-  "liquidity": "Liquidez",
   "noPosi": "Sin posición",
   "overview": {
     "pooled": "Puesta en común",
@@ -41,5 +40,6 @@
     }
   },
   "title": "Posición de la estaca",
-  "totalAmt": "Importe total"
+  "totalAmt": "Importe total",
+  "value": "Valor"
 }

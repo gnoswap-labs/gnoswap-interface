@@ -98,6 +98,7 @@
   "unstakingFee": {
     "txt": "解冻费"
   },
+  "value": "价值",
   "withdrawalFee": {
     "txt": "退学费用"
   }
