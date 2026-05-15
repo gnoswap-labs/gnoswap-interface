@@ -27,7 +27,7 @@ const ReceiveWugnotContent: React.FC<{ content?: SnackbarContent; onClick: () =>
   };
 
   return (
-    <div className="notice-body clickable" onClick={onClick}>
+    <div className="notice-body" onClick={onClick}>
       <div className="icon-wrap-wrapper">
         <IconWrap className="icon-wrap" />
       </div>

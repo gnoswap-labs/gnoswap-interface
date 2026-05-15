@@ -25,7 +25,7 @@ const StakePositionContent: React.FC<{ content?: SnackbarContent; onClick: () =>
   };
 
   return (
-    <div className="notice-body clickable" onClick={onClick}>
+    <div className="notice-body" onClick={onClick}>
       <div className="icon-wrap-wrapper">
         <Image mobileWidth={24} width={36} src={content?.logoUrl || ""} alt="logo" />
       </div>
