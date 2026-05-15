@@ -79,13 +79,25 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     },
   });
 
-  const { data: closedPositionCheck, isFetched: isFetchedClosedPositionCheck } = useGetPositionsByAddress(
+  const { data: openPositionCountData, isFetched: isFetchedOpenPositionCount } = useGetPositionsByAddress(
     {
       address,
       poolPath,
       page: 1,
       limit: 1,
-      isClosed: true,
+      withClosed: false,
+    },
+    {
+      enabled: !!address && !!poolPath,
+    },
+  );
+
+  const { data: allPositionCountData, isFetched: isFetchedAllPositionCount } = useGetPositionsByAddress(
+    {
+      address,
+      poolPath,
+      page: 1,
+      limit: 1,
       withClosed: true,
     },
     {
@@ -289,15 +301,15 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     setIsShowClosedPosition(!isShowClosePosition);
   };
 
-  const haveClosedPosition = useMemo(() => {
-    return (closedPositionCheck?.totalCount ?? 0) > 0;
-  }, [closedPositionCheck?.totalCount]);
+  const hasMeaningfulClosedToggle = useMemo(() => {
+    return (allPositionCountData?.totalCount ?? 0) > (openPositionCountData?.totalCount ?? 0);
+  }, [allPositionCountData?.totalCount, openPositionCountData?.totalCount]);
 
   useEffect(() => {
-    if (isFetchedClosedPositionCheck && !haveClosedPosition && isShowClosePosition) {
+    if (isFetchedAllPositionCount && isFetchedOpenPositionCount && !hasMeaningfulClosedToggle && isShowClosePosition) {
       setIsShowClosedPosition(false);
     }
-  }, [haveClosedPosition, isFetchedClosedPositionCheck, isShowClosePosition]);
+  }, [hasMeaningfulClosedToggle, isFetchedAllPositionCount, isFetchedOpenPositionCount, isShowClosePosition]);
 
   const closedPosition = useMemo(() => {
     return (
@@ -315,8 +327,8 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     if (!connectedWallet || isSwitchNetwork) {
       return false;
     }
-    return isFetchedClosedPositionCheck && haveClosedPosition;
-  }, [connectedWallet, haveClosedPosition, isFetchedClosedPositionCheck, isSwitchNetwork]);
+    return isFetchedAllPositionCount && isFetchedOpenPositionCount && hasMeaningfulClosedToggle;
+  }, [connectedWallet, hasMeaningfulClosedToggle, isFetchedAllPositionCount, isFetchedOpenPositionCount, isSwitchNetwork]);
 
   const isShowRemovePositionButton = useMemo(() => {
     if (!connectedWallet || isSwitchNetwork) {
