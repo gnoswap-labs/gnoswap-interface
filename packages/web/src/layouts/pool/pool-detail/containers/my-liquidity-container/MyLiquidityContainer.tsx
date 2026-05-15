@@ -51,6 +51,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   const [positionLimit, setPositionLimit] = useState(DEFAULT_POSITION_LIMIT);
   const poolPath = router.getPoolPath();
   const normalizedAddress = useMemo(() => (address || "").toLowerCase(), [address]);
+  const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
 
   const positionScopeId = useMemo(() => {
     return ["my-liquidity", address || "", poolPath || "", positionLimit].join("-");
@@ -70,6 +71,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     poolPath,
     page: 1,
     limit: positionLimit,
+    withClosed: isShowClosePosition,
     scopeId: positionScopeId,
     queryOption: {
       enabled: !!poolPath,
@@ -98,7 +100,6 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
 
   const { claimAll, claim } = usePosition(loadedPositions.filter(item => !item.closed));
   const [loadingTransactionClaim, setLoadingTransactionClaim] = useState(false);
-  const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
   const { openModal } = useTransactionConfirmModal();
   const { tokenPrices, updateBalances, refetchGrc20Balances } = useTokenData();
 
@@ -283,15 +284,14 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     );
   }, [accountPositions]);
 
-  const haveClosedPosition = useMemo(() => closedPosition.length > 0, [closedPosition.length]);
   const haveNotClosedPosition = useMemo(() => openedPosition.length > 0, [openedPosition.length]);
 
   const showClosePositionButton = useMemo(() => {
     if (!connectedWallet || isSwitchNetwork) {
       return false;
     }
-    return haveClosedPosition;
-  }, [connectedWallet, haveClosedPosition, isSwitchNetwork]);
+    return !!address;
+  }, [address, connectedWallet, isSwitchNetwork]);
 
   const isShowRemovePositionButton = useMemo(() => {
     if (!connectedWallet || isSwitchNetwork) {
