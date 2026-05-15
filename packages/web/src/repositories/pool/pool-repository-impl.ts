@@ -171,12 +171,15 @@ export class PoolRepositoryImpl implements PoolRepository {
     return pools;
   };
 
-  getIncentivizePools = async (): Promise<IncentivizePoolModel[]> => {
+  getIncentivizePools = async (address?: string): Promise<IncentivizePoolModel[]> => {
     if (!this.networkClient) {
       return [];
     }
+    const url = address
+      ? `/pools?incentivized=true&address=${encodeURIComponent(address)}`
+      : "/pools?incentivized=true";
     const response = await this.networkClient.get<PoolListResponse>({
-      url: "/pools?incentivized=true",
+      url,
     });
 
     const pools = response?.data?.data ? response.data.data.map(PoolMapper.toIncentivePool) : [];

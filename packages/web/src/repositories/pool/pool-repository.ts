@@ -38,7 +38,7 @@ export interface PoolRepository {
     request: AddLiquidityRequest,
   ) => Promise<WalletResponse<AddLiquiditySuccessResponse | AddLiquidityFailedResponse>>;
 
-  getIncentivizePools: () => Promise<IncentivizePoolModel[]>;
+  getIncentivizePools: (address?: string) => Promise<IncentivizePoolModel[]>;
 
   createExternalIncentive: (
     request: CreateExternalIncentiveRequest,
