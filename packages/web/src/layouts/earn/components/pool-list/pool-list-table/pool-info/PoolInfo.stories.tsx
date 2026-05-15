@@ -41,6 +41,7 @@ const pool: IncentivizePoolCardInfoWithPriceGrade = {
   fees24h: "$131.937491",
   rewardTokens: [],
   incentivized: true,
+  hasStakedPosition: false,
   currentTick: 0,
   price: 0,
   tvl: "0",

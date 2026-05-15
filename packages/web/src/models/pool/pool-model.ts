@@ -19,6 +19,7 @@ export interface PoolModel {
   fee: string;
 
   incentivized: boolean;
+  hasStakedPosition?: boolean;
   rewardTokens: RewardTokenModel[];
 
   tvl: string;
@@ -66,6 +67,7 @@ export const initialPool: PoolModel = {
   tokenAPriceGrade: "NONE",
   tokenBPriceGrade: "NONE",
   incentivized: true,
+  hasStakedPosition: false,
   tvl: "0",
   tvlChange: 0,
   volume24h: 0,
