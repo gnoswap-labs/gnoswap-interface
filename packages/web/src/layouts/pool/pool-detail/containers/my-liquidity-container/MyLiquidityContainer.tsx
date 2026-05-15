@@ -12,6 +12,7 @@ import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetUsernameByAddress } from "@query/address";
+import { useGetPositionsByAddress } from "@query/positions";
 import { QUERY_KEY } from "@query/query-keys";
 import { DexEvent } from "@repositories/common";
 import { delay } from "@utils/common";
@@ -77,6 +78,20 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
       enabled: !!poolPath,
     },
   });
+
+  const { data: closedPositionCheck, isFetched: isFetchedClosedPositionCheck } = useGetPositionsByAddress(
+    {
+      address,
+      poolPath,
+      page: 1,
+      limit: 1,
+      isClosed: true,
+      withClosed: true,
+    },
+    {
+      enabled: !!address && !!poolPath,
+    },
+  );
 
   const loadedPositions = useMemo<PoolPositionModel[]>(() => {
     if (!address || !poolPath) {
@@ -274,6 +289,16 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     setIsShowClosedPosition(!isShowClosePosition);
   };
 
+  const haveClosedPosition = useMemo(() => {
+    return (closedPositionCheck?.totalCount ?? 0) > 0;
+  }, [closedPositionCheck?.totalCount]);
+
+  useEffect(() => {
+    if (isFetchedClosedPositionCheck && !haveClosedPosition && isShowClosePosition) {
+      setIsShowClosedPosition(false);
+    }
+  }, [haveClosedPosition, isFetchedClosedPositionCheck, isShowClosePosition]);
+
   const closedPosition = useMemo(() => {
     return (
       accountPositions
@@ -290,8 +315,8 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     if (!connectedWallet || isSwitchNetwork) {
       return false;
     }
-    return !!address;
-  }, [address, connectedWallet, isSwitchNetwork]);
+    return isFetchedClosedPositionCheck && haveClosedPosition;
+  }, [connectedWallet, haveClosedPosition, isFetchedClosedPositionCheck, isSwitchNetwork]);
 
   const isShowRemovePositionButton = useMemo(() => {
     if (!connectedWallet || isSwitchNetwork) {
