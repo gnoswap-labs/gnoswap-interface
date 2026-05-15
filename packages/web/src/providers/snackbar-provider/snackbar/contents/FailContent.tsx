@@ -32,7 +32,7 @@ const FailContent: React.FC<{ content?: SnackbarContent }> = ({ content }: { con
       <div>
         <h5>{t("Modal:toast.failed.title")}</h5>
         <p>{t("Modal:toast.failed.desc")}</p>
-        <a href={getGnoscanUrl(GnoscanDataType.Transactions)} target="_blank">
+        <a className="link" href={getGnoscanUrl(GnoscanDataType.Transactions)} target="_blank">
           {t("Modal:toast.failed.viewTx")} <IconNewTab />
         </a>
       </div>
