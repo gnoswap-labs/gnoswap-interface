@@ -17,7 +17,12 @@ export const useMakePoolPositions = (
   options?: UseQueryOptions<PoolPositionModel[], Error>,
 ) => {
   const query = useQuery<PoolPositionModel[], Error>({
-    queryKey: [QUERY_KEY.poolPositions, scopeId],
+    queryKey: [
+      QUERY_KEY.poolPositions,
+      scopeId,
+      positions?.map(position => `${position.id}:${position.closed}`).join(",") ?? "",
+      pools.map(pool => pool.poolPath).join(","),
+    ],
     queryFn: async () => {
       return new Promise(resolve => {
         const poolPositions: PoolPositionModel[] = [];
