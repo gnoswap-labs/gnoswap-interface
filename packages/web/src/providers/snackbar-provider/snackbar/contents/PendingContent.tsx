@@ -29,7 +29,7 @@ const PendingContent: React.FC<{ content?: SnackbarContent }> = ({ content }: { 
       <div>
         <h5>{t("Modal:toast.pending.title")}</h5>
         <p className="waiting-confirmation">{t("Modal:toast.pending.desc")}</p>
-        <a href={getGnoscanUrl(GnoscanDataType.Transactions)} target="_blank">
+        <a className="link" href={getGnoscanUrl(GnoscanDataType.Transactions)} target="_blank">
           {t("Modal:toast.pending.viewTx")} <IconNewTab />
         </a>
       </div>

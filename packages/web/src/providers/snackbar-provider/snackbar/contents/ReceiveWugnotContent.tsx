@@ -39,7 +39,7 @@ const ReceiveWugnotContent: React.FC<{ content?: SnackbarContent; onClick: () =>
             __html: sanitizeHtml(content?.description || t("Modal:toast.receive-wugnot.desc")),
           }}
         />
-        <a href={getUnwrapUrl()} target="_blank" rel="noopener noreferrer" onClick={onClickLink}>
+        <a className="link" href={getUnwrapUrl()} target="_blank" rel="noopener noreferrer" onClick={onClickLink}>
           {t("Modal:toast.receive-wugnot.link")} <IconArrowRight />
         </a>
       </div>

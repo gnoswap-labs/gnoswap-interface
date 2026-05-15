@@ -122,12 +122,14 @@ export const SnackbarWrapper = styled.div`
           ${fonts.p2}
         }
       }
-      a {
-        width: 100%;
+      a,.link {
         ${mixins.flexbox("row", "center", "flex-start")};
         ${fonts.body11}
+        width: fit-content;
         color: ${({ theme }) => theme.color.text04};
         gap: 4px;
+        cursor: pointer;
+
         ${media.mobile} {
           ${fonts.p2}
         }
