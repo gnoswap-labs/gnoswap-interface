@@ -69,12 +69,17 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     scopeId: "EarnMyPositionContainer",
   });
 
-  const { data: oppositePositionData } = useGetPositionsByAddress({
-    address,
-    page: 1,
-    limit: 1,
-    withClosed: !isClosed,
-  });
+  const { data: allPositionData } = useGetPositionsByAddress(
+    {
+      address,
+      page: 1,
+      limit: 1,
+      withClosed: true,
+    },
+    {
+      enabled: !isClosed,
+    },
+  );
 
   const [mappedData, setMappedData] = useState<PoolPositionModel[]>([]);
   const [isDataMappingLoading, setIsDataMappingLoading] = useState(true);
@@ -255,16 +260,18 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   }, []);
 
   const visiblePositions = useMemo(() => {
-    const oppositeTotalPositionCount = oppositePositionData?.totalCount ?? 0;
-    const openedTotalPositionCount = isClosed ? oppositeTotalPositionCount : totalPositionCount;
-    const allTotalPositionCount = isClosed ? totalPositionCount : oppositeTotalPositionCount;
-
     if (!connected && !address) {
       return false;
     }
 
-    return allTotalPositionCount > openedTotalPositionCount;
-  }, [address, connected, isClosed, oppositePositionData?.totalCount, totalPositionCount]);
+    if (isClosed) {
+      return true;
+    }
+
+    const allTotalPositionCount = allPositionData?.totalCount ?? totalPositionCount;
+
+    return allTotalPositionCount > totalPositionCount;
+  }, [address, allPositionData?.totalCount, connected, isClosed, totalPositionCount]);
 
   const getMappedData = (): PoolPositionModel[] => {
     if (isViewMorePositions) {
