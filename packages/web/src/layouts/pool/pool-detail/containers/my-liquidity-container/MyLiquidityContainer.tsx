@@ -12,7 +12,6 @@ import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetUsernameByAddress } from "@query/address";
-import { useGetPositionsByAddress } from "@query/positions";
 import { QUERY_KEY } from "@query/query-keys";
 import { DexEvent } from "@repositories/common";
 import { delay } from "@utils/common";
@@ -55,7 +54,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
   const [hasLoadedPositionOnce, setHasLoadedPositionOnce] = useState(false);
 
-  const positionScopeId = useMemo(() => {
+  const positionScopeIdPrefix = useMemo(() => {
     return ["my-liquidity", address || "", poolPath || "", positionLimit].join("-");
   }, [address, poolPath, positionLimit]);
 
@@ -64,48 +63,37 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     setHasLoadedPositionOnce(false);
   }, [address, poolPath]);
 
-  const {
-    positions: positions,
-    loading: isLoadingPosition,
-    refetch: refetchPositions,
-    totalPositionCount,
-  } = usePositionData({
+  const openPositionData = usePositionData({
     address,
     poolPath,
     page: 1,
     limit: positionLimit,
-    withClosed: isShowClosePosition,
-    scopeId: positionScopeId,
+    withClosed: false,
+    scopeId: `${positionScopeIdPrefix}-open`,
     queryOption: {
       enabled: !!poolPath,
     },
   });
 
-  const { data: openPositionCountData, isFetched: isFetchedOpenPositionCount } = useGetPositionsByAddress(
-    {
-      address,
-      poolPath,
-      page: 1,
-      limit: 1,
-      withClosed: false,
+  const allPositionData = usePositionData({
+    address,
+    poolPath,
+    page: 1,
+    limit: positionLimit,
+    withClosed: true,
+    scopeId: `${positionScopeIdPrefix}-all`,
+    queryOption: {
+      enabled: !!poolPath,
     },
-    {
-      enabled: !!address && !!poolPath,
-    },
-  );
+  });
 
-  const { data: allPositionCountData, isFetched: isFetchedAllPositionCount } = useGetPositionsByAddress(
-    {
-      address,
-      poolPath,
-      page: 1,
-      limit: 1,
-      withClosed: true,
-    },
-    {
-      enabled: !!address && !!poolPath,
-    },
-  );
+  const activePositionData = isShowClosePosition ? allPositionData : openPositionData;
+  const {
+    positions,
+    loading: isLoadingPosition,
+    refetch: refetchPositions,
+    totalPositionCount,
+  } = activePositionData;
 
   const loadedPositions = useMemo<PoolPositionModel[]>(() => {
     if (!address || !poolPath) {
@@ -314,14 +302,24 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   };
 
   const hasMeaningfulClosedToggle = useMemo(() => {
-    return (allPositionCountData?.totalCount ?? 0) > (openPositionCountData?.totalCount ?? 0);
-  }, [allPositionCountData?.totalCount, openPositionCountData?.totalCount]);
+    return allPositionData.totalPositionCount > openPositionData.totalPositionCount;
+  }, [allPositionData.totalPositionCount, openPositionData.totalPositionCount]);
 
   useEffect(() => {
-    if (isFetchedAllPositionCount && isFetchedOpenPositionCount && !hasMeaningfulClosedToggle && isShowClosePosition) {
+    if (
+      allPositionData.isFetchedPosition &&
+      openPositionData.isFetchedPosition &&
+      !hasMeaningfulClosedToggle &&
+      isShowClosePosition
+    ) {
       setIsShowClosedPosition(false);
     }
-  }, [hasMeaningfulClosedToggle, isFetchedAllPositionCount, isFetchedOpenPositionCount, isShowClosePosition]);
+  }, [
+    allPositionData.isFetchedPosition,
+    hasMeaningfulClosedToggle,
+    isShowClosePosition,
+    openPositionData.isFetchedPosition,
+  ]);
 
   const closedPosition = useMemo(() => {
     return (
@@ -339,8 +337,14 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     if (!connectedWallet || isSwitchNetwork) {
       return false;
     }
-    return isFetchedAllPositionCount && isFetchedOpenPositionCount && hasMeaningfulClosedToggle;
-  }, [connectedWallet, hasMeaningfulClosedToggle, isFetchedAllPositionCount, isFetchedOpenPositionCount, isSwitchNetwork]);
+    return allPositionData.isFetchedPosition && openPositionData.isFetchedPosition && hasMeaningfulClosedToggle;
+  }, [
+    allPositionData.isFetchedPosition,
+    connectedWallet,
+    hasMeaningfulClosedToggle,
+    isSwitchNetwork,
+    openPositionData.isFetchedPosition,
+  ]);
 
   const isShowRemovePositionButton = useMemo(() => {
     if (!connectedWallet || isSwitchNetwork) {
