@@ -53,6 +53,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   const poolPath = router.getPoolPath();
   const normalizedAddress = useMemo(() => (address || "").toLowerCase(), [address]);
   const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
+  const [hasLoadedPositionOnce, setHasLoadedPositionOnce] = useState(false);
 
   const positionScopeId = useMemo(() => {
     return ["my-liquidity", address || "", poolPath || "", positionLimit].join("-");
@@ -60,6 +61,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
 
   useEffect(() => {
     setPositionLimit(DEFAULT_POSITION_LIMIT);
+    setHasLoadedPositionOnce(false);
   }, [address, poolPath]);
 
   const {
@@ -114,6 +116,16 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
       position => position.poolPath === poolPath && position.owner.toLowerCase() === normalizedAddress,
     );
   }, [address, poolPath, positions, normalizedAddress]);
+
+  useEffect(() => {
+    if (!isLoadingPosition) {
+      setHasLoadedPositionOnce(true);
+    }
+  }, [isLoadingPosition]);
+
+  const isHeaderLoading = useMemo(() => {
+    return isLoadingPosition && !hasLoadedPositionOnce;
+  }, [hasLoadedPositionOnce, isLoadingPosition]);
 
   const { invalidateQueryKey } = useInvalidateQueries();
 
@@ -371,6 +383,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
       isStakable={isStakable}
       isShowRemovePositionButton={isShowRemovePositionButton}
       loading={isLoadingPosition}
+      isHeaderLoading={isHeaderLoading}
       loadingTransactionClaim={loadingTransactionClaim}
       isShowClosePosition={isShowClosePosition}
       handleSetIsClosePosition={handleSetIsClosePosition}
