@@ -26,12 +26,11 @@ export interface IncentivizedPoolCardProps {
   pool: IncentivizePoolCardInfoWithPriceGrade;
   routeItem: (id: string) => void;
   themeKey: "dark" | "light";
-  checkStakedPool: (poolPath: string | null) => boolean;
 }
 
 const BINS_DATA_DEFAULT_LENGTH = 40;
 
-const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, routeItem, themeKey, checkStakedPool }) => {
+const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, routeItem, themeKey }) => {
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
 
@@ -53,9 +52,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
   );
   const bins40 = bins40Result?.bins;
 
-  const staked = useMemo(() => {
-    return checkStakedPool(pool.poolPath || null);
-  }, [checkStakedPool, pool.poolPath]);
+  const staked = pool.hasStakedPosition;
 
   const pairName = useMemo(() => {
     return `${pool.tokenA.symbol}/${pool.tokenB.symbol}`;
@@ -74,7 +71,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
     );
 
     return isAllReserveZeroBin40;
-  }, [pool, bins40]);
+  }, [bins40]);
 
   const aprStr = useMemo(() => {
     if (!pool.apr) return "-";

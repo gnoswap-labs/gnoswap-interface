@@ -1,8 +1,8 @@
 import { useAtomValue } from "jotai";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { useAddress } from "@hooks/common/use-address";
 import useCustomRouter from "@hooks/common/use-custom-router";
-import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useIncentivizePool } from "@hooks/pool/data/use-incentivize-pool";
 import { ThemeState } from "@states/index";
@@ -28,17 +28,17 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(1);
   const [page, setPage] = useState(1);
   const router = useCustomRouter();
+  const { address } = useAddress();
   const [mobile, setMobile] = useState(false);
   const {
     data: incentivizePools = [],
     isFetched: isFetchedIncentivizedPools,
     isLoading: isLoadingIncentivizedPool,
-  } = useIncentivizePool();
+  } = useIncentivizePool(address);
   const { tokenPrices } = useTokenData();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
   const { width } = useWindowSize();
-  const { checkStakedPool } = usePositionData();
 
   const incentivizePoolList: IncentivizePoolCardInfoWithPriceGrade[] = React.useMemo(() => {
     return incentivizePools.map(pool => {
@@ -192,7 +192,6 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
       showPagination={showPagination}
       width={width}
       isLoading={isLoadingIncentivizedPool}
-      checkStakedPool={checkStakedPool}
     />
   );
 };
