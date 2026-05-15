@@ -3,6 +3,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useIncentivizePool } from "@hooks/pool/data/use-incentivize-pool";
 
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import AvailableStakingPools, {
   AvailableStakingPoolsSortKey,
   SortDirection,
@@ -32,11 +33,15 @@ const AvailableStakingPoolsContainer: React.FC = () => {
   const [sort, setSort] = useState<SortState>(DEFAULT_SORT);
 
   const sortedPools = useMemo(() => {
-    const list = [...incentivizePools];
+    const feeTierMap = SwapFeeTierInfoMap;
+    const list = [...incentivizePools].map(pool => ({
+      ...pool,
+      poolName: `${pool.tokenA.symbol}/${pool.tokenB.symbol}/${feeTierMap[pool.feeTier].rateStr}`,
+    }));
     list.sort((a, b) => {
       switch (sort.key) {
         case "poolName":
-          return compareString(a.poolPath ?? "", b.poolPath ?? "", sort.direction);
+          return compareString(a.poolName ?? "", b.poolName ?? "", sort.direction);
         case "stakingApr":
           return compareNumber(Number(a.stakingApr) || 0, Number(b.stakingApr) || 0, sort.direction);
         case "tvl":
@@ -49,12 +54,11 @@ const AvailableStakingPoolsContainer: React.FC = () => {
 
   const onChangeSort = useCallback((key: AvailableStakingPoolsSortKey) => {
     setSort(prev => {
-      // Different column: start at ASC.
+      // Different column: start at DESC.
       if (prev.key !== key) {
-        return { key, direction: "asc" };
+        return { key, direction: "desc" };
       }
       // Same column cycle: DESC -> ASC -> DEFAULT (TVL desc).
-      // Starting from DESC lets a click on the default-sorted column toggle to ASC immediately.
       if (prev.direction === "desc") {
         return { key, direction: "asc" };
       }
@@ -64,7 +68,7 @@ const AvailableStakingPoolsContainer: React.FC = () => {
 
   const onSelectPool = useCallback(
     (selectedPoolPath: string) => {
-      router.movePageWithPoolPath("POOL_STAKE", selectedPoolPath);
+      router.movePageWithPoolPath("POOL", selectedPoolPath, "staking");
     },
     [router],
   );

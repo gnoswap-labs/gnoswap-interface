@@ -53,14 +53,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     return DESKTOP * 5; // 4 * 5 = 20
   }, [width]);
 
-  const {
-    isError,
-    availableStake,
-    isFetchedPosition,
-    loading: isLoadingPosition,
-    positions,
-    totalPositionCount,
-  } = usePositionData({
+  const { isError, isFetchedPosition, loading: isLoadingPosition, positions, totalPositionCount } = usePositionData({
     address,
     page,
     limit,
@@ -327,7 +320,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       visiblePositions={visiblePositions}
       positionLength={totalPositionCount}
       connected={connected}
-      availableStake={availableStake}
+      availableStake={true}
       connect={connect}
       loading={isLoadingPool || (connected ? isLoadingPosition || !isFetchedPosition : false) || isDataMappingLoading}
       loadingPositionCardList={loadingPositionCardList}

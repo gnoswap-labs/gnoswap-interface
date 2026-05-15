@@ -1,7 +1,9 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import VideoGuideTrigger from "@components/common/video-guide-trigger/VideoGuideTrigger";
+import { VIDEO_GUIDE_TYPES, VideoGuideType } from "@constants/video-guide.constant";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 
 import SelectLiquidity from "./select-liquidity/SelectLiquidity";
@@ -20,6 +22,7 @@ interface StakePositionProps {
   isEmpty: boolean;
   isLoading: boolean;
   connected: boolean;
+  onOpenVideoGuide: (type: VideoGuideType) => void;
 }
 
 const StakePosition: React.FC<StakePositionProps> = ({
@@ -32,8 +35,13 @@ const StakePosition: React.FC<StakePositionProps> = ({
   isEmpty,
   isLoading,
   connected,
+  onOpenVideoGuide,
 }) => {
   const { t } = useTranslation();
+
+  const handleOpenVideoGuide = useCallback(() => {
+    onOpenVideoGuide(VIDEO_GUIDE_TYPES.STAKING);
+  }, [onOpenVideoGuide]);
 
   const selectedPositions = useMemo(() => {
     return unstakedPositions.filter(position => checkedList.includes(position.id));
@@ -47,7 +55,10 @@ const StakePosition: React.FC<StakePositionProps> = ({
 
   return (
     <div css={wrapper}>
-      <h3 className="title">{t("StakePosition:title")}</h3>
+      <div className="title-wrapper">
+        <h3 className="title">{t("StakePosition:title")}</h3>
+        <VideoGuideTrigger text={`${t("common:guide.staking.title")} ▶`} onClick={handleOpenVideoGuide} />
+      </div>
       <SelectLiquidity
         unstakedPositions={unstakedPositions}
         checkedList={checkedList}
