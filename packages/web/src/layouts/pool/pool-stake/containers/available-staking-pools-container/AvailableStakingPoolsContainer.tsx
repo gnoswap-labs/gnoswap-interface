@@ -3,6 +3,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useIncentivizePool } from "@hooks/pool/data/use-incentivize-pool";
 
+import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import AvailableStakingPools, {
   AvailableStakingPoolsSortKey,
   SortDirection,
@@ -32,11 +33,15 @@ const AvailableStakingPoolsContainer: React.FC = () => {
   const [sort, setSort] = useState<SortState>(DEFAULT_SORT);
 
   const sortedPools = useMemo(() => {
-    const list = [...incentivizePools];
+    const feeTierMap = SwapFeeTierInfoMap;
+    const list = [...incentivizePools].map(pool => ({
+      ...pool,
+      poolName: `${pool.tokenA.symbol}/${pool.tokenB.symbol}/${feeTierMap[pool.feeTier].rateStr}`,
+    }));
     list.sort((a, b) => {
       switch (sort.key) {
         case "poolName":
-          return compareString(a.poolPath ?? "", b.poolPath ?? "", sort.direction);
+          return compareString(a.poolName ?? "", b.poolName ?? "", sort.direction);
         case "stakingApr":
           return compareNumber(Number(a.stakingApr) || 0, Number(b.stakingApr) || 0, sort.direction);
         case "tvl":
