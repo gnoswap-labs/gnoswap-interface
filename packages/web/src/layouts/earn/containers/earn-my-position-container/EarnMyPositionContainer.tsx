@@ -12,6 +12,7 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useGetUsernameByAddress } from "@query/address";
+import { useGetPositionsByAddress } from "@query/positions";
 import { EarnState, ThemeState } from "@states/index";
 
 import { PositionConverter } from "@services/converters/position";
@@ -64,7 +65,15 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     address,
     page,
     limit,
+    withClosed: isClosed,
     scopeId: "EarnMyPositionContainer",
+  });
+
+  const { data: oppositePositionData } = useGetPositionsByAddress({
+    address,
+    page: 1,
+    limit: 1,
+    withClosed: !isClosed,
   });
 
   const [mappedData, setMappedData] = useState<PoolPositionModel[]>([]);
@@ -246,13 +255,16 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   }, []);
 
   const visiblePositions = useMemo(() => {
-    const noClosedPosition = closedPosition.length <= 0;
+    const oppositeTotalPositionCount = oppositePositionData?.totalCount ?? 0;
+    const openedTotalPositionCount = isClosed ? oppositeTotalPositionCount : totalPositionCount;
+    const allTotalPositionCount = isClosed ? totalPositionCount : oppositeTotalPositionCount;
 
-    if ((!connected && !address) || noClosedPosition) {
+    if (!connected && !address) {
       return false;
     }
-    return true;
-  }, [address, closedPosition.length, connected]);
+
+    return allTotalPositionCount > openedTotalPositionCount;
+  }, [address, connected, isClosed, oppositePositionData?.totalCount, totalPositionCount]);
 
   const getMappedData = (): PoolPositionModel[] => {
     if (isViewMorePositions) {
