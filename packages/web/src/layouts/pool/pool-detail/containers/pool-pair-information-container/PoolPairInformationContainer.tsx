@@ -37,6 +37,7 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
   const { loading: loadingPosition } = usePositionData({
     address,
     poolPath,
+    withClosed: false,
     queryOption: {
       enabled: !!poolPath,
     },

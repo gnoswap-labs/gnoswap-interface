@@ -56,6 +56,7 @@ const PoolDetail: React.FC = () => {
   const { isFetchedPosition, loading, positions } = usePositionData({
     address: urlAddress ?? connectAddress,
     poolPath,
+    withClosed: false,
     queryOption: {
       enabled: !!poolPath,
     },
