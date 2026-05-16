@@ -15,7 +15,7 @@ export interface PoolResponse {
 
   incentivized: boolean;
 
-  hasStakedPosition?: boolean;
+  hasStakedPosition: boolean;
 
   price: number;
 

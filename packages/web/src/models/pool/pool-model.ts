@@ -19,7 +19,7 @@ export interface PoolModel {
   fee: string;
 
   incentivized: boolean;
-  hasStakedPosition?: boolean;
+  hasStakedPosition: boolean;
   rewardTokens: RewardTokenModel[];
 
   tvl: string;
