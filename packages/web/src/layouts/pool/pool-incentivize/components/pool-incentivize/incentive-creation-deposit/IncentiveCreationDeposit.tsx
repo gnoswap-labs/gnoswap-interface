@@ -2,9 +2,12 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 
+import { GNS_TOKEN } from "@common/values/token-constant";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 import { useTokenData } from "@hooks/token/data/use-token-data";
+import { DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT, useGetIncentiveCreationDeposit } from "@query/pools";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 import {
   IncentiveCreationDepositTooltipContent,
@@ -13,14 +16,14 @@ import {
 import Tooltip from "@components/common/tooltip/Tooltip";
 import IconInfo from "@components/common/icons/IconInfo";
 
-export const GNS_DEPOSIT_AMOUNT = 1_000;
-
 const IncentiveCreationDeposit: React.FC = () => {
   const { t } = useTranslation();
   const { tokens } = useTokenData();
   const theme = useTheme();
+  const { data: depositGnsAmount = DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT } = useGetIncentiveCreationDeposit();
 
   const gnsInfo = tokens.find(item => item.path === GNS_TOKEN_PATH);
+  const displayDepositAmount = makeDisplayTokenAmount(GNS_TOKEN, depositGnsAmount) || 0;
 
   return (
     <IncentiveCreationDepositWrapper>
@@ -39,7 +42,7 @@ const IncentiveCreationDeposit: React.FC = () => {
       </h5>
       <div className="deposit">
         <MissingLogo symbol={gnsInfo?.symbol || ""} url={gnsInfo?.logoURI} width={24} mobileWidth={24} />
-        {GNS_DEPOSIT_AMOUNT.toLocaleString("en")}
+        {displayDepositAmount.toLocaleString("en")}
       </div>
     </IncentiveCreationDepositWrapper>
   );
