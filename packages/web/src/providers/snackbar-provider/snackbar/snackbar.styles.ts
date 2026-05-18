@@ -190,9 +190,9 @@ export const SnackbarWrapper = styled.div`
       }
 
       ${media.mobile} {
-        width: 16px;
-        height: 16px;
-        flex-basis: 16px;
+        width: 20px;
+        height: 20px;
+        flex-basis: 20px;
       }
     }
   }
