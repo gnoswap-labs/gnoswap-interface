@@ -17,7 +17,7 @@ export const SnackbarList = styled.div`
   }
   ${media.mobile} {
     width: 328px;
-    top: 0px;
+    top: calc(env(safe-area-inset-top, 0px) + 56px);
     left: 50%;
     transform: translateX(-50%);
     right: auto;
