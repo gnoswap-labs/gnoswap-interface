@@ -20,6 +20,12 @@ export const wrapper = (theme: Theme) => css`
     ${fonts.body9}
     color: ${theme.color.text02};
     margin-bottom: 8px;
+    
+    padding: 0 24px;
+
+    ${media.mobile} {
+      padding: 0 11px;
+    }
   }
 
   .pools-card {
@@ -28,11 +34,11 @@ export const wrapper = (theme: Theme) => css`
     background-color: ${theme.color.background20};
     border: 1px solid ${theme.color.border02};
     border-radius: 8px;
-    padding: 24px;
     gap: 4px;
+    padding: 24px 0;
 
     ${media.mobile} {
-      padding: 11px;
+      padding: 11px 0;
     }
   }
 
@@ -51,6 +57,12 @@ export const wrapper = (theme: Theme) => css`
     height: 36px;
     color: ${theme.color.text02};
     ${fonts.body12};
+    
+    padding: 0 24px;
+
+    ${media.mobile} {
+      padding: 0 11px;
+    }
   }
 
   .pools-table .pools-row {
