@@ -97,18 +97,18 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
     return new BigNumber(stakingData.claimableUnvestedAmount || "0").isGreaterThan(0);
   }, [stakingData.claimableUnvestedAmount]);
 
-  const isExternalIncentiveActive = stakingData.activeYn === YN_TYPE.YES;
-  const isExternalIncentiveEnded = stakingData.activeYn === YN_TYPE.NO;
-  const hasKnownExternalIncentiveActiveState = isExternalIncentiveActive || isExternalIncentiveEnded;
+  const isExternalIncentiveRefunded = stakingData.isRefunded === YN_TYPE.YES;
+  const isExternalIncentiveNotRefunded = stakingData.isRefunded === YN_TYPE.NO;
+  const hasKnownExternalIncentiveRefundState = isExternalIncentiveRefunded || isExternalIncentiveNotRefunded;
 
-  const isClaimDisabled = !hasClaimableUnvestedAmount || !hasKnownExternalIncentiveActiveState;
+  const isClaimDisabled = !hasClaimableUnvestedAmount || !hasKnownExternalIncentiveRefundState;
 
   const handleClaim = React.useCallback(() => {
     if (isClaimDisabled) {
       return;
     }
 
-    if (isExternalIncentiveEnded) {
+    if (isExternalIncentiveRefunded) {
       void collectExternalIncentivePenalty({ rpcProvider });
       return;
     }
@@ -117,7 +117,7 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
   }, [
     collectExternalIncentivePenalty,
     isClaimDisabled,
-    isExternalIncentiveEnded,
+    isExternalIncentiveRefunded,
     removeExternalIncentive,
     rpcProvider,
   ]);
