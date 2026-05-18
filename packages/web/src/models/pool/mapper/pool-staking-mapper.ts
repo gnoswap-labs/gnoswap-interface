@@ -13,7 +13,7 @@ export class PoolStakingMapper {
       incentiveId: poolStaking?.incentiveId || null,
       unvestedAmount: poolStaking.unvestedAmount || "0",
       claimableUnvestedAmount: poolStaking.claimableUnvestedAmount || "0",
-      activeYn: poolStaking.activeYn,
+      isRefunded: poolStaking.isRefunded,
       incentiveType: poolStaking.incentiveType as INCENTIVE_TYPE,
     };
   }
