@@ -94,7 +94,7 @@ export const SnackbarWrapper = styled.div`
         }
       }
     }
-    > div {
+    > div:not(.icon-wrap-wrapper) {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
 
       gap: 8px;
