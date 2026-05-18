@@ -1,6 +1,6 @@
+import { cx } from "@emotion/css";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { cx } from "@emotion/css";
 
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
@@ -8,19 +8,19 @@ import IconStar from "@components/common/icons/IconStar";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import { QUERY_PARAMETER } from "@constants/page.constant";
+import { usePrefetchNavigation } from "@hooks/common/use-prefetch-navigation";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
+import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
 import { IncentivizePoolCardInfoWithPriceGrade } from "@models/pool/info/pool-card-info";
+import { useGetBinsByPath } from "@query/pools";
 import { formatRate } from "@utils/new-number-utils";
 import { numberToFormat } from "@utils/string-utils";
-import { useGetBinsByPath } from "@query/pools";
 import { getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils";
-import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
-import { usePrefetchNavigation } from "@hooks/common/use-prefetch-navigation";
-import { QUERY_PARAMETER } from "@constants/page.constant";
 
-import { PoolCardWrapper, PoolCardWrapperWrapperBorder } from "./IncentivizedPoolCard.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import PriceWarning from "@components/common/price-warning/PriceWarning";
+import { PoolCardWrapper, PoolCardWrapperWrapperBorder } from "./IncentivizedPoolCard.styles";
 
 export interface IncentivizedPoolCardProps {
   pool: IncentivizePoolCardInfoWithPriceGrade;
@@ -46,7 +46,9 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
   const { data: bins40Result, isLoading: isLoadingBins40 } = useGetBinsByPath(
     pool.poolPath || "",
     BINS_DATA_DEFAULT_LENGTH,
-    undefined,
+    null,
+    null,
+    null,
     {
       enabled: !!pool.poolPath,
     },

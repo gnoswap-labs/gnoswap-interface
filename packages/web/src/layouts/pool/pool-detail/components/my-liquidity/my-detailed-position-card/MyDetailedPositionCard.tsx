@@ -97,7 +97,12 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   const GRAPH_WIDTH = useMemo(() => Math.min(width - (width > 767 ? 224 : 80), 1216), [width]);
   const [copied, setCopy] = useCopy();
   const [copiedPosition, setCopiedPosition] = useCopy();
-  const { data: bins = [] } = useGetPositionBins(position.lpTokenId, 40);
+  const { data: bins = [] } = useGetPositionBins(position.lpTokenId, 40, {
+    liquidity: position.liquidity,
+    poolCurrentTick: position.pool?.currentTick,
+    poolTokenABalance: position.pool?.tokenABalance,
+    poolTokenBBalance: position.pool?.tokenBBalance,
+  });
 
   const isClosed = position.closed;
 
