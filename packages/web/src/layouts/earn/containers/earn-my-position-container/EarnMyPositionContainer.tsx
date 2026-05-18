@@ -57,6 +57,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     address,
     page,
     limit,
+    withClosed: isClosed,
     scopeId: "EarnMyPositionContainer",
   });
 
@@ -239,13 +240,8 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   }, []);
 
   const visiblePositions = useMemo(() => {
-    const noClosedPosition = closedPosition.length <= 0;
-
-    if ((!connected && !address) || noClosedPosition) {
-      return false;
-    }
-    return true;
-  }, [address, closedPosition.length, connected]);
+    return connected || !!address;
+  }, [address, connected]);
 
   const getMappedData = (): PoolPositionModel[] => {
     if (isViewMorePositions) {

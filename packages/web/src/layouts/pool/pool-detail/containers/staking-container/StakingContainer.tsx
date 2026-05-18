@@ -47,6 +47,7 @@ const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking, onO
   const { positions: allPositions, loading: isLoadingPosition } = usePositionData({
     address,
     poolPath,
+    withClosed: false,
     queryOption: {
       enabled: !!poolPath,
     },

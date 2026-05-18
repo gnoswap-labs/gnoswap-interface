@@ -21,7 +21,10 @@ interface UseGetPositionsByAddressProps {
 
 export const useGetPositionsByAddress = (
   props?: UseGetPositionsByAddressProps,
-  options?: UseQueryOptions<GetPositionsByAddressResult, Error>,
+  options?: Omit<
+    UseQueryOptions<GetPositionsByAddressResult, Error, GetPositionsByAddressResult>,
+    "queryKey" | "queryFn"
+  >,
 ) => {
   const { positionRepository } = useGnoswapContext();
   const { account, currentChainId, availNetwork } = useWallet();
@@ -34,8 +37,8 @@ export const useGetPositionsByAddress = (
     return props?.poolPath || "";
   }, [props?.poolPath]);
 
-  return useQuery<GetPositionsByAddressResult, Error>({
-    queryKey: [
+  return useQuery<GetPositionsByAddressResult, Error, GetPositionsByAddressResult>(
+    [
       QUERY_KEY.positions,
       currentChainId,
       address,
@@ -46,7 +49,7 @@ export const useGetPositionsByAddress = (
       props?.isClosed,
       props?.withAvailableStake,
     ],
-    queryFn: async () => {
+    async () => {
       if (!availNetwork || !address) {
         return { positions: [], totalCount: 0 };
       }
@@ -65,19 +68,21 @@ export const useGetPositionsByAddress = (
           return { positions: [], totalCount: 0 };
         });
     },
-    select: data => {
-      if (props?.isClosed === undefined) {
-        return data;
-      }
-      return {
-        positions: data.positions.filter(p => p.closed === props.isClosed),
-        totalCount: data.totalCount,
-      };
+    {
+      select: data => {
+        if (props?.isClosed === undefined) {
+          return data;
+        }
+        return {
+          positions: data.positions.filter(p => p.closed === props.isClosed),
+          totalCount: data.totalCount,
+        };
+      },
+      keepPreviousData: true,
+      refetchInterval: REFETCH_INTERVAL,
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+      ...options,
     },
-    keepPreviousData: true,
-    refetchInterval: REFETCH_INTERVAL,
-    refetchOnMount: true,
-    refetchOnReconnect: true,
-    ...options,
-  });
+  );
 };
