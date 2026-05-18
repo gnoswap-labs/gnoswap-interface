@@ -40,7 +40,6 @@ export const SnackbarWrapper = styled.div`
   }
   ${media.mobile} {
     width: 100%;
-    top: 16px;
     height: fit-content;
     padding: 15px;
   }
