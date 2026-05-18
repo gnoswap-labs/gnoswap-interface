@@ -157,18 +157,43 @@ export const SnackbarWrapper = styled.div`
       display: flex;
       width: 36px;
       height: 36px;
+      min-width: 36px;
+      flex: 0 0 36px;
       background-color: ${({ theme }) => theme.color.point};
       border-radius: 50%;
       justify-content: center;
       align-items: center;
+
+      &.nft-image-wrapper {
+        background-color: transparent;
+        border-radius: 0;
+
+        .nft-image {
+          object-fit: contain;
+        }
+      }
+
+      ${media.mobile} {
+        width: 24px;
+        height: 24px;
+        min-width: 24px;
+        flex-basis: 24px;
+      }
     }
 
     .icon-wrap {
       display: flex;
       width: 24px;
       height: 24px;
+      flex: 0 0 24px;
       * {
         fill: ${({ theme }) => theme.color.background06};
+      }
+
+      ${media.mobile} {
+        width: 16px;
+        height: 16px;
+        flex-basis: 16px;
       }
     }
   }
