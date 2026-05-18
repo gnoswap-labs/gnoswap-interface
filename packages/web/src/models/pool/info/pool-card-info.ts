@@ -11,6 +11,8 @@ export interface IncentivizePoolCardInfo {
 
   incentivized: boolean;
 
+  hasStakedPosition: boolean;
+
   tokenA: TokenModel;
 
   tokenB: TokenModel;

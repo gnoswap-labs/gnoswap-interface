@@ -28,6 +28,7 @@
     "tokenAPriceGrade": "NONE",
     "tokenBPriceGrade": "NONE",
     "incentivized": true,
+    "hasStakedPosition": false,
     "tvl": "1182782.0",
     "tvlChange": 118278200.0,
     "volume24h": 1182797.0,

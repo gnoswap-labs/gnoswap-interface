@@ -23,7 +23,6 @@ export interface IncentivizedPoolCardListProps {
   showPagination: boolean;
   width: number;
   isLoading: boolean;
-  checkStakedPool: (poolPath: string | null) => boolean;
 }
 
 const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
@@ -40,7 +39,6 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   showPagination,
   width,
   isLoading,
-  checkStakedPool,
 }) => {
   const data = useMemo(() => {
     if (page === 1) {
@@ -63,13 +61,7 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
       <PoolListWrapper ref={divRef} onScroll={onScroll} $loading={isLoading}>
         {hasData &&
           data.map((info, index) => (
-            <IncentivizedPoolCard
-              pool={info}
-              key={index}
-              routeItem={routeItem}
-              themeKey={themeKey}
-              checkStakedPool={checkStakedPool}
-            />
+            <IncentivizedPoolCard pool={info} key={index} routeItem={routeItem} themeKey={themeKey} />
           ))}
         {showBlank &&
           Array((width <= 1180 && width >= 920 ? 3 : 4) - incentivizedPools.length)
