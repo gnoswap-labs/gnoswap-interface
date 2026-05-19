@@ -11,7 +11,7 @@ import IconStar from "@components/common/icons/IconStar";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { StakingPeriodType, STAKING_PERIOD_INFO, RewardType } from "@constants/option.constant";
+import { StakingPeriodType, RewardType } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionModel } from "@models/position/position-model";
@@ -31,6 +31,7 @@ import {
 
 interface StakingContentCardProps {
   period: StakingPeriodType;
+  periodInfo: { period: number; rate: number };
   stakingApr?: string;
   checkPoints: StakingPeriodType[];
   positions: PoolPositionModel[];
@@ -98,6 +99,7 @@ const PriceTooltipContent = ({ positions, period }: { positions: PoolPositionMod
 
 const StakingContentCard: React.FC<StakingContentCardProps> = ({
   period,
+  periodInfo,
   checkPoints,
   positions,
   stakingApr,
@@ -111,10 +113,6 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   const checkedStep = useMemo(() => {
     return checkPoints.includes(period);
   }, [checkPoints, period]);
-
-  const periodInfo = useMemo(() => {
-    return STAKING_PERIOD_INFO[period];
-  }, [period]);
 
   const totalUSD = useMemo(() => {
     if (positions.length === 0) {
@@ -158,8 +156,8 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   }, [positionRewards, tokenPrices]);
 
   const aprNumber = useMemo(
-    () => (stakingApr ? BigNumber(stakingApr).multipliedBy(STAKING_PERIOD_INFO[period].rate) : null),
-    [period, stakingApr],
+    () => (stakingApr ? BigNumber(stakingApr).multipliedBy(periodInfo.rate) : null),
+    [periodInfo.rate, stakingApr],
   );
 
   const aprStr = useMemo(() => {
@@ -275,6 +273,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
 
 interface SummuryAprProps {
   period: StakingPeriodType;
+  periodInfo: { period: number; rate: number };
   checkPoints: StakingPeriodType[];
   positions: PoolPositionModel[];
   stakingApr?: string;
@@ -282,7 +281,14 @@ interface SummuryAprProps {
   breakpoint: DEVICE_TYPE;
 }
 
-export const SummuryApr: React.FC<SummuryAprProps> = ({ period, checkPoints, positions, stakingApr, loading }) => {
+export const SummuryApr: React.FC<SummuryAprProps> = ({
+  period,
+  periodInfo,
+  checkPoints,
+  positions,
+  stakingApr,
+  loading,
+}) => {
   const { t } = useTranslation();
   const { data: tokenPrices = {} } = useGetAllTokenPrices();
 
@@ -291,10 +297,6 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({ period, checkPoints, pos
   const checkedStep = useMemo(() => {
     return checkPoints.includes(period);
   }, [checkPoints, period]);
-
-  const periodInfo = useMemo(() => {
-    return STAKING_PERIOD_INFO[period];
-  }, [period]);
 
   const positionRewards = useMemo(() => {
     return positions.flatMap(position => position.rewards);
@@ -331,8 +333,8 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({ period, checkPoints, pos
   }, [positionRewards, tokenPrices]);
 
   const aprNumber = useMemo(
-    () => (stakingApr ? BigNumber(stakingApr).multipliedBy(STAKING_PERIOD_INFO[period].rate) : null),
-    [period, stakingApr],
+    () => (stakingApr ? BigNumber(stakingApr).multipliedBy(periodInfo.rate) : null),
+    [periodInfo.rate, stakingApr],
   );
 
   const aprStr = useMemo(() => {
