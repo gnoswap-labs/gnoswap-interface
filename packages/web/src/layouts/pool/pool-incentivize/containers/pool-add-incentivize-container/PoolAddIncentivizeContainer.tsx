@@ -2,6 +2,7 @@ import { useAtom } from "jotai";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT } from "@common/values";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
@@ -12,12 +13,7 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { TokenBalanceInfo } from "@models/token/token-balance-info";
 import { TokenModel } from "@models/token/token-model";
-import {
-  DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT,
-  useGetIncentiveCreationDeposit,
-  useGetPoolDetailByPath,
-  useGetPoolList,
-} from "@query/pools";
+import { useGetIncentiveCreationDeposit, useGetPoolDetailByPath, useGetPoolList } from "@query/pools";
 import PoolDetailData from "@repositories/pool/mock/pool-detail.json";
 import { EarnState } from "@states/index";
 import { makeDisplayTokenAmount } from "@utils/token-utils";

@@ -30,5 +30,4 @@ export const GAS_WANTED_BUFFER_MULTIPLIER = 1.1 as const;
 export const GAS_WANTED_BUFFER_SAFE_MARGIN = 1.2 as const;
 
 export const MINIMUM_GNOT_SWAP_AMOUNT = 0.001;
-
-export const GNS_DEPOSIT_AMOUNT = 1_000_000_000 as const;
+export const DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT = "1000000000" as const;

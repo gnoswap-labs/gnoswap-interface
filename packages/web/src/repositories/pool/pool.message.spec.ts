@@ -85,6 +85,7 @@ describe("pool.message.ts", () => {
         poolPath: "pool_path",
         rewardToken: createTokenModel("gns_token_path"),
         rewardAmount: "250",
+        incentiveCreationDepositGnsAmount: "1500000000",
         startTime: 100,
         endTime: 200,
         caller,
@@ -96,7 +97,7 @@ describe("pool.message.ts", () => {
       caller,
       pkg_path: "gns_token_path",
       func: "Approve",
-      args: ["staker_address", "1250000000"],
+      args: ["staker_address", "1750000000"],
     });
     expect(messages[1]).toMatchObject({
       caller,

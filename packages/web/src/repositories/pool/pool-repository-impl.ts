@@ -4,7 +4,7 @@ import { WalletClient } from "@common/clients/wallet-client";
 import { SendTransactionResponse, SendTransactionSuccessResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { PoolError } from "@common/errors/pool";
-import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED, GNS_DEPOSIT_AMOUNT } from "@common/values";
+import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED, DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT } from "@common/values";
 import { PACKAGE_POOL_PATH, PACKAGE_STAKER_PATH } from "@constants/environment.constant";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import { GnoProvider } from "@gnolang/gno-js-client";
@@ -83,10 +83,8 @@ export class PoolRepositoryImpl implements PoolRepository {
   };
 
   getIncentiveCreationDeposit = async (): Promise<string> => {
-    const defaultDepositGnsAmount = String(GNS_DEPOSIT_AMOUNT);
-
     if (!this.networkClient) {
-      return defaultDepositGnsAmount;
+      return DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT;
     }
 
     try {
@@ -96,10 +94,10 @@ export class PoolRepositoryImpl implements PoolRepository {
         url: "/incentivize/deposit",
       });
 
-      return response?.data?.data?.depositGnsAmount || defaultDepositGnsAmount;
+      return response?.data?.data?.depositGnsAmount || DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT;
     } catch (error) {
       console.error(error);
-      return defaultDepositGnsAmount;
+      return DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT;
     }
   };
 

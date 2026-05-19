@@ -7,6 +7,8 @@ export interface CreateExternalIncentiveRequest {
 
   rewardAmount: string;
 
+  incentiveCreationDepositGnsAmount: string;
+
   startTime: number;
 
   endTime: number;

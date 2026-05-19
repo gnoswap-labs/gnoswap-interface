@@ -1,7 +1,7 @@
 import { PoolPricesResponse, PoolRepository } from ".";
 
 import { SendTransactionResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
-import { GNS_DEPOSIT_AMOUNT } from "@common/values";
+import { DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT } from "@common/values";
 import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
@@ -51,7 +51,7 @@ export class PoolRepositoryMock implements PoolRepository {
   };
 
   getIncentiveCreationDeposit = async (): Promise<string> => {
-    return String(GNS_DEPOSIT_AMOUNT);
+    return DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT;
   };
 
   getPoolDetailByPoolPath = async (): Promise<PoolDetailModel> => {

@@ -7,7 +7,7 @@ import {
   TokenApproveMessageInfo,
   TransactionMessage,
 } from "@common/clients/wallet-client/transaction-messages";
-import { DEFAULT_TRANSACTION_DEADLINE, GNS_DEPOSIT_AMOUNT } from "@common/values";
+import { DEFAULT_TRANSACTION_DEADLINE } from "@common/values";
 import {
   GNS_TOKEN_PATH,
   PACKAGE_POOL_ADDRESS,
@@ -178,6 +178,7 @@ export function makeCreateExternalIncentiveMessageWithApproves(
     poolPath,
     rewardToken,
     rewardAmount,
+    incentiveCreationDepositGnsAmount,
     startTime,
     endTime,
     caller,
@@ -185,6 +186,7 @@ export function makeCreateExternalIncentiveMessageWithApproves(
     poolPath: string;
     rewardToken: TokenModel;
     rewardAmount: string;
+    incentiveCreationDepositGnsAmount: string;
     startTime: number;
     endTime: number;
     caller: string;
@@ -202,7 +204,7 @@ export function makeCreateExternalIncentiveMessageWithApproves(
     approveMessageInfos.push({
       tokenPath: GNS_TOKEN_PATH,
       targetAddress: PACKAGE_STAKER_ADDRESS,
-      amount: GNS_DEPOSIT_AMOUNT,
+      amount: incentiveCreationDepositGnsAmount,
       caller,
     });
     approveMessageInfos.push({
@@ -215,7 +217,7 @@ export function makeCreateExternalIncentiveMessageWithApproves(
     approveMessageInfos.push({
       tokenPath: GNS_TOKEN_PATH,
       targetAddress: PACKAGE_STAKER_ADDRESS,
-      amount: GNS_DEPOSIT_AMOUNT,
+      amount: incentiveCreationDepositGnsAmount,
       caller,
     });
     approveMessageInfos.push({
