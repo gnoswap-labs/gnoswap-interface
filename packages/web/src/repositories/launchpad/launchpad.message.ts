@@ -5,7 +5,6 @@ import {
   TokenApproveMessageInfo,
 } from "@common/clients/wallet-client/transaction-messages";
 import { GNS_TOKEN_PATH, PACKAGE_LAUNCHPAD_ADDRESS, PACKAGE_LAUNCHPAD_PATH } from "@constants/environment.constant";
-import { MAX_INT64 } from "@utils/math.utils";
 
 enum TransactionMessageFunctionType {
   DepositGns = "DepositGns",
@@ -39,7 +38,7 @@ export function makeDepositGNSMessageWithApproves(
     {
       tokenPath: GNS_TOKEN_PATH,
       targetAddress: PACKAGE_LAUNCHPAD_ADDRESS,
-      amount: MAX_INT64,
+      amount: gnsTokenAmount,
       caller,
     },
   ];
