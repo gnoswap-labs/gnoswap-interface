@@ -50,6 +50,15 @@ describe("make token raw price", () => {
     const result = makeRawTokenAmount(token, amount);
     expect(result).toBe("123456");
   });
+
+  test("1.23 to 123000000 with 8 decimals", () => {
+    const token = {
+      ...DEFAULT_TOKEN,
+      decimals: 8,
+    };
+    const result = makeRawTokenAmount(token, 1.23);
+    expect(result).toBe("123000000");
+  });
 });
 
 describe("make token display price", () => {
@@ -81,6 +90,15 @@ describe("make token display price", () => {
     const amount = "1";
     const result = makeDisplayTokenAmount(token, amount);
     expect(result).toBe(0.000001);
+  });
+
+  test("123000000 to 1.23 with 8 decimals", () => {
+    const token = {
+      ...DEFAULT_TOKEN,
+      decimals: 8,
+    };
+    const result = makeDisplayTokenAmount(token, "123000000");
+    expect(result).toBe(1.23);
   });
 });
 

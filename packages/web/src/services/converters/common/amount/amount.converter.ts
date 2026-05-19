@@ -32,8 +32,8 @@ export class AmountConverter {
         return "0";
       }
 
-      const rawDecimals = token?.decimals || 0;
-      const normalizedDecimals = Math.abs(Math.floor(rawDecimals));
+      const rawDecimals = token.decimals;
+      const normalizedDecimals = Number.isFinite(rawDecimals) ? Math.abs(Math.floor(rawDecimals)) : 0;
 
       const divisor = new BigNumber(10).pow(normalizedDecimals);
       const result = amount.dividedBy(divisor);

@@ -31,11 +31,16 @@ const DELEGATE_MIN_AMOUNT = 1;
 
 function handleAmount(changed: string, token: TokenModel | null) {
   let value = changed;
-  const decimals = token?.decimals || 0;
+  const decimals = token?.decimals;
+
+  if (decimals === undefined) {
+    return changed;
+  }
+
   if (!value || BigNumber(value).isZero()) {
     value = changed;
   } else {
-    value = BigNumber(value).toFixed(decimals || 0, 1);
+    value = BigNumber(value).toFixed(decimals, 1);
   }
 
   if (BigNumber(changed).isEqualTo(value)) {
