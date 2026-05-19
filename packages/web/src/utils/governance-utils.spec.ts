@@ -1,4 +1,4 @@
-import { isQuorumReached, makeProposalVariablesQuery } from "./governance-utils";
+import { getProposalCreationThreshold, isQuorumReached, makeProposalVariablesQuery } from "./governance-utils";
 
 describe("make proposal's variable query", () => {
   test("single variable", () => {
@@ -64,5 +64,15 @@ describe("isQuorumReached", () => {
     });
 
     expect(result).toBe(false);
+  });
+});
+
+describe("governance utils", () => {
+  it("converts proposal creation threshold with xGNS decimals", () => {
+    expect(getProposalCreationThreshold(250000000, 8)).toBe(2.5);
+  });
+
+  it("falls back when proposal creation threshold is missing", () => {
+    expect(getProposalCreationThreshold(undefined, 8)).toBe(1000);
   });
 });

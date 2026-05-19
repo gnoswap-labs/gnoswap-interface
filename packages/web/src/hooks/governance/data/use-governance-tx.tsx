@@ -14,6 +14,7 @@ import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confir
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { DexEvent, DexEventType } from "@repositories/common";
+import { makeRawTokenAmount } from "@utils/token-utils";
 
 export const useGovernanceTx = () => {
   const { getNextReferralAddress, removeReferrerFromLocalStorage } = useReferral();
@@ -103,10 +104,10 @@ export const useGovernanceTx = () => {
       return;
     }
 
-    const unitAmount = Math.floor(Number(amount) * 10 ** GNS_TOKEN.decimals);
+    const unitAmount = makeRawTokenAmount(GNS_TOKEN, amount) || "0";
 
     const messageData = {
-      tokenAAmount: (unitAmount / 10 ** GNS_TOKEN.decimals).toLocaleString("en"),
+      tokenAAmount: Number(amount).toLocaleString("en"),
       tokenASymbol: GNS_TOKEN.symbol,
       target: toName,
     };
@@ -117,7 +118,7 @@ export const useGovernanceTx = () => {
       () =>
         governanceRepository.sendDelegate({
           to: toAddress,
-          amount: unitAmount.toString(),
+          amount: unitAmount,
           referrerAddress: currentReferralAddress,
         }),
       DexEvent.DELEGATE,
@@ -142,10 +143,10 @@ export const useGovernanceTx = () => {
       return;
     }
 
-    const unitAmount = Math.floor(Number(amount) * 10 ** GNS_TOKEN.decimals);
+    const unitAmount = makeRawTokenAmount(GNS_TOKEN, amount) || "0";
 
     const messageData = {
-      tokenAAmount: (unitAmount / 10 ** GNS_TOKEN.decimals).toLocaleString("en"),
+      tokenAAmount: Number(amount).toLocaleString("en"),
       tokenASymbol: GNS_TOKEN.symbol,
       target: fromName,
     };
@@ -154,7 +155,7 @@ export const useGovernanceTx = () => {
       () =>
         governanceRepository.sendUndelegate({
           to: fromAddress,
-          amount: unitAmount.toString(),
+          amount: unitAmount,
         }),
       DexEvent.UNDELEGATE,
       messageData,
@@ -246,7 +247,7 @@ export const useGovernanceTx = () => {
       return;
     }
 
-    const unitAmount = Math.floor(Number(amount) * 10 ** GNS_TOKEN.decimals);
+    const unitAmount = makeRawTokenAmount(GNS_TOKEN, amount) || "0";
     const messageData = {
       target: t("Governance:proposal.type.community"),
     };
@@ -258,7 +259,7 @@ export const useGovernanceTx = () => {
           description,
           tokenPath,
           to: toAddress,
-          amount: unitAmount.toString(),
+          amount: unitAmount,
         }),
       DexEvent.PROPOSE_COMM_POOL_SPEND,
       messageData,

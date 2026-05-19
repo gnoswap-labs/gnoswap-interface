@@ -3,7 +3,7 @@ import { Trans, useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-import { GNOT_TOKEN, GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
+import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconClose from "@components/common/icons/IconCancel";
 import IconInfo from "@components/common/icons/IconInfo";
@@ -70,7 +70,6 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   );
 
   const { data, isLoading } = useGetProposalDetails({ proposalId, address });
-
   const proposalDetail = useMemo(() => {
     if (!data?.proposal) return nullProposalDetailsInfo.proposal;
     return data.proposal;
@@ -209,7 +208,7 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
                 </div>
                 <div className="variable">
                   <div className="variable-type">{t("Governance:detailModal.content.amount")}</div>
-                  {rawToDisplayAmount(proposalDetailContent.amount, GNOT_TOKEN.decimals)} {GNS_TOKEN.symbol}
+                  {rawToDisplayAmount(proposalDetailContent.amount, GNS_TOKEN.decimals)} {GNS_TOKEN.symbol}
                 </div>
               </>
             )}

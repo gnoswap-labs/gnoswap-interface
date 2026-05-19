@@ -10,9 +10,8 @@ import { useCreateProposalModal } from "@hooks/governance/ui/use-create-proposal
 import ProposalList from "../../components/proposals-list/ProposalList";
 import { useGovernanceTx } from "@hooks/governance/data/use-governance-tx";
 import { rawToDisplayAmount } from "@utils/number-utils";
-import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
-
-const DEFAULT_PROPOSAL_CREATION_THRESHOLD = 1000 as const;
+import { XGNS_TOKEN } from "@common/values/token-constant";
+import { getProposalCreationThreshold } from "@utils/governance-utils";
 
 const ProposalListContainer: React.FC = () => {
   const router = useRouter();
@@ -72,12 +71,7 @@ const ProposalListContainer: React.FC = () => {
   }, [proposalParameterInfo?.functions]);
 
   const proposalCreationThreshold = useMemo(() => {
-    if (!proposalParameterInfo) return DEFAULT_PROPOSAL_CREATION_THRESHOLD;
-
-    return (
-      rawToDisplayAmount(proposalParameterInfo.proposalCreationThreshold, GNS_TOKEN.decimals) ||
-      DEFAULT_PROPOSAL_CREATION_THRESHOLD
-    );
+    return getProposalCreationThreshold(proposalParameterInfo?.proposalCreationThreshold, XGNS_TOKEN.decimals);
   }, [proposalParameterInfo?.proposalCreationThreshold]);
 
   const fetchNextItems = () => {
