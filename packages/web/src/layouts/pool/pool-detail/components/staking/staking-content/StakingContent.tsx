@@ -5,7 +5,7 @@ import Button from "@components/common/button/Button";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { StakingPeriodType, STAKING_PERIOS } from "@constants/option.constant";
+import { StakingPeriodType, STAKING_PERIOS, STAKING_PERIOD_INFO } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useIntersectionObserver } from "@hooks/common/use-interaction-observer";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
@@ -39,7 +39,37 @@ const TEXT_BTN = [
   "Pool:staking.keepStakingNote.four",
 ];
 
-const DAY_TIME = 24 * 60 * 60 * 1000;
+const DAY_SECONDS = 24 * 60 * 60;
+
+type StakingPeriodInfo = {
+  period: number;
+  rate: number;
+  durationSeconds: number;
+};
+
+const buildStakingPeriodInfos = (pool: PoolDetailModel | null): Record<StakingPeriodType, StakingPeriodInfo> => {
+  const configByPercentage = new Map((pool?.warmupConfigs || []).map(config => [config.percentage, config]));
+
+  return STAKING_PERIOS.reduce((accum, key, index) => {
+    const defaultInfo = STAKING_PERIOD_INFO[key];
+    const config = configByPercentage.get(defaultInfo.rate * 100);
+    if (!config) {
+      accum[key] = { ...defaultInfo, durationSeconds: defaultInfo.period * DAY_SECONDS };
+      return accum;
+    }
+
+    const previousPeriod = STAKING_PERIOS[index - 1];
+    const fallbackPeriod = previousPeriod ? accum[previousPeriod].period : STAKING_PERIOD_INFO.MAX.period;
+
+    accum[key] = {
+      durationSeconds: config.durationSeconds,
+      period: config.durationSeconds > 0 ? Number((config.durationSeconds / DAY_SECONDS).toFixed(2)) : fallbackPeriod,
+      rate: config.percentage / 100,
+    };
+
+    return accum;
+  }, {} as Record<StakingPeriodType, StakingPeriodInfo>);
+};
 
 const StakingContent: React.FC<StakingContentProps> = ({
   totalApr,
@@ -100,19 +130,21 @@ const StakingContent: React.FC<StakingContentProps> = ({
     return getUniqueRewardTokensWithMultipleRewardTypes(rewardTokens, getGnotPath);
   }, [getGnotPath, pool?.rewardTokens]);
 
+  const stakingPeriodInfos = useMemo(() => buildStakingPeriodInfos(pool), [pool]);
+
   const stakingPositionMap = useMemo(() => {
     return stakedPosition.reduce<{
       [key in StakingPeriodType]: PoolPositionModel[];
     }>(
       (accum, current) => {
         const stakedTime = new Date(current.stakedAt).getTime();
-        const difference = (new Date().getTime() - stakedTime) / DAY_TIME;
+        const differenceSeconds = (new Date().getTime() - stakedTime) / 1000;
         let periodType: StakingPeriodType = "MAX";
-        if (difference < 5) {
+        if (differenceSeconds < stakingPeriodInfos["5D"].durationSeconds) {
           periodType = "5D";
-        } else if (difference < 10) {
+        } else if (differenceSeconds < stakingPeriodInfos["10D"].durationSeconds) {
           periodType = "10D";
-        } else if (difference < 30) {
+        } else if (differenceSeconds < stakingPeriodInfos["30D"].durationSeconds) {
           periodType = "30D";
         }
         accum[periodType].push(current);
@@ -125,7 +157,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
         MAX: [],
       },
     );
-  }, [stakedPosition]);
+  }, [stakedPosition, stakingPeriodInfos]);
 
   const checkPoints = useMemo((): StakingPeriodType[] => {
     let checkPointIndex = -1;
@@ -212,6 +244,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
               positions={stakingPositionMap[period]}
               checkPoints={checkPoints}
               breakpoint={breakpoint}
+              periodInfo={stakingPeriodInfos[period]}
             />
           ) : (
             <StakingContentCard
@@ -222,6 +255,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
               breakpoint={breakpoint}
               loading={loading}
               checkPoints={checkPoints}
+              periodInfo={stakingPeriodInfos[period]}
             />
           );
         })}
@@ -256,7 +290,6 @@ const StakingContent: React.FC<StakingContentProps> = ({
               gap: "8px",
             }}
             className={type < 3 ? "change-weight" : "receive-button"}
-            onClick={() => {}}
           />
         )}
       </div>
