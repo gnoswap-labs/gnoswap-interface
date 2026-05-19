@@ -258,10 +258,10 @@ export const usePoolAddLiquidityConfirmModal = ({
   } => {
     return {
       token: GNS_TOKEN,
-      fee: GNS_TOKEN ? `${makeDisplayTokenAmount(GNS_TOKEN, creationFee || 0)}` : "",
+      fee: `${makeDisplayTokenAmount(GNS_TOKEN, creationFee || 0)}`,
       errorMsg: (() => {
         let totalGnsAmount = makeDisplayTokenAmount(GNS_TOKEN, creationFee || 0) || 0;
-        const gnsBalance = displayBalanceMap[GNS_TOKEN?.priceID ?? ""] || 0;
+        const gnsBalance = displayBalanceMap[GNS_TOKEN.priceID] || 0;
 
         if (tokenA?.priceID === GNS_TOKEN_PATH) {
           totalGnsAmount += Number(tokenAAmount);

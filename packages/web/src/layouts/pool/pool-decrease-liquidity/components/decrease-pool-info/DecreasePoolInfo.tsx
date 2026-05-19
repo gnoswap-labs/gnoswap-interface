@@ -59,8 +59,8 @@ const DecreasePoolInfo: React.FC<Props> = ({ tokenA, tokenB, pooledTokenInfos, i
       return BigNumber(pooledTokenInfos?.unClaimTokenBAmount ?? 0).toFormat();
     }
 
-    return BigNumber(pooledTokenInfos?.unClaimTokenBAmount ?? 0).toFormat(tokenA.decimals);
-  }, [pooledTokenInfos?.unClaimTokenBAmount, tokenA.decimals]);
+    return BigNumber(pooledTokenInfos?.unClaimTokenBAmount ?? 0).toFormat(tokenB.decimals);
+  }, [pooledTokenInfos?.unClaimTokenBAmount, tokenB.decimals]);
 
   const isNotMobile = breakpoint !== DEVICE_TYPE.MOBILE;
   return (

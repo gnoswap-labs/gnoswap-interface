@@ -117,10 +117,10 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
 
     const priceWithDecimal = (() => {
       if (selectPool.compareToken?.path === tokenA.path) {
-        return 10 ** ((tokenB.decimals || 0) - (tokenA.decimals || 0)) * currentPrice;
+        return 10 ** (tokenB.decimals - tokenA.decimals) * currentPrice;
       }
 
-      return 10 ** ((tokenA.decimals || 0) - (tokenB.decimals || 0)) * currentPrice;
+      return 10 ** (tokenA.decimals - tokenB.decimals) * currentPrice;
     })();
 
     return (
