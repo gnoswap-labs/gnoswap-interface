@@ -8,17 +8,14 @@ import {
 } from "@common/clients/wallet-client/transaction-messages";
 import {
   PACKAGE_POOL_ADDRESS,
-  PACKAGE_POSITION_ADDRESS,
   PACKAGE_POSITION_PATH,
   PACKAGE_STAKER_ADDRESS,
   PACKAGE_STAKER_PATH,
-  WRAPPED_GNOT_PATH,
 } from "@constants/environment.constant";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionModel } from "@models/position/position-model";
 import { TokenModel } from "@models/token/token-model";
-import { checkGnotPath, isGNOTPath, wrapNativeTokenPath } from "@utils/common";
-import { MAX_INT64 } from "@utils/math.utils";
+import { checkGnotPath, wrapNativeTokenPath } from "@utils/common";
 import { calculateMinTokenAmount } from "@utils/reposition-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
 import { getWrappedGNOTDepositAmount } from "@utils/transaction-utils";
@@ -49,38 +46,11 @@ export function makeClaimMessageWithApproves(
 
   let hasFee = false;
   let hasStakingReward = false;
-  let isGnotApproved = false;
-
   position.rewards.forEach(reward => {
-    const rewardTokenWrappedPath = checkGnotPath(reward.rewardToken.path);
-    // Reward token approve to Pool
     if (reward.rewardToken.rewardType === "SWAP_FEE") {
       hasFee = true;
-      approveMessageInfos.push({
-        tokenPath: reward.rewardToken.path,
-        targetAddress: PACKAGE_POOL_ADDRESS,
-        amount: MAX_INT64,
-        caller,
-      });
-      approveMessageInfos.push({
-        tokenPath: reward.rewardToken.path,
-        targetAddress: PACKAGE_POSITION_ADDRESS,
-        amount: MAX_INT64,
-        caller,
-      });
-    }
-    // Reward token approve to Staker(When GNOT token)
-    else {
+    } else {
       hasStakingReward = true;
-      if (rewardTokenWrappedPath === WRAPPED_GNOT_PATH && !isGnotApproved) {
-        approveMessageInfos.push({
-          tokenPath: WRAPPED_GNOT_PATH,
-          targetAddress: PACKAGE_STAKER_ADDRESS,
-          amount: MAX_INT64,
-          caller,
-        });
-        isGnotApproved = true;
-      }
     }
   });
 
@@ -112,8 +82,6 @@ export function makeClaimMessageWithApproves(
 
 export function makeClaimAllMessageWithApprovesByIds(
   {
-    swapFeeTokenPaths,
-    hasGnotStakingReward,
     positionsWithSwapFee,
     positionsWithStakingReward,
     caller,
@@ -127,30 +95,6 @@ export function makeClaimAllMessageWithApprovesByIds(
   fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
   const approveMessageInfos: TokenApproveMessageInfo[] = [];
-
-  swapFeeTokenPaths.forEach(tokenPath => {
-    approveMessageInfos.push({
-      tokenPath,
-      targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: MAX_INT64,
-      caller,
-    });
-    approveMessageInfos.push({
-      tokenPath,
-      targetAddress: PACKAGE_POSITION_ADDRESS,
-      amount: MAX_INT64,
-      caller,
-    });
-  });
-
-  if (hasGnotStakingReward) {
-    approveMessageInfos.push({
-      tokenPath: WRAPPED_GNOT_PATH,
-      targetAddress: PACKAGE_STAKER_ADDRESS,
-      amount: MAX_INT64,
-      caller,
-    });
-  }
 
   const messages: TransactionMessage[] = [];
 
@@ -195,13 +139,9 @@ export function makeClaimAllMessageWithApproves(
   const messages: TransactionMessage[] = positions.flatMap(position => {
     let hasFee = false;
     let hasStakingReward = false;
-    let isGnotApproved = false;
-
     const collectMessages: TransactionMessage[] = [];
 
     position.rewards.forEach(reward => {
-      const rewardTokenWrappedPath = checkGnotPath(reward.rewardToken.path);
-      // Reward token approve to Pool
       if (reward.rewardToken.rewardType === "SWAP_FEE") {
         const claimableAmount = BigNumber(reward.claimableAmount).toNumber();
         if (claimableAmount <= 0) {
@@ -209,33 +149,8 @@ export function makeClaimAllMessageWithApproves(
         }
 
         hasFee = true;
-
-        approveMessageInfos.push({
-          tokenPath: reward.rewardToken.path,
-          targetAddress: PACKAGE_POOL_ADDRESS,
-          amount: MAX_INT64,
-          caller,
-        });
-        approveMessageInfos.push({
-          tokenPath: reward.rewardToken.path,
-          targetAddress: PACKAGE_POSITION_ADDRESS,
-          amount: MAX_INT64,
-          caller,
-        });
-      }
-
-      // Reward token approve to Staker(When GNOT token)
-      else {
+      } else {
         hasStakingReward = true;
-        if (rewardTokenWrappedPath === WRAPPED_GNOT_PATH && !isGnotApproved) {
-          approveMessageInfos.push({
-            tokenPath: WRAPPED_GNOT_PATH,
-            targetAddress: PACKAGE_STAKER_ADDRESS,
-            amount: MAX_INT64,
-            caller,
-          });
-          isGnotApproved = true;
-        }
       }
     });
 
@@ -303,33 +218,6 @@ export function makeUnStakePositionsMessagesWithApproves(
 ): Promise<TransactionMessage[]> {
   const approveMessageInfos: TokenApproveMessageInfo[] = [];
 
-  // Reward token approve to Pool and Staker(When GNOT token)
-  const collectRewardApproveMessageInfos = positions.flatMap(position =>
-    position.rewards.flatMap(reward => {
-      const messages: TokenApproveMessageInfo[] = [];
-
-      messages.push({
-        tokenPath: WRAPPED_GNOT_PATH,
-        targetAddress: PACKAGE_POOL_ADDRESS,
-        amount: MAX_INT64,
-        caller,
-      });
-
-      if (reward.rewardToken.path === WRAPPED_GNOT_PATH) {
-        messages.push({
-          tokenPath: WRAPPED_GNOT_PATH,
-          targetAddress: PACKAGE_STAKER_ADDRESS,
-          amount: MAX_INT64,
-          caller,
-        });
-      }
-
-      return messages;
-    }),
-  );
-
-  approveMessageInfos.push(...collectRewardApproveMessageInfos);
-
   const unstakeMessages = positions.map(position =>
     makeTransactionMessage({
       send: "",
@@ -376,13 +264,13 @@ export function makeIncreaseLiquidityMessagesWithApproves(
     {
       tokenPath: tokenAWrappedPath,
       targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: MAX_INT64,
+      amount: tokenAAmountRaw,
       caller,
     },
     {
       tokenPath: tokenBWrappedPath,
       targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: MAX_INT64,
+      amount: tokenBAmountRaw,
       caller,
     },
   ];
@@ -422,8 +310,6 @@ export function makeDecreaseLiquidityMessagesWithApproves(
   {
     lpTokenId,
     calculatedLiquidity,
-    tokenA,
-    tokenB,
     tokenAAmount,
     tokenBAmount,
     slippage,
@@ -442,34 +328,7 @@ export function makeDecreaseLiquidityMessagesWithApproves(
   },
   fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
-  const tokenAWrappedPath = tokenA.wrappedPath || checkGnotPath(tokenA.path);
-  const tokenBWrappedPath = tokenB.wrappedPath || checkGnotPath(tokenB.path);
-
-  // Make Approve messages that can be managed by a Pool package of tokens.
-  const approveMessageInfos: TokenApproveMessageInfo[] = [
-    {
-      tokenPath: tokenAWrappedPath,
-      targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: MAX_INT64,
-      caller,
-    },
-    {
-      tokenPath: tokenBWrappedPath,
-      targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: MAX_INT64,
-      caller,
-    },
-  ];
-
-  // If the GNOT token is included, the Position package must include the token approve.
-  if (isGNOTPath(tokenAWrappedPath) || isGNOTPath(tokenBWrappedPath)) {
-    approveMessageInfos.push({
-      tokenPath: WRAPPED_GNOT_PATH,
-      targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: MAX_INT64,
-      caller,
-    });
-  }
+  const approveMessageInfos: TokenApproveMessageInfo[] = [];
 
   const slippageRatio = (100 - slippage) / 100;
 
@@ -531,13 +390,13 @@ export function makeRepositionLiquidityMessagesWithApproves(
     {
       tokenPath: tokenAWrappedPath,
       targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: MAX_INT64,
+      amount: tokenAAmountRaw,
       caller,
     },
     {
       tokenPath: tokenBWrappedPath,
       targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: MAX_INT64,
+      amount: tokenBAmountRaw,
       caller,
     },
   ];
@@ -576,7 +435,6 @@ export function makeRemoveLiquidityMessagesWithApproves(
   {
     lpTokenIds,
     positionLiquidities,
-    tokenPaths,
     caller,
     deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString(),
   }: {
@@ -588,23 +446,7 @@ export function makeRemoveLiquidityMessagesWithApproves(
   },
   fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
-  // Make Approve messages that can be managed by a Pool package of tokens.
-  const approveMessageInfos: TokenApproveMessageInfo[] = tokenPaths.map(tokenPath => ({
-    tokenPath: wrapNativeTokenPath(tokenPath),
-    targetAddress: PACKAGE_POOL_ADDRESS,
-    amount: MAX_INT64,
-    caller,
-  }));
-
-  // If the GNOT token is included, the Position package must include the token approve.
-  if (tokenPaths.some(isGNOTPath)) {
-    approveMessageInfos.push({
-      tokenPath: WRAPPED_GNOT_PATH,
-      targetAddress: PACKAGE_POSITION_ADDRESS,
-      amount: MAX_INT64,
-      caller,
-    });
-  }
+  const approveMessageInfos: TokenApproveMessageInfo[] = [];
 
   const removeLiquidityMessages = lpTokenIds.map(lpTokenId => {
     const positionLiquidity = positionLiquidities[lpTokenId] || new BigNumber(0);

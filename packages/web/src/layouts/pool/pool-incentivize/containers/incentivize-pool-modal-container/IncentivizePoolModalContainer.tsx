@@ -3,6 +3,7 @@ import { useAtom } from "jotai";
 import { useCallback } from "react";
 
 import { ERROR_VALUE } from "@common/errors/adena";
+import { DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT } from "@common/values";
 import { useAddress } from "@hooks/common/use-address";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
@@ -12,7 +13,12 @@ import { useMessage } from "@hooks/common/use-message";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { useGetIncentivizePoolList, useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
+import {
+  useGetIncentiveCreationDeposit,
+  useGetIncentivizePoolList,
+  useGetPoolList,
+  useRefetchGetPoolDetailByPath,
+} from "@query/pools";
 import { useGetPoolStakingListByAddress } from "@query/pools/use-get-pool-staking-list-by-address";
 import { DexEvent } from "@repositories/common";
 import { EarnState } from "@states/index";
@@ -59,6 +65,8 @@ const IncentivizePoolModalContainer: React.FC<IncentivizePoolModalContainerProps
   const { refetch: refetchIncentivizePools } = useGetIncentivizePoolList();
   const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(poolPath);
   const { refetch: refetchStakingList } = useGetPoolStakingListByAddress(address || "");
+  const { data: incentiveCreationDepositGnsAmount = DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT } =
+    useGetIncentiveCreationDeposit();
 
   const { getMessage } = useMessage();
 
@@ -133,6 +141,7 @@ const IncentivizePoolModalContainer: React.FC<IncentivizePoolModalContainerProps
         poolPath: pool.poolPath,
         rewardToken: dataModal.token,
         rewardAmount: dataModal.amount || "0",
+        incentiveCreationDepositGnsAmount,
         startTime,
         endTime,
       };
@@ -203,7 +212,18 @@ const IncentivizePoolModalContainer: React.FC<IncentivizePoolModalContainerProps
       }
       return result;
     },
-    [address, poolRepository, dataModal, period, pool, router, startDate.date, startDate.month, startDate.year],
+    [
+      address,
+      poolRepository,
+      dataModal,
+      incentiveCreationDepositGnsAmount,
+      period,
+      pool,
+      router,
+      startDate.date,
+      startDate.month,
+      startDate.year,
+    ],
   );
 
   return (

@@ -2,11 +2,12 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "@emotion/react";
 
+import { DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT } from "@common/values";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 import { useTokenData } from "@hooks/token/data/use-token-data";
-import { DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT, useGetIncentiveCreationDeposit } from "@query/pools";
+import { useGetIncentiveCreationDeposit } from "@query/pools";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 import {

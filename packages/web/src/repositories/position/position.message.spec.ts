@@ -1,11 +1,9 @@
-import { DEFAULT_ALLOWANCE_LIMIT } from "@common/values";
 import type { RewardType } from "@constants/option.constant";
 import type { PoolPositionModel } from "@models/position/pool-position-model";
 import type { PositionModel } from "@models/position/position-model";
 import type { RewardModel } from "@models/position/reward-model";
 import type { TokenModel } from "@models/token/token-model";
 import type { TransactionMessage } from "@common/clients/wallet-client/transaction-messages/common";
-import { MAX_INT64_STR } from "@utils/math.utils";
 import BigNumber from "bignumber.js";
 
 jest.mock("@constants/environment.constant", () => ({
@@ -204,9 +202,9 @@ describe("position.message.ts", () => {
 
   describe("makeClaimMessageWithApproves", () => {
     const tokenFee = "fee_token";
-    const tokenStaking = "ugnot"; // native path, but will be wrapped via checkGnotPath(...)
+    const tokenStaking = "ugnot";
 
-    it("creates fee + staking collect tx messages and the required approve messages", async () => {
+    it("creates fee + staking collect tx messages without token approve messages", async () => {
       const caller = "caller";
       const position = createPosition("lp1", [
         createReward({ rewardType: "SWAP_FEE", rewardTokenPath: tokenFee, claimableAmount: "0" }),
@@ -216,36 +214,9 @@ describe("position.message.ts", () => {
       const fetchAllowance = jest.fn(async () => 0);
       const messages = await makeClaimMessageWithApproves({ position, caller }, fetchAllowance);
 
-      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 3);
+      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 0, 0);
 
-      expect(approveMessages).toEqual(
-        expect.arrayContaining([
-          {
-            caller,
-            send: "",
-            pkg_path: tokenFee,
-            func: "Approve",
-            args: ["pool_address", MAX_INT64_STR],
-            gasFee: undefined,
-          },
-          {
-            caller,
-            send: "",
-            pkg_path: tokenFee,
-            func: "Approve",
-            args: ["position_address", MAX_INT64_STR],
-            gasFee: undefined,
-          },
-          {
-            caller,
-            send: "",
-            pkg_path: "wugnot",
-            func: "Approve",
-            args: ["staker_address", MAX_INT64_STR],
-            gasFee: undefined,
-          },
-        ]),
-      );
+      expect(approveMessages).toHaveLength(0);
 
       expect(txMessages).toEqual([
         {
@@ -265,18 +236,21 @@ describe("position.message.ts", () => {
           gasFee: undefined,
         },
       ]);
-      expectResetMessages(resetMessages, approveMessages);
+      expect(resetMessages).toHaveLength(0);
+      expect(fetchAllowance).not.toHaveBeenCalled();
     });
 
-    it("filters out approve messages when allowance is above the limit", async () => {
+    it("does not fetch allowance for fee claims because no approval is required", async () => {
       const caller = "caller";
       const position = createPosition("lp1", [
         createReward({ rewardType: "SWAP_FEE", rewardTokenPath: "fee_token", claimableAmount: "0" }),
       ]);
 
-      const fetchAllowance = jest.fn(async () => DEFAULT_ALLOWANCE_LIMIT * 2);
+      const fetchAllowance = jest.fn(async () => 0);
       const messages = await makeClaimMessageWithApproves({ position, caller }, fetchAllowance);
-      const { txMessages, resetMessages } = splitMessagesByApproveReset(messages, 0, 2);
+      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 0, 0);
+
+      expect(approveMessages).toHaveLength(0);
 
       expect(txMessages).toEqual([
         {
@@ -288,24 +262,8 @@ describe("position.message.ts", () => {
           gasFee: undefined,
         },
       ]);
-      expect(resetMessages).toEqual([
-        {
-          caller,
-          send: "",
-          pkg_path: "fee_token",
-          func: "Approve",
-          args: ["pool_address", "0"],
-          gasFee: undefined,
-        },
-        {
-          caller,
-          send: "",
-          pkg_path: "fee_token",
-          func: "Approve",
-          args: ["position_address", "0"],
-          gasFee: undefined,
-        },
-      ]);
+      expect(resetMessages).toHaveLength(0);
+      expect(fetchAllowance).not.toHaveBeenCalled();
     });
   });
 
@@ -322,20 +280,9 @@ describe("position.message.ts", () => {
       const fetchAllowance = jest.fn(async () => 0);
       const messages = await makeClaimAllMessageWithApproves({ positions, caller }, fetchAllowance);
 
-      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 1);
+      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 0, 0);
 
-      expect(approveMessages).toEqual(
-        expect.arrayContaining([
-          {
-            caller,
-            send: "",
-            pkg_path: "wugnot",
-            func: "Approve",
-            args: ["staker_address", MAX_INT64_STR],
-            gasFee: undefined,
-          },
-        ]),
-      );
+      expect(approveMessages).toHaveLength(0);
 
       // Only CollectReward should exist (no CollectFee because claimableAmount <= 0).
       expect(txMessages).toEqual([
@@ -348,10 +295,11 @@ describe("position.message.ts", () => {
           gasFee: undefined,
         },
       ]);
-      expectResetMessages(resetMessages, approveMessages);
+      expect(resetMessages).toHaveLength(0);
+      expect(fetchAllowance).not.toHaveBeenCalled();
     });
 
-    it("merges duplicate approveInfos across multiple positions (fee)", async () => {
+    it("creates CollectFee messages across multiple positions without approve messages", async () => {
       const caller = "caller";
 
       const positions = [
@@ -366,30 +314,9 @@ describe("position.message.ts", () => {
       const fetchAllowance = jest.fn(async () => 0);
       const messages = await makeClaimAllMessageWithApproves({ positions, caller }, fetchAllowance);
 
-      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 2);
+      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 0, 0);
 
-      // Expect exactly 2 approve messages for fee_token: pool + position_address.
-      expect(approveMessages).toEqual(
-        expect.arrayContaining([
-          {
-            caller,
-            send: "",
-            pkg_path: "fee_token",
-            func: "Approve",
-            args: ["pool_address", MAX_INT64_STR],
-            gasFee: undefined,
-          },
-          {
-            caller,
-            send: "",
-            pkg_path: "fee_token",
-            func: "Approve",
-            args: ["position_address", MAX_INT64_STR],
-            gasFee: undefined,
-          },
-        ]),
-      );
-      expect(approveMessages).toHaveLength(2);
+      expect(approveMessages).toHaveLength(0);
 
       expect(txMessages).toEqual([
         {
@@ -409,12 +336,13 @@ describe("position.message.ts", () => {
           gasFee: undefined,
         },
       ]);
-      expectResetMessages(resetMessages, approveMessages);
+      expect(resetMessages).toHaveLength(0);
+      expect(fetchAllowance).not.toHaveBeenCalled();
     });
   });
 
   describe("makeUnStakePositionsMessagesWithApproves", () => {
-    it("creates pool and staker approve messages for wugnot rewards and one UnStakeToken per position", async () => {
+    it("creates one UnStakeToken per position without token approve messages", async () => {
       const caller = "caller";
 
       const positions: PoolPositionModel[] = [
@@ -429,29 +357,9 @@ describe("position.message.ts", () => {
       const fetchAllowance = jest.fn(async () => 0);
       const messages = await makeUnStakePositionsMessagesWithApproves({ positions, caller }, fetchAllowance);
 
-      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 2);
+      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 0, 0);
 
-      expect(approveMessages).toEqual(
-        expect.arrayContaining([
-          {
-            caller,
-            send: "",
-            pkg_path: "wugnot",
-            func: "Approve",
-            args: ["pool_address", MAX_INT64_STR],
-            gasFee: undefined,
-          },
-          {
-            caller,
-            send: "",
-            pkg_path: "wugnot",
-            func: "Approve",
-            args: ["staker_address", MAX_INT64_STR],
-            gasFee: undefined,
-          },
-        ]),
-      );
-      expect(approveMessages).toHaveLength(2);
+      expect(approveMessages).toHaveLength(0);
 
       expect(txMessages).toEqual([
         {
@@ -471,7 +379,8 @@ describe("position.message.ts", () => {
           gasFee: undefined,
         },
       ]);
-      expectResetMessages(resetMessages, approveMessages);
+      expect(resetMessages).toHaveLength(0);
+      expect(fetchAllowance).not.toHaveBeenCalled();
     });
   });
 
@@ -509,7 +418,7 @@ describe("position.message.ts", () => {
             send: "",
             pkg_path: "wugnot",
             func: "Approve",
-            args: ["pool_address", MAX_INT64_STR],
+            args: ["pool_address", "2500"],
             gasFee: undefined,
           },
           {
@@ -517,7 +426,7 @@ describe("position.message.ts", () => {
             send: "",
             pkg_path: "tokenB_path",
             func: "Approve",
-            args: ["pool_address", MAX_INT64_STR],
+            args: ["pool_address", "3000000"],
             gasFee: undefined,
           },
         ]),
@@ -546,7 +455,7 @@ describe("position.message.ts", () => {
   });
 
   describe("makeDecreaseLiquidityMessagesWithApproves", () => {
-    it("creates DecreaseLiquidity tx and de-duplicates approve for wugnot", async () => {
+    it("creates DecreaseLiquidity tx without token approve messages", async () => {
       const caller = "caller";
       const lpTokenId = "lp1";
       const deadline = "deadline";
@@ -570,30 +479,9 @@ describe("position.message.ts", () => {
         fetchAllowance,
       );
 
-      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 2);
+      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 0, 0);
 
-      // Base pool approves (wugnot + tokenB) + extra gnot approve should merge into a single wugnot->pool approve.
-      expect(approveMessages).toHaveLength(2);
-      expect(approveMessages).toEqual(
-        expect.arrayContaining([
-          {
-            caller,
-            send: "",
-            pkg_path: "wugnot",
-            func: "Approve",
-            args: ["pool_address", MAX_INT64_STR],
-            gasFee: undefined,
-          },
-          {
-            caller,
-            send: "",
-            pkg_path: "tokenB_path",
-            func: "Approve",
-            args: ["pool_address", MAX_INT64_STR],
-            gasFee: undefined,
-          },
-        ]),
-      );
+      expect(approveMessages).toHaveLength(0);
 
       expect(txMessages).toEqual([
         {
@@ -605,7 +493,8 @@ describe("position.message.ts", () => {
           gasFee: undefined,
         },
       ]);
-      expectResetMessages(resetMessages, approveMessages);
+      expect(resetMessages).toHaveLength(0);
+      expect(fetchAllowance).not.toHaveBeenCalled();
     });
   });
 
@@ -645,7 +534,7 @@ describe("position.message.ts", () => {
             send: "",
             pkg_path: "wugnot",
             func: "Approve",
-            args: ["pool_address", MAX_INT64_STR],
+            args: ["pool_address", "2500"],
             gasFee: undefined,
           },
           {
@@ -653,7 +542,7 @@ describe("position.message.ts", () => {
             send: "",
             pkg_path: "tokenB_path",
             func: "Approve",
-            args: ["pool_address", MAX_INT64_STR],
+            args: ["pool_address", "3000000"],
             gasFee: undefined,
           },
         ]),
@@ -682,7 +571,7 @@ describe("position.message.ts", () => {
   });
 
   describe("makeRemoveLiquidityMessagesWithApproves", () => {
-    it("creates approves for pool tokens and (when gnot included) for position package, then DecreaseLiquidity tx for each lpTokenId", async () => {
+    it("creates DecreaseLiquidity tx for each lpTokenId without token approve messages", async () => {
       const caller = "caller";
       const deadline = "deadline";
       const lpTokenIds = ["lp1", "lp2"];
@@ -706,38 +595,9 @@ describe("position.message.ts", () => {
         fetchAllowance,
       );
 
-      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 3);
+      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 0, 0);
 
-      // wugnot->pool, tokenB->pool, wugnot->position_address
-      expect(approveMessages).toHaveLength(3);
-      expect(approveMessages).toEqual(
-        expect.arrayContaining([
-          {
-            caller,
-            send: "",
-            pkg_path: "wugnot",
-            func: "Approve",
-            args: ["pool_address", MAX_INT64_STR],
-            gasFee: undefined,
-          },
-          {
-            caller,
-            send: "",
-            pkg_path: "tokenB_path",
-            func: "Approve",
-            args: ["pool_address", MAX_INT64_STR],
-            gasFee: undefined,
-          },
-          {
-            caller,
-            send: "",
-            pkg_path: "wugnot",
-            func: "Approve",
-            args: ["position_address", MAX_INT64_STR],
-            gasFee: undefined,
-          },
-        ]),
-      );
+      expect(approveMessages).toHaveLength(0);
 
       expect(txMessages).toEqual([
         {
@@ -757,7 +617,8 @@ describe("position.message.ts", () => {
           gasFee: undefined,
         },
       ]);
-      expectResetMessages(resetMessages, approveMessages);
+      expect(resetMessages).toHaveLength(0);
+      expect(fetchAllowance).not.toHaveBeenCalled();
     });
   });
 });

@@ -11,7 +11,6 @@ import {
   PACKAGE_GOVERNANCE_STAKER_PATH,
 } from "@constants/environment.constant";
 import { makeProposalVariablesQuery } from "@utils/governance-utils";
-import { MAX_INT64 } from "@utils/math.utils";
 
 enum TransactionMessageFunctionType {
   ProposeText = "ProposeText",
@@ -182,7 +181,7 @@ export function makeDelegateMessagesWithApproves(
     {
       tokenPath: GNS_TOKEN_PATH,
       targetAddress: PACKAGE_GOVERNANCE_STAKER_ADDRESS,
-      amount: MAX_INT64,
+      amount,
       caller,
     },
   ];
@@ -236,7 +235,7 @@ export function makeReDelegateMessagesWithApproves(
     {
       tokenPath: GNS_TOKEN_PATH,
       targetAddress: PACKAGE_GOVERNANCE_STAKER_ADDRESS,
-      amount: MAX_INT64,
+      amount,
       caller,
     },
   ];
