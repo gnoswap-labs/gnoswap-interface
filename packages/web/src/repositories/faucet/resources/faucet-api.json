@@ -5,6 +5,6 @@
   },
   "test-13": {
     "grc20": "https://beta.faucet.adena.app",
-    "native": ""
+    "native": null
   }
 }
