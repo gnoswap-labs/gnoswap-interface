@@ -33,6 +33,7 @@ export interface PoolModel {
   apr: string;
   stakingApr: string;
   feeApr: string;
+  warmupConfigs: WarmupPeriodConfigModel[];
   totalApr: number | string | null;
   //TODO Remove later
   id: string;
@@ -87,6 +88,7 @@ export const initialPool: PoolModel = {
   volumeChange24h: 0,
   feeApr: "",
   stakingApr: "",
+  warmupConfigs: [],
   allTimeVolumeUsd: "",
   priceRatio: {
     "7d": [],
@@ -94,6 +96,11 @@ export const initialPool: PoolModel = {
     all: [],
   },
 };
+
+export interface WarmupPeriodConfigModel {
+  percentage: number;
+  durationSeconds: number;
+}
 
 export type IncentivizePoolModel = PoolModel;
 
