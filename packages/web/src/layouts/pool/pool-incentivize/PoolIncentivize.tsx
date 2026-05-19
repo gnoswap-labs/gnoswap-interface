@@ -13,6 +13,7 @@ import { useTokenData } from "@hooks/token/data/use-token-data";
 import { DEVICE_TYPE } from "@styles/media";
 import { checkGnotPath } from "@utils/common";
 import { makeRouteUrl } from "@utils/page.utils";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import PoolAddIncentivizeContainer from "./containers/pool-add-incentivize-container/PoolAddIncentivizeContainer";
 import PoolIncentivizeContainer from "./containers/pool-incentivize-container/PoolIncentivizeContainer";
@@ -41,7 +42,9 @@ const PoolIncentivize: React.FC = () => {
       base.push({
         title:
           breakpoint === DEVICE_TYPE.WEB || breakpoint === DEVICE_TYPE.MEDIUM_WEB
-            ? `${getGnotPath(tokenA).symbol}/${getGnotPath(tokenB).symbol} (${Number(fee) / 10000}%)`
+            ? `${formatDisplayTokenSymbol(getGnotPath(tokenA).symbol)}/${formatDisplayTokenSymbol(
+                getGnotPath(tokenB).symbol,
+              )} (${Number(fee) / 10000}%)`
             : "...",
         path: makeRouteUrl(PAGE_PATH.POOL, {
           [QUERY_PARAMETER.POOL_PATH]: poolPath,

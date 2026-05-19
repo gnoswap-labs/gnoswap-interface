@@ -5,6 +5,7 @@ import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useGetToken } from "@query/token";
 import { ITokenResponse } from "@repositories/token";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 import { useTranslation } from "react-i18next";
 
 export type BreadcrumbTypes = "TOKEN_SYMBOL" | "LAUNCHPAD" | "OTHERs";
@@ -50,7 +51,9 @@ const BreadcrumbsContainer: React.FC<Props> = ({ listBreadcrumb, isLoading, w = 
         path: "/",
       },
       {
-        title: getMapping(tokenB?.symbol || "")[router.pathname] || `${getGnotPath(tokenB)?.symbol || "BTC"}`,
+        title:
+          getMapping(formatDisplayTokenSymbol(tokenB?.symbol || ""))[router.pathname] ||
+          `${formatDisplayTokenSymbol(getGnotPath(tokenB)?.symbol || "BTC")}`,
         path: "",
       },
     ];

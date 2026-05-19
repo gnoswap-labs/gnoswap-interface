@@ -1,7 +1,10 @@
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import { TokenModel } from "@models/token/token-model";
 import {
+  formatDisplayTokenSymbol,
   formatTokenBalanceDisplay,
+  formatTokenModelPath,
+  formatTokenPath,
   isNativeTokenPath,
   makeDisplayTokenAmount,
   makeRawTokenAmount,
@@ -150,6 +153,39 @@ describe("format token balance display", () => {
       expect(formatTokenBalanceDisplay("999999999999.99", true)).toBe("999,999,999,999.99");
       expect(formatTokenBalanceDisplay("999999999999.999999", true)).toBe("999,999,999,999.99");
     });
+  });
+});
+
+describe("format display token symbol", () => {
+  it("should keep token symbols with 9 or fewer characters", () => {
+    expect(formatDisplayTokenSymbol("GNOT")).toBe("GNOT");
+    expect(formatDisplayTokenSymbol("123456789")).toBe("123456789");
+  });
+
+  it("should shorten token symbols longer than 9 characters", () => {
+    expect(formatDisplayTokenSymbol("ibc/488D610A5FB7878660703092A35BC4E7D0C88E2EA71174337AA317A22C05177F")).toBe(
+      "ibc/488D6...",
+    );
+  });
+
+  it("should keep non-native token paths unshortened after removing gno.land prefix", () => {
+    expect(formatTokenPath("gno.land/r/gnoswap/gns", false)).toBe("r/gnoswap/gns");
+    expect(formatTokenPath("ibc/488D610A5FB7878660703092A35BC4E7D0C88E2EA71174337AA317A22C05177F", false)).toBe(
+      "ibc/488D610A5FB7878660703092A35BC4E7D0C88E2EA71174337AA317A22C05177F",
+    );
+  });
+
+  it("should keep native token path display unchanged", () => {
+    expect(formatTokenPath(GNOT_TOKEN.path, true)).toBe("Native Coin");
+  });
+
+  it("should keep token model paths unshortened", () => {
+    expect(
+      formatTokenModelPath({
+        ...DEFAULT_TOKEN,
+        path: "ibc/488D610A5FB7878660703092A35BC4E7D0C88E2EA71174337AA317A22C05177F",
+      }),
+    ).toBe("ibc/488D610A5FB7878660703092A35BC4E7D0C88E2EA71174337AA317A22C05177F");
   });
 });
 

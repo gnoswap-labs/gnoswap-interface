@@ -19,6 +19,7 @@ import { useTranslation } from "react-i18next";
 import MissingLogo from "../../missing-logo/MissingLogo";
 import { QUERY_PARAMETER } from "@constants/page.constant";
 import { usePrefetchNavigation } from "@hooks/common/use-prefetch-navigation";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 interface MyPositionCardProps {
   address?: string | null;
@@ -364,7 +365,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           <div className="title-wrapper">
             <div id={boxHeaderId} className="box-header">
               <MissingLogo symbol={`ID #${position.id}`} url={position.tokenUri} width={24} showTooltip />
-              <span>{`${tokenA.symbol}/${tokenB.symbol}`}</span>
+              <span>{`${formatDisplayTokenSymbol(tokenA.symbol)}/${formatDisplayTokenSymbol(tokenB.symbol)}`}</span>
               <div className="badge-group">
                 <Badge type={BADGE_TYPE.DARK_DEFAULT} text={feeRateStr} />
               </div>
@@ -439,7 +440,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                     {minPriceStr}(<span>{minTickLabel}</span>) ~
                   </p>
                   <p className={`label-text ${endClass}`}>
-                    {maxPriceStr}(<span>{maxTickLabel}</span>) {tokenB.symbol}
+                    {maxPriceStr}(<span>{maxTickLabel}</span>) {formatDisplayTokenSymbol(tokenB.symbol)}
                   </p>
                 </div>
               </React.Fragment>

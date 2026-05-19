@@ -7,6 +7,7 @@ import { TooltipInfo } from "../PoolGraph.types";
 import { PoolGraphTooltipContainer } from "./PoolGraphTooltip.styles";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 function makeClassNameWithSmallFont(className: string, target: string, limitLength = 21) {
   const additionalClassName = "small-font";
@@ -150,7 +151,7 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
               width={20}
               mobileWidth={20}
             />
-            <span className="symbol">{tooltipInfo.tokenA.symbol}</span>
+            <span className="symbol">{formatDisplayTokenSymbol(tooltipInfo.tokenA.symbol)}</span>
           </span>
           <span className="amount total-amount">
             <span className={makeClassNameWithSmallFont("token-amount-value", displayTooltipInfo.totalTokenAAmount)}>
@@ -182,7 +183,7 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
               width={20}
               mobileWidth={20}
             />
-            <span className="symbol">{tooltipInfo.tokenB.symbol}</span>
+            <span className="symbol">{formatDisplayTokenSymbol(tooltipInfo.tokenB.symbol)}</span>
           </span>
           <span className="amount total-amount">
             <span className={makeClassNameWithSmallFont("token-amount-value", displayTooltipInfo.totalTokenBAmount)}>

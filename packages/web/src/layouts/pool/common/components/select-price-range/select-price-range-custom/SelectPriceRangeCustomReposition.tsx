@@ -21,6 +21,7 @@ import { checkGnotPath } from "@utils/common";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToTick, tickToPrice } from "@utils/swap-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import SelectPriceRangeCutomController from "./price-steps/PriceSteps";
 
@@ -125,13 +126,13 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
 
     return (
       <>
-        1 {currentTokenA.symbol} =&nbsp;
+        1 {formatDisplayTokenSymbol(currentTokenA.symbol)} =&nbsp;
         {formatTokenExchangeRate(priceWithDecimal, {
           maxSignificantDigits: 6,
           minLimit: 0.000001,
         })}
         &nbsp;
-        {currentTokenB.symbol}
+        {formatDisplayTokenSymbol(currentTokenB.symbol)}
       </>
     );
   }, [

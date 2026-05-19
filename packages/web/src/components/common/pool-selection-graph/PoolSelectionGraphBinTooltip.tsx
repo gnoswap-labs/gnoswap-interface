@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import MissingLogo from "../missing-logo/MissingLogo";
 import { TokenModel } from "@models/token/token-model";
 import { useTranslation } from "react-i18next";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 export interface TooltipInfo {
   tokenA: TokenModel;
@@ -128,7 +129,7 @@ export const PoolSelectionGraphBinTooptip: React.FC<PoolSelectionGraphBinTooptip
               width={20}
               mobileWidth={20}
             />
-            <span>{tooltipInfo.tokenA.symbol}</span>
+            <span>{formatDisplayTokenSymbol(tooltipInfo.tokenA.symbol)}</span>
           </span>
           <span className="amount total-amount">
             <MissingLogo
@@ -155,7 +156,7 @@ export const PoolSelectionGraphBinTooptip: React.FC<PoolSelectionGraphBinTooptip
               width={20}
               mobileWidth={20}
             />
-            <span>{tooltipInfo.tokenB.symbol}</span>
+            <span>{formatDisplayTokenSymbol(tooltipInfo.tokenB.symbol)}</span>
           </span>
           <span className="amount total-amount">
             <MissingLogo

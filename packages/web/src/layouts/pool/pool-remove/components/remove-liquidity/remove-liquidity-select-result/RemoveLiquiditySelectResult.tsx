@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
 
@@ -33,7 +34,7 @@ const RemoveLiquiditySelectResult: React.FC<RemoveLiquiditySelectResultProps> = 
                 mobileWidth={24}
               />
               <p>
-                {t("RemovePosition:overview.pooled")} {pooledTokenInfo.token.symbol}
+                {t("RemovePosition:overview.pooled")} {formatDisplayTokenSymbol(pooledTokenInfo.token.symbol)}
               </p>
               <strong>
                 {formatPoolPairAmount(pooledTokenInfo.amount, {

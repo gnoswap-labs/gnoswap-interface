@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
 
@@ -31,7 +32,7 @@ const SelectUnstakeResult: React.FC<SelectUnstakeResultProps> = ({ positions }) 
                 mobileWidth={24}
               />
               <p>
-                {t("UnstakePosition:overview.pooled")} {pooledTokenInfo.token.symbol}
+                {t("UnstakePosition:overview.pooled")} {formatDisplayTokenSymbol(pooledTokenInfo.token.symbol)}
               </p>
               <strong>{pooledTokenInfo.amount}</strong>
             </div>

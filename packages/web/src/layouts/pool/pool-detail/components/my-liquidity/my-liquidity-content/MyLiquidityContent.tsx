@@ -21,7 +21,7 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { isGNOTPath } from "@utils/common";
 import { formatOtherPrice, formatPoolPairAmount } from "@utils/new-number-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { formatDisplayTokenSymbol, makeDisplayTokenAmount } from "@utils/token-utils";
 import { mapToDisplayRewardType } from "@utils/reward-utils";
 import { DEFAULT_TOKEN_PRICE_RATIO } from "@common/values";
 import { sortDisplayRewards } from "@utils/pool-utils";
@@ -693,7 +693,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                     isKMB: false,
                     decimals: positionData.tokenA.decimals,
                   })}{" "}
-                  <span>{positionData?.tokenA?.symbol}</span>{" "}
+                  <span>{formatDisplayTokenSymbol(positionData?.tokenA?.symbol || "")}</span>{" "}
                 </TokenAmountTooltipContentWrapper>
               }
             >
@@ -709,7 +709,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                     {formatPoolPairAmount(tokenABalance, {
                       decimals: 2,
                     })}{" "}
-                    <span className={"token-symbol wrap-text"}>{positionData?.tokenA?.symbol}</span>{" "}
+                    <span className={"token-symbol wrap-text"}>
+                      {formatDisplayTokenSymbol(positionData?.tokenA?.symbol || "")}
+                    </span>{" "}
                     <span className="token-percent">{depositRatioStrOfTokenA}</span>
                   </>
                 ) : (
@@ -734,7 +736,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                     isKMB: false,
                     decimals: positionData.tokenA.decimals,
                   })}{" "}
-                  <span>{positionData?.tokenB?.symbol}</span>{" "}
+                  <span>{formatDisplayTokenSymbol(positionData?.tokenB?.symbol || "")}</span>{" "}
                 </TokenAmountTooltipContentWrapper>
               }
             >
@@ -750,7 +752,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
                     {formatPoolPairAmount(tokenBBalance, {
                       decimals: 2,
                     })}{" "}
-                    <span className={"token-symbol  wrap-text"}>{positionData?.tokenB?.symbol}</span>{" "}
+                    <span className={"token-symbol  wrap-text"}>
+                      {formatDisplayTokenSymbol(positionData?.tokenB?.symbol || "")}
+                    </span>{" "}
                     <span className="token-percent">{depositRatioStrOfTokenB}</span>
                   </>
                 ) : (

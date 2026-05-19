@@ -8,6 +8,7 @@ import { DisplayRewardType, RewardType } from "@constants/option.constant";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
 import { formatOtherPrice, formatPoolPairAmount } from "@utils/new-number-utils";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 import { RewardTooltipContentWrapper } from "./RewardTooltipContent.styles";
 
 export interface PositionRewardForTooltip {
@@ -101,7 +102,7 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({ rewardInfo,
                       width={20}
                       mobileWidth={20}
                     />
-                    <span className="position">{getGnotPath(reward.token).symbol}</span>
+                    <span className="position">{formatDisplayTokenSymbol(getGnotPath(reward.token).symbol)}</span>
                   </div>
                   <span className="position">
                     {formatPoolPairAmount(reward.amount, {

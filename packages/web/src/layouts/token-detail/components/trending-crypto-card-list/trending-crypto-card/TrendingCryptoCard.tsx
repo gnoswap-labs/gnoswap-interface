@@ -5,6 +5,7 @@ import React from "react";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { makeTokenRouteUrl } from "@utils/page.utils";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import { NameSectionWrapper, wrapper } from "./TrendingCryptoCard.styles";
 
@@ -31,7 +32,7 @@ const TrendingCryptoCard: React.FC<TrendingCryptoCardProps> = ({ item }) => {
         <NameSectionWrapper>
           <MissingLogo symbol={item.symbol} url={item.logoURI} className="logo" width={20} mobileWidth={20} />
           <span className="name">{item.name}</span>
-          <span className="symbol">{item.symbol}</span>
+          <span className="symbol">{formatDisplayTokenSymbol(item.symbol)}</span>
         </NameSectionWrapper>
         <span className="price">{item.price}</span>
         <span

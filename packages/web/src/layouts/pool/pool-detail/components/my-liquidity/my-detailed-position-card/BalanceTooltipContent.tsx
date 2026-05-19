@@ -5,6 +5,7 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import { BalanceTooltipContentWrapper } from "./BalanceTooltipContent.styles";
 
@@ -36,7 +37,7 @@ export const BalanceTooltipContent: React.FC<BalanceTooltipContentProps> = ({ ba
               width={20}
               mobileWidth={20}
             />
-            <span className="position">{balance.token.symbol}</span>
+            <span className="position">{formatDisplayTokenSymbol(balance.token.symbol)}</span>
           </div>
           <span className="position">
             {formatPoolPairAmount(balance.balance, {

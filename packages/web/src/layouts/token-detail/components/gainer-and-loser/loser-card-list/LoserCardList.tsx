@@ -8,6 +8,7 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { TokenChangeInfo } from "@models/token/token-change-info";
 import { makeTokenRouteUrl } from "@utils/page.utils";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import { cardStyle, loadingWrapper, NameSectionWrapper } from "../CardListCommonStyle.styles";
 
@@ -39,7 +40,7 @@ const LoserCard: React.FC<LoserCardListProps> = ({ losers = [], loadingLose }) =
               <NameSectionWrapper>
                 <MissingLogo symbol={loser.symbol} url={loser.logoURI} className="logo" width={20} mobileWidth={20} />
                 <span className="name">{loser.name}</span>
-                <span className="symbol">{loser.symbol}</span>
+                <span className="symbol">{formatDisplayTokenSymbol(loser.symbol)}</span>
               </NameSectionWrapper>
               <span className="price">{loser.price}</span>
               <span

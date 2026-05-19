@@ -9,6 +9,7 @@ import { swapDirectionToGuaranteedType } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { floorNumber, toNumberFormat } from "@utils/number-utils";
 import { convertToKMBWithPrefix } from "@utils/stake-position-utils";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
@@ -67,18 +68,18 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     if (swapRateAction === SwapRateAction.ATOB) {
       return (
         <>
-          1&nbsp;{tokenA.symbol}&nbsp;=&nbsp;
+          1&nbsp;{formatDisplayTokenSymbol(tokenA.symbol)}&nbsp;=&nbsp;
           <ExchangeRate value={convertSwapRate(swapRate)} />
-          &nbsp;{tokenB.symbol}
+          &nbsp;{formatDisplayTokenSymbol(tokenB.symbol)}
         </>
       );
     }
 
     return (
       <>
-        1&nbsp;{tokenB.symbol}&nbsp;=&nbsp;
+        1&nbsp;{formatDisplayTokenSymbol(tokenB.symbol)}&nbsp;=&nbsp;
         <ExchangeRate value={convertSwapRate(swapRate)} />
-        &nbsp;{tokenA.symbol}
+        &nbsp;{formatDisplayTokenSymbol(tokenA.symbol)}
       </>
     );
   }, [swapSummaryInfo]);
@@ -227,7 +228,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                     width={24}
                     mobileWidth={24}
                   />
-                  <span>{swapSummaryInfo?.tokenA.symbol}</span>
+                  <span>{formatDisplayTokenSymbol(swapSummaryInfo?.tokenA.symbol || "")}</span>
                 </div>
               </div>
               <div className="amount-info">
@@ -252,7 +253,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                     width={24}
                     mobileWidth={24}
                   />
-                  <span>{swapSummaryInfo?.tokenB.symbol}</span>
+                  <span>{formatDisplayTokenSymbol(swapSummaryInfo?.tokenB.symbol || "")}</span>
                 </div>
               </div>
               <div className="amount-info">

@@ -11,6 +11,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { DeviceSize } from "@styles/media";
 import { makeRouteUrl } from "@utils/page.utils";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 
 import RepositionContainer from "./containers/reposition-container/RepositionContainer";
@@ -31,7 +32,9 @@ const PoolReposition: React.FC = () => {
       {
         title:
           width > DeviceSize.mediumWeb
-            ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} (${Number(data?.fee) / 10000}%)`
+            ? `${formatDisplayTokenSymbol(getGnotPath(data?.tokenA).symbol)}/${formatDisplayTokenSymbol(
+                getGnotPath(data?.tokenB).symbol,
+              )} (${Number(data?.fee) / 10000}%)`
             : "...",
         path: makeRouteUrl(PAGE_PATH.POOL, {
           [QUERY_PARAMETER.POOL_PATH]: poolPath,
