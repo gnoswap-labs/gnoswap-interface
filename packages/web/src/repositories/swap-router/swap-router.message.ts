@@ -6,11 +6,7 @@ import {
   TokenApproveMessageInfo,
   TransactionMessage,
 } from "@common/clients/wallet-client/transaction-messages";
-import {
-  PACKAGE_POOL_ADDRESS,
-  PACKAGE_ROUTER_ADDRESS,
-  PACKAGE_ROUTER_PATH,
-} from "@constants/environment.constant";
+import { PACKAGE_ROUTER_ADDRESS, PACKAGE_ROUTER_PATH } from "@constants/environment.constant";
 import { EstimatedRoute } from "@models/swap/swap-route-info";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
@@ -87,12 +83,6 @@ export function makeExactInSwapRouteMessageWithApproves(
   const approveInfos: TokenApproveMessageInfo[] = [
     {
       tokenPath: inputTokenWrappedPath,
-      targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: tokenAmountRaw,
-      caller,
-    },
-    {
-      tokenPath: inputTokenWrappedPath,
       targetAddress: PACKAGE_ROUTER_ADDRESS,
       amount: tokenAmountRaw,
       caller,
@@ -152,12 +142,6 @@ export function makeExactOutSwapRouteMessageWithApproves(
   messages.push(swapMessage);
 
   const approveInfos: TokenApproveMessageInfo[] = [
-    {
-      tokenPath: inputTokenWrappedPath,
-      targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: tokenAmountLimitRaw,
-      caller,
-    },
     {
       tokenPath: inputTokenWrappedPath,
       targetAddress: PACKAGE_ROUTER_ADDRESS,

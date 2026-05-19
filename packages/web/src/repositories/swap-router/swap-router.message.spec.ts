@@ -3,7 +3,6 @@ import type { EstimatedRoute } from "@models/swap/swap-route-info";
 import type { TokenModel } from "@models/token/token-model";
 
 jest.mock("@constants/environment.constant", () => ({
-  PACKAGE_POOL_ADDRESS: "pool_address",
   PACKAGE_ROUTER_ADDRESS: "router_address",
   PACKAGE_ROUTER_PATH: "router_path",
   WRAPPED_GNOT_PATH: "wugnot",
@@ -71,17 +70,9 @@ describe("swap-router.message.ts", () => {
       fetchAllowance,
     );
 
-    const { approveMessages, txMessages, resetMessages } = splitMessages(messages, 2);
+    const { approveMessages, txMessages, resetMessages } = splitMessages(messages, 1);
 
     expect(approveMessages).toEqual([
-      {
-        caller,
-        send: "",
-        pkg_path: "token_in",
-        func: "Approve",
-        args: ["pool_address", "1250000"],
-        gasFee: undefined,
-      },
       {
         caller,
         send: "",
@@ -100,6 +91,7 @@ describe("swap-router.message.ts", () => {
     expect(resetMessages).toEqual(
       approveMessages.map(message => ({ ...message, args: [message.args?.[0] || "", "0"] })),
     );
+    expect(messages.some(message => message.args?.[0] === "pool_address" && message.func === "Approve")).toBe(false);
     expect(messages.some(message => message.pkg_path === "token_out" && message.func === "Approve")).toBe(false);
   });
 
@@ -123,17 +115,9 @@ describe("swap-router.message.ts", () => {
       fetchAllowance,
     );
 
-    const { approveMessages, txMessages, resetMessages } = splitMessages(messages, 2);
+    const { approveMessages, txMessages, resetMessages } = splitMessages(messages, 1);
 
     expect(approveMessages).toEqual([
-      {
-        caller,
-        send: "",
-        pkg_path: "token_in",
-        func: "Approve",
-        args: ["pool_address", "1250000"],
-        gasFee: undefined,
-      },
       {
         caller,
         send: "",
@@ -152,6 +136,7 @@ describe("swap-router.message.ts", () => {
     expect(resetMessages).toEqual(
       approveMessages.map(message => ({ ...message, args: [message.args?.[0] || "", "0"] })),
     );
+    expect(messages.some(message => message.args?.[0] === "pool_address" && message.func === "Approve")).toBe(false);
     expect(messages.some(message => message.pkg_path === "token_out" && message.func === "Approve")).toBe(false);
   });
 });
