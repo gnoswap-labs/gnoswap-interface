@@ -7,12 +7,11 @@ import {
   TokenApproveMessageInfo,
   TransactionMessage,
 } from "@common/clients/wallet-client/transaction-messages";
-import { DEFAULT_TRANSACTION_DEADLINE } from "@common/values";
+import { DEFAULT_TRANSACTION_DEADLINE, GNS_DEPOSIT_AMOUNT } from "@common/values";
 import {
   GNS_TOKEN_PATH,
   PACKAGE_POOL_ADDRESS,
   PACKAGE_POOL_PATH,
-  PACKAGE_POSITION_ADDRESS,
   PACKAGE_POSITION_PATH,
   PACKAGE_STAKER_ADDRESS,
   PACKAGE_STAKER_PATH,
@@ -21,7 +20,7 @@ import {
 import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath, isGNOTPath, wrapNativeTokenPath } from "@utils/common";
-import { MAX_INT64, tickToSqrtPriceX96 } from "@utils/math.utils";
+import { tickToSqrtPriceX96 } from "@utils/math.utils";
 import { isOrderedTokenPaths } from "@utils/pool-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
 import { priceToTick } from "@utils/swap-utils";
@@ -64,7 +63,7 @@ export function makeCreatePoolMessageWithApproves(
     approveMessageInfos.push({
       tokenPath: GNS_TOKEN_PATH,
       targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: MAX_INT64,
+      amount: createPoolFee,
       caller,
     });
   }
@@ -134,7 +133,7 @@ export function makePositionMintMessageWithApproves(
     approveMessageInfos.push({
       tokenPath: tokenAWrappedPath,
       targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: MAX_INT64,
+      amount: tokenAAmountRaw,
       caller,
     });
   }
@@ -143,16 +142,7 @@ export function makePositionMintMessageWithApproves(
     approveMessageInfos.push({
       tokenPath: tokenBWrappedPath,
       targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: MAX_INT64,
-      caller,
-    });
-  }
-
-  if (sendAmount && Number(sendAmount) > 0) {
-    approveMessageInfos.push({
-      tokenPath: WRAPPED_GNOT_PATH,
-      targetAddress: PACKAGE_POSITION_ADDRESS,
-      amount: MAX_INT64,
+      amount: tokenBAmountRaw,
       caller,
     });
   }
@@ -212,20 +202,26 @@ export function makeCreateExternalIncentiveMessageWithApproves(
     approveMessageInfos.push({
       tokenPath: GNS_TOKEN_PATH,
       targetAddress: PACKAGE_STAKER_ADDRESS,
-      amount: MAX_INT64,
+      amount: GNS_DEPOSIT_AMOUNT,
+      caller,
+    });
+    approveMessageInfos.push({
+      tokenPath: GNS_TOKEN_PATH,
+      targetAddress: PACKAGE_STAKER_ADDRESS,
+      amount: rewardAmountRaw,
       caller,
     });
   } else {
     approveMessageInfos.push({
       tokenPath: GNS_TOKEN_PATH,
       targetAddress: PACKAGE_STAKER_ADDRESS,
-      amount: MAX_INT64,
+      amount: GNS_DEPOSIT_AMOUNT,
       caller,
     });
     approveMessageInfos.push({
       tokenPath: rewardTokenPath,
       targetAddress: PACKAGE_STAKER_ADDRESS,
-      amount: MAX_INT64,
+      amount: rewardAmountRaw,
       caller,
     });
   }
