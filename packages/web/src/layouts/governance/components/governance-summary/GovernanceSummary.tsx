@@ -47,17 +47,16 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
 
   const displayGovernanceSummary: GovernanceSummaryInfo = React.useMemo(() => {
     const { delegationInfo } = governanceSummary;
-    const GNS_TOKEN_DECIMALS = GNS_TOKEN.decimals;
 
     return {
       ...governanceSummary,
       delegationInfo: {
-        totalDelegationAmount: String(rawToDisplayAmount(delegationInfo.totalDelegationAmount, GNS_TOKEN_DECIMALS)),
+        totalDelegationAmount: String(rawToDisplayAmount(delegationInfo.totalDelegationAmount, GNS_TOKEN.decimals)),
         governanceDelegationAmount: String(
-          rawToDisplayAmount(delegationInfo.governanceDelegationAmount, GNS_TOKEN_DECIMALS),
+          rawToDisplayAmount(delegationInfo.governanceDelegationAmount, GNS_TOKEN.decimals),
         ),
         launchpadDelegationAmount: String(
-          rawToDisplayAmount(delegationInfo.launchpadDelegationAmount, GNS_TOKEN_DECIMALS),
+          rawToDisplayAmount(delegationInfo.launchpadDelegationAmount, GNS_TOKEN.decimals),
         ),
       },
     };
@@ -101,7 +100,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
           ...gnotPathInfo,
         };
 
-        const displayAmount = rawToDisplayAmount(balance.amount, tokenInfo.decimals || 0);
+        const displayAmount = rawToDisplayAmount(balance.amount, tokenInfo.decimals);
         const usdValue = getTokenUSDPrice(balance.path, displayAmount) || 0;
 
         return {
@@ -111,7 +110,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
         };
       })
       .sort((a, b) => b.usdValue - a.usdValue);
-  }, [governanceCommunityPoolBalances]);
+  }, [getGnotPath, getTokenUSDPrice, governanceCommunityPoolBalances, tokens]);
 
   const delegatedRatioValue = React.useMemo(() => {
     return `${formatOtherPrice(Number(governanceSummary.delegatedRatio) * 100, {

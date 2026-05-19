@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -110,7 +111,7 @@ const PoolIncentivizeContainer: React.FC = () => {
 
   const btnStatus: { text: string; disabled: boolean } = useMemo(() => {
     const depositDisplayAmount = makeDisplayTokenAmount(GNS_TOKEN, depositGnsAmount) || 0;
-    const depositRawAmount = Number(depositGnsAmount);
+    const depositRawAmount = depositGnsAmount;
 
     if (!connected) {
       return {
@@ -151,7 +152,7 @@ const PoolIncentivizeContainer: React.FC = () => {
     if (
       (token?.path === GNS_TOKEN_PATH &&
         Number(tokenAmountInput.amount) + depositDisplayAmount > Number(tokenAmountInput.balance.replace(/,/g, ""))) ||
-      (token?.path !== GNS_TOKEN_PATH && depositRawAmount > (balances[GNS_TOKEN_PATH] || 0))
+      (token?.path !== GNS_TOKEN_PATH && BigNumber(depositRawAmount).isGreaterThan(balances[GNS_TOKEN_PATH] || 0))
     )
       return {
         text: t("IncentivizePool:submitBtn.insuffiDep"),

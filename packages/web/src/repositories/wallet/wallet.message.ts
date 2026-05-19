@@ -9,12 +9,12 @@ export function makeTransferGNOTTokenMessages({
   fromAddress,
   toAddress,
 }: {
-  tokenAmount: number;
+  tokenAmount: string;
   fromAddress: string;
   toAddress: string;
 }): TransactionMessage[] {
   const bankSendMessage = makeTransferNativeTokenMessage(
-    tokenAmount.toString(),
+    tokenAmount,
     GNOT_UNIT_DENOM,
     fromAddress,
     toAddress,
@@ -30,7 +30,7 @@ export function makeTransferGRC20TokenMessages({
   toAddress,
 }: {
   token: TokenModel;
-  tokenAmount: number;
+  tokenAmount: string;
   fromAddress: string;
   toAddress: string;
 }): TransactionMessage[] {
@@ -38,7 +38,7 @@ export function makeTransferGRC20TokenMessages({
     packagePath: token.path,
     send: "",
     func: "Transfer",
-    args: [toAddress, tokenAmount.toString()],
+    args: [toAddress, tokenAmount],
     caller: fromAddress,
   });
 

@@ -13,13 +13,12 @@ import IncentivizePoolHistory from "../../components/incentivize-pool-history/In
 const shiftToDisplay = (token: Pick<TokenModel, "decimals">, amount: string) => {
   const bn = new BigNumber(amount);
   if (bn.isNaN()) return "0";
-  return bn.shiftedBy(-(token.decimals || 0)).toFixed();
+  return bn.shiftedBy(-token.decimals).toFixed();
 };
 
 const IncentivizePoolHistoryContainer = () => {
   const { account } = useWallet();
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
-
   const { data: rawPoolStakingList = [], isFetched: isFetchedStakingList } = useGetPoolStakingListByAddress(
     account?.address || "",
     {

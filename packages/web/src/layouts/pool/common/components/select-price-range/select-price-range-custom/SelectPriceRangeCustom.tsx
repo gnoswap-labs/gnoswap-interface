@@ -104,10 +104,10 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
 
       const currentPrice = (() => {
         if (selectPool.compareToken?.path === tokenA.path) {
-          return 10 ** ((tokenB.decimals || 0) - (tokenA.decimals || 0)) * selectPool.currentPrice;
+          return 10 ** (tokenB.decimals - tokenA.decimals) * selectPool.currentPrice;
         }
 
-        return 10 ** ((tokenA.decimals || 0) - (tokenB.decimals || 0)) * selectPool.currentPrice;
+        return 10 ** (tokenA.decimals - tokenB.decimals) * selectPool.currentPrice;
       })();
 
       return (
@@ -305,7 +305,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
       return [getGnotPath(tokenA).symbol, getGnotPath(tokenB).symbol];
     }, [tokenA, tokenB, isKeepToken]);
 
-    const decimalsRatio = useMemo(() => tokenB.decimals - tokenA.decimals || 0, [tokenA.decimals, tokenB.decimals]);
+    const decimalsRatio = useMemo(() => tokenB.decimals - tokenA.decimals, [tokenA.decimals, tokenB.decimals]);
 
     if (selectPool.renderState() === "NONE") {
       return <></>;

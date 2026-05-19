@@ -223,8 +223,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool?.tokenB?.symbol, pool?.tokenA?.symbol]);
 
   const currentPriceRatioNumber = useMemo(() => {
-    const tokenADecimals = pool.tokenA.decimals || 0;
-    const tokenBDecimals = pool.tokenB.decimals || 0;
+    const tokenADecimals = pool.tokenA.decimals;
+    const tokenBDecimals = pool.tokenB.decimals;
 
     return BigNumber(tickToPrice(pool.currentTick))
       .shiftedBy(-tokenADecimals + tokenBDecimals)

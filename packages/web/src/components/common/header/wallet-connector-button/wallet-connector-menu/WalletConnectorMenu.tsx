@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useTheme } from "@emotion/react";
 import { Trans, useTranslation } from "next-i18next";
 
+import { GNOT_TOKEN } from "@common/values/token-constant";
 import { SOCIAL_WALLET_EXTERNAL_URL } from "@constants/external-url.contant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconInfo from "@components/common/icons/IconInfo";
@@ -130,7 +131,7 @@ const WalletConnectorMenu: React.FC<WalletConnectorMenuProps> = ({
     const balance = gnotBalance || account?.balances?.[0].amount || "-";
     const formattedPrice =
       BigNumber(balance ?? 0)
-        .shiftedBy((gnotToken?.decimals ?? 0) * -1)
+        .shiftedBy((gnotToken?.decimals ?? GNOT_TOKEN.decimals) * -1)
         .toString()
         .match(roundDownDecimalNumber(6))
         ?.toString() ?? 0;

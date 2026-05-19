@@ -41,7 +41,6 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
     incentiveId ?? "",
   );
   const { getGnotPath } = useGnotToGnot();
-
   const currentPool = React.useMemo(() => {
     if (!pool) {
       return null;

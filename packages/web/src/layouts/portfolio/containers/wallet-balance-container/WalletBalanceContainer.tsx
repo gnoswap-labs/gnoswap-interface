@@ -26,6 +26,7 @@ import { DexEvent } from "@repositories/common";
 import { delay } from "@utils/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { toUnitFormat } from "@utils/number-utils";
+import { makeRawTokenAmount } from "@utils/token-utils";
 import { isEmptyObject } from "@utils/validation-utils";
 
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
@@ -186,14 +187,16 @@ const WalletBalanceContainer: React.FC = () => {
   const availableBalance = useMemo(() => {
     return Object.entries(balancesPrice).reduce((acc, [key, value]) => {
       const path = key === "ugnot" ? WRAPPED_GNOT_PATH : key;
+      const token = tokens.find(token => token.priceID === key || token.path === key || token.path === path);
+      const decimals = token?.decimals ?? GNOT_TOKEN.decimals;
       const balance =
         BigNumber(value || 0)
           .multipliedBy(tokenPrices?.[path]?.pricesBefore?.latestPrice || 0)
-          .shiftedBy(GNOT_TOKEN.decimals * -1)
+          .shiftedBy(-decimals)
           .toNumber() || 0;
       return BigNumber(acc).plus(balance).toNumber();
     }, 0);
-  }, [balancesPrice, tokenPrices]);
+  }, [balancesPrice, tokenPrices, tokens]);
 
   const availableBalanceStr = useMemo(() => {
     return availableBalance;
@@ -264,7 +267,7 @@ const WalletBalanceContainer: React.FC = () => {
         fromAddress: account.address,
         toAddress: address,
         token: withdrawInfo,
-        tokenAmount: BigNumber(amount).multipliedBy(Math.pow(10, withdrawInfo.decimals)).toNumber(),
+        tokenAmount: makeRawTokenAmount(withdrawInfo, amount) || "0",
       },
       withdrawInfo.type,
     );

@@ -264,7 +264,6 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           changeAmount={gnsAmountInput.changeAmount}
           changeToken={() => {}}
           style={{ padding: "16px" }}
-          integersOnly={true}
         />
       </article>
 
@@ -428,7 +427,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
         <div className="delegatee-info-rows">
           <div className="label">{t("Governance:myDel.delModal.selectDel.votingPower")}</div>
           <div className="value no-wrap">
-            <MissingLogo symbol="xGNS" url={XGNS_TOKEN.logoURI} width={24} />
+            <MissingLogo symbol={XGNS_TOKEN.symbol} url={XGNS_TOKEN.logoURI} width={24} />
             {formatOtherPrice(toDisplayVotingPowerFromRaw(selectedDelegateVotingPowerRaw), {
               isKMB: false,
               usd: false,

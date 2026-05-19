@@ -17,6 +17,7 @@ import { useGetAvgBlockTime } from "@query/address";
 import { useGetTokens } from "@query/token";
 import { checkGnotPath } from "@utils/common";
 import { formatPoolPairAmount, formatPrice } from "@utils/new-number-utils";
+import { makeRawTokenAmount } from "@utils/token-utils";
 import { isEmptyObject } from "@utils/validation-utils";
 
 import useSendAsset from "@hooks/wallet/data/useSendAsset";
@@ -188,7 +189,7 @@ const AssetListContainer: React.FC = () => {
           return formatPrice(
             BigNumber(tokenPrice)
               .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || 0)
-              .dividedBy(10 ** (item.decimals || 0)),
+              .dividedBy(10 ** item.decimals),
             {
               isKMB: false,
             },
@@ -251,7 +252,7 @@ const AssetListContainer: React.FC = () => {
           return formatPrice(
             BigNumber(tokenPrice)
               .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || 0)
-              .dividedBy(10 ** (item.decimals || 0)),
+              .dividedBy(10 ** item.decimals),
             {
               isKMB: false,
             },
@@ -431,7 +432,7 @@ const AssetListContainer: React.FC = () => {
         fromAddress: account.address,
         toAddress: address,
         token: withdrawInfo,
-        tokenAmount: BigNumber(amount).multipliedBy(1000000).toNumber(),
+        tokenAmount: makeRawTokenAmount(withdrawInfo, amount) || "0",
       },
       withdrawInfo.type,
     );

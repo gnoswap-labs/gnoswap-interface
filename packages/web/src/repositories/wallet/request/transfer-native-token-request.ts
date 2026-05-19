@@ -4,7 +4,7 @@ export interface TransferNativeTokenRequest {
   token: TokenModel;
 
   // only integer
-  tokenAmount: number;
+  tokenAmount: string;
 
   fromAddress: string;
 

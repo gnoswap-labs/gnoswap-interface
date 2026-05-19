@@ -351,8 +351,8 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
     const decimalIndex = value.indexOf(".");
     if (decimalIndex !== -1) {
       const decimals = value.slice(decimalIndex + 1);
-      if (decimals.length > 6) {
-        e.target.value = value.slice(0, decimalIndex + 7);
+      if (decimals.length > GNS_TOKEN.decimals) {
+        e.target.value = value.slice(0, decimalIndex + GNS_TOKEN.decimals + 1);
       }
     }
   };

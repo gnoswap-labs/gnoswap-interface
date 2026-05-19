@@ -97,7 +97,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
         }),
       )
       .sort(sortByAmountAndDate);
-  }, [myDelegates.delegates]);
+  }, [myDelegates.delegates, sortByAmountAndDate]);
 
   const myUnDelegatesInfo: DelegationItemInfo[] = useMemo(() => {
     return myUnDelegates.delegations
@@ -114,7 +114,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
         }),
       )
       .sort(sortByAmountAndDate);
-  }, [myUnDelegates.delegations]);
+  }, [myUnDelegates.delegations, sortByAmountAndDate]);
 
   const hasMyDelegates = myDelegatesInfo.length > 0;
   const hasMyUnDelegates = myUnDelegatesInfo.length > 0;

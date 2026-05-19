@@ -25,7 +25,7 @@ export function makeDisplayTokenAmount(
   amount: bigint | string | number,
   options?: { decimalsWithoutRounding?: number },
 ) {
-  const number = BigNumber(Number(amount));
+  const number = BigNumber(amount.toString());
   if (number.isNaN()) {
     return null;
   }
@@ -36,7 +36,7 @@ export function makeDisplayTokenAmount(
     );
   }
 
-  return number.shiftedBy(-(token.decimals || 0)).toNumber();
+  return number.shiftedBy(-token.decimals).toNumber();
 }
 
 export function makeShiftAmount(

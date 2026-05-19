@@ -51,12 +51,13 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
   const { guaranteedTypeStr, guaranteedStr } = useMemo(() => {
     const swapDirection = swapSummaryInfo.swapDirection;
     const { amount, currency } = swapSummaryInfo.guaranteedAmount;
+    const guaranteedToken = swapDirection === "EXACT_IN" ? swapSummaryInfo.tokenB : swapSummaryInfo.tokenA;
 
     return {
       guaranteedTypeStr: t(swapDirectionToGuaranteedType(swapDirection)),
-      guaranteedStr: `${toNumberFormat(amount || 0, 6)} ${currency}`,
+      guaranteedStr: `${toNumberFormat(amount || 0, guaranteedToken.decimals)} ${currency}`,
     };
-  }, [swapSummaryInfo.swapDirection, swapSummaryInfo.guaranteedAmount, t]);
+  }, [swapSummaryInfo.swapDirection, swapSummaryInfo.guaranteedAmount, swapSummaryInfo.tokenA, swapSummaryInfo.tokenB, t]);
 
   const { gasFeeStr, gasFeeUSDStr } = useMemo(() => {
     const { amount, currency } = swapSummaryInfo.gasFee;

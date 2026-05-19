@@ -1,10 +1,10 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
+import { GNS_TOKEN } from "@common/values/token-constant";
 import { useLaunchpadHandler } from "@hooks/launchpad/data/use-launchpad-handler";
 import { LaunchpadParticipationModel, LaunchpadPoolModel } from "@models/launchpad";
 import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
-import { GNS_TOKEN } from "@common/values/token-constant";
 
 import { MyParticipationWrapper } from "./LaunchpadMyParticipation.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
