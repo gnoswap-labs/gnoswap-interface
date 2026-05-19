@@ -1,0 +1,157 @@
+import type { TransactionMessage } from "@common/clients/wallet-client/transaction-messages/common";
+import type { EstimatedRoute } from "@models/swap/swap-route-info";
+import type { TokenModel } from "@models/token/token-model";
+
+jest.mock("@constants/environment.constant", () => ({
+  PACKAGE_POOL_ADDRESS: "pool_address",
+  PACKAGE_ROUTER_ADDRESS: "router_address",
+  PACKAGE_ROUTER_PATH: "router_path",
+  WRAPPED_GNOT_PATH: "wugnot",
+}));
+
+import {
+  makeExactInSwapRouteMessageWithApproves,
+  makeExactOutSwapRouteMessageWithApproves,
+} from "@repositories/swap-router/swap-router.message";
+
+const createTokenModel = (path: string, overrides?: Partial<TokenModel>): TokenModel => ({
+  path,
+  type: "GRC20",
+  chainId: "dev.gnoswap",
+  createdAt: "2024-01-24T15:12:21Z",
+  name: path,
+  symbol: path,
+  decimals: 6,
+  logoURI: "",
+  priceID: path,
+  ...overrides,
+});
+
+const route: EstimatedRoute = {
+  quote: 1,
+  amountIn: 1_000_000n,
+  amountOut: 2_000_000n,
+  pools: [
+    {
+      tokenA: "token_in",
+      tokenB: "token_out",
+      fee: 3000,
+      price: 1,
+      tokenABalance: 0,
+      tokenBBalance: 0,
+      poolPath: "pool_path",
+    },
+  ],
+};
+
+const splitMessages = (messages: TransactionMessage[], approveCount: number) => ({
+  approveMessages: messages.slice(0, approveCount),
+  txMessages: messages.slice(approveCount, messages.length - approveCount),
+  resetMessages: messages.slice(messages.length - approveCount),
+});
+
+describe("swap-router.message.ts", () => {
+  it("approves only input token for exact-in swaps using exact input amount", async () => {
+    const caller = "caller";
+    const inputToken = createTokenModel("token_in");
+    const outputToken = createTokenModel("token_out");
+    const fetchAllowance = jest.fn(async () => 0);
+
+    const messages = await makeExactInSwapRouteMessageWithApproves(
+      {
+        inputToken,
+        outputToken,
+        tokenAmount: 1.25,
+        estimatedRoutes: [route],
+        tokenAmountLimit: 2,
+        deadline: 123,
+        caller,
+        referrerAddress: null,
+      },
+      fetchAllowance,
+    );
+
+    const { approveMessages, txMessages, resetMessages } = splitMessages(messages, 2);
+
+    expect(approveMessages).toEqual([
+      {
+        caller,
+        send: "",
+        pkg_path: "token_in",
+        func: "Approve",
+        args: ["pool_address", "1250000"],
+        gasFee: undefined,
+      },
+      {
+        caller,
+        send: "",
+        pkg_path: "token_in",
+        func: "Approve",
+        args: ["router_address", "1250000"],
+        gasFee: undefined,
+      },
+    ]);
+    expect(txMessages).toHaveLength(1);
+    expect(txMessages[0]).toMatchObject({
+      pkg_path: "router_path",
+      func: "ExactInSwapRoute",
+      args: ["token_in", "token_out", "1250000", "token_in:token_out:3000", "1", "2000000", "123", ""],
+    });
+    expect(resetMessages).toEqual(
+      approveMessages.map(message => ({ ...message, args: [message.args?.[0] || "", "0"] })),
+    );
+    expect(messages.some(message => message.pkg_path === "token_out" && message.func === "Approve")).toBe(false);
+  });
+
+  it("approves only input token for exact-out swaps using max sent amount", async () => {
+    const caller = "caller";
+    const inputToken = createTokenModel("token_in");
+    const outputToken = createTokenModel("token_out");
+    const fetchAllowance = jest.fn(async () => 0);
+
+    const messages = await makeExactOutSwapRouteMessageWithApproves(
+      {
+        inputToken,
+        outputToken,
+        tokenAmount: 2,
+        estimatedRoutes: [route],
+        tokenAmountLimit: 1.25,
+        deadline: 123,
+        caller,
+        referrerAddress: null,
+      },
+      fetchAllowance,
+    );
+
+    const { approveMessages, txMessages, resetMessages } = splitMessages(messages, 2);
+
+    expect(approveMessages).toEqual([
+      {
+        caller,
+        send: "",
+        pkg_path: "token_in",
+        func: "Approve",
+        args: ["pool_address", "1250000"],
+        gasFee: undefined,
+      },
+      {
+        caller,
+        send: "",
+        pkg_path: "token_in",
+        func: "Approve",
+        args: ["router_address", "1250000"],
+        gasFee: undefined,
+      },
+    ]);
+    expect(txMessages).toHaveLength(1);
+    expect(txMessages[0]).toMatchObject({
+      pkg_path: "router_path",
+      func: "ExactOutSwapRoute",
+      args: ["token_in", "token_out", "2000000", "token_in:token_out:3000", "1", "1250000", "123", ""],
+    });
+    expect(resetMessages).toEqual(
+      approveMessages.map(message => ({ ...message, args: [message.args?.[0] || "", "0"] })),
+    );
+    expect(messages.some(message => message.pkg_path === "token_out" && message.func === "Approve")).toBe(false);
+  });
+});
