@@ -1,14 +1,14 @@
+import { useMutation, useQuery } from "@tanstack/react-query";
 import React from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
 
-import { QUERY_KEY } from "@query/query-keys";
 import { FAUCET_RESPONSE_MESSAGE } from "@common/errors/faucet/faucet-error";
+import { QUERY_KEY } from "@query/query-keys";
 
-import { FaucetResponse } from "@repositories/faucet/response";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { FaucetResponse } from "@repositories/faucet/response";
 
-const NATIVE_FAUCET_AMOUNT = "10000000ugnot";
+const NATIVE_FAUCET_AMOUNT = "100000000ugnot";
 
 export interface UseFaucetNativeReturn {
   isSupportedFaucetNative: boolean;
