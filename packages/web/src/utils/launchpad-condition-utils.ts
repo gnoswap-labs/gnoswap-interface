@@ -27,7 +27,7 @@ export function getLaunchpadConditionDisplayAmount(
     return amount;
   }
 
-  return amount.shiftedBy(-(token.decimals || 0));
+  return amount.shiftedBy(-token.decimals);
 }
 
 export function formatLaunchpadConditionAmount(

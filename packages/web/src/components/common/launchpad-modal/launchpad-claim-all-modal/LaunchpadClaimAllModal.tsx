@@ -46,7 +46,7 @@ const LaunchpadClaimAllModal = ({
         ...participation,
         claimableRewardAmount: rawToDisplayAmount(
           participation.claimableRewardAmount,
-          participation.rewardToken?.decimals || 0,
+          participation.rewardToken?.decimals ?? rewardInfo.rewardTokenDecimals,
         ),
         depositAmount: rawToDisplayAmount(participation.depositAmount, GNS_TOKEN.decimals),
       };

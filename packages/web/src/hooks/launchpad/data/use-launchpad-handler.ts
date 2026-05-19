@@ -165,7 +165,7 @@ export const useLaunchpadHandler = () => {
 
     // Calculate the USD value of the Deposited USD available for withdrawal.
     const depositAmount = isWithdrawable ? participationInfo.depositAmount : 0;
-    const depositUSDValue = calculateUSDValueBy(depositAmount, tokenPriceMap?.[GNS_TOKEN.path]?.usd);
+    const depositUSDValue = calculateUSDValueBy(depositAmount, tokenPriceMap?.[GNS_TOKEN.priceID]?.usd);
 
     // Calculate the USD value of the claimable reward.
     const rewardAmount = participationInfo.claimableRewardAmount;
@@ -236,7 +236,7 @@ export const useLaunchpadHandler = () => {
       return BigNumber(accumulated).plus(info.depositAmount);
     }, BigNumber(0));
 
-    const depositUSDValue = calculateUSDValueBy(depositAmount, tokenPriceMap?.[GNS_TOKEN.path]?.usd);
+    const depositUSDValue = calculateUSDValueBy(depositAmount, tokenPriceMap?.[GNS_TOKEN.priceID]?.usd);
 
     // Calculate the USD value of the claimable reward.
     const rewardAmount = participationInfos.reduce((accumulated, current) => {

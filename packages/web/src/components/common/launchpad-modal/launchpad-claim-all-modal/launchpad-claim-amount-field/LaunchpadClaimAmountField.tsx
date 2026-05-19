@@ -56,7 +56,7 @@ const LaunchpadClaimAmountField = ({ amount, rewardInfo, type }: LaunchpadClaimA
             src={DEFAULT_DEPOSIT_TOKEN?.logoURI}
             alt={`${DEFAULT_DEPOSIT_TOKEN?.symbol} token symbol image`}
           />
-          {toNumberFormat(amount, 6)} {DEFAULT_DEPOSIT_TOKEN?.symbol}
+          {toNumberFormat(amount, DEFAULT_DEPOSIT_TOKEN.decimals)} {DEFAULT_DEPOSIT_TOKEN?.symbol}
         </div>
         <div className="value-price">{estimatePrice}</div>
       </ClaimAllFieldWrapper>
@@ -68,7 +68,7 @@ const LaunchpadClaimAmountField = ({ amount, rewardInfo, type }: LaunchpadClaimA
       <ClaimAllFieldWrapper>
         <div className="value-token">
           <MissingLogo symbol={rewardInfo.rewardTokenSymbol} url={rewardInfo?.rewardTokenLogoURL} width={24} />
-          {toNumberFormat(amount, 6)} {rewardInfo?.rewardTokenSymbol}
+          {toNumberFormat(amount, rewardInfo.rewardTokenDecimals)} {rewardInfo?.rewardTokenSymbol}
         </div>
         <div className="value-price">{estimatePrice}</div>
       </ClaimAllFieldWrapper>

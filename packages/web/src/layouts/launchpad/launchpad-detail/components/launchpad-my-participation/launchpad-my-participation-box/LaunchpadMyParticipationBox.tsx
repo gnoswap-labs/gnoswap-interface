@@ -4,8 +4,8 @@ import { useTranslation } from "next-i18next";
 
 import { LaunchpadParticipationModel } from "@models/launchpad";
 import { ParticipateButtonProps } from "../LaunchpadMyParticipation";
-import { GNS_TOKEN, LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN } from "@common/values/token-constant";
 import { ProjectRewardInfoModel } from "@layouts/launchpad/launchpad-detail/LaunchpadDetail";
+import { GNS_TOKEN } from "@common/values/token-constant";
 import { getDateUtcToLocal } from "@common/utils/date-util";
 import { rawToDisplayAmount, toNumberFormat } from "@utils/number-utils";
 import { formatRate } from "@utils/new-number-utils";
@@ -73,8 +73,13 @@ const LaunchpadMyParticipationBox = ({ item, idx, rewardInfo, handleClickClaim }
         <div className="participation-box-data">
           <div className="participation-box-data-key">{t("Launchpad:myParticipation.col.depositAmounts")}</div>
           <div className="participation-box-data-value">
-            <Image src="/gns.svg" width={24} height={24} alt="GNS symbol image" />
-            {toNumberFormat(displayParticipationModel.depositAmount, 2)} {LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}
+            <Image
+              src={GNS_TOKEN.logoURI || "/gns.svg"}
+              width={24}
+              height={24}
+              alt={`${GNS_TOKEN.symbol} symbol image`}
+            />
+            {toNumberFormat(displayParticipationModel.depositAmount, 2)} {GNS_TOKEN.symbol}
           </div>
         </div>
         <div className="participation-box-data">
@@ -91,7 +96,7 @@ const LaunchpadMyParticipationBox = ({ item, idx, rewardInfo, handleClickClaim }
               mobileWidth={24}
             />
             <>
-              {isClaimed ? 0 : toNumberFormat(displayParticipationModel.claimableRewardAmount, 6)}{" "}
+              {isClaimed ? 0 : toNumberFormat(displayParticipationModel.claimableRewardAmount, rewardInfo.rewardTokenDecimals)}{" "}
               {rewardInfo?.rewardTokenSymbol}
             </>
           </div>
@@ -114,7 +119,7 @@ const LaunchpadMyParticipationBox = ({ item, idx, rewardInfo, handleClickClaim }
                   mobileWidth={24}
                 />
                 <>
-                  {toNumberFormat(displayParticipationModel.claimedRewardAmount, 6)} {rewardInfo?.rewardTokenSymbol}
+                  {toNumberFormat(displayParticipationModel.claimedRewardAmount, rewardInfo.rewardTokenDecimals)} {rewardInfo?.rewardTokenSymbol}
                 </>
               </div>
             </div>
