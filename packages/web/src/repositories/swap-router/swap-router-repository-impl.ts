@@ -57,7 +57,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     const tokenAmountRaw =
       exactType === "EXACT_IN"
         ? makeRawTokenAmount(inputToken, tokenAmount)
-        : makeRawTokenAmount(inputToken, tokenAmount);
+        : makeRawTokenAmount(outputToken, tokenAmount);
 
     const response = await this.networkClient.post<
       {

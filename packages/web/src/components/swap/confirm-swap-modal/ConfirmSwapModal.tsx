@@ -110,8 +110,9 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   const guaranteedStr = useMemo(() => {
     if (!swapSummaryInfo) return;
     const { amount, currency } = swapSummaryInfo.guaranteedAmount;
-    return `${toNumberFormat(amount, 6)} ${currency}`;
-  }, [swapSummaryInfo?.guaranteedAmount]);
+    const guaranteedToken = swapSummaryInfo.swapDirection === "EXACT_IN" ? swapSummaryInfo.tokenB : swapSummaryInfo.tokenA;
+    return `${toNumberFormat(amount, guaranteedToken.decimals)} ${currency}`;
+  }, [swapSummaryInfo]);
 
   const gasFeeStr = useMemo(() => {
     if (!swapSummaryInfo) return;

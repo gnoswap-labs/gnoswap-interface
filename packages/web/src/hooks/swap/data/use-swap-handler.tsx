@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { ERROR_VALUE as SWAP_ERROR_VALUE } from "@common/errors/swap";
 import { DEFAULT_GAS_FEE, MINIMUM_GNOT_SWAP_AMOUNT } from "@common/values";
+import { GNOT_TOKEN } from "@common/values/token-constant";
 import ConfirmSwapModal from "@components/swap/confirm-swap-modal/ConfirmSwapModal";
 import { PAGE_PATH } from "@constants/page.constant";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
@@ -126,7 +127,11 @@ function compareAmountFn(amountA: string | number | bigint, amountB: string | nu
 
 function handleAmount(changed: string, token: TokenModel | null) {
   let value = changed;
-  const decimals = token?.decimals || 0;
+  const decimals = token?.decimals;
+
+  if (decimals === undefined) {
+    return { isValid: false, value: changed };
+  }
 
   // Check if input exceeds decimal places
   if (changed.includes(".") && changed.split(".")[1].length > decimals) {
@@ -137,7 +142,7 @@ function handleAmount(changed: string, token: TokenModel | null) {
   if (!value || BigNumber(value).isZero()) {
     value = changed;
   } else {
-    value = BigNumber(value).toFixed(decimals || 0, 1);
+    value = BigNumber(value).toFixed(decimals, 1);
   }
 
   if (BigNumber(changed).isEqualTo(value)) {
@@ -234,7 +239,7 @@ export const useSwapHandler = () => {
   const defaultGasFeeAmount = useMemo(
     () =>
       BigNumber(DEFAULT_GAS_FEE)
-        .shiftedBy(-(gnotToken?.decimals ?? 0))
+        .shiftedBy(-(gnotToken?.decimals ?? GNOT_TOKEN.decimals))
         .toNumber(),
     [gnotToken?.decimals],
   );
@@ -332,8 +337,12 @@ export const useSwapHandler = () => {
       const tokenAUSDValue = tokenPrices[checkGnotPath(tokenA.path)]?.usd || 0;
       const tokenBUSDValue = tokenPrices[checkGnotPath(tokenB.path)]?.usd || 0;
 
-      const tokenAUSDAmount = (makeDisplayTokenAmount(tokenA, tokenAAmount) || 0) * Number(tokenAUSDValue);
-      const tokenBUSDAmount = (makeDisplayTokenAmount(tokenB, tokenBAmount) || 0) * Number(tokenBUSDValue);
+      const tokenAUSDAmount = BigNumber(tokenAAmount || 0)
+        .multipliedBy(tokenAUSDValue)
+        .toNumber();
+      const tokenBUSDAmount = BigNumber(tokenBAmount || 0)
+        .multipliedBy(tokenBUSDValue)
+        .toNumber();
 
       const priceImpactNum =
         tokenAUSDAmount !== 0
