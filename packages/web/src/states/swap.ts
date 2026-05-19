@@ -22,18 +22,19 @@ export const swap = atom<SwapValue>({
   isKeepToken: false,
 });
 
-export interface SwapConfirmModalState {
-  swapTokenInfo: SwapTokenInfo | null;
-  swapSummaryInfo: SwapSummaryInfo | null;
-  isRefetching: boolean;
-  estimatedAmount: string | null;
-  tokenAmountLimit: number;
-}
+export type SwapConfirmModalState =
+  | {
+      status: "idle";
+    }
+  | {
+      status: "ready";
+      swapTokenInfo: SwapTokenInfo;
+      swapSummaryInfo: SwapSummaryInfo;
+      isRefetching: boolean;
+      estimatedAmount: string | null;
+      tokenAmountLimit: number;
+    };
 
 export const swapConfirmModalState = atom<SwapConfirmModalState>({
-  swapTokenInfo: null,
-  swapSummaryInfo: null,
-  isRefetching: false,
-  estimatedAmount: null,
-  tokenAmountLimit: 0,
+  status: "idle",
 });
