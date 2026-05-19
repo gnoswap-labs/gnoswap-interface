@@ -2,6 +2,7 @@ import { useAtom } from "jotai";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { GNS_TOKEN } from "@common/values/token-constant";
 import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
@@ -11,11 +12,11 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { TokenBalanceInfo } from "@models/token/token-balance-info";
 import { TokenModel } from "@models/token/token-model";
-import { useGetPoolList } from "@query/pools";
+import { DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT, useGetIncentiveCreationDeposit, useGetPoolList } from "@query/pools";
 import PoolDetailData from "@repositories/pool/mock/pool-detail.json";
 import { EarnState } from "@states/index";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
-import { GNS_DEPOSIT_AMOUNT } from "../../components/pool-incentivize/incentive-creation-deposit/IncentiveCreationDeposit";
 import PoolIncentivize from "../../components/pool-incentivize/PoolIncentivize";
 import { useIncentivizePoolModal } from "@hooks/pool/ui/use-incentivize-pool-modal";
 
@@ -38,6 +39,7 @@ const PoolIncentivizeContainer: React.FC = () => {
   const tokenAmountInput = useTokenAmountInput(token);
   const { updateTokenPrices, balances } = useTokenData();
   const { data: pools = [] } = useGetPoolList({ enabled: false });
+  const { data: depositGnsAmount = DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT } = useGetIncentiveCreationDeposit();
   const { getGnotPath } = useGnotToGnot();
 
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
@@ -106,6 +108,9 @@ const PoolIncentivizeContainer: React.FC = () => {
   }, [connected, openConnectWalletModal, openModal]);
 
   const btnStatus: { text: string; disabled: boolean } = useMemo(() => {
+    const depositDisplayAmount = makeDisplayTokenAmount(GNS_TOKEN, depositGnsAmount) || 0;
+    const depositRawAmount = Number(depositGnsAmount);
+
     if (!connected) {
       return {
         text: t("common:btn.walletLogin"),
@@ -144,8 +149,8 @@ const PoolIncentivizeContainer: React.FC = () => {
     }
     if (
       (token?.path === GNS_TOKEN_PATH &&
-        Number(tokenAmountInput.amount) + 1000 > Number(tokenAmountInput.balance.replace(/,/g, ""))) ||
-      (token?.path !== GNS_TOKEN_PATH && GNS_DEPOSIT_AMOUNT * 1_000_000 > (balances[GNS_TOKEN_PATH] || 0))
+        Number(tokenAmountInput.amount) + depositDisplayAmount > Number(tokenAmountInput.balance.replace(/,/g, ""))) ||
+      (token?.path !== GNS_TOKEN_PATH && depositRawAmount > (balances[GNS_TOKEN_PATH] || 0))
     )
       return {
         text: t("IncentivizePool:submitBtn.insuffiDep"),
@@ -163,6 +168,7 @@ const PoolIncentivizeContainer: React.FC = () => {
     tokenAmountInput.balance,
     token?.path,
     balances,
+    depositGnsAmount,
     t,
   ]);
 

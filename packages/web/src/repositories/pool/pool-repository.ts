@@ -18,6 +18,8 @@ export interface PoolRepository {
 
   getCreationFee: () => Promise<number>;
 
+  getIncentiveCreationDeposit: () => Promise<string>;
+
   getWithdrawalFee: () => Promise<number>;
 
   getUnstakingFee: () => Promise<number>;
