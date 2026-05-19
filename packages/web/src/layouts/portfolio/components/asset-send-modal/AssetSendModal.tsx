@@ -109,7 +109,8 @@ const AssetSendModal: React.FC<Props> = ({
   const onChangeAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
-      const decimals = withdrawInfo?.decimals || 0;
+      if (!withdrawInfo) return;
+      const decimals = withdrawInfo.decimals;
 
       if (value === "") {
         setAmount("");

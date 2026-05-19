@@ -21,14 +21,14 @@ const formatDashboardPrice = (price?: string, unit?: string) => {
 const DashboardInfoContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const { isLoading: isLoadingCommon } = useLoading();
-
   const { data: dashboardTokenData, isFetched: isFetchedDashboardToken } = useGetDashboardToken();
-  const convertedDashboardTokenData = React.useMemo(() => {
-    return ExploreDashboardConverter.convertDashboardToken(dashboardTokenData);
-  }, [dashboardTokenData]);
 
   const { data: governanceOverview = null, isFetched: isFetchedGovernanceOverview } =
     useGetDashboardGovernanceOverview();
+
+  const convertedDashboardTokenData = React.useMemo(() => {
+    return ExploreDashboardConverter.convertDashboardToken(dashboardTokenData);
+  }, [dashboardTokenData]);
 
   const convertedGovernanceOverview = React.useMemo(() => {
     return ExploreDashboardConverter.convertGovernanceOverview(governanceOverview);
@@ -99,7 +99,7 @@ const DashboardInfoContainer: React.FC = () => {
         community: formatOtherPrice(Math.floor(emissionDistribution.community), { isKMB: false, usd: false }),
       },
     };
-  }, [dashboardTokenData, progressBar, stakingRatio]);
+  }, [convertedDashboardTokenData, progressBar, stakingRatio]);
 
   const governanceOverviewInfo = useMemo(() => {
     if (!convertedGovernanceOverview) {
