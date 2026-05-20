@@ -6,6 +6,7 @@ import {
   formatTokenModelPath,
   formatTokenPath,
   isNativeTokenPath,
+  isAmountLessThanTokenMinimum,
   makeDisplayTokenAmount,
   makeRawTokenAmount,
 } from "./token-utils";
@@ -116,6 +117,49 @@ describe("make token display price", () => {
     };
     const result = makeDisplayTokenAmount(token, "123000000");
     expect(result).toBe(1.23);
+  });
+});
+
+describe("is amount less than token minimum", () => {
+  test("uses 6-decimal minimum display amount", () => {
+    const token = {
+      ...DEFAULT_TOKEN,
+      decimals: 6,
+    };
+
+    expect(isAmountLessThanTokenMinimum(token, "0.0000009")).toBe(true);
+    expect(isAmountLessThanTokenMinimum(token, "0.000001")).toBe(false);
+  });
+
+  test("uses 8-decimal minimum display amount", () => {
+    const token = {
+      ...DEFAULT_TOKEN,
+      decimals: 8,
+    };
+
+    expect(isAmountLessThanTokenMinimum(token, "0.000000009")).toBe(true);
+    expect(isAmountLessThanTokenMinimum(token, "0.00000001")).toBe(false);
+  });
+
+  test("uses integer minimum for 0-decimal tokens", () => {
+    const token = {
+      ...DEFAULT_TOKEN,
+      decimals: 0,
+    };
+
+    expect(isAmountLessThanTokenMinimum(token, "0.9")).toBe(true);
+    expect(isAmountLessThanTokenMinimum(token, "1")).toBe(false);
+  });
+
+  test("does not treat empty, zero, or invalid input as below minimum", () => {
+    const token = {
+      ...DEFAULT_TOKEN,
+      decimals: 6,
+    };
+
+    expect(isAmountLessThanTokenMinimum(token, "")).toBe(false);
+    expect(isAmountLessThanTokenMinimum(token, "0")).toBe(false);
+    expect(isAmountLessThanTokenMinimum(token, "abc")).toBe(false);
   });
 });
 

@@ -22,6 +22,7 @@ import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatPrice } from "@utils/new-number-utils";
 import { capitalize } from "@utils/string-utils";
+import { isAmountLessThanTokenMinimum } from "@utils/token-utils";
 import { isValidAddress } from "@utils/validation-utils";
 
 import IconWallet from "@components/common/icons/IconWallet";
@@ -126,7 +127,7 @@ const AssetSendModal: React.FC<Props> = ({
 
       setAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     },
-    [setAmount, withdrawInfo?.decimals],
+    [setAmount, withdrawInfo],
   );
 
   const onChangeAddress = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -156,6 +157,8 @@ const AssetSendModal: React.FC<Props> = ({
     if (!address || !isValidAddress(address)) return true;
 
     if (!withdrawInfo) return true;
+
+    if (isAmountLessThanTokenMinimum(withdrawInfo, amount)) return true;
 
     if (!isBalanceSufficient(amount, currentAvailableBalance ?? "0")) return true;
 
@@ -201,7 +204,7 @@ const AssetSendModal: React.FC<Props> = ({
     if (amount === "") {
       return t("Wallet:assetSendModal.btn.enterAmt");
     }
-    if (Number(amount) < 0.000001) {
+    if (isAmountLessThanTokenMinimum(withdrawInfo, amount)) {
       return t("Wallet:assetSendModal.btn.lowAmt");
     }
     if (

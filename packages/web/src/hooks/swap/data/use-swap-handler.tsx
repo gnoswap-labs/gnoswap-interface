@@ -34,9 +34,10 @@ import { checkGnotPath, isGNOTPath, toNativePath } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
 import { nullish } from "@utils/nullish-utils";
 import { matchInputNumber } from "@utils/number-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { isAmountLessThanTokenMinimum, makeDisplayTokenAmount } from "@utils/token-utils";
 import { isEmptyObject } from "@utils/validation-utils";
 
+import { handleAmount } from "./use-swap-handler.utils";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
@@ -123,36 +124,6 @@ function compareAmountFn(amountA: string | number | bigint, amountB: string | nu
   }
 
   return amountValueA.isGreaterThan(amountValueB) ? 1 : -1;
-}
-
-function handleAmount(changed: string, token: TokenModel | null) {
-  let value = changed;
-  const decimals = token?.decimals;
-
-  if (decimals === undefined) {
-    return { isValid: false, value: changed };
-  }
-
-  // Check if input exceeds decimal places
-  if (changed.includes(".") && changed.split(".")[1].length > decimals) {
-    // Signal invalid input
-    return { isValid: false, value: changed };
-  }
-
-  if (!value || BigNumber(value).isZero()) {
-    value = changed;
-  } else {
-    value = BigNumber(value).toFixed(decimals, 1);
-  }
-
-  if (BigNumber(changed).isEqualTo(value)) {
-    const dotIndex = changed.indexOf(".");
-    if (dotIndex === -1 || changed.length - dotIndex - 1 < decimals) {
-      value = changed;
-    }
-  }
-
-  return { isValid: true, value };
 }
 
 export const useSwapHandler = () => {
@@ -424,8 +395,8 @@ export const useSwapHandler = () => {
       return "ENTER_AMOUNT";
     }
     if (
-      (Number(tokenAAmount) < 0.000001 && type === "EXACT_IN") ||
-      (Number(tokenBAmount) < 0.000001 && type === "EXACT_OUT") ||
+      (type === "EXACT_IN" && isAmountLessThanTokenMinimum(tokenA, tokenAAmount)) ||
+      (type === "EXACT_OUT" && isAmountLessThanTokenMinimum(tokenB, tokenBAmount)) ||
       (isGNOTPath(toNativePath(tokenA.path)) && BigNumber(tokenAAmount).isLessThan(MINIMUM_GNOT_SWAP_AMOUNT))
     ) {
       return "AMOUNT_TOO_LOW";
@@ -780,7 +751,7 @@ export const useSwapHandler = () => {
 
   const changeTokenAAmount = useCallback(
     (changed: string, none?: boolean) => {
-      const result = handleAmount(changed, tokenA);
+      const result = handleAmount(changed, tokenA, tokenAAmount);
 
       // If invalid decimal places, don't update or trigger loading
       if (!result.isValid) {
@@ -821,7 +792,7 @@ export const useSwapHandler = () => {
       updateSwapAmount(result.value);
       setTokenAAmount(result.value);
     },
-    [isSameToken, setSwapValue, tokenA, tokenB?.symbol],
+    [isSameToken, setSwapValue, tokenA, tokenAAmount, tokenB?.symbol],
   );
 
   useEffect(() => {
@@ -834,7 +805,7 @@ export const useSwapHandler = () => {
 
   const changeTokenBAmount = useCallback(
     (changed: string, none?: boolean) => {
-      const result = handleAmount(changed, tokenB);
+      const result = handleAmount(changed, tokenB, tokenBAmount);
 
       if (!result.isValid) {
         setIsLoading(false);
@@ -875,7 +846,7 @@ export const useSwapHandler = () => {
       updateSwapAmount(result.value);
       setTokenBAmount(result.value);
     },
-    [isSameToken, tokenA, tokenB],
+    [isSameToken, tokenA, tokenB, tokenBAmount],
   );
 
   const isSameTokenFn = useCallback((tokenA_: TokenModel | null, tokenB_: TokenModel | null) => {
