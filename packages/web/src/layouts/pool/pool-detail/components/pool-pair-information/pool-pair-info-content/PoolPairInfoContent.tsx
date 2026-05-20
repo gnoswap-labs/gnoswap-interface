@@ -1,4 +1,3 @@
-import BigNumber from "bignumber.js";
 import { useAtomValue } from "jotai";
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -21,6 +20,7 @@ import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { TokenModel } from "@models/token/token-model";
 import { ThemeState } from "@states/index";
 import { formatOtherPrice, formatPoolPairAmount, formatRate } from "@utils/new-number-utils";
+import { makeDisplayPrice } from "@utils/pool-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { tickToPrice } from "@utils/swap-utils";
 
@@ -223,13 +223,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool?.tokenB?.displaySymbol, pool?.tokenA?.displaySymbol]);
 
   const currentPriceRatioNumber = useMemo(() => {
-    const tokenADecimals = pool.tokenA.decimals;
-    const tokenBDecimals = pool.tokenB.decimals;
-
-    return BigNumber(tickToPrice(pool.currentTick))
-      .shiftedBy(-tokenADecimals + tokenBDecimals)
-      .toNumber();
-  }, [pool.currentTick, pool.tokenA.decimals, pool.tokenB.decimals]);
+    return makeDisplayPrice(tickToPrice(pool.currentTick), pool.tokenA, pool.tokenB);
+  }, [pool.currentTick, pool.tokenA, pool.tokenB]);
 
   const currentPriceRatio = useMemo(() => {
     return formatTokenExchangeRate(currentPriceRatioNumber, {

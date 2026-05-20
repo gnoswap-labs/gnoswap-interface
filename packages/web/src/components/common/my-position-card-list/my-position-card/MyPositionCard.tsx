@@ -6,7 +6,7 @@ import { MyPositionCardWrapper, MyPositionCardWrapperBorder } from "./MyPosition
 import BarAreaGraph from "../../bar-area-graph/BarAreaGraph";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
-import { isMaxTick, isMinTick } from "@utils/pool-utils";
+import { isMaxTick, isMinTick, makeDisplayPrice } from "@utils/pool-utils";
 import IconStrokeArrowUp from "../../icons/IconStrokeArrowUp";
 import IconStrokeArrowDown from "../../icons/IconStrokeArrowDown";
 import { useGetPositionBins } from "@query/positions";
@@ -220,38 +220,34 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const minPriceStr = useMemo(() => {
     const isEndTick = isEndTickBy(position.tickLower, position.pool.fee);
 
-    const minPrice = tickToPriceStr(position.tickLower, {
-      decimals: 40,
-      isEnd: isEndTick,
-      isFormat: false,
-    });
+    const minPrice = isEndTick ? tickToPriceStr(position.tickLower, { isEnd: true }) : null;
 
     if (isFullRange) return "0";
+    if (minPrice === "∞") return "∞";
 
-    return formatTokenExchangeRate(minPrice, {
+    const displayMinPrice = makeDisplayPrice(tickToPrice(position.tickLower), tokenA, tokenB);
+
+    return formatTokenExchangeRate(displayMinPrice, {
       minLimit: 0.000001,
       maxSignificantDigits: 6,
-      isInfinite: minPrice === "∞",
     });
-  }, [position.tickLower, position.pool.fee, isFullRange]);
+  }, [position.tickLower, position.pool.fee, isFullRange, tokenA, tokenB]);
 
   const maxPriceStr = useMemo(() => {
     const isEndTick = isEndTickBy(position.tickUpper, position.pool.fee);
-    const maxPrice = tickToPriceStr(position.tickUpper, {
-      decimals: 40,
-      isEnd: isEndTick,
-      isFormat: false,
-    });
+    const maxPrice = isEndTick ? tickToPriceStr(position.tickUpper, { isEnd: true }) : null;
 
     if (isFullRange) return "∞";
+    if (maxPrice === "∞") return "∞";
 
-    return formatTokenExchangeRate(maxPrice, {
+    const displayMaxPrice = makeDisplayPrice(tickToPrice(position.tickUpper), tokenA, tokenB);
+
+    return formatTokenExchangeRate(displayMaxPrice, {
       maxSignificantDigits: 6,
       minLimit: 0.000001,
-      isInfinite: maxPrice === "∞",
       fixedDecimalDigits: 6,
     });
-  }, [position.tickUpper, position.pool.fee, isFullRange]);
+  }, [position.tickUpper, position.pool.fee, isFullRange, tokenA, tokenB]);
 
   const onClickViewRange = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
