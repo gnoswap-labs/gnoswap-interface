@@ -34,7 +34,7 @@ import { checkGnotPath, isGNOTPath, toNativePath } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
 import { nullish } from "@utils/nullish-utils";
 import { matchInputNumber } from "@utils/number-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { isAmountLessThanTokenMinimum, makeDisplayTokenAmount } from "@utils/token-utils";
 import { isEmptyObject } from "@utils/validation-utils";
 
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
@@ -424,8 +424,8 @@ export const useSwapHandler = () => {
       return "ENTER_AMOUNT";
     }
     if (
-      (Number(tokenAAmount) < 0.000001 && type === "EXACT_IN") ||
-      (Number(tokenBAmount) < 0.000001 && type === "EXACT_OUT") ||
+      (type === "EXACT_IN" && isAmountLessThanTokenMinimum(tokenA, tokenAAmount)) ||
+      (type === "EXACT_OUT" && isAmountLessThanTokenMinimum(tokenB, tokenBAmount)) ||
       (isGNOTPath(toNativePath(tokenA.path)) && BigNumber(tokenAAmount).isLessThan(MINIMUM_GNOT_SWAP_AMOUNT))
     ) {
       return "AMOUNT_TOO_LOW";
