@@ -1,7 +1,5 @@
 import { atom } from "jotai";
 import { TokenSwapModel } from "@models/token/token-swap-model";
-import { SwapTokenInfo } from "@models/swap/swap-token-info";
-import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 
 export type SwapValue = TokenSwapModel & {
   tokenAAmount?: string;
@@ -20,20 +18,4 @@ export const swap = atom<SwapValue>({
   isEarnChanged: false,
   isReverted: false,
   isKeepToken: false,
-});
-
-export interface SwapConfirmModalState {
-  swapTokenInfo: SwapTokenInfo | null;
-  swapSummaryInfo: SwapSummaryInfo | null;
-  isRefetching: boolean;
-  estimatedAmount: string | null;
-  tokenAmountLimit: number;
-}
-
-export const swapConfirmModalState = atom<SwapConfirmModalState>({
-  swapTokenInfo: null,
-  swapSummaryInfo: null,
-  isRefetching: false,
-  estimatedAmount: null,
-  tokenAmountLimit: 0,
 });

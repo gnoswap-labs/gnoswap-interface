@@ -161,7 +161,6 @@ export const useSwapHandler = () => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
-  const [, setSwapConfirmModalState] = useAtom(SwapState.swapConfirmModalState);
 
   const { removeReferrerFromLocalStorage } = useReferral();
   const {
@@ -192,14 +191,8 @@ export const useSwapHandler = () => {
   const [openedConfirmModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { connected: connectedWallet, isSwitchNetwork, switchNetwork } = useWallet();
-  const {
-    tokens,
-    tokenPrices,
-    displayBalanceMap,
-    updateBalances,
-    getTokenUSDPrice,
-    refetchGrc20Balances,
-  } = useTokenData();
+  const { tokens, tokenPrices, displayBalanceMap, updateBalances, getTokenUSDPrice, refetchGrc20Balances } =
+    useTokenData();
   const { slippage, changeSlippage } = useSlippage();
   const { openModal } = useConnectWalletModal();
   const { data: swapFee } = useGetSwapFee();
@@ -243,11 +236,10 @@ export const useSwapHandler = () => {
         .toNumber(),
     [gnotToken?.decimals],
   );
-  const gasFeeUSD = useMemo(() => getTokenUSDPrice(checkGnotPath(gnotToken?.path ?? ""), defaultGasFeeAmount) ?? 0, [
-    defaultGasFeeAmount,
-    getTokenUSDPrice,
-    gnotToken?.path,
-  ]);
+  const gasFeeUSD = useMemo(
+    () => getTokenUSDPrice(checkGnotPath(gnotToken?.path ?? ""), defaultGasFeeAmount) ?? 0,
+    [defaultGasFeeAmount, getTokenUSDPrice, gnotToken?.path],
+  );
 
   const swapRouteInfos: SwapRouteInfo[] = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -635,20 +627,6 @@ export const useSwapHandler = () => {
     displayNetworkFee,
   ]);
 
-  // If the data required for the modal configuration is updated, update the modal data as well
-  useEffect(() => {
-    if (!swapTokenInfo || !swapSummaryInfo) return;
-
-    setSwapConfirmModalState(prev => ({
-      ...prev,
-      swapTokenInfo,
-      swapSummaryInfo,
-      isRefetching,
-      estimatedAmount,
-      tokenAmountLimit,
-    }));
-  }, [swapTokenInfo, swapSummaryInfo, isRefetching, estimatedAmount, tokenAmountLimit]);
-
   const isAvailSwap = useMemo(() => {
     return (
       swapButtonState === "SWAP" ||
@@ -658,7 +636,13 @@ export const useSwapHandler = () => {
     );
   }, [swapButtonState]);
 
-  const openConfirmModal = useCallback(() => {
+  const closeModal = useCallback(() => {
+    setOpenedModal(false);
+    setModalContent(null);
+    setSwapResult(null);
+  }, [setModalContent, setOpenedModal]);
+
+  function openConfirmModal() {
     if (!swapSummaryInfo) {
       return;
     }
@@ -667,11 +651,14 @@ export const useSwapHandler = () => {
       <ConfirmSwapModal
         submitted={true}
         swapResult={swapResult}
-        setSwapRateAction={setSwapRateAction}
+        swapSummaryInfo={swapSummaryInfo}
+        swapTokenInfo={swapTokenInfo}
+        estimatedAmount={estimatedAmount}
+        isRefetching={false}
         swap={executeSwap}
         close={closeModal}
         isWrapOrUnwrap={swapButtonState === "WRAP" || swapButtonState === "UNWRAP"}
-        isLoading={isRefetching}
+        isLoading={false}
         priceImpactStatus={priceImpactStatus}
         connectedWallet={connectedWallet}
         title={(() => {
@@ -690,30 +677,11 @@ export const useSwapHandler = () => {
         })()}
       />,
     );
-  }, [
-    submitted,
-    swapResult,
-    swapSummaryInfo,
-    swapTokenInfo,
-    swapButtonState,
-    priceImpactStatus,
-    isLoading,
-    isRefetching,
-    isLoadingGasInfo,
-    setSwapRateAction,
-    connectedWallet,
-    t,
-  ]);
+  }
 
   const openConnectWallet = useCallback(() => {
     openModal();
   }, [openModal]);
-
-  const closeModal = useCallback(() => {
-    setOpenedModal(false);
-    setModalContent(null);
-    setSwapResult(null);
-  }, []);
 
   const onFinishSwap = useCallback(() => {
     closeModal();
