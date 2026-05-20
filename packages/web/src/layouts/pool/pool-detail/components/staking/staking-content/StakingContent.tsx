@@ -5,7 +5,6 @@ import Button from "@components/common/button/Button";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { StakingPeriodType, STAKING_PERIOS } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useIntersectionObserver } from "@hooks/common/use-interaction-observer";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
@@ -17,6 +16,7 @@ import { getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils
 
 import IncentivizeTokenDetailTooltipContent from "./incentivized-token-detail-tooltip-content/IncentivizeTokenDetailTooltipContent";
 import StakingContentCard, { SummuryApr } from "./staking-content-card/StakingContentCard";
+import { buildStakingTiers, getStakingTierKey } from "./staking-tier";
 
 import { AprNumberContainer, AprStakingHeader, StakingContentWrapper } from "./StakingContent.styles";
 
@@ -38,49 +38,6 @@ const TEXT_BTN = [
   "Pool:staking.keepStakingNote.three",
   "Pool:staking.keepStakingNote.four",
 ];
-
-const DAY_SECONDS = 24 * 60 * 60;
-
-type StakingPeriodInfo = {
-  period: number;
-  endPeriod: number;
-  rate: number;
-  durationSeconds: number;
-  endDurationSeconds: number;
-};
-
-const buildStakingPeriodInfos = (pool: PoolDetailModel | null): Record<StakingPeriodType, StakingPeriodInfo> => {
-  const warmupConfigs = [...(pool?.warmupConfigs ?? [])].sort((left, right) => left.percentage - right.percentage);
-  let endDurationSeconds = 0;
-
-  return STAKING_PERIOS.reduce((accum, key, index) => {
-    const config = warmupConfigs[index];
-    if (!config) {
-      accum[key] = {
-        period: 0,
-        endPeriod: -1,
-        rate: 0,
-        durationSeconds: 0,
-        endDurationSeconds,
-      };
-      return accum;
-    }
-
-    if (key !== "MAX" && config.durationSeconds > 0) {
-      endDurationSeconds += config.durationSeconds;
-    }
-
-    accum[key] = {
-      durationSeconds: config.durationSeconds,
-      endDurationSeconds,
-      endPeriod: key !== "MAX" && endDurationSeconds > 0 ? Number((endDurationSeconds / DAY_SECONDS).toFixed(2)) : -1,
-      period: key !== "MAX" && config.durationSeconds > 0 ? Number((config.durationSeconds / DAY_SECONDS).toFixed(2)) : -1,
-      rate: config.percentage / 100,
-    };
-
-    return accum;
-  }, {} as Record<StakingPeriodType, StakingPeriodInfo>);
-};
 
 const StakingContent: React.FC<StakingContentProps> = ({
   totalApr,
@@ -141,53 +98,36 @@ const StakingContent: React.FC<StakingContentProps> = ({
     return getUniqueRewardTokensWithMultipleRewardTypes(rewardTokens, getGnotPath);
   }, [getGnotPath, pool?.rewardTokens]);
 
-  const stakingPeriodInfos = useMemo(() => buildStakingPeriodInfos(pool), [pool]);
+  const stakingTiers = useMemo(() => buildStakingTiers(pool), [pool]);
 
   const stakingPositionMap = useMemo(() => {
-    return stakedPosition.reduce<{
-      [key in StakingPeriodType]: PoolPositionModel[];
-    }>(
+    const initialMap = stakingTiers.reduce<Record<string, PoolPositionModel[]>>((accum, tier) => {
+      accum[tier.key] = [];
+      return accum;
+    }, {});
+
+    return stakedPosition.reduce<Record<string, PoolPositionModel[]>>(
       (accum, current) => {
-        const stakedTime = new Date(current.stakedAt).getTime();
-        const differenceSeconds = (new Date().getTime() - stakedTime) / 1000;
-        let periodType: StakingPeriodType = "MAX";
-        if (stakingPeriodInfos["5D"].endDurationSeconds > 0 && differenceSeconds < stakingPeriodInfos["5D"].endDurationSeconds) {
-          periodType = "5D";
-        } else if (
-          stakingPeriodInfos["10D"].endDurationSeconds > 0 &&
-          differenceSeconds < stakingPeriodInfos["10D"].endDurationSeconds
-        ) {
-          periodType = "10D";
-        } else if (
-          stakingPeriodInfos["30D"].endDurationSeconds > 0 &&
-          differenceSeconds < stakingPeriodInfos["30D"].endDurationSeconds
-        ) {
-          periodType = "30D";
-        }
-        accum[periodType].push(current);
+        const tierKey = getStakingTierKey(stakingTiers, current.stakedAt);
+        accum[tierKey]?.push(current);
         return accum;
       },
-      {
-        "5D": [],
-        "10D": [],
-        "30D": [],
-        MAX: [],
-      },
+      initialMap,
     );
-  }, [stakedPosition, stakingPeriodInfos]);
+  }, [stakedPosition, stakingTiers]);
 
-  const checkPoints = useMemo((): StakingPeriodType[] => {
+  const checkPoints = useMemo((): string[] => {
     let checkPointIndex = -1;
-    STAKING_PERIOS.forEach((period, index) => {
-      if (stakingPositionMap[period].length > 0) {
+    stakingTiers.forEach((tier, index) => {
+      if ((stakingPositionMap[tier.key] ?? []).length > 0) {
         checkPointIndex = index;
       }
     });
     if (checkPointIndex < 0) {
       return [];
     }
-    return STAKING_PERIOS.slice(0, checkPointIndex + 1);
-  }, [stakingPositionMap]);
+    return stakingTiers.slice(0, checkPointIndex + 1).map(tier => tier.key);
+  }, [stakingPositionMap, stakingTiers]);
 
   return (
     <StakingContentWrapper ref={ref} isMobile={mobile}>
@@ -251,28 +191,26 @@ const StakingContent: React.FC<StakingContentProps> = ({
       </div>
       <div className="staking-wrap">
         <span>{t("Pool:staking.myStake")}</span>
-        {STAKING_PERIOS.map((period, index) => {
-          return period === "MAX" ? (
+        {stakingTiers.map(tier => {
+          return tier.kind === "max" ? (
             <SummuryApr
               loading={loading}
-              key={index}
+              key={tier.key}
               stakingApr={pool?.stakingApr}
-              period={period}
-              positions={stakingPositionMap[period]}
+              tier={tier}
+              positions={stakingPositionMap[tier.key] ?? []}
               checkPoints={checkPoints}
               breakpoint={breakpoint}
-              periodInfo={stakingPeriodInfos[period]}
             />
           ) : (
             <StakingContentCard
-              key={index}
+              key={tier.key}
               stakingApr={pool?.stakingApr}
-              period={period}
-              positions={stakingPositionMap[period]}
+              tier={tier}
+              positions={stakingPositionMap[tier.key] ?? []}
               breakpoint={breakpoint}
               loading={loading}
               checkPoints={checkPoints}
-              periodInfo={stakingPeriodInfos[period]}
             />
           );
         })}
