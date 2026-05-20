@@ -8,7 +8,6 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { TokenChangeInfo } from "@models/token/token-change-info";
 import { makeTokenRouteUrl } from "@utils/page.utils";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import { cardStyle, loadingWrapper, NameSectionWrapper } from "../CardListCommonStyle.styles";
 
@@ -46,7 +45,7 @@ const GainerCardList: React.FC<GainerCardListProps> = ({ gainers = [], loadingGa
                   mobileWidth={20}
                 />
                 <span className="name">{gainer.name}</span>
-                <span className="symbol">{formatDisplayTokenSymbol(gainer.symbol)}</span>
+                <span className="symbol">{gainer.displaySymbol}</span>
               </NameSectionWrapper>
               <span className="price">{gainer.price}</span>
               <span

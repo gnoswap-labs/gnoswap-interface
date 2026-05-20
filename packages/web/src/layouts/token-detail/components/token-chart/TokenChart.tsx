@@ -17,6 +17,7 @@ export interface TokenInfo {
   token: {
     name: string;
     symbol: string;
+    displaySymbol: string;
     image: string;
     pkg_path: string;
     decimals: number;

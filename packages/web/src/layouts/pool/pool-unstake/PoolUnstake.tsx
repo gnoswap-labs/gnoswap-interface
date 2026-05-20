@@ -11,7 +11,6 @@ import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { DeviceSize } from "@styles/media";
 import { useGetPoolDetailByPath } from "src/react-query/pools";
 import { PAGE_PATH } from "@constants/page.constant";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import UnstakeLiquidityContainer from "./containers/unstake-position-container/UnstakePositionContainer";
 import UnstakeLiquidityLayout from "./UnstakeLiquidityLayout";
@@ -31,9 +30,9 @@ const PoolUnstake: React.FC = () => {
       {
         title:
           width > DeviceSize.mediumWeb
-            ? `${formatDisplayTokenSymbol(getGnotPath(data?.tokenA).symbol)}/${formatDisplayTokenSymbol(
-                getGnotPath(data?.tokenB).symbol,
-              )} (${Number(data?.fee) / 10000}%)`
+            ? `${getGnotPath(data?.tokenA).displaySymbol}/${getGnotPath(data?.tokenB).displaySymbol} (${
+                Number(data?.fee) / 10000
+              }%)`
             : "...",
         path: `/earn/pool?poolPath=${poolPath}`,
       },

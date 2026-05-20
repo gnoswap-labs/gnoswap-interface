@@ -5,7 +5,6 @@ import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 import MissingLogo from "../missing-logo/MissingLogo";
 import { useTranslation } from "react-i18next";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 export interface SelectTokenIncentivizeProps {
   keyword: string;
   defaultTokens: TokenModel[];
@@ -68,7 +67,7 @@ const SelectTokenIncentivize: React.FC<SelectTokenIncentivizeProps> = ({ tokens,
                   mobileWidth={24}
                 />
                 <span className="token-name">{token.name}</span>
-                <span className="token-symbol">{formatDisplayTokenSymbol(token.symbol)}</span>
+                <span className="token-symbol">{token.displaySymbol}</span>
               </div>
               <span className="token-balance">{getTokenPrice(token)}</span>
             </div>

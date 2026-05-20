@@ -12,6 +12,7 @@ export interface ITokenResponse {
   path: string;
   decimals: number;
   symbol: string;
+  displaySymbol: string;
   logoURI: string;
   priceID: string;
   priceId: string;

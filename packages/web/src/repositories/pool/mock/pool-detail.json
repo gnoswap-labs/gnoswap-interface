@@ -9,6 +9,7 @@
       "path": "gno.land/r/bar",
       "decimals": 4,
       "symbol": "BAR",
+      "displaySymbol": "BAR",
       "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
       "type": "GRC20",
       "priceID": "gno.land/r/bar"
@@ -21,6 +22,7 @@
       "path": "gno.land/r/foo",
       "decimals": 4,
       "symbol": "FOO",
+      "displaySymbol": "FOO",
       "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
       "type": "GRC20",
       "priceID": "gno.land/r/foo"

@@ -12,7 +12,7 @@ import { usePrefetchNavigation } from "@hooks/common/use-prefetch-navigation";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { IncentivizePoolCardInfo } from "@models/pool/info/pool-card-info";
 import { formatRate } from "@utils/new-number-utils";
-import { formatDisplayTokenSymbol, getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils";
+import { getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils";
 
 import { wrapper } from "./AvailableStakingPools.styles";
 
@@ -117,7 +117,7 @@ const AvailableStakingPoolRow: React.FC<AvailableStakingPoolRowProps> = ({ pool,
           size={20}
         />
         <span className="pair">
-          {formatDisplayTokenSymbol(pool.tokenA.symbol)}/{formatDisplayTokenSymbol(pool.tokenB.symbol)}
+          {pool.tokenA.displaySymbol}/{pool.tokenB.displaySymbol}
         </span>
         <span className="fee">{feeRateStr}</span>
       </div>

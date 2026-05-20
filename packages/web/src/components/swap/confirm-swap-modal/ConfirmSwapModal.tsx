@@ -9,7 +9,6 @@ import { swapDirectionToGuaranteedType } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { floorNumber, toNumberFormat } from "@utils/number-utils";
 import { convertToKMBWithPrefix } from "@utils/stake-position-utils";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
@@ -68,18 +67,18 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     if (swapRateAction === SwapRateAction.ATOB) {
       return (
         <>
-          1&nbsp;{formatDisplayTokenSymbol(tokenA.symbol)}&nbsp;=&nbsp;
+          1&nbsp;{tokenA.displaySymbol}&nbsp;=&nbsp;
           <ExchangeRate value={convertSwapRate(swapRate)} />
-          &nbsp;{formatDisplayTokenSymbol(tokenB.symbol)}
+          &nbsp;{tokenB.displaySymbol}
         </>
       );
     }
 
     return (
       <>
-        1&nbsp;{formatDisplayTokenSymbol(tokenB.symbol)}&nbsp;=&nbsp;
+        1&nbsp;{tokenB.displaySymbol}&nbsp;=&nbsp;
         <ExchangeRate value={convertSwapRate(swapRate)} />
-        &nbsp;{formatDisplayTokenSymbol(tokenA.symbol)}
+        &nbsp;{tokenA.displaySymbol}
       </>
     );
   }, [swapSummaryInfo]);
@@ -111,7 +110,8 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   const guaranteedStr = useMemo(() => {
     if (!swapSummaryInfo) return;
     const { amount, currency } = swapSummaryInfo.guaranteedAmount;
-    const guaranteedToken = swapSummaryInfo.swapDirection === "EXACT_IN" ? swapSummaryInfo.tokenB : swapSummaryInfo.tokenA;
+    const guaranteedToken =
+      swapSummaryInfo.swapDirection === "EXACT_IN" ? swapSummaryInfo.tokenB : swapSummaryInfo.tokenA;
     return `${toNumberFormat(amount, guaranteedToken.decimals)} ${currency}`;
   }, [swapSummaryInfo]);
 
@@ -229,7 +229,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                     width={24}
                     mobileWidth={24}
                   />
-                  <span>{formatDisplayTokenSymbol(swapSummaryInfo?.tokenA.symbol || "")}</span>
+                  <span>{swapSummaryInfo?.tokenA.displaySymbol || ""}</span>
                 </div>
               </div>
               <div className="amount-info">
@@ -254,7 +254,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                     width={24}
                     mobileWidth={24}
                   />
-                  <span>{formatDisplayTokenSymbol(swapSummaryInfo?.tokenB.symbol || "")}</span>
+                  <span>{swapSummaryInfo?.tokenB.displaySymbol || ""}</span>
                 </div>
               </div>
               <div className="amount-info">

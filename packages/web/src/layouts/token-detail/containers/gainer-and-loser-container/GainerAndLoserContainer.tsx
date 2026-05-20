@@ -34,6 +34,7 @@ const GainerAndLoserContainer: React.FC = () => {
         path: isGnotPath ? gnot?.path || "" : item.tokenPath,
         name: isGnotPath ? gnot?.name || "" : temp.name,
         symbol: isGnotPath ? gnot?.symbol || "" : temp.symbol,
+        displaySymbol: isGnotPath ? gnot?.displaySymbol || "" : temp.displaySymbol,
         logoURI: isGnotPath ? gnot?.logoURI || "" : temp.logoURI,
         price: formatPrice(item.tokenPrice),
         change: {
@@ -45,7 +46,7 @@ const GainerAndLoserContainer: React.FC = () => {
         },
       };
     });
-  }, [gainers, wugnotPath, tokens, gnot?.path, gnot?.name, gnot?.symbol, gnot?.logoURI]);
+  }, [gainers, wugnotPath, tokens, gnot?.path, gnot?.name, gnot?.symbol, gnot?.displaySymbol, gnot?.logoURI]);
 
   const loserList = useMemo(() => {
     return losers?.slice(0, 3)?.map((item: IGainer) => {
@@ -56,6 +57,7 @@ const GainerAndLoserContainer: React.FC = () => {
         path: isGnotPath ? gnot?.path || "" : item.tokenPath,
         name: isGnotPath ? gnot?.name || "" : temp.name,
         symbol: isGnotPath ? gnot?.symbol || "" : temp.symbol,
+        displaySymbol: isGnotPath ? gnot?.displaySymbol || "" : temp.displaySymbol,
         logoURI: isGnotPath ? gnot?.logoURI || "" : temp.logoURI,
         price: formatPrice(item.tokenPrice),
         change: {
@@ -67,7 +69,7 @@ const GainerAndLoserContainer: React.FC = () => {
         },
       };
     });
-  }, [losers, wugnotPath, tokens, gnot?.path, gnot?.name, gnot?.symbol, gnot?.logoURI]);
+  }, [losers, wugnotPath, tokens, gnot?.path, gnot?.name, gnot?.symbol, gnot?.displaySymbol, gnot?.logoURI]);
 
   return (
     <GainerAndLoser

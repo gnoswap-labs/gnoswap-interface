@@ -4,7 +4,6 @@ import { cx } from "@emotion/css";
 import { useTheme } from "@emotion/react";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import IconOpenLink from "../icons/IconOpenLink";
@@ -60,7 +59,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ steps, onClickPath }) => {
     if (step.options?.type === "TOKEN_SYMBOL") {
       return (
         <div className="token-symbol-path">
-          <div className="token-title">{formatDisplayTokenSymbol(step.title)}</div>
+          <div className="token-title">{step.title}</div>
           <div className="token-path" onClick={e => onClickTokenPath(e, step.options?.token?.path ?? "")}>
             <div>{tokenPathDisplay(step.options.token)}</div>
             <IconOpenLink fill={theme.color.text04} className="path-link-icon" />

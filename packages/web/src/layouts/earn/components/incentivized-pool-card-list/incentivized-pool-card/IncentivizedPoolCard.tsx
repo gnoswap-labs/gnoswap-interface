@@ -16,7 +16,7 @@ import { IncentivizePoolCardInfoWithPriceGrade } from "@models/pool/info/pool-ca
 import { useGetBinsByPath } from "@query/pools";
 import { formatRate } from "@utils/new-number-utils";
 import { numberToFormat } from "@utils/string-utils";
-import { formatDisplayTokenSymbol, getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils";
+import { getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils";
 
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import PriceWarning from "@components/common/price-warning/PriceWarning";
@@ -57,8 +57,8 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
   const staked = pool.hasStakedPosition;
 
   const pairName = useMemo(() => {
-    return `${formatDisplayTokenSymbol(pool.tokenA.symbol)}/${formatDisplayTokenSymbol(pool.tokenB.symbol)}`;
-  }, [pool.tokenA.symbol, pool.tokenB.symbol]);
+    return `${pool.tokenA.displaySymbol}/${pool.tokenB.displaySymbol}`;
+  }, [pool.tokenA.displaySymbol, pool.tokenB.displaySymbol]);
 
   const rewardTokenLogos = useMemo(() => {
     if (!pool.incentivized) return null;
@@ -172,12 +172,9 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
               )}
               <div className="price-section">
                 <span className="label-text">{t("Earn:incentiPools.card.current.price")}</span>
-                <span className="label-text">{`1 ${formatDisplayTokenSymbol(pool.tokenA.symbol)} = ${numberToFormat(
-                  pool.price,
-                  {
-                    decimals: 2,
-                  },
-                )} ${formatDisplayTokenSymbol(pool.tokenB.symbol)}`}</span>
+                <span className="label-text">{`1 ${pool.tokenA.displaySymbol} = ${numberToFormat(pool.price, {
+                  decimals: 2,
+                })} ${pool.tokenB.displaySymbol}`}</span>
               </div>
             </div>
           </div>

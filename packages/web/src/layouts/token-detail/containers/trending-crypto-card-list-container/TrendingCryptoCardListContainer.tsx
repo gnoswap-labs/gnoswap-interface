@@ -33,6 +33,7 @@ const TrendingCryptoCardListContainer: React.FC = () => {
           path: item.tokenPath === wugnotPath ? gnot?.path || "" : item.tokenPath,
           name: item.tokenPath === wugnotPath ? gnot?.name || "" : temp.name,
           symbol: item.tokenPath === wugnotPath ? gnot?.symbol || "" : temp.symbol,
+          displaySymbol: item.tokenPath === wugnotPath ? gnot?.displaySymbol || "" : temp.displaySymbol,
           logoURI: item.tokenPath === wugnotPath ? gnot?.logoURI || "" : temp.logoURI,
           price: formatPrice(item.tokenPrice),
           change: {

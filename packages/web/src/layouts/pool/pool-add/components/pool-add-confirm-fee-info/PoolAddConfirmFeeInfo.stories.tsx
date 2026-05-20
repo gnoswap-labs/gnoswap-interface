@@ -12,6 +12,7 @@ const token = {
     path: "1",
     name: "gno.land",
     symbol: "GNO.LAND",
+    displaySymbol: "GNO.LAND",
     logoURI: "",
   },
   amount: "12,211",

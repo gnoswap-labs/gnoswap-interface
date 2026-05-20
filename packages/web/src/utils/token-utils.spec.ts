@@ -1,7 +1,6 @@
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import { TokenModel } from "@models/token/token-model";
 import {
-  formatDisplayTokenSymbol,
   formatTokenBalanceDisplay,
   formatTokenModelPath,
   formatTokenPath,
@@ -19,6 +18,7 @@ const DEFAULT_TOKEN: TokenModel = {
   chainId: "",
   name: "",
   symbol: "",
+  displaySymbol: "",
   logoURI: "",
   createdAt: "",
 };
@@ -174,18 +174,7 @@ describe("format token balance display", () => {
   });
 });
 
-describe("format display token symbol", () => {
-  it("should keep token symbols with 9 or fewer characters", () => {
-    expect(formatDisplayTokenSymbol("GNOT")).toBe("GNOT");
-    expect(formatDisplayTokenSymbol("123456789")).toBe("123456789");
-  });
-
-  it("should shorten token symbols longer than 9 characters", () => {
-    expect(formatDisplayTokenSymbol("ibc/488D610A5FB7878660703092A35BC4E7D0C88E2EA71174337AA317A22C05177F")).toBe(
-      "ibc/488D6...",
-    );
-  });
-
+describe("format token path", () => {
   it("should keep non-native token paths unshortened after removing gno.land prefix", () => {
     expect(formatTokenPath("gno.land/r/gnoswap/gns", false)).toBe("r/gnoswap/gns");
     expect(formatTokenPath("ibc/488D610A5FB7878660703092A35BC4E7D0C88E2EA71174337AA317A22C05177F", false)).toBe(

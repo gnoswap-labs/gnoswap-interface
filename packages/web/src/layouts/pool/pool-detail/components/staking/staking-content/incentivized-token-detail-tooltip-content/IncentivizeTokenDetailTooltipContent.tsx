@@ -8,7 +8,6 @@ import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 import { capitalize } from "@utils/string-utils";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import * as S from "./IncentivizeTokenDetailTooltipContent.styles";
 
@@ -47,7 +46,7 @@ const IncentivizeTokenDetailTooltipContent: React.FC<Props> = ({ poolStakings }:
             <S.TokenItem key={item.startTimestamp + item.incentivizedAmount}>
               <S.ItemHeader>
                 <MissingLogo symbol={tokenData.symbol} url={tokenData.logoURI} width={18} />
-                <S.ItemHeaderSymbol>{formatDisplayTokenSymbol(tokenData.symbol)}</S.ItemHeaderSymbol>
+                <S.ItemHeaderSymbol>{tokenData.displaySymbol}</S.ItemHeaderSymbol>
                 <S.ItemHeaderTag>{incentiveTypeText(item.incentiveType)}</S.ItemHeaderTag>
               </S.ItemHeader>
               <S.DataGrid>

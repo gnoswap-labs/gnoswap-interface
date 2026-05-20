@@ -59,6 +59,7 @@ const DEPOSIT_INFO: TokenModel = {
   path: "gno.land/r/gns",
   decimals: 4,
   symbol: "ATOM",
+  displaySymbol: "ATOM",
   logoURI: "/atom.svg",
   type: "GRC20",
   priceID: "gno.land/r/gns",

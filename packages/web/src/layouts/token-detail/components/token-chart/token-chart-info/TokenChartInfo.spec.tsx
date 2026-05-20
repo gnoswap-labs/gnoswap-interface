@@ -9,6 +9,7 @@ describe("TokenChartInfo Component", () => {
       token: {
         name: "",
         symbol: "",
+        displaySymbol: "",
         image: "",
       },
       priceInfo: {

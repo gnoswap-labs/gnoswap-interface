@@ -18,7 +18,6 @@ import { DistributionPeriodDate } from "@states/earn";
 import { IncentivizePoolModalWrapper } from "./IncentivizePoolModal.styles";
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 interface Props {
   close: () => void;
@@ -71,8 +70,7 @@ const IncentivizePoolModal: React.FC<Props> = ({ close, onSubmit, date, period, 
                     size={24}
                   />
                   <div className="value">
-                    {formatDisplayTokenSymbol(pool?.tokenA.symbol || "")}/
-                    {formatDisplayTokenSymbol(pool?.tokenB.symbol || "")}
+                    {pool?.tokenA.displaySymbol || ""}/{pool?.tokenB.displaySymbol || ""}
                   </div>
                   <Badge type={BADGE_TYPE.DARK_DEFAULT} text={`${Number(pool?.fee) / 10000}%`} />
                 </div>
@@ -86,7 +84,7 @@ const IncentivizePoolModal: React.FC<Props> = ({ close, onSubmit, date, period, 
                     url={getGnotPath(data?.token)?.logoURI || ""}
                   />
                   <div className="value">
-                    {Number(data?.amount).toLocaleString()} {formatDisplayTokenSymbol(data?.token?.symbol || "")}
+                    {Number(data?.amount).toLocaleString()} {data?.token?.displaySymbol || ""}
                   </div>
                 </div>
               </div>
@@ -101,7 +99,7 @@ const IncentivizePoolModal: React.FC<Props> = ({ close, onSubmit, date, period, 
                   <div className="sub-value">
                     {t("IncentivizePool:confirmModal.row.value.period.desc", {
                       amount: Number((Number(data?.amount || 0) / period).toFixed(2)).toLocaleString(),
-                      symbol: formatDisplayTokenSymbol(data?.token?.symbol || ""),
+                      symbol: data?.token?.displaySymbol || "",
                     })}
                   </div>
                 </div>

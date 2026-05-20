@@ -16,6 +16,7 @@ export const useGnotToGnot = () => {
             name?: string;
             logoURI?: string;
             symbol?: string;
+            displaySymbol?: string;
           }
         | null
         | undefined,
@@ -24,6 +25,7 @@ export const useGnotToGnot = () => {
         path: token?.path === WRAPPED_GNOT_PATH ? gnot?.path || "" : token?.path || "",
         name: token?.path === WRAPPED_GNOT_PATH ? gnot?.name || "" : token?.name || "",
         symbol: token?.path === WRAPPED_GNOT_PATH ? gnot?.symbol || "" : token?.symbol || "",
+        displaySymbol: token?.path === WRAPPED_GNOT_PATH ? gnot?.displaySymbol || "" : token?.displaySymbol || "",
         logoURI: token?.path === WRAPPED_GNOT_PATH ? gnot?.logoURI || "" : token?.logoURI || "",
         wrappedPath: token?.path === WRAPPED_GNOT_PATH ? gnot?.wrappedPath || "" : "",
       };

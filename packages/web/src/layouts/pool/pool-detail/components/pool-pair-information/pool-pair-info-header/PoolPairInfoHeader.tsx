@@ -6,7 +6,7 @@ import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapToken
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
 import { RewardTokenModel } from "@models/position/reward-model";
-import { formatDisplayTokenSymbol, getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils";
+import { getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils";
 
 import { PoolInfoHeaderWrapper } from "./PoolPairInfoHeader.styles";
 
@@ -52,7 +52,7 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
           size={doubleLogoSize}
         />
         <h3>
-          {formatDisplayTokenSymbol(tokenA.symbol)}/{formatDisplayTokenSymbol(tokenB.symbol)}
+          {tokenA.displaySymbol}/{tokenB.displaySymbol}
         </h3>
       </div>
       <div className="badge-wrap">
