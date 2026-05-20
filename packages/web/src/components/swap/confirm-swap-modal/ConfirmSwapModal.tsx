@@ -1,9 +1,11 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { useAtomValue } from "jotai";
 
+import { SwapState } from "@states/index";
 import { PriceImpactStatus, SwapRateAction } from "@hooks/swap/data/use-swap-handler";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
-import { SwapSummaryInfo, swapDirectionToGuaranteedType } from "@models/swap/swap-summary-info";
+import { swapDirectionToGuaranteedType } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { floorNumber, toNumberFormat } from "@utils/number-utils";
 import { convertToKMBWithPrefix } from "@utils/stake-position-utils";
@@ -29,16 +31,13 @@ import { formatPriceImpact } from "@utils/string-utils";
 interface ConfirmSwapModalProps {
   submitted: boolean;
   swapResult: SwapResultInfo | null;
-  swapSummaryInfo: SwapSummaryInfo | null;
-  swapTokenInfo: SwapTokenInfo | null;
-  estimatedAmount: string | null;
-  isRefetching: boolean;
   title: string;
   isWrapOrUnwrap: boolean;
   priceImpactStatus: PriceImpactStatus;
   isLoading: boolean;
   connectedWallet: boolean;
 
+  setSwapRateAction: (type: SwapRateAction) => void;
   swap: (swapTokenInfo: SwapTokenInfo, estimatedAmount: string | null) => void;
   close: () => void;
 }
@@ -46,41 +45,30 @@ interface ConfirmSwapModalProps {
 const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   submitted,
   swapResult,
-  swapSummaryInfo,
-  swapTokenInfo,
-  estimatedAmount,
-  isRefetching,
   swap,
   close,
   title,
+  setSwapRateAction,
   isWrapOrUnwrap,
   priceImpactStatus,
   isLoading,
   connectedWallet,
 }) => {
-  const { t } = useTranslation();
-  const [displaySwapRateAction, setDisplaySwapRateAction] = useState(
-    () => swapSummaryInfo?.swapRateAction ?? SwapRateAction.BTOA,
-  );
+  const swapConfirmModalState = useAtomValue(SwapState.swapConfirmModalState);
+  const { swapSummaryInfo, swapTokenInfo, estimatedAmount, isRefetching } = swapConfirmModalState;
 
-  const displaySwapRate = useMemo(() => {
-    if (!swapSummaryInfo) return 0;
-    if (displaySwapRateAction === swapSummaryInfo.swapRateAction) {
-      return swapSummaryInfo.swapRate;
-    }
-    return swapSummaryInfo.swapRate ? 1 / swapSummaryInfo.swapRate : 0;
-  }, [displaySwapRateAction, swapSummaryInfo]);
+  const { t } = useTranslation();
 
   const swapRateDescription = useMemo(() => {
     if (!swapSummaryInfo) return;
 
-    const { tokenA, tokenB } = swapSummaryInfo;
+    const { tokenA, tokenB, swapRate, swapRateAction } = swapSummaryInfo;
 
-    if (displaySwapRateAction === SwapRateAction.ATOB) {
+    if (swapRateAction === SwapRateAction.ATOB) {
       return (
         <>
           1&nbsp;{tokenA.displaySymbol}&nbsp;=&nbsp;
-          <ExchangeRate value={convertSwapRate(displaySwapRate)} />
+          <ExchangeRate value={convertSwapRate(swapRate)} />
           &nbsp;{tokenB.displaySymbol}
         </>
       );
@@ -89,33 +77,35 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     return (
       <>
         1&nbsp;{tokenB.displaySymbol}&nbsp;=&nbsp;
-        <ExchangeRate value={convertSwapRate(displaySwapRate)} />
+        <ExchangeRate value={convertSwapRate(swapRate)} />
         &nbsp;{tokenA.displaySymbol}
       </>
     );
-  }, [displaySwapRate, displaySwapRateAction, swapSummaryInfo]);
+  }, [swapSummaryInfo]);
 
   const handleSwapRateDescription = useCallback(() => {
-    setDisplaySwapRateAction(prev => (prev === SwapRateAction.ATOB ? SwapRateAction.BTOA : SwapRateAction.ATOB));
-  }, []);
+    setSwapRateAction(
+      swapSummaryInfo?.swapRateAction === SwapRateAction.ATOB ? SwapRateAction.BTOA : SwapRateAction.ATOB,
+    );
+  }, [swapSummaryInfo?.swapRateAction]);
 
   const priceImpactStr = useMemo(() => {
     if (!swapSummaryInfo) return;
     const priceImpact = swapSummaryInfo.priceImpact;
     return `${priceImpact}%`;
-  }, [swapSummaryInfo]);
+  }, [swapSummaryInfo?.priceImpact]);
 
   const slippageStr = useMemo(() => {
     if (!swapTokenInfo) return;
     const slippage = swapTokenInfo.slippage;
     return `${slippage}%`;
-  }, [swapTokenInfo]);
+  }, [swapTokenInfo?.slippage]);
 
   const guaranteedTypeStr = useMemo(() => {
     if (!swapSummaryInfo) return;
     const swapDirection = swapSummaryInfo.swapDirection;
     return t(swapDirectionToGuaranteedType(swapDirection));
-  }, [swapSummaryInfo, t]);
+  }, [swapSummaryInfo?.swapDirection, t]);
 
   const guaranteedStr = useMemo(() => {
     if (!swapSummaryInfo) return;
@@ -129,7 +119,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     if (!swapSummaryInfo) return;
     const { amount, currency } = swapSummaryInfo.gasFee;
     return `${toNumberFormat(amount)} ${currency}`;
-  }, [swapSummaryInfo]);
+  }, [swapSummaryInfo?.gasFee]);
 
   const gasFeeUSDStr = useMemo(() => {
     if (!swapSummaryInfo) return;
@@ -138,7 +128,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     if (Number(gasFeeUSD) < 0.01) return "<$0.01";
 
     return `$${toNumberFormat(gasFeeUSD)}`;
-  }, [swapSummaryInfo]);
+  }, [swapSummaryInfo?.gasFeeUSD]);
 
   const showPriceImpact = useMemo(() => !!swapSummaryInfo?.priceImpact, [swapSummaryInfo?.priceImpact]);
 
@@ -161,26 +151,24 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   const unitSwapPrice = useMemo(() => {
     if (!swapSummaryInfo || !swapTokenInfo) return "-";
 
-    const { swapRateAction } = swapSummaryInfo;
+    const { swapRateAction, swapRate } = swapSummaryInfo;
     const { tokenAUSD, tokenBUSD, tokenAAmount, tokenBAmount } = swapTokenInfo;
-    const currentSwapRateAction = displaySwapRateAction ?? swapRateAction;
-
-    if (currentSwapRateAction === SwapRateAction.ATOB) {
+    if (swapRateAction === SwapRateAction.ATOB) {
       if (!tokenBUSD || tokenBUSD === 0) return "-";
-      return convertToKMBWithPrefix(floorNumber((tokenBUSD / Number(tokenBAmount)) * displaySwapRate).toFixed(3), {
+      return convertToKMBWithPrefix(floorNumber((tokenBUSD / Number(tokenBAmount)) * swapRate).toFixed(3), {
         isIgnoreKFormat: true,
         approx: true,
         usd: true,
       });
     } else {
       if (!tokenAUSD || tokenAUSD === 0) return "-";
-      return convertToKMBWithPrefix(floorNumber((tokenAUSD / Number(tokenAAmount)) * displaySwapRate).toFixed(3), {
+      return convertToKMBWithPrefix(floorNumber((tokenAUSD / Number(tokenAAmount)) * swapRate).toFixed(3), {
         isIgnoreKFormat: true,
         approx: true,
         usd: true,
       });
     }
-  }, [displaySwapRate, displaySwapRateAction, swapSummaryInfo, swapTokenInfo]);
+  }, [swapSummaryInfo, swapTokenInfo]);
 
   const routerFeePercentageStr = useMemo(() => {
     if (!swapSummaryInfo?.protocolFee) return null;
@@ -189,12 +177,24 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
 
   const routerFeeStr = useMemo(() => {
     return formatRouterFeeStr(swapSummaryInfo, swapTokenInfo);
-  }, [swapSummaryInfo, swapTokenInfo]);
+  }, [
+    swapSummaryInfo?.routerFee,
+    swapSummaryInfo?.protocolFee,
+    swapTokenInfo?.direction,
+    swapTokenInfo?.tokenAAmount,
+    swapTokenInfo?.tokenBAmount,
+    swapTokenInfo?.tokenAUSD,
+    swapTokenInfo?.tokenBUSD,
+    swapTokenInfo?.tokenA?.symbol,
+    swapTokenInfo?.tokenB?.symbol,
+    swapTokenInfo?.tokenADecimals,
+    swapTokenInfo?.tokenBDecimals,
+  ]);
 
   const handleSwap = useCallback(() => {
     if (!swapTokenInfo) return;
     swap(swapTokenInfo, estimatedAmount);
-  }, [estimatedAmount, swap, swapTokenInfo]);
+  }, [swapTokenInfo, swap]);
 
   const gasEstimateSuccess = useMemo(() => {
     return Boolean(swapSummaryInfo?.gasEstimateSuccess);
