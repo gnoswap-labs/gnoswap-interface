@@ -1,5 +1,5 @@
 import { STATIC_TEXT } from "@common/values";
-import { GNOT_TOKEN } from "@common/values/token-constant";
+import { GNOT_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
 import { RewardType } from "@constants/option.constant";
 import { RewardTokenModel } from "@models/position/reward-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
@@ -15,6 +15,8 @@ export interface RewardTokenModelWithMultipleTypes extends Omit<RewardTokenModel
 export const TOKEN_DISPLAY_MAX_LENGTH = 9;
 
 export function formatDisplayTokenSymbol(symbol: string): string {
+  if (symbol.toUpperCase() === WUGNOT_TOKEN.symbol) return GNOT_TOKEN.symbol;
+
   if (symbol.length <= TOKEN_DISPLAY_MAX_LENGTH) return symbol;
 
   return `${symbol.slice(0, TOKEN_DISPLAY_MAX_LENGTH)}...`;
