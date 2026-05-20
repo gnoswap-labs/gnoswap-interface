@@ -74,7 +74,7 @@ export function PairRatio({
       {!loading && (
         <div className="ratio-value">
           {breakpoint !== DEVICE_TYPE.MOBILE && <>1 {displayTokenSymbol}</>} =&nbsp;
-          {formatExchangeRate(overrideValue || pool.price)}&nbsp;
+          {formatExchangeRate(overrideValue ?? pool.price)}&nbsp;
           {secondTokenSymbol}
         </div>
       )}
