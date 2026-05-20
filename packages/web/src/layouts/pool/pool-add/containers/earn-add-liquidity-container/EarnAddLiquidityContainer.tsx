@@ -123,7 +123,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     }
 
     return sqrtPriceX96;
-  }, [selectPool, selectPool.isOrderedPrice]);
+  }, [selectPool]);
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
     let depositRatio = "-";
@@ -363,7 +363,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      const decimals = tokenB.decimals - tokenA.decimals;
       const currentSqrtPriceX96 = selectPool.isCreate ? priceToSqrtX96(selectPool.currentPrice) : sqrtPriceX96;
       if (!currentSqrtPriceX96) {
         return null;
@@ -371,10 +370,10 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
       const amountRaw = makeRawTokenAmount(tokenA, amount) || 0;
       const { amountB } = getDepositAmountsByAmountA(
-        BigNumber(selectPool.currentPrice).shiftedBy(decimals).toNumber(),
+        selectPool.currentPrice,
         currentSqrtPriceX96,
-        BigNumber(selectPool.minPrice).shiftedBy(decimals).toNumber(),
-        BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
+        selectPool.minPrice,
+        selectPool.maxPrice,
         BigInt(amountRaw),
       );
       const expectedTokenAmount = makeDisplayTokenAmount(tokenB, amountB) || "0";
@@ -410,7 +409,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      const decimals = tokenB.decimals - tokenA.decimals;
       const currentSqrtPriceX96 = selectPool.isCreate ? priceToSqrtX96(selectPool.currentPrice) : sqrtPriceX96;
       if (!currentSqrtPriceX96) {
         return null;
@@ -418,10 +416,10 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
       const amountRaw = makeRawTokenAmount(tokenB, amount) || 0;
       const { amountA } = getDepositAmountsByAmountB(
-        BigNumber(selectPool.currentPrice).shiftedBy(decimals).toNumber(),
+        selectPool.currentPrice,
         currentSqrtPriceX96,
-        BigNumber(selectPool.minPrice).shiftedBy(decimals).toNumber(),
-        BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
+        selectPool.minPrice,
+        selectPool.maxPrice,
         BigInt(amountRaw),
       );
       const expectedTokenAmount = makeDisplayTokenAmount(tokenA, amountA) || "0";

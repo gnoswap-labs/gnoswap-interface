@@ -25,6 +25,7 @@ import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { SwapState } from "@states/index";
 import { formatRate } from "@utils/new-number-utils";
 import { makeRouteUrl } from "@utils/page.utils";
+import { invertSqrtPriceX96 } from "@utils/pool-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
 import {
   getDepositAmountsByAmountA,
@@ -106,7 +107,16 @@ const PoolAddLiquidityContainer: React.FC = () => {
   const { isLoading: isLoadingCommon } = useLoading();
 
   const sqrtPriceX96 = useMemo(() => {
-    return selectPool?.sqrtPriceX96 ?? null;
+    if (selectPool?.isOrderedPrice === undefined || selectPool?.isOrderedPrice === null) {
+      return null;
+    }
+
+    const sqrtPriceX96 = selectPool?.sqrtPriceX96 ?? 0n;
+    if (!selectPool.isOrderedPrice) {
+      return invertSqrtPriceX96(sqrtPriceX96);
+    }
+
+    return sqrtPriceX96;
   }, [selectPool]);
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
@@ -294,13 +304,12 @@ const PoolAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      const decimals = tokenB.decimals - tokenA.decimals;
       const amountRaw = makeRawTokenAmount(tokenA, amount) || 0;
       const { amountB } = getDepositAmountsByAmountA(
-        BigNumber(selectPool.currentPrice).shiftedBy(decimals).toNumber(),
+        selectPool.currentPrice,
         sqrtPriceX96,
-        BigNumber(selectPool.minPrice).shiftedBy(decimals).toNumber(),
-        BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
+        selectPool.minPrice,
+        selectPool.maxPrice,
         BigInt(amountRaw),
       );
       const expectedTokenAmount = makeDisplayTokenAmount(tokenB, amountB) || "0";
@@ -334,13 +343,12 @@ const PoolAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      const decimals = tokenB.decimals - tokenA.decimals;
       const amountRaw = makeRawTokenAmount(tokenB, amount) || 0;
       const { amountA } = getDepositAmountsByAmountB(
-        BigNumber(selectPool.currentPrice).shiftedBy(decimals).toNumber(),
+        selectPool.currentPrice,
         sqrtPriceX96,
-        BigNumber(selectPool.minPrice).shiftedBy(decimals).toNumber(),
-        BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
+        selectPool.minPrice,
+        selectPool.maxPrice,
         BigInt(amountRaw),
       );
       const expectedTokenAmount = makeDisplayTokenAmount(tokenA, amountA) || "0";

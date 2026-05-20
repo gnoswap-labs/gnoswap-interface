@@ -21,7 +21,7 @@ import {
 } from "@query/pools";
 import { EarnState } from "@states/index";
 import { checkGnotPath, encryptId } from "@utils/common";
-import { isValidCurrentPrice } from "@utils/pool-utils";
+import { invertSqrtPriceX96, isValidCurrentPrice } from "@utils/pool-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
 import {
   feeBoostRateByPrices,
@@ -294,38 +294,44 @@ export const useSelectPool = ({
       return null;
     }
 
-    const currentPrice = isCreate ? startPrice : isOrderedPrice ? price : 1 / price;
+    const currentPrice = isCreate ? startPrice : price;
     if (!isValidCurrentPrice(currentPrice)) {
       return null;
     }
 
-    const orderedMinPrice = isOrderedPrice ? minPrice : 1 / maxPrice;
-    const orderedMaxPrice = isOrderedPrice ? maxPrice : 1 / minPrice;
-
-    if (orderedMaxPrice < currentPrice) {
+    if (maxPrice < currentPrice) {
       return 0;
     }
 
-    if (orderedMinPrice > currentPrice) {
+    if (minPrice > currentPrice) {
       return 100;
     }
 
-    const currentMinPrice = fullRange ? swapFeeTierMaxPriceRangeMap.minPrice : orderedMinPrice;
-    const currentMaxPrice = fullRange ? swapFeeTierMaxPriceRangeMap.maxPrice : orderedMaxPrice;
+    const currentMinPrice = fullRange ? swapFeeTierMaxPriceRangeMap.minPrice : minPrice;
+    const currentMaxPrice = fullRange ? swapFeeTierMaxPriceRangeMap.maxPrice : maxPrice;
 
     const adjustAmountA = 1_000_000_000n;
 
-    const decimals = tokenB.decimals - tokenA.decimals;
-    const currentSqrtPriceX96 = isCreate ? priceToSqrtX96(currentPrice) : sqrtPriceX96;
+    const currentSqrtPriceX96 = (() => {
+      if (isCreate) {
+        return priceToSqrtX96(currentPrice);
+      }
+
+      if (!isOrderedPrice && sqrtPriceX96) {
+        return invertSqrtPriceX96(sqrtPriceX96);
+      }
+
+      return sqrtPriceX96;
+    })();
     if (!currentSqrtPriceX96) {
       return null;
     }
 
     const { amountA, amountB } = getDepositAmountsByAmountA(
-      BigNumber(currentPrice).shiftedBy(decimals).toNumber(),
+      currentPrice,
       currentSqrtPriceX96,
-      BigNumber(currentMinPrice).shiftedBy(decimals).toNumber(),
-      BigNumber(currentMaxPrice).shiftedBy(decimals).toNumber(),
+      currentMinPrice,
+      currentMaxPrice,
       adjustAmountA,
     );
 
