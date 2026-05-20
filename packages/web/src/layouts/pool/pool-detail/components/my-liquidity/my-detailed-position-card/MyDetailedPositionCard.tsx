@@ -39,7 +39,7 @@ import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { isClaimableReward, mapToDisplayRewardType } from "@utils/reward-utils";
-import { sortTokensByPoolOrder } from "@utils/pool-utils";
+import { makeDisplayPrice, sortTokensByPoolOrder } from "@utils/pool-utils";
 
 import { DailyEarningTooltipContent, PositionAPRInfo } from "../stat-tooltip-contents/DailyEarningTooltipContent";
 import { BalanceTooltipContent, PositionBalanceInfo } from "./BalanceTooltipContent";
@@ -488,20 +488,13 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
 
   const stringPrice = useMemo(() => {
     const price = tickToPrice(position?.pool?.currentTick);
-    const priceStr = tickToPriceStr(position?.pool?.currentTick, {
-      decimals: 40,
-      isFormat: false,
-    });
-
-    if (priceStr === "∞") {
-      return "∞";
-    }
 
     if (isSwap) {
+      const displayPrice = makeDisplayPrice(1 / price, tokenB, tokenA);
       return (
         <>
           1 {tokenB?.displaySymbol || ""} ={" "}
-          {formatTokenExchangeRate(1 / price, {
+          {formatTokenExchangeRate(displayPrice, {
             maxSignificantDigits: 6,
             minLimit: 0.000001,
           })}{" "}
@@ -509,17 +502,18 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         </>
       );
     }
+    const displayPrice = makeDisplayPrice(price, tokenA, tokenB);
     return (
       <>
         1 {tokenA?.displaySymbol || ""} ={" "}
-        {formatTokenExchangeRate(price, {
+        {formatTokenExchangeRate(displayPrice, {
           maxSignificantDigits: 6,
           minLimit: 0.000001,
         })}{" "}
         {tokenB?.displaySymbol || ""}
       </>
     );
-  }, [isSwap, tokenA?.displaySymbol, tokenB?.displaySymbol, position?.pool?.currentTick]);
+  }, [isSwap, tokenA, tokenB, position?.pool?.currentTick]);
 
   const poolBin = useMemo(() => {
     return (bins ?? []).map(item => ({
@@ -588,30 +582,29 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   }, [tickRange, positionBin.length, position.pool.fee]);
 
   const minPriceStr = useMemo(() => {
-    const isEndTick = isEndTickBy(position.tickLower, position.pool.fee);
-    const maxPrice = tickToPrice(position.tickUpper);
-    const minPrice = tickToPriceStr(position.tickLower, {
-      isEnd: isEndTick,
-      decimals: 40,
-      isFormat: false,
-    });
-
     if (isFullRange) return "0 ";
 
     if (!isSwap) {
+      const isEndTick = isEndTickBy(position.tickLower, position.pool.fee);
+      const minPrice = tickToPriceStr(position.tickLower, { isEnd: isEndTick });
       if (minPrice === "∞") return "∞";
 
-      return formatTokenExchangeRate(minPrice, {
+      const displayMinPrice = makeDisplayPrice(tickToPrice(position.tickLower), tokenA, tokenB);
+      return formatTokenExchangeRate(displayMinPrice, {
         maxSignificantDigits: 6,
         minLimit: 0.000001,
       });
     }
 
-    return formatTokenExchangeRate(`${Number(1 / Number(maxPrice))}`, {
+    const isEndTick = isEndTickBy(position.tickUpper, position.pool.fee);
+    if (isEndTick) return "0";
+
+    const displayMinPrice = makeDisplayPrice(1 / tickToPrice(position.tickUpper), tokenB, tokenA);
+    return formatTokenExchangeRate(displayMinPrice, {
       maxSignificantDigits: 6,
       minLimit: 0.000001,
     });
-  }, [position.tickLower, position.pool.fee, position.tickUpper, isFullRange, isSwap]);
+  }, [position.tickLower, position.pool.fee, position.tickUpper, isFullRange, isSwap, tokenA, tokenB]);
 
   const currentPrice = useMemo(() => {
     return !isSwap ? tickToPrice(position?.pool.currentTick) : 1 / tickToPrice(position?.pool.currentTick);
@@ -628,36 +621,33 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   }, [currentPrice, position.tickUpper, isSwap]);
 
   const maxPriceStr = useMemo(() => {
-    const isEndTick = isEndTickBy(position.tickUpper, position.pool.fee);
-
-    const minPrice = tickToPrice(position.tickLower);
-
-    const maxPrice = tickToPriceStr(position.tickUpper, {
-      isEnd: isEndTick,
-      decimals: 40,
-      isFormat: false,
-    });
-
     if (isFullRange) {
       return "∞";
     }
 
     if (!isSwap) {
+      const isEndTick = isEndTickBy(position.tickUpper, position.pool.fee);
+      const maxPrice = tickToPriceStr(position.tickUpper, { isEnd: isEndTick });
       if (maxPrice === "∞") {
         return "∞";
       }
 
-      return formatTokenExchangeRate(maxPrice, {
+      const displayMaxPrice = makeDisplayPrice(tickToPrice(position.tickUpper), tokenA, tokenB);
+      return formatTokenExchangeRate(displayMaxPrice, {
         maxSignificantDigits: 6,
         minLimit: 0.000001,
       });
     }
 
-    return formatTokenExchangeRate(`${Number(1 / Number(minPrice))}`, {
+    const isEndTick = isEndTickBy(position.tickLower, position.pool.fee);
+    if (isEndTick) return "∞";
+
+    const displayMaxPrice = makeDisplayPrice(1 / tickToPrice(position.tickLower), tokenB, tokenA);
+    return formatTokenExchangeRate(displayMaxPrice, {
       maxSignificantDigits: 6,
       minLimit: 0.000001,
     });
-  }, [position.tickLower, position.tickUpper, isFullRange, isSwap, position.pool.fee]);
+  }, [position.tickLower, position.tickUpper, isFullRange, isSwap, position.pool.fee, tokenA, tokenB]);
 
   const minTickLabel = useMemo(() => {
     if (Math.abs(minTickRate) >= 1000) return ">999%";

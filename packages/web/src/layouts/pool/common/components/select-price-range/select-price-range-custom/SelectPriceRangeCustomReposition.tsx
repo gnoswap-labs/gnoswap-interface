@@ -18,6 +18,7 @@ import { SelectPool } from "@hooks/pool/data/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
+import { makeDisplayPrice } from "@utils/pool-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToTick, tickToPrice } from "@utils/swap-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
@@ -84,12 +85,12 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
   }, [selectPool.compareToken, selectPool.startPrice, tokenA.path, tokenB.path]);
 
   const currentTokenA = useMemo(() => {
-    return flip ? getGnotPath(tokenB) : getGnotPath(tokenA);
-  }, [flip, tokenA, tokenB]);
+    return flip ? { ...tokenB, ...getGnotPath(tokenB) } : { ...tokenA, ...getGnotPath(tokenA) };
+  }, [flip, getGnotPath, tokenA, tokenB]);
 
   const currentTokenB = useMemo(() => {
-    return flip ? getGnotPath(tokenA) : getGnotPath(tokenB);
-  }, [flip, tokenA, tokenB]);
+    return flip ? { ...tokenA, ...getGnotPath(tokenA) } : { ...tokenB, ...getGnotPath(tokenB) };
+  }, [flip, getGnotPath, tokenA, tokenB]);
 
   const currentPrice = useMemo(() => {
     if (selectPool.startPrice) {
@@ -115,18 +116,12 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
       return "-";
     }
 
-    const priceWithDecimal = (() => {
-      if (selectPool.compareToken?.path === tokenA.path) {
-        return 10 ** (tokenB.decimals - tokenA.decimals) * currentPrice;
-      }
-
-      return 10 ** (tokenA.decimals - tokenB.decimals) * currentPrice;
-    })();
+    const displayPrice = makeDisplayPrice(currentPrice, currentTokenA, currentTokenB);
 
     return (
       <>
         1 {currentTokenA.displaySymbol} =&nbsp;
-        {formatTokenExchangeRate(priceWithDecimal, {
+        {formatTokenExchangeRate(displayPrice, {
           maxSignificantDigits: 6,
           minLimit: 0.000001,
         })}
@@ -134,15 +129,11 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
         {currentTokenB.displaySymbol}
       </>
     );
-  }, [
-    currentPrice,
-    currentTokenA.displaySymbol,
-    currentTokenB.displaySymbol,
-    selectPool.compareToken?.path,
-    tokenA.path,
-    tokenA.decimals,
-    tokenB.decimals,
-  ]);
+  }, [currentPrice, currentTokenA, currentTokenB]);
+
+  const decimalsRatio = useMemo(() => {
+    return currentTokenA.decimals - currentTokenB.decimals;
+  }, [currentTokenA.decimals, currentTokenB.decimals]);
 
   const availZoomIn = useMemo(() => {
     return selectPool.zoomLevel < ZOOL_VALUES.length - 1;
@@ -398,6 +389,7 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
                       decrease={selectPool.decreaseMinTick}
                       increase={selectPool.increaseMinTick}
                       setIsChangeMinMax={selectPool.setIsChangeMinMax}
+                      priceRatio={decimalsRatio}
                     />
                     <SelectPriceRangeCutomController
                       title={t("Reposition:form.price.max")}
@@ -412,6 +404,7 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
                       decrease={selectPool.decreaseMaxTick}
                       increase={selectPool.increaseMaxTick}
                       setIsChangeMinMax={selectPool.setIsChangeMinMax}
+                      priceRatio={decimalsRatio}
                     />
                   </div>
                   <div className="extra-wrapper">

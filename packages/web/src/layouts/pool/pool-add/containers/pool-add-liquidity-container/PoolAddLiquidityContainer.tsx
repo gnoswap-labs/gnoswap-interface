@@ -25,12 +25,14 @@ import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { SwapState } from "@states/index";
 import { formatRate } from "@utils/new-number-utils";
 import { makeRouteUrl } from "@utils/page.utils";
+import { invertSqrtPriceX96, makeDisplayPrice, makeRawPrice } from "@utils/pool-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
 import {
   getDepositAmountsByAmountA,
   getDepositAmountsByAmountB,
   makeSwapFeeTier,
   priceToNearTick,
+  priceToSqrtX96,
   priceToTick,
   tickToPrice,
 } from "@utils/swap-utils";
@@ -106,7 +108,16 @@ const PoolAddLiquidityContainer: React.FC = () => {
   const { isLoading: isLoadingCommon } = useLoading();
 
   const sqrtPriceX96 = useMemo(() => {
-    return selectPool?.sqrtPriceX96 ?? null;
+    if (selectPool?.isOrderedPrice === undefined || selectPool?.isOrderedPrice === null) {
+      return null;
+    }
+
+    const sqrtPriceX96 = selectPool?.sqrtPriceX96 ?? 0n;
+    if (!selectPool.isOrderedPrice) {
+      return invertSqrtPriceX96(sqrtPriceX96);
+    }
+
+    return sqrtPriceX96;
   }, [selectPool]);
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
@@ -242,42 +253,12 @@ const PoolAddLiquidityContainer: React.FC = () => {
     [type],
   );
 
-  const changeTokenAAmount = useCallback(
-    (amount: string) => {
-      tokenAAmountInput.changeAmount(amount);
-      setExactType("EXACT_IN");
-
-      if (!amount || amount === "0") {
-        tokenBAmountInput.changeAmount("0");
-        return;
-      }
-
-      updateTokenBAmountByTokenA(amount);
-    },
-    [tokenAAmountInput],
-  );
-
-  const changeTokenBAmount = useCallback(
-    (amount: string) => {
-      tokenBAmountInput.changeAmount(amount);
-      setExactType("EXACT_OUT");
-
-      if (!amount || amount === "0") {
-        tokenAAmountInput.changeAmount("0");
-        return;
-      }
-
-      updateTokenAAmountByTokenB(amount);
-    },
-    [tokenBAmountInput],
-  );
-
   const updateTokenBAmountByTokenA = useCallback(
     (amount: string) => {
       if (BigNumber(amount).isNaN() || !BigNumber(amount).isFinite()) {
         return;
       }
-      if (!selectPool.currentPrice || !sqrtPriceX96) {
+      if (!selectPool.currentPrice || (!selectPool.isCreate && !sqrtPriceX96)) {
         return;
       }
 
@@ -294,25 +275,31 @@ const PoolAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      const decimals = tokenB.decimals - tokenA.decimals;
+      const currentSqrtPriceX96 = selectPool.isCreate ? priceToSqrtX96(selectPool.currentPrice) : sqrtPriceX96;
+      if (!currentSqrtPriceX96) {
+        return;
+      }
+
       const amountRaw = makeRawTokenAmount(tokenA, amount) || 0;
       const { amountB } = getDepositAmountsByAmountA(
-        BigNumber(selectPool.currentPrice).shiftedBy(decimals).toNumber(),
-        sqrtPriceX96,
-        BigNumber(selectPool.minPrice).shiftedBy(decimals).toNumber(),
-        BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
+        selectPool.currentPrice,
+        currentSqrtPriceX96,
+        selectPool.minPrice,
+        selectPool.maxPrice,
         BigInt(amountRaw),
       );
       const expectedTokenAmount = makeDisplayTokenAmount(tokenB, amountB) || "0";
       tokenBAmountInput.changeAmount(expectedTokenAmount.toString());
     },
     [
+      selectPool.isCreate,
       selectPool.currentPrice,
       sqrtPriceX96,
-      selectPool.compareToken?.symbol,
       selectPool.minPrice,
       selectPool.maxPrice,
-      tokenA?.symbol,
+      tokenA,
+      tokenB,
+      tokenBAmountInput,
     ],
   );
 
@@ -322,7 +309,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      if (!selectPool.currentPrice || !sqrtPriceX96) {
+      if (!selectPool.currentPrice || (!selectPool.isCreate && !sqrtPriceX96)) {
         return;
       }
 
@@ -334,26 +321,62 @@ const PoolAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      const decimals = tokenB.decimals - tokenA.decimals;
+      const currentSqrtPriceX96 = selectPool.isCreate ? priceToSqrtX96(selectPool.currentPrice) : sqrtPriceX96;
+      if (!currentSqrtPriceX96) {
+        return;
+      }
+
       const amountRaw = makeRawTokenAmount(tokenB, amount) || 0;
       const { amountA } = getDepositAmountsByAmountB(
-        BigNumber(selectPool.currentPrice).shiftedBy(decimals).toNumber(),
-        sqrtPriceX96,
-        BigNumber(selectPool.minPrice).shiftedBy(decimals).toNumber(),
-        BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
+        selectPool.currentPrice,
+        currentSqrtPriceX96,
+        selectPool.minPrice,
+        selectPool.maxPrice,
         BigInt(amountRaw),
       );
       const expectedTokenAmount = makeDisplayTokenAmount(tokenA, amountA) || "0";
       tokenAAmountInput.changeAmount(expectedTokenAmount.toString());
     },
     [
+      selectPool.isCreate,
       selectPool.currentPrice,
       sqrtPriceX96,
-      selectPool.compareToken?.symbol,
       selectPool.minPrice,
       selectPool.maxPrice,
-      tokenB?.symbol,
+      tokenA,
+      tokenB,
+      tokenAAmountInput,
     ],
+  );
+
+  const changeTokenAAmount = useCallback(
+    (amount: string) => {
+      tokenAAmountInput.changeAmount(amount);
+      setExactType("EXACT_IN");
+
+      if (!amount || amount === "0") {
+        tokenBAmountInput.changeAmount("0");
+        return;
+      }
+
+      updateTokenBAmountByTokenA(amount);
+    },
+    [tokenAAmountInput, tokenBAmountInput, updateTokenBAmountByTokenA],
+  );
+
+  const changeTokenBAmount = useCallback(
+    (amount: string) => {
+      tokenBAmountInput.changeAmount(amount);
+      setExactType("EXACT_OUT");
+
+      if (!amount || amount === "0") {
+        tokenAAmountInput.changeAmount("0");
+        return;
+      }
+
+      updateTokenAAmountByTokenB(amount);
+    },
+    [tokenAAmountInput, tokenBAmountInput, updateTokenAAmountByTokenB],
   );
 
   const submit = useCallback(() => {
@@ -467,7 +490,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
 
   useEffect(() => {
     if (pools.length > 0 && tokenA && tokenB && selectPool.compareToken) {
-      const tokenPair = [tokenA.wrappedPath, tokenB.wrappedPath].sort(sortTokenPaths);
+      const tokenPair = [tokenA.wrappedPath || tokenA.path, tokenB.wrappedPath || tokenB.path].sort(sortTokenPaths);
       const compareToken = selectPool.compareToken;
       const reverse =
         tokenPair.findIndex(path => {
@@ -476,10 +499,10 @@ const PoolAddLiquidityContainer: React.FC = () => {
           }
           return false;
         }) === 1;
-      const priceOfMaxLiquidity = pools.sort((p1, p2) => Number(p2.tvl) - Number(p1.tvl)).at(0)?.price || null;
+      const priceOfMaxLiquidity = [...pools].sort((p1, p2) => Number(p2.tvl) - Number(p1.tvl)).at(0)?.price ?? null;
       if (priceOfMaxLiquidity) {
         const maxPrice = reverse ? 1 / priceOfMaxLiquidity : priceOfMaxLiquidity;
-        setDefaultPrice(maxPrice);
+        setDefaultPrice(makeDisplayPrice(maxPrice, tokenA, tokenB));
       } else {
         setDefaultPrice(null);
       }
@@ -490,31 +513,32 @@ const PoolAddLiquidityContainer: React.FC = () => {
 
   const changeStartingPrice = useCallback(
     (price: string) => {
-      if (price === "") {
-        setCreateOption({
-          ...createOption,
+      if (price === "" || !tokenA || !tokenB) {
+        setCreateOption(prev => ({
+          ...prev,
           startPrice: null,
-          isCreate: createOption?.isCreate ? true : false,
-        });
+          isCreate: prev?.isCreate ? true : false,
+        }));
         return;
       }
-      const priceNum = BigNumber(price).toNumber();
-      if (BigNumber(Number(priceNum)).isNaN()) {
-        setCreateOption({
-          ...createOption,
+      const priceBN = BigNumber(price);
+      if (!priceBN.isFinite() || !priceBN.gt(0)) {
+        setCreateOption(prev => ({
+          ...prev,
           startPrice: null,
-          isCreate: createOption?.isCreate ? true : false,
-        });
+          isCreate: prev?.isCreate ? true : false,
+        }));
         return;
       }
-      const tick = priceToNearTick(priceNum, selectPool.tickSpacing);
+      const rawPrice = makeRawPrice(priceBN.toNumber(), tokenA, tokenB);
+      const tick = priceToNearTick(rawPrice, selectPool.tickSpacing);
       const nearStartPrice = tickToPrice(tick);
       setCreateOption({
         isCreate: true,
         startPrice: nearStartPrice,
       });
     },
-    [createOption, selectPool.tickSpacing],
+    [selectPool.tickSpacing, tokenA, tokenB],
   );
 
   const handleSwapValue = useCallback(() => {

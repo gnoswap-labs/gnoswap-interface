@@ -1,3 +1,5 @@
+import BigNumber from "bignumber.js";
+
 import {
   DisplayRewardType,
   SwapFeeTierInfoMap,
@@ -60,6 +62,18 @@ export function toMinPriceStr(tick: number) {
 
 export function isValidCurrentPrice(price: number | null | undefined): price is number {
   return price !== null && price !== undefined && !!price && Number.isFinite(price);
+}
+
+export function makeDisplayPrice(price: number | string, baseToken: TokenModel, quoteToken: TokenModel): number {
+  return BigNumber(price)
+    .shiftedBy(baseToken.decimals - quoteToken.decimals)
+    .toNumber();
+}
+
+export function makeRawPrice(price: number | string, baseToken: TokenModel, quoteToken: TokenModel): number {
+  return BigNumber(price)
+    .shiftedBy(quoteToken.decimals - baseToken.decimals)
+    .toNumber();
 }
 
 export function isOrderedTokenPaths(tokenAPath: string, tokenBPath: string): boolean {

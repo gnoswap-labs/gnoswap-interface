@@ -10,9 +10,10 @@ import { useColorGraph } from "@hooks/common/use-color-graph";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { TokenModel } from "@models/token/token-model";
-import { convertToKMB } from "@utils/stake-position-utils";
+import { makeDisplayPrice } from "@utils/pool-utils";
+import { convertToKMB, formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { displayTickNumber } from "@utils/string-utils";
-import { priceToTick, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
+import { priceToTick, tickToPrice } from "@utils/swap-utils";
 
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { PoolSelectionGraphBinTooptip, TooltipInfo } from "./PoolSelectionGraphBinTooltip";
@@ -106,7 +107,10 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   const brushRef = useRef<SVGGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
 
-  const [priceOfTick, setPriceOfTick] = useState<{ [key in number]: string }>({});
+  const [priceOfTick, setPriceOfTick] = useState<{
+    tokenA: { [key in number]: string };
+    tokenB: { [key in number]: string };
+  }>({ tokenA: {}, tokenB: {} });
   const [tooltipInfo, setTooltipInfo] = useState<TooltipInfo | null>(null);
   const [positionX, setPositionX] = useState<number | null>(null);
   const [positionY, setPositionY] = useState<number | null>(null);
@@ -562,16 +566,18 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const maxTick = bin.maxTick;
 
     const tokenARange = {
-      min: priceOfTick[minTick] || null,
-      max: priceOfTick[maxTick] || null,
+      min: priceOfTick.tokenA[minTick] || null,
+      max: priceOfTick.tokenA[maxTick] || null,
     };
     const tokenBRange = {
-      min: priceOfTick[-minTick] || null,
-      max: priceOfTick[-maxTick] || null,
+      min: priceOfTick.tokenB[minTick] || null,
+      max: priceOfTick.tokenB[maxTick] || null,
     };
 
     const tokenAAmountStr = bin.reserveTokenA;
     const tokenBAmountStr = bin.reserveTokenB;
+
+    const currentTickKey = Math.round(currentTick);
 
     setTooltipInfo({
       tokenA: tokenA,
@@ -580,8 +586,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       tokenBAmount: tokenBAmountStr ? convertToKMB(tokenBAmountStr.toString()) : "-",
       tokenARange: tokenARange,
       tokenBRange: tokenBRange,
-      tokenAPrice: priceOfTick[currentTick] || "0",
-      tokenBPrice: priceOfTick[-currentTick] || "0",
+      tokenAPrice: priceOfTick.tokenA[currentTickKey] || "0",
+      tokenBPrice: priceOfTick.tokenB[currentTickKey] || "0",
     });
     setPositionX(mouseX);
     setPositionY(mouseY);
@@ -610,31 +616,44 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   // Lazy initialize currentPrice of tick
   useEffect(() => {
     if (resolvedDisplayBins.length > 0) {
-      new Promise<{ [key in number]: string }>(resolve => {
+      const formatDisplayPrice = (tick: number, baseToken: TokenModel, quoteToken: TokenModel) => {
+        const displayPrice = makeDisplayPrice(tickToPrice(tick), baseToken, quoteToken);
+
+        return formatTokenExchangeRate(displayPrice.toString(), {
+          maxSignificantDigits: 6,
+          minLimit: 0.000001,
+        });
+      };
+
+      new Promise<{
+        tokenA: { [key in number]: string };
+        tokenB: { [key in number]: string };
+      }>(resolve => {
         const priceOfTick = resolvedDisplayBins
           .flatMap(bin => {
             const minTick = bin.minTick;
             const maxTick = bin.maxTick;
-            return [minTick, maxTick, -minTick, -maxTick];
+            return [minTick, maxTick];
           })
-          .reduce<{ [key in number]: string }>((acc, current) => {
-            if (!acc[current]) {
-              acc[current] = tickToPriceStr(current, {
-                decimals: 40,
-              }).toString();
+          .reduce<{
+            tokenA: { [key in number]: string };
+            tokenB: { [key in number]: string };
+          }>((acc, current) => {
+            if (!acc.tokenA[current]) {
+              acc.tokenA[current] = formatDisplayPrice(current, tokenA, tokenB);
+            }
+            if (!acc.tokenB[current]) {
+              acc.tokenB[current] = formatDisplayPrice(-current, tokenB, tokenA);
             }
             return acc;
-          }, {});
-        priceOfTick[currentTick] = tickToPriceStr(Math.round(currentTick), {
-          decimals: 40,
-        }).toString();
-        priceOfTick[-currentTick] = tickToPriceStr(-Math.round(currentTick), {
-          decimals: 40,
-        }).toString();
+          }, { tokenA: {}, tokenB: {} });
+        const currentTickKey = Math.round(currentTick);
+        priceOfTick.tokenA[currentTickKey] = formatDisplayPrice(currentTickKey, tokenA, tokenB);
+        priceOfTick.tokenB[currentTickKey] = formatDisplayPrice(-currentTickKey, tokenB, tokenA);
         resolve(priceOfTick);
       }).then(setPriceOfTick);
     }
-  }, [resolvedDisplayBins]);
+  }, [currentTick, resolvedDisplayBins, tokenA, tokenB]);
 
   useEffect(() => {
     //  D3 - Draw bin and define interaction

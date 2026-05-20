@@ -23,6 +23,7 @@ import { SelectPool } from "@hooks/pool/data/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
+import { makeDisplayPrice } from "@utils/pool-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToTick, tickToPrice } from "@utils/swap-utils";
@@ -102,13 +103,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
         return "-";
       }
 
-      const currentPrice = (() => {
-        if (selectPool.compareToken?.path === tokenA.path) {
-          return 10 ** (tokenB.decimals - tokenA.decimals) * selectPool.currentPrice;
-        }
-
-        return 10 ** (tokenA.decimals - tokenB.decimals) * selectPool.currentPrice;
-      })();
+      const currentPrice = makeDisplayPrice(selectPool.currentPrice, tokenA, tokenB);
 
       return (
         <>
@@ -285,10 +280,10 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
     }, [selectPool.poolPath, selectPool.feeTier, selectPool.startPrice, isLoading]);
 
     useEffect(() => {
-      if (!selectPool.poolPath) {
+      if (selectPool.isCreate) {
         changeStartingPrice(startingPriceValue);
       }
-    }, [selectPool.poolPath, startingPriceValue]);
+    }, [selectPool.isCreate, startingPriceValue, changeStartingPrice]);
 
     useEffect(() => {
       if (selectPool.selectedFullRange) {
@@ -305,7 +300,9 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
       return [getGnotPath(tokenA).symbol, getGnotPath(tokenB).symbol];
     }, [tokenA, tokenB, isKeepToken]);
 
-    const decimalsRatio = useMemo(() => tokenB.decimals - tokenA.decimals, [tokenA.decimals, tokenB.decimals]);
+    const decimalsRatio = useMemo(() => {
+      return tokenA.decimals - tokenB.decimals;
+    }, [tokenA.decimals, tokenB.decimals]);
 
     if (selectPool.renderState() === "NONE") {
       return <></>;

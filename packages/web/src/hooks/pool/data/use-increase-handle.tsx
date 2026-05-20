@@ -13,6 +13,7 @@ import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { IncreaseState } from "@states/index";
+import { makeDisplayPrice } from "@utils/pool-utils";
 import {
   getDepositAmountsByAmountA,
   getDepositAmountsByAmountB,
@@ -64,25 +65,21 @@ export const useIncreaseHandle = () => {
   const minPriceStr = useMemo(() => {
     if (!selectedPosition) return "-";
     const isEndTick = isEndTickBy(selectedPosition?.tickLower, selectedPosition?.pool.fee);
-    const minPrice = tickToPriceStr(selectedPosition?.tickLower, {
-      decimals: 40,
-      isEnd: isEndTick,
-    });
+    const minPrice = tickToPriceStr(selectedPosition?.tickLower, { isEnd: isEndTick });
+    if (minPrice === "0" || minPrice === "∞") return minPrice;
 
-    return `${minPrice}`;
-  }, [selectedPosition?.tickUpper, selectedPosition?.tickLower]);
+    return `${makeDisplayPrice(tickToPrice(selectedPosition.tickLower), selectedPosition.pool.tokenA, selectedPosition.pool.tokenB)}`;
+  }, [selectedPosition]);
 
   const maxPriceStr = useMemo(() => {
     if (!selectedPosition) return "-";
     const isEndTick = isEndTickBy(selectedPosition?.tickUpper, selectedPosition?.pool.fee);
 
-    const maxPrice = tickToPriceStr(selectedPosition?.tickUpper, {
-      decimals: 40,
-      isEnd: isEndTick,
-    });
+    const maxPrice = tickToPriceStr(selectedPosition?.tickUpper, { isEnd: isEndTick });
+    if (maxPrice === "0" || maxPrice === "∞") return maxPrice;
 
-    return maxPrice;
-  }, [selectedPosition?.tickLower, selectedPosition?.tickUpper]);
+    return `${makeDisplayPrice(tickToPrice(selectedPosition.tickUpper), selectedPosition.pool.tokenA, selectedPosition.pool.tokenB)}`;
+  }, [selectedPosition]);
 
   const feeTier = useMemo(() => {
     return selectedPosition ? makeSwapFeeTier(selectedPosition.pool.fee) : null;

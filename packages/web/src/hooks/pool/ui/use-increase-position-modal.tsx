@@ -224,11 +224,10 @@ export const useIncreasePositionModal = ({
 
       if (result.code === 0) {
         openTransactionConfirmModal();
-        // Make display token amount
-        const tokenAAmount = (makeDisplayTokenAmount(tokenA, tokenAAmountInput.amount) || 0).toLocaleString("en-US", {
+        const tokenAAmount = Number(tokenAAmountInput.amount).toLocaleString("en-US", {
           maximumFractionDigits: tokenA.decimals,
         });
-        const tokenBAmount = (makeDisplayTokenAmount(tokenB, tokenBAmountInput.amount) || 0).toLocaleString("en-US", {
+        const tokenBAmount = Number(tokenBAmountInput.amount).toLocaleString("en-US", {
           maximumFractionDigits: tokenB.decimals,
         });
 

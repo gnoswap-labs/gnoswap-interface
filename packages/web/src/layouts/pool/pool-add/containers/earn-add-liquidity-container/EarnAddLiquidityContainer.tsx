@@ -19,14 +19,16 @@ import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { SwapState } from "@states/index";
 import { formatRate } from "@utils/new-number-utils";
 import { makeRouteUrl } from "@utils/page.utils";
-import { invertSqrtPriceX96 } from "@utils/pool-utils";
+import { invertSqrtPriceX96, makeDisplayPrice, makeRawPrice } from "@utils/pool-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
 import {
   getDepositAmountsByAmountA,
   getDepositAmountsByAmountB,
   makeSwapFeeTier,
+  priceToNearTick,
   priceToSqrtX96,
   priceToTick,
+  tickToPrice,
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 
@@ -123,7 +125,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
     }
 
     return sqrtPriceX96;
-  }, [selectPool, selectPool.isOrderedPrice]);
+  }, [selectPool]);
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
     let depositRatio = "-";
@@ -321,7 +323,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const changeStartingPrice = useCallback(
     (price: string) => {
-      if (price === "" || !swapFeeTier) {
+      if (price === "" || !swapFeeTier || !tokenA || !tokenB) {
         setCreateOption(prev => ({
           ...prev,
           startPrice: null,
@@ -337,12 +339,16 @@ const EarnAddLiquidityContainer: React.FC = () => {
         return;
       }
 
+      const rawPrice = makeRawPrice(priceNum, tokenA, tokenB);
+      const tick = priceToNearTick(rawPrice, selectPool.tickSpacing);
+      const nearStartPrice = tickToPrice(tick);
+
       setCreateOption(prev => ({
         ...prev,
-        startPrice: priceNum,
+        startPrice: nearStartPrice,
       }));
     },
-    [swapFeeTier],
+    [selectPool.tickSpacing, swapFeeTier, tokenA, tokenB],
   );
 
   const updateTokenBAmountByTokenA = useCallback(
@@ -363,7 +369,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      const decimals = tokenB.decimals - tokenA.decimals;
       const currentSqrtPriceX96 = selectPool.isCreate ? priceToSqrtX96(selectPool.currentPrice) : sqrtPriceX96;
       if (!currentSqrtPriceX96) {
         return null;
@@ -371,10 +376,10 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
       const amountRaw = makeRawTokenAmount(tokenA, amount) || 0;
       const { amountB } = getDepositAmountsByAmountA(
-        BigNumber(selectPool.currentPrice).shiftedBy(decimals).toNumber(),
+        selectPool.currentPrice,
         currentSqrtPriceX96,
-        BigNumber(selectPool.minPrice).shiftedBy(decimals).toNumber(),
-        BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
+        selectPool.minPrice,
+        selectPool.maxPrice,
         BigInt(amountRaw),
       );
       const expectedTokenAmount = makeDisplayTokenAmount(tokenB, amountB) || "0";
@@ -410,7 +415,6 @@ const EarnAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      const decimals = tokenB.decimals - tokenA.decimals;
       const currentSqrtPriceX96 = selectPool.isCreate ? priceToSqrtX96(selectPool.currentPrice) : sqrtPriceX96;
       if (!currentSqrtPriceX96) {
         return null;
@@ -418,10 +422,10 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
       const amountRaw = makeRawTokenAmount(tokenB, amount) || 0;
       const { amountA } = getDepositAmountsByAmountB(
-        BigNumber(selectPool.currentPrice).shiftedBy(decimals).toNumber(),
+        selectPool.currentPrice,
         currentSqrtPriceX96,
-        BigNumber(selectPool.minPrice).shiftedBy(decimals).toNumber(),
-        BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
+        selectPool.minPrice,
+        selectPool.maxPrice,
         BigInt(amountRaw),
       );
       const expectedTokenAmount = makeDisplayTokenAmount(tokenA, amountA) || "0";
@@ -581,7 +585,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
           ?.price || null;
       if (priceOfMaxLiquidity) {
         const maxPrice = reverse ? 1 / priceOfMaxLiquidity : priceOfMaxLiquidity;
-        setDefaultPrice(maxPrice);
+        setDefaultPrice(makeDisplayPrice(maxPrice, tokenA, tokenB));
       } else {
         setDefaultPrice(null);
       }

@@ -90,9 +90,8 @@ const PriceSteps = forwardRef<PriceStepsRef, PriceStepsProps>(
         }
 
         const { minPrice, maxPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];
-        const currentValue = BigNumber(value)
-          .shiftedBy(priceRatio || 0)
-          .toNumber();
+        const displayPrice = BigNumber(value).shiftedBy(priceRatio || 0);
+        const currentValue = displayPrice.toNumber();
 
         const minPriceWithRatio = BigNumber(minPrice)
           .shiftedBy(priceRatio || 0)
@@ -111,13 +110,13 @@ const PriceSteps = forwardRef<PriceStepsRef, PriceStepsProps>(
           return;
         }
         if (currentValue >= 1) {
-          setDisplayValue(greaterThan1Transform(BigNumber(value).toFixed()));
+          setDisplayValue(greaterThan1Transform(displayPrice.toFixed()));
           return;
         }
 
-        setDisplayValue(subscriptFormat(BigNumber(value).toFixed()));
+        setDisplayValue(subscriptFormat(displayPrice.toFixed()));
       },
-      [feeTier, priceRatio, selectedFullRange],
+      [feeTier, priceRatio],
     );
 
     const onBlur = useCallback(() => {
@@ -125,7 +124,7 @@ const PriceSteps = forwardRef<PriceStepsRef, PriceStepsProps>(
         return;
       }
       setChanged(false);
-      const currentValue = BigNumber(Number(displayValue));
+      const currentValue = BigNumber(displayValue).shiftedBy(-(priceRatio || 0));
 
       const nearPrice = findNearPrice(currentValue.toNumber(), tickSpacing);
 
@@ -150,6 +149,7 @@ const PriceSteps = forwardRef<PriceStepsRef, PriceStepsProps>(
       changePrice,
       formatControllerValue,
       onSelectCustomRange,
+      priceRatio,
     ]);
 
     useImperativeHandle(
@@ -173,26 +173,33 @@ const PriceSteps = forwardRef<PriceStepsRef, PriceStepsProps>(
         return "-";
       }
 
-      const currentValue = BigNumber(current).toNumber();
+      const displayPrice = BigNumber(current).shiftedBy(priceRatio || 0);
+      const currentValue = displayPrice.toNumber();
       const { maxPrice, minPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];
+      const maxPriceWithRatio = BigNumber(maxPrice)
+        .shiftedBy(priceRatio || 0)
+        .toNumber();
+      const minPriceWithRatio = BigNumber(minPrice)
+        .shiftedBy(priceRatio || 0)
+        .toNumber();
 
-      if (currentValue <= minPrice) {
+      if (currentValue <= minPriceWithRatio) {
         return "0";
       }
 
       if (currentValue < 1 && currentValue !== 0) {
-        return subscriptFormat(BigNumber(current).toFixed());
+        return subscriptFormat(displayPrice.toFixed());
       }
 
-      if (currentValue / maxPrice > 0.9) {
+      if (currentValue / maxPriceWithRatio > 0.9) {
         return "∞";
       }
 
-      return formatTokenExchangeRate(current, {
+      return formatTokenExchangeRate(displayPrice.toFixed(), {
         maxSignificantDigits: 6,
         minLimit: 0.000001,
       });
-    }, [current, feeTier]);
+    }, [current, feeTier, priceRatio]);
 
     const priceValueString = (
       <>
@@ -219,16 +226,22 @@ const PriceSteps = forwardRef<PriceStepsRef, PriceStepsProps>(
     }, [displayValue]);
 
     const ratioDisplay = useMemo(() => {
-      if (isNumber(current ?? "") && Number(current) >= 1) {
-        return convertToKMB(Number(current).toFixed(4));
+      if (current === null) {
+        return displayValue;
       }
 
-      if (current) {
-        return subscriptFormat(current);
+      const displayPrice = BigNumber(current).shiftedBy(priceRatio || 0);
+
+      if (isNumber(displayPrice.toString()) && displayPrice.isGreaterThanOrEqualTo(1)) {
+        return convertToKMB(displayPrice.toFixed(4));
+      }
+
+      if (!displayPrice.isZero()) {
+        return subscriptFormat(displayPrice.toFixed());
       }
 
       return displayValue;
-    }, [current, displayValue]);
+    }, [current, displayValue, priceRatio]);
 
     return (
       <PriceStepsWrapper>

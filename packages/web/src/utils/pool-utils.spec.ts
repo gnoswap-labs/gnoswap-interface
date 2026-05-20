@@ -1,6 +1,20 @@
-import { invertSqrtPriceX96, isOrderedTokenPaths, isValidCurrentPrice } from "./pool-utils";
+import { TokenModel } from "@models/token/token-model";
+import { invertSqrtPriceX96, isOrderedTokenPaths, isValidCurrentPrice, makeDisplayPrice, makeRawPrice } from "./pool-utils";
 
 const TWO_192 = BigInt("6277101735386680763835789423207666416102355444464034512896");
+
+const makeToken = (symbol: string, decimals: number): TokenModel => ({
+  path: `gno.land/r/demo/${symbol.toLowerCase()}`,
+  type: "GRC20",
+  chainId: "test-chain",
+  name: symbol,
+  symbol,
+  displaySymbol: symbol,
+  decimals,
+  logoURI: "",
+  createdAt: "",
+  priceID: symbol,
+});
 
 describe("invertSqrtPriceX96", () => {
   it("should return 0n when input is 0n", () => {
@@ -64,6 +78,48 @@ describe("isOrderedTokenPaths", () => {
     // "gno.land/r/gnoland/wugnot" < "gno.land/r/gnoswap/gns" lexicographically
     expect(isOrderedTokenPaths(wgnotPath, gnsPath)).toBe(true);
     expect(isOrderedTokenPaths(gnsPath, wgnotPath)).toBe(false);
+  });
+});
+
+describe("price display/raw conversion", () => {
+  it("should convert higher-decimal base display prices into the raw tick domain and back", () => {
+    const btc = makeToken("BTC", 8);
+    const usdc = makeToken("USDC", 6);
+
+    const rawPrice = makeRawPrice(1, btc, usdc);
+
+    expect(rawPrice).toBe(0.01);
+    expect(makeDisplayPrice(rawPrice, btc, usdc)).toBe(1);
+  });
+
+  it("should convert much higher-decimal base display prices into the raw tick domain and back", () => {
+    const sol = makeToken("SOL", 9);
+    const trx = makeToken("TRX", 6);
+
+    const rawPrice = makeRawPrice(1, sol, trx);
+
+    expect(rawPrice).toBe(0.001);
+    expect(makeDisplayPrice(rawPrice, sol, trx)).toBe(1);
+  });
+
+  it("should convert lower-decimal base display prices into the raw tick domain and back", () => {
+    const usdc = makeToken("USDC", 6);
+    const btc = makeToken("BTC", 8);
+
+    const rawPrice = makeRawPrice(1, usdc, btc);
+
+    expect(rawPrice).toBe(100);
+    expect(makeDisplayPrice(rawPrice, usdc, btc)).toBe(1);
+  });
+
+  it("should preserve equal-decimal token prices", () => {
+    const tokenA = makeToken("A", 6);
+    const tokenB = makeToken("B", 6);
+
+    const rawPrice = makeRawPrice(1.25, tokenA, tokenB);
+
+    expect(rawPrice).toBe(1.25);
+    expect(makeDisplayPrice(rawPrice, tokenA, tokenB)).toBe(1.25);
   });
 });
 

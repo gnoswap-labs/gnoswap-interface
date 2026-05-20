@@ -189,17 +189,11 @@ export const useSwapHandler = () => {
 
   const [copied, setCopied] = useState(false);
   const [swapResult, setSwapResult] = useState<SwapResultInfo | null>(null);
-  const [openedConfirmModal] = useState(false);
+  const [openedConfirmModal, setOpenedConfirmModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { connected: connectedWallet, isSwitchNetwork, switchNetwork } = useWallet();
-  const {
-    tokens,
-    tokenPrices,
-    displayBalanceMap,
-    updateBalances,
-    getTokenUSDPrice,
-    refetchGrc20Balances,
-  } = useTokenData();
+  const { tokens, tokenPrices, displayBalanceMap, updateBalances, getTokenUSDPrice, refetchGrc20Balances } =
+    useTokenData();
   const { slippage, changeSlippage } = useSlippage();
   const { openModal } = useConnectWalletModal();
   const { data: swapFee } = useGetSwapFee();
@@ -243,11 +237,10 @@ export const useSwapHandler = () => {
         .toNumber(),
     [gnotToken?.decimals],
   );
-  const gasFeeUSD = useMemo(() => getTokenUSDPrice(checkGnotPath(gnotToken?.path ?? ""), defaultGasFeeAmount) ?? 0, [
-    defaultGasFeeAmount,
-    getTokenUSDPrice,
-    gnotToken?.path,
-  ]);
+  const gasFeeUSD = useMemo(
+    () => getTokenUSDPrice(checkGnotPath(gnotToken?.path ?? ""), defaultGasFeeAmount) ?? 0,
+    [defaultGasFeeAmount, getTokenUSDPrice, gnotToken?.path],
+  );
 
   const swapRouteInfos: SwapRouteInfo[] = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -294,25 +287,48 @@ export const useSwapHandler = () => {
     });
   }, [isSwitchNetwork, displayBalanceMap, tokenB]);
 
+  const quotedTokenAAmount = useMemo(() => {
+    return type === "EXACT_OUT" && estimatedAmount !== null ? estimatedAmount : tokenAAmount;
+  }, [estimatedAmount, tokenAAmount, type]);
+
+  const quotedTokenBAmount = useMemo(() => {
+    return type === "EXACT_IN" && estimatedAmount !== null ? estimatedAmount : tokenBAmount;
+  }, [estimatedAmount, tokenBAmount, type]);
+
+  useEffect(() => {
+    if (estimatedAmount === null) {
+      return;
+    }
+
+    if (type === "EXACT_IN") {
+      setTokenBAmount(estimatedAmount);
+    } else {
+      setTokenAAmount(estimatedAmount);
+    }
+  }, [estimatedAmount, type]);
+
   const tokenAUSD = useMemo(() => {
-    if (!Number(tokenAAmount) || !tokenA || !tokenPrices[checkGnotPath(tokenA.priceID)].usd) {
+    if (!Number(quotedTokenAAmount) || !tokenA || !tokenPrices[checkGnotPath(tokenA.priceID)]?.usd) {
       return null;
     }
-    return BigNumber(tokenAAmount).multipliedBy(tokenPrices[checkGnotPath(tokenA.priceID)].usd).toNumber();
-  }, [tokenA, tokenAAmount, tokenPrices]);
+    return BigNumber(quotedTokenAAmount).multipliedBy(tokenPrices[checkGnotPath(tokenA.priceID)].usd).toNumber();
+  }, [quotedTokenAAmount, tokenA, tokenPrices]);
 
   const tokenBUSD = useMemo(() => {
-    if (!Number(tokenBAmount) || !tokenB || !tokenPrices[checkGnotPath(tokenB.priceID)]?.usd) {
+    if (!Number(quotedTokenBAmount) || !tokenB || !tokenPrices[checkGnotPath(tokenB.priceID)]?.usd) {
       return null;
     }
-    return BigNumber(tokenBAmount).multipliedBy(tokenPrices[checkGnotPath(tokenB.priceID)].usd).toNumber();
-  }, [tokenB, tokenBAmount, tokenPrices]);
+    return BigNumber(quotedTokenBAmount).multipliedBy(tokenPrices[checkGnotPath(tokenB.priceID)].usd).toNumber();
+  }, [quotedTokenBAmount, tokenB, tokenPrices]);
 
-  const getValidUSDValue = (token: TokenModel) => {
-    const bnValue = BigNumber(tokenPrices[checkGnotPath(token.path)]?.usd);
-    if (bnValue.isNaN() || !bnValue.gt(0)) return null;
-    return bnValue.toNumber();
-  };
+  const getValidUSDValue = useCallback(
+    (token: TokenModel) => {
+      const bnValue = BigNumber(tokenPrices[checkGnotPath(token.path)]?.usd);
+      if (bnValue.isNaN() || !bnValue.gt(0)) return null;
+      return bnValue.toNumber();
+    },
+    [tokenPrices],
+  );
 
   const priceImpact = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -323,12 +339,6 @@ export const useSwapHandler = () => {
       return prevPriceImpact.current || BigNumber(0);
     }
 
-    if (type === "EXACT_IN") {
-      setTokenBAmount(estimatedAmount);
-    } else {
-      setTokenAAmount(estimatedAmount);
-    }
-
     const tokenAUSDValue = getValidUSDValue(tokenA);
     const tokenBUSDValue = getValidUSDValue(tokenB);
     const hasUSDPrice = tokenAUSDValue !== null && tokenBUSDValue !== null;
@@ -337,10 +347,10 @@ export const useSwapHandler = () => {
       const tokenAUSDValue = tokenPrices[checkGnotPath(tokenA.path)]?.usd || 0;
       const tokenBUSDValue = tokenPrices[checkGnotPath(tokenB.path)]?.usd || 0;
 
-      const tokenAUSDAmount = BigNumber(tokenAAmount || 0)
+      const tokenAUSDAmount = BigNumber(quotedTokenAAmount || 0)
         .multipliedBy(tokenAUSDValue)
         .toNumber();
-      const tokenBUSDAmount = BigNumber(tokenBAmount || 0)
+      const tokenBUSDAmount = BigNumber(quotedTokenBAmount || 0)
         .multipliedBy(tokenBUSDValue)
         .toNumber();
 
@@ -365,7 +375,18 @@ export const useSwapHandler = () => {
     );
     prevPriceImpact.current = BigNumber(priceImpactNum.toFixed(2));
     return BigNumber(priceImpactNum.toFixed(2));
-  }, [estimatedRoutes, swapFee, tokenA?.path, tokenAAmount, tokenB?.path, tokenBAmount, tokenPrices]);
+  }, [
+    estimatedAmount,
+    estimatedRoutes,
+    getValidUSDValue,
+    quotedTokenAAmount,
+    quotedTokenBAmount,
+    swapFee,
+    tokenA,
+    tokenB,
+    tokenPrices,
+    type,
+  ]);
 
   const priceImpactStatus: PriceImpactStatus = useMemo(() => {
     if (!priceImpact) return "NONE";
@@ -493,13 +514,13 @@ export const useSwapHandler = () => {
 
     return {
       tokenA,
-      tokenAAmount,
+      tokenAAmount: quotedTokenAAmount,
       tokenABalance,
       tokenAUSD,
       tokenAUSDStr: formatPrice(tokenAUSD, { usd: true, isKMB: false, approx: true }),
       tokenAPriceGrade,
       tokenB,
-      tokenBAmount,
+      tokenBAmount: quotedTokenBAmount,
       tokenBBalance,
       tokenBUSD,
       tokenBUSDStr: formatPrice(tokenBUSD, { usd: true, isKMB: false, approx: true }),
@@ -513,11 +534,11 @@ export const useSwapHandler = () => {
     slippage,
     type,
     tokenA,
-    tokenAAmount,
+    quotedTokenAAmount,
     tokenABalance,
     tokenAUSD,
     tokenB,
-    tokenBAmount,
+    quotedTokenBAmount,
     tokenBBalance,
     tokenBUSD,
     tokenPrices,
@@ -584,12 +605,12 @@ export const useSwapHandler = () => {
 
     const swapRate =
       swapRateAction === SwapRateAction.ATOB
-        ? Number(tokenBAmount) / Number(tokenAAmount)
-        : Number(tokenAAmount) / Number(tokenBAmount);
+        ? Number(quotedTokenBAmount) / Number(quotedTokenAAmount)
+        : Number(quotedTokenAAmount) / Number(quotedTokenBAmount);
     const swapRateUSD =
       type === "EXACT_IN"
-        ? BigNumber(tokenBAmount).multipliedBy(tokenBUSDValue).toNumber()
-        : BigNumber(tokenAAmount).multipliedBy(tokenAUSDValue).toNumber();
+        ? BigNumber(quotedTokenBAmount).multipliedBy(tokenBUSDValue).toNumber()
+        : BigNumber(quotedTokenAAmount).multipliedBy(tokenAUSDValue).toNumber();
 
     return {
       tokenA,
@@ -620,8 +641,8 @@ export const useSwapHandler = () => {
     tokenB,
     isSameToken,
     type,
-    tokenAAmount,
-    tokenBAmount,
+    quotedTokenAAmount,
+    quotedTokenBAmount,
     tokenAmountLimit,
     swapRateAction,
     type,
@@ -658,62 +679,82 @@ export const useSwapHandler = () => {
     );
   }, [swapButtonState]);
 
-  const openConfirmModal = useCallback(() => {
-    if (!swapSummaryInfo) {
-      return;
+  const executeSwapRef = useRef(executeSwap);
+  executeSwapRef.current = executeSwap;
+
+  const executeLatestSwap = useCallback((swapTokenInfo: SwapTokenInfo, estimatedAmount: string | null) => {
+    executeSwapRef.current(swapTokenInfo, estimatedAmount);
+  }, []);
+
+  const confirmModalTitle = useMemo(() => {
+    switch (swapButtonState) {
+      case "SWAP":
+        return t("Swap:confirmSwapModal.title");
+      case "WRAP":
+        return t("Swap:confirmSwapModal.confirmBtn.wrap");
+      case "UNWRAP":
+        return t("Swap:confirmSwapModal.confirmBtn.unwrap");
+      case "HIGHT_PRICE_IMPACT":
+        return t("Swap:swapButton.swapAnyway");
+      default:
+        return "";
     }
-    setOpenedModal(true);
-    setModalContent(
+  }, [swapButtonState, t]);
+
+  const closeModal = useCallback(() => {
+    setOpenedModal(false);
+    setOpenedConfirmModal(false);
+    setModalContent(null);
+    setSwapResult(null);
+  }, [setModalContent, setOpenedModal]);
+
+  const renderConfirmModalContent = useCallback(
+    () => (
       <ConfirmSwapModal
         submitted={true}
         swapResult={swapResult}
         setSwapRateAction={setSwapRateAction}
-        swap={executeSwap}
+        swap={executeLatestSwap}
         close={closeModal}
         isWrapOrUnwrap={swapButtonState === "WRAP" || swapButtonState === "UNWRAP"}
         isLoading={isRefetching}
         priceImpactStatus={priceImpactStatus}
         connectedWallet={connectedWallet}
-        title={(() => {
-          switch (swapButtonState) {
-            case "SWAP":
-              return t("Swap:confirmSwapModal.title");
-            case "WRAP":
-              return t("Swap:confirmSwapModal.confirmBtn.wrap");
-            case "UNWRAP":
-              return t("Swap:confirmSwapModal.confirmBtn.unwrap");
-            case "HIGHT_PRICE_IMPACT":
-              return t("Swap:swapButton.swapAnyway");
-            default:
-              return "";
-          }
-        })()}
-      />,
-    );
-  }, [
-    submitted,
-    swapResult,
-    swapSummaryInfo,
-    swapTokenInfo,
-    swapButtonState,
-    priceImpactStatus,
-    isLoading,
-    isRefetching,
-    isLoadingGasInfo,
-    setSwapRateAction,
-    connectedWallet,
-    t,
-  ]);
+        title={confirmModalTitle}
+      />
+    ),
+    [
+      closeModal,
+      confirmModalTitle,
+      connectedWallet,
+      executeLatestSwap,
+      isRefetching,
+      priceImpactStatus,
+      swapButtonState,
+      swapResult,
+    ],
+  );
+
+  const openConfirmModal = useCallback(() => {
+    if (!swapSummaryInfo) {
+      return;
+    }
+    setOpenedModal(true);
+    setOpenedConfirmModal(true);
+    setModalContent(renderConfirmModalContent());
+  }, [renderConfirmModalContent, setModalContent, setOpenedModal, swapSummaryInfo]);
+
+  useEffect(() => {
+    if (!openedConfirmModal) {
+      return;
+    }
+
+    setModalContent(renderConfirmModalContent());
+  }, [openedConfirmModal, renderConfirmModalContent, setModalContent]);
 
   const openConnectWallet = useCallback(() => {
     openModal();
   }, [openModal]);
-
-  const closeModal = useCallback(() => {
-    setOpenedModal(false);
-    setModalContent(null);
-    setSwapResult(null);
-  }, []);
 
   const onFinishSwap = useCallback(() => {
     closeModal();

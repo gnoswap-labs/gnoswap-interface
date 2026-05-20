@@ -29,6 +29,7 @@ import {
 import { CreatePoolFailedResponse, CreatePoolSuccessResponse } from "@repositories/pool/response/create-pool-response";
 import { CommonState } from "@states/index";
 import { subscriptFormat } from "@utils/number-utils";
+import { makeDisplayPrice } from "@utils/pool-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToNearTick } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
@@ -178,24 +179,28 @@ export const usePoolAddLiquidityConfirmModal = ({
   }, [tokenA, tokenB, swapFeeTier, tokenAAmount, tokenAAmountInput.usdValue, tokenBAmount, tokenBAmountInput.usdValue]);
 
   const formatPriceDisplay = useCallback(
-    (price: number) => {
+    (price: number, baseToken: TokenModel, quoteToken: TokenModel) => {
       if (price === null || BigNumber(Number(price)).isNaN() || !swapFeeTier) {
         return "-";
       }
 
       const { maxPrice } = SwapFeeTierMaxPriceRangeMap[swapFeeTier || "NONE"];
 
-      const currentValue = BigNumber(price).toNumber();
+      const displayPrice = BigNumber(makeDisplayPrice(price, baseToken, quoteToken));
+      const currentValue = displayPrice.toNumber();
+      const maxPriceWithRatio = BigNumber(maxPrice)
+        .shiftedBy(baseToken.decimals - quoteToken.decimals)
+        .toNumber();
 
       if (currentValue < 1 && currentValue !== 0) {
-        return subscriptFormat(BigNumber(price).toFixed());
+        return subscriptFormat(displayPrice.toFixed());
       }
 
-      if (currentValue / maxPrice > 0.9) {
+      if (currentValue / maxPriceWithRatio > 0.9) {
         return "∞";
       }
 
-      return formatTokenExchangeRate(price, {
+      return formatTokenExchangeRate(displayPrice.toFixed(), {
         maxSignificantDigits: 6,
         minLimit: 0.000001,
       });
@@ -207,11 +212,17 @@ export const usePoolAddLiquidityConfirmModal = ({
     if (!selectPool) {
       return null;
     }
-    const tokenASymbol =
-      selectPool.compareToken?.path === tokenA?.path ? tokenA?.displaySymbol || "" : tokenB?.displaySymbol || "";
-    const tokenBSymbol =
-      selectPool.compareToken?.path === tokenA?.path ? tokenB?.displaySymbol || "" : tokenA?.displaySymbol || "";
-    const currentPrice = `${selectPool.currentPrice}`;
+    if (!tokenA || !tokenB || selectPool.currentPrice === null) {
+      return null;
+    }
+
+    const isTokenABase = selectPool.compareToken?.path === tokenA.path;
+    const baseToken = isTokenABase ? tokenA : tokenB;
+    const quoteToken = isTokenABase ? tokenB : tokenA;
+    const tokenASymbol = baseToken.displaySymbol || "";
+    const tokenBSymbol = quoteToken.displaySymbol || "";
+    const rawCurrentPrice = selectPool.currentPrice;
+    const currentPrice = `${makeDisplayPrice(rawCurrentPrice, baseToken, quoteToken)}`;
     if (selectPool.selectedFullRange) {
       return {
         currentPrice,
@@ -229,18 +240,18 @@ export const usePoolAddLiquidityConfirmModal = ({
     let minPriceStr = "0.0000";
     let maxPriceStr = "0.0000";
     if (selectPool.minPrice && selectPool.minPrice > minPrice) {
-      minPriceStr = formatPriceDisplay(selectPool.minPrice);
+      minPriceStr = formatPriceDisplay(selectPool.minPrice, baseToken, quoteToken);
     }
     if (selectPool.maxPrice) {
-      maxPriceStr = formatPriceDisplay(selectPool.maxPrice);
+      maxPriceStr = formatPriceDisplay(selectPool.maxPrice, baseToken, quoteToken);
     }
     const feeBoost = selectPool.feeBoost === null ? "-" : `x${selectPool.feeBoost}`;
 
     let inRange = true;
-    if (!selectPool.maxPrice || BigNumber(selectPool.maxPrice).isLessThan(currentPrice)) {
+    if (!selectPool.maxPrice || BigNumber(selectPool.maxPrice).isLessThan(rawCurrentPrice)) {
       inRange = false;
     }
-    if (selectPool.minPrice === null || BigNumber(selectPool.minPrice).isGreaterThan(currentPrice)) {
+    if (selectPool.minPrice === null || BigNumber(selectPool.minPrice).isGreaterThan(rawCurrentPrice)) {
       inRange = false;
     }
 
