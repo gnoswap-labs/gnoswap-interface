@@ -177,37 +177,40 @@ export const usePoolAddLiquidityConfirmModal = ({
     };
   }, [tokenA, tokenB, swapFeeTier, tokenAAmount, tokenAAmountInput.usdValue, tokenBAmount, tokenBAmountInput.usdValue]);
 
-  const formatPriceDisplay = (price: number) => {
-    if (price === null || BigNumber(Number(price)).isNaN() || !swapFeeTier) {
-      return "-";
-    }
+  const formatPriceDisplay = useCallback(
+    (price: number) => {
+      if (price === null || BigNumber(Number(price)).isNaN() || !swapFeeTier) {
+        return "-";
+      }
 
-    const { maxPrice } = SwapFeeTierMaxPriceRangeMap[swapFeeTier || "NONE"];
+      const { maxPrice } = SwapFeeTierMaxPriceRangeMap[swapFeeTier || "NONE"];
 
-    const currentValue = BigNumber(price).toNumber();
+      const currentValue = BigNumber(price).toNumber();
 
-    if (currentValue < 1 && currentValue !== 0) {
-      return subscriptFormat(BigNumber(price).toFixed());
-    }
+      if (currentValue < 1 && currentValue !== 0) {
+        return subscriptFormat(BigNumber(price).toFixed());
+      }
 
-    if (currentValue / maxPrice > 0.9) {
-      return "∞";
-    }
+      if (currentValue / maxPrice > 0.9) {
+        return "∞";
+      }
 
-    return formatTokenExchangeRate(price, {
-      maxSignificantDigits: 6,
-      minLimit: 0.000001,
-    });
-  };
+      return formatTokenExchangeRate(price, {
+        maxSignificantDigits: 6,
+        minLimit: 0.000001,
+      });
+    },
+    [swapFeeTier],
+  );
 
   const priceRangeInfo = useMemo(() => {
     if (!selectPool) {
       return null;
     }
     const tokenASymbol =
-      selectPool.compareToken?.symbol === tokenA?.symbol ? tokenA?.displaySymbol || "" : tokenB?.displaySymbol || "";
+      selectPool.compareToken?.path === tokenA?.path ? tokenA?.displaySymbol || "" : tokenB?.displaySymbol || "";
     const tokenBSymbol =
-      selectPool.compareToken?.symbol === tokenA?.symbol ? tokenB?.displaySymbol || "" : tokenA?.displaySymbol || "";
+      selectPool.compareToken?.path === tokenA?.path ? tokenB?.displaySymbol || "" : tokenA?.displaySymbol || "";
     const currentPrice = `${selectPool.currentPrice}`;
     if (selectPool.selectedFullRange) {
       return {
@@ -251,7 +254,7 @@ export const usePoolAddLiquidityConfirmModal = ({
       feeBoost,
       estimatedAPR: "N/A",
     };
-  }, [selectPool, tokenA, tokenB]);
+  }, [formatPriceDisplay, selectPool, tokenA, tokenB]);
 
   const feeInfo = useMemo((): {
     token?: TokenModel;

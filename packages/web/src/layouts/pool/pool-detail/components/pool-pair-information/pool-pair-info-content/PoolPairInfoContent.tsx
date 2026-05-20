@@ -219,8 +219,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.rewards24hUsd]);
 
   const isWrapText = useMemo(() => {
-    return pool?.tokenA?.symbol.length === 4 || pool?.tokenB?.symbol.length === 4;
-  }, [pool?.tokenB?.symbol, pool?.tokenA?.symbol]);
+    return pool?.tokenA?.displaySymbol.length === 4 || pool?.tokenB?.displaySymbol.length === 4;
+  }, [pool?.tokenB?.displaySymbol, pool?.tokenA?.displaySymbol]);
 
   const currentPriceRatioNumber = useMemo(() => {
     const tokenADecimals = pool.tokenA.decimals;

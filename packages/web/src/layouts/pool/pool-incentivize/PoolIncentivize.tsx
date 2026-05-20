@@ -52,7 +52,7 @@ const PoolIncentivize: React.FC = () => {
     base.push({ title: t("business:pageHeader.incentivzePool"), path: "" });
 
     return base;
-  }, [tokenAPath, tokenBPath, breakpoint, hasDedicatedPool]);
+  }, [breakpoint, fee, getGnotPath, hasDedicatedPool, poolPath, t, tokenAPath, tokenBPath, tokens]);
 
   return (
     <PoolIncentivizeLayout
