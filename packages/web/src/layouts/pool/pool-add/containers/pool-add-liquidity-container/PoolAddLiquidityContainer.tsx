@@ -488,7 +488,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
 
   useEffect(() => {
     if (pools.length > 0 && tokenA && tokenB && selectPool.compareToken) {
-      const tokenPair = [tokenA.wrappedPath, tokenB.wrappedPath].sort(sortTokenPaths);
+      const tokenPair = [tokenA.wrappedPath || tokenA.path, tokenB.wrappedPath || tokenB.path].sort(sortTokenPaths);
       const compareToken = selectPool.compareToken;
       const reverse =
         tokenPair.findIndex(path => {
