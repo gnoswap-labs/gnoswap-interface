@@ -403,7 +403,7 @@ describe("position.message.ts", () => {
           tokenAAmount: 0.0025,
           tokenBAmount: 3,
           caller,
-          slippage: 0,
+          slippage: 10,
           deadline,
         },
         fetchAllowance,
@@ -419,7 +419,7 @@ describe("position.message.ts", () => {
             send: "",
             pkg_path: "wugnot",
             func: "Approve",
-            args: ["pool_address", "2500"],
+            args: ["pool_address", "2750"],
             gasFee: undefined,
           },
           {
@@ -427,7 +427,7 @@ describe("position.message.ts", () => {
             send: "",
             pkg_path: "tokenB_path",
             func: "Approve",
-            args: ["pool_address", "3000000"],
+            args: ["pool_address", "3300000"],
             gasFee: undefined,
           },
         ]),
@@ -436,7 +436,7 @@ describe("position.message.ts", () => {
       expect(txMessages).toEqual([
         {
           caller,
-          send: "2500ugnot",
+          send: "2750ugnot",
           pkg_path: "wugnot",
           func: "Deposit",
           args: null,
@@ -447,7 +447,7 @@ describe("position.message.ts", () => {
           send: "",
           pkg_path: "position_path",
           func: "IncreaseLiquidity",
-          args: ["lp1", "2500", "3000000", "2500", "3000000", deadline],
+          args: ["lp1", "2750", "3300000", "2250", "2700000", deadline],
           gasFee: undefined,
         },
       ]);
@@ -518,7 +518,7 @@ describe("position.message.ts", () => {
           tokenBAmount: "3",
           minTick: -10,
           maxTick: 10,
-          slippage: 0,
+          slippage: 10,
           caller,
           deadline,
         },
@@ -535,7 +535,7 @@ describe("position.message.ts", () => {
             send: "",
             pkg_path: "wugnot",
             func: "Approve",
-            args: ["pool_address", "2500"],
+            args: ["pool_address", "2750"],
             gasFee: undefined,
           },
           {
@@ -543,7 +543,7 @@ describe("position.message.ts", () => {
             send: "",
             pkg_path: "tokenB_path",
             func: "Approve",
-            args: ["pool_address", "3000000"],
+            args: ["pool_address", "3300000"],
             gasFee: undefined,
           },
         ]),
@@ -552,7 +552,7 @@ describe("position.message.ts", () => {
       expect(txMessages).toEqual([
         {
           caller,
-          send: "2500ugnot",
+          send: "2750ugnot",
           pkg_path: "wugnot",
           func: "Deposit",
           args: null,
@@ -563,7 +563,7 @@ describe("position.message.ts", () => {
           send: "",
           pkg_path: "position_path",
           func: "Reposition",
-          args: ["lp1", "-10", "10", "2500", "3000000", "2500", "3000000", deadline],
+          args: ["lp1", "-10", "10", "2750", "3300000", "2250", "2700000", deadline],
           gasFee: undefined,
         },
       ]);

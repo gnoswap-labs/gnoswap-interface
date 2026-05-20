@@ -258,19 +258,21 @@ export function makeIncreaseLiquidityMessagesWithApproves(
 
   const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
   const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
+  const tokenAAmountMaxRaw = calculateMaxTokenAmount(tokenAAmountRaw, slippage);
+  const tokenBAmountMaxRaw = calculateMaxTokenAmount(tokenBAmountRaw, slippage);
 
   // Make Approve messages that can be managed by a Pool package of tokens.
   const approveMessageInfos: TokenApproveMessageInfo[] = [
     {
       tokenPath: tokenAWrappedPath,
       targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: tokenAAmountRaw,
+      amount: tokenAAmountMaxRaw,
       caller,
     },
     {
       tokenPath: tokenBWrappedPath,
       targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: tokenBAmountRaw,
+      amount: tokenBAmountMaxRaw,
       caller,
     },
   ];
@@ -279,7 +281,7 @@ export function makeIncreaseLiquidityMessagesWithApproves(
 
   const messages: TransactionMessage[] = [];
 
-  const depositAmount = getWrappedGNOTDepositAmount(tokenA.path, tokenB.path, tokenAAmountRaw, tokenBAmountRaw);
+  const depositAmount = getWrappedGNOTDepositAmount(tokenA.path, tokenB.path, tokenAAmountMaxRaw, tokenBAmountMaxRaw);
   if (BigNumber(depositAmount).isGreaterThan(0)) {
     const depositMessage = makeDepositGNOTMessage(depositAmount, caller);
     if (depositMessage) {
@@ -293,10 +295,10 @@ export function makeIncreaseLiquidityMessagesWithApproves(
     packagePath: PACKAGE_POSITION_PATH,
     args: [
       lpTokenId, // LP Token ID
-      tokenAAmountRaw, // Maximum amount of tokenA to offer
-      tokenBAmountRaw, // Maximum amount of tokenB to offer
-      BigNumber(tokenAAmountRaw).multipliedBy(slippageRatio).toFixed(0), // Minimum amount of tokenA to provide
-      BigNumber(tokenBAmountRaw).multipliedBy(slippageRatio).toFixed(0), // Minimum amount of tokenB to provide
+      tokenAAmountMaxRaw, // Maximum amount of tokenA to offer
+      tokenBAmountMaxRaw, // Maximum amount of tokenB to offer
+      BigNumber(tokenAAmountRaw).multipliedBy(slippageRatio).integerValue(BigNumber.ROUND_FLOOR).toFixed(0), // Minimum amount of tokenA to provide
+      BigNumber(tokenBAmountRaw).multipliedBy(slippageRatio).integerValue(BigNumber.ROUND_FLOOR).toFixed(0), // Minimum amount of tokenB to provide
       deadline, // Deadline UTC time
     ],
     caller,
@@ -381,6 +383,8 @@ export function makeRepositionLiquidityMessagesWithApproves(
 
   const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
   const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
+  const tokenAAmountMaxRaw = calculateMaxTokenAmount(tokenAAmountRaw, slippage);
+  const tokenBAmountMaxRaw = calculateMaxTokenAmount(tokenBAmountRaw, slippage);
 
   const minTokenAAmount = calculateMinTokenAmount(tokenAAmountRaw, slippage);
   const minTokenBAmount = calculateMinTokenAmount(tokenBAmountRaw, slippage);
@@ -390,19 +394,19 @@ export function makeRepositionLiquidityMessagesWithApproves(
     {
       tokenPath: tokenAWrappedPath,
       targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: tokenAAmountRaw,
+      amount: tokenAAmountMaxRaw,
       caller,
     },
     {
       tokenPath: tokenBWrappedPath,
       targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: tokenBAmountRaw,
+      amount: tokenBAmountMaxRaw,
       caller,
     },
   ];
 
   const messages: TransactionMessage[] = [];
-  const depositAmount = getWrappedGNOTDepositAmount(tokenA.path, tokenB.path, tokenAAmountRaw, tokenBAmountRaw);
+  const depositAmount = getWrappedGNOTDepositAmount(tokenA.path, tokenB.path, tokenAAmountMaxRaw, tokenBAmountMaxRaw);
   if (BigNumber(depositAmount).isGreaterThan(0)) {
     const depositMessage = makeDepositGNOTMessage(depositAmount, caller);
     if (depositMessage) {
@@ -418,8 +422,8 @@ export function makeRepositionLiquidityMessagesWithApproves(
       lpTokenId, // LP Token ID
       `${minTick}`, // position's minimal tick
       `${maxTick}`, // position's maximal tick
-      `${tokenAAmountRaw}`, // Maximum amount of tokenA to offer
-      `${tokenBAmountRaw}`, // Maximum amount of tokenB to offer
+      `${tokenAAmountMaxRaw}`, // Maximum amount of tokenA to offer
+      `${tokenBAmountMaxRaw}`, // Maximum amount of tokenB to offer
       minTokenAAmount, // Minimum amount of tokenA to provide
       minTokenBAmount, // Minimum amount of tokenB to provide
       deadline, // Deadline UTC time
@@ -466,4 +470,16 @@ export function makeRemoveLiquidityMessagesWithApproves(
   });
 
   return makeTransactionMessagesWithApproves(removeLiquidityMessages, approveMessageInfos, fetchAllowance);
+}
+
+function calculateMaxTokenAmount(tokenAmount: string, slippage: number): string {
+  if (!tokenAmount || BigNumber(tokenAmount).isZero()) {
+    return "0";
+  }
+
+  return BigNumber(tokenAmount)
+    .multipliedBy(100 + slippage)
+    .dividedBy(100)
+    .integerValue(BigNumber.ROUND_CEIL)
+    .toFixed(0);
 }

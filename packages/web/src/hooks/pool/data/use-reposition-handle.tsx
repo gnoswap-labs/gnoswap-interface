@@ -10,7 +10,6 @@ import { ERROR_VALUE } from "@common/errors/adena";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { ERROR_VALUE as SWAP_ERROR_VALUE } from "@common/errors/swap";
 import {
-  DEFAULT_SLIPPAGE,
   PriceRangeMeta,
   RANGE_STATUS_OPTION,
   SwapFeeTierMaxPriceRangeMap,
@@ -89,17 +88,20 @@ export const useRepositionHandle = () => {
   const { slippage, changeSlippage } = useSlippage();
   const { connected, account, walletClient } = useWallet();
   const [initialized, setInitialized] = useState(false);
-  const { positions, loading: isLoadingPosition, refetch: refetchPositions } = usePositionData({
+  const {
+    positions,
+    loading: isLoadingPosition,
+    refetch: refetchPositions,
+  } = usePositionData({
     poolPath,
   });
   const { estimateNetworkFee } = useNetworkFee(null);
   const { invalidateQueryKey } = useInvalidateQueries();
 
-  const selectedPosition = useMemo(() => positions.find(item => item.id.toString() === positionId) || defaultPosition, [
-    defaultPosition,
-    positionId,
-    positions,
-  ]);
+  const selectedPosition = useMemo(
+    () => positions.find(item => item.id.toString() === positionId) || defaultPosition,
+    [defaultPosition, positionId, positions],
+  );
 
   const calculatedLiquidity = useMemo(() => {
     if (!selectedPosition?.liquidity) return BigNumber(0);
@@ -564,15 +566,8 @@ export const useRepositionHandle = () => {
         return fetchAllowance(rpcProvider, packagePath, owner, spender);
       };
 
-      const {
-        inputToken,
-        outputToken,
-        tokenAmount,
-        estimatedRoutes,
-        tokenAmountLimit,
-        deadline,
-        referrerAddress,
-      } = request;
+      const { inputToken, outputToken, tokenAmount, estimatedRoutes, tokenAmountLimit, deadline, referrerAddress } =
+        request;
       const makeMessageRequests: ExactSwapRouteMessageRequest = {
         inputToken,
         outputToken,
@@ -639,8 +634,8 @@ export const useRepositionHandle = () => {
         slippage: slippage,
         originAmount: estimatedSwapResult.originAmount,
         tokenAmountLimit: isExactIn
-          ? outputAmount.toNumber() * ((100 - DEFAULT_SLIPPAGE) / 100)
-          : inputAmount.toNumber() * ((100 + DEFAULT_SLIPPAGE) / 100),
+          ? outputAmount.toNumber() * ((100 - slippage) / 100)
+          : inputAmount.toNumber() * ((100 + slippage) / 100),
         deadline,
         referrerAddress: currentReferralAddress,
       };
@@ -865,7 +860,7 @@ export const useRepositionHandle = () => {
         tokenB,
         tokenAAmount,
         tokenBAmount,
-        slippage: DEFAULT_SLIPPAGE,
+        slippage,
         minTick: priceToNearTick(selectPool.minPrice, selectPool.tickSpacing),
         maxTick: priceToNearTick(selectPool.maxPrice, selectPool.tickSpacing),
         caller: address,
@@ -889,6 +884,7 @@ export const useRepositionHandle = () => {
       buildAdenaWalletRepositionAction,
       buildSocialWalletRepositionAction,
       walletClient,
+      slippage,
     ],
   );
 
