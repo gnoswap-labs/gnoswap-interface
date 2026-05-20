@@ -1,6 +1,7 @@
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import { TokenModel } from "@models/token/token-model";
 import {
+  formatDisplayTokenSymbol,
   formatTokenBalanceDisplay,
   formatTokenModelPath,
   formatTokenPath,
@@ -22,6 +23,19 @@ const DEFAULT_TOKEN: TokenModel = {
   logoURI: "",
   createdAt: "",
 };
+
+describe("format display token symbol", () => {
+  it("should keep token symbols with 9 or fewer characters", () => {
+    expect(formatDisplayTokenSymbol("GNOT")).toBe("GNOT");
+    expect(formatDisplayTokenSymbol("123456789")).toBe("123456789");
+  });
+
+  it("should shorten token symbols longer than 9 characters", () => {
+    expect(formatDisplayTokenSymbol("ibc/488D610A5FB7878660703092A35BC4E7D0C88E2EA71174337AA317A22C05177F")).toBe(
+      "ibc/488D6...",
+    );
+  });
+});
 
 describe("make token raw price", () => {
   test("1 to 1000000", () => {
