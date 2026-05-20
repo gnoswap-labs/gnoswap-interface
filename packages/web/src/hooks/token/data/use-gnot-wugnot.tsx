@@ -16,7 +16,7 @@ export const useGnotToGnot = () => {
             name?: string;
             logoURI?: string;
             symbol?: string;
-            displaySymbol?: string;
+            displaySymbol: string;
           }
         | null
         | undefined,

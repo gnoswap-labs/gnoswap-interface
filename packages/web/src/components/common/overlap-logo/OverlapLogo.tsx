@@ -9,7 +9,7 @@ import {
 export interface ILogoData {
   src: string;
   symbol: string;
-  displaySymbol?: string;
+  displaySymbol: string;
   tooltipContent?: string;
 }
 

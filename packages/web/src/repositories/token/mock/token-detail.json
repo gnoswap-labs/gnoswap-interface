@@ -407,6 +407,7 @@
         "name": "Bar",
         "path": "gno.land/r/bar",
         "symbol": "BAR",
+        "displaySymbol": "BAR",
         "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg"
       },
       "tokenB": {
@@ -414,6 +415,7 @@
         "name": "Gnoland",
         "path": "ugnot",
         "symbol": "GNOT",
+        "displaySymbol": "GNOT",
         "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/gnot.svg"
       },
       "tvlUsd": "1998051479.954414",
@@ -427,6 +429,7 @@
         "name": "Bar",
         "path": "gno.land/r/bar",
         "symbol": "BAR",
+        "displaySymbol": "BAR",
         "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg"
       },
       "tokenB": {
@@ -434,6 +437,7 @@
         "name": "Baz",
         "path": "gno.land/r/baz",
         "symbol": "BAZ",
+        "displaySymbol": "BAZ",
         "logoURI": "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_baz.svg"
       },
       "tvlUsd": "1000069655.690114",
