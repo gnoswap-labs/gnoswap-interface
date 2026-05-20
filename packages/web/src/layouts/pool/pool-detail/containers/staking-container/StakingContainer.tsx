@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import { StakingPeriodType } from "@constants/option.constant";
+import { StakingPeriodType, STAKING_PERIOS } from "@constants/option.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import useUrlParam from "@hooks/common/use-url-param";
@@ -8,6 +8,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePoolData } from "@hooks/pool/data/use-pool-data";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useGetPoolDetailByPath, useGetPoolStakingListByPoolPath } from "@query/pools";
 import { formatRate } from "@utils/new-number-utils";
@@ -16,7 +17,25 @@ import { isValidAddress } from "@utils/validation-utils";
 import Staking from "../../components/staking/Staking";
 import { PoolConverter } from "@services/converters/pool";
 
-const DAY_TIME = 24 * 60 * 60 * 1000;
+const getStakingPeriodType = (pool: PoolDetailModel | null, stakedAt: string): StakingPeriodType => {
+  const warmupConfigs = [...(pool?.warmupConfigs ?? [])].sort((left, right) => left.percentage - right.percentage);
+  const differenceSeconds = (new Date().getTime() - new Date(stakedAt).getTime()) / 1000;
+  let endDurationSeconds = 0;
+
+  for (let index = 0; index < warmupConfigs.length && index < STAKING_PERIOS.length - 1; index += 1) {
+    const config = warmupConfigs[index];
+    if (config.durationSeconds <= 0) {
+      continue;
+    }
+
+    endDurationSeconds += config.durationSeconds;
+    if (differenceSeconds < endDurationSeconds) {
+      return STAKING_PERIOS[index];
+    }
+  }
+
+  return "MAX";
+};
 
 interface StakingContainerProps {
   hasPoolStaking: boolean;
@@ -126,16 +145,7 @@ const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking, onO
       [key in StakingPeriodType]: PoolPositionModel[];
     }>(
       (accum, current) => {
-        const stakedTime = new Date(current.stakedAt).getTime();
-        const difference = (new Date().getTime() - stakedTime) / DAY_TIME;
-        let periodType: StakingPeriodType = "MAX";
-        if (difference < 5) {
-          periodType = "5D";
-        } else if (difference < 10) {
-          periodType = "10D";
-        } else if (difference < 30) {
-          periodType = "30D";
-        }
+        const periodType = getStakingPeriodType(pool, current.stakedAt);
         accum[periodType].push(current);
         return accum;
       },
@@ -146,7 +156,7 @@ const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking, onO
         MAX: [],
       },
     );
-  }, [stakedPositions]);
+  }, [pool, stakedPositions]);
 
   useEffect(() => {
     if (allPositions.length === 0) {

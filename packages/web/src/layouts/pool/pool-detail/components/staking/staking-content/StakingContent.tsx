@@ -5,7 +5,7 @@ import Button from "@components/common/button/Button";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { StakingPeriodType, STAKING_PERIOS, STAKING_PERIOD_INFO } from "@constants/option.constant";
+import { StakingPeriodType, STAKING_PERIOS } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useIntersectionObserver } from "@hooks/common/use-interaction-observer";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
@@ -43,27 +43,38 @@ const DAY_SECONDS = 24 * 60 * 60;
 
 type StakingPeriodInfo = {
   period: number;
+  endPeriod: number;
   rate: number;
   durationSeconds: number;
+  endDurationSeconds: number;
 };
 
 const buildStakingPeriodInfos = (pool: PoolDetailModel | null): Record<StakingPeriodType, StakingPeriodInfo> => {
-  const configByPercentage = new Map((pool?.warmupConfigs || []).map(config => [config.percentage, config]));
+  const warmupConfigs = [...(pool?.warmupConfigs ?? [])].sort((left, right) => left.percentage - right.percentage);
+  let endDurationSeconds = 0;
 
   return STAKING_PERIOS.reduce((accum, key, index) => {
-    const defaultInfo = STAKING_PERIOD_INFO[key];
-    const config = configByPercentage.get(defaultInfo.rate * 100);
+    const config = warmupConfigs[index];
     if (!config) {
-      accum[key] = { ...defaultInfo, durationSeconds: defaultInfo.period * DAY_SECONDS };
+      accum[key] = {
+        period: 0,
+        endPeriod: -1,
+        rate: 0,
+        durationSeconds: 0,
+        endDurationSeconds,
+      };
       return accum;
     }
 
-    const previousPeriod = STAKING_PERIOS[index - 1];
-    const fallbackPeriod = previousPeriod ? accum[previousPeriod].period : STAKING_PERIOD_INFO.MAX.period;
+    if (key !== "MAX" && config.durationSeconds > 0) {
+      endDurationSeconds += config.durationSeconds;
+    }
 
     accum[key] = {
       durationSeconds: config.durationSeconds,
-      period: config.durationSeconds > 0 ? Number((config.durationSeconds / DAY_SECONDS).toFixed(2)) : fallbackPeriod,
+      endDurationSeconds,
+      endPeriod: key !== "MAX" && endDurationSeconds > 0 ? Number((endDurationSeconds / DAY_SECONDS).toFixed(2)) : -1,
+      period: key !== "MAX" && config.durationSeconds > 0 ? Number((config.durationSeconds / DAY_SECONDS).toFixed(2)) : -1,
       rate: config.percentage / 100,
     };
 
@@ -140,11 +151,17 @@ const StakingContent: React.FC<StakingContentProps> = ({
         const stakedTime = new Date(current.stakedAt).getTime();
         const differenceSeconds = (new Date().getTime() - stakedTime) / 1000;
         let periodType: StakingPeriodType = "MAX";
-        if (differenceSeconds < stakingPeriodInfos["5D"].durationSeconds) {
+        if (stakingPeriodInfos["5D"].endDurationSeconds > 0 && differenceSeconds < stakingPeriodInfos["5D"].endDurationSeconds) {
           periodType = "5D";
-        } else if (differenceSeconds < stakingPeriodInfos["10D"].durationSeconds) {
+        } else if (
+          stakingPeriodInfos["10D"].endDurationSeconds > 0 &&
+          differenceSeconds < stakingPeriodInfos["10D"].endDurationSeconds
+        ) {
           periodType = "10D";
-        } else if (differenceSeconds < stakingPeriodInfos["30D"].durationSeconds) {
+        } else if (
+          stakingPeriodInfos["30D"].endDurationSeconds > 0 &&
+          differenceSeconds < stakingPeriodInfos["30D"].endDurationSeconds
+        ) {
           periodType = "30D";
         }
         accum[periodType].push(current);

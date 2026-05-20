@@ -32,7 +32,7 @@ import {
 
 interface StakingContentCardProps {
   period: StakingPeriodType;
-  periodInfo: { period: number; rate: number };
+  periodInfo: { period: number; endPeriod: number; rate: number };
   stakingApr?: string;
   checkPoints: StakingPeriodType[];
   positions: PoolPositionModel[];
@@ -234,7 +234,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
                   scroll
                   FloatingContent={
                     <div>
-                      <PriceTooltipContent positions={positions} period={periodInfo.period} />
+                      <PriceTooltipContent positions={positions} period={periodInfo.endPeriod} />
                     </div>
                   }
                 >
@@ -274,7 +274,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
 
 interface SummuryAprProps {
   period: StakingPeriodType;
-  periodInfo: { period: number; rate: number };
+  periodInfo: { period: number; endPeriod: number; rate: number };
   checkPoints: StakingPeriodType[];
   positions: PoolPositionModel[];
   stakingApr?: string;
