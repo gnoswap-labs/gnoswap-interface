@@ -194,7 +194,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   const handleSwap = useCallback(() => {
     if (!swapTokenInfo) return;
     swap(swapTokenInfo, estimatedAmount);
-  }, [swapTokenInfo, swap]);
+  }, [estimatedAmount, swap, swapTokenInfo]);
 
   const gasEstimateSuccess = useMemo(() => {
     return Boolean(swapSummaryInfo?.gasEstimateSuccess);
