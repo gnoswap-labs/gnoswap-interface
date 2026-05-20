@@ -187,7 +187,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
           <div className="name-wrap">
             <span className="symbol-text">
               {t("Pool:staking.period.title", {
-                days: tier.period,
+                days: tier.endPeriod,
               })}
             </span>
             <div className="icon-wrap">
