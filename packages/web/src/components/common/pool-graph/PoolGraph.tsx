@@ -5,8 +5,9 @@ import * as uuid from "uuid";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { TokenModel } from "@models/token/token-model";
+import { makeDisplayPrice } from "@utils/pool-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
-import { tickToPriceStr } from "@utils/swap-utils";
+import { tickToPrice } from "@utils/swap-utils";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 
 import PoolGraphSVG from "./pool-graph-svg/PoolGraphSVG";
@@ -187,7 +188,10 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       .range([boundsHeight, 0]);
   }, [boundsHeight, maxHeight]);
 
-  const [tickOfPrices, setTickOfPrices] = useState<{ [key in number]: string }>({});
+  const [tickOfPrices, setTickOfPrices] = useState<{
+    tokenA: { [key in number]: string };
+    tokenB: { [key in number]: string };
+  }>({ tokenA: {}, tokenB: {} });
   const [tooltipInfo, setTooltipInfo] = useState<TooltipInfo | null>(null);
   const [positionX, setPositionX] = useState<number | null>(null);
   const [positionY, setPositionY] = useState<number | null>(null);
@@ -226,7 +230,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
   const onMouseMoveChartBin = useCallback(
     (event: MouseEvent) => {
-      if (!mouseover || Object.keys(tickOfPrices).length === 0) {
+      if (!mouseover || Object.keys(tickOfPrices.tokenA).length === 0) {
         return;
       }
       const mouseX = event.offsetX;
@@ -294,12 +298,12 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       const maxTickSwap = currentBin.maxTickSwap + defaultMinX;
 
       const tokenARange = {
-        min: tickOfPrices[!isReversed ? minTick : minTickSwap] || null,
-        max: tickOfPrices[!isReversed ? maxTick : maxTickSwap] || null,
+        min: tickOfPrices.tokenA[!isReversed ? minTick : minTickSwap] || null,
+        max: tickOfPrices.tokenA[!isReversed ? maxTick : maxTickSwap] || null,
       };
       const tokenBRange = {
-        min: tickOfPrices[!isReversed ? -minTick : -minTickSwap] || null,
-        max: tickOfPrices[!isReversed ? -maxTick : -maxTickSwap] || null,
+        min: tickOfPrices.tokenB[!isReversed ? minTick : minTickSwap] || null,
+        max: tickOfPrices.tokenB[!isReversed ? maxTick : maxTickSwap] || null,
       };
       const index = currentBin.index;
 
@@ -361,8 +365,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         depositTokenBAmount,
         tokenARange: tokenARange,
         tokenBRange: tokenBRange,
-        tokenAPrice: tickOfPrices[currentTick || 0],
-        tokenBPrice: tickOfPrices[-(currentTick || 0)],
+        tokenAPrice: tickOfPrices.tokenA[currentTick || 0],
+        tokenBPrice: tickOfPrices.tokenB[currentTick || 0],
         disabled: disabledBin,
       });
       setPositionX(mouseX);
@@ -378,32 +382,41 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
   useEffect(() => {
     if (bins.length > 0) {
-      new Promise<{ [key in number]: string }>(resolve => {
+      const formatDisplayPrice = (tick: number, baseToken: TokenModel, quoteToken: TokenModel) => {
+        const displayPrice = makeDisplayPrice(tickToPrice(tick), baseToken, quoteToken);
+
+        return formatTokenExchangeRate(displayPrice.toString(), {
+          maxSignificantDigits: 7,
+          minLimit: 0.000001,
+        });
+      };
+
+      new Promise<{
+        tokenA: { [key in number]: string };
+        tokenB: { [key in number]: string };
+      }>(resolve => {
         const tickOfPrices = bins
           .flatMap(bin => {
             const minTick = bin.minTick;
             const maxTick = bin.maxTick;
-            return [minTick, maxTick, -minTick, -maxTick];
+            return [minTick, maxTick];
           })
-          .reduce<{ [key in number]: string }>((acc, current) => {
-            if (!acc[current]) {
-              const priceStr = tickToPriceStr(current, {
-                decimals: 40,
-                isFormat: false,
-              });
-
-              acc[current] = formatTokenExchangeRate(priceStr, {
-                maxSignificantDigits: 7,
-                minLimit: 0.000001,
-                isInfinite: priceStr === "∞",
-              });
+          .reduce<{
+            tokenA: { [key in number]: string };
+            tokenB: { [key in number]: string };
+          }>((acc, current) => {
+            if (!acc.tokenA[current]) {
+              acc.tokenA[current] = formatDisplayPrice(current, tokenA, tokenB);
+            }
+            if (!acc.tokenB[current]) {
+              acc.tokenB[current] = formatDisplayPrice(-current, tokenB, tokenA);
             }
             return acc;
-          }, {});
+          }, { tokenA: {}, tokenB: {} });
         resolve(tickOfPrices);
       }).then(setTickOfPrices);
     }
-  }, [bins]);
+  }, [bins, tokenA, tokenB]);
 
   useEffect(() => {
     if (tooltipInfo) {
