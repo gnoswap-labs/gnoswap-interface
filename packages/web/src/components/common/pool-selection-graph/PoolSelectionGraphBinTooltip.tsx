@@ -36,7 +36,7 @@ export const PoolSelectionGraphBinTooptip: React.FC<PoolSelectionGraphBinTooptip
     if (!tokenAPrice) {
       return "-";
     }
-    return `${tokenAPrice} ${tokenB.symbol}`;
+    return `${tokenAPrice} ${formatDisplayTokenSymbol(tokenB.symbol)}`;
   }, [tooltipInfo]);
 
   const tokenBPriceString = useMemo(() => {
@@ -47,7 +47,7 @@ export const PoolSelectionGraphBinTooptip: React.FC<PoolSelectionGraphBinTooptip
     if (!tokenBPrice) {
       return "-";
     }
-    return `${tokenBPrice} ${tokenA.symbol}`;
+    return `${tokenBPrice} ${formatDisplayTokenSymbol(tokenA.symbol)}`;
   }, [tooltipInfo]);
 
   const tokenAPriceRangeStr = useMemo(() => {
@@ -58,7 +58,7 @@ export const PoolSelectionGraphBinTooptip: React.FC<PoolSelectionGraphBinTooptip
     if (tokenARange?.min === null || tokenARange?.max === null) {
       return "-";
     }
-    return `${tokenARange.min} - ${tokenARange.max} ${tokenB.symbol}`;
+    return `${tokenARange.min} - ${tokenARange.max} ${formatDisplayTokenSymbol(tokenB.symbol)}`;
   }, [tooltipInfo]);
 
   const tokenBPriceRangeStr = useMemo(() => {
@@ -69,7 +69,7 @@ export const PoolSelectionGraphBinTooptip: React.FC<PoolSelectionGraphBinTooptip
     if (tokenBRange?.min === null || tokenBRange?.max === null) {
       return "-";
     }
-    return `${tokenBRange.max} - ${tokenBRange.min} ${tokenA.symbol}`;
+    return `${tokenBRange.max} - ${tokenBRange.min} ${formatDisplayTokenSymbol(tokenA.symbol)}`;
   }, [tooltipInfo]);
 
   return tooltipInfo ? (
@@ -91,7 +91,7 @@ export const PoolSelectionGraphBinTooptip: React.FC<PoolSelectionGraphBinTooptip
               mobileWidth={20}
             />
             <span>
-              {tooltipInfo.tokenA.symbol} {t("common:price")}
+              {formatDisplayTokenSymbol(tooltipInfo.tokenA.symbol)} {t("common:price")}
             </span>
           </span>
           <span className="price-range">{tokenAPriceString}</span>
@@ -106,7 +106,7 @@ export const PoolSelectionGraphBinTooptip: React.FC<PoolSelectionGraphBinTooptip
               mobileWidth={20}
             />
             <span>
-              {tooltipInfo.tokenB.symbol} {t("common:price")}
+              {formatDisplayTokenSymbol(tooltipInfo.tokenB.symbol)} {t("common:price")}
             </span>
           </span>
           <span className="price-range">{tokenBPriceString}</span>

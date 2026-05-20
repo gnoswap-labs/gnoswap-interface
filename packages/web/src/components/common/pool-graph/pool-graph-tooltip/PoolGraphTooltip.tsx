@@ -59,16 +59,16 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
     } = tooltipInfo;
 
     return {
-      tokenAPrice: `${tokenAPrice} ${tokenB.symbol}`,
-      tokenBPrice: `${tokenBPrice} ${tokenA.symbol}`,
+      tokenAPrice: `${tokenAPrice} ${formatDisplayTokenSymbol(tokenB.symbol)}`,
+      tokenBPrice: `${tokenBPrice} ${formatDisplayTokenSymbol(tokenA.symbol)}`,
       tokenAPriceRange:
         breakpoint === DEVICE_TYPE.MOBILE
           ? `${tokenARange.min} - ${tokenARange.max}`
-          : `${tokenARange.min} - ${tokenARange.max} ${tokenB.symbol}`,
+          : `${tokenARange.min} - ${tokenARange.max} ${formatDisplayTokenSymbol(tokenB.symbol)}`,
       tokenBPriceRange:
         breakpoint === DEVICE_TYPE.MOBILE
           ? `${tokenBRange.max} - ${tokenBRange.min}`
-          : `${tokenBRange.max} - ${tokenBRange.min} ${tokenA.symbol}`,
+          : `${tokenBRange.max} - ${tokenBRange.min} ${formatDisplayTokenSymbol(tokenA.symbol)}`,
       totalTokenAAmount: tokenAAmount || "0",
       totalTokenBAmount: tokenBAmount || "0",
       depositTokenAAmount: depositTokenAAmount || "0",
@@ -107,7 +107,7 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
               mobileWidth={20}
             />
             <span>
-              {tooltipInfo.tokenA.symbol} {t("common:price")}
+              {formatDisplayTokenSymbol(tooltipInfo.tokenA.symbol)} {t("common:price")}
             </span>
           </span>
           <span className={"token-amount-value price"}>{displayTooltipInfo.tokenAPrice}</span>
@@ -123,7 +123,7 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
               mobileWidth={20}
             />
             <span>
-              {tooltipInfo.tokenB.symbol} {t("common:price")}
+              {formatDisplayTokenSymbol(tooltipInfo.tokenB.symbol)} {t("common:price")}
             </span>
           </span>
           <span className={"token-amount-value price"}>{displayTooltipInfo.tokenBPrice}</span>

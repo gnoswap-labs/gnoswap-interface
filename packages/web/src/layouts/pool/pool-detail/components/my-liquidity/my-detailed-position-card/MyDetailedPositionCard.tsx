@@ -1022,7 +1022,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
                   dangerouslySetInnerHTML={{
                     __html: sanitizeHtml(
                       t("Pool:position.ratioTooltip", {
-                        symbol: (!isSwap ? tokenA : tokenB)?.symbol,
+                        symbol: formatDisplayTokenSymbol((!isSwap ? tokenA : tokenB)?.symbol || ""),
                       }),
                     ),
                   }}
@@ -1046,7 +1046,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
                   dangerouslySetInnerHTML={{
                     __html: sanitizeHtml(
                       t("Pool:position.ratioTooltip", {
-                        symbol: (!isSwap ? tokenB : tokenA)?.symbol,
+                        symbol: formatDisplayTokenSymbol((!isSwap ? tokenB : tokenA)?.symbol || ""),
                       }),
                     ),
                   }}
