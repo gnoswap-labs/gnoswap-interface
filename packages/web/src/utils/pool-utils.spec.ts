@@ -81,14 +81,14 @@ describe("isOrderedTokenPaths", () => {
 });
 
 describe("price display/raw conversion", () => {
-  it("should convert BTC/USDT display price into the raw tick domain and back", () => {
+  it("should convert BTC/USDC display price into the raw tick domain and back", () => {
     const btc = makeToken("BTC", 8);
-    const usdt = makeToken("USDT", 6);
+    const usdc = makeToken("USDC", 6);
 
-    const rawPrice = makeRawPrice(1, btc, usdt);
+    const rawPrice = makeRawPrice(1, btc, usdc);
 
-    expect(rawPrice).toBe(100);
-    expect(makeDisplayPrice(rawPrice, btc, usdt)).toBe(1);
+    expect(rawPrice).toBe(0.01);
+    expect(makeDisplayPrice(rawPrice, btc, usdc)).toBe(1);
   });
 
   it("should preserve equal-decimal token prices", () => {

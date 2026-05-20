@@ -66,13 +66,13 @@ export function isValidCurrentPrice(price: number | null | undefined): price is 
 
 export function makeDisplayPrice(price: number | string, baseToken: TokenModel, quoteToken: TokenModel): number {
   return BigNumber(price)
-    .shiftedBy(quoteToken.decimals - baseToken.decimals)
+    .shiftedBy(baseToken.decimals - quoteToken.decimals)
     .toNumber();
 }
 
 export function makeRawPrice(price: number | string, baseToken: TokenModel, quoteToken: TokenModel): number {
   return BigNumber(price)
-    .shiftedBy(baseToken.decimals - quoteToken.decimals)
+    .shiftedBy(quoteToken.decimals - baseToken.decimals)
     .toNumber();
 }
 

@@ -189,7 +189,7 @@ export const usePoolAddLiquidityConfirmModal = ({
       const displayPrice = BigNumber(makeDisplayPrice(price, baseToken, quoteToken));
       const currentValue = displayPrice.toNumber();
       const maxPriceWithRatio = BigNumber(maxPrice)
-        .shiftedBy(quoteToken.decimals - baseToken.decimals)
+        .shiftedBy(baseToken.decimals - quoteToken.decimals)
         .toNumber();
 
       if (currentValue < 1 && currentValue !== 0) {

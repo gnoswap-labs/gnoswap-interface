@@ -294,7 +294,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
     }, [tokenA, tokenB, isKeepToken]);
 
     const decimalsRatio = useMemo(() => {
-      return tokenB.decimals - tokenA.decimals;
+      return tokenA.decimals - tokenB.decimals;
     }, [tokenA.decimals, tokenB.decimals]);
 
     if (selectPool.renderState() === "NONE") {
