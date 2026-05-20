@@ -23,6 +23,7 @@ import { SelectPool } from "@hooks/pool/data/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
+import { makeDisplayPrice } from "@utils/pool-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToTick, tickToPrice } from "@utils/swap-utils";
@@ -103,13 +104,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
         return "-";
       }
 
-      const currentPrice = (() => {
-        if (selectPool.compareToken?.path === tokenA.path) {
-          return 10 ** (tokenB.decimals - tokenA.decimals) * selectPool.currentPrice;
-        }
-
-        return 10 ** (tokenA.decimals - tokenB.decimals) * selectPool.currentPrice;
-      })();
+      const currentPrice = makeDisplayPrice(selectPool.currentPrice, tokenA, tokenB);
 
       return (
         <>
@@ -123,13 +118,9 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
         </>
       );
     }, [
-      selectPool.compareToken?.path,
       selectPool.currentPrice,
-      tokenA.symbol,
-      tokenA.decimals,
-      tokenA.path,
-      tokenB.symbol,
-      tokenB.decimals,
+      tokenA,
+      tokenB,
     ]);
 
     useImperativeHandle(ref, () => {

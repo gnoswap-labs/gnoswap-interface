@@ -29,6 +29,7 @@ import {
 import { CreatePoolFailedResponse, CreatePoolSuccessResponse } from "@repositories/pool/response/create-pool-response";
 import { CommonState } from "@states/index";
 import { subscriptFormat } from "@utils/number-utils";
+import { makeDisplayPrice } from "@utils/pool-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToNearTick } from "@utils/swap-utils";
 import { formatDisplayTokenSymbol, makeDisplayTokenAmount } from "@utils/token-utils";
@@ -177,40 +178,49 @@ export const usePoolAddLiquidityConfirmModal = ({
     };
   }, [tokenA, tokenB, swapFeeTier, tokenAAmount, tokenAAmountInput.usdValue, tokenBAmount, tokenBAmountInput.usdValue]);
 
-  const formatPriceDisplay = (price: number) => {
+  const formatPriceDisplay = useCallback((price: number, baseToken: TokenModel, quoteToken: TokenModel) => {
     if (price === null || BigNumber(Number(price)).isNaN() || !swapFeeTier) {
       return "-";
     }
 
     const { maxPrice } = SwapFeeTierMaxPriceRangeMap[swapFeeTier || "NONE"];
 
-    const currentValue = BigNumber(price).toNumber();
+    const displayPrice = BigNumber(makeDisplayPrice(price, baseToken, quoteToken));
+    const currentValue = displayPrice.toNumber();
+    const maxPriceWithRatio = BigNumber(maxPrice)
+      .shiftedBy(quoteToken.decimals - baseToken.decimals)
+      .toNumber();
 
     if (currentValue < 1 && currentValue !== 0) {
-      return subscriptFormat(BigNumber(price).toFixed());
+      return subscriptFormat(displayPrice.toFixed());
     }
 
-    if (currentValue / maxPrice > 0.9) {
+    if (currentValue / maxPriceWithRatio > 0.9) {
       return "∞";
     }
 
-    return formatTokenExchangeRate(price, {
+    return formatTokenExchangeRate(displayPrice.toFixed(), {
       maxSignificantDigits: 6,
       minLimit: 0.000001,
     });
-  };
+  }, [swapFeeTier]);
 
   const priceRangeInfo = useMemo(() => {
     if (!selectPool) {
       return null;
     }
+    if (!tokenA || !tokenB || selectPool.currentPrice === null) {
+      return null;
+    }
+
     const tokenASymbol = formatDisplayTokenSymbol(
-      selectPool.compareToken?.symbol === tokenA?.symbol ? tokenA?.symbol || "" : tokenB?.symbol || "",
+      selectPool.compareToken?.symbol === tokenA.symbol ? tokenA.symbol || "" : tokenB.symbol || "",
     );
     const tokenBSymbol = formatDisplayTokenSymbol(
-      selectPool.compareToken?.symbol === tokenA?.symbol ? tokenB?.symbol || "" : tokenA?.symbol || "",
+      selectPool.compareToken?.symbol === tokenA.symbol ? tokenB.symbol || "" : tokenA.symbol || "",
     );
-    const currentPrice = `${selectPool.currentPrice}`;
+    const rawCurrentPrice = selectPool.currentPrice;
+    const currentPrice = `${makeDisplayPrice(rawCurrentPrice, tokenA, tokenB)}`;
     if (selectPool.selectedFullRange) {
       return {
         currentPrice,
@@ -228,18 +238,18 @@ export const usePoolAddLiquidityConfirmModal = ({
     let minPriceStr = "0.0000";
     let maxPriceStr = "0.0000";
     if (selectPool.minPrice && selectPool.minPrice > minPrice) {
-      minPriceStr = formatPriceDisplay(selectPool.minPrice);
+      minPriceStr = formatPriceDisplay(selectPool.minPrice, tokenA, tokenB);
     }
     if (selectPool.maxPrice) {
-      maxPriceStr = formatPriceDisplay(selectPool.maxPrice);
+      maxPriceStr = formatPriceDisplay(selectPool.maxPrice, tokenA, tokenB);
     }
     const feeBoost = selectPool.feeBoost === null ? "-" : `x${selectPool.feeBoost}`;
 
     let inRange = true;
-    if (!selectPool.maxPrice || BigNumber(selectPool.maxPrice).isLessThan(currentPrice)) {
+    if (!selectPool.maxPrice || BigNumber(selectPool.maxPrice).isLessThan(rawCurrentPrice)) {
       inRange = false;
     }
-    if (selectPool.minPrice === null || BigNumber(selectPool.minPrice).isGreaterThan(currentPrice)) {
+    if (selectPool.minPrice === null || BigNumber(selectPool.minPrice).isGreaterThan(rawCurrentPrice)) {
       inRange = false;
     }
 
@@ -253,7 +263,7 @@ export const usePoolAddLiquidityConfirmModal = ({
       feeBoost,
       estimatedAPR: "N/A",
     };
-  }, [selectPool, tokenA, tokenB]);
+  }, [formatPriceDisplay, selectPool, tokenA, tokenB]);
 
   const feeInfo = useMemo((): {
     token?: TokenModel;
