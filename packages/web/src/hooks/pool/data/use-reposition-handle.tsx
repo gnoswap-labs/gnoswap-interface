@@ -134,6 +134,7 @@ export const useRepositionHandle = () => {
       ...selectedPosition?.pool.tokenA,
       name: getGnotPath(selectedPosition?.pool.tokenA).name,
       symbol: getGnotPath(selectedPosition?.pool.tokenA).symbol,
+      displaySymbol: getGnotPath(selectedPosition?.pool.tokenA).displaySymbol,
       logoURI: getGnotPath(selectedPosition?.pool.tokenA).logoURI,
     };
   }, [getGnotPath, selectedPosition]);
@@ -144,6 +145,7 @@ export const useRepositionHandle = () => {
       ...selectedPosition?.pool.tokenB,
       name: getGnotPath(selectedPosition?.pool.tokenB).name,
       symbol: getGnotPath(selectedPosition?.pool.tokenB).symbol,
+      displaySymbol: getGnotPath(selectedPosition?.pool.tokenB).displaySymbol,
       logoURI: getGnotPath(selectedPosition?.pool.tokenB).logoURI,
     };
   }, [getGnotPath, selectedPosition]);

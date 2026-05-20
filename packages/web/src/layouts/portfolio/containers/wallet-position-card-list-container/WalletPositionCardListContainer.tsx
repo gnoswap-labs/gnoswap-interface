@@ -100,11 +100,13 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
           tokenA: {
             ...pool.tokenA,
             symbol: getGnotPath(pool.tokenA).symbol,
+            displaySymbol: getGnotPath(pool.tokenA).displaySymbol,
             logoURI: getGnotPath(pool.tokenA).logoURI,
           },
           tokenB: {
             ...pool.tokenB,
             symbol: getGnotPath(pool.tokenB).symbol,
+            displaySymbol: getGnotPath(pool.tokenB).displaySymbol,
             logoURI: getGnotPath(pool.tokenB).logoURI,
           },
         };

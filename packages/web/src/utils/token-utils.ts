@@ -100,13 +100,14 @@ export function formatTokenPath(path: string, isNative: boolean): string {
  * @param getGnotPath GNOT path conversion function
  */
 export function getUniqueRewardTokensByPath<
-  T extends { path?: string; name?: string; logoURI?: string; symbol?: string },
+  T extends { path?: string; name?: string; logoURI?: string; symbol?: string; displaySymbol?: string },
 >(
   rewardTokens: RewardTokenModel[],
   getGnotPath: (token: T | null | undefined) => {
     path: string;
     name: string;
     symbol: string;
+    displaySymbol: string;
     logoURI: string;
     wrappedPath: string;
   },
@@ -119,6 +120,7 @@ export function getUniqueRewardTokensByPath<
         ...current,
         logoURI: getGnotPath(current as unknown as T).logoURI,
         symbol: getGnotPath(current as unknown as T).symbol,
+        displaySymbol: getGnotPath(current as unknown as T).displaySymbol,
         path: getGnotPath(current as unknown as T).path,
       });
     }
@@ -136,13 +138,14 @@ export function getUniqueRewardTokensByPath<
  * @param getGnotPath GNOT path conversion function
  */
 export function getUniqueRewardTokensWithMultipleRewardTypes<
-  T extends { path?: string; name?: string; logoURI?: string; symbol?: string },
+  T extends { path?: string; name?: string; logoURI?: string; symbol?: string; displaySymbol?: string },
 >(
   rewardTokens: RewardTokenModel[],
   getGnotPath: (token: T | null | undefined) => {
     path: string;
     name: string;
     symbol: string;
+    displaySymbol: string;
     logoURI: string;
     wrappedPath: string;
   },
@@ -158,6 +161,7 @@ export function getUniqueRewardTokensWithMultipleRewardTypes<
       ...current,
       logoURI: tokenInfo.logoURI,
       symbol: tokenInfo.symbol,
+      displaySymbol: tokenInfo.displaySymbol,
       path: tokenInfo.path,
     };
 

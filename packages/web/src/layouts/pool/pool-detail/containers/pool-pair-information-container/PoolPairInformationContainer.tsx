@@ -97,6 +97,7 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
         path: getGnotPath(tokenA).path,
         name: getGnotPath(tokenA).name,
         symbol: getGnotPath(tokenA).symbol,
+        displaySymbol: getGnotPath(tokenA).displaySymbol,
         logoURI: getGnotPath(tokenA).logoURI,
       },
       tokenB: {
@@ -104,6 +105,7 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
         path: getGnotPath(tokenB).path,
         name: getGnotPath(tokenB).name,
         symbol: getGnotPath(tokenB).symbol,
+        displaySymbol: getGnotPath(tokenB).displaySymbol,
         logoURI: getGnotPath(tokenB).logoURI,
       },
       tokenAPriceGrade,

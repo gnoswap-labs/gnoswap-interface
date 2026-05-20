@@ -20,6 +20,7 @@ export const usePoolData = () => {
           ? {
               ...item.tokenA,
               symbol: getGnotPath(item.tokenA).symbol,
+              displaySymbol: getGnotPath(item.tokenA).displaySymbol,
               logoURI: getGnotPath(item.tokenA).logoURI,
               name: getGnotPath(item.tokenA).name,
             }
@@ -28,6 +29,7 @@ export const usePoolData = () => {
           ? {
               ...item.tokenB,
               symbol: getGnotPath(item.tokenB).symbol,
+              displaySymbol: getGnotPath(item.tokenB).displaySymbol,
               logoURI: getGnotPath(item.tokenB).logoURI,
               name: getGnotPath(item.tokenB).name,
             }
@@ -51,12 +53,14 @@ export const usePoolData = () => {
         tokenA: {
           ...pool.tokenA,
           symbol: getGnotPath(pool.tokenA).symbol,
+          displaySymbol: getGnotPath(pool.tokenA).displaySymbol,
           logoURI: getGnotPath(pool.tokenA).logoURI,
           name: getGnotPath(pool.tokenA).name,
         },
         tokenB: {
           ...pool.tokenB,
           symbol: getGnotPath(pool.tokenB).symbol,
+          displaySymbol: getGnotPath(pool.tokenB).displaySymbol,
           logoURI: getGnotPath(pool.tokenB).logoURI,
           name: getGnotPath(pool.tokenB).name,
         },
