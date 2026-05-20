@@ -1,6 +1,7 @@
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { PoolResponse } from "@repositories/pool";
 import { formatOtherPrice } from "@utils/new-number-utils";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 import { IncentivizePoolCardInfo } from "../info/pool-card-info";
 import { PoolListInfo } from "../info/pool-list-info";
 import { PoolSelectItemInfo } from "../info/pool-select-item-info";
@@ -107,7 +108,19 @@ export class PoolMapper {
       id,
       incentivized: pool.incentivized,
       hasStakedPosition: pool.hasStakedPosition,
-      rewardTokens: pool.rewardTokens || [],
+      tokenA: {
+        ...pool.tokenA,
+        displaySymbol: formatDisplayTokenSymbol(pool.tokenA.symbol),
+      },
+      tokenB: {
+        ...pool.tokenB,
+        displaySymbol: formatDisplayTokenSymbol(pool.tokenB.symbol),
+      },
+      rewardTokens:
+        pool.rewardTokens?.map(token => ({
+          ...token,
+          displaySymbol: formatDisplayTokenSymbol(token.symbol),
+        })) || [],
       apr: pool.totalApr,
       stakingApr,
       liquidity: pool.liquidity,
@@ -126,7 +139,19 @@ export class PoolMapper {
       id,
       incentivized: pool.incentivized,
       hasStakedPosition: pool.hasStakedPosition,
-      rewardTokens: pool.rewardTokens || [],
+      tokenA: {
+        ...pool.tokenA,
+        displaySymbol: formatDisplayTokenSymbol(pool.tokenA.symbol),
+      },
+      tokenB: {
+        ...pool.tokenB,
+        displaySymbol: formatDisplayTokenSymbol(pool.tokenB.symbol),
+      },
+      rewardTokens:
+        pool.rewardTokens?.map(token => ({
+          ...token,
+          displaySymbol: formatDisplayTokenSymbol(token.symbol),
+        })) || [],
       apr: pool.totalApr,
       stakingApr,
       liquidity: pool.liquidity,
@@ -145,7 +170,19 @@ export class PoolMapper {
       id,
       incentivized: pool.incentivized,
       hasStakedPosition: pool.hasStakedPosition,
-      rewardTokens: pool.rewardTokens || [],
+      tokenA: {
+        ...pool.tokenA,
+        displaySymbol: formatDisplayTokenSymbol(pool.tokenA.symbol),
+      },
+      tokenB: {
+        ...pool.tokenB,
+        displaySymbol: formatDisplayTokenSymbol(pool.tokenB.symbol),
+      },
+      rewardTokens:
+        pool.rewardTokens?.map(token => ({
+          ...token,
+          displaySymbol: formatDisplayTokenSymbol(token.symbol),
+        })) || [],
       apr: pool.totalApr ?? "",
       stakingApr,
       totalApr: pool.totalApr,

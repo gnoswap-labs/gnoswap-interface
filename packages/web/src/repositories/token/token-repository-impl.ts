@@ -15,6 +15,7 @@ import { StorageKeyType } from "@common/values";
 import { customSort } from "@containers/select-token-container/SelectTokenContainer";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { TokenSearchLogModel } from "@models/token/token-search-log-model";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 import mockedExchangeRateGraph from "./mock/token-exchange-rate-graph.json";
 import { IBalancesByAddressResponse, IGrc20TransferHistoryResponse } from "./response/balance-by-address-response";
 import { TokenExchangeRateGraphResponse } from "./response/token-exchange-rate-response";
@@ -40,7 +41,10 @@ export class TokenRepositoryImpl implements TokenRepository {
     const response = await this.networkClient.get<{ data: ITokenResponse }>({
       url: `/token-metas/${tempPath}`,
     });
-    return response.data.data;
+    return {
+      ...response.data.data,
+      displaySymbol: formatDisplayTokenSymbol(response.data.data.symbol),
+    };
   };
 
   public getTokens = async (): Promise<TokenListResponse> => {
@@ -53,7 +57,13 @@ export class TokenRepositoryImpl implements TokenRepository {
     if (response.data.data === null) {
       return { tokens: [] };
     }
-    const tokens = response?.data?.data.sort(customSort) || [];
+    const tokens =
+      response?.data?.data
+        .map(token => ({
+          ...token,
+          displaySymbol: formatDisplayTokenSymbol(token.symbol),
+        }))
+        .sort(customSort) || [];
     return { tokens };
   };
 
@@ -88,7 +98,20 @@ export class TokenRepositoryImpl implements TokenRepository {
     }>({
       url: `/tokens/${tempPath}/details`,
     });
-    return response.data.data;
+    return {
+      ...response.data.data,
+      bestPools: response.data.data.bestPools.map(pool => ({
+        ...pool,
+        tokenA: {
+          ...pool.tokenA,
+          displaySymbol: formatDisplayTokenSymbol(pool.tokenA.symbol),
+        },
+        tokenB: {
+          ...pool.tokenB,
+          displaySymbol: formatDisplayTokenSymbol(pool.tokenB.symbol),
+        },
+      })),
+    };
   };
 
   public getChain = async (): Promise<IChainResponse> => {
