@@ -17,12 +17,14 @@ export const useIncentivizePool = (address?: string) => {
         tokenA: {
           ...item.tokenA,
           symbol: getGnotPath(item.tokenA).symbol,
+          displaySymbol: getGnotPath(item.tokenA).displaySymbol,
           logoURI: getGnotPath(item.tokenA).logoURI,
           name: getGnotPath(item.tokenA).name,
         },
         tokenB: {
           ...item.tokenB,
           symbol: getGnotPath(item.tokenB).symbol,
+          displaySymbol: getGnotPath(item.tokenB).displaySymbol,
           logoURI: getGnotPath(item.tokenB).logoURI,
           name: getGnotPath(item.tokenB).name,
         },

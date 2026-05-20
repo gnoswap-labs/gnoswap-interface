@@ -52,11 +52,13 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
       tokenA: {
         ...poolInfo.tokenA,
         symbol: getGnotPath(poolInfo.tokenA).symbol,
+        displaySymbol: getGnotPath(poolInfo.tokenA).displaySymbol,
         logoURI: getGnotPath(poolInfo.tokenA).logoURI,
       },
       tokenB: {
         ...poolInfo.tokenB,
         symbol: getGnotPath(poolInfo.tokenB).symbol,
+        displaySymbol: getGnotPath(poolInfo.tokenB).displaySymbol,
         logoURI: getGnotPath(poolInfo.tokenB).logoURI,
       },
     };

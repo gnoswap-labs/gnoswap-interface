@@ -90,6 +90,7 @@ export const useTokenData = () => {
           token: {
             ...token,
             symbol: getGnotPath(token).symbol,
+            displaySymbol: getGnotPath(token).displaySymbol,
             name: getGnotPath(token).name,
             logoURI: getGnotPath(token).logoURI,
           },
@@ -101,10 +102,11 @@ export const useTokenData = () => {
 
       return {
         token: {
-          ...token,
-          symbol: getGnotPath(token).symbol,
-          name: getGnotPath(token).name,
-          logoURI: getGnotPath(token).logoURI,
+            ...token,
+            symbol: getGnotPath(token).symbol,
+            displaySymbol: getGnotPath(token).displaySymbol,
+            name: getGnotPath(token).name,
+            logoURI: getGnotPath(token).logoURI,
         },
         upDown: data1D.status === MATH_NEGATIVE_TYPE.POSITIVE ? "up" : "down",
         content: data1D.percentDisplay.replace(/[+-]/g, ""),
@@ -127,6 +129,7 @@ export const useTokenData = () => {
               token: {
                 ...token,
                 symbol: getGnotPath(token).symbol,
+                displaySymbol: getGnotPath(token).displaySymbol,
                 name: getGnotPath(token).name,
                 logoURI: getGnotPath(token).logoURI,
               },
@@ -137,6 +140,7 @@ export const useTokenData = () => {
               token: {
                 ...token,
                 symbol: getGnotPath(token).symbol,
+                displaySymbol: getGnotPath(token).displaySymbol,
                 name: getGnotPath(token).name,
                 logoURI: getGnotPath(token).logoURI,
               },

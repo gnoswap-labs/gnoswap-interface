@@ -438,6 +438,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
               path: getGnotPath(currentTokenA).path,
               name: getGnotPath(currentTokenA).name,
               symbol: getGnotPath(currentTokenA).symbol,
+              displaySymbol: getGnotPath(currentTokenA).displaySymbol,
               logoURI: getGnotPath(currentTokenA).logoURI,
             }
           : null,
@@ -447,6 +448,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
               path: getGnotPath(currentTokenB).path,
               name: getGnotPath(currentTokenB).name,
               symbol: getGnotPath(currentTokenB).symbol,
+              displaySymbol: getGnotPath(currentTokenB).displaySymbol,
               logoURI: getGnotPath(currentTokenB).logoURI,
             }
           : null,

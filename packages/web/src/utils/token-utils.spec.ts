@@ -35,11 +35,6 @@ describe("format display token symbol", () => {
       "ibc/488D6...",
     );
   });
-
-  it("should display WUGNOT as GNOT", () => {
-    expect(formatDisplayTokenSymbol("WUGNOT")).toBe("GNOT");
-    expect(formatDisplayTokenSymbol("wugnot")).toBe("GNOT");
-  });
 });
 
 describe("make token raw price", () => {

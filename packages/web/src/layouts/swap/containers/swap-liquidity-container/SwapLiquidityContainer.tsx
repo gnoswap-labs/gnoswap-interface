@@ -65,6 +65,7 @@ const SwapLiquidityContainer: React.FC = () => {
       path: getGnotPath(tokenA).path,
       name: getGnotPath(tokenA).name,
       symbol: getGnotPath(tokenA).symbol,
+      displaySymbol: getGnotPath(tokenA).displaySymbol,
       logoURI: getGnotPath(tokenA).logoURI,
     };
   }, [tokenA, gnot]);
@@ -76,6 +77,7 @@ const SwapLiquidityContainer: React.FC = () => {
       path: getGnotPath(tokenB).path,
       name: getGnotPath(tokenB).name,
       symbol: getGnotPath(tokenB).symbol,
+      displaySymbol: getGnotPath(tokenB).displaySymbol,
       logoURI: getGnotPath(tokenB).logoURI,
     };
   }, [tokenB, gnot]);
