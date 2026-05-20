@@ -179,20 +179,18 @@ export const usePoolAddLiquidityConfirmModal = ({
   }, [tokenA, tokenB, swapFeeTier, tokenAAmount, tokenAAmountInput.usdValue, tokenBAmount, tokenBAmountInput.usdValue]);
 
   const formatPriceDisplay = useCallback(
-    (price: number, baseToken: TokenModel, quoteToken: TokenModel, isCreate: boolean) => {
+    (price: number, baseToken: TokenModel, quoteToken: TokenModel) => {
       if (price === null || BigNumber(Number(price)).isNaN() || !swapFeeTier) {
         return "-";
       }
 
       const { maxPrice } = SwapFeeTierMaxPriceRangeMap[swapFeeTier || "NONE"];
 
-      const displayPrice = BigNumber(isCreate ? price : makeDisplayPrice(price, baseToken, quoteToken));
+      const displayPrice = BigNumber(makeDisplayPrice(price, baseToken, quoteToken));
       const currentValue = displayPrice.toNumber();
-      const maxPriceWithRatio = isCreate
-        ? maxPrice
-        : BigNumber(maxPrice)
-            .shiftedBy(quoteToken.decimals - baseToken.decimals)
-            .toNumber();
+      const maxPriceWithRatio = BigNumber(maxPrice)
+        .shiftedBy(quoteToken.decimals - baseToken.decimals)
+        .toNumber();
 
       if (currentValue < 1 && currentValue !== 0) {
         return subscriptFormat(displayPrice.toFixed());
@@ -225,7 +223,7 @@ export const usePoolAddLiquidityConfirmModal = ({
       selectPool.compareToken?.symbol === tokenA.symbol ? tokenB.symbol || "" : tokenA.symbol || "",
     );
     const rawCurrentPrice = selectPool.currentPrice;
-    const currentPrice = `${selectPool.isCreate ? rawCurrentPrice : makeDisplayPrice(rawCurrentPrice, tokenA, tokenB)}`;
+    const currentPrice = `${makeDisplayPrice(rawCurrentPrice, tokenA, tokenB)}`;
     if (selectPool.selectedFullRange) {
       return {
         currentPrice,
@@ -243,10 +241,10 @@ export const usePoolAddLiquidityConfirmModal = ({
     let minPriceStr = "0.0000";
     let maxPriceStr = "0.0000";
     if (selectPool.minPrice && selectPool.minPrice > minPrice) {
-      minPriceStr = formatPriceDisplay(selectPool.minPrice, tokenA, tokenB, selectPool.isCreate);
+      minPriceStr = formatPriceDisplay(selectPool.minPrice, tokenA, tokenB);
     }
     if (selectPool.maxPrice) {
-      maxPriceStr = formatPriceDisplay(selectPool.maxPrice, tokenA, tokenB, selectPool.isCreate);
+      maxPriceStr = formatPriceDisplay(selectPool.maxPrice, tokenA, tokenB);
     }
     const feeBoost = selectPool.feeBoost === null ? "-" : `x${selectPool.feeBoost}`;
 

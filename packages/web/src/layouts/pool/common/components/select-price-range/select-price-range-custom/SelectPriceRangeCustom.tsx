@@ -104,9 +104,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
         return "-";
       }
 
-      const currentPrice = selectPool.isCreate
-        ? selectPool.currentPrice
-        : makeDisplayPrice(selectPool.currentPrice, tokenA, tokenB);
+      const currentPrice = makeDisplayPrice(selectPool.currentPrice, tokenA, tokenB);
 
       return (
         <>
@@ -296,12 +294,8 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
     }, [tokenA, tokenB, isKeepToken]);
 
     const decimalsRatio = useMemo(() => {
-      if (selectPool.isCreate) {
-        return 0;
-      }
-
       return tokenB.decimals - tokenA.decimals;
-    }, [selectPool.isCreate, tokenA.decimals, tokenB.decimals]);
+    }, [tokenA.decimals, tokenB.decimals]);
 
     if (selectPool.renderState() === "NONE") {
       return <></>;

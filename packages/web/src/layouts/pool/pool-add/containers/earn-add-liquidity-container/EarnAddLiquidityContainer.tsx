@@ -19,14 +19,16 @@ import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { SwapState } from "@states/index";
 import { formatRate } from "@utils/new-number-utils";
 import { makeRouteUrl } from "@utils/page.utils";
-import { invertSqrtPriceX96 } from "@utils/pool-utils";
+import { invertSqrtPriceX96, makeDisplayPrice, makeRawPrice } from "@utils/pool-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
 import {
   getDepositAmountsByAmountA,
   getDepositAmountsByAmountB,
   makeSwapFeeTier,
+  priceToNearTick,
   priceToSqrtX96,
   priceToTick,
+  tickToPrice,
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 
@@ -321,7 +323,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const changeStartingPrice = useCallback(
     (price: string) => {
-      if (price === "" || !swapFeeTier) {
+      if (price === "" || !swapFeeTier || !tokenA || !tokenB) {
         setCreateOption(prev => ({
           ...prev,
           startPrice: null,
@@ -337,12 +339,16 @@ const EarnAddLiquidityContainer: React.FC = () => {
         return;
       }
 
+      const rawPrice = makeRawPrice(priceNum, tokenA, tokenB);
+      const tick = priceToNearTick(rawPrice, selectPool.tickSpacing);
+      const nearStartPrice = tickToPrice(tick);
+
       setCreateOption(prev => ({
         ...prev,
-        startPrice: priceNum,
+        startPrice: nearStartPrice,
       }));
     },
-    [swapFeeTier],
+    [selectPool.tickSpacing, swapFeeTier, tokenA, tokenB],
   );
 
   const updateTokenBAmountByTokenA = useCallback(
@@ -579,7 +585,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
           ?.price || null;
       if (priceOfMaxLiquidity) {
         const maxPrice = reverse ? 1 / priceOfMaxLiquidity : priceOfMaxLiquidity;
-        setDefaultPrice(maxPrice);
+        setDefaultPrice(makeDisplayPrice(maxPrice, tokenA, tokenB));
       } else {
         setDefaultPrice(null);
       }

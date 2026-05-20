@@ -25,13 +25,14 @@ import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { SwapState } from "@states/index";
 import { formatRate } from "@utils/new-number-utils";
 import { makeRouteUrl } from "@utils/page.utils";
-import { invertSqrtPriceX96 } from "@utils/pool-utils";
+import { invertSqrtPriceX96, makeDisplayPrice, makeRawPrice } from "@utils/pool-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
 import {
   getDepositAmountsByAmountA,
   getDepositAmountsByAmountB,
   makeSwapFeeTier,
   priceToNearTick,
+  priceToSqrtX96,
   priceToTick,
   tickToPrice,
 } from "@utils/swap-utils";
@@ -287,7 +288,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
       if (BigNumber(amount).isNaN() || !BigNumber(amount).isFinite()) {
         return;
       }
-      if (!selectPool.currentPrice || !sqrtPriceX96) {
+      if (!selectPool.currentPrice || (!selectPool.isCreate && !sqrtPriceX96)) {
         return;
       }
 
@@ -304,10 +305,15 @@ const PoolAddLiquidityContainer: React.FC = () => {
         return;
       }
 
+      const currentSqrtPriceX96 = selectPool.isCreate ? priceToSqrtX96(selectPool.currentPrice) : sqrtPriceX96;
+      if (!currentSqrtPriceX96) {
+        return;
+      }
+
       const amountRaw = makeRawTokenAmount(tokenA, amount) || 0;
       const { amountB } = getDepositAmountsByAmountA(
         selectPool.currentPrice,
-        sqrtPriceX96,
+        currentSqrtPriceX96,
         selectPool.minPrice,
         selectPool.maxPrice,
         BigInt(amountRaw),
@@ -316,6 +322,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
       tokenBAmountInput.changeAmount(expectedTokenAmount.toString());
     },
     [
+      selectPool.isCreate,
       selectPool.currentPrice,
       sqrtPriceX96,
       selectPool.compareToken?.symbol,
@@ -331,7 +338,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      if (!selectPool.currentPrice || !sqrtPriceX96) {
+      if (!selectPool.currentPrice || (!selectPool.isCreate && !sqrtPriceX96)) {
         return;
       }
 
@@ -343,10 +350,15 @@ const PoolAddLiquidityContainer: React.FC = () => {
         return;
       }
 
+      const currentSqrtPriceX96 = selectPool.isCreate ? priceToSqrtX96(selectPool.currentPrice) : sqrtPriceX96;
+      if (!currentSqrtPriceX96) {
+        return;
+      }
+
       const amountRaw = makeRawTokenAmount(tokenB, amount) || 0;
       const { amountA } = getDepositAmountsByAmountB(
         selectPool.currentPrice,
-        sqrtPriceX96,
+        currentSqrtPriceX96,
         selectPool.minPrice,
         selectPool.maxPrice,
         BigInt(amountRaw),
@@ -355,6 +367,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
       tokenAAmountInput.changeAmount(expectedTokenAmount.toString());
     },
     [
+      selectPool.isCreate,
       selectPool.currentPrice,
       sqrtPriceX96,
       selectPool.compareToken?.symbol,
@@ -485,7 +498,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
       const priceOfMaxLiquidity = pools.sort((p1, p2) => Number(p2.tvl) - Number(p1.tvl)).at(0)?.price || null;
       if (priceOfMaxLiquidity) {
         const maxPrice = reverse ? 1 / priceOfMaxLiquidity : priceOfMaxLiquidity;
-        setDefaultPrice(maxPrice);
+        setDefaultPrice(makeDisplayPrice(maxPrice, tokenA, tokenB));
       } else {
         setDefaultPrice(null);
       }
@@ -496,7 +509,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
 
   const changeStartingPrice = useCallback(
     (price: string) => {
-      if (price === "") {
+      if (price === "" || !tokenA || !tokenB) {
         setCreateOption({
           ...createOption,
           startPrice: null,
@@ -513,14 +526,15 @@ const PoolAddLiquidityContainer: React.FC = () => {
         });
         return;
       }
-      const tick = priceToNearTick(priceNum, selectPool.tickSpacing);
+      const rawPrice = makeRawPrice(priceNum, tokenA, tokenB);
+      const tick = priceToNearTick(rawPrice, selectPool.tickSpacing);
       const nearStartPrice = tickToPrice(tick);
       setCreateOption({
         isCreate: true,
         startPrice: nearStartPrice,
       });
     },
-    [createOption, selectPool.tickSpacing],
+    [createOption, selectPool.tickSpacing, tokenA, tokenB],
   );
 
   const handleSwapValue = useCallback(() => {
