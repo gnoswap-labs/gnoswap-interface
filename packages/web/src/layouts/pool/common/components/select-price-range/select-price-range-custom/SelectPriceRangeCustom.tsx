@@ -280,10 +280,10 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
     }, [selectPool.poolPath, selectPool.feeTier, selectPool.startPrice, isLoading]);
 
     useEffect(() => {
-      if (!selectPool.poolPath) {
+      if (selectPool.isCreate) {
         changeStartingPrice(startingPriceValue);
       }
-    }, [selectPool.poolPath, startingPriceValue]);
+    }, [selectPool.isCreate, startingPriceValue, changeStartingPrice]);
 
     useEffect(() => {
       if (selectPool.selectedFullRange) {

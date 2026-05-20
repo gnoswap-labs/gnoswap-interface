@@ -9,6 +9,7 @@ const makeToken = (symbol: string, decimals: number): TokenModel => ({
   chainId: "test-chain",
   name: symbol,
   symbol,
+  displaySymbol: symbol,
   decimals,
   logoURI: "",
   createdAt: "",
@@ -81,7 +82,7 @@ describe("isOrderedTokenPaths", () => {
 });
 
 describe("price display/raw conversion", () => {
-  it("should convert BTC/USDC display price into the raw tick domain and back", () => {
+  it("should convert higher-decimal base display prices into the raw tick domain and back", () => {
     const btc = makeToken("BTC", 8);
     const usdc = makeToken("USDC", 6);
 
@@ -89,6 +90,26 @@ describe("price display/raw conversion", () => {
 
     expect(rawPrice).toBe(0.01);
     expect(makeDisplayPrice(rawPrice, btc, usdc)).toBe(1);
+  });
+
+  it("should convert much higher-decimal base display prices into the raw tick domain and back", () => {
+    const sol = makeToken("SOL", 9);
+    const trx = makeToken("TRX", 6);
+
+    const rawPrice = makeRawPrice(1, sol, trx);
+
+    expect(rawPrice).toBe(0.001);
+    expect(makeDisplayPrice(rawPrice, sol, trx)).toBe(1);
+  });
+
+  it("should convert lower-decimal base display prices into the raw tick domain and back", () => {
+    const usdc = makeToken("USDC", 6);
+    const btc = makeToken("BTC", 8);
+
+    const rawPrice = makeRawPrice(1, usdc, btc);
+
+    expect(rawPrice).toBe(100);
+    expect(makeDisplayPrice(rawPrice, usdc, btc)).toBe(1);
   });
 
   it("should preserve equal-decimal token prices", () => {

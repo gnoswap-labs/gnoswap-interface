@@ -510,20 +510,20 @@ const PoolAddLiquidityContainer: React.FC = () => {
   const changeStartingPrice = useCallback(
     (price: string) => {
       if (price === "" || !tokenA || !tokenB) {
-        setCreateOption({
-          ...createOption,
+        setCreateOption(prev => ({
+          ...prev,
           startPrice: null,
-          isCreate: createOption?.isCreate ? true : false,
-        });
+          isCreate: prev?.isCreate ? true : false,
+        }));
         return;
       }
       const priceNum = BigNumber(price).toNumber();
       if (BigNumber(Number(priceNum)).isNaN()) {
-        setCreateOption({
-          ...createOption,
+        setCreateOption(prev => ({
+          ...prev,
           startPrice: null,
-          isCreate: createOption?.isCreate ? true : false,
-        });
+          isCreate: prev?.isCreate ? true : false,
+        }));
         return;
       }
       const rawPrice = makeRawPrice(priceNum, tokenA, tokenB);
@@ -534,7 +534,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
         startPrice: nearStartPrice,
       });
     },
-    [createOption, selectPool.tickSpacing, tokenA, tokenB],
+    [selectPool.tickSpacing, tokenA, tokenB],
   );
 
   const handleSwapValue = useCallback(() => {
