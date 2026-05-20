@@ -216,10 +216,13 @@ export const usePoolAddLiquidityConfirmModal = ({
       return null;
     }
 
-    const tokenASymbol = selectPool.compareToken?.path === tokenA.path ? tokenA.displaySymbol || "" : tokenB.displaySymbol || "";
-    const tokenBSymbol = selectPool.compareToken?.path === tokenA.path ? tokenB.displaySymbol || "" : tokenA.displaySymbol || "";
+    const isTokenABase = selectPool.compareToken?.path === tokenA.path;
+    const baseToken = isTokenABase ? tokenA : tokenB;
+    const quoteToken = isTokenABase ? tokenB : tokenA;
+    const tokenASymbol = baseToken.displaySymbol || "";
+    const tokenBSymbol = quoteToken.displaySymbol || "";
     const rawCurrentPrice = selectPool.currentPrice;
-    const currentPrice = `${makeDisplayPrice(rawCurrentPrice, tokenA, tokenB)}`;
+    const currentPrice = `${makeDisplayPrice(rawCurrentPrice, baseToken, quoteToken)}`;
     if (selectPool.selectedFullRange) {
       return {
         currentPrice,
@@ -237,10 +240,10 @@ export const usePoolAddLiquidityConfirmModal = ({
     let minPriceStr = "0.0000";
     let maxPriceStr = "0.0000";
     if (selectPool.minPrice && selectPool.minPrice > minPrice) {
-      minPriceStr = formatPriceDisplay(selectPool.minPrice, tokenA, tokenB);
+      minPriceStr = formatPriceDisplay(selectPool.minPrice, baseToken, quoteToken);
     }
     if (selectPool.maxPrice) {
-      maxPriceStr = formatPriceDisplay(selectPool.maxPrice, tokenA, tokenB);
+      maxPriceStr = formatPriceDisplay(selectPool.maxPrice, baseToken, quoteToken);
     }
     const feeBoost = selectPool.feeBoost === null ? "-" : `x${selectPool.feeBoost}`;
 

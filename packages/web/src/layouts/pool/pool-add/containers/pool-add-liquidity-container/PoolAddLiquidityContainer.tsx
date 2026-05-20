@@ -325,10 +325,11 @@ const PoolAddLiquidityContainer: React.FC = () => {
       selectPool.isCreate,
       selectPool.currentPrice,
       sqrtPriceX96,
-      selectPool.compareToken?.symbol,
       selectPool.minPrice,
       selectPool.maxPrice,
-      tokenA?.symbol,
+      tokenA,
+      tokenB,
+      tokenBAmountInput.changeAmount,
     ],
   );
 
@@ -370,10 +371,11 @@ const PoolAddLiquidityContainer: React.FC = () => {
       selectPool.isCreate,
       selectPool.currentPrice,
       sqrtPriceX96,
-      selectPool.compareToken?.symbol,
       selectPool.minPrice,
       selectPool.maxPrice,
-      tokenB?.symbol,
+      tokenA,
+      tokenB,
+      tokenAAmountInput.changeAmount,
     ],
   );
 
