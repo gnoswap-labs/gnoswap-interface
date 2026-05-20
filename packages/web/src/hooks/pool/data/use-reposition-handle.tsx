@@ -57,6 +57,7 @@ import {
 import { IncreaseState } from "@states/index";
 import { checkGnotPath, delay } from "@utils/common";
 import { subscriptFormat } from "@utils/number-utils";
+import { makeDisplayPrice } from "@utils/pool-utils";
 import { getRepositionAmountsByPriceRange, getRepositionAmountsWithSwapSimulation } from "@utils/reposition-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
@@ -213,28 +214,36 @@ export const useRepositionHandle = () => {
 
   const formatPriceDisplay = useCallback(
     (price: number | string | BigNumber | null) => {
-      if (price === null || BigNumber(Number(price)).isNaN() || !selectPool.feeTier) {
+      if (price === null || BigNumber(Number(price)).isNaN() || !selectPool.feeTier || !tokenA || !tokenB) {
         return "-";
       }
 
+      const isTokenABase = selectPool.compareToken?.path === tokenA.path;
+      const baseToken = isTokenABase ? tokenA : tokenB;
+      const quoteToken = isTokenABase ? tokenB : tokenA;
+
       const { maxPrice } = SwapFeeTierMaxPriceRangeMap[selectPool.feeTier || "NONE"];
 
-      const currentValue = BigNumber(price).toNumber();
+      const displayPrice = BigNumber(makeDisplayPrice(price.toString(), baseToken, quoteToken));
+      const currentValue = displayPrice.toNumber();
+      const maxPriceWithRatio = BigNumber(maxPrice)
+        .shiftedBy(baseToken.decimals - quoteToken.decimals)
+        .toNumber();
 
       if (currentValue < 1 && currentValue !== 0) {
-        return subscriptFormat(BigNumber(price).toFixed());
+        return subscriptFormat(displayPrice.toFixed());
       }
 
-      if (currentValue / maxPrice > 0.9) {
+      if (currentValue / maxPriceWithRatio > 0.9) {
         return "∞";
       }
 
-      return formatTokenExchangeRate(Number(price), {
+      return formatTokenExchangeRate(displayPrice.toFixed(), {
         maxSignificantDigits: 6,
         minLimit: 0.000001,
       });
     },
-    [selectPool.feeTier],
+    [selectPool.compareToken?.path, selectPool.feeTier, tokenA, tokenB],
   );
 
   const minPriceStr = useMemo(() => {
@@ -732,7 +741,7 @@ export const useRepositionHandle = () => {
                   resultData.hash,
                 ),
               );
-              await updateConfirmModalData("success", "Reposition Complete", "", null, () => router.back());
+              updateConfirmModalData("success", "Reposition Complete", "", null, () => router.back());
               openConfirmModal();
             } else if (result.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
               broadcastRejected(

@@ -14,6 +14,7 @@ import { TokenModel } from "@models/token/token-model";
 import { IncreaseState } from "@states/index";
 import { checkGnotPath } from "@utils/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
+import { makeDisplayPrice } from "@utils/pool-utils";
 import { getDepositAmountsByLiquidity, isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 
@@ -85,24 +86,21 @@ export const useDecreaseHandle = () => {
   const minPriceStr = useMemo(() => {
     if (!selectedPosition) return "-";
     const isEndTick = isEndTickBy(selectedPosition?.tickLower, selectedPosition?.pool.fee);
-    const minPrice = tickToPriceStr(selectedPosition?.tickLower, {
-      decimals: 40,
-      isEnd: isEndTick,
-    });
-    return `${minPrice}`;
-  }, [selectedPosition?.tickUpper, selectedPosition?.tickLower]);
+    const minPrice = tickToPriceStr(selectedPosition?.tickLower, { isEnd: isEndTick });
+    if (minPrice === "0" || minPrice === "∞") return minPrice;
+
+    return `${makeDisplayPrice(tickToPrice(selectedPosition.tickLower), selectedPosition.pool.tokenA, selectedPosition.pool.tokenB)}`;
+  }, [selectedPosition]);
 
   const maxPriceStr = useMemo(() => {
     if (!selectedPosition) return "-";
     const isEndTick = isEndTickBy(selectedPosition?.tickUpper, selectedPosition?.pool.fee);
 
-    const maxPrice = tickToPriceStr(selectedPosition?.tickUpper, {
-      decimals: 40,
-      isEnd: isEndTick,
-    });
+    const maxPrice = tickToPriceStr(selectedPosition?.tickUpper, { isEnd: isEndTick });
+    if (maxPrice === "0" || maxPrice === "∞") return maxPrice;
 
-    return maxPrice;
-  }, [selectedPosition?.tickLower, selectedPosition?.tickUpper]);
+    return `${makeDisplayPrice(tickToPrice(selectedPosition.tickUpper), selectedPosition.pool.tokenA, selectedPosition.pool.tokenB)}`;
+  }, [selectedPosition]);
 
   const fee = poolPath?.split(":")[2];
   const tokenA: TokenModel | null = useMemo(() => {
