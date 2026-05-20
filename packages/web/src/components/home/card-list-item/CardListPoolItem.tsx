@@ -7,7 +7,6 @@ import { useCallback, useMemo } from "react";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import IconStar from "@components/common/icons/IconStar";
 import { formatRate } from "@utils/new-number-utils";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 interface CardListPoolItemProps {
   index: number;
@@ -18,7 +17,7 @@ interface CardListPoolItemProps {
 const CardListPoolItem: React.FC<CardListPoolItemProps> = ({ index, item, onClickItem }) => {
   const pairName = useMemo(() => {
     const pool = item.pool;
-    return `${formatDisplayTokenSymbol(pool.tokenA.symbol)}/${formatDisplayTokenSymbol(pool.tokenB.symbol)}`;
+    return `${pool.tokenA.displaySymbol}/${pool.tokenB.displaySymbol}`;
   }, [item]);
 
   const poolFeeRate = useMemo(() => {

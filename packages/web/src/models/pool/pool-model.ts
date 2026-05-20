@@ -48,6 +48,7 @@ export const initialPool: PoolModel = {
     path: "",
     decimals: 4,
     symbol: "",
+    displaySymbol: "",
     logoURI: "",
     type: "Native",
     priceID: "",
@@ -60,6 +61,7 @@ export const initialPool: PoolModel = {
     path: "",
     decimals: 4,
     symbol: "",
+    displaySymbol: "",
     logoURI: "",
     type: "Native",
     priceID: "",
@@ -137,6 +139,7 @@ export interface ITokenA {
   path: string;
   decimals: number;
   symbol: string;
+  displaySymbol: string;
   logoURI: string;
   priceID: string;
 }
@@ -149,6 +152,7 @@ export interface ITokenB {
   path: string;
   decimals: number;
   symbol: string;
+  displaySymbol: string;
   logoURI: string;
   priceID: string;
 }

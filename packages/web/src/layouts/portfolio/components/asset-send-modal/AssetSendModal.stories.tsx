@@ -28,6 +28,7 @@ export const Default: Story = {
       path: "gno.land/r/gns",
       decimals: 4,
       symbol: "GNOT",
+      displaySymbol: "GNOT",
       logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/gno-native/images/ugnot.svg",
       type: "GRC20",
       priceID: "gno.land/r/gns",

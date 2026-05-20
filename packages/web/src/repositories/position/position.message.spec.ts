@@ -53,6 +53,7 @@ const createTokenModel = (
     createdAt: "2024-01-24T15:12:21Z",
     name: "Test Token",
     symbol: "TT",
+    displaySymbol: "TT",
     decimals: 6,
     logoURI: "",
     priceID: path,

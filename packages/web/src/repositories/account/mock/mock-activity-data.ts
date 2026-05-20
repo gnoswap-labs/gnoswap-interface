@@ -3,8 +3,8 @@ import { ActivityData } from "@repositories/activity/responses/activity-response
 import { DexEvent } from "@repositories/common/types";
 
 export const mockTokenPairInfo: TokenPairInfo = {
-  tokenA: { path: "gno.land/r/demo/gnot", name: "GNOT", symbol: "GNOT", logoURI: "" },
-  tokenB: { path: "gno.land/r/demo/gns", name: "GNS", symbol: "GNS", logoURI: "" },
+  tokenA: { path: "gno.land/r/demo/gnot", name: "GNOT", symbol: "GNOT", displaySymbol: "GNOT", logoURI: "" },
+  tokenB: { path: "gno.land/r/demo/gns", name: "GNS", symbol: "GNS", displaySymbol: "GNS", logoURI: "" },
 };
 
 export const mockActivityData: ActivityData = {
@@ -18,6 +18,7 @@ export const mockActivityData: ActivityData = {
     path: "gno.land/r/demo/gnot",
     decimals: 6,
     symbol: "GNOT",
+    displaySymbol: "GNOT",
     logoURI: "",
     priceID: "",
   },
@@ -29,6 +30,7 @@ export const mockActivityData: ActivityData = {
     path: "gno.land/r/demo/gns",
     decimals: 6,
     symbol: "GNS",
+    displaySymbol: "GNS",
     logoURI: "",
     priceID: "",
   },

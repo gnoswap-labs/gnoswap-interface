@@ -23,7 +23,7 @@ import { formatPrice } from "@utils/new-number-utils";
 import TokenChart, { ChartInfo, TokenInfo } from "../../components/token-chart/TokenChart";
 
 const TokenChartGraphPeriods: Readonly<string[]> = ["1D", "7D", "1M", "1Y", "All"] as const;
-export type TokenChartGraphPeriodType = typeof TokenChartGraphPeriods[number];
+export type TokenChartGraphPeriodType = (typeof TokenChartGraphPeriods)[number];
 
 const DEFAULT_PADDING = 12;
 const DEFAULT_X_LABEL_WIDTH = 82;
@@ -48,6 +48,7 @@ export const dummyTokenInfo: TokenInfo = {
   token: {
     name: "",
     symbol: "",
+    displaySymbol: "",
     image: "",
     pkg_path: "",
     decimals: 1,
@@ -143,10 +144,7 @@ function truncateToSignificantDigits(value: BigNumber, significantDigits: number
   return negative ? `-${normalized}` : normalized;
 }
 
-function getYAxisInfo(
-  datas: string[],
-  tokenPrice?: number,
-): { labels: string[]; minValue: string; maxValue: string } {
+function getYAxisInfo(datas: string[], tokenPrice?: number): { labels: string[]; minValue: string; maxValue: string } {
   const Y_AXIS_LABEL_COUNT = 6;
   const Y_AXIS_STEP_COUNT = Y_AXIS_LABEL_COUNT - 1;
   // Fall back to fixed-decimal formatting until the price query resolves to avoid
@@ -302,6 +300,7 @@ const TokenChartContainer: React.FC = () => {
         token: {
           name: getGnotPath(tokenB).name,
           symbol: getGnotPath(tokenB).symbol,
+          displaySymbol: getGnotPath(tokenB).displaySymbol,
           image: getGnotPath(tokenB).logoURI,
           pkg_path: getGnotPath(tokenB).path,
           decimals: 1,
@@ -409,7 +408,11 @@ const TokenChartContainer: React.FC = () => {
       }))
       .reverse();
 
-    const { labels: yAxisLabels, minValue: yAxisMin, maxValue: yAxisMax } = getYAxisInfo(
+    const {
+      labels: yAxisLabels,
+      minValue: yAxisMin,
+      maxValue: yAxisMax,
+    } = getYAxisInfo(
       datas.map(item => item.amount.value),
       currentPrice !== undefined ? Number(currentPrice) : undefined,
     );

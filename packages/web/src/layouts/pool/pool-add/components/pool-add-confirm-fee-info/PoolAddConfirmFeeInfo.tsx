@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { TokenInfo } from "@models/token/token-info";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import IconInfo from "@components/common/icons/IconInfo";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import {
   CreationFeeErrorMsgWrapper,
@@ -40,7 +39,7 @@ const PoolAddConfirmFeeInfo: React.FC<EarnAddConfirmFeeInfoProps> = ({ token, fe
       <PoolAddConfirmFeeInfoSection $hasError={!!errorMsg}>
         <div className="token-info">
           <img src={token?.logoURI} alt="token logo" />
-          <div>{formatDisplayTokenSymbol(token?.symbol || "")}</div>
+          <div>{token?.displaySymbol || ""}</div>
         </div>
         <div className="fee-info">
           <span>{fee}</span>

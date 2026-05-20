@@ -32,6 +32,7 @@ export const generateTokenModel = () => {
     logoURI: "",
     name: "GNOT",
     symbol: "GNOLAND",
+    displaySymbol: "GNOLAND",
     amount: {
       value: BigNumber(generateNumberPlus()),
       denom: "ugnot",
@@ -44,6 +45,7 @@ export const generateToken0 = () => {
     token_id: `${generateAddress()}`,
     name: "GNOT",
     symbol: "GNOLAND",
+    displaySymbol: "GNOLAND",
     amount: {
       value: generateNumberPlus(),
       denom: "ugnot",
@@ -56,6 +58,7 @@ export const generateToken1 = () => {
     token_id: `${generateAddress()}`,
     name: "GNS",
     symbol: "GNOSWAP",
+    displaySymbol: "GNOSWAP",
     amount: {
       value: generateNumberPlus(),
       denom: "ugnos",

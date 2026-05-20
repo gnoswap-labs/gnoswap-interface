@@ -15,6 +15,7 @@ const fooToken: TokenModel = {
   chainId: "dev.gnoswap",
   name: "Foo Token",
   symbol: "FOO",
+  displaySymbol: "FOO",
   decimals: 6,
   logoURI: "",
   createdAt: "2026-05-13T00:00:00Z",

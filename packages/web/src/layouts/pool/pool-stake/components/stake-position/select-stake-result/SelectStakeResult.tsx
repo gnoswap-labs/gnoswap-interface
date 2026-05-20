@@ -10,7 +10,6 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
 import { formatOtherPrice, formatPoolPairAmount, formatRate } from "@utils/new-number-utils";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import { HoverTextWrapper, wrapper } from "./SelectStakeResult.styles";
 
@@ -110,7 +109,7 @@ const SelectStakeResult: React.FC<SelectStakeResultProps> = ({ positions, isHidd
             <div className="main-info">
               <MissingLogo symbol={entry.token.symbol} url={entry.token.logoURI} width={24} mobileWidth={24} />
               <p>
-                {t("StakePosition:overview.pooled")} {formatDisplayTokenSymbol(entry.token.symbol)}
+                {t("StakePosition:overview.pooled")} {entry.token.displaySymbol}
               </p>
               <strong>
                 {formatPoolPairAmount(entry.amount, {

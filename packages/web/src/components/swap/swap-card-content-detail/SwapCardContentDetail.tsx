@@ -14,7 +14,6 @@ import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { DEVICE_TYPE } from "@styles/media";
 import { floorNumber, toNumberFormat } from "@utils/number-utils";
 import { convertToKMBWithPrefix } from "@utils/stake-position-utils";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import SwapCardAutoRouter from "./swap-card-auto-router/SwapCardAutoRouter";
 import SwapCardFeeInfo from "./swap-card-fee-info/SwapCardFeeInfo";
@@ -59,17 +58,17 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
     if (swapRateAction === SwapRateAction.ATOB) {
       return (
         <>
-          1 {formatDisplayTokenSymbol(tokenA.symbol)} =&nbsp;
+          1 {tokenA.displaySymbol} =&nbsp;
           <ExchangeRate value={convertSwapRate(swapRate)} />
-          &nbsp;{formatDisplayTokenSymbol(tokenB.symbol)}
+          &nbsp;{tokenB.displaySymbol}
         </>
       );
     } else {
       return (
         <>
-          1 {formatDisplayTokenSymbol(tokenB.symbol)} =&nbsp;
+          1 {tokenB.displaySymbol} =&nbsp;
           <ExchangeRate value={convertSwapRate(swapRate)} />
-          &nbsp;{formatDisplayTokenSymbol(tokenA.symbol)}
+          &nbsp;{tokenA.displaySymbol}
         </>
       );
     }

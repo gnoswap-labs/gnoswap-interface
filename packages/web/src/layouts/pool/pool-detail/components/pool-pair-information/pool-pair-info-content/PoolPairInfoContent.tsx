@@ -23,7 +23,6 @@ import { ThemeState } from "@states/index";
 import { formatOtherPrice, formatPoolPairAmount, formatRate } from "@utils/new-number-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { tickToPrice } from "@utils/swap-utils";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import {
   AprDivider,
@@ -220,8 +219,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool.rewards24hUsd]);
 
   const isWrapText = useMemo(() => {
-    return pool?.tokenA?.symbol.length === 4 || pool?.tokenB?.symbol.length === 4;
-  }, [pool?.tokenB?.symbol, pool?.tokenA?.symbol]);
+    return pool?.tokenA?.displaySymbol.length === 4 || pool?.tokenB?.displaySymbol.length === 4;
+  }, [pool?.tokenB?.displaySymbol, pool?.tokenA?.displaySymbol]);
 
   const currentPriceRatioNumber = useMemo(() => {
     const tokenADecimals = pool.tokenA.decimals;
@@ -330,7 +329,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                         isKMB: false,
                         decimals: pool.tokenA.decimals,
                       })}{" "}
-                      <span>{formatDisplayTokenSymbol(pool?.tokenA?.symbol || "")}</span>{" "}
+                      <span>{pool?.tokenA?.displaySymbol || ""}</span>{" "}
                     </TokenAmountTooltipContentWrapper>
                   }
                   className={`section-image ${pool.tokenABalance ? "can-hover" : ""}`}
@@ -346,7 +345,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                       decimals: 2,
                     })}{" "}
                     <span className={`token-symbol ${isWrapText ? "wrap-text" : ""}`}>
-                      {formatDisplayTokenSymbol(pool?.tokenA?.symbol || "")}
+                      {pool?.tokenA?.displaySymbol || ""}
                     </span>{" "}
                     <span className="token-percent">{depositRatioStrOfTokenA}</span>
                   </span>
@@ -366,7 +365,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                         isKMB: false,
                         decimals: pool.tokenA.decimals,
                       })}
-                      <span>{formatDisplayTokenSymbol(pool?.tokenB?.symbol || "")}</span>{" "}
+                      <span>{pool?.tokenB?.displaySymbol || ""}</span>{" "}
                     </TokenAmountTooltipContentWrapper>
                   }
                   className={`section-image ${pool.tokenBBalance ? "can-hover" : ""}`}
@@ -382,7 +381,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                       decimals: 2,
                     })}{" "}
                     <span className={`token-symbol ${isWrapText ? "wrap-text" : ""}`}>
-                      {formatDisplayTokenSymbol(pool?.tokenB?.symbol || "")}
+                      {pool?.tokenB?.displaySymbol || ""}
                     </span>{" "}
                     <span className="token-percent">{depositRatioStrOfTokenB}</span>
                   </span>
@@ -506,8 +505,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                       width={20}
                       className="image-logo"
                     />
-                    {width >= 768 && `1 ${formatDisplayTokenSymbol(pool?.tokenA?.symbol || "")}`} = {currentPriceRatio}{" "}
-                    {formatDisplayTokenSymbol(pool?.tokenB?.symbol || "")}
+                    {width >= 768 && `1 ${pool?.tokenA?.displaySymbol || ""}`} = {currentPriceRatio}{" "}
+                    {pool?.tokenB?.displaySymbol || ""}
                   </div>
                 )}
                 {loading && (
@@ -529,8 +528,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                       width={20}
                       className="image-logo"
                     />
-                    {width >= 768 && `1 ${formatDisplayTokenSymbol(pool?.tokenB?.symbol || "")}`} ={" "}
-                    {currentPriceReverse} {formatDisplayTokenSymbol(pool?.tokenA?.symbol || "")}
+                    {width >= 768 && `1 ${pool?.tokenB?.displaySymbol || ""}`} = {currentPriceReverse}{" "}
+                    {pool?.tokenA?.displaySymbol || ""}
                   </div>
                 )}
               </div>

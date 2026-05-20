@@ -1,7 +1,6 @@
 import { GNS_TOKEN } from "@common/values/token-constant";
 import IconLogoWhite from "@components/common/icons/IconLogoWhite";
 import { DEVICE_TYPE } from "@styles/media";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import { DashboardInfoTitleWrapper, TitleDivider, TokenLogoWrapper, TokenWrapper } from "./DashboardInfoTitle.styles";
 
@@ -22,7 +21,7 @@ const DashboardInfoTitle: React.FC<DashboardInfoTitleProps> = ({ dashboardTokenI
         <div className="token-image-wrapper">
           <IconLogoWhite />
         </div>
-        <div className="token-symbol">{formatDisplayTokenSymbol(GNS_TOKEN.symbol)}</div>
+        <div className="token-symbol">{GNS_TOKEN.displaySymbol}</div>
       </TokenLogoWrapper>
       <div className="amount-info">{dashboardTokenInfo.gnosAmount}</div>
     </TokenWrapper>

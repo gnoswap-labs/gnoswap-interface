@@ -27,7 +27,6 @@ import { makeDisplayPrice } from "@utils/pool-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToTick, tickToPrice } from "@utils/swap-utils";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import PriceSteps from "./price-steps/PriceSteps";
 import StartingPrice from "./starting-price/StartingPrice";
@@ -108,16 +107,24 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
 
       return (
         <>
-          1 {formatDisplayTokenSymbol(tokenA.symbol)} =&nbsp;
+          1 {tokenA.displaySymbol} =&nbsp;
           {formatTokenExchangeRate(currentPrice, {
             maxSignificantDigits: 6,
             minLimit: 0.000001,
           })}
           &nbsp;
-          {formatDisplayTokenSymbol(tokenB.symbol)}
+          {tokenB.displaySymbol}
         </>
       );
-    }, [selectPool.currentPrice, selectPool.isCreate, tokenA, tokenB]);
+    }, [
+      selectPool.compareToken?.path,
+      selectPool.currentPrice,
+      tokenA.displaySymbol,
+      tokenA.decimals,
+      tokenA.path,
+      tokenB.displaySymbol,
+      tokenB.decimals,
+    ]);
 
     useImperativeHandle(ref, () => {
       return { resetRange };

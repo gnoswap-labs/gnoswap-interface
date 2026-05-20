@@ -59,12 +59,14 @@ const PoolAddIncentivizeContainer: React.FC = () => {
           ...pool.tokenA,
           name: getGnotPath(pool.tokenA).name,
           symbol: getGnotPath(pool.tokenA).symbol,
+          displaySymbol: getGnotPath(pool.tokenA).displaySymbol,
           logoURI: getGnotPath(pool.tokenA).logoURI,
         },
         tokenB: {
           ...pool.tokenB,
           name: getGnotPath(pool.tokenB).name,
           symbol: getGnotPath(pool.tokenB).symbol,
+          displaySymbol: getGnotPath(pool.tokenB).displaySymbol,
           logoURI: getGnotPath(pool.tokenB).logoURI,
         },
       };
@@ -101,12 +103,14 @@ const PoolAddIncentivizeContainer: React.FC = () => {
             ...pool.tokenA,
             path: getGnotPath(pool.tokenA).path,
             symbol: getGnotPath(pool.tokenA).symbol,
+            displaySymbol: getGnotPath(pool.tokenA).displaySymbol,
             logoURI: getGnotPath(pool.tokenA).logoURI,
           },
           tokenB: {
             ...pool.tokenB,
             path: getGnotPath(pool.tokenB).path,
             symbol: getGnotPath(pool.tokenB).symbol,
+            displaySymbol: getGnotPath(pool.tokenB).displaySymbol,
             logoURI: getGnotPath(pool.tokenB).logoURI,
           },
         });

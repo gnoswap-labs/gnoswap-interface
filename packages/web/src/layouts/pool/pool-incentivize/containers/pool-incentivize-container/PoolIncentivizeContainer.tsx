@@ -80,12 +80,14 @@ const PoolIncentivizeContainer: React.FC = () => {
             ...pool.tokenA,
             path: getGnotPath(pool.tokenA).path,
             symbol: getGnotPath(pool.tokenA).symbol,
+            displaySymbol: getGnotPath(pool.tokenA).displaySymbol,
             logoURI: getGnotPath(pool.tokenA).logoURI,
           },
           tokenB: {
             ...pool.tokenB,
             path: getGnotPath(pool.tokenB).path,
             symbol: getGnotPath(pool.tokenB).symbol,
+            displaySymbol: getGnotPath(pool.tokenB).displaySymbol,
             logoURI: getGnotPath(pool.tokenB).logoURI,
           },
         });

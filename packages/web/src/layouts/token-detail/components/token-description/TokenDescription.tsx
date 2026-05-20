@@ -2,7 +2,6 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import TokenDescriptionContent from "./token-description-content/TokenDescriptionContent";
 import TokenDescriptionLinks from "./token-description-links/TokenDescriptionLinks";
@@ -37,7 +36,7 @@ const TokenDescription: React.FC<TokenDescriptionProps> = ({
       {!loading && (
         <h2>
           {t("TokenDetails:description.title", {
-            name: `${tokenName} (${formatDisplayTokenSymbol(tokenSymbol)})`,
+            name: `${tokenName} (${tokenSymbol})`,
           })}
         </h2>
       )}

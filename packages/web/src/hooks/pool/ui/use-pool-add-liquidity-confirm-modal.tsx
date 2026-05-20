@@ -32,7 +32,7 @@ import { subscriptFormat } from "@utils/number-utils";
 import { makeDisplayPrice } from "@utils/pool-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToNearTick } from "@utils/swap-utils";
-import { formatDisplayTokenSymbol, makeDisplayTokenAmount } from "@utils/token-utils";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
@@ -216,12 +216,8 @@ export const usePoolAddLiquidityConfirmModal = ({
       return null;
     }
 
-    const tokenASymbol = formatDisplayTokenSymbol(
-      selectPool.compareToken?.symbol === tokenA.symbol ? tokenA.symbol || "" : tokenB.symbol || "",
-    );
-    const tokenBSymbol = formatDisplayTokenSymbol(
-      selectPool.compareToken?.symbol === tokenA.symbol ? tokenB.symbol || "" : tokenA.symbol || "",
-    );
+    const tokenASymbol = selectPool.compareToken?.path === tokenA.path ? tokenA.displaySymbol || "" : tokenB.displaySymbol || "";
+    const tokenBSymbol = selectPool.compareToken?.path === tokenA.path ? tokenB.displaySymbol || "" : tokenA.displaySymbol || "";
     const rawCurrentPrice = selectPool.currentPrice;
     const currentPrice = `${makeDisplayPrice(rawCurrentPrice, tokenA, tokenB)}`;
     if (selectPool.selectedFullRange) {
