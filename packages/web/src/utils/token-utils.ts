@@ -47,6 +47,18 @@ export function makeDisplayTokenAmount(
   return number.shiftedBy(-token.decimals).toNumber();
 }
 
+export function isAmountLessThanTokenMinimum(
+  token: Pick<TokenModel | OnchainToken, "decimals">,
+  amount: string | number,
+) {
+  const number = BigNumber(amount.toString().replace(/,/g, ""));
+  if (!number.isFinite() || !number.gt(0)) {
+    return false;
+  }
+
+  return number.shiftedBy(token.decimals).lt(1);
+}
+
 export function makeShiftAmount(
   amount: bigint | string | number,
   shift: number,
