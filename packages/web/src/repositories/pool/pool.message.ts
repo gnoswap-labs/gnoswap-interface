@@ -22,6 +22,7 @@ import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath, isGNOTPath, wrapNativeTokenPath } from "@utils/common";
 import { tickToSqrtPriceX96 } from "@utils/math.utils";
 import { isOrderedTokenPaths } from "@utils/pool-utils";
+import { calculateMaxTokenAmount, calculateMinTokenAmount } from "@utils/slippage-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
 import { priceToTick } from "@utils/swap-utils";
 import { isNativeTokenPath, makeRawTokenAmount } from "@utils/token-utils";
@@ -365,26 +366,6 @@ function makePositionMintMessage(
       referrerAddress || "", // Referral address
     ],
   });
-}
-
-function calculateMaxTokenAmount(tokenAmount: string, slippage: number): string {
-  if (!tokenAmount || BigNumber(tokenAmount).isZero()) {
-    return "0";
-  }
-
-  return BigNumber(tokenAmount)
-    .multipliedBy(100 + slippage)
-    .dividedBy(100)
-    .integerValue(BigNumber.ROUND_CEIL)
-    .toFixed(0);
-}
-
-function calculateMinTokenAmount(tokenAmount: string, slippage: number): string {
-  return BigNumber(tokenAmount)
-    .multipliedBy(100 - slippage)
-    .dividedBy(100)
-    .integerValue(BigNumber.ROUND_FLOOR)
-    .toFixed(0);
 }
 
 function makeRemoveIncentiveMessage(poolPath: string, incentiveID: string, caller: string) {
