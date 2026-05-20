@@ -308,7 +308,7 @@ export const useSwapHandler = () => {
   }, [estimatedAmount, type]);
 
   const tokenAUSD = useMemo(() => {
-    if (!Number(quotedTokenAAmount) || !tokenA || !tokenPrices[checkGnotPath(tokenA.priceID)].usd) {
+    if (!Number(quotedTokenAAmount) || !tokenA || !tokenPrices[checkGnotPath(tokenA.priceID)]?.usd) {
       return null;
     }
     return BigNumber(quotedTokenAAmount).multipliedBy(tokenPrices[checkGnotPath(tokenA.priceID)].usd).toNumber();
@@ -680,10 +680,7 @@ export const useSwapHandler = () => {
   }, [swapButtonState]);
 
   const executeSwapRef = useRef(executeSwap);
-
-  useEffect(() => {
-    executeSwapRef.current = executeSwap;
-  });
+  executeSwapRef.current = executeSwap;
 
   const executeLatestSwap = useCallback((swapTokenInfo: SwapTokenInfo, estimatedAmount: string | null) => {
     executeSwapRef.current(swapTokenInfo, estimatedAmount);

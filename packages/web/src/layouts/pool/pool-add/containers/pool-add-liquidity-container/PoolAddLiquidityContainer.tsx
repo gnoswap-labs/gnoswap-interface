@@ -519,8 +519,8 @@ const PoolAddLiquidityContainer: React.FC = () => {
         }));
         return;
       }
-      const priceNum = BigNumber(price).toNumber();
-      if (BigNumber(Number(priceNum)).isNaN()) {
+      const priceBN = BigNumber(price);
+      if (!priceBN.isFinite() || !priceBN.gt(0)) {
         setCreateOption(prev => ({
           ...prev,
           startPrice: null,
@@ -528,7 +528,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
         }));
         return;
       }
-      const rawPrice = makeRawPrice(priceNum, tokenA, tokenB);
+      const rawPrice = makeRawPrice(priceBN.toNumber(), tokenA, tokenB);
       const tick = priceToNearTick(rawPrice, selectPool.tickSpacing);
       const nearStartPrice = tickToPrice(tick);
       setCreateOption({
