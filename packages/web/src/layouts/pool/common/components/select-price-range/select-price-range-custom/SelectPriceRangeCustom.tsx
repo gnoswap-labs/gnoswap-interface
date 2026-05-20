@@ -104,7 +104,9 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
         return "-";
       }
 
-      const currentPrice = makeDisplayPrice(selectPool.currentPrice, tokenA, tokenB);
+      const currentPrice = selectPool.isCreate
+        ? selectPool.currentPrice
+        : makeDisplayPrice(selectPool.currentPrice, tokenA, tokenB);
 
       return (
         <>
@@ -117,11 +119,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
           {formatDisplayTokenSymbol(tokenB.symbol)}
         </>
       );
-    }, [
-      selectPool.currentPrice,
-      tokenA,
-      tokenB,
-    ]);
+    }, [selectPool.currentPrice, selectPool.isCreate, tokenA, tokenB]);
 
     useImperativeHandle(ref, () => {
       return { resetRange };
@@ -297,7 +295,13 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
       return [getGnotPath(tokenA).symbol, getGnotPath(tokenB).symbol];
     }, [tokenA, tokenB, isKeepToken]);
 
-    const decimalsRatio = useMemo(() => tokenB.decimals - tokenA.decimals, [tokenA.decimals, tokenB.decimals]);
+    const decimalsRatio = useMemo(() => {
+      if (selectPool.isCreate) {
+        return 0;
+      }
+
+      return tokenB.decimals - tokenA.decimals;
+    }, [selectPool.isCreate, tokenA.decimals, tokenB.decimals]);
 
     if (selectPool.renderState() === "NONE") {
       return <></>;

@@ -178,32 +178,37 @@ export const usePoolAddLiquidityConfirmModal = ({
     };
   }, [tokenA, tokenB, swapFeeTier, tokenAAmount, tokenAAmountInput.usdValue, tokenBAmount, tokenBAmountInput.usdValue]);
 
-  const formatPriceDisplay = useCallback((price: number, baseToken: TokenModel, quoteToken: TokenModel) => {
-    if (price === null || BigNumber(Number(price)).isNaN() || !swapFeeTier) {
-      return "-";
-    }
+  const formatPriceDisplay = useCallback(
+    (price: number, baseToken: TokenModel, quoteToken: TokenModel, isCreate: boolean) => {
+      if (price === null || BigNumber(Number(price)).isNaN() || !swapFeeTier) {
+        return "-";
+      }
 
-    const { maxPrice } = SwapFeeTierMaxPriceRangeMap[swapFeeTier || "NONE"];
+      const { maxPrice } = SwapFeeTierMaxPriceRangeMap[swapFeeTier || "NONE"];
 
-    const displayPrice = BigNumber(makeDisplayPrice(price, baseToken, quoteToken));
-    const currentValue = displayPrice.toNumber();
-    const maxPriceWithRatio = BigNumber(maxPrice)
-      .shiftedBy(quoteToken.decimals - baseToken.decimals)
-      .toNumber();
+      const displayPrice = BigNumber(isCreate ? price : makeDisplayPrice(price, baseToken, quoteToken));
+      const currentValue = displayPrice.toNumber();
+      const maxPriceWithRatio = isCreate
+        ? maxPrice
+        : BigNumber(maxPrice)
+            .shiftedBy(quoteToken.decimals - baseToken.decimals)
+            .toNumber();
 
-    if (currentValue < 1 && currentValue !== 0) {
-      return subscriptFormat(displayPrice.toFixed());
-    }
+      if (currentValue < 1 && currentValue !== 0) {
+        return subscriptFormat(displayPrice.toFixed());
+      }
 
-    if (currentValue / maxPriceWithRatio > 0.9) {
-      return "∞";
-    }
+      if (currentValue / maxPriceWithRatio > 0.9) {
+        return "∞";
+      }
 
-    return formatTokenExchangeRate(displayPrice.toFixed(), {
-      maxSignificantDigits: 6,
-      minLimit: 0.000001,
-    });
-  }, [swapFeeTier]);
+      return formatTokenExchangeRate(displayPrice.toFixed(), {
+        maxSignificantDigits: 6,
+        minLimit: 0.000001,
+      });
+    },
+    [swapFeeTier],
+  );
 
   const priceRangeInfo = useMemo(() => {
     if (!selectPool) {
@@ -220,7 +225,7 @@ export const usePoolAddLiquidityConfirmModal = ({
       selectPool.compareToken?.symbol === tokenA.symbol ? tokenB.symbol || "" : tokenA.symbol || "",
     );
     const rawCurrentPrice = selectPool.currentPrice;
-    const currentPrice = `${makeDisplayPrice(rawCurrentPrice, tokenA, tokenB)}`;
+    const currentPrice = `${selectPool.isCreate ? rawCurrentPrice : makeDisplayPrice(rawCurrentPrice, tokenA, tokenB)}`;
     if (selectPool.selectedFullRange) {
       return {
         currentPrice,
@@ -238,10 +243,10 @@ export const usePoolAddLiquidityConfirmModal = ({
     let minPriceStr = "0.0000";
     let maxPriceStr = "0.0000";
     if (selectPool.minPrice && selectPool.minPrice > minPrice) {
-      minPriceStr = formatPriceDisplay(selectPool.minPrice, tokenA, tokenB);
+      minPriceStr = formatPriceDisplay(selectPool.minPrice, tokenA, tokenB, selectPool.isCreate);
     }
     if (selectPool.maxPrice) {
-      maxPriceStr = formatPriceDisplay(selectPool.maxPrice, tokenA, tokenB);
+      maxPriceStr = formatPriceDisplay(selectPool.maxPrice, tokenA, tokenB, selectPool.isCreate);
     }
     const feeBoost = selectPool.feeBoost === null ? "-" : `x${selectPool.feeBoost}`;
 
