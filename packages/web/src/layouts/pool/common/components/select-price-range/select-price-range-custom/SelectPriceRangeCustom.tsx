@@ -26,7 +26,6 @@ import { checkGnotPath } from "@utils/common";
 import { sortTokenPaths } from "@utils/sort-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToTick, tickToPrice } from "@utils/swap-utils";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import PriceSteps from "./price-steps/PriceSteps";
 import StartingPrice from "./starting-price/StartingPrice";
@@ -113,22 +112,22 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
 
       return (
         <>
-          1 {formatDisplayTokenSymbol(tokenA.symbol)} =&nbsp;
+          1 {tokenA.displaySymbol} =&nbsp;
           {formatTokenExchangeRate(currentPrice, {
             maxSignificantDigits: 6,
             minLimit: 0.000001,
           })}
           &nbsp;
-          {formatDisplayTokenSymbol(tokenB.symbol)}
+          {tokenB.displaySymbol}
         </>
       );
     }, [
       selectPool.compareToken?.path,
       selectPool.currentPrice,
-      tokenA.symbol,
+      tokenA.displaySymbol,
       tokenA.decimals,
       tokenA.path,
-      tokenB.symbol,
+      tokenB.displaySymbol,
       tokenB.decimals,
     ]);
 

@@ -3,7 +3,7 @@ import { useCallback, useMemo, useRef } from "react";
 
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { DEVICE_TYPE } from "@styles/media";
-import { formatDisplayTokenSymbol, formatTokenPath } from "@utils/token-utils";
+import { formatTokenPath } from "@utils/token-utils";
 import useElementWidth from "@hooks/common/use-element-width";
 
 import { TokenInfoCellWrapper } from "./TokenInfoCell.styles";
@@ -15,6 +15,7 @@ export interface TokenInfoCellProps {
     path: string;
     name: string;
     symbol: string;
+    displaySymbol: string;
     logoURI: string;
   };
   isNative: boolean;
@@ -22,7 +23,7 @@ export interface TokenInfoCellProps {
 }
 
 function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
-  const { name, path, symbol, logoURI } = token;
+  const { name, path, symbol, displaySymbol, logoURI } = token;
   const theme = useTheme();
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
   const elementId = useMemo(() => `${token.path}`, [token.path]);
@@ -62,7 +63,7 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
             <IconOpenLink fill={theme.color.text04} className="path-link-icon" />
           </div>
         </div>
-        <span className="token-symbol">{formatDisplayTokenSymbol(symbol)}</span>
+        <span className="token-symbol">{displaySymbol}</span>
       </div>
     </TokenInfoCellWrapper>
   );

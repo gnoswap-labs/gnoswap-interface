@@ -8,7 +8,6 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { formatRate } from "@utils/new-number-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import { EarnAddConfirmAmountInfoProps } from "../pool-add-confirm-amount-info/PoolAddConfirmAmountInfo";
 
@@ -49,8 +48,8 @@ const PoolAddConfirmPriceRangeInfo: React.FC<PoolAddConfirmPriceRangeInfoProps> 
   const { t } = useTranslation();
 
   const [swap, setSwap] = useState(false);
-  const tokenASymbol = formatDisplayTokenSymbol(tokenA.info.symbol);
-  const tokenBSymbol = formatDisplayTokenSymbol(tokenB.info.symbol);
+  const tokenASymbol = tokenA.info.displaySymbol;
+  const tokenBSymbol = tokenB.info.displaySymbol;
 
   const currentPriceStr = useMemo(() => {
     if (!swap) {

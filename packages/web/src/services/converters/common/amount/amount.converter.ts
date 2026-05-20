@@ -41,7 +41,7 @@ export class AmountConverter {
       return result.toFixed();
     } catch (error) {
       console.warn("AmountConverter: Failed to convert token amount", {
-        tokenSymbol: token?.symbol,
+        tokenSymbol: token?.displaySymbol,
         rawAmount,
         decimals: token?.decimals,
         error: error instanceof Error ? error.message : error,

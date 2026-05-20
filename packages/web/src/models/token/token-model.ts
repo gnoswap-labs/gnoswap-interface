@@ -18,6 +18,8 @@ export interface TokenModel {
 
   symbol: string;
 
+  displaySymbol: string;
+
   decimals: number;
 
   logoURI: string;

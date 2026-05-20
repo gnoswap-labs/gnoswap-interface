@@ -6,6 +6,7 @@ import { PoolPositionModel } from "../pool-position-model";
 import { PositionModel } from "../position-model";
 import { RewardModel } from "../reward-model";
 import { toUnitFormat } from "@utils/number-utils";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 
 export class PositionMapper {
@@ -62,7 +63,10 @@ export class PositionMapper {
 
   public static rewardFromResponse(reward: RewardResponse): RewardModel {
     return {
-      rewardToken: reward.rewardToken,
+      rewardToken: {
+        ...reward.rewardToken,
+        displaySymbol: formatDisplayTokenSymbol(reward.rewardToken.symbol),
+      },
       accuReward1D: reward.accuReward1D,
       apr: reward.apr !== "" ? Number(reward.apr) : null,
       totalAmount: reward.totalAmount,

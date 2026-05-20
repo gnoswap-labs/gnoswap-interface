@@ -35,6 +35,7 @@ export const Default: Story = {
       path: "gno.land/r/bar",
       decimals: 6,
       symbol: "BAR",
+      displaySymbol: "BAR",
       logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
       priceID: "gno.land/r/bar",
       description: "this_is_desc_section",

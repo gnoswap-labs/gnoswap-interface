@@ -20,6 +20,7 @@ const createTokenModel = (path: string, overrides?: Partial<TokenModel>): TokenM
   createdAt: "2024-01-24T15:12:21Z",
   name: path,
   symbol: path,
+  displaySymbol: path,
   decimals: 6,
   logoURI: "",
   priceID: path,

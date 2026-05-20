@@ -13,7 +13,6 @@ import { useVideoGuide } from "@hooks/common/use-video-guide";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { DeviceSize } from "@styles/media";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 import { isValidVideoGuideType } from "@utils/video-guide.utils";
 import { useGetPoolDetailByPathWithEmptyPath } from "src/react-query/pools";
 
@@ -45,9 +44,9 @@ const PoolStake: React.FC = () => {
       breadcrumbs.push({
         title:
           width >= DeviceSize.mediumWeb
-            ? `${formatDisplayTokenSymbol(getGnotPath(data?.tokenA).symbol)}/${formatDisplayTokenSymbol(
-                getGnotPath(data?.tokenB).symbol,
-              )} (${Number(data?.fee) / 10000}%)`
+            ? `${getGnotPath(data?.tokenA).displaySymbol}/${getGnotPath(data?.tokenB).displaySymbol} (${
+                Number(data?.fee) / 10000
+              }%)`
             : "...",
         path: `/earn/pool?poolPath=${poolPath}`,
       });

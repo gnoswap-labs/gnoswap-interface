@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import MissingLogo from "../missing-logo/MissingLogo";
 import { TokenModel } from "@models/token/token-model";
 import { useTranslation } from "react-i18next";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 export interface TooltipInfo {
   tokenA: TokenModel;
@@ -36,7 +35,7 @@ export const PoolSelectionGraphBinTooptip: React.FC<PoolSelectionGraphBinTooptip
     if (!tokenAPrice) {
       return "-";
     }
-    return `${tokenAPrice} ${formatDisplayTokenSymbol(tokenB.symbol)}`;
+    return `${tokenAPrice} ${tokenB.displaySymbol}`;
   }, [tooltipInfo]);
 
   const tokenBPriceString = useMemo(() => {
@@ -47,7 +46,7 @@ export const PoolSelectionGraphBinTooptip: React.FC<PoolSelectionGraphBinTooptip
     if (!tokenBPrice) {
       return "-";
     }
-    return `${tokenBPrice} ${formatDisplayTokenSymbol(tokenA.symbol)}`;
+    return `${tokenBPrice} ${tokenA.displaySymbol}`;
   }, [tooltipInfo]);
 
   const tokenAPriceRangeStr = useMemo(() => {
@@ -58,7 +57,7 @@ export const PoolSelectionGraphBinTooptip: React.FC<PoolSelectionGraphBinTooptip
     if (tokenARange?.min === null || tokenARange?.max === null) {
       return "-";
     }
-    return `${tokenARange.min} - ${tokenARange.max} ${formatDisplayTokenSymbol(tokenB.symbol)}`;
+    return `${tokenARange.min} - ${tokenARange.max} ${tokenB.displaySymbol}`;
   }, [tooltipInfo]);
 
   const tokenBPriceRangeStr = useMemo(() => {
@@ -69,7 +68,7 @@ export const PoolSelectionGraphBinTooptip: React.FC<PoolSelectionGraphBinTooptip
     if (tokenBRange?.min === null || tokenBRange?.max === null) {
       return "-";
     }
-    return `${tokenBRange.max} - ${tokenBRange.min} ${formatDisplayTokenSymbol(tokenA.symbol)}`;
+    return `${tokenBRange.max} - ${tokenBRange.min} ${tokenA.displaySymbol}`;
   }, [tooltipInfo]);
 
   return tooltipInfo ? (
@@ -91,7 +90,7 @@ export const PoolSelectionGraphBinTooptip: React.FC<PoolSelectionGraphBinTooptip
               mobileWidth={20}
             />
             <span>
-              {formatDisplayTokenSymbol(tooltipInfo.tokenA.symbol)} {t("common:price")}
+              {tooltipInfo.tokenA.displaySymbol} {t("common:price")}
             </span>
           </span>
           <span className="price-range">{tokenAPriceString}</span>
@@ -106,7 +105,7 @@ export const PoolSelectionGraphBinTooptip: React.FC<PoolSelectionGraphBinTooptip
               mobileWidth={20}
             />
             <span>
-              {formatDisplayTokenSymbol(tooltipInfo.tokenB.symbol)} {t("common:price")}
+              {tooltipInfo.tokenB.displaySymbol} {t("common:price")}
             </span>
           </span>
           <span className="price-range">{tokenBPriceString}</span>
@@ -129,7 +128,7 @@ export const PoolSelectionGraphBinTooptip: React.FC<PoolSelectionGraphBinTooptip
               width={20}
               mobileWidth={20}
             />
-            <span>{formatDisplayTokenSymbol(tooltipInfo.tokenA.symbol)}</span>
+            <span>{tooltipInfo.tokenA.displaySymbol}</span>
           </span>
           <span className="amount total-amount">
             <MissingLogo
@@ -156,7 +155,7 @@ export const PoolSelectionGraphBinTooptip: React.FC<PoolSelectionGraphBinTooptip
               width={20}
               mobileWidth={20}
             />
-            <span>{formatDisplayTokenSymbol(tooltipInfo.tokenB.symbol)}</span>
+            <span>{tooltipInfo.tokenB.displaySymbol}</span>
           </span>
           <span className="amount total-amount">
             <MissingLogo

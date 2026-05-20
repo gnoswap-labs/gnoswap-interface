@@ -37,7 +37,7 @@ import { formatOtherPrice } from "@utils/new-number-utils";
 import { makeRouteUrl } from "@utils/page.utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
-import { formatDisplayTokenSymbol, makeDisplayTokenAmount } from "@utils/token-utils";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { isClaimableReward, mapToDisplayRewardType } from "@utils/reward-utils";
 import { sortTokensByPoolOrder } from "@utils/pool-utils";
 
@@ -500,26 +500,26 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     if (isSwap) {
       return (
         <>
-          1 {formatDisplayTokenSymbol(tokenB?.symbol || "")} ={" "}
+          1 {tokenB?.displaySymbol || ""} ={" "}
           {formatTokenExchangeRate(1 / price, {
             maxSignificantDigits: 6,
             minLimit: 0.000001,
           })}{" "}
-          {formatDisplayTokenSymbol(tokenA?.symbol || "")}
+          {tokenA?.displaySymbol || ""}
         </>
       );
     }
     return (
       <>
-        1 {formatDisplayTokenSymbol(tokenA?.symbol || "")} ={" "}
+        1 {tokenA?.displaySymbol || ""} ={" "}
         {formatTokenExchangeRate(price, {
           maxSignificantDigits: 6,
           minLimit: 0.000001,
         })}{" "}
-        {formatDisplayTokenSymbol(tokenB?.symbol || "")}
+        {tokenB?.displaySymbol || ""}
       </>
     );
-  }, [isSwap, tokenB?.symbol, tokenA?.symbol, position?.pool?.currentTick]);
+  }, [isSwap, tokenA?.displaySymbol, tokenB?.displaySymbol, position?.pool?.currentTick]);
 
   const poolBin = useMemo(() => {
     return (bins ?? []).map(item => ({
@@ -1022,7 +1022,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
                   dangerouslySetInnerHTML={{
                     __html: sanitizeHtml(
                       t("Pool:position.ratioTooltip", {
-                        symbol: formatDisplayTokenSymbol((!isSwap ? tokenA : tokenB)?.symbol || ""),
+                        symbol: (!isSwap ? tokenA : tokenB)?.displaySymbol || "",
                       }),
                     ),
                   }}
@@ -1046,7 +1046,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
                   dangerouslySetInnerHTML={{
                     __html: sanitizeHtml(
                       t("Pool:position.ratioTooltip", {
-                        symbol: formatDisplayTokenSymbol((!isSwap ? tokenB : tokenA)?.symbol || ""),
+                        symbol: (!isSwap ? tokenB : tokenA)?.displaySymbol || "",
                       }),
                     ),
                   }}

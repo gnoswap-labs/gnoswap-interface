@@ -11,7 +11,6 @@ import { ExtendedPoolStakingModel } from "@models/pool/pool-staking";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { toNumberFormat } from "@utils/number-utils";
 import { capitalize } from "@utils/string-utils";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
@@ -72,8 +71,8 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
     return {
       left: currentPool.tokenA.logoURI,
       right: currentPool.tokenB.logoURI,
-      leftSymbol: currentPool.tokenA.symbol,
-      rightSymbol: currentPool.tokenB.symbol,
+      leftSymbol: currentPool.tokenA.displaySymbol,
+      rightSymbol: currentPool.tokenB.displaySymbol,
     };
   }, [currentPool, isSelected]);
 
@@ -129,7 +128,7 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
           <div className="label">{t("IncentivizePool:incentiPool.history.label.token")}</div>
           <div className="value">
             <MissingLogo symbol={rewardToken.symbol} width={24} url={rewardToken.logoURI} />
-            <span>{formatDisplayTokenSymbol(rewardToken.symbol)}</span>
+            <span>{rewardToken.displaySymbol}</span>
             <Chip text={capitalize(stakingData.incentiveType)} />
           </div>
         </div>
@@ -138,8 +137,7 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
           <div className="value">
             <DoubleLogo {...doubleLogos} size={24} />
             <span>
-              {formatDisplayTokenSymbol(doubleLogos.leftSymbol || "")}/
-              {formatDisplayTokenSymbol(doubleLogos.rightSymbol || "")}
+              {doubleLogos.leftSymbol || ""}/{doubleLogos.rightSymbol || ""}
             </span>
             <Chip text={feeRateStr} height={24} />
           </div>

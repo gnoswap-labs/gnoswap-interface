@@ -13,7 +13,6 @@ import {
 import { tickToSqrtPriceX96 } from "./math.utils";
 import { toNumberFormat } from "./number-utils";
 import { convertToKMB } from "./stake-position-utils";
-import { formatDisplayTokenSymbol } from "./token-utils";
 
 const LOG10001 = Math.log(1.0001);
 
@@ -282,7 +281,7 @@ export function formatRouterFeeStr(swapSummaryInfo: SwapSummaryInfo | null, swap
 
   const tokenAmount = swapTokenInfo.tokenBAmount;
   const tokenUSD = swapTokenInfo.tokenBUSD;
-  const tokenSymbol = swapTokenInfo.tokenB?.symbol;
+  const tokenSymbol = swapTokenInfo.tokenB?.displaySymbol;
   const tokenDecimals = swapTokenInfo.tokenBDecimals;
 
   if (!tokenAmount) {
@@ -298,7 +297,7 @@ export function formatRouterFeeStr(swapSummaryInfo: SwapSummaryInfo | null, swap
 
   const feeAmount = BigNumber(tokenAmount).multipliedBy(feeRate).toNumber();
   const decimals = tokenDecimals || 6;
-  return `${toNumberFormat(feeAmount, decimals)} ${formatDisplayTokenSymbol(tokenSymbol || "")}`;
+  return `${toNumberFormat(feeAmount, decimals)} ${tokenSymbol || ""}`;
 }
 
 export type BroadcastMessageData = {

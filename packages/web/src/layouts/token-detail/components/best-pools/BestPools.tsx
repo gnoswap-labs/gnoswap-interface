@@ -2,7 +2,6 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import BestPoolCardList, { BestPool } from "./best-pool-card-list/BestPoolCardList";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import { wrapper } from "./BestPools.styles";
 
@@ -19,7 +18,7 @@ const BestPools: React.FC<BestPoolsProps> = ({ titleSymbol, cardList, loading })
     <div css={wrapper}>
       <h2>
         {t("TokenDetails:bestPool.title", {
-          symbol: formatDisplayTokenSymbol(titleSymbol),
+          symbol: titleSymbol,
         })}
       </h2>
       <BestPoolCardList list={cardList} loading={loading} />

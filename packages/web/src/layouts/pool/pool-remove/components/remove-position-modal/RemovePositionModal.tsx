@@ -13,7 +13,6 @@ import WarningCard from "@components/common/warning-card/WarningCard";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useGetWithdrawalFee } from "@query/pools";
 import { formatOtherPrice, formatPoolPairAmount, formatRate } from "@utils/new-number-utils";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 
@@ -132,7 +131,7 @@ const RemovePositionModal: React.FC<Props> = ({ selectedPositions, close, onSubm
                             mobileWidth={24}
                             className="image-logo"
                           />
-                          <div>{formatDisplayTokenSymbol(rewardInfo.token.symbol)}</div>
+                          <div>{rewardInfo.token.displaySymbol}</div>
                         </div>
                         <div className="value">
                           {formatPoolPairAmount(rewardInfo.amount, {

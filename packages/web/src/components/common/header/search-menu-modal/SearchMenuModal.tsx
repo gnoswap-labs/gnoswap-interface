@@ -29,7 +29,7 @@ import {
 } from "./SearchMenuModal.styles";
 import useElementWidth from "@hooks/common/use-element-width";
 import useElementWidthList from "@hooks/common/use-element-width-list";
-import { formatDisplayTokenSymbol, formatTokenPath } from "@utils/token-utils";
+import { formatTokenPath } from "@utils/token-utils";
 import PriceWarning from "@components/common/price-warning/PriceWarning";
 
 interface NegativeStatusType {
@@ -244,7 +244,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                                 <IconNewTab />
                               </div>
                             </div>
-                            <span>{formatDisplayTokenSymbol(item.token.symbol)}</span>
+                            <span>{item.token.displaySymbol}</span>
                           </TokenInfoWrapper>
                         </div>
                         <div className="coin-infor-value" ref={recentPriceRef.current[idx]}>
@@ -273,8 +273,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                             rightSymbol={item?.tokenB?.symbol}
                           />
                           <span className="token-name">
-                            {formatDisplayTokenSymbol(item.token.symbol)}/
-                            {formatDisplayTokenSymbol(item?.tokenB?.symbol || "")}
+                            {item.token.displaySymbol}/{item?.tokenB?.displaySymbol || ""}
                           </span>
                           <Badge text={item.fee} type={BADGE_TYPE.DARK_DEFAULT} />
                         </div>
@@ -324,7 +323,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                               <IconNewTab />
                             </div>
                           </div>
-                          <span>{formatDisplayTokenSymbol(item.token.symbol)}</span>
+                          <span>{item.token.displaySymbol}</span>
                         </TokenInfoWrapper>
                       </div>
                       <div className="coin-infor-value" ref={popularPriceRef.current[idx]}>
@@ -360,8 +359,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           rightSymbol={item?.tokenB?.symbol}
                         />
                         <span className="token-name">
-                          {formatDisplayTokenSymbol(item.token.symbol)}/
-                          {formatDisplayTokenSymbol(item?.tokenB?.symbol || "")}
+                          {item.token.displaySymbol}/{item?.tokenB?.displaySymbol || ""}
                         </span>
                         <Badge text={item.fee} type={BADGE_TYPE.DARK_DEFAULT} />
                       </div>

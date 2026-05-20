@@ -8,16 +8,16 @@ import BigNumber from "bignumber.js";
 import { formatOtherPrice } from "./new-number-utils";
 import { roundDownDecimalNumber } from "./regex";
 
+export interface RewardTokenModelWithMultipleTypes extends Omit<RewardTokenModel, "rewardType"> {
+  rewardType: RewardType | RewardType[];
+}
+
 export const TOKEN_DISPLAY_MAX_LENGTH = 9;
 
 export function formatDisplayTokenSymbol(symbol: string): string {
   if (symbol.length <= TOKEN_DISPLAY_MAX_LENGTH) return symbol;
 
   return `${symbol.slice(0, TOKEN_DISPLAY_MAX_LENGTH)}...`;
-}
-
-export interface RewardTokenModelWithMultipleTypes extends Omit<RewardTokenModel, "rewardType"> {
-  rewardType: RewardType | RewardType[];
 }
 
 export function makeRawTokenAmount(token: TokenModel, amount: string | number) {
@@ -151,27 +151,24 @@ export function getUniqueRewardTokensWithMultipleRewardTypes<
     return [];
   }
 
-  const tokensByPath = rewardTokens.reduce(
-    (acc, current) => {
-      const tokenInfo = getGnotPath(current as unknown as T);
+  const tokensByPath = rewardTokens.reduce((acc, current) => {
+    const tokenInfo = getGnotPath(current as unknown as T);
 
-      const convertedToken = {
-        ...current,
-        logoURI: tokenInfo.logoURI,
-        symbol: tokenInfo.symbol,
-        path: tokenInfo.path,
-      };
+    const convertedToken = {
+      ...current,
+      logoURI: tokenInfo.logoURI,
+      symbol: tokenInfo.symbol,
+      path: tokenInfo.path,
+    };
 
-      const path = convertedToken.path;
-      if (!acc[path]) {
-        acc[path] = [];
-      }
-      acc[path].push(convertedToken);
+    const path = convertedToken.path;
+    if (!acc[path]) {
+      acc[path] = [];
+    }
+    acc[path].push(convertedToken);
 
-      return acc;
-    },
-    {} as Record<string, RewardTokenModel[]>,
-  );
+    return acc;
+  }, {} as Record<string, RewardTokenModel[]>);
 
   return Object.values(tokensByPath).map(tokens => {
     const baseToken = tokens[0];

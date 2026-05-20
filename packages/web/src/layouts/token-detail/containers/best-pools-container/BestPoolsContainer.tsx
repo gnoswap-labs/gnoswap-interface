@@ -36,12 +36,14 @@ const BestPoolsContainer: React.FC = () => {
             path: getGnotPath(item.tokenA).path,
             name: getGnotPath(item.tokenA).name,
             symbol: getGnotPath(item.tokenA).symbol,
+            displaySymbol: getGnotPath(item.tokenA).displaySymbol,
             logoURI: getGnotPath(item.tokenA).logoURI,
           },
           tokenB: {
             path: getGnotPath(item.tokenB).path,
             name: getGnotPath(item.tokenB).name,
             symbol: getGnotPath(item.tokenB).symbol,
+            displaySymbol: getGnotPath(item.tokenB).displaySymbol,
             logoURI: getGnotPath(item.tokenB).logoURI,
           },
         },
@@ -56,7 +58,7 @@ const BestPoolsContainer: React.FC = () => {
 
   return (
     <BestPools
-      titleSymbol={tokenB?.symbol || ""}
+      titleSymbol={tokenB?.displaySymbol || ""}
       cardList={bestPoolList}
       loading={isLoading || isLoadingGetPoolList || isLoadingChainList || isLoadingListToken || isLoadingCommon}
     />

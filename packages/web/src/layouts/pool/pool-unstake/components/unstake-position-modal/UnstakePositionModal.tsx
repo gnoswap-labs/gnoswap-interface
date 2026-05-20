@@ -15,7 +15,6 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useGetUnstakingFee } from "@query/pools";
 import { formatOtherPrice, formatPoolPairAmount, formatRate } from "@utils/new-number-utils";
 import { isInRangePosition } from "@utils/stake-position-utils";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
@@ -108,9 +107,7 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
                       rightSymbol={position.pool.tokenB.symbol}
                     />
                     {breakpoint !== DEVICE_TYPE.MOBILE && (
-                      <div>{`${formatDisplayTokenSymbol(position.pool.tokenA.symbol)}/${formatDisplayTokenSymbol(
-                        position.pool.tokenB.symbol,
-                      )}`}</div>
+                      <div>{`${position.pool.tokenA.displaySymbol}/${position.pool.tokenB.displaySymbol}`}</div>
                     )}
                     <Badge
                       className="unstake-bar"
@@ -143,9 +140,7 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
                           width={24}
                           mobileWidth={24}
                         />
-                        <RewardLogoSymbolWrapper>
-                          {formatDisplayTokenSymbol(rewardInfo.token.symbol)}
-                        </RewardLogoSymbolWrapper>
+                        <RewardLogoSymbolWrapper>{rewardInfo.token.displaySymbol}</RewardLogoSymbolWrapper>
                       </div>
                       <div className="value">
                         {formatPoolPairAmount(rewardInfo.amount, {

@@ -71,7 +71,7 @@ const TokenDescriptionContainer: React.FC = () => {
   return (
     <TokenDescription
       tokenName={descriptionInfo.token.name}
-      tokenSymbol={descriptionInfo.token.symbol}
+      tokenSymbol={descriptionInfo.token.displaySymbol}
       content={descriptionInfo.token.description || ""}
       links={descriptionInfo.links}
       path={displayTokenPath}

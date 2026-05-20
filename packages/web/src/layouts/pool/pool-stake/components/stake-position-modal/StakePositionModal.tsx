@@ -11,7 +11,6 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { isInRangePosition } from "@utils/stake-position-utils";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import { Divider, StakePositionModalWrapper, ToolTipContentWrapper } from "./StakePositionModal.styles";
 import { useWindowSize } from "@hooks/common/use-window-size";
@@ -108,9 +107,7 @@ const StakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) => 
                       rightSymbol={position.pool.tokenB.symbol}
                     />
                     {breakpoint !== DEVICE_TYPE.MOBILE && (
-                      <div>{`${formatDisplayTokenSymbol(position.pool.tokenA.symbol)}/${formatDisplayTokenSymbol(
-                        position.pool.tokenB.symbol,
-                      )}`}</div>
+                      <div>{`${position.pool.tokenA.displaySymbol}/${position.pool.tokenB.displaySymbol}`}</div>
                     )}
                     <Badge
                       className="position-bar"

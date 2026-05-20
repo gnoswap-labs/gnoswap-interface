@@ -8,7 +8,6 @@ import { SelectPool } from "@hooks/pool/data/use-select-pool";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { numberToFormat } from "@utils/string-utils";
-import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import { BalanceChangeWrapper } from "./BalanceChange.styles";
 
@@ -120,14 +119,14 @@ const BalanceChange: React.FC<BalanceChangeProps> = ({
           <div className="table-balance-change">
             <p className="value">
               <MissingLogo symbol={tokenA?.symbol || ""} url={tokenA?.logoURI} width={24} />{" "}
-              {formatDisplayTokenSymbol(tokenA?.symbol || "")}
+              {tokenA?.displaySymbol || ""}
             </p>
             <p className="value right dimmed">{withLoading(currentTokenAAmount)}</p>
           </div>
           <div className="table-balance-change">
             <p className="value">
               <MissingLogo symbol={tokenB?.symbol || ""} url={tokenB?.logoURI} width={24} />{" "}
-              {formatDisplayTokenSymbol(tokenB?.symbol || "")}
+              {tokenB?.displaySymbol || ""}
             </p>
             <p className="value right dimmed">{withLoading(currentTokenBAmount)}</p>
           </div>
@@ -142,16 +141,14 @@ const BalanceChange: React.FC<BalanceChangeProps> = ({
 
         <div className="table-balance-change">
           <p className="value">
-            <MissingLogo symbol={tokenA?.symbol || ""} url={tokenA?.logoURI} width={24} />{" "}
-            {formatDisplayTokenSymbol(tokenA?.symbol || "")}
+            <MissingLogo symbol={tokenA?.symbol || ""} url={tokenA?.logoURI} width={24} /> {tokenA?.displaySymbol || ""}
           </p>
           {!isMobile && <p className="value right dimmed">{withLoading(currentTokenAAmount)}</p>}
           <p className="value right">{withLoading(repositionTokenAAmount ?? "-")}</p>
         </div>
         <div className="table-balance-change">
           <p className="value">
-            <MissingLogo symbol={tokenB?.symbol || ""} url={tokenB?.logoURI} width={24} />{" "}
-            {formatDisplayTokenSymbol(tokenB?.symbol || "")}
+            <MissingLogo symbol={tokenB?.symbol || ""} url={tokenB?.logoURI} width={24} /> {tokenB?.displaySymbol || ""}
           </p>
           {!isMobile && <p className="value right dimmed">{withLoading(currentTokenBAmount)}</p>}
           <p className="value right">{withLoading(repositionTokenBAmount ?? "-")}</p>

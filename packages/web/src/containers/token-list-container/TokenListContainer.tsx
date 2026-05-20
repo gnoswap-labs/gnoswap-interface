@@ -86,6 +86,7 @@ export const createDummyTokenList = (): Token[] => [
       path: "1",
       name: "Bitcoin",
       symbol: "BTC",
+      displaySymbol: "BTC",
       logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
     },
     price: "$12,090.09",
@@ -114,6 +115,7 @@ export const createDummyTokenList = (): Token[] => [
           path: Math.floor(Math.random() * 50 + 1).toString(),
           name: "HEX",
           symbol: "HEX",
+          displaySymbol: "HEX",
           logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39/logo.png",
         },
@@ -121,6 +123,7 @@ export const createDummyTokenList = (): Token[] => [
           path: Math.floor(Math.random() * 50 + 1).toString(),
           name: "USDCoin",
           symbol: "USDC",
+          displaySymbol: "USDC",
           logoURI:
             "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
         },
@@ -238,6 +241,7 @@ const TokenListContainer: React.FC = () => {
             path: item.path,
             name: item.name,
             symbol: item.symbol,
+            displaySymbol: item.displaySymbol,
             logoURI: item.logoURI,
           },
           mostLiquidPool: tempTokenPrice?.mostLiquidityPool
@@ -248,12 +252,14 @@ const TokenListContainer: React.FC = () => {
                     path: !tempTokenA ? "" : tempTokenA?.[0]?.path,
                     name: getGnotPath(tempTokenA?.[0]).name,
                     symbol: getGnotPath(tempTokenA?.[0]).symbol,
+                    displaySymbol: getGnotPath(tempTokenA?.[0]).displaySymbol,
                     logoURI: getGnotPath(tempTokenA?.[0]).logoURI,
                   },
                   tokenB: {
                     path: !tempTokenB ? "" : tempTokenB?.[0]?.path,
                     name: getGnotPath(tempTokenB?.[0]).name,
                     symbol: getGnotPath(tempTokenB?.[0]).symbol,
+                    displaySymbol: getGnotPath(tempTokenB?.[0]).displaySymbol,
                     logoURI: getGnotPath(tempTokenB?.[0]).logoURI,
                   },
                 },

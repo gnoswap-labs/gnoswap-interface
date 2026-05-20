@@ -6,7 +6,7 @@ import { TokenModel } from "@models/token/token-model";
 import { TokenState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
 import { removeDuplicatesByWrappedPath } from "@utils/common";
-import { formatDisplayTokenSymbol, formatTokenModelPath } from "@utils/token-utils";
+import { formatTokenModelPath } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -169,7 +169,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
                 width={24}
                 mobileWidth={24}
               />
-              <span>{formatDisplayTokenSymbol(token.symbol)}</span>
+              <span>{token.displaySymbol}</span>
             </div>
           ))}
         </div>
@@ -206,7 +206,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
                         <IconNewTab />
                       </div>
                     </div>
-                    <span className="token-symbol">{formatDisplayTokenSymbol(token.symbol)}</span>
+                    <span className="token-symbol">{token.displaySymbol}</span>
                   </TokenInfoWrapper>
                 </div>
                 <span className="token-balance" ref={priceRefs.current[index]}>
