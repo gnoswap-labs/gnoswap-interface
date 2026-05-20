@@ -722,18 +722,12 @@ export const useRepositionHandle = () => {
                   {
                     tokenASymbol: request.tokenA.symbol || "",
                     tokenBSymbol: request.tokenB.symbol || "",
-                    tokenAAmount: Number(makeDisplayTokenAmount(request.tokenA, request.tokenAAmount)).toLocaleString(
-                      "en-US",
-                      {
-                        maximumFractionDigits: request.tokenA.decimals,
-                      },
-                    ),
-                    tokenBAmount: Number(makeDisplayTokenAmount(request.tokenB, request.tokenBAmount)).toLocaleString(
-                      "en-US",
-                      {
-                        maximumFractionDigits: request.tokenB.decimals,
-                      },
-                    ),
+                    tokenAAmount: Number(request.tokenAAmount).toLocaleString("en-US", {
+                      maximumFractionDigits: request.tokenA.decimals,
+                    }),
+                    tokenBAmount: Number(request.tokenBAmount).toLocaleString("en-US", {
+                      maximumFractionDigits: request.tokenB.decimals,
+                    }),
                   },
                   resultData.hash,
                 ),

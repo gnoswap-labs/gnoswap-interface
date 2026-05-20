@@ -2,7 +2,6 @@ import { GNOT_TOKEN } from "@common/values/token-constant";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useCallback } from "react";
 
@@ -21,15 +20,16 @@ export const useWrap = () => {
 
   const unwrap = useCallback(
     async (tokenAmount: string) => {
-      if (BigNumber(tokenAmount).isLessThan(1000)) {
+      const rawTokenAmount = BigNumber(tokenAmount);
+      if (rawTokenAmount.isNaN() || rawTokenAmount.isLessThan(1000)) {
         return null;
       }
 
-      const displayTokenAmount = makeDisplayTokenAmount(GNOT_TOKEN, tokenAmount);
+      const displayTokenAmount = rawTokenAmount.shiftedBy(-GNOT_TOKEN.decimals).toFixed();
 
       return swapRouterRepository.sendUnwrapToken({
         token: GNOT_TOKEN,
-        tokenAmount: displayTokenAmount?.toString() || "0",
+        tokenAmount: displayTokenAmount,
       });
     },
     [swapRouterRepository],
