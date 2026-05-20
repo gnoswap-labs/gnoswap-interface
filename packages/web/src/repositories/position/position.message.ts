@@ -16,7 +16,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionModel } from "@models/position/position-model";
 import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath, wrapNativeTokenPath } from "@utils/common";
-import { calculateMinTokenAmount } from "@utils/reposition-utils";
+import { calculateMaxTokenAmount, calculateMinTokenAmount } from "@utils/slippage-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
 import { getWrappedGNOTDepositAmount } from "@utils/transaction-utils";
 import BigNumber from "bignumber.js";
@@ -277,8 +277,6 @@ export function makeIncreaseLiquidityMessagesWithApproves(
     },
   ];
 
-  const slippageRatio = (100 - slippage) / 100;
-
   const messages: TransactionMessage[] = [];
 
   const depositAmount = getWrappedGNOTDepositAmount(tokenA.path, tokenB.path, tokenAAmountMaxRaw, tokenBAmountMaxRaw);
@@ -297,8 +295,8 @@ export function makeIncreaseLiquidityMessagesWithApproves(
       lpTokenId, // LP Token ID
       tokenAAmountMaxRaw, // Maximum amount of tokenA to offer
       tokenBAmountMaxRaw, // Maximum amount of tokenB to offer
-      BigNumber(tokenAAmountRaw).multipliedBy(slippageRatio).integerValue(BigNumber.ROUND_FLOOR).toFixed(0), // Minimum amount of tokenA to provide
-      BigNumber(tokenBAmountRaw).multipliedBy(slippageRatio).integerValue(BigNumber.ROUND_FLOOR).toFixed(0), // Minimum amount of tokenB to provide
+      calculateMinTokenAmount(tokenAAmountRaw, slippage), // Minimum amount of tokenA to provide
+      calculateMinTokenAmount(tokenBAmountRaw, slippage), // Minimum amount of tokenB to provide
       deadline, // Deadline UTC time
     ],
     caller,
@@ -470,16 +468,4 @@ export function makeRemoveLiquidityMessagesWithApproves(
   });
 
   return makeTransactionMessagesWithApproves(removeLiquidityMessages, approveMessageInfos, fetchAllowance);
-}
-
-function calculateMaxTokenAmount(tokenAmount: string, slippage: number): string {
-  if (!tokenAmount || BigNumber(tokenAmount).isZero()) {
-    return "0";
-  }
-
-  return BigNumber(tokenAmount)
-    .multipliedBy(100 + slippage)
-    .dividedBy(100)
-    .integerValue(BigNumber.ROUND_CEIL)
-    .toFixed(0);
 }

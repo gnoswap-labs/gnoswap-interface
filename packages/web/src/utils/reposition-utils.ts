@@ -186,11 +186,3 @@ export function getRepositionAmountsWithSwapSimulation(
     amountB: makeShiftAmount(depositAmounts.amountB, tokenB.decimals * -1).toString(),
   };
 }
-
-export function calculateMinTokenAmount(tokenAmount: string, slippage: number): string {
-  if (!tokenAmount || tokenAmount === "0") return "0";
-
-  const slippageRatio = (100 - slippage) / 100;
-
-  return BigNumber(tokenAmount).multipliedBy(slippageRatio).integerValue(BigNumber.ROUND_FLOOR).toFixed(0);
-}
