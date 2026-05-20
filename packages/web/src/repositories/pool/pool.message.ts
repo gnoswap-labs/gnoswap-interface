@@ -116,6 +116,10 @@ export function makePositionMintMessageWithApproves(
 ): Promise<TransactionMessage[]> {
   const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
   const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
+  const tokenAAmountMaxRaw = calculateMaxTokenAmount(tokenAAmountRaw, slippage);
+  const tokenBAmountMaxRaw = calculateMaxTokenAmount(tokenBAmountRaw, slippage);
+  const tokenAAmountMinRaw = calculateMinTokenAmount(tokenAAmountRaw, slippage);
+  const tokenBAmountMinRaw = calculateMinTokenAmount(tokenBAmountRaw, slippage);
 
   const tokenAWrappedPath = tokenA.wrappedPath || wrapNativeTokenPath(tokenA.path);
   const tokenBWrappedPath = tokenB.wrappedPath || wrapNativeTokenPath(tokenB.path);
@@ -124,16 +128,16 @@ export function makePositionMintMessageWithApproves(
 
   // When native GNOT is included, wrap it first via Deposit.
   const sendAmount: string | null = isNativeTokenPath(tokenA.path)
-    ? tokenAAmountRaw
+    ? tokenAAmountMaxRaw
     : isNativeTokenPath(tokenB.path)
-    ? tokenBAmountRaw
+    ? tokenBAmountMaxRaw
     : null;
 
   if (BigNumber(tokenAAmount).isGreaterThan(0)) {
     approveMessageInfos.push({
       tokenPath: tokenAWrappedPath,
       targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: tokenAAmountRaw,
+      amount: tokenAAmountMaxRaw,
       caller,
     });
   }
@@ -142,7 +146,7 @@ export function makePositionMintMessageWithApproves(
     approveMessageInfos.push({
       tokenPath: tokenBWrappedPath,
       targetAddress: PACKAGE_POOL_ADDRESS,
-      amount: tokenBAmountRaw,
+      amount: tokenBAmountMaxRaw,
       caller,
     });
   }
@@ -162,9 +166,10 @@ export function makePositionMintMessageWithApproves(
     feeTier,
     minTick,
     maxTick,
-    tokenAAmountRaw,
-    tokenBAmountRaw,
-    slippage,
+    tokenAAmountMaxRaw,
+    tokenBAmountMaxRaw,
+    tokenAAmountMinRaw,
+    tokenBAmountMinRaw,
     caller,
     referrerAddress,
   );
@@ -331,14 +336,14 @@ function makePositionMintMessage(
   feeTier: SwapFeeTierType,
   minTick: number,
   maxTick: number,
-  tokenAAmount: string,
-  tokenBAmount: string,
-  slippage: number,
+  tokenAAmountMax: string,
+  tokenBAmountMax: string,
+  tokenAAmountMin: string,
+  tokenBAmountMin: string,
   caller: string,
   referrerAddress: string | null,
 ) {
   const fee = `${SwapFeeTierInfoMap[feeTier].fee}`;
-  const slippageRatio = (100 - slippage) / 100;
   const deadline = DEFAULT_TRANSACTION_DEADLINE;
   return makeTransactionMessage({
     caller,
@@ -351,15 +356,35 @@ function makePositionMintMessage(
       fee,
       `${minTick}`,
       `${maxTick}`,
-      tokenAAmount,
-      tokenBAmount,
-      BigNumber(tokenAAmount).multipliedBy(slippageRatio).toFixed(0),
-      BigNumber(tokenBAmount).multipliedBy(slippageRatio).toFixed(0),
+      tokenAAmountMax,
+      tokenBAmountMax,
+      tokenAAmountMin,
+      tokenBAmountMin,
       deadline,
       caller, // LP Token Receiver
       referrerAddress || "", // Referral address
     ],
   });
+}
+
+function calculateMaxTokenAmount(tokenAmount: string, slippage: number): string {
+  if (!tokenAmount || BigNumber(tokenAmount).isZero()) {
+    return "0";
+  }
+
+  return BigNumber(tokenAmount)
+    .multipliedBy(100 + slippage)
+    .dividedBy(100)
+    .integerValue(BigNumber.ROUND_CEIL)
+    .toFixed(0);
+}
+
+function calculateMinTokenAmount(tokenAmount: string, slippage: number): string {
+  return BigNumber(tokenAmount)
+    .multipliedBy(100 - slippage)
+    .dividedBy(100)
+    .integerValue(BigNumber.ROUND_FLOOR)
+    .toFixed(0);
 }
 
 function makeRemoveIncentiveMessage(poolPath: string, incentiveID: string, caller: string) {

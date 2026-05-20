@@ -29,7 +29,7 @@ const createTokenModel = (path: string, type: TokenModel["type"] = "GRC20"): Tok
 });
 
 describe("pool.message.ts", () => {
-  it("approves mint tokens using exact desired raw amounts", async () => {
+  it("approves mint tokens using slippage-adjusted max raw amounts", async () => {
     const caller = "caller";
     const fetchAllowance = jest.fn(async () => 0);
 
@@ -42,7 +42,7 @@ describe("pool.message.ts", () => {
         tokenBAmount: "3",
         minTick: -10,
         maxTick: 10,
-        slippage: 0,
+        slippage: 10,
         caller,
         referrerAddress: null,
       },
@@ -53,27 +53,29 @@ describe("pool.message.ts", () => {
       caller,
       pkg_path: "tokenA_path",
       func: "Approve",
-      args: ["pool_address", "1250000"],
+      args: ["pool_address", "1375000"],
     });
     expect(messages[1]).toMatchObject({
       caller,
       pkg_path: "tokenB_path",
       func: "Approve",
-      args: ["pool_address", "3000000"],
+      args: ["pool_address", "3300000"],
     });
     expect(messages[2]).toMatchObject({
       caller,
       pkg_path: "position_path",
       func: "Mint",
     });
-    expect(messages[2].args?.slice(0, 7)).toEqual([
+    expect(messages[2].args?.slice(0, 9)).toEqual([
       "tokenA_path",
       "tokenB_path",
       "3000",
       "-10",
       "10",
-      "1250000",
-      "3000000",
+      "1375000",
+      "3300000",
+      "1125000",
+      "2700000",
     ]);
   });
 
