@@ -577,6 +577,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const tokenAAmountStr = bin.reserveTokenA;
     const tokenBAmountStr = bin.reserveTokenB;
 
+    const currentTickKey = Math.round(currentTick);
+
     setTooltipInfo({
       tokenA: tokenA,
       tokenB: tokenB,
@@ -584,8 +586,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       tokenBAmount: tokenBAmountStr ? convertToKMB(tokenBAmountStr.toString()) : "-",
       tokenARange: tokenARange,
       tokenBRange: tokenBRange,
-      tokenAPrice: priceOfTick.tokenA[currentTick] || "0",
-      tokenBPrice: priceOfTick.tokenB[currentTick] || "0",
+      tokenAPrice: priceOfTick.tokenA[currentTickKey] || "0",
+      tokenBPrice: priceOfTick.tokenB[currentTickKey] || "0",
     });
     setPositionX(mouseX);
     setPositionY(mouseY);
@@ -645,8 +647,9 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
             }
             return acc;
           }, { tokenA: {}, tokenB: {} });
-        priceOfTick.tokenA[currentTick] = formatDisplayPrice(Math.round(currentTick), tokenA, tokenB);
-        priceOfTick.tokenB[currentTick] = formatDisplayPrice(-Math.round(currentTick), tokenB, tokenA);
+        const currentTickKey = Math.round(currentTick);
+        priceOfTick.tokenA[currentTickKey] = formatDisplayPrice(currentTickKey, tokenA, tokenB);
+        priceOfTick.tokenB[currentTickKey] = formatDisplayPrice(-currentTickKey, tokenB, tokenA);
         resolve(priceOfTick);
       }).then(setPriceOfTick);
     }

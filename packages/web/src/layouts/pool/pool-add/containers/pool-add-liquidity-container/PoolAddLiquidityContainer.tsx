@@ -253,36 +253,6 @@ const PoolAddLiquidityContainer: React.FC = () => {
     [type],
   );
 
-  const changeTokenAAmount = useCallback(
-    (amount: string) => {
-      tokenAAmountInput.changeAmount(amount);
-      setExactType("EXACT_IN");
-
-      if (!amount || amount === "0") {
-        tokenBAmountInput.changeAmount("0");
-        return;
-      }
-
-      updateTokenBAmountByTokenA(amount);
-    },
-    [tokenAAmountInput],
-  );
-
-  const changeTokenBAmount = useCallback(
-    (amount: string) => {
-      tokenBAmountInput.changeAmount(amount);
-      setExactType("EXACT_OUT");
-
-      if (!amount || amount === "0") {
-        tokenAAmountInput.changeAmount("0");
-        return;
-      }
-
-      updateTokenAAmountByTokenB(amount);
-    },
-    [tokenBAmountInput],
-  );
-
   const updateTokenBAmountByTokenA = useCallback(
     (amount: string) => {
       if (BigNumber(amount).isNaN() || !BigNumber(amount).isFinite()) {
@@ -329,7 +299,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
       selectPool.maxPrice,
       tokenA,
       tokenB,
-      tokenBAmountInput.changeAmount,
+      tokenBAmountInput,
     ],
   );
 
@@ -375,8 +345,38 @@ const PoolAddLiquidityContainer: React.FC = () => {
       selectPool.maxPrice,
       tokenA,
       tokenB,
-      tokenAAmountInput.changeAmount,
+      tokenAAmountInput,
     ],
+  );
+
+  const changeTokenAAmount = useCallback(
+    (amount: string) => {
+      tokenAAmountInput.changeAmount(amount);
+      setExactType("EXACT_IN");
+
+      if (!amount || amount === "0") {
+        tokenBAmountInput.changeAmount("0");
+        return;
+      }
+
+      updateTokenBAmountByTokenA(amount);
+    },
+    [tokenAAmountInput, tokenBAmountInput, updateTokenBAmountByTokenA],
+  );
+
+  const changeTokenBAmount = useCallback(
+    (amount: string) => {
+      tokenBAmountInput.changeAmount(amount);
+      setExactType("EXACT_OUT");
+
+      if (!amount || amount === "0") {
+        tokenAAmountInput.changeAmount("0");
+        return;
+      }
+
+      updateTokenAAmountByTokenB(amount);
+    },
+    [tokenAAmountInput, tokenBAmountInput, updateTokenAAmountByTokenB],
   );
 
   const submit = useCallback(() => {
@@ -497,7 +497,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
           }
           return false;
         }) === 1;
-      const priceOfMaxLiquidity = pools.sort((p1, p2) => Number(p2.tvl) - Number(p1.tvl)).at(0)?.price || null;
+      const priceOfMaxLiquidity = [...pools].sort((p1, p2) => Number(p2.tvl) - Number(p1.tvl)).at(0)?.price ?? null;
       if (priceOfMaxLiquidity) {
         const maxPrice = reverse ? 1 / priceOfMaxLiquidity : priceOfMaxLiquidity;
         setDefaultPrice(makeDisplayPrice(maxPrice, tokenA, tokenB));
