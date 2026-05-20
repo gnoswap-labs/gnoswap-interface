@@ -12,6 +12,7 @@ import { SwapFeeTierType } from "@constants/option.constant";
 import { PAGE_PATH, QUERY_PARAMETER } from "@constants/page.constant";
 import { TokenModel } from "@models/token/token-model";
 import { formatRate } from "@utils/new-number-utils";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import { SwapLiquidityWrapper } from "./SwapLiquidity.styles";
 
@@ -113,7 +114,7 @@ const SwapLiquidity: React.FC<SwapLiquidityProps> = ({ liquiditys, tokenA, token
           </div>
         </div>
         <span>
-          {tokenA.symbol}/{tokenB.symbol}
+          {formatDisplayTokenSymbol(tokenA.symbol)}/{formatDisplayTokenSymbol(tokenB.symbol)}
         </span>
       </div>
       {liquiditys.length === 0 ? (

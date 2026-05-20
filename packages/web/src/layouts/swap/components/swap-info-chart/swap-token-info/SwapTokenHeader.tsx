@@ -17,7 +17,7 @@ import { SwapTokenHeaderWrapper } from "./SwapTokenHeader.styles";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import { nullish } from "@utils/nullish-utils";
 import useCustomRouter from "@hooks/common/use-custom-router";
-import { formatTokenPath } from "@utils/token-utils";
+import { formatDisplayTokenSymbol, formatTokenPath } from "@utils/token-utils";
 
 import PriceWarning from "@components/common/price-warning/PriceWarning";
 
@@ -121,7 +121,7 @@ const SwapTokenHeader = ({
               <IconOpenLink size="10px" fill={theme.color.text04} className="path-link-icon" />
             </button>
           </div>
-          <div className="symbol">{tokenInfo.symbol}</div>
+          <div className="symbol">{formatDisplayTokenSymbol(tokenInfo.symbol)}</div>
         </div>
       </div>
       <div className="right">

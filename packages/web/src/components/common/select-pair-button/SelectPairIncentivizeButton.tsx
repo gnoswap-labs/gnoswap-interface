@@ -5,6 +5,7 @@ import { TokenModel } from "@models/token/token-model";
 import { useSelectTokenIncentivizeModal } from "@hooks/token/ui/use-select-token-incentivize-modal";
 import MissingLogo from "../missing-logo/MissingLogo";
 import { useTranslation } from "react-i18next";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 interface SelectPairIncentivizeButtonProps {
   token: TokenModel | null;
@@ -49,7 +50,7 @@ const SelectPairIncentivizeButton: React.FC<SelectPairIncentivizeButtonProps> = 
       {token ? (
         <div className="token-pair-wrapper">
           <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={24} mobileWidth={24} />
-          <span className="token-symbol">{token.symbol}</span>
+          <span className="token-symbol">{formatDisplayTokenSymbol(token.symbol)}</span>
         </div>
       ) : (
         <span className="token-label-select">{t("common:selectPairBtn.select")}</span>

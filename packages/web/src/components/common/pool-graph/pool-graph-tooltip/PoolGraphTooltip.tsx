@@ -7,6 +7,7 @@ import { TooltipInfo } from "../PoolGraph.types";
 import { PoolGraphTooltipContainer } from "./PoolGraphTooltip.styles";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 function makeClassNameWithSmallFont(className: string, target: string, limitLength = 21) {
   const additionalClassName = "small-font";
@@ -58,16 +59,16 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
     } = tooltipInfo;
 
     return {
-      tokenAPrice: `${tokenAPrice} ${tokenB.symbol}`,
-      tokenBPrice: `${tokenBPrice} ${tokenA.symbol}`,
+      tokenAPrice: `${tokenAPrice} ${formatDisplayTokenSymbol(tokenB.symbol)}`,
+      tokenBPrice: `${tokenBPrice} ${formatDisplayTokenSymbol(tokenA.symbol)}`,
       tokenAPriceRange:
         breakpoint === DEVICE_TYPE.MOBILE
           ? `${tokenARange.min} - ${tokenARange.max}`
-          : `${tokenARange.min} - ${tokenARange.max} ${tokenB.symbol}`,
+          : `${tokenARange.min} - ${tokenARange.max} ${formatDisplayTokenSymbol(tokenB.symbol)}`,
       tokenBPriceRange:
         breakpoint === DEVICE_TYPE.MOBILE
           ? `${tokenBRange.max} - ${tokenBRange.min}`
-          : `${tokenBRange.max} - ${tokenBRange.min} ${tokenA.symbol}`,
+          : `${tokenBRange.max} - ${tokenBRange.min} ${formatDisplayTokenSymbol(tokenA.symbol)}`,
       totalTokenAAmount: tokenAAmount || "0",
       totalTokenBAmount: tokenBAmount || "0",
       depositTokenAAmount: depositTokenAAmount || "0",
@@ -106,7 +107,7 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
               mobileWidth={20}
             />
             <span>
-              {tooltipInfo.tokenA.symbol} {t("common:price")}
+              {formatDisplayTokenSymbol(tooltipInfo.tokenA.symbol)} {t("common:price")}
             </span>
           </span>
           <span className={"token-amount-value price"}>{displayTooltipInfo.tokenAPrice}</span>
@@ -122,7 +123,7 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
               mobileWidth={20}
             />
             <span>
-              {tooltipInfo.tokenB.symbol} {t("common:price")}
+              {formatDisplayTokenSymbol(tooltipInfo.tokenB.symbol)} {t("common:price")}
             </span>
           </span>
           <span className={"token-amount-value price"}>{displayTooltipInfo.tokenBPrice}</span>
@@ -150,7 +151,7 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
               width={20}
               mobileWidth={20}
             />
-            <span className="symbol">{tooltipInfo.tokenA.symbol}</span>
+            <span className="symbol">{formatDisplayTokenSymbol(tooltipInfo.tokenA.symbol)}</span>
           </span>
           <span className="amount total-amount">
             <span className={makeClassNameWithSmallFont("token-amount-value", displayTooltipInfo.totalTokenAAmount)}>
@@ -182,7 +183,7 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
               width={20}
               mobileWidth={20}
             />
-            <span className="symbol">{tooltipInfo.tokenB.symbol}</span>
+            <span className="symbol">{formatDisplayTokenSymbol(tooltipInfo.tokenB.symbol)}</span>
           </span>
           <span className="amount total-amount">
             <span className={makeClassNameWithSmallFont("token-amount-value", displayTooltipInfo.totalTokenBAmount)}>

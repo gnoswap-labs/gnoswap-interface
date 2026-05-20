@@ -37,7 +37,7 @@ import { formatOtherPrice } from "@utils/new-number-utils";
 import { makeRouteUrl } from "@utils/page.utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { formatDisplayTokenSymbol, makeDisplayTokenAmount } from "@utils/token-utils";
 import { isClaimableReward, mapToDisplayRewardType } from "@utils/reward-utils";
 import { sortTokensByPoolOrder } from "@utils/pool-utils";
 
@@ -500,23 +500,23 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     if (isSwap) {
       return (
         <>
-          1 {tokenB?.symbol} ={" "}
+          1 {formatDisplayTokenSymbol(tokenB?.symbol || "")} ={" "}
           {formatTokenExchangeRate(1 / price, {
             maxSignificantDigits: 6,
             minLimit: 0.000001,
           })}{" "}
-          {tokenA?.symbol}
+          {formatDisplayTokenSymbol(tokenA?.symbol || "")}
         </>
       );
     }
     return (
       <>
-        1 {tokenA?.symbol} ={" "}
+        1 {formatDisplayTokenSymbol(tokenA?.symbol || "")} ={" "}
         {formatTokenExchangeRate(price, {
           maxSignificantDigits: 6,
           minLimit: 0.000001,
         })}{" "}
-        {tokenB?.symbol}
+        {formatDisplayTokenSymbol(tokenB?.symbol || "")}
       </>
     );
   }, [isSwap, tokenB?.symbol, tokenA?.symbol, position?.pool?.currentTick]);
@@ -1020,9 +1020,11 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
               FloatingContent={
                 <ToolTipContentWrapper
                   dangerouslySetInnerHTML={{
-                    __html: sanitizeHtml(t("Pool:position.ratioTooltip", {
-                      symbol: (!isSwap ? tokenA : tokenB)?.symbol,
-                    })),
+                    __html: sanitizeHtml(
+                      t("Pool:position.ratioTooltip", {
+                        symbol: formatDisplayTokenSymbol((!isSwap ? tokenA : tokenB)?.symbol || ""),
+                      }),
+                    ),
                   }}
                 />
               }
@@ -1042,9 +1044,11 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
               FloatingContent={
                 <ToolTipContentWrapper
                   dangerouslySetInnerHTML={{
-                    __html: sanitizeHtml(t("Pool:position.ratioTooltip", {
-                      symbol: (!isSwap ? tokenB : tokenA)?.symbol,
-                    })),
+                    __html: sanitizeHtml(
+                      t("Pool:position.ratioTooltip", {
+                        symbol: formatDisplayTokenSymbol((!isSwap ? tokenB : tokenA)?.symbol || ""),
+                      }),
+                    ),
                   }}
                 />
               }

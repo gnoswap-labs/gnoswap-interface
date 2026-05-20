@@ -10,7 +10,7 @@ import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
-import { getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils";
+import { formatDisplayTokenSymbol, getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils";
 
 import PoolInfoLazyChart from "./pool-info-lazy-chart/PoolInfoLazyChart";
 
@@ -102,10 +102,10 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
     breakpoint === DEVICE_TYPE.MOBILE
       ? POOL_INFO_MOBILE
       : breakpoint === DEVICE_TYPE.TABLET_M
-      ? POOL_INFO_SMALL_TABLET
-      : breakpoint === DEVICE_TYPE.TABLET
-      ? POOL_INFO_TABLET
-      : POOL_INFO;
+        ? POOL_INFO_SMALL_TABLET
+        : breakpoint === DEVICE_TYPE.TABLET
+          ? POOL_INFO_TABLET
+          : POOL_INFO;
 
   /**
    * Checks if either token has missing price information
@@ -174,7 +174,9 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
           leftSymbol={tokenA.symbol}
           rightSymbol={tokenB.symbol}
         />
-        <span className="symbol-pair">{`${tokenA.symbol}/${tokenB.symbol}`}</span>
+        <span className="symbol-pair">{`${formatDisplayTokenSymbol(tokenA.symbol)}/${formatDisplayTokenSymbol(
+          tokenB.symbol,
+        )}`}</span>
         <span className="feeRate">{SwapFeeTierInfoMap[feeTier].rateStr}</span>
       </TableColumn>
       {/* TVL */}

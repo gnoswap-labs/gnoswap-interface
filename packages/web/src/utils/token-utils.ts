@@ -8,6 +8,14 @@ import BigNumber from "bignumber.js";
 import { formatOtherPrice } from "./new-number-utils";
 import { roundDownDecimalNumber } from "./regex";
 
+export const TOKEN_DISPLAY_MAX_LENGTH = 9;
+
+export function formatDisplayTokenSymbol(symbol: string): string {
+  if (symbol.length <= TOKEN_DISPLAY_MAX_LENGTH) return symbol;
+
+  return `${symbol.slice(0, TOKEN_DISPLAY_MAX_LENGTH)}...`;
+}
+
 export interface RewardTokenModelWithMultipleTypes extends Omit<RewardTokenModel, "rewardType"> {
   rewardType: RewardType | RewardType[];
 }
@@ -92,12 +100,10 @@ export function formatTokenPath(path: string, isNative: boolean): string {
  * @param getGnotPath GNOT path conversion function
  */
 export function getUniqueRewardTokensByPath<
-  T extends { path?: string; name?: string; logoURI?: string; symbol?: string }
+  T extends { path?: string; name?: string; logoURI?: string; symbol?: string },
 >(
   rewardTokens: RewardTokenModel[],
-  getGnotPath: (
-    token: T | null | undefined,
-  ) => {
+  getGnotPath: (token: T | null | undefined) => {
     path: string;
     name: string;
     symbol: string;
@@ -106,14 +112,14 @@ export function getUniqueRewardTokensByPath<
   },
 ) {
   return rewardTokens.reduce((acc, current) => {
-    const existToken = acc.some(item => item.path === getGnotPath((current as unknown) as T).path);
+    const existToken = acc.some(item => item.path === getGnotPath(current as unknown as T).path);
 
     if (!existToken) {
       acc.push({
         ...current,
-        logoURI: getGnotPath((current as unknown) as T).logoURI,
-        symbol: getGnotPath((current as unknown) as T).symbol,
-        path: getGnotPath((current as unknown) as T).path,
+        logoURI: getGnotPath(current as unknown as T).logoURI,
+        symbol: getGnotPath(current as unknown as T).symbol,
+        path: getGnotPath(current as unknown as T).path,
       });
     }
 
@@ -130,12 +136,10 @@ export function getUniqueRewardTokensByPath<
  * @param getGnotPath GNOT path conversion function
  */
 export function getUniqueRewardTokensWithMultipleRewardTypes<
-  T extends { path?: string; name?: string; logoURI?: string; symbol?: string }
+  T extends { path?: string; name?: string; logoURI?: string; symbol?: string },
 >(
   rewardTokens: RewardTokenModel[],
-  getGnotPath: (
-    token: T | null | undefined,
-  ) => {
+  getGnotPath: (token: T | null | undefined) => {
     path: string;
     name: string;
     symbol: string;
@@ -147,24 +151,27 @@ export function getUniqueRewardTokensWithMultipleRewardTypes<
     return [];
   }
 
-  const tokensByPath = rewardTokens.reduce((acc, current) => {
-    const tokenInfo = getGnotPath((current as unknown) as T);
+  const tokensByPath = rewardTokens.reduce(
+    (acc, current) => {
+      const tokenInfo = getGnotPath(current as unknown as T);
 
-    const convertedToken = {
-      ...current,
-      logoURI: tokenInfo.logoURI,
-      symbol: tokenInfo.symbol,
-      path: tokenInfo.path,
-    };
+      const convertedToken = {
+        ...current,
+        logoURI: tokenInfo.logoURI,
+        symbol: tokenInfo.symbol,
+        path: tokenInfo.path,
+      };
 
-    const path = convertedToken.path;
-    if (!acc[path]) {
-      acc[path] = [];
-    }
-    acc[path].push(convertedToken);
+      const path = convertedToken.path;
+      if (!acc[path]) {
+        acc[path] = [];
+      }
+      acc[path].push(convertedToken);
 
-    return acc;
-  }, {} as Record<string, RewardTokenModel[]>);
+      return acc;
+    },
+    {} as Record<string, RewardTokenModel[]>,
+  );
 
   return Object.values(tokensByPath).map(tokens => {
     const baseToken = tokens[0];

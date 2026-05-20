@@ -1,4 +1,5 @@
 import Tooltip from "../tooltip/Tooltip";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 import {
   OverlapLogoImageWrapper,
   OverlapLogoStyleProps,
@@ -31,7 +32,7 @@ const OverlapLogo = ({ logos, size = 36 }: OverlapLogoProps) => {
             {logo.src ? (
               <img src={logo.src} alt="logo-image" />
             ) : (
-              <div className="missing-logo right-logo">{logo.symbol}</div>
+              <div className="missing-logo right-logo">{formatDisplayTokenSymbol(logo.symbol)}</div>
             )}
           </OverlapLogoImageWrapper>
         </Tooltip>

@@ -10,6 +10,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatPrice } from "@utils/new-number-utils";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import { IPriceRange } from "@hooks/pool/data/use-reposition-handle";
 
@@ -50,7 +51,7 @@ const RepositionSelectPosition: React.FC<RepositionSelectPositionProps> = ({
 
     return (
       <>
-        {tokenA?.symbol}/{tokenB?.symbol}
+        {formatDisplayTokenSymbol(tokenA?.symbol || "")}/{formatDisplayTokenSymbol(tokenB?.symbol || "")}
         <Badge text={fee} type={BADGE_TYPE.DARK_DEFAULT} />
       </>
     );

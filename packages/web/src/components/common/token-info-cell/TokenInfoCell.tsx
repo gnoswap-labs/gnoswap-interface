@@ -3,7 +3,7 @@ import { useCallback, useMemo, useRef } from "react";
 
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { DEVICE_TYPE } from "@styles/media";
-import { formatTokenPath } from "@utils/token-utils";
+import { formatDisplayTokenSymbol, formatTokenPath } from "@utils/token-utils";
 import useElementWidth from "@hooks/common/use-element-width";
 
 import { TokenInfoCellWrapper } from "./TokenInfoCell.styles";
@@ -62,7 +62,7 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
             <IconOpenLink fill={theme.color.text04} className="path-link-icon" />
           </div>
         </div>
-        <span className="token-symbol">{symbol}</span>
+        <span className="token-symbol">{formatDisplayTokenSymbol(symbol)}</span>
       </div>
     </TokenInfoCellWrapper>
   );

@@ -8,6 +8,7 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { RANGE_STATUS_OPTION } from "@constants/option.constant";
 import { formatRate } from "@utils/new-number-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import { EarnAddConfirmAmountInfoProps } from "../pool-add-confirm-amount-info/PoolAddConfirmAmountInfo";
 
@@ -48,19 +49,21 @@ const PoolAddConfirmPriceRangeInfo: React.FC<PoolAddConfirmPriceRangeInfoProps> 
   const { t } = useTranslation();
 
   const [swap, setSwap] = useState(false);
+  const tokenASymbol = formatDisplayTokenSymbol(tokenA.info.symbol);
+  const tokenBSymbol = formatDisplayTokenSymbol(tokenB.info.symbol);
 
   const currentPriceStr = useMemo(() => {
     if (!swap) {
-      return `1 ${tokenA.info.symbol} = ${formatTokenExchangeRate(currentPrice, {
+      return `1 ${tokenASymbol} = ${formatTokenExchangeRate(currentPrice, {
         maxSignificantDigits: 6,
         minLimit: 0.000001,
-      })} ${tokenB.info.symbol}`;
+      })} ${tokenBSymbol}`;
     }
-    return `1 ${tokenB.info.symbol} = ${formatTokenExchangeRate(1 / Number(currentPrice), {
+    return `1 ${tokenBSymbol} = ${formatTokenExchangeRate(1 / Number(currentPrice), {
       maxSignificantDigits: 6,
       minLimit: 0.000001,
-    })} ${tokenA.info.symbol}`;
-  }, [currentPrice, tokenA.info.symbol, tokenB.info.symbol, swap]);
+    })} ${tokenASymbol}`;
+  }, [currentPrice, tokenASymbol, tokenBSymbol, swap]);
 
   const rangeStatus = useMemo(() => {
     return inRange ? RANGE_STATUS_OPTION.IN : RANGE_STATUS_OPTION.OUT;
@@ -68,17 +71,17 @@ const PoolAddConfirmPriceRangeInfo: React.FC<PoolAddConfirmPriceRangeInfoProps> 
 
   const displayPriceLabelMin = useMemo(() => {
     if (breakpoint === DEVICE_TYPE.MOBILE) {
-      return `${tokenA.info.symbol} per ${tokenB.info.symbol}`;
+      return `${tokenASymbol} per ${tokenBSymbol}`;
     }
     return priceLabelMin;
-  }, [breakpoint, priceLabelMin, tokenA, tokenB]);
+  }, [breakpoint, priceLabelMin, tokenASymbol, tokenBSymbol]);
 
   const displayPriceLabelMax = useMemo(() => {
     if (breakpoint === DEVICE_TYPE.MOBILE) {
-      return `${tokenA.info.symbol} per ${tokenB.info.symbol}`;
+      return `${tokenASymbol} per ${tokenBSymbol}`;
     }
     return priceLabelMax;
-  }, [breakpoint, priceLabelMax, tokenA, tokenB]);
+  }, [breakpoint, priceLabelMax, tokenASymbol, tokenBSymbol]);
 
   return (
     <PoolAddConfirmPriceRangeInfoWrapper>

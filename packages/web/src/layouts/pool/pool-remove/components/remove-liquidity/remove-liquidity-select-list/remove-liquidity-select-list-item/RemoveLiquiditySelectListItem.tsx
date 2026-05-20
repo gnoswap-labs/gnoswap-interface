@@ -14,6 +14,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { makeSwapFeeTier } from "@utils/swap-utils";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import {
   RemoveLiquiditySelectListItemWrapper,
@@ -46,7 +47,7 @@ const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
       <TokenValueWrapper>
         <div className="value">
           <MissingLogo url={getGnotPath(token).logoURI} symbol={getGnotPath(token).symbol} width={20} />
-          {token.symbol}
+          {formatDisplayTokenSymbol(token.symbol)}
         </div>
         <div className="value">{tokenBalanceByTokenDecimal}</div>
       </TokenValueWrapper>
@@ -125,7 +126,11 @@ const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps
               leftSymbol={tokenA.symbol}
               rightSymbol={tokenB.symbol}
             />
-            {width > 768 && <span className="token-id">{`${tokenA.symbol}/${tokenB.symbol}`}</span>}
+            {width > 768 && (
+              <span className="token-id">{`${formatDisplayTokenSymbol(tokenA.symbol)}/${formatDisplayTokenSymbol(
+                tokenB.symbol,
+              )}`}</span>
+            )}
             <Badge text={feeStr} type={BADGE_TYPE.DARK_DEFAULT} />
           </div>
         </Tooltip>

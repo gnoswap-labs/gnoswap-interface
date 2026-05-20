@@ -13,6 +13,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { isInRangePosition } from "@utils/stake-position-utils";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import { TokenTitleWrapper, TokenValueWrapper, tooltipWrapper, wrapper } from "./SelectLiquidityListItem.styles";
 
@@ -37,7 +38,7 @@ const TooltipContent: React.FC<{
       <TokenValueWrapper>
         <div className="value">
           <MissingLogo url={getGnotPath(token).logoURI} symbol={getGnotPath(token).symbol} width={20} />
-          {token.symbol}
+          {formatDisplayTokenSymbol(token.symbol)}
         </div>
         <div className="value">{tokenBalanceByTokenDecimal}</div>
       </TokenValueWrapper>
@@ -109,7 +110,9 @@ const SelectLiquidityListItem: React.FC<SelectLiquidityListItemProps> = ({
               rightSymbol={tokenB.symbol}
             />
             {width > 768 && (
-              <span className="token-id">{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</span>
+              <span className="token-id">{`${formatDisplayTokenSymbol(
+                position.pool.tokenA.symbol,
+              )}/${formatDisplayTokenSymbol(position.pool.tokenB.symbol)}`}</span>
             )}
             <Badge text={`${Number(position.pool.fee) / 10000}%`} type={BADGE_TYPE.DARK_DEFAULT} />
             <RangeBadge status={inRange ? "IN" : "OUT"} />

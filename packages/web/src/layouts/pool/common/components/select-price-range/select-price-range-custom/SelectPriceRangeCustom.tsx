@@ -26,6 +26,7 @@ import { checkGnotPath } from "@utils/common";
 import { sortTokenPaths } from "@utils/sort-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToTick, tickToPrice } from "@utils/swap-utils";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 import PriceSteps from "./price-steps/PriceSteps";
 import StartingPrice from "./starting-price/StartingPrice";
@@ -85,10 +86,10 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
 
     const isCustom = true;
 
-    const isLoading = useMemo(() => selectPool.renderState() === "LOADING" || isLoadingSelectPriceRange, [
-      selectPool.renderState(),
-      isLoadingSelectPriceRange,
-    ]);
+    const isLoading = useMemo(
+      () => selectPool.renderState() === "LOADING" || isLoadingSelectPriceRange,
+      [selectPool.renderState(), isLoadingSelectPriceRange],
+    );
 
     const availSelect = Array.isArray(selectPool.liquidityOfTickPoints) && selectPool.renderState() === "DONE";
 
@@ -112,13 +113,13 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
 
       return (
         <>
-          1 {tokenA.symbol} =&nbsp;
+          1 {formatDisplayTokenSymbol(tokenA.symbol)} =&nbsp;
           {formatTokenExchangeRate(currentPrice, {
             maxSignificantDigits: 6,
             minLimit: 0.000001,
           })}
           &nbsp;
-          {tokenB.symbol}
+          {formatDisplayTokenSymbol(tokenB.symbol)}
         </>
       );
     }, [

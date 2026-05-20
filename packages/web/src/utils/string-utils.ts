@@ -3,6 +3,7 @@ import { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 import { tickToPrice, tickToPriceStr } from "./swap-utils";
 import { isNumber, removeTrailingZeros } from "./number-utils";
+import { formatDisplayTokenSymbol } from "./token-utils";
 
 /**
  * Shortens an address by N characters.
@@ -20,14 +21,14 @@ export function formatAddress(address: string, num?: number): string {
 }
 
 export function tokenPairSymbolToOneCharacter(tokenPair: TokenPairInfo): string {
-  const symbol0 = tokenPair.tokenA.symbol;
-  const symbol1 = tokenPair.tokenB.symbol;
+  const symbol0 = formatDisplayTokenSymbol(tokenPair.tokenA.symbol);
+  const symbol1 = formatDisplayTokenSymbol(tokenPair.tokenB.symbol);
   return `${symbol0}/${symbol1}`;
 }
 
 export function makePairName({ tokenA, tokenB }: { tokenA: TokenModel; tokenB: TokenModel }): string {
-  const symbolA = tokenA.symbol;
-  const symbolB = tokenB.symbol;
+  const symbolA = formatDisplayTokenSymbol(tokenA.symbol);
+  const symbolB = formatDisplayTokenSymbol(tokenB.symbol);
   return `${symbolA}/${symbolB}`;
 }
 

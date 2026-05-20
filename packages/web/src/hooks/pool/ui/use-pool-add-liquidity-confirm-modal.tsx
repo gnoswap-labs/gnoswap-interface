@@ -31,7 +31,7 @@ import { CommonState } from "@states/index";
 import { subscriptFormat } from "@utils/number-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToNearTick } from "@utils/swap-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { formatDisplayTokenSymbol, makeDisplayTokenAmount } from "@utils/token-utils";
 
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
@@ -204,8 +204,12 @@ export const usePoolAddLiquidityConfirmModal = ({
     if (!selectPool) {
       return null;
     }
-    const tokenASymbol = selectPool.compareToken?.symbol === tokenA?.symbol ? tokenA?.symbol : tokenB?.symbol;
-    const tokenBSymbol = selectPool.compareToken?.symbol === tokenA?.symbol ? tokenB?.symbol : tokenA?.symbol;
+    const tokenASymbol = formatDisplayTokenSymbol(
+      selectPool.compareToken?.symbol === tokenA?.symbol ? tokenA?.symbol || "" : tokenB?.symbol || "",
+    );
+    const tokenBSymbol = formatDisplayTokenSymbol(
+      selectPool.compareToken?.symbol === tokenA?.symbol ? tokenB?.symbol || "" : tokenA?.symbol || "",
+    );
     const currentPrice = `${selectPool.currentPrice}`;
     if (selectPool.selectedFullRange) {
       return {
