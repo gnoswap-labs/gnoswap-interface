@@ -1,7 +1,6 @@
 import React, { useCallback } from "react";
 import { cx } from "@emotion/css";
 import { useTheme } from "@emotion/react";
-import { useTranslation } from "react-i18next";
 
 import { STATIC_TEXT } from "@common/values";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
@@ -11,7 +10,6 @@ import { type Steps } from "@containers/breadcrumbs-container/BreadcrumbsContain
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import { wrapper } from "./LaunchpadBreadcrumbs.styles";
-import { useWindowSize } from "@hooks/common/use-window-size";
 
 interface BreadcrumbsProps {
   steps: Steps[];
@@ -19,42 +17,38 @@ interface BreadcrumbsProps {
 }
 
 const LaunchpadBreadcrumbs: React.FC<BreadcrumbsProps> = ({ steps, onClickPath }) => {
-  const { t } = useTranslation();
   const theme = useTheme();
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
-  const { width } = useWindowSize();
-  console.log(width, "width");
 
-  const tokenPathDisplay = useCallback(
-    (token?: TokenModel) => {
-      if (!token) return "";
+  const tokenPathDisplay = useCallback((token?: TokenModel) => {
+    if (!token) return "";
 
-      const path_ = token.path;
+    const path_ = token.path;
 
-      if (isNativeToken(token)) return STATIC_TEXT.NATIVE_COIN;
+    if (isNativeToken(token)) return STATIC_TEXT.NATIVE_COIN;
 
-      const tokenPathArr = path_?.split("/") ?? [];
+    const tokenPathArr = path_?.split("/") ?? [];
 
-      if (tokenPathArr?.length <= 0) return path_;
+    if (tokenPathArr?.length <= 0) return path_;
 
-      const lastPath = tokenPathArr[tokenPathArr?.length - 1];
+    const lastPath = tokenPathArr[tokenPathArr?.length - 1];
 
-      if (lastPath.length >= 12) {
-        return "..." + tokenPathArr[tokenPathArr?.length - 1].slice(length - 12, length - 1);
-      }
+    if (lastPath.length >= 12) {
+      return `...${lastPath.slice(-12)}`;
+    }
 
-      return path_.replace("gno.land", "...");
-    },
-    [t],
-  );
+    return path_.replace("gno.land", "...");
+  }, []);
 
   const onClickTokenPath = useCallback(
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>, token?: TokenModel) => {
       e.stopPropagation();
-      if (path === "ugnot") {
+      if (!token) return;
+
+      if (token.path === "ugnot") {
         window.open(getGnoscanUrl(), "_blank");
       } else {
-        window.open(getTokenUrl(path), "_blank");
+        window.open(getTokenUrl(token.tokenId), "_blank");
       }
     },
     [getGnoscanUrl, getTokenUrl],
@@ -65,7 +59,7 @@ const LaunchpadBreadcrumbs: React.FC<BreadcrumbsProps> = ({ steps, onClickPath }
       return (
         <div className="token-symbol-path">
           <div className="token-title">{step.title}</div>
-          <div className="token-path" onClick={e => onClickTokenPath(e, step.options?.token?.path ?? "")}>
+          <div className="token-path" onClick={e => onClickTokenPath(e, step.options?.token)}>
             <div>{tokenPathDisplay(step.options.token)}</div>
             <IconOpenLink fill={theme.color.text04} className="path-link-icon" />
           </div>

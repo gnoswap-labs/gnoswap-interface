@@ -11,6 +11,7 @@ import {
 
 const fooToken: TokenModel = {
   path: "gno.land/r/gnoswap/test_token/foo",
+  tokenId: "gno.land/r/gnoswap/test_token/foo.FOO",
   type: "GRC20",
   chainId: "dev.gnoswap",
   name: "Foo Token",

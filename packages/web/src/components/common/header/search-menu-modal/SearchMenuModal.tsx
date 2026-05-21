@@ -163,12 +163,12 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   );
 
   const onClickPath = useCallback(
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>, token: TokenInfo) => {
       e.stopPropagation();
-      if (path === "ugnot") {
+      if (token.path === "ugnot") {
         window.open(getGnoscanUrl(), "_blank");
       } else {
-        window.open(getTokenUrl(path), "_blank");
+        window.open(getTokenUrl(token.tokenId), "_blank");
       }
     },
     [getGnoscanUrl, getTokenUrl],
@@ -237,7 +237,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                               <div
                                 className="token-path"
                                 onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
-                                  onClickPath(e, item.token.path)
+                                  onClickPath(e, item.token)
                                 }
                               >
                                 <div className="path">{getTokenPathDisplay(item.token.path, item.isNative)}</div>
@@ -315,9 +315,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                             </span>
                             <div
                               className="token-path"
-                              onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
-                                onClickPath(e, item.token.path)
-                              }
+                              onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, item.token)}
                             >
                               <div>{getTokenPathDisplay(item.token.path, item.isNative)}</div>
                               <IconNewTab />

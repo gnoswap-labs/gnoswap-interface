@@ -1,10 +1,17 @@
 import { TokenModel } from "@models/token/token-model";
-import { invertSqrtPriceX96, isOrderedTokenPaths, isValidCurrentPrice, makeDisplayPrice, makeRawPrice } from "./pool-utils";
+import {
+  invertSqrtPriceX96,
+  isOrderedTokenPaths,
+  isValidCurrentPrice,
+  makeDisplayPrice,
+  makeRawPrice,
+} from "./pool-utils";
 
 const TWO_192 = BigInt("6277101735386680763835789423207666416102355444464034512896");
 
 const makeToken = (symbol: string, decimals: number): TokenModel => ({
   path: `gno.land/r/demo/${symbol.toLowerCase()}`,
+  tokenId: `gno.land/r/demo/${symbol.toLowerCase()}.${symbol}`,
   type: "GRC20",
   chainId: "test-chain",
   name: symbol,

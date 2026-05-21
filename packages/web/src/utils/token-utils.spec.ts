@@ -14,6 +14,7 @@ import {
 const DEFAULT_TOKEN: TokenModel = {
   decimals: 6,
   path: "",
+  tokenId: "",
   address: "",
   type: "GRC20",
   priceID: "",

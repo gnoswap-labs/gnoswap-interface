@@ -80,6 +80,7 @@ const HeaderContainer: React.FC = () => {
         searchType: "",
         token: {
           path: item.path,
+          tokenId: item.tokenId,
           name: item.name,
           symbol: item.symbol,
           displaySymbol: item.displaySymbol,
@@ -92,6 +93,7 @@ const HeaderContainer: React.FC = () => {
         },
         tokenB: {
           path: "",
+          tokenId: "",
           name: "",
           symbol: "",
           displaySymbol: "",
@@ -111,6 +113,7 @@ const HeaderContainer: React.FC = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return storageData.map((item: any) => {
       if (!item.isLiquid) {
+        const currentToken = listTokens.find((token: TokenModel) => token.path === item?.token?.path);
         const temp: TokenPriceModel = tokenPrices[item?.token?.path] ?? {};
         const isGnot = item?.token?.path === "ugnot";
         const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
@@ -123,6 +126,12 @@ const HeaderContainer: React.FC = () => {
         const price = formatPrice(transferData.usd);
         return {
           ...item,
+          token: currentToken
+            ? {
+                ...item.token,
+                tokenId: currentToken.tokenId,
+              }
+            : item.token,
           price: price,
           priceOf1d: {
             status: dataToday.status,
@@ -169,6 +178,7 @@ const HeaderContainer: React.FC = () => {
           searchType: "popular",
           token: {
             path: item.tokenA.path,
+            tokenId: item.tokenA.tokenId,
             name: item.tokenA.name,
             symbol: getGnotPath(item.tokenA).symbol,
             displaySymbol: getGnotPath(item.tokenA).displaySymbol,
@@ -181,6 +191,7 @@ const HeaderContainer: React.FC = () => {
           },
           tokenB: {
             path: item.tokenB.path,
+            tokenId: item.tokenB.tokenId,
             name: item.tokenB.name,
             symbol: getGnotPath(item.tokenB).symbol,
             displaySymbol: getGnotPath(item.tokenB).displaySymbol,
@@ -225,6 +236,7 @@ const HeaderContainer: React.FC = () => {
           searchType: "",
           token: {
             path: item.path,
+            tokenId: item.tokenId,
             name: item.name,
             symbol: item.symbol,
             displaySymbol: item.displaySymbol,
@@ -237,6 +249,7 @@ const HeaderContainer: React.FC = () => {
           },
           tokenB: {
             path: "",
+            tokenId: "",
             name: "",
             symbol: "",
             displaySymbol: "",

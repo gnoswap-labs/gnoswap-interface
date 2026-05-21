@@ -12,6 +12,7 @@ import { GetRoutesResponse } from "./response/get-routes-response";
 
 const createToken = (symbol: string, decimals: number): TokenModel => ({
   path: `gno.land/r/demo/${symbol.toLowerCase()}`,
+  tokenId: `gno.land/r/demo/${symbol.toLowerCase()}.${symbol}`,
   type: "GRC20",
   chainId: "dev.gnoswap",
   name: symbol,

@@ -33,6 +33,7 @@ export const Default: Story = {
       createdAt: "2023-12-12 23:45:12",
       name: "Bar",
       path: "gno.land/r/bar",
+      tokenId: "gno.land/r/bar.BAR",
       decimals: 6,
       symbol: "BAR",
       displaySymbol: "BAR",

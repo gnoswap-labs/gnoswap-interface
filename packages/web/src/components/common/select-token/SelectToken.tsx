@@ -118,12 +118,12 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   }, [tokenNameRef, keyword, tokens]);
 
   const onClickPath = useCallback(
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>, token: TokenModel) => {
       e.stopPropagation();
-      if (path === "ugnot") {
+      if (token.path === "ugnot") {
         window.open(getGnoscanUrl(), "_blank");
       } else {
-        window.open(getTokenUrl(path), "_blank");
+        window.open(getTokenUrl(token.tokenId), "_blank");
       }
     },
     [getGnoscanUrl, getTokenUrl],
@@ -200,7 +200,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
                       </span>
                       <div
                         className="token-path"
-                        onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, token.path)}
+                        onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, token)}
                       >
                         <div>{displayTokenPath}</div>
                         <IconNewTab />

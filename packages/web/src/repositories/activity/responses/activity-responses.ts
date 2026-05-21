@@ -22,6 +22,7 @@ export interface OnchainToken {
   createdAt: string;
   name: string;
   path: string;
+  tokenId: string;
   decimals: number;
   symbol: string;
   displaySymbol: string;
@@ -35,6 +36,7 @@ export const emptyToken: OnchainToken = {
   createdAt: "",
   name: "",
   path: "",
+  tokenId: "",
   decimals: 6,
   symbol: "-",
   displaySymbol: "-",
@@ -51,6 +53,7 @@ export const dummyActivityData: ActivityData = {
     createdAt: "",
     name: "gnoland",
     path: "ugnot",
+    tokenId: "ugnot",
     decimals: 6,
     symbol: "GNOT",
     displaySymbol: "GNOT",
@@ -63,6 +66,7 @@ export const dummyActivityData: ActivityData = {
     createdAt: "",
     name: "gnoland",
     path: "ugnot",
+    tokenId: "ugnot",
     decimals: 6,
     symbol: "GNOT",
     displaySymbol: "GNOT",

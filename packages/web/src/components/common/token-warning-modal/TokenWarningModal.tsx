@@ -27,6 +27,7 @@ const TokenWarningModal: React.FC<TokenWarningModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const { getTokenUrl } = useGnoscanUrl();
+  const tokenUrl = getTokenUrl(token.tokenId);
 
   const onClickClose = useCallback(() => {
     close();
@@ -49,8 +50,8 @@ const TokenWarningModal: React.FC<TokenWarningModalProps> = ({
             </div>
           </div>
           <div className="link">
-            <a className="url-wrapper" href={getTokenUrl(token.path)} target="_blank">
-              <div>{getTokenUrl(token.path)}</div>
+            <a className="url-wrapper" href={tokenUrl} target="_blank" rel="noopener noreferrer">
+              <div>{tokenUrl}</div>
               <IconNewTab className="new-tab" />
             </a>
             <div className="icon-wrapper" onClick={handleChecked}>

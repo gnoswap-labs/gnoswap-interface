@@ -21,6 +21,7 @@ describe("AssetInfo Component", () => {
     const mockProps: AssetInfoProps = {
       asset: {
         path: "gno.land/r/onbloc/gns",
+        tokenId: "gno.land/r/onbloc/gns.GNS",
         type: "GRC20",
         chainId: "Gnoland",
         name: "Gnoswap",
