@@ -239,6 +239,7 @@ const TokenListContainer: React.FC = () => {
           priceGradeType: transferData.priceGradeType,
           token: {
             path: item.path,
+            tokenId: item.tokenId,
             name: item.name,
             symbol: item.symbol,
             displaySymbol: item.displaySymbol,
@@ -250,6 +251,7 @@ const TokenListContainer: React.FC = () => {
                 tokenPair: {
                   tokenA: {
                     path: !tempTokenA ? "" : tempTokenA?.[0]?.path,
+                    tokenId: tempTokenA?.[0]?.tokenId,
                     name: getGnotPath(tempTokenA?.[0]).name,
                     symbol: getGnotPath(tempTokenA?.[0]).symbol,
                     displaySymbol: getGnotPath(tempTokenA?.[0]).displaySymbol,
@@ -257,6 +259,7 @@ const TokenListContainer: React.FC = () => {
                   },
                   tokenB: {
                     path: !tempTokenB ? "" : tempTokenB?.[0]?.path,
+                    tokenId: tempTokenB?.[0]?.tokenId,
                     name: getGnotPath(tempTokenB?.[0]).name,
                     symbol: getGnotPath(tempTokenB?.[0]).symbol,
                     displaySymbol: getGnotPath(tempTokenB?.[0]).displaySymbol,
@@ -334,7 +337,7 @@ const TokenListContainer: React.FC = () => {
     });
     temp = temp.filter((item: Token) => item.token.path.includes(grc20));
     return temp.map((item: Token, i: number) => ({ ...item, idx: i }));
-  }, [tokenType, tokens, wugnotPath, tokenPrices]);
+  }, [getGnotPath, tokenType, tokens, wugnotPath, tokenPrices]);
 
   const sortedData = useMemo(() => {
     const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
