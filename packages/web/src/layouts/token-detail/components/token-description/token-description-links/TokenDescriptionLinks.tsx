@@ -5,12 +5,12 @@ import IconCopy from "@components/common/icons/IconCopy";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { openExternalUrl } from "@utils/url-utils";
+import { getSafeExternalUrl, openExternalUrl } from "@utils/url-utils";
 
 import { copyTooltip, wrapper } from "./TokenDescriptionLinks.styles";
 
 interface TokenDescriptionLinksProps {
-  links: { [key: string]: string };
+  links: Record<string, string>;
   copied: boolean;
   copyClick: () => void;
   path: string;
@@ -23,6 +23,11 @@ const TokenDescriptionLinks: React.FC<TokenDescriptionLinksProps> = ({ links, co
   const onClickLink = (link: string) => {
     openExternalUrl(link);
   };
+
+  const safeLinks = Object.entries(links)
+    .map(([label, url]) => [label, getSafeExternalUrl(url.trim())] as const)
+    .filter((entry): entry is readonly [string, string] => entry[1] !== null);
+
   return (
     <div css={wrapper}>
       {path && (
@@ -51,9 +56,9 @@ const TokenDescriptionLinks: React.FC<TokenDescriptionLinksProps> = ({ links, co
         <h3>{t("TokenDetails:description.links")}</h3>
         {!isLoading && (
           <div className="group-button">
-            {Object.keys(links)?.map((link, idx) =>
-              links[link] ? (
-                <button key={idx} onClick={() => onClickLink(links[link])}>
+            {safeLinks.map(([link, url]) =>
+              url ? (
+                <button key={link} onClick={() => onClickLink(url)}>
                   <span>{link}</span>
                   <IconOpenLink className="link-icon" />
                 </button>
