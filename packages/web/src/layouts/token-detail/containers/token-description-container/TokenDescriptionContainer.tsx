@@ -27,7 +27,7 @@ export const descriptionInit: DescriptionInfo = {
 };
 
 const TokenDescriptionContainer: React.FC = () => {
-  const { getTokenUrl } = useGnoscanUrl();
+  const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
   const [descriptionInfo, setDescriptionInfo] = useState<DescriptionInfo>(descriptionInit);
   const [copied, setCopied] = useState(false);
   const router = useCustomRouter();
@@ -62,11 +62,11 @@ const TokenDescriptionContainer: React.FC = () => {
         },
         links: {
           Website: tokenB.websiteURL || "",
-          Gnoscan: getTokenUrl(tokenB.path),
+          Gnoscan: tokenB.path === "ugnot" ? getGnoscanUrl() : tokenB.tokenId ? getTokenUrl(tokenB.tokenId) : "",
         },
       }));
     }
-  }, [router.query, tokenB]);
+  }, [getGnoscanUrl, getTokenUrl, router.query, tokenB]);
 
   return (
     <TokenDescription
