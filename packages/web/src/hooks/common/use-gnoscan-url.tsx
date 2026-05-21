@@ -43,8 +43,8 @@ export const useGnoscanUrl = () => {
     return getGnoscanUrl(GnoscanDataType.Realms, `details?path=${realmPath}`);
   };
 
-  const getTokenUrl = (tokenPath: string) => {
-    return getGnoscanUrl(GnoscanDataType.Tokens, `${tokenPath}`);
+  const getTokenUrl = (tokenId: string) => {
+    return getGnoscanUrl(GnoscanDataType.Tokens, `${tokenId}`);
   };
 
   const getAccountUrl = (address: string) => {
