@@ -10,6 +10,7 @@ export default {
 const token = {
   info: {
     path: "1",
+    tokenId: "1.GNO.LAND",
     name: "gno.land",
     symbol: "GNO.LAND",
     displaySymbol: "GNO.LAND",

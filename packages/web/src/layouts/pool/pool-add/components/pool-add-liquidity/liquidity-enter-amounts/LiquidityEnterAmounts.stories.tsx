@@ -27,6 +27,7 @@ const token: TokenModel = {
   createdAt: "2023-12-08T03:57:43Z",
   name: "Foo",
   path: "gno.land/r/foo",
+  tokenId: "gno.land/r/foo.FOO",
   decimals: 4,
   symbol: "FOO",
   displaySymbol: "FOO",
