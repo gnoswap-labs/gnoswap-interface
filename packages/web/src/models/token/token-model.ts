@@ -36,6 +36,12 @@ export interface TokenModel {
 
   websiteURL?: string;
 
+  twitterURL?: string;
+
+  discordURL?: string;
+
+  docsURL?: string;
+
   wrappedPath?: string;
 
   denom?: string;

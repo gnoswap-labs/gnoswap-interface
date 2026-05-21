@@ -19,6 +19,9 @@ export interface ITokenResponse {
   priceId: string;
   description: string;
   websiteURL: string;
+  twitterURL: string;
+  discordURL: string;
+  docsURL: string;
   displayPath: string;
   wrappedPath: string;
 }
