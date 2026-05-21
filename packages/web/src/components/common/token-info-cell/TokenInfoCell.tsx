@@ -13,6 +13,7 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 export interface TokenInfoCellProps {
   token: {
     path: string;
+    tokenId?: string;
     name: string;
     symbol: string;
     displaySymbol: string;
@@ -23,7 +24,7 @@ export interface TokenInfoCellProps {
 }
 
 function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
-  const { name, path, symbol, displaySymbol, logoURI } = token;
+  const { name, path, tokenId, symbol, displaySymbol, logoURI } = token;
   const theme = useTheme();
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
   const elementId = useMemo(() => `${token.path}`, [token.path]);
@@ -44,10 +45,11 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
       if (path === "ugnot") {
         window.open(getGnoscanUrl(), "_blank");
       } else {
-        window.open(getTokenUrl(path), "_blank");
+        if (!tokenId) return;
+        window.open(getTokenUrl(tokenId), "_blank");
       }
     },
-    [path, getGnoscanUrl, getTokenUrl],
+    [path, tokenId, getGnoscanUrl, getTokenUrl],
   );
 
   return (
