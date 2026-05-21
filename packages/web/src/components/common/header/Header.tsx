@@ -120,7 +120,7 @@ const Header: React.FC<HeaderProps> = ({
   const [isShowDepositModal, setIsShowDepositModal] = useState(false);
   const { t } = useTranslation();
   const { saveCurrentScrollHeight } = useScrollData();
-  const { handleNavigation } = useNavigation();
+  const { getNavigationPath, handleNavigation } = useNavigation();
   const { removeReferrerFromUrl, refreshReferralData } = useReferral();
 
   const { isSupportedFaucetGRC20 } = useFaucetGRC20();
@@ -177,7 +177,7 @@ const Header: React.FC<HeaderProps> = ({
       <HeaderWrapper>
         <HeaderContainer>
           <LeftSection>
-            <Link className="link" href={"/"} onClick={e => handleNavigation(e, "/")}>
+            <Link className="link" href={getNavigationPath("/")} onClick={handleNavigation}>
               <LogoLink>
                 <IconHeaderLogo className="header-main-logo" />
               </LogoLink>
@@ -187,7 +187,7 @@ const Header: React.FC<HeaderProps> = ({
                 <React.Fragment>
                   <ul>
                     {navigationItems.map(item => (
-                      <Link href={item.path} key={item.title} onClick={e => handleNavigation(e, item.path)}>
+                      <Link href={getNavigationPath(item.path)} key={item.title} onClick={handleNavigation}>
                         <li
                           key={t(item.title)}
                           className={
@@ -205,6 +205,7 @@ const Header: React.FC<HeaderProps> = ({
                   </ul>
                   <SubMenuButton
                     onNavigation={handleNavigation}
+                    getNavigationPath={getNavigationPath}
                     sideMenuToggle={sideMenuToggle}
                     onSideMenuToggle={onSideMenuToggle}
                     isCollapseNav={isCollapseNav}
@@ -271,7 +272,7 @@ const Header: React.FC<HeaderProps> = ({
                     pathname === item.path || (item.subPath || []).some(_ => pathname.includes(_)) ? "selected" : ""
                   }
                 >
-                  <Link href={item.path} onClick={e => handleNavigation(e, item.path)}>
+                  <Link href={getNavigationPath(item.path)} onClick={handleNavigation}>
                     {t(item.title)}
                   </Link>
                 </BottomNavItem>
@@ -281,6 +282,7 @@ const Header: React.FC<HeaderProps> = ({
                 onSideMenuToggle={onSideMenuToggle}
                 isCollapseNav={isCollapseNav}
                 onNavigation={handleNavigation}
+                getNavigationPath={getNavigationPath}
                 isBottomNav={true}
               />
             </BottomNavContainer>
