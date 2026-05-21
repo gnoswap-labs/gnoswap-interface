@@ -29,6 +29,7 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
       displaySymbol: token.displaySymbol,
       logoURI: token.logoURI,
       path: isNativeTokenByType(token.type) ? token.wrappedPath : token.path,
+      tokenId: token.tokenId,
       isNative: isNativeTokenByType(token.type),
     };
   }, [token]);
@@ -54,16 +55,13 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
     refetchInterval: RefetchInterval.Frequent,
   });
 
-  const handleMouseMove = React.useCallback(
-    (data?: LineGraphData) => {
-      setChartData(data);
-    },
-    [tokenData.path],
-  );
+  const handleMouseMove = React.useCallback((data?: LineGraphData) => {
+    setChartData(data);
+  }, []);
 
   const handleMouseOut = React.useCallback(() => {
     handleMouseMove(undefined);
-  }, [tokenData.path]);
+  }, [handleMouseMove]);
 
   // @dev If the selected token changes, reset the chart data.
   React.useEffect(() => {

@@ -27,6 +27,7 @@ interface TokenInfo {
   displaySymbol: string;
   logoURI: string;
   path: string | undefined;
+  tokenId: string | undefined;
   isNative: boolean;
 }
 
@@ -88,7 +89,7 @@ const SwapTokenHeader = ({
       return;
     }
     router.movePageWithTokenPath("TOKEN", tokenInfo.path);
-  }, [tokenInfo.path, router]);
+  }, [router, tokenInfo]);
 
   const onClickPath = React.useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -96,10 +97,11 @@ const SwapTokenHeader = ({
       if (tokenInfo.isNative) {
         window.open(getGnoscanUrl(), "_blank", "noopener,noreferrer");
       } else {
-        window.open(getTokenUrl(nullish.handleFalsy(tokenInfo.path, "")), "_blank", "noopener,noreferrer");
+        if (!tokenInfo.tokenId) return;
+        window.open(getTokenUrl(tokenInfo.tokenId), "_blank", "noopener,noreferrer");
       }
     },
-    [tokenInfo],
+    [getGnoscanUrl, getTokenUrl, tokenInfo],
   );
 
   return (
