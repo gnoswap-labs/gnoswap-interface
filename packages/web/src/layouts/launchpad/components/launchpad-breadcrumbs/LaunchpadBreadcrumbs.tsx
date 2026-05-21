@@ -34,7 +34,7 @@ const LaunchpadBreadcrumbs: React.FC<BreadcrumbsProps> = ({ steps, onClickPath }
     const lastPath = tokenPathArr[tokenPathArr?.length - 1];
 
     if (lastPath.length >= 12) {
-      return "..." + tokenPathArr[tokenPathArr?.length - 1].slice(length - 12, length - 1);
+      return `...${lastPath.slice(-12)}`;
     }
 
     return path_.replace("gno.land", "...");
@@ -48,7 +48,6 @@ const LaunchpadBreadcrumbs: React.FC<BreadcrumbsProps> = ({ steps, onClickPath }
       if (token.path === "ugnot") {
         window.open(getGnoscanUrl(), "_blank");
       } else {
-        if (!token.tokenId) return;
         window.open(getTokenUrl(token.tokenId), "_blank");
       }
     },

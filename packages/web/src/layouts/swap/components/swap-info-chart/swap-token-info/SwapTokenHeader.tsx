@@ -27,7 +27,7 @@ interface TokenInfo {
   displaySymbol: string;
   logoURI: string;
   path: string | undefined;
-  tokenId: string | undefined;
+  tokenId: string;
   isNative: boolean;
 }
 
@@ -97,7 +97,6 @@ const SwapTokenHeader = ({
       if (tokenInfo.isNative) {
         window.open(getGnoscanUrl(), "_blank", "noopener,noreferrer");
       } else {
-        if (!tokenInfo.tokenId) return;
         window.open(getTokenUrl(tokenInfo.tokenId), "_blank", "noopener,noreferrer");
       }
     },

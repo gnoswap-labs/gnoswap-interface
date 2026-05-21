@@ -168,7 +168,6 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
       if (token.path === "ugnot") {
         window.open(getGnoscanUrl(), "_blank");
       } else {
-        if (!token.tokenId) return;
         window.open(getTokenUrl(token.tokenId), "_blank");
       }
     },

@@ -13,7 +13,7 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 export interface TokenInfoCellProps {
   token: {
     path: string;
-    tokenId?: string;
+    tokenId: string;
     name: string;
     symbol: string;
     displaySymbol: string;
@@ -45,7 +45,6 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
       if (path === "ugnot") {
         window.open(getGnoscanUrl(), "_blank");
       } else {
-        if (!tokenId) return;
         window.open(getTokenUrl(tokenId), "_blank");
       }
     },
