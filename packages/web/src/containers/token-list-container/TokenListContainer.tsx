@@ -84,6 +84,7 @@ export const createDummyTokenList = (): Token[] => [
     path: Math.floor(Math.random() * 50 + 1).toString(),
     token: {
       path: "1",
+      tokenId: "1.BTC",
       name: "Bitcoin",
       symbol: "BTC",
       displaySymbol: "BTC",
@@ -113,6 +114,7 @@ export const createDummyTokenList = (): Token[] => [
       tokenPair: {
         tokenA: {
           path: Math.floor(Math.random() * 50 + 1).toString(),
+          tokenId: "dummy.HEX",
           name: "HEX",
           symbol: "HEX",
           displaySymbol: "HEX",
@@ -121,6 +123,7 @@ export const createDummyTokenList = (): Token[] => [
         },
         tokenB: {
           path: Math.floor(Math.random() * 50 + 1).toString(),
+          tokenId: "dummy.USDC",
           name: "USDCoin",
           symbol: "USDC",
           displaySymbol: "USDC",

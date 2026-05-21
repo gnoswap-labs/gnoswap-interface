@@ -62,7 +62,7 @@ const TokenDescriptionContainer: React.FC = () => {
         },
         links: {
           Website: tokenB.websiteURL || "",
-          Gnoscan: tokenB.path === "ugnot" ? getGnoscanUrl() : tokenB.tokenId ? getTokenUrl(tokenB.tokenId) : "",
+          Gnoscan: tokenB.path === "ugnot" ? getGnoscanUrl() : getTokenUrl(tokenB.tokenId),
         },
       }));
     }
