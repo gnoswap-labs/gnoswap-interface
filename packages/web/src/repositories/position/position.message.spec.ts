@@ -58,6 +58,7 @@ const createTokenModel = (
     logoURI: "",
     priceID: path,
     ...overrides,
+    tokenId: overrides?.tokenId ?? `${path}.${path}`,
   };
 };
 
