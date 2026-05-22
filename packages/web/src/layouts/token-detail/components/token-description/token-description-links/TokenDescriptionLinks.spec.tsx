@@ -6,6 +6,8 @@ import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapTheme
 import TokenDescriptionLinks from "./TokenDescriptionLinks";
 
 describe("TokenDescriptionLinks", () => {
+  const originalCanParse = URL.canParse;
+
   beforeAll(() => {
     Object.defineProperty(URL, "canParse", {
       configurable: true,
@@ -17,6 +19,13 @@ describe("TokenDescriptionLinks", () => {
           return false;
         }
       },
+    });
+  });
+
+  afterAll(() => {
+    Object.defineProperty(URL, "canParse", {
+      configurable: true,
+      value: originalCanParse,
     });
   });
 
