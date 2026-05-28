@@ -19,6 +19,18 @@ import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { PoolSelectionGraphBinTooptip, TooltipInfo } from "./PoolSelectionGraphBinTooltip";
 import { createPoolSelectionGraphBins } from "./PoolSelectionGraph.utils";
 
+const MIN_VISIBLE_BAR_HEIGHT = 5;
+
+const getVisibleBarDimensions = (scaleYComputation: number, boundsHeight: number) => {
+  const rawHeight = Math.max(0, boundsHeight - scaleYComputation);
+  const visibleHeight = rawHeight > 0 ? Math.max(rawHeight, MIN_VISIBLE_BAR_HEIGHT) : 0;
+
+  return {
+    y: boundsHeight - visibleHeight,
+    height: visibleHeight,
+  };
+};
+
 interface SelectionColor {
   startPercent: string;
   endPercent: string;
@@ -459,16 +471,12 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
             .attr("x", () => scaleX(bin.positionX))
             .attr("y", () => {
               const scaleYComputation = scaleY(bin.height) ?? 0;
-              return scaleYComputation - (scaleYComputation > height - 5 && scaleYComputation !== height ? 5 : 0);
+              return getVisibleBarDimensions(scaleYComputation, boundsHeight).y;
             })
             .attr("width", () => Math.max(scaleX(bin.maxTick - graphMinTick) - scaleX(bin.positionX), 0))
             .attr("height", () => {
               const scaleYComputation = scaleY(bin.height) ?? 0;
-              return (
-                boundsHeight -
-                scaleYComputation +
-                (scaleYComputation > height - 5 && scaleYComputation !== height ? 5 : 0)
-              );
+              return getVisibleBarDimensions(scaleYComputation, boundsHeight).height;
             });
           d3.select(this)
             .append("rect")
@@ -477,16 +485,12 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
             .attr("x", () => scaleX(bin.positionX) + 0.5)
             .attr("y", () => {
               const scaleYComputation = scaleY(bin.height) ?? 0;
-              return scaleYComputation - (scaleYComputation > height - 5 && scaleYComputation !== height ? 5 : 0);
+              return getVisibleBarDimensions(scaleYComputation, boundsHeight).y;
             })
             .attr("width", () => Math.max(scaleX(bin.maxTick - graphMinTick) - scaleX(bin.positionX) - 0.5, 0))
             .attr("height", () => {
               const scaleYComputation = scaleY(bin.height) ?? 0;
-              return (
-                boundsHeight -
-                scaleYComputation +
-                (scaleYComputation > height - 5 && scaleYComputation !== height ? 5 : 0)
-              );
+              return getVisibleBarDimensions(scaleYComputation, boundsHeight).height;
             });
         });
     }

@@ -8,6 +8,18 @@ import { ReservedBin } from "../PoolGraph.types";
 import { PoolGraphSVGContainer } from "./PoolGraphSVG.styles";
 import { useTheme } from "@emotion/react";
 
+const MIN_VISIBLE_BAR_HEIGHT = 3;
+
+const getVisibleBarDimensions = (scaleYComputation: number, boundsHeight: number) => {
+  const rawHeight = Math.max(0, boundsHeight - scaleYComputation);
+  const visibleHeight = rawHeight > 0 ? Math.max(rawHeight, MIN_VISIBLE_BAR_HEIGHT) : 0;
+
+  return {
+    y: boundsHeight - visibleHeight,
+    height: visibleHeight,
+  };
+};
+
 interface PoolGraphSVGProps {
   graphId: string;
   width: number;
@@ -138,18 +150,13 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
               .attr("width", binWidth)
               .attr("y", () => {
                 const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
-                return scaleYComputation - (scaleYComputation > height - 3 && scaleYComputation !== height ? 3 : 0);
+                return getVisibleBarDimensions(scaleYComputation, boundsHeight).y;
               })
               .attr("height", () => {
                 const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
-                return (
-                  boundsHeight -
-                  scaleYComputation +
-                  (scaleYComputation > height - 3 && scaleYComputation !== height ? 3 : 0)
-                );
+                return getVisibleBarDimensions(scaleYComputation, boundsHeight).height;
               });
 
-            const heightPadding = 3;
             const poolFill = isPosition && !disableBlackBars ? (themeKey === "dark" ? "#1C2230" : "#E0E8F4") : fillByBin(bin);
 
             select(this)
@@ -161,15 +168,11 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
               .attr("width", Math.max(0, binWidth - 0.5))
               .attr("y", () => {
                 const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
-                return scaleYComputation - (scaleYComputation > height - 3 && scaleYComputation !== height ? 3 : 0);
+                return getVisibleBarDimensions(scaleYComputation, boundsHeight).y;
               })
               .attr("height", () => {
                 const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
-                return (
-                  boundsHeight -
-                  scaleYComputation +
-                  (scaleYComputation > height - heightPadding && scaleYComputation !== height ? heightPadding : 0)
-                );
+                return getVisibleBarDimensions(scaleYComputation, boundsHeight).height;
               });
 
             if (isPosition && !disableBlackBars && bin.isPositionVisualActive && bin.positionReserveTokenMap > 0) {
@@ -182,15 +185,11 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
                 .attr("width", Math.max(0, binWidth - 0.5))
                 .attr("y", () => {
                   const scaleYComputation = scaleY(bin.positionReserveTokenMap) ?? 0;
-                  return scaleYComputation - (scaleYComputation > height - 3 && scaleYComputation !== height ? 3 : 0);
+                  return getVisibleBarDimensions(scaleYComputation, boundsHeight).y;
                 })
                 .attr("height", () => {
                   const scaleYComputation = scaleY(bin.positionReserveTokenMap) ?? 0;
-                  return (
-                    boundsHeight -
-                    scaleYComputation +
-                    (scaleYComputation > height - heightPadding && scaleYComputation !== height ? heightPadding : 0)
-                  );
+                  return getVisibleBarDimensions(scaleYComputation, boundsHeight).height;
                 });
             }
           });
