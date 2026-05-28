@@ -11,10 +11,12 @@ import { PoolListResponse, PoolRepository, PoolRepositoryImpl, PoolRepositoryMoc
 class MockNetworkClient implements NetworkClient {
   public getCalls: HttpGetRequestParam[] = [];
 
+  public constructor(private readonly getResponse?: unknown) {}
+
   public async get<R>(params: HttpGetRequestParam): Promise<HttpResponse<R>> {
     this.getCalls.push(params);
 
-    const response: PoolListResponse = {
+    const defaultResponse: PoolListResponse = {
       meta: {
         height: 0,
         timestamp: "",
@@ -25,7 +27,7 @@ class MockNetworkClient implements NetworkClient {
     return {
       status: 200,
       message: "Success",
-      data: response as R,
+      data: (this.getResponse ?? defaultResponse) as R,
     };
   }
 
@@ -114,5 +116,25 @@ describe("getIncentivizePools", () => {
         url: "/pools?incentivized=true&address=g1abc%2F%3F%3A",
       },
     ]);
+  });
+});
+
+describe("getLiquidityTicksOfPoolByPath", () => {
+  it("requests pool liquidity ticks and preserves liquidityNet strings", async () => {
+    const liquidityNet = "340282366920938463463374607431768211456";
+    const networkClient = new MockNetworkClient({
+      data: [{ tick: 1, liquidityNet }],
+    });
+    const repository = new PoolRepositoryImpl(networkClient, null, null);
+
+    const ticks = await repository.getLiquidityTicksOfPoolByPath("pool-1");
+
+    expect(networkClient.getCalls).toEqual([
+      {
+        url: "/pools/pool-1/ticks",
+      },
+    ]);
+    expect(ticks).toEqual([{ tick: 1, liquidityNet }]);
+    expect(typeof ticks[0].liquidityNet).toBe("string");
   });
 });

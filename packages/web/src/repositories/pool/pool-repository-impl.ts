@@ -12,6 +12,7 @@ import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { PoolStakingMapper } from "@models/pool/mapper/pool-staking-mapper";
 import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { PoolLiquidityTickModel } from "@models/pool/pool-liquidity-model";
 import { IncentivizePoolModel, PoolModel } from "@models/pool/pool-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 import {
@@ -37,6 +38,7 @@ import { CreatePoolRequest } from "./request/create-pool-request";
 import { RemoveExternalIncentiveRequest } from "./request/remove-external-incentive-request";
 import { AddLiquidityFailedResponse, AddLiquiditySuccessResponse } from "./response/add-liquidity-response";
 import { CreatePoolFailedResponse, CreatePoolSuccessResponse } from "./response/create-pool-response";
+import { PoolLiquidityTickResponse } from "./response/pool-liquidity-ticks-response";
 import { PoolStakingResponse } from "./response/pool-staking-response";
 
 export class PoolRepositoryImpl implements PoolRepository {
@@ -222,6 +224,23 @@ export class PoolRepositoryImpl implements PoolRepository {
         url: `/pools/${encodeURIComponent(poolPath)}/bins?binSize=${count || 40}`,
       })
       .then(response => response.data.data);
+  };
+
+  getLiquidityTicksOfPoolByPath = async (poolPath: string): Promise<PoolLiquidityTickModel[]> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    return this.networkClient
+      .get<{ data: PoolLiquidityTickResponse[] }>({
+        url: `/pools/${encodeURIComponent(poolPath)}/ticks`,
+      })
+      .then(response =>
+        response.data.data.map(tick => ({
+          tick: tick.tick,
+          liquidityNet: tick.liquidityNet,
+        })),
+      );
   };
 
   getPoolPriceByPoolPath = async (poolPath: string, period?: CHART_DAY_SCOPE_TYPE): Promise<PoolPricesResponse> => {

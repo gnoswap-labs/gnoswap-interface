@@ -51,6 +51,7 @@ export enum QUERY_KEY {
   lastedBlockHeight = "lasted_block_height",
   removeExternalIncentive = "remove_external_incentive",
   poolLiquidity = "pool_liquidity",
+  poolLiquidityTicks = "pool_liquidity_ticks",
   poolTicks = "pool_ticks",
   poolTickSpacing = "pool_tick_spacing",
   poolSqrtPriceX96 = "pool_sqrt_price_x96",

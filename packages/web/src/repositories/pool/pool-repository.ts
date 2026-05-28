@@ -12,6 +12,7 @@ import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 import { PoolPricesResponse } from "./response";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
+import { PoolLiquidityTickModel } from "@models/pool/pool-liquidity-model";
 
 export interface PoolRepository {
   getPools: () => Promise<PoolModel[]>;
@@ -29,6 +30,8 @@ export interface PoolRepository {
   getPoolDetailByPoolPath: (poolPath: string) => Promise<PoolDetailModel>;
 
   getBinsOfPoolByPath: (poolPath: string, count?: number) => Promise<PoolBinModel[]>;
+
+  getLiquidityTicksOfPoolByPath: (poolPath: string) => Promise<PoolLiquidityTickModel[]>;
 
   getPoolPriceByPoolPath: (poolPath: string, period?: CHART_DAY_SCOPE_TYPE) => Promise<PoolPricesResponse>;
 
