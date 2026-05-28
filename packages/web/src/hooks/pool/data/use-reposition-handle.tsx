@@ -196,6 +196,7 @@ export const useRepositionHandle = () => {
       [QUERY_KEY.positions],
       [QUERY_KEY.poolDetail],
       [QUERY_KEY.poolPairBins],
+      [QUERY_KEY.poolLiquidityTicks],
       [QUERY_KEY.bins],
       [QUERY_KEY.lazyBins],
       [QUERY_KEY.positionBins],

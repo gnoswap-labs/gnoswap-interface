@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { PoolLiquiditySegmentModel } from "@models/pool/pool-liquidity-model";
 
 import PoolPairInfoContent from "./pool-pair-info-content/PoolPairInfoContent";
 import PoolPairInfoHeader from "./pool-pair-info-header/PoolPairInfoHeader";
@@ -23,20 +23,13 @@ interface PoolPairInformationProps {
   onClickPath: (path: string) => void;
   loading: boolean;
   loadingBins: boolean;
-  poolBins: PoolBinModel[];
-  shiftIndex: number;
-  displayBinCount: number;
-  zoomLevel: number;
+  liquiditySegments: PoolLiquiditySegmentModel[];
   availInfo: {
-    availMoveLeft: boolean;
-    availMoveRight: boolean;
     availZoomIn: boolean;
     availZoomOut: boolean;
   };
   onZoomIn: () => void;
   onZoomOut: () => void;
-  onMoveLeft: () => void;
-  onMoveRight: () => void;
 }
 
 const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
@@ -47,15 +40,10 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
   onClickPath,
   loading,
   loadingBins,
-  poolBins,
-  shiftIndex,
-  displayBinCount,
-  zoomLevel,
+  liquiditySegments,
   availInfo,
   onZoomIn,
   onZoomOut,
-  onMoveLeft,
-  onMoveRight,
 }) => {
   const { t } = useTranslation();
 
@@ -93,18 +81,13 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
           />
         )}
         <PoolPairInfoContent
-          poolBins={poolBins}
+          liquiditySegments={liquiditySegments}
           pool={pool}
           loading={loading}
           loadingBins={loadingBins}
-          shiftIndex={shiftIndex}
-          displayBinCount={displayBinCount}
-          zoomLevel={zoomLevel}
           availInfo={availInfo}
           onZoomIn={onZoomIn}
           onZoomOut={onZoomOut}
-          onMoveLeft={onMoveLeft}
-          onMoveRight={onMoveRight}
         />
       </div>
     </PoolPairInformationWrapper>

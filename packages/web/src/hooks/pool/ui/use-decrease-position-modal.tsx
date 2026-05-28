@@ -96,6 +96,7 @@ export const useDecreasePositionModal = ({
       [QUERY_KEY.positions, currentChainId, address],
       [QUERY_KEY.poolDetail, poolPath],
       [QUERY_KEY.poolPairBins],
+      [QUERY_KEY.poolLiquidityTicks],
     ]);
   }, [invalidateQueryKey, poolPath, currentChainId, address]);
 

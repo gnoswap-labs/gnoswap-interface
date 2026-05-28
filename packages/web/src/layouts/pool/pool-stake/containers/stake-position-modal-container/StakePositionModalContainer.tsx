@@ -61,6 +61,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
       [QUERY_KEY.positions, currentChainId, address],
       [QUERY_KEY.poolDetail, poolPath],
       [QUERY_KEY.poolPairBins],
+      [QUERY_KEY.poolLiquidityTicks],
     ]);
     await Promise.all([refetchPositions(), refetchPools(), refetchPoolDetails()]);
   }, [invalidateQueryKey, poolPath, currentChainId, address, refetchPoolDetails, refetchPools, refetchPositions]);

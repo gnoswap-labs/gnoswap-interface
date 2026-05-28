@@ -122,6 +122,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
       [QUERY_KEY.tokenBalancesByAddress, address],
       [QUERY_KEY.positions, currentChainId, address],
       [QUERY_KEY.poolPairBins],
+      [QUERY_KEY.poolLiquidityTicks],
     ]);
   }, [invalidateQueryKey, currentChainId, address]);
 

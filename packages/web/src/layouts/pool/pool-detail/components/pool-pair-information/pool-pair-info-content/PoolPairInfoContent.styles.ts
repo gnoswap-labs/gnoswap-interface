@@ -38,7 +38,9 @@ export const ContentWrapper = styled.div`
         gap: 8px;
       }
       .zoom-controller {
-        ${mixins.flexbox("row", "center", "center")};
+        ${mixins.flexbox("row", "center", "flex-end")};
+        justify-self: end;
+        width: 140px;
         gap: 4px;
         -webkit-user-select: none;
         -khtml-user-select: none;

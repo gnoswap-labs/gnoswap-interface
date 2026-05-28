@@ -5,6 +5,8 @@ import { cx } from "@emotion/css";
 
 import { STATIC_TEXT, DEFAULT_TOKEN_PRICE_RATIO } from "@common/values";
 import IconStar from "@components/common/icons/IconStar";
+import IconAdd from "@components/common/icons/IconAdd";
+import IconRemove from "@components/common/icons/IconRemove";
 import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
 import IconTriangleArrowUpV2 from "@components/common/icons/IconTriangleArrowUpV2";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
@@ -15,8 +17,8 @@ import Tooltip from "@components/common/tooltip/Tooltip";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
-import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { PoolLiquiditySegmentModel } from "@models/pool/pool-liquidity-model";
 import { TokenModel } from "@models/token/token-model";
 import { ThemeState } from "@states/index";
 import { formatOtherPrice, formatPoolPairAmount, formatRate } from "@utils/new-number-utils";
@@ -37,10 +39,6 @@ import {
 } from "./PoolPairInfoContent.styles";
 import TooltipAPR from "./TooltipAPR";
 import IconInfo from "@components/common/icons/IconInfo";
-import IconKeyboardArrowLeft from "@components/common/icons/IconKeyboardArrowLeft";
-import IconKeyboardArrowRight from "@components/common/icons/IconKeyboardArrowRight";
-import IconRemove from "@components/common/icons/IconRemove";
-import IconAdd from "@components/common/icons/IconAdd";
 import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
 import PriceWarning from "@components/common/price-warning/PriceWarning";
 
@@ -48,35 +46,23 @@ interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
   loading: boolean;
   loadingBins: boolean;
-  poolBins: PoolBinModel[];
-  shiftIndex: number;
-  displayBinCount: number;
-  zoomLevel: number;
+  liquiditySegments: PoolLiquiditySegmentModel[];
   availInfo: {
-    availMoveLeft: boolean;
-    availMoveRight: boolean;
     availZoomIn: boolean;
     availZoomOut: boolean;
   };
   onZoomIn: () => void;
   onZoomOut: () => void;
-  onMoveLeft: () => void;
-  onMoveRight: () => void;
 }
 
 const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   pool,
   loading,
   loadingBins,
-  poolBins,
-  shiftIndex,
-  displayBinCount,
-  zoomLevel,
+  liquiditySegments,
   availInfo,
   onZoomIn,
   onZoomOut,
-  onMoveLeft,
-  onMoveRight,
 }) => {
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
@@ -265,12 +251,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [getGnotPath, pool?.rewardTokens]);
 
   const isHideBar = useMemo(() => {
-    const isAllReserveZeroPoolBin = poolBins?.every(
-      item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
-    );
-
-    return isAllReserveZeroPoolBin;
-  }, [poolBins]);
+    return liquiditySegments.length === 0;
+  }, [liquiditySegments.length]);
 
   const tvlDisplay = useMemo(() => {
     if (loading) {
@@ -531,12 +513,6 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             </div>
             {!loadingBins && (
               <div className="zoom-controller">
-                <button className={cx({ disabled: !availInfo.availMoveLeft })} onClick={onMoveLeft}>
-                  <IconKeyboardArrowLeft />
-                </button>
-                <button className={cx({ disabled: !availInfo.availMoveRight })} onClick={onMoveRight}>
-                  <IconKeyboardArrowRight />
-                </button>
                 <button className={cx({ disabled: !availInfo.availZoomOut })} onClick={onZoomOut}>
                   <IconRemove />
                 </button>
@@ -550,7 +526,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             <PoolGraph
               tokenA={pool?.tokenA}
               tokenB={pool?.tokenB}
-              bins={poolBins ?? []}
+              liquiditySegments={liquiditySegments}
               currentTick={pool?.currentTick}
               width={GRAPWIDTH}
               height={150}
@@ -558,11 +534,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               themeKey={themeKey}
               position="top"
               offset={40}
-              poolPrice={tickToPrice(pool.currentTick) || 1}
               disabled={isHideBar}
-              shiftIndex={shiftIndex}
-              displayBinCount={displayBinCount}
-              zoomLevel={zoomLevel}
               disableBlackBars={true}
             />
           )}

@@ -4,21 +4,17 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { GNOT_TOKEN } from "@common/values/token-constant";
-import { ZOOL_VALUES } from "@constants/graph.constant";
+import {
+  LIQUIDITY_GRAPH_BIN_COUNT,
+  LIQUIDITY_GRAPH_INITIAL_ZOOM_LEVEL,
+  LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES,
+} from "@constants/graph.constant";
 import { SwapFeeTierInfoMap, SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import { MAX_PRICE, MAX_TICK, MIN_PRICE, MIN_TICK } from "@constants/swap.constant";
 import { useLoading } from "@hooks/common/use-loading";
-import { PoolBinModel } from "@models/pool/pool-bin-model";
+import { PoolLiquiditySegmentModel } from "@models/pool/pool-liquidity-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
-import {
-  useGetBinsByPath,
-  useGetPoolFromDb,
-  useGetPoolLiquidity,
-  useGetPoolSqrtPriceX96,
-  useGetPoolTicks,
-  useGetPoolTickSpacing,
-  useInitializeBins,
-} from "@query/pools";
+import { useGetPoolFromDb, useGetPoolLiquidity, useGetPoolSqrtPriceX96, useGetPoolTickSpacing } from "@query/pools";
 import { EarnState } from "@states/index";
 import { checkGnotPath, encryptId } from "@utils/common";
 import { invertSqrtPriceX96, isValidCurrentPrice } from "@utils/pool-utils";
@@ -32,6 +28,7 @@ import {
   tickToPrice,
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { usePoolLiquiditySegmentsByPath } from "./use-pool-liquidity-segments-by-path";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 
@@ -49,7 +46,7 @@ interface Props {
 }
 
 export interface SelectPool {
-  bins: PoolBinModel[] | undefined;
+  liquiditySegments: PoolLiquiditySegmentModel[];
   poolPath: string | null;
   isCreate: boolean;
   renderState: (isIgnoreDefaultLoading?: boolean) => RenderState;
@@ -109,7 +106,7 @@ export const useSelectPool = ({
   // Local state
   const [fullRange, setFullRange] = useState(false);
   const [focusPosition, setFocusPosition] = useState<number>(0);
-  const [zoomLevel, setZoomLevel] = useState<number>(0);
+  const [zoomLevel, setZoomLevel] = useState<number>(LIQUIDITY_GRAPH_INITIAL_ZOOM_LEVEL);
   const [minPosition, setMinPosition] = useState<number | null>(null);
   const [maxPosition, setMaxPosition] = useState<number | null>(null);
   const [compareToken, setCompareToken] = useState<TokenModel | null>(tokenA);
@@ -147,28 +144,21 @@ export const useSelectPool = ({
 
   const convertPath = useMemo(() => (calculatedPoolPath ? encryptId(calculatedPoolPath) : null), [calculatedPoolPath]);
 
+  const orderedSegmentTokens = useMemo(() => {
+    if (!tokenA || !tokenB) {
+      return null;
+    }
+
+    return [tokenA, tokenB]
+      .map(token => ({ ...token, path: checkGnotPath(token.path) }))
+      .sort((left, right) => sortTokenPaths(left.path, right.path));
+  }, [tokenA, tokenB]);
+
   const swapFeeTierMaxPriceRangeMap = useMemo(() => {
     return SwapFeeTierMaxPriceRangeMap[feeTier || "NONE"];
   }, [feeTier]);
 
   const shouldRefetch = ["/earn/pool/add", "/earn/add"].includes(router.pathname);
-
-  const { data: binsResult } = useGetBinsByPath(calculatedPoolPath || "", ZOOL_VALUES[zoomLevel], null, null, null, {
-    enabled: !!calculatedPoolPath && !isCreate,
-    queryKey: ["useSelectPool/getBins", calculatedPoolPath, zoomLevel, isCreate],
-  });
-  const bins = binsResult?.bins;
-
-  const { data: initializeBins, isLoading: isLoadingInitializeBins } = useInitializeBins(
-    feeTier,
-    startPrice,
-    ZOOL_VALUES[zoomLevel],
-    isReverse,
-    {
-      enabled: !!feeTier && !!startPrice && !!isCreate,
-      queryKey: ["useSelectPool/initializeBins", feeTier, startPrice, zoomLevel, isReverse, isCreate],
-    },
-  );
 
   const { data: poolFromDb, isLoading: isLoadingPoolFromDb } = useGetPoolFromDb(convertPath, {
     enabled: !!convertPath && !isCreate,
@@ -178,11 +168,6 @@ export const useSelectPool = ({
   const { data: liquidity, isLoading: isLoadingLiquidity } = useGetPoolLiquidity(calculatedPoolPath, {
     enabled: !!calculatedPoolPath && !isCreate,
     refetchInterval: shouldRefetch ? 5_000 : false,
-  });
-
-  const { data: ticks, isLoading: isLoadingTicks } = useGetPoolTicks(calculatedPoolPath, {
-    enabled: !!calculatedPoolPath && !isCreate,
-    isReverse,
   });
 
   const { data: tickSpacing, isLoading: isLoadingTickSpacing } = useGetPoolTickSpacing(calculatedPoolPath, {
@@ -195,8 +180,7 @@ export const useSelectPool = ({
     refetchInterval: shouldRefetch ? 5_000 : false,
   });
 
-  const isLoadingPoolInfo =
-    isLoadingPoolFromDb || isLoadingLiquidity || isLoadingTicks || isLoadingTickSpacing || isLoadingSqrtPriceX96;
+  const isLoadingPoolInfo = isLoadingPoolFromDb || isLoadingLiquidity || isLoadingTickSpacing || isLoadingSqrtPriceX96;
 
   const price = useMemo(() => {
     if (isCreate) return startPrice || 0;
@@ -205,19 +189,27 @@ export const useSelectPool = ({
     return isReverse ? 1 / basePrice : basePrice;
   }, [isCreate, startPrice, poolFromDb, isReverse]);
 
+  const { liquiditySegments, isLoading: isLoadingLiquiditySegments } = usePoolLiquiditySegmentsByPath(
+    calculatedPoolPath,
+    {
+      currentTick: poolFromDb?.currentTick,
+      tokenA: orderedSegmentTokens?.[0],
+      tokenB: orderedSegmentTokens?.[1],
+      includeTokenAmounts: true,
+      visibleTickRange: LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES[zoomLevel],
+      binCount: LIQUIDITY_GRAPH_BIN_COUNT,
+    },
+    {
+      enabled: !!calculatedPoolPath && !isCreate,
+      queryKey: ["useSelectPool/liquiditySegments", calculatedPoolPath, zoomLevel, isCreate],
+    },
+  );
+
   const liquidityOfTickPoints: [number, number][] = useMemo(() => {
-    if (!ticks || ticks.length === 0) return [];
+    if (isCreate) return [];
 
-    const result: [number, number][] = ticks
-      .sort((t1, t2) => t1 - t2)
-      .map(tick => {
-        const height = 0;
-        const tickPrice = tickToPrice(tick);
-        return [tickPrice ?? 0, height ?? 0];
-      });
-
-    return [[0, 0], ...result];
-  }, [ticks]);
+    return liquiditySegments.map(segment => [tickToPrice(segment.minTick), Number(segment.graphHeightRatio)]);
+  }, [isCreate, liquiditySegments]);
 
   const poolPath = useMemo(() => {
     return latestPoolPath;
@@ -232,28 +224,16 @@ export const useSelectPool = ({
           return "CREATE";
         }
 
-        if (isLoadingInitializeBins || initializeBins === undefined) {
-          return "LOADING";
-        }
+        return "DONE";
       } else {
-        if (isLoadingPoolInfo || (isIgnoreDefaultLoading ? isLoading : null)) {
+        if (isLoadingPoolInfo || isLoadingLiquiditySegments || (isIgnoreDefaultLoading ? isLoading : null)) {
           return "LOADING";
         }
       }
 
       return "DONE";
     },
-    [
-      feeTier,
-      isCreate,
-      startPrice,
-      tokenA,
-      tokenB,
-      isLoading,
-      isLoadingPoolInfo,
-      isLoadingInitializeBins,
-      initializeBins,
-    ],
+    [feeTier, isCreate, startPrice, tokenA, tokenB, isLoading, isLoadingPoolInfo, isLoadingLiquiditySegments],
   );
 
   const minPrice = useMemo(() => {
@@ -457,7 +437,7 @@ export const useSelectPool = ({
     const [defaultMinPosition, defaultMaxPosition] = priceRangeRef.current;
 
     excuteInteraction(() => {
-      setZoomLevel(0);
+      setZoomLevel(LIQUIDITY_GRAPH_INITIAL_ZOOM_LEVEL);
       setFullRange(false);
       changeMinPosition(defaultMinPosition);
       changeMaxPosition(defaultMaxPosition);
@@ -465,7 +445,7 @@ export const useSelectPool = ({
   }, [interactionType]);
 
   const zoomIn = useCallback(() => {
-    if (zoomLevel + 1 < ZOOL_VALUES.length) {
+    if (zoomLevel + 1 < LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES.length) {
       setZoomLevel(zoomLevel + 1);
     }
   }, [zoomLevel]);
@@ -536,7 +516,7 @@ export const useSelectPool = ({
 
   return {
     startPrice,
-    bins: isCreate ? initializeBins : bins,
+    liquiditySegments: isCreate ? [] : liquiditySegments,
     poolPath,
     renderState,
     feeTier,
@@ -575,11 +555,10 @@ export const useSelectPool = ({
     isChangeMinMax,
     setIsChangeMinMax,
     isOrderedPrice,
-    isLoading: isLoading || isLoadingPoolInfo,
+    isLoading: isLoading || isLoadingPoolInfo || isLoadingLiquiditySegments,
     currentPoolPath,
     poolFromDb,
     liquidity,
-    ticks,
     sqrtPriceX96,
   };
 };

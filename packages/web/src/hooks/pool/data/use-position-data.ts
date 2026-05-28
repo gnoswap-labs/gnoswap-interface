@@ -1,6 +1,6 @@
 import { usePoolData } from "@hooks/pool/data/use-pool-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useGetPositionsByAddress, useMakePoolPositions } from "@query/positions";
 import { useLoading } from "@hooks/common/use-loading";
 import { QueryKey, UseQueryOptions } from "@tanstack/react-query";
@@ -50,7 +50,6 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     data: positions = [],
     isFetched: isFetchedPoolPositions,
     isLoading: isLoadingPoolPositions,
-    refetch: refetchPooPositions,
   } = useMakePoolPositions(rawPositions, pools, isFetchedPosition, options?.scopeId || "");
 
   const availableStake = useMemo(() => {
@@ -87,10 +86,6 @@ export const usePositionData = (options?: UsePositionDataOption) => {
       (isLoadingPool || isLoadingPosition || isCommonLoading || isLoadingPoolPositions) && walletConnected && !!account
     );
   }, [isCommonLoading, isLoadingPool, isLoadingPoolPositions, isLoadingPosition, walletConnected, account]);
-
-  useEffect(() => {
-    refetchPooPositions();
-  }, [data, pools, refetchPooPositions]);
 
   return {
     availableStake,
