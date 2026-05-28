@@ -1,27 +1,30 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import * as d3 from "d3";
 import * as uuid from "uuid";
 
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
-import { PoolBinModel } from "@models/pool/pool-bin-model";
+import { useTokenData } from "@hooks/token/data/use-token-data";
+import { PoolLiquiditySegmentModel } from "@models/pool/pool-liquidity-model";
 import { TokenModel } from "@models/token/token-model";
-import { makeDisplayPrice } from "@utils/pool-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
-import { tickToPrice } from "@utils/swap-utils";
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 
 import PoolGraphSVG from "./pool-graph-svg/PoolGraphSVG";
 import PoolGraphTooltip from "./pool-graph-tooltip/PoolGraphTooltip";
 import { PoolGraphWrapper } from "./PoolGraph.styles";
 import { ReservedBin, TooltipInfo } from "./PoolGraph.types";
+import {
+  createPoolGraphBins,
+  formatPoolGraphTokenUsd,
+  formatPoolGraphTooltipPrice,
+  getPoolGraphTooltipTick,
+} from "./PoolGraph.utils";
 
 export interface PoolGraphProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
-  bins: PoolBinModel[];
+  liquiditySegments: PoolLiquiditySegmentModel[];
   currentTick?: number | null;
   mouseover?: boolean;
-  zoomable?: boolean;
   visibleLabel?: boolean;
   width: number;
   height: number;
@@ -35,23 +38,19 @@ export interface PoolGraphProps {
   nextSpacing?: boolean;
   position?: FloatingPosition;
   offset?: number;
-  maxTickPosition?: number | null;
-  minTickPosition?: number | null;
-  poolPrice: number;
   isPosition?: boolean;
-  binsMyAmount?: PoolBinModel[];
+  positionLiquidity?: string | number | null;
+  positionTickLower?: number | null;
+  positionTickUpper?: number | null;
   isReversed?: boolean;
   disabled?: boolean;
-  shiftIndex?: number;
-  displayBinCount?: number;
-  zoomLevel?: number;
   disableBlackBars?: boolean;
 }
 
 const PoolGraph: React.FC<PoolGraphProps> = ({
   tokenA,
   tokenB,
-  bins = [],
+  liquiditySegments = [],
   currentTick = null,
   mouseover,
   width,
@@ -66,16 +65,12 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   nextSpacing = false,
   position,
   offset = 20,
-  maxTickPosition = 0,
-  minTickPosition = 0,
-  poolPrice,
   isPosition = false,
-  binsMyAmount = [],
+  positionLiquidity = null,
+  positionTickLower = null,
+  positionTickUpper = null,
   isReversed = false,
   disabled = true,
-  displayBinCount = 40,
-  shiftIndex = 0,
-  zoomLevel = 0,
   disableBlackBars = true,
 }) => {
   const graphIdRef = useRef(uuid.v4());
@@ -85,107 +80,68 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const svgRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const lastHoverBinIndexRef = useRef<number | undefined>();
+  const { tokenPrices } = useTokenData();
 
   const boundsWidth = width - margin.right - margin.left;
   const boundsHeight = height - margin.top - margin.bottom;
 
-  // D3 - Dimension Definition
-  const defaultMinX = React.useMemo(() => Math.min(...bins.map(bin => bin.minTick)), [bins]);
   const reservedBins: ReservedBin[] = useMemo(() => {
-    const length = bins.length / 2;
-    const fullLength = length * 2;
+    return createPoolGraphBins({
+      liquiditySegments,
+      boundsHeight,
+      tokenA,
+      tokenB,
+      currentTick,
+      isReversed,
+      positionLiquidity,
+      positionTickLower,
+      positionTickUpper,
+    }).sort((left, right) => left.minTick - right.minTick);
+  }, [
+    liquiditySegments,
+    boundsHeight,
+    tokenA,
+    tokenB,
+    currentTick,
+    isReversed,
+    positionLiquidity,
+    positionTickLower,
+    positionTickUpper,
+  ]);
 
-    const convertReserveBins = bins.map((item, index) => {
-      const reserveTokenAMap = Number(item.reserveTokenB) / (Number(poolPrice) || 1);
-      const reserveTokenBMap = Number(item.reserveTokenA);
-
-      return {
-        ...item,
-        reserveTokenAMyAmount: binsMyAmount?.[index]?.reserveTokenA || 0,
-        reserveTokenBMyAmount: binsMyAmount?.[index]?.reserveTokenB || 0,
-        reserveTokenAMap: index < length ? reserveTokenAMap : reserveTokenBMap,
-        index: index,
-      };
-    });
-
-    const maxHeight = d3.max(convertReserveBins, bin => bin.reserveTokenAMap) || 0;
-
-    const reserveBins = convertReserveBins
-      .sort((b1, b2) => b1.minTick - b2.minTick)
-      .map(bin => {
-        return {
-          ...bin,
-          minTick: bin.minTick - defaultMinX,
-          maxTick: bin.maxTick - defaultMinX,
-          reserveTokenMap: (bin.reserveTokenAMap * boundsHeight) / maxHeight,
-          minTickSwap: bin.minTick - defaultMinX,
-          maxTickSwap: bin.maxTick - defaultMinX,
-        };
-      });
-
-    if (!isReversed) {
-      return reserveBins;
+  const minX = useMemo(() => {
+    if (reservedBins.length === 0) {
+      return 0;
     }
-
-    const reverseReserveBins = reserveBins.map((item, i) => ({
-      ...reserveBins[length * 2 - i - 1],
-      minTick: item.minTick,
-      maxTick: item.maxTick,
-      minTickSwap: reserveBins[fullLength - i - 1].minTick,
-      maxTickSwap: reserveBins[fullLength - i - 1].maxTick,
-    }));
-    return reverseReserveBins;
-  }, [bins, isReversed, poolPrice, binsMyAmount.length]);
-
-  const displayBins = useMemo(() => {
-    const centerIndex = reservedBins.length / 2;
-    const displaySideBinCount = displayBinCount / 2;
-
-    const sliceStartIndex =
-      centerIndex - displaySideBinCount + shiftIndex >= 0 ? centerIndex - displaySideBinCount + shiftIndex : 0;
-
-    const sliceEndIndex =
-      centerIndex + displaySideBinCount + shiftIndex < reservedBins.length
-        ? centerIndex + displaySideBinCount + shiftIndex
-        : reservedBins.length;
-
-    return reservedBins.slice(sliceStartIndex, sliceEndIndex);
-  }, [reservedBins, displayBinCount, shiftIndex]);
-
-  const minX = useMemo(() => Math.min(...(displayBins.map(bin => bin.minTick) || 0)), [displayBins]);
-  const maxX = useMemo(() => Math.max(...(displayBins.map(bin => bin.maxTick) || 0)), [displayBins]);
-  const maxHeight = d3.max(reservedBins, bin => bin.reserveTokenMap) || 0;
+    return Math.min(...reservedBins.map(bin => bin.minTick));
+  }, [reservedBins]);
+  const maxX = useMemo(() => {
+    const maxTick = reservedBins.length > 0 ? Math.max(...reservedBins.map(bin => bin.maxTick)) : 1;
+    return maxTick === minX ? minX + 1 : maxTick;
+  }, [reservedBins, minX]);
+  const maxHeight = useMemo(() => {
+    if (reservedBins.length === 0) {
+      return 0;
+    }
+    return Math.max(...reservedBins.map(bin => bin.reserveTokenMap));
+  }, [reservedBins]);
 
   const currentTickRelative = useMemo(() => {
     if (currentTick === null) return null;
-    return currentTick - defaultMinX;
-  }, [currentTick, defaultMinX]);
+    return isReversed ? -currentTick : currentTick;
+  }, [currentTick, isReversed]);
 
   const scaleX = useMemo(() => {
-    if (currentTickRelative === null) {
-      return d3.scaleLinear().domain([minX, maxX]).range([margin.left, boundsWidth]);
-    }
-
-    const halfBinWidth = (maxX - minX) / displayBins.length / 2;
-    const binWidth = halfBinWidth * 2;
-    const halfDisplayRange = (displayBinCount / 2) * binWidth;
-
-    const shiftOffset = shiftIndex * binWidth;
-
-    return d3
-      .scaleLinear()
-      .domain([
-        currentTickRelative - halfDisplayRange + shiftOffset,
-        currentTickRelative + halfDisplayRange + shiftOffset,
-      ])
-      .range([margin.left, boundsWidth]);
-  }, [currentTickRelative, minX, maxX, boundsWidth, margin.left, displayBins.length, displayBinCount, shiftIndex]);
+    return (value: number) => margin.left + ((value - minX) / (maxX - minX)) * (boundsWidth - margin.left);
+  }, [minX, maxX, boundsWidth, margin.left]);
 
   const scaleY = useMemo(() => {
-    return d3
-      .scaleLinear()
-      .domain([0, maxHeight || 0])
-      .range([boundsHeight, 0]);
+    return (value: number) => {
+      if (maxHeight <= 0) {
+        return boundsHeight;
+      }
+      return boundsHeight - (value / maxHeight) * boundsHeight;
+    };
   }, [boundsHeight, maxHeight]);
 
   const [tickOfPrices, setTickOfPrices] = useState<{
@@ -203,15 +159,15 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     if (reservedBins.length === 2) {
       return 20;
     }
-    if (displayBins.length < 2) {
+    if (reservedBins.length < 2) {
       return 0;
     }
-    const spacing = Math.abs(scaleX(displayBins[1].minTick) - scaleX(displayBins[0].minTick));
+    const spacing = Math.abs(scaleX(reservedBins[1].minTick) - scaleX(reservedBins[0].minTick));
     if (spacing < 2) {
       return spacing;
     }
     return spacing;
-  }, [displayBins, scaleX]);
+  }, [reservedBins, scaleX]);
 
   const tooltipPosition = useMemo((): FloatingPosition => {
     if (position) {
@@ -291,88 +247,86 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         setTooltipInfo(null);
         return;
       }
-      const minTick = currentBin.minTick + defaultMinX;
-      const maxTick = currentBin.maxTick + defaultMinX;
-
-      const minTickSwap = currentBin.minTickSwap + defaultMinX;
-      const maxTickSwap = currentBin.maxTickSwap + defaultMinX;
-
-      const tokenARange = {
-        min: tickOfPrices.tokenA[!isReversed ? minTick : minTickSwap] || null,
-        max: tickOfPrices.tokenA[!isReversed ? maxTick : maxTickSwap] || null,
-      };
-      const tokenBRange = {
-        min: tickOfPrices.tokenB[!isReversed ? minTick : minTickSwap] || null,
-        max: tickOfPrices.tokenB[!isReversed ? maxTick : maxTickSwap] || null,
-      };
-      const index = currentBin.index;
+      const tooltipTick = getPoolGraphTooltipTick(currentBin, currentTick);
 
       const tokenAAmountStr = currentBin.reserveTokenA;
       const tokenBAmountStr = currentBin.reserveTokenB;
-      const depositTokenAAmountStr = currentBin?.reserveTokenAMyAmount;
-      const depositTokenBAmountStr = currentBin?.reserveTokenBMyAmount;
-      let disabledBin = !!(
-        maxTickPosition != null &&
-        minTickPosition != null &&
-        (scaleX(currentBin.minTick) < minTickPosition - binSpacing || scaleX(currentBin.minTick) > maxTickPosition)
-      );
-      if (isReversed) {
-        disabledBin = !!(
-          maxTickPosition != null &&
-          minTickPosition != null &&
-          (scaleX(currentBin.minTick) < scaleX(maxX) - maxTickPosition - binSpacing ||
-            scaleX(currentBin.minTick) > scaleX(maxX) - minTickPosition)
-        );
-      }
+      const positionTokenAAmountStr = currentBin?.reserveTokenAMyAmount;
+      const positionTokenBAmountStr = currentBin?.reserveTokenBMyAmount;
+      const hasNoPositionLiquidity = !disableBlackBars && isPosition && !currentBin.isPositionActive;
 
       const tokenAAmount = tokenAAmountStr
-        ? formatTokenExchangeRate(tokenAAmountStr.toString(), {
+        ? formatTokenExchangeRate(tokenAAmountStr, {
             maxSignificantDigits: tokenA.decimals + 1,
             minLimit: 0.000001,
           })
         : "-";
       const tokenBAmount = tokenBAmountStr
-        ? formatTokenExchangeRate(tokenBAmountStr.toString(), {
+        ? formatTokenExchangeRate(tokenBAmountStr, {
             maxSignificantDigits: tokenB.decimals + 1,
             minLimit: 0.000001,
           })
         : "-";
-      const depositTokenAAmount =
-        index < 20
-          ? "-"
-          : index > 19 && `${currentBin.reserveTokenAMyAmount}` === "0"
-          ? "<0.000001"
-          : formatTokenExchangeRate(depositTokenAAmountStr.toString(), {
+      const positionTokenAAmount =
+        !positionTokenAAmountStr || hasNoPositionLiquidity
+          ? "0"
+          : formatTokenExchangeRate(positionTokenAAmountStr, {
               maxSignificantDigits: tokenA.decimals + 1,
               minLimit: 0.000001,
-            }) || "-";
-      const depositTokenBAmount =
-        index > 19
-          ? "-"
-          : index < 20 && `${currentBin.reserveTokenBMyAmount}` === "0"
-          ? "<0.000001"
-          : formatTokenExchangeRate(depositTokenBAmountStr.toString(), {
+            }) || "0";
+      const positionTokenBAmount =
+        !positionTokenBAmountStr || hasNoPositionLiquidity
+          ? "0"
+          : formatTokenExchangeRate(positionTokenBAmountStr, {
               maxSignificantDigits: tokenB.decimals + 1,
               minLimit: 0.000001,
-            }) || "-";
+            }) || "0";
+      const positionTokenAUsd = formatPoolGraphTokenUsd(
+        hasNoPositionLiquidity ? "0" : positionTokenAAmountStr,
+        tokenA,
+        tokenPrices,
+      );
+      const positionTokenBUsd = formatPoolGraphTokenUsd(
+        hasNoPositionLiquidity ? "0" : positionTokenBAmountStr,
+        tokenB,
+        tokenPrices,
+      );
 
       setTooltipInfo({
         tokenA,
         tokenB,
         tokenAAmount,
         tokenBAmount,
-        depositTokenAAmount,
-        depositTokenBAmount,
-        tokenARange: tokenARange,
-        tokenBRange: tokenBRange,
-        tokenAPrice: tickOfPrices.tokenA[currentTick || 0],
-        tokenBPrice: tickOfPrices.tokenB[currentTick || 0],
-        disabled: disabledBin,
+        tokenAUsd: formatPoolGraphTokenUsd(tokenAAmountStr, tokenA, tokenPrices),
+        tokenBUsd: formatPoolGraphTokenUsd(tokenBAmountStr, tokenB, tokenPrices),
+        positionTokenAAmount,
+        positionTokenBAmount,
+        positionTokenAUsd,
+        positionTokenBUsd,
+        tokenAVisible: currentBin.reserveTokenAVisible,
+        tokenBVisible: currentBin.reserveTokenBVisible,
+        positionTokenAVisible: currentBin.positionReserveTokenAVisible,
+        positionTokenBVisible: currentBin.positionReserveTokenBVisible,
+        isPositionActive: currentBin.isPositionActive,
+        positionLiquidityShare: hasNoPositionLiquidity ? "0%" : currentBin.positionLiquidityShare,
+        price: tickOfPrices.tokenA[tooltipTick],
+        disabled: false,
       });
       setPositionX(mouseX);
       setPositionY(mouseY);
     },
-    [mouseover, tickOfPrices, reservedBins, binSpacing, currentTick],
+    [
+      mouseover,
+      tickOfPrices,
+      reservedBins,
+      binSpacing,
+      currentTick,
+      disableBlackBars,
+      isPosition,
+      tokenA,
+      tokenB,
+      tokenPrices,
+    ],
   );
 
   function onMouseOutChartBin() {
@@ -381,42 +335,37 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   }
 
   useEffect(() => {
-    if (bins.length > 0) {
-      const formatDisplayPrice = (tick: number, baseToken: TokenModel, quoteToken: TokenModel) => {
-        const displayPrice = makeDisplayPrice(tickToPrice(tick), baseToken, quoteToken);
-
-        return formatTokenExchangeRate(displayPrice.toString(), {
-          maxSignificantDigits: 7,
-          minLimit: 0.000001,
-        });
-      };
-
+    if (reservedBins.length > 0) {
       new Promise<{
         tokenA: { [key in number]: string };
         tokenB: { [key in number]: string };
       }>(resolve => {
-        const tickOfPrices = bins
+        const tickOfPrices = reservedBins
           .flatMap(bin => {
-            const minTick = bin.minTick;
-            const maxTick = bin.maxTick;
-            return [minTick, maxTick];
+            const tooltipTick = getPoolGraphTooltipTick(bin, currentTick);
+            return [bin.sourceMinTick, tooltipTick];
           })
           .reduce<{
             tokenA: { [key in number]: string };
             tokenB: { [key in number]: string };
-          }>((acc, current) => {
-            if (!acc.tokenA[current]) {
-              acc.tokenA[current] = formatDisplayPrice(current, tokenA, tokenB);
-            }
-            if (!acc.tokenB[current]) {
-              acc.tokenB[current] = formatDisplayPrice(-current, tokenB, tokenA);
-            }
-            return acc;
-          }, { tokenA: {}, tokenB: {} });
+          }>(
+            (acc, current) => {
+              if (!acc.tokenA[current]) {
+                acc.tokenA[current] = formatPoolGraphTooltipPrice(current, tokenA, tokenB);
+              }
+              if (!acc.tokenB[current]) {
+                acc.tokenB[current] = formatPoolGraphTooltipPrice(-current, tokenB, tokenA);
+              }
+              return acc;
+            },
+            { tokenA: {}, tokenB: {} },
+          );
         resolve(tickOfPrices);
       }).then(setTickOfPrices);
+      return;
     }
-  }, [bins, tokenA, tokenB]);
+    setTickOfPrices({ tokenA: {}, tokenB: {} });
+  }, [reservedBins, tokenA, tokenB]);
 
   useEffect(() => {
     if (tooltipInfo) {
@@ -447,25 +396,21 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
           height={height}
           margin={margin}
           currentTick={currentTick}
-          reservedBins={displayBins}
-          maxTickPosition={maxTickPosition}
-          minTickPosition={minTickPosition}
+          reservedBins={reservedBins}
           isReversed={isReversed}
+          isPosition={isPosition}
           disabled={disabled}
           themeKey={themeKey}
           binSpacing={binSpacing}
           scaleX={scaleX}
           scaleY={scaleY}
-          zoomLevel={zoomLevel}
           currentTickRelative={currentTickRelative}
           d3Position={{
             minX,
             maxX,
-            defaultMinX,
           }}
           onMouseMove={onMouseMoveChartBin}
           onMouseOut={onMouseOutChartBin}
-          shiftIndex={shiftIndex}
           disableBlackBars={disableBlackBars}
         />
       </FloatingTooltip>
