@@ -1,6 +1,7 @@
 import { cx } from "@emotion/css";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { LIQUIDITY_GRAPH_BIN_COUNT, LIQUIDITY_GRAPH_DEFAULT_VISIBLE_TICK_RANGE } from "@constants/graph.constant";
 
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
@@ -10,10 +11,10 @@ import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import { QUERY_PARAMETER } from "@constants/page.constant";
 import { usePrefetchNavigation } from "@hooks/common/use-prefetch-navigation";
+import { usePoolLiquiditySegmentsByPath } from "@hooks/pool/data/use-pool-liquidity-segments-by-path";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
 import { IncentivizePoolCardInfoWithPriceGrade } from "@models/pool/info/pool-card-info";
-import { useGetBinsByPath } from "@query/pools";
 import { formatRate } from "@utils/new-number-utils";
 import { numberToFormat } from "@utils/string-utils";
 import { getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils";
@@ -28,8 +29,6 @@ export interface IncentivizedPoolCardProps {
   themeKey: "dark" | "light";
 }
 
-const BINS_DATA_DEFAULT_LENGTH = 40;
-
 const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, routeItem, themeKey }) => {
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
@@ -42,17 +41,20 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
     enabled: Boolean(pool.poolId),
   });
 
-  const { data: bins40Result, isLoading: isLoadingBins40 } = useGetBinsByPath(
+  const { liquiditySegments, isLoading: isLoadingLiquiditySegments } = usePoolLiquiditySegmentsByPath(
     pool.poolPath || "",
-    BINS_DATA_DEFAULT_LENGTH,
-    null,
-    null,
-    null,
+    {
+      currentTick: pool.currentTick,
+      tokenA: pool.tokenA,
+      tokenB: pool.tokenB,
+      includeTokenAmounts: true,
+      visibleTickRange: LIQUIDITY_GRAPH_DEFAULT_VISIBLE_TICK_RANGE,
+      binCount: LIQUIDITY_GRAPH_BIN_COUNT,
+    },
     {
       enabled: !!pool.poolPath,
     },
   );
-  const bins40 = bins40Result?.bins;
 
   const staked = pool.hasStakedPosition;
 
@@ -68,12 +70,8 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
   }, [getGnotPath, pool.rewardTokens, pool.incentivized]);
 
   const isHideBar = useMemo(() => {
-    const isAllReserveZeroBin40 = bins40?.every(
-      item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
-    );
-
-    return isAllReserveZeroBin40;
-  }, [bins40]);
+    return liquiditySegments.length === 0;
+  }, [liquiditySegments.length]);
 
   const aprStr = useMemo(() => {
     if (!pool.apr) return "-";
@@ -150,7 +148,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
               </div>
             </div>
             <div className="pool-content" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
-              {isLoadingBins40 ? (
+              {isLoadingLiquiditySegments ? (
                 <div className="bins-loading-wrapper">
                   <LoadingSpinner size="MEDIUM" />
                 </div>
@@ -158,7 +156,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
                 <PoolGraph
                   tokenA={pool.tokenA}
                   tokenB={pool.tokenB}
-                  bins={bins40 ?? []}
+                  liquiditySegments={liquiditySegments}
                   currentTick={pool.currentTick}
                   width={258}
                   height={80}
@@ -166,7 +164,6 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
                   themeKey={themeKey}
                   position="top"
                   offset={40}
-                  poolPrice={pool?.price || 1}
                   disabled={isHideBar}
                 />
               )}

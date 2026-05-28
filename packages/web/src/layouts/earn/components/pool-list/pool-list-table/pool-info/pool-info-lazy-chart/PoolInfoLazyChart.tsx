@@ -1,12 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import { LIQUIDITY_GRAPH_BIN_COUNT, LIQUIDITY_GRAPH_DEFAULT_VISIBLE_TICK_RANGE } from "@constants/graph.constant";
 
-import PoolGraph from "@components/common/pool-graph/PoolGraph";
+import type { PoolGraphProps } from "@components/common/pool-graph/PoolGraph";
 import { SkeletonItem } from "@components/common/table-skeleton/TableSkeleton.styles";
 import { POOL_INFO, pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { cx } from "@emotion/css";
 import { useTheme } from "@emotion/react";
+import { usePoolLiquiditySegmentsByPath } from "@hooks/pool/data/use-pool-liquidity-segments-by-path";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
-import { useGetSimpleBinsByPath } from "@query/pools";
 
 import { PoolInfoLazyChartWrapper } from "./PoolInfoLazyChart.styles";
 
@@ -17,28 +19,39 @@ export interface PoolInfoLazyChartProps {
 
 const SKELETON_OPTION = POOL_INFO.list[POOL_INFO.list.length - 1];
 
+const PoolGraph = dynamic<PoolGraphProps>(() => import("@components/common/pool-graph/PoolGraph"), {
+  ssr: false,
+});
+
 const PoolInfoLazyChart: React.FC<PoolInfoLazyChartProps> = ({ pool, width }) => {
-  const { tokenA, tokenB, price, currentTick } = pool;
+  const { tokenA, tokenB, currentTick } = pool;
   const { themeKey } = useTheme();
 
   const observerRef = useRef<HTMLDivElement | null>(null);
   const [display, setDisplay] = useState(false);
 
-  const { data: bins } = useGetSimpleBinsByPath(pool.poolId, display);
+  const { liquiditySegments, isFetched } = usePoolLiquiditySegmentsByPath(
+    pool.poolId,
+    {
+      currentTick,
+      tokenA,
+      tokenB,
+      includeTokenAmounts: true,
+      visibleTickRange: LIQUIDITY_GRAPH_DEFAULT_VISIBLE_TICK_RANGE,
+      binCount: LIQUIDITY_GRAPH_BIN_COUNT,
+    },
+    {
+      enabled: display,
+    },
+  );
 
   const isHideBar = useMemo(() => {
-    if (!bins) {
-      return true;
-    }
-    const isAllReserveZeroBin = bins.every(
-      item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
-    );
-    return isAllReserveZeroBin;
-  }, [bins]);
+    return liquiditySegments.length === 0;
+  }, [liquiditySegments.length]);
 
   const visibleSkeleton = useMemo(() => {
-    return !display || !bins;
-  }, [display, bins]);
+    return !display || !isFetched;
+  }, [display, isFetched]);
 
   useEffect(() => {
     let observer: IntersectionObserver | null = null;
@@ -85,13 +98,12 @@ const PoolInfoLazyChart: React.FC<PoolInfoLazyChartProps> = ({ pool, width }) =>
           tokenA={tokenA}
           tokenB={tokenB}
           currentTick={currentTick}
-          bins={bins ?? []}
+          liquiditySegments={liquiditySegments}
           mouseover
           disabled={isHideBar}
           themeKey={themeKey}
           position="top"
           nextSpacing={false}
-          poolPrice={Number(price)}
         />
       )}
     </PoolInfoLazyChartWrapper>
