@@ -34,12 +34,19 @@ interface FoldedLiquidityTick {
   liquidityNet: bigint;
 }
 
+interface SegmentHeightInterval {
+  minTick: number;
+  maxTick: number;
+  liquidity: bigint;
+}
+
 interface SegmentDraft {
   minTick: number;
   maxTick: number;
   amountMinTick: number;
   amountMaxTick: number;
   liquidity: bigint;
+  heightIntervals: SegmentHeightInterval[];
 }
 
 const sortTicks = (ticks: PoolLiquidityTickModel[]): FoldedLiquidityTick[] => {
@@ -72,6 +79,7 @@ const buildSegmentDrafts = (foldedTicks: FoldedLiquidityTick[]): SegmentDraft[] 
         amountMinTick: current.tick,
         amountMaxTick: next.tick,
         liquidity: activeLiquidity,
+        heightIntervals: [{ minTick: current.tick, maxTick: next.tick, liquidity: activeLiquidity }],
       });
     }
   }
@@ -138,12 +146,15 @@ const buildVisualBinDrafts = (
     let binLiquidity = 0n;
     let amountMinTick: number | null = null;
     let amountMaxTick: number | null = null;
+    const heightIntervals: SegmentHeightInterval[] = [];
     let intervalStartTick = binMinTick;
 
     const applyInterval = (liquidity: bigint, minTick: number, maxTick: number) => {
       if (liquidity <= 0n || minTick >= maxTick) {
         return;
       }
+
+      heightIntervals.push({ minTick, maxTick, liquidity });
 
       if (liquidity > binLiquidity) {
         binLiquidity = liquidity;
@@ -181,6 +192,7 @@ const buildVisualBinDrafts = (
         amountMinTick: amountMinTick ?? binMinTick,
         amountMaxTick: amountMaxTick ?? binMinTick,
         liquidity: binLiquidity,
+        heightIntervals,
       });
     }
   }
@@ -309,32 +321,36 @@ const getSegmentDisplayAmounts = (
 };
 
 const getSegmentHeight = (
-  segment: PoolLiquiditySegmentModel,
+  segment: SegmentDraft,
   options: PoolLiquiditySegmentBuildOptions | undefined,
   tokenBPerTokenA: BigNumber,
 ): BigNumber => {
   if (options?.includeTokenAmounts && options.tokenA && options.tokenB) {
-    const visualAmounts = derivePoolLiquidityTokenAmounts({
-      liquidity: segment.liquidity,
-      minTick: segment.amountMinTick,
-      maxTick: segment.amountMaxTick,
-      currentTick: options.currentTick ?? segment.minTick,
-      tokenA: options.tokenA,
-      tokenB: options.tokenB,
-    });
-    const tokenAAmount = getDisplayAmount(BigInt(visualAmounts.tokenAAmount.rawAmount), options.tokenA.decimals);
-    const tokenBAmount = getDisplayAmount(BigInt(visualAmounts.tokenBAmount.rawAmount), options.tokenB.decimals);
+    const { tokenA, tokenB } = options;
 
-    if (tokenBPerTokenA.isGreaterThan(0)) {
-      return tokenAAmount.plus(tokenBAmount.dividedBy(tokenBPerTokenA));
-    }
+    return segment.heightIntervals.reduce((height, interval) => {
+      const visualAmounts = derivePoolLiquidityTokenAmounts({
+        liquidity: interval.liquidity.toString(),
+        minTick: interval.minTick,
+        maxTick: interval.maxTick,
+        currentTick: options.currentTick ?? segment.minTick,
+        tokenA,
+        tokenB,
+      });
+      const tokenAAmount = getDisplayAmount(BigInt(visualAmounts.tokenAAmount.rawAmount), tokenA.decimals);
+      const tokenBAmount = getDisplayAmount(BigInt(visualAmounts.tokenBAmount.rawAmount), tokenB.decimals);
 
-    const tokenAHeight = getDisplayHeightUnit(BigInt(visualAmounts.tokenAAmount.rawAmount), options.tokenA.decimals);
-    const tokenBHeight = getDisplayHeightUnit(BigInt(visualAmounts.tokenBAmount.rawAmount), options.tokenB.decimals);
-    return BigNumber.max(tokenAHeight, tokenBHeight);
+      if (tokenBPerTokenA.isGreaterThan(0)) {
+        return height.plus(tokenAAmount).plus(tokenBAmount.dividedBy(tokenBPerTokenA));
+      }
+
+      const tokenAHeight = getDisplayHeightUnit(BigInt(visualAmounts.tokenAAmount.rawAmount), tokenA.decimals);
+      const tokenBHeight = getDisplayHeightUnit(BigInt(visualAmounts.tokenBAmount.rawAmount), tokenB.decimals);
+      return height.plus(BigNumber.max(tokenAHeight, tokenBHeight));
+    }, BigNumber(0));
   }
 
-  return BigNumber(segment.liquidity);
+  return BigNumber(segment.liquidity.toString());
 };
 
 export function buildPoolLiquiditySegments(
@@ -377,7 +393,7 @@ export function buildPoolLiquiditySegments(
   });
 
   const tokenBPerTokenA = getCurrentTokenBPerTokenA(options ?? {});
-  const segmentHeights = segments.map(segment => getSegmentHeight(segment, options, tokenBPerTokenA));
+  const segmentHeights = draftedSegments.map(segment => getSegmentHeight(segment, options, tokenBPerTokenA));
   const maxHeight = segmentHeights.reduce((currentMax, segmentHeight) => {
     return BigNumber.max(currentMax, segmentHeight);
   }, BigNumber(0));

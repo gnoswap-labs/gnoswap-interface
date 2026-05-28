@@ -19,6 +19,7 @@ declare function it(name: string, fn: () => void): void;
 declare function expect(actual: unknown): {
   toBe(expected: unknown): void;
   toEqual(expected: unknown): void;
+  toBeLessThan(expected: number): void;
   toBeLessThanOrEqual(expected: number): void;
   toBeGreaterThan(expected: number): void;
 };
@@ -57,6 +58,18 @@ const segment = (
 });
 
 const hugeLiquidity = "340282366920938463463374607431768211456";
+
+const graphHeightRatio = (segment: PoolLiquiditySegmentModel): number => Number(segment.graphHeightRatio);
+
+const findSegmentContainingTick = (segments: PoolLiquiditySegmentModel[], tick: number): PoolLiquiditySegmentModel => {
+  const result = segments.find(current => current.minTick <= tick && current.maxTick > tick);
+
+  if (!result) {
+    throw new Error(`Expected a segment containing tick ${tick}`);
+  }
+
+  return result;
+};
 
 describe("buildPoolLiquiditySegments", () => {
   it("returns an empty segment list when the pool has no initialized ticks", () => {
@@ -364,6 +377,95 @@ describe("buildPoolLiquiditySegments", () => {
     expect(Number(segments[0].graphHeightRatio)).toBeLessThanOrEqual(0.2);
   });
 
+  it("aggregates full active bin amounts while tooltip bounds stay on the max-liquidity slice", () => {
+    const tokenA = makeToken("USDC", 6, "usdc");
+    const tokenB = makeToken("USDT", 6, "usdt");
+    const ticks: PoolLiquidityTickModel[] = [
+      { tick: 0, liquidityNet: "100000000000000000" },
+      { tick: 10, liquidityNet: "900000000000000000" },
+      { tick: 20, liquidityNet: "-900000000000000000" },
+      { tick: 100, liquidityNet: "900000000000000000" },
+      { tick: 200, liquidityNet: "-1000000000000000000" },
+    ];
+
+    const segments = buildPoolLiquiditySegments(ticks, {
+      currentTick: 150,
+      tokenA,
+      tokenB,
+      includeTokenAmounts: true,
+      visibleTickRange: 300,
+      binCount: 3,
+    });
+
+    expect(segments.map(current => [current.minTick, current.maxTick, current.amountMinTick, current.amountMaxTick])).toEqual(
+      [
+        [0, 100, 10, 20],
+        [100, 200, 100, 200],
+        [200, 300, 200, 200],
+      ],
+    );
+    expect(segments[0].tokenAAmount).toEqual({ rawAmount: "0", displayAmount: "0" });
+    expect(graphHeightRatio(segments[0])).toBeGreaterThan(0.17);
+  });
+
+  it("keeps the #38 edge bins positive but lower than the fully covered interior", () => {
+    const tokenA = makeToken("USDC", 6, "usdc");
+    const tokenB = makeToken("GNOT", 6, "gnot");
+    const ticks: PoolLiquidityTickModel[] = [
+      { tick: -6_960, liquidityNet: "418944535899414" },
+      { tick: 6_960, liquidityNet: "-418944535899414" },
+    ];
+
+    const segments = buildPoolLiquiditySegments(ticks, {
+      currentTick: 0,
+      tokenA,
+      tokenB,
+      includeTokenAmounts: true,
+      visibleTickRange: LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES[3],
+      binCount: LIQUIDITY_GRAPH_BIN_COUNT,
+    });
+    const lowerEdge = findSegmentContainingTick(segments, -6_960);
+    const upperEdge = findSegmentContainingTick(segments, 6_960);
+    const interior = findSegmentContainingTick(segments, 0);
+
+    expect(segments.length).toBe(LIQUIDITY_GRAPH_BIN_COUNT);
+    expect(lowerEdge.liquidity).toBe("418944535899414");
+    expect(upperEdge.liquidity).toBe("418944535899414");
+    expect(graphHeightRatio(lowerEdge)).toBeGreaterThan(0);
+    expect(graphHeightRatio(upperEdge)).toBeGreaterThan(0);
+    expect(graphHeightRatio(lowerEdge)).toBeLessThan(graphHeightRatio(interior));
+    expect(graphHeightRatio(upperEdge)).toBeLessThan(graphHeightRatio(interior));
+  });
+
+  it("keeps the ETH/USDC default zoom internal boundary bins from collapsing to tiny bars", () => {
+    const eth = makeToken("ETH", 6, "test_eth");
+    const usdc = makeToken("USDC", 6, "test_usdc");
+    const ticks: PoolLiquidityTickModel[] = [
+      { tick: -887_220, liquidityNet: "89453877208904" },
+      { tick: 69_060, liquidityNet: "153139526890" },
+      { tick: 82_920, liquidityNet: "-153139526890" },
+      { tick: 887_220, liquidityNet: "-89453877208904" },
+    ];
+
+    const segments = buildPoolLiquiditySegments(ticks, {
+      currentTick: 76_013,
+      tokenA: eth,
+      tokenB: usdc,
+      includeTokenAmounts: true,
+      visibleTickRange: LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES[3],
+      binCount: LIQUIDITY_GRAPH_BIN_COUNT,
+    });
+    const lowerBoundary = findSegmentContainingTick(segments, 69_060);
+    const upperBoundary = findSegmentContainingTick(segments, 82_920);
+    const interior = findSegmentContainingTick(segments, 76_013);
+
+    expect(segments.length).toBe(LIQUIDITY_GRAPH_BIN_COUNT);
+    expect(lowerBoundary.amountMinTick).toBe(69_060);
+    expect(upperBoundary.amountMaxTick).toBe(82_920);
+    expect(graphHeightRatio(lowerBoundary)).toBeGreaterThan(0.5);
+    expect(graphHeightRatio(upperBoundary)).toBeGreaterThan(0.5);
+    expect(graphHeightRatio(interior)).toBeGreaterThan(0.5);
+  });
 
   it("keeps the dev API ETH/USDC page fixture from collapsing one side", () => {
     const eth = makeToken("ETH", 6, "test_eth");
