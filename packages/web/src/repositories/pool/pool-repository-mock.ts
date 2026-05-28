@@ -3,7 +3,6 @@ import { PoolPricesResponse, PoolRepository } from ".";
 import { SendTransactionResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
 import { DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT } from "@common/values";
 import { PoolRPCMapper } from "@models/pool/mapper/pool-rpc-mapper";
-import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolLiquidityTickModel } from "@models/pool/pool-liquidity-model";
 import { IncentivizePoolModel, IPoolDetailResponse, PoolModel } from "@models/pool/pool-model";
@@ -57,10 +56,6 @@ export class PoolRepositoryMock implements PoolRepository {
 
   getPoolDetailByPoolPath = async (): Promise<PoolDetailModel> => {
     return PoolDetailData.pool as never;
-  };
-
-  getBinsOfPoolByPath = async (): Promise<PoolBinModel[]> => {
-    return [];
   };
 
   getLiquidityTicksOfPoolByPath = async (): Promise<PoolLiquidityTickModel[]> => {

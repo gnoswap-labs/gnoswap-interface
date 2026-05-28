@@ -10,7 +10,6 @@ import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { PoolStakingMapper } from "@models/pool/mapper/pool-staking-mapper";
-import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolLiquidityTickModel } from "@models/pool/pool-liquidity-model";
 import { IncentivizePoolModel, PoolModel } from "@models/pool/pool-model";
@@ -213,17 +212,6 @@ export class PoolRepositoryImpl implements PoolRepository {
       })
       .then(response => PoolMapper.detailFromResponse(response.data.data));
     return pool;
-  };
-
-  getBinsOfPoolByPath = async (poolPath: string, count?: number): Promise<PoolBinModel[]> => {
-    if (!this.networkClient) {
-      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
-    }
-    return this.networkClient
-      .get<{ data: PoolBinModel[] }>({
-        url: `/pools/${encodeURIComponent(poolPath)}/bins?binSize=${count || 40}`,
-      })
-      .then(response => response.data.data);
   };
 
   getLiquidityTicksOfPoolByPath = async (poolPath: string): Promise<PoolLiquidityTickModel[]> => {

@@ -118,7 +118,6 @@ export interface IPoolDetailResponse {
   tokenABalance: string;
   tokenBBalance: string;
   tickSpacing: string;
-  bins: IBin[];
   priceRatio: IPoolPriceRatio;
 }
 
@@ -157,14 +156,4 @@ export interface ITokenB {
   displaySymbol: string;
   logoURI: string;
   priceID: string;
-}
-
-export interface IBin {
-  index: number;
-  liquidity: string;
-  reserveTokenA: string;
-  reserveTokenB: string;
-  minTick: string;
-  maxTick: string;
-  rewardTokens: TokenModel[];
 }

@@ -4,10 +4,8 @@ import { SendTransactionResponse, WalletResponse } from "@common/clients/wallet-
 import { CommonError } from "@common/errors";
 import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
 import { PACKAGE_STAKER_PATH } from "@constants/environment.constant";
-import { PositionBinMapper } from "@models/position/mapper/position-bin-mapper";
 import { PositionHistoryMapper } from "@models/position/mapper/position-history-mapper";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
-import { PositionBinModel } from "@models/position/position-bin-model";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { PositionModel } from "@models/position/position-model";
 import { ActivityResponse } from "@repositories/activity/responses/activity-responses";
@@ -36,7 +34,6 @@ import {
   DecreaseLiquiditySuccessResponse,
   IncreaseLiquidityFailedResponse,
   IncreaseLiquiditySuccessResponse,
-  PositionBinResponse,
   PositionListResponse,
   PositionResponse,
   PositionRewardsResponse,
@@ -67,18 +64,6 @@ export class PositionRepositoryImpl implements PositionRepository {
       url: "/positions/" + lpTokenId + "/history",
     });
     return PositionHistoryMapper.fromList(response.data.data);
-  };
-
-  getPositionBins = async (lpTokenId: string, count: 20 | 40): Promise<PositionBinModel[]> => {
-    if (!this.networkClient) {
-      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
-    }
-    const response = await this.networkClient.get<{
-      data: PositionBinResponse[];
-    }>({
-      url: "/positions/" + lpTokenId + `/bins?binSize=${count}`,
-    });
-    return PositionBinMapper.fromList(response.data.data);
   };
 
   getPositionById = async (lpTokenId: string): Promise<PositionModel> => {

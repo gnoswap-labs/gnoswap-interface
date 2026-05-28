@@ -50,7 +50,6 @@ export class PositionMapper {
       claimedRewards: position.claimedRewards || [],
       closed: position.closed,
       totalDailyRewardsUsd: toUnitFormat(position.totalDailyRewardsUsd, true, true),
-      bins40: [],
       totalClaimedUsd: position.totalClaimedUsd,
       usdValue: Number(position.usdValue),
       tokenUri: position.tokenUri,

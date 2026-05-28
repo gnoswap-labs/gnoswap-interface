@@ -1,5 +1,4 @@
 import { ClaimedRewardModel, RewardModel } from "./reward-model";
-import { PoolBinModel } from "@models/pool/pool-bin-model";
 
 export interface PositionModel {
   id: number;
@@ -35,8 +34,6 @@ export interface PositionModel {
   rewards: RewardModel[];
 
   claimedRewards: ClaimedRewardModel[];
-
-  bins40: PoolBinModel[];
 
   closed: boolean;
 

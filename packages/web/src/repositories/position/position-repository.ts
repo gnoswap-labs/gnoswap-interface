@@ -1,5 +1,4 @@
 import { SendTransactionResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
-import { PositionBinModel } from "@models/position/position-bin-model";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { PositionModel } from "@models/position/position-model";
 
@@ -34,8 +33,6 @@ export interface PositionRepository {
   ) => Promise<GetPositionsByAddressResult>;
 
   getPositionRewardsByAddress: (address: string) => Promise<PositionRewardsResponse | null>;
-
-  getPositionBins: (lpTokenId: string, count: 20 | 40) => Promise<PositionBinModel[]>;
 
   getPositionById: (lpTokenId: string) => Promise<PositionModel>;
 

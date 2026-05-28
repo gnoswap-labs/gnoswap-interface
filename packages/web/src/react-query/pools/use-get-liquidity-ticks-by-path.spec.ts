@@ -11,12 +11,10 @@ import {
 } from "./use-get-liquidity-ticks-by-path";
 
 describe("createGetLiquidityTicksByPathQueryKey", () => {
-  it("uses a ticks-specific key that cannot collide with pool bins keys", () => {
+  it("uses a ticks-specific key", () => {
     const poolPath = "pool-1";
 
     expect(createGetLiquidityTicksByPathQueryKey(poolPath)).toEqual([QUERY_KEY.poolLiquidityTicks, poolPath]);
-    expect(createGetLiquidityTicksByPathQueryKey(poolPath)).not.toEqual([QUERY_KEY.bins, poolPath]);
-    expect(createGetLiquidityTicksByPathQueryKey(poolPath)).not.toEqual([QUERY_KEY.lazyBins, poolPath]);
   });
 });
 

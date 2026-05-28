@@ -97,7 +97,6 @@ const createPosition = (lpTokenId: string, rewards: RewardModel[]): PositionMode
     stakedAt: "",
     rewards,
     claimedRewards: [],
-    bins40: [],
     closed: false,
     totalClaimedUsd: "0",
     usdValue: 0,
