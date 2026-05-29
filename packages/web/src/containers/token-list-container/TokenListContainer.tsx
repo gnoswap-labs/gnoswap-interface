@@ -221,7 +221,8 @@ const TokenListContainer: React.FC = () => {
         const isGnot = item.path === "ugnot";
         const tempTokenPrice: TokenPriceModel = tokenPrices[isGnot ? wugnotPath : item.path] ?? {};
         const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
-        const transferData = isGnot ? tempWuGnot : tempTokenPrice;
+        const tempGnot = tokenPrices.ugnot;
+        const transferData = isGnot ? { ...tempWuGnot, marketCap: tempGnot?.marketCap } : tempTokenPrice;
         const splitMostLiquidity: string[] = tempTokenPrice?.mostLiquidityPool?.split(":") || [];
         const swapFeeType: SwapFeeTierType = `FEE_${splitMostLiquidity[2]}` as SwapFeeTierType;
         const tempTokenA = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[0]);
@@ -277,9 +278,7 @@ const TokenListContainer: React.FC = () => {
             : undefined,
           last7days,
           marketCap: transferData.marketCap
-            ? `$${Math.floor(
-                Number((isGnot ? 1000000000 * Number(transferData.usd) : transferData.marketCap) || 0),
-              ).toLocaleString()}`
+            ? `$${Math.floor(Number(transferData.marketCap || 0)).toLocaleString()}`
             : "-",
           liquidity: formatOtherPrice(transferData.lockedTokensUsd, {
             decimals: 0,

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
-import { useGetTokenDetails, useGetTokenPrices } from "@query/token";
+import { useGetAllTokenPrices, useGetTokenDetails, useGetTokenPrices } from "@query/token";
 import { checkPositivePrice } from "@utils/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
@@ -42,6 +42,8 @@ const TokenInfoContentContainer: React.FC = () => {
     data: { usd: currentPrice = "0", feeUsd24h, pricesBefore = priceChangeDetailInit, marketCap } = {},
     isStale: isStaleTokenPrices,
   } = useGetTokenPrices(path === "ugnot" ? WRAPPED_GNOT_PATH : (path as string), { enabled: !!path });
+  const { data: tokenPrices = {}, isLoading: isLoadingAllTokenPrices } = useGetAllTokenPrices({ enabled: path === "ugnot" });
+  const gnotMarketCap = tokenPrices.ugnot?.marketCap;
   const { isLoading: isLoadingCommon } = useLoading();
   const { t } = useTranslation();
 
@@ -49,12 +51,12 @@ const TokenInfoContentContainer: React.FC = () => {
     const isGnot = path === "ugnot";
 
     return {
-      popularity: formatOtherPrice(isGnot ? 1_000_000_000 * Number(currentPrice) : marketCap),
+      popularity: formatOtherPrice(isGnot ? gnotMarketCap : marketCap),
       lockedTokensUsd: formatOtherPrice(market.lockedTokensUsd),
       volumeUsd24h: formatOtherPrice(market.volumeUsd24h),
       feesUsd24h: formatOtherPrice(feeUsd24h),
     };
-  }, [path, currentPrice, marketCap, market.lockedTokensUsd, market.volumeUsd24h, feeUsd24h]);
+  }, [path, gnotMarketCap, marketCap, market.lockedTokensUsd, market.volumeUsd24h, feeUsd24h]);
 
   const priceInfomation = useMemo(() => {
     const data1H = checkPositivePrice(currentPrice, pricesBefore.price1h);
@@ -161,7 +163,7 @@ const TokenInfoContentContainer: React.FC = () => {
       marketInfo={marketInformation}
       loadingPricePerform={isLoading || isLoadingCommon}
       loadingPriceInfo={isLoading || isLoadingCommon}
-      loadingMarketInfo={isLoading || isLoadingCommon}
+      loadingMarketInfo={isLoading || isLoadingCommon || isLoadingAllTokenPrices}
     />
   );
 };
