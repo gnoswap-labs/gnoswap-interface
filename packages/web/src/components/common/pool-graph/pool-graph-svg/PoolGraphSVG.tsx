@@ -125,7 +125,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
 
       // Create a chart bar.
       const rects = select(chartRef.current);
-      rects.attr("clip-path", "url(#clip)");
+      rects.attr("clip-path", `url(#clip-${graphId})`);
 
       // D3 - Draw reservedBins as bars
       rects.selectAll("g").remove();

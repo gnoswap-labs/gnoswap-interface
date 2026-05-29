@@ -940,10 +940,22 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         )}
         {!loading && !isLoadingLiquiditySegments && (
           <div className="zoom-controller">
-            <button className={cx({ disabled: !availInfo.availZoomOut })} onClick={handleZoomOut}>
+            <button
+              type="button"
+              aria-label="Zoom out"
+              disabled={!availInfo.availZoomOut}
+              className={cx({ disabled: !availInfo.availZoomOut })}
+              onClick={handleZoomOut}
+            >
               <IconRemove />
             </button>
-            <button className={cx({ disabled: !availInfo.availZoomIn })} onClick={handleZoomIn}>
+            <button
+              type="button"
+              aria-label="Zoom in"
+              disabled={!availInfo.availZoomIn}
+              className={cx({ disabled: !availInfo.availZoomIn })}
+              onClick={handleZoomIn}
+            >
               <IconAdd />
             </button>
           </div>

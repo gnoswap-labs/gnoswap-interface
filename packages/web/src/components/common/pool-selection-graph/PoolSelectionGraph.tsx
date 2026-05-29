@@ -662,7 +662,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         scaleX(priceToTick(maxPrice) - graphMinTick),
       ]);
     }
-  }, [minPrice, maxPrice, zoomLevel, fullRange, graphBins]);
+  }, [minPrice, maxPrice, zoomLevel, fullRange, graphBins, graphMinTick, boundsWidth, scaleX]);
 
   useEffect(() => {
     if (!brushRef.current) {

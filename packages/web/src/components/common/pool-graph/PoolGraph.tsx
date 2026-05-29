@@ -132,7 +132,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   }, [currentTick, isReversed]);
 
   const scaleX = useMemo(() => {
-    return (value: number) => margin.left + ((value - minX) / (maxX - minX)) * (boundsWidth - margin.left);
+    return (value: number) => margin.left + ((value - minX) / (maxX - minX)) * boundsWidth;
   }, [minX, maxX, boundsWidth, margin.left]);
 
   const scaleY = useMemo(() => {

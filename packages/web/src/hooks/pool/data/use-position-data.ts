@@ -20,7 +20,7 @@ export interface UsePositionDataOption {
 
 export const usePositionData = (options?: UsePositionDataOption) => {
   const { account, connected: walletConnected } = useWallet();
-  const { pools, loading: isLoadingPool } = usePoolData();
+  const { pools, loading: isLoadingPool, isFetchedPools } = usePoolData();
 
   const fetchedAddress = useMemo(() => {
     return options?.address || account?.address;
@@ -50,7 +50,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     data: positions = [],
     isFetched: isFetchedPoolPositions,
     isLoading: isLoadingPoolPositions,
-  } = useMakePoolPositions(rawPositions, pools, isFetchedPosition, options?.scopeId || "");
+  } = useMakePoolPositions(rawPositions, pools, isFetchedPosition, isFetchedPools, options?.scopeId || "");
 
   const availableStake = useMemo(() => {
     if (!isFetchedPoolPositions) {

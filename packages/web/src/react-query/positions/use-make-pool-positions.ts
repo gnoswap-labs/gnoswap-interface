@@ -11,9 +11,10 @@ export const useMakePoolPositions = (
   positions: PositionModel[] | undefined,
   pools: PoolModel[],
   isFetchedPosition: boolean,
+  isFetchedPools: boolean,
   scopeId?: string,
 ) => {
-  const isEnabled = isFetchedPosition && pools.length > 0;
+  const isEnabled = isFetchedPosition && isFetchedPools;
 
   const data = useMemo(() => {
     if (!isEnabled) return [];
@@ -39,6 +40,6 @@ export const useMakePoolPositions = (
   return {
     data,
     isFetched: isEnabled,
-    isLoading: isFetchedPosition && !isEnabled,
+    isLoading: !isEnabled,
   };
 };

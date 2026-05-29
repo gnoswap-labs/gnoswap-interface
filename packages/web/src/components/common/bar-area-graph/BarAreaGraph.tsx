@@ -53,7 +53,8 @@ const BarAreaGraph: React.FC<BarAreaGraphProps> = ({
   disableBlackBars,
 }) => {
   const isHideBar = useMemo(() => {
-    return liquiditySegments.length === 0 && !positionLiquidity;
+    const hasPositionLiquidity = Number(positionLiquidity ?? 0) > 0;
+    return liquiditySegments.length === 0 && !hasPositionLiquidity;
   }, [liquiditySegments.length, positionLiquidity]);
 
   return (
