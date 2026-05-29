@@ -31,32 +31,33 @@ const priceChangeDetailInit = {
 const TokenInfoContentContainer: React.FC = () => {
   const router = useCustomRouter();
   const path = router.getTokenPath();
+  const isGnot = path === "ugnot";
+  const tokenDataPath = isGnot ? WRAPPED_GNOT_PATH : (path as string);
   const {
     data: { market = marketInformationInit } = {},
     isLoading,
     isStale: isStaleTokenDetails,
-  } = useGetTokenDetails(path === "ugnot" ? WRAPPED_GNOT_PATH : (path as string), {
+  } = useGetTokenDetails(tokenDataPath, {
     enabled: !!path,
   });
   const {
     data: { usd: currentPrice = "0", feeUsd24h, pricesBefore = priceChangeDetailInit, marketCap } = {},
     isStale: isStaleTokenPrices,
-  } = useGetTokenPrices(path === "ugnot" ? WRAPPED_GNOT_PATH : (path as string), { enabled: !!path });
-  const { data: tokenPrices = {}, isLoading: isLoadingAllTokenPrices } = useGetAllTokenPrices({ enabled: path === "ugnot" });
+  } = useGetTokenPrices(tokenDataPath, { enabled: !!path });
+  const { data: tokenPrices = {}, isLoading: isLoadingAllTokenPrices } = useGetAllTokenPrices({ enabled: isGnot });
+  const isLoadingGnotMarketCap = isGnot && isLoadingAllTokenPrices;
   const gnotMarketCap = tokenPrices.ugnot?.marketCap;
   const { isLoading: isLoadingCommon } = useLoading();
   const { t } = useTranslation();
 
   const marketInformation = useMemo(() => {
-    const isGnot = path === "ugnot";
-
     return {
       popularity: formatOtherPrice(isGnot ? gnotMarketCap : marketCap),
       lockedTokensUsd: formatOtherPrice(market.lockedTokensUsd),
       volumeUsd24h: formatOtherPrice(market.volumeUsd24h),
       feesUsd24h: formatOtherPrice(feeUsd24h),
     };
-  }, [path, gnotMarketCap, marketCap, market.lockedTokensUsd, market.volumeUsd24h, feeUsd24h]);
+  }, [isGnot, gnotMarketCap, marketCap, market.lockedTokensUsd, market.volumeUsd24h, feeUsd24h]);
 
   const priceInfomation = useMemo(() => {
     const data1H = checkPositivePrice(currentPrice, pricesBefore.price1h);
@@ -163,7 +164,7 @@ const TokenInfoContentContainer: React.FC = () => {
       marketInfo={marketInformation}
       loadingPricePerform={isLoading || isLoadingCommon}
       loadingPriceInfo={isLoading || isLoadingCommon}
-      loadingMarketInfo={isLoading || isLoadingCommon || isLoadingAllTokenPrices}
+      loadingMarketInfo={isLoading || isLoadingCommon || isLoadingGnotMarketCap}
     />
   );
 };
