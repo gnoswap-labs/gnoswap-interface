@@ -61,6 +61,82 @@ const hugeLiquidity = "340282366920938463463374607431768211456";
 
 const graphHeightRatio = (segment: PoolLiquiditySegmentModel): number => Number(segment.graphHeightRatio);
 
+const getRawAmount = (segment: PoolLiquiditySegmentModel, key: "tokenAAmount" | "tokenBAmount"): bigint => {
+  const rawAmount = segment[key]?.rawAmount;
+
+  if (!rawAmount) {
+    throw new Error(`Expected ${key} to be present on segment [${segment.minTick}, ${segment.maxTick})`);
+  }
+
+  return BigInt(rawAmount);
+};
+
+const sumRawAmounts = (segments: PoolLiquiditySegmentModel[], key: "tokenAAmount" | "tokenBAmount"): string =>
+  segments.map(segment => getRawAmount(segment, key)).reduce((total, rawAmount) => total + rawAmount, 0n).toString();
+
+const getVisibleTickWindow = (currentTick: number, visibleTickRange: number): { minTick: number; maxTick: number } => {
+  const fullTickRange = MAX_TICK - MIN_TICK;
+  const normalizedRange = Math.min(fullTickRange, Math.max(1, Math.trunc(visibleTickRange)));
+
+  if (normalizedRange >= fullTickRange) {
+    return { minTick: MIN_TICK, maxTick: MAX_TICK };
+  }
+
+  let minTick = currentTick - Math.floor(normalizedRange / 2);
+  let maxTick = minTick + normalizedRange;
+
+  if (minTick < MIN_TICK) {
+    minTick = MIN_TICK;
+    maxTick = minTick + normalizedRange;
+  }
+
+  if (maxTick > MAX_TICK) {
+    maxTick = MAX_TICK;
+    minTick = maxTick - normalizedRange;
+  }
+
+  return { minTick, maxTick };
+};
+
+const sumClippedRawAmounts = (
+  segments: PoolLiquiditySegmentModel[],
+  key: "tokenAAmount" | "tokenBAmount",
+  options: Required<Pick<PoolLiquiditySegmentBuildOptions, "currentTick" | "tokenA" | "tokenB">> & {
+    minTick: number;
+    maxTick: number;
+  },
+): string =>
+  segments
+    .map(segment => {
+      const minTick = Math.max(segment.minTick, options.minTick);
+      const maxTick = Math.min(segment.maxTick, options.maxTick);
+
+      if (minTick >= maxTick) {
+        return 0n;
+      }
+
+      const clippedAmounts = derivePoolLiquidityTokenAmounts({
+        liquidity: segment.liquidity,
+        minTick,
+        maxTick,
+        currentTick: options.currentTick,
+        tokenA: options.tokenA,
+        tokenB: options.tokenB,
+      });
+
+      return BigInt(clippedAmounts[key].rawAmount);
+    })
+    .reduce((total, rawAmount) => total + rawAmount, 0n)
+    .toString();
+
+const expectRawAmountFloorDeficitWithin = (actual: string, expected: string, tolerance: bigint): void => {
+  const actualAmount = BigInt(actual);
+  const expectedAmount = BigInt(expected);
+
+  expect(actualAmount <= expectedAmount).toBe(true);
+  expect(expectedAmount - actualAmount <= tolerance).toBe(true);
+};
+
 const findSegmentContainingTick = (segments: PoolLiquiditySegmentModel[], tick: number): PoolLiquiditySegmentModel => {
   const result = segments.find(current => current.minTick <= tick && current.maxTick > tick);
 
@@ -406,6 +482,85 @@ describe("buildPoolLiquiditySegments", () => {
     );
     expect(segments[0].tokenAAmount).toEqual({ rawAmount: "0", displayAmount: "0" });
     expect(graphHeightRatio(segments[0])).toBeGreaterThan(0.17);
+  });
+
+  it("sums every real interval in visual bins across every zoom scale", () => {
+    const tokenA = makeToken("BTC", 8, "test_btc");
+    const tokenB = makeToken("USDC", 6, "test_usdc");
+    const currentTick = 66_605;
+    const ticks: PoolLiquidityTickModel[] = [
+      { tick: -887_220, liquidityNet: "340039809885" },
+      { tick: 59_520, liquidityNet: "9447993603" },
+      { tick: 73_440, liquidityNet: "-9447993603" },
+      { tick: 887_220, liquidityNet: "-340039809885" },
+    ];
+
+    const rawSegments = buildPoolLiquiditySegments(ticks, {
+      currentTick,
+      tokenA,
+      tokenB,
+      includeTokenAmounts: true,
+    });
+    const fullRangeVisualBins = buildPoolLiquiditySegments(ticks, {
+      currentTick,
+      tokenA,
+      tokenB,
+      includeTokenAmounts: true,
+      visibleTickRange: LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES[0],
+      binCount: LIQUIDITY_GRAPH_BIN_COUNT,
+    });
+
+    const rawTokenAAmount = sumRawAmounts(rawSegments, "tokenAAmount");
+    const rawTokenBAmount = sumRawAmounts(rawSegments, "tokenBAmount");
+    const maxSplitFloorDeficit = BigInt(LIQUIDITY_GRAPH_BIN_COUNT * 2 + ticks.length);
+
+    expect(rawTokenAAmount).toBe("12267944499");
+    expect(rawTokenBAmount).toBe("9579684752094");
+
+    for (const visibleTickRange of LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES) {
+      const { minTick, maxTick } = getVisibleTickWindow(currentTick, visibleTickRange);
+      const visualBins = buildPoolLiquiditySegments(ticks, {
+        currentTick,
+        tokenA,
+        tokenB,
+        includeTokenAmounts: true,
+        visibleTickRange,
+        binCount: LIQUIDITY_GRAPH_BIN_COUNT,
+      });
+      const expectedTokenAAmount = sumClippedRawAmounts(rawSegments, "tokenAAmount", {
+        currentTick,
+        tokenA,
+        tokenB,
+        minTick,
+        maxTick,
+      });
+      const expectedTokenBAmount = sumClippedRawAmounts(rawSegments, "tokenBAmount", {
+        currentTick,
+        tokenA,
+        tokenB,
+        minTick,
+        maxTick,
+      });
+
+      expectRawAmountFloorDeficitWithin(
+        sumRawAmounts(visualBins, "tokenAAmount"),
+        expectedTokenAAmount,
+        maxSplitFloorDeficit,
+      );
+      expectRawAmountFloorDeficitWithin(
+        sumRawAmounts(visualBins, "tokenBAmount"),
+        expectedTokenBAmount,
+        maxSplitFloorDeficit,
+      );
+    }
+
+    const maxLiquidityRawSegment = findSegmentContainingTick(rawSegments, currentTick);
+    const visualBinContainingCurrentTick = findSegmentContainingTick(fullRangeVisualBins, currentTick);
+
+    expect(visualBinContainingCurrentTick.minTick).toBeLessThan(59_520);
+    expect(visualBinContainingCurrentTick.maxTick).toBeGreaterThan(73_440);
+    expect(getRawAmount(visualBinContainingCurrentTick, "tokenAAmount") > getRawAmount(maxLiquidityRawSegment, "tokenAAmount")).toBe(true);
+    expect(getRawAmount(visualBinContainingCurrentTick, "tokenBAmount") > getRawAmount(maxLiquidityRawSegment, "tokenBAmount")).toBe(true);
   });
 
   it("keeps the #38 edge bins positive but lower than the fully covered interior", () => {

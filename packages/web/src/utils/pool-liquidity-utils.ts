@@ -310,14 +310,32 @@ const getSegmentDisplayAmounts = (
     return null;
   }
 
-  return derivePoolLiquidityTokenAmounts({
-    liquidity: segment.liquidity.toString(),
-    minTick: segment.amountMinTick,
-    maxTick: segment.amountMaxTick,
-    currentTick: options.currentTick ?? segment.minTick,
-    tokenA: options.tokenA,
-    tokenB: options.tokenB,
-  });
+  const tokenA = options.tokenA;
+  const tokenB = options.tokenB;
+
+  const { totalTokenAAmount, totalTokenBAmount } = segment.heightIntervals.reduce(
+    (totals, interval) => {
+      const visualAmounts = derivePoolLiquidityTokenAmounts({
+        liquidity: interval.liquidity.toString(),
+        minTick: interval.minTick,
+        maxTick: interval.maxTick,
+        currentTick: options.currentTick ?? segment.minTick,
+        tokenA,
+        tokenB,
+      });
+
+      return {
+        totalTokenAAmount: totals.totalTokenAAmount + BigInt(visualAmounts.tokenAAmount.rawAmount),
+        totalTokenBAmount: totals.totalTokenBAmount + BigInt(visualAmounts.tokenBAmount.rawAmount),
+      };
+    },
+    { totalTokenAAmount: 0n, totalTokenBAmount: 0n },
+  );
+
+  return {
+    tokenAAmount: createTokenAmount(totalTokenAAmount, options.tokenA.decimals),
+    tokenBAmount: createTokenAmount(totalTokenBAmount, options.tokenB.decimals),
+  };
 };
 
 const getSegmentHeight = (
