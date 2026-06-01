@@ -48,3 +48,7 @@ export const createPoolSelectionGraphBins = (
     .reverse()
     .map((bin, index) => ({ ...bin, index }));
 };
+
+export const getPoolSelectionGraphTooltipTick = (bin: Pick<PoolSelectionGraphBin, "minTick" | "maxTick">): number => {
+  return bin.minTick;
+};

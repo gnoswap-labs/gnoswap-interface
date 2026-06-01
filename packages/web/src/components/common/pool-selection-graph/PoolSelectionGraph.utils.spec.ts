@@ -2,7 +2,7 @@ import { PoolLiquiditySegmentModel, PoolLiquidityTickModel } from "@models/pool/
 import { TokenModel } from "@models/token/token-model";
 import { buildPoolLiquiditySegments } from "@utils/pool-liquidity-utils";
 
-import { createPoolSelectionGraphBins } from "./PoolSelectionGraph.utils";
+import { createPoolSelectionGraphBins, getPoolSelectionGraphTooltipTick } from "./PoolSelectionGraph.utils";
 
 const makeToken = (symbol: string, decimals: number): TokenModel => ({
   path: `gno.land/r/demo/${symbol.toLowerCase()}`,
@@ -37,6 +37,12 @@ const segment = (minTick: number, maxTick: number): PoolLiquiditySegmentModel =>
 });
 
 describe("createPoolSelectionGraphBins", () => {
+  it("uses each bin's min tick for tooltip prices at the current-price boundary", () => {
+    expect(getPoolSelectionGraphTooltipTick({ minTick: 6_931, maxTick: 6_932 })).toBe(6_931);
+    expect(getPoolSelectionGraphTooltipTick({ minTick: 6_932, maxTick: 6_933 })).toBe(6_932);
+    expect(getPoolSelectionGraphTooltipTick({ minTick: 6_930, maxTick: 6_931 })).toBe(6_930);
+  });
+
   it("keeps the full tick-derived segment range without centered slicing", () => {
     const liquiditySegments = Array.from({ length: 60 }, (_, index) => segment(index * 10, index * 10 + 10));
 

@@ -17,7 +17,7 @@ import { priceToTick, tickToPrice } from "@utils/swap-utils";
 
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { PoolSelectionGraphBinTooptip, TooltipInfo } from "./PoolSelectionGraphBinTooltip";
-import { createPoolSelectionGraphBins } from "./PoolSelectionGraph.utils";
+import { createPoolSelectionGraphBins, getPoolSelectionGraphTooltipTick } from "./PoolSelectionGraph.utils";
 
 const MIN_VISIBLE_BAR_HEIGHT = 5;
 
@@ -126,6 +126,9 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   const [hoverBarIndex, setHoverBarIndex] = useState<number | null>(null);
 
   const { redColor, greenColor } = useColorGraph();
+
+  const displayTokenA = useMemo(() => (flip ? tokenB : tokenA), [flip, tokenA, tokenB]);
+  const displayTokenB = useMemo(() => (flip ? tokenA : tokenB), [flip, tokenA, tokenB]);
 
   const [selectionColor, setSelectionColor] = useState<SelectionColor>(getSelectionColor("0", "0"));
 
@@ -290,7 +293,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const isRightStartLine = startPosition - 75 < 0;
     const isRightEndLine = endPosition + 75 < boundsWidth;
 
-    setSelectionColor(selectionColor);
+    setSelectionColor(current => (isSameSelectionColor(current, selectionColor) ? current : selectionColor));
 
     updateLine(brushElement, "start", startPosition, startRate, isRightStartLine, fullRange, selectionColor);
     updateLine(brushElement, "end", endPosition, endRate, isRightEndLine, fullRange, selectionColor);
@@ -395,7 +398,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       const minPrice = getPriceBy(startPosition);
       const maxPrice = getPriceBy(endPosition);
 
-      setSelectionColor(selectionColor);
+      setSelectionColor(current => (isSameSelectionColor(current, selectionColor) ? current : selectionColor));
       setMinPrice(minPrice);
       setMaxPrice(maxPrice);
     }
@@ -544,19 +547,19 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
     setHoverBarIndex(bin.index);
 
-    const minTick = bin.minTick;
+    const tooltipTick = getPoolSelectionGraphTooltipTick(bin);
 
     const tokenAAmountStr = bin.reserveTokenA;
     const tokenBAmountStr = bin.reserveTokenB;
 
     setTooltipInfo({
-      tokenA: tokenA,
-      tokenB: tokenB,
+      tokenA: displayTokenA,
+      tokenB: displayTokenB,
       tokenAAmount: tokenAAmountStr ? convertToKMB(tokenAAmountStr.toString()) : "-",
       tokenBAmount: tokenBAmountStr ? convertToKMB(tokenBAmountStr.toString()) : "-",
       tokenAVisible: tokenAAmountStr > 0,
       tokenBVisible: tokenBAmountStr > 0,
-      price: priceOfTick.tokenA[minTick] || "0",
+      price: priceOfTick.tokenA[tooltipTick] || "0",
     });
     setPositionX(mouseX);
     setPositionY(mouseY);
@@ -600,17 +603,20 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         tokenB: { [key in number]: string };
       }>(resolve => {
         const priceOfTick = resolvedDisplayBins
-          .map(bin => bin.minTick)
+          .flatMap(bin => {
+            const tooltipTick = getPoolSelectionGraphTooltipTick(bin);
+            return [bin.minTick, tooltipTick];
+          })
           .reduce<{
             tokenA: { [key in number]: string };
             tokenB: { [key in number]: string };
           }>(
             (acc, current) => {
               if (!acc.tokenA[current]) {
-                acc.tokenA[current] = formatDisplayPrice(current, tokenA, tokenB);
+                acc.tokenA[current] = formatDisplayPrice(current, displayTokenA, displayTokenB);
               }
               if (!acc.tokenB[current]) {
-                acc.tokenB[current] = formatDisplayPrice(-current, tokenB, tokenA);
+                acc.tokenB[current] = formatDisplayPrice(-current, displayTokenB, displayTokenA);
               }
               return acc;
             },
@@ -619,7 +625,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         resolve(priceOfTick);
       }).then(setPriceOfTick);
     }
-  }, [resolvedDisplayBins, tokenA, tokenB]);
+  }, [resolvedDisplayBins, displayTokenA, displayTokenB]);
 
   useEffect(() => {
     //  D3 - Draw bin and define interaction
@@ -806,6 +812,19 @@ const getSelectionColor = (start: string, end: string) => {
     badgeEnd: "#EA3943B2",
   };
 };
+
+function isSameSelectionColor(left: SelectionColor, right: SelectionColor): boolean {
+  return (
+    left.startPercent === right.startPercent &&
+    left.endPercent === right.endPercent &&
+    left.start === right.start &&
+    left.end === right.end &&
+    left.lineStart === right.lineStart &&
+    left.lineEnd === right.lineEnd &&
+    left.badgeStart === right.badgeStart &&
+    left.badgeEnd === right.badgeEnd
+  );
+}
 
 function makeLeftBadge(
   refer: d3.Selection<SVGSVGElement, unknown, null, undefined>,
