@@ -24,7 +24,7 @@ import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { SwapState } from "@states/index";
 import { formatRate } from "@utils/new-number-utils";
-import { makeRouteUrl } from "@utils/page.utils";
+import { makeRouteUrl, replaceRouteUrlWithoutNavigation } from "@utils/page.utils";
 import { invertSqrtPriceX96, makeDisplayPrice, makeRawPrice } from "@utils/pool-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
 import {
@@ -591,9 +591,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
       tickUpper: selectPool.maxPosition !== null ? priceToTick(selectPool.maxPosition) : null,
     };
     if (tokenA?.path && tokenB?.path) {
-      router.replace(makeRouteUrl(PAGE_PATH.POOL_ADD, query), undefined, {
-        shallow: true,
-      });
+      replaceRouteUrlWithoutNavigation(PAGE_PATH.POOL_ADD, makeRouteUrl(PAGE_PATH.POOL_ADD, query));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectPool.minPosition, selectPool.maxPosition, priceRange?.type]);
