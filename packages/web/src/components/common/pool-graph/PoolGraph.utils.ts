@@ -48,25 +48,31 @@ const hasRawAmount = (amount?: { rawAmount: string }): boolean => {
   return BigInt(amount.rawAmount) > 0n;
 };
 
-const containsCurrentTick = (
-  segment: Pick<PoolLiquiditySegmentModel, "minTick" | "maxTick">,
-  currentTick?: number | null,
-): boolean => {
-  if (currentTick == null) {
-    return false;
+const resolveDisplayAmount = (
+  tokenAAmount: string | null | undefined,
+  tokenBAmount: string | null | undefined,
+  useInvertedDisplay: boolean,
+): [string | null, string | null] => {
+  if (useInvertedDisplay) {
+    return [tokenBAmount ?? null, tokenAAmount ?? null];
   }
 
-  return currentTick >= segment.minTick && currentTick < segment.maxTick;
+  return [tokenAAmount ?? null, tokenBAmount ?? null];
 };
 
-export const getPoolGraphTooltipTick = (
-  bin: Pick<ReservedBin, "sourceMinTick" | "sourceMaxTick">,
-  currentTick?: number | null,
-): number => {
-  if (currentTick != null && bin.sourceMinTick < currentTick && bin.sourceMaxTick === currentTick) {
-    return currentTick;
+const resolveDisplayVisibility = (
+  tokenAVisible: boolean,
+  tokenBVisible: boolean,
+  useInvertedDisplay: boolean,
+): [boolean, boolean] => {
+  if (useInvertedDisplay) {
+    return [tokenBVisible, tokenAVisible];
   }
 
+  return [tokenAVisible, tokenBVisible];
+};
+
+export const getPoolGraphTooltipTick = (bin: Pick<ReservedBin, "sourceMinTick" | "sourceMaxTick">): number => {
   return bin.sourceMinTick;
 };
 
@@ -225,11 +231,26 @@ export const createPoolGraphBins = ({
             tokenB,
           })
         : null;
-    const isCurrentTickBin = containsCurrentTick(segment, currentTick);
-    const reserveTokenAVisible = isCurrentTickBin || hasRawAmount(segment.tokenAAmount);
-    const reserveTokenBVisible = isCurrentTickBin || hasRawAmount(segment.tokenBAmount);
-    const positionReserveTokenAVisible = isCurrentTickBin || hasRawAmount(positionAmounts?.tokenAAmount);
-    const positionReserveTokenBVisible = isCurrentTickBin || hasRawAmount(positionAmounts?.tokenBAmount);
+    const [reserveTokenAVisible, reserveTokenBVisible] = resolveDisplayVisibility(
+      hasRawAmount(segment.tokenAAmount),
+      hasRawAmount(segment.tokenBAmount),
+      useInvertedDisplay,
+    );
+    const [positionReserveTokenAVisible, positionReserveTokenBVisible] = resolveDisplayVisibility(
+      hasRawAmount(positionAmounts?.tokenAAmount),
+      hasRawAmount(positionAmounts?.tokenBAmount),
+      useInvertedDisplay,
+    );
+    const [reserveTokenA, reserveTokenB] = resolveDisplayAmount(
+      segment.tokenAAmount?.displayAmount,
+      segment.tokenBAmount?.displayAmount,
+      useInvertedDisplay,
+    );
+    const [reserveTokenAMyAmount, reserveTokenBMyAmount] = resolveDisplayAmount(
+      positionAmounts?.tokenAAmount.displayAmount,
+      positionAmounts?.tokenBAmount.displayAmount,
+      useInvertedDisplay,
+    );
     const positionHeight = positionVisualAmounts
       ? getDisplayHeight(
           {
@@ -254,8 +275,8 @@ export const createPoolGraphBins = ({
       sourceMaxTick: segment.maxTick,
       reserveTokenMap: toFiniteNumber(segment.graphHeightRatio) * boundsHeight,
       positionReserveTokenMap: positionHeightRatio * boundsHeight,
-      reserveTokenAMyAmount: positionAmounts?.tokenAAmount.displayAmount ?? null,
-      reserveTokenBMyAmount: positionAmounts?.tokenBAmount.displayAmount ?? null,
+      reserveTokenAMyAmount,
+      reserveTokenBMyAmount,
       reserveTokenAVisible,
       reserveTokenBVisible,
       positionReserveTokenAVisible,
@@ -264,8 +285,8 @@ export const createPoolGraphBins = ({
       reserveTokenAMap: toFiniteNumber(displayHeights[index].toString()),
       index,
       liquidity: segment.liquidity,
-      reserveTokenA: segment.tokenAAmount?.displayAmount ?? null,
-      reserveTokenB: segment.tokenBAmount?.displayAmount ?? null,
+      reserveTokenA,
+      reserveTokenB,
       isPositionActive,
       isPositionVisualActive,
     };

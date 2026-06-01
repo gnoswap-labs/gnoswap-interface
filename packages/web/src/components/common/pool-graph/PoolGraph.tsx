@@ -152,6 +152,9 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const [positionX, setPositionX] = useState<number | null>(null);
   const [positionY, setPositionY] = useState<number | null>(null);
 
+  const displayTokenA = useMemo(() => (isReversed ? tokenB : tokenA), [isReversed, tokenA, tokenB]);
+  const displayTokenB = useMemo(() => (isReversed ? tokenA : tokenB), [isReversed, tokenA, tokenB]);
+
   const binSpacing = useMemo(() => {
     if (reservedBins.length < 1) {
       return 0;
@@ -247,7 +250,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         setTooltipInfo(null);
         return;
       }
-      const tooltipTick = getPoolGraphTooltipTick(currentBin, currentTick);
+      const tooltipTick = getPoolGraphTooltipTick(currentBin);
 
       const tokenAAmountStr = currentBin.reserveTokenA;
       const tokenBAmountStr = currentBin.reserveTokenB;
@@ -257,13 +260,13 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
       const tokenAAmount = tokenAAmountStr
         ? formatTokenExchangeRate(tokenAAmountStr, {
-            maxSignificantDigits: tokenA.decimals + 1,
+            maxSignificantDigits: displayTokenA.decimals + 1,
             minLimit: 0.000001,
           })
         : "-";
       const tokenBAmount = tokenBAmountStr
         ? formatTokenExchangeRate(tokenBAmountStr, {
-            maxSignificantDigits: tokenB.decimals + 1,
+            maxSignificantDigits: displayTokenB.decimals + 1,
             minLimit: 0.000001,
           })
         : "-";
@@ -271,34 +274,34 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         !positionTokenAAmountStr || hasNoPositionLiquidity
           ? "0"
           : formatTokenExchangeRate(positionTokenAAmountStr, {
-              maxSignificantDigits: tokenA.decimals + 1,
+              maxSignificantDigits: displayTokenA.decimals + 1,
               minLimit: 0.000001,
             }) || "0";
       const positionTokenBAmount =
         !positionTokenBAmountStr || hasNoPositionLiquidity
           ? "0"
           : formatTokenExchangeRate(positionTokenBAmountStr, {
-              maxSignificantDigits: tokenB.decimals + 1,
+              maxSignificantDigits: displayTokenB.decimals + 1,
               minLimit: 0.000001,
             }) || "0";
       const positionTokenAUsd = formatPoolGraphTokenUsd(
         hasNoPositionLiquidity ? "0" : positionTokenAAmountStr,
-        tokenA,
+        displayTokenA,
         tokenPrices,
       );
       const positionTokenBUsd = formatPoolGraphTokenUsd(
         hasNoPositionLiquidity ? "0" : positionTokenBAmountStr,
-        tokenB,
+        displayTokenB,
         tokenPrices,
       );
 
       setTooltipInfo({
-        tokenA,
-        tokenB,
+        tokenA: displayTokenA,
+        tokenB: displayTokenB,
         tokenAAmount,
         tokenBAmount,
-        tokenAUsd: formatPoolGraphTokenUsd(tokenAAmountStr, tokenA, tokenPrices),
-        tokenBUsd: formatPoolGraphTokenUsd(tokenBAmountStr, tokenB, tokenPrices),
+        tokenAUsd: formatPoolGraphTokenUsd(tokenAAmountStr, displayTokenA, tokenPrices),
+        tokenBUsd: formatPoolGraphTokenUsd(tokenBAmountStr, displayTokenB, tokenPrices),
         positionTokenAAmount,
         positionTokenBAmount,
         positionTokenAUsd,
@@ -309,7 +312,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
         positionTokenBVisible: currentBin.positionReserveTokenBVisible,
         isPositionActive: currentBin.isPositionActive,
         positionLiquidityShare: hasNoPositionLiquidity ? "0%" : currentBin.positionLiquidityShare,
-        price: tickOfPrices.tokenA[tooltipTick],
+        price: isReversed ? tickOfPrices.tokenB[tooltipTick] : tickOfPrices.tokenA[tooltipTick],
         disabled: false,
       });
       setPositionX(mouseX);
@@ -320,12 +323,12 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       tickOfPrices,
       reservedBins,
       binSpacing,
-      currentTick,
       disableBlackBars,
       isPosition,
-      tokenA,
-      tokenB,
+      displayTokenA,
+      displayTokenB,
       tokenPrices,
+      isReversed,
     ],
   );
 
@@ -342,7 +345,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       }>(resolve => {
         const tickOfPrices = reservedBins
           .flatMap(bin => {
-            const tooltipTick = getPoolGraphTooltipTick(bin, currentTick);
+            const tooltipTick = getPoolGraphTooltipTick(bin);
             return [bin.sourceMinTick, tooltipTick];
           })
           .reduce<{

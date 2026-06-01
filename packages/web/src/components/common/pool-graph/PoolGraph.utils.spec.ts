@@ -58,10 +58,10 @@ describe("createPoolGraphBins", () => {
     expect(formatPoolGraphTooltipPrice(100, tokenB, tokenC)).toBe("1.01");
   });
 
-  it("uses the current tick for the bin immediately below the current-price boundary", () => {
-    expect(getPoolGraphTooltipTick({ sourceMinTick: 6_931, sourceMaxTick: 6_932 }, 6_932)).toBe(6_932);
-    expect(getPoolGraphTooltipTick({ sourceMinTick: 6_932, sourceMaxTick: 6_933 }, 6_932)).toBe(6_932);
-    expect(getPoolGraphTooltipTick({ sourceMinTick: 6_930, sourceMaxTick: 6_931 }, 6_932)).toBe(6_930);
+  it("uses each bin's source min tick for tooltip prices at the current-price boundary", () => {
+    expect(getPoolGraphTooltipTick({ sourceMinTick: 6_931, sourceMaxTick: 6_932 })).toBe(6_931);
+    expect(getPoolGraphTooltipTick({ sourceMinTick: 6_932, sourceMaxTick: 6_933 })).toBe(6_932);
+    expect(getPoolGraphTooltipTick({ sourceMinTick: 6_930, sourceMaxTick: 6_931 })).toBe(6_930);
   });
 
   it("abbreviates tooltip token USD amounts with price prefixes", () => {
@@ -327,7 +327,7 @@ describe("createPoolGraphBins", () => {
     ]);
   });
 
-  it("shows both token rows for the current-tick bin even when the tick is on a bin boundary", () => {
+  it("shows only positive reserve and position token rows when the tick is on a bin boundary", () => {
     const liquiditySegments = buildPoolLiquiditySegments(
       [
         { tick: 0, liquidityNet: "1000000000000000000" },
@@ -341,11 +341,23 @@ describe("createPoolGraphBins", () => {
       },
     );
 
-    const bins = createPoolGraphBins({ liquiditySegments, boundsHeight: 100, tokenA, tokenB, currentTick: 0 });
+    const bins = createPoolGraphBins({
+      liquiditySegments,
+      boundsHeight: 100,
+      tokenA,
+      tokenB,
+      currentTick: 0,
+      positionLiquidity: "1000000000000000000",
+      positionTickLower: 0,
+      positionTickUpper: 100,
+    });
 
     expect(bins[0].reserveTokenA).toBe("4987272070.749096");
     expect(bins[0].reserveTokenB).toBe("0");
-    expect([bins[0].reserveTokenAVisible, bins[0].reserveTokenBVisible]).toEqual([true, true]);
+    expect(bins[0].reserveTokenAMyAmount).toBe("4987272070.749096");
+    expect(bins[0].reserveTokenBMyAmount).toBe("0");
+    expect([bins[0].reserveTokenAVisible, bins[0].reserveTokenBVisible]).toEqual([true, false]);
+    expect([bins[0].positionReserveTokenAVisible, bins[0].positionReserveTokenBVisible]).toEqual([true, false]);
   });
 
   it("shows both token rows when a bin contains both token amounts", () => {
@@ -366,6 +378,39 @@ describe("createPoolGraphBins", () => {
 
     expect(bins[0].reserveTokenA).toBe("2490519147.795409");
     expect(bins[0].reserveTokenB).toBe("0.002503002301265531");
+    expect([bins[0].reserveTokenAVisible, bins[0].reserveTokenBVisible]).toEqual([true, true]);
+  });
+
+  it("maps reserve and position amounts to display token order when reversed", () => {
+    const liquiditySegments = buildPoolLiquiditySegments(
+      [
+        { tick: 0, liquidityNet: "1000000000000000000" },
+        { tick: 100, liquidityNet: "-1000000000000000000" },
+      ],
+      {
+        currentTick: 50,
+        tokenA,
+        tokenB,
+        includeTokenAmounts: true,
+      },
+    );
+
+    const bins = createPoolGraphBins({
+      liquiditySegments,
+      boundsHeight: 100,
+      tokenA,
+      tokenB,
+      currentTick: 50,
+      isReversed: true,
+      positionLiquidity: "1000000000000000000",
+      positionTickLower: 0,
+      positionTickUpper: 100,
+    });
+
+    expect(bins[0].reserveTokenA).toBe("0.002503002301265531");
+    expect(bins[0].reserveTokenB).toBe("2490519147.795409");
+    expect(bins[0].reserveTokenAMyAmount).toBe("0.002503002301265531");
+    expect(bins[0].reserveTokenBMyAmount).toBe("2490519147.795409");
     expect([bins[0].reserveTokenAVisible, bins[0].reserveTokenBVisible]).toEqual([true, true]);
   });
 });
