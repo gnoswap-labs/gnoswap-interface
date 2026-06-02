@@ -78,11 +78,7 @@
   },
   "rangeStatus": {
     "active": "Активный",
-    "inactive": "Неактивный",
-    "inRange": "В диапазоне",
-    "inRange_short": "На сайте",
-    "outRange": "Вне зоны действия",
-    "outRange_short": "Выход"
+    "inactive": "Неактивный"
   },
   "rewardType": {
     "external_reward": "Внешние вознаграждения",

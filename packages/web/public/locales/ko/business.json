@@ -78,11 +78,7 @@
   },
   "rangeStatus": {
     "active": "활성",
-    "inactive": "비활성",
-    "inRange": "범위 내",
-    "inRange_short": "In",
-    "outRange": "범위 외",
-    "outRange_short": "Out"
+    "inactive": "비활성"
   },
   "rewardType": {
     "external_reward": "External 보상",

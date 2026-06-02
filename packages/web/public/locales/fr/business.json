@@ -78,11 +78,7 @@
   },
   "rangeStatus": {
     "active": "Actif",
-    "inactive": "Inactif",
-    "inRange": "En cours de validité",
-    "inRange_short": "En",
-    "outRange": "Hors plage",
-    "outRange_short": "Sortie"
+    "inactive": "Inactif"
   },
   "rewardType": {
     "external_reward": "Récompenses externes",

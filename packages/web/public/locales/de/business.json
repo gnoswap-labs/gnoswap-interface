@@ -78,11 +78,7 @@
   },
   "rangeStatus": {
     "active": "Aktiv",
-    "inactive": "Inaktiv",
-    "inRange": "In Reichweite",
-    "inRange_short": "Unter",
-    "outRange": "Außerhalb des Bereichs",
-    "outRange_short": "Aus"
+    "inactive": "Inaktiv"
   },
   "rewardType": {
     "external_reward": "Externe Belohnungen",

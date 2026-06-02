@@ -78,11 +78,7 @@
   },
   "rangeStatus": {
     "active": "Active",
-    "inactive": "Inactive",
-    "inRange": "In-range",
-    "inRange_short": "In",
-    "outRange": "Out-range",
-    "outRange_short": "Out"
+    "inactive": "Inactive"
   },
   "rewardType": {
     "external_reward": "External Rewards",
