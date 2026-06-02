@@ -6,38 +6,25 @@ import { RangeDot, RangeBadgeText, RangeBadgeWrapper } from "./RangeBadge.styles
 export interface RangeBadgeProps {
   status: RANGE_STATUS_OPTION;
   className?: string;
-  isShorten?: boolean;
   isClosed?: boolean;
 }
 
-const RangeBadge: React.FC<RangeBadgeProps> = ({ status, className, isShorten, isClosed }) => {
+const RangeBadge: React.FC<RangeBadgeProps> = ({ status, className, isClosed }) => {
   const { t } = useTranslation();
 
   const statusText = useMemo(() => {
     if (isClosed) return t("common:closed");
 
-    if (isShorten) {
-      switch (status) {
-        case RANGE_STATUS_OPTION.IN:
-          return t("business:rangeStatus.inRange", { context: "short" });
-        case RANGE_STATUS_OPTION.OUT:
-          return t("business:rangeStatus.outRange", { context: "short" });
-        case RANGE_STATUS_OPTION.NONE:
-        default:
-          return "";
-      }
-    }
-
     switch (status) {
       case RANGE_STATUS_OPTION.IN:
-        return t("business:rangeStatus.inRange");
+        return t("business:rangeStatus.active");
       case RANGE_STATUS_OPTION.OUT:
-        return t("business:rangeStatus.outRange");
+        return t("business:rangeStatus.inactive");
       case RANGE_STATUS_OPTION.NONE:
       default:
         return t("common:closed");
     }
-  }, [isClosed, isShorten, status, t]);
+  }, [isClosed, status, t]);
 
   return (
     <RangeBadgeWrapper className={className}>

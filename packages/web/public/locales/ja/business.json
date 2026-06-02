@@ -77,10 +77,8 @@
     "txt": "ルーター料金"
   },
   "rangeStatus": {
-    "inRange": "範囲内",
-    "inRange_short": "で",
-    "outRange": "アウトレンジ",
-    "outRange_short": "アウト"
+    "active": "アクティブ",
+    "inactive": "活動休止中"
   },
   "rewardType": {
     "external_reward": "外部報酬",
