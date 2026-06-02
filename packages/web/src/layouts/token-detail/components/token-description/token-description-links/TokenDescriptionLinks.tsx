@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import IconCopy from "@components/common/icons/IconCopy";
@@ -20,13 +20,13 @@ interface TokenDescriptionLinksProps {
 const TokenDescriptionLinks: React.FC<TokenDescriptionLinksProps> = ({ links, copied, copyClick, path, isLoading }) => {
   const { t } = useTranslation();
 
-  const onClickLink = (link: string) => {
-    openExternalUrl(link);
-  };
-
-  const safeLinks = Object.entries(links)
-    .map(([label, url]) => [label, getSafeExternalUrl(url.trim())] as const)
-    .filter((entry): entry is readonly [string, string] => entry[1] !== null);
+  const safeLinks = useMemo(
+    () =>
+      Object.entries(links)
+        .map(([label, url]) => [label, getSafeExternalUrl(url.trim())] as const)
+        .filter((entry): entry is readonly [string, string] => entry[1] !== null),
+    [links],
+  );
 
   return (
     <div css={wrapper}>
@@ -56,14 +56,12 @@ const TokenDescriptionLinks: React.FC<TokenDescriptionLinksProps> = ({ links, co
         <h3>{t("TokenDetails:description.links")}</h3>
         {!isLoading && (
           <div className="group-button">
-            {safeLinks.map(([link, url]) =>
-              url ? (
-                <button key={link} onClick={() => onClickLink(url)}>
-                  <span>{link}</span>
-                  <IconOpenLink className="link-icon" />
-                </button>
-              ) : null,
-            )}
+            {safeLinks.map(([link, url]) => (
+              <button key={link} onClick={() => openExternalUrl(url)}>
+                <span>{link}</span>
+                <IconOpenLink className="link-icon" />
+              </button>
+            ))}
           </div>
         )}
         {isLoading && <div css={pulseSkeletonStyle({ w: "150px", h: 20 })} />}
