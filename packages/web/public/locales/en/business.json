@@ -77,6 +77,8 @@
     "txt": "Router Fee"
   },
   "rangeStatus": {
+    "active": "Active",
+    "inactive": "Inactive",
     "inRange": "In-range",
     "inRange_short": "In",
     "outRange": "Out-range",

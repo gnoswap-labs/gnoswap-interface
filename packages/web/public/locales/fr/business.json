@@ -77,6 +77,8 @@
     "txt": "Frais de routeur"
   },
   "rangeStatus": {
+    "active": "Actif",
+    "inactive": "Inactif",
     "inRange": "En cours de validité",
     "inRange_short": "En",
     "outRange": "Hors plage",

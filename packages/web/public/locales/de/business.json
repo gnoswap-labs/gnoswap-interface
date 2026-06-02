@@ -77,6 +77,8 @@
     "txt": "Router-Gebühr"
   },
   "rangeStatus": {
+    "active": "Aktiv",
+    "inactive": "Inaktiv",
     "inRange": "In Reichweite",
     "inRange_short": "Unter",
     "outRange": "Außerhalb des Bereichs",

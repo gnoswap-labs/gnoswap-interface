@@ -77,6 +77,8 @@
     "txt": "Tasa de router"
   },
   "rangeStatus": {
+    "active": "Activo",
+    "inactive": "Inactivo",
     "inRange": "En rango",
     "inRange_short": "En",
     "outRange": "Fuera de rango",

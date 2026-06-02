@@ -77,6 +77,8 @@
     "txt": "路由器费用"
   },
   "rangeStatus": {
+    "active": "活跃",
+    "inactive": "不活动",
     "inRange": "范围内",
     "inRange_short": "在",
     "outRange": "超出范围",

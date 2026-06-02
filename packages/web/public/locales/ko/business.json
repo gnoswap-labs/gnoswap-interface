@@ -77,6 +77,8 @@
     "txt": "라우터 수수료"
   },
   "rangeStatus": {
+    "active": "활성",
+    "inactive": "비활성",
     "inRange": "범위 내",
     "inRange_short": "In",
     "outRange": "범위 외",
