@@ -15,6 +15,7 @@ import { useLoading } from "@hooks/common/use-loading";
 import { MAIN_TOKEN_LIST_SIZE } from "@constants/table.constant";
 import { formatOtherPrice, formatPrice } from "@utils/new-number-utils";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
+import { getLast7dGraphStatus } from "./token-list-graph-status";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -229,11 +230,7 @@ const TokenListContainer: React.FC = () => {
         const data1day = checkPositivePrice(transferData.pricesBefore?.latestPrice, transferData.pricesBefore?.price1d);
 
         const data7day = checkPositivePrice(transferData.pricesBefore?.latestPrice, transferData.pricesBefore?.price7d);
-        const latestGraphPrice =
-          tempTokenPrice?.last7d?.length > 0
-            ? tempTokenPrice.last7d[tempTokenPrice.last7d.length - 1].price
-            : tempTokenPrice.pricesBefore?.latestPrice;
-        const graphStatus = checkPositivePrice(transferData.pricesBefore?.latestPrice, latestGraphPrice).status;
+        const graphStatus = getLast7dGraphStatus(transferData.last7d);
 
         const data30D = checkPositivePrice(transferData.pricesBefore?.latestPrice, transferData.pricesBefore?.price30d);
 
@@ -273,9 +270,9 @@ const TokenListContainer: React.FC = () => {
               }
             : undefined,
           last7days: [
-            ...(transferData?.last7d
-              ?.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime())
-              .map(item => Number(item.price || 0)) || []),
+            ...[...(transferData?.last7d || [])]
+              .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime())
+              .map(item => Number(item.price || 0)),
             ...(transferData?.pricesBefore?.latestPrice ? [Number(transferData?.pricesBefore?.latestPrice)] : []),
           ],
           marketCap: transferData.marketCap
