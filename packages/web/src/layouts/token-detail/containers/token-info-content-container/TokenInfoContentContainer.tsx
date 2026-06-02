@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
-import { useGetAllTokenPrices, useGetTokenDetails, useGetTokenPrices } from "@query/token";
+import { useGetTokenDetails, useGetTokenPrices } from "@query/token";
 import { checkPositivePrice } from "@utils/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
@@ -44,9 +44,11 @@ const TokenInfoContentContainer: React.FC = () => {
     data: { usd: currentPrice = "0", feeUsd24h, pricesBefore = priceChangeDetailInit, marketCap } = {},
     isStale: isStaleTokenPrices,
   } = useGetTokenPrices(tokenDataPath, { enabled: !!path });
-  const { data: tokenPrices = {}, isLoading: isLoadingAllTokenPrices } = useGetAllTokenPrices({ enabled: isGnot });
-  const isLoadingGnotMarketCap = isGnot && isLoadingAllTokenPrices;
-  const gnotMarketCap = tokenPrices.ugnot?.marketCap;
+  const {
+    data: { marketCap: gnotMarketCap } = {},
+    isLoading: isLoadingNativeGnotMarketCap,
+  } = useGetTokenPrices("ugnot", { enabled: isGnot });
+  const isLoadingGnotMarketCap = isGnot && isLoadingNativeGnotMarketCap;
   const { isLoading: isLoadingCommon } = useLoading();
   const { t } = useTranslation();
 
