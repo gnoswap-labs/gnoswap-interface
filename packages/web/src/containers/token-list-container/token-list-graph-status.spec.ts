@@ -1,6 +1,6 @@
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { type Last7dPricePoint } from "@models/token/token-price-model";
-import { getLast7dGraphStatus } from "./token-list-graph-status";
+import { getLast7dGraphStatus, getLast7dGraphStatusFromPrices } from "./token-list-graph-status";
 
 describe("getLast7dGraphStatus", () => {
   it("returns NEGATIVE when chronological first price is greater than last price", () => {
@@ -53,5 +53,25 @@ describe("getLast7dGraphStatus", () => {
     ];
 
     expect(getLast7dGraphStatus(last7d)).toBe(MATH_NEGATIVE_TYPE.NONE);
+  });
+});
+
+describe("getLast7dGraphStatusFromPrices", () => {
+  it("returns NEGATIVE when appended latest price makes the rendered graph end lower", () => {
+    const renderedPrices = [10, 12, 11, 8];
+
+    expect(getLast7dGraphStatusFromPrices(renderedPrices)).toBe(MATH_NEGATIVE_TYPE.NEGATIVE);
+  });
+
+  it("returns POSITIVE when appended latest price makes the rendered graph end higher", () => {
+    const renderedPrices = [10, 8, 9, 12];
+
+    expect(getLast7dGraphStatusFromPrices(renderedPrices)).toBe(MATH_NEGATIVE_TYPE.POSITIVE);
+  });
+
+  it("ignores unusable rendered prices before comparing the first and final usable values", () => {
+    const renderedPrices = [Number.NaN, 5, Number.POSITIVE_INFINITY, 3];
+
+    expect(getLast7dGraphStatusFromPrices(renderedPrices)).toBe(MATH_NEGATIVE_TYPE.NEGATIVE);
   });
 });

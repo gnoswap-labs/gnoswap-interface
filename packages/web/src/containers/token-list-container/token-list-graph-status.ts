@@ -9,18 +9,30 @@ const isUsablePricePoint = (item: Last7dPricePoint) => {
   return Number.isFinite(time) && item.price !== "" && !price.isNaN() && price.isFinite();
 };
 
+const isUsablePrice = (priceValue: BigNumber.Value) => {
+  const price = BigNumber(priceValue);
+
+  return !price.isNaN() && price.isFinite();
+};
+
+export const getLast7dGraphStatusFromPrices = (prices?: readonly BigNumber.Value[] | null): MATH_NEGATIVE_TYPE => {
+  const usablePrices = (prices ?? []).filter(isUsablePrice);
+
+  if (usablePrices.length === 0) {
+    return MATH_NEGATIVE_TYPE.NONE;
+  }
+
+  const firstPrice = BigNumber(usablePrices[0]);
+  const lastPrice = BigNumber(usablePrices[usablePrices.length - 1]);
+
+  return firstPrice.isGreaterThan(lastPrice) ? MATH_NEGATIVE_TYPE.NEGATIVE : MATH_NEGATIVE_TYPE.POSITIVE;
+};
+
 export const getLast7dGraphStatus = (last7d?: readonly Last7dPricePoint[] | null): MATH_NEGATIVE_TYPE => {
   const sortedLast7d = [...(last7d ?? [])].sort(
     (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime(),
   );
   const usableLast7d = sortedLast7d.filter(isUsablePricePoint);
 
-  if (usableLast7d.length === 0) {
-    return MATH_NEGATIVE_TYPE.NONE;
-  }
-
-  const firstPrice = BigNumber(usableLast7d[0].price);
-  const lastPrice = BigNumber(usableLast7d[usableLast7d.length - 1].price);
-
-  return firstPrice.isGreaterThan(lastPrice) ? MATH_NEGATIVE_TYPE.NEGATIVE : MATH_NEGATIVE_TYPE.POSITIVE;
+  return getLast7dGraphStatusFromPrices(usableLast7d.map(item => item.price));
 };

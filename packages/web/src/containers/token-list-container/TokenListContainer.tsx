@@ -15,7 +15,7 @@ import { useLoading } from "@hooks/common/use-loading";
 import { MAIN_TOKEN_LIST_SIZE } from "@constants/table.constant";
 import { formatOtherPrice, formatPrice } from "@utils/new-number-utils";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
-import { getLast7dGraphStatus } from "./token-list-graph-status";
+import { getLast7dGraphStatusFromPrices } from "./token-list-graph-status";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -230,7 +230,13 @@ const TokenListContainer: React.FC = () => {
         const data1day = checkPositivePrice(transferData.pricesBefore?.latestPrice, transferData.pricesBefore?.price1d);
 
         const data7day = checkPositivePrice(transferData.pricesBefore?.latestPrice, transferData.pricesBefore?.price7d);
-        const graphStatus = getLast7dGraphStatus(transferData.last7d);
+        const last7days = [
+          ...[...(transferData?.last7d || [])]
+            .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime())
+            .map(item => Number(item.price || 0)),
+          ...(transferData?.pricesBefore?.latestPrice ? [Number(transferData?.pricesBefore?.latestPrice)] : []),
+        ];
+        const graphStatus = getLast7dGraphStatusFromPrices(last7days);
 
         const data30D = checkPositivePrice(transferData.pricesBefore?.latestPrice, transferData.pricesBefore?.price30d);
 
@@ -269,12 +275,7 @@ const TokenListContainer: React.FC = () => {
                 feeRate: splitMostLiquidity.length > 1 ? `${SwapFeeTierInfoMap[swapFeeType].rateStr}` : "0.02%",
               }
             : undefined,
-          last7days: [
-            ...[...(transferData?.last7d || [])]
-              .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime())
-              .map(item => Number(item.price || 0)),
-            ...(transferData?.pricesBefore?.latestPrice ? [Number(transferData?.pricesBefore?.latestPrice)] : []),
-          ],
+          last7days,
           marketCap: transferData.marketCap
             ? `$${Math.floor(
                 Number((isGnot ? 1000000000 * Number(transferData.usd) : transferData.marketCap) || 0),
