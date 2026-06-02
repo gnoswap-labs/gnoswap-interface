@@ -15,7 +15,7 @@ import { useLoading } from "@hooks/common/use-loading";
 import { MAIN_TOKEN_LIST_SIZE } from "@constants/table.constant";
 import { formatOtherPrice, formatPrice } from "@utils/new-number-utils";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
-import { getLast7dGraphStatusFromPrices } from "./token-list-graph-status";
+import { getLast7dGraphStatus } from "./token-list-graph-status";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -236,7 +236,7 @@ const TokenListContainer: React.FC = () => {
             .map(item => Number(item.price || 0)),
           ...(transferData?.pricesBefore?.latestPrice ? [Number(transferData?.pricesBefore?.latestPrice)] : []),
         ];
-        const graphStatus = getLast7dGraphStatusFromPrices(last7days);
+        const graphStatus = getLast7dGraphStatus(last7days);
 
         const data30D = checkPositivePrice(transferData.pricesBefore?.latestPrice, transferData.pricesBefore?.price30d);
 
