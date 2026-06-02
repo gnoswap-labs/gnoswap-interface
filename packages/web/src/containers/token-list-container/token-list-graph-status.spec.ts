@@ -1,5 +1,6 @@
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
-import { getLast7dGraphStatus, type Last7dPricePoint } from "./token-list-graph-status";
+import { type Last7dPricePoint } from "@models/token/token-price-model";
+import { getLast7dGraphStatus } from "./token-list-graph-status";
 
 describe("getLast7dGraphStatus", () => {
   it("returns NEGATIVE when chronological first price is greater than last price", () => {

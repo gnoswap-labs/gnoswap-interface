@@ -1,10 +1,6 @@
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
+import { type Last7dPricePoint } from "@models/token/token-price-model";
 import BigNumber from "bignumber.js";
-
-export interface Last7dPricePoint {
-  time: string;
-  price: string;
-}
 
 const isUsablePricePoint = (item: Last7dPricePoint) => {
   const time = new Date(item.time).getTime();
