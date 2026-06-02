@@ -45,6 +45,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
     pool.poolPath || "",
     {
       currentTick: pool.currentTick,
+      currentPrice: pool.price,
       tokenA: pool.tokenA,
       tokenB: pool.tokenB,
       includeTokenAmounts: true,
@@ -158,6 +159,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
                   tokenB={pool.tokenB}
                   liquiditySegments={liquiditySegments}
                   currentTick={pool.currentTick}
+                  currentPrice={pool.price}
                   width={258}
                   height={80}
                   mouseover

@@ -74,6 +74,8 @@ const getRawAmount = (segment: PoolLiquiditySegmentModel, key: "tokenAAmount" | 
 const sumRawAmounts = (segments: PoolLiquiditySegmentModel[], key: "tokenAAmount" | "tokenBAmount"): string =>
   segments.map(segment => getRawAmount(segment, key)).reduce((total, rawAmount) => total + rawAmount, 0n).toString();
 
+const absBigInt = (value: bigint): bigint => (value < 0n ? -value : value);
+
 const getVisibleTickWindow = (currentTick: number, visibleTickRange: number): { minTick: number; maxTick: number } => {
   const fullTickRange = MAX_TICK - MIN_TICK;
   const normalizedRange = Math.min(fullTickRange, Math.max(1, Math.trunc(visibleTickRange)));
@@ -746,6 +748,42 @@ describe("createPoolLiquiditySegmentMemo", () => {
     expect(memoizedTransform(changedTicks, options)).toBe(secondSegments);
     expect(transformCalls).toBe(2);
   });
+
+  it("recomputes when the exact current sqrt price or current price changes", () => {
+    const ticks: PoolLiquidityTickModel[] = [
+      { tick: 0, liquidityNet: "100" },
+      { tick: 100, liquidityNet: "-100" },
+    ];
+    const firstSegments = [segment(0, 100, "100", { graphHeightRatio: "0.1" })];
+    const secondSegments = [segment(0, 100, "100", { graphHeightRatio: "0.2" })];
+    const thirdSegments = [segment(0, 100, "100", { graphHeightRatio: "0.3" })];
+    let transformCalls = 0;
+    const transform = (
+      inputTicks: PoolLiquidityTickModel[],
+      inputOptions?: PoolLiquiditySegmentBuildOptions,
+    ): PoolLiquiditySegmentModel[] => {
+      void inputTicks;
+      void inputOptions;
+      transformCalls += 1;
+      return [firstSegments, secondSegments, thirdSegments][transformCalls - 1] ?? thirdSegments;
+    };
+    const memoizedTransform = createPoolLiquiditySegmentMemo(transform);
+    const options = { currentTick: 76, currentSqrtPriceX96: tickToSqrtPriceX96(76), currentPrice: 1.0076 };
+
+    expect(memoizedTransform(ticks, options)).toBe(firstSegments);
+    expect(memoizedTransform(ticks, options)).toBe(firstSegments);
+    expect(transformCalls).toBe(1);
+
+    expect(memoizedTransform(ticks, { ...options, currentSqrtPriceX96: tickToSqrtPriceX96(77) })).toBe(
+      secondSegments,
+    );
+    expect(transformCalls).toBe(2);
+
+    expect(memoizedTransform(ticks, { ...options, currentSqrtPriceX96: tickToSqrtPriceX96(77), currentPrice: 1.0077 })).toBe(
+      thirdSegments,
+    );
+    expect(transformCalls).toBe(3);
+  });
 });
 
 describe("derivePoolLiquidityTokenAmounts", () => {
@@ -818,6 +856,109 @@ describe("derivePoolLiquidityTokenAmounts", () => {
         rawAmount: aboveAmounts.amount1.toString(),
         displayAmount: "0.005012269623051203",
       },
+    });
+  });
+
+  it("uses exact currentSqrtPriceX96 before the currentTick boundary", () => {
+    const tokenA = makeToken("USDC", 6, "usdc");
+    const tokenB = makeToken("USDT", 6, "usdt");
+    const liquidity = "1000000000000000000";
+    const minTick = 0;
+    const maxTick = 100;
+    const exactCurrentSqrtPriceX96 = tickToSqrtPriceX96(50);
+    const exactAmounts = getAmountsForLiquidity(
+      exactCurrentSqrtPriceX96,
+      tickToSqrtPriceX96(minTick),
+      tickToSqrtPriceX96(maxTick),
+      BigInt(liquidity),
+    );
+    const boundaryAmounts = getAmountsForLiquidity(
+      tickToSqrtPriceX96(minTick),
+      tickToSqrtPriceX96(minTick),
+      tickToSqrtPriceX96(maxTick),
+      BigInt(liquidity),
+    );
+
+    const amounts = derivePoolLiquidityTokenAmounts({
+      liquidity,
+      minTick,
+      maxTick,
+      currentTick: minTick,
+      currentSqrtPriceX96: exactCurrentSqrtPriceX96,
+      tokenA,
+      tokenB,
+    });
+
+    expect(amounts).toEqual({
+      tokenAAmount: { rawAmount: exactAmounts.amount0.toString(), displayAmount: "2490519147.795409" },
+      tokenBAmount: { rawAmount: exactAmounts.amount1.toString(), displayAmount: "2503002301.265531" },
+    });
+    expect(BigInt(amounts.tokenAAmount.rawAmount) < boundaryAmounts.amount0).toBe(true);
+    expect(BigInt(amounts.tokenBAmount.rawAmount) > 0n).toBe(true);
+  });
+
+  it("uses exact currentPrice for the USDC/USDT fee-100 current tick mismatch", () => {
+    const tokenA = makeToken("USDC", 6, "usdc");
+    const tokenB = makeToken("USDT", 6, "usdt");
+    const ticks: PoolLiquidityTickModel[] = [
+      { tick: 0, liquidityNet: "2005104374357378" },
+      { tick: 100, liquidityNet: "-2005104374357378" },
+    ];
+    const currentTick = 76;
+    const currentPrice = 1.0076938991871397;
+    const priceSegments = buildPoolLiquiditySegments(ticks, {
+      currentTick,
+      currentPrice,
+      tokenA,
+      tokenB,
+      includeTokenAmounts: true,
+    });
+    const tickBoundarySegments = buildPoolLiquiditySegments(ticks, {
+      currentTick,
+      tokenA,
+      tokenB,
+      includeTokenAmounts: true,
+    });
+    const priceRawTokenA = BigInt(sumRawAmounts(priceSegments, "tokenAAmount"));
+    const tickBoundaryRawTokenA = BigInt(sumRawAmounts(tickBoundarySegments, "tokenAAmount"));
+    const expectedPriceRawTokenA = 2_330_692_486_402n;
+    const expectedTickBoundaryRawTokenA = 2_395_442_455_598n;
+
+    expect(priceRawTokenA < 2_350_000_000_000n).toBe(true);
+    expect(priceRawTokenA > 2_320_000_000_000n).toBe(true);
+    expect(absBigInt(priceRawTokenA - expectedPriceRawTokenA) <= 10_000n).toBe(true);
+    expect(absBigInt(tickBoundaryRawTokenA - expectedTickBoundaryRawTokenA) <= 1_000_000n).toBe(true);
+    expect(tickBoundaryRawTokenA - priceRawTokenA > 60_000_000_000n).toBe(true);
+  });
+
+  it("uses currentSqrtPriceX96 before currentPrice", () => {
+    const tokenA = makeToken("USDC", 6, "usdc");
+    const tokenB = makeToken("USDT", 6, "usdt");
+    const liquidity = "1000000000000000000";
+    const minTick = 0;
+    const maxTick = 100;
+    const exactCurrentSqrtPriceX96 = tickToSqrtPriceX96(25);
+    const exactAmounts = getAmountsForLiquidity(
+      exactCurrentSqrtPriceX96,
+      tickToSqrtPriceX96(minTick),
+      tickToSqrtPriceX96(maxTick),
+      BigInt(liquidity),
+    );
+
+    expect(
+      derivePoolLiquidityTokenAmounts({
+        liquidity,
+        minTick,
+        maxTick,
+        currentTick: 0,
+        currentSqrtPriceX96: exactCurrentSqrtPriceX96,
+        currentPrice: 1.009,
+        tokenA,
+        tokenB,
+      }),
+    ).toEqual({
+      tokenAAmount: { rawAmount: exactAmounts.amount0.toString(), displayAmount: "3738115413.094571" },
+      tokenBAmount: { rawAmount: exactAmounts.amount1.toString(), displayAmount: "1250719001.622256" },
     });
   });
 });

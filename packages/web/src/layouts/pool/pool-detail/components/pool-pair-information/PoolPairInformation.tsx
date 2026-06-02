@@ -24,6 +24,7 @@ interface PoolPairInformationProps {
   loading: boolean;
   loadingBins: boolean;
   liquiditySegments: PoolLiquiditySegmentModel[];
+  currentSqrtPriceX96?: bigint | null;
   availInfo: {
     availZoomIn: boolean;
     availZoomOut: boolean;
@@ -41,6 +42,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
   loading,
   loadingBins,
   liquiditySegments,
+  currentSqrtPriceX96,
   availInfo,
   onZoomIn,
   onZoomOut,
@@ -85,6 +87,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
           pool={pool}
           loading={loading}
           loadingBins={loadingBins}
+          currentSqrtPriceX96={currentSqrtPriceX96}
           availInfo={availInfo}
           onZoomIn={onZoomIn}
           onZoomOut={onZoomOut}

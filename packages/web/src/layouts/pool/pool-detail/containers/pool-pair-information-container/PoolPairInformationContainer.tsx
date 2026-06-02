@@ -12,7 +12,7 @@ import { usePoolLiquiditySegmentsByPath } from "@hooks/pool/data/use-pool-liquid
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/data/use-token-data";
-import { useGetPoolDetailByPath } from "@query/pools";
+import { useGetPoolDetailByPath, useGetPoolSqrtPriceX96 } from "@query/pools";
 import { PoolConverter } from "@services/converters/pool";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 
@@ -31,6 +31,9 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
   const poolPath = router.getPoolPath();
   const { isMobile } = useWindowSize();
   const { data, isLoading: loading } = useGetPoolDetailByPath(poolPath as string, {
+    enabled: !!poolPath,
+  });
+  const { data: currentSqrtPriceX96, isLoading: isLoadingSqrtPriceX96 } = useGetPoolSqrtPriceX96(poolPath as string, {
     enabled: !!poolPath,
   });
   const { loading: loadingPosition } = usePositionData({
@@ -89,6 +92,8 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
     poolPath as string,
     {
       currentTick: pool.currentTick,
+      currentSqrtPriceX96: currentSqrtPriceX96 ?? undefined,
+      currentPrice: pool.price,
       tokenA: pool.tokenA,
       tokenB: pool.tokenB,
       includeTokenAmounts: true,
@@ -138,8 +143,9 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
       onClickPath={onClickPath}
       feeStr={feeStr}
       loading={loading || loadingPosition}
-      loadingBins={loading || loadingPosition || isLoadingLiquiditySegments}
+      loadingBins={loading || loadingPosition || isLoadingLiquiditySegments || isLoadingSqrtPriceX96}
       liquiditySegments={liquiditySegments}
+      currentSqrtPriceX96={currentSqrtPriceX96}
       availInfo={availInfo}
       onZoomIn={handleZoomIn}
       onZoomOut={handleZoomOut}

@@ -143,6 +143,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     position.poolPath,
     {
       currentTick: currentTick ?? undefined,
+      currentPrice: position.pool.price,
       tokenA,
       tokenB,
       includeTokenAmounts: true,
@@ -967,6 +968,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
           tokenB={tokenB}
           liquiditySegments={liquiditySegments}
           currentTick={currentTick}
+          currentPrice={position.pool.price}
           width={GRAPH_WIDTH}
           height={150}
           mouseover

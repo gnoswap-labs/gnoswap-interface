@@ -34,6 +34,8 @@ export interface PoolLiquiditySegmentModel {
 
 export interface PoolLiquiditySegmentBuildOptions {
   currentTick?: number;
+  currentSqrtPriceX96?: bigint;
+  currentPrice?: number;
   tokenA?: Pick<TokenModel, "path" | "decimals" | "symbol" | "displaySymbol">;
   tokenB?: Pick<TokenModel, "path" | "decimals" | "symbol" | "displaySymbol">;
   displayTokenAPath?: string;
@@ -48,6 +50,8 @@ export interface PoolLiquidityTokenAmountBuildOptions {
   minTick: number;
   maxTick: number;
   currentTick: number;
+  currentSqrtPriceX96?: bigint;
+  currentPrice?: number;
   tokenA: Pick<TokenModel, "path" | "decimals" | "symbol" | "displaySymbol">;
   tokenB: Pick<TokenModel, "path" | "decimals" | "symbol" | "displaySymbol">;
 }

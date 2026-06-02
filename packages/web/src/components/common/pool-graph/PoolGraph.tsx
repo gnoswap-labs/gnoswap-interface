@@ -24,6 +24,8 @@ export interface PoolGraphProps {
   tokenB: TokenModel;
   liquiditySegments: PoolLiquiditySegmentModel[];
   currentTick?: number | null;
+  currentSqrtPriceX96?: bigint | null;
+  currentPrice?: number | null;
   mouseover?: boolean;
   visibleLabel?: boolean;
   width: number;
@@ -52,6 +54,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   tokenB,
   liquiditySegments = [],
   currentTick = null,
+  currentSqrtPriceX96 = null,
+  currentPrice = null,
   mouseover,
   width,
   height,
@@ -92,6 +96,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       tokenA,
       tokenB,
       currentTick,
+      currentSqrtPriceX96,
+      currentPrice,
       isReversed,
       positionLiquidity,
       positionTickLower,
@@ -103,6 +109,8 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     tokenA,
     tokenB,
     currentTick,
+    currentSqrtPriceX96,
+    currentPrice,
     isReversed,
     positionLiquidity,
     positionTickLower,

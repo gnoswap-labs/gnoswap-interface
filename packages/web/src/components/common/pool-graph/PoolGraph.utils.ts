@@ -6,7 +6,7 @@ import { derivePoolLiquidityTokenAmounts } from "@utils/pool-liquidity-utils";
 import { makeDisplayPrice } from "@utils/pool-utils";
 import { checkGnotPath } from "@utils/common";
 import { convertToKMBWithPrefix, formatTokenExchangeRate } from "@utils/stake-position-utils";
-import { tickToPrice } from "@utils/swap-utils";
+import { rawBySqrtX96, tickToPrice } from "@utils/swap-utils";
 
 import { ReservedBin } from "./PoolGraph.types";
 
@@ -16,6 +16,8 @@ interface CreatePoolGraphBinsOptions {
   tokenA: Pick<TokenModel, "path" | "decimals" | "symbol" | "displaySymbol">;
   tokenB: Pick<TokenModel, "path" | "decimals" | "symbol" | "displaySymbol">;
   currentTick?: number | null;
+  currentSqrtPriceX96?: bigint | null;
+  currentPrice?: number | null;
   isReversed?: boolean;
   positionLiquidity?: string | number | null;
   positionTickLower?: number | null;
@@ -151,14 +153,28 @@ const getPositionOverlapBounds = (
 
 const getCurrentTokenBPerTokenA = (
   currentTick: number | null | undefined,
+  currentSqrtPriceX96: bigint | null | undefined,
+  currentPrice: number | null | undefined,
   tokenA: Pick<TokenModel, "decimals">,
   tokenB: Pick<TokenModel, "decimals">,
 ): BigNumber => {
-  if (currentTick == null) {
+  const rawPrice = (() => {
+    if (currentPrice != null && Number.isFinite(currentPrice) && currentPrice > 0) {
+      return currentPrice;
+    }
+
+    if (currentSqrtPriceX96 != null && currentSqrtPriceX96 > 0n) {
+      return rawBySqrtX96(currentSqrtPriceX96);
+    }
+
+    return currentTick == null ? 0 : tickToPrice(currentTick);
+  })();
+
+  if (rawPrice <= 0) {
     return BigNumber(0);
   }
 
-  const price = BigNumber(tickToPrice(currentTick)).shiftedBy(tokenA.decimals - tokenB.decimals);
+  const price = BigNumber(rawPrice).shiftedBy(tokenA.decimals - tokenB.decimals);
   return price.isFinite() && price.isGreaterThan(0) ? price : BigNumber(0);
 };
 
@@ -186,12 +202,14 @@ export const createPoolGraphBins = ({
   tokenA,
   tokenB,
   currentTick,
+  currentSqrtPriceX96,
+  currentPrice,
   isReversed = false,
   positionLiquidity,
   positionTickLower,
   positionTickUpper,
 }: CreatePoolGraphBinsOptions): ReservedBin[] => {
-  const tokenBPerTokenA = getCurrentTokenBPerTokenA(currentTick, tokenA, tokenB);
+  const tokenBPerTokenA = getCurrentTokenBPerTokenA(currentTick, currentSqrtPriceX96, currentPrice, tokenA, tokenB);
   const displayHeights = liquiditySegments.map(segment => getDisplayHeight(segment, tokenBPerTokenA));
   const maxPoolDisplayHeight = displayHeights.reduce(
     (currentMax, displayHeight) => BigNumber.max(currentMax, displayHeight),
@@ -216,6 +234,8 @@ export const createPoolGraphBins = ({
             minTick: amountOverlapBounds.minTick,
             maxTick: amountOverlapBounds.maxTick,
             currentTick: currentTick ?? amountOverlapBounds.minTick,
+            currentSqrtPriceX96: currentSqrtPriceX96 ?? undefined,
+            currentPrice: currentPrice ?? undefined,
             tokenA,
             tokenB,
           })
@@ -227,6 +247,8 @@ export const createPoolGraphBins = ({
             minTick: visualOverlapBounds.minTick,
             maxTick: visualOverlapBounds.maxTick,
             currentTick: currentTick ?? visualOverlapBounds.minTick,
+            currentSqrtPriceX96: currentSqrtPriceX96 ?? undefined,
+            currentPrice: currentPrice ?? undefined,
             tokenA,
             tokenB,
           })

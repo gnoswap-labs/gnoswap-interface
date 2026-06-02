@@ -2,7 +2,7 @@ import BigNumber from "bignumber.js";
 import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
 import { getAmountsForLiquidity } from "./liquidity-utils";
 import { tickToSqrtPriceX96 } from "./math.utils";
-import { tickToPrice } from "./swap-utils";
+import { priceToSqrtX96, rawBySqrtX96, tickToPrice } from "./swap-utils";
 import {
   BuildPoolLiquiditySegmentsFn,
   PoolLiquidityDerivedTokenAmounts,
@@ -281,12 +281,47 @@ const getDisplayAmount = (rawAmount: bigint, decimals: number): BigNumber => {
   return BigNumber(rawAmount.toString()).dividedBy(pow10(decimals).toString());
 };
 
+const isPositiveFinitePrice = (price: number | undefined): price is number => {
+  return price !== undefined && Number.isFinite(price) && price > 0;
+};
+
+const isPositiveSqrtPriceX96 = (sqrtPriceX96: bigint | undefined): sqrtPriceX96 is bigint => {
+  return sqrtPriceX96 !== undefined && sqrtPriceX96 > 0n;
+};
+
+const resolveCurrentSqrtPriceX96 = ({
+  currentSqrtPriceX96,
+  currentPrice,
+  currentTick,
+}: Pick<PoolLiquidityTokenAmountBuildOptions, "currentSqrtPriceX96" | "currentPrice" | "currentTick">): bigint => {
+  if (isPositiveSqrtPriceX96(currentSqrtPriceX96)) {
+    return currentSqrtPriceX96;
+  }
+
+  if (isPositiveFinitePrice(currentPrice)) {
+    return priceToSqrtX96(currentPrice);
+  }
+
+  return tickToSqrtPriceX96(currentTick);
+};
+
 const getCurrentTokenBPerTokenA = (options: PoolLiquiditySegmentBuildOptions): BigNumber => {
-  if (options.currentTick === undefined || !options.tokenA || !options.tokenB) {
+  if (!options.tokenA || !options.tokenB) {
     return BigNumber(0);
   }
 
-  const price = BigNumber(tickToPrice(options.currentTick)).shiftedBy(options.tokenA.decimals - options.tokenB.decimals);
+  const rawPrice = (() => {
+    if (isPositiveFinitePrice(options.currentPrice)) {
+      return options.currentPrice;
+    }
+
+    if (isPositiveSqrtPriceX96(options.currentSqrtPriceX96)) {
+      return rawBySqrtX96(options.currentSqrtPriceX96);
+    }
+
+    return options.currentTick === undefined ? 0 : tickToPrice(options.currentTick);
+  })();
+  const price = BigNumber(rawPrice).shiftedBy(options.tokenA.decimals - options.tokenB.decimals);
   return price.isFinite() && price.isGreaterThan(0) ? price : BigNumber(0);
 };
 
@@ -320,6 +355,8 @@ const getSegmentDisplayAmounts = (
         minTick: interval.minTick,
         maxTick: interval.maxTick,
         currentTick: options.currentTick ?? segment.minTick,
+        currentSqrtPriceX96: options.currentSqrtPriceX96,
+        currentPrice: options.currentPrice,
         tokenA,
         tokenB,
       });
@@ -352,6 +389,8 @@ const getSegmentHeight = (
         minTick: interval.minTick,
         maxTick: interval.maxTick,
         currentTick: options.currentTick ?? segment.minTick,
+        currentSqrtPriceX96: options.currentSqrtPriceX96,
+        currentPrice: options.currentPrice,
         tokenA,
         tokenB,
       });
@@ -433,6 +472,8 @@ export function createPoolLiquiditySegmentMemo(
     const tickSignature = ticks.map(tick => `${tick.tick}:${tick.liquidityNet}`).join("|");
     const optionSignature = JSON.stringify({
       currentTick: options?.currentTick,
+      currentSqrtPriceX96: options?.currentSqrtPriceX96?.toString(),
+      currentPrice: options?.currentPrice,
       tokenAPath: options?.tokenA?.path,
       tokenADecimals: options?.tokenA?.decimals,
       tokenBPath: options?.tokenB?.path,
@@ -459,7 +500,7 @@ export function derivePoolLiquidityTokenAmounts(
   options: PoolLiquidityTokenAmountBuildOptions,
 ): PoolLiquidityDerivedTokenAmounts {
   const liquidity = BigInt(options.liquidity);
-  const currentPriceX96 = tickToSqrtPriceX96(options.currentTick);
+  const currentPriceX96 = resolveCurrentSqrtPriceX96(options);
   const minPriceX96 = tickToSqrtPriceX96(options.minTick);
   const maxPriceX96 = tickToSqrtPriceX96(options.maxTick);
   const { amount0, amount1 } = getAmountsForLiquidity(currentPriceX96, minPriceX96, maxPriceX96, liquidity);

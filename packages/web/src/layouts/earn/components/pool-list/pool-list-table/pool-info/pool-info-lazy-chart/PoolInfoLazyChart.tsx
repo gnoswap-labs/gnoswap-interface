@@ -24,7 +24,7 @@ const PoolGraph = dynamic<PoolGraphProps>(() => import("@components/common/pool-
 });
 
 const PoolInfoLazyChart: React.FC<PoolInfoLazyChartProps> = ({ pool, width }) => {
-  const { tokenA, tokenB, currentTick } = pool;
+  const { tokenA, tokenB, currentTick, price } = pool;
   const { themeKey } = useTheme();
 
   const observerRef = useRef<HTMLDivElement | null>(null);
@@ -34,6 +34,7 @@ const PoolInfoLazyChart: React.FC<PoolInfoLazyChartProps> = ({ pool, width }) =>
     pool.poolId,
     {
       currentTick,
+      currentPrice: price,
       tokenA,
       tokenB,
       includeTokenAmounts: true,
@@ -98,6 +99,7 @@ const PoolInfoLazyChart: React.FC<PoolInfoLazyChartProps> = ({ pool, width }) =>
           tokenA={tokenA}
           tokenB={tokenB}
           currentTick={currentTick}
+          currentPrice={price}
           liquiditySegments={liquiditySegments}
           mouseover
           disabled={isHideBar}

@@ -193,6 +193,8 @@ export const useSelectPool = ({
     calculatedPoolPath,
     {
       currentTick: poolFromDb?.currentTick,
+      currentSqrtPriceX96: sqrtPriceX96 ?? undefined,
+      currentPrice: price,
       tokenA: orderedSegmentTokens?.[0],
       tokenB: orderedSegmentTokens?.[1],
       includeTokenAmounts: true,
@@ -201,7 +203,14 @@ export const useSelectPool = ({
     },
     {
       enabled: !!calculatedPoolPath && !isCreate,
-      queryKey: ["useSelectPool/liquiditySegments", calculatedPoolPath, zoomLevel, isCreate],
+      queryKey: [
+        "useSelectPool/liquiditySegments",
+        calculatedPoolPath,
+        zoomLevel,
+        isCreate,
+        sqrtPriceX96?.toString(),
+        price,
+      ],
     },
   );
 

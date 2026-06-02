@@ -27,6 +27,8 @@ export const usePoolLiquiditySegmentsByPath = (
   const { data: liquidityTicks = [], isLoading, isFetched, isError } = useGetLiquidityTicksByPath(poolPath, queryOptions);
   const memoizedTransform = useMemo(() => getPoolLiquiditySegmentMemoByPath(poolPath), [poolPath]);
   const currentTick = segmentOptions?.currentTick;
+  const currentSqrtPriceX96 = segmentOptions?.currentSqrtPriceX96;
+  const currentPrice = segmentOptions?.currentPrice;
   const tokenA = segmentOptions?.tokenA;
   const tokenB = segmentOptions?.tokenB;
   const displayTokenAPath = segmentOptions?.displayTokenAPath;
@@ -38,6 +40,8 @@ export const usePoolLiquiditySegmentsByPath = (
   const stableSegmentOptions = useMemo(
     () => ({
       currentTick,
+      currentSqrtPriceX96,
+      currentPrice,
       tokenA,
       tokenB,
       displayTokenAPath,
@@ -46,7 +50,18 @@ export const usePoolLiquiditySegmentsByPath = (
       visibleTickRange,
       binCount,
     }),
-    [currentTick, tokenA, tokenB, displayTokenAPath, displayTokenBPath, includeTokenAmounts, visibleTickRange, binCount],
+    [
+      currentTick,
+      currentSqrtPriceX96,
+      currentPrice,
+      tokenA,
+      tokenB,
+      displayTokenAPath,
+      displayTokenBPath,
+      includeTokenAmounts,
+      visibleTickRange,
+      binCount,
+    ],
   );
 
   const liquiditySegments = useMemo(

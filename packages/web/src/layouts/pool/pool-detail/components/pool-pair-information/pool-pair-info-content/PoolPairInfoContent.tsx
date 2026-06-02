@@ -24,7 +24,6 @@ import { ThemeState } from "@states/index";
 import { formatOtherPrice, formatPoolPairAmount, formatRate } from "@utils/new-number-utils";
 import { makeDisplayPrice } from "@utils/pool-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
-import { tickToPrice } from "@utils/swap-utils";
 
 import {
   AprDivider,
@@ -47,6 +46,7 @@ interface PoolPairInfoContentProps {
   loading: boolean;
   loadingBins: boolean;
   liquiditySegments: PoolLiquiditySegmentModel[];
+  currentSqrtPriceX96?: bigint | null;
   availInfo: {
     availZoomIn: boolean;
     availZoomOut: boolean;
@@ -60,6 +60,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   loading,
   loadingBins,
   liquiditySegments,
+  currentSqrtPriceX96,
   availInfo,
   onZoomIn,
   onZoomOut,
@@ -209,8 +210,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   }, [pool?.tokenB?.displaySymbol, pool?.tokenA?.displaySymbol]);
 
   const currentPriceRatioNumber = useMemo(() => {
-    return makeDisplayPrice(tickToPrice(pool.currentTick), pool.tokenA, pool.tokenB);
-  }, [pool.currentTick, pool.tokenA, pool.tokenB]);
+    return makeDisplayPrice(pool.price, pool.tokenA, pool.tokenB);
+  }, [pool.price, pool.tokenA, pool.tokenB]);
 
   const currentPriceRatio = useMemo(() => {
     return formatTokenExchangeRate(currentPriceRatioNumber, {
@@ -528,6 +529,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               tokenB={pool?.tokenB}
               liquiditySegments={liquiditySegments}
               currentTick={pool?.currentTick}
+              currentSqrtPriceX96={currentSqrtPriceX96}
+              currentPrice={pool?.price}
               width={GRAPWIDTH}
               height={150}
               mouseover
