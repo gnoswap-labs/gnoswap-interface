@@ -18,9 +18,9 @@ import { TokenState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
 import { getLabelChartV2, getLocalizeTime, getNumberOfAxis } from "@utils/chart";
 import { checkPositivePrice, generateDateSequence } from "@utils/common";
+import { formatPrice } from "@utils/new-number-utils";
 
 import TokenChart, { ChartInfo, TokenInfo } from "../../components/token-chart/TokenChart";
-import { formatTokenDetailMainPrice } from "./token-chart-container.utils";
 
 const TokenChartGraphPeriods: Readonly<string[]> = ["1D", "7D", "1M", "1Y", "All"] as const;
 export type TokenChartGraphPeriodType = (typeof TokenChartGraphPeriods)[number];
@@ -309,7 +309,7 @@ const TokenChartContainer: React.FC = () => {
         },
         priceInfo: {
           amount: {
-            value: formatTokenDetailMainPrice(currentPrice),
+            value: formatPrice(currentPrice, { isKMB: false, forcedDecimals: true }),
             denom: "USD",
             status: dataToday.status,
           },
