@@ -18,7 +18,10 @@ export const Default: Story = {
     content: "description",
     links: {
       Website: "https://gnoswap.io",
-      Gnoscan: "https://gnoscan.io/tokens/r/demo/wugnot",
+      X: "https://x.com/gnoswaplabs",
+      Discord: "https://discord.com/invite/u4bdGHStb2",
+      Docs: "https://docs.gnoswap.io",
+      GnoScan: "https://gnoscan.io/tokens/r/demo/wugnot",
     },
   },
 };

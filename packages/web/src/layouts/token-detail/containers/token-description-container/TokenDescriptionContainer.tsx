@@ -12,17 +12,14 @@ import TokenDescription from "../../components/token-description/TokenDescriptio
 
 export interface DescriptionInfo {
   token: TokenModel;
-  links: {
-    Website: string;
-    Gnoscan: string;
-  };
+  links: Record<string, string>;
 }
 
 export const descriptionInit: DescriptionInfo = {
   token: GNS_TOKEN,
   links: {
     Website: "https://gnoswap.io",
-    Gnoscan: "https://gnoscan.io/tokens/r/demo/wugnot",
+    GnoScan: "https://gnoscan.io/tokens/r/demo/wugnot",
   },
 };
 
@@ -62,7 +59,10 @@ const TokenDescriptionContainer: React.FC = () => {
         },
         links: {
           Website: tokenB.websiteURL || "",
-          Gnoscan: tokenB.path === "ugnot" ? getGnoscanUrl() : getTokenUrl(tokenB.tokenId),
+          X: tokenB.twitterURL || "",
+          Discord: tokenB.discordURL || "",
+          Docs: tokenB.docsURL || "",
+          GnoScan: tokenB.path === "ugnot" ? getGnoscanUrl() : getTokenUrl(tokenB.tokenId),
         },
       }));
     }
