@@ -219,30 +219,31 @@ const TokenListContainer: React.FC = () => {
       .filter((token: TokenModel) => token.path !== wugnotPath)
       .map((item: TokenModel) => {
         const isGnot = item.path === "ugnot";
-        const tempTokenPrice: TokenPriceModel = tokenPrices[isGnot ? wugnotPath : item.path] ?? {};
-        const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
-        const transferData = isGnot ? tempWuGnot : tempTokenPrice;
-        const splitMostLiquidity: string[] = tempTokenPrice?.mostLiquidityPool?.split(":") || [];
+        const priceDataPath = isGnot ? wugnotPath : item.path;
+        const selectedPriceData: TokenPriceModel = tokenPrices[priceDataPath] ?? {};
+        const gnotPriceData = tokenPrices.ugnot;
+        const rowMarketCap = isGnot ? gnotPriceData?.marketCap : selectedPriceData.marketCap;
+        const splitMostLiquidity: string[] = selectedPriceData.mostLiquidityPool?.split(":") || [];
         const swapFeeType: SwapFeeTierType = `FEE_${splitMostLiquidity[2]}` as SwapFeeTierType;
         const tempTokenA = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[0]);
         const tempTokenB = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[1]);
 
-        const data1day = checkPositivePrice(transferData.pricesBefore?.latestPrice, transferData.pricesBefore?.price1d);
+        const data1day = checkPositivePrice(selectedPriceData.pricesBefore?.latestPrice, selectedPriceData.pricesBefore?.price1d);
 
-        const data7day = checkPositivePrice(transferData.pricesBefore?.latestPrice, transferData.pricesBefore?.price7d);
+        const data7day = checkPositivePrice(selectedPriceData.pricesBefore?.latestPrice, selectedPriceData.pricesBefore?.price7d);
         const last7days = [
-          ...[...(transferData?.last7d || [])]
+          ...[...(selectedPriceData.last7d || [])]
             .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime())
             .map(item => Number(item.price || 0)),
-          ...(transferData?.pricesBefore?.latestPrice ? [Number(transferData?.pricesBefore?.latestPrice)] : []),
+          ...(selectedPriceData.pricesBefore?.latestPrice ? [Number(selectedPriceData.pricesBefore.latestPrice)] : []),
         ];
         const graphStatus = getLast7dGraphStatus(last7days);
 
-        const data30D = checkPositivePrice(transferData.pricesBefore?.latestPrice, transferData.pricesBefore?.price30d);
+        const data30D = checkPositivePrice(selectedPriceData.pricesBefore?.latestPrice, selectedPriceData.pricesBefore?.price30d);
 
         return {
-          ...transferData,
-          priceGradeType: transferData.priceGradeType,
+          ...selectedPriceData,
+          priceGradeType: selectedPriceData.priceGradeType,
           token: {
             path: item.path,
             tokenId: item.tokenId,
@@ -251,7 +252,7 @@ const TokenListContainer: React.FC = () => {
             displaySymbol: item.displaySymbol,
             logoURI: item.logoURI,
           },
-          mostLiquidPool: tempTokenPrice?.mostLiquidityPool
+          mostLiquidPool: selectedPriceData.mostLiquidityPool
             ? {
                 poolId: Math.floor(Math.random() * 50 + 1).toString(),
                 tokenPair: {
@@ -276,20 +277,16 @@ const TokenListContainer: React.FC = () => {
               }
             : undefined,
           last7days,
-          marketCap: transferData.marketCap
-            ? `$${Math.floor(
-                Number((isGnot ? 1000000000 * Number(transferData.usd) : transferData.marketCap) || 0),
-              ).toLocaleString()}`
-            : "-",
-          liquidity: formatOtherPrice(transferData.lockedTokensUsd, {
+          marketCap: rowMarketCap ? `$${Math.floor(Number(rowMarketCap || 0)).toLocaleString()}` : "-",
+          liquidity: formatOtherPrice(selectedPriceData.lockedTokensUsd, {
             decimals: 0,
             isKMB: false,
           }),
-          volume24h: formatOtherPrice(transferData.volumeUsd24h, {
+          volume24h: formatOtherPrice(selectedPriceData.volumeUsd24h, {
             decimals: 0,
             isKMB: false,
           }),
-          price: transferData.usd ? formatPrice(transferData.usd, { isKMB: false, forcedDecimals: true }) : "--",
+          price: selectedPriceData.usd ? formatPrice(selectedPriceData.usd, { isKMB: false, forcedDecimals: true }) : "--",
           priceOf1d: {
             status: data1day.status,
             value:
