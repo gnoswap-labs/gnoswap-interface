@@ -190,7 +190,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   const [baseLineYAxis, setBaseLineYAxis] = useState<string[]>([]);
   const [baseLineNumberWidth, setBaseLineNumberWidth] = useState<number>(0);
   const { height: customHeight = 0, locationTooltip } = customData;
-  const baseLineCount = useMemo(() => 4, []);
+  const baseLineCount = 4;
   const theme = useTheme();
 
   const isFocus = useCallback(() => {

@@ -107,15 +107,10 @@ export const useIncreaseHandle = () => {
     };
   }, [selectedPosition?.pool]);
 
-  const inRange = useMemo(() => {
-    if (!selectedPosition) return false;
-    const { tickLower, tickUpper, pool } = selectedPosition;
-    const currentTick = pool.currentTick;
-    if (currentTick < tickLower || currentTick > tickUpper) {
-      return false;
-    }
-    return true;
-  }, [selectedPosition]);
+  const inRange = !selectedPosition
+    ? false
+    : selectedPosition.pool.currentTick >= selectedPosition.tickLower &&
+      selectedPosition.pool.currentTick <= selectedPosition.tickUpper;
 
   const rangeStatus = useMemo(() => {
     return selectedPosition?.closed

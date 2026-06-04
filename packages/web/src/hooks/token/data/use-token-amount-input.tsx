@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import BigNumber from "bignumber.js";
 
 import { TokenModel } from "@models/token/token-model";
@@ -69,16 +69,13 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
   const { connected: isConnectedWallet, isSwitchNetwork } = useWallet();
 
   const [amount, setAmount] = useState<string>("0");
-  const [balance, setBalance] = useState<string>("0");
   const { displayBalanceMap, tokenPrices } = useTokenData();
 
-  useEffect(() => {
+  const balance = useMemo(() => {
     if (token && displayBalanceMap[token.path]) {
-      const balance = displayBalanceMap[token.path];
-      setBalance(BigNumber(balance ?? 0).toFormat());
-    } else {
-      setBalance("0");
+      return BigNumber(displayBalanceMap[token.path] ?? 0).toFormat();
     }
+    return "0";
   }, [displayBalanceMap, token]);
 
   const usdValue = useMemo(() => {

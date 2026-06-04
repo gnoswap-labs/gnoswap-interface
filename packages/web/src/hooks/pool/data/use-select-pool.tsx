@@ -219,10 +219,6 @@ export const useSelectPool = ({
     return [[0, 0], ...result];
   }, [ticks]);
 
-  const poolPath = useMemo(() => {
-    return latestPoolPath;
-  }, [latestPoolPath]);
-
   const renderState = useCallback(
     (isIgnoreDefaultLoading = false) => {
       if (!tokenA || !tokenB || !feeTier) return "NONE";
@@ -537,7 +533,7 @@ export const useSelectPool = ({
   return {
     startPrice,
     bins: isCreate ? initializeBins : bins,
-    poolPath,
+    poolPath: latestPoolPath,
     renderState,
     feeTier,
     tickSpacing: tickSpacing ?? 1,

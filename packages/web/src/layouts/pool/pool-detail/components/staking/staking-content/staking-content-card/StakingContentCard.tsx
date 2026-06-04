@@ -109,9 +109,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   const { tokenPrices } = useTokenData();
   const hasPosition = positions.length > 0;
 
-  const checkedStep = useMemo(() => {
-    return checkPoints.includes(period);
-  }, [checkPoints, period]);
+  const checkedStep = checkPoints.includes(period);
 
   const periodInfo = useMemo(() => {
     return STAKING_PERIOD_INFO[period];
@@ -289,9 +287,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({ period, checkPoints, pos
 
   const hasPosition = positions.length > 0;
 
-  const checkedStep = useMemo(() => {
-    return checkPoints.includes(period);
-  }, [checkPoints, period]);
+  const checkedStep = checkPoints.includes(period);
 
   const periodInfo = useMemo(() => {
     return STAKING_PERIOD_INFO[period];
