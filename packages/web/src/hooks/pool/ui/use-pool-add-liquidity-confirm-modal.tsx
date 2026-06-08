@@ -328,8 +328,8 @@ export const usePoolAddLiquidityConfirmModal = ({
 
     broadcastLoading(
       getMessage(DexEvent.ADD, "pending", {
-        tokenASymbol: tokenA?.symbol,
-        tokenBSymbol: tokenB?.symbol,
+        tokenASymbol: tokenA?.displaySymbol,
+        tokenBSymbol: tokenB?.displaySymbol,
         tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
           maximumFractionDigits: tokenA.decimals,
         }),
@@ -370,8 +370,8 @@ export const usePoolAddLiquidityConfirmModal = ({
             formatData: response => {
               if (!response) {
                 return {
-                  tokenASymbol: tokenA?.symbol,
-                  tokenBSymbol: tokenB?.symbol,
+                  tokenASymbol: tokenA?.displaySymbol,
+                  tokenBSymbol: tokenB?.displaySymbol,
                   tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
                     maximumFractionDigits: tokenA.decimals,
                   }),
@@ -382,8 +382,8 @@ export const usePoolAddLiquidityConfirmModal = ({
               }
 
               return {
-                tokenASymbol: tokenA?.symbol,
-                tokenBSymbol: tokenB?.symbol,
+                tokenASymbol: tokenA?.displaySymbol,
+                tokenBSymbol: tokenB?.displaySymbol,
                 tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
                   maximumFractionDigits: tokenA.decimals,
                 }),
@@ -410,8 +410,8 @@ export const usePoolAddLiquidityConfirmModal = ({
               DexEvent.ADD,
               "success",
               {
-                tokenASymbol: tokenA?.symbol || "",
-                tokenBSymbol: tokenB?.symbol || "",
+                tokenASymbol: tokenA?.displaySymbol || "",
+                tokenBSymbol: tokenB?.displaySymbol || "",
                 tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
                   maximumFractionDigits: tokenA.decimals,
                 }),
@@ -429,8 +429,8 @@ export const usePoolAddLiquidityConfirmModal = ({
         ) {
           broadcastRejected(
             getMessage(DexEvent.ADD, "error", {
-              tokenASymbol: tokenA?.symbol,
-              tokenBSymbol: tokenB?.symbol,
+              tokenASymbol: tokenA?.displaySymbol,
+              tokenBSymbol: tokenB?.displaySymbol,
               tokenAAmount: Number(tokenAAmount).toLocaleString("en-US", {
                 maximumFractionDigits: tokenA.decimals,
               }),

@@ -126,8 +126,8 @@ const PoolAddLiquidityContainer: React.FC = () => {
     let estimatedApr: string = formatRate(selectPool.estimatedAPR) ?? "-";
 
     if (selectPool.selectedFullRange) {
-      const tokenASymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.symbol : tokenB?.symbol;
-      const tokenBSymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.symbol : tokenA?.symbol;
+      const tokenASymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.displaySymbol : tokenB?.displaySymbol;
+      const tokenBSymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.displaySymbol : tokenA?.displaySymbol;
       depositRatio = `50.0% ${tokenASymbol} / 50.0% ${tokenBSymbol}`;
       return {
         depositRatio,
@@ -140,8 +140,8 @@ const PoolAddLiquidityContainer: React.FC = () => {
     if (tokenAdepositRatio !== null) {
       const tokenARatioStr = BigNumber(tokenAdepositRatio).toFixed(1);
       const tokenBRatioStr = BigNumber(100 - tokenAdepositRatio).toFixed(1);
-      const tokenASymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.symbol : tokenB?.symbol;
-      const tokenBSymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.symbol : tokenA?.symbol;
+      const tokenASymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.displaySymbol : tokenB?.displaySymbol;
+      const tokenBSymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.displaySymbol : tokenA?.displaySymbol;
       depositRatio = `${tokenARatioStr}% ${tokenASymbol} / ${tokenBRatioStr}% ${tokenBSymbol}`;
     }
     if (tokenAdepositRatio === 0 || tokenAdepositRatio === 100) {
@@ -161,7 +161,8 @@ const PoolAddLiquidityContainer: React.FC = () => {
     selectPool.feeBoost,
     selectPool.selectedFullRange,
     tokenA?.symbol,
-    tokenB?.symbol,
+    tokenA?.displaySymbol,
+    tokenB?.displaySymbol,
     selectPool.estimatedAPR,
   ]);
 
@@ -449,8 +450,8 @@ const PoolAddLiquidityContainer: React.FC = () => {
 
       const poolPath = router.getPoolPath() || "";
       const splitPath: string[] = poolPath.split(":") || [];
-      const currentTokenA = tokens.find(token => token.path === splitPath[0]) || null;
-      const currentTokenB = tokens.find(token => token.path === splitPath[1]) || null;
+      const currentTokenA = tokens.find((token: TokenModel) => token.path === splitPath[0]) || null;
+      const currentTokenB = tokens.find((token: TokenModel) => token.path === splitPath[1]) || null;
       const feeTier = makeSwapFeeTier(splitPath[2]);
       setSwapFeeTier(feeTier);
       setSwapValue(prev => ({
