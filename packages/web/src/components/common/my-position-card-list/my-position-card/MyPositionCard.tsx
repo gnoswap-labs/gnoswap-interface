@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { RANGE_STATUS_OPTION, SwapFeeTierInfoMap } from "@constants/option.constant";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
@@ -241,7 +241,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const { tokenA, tokenB } = pool;
   const [isHiddenStart] = useState(false);
   const [viewMyRange, setViewMyRange] = useState(false);
-  const [shortenInRange, setShortenInRange] = useState(false);
 
   const { prefetch } = usePrefetchNavigation({
     pageType: "POOL",
@@ -317,8 +316,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return formatOtherPrice(result);
   }, [position.rewards, tokenPrices]);
 
-  const boxHeaderId = useMemo(() => position.id + "-box-header", [position.id]);
-
   const handleMouseEnter = useCallback(() => {
     prefetch();
   }, [prefetch]);
@@ -326,11 +323,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const handleClick = useCallback(() => {
     movePoolDetail(pool.id, position.id);
   }, [movePoolDetail, pool.id, position.id]);
-
-  useLayoutEffect(() => {
-    const titleElement = document.getElementById(boxHeaderId);
-    setShortenInRange((titleElement?.clientWidth || 0) > 210);
-  }, [inRange, boxHeaderId]);
 
   return (
     <MyPositionCardWrapperBorder
@@ -346,7 +338,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
           disabled={inRange === null}
         >
           <div className="title-wrapper">
-            <div id={boxHeaderId} className="box-header">
+            <div className="box-header">
               <MissingLogo symbol={`ID #${position.id}`} url={position.tokenUri} width={24} showTooltip />
               <span>{`${tokenA.displaySymbol}/${tokenB.displaySymbol}`}</span>
               <div className="badge-group">
@@ -356,7 +348,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
             <RangeBadge
               isClosed={position.closed}
               className={inRange === null ? "disabled-range" : ""}
-              isShorten={shortenInRange}
               status={
                 inRange === null ? RANGE_STATUS_OPTION.NONE : inRange ? RANGE_STATUS_OPTION.IN : RANGE_STATUS_OPTION.OUT
               }

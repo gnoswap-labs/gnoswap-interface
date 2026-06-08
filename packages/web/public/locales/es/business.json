@@ -77,10 +77,8 @@
     "txt": "Tasa de router"
   },
   "rangeStatus": {
-    "inRange": "En rango",
-    "inRange_short": "En",
-    "outRange": "Fuera de rango",
-    "outRange_short": "En"
+    "active": "Activo",
+    "inactive": "Inactivo"
   },
   "rewardType": {
     "external_reward": "Recompensas externas",

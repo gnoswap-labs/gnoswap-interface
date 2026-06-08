@@ -78,6 +78,7 @@ export const wrapper = (theme: Theme) => css`
   }
   .group-button {
     ${mixins.flexbox("row", "flex-start", "flex-start")};
+    flex-wrap: wrap;
     gap: 4px;
   }
   ${media.mobile} {

@@ -77,10 +77,8 @@
     "txt": "Плата за маршрутизатор"
   },
   "rangeStatus": {
-    "inRange": "В диапазоне",
-    "inRange_short": "На сайте",
-    "outRange": "Вне зоны действия",
-    "outRange_short": "Выход"
+    "active": "Активный",
+    "inactive": "Неактивный"
   },
   "rewardType": {
     "external_reward": "Внешние вознаграждения",

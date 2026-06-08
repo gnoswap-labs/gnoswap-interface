@@ -77,10 +77,8 @@
     "txt": "Router-Gebühr"
   },
   "rangeStatus": {
-    "inRange": "In Reichweite",
-    "inRange_short": "Unter",
-    "outRange": "Außerhalb des Bereichs",
-    "outRange_short": "Aus"
+    "active": "Aktiv",
+    "inactive": "Inaktiv"
   },
   "rewardType": {
     "external_reward": "Externe Belohnungen",

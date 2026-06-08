@@ -309,7 +309,7 @@ const TokenChartContainer: React.FC = () => {
         },
         priceInfo: {
           amount: {
-            value: formatPrice(currentPrice, { forcedDecimals: true }),
+            value: formatPrice(currentPrice, { isKMB: false, forcedDecimals: true }),
             denom: "USD",
             status: dataToday.status,
           },

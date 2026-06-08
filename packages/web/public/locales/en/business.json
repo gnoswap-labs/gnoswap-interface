@@ -77,10 +77,8 @@
     "txt": "Router Fee"
   },
   "rangeStatus": {
-    "inRange": "In-range",
-    "inRange_short": "In",
-    "outRange": "Out-range",
-    "outRange_short": "Out"
+    "active": "Active",
+    "inactive": "Inactive"
   },
   "rewardType": {
     "external_reward": "External Rewards",
