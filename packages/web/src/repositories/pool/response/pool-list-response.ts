@@ -1,5 +1,5 @@
 import { PoolBinModel } from "@models/pool/pool-bin-model";
-import { IPoolPriceRatio } from "@models/pool/pool-model";
+import { IPoolPriceRatio, WarmupPeriodConfigModel } from "@models/pool/pool-model";
 import { RewardTokenModel } from "@models/position/reward-model";
 import { TokenModel } from "@models/token/token-model";
 
@@ -64,6 +64,8 @@ export interface PoolResponse {
   feeApr: string;
 
   stakingApr: string;
+
+  warmupConfigs?: WarmupPeriodConfigModel[];
 
   // TODO Remove later
 

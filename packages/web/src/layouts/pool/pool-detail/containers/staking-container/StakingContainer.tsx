@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import { StakingPeriodType } from "@constants/option.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import useUrlParam from "@hooks/common/use-url-param";
@@ -14,9 +13,8 @@ import { formatRate } from "@utils/new-number-utils";
 import { isValidAddress } from "@utils/validation-utils";
 
 import Staking from "../../components/staking/Staking";
+import { buildStakingTiers, getStakingTierKey } from "../../components/staking/staking-content/staking-tier";
 import { PoolConverter } from "@services/converters/pool";
-
-const DAY_TIME = 24 * 60 * 60 * 1000;
 
 interface StakingContainerProps {
   hasPoolStaking: boolean;
@@ -90,6 +88,8 @@ const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking, onO
     };
   }, [data, getGnotPath]);
 
+  const stakingTiers = useMemo(() => buildStakingTiers(pool), [pool]);
+
   const handleResize = () => {
     if (typeof window !== "undefined") {
       const windowInnerWidth = window.innerWidth;
@@ -124,31 +124,25 @@ const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking, onO
   }, []);
 
   const stakingPositionMap = useMemo(() => {
-    return stakedPositions.reduce<{
-      [key in StakingPeriodType]: PoolPositionModel[];
-    }>(
+    const initialMap = stakingTiers.reduce<Record<string, PoolPositionModel[]>>((accum, tier) => {
+      accum[tier.key] = [];
+      return accum;
+    }, {});
+
+    return stakedPositions.reduce<Record<string, PoolPositionModel[]>>(
       (accum, current) => {
-        const stakedTime = new Date(current.stakedAt).getTime();
-        const difference = (new Date().getTime() - stakedTime) / DAY_TIME;
-        let periodType: StakingPeriodType = "MAX";
-        if (difference < 5) {
-          periodType = "5D";
-        } else if (difference < 10) {
-          periodType = "10D";
-        } else if (difference < 30) {
-          periodType = "30D";
-        }
-        accum[periodType].push(current);
+        const tierKey = getStakingTierKey(stakingTiers, current.stakedAt);
+        accum[tierKey]?.push(current);
         return accum;
       },
-      {
-        "5D": [],
-        "10D": [],
-        "30D": [],
-        MAX: [],
-      },
+      initialMap,
     );
-  }, [stakedPositions]);
+  }, [stakedPositions, stakingTiers]);
+
+  const hasMaxTierPosition = useMemo(() => {
+    const maxTier = stakingTiers.find(tier => tier.kind === "max");
+    return maxTier ? (stakingPositionMap[maxTier.key] ?? []).length > 0 : false;
+  }, [stakingPositionMap, stakingTiers]);
 
   useEffect(() => {
     if (allPositions.length === 0) {
@@ -159,17 +153,17 @@ const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking, onO
       setType(1);
       return;
     }
-    if (stakingPositionMap["MAX"].length === 0) {
+    if (!hasMaxTierPosition) {
       setType(2);
       return;
     }
 
-    if (stakingPositionMap["MAX"].length !== 0) {
+    if (hasMaxTierPosition) {
       setType(3);
       return;
     }
     setType(0);
-  }, [allPositions.length, stakedPositions.length, stakingPositionMap]);
+  }, [allPositions.length, hasMaxTierPosition, stakedPositions.length]);
 
   return (
     <Staking
