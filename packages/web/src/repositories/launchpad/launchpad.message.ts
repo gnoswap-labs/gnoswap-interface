@@ -10,6 +10,7 @@ enum TransactionMessageFunctionType {
   DepositGns = "DepositGns",
   CollectRewardByDepositId = "CollectRewardByDepositId",
   CollectDepositGns = "CollectDepositGns",
+  CollectProtocolFee = "CollectProtocolFee",
 }
 
 export function makeDepositGNSMessageWithApproves(
@@ -134,4 +135,16 @@ export function makeCollectRewardWithDepositBydepositIDMessage({
   });
 
   return [collectRewardBydepositIDMessage, collectDepositGnsMessage];
+}
+
+export function makeCollectProtocolFeeMessage({ caller }: { caller: string }): TransactionMessage[] {
+  const collectProtocolFeeMessage = makeTransactionMessage({
+    packagePath: PACKAGE_LAUNCHPAD_PATH,
+    send: "",
+    func: TransactionMessageFunctionType.CollectProtocolFee,
+    args: [],
+    caller,
+  });
+
+  return [collectProtocolFeeMessage];
 }
