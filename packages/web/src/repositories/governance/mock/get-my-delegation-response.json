@@ -15,6 +15,13 @@
     }
   ],
   "claimableRewardUsd": "2751.50",
+  "launchpadProtocolFees": [
+    {
+      "amount": "125.50",
+      "path": "ugnot"
+    }
+  ],
+  "launchpadProtocolFeeUsd": "125.50",
   "unDelegatedAmount": "45000.00",
   "withdrawableAmount": "32500.25",
   "votingWeight": "87.5"
