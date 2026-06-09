@@ -33,6 +33,7 @@ describe("format display token symbol", () => {
   });
 
   it("should shorten token symbols longer than 9 characters", () => {
+    expect(formatDisplayTokenSymbol("1234567890")).toBe("123456789...");
     expect(formatDisplayTokenSymbol("ibc/488D610A5FB7878660703092A35BC4E7D0C88E2EA71174337AA317A22C05177F")).toBe(
       "ibc/488D6...",
     );

@@ -218,7 +218,7 @@ const QuickPoolInfo: React.FC<Props> = ({
     <QuickPoolInfoWrapper>
       <div className="token-pair">
         <OverlapTokenLogo tokens={[tokenA, tokenB]} size={24} />
-        <span className="token-name">{`${tokenA?.symbol}/${tokenB?.symbol}`}</span>
+        <span className="token-name">{`${tokenA?.displaySymbol}/${tokenB?.displaySymbol}`}</span>
       </div>
       {renderPositionInfo()}
       {(isStakable || canUnstake) && !isLoadingPool && <Divider />}

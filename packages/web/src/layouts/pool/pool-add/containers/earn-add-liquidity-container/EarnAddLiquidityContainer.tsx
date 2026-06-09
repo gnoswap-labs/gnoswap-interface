@@ -133,8 +133,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
     let estimatedApr: string = formatRate(selectPool.estimatedAPR) ?? "-";
 
     if (selectPool.selectedFullRange) {
-      const tokenASymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.symbol : tokenB?.symbol;
-      const tokenBSymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.symbol : tokenA?.symbol;
+      const tokenASymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.displaySymbol : tokenB?.displaySymbol;
+      const tokenBSymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.displaySymbol : tokenA?.displaySymbol;
       depositRatio = `50.0% ${tokenASymbol} / 50.0% ${tokenBSymbol}`;
       return {
         depositRatio,
@@ -147,8 +147,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (tokenAdepositRatio !== null) {
       const tokenARatioStr = BigNumber(tokenAdepositRatio).toFixed(1);
       const tokenBRatioStr = BigNumber(100 - tokenAdepositRatio).toFixed(1);
-      const tokenASymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.symbol : tokenB?.symbol;
-      const tokenBSymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.symbol : tokenA?.symbol;
+      const tokenASymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.displaySymbol : tokenB?.displaySymbol;
+      const tokenBSymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.displaySymbol : tokenA?.displaySymbol;
       depositRatio = `${tokenARatioStr}% ${tokenASymbol} / ${tokenBRatioStr}% ${tokenBSymbol}`;
     }
     if (tokenAdepositRatio === 0 || tokenAdepositRatio === 100) {
@@ -168,7 +168,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
     selectPool.feeBoost,
     selectPool.selectedFullRange,
     tokenA?.symbol,
-    tokenB?.symbol,
+    tokenA?.displaySymbol,
+    tokenB?.displaySymbol,
     selectPool.estimatedAPR,
   ]);
 
@@ -537,8 +538,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (!initialized) {
       setInitialized(true);
       const query = router.query;
-      const currentTokenA = tokens.find(token => token.path === query.tokenA) || null;
-      const currentTokenB = tokens.find(token => token.path === query.tokenB) || null;
+      const currentTokenA = tokens.find((token: TokenModel) => token.path === query.tokenA) || null;
+      const currentTokenB = tokens.find((token: TokenModel) => token.path === query.tokenB) || null;
 
       setSwapValue({
         tokenA: currentTokenA,

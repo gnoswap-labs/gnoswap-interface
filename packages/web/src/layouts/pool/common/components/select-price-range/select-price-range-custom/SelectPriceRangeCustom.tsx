@@ -294,11 +294,17 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
 
     const selectTokenPair = useMemo(() => {
       if (!isKeepToken) {
-        return [getGnotPath(tokenB).symbol, getGnotPath(tokenA).symbol];
+        return [
+          { display: getGnotPath(tokenB).displaySymbol, key: getGnotPath(tokenB).symbol },
+          { display: getGnotPath(tokenA).displaySymbol, key: getGnotPath(tokenA).symbol },
+        ];
       }
 
-      return [getGnotPath(tokenA).symbol, getGnotPath(tokenB).symbol];
-    }, [tokenA, tokenB, isKeepToken]);
+      return [
+        { display: getGnotPath(tokenA).displaySymbol, key: getGnotPath(tokenA).symbol },
+        { display: getGnotPath(tokenB).displaySymbol, key: getGnotPath(tokenB).symbol },
+      ];
+    }, [getGnotPath, tokenA, tokenB, isKeepToken]);
 
     const decimalsRatio = useMemo(() => {
       return tokenA.decimals - tokenB.decimals;
@@ -316,8 +322,8 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
       <>
         {selectPool.isCreate && (
           <StartingPrice
-            tokenASymbol={tokenA.symbol || ""}
-            tokenBSymbol={tokenB.symbol || ""}
+            tokenASymbol={tokenA.displaySymbol || ""}
+            tokenBSymbol={tokenB.displaySymbol || ""}
             isEmptyLiquidity={isEmptyLiquidity}
             defaultPrice={defaultPrice}
             startingPriceValue={startingPriceValue}
@@ -431,8 +437,8 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
                       <PriceSteps
                         title={t("AddPosition:form.priceRange.minPrice")}
                         current={selectPool.minPrice}
-                        token0Symbol={tokenA.symbol}
-                        token1Symbol={tokenB.symbol}
+                        token0Symbol={tokenA.displaySymbol}
+                        token1Symbol={tokenB.displaySymbol}
                         tickSpacing={selectPool.tickSpacing}
                         feeTier={selectPool.feeTier || "NONE"}
                         selectedFullRange={selectPool.selectedFullRange}
@@ -447,8 +453,8 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
                       <PriceSteps
                         title={t("AddPosition:form.priceRange.maxPrice")}
                         current={selectPool.maxPrice}
-                        token0Symbol={tokenA.symbol}
-                        token1Symbol={tokenB.symbol}
+                        token0Symbol={tokenA.displaySymbol}
+                        token1Symbol={tokenB.displaySymbol}
                         tickSpacing={selectPool.tickSpacing}
                         feeTier={selectPool.feeTier || "NONE"}
                         selectedFullRange={selectPool.selectedFullRange}
