@@ -182,19 +182,23 @@ export const useSelectPool = ({
 
   const isLoadingPoolInfo = isLoadingPoolFromDb || isLoadingLiquidity || isLoadingTickSpacing || isLoadingSqrtPriceX96;
 
-  const price = useMemo(() => {
+  const segmentCurrentPrice = useMemo(() => {
     if (isCreate) return startPrice || 0;
     if (poolFromDb?.price == null) return 0;
-    const basePrice = poolFromDb.price || tickToPrice(poolFromDb.currentTick);
-    return isReverse ? 1 / basePrice : basePrice;
-  }, [isCreate, startPrice, poolFromDb, isReverse]);
+    return poolFromDb.price || tickToPrice(poolFromDb.currentTick);
+  }, [isCreate, startPrice, poolFromDb]);
+
+  const price = useMemo(() => {
+    if (segmentCurrentPrice === 0) return 0;
+    return isReverse ? 1 / segmentCurrentPrice : segmentCurrentPrice;
+  }, [segmentCurrentPrice, isReverse]);
 
   const { liquiditySegments, isLoading: isLoadingLiquiditySegments } = usePoolLiquiditySegmentsByPath(
     calculatedPoolPath,
     {
       currentTick: poolFromDb?.currentTick,
       currentSqrtPriceX96: sqrtPriceX96 ?? undefined,
-      currentPrice: price,
+      currentPrice: segmentCurrentPrice,
       tokenA: orderedSegmentTokens?.[0],
       tokenB: orderedSegmentTokens?.[1],
       includeTokenAmounts: true,
@@ -209,7 +213,7 @@ export const useSelectPool = ({
         zoomLevel,
         isCreate,
         sqrtPriceX96?.toString(),
-        price,
+        segmentCurrentPrice,
       ],
     },
   );
