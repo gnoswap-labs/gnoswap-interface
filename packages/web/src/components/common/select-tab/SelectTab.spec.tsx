@@ -23,8 +23,8 @@ describe("SelectTab Component", () => {
           <SelectTab
             selectType="LONGTOKEN01"
             list={[
-              { value: "LONGTOKEN01", display: "LONGTOKEN..." },
-              { value: "ANOTHERLONGTOKEN", display: "ANOTHERLO..." },
+              { display: "LONGTOKEN...", key: "LONGTOKEN01" },
+              { display: "ANOTHERLO...", key: "ANOTHERLONGTOKEN" },
             ]}
             onClick={(type: string) => {
               clickedType = type;

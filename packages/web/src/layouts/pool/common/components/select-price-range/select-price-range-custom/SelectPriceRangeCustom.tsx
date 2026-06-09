@@ -295,14 +295,14 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
     const selectTokenPair = useMemo(() => {
       if (!isKeepToken) {
         return [
-          { value: getGnotPath(tokenB).symbol, display: getGnotPath(tokenB).displaySymbol },
-          { value: getGnotPath(tokenA).symbol, display: getGnotPath(tokenA).displaySymbol },
+          { display: getGnotPath(tokenB).displaySymbol, key: getGnotPath(tokenB).symbol },
+          { display: getGnotPath(tokenA).displaySymbol, key: getGnotPath(tokenA).symbol },
         ];
       }
 
       return [
-        { value: getGnotPath(tokenA).symbol, display: getGnotPath(tokenA).displaySymbol },
-        { value: getGnotPath(tokenB).symbol, display: getGnotPath(tokenB).displaySymbol },
+        { display: getGnotPath(tokenA).displaySymbol, key: getGnotPath(tokenA).symbol },
+        { display: getGnotPath(tokenB).displaySymbol, key: getGnotPath(tokenB).symbol },
       ];
     }, [getGnotPath, tokenA, tokenB, isKeepToken]);
 

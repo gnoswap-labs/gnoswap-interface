@@ -65,7 +65,7 @@ export function PairRatio({
     <PairRatioWrapper>
       {!loading && (
         <MissingLogo
-          symbol={!isSwap ? pool.tokenA?.symbol : pool.tokenB?.symbol}
+          symbol={replaceGnotSymbol(!isSwap ? pool.tokenA?.symbol : pool.tokenB?.symbol)}
           url={!isSwap ? pool.tokenA?.logoURI : pool.tokenB?.logoURI}
           width={20}
           className="image-logo"
