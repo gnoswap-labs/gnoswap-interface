@@ -23,8 +23,8 @@ describe("SelectTab Component", () => {
           <SelectTab
             selectType="LONGTOKEN01"
             list={[
-              { value: "LONGTOKEN01", display: "LONGTOKEN…" },
-              { value: "ANOTHERLONGTOKEN", display: "ANOTHERLO…" },
+              { value: "LONGTOKEN01", display: "LONGTOKEN..." },
+              { value: "ANOTHERLONGTOKEN", display: "ANOTHERLO..." },
             ]}
             onClick={(type: string) => {
               clickedType = type;
@@ -34,8 +34,8 @@ describe("SelectTab Component", () => {
       </JotaiProvider>,
     );
 
-    expect((screen.getByText("LONGTOKEN…") as HTMLButtonElement).disabled).toBe(true);
-    fireEvent.click(screen.getByText("ANOTHERLO…"));
+    expect((screen.getByText("LONGTOKEN...") as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.click(screen.getByText("ANOTHERLO..."));
     expect(clickedType).toBe("ANOTHERLONGTOKEN");
   });
 });

@@ -12,12 +12,12 @@ export interface RewardTokenModelWithMultipleTypes extends Omit<RewardTokenModel
   rewardType: RewardType | RewardType[];
 }
 
-export const TOKEN_DISPLAY_MAX_LENGTH = 10;
+export const TOKEN_DISPLAY_MAX_LENGTH = 9;
 
 export function formatDisplayTokenSymbol(symbol: string): string {
   if (symbol.length <= TOKEN_DISPLAY_MAX_LENGTH) return symbol;
 
-  return `${symbol.slice(0, TOKEN_DISPLAY_MAX_LENGTH - 1)}…`;
+  return `${symbol.slice(0, TOKEN_DISPLAY_MAX_LENGTH)}...`;
 }
 
 export function makeRawTokenAmount(token: TokenModel, amount: string | number) {

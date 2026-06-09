@@ -27,16 +27,15 @@ const DEFAULT_TOKEN: TokenModel = {
 };
 
 describe("format display token symbol", () => {
-  it("should keep token symbols with 10 or fewer characters", () => {
+  it("should keep token symbols with 9 or fewer characters", () => {
     expect(formatDisplayTokenSymbol("GNOT")).toBe("GNOT");
     expect(formatDisplayTokenSymbol("123456789")).toBe("123456789");
-    expect(formatDisplayTokenSymbol("1234567890")).toBe("1234567890");
   });
 
-  it("should shorten token symbols longer than 10 characters", () => {
-    expect(formatDisplayTokenSymbol("12345678901")).toBe("123456789…");
+  it("should shorten token symbols longer than 9 characters", () => {
+    expect(formatDisplayTokenSymbol("1234567890")).toBe("123456789...");
     expect(formatDisplayTokenSymbol("ibc/488D610A5FB7878660703092A35BC4E7D0C88E2EA71174337AA317A22C05177F")).toBe(
-      "ibc/488D6…",
+      "ibc/488D6...",
     );
   });
 });
