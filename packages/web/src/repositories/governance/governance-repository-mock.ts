@@ -136,7 +136,7 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
     throw new Error("Mock sendCollectUndelegated");
   };
 
-  public sendCollectReward = async (): Promise<WalletResponse<{ hash: string }>> => {
-    throw new Error("Mock sendCollectUndelegated");
+  public sendCollectReward = async (claimLaunchpadProtocolFees: boolean): Promise<WalletResponse<{ hash: string }>> => {
+    throw new Error(`Mock sendCollectReward : ${claimLaunchpadProtocolFees}`);
   };
 }

@@ -70,6 +70,7 @@ import {
   makeUnDelegateMessages,
   makeVoteMessages,
 } from "./governance.message";
+import { makeCollectProtocolFeeMessage } from "../launchpad/launchpad.message";
 
 export class GovernanceRepositoryImpl implements GovernanceRepository {
   private networkClient: NetworkClient | null;
@@ -431,9 +432,12 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     });
   };
 
-  public sendCollectReward = async (): Promise<WalletResponse<{ hash: string }>> => {
+  public sendCollectReward = async (claimLaunchpadProtocolFees: boolean): Promise<WalletResponse<{ hash: string }>> => {
     const caller = await this.getAddress();
-    const messages = makeCollectRewardMessages({ caller });
+    const messages = [
+      ...makeCollectRewardMessages({ caller }),
+      ...(claimLaunchpadProtocolFees ? makeCollectProtocolFeeMessage({ caller }) : []),
+    ];
 
     const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
 
