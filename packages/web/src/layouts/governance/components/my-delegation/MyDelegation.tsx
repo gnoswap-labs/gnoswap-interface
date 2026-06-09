@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import dayjs from "dayjs";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -47,7 +48,7 @@ interface MyDelegationProps {
   delegateGNS: (toName: string, toAddress: string, amount: string) => void;
   undelegateGNS: (fromName: string, fromAddress: string, amount: string) => void;
   collectUndelegated: (amount: string) => void;
-  collectReward: (usdValue: string) => void;
+  collectReward: (usdValue: string, claimLaunchpadProtocolFees: boolean) => void;
 }
 
 const MyDelegation: React.FC<MyDelegationProps> = ({
@@ -120,7 +121,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   const hasMyUnDelegates = myUnDelegatesInfo.length > 0;
 
   const rewardInfo = useMemo(() => {
-    return myDelegationInfo.claimableRewards
+    return [...myDelegationInfo.claimableRewards, ...myDelegationInfo.launchpadProtocolFees]
       .map(reward => {
         const tokenInfo = tokens.find(token => token.path === reward.path);
         const displayAmount = rawToDisplayAmount(reward.amount, tokenInfo?.decimals || 0);
@@ -136,7 +137,13 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
         };
       })
       .sort((a, b) => b.usdValue - a.usdValue);
-  }, [myDelegationInfo.claimableRewards, getTokenUSDPrice, tokens, getGnotPath]);
+  }, [myDelegationInfo.claimableRewards, myDelegationInfo.launchpadProtocolFees, getTokenUSDPrice, tokens, getGnotPath]);
+
+  const totalClaimableRewardUsd = useMemo(() => {
+    return BigNumber(myDelegationInfo.claimableRewardUsd || 0)
+      .plus(myDelegationInfo.launchpadProtocolFeeUsd || 0)
+      .toString();
+  }, [myDelegationInfo.claimableRewardUsd, myDelegationInfo.launchpadProtocolFeeUsd]);
 
   const currentDelegatedDisplayAmount = useMemo(() => {
     return rawToDisplayAmount(myDelegationInfo.votingWeight, XGNS_TOKEN.decimals);
@@ -347,7 +354,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                       <div className="reward-info-total">
                         <span className="label">{t("Governance:myDel.reward.title")}</span>
                         <span className="value">
-                          {formatOtherPrice(myDelegationInfo.claimableRewardUsd, { isKMB: false })}
+                          {formatOtherPrice(totalClaimableRewardUsd, { isKMB: false })}
                         </span>
                       </div>
                       {rewardInfo.map((reward, index) => {
@@ -370,7 +377,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                   placement="top"
                 >
                   <div className={visibleRewardInfoTooltip ? "value-wrapper-for-hover" : "value-wrapper"}>
-                    {formatOtherPrice(myDelegationInfo.claimableRewardUsd, {
+                    {formatOtherPrice(totalClaimableRewardUsd, {
                       isKMB: false,
                     })}
                   </div>
@@ -383,9 +390,10 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                       text: t("Governance:myDel.reward.btn"),
                       onClick: () => {
                         collectReward(
-                          formatOtherPrice(myDelegationInfo.claimableRewardUsd, {
+                          formatOtherPrice(totalClaimableRewardUsd, {
                             isKMB: false,
                           }),
+                          myDelegationInfo.launchpadProtocolFees.length > 0,
                         );
                       },
                       disabled: !visibleRewardInfoTooltip,
