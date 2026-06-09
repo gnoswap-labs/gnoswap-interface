@@ -68,5 +68,8 @@ export interface GovernanceRepository {
 
   sendCollectUndelegated: () => Promise<WalletResponse<{ hash: string }>>;
 
-  sendCollectReward: (claimLaunchpadProtocolFees: boolean) => Promise<WalletResponse<{ hash: string }>>;
+  sendCollectReward: (
+    claimGovernanceRewards: boolean,
+    claimLaunchpadProtocolFees: boolean,
+  ) => Promise<WalletResponse<{ hash: string }>>;
 }

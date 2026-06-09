@@ -432,10 +432,13 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     });
   };
 
-  public sendCollectReward = async (claimLaunchpadProtocolFees: boolean): Promise<WalletResponse<{ hash: string }>> => {
+  public sendCollectReward = async (
+    claimGovernanceRewards: boolean,
+    claimLaunchpadProtocolFees: boolean,
+  ): Promise<WalletResponse<{ hash: string }>> => {
     const caller = await this.getAddress();
     const messages = [
-      ...makeCollectRewardMessages({ caller }),
+      ...(claimGovernanceRewards ? makeCollectRewardMessages({ caller }) : []),
       ...(claimLaunchpadProtocolFees ? makeCollectProtocolFeeMessage({ caller }) : []),
     ];
 

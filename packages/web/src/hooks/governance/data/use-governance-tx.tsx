@@ -46,9 +46,7 @@ export const useGovernanceTx = () => {
       target?: string;
       memo0?: string;
     },
-    formatData: (
-      result: string[] | null,
-    ) => {
+    formatData: (result: string[] | null) => {
       tokenASymbol?: string;
       tokenBSymbol?: string;
       tokenAAmount?: string;
@@ -195,7 +193,12 @@ export const useGovernanceTx = () => {
     );
   };
 
-  const collectReward = (usdValue: string, claimLaunchpadProtocolFees: boolean, emitCallback: () => Promise<void>) => {
+  const collectReward = (
+    usdValue: string,
+    claimGovernanceRewards: boolean,
+    claimLaunchpadProtocolFees: boolean,
+    emitCallback: () => Promise<void>,
+  ) => {
     if (!account) {
       return;
     }
@@ -205,7 +208,7 @@ export const useGovernanceTx = () => {
     };
 
     processTx(
-      () => governanceRepository.sendCollectReward(claimLaunchpadProtocolFees),
+      () => governanceRepository.sendCollectReward(claimGovernanceRewards, claimLaunchpadProtocolFees),
       DexEvent.COLLECT_GOV_REWARD,
       messageData,
       () => messageData,

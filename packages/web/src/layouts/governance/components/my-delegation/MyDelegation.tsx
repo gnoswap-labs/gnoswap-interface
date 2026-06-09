@@ -48,7 +48,7 @@ interface MyDelegationProps {
   delegateGNS: (toName: string, toAddress: string, amount: string) => void;
   undelegateGNS: (fromName: string, fromAddress: string, amount: string) => void;
   collectUndelegated: (amount: string) => void;
-  collectReward: (usdValue: string, claimLaunchpadProtocolFees: boolean) => void;
+  collectReward: (usdValue: string, claimGovernanceRewards: boolean, claimLaunchpadProtocolFees: boolean) => void;
 }
 
 const MyDelegation: React.FC<MyDelegationProps> = ({
@@ -137,7 +137,13 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
         };
       })
       .sort((a, b) => b.usdValue - a.usdValue);
-  }, [myDelegationInfo.claimableRewards, myDelegationInfo.launchpadProtocolFees, getTokenUSDPrice, tokens, getGnotPath]);
+  }, [
+    myDelegationInfo.claimableRewards,
+    myDelegationInfo.launchpadProtocolFees,
+    getTokenUSDPrice,
+    tokens,
+    getGnotPath,
+  ]);
 
   const totalClaimableRewardUsd = useMemo(() => {
     return BigNumber(myDelegationInfo.claimableRewardUsd || 0)
@@ -353,9 +359,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                     <MyDelegationRewardTooltipContent>
                       <div className="reward-info-total">
                         <span className="label">{t("Governance:myDel.reward.title")}</span>
-                        <span className="value">
-                          {formatOtherPrice(totalClaimableRewardUsd, { isKMB: false })}
-                        </span>
+                        <span className="value">{formatOtherPrice(totalClaimableRewardUsd, { isKMB: false })}</span>
                       </div>
                       {rewardInfo.map((reward, index) => {
                         const { tokenInfo } = reward;
@@ -393,6 +397,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                           formatOtherPrice(totalClaimableRewardUsd, {
                             isKMB: false,
                           }),
+                          myDelegationInfo.claimableRewards.length > 0,
                           myDelegationInfo.launchpadProtocolFees.length > 0,
                         );
                       },
