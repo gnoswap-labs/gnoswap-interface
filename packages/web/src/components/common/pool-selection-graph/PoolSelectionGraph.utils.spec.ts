@@ -104,6 +104,19 @@ describe("getPoolSelectionGraphEmptyTickWindow", () => {
     expect(tickWindow).toEqual({ minTick: -9_120, maxTick: 9_120 });
   });
 
+  it("places selected create-pool range handles in the middle of each graph side", () => {
+    const tickWindow = getPoolSelectionGraphEmptyTickWindow({
+      currentTick: 0,
+      visibleTickRange: 18_240,
+      minTick: MIN_TICK,
+      maxTick: MAX_TICK,
+      selectedMinTick: -7_000,
+      selectedMaxTick: 7_000,
+    });
+
+    expect(tickWindow).toEqual({ minTick: -14_000, maxTick: 14_000 });
+  });
+
   it("uses the full protocol range only when the requested visible range covers it", () => {
     const tickWindow = getPoolSelectionGraphEmptyTickWindow({
       currentTick: 0,

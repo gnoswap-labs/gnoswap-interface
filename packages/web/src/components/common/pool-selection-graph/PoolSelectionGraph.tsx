@@ -160,6 +160,20 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     return priceToTick(currentPrice);
   }, [currentPrice]);
 
+  const selectedMinTick = useMemo(() => {
+    if (fullRange || minPrice === null || minPrice <= 0 || !Number.isFinite(minPrice)) {
+      return undefined;
+    }
+    return priceToTick(minPrice);
+  }, [fullRange, minPrice]);
+
+  const selectedMaxTick = useMemo(() => {
+    if (fullRange || maxPrice === null || maxPrice <= 0 || !Number.isFinite(maxPrice)) {
+      return undefined;
+    }
+    return priceToTick(maxPrice);
+  }, [fullRange, maxPrice]);
+
   const emptyTickWindow = useMemo(
     () =>
       getPoolSelectionGraphEmptyTickWindow({
@@ -167,8 +181,17 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         visibleTickRange: LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES[zoomLevel] ?? LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES[0],
         minTick: swapFeeTierMaxPriceRange.minTick,
         maxTick: swapFeeTierMaxPriceRange.maxTick,
+        selectedMinTick,
+        selectedMaxTick,
       }),
-    [currentTick, swapFeeTierMaxPriceRange.maxTick, swapFeeTierMaxPriceRange.minTick, zoomLevel],
+    [
+      currentTick,
+      selectedMaxTick,
+      selectedMinTick,
+      swapFeeTierMaxPriceRange.maxTick,
+      swapFeeTierMaxPriceRange.minTick,
+      zoomLevel,
+    ],
   );
 
   const graphMinTick = useMemo(() => {

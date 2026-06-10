@@ -63,14 +63,33 @@ export const getPoolSelectionGraphEmptyTickWindow = ({
   visibleTickRange,
   minTick,
   maxTick,
+  selectedMinTick,
+  selectedMaxTick,
 }: {
   currentTick: number;
   visibleTickRange: number;
   minTick: number;
   maxTick: number;
+  selectedMinTick?: number;
+  selectedMaxTick?: number;
 }): PoolSelectionGraphTickWindow => {
   const fullRange = maxTick - minTick;
   const normalizedRange = Math.min(fullRange, Math.max(1, Math.trunc(visibleTickRange)));
+
+  if (
+    selectedMinTick !== undefined &&
+    selectedMaxTick !== undefined &&
+    selectedMinTick < currentTick &&
+    selectedMaxTick > currentTick
+  ) {
+    const lowerDistance = currentTick - selectedMinTick;
+    const upperDistance = selectedMaxTick - currentTick;
+
+    return {
+      minTick: Math.max(minTick, currentTick - lowerDistance * 2),
+      maxTick: Math.min(maxTick, currentTick + upperDistance * 2),
+    };
+  }
 
   if (normalizedRange >= fullRange) {
     return { minTick, maxTick };
