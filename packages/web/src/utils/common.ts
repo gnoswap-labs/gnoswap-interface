@@ -212,7 +212,7 @@ export function randomData() {
 
 export const checkGnotPath = (path: string) => {
   if (path === GNOT_TOKEN.path) {
-    return WRAPPED_GNOT_PATH || path;
+    return WRAPPED_GNOT_PATH;
   } else {
     return path;
   }
