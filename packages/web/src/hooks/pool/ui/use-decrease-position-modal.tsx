@@ -12,12 +12,12 @@ import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { useMessage } from "@hooks/common/use-message";
+import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { QUERY_KEY } from "@query/query-keys";
 import { DexEvent } from "@repositories/common";
-import { DecreaseLiquiditySuccessResponse } from "@repositories/position/response";
 import { CommonState } from "@states/index";
 import { delay } from "@utils/common";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
@@ -80,6 +80,7 @@ export const useDecreasePositionModal = ({
   }, [clearModal, router]);
 
   const { broadcastRejected, broadcastSuccess, broadcastLoading, broadcastError } = useBroadcastHandler();
+  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal();
   const { enqueueEvent } = useTransactionEventStore();
 
   const poolPath = makePoolPath(tokenA, tokenB, swapFeeTier);
@@ -243,28 +244,9 @@ export const useDecreasePositionModal = ({
         }
 
         if (result.code === 0 && result?.data) {
-          const resultData = result?.data as DecreaseLiquiditySuccessResponse;
-
-          // Make display token amount
-          const tokenAAmount = (
-            makeDisplayTokenAmount(tokenA, resultData.removedTokenAAmount) || 0
-          ).toLocaleString("en-US", { maximumFractionDigits: tokenA.decimals });
-          const tokenBAmount = (
-            makeDisplayTokenAmount(tokenB, resultData.removedTokenBAmount) || 0
-          ).toLocaleString("en-US", { maximumFractionDigits: tokenB.decimals });
-
+          openTransactionConfirmModal();
           broadcastSuccess(
-            getMessage(
-              DexEvent.REMOVE,
-              "success",
-              {
-                tokenASymbol: tokenTransform(tokenA).symbol,
-                tokenBSymbol: tokenTransform(tokenB).symbol,
-                tokenAAmount,
-                tokenBAmount,
-              },
-              resultData.hash,
-            ),
+            getMessage(DexEvent.REMOVE, "success", defaultMessageData, result.data.hash),
             onSuccessClose,
           );
         } else if (
@@ -292,6 +274,7 @@ export const useDecreasePositionModal = ({
       updateBalances,
       handleRefreshData,
       onSuccessClose,
+      openTransactionConfirmModal,
       broadcastLoading,
       broadcastSuccess,
       broadcastRejected,
