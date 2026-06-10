@@ -15,6 +15,7 @@ import {
   PositionRewardsGroupResponse,
   PositionRewardsResponse,
 } from "@repositories/position/response";
+import { AmountConverter } from "@services/converters/common/amount";
 import { DEVICE_TYPE } from "@styles/media";
 
 import StakedPostionsTooltipContent from "./sateked-positions-tooltip/StakedPositinosTooltipContent";
@@ -110,7 +111,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         tooltipItems.push({
           rewardType: displayType,
           token,
-          amount: Number(item.amount),
+          amount: Number(AmountConverter.convertSingle(token, item.amount)),
           usd: Number(item.usdValue),
           accumulatedRewardOf1d: null,
           accumulatedRewardOf1dUsd: null,
