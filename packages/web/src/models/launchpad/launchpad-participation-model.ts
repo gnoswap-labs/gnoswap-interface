@@ -41,4 +41,6 @@ export interface LaunchpadParticipationModel {
   claimedRewardAmount: number;
 
   depositApr: number | null;
+
+  withdrawn: boolean;
 }

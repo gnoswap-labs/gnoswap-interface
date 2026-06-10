@@ -73,6 +73,7 @@ const LaunchpadMyParticipation = ({
         claimableTime: item.claimableTime,
         claimableRewardAmount: rawToDisplayAmount(item.claimableRewardAmount, rewardInfo.rewardTokenDecimals),
         depositAmount: rawToDisplayAmount(item.depositAmount, GNS_TOKEN.decimals),
+        withdrawn: item.withdrawn,
       });
     });
   }, [data, rewardInfo.rewardTokenDecimals]);
