@@ -70,6 +70,6 @@ export interface GovernanceRepository {
 
   sendCollectReward: (
     claimGovernanceRewards: boolean,
-    claimLaunchpadProtocolFees: boolean,
+    claimLaunchpadRewards: boolean,
   ) => Promise<WalletResponse<{ hash: string }>>;
 }

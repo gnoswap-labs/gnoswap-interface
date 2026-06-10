@@ -196,7 +196,7 @@ export const useGovernanceTx = () => {
   const collectReward = (
     usdValue: string,
     claimGovernanceRewards: boolean,
-    claimLaunchpadProtocolFees: boolean,
+    claimLaunchpadRewards: boolean,
     emitCallback: () => Promise<void>,
   ) => {
     if (!account) {
@@ -208,7 +208,7 @@ export const useGovernanceTx = () => {
     };
 
     processTx(
-      () => governanceRepository.sendCollectReward(claimGovernanceRewards, claimLaunchpadProtocolFees),
+      () => governanceRepository.sendCollectReward(claimGovernanceRewards, claimLaunchpadRewards),
       DexEvent.COLLECT_GOV_REWARD,
       messageData,
       () => messageData,

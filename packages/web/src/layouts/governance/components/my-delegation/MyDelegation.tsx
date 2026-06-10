@@ -48,7 +48,7 @@ interface MyDelegationProps {
   delegateGNS: (toName: string, toAddress: string, amount: string) => void;
   undelegateGNS: (fromName: string, fromAddress: string, amount: string) => void;
   collectUndelegated: (amount: string) => void;
-  collectReward: (usdValue: string, claimGovernanceRewards: boolean, claimLaunchpadProtocolFees: boolean) => void;
+  collectReward: (usdValue: string, claimGovernanceRewards: boolean, claimLaunchpadRewards: boolean) => void;
 }
 
 const MyDelegation: React.FC<MyDelegationProps> = ({
@@ -121,7 +121,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   const hasMyUnDelegates = myUnDelegatesInfo.length > 0;
 
   const rewardInfo = useMemo(() => {
-    return [...myDelegationInfo.claimableRewards, ...myDelegationInfo.launchpadProtocolFees]
+    return [...myDelegationInfo.claimableGovernanceRewards, ...myDelegationInfo.claimableLaunchpadRewards]
       .map(reward => {
         const tokenInfo = tokens.find(token => token.path === reward.path);
         const displayAmount = rawToDisplayAmount(reward.amount, tokenInfo?.decimals || 0);
@@ -138,18 +138,18 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
       })
       .sort((a, b) => b.usdValue - a.usdValue);
   }, [
-    myDelegationInfo.claimableRewards,
-    myDelegationInfo.launchpadProtocolFees,
+    myDelegationInfo.claimableGovernanceRewards,
+    myDelegationInfo.claimableLaunchpadRewards,
     getTokenUSDPrice,
     tokens,
     getGnotPath,
   ]);
 
   const totalClaimableRewardUsd = useMemo(() => {
-    return BigNumber(myDelegationInfo.claimableRewardUsd || 0)
-      .plus(myDelegationInfo.launchpadProtocolFeeUsd || 0)
+    return BigNumber(myDelegationInfo.claimableGovernanceRewardUsd || 0)
+      .plus(myDelegationInfo.claimableLaunchpadRewardUsd || 0)
       .toString();
-  }, [myDelegationInfo.claimableRewardUsd, myDelegationInfo.launchpadProtocolFeeUsd]);
+  }, [myDelegationInfo.claimableGovernanceRewardUsd, myDelegationInfo.claimableLaunchpadRewardUsd]);
 
   const currentDelegatedDisplayAmount = useMemo(() => {
     return rawToDisplayAmount(myDelegationInfo.votingWeight, XGNS_TOKEN.decimals);
@@ -397,8 +397,8 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                           formatOtherPrice(totalClaimableRewardUsd, {
                             isKMB: false,
                           }),
-                          myDelegationInfo.claimableRewards.length > 0,
-                          myDelegationInfo.launchpadProtocolFees.length > 0,
+                          myDelegationInfo.claimableGovernanceRewards.length > 0,
+                          myDelegationInfo.claimableLaunchpadRewards.length > 0,
                         );
                       },
                       disabled: !visibleRewardInfoTooltip,

@@ -138,8 +138,8 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
 
   public sendCollectReward = async (
     claimGovernanceRewards: boolean,
-    claimLaunchpadProtocolFees: boolean,
+    claimLaunchpadRewards: boolean,
   ): Promise<WalletResponse<{ hash: string }>> => {
-    throw new Error(`Mock sendCollectReward : ${claimGovernanceRewards}, ${claimLaunchpadProtocolFees}`);
+    throw new Error(`Mock sendCollectReward : ${claimGovernanceRewards}, ${claimLaunchpadRewards}`);
   };
 }
