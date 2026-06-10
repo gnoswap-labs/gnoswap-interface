@@ -1,6 +1,6 @@
 {
   "availableBalance": "125500.75",
-  "claimableRewards": [
+  "claimableGovernanceRewards": [
     {
       "amount": "1250.50",
       "path": "ugnot"
@@ -14,7 +14,14 @@
       "path": "gno.land/r/gnoswap/gns"
     }
   ],
-  "claimableRewardUsd": "2751.50",
+  "claimableGovernanceRewardUsd": "2751.50",
+  "claimableLaunchpadRewards": [
+    {
+      "amount": "125.50",
+      "path": "ugnot"
+    }
+  ],
+  "claimableLaunchpadRewardUsd": "125.50",
   "unDelegatedAmount": "45000.00",
   "withdrawableAmount": "32500.25",
   "votingWeight": "87.5"

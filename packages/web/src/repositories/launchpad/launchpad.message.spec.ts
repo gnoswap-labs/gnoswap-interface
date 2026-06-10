@@ -4,7 +4,10 @@ jest.mock("@constants/environment.constant", () => ({
   PACKAGE_LAUNCHPAD_PATH: "launchpad_path",
 }));
 
-import { makeDepositGNSMessageWithApproves } from "@repositories/launchpad/launchpad.message";
+import {
+  makeCollectProtocolFeeMessage,
+  makeDepositGNSMessageWithApproves,
+} from "@repositories/launchpad/launchpad.message";
 
 describe("launchpad.message.ts", () => {
   it("approves launchpad deposits with the exact deposit amount", async () => {
@@ -27,6 +30,21 @@ describe("launchpad.message.ts", () => {
       pkg_path: "launchpad_path",
       func: "DepositGns",
       args: ["pool-1", "456000000", ""],
+    });
+  });
+
+  it("builds a collect protocol fee message", () => {
+    const caller = "caller";
+
+    const messages = makeCollectProtocolFeeMessage({ caller });
+
+    expect(messages).toHaveLength(1);
+    expect(messages[0]).toMatchObject({
+      caller,
+      pkg_path: "launchpad_path",
+      send: "",
+      func: "CollectProtocolFee",
+      args: [],
     });
   });
 });
