@@ -9,6 +9,11 @@ export interface PoolSelectionGraphBin {
   reserveTokenB: number;
 }
 
+export interface PoolSelectionGraphTickWindow {
+  minTick: number;
+  maxTick: number;
+}
+
 const toFiniteNumber = (value: string | number | null | undefined): number => {
   if (value === null || value === undefined) {
     return 0;
@@ -51,4 +56,42 @@ export const createPoolSelectionGraphBins = (
 
 export const getPoolSelectionGraphTooltipTick = (bin: Pick<PoolSelectionGraphBin, "minTick" | "maxTick">): number => {
   return bin.minTick;
+};
+
+export const getPoolSelectionGraphEmptyTickWindow = ({
+  currentTick,
+  visibleTickRange,
+  minTick,
+  maxTick,
+}: {
+  currentTick: number;
+  visibleTickRange: number;
+  minTick: number;
+  maxTick: number;
+}): PoolSelectionGraphTickWindow => {
+  const fullRange = maxTick - minTick;
+  const normalizedRange = Math.min(fullRange, Math.max(1, Math.trunc(visibleTickRange)));
+
+  if (normalizedRange >= fullRange) {
+    return { minTick, maxTick };
+  }
+
+  const clampedCurrentTick = Math.min(maxTick, Math.max(minTick, currentTick));
+  let windowMinTick = clampedCurrentTick - Math.floor(normalizedRange / 2);
+  let windowMaxTick = windowMinTick + normalizedRange;
+
+  if (windowMinTick < minTick) {
+    windowMinTick = minTick;
+    windowMaxTick = windowMinTick + normalizedRange;
+  }
+
+  if (windowMaxTick > maxTick) {
+    windowMaxTick = maxTick;
+    windowMinTick = windowMaxTick - normalizedRange;
+  }
+
+  return {
+    minTick: windowMinTick,
+    maxTick: windowMaxTick,
+  };
 };

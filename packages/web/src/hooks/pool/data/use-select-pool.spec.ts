@@ -11,3 +11,12 @@ describe("useSelectPool liquidity segment price", () => {
     expect(source).toContain("segmentCurrentPrice,\n      ],");
   });
 });
+
+describe("useSelectPool selected pool path", () => {
+  it("keeps the calculated pool path available while create-pool starting price is empty", () => {
+    const source = readFileSync(path.join(__dirname, "use-select-pool.tsx"), { encoding: "utf8" });
+
+    expect(source).toContain("if (calculatedPoolPath) {\n      setLatestPoolPath(calculatedPoolPath);");
+    expect(source).not.toContain("if (isCreate && startPrice === null) {\n      setLatestPoolPath(null);");
+  });
+});

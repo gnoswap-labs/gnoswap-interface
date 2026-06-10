@@ -5,6 +5,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import * as uuid from "uuid";
 import { EventBlocker, PoolSelectionGraphTooltipWrapper, PoolSelectionGraphWrapper } from "./PoolSelectionGraph.styles";
 
+import { LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES } from "@constants/graph.constant";
 import { SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import { useColorGraph } from "@hooks/common/use-color-graph";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
@@ -17,7 +18,11 @@ import { priceToTick, tickToPrice } from "@utils/swap-utils";
 
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { PoolSelectionGraphBinTooptip, TooltipInfo } from "./PoolSelectionGraphBinTooltip";
-import { createPoolSelectionGraphBins, getPoolSelectionGraphTooltipTick } from "./PoolSelectionGraph.utils";
+import {
+  createPoolSelectionGraphBins,
+  getPoolSelectionGraphEmptyTickWindow,
+  getPoolSelectionGraphTooltipTick,
+} from "./PoolSelectionGraph.utils";
 
 const MIN_VISIBLE_BAR_HEIGHT = 5;
 
@@ -148,22 +153,40 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
   const graphBins = useMemo(() => createPoolSelectionGraphBins(liquiditySegments, flip), [liquiditySegments, flip]);
 
+  const currentTick = useMemo(() => {
+    if (Number.isNaN(currentPrice)) {
+      return 0;
+    }
+    return priceToTick(currentPrice);
+  }, [currentPrice]);
+
+  const emptyTickWindow = useMemo(
+    () =>
+      getPoolSelectionGraphEmptyTickWindow({
+        currentTick,
+        visibleTickRange: LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES[zoomLevel] ?? LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES[0],
+        minTick: swapFeeTierMaxPriceRange.minTick,
+        maxTick: swapFeeTierMaxPriceRange.maxTick,
+      }),
+    [currentTick, swapFeeTierMaxPriceRange.maxTick, swapFeeTierMaxPriceRange.minTick, zoomLevel],
+  );
+
   const graphMinTick = useMemo(() => {
     if (graphBins.length === 0) {
-      return swapFeeTierMaxPriceRange.minTick;
+      return emptyTickWindow.minTick;
     }
     return Math.min(...graphBins.map(bin => bin.minTick));
-  }, [graphBins, swapFeeTierMaxPriceRange.minTick]);
+  }, [emptyTickWindow.minTick, graphBins]);
 
   // D3 - Dimension Definition
   const maxX = useMemo(() => {
     if (graphBins.length === 0) {
-      return swapFeeTierMaxPriceRange.maxTick;
+      return emptyTickWindow.maxTick;
     }
 
     const maxTick = Math.max(...graphBins.map(bin => bin.maxTick));
     return maxTick === graphMinTick ? graphMinTick + tickSpacing : maxTick;
-  }, [graphBins, graphMinTick, swapFeeTierMaxPriceRange.maxTick, tickSpacing]);
+  }, [emptyTickWindow.maxTick, graphBins, graphMinTick, tickSpacing]);
 
   const maxLiquidity = useMemo(() => {
     if (graphBins.length === 0) {
@@ -207,13 +230,6 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       };
     });
   }, [graphBins, graphMinTick]);
-
-  const currentTick = useMemo(() => {
-    if (Number.isNaN(currentPrice)) {
-      return 0;
-    }
-    return priceToTick(currentPrice);
-  }, [currentPrice]);
 
   const tooltipPosition = useMemo((): FloatingPosition => {
     if (position) {

@@ -501,12 +501,12 @@ export const useSelectPool = ({
   }, [interactionType, minPosition, maxPosition, tickSpacing]);
 
   useEffect(() => {
-    if (isCreate && startPrice === null) {
-      setLatestPoolPath(null);
-    } else if (calculatedPoolPath) {
+    if (calculatedPoolPath) {
       setLatestPoolPath(calculatedPoolPath);
+    } else {
+      setLatestPoolPath(null);
     }
-  }, [isCreate, calculatedPoolPath, startPrice]);
+  }, [calculatedPoolPath]);
 
   useEffect(() => {
     if (!options || !feeTier) {

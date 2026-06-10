@@ -1,8 +1,13 @@
 import { PoolLiquiditySegmentModel, PoolLiquidityTickModel } from "@models/pool/pool-liquidity-model";
 import { TokenModel } from "@models/token/token-model";
+import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
 import { buildPoolLiquiditySegments } from "@utils/pool-liquidity-utils";
 
-import { createPoolSelectionGraphBins, getPoolSelectionGraphTooltipTick } from "./PoolSelectionGraph.utils";
+import {
+  createPoolSelectionGraphBins,
+  getPoolSelectionGraphEmptyTickWindow,
+  getPoolSelectionGraphTooltipTick,
+} from "./PoolSelectionGraph.utils";
 
 const makeToken = (symbol: string, decimals: number): TokenModel => ({
   path: `gno.land/r/demo/${symbol.toLowerCase()}`,
@@ -84,5 +89,29 @@ describe("createPoolSelectionGraphBins", () => {
       [-20, -10, 2, 1],
       [-10, 0, 2, 1],
     ]);
+  });
+});
+
+describe("getPoolSelectionGraphEmptyTickWindow", () => {
+  it("centers empty create-pool graphs around the current tick instead of the full protocol range", () => {
+    const tickWindow = getPoolSelectionGraphEmptyTickWindow({
+      currentTick: 0,
+      visibleTickRange: 18_240,
+      minTick: MIN_TICK,
+      maxTick: MAX_TICK,
+    });
+
+    expect(tickWindow).toEqual({ minTick: -9_120, maxTick: 9_120 });
+  });
+
+  it("uses the full protocol range only when the requested visible range covers it", () => {
+    const tickWindow = getPoolSelectionGraphEmptyTickWindow({
+      currentTick: 0,
+      visibleTickRange: MAX_TICK - MIN_TICK,
+      minTick: MIN_TICK,
+      maxTick: MAX_TICK,
+    });
+
+    expect(tickWindow).toEqual({ minTick: MIN_TICK, maxTick: MAX_TICK });
   });
 });
