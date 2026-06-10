@@ -1,12 +1,12 @@
+import BigNumber from "bignumber.js";
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { subscriptFormat } from "@utils/number-utils";
 
 import { TooltipInfo } from "../PoolGraph.types";
 import { PoolGraphTooltipContainer } from "./PoolGraphTooltip.styles";
-import { useWindowSize } from "@hooks/common/use-window-size";
-import { DEVICE_TYPE } from "@styles/media";
 
 function makeClassNameWithSmallFont(className: string, target: string, limitLength = 21) {
   const additionalClassName = "small-font";
@@ -14,6 +14,30 @@ function makeClassNameWithSmallFont(className: string, target: string, limitLeng
     return `${className} ${additionalClassName}`;
   }
   return className;
+}
+
+function formatTooltipTokenAmount(amount: string) {
+  const amountNumber = BigNumber(amount);
+
+  if (amountNumber.isNaN() || !amountNumber.isFinite()) {
+    return amount;
+  }
+
+  if (amountNumber.isGreaterThan(0) && amountNumber.isLessThan(1)) {
+    return subscriptFormat(amountNumber.toFixed());
+  }
+
+  return amount;
+}
+
+function hasPositiveTokenAmount(amount?: string | null) {
+  const amountText = amount?.trim() || "0";
+
+  if (amountText.startsWith("<")) {
+    return true;
+  }
+
+  return BigNumber(amountText).isGreaterThan(0);
 }
 
 export interface PoolGraphTooltipProps {
@@ -27,183 +51,165 @@ const PoolGraphTooltip: React.FC<React.PropsWithRef<PoolGraphTooltipProps>> = ({
   isPosition,
   disabled,
 }) => {
-  const { breakpoint } = useWindowSize();
   const { t } = useTranslation();
 
   const displayTooltipInfo = useMemo(() => {
     if (!tooltipInfo) {
       return {
-        tokenAPrice: "-",
-        tokenBPrice: "-",
-        tokenAPriceRange: "-",
-        tokenBPriceRange: "-",
+        price: "-",
         totalTokenAAmount: "-",
         totalTokenBAmount: "-",
-        depositTokenAAmount: "-",
-        depositTokenBAmount: "-",
+        totalTokenAUsd: "-",
+        totalTokenBUsd: "-",
+        positionTokenAAmount: "0",
+        positionTokenBAmount: "0",
+        positionTokenAUsd: "$0",
+        positionTokenBUsd: "$0",
       };
     }
 
-    const {
-      tokenA,
-      tokenB,
-      tokenAPrice,
-      tokenBPrice,
-      tokenARange,
-      tokenBRange,
-      tokenAAmount,
-      tokenBAmount,
-      depositTokenAAmount,
-      depositTokenBAmount,
-    } = tooltipInfo;
+    const { tokenB, price, tokenAAmount, tokenBAmount, positionTokenAAmount, positionTokenBAmount } = tooltipInfo;
 
     return {
-      tokenAPrice: `${tokenAPrice} ${tokenB.displaySymbol}`,
-      tokenBPrice: `${tokenBPrice} ${tokenA.displaySymbol}`,
-      tokenAPriceRange:
-        breakpoint === DEVICE_TYPE.MOBILE
-          ? `${tokenARange.min} - ${tokenARange.max}`
-          : `${tokenARange.min} - ${tokenARange.max} ${tokenB.displaySymbol}`,
-      tokenBPriceRange:
-        breakpoint === DEVICE_TYPE.MOBILE
-          ? `${tokenBRange.max} - ${tokenBRange.min}`
-          : `${tokenBRange.max} - ${tokenBRange.min} ${tokenA.displaySymbol}`,
-      totalTokenAAmount: tokenAAmount || "0",
-      totalTokenBAmount: tokenBAmount || "0",
-      depositTokenAAmount: depositTokenAAmount || "0",
-      depositTokenBAmount: depositTokenBAmount || "0",
+      price: `${formatTooltipTokenAmount(price)} ${tokenB.displaySymbol}`,
+      totalTokenAAmount: formatTooltipTokenAmount(tokenAAmount || "0"),
+      totalTokenBAmount: formatTooltipTokenAmount(tokenBAmount || "0"),
+      totalTokenAUsd: tooltipInfo.tokenAUsd || "-",
+      totalTokenBUsd: tooltipInfo.tokenBUsd || "-",
+      positionTokenAAmount: formatTooltipTokenAmount(positionTokenAAmount || "0"),
+      positionTokenBAmount: formatTooltipTokenAmount(positionTokenBAmount || "0"),
+      positionTokenAUsd: tooltipInfo.positionTokenAUsd || "$0",
+      positionTokenBUsd: tooltipInfo.positionTokenBUsd || "$0",
     };
-  }, [tooltipInfo, breakpoint]);
-
-  const isDisplayPositionAmount = useMemo(() => {
-    if (!!tooltipInfo?.disabled) {
-      return false;
-    }
-    return isPosition;
-  }, [isPosition, tooltipInfo?.disabled]);
+  }, [tooltipInfo]);
 
   if (!tooltipInfo || disabled) {
     return <React.Fragment />;
   }
 
+  const hasPositionLiquidity =
+    tooltipInfo.isPositionActive ||
+    hasPositiveTokenAmount(tooltipInfo.positionTokenAAmount) ||
+    hasPositiveTokenAmount(tooltipInfo.positionTokenBAmount);
+
   return (
     <PoolGraphTooltipContainer>
-      <div className="header">
-        <div className="row">
-          <span className="token">{t("common:poolGraph.tooltip.quote")}</span>
-          <span className="price-range">{t("business:currentPrice")}</span>
-        </div>
+      <div className="price-row">
+        <span>{t("common:price")}:</span>
+        <span className="price-value">{displayTooltipInfo.price}</span>
       </div>
 
-      <div className="content">
-        <div className="row">
-          <span className="token">
-            <MissingLogo
-              symbol={tooltipInfo.tokenA.symbol}
-              url={tooltipInfo.tokenA.logoURI}
-              className="logo"
-              width={20}
-              mobileWidth={20}
-            />
-            <span>
-              {tooltipInfo.tokenA.displaySymbol} {t("common:price")}
-            </span>
-          </span>
-          <span className={"token-amount-value price"}>{displayTooltipInfo.tokenAPrice}</span>
+      {isPosition && (
+        <div className="header mt-8">
+          <span>Total liquidity</span>
         </div>
+      )}
 
-        <div className="row">
-          <span className="token">
-            <MissingLogo
-              symbol={tooltipInfo.tokenB.symbol}
-              url={tooltipInfo.tokenB.logoURI}
-              className="logo"
-              width={20}
-              mobileWidth={20}
-            />
-            <span>
-              {tooltipInfo.tokenB.displaySymbol} {t("common:price")}
+      <div className={`content ${isPosition ? "" : "pool-liquidity-content"}`}>
+        {tooltipInfo.tokenAVisible && (
+          <div className="row">
+            <span className="content-token">
+              <MissingLogo
+                symbol={tooltipInfo.tokenA.symbol}
+                url={tooltipInfo.tokenA.logoURI}
+                className="logo"
+                width={20}
+                mobileWidth={20}
+              />
+              <span className="symbol">{tooltipInfo.tokenA.displaySymbol}</span>
             </span>
-          </span>
-          <span className={"token-amount-value price"}>{displayTooltipInfo.tokenBPrice}</span>
-        </div>
+            <span className="amount total-amount">
+              <span className={makeClassNameWithSmallFont("token-amount-value", displayTooltipInfo.totalTokenAAmount)}>
+                {displayTooltipInfo.totalTokenAAmount}
+              </span>
+              <span className="token-price-value">({displayTooltipInfo.totalTokenAUsd})</span>
+            </span>
+          </div>
+        )}
+
+        {tooltipInfo.tokenBVisible && (
+          <div className="row">
+            <span className="content-token">
+              <MissingLogo
+                symbol={tooltipInfo.tokenB.symbol}
+                url={tooltipInfo.tokenB.logoURI}
+                className="logo"
+                width={20}
+                mobileWidth={20}
+              />
+              <span className="symbol">{tooltipInfo.tokenB.displaySymbol}</span>
+            </span>
+            <span className="amount total-amount">
+              <span className={makeClassNameWithSmallFont("token-amount-value", displayTooltipInfo.totalTokenBAmount)}>
+                {displayTooltipInfo.totalTokenBAmount}
+              </span>
+              <span className="token-price-value">({displayTooltipInfo.totalTokenBUsd})</span>
+            </span>
+          </div>
+        )}
       </div>
 
-      <div className="header mt-8">
-        <div className="row">
-          <span className="token token-title">{t("business:token")}</span>
-          <span className="amount total-amount">{t("common:poolGraph.tooltip.totalAmt")}</span>
-          {isDisplayPositionAmount && (
-            <span className="amount w-100 in-header">{t("common:poolGraph.tooltip.positionAmt")}</span>
-          )}
-          <span className="price-range">{t("common:poolGraph.tooltip.priceRange")}</span>
-        </div>
-      </div>
+      {isPosition && hasPositionLiquidity && (
+        <React.Fragment>
+          <div className="header mt-8">
+            <span>Your liquidity ({tooltipInfo.positionLiquidityShare})</span>
+          </div>
 
-      <div className="content">
-        <div className="row">
-          <span className="content-token">
-            <MissingLogo
-              symbol={tooltipInfo.tokenA.symbol}
-              url={tooltipInfo.tokenA.logoURI}
-              className="logo"
-              width={20}
-              mobileWidth={20}
-            />
-            <span className="symbol">{tooltipInfo.tokenA.displaySymbol}</span>
-          </span>
-          <span className="amount total-amount">
-            <span className={makeClassNameWithSmallFont("token-amount-value", displayTooltipInfo.totalTokenAAmount)}>
-              {displayTooltipInfo.totalTokenAAmount}
-            </span>
-          </span>
-
-          {isDisplayPositionAmount && (
-            <span className="amount w-100">
-              <span className="token-amount-value">{displayTooltipInfo.depositTokenAAmount}</span>
-            </span>
-          )}
-          <span
-            className={makeClassNameWithSmallFont(
-              "token-amount-value price-range",
-              displayTooltipInfo.tokenAPriceRange,
+          <div className="content">
+            {tooltipInfo.positionTokenAVisible && (
+              <div className="row">
+                <span className="content-token">
+                  <MissingLogo
+                    symbol={tooltipInfo.tokenA.symbol}
+                    url={tooltipInfo.tokenA.logoURI}
+                    className="logo"
+                    width={20}
+                    mobileWidth={20}
+                  />
+                  <span className="symbol">{tooltipInfo.tokenA.displaySymbol}</span>
+                </span>
+                <span className="amount total-amount">
+                  <span
+                    className={makeClassNameWithSmallFont(
+                      "token-amount-value",
+                      displayTooltipInfo.positionTokenAAmount,
+                    )}
+                  >
+                    {displayTooltipInfo.positionTokenAAmount}
+                  </span>
+                  <span className="token-price-value">({displayTooltipInfo.positionTokenAUsd})</span>
+                </span>
+              </div>
             )}
-          >
-            {displayTooltipInfo.tokenAPriceRange}
-          </span>
-        </div>
 
-        <div className="row">
-          <span className="content-token">
-            <MissingLogo
-              symbol={tooltipInfo.tokenB.symbol}
-              url={tooltipInfo.tokenB.logoURI}
-              className="logo"
-              width={20}
-              mobileWidth={20}
-            />
-            <span className="symbol">{tooltipInfo.tokenB.displaySymbol}</span>
-          </span>
-          <span className="amount total-amount">
-            <span className={makeClassNameWithSmallFont("token-amount-value", displayTooltipInfo.totalTokenBAmount)}>
-              {displayTooltipInfo.totalTokenBAmount}
-            </span>
-          </span>
-          {isDisplayPositionAmount && (
-            <span className="amount w-100">
-              <span className="token-amount-value">{displayTooltipInfo.depositTokenBAmount}</span>
-            </span>
-          )}
-          <span
-            className={makeClassNameWithSmallFont(
-              "token-amount-value price-range",
-              displayTooltipInfo.tokenBPriceRange,
+            {tooltipInfo.positionTokenBVisible && (
+              <div className="row">
+                <span className="content-token">
+                  <MissingLogo
+                    symbol={tooltipInfo.tokenB.symbol}
+                    url={tooltipInfo.tokenB.logoURI}
+                    className="logo"
+                    width={20}
+                    mobileWidth={20}
+                  />
+                  <span className="symbol">{tooltipInfo.tokenB.displaySymbol}</span>
+                </span>
+                <span className="amount total-amount">
+                  <span
+                    className={makeClassNameWithSmallFont(
+                      "token-amount-value",
+                      displayTooltipInfo.positionTokenBAmount,
+                    )}
+                  >
+                    {displayTooltipInfo.positionTokenBAmount}
+                  </span>
+                  <span className="token-price-value">({displayTooltipInfo.positionTokenBUsd})</span>
+                </span>
+              </div>
             )}
-          >
-            {displayTooltipInfo.tokenBPriceRange}
-          </span>
-        </div>
-      </div>
+          </div>
+        </React.Fragment>
+      )}
     </PoolGraphTooltipContainer>
   );
 };

@@ -1,4 +1,3 @@
-import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { IPoolPriceRatio } from "@models/pool/pool-model";
 import { RewardTokenModel } from "@models/position/reward-model";
 import { TokenModel } from "@models/token/token-model";
@@ -30,10 +29,6 @@ export interface PoolResponse {
   tickSpacing: number;
 
   currentTick: number;
-
-  bins: PoolBinModel[]; // ToDo: Delete
-
-  bins40: PoolBinModel[]; // ToDo: Delete
 
   tvl: string;
 

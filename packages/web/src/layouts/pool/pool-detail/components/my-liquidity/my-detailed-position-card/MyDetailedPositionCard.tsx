@@ -7,9 +7,11 @@ import { cx } from "@emotion/css";
 import { WUGNOT_TOKEN } from "@common/values/token-constant";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
+import IconAdd from "@components/common/icons/IconAdd";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconLinkPage from "@components/common/icons/IconLinkPage";
 import IconPolygon from "@components/common/icons/IconPolygon";
+import IconRemove from "@components/common/icons/IconRemove";
 import IconStaking from "@components/common/icons/IconStaking";
 import IconSwap from "@components/common/icons/IconSwap";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
@@ -17,6 +19,11 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import RangeBadge from "@components/common/range-badge/RangeBadge";
+import {
+  LIQUIDITY_GRAPH_BIN_COUNT,
+  LIQUIDITY_GRAPH_INITIAL_ZOOM_LEVEL,
+  LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES,
+} from "@constants/graph.constant";
 import RewardTooltipContent, {
   PositionRewardForTooltip,
 } from "@components/common/reward-tooltip-content/RewardTooltipContent";
@@ -27,9 +34,9 @@ import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useCopy } from "@hooks/common/use-copy";
 import useRouter from "@hooks/common/use-custom-router";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { usePoolLiquiditySegmentsByPath } from "@hooks/pool/data/use-pool-liquidity-segments-by-path";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
-import { useGetPositionBins } from "@query/positions";
 import { ThemeState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
 import { isGNOTPath } from "@utils/common";
@@ -97,13 +104,8 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   const GRAPH_WIDTH = useMemo(() => Math.min(width - (width > 767 ? 224 : 80), 1216), [width]);
   const [copied, setCopy] = useCopy();
   const [copiedPosition, setCopiedPosition] = useCopy();
-  const { data: bins = [] } = useGetPositionBins(position.lpTokenId, 40, {
-    liquidity: position.liquidity,
-    poolCurrentTick: position.pool?.currentTick,
-    poolTokenABalance: position.pool?.tokenABalance,
-    poolTokenBBalance: position.pool?.tokenBBalance,
-  });
-
+  const [zoomLevel, setZoomLevel] = useState<number>(LIQUIDITY_GRAPH_INITIAL_ZOOM_LEVEL);
+  const visibleTickRange = useMemo(() => LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES[zoomLevel], [zoomLevel]);
   const isClosed = position.closed;
 
   const isDisplay = useMemo(() => {
@@ -137,9 +139,21 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     return position.pool.currentTick ?? null;
   }, [position.pool.currentTick]);
 
-  const price = useMemo(() => {
-    return position.pool.price || 1;
-  }, [position.pool.price]);
+  const { liquiditySegments, isLoading: isLoadingLiquiditySegments } = usePoolLiquiditySegmentsByPath(
+    position.poolPath,
+    {
+      currentTick: currentTick ?? undefined,
+      currentPrice: position.pool.price,
+      tokenA,
+      tokenB,
+      includeTokenAmounts: true,
+      visibleTickRange,
+      binCount: LIQUIDITY_GRAPH_BIN_COUNT,
+    },
+    {
+      enabled: !loading && !!position.poolPath,
+    },
+  );
 
   const inRange = useMemo(() => {
     const { tickLower, tickUpper, pool } = position;
@@ -515,71 +529,15 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     );
   }, [isSwap, tokenA, tokenB, position?.pool?.currentTick]);
 
-  const poolBin = useMemo(() => {
-    return (bins ?? []).map(item => ({
-      index: item.index,
-      reserveTokenA: Number(item.poolReserveTokenA),
-      reserveTokenB: Number(item.poolReserveTokenB),
-      minTick: Number(item.minTick),
-      maxTick: Number(item.maxTick),
-      liquidity: Number(item.poolLiquidity),
-    }));
-  }, [bins]);
-
-  const positionBin = useMemo(() => {
-    return (bins ?? []).map(item => ({
-      index: item.index,
-      reserveTokenA: Number(item.reserveTokenA),
-      reserveTokenB: Number(item.reserveTokenB),
-      minTick: Number(item.minTick),
-      maxTick: Number(item.maxTick),
-      liquidity: Number(item.liquidity),
-    }));
-  }, [bins]);
-
-  const tickRange = useMemo(() => {
-    const ticks = positionBin.flatMap(bin => [bin.minTick, bin.maxTick]);
-    const min = Math.min(...ticks);
-    const max = Math.max(...ticks);
-    return [min, max];
-  }, [positionBin]);
-
-  const minTickPosition = useMemo(() => {
-    const [min, max] = tickRange;
-    const currentTick = position.pool.currentTick;
-    if (position.tickLower === currentTick) {
-      return 0;
-    }
-    if (position.tickLower < currentTick) {
-      return ((position.tickLower - min) / (currentTick - min)) * (GRAPH_WIDTH / 2);
-    }
-    return ((position.tickLower - currentTick) / (max - currentTick)) * (GRAPH_WIDTH / 2) + GRAPH_WIDTH / 2;
-  }, [GRAPH_WIDTH, position.pool.currentTick, position.tickLower, tickRange]);
-
-  const maxTickPosition = useMemo(() => {
-    const [min, max] = tickRange;
-    const currentTick = position.pool.currentTick;
-    if (position.tickUpper === currentTick) {
-      return 0;
-    }
-    if (position.tickUpper < currentTick) {
-      return ((position.tickUpper - min) / (currentTick - min)) * (GRAPH_WIDTH / 2);
-    }
-    return ((position.tickUpper - currentTick) / (max - currentTick)) * (GRAPH_WIDTH / 2) + GRAPH_WIDTH / 2;
-  }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
-
   const isFullRange = useMemo(() => {
-    const [min, max] = tickRange;
-    if (positionBin.length === 0) return false;
+    const isMinEndTick = isEndTickBy(position.tickLower, position.pool.fee);
+    const isMaxEndTick = isEndTickBy(position.tickUpper, position.pool.fee);
 
-    const isMinEndTick = isEndTickBy(min, position.pool.fee);
-    const isMaxEndTick = isEndTickBy(max, position.pool.fee);
-
-    const minPrice = tickToPriceStr(min, { isEnd: isMinEndTick });
-    const maxPrice = tickToPriceStr(max, { isEnd: isMaxEndTick });
+    const minPrice = tickToPriceStr(position.tickLower, { isEnd: isMinEndTick });
+    const maxPrice = tickToPriceStr(position.tickUpper, { isEnd: isMaxEndTick });
 
     return minPrice === "0" && maxPrice === "∞";
-  }, [tickRange, positionBin.length, position.pool.fee]);
+  }, [position.tickLower, position.tickUpper, position.pool.fee]);
 
   const minPriceStr = useMemo(() => {
     if (isFullRange) return "0 ";
@@ -676,15 +634,28 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   }, [maxTickRate, isSwap, minTickRate]);
 
   const isHideBar = useMemo(() => {
-    const isAllReserveZeroBin40 = poolBin.every(
-      item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
-    );
-    const isAllReserveZeroBin = positionBin.every(
-      item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
-    );
+    return liquiditySegments.length === 0 && !position.liquidity;
+  }, [liquiditySegments.length, position.liquidity]);
 
-    return isAllReserveZeroBin40 && isAllReserveZeroBin;
-  }, [poolBin, positionBin]);
+  const availInfo = useMemo(
+    () => ({
+      availZoomIn: zoomLevel < LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES.length - 1,
+      availZoomOut: zoomLevel > 0,
+    }),
+    [zoomLevel],
+  );
+
+  const handleZoomIn = useCallback(() => {
+    if (availInfo.availZoomIn && zoomLevel + 1 < LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES.length) {
+      setZoomLevel(zoomLevel + 1);
+    }
+  }, [zoomLevel, availInfo.availZoomIn]);
+
+  const handleZoomOut = useCallback(() => {
+    if (availInfo.availZoomOut && zoomLevel > 0) {
+      setZoomLevel(zoomLevel - 1);
+    }
+  }, [zoomLevel, availInfo.availZoomOut]);
 
   const isShowRewardInfoTooltip = useMemo(() => {
     return (
@@ -968,30 +939,52 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
             />
           </div>
         )}
+        {!loading && !isLoadingLiquiditySegments && (
+          <div className="zoom-controller">
+            <button
+              type="button"
+              aria-label="Zoom out"
+              disabled={!availInfo.availZoomOut}
+              className={cx({ disabled: !availInfo.availZoomOut })}
+              onClick={handleZoomOut}
+            >
+              <IconRemove />
+            </button>
+            <button
+              type="button"
+              aria-label="Zoom in"
+              disabled={!availInfo.availZoomIn}
+              className={cx({ disabled: !availInfo.availZoomIn })}
+              onClick={handleZoomIn}
+            >
+              <IconAdd />
+            </button>
+          </div>
+        )}
       </div>
-      {!loading && (
+      {!loading && !isLoadingLiquiditySegments && (
         <PoolGraph
           tokenA={tokenA}
           tokenB={tokenB}
-          bins={poolBin}
+          liquiditySegments={liquiditySegments}
           currentTick={currentTick}
+          currentPrice={position.pool.price}
           width={GRAPH_WIDTH}
           height={150}
           mouseover
           themeKey={themeKey}
           position="top"
           offset={40}
-          poolPrice={price}
           isPosition
-          minTickPosition={minTickPosition}
-          maxTickPosition={maxTickPosition}
-          binsMyAmount={positionBin}
+          positionLiquidity={position.liquidity.toString()}
+          positionTickLower={position.tickLower}
+          positionTickUpper={position.tickUpper}
           isReversed={isSwap}
           disabled={isHideBar}
           disableBlackBars={false}
         />
       )}
-      {loading && (
+      {(loading || isLoadingLiquiditySegments) && (
         <LoadingChart>
           <LoadingSpinner />
         </LoadingChart>

@@ -18,7 +18,7 @@ import { PoolModel } from "@models/pool/pool-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { SwapState } from "@states/index";
 import { formatRate } from "@utils/new-number-utils";
-import { makeRouteUrl } from "@utils/page.utils";
+import { makeRouteUrl, replaceRouteUrlWithoutNavigation } from "@utils/page.utils";
 import { invertSqrtPriceX96, makeDisplayPrice, makeRawPrice } from "@utils/pool-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
 import {
@@ -690,9 +690,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
         tickUpper: nextTickUpper,
         ...(hasUrlReferralParameter ? { referrer: currentReferralAddress } : {}),
       };
-      router.replace(makeRouteUrl(PAGE_PATH.EARN_ADD, query), undefined, {
-        shallow: true,
-      });
+      replaceRouteUrlWithoutNavigation(PAGE_PATH.EARN_ADD, makeRouteUrl(PAGE_PATH.EARN_ADD, query));
     }
   }, [
     swapFeeTier,

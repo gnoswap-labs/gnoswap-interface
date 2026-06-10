@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from "react";
-import * as d3 from "d3";
+import { select } from "d3-selection";
 
 import { useColorGraph } from "@hooks/common/use-color-graph";
 import { ThemeKeys } from "@styles/ThemeTypes";
@@ -7,6 +7,18 @@ import { ThemeKeys } from "@styles/ThemeTypes";
 import { ReservedBin } from "../PoolGraph.types";
 import { PoolGraphSVGContainer } from "./PoolGraphSVG.styles";
 import { useTheme } from "@emotion/react";
+
+const MIN_VISIBLE_BAR_HEIGHT = 3;
+
+const getVisibleBarDimensions = (scaleYComputation: number, boundsHeight: number) => {
+  const rawHeight = Math.max(0, boundsHeight - scaleYComputation);
+  const visibleHeight = rawHeight > 0 ? Math.max(rawHeight, MIN_VISIBLE_BAR_HEIGHT) : 0;
+
+  return {
+    y: boundsHeight - visibleHeight,
+    height: visibleHeight,
+  };
+};
 
 interface PoolGraphSVGProps {
   graphId: string;
@@ -20,22 +32,18 @@ interface PoolGraphSVGProps {
   };
   currentTick?: number | null;
   reservedBins: ReservedBin[];
-  maxTickPosition?: number | null;
-  minTickPosition?: number | null;
   binSpacing: number;
   isReversed: boolean;
+  isPosition: boolean;
   disabled?: boolean;
   themeKey: ThemeKeys;
-  scaleX: d3.ScaleLinear<number, number, never>;
-  scaleY: d3.ScaleLinear<number, number, never>;
+  scaleX: (value: number) => number;
+  scaleY: (value: number) => number;
   d3Position: {
-    defaultMinX: number;
     minX: number;
     maxX: number;
   };
-  zoomLevel: number;
   currentTickRelative: number | null;
-  shiftIndex: number;
   disableBlackBars?: boolean;
   onMouseEnter?: (event: React.MouseEvent | React.TouchEvent) => void;
   onMouseLeave?: (event: React.MouseEvent) => void;
@@ -59,11 +67,10 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
       currentTick,
       currentTickRelative,
       binSpacing,
-      maxTickPosition = 0,
-      minTickPosition = 0,
       reservedBins,
       themeKey,
       isReversed,
+      isPosition,
       disabled,
       scaleX,
       scaleY,
@@ -73,8 +80,6 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
       onTouchStart,
       onMouseMove,
       onMouseOut,
-      zoomLevel,
-      shiftIndex,
       disableBlackBars,
     },
     forwardedRef,
@@ -90,14 +95,14 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
     const boundsWidth = width - margin.right - margin.left;
     const boundsHeight = height - margin.top - margin.bottom;
 
-    // D3 - Dimension Definition
-    const { maxX } = d3Position;
+    // Keep the domain prop in the dependency graph so D3 redraws if bounds change without a segment identity change.
+    const { minX, maxX } = d3Position;
 
     const hasCurrentTick = useMemo(() => currentTick != null, [currentTick]);
 
     const currentTickPosition = useMemo(() => {
       // centred if reservedBins is empty or currentTickRelative is not present
-      if (reservedBins.length === 0 || !currentTickRelative) {
+      if (reservedBins.length === 0 || currentTickRelative == null) {
         return boundsWidth / 2;
       }
 
@@ -109,32 +114,6 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
     function updateChart() {
       // Retrieves the colour of the chart bar at the current tick.
       function fillByBin(bin: ReservedBin) {
-        if (disableBlackBars) {
-          if (hasCurrentTick && currentTickRelative !== null) {
-            if (bin.minTick < currentTickRelative) {
-              return `url(#gradient-bar-green-${graphId})`;
-            }
-            return `url(#gradient-bar-red-${graphId})`;
-          }
-          return `url(#gradient-bar-red-${graphId})`;
-        }
-
-        let isBlackBar = !!(
-          maxTickPosition != null &&
-          minTickPosition != null &&
-          (scaleX(bin.minTick) < minTickPosition - binSpacing || scaleX(bin.minTick) > maxTickPosition)
-        );
-
-        if (isReversed) {
-          isBlackBar = !!(
-            maxTickPosition != null &&
-            minTickPosition != null &&
-            (scaleX(bin.minTick) < scaleX(maxX) - maxTickPosition - binSpacing ||
-              scaleX(bin.minTick) > scaleX(maxX) - minTickPosition)
-          );
-        }
-        if (isBlackBar) return themeKey === "dark" ? "#1C2230" : "#E0E8F4";
-
         if (hasCurrentTick && currentTickRelative !== null) {
           if (bin.minTick < currentTickRelative) {
             return `url(#gradient-bar-green-${graphId})`;
@@ -145,8 +124,8 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
       }
 
       // Create a chart bar.
-      const rects = d3.select(chartRef.current);
-      rects.attr("clip-path", "url(#clip)");
+      const rects = select(chartRef.current);
+      rects.attr("clip-path", `url(#clip-${graphId})`);
 
       // D3 - Draw reservedBins as bars
       rects.selectAll("g").remove();
@@ -157,12 +136,12 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
           .enter()
           .append("g")
           .attr("class", "bin-wrapper")
-          .attr("id", bin => `pool-graph-bin-${graphId}-${bin.index}`)
-          .each(function (bin) {
+          .attr("id", (bin: ReservedBin) => `pool-graph-bin-${graphId}-${bin.index}`)
+          .each(function (this: SVGGElement, bin: ReservedBin) {
             const binX = scaleX(bin.minTick);
             const binWidth = Math.max(0.5, scaleX(bin.maxTick) - binX);
 
-            d3.select(this)
+            select(this)
               .append("rect")
               .style("fill", "transparent")
               .attr("class", "bin-inner")
@@ -171,37 +150,48 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
               .attr("width", binWidth)
               .attr("y", () => {
                 const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
-                return scaleYComputation - (scaleYComputation > height - 3 && scaleYComputation !== height ? 3 : 0);
+                return getVisibleBarDimensions(scaleYComputation, boundsHeight).y;
               })
               .attr("height", () => {
                 const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
-                return (
-                  boundsHeight -
-                  scaleYComputation +
-                  (scaleYComputation > height - 3 && scaleYComputation !== height ? 3 : 0)
-                );
+                return getVisibleBarDimensions(scaleYComputation, boundsHeight).height;
               });
 
-            const heightPadding = 3;
-            d3.select(this)
+            const poolFill = isPosition && !disableBlackBars ? (themeKey === "dark" ? "#1C2230" : "#E0E8F4") : fillByBin(bin);
+
+            select(this)
               .append("rect")
-              .style("fill", fillByBin(bin))
+              .style("fill", poolFill)
               .attr("class", "bin-inner")
               .style("stroke-width", "0")
               .attr("x", binX + 1)
               .attr("width", Math.max(0, binWidth - 0.5))
               .attr("y", () => {
                 const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
-                return scaleYComputation - (scaleYComputation > height - 3 && scaleYComputation !== height ? 3 : 0);
+                return getVisibleBarDimensions(scaleYComputation, boundsHeight).y;
               })
               .attr("height", () => {
                 const scaleYComputation = scaleY(bin.reserveTokenMap) ?? 0;
-                return (
-                  boundsHeight -
-                  scaleYComputation +
-                  (scaleYComputation > height - heightPadding && scaleYComputation !== height ? heightPadding : 0)
-                );
+                return getVisibleBarDimensions(scaleYComputation, boundsHeight).height;
               });
+
+            if (isPosition && !disableBlackBars && bin.isPositionVisualActive && bin.positionReserveTokenMap > 0) {
+              select(this)
+                .append("rect")
+                .style("fill", fillByBin(bin))
+                .attr("class", "bin-position-overlay")
+                .style("stroke-width", "0")
+                .attr("x", binX + 1)
+                .attr("width", Math.max(0, binWidth - 0.5))
+                .attr("y", () => {
+                  const scaleYComputation = scaleY(bin.positionReserveTokenMap) ?? 0;
+                  return getVisibleBarDimensions(scaleYComputation, boundsHeight).y;
+                })
+                .attr("height", () => {
+                  const scaleYComputation = scaleY(bin.positionReserveTokenMap) ?? 0;
+                  return getVisibleBarDimensions(scaleYComputation, boundsHeight).height;
+                });
+            }
           });
       }
 
@@ -224,8 +214,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
       //  D3 - Draw bin and define interaction
       if (!svgRef?.current) return;
 
-      const svgElement = d3
-        .select(svgRef?.current)
+      const svgElement = select(svgRef?.current)
         .attr("width", width)
         .attr("height", height)
         .attr("viewBox", [0, 0, width, height])
@@ -246,7 +235,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
         .attr("x", margin.left)
         .attr("y", margin.top);
 
-      const rects = d3.select(chartRef.current);
+      const rects = select(chartRef.current);
       rects.attr("clip-path", `url(#clip-${graphId})`);
 
       if (!!width && !!height && !!chartRef.current) {
@@ -260,12 +249,15 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
       chartRef?.current,
       onMouseMove,
       theme,
-      zoomLevel,
       scaleX,
       scaleY,
-      shiftIndex,
       currentTickPosition,
       disableBlackBars,
+      isPosition,
+      minX,
+      maxX,
+      binSpacing,
+      isReversed,
     ]);
 
     return (

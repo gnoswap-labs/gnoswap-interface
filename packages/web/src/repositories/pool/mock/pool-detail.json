@@ -47,8 +47,6 @@
     "tokenABalance": 591391,
     "tokenBBalance": 2777571,
     "tickSpacing": 10,
-    "bins": [],
-    "bins40": [],
     "topBin": null,
     "resolvedBins": [],
     "totalApr": 0,

@@ -63,7 +63,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
 
   const hasPositions = positions.length > 0;
   const shouldShowSkeleton = isLoading || (!isFetched && !hasPositions);
-  const shouldShowPositions = !isLoading && hasPositions;
+  const shouldShowPositions = hasPositions;
   const shouldShowLoadMoreButton = !mobile && !isLoading && showLoadMore && !!onClickLoadMore;
   const shouldShowPositionIndicator = showPositionIndicator && isFetched && hasPositions && !isLoading;
   const shouldShowPagination = Boolean(totalPage && totalPage > 1 && (mobile || !loadMore));
@@ -95,7 +95,7 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
           Array(blankCardCount)
             .fill(1)
             .map((_, index) => <BlankPositionCard key={index} />)}
-        {shouldShowSkeleton &&
+        {shouldShowSkeleton && !hasPositions &&
           Array.from({ length: maxDisplayCount }).map((_, idx) => (
             <span key={idx} className="card-skeleton" css={pulseSkeletonStyle({ w: "100%", tone: "600" })} />
           ))}

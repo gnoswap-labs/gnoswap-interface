@@ -4,7 +4,6 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { EARN_POOL_LIST_SIZE } from "@constants/table.constant";
 import useClickOutside from "@hooks/common/use-click-outside";
 import useCustomRouter from "@hooks/common/use-custom-router";
-import { useLoading } from "@hooks/common/use-loading";
 import { usePoolData } from "@hooks/pool/data/use-pool-data";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
@@ -27,9 +26,8 @@ const PoolListContainer: React.FC = () => {
   const [searchIcon, setSearchIcon] = useState(false);
   const [breakpoint] = useAtom(CommonState.breakpoint);
   const router = useCustomRouter();
-  const { poolListInfos, updatePools } = usePoolData();
+  const { poolListInfos, isFetchedPools, updatePools } = usePoolData();
   const [componentRef, isClickOutside, setIsInside] = useClickOutside();
-  const { isLoadingPools } = useLoading();
   const { tokenPrices } = useTokenData();
 
   const themeKey = useAtomValue(ThemeState.themeKey);
@@ -258,7 +256,7 @@ const PoolListContainer: React.FC = () => {
   return (
     <PoolList
       pools={paginatedPools}
-      isFetched={!isLoadingPools}
+      isFetched={isFetchedPools}
       poolType={poolType}
       changePoolType={changePoolType}
       search={handleSearch}

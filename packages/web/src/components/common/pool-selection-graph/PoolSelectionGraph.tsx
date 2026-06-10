@@ -8,7 +8,7 @@ import { EventBlocker, PoolSelectionGraphTooltipWrapper, PoolSelectionGraphWrapp
 import { SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import { useColorGraph } from "@hooks/common/use-color-graph";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
-import { PoolBinModel } from "@models/pool/pool-bin-model";
+import { PoolLiquiditySegmentModel } from "@models/pool/pool-liquidity-model";
 import { TokenModel } from "@models/token/token-model";
 import { makeDisplayPrice } from "@utils/pool-utils";
 import { convertToKMB, formatTokenExchangeRate } from "@utils/stake-position-utils";
@@ -17,6 +17,19 @@ import { priceToTick, tickToPrice } from "@utils/swap-utils";
 
 import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { PoolSelectionGraphBinTooptip, TooltipInfo } from "./PoolSelectionGraphBinTooltip";
+import { createPoolSelectionGraphBins, getPoolSelectionGraphTooltipTick } from "./PoolSelectionGraph.utils";
+
+const MIN_VISIBLE_BAR_HEIGHT = 5;
+
+const getVisibleBarDimensions = (scaleYComputation: number, boundsHeight: number) => {
+  const rawHeight = Math.max(0, boundsHeight - scaleYComputation);
+  const visibleHeight = rawHeight > 0 ? Math.max(rawHeight, MIN_VISIBLE_BAR_HEIGHT) : 0;
+
+  return {
+    y: boundsHeight - visibleHeight,
+    height: visibleHeight,
+  };
+};
 
 interface SelectionColor {
   startPercent: string;
@@ -42,7 +55,7 @@ interface ResolveBinModel {
 export interface PoolSelectionGraphProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
-  bins: PoolBinModel[];
+  liquiditySegments: PoolLiquiditySegmentModel[];
   feeTier: SwapFeeTierType;
   tickSpacing: number;
   mouseover?: boolean;
@@ -62,8 +75,6 @@ export interface PoolSelectionGraphProps {
   price: number;
   flip?: boolean;
   showBar?: boolean;
-  displayBinCount?: number;
-  shiftIndex?: number;
   minPrice: number | null;
   maxPrice: number | null;
   fullRange: boolean;
@@ -75,7 +86,7 @@ export interface PoolSelectionGraphProps {
 const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   tokenA,
   tokenB,
-  bins = [],
+  liquiditySegments = [],
   feeTier,
   tickSpacing,
   width,
@@ -90,8 +101,6 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   position,
   price,
   flip,
-  displayBinCount = 40,
-  shiftIndex = 0,
   fullRange,
   minPrice,
   maxPrice,
@@ -118,6 +127,9 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
   const { redColor, greenColor } = useColorGraph();
 
+  const displayTokenA = useMemo(() => (flip ? tokenB : tokenA), [flip, tokenA, tokenB]);
+  const displayTokenB = useMemo(() => (flip ? tokenA : tokenB), [flip, tokenA, tokenB]);
+
   const [selectionColor, setSelectionColor] = useState<SelectionColor>(getSelectionColor("0", "0"));
 
   const displayLabels = 8;
@@ -134,54 +146,36 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     return price;
   }, [price]);
 
-  const adjustBins = useMemo(() => {
-    return flip
-      ? bins
-          .map(bin => ({
-            ...bin,
-            maxTick: -1 * bin.minTick,
-            minTick: -1 * bin.maxTick,
-            reserveTokenA: bin.reserveTokenB,
-            reserveTokenB: bin.reserveTokenA,
-            height: BigNumber(bin.reserveTokenB).multipliedBy(price).plus(bin.reserveTokenA).toNumber(),
-          }))
-          .reverse()
-      : bins.map(bin => ({
-          ...bin,
-          height: BigNumber(bin.reserveTokenA).multipliedBy(price).plus(bin.reserveTokenB).toNumber(),
-        }));
-  }, [bins, price, flip]);
-
-  // Display bins is bins slice data.
-  const displayBins = useMemo(() => {
-    const centerIndex = adjustBins.length / 2;
-    const displaySideBinCount = displayBinCount / 2;
-
-    const sliceStartIndex =
-      centerIndex - displaySideBinCount + shiftIndex >= 0 ? centerIndex - displaySideBinCount + shiftIndex : 0;
-
-    const sliceEndIndex =
-      centerIndex + displaySideBinCount + shiftIndex < adjustBins.length
-        ? centerIndex + displaySideBinCount + shiftIndex
-        : adjustBins.length;
-
-    return adjustBins.slice(sliceStartIndex, sliceEndIndex);
-  }, [adjustBins, displayBinCount, shiftIndex]);
+  const graphBins = useMemo(() => createPoolSelectionGraphBins(liquiditySegments, flip), [liquiditySegments, flip]);
 
   const graphMinTick = useMemo(() => {
-    return Math.min(...displayBins.map(bin => bin.minTick));
-  }, [displayBins]);
+    if (graphBins.length === 0) {
+      return swapFeeTierMaxPriceRange.minTick;
+    }
+    return Math.min(...graphBins.map(bin => bin.minTick));
+  }, [graphBins, swapFeeTierMaxPriceRange.minTick]);
 
   // D3 - Dimension Definition
-  const minX = useMemo(() => Math.min(...displayBins.map(bin => bin.minTick)), [displayBins]);
-  const maxX = useMemo(() => Math.max(...displayBins.map(bin => bin.maxTick)), [displayBins]);
+  const maxX = useMemo(() => {
+    if (graphBins.length === 0) {
+      return swapFeeTierMaxPriceRange.maxTick;
+    }
 
-  const maxLiquidity = Math.max(...adjustBins.map(bin => bin.height));
+    const maxTick = Math.max(...graphBins.map(bin => bin.maxTick));
+    return maxTick === graphMinTick ? graphMinTick + tickSpacing : maxTick;
+  }, [graphBins, graphMinTick, swapFeeTierMaxPriceRange.maxTick, tickSpacing]);
+
+  const maxLiquidity = useMemo(() => {
+    if (graphBins.length === 0) {
+      return 0;
+    }
+    return Math.max(...graphBins.map(bin => bin.height));
+  }, [graphBins]);
 
   // D3 - Scale Definition
   const defaultScaleX = d3
     .scaleLinear()
-    .domain([0, maxX - minX])
+    .domain([0, maxX - graphMinTick])
     .range([0, boundsWidth]);
 
   const scaleX = defaultScaleX.copy();
@@ -195,10 +189,13 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     )
     .tickArguments([displayLabels]);
 
-  const scaleY = d3.scaleLinear().domain([0, maxLiquidity]).range([boundsHeight, 0]);
+  const scaleY = d3
+    .scaleLinear()
+    .domain([0, maxLiquidity > 0 ? maxLiquidity : 1])
+    .range([boundsHeight, 0]);
 
   const resolvedDisplayBins: ResolveBinModel[] = useMemo(() => {
-    return displayBins.map((bin, index) => {
+    return graphBins.map((bin, index) => {
       return {
         index,
         height: bin.height,
@@ -209,11 +206,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         reserveTokenB: bin.reserveTokenB || 0,
       };
     });
-  }, [displayBins, graphMinTick]);
-
-  const tickWidth = useMemo(() => {
-    return boundsWidth / displayBins.length;
-  }, [boundsWidth, displayBins.length]);
+  }, [graphBins, graphMinTick]);
 
   const currentTick = useMemo(() => {
     if (Number.isNaN(currentPrice)) {
@@ -300,7 +293,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const isRightStartLine = startPosition - 75 < 0;
     const isRightEndLine = endPosition + 75 < boundsWidth;
 
-    setSelectionColor(selectionColor);
+    setSelectionColor(current => (isSameSelectionColor(current, selectionColor) ? current : selectionColor));
 
     updateLine(brushElement, "start", startPosition, startRate, isRightStartLine, fullRange, selectionColor);
     updateLine(brushElement, "end", endPosition, endRate, isRightEndLine, fullRange, selectionColor);
@@ -405,7 +398,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       const minPrice = getPriceBy(startPosition);
       const maxPrice = getPriceBy(endPosition);
 
-      setSelectionColor(selectionColor);
+      setSelectionColor(current => (isSameSelectionColor(current, selectionColor) ? current : selectionColor));
       setMinPrice(minPrice);
       setMaxPrice(maxPrice);
     }
@@ -452,7 +445,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     rects.attr("clip-path", "url(#clip)");
 
     // D3 - Draw Current tick (middle line)
-    if (currentTick !== null && displayBins.length === displayBinCount) {
+    if (currentTick !== null && currentLinePosition >= 0 && currentLinePosition <= boundsWidth) {
       rects
         .append("line")
         .attr("x1", currentLinePosition)
@@ -481,16 +474,12 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
             .attr("x", () => scaleX(bin.positionX))
             .attr("y", () => {
               const scaleYComputation = scaleY(bin.height) ?? 0;
-              return scaleYComputation - (scaleYComputation > height - 5 && scaleYComputation !== height ? 5 : 0);
+              return getVisibleBarDimensions(scaleYComputation, boundsHeight).y;
             })
-            .attr("width", tickWidth)
+            .attr("width", () => Math.max(scaleX(bin.maxTick - graphMinTick) - scaleX(bin.positionX), 0))
             .attr("height", () => {
               const scaleYComputation = scaleY(bin.height) ?? 0;
-              return (
-                boundsHeight -
-                scaleYComputation +
-                (scaleYComputation > height - 5 && scaleYComputation !== height ? 5 : 0)
-              );
+              return getVisibleBarDimensions(scaleYComputation, boundsHeight).height;
             });
           d3.select(this)
             .append("rect")
@@ -499,16 +488,12 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
             .attr("x", () => scaleX(bin.positionX) + 0.5)
             .attr("y", () => {
               const scaleYComputation = scaleY(bin.height) ?? 0;
-              return scaleYComputation - (scaleYComputation > height - 5 && scaleYComputation !== height ? 5 : 0);
+              return getVisibleBarDimensions(scaleYComputation, boundsHeight).y;
             })
-            .attr("width", tickWidth - 0.5)
+            .attr("width", () => Math.max(scaleX(bin.maxTick - graphMinTick) - scaleX(bin.positionX) - 0.5, 0))
             .attr("height", () => {
               const scaleYComputation = scaleY(bin.height) ?? 0;
-              return (
-                boundsHeight -
-                scaleYComputation +
-                (scaleYComputation > height - 5 && scaleYComputation !== height ? 5 : 0)
-              );
+              return getVisibleBarDimensions(scaleYComputation, boundsHeight).height;
             });
         });
     }
@@ -562,32 +547,19 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
     setHoverBarIndex(bin.index);
 
-    const minTick = bin.minTick;
-    const maxTick = bin.maxTick;
-
-    const tokenARange = {
-      min: priceOfTick.tokenA[minTick] || null,
-      max: priceOfTick.tokenA[maxTick] || null,
-    };
-    const tokenBRange = {
-      min: priceOfTick.tokenB[minTick] || null,
-      max: priceOfTick.tokenB[maxTick] || null,
-    };
+    const tooltipTick = getPoolSelectionGraphTooltipTick(bin);
 
     const tokenAAmountStr = bin.reserveTokenA;
     const tokenBAmountStr = bin.reserveTokenB;
 
-    const currentTickKey = Math.round(currentTick);
-
     setTooltipInfo({
-      tokenA: tokenA,
-      tokenB: tokenB,
+      tokenA: displayTokenA,
+      tokenB: displayTokenB,
       tokenAAmount: tokenAAmountStr ? convertToKMB(tokenAAmountStr.toString()) : "-",
       tokenBAmount: tokenBAmountStr ? convertToKMB(tokenBAmountStr.toString()) : "-",
-      tokenARange: tokenARange,
-      tokenBRange: tokenBRange,
-      tokenAPrice: priceOfTick.tokenA[currentTickKey] || "0",
-      tokenBPrice: priceOfTick.tokenB[currentTickKey] || "0",
+      tokenAVisible: tokenAAmountStr > 0,
+      tokenBVisible: tokenBAmountStr > 0,
+      price: priceOfTick.tokenA[tooltipTick] || "0",
     });
     setPositionX(mouseX);
     setPositionY(mouseY);
@@ -620,7 +592,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         const displayPrice = makeDisplayPrice(tickToPrice(tick), baseToken, quoteToken);
 
         return formatTokenExchangeRate(displayPrice.toString(), {
-          maxSignificantDigits: 6,
+          maxSignificantDigits: 5,
+          isIgnoreKMBFormat: true,
           minLimit: 0.000001,
         });
       };
@@ -631,29 +604,28 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       }>(resolve => {
         const priceOfTick = resolvedDisplayBins
           .flatMap(bin => {
-            const minTick = bin.minTick;
-            const maxTick = bin.maxTick;
-            return [minTick, maxTick];
+            const tooltipTick = getPoolSelectionGraphTooltipTick(bin);
+            return [bin.minTick, tooltipTick];
           })
           .reduce<{
             tokenA: { [key in number]: string };
             tokenB: { [key in number]: string };
-          }>((acc, current) => {
-            if (!acc.tokenA[current]) {
-              acc.tokenA[current] = formatDisplayPrice(current, tokenA, tokenB);
-            }
-            if (!acc.tokenB[current]) {
-              acc.tokenB[current] = formatDisplayPrice(-current, tokenB, tokenA);
-            }
-            return acc;
-          }, { tokenA: {}, tokenB: {} });
-        const currentTickKey = Math.round(currentTick);
-        priceOfTick.tokenA[currentTickKey] = formatDisplayPrice(currentTickKey, tokenA, tokenB);
-        priceOfTick.tokenB[currentTickKey] = formatDisplayPrice(-currentTickKey, tokenB, tokenA);
+          }>(
+            (acc, current) => {
+              if (!acc.tokenA[current]) {
+                acc.tokenA[current] = formatDisplayPrice(current, displayTokenA, displayTokenB);
+              }
+              if (!acc.tokenB[current]) {
+                acc.tokenB[current] = formatDisplayPrice(-current, displayTokenB, displayTokenA);
+              }
+              return acc;
+            },
+            { tokenA: {}, tokenB: {} },
+          );
         resolve(priceOfTick);
       }).then(setPriceOfTick);
     }
-  }, [currentTick, resolvedDisplayBins, tokenA, tokenB]);
+  }, [resolvedDisplayBins, displayTokenA, displayTokenB]);
 
   useEffect(() => {
     //  D3 - Draw bin and define interaction
@@ -680,7 +652,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
   // Brush settings, on currentPrice change, zoom, move ...
   useEffect(() => {
-    if (minPrice === null || maxPrice === null || displayBins.length !== displayBinCount) {
+    if (minPrice === null || maxPrice === null) {
       return;
     }
     if (!brushRef?.current) {
@@ -696,7 +668,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         scaleX(priceToTick(maxPrice) - graphMinTick),
       ]);
     }
-  }, [minPrice, maxPrice, zoomLevel, shiftIndex, fullRange, displayBins]);
+  }, [minPrice, maxPrice, zoomLevel, fullRange, graphBins, graphMinTick, boundsWidth, scaleX]);
 
   useEffect(() => {
     if (!brushRef.current) {
@@ -840,6 +812,19 @@ const getSelectionColor = (start: string, end: string) => {
     badgeEnd: "#EA3943B2",
   };
 };
+
+function isSameSelectionColor(left: SelectionColor, right: SelectionColor): boolean {
+  return (
+    left.startPercent === right.startPercent &&
+    left.endPercent === right.endPercent &&
+    left.start === right.start &&
+    left.end === right.end &&
+    left.lineStart === right.lineStart &&
+    left.lineEnd === right.lineEnd &&
+    left.badgeStart === right.badgeStart &&
+    left.badgeEnd === right.badgeEnd
+  );
+}
 
 function makeLeftBadge(
   refer: d3.Selection<SVGSVGElement, unknown, null, undefined>,

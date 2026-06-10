@@ -9,7 +9,6 @@ import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { isMaxTick, isMinTick, makeDisplayPrice } from "@utils/pool-utils";
 import IconStrokeArrowUp from "../../icons/IconStrokeArrowUp";
 import IconStrokeArrowDown from "../../icons/IconStrokeArrowDown";
-import { useGetPositionBins } from "@query/positions";
 import LoadingSpinner from "../../loading-spinner/LoadingSpinner";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
@@ -19,6 +18,8 @@ import { useTranslation } from "react-i18next";
 import MissingLogo from "../../missing-logo/MissingLogo";
 import { QUERY_PARAMETER } from "@constants/page.constant";
 import { usePrefetchNavigation } from "@hooks/common/use-prefetch-navigation";
+import { usePoolLiquiditySegmentsByPath } from "@hooks/pool/data/use-pool-liquidity-segments-by-path";
+import { LIQUIDITY_GRAPH_BIN_COUNT, LIQUIDITY_GRAPH_DEFAULT_VISIBLE_TICK_RANGE } from "@constants/graph.constant";
 
 interface MyPositionCardProps {
   address?: string | null;
@@ -36,105 +37,46 @@ export function estimateTick(tick: number, width: number) {
   return tick;
 }
 
-const MyPositionCard: React.FC<MyPositionCardProps> = ({
-  address,
+interface MyPositionRangeGraphProps {
+  position: PoolPositionModel;
+  currentIndex?: number;
+  themeKey: "dark" | "light";
+  graphWidth: number;
+  graphHeight: number;
+  isHiddenStart: boolean;
+  onClickViewRange: (e: React.MouseEvent<HTMLDivElement>) => void;
+}
+
+const MyPositionRangeGraph: React.FC<MyPositionRangeGraphProps> = ({
   position,
-  movePoolDetail,
   currentIndex,
   themeKey,
-  tokenPrices,
+  graphWidth,
+  graphHeight,
+  isHiddenStart,
+  onClickViewRange,
 }) => {
   const { t } = useTranslation();
-
-  const GRAPH_WIDTH = 290;
-  const GRAPH_HEIGHT = 80;
   const { pool } = position;
   const { tokenA, tokenB } = pool;
-  const [isHiddenStart] = useState(false);
-  const [viewMyRange, setViewMyRange] = useState(false);
-  const [isMouseoverGraph, setIsMouseoverGraph] = useState(false);
 
-  const { data: bins40, isFetched: isFetchedBins } = useGetPositionBins(
-    position.lpTokenId,
-    40,
+  const { liquiditySegments, isFetched: isFetchedLiquiditySegments } = usePoolLiquiditySegmentsByPath(
+    position.poolPath,
     {
-      liquidity: position.liquidity,
-      poolCurrentTick: position.pool?.currentTick,
-      poolTokenABalance: position.pool?.tokenABalance,
-      poolTokenBBalance: position.pool?.tokenBBalance,
+      currentTick: pool.currentTick,
+      tokenA,
+      tokenB,
+      includeTokenAmounts: true,
+      visibleTickRange: LIQUIDITY_GRAPH_DEFAULT_VISIBLE_TICK_RANGE,
+      binCount: LIQUIDITY_GRAPH_BIN_COUNT,
     },
     {
-      enabled: isMouseoverGraph,
+      enabled: true,
     },
   );
 
-  const { prefetch } = usePrefetchNavigation({
-    pageType: "POOL",
-    params: {
-      [QUERY_PARAMETER.POOL_PATH]: position.poolPath,
-      [QUERY_PARAMETER.ADDRESS]: address,
-    },
-    hash: position.id,
-  });
+  const currentPrice = useMemo(() => tickToPrice(pool.currentTick), [pool.currentTick]);
 
-  const onMouseoverViewMyRange = useCallback(() => {
-    setIsMouseoverGraph(true);
-  }, []);
-
-  const onMouseoutViewMyRange = useCallback(() => {
-    setIsMouseoverGraph(false);
-  }, []);
-
-  const poolBins = useMemo(() => {
-    return (bins40 ?? []).map(item => ({
-      index: item.index,
-      reserveTokenA: Number(item.poolReserveTokenA),
-      reserveTokenB: Number(item.poolReserveTokenB),
-      minTick: Number(item.minTick),
-      maxTick: Number(item.maxTick),
-      liquidity: Number(item.poolLiquidity),
-    }));
-  }, [bins40]);
-
-  const positionBins = useMemo(() => {
-    return (bins40 ?? []).map(item => ({
-      index: item.index,
-      reserveTokenA: Number(item.reserveTokenA),
-      reserveTokenB: Number(item.reserveTokenB),
-      minTick: Number(item.minTick),
-      maxTick: Number(item.maxTick),
-      liquidity: Number(item.liquidity),
-    }));
-  }, [bins40]);
-
-  // fake close
-  const inRange: boolean | null = useMemo(() => {
-    if (position.closed === true) return null;
-    return pool.currentTick <= position.tickUpper && pool.currentTick >= position.tickLower;
-  }, [pool.currentTick, position.tickLower, position.tickUpper, position.closed]);
-
-  const feeRateStr = SwapFeeTierInfoMap[position.feeTier].rateStr;
-
-  const positionUsdValueStr = useMemo(() => {
-    if (!position.positionUsdValue || position.positionUsdValue === "0") return "-";
-
-    return formatOtherPrice(position.positionUsdValue);
-  }, [position.positionUsdValue]);
-
-  const aprStr = useMemo(() => {
-    if (!position.apr) return "-";
-
-    return (
-      <>
-        {Number(position.apr) > 100 && <IconStar size={20} />}
-        {formatRate(position.apr)}
-      </>
-    );
-  }, [position.apr]);
-
-  const currentPrice = useMemo(() => {
-    return tickToPrice(pool.currentTick);
-  }, [pool.currentTick]);
   const minTickRate = useMemo(() => {
     if (isMinTick(position.tickLower)) {
       return 0;
@@ -171,50 +113,15 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         }%`;
   }, [maxTickRate]);
 
-  const tickRange = useMemo(() => {
-    const ticks = positionBins.flatMap(bin => [bin.minTick, bin.maxTick]);
-    const min = Math.min(...ticks);
-    const max = Math.max(...ticks);
-    return [min, max];
-  }, [positionBins]);
-
-  const minTickPosition = useMemo(() => {
-    const [min, max] = tickRange;
-    const currentTick = position.pool.currentTick;
-    if (position.tickLower === currentTick) {
-      return 0;
-    }
-    if (position.tickLower < currentTick) {
-      return ((position.tickLower - min) / (currentTick - min)) * (GRAPH_WIDTH / 2);
-    }
-    return ((position.tickLower - currentTick) / (max - currentTick)) * (GRAPH_WIDTH / 2) + GRAPH_WIDTH / 2;
-  }, [GRAPH_WIDTH, position.pool.currentTick, position.tickLower, tickRange]);
-
-  const maxTickPosition = useMemo(() => {
-    const [min, max] = tickRange;
-    const currentTick = position.pool.currentTick;
-    if (position.tickUpper === currentTick) {
-      return 0;
-    }
-    if (position.tickUpper < currentTick) {
-      return ((position.tickUpper - min) / (currentTick - min)) * (GRAPH_WIDTH / 2);
-    }
-    return ((position.tickUpper - currentTick) / (max - currentTick)) * (GRAPH_WIDTH / 2) + GRAPH_WIDTH / 2;
-  }, [GRAPH_WIDTH, position.pool.currentTick, position.tickUpper, tickRange]);
-
   const isFullRange = useMemo(() => {
-    const [min, max] = tickRange;
+    const isMinEndTick = isEndTickBy(position.tickLower, position.pool.fee);
+    const isMaxEndTick = isEndTickBy(position.tickUpper, position.pool.fee);
 
-    if (positionBins.length === 0) return false;
-
-    const isMinEndTick = isEndTickBy(min, position.pool.fee);
-    const isMaxEndTick = isEndTickBy(max, position.pool.fee);
-
-    const minPrice = tickToPriceStr(min, { isEnd: isMinEndTick });
-    const maxPrice = tickToPriceStr(max, { isEnd: isMaxEndTick });
+    const minPrice = tickToPriceStr(position.tickLower, { isEnd: isMinEndTick });
+    const maxPrice = tickToPriceStr(position.tickUpper, { isEnd: isMaxEndTick });
 
     return minPrice === "0" && maxPrice === "∞";
-  }, [tickRange, positionBins.length, position.pool.fee]);
+  }, [position.tickLower, position.tickUpper, position.pool.fee]);
 
   const minPriceStr = useMemo(() => {
     const isEndTick = isEndTickBy(position.tickLower, position.pool.fee);
@@ -248,36 +155,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     });
   }, [position.tickUpper, position.pool.fee, isFullRange, tokenA, tokenB]);
 
-  const onClickViewRange = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-    setViewMyRange(!viewMyRange);
-  };
-
   const getMinTick = useMemo(() => {
-    if (minTickPosition == null) {
-      return null;
-    }
-    if (minTickPosition < 0) {
-      return 0;
-    }
-    if (minTickPosition > GRAPH_WIDTH) {
-      return GRAPH_WIDTH;
-    }
-    return minTickPosition;
-  }, [minTickPosition]);
+    return estimateTick(position.tickLower, graphWidth);
+  }, [graphWidth, position.tickLower]);
 
   const getMaxTick = useMemo(() => {
-    if (maxTickPosition == null) {
-      return null;
-    }
-    if (maxTickPosition < 0) {
-      return 0;
-    }
-    if (maxTickPosition > GRAPH_WIDTH) {
-      return GRAPH_WIDTH;
-    }
-    return maxTickPosition;
-  }, [maxTickPosition]);
+    return estimateTick(position.tickUpper, graphWidth);
+  }, [graphWidth, position.tickUpper]);
 
   const startClass = useMemo(() => {
     if (getMinTick === null) {
@@ -292,6 +176,110 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     }
     return maxTickRate > 0 ? "positive" : "negative";
   }, [getMaxTick, maxTickRate]);
+
+  return (
+    <div className="pool-price-graph open" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
+      <div className="view-my-range">
+        <span onClick={onClickViewRange}>
+          {t("Earn:positions.card.hideRange")} <IconStrokeArrowDown />
+        </span>
+      </div>
+      {isFetchedLiquiditySegments ? (
+        <React.Fragment>
+          <div className="chart-wrapper">
+            <BarAreaGraph
+              width={graphWidth}
+              height={graphHeight}
+              currentTick={pool.currentTick}
+              minLabel={minTickLabel}
+              maxLabel={maxTickLabel}
+              tokenA={tokenA}
+              tokenB={tokenB}
+              isHiddenStart={isHiddenStart}
+              currentIndex={currentIndex}
+              themeKey={themeKey}
+              minTickRate={minTickRate}
+              maxTickRate={maxTickRate}
+              liquiditySegments={liquiditySegments}
+              positionLiquidity={position.liquidity.toString()}
+              positionTickLower={position.tickLower}
+              positionTickUpper={position.tickUpper}
+              disableBlackBars={false}
+            />
+          </div>
+          <div className="min-max-price">
+            <p className={`label-text ${startClass}`}>
+              {minPriceStr}(<span>{minTickLabel}</span>) ~
+            </p>
+            <p className={`label-text ${endClass}`}>
+              {maxPriceStr}(<span>{maxTickLabel}</span>) {tokenB.displaySymbol}
+            </p>
+          </div>
+        </React.Fragment>
+      ) : (
+        <div className="graph-loading-wrapper">
+          <LoadingSpinner className="icon-loading" size={"SMALL"} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+const MyPositionCard: React.FC<MyPositionCardProps> = ({
+  address,
+  position,
+  movePoolDetail,
+  currentIndex,
+  themeKey,
+  tokenPrices,
+}) => {
+  const { t } = useTranslation();
+
+  const GRAPH_WIDTH = 290;
+  const GRAPH_HEIGHT = 80;
+  const { pool } = position;
+  const { tokenA, tokenB } = pool;
+  const [isHiddenStart] = useState(false);
+  const [viewMyRange, setViewMyRange] = useState(false);
+
+  const { prefetch } = usePrefetchNavigation({
+    pageType: "POOL",
+    params: {
+      [QUERY_PARAMETER.POOL_PATH]: position.poolPath,
+      [QUERY_PARAMETER.ADDRESS]: address,
+    },
+    hash: position.id,
+  });
+
+  // fake close
+  const inRange: boolean | null = useMemo(() => {
+    if (position.closed === true) return null;
+    return pool.currentTick <= position.tickUpper && pool.currentTick >= position.tickLower;
+  }, [pool.currentTick, position.tickLower, position.tickUpper, position.closed]);
+
+  const feeRateStr = SwapFeeTierInfoMap[position.feeTier].rateStr;
+
+  const positionUsdValueStr = useMemo(() => {
+    if (!position.positionUsdValue || position.positionUsdValue === "0") return "-";
+
+    return formatOtherPrice(position.positionUsdValue);
+  }, [position.positionUsdValue]);
+
+  const aprStr = useMemo(() => {
+    if (!position.apr) return "-";
+
+    return (
+      <>
+        {Number(position.apr) > 100 && <IconStar size={20} />}
+        {formatRate(position.apr)}
+      </>
+    );
+  }, [position.apr]);
+
+  const onClickViewRange = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    setViewMyRange(!viewMyRange);
+  };
 
   const claimableUSD = useMemo(() => {
     const result = position.rewards.reduce((acc: number | null, cur) => {
@@ -383,59 +371,22 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <span>{claimableUSD}</span>
             </div>
           </div>
-          <div className="view-my-range" onMouseOver={onMouseoverViewMyRange} onMouseOut={onMouseoutViewMyRange}>
+          <div className="view-my-range">
             <span onClick={onClickViewRange}>
               {t("Earn:positions.card.viewRange")} <IconStrokeArrowUp />
             </span>
           </div>
-          <div
-            className={`pool-price-graph ${viewMyRange ? "open" : ""}`}
-            onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}
-          >
-            <div className="view-my-range">
-              <span onClick={onClickViewRange}>
-                {t("Earn:positions.card.hideRange")} <IconStrokeArrowDown />
-              </span>
-            </div>
-            {isFetchedBins ? (
-              <React.Fragment>
-                <div className="chart-wrapper">
-                  <BarAreaGraph
-                    width={GRAPH_WIDTH}
-                    height={GRAPH_HEIGHT}
-                    currentTick={pool.currentTick}
-                    minLabel={minTickLabel}
-                    maxLabel={maxTickLabel}
-                    minTick={minTickPosition}
-                    maxTick={maxTickPosition}
-                    poolBins={poolBins}
-                    tokenA={tokenA}
-                    tokenB={tokenB}
-                    isHiddenStart={isHiddenStart}
-                    currentIndex={currentIndex}
-                    themeKey={themeKey}
-                    minTickRate={minTickRate}
-                    maxTickRate={maxTickRate}
-                    pool={pool}
-                    positionBins={positionBins}
-                    disableBlackBars={false}
-                  />
-                </div>
-                <div className="min-max-price">
-                  <p className={`label-text ${startClass}`}>
-                    {minPriceStr}(<span>{minTickLabel}</span>) ~
-                  </p>
-                  <p className={`label-text ${endClass}`}>
-                    {maxPriceStr}(<span>{maxTickLabel}</span>) {tokenB.displaySymbol}
-                  </p>
-                </div>
-              </React.Fragment>
-            ) : (
-              <div className="graph-loading-wrapper">
-                <LoadingSpinner className="icon-loading" size={"SMALL"} />
-              </div>
-            )}
-          </div>
+          {viewMyRange && (
+            <MyPositionRangeGraph
+              position={position}
+              currentIndex={currentIndex}
+              themeKey={themeKey}
+              graphWidth={GRAPH_WIDTH}
+              graphHeight={GRAPH_HEIGHT}
+              isHiddenStart={isHiddenStart}
+              onClickViewRange={onClickViewRange}
+            />
+          )}
         </MyPositionCardWrapper>
       </div>
     </MyPositionCardWrapperBorder>

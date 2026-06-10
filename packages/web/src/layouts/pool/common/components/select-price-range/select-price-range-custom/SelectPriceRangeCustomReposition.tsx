@@ -1,16 +1,14 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
 import IconAdd from "@components/common/icons/IconAdd";
-import IconKeyboardArrowLeft from "@components/common/icons/IconKeyboardArrowLeft";
-import IconKeyboardArrowRight from "@components/common/icons/IconKeyboardArrowRight";
 import IconRefresh from "@components/common/icons/IconRefresh";
 import IconRemove from "@components/common/icons/IconRemove";
 import IconSwap from "@components/common/icons/IconSwap";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import PoolSelectionGraph from "@components/common/pool-selection-graph/PoolSelectionGraph";
 import SelectTab from "@components/common/select-tab/SelectTab";
-import { ZOOL_VALUES } from "@constants/graph.constant";
+import { LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES } from "@constants/graph.constant";
 import { PriceRangeMeta, PriceRangeType, SwapFeeTierPriceRange } from "@constants/option.constant";
 import { MAX_TICK } from "@constants/swap.constant";
 import { useLoading } from "@hooks/common/use-loading";
@@ -55,7 +53,6 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
 }) => {
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
-  const [shiftPosition, setShiftPosition] = useState(0);
   const { isLoading: isLoadingCommon } = useLoading();
   const GRAPH_WIDTH = 388;
   const GRAPH_HEIGHT = 160;
@@ -136,35 +133,18 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
   }, [currentTokenA.decimals, currentTokenB.decimals]);
 
   const availZoomIn = useMemo(() => {
-    return selectPool.zoomLevel < ZOOL_VALUES.length - 1;
+    return selectPool.zoomLevel < LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES.length - 1;
   }, [selectPool.zoomLevel]);
 
   const availZoomOut = useMemo(() => {
     return selectPool.zoomLevel > 0;
   }, [selectPool.zoomLevel]);
 
-  const availMoveLeft = useMemo(() => {
-    if (!selectPool.bins) {
-      return false;
-    }
-    const moveRange = selectPool.bins.length / 2 - 20;
-    return shiftPosition + moveRange > 0;
-  }, [selectPool.bins, shiftPosition]);
-
-  const availMoveRight = useMemo(() => {
-    if (!selectPool.bins) {
-      return false;
-    }
-    const moveRange = selectPool.bins.length / 2 - 20;
-    return moveRange - shiftPosition > 0;
-  }, [selectPool.bins, shiftPosition]);
-
   const zoomIn = useCallback(() => {
     if (!availZoomIn) {
       return;
     }
     selectPool.zoomIn();
-    setShiftPosition(0);
   }, [availZoomIn, selectPool]);
 
   const zoomOut = useCallback(() => {
@@ -172,22 +152,7 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
       return;
     }
     selectPool.zoomOut();
-    setShiftPosition(0);
   }, [availZoomOut, selectPool]);
-
-  const moveLeft = useCallback(() => {
-    if (!availMoveLeft) {
-      return;
-    }
-    setShiftPosition(value => value - 1);
-  }, [availMoveLeft]);
-
-  const moveRight = useCallback(() => {
-    if (!availMoveRight) {
-      return;
-    }
-    setShiftPosition(value => value + 1);
-  }, [availMoveRight]);
 
   const onClickTabItem = useCallback(
     (symbol: string) => {
@@ -207,7 +172,6 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
 
   const selectFullRange = useCallback(() => {
     selectPool.selectFullRange();
-    setShiftPosition(0);
     changePriceRange({ type: "Custom" });
   }, [selectPool]);
 
@@ -231,7 +195,6 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
   }
 
   function onResetRange(priceRangeType?: PriceRangeType | null) {
-    setShiftPosition(0);
     if (priceRangeType && priceRangeType !== "Custom") {
       initPriceRange(priceRangeType);
     } else {
@@ -290,24 +253,6 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
                   <div className="graph-option-wrapper">
                     <span
                       className={`graph-option-item decrease ${
-                        isLoading || showDim || !availMoveLeft ? "disabled-option" : ""
-                      }`}
-                      onClick={moveLeft}
-                    >
-                      <IconKeyboardArrowLeft />
-                    </span>
-                    <span
-                      className={`graph-option-item increase ${
-                        isLoading || showDim || !availMoveRight ? "disabled-option" : ""
-                      }`}
-                      onClick={moveRight}
-                    >
-                      <IconKeyboardArrowRight />
-                    </span>
-                  </div>
-                  <div className="graph-option-wrapper">
-                    <span
-                      className={`graph-option-item decrease ${
                         isLoading || showDim || !availZoomOut ? "disabled-option" : ""
                       }`}
                       onClick={zoomOut}
@@ -354,13 +299,12 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
                     <PoolSelectionGraph
                       tokenA={tokenA}
                       tokenB={tokenB}
-                      bins={selectPool.bins || []}
+                      liquiditySegments={selectPool.liquiditySegments}
                       feeTier={selectPool.feeTier || "NONE"}
                       tickSpacing={selectPool.tickSpacing || 1}
                       width={GRAPH_WIDTH}
                       height={GRAPH_HEIGHT}
                       position="top"
-                      offset={selectPool.bins?.length}
                       price={currentPrice || 0}
                       flip={flip}
                       fullRange={selectPool.selectedFullRange}
@@ -369,7 +313,6 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
                       maxPrice={selectPool.maxPrice}
                       setMinPrice={selectPool.setMinPosition}
                       setMaxPrice={selectPool.setMaxPosition}
-                      shiftIndex={shiftPosition}
                       onFinishMove={() => changePriceRange({ type: "Custom" })}
                     />
                   </div>

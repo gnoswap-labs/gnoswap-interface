@@ -61,9 +61,6 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     scopeId: "EarnMyPositionContainer",
   });
 
-  const [mappedData, setMappedData] = useState<PoolPositionModel[]>([]);
-  const [isDataMappingLoading, setIsDataMappingLoading] = useState(true);
-
   const divRef = useRef<HTMLDivElement | null>(null);
 
   const { data: addressName = "" } = useGetUsernameByAddress(address || "", {
@@ -243,32 +240,23 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     return connected || !!address;
   }, [address, connected]);
 
-  const getMappedData = (): PoolPositionModel[] => {
-    if (isViewMorePositions) {
-      return showedPosition;
-    }
+  const mappedData = useMemo(() => {
+    let targetPositions: PoolPositionModel[];
 
-    for (const breakpoint of POSITION_CARD_LIST_BREAKPOINTS) {
-      if (width > breakpoint.width) {
-        return showedPosition.slice(0, breakpoint.displayCount);
+    if (isViewMorePositions) {
+      targetPositions = showedPosition;
+    } else {
+      targetPositions = showedPosition;
+      for (const breakpoint of POSITION_CARD_LIST_BREAKPOINTS) {
+        if (width > breakpoint.width) {
+          targetPositions = showedPosition.slice(0, breakpoint.displayCount);
+          break;
+        }
       }
     }
 
-    return showedPosition;
-  };
-
-  const updateDataMapping = useCallback(() => {
-    setIsDataMappingLoading(true);
-    const newMappedData = getMappedData();
-    const convertedMappedData = PositionConverter.convertPositions(newMappedData);
-
-    setMappedData(convertedMappedData);
-    setIsDataMappingLoading(false);
-  }, [isViewMorePositions, width, showedPosition, limit]);
-
-  useEffect(() => {
-    updateDataMapping();
-  }, [updateDataMapping]);
+    return PositionConverter.convertPositions(targetPositions);
+  }, [isViewMorePositions, width, showedPosition]);
 
   const highestApr = useMemo(() => {
     return pools.reduce((acc, current) => {
@@ -305,8 +293,8 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   }, [isClosed]);
 
   const loadingPositionCardList = useMemo(() => {
-    return isLoadingPool || isLoadingPosition || isDataMappingLoading;
-  }, [isLoadingPool, isLoadingPosition, isDataMappingLoading]);
+    return isLoadingPool || isLoadingPosition;
+  }, [isLoadingPool, isLoadingPosition]);
 
   return (
     <EarnMyPositions
@@ -318,7 +306,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       connected={connected}
       availableStake={true}
       connect={connect}
-      loading={isLoadingPool || (connected ? isLoadingPosition || !isFetchedPosition : false) || isDataMappingLoading}
+      loading={isLoadingPool || (connected ? isLoadingPosition || !isFetchedPosition : false)}
       loadingPositionCardList={loadingPositionCardList}
       fetched={isFetchedPools && isFetchedPosition}
       isError={isError}

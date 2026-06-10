@@ -5,32 +5,41 @@ export interface TooltipInfo {
   tokenB: TokenModel;
   tokenAAmount: string | null;
   tokenBAmount: string | null;
-  depositTokenAAmount: string | null;
-  depositTokenBAmount: string | null;
-  tokenARange: {
-    min: string | null;
-    max: string | null;
-  };
-  tokenBRange: {
-    min: string | null;
-    max: string | null;
-  };
-  tokenAPrice: string;
-  tokenBPrice: string;
+  tokenAUsd: string | null;
+  tokenBUsd: string | null;
+  positionTokenAAmount: string | null;
+  positionTokenBAmount: string | null;
+  positionTokenAUsd: string | null;
+  positionTokenBUsd: string | null;
+  tokenAVisible: boolean;
+  tokenBVisible: boolean;
+  positionTokenAVisible: boolean;
+  positionTokenBVisible: boolean;
+  isPositionActive: boolean;
+  positionLiquidityShare: string;
+  price: string;
   disabled?: boolean;
 }
 
 export interface ReservedBin {
   minTick: number;
   maxTick: number;
+  sourceMinTick: number;
+  sourceMaxTick: number;
   reserveTokenMap: number;
-  minTickSwap: number;
-  maxTickSwap: number;
-  reserveTokenAMyAmount: number;
-  reserveTokenBMyAmount: number;
+  positionReserveTokenMap: number;
+  reserveTokenAMyAmount: string | null;
+  reserveTokenBMyAmount: string | null;
+  reserveTokenAVisible: boolean;
+  reserveTokenBVisible: boolean;
+  positionReserveTokenAVisible: boolean;
+  positionReserveTokenBVisible: boolean;
+  positionLiquidityShare: string;
   reserveTokenAMap: number;
   index: number;
-  liquidity: number;
-  reserveTokenA: number;
-  reserveTokenB: number;
+  liquidity: string;
+  reserveTokenA: string | null;
+  reserveTokenB: string | null;
+  isPositionActive: boolean;
+  isPositionVisualActive: boolean;
 }

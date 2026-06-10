@@ -34,15 +34,5 @@
   "price": "16.26",
   "tokenABalance": "12345",
   "tokenBBalance": "616561416",
-  "tickSpacing": "1",
-  "bins": [
-    {
-      "index": 0,
-      "liquidity": "131745",
-      "reserveTokenA": "151616",
-      "reserveTokenB": "468",
-      "minTick": "-6614",
-      "maxTick": "6660"
-    }
-  ]
+  "tickSpacing": "1"
 }
