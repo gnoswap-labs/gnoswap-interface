@@ -249,6 +249,10 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
     }, [selectPool.isCreate, startingPriceValue, changeStartingPrice]);
 
     useEffect(() => {
+      setStartingPriceValue("");
+    }, [tokenA.path, tokenB.path]);
+
+    useEffect(() => {
       if (selectPool.selectedFullRange) {
         minPriceRangeCustomRef.current?.formatData();
         maxPriceRangeCustomRef.current?.formatData();

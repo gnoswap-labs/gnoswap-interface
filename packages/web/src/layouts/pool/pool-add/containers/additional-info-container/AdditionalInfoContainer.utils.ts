@@ -31,18 +31,18 @@ export const resolvePoolAddInfo = ({
   tokenPair,
   currentPoolPath,
 }: ResolvePoolAddInfoParams): ResolvedPoolAddInfo => {
-  if (poolPath && hasCompleteTokenPair(tokenPair)) {
-    return {
-      poolPath,
-      tokenPair: [...tokenPair],
-    };
-  }
-
   const currentTokenPair = parseTokenPairFromPoolPath(currentPoolPath);
   if (currentPoolPath && currentTokenPair) {
     return {
       poolPath: currentPoolPath,
       tokenPair: currentTokenPair,
+    };
+  }
+
+  if (poolPath && hasCompleteTokenPair(tokenPair)) {
+    return {
+      poolPath,
+      tokenPair: [...tokenPair],
     };
   }
 

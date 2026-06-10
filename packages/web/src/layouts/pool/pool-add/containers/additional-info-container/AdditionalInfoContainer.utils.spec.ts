@@ -14,11 +14,24 @@ describe("resolvePoolAddInfo", () => {
     });
   });
 
-  it("keeps query values when they are complete", () => {
+  it("uses current pool path when client navigation leaves stale query tokens", () => {
     const resolved = resolvePoolAddInfo({
       poolPath: "token-a:token-b:3000",
       tokenPair: ["token-a", "token-b"],
-      currentPoolPath: "other-a:other-b:3000",
+      currentPoolPath: "current-a:current-b:3000",
+    });
+
+    expect(resolved).toEqual({
+      poolPath: "current-a:current-b:3000",
+      tokenPair: ["current-a", "current-b"],
+    });
+  });
+
+  it("keeps query values when they are complete and current pool path is empty", () => {
+    const resolved = resolvePoolAddInfo({
+      poolPath: "token-a:token-b:3000",
+      tokenPair: ["token-a", "token-b"],
+      currentPoolPath: null,
     });
 
     expect(resolved).toEqual({

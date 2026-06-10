@@ -224,14 +224,14 @@ const EarnAddLiquidityContainer: React.FC = () => {
   ]);
 
   const selectSwapFeeTier = useCallback(
-    (feeTier: SwapFeeTierType) => {
+    (feeTier: SwapFeeTierType, options: { resetStartPrice?: boolean } = {}) => {
       setSwapFeeTier(feeTier);
       const poolFeeTier = pools.map(pool => makeSwapFeeTier(pool.fee));
       const existPool = poolFeeTier.includes(feeTier);
 
       setCreateOption(prev => ({
         isCreate: !existPool,
-        startPrice: existPool ? null : prev.startPrice,
+        startPrice: existPool || options.resetStartPrice ? null : prev.startPrice,
       }));
     },
     [pools],
@@ -608,9 +608,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (!!tokenA && !!tokenB && isFetchedPools) {
       if (isDifferentPair) {
         if (router.query?.fee_tier) {
-          selectSwapFeeTier(`FEE_${router.query?.fee_tier}` as SwapFeeTierType);
+          selectSwapFeeTier(`FEE_${router.query?.fee_tier}` as SwapFeeTierType, { resetStartPrice: true });
         } else {
-          selectSwapFeeTier("FEE_3000");
+          selectSwapFeeTier("FEE_3000", { resetStartPrice: true });
         }
         lastPoolPathRef.current = pair;
       }
