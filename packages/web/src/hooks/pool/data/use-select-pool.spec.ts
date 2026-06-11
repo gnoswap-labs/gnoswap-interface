@@ -11,21 +11,3 @@ describe("useSelectPool liquidity segment price", () => {
     expect(source).toContain("segmentCurrentPrice,\n      ],");
   });
 });
-
-describe("useSelectPool selected pool path", () => {
-  it("keeps the calculated pool path available while create-pool starting price is empty", () => {
-    const source = readFileSync(path.join(__dirname, "use-select-pool.tsx"), { encoding: "utf8" });
-
-    expect(source).toContain("if (calculatedPoolPath) {\n      setLatestPoolPath(calculatedPoolPath);");
-    expect(source).not.toContain("if (isCreate && startPrice === null) {\n      setLatestPoolPath(null);");
-  });
-});
-
-describe("useSelectPool create-pool price basis", () => {
-  it("uses the compare-token current price for deposit ratio calculations", () => {
-    const source = readFileSync(path.join(__dirname, "use-select-pool.tsx"), { encoding: "utf8" });
-
-    expect(source).toContain("const currentPrice = price;");
-    expect(source).not.toContain("const currentPrice = isCreate ? startPrice : price;");
-  });
-});

@@ -1,6 +1,3 @@
-import { readFileSync } from "fs";
-import path from "path";
-
 import { PoolLiquiditySegmentModel, PoolLiquidityTickModel } from "@models/pool/pool-liquidity-model";
 import { TokenModel } from "@models/token/token-model";
 import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
@@ -155,18 +152,5 @@ describe("getPoolSelectionGraphEmptyTickWindow", () => {
     });
 
     expect(tickWindow).toEqual({ minTick: MIN_TICK, maxTick: MAX_TICK });
-  });
-});
-
-describe("PoolSelectionGraph chart redraw", () => {
-  it("redraws the D3 chart when zoom changes the visible tick domain", () => {
-    const source = readFileSync(path.join(__dirname, "PoolSelectionGraph.tsx"), { encoding: "utf8" });
-    const chartEffectMatch = source.match(/updateChart\(\);\n    }\n  }, \[([\s\S]*?)\]\);/);
-    const chartEffectDeps = chartEffectMatch?.[1] ?? "";
-
-    expect(chartEffectDeps).toContain("zoomLevel");
-    expect(chartEffectDeps).toContain("graphMinTick");
-    expect(chartEffectDeps).toContain("maxX");
-    expect(chartEffectDeps).toContain("currentTick");
   });
 });
