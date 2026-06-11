@@ -20,3 +20,12 @@ describe("useSelectPool selected pool path", () => {
     expect(source).not.toContain("if (isCreate && startPrice === null) {\n      setLatestPoolPath(null);");
   });
 });
+
+describe("useSelectPool create-pool price basis", () => {
+  it("uses the compare-token current price for deposit ratio calculations", () => {
+    const source = readFileSync(path.join(__dirname, "use-select-pool.tsx"), { encoding: "utf8" });
+
+    expect(source).toContain("const currentPrice = price;");
+    expect(source).not.toContain("const currentPrice = isCreate ? startPrice : price;");
+  });
+});

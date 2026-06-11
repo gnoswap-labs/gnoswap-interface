@@ -287,7 +287,7 @@ export const useSelectPool = ({
       return null;
     }
 
-    const currentPrice = isCreate ? startPrice : price;
+    const currentPrice = price;
     if (!isValidCurrentPrice(currentPrice)) {
       return null;
     }
@@ -342,7 +342,6 @@ export const useSelectPool = ({
     maxPrice,
     swapFeeTierMaxPriceRangeMap,
     isCreate,
-    startPrice,
     isOrderedPrice,
     price,
     fullRange,

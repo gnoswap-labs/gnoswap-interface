@@ -10,3 +10,14 @@ describe("SelectPriceRangeCustom pair changes", () => {
     expect(source).toContain("[tokenPairKey]");
   });
 });
+
+describe("SelectPriceRangeCustom create-pool range basis", () => {
+  it("initializes ranges from the displayed current price, not the sorted pool start price", () => {
+    const source = readFileSync(path.join(__dirname, "SelectPriceRangeCustom.tsx"), { encoding: "utf8" });
+
+    expect(source).toContain("const currentPrice = selectPool.currentPrice;");
+    expect(source).not.toContain(
+      "const currentPrice = selectPool.isCreate ? selectPool.startPrice : selectPool.currentPrice;",
+    );
+  });
+});

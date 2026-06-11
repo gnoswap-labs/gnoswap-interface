@@ -163,7 +163,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
 
     function initPriceRange(inputPriceRangeType?: PriceRangeType | null) {
       const currentPriceRangeType = inputPriceRangeType || priceRangeType;
-      const currentPrice = selectPool.isCreate ? selectPool.startPrice : selectPool.currentPrice;
+      const currentPrice = selectPool.currentPrice;
       const { tickLower, tickUpper } = defaultTicks ?? {};
       const { minPrice, maxPrice } = SwapFeeTierMaxPriceRangeMap[selectPool.feeTier || "NONE"];
 
