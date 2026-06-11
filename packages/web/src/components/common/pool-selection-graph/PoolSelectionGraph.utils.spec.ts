@@ -1,3 +1,6 @@
+import { readFileSync } from "fs";
+import path from "path";
+
 import { PoolLiquiditySegmentModel, PoolLiquidityTickModel } from "@models/pool/pool-liquidity-model";
 import { TokenModel } from "@models/token/token-model";
 import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
@@ -104,7 +107,7 @@ describe("getPoolSelectionGraphEmptyTickWindow", () => {
     expect(tickWindow).toEqual({ minTick: -9_120, maxTick: 9_120 });
   });
 
-  it("places selected create-pool range handles in the middle of each graph side", () => {
+  it("keeps selected create-pool range visible when it fits the requested zoom range", () => {
     const tickWindow = getPoolSelectionGraphEmptyTickWindow({
       currentTick: 0,
       visibleTickRange: 18_240,
@@ -114,7 +117,33 @@ describe("getPoolSelectionGraphEmptyTickWindow", () => {
       selectedMaxTick: 7_000,
     });
 
-    expect(tickWindow).toEqual({ minTick: -14_000, maxTick: 14_000 });
+    expect(tickWindow).toEqual({ minTick: -9_120, maxTick: 9_120 });
+  });
+
+  it("keeps zoom changes effective when the selected range is wider than the visible range", () => {
+    const tickWindow = getPoolSelectionGraphEmptyTickWindow({
+      currentTick: 0,
+      visibleTickRange: 3_960,
+      minTick: MIN_TICK,
+      maxTick: MAX_TICK,
+      selectedMinTick: -7_000,
+      selectedMaxTick: 7_000,
+    });
+
+    expect(tickWindow).toEqual({ minTick: -1_980, maxTick: 1_980 });
+  });
+
+  it("shifts the visible window to keep an off-center selected range visible when possible", () => {
+    const tickWindow = getPoolSelectionGraphEmptyTickWindow({
+      currentTick: 0,
+      visibleTickRange: 18_240,
+      minTick: MIN_TICK,
+      maxTick: MAX_TICK,
+      selectedMinTick: -12_000,
+      selectedMaxTick: 2_000,
+    });
+
+    expect(tickWindow).toEqual({ minTick: -12_000, maxTick: 6_240 });
   });
 
   it("uses the full protocol range only when the requested visible range covers it", () => {
@@ -126,5 +155,18 @@ describe("getPoolSelectionGraphEmptyTickWindow", () => {
     });
 
     expect(tickWindow).toEqual({ minTick: MIN_TICK, maxTick: MAX_TICK });
+  });
+});
+
+describe("PoolSelectionGraph chart redraw", () => {
+  it("redraws the D3 chart when zoom changes the visible tick domain", () => {
+    const source = readFileSync(path.join(__dirname, "PoolSelectionGraph.tsx"), { encoding: "utf8" });
+    const chartEffectMatch = source.match(/updateChart\(\);\n    }\n  }, \[([\s\S]*?)\]\);/);
+    const chartEffectDeps = chartEffectMatch?.[1] ?? "";
+
+    expect(chartEffectDeps).toContain("zoomLevel");
+    expect(chartEffectDeps).toContain("graphMinTick");
+    expect(chartEffectDeps).toContain("maxX");
+    expect(chartEffectDeps).toContain("currentTick");
   });
 });

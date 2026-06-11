@@ -76,41 +76,38 @@ export const getPoolSelectionGraphEmptyTickWindow = ({
   const fullRange = maxTick - minTick;
   const normalizedRange = Math.min(fullRange, Math.max(1, Math.trunc(visibleTickRange)));
 
-  if (
-    selectedMinTick !== undefined &&
-    selectedMaxTick !== undefined &&
-    selectedMinTick < currentTick &&
-    selectedMaxTick > currentTick
-  ) {
-    const lowerDistance = currentTick - selectedMinTick;
-    const upperDistance = selectedMaxTick - currentTick;
-
-    return {
-      minTick: Math.max(minTick, currentTick - lowerDistance * 2),
-      maxTick: Math.min(maxTick, currentTick + upperDistance * 2),
-    };
-  }
-
   if (normalizedRange >= fullRange) {
     return { minTick, maxTick };
   }
 
-  const clampedCurrentTick = Math.min(maxTick, Math.max(minTick, currentTick));
-  let windowMinTick = clampedCurrentTick - Math.floor(normalizedRange / 2);
-  let windowMaxTick = windowMinTick + normalizedRange;
-
-  if (windowMinTick < minTick) {
-    windowMinTick = minTick;
-    windowMaxTick = windowMinTick + normalizedRange;
-  }
-
-  if (windowMaxTick > maxTick) {
-    windowMaxTick = maxTick;
-    windowMinTick = windowMaxTick - normalizedRange;
-  }
-
-  return {
-    minTick: windowMinTick,
-    maxTick: windowMaxTick,
+  const clampWindow = (windowMinTick: number): PoolSelectionGraphTickWindow => {
+    const minWindowTick = Math.max(minTick, Math.min(windowMinTick, maxTick - normalizedRange));
+    return {
+      minTick: minWindowTick,
+      maxTick: minWindowTick + normalizedRange,
+    };
   };
+
+  const clampedCurrentTick = Math.min(maxTick, Math.max(minTick, currentTick));
+  let tickWindow = clampWindow(clampedCurrentTick - Math.floor(normalizedRange / 2));
+
+  if (selectedMinTick !== undefined && selectedMaxTick !== undefined) {
+    const selectedRange = selectedMaxTick - selectedMinTick;
+
+    if (selectedRange <= normalizedRange) {
+      let nextMinTick = tickWindow.minTick;
+
+      if (nextMinTick > selectedMinTick) {
+        nextMinTick = selectedMinTick;
+      }
+
+      if (nextMinTick + normalizedRange < selectedMaxTick) {
+        nextMinTick = selectedMaxTick - normalizedRange;
+      }
+
+      tickWindow = clampWindow(nextMinTick);
+    }
+  }
+
+  return tickWindow;
 };
