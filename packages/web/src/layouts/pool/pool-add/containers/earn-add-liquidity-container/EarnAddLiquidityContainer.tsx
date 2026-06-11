@@ -133,8 +133,10 @@ const EarnAddLiquidityContainer: React.FC = () => {
     let estimatedApr: string = formatRate(selectPool.estimatedAPR) ?? "-";
 
     if (selectPool.selectedFullRange) {
-      const tokenASymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.displaySymbol : tokenB?.displaySymbol;
-      const tokenBSymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.displaySymbol : tokenA?.displaySymbol;
+      const tokenASymbol =
+        tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.displaySymbol : tokenB?.displaySymbol;
+      const tokenBSymbol =
+        tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.displaySymbol : tokenA?.displaySymbol;
       depositRatio = `50.0% ${tokenASymbol} / 50.0% ${tokenBSymbol}`;
       return {
         depositRatio,
@@ -147,8 +149,10 @@ const EarnAddLiquidityContainer: React.FC = () => {
     if (tokenAdepositRatio !== null) {
       const tokenARatioStr = BigNumber(tokenAdepositRatio).toFixed(1);
       const tokenBRatioStr = BigNumber(100 - tokenAdepositRatio).toFixed(1);
-      const tokenASymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.displaySymbol : tokenB?.displaySymbol;
-      const tokenBSymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.displaySymbol : tokenA?.displaySymbol;
+      const tokenASymbol =
+        tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.displaySymbol : tokenB?.displaySymbol;
+      const tokenBSymbol =
+        tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.displaySymbol : tokenA?.displaySymbol;
       depositRatio = `${tokenARatioStr}% ${tokenASymbol} / ${tokenBRatioStr}% ${tokenBSymbol}`;
     }
     if (tokenAdepositRatio === 0 || tokenAdepositRatio === 100) {
@@ -268,8 +272,24 @@ const EarnAddLiquidityContainer: React.FC = () => {
     }
   }, [priceRange?.type]);
 
+  const resetPoolAddForm = useCallback(() => {
+    tokenAAmountInput.changeAmount("");
+    tokenBAmountInput.changeAmount("");
+    setExactType("EXACT_IN");
+    setSwapFeeTier(null);
+    setPriceRange(null);
+    setDefaultPrice(null);
+    setCreateOption({ isCreate: false, startPrice: null });
+    selectPool.resetRange();
+    selectPool.setIsChangeMinMax(false);
+  }, [selectPool, tokenAAmountInput, tokenBAmountInput]);
+
   const changeTokenA = useCallback(
     (token: TokenModel) => {
+      if (!isSameToken(token.path, tokenA?.path || "")) {
+        resetPoolAddForm();
+      }
+
       setSwapValue(prev => {
         if (isSameToken(token.path, prev.tokenB?.path || "")) {
           return {
@@ -293,11 +313,15 @@ const EarnAddLiquidityContainer: React.FC = () => {
         };
       });
     },
-    [type, isKeepToken],
+    [isKeepToken, resetPoolAddForm, selectPool, selectSwapFeeTier, setSwapValue, tokenA?.path, type],
   );
 
   const changeTokenB = useCallback(
     (token: TokenModel) => {
+      if (!isSameToken(token.path, tokenB?.path || "")) {
+        resetPoolAddForm();
+      }
+
       setSwapValue(prev => {
         if (isSameToken(token.path, prev.tokenA?.path || "")) {
           return {
@@ -319,7 +343,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
         };
       });
     },
-    [type],
+    [resetPoolAddForm, selectSwapFeeTier, setSwapValue, tokenB?.path, type],
   );
 
   const changeStartingPrice = useCallback(
