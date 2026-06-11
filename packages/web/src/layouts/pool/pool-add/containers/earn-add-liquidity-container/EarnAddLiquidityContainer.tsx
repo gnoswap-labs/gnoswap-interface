@@ -19,16 +19,14 @@ import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { SwapState } from "@states/index";
 import { formatRate } from "@utils/new-number-utils";
 import { makeRouteUrl, replaceRouteUrlWithoutNavigation } from "@utils/page.utils";
-import { invertSqrtPriceX96, makeDisplayPrice, makeRawPrice } from "@utils/pool-utils";
+import { invertSqrtPriceX96, makeDisplayPrice } from "@utils/pool-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
 import {
   getDepositAmountsByAmountA,
   getDepositAmountsByAmountB,
   makeSwapFeeTier,
-  priceToNearTick,
   priceToSqrtX96,
   priceToTick,
-  tickToPrice,
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 
@@ -37,6 +35,7 @@ import { usePool } from "@hooks/pool/data/use-pool";
 import { usePoolAddLiquidityConfirmModal } from "@hooks/pool/ui/use-pool-add-liquidity-confirm-modal";
 import { isSameToken } from "@utils/common";
 import PoolAddLiquidity, { PriceRangeSummary } from "../../components/pool-add-liquidity/PoolAddLiquidity";
+import { resolvePoolAddStartingPrice, snapPoolAddRawStartingPrice } from "./EarnAddLiquidityContainer.utils";
 
 export const SWAP_FEE_TIERS: SwapFeeTierType[] = ["FEE_100", "FEE_500", "FEE_3000", "FEE_10000"];
 
@@ -252,10 +251,14 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
       // If you've already set a starting price, update it to apply tick spacing.
       if (createOption.isCreate && createOption.startPrice) {
-        changeStartingPrice(createOption.startPrice.toString());
+        setCreateOption(prev => ({
+          ...prev,
+          startPrice:
+            prev.startPrice === null ? null : snapPoolAddRawStartingPrice(prev.startPrice, selectPool.tickSpacing),
+        }));
       }
     },
-    [createOption],
+    [createOption, selectPool],
   );
 
   useEffect(() => {
@@ -355,8 +358,8 @@ const EarnAddLiquidityContainer: React.FC = () => {
         }));
         return;
       }
-      const priceNum = BigNumber(price).toNumber();
-      if (BigNumber(Number(priceNum)).isNaN()) {
+      const startPrice = resolvePoolAddStartingPrice(price, tokenA, tokenB, selectPool.tickSpacing);
+      if (startPrice === null) {
         setCreateOption(prev => ({
           ...prev,
           startPrice: null,
@@ -364,13 +367,9 @@ const EarnAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      const rawPrice = makeRawPrice(priceNum, tokenA, tokenB);
-      const tick = priceToNearTick(rawPrice, selectPool.tickSpacing);
-      const nearStartPrice = tickToPrice(tick);
-
       setCreateOption(prev => ({
         ...prev,
-        startPrice: nearStartPrice,
+        startPrice,
       }));
     },
     [selectPool.tickSpacing, swapFeeTier, tokenA, tokenB],
