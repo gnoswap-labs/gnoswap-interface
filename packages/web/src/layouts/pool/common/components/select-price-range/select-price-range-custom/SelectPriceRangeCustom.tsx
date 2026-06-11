@@ -83,6 +83,10 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
 
     const isCustom = true;
 
+    const tokenPairKey = useMemo(() => {
+      return [checkGnotPath(tokenA.path), checkGnotPath(tokenB.path)].sort(sortTokenPaths).join(":");
+    }, [tokenA.path, tokenB.path]);
+
     const isLoading = useMemo(
       () => selectPool.renderState() === "LOADING" || isLoadingSelectPriceRange,
       [selectPool.renderState(), isLoadingSelectPriceRange],
@@ -250,7 +254,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
 
     useEffect(() => {
       setStartingPriceValue("");
-    }, [tokenA.path, tokenB.path]);
+    }, [tokenPairKey]);
 
     useEffect(() => {
       if (selectPool.selectedFullRange) {

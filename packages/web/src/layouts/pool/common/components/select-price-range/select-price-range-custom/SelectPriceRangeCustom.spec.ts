@@ -6,6 +6,7 @@ describe("SelectPriceRangeCustom pair changes", () => {
     const source = readFileSync(path.join(__dirname, "SelectPriceRangeCustom.tsx"), { encoding: "utf8" });
 
     expect(source).toContain("setStartingPriceValue(\"\");");
-    expect(source).toContain("[tokenA.path, tokenB.path]");
+    expect(source).toContain("tokenPairKey");
+    expect(source).toContain("[tokenPairKey]");
   });
 });
