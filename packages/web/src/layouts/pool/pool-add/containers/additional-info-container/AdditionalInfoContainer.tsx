@@ -6,18 +6,17 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { initialDetailPool } from "@models/pool/pool-detail-model";
-import { isNativeToken, TokenModel } from "@models/token/token-model";
+import { isNativeToken } from "@models/token/token-model";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { EarnState } from "@states/index";
 import { useTokenData } from "@hooks/token/data/use-token-data";
-import { checkGnotPath } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 
 import AdditionalInfo from "../../components/additional-info/AdditionalInfo";
 import { usePoolAddSearchParams } from "@hooks/pool/data/use-pool-add-serach-param";
 import { usePool } from "@hooks/pool/data/use-pool";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { resolvePoolAddInfo } from "./AdditionalInfoContainer.utils";
+import { resolvePoolAddInfo, resolvePoolAddToken } from "./AdditionalInfoContainer.utils";
 
 const DEFAULT_POSITION_LIMIT = 20;
 
@@ -36,23 +35,21 @@ const AdditionalInfoContainer: React.FC = () => {
     [currentPoolPath, poolPath, tokenPair],
   );
 
-  const tokenA = useMemo(
-    () =>
-      ({
-        ...tokens.find(item => item.path === checkGnotPath(activePoolAddInfo.tokenPair[0])),
-        ...getGnotPath(tokens.find(item => item.path === checkGnotPath(activePoolAddInfo.tokenPair[0]))),
-      } as TokenModel),
-    [activePoolAddInfo.tokenPair, getGnotPath, tokens],
-  );
+  const tokenA = useMemo(() => {
+    return resolvePoolAddToken({
+      tokenPath: activePoolAddInfo.tokenPair[0],
+      tokens,
+      getGnotPath,
+    });
+  }, [activePoolAddInfo.tokenPair, getGnotPath, tokens]);
 
-  const tokenB = useMemo(
-    () =>
-      ({
-        ...tokens.find(item => item.path === checkGnotPath(activePoolAddInfo.tokenPair[1])),
-        ...getGnotPath(tokens.find(item => item.path === checkGnotPath(activePoolAddInfo.tokenPair[1]))),
-      } as TokenModel),
-    [activePoolAddInfo.tokenPair, getGnotPath, tokens],
-  );
+  const tokenB = useMemo(() => {
+    return resolvePoolAddToken({
+      tokenPath: activePoolAddInfo.tokenPair[1],
+      tokens,
+      getGnotPath,
+    });
+  }, [activePoolAddInfo.tokenPair, getGnotPath, tokens]);
 
   const { pools, fetching: isFetchingFeetierOfLiquidityMap } = usePool({ tokenA, tokenB, compareToken });
 
@@ -60,10 +57,7 @@ const AdditionalInfoContainer: React.FC = () => {
     return pools.some(pool => pool.poolPath === activePoolAddInfo.poolPath);
   }, [activePoolAddInfo.poolPath, pools]);
 
-  const {
-    totalPositionCount,
-    loading: isLoadingTotalPositionCount,
-  } = usePositionData({
+  const { totalPositionCount, loading: isLoadingTotalPositionCount } = usePositionData({
     isClosed: false,
     poolPath: activePoolAddInfo.poolPath || "",
     limit: 1,
@@ -89,9 +83,12 @@ const AdditionalInfoContainer: React.FC = () => {
     },
   });
 
-  const { data = initialDetailPool, isLoading: isLoadingPoolInfo } = useGetPoolDetailByPath(activePoolAddInfo.poolPath, {
-    enabled: !!activePoolAddInfo.poolPath && shouldFetchPool,
-  });
+  const { data = initialDetailPool, isLoading: isLoadingPoolInfo } = useGetPoolDetailByPath(
+    activePoolAddInfo.poolPath,
+    {
+      enabled: !!activePoolAddInfo.poolPath && shouldFetchPool,
+    },
+  );
 
   const handleClickGotoStaking = useCallback(
     (type: PAGE_PATH_TYPE) => {

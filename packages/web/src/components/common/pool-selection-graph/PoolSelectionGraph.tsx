@@ -154,7 +154,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   const graphBins = useMemo(() => createPoolSelectionGraphBins(liquiditySegments, flip), [liquiditySegments, flip]);
 
   const currentTick = useMemo(() => {
-    if (Number.isNaN(currentPrice)) {
+    if (Number.isNaN(currentPrice) || currentPrice <= 0 || !Number.isFinite(currentPrice)) {
       return 0;
     }
     return priceToTick(currentPrice);
