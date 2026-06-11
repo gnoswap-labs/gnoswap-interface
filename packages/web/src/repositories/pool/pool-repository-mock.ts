@@ -54,6 +54,10 @@ export class PoolRepositoryMock implements PoolRepository {
     return DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT;
   };
 
+  getAllowedExternalRewardTokenPaths = async (): Promise<string[]> => {
+    return ["gno.land/r/gnoland/wugnot", "gno.land/r/gnoswap/gns"];
+  };
+
   getPoolDetailByPoolPath = async (): Promise<PoolDetailModel> => {
     return PoolDetailData.pool as never;
   };

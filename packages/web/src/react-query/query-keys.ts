@@ -40,6 +40,7 @@ export enum QUERY_KEY {
   poolDetail = "pool_details",
   prices = "prices",
   incentivizePools = "incentivizePools",
+  allowedExternalRewardTokenPaths = "allowed_external_reward_token_paths",
   poolWithdrawalFee = "pool_withdrawal_fee",
   unstakingFee = "unstaking_fee",
   poolStakingList = "pool_staking_list",

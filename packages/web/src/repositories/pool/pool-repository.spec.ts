@@ -119,6 +119,29 @@ describe("getIncentivizePools", () => {
   });
 });
 
+describe("getAllowedExternalRewardTokenPaths", () => {
+  it("requests allowed external reward tokens from API", async () => {
+    const networkClient = new MockNetworkClient({
+      data: {
+        tokens: [
+          { tokenPath: "gno.land/r/gnoswap/gns", minRewardAmount: "0" },
+          { tokenPath: "gno.land/r/gnoland/wugnot", minRewardAmount: "100" },
+        ],
+      },
+    });
+    const repository = new PoolRepositoryImpl(networkClient, null, null);
+
+    const tokenPaths = await repository.getAllowedExternalRewardTokenPaths();
+
+    expect(networkClient.getCalls).toEqual([
+      {
+        url: "/incentivize/allowed-tokens",
+      },
+    ]);
+    expect(tokenPaths).toEqual(["gno.land/r/gnoswap/gns", "gno.land/r/gnoland/wugnot"]);
+  });
+});
+
 describe("getLiquidityTicksOfPoolByPath", () => {
   it("requests pool liquidity ticks and preserves liquidityNet strings", async () => {
     const liquidityNet = "340282366920938463463374607431768211456";

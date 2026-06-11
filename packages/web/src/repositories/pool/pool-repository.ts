@@ -20,6 +20,8 @@ export interface PoolRepository {
 
   getIncentiveCreationDeposit: () => Promise<string>;
 
+  getAllowedExternalRewardTokenPaths: () => Promise<string[]>;
+
   getWithdrawalFee: () => Promise<number>;
 
   getUnstakingFee: () => Promise<number>;

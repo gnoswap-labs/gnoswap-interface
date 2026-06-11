@@ -1,7 +1,11 @@
 import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { NetworkClient } from "@common/clients/network-client";
 import { WalletClient } from "@common/clients/wallet-client";
-import { SendTransactionResponse, SendTransactionSuccessResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
+import {
+  SendTransactionResponse,
+  SendTransactionSuccessResponse,
+  WalletResponse,
+} from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { PoolError } from "@common/errors/pool";
 import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED, DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT } from "@common/values";
@@ -22,7 +26,13 @@ import {
   makeABCIParams,
 } from "@utils/rpc-utils";
 import { generateSendTransactionParams, withTransactionGuard } from "@utils/transaction-utils";
-import { PoolListResponse, PoolPricesResponse, PoolRepository, PoolResponse } from ".";
+import {
+  AllowedExternalRewardTokensResponse,
+  PoolListResponse,
+  PoolPricesResponse,
+  PoolRepository,
+  PoolResponse,
+} from ".";
 import {
   makeCollectExternalIncentivePenaltyMessageWithApproves,
   makeCreateExternalIncentiveMessageWithApproves,
@@ -99,6 +109,23 @@ export class PoolRepositoryImpl implements PoolRepository {
     } catch (error) {
       console.error(error);
       return DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT;
+    }
+  };
+
+  getAllowedExternalRewardTokenPaths = async (): Promise<string[]> => {
+    if (!this.networkClient) {
+      return [];
+    }
+
+    try {
+      const response = await this.networkClient.get<AllowedExternalRewardTokensResponse>({
+        url: "/incentivize/allowed-tokens",
+      });
+
+      return response?.data?.data?.tokens?.map(token => token.tokenPath) || [];
+    } catch (error) {
+      console.error(error);
+      return [];
     }
   };
 
