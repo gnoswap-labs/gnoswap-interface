@@ -30,7 +30,7 @@ describe("filterAllowedIncentiveTokens", () => {
 
     const result = filterAllowedIncentiveTokens(tokens, ["gno.land/r/gnoland/wugnot", "gno.land/r/gnoswap/gns"]);
 
-    expect(result.map(token => token.symbol)).toEqual(["WUGNOT", "GNS"]);
+    expect(result.map(token => token.symbol)).toEqual(["GNOT", "GNS"]);
   });
 
   it("sorts by allowed token path order instead of symbol order", () => {
@@ -53,5 +53,16 @@ describe("filterAllowedIncentiveTokens", () => {
     const result = filterAllowedIncentiveTokens(tokens, ["gno.land/r/gnoland/wugnot"]);
 
     expect(result.map(token => token.symbol)).toEqual(["WGNOT"]);
+  });
+
+  it("deduplicates wrapped GNOT and native GNOT by incentive path while preferring native GNOT", () => {
+    const tokens = [
+      makeToken("WUGNOT", "gno.land/r/gnoland/wugnot"),
+      makeToken("GNOT", "ugnot", "gno.land/r/gnoland/wugnot"),
+    ];
+
+    const result = filterAllowedIncentiveTokens(tokens, ["gno.land/r/gnoland/wugnot"]);
+
+    expect(result.map(token => token.symbol)).toEqual(["GNOT"]);
   });
 });
