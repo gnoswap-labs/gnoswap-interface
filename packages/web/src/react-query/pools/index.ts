@@ -1,5 +1,6 @@
 export * from "./use-get-liquidity-ticks-by-path";
 export * from "./use-get-incentivize-pool-list";
+export * from "./use-get-allowed-external-reward-token-paths";
 export * from "./use-get-incentive-creation-deposit";
 export * from "./use-get-lasted-block-height";
 export * from "./use-get-pool-creation-fee";
