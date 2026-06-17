@@ -13,9 +13,9 @@
       "staking": "Abstecken",
       "swap": "Tauschen Sie",
       "tooltip": {
-        "position": "Verdiente Gebühren in USD. Zählt nur, wenn der Pool $GNS-Anreize erhält.",
-        "staking": "<ul><li>Verdiente Belohnungen für Positionseinsätze in USD. Zählt nur, wenn die Position Rewards hat.</li><li>Protokollgebühren Verdient in USD. Zählt nur, wenn Rewards einen USD-Wert haben.</li></ul>",
-        "volume": "In USD gezahlte Swap-Gebühren. Zählt nur, wenn der Pool $GNS-Anreize erhält."
+        "position": "Swap-Gebühren werden in USD ausgewiesen. Dies gilt nur, wenn der Pool $GNS-Anreize erhält.",
+        "staking": "<ul><li>In USD beanspruchte Staking-Belohnungen. Es werden nur interne $GNS-Anreize berücksichtigt.</li><li>Protokollgebühren werden in USD ausgezahlt. Es werden nur Fälle berücksichtigt, bei denen der Belohnungstoken einen USD-Kurs hat.</li></ul>",
+        "volume": "Die Swap-Gebühren werden in USD gezahlt. Dies gilt nur, wenn der Pool interne $GNS-Anreize erhält."
       },
       "user": "Benutzer",
       "xGNS": "xGNS Absteckung"
