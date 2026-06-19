@@ -40,6 +40,10 @@ const createLeaderboardUser = (rank: number): LeaderboardUser => ({
   totalPoint: "0",
 });
 
+const createApiLeaderboardUser = (rank: string): LeaderboardUser => {
+  return JSON.parse(JSON.stringify({ ...createLeaderboardUser(0), rank }));
+};
+
 describe("LeaderboardTableRow", () => {
   it("displays the global rank when a page rank offset is provided", () => {
     render(
@@ -72,5 +76,22 @@ describe("LeaderboardTableRow", () => {
 
     expect(screen.getByText("#101")).toBeInTheDocument();
     expect(screen.queryByText("#201")).not.toBeInTheDocument();
+  });
+
+  it("coerces a serialized API rank before applying the page offset", () => {
+    render(
+      <GnoswapThemeProvider>
+        <LeaderboardTableRow
+          myAddress={undefined}
+          data={createApiLeaderboardUser("1")}
+          tdWidths={[100, 100, 100, 100, 100, 100]}
+          isMobile={false}
+          rankOffset={100}
+        />
+      </GnoswapThemeProvider>,
+    );
+
+    expect(screen.getByText("#101")).toBeInTheDocument();
+    expect(screen.queryByText("#1100")).not.toBeInTheDocument();
   });
 });
