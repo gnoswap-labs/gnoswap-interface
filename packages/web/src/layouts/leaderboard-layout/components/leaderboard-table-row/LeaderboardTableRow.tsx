@@ -51,9 +51,10 @@ const LeaderboardTableRow = ({
   }, [data.swapFeeUsd, data.providedLiquidityFeeUsd, data.stakingRewardsUsd, data.governanceRewardsUsd]);
 
   const displayRankNumber = React.useMemo(() => {
-    if (!data.rank) return "-";
-    if (!rankOffset || data.rank > rankOffset) return data.rank;
-    return data.rank + rankOffset;
+    const rank = Number(data.rank);
+    if (!Number.isFinite(rank) || rank <= 0) return "-";
+    if (!rankOffset || rank > rankOffset) return rank;
+    return rank + rankOffset;
   }, [data.rank, rankOffset]);
 
   const displayRank = React.useMemo(() => {
