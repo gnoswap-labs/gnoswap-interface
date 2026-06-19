@@ -25,12 +25,14 @@ const LeaderboardTableRow = ({
   tdWidths,
   isMobile,
   isMe = false,
+  rankOffset = 0,
 }: {
   myAddress: string | undefined;
   data: LeaderboardUser;
   tdWidths: number[];
   isMobile: boolean;
   isMe?: boolean;
+  rankOffset?: number;
 }) => {
   const Hover = isMe ? HoverSection : HoverOnBgSection;
   const TableWrapper = isMe ? WrapperHoverBackground : Wrapper;
@@ -48,10 +50,21 @@ const LeaderboardTableRow = ({
     };
   }, [data.swapFeeUsd, data.providedLiquidityFeeUsd, data.stakingRewardsUsd, data.governanceRewardsUsd]);
 
-  const displayRank = React.useMemo(() => {
+  const displayRankNumber = React.useMemo(() => {
     if (!data.rank) return "-";
-    return `#${data.rank}`;
-  }, [data.rank]);
+    if (!rankOffset || data.rank > rankOffset) return data.rank;
+    return data.rank + rankOffset;
+  }, [data.rank, rankOffset]);
+
+  const displayRank = React.useMemo(() => {
+    if (displayRankNumber === "-") return displayRankNumber;
+    return `#${displayRankNumber}`;
+  }, [displayRankNumber]);
+
+  const displayUser = React.useMemo(() => {
+    if (displayRankNumber === "-" || displayRankNumber === data.rank) return data;
+    return { ...data, rank: displayRankNumber };
+  }, [data, displayRankNumber]);
 
   return (
     <TableWrapper>
@@ -59,7 +72,7 @@ const LeaderboardTableRow = ({
       <Hover style={isLeaderboardHidden(data.hiddenYn) ? { cursor: "auto" } : {}}>
         <UserColumn
           myAddress={myAddress}
-          user={data}
+          user={displayUser}
           isMe={isMe}
           tdWidth={tdWidths.at(1)}
           style={{ justifyContent: "flex-start" }}
