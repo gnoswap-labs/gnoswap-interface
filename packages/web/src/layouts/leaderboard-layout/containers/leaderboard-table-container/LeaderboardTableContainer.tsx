@@ -17,13 +17,16 @@ interface LeaderboardTableContainerProps {
   readonly movePage: (page: number) => void;
 }
 
+const LEADERBOARD_PAGE_SIZE = 100;
+
 export default function LeaderboardTableContainer({ keyword, page, movePage }: LeaderboardTableContainerProps) {
   const theme = useTheme();
   const { isMobile } = useWindowSize();
   const { address: myAddress } = useAddress();
 
-  const { data: leaderboardInfos } = useGetLeaderboard({ limit: 100, page });
+  const { data: leaderboardInfos } = useGetLeaderboard({ limit: LEADERBOARD_PAGE_SIZE, page });
   const { data: leaderboardMyInfo } = useGetLeaderboardByAddress(myAddress || "");
+  const rankOffset = Math.max(page - 1, 0) * LEADERBOARD_PAGE_SIZE;
 
   const filteredData = React.useMemo(() => {
     if (!leaderboardInfos?.users) return [];
@@ -58,6 +61,7 @@ export default function LeaderboardTableContainer({ keyword, page, movePage }: L
             myAddress={myAddress}
             currentUserData={leaderboardMyInfo}
             leaderboardEntries={filteredData}
+            rankOffset={rankOffset}
           />
         )}
       </LeaderboardTableWrapper>
