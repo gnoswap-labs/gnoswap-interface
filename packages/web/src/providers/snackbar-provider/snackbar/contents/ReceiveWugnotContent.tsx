@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import Link from "next/link";
 
 import { GNOT_UNIT_DENOM } from "@common/values/token-constant";
 import IconArrowRight from "@components/common/icons/IconArrowRight";
@@ -39,9 +40,9 @@ const ReceiveWugnotContent: React.FC<{ content?: SnackbarContent; onClick: () =>
             __html: sanitizeHtml(content?.description || t("Modal:toast.receive-wugnot.desc")),
           }}
         />
-        <a className="link" href={getUnwrapUrl()} target="_blank" rel="noopener noreferrer" onClick={onClickLink}>
+        <Link className="link" href={getUnwrapUrl()} onClick={onClickLink}>
           {t("Modal:toast.receive-wugnot.link")} <IconArrowRight />
-        </a>
+        </Link>
       </div>
     </div>
   );
