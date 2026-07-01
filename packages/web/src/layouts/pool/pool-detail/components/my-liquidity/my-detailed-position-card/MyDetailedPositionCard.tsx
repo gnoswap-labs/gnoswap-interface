@@ -48,7 +48,6 @@ import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { isClaimableReward, mapToDisplayRewardType } from "@utils/reward-utils";
 import { makeDisplayPrice, sortTokensByPoolOrder } from "@utils/pool-utils";
 
-import { DailyEarningTooltipContent, PositionAPRInfo } from "../stat-tooltip-contents/DailyEarningTooltipContent";
 import { BalanceTooltipContent, PositionBalanceInfo } from "./BalanceTooltipContent";
 import ManageButton from "./manage-button/ManageButton";
 import PositionHistory from "./PositionHistory";
@@ -61,13 +60,6 @@ import {
   PositionCardAnchor,
   ToolTipContentWrapper,
 } from "./MyDetailedPositionCard.styles";
-
-const emptyRewardInfo: { [key in DisplayRewardType]: PositionAPRInfo[] } = {
-  SWAP_FEE: [],
-  EXTERNAL_REWARD: [],
-  INTERNAL_REWARD: [],
-  NONE: [],
-};
 
 interface MyDetailedPositionCardProps {
   position: PoolPositionModel;
@@ -342,7 +334,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     });
 
     return totalRewardInfo;
-  }, [getTokenPrice, isDisplay, position.rewards, tokenPrices, tokenA.path, tokenB.path]);
+  }, [getTokenPrice, position.rewards, tokenPrices, tokenA.path, tokenB.path]);
 
   const totalRewardUSD = useMemo(() => {
     if (!isDisplay) {
@@ -379,105 +371,42 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     return isOwnerAddress && positionWithClaimableRewards.rewards.length > 0;
   }, [isOwnerAddress, positionWithClaimableRewards.rewards]);
 
-  const totalDailyEarning = useMemo(() => {
-    const isEmpty = !totalRewardInfo || position.rewards.length === 0;
-
-    if (!isDisplay || isEmpty) {
-      return "-";
+  const claimedRewardInfo = useMemo((): { [key in DisplayRewardType]: PositionRewardForTooltip[] } | null => {
+    if (position.claimedRewards.length === 0) {
+      return null;
     }
 
-    const totalDailyEarningValue = Object.values(totalRewardInfo)
-      .flatMap(item => item)
-      .reduce((acc: number | null, current) => {
-        if ((acc === null || acc === undefined) && current === null) {
-          return null;
-        }
-
-        if (acc === null || acc === undefined) {
-          return current.accumulatedRewardOf1dUsd;
-        }
-
-        if (current.accumulatedRewardOf1dUsd == null) {
-          return acc;
-        }
-
-        return acc + current.accumulatedRewardOf1dUsd;
-      }, null);
-
-    return formatOtherPrice(totalDailyEarningValue, { isKMB: false });
-  }, [isDisplay, position.rewards.length, totalRewardInfo]);
-
-  const aprRewardInfo = useMemo((): { [key in DisplayRewardType]: PositionAPRInfo[] } => {
-    if (position.rewards.length === 0) {
-      return emptyRewardInfo;
-    }
-
-    const aprRewardInfo = position.rewards.reduce<{
-      [key in DisplayRewardType]: PositionAPRInfo[];
+    const claimedRewardInfo = position.claimedRewards.reduce<{
+      [key in DisplayRewardType]: PositionRewardForTooltip[];
     }>(
       (accum, current) => {
         const rewardType = current.rewardToken.rewardType as RewardType;
         const displayRewardType = mapToDisplayRewardType(rewardType);
-
-        const currentTypeRewards = accum[displayRewardType];
-        const tokenPrice = tokenPrices[current.rewardToken.priceID].usd
-          ? Number(tokenPrices[current.rewardToken.priceID].usd)
+        const tokenPrice = tokenPrices[current.rewardToken.priceID]?.usd
+          ? Number(tokenPrices[current.rewardToken.priceID]?.usd)
           : null;
-
-        if (!currentTypeRewards) {
-          accum[displayRewardType] = [];
-        }
-
         const index = accum[displayRewardType].findIndex(item => item.token.priceID === current.rewardToken.priceID);
+        const amount = current.claimedAmount ? Number(current.claimedAmount) : null;
+        const usd = amount !== null && tokenPrice !== null ? amount * tokenPrice : null;
 
-        if (index != -1) {
+        if (index !== -1) {
           const existReward = accum[displayRewardType][index];
-          const accuReward1D = (() => {
-            if (existReward.accuReward1D === null && !current.accuReward1D) {
-              return null;
-            }
-
-            if (existReward.accuReward1D === null) {
-              return Number(current.accuReward1D);
-            }
-
-            if (!current.accuReward1D) {
-              return existReward.accuReward1D;
-            }
-
-            return existReward.accuReward1D + Number(current.accuReward1D);
-          })();
-          const apr = (() => {
-            if (existReward.apr === null && current.apr === null) {
-              return null;
-            }
-
-            if (existReward.apr === null) {
-              return current.apr;
-            }
-
-            if (current.apr === null) {
-              return existReward.apr;
-            }
-
-            return existReward.apr + current.apr;
-          })();
-          const accuReward1DUsd = accuReward1D !== null && tokenPrice !== null ? accuReward1D * tokenPrice : null;
-
           accum[displayRewardType][index] = {
             ...existReward,
-            accuReward1D,
-            accuReward1DPrice: accuReward1DUsd,
-            apr: apr,
+            amount:
+              existReward.amount !== null && amount !== null
+                ? existReward.amount + amount
+                : existReward.amount ?? amount,
+            usd: existReward.usd !== null && usd !== null ? existReward.usd + usd : existReward.usd ?? usd,
           };
         } else {
           accum[displayRewardType].push({
+            rewardType: displayRewardType,
             token: current.rewardToken,
-            rewardType: rewardType,
-            accuReward1D: current.accuReward1D ? Number(current.accuReward1D) : null,
-            accuReward1DPrice:
-              current.accuReward1D && tokenPrice !== null ? Number(current.accuReward1D) * tokenPrice : null,
-            apr: current.apr ? Number(current.apr) : null,
+            amount,
+            usd,
+            accumulatedRewardOf1d: null,
+            accumulatedRewardOf1dUsd: null,
           });
         }
         return accum;
@@ -490,15 +419,31 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       },
     );
 
-    Object.keys(aprRewardInfo).forEach(key => {
+    Object.keys(claimedRewardInfo).forEach(key => {
       const rewardType = key as DisplayRewardType;
-      if (aprRewardInfo[rewardType].length > 0) {
-        aprRewardInfo[rewardType] = sortTokensByPoolOrder(aprRewardInfo[rewardType], tokenA.path, tokenB.path);
+      if (claimedRewardInfo[rewardType].length > 0) {
+        claimedRewardInfo[rewardType] = sortTokensByPoolOrder(claimedRewardInfo[rewardType], tokenA.path, tokenB.path);
       }
     });
 
-    return aprRewardInfo;
-  }, [position.rewards, tokenPrices, tokenA.path, tokenB.path]);
+    return claimedRewardInfo;
+  }, [position.claimedRewards, tokenPrices, tokenA.path, tokenB.path]);
+
+  const totalClaimedRewards = useMemo(() => {
+    if (!isDisplay) {
+      return "-";
+    }
+
+    if (position.totalClaimedUsd !== "") {
+      return formatOtherPrice(position.totalClaimedUsd, { isKMB: false });
+    }
+
+    const totalClaimedUsd = Object.values(claimedRewardInfo ?? {})
+      .flatMap(item => item)
+      .reduce((accum, current) => accum + (current.usd ?? 0), 0);
+
+    return formatOtherPrice(totalClaimedUsd, { isKMB: false });
+  }, [claimedRewardInfo, isDisplay, position.totalClaimedUsd]);
 
   const stringPrice = useMemo(() => {
     const price = tickToPrice(position?.pool?.currentTick);
@@ -657,14 +602,14 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     }
   }, [zoomLevel, availInfo.availZoomOut]);
 
-  const isShowRewardInfoTooltip = useMemo(() => {
+  const isShowClaimedRewardInfoTooltip = useMemo(() => {
     return (
-      aprRewardInfo !== null &&
-      (aprRewardInfo?.EXTERNAL_REWARD.length !== 0 ||
-        aprRewardInfo?.INTERNAL_REWARD.length !== 0 ||
-        aprRewardInfo?.SWAP_FEE.length !== 0)
+      claimedRewardInfo !== null &&
+      (claimedRewardInfo?.EXTERNAL_REWARD.length !== 0 ||
+        claimedRewardInfo?.INTERNAL_REWARD.length !== 0 ||
+        claimedRewardInfo?.SWAP_FEE.length !== 0)
     );
-  }, [aprRewardInfo]);
+  }, [claimedRewardInfo]);
 
   const isShowTotalRewardInfo = useMemo(() => {
     return (
@@ -854,20 +799,20 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         )}
       </div>
       <div className="info-box">
-        <span className="symbol-text">{t("Pool:position.card.dailyEarn.title")}</span>
-        {!isClosed && isShowRewardInfoTooltip && !loading ? (
+        <span className="symbol-text">{t("Pool:position.card.claimedReward.title")}</span>
+        {!isClosed && isShowClaimedRewardInfoTooltip && !loading ? (
           <Tooltip
             placement="top"
             FloatingContent={
               <div>
-                <DailyEarningTooltipContent rewardInfo={aprRewardInfo} />
+                <RewardTooltipContent rewardInfo={claimedRewardInfo} sortByUsd={false} />
               </div>
             }
           >
-            <span className="content-text">{totalDailyEarning}</span>
+            <span className="content-text">{totalClaimedRewards}</span>
           </Tooltip>
         ) : (
-          !loading && <span className="content-text disabled">{totalDailyEarning}</span>
+          !loading && <span className="content-text disabled">{totalClaimedRewards}</span>
         )}
         {loading && (
           <PulseSkeletonWrapper height={39} mobileHeight={25}>

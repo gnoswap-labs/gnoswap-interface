@@ -15,7 +15,6 @@ import { RewardType, DisplayRewardType } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { RewardModel } from "@models/position/reward-model";
 import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { DEVICE_TYPE } from "@styles/media";
@@ -25,8 +24,6 @@ import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { mapToDisplayRewardType } from "@utils/reward-utils";
 import { DEFAULT_TOKEN_PRICE_RATIO } from "@common/values";
 import { sortDisplayRewards } from "@utils/pool-utils";
-
-import { DailyEarningTooltipContent, PositionAPRInfo } from "../stat-tooltip-contents/DailyEarningTooltipContent";
 
 import {
   AmountDisplayWrapper,
@@ -193,14 +190,14 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       EXTERNAL_REWARD: Object.values(sortedInfoMap["EXTERNAL_REWARD"]),
       NONE: Object.values(sortedInfoMap["NONE"]),
     };
-  }, [canShowData, positions, tokenPrices]);
+  }, [canShowData, positionData, positions, tokenPrices]);
 
-  const aprRewardInfo = useMemo((): { [key in DisplayRewardType]: PositionAPRInfo[] } | null => {
+  const claimedRewardInfo = useMemo((): { [key in DisplayRewardType]: PositionRewardForTooltip[] } | null => {
     if (!canShowData) {
       return null;
     }
     const infoMap: {
-      [key in DisplayRewardType]: { [key in string]: PositionAPRInfo };
+      [key in DisplayRewardType]: { [key in string]: PositionRewardForTooltip };
     } = {
       SWAP_FEE: {},
       INTERNAL_REWARD: {},
@@ -208,93 +205,39 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       NONE: {},
     };
 
-    const totalLiquidity = positions.reduce((accum, current) => {
-      accum += current.liquidity;
-      return accum;
-    }, BigInt(0));
-
     positions
-      .flatMap<RewardModel & { liquidity: bigint }, PoolPositionModel>(position =>
-        position.rewards.map(item => ({
-          ...item,
-          liquidity: position.liquidity,
-        })),
-      )
+      .flatMap(position => position.claimedRewards)
       .map(reward => ({
         token: reward.rewardToken,
         rewardType: reward.rewardToken.rewardType as RewardType,
-        accuReward1D: reward.accuReward1D ? Number(reward.accuReward1D) : null,
-        apr: reward.apr ? Number(reward.apr) : null,
-        liquidity: reward.liquidity,
+        amount: reward.claimedAmount ? Number(reward.claimedAmount) : null,
+        usd:
+          reward.claimedAmount && tokenPrices[reward.rewardToken.priceID]?.usd
+            ? Number(reward.claimedAmount) * Number(tokenPrices[reward.rewardToken.priceID]?.usd)
+            : null,
+        accumulatedRewardOf1d: null,
+        accumulatedRewardOf1dUsd: null,
       }))
       .forEach(rewardInfo => {
         const mappedRewardType = mapToDisplayRewardType(rewardInfo.rewardType);
 
         const existReward = infoMap[mappedRewardType]?.[rewardInfo.token.priceID];
-        const tokenPrice = tokenPrices[rewardInfo.token.priceID]?.usd
-          ? Number(tokenPrices[rewardInfo.token.priceID]?.usd)
-          : null;
-
         if (existReward) {
-          const accuReward1D = (() => {
-            if (existReward.accuReward1D === null) {
-              if (rewardInfo.accuReward1D === null) {
-                return null;
-              }
-
-              return rewardInfo.accuReward1D;
-            }
-
-            if (rewardInfo.accuReward1D === null) {
-              return existReward.accuReward1D;
-            }
-
-            return existReward.accuReward1D + rewardInfo.accuReward1D;
-          })();
-
-          const accuReward1DPrice = accuReward1D !== null && tokenPrice !== null ? accuReward1D * tokenPrice : null;
-
-          const apr = (() => {
-            if (existReward.apr === null) {
-              if (rewardInfo.apr === null) {
-                return null;
-              }
-
-              return Number(BigInt((rewardInfo.apr * 1000).toFixed(0)) * rewardInfo.liquidity);
-            }
-
-            if (rewardInfo.apr === null) {
-              return Number(existReward.apr);
-            }
-
-            return Number(existReward.apr) + Number(BigInt((rewardInfo.apr * 1000).toFixed(0)) * rewardInfo.liquidity);
-          })();
-
           infoMap[mappedRewardType][rewardInfo.token.priceID] = {
             ...existReward,
-            accuReward1D,
-            accuReward1DPrice,
-            apr: apr,
+            amount:
+              existReward.amount !== null && rewardInfo.amount !== null
+                ? existReward.amount + rewardInfo.amount
+                : existReward.amount ?? rewardInfo.amount,
+            usd:
+              existReward.usd !== null && rewardInfo.usd !== null
+                ? existReward.usd + rewardInfo.usd
+                : existReward.usd ?? rewardInfo.usd,
           };
         } else {
-          infoMap[mappedRewardType][rewardInfo.token.priceID] = {
-            ...rewardInfo,
-            accuReward1DPrice:
-              rewardInfo.accuReward1D !== null && tokenPrice !== null
-                ? Number(rewardInfo.accuReward1D) * tokenPrice
-                : null,
-            apr: rewardInfo.apr ? Number(BigInt((rewardInfo.apr * 1000).toFixed(0)) * rewardInfo.liquidity) : null,
-          };
+          infoMap[mappedRewardType][rewardInfo.token.priceID] = rewardInfo;
         }
       });
-
-    Object.keys(infoMap).forEach((typeKey: string) => {
-      const categorizedMap = infoMap[typeKey as DisplayRewardType];
-      Object.keys(categorizedMap).forEach((positionKey: string) => {
-        const multipliedApr = categorizedMap[positionKey].apr;
-        categorizedMap[positionKey].apr = multipliedApr ? Number(BigInt(multipliedApr) / totalLiquidity) / 1000 : null;
-      });
-    });
 
     const sortedInfoMap = sortDisplayRewards(infoMap, positionData);
 
@@ -304,40 +247,25 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       EXTERNAL_REWARD: Object.values(sortedInfoMap["EXTERNAL_REWARD"]),
       NONE: Object.values(sortedInfoMap["NONE"]),
     };
-  }, [canShowData, positions, tokenPrices]);
+  }, [canShowData, positionData, positions, tokenPrices]);
 
-  const isShowRewardInfoTooltip = useMemo(() => {
+  const isShowClaimedRewardInfoTooltip = useMemo(() => {
     return (
-      aprRewardInfo !== null &&
-      (aprRewardInfo?.EXTERNAL_REWARD.length !== 0 ||
-        aprRewardInfo?.INTERNAL_REWARD.length !== 0 ||
-        aprRewardInfo?.SWAP_FEE.length !== 0)
+      claimedRewardInfo !== null &&
+      (claimedRewardInfo?.EXTERNAL_REWARD.length !== 0 ||
+        claimedRewardInfo?.INTERNAL_REWARD.length !== 0 ||
+        claimedRewardInfo?.SWAP_FEE.length !== 0)
     );
-  }, [aprRewardInfo]);
+  }, [claimedRewardInfo]);
 
-  const dailyEarning = useMemo(() => {
-    if (!canShowData || !claimableRewardInfo) {
+  const claimedRewardsUSD = useMemo(() => {
+    if (!canShowData) {
       return "-";
     }
 
-    const claimableUsdValue = Object.values(claimableRewardInfo)
-      .flatMap(item => item)
-      .reduce((accum: null | number, current) => {
-        if (accum === -1 || current.accumulatedRewardOf1dUsd === null) return -1;
-
-        if (accum === null || accum === undefined) {
-          return current.accumulatedRewardOf1dUsd;
-        }
-
-        return accum + current.accumulatedRewardOf1dUsd;
-      }, null as number | null);
-
-    if (claimableUsdValue === null || claimableUsdValue === -1) {
-      return "-";
-    }
-
-    return formatOtherPrice(claimableUsdValue, { isKMB: false });
-  }, [canShowData, isDisplayPrice, claimableRewardInfo]);
+    const totalClaimedUsd = positions.reduce((accum, current) => accum + Number(current.totalClaimedUsd || 0), 0);
+    return formatOtherPrice(totalClaimedUsd, { isKMB: false });
+  }, [canShowData, positions]);
 
   const unclaimedRewardInfo = useMemo((): PositionRewardForTooltip[] | null => {
     if (!canShowData) {
@@ -443,7 +371,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         }
       });
     return Object.values(infoMap);
-  }, [canShowData, isDisplayPrice, positions, tokenPrices]);
+  }, [canShowData, positions, tokenPrices]);
 
   const isShowClaimableRewardInfo = useMemo(() => {
     return (
@@ -532,26 +460,26 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     return `(${depositStr})`;
   }, [depositRatio]);
 
-  const feeDaily = useMemo(() => {
-    const swapFee = aprRewardInfo?.SWAP_FEE;
+  const feeClaimed = useMemo(() => {
+    const swapFee = claimedRewardInfo?.SWAP_FEE;
     const sumUsd = swapFee?.reduce((accum: number | null, current) => {
       if (accum === null || accum === undefined) {
-        if (current.accuReward1DPrice === null) return null;
+        if (current.usd === null) return null;
 
-        return current.accuReward1DPrice;
+        return current.usd;
       }
 
-      if (current.accuReward1DPrice === null) {
+      if (current.usd === null) {
         return accum;
       }
 
-      return accum + current.accuReward1DPrice;
+      return accum + current.usd;
     }, null);
 
-    if (!canShowData || !isDisplayPrice) return "-";
+    if (!canShowData) return "-";
 
     return formatOtherPrice(sumUsd, { isKMB: false });
-  }, [aprRewardInfo?.SWAP_FEE, canShowData, isDisplayPrice]);
+  }, [claimedRewardInfo?.SWAP_FEE, canShowData]);
 
   const feeClaim = useMemo(() => {
     const swapFeeReward = claimableRewardInfo?.SWAP_FEE;
@@ -575,6 +503,21 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     return formatOtherPrice(sumUsd, { isKMB: false });
   }, [claimableRewardInfo?.SWAP_FEE, canShowData, isDisplayPrice]);
 
+  const logoClaimedFee = useMemo(() => {
+    const swapFee = claimedRewardInfo?.SWAP_FEE;
+    return (
+      swapFee
+        ?.flatMap(item => item.token)
+        .reduce<TokenModel[]>((acc: TokenModel[], current) => {
+          const token = acc.find(item => item.path === current.path);
+          if (!token) {
+            acc.push({ ...current, ...getGnotPath(current) });
+          }
+          return acc;
+        }, []) ?? []
+    );
+  }, [claimedRewardInfo?.SWAP_FEE, getGnotPath]);
+
   const logoDaily = useMemo(() => {
     const swapFee = claimableRewardInfo?.SWAP_FEE;
     return (
@@ -582,13 +525,31 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         ?.flatMap(item => item.token)
         .reduce<TokenModel[]>((acc: TokenModel[], current) => {
           const token = acc.find(item => item.path === current.path);
-          if (token) {
-            acc.push({ ...token, ...getGnotPath(token) });
+          if (!token) {
+            acc.push({ ...current, ...getGnotPath(current) });
           }
           return acc;
         }, []) ?? []
     );
   }, [claimableRewardInfo?.SWAP_FEE, getGnotPath]);
+
+  const logoClaimedReward = useMemo(() => {
+    const internalRewardToken = claimedRewardInfo?.INTERNAL_REWARD.map(item => item.token) ?? [];
+    const externalRewardToken = claimedRewardInfo?.EXTERNAL_REWARD.map(item => item.token) ?? [];
+    const tokenList = [...internalRewardToken, ...externalRewardToken];
+    const currentRewardTokens = tokenList.reduce<TokenModel[]>((acc: TokenModel[], current) => {
+      const token = acc.find(item => item.path === current.path);
+      if (!token) {
+        acc.push(current);
+      }
+      return acc;
+    }, []);
+
+    return currentRewardTokens.map(token => ({
+      ...token,
+      ...getGnotPath(token),
+    }));
+  }, [claimedRewardInfo?.EXTERNAL_REWARD, claimedRewardInfo?.INTERNAL_REWARD, getGnotPath]);
 
   const logoReward = useMemo(() => {
     const internalRewardToken = claimableRewardInfo?.INTERNAL_REWARD.map(item => item.token) ?? [];
@@ -596,8 +557,8 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     const tokenList = [...internalRewardToken, ...rewardTokens];
     const currentRewardTokens = tokenList.reduce<TokenModel[]>((acc: TokenModel[], current) => {
       const token = acc.find(item => item.path === current.path);
-      if (token) {
-        acc.push(token);
+      if (!token) {
+        acc.push(current);
       }
       return acc;
     }, []);
@@ -608,27 +569,27 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     }));
   }, [claimableRewardInfo?.INTERNAL_REWARD, getGnotPath, positionData?.rewardTokens]);
 
-  const rewardDaily = useMemo(() => {
-    const rewards = [...(aprRewardInfo?.INTERNAL_REWARD ?? []), ...(aprRewardInfo?.EXTERNAL_REWARD ?? [])];
+  const rewardClaimed = useMemo(() => {
+    const rewards = [...(claimedRewardInfo?.INTERNAL_REWARD ?? []), ...(claimedRewardInfo?.EXTERNAL_REWARD ?? [])];
 
     const sumUSD = rewards?.reduce((accum: number | null, current) => {
-      if ((accum === null || accum === undefined) && current.accuReward1DPrice === null) return null;
+      if ((accum === null || accum === undefined) && current.usd === null) return null;
 
       if (accum === null) {
-        return current.accuReward1DPrice;
+        return current.usd;
       }
 
-      if (current.accuReward1DPrice === null) {
+      if (current.usd === null) {
         return accum;
       }
 
-      return accum + current.accuReward1DPrice;
+      return accum + current.usd;
     }, null);
 
-    if (!canShowData || !isDisplayPrice) return "-";
+    if (!canShowData) return "-";
 
     return formatOtherPrice(sumUSD, { isKMB: false });
-  }, [aprRewardInfo?.EXTERNAL_REWARD, aprRewardInfo?.INTERNAL_REWARD, canShowData, isDisplayPrice]);
+  }, [claimedRewardInfo?.EXTERNAL_REWARD, claimedRewardInfo?.INTERNAL_REWARD, canShowData]);
 
   const rewardClaim = useMemo(() => {
     const rewards = [...(claimableRewardInfo?.EXTERNAL_REWARD ?? []), ...(claimableRewardInfo?.INTERNAL_REWARD ?? [])];
@@ -768,19 +729,19 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     return (
       <section>
         <h4>
-          {t("Pool:position.card.dailyEarn.title", {
+          {t("Pool:position.card.claimedReward.title", {
             context: "total",
           })}
         </h4>
-        {!loading && isShowRewardInfoTooltip ? (
+        {!loading && isShowClaimedRewardInfoTooltip ? (
           <Tooltip
             placement="top"
-            FloatingContent={<div>{aprRewardInfo && <DailyEarningTooltipContent rewardInfo={aprRewardInfo} />}</div>}
+            FloatingContent={<RewardTooltipContent rewardInfo={claimedRewardInfo} sortByUsd={false} />}
           >
-            <span className="content-value">{dailyEarning}</span>
+            <span className="content-value">{claimedRewardsUSD}</span>
           </Tooltip>
         ) : (
-          !loading && <span className="content-value disabled">{dailyEarning}</span>
+          !loading && <span className="content-value disabled">{claimedRewardsUSD}</span>
         )}
         {loading && (
           <PulseSkeletonWrapper height={39} mobileHeight={25}>
@@ -798,16 +759,16 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           <div className="total-daily">
             <div className="content-wrap">
               <span>{t("Pool:position.card.fee")}</span>
-              {breakpoint === DEVICE_TYPE.WEB && <OverlapTokenLogo tokens={logoDaily} size={20} />}
-              <span className="apr-value">{feeDaily}</span>
+              {breakpoint === DEVICE_TYPE.WEB && <OverlapTokenLogo tokens={logoClaimedFee} size={20} />}
+              <span className="apr-value">{feeClaimed}</span>
             </div>
             <div className="divider"></div>
             <div className="content-wrap content-reward">
               <span>{t("Pool:position.card.reward")}</span>
-              {logoReward.length > 0 && breakpoint === DEVICE_TYPE.WEB && (
-                <OverlapTokenLogo tokens={logoReward} size={20} />
+              {logoClaimedReward.length > 0 && breakpoint === DEVICE_TYPE.WEB && (
+                <OverlapTokenLogo tokens={logoClaimedReward} size={20} />
               )}
-              <span className="apr-value">{rewardDaily}</span>
+              <span className="apr-value">{rewardClaimed}</span>
             </div>
           </div>
         )}

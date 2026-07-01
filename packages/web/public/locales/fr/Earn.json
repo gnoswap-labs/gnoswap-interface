@@ -50,6 +50,7 @@
   "positions": {
     "addPositionBtn": "Nouvelle position",
     "card": {
+      "claimedRewards": "Récompenses réclamées",
       "claimRewards": "Récompenses réclamables",
       "dailyEarn": "Gains journaliers",
       "hideRange": "Cacher ma gamme",

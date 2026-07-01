@@ -44,6 +44,10 @@
         "title": "請求可能な報酬",
         "title_total": "請求可能な報酬総額"
       },
+      "claimedReward": {
+        "title": "請求済み報酬",
+        "title_total": "請求済み報酬合計"
+      },
       "dailyEarn": {
         "title": "日々の収益",
         "title_total": "1日の総収入"
