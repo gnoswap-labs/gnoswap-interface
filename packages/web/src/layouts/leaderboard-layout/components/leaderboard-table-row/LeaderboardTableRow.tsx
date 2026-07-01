@@ -12,7 +12,7 @@ import { LeaderboardUser } from "@repositories/leaderboard/response/common/types
 import { isLeaderboardHidden } from "@utils/leaderboard-utils";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
-const formatUsdValue = (value: string | number | null | undefined) => {
+const formatUsdValue = (value: string | number | null) => {
   if (value == null || value === "") return "-";
   return formatOtherPrice(value, { isKMB: false });
 };

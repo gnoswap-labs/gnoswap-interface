@@ -119,15 +119,17 @@ describe("LeaderboardTableRow", () => {
     expect(screen.queryByText("$")).not.toBeInTheDocument();
   });
 
-  it("does not expose point precision below 0.01", () => {
+  it("does not expose USD precision below 0.01", () => {
     render(
       <GnoswapThemeProvider>
         <LeaderboardTableRow
           myAddress={undefined}
           data={{
             ...createLeaderboardUser(647),
-            paidSwapFeePoint: "0.009",
-            totalPoint: "0.009",
+            swapFeeUsd: "0.009",
+            providedLiquidityFeeUsd: "0.009",
+            stakingRewardsUsd: "0.009",
+            governanceRewardsUsd: "0.009",
           }}
           tdWidths={[100, 100, 100, 100, 100, 100]}
           isMobile={false}
@@ -135,8 +137,8 @@ describe("LeaderboardTableRow", () => {
       </GnoswapThemeProvider>,
     );
 
-    expect(screen.getByText("0")).toBeInTheDocument();
+    expect(screen.getAllByText("<$0.01")).toHaveLength(2);
     expect(screen.queryByText("0.009")).not.toBeInTheDocument();
-    expect(screen.queryByText("0.01")).not.toBeInTheDocument();
+    expect(screen.queryByText("$0.009")).not.toBeInTheDocument();
   });
 });
