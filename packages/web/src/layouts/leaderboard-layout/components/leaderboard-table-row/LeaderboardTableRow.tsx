@@ -10,13 +10,11 @@ import PointComposition from "../point-composition/PointComposition";
 import UserColumn from "../user-column/UserColumn";
 import { LeaderboardUser } from "@repositories/leaderboard/response/common/types";
 import { isLeaderboardHidden } from "@utils/leaderboard-utils";
-import { numberToFormat } from "@utils/string-utils";
-import { removeTrailingZeros } from "@utils/number-utils";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
-const formatUsdValue = (value: string | number) => {
+const formatUsdValue = (value: string | number | null) => {
   if (value == null || value === "") return "-";
-  const formattedValue = `$${numberToFormat(value, { decimals: 2, forceDecimals: true, truncateDecimals: true })}`;
-  return removeTrailingZeros(formattedValue);
+  return formatOtherPrice(value, { isKMB: false });
 };
 
 const LeaderboardTableRow = ({

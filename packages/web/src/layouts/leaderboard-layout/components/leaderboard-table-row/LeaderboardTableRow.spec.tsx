@@ -94,4 +94,51 @@ describe("LeaderboardTableRow", () => {
     expect(screen.getByText("#101")).toBeInTheDocument();
     expect(screen.queryByText("#1100")).not.toBeInTheDocument();
   });
+
+  it("displays tiny positive USD values with the minimum USD label", () => {
+    render(
+      <GnoswapThemeProvider>
+        <LeaderboardTableRow
+          myAddress={undefined}
+          data={{
+            ...createLeaderboardUser(647),
+            governanceRewardsUsd: "0.0000003",
+            swapFeeUsd: "0.000000996805274021",
+            providedLiquidityFeeUsd: "0.000000969767947872",
+            stakingRewardsUsd: "0.0000006",
+            paidSwapFeePoint: "0.000000996805274021",
+            totalPoint: "0.000000996805274021",
+          }}
+          tdWidths={[100, 100, 100, 100, 100, 100]}
+          isMobile={false}
+        />
+      </GnoswapThemeProvider>,
+    );
+
+    expect(screen.getAllByText("<$0.01")).toHaveLength(3);
+    expect(screen.queryByText("$")).not.toBeInTheDocument();
+  });
+
+  it("does not expose USD precision below 0.01", () => {
+    render(
+      <GnoswapThemeProvider>
+        <LeaderboardTableRow
+          myAddress={undefined}
+          data={{
+            ...createLeaderboardUser(647),
+            swapFeeUsd: "0.009",
+            providedLiquidityFeeUsd: "0.009",
+            stakingRewardsUsd: "0.009",
+            governanceRewardsUsd: "0.009",
+          }}
+          tdWidths={[100, 100, 100, 100, 100, 100]}
+          isMobile={false}
+        />
+      </GnoswapThemeProvider>,
+    );
+
+    expect(screen.getAllByText("<$0.01")).toHaveLength(2);
+    expect(screen.queryByText("0.009")).not.toBeInTheDocument();
+    expect(screen.queryByText("$0.009")).not.toBeInTheDocument();
+  });
 });
