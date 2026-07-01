@@ -1,8 +1,13 @@
 import { PoolLiquiditySegmentModel, PoolLiquidityTickModel } from "@models/pool/pool-liquidity-model";
 import { TokenModel } from "@models/token/token-model";
+import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
 import { buildPoolLiquiditySegments } from "@utils/pool-liquidity-utils";
 
-import { createPoolSelectionGraphBins, getPoolSelectionGraphTooltipTick } from "./PoolSelectionGraph.utils";
+import {
+  createPoolSelectionGraphBins,
+  getPoolSelectionGraphEmptyTickWindow,
+  getPoolSelectionGraphTooltipTick,
+} from "./PoolSelectionGraph.utils";
 
 const makeToken = (symbol: string, decimals: number): TokenModel => ({
   path: `gno.land/r/demo/${symbol.toLowerCase()}`,
@@ -84,5 +89,68 @@ describe("createPoolSelectionGraphBins", () => {
       [-20, -10, 2, 1],
       [-10, 0, 2, 1],
     ]);
+  });
+});
+
+describe("getPoolSelectionGraphEmptyTickWindow", () => {
+  it("centers empty create-pool graphs around the current tick instead of the full protocol range", () => {
+    const tickWindow = getPoolSelectionGraphEmptyTickWindow({
+      currentTick: 0,
+      visibleTickRange: 18_240,
+      minTick: MIN_TICK,
+      maxTick: MAX_TICK,
+    });
+
+    expect(tickWindow).toEqual({ minTick: -9_120, maxTick: 9_120 });
+  });
+
+  it("keeps selected create-pool range visible when it fits the requested zoom range", () => {
+    const tickWindow = getPoolSelectionGraphEmptyTickWindow({
+      currentTick: 0,
+      visibleTickRange: 18_240,
+      minTick: MIN_TICK,
+      maxTick: MAX_TICK,
+      selectedMinTick: -7_000,
+      selectedMaxTick: 7_000,
+    });
+
+    expect(tickWindow).toEqual({ minTick: -9_120, maxTick: 9_120 });
+  });
+
+  it("keeps zoom changes effective when the selected range is wider than the visible range", () => {
+    const tickWindow = getPoolSelectionGraphEmptyTickWindow({
+      currentTick: 0,
+      visibleTickRange: 3_960,
+      minTick: MIN_TICK,
+      maxTick: MAX_TICK,
+      selectedMinTick: -7_000,
+      selectedMaxTick: 7_000,
+    });
+
+    expect(tickWindow).toEqual({ minTick: -1_980, maxTick: 1_980 });
+  });
+
+  it("shifts the visible window to keep an off-center selected range visible when possible", () => {
+    const tickWindow = getPoolSelectionGraphEmptyTickWindow({
+      currentTick: 0,
+      visibleTickRange: 18_240,
+      minTick: MIN_TICK,
+      maxTick: MAX_TICK,
+      selectedMinTick: -12_000,
+      selectedMaxTick: 2_000,
+    });
+
+    expect(tickWindow).toEqual({ minTick: -12_000, maxTick: 6_240 });
+  });
+
+  it("uses the full protocol range only when the requested visible range covers it", () => {
+    const tickWindow = getPoolSelectionGraphEmptyTickWindow({
+      currentTick: 0,
+      visibleTickRange: MAX_TICK - MIN_TICK,
+      minTick: MIN_TICK,
+      maxTick: MAX_TICK,
+    });
+
+    expect(tickWindow).toEqual({ minTick: MIN_TICK, maxTick: MAX_TICK });
   });
 });

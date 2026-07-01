@@ -6,12 +6,12 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { initialDetailPool } from "@models/pool/pool-detail-model";
-import { isNativeToken, TokenModel } from "@models/token/token-model";
+import { isNativeToken } from "@models/token/token-model";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { EarnState } from "@states/index";
 import { useTokenData } from "@hooks/token/data/use-token-data";
-import { checkGnotPath } from "@utils/common";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
+import { checkGnotPath } from "@utils/common";
 
 import AdditionalInfo from "../../components/additional-info/AdditionalInfo";
 import { usePoolAddSearchParams } from "@hooks/pool/data/use-pool-add-serach-param";
@@ -20,49 +20,58 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 
 const DEFAULT_POSITION_LIMIT = 20;
 
+const parseTokenPairFromPoolPath = (poolPath: string | null): string[] | null => {
+  if (!poolPath) {
+    return null;
+  }
+
+  const [tokenAPath, tokenBPath] = poolPath.split(":");
+  if (!tokenAPath || !tokenBPath) {
+    return null;
+  }
+
+  return [tokenAPath, tokenBPath];
+};
+
 const AdditionalInfoContainer: React.FC = () => {
   const router = useCustomRouter();
   const { breakpoint } = useWindowSize();
   const { account, connected } = useWallet();
   const [compareToken] = useAtom(EarnState.currentCompareToken);
+  const [currentPoolPath] = useAtom(EarnState.currentPoolPath);
   const [{ isLoading: isLoadingRPCPoolInfo }] = useAtom(EarnState.poolInfoQuery);
   const { poolPath, tokenPair } = usePoolAddSearchParams();
   const { tokens } = useTokenData();
   const { getGnotPath } = useGnotToGnot();
 
-  const tokenA = useMemo(
-    () =>
-      ({
-        ...tokens.find(item => item.path === checkGnotPath(tokenPair[0])),
-        ...getGnotPath(tokens.find(item => item.path === checkGnotPath(tokenPair[0]))),
-      } as TokenModel),
-    [getGnotPath, tokens, tokenPair],
-  );
+  const currentPoolTokenPair = useMemo(() => parseTokenPairFromPoolPath(currentPoolPath), [currentPoolPath]);
+  const activePoolPath = currentPoolTokenPair ? currentPoolPath : poolPath;
+  const activeTokenPair = useMemo(() => {
+    return currentPoolTokenPair ?? (tokenPair[0] && tokenPair[1] ? [tokenPair[0], tokenPair[1]] : []);
+  }, [currentPoolTokenPair, tokenPair]);
 
-  const tokenB = useMemo(
-    () =>
-      ({
-        ...tokens.find(item => item.path === checkGnotPath(tokenPair[1])),
-        ...getGnotPath(tokens.find(item => item.path === checkGnotPath(tokenPair[1]))),
-      } as TokenModel),
-    [getGnotPath, tokens, tokenPair],
-  );
+  const tokenA = useMemo(() => {
+    const token = tokens.find(item => item.path === checkGnotPath(activeTokenPair[0]));
+    return token ? { ...token, ...getGnotPath(token) } : null;
+  }, [activeTokenPair, getGnotPath, tokens]);
+
+  const tokenB = useMemo(() => {
+    const token = tokens.find(item => item.path === checkGnotPath(activeTokenPair[1]));
+    return token ? { ...token, ...getGnotPath(token) } : null;
+  }, [activeTokenPair, getGnotPath, tokens]);
 
   const { pools, fetching: isFetchingFeetierOfLiquidityMap } = usePool({ tokenA, tokenB, compareToken });
 
   const shouldFetchPool = useMemo(() => {
-    return pools.some(pool => pool.poolPath === poolPath);
-  }, [poolPath, pools]);
+    return pools.some(pool => pool.poolPath === activePoolPath);
+  }, [activePoolPath, pools]);
 
-  const {
-    totalPositionCount,
-    loading: isLoadingTotalPositionCount,
-  } = usePositionData({
+  const { totalPositionCount, loading: isLoadingTotalPositionCount } = usePositionData({
     isClosed: false,
-    poolPath: poolPath || "",
+    poolPath: activePoolPath || "",
     limit: 1,
     queryOption: {
-      enabled: !!poolPath,
+      enabled: !!activePoolPath,
     },
   });
 
@@ -76,39 +85,39 @@ const AdditionalInfoContainer: React.FC = () => {
 
   const { positions, loading: isLoadingPosition } = usePositionData({
     isClosed: false,
-    poolPath: poolPath || "",
+    poolPath: activePoolPath || "",
     limit: positionLimit,
     queryOption: {
-      enabled: !!poolPath,
+      enabled: !!activePoolPath,
     },
   });
 
-  const { data = initialDetailPool, isLoading: isLoadingPoolInfo } = useGetPoolDetailByPath(poolPath, {
-    enabled: !!poolPath && shouldFetchPool,
+  const { data = initialDetailPool, isLoading: isLoadingPoolInfo } = useGetPoolDetailByPath(activePoolPath, {
+    enabled: !!activePoolPath && shouldFetchPool,
   });
 
   const handleClickGotoStaking = useCallback(
     (type: PAGE_PATH_TYPE) => {
-      if (poolPath) {
-        router.movePageWithPoolPath(type, poolPath);
+      if (activePoolPath) {
+        router.movePageWithPoolPath(type, activePoolPath);
       }
     },
-    [poolPath],
+    [activePoolPath, router],
   );
 
   const stakedPositions = useMemo(() => {
-    if (!poolPath || !account || !connected) return [];
-    return positions.filter(position => position.poolPath === poolPath && position.staked);
-  }, [poolPath, account, connected, positions]);
+    if (!activePoolPath || !account || !connected) return [];
+    return positions.filter(position => position.poolPath === activePoolPath && position.staked);
+  }, [activePoolPath, account, connected, positions]);
 
   const unstakedPositions = useMemo(() => {
-    if (!poolPath || !account || !connected) return [];
-    return positions.filter(position => position.poolPath === poolPath && !position.staked);
-  }, [poolPath, account, connected, positions]);
+    if (!activePoolPath || !account || !connected) return [];
+    return positions.filter(position => position.poolPath === activePoolPath && !position.staked);
+  }, [activePoolPath, account, connected, positions]);
 
   const isReversed = useMemo(() => {
     return (
-      tokenPair?.findIndex(path => {
+      activeTokenPair?.findIndex(path => {
         if (compareToken) {
           return isNativeToken(compareToken) || compareToken.path === "ugnot"
             ? compareToken.wrappedPath === path
@@ -117,17 +126,17 @@ const AdditionalInfoContainer: React.FC = () => {
         return false;
       }) === 1
     );
-  }, [compareToken, tokenPair]);
+  }, [activeTokenPair, compareToken]);
 
   return (
     <AdditionalInfo
       breakpoint={breakpoint}
-      tokenPair={tokenPair}
+      tokenPair={activeTokenPair}
       stakedPositions={stakedPositions}
       unstakedPositions={unstakedPositions}
       handleClickGotoStaking={handleClickGotoStaking}
       pool={data}
-      poolPath={poolPath}
+      poolPath={activePoolPath}
       isLoadingPool={
         isLoadingRPCPoolInfo ||
         isFetchingFeetierOfLiquidityMap ||

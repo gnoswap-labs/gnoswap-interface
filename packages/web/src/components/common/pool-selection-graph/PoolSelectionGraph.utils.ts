@@ -9,6 +9,11 @@ export interface PoolSelectionGraphBin {
   reserveTokenB: number;
 }
 
+export interface PoolSelectionGraphTickWindow {
+  minTick: number;
+  maxTick: number;
+}
+
 const toFiniteNumber = (value: string | number | null | undefined): number => {
   if (value === null || value === undefined) {
     return 0;
@@ -51,4 +56,58 @@ export const createPoolSelectionGraphBins = (
 
 export const getPoolSelectionGraphTooltipTick = (bin: Pick<PoolSelectionGraphBin, "minTick" | "maxTick">): number => {
   return bin.minTick;
+};
+
+export const getPoolSelectionGraphEmptyTickWindow = ({
+  currentTick,
+  visibleTickRange,
+  minTick,
+  maxTick,
+  selectedMinTick,
+  selectedMaxTick,
+}: {
+  currentTick: number;
+  visibleTickRange: number;
+  minTick: number;
+  maxTick: number;
+  selectedMinTick?: number;
+  selectedMaxTick?: number;
+}): PoolSelectionGraphTickWindow => {
+  const fullRange = maxTick - minTick;
+  const normalizedRange = Math.min(fullRange, Math.max(1, Math.trunc(visibleTickRange)));
+
+  if (normalizedRange >= fullRange) {
+    return { minTick, maxTick };
+  }
+
+  const clampWindow = (windowMinTick: number): PoolSelectionGraphTickWindow => {
+    const minWindowTick = Math.max(minTick, Math.min(windowMinTick, maxTick - normalizedRange));
+    return {
+      minTick: minWindowTick,
+      maxTick: minWindowTick + normalizedRange,
+    };
+  };
+
+  const clampedCurrentTick = Math.min(maxTick, Math.max(minTick, currentTick));
+  let tickWindow = clampWindow(clampedCurrentTick - Math.floor(normalizedRange / 2));
+
+  if (selectedMinTick !== undefined && selectedMaxTick !== undefined) {
+    const selectedRange = selectedMaxTick - selectedMinTick;
+
+    if (selectedRange <= normalizedRange) {
+      let nextMinTick = tickWindow.minTick;
+
+      if (nextMinTick > selectedMinTick) {
+        nextMinTick = selectedMinTick;
+      }
+
+      if (nextMinTick + normalizedRange < selectedMaxTick) {
+        nextMinTick = selectedMaxTick - normalizedRange;
+      }
+
+      tickWindow = clampWindow(nextMinTick);
+    }
+  }
+
+  return tickWindow;
 };

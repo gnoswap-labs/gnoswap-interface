@@ -83,6 +83,10 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
 
     const isCustom = true;
 
+    const tokenPairKey = useMemo(() => {
+      return [checkGnotPath(tokenA.path), checkGnotPath(tokenB.path)].sort(sortTokenPaths).join(":");
+    }, [tokenA.path, tokenB.path]);
+
     const isLoading = useMemo(
       () => selectPool.renderState() === "LOADING" || isLoadingSelectPriceRange,
       [selectPool.renderState(), isLoadingSelectPriceRange],
@@ -159,7 +163,7 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
 
     function initPriceRange(inputPriceRangeType?: PriceRangeType | null) {
       const currentPriceRangeType = inputPriceRangeType || priceRangeType;
-      const currentPrice = selectPool.isCreate ? selectPool.startPrice : selectPool.currentPrice;
+      const currentPrice = selectPool.currentPrice;
       const { tickLower, tickUpper } = defaultTicks ?? {};
       const { minPrice, maxPrice } = SwapFeeTierMaxPriceRangeMap[selectPool.feeTier || "NONE"];
 
@@ -247,6 +251,10 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
         changeStartingPrice(startingPriceValue);
       }
     }, [selectPool.isCreate, startingPriceValue, changeStartingPrice]);
+
+    useEffect(() => {
+      setStartingPriceValue("");
+    }, [tokenPairKey]);
 
     useEffect(() => {
       if (selectPool.selectedFullRange) {

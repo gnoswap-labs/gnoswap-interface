@@ -287,7 +287,7 @@ export const useSelectPool = ({
       return null;
     }
 
-    const currentPrice = isCreate ? startPrice : price;
+    const currentPrice = price;
     if (!isValidCurrentPrice(currentPrice)) {
       return null;
     }
@@ -342,7 +342,6 @@ export const useSelectPool = ({
     maxPrice,
     swapFeeTierMaxPriceRangeMap,
     isCreate,
-    startPrice,
     isOrderedPrice,
     price,
     fullRange,
@@ -501,12 +500,12 @@ export const useSelectPool = ({
   }, [interactionType, minPosition, maxPosition, tickSpacing]);
 
   useEffect(() => {
-    if (isCreate && startPrice === null) {
-      setLatestPoolPath(null);
-    } else if (calculatedPoolPath) {
+    if (calculatedPoolPath) {
       setLatestPoolPath(calculatedPoolPath);
+    } else {
+      setLatestPoolPath(null);
     }
-  }, [isCreate, calculatedPoolPath, startPrice]);
+  }, [calculatedPoolPath]);
 
   useEffect(() => {
     if (!options || !feeTier) {
