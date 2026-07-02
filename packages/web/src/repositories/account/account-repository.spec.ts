@@ -73,7 +73,7 @@ describe("get account", () => {
     }
 
     expect(error).toBeTruthy();
-    expect(error?.status).toBe(1000);
+    expect(error).toMatchObject({ status: 1000 });
   });
 });
 

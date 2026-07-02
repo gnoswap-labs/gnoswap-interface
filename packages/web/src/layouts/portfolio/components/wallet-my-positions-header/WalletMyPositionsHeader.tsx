@@ -22,7 +22,7 @@ const WalletMyPositionsHeader: React.FC<WalletMyPositionsHeaderProps> = ({ toggl
     isFetchedPosition: isFetchedPosition,
     totalPositionCount,
   } = usePositionData({
-    withClosed: isClosed,
+    withClosed: true,
     scopeId: "WalletMyPositionsHeader",
   });
 
