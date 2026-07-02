@@ -44,10 +44,6 @@
         "title": "Claimable Rewards",
         "title_total": "Total Claimable Rewards"
       },
-      "claimedReward": {
-        "title": "Claimed Rewards",
-        "title_total": "Total Claimed Rewards"
-      },
       "dailyEarn": {
         "title": "Daily Earnings",
         "title_total": "Total Daily Earnings"

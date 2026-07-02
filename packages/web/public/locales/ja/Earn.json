@@ -50,7 +50,6 @@
   "positions": {
     "addPositionBtn": "新ポジション",
     "card": {
-      "claimedRewards": "請求済み報酬",
       "claimRewards": "クレーム可能な報酬",
       "dailyEarn": "日々の収益",
       "hideRange": "範囲を隠す",

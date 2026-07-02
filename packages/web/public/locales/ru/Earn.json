@@ -50,7 +50,6 @@
   "positions": {
     "addPositionBtn": "Новая должность",
     "card": {
-      "claimedRewards": "Полученные награды",
       "claimRewards": "Претендовать на награды",
       "dailyEarn": "Ежедневный заработок",
       "hideRange": "Скрыть мой диапазон",

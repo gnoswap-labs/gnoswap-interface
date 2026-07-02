@@ -44,10 +44,6 @@
         "title": "可申请的奖励",
         "title_total": "可申请的奖励总额"
       },
-      "claimedReward": {
-        "title": "已领取的奖励",
-        "title_total": "已领取奖励总额"
-      },
       "dailyEarn": {
         "title": "每日收入",
         "title_total": "每日总收入"

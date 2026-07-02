@@ -50,7 +50,6 @@
   "positions": {
     "addPositionBtn": "新职位",
     "card": {
-      "claimedRewards": "已领取的奖励",
       "claimRewards": "可领取的奖励",
       "dailyEarn": "每日收入",
       "hideRange": "隐藏我的范围",

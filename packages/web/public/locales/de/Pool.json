@@ -44,10 +44,6 @@
         "title": "Einforderbare Belohnungen",
         "title_total": "Anspruchsberechtigte Belohnungen insgesamt"
       },
-      "claimedReward": {
-        "title": "Beanspruchte Belohnungen",
-        "title_total": "Beanspruchte Belohnungen insgesamt"
-      },
       "dailyEarn": {
         "title": "Tägliche Einnahmen",
         "title_total": "Gesamte Tageseinnahmen"
