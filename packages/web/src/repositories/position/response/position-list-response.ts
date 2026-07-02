@@ -47,7 +47,7 @@ export interface PositionResponse {
 
   unclaimedFeeBUsd: string;
 
-  totalDailyRewardsUsd: string;
+  totalDailyRewardsUsd?: string;
 
   stakedUsd?: string;
 

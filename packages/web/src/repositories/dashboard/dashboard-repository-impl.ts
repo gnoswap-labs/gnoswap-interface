@@ -90,9 +90,9 @@ export class DashboardRepositoryImpl implements DashboardRepository {
       console.log("");
     }
 
-    const { data } = await this.networkClient.get<ActivityResponse>({
+    const { data } = await this.networkClient.get<{ data: ActivityResponse }>({
       url: "/users/" + request.address + "/activity",
     });
-    return data;
+    return data.data;
   };
 }

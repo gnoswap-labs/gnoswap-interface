@@ -95,7 +95,7 @@ const AssetListContainer: React.FC = () => {
   const { data: blockTimeData } = useGetAvgBlockTime();
   const { data: { tokens = [] } = {} } = useGetTokens();
   const { loading: loadingPositions } = usePositionData({
-    isClosed: false,
+    withClosed: false,
   });
 
   const [sendAssetAmount, setSendAssetAmount] = useState("");

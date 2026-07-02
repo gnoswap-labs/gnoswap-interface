@@ -63,9 +63,9 @@ export class AccountRepositoryImpl implements AccountRepository {
       return [];
     }
     const response = await this.networkClient.get<AccountBalancesResponse>({
-      url: `/user/${address}/balance`,
+      url: `/users/${address}/balances`,
     });
-    return response.data.balances;
+    return response.data.data;
   };
 
   public getUsername = async (address: string): Promise<string> => {

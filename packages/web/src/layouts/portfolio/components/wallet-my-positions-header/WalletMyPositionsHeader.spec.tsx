@@ -40,16 +40,16 @@ describe("WalletMyPositionsHeader", () => {
     jest.clearAllMocks();
   });
 
-  it("requests only open positions when closed positions are hidden", () => {
+  it("always fetches all positions to determine if closed positions exist", () => {
     render(<WalletMyPositionsHeader toggleClosed={jest.fn()} isClosed={false} />);
 
     expect(mockUsePositionData).toHaveBeenCalledWith({
-      withClosed: false,
+      withClosed: true,
       scopeId: "WalletMyPositionsHeader",
     });
   });
 
-  it("requests open and closed positions when closed positions are shown", () => {
+  it("still fetches all positions even when toggle shows closed positions", () => {
     render(<WalletMyPositionsHeader toggleClosed={jest.fn()} isClosed={true} />);
 
     expect(mockUsePositionData).toHaveBeenCalledWith({

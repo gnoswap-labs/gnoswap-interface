@@ -23,10 +23,10 @@ export interface PositionRepository {
   getPositionsByAddress: (
     address: string,
     options?: {
-      isClosed?: boolean;
       poolPath?: string;
       page?: number;
       limit?: number;
+      /** API option: when true, include closed positions in the server response. */
       withClosed?: boolean;
       withAvailableStake?: boolean;
     },
