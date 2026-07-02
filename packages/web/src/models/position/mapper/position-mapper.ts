@@ -4,7 +4,7 @@ import { PositionResponse } from "@repositories/position/response";
 import { RewardResponse } from "@repositories/position/response/reward-response";
 import { PoolPositionModel } from "../pool-position-model";
 import { PositionModel } from "../position-model";
-import { RewardModel } from "../reward-model";
+import { ClaimedRewardModel, RewardModel, RewardTokenModel } from "../reward-model";
 import { toUnitFormat } from "@utils/number-utils";
 import { formatDisplayTokenSymbol } from "@utils/token-utils";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
@@ -47,7 +47,7 @@ export class PositionMapper {
       stakedAt: position.stakedAt || "",
       stakedUsdValue: position.stakedUsd || "",
       rewards: position.rewards?.map(PositionMapper.rewardFromResponse) || [],
-      claimedRewards: position.claimedRewards || [],
+      claimedRewards: position.claimedRewards?.map(PositionMapper.claimedRewardFromResponse) || [],
       closed: position.closed,
       totalDailyRewardsUsd: toUnitFormat(position.totalDailyRewardsUsd ?? "", true, true),
       totalClaimedUsd: position.totalClaimedUsd,
@@ -62,15 +62,28 @@ export class PositionMapper {
 
   public static rewardFromResponse(reward: RewardResponse): RewardModel {
     return {
-      rewardToken: {
-        ...reward.rewardToken,
-        displaySymbol: formatDisplayTokenSymbol(reward.rewardToken.symbol),
-      },
+      rewardToken: PositionMapper.rewardTokenFromResponse(reward.rewardToken),
       apr: reward.apr !== "" ? Number(reward.apr) : null,
       totalAmount: reward.totalAmount,
       claimableAmount: reward.claimableAmount,
       claimableUsd: reward.claimableUsd,
       // rewardType: reward.rewardType.toUpperCase() as RewardType,
+    };
+  }
+
+  private static claimedRewardFromResponse(reward: ClaimedRewardModel): ClaimedRewardModel {
+    return {
+      ...reward,
+      rewardToken: PositionMapper.rewardTokenFromResponse(reward.rewardToken),
+    };
+  }
+
+  private static rewardTokenFromResponse(rewardToken: RewardTokenModel): RewardTokenModel {
+    return {
+      ...rewardToken,
+      displaySymbol: formatDisplayTokenSymbol(
+        rewardToken.symbol || rewardToken.displaySymbol || rewardToken.name || rewardToken.path,
+      ),
     };
   }
 
