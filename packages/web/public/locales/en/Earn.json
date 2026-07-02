@@ -50,6 +50,7 @@
   "positions": {
     "addPositionBtn": "New Position",
     "card": {
+      "claimedRewards": "Claimed Rewards",
       "claimRewards": "Claimable Rewards",
       "dailyEarn": "Daily Earnings",
       "hideRange": "Hide my range",
