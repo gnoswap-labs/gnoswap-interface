@@ -424,7 +424,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     }
 
     const rewards = Object.values(claimedRewardInfo ?? {}).flatMap(item => item);
-    const totalClaimedUsd = rewards.length === 0 ? 0 : sumRewardUsd(rewards);
+    const totalClaimedUsd = rewards.length === 0 ? null : sumRewardUsd(rewards);
 
     return formatOtherPrice(totalClaimedUsd, { isKMB: false });
   }, [claimedRewardInfo, position.totalClaimedUsd]);
