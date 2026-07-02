@@ -67,7 +67,6 @@ const AdditionalInfoContainer: React.FC = () => {
   }, [activePoolPath, pools]);
 
   const { totalPositionCount, loading: isLoadingTotalPositionCount } = usePositionData({
-    isClosed: false,
     poolPath: activePoolPath || "",
     withClosed: false,
     limit: 1,
@@ -85,7 +84,6 @@ const AdditionalInfoContainer: React.FC = () => {
   }, [totalPositionCount]);
 
   const { positions, loading: isLoadingPosition } = usePositionData({
-    isClosed: false,
     poolPath: activePoolPath || "",
     withClosed: false,
     limit: positionLimit,

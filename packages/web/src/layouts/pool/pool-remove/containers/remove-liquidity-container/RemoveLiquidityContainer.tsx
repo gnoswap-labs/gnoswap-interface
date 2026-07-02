@@ -21,7 +21,6 @@ const RemoveLiquidityContainer: React.FC = () => {
     loading: isLoadingPositions,
     refetch: refetchPositions,
   } = usePositionData({
-    isClosed: false,
     poolPath,
     withClosed: false,
     queryOption: {

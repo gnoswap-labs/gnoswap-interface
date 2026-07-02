@@ -26,6 +26,7 @@ export interface PositionRepository {
       poolPath?: string;
       page?: number;
       limit?: number;
+      /** API option: when true, include closed positions in the server response. */
       withClosed?: boolean;
       withAvailableStake?: boolean;
     },

@@ -104,7 +104,7 @@ describe("get balances", () => {
   });
 
   it("returns mock balances with the API item shape", async () => {
-    const balances = await new AccountRepositoryMock(localStorageClient).getBalances(defaultAccountInfo.address);
+    const balances = await new AccountRepositoryMock(localStorageClient as StorageClient<unknown>).getBalances();
 
     expect(balances[0]).toEqual({
       path: "gno.land/r/demo/tong_token",

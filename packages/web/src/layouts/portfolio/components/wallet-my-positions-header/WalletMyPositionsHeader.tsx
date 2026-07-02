@@ -7,10 +7,13 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { wrapper } from "./WalletMyPositionsHeader.styles";
 import Switch from "@components/common/switch/Switch";
 
-const WalletMyPositionsHeader: React.FC<{ toggleClosed: () => void; isClosed: boolean }> = ({
-  toggleClosed,
-  isClosed,
-}) => {
+interface WalletMyPositionsHeaderProps {
+  toggleClosed: () => void;
+  /** UI toggle state: whether closed positions should be shown in this view. */
+  isClosed: boolean;
+}
+
+const WalletMyPositionsHeader: React.FC<WalletMyPositionsHeaderProps> = ({ toggleClosed, isClosed }) => {
   const { t } = useTranslation();
   const { isSwitchNetwork } = useWallet();
 

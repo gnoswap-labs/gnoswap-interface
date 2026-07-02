@@ -39,6 +39,7 @@ export interface EarnMyPositionsProps {
   onClickLoadMore?: () => void;
   themeKey: "dark" | "light";
   account: AccountModel | null;
+  /** UI toggle state: whether closed positions should be shown in this view. */
   isClosed: boolean;
   handleChangeClosed: () => void;
   tokenPrices: Record<string, TokenPriceModel>;

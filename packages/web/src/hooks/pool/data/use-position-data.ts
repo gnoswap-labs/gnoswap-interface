@@ -8,10 +8,10 @@ import { PositionModel } from "@models/position/position-model";
 
 export interface UsePositionDataOption {
   address?: string;
-  isClosed?: boolean;
   poolPath?: string | null;
   page?: number;
   limit?: number;
+  /** API option: when true, include closed positions in the server response. */
   withClosed?: boolean;
   withAvailableStake?: boolean;
   scopeId?: string;
@@ -34,7 +34,6 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     isLoading: isLoadingPosition,
   } = useGetPositionsByAddress({
     address: fetchedAddress as string,
-    isClosed: options?.isClosed,
     poolPath: options?.poolPath,
     page: options?.page,
     limit: options?.limit,

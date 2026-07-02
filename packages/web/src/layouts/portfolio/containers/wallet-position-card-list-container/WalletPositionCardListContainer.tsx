@@ -15,7 +15,12 @@ import { ThemeState } from "@states/index";
 import { PositionConverter } from "@services/converters/position";
 import { POSITION_CARD_BREAKPOINTS, POSITION_CARD_DISPLAY_COUNT, POSITION_CARD_LIST_BREAKPOINTS } from "@common/values";
 
-const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isClosed }) => {
+interface WalletPositionCardListContainerProps {
+  /** UI toggle state: whether closed positions should be shown in this view. */
+  isClosed: boolean;
+}
+
+const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerProps> = ({ isClosed }) => {
   const { getGnotPath } = useGnotToGnot();
   const [currentIndex, setCurrentIndex] = useState(1);
   const router = useRouter();

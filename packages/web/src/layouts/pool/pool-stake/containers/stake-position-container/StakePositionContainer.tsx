@@ -25,7 +25,6 @@ const StakePositionContainer: React.FC<StakePositionContainerProps> = ({ onOpenV
     loading: isLoadingAllPositions,
     refetch: refetchPositions,
   } = usePositionData({
-    isClosed: false,
     poolPath: poolPath || undefined,
     withClosed: false,
     withAvailableStake: true,

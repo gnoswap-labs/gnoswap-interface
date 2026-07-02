@@ -22,6 +22,7 @@ export interface EarnMyPositionsHeaderProps {
   availableStake: boolean;
   moveEarnAdd: () => void;
   moveEarnStake: () => void;
+  /** UI toggle state: whether closed positions should be shown in this view. */
   isClosed: boolean;
   handleChangeClosed: () => void;
   positions: PoolPositionModel[];

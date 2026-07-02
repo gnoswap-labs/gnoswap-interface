@@ -11,10 +11,10 @@ const REFETCH_INTERVAL = 5_000;
 
 interface UseGetPositionsByAddressProps {
   address?: string;
-  isClosed?: boolean;
   poolPath?: string | null;
   page?: number;
   limit?: number;
+  /** API option: when true, include closed positions in the server response. */
   withClosed?: boolean;
   withAvailableStake?: boolean;
 }
@@ -67,15 +67,6 @@ export const useGetPositionsByAddress = (
         });
     },
     {
-      select: data => {
-        if (props?.isClosed === undefined) {
-          return data;
-        }
-        return {
-          positions: data.positions.filter(p => p.closed === props.isClosed),
-          totalCount: data.totalCount,
-        };
-      },
       keepPreviousData: true,
       refetchInterval: REFETCH_INTERVAL,
       refetchOnMount: true,
