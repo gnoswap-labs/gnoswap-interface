@@ -295,26 +295,30 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return formatOtherPrice(result);
   }, [position.rewards]);
 
-  const dailyEarning = useMemo(() => {
-    const result = position.rewards.reduce((acc: number | null, current) => {
-      const tokenPrice = tokenPrices?.[current.rewardToken.priceID].usd
-        ? Number(tokenPrices?.[current.rewardToken.priceID].usd)
+  const claimedRewardsUSD = useMemo(() => {
+    if (position.totalClaimedUsd !== "") {
+      return formatOtherPrice(position.totalClaimedUsd);
+    }
+
+    const result = position.claimedRewards.reduce((acc: number | null, current) => {
+      const tokenPrice = tokenPrices?.[current.rewardToken.priceID]?.usd
+        ? Number(tokenPrices?.[current.rewardToken.priceID]?.usd)
         : null;
       if (acc === -1 || tokenPrice === null) return -1;
 
-      if (acc === null && !current.accuReward1D) {
+      if (acc === null && !current.claimedAmount) {
         return null;
       }
 
-      if (acc === null) return Number(current.accuReward1D) * tokenPrice;
+      if (acc === null) return Number(current.claimedAmount) * tokenPrice;
 
-      return acc + Number(current.accuReward1D) * tokenPrice;
+      return acc + Number(current.claimedAmount) * tokenPrice;
     }, null);
 
     if (result === null || result === -1) return "-";
 
     return formatOtherPrice(result);
-  }, [position.rewards, tokenPrices]);
+  }, [position.claimedRewards, position.totalClaimedUsd, tokenPrices]);
 
   const handleMouseEnter = useCallback(() => {
     prefetch();
@@ -363,11 +367,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <span className="apr-value">{aprStr}</span>
             </div>
             <div className="list-header mt-4">
-              <span className="label-text">{t("Earn:positions.card.dailyEarn")}</span>
+              <span className="label-text">{t("Earn:positions.card.claimedRewards")}</span>
               <span className="label-text">{t("Earn:positions.card.claimRewards")}</span>
             </div>
             <div className="list-content">
-              <span>{dailyEarning}</span>
+              <span>{claimedRewardsUSD}</span>
               <span>{claimableUSD}</span>
             </div>
           </div>

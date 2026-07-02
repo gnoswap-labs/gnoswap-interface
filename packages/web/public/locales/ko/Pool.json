@@ -44,6 +44,10 @@
         "title": "청구 가능한 보상",
         "title_total": "청구 가능한 총 보상"
       },
+      "claimedReward": {
+        "title": "수령한 보상",
+        "title_total": "청구된 보상 총액"
+      },
       "dailyEarn": {
         "title": "일일 수익",
         "title_total": "일일 총 수익"
