@@ -44,6 +44,16 @@ interface MyLiquidityContentProps {
   isSwitchNetwork: boolean;
 }
 
+const sumRewardUsd = (rewards: PositionRewardForTooltip[]): number | null => {
+  return rewards.reduce<number | null>((accum, current) => {
+    if (accum === null || current.usd === null) {
+      return null;
+    }
+
+    return accum + current.usd;
+  }, 0);
+};
+
 const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   connected,
   positions,
@@ -121,7 +131,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
           ) || 0,
         amount: reward.claimableAmount ? Number(reward.claimableAmount) : null,
         usd: reward.claimableUsd ? Number(reward.claimableUsd) : null,
-        accumulatedRewardOf1d: reward.accuReward1D ? Number(reward.accuReward1D) : null,
+        accumulatedRewardOf1d: null,
         claimableUsdValue: reward.claimableUsd ? Number(reward.claimableUsd) : null,
       }))
       .forEach(rewardInfo => {
@@ -229,10 +239,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
               existReward.amount !== null && rewardInfo.amount !== null
                 ? existReward.amount + rewardInfo.amount
                 : existReward.amount ?? rewardInfo.amount,
-            usd:
-              existReward.usd !== null && rewardInfo.usd !== null
-                ? existReward.usd + rewardInfo.usd
-                : existReward.usd ?? rewardInfo.usd,
+            usd: existReward.usd !== null && rewardInfo.usd !== null ? existReward.usd + rewardInfo.usd : null,
           };
         } else {
           infoMap[mappedRewardType][rewardInfo.token.priceID] = rewardInfo;
@@ -263,9 +270,40 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       return "-";
     }
 
-    const totalClaimedUsd = positions.reduce((accum, current) => accum + Number(current.totalClaimedUsd || 0), 0);
+    const totalClaimedUsd = positions.reduce<number | null>((accum, current) => {
+      if (accum === null) {
+        return null;
+      }
+
+      if (current.totalClaimedUsd !== "") {
+        return accum + Number(current.totalClaimedUsd);
+      }
+
+      if (current.claimedRewards.length === 0) {
+        return accum;
+      }
+
+      const claimedRewardsUsd = current.claimedRewards.reduce<number | null>((rewardAccum, reward) => {
+        if (rewardAccum === null) {
+          return null;
+        }
+
+        const tokenPrice = tokenPrices[reward.rewardToken.priceID]?.usd
+          ? Number(tokenPrices[reward.rewardToken.priceID]?.usd)
+          : null;
+
+        if (!reward.claimedAmount || tokenPrice === null) {
+          return null;
+        }
+
+        return rewardAccum + Number(reward.claimedAmount) * tokenPrice;
+      }, 0);
+
+      return claimedRewardsUsd === null ? null : accum + claimedRewardsUsd;
+    }, 0);
+
     return formatOtherPrice(totalClaimedUsd, { isKMB: false });
-  }, [canShowData, positions]);
+  }, [canShowData, positions, tokenPrices]);
 
   const unclaimedRewardInfo = useMemo((): PositionRewardForTooltip[] | null => {
     if (!canShowData) {
@@ -279,9 +317,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
         rewardType: reward.rewardToken.rewardType as RewardType,
         amount: reward.claimableAmount ? makeDisplayTokenAmount(reward.rewardToken, reward.claimableAmount) : null,
         usd: reward.claimableUsd ? Number(reward.claimableUsd) : null,
-        accumulatedRewardOf1d: reward.accuReward1D
-          ? makeDisplayTokenAmount(reward.rewardToken, reward.accuReward1D)
-          : null,
+        accumulatedRewardOf1d: null,
       }))
       .forEach(rewardInfo => {
         if (rewardInfo.amount) {
@@ -462,19 +498,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
 
   const feeClaimed = useMemo(() => {
     const swapFee = claimedRewardInfo?.SWAP_FEE;
-    const sumUsd = swapFee?.reduce((accum: number | null, current) => {
-      if (accum === null || accum === undefined) {
-        if (current.usd === null) return null;
-
-        return current.usd;
-      }
-
-      if (current.usd === null) {
-        return accum;
-      }
-
-      return accum + current.usd;
-    }, null);
+    const sumUsd = swapFee && swapFee.length > 0 ? sumRewardUsd(swapFee) : undefined;
 
     if (!canShowData) return "-";
 
@@ -572,19 +596,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   const rewardClaimed = useMemo(() => {
     const rewards = [...(claimedRewardInfo?.INTERNAL_REWARD ?? []), ...(claimedRewardInfo?.EXTERNAL_REWARD ?? [])];
 
-    const sumUSD = rewards?.reduce((accum: number | null, current) => {
-      if ((accum === null || accum === undefined) && current.usd === null) return null;
-
-      if (accum === null) {
-        return current.usd;
-      }
-
-      if (current.usd === null) {
-        return accum;
-      }
-
-      return accum + current.usd;
-    }, null);
+    const sumUSD = rewards.length > 0 ? sumRewardUsd(rewards) : undefined;
 
     if (!canShowData) return "-";
 

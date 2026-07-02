@@ -12,11 +12,5 @@ export interface RewardResponse {
 
   claimableUsd: string;
 
-  accuReward1d: string;
-
-  accuReward7d: string;
-
   apr: string;
-
-  accuReward1D: string;
 }

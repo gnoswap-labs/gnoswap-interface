@@ -73,7 +73,6 @@ const createReward = ({ rewardType, rewardTokenPath, claimableAmount }: RewardOv
     totalAmount: "100",
     claimableAmount,
     claimableUsd: "0",
-    accuReward1D: null,
     apr: null,
   };
 };

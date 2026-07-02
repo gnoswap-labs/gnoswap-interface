@@ -46,7 +46,6 @@ export class PositionConverter {
       rewards:
         position.rewards?.map(reward => ({
           ...reward,
-          accuReward1D: AmountConverter.convertSingle(reward.rewardToken, reward.accuReward1D || 0),
           claimableAmount: AmountConverter.convertSingle(reward.rewardToken, reward.claimableAmount || 0),
           totalAmount: AmountConverter.convertSingle(reward.rewardToken, reward.totalAmount || 0),
         })) || [],
