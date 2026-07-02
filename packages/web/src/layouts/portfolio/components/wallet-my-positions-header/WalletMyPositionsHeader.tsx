@@ -19,7 +19,7 @@ const WalletMyPositionsHeader: React.FC<{ toggleClosed: () => void; isClosed: bo
     isFetchedPosition: isFetchedPosition,
     totalPositionCount,
   } = usePositionData({
-    isClosed: false,
+    withClosed: isClosed,
     scopeId: "WalletMyPositionsHeader",
   });
 
