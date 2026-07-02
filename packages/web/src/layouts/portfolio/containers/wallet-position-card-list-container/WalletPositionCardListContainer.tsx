@@ -29,9 +29,9 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
     const { DESKTOP, TABLET } = POSITION_CARD_DISPLAY_COUNT;
 
     if (width < DESKTOP_MIN && width >= TABLET_MIN) {
-      return TABLET * 7; // 3 * 7 = 21
+      return TABLET * 7;
     }
-    return DESKTOP * 5; // 4 * 5 = 20
+    return DESKTOP * 5;
   }, [width]);
 
   const {
@@ -40,7 +40,7 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
     positions: positionsData = [],
     totalPositionCount,
   } = usePositionData({
-    isClosed: false,
+    withClosed: isClosed,
     page,
     limit,
   });
