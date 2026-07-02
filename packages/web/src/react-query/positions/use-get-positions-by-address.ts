@@ -46,7 +46,6 @@ export const useGetPositionsByAddress = (
       props?.page,
       props?.limit,
       props?.withClosed,
-      props?.isClosed,
       props?.withAvailableStake,
     ],
     async () => {
@@ -60,7 +59,6 @@ export const useGetPositionsByAddress = (
           page: props?.page,
           limit: props?.limit,
           withClosed: props?.withClosed,
-          isClosed: props?.isClosed,
           withAvailableStake: props?.withAvailableStake,
         })
         .catch(e => {

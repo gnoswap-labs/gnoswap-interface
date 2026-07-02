@@ -49,7 +49,7 @@ export class PositionMapper {
       rewards: position.rewards?.map(PositionMapper.rewardFromResponse) || [],
       claimedRewards: position.claimedRewards || [],
       closed: position.closed,
-      totalDailyRewardsUsd: toUnitFormat(position.totalDailyRewardsUsd, true, true),
+      totalDailyRewardsUsd: toUnitFormat(position.totalDailyRewardsUsd ?? "", true, true),
       totalClaimedUsd: position.totalClaimedUsd,
       usdValue: Number(position.usdValue),
       tokenUri: position.tokenUri,

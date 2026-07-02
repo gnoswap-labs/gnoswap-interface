@@ -81,7 +81,6 @@ export class PositionRepositoryImpl implements PositionRepository {
   getPositionsByAddress = async (
     address: string,
     options?: {
-      isClosed?: boolean;
       poolPath?: string;
       page?: number;
       limit?: number;
@@ -93,7 +92,6 @@ export class PositionRepositoryImpl implements PositionRepository {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
     const queries = [
-      options?.isClosed !== undefined ? `closed=${options.isClosed}` : "",
       options?.poolPath !== undefined ? `poolPath=${options.poolPath}` : "",
       options?.page !== undefined ? `page=${options.page}` : "",
       options?.limit !== undefined ? `limit=${options.limit}` : "",

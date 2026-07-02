@@ -16,9 +16,14 @@ const RemoveLiquidityContainer: React.FC = () => {
   const poolPath = router.getPoolPath();
   const positionId = router.getPositionId();
   const [checkedList, setCheckedList] = useState<number[]>(positionId ? [Number(positionId)] : []);
-  const { positions: allPosition, loading: isLoadingPositions, refetch: refetchPositions } = usePositionData({
+  const {
+    positions: allPosition,
+    loading: isLoadingPositions,
+    refetch: refetchPositions,
+  } = usePositionData({
     isClosed: false,
     poolPath,
+    withClosed: false,
     queryOption: {
       enabled: !!poolPath,
     },
