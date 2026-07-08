@@ -44,16 +44,16 @@ const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerP
     return DESKTOP * 5;
   }, [width]);
 
-  const shouldFetchPositions = isClosed || !openPositionData;
+  const useSharedOpenPositions = !isClosed && page === 1 && !!openPositionData;
   const fetchedPositionData = usePositionData({
     withClosed: isClosed,
     page,
     limit,
     queryOption: {
-      enabled: shouldFetchPositions,
+      enabled: !useSharedOpenPositions,
     },
   });
-  const positionData = shouldFetchPositions ? fetchedPositionData : openPositionData;
+  const positionData = useSharedOpenPositions ? openPositionData : fetchedPositionData;
   const {
     isFetchedPosition,
     loading: loadingPositions,
@@ -107,13 +107,13 @@ const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerP
   }, [width]);
 
   const pagedPositionsData = useMemo(() => {
-    if (shouldFetchPositions) {
+    if (!useSharedOpenPositions) {
       return positionsData;
     }
 
     const startIndex = (page - 1) * limit;
     return positionsData.slice(startIndex, startIndex + limit);
-  }, [limit, page, positionsData, shouldFetchPositions]);
+  }, [limit, page, positionsData, useSharedOpenPositions]);
 
   const poolPositions = useMemo(() => {
     const mappedPositions: PoolPositionModel[] = [];

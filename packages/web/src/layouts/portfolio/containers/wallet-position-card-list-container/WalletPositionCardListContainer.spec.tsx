@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { act, render } from "@testing-library/react";
 
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 
@@ -9,9 +9,11 @@ jest.mock("jotai", () => ({
   useAtomValue: () => "light",
 }));
 
+const mockMyPositionCardList = jest.fn(() => <div data-testid="my-position-card-list" />);
+
 jest.mock("@components/common/my-position-card-list/MyPositionCardList", () => ({
   __esModule: true,
-  default: () => <div data-testid="my-position-card-list" />,
+  default: (props: unknown) => mockMyPositionCardList(props),
 }));
 
 jest.mock("@hooks/common/use-custom-router", () => ({
@@ -85,6 +87,7 @@ const openPositionData = {
 describe("WalletPositionCardListContainer", () => {
   beforeEach(() => {
     mockUsePositionData.mockReturnValue(openPositionData);
+    mockMyPositionCardList.mockClear();
   });
 
   afterEach(() => {
@@ -110,6 +113,24 @@ describe("WalletPositionCardListContainer", () => {
       expect.objectContaining({
         withClosed: true,
         page: 1,
+        queryOption: expect.objectContaining({ enabled: true }),
+      }),
+    );
+  });
+
+  it("fetches a paginated open position page after leaving the shared first page", () => {
+    render(<WalletPositionCardListContainer isClosed={false} openPositionData={openPositionData} />);
+
+    const lastProps = mockMyPositionCardList.mock.calls.at(-1)?.[0] as { movePage: (page: number) => void };
+
+    act(() => {
+      lastProps.movePage(2);
+    });
+
+    expect(mockUsePositionData).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        withClosed: false,
+        page: 2,
         queryOption: expect.objectContaining({ enabled: true }),
       }),
     );
