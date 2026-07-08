@@ -37,7 +37,11 @@ import { BalanceSummaryInfo } from "@layouts/portfolio/components/wallet-balance
 import AssetSendModal from "../../components/asset-send-modal/AssetSendModal";
 import WalletBalance from "../../components/wallet-balance/WalletBalance";
 
-const WalletBalanceContainer: React.FC = () => {
+interface WalletBalanceContainerProps {
+  positionData: ReturnType<typeof usePositionData>;
+}
+
+const WalletBalanceContainer: React.FC<WalletBalanceContainerProps> = ({ positionData }) => {
   const { rpcProvider } = useGnoswapContext();
   const { connected, isSwitchNetwork, loadingConnect, account, walletType, currentChainId } = useWallet();
   const { address: userAddress = "" } = useAddress();
@@ -53,7 +57,7 @@ const WalletBalanceContainer: React.FC = () => {
   const { data: blockTimeData } = useGetAvgBlockTime();
   const { balances: balancesPrice, loadingBalance, updateBalances, tokens } = useTokenData();
 
-  const { positions, loading: loadingPositions } = usePositionData();
+  const { positions, loading: loadingPositions } = positionData;
   const { data: positionRewards, isLoading: loadingPositionRewards } = useGetPositionRewards();
 
   const { invalidateQueryKey } = useInvalidateQueries();
@@ -66,11 +70,10 @@ const WalletBalanceContainer: React.FC = () => {
     ]);
   }, [invalidateQueryKey, currentChainId, userAddress]);
 
-  const isLoadingPosition = useMemo(() => connected && (loadingPositions || loadingPositionRewards), [
-    connected,
-    loadingPositions,
-    loadingPositionRewards,
-  ]);
+  const isLoadingPosition = useMemo(
+    () => connected && (loadingPositions || loadingPositionRewards),
+    [connected, loadingPositions, loadingPositionRewards],
+  );
 
   const { claimAll } = usePosition([]);
   const { broadcastSuccess, broadcastError, broadcastRejected, broadcastLoading } = useBroadcastHandler();

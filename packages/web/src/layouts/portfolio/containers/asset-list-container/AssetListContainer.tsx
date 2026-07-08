@@ -9,7 +9,6 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
@@ -73,7 +72,11 @@ interface SortedProps extends TokenModel {
   sortPrice?: string;
 }
 
-const AssetListContainer: React.FC = () => {
+interface AssetListContainerProps {
+  isLoadingPosition: boolean;
+}
+
+const AssetListContainer: React.FC<AssetListContainerProps> = ({ isLoadingPosition }) => {
   const router = useCustomRouter();
   const { connected, account, isSwitchNetwork } = useWallet();
 
@@ -94,13 +97,9 @@ const AssetListContainer: React.FC = () => {
   const { isLoadingTokens } = useLoading();
   const { data: blockTimeData } = useGetAvgBlockTime();
   const { data: { tokens = [] } = {} } = useGetTokens();
-  const { loading: loadingPositions } = usePositionData({
-    withClosed: false,
-  });
-
   const [sendAssetAmount, setSendAssetAmount] = useState("");
 
-  const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);
+  const isPositionLoading = useMemo(() => connected && isLoadingPosition, [connected, isLoadingPosition]);
 
   const changeTokenDeposit = useCallback((token: TokenModel) => {
     setDepositInfo(token);
@@ -447,7 +446,7 @@ const AssetListContainer: React.FC = () => {
         assets={[...fixedTokens, ...filteredTokens]}
         connected={connected}
         isFetched={
-          isFetched && !isLoadingTokens && !isLoadingPosition && !(isEmptyObject(balances) && account?.address)
+          isFetched && !isLoadingTokens && !isPositionLoading && !(isEmptyObject(balances) && account?.address)
         }
         assetType={assetType}
         invisibleZeroBalance={invisibleZeroBalance}

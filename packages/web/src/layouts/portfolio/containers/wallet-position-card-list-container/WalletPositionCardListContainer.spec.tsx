@@ -69,38 +69,48 @@ jest.mock("@services/converters/position", () => ({
 
 const mockUsePositionData = usePositionData as jest.Mock;
 
+const openPositionData = {
+  availableStake: false,
+  isError: false,
+  positions: [],
+  totalPositionCount: 0,
+  refetch: jest.fn(),
+  checkStakedPool: jest.fn(),
+  getPositions: jest.fn(() => []),
+  isFetchedPosition: true,
+  loading: false,
+  isLoadingPool: false,
+};
+
 describe("WalletPositionCardListContainer", () => {
   beforeEach(() => {
-    mockUsePositionData.mockReturnValue({
-      isFetchedPosition: true,
-      loading: false,
-      positions: [],
-      totalPositionCount: 0,
-    });
+    mockUsePositionData.mockReturnValue(openPositionData);
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it("requests only open positions when closed positions are hidden", () => {
-    render(<WalletPositionCardListContainer isClosed={false} />);
+  it("reuses the shared open position data instead of fetching open positions again", () => {
+    render(<WalletPositionCardListContainer isClosed={false} openPositionData={openPositionData} />);
 
     expect(mockUsePositionData).toHaveBeenCalledWith(
       expect.objectContaining({
         withClosed: false,
         page: 1,
+        queryOption: expect.objectContaining({ enabled: false }),
       }),
     );
   });
 
   it("requests open and closed positions when closed positions are shown", () => {
-    render(<WalletPositionCardListContainer isClosed={true} />);
+    render(<WalletPositionCardListContainer isClosed={true} openPositionData={openPositionData} />);
 
     expect(mockUsePositionData).toHaveBeenCalledWith(
       expect.objectContaining({
         withClosed: true,
         page: 1,
+        queryOption: expect.objectContaining({ enabled: true }),
       }),
     );
   });

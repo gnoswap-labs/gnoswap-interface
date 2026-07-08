@@ -18,9 +18,14 @@ import { POSITION_CARD_BREAKPOINTS, POSITION_CARD_DISPLAY_COUNT, POSITION_CARD_L
 interface WalletPositionCardListContainerProps {
   /** UI toggle state: whether closed positions should be shown in this view. */
   isClosed: boolean;
+  /** Shared open-position query from the portfolio page. Reusing it avoids another open-position API call. */
+  openPositionData?: ReturnType<typeof usePositionData>;
 }
 
-const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerProps> = ({ isClosed }) => {
+const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerProps> = ({
+  isClosed,
+  openPositionData,
+}) => {
   const { getGnotPath } = useGnotToGnot();
   const [currentIndex, setCurrentIndex] = useState(1);
   const router = useRouter();
@@ -39,16 +44,22 @@ const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerP
     return DESKTOP * 5;
   }, [width]);
 
+  const shouldFetchPositions = isClosed || !openPositionData;
+  const fetchedPositionData = usePositionData({
+    withClosed: isClosed,
+    page,
+    limit,
+    queryOption: {
+      enabled: shouldFetchPositions,
+    },
+  });
+  const positionData = shouldFetchPositions ? fetchedPositionData : openPositionData;
   const {
     isFetchedPosition,
     loading: loadingPositions,
     positions: positionsData = [],
     totalPositionCount,
-  } = usePositionData({
-    withClosed: isClosed,
-    page,
-    limit,
-  });
+  } = positionData;
 
   const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);
 
@@ -95,9 +106,18 @@ const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerP
     }
   }, [width]);
 
+  const pagedPositionsData = useMemo(() => {
+    if (shouldFetchPositions) {
+      return positionsData;
+    }
+
+    const startIndex = (page - 1) * limit;
+    return positionsData.slice(startIndex, startIndex + limit);
+  }, [limit, page, positionsData, shouldFetchPositions]);
+
   const poolPositions = useMemo(() => {
     const mappedPositions: PoolPositionModel[] = [];
-    positionsData.forEach(position => {
+    pagedPositionsData.forEach(position => {
       const pool = pools.find(pool => pool.poolPath === position.poolPath);
       if (pool) {
         const temp = {
@@ -120,7 +140,7 @@ const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerP
     });
 
     return mappedPositions;
-  }, [pools, positionsData, getGnotPath]);
+  }, [pools, pagedPositionsData, getGnotPath]);
 
   const openPosition = useMemo(() => {
     return poolPositions
