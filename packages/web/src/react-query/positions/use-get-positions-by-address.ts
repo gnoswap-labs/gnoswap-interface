@@ -8,6 +8,8 @@ import { GetPositionsByAddressResult } from "@repositories/position/response";
 import { QUERY_KEY } from "../query-keys";
 
 const REFETCH_INTERVAL = 5_000;
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 20;
 
 interface UseGetPositionsByAddressProps {
   address?: string;
@@ -37,16 +39,21 @@ export const useGetPositionsByAddress = (
     return props?.poolPath || "";
   }, [props?.poolPath]);
 
+  const page = props?.page ?? DEFAULT_PAGE;
+  const limit = props?.limit ?? DEFAULT_LIMIT;
+  const withClosed = props?.withClosed ?? true;
+  const withAvailableStake = props?.withAvailableStake ?? false;
+
   return useQuery<GetPositionsByAddressResult, Error, GetPositionsByAddressResult>(
     [
       QUERY_KEY.positions,
       currentChainId,
       address,
       poolPath,
-      props?.page,
-      props?.limit,
-      props?.withClosed,
-      props?.withAvailableStake,
+      page,
+      limit,
+      withClosed,
+      withAvailableStake,
     ],
     async () => {
       if (!availNetwork || !address) {
@@ -56,10 +63,10 @@ export const useGetPositionsByAddress = (
       return await positionRepository
         .getPositionsByAddress(address, {
           poolPath: poolPath ? encodeURIComponent(poolPath) : undefined,
-          page: props?.page,
-          limit: props?.limit,
-          withClosed: props?.withClosed,
-          withAvailableStake: props?.withAvailableStake,
+          page,
+          limit,
+          withClosed,
+          withAvailableStake,
         })
         .catch(e => {
           console.error(e);

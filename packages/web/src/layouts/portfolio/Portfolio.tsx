@@ -9,13 +9,10 @@ import AssetListContainer from "./containers/asset-list-container/AssetListConta
 import WalletBalanceContainer from "./containers/wallet-balance-container/WalletBalanceContainer";
 import WalletPositionCardListContainer from "./containers/wallet-position-card-list-container/WalletPositionCardListContainer";
 
-import { usePositionData } from "@hooks/pool/data/use-position-data";
-
 import WalletLayout from "./PortfolioLayout";
 
 const Portfolio: React.FC = () => {
   const [isShowClosedPosition, setIsShowClosedPosition] = React.useState(false);
-  const openPositionData = usePositionData({ withClosed: false });
 
   const toggleShowClosedPosition = () => {
     setIsShowClosedPosition(prev => !prev);
@@ -24,14 +21,12 @@ const Portfolio: React.FC = () => {
   return (
     <WalletLayout
       header={<HeaderContainer />}
-      balance={<WalletBalanceContainer positionData={openPositionData} />}
-      assets={<AssetListContainer isLoadingPosition={openPositionData.loading} />}
+      balance={<WalletBalanceContainer />}
+      assets={<AssetListContainer />}
       positions={
         <WalletMyPositions
           header={<WalletMyPositionsHeader toggleClosed={toggleShowClosedPosition} isClosed={isShowClosedPosition} />}
-          cardList={
-            <WalletPositionCardListContainer isClosed={isShowClosedPosition} openPositionData={openPositionData} />
-          }
+          cardList={<WalletPositionCardListContainer isClosed={isShowClosedPosition} />}
         />
       }
       footer={<Footer />}

@@ -3,8 +3,8 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useCallback, useMemo } from "react";
 import { useGetPositionsByAddress, useMakePoolPositions } from "@query/positions";
 import { useLoading } from "@hooks/common/use-loading";
-import { UseQueryOptions } from "@tanstack/react-query";
-import { GetPositionsByAddressResult } from "@repositories/position/response";
+import { QueryKey, UseQueryOptions } from "@tanstack/react-query";
+import { PositionModel } from "@models/position/position-model";
 
 export interface UsePositionDataOption {
   address?: string;
@@ -15,10 +15,7 @@ export interface UsePositionDataOption {
   withClosed?: boolean;
   withAvailableStake?: boolean;
   scopeId?: string;
-  queryOption?: Omit<
-    UseQueryOptions<GetPositionsByAddressResult, Error, GetPositionsByAddressResult>,
-    "queryKey" | "queryFn"
-  >;
+  queryOption?: UseQueryOptions<PositionModel[], Error, PositionModel[], QueryKey>;
 }
 
 export const usePositionData = (options?: UsePositionDataOption) => {
@@ -35,17 +32,14 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     isError,
     isFetched: isFetchedPosition,
     isLoading: isLoadingPosition,
-  } = useGetPositionsByAddress(
-    {
-      address: fetchedAddress as string,
-      poolPath: options?.poolPath,
-      page: options?.page,
-      limit: options?.limit,
-      withClosed: options?.withClosed,
-      withAvailableStake: options?.withAvailableStake,
-    },
-    options?.queryOption,
-  );
+  } = useGetPositionsByAddress({
+    address: fetchedAddress as string,
+    poolPath: options?.poolPath,
+    page: options?.page,
+    limit: options?.limit,
+    withClosed: options?.withClosed,
+    withAvailableStake: options?.withAvailableStake,
+  });
 
   const { totalCount: totalPositionCount = 0, positions: rawPositions = [] } = data ?? {};
 
