@@ -3,6 +3,7 @@ import type { EstimatedRoute } from "@models/swap/swap-route-info";
 import type { TokenModel } from "@models/token/token-model";
 
 jest.mock("@constants/environment.constant", () => ({
+  PACKAGE_COMMON_PATH: "common_path",
   PACKAGE_ROUTER_ADDRESS: "router_address",
   PACKAGE_ROUTER_PATH: "router_path",
   WRAPPED_GNOT_PATH: "wugnot",
@@ -78,9 +79,9 @@ describe("swap-router.message.ts", () => {
       {
         caller,
         send: "",
-        pkg_path: "token_in",
+        pkg_path: "common_path",
         func: "Approve",
-        args: ["router_address", "1250000"],
+        args: ["token_in", "router_address", "1250000"],
         gasFee: undefined,
       },
     ]);
@@ -91,10 +92,10 @@ describe("swap-router.message.ts", () => {
       args: ["token_in", "token_out", "1250000", "token_in:token_out:3000", "1", "2000000", "123", ""],
     });
     expect(resetMessages).toEqual(
-      approveMessages.map(message => ({ ...message, args: [message.args?.[0] || "", "0"] })),
+      approveMessages.map(message => ({ ...message, args: [message.args?.[0] || "", message.args?.[1] || "", "0"] })),
     );
-    expect(messages.some(message => message.args?.[0] === "pool_address" && message.func === "Approve")).toBe(false);
-    expect(messages.some(message => message.pkg_path === "token_out" && message.func === "Approve")).toBe(false);
+    expect(messages.some(message => message.args?.[1] === "pool_address" && message.func === "Approve")).toBe(false);
+    expect(messages.some(message => message.args?.[0] === "token_out" && message.func === "Approve")).toBe(false);
   });
 
   it("approves only input token for exact-out swaps using max sent amount", async () => {
@@ -123,9 +124,9 @@ describe("swap-router.message.ts", () => {
       {
         caller,
         send: "",
-        pkg_path: "token_in",
+        pkg_path: "common_path",
         func: "Approve",
-        args: ["router_address", "1250000"],
+        args: ["token_in", "router_address", "1250000"],
         gasFee: undefined,
       },
     ]);
@@ -136,9 +137,9 @@ describe("swap-router.message.ts", () => {
       args: ["token_in", "token_out", "2000000", "token_in:token_out:3000", "1", "1250000", "123", ""],
     });
     expect(resetMessages).toEqual(
-      approveMessages.map(message => ({ ...message, args: [message.args?.[0] || "", "0"] })),
+      approveMessages.map(message => ({ ...message, args: [message.args?.[0] || "", message.args?.[1] || "", "0"] })),
     );
-    expect(messages.some(message => message.args?.[0] === "pool_address" && message.func === "Approve")).toBe(false);
-    expect(messages.some(message => message.pkg_path === "token_out" && message.func === "Approve")).toBe(false);
+    expect(messages.some(message => message.args?.[1] === "pool_address" && message.func === "Approve")).toBe(false);
+    expect(messages.some(message => message.args?.[0] === "token_out" && message.func === "Approve")).toBe(false);
   });
 });

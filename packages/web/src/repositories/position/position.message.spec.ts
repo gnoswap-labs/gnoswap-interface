@@ -7,6 +7,7 @@ import type { TransactionMessage } from "@common/clients/wallet-client/transacti
 import BigNumber from "bignumber.js";
 
 jest.mock("@constants/environment.constant", () => ({
+  PACKAGE_COMMON_PATH: "common_path",
   // GNOT wrapper
   WRAPPED_GNOT_PATH: "wugnot",
 
@@ -126,15 +127,16 @@ const splitMessagesByApproveReset = (
 };
 
 const toResetApproveMessage = (message: TransactionMessage): TransactionMessage => {
-  const targetAddress = message.args?.[0];
+  const tokenPath = message.args?.[0];
+  const targetAddress = message.args?.[1];
 
-  if (message.func !== "Approve" || !targetAddress) {
-    throw new Error("Approve message must include a target address");
+  if (message.func !== "Approve" || !tokenPath || !targetAddress) {
+    throw new Error("Approve message must include token and target addresses");
   }
 
   return {
     ...message,
-    args: [targetAddress, "0"],
+    args: [tokenPath, targetAddress, "0"],
   };
 };
 
@@ -416,17 +418,17 @@ describe("position.message.ts", () => {
           {
             caller,
             send: "",
-            pkg_path: "wugnot",
+            pkg_path: "common_path",
             func: "Approve",
-            args: ["pool_address", "2500"],
+            args: ["wugnot", "pool_address", "2500"],
             gasFee: undefined,
           },
           {
             caller,
             send: "",
-            pkg_path: "tokenB_path",
+            pkg_path: "common_path",
             func: "Approve",
-            args: ["pool_address", "3000000"],
+            args: ["tokenB_path", "pool_address", "3000000"],
             gasFee: undefined,
           },
         ]),
@@ -532,17 +534,17 @@ describe("position.message.ts", () => {
           {
             caller,
             send: "",
-            pkg_path: "wugnot",
+            pkg_path: "common_path",
             func: "Approve",
-            args: ["pool_address", "2500"],
+            args: ["wugnot", "pool_address", "2500"],
             gasFee: undefined,
           },
           {
             caller,
             send: "",
-            pkg_path: "tokenB_path",
+            pkg_path: "common_path",
             func: "Approve",
-            args: ["pool_address", "3000000"],
+            args: ["tokenB_path", "pool_address", "3000000"],
             gasFee: undefined,
           },
         ]),
