@@ -1,4 +1,5 @@
 jest.mock("@constants/environment.constant", () => ({
+  PACKAGE_COMMON_PATH: "common_path",
   GNS_TOKEN_PATH: "gns_token_path",
   PACKAGE_GOVERNANCE_PATH: "governance_path",
   PACKAGE_GOVERNANCE_STAKER_ADDRESS: "governance_staker_address",
@@ -19,9 +20,9 @@ describe("governance.message.ts", () => {
 
     expect(messages[0]).toMatchObject({
       caller,
-      pkg_path: "gns_token_path",
+      pkg_path: "common_path",
       func: "Approve",
-      args: ["governance_staker_address", "123000000"],
+      args: ["gns_token_path", "governance_staker_address", "123000000"],
     });
     expect(messages[1]).toMatchObject({
       caller,

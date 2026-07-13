@@ -33,6 +33,8 @@ export const PACKAGE_REFERRAL_ADDRESS = getAddressByPackagePath(PACKAGE_REFERRAL
 
 export const PACKAGE_NFT_PATH = process.env.NEXT_PUBLIC_PACKAGE_NFT_PATH || "";
 
+export const PACKAGE_COMMON_PATH = process.env.NEXT_PUBLIC_PACKAGE_COMMON_PATH || "gno.land/r/gnoswap/common";
+
 export const PACKAGE_GOVERNANCE_PATH = process.env.NEXT_PUBLIC_PACKAGE_GOVERNANCE_PATH || "";
 
 export const PACKAGE_GOVERNANCE_STAKER_PATH = process.env.NEXT_PUBLIC_PACKAGE_GOVERNANCE_STAKER_PATH || "";

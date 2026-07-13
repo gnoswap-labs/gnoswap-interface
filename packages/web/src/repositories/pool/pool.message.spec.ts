@@ -1,6 +1,7 @@
 import type { TokenModel } from "@models/token/token-model";
 
 jest.mock("@constants/environment.constant", () => ({
+  PACKAGE_COMMON_PATH: "common_path",
   GNS_TOKEN_PATH: "gns_token_path",
   PACKAGE_POOL_ADDRESS: "pool_address",
   PACKAGE_POOL_PATH: "pool_path",
@@ -52,15 +53,15 @@ describe("pool.message.ts", () => {
 
     expect(messages[0]).toMatchObject({
       caller,
-      pkg_path: "tokenA_path",
+      pkg_path: "common_path",
       func: "Approve",
-      args: ["pool_address", "1250000"],
+      args: ["tokenA_path", "pool_address", "1250000"],
     });
     expect(messages[1]).toMatchObject({
       caller,
-      pkg_path: "tokenB_path",
+      pkg_path: "common_path",
       func: "Approve",
-      args: ["pool_address", "3000000"],
+      args: ["tokenB_path", "pool_address", "3000000"],
     });
     expect(messages[2]).toMatchObject({
       caller,
@@ -97,9 +98,9 @@ describe("pool.message.ts", () => {
 
     expect(messages[0]).toMatchObject({
       caller,
-      pkg_path: "gns_token_path",
+      pkg_path: "common_path",
       func: "Approve",
-      args: ["staker_address", "1750000000"],
+      args: ["gns_token_path", "staker_address", "1750000000"],
     });
     expect(messages[1]).toMatchObject({
       caller,

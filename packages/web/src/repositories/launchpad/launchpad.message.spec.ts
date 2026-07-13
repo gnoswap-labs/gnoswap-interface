@@ -1,4 +1,5 @@
 jest.mock("@constants/environment.constant", () => ({
+  PACKAGE_COMMON_PATH: "common_path",
   GNS_TOKEN_PATH: "gns_token_path",
   PACKAGE_LAUNCHPAD_ADDRESS: "launchpad_address",
   PACKAGE_LAUNCHPAD_PATH: "launchpad_path",
@@ -21,9 +22,9 @@ describe("launchpad.message.ts", () => {
 
     expect(messages[0]).toMatchObject({
       caller,
-      pkg_path: "gns_token_path",
+      pkg_path: "common_path",
       func: "Approve",
-      args: ["launchpad_address", "456000000"],
+      args: ["gns_token_path", "launchpad_address", "456000000"],
     });
     expect(messages[1]).toMatchObject({
       caller,
