@@ -1,4 +1,4 @@
-import { GNS_TOKEN_PATH, XGNS_TOKEN_PATH, WRAPPED_GNOT_PATH } from "@constants/environment.constant";
+import { GNS_TOKEN_PATH, WRAPPED_GNOT_PATH, XGNS_TOKEN_PATH } from "@constants/environment.constant";
 import { TokenModel } from "@models/token/token-model";
 
 export const GNOT_UNIT_DENOM = "ugnot" as const;
@@ -9,7 +9,7 @@ export const GNS_TOKEN: TokenModel = {
   createdAt: "2024-01-24T15:12:21Z",
   name: "GnoSwap",
   path: GNS_TOKEN_PATH,
-  tokenId: `${GNS_TOKEN_PATH}.GNS`,
+  tokenId: GNS_TOKEN_PATH,
   decimals: 6,
   symbol: "GNS",
   displaySymbol: "GNS",
@@ -26,7 +26,7 @@ export const XGNS_TOKEN: TokenModel = {
   createdAt: "0001-01-01T00:00:00Z",
   name: "GnoSwap",
   path: XGNS_TOKEN_PATH,
-  tokenId: `${XGNS_TOKEN_PATH}.xGNS`,
+  tokenId: XGNS_TOKEN_PATH,
   decimals: 6,
   symbol: "xGNS",
   displaySymbol: "xGNS",
@@ -74,13 +74,13 @@ export const WUGNOT_TOKEN: TokenModel = {
   type: "GRC20",
   chainId: "portal-loop",
   name: "wrapped GNOT",
-  path: "gno.land/r/gnoland/wugnot",
-  tokenId: "gno.land/r/gnoland/wugnot.wugnot",
+  path: WRAPPED_GNOT_PATH,
+  tokenId: WRAPPED_GNOT_PATH,
   decimals: 6,
   symbol: "wugnot",
   displaySymbol: "wugnot",
   logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_demo_wugnot.svg",
-  priceID: "gno.land/r/gnoland/wugnot",
+  priceID: WRAPPED_GNOT_PATH,
   description:
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc tincidunt ultricies. Nullam nec purus nec nunc tincidunt ultricies.",
   websiteURL: "https://gno.land/r/gnoland/wugnot",
