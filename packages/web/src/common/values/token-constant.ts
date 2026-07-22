@@ -84,7 +84,7 @@ export const WUGNOT_TOKEN: TokenModel = {
   description:
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam nec purus nec nunc tincidunt ultricies. Nullam nec purus nec nunc tincidunt ultricies.",
   websiteURL: "https://gno.land/r/gnoland/wugnot",
-  wrappedPath: "gno.land/r/gnoland/wugnot",
+  wrappedPath: WRAPPED_GNOT_PATH,
   createdAt: "0001-01-01T00:00:00Z",
 };
 

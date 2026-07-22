@@ -4,7 +4,7 @@ import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { TransactionMessageError } from "@common/errors";
 import { DEFAULT_ALLOWANCE_LIMIT } from "@common/values";
-import { PACKAGE_COMMON_PATH, PACKAGE_NFT_PATH, WRAPPED_GNOT_PATH } from "@constants/environment.constant";
+import { PACKAGE_COMMON_PATH, PACKAGE_NFT_PATH, WRAPPED_GNOT_PACKAGE_PATH } from "@constants/environment.constant";
 import { MAX_INT64_STR } from "@utils/math.utils";
 
 export interface TransactionBankMessage {
@@ -110,7 +110,7 @@ export function makeDepositGNOTMessage(amount: string | number | null, caller: s
   return makeTransactionMessage({
     caller,
     send: makeGNOTSendAmount(amount),
-    packagePath: WRAPPED_GNOT_PATH,
+    packagePath: WRAPPED_GNOT_PACKAGE_PATH,
     func: "Deposit",
     args: null,
   });

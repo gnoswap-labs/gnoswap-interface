@@ -12,7 +12,9 @@ export const DEFAULT_CHAIN_ROUTER_URL = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_RO
 export const DEFAULT_CHAIN_SCANNER_URL = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_SCANNER_URL || "";
 
 // Contract Config
-export const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "";
+export const WRAPPED_GNOT_PATH = process.env.NEXT_PUBLIC_WRAPPED_GNOT_PATH || "gno.land/r/gnoland/wugnot.wugnot";
+export const WRAPPED_GNOT_PACKAGE_PATH =
+  process.env.NEXT_PUBLIC_WRAPPED_GNOT_PACKAGE_PATH || "gno.land/r/gnoland/wugnot";
 export const GNS_TOKEN_PATH = process.env.NEXT_PUBLIC_GNS_TOKEN_PATH || "";
 export const XGNS_TOKEN_PATH = process.env.NEXT_PUBLIC_XGNS_TOKEN_PATH || "";
 

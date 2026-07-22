@@ -6,9 +6,13 @@ import {
   TokenApproveMessageInfo,
   TransactionMessage,
 } from "@common/clients/wallet-client/transaction-messages";
-import { PACKAGE_ROUTER_ADDRESS, PACKAGE_ROUTER_PATH } from "@constants/environment.constant";
+import {
+  PACKAGE_ROUTER_ADDRESS,
+  PACKAGE_ROUTER_PATH,
+  WRAPPED_GNOT_PACKAGE_PATH,
+} from "@constants/environment.constant";
 import { EstimatedRoute } from "@models/swap/swap-route-info";
-import { isNativeToken, TokenModel } from "@models/token/token-model";
+import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
 import { makeRoutesQuery } from "@utils/swap-route-utils";
 import { isNativeTokenPath, makeRawTokenAmount } from "@utils/token-utils";
@@ -162,10 +166,11 @@ export function makeWrapTokenMessages({
   tokenAmount: string;
   caller: string;
 }): TransactionMessage[] {
+  const tokenPath = WRAPPED_GNOT_PACKAGE_PATH;
   const tokenAmountRaw = makeRawTokenAmount(token, tokenAmount) || "0";
   const sendAmount = makeGNOTSendAmount(tokenAmountRaw);
   const wrapTokenTransactionMessage = makeTransactionMessage({
-    packagePath: token.wrappedPath || "",
+    packagePath: tokenPath,
     send: sendAmount,
     func: TransactionMessageFunctionType.Deposit,
     args: null,
@@ -184,7 +189,7 @@ export function makeUnwrapTokenMessages({
   tokenAmount: string;
   caller: string;
 }): TransactionMessage[] {
-  const tokenPath = isNativeToken(token) ? token.wrappedPath : token.path;
+  const tokenPath = WRAPPED_GNOT_PACKAGE_PATH;
   const tokenAmountRaw = makeRawTokenAmount(token, tokenAmount) || "0";
   const wrapTokenTransactionMessage = makeTransactionMessage({
     packagePath: tokenPath,
