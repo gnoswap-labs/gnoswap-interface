@@ -14,6 +14,7 @@ jest.mock("@constants/environment.constant", () => ({
 
 import {
   makeCreateExternalIncentiveMessageWithApproves,
+  makeCreatePoolMessageWithApproves,
   makePositionMintMessageWithApproves,
 } from "@repositories/pool/pool.message";
 
@@ -76,6 +77,67 @@ describe("pool.message.ts", () => {
       "10",
       "1250000",
       "3000000",
+    ]);
+  });
+
+  it("uses the given start price as is, whichever order the token pair is passed in", async () => {
+    const caller = "caller";
+    const fetchAllowance = jest.fn(async () => 0);
+    const request = {
+      feeTier: "FEE_3000" as const,
+      startPrice: "50",
+      createPoolFee: 0,
+      caller,
+    };
+
+    const orderedMessages = await makeCreatePoolMessageWithApproves(
+      { ...request, tokenA: createTokenModel("tokenA_path"), tokenB: createTokenModel("tokenB_path") },
+      fetchAllowance,
+    );
+    const reversedMessages = await makeCreatePoolMessageWithApproves(
+      { ...request, tokenA: createTokenModel("tokenB_path"), tokenB: createTokenModel("tokenA_path") },
+      fetchAllowance,
+    );
+
+    const orderedArgs = orderedMessages.find(message => message.func === "CreatePool")?.args;
+    const reversedArgs = reversedMessages.find(message => message.func === "CreatePool")?.args;
+
+    expect(orderedArgs?.slice(0, 3)).toEqual(["tokenA_path", "tokenB_path", "3000"]);
+    expect(reversedArgs).toEqual(orderedArgs);
+  });
+
+  it("reorders mint token paths and amounts by the sorted token pair", async () => {
+    const caller = "caller";
+    const fetchAllowance = jest.fn(async () => 0);
+
+    const messages = await makePositionMintMessageWithApproves(
+      {
+        tokenA: createTokenModel("tokenB_path"),
+        tokenB: createTokenModel("tokenA_path"),
+        feeTier: "FEE_3000",
+        tokenAAmount: "3",
+        tokenBAmount: "1.25",
+        minTick: -10,
+        maxTick: 20,
+        slippage: 1,
+        caller,
+        referrerAddress: null,
+      },
+      fetchAllowance,
+    );
+
+    const mintMessage = messages.find(message => message.func === "Mint");
+
+    expect(mintMessage?.args?.slice(0, 9)).toEqual([
+      "tokenA_path",
+      "tokenB_path",
+      "3000",
+      "-10",
+      "20",
+      "1250000",
+      "3000000",
+      "1237500",
+      "2970000",
     ]);
   });
 

@@ -69,13 +69,10 @@ export function makeCreatePoolMessageWithApproves(
   }
 
   /**
-   * If the token path pairs are out of order, adjust the price and token order.
+   * The given start price is already based on the sorted token0, so only the token order is adjusted.
    */
-  const isOrdered = isOrderedTokenPaths(tokenAPath, tokenBPath);
-
   const [orderedPoolAPath, orderedPoolBPath] = [tokenAPath, tokenBPath].sort(sortTokenPaths);
-  const orderedStartPriceNum = isOrdered || startPriceNum === 0 ? startPriceNum : 1 / startPriceNum;
-  const startPriceSqrt = tickToSqrtPriceX96(priceToTick(orderedStartPriceNum));
+  const startPriceSqrt = tickToSqrtPriceX96(priceToTick(startPriceNum));
 
   const createPoolMessage = makeTransactionMessage({
     caller,
@@ -156,14 +153,26 @@ export function makePositionMintMessageWithApproves(
     }
   }
 
+  /**
+   * Mint always expects the sorted token pair (token0, token1) with the matching amounts.
+   * The given ticks are already based on token0, so only the paths and the amounts are reordered.
+   */
+  const isOrdered = isOrderedTokenPaths(tokenAWrappedPath, tokenBWrappedPath);
+  const [token0Path, token1Path] = isOrdered
+    ? [tokenAWrappedPath, tokenBWrappedPath]
+    : [tokenBWrappedPath, tokenAWrappedPath];
+  const [amount0Raw, amount1Raw] = isOrdered
+    ? [tokenAAmountRaw, tokenBAmountRaw]
+    : [tokenBAmountRaw, tokenAAmountRaw];
+
   const mintMessage = makePositionMintMessage(
-    tokenAWrappedPath,
-    tokenBWrappedPath,
+    token0Path,
+    token1Path,
     feeTier,
     minTick,
     maxTick,
-    tokenAAmountRaw,
-    tokenBAmountRaw,
+    amount0Raw,
+    amount1Raw,
     slippage,
     caller,
     referrerAddress,

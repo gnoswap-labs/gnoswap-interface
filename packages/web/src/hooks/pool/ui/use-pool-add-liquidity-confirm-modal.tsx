@@ -30,6 +30,7 @@ import { CreatePoolFailedResponse, CreatePoolSuccessResponse } from "@repositori
 import { CommonState } from "@states/index";
 import { subscriptFormat } from "@utils/number-utils";
 import { makeDisplayPrice } from "@utils/pool-utils";
+import { sortTokenPaths } from "@utils/sort-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToNearTick } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
@@ -40,7 +41,7 @@ import { useAddress } from "@hooks/common/use-address";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import PoolAddConfirmModal from "@layouts/pool/pool-add/components/pool-add-confirm-modal/PoolAddConfirmModal";
-import { delay } from "@utils/common";
+import { checkGnotPath, delay } from "@utils/common";
 
 export interface EarnAddLiquidityConfirmModalProps {
   tokenA: TokenModel | null;
@@ -326,6 +327,17 @@ export const usePoolAddLiquidityConfirmModal = ({
       }
     }
 
+    /**
+     * The selected price range is quoted in the compare token, but a pool always stores
+     * ticks based on the sorted token0. When the compare token is token1 (e.g. after flipping
+     * the token pair), the prices are inverted, so the ticks have to be inverted back.
+     */
+    const [firstSortedPath] = [checkGnotPath(tokenA.path), checkGnotPath(tokenB.path)].sort(sortTokenPaths);
+    const basePath = checkGnotPath(selectPool.compareToken?.path ?? tokenA.path);
+    if (basePath !== firstSortedPath) {
+      [minTick, maxTick] = [-maxTick, -minTick];
+    }
+
     broadcastLoading(
       getMessage(DexEvent.ADD, "pending", {
         tokenASymbol: tokenA?.displaySymbol,
@@ -454,6 +466,7 @@ export const usePoolAddLiquidityConfirmModal = ({
     selectPool.isCreate,
     selectPool.selectedFullRange,
     selectPool.startPrice,
+    selectPool.compareToken?.path,
     addLiquidity,
     tokenAAmount,
     tokenBAmount,
