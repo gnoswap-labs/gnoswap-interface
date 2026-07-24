@@ -69,13 +69,10 @@ export function makeCreatePoolMessageWithApproves(
   }
 
   /**
-   * If the token path pairs are out of order, adjust the price and token order.
+   * The given start price is already based on the sorted token0, so only the token order is adjusted.
    */
-  const isOrdered = isOrderedTokenPaths(tokenAPath, tokenBPath);
-
   const [orderedPoolAPath, orderedPoolBPath] = [tokenAPath, tokenBPath].sort(sortTokenPaths);
-  const orderedStartPriceNum = isOrdered || startPriceNum === 0 ? startPriceNum : 1 / startPriceNum;
-  const startPriceSqrt = tickToSqrtPriceX96(priceToTick(orderedStartPriceNum));
+  const startPriceSqrt = tickToSqrtPriceX96(priceToTick(startPriceNum));
 
   const createPoolMessage = makeTransactionMessage({
     caller,

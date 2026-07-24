@@ -25,13 +25,12 @@ import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { SwapState } from "@states/index";
 import { formatRate } from "@utils/new-number-utils";
 import { makeRouteUrl, replaceRouteUrlWithoutNavigation } from "@utils/page.utils";
-import { invertSqrtPriceX96, makeDisplayPrice, makeRawPrice } from "@utils/pool-utils";
+import { invertSqrtPriceX96, makeDisplayPrice } from "@utils/pool-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
 import {
   getDepositAmountsByAmountA,
   getDepositAmountsByAmountB,
   makeSwapFeeTier,
-  priceToNearTick,
   priceToSqrtX96,
   priceToTick,
   tickToPrice,
@@ -41,6 +40,7 @@ import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 import { usePool } from "@hooks/pool/data/use-pool";
 import { usePoolAddLiquidityConfirmModal } from "@hooks/pool/ui/use-pool-add-liquidity-confirm-modal";
 import PoolAddLiquidity, { PriceRangeSummary } from "../../components/pool-add-liquidity/PoolAddLiquidity";
+import { resolvePoolAddStartingPrice } from "../pool-add-starting-price.utils";
 
 export const SWAP_FEE_TIERS: SwapFeeTierType[] = ["FEE_100", "FEE_500", "FEE_3000", "FEE_10000"];
 
@@ -522,8 +522,8 @@ const PoolAddLiquidityContainer: React.FC = () => {
         }));
         return;
       }
-      const priceBN = BigNumber(price);
-      if (!priceBN.isFinite() || !priceBN.gt(0)) {
+      const startPrice = resolvePoolAddStartingPrice(price, tokenA, tokenB, selectPool.tickSpacing);
+      if (startPrice === null) {
         setCreateOption(prev => ({
           ...prev,
           startPrice: null,
@@ -531,12 +531,9 @@ const PoolAddLiquidityContainer: React.FC = () => {
         }));
         return;
       }
-      const rawPrice = makeRawPrice(priceBN.toNumber(), tokenA, tokenB);
-      const tick = priceToNearTick(rawPrice, selectPool.tickSpacing);
-      const nearStartPrice = tickToPrice(tick);
       setCreateOption({
         isCreate: true,
-        startPrice: nearStartPrice,
+        startPrice,
       });
     },
     [selectPool.tickSpacing, tokenA, tokenB],
