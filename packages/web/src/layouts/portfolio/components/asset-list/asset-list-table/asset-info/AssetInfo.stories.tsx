@@ -1,6 +1,6 @@
+import { css, Theme } from "@emotion/react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import { fn } from "@storybook/test";
-import { css, Theme } from "@emotion/react";
 
 import { DEVICE_TYPE } from "@styles/media";
 
@@ -33,7 +33,6 @@ export const Default: Story = {
       createdAt: "2023-12-12 23:45:12",
       name: "Bar",
       path: "gno.land/r/bar",
-      tokenId: "gno.land/r/bar.BAR",
       decimals: 6,
       symbol: "BAR",
       displaySymbol: "BAR",

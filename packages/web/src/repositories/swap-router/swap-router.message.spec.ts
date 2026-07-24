@@ -7,6 +7,7 @@ jest.mock("@constants/environment.constant", () => ({
   PACKAGE_ROUTER_ADDRESS: "router_address",
   PACKAGE_ROUTER_PATH: "router_path",
   WRAPPED_GNOT_PATH: "wugnot",
+  WRAPPED_GNOT_PACKAGE_PATH: "wugnot",
 }));
 
 import {
@@ -26,7 +27,6 @@ const createTokenModel = (path: string, overrides?: Partial<TokenModel>): TokenM
   logoURI: "",
   priceID: path,
   ...overrides,
-  tokenId: overrides?.tokenId ?? `${path}.${path}`,
 });
 
 const route: EstimatedRoute = {

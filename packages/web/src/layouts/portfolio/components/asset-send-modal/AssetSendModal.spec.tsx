@@ -47,7 +47,6 @@ const token: TokenModel = {
   name: "Gnoswap",
   address: validAddress,
   path: "gno.land/r/gns",
-  tokenId: "gno.land/r/gns.GNS",
   decimals: 4,
   symbol: "GNS",
   displaySymbol: "GNS",

@@ -22,9 +22,13 @@ describe("wallet messages", () => {
 
   it("preserves GRC20 transfer raw amounts as strings", () => {
     const rawAmount = "123456789012345678901234567890";
+    const token = {
+      ...GNS_TOKEN,
+      path: "gno.land/r/gnoswap/v1/gns",
+    };
 
     const [message] = makeTransferGRC20TokenMessages({
-      token: GNS_TOKEN,
+      token,
       tokenAmount: rawAmount,
       fromAddress: "g1from",
       toAddress: "g1to",
@@ -32,7 +36,7 @@ describe("wallet messages", () => {
 
     expect(isContractMessage(message)).toBe(true);
     if (isContractMessage(message)) {
-      expect(message.args).toEqual(["g1to", rawAmount]);
+      expect(message.args).toEqual([token.path, "g1to", rawAmount]);
     }
   });
 });

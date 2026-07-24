@@ -1,20 +1,20 @@
-import React, { useCallback, useState, useEffect, useMemo } from "react";
 import TokenList from "@components/home/token-list/TokenList";
 import { MATH_NEGATIVE_TYPE, SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
-import { type TokenInfo } from "@models/token/token-info";
-import { type TokenPairInfo } from "@models/token/token-pair-info";
-import { ValuesType } from "utility-types";
-import { useWindowSize } from "@hooks/common/use-window-size";
+import { MAIN_TOKEN_LIST_SIZE } from "@constants/table.constant";
 import useClickOutside from "@hooks/common/use-click-outside";
-import { isNativeToken, TokenModel } from "@models/token/token-model";
-import { TokenPriceModel } from "@models/token/token-price-model";
-import { checkPositivePrice } from "@utils/common";
+import { useLoading } from "@hooks/common/use-loading";
+import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useTokenData } from "@hooks/token/data/use-token-data";
-import { useLoading } from "@hooks/common/use-loading";
-import { MAIN_TOKEN_LIST_SIZE } from "@constants/table.constant";
-import { formatOtherPrice, formatPrice } from "@utils/new-number-utils";
+import { type TokenInfo } from "@models/token/token-info";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
+import { type TokenPairInfo } from "@models/token/token-pair-info";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
+import { TokenPriceModel } from "@models/token/token-price-model";
+import { checkPositivePrice } from "@utils/common";
+import { formatOtherPrice, formatPrice } from "@utils/new-number-utils";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { ValuesType } from "utility-types";
 import { getLast7dGraphStatus } from "./token-list-graph-status";
 
 interface NegativeStatusType {
@@ -85,7 +85,6 @@ export const createDummyTokenList = (): Token[] => [
     path: Math.floor(Math.random() * 50 + 1).toString(),
     token: {
       path: "1",
-      tokenId: "1.BTC",
       name: "Bitcoin",
       symbol: "BTC",
       displaySymbol: "BTC",
@@ -115,7 +114,6 @@ export const createDummyTokenList = (): Token[] => [
       tokenPair: {
         tokenA: {
           path: Math.floor(Math.random() * 50 + 1).toString(),
-          tokenId: "dummy.HEX",
           name: "HEX",
           symbol: "HEX",
           displaySymbol: "HEX",
@@ -124,7 +122,6 @@ export const createDummyTokenList = (): Token[] => [
         },
         tokenB: {
           path: Math.floor(Math.random() * 50 + 1).toString(),
-          tokenId: "dummy.USDC",
           name: "USDCoin",
           symbol: "USDC",
           displaySymbol: "USDC",
@@ -246,7 +243,6 @@ const TokenListContainer: React.FC = () => {
           priceGradeType: selectedPriceData.priceGradeType,
           token: {
             path: item.path,
-            tokenId: item.tokenId,
             name: item.name,
             symbol: item.symbol,
             displaySymbol: item.displaySymbol,
@@ -258,7 +254,6 @@ const TokenListContainer: React.FC = () => {
                 tokenPair: {
                   tokenA: {
                     path: !tempTokenA ? "" : tempTokenA?.[0]?.path,
-                    tokenId: tempTokenA?.[0]?.tokenId,
                     name: getGnotPath(tempTokenA?.[0]).name,
                     symbol: getGnotPath(tempTokenA?.[0]).symbol,
                     displaySymbol: getGnotPath(tempTokenA?.[0]).displaySymbol,
@@ -266,7 +261,6 @@ const TokenListContainer: React.FC = () => {
                   },
                   tokenB: {
                     path: !tempTokenB ? "" : tempTokenB?.[0]?.path,
-                    tokenId: tempTokenB?.[0]?.tokenId,
                     name: getGnotPath(tempTokenB?.[0]).name,
                     symbol: getGnotPath(tempTokenB?.[0]).symbol,
                     displaySymbol: getGnotPath(tempTokenB?.[0]).displaySymbol,

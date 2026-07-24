@@ -5,7 +5,6 @@ function makeToken(symbol: string, path: string, wrappedPath?: string): TokenMod
   return {
     path,
     wrappedPath,
-    tokenId: path,
     type: path === "ugnot" ? "Native" : "GRC20",
     chainId: "dev.gnoswap",
     name: symbol,
@@ -34,10 +33,7 @@ describe("filterAllowedIncentiveTokens", () => {
   });
 
   it("sorts by allowed token path order instead of symbol order", () => {
-    const tokens = [
-      makeToken("AAA", "gno.land/r/gnoland/wugnot"),
-      makeToken("ZZZ", "gno.land/r/gnoswap/gns"),
-    ];
+    const tokens = [makeToken("AAA", "gno.land/r/gnoland/wugnot"), makeToken("ZZZ", "gno.land/r/gnoswap/gns")];
 
     const result = filterAllowedIncentiveTokens(tokens, ["gno.land/r/gnoswap/gns", "gno.land/r/gnoland/wugnot"]);
 
@@ -45,10 +41,7 @@ describe("filterAllowedIncentiveTokens", () => {
   });
 
   it("deduplicates tokens by path", () => {
-    const tokens = [
-      makeToken("WUGNOT", "gno.land/r/gnoland/wugnot"),
-      makeToken("WGNOT", "gno.land/r/gnoland/wugnot"),
-    ];
+    const tokens = [makeToken("WUGNOT", "gno.land/r/gnoland/wugnot"), makeToken("WGNOT", "gno.land/r/gnoland/wugnot")];
 
     const result = filterAllowedIncentiveTokens(tokens, ["gno.land/r/gnoland/wugnot"]);
 

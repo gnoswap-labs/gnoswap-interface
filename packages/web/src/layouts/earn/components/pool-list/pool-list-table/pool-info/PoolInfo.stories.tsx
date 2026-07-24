@@ -1,6 +1,6 @@
+import { css, Theme } from "@emotion/react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import { fn } from "@storybook/test";
-import { css, Theme } from "@emotion/react";
 
 import { IncentivizePoolCardInfoWithPriceGrade } from "@models/pool/info/pool-card-info";
 import PoolInfo from "./PoolInfo";
@@ -13,7 +13,6 @@ const pool: IncentivizePoolCardInfoWithPriceGrade = {
     name: "Bar",
     address: "g1w8wqgrp08cqhtupzx98n4jtm8kqy7vadfmmyd0",
     path: "gno.land/r/bar",
-    tokenId: "gno.land/r/bar.BAR",
     decimals: 4,
     symbol: "BAR",
     displaySymbol: "BAR",
@@ -27,7 +26,6 @@ const pool: IncentivizePoolCardInfoWithPriceGrade = {
     name: "Foo",
     address: "g1evezrh92xaucffmtgsaa3rvmz5s8kedffsg469",
     path: "gno.land/r/foo",
-    tokenId: "gno.land/r/foo.FOO",
     decimals: 4,
     symbol: "FOO",
     displaySymbol: "FOO",

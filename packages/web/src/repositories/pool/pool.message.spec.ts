@@ -9,6 +9,7 @@ jest.mock("@constants/environment.constant", () => ({
   PACKAGE_STAKER_ADDRESS: "staker_address",
   PACKAGE_STAKER_PATH: "staker_path",
   WRAPPED_GNOT_PATH: "wugnot",
+  WRAPPED_GNOT_PACKAGE_PATH: "wugnot",
 }));
 
 import {
@@ -18,7 +19,6 @@ import {
 
 const createTokenModel = (path: string, type: TokenModel["type"] = "GRC20"): TokenModel => ({
   path,
-  tokenId: `${path}.${path}`,
   type,
   chainId: "dev.gnoswap",
   createdAt: "2024-01-24T15:12:21Z",

@@ -46,7 +46,7 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ steps, onClickPath }) => {
       if (token.path === "ugnot") {
         window.open(getGnoscanUrl(), "_blank");
       } else {
-        window.open(getTokenUrl(token.tokenId), "_blank");
+        window.open(getTokenUrl(token.path), "_blank");
       }
     },
     [getGnoscanUrl, getTokenUrl],

@@ -1,23 +1,23 @@
-import React from "react";
-import dayjs from "dayjs";
-import { useTranslation } from "react-i18next";
 import { cx } from "@emotion/css";
+import dayjs from "dayjs";
+import React from "react";
+import { useTranslation } from "react-i18next";
 
-import { formatPrice } from "@utils/new-number-utils";
-import { useTheme } from "@emotion/react";
-import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
-import { LineGraphData } from "@components/common/line-graph/LineGraph";
 import { GNOT_TOKEN } from "@common/values/token-constant";
+import { LineGraphData } from "@components/common/line-graph/LineGraph";
+import { useTheme } from "@emotion/react";
 import useElementWidth from "@hooks/common/use-element-width";
-import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
+import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
+import { formatPrice } from "@utils/new-number-utils";
 
-import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { SwapTokenHeaderWrapper } from "./SwapTokenHeader.styles";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
-import { nullish } from "@utils/nullish-utils";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import useCustomRouter from "@hooks/common/use-custom-router";
+import { nullish } from "@utils/nullish-utils";
 import { formatTokenPath } from "@utils/token-utils";
+import { SwapTokenHeaderWrapper } from "./SwapTokenHeader.styles";
 
 import PriceWarning from "@components/common/price-warning/PriceWarning";
 
@@ -27,7 +27,6 @@ interface TokenInfo {
   displaySymbol: string;
   logoURI: string;
   path: string | undefined;
-  tokenId: string;
   isNative: boolean;
 }
 
@@ -97,7 +96,7 @@ const SwapTokenHeader = ({
       if (tokenInfo.isNative) {
         window.open(getGnoscanUrl(), "_blank", "noopener,noreferrer");
       } else {
-        window.open(getTokenUrl(tokenInfo.tokenId), "_blank", "noopener,noreferrer");
+        window.open(getTokenUrl(tokenInfo.path ?? ""), "_blank", "noopener,noreferrer");
       }
     },
     [getGnoscanUrl, getTokenUrl, tokenInfo],

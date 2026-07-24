@@ -16,7 +16,7 @@ const TokenWarningModalContainer: React.FC<TokenWarningModalContainerProps> = ({
   const [checked, setChecked] = useState(false);
   const handleChecked = async () => {
     try {
-      const url = getTokenUrl(token.tokenId);
+      const url = getTokenUrl(token.path);
       await navigator.clipboard.writeText(url);
       if (!checked) {
         setChecked(true);

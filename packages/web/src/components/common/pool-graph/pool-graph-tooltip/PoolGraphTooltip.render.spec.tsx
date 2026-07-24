@@ -14,7 +14,6 @@ jest.mock("react-i18next", () => ({
 
 const tokenA = {
   path: "gno.land/r/demo/usdc",
-  tokenId: "gno.land/r/demo/usdc.USDC",
   type: "GRC20" as const,
   chainId: "test-chain",
   name: "USDC",
@@ -28,7 +27,6 @@ const tokenA = {
 
 const tokenB = {
   path: "gno.land/r/demo/gnot",
-  tokenId: "gno.land/r/demo/gnot.GNOT",
   type: "GRC20" as const,
   chainId: "test-chain",
   name: "GNOT",

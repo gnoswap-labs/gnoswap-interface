@@ -35,7 +35,6 @@ describe("PositionMapper", () => {
           claimedAmount: "100",
           rewardToken: {
             path: "gno.land/r/gns",
-            tokenId: "gns",
             type: "GRC20",
             chainId: "dev.gnoswap",
             name: "Gnoswap",

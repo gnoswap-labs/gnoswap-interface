@@ -4,7 +4,6 @@ import { resolvePoolAddStartingPrice, snapPoolAddRawStartingPrice } from "./Earn
 
 const makeToken = (symbol: string, decimals: number, path = `gno.land/r/demo/${symbol.toLowerCase()}`): TokenModel => ({
   path,
-  tokenId: `gno.land/r/demo/${symbol.toLowerCase()}.${symbol}`,
   type: "GRC20",
   chainId: "test-chain",
   name: symbol,

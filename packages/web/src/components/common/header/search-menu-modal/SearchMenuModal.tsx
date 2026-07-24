@@ -1,7 +1,7 @@
+import { cx } from "@emotion/css";
 import { useAtom } from "jotai";
 import React, { useCallback, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { cx } from "@emotion/css";
 
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
@@ -12,12 +12,16 @@ import IconTriangleArrowUpV2 from "@components/common/icons/IconTriangleArrowUpV
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
 import { TokenInfo } from "@models/token/token-info";
+import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 import { TokenState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
-import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
-import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 
+import PriceWarning from "@components/common/price-warning/PriceWarning";
+import useElementWidth from "@hooks/common/use-element-width";
+import useElementWidthList from "@hooks/common/use-element-width-list";
+import { formatTokenPath } from "@utils/token-utils";
 import {
   InputStyle,
   ModalContainer,
@@ -27,10 +31,6 @@ import {
   SearchWrapper,
   TokenInfoWrapper,
 } from "./SearchMenuModal.styles";
-import useElementWidth from "@hooks/common/use-element-width";
-import useElementWidthList from "@hooks/common/use-element-width-list";
-import { formatTokenPath } from "@utils/token-utils";
-import PriceWarning from "@components/common/price-warning/PriceWarning";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -168,7 +168,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
       if (token.path === "ugnot") {
         window.open(getGnoscanUrl(), "_blank");
       } else {
-        window.open(getTokenUrl(token.tokenId), "_blank");
+        window.open(getTokenUrl(token.path), "_blank");
       }
     },
     [getGnoscanUrl, getTokenUrl],

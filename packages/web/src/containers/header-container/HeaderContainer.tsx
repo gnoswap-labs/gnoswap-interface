@@ -2,16 +2,18 @@ import { useAtomValue } from "jotai";
 import React, { useCallback, useMemo, useState } from "react";
 
 import Header from "@components/common/header/Header";
+import { Token } from "@components/common/header/search-menu-modal/SearchMenuModal";
 import { MATH_NEGATIVE_TYPE, SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import useRouter from "@hooks/common/use-custom-router";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
-import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { PoolModel } from "@models/pool/pool-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
+import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { useGetAvgBlockTime } from "@query/address";
 import { useGetPoolList } from "@query/pools";
@@ -20,8 +22,6 @@ import { ThemeState, TokenState } from "@states/index";
 import { checkPositivePrice, parseJson } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
 import { formatAddress, formatApr } from "@utils/string-utils";
-import { Token } from "@components/common/header/search-menu-modal/SearchMenuModal";
-import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 
 const HeaderContainer: React.FC = () => {
   const { pathname, movePageWithTokenPath, movePageWithPoolPath } = useRouter();
@@ -80,7 +80,6 @@ const HeaderContainer: React.FC = () => {
         searchType: "",
         token: {
           path: item.path,
-          tokenId: item.tokenId,
           name: item.name,
           symbol: item.symbol,
           displaySymbol: item.displaySymbol,
@@ -93,7 +92,6 @@ const HeaderContainer: React.FC = () => {
         },
         tokenB: {
           path: "",
-          tokenId: "",
           name: "",
           symbol: "",
           displaySymbol: "",
@@ -129,7 +127,6 @@ const HeaderContainer: React.FC = () => {
           token: currentToken
             ? {
                 ...item.token,
-                tokenId: currentToken.tokenId,
               }
             : item.token,
           price: price,
@@ -178,7 +175,6 @@ const HeaderContainer: React.FC = () => {
           searchType: "popular",
           token: {
             path: item.tokenA.path,
-            tokenId: item.tokenA.tokenId,
             name: item.tokenA.name,
             symbol: getGnotPath(item.tokenA).symbol,
             displaySymbol: getGnotPath(item.tokenA).displaySymbol,
@@ -191,7 +187,6 @@ const HeaderContainer: React.FC = () => {
           },
           tokenB: {
             path: item.tokenB.path,
-            tokenId: item.tokenB.tokenId,
             name: item.tokenB.name,
             symbol: getGnotPath(item.tokenB).symbol,
             displaySymbol: getGnotPath(item.tokenB).displaySymbol,
@@ -236,7 +231,6 @@ const HeaderContainer: React.FC = () => {
           searchType: "",
           token: {
             path: item.path,
-            tokenId: item.tokenId,
             name: item.name,
             symbol: item.symbol,
             displaySymbol: item.displaySymbol,
@@ -249,7 +243,6 @@ const HeaderContainer: React.FC = () => {
           },
           tokenB: {
             path: "",
-            tokenId: "",
             name: "",
             symbol: "",
             displaySymbol: "",

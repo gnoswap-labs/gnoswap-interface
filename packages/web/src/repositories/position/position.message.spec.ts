@@ -1,15 +1,16 @@
+import type { TransactionMessage } from "@common/clients/wallet-client/transaction-messages/common";
 import type { RewardType } from "@constants/option.constant";
 import type { PoolPositionModel } from "@models/position/pool-position-model";
 import type { PositionModel } from "@models/position/position-model";
 import type { RewardModel } from "@models/position/reward-model";
 import type { TokenModel } from "@models/token/token-model";
-import type { TransactionMessage } from "@common/clients/wallet-client/transaction-messages/common";
 import BigNumber from "bignumber.js";
 
 jest.mock("@constants/environment.constant", () => ({
   PACKAGE_COMMON_PATH: "common_path",
   // GNOT wrapper
   WRAPPED_GNOT_PATH: "wugnot",
+  WRAPPED_GNOT_PACKAGE_PATH: "wugnot",
 
   // Package addresses / paths
   PACKAGE_POOL_ADDRESS: "pool_address",
@@ -59,7 +60,6 @@ const createTokenModel = (
     logoURI: "",
     priceID: path,
     ...overrides,
-    tokenId: overrides?.tokenId ?? `${path}.${path}`,
   };
 };
 
@@ -108,9 +108,9 @@ const createPosition = (lpTokenId: string, rewards: RewardModel[]): PositionMode
 
 const createPoolPosition = (lpTokenId: string, rewards: RewardModel[]): PoolPositionModel => {
   return {
-    ...(createPosition(lpTokenId, rewards) as unknown as PositionModel),
+    ...((createPosition(lpTokenId, rewards) as unknown) as PositionModel),
     feeTier: "NONE",
-    pool: {} as unknown as PoolPositionModel["pool"],
+    pool: ({} as unknown) as PoolPositionModel["pool"],
   };
 };
 

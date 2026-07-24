@@ -23,7 +23,6 @@ const tokenA: TokenModel = {
   createdAt: "2023-12-08T03:57:43Z",
   name: "Foo",
   path: "gno.land/r/foo",
-  tokenId: "gno.land/r/foo.FOO",
   decimals: 4,
   symbol: "FOO",
   displaySymbol: "FOO",
@@ -38,7 +37,6 @@ const tokenB: TokenModel = {
   createdAt: "2023-12-08T03:57:43Z",
   name: "Foo",
   path: "gno.land/r/foo",
-  tokenId: "gno.land/r/foo.FOO",
   decimals: 4,
   symbol: "FOO",
   displaySymbol: "FOO",
@@ -66,6 +64,8 @@ const swapSummaryInfo: SwapSummaryInfo = {
   gasFeeUSD: 0.1,
   protocolFee: "0.15",
   swapRateAction: SwapRateAction.ATOB,
+  routerFee: 0,
+  gasEstimateSuccess: true,
 };
 
 const swapTokenInfo: SwapTokenInfo = {
@@ -83,6 +83,8 @@ const swapTokenInfo: SwapTokenInfo = {
   tokenBUSD: 0.5,
   tokenBUSDStr: "0.5",
   tokenBDecimals: 6,
+  tokenAPriceGrade: "NONE",
+  tokenBPriceGrade: "NONE",
 };
 
 describe("SwapCardContentDetail Component", () => {
@@ -96,6 +98,8 @@ describe("SwapCardContentDetail Component", () => {
       },
       isLoading: false,
       priceImpactStatus: "MEDIUM",
+      isLoadingGasInfo: false,
+      connectedWallet: false,
     };
 
     render(
