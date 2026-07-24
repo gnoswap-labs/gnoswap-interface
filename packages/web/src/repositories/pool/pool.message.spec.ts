@@ -79,6 +79,41 @@ describe("pool.message.ts", () => {
     ]);
   });
 
+  it("reorders mint token paths and amounts by the sorted token pair", async () => {
+    const caller = "caller";
+    const fetchAllowance = jest.fn(async () => 0);
+
+    const messages = await makePositionMintMessageWithApproves(
+      {
+        tokenA: createTokenModel("tokenB_path"),
+        tokenB: createTokenModel("tokenA_path"),
+        feeTier: "FEE_3000",
+        tokenAAmount: "3",
+        tokenBAmount: "1.25",
+        minTick: -10,
+        maxTick: 20,
+        slippage: 1,
+        caller,
+        referrerAddress: null,
+      },
+      fetchAllowance,
+    );
+
+    const mintMessage = messages.find(message => message.func === "Mint");
+
+    expect(mintMessage?.args?.slice(0, 9)).toEqual([
+      "tokenA_path",
+      "tokenB_path",
+      "3000",
+      "-10",
+      "20",
+      "1250000",
+      "3000000",
+      "1237500",
+      "2970000",
+    ]);
+  });
+
   it("sums GNS incentive reward and creation deposit approvals for the same spender", async () => {
     const caller = "caller";
     const fetchAllowance = jest.fn(async () => 0);

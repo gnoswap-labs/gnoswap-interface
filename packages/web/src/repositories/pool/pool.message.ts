@@ -156,14 +156,26 @@ export function makePositionMintMessageWithApproves(
     }
   }
 
+  /**
+   * Mint always expects the sorted token pair (token0, token1) with the matching amounts.
+   * The given ticks are already based on token0, so only the paths and the amounts are reordered.
+   */
+  const isOrdered = isOrderedTokenPaths(tokenAWrappedPath, tokenBWrappedPath);
+  const [token0Path, token1Path] = isOrdered
+    ? [tokenAWrappedPath, tokenBWrappedPath]
+    : [tokenBWrappedPath, tokenAWrappedPath];
+  const [amount0Raw, amount1Raw] = isOrdered
+    ? [tokenAAmountRaw, tokenBAmountRaw]
+    : [tokenBAmountRaw, tokenAAmountRaw];
+
   const mintMessage = makePositionMintMessage(
-    tokenAWrappedPath,
-    tokenBWrappedPath,
+    token0Path,
+    token1Path,
     feeTier,
     minTick,
     maxTick,
-    tokenAAmountRaw,
-    tokenBAmountRaw,
+    amount0Raw,
+    amount1Raw,
     slippage,
     caller,
     referrerAddress,
