@@ -8,7 +8,6 @@ const token = (decimals: number): TokenModel => ({
   name: "Token",
   address: "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax",
   path: "gno.land/r/token",
-  tokenId: "gno.land/r/token.TOKEN",
   decimals,
   symbol: "TOKEN",
   displaySymbol: "TOKEN",

@@ -1,11 +1,11 @@
 import { LIQUIDITY_GRAPH_BIN_COUNT, LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES } from "@constants/graph.constant";
 import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
-import { TokenModel } from "@models/token/token-model";
 import {
   PoolLiquiditySegmentBuildOptions,
   PoolLiquiditySegmentModel,
   PoolLiquidityTickModel,
 } from "@models/pool/pool-liquidity-model";
+import { TokenModel } from "@models/token/token-model";
 import { getAmountsForLiquidity } from "./liquidity-utils";
 import { tickToSqrtPriceX96 } from "./math.utils";
 import {
@@ -16,7 +16,9 @@ import {
 
 declare function describe(name: string, fn: () => void): void;
 declare function it(name: string, fn: () => void): void;
-declare function expect(actual: unknown): {
+declare function expect(
+  actual: unknown,
+): {
   toBe(expected: unknown): void;
   toEqual(expected: unknown): void;
   toBeLessThan(expected: number): void;
@@ -26,7 +28,6 @@ declare function expect(actual: unknown): {
 
 const makeToken = (symbol: string, decimals: number, pathSuffix = symbol.toLowerCase()): TokenModel => ({
   path: `gno.land/r/demo/${pathSuffix}`,
-  tokenId: `gno.land/r/demo/${pathSuffix}.${symbol}`,
   type: "GRC20",
   chainId: "test-chain",
   name: symbol,
@@ -72,7 +73,10 @@ const getRawAmount = (segment: PoolLiquiditySegmentModel, key: "tokenAAmount" | 
 };
 
 const sumRawAmounts = (segments: PoolLiquiditySegmentModel[], key: "tokenAAmount" | "tokenBAmount"): string =>
-  segments.map(segment => getRawAmount(segment, key)).reduce((total, rawAmount) => total + rawAmount, 0n).toString();
+  segments
+    .map(segment => getRawAmount(segment, key))
+    .reduce((total, rawAmount) => total + rawAmount, 0n)
+    .toString();
 
 const absBigInt = (value: bigint): bigint => (value < 0n ? -value : value);
 
@@ -445,13 +449,13 @@ describe("buildPoolLiquiditySegments", () => {
       binCount: 3,
     });
 
-    expect(segments.map(current => [current.minTick, current.maxTick, current.amountMinTick, current.amountMaxTick])).toEqual(
-      [
-        [0, 100, 0, 10],
-        [100, 200, 100, 200],
-        [200, 300, 200, 200],
-      ],
-    );
+    expect(
+      segments.map(current => [current.minTick, current.maxTick, current.amountMinTick, current.amountMaxTick]),
+    ).toEqual([
+      [0, 100, 0, 10],
+      [100, 200, 100, 200],
+      [200, 300, 200, 200],
+    ]);
     expect(Number(segments[0].graphHeightRatio)).toBeLessThanOrEqual(0.2);
   });
 
@@ -475,13 +479,13 @@ describe("buildPoolLiquiditySegments", () => {
       binCount: 3,
     });
 
-    expect(segments.map(current => [current.minTick, current.maxTick, current.amountMinTick, current.amountMaxTick])).toEqual(
-      [
-        [0, 100, 10, 20],
-        [100, 200, 100, 200],
-        [200, 300, 200, 200],
-      ],
-    );
+    expect(
+      segments.map(current => [current.minTick, current.maxTick, current.amountMinTick, current.amountMaxTick]),
+    ).toEqual([
+      [0, 100, 10, 20],
+      [100, 200, 100, 200],
+      [200, 300, 200, 200],
+    ]);
     expect(segments[0].tokenAAmount).toEqual({ rawAmount: "0", displayAmount: "0" });
     expect(graphHeightRatio(segments[0])).toBeGreaterThan(0.17);
   });
@@ -561,8 +565,14 @@ describe("buildPoolLiquiditySegments", () => {
 
     expect(visualBinContainingCurrentTick.minTick).toBeLessThan(59_520);
     expect(visualBinContainingCurrentTick.maxTick).toBeGreaterThan(73_440);
-    expect(getRawAmount(visualBinContainingCurrentTick, "tokenAAmount") > getRawAmount(maxLiquidityRawSegment, "tokenAAmount")).toBe(true);
-    expect(getRawAmount(visualBinContainingCurrentTick, "tokenBAmount") > getRawAmount(maxLiquidityRawSegment, "tokenBAmount")).toBe(true);
+    expect(
+      getRawAmount(visualBinContainingCurrentTick, "tokenAAmount") >
+        getRawAmount(maxLiquidityRawSegment, "tokenAAmount"),
+    ).toBe(true);
+    expect(
+      getRawAmount(visualBinContainingCurrentTick, "tokenBAmount") >
+        getRawAmount(maxLiquidityRawSegment, "tokenBAmount"),
+    ).toBe(true);
   });
 
   it("keeps the #38 edge bins positive but lower than the fully covered interior", () => {
@@ -774,14 +784,12 @@ describe("createPoolLiquiditySegmentMemo", () => {
     expect(memoizedTransform(ticks, options)).toBe(firstSegments);
     expect(transformCalls).toBe(1);
 
-    expect(memoizedTransform(ticks, { ...options, currentSqrtPriceX96: tickToSqrtPriceX96(77) })).toBe(
-      secondSegments,
-    );
+    expect(memoizedTransform(ticks, { ...options, currentSqrtPriceX96: tickToSqrtPriceX96(77) })).toBe(secondSegments);
     expect(transformCalls).toBe(2);
 
-    expect(memoizedTransform(ticks, { ...options, currentSqrtPriceX96: tickToSqrtPriceX96(77), currentPrice: 1.0077 })).toBe(
-      thirdSegments,
-    );
+    expect(
+      memoizedTransform(ticks, { ...options, currentSqrtPriceX96: tickToSqrtPriceX96(77), currentPrice: 1.0077 }),
+    ).toBe(thirdSegments);
     expect(transformCalls).toBe(3);
   });
 });

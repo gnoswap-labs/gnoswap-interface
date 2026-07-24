@@ -26,7 +26,6 @@ const createTokenModel = (path: string, overrides?: Partial<TokenModel>): TokenM
   logoURI: "",
   priceID: path,
   ...overrides,
-  tokenId: overrides?.tokenId ?? `${path}.${path}`,
 });
 
 const route: EstimatedRoute = {

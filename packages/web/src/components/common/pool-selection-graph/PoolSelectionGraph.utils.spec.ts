@@ -1,6 +1,6 @@
+import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
 import { PoolLiquiditySegmentModel, PoolLiquidityTickModel } from "@models/pool/pool-liquidity-model";
 import { TokenModel } from "@models/token/token-model";
-import { MAX_TICK, MIN_TICK } from "@constants/swap.constant";
 import { buildPoolLiquiditySegments } from "@utils/pool-liquidity-utils";
 
 import {
@@ -11,7 +11,6 @@ import {
 
 const makeToken = (symbol: string, decimals: number): TokenModel => ({
   path: `gno.land/r/demo/${symbol.toLowerCase()}`,
-  tokenId: `gno.land/r/demo/${symbol.toLowerCase()}.${symbol}`,
   type: "GRC20",
   chainId: "test-chain",
   name: symbol,

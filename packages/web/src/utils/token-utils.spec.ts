@@ -5,8 +5,8 @@ import {
   formatTokenBalanceDisplay,
   formatTokenModelPath,
   formatTokenPath,
-  isNativeTokenPath,
   isAmountLessThanTokenMinimum,
+  isNativeTokenPath,
   makeDisplayTokenAmount,
   makeRawTokenAmount,
 } from "./token-utils";
@@ -14,7 +14,6 @@ import {
 const DEFAULT_TOKEN: TokenModel = {
   decimals: 6,
   path: "",
-  tokenId: "",
   address: "",
   type: "GRC20",
   priceID: "",

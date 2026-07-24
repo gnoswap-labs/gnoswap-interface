@@ -20,7 +20,6 @@ const swapSummaryInfo: SwapSummaryInfo = {
     createdAt: "2023-12-08T03:57:43Z",
     name: "Foo",
     path: "gno.land/r/foo",
-    tokenId: "gno.land/r/foo.FOO",
     decimals: 4,
     symbol: "FOO",
     displaySymbol: "FOO",
@@ -34,7 +33,6 @@ const swapSummaryInfo: SwapSummaryInfo = {
     createdAt: "2023-12-08T03:57:43Z",
     name: "Foo",
     path: "gno.land/r/foo",
-    tokenId: "gno.land/r/foo.FOO",
     decimals: 4,
     symbol: "FOO",
     displaySymbol: "FOO",
@@ -59,6 +57,7 @@ const swapSummaryInfo: SwapSummaryInfo = {
   swapRateAction: SwapRateAction.ATOB,
   protocolFee: "",
   routerFee: 0.15,
+  gasEstimateSuccess: false,
 };
 
 const swapTokenInfo: SwapTokenInfo = {
@@ -68,7 +67,6 @@ const swapTokenInfo: SwapTokenInfo = {
     name: "Foo",
     address: "g1evezrh92xaucffmtgsaa3rvmz5s8kedffsg469",
     path: "gno.land/r/foo",
-    tokenId: "gno.land/r/foo.FOO",
     decimals: 4,
     symbol: "FOO",
     displaySymbol: "FOO",
@@ -80,13 +78,14 @@ const swapTokenInfo: SwapTokenInfo = {
   tokenABalance: "0",
   tokenAUSD: 0,
   tokenAUSDStr: "0",
+  tokenAPriceGrade: "NONE",
+  tokenBPriceGrade: "NONE",
   tokenB: {
     chainId: "dev",
     createdAt: "2023-10-17T05:58:00+09:00",
     name: "Foo",
     address: "g1evezrh92xaucffmtgsaa3rvmz5s8kedffsg469",
     path: "gno.land/r/foo",
-    tokenId: "gno.land/r/foo.FOO",
     decimals: 4,
     symbol: "FOO",
     displaySymbol: "FOO",
@@ -111,6 +110,9 @@ describe("SwapCardFeeInfo Component", () => {
       swapTokenInfo,
       isLoading: false,
       priceImpactStatus: "HIGH" as PriceImpactStatus,
+      isLoadingGasInfo: false,
+      connectedWallet: false,
+      gasEstimateSuccess: false,
     };
 
     render(

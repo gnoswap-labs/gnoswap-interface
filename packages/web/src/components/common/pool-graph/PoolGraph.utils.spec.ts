@@ -1,6 +1,6 @@
 import { PoolLiquiditySegmentModel, PoolLiquidityTickModel } from "@models/pool/pool-liquidity-model";
-import { TokenPriceModel } from "@models/token/token-price-model";
 import { TokenModel } from "@models/token/token-model";
+import { TokenPriceModel } from "@models/token/token-price-model";
 import { buildPoolLiquiditySegments } from "@utils/pool-liquidity-utils";
 
 import {
@@ -12,7 +12,9 @@ import {
 
 declare function describe(name: string, fn: () => void): void;
 declare function it(name: string, fn: () => void): void;
-declare function expect(actual: unknown): {
+declare function expect(
+  actual: unknown,
+): {
   toBe(expected: unknown): void;
   toEqual(expected: unknown): void;
   toBeGreaterThan(expected: number): void;
@@ -20,7 +22,6 @@ declare function expect(actual: unknown): {
 
 const makeToken = (symbol: string, decimals: number): TokenModel => ({
   path: `gno.land/r/demo/${symbol.toLowerCase()}`,
-  tokenId: `gno.land/r/demo/${symbol.toLowerCase()}.${symbol}`,
   type: "GRC20",
   chainId: "test-chain",
   name: symbol,
@@ -154,9 +155,7 @@ describe("createPoolGraphBins", () => {
       positionTickUpper: 20,
     });
 
-    expect(bins.map(bin => [bin.sourceMinTick, bin.sourceMaxTick, bin.isPositionActive])).toEqual([
-      [0, 30, true],
-    ]);
+    expect(bins.map(bin => [bin.sourceMinTick, bin.sourceMaxTick, bin.isPositionActive])).toEqual([[0, 30, true]]);
     expect(bins[0].minTick).toBe(0);
     expect(bins[0].maxTick).toBe(30);
     expect(bins[0].positionReserveTokenMap).toBeGreaterThan(0);

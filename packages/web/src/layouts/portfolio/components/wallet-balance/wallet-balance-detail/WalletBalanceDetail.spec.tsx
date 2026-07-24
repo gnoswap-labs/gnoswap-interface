@@ -1,6 +1,6 @@
-import type { ReactNode } from "react";
 import { render, screen } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
+import type { ReactNode } from "react";
 
 import type { TokenModel } from "@models/token/token-model";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
@@ -49,7 +49,6 @@ jest.mock("@hooks/token/data/use-gnot-wugnot", () => ({
 describe("WalletBalanceDetail Component", () => {
   const usdcToken: TokenModel = {
     path: "gno.land/r/demo/usdc",
-    tokenId: "gno.land/r/demo/usdc.USDC",
     type: "GRC20",
     address: "",
     chainId: "test-chain",
@@ -64,7 +63,6 @@ describe("WalletBalanceDetail Component", () => {
 
   const atomToken: TokenModel = {
     path: "gno.land/r/demo/atom",
-    tokenId: "gno.land/r/demo/atom.ATOM",
     type: "GRC20",
     address: "",
     chainId: "test-chain",

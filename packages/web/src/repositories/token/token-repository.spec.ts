@@ -38,7 +38,6 @@ describe("createSearchLog", () => {
     changeRate: "-3.3",
     token: {
       path: "path",
-      tokenId: "path.symbol",
       address: "address",
       type: "GRC20",
       priceID: "priceID",
@@ -74,7 +73,6 @@ describe("getSearchLogs", () => {
     changeRate: "-3.3",
     token: {
       path: "path",
-      tokenId: "path.symbol",
       address: "address",
       type: "GRC20",
       priceID: "priceID",

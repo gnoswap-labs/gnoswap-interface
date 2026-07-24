@@ -5,7 +5,6 @@ import { DexEvent } from "@repositories/common/types";
 export const mockTokenPairInfo: TokenPairInfo = {
   tokenA: {
     path: "gno.land/r/demo/gnot",
-    tokenId: "gno.land/r/demo/gnot.GNOT",
     name: "GNOT",
     symbol: "GNOT",
     displaySymbol: "GNOT",
@@ -13,7 +12,6 @@ export const mockTokenPairInfo: TokenPairInfo = {
   },
   tokenB: {
     path: "gno.land/r/demo/gns",
-    tokenId: "gno.land/r/demo/gns.GNS",
     name: "GNS",
     symbol: "GNS",
     displaySymbol: "GNS",
@@ -30,7 +28,6 @@ export const mockActivityData: ActivityData = {
     createdAt: "1900-01-01",
     name: "GNOT",
     path: "gno.land/r/demo/gnot",
-    tokenId: "gno.land/r/demo/gnot.GNOT",
     decimals: 6,
     symbol: "GNOT",
     displaySymbol: "GNOT",
@@ -43,7 +40,6 @@ export const mockActivityData: ActivityData = {
     createdAt: "1900-01-01",
     name: "GNS",
     path: "gno.land/r/demo/gns",
-    tokenId: "gno.land/r/demo/gns.GNS",
     decimals: 6,
     symbol: "GNS",
     displaySymbol: "GNS",

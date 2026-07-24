@@ -19,7 +19,6 @@ const swapTokenInfo: SwapTokenInfo = {
     createdAt: "2023-12-08T03:57:43Z",
     name: "Foo",
     path: "gno.land/r/foo",
-    tokenId: "gno.land/r/foo.FOO",
     decimals: 4,
     symbol: "FOO",
     displaySymbol: "FOO",
@@ -31,13 +30,14 @@ const swapTokenInfo: SwapTokenInfo = {
   tokenABalance: "",
   tokenAUSD: 0,
   tokenAUSDStr: "0",
+  tokenAPriceGrade: "NONE",
+  tokenBPriceGrade: "NONE",
   tokenB: {
     type: "GRC20",
     chainId: "dev.gnoswap",
     createdAt: "2023-12-08T03:57:43Z",
     name: "Foo",
     path: "gno.land/r/foo",
-    tokenId: "gno.land/r/foo.FOO",
     decimals: 4,
     symbol: "FOO",
     displaySymbol: "FOO",
@@ -72,6 +72,9 @@ describe("SwapCardContent Component", () => {
       isSwitchNetwork: false,
       priceImpactStatus: "NONE" as PriceImpactStatus,
       isSameToken: false,
+      resetEstimatedLiquidity: (): void => {},
+      isLoadingGasInfo: false,
+      isRefetching: false,
     };
 
     render(

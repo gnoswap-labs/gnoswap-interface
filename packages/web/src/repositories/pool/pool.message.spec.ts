@@ -18,7 +18,6 @@ import {
 
 const createTokenModel = (path: string, type: TokenModel["type"] = "GRC20"): TokenModel => ({
   path,
-  tokenId: `${path}.${path}`,
   type,
   chainId: "dev.gnoswap",
   createdAt: "2024-01-24T15:12:21Z",

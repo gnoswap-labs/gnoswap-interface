@@ -11,7 +11,6 @@ const TWO_192 = BigInt("62771017353866807638357894232076664161023554444640345128
 
 const makeToken = (symbol: string, decimals: number): TokenModel => ({
   path: `gno.land/r/demo/${symbol.toLowerCase()}`,
-  tokenId: `gno.land/r/demo/${symbol.toLowerCase()}.${symbol}`,
   type: "GRC20",
   chainId: "test-chain",
   name: symbol,

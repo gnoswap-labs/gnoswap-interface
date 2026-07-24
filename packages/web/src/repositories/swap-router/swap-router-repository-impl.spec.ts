@@ -7,12 +7,11 @@ import {
 } from "@common/clients/network-client/protocols";
 import { TokenModel } from "@models/token/token-model";
 
-import { SwapRouterRepositoryImpl } from "./swap-router-repository-impl";
 import { GetRoutesResponse } from "./response/get-routes-response";
+import { SwapRouterRepositoryImpl } from "./swap-router-repository-impl";
 
 const createToken = (symbol: string, decimals: number): TokenModel => ({
   path: `gno.land/r/demo/${symbol.toLowerCase()}`,
-  tokenId: `gno.land/r/demo/${symbol.toLowerCase()}.${symbol}`,
   type: "GRC20",
   chainId: "dev.gnoswap",
   name: symbol,

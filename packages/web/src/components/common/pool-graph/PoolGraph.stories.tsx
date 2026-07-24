@@ -1,19 +1,17 @@
-import PoolGraph, { type PoolGraphProps } from "./PoolGraph";
-import { Meta, StoryObj } from "@storybook/nextjs";
-import POOLS from "@repositories/pool/mock/pools.json";
-import { buildPoolLiquiditySegments } from "@utils/pool-liquidity-utils";
 import { TokenModel } from "@models/token/token-model";
+import POOLS from "@repositories/pool/mock/pools.json";
+import { Meta, StoryObj } from "@storybook/nextjs";
+import { buildPoolLiquiditySegments } from "@utils/pool-liquidity-utils";
+import PoolGraph, { type PoolGraphProps } from "./PoolGraph";
 
 const rawPool = POOLS.pools[0];
 const tokenA: TokenModel = {
   ...rawPool.tokenA,
-  tokenId: `${rawPool.tokenA.path}.${rawPool.tokenA.symbol}`,
   type: "GRC20",
   displaySymbol: rawPool.tokenA.symbol,
 };
 const tokenB: TokenModel = {
   ...rawPool.tokenB,
-  tokenId: `${rawPool.tokenB.path}.${rawPool.tokenB.symbol}`,
   type: "GRC20",
   displaySymbol: rawPool.tokenB.symbol,
 };
