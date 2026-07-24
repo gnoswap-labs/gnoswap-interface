@@ -10,6 +10,7 @@ jest.mock("@constants/environment.constant", () => ({
   PACKAGE_COMMON_PATH: "common_path",
   // GNOT wrapper
   WRAPPED_GNOT_PATH: "wugnot",
+  WRAPPED_GNOT_PACKAGE_PATH: "wugnot",
 
   // Package addresses / paths
   PACKAGE_POOL_ADDRESS: "pool_address",

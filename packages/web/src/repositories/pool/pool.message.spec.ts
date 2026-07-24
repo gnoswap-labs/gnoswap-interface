@@ -9,6 +9,7 @@ jest.mock("@constants/environment.constant", () => ({
   PACKAGE_STAKER_ADDRESS: "staker_address",
   PACKAGE_STAKER_PATH: "staker_path",
   WRAPPED_GNOT_PATH: "wugnot",
+  WRAPPED_GNOT_PACKAGE_PATH: "wugnot",
 }));
 
 import {
