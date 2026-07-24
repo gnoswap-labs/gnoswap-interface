@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 
+import { GNS_TOKEN } from "@common/values/token-constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { useLoading } from "@hooks/common/use-loading";
-import { useGetToken } from "@query/token";
 import { TokenModel } from "@models/token/token-model";
-import { GNS_TOKEN } from "@common/values/token-constant";
+import { useGetToken } from "@query/token";
 import { formatTokenModelPath } from "@utils/token-utils";
 
 import TokenDescription from "../../components/token-description/TokenDescription";
@@ -62,7 +62,7 @@ const TokenDescriptionContainer: React.FC = () => {
           X: tokenB.twitterURL || "",
           Discord: tokenB.discordURL || "",
           Docs: tokenB.docsURL || "",
-          GnoScan: tokenB.path === "ugnot" ? getGnoscanUrl() : getTokenUrl(tokenB.tokenId),
+          GnoScan: tokenB.path === "ugnot" ? getGnoscanUrl() : getTokenUrl(tokenB.path),
         },
       }));
     }

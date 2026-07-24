@@ -1,19 +1,18 @@
 import { useTheme } from "@emotion/react";
 import { useCallback, useMemo, useRef } from "react";
 
+import useElementWidth from "@hooks/common/use-element-width";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatTokenPath } from "@utils/token-utils";
-import useElementWidth from "@hooks/common/use-element-width";
 
-import { TokenInfoCellWrapper } from "./TokenInfoCell.styles";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { TokenInfoCellWrapper } from "./TokenInfoCell.styles";
 
 export interface TokenInfoCellProps {
   token: {
     path: string;
-    tokenId: string;
     name: string;
     symbol: string;
     displaySymbol: string;
@@ -24,7 +23,7 @@ export interface TokenInfoCellProps {
 }
 
 function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
-  const { name, path, tokenId, symbol, displaySymbol, logoURI } = token;
+  const { name, path, symbol, displaySymbol, logoURI } = token;
   const theme = useTheme();
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
   const elementId = useMemo(() => `${token.path}`, [token.path]);
@@ -45,10 +44,10 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
       if (path === "ugnot") {
         window.open(getGnoscanUrl(), "_blank");
       } else {
-        window.open(getTokenUrl(tokenId), "_blank");
+        window.open(getTokenUrl(path), "_blank");
       }
     },
-    [path, tokenId, getGnoscanUrl, getTokenUrl],
+    [path, getGnoscanUrl, getTokenUrl],
   );
 
   return (

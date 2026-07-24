@@ -10,7 +10,6 @@ export interface ITokenResponse {
   createdAt: string;
   name: string;
   path: string;
-  tokenId: string;
   decimals: number;
   symbol: string;
   displaySymbol: string;

@@ -34,7 +34,6 @@ const BestPoolsContainer: React.FC = () => {
         tokenPair: {
           tokenA: {
             path: getGnotPath(item.tokenA).path,
-            tokenId: item.tokenA.tokenId,
             name: getGnotPath(item.tokenA).name,
             symbol: getGnotPath(item.tokenA).symbol,
             displaySymbol: getGnotPath(item.tokenA).displaySymbol,
@@ -42,7 +41,6 @@ const BestPoolsContainer: React.FC = () => {
           },
           tokenB: {
             path: getGnotPath(item.tokenB).path,
-            tokenId: item.tokenB.tokenId,
             name: getGnotPath(item.tokenB).name,
             symbol: getGnotPath(item.tokenB).symbol,
             displaySymbol: getGnotPath(item.tokenB).displaySymbol,

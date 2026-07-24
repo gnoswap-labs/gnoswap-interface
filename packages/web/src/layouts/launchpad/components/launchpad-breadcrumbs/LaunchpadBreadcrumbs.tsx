@@ -1,14 +1,14 @@
-import React, { useCallback } from "react";
 import { cx } from "@emotion/css";
 import { useTheme } from "@emotion/react";
+import React, { useCallback } from "react";
 
 import { STATIC_TEXT } from "@common/values";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 
-import { type Steps } from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
+import { type Steps } from "@containers/breadcrumbs-container/BreadcrumbsContainer";
 import { wrapper } from "./LaunchpadBreadcrumbs.styles";
 
 interface BreadcrumbsProps {
@@ -48,7 +48,7 @@ const LaunchpadBreadcrumbs: React.FC<BreadcrumbsProps> = ({ steps, onClickPath }
       if (token.path === "ugnot") {
         window.open(getGnoscanUrl(), "_blank");
       } else {
-        window.open(getTokenUrl(token.tokenId), "_blank");
+        window.open(getTokenUrl(token.path), "_blank");
       }
     },
     [getGnoscanUrl, getTokenUrl],

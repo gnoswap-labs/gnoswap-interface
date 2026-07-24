@@ -1,15 +1,15 @@
 import React from "react";
 
+import { RefetchInterval } from "@common/values";
 import { LineGraphData } from "@components/common/line-graph/LineGraph";
 import { isNativeTokenByType, TokenModel } from "@models/token/token-model";
-import { RefetchInterval } from "@common/values";
 
 import useElementWidth from "@hooks/common/use-element-width";
 import { useGetTokenPrices } from "@query/token";
+import { formatPrice } from "@utils/new-number-utils";
 import SwapTokenChart from "./SwapTokenChart";
 import SwapTokenHeader from "./SwapTokenHeader";
 import { SwapTokenInfoWrapper } from "./SwapTokenInfo.styles";
-import { formatPrice } from "@utils/new-number-utils";
 
 interface SwapTokenInfoProps {
   token: TokenModel;
@@ -29,7 +29,6 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
       displaySymbol: token.displaySymbol,
       logoURI: token.logoURI,
       path: isNativeTokenByType(token.type) ? token.wrappedPath : token.path,
-      tokenId: token.tokenId,
       isNative: isNativeTokenByType(token.type),
     };
   }, [token]);
@@ -46,14 +45,13 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
     });
   }, [rawCurrentPrice]);
 
-  const {
-    data: { priceGradeType, last7d = [] } = {},
-    isLoading,
-    isFetched,
-  } = useGetTokenPrices(tokenData.path as string, {
-    enabled: !!tokenData.path,
-    refetchInterval: RefetchInterval.Frequent,
-  });
+  const { data: { priceGradeType, last7d = [] } = {}, isLoading, isFetched } = useGetTokenPrices(
+    tokenData.path as string,
+    {
+      enabled: !!tokenData.path,
+      refetchInterval: RefetchInterval.Frequent,
+    },
+  );
 
   const handleMouseMove = React.useCallback((data?: LineGraphData) => {
     setChartData(data);

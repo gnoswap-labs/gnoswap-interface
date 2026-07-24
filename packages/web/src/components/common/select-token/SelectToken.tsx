@@ -123,7 +123,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       if (token.path === "ugnot") {
         window.open(getGnoscanUrl(), "_blank");
       } else {
-        window.open(getTokenUrl(token.tokenId), "_blank");
+        window.open(getTokenUrl(token.path), "_blank");
       }
     },
     [getGnoscanUrl, getTokenUrl],
