@@ -35,6 +35,9 @@ export function makeSwapFeeTierByTickSpacing(tickSpacing: number): SwapFeeTierTy
 }
 
 export function priceToTick(price: number | bigint) {
+  if (Number(price) <= 0) {
+    return 0;
+  }
   const logPrice = Math.log(Number(price));
   return Math.round(BigNumber(logPrice).dividedBy(LOG10001).toNumber());
 }
@@ -91,7 +94,7 @@ export function priceToNearTick(price: number, tickSpacing: number) {
 }
 
 export function priceToSqrtX96(price: number): bigint {
-  if (Number.isNaN(price)) {
+  if (Number.isNaN(price) || price <= 0) {
     return 0n;
   }
   return BigInt(BigNumber(Math.sqrt(price)).multipliedBy(Q96.toString()).toFixed(0));
@@ -143,6 +146,9 @@ export function tickToPriceStr(
 
 export function feeBoostByPrices(minPrice: number | null, maxPrice: number | null) {
   if (minPrice === null || maxPrice === null || minPrice > maxPrice) {
+    return null;
+  }
+  if (minPrice === maxPrice || maxPrice === 0) {
     return null;
   }
   const sqrt4Value = BigNumber(minPrice / maxPrice)

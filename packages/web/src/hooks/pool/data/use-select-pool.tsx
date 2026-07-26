@@ -330,8 +330,8 @@ export const useSelectPool = ({
 
     const tokenAAmount = makeDisplayTokenAmount(tokenA, amountA) || 0;
     const tokenBAmount = makeDisplayTokenAmount(tokenB, amountB) || 0;
-
     const sumOfAmounts = tokenAAmount + tokenBAmount;
+    if (sumOfAmounts === 0) return null;
     return BigNumber(tokenAAmount.toString()).dividedBy(sumOfAmounts.toString()).multipliedBy(100).toNumber();
   }, [
     sqrtPriceX96,
@@ -362,13 +362,18 @@ export const useSelectPool = ({
     return Number(poolFromDb?.feeApr || 0) * Number(feeBoost ?? 0);
   }, [feeBoost, poolFromDb?.feeApr]);
 
-  function excuteInteraction(callback: () => void) {
-    if (interactionType === "INTERACTION") {
+  const interactionTypeRef = useRef(interactionType);
+  interactionTypeRef.current = interactionType;
+
+  const excuteInteraction = useCallback((callback: () => void) => {
+    if (interactionTypeRef.current === "INTERACTION") {
       return;
     }
     setInteractionType("INTERACTION");
-    new Promise(resolve => resolve(callback())).then(() => setInteractionType("FINISH"));
-  }
+    new Promise(resolve => resolve(callback()))
+      .catch(() => {})
+      .finally(() => setInteractionType("FINISH"));
+  }, []);
 
   const changeMinPosition = useCallback(
     (num: number | null) => {
@@ -404,7 +409,7 @@ export const useSelectPool = ({
         changeMinPosition(tickToPrice(nearTick + tickSpacing));
       }
     });
-  }, [tickSpacing, minPosition, interactionType]);
+  }, [tickSpacing, minPosition, excuteInteraction, changeMinPosition]);
 
   const decreaseMinTick = useCallback(() => {
     excuteInteraction(() => {
@@ -419,7 +424,7 @@ export const useSelectPool = ({
         changeMinPosition(tickToPrice(nearTick - tickSpacing));
       }
     });
-  }, [minPosition, tickSpacing, interactionType]);
+  }, [minPosition, tickSpacing, excuteInteraction, changeMinPosition]);
 
   const increaseMaxTick = useCallback(() => {
     excuteInteraction(() => {
@@ -431,7 +436,7 @@ export const useSelectPool = ({
         changeMaxPosition(tickToPrice(nearTick + tickSpacing));
       }
     });
-  }, [interactionType, tickSpacing, maxPosition]);
+  }, [excuteInteraction, changeMaxPosition, tickSpacing, maxPosition]);
 
   const decreaseMaxTick = useCallback(() => {
     excuteInteraction(() => {
@@ -443,7 +448,7 @@ export const useSelectPool = ({
         changeMaxPosition(tickToPrice(nearTick - tickSpacing));
       }
     });
-  }, [maxPosition, tickSpacing, interactionType]);
+  }, [maxPosition, tickSpacing, excuteInteraction, changeMaxPosition]);
 
   const resetRange = useCallback(() => {
     const [defaultMinPosition, defaultMaxPosition] = priceRangeRef.current;
@@ -454,7 +459,7 @@ export const useSelectPool = ({
       changeMinPosition(defaultMinPosition);
       changeMaxPosition(defaultMaxPosition);
     });
-  }, [interactionType]);
+  }, [excuteInteraction, changeMinPosition, changeMaxPosition]);
 
   const zoomIn = useCallback(() => {
     if (zoomLevel + 1 < LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES.length) {
