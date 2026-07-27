@@ -6,7 +6,7 @@ function tokenPriority(token: TokenModel, allowedTokenPaths: readonly string[]):
   return index === -1 ? allowedTokenPaths.length : index;
 }
 
-function incentiveTokenPath(token: TokenModel): string {
+export function incentiveTokenPath(token: TokenModel): string {
   if (isNativeToken(token.path)) {
     return token.wrappedPath || checkGnotPath(token.path);
   }

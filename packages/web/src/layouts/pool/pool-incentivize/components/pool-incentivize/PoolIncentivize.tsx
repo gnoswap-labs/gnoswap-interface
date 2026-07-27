@@ -74,6 +74,10 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
     return temp;
   }, [selectedPool]);
 
+  const poolTokens = useMemo((): TokenModel[] | undefined => {
+    return selectedItem ? [selectedItem.tokenA, selectedItem.tokenB] : undefined;
+  }, [selectedItem]);
+
   const poolSelectItems = useMemo((): PoolSelectItemInfo[] => {
     return pools
       .map(PoolMapper.toPoolSelectItemInfo)
@@ -123,7 +127,13 @@ const PoolIncentivize: React.FC<PoolIncentivizeProps> = ({
 
       <article className="token-amount-input">
         <h5 className="section-title">{t("IncentivizePool:incentiPool.form.rewaAmt.label")}</h5>
-        <TokenAmountInput changeToken={changeToken} connected={connected} {...tokenAmountInput} changable={true} />
+        <TokenAmountInput
+          changeToken={changeToken}
+          connected={connected}
+          {...tokenAmountInput}
+          changable={true}
+          poolTokens={poolTokens}
+        />
       </article>
       <PoolIncentivizeDetails
         amount={tokenAmountInput.amount}
