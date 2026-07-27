@@ -39,6 +39,21 @@ export function priceToTick(price: number | bigint) {
   return Math.round(BigNumber(logPrice).dividedBy(LOG10001).toNumber());
 }
 
+export function priceToBoundedTick(price: number | bigint, feeTier: SwapFeeTierType) {
+  const { minTick, minPrice, maxTick, maxPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];
+  const currentPrice = Number(price);
+
+  if (currentPrice <= minPrice) {
+    return minTick;
+  }
+
+  if (currentPrice >= maxPrice) {
+    return maxTick;
+  }
+
+  return Math.max(minTick, Math.min(maxTick, priceToTick(currentPrice)));
+}
+
 export function findNearPrice(price: number, tickSpacing: number) {
   const feeTier = makeSwapFeeTierByTickSpacing(tickSpacing);
   const { minPrice, maxPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];

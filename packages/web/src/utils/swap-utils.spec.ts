@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import { tickToSqrtPriceX96 } from "./math.utils";
 import {
   BroadcastMessageData,
   feeBoostRateByPrices,
   getSwappedTokenData,
   isEndTickBy,
+  priceToBoundedTick,
   priceToNearTick,
   priceToTick,
   SwapResponse,
@@ -100,6 +102,30 @@ describe("price convert to near tick", () => {
     const price = 0.60651549714;
     const tickSpacing = 4;
     expect(priceToNearTick(price, tickSpacing)).toBe(-5000);
+  });
+});
+
+describe("price convert to bounded tick", () => {
+  const boundaryCases: { feeTier: SwapFeeTierType; minTick: number; maxTick: number }[] = [
+    { feeTier: "FEE_100", minTick: -887272, maxTick: 887272 },
+    { feeTier: "FEE_500", minTick: -887270, maxTick: 887270 },
+    { feeTier: "FEE_3000", minTick: -887220, maxTick: 887220 },
+    { feeTier: "FEE_10000", minTick: -887200, maxTick: 887200 },
+  ];
+
+  test.each(boundaryCases)("clamps prices outside %s fee-tier bounds", ({ feeTier, minTick, maxTick }) => {
+    const { minPrice, maxPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];
+
+    expect(priceToBoundedTick(0, feeTier)).toBe(minTick);
+    expect(priceToBoundedTick(minPrice / 2, feeTier)).toBe(minTick);
+    expect(priceToBoundedTick(minPrice, feeTier)).toBe(minTick);
+    expect(priceToBoundedTick(maxPrice, feeTier)).toBe(maxTick);
+    expect(priceToBoundedTick(maxPrice * 2, feeTier)).toBe(maxTick);
+  });
+
+  test("keeps in-range prices within the fee-tier tick bounds", () => {
+    expect(priceToBoundedTick(1, "FEE_100")).toBe(0);
+    expect(priceToBoundedTick(1, "FEE_500")).toBe(0);
   });
 });
 
