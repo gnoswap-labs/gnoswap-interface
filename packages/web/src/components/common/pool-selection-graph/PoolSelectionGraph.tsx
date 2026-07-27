@@ -22,6 +22,7 @@ import {
   createPoolSelectionGraphBins,
   getPoolSelectionGraphEmptyTickWindow,
   getPoolSelectionGraphTooltipTick,
+  normalizePoolSelectionGraphPriceRange,
 } from "./PoolSelectionGraph.utils";
 
 const MIN_VISIBLE_BAR_HEIGHT = 5;
@@ -119,6 +120,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   const svgRef = useRef<SVGSVGElement>(null);
   const chartRef = useRef(null);
   const brushRef = useRef<SVGGElement | null>(null);
+  const isBrushMovingRef = useRef(false);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
 
   const [priceOfTick, setPriceOfTick] = useState<{
@@ -295,6 +297,10 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     if (!brushRef.current) {
       return;
     }
+    if (event.mode !== undefined) {
+      isBrushMovingRef.current = true;
+    }
+
     const selection = event.selection ? event.selection : [0, 0];
     const startPosition = selection[0] as number;
     const endPosition = selection[1] as number;
@@ -391,6 +397,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     if (!brushRef.current || event.mode === undefined) {
       return;
     }
+    isBrushMovingRef.current = false;
 
     if (!!onFinishMove) {
       onFinishMove();
@@ -434,8 +441,10 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         return tickToPrice(tick);
       }
 
-      const minPrice = getPriceBy(startPosition);
-      const maxPrice = getPriceBy(endPosition);
+      const { minPrice, maxPrice } = normalizePoolSelectionGraphPriceRange(
+        getPriceBy(startPosition),
+        getPriceBy(endPosition),
+      );
 
       setSelectionColor(current => (isSameSelectionColor(current, selectionColor) ? current : selectionColor));
       setMinPrice(minPrice);
@@ -709,6 +718,9 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   // Brush settings, on currentPrice change, zoom, move ...
   useEffect(() => {
     if (minPrice === null || maxPrice === null) {
+      return;
+    }
+    if (isBrushMovingRef.current) {
       return;
     }
     if (!brushRef?.current) {

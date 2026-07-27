@@ -14,6 +14,11 @@ export interface PoolSelectionGraphTickWindow {
   maxTick: number;
 }
 
+export interface PoolSelectionGraphPriceRange {
+  minPrice: number;
+  maxPrice: number;
+}
+
 const toFiniteNumber = (value: string | number | null | undefined): number => {
   if (value === null || value === undefined) {
     return 0;
@@ -111,3 +116,11 @@ export const getPoolSelectionGraphEmptyTickWindow = ({
 
   return tickWindow;
 };
+
+export const normalizePoolSelectionGraphPriceRange = (
+  startPrice: number,
+  endPrice: number,
+): PoolSelectionGraphPriceRange => ({
+  minPrice: Math.min(startPrice, endPrice),
+  maxPrice: Math.max(startPrice, endPrice),
+});

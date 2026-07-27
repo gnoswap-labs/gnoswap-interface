@@ -7,6 +7,7 @@ import {
   createPoolSelectionGraphBins,
   getPoolSelectionGraphEmptyTickWindow,
   getPoolSelectionGraphTooltipTick,
+  normalizePoolSelectionGraphPriceRange,
 } from "./PoolSelectionGraph.utils";
 
 const makeToken = (symbol: string, decimals: number): TokenModel => ({
@@ -151,5 +152,19 @@ describe("getPoolSelectionGraphEmptyTickWindow", () => {
     });
 
     expect(tickWindow).toEqual({ minTick: MIN_TICK, maxTick: MAX_TICK });
+  });
+});
+
+describe("normalizePoolSelectionGraphPriceRange", () => {
+  it("keeps an ordered range below the current price unchanged", () => {
+    expect(normalizePoolSelectionGraphPriceRange(0.5, 0.8)).toEqual({ minPrice: 0.5, maxPrice: 0.8 });
+  });
+
+  it("normalizes crossed brush prices into min and max order", () => {
+    expect(normalizePoolSelectionGraphPriceRange(2.1, 0.7)).toEqual({ minPrice: 0.7, maxPrice: 2.1 });
+  });
+
+  it("preserves boundary sentinel values while ordering the range", () => {
+    expect(normalizePoolSelectionGraphPriceRange(3, 0)).toEqual({ minPrice: 0, maxPrice: 3 });
   });
 });
