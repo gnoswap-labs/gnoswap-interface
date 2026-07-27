@@ -35,7 +35,7 @@ const SelectTokenIncentivizeContainer: React.FC<SelectTokenIncentivizeContainerP
 
   const combinedAllowedTokenPaths = useMemo(() => {
     const poolTokenPaths = (poolTokens ?? []).map(incentiveTokenPath);
-    return [...allowedTokenPaths, ...poolTokenPaths];
+    return [...poolTokenPaths, ...allowedTokenPaths];
   }, [allowedTokenPaths, poolTokens]);
 
   const defaultTokens = useMemo(() => {
