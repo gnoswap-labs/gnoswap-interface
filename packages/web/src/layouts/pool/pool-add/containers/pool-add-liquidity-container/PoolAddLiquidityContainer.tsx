@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {
   AddLiquiditySubmitType,
@@ -31,8 +31,8 @@ import {
   getDepositAmountsByAmountA,
   getDepositAmountsByAmountB,
   makeSwapFeeTier,
+  priceToBoundedTick,
   priceToSqrtX96,
-  priceToTick,
   tickToPrice,
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
@@ -65,6 +65,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
   const [defaultPrice, setDefaultPrice] = useState<number | null>(null);
   const [priceRangeTypeFromUrl, setPriceRangeTypeFromUrl] = useState<PriceRangeType | null>();
   const [ticksFromUrl, setTickFromUrl] = useState<DefaultTick>();
+  const initializedPriceRangeKey = useRef<string>();
   const { getGnotPath } = useGnotToGnot();
 
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
@@ -176,7 +177,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
     if (!tokenA || !tokenB) {
       return "INVALID_PAIR";
     }
-    if (selectPool.minPrice && selectPool.maxPrice && selectPool.minPrice >= selectPool.maxPrice) {
+    if (selectPool.minPrice !== null && selectPool.maxPrice !== null && selectPool.minPrice >= selectPool.maxPrice) {
       return "INVALID_RANGE";
     }
     if (!Number(tokenAAmountInput.amount) && !Number(tokenBAmountInput.amount)) {
@@ -272,7 +273,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      if (!selectPool.minPrice || !selectPool.maxPrice) {
+      if (selectPool.minPrice === null || selectPool.maxPrice === null) {
         return;
       }
 
@@ -318,7 +319,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
         return;
       }
 
-      if (!selectPool.minPrice || !selectPool.maxPrice) {
+      if (selectPool.minPrice === null || selectPool.maxPrice === null) {
         return;
       }
 
@@ -570,29 +571,34 @@ const PoolAddLiquidityContainer: React.FC = () => {
     const poolFeeTier = pools.map(pool => makeSwapFeeTier(pool.fee));
     const existPool = poolFeeTier.includes(swapFeeTier);
 
+    const priceRangeKey = [tokenA.path, tokenB.path, swapFeeTier, existPool ? "exists" : "create"].join(":");
+    if (initializedPriceRangeKey.current === priceRangeKey) {
+      return;
+    }
+    initializedPriceRangeKey.current = priceRangeKey;
+
     if (existPool) {
-      if (router.query.price_range_type) {
-        setPriceRange(priceRanges.find(range => range.type === router.query.price_range_type) || null);
-        return;
-      }
-      setPriceRange(priceRanges.find(range => range.type === "Passive") || null);
+      const defaultPriceRangeType = priceRangeTypeFromUrl ?? "Passive";
+      setPriceRange(priceRanges.find(range => range.type === defaultPriceRangeType) || null);
     } else {
       setPriceRange(priceRanges.find(range => range.type === "Custom") || null);
     }
-  }, [swapFeeTier, pools, priceRanges, tokenA, tokenB, router.query.price_range_type]);
+  }, [swapFeeTier, pools, priceRanges, tokenA, tokenB, priceRangeTypeFromUrl]);
 
   useEffect(() => {
     const query = {
       [QUERY_PARAMETER.POOL_PATH]: router.getPoolPath(),
       price_range_type: priceRange?.type,
-      tickLower: selectPool.minPosition !== null ? priceToTick(selectPool.minPosition) : null,
-      tickUpper: selectPool.maxPosition !== null ? priceToTick(selectPool.maxPosition) : null,
+      tickLower:
+        selectPool.minPosition !== null && swapFeeTier ? priceToBoundedTick(selectPool.minPosition, swapFeeTier) : null,
+      tickUpper:
+        selectPool.maxPosition !== null && swapFeeTier ? priceToBoundedTick(selectPool.maxPosition, swapFeeTier) : null,
     };
     if (tokenA?.path && tokenB?.path) {
       replaceRouteUrlWithoutNavigation(PAGE_PATH.POOL_ADD, makeRouteUrl(PAGE_PATH.POOL_ADD, query));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectPool.minPosition, selectPool.maxPosition, priceRange?.type]);
+  }, [selectPool.minPosition, selectPool.maxPosition, priceRange?.type, swapFeeTier]);
 
   const showDim = useMemo(() => {
     return !!(tokenA && tokenB && selectPool.isCreate && !createOption.startPrice);

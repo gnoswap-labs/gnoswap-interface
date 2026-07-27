@@ -80,12 +80,17 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
     const [startingPriceValue, setStartingPriceValue] = useState<string>("");
     const minPriceRangeCustomRef = useRef<React.ElementRef<typeof PriceSteps>>(null);
     const maxPriceRangeCustomRef = useRef<React.ElementRef<typeof PriceSteps>>(null);
+    const initializedRangeKeyRef = useRef<string>();
 
     const isCustom = true;
 
     const tokenPairKey = useMemo(() => {
       return [checkGnotPath(tokenA.path), checkGnotPath(tokenB.path)].sort(sortTokenPaths).join(":");
     }, [tokenA.path, tokenB.path]);
+
+    const rangeInitKey = useMemo(() => {
+      return [tokenPairKey, selectPool.poolPath ?? "", selectPool.feeTier ?? "NONE", selectPool.startPrice ?? ""].join(":");
+    }, [selectPool.feeTier, selectPool.poolPath, selectPool.startPrice, tokenPairKey]);
 
     const isLoading = useMemo(
       () => selectPool.renderState() === "LOADING" || isLoadingSelectPriceRange,
@@ -167,13 +172,13 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
       const { tickLower, tickUpper } = defaultTicks ?? {};
       const { minPrice, maxPrice } = SwapFeeTierMaxPriceRangeMap[selectPool.feeTier || "NONE"];
 
-      if (inputPriceRangeType === "Custom" && tickLower && tickUpper) {
+      if (inputPriceRangeType === "Custom" && tickLower !== undefined && tickUpper !== undefined) {
         selectPool.setMinPosition(tickLower < minPrice ? minPrice : tickLower);
         selectPool.setMaxPosition(tickUpper > maxPrice ? maxPrice : tickUpper);
         return;
       }
 
-      if (currentPrice && selectPool.feeTier && currentPriceRangeType) {
+      if (currentPrice !== null && currentPrice > 0 && Number.isFinite(currentPrice) && selectPool.feeTier && currentPriceRangeType) {
         const priceRange = SwapFeeTierPriceRange[selectPool.feeTier][currentPriceRangeType];
 
         const getPriceWithTickSpacing = (range: number) => {
@@ -239,12 +244,17 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
     }, [tokenA]);
 
     useEffect(() => {
-      if (isLoading) {
+      if (isLoading || !priceRangeType) {
         return;
       }
 
+      if (initializedRangeKeyRef.current === rangeInitKey) {
+        return;
+      }
+
+      initializedRangeKeyRef.current = rangeInitKey;
       resetRange(priceRangeType);
-    }, [selectPool.poolPath, selectPool.feeTier, selectPool.startPrice, isLoading]);
+    }, [rangeInitKey, isLoading, priceRangeType]);
 
     useEffect(() => {
       if (selectPool.isCreate) {

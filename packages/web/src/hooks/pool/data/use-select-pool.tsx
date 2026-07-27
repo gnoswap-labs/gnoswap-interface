@@ -376,7 +376,7 @@ export const useSelectPool = ({
         setMinPosition(null);
         return;
       }
-      if (num === 0) {
+      if (num <= swapFeeTierMaxPriceRangeMap.minPrice) {
         const { minPrice } = swapFeeTierMaxPriceRangeMap;
         setMinPosition(minPrice);
         return;
@@ -386,17 +386,24 @@ export const useSelectPool = ({
     [swapFeeTierMaxPriceRangeMap],
   );
 
-  const changeMaxPosition = useCallback((num: number | null) => {
-    if (num === null) {
-      setMaxPosition(null);
-      return;
-    }
-    setMaxPosition(num);
-  }, []);
+  const changeMaxPosition = useCallback(
+    (num: number | null) => {
+      if (num === null) {
+        setMaxPosition(null);
+        return;
+      }
+      if (num >= swapFeeTierMaxPriceRangeMap.maxPrice) {
+        setMaxPosition(swapFeeTierMaxPriceRangeMap.maxPrice);
+        return;
+      }
+      setMaxPosition(num);
+    },
+    [swapFeeTierMaxPriceRangeMap],
+  );
 
   const increaseMinTick = useCallback(() => {
     excuteInteraction(() => {
-      if (!tickSpacing || !minPosition) {
+      if (!tickSpacing || minPosition === null) {
         return;
       }
       const nearTick = priceToNearTick(minPosition, tickSpacing);
@@ -408,7 +415,7 @@ export const useSelectPool = ({
 
   const decreaseMinTick = useCallback(() => {
     excuteInteraction(() => {
-      if (!tickSpacing || !minPosition) {
+      if (!tickSpacing || minPosition === null) {
         return;
       }
       if (minPosition === 0) {
@@ -423,7 +430,7 @@ export const useSelectPool = ({
 
   const increaseMaxTick = useCallback(() => {
     excuteInteraction(() => {
-      if (!tickSpacing || !maxPosition) {
+      if (!tickSpacing || maxPosition === null) {
         return;
       }
       const nearTick = priceToNearTick(maxPosition, tickSpacing);
@@ -435,7 +442,7 @@ export const useSelectPool = ({
 
   const decreaseMaxTick = useCallback(() => {
     excuteInteraction(() => {
-      if (!tickSpacing || !maxPosition) {
+      if (!tickSpacing || maxPosition === null) {
         return;
       }
       const nearTick = priceToNearTick(maxPosition, tickSpacing);
