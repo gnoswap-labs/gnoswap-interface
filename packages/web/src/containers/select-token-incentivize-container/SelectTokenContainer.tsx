@@ -7,13 +7,18 @@ import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { useGetAllowedExternalRewardTokenPaths } from "@query/pools";
-import { filterAllowedIncentiveTokens } from "./incentive-token-filter";
+import { filterAllowedIncentiveTokens, incentiveTokenPath } from "./incentive-token-filter";
 
 interface SelectTokenIncentivizeContainerProps {
   changeToken?: (token: TokenModel) => void;
   callback?: (value: boolean) => void;
+  poolTokens?: readonly TokenModel[];
 }
-const SelectTokenIncentivizeContainer: React.FC<SelectTokenIncentivizeContainerProps> = ({ changeToken, callback }) => {
+const SelectTokenIncentivizeContainer: React.FC<SelectTokenIncentivizeContainerProps> = ({
+  changeToken,
+  callback,
+  poolTokens,
+}) => {
   const { tokens, balances, updateTokens, updateBalances } = useTokenData();
   const { data: allowedTokenPaths = [] } = useGetAllowedExternalRewardTokenPaths();
   const [keyword, setKeyword] = useState("");
@@ -28,13 +33,18 @@ const SelectTokenIncentivizeContainer: React.FC<SelectTokenIncentivizeContainerP
     if (tokens.length > 0) updateBalances();
   }, [tokens]);
 
+  const combinedAllowedTokenPaths = useMemo(() => {
+    const poolTokenPaths = (poolTokens ?? []).map(incentiveTokenPath);
+    return [...allowedTokenPaths, ...poolTokenPaths];
+  }, [allowedTokenPaths, poolTokens]);
+
   const defaultTokens = useMemo(() => {
-    return filterAllowedIncentiveTokens(tokens, allowedTokenPaths).filter((_, index) => index < 5);
-  }, [allowedTokenPaths, tokens]);
+    return filterAllowedIncentiveTokens(tokens, combinedAllowedTokenPaths).filter((_, index) => index < 5);
+  }, [combinedAllowedTokenPaths, tokens]);
 
   const filteredTokens = useMemo(() => {
-    return filterAllowedIncentiveTokens(tokens, allowedTokenPaths);
-  }, [allowedTokenPaths, tokens]);
+    return filterAllowedIncentiveTokens(tokens, combinedAllowedTokenPaths);
+  }, [combinedAllowedTokenPaths, tokens]);
 
   const selectToken = useCallback(
     (token: TokenModel) => {

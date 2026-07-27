@@ -18,6 +18,7 @@ export interface TokenAmountInputProps extends TokenAmountInputModel {
   style?: React.CSSProperties;
   isVisibleMaxButton?: boolean;
   integersOnly?: boolean;
+  poolTokens?: readonly TokenModel[];
 }
 
 const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
@@ -32,6 +33,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   style,
   isVisibleMaxButton = true,
   integersOnly = false,
+  poolTokens,
 }) => {
   const { t } = useTranslation();
 
@@ -128,6 +130,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
             disabled={disabledSelectPair}
             changeToken={changeToken}
             isHiddenArrow={disabledSelectPair}
+            poolTokens={poolTokens}
           />
         </div>
       </div>
