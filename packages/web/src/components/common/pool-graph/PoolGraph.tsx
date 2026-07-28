@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import * as uuid from "uuid";
 
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
-import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useGetAllTokenPrices } from "@query/token";
 import { PoolLiquiditySegmentModel } from "@models/pool/pool-liquidity-model";
 import { TokenModel } from "@models/token/token-model";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
@@ -84,7 +84,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
   const svgRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const lastHoverBinIndexRef = useRef<number | undefined>();
-  const { tokenPrices } = useTokenData();
+  const { data: tokenPrices = {} } = useGetAllTokenPrices();
 
   const boundsWidth = width - margin.right - margin.left;
   const boundsHeight = height - margin.top - margin.bottom;

@@ -6,7 +6,7 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useIncentivizePool } from "@hooks/pool/data/use-incentivize-pool";
 import { ThemeState } from "@states/index";
-import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useGetAllTokenPrices } from "@query/token";
 import { IncentivizePoolCardInfoWithPriceGrade } from "@models/pool/info/pool-card-info";
 
 import IncentivizedPoolCardList from "../../components/incentivized-pool-card-list/IncentivizedPoolCardList";
@@ -35,7 +35,7 @@ const IncentivizedPoolCardListContainer: React.FC = () => {
     isFetched: isFetchedIncentivizedPools,
     isLoading: isLoadingIncentivizedPool,
   } = useIncentivizePool(address);
-  const { tokenPrices } = useTokenData();
+  const { data: tokenPrices = {} } = useGetAllTokenPrices();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
   const { width } = useWindowSize();
