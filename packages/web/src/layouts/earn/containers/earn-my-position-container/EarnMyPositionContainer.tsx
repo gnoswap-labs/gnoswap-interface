@@ -7,7 +7,7 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePoolData } from "@hooks/pool/data/use-pool-data";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
-import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useGetAllTokenPrices } from "@query/token";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { PoolPositionModel } from "@models/position/pool-position-model";
@@ -31,7 +31,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
 }) => {
   const router = useCustomRouter();
   const { connected, connectAdenaClient, isSwitchNetwork, switchNetwork, account } = useWallet();
-  const { tokenPrices = {}, updateTokenPrices } = useTokenData();
+  const { data: tokenPrices = {} } = useGetAllTokenPrices();
   const { isFetchedPools, loading: isLoadingPool, pools } = usePoolData();
   const { width } = useWindowSize();
   const { openModal } = useConnectWalletModal();
@@ -74,7 +74,6 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     }
   };
   useEffect(() => {
-    updateTokenPrices();
     if (typeof window !== "undefined") {
       if (window.innerWidth < 920) setMobile(true);
       else setMobile(false);

@@ -5,7 +5,7 @@ import { EARN_POOL_LIST_SIZE } from "@constants/table.constant";
 import useClickOutside from "@hooks/common/use-click-outside";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePoolData } from "@hooks/pool/data/use-pool-data";
-import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useGetAllTokenPrices } from "@query/token";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { TokenModel } from "@models/token/token-model";
 import { CommonState, ThemeState } from "@states/index";
@@ -26,9 +26,9 @@ const PoolListContainer: React.FC = () => {
   const [searchIcon, setSearchIcon] = useState(false);
   const [breakpoint] = useAtom(CommonState.breakpoint);
   const router = useCustomRouter();
-  const { poolListInfos, isFetchedPools, updatePools } = usePoolData();
+  const { poolListInfos, isFetchedPools } = usePoolData();
   const [componentRef, isClickOutside, setIsInside] = useClickOutside();
-  const { tokenPrices } = useTokenData();
+  const { data: tokenPrices = {} } = useGetAllTokenPrices();
 
   const themeKey = useAtomValue(ThemeState.themeKey);
 
@@ -40,13 +40,6 @@ const PoolListContainer: React.FC = () => {
       !tokenPrices?.[checkGnotPath(tokenA.priceID)]?.usd || !tokenPrices?.[checkGnotPath(tokenB.priceID)]?.usd,
     [tokenPrices],
   );
-
-  /**
-   * Fetch pool data on component mount
-   */
-  useEffect(() => {
-    updatePools();
-  }, []);
 
   /**
    * Hide search icon when clicking outside and no keyword is entered
@@ -149,7 +142,7 @@ const PoolListContainer: React.FC = () => {
           tokenBPriceGrade,
         };
       });
-  }, [poolListInfos, keyword, poolType, anyEmptyPrice, matchesKeyword, filteredPoolType]);
+  }, [poolListInfos, keyword, poolType, anyEmptyPrice, matchesKeyword, filteredPoolType, tokenPrices]);
 
   /**
    * Sort filtered pools based on current sort option
