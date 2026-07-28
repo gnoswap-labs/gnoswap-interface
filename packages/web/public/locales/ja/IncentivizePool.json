@@ -54,7 +54,7 @@
       "pool": {
         "col": {
           "pools": "プール",
-          "tvl": "流動性"
+          "tvl": "TVL"
         },
         "label": "1.プールを選択",
         "searchPlaceHolder": "名前、記号、パスで検索"

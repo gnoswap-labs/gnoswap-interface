@@ -54,7 +54,7 @@
       "pool": {
         "col": {
           "pools": "Piscinas",
-          "tvl": "Liquidez"
+          "tvl": "TVL"
         },
         "label": "1. Seleccione Pool",
         "searchPlaceHolder": "Búsqueda por nombre, símbolo o ruta"

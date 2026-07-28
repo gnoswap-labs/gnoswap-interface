@@ -54,7 +54,7 @@
       "pool": {
         "col": {
           "pools": "游泳池",
-          "tvl": "流动性"
+          "tvl": "电视线"
         },
         "label": "1.选择池",
         "searchPlaceHolder": "按名称、符号或路径搜索"
