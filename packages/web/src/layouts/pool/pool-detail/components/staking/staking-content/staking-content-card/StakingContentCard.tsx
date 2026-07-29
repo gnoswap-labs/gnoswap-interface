@@ -13,7 +13,6 @@ import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSke
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { StakingPeriodType, STAKING_PERIOD_INFO, RewardType } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { useTokenData } from "@hooks/token/data/use-token-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionModel } from "@models/position/position-model";
 import { useGetAllTokenPrices } from "@query/token";
@@ -106,7 +105,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   loading,
 }) => {
   const { t } = useTranslation();
-  const { tokenPrices } = useTokenData();
+  const { data: tokenPrices = {} } = useGetAllTokenPrices();
   const hasPosition = positions.length > 0;
 
   const checkedStep = useMemo(() => {
@@ -285,7 +284,7 @@ interface SummuryAprProps {
 
 export const SummuryApr: React.FC<SummuryAprProps> = ({ period, checkPoints, positions, stakingApr, loading }) => {
   const { t } = useTranslation();
-  const { tokenPrices } = useTokenData();
+  const { data: tokenPrices = {} } = useGetAllTokenPrices();
 
   const hasPosition = positions.length > 0;
 

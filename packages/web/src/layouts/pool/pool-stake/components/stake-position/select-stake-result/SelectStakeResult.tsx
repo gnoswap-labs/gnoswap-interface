@@ -5,7 +5,7 @@ import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import IconInfo from "@components/common/icons/IconInfo";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useGetAllTokenPrices } from "@query/token";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
@@ -26,7 +26,7 @@ interface PooledTokenEntry {
 
 const SelectStakeResult: React.FC<SelectStakeResultProps> = ({ positions, isHiddenBadge = false }) => {
   const { t } = useTranslation();
-  const { tokenPrices } = useTokenData();
+  const { data: tokenPrices = {} } = useGetAllTokenPrices();
 
   const pooledTokenEntries = useMemo<PooledTokenEntry[]>(() => {
     const entries = new Map<string, PooledTokenEntry>();
