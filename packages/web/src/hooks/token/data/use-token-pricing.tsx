@@ -10,19 +10,23 @@ import { useGetAllTokenPrices, useGetTokens } from "@query/token";
  * Use when a consumer needs tokens + tokenPrices + getTokenUSDPrice only.
  */
 export const useTokenPricing = () => {
-  const { data: { tokens = [] } = {} } = useGetTokens();
+  const { data: { tokens = [] } = {}, isFetched: isFetchedTokens } = useGetTokens();
   const { data: tokenPrices = {} } = useGetAllTokenPrices();
 
   const getTokenUSDPrice = useCallback(
     (tokenAId: string, amount: bigint | string | number) => {
       const tokenUSDPrice = tokenPrices[tokenAId]?.usd || "0";
-      if (!tokenUSDPrice || Number.isNaN(amount)) {
+      const amountValue = BigNumber(amount.toString());
+      const priceValue = BigNumber(tokenUSDPrice);
+      const usdValue = amountValue.multipliedBy(priceValue);
+
+      if (!amountValue.isFinite() || !priceValue.isFinite() || !usdValue.isFinite()) {
         return null;
       }
-      return BigNumber(amount.toString()).multipliedBy(tokenUSDPrice).toNumber();
+      return usdValue.toNumber();
     },
     [tokenPrices],
   );
 
-  return { tokens, tokenPrices, getTokenUSDPrice };
+  return { tokens, tokenPrices, getTokenUSDPrice, isFetchedTokens };
 };

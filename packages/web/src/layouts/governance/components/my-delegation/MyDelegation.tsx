@@ -72,7 +72,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
   const [isOpenUndelegateModal, setIsOpenUndelegateModal] = useState(false);
-  const { getTokenUSDPrice, tokens } = useTokenPricing();
+  const { getTokenUSDPrice, isFetchedTokens, tokens } = useTokenPricing();
   const [showUndel, setShowUndel] = useState(false);
 
   const sortByAmountAndDate = useCallback((a: DelegationItemInfo, b: DelegationItemInfo) => {
@@ -198,8 +198,10 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
    * A delimiter showing reward information.
    */
   const visibleRewardInfoTooltip = useMemo(() => {
-    return rewardInfo.length > 0;
-  }, [rewardInfo]);
+    return isFetchedTokens && rewardInfo.length > 0;
+  }, [isFetchedTokens, rewardInfo]);
+
+  const isLoadingRewardInfo = isLoadingMyDelegation || !isFetchedTokens;
 
   /**
    * Automatically switch to the voting weight tab if undelegationInfos is empty
@@ -348,7 +350,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                     }
                   : undefined
               }
-              isLoading={isLoadingMyDelegation}
+              isLoading={isLoadingRewardInfo}
             />
             <InfoBox
               title={t("Governance:myDel.reward.title")}

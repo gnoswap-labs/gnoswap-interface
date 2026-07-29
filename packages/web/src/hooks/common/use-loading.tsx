@@ -59,7 +59,7 @@ export const useLoading = () => {
     }
 
     return !isFetchedChainData;
-  }, [initialized]);
+  }, [initialized, isFetchedChainData]);
 
   const isLoadingDashboardStats = useMemo(() => {
     if (!initialized) {
