@@ -16,7 +16,7 @@ import { Divider } from "@components/common/divider/divider";
 import { rawToDisplayAmount, toNumberFormat } from "@utils/number-utils";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
-import { useTokenPriceHelper } from "@hooks/token/data/use-token-price-helper";
+import { useTokenPricing } from "@hooks/token/data/use-token-pricing";
 import { TokenModel } from "@models/token/token-model";
 import VideoGuideTrigger from "@components/common/video-guide-trigger/VideoGuideTrigger";
 
@@ -43,7 +43,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
   const { isMobile } = useWindowSize();
 
   const { getGnotPath } = useGnotToGnot();
-  const { getTokenUSDPrice, tokens } = useTokenPriceHelper();
+  const { getTokenUSDPrice, tokens } = useTokenPricing();
 
   const displayGovernanceSummary: GovernanceSummaryInfo = React.useMemo(() => {
     const { delegationInfo } = governanceSummary;

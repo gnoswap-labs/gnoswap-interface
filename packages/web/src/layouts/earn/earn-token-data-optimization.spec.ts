@@ -73,17 +73,17 @@ describe("earn token data optimization", () => {
     });
   });
 
-  describe("governance helper consumers", () => {
+  describe("governance pricing consumers", () => {
     const governanceConsumers = [
       "../../layouts/governance/components/governance-summary/GovernanceSummary.tsx",
       "../../layouts/governance/components/my-delegation/MyDelegation.tsx",
     ];
 
-    it("uses useTokenPriceHelper instead of useTokenData", () => {
+    it("uses useTokenPricing instead of useTokenData", () => {
       for (const relativePath of governanceConsumers) {
         const source = readSource(relativePath);
 
-        expect(source).toContain("useTokenPriceHelper");
+        expect(source).toContain("useTokenPricing");
         expect(source).not.toContain("useTokenData");
       }
     });

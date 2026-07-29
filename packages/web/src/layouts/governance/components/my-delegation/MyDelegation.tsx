@@ -8,7 +8,7 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconSwap from "@components/common/icons/IconSwap";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { useTokenPriceHelper } from "@hooks/token/data/use-token-price-helper";
+import { useTokenPricing } from "@hooks/token/data/use-token-pricing";
 import {
   DelegationItemInfo,
   MyDelegatesInfo,
@@ -72,7 +72,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
   const [isOpenUndelegateModal, setIsOpenUndelegateModal] = useState(false);
-  const { getTokenUSDPrice, tokens } = useTokenPriceHelper();
+  const { getTokenUSDPrice, tokens } = useTokenPricing();
   const [showUndel, setShowUndel] = useState(false);
 
   const sortByAmountAndDate = useCallback((a: DelegationItemInfo, b: DelegationItemInfo) => {

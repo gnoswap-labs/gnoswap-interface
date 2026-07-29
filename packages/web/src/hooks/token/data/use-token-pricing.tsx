@@ -4,12 +4,12 @@ import { useCallback } from "react";
 import { useGetAllTokenPrices, useGetTokens } from "@query/token";
 
 /**
- * Lightweight helper that provides token metadata and USD pricing without
+ * Lightweight pricing hook that provides token metadata and USD pricing without
  * balance side-effects (no useGetGrc20Balances, no updateBalances, no RPC calls).
  *
  * Use when a consumer needs tokens + tokenPrices + getTokenUSDPrice only.
  */
-export const useTokenPriceHelper = () => {
+export const useTokenPricing = () => {
   const { data: { tokens = [] } = {} } = useGetTokens();
   const { data: tokenPrices = {} } = useGetAllTokenPrices();
 

@@ -20,8 +20,8 @@ jest.mock("@hooks/common/use-window-size", () => ({
   }),
 }));
 
-jest.mock("@hooks/token/data/use-token-price-helper", () => ({
-  useTokenPriceHelper: () => ({
+jest.mock("@hooks/token/data/use-token-pricing", () => ({
+  useTokenPricing: () => ({
     getTokenUSDPrice: () => 0,
     tokens: [],
   }),
