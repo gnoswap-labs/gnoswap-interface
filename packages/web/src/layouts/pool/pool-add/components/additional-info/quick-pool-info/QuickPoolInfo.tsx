@@ -8,8 +8,8 @@ import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight"
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import { PAGE_PATH_TYPE } from "@constants/page.constant";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
-import { useTokenData } from "@hooks/token/data/use-token-data";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { useGetTokens } from "@query/token";
 import { PositionModel } from "@models/position/position-model";
 import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
@@ -40,7 +40,7 @@ const QuickPoolInfo: React.FC<Props> = ({
   const { t } = useTranslation();
 
   const { getGnotPath } = useGnotToGnot();
-  const { tokens } = useTokenData();
+  const { data: { tokens = [] } = {} } = useGetTokens();
 
   const tokenA = useMemo(
     () =>
