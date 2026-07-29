@@ -9,6 +9,7 @@ describe("usePoolAddLiquidityConfirmModal pool refresh", () => {
 
     expect(source).toContain("const { poolPath: selectedPoolPath, refetchPoolData } = selectPool;");
     expect(source).toContain("await refetchPoolData();");
+    expect(source).toContain("[QUERY_KEY.rpcPools],");
     expect(source).toContain("await delay(1000);\n              await handleRefreshData();");
     expect(source).toContain("onSuccess: handleRefreshData");
     expect(source).toContain("rpcProvider,\n    handleRefreshData,");
