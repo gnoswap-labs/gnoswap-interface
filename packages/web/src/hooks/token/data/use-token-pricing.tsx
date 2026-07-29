@@ -7,7 +7,7 @@ import { useGetAllTokenPrices, useGetTokens } from "@query/token";
  * Lightweight pricing hook that provides token metadata and USD pricing without
  * balance side-effects (no useGetGrc20Balances, no updateBalances, no RPC calls).
  *
- * Use when a consumer needs tokens + tokenPrices + getTokenUSDPrice only.
+ * Use when a consumer needs tokens + getTokenUSDPrice only.
  */
 export const useTokenPricing = () => {
   const { data: { tokens = [] } = {}, isFetched: isFetchedTokens } = useGetTokens();
@@ -28,5 +28,5 @@ export const useTokenPricing = () => {
     [tokenPrices],
   );
 
-  return { tokens, tokenPrices, getTokenUSDPrice, isFetchedTokens };
+  return { tokens, getTokenUSDPrice, isFetchedTokens };
 };
