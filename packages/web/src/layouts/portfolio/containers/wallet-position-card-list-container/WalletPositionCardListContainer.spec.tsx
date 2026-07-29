@@ -47,10 +47,10 @@ jest.mock("@hooks/token/data/use-gnot-wugnot", () => {
   };
 });
 
-jest.mock("@hooks/token/data/use-token-data", () => {
+jest.mock("@query/token", () => {
   const tokenPrices = {};
   return {
-    useTokenData: () => ({ tokenPrices }),
+    useGetAllTokenPrices: () => ({ data: tokenPrices }),
   };
 });
 

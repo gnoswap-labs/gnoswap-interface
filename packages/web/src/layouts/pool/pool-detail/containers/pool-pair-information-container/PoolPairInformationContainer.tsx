@@ -11,8 +11,8 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePoolLiquiditySegmentsByPath } from "@hooks/pool/data/use-pool-liquidity-segments-by-path";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
-import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useGetPoolDetailByPath, useGetPoolSqrtPriceX96 } from "@query/pools";
+import { useGetAllTokenPrices } from "@query/token";
 import { PoolConverter } from "@services/converters/pool";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 
@@ -45,7 +45,7 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
     },
   });
 
-  const { tokenPrices } = useTokenData();
+  const { data: tokenPrices = {} } = useGetAllTokenPrices();
   const visibleTickRange = React.useMemo(() => LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES[zoomLevel], [zoomLevel]);
 
   const onClickPath = (path: string) => {

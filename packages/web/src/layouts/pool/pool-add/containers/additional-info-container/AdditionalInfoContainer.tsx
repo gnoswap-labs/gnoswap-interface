@@ -9,8 +9,8 @@ import { initialDetailPool } from "@models/pool/pool-detail-model";
 import { isNativeToken } from "@models/token/token-model";
 import { useGetPoolDetailByPath } from "@query/pools";
 import { EarnState } from "@states/index";
-import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
+import { useGetTokens } from "@query/token";
 import { checkGnotPath } from "@utils/common";
 
 import AdditionalInfo from "../../components/additional-info/AdditionalInfo";
@@ -41,7 +41,7 @@ const AdditionalInfoContainer: React.FC = () => {
   const [currentPoolPath] = useAtom(EarnState.currentPoolPath);
   const [{ isLoading: isLoadingRPCPoolInfo }] = useAtom(EarnState.poolInfoQuery);
   const { poolPath, tokenPair } = usePoolAddSearchParams();
-  const { tokens } = useTokenData();
+  const { data: { tokens = [] } = {} } = useGetTokens();
   const { getGnotPath } = useGnotToGnot();
 
   const currentPoolTokenPair = useMemo(() => parseTokenPairFromPoolPath(currentPoolPath), [currentPoolPath]);
