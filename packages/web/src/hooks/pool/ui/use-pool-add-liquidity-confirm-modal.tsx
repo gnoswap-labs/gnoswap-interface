@@ -476,6 +476,7 @@ export const usePoolAddLiquidityConfirmModal = ({
     slippage,
     createPool,
     rpcProvider,
+    handleRefreshData,
   ]);
 
   const openAddPositionModal = useCallback(() => {
