@@ -1,15 +1,15 @@
 import { useMemo } from "react";
-import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useInitLoading } from "@query/common";
 import { useGetDashboardVolume } from "@query/dashboard";
 import { useGetPoolList } from "@query/pools";
-import { useGetChainInfo } from "@query/token";
+import { useGetChainInfo, useGetTokens, useGetAllTokenPrices } from "@query/token";
 import { useGetLaunchpadActiveProjects } from "@query/launchpad/use-get-launchpad-active-projects";
 
 export const useLoading = () => {
   const { data: initialized } = useInitLoading();
   const { isFetched: isFetchedChainData } = useGetChainInfo();
-  const { isFetched: isFetchedTokenData, isFetchedTokenPrices } = useTokenData();
+  const { isFetched: isFetchedTokenData } = useGetTokens();
+  const { isFetched: isFetchedTokenPrices } = useGetAllTokenPrices();
   const { isFetched: isFetchedChainList } = useGetChainInfo({ enabled: false });
   const { isFetched: isFetchedPoolData } = useGetPoolList({ enabled: false });
   const { isFetched: isFetchedDashboardVolume } = useGetDashboardVolume({
