@@ -54,7 +54,7 @@
       "pool": {
         "col": {
           "pools": "Pool",
-          "tvl": "Liquidité"
+          "tvl": "TVL"
         },
         "label": "1. Sélectionnez Pool",
         "searchPlaceHolder": "Recherche par nom, symbole ou chemin"

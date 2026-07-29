@@ -36,6 +36,7 @@ export const EXT_URL = {
     CONTRACTS: "https://github.com/gnoswap-labs/gnoswap",
   },
   AUDIT: "https://github.com/gnoswap-labs/gnoswap/tree/main/audits",
+  BRIDGE: "https://bridge.onbloc.xyz/",
 } as const;
 
 export const SOCIAL_WALLET_EXTERNAL_URL = {

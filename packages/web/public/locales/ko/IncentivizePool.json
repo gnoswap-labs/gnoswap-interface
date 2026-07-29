@@ -54,7 +54,7 @@
       "pool": {
         "col": {
           "pools": "풀",
-          "tvl": "유동성"
+          "tvl": "TVL"
         },
         "label": "1. 풀 선택",
         "searchPlaceHolder": "이름, 심볼 또는 경로로 검색"
