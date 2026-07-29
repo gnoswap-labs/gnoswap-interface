@@ -84,6 +84,7 @@ export interface SelectPool {
   isOrderedPrice: boolean;
   setIsChangeMinMax: (value: boolean) => void;
   isLoading: boolean;
+  refetchPoolData: () => Promise<void>;
 }
 
 export const useSelectPool = ({
@@ -160,14 +161,21 @@ export const useSelectPool = ({
 
   const shouldRefetch = ["/earn/pool/add", "/earn/add"].includes(router.pathname);
 
-  const { data: poolFromDb, isLoading: isLoadingPoolFromDb } = useGetPoolFromDb(convertPath, {
+  const {
+    data: poolFromDb,
+    isLoading: isLoadingPoolFromDb,
+    refetch: refetchPoolFromDb,
+  } = useGetPoolFromDb(convertPath, {
     enabled: !!convertPath && !isCreate,
     refetchInterval: shouldRefetch ? 5_000 : false,
   });
 
-  const { data: liquidity, isLoading: isLoadingLiquidity } = useGetPoolLiquidity(calculatedPoolPath, {
+  const {
+    data: liquidity,
+    isLoading: isLoadingLiquidity,
+    refetch: refetchLiquidity,
+  } = useGetPoolLiquidity(calculatedPoolPath, {
     enabled: !!calculatedPoolPath && !isCreate,
-    refetchInterval: shouldRefetch ? 5_000 : false,
   });
 
   const { data: tickSpacing, isLoading: isLoadingTickSpacing } = useGetPoolTickSpacing(calculatedPoolPath, {
@@ -175,9 +183,12 @@ export const useSelectPool = ({
     fallbackFeeTier: feeTier,
   });
 
-  const { data: sqrtPriceX96, isLoading: isLoadingSqrtPriceX96 } = useGetPoolSqrtPriceX96(calculatedPoolPath, {
+  const {
+    data: sqrtPriceX96,
+    isLoading: isLoadingSqrtPriceX96,
+    refetch: refetchSqrtPriceX96,
+  } = useGetPoolSqrtPriceX96(calculatedPoolPath, {
     enabled: !!calculatedPoolPath && !isCreate,
-    refetchInterval: shouldRefetch ? 5_000 : false,
   });
 
   const isLoadingPoolInfo = isLoadingPoolFromDb || isLoadingLiquidity || isLoadingTickSpacing || isLoadingSqrtPriceX96;
@@ -248,6 +259,10 @@ export const useSelectPool = ({
     },
     [feeTier, isCreate, startPrice, tokenA, tokenB, isLoading, isLoadingPoolInfo, isLoadingLiquiditySegments],
   );
+
+  const refetchPoolData = useCallback(async () => {
+    await Promise.allSettled([refetchPoolFromDb(), refetchLiquidity(), refetchSqrtPriceX96()]);
+  }, [refetchPoolFromDb, refetchLiquidity, refetchSqrtPriceX96]);
 
   const minPrice = useMemo(() => {
     if (fullRange) {
@@ -579,5 +594,6 @@ export const useSelectPool = ({
     poolFromDb,
     liquidity,
     sqrtPriceX96,
+    refetchPoolData,
   };
 };
