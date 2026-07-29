@@ -7,8 +7,8 @@ import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePoolData } from "@hooks/pool/data/use-pool-data";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
-import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { useGetAllTokenPrices } from "@query/token";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { ThemeState } from "@states/index";
@@ -55,7 +55,7 @@ const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerP
   const { pools, loading } = usePoolData();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
-  const { tokenPrices = {} } = useTokenData();
+  const { data: tokenPrices = {} } = useGetAllTokenPrices();
 
   const [isViewMorePositions, setIsViewMorePositions] = useState(false);
   const [mappedData, setMappedData] = useState<PoolPositionModel[]>([]);

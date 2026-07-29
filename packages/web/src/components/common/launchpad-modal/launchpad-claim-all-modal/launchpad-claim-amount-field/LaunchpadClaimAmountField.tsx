@@ -3,8 +3,8 @@ import Image from "next/image";
 import BigNumber from "bignumber.js";
 
 import { GNS_TOKEN } from "@common/values/token-constant";
-import { useTokenData } from "@hooks/token/data/use-token-data";
 import { ProjectRewardInfoModel } from "@layouts/launchpad/launchpad-detail/LaunchpadDetail";
+import { useGetAllTokenPrices } from "@query/token";
 
 import { ClaimAllFieldWrapper } from "./LaunchpadClaimAmountField.styled";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -20,7 +20,7 @@ interface LaunchpadClaimAmountFieldProps {
 const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
 const LaunchpadClaimAmountField = ({ amount, rewardInfo, type }: LaunchpadClaimAmountFieldProps) => {
-  const { tokenPrices } = useTokenData();
+  const { data: tokenPrices = {} } = useGetAllTokenPrices();
 
   const estimatePrice = React.useMemo(() => {
     const calculatePrice = (tokenPath: string | undefined, amountValue: number) => {
