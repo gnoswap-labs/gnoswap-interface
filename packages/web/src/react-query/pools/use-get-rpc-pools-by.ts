@@ -43,6 +43,5 @@ export const useGetRPCPoolsBy = (poolPaths: string[]) => {
     },
     enabled: poolPaths.length > 0,
     staleTime: 1000 * 30,
-    refetchInterval: 1000 * 60,
   });
 };
