@@ -6,8 +6,8 @@ import { DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT } from "@common/values";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { GNS_TOKEN_PATH } from "@constants/environment.constant";
-import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useGetIncentiveCreationDeposit } from "@query/pools";
+import { useGetTokens } from "@query/token";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 import {
@@ -19,7 +19,7 @@ import IconInfo from "@components/common/icons/IconInfo";
 
 const IncentiveCreationDeposit: React.FC = () => {
   const { t } = useTranslation();
-  const { tokens } = useTokenData();
+  const { data: { tokens = [] } = {} } = useGetTokens();
   const theme = useTheme();
   const { data: depositGnsAmount = DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT } = useGetIncentiveCreationDeposit();
 

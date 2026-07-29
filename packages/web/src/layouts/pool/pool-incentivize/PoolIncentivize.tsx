@@ -9,8 +9,8 @@ import useRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
-import { useTokenData } from "@hooks/token/data/use-token-data";
 import { DEVICE_TYPE } from "@styles/media";
+import { useGetTokens } from "@query/token";
 import { checkGnotPath } from "@utils/common";
 import { makeRouteUrl } from "@utils/page.utils";
 
@@ -26,7 +26,7 @@ const PoolIncentivize: React.FC = () => {
   const poolPath = router.getPoolPath() || "::";
   const [tokenAPath, tokenBPath, fee] = poolPath.split(":");
   const { getGnotPath } = useGnotToGnot();
-  const { tokens } = useTokenData();
+  const { data: { tokens = [] } = {} } = useGetTokens();
 
   const { isLoading } = useLoading();
 
