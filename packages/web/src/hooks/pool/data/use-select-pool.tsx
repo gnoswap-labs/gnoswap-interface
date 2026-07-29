@@ -189,6 +189,7 @@ export const useSelectPool = ({
     refetch: refetchSqrtPriceX96,
   } = useGetPoolSqrtPriceX96(calculatedPoolPath, {
     enabled: !!calculatedPoolPath && !isCreate,
+    refetchInterval: shouldRefetch ? 5_000 : false,
   });
 
   const isLoadingPoolInfo = isLoadingPoolFromDb || isLoadingLiquidity || isLoadingTickSpacing || isLoadingSqrtPriceX96;

@@ -11,13 +11,18 @@ describe("useSelectPool liquidity segment price", () => {
     expect(source).toContain("segmentCurrentPrice,\n      ],");
   });
 
-  it("keeps pool RPC queries off idle refetch polling", () => {
+  it("keeps liquidity RPC off idle refetch polling while refreshing sqrt price on add pages", () => {
     const source = readFileSync(path.join(__dirname, "use-select-pool.tsx"), { encoding: "utf8" });
     const addPagePollingMatches = source.match(/refetchInterval: shouldRefetch \? 5_000 : false/g) ?? [];
 
-    expect(addPagePollingMatches).toHaveLength(1);
+    expect(addPagePollingMatches).toHaveLength(2);
     expect(source).toContain("useGetPoolLiquidity(calculatedPoolPath, {\n    enabled: !!calculatedPoolPath && !isCreate,\n  });");
-    expect(source).toContain("useGetPoolSqrtPriceX96(calculatedPoolPath, {\n    enabled: !!calculatedPoolPath && !isCreate,\n  });");
+    expect(source).toContain(
+      "useGetPoolSqrtPriceX96(calculatedPoolPath, {\n" +
+        "    enabled: !!calculatedPoolPath && !isCreate,\n" +
+        "    refetchInterval: shouldRefetch ? 5_000 : false,\n" +
+        "  });",
+    );
   });
 
   it("exposes manual pool data refetch for transaction success paths", () => {
