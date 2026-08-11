@@ -34,11 +34,11 @@ export const TokenListHeaderwrapper = styled.div`
     flex: 0 0 16px;
     width: 16px;
     height: 16px;
-    cursor: help;
-    margin-left: -8px;
+    cursor: default;
+    margin-right: -8px;
 
     ${media.mobile} {
-      margin-left: 0;
+      margin-right: 0;
     }
 
     svg {
