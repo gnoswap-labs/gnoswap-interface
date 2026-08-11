@@ -80,14 +80,6 @@ export const AssetListHeaderWrapper = styled.div`
       height: 12px;
       content: "";
     }
-
-    &:hover .filters-trigger {
-      color: ${({ theme }) => theme.color.text01};
-
-      .filters-arrow path {
-        fill: ${({ theme }) => theme.color.text01};
-      }
-    }
   }
   .filters-trigger {
     ${mixins.flexbox("row", "center", "center")};
@@ -100,6 +92,14 @@ export const AssetListHeaderWrapper = styled.div`
     font: inherit;
     white-space: nowrap;
     transition: color 0.2s ease;
+
+    &:hover {
+      color: ${({ theme }) => theme.color.text01};
+
+      .filters-arrow path {
+        fill: ${({ theme }) => theme.color.text01};
+      }
+    }
   }
   .filters-arrow {
     width: 16px;
