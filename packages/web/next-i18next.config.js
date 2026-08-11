@@ -18,7 +18,7 @@ module.exports = {
   debug: isDev,
   i18n: {
     defaultLocale: "en",
-    locales: ["en", "zh", "hi", "es", "fr", "ru", "ja", "ko", "vi"],
+    locales: ["en", "zh", "es", "fr", "ru", "ja", "ko", "vi"],
     localeDetection: false,
   },
   reloadOnPrerender: isDev,

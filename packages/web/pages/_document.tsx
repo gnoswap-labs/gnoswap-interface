@@ -2,7 +2,6 @@ import { UMAMI_SCRIPT_URL, UMAMI_WEBSITE_ID } from "@constants/environment.const
 import "dayjs/locale/en";
 import "dayjs/locale/es";
 import "dayjs/locale/fr";
-import "dayjs/locale/hi";
 import "dayjs/locale/ja";
 import "dayjs/locale/ko";
 import "dayjs/locale/ru";

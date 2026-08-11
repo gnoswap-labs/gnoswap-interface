@@ -101,7 +101,7 @@ packages/web/src/
 
 ## i18n
 
-- i18next with Next.js (`next-i18next`), 10 locales (en default)
+- i18next with Next.js (`next-i18next`), 9 locales (en default)
 - Translation files in `public/locales/<lang>/`
 - Pages export `getStaticProps` with `serverSideTranslations(locale, namespaces)`
 - Client uses chained backend: LocalStorage cache (1hr TTL) → HTTP fetch

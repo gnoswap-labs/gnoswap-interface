@@ -313,7 +313,6 @@ export const LANGUAGES = [
   { code: "ko", name: "한국어" },
   { code: "ru", name: "Русский" },
   { code: "zh", name: "中文" },
-  { code: "hi", name: "हिन्दी" },
 ];
 
 export const DEFAULT_POOL_ADD_URI = `/earn/add?tokenA=gnot&tokenB=${GNS_TOKEN_PATH}&fee_tier=3000`;
@@ -330,7 +329,6 @@ export const LANGUAGE_CODE_MAP: Record<string, string> = {
   ko: "ko-KR",
   ru: "ru-RU",
   zh: "zh-CN",
-  hi: "hi-IN",
 };
 
 export const getLangCode = (code: string) => {
