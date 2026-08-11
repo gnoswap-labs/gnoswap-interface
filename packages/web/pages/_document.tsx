@@ -1,5 +1,4 @@
 import { UMAMI_SCRIPT_URL, UMAMI_WEBSITE_ID } from "@constants/environment.constant";
-import "dayjs/locale/de";
 import "dayjs/locale/en";
 import "dayjs/locale/es";
 import "dayjs/locale/fr";
