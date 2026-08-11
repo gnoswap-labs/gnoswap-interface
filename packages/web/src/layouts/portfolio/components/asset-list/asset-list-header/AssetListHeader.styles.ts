@@ -93,7 +93,8 @@ export const AssetListHeaderWrapper = styled.div`
     white-space: nowrap;
     transition: color 0.2s ease;
 
-    &:hover {
+    &:hover,
+    &[aria-expanded="true"] {
       color: ${({ theme }) => theme.color.text01};
 
       .filters-arrow path {
