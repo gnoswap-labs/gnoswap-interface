@@ -1,1 +1,31 @@
-{"confModal":{"balanceChanges":"Thay đổi số dư","btn":"Xác nhận giảm thanh khoản","currentBalance":"Số dư hiện tại","decreasingAmount":"Số tiền giảm dần","fees":"Phí","newBalance":"Cân bằng mới","pooled":"gộp lại","positionDetails":"Chi tiết vị trí","title":"Xác nhận giảm thanh khoản","tooltip":{"withdrawalFee":"Tỷ lệ phần trăm phí được tính trên phí vị trí được yêu cầu (không phải trên tiền gốc) được chuyển vào giao thức."},"unclaimed":"Chưa được xác nhận"},"form":{"collectWugnot":{"switch":"Thu thập dưới dạng WGNOT"},"decreaseAmount":{"label":"2. Số tiền giảm dần"},"pooled":"gộp lại","selectedPosition":{"label":"1. Vị trí đã chọn"},"unclaimed":"Phí chưa được yêu cầu"},"title":"Giảm thanh khoản"}
+{
+  "confModal": {
+    "balanceChanges": "Thay đổi về số dư",
+    "btn": "Xác nhận việc giảm thanh khoản",
+    "currentBalance": "Số dư hiện tại",
+    "decreasingAmount": "Số tiền giảm dần",
+    "fees": "Phí",
+    "newBalance": "New Balance",
+    "pooled": "Tổng hợp",
+    "positionDetails": "Chi tiết về vị trí",
+    "title": "Xác nhận việc giảm thanh khoản",
+    "tooltip": {
+      "withdrawalFee": "Tỷ lệ phần trăm phí được tính trên số phí được yêu cầu thanh toán của vị thế (không tính trên số vốn gốc) được chuyển cho giao thức."
+    },
+    "unclaimed": "Chưa có người nhận"
+  },
+  "form": {
+    "collectWugnot": {
+      "switch": "Thu thập dưới tên WGNOT"
+    },
+    "decreaseAmount": {
+      "label": "2. Số tiền giảm dần"
+    },
+    "pooled": "Tổng hợp",
+    "selectedPosition": {
+      "label": "1. Vị trí được tuyển chọn"
+    },
+    "unclaimed": "Phí chưa được nhận"
+  },
+  "title": "Giảm tính thanh khoản"
+}

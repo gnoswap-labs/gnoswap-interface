@@ -1,1 +1,103 @@
-{"amount":"Số lượng","balance":"Sự cân bằng","currentPrice":"Giá hiện tại","feeTierDesc":{"100":"Tốt nhất cho các cặp rất ổn định","500":"Tốt nhất cho các cặp ổn định","3000":"Tốt nhất cho hầu hết các cặp","10000":"Tốt nhất cho các cặp kỳ lạ"},"incentive":"Khích lệ","liquidity":"Thanh khoản","maxPrice":"Giá tối đa","minPrice":"Giá tối thiểu","noPosition":"Không có vị trí","onchainActi":{"action":{"add":"Thêm vào","cancel":"Hủy bỏ","claim":"Khẳng định","claimFees":"Phí yêu cầu bồi thường","claimRewards":"Yêu cầu phần thưởng","create":"Tạo nên","decrease":"Giảm bớt","delegate":"Ủy quyền","execute":"Thực hiện","incentivize":"Khuyến khích","increase":"Tăng","remove":"Di dời","reposition":"Tái định vị","stake":"Cổ phần","swap":"Tráo đổi","undelegate":"Hủy ủy quyền","unstake":"Hủy đặt cược","vote":"Bỏ phiếu"}},"pageHeader":{"addPosi":"Thêm vị trí","dashboard":"bảng điều khiển","decreaseLiqui":"Giảm thanh khoản","earn":"Kiếm","incentivzePool":"Khuyến khích nhóm","increaseLiqui":"Tăng tính thanh khoản","removePosi":"Xóa vị trí","reposition":"Tái định vị","stakePosition":"Vị trí cổ phần","unstakePosition":"Vị trí hủy đặt cược","wallet":"Cái ví"},"positionHistoryAction":{"claimFees":"Phí yêu cầu bồi thường","create":"Tạo nên"},"positionPriceRangeInfo":{"capEff":{"desc":"Hệ số được tính toán dựa trên mức độ tập trung trong phạm vi của bạn. Điều này cho biết bạn có thể kiếm được bao nhiêu phần thưởng so với vị thế toàn dải có cùng số vốn.","label":"Hiệu quả vốn"},"depositR":{"desc":"Tỷ lệ gửi tiền của hai mã thông báo được xác định dựa trên giá hiện tại và phạm vi giá đã đặt.","label":"Tỷ lệ tiền gửi"},"feeApr":{"desc":"APR ước tính từ phí hoán đổi được tính toán dựa trên phạm vi giá đã chọn của vị thế.","label":"Phí APR"}},"priceRangeType":{"active":"Tích cực","custom":"Phong tục","passive":"Thụ động"},"protocolFee":{"txt":"Phí giao thức"},"rangeStatus":{"inRange":"Trong phạm vi","inRange_short":"TRONG","outRange":"Ngoài phạm vi","outRange_short":"Ngoài"},"rewardType":{"external":"Phần thưởng bên ngoài","internal":"Phần thưởng nội bộ","swapFee":"Phí hoán đổi"},"selectAToken":"Chọn mã thông báo\n","staked":"đặt cược","stakingIncentiveType":{"external":"Bên ngoài","internal":"Nội bộ"},"switchGnoland":"Chuyển sang Gnoland","token":"Mã thông báo"}
+{
+  "amount": "Số tiền",
+  "balance": "Cân bằng",
+  "currentPrice": "Giá hiện tại",
+  "feeTierDesc": {
+    "100": "Phù hợp nhất cho các cặp rất ổn định",
+    "500": "Phù hợp nhất cho các cặp tiền tệ ổn định",
+    "3000": "Phù hợp nhất với hầu hết các cặp đôi",
+    "10000": "Phù hợp nhất cho các cặp tiền tệ hiếm"
+  },
+  "incentive": "Chính sách khuyến khích",
+  "liquidity": "Khả năng thanh khoản",
+  "maxPrice": "Giá tối đa",
+  "minPrice": "Giá tối thiểu",
+  "noPosition": "Không có vị trí",
+  "onchainActi": {
+    "action": {
+      "add": "Thêm",
+      "cancel": "Hủy",
+      "claim": "Yêu cầu",
+      "claimDeposit": "Yêu cầu hoàn lại tiền đặt cọc",
+      "claimFees": "Phí yêu cầu bồi thường",
+      "claimRewards": "Nhận phần thưởng",
+      "create": "Tạo",
+      "decrease": "Giảm",
+      "delegate": "Đại biểu",
+      "deposit": "Tiền gửi",
+      "execute": "Thực thi",
+      "incentivize": "Tạo động lực",
+      "increase": "Tăng",
+      "remove": "Xóa",
+      "reposition": "Điều chỉnh vị trí",
+      "stake": "Cổ phần",
+      "swap": "Hoán đổi",
+      "undelegate": "Hủy ủy quyền",
+      "unstake": "Rút tiền đặt cược",
+      "vote": "Bỏ phiếu"
+    }
+  },
+  "pageHeader": {
+    "addPosi": "Thêm vị trí",
+    "dashboard": "Khám phá",
+    "decreaseLiqui": "Giảm tính thanh khoản",
+    "earn": "Kiếm tiền",
+    "incentivzePool": "Quỹ khuyến khích",
+    "increaseLiqui": "Tăng tính thanh khoản",
+    "removePosi": "Xóa vị trí",
+    "reposition": "Điều chỉnh vị trí",
+    "stakePosition": "Vị thế đặt cược",
+    "unstakePosition": "Hủy đặt cược",
+    "wallet": "Danh mục đầu tư"
+  },
+  "positionHistoryAction": {
+    "claimFees": "Phí yêu cầu bồi thường",
+    "create": "Tạo"
+  },
+  "positionPriceRangeInfo": {
+    "capEff": {
+      "desc": "Hệ số nhân được tính dựa trên mức độ tập trung của danh mục đầu tư của bạn. Chỉ số này cho biết bạn có thể kiếm được thêm bao nhiêu phần thưởng so với một danh mục đầu tư đa dạng hoàn toàn với cùng mức vốn.",
+      "label": "Hiệu quả sử dụng vốn"
+    },
+    "depositR": {
+      "desc": "Tỷ lệ ký quỹ của hai loại token này được xác định dựa trên giá hiện tại và phạm vi giá đã đặt.",
+      "label": "Tỷ lệ dự trữ bắt buộc"
+    },
+    "feeApr": {
+      "desc": "​Được tính toán dựa trên mức phí hàng năm, dựa trên dữ liệu trong 24 giờ qua. Phần thưởng thực tế của bạn sẽ dao động tùy thuộc vào sự thay đổi của TVL và giá của pool.",
+      "label": "Lãi suất hàng năm (APR)"
+    }
+  },
+  "priceRangeType": {
+    "active": "Hoạt động",
+    "custom": "Tùy chỉnh",
+    "passive": "Thụ động"
+  },
+  "protocolFee": {
+    "txt": "Phí sử dụng bộ định tuyến"
+  },
+  "rangeStatus": {
+    "active": "Hoạt động",
+    "inactive": "Không hoạt động"
+  },
+  "rewardType": {
+    "external_reward": "Phần thưởng từ bên ngoài",
+    "internal_reward": "Phần thưởng nội bộ",
+    "swap_fee": "Phí hoán đổi"
+  },
+  "selectAToken": "Chọn một mã thông báo\n",
+  "staked": "Được đặt cược",
+  "stakingIncentiveType": {
+    "external": "Bên ngoài",
+    "internal": "Nội bộ"
+  },
+  "switchGnoland": "Chuyển sang Gnoland",
+  "token": "Token",
+  "unstakingFee": {
+    "txt": "Phí rút tiền đặt cọc"
+  },
+  "value": "Giá trị",
+  "withdrawalFee": {
+    "txt": "Phí rút tiền"
+  }
+}

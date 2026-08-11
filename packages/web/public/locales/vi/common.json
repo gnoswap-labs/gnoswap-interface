@@ -1,1 +1,180 @@
-{"action":{"balance":"Sự cân bằng","cancel":"Hủy bỏ","close":"Đóng","copy":"Sao chép","earn":"Kiếm","swap":"Tráo đổi"},"all":"Tất cả","available":"Có sẵn","balanceChange":{"currentBalance":"Số dư hiện tại","defaultTitle":"3. Thay đổi số dư","newBalance":"Cân bằng mới"},"barChart":{"fees":"Phí","tradingVol":"Khối lượng giao dịch"},"btn":{"insuffiBal":"Số dư không đủ","walletLogin":"Đăng nhập ví"},"clickHere":"Bấm vào đây!","closed":"Đã đóng","conjunction":{"and":"Và","for":"vì"},"copied":"Đã sao chép","day":{"base":"ngày","count_other":"{{count}} ngày","today":"Hôm nay"},"imporNote":"Lưu ý quan trọng","learnMore":"Tìm hiểu thêm","localTimeComp":{"tooltip":"*Dựa trên giờ địa phương của bạn"},"main":"Chủ yếu","max":"Tối đa","month":{"apr":"Tháng tư","aug":"tháng 8","dec":"Tháng 12","feb":"Tháng hai","jan":"Tháng Một","july":"Tháng bảy","june":"Tháng sáu","mar":"Bước đều","may":"Có thể","nov":"Tháng mười một","oct":"Tháng Mười","sep":"Tháng 9"},"noData":"Không có dữ liệu","noDataFound":"Không tìm thấy dữ liệu nào","per":"mỗi","poolGraph":{"tooltip":{"positionAmt":"Số tiền của vị trí.","priceRange":"Phạm vi giá","quote":"Trích dẫn","totalAmt":"Tổng số tiền."}},"price":"Giá","reset":"Cài lại","search":"Tìm kiếm","select":"Lựa chọn","select_all":"Chọn tất cả","selectPairBtn":{"modal":{"noData":"Không tìm thấy dữ liệu nào","searchInputPlaceholder":"Tìm kiếm theo Tên, Ký hiệu hoặc Đường dẫn","title":"Chọn một mã thông báo"},"select":"Lựa chọn"},"settingModal":{"autoButton":"Tự động","slipTol":"Khả năng chịu trượt","slipTolTooltip":"Giao dịch của bạn sẽ hoàn nguyên nếu giá thay đổi bất lợi nhiều hơn tỷ lệ phần trăm này.","title":"Cài đặt"},"swapUrlCopied":"Đã sao chép URL hoán đổi!","urlCopied":"Đã sao chép URL!"}
+{
+  "action": {
+    "balance": "Cân bằng",
+    "cancel": "Hủy",
+    "close": "Đóng",
+    "copy": "Sao chép",
+    "earn": "Kiếm tiền",
+    "swap": "Hoán đổi"
+  },
+  "all": "Tất cả",
+  "available": "Còn hàng",
+  "balanceChange": {
+    "currentBalance": "Số dư hiện tại",
+    "defaultTitle": "3. Thay đổi về cân bằng",
+    "newBalance": "New Balance"
+  },
+  "barChart": {
+    "fees": "Phí",
+    "tradingVol": "Khối lượng giao dịch"
+  },
+  "btn": {
+    "amountTooLow": "Số tiền quá thấp",
+    "enterAmount": "Nhập số tiền",
+    "insuffiBal": "Số dư không đủ",
+    "switchNetwork": "Chuyển sang Gnoland",
+    "walletLogin": "Đăng nhập bằng ví"
+  },
+  "clickHere": "Nhấp vào đây!",
+  "closed": "Đã đóng",
+  "conjunction": {
+    "and": "và",
+    "for": "để"
+  },
+  "copied": "Đã sao chép!",
+  "day": {
+    "base": "ngày",
+    "count_other": "{{count}} ngày",
+    "today": "Hôm nay"
+  },
+  "guide": {
+    "governance": {
+      "action": "Đại biểu GNS",
+      "subtitle": "Tìm hiểu về cơ chế quản trị của GnoSwap và cách nhận xGNS để kiếm được một phần phí giao dịch trên GnoSwap.",
+      "title": "Hệ thống quản trị của GnoSwap hoạt động như thế nào?"
+    },
+    "launchpad": {
+      "action": "Tham gia ngay",
+      "subtitle": "Tìm hiểu về GnoSwap Launchpad và cách tham gia vào đợt ra mắt token của một dự án trên GnoSwap.",
+      "title": "Làm thế nào để tham gia GnoSwap Launchpad?"
+    },
+    "leaderboard": {
+      "action": "Khám phá ngay",
+      "subtitle": "Tìm hiểu về Bảng xếp hạng GnoSwap và cách thăng hạng để có cơ hội nhận phần thưởng trên GnoSwap.",
+      "title": "Bảng xếp hạng là gì?"
+    },
+    "learnMore": "Tìm hiểu thêm",
+    "position": {
+      "action": "Tạo vị trí",
+      "subtitle": "Tìm hiểu về các vị thế và cách cung cấp thanh khoản để nhận phần thưởng trên GnoSwap.",
+      "title": "“Vị trí” là gì?"
+    },
+    "staking": {
+      "action": "Xác định quan điểm",
+      "subtitle": "Tìm hiểu về staking và cách thực hiện staking để tối đa hóa phần thưởng trên GnoSwap.",
+      "title": "Staking hoạt động như thế nào?"
+    }
+  },
+  "imporNote": "Lưu ý quan trọng",
+  "learnMore": "Tìm hiểu thêm",
+  "localTimeComp": {
+    "tooltip": "*Dựa trên múi giờ địa phương của bạn"
+  },
+  "main": "Trang chủ",
+  "max": "Max",
+  "month": {
+    "apr": "Tháng Tư",
+    "aug": "Tháng 8",
+    "dec": "Tháng 12",
+    "feb": "tháng Hai",
+    "jan": "Tháng Giêng",
+    "july": "Tháng Bảy",
+    "june": "Tháng Sáu",
+    "mar": "Tháng Ba",
+    "may": "Tháng Năm",
+    "nov": "Tháng Mười Một",
+    "oct": "Tháng Mười",
+    "sep": "Tháng Chín"
+  },
+  "noData": "Không có dữ liệu",
+  "noDataFound": "Không tìm thấy dữ liệu nào",
+  "noProposalFound": "Không tìm thấy đề xuất nào",
+  "per": "mỗi",
+  "poolGraph": {
+    "tooltip": {
+      "positionAmt": "Chức vụ",
+      "priceRange": "Phạm vi giá",
+      "quote": "Trích dẫn",
+      "totalAmt": "Tổng số tiền"
+    }
+  },
+  "price": "Giá",
+  "reset": "Đặt lại",
+  "search": "Tìm kiếm",
+  "select": "Chọn",
+  "select_all": "Chọn tất cả",
+  "selectPairBtn": {
+    "modal": {
+      "noData": "Không tìm thấy dữ liệu nào",
+      "searchInputPlaceholder": "Tìm kiếm theo tên, ký hiệu hoặc đường dẫn",
+      "title": "Chọn một mã thông báo"
+    },
+    "select": "Chọn"
+  },
+  "settingModal": {
+    "autoButton": "Tự động",
+    "slipTol": "Dung sai trượt",
+    "slipTolTooltip": "Các giao dịch của bạn sẽ bị hủy nếu giá tại <br/>thay đổi theo hướng bất lợi với mức chênh lệch vượt quá tỷ lệ phần trăm này.",
+    "title": "Cài đặt"
+  },
+  "social": {
+    "connect": {
+      "email": {
+        "invalid": "Vui lòng nhập địa chỉ email hợp lệ",
+        "placeholder": "Địa chỉ email"
+      },
+      "or": "HOẶC",
+      "sign": {
+        "google": "Đăng nhập bằng Google",
+        "x": "Đăng nhập bằng X"
+      }
+    },
+    "connecting": {
+      "desc": {
+        "email": "Hãy kiểm tra hộp thư điện tử của bạn để chấp thuận kết nối.",
+        "sns": "Hãy xác nhận kết nối trong cửa sổ bật lên."
+      },
+      "title": "Kết nối với {{loginType}}"
+    },
+    "modal": {
+      "expiredSession": {
+        "desc": "Phiên làm việc của bạn đã hết hạn do không có hoạt động.<br/>Vui lòng đăng nhập lại để tiếp tục.",
+        "title": "Phiên làm việc đã hết hạn"
+      },
+      "transaction": {
+        "approve": "Phê duyệt",
+        "column": {
+          "account": "Tài khoản",
+          "function": "Chức năng",
+          "memo": "Thông báo",
+          "networkFee": "Phí mạng",
+          "realm": "Vương quốc"
+        },
+        "placeholder": {
+          "optional": "(Tùy chọn)"
+        },
+        "title": "Chấp thuận giao dịch",
+        "validation": {
+          "domain": "Hãy kiểm tra lại tên miền của bạn. Có thể đây là một vụ lừa đảo."
+        },
+        "view": "Xem dữ liệu giao dịch"
+      },
+      "warning": {
+        "desc": "Bạn có thể sử dụng các tính năng cơ bản của ví, chẳng hạn như chuyển tài sản <br/> và ký giao dịch, thông qua ví xã hội. <br/> Để truy cập các tính năng nâng cao của ví, như xuất khóa riêng <br/> hoặc thay đổi mạng, vui lòng cài đặt tiện ích mở rộng ví Adena tại <br/> và đăng nhập bằng cùng một tài khoản xã hội <br/>.",
+        "dontShow": "Không hiển thị lại trong 30 ngày",
+        "link": {
+          "adena": "Truy cập để cài đặt Adena",
+          "faq": "Ví xã hội hoạt động như thế nào?"
+        },
+        "title": "Thông báo về việc sử dụng ví điện tử trên mạng xã hội"
+      }
+    },
+    "notification": {
+      "content": "Để sử dụng đầy đủ các tính năng của ví, hãy cài đặt ứng dụng “ <br/> ” và “Adena” tại <link/>, sau đó đăng nhập bằng tài khoản mạng xã hội tương ứng.",
+      "footer": "Ví xã hội hoạt động như thế nào?",
+      "title": "Bạn đang sử dụng ví xã hội"
+    }
+  },
+  "swapUrlCopied": "Đã sao chép URL!",
+  "urlCopied": "Đã sao chép URL!"
+}

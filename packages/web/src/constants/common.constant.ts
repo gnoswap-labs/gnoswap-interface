@@ -307,7 +307,6 @@ export const SEOInfo: Record<
 
 export const LANGUAGES = [
   { code: "en", name: "English" },
-  { code: "de", name: "Deutsch" },
   { code: "es", name: "Español" },
   { code: "fr", name: "Français" },
   { code: "ja", name: "日本語" },
@@ -325,7 +324,6 @@ export const DEFAULT_POOL_PATH = [...DEFAULT_TOKEN_PAIR.sort(sortTokenPaths), "3
 
 export const LANGUAGE_CODE_MAP: Record<string, string> = {
   en: "en-US",
-  de: "de-DE",
   es: "es-ES",
   fr: "fr-FR",
   ja: "ja-JP",
