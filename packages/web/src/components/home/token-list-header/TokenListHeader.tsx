@@ -65,7 +65,7 @@ const TokenListHeader: React.FC<TokenListHeaderProps> = ({
       checked={showUnverifiedTokens}
       onChange={toggleShowUnverifiedTokens}
       hasLabel={true}
-      labelText={t("Main:tokenList.showUnverifiedTokens")}
+      labelText={t("Main:tokenList.showUnverifiedTokens", { defaultValue: "Show unverified tokens" })}
       labelExtra={unverifiedTokensInfo}
       labelExtraPosition="before"
     />

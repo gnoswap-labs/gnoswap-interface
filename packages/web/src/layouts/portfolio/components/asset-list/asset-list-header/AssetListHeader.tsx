@@ -73,7 +73,7 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
             checked={showUnverifiedTokens}
             onChange={toggleShowUnverifiedTokens}
             hasLabel={true}
-            labelText={t("Wallet:assets.showUnverifiedTokens")}
+            labelText={t("Wallet:assets.showUnverifiedTokens", { defaultValue: "Show unverified tokens" })}
           />
           {connected && (
             <Switch
