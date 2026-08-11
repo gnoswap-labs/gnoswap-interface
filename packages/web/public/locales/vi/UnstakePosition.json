@@ -1,1 +1,45 @@
-{"btn":{"selectPosi":"Chọn vị trí"},"confStakeModal":{"btn":"Xác nhận vị trí hủy đặt cược","positionLst":"Vị trí","stakingReward":{"apr":{"label":"Đặt cược APR","tooltip":"Phạm vi APR ước tính được tính bằng cách áp dụng hệ số nhân động vào vị thế đặt cược của bạn, dựa trên thời hạn đặt cược."},"title":"Đặt cược phần thưởng"},"title":"Xác nhận vị trí hủy đặt cược","unstakingFee":{"tooltip":"Tỷ lệ phần trăm phí được tính trên phần thưởng đặt cược của vị thế được yêu cầu (không phải trên tiền gốc) được chuyển vào giao thức."},"warning":{"content":"APR của bạn sẽ giảm từ {{currentPercent}} → <1> {{swapFeePercent}}</1>","title":"Lưu ý quan trọng"}},"overview":{"collectAsSwitch":"Thu thập dưới dạng WGNOT","pooled":"gộp lại","totalAmt":"Tổng cộng","unclaimed":"Phần thưởng chưa nhận"},"positionList":{"item":{"tooltip":{"tokenID":"ID mã thông báo"}}},"rewards":"Phần thưởng","title":"Bỏ đặt cược vị thế","unclaimed":"Chưa được xác nhận","unclaimedRewards":"Phần thưởng chưa được nhận","warning":{"content":"Điều này sẽ thiết lập lại hoàn toàn tiến trình đặt cược của bạn. Sau khi đặt cược lại, bạn sẽ phải đợi 30 ngày để bắt đầu nhận phần thưởng đặt cược tối đa. Hãy chắc chắn hiểu rõ giai đoạn khởi động diễn ra như thế nào trước khi bỏ đặt cọc.","title":"Tiến trình đặt cược của bạn sẽ được đặt lại"}}
+{
+  "btn": {
+    "selectPosi": "Chọn vị trí"
+  },
+  "confStakeModal": {
+    "btn": "Xác nhận việc rút tiền khỏi vị thế",
+    "positionLst": "Các vị trí",
+    "stakingReward": {
+      "apr": {
+        "label": "Lãi suất hàng năm (APR) khi tham gia staking",
+        "tooltip": "Phạm vi lãi suất hàng năm ước tính (APR) được tính toán bằng cách áp dụng một\nhệ số nhân động cho số tiền bạn đã staking, dựa trên\nthời gian staking."
+      },
+      "title": "Phần thưởng từ việc staking"
+    },
+    "title": "Xác nhận việc rút tiền khỏi vị thế",
+    "unstakingFee": {
+      "tooltip": "Tỷ lệ phần trăm phí được tính trên phần thưởng staking đã nhận của vị thế (không tính trên số vốn gốc) được chuyển cho giao thức."
+    },
+    "warning": {
+      "content": "Tỷ lệ phần trăm hàng năm (APR) của bạn sẽ giảm từ {{currentPercent}} → <1>{{swapFeePercent}}</1>",
+      "title": "Lưu ý quan trọng"
+    }
+  },
+  "overview": {
+    "collectAsSwitch": "Thu thập dưới tên WGNOT",
+    "pooled": "Tổng hợp",
+    "totalAmt": "Tổng số tiền",
+    "unclaimed": "Tiền thưởng chưa có người nhận"
+  },
+  "positionList": {
+    "item": {
+      "tooltip": {
+        "tokenID": "Mã vị trí"
+      }
+    }
+  },
+  "rewards": "Phần thưởng",
+  "title": "Hủy đặt cược",
+  "unclaimed": "Chưa có người nhận",
+  "unclaimedRewards": "Phần thưởng chưa có người nhận",
+  "warning": {
+    "content": "Thao tác này sẽ đặt lại hoàn toàn tiến trình staking của bạn. Sau khi thực hiện staking lại, bạn sẽ phải đợi 30 ngày mới bắt đầu nhận được phần thưởng staking tối đa. Hãy đảm bảo rằng bạn đã hiểu rõ cách thức hoạt động của giai đoạn khởi động trước khi hủy staking.",
+    "title": "Tiến trình staking của bạn sẽ được đặt lại"
+  }
+}

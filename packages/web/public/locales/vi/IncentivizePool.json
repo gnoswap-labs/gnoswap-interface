@@ -1,1 +1,102 @@
-{"confirmModal":{"btn":"Xác nhận quỹ khuyến khích","row":{"label":{"pool":"Hồ bơi"},"title":"Phần thưởng","value":{"period":{"desc":"{{amount}} {{symbol}} sẽ được phân phối hàng ngày"}}},"title":"Xác nhận quỹ khuyến khích"},"creationDeposit":{"title":"Tiền gửi tạo động lực","tooltip":"Số tiền phí được gửi để kích hoạt ưu đãi. Có thể hoàn lại toàn bộ sau khi chương trình hoàn tất."},"disclaimer":{"description":"Tính năng này cho phép bạn cung cấp các ưu đãi dưới dạng phần thưởng đặt cược cho một nhóm thanh khoản cụ thể. Trước khi tiếp tục, hãy đảm bảo rằng bạn hiểu cơ chế khuyến khích bên ngoài và Giai đoạn khởi động<docs_link/> . Số tiền chưa phân phối từ Giai đoạn khởi động sẽ được gửi đến địa chỉ của nhà cung cấp phần thưởng sau khi hoàn thành giai đoạn khuyến khích.﻿<br /><br />Khi bạn hoàn thành bước này, bạn KHÔNG THỂ rút phần thưởng. Các ưu đãi bạn thêm sẽ được tự động phân phối theo hợp đồng.","title":"Tuyên bố miễn trừ trách nhiệm"},"incenDetail":{"row":{"label":{"period":"Giai đoạn","pool":"Hồ bơi","totalAmt":"Tổng cộng"},"value":{"period":{"desc":"{{symbol}} sẽ được phân phối hàng ngày"}}}},"incentiPool":{"form":{"header":"Khuyến khích nhóm","period":{"field":{"disPeriod":{"tootlip":"Ưu đãi được phân phối dựa trên số lượng khối. Khoảng thời gian phân phối mang tính gần đúng và có thể hơi khác so với thời gian thực tế dựa trên điều kiện mạng của blockchain."},"startDate":{"label":"Ngày bắt đầu"}},"label":"2. Chọn thời gian phân phối"},"pool":{"col":{"liqui":"Thanh khoản","pools":"Bể bơi"},"label":"1. Chọn nhóm","searchPlaceHolder":"Tìm kiếm theo Tên, Ký hiệu hoặc Đường dẫn"},"rewaAmt":{"label":"3. Đặt số tiền thưởng"}}},"liquidity":"Thanh khoản","rewards":"Phần thưởng","selectToken":"Chọn một mã thông báo","setReward":"Đặt số tiền thưởng","submitBtn":{"amtTooLow":"Số tiền quá thấp","enterAmt":"Nhập số tiền","incentiPool":"Khuyến khích nhóm","insuffiDep":"Tiền gửi sáng tạo không đủ","selectPool":"Chọn nhóm","switch":"Chuyển sang Gnoland"}}
+{
+  "confirmModal": {
+    "btn": "Xác nhận Quỹ khuyến khích",
+    "row": {
+      "label": {
+        "pool": "Hồ bơi"
+      },
+      "title": "Phần thưởng",
+      "value": {
+        "period": {
+          "desc": "{{amount}} {{symbol}} sẽ được phân phối hàng ngày"
+        }
+      }
+    },
+    "title": "Xác nhận Quỹ khuyến khích"
+  },
+  "creationDeposit": {
+    "title": "Tiền gửi tạo động lực",
+    "tooltip": "Số lượng GNS được gửi vào để kích hoạt chương trình khuyến khích. Số GNS này có thể được hoàn lại toàn bộ sau khi chương trình kết thúc."
+  },
+  "disclaimer": {
+    "description": "Tính năng này cho phép bạn cung cấp các khoản khuyến khích dưới dạng phần thưởng staking cho một bể thanh khoản cụ thể. Trước khi tiếp tục, hãy đảm bảo rằng bạn đã hiểu rõ cơ chế hoạt động của các khoản khuyến khích bên ngoài và các giai đoạn Warm-up tại<docs_link/>. Số tiền chưa được phân phối từ các giai đoạn Warm-up sẽ được chuyển đến địa chỉ của nhà cung cấp khuyến khích ngay sau khi giai đoạn khuyến khích kết thúc.﻿<br /><br />Sau khi hoàn tất bước này, bạn SẼ KHÔNG THỂ rút phần thưởng. Các phần thưởng bạn thêm vào sẽ được hợp đồng phân phối tự động.",
+    "title": "Lưu ý"
+  },
+  "incenDetail": {
+    "row": {
+      "label": {
+        "distributionPeriod": "Thời gian phân phối",
+        "period": "Kỳ",
+        "pool": "Hồ bơi",
+        "totalAmt": "Tổng số tiền"
+      },
+      "value": {
+        "period": {
+          "desc": "{{symbol}} sẽ được phân phối hàng ngày"
+        }
+      }
+    }
+  },
+  "incentiPool": {
+    "form": {
+      "header": "Quỹ khuyến khích",
+      "period": {
+        "field": {
+          "disPeriod": {
+            "tootlip": "Phần thưởng được phân phối dựa trên số lượng khối. Thời gian phân phối chỉ mang tính tham khảo và có thể khác biệt nhẹ so với thời gian thực tế tùy thuộc vào tình trạng mạng của blockchain."
+          },
+          "startDate": {
+            "label": "Ngày bắt đầu"
+          }
+        },
+        "label": "2. Chọn khoảng thời gian phân phối"
+      },
+      "pool": {
+        "col": {
+          "pools": "Hồ bơi",
+          "tvl": "TVL"
+        },
+        "label": "1. Chọn nhóm",
+        "searchPlaceHolder": "Tìm kiếm theo tên, ký hiệu hoặc đường dẫn"
+      },
+      "rewaAmt": {
+        "label": "3. Đặt mức thưởng"
+      }
+    },
+    "history": {
+      "button": {
+        "claim": "Yêu cầu"
+      },
+      "label": {
+        "claimableUnvestedAmount": "Số tiền chưa được hưởng có thể yêu cầu thanh toán",
+        "depositAmount": "Số tiền đặt cọc",
+        "endDate": "Ngày kết thúc",
+        "incentivizedAmount": "Số tiền được khuyến khích",
+        "pool": "Hồ bơi",
+        "remainingAmount": "Số tiền còn lại",
+        "startDate": "Ngày bắt đầu",
+        "token": "Token",
+        "unvestedAmount": "Số tiền chưa được giải phóng"
+      },
+      "tooltip": {
+        "claimableUnvestedAmount": "Số tiền mà nhà cung cấp hiện có thể yêu cầu thanh toán sau khi chương trình khuyến khích đã kết thúc.",
+        "depositAmount": "Số lượng token đã được gửi vào khi chương trình khuyến khích này được thiết lập. Số token này sẽ được hoàn trả toàn bộ sau khi chương trình khuyến khích kết thúc.",
+        "incentivizedAmount": "Số lượng token được phân bổ làm phần thưởng cho nhóm.",
+        "remainingAmount": "Số lượng token còn lại trong pool.",
+        "unvestedAmount": "Số lượng token chưa được giải phóng do giai đoạn khởi động <link/>. Số lượng này sẽ được hiển thị và có thể được nhận bởi địa chỉ của nhà cung cấp sau khi chương trình khuyến khích kết thúc."
+      }
+    }
+  },
+  "liquidity": "Khả năng thanh khoản",
+  "rewards": "Phần thưởng",
+  "selectToken": "Chọn một mã thông báo",
+  "setReward": "Đặt số tiền thưởng",
+  "submitBtn": {
+    "amtTooLow": "Số tiền quá thấp",
+    "enterAmt": "Nhập số tiền",
+    "incentiPool": "Quỹ khuyến khích",
+    "insuffiDep": "Số tiền ký quỹ tạo lập không đủ",
+    "selectPool": "Chọn hồ bơi",
+    "switch": "Chuyển sang Gnoland"
+  }
+}

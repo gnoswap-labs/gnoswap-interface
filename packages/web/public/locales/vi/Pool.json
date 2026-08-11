@@ -1,1 +1,110 @@
-{"gotoIncentivizeGuide":{"add":"Bạn muốn thêm các ưu đãi cho nhóm này?","boost":"Bạn muốn tăng cường ưu đãi cho nhóm này?"},"poolInfo":{"section":{"apr":{"fee":"Phí 24h","reward":"Phần thưởng 24h","tooltip":{"feeApr":"Phí APR","stakingApr":"Đặt cược APR","title":"Phân tích APR"}},"volume":{"allTimeVol":"Khối lượng mọi thời đại","title":"Tập 24h"}}},"position":{"btn":{"addPosition":"Thêm vị trí","removePosition":"Xóa vị trí"},"card":{"balance":{"title":"Sự cân bằng","title_total":"Tổng số dư"},"btn":{"claimAll":"Yêu cầu tất cả","copyPosition":"Sao chép định vị","manage":{"decrease":"Giảm thanh khoản","increase":"Tăng tính thanh khoản","label":"Quản lý","reposition":"Tái định vị"}},"claimableReward":{"title":"Phần thưởng có thể yêu cầu","title_total":"Tổng số phần thưởng có thể nhận được"},"dailyEarn":{"title":"Thu nhập hàng ngày","title_total":"Tổng thu nhập hàng ngày"},"fee":"Phí","history":{"col":{"action":"Hoạt động","time":"Dấu thời gian","value":"Giá trị"},"empty":"Không tìm thấy lịch sử vị trí","title":"Lịch sử vị thế"},"reward":"Phần thưởng"},"ratioTooltip":"Giá mà vị thế sẽ được chuyển đổi hoàn toàn thành<br/> {{symbol}}.","showClosed":"Hiển thị các vị trí đã đóng","title":"Vị trí của tôi","title_other":"Vị trí của"},"staking":{"btn":{"stake":"Vị trí cổ phần","unstake":"Vị trí hủy đặt cược"},"intro":"Đặt cược vị trí của bạn để kiếm được phần thưởng lên tới","keepStakingNote":{"four":"Nhận phần thưởng tối đa ✨","one":"Tạo vị trí đầu tiên của bạn để bắt đầu ⛵","three":"Tiếp tục đặt cược để nhận phần thưởng cao hơn ⌛","two":"Đặt cược vị trí của bạn để bắt đầu ⛵"},"myStake":"Đặt cược của tôi","period":{"stakedTooltip":{"nextTier":"Bậc tiếp theo","stakedDate":"Ngày đặt cọc","totalValue":"Tổng giá trị"},"subtitle":"{{percent}} Phần thưởng tối đa","subtitle_max":"Nhận phần thưởng tối đa","subtitleTooltip":"Trong thời gian đặt cược này, bạn sẽ chỉ nhận được {{percent}} phần thưởng đặt cược tối đa của mình. Giữ vị trí của bạn được đặt cược để tăng phần thưởng của bạn.","subtitleTooltip_max":"Trong thời gian đặt cược này, bạn sẽ chỉ nhận được phần thưởng đặt cược tối đa. Giữ vị trí của bạn được đặt cược để duy trì phần thưởng của bạn.","title":"Đặt cược ít hơn {{days}} ngày","title_max":"Đặt cược nhiều hơn {{days}} ngày"},"title":"đặt cược","tooltip":{"hoverGuide":"Di chuột để xem chi tiết","rewardInfo":{"endDate":"Ngày cuối","incentAmt":"Số tiền khuyến khích","remainingAmt":"Số tiền còn lại","startDate":"Ngày bắt đầu"}}},"wanttoaddup":"Bạn muốn tăng cường ưu đãi cho nhóm này?"}
+{
+  "gotoIncentivizeGuide": {
+    "add": "Bạn có muốn cộng các khoản khuyến khích cho nhóm này không?",
+    "boost": "Bạn có muốn tăng mức thưởng cho nhóm này không?"
+  },
+  "poolInfo": {
+    "section": {
+      "apr": {
+        "fee": "Phí 24 giờ",
+        "reward": "Phần thưởng 24h",
+        "tooltip": {
+          "feeApr": "Lãi suất hàng năm (APR)",
+          "stakingApr": "Lãi suất hàng năm (APR) khi tham gia staking",
+          "title": "Chi tiết về APR"
+        }
+      },
+      "volume": {
+        "allTimeVol": "Khối lượng giao dịch tích lũy",
+        "title": "Tập 24h"
+      }
+    }
+  },
+  "position": {
+    "btn": {
+      "addPosition": "Thêm vị trí",
+      "removePosition": "Xóa vị trí"
+    },
+    "card": {
+      "balance": {
+        "title": "Cân bằng",
+        "title_total": "Số dư tổng cộng"
+      },
+      "btn": {
+        "claimAll": "Nhận tất cả",
+        "copyPosition": "Sao chép định vị",
+        "manage": {
+          "decrease": "Giảm tính thanh khoản",
+          "increase": "Tăng tính thanh khoản",
+          "label": "Quản lý",
+          "reposition": "Điều chỉnh vị trí"
+        }
+      },
+      "claimableReward": {
+        "title": "Phần thưởng có thể nhận",
+        "title_total": "Tổng số phần thưởng có thể nhận được"
+      },
+      "claimedReward": {
+        "title": "Phần thưởng đã nhận",
+        "title_total": "Tổng số phần thưởng đã yêu cầu"
+      },
+      "dailyEarn": {
+        "title": "Thu nhập hàng ngày",
+        "title_total": "Tổng thu nhập hàng ngày"
+      },
+      "fee": "Phí",
+      "history": {
+        "col": {
+          "action": "Hành động",
+          "time": "Dấu thời gian",
+          "value": "Giá trị"
+        },
+        "empty": "Không tìm thấy lịch sử vị thế",
+        "title": "Lịch sử vị trí"
+      },
+      "reward": "Phần thưởng"
+    },
+    "ratioTooltip": "Mức giá mà tại đó vị thế sẽ được chuyển đổi hoàn toàn thành các hợp đồng tương lai có đòn bẩy ( {{symbol}}).",
+    "showClosed": "Hiển thị các vị thế đã đóng",
+    "title": "Các vị trí của tôi",
+    "title_other": "Các vị trí"
+  },
+  "staking": {
+    "btn": {
+      "stake": "Vị thế đặt cược",
+      "unstake": "Hủy đặt cược"
+    },
+    "intro": "Đặt cược vào vị thế của bạn để nhận phần thưởng lên đến",
+    "keepStakingNote": {
+      "four": "Nhận phần thưởng tối đa ✨",
+      "one": "Tạo vị thế đầu tiên của bạn để bắt đầu ⛵",
+      "three": "Tiếp tục tham gia staking để nhận phần thưởng cao hơn ⌛",
+      "two": "Đặt cược để bắt đầu ⛵"
+    },
+    "myStake": "Hoạt động Staking của tôi",
+    "period": {
+      "stakedTooltip": {
+        "nextTier": "Cấp độ tiếp theo",
+        "stakedDate": "Ngày đặt cọc",
+        "totalValue": "Tổng giá trị"
+      },
+      "subtitle": "{{percent}} của Max Rewards",
+      "subtitle_max": "Nhận phần thưởng tối đa",
+      "subtitleTooltip": "Trong giai đoạn staking này, bạn sẽ chỉ nhận được {{percent}} phần thưởng staking tối đa của mình. Hãy duy trì vị thế staking để tăng phần thưởng của bạn.",
+      "subtitleTooltip_max": "Trong giai đoạn staking này, bạn sẽ nhận được phần thưởng staking tối đa. Hãy duy trì trạng thái staking để tiếp tục nhận phần thưởng.",
+      "title": "Thời gian đặt cược dưới {{days}} ngày",
+      "title_max": "Đặt cược trong hơn {{days}} ngày"
+    },
+    "title": "Staking",
+    "tooltip": {
+      "hoverGuide": "Di chuột vào để xem chi tiết",
+      "rewardInfo": {
+        "endDate": "Ngày kết thúc",
+        "incentAmt": "Số tiền được khuyến khích",
+        "remainingAmt": "Số tiền còn lại",
+        "startDate": "Ngày bắt đầu"
+      }
+    }
+  },
+  "wanttoaddup": "Bạn có muốn tăng mức thưởng cho nhóm này không?"
+}

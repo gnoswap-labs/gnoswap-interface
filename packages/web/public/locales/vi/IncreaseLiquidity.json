@@ -1,1 +1,23 @@
-{"btn":{"enterAmount":"Nhập số tiền"},"confirmIncreaseModal":{"increaseAmt":"Số tiền tăng dần","section":{"posiDetail":{"label":"Chi tiết vị trí"}},"title":"Xác nhận tăng thanh khoản"},"form":{"enterincreasingAmount":{"label":"2. Nhập số tiền tăng dần"},"selectPosition":{"label":"1. Chọn vị trí"}},"title":"Tăng tính thanh khoản"}
+{
+  "btn": {
+    "enterAmount": "Nhập số tiền"
+  },
+  "confirmIncreaseModal": {
+    "increaseAmt": "Số tiền ngày càng tăng",
+    "section": {
+      "posiDetail": {
+        "label": "Chi tiết về vị trí"
+      }
+    },
+    "title": "Xác nhận việc tăng thanh khoản"
+  },
+  "form": {
+    "enterincreasingAmount": {
+      "label": "2. Nhập số tiền tăng dần"
+    },
+    "selectPosition": {
+      "label": "1. Chọn vị trí"
+    }
+  },
+  "title": "Tăng tính thanh khoản"
+}

@@ -1,1 +1,81 @@
-{"assets":{"action":{"receive":"Nhận được","send":"Gửi"},"col":{"amount":"Số lượng","asset":"Tài sản","assetReceive":"Nhận được","assetSend":"Gửi","bal":"Sự cân bằng","chain":"Xích"},"empty":"Không tìm thấy mã thông báo nào","hideZeroAmt":"Ẩn số tiền bằng 0","title":"Tài sản"},"assetSendModal":{"addr":{"label":"Địa chỉ","tooltip":"Địa chỉ nhận tiền."},"btn":{"enterAddr":"Nhập một địa chỉ","enterAmt":"Nhập số tiền","invalidAddr":"Địa chỉ không hợp lệ","lowAmt":"Số tiền quá thấp","selectToken":"Chọn một mã thông báo"},"enterAddr":{"input":"Nhập địa chỉ"},"estNetFee":"Phí mạng ước tính","network":{"label":"Mạng","tooltip":"Mạng lưới mã thông báo sẽ được gửi."},"second":"≈ {{avgBlockTime}} giây","selectToken":{"label":"Chọn mã thông báo"},"warning":{"content1":"Kiểm tra lại để xác nhận địa chỉ nhập ở trên là chính xác và nằm trên blockchain Gnoland Mainnet.","content2":"KHÔNG gửi token đến địa chỉ hợp đồng. Gửi token đến địa chỉ hợp đồng có thể dẫn đến mất tiền của bạn.","content3":"Giao dịch KHÔNG THỂ bị hủy sau khi đã gửi.","title":"Ghi chú quan trọng"}},"gotoEarnAdd":"Thêm Vị trí để bắt đầu kiếm phần thưởng","myPosi":"Vị trí của tôi","overral":{"availBal":{"label":"Số dư khả dụng","tooltip":"Tổng số tài sản không được gửi vào nhóm thanh khoản."},"claimableReward":{"label":"Phần thưởng có thể yêu cầu","tooltip":"Tổng số phần thưởng chưa được nhận."},"claimAll":{"btn":"Yêu cầu tất cả"},"stakedPosi":{"dataTooltip":{"date":"Ngày đặt cọc","totalValue":"Tổng giá trị"},"label":"Vị trí đặt cọc","tooltip":"Tổng số vị trí đặt cược."},"totalBal":"Tổng số dư","totalClaimed":{"label":"Tổng số phần thưởng được yêu cầu","tooltip":"Tổng số phần thưởng tích lũy được yêu cầu."}}}
+{
+  "assets": {
+    "action": {
+      "receive": "Nhận",
+      "send": "Gửi"
+    },
+    "col": {
+      "amount": "Số tiền",
+      "asset": "Tài sản",
+      "assetReceive": "Nhận",
+      "assetSend": "Gửi",
+      "bal": "Cân bằng",
+      "chain": "Chuỗi"
+    },
+    "empty": "Không tìm thấy mã thông báo nào",
+    "hideZeroAmt": "Ẩn các số tiền bằng không",
+    "title": "Tài sản"
+  },
+  "assetSendModal": {
+    "addr": {
+      "label": "Địa chỉ",
+      "tooltip": "Địa chỉ mà tiền sẽ được chuyển đến."
+    },
+    "btn": {
+      "enterAddr": "Nhập địa chỉ",
+      "enterAmt": "Nhập số tiền",
+      "invalidAddr": "Địa chỉ không hợp lệ",
+      "lowAmt": "Số tiền quá thấp",
+      "selectToken": "Chọn một mã thông báo"
+    },
+    "enterAddr": {
+      "input": "Nhập địa chỉ"
+    },
+    "estNetFee": "Phí mạng ước tính",
+    "network": {
+      "label": "Mạng",
+      "tooltip": "Mạng của token cần gửi."
+    },
+    "second": "≈ {{avgBlockTime}} giây",
+    "selectToken": {
+      "label": "Chọn mã thông báo"
+    },
+    "warning": {
+      "content1": "Hãy kiểm tra lại để đảm bảo rằng địa chỉ bạn đã nhập ở trên là chính xác và thuộc chuỗi khối Gnoland Mainnet.",
+      "content2": "KHÔNG được gửi token đến các địa chỉ hợp đồng. Việc gửi token đến địa chỉ hợp đồng có thể dẫn đến việc bạn bị mất tiền.",
+      "content3": "Giao dịch KHÔNG THỂ bị hủy sau khi đã được gửi đi.",
+      "title": "Những lưu ý quan trọng"
+    }
+  },
+  "gotoEarnAdd": "Thêm một vị trí để bắt đầu nhận phần thưởng",
+  "myPosi": "Các vị trí của tôi",
+  "overral": {
+    "availBal": {
+      "label": "Số dư khả dụng",
+      "tooltip": "Tổng giá trị tài sản có thể sử dụng."
+    },
+    "claimableReward": {
+      "label": "Phần thưởng có thể nhận",
+      "tooltip": "Tổng số tiền thưởng chưa có người nhận."
+    },
+    "claimAll": {
+      "btn": "Nhận tất cả"
+    },
+    "stakedPosi": {
+      "dataTooltip": {
+        "date": "Ngày đặt cọc",
+        "totalValue": "Tổng giá trị"
+      },
+      "label": "Các vị thế đã đặt cược",
+      "tooltip": "Tổng giá trị các vị thế đã đặt cược."
+    },
+    "totalBal": "Số dư tổng cộng",
+    "totalClaimed": {
+      "label": "Tổng số phần thưởng đã yêu cầu",
+      "tooltip": "Tổng cộng các phần thưởng đã được yêu cầu."
+    }
+  },
+  "socialwallet": {
+    "badge": "Ví tài khoản mạng xã hội"
+  }
+}

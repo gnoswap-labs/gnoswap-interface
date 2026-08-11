@@ -1,1 +1,39 @@
-{"allSwitch":"Tất cả","bal":"Sự cân bằng","brand":{"introduction":"<span>Trao đổi</span> và <span>kiếm tiền</span><br/> Trên GnoSwap\n"},"followOur":"Hãy làm theo hướng dẫn đơn giản của chúng tôi để bắt đầu xây dựng tính thanh khoản cho dự án của bạn.","highest":"APR cao nhất","keyStatCard":{"swapFee24":"Phí hoán đổi 24h","swapVol24":"Khối lượng hoán đổi 24h","title":"Số liệu thống kê chính","toDashBoardBtnText":"Đi đến bảng điều khiển","totalValueLocked":"Tổng giá trị bị khóa"},"liquidityCol":"Thanh khoản","lookingTo":"Bạn đang muốn bắt đầu sử dụng GnoSwap?","newList":"Danh sách mới","projectOnb":"Hướng dẫn triển khai dự án","search":"Tìm kiếm","swapComp":"Tráo đổi","swapNowBtn":"Trao đổi ngay","theFirst":"AMM DEX thanh khoản tập trung đầu tiên được xây dựng bằng Gnolang","theOne":"Nền tảng DeFi Gnoland một cửa","tokenList":{"emptyText":"Không tìm thấy mã thông báo nào","header":{"last7daysCol":"7 ngày qua","marketCapCol":"Vốn hóa thị trường","mostLiquidCol":"Bể bơi lỏng nhất","nameCol":"Tên","priceCol":"Giá","volumeCol":"Khối lượng (24h)"},"title":"Mã thông báo"},"toOffer":"để cung cấp trải nghiệm DeFi đơn giản và thân thiện với người dùng nhất cho các nhà giao dịch.","trending":"Xu hướng"}
+{
+  "allSwitch": "Tất cả",
+  "bal": "Số dư",
+  "brand": {
+    "introduction": "<span>Trao đổi</span> và <span>kiếm</span><br/>trên GnoSwap\n"
+  },
+  "followOur": "Hãy làm theo hướng dẫn đơn giản của chúng tôi để bắt đầu xây dựng thanh khoản cho dự án của bạn.",
+  "highest": "Tỷ lệ phần trăm hàng năm (APR) cao nhất",
+  "keyStatCard": {
+    "swapFee24": "Phí hoán đổi trong 24 giờ",
+    "swapVol24": "Khối lượng giao dịch hoán đổi trong 24 giờ",
+    "title": "Các số liệu chính",
+    "toDashBoardBtnText": "Truy cập mục Khám phá",
+    "totalValueLocked": "Tổng giá trị được khóa"
+  },
+  "liquidityCol": "Khả năng thanh khoản",
+  "lookingTo": "Bạn đang muốn bắt đầu sử dụng GnoSwap?",
+  "newList": "Các tin đăng mới",
+  "projectOnb": "Hướng dẫn tham gia dự án",
+  "search": "Tìm kiếm",
+  "swapComp": "Hoán đổi",
+  "swapNowBtn": "Đi đến Hoán đổi",
+  "theFirst": "Sàn giao dịch phi tập trung (DEX) AMM với tính thanh khoản tập trung đầu tiên được xây dựng bằng ngôn ngữ lập trình Go",
+  "theOne": "Nền tảng DeFi một cửa Gnoland",
+  "tokenList": {
+    "emptyText": "Không tìm thấy mã thông báo nào",
+    "header": {
+      "last7daysCol": "7 ngày qua",
+      "marketCapCol": "Giá trị vốn hóa thị trường",
+      "mostLiquidCol": "Pool có tính thanh khoản cao nhất",
+      "nameCol": "Tên",
+      "priceCol": "Giá",
+      "volumeCol": "Khối lượng (24 giờ)"
+    },
+    "title": "Token"
+  },
+  "toOffer": "nhằm mang đến trải nghiệm DeFi đơn giản nhất và thân thiện nhất với người dùng cho các nhà giao dịch.",
+  "trending": "Xu hướng"
+}
