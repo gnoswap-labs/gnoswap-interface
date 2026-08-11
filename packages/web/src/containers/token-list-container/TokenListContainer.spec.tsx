@@ -14,6 +14,10 @@ jest.mock("@hooks/token/data/use-token-data", () => ({
   useTokenData: jest.fn(),
 }));
 
+jest.mock("@query/token", () => ({
+  useGetTokens: jest.fn(),
+}));
+
 jest.mock("@hooks/token/data/use-gnot-wugnot", () => ({
   useGnotToGnot: () => ({
     wugnotPath: "gno.land/r/demo/wugnot",
@@ -52,6 +56,8 @@ jest.mock("@components/home/token-info/TokenInfo", () => ({
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { useTokenData } = require("@hooks/token/data/use-token-data");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { useGetTokens } = require("@query/token");
 
 const makeToken = (overrides: Partial<TokenModel>): TokenModel => ({
   path: "gno.land/r/demo/token",
@@ -96,6 +102,11 @@ describe("TokenListContainer unverified token filtering", () => {
       tokens: showUnverified ? [verifiedToken, unverifiedToken] : [verifiedToken],
       tokenPrices: {},
       error: null,
+    }));
+    useGetTokens.mockImplementation((showUnverified: boolean) => ({
+      data: {
+        tokens: showUnverified ? [verifiedToken, unverifiedToken] : [verifiedToken],
+      },
     }));
   });
 

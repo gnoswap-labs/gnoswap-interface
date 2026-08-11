@@ -4,10 +4,6 @@ import { TokenSearchLogModel } from "@models/token/token-search-log-model";
 import { TokenRepositoryMock } from "./token-repository-mock";
 import { TokenRepositoryImpl } from "./token-repository-impl";
 
-jest.mock("@containers/select-token-container/SelectTokenContainer", () => ({
-  customSort: () => 0,
-}));
-
 const localStorageClient = new MockStorageClient("LOCAL");
 const tokenRepository = new TokenRepositoryMock(localStorageClient);
 
