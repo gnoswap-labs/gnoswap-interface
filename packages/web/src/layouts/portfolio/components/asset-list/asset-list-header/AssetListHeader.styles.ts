@@ -107,6 +107,7 @@ export const AssetListHeaderWrapper = styled.div`
 
     path {
       fill: ${({ theme }) => theme.color.icon08};
+      transition: fill 0.2s ease;
     }
   }
   .filters-dropdown {
