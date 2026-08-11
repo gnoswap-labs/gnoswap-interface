@@ -97,7 +97,7 @@ export const AssetListHeaderWrapper = styled.div`
     top: calc(100% + 12px);
     right: 0;
     box-sizing: border-box;
-    width: 240px;
+    width: 280px;
     padding: 16px;
     border: 1px solid ${({ theme }) => theme.color.border01};
     border-radius: 8px;
