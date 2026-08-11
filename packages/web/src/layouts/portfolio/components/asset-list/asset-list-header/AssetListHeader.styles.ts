@@ -71,6 +71,23 @@ export const AssetListHeaderWrapper = styled.div`
   }
   .filters-wrapper {
     position: relative;
+
+    &::after {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      width: 280px;
+      height: 12px;
+      content: "";
+    }
+
+    &:hover .filters-trigger {
+      color: ${({ theme }) => theme.color.text01};
+
+      .filters-arrow path {
+        fill: ${({ theme }) => theme.color.text01};
+      }
+    }
   }
   .filters-trigger {
     ${mixins.flexbox("row", "center", "center")};
@@ -78,10 +95,11 @@ export const AssetListHeaderWrapper = styled.div`
     padding: 0;
     border: 0;
     background: transparent;
-    color: ${({ theme }) => theme.color.text02};
+    color: ${({ theme }) => theme.color.text04};
     cursor: pointer;
     font: inherit;
     white-space: nowrap;
+    transition: color 0.2s ease;
   }
   .filters-arrow {
     width: 16px;
@@ -113,11 +131,6 @@ export const AssetListHeaderWrapper = styled.div`
         flex: 1;
         min-width: 0;
         color: ${({ theme }) => theme.color.text04};
-        transition: color 0.2s ease;
-      }
-
-      &:hover label {
-        color: ${({ theme }) => theme.color.text01};
       }
 
       input {

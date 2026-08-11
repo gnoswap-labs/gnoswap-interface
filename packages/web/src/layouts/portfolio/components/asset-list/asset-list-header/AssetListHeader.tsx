@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ValuesType } from "utility-types";
 
@@ -51,30 +51,14 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
 }) => {
   const { t } = useTranslation();
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
-  const filtersRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!isFiltersOpen) return;
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (filtersRef.current && !filtersRef.current.contains(event.target as Node)) {
-        setIsFiltersOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isFiltersOpen]);
 
   const renderFilters = () => (
-    <div className="filters-wrapper" ref={filtersRef}>
-      <button
-        type="button"
-        className="filters-trigger"
-        aria-haspopup="dialog"
-        aria-expanded={isFiltersOpen}
-        onClick={() => setIsFiltersOpen(prev => !prev)}
-      >
+    <div
+      className="filters-wrapper"
+      onMouseEnter={() => setIsFiltersOpen(true)}
+      onMouseLeave={() => setIsFiltersOpen(false)}
+    >
+      <button type="button" className="filters-trigger" aria-haspopup="dialog" aria-expanded={isFiltersOpen}>
         {t("Wallet:assets.filters", { defaultValue: "Filters" })}
         <IconArrowDown className="filters-arrow" />
       </button>

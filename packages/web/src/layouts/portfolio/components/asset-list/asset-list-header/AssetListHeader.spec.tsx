@@ -33,7 +33,7 @@ const renderHeader = (overrides: Partial<React.ComponentProps<typeof AssetListHe
   );
 
 describe("AssetListHeader", () => {
-  const openFilters = () => fireEvent.click(screen.getByRole("button", { name: "Wallet:assets.filters" }));
+  const openFilters = () => fireEvent.mouseEnter(screen.getByRole("button", { name: "Wallet:assets.filters" }));
 
   it("renders both filter switches inside the Filters dropdown", () => {
     renderHeader();

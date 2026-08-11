@@ -169,7 +169,7 @@ const setBalanceMap = () => {
   });
 };
 
-const openFilters = () => fireEvent.click(screen.getByRole("button", { name: "Wallet:assets.filters" }));
+const openFilters = () => fireEvent.mouseEnter(screen.getByRole("button", { name: "Wallet:assets.filters" }));
 const getShowUnverifiedToggle = () => screen.getByLabelText("Wallet:assets.showUnverifiedTokens");
 const getHideZeroToggle = () => screen.getByLabelText("Wallet:assets.hideZeroAmt");
 const getVisibleRows = () => screen.getAllByTestId("asset-row").map(row => row.textContent);
