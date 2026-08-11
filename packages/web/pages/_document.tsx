@@ -5,6 +5,7 @@ import "dayjs/locale/fr";
 import "dayjs/locale/ja";
 import "dayjs/locale/ko";
 import "dayjs/locale/ru";
+import "dayjs/locale/vi";
 import "dayjs/locale/zh";
 import Document, { Head, Html, Main, NextScript } from "next/document";
 import i18nextConfig from "../next-i18next.config";

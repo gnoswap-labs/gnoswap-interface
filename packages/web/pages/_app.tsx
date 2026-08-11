@@ -6,6 +6,7 @@ import "dayjs/locale/fr";
 import "dayjs/locale/ja";
 import "dayjs/locale/ko";
 import "dayjs/locale/ru";
+import "dayjs/locale/vi";
 import "dayjs/locale/zh";
 import { Provider as JotaiProvider } from "jotai";
 import { appWithTranslation, UserConfig, useTranslation } from "next-i18next";

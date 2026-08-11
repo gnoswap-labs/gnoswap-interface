@@ -312,6 +312,7 @@ export const LANGUAGES = [
   { code: "ja", name: "日本語" },
   { code: "ko", name: "한국어" },
   { code: "ru", name: "Русский" },
+  { code: "vi", name: "Tiếng Việt" },
   { code: "zh", name: "中文" },
 ];
 
@@ -328,6 +329,7 @@ export const LANGUAGE_CODE_MAP: Record<string, string> = {
   ja: "ja-JP",
   ko: "ko-KR",
   ru: "ru-RU",
+  vi: "vi-VN",
   zh: "zh-CN",
 };
 
