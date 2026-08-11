@@ -67,6 +67,7 @@ const TokenListHeader: React.FC<TokenListHeaderProps> = ({
       hasLabel={true}
       labelText={t("Main:tokenList.showUnverifiedTokens")}
       labelExtra={unverifiedTokensInfo}
+      labelExtraPosition="before"
     />
   );
 
