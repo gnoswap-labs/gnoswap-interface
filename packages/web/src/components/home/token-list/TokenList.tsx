@@ -24,6 +24,8 @@ interface TokenItem {
   searchIcon: boolean;
   onTogleSearch: () => void;
   searchRef: React.RefObject<HTMLDivElement>;
+  showUnverifiedTokens: boolean;
+  toggleShowUnverifiedTokens: () => void;
 }
 
 const TokenList: React.FC<TokenItem> = ({
@@ -43,6 +45,8 @@ const TokenList: React.FC<TokenItem> = ({
   searchIcon,
   onTogleSearch,
   searchRef,
+  showUnverifiedTokens,
+  toggleShowUnverifiedTokens,
 }) => {
   return (
     <div css={wrapper}>
@@ -55,6 +59,8 @@ const TokenList: React.FC<TokenItem> = ({
         searchIcon={searchIcon}
         onTogleSearch={onTogleSearch}
         searchRef={searchRef}
+        showUnverifiedTokens={showUnverifiedTokens}
+        toggleShowUnverifiedTokens={toggleShowUnverifiedTokens}
       />
       <TokenListTable
         tokens={tokens}

@@ -1,6 +1,7 @@
 import React from "react";
 import SearchInput from "@components/common/search-input/SearchInput";
 import SelectTab from "@components/common/select-tab/SelectTab";
+import Switch from "@components/common/switch/Switch";
 import { TOKEN_TYPE } from "@containers/token-list-container/TokenListContainer";
 import { TokenListHeaderwrapper, TokenTitleWrapper } from "./TokenListHeader.styles";
 import IconSearch from "@components/common/icons/IconSearch";
@@ -16,6 +17,8 @@ interface TokenListHeaderProps {
   searchIcon: boolean;
   onTogleSearch: () => void;
   searchRef: React.RefObject<HTMLDivElement>;
+  showUnverifiedTokens: boolean;
+  toggleShowUnverifiedTokens: () => void;
 }
 
 const TokenListHeader: React.FC<TokenListHeaderProps> = ({
@@ -27,6 +30,8 @@ const TokenListHeader: React.FC<TokenListHeaderProps> = ({
   searchIcon,
   onTogleSearch,
   searchRef,
+  showUnverifiedTokens,
+  toggleShowUnverifiedTokens,
 }) => {
   const { t } = useTranslation();
 
@@ -48,19 +53,37 @@ const TokenListHeader: React.FC<TokenListHeaderProps> = ({
             />
           </div>
         ) : (
-          <div className="icon-wrap" onClick={onTogleSearch}>
-            <IconSearch className="search-icon" />
+          <div className="mobile-controls">
+            <Switch
+              id="show-unverified-tokens"
+              checked={showUnverifiedTokens}
+              onChange={toggleShowUnverifiedTokens}
+              hasLabel={true}
+              labelText={t("Main:tokenList.showUnverifiedTokens")}
+            />
+            <div className="icon-wrap" onClick={onTogleSearch}>
+              <IconSearch className="search-icon" />
+            </div>
           </div>
         )}
       </TokenTitleWrapper>
       {breakpoint !== DEVICE_TYPE.MOBILE ? (
-        <SearchInput
-          width={300}
-          value={keyword}
-          onChange={search}
-          className="tokens-search"
-          placeholder={t("Main:search")}
-        />
+        <div className="right-section">
+          <Switch
+            id="show-unverified-tokens"
+            checked={showUnverifiedTokens}
+            onChange={toggleShowUnverifiedTokens}
+            hasLabel={true}
+            labelText={t("Main:tokenList.showUnverifiedTokens")}
+          />
+          <SearchInput
+            width={300}
+            value={keyword}
+            onChange={search}
+            className="tokens-search"
+            placeholder={t("Main:search")}
+          />
+        </div>
       ) : (
         <SelectTab
           selectType={tokenType}

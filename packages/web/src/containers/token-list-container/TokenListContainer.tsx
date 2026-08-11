@@ -13,6 +13,7 @@ import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { checkPositivePrice } from "@utils/common";
 import { formatOtherPrice, formatPrice } from "@utils/new-number-utils";
+import { keepVerified } from "@utils/token-verification-filter";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ValuesType } from "utility-types";
 import { getLast7dGraphStatus } from "./token-list-graph-status";
@@ -142,6 +143,7 @@ const TokenListContainer: React.FC = () => {
   const [tokenType, setTokenType] = useState<TOKEN_TYPE>(TOKEN_TYPE.ALL);
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState("");
+  const [showUnverifiedTokens, setShowUnverifiedTokens] = useState(false);
   const [sortOption, setSortOption] = useState<SortOption>({
     key: TABLE_HEAD.VOLUME,
     direction: "desc",
@@ -189,6 +191,11 @@ const TokenListContainer: React.FC = () => {
     setPage(newPage);
   }, []);
 
+  const toggleShowUnverifiedTokens = useCallback(() => {
+    setShowUnverifiedTokens(prev => !prev);
+    setPage(0);
+  }, []);
+
   const isSortOption = useCallback((head: TABLE_HEAD) => {
     const disableItems = [TABLE_HEAD.MOST_LIQUID_POOL.toString(), TABLE_HEAD.LAST_7_DAYS.toString()];
 
@@ -212,101 +219,112 @@ const TokenListContainer: React.FC = () => {
   const firstData = useMemo(() => {
     const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
 
-    let temp = tokens
-      .filter((token: TokenModel) => token.path !== wugnotPath)
-      .map((item: TokenModel) => {
-        const isGnot = item.path === "ugnot";
-        const priceDataPath = isGnot ? wugnotPath : item.path;
-        const selectedPriceData: TokenPriceModel = tokenPrices[priceDataPath] ?? {};
-        const gnotPriceData = tokenPrices.ugnot;
-        const rowMarketCap = isGnot ? gnotPriceData?.marketCap : selectedPriceData.marketCap;
-        const splitMostLiquidity: string[] = selectedPriceData.mostLiquidityPool?.split(":") || [];
-        const swapFeeType: SwapFeeTierType = `FEE_${splitMostLiquidity[2]}` as SwapFeeTierType;
-        const tempTokenA = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[0]);
-        const tempTokenB = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[1]);
+    let temp = keepVerified(
+      tokens.filter((token: TokenModel) => token.path !== wugnotPath),
+      showUnverifiedTokens,
+    ).map((item: TokenModel) => {
+      const isGnot = item.path === "ugnot";
+      const priceDataPath = isGnot ? wugnotPath : item.path;
+      const selectedPriceData: TokenPriceModel = tokenPrices[priceDataPath] ?? {};
+      const gnotPriceData = tokenPrices.ugnot;
+      const rowMarketCap = isGnot ? gnotPriceData?.marketCap : selectedPriceData.marketCap;
+      const splitMostLiquidity: string[] = selectedPriceData.mostLiquidityPool?.split(":") || [];
+      const swapFeeType: SwapFeeTierType = `FEE_${splitMostLiquidity[2]}` as SwapFeeTierType;
+      const tempTokenA = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[0]);
+      const tempTokenB = tokens.filter((_item: TokenModel) => _item.path === splitMostLiquidity[1]);
 
-        const data1day = checkPositivePrice(selectedPriceData.pricesBefore?.latestPrice, selectedPriceData.pricesBefore?.price1d);
+      const data1day = checkPositivePrice(
+        selectedPriceData.pricesBefore?.latestPrice,
+        selectedPriceData.pricesBefore?.price1d,
+      );
 
-        const data7day = checkPositivePrice(selectedPriceData.pricesBefore?.latestPrice, selectedPriceData.pricesBefore?.price7d);
-        const last7days = [
-          ...[...(selectedPriceData.last7d || [])]
-            .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime())
-            .map(item => Number(item.price || 0)),
-          ...(selectedPriceData.pricesBefore?.latestPrice ? [Number(selectedPriceData.pricesBefore.latestPrice)] : []),
-        ];
-        const graphStatus = getLast7dGraphStatus(last7days);
+      const data7day = checkPositivePrice(
+        selectedPriceData.pricesBefore?.latestPrice,
+        selectedPriceData.pricesBefore?.price7d,
+      );
+      const last7days = [
+        ...[...(selectedPriceData.last7d || [])]
+          .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime())
+          .map(item => Number(item.price || 0)),
+        ...(selectedPriceData.pricesBefore?.latestPrice ? [Number(selectedPriceData.pricesBefore.latestPrice)] : []),
+      ];
+      const graphStatus = getLast7dGraphStatus(last7days);
 
-        const data30D = checkPositivePrice(selectedPriceData.pricesBefore?.latestPrice, selectedPriceData.pricesBefore?.price30d);
+      const data30D = checkPositivePrice(
+        selectedPriceData.pricesBefore?.latestPrice,
+        selectedPriceData.pricesBefore?.price30d,
+      );
 
-        return {
-          ...selectedPriceData,
-          priceGradeType: selectedPriceData.priceGradeType,
-          token: {
-            path: item.path,
-            name: item.name,
-            symbol: item.symbol,
-            displaySymbol: item.displaySymbol,
-            logoURI: item.logoURI,
-          },
-          mostLiquidPool: selectedPriceData.mostLiquidityPool
-            ? {
-                poolId: Math.floor(Math.random() * 50 + 1).toString(),
-                tokenPair: {
-                  tokenA: {
-                    path: !tempTokenA ? "" : tempTokenA?.[0]?.path,
-                    name: getGnotPath(tempTokenA?.[0]).name,
-                    symbol: getGnotPath(tempTokenA?.[0]).symbol,
-                    displaySymbol: getGnotPath(tempTokenA?.[0]).displaySymbol,
-                    logoURI: getGnotPath(tempTokenA?.[0]).logoURI,
-                  },
-                  tokenB: {
-                    path: !tempTokenB ? "" : tempTokenB?.[0]?.path,
-                    name: getGnotPath(tempTokenB?.[0]).name,
-                    symbol: getGnotPath(tempTokenB?.[0]).symbol,
-                    displaySymbol: getGnotPath(tempTokenB?.[0]).displaySymbol,
-                    logoURI: getGnotPath(tempTokenB?.[0]).logoURI,
-                  },
+      return {
+        ...selectedPriceData,
+        priceGradeType: selectedPriceData.priceGradeType,
+        token: {
+          path: item.path,
+          name: item.name,
+          symbol: item.symbol,
+          displaySymbol: item.displaySymbol,
+          logoURI: item.logoURI,
+        },
+        mostLiquidPool: selectedPriceData.mostLiquidityPool
+          ? {
+              poolId: Math.floor(Math.random() * 50 + 1).toString(),
+              tokenPair: {
+                tokenA: {
+                  path: !tempTokenA ? "" : tempTokenA?.[0]?.path,
+                  name: getGnotPath(tempTokenA?.[0]).name,
+                  symbol: getGnotPath(tempTokenA?.[0]).symbol,
+                  displaySymbol: getGnotPath(tempTokenA?.[0]).displaySymbol,
+                  logoURI: getGnotPath(tempTokenA?.[0]).logoURI,
                 },
-                feeRate: splitMostLiquidity.length > 1 ? `${SwapFeeTierInfoMap[swapFeeType].rateStr}` : "0.02%",
-              }
-            : undefined,
-          last7days,
-          marketCap: rowMarketCap ? `$${Math.floor(Number(rowMarketCap || 0)).toLocaleString()}` : "-",
-          liquidity: formatOtherPrice(selectedPriceData.lockedTokensUsd, {
-            decimals: 0,
-            isKMB: false,
-          }),
-          volume24h: formatOtherPrice(selectedPriceData.volumeUsd24h, {
-            decimals: 0,
-            isKMB: false,
-          }),
-          price: selectedPriceData.usd ? formatPrice(selectedPriceData.usd, { isKMB: false, forcedDecimals: true }) : "--",
-          priceOf1d: {
-            status: data1day.status,
-            value:
-              data1day.percentDisplay !== "-" ? data1day.percentDisplay.replace(/[+-]/g, "") : data1day.percentDisplay,
-            realValue:
-              data1day.percentDisplay === "-" ? -100000000000 : Number(data1day.percentDisplay.replace(/[%]/g, "")),
-          },
-          priceOf7d: {
-            status: data7day.status,
-            value:
-              data7day.percentDisplay !== "-" ? data7day.percentDisplay.replace(/[+-]/g, "") : data7day.percentDisplay,
-            realValue:
-              data7day.percentDisplay === "-" ? -100000000000 : Number(data7day.percentDisplay.replace(/[%]/g, "")),
-          },
-          priceOf30d: {
-            status: data30D.status,
-            value:
-              data30D.percentDisplay !== "-" ? data30D.percentDisplay.replace(/[+-]/g, "") : data30D.percentDisplay,
-            realValue:
-              data30D.percentDisplay === "-" ? -100000000000 : Number(data30D.percentDisplay.replace(/[%]/g, "")),
-          },
-          idx: 1,
-          graphStatus,
-          isNative: isNativeToken(item),
-        };
-      });
+                tokenB: {
+                  path: !tempTokenB ? "" : tempTokenB?.[0]?.path,
+                  name: getGnotPath(tempTokenB?.[0]).name,
+                  symbol: getGnotPath(tempTokenB?.[0]).symbol,
+                  displaySymbol: getGnotPath(tempTokenB?.[0]).displaySymbol,
+                  logoURI: getGnotPath(tempTokenB?.[0]).logoURI,
+                },
+              },
+              feeRate: splitMostLiquidity.length > 1 ? `${SwapFeeTierInfoMap[swapFeeType].rateStr}` : "0.02%",
+            }
+          : undefined,
+        last7days,
+        marketCap: rowMarketCap ? `$${Math.floor(Number(rowMarketCap || 0)).toLocaleString()}` : "-",
+        liquidity: formatOtherPrice(selectedPriceData.lockedTokensUsd, {
+          decimals: 0,
+          isKMB: false,
+        }),
+        volume24h: formatOtherPrice(selectedPriceData.volumeUsd24h, {
+          decimals: 0,
+          isKMB: false,
+        }),
+        price: selectedPriceData.usd
+          ? formatPrice(selectedPriceData.usd, { isKMB: false, forcedDecimals: true })
+          : "--",
+        priceOf1d: {
+          status: data1day.status,
+          value:
+            data1day.percentDisplay !== "-" ? data1day.percentDisplay.replace(/[+-]/g, "") : data1day.percentDisplay,
+          realValue:
+            data1day.percentDisplay === "-" ? -100000000000 : Number(data1day.percentDisplay.replace(/[%]/g, "")),
+        },
+        priceOf7d: {
+          status: data7day.status,
+          value:
+            data7day.percentDisplay !== "-" ? data7day.percentDisplay.replace(/[+-]/g, "") : data7day.percentDisplay,
+          realValue:
+            data7day.percentDisplay === "-" ? -100000000000 : Number(data7day.percentDisplay.replace(/[%]/g, "")),
+        },
+        priceOf30d: {
+          status: data30D.status,
+          value: data30D.percentDisplay !== "-" ? data30D.percentDisplay.replace(/[+-]/g, "") : data30D.percentDisplay,
+          realValue:
+            data30D.percentDisplay === "-" ? -100000000000 : Number(data30D.percentDisplay.replace(/[%]/g, "")),
+        },
+        idx: 1,
+        graphStatus,
+        isNative: isNativeToken(item),
+      };
+    });
 
     temp.sort((a: Token, b: Token) => {
       const volumeCompare =
@@ -329,7 +347,7 @@ const TokenListContainer: React.FC = () => {
     });
     temp = temp.filter((item: Token) => item.token.path.includes(grc20));
     return temp.map((item: Token, i: number) => ({ ...item, idx: i }));
-  }, [getGnotPath, tokenType, tokens, wugnotPath, tokenPrices]);
+  }, [getGnotPath, showUnverifiedTokens, tokenType, tokens, wugnotPath, tokenPrices]);
 
   const sortedData = useMemo(() => {
     const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
@@ -435,7 +453,7 @@ const TokenListContainer: React.FC = () => {
       search={search}
       keyword={keyword}
       currentPage={page}
-      totalPage={Math.ceil((tokens || []).length / MAIN_TOKEN_LIST_SIZE)}
+      totalPage={Math.ceil(firstData.length / MAIN_TOKEN_LIST_SIZE)}
       movePage={movePage}
       isSortOption={isSortOption}
       sort={sort}
@@ -443,6 +461,8 @@ const TokenListContainer: React.FC = () => {
       searchIcon={searchIcon}
       onTogleSearch={onTogleSearch}
       searchRef={componentRef}
+      showUnverifiedTokens={showUnverifiedTokens}
+      toggleShowUnverifiedTokens={toggleShowUnverifiedTokens}
     />
   );
 };
