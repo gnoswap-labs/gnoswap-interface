@@ -96,12 +96,29 @@ export const AssetListHeaderWrapper = styled.div`
     z-index: 10;
     top: calc(100% + 12px);
     right: 0;
-    min-width: 240px;
+    box-sizing: border-box;
+    width: 240px;
     padding: 16px;
     border: 1px solid ${({ theme }) => theme.color.border01};
     border-radius: 8px;
     background: ${({ theme }) => theme.color.background01};
     box-shadow: 0 8px 24px rgb(0 0 0 / 20%);
+
+    .switch-button {
+      width: 100%;
+      justify-content: space-between;
+      gap: 16px;
+
+      label {
+        flex: 1;
+        min-width: 0;
+      }
+
+      input {
+        flex: 0 0 auto;
+        margin: 0;
+      }
+    }
 
     .switch-button + .switch-button {
       margin-top: 16px;

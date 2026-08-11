@@ -84,6 +84,13 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
           role="dialog"
           aria-label={t("Wallet:assets.filters", { defaultValue: "Filters" })}
         >
+          <Switch
+            id="show-unverified-tokens"
+            checked={showUnverifiedTokens}
+            onChange={toggleShowUnverifiedTokens}
+            hasLabel={true}
+            labelText={t("Wallet:assets.showUnverifiedTokens")}
+          />
           {connected && (
             <Switch
               id="hide-zero-balances"
@@ -93,13 +100,6 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
               labelText={t("Wallet:assets.hideZeroAmt")}
             />
           )}
-          <Switch
-            id="show-unverified-tokens"
-            checked={showUnverifiedTokens}
-            onChange={toggleShowUnverifiedTokens}
-            hasLabel={true}
-            labelText={t("Wallet:assets.showUnverifiedTokens")}
-          />
         </div>
       )}
     </div>
