@@ -13,6 +13,7 @@
       "chain": "Chaîne"
     },
     "empty": "Aucun jeton trouvé",
+    "filters": "Filtres",
     "hideZeroAmt": "Cacher les montants nuls",
     "showUnverifiedTokens": "Afficher les jetons non vérifiés",
     "title": "Actifs"
