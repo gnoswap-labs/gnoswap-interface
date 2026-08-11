@@ -69,6 +69,44 @@ export const AssetListHeaderWrapper = styled.div`
     flex-shrink: 0;
     gap: 36px;
   }
+  .filters-wrapper {
+    position: relative;
+  }
+  .filters-trigger {
+    ${mixins.flexbox("row", "center", "center")};
+    gap: 8px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: ${({ theme }) => theme.color.text02};
+    cursor: pointer;
+    font: inherit;
+    white-space: nowrap;
+  }
+  .filters-arrow {
+    width: 16px;
+    height: 16px;
+
+    path {
+      fill: ${({ theme }) => theme.color.icon08};
+    }
+  }
+  .filters-dropdown {
+    position: absolute;
+    z-index: 10;
+    top: calc(100% + 12px);
+    right: 0;
+    min-width: 240px;
+    padding: 16px;
+    border: 1px solid ${({ theme }) => theme.color.border01};
+    border-radius: 8px;
+    background: ${({ theme }) => theme.color.background01};
+    box-shadow: 0 8px 24px rgb(0 0 0 / 20%);
+
+    .switch-button + .switch-button {
+      margin-top: 16px;
+    }
+  }
   .assets-search {
     input {
       &::placeholder {

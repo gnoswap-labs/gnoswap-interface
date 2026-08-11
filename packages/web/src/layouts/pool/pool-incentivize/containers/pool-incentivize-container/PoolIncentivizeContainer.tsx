@@ -39,7 +39,7 @@ const PoolIncentivizeContainer: React.FC = () => {
   const [poolDetail, setPoolDetail] = useState<PoolDetailModel | null>(null);
   const [token, setToken] = useState<TokenModel | null>(null);
   const tokenAmountInput = useTokenAmountInput(token);
-  const { updateTokenPrices, balances } = useTokenData();
+  const { updateTokenPrices, balances } = useTokenData(true);
   const { data: pools = [] } = useGetPoolList({ enabled: false });
   const { data: depositGnsAmount = DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT } = useGetIncentiveCreationDeposit();
   const { getGnotPath } = useGnotToGnot();

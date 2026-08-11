@@ -19,7 +19,7 @@ import IconInfo from "@components/common/icons/IconInfo";
 
 const IncentiveCreationDeposit: React.FC = () => {
   const { t } = useTranslation();
-  const { data: { tokens = [] } = {} } = useGetTokens();
+  const { data: { tokens = [] } = {} } = useGetTokens(true);
   const theme = useTheme();
   const { data: depositGnsAmount = DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT } = useGetIncentiveCreationDeposit();
 

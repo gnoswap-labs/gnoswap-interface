@@ -32,6 +32,7 @@
       "priceCol": "Giá",
       "volumeCol": "Khối lượng (24 giờ)"
     },
+    "showUnverifiedTokens": "Hiển thị các mã thông báo chưa được xác minh",
     "title": "Token"
   },
   "toOffer": "nhằm mang đến trải nghiệm DeFi đơn giản nhất và thân thiện nhất với người dùng cho các nhà giao dịch.",

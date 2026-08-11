@@ -34,7 +34,8 @@ export class TokenRepositoryMock implements TokenRepository {
     return mockedExchangeRateGraph;
   };
 
-  public getTokens = async (): Promise<TokenListResponse> => {
+  public getTokens = async (showUnverified: boolean): Promise<TokenListResponse> => {
+    void showUnverified;
     return { tokens: [] };
   };
 

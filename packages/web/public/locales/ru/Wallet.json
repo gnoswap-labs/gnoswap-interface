@@ -14,7 +14,7 @@
     },
     "empty": "Жетоны не найдены",
     "hideZeroAmt": "Скрыть нулевые суммы",
-    "showUnverifiedTokens": "Показать неверифицированные жетоны",
+    "showUnverifiedTokens": "Показать непроверенные токены",
     "title": "Ресурсы"
   },
   "assetSendModal": {

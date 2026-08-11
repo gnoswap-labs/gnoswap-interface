@@ -92,11 +92,11 @@ const renderContainer = () =>
 
 describe("TokenListContainer unverified token filtering", () => {
   beforeEach(() => {
-    useTokenData.mockReturnValue({
-      tokens: [verifiedToken, unverifiedToken],
+    useTokenData.mockImplementation((showUnverified: boolean) => ({
+      tokens: showUnverified ? [verifiedToken, unverifiedToken] : [verifiedToken],
       tokenPrices: {},
       error: null,
-    });
+    }));
   });
 
   afterEach(() => {
@@ -111,6 +111,7 @@ describe("TokenListContainer unverified token filtering", () => {
 
     const toggle = getToggle();
     expect(toggle).not.toBeChecked();
+    expect(useTokenData).toHaveBeenLastCalledWith(false);
   });
 
   it("hides unverified tokens by default and shows verified tokens", () => {
@@ -127,6 +128,7 @@ describe("TokenListContainer unverified token filtering", () => {
     fireEvent.click(getToggle());
 
     const rows = getRenderedTokenRows();
+    expect(useTokenData).toHaveBeenLastCalledWith(true);
     expect(rows.some(row => row.includes("VerifiedToken"))).toBe(true);
     expect(rows.some(row => row.includes("UnverifiedToken"))).toBe(true);
   });

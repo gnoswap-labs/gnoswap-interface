@@ -23,7 +23,7 @@ const BestPoolsContainer: React.FC = () => {
   const { data: pools = [], isLoading: isLoadingGetPoolList } = useGetPoolList();
   const { data: tokenB } = useGetToken(path, { enabled: !!path });
   const { isLoading: isLoadingChainList } = useGetChainInfo();
-  const { isLoading: isLoadingListToken } = useGetTokens();
+  const { isLoading: isLoadingListToken } = useGetTokens(true);
   const { isLoading: isLoadingCommon } = useLoading();
 
   const bestPoolList: BestPool[] = useMemo(() => {

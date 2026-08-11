@@ -32,7 +32,7 @@
       "priceCol": "가격",
       "volumeCol": "거래량 (24h)"
     },
-    "showUnverifiedTokens": "검증되지 않은 토큰 표시",
+    "showUnverifiedTokens": "확인되지 않은 토큰 표시",
     "title": "토큰"
   },
   "toOffer": "트레이더에게 가장 쉽고 사용자 친화적인 디파이 사용 경험을 제공합니다.",

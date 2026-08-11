@@ -102,7 +102,7 @@ const AssetSendModal: React.FC<Props> = ({
 
   const { account } = useWallet();
 
-  const { tokenPrices, displayBalanceMap } = useTokenData();
+  const { tokenPrices, displayBalanceMap } = useTokenData(true);
 
   useEscCloseModal(close);
   usePositionModal(modalRef);

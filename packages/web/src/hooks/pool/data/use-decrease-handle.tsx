@@ -52,7 +52,7 @@ export const useDecreaseHandle = () => {
     type: "Custom",
   });
   const [percent, setPercent] = useState<number>(50);
-  const { tokenPrices } = useTokenData();
+  const { tokenPrices } = useTokenData(true);
 
   const { positions } = usePositionData({
     poolPath,

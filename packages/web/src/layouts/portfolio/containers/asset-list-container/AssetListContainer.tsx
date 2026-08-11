@@ -84,7 +84,10 @@ const AssetListContainer: React.FC = () => {
   const [keyword, setKeyword] = useState("");
   const [extended, setExtened] = useState(true);
   const [hasLoader] = useState(false);
-  const [sortOption, setTokenSortOption] = useState<AssetSortOption>();
+  const [sortOption, setTokenSortOption] = useState<AssetSortOption>({
+    key: ASSET_HEAD.BALANCE,
+    direction: "desc",
+  });
   const { breakpoint } = useWindowSize();
   const [searchIcon, setSearchIcon] = useState(false);
   const [componentRef, isClickOutside, setIsInside] = useClickOutside();
@@ -94,7 +97,7 @@ const AssetListContainer: React.FC = () => {
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>(DEPOSIT_INFO);
   const { isLoadingTokens } = useLoading();
   const { data: blockTimeData } = useGetAvgBlockTime();
-  const { data: { tokens = [] } = {} } = useGetTokens();
+  const { data: { tokens = [] } = {} } = useGetTokens(showUnverifiedTokens);
   const { loading: loadingPositions } = usePositionData({
     withClosed: false,
   });
@@ -126,24 +129,13 @@ const AssetListContainer: React.FC = () => {
     }
   }, [isClickOutside, keyword]);
 
-  const { displayBalanceMap, balances, tokenPrices, isFetched, updateBalances } = useTokenData();
+  const { displayBalanceMap, balances, tokenPrices, isFetched, updateBalances } = useTokenData(showUnverifiedTokens);
 
   useEffect(() => {
     const interval = setInterval(() => {
       updateBalances();
     }, 60000);
     return () => clearInterval(interval);
-  }, [tokens]);
-
-  useEffect(() => {
-    if (!tokens) return;
-
-    if (tokens?.length === 0) {
-      setTokenSortOption({
-        key: ASSET_HEAD.BALANCE,
-        direction: "desc",
-      });
-    }
   }, [tokens]);
 
   const fixedTokens: SortedProps[] = useMemo(() => {
@@ -236,57 +228,53 @@ const AssetListContainer: React.FC = () => {
 
   const filteredTokens = useMemo(() => {
     const COLLAPSED_LENGTH = 15;
-    let mappedTokens: SortedProps[] = keepVerified(
-      tokens
-        .filter(
-          item => item.path !== GNOT_TOKEN.path && item.path !== GNS_TOKEN.path && item.path !== WUGNOT_TOKEN.path,
-        )
-        .map(item => {
-          const tokenPrice = balances[item.priceID];
+    let mappedTokens: SortedProps[] = tokens
+      .filter(item => item.path !== GNOT_TOKEN.path && item.path !== GNS_TOKEN.path && item.path !== WUGNOT_TOKEN.path)
+      .map(item => {
+        const tokenPrice = balances[item.priceID];
 
-          const price = (() => {
-            if (!connected || isSwitchNetwork) {
-              return "-";
-            }
+        const price = (() => {
+          if (!connected || isSwitchNetwork) {
+            return "-";
+          }
 
-            if (
-              !tokenPrice ||
-              Number.isNaN(tokenPrice) ||
-              !tokenPrices[checkGnotPath(item?.path)]?.usd ||
-              !balances[item.priceID]
-            ) {
-              return "$0";
-            }
+          if (
+            !tokenPrice ||
+            Number.isNaN(tokenPrice) ||
+            !tokenPrices[checkGnotPath(item?.path)]?.usd ||
+            !balances[item.priceID]
+          ) {
+            return "$0";
+          }
 
-            return formatPrice(
-              BigNumber(tokenPrice)
-                .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || 0)
-                .dividedBy(10 ** item.decimals),
-              {
-                isKMB: false,
-              },
-            );
-          })();
-
-          const balance = (() => {
-            if (isSwitchNetwork || !displayBalanceMap[item.path]) return "-";
-
-            return formatPoolPairAmount(displayBalanceMap[item.path], {
+          return formatPrice(
+            BigNumber(tokenPrice)
+              .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || 0)
+              .dividedBy(10 ** item.decimals),
+            {
               isKMB: false,
-              decimals: item.decimals,
-            });
-          })();
+            },
+          );
+        })();
 
-          return {
-            ...item,
-            price: price,
-            balance: balance,
-            tokenPrice: tokenPrice || 0,
-            sortPrice: price.toString(),
-          };
-        }),
-      showUnverifiedTokens,
-    ).filter(asset => invisibleZeroBalance === false || filterZeroBalance(asset));
+        const balance = (() => {
+          if (isSwitchNetwork || !displayBalanceMap[item.path]) return "-";
+
+          return formatPoolPairAmount(displayBalanceMap[item.path], {
+            isKMB: false,
+            decimals: item.decimals,
+          });
+        })();
+
+        return {
+          ...item,
+          price: price,
+          balance: balance,
+          tokenPrice: tokenPrice || 0,
+          sortPrice: price.toString(),
+        };
+      })
+      .filter(asset => invisibleZeroBalance === false || filterZeroBalance(asset));
 
     if (sortOption?.key === ASSET_HEAD.ASSET) {
       mappedTokens = mappedTokens.sort((x, y) => {
@@ -345,7 +333,6 @@ const AssetListContainer: React.FC = () => {
     keyword,
     isSwitchNetwork,
     connected,
-    showUnverifiedTokens,
   ]);
 
   const changeAssetType = useCallback((newType: string) => {

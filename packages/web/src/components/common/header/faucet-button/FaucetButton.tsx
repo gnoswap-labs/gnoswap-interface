@@ -26,7 +26,7 @@ export const FaucetButton = () => {
   const { faucetNative, isLoadingFaucetNative, isSupportedFaucetNative } = useFaucetNative();
 
   const { refetchGnotBalance } = useWallet();
-  const { refetchGrc20Balances, updateBalances } = useTokenData();
+  const { refetchGrc20Balances, updateBalances } = useTokenData(true);
 
   const isLoading = isLoadingFaucetGRC20 || isLoadingFaucetNative;
 

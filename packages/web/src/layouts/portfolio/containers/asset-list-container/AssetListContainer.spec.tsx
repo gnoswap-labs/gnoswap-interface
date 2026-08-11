@@ -151,19 +151,25 @@ const renderContainer = () =>
   );
 
 const setTokens = (tokens: TokenModel[]) => {
-  useGetTokens.mockReturnValue({ data: { tokens } });
+  useGetTokens.mockImplementation((showUnverified: boolean) => ({
+    data: { tokens: showUnverified ? tokens : tokens.filter(token => token.isVerified) },
+  }));
 };
 
 const setBalanceMap = () => {
-  useTokenData.mockReturnValue({
-    displayBalanceMap,
-    balances: { ugnot: 1 },
-    tokenPrices: {},
-    isFetched: true,
-    updateBalances: jest.fn(),
+  useTokenData.mockImplementation((showUnverified: boolean) => {
+    void showUnverified;
+    return {
+      displayBalanceMap,
+      balances: { ugnot: 1 },
+      tokenPrices: {},
+      isFetched: true,
+      updateBalances: jest.fn(),
+    };
   });
 };
 
+const openFilters = () => fireEvent.click(screen.getByRole("button", { name: "Wallet:assets.filters" }));
 const getShowUnverifiedToggle = () => screen.getByLabelText("Wallet:assets.showUnverifiedTokens");
 const getHideZeroToggle = () => screen.getByLabelText("Wallet:assets.hideZeroAmt");
 const getVisibleRows = () => screen.getAllByTestId("asset-row").map(row => row.textContent);
@@ -184,7 +190,10 @@ describe("AssetListContainer unverified token filtering", () => {
   it("renders the toggle in OFF state by default and hides unverified assets", () => {
     renderContainer();
 
+    openFilters();
     expect(getShowUnverifiedToggle()).not.toBeChecked();
+    expect(useGetTokens).toHaveBeenLastCalledWith(false);
+    expect(useTokenData).toHaveBeenLastCalledWith(false);
     expect(screen.getByText(/VerifiedBal/)).toBeInTheDocument();
     expect(screen.queryByText(/UnverifiedBal/)).not.toBeInTheDocument();
   });
@@ -192,8 +201,11 @@ describe("AssetListContainer unverified token filtering", () => {
   it("shows unverified assets when the toggle is switched on", () => {
     renderContainer();
 
+    openFilters();
     fireEvent.click(getShowUnverifiedToggle());
 
+    expect(useGetTokens).toHaveBeenLastCalledWith(true);
+    expect(useTokenData).toHaveBeenLastCalledWith(true);
     expect(screen.getByText(/VerifiedBal/)).toBeInTheDocument();
     expect(screen.getByText(/UnverifiedBal/)).toBeInTheDocument();
     expect(screen.getByText(/VerifiedZero/)).toBeInTheDocument();
@@ -214,6 +226,7 @@ describe("AssetListContainer unverified token filtering", () => {
     ({ hideZero, showUnverified, visible }) => {
       renderContainer();
 
+      openFilters();
       if (hideZero) fireEvent.click(getHideZeroToggle());
       if (showUnverified) fireEvent.click(getShowUnverifiedToggle());
 
@@ -228,6 +241,7 @@ describe("AssetListContainer unverified token filtering", () => {
   it("keeps zero-balance, type, and search filters working with the toggle on", () => {
     renderContainer();
 
+    openFilters();
     fireEvent.click(getShowUnverifiedToggle());
     fireEvent.click(getHideZeroToggle());
 
@@ -262,6 +276,7 @@ describe("AssetListContainer unverified token filtering", () => {
       // unverified fallback entries are hidden by default
       expect(screen.queryAllByTestId("asset-row")).toHaveLength(0);
 
+      openFilters();
       fireEvent.click(getShowUnverifiedToggle());
 
       const rows = getVisibleRows();

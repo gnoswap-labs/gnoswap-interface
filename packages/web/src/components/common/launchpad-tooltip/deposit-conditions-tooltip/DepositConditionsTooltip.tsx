@@ -20,7 +20,7 @@ const DepositConditionsTooltip = ({ placement }: DepositConditionsTooltipProps) 
   const { t } = useTranslation();
 
   const depositConditions = useAtomValue(LaunchpadState.depositConditions);
-  const { data: { tokens = [] } = {} } = useGetTokens();
+  const { data: { tokens = [] } = {} } = useGetTokens(true);
 
   const renderConditions = () => {
     return depositConditions.map(condition => {

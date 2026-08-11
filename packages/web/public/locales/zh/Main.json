@@ -32,7 +32,7 @@
       "priceCol": "价格",
       "volumeCol": "容量（24 小时）"
     },
-    "showUnverifiedTokens": "显示未验证代币",
+    "showUnverifiedTokens": "显示未验证的代币",
     "title": "代币"
   },
   "toOffer": "为交易者提供最简化、最用户友好的 DeFi 体验。",

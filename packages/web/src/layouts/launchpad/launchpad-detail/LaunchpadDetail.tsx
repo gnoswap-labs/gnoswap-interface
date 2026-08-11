@@ -64,7 +64,7 @@ const LaunchpadDetail: React.FC = () => {
 
   const [selectPoolId, setSelectPoolId] = useAtom(LaunchpadState.selectLaunchpadPool);
   const [, setDepositConditions] = useAtom(LaunchpadState.depositConditions);
-  const { updateBalances, refetchGrc20Balances } = useTokenData();
+  const { updateBalances, refetchGrc20Balances } = useTokenData(true);
 
   const { breakpoint } = useWindowSize();
   const router = useCustomRouter();

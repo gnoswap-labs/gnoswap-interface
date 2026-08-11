@@ -33,9 +33,16 @@ const renderHeader = (overrides: Partial<React.ComponentProps<typeof AssetListHe
   );
 
 describe("AssetListHeader", () => {
-  it("renders both filter switches with localized labels beside Hide zero balances", () => {
+  const openFilters = () => fireEvent.click(screen.getByRole("button", { name: "Wallet:assets.filters" }));
+
+  it("renders both filter switches inside the Filters dropdown", () => {
     renderHeader();
 
+    expect(screen.getByRole("button", { name: "Wallet:assets.filters" })).toBeInTheDocument();
+    expect(screen.queryByLabelText("Wallet:assets.hideZeroAmt")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Wallet:assets.showUnverifiedTokens")).not.toBeInTheDocument();
+
+    openFilters();
     expect(screen.getByLabelText("Wallet:assets.hideZeroAmt")).toBeInTheDocument();
     expect(screen.getByLabelText("Wallet:assets.showUnverifiedTokens")).toBeInTheDocument();
   });
@@ -44,6 +51,7 @@ describe("AssetListHeader", () => {
     const toggleShowUnverifiedTokens = jest.fn();
     renderHeader({ toggleShowUnverifiedTokens });
 
+    openFilters();
     const toggle = screen.getByLabelText("Wallet:assets.showUnverifiedTokens");
     expect(toggle).not.toBeChecked();
 
@@ -56,6 +64,7 @@ describe("AssetListHeader", () => {
     const toggleShowUnverifiedTokens = jest.fn();
     renderHeader({ toggleInvisibleZeroBalance, toggleShowUnverifiedTokens });
 
+    openFilters();
     fireEvent.click(screen.getByLabelText("Wallet:assets.hideZeroAmt"));
 
     expect(toggleInvisibleZeroBalance).toHaveBeenCalledTimes(1);
@@ -65,6 +74,7 @@ describe("AssetListHeader", () => {
   it("shows the show-unverified switch even when the wallet is not connected", () => {
     renderHeader({ connected: false });
 
+    openFilters();
     expect(screen.queryByLabelText("Wallet:assets.hideZeroAmt")).not.toBeInTheDocument();
     expect(screen.getByLabelText("Wallet:assets.showUnverifiedTokens")).toBeInTheDocument();
   });
@@ -72,6 +82,7 @@ describe("AssetListHeader", () => {
   it("renders both switches on mobile as well", () => {
     renderHeader({ breakpoint: DEVICE_TYPE.MOBILE, searchIcon: false });
 
+    openFilters();
     expect(screen.getByLabelText("Wallet:assets.hideZeroAmt")).toBeInTheDocument();
     expect(screen.getByLabelText("Wallet:assets.showUnverifiedTokens")).toBeInTheDocument();
   });

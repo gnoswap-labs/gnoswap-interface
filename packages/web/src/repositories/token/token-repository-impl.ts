@@ -47,12 +47,12 @@ export class TokenRepositoryImpl implements TokenRepository {
     };
   };
 
-  public getTokens = async (): Promise<TokenListResponse> => {
+  public getTokens = async (showUnverified: boolean): Promise<TokenListResponse> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
     const response = await this.networkClient.get<{ data: ITokenResponse[] }>({
-      url: "/token-metas",
+      url: `/token-metas?showUnverified=${showUnverified}`,
     });
     if (response.data.data === null) {
       return { tokens: [] };

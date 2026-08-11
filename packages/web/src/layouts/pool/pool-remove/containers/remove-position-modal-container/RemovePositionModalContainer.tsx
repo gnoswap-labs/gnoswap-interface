@@ -60,7 +60,7 @@ const RemovePositionModalContainer = ({
   const poolPath = selectedPositions?.[0]?.poolPath || "";
 
   // Refetch functions
-  const { updateBalances } = useTokenData();
+  const { updateBalances } = useTokenData(true);
   const { refetch: refetchPools } = useGetPoolList();
   const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(selectedPositions?.[0]?.poolPath);
   const { pooledTokenInfos } = usePositionsRewards({

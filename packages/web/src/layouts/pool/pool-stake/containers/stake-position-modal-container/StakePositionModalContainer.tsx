@@ -51,7 +51,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
 
   const { getNextReferralAddress, removeReferrerFromLocalStorage } = useReferral();
   const clearModal = useClearModal();
-  const { updateBalances } = useTokenData();
+  const { updateBalances } = useTokenData(true);
 
   const { getMessage } = useMessage();
 

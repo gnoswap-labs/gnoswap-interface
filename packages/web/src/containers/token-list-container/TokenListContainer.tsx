@@ -11,9 +11,9 @@ import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { type TokenPairInfo } from "@models/token/token-pair-info";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 import { TokenPriceModel } from "@models/token/token-price-model";
+import { useGetTokens } from "@query/token";
 import { checkPositivePrice } from "@utils/common";
 import { formatOtherPrice, formatPrice } from "@utils/new-number-utils";
-import { keepVerified } from "@utils/token-verification-filter";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ValuesType } from "utility-types";
 import { getLast7dGraphStatus } from "./token-list-graph-status";
@@ -168,7 +168,8 @@ const TokenListContainer: React.FC = () => {
     setIsInside(true);
   };
 
-  const { tokens, error, tokenPrices } = useTokenData();
+  const { error, tokenPrices } = useTokenData(showUnverifiedTokens);
+  const { data: { tokens = [] } = {} } = useGetTokens(showUnverifiedTokens);
 
   const changeTokenType = useCallback((newType: string) => {
     switch (newType) {
@@ -219,10 +220,7 @@ const TokenListContainer: React.FC = () => {
   const firstData = useMemo(() => {
     const grc20 = tokenType === TOKEN_TYPE.GRC20 ? "gno.land/r/" : "";
 
-    let temp = keepVerified(
-      tokens.filter((token: TokenModel) => token.path !== wugnotPath),
-      showUnverifiedTokens,
-    ).map((item: TokenModel) => {
+    let temp = tokens.filter((token: TokenModel) => token.path !== wugnotPath).map((item: TokenModel) => {
       const isGnot = item.path === "ugnot";
       const priceDataPath = isGnot ? wugnotPath : item.path;
       const selectedPriceData: TokenPriceModel = tokenPrices[priceDataPath] ?? {};

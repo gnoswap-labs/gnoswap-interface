@@ -26,7 +26,7 @@ const PoolIncentivize: React.FC = () => {
   const poolPath = router.getPoolPath() || "::";
   const [tokenAPath, tokenBPath, fee] = poolPath.split(":");
   const { getGnotPath } = useGnotToGnot();
-  const { data: { tokens = [] } = {} } = useGetTokens();
+  const { data: { tokens = [] } = {} } = useGetTokens(true);
 
   const { isLoading } = useLoading();
 

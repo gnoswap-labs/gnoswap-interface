@@ -14,7 +14,7 @@
     },
     "empty": "未找到代币",
     "hideZeroAmt": "隐藏零金额",
-    "showUnverifiedTokens": "显示未验证代币",
+    "showUnverifiedTokens": "显示未验证的代币",
     "title": "资产"
   },
   "assetSendModal": {

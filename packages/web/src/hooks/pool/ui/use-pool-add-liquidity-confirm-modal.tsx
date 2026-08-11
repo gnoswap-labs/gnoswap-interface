@@ -104,12 +104,12 @@ export const usePoolAddLiquidityConfirmModal = ({
   const { getMessage } = useMessage();
 
   const router = useRouter();
-  const { displayBalanceMap } = useTokenData();
+  const { displayBalanceMap } = useTokenData(true);
   const { data: creationFee, refetch: refetchGetPoolCreationFee } = useGetPoolCreationFee();
 
   // Refetch functions
   const { address } = useAddress();
-  const { updateBalances } = useTokenData();
+  const { updateBalances } = useTokenData(true);
 
   const [openedModal, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);

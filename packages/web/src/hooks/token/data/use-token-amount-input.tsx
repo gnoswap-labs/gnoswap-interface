@@ -70,7 +70,7 @@ export const useTokenAmountInput = (token: TokenModel | null): TokenAmountInputM
 
   const [amount, setAmount] = useState<string>("0");
   const [balance, setBalance] = useState<string>("0");
-  const { displayBalanceMap, tokenPrices } = useTokenData();
+  const { displayBalanceMap, tokenPrices } = useTokenData(true);
 
   useEffect(() => {
     if (token && displayBalanceMap[token.path]) {

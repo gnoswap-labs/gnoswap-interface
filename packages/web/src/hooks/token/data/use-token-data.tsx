@@ -17,14 +17,14 @@ import { isEmptyObject } from "@utils/validation-utils";
 
 import { useGnotToGnot } from "./use-gnot-wugnot";
 
-export const useTokenData = () => {
+export const useTokenData = (showUnverified = true) => {
   const {
     data: { tokens = [] } = {},
     isLoading: loading,
     isFetched,
     error,
     refetch: refetchTokenList,
-  } = useGetTokens();
+  } = useGetTokens(showUnverified);
   const {
     data: tokenPrices = {},
     isLoading: isLoadingTokenPrice,

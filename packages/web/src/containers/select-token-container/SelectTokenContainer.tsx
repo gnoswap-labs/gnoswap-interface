@@ -76,7 +76,7 @@ const handleSort = (list: SortedProps[]) => {
 
 const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({ changeToken, callback }) => {
   const { breakpoint } = useWindowSize();
-  const { tokens, balances, tokenPrices, displayBalanceMap } = useTokenData();
+  const { tokens, balances, tokenPrices, displayBalanceMap } = useTokenData(true);
   const [keyword, setKeyword] = useState("");
   const clearModal = useClearModal();
   const themeKey = useAtomValue(ThemeState.themeKey);

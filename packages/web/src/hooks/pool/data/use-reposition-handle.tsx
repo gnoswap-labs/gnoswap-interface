@@ -83,7 +83,7 @@ export const useRepositionHandle = () => {
   const { getMessage } = useMessage();
 
   const { address } = useAddress();
-  const { updateBalances } = useTokenData();
+  const { updateBalances } = useTokenData(true);
   const { swapRouterRepository, positionRepository, transactionService } = useGnoswapContext();
   const { getGnotPath } = useGnotToGnot();
   const { slippage, changeSlippage } = useSlippage();

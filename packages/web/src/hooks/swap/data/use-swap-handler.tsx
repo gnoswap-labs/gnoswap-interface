@@ -164,7 +164,7 @@ export const useSwapHandler = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { connected: connectedWallet, isSwitchNetwork, switchNetwork } = useWallet();
   const { tokens, tokenPrices, displayBalanceMap, updateBalances, getTokenUSDPrice, refetchGrc20Balances } =
-    useTokenData();
+  useTokenData(true);
   const { slippage, changeSlippage } = useSlippage();
   const { openModal } = useConnectWalletModal();
   const { data: swapFee } = useGetSwapFee();

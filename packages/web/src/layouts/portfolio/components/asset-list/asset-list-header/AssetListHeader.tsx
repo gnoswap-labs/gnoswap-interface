@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ValuesType } from "utility-types";
 
 import IconSearch from "@components/common/icons/IconSearch";
+import IconArrowDown from "@components/common/icons/IconArrowDown";
 import SearchInput from "@components/common/search-input/SearchInput";
 import SelectTab from "@components/common/select-tab/SelectTab";
 import Switch from "@components/common/switch/Switch";
@@ -49,6 +50,60 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
   searchRef,
 }) => {
   const { t } = useTranslation();
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const filtersRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isFiltersOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (filtersRef.current && !filtersRef.current.contains(event.target as Node)) {
+        setIsFiltersOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isFiltersOpen]);
+
+  const renderFilters = () => (
+    <div className="filters-wrapper" ref={filtersRef}>
+      <button
+        type="button"
+        className="filters-trigger"
+        aria-haspopup="dialog"
+        aria-expanded={isFiltersOpen}
+        onClick={() => setIsFiltersOpen(prev => !prev)}
+      >
+        {t("Wallet:assets.filters", { defaultValue: "Filters" })}
+        <IconArrowDown className="filters-arrow" />
+      </button>
+      {isFiltersOpen && (
+        <div
+          className="filters-dropdown"
+          role="dialog"
+          aria-label={t("Wallet:assets.filters", { defaultValue: "Filters" })}
+        >
+          {connected && (
+            <Switch
+              id="hide-zero-balances"
+              checked={invisibleZeroBalance}
+              onChange={toggleInvisibleZeroBalance}
+              hasLabel={true}
+              labelText={t("Wallet:assets.hideZeroAmt")}
+            />
+          )}
+          <Switch
+            id="show-unverified-tokens"
+            checked={showUnverifiedTokens}
+            onChange={toggleShowUnverifiedTokens}
+            hasLabel={true}
+            labelText={t("Wallet:assets.showUnverifiedTokens")}
+          />
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <AssetListHeaderWrapper>
@@ -64,19 +119,7 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
               </div>
             ) : (
               <>
-                <Switch
-                  checked={invisibleZeroBalance}
-                  onChange={toggleInvisibleZeroBalance}
-                  hasLabel={true}
-                  labelText={t("Wallet:assets.hideZeroAmt")}
-                />
-                <Switch
-                  id="show-unverified-tokens"
-                  checked={showUnverifiedTokens}
-                  onChange={toggleShowUnverifiedTokens}
-                  hasLabel={true}
-                  labelText={t("Wallet:assets.showUnverifiedTokens")}
-                />
+                {renderFilters()}
                 <div className="icon-wrap" onClick={onTogleSearch}>
                   <IconSearch className="search-icon" />
                 </div>
@@ -87,21 +130,7 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
       </div>
       {breakpoint !== DEVICE_TYPE.MOBILE ? (
         <div className="right-section">
-          {connected && (
-            <Switch
-              checked={invisibleZeroBalance}
-              onChange={toggleInvisibleZeroBalance}
-              hasLabel={true}
-              labelText={t("Wallet:assets.hideZeroAmt")}
-            />
-          )}
-          <Switch
-            id="show-unverified-tokens"
-            checked={showUnverifiedTokens}
-            onChange={toggleShowUnverifiedTokens}
-            hasLabel={true}
-            labelText={t("Wallet:assets.showUnverifiedTokens")}
-          />
+          {renderFilters()}
           <SearchInput width={300} value={keyword} onChange={search} className="assets-search" />
         </div>
       ) : (

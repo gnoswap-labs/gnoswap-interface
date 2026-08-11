@@ -32,7 +32,7 @@ const defaultToken = {
 const TrendingCardListContainer: React.FC = () => {
   const router = useCustomRouter();
   const { breakpoint } = useWindowSize();
-  const { data: { tokens = [] } = {} } = useGetTokens();
+  const { data: { tokens = [] } = {} } = useGetTokens(true);
   const { data: { trending = [] } = {} } = useGetChainInfo();
   const { gnot, wugnotPath } = useGnotToGnot();
   const { isLoadingTrendingTokens } = useLoading();

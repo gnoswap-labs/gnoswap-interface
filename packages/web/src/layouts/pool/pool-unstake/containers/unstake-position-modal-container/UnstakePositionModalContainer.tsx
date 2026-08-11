@@ -42,7 +42,7 @@ const UnstakePositionModalContainer = ({ positions, refetchPositions }: UnstakeP
   const { enqueueEvent } = useTransactionEventStore();
 
   // Refetch functions
-  const { updateBalances } = useTokenData();
+  const { updateBalances } = useTokenData(true);
   const { refetch: refetchPools } = useGetPoolList();
   const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(positions?.[0]?.poolPath);
 

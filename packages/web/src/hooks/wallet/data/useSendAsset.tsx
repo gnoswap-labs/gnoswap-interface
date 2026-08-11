@@ -29,7 +29,7 @@ const useSendAsset = () => {
   const walletClient = useAtomValue(WalletState.client);
   const { walletRepository, transactionService } = useGnoswapContext();
   const { enqueueEvent } = useTransactionEventStore();
-  const { updateBalances, refetchGrc20Balances } = useTokenData();
+  const { updateBalances, refetchGrc20Balances } = useTokenData(true);
   const { estimateNetworkFee } = useNetworkFee(null);
 
   // ---------- broadcast helpers ----------

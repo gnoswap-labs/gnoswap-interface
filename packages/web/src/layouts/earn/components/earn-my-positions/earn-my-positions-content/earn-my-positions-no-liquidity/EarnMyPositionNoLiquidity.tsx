@@ -21,7 +21,7 @@ interface EarnMyPositionNoLiquidityProps {
 
 const EarnMyPositionNoLiquidity: React.FC<EarnMyPositionNoLiquidityProps> = ({ highestApr }) => {
   const { t } = useTranslation();
-  const { balances: balancesPrice, tokens } = useTokenData();
+  const { balances: balancesPrice, tokens } = useTokenData(true);
   const { data: tokenPrices = {} } = useGetAllTokenPrices();
   const availableBalance = useMemo(() => {
     return Object.entries(balancesPrice).reduce((acc, [key, value]) => {

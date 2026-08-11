@@ -81,7 +81,7 @@ export const useIncreasePositionModal = ({
   const poolPath = selectedPosition?.poolPath || "";
 
   // Refetch functions
-  const { updateBalances } = useTokenData();
+  const { updateBalances } = useTokenData(true);
 
   const handleRefreshData = useCallback(async () => {
     invalidateQueryKey("IncreasePosition", [

@@ -16,7 +16,7 @@ import GainerAndLoser from "../../components/gainer-and-loser/GainerAndLoser";
 const GainerAndLoserContainer: React.FC = () => {
   const router = useCustomRouter();
   const path = router.getTokenPath();
-  const { data: { tokens = [] } = {}, isLoading: isLoadingListToken } = useGetTokens();
+  const { data: { tokens = [] } = {}, isLoading: isLoadingListToken } = useGetTokens(true);
   const { data: { gainers = [], losers = [] } = {}, isLoading } = useGetChainInfo();
   const { gnot, wugnotPath } = useGnotToGnot();
   const { isLoading: isLoadingGetPoolList } = useGetPoolList();
