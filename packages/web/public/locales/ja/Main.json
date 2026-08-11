@@ -32,6 +32,7 @@
       "priceCol": "価格",
       "volumeCol": "体積（24時間）"
     },
+    "showUnverifiedTokens": "未検証トークンを表示",
     "title": "トークン"
   },
   "toOffer": "トレーダーに最もシンプルでユーザーフレンドリーなDeFi体験を提供する。",

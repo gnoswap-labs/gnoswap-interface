@@ -14,6 +14,7 @@
     },
     "empty": "No se han encontrado fichas",
     "hideZeroAmt": "Ocultar importes cero",
+    "showUnverifiedTokens": "Mostrar fichas no verificadas",
     "title": "Activos"
   },
   "assetSendModal": {

@@ -14,6 +14,7 @@
     },
     "empty": "トークンが見つかりません",
     "hideZeroAmt": "ゼロ金額を隠す",
+    "showUnverifiedTokens": "未検証トークンを表示",
     "title": "資産"
   },
   "assetSendModal": {

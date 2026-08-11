@@ -32,6 +32,7 @@
       "priceCol": "Price",
       "volumeCol": "Volume (24h)"
     },
+    "showUnverifiedTokens": "Show unverified tokens",
     "title": "Tokens"
   },
   "toOffer": "to offer the most simplified and user-friendly DeFi experience for traders.",

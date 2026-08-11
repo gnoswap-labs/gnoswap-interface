@@ -14,6 +14,7 @@
     },
     "empty": "No tokens found",
     "hideZeroAmt": "Hide zero amounts",
+    "showUnverifiedTokens": "Show unverified tokens",
     "title": "Assets"
   },
   "assetSendModal": {
