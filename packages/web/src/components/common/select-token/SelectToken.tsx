@@ -1,8 +1,8 @@
 import IconClose from "@components/common/icons/IconCancel";
 import IconSearch from "@components/common/icons/IconSearch";
-import { ORDER } from "@containers/select-token-container/SelectTokenContainer";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { TokenModel } from "@models/token/token-model";
+import { ORDER } from "@utils/token-sort";
 import { TokenState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
 import { removeDuplicatesByWrappedPath } from "@utils/common";

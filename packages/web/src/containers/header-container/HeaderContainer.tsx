@@ -57,7 +57,7 @@ const HeaderContainer: React.FC = () => {
   const { data: poolList = [] } = useGetPoolList({
     enabled: !!searchMenuToggle,
   });
-  const { data: { tokens: listTokens = [] } = {}, isFetched, error } = useGetTokens({ enabled: !!searchMenuToggle });
+  const { data: { tokens: listTokens = [] } = {}, isFetched, error } = useGetTokens(true, { enabled: !!searchMenuToggle });
   const { data: tokenPrices = {} } = useGetAllTokenPrices({
     enabled: !!searchMenuToggle,
   });

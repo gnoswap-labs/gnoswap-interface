@@ -128,7 +128,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   const { claimAll, claim } = usePosition(loadedPositions.filter(item => !item.closed));
   const [loadingTransactionClaim, setLoadingTransactionClaim] = useState(false);
   const { openModal } = useTransactionConfirmModal();
-  const { tokenPrices, updateBalances, refetchGrc20Balances } = useTokenData();
+  const { tokenPrices, updateBalances, refetchGrc20Balances } = useTokenData(true);
 
   const { getMessage } = useMessage();
 

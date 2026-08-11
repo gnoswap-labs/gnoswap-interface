@@ -13,7 +13,9 @@
       "chain": "Cadena"
     },
     "empty": "No se han encontrado fichas",
+    "filters": "Filtros",
     "hideZeroAmt": "Ocultar importes cero",
+    "showUnverifiedTokens": "Mostrar tokens no verificados",
     "title": "Activos"
   },
   "assetSendModal": {

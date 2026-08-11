@@ -13,7 +13,9 @@
       "chain": "Chuỗi"
     },
     "empty": "Không tìm thấy mã thông báo nào",
+    "filters": "Bộ lọc",
     "hideZeroAmt": "Ẩn các số tiền bằng không",
+    "showUnverifiedTokens": "Hiển thị các mã thông báo chưa được xác minh",
     "title": "Tài sản"
   },
   "assetSendModal": {

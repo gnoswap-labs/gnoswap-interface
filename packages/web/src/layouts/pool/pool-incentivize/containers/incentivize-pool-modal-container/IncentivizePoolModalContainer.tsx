@@ -58,7 +58,7 @@ const IncentivizePoolModalContainer: React.FC<IncentivizePoolModalContainerProps
   const { estimateNetworkFee } = useNetworkFee(null);
 
   // refetch functions
-  const { updateBalances } = useTokenData();
+  const { updateBalances } = useTokenData(true);
   const { refetch: refetchPositions } = usePositionData({ address, scopeId: "IncentivizePoolModalContainer" });
 
   const { refetch: refetchPools } = useGetPoolList();

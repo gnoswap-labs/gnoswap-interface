@@ -10,7 +10,7 @@ import { useGetAllTokenPrices, useGetTokens } from "@query/token";
  * Use when a consumer needs tokens + getTokenUSDPrice only.
  */
 export const useTokenPricing = () => {
-  const { data: { tokens = [] } = {}, isFetched: isFetchedTokens } = useGetTokens();
+  const { data: { tokens = [] } = {}, isFetched: isFetchedTokens } = useGetTokens(true);
   const { data: tokenPrices = {} } = useGetAllTokenPrices();
 
   const getTokenUSDPrice = useCallback(

@@ -13,6 +13,7 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { ThemeState, TokenState } from "@states/index";
 import { parseJson } from "@utils/common";
+import { ORDER, customSort } from "@utils/token-sort";
 
 interface SelectTokenContainerProps {
   changeToken?: (token: TokenModel) => void;
@@ -24,20 +25,7 @@ export interface SortedProps extends TokenModel {
   tokenPrice: number;
 }
 
-export const ORDER = [GNOT_TOKEN.symbol, GNS_TOKEN.symbol, "BAR", "BAZ"];
-
-export const customSort = (a: TokenModel, b: TokenModel) => {
-  const symbolA = a.symbol.toUpperCase();
-  const symbolB = b.symbol.toUpperCase();
-
-  const indexA = ORDER.indexOf(symbolA);
-  const indexB = ORDER.indexOf(symbolB);
-
-  if (indexA === -1) return 1;
-  if (indexB === -1) return -1;
-
-  return indexA - indexB;
-};
+export { ORDER, customSort };
 
 const handleSort = (list: SortedProps[]) => {
   const gnot = list.find(a => a.path === GNOT_TOKEN.path);
@@ -76,7 +64,7 @@ const handleSort = (list: SortedProps[]) => {
 
 const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({ changeToken, callback }) => {
   const { breakpoint } = useWindowSize();
-  const { tokens, balances, tokenPrices, displayBalanceMap } = useTokenData();
+  const { tokens, balances, tokenPrices, displayBalanceMap } = useTokenData(true);
   const [keyword, setKeyword] = useState("");
   const clearModal = useClearModal();
   const themeKey = useAtomValue(ThemeState.themeKey);

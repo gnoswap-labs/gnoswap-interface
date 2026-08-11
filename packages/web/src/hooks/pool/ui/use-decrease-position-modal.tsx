@@ -86,7 +86,7 @@ export const useDecreasePositionModal = ({
   const poolPath = makePoolPath(tokenA, tokenB, swapFeeTier);
 
   // Refetch functions
-  const { updateBalances } = useTokenData();
+  const { updateBalances } = useTokenData(true);
 
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);

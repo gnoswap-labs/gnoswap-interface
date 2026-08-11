@@ -23,6 +23,33 @@ export const TokenListHeaderwrapper = styled.div`
       padding: 4px 24px;
     }
   }
+  .right-section {
+    ${mixins.flexbox("row", "center", "center")};
+    flex-shrink: 0;
+    gap: 36px;
+  }
+
+  .show-unverified-info {
+    display: flex;
+    flex: 0 0 16px;
+    width: 16px;
+    height: 16px;
+    cursor: default;
+    margin-right: -8px;
+
+    ${media.mobile} {
+      margin-right: 0;
+    }
+
+    svg {
+      width: 16px;
+      height: 16px;
+
+      path {
+        fill: ${({ theme }) => theme.color.icon08};
+      }
+    }
+  }
 `;
 
 export const TokenTitleWrapper = styled.div`
@@ -31,7 +58,7 @@ export const TokenTitleWrapper = styled.div`
   gap: 36px;
   ${media.mobile} {
     justify-content: space-between;
-    height: 24px;
+    min-height: 24px;
   }
   h2 {
     ${fonts.h5};
@@ -41,6 +68,10 @@ export const TokenTitleWrapper = styled.div`
     }
   }
 
+  .mobile-controls {
+    ${mixins.flexbox("row", "center", "center")};
+    gap: 8px;
+  }
   .icon-wrap {
     height: 100%;
     .search-icon {
@@ -56,5 +87,40 @@ export const TokenTitleWrapper = styled.div`
         fill: ${({ theme }) => theme.color.icon02};
       }
     }
+  }
+`;
+
+export const UnverifiedTokensTooltipContent = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  gap: 16px;
+  width: 320px;
+  color: ${({ theme }) => theme.color.text02};
+  ${fonts.body12};
+
+  p {
+    margin: 0;
+  }
+
+  a {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 8px;
+    color: ${({ theme }) => theme.color.text04};
+    text-decoration: none;
+
+    &:hover {
+      color: ${({ theme }) => theme.color.text01};
+    }
+
+    svg {
+      flex: 0 0 16px;
+
+      path {
+        fill: currentColor;
+      }
+    }
+  }
+
+  ${media.mobile} {
+    width: min(320px, calc(100vw - 32px));
   }
 `;

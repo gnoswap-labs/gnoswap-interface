@@ -44,7 +44,7 @@ const RepositionContainer: React.FC = () => {
   } = useRepositionHandle();
   const { rpcProvider } = useGnoswapContext();
 
-  const { updateBalances } = useTokenData();
+  const { updateBalances } = useTokenData(true);
 
   const concentratedFeeApr =
     priceRangeSummary.feeBoost && priceRangeSummary.feeBoost !== "-"

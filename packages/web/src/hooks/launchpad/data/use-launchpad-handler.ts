@@ -59,7 +59,7 @@ export const useLaunchpadHandler = () => {
   const selectPoolId = useAtomValue(LaunchpadState.selectLaunchpadPool);
 
   const { connected: connectedWallet, account, isSwitchNetwork, switchNetwork } = useWallet();
-  const { displayBalanceMap, tokens } = useTokenData();
+  const { displayBalanceMap, tokens } = useTokenData(true);
 
   const { launchpadRepository } = useGnoswapContext();
   const { data: tokenPriceMap } = useGetAllTokenPrices();

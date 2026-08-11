@@ -44,6 +44,8 @@ export interface TokenModel {
 
   denom?: string;
 
+  isVerified?: boolean;
+
   priceID: string;
 }
 

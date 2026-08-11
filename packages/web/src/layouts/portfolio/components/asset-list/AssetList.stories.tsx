@@ -63,6 +63,8 @@ export const Default: Story = {
     changeAssetType: fn(),
     search: fn(),
     toggleInvisibleZeroBalance: fn(),
+    toggleShowUnverifiedTokens: fn(),
+    showUnverifiedTokens: false,
     toggleExtended: fn(),
     deposit: fn(),
     withdraw: fn(),

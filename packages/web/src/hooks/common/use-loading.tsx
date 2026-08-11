@@ -8,7 +8,7 @@ import { useGetLaunchpadActiveProjects } from "@query/launchpad/use-get-launchpa
 export const useLoading = () => {
   const { data: initialized } = useInitLoading();
   const { isFetched: isFetchedChainData } = useGetChainInfo();
-  const { isFetched: isFetchedTokenData } = useGetTokens();
+  const { isFetched: isFetchedTokenData } = useGetTokens(true);
   const { isFetched: isFetchedTokenPrices } = useGetAllTokenPrices();
   const { isFetched: isFetchedChainList } = useGetChainInfo({ enabled: false });
   const { isFetched: isFetchedPoolData } = useGetPoolList({ enabled: false });

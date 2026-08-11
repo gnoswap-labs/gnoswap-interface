@@ -20,7 +20,7 @@ export const useBackground = () => {
   const [sessionId] = useAtom(CommonState.sessionId);
   const [isViewMorePositions, setIsViewMorePositions] = useAtom(EarnState.isViewMorePositions);
   const [isViewMoreActiveProjects, setIsViewMoreActiveProjects] = useAtom(LaunchpadState.isViewMoreActiveProjects);
-  const { updateBalances, refetchGrc20Balances } = useTokenData();
+  const { updateBalances, refetchGrc20Balances } = useTokenData(true);
   const { scrollTo, getScrollHeight } = useScrollData();
   const { isLoadingTokens, isLoadingPools, isLoadingLaunchpadProjectList } = useLoading();
   const [memorizedPath, setMemorizedPath] = useState<string | null>(null);

@@ -32,7 +32,10 @@
       "priceCol": "价格",
       "volumeCol": "容量（24 小时）"
     },
-    "title": "代币"
+    "showUnverifiedTokens": "显示未验证的代币",
+    "title": "代币",
+    "unverifiedTokensTooltip": "未在 gno.land 上注册的代币资源已被过滤。",
+    "verifyToken": "验证您的令牌"
   },
   "toOffer": "为交易者提供最简化、最用户友好的 DeFi 体验。",
   "trending": "热门内容"

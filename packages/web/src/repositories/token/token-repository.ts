@@ -12,7 +12,7 @@ import { IBalancesByAddressResponse, IGrc20TransferHistoryResponse } from "./res
 import { TokenExchangeRateGraphResponse } from "./response/token-exchange-rate-response";
 
 export interface TokenRepository {
-  getTokens: () => Promise<TokenListResponse>;
+  getTokens: (showUnverified: boolean) => Promise<TokenListResponse>;
 
   getTokenByPath: (path: string) => Promise<ITokenResponse>;
 

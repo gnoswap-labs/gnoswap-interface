@@ -15,7 +15,7 @@ export const useGetLaunchpadParticipationInfos = (
   options?: UseQueryOptions<LaunchpadParticipationModel[], Error>,
 ) => {
   const { launchpadRepository } = useGnoswapContext();
-  const { data: { tokens = [] } = {} } = useGetTokens();
+  const { data: { tokens = [] } = {} } = useGetTokens(true);
 
   return useQuery<LaunchpadParticipationModel[], Error>({
     queryKey: [QUERY_KEY.launchpadParticipationInfos, projectID, address, tokens.length],

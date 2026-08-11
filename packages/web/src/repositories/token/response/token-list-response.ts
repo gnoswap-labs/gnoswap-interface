@@ -23,4 +23,5 @@ export interface ITokenResponse {
   docsURL: string;
   displayPath: string;
   wrappedPath: string;
+  isVerified: boolean;
 }

@@ -13,7 +13,7 @@ const SwapContainer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
   const router = useRouter();
   const [initialized, setInitialized] = useState(false);
-  const { data: { tokens = [] } = {} } = useGetTokens();
+  const { data: { tokens = [] } = {} } = useGetTokens(true);
 
   const {
     connectedWallet,

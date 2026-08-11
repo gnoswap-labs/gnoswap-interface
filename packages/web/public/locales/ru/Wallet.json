@@ -13,7 +13,9 @@
       "chain": "Цепь"
     },
     "empty": "Жетоны не найдены",
+    "filters": "Фильтры",
     "hideZeroAmt": "Скрыть нулевые суммы",
+    "showUnverifiedTokens": "Показать непроверенные токены",
     "title": "Ресурсы"
   },
   "assetSendModal": {

@@ -32,7 +32,7 @@ const MyDelegationContainer: React.FC<MyDelegationContainerProps> = ({
     return account?.address || "";
   }, [account]);
 
-  const { updateBalances } = useTokenData();
+  const { updateBalances } = useTokenData(true);
   const {
     data: governanceSummaryInfo,
     isFetched: isFetchedGovernanceSummaryInfo,

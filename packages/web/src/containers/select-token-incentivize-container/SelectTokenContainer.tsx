@@ -19,7 +19,7 @@ const SelectTokenIncentivizeContainer: React.FC<SelectTokenIncentivizeContainerP
   callback,
   poolTokens,
 }) => {
-  const { tokens, balances, updateTokens, updateBalances } = useTokenData();
+  const { tokens, balances, updateTokens, updateBalances } = useTokenData(true);
   const { data: allowedTokenPaths = [] } = useGetAllowedExternalRewardTokenPaths();
   const [keyword, setKeyword] = useState("");
   const clearModal = useClearModal();

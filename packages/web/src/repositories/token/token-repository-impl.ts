@@ -12,9 +12,9 @@ import { NetworkClient } from "@common/clients/network-client";
 import { StorageClient } from "@common/clients/storage-client";
 import { CommonError } from "@common/errors";
 import { StorageKeyType } from "@common/values";
-import { customSort } from "@containers/select-token-container/SelectTokenContainer";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { TokenSearchLogModel } from "@models/token/token-search-log-model";
+import { customSort } from "@utils/token-sort";
 import { formatDisplayTokenSymbol } from "@utils/token-utils";
 import mockedExchangeRateGraph from "./mock/token-exchange-rate-graph.json";
 import { IBalancesByAddressResponse, IGrc20TransferHistoryResponse } from "./response/balance-by-address-response";
@@ -47,12 +47,12 @@ export class TokenRepositoryImpl implements TokenRepository {
     };
   };
 
-  public getTokens = async (): Promise<TokenListResponse> => {
+  public getTokens = async (showUnverified: boolean): Promise<TokenListResponse> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
     const response = await this.networkClient.get<{ data: ITokenResponse[] }>({
-      url: "/token-metas",
+      url: `/token-metas?showUnverified=${showUnverified}`,
     });
     if (response.data.data === null) {
       return { tokens: [] };

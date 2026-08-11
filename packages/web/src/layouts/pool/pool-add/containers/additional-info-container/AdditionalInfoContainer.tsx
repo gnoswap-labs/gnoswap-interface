@@ -41,7 +41,7 @@ const AdditionalInfoContainer: React.FC = () => {
   const [currentPoolPath] = useAtom(EarnState.currentPoolPath);
   const [{ isLoading: isLoadingRPCPoolInfo }] = useAtom(EarnState.poolInfoQuery);
   const { poolPath, tokenPair } = usePoolAddSearchParams();
-  const { data: { tokens = [] } = {} } = useGetTokens();
+  const { data: { tokens = [] } = {} } = useGetTokens(true);
   const { getGnotPath } = useGnotToGnot();
 
   const currentPoolTokenPair = useMemo(() => parseTokenPairFromPoolPath(currentPoolPath), [currentPoolPath]);

@@ -51,7 +51,7 @@ const WalletBalanceContainer: React.FC = () => {
   const [sendAssetAmount, setSendAssetAmount] = useState("");
 
   const { data: blockTimeData } = useGetAvgBlockTime();
-  const { balances: balancesPrice, loadingBalance, updateBalances, tokens } = useTokenData();
+  const { balances: balancesPrice, loadingBalance, updateBalances, tokens } = useTokenData(true);
 
   const { positions, loading: loadingPositions } = usePositionData();
   const { data: positionRewards, isLoading: loadingPositionRewards } = useGetPositionRewards();

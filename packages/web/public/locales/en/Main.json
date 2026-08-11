@@ -32,7 +32,10 @@
       "priceCol": "Price",
       "volumeCol": "Volume (24h)"
     },
-    "title": "Tokens"
+    "showUnverifiedTokens": "Show unverified tokens",
+    "title": "Tokens",
+    "unverifiedTokensTooltip": "Tokens unregistered on gno.land Token Resources are filtered.",
+    "verifyToken": "Verify your token"
   },
   "toOffer": "to offer the most simplified and user-friendly DeFi experience for traders.",
   "trending": "Trending"

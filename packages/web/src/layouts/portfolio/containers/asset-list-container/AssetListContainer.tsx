@@ -18,6 +18,7 @@ import { useGetTokens } from "@query/token";
 import { checkGnotPath } from "@utils/common";
 import { formatPoolPairAmount, formatPrice } from "@utils/new-number-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
+import { keepVerified } from "@utils/token-verification-filter";
 import { isEmptyObject } from "@utils/validation-utils";
 
 import useSendAsset from "@hooks/wallet/data/useSendAsset";
@@ -79,10 +80,14 @@ const AssetListContainer: React.FC = () => {
   const [address] = useState("");
   const [assetType, setAssetType] = useState<ASSET_FILTER_TYPE>(ASSET_FILTER_TYPE.ALL);
   const [invisibleZeroBalance, setInvisibleZeroBalance] = useState(false);
+  const [showUnverifiedTokens, setShowUnverifiedTokens] = useState(false);
   const [keyword, setKeyword] = useState("");
   const [extended, setExtened] = useState(true);
   const [hasLoader] = useState(false);
-  const [sortOption, setTokenSortOption] = useState<AssetSortOption>();
+  const [sortOption, setTokenSortOption] = useState<AssetSortOption>({
+    key: ASSET_HEAD.BALANCE,
+    direction: "desc",
+  });
   const { breakpoint } = useWindowSize();
   const [searchIcon, setSearchIcon] = useState(false);
   const [componentRef, isClickOutside, setIsInside] = useClickOutside();
@@ -92,7 +97,7 @@ const AssetListContainer: React.FC = () => {
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>(DEPOSIT_INFO);
   const { isLoadingTokens } = useLoading();
   const { data: blockTimeData } = useGetAvgBlockTime();
-  const { data: { tokens = [] } = {} } = useGetTokens();
+  const { data: { tokens = [] } = {} } = useGetTokens(showUnverifiedTokens);
   const { loading: loadingPositions } = usePositionData({
     withClosed: false,
   });
@@ -124,24 +129,13 @@ const AssetListContainer: React.FC = () => {
     }
   }, [isClickOutside, keyword]);
 
-  const { displayBalanceMap, balances, tokenPrices, isFetched, updateBalances } = useTokenData();
+  const { displayBalanceMap, balances, tokenPrices, isFetched, updateBalances } = useTokenData(showUnverifiedTokens);
 
   useEffect(() => {
     const interval = setInterval(() => {
       updateBalances();
     }, 60000);
     return () => clearInterval(interval);
-  }, [tokens]);
-
-  useEffect(() => {
-    if (!tokens) return;
-
-    if (tokens?.length === 0) {
-      setTokenSortOption({
-        key: ASSET_HEAD.BALANCE,
-        direction: "desc",
-      });
-    }
   }, [tokens]);
 
   const fixedTokens: SortedProps[] = useMemo(() => {
@@ -169,8 +163,8 @@ const AssetListContainer: React.FC = () => {
       }
     }
 
-    return [gnot, wugnot, gns]
-      .map(item => {
+    return keepVerified(
+      [gnot, wugnot, gns].map(item => {
         const tokenPrice = balances[item.priceID];
 
         const price = (() => {
@@ -213,7 +207,9 @@ const AssetListContainer: React.FC = () => {
           tokenPrice: tokenPrice || 0,
           sortPrice: price.toString(),
         };
-      })
+      }),
+      showUnverifiedTokens,
+    )
       .filter(asset => invisibleZeroBalance === false || filterZeroBalance(asset))
       .filter(asset => filterKeyword(asset, keyword))
       .filter(asset => filterType(asset, assetType));
@@ -227,6 +223,7 @@ const AssetListContainer: React.FC = () => {
     keyword,
     assetType,
     connected,
+    showUnverifiedTokens,
   ]);
 
   const filteredTokens = useMemo(() => {
@@ -355,6 +352,10 @@ const AssetListContainer: React.FC = () => {
     setInvisibleZeroBalance(!invisibleZeroBalance);
   }, [invisibleZeroBalance]);
 
+  const toggleShowUnverifiedTokens = useCallback(() => {
+    setShowUnverifiedTokens(!showUnverifiedTokens);
+  }, [showUnverifiedTokens]);
+
   const toggleExtended = useCallback(() => {
     setExtened(!extended);
   }, [extended]);
@@ -450,12 +451,14 @@ const AssetListContainer: React.FC = () => {
         }
         assetType={assetType}
         invisibleZeroBalance={invisibleZeroBalance}
+        showUnverifiedTokens={showUnverifiedTokens}
         keyword={keyword}
         extended={extended}
         hasLoader={hasLoader}
         changeAssetType={changeAssetType}
         search={search}
         toggleInvisibleZeroBalance={toggleInvisibleZeroBalance}
+        toggleShowUnverifiedTokens={toggleShowUnverifiedTokens}
         toggleExtended={toggleExtended}
         deposit={deposit}
         withdraw={withdraw}

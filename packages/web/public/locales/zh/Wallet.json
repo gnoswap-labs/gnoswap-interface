@@ -13,7 +13,9 @@
       "chain": "链"
     },
     "empty": "未找到代币",
+    "filters": "筛选条件",
     "hideZeroAmt": "隐藏零金额",
+    "showUnverifiedTokens": "显示未验证的代币",
     "title": "资产"
   },
   "assetSendModal": {

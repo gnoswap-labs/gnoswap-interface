@@ -21,7 +21,7 @@ const TOKEN_ROTATION_INTERVAL = 2000 as const;
 
 const HomeSwapContainer: React.FC = () => {
   const router = useRouter();
-  const { tokenPrices, displayBalanceMap, tokens } = useTokenData();
+  const { tokenPrices, displayBalanceMap, tokens } = useTokenData(true);
   const [tokenA] = useState<TokenModel | null>(GNOT_TOKEN);
   const [tokenAAmount] = useState<string>(DEFAULT_TOKEN_A_AMOUNT);
   const [tokenB, setTokenB] = useState<TokenModel | null>(GNS_TOKEN);

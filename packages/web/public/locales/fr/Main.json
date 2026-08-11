@@ -32,7 +32,10 @@
       "priceCol": "Prix",
       "volumeCol": "Volume (24h)"
     },
-    "title": "Jetons"
+    "showUnverifiedTokens": "Afficher les jetons non vérifiés",
+    "title": "Jetons",
+    "unverifiedTokensTooltip": "Les jetons non enregistrés sur gno.land sont filtrés dans les ressources de jetons.",
+    "verifyToken": "Vérifiez votre jeton"
   },
   "toOffer": "pour offrir aux traders l'expérience DeFi la plus simplifiée et la plus conviviale.",
   "trending": "Tendance"

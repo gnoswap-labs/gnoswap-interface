@@ -40,7 +40,7 @@ const QuickPoolInfo: React.FC<Props> = ({
   const { t } = useTranslation();
 
   const { getGnotPath } = useGnotToGnot();
-  const { data: { tokens = [] } = {} } = useGetTokens();
+  const { data: { tokens = [] } = {} } = useGetTokens(true);
 
   const tokenA = useMemo(
     () =>
