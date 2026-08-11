@@ -112,6 +112,12 @@ export const AssetListHeaderWrapper = styled.div`
       label {
         flex: 1;
         min-width: 0;
+        color: ${({ theme }) => theme.color.text04};
+        transition: color 0.2s ease;
+      }
+
+      &:hover label {
+        color: ${({ theme }) => theme.color.text01};
       }
 
       input {
