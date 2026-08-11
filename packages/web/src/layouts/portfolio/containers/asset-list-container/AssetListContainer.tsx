@@ -18,6 +18,7 @@ import { useGetTokens } from "@query/token";
 import { checkGnotPath } from "@utils/common";
 import { formatPoolPairAmount, formatPrice } from "@utils/new-number-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
+import { keepVerified } from "@utils/token-verification-filter";
 import { isEmptyObject } from "@utils/validation-utils";
 
 import useSendAsset from "@hooks/wallet/data/useSendAsset";
@@ -79,6 +80,7 @@ const AssetListContainer: React.FC = () => {
   const [address] = useState("");
   const [assetType, setAssetType] = useState<ASSET_FILTER_TYPE>(ASSET_FILTER_TYPE.ALL);
   const [invisibleZeroBalance, setInvisibleZeroBalance] = useState(false);
+  const [showUnverifiedTokens, setShowUnverifiedTokens] = useState(false);
   const [keyword, setKeyword] = useState("");
   const [extended, setExtened] = useState(true);
   const [hasLoader] = useState(false);
@@ -169,8 +171,8 @@ const AssetListContainer: React.FC = () => {
       }
     }
 
-    return [gnot, wugnot, gns]
-      .map(item => {
+    return keepVerified(
+      [gnot, wugnot, gns].map(item => {
         const tokenPrice = balances[item.priceID];
 
         const price = (() => {
@@ -213,7 +215,9 @@ const AssetListContainer: React.FC = () => {
           tokenPrice: tokenPrice || 0,
           sortPrice: price.toString(),
         };
-      })
+      }),
+      showUnverifiedTokens,
+    )
       .filter(asset => invisibleZeroBalance === false || filterZeroBalance(asset))
       .filter(asset => filterKeyword(asset, keyword))
       .filter(asset => filterType(asset, assetType));
@@ -227,57 +231,62 @@ const AssetListContainer: React.FC = () => {
     keyword,
     assetType,
     connected,
+    showUnverifiedTokens,
   ]);
 
   const filteredTokens = useMemo(() => {
     const COLLAPSED_LENGTH = 15;
-    let mappedTokens: SortedProps[] = tokens
-      .filter(item => item.path !== GNOT_TOKEN.path && item.path !== GNS_TOKEN.path && item.path !== WUGNOT_TOKEN.path)
-      .map(item => {
-        const tokenPrice = balances[item.priceID];
+    let mappedTokens: SortedProps[] = keepVerified(
+      tokens
+        .filter(
+          item => item.path !== GNOT_TOKEN.path && item.path !== GNS_TOKEN.path && item.path !== WUGNOT_TOKEN.path,
+        )
+        .map(item => {
+          const tokenPrice = balances[item.priceID];
 
-        const price = (() => {
-          if (!connected || isSwitchNetwork) {
-            return "-";
-          }
+          const price = (() => {
+            if (!connected || isSwitchNetwork) {
+              return "-";
+            }
 
-          if (
-            !tokenPrice ||
-            Number.isNaN(tokenPrice) ||
-            !tokenPrices[checkGnotPath(item?.path)]?.usd ||
-            !balances[item.priceID]
-          ) {
-            return "$0";
-          }
+            if (
+              !tokenPrice ||
+              Number.isNaN(tokenPrice) ||
+              !tokenPrices[checkGnotPath(item?.path)]?.usd ||
+              !balances[item.priceID]
+            ) {
+              return "$0";
+            }
 
-          return formatPrice(
-            BigNumber(tokenPrice)
-              .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || 0)
-              .dividedBy(10 ** item.decimals),
-            {
+            return formatPrice(
+              BigNumber(tokenPrice)
+                .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || 0)
+                .dividedBy(10 ** item.decimals),
+              {
+                isKMB: false,
+              },
+            );
+          })();
+
+          const balance = (() => {
+            if (isSwitchNetwork || !displayBalanceMap[item.path]) return "-";
+
+            return formatPoolPairAmount(displayBalanceMap[item.path], {
               isKMB: false,
-            },
-          );
-        })();
+              decimals: item.decimals,
+            });
+          })();
 
-        const balance = (() => {
-          if (isSwitchNetwork || !displayBalanceMap[item.path]) return "-";
-
-          return formatPoolPairAmount(displayBalanceMap[item.path], {
-            isKMB: false,
-            decimals: item.decimals,
-          });
-        })();
-
-        return {
-          ...item,
-          price: price,
-          balance: balance,
-          tokenPrice: tokenPrice || 0,
-          sortPrice: price.toString(),
-        };
-      })
-      .filter(asset => invisibleZeroBalance === false || filterZeroBalance(asset));
+          return {
+            ...item,
+            price: price,
+            balance: balance,
+            tokenPrice: tokenPrice || 0,
+            sortPrice: price.toString(),
+          };
+        }),
+      showUnverifiedTokens,
+    ).filter(asset => invisibleZeroBalance === false || filterZeroBalance(asset));
 
     if (sortOption?.key === ASSET_HEAD.ASSET) {
       mappedTokens = mappedTokens.sort((x, y) => {
@@ -336,6 +345,7 @@ const AssetListContainer: React.FC = () => {
     keyword,
     isSwitchNetwork,
     connected,
+    showUnverifiedTokens,
   ]);
 
   const changeAssetType = useCallback((newType: string) => {
@@ -354,6 +364,10 @@ const AssetListContainer: React.FC = () => {
   const toggleInvisibleZeroBalance = useCallback(() => {
     setInvisibleZeroBalance(!invisibleZeroBalance);
   }, [invisibleZeroBalance]);
+
+  const toggleShowUnverifiedTokens = useCallback(() => {
+    setShowUnverifiedTokens(!showUnverifiedTokens);
+  }, [showUnverifiedTokens]);
 
   const toggleExtended = useCallback(() => {
     setExtened(!extended);
@@ -450,12 +464,14 @@ const AssetListContainer: React.FC = () => {
         }
         assetType={assetType}
         invisibleZeroBalance={invisibleZeroBalance}
+        showUnverifiedTokens={showUnverifiedTokens}
         keyword={keyword}
         extended={extended}
         hasLoader={hasLoader}
         changeAssetType={changeAssetType}
         search={search}
         toggleInvisibleZeroBalance={toggleInvisibleZeroBalance}
+        toggleShowUnverifiedTokens={toggleShowUnverifiedTokens}
         toggleExtended={toggleExtended}
         deposit={deposit}
         withdraw={withdraw}

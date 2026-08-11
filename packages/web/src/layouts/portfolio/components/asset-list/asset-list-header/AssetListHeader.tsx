@@ -21,9 +21,11 @@ interface AssetListHeaderProps {
   assetType: ASSET_FILTER_TYPE;
   connected: boolean;
   invisibleZeroBalance: boolean;
+  showUnverifiedTokens: boolean;
   keyword: string;
   changeAssetType: (newType: string) => void;
   toggleInvisibleZeroBalance: () => void;
+  toggleShowUnverifiedTokens: () => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
   breakpoint: DEVICE_TYPE;
   searchIcon: boolean;
@@ -35,9 +37,11 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
   assetType,
   connected,
   invisibleZeroBalance,
+  showUnverifiedTokens,
   keyword,
   changeAssetType,
   toggleInvisibleZeroBalance,
+  toggleShowUnverifiedTokens,
   search,
   breakpoint,
   searchIcon,
@@ -54,14 +58,6 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
           <SelectTab selectType={assetType} list={Object.values(ASSET_FILTER_TYPE)} onClick={changeAssetType} />
         ) : (
           <div className="mobile-title-container">
-            {breakpoint !== DEVICE_TYPE.MOBILE && (
-              <Switch
-                checked={invisibleZeroBalance}
-                onChange={toggleInvisibleZeroBalance}
-                hasLabel={true}
-                labelText={t("Wallet:assets.hideZeroAmt")}
-              />
-            )}
             {searchIcon ? (
               <div ref={searchRef as unknown as React.RefObject<HTMLDivElement>}>
                 <SearchInput width={200} height={40} value={keyword} onChange={search} className="tokens-search" />
@@ -73,6 +69,13 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
                   onChange={toggleInvisibleZeroBalance}
                   hasLabel={true}
                   labelText={t("Wallet:assets.hideZeroAmt")}
+                />
+                <Switch
+                  id="show-unverified-tokens"
+                  checked={showUnverifiedTokens}
+                  onChange={toggleShowUnverifiedTokens}
+                  hasLabel={true}
+                  labelText={t("Wallet:assets.showUnverifiedTokens")}
                 />
                 <div className="icon-wrap" onClick={onTogleSearch}>
                   <IconSearch className="search-icon" />
@@ -92,6 +95,13 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
               labelText={t("Wallet:assets.hideZeroAmt")}
             />
           )}
+          <Switch
+            id="show-unverified-tokens"
+            checked={showUnverifiedTokens}
+            onChange={toggleShowUnverifiedTokens}
+            hasLabel={true}
+            labelText={t("Wallet:assets.showUnverifiedTokens")}
+          />
           <SearchInput width={300} value={keyword} onChange={search} className="assets-search" />
         </div>
       ) : (
