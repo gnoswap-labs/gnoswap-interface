@@ -2,9 +2,5 @@
   "staging": {
     "grc20": "https://faucet.adena.app",
     "native": null
-  },
-  "sapphire-1": {
-    "grc20": "https://beta.faucet.adena.app",
-    "native": null
   }
 }
