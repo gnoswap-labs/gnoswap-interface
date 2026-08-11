@@ -83,4 +83,9 @@ export const SIDE_EXTRA_MENU_NAV = [
     path: "privacy",
     iconType: "OPEN_LINK",
   },
+  {
+    title: "HeaderFooter:gnoBridge",
+    path: EXT_URL.BRIDGE,
+    iconType: "OPEN_LINK",
+  },
 ] as const;
