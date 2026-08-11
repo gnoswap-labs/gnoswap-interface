@@ -6,6 +6,7 @@ interface SwitchProps {
   onChange: () => void;
   hasLabel?: boolean;
   labelText?: string;
+  labelExtra?: React.ReactNode;
   disabled?: boolean;
   id?: string;
 }
@@ -15,6 +16,7 @@ const Switch: React.FC<SwitchProps> = ({
   onChange,
   hasLabel = false,
   labelText = "Hide zero balances",
+  labelExtra,
   disabled = false,
   id = "switch",
 }) => {
@@ -23,6 +25,7 @@ const Switch: React.FC<SwitchProps> = ({
       {hasLabel ? (
         <SwitchWrapper className="switch-button">
           <SwitchLabel htmlFor={id}>{labelText}</SwitchLabel>
+          {labelExtra}
           <SwitchInput type="checkbox" id={id} checked={checked} onChange={onChange} disabled={disabled} />
         </SwitchWrapper>
       ) : (
