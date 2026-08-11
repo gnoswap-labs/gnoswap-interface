@@ -104,7 +104,7 @@ export const UnverifiedTokensTooltipContent = styled.div`
   a {
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 8px;
-    color: ${({ theme }) => theme.color.text02};
+    color: ${({ theme }) => theme.color.text04};
     text-decoration: none;
 
     &:hover {
