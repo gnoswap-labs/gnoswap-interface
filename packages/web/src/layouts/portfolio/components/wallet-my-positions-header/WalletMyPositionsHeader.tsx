@@ -17,12 +17,12 @@ const WalletMyPositionsHeader: React.FC<WalletMyPositionsHeaderProps> = ({ toggl
   const { t } = useTranslation();
   const { isSwitchNetwork } = useWallet();
 
-  const { isFetchedPosition, totalPositionCount } = usePositionData({
+  const { isPositionDataAvailable, totalPositionCount } = usePositionData({
     withClosed: isClosed,
     scopeId: "WalletMyPositionsHeader",
   });
 
-  if (!isFetchedPosition || isSwitchNetwork) return null;
+  if (!isPositionDataAvailable || isSwitchNetwork) return null;
 
   return (
     <div css={wrapper}>

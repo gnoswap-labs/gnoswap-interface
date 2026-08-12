@@ -40,7 +40,7 @@ const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerP
   }, [width]);
 
   const {
-    isFetchedPosition,
+    isPositionDataAvailable,
     loading: loadingPositions,
     positions: positionsData = [],
     totalPositionCount,
@@ -271,7 +271,7 @@ const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerP
     <MyPositionCardList
       positions={mappedData}
       loadMore={!isViewMorePositions}
-      isFetched={isFetchedPosition}
+      isFetched={isPositionDataAvailable}
       isLoading={loading || isLoadingPosition}
       movePoolDetail={movePoolDetail}
       currentIndex={currentIndex}

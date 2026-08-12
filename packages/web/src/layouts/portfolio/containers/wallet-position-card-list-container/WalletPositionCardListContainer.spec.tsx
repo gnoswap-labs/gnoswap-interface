@@ -77,6 +77,7 @@ describe("WalletPositionCardListContainer", () => {
   beforeEach(() => {
     mockUsePositionData.mockReturnValue({
       isFetchedPosition: true,
+      isPositionDataAvailable: true,
       loading: false,
       positions: [],
       totalPositionCount: 0,
@@ -118,5 +119,26 @@ describe("WalletPositionCardListContainer", () => {
     rerender(<WalletPositionCardListContainer isClosed={true} />);
 
     expect(mockMyPositionCardList.mock.calls.some(([props]) => props.isLoading)).toBe(false);
+  });
+
+  it("keeps the card list renderable while the filtered position query is transitioning", () => {
+    let isFetchedPosition = true;
+    mockUsePositionData.mockImplementation(() => ({
+      isFetchedPosition,
+      isPositionDataAvailable: true,
+      loading: false,
+      positions: [],
+      totalPositionCount: 0,
+    }));
+
+    const { rerender } = render(<WalletPositionCardListContainer isClosed={false} />);
+    isFetchedPosition = false;
+    mockMyPositionCardList.mockClear();
+
+    rerender(<WalletPositionCardListContainer isClosed={true} />);
+
+    const [lastProps] = mockMyPositionCardList.mock.calls.at(-1) as [{ isFetched: boolean; isLoading: boolean }];
+    expect(lastProps.isFetched).toBe(true);
+    expect(lastProps.isLoading).toBe(false);
   });
 });
