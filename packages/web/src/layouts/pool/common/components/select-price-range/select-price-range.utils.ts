@@ -20,6 +20,7 @@ export interface PriceRangeAprOptions {
   feeTier: SwapFeeTierType | null;
   tickSpacing: number;
   feeApr: number | string | null | undefined;
+  isCustomSelected: boolean;
   customMinPrice: number | null;
   customMaxPrice: number | null;
 }
@@ -94,14 +95,22 @@ export const calculatePriceRangeApr = (
 
 export const makePriceRangesWithApr = (
   priceRanges: PriceRangeMeta[],
-  { currentPrice, feeTier, tickSpacing, feeApr, customMinPrice, customMaxPrice }: PriceRangeAprOptions,
+  {
+    currentPrice,
+    feeTier,
+    tickSpacing,
+    feeApr,
+    isCustomSelected,
+    customMinPrice,
+    customMaxPrice,
+  }: PriceRangeAprOptions,
 ): PriceRangeMeta[] => {
   const minPriceLimit = feeTier ? SwapFeeTierMaxPriceRangeMap[feeTier]?.minPrice : undefined;
 
   return priceRanges.map(priceRange => {
     const prices =
       priceRange.type === "Custom"
-        ? customMinPrice !== null && customMaxPrice !== null
+        ? isCustomSelected && customMinPrice !== null && customMaxPrice !== null
           ? { minPrice: customMinPrice, maxPrice: customMaxPrice }
           : null
         : getPriceRangeByType(currentPrice, feeTier, tickSpacing, priceRange.type);
