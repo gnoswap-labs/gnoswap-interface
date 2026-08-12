@@ -1,5 +1,3 @@
-import BigNumber from "bignumber.js";
-
 import {
   PriceRangeMeta,
   PriceRangeType,
@@ -8,6 +6,7 @@ import {
   SwapFeeTierType,
 } from "@constants/option.constant";
 import { formatRate } from "@utils/new-number-utils";
+import { calculateEstimatedAPR } from "@utils/pool-apr-utils";
 import { feeBoostRateByPrices, priceToTick, tickToPrice } from "@utils/swap-utils";
 
 export interface PriceRangePrices {
@@ -90,7 +89,8 @@ export const calculatePriceRangeApr = (
     return undefined;
   }
 
-  return BigNumber(feeAprNumber).multipliedBy(feeBoost).toFixed(2);
+  const estimatedAPR = calculateEstimatedAPR(feeAprNumber, feeBoost);
+  return estimatedAPR === null ? undefined : estimatedAPR.toString();
 };
 
 export const makePriceRangesWithApr = (

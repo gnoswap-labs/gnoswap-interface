@@ -1,4 +1,5 @@
 import { SwapFeeTierPriceRange, SwapFeeTierType } from "@constants/option.constant";
+import { calculateEstimatedAPR } from "@utils/pool-apr-utils";
 import { feeBoostRateByPrices, priceToTick, tickToPrice } from "@utils/swap-utils";
 
 import {
@@ -28,14 +29,33 @@ describe("getPriceRangeByType", () => {
 
 describe("calculatePriceRangeApr", () => {
   it("calculates APR from the pool fee APR and range fee boost", () => {
-    expect(calculatePriceRangeApr("4.32", 0.9, 1.1)).toBe(
-      (Number("4.32") * Number(feeBoostRateByPrices(0.9, 1.1))).toFixed(2),
-    );
+    const feeApr = "4.32";
+    const feeBoost = feeBoostRateByPrices(0.9, 1.1);
+
+    expect(calculatePriceRangeApr(feeApr, 0.9, 1.1)).toBe(String(Number(feeApr) * Number(feeBoost)));
+  });
+
+  it("keeps the raw APR value for the shared display formatter", () => {
+    const feeApr = "0.004";
+    const feeBoost = feeBoostRateByPrices(0.924968, 1.07465);
+
+    expect(calculatePriceRangeApr(feeApr, 0.924968, 1.07465)).toBe(String(Number(feeApr) * Number(feeBoost)));
   });
 
   it("returns no APR when the pool has no APR data", () => {
     expect(calculatePriceRangeApr(null, 0.9, 1.1)).toBeUndefined();
     expect(calculatePriceRangeApr("", 0.9, 1.1)).toBeUndefined();
+  });
+});
+
+describe("calculateEstimatedAPR", () => {
+  it("uses the same raw fee APR and fee boost multiplication as the selected-range summary", () => {
+    expect(calculateEstimatedAPR("0.004", "27.17")).toBe(Number("0.004") * Number("27.17"));
+  });
+
+  it("returns no APR when either source value is unavailable", () => {
+    expect(calculateEstimatedAPR(null, "27.17")).toBeNull();
+    expect(calculateEstimatedAPR("0.004", null)).toBeNull();
   });
 });
 
@@ -101,6 +121,10 @@ describe("makePriceRangesWithApr", () => {
 describe("formatPriceRangeApr", () => {
   it("formats an APR value with the APR suffix", () => {
     expect(formatPriceRangeApr("4.32")).toBe("4.32% APR");
+  });
+
+  it("uses the same truncating format as the lower Fee APR summary", () => {
+    expect(formatPriceRangeApr("0.10868")).toBe("0.10% APR");
   });
 
   it("uses a dash when APR data is unavailable", () => {
