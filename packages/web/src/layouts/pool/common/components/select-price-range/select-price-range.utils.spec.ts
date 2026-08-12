@@ -48,11 +48,26 @@ describe("makePriceRangesWithApr", () => {
       feeTier: "FEE_3000",
       tickSpacing: 60,
       feeApr: null,
+      isCustomSelected: false,
       customMinPrice: 0.9,
       customMaxPrice: 1.1,
     });
 
     expect(ranges.every(range => range.apr === undefined)).toBe(true);
+  });
+
+  it("does not calculate the Custom APR before Custom is selected", () => {
+    const ranges = makePriceRangesWithApr([...priceRanges], {
+      currentPrice: 1,
+      feeTier: "FEE_3000",
+      tickSpacing: 60,
+      feeApr: "4.32",
+      isCustomSelected: false,
+      customMinPrice: 0.9,
+      customMaxPrice: 1.1,
+    });
+
+    expect(ranges.find(range => range.type === "Custom")?.apr).toBeUndefined();
   });
 
   it("recalculates the Custom APR from the current min and max prices", () => {
@@ -61,6 +76,7 @@ describe("makePriceRangesWithApr", () => {
       feeTier: "FEE_3000",
       tickSpacing: 60,
       feeApr: "4.32",
+      isCustomSelected: true,
       customMinPrice: 0.9,
       customMaxPrice: 1.1,
     });
@@ -69,6 +85,7 @@ describe("makePriceRangesWithApr", () => {
       feeTier: "FEE_3000",
       tickSpacing: 60,
       feeApr: "4.32",
+      isCustomSelected: true,
       customMinPrice: 0.8,
       customMaxPrice: 1.2,
     });

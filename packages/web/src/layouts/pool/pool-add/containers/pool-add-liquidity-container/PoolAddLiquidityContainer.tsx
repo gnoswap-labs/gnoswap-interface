@@ -93,6 +93,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
         feeTier: swapFeeTier,
         tickSpacing: selectPool.tickSpacing,
         feeApr: selectPool.feeApr,
+        isCustomSelected: priceRange?.type === "Custom",
         customMinPrice: selectPool.minPrice,
         customMaxPrice: selectPool.maxPrice,
       }),
@@ -102,6 +103,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
       selectPool.maxPrice,
       selectPool.minPrice,
       selectPool.tickSpacing,
+      priceRange?.type,
       swapFeeTier,
     ],
   );
