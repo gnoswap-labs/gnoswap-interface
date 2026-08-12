@@ -8,6 +8,7 @@ import useComponentSize from "@hooks/common/use-component-size";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { DEVICE_TYPE } from "@styles/media";
 import { getLocalizeTime, parseDate } from "@utils/chart";
+import { getYAxisInfo } from "@utils/chart-y-axis";
 
 import { ExchangeRateGraphContentWrapper, ExchangeRateGraphXAxisWrapper } from "./ExchangeRateGraphContent.styles";
 import { IPoolPriceRatioItem } from "@models/pool/pool-model";
@@ -44,6 +45,16 @@ export function ExchangeRateGraphContent({ pricesData, onMouseMove, onMouseOut }
   }, [pricesChartData, i18n.language]);
 
   const hasSingleData = useMemo(() => pricesChartData?.length === 1, [pricesChartData]);
+
+  const chartYAxis = useMemo(() => {
+    const latestPrice = pricesChartData[pricesChartData.length - 1]?.value;
+    const tokenPrice = latestPrice !== undefined ? Number(latestPrice) : undefined;
+
+    return getYAxisInfo(
+      pricesChartData.map(item => item.value),
+      tokenPrice !== undefined && Number.isFinite(tokenPrice) ? tokenPrice : undefined,
+    );
+  }, [pricesChartData]);
 
   const countXAxis = useMemo(() => {
     if (hasSingleData) return 1;
@@ -97,6 +108,10 @@ export function ExchangeRateGraphContent({ pricesData, onMouseMove, onMouseOut }
             }}
             showBaseLine
             showBaseLineLabels
+            baseLineLabels={chartYAxis.labels}
+            yAxisMin={chartYAxis.minValue}
+            yAxisMax={chartYAxis.maxValue}
+            renderSinglePointAsLine
             isShowTooltip={true}
             renderBottom={renderXAxis}
             onMouseOut={onMouseOut}
