@@ -4,7 +4,7 @@ import { useCallback, useMemo, useRef } from "react";
 import useElementWidth from "@hooks/common/use-element-width";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { DEVICE_TYPE } from "@styles/media";
-import { formatTokenPath } from "@utils/token-utils";
+import { formatDisplayTokenName, formatTokenPath } from "@utils/token-utils";
 
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -20,9 +20,10 @@ export interface TokenInfoCellProps {
   };
   isNative: boolean;
   breakpoint?: DEVICE_TYPE;
+  truncateName?: boolean;
 }
 
-function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
+function TokenInfoCell({ token, breakpoint, isNative, truncateName = false }: TokenInfoCellProps) {
   const { name, path, symbol, displaySymbol, logoURI } = token;
   const theme = useTheme();
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
@@ -37,6 +38,8 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
   const tokenPathDisplay = useMemo(() => {
     return formatTokenPath(path, isNative);
   }, [isNative, path]);
+
+  const displayName = truncateName ? formatDisplayTokenName(name) : name;
 
   const onClickPath = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -56,7 +59,7 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
       <div className={`token-name-symbol-path ${breakpoint === DEVICE_TYPE.MOBILE ? "mobile" : ""}`}>
         <div className="token-name-path">
           <strong className="token-name" ref={tokenNameRef} id={elementId}>
-            {name}
+            {displayName}
           </strong>
           <div className="token-link" onClick={onClickPath}>
             <span>{tokenPathDisplay}</span>

@@ -1,6 +1,7 @@
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import { TokenModel } from "@models/token/token-model";
 import {
+  formatDisplayTokenName,
   formatDisplayTokenSymbol,
   formatTokenBalanceDisplay,
   formatTokenModelPath,
@@ -36,6 +37,18 @@ describe("format display token symbol", () => {
     expect(formatDisplayTokenSymbol("ibc/488D610A5FB7878660703092A35BC4E7D0C88E2EA71174337AA317A22C05177F")).toBe(
       "ibc/488D6...",
     );
+  });
+});
+
+describe("format display token name", () => {
+  it("should keep token names with 9 or fewer characters", () => {
+    expect(formatDisplayTokenName("FOOTBALL")).toBe("FOOTBALL");
+    expect(formatDisplayTokenName("123456789")).toBe("123456789");
+  });
+
+  it("should shorten long token names and remove a trailing cut-space", () => {
+    expect(formatDisplayTokenName("FOOTBALL WORLD CUB")).toBe("FOOTBALL...");
+    expect(formatDisplayTokenName("1234567890")).toBe("123456789...");
   });
 });
 
