@@ -146,6 +146,7 @@ interface FormatPriceOptions {
   greaterThan1Decimals?: number;
   forcedDecimals?: boolean;
   approx?: boolean;
+  minLimit?: number;
 }
 
 export const formatPrice = (value?: BigNumber | string | number | null, options: FormatPriceOptions = {}): string => {
@@ -156,6 +157,7 @@ export const formatPrice = (value?: BigNumber | string | number | null, options:
     lessThan1Significant = 3,
     greaterThan1Decimals = 2,
     forcedDecimals = false,
+    minLimit,
   } = options;
 
   if (value === "" || value === null || value === undefined) {
@@ -172,6 +174,10 @@ export const formatPrice = (value?: BigNumber | string | number | null, options:
   if (absValue.isNaN()) return value.toString();
 
   if (absValue.isEqualTo(0)) return prefix + "0";
+
+  if (minLimit !== undefined && absValue.isLessThan(minLimit)) {
+    return `<${prefix}${minLimit}`;
+  }
 
   if (isKMB) {
     const kmbNumber = toKMBFormat(valueWithoutComma, { usd });
