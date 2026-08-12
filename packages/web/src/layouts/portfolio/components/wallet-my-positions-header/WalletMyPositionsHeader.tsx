@@ -17,32 +17,22 @@ const WalletMyPositionsHeader: React.FC<WalletMyPositionsHeaderProps> = ({ toggl
   const { t } = useTranslation();
   const { isSwitchNetwork } = useWallet();
 
-  const {
-    positions,
-    isFetchedPosition: isFetchedPosition,
-    totalPositionCount,
-  } = usePositionData({
-    withClosed: true,
+  const { isPositionDataAvailable, totalPositionCount } = usePositionData({
+    withClosed: isClosed,
     scopeId: "WalletMyPositionsHeader",
   });
 
-  const hasClosedPositions = React.useMemo(() => {
-    return positions.some(position => position.closed);
-  }, [positions]);
-
-  if (!isFetchedPosition || isSwitchNetwork) return null;
+  if (!isPositionDataAvailable || isSwitchNetwork) return null;
 
   return (
     <div css={wrapper}>
       {totalPositionCount > 0 && <h2>{`${t("Wallet:myPosi")} (${totalPositionCount.toLocaleString()})`}</h2>}
-      {hasClosedPositions && (
-        <Switch
-          checked={isClosed}
-          onChange={toggleClosed}
-          hasLabel={true}
-          labelText={t("Earn:positions.showClosedSwitch")}
-        />
-      )}
+      <Switch
+        checked={isClosed}
+        onChange={toggleClosed}
+        hasLabel={true}
+        labelText={t("Earn:positions.showClosedSwitch")}
+      />
     </div>
   );
 };

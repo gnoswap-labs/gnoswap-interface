@@ -40,7 +40,7 @@ const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerP
   }, [width]);
 
   const {
-    isFetchedPosition,
+    isPositionDataAvailable,
     loading: loadingPositions,
     positions: positionsData = [],
     totalPositionCount,
@@ -58,8 +58,6 @@ const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerP
   const { data: tokenPrices = {} } = useGetAllTokenPrices();
 
   const [isViewMorePositions, setIsViewMorePositions] = useState(false);
-  const [mappedData, setMappedData] = useState<PoolPositionModel[]>([]);
-  const [isDataMappingLoading, setIsDataMappingLoading] = useState(true);
 
   const handleClickLoadMore = useCallback(() => {
     setIsViewMorePositions(!isViewMorePositions);
@@ -134,7 +132,7 @@ const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerP
 
   const showedPosition = useMemo(() => {
     return [...openPosition, ...(isClosed ? closedPosition : [])];
-  }, [closedPosition, isClosed, openPosition, limit]);
+  }, [closedPosition, isClosed, openPosition]);
 
   const handleScroll = useCallback(() => {
     if (divRef.current) {
@@ -219,32 +217,23 @@ const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerP
     }
   }, [showedPosition.length]);
 
-  const getMappedData = (): PoolPositionModel[] => {
-    if (isViewMorePositions) {
-      return showedPosition;
-    }
+  const mappedData = useMemo(() => {
+    let targetPositions: PoolPositionModel[];
 
-    for (const breakpoint of POSITION_CARD_LIST_BREAKPOINTS) {
-      if (width > breakpoint.width) {
-        return showedPosition.slice(0, breakpoint.displayCount);
+    if (isViewMorePositions) {
+      targetPositions = showedPosition;
+    } else {
+      targetPositions = showedPosition;
+      for (const breakpoint of POSITION_CARD_LIST_BREAKPOINTS) {
+        if (width > breakpoint.width) {
+          targetPositions = showedPosition.slice(0, breakpoint.displayCount);
+          break;
+        }
       }
     }
 
-    return showedPosition;
-  };
-
-  const updateDataMapping = useCallback(() => {
-    setIsDataMappingLoading(true);
-    const newMappedData = getMappedData();
-    const convertedMappedData = PositionConverter.convertPositions(newMappedData);
-
-    setMappedData(convertedMappedData);
-    setIsDataMappingLoading(false);
-  }, [isViewMorePositions, width, showedPosition, limit]);
-
-  useEffect(() => {
-    updateDataMapping();
-  }, [updateDataMapping]);
+    return PositionConverter.convertPositions(targetPositions);
+  }, [isViewMorePositions, width, showedPosition]);
 
   /**
    * Navigate to specific page
@@ -282,8 +271,8 @@ const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerP
     <MyPositionCardList
       positions={mappedData}
       loadMore={!isViewMorePositions}
-      isFetched={isFetchedPosition}
-      isLoading={loading || isLoadingPosition || isDataMappingLoading}
+      isFetched={isPositionDataAvailable}
+      isLoading={loading || isLoadingPosition}
       movePoolDetail={movePoolDetail}
       currentIndex={currentIndex}
       maxDisplayCount={maxDisplayCount}

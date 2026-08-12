@@ -42,6 +42,10 @@ export const usePositionData = (options?: UsePositionDataOption) => {
   });
 
   const { totalCount: totalPositionCount = 0, positions: rawPositions = [] } = data ?? {};
+  // React Query keeps the previous result while a filter-specific query is transitioning.
+  // Keep that result available for rendering without changing the meaning of isFetchedPosition.
+  const hasPositionData = data !== undefined;
+  const isPositionDataAvailable = isFetchedPosition || hasPositionData;
 
   const { isLoading: isCommonLoading } = useLoading();
 
@@ -49,7 +53,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     data: positions = [],
     isFetched: isFetchedPoolPositions,
     isLoading: isLoadingPoolPositions,
-  } = useMakePoolPositions(rawPositions, pools, isFetchedPosition, isFetchedPools, options?.scopeId || "");
+  } = useMakePoolPositions(rawPositions, pools, isPositionDataAvailable, isFetchedPools, options?.scopeId || "");
 
   const availableStake = useMemo(() => {
     if (!isFetchedPoolPositions) {
@@ -95,6 +99,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     checkStakedPool,
     getPositions,
     isFetchedPosition: isFetchedPosition && isFetchedPoolPositions,
+    isPositionDataAvailable: isPositionDataAvailable && isFetchedPoolPositions,
     loading,
     isLoadingPool,
   };

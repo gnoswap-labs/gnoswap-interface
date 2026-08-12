@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 
@@ -29,32 +29,63 @@ const mockUsePositionData = usePositionData as jest.Mock;
 
 describe("WalletMyPositionsHeader", () => {
   beforeEach(() => {
-    mockUsePositionData.mockReturnValue({
-      positions: [],
+    mockUsePositionData.mockImplementation(({ withClosed }: { withClosed?: boolean }) => ({
       isFetchedPosition: true,
-      totalPositionCount: 1,
-    });
+      isPositionDataAvailable: true,
+      totalPositionCount: withClosed ? 3 : 2,
+    }));
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it("always fetches all positions to determine if closed positions exist", () => {
+  it("uses the open position count when closed positions are hidden", () => {
     render(<WalletMyPositionsHeader toggleClosed={jest.fn()} isClosed={false} />);
 
+    expect(screen.getByRole("heading")).toHaveTextContent("Wallet:myPosi (2)");
+    expect(screen.getByRole("checkbox")).toBeInTheDocument();
+    expect(mockUsePositionData).toHaveBeenCalledTimes(1);
+    expect(mockUsePositionData).toHaveBeenCalledWith({
+      withClosed: false,
+      scopeId: "WalletMyPositionsHeader",
+    });
+  });
+
+  it("uses the inclusive position count when closed positions are shown", () => {
+    render(<WalletMyPositionsHeader toggleClosed={jest.fn()} isClosed={true} />);
+
+    expect(screen.getByRole("heading")).toHaveTextContent("Wallet:myPosi (3)");
+    expect(screen.getByRole("checkbox")).toBeInTheDocument();
+    expect(mockUsePositionData).toHaveBeenCalledTimes(1);
     expect(mockUsePositionData).toHaveBeenCalledWith({
       withClosed: true,
       scopeId: "WalletMyPositionsHeader",
     });
   });
 
-  it("still fetches all positions even when toggle shows closed positions", () => {
+  it("keeps the closed switch visible without relying on a current-page closed position", () => {
+    mockUsePositionData.mockReturnValue({
+      isFetchedPosition: true,
+      isPositionDataAvailable: true,
+      totalPositionCount: 0,
+    });
+
+    render(<WalletMyPositionsHeader toggleClosed={jest.fn()} isClosed={false} />);
+
+    expect(screen.getByRole("checkbox")).toBeInTheDocument();
+  });
+
+  it("keeps the rendered header while the filtered position query is transitioning", () => {
+    mockUsePositionData.mockReturnValue({
+      isFetchedPosition: false,
+      isPositionDataAvailable: true,
+      totalPositionCount: 43,
+    });
+
     render(<WalletMyPositionsHeader toggleClosed={jest.fn()} isClosed={true} />);
 
-    expect(mockUsePositionData).toHaveBeenCalledWith({
-      withClosed: true,
-      scopeId: "WalletMyPositionsHeader",
-    });
+    expect(screen.getByRole("heading")).toHaveTextContent("Wallet:myPosi (43)");
+    expect(screen.getByRole("checkbox")).toBeInTheDocument();
   });
 });
