@@ -70,6 +70,21 @@ export function makeDisplayPrice(price: number | string, baseToken: TokenModel, 
     .toNumber();
 }
 
+export function calculateTokenDepositRatio(
+  tokenABalance: number,
+  tokenBBalance: number,
+  price: number | string | null | undefined,
+  tokenA: TokenModel,
+  tokenB: TokenModel,
+): number {
+  if (tokenABalance + tokenBBalance === 0) {
+    return 0.5;
+  }
+
+  const priceRatio = price ? makeDisplayPrice(price, tokenA, tokenB) : 1;
+  return tokenABalance / (tokenABalance + tokenBBalance / priceRatio);
+}
+
 export function makeRawPrice(price: number | string, baseToken: TokenModel, quoteToken: TokenModel): number {
   return BigNumber(price)
     .shiftedBy(quoteToken.decimals - baseToken.decimals)

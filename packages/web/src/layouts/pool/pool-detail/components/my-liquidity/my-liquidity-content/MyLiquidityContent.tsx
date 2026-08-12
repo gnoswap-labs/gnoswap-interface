@@ -22,8 +22,7 @@ import { isGNOTPath } from "@utils/common";
 import { formatOtherPrice, formatPoolPairAmount } from "@utils/new-number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { mapToDisplayRewardType } from "@utils/reward-utils";
-import { DEFAULT_TOKEN_PRICE_RATIO } from "@common/values";
-import { sortDisplayRewards } from "@utils/pool-utils";
+import { calculateTokenDepositRatio, sortDisplayRewards } from "@utils/pool-utils";
 
 import {
   AmountDisplayWrapper,
@@ -481,10 +480,18 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       return 0.5;
     }
 
-    const priceRatio = positionData?.price || DEFAULT_TOKEN_PRICE_RATIO;
+    if (!positionData) {
+      return 0.5;
+    }
 
-    return tokenABalance / (tokenABalance + tokenBBalance / priceRatio);
-  }, [tokenABalance, tokenBBalance, positionData?.price]);
+    return calculateTokenDepositRatio(
+      tokenABalance,
+      tokenBBalance,
+      positionData.price,
+      positionData.tokenA,
+      positionData.tokenB,
+    );
+  }, [tokenABalance, tokenBBalance, positionData]);
 
   const depositRatioStrOfTokenA = useMemo(() => {
     const depositStr = `${Math.round(depositRatio * 100)}%`;
