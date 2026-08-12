@@ -32,10 +32,7 @@
       "priceCol": "価格",
       "volumeCol": "体積（24時間）"
     },
-    "showUnverifiedTokens": "未確認のトークンを表示する",
-    "title": "トークン",
-    "unverifiedTokensTooltip": "Gno.landの「Token Resources」に登録されていないトークンは除外されます。",
-    "verifyToken": "トークンを確認してください"
+    "title": "トークン"
   },
   "toOffer": "トレーダーに最もシンプルでユーザーフレンドリーなDeFi体験を提供する。",
   "trending": "トレンド"

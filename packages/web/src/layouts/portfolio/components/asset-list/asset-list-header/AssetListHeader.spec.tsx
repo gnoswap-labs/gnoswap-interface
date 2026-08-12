@@ -33,7 +33,7 @@ describe("AssetListHeader", () => {
   it("renders the show-unverified switch directly and removes the Filters/zero-balance controls", () => {
     renderHeader();
 
-    expect(screen.getByLabelText("Main:tokenList.showUnverifiedTokens")).toBeInTheDocument();
+    expect(screen.getByLabelText("common:tokenList.showUnverifiedTokens")).toBeInTheDocument();
     expect(screen.queryByText("Wallet:assets.filters")).not.toBeInTheDocument();
     expect(screen.queryByLabelText("Wallet:assets.hideZeroAmt")).not.toBeInTheDocument();
   });
@@ -42,7 +42,7 @@ describe("AssetListHeader", () => {
     const toggleShowUnverifiedTokens = jest.fn();
     renderHeader({ toggleShowUnverifiedTokens });
 
-    const toggle = screen.getByLabelText("Main:tokenList.showUnverifiedTokens");
+    const toggle = screen.getByLabelText("common:tokenList.showUnverifiedTokens");
     expect(toggle).not.toBeChecked();
 
     fireEvent.click(toggle);
@@ -52,7 +52,7 @@ describe("AssetListHeader", () => {
   it("renders the same switch on mobile as well", () => {
     renderHeader({ breakpoint: DEVICE_TYPE.MOBILE, searchIcon: false });
 
-    expect(screen.getByLabelText("Main:tokenList.showUnverifiedTokens")).toBeInTheDocument();
+    expect(screen.getByLabelText("common:tokenList.showUnverifiedTokens")).toBeInTheDocument();
     expect(screen.queryByLabelText("Wallet:assets.hideZeroAmt")).not.toBeInTheDocument();
   });
 });

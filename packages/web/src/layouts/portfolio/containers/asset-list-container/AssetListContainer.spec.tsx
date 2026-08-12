@@ -168,7 +168,7 @@ const setBalanceMap = () => {
   });
 };
 
-const getShowUnverifiedToggle = () => screen.getByLabelText("Main:tokenList.showUnverifiedTokens");
+const getShowUnverifiedToggle = () => screen.getByLabelText("common:tokenList.showUnverifiedTokens");
 const getVisibleRows = () => screen.getAllByTestId("asset-row").map(row => row.textContent);
 
 describe("AssetListContainer unverified token filtering", () => {

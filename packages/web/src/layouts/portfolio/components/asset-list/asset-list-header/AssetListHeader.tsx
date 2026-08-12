@@ -2,16 +2,13 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { ValuesType } from "utility-types";
 
-import IconInfo from "@components/common/icons/IconInfo";
-import IconNewTab from "@components/common/icons/IconNewTab";
 import IconSearch from "@components/common/icons/IconSearch";
 import SearchInput from "@components/common/search-input/SearchInput";
 import SelectTab from "@components/common/select-tab/SelectTab";
-import Switch from "@components/common/switch/Switch";
-import Tooltip from "@components/common/tooltip/Tooltip";
+import ShowUnverifiedTokensSwitch from "@components/common/show-unverified-tokens-switch/ShowUnverifiedTokensSwitch";
 import { DEVICE_TYPE } from "@styles/media";
 
-import { AssetListHeaderWrapper, UnverifiedTokensTooltipContent } from "./AssetListHeader.styles";
+import { AssetListHeaderWrapper } from "./AssetListHeader.styles";
 
 export const ASSET_FILTER_TYPE = {
   ALL: "All",
@@ -46,37 +43,6 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
   searchRef,
 }) => {
   const { t } = useTranslation();
-  const unverifiedTokensTooltip = (
-    <UnverifiedTokensTooltipContent>
-      <p>
-        {t("Main:tokenList.unverifiedTokensTooltip", {
-          defaultValue: "Tokens unregistered on gno.land Token Resources are filtered.",
-        })}
-      </p>
-      <a href="https://github.com/onbloc/gno-token-resource" target="_blank" rel="noreferrer">
-        {t("Main:tokenList.verifyToken", { defaultValue: "Verify your token" })}
-        <IconNewTab />
-      </a>
-    </UnverifiedTokensTooltipContent>
-  );
-
-  const unverifiedTokensInfo = (
-    <Tooltip placement="top" FloatingContent={unverifiedTokensTooltip} className="show-unverified-info">
-      <IconInfo size={16} />
-    </Tooltip>
-  );
-
-  const showUnverifiedTokensSwitch = (
-    <Switch
-      id="show-unverified-tokens"
-      checked={showUnverifiedTokens}
-      onChange={toggleShowUnverifiedTokens}
-      hasLabel={true}
-      labelText={t("Main:tokenList.showUnverifiedTokens")}
-      labelExtra={unverifiedTokensInfo}
-      labelExtraPosition="before"
-    />
-  );
 
   return (
     <AssetListHeaderWrapper>
@@ -92,7 +58,7 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
               </div>
             ) : (
               <>
-                {showUnverifiedTokensSwitch}
+                <ShowUnverifiedTokensSwitch checked={showUnverifiedTokens} onChange={toggleShowUnverifiedTokens} />
                 <div className="icon-wrap" onClick={onTogleSearch}>
                   <IconSearch className="search-icon" />
                 </div>
@@ -103,7 +69,7 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
       </div>
       {breakpoint !== DEVICE_TYPE.MOBILE ? (
         <div className="right-section">
-          {showUnverifiedTokensSwitch}
+          <ShowUnverifiedTokensSwitch checked={showUnverifiedTokens} onChange={toggleShowUnverifiedTokens} />
           <SearchInput width={300} value={keyword} onChange={search} className="assets-search" />
         </div>
       ) : (

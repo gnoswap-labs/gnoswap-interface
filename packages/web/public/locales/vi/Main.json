@@ -32,10 +32,7 @@
       "priceCol": "Giá",
       "volumeCol": "Khối lượng (24 giờ)"
     },
-    "showUnverifiedTokens": "Hiển thị các mã thông báo chưa được xác minh",
-    "title": "Token",
-    "unverifiedTokensTooltip": "Các token chưa được đăng ký trên Gno.land Token Resources sẽ bị lọc ra.",
-    "verifyToken": "Xác minh mã xác thực của bạn"
+    "title": "Token"
   },
   "toOffer": "nhằm mang đến trải nghiệm DeFi đơn giản nhất và thân thiện nhất với người dùng cho các nhà giao dịch.",
   "trending": "Xu hướng"
