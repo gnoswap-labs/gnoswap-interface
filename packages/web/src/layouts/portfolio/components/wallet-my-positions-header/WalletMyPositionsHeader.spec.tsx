@@ -30,7 +30,6 @@ const mockUsePositionData = usePositionData as jest.Mock;
 describe("WalletMyPositionsHeader", () => {
   beforeEach(() => {
     mockUsePositionData.mockImplementation(({ withClosed }: { withClosed?: boolean }) => ({
-      positions: [],
       isFetchedPosition: true,
       totalPositionCount: withClosed ? 3 : 2,
     }));
@@ -44,13 +43,11 @@ describe("WalletMyPositionsHeader", () => {
     render(<WalletMyPositionsHeader toggleClosed={jest.fn()} isClosed={false} />);
 
     expect(screen.getByRole("heading")).toHaveTextContent("Wallet:myPosi (2)");
-    expect(mockUsePositionData).toHaveBeenNthCalledWith(1, {
+    expect(screen.getByRole("checkbox")).toBeInTheDocument();
+    expect(mockUsePositionData).toHaveBeenCalledTimes(1);
+    expect(mockUsePositionData).toHaveBeenCalledWith({
       withClosed: false,
       scopeId: "WalletMyPositionsHeader",
-    });
-    expect(mockUsePositionData).toHaveBeenNthCalledWith(2, {
-      withClosed: true,
-      scopeId: "WalletMyPositionsHeader:closed-check",
     });
   });
 
@@ -58,14 +55,19 @@ describe("WalletMyPositionsHeader", () => {
     render(<WalletMyPositionsHeader toggleClosed={jest.fn()} isClosed={true} />);
 
     expect(screen.getByRole("heading")).toHaveTextContent("Wallet:myPosi (3)");
+    expect(screen.getByRole("checkbox")).toBeInTheDocument();
+    expect(mockUsePositionData).toHaveBeenCalledTimes(1);
+    expect(mockUsePositionData).toHaveBeenCalledWith({
+      withClosed: true,
+      scopeId: "WalletMyPositionsHeader",
+    });
   });
 
-  it("shows the closed switch when a closed position exists outside the first page", () => {
-    mockUsePositionData.mockImplementation(({ withClosed }: { withClosed?: boolean }) => ({
-      positions: [],
+  it("keeps the closed switch visible without relying on a current-page closed position", () => {
+    mockUsePositionData.mockReturnValue({
       isFetchedPosition: true,
-      totalPositionCount: withClosed ? 21 : 20,
-    }));
+      totalPositionCount: 0,
+    });
 
     render(<WalletMyPositionsHeader toggleClosed={jest.fn()} isClosed={false} />);
 
