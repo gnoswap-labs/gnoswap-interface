@@ -35,6 +35,7 @@ import { usePool } from "@hooks/pool/data/use-pool";
 import { usePoolAddLiquidityConfirmModal } from "@hooks/pool/ui/use-pool-add-liquidity-confirm-modal";
 import { isSameToken } from "@utils/common";
 import PoolAddLiquidity, { PriceRangeSummary } from "../../components/pool-add-liquidity/PoolAddLiquidity";
+import { makePriceRangesWithApr } from "../../../common/components/select-price-range/select-price-range.utils";
 import { resolvePoolAddStartingPrice, snapPoolAddRawStartingPrice } from "./EarnAddLiquidityContainer.utils";
 
 export const SWAP_FEE_TIERS: SwapFeeTierType[] = ["FEE_100", "FEE_500", "FEE_3000", "FEE_10000"];
@@ -73,7 +74,13 @@ const EarnAddLiquidityContainer: React.FC = () => {
 
   const { connected: connectedWallet, account, switchNetwork, isSwitchNetwork } = useWallet();
   const { slippage, changeSlippage } = useSlippage();
-  const { refetchGrc20Balances, updateBalances, updateTokenPrices, tokens, loading: isLoadingTokens } = useTokenData(true);
+  const {
+    refetchGrc20Balances,
+    updateBalances,
+    updateTokenPrices,
+    tokens,
+    loading: isLoadingTokens,
+  } = useTokenData(true);
   const [createOption, setCreateOption] = useState<{
     startPrice: number | null;
     isCreate: boolean;
@@ -85,6 +92,26 @@ const EarnAddLiquidityContainer: React.FC = () => {
     isCreate: createOption.isCreate,
     startPrice: createOption.startPrice,
   });
+
+  const priceRangesWithApr = useMemo(
+    () =>
+      makePriceRangesWithApr(PRICE_RANGES, {
+        currentPrice: selectPool.currentPrice,
+        feeTier: swapFeeTier,
+        tickSpacing: selectPool.tickSpacing,
+        feeApr: selectPool.feeApr,
+        customMinPrice: selectPool.minPrice,
+        customMaxPrice: selectPool.maxPrice,
+      }),
+    [
+      selectPool.currentPrice,
+      selectPool.feeApr,
+      selectPool.maxPrice,
+      selectPool.minPrice,
+      selectPool.tickSpacing,
+      swapFeeTier,
+    ],
+  );
   const {
     fetching: isFetchingFeetierOfLiquidityMap,
     pools,
@@ -758,7 +785,7 @@ const EarnAddLiquidityContainer: React.FC = () => {
       feetierOfLiquidityMap={feetierOfLiquidityMap}
       feeTier={swapFeeTier}
       selectFeeTier={selectSwapFeeTier}
-      priceRanges={priceRanges}
+      priceRanges={priceRangesWithApr}
       priceRange={priceRange}
       priceRangeSummary={priceRangeSummary}
       changePriceRange={changePriceRange}

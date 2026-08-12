@@ -40,6 +40,7 @@ import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
 import { usePool } from "@hooks/pool/data/use-pool";
 import { usePoolAddLiquidityConfirmModal } from "@hooks/pool/ui/use-pool-add-liquidity-confirm-modal";
 import PoolAddLiquidity, { PriceRangeSummary } from "../../components/pool-add-liquidity/PoolAddLiquidity";
+import { makePriceRangesWithApr } from "../../../common/components/select-price-range/select-price-range.utils";
 import { resolvePoolAddStartingPrice } from "../pool-add-starting-price.utils";
 
 export const SWAP_FEE_TIERS: SwapFeeTierType[] = ["FEE_100", "FEE_500", "FEE_3000", "FEE_10000"];
@@ -85,6 +86,26 @@ const PoolAddLiquidityContainer: React.FC = () => {
     startPrice: createOption?.startPrice,
   });
 
+  const priceRangesWithApr = useMemo(
+    () =>
+      makePriceRangesWithApr(PRICE_RANGES, {
+        currentPrice: selectPool.currentPrice,
+        feeTier: swapFeeTier,
+        tickSpacing: selectPool.tickSpacing,
+        feeApr: selectPool.feeApr,
+        customMinPrice: selectPool.minPrice,
+        customMaxPrice: selectPool.maxPrice,
+      }),
+    [
+      selectPool.currentPrice,
+      selectPool.feeApr,
+      selectPool.maxPrice,
+      selectPool.minPrice,
+      selectPool.tickSpacing,
+      swapFeeTier,
+    ],
+  );
+
   const { updatePools } = usePoolData();
   const {
     pools,
@@ -127,8 +148,10 @@ const PoolAddLiquidityContainer: React.FC = () => {
     let estimatedApr: string = formatRate(selectPool.estimatedAPR) ?? "-";
 
     if (selectPool.selectedFullRange) {
-      const tokenASymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.displaySymbol : tokenB?.displaySymbol;
-      const tokenBSymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.displaySymbol : tokenA?.displaySymbol;
+      const tokenASymbol =
+        tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.displaySymbol : tokenB?.displaySymbol;
+      const tokenBSymbol =
+        tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.displaySymbol : tokenA?.displaySymbol;
       depositRatio = `50.0% ${tokenASymbol} / 50.0% ${tokenBSymbol}`;
       return {
         depositRatio,
@@ -141,8 +164,10 @@ const PoolAddLiquidityContainer: React.FC = () => {
     if (tokenAdepositRatio !== null) {
       const tokenARatioStr = BigNumber(tokenAdepositRatio).toFixed(1);
       const tokenBRatioStr = BigNumber(100 - tokenAdepositRatio).toFixed(1);
-      const tokenASymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.displaySymbol : tokenB?.displaySymbol;
-      const tokenBSymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.displaySymbol : tokenA?.displaySymbol;
+      const tokenASymbol =
+        tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.displaySymbol : tokenB?.displaySymbol;
+      const tokenBSymbol =
+        tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.displaySymbol : tokenA?.displaySymbol;
       depositRatio = `${tokenARatioStr}% ${tokenASymbol} / ${tokenBRatioStr}% ${tokenBSymbol}`;
     }
     if (tokenAdepositRatio === 0 || tokenAdepositRatio === 100) {
@@ -627,7 +652,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
       feetierOfLiquidityMap={feetierOfLiquidityMap}
       feeTier={swapFeeTier}
       selectFeeTier={selectSwapFeeTier}
-      priceRanges={priceRanges}
+      priceRanges={priceRangesWithApr}
       priceRange={priceRange}
       priceRangeSummary={priceRangeSummary}
       changePriceRange={changePriceRange}

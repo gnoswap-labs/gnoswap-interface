@@ -64,6 +64,7 @@ export interface SelectPool {
   maxPrice: number | null;
   depositRatio: number | null;
   feeBoost: string | null;
+  feeApr: string | null;
   estimatedAPR: number | null;
   increaseMinTick: () => void;
   decreaseMinTick: () => void;
@@ -554,6 +555,7 @@ export const useSelectPool = ({
     maxPrice,
     depositRatio,
     feeBoost,
+    feeApr: poolFromDb?.feeApr || null,
     estimatedAPR,
     increaseMinTick,
     decreaseMinTick,
