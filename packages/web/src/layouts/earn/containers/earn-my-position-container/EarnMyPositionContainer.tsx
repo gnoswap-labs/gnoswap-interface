@@ -53,13 +53,38 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     return DESKTOP * 5; // 4 * 5 = 20
   }, [width]);
 
-  const { isError, isFetchedPosition, loading: isLoadingPosition, positions, totalPositionCount } = usePositionData({
+  const openPositionData = usePositionData({
+    address,
+    page: 1,
+    limit: 1,
+    withClosed: false,
+    scopeId: "EarnMyPositionContainer-open",
+  });
+  const allPositionData = usePositionData({
+    address,
+    page: 1,
+    limit: 1,
+    withClosed: true,
+    scopeId: "EarnMyPositionContainer-all",
+  });
+  const {
+    isError,
+    isFetchedPosition,
+    loading: isLoadingPosition,
+    positions,
+    totalPositionCount,
+  } = usePositionData({
     address,
     page,
     limit,
     withClosed: isClosed,
     scopeId: "EarnMyPositionContainer",
   });
+
+  const hasClosedPositions =
+    allPositionData.isFetchedPosition &&
+    openPositionData.isFetchedPosition &&
+    allPositionData.totalPositionCount > openPositionData.totalPositionCount;
 
   const divRef = useRef<HTMLDivElement | null>(null);
 
@@ -327,6 +352,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       themeKey={themeKey}
       account={account}
       isClosed={isClosed}
+      hasClosedPositions={hasClosedPositions}
       handleChangeClosed={handleChangeClosed}
       tokenPrices={tokenPrices}
       highestApr={highestApr}

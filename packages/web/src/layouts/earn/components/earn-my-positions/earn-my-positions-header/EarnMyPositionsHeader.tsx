@@ -24,6 +24,7 @@ export interface EarnMyPositionsHeaderProps {
   moveEarnStake: () => void;
   /** UI toggle state: whether closed positions should be shown in this view. */
   isClosed: boolean;
+  hasClosedPositions: boolean;
   handleChangeClosed: () => void;
   positions: PoolPositionModel[];
   onOpenVideoGuide: (type: "POSITION") => void;
@@ -40,6 +41,7 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
   moveEarnAdd,
   moveEarnStake,
   isClosed,
+  hasClosedPositions,
   handleChangeClosed,
   onOpenVideoGuide,
 }) => {
@@ -101,7 +103,7 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
     <PositionsWrapper>
       <div className="header-content">
         <HeaderTextWrapper>{renderMyPositionTitle()}</HeaderTextWrapper>
-        {visiblePositions && (
+        {visiblePositions && hasClosedPositions && (
           <Switch
             checked={isClosed}
             onChange={handleChangeClosed}
@@ -117,7 +119,7 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
         )}
       </div>
       <div className="button-wrapper">
-        {visiblePositions && (
+        {visiblePositions && hasClosedPositions && (
           <Switch
             checked={isClosed}
             onChange={handleChangeClosed}
