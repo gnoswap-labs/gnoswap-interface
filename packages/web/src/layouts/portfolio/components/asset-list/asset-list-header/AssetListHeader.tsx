@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { ValuesType } from "utility-types";
 
+import IconInfo from "@components/common/icons/IconInfo";
+import IconNewTab from "@components/common/icons/IconNewTab";
 import IconSearch from "@components/common/icons/IconSearch";
-import IconArrowDown from "@components/common/icons/IconArrowDown";
 import SearchInput from "@components/common/search-input/SearchInput";
 import SelectTab from "@components/common/select-tab/SelectTab";
 import Switch from "@components/common/switch/Switch";
+import Tooltip from "@components/common/tooltip/Tooltip";
 import { DEVICE_TYPE } from "@styles/media";
 
-import { AssetListHeaderWrapper } from "./AssetListHeader.styles";
+import { AssetListHeaderWrapper, UnverifiedTokensTooltipContent } from "./AssetListHeader.styles";
 
 export const ASSET_FILTER_TYPE = {
   ALL: "All",
@@ -20,12 +22,9 @@ export type ASSET_FILTER_TYPE = ValuesType<typeof ASSET_FILTER_TYPE>;
 
 interface AssetListHeaderProps {
   assetType: ASSET_FILTER_TYPE;
-  connected: boolean;
-  invisibleZeroBalance: boolean;
   showUnverifiedTokens: boolean;
   keyword: string;
   changeAssetType: (newType: string) => void;
-  toggleInvisibleZeroBalance: () => void;
   toggleShowUnverifiedTokens: () => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
   breakpoint: DEVICE_TYPE;
@@ -36,12 +35,9 @@ interface AssetListHeaderProps {
 
 const AssetListHeader: React.FC<AssetListHeaderProps> = ({
   assetType,
-  connected,
-  invisibleZeroBalance,
   showUnverifiedTokens,
   keyword,
   changeAssetType,
-  toggleInvisibleZeroBalance,
   toggleShowUnverifiedTokens,
   search,
   breakpoint,
@@ -50,43 +46,36 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
   searchRef,
 }) => {
   const { t } = useTranslation();
-  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const unverifiedTokensTooltip = (
+    <UnverifiedTokensTooltipContent>
+      <p>
+        {t("Main:tokenList.unverifiedTokensTooltip", {
+          defaultValue: "Tokens unregistered on gno.land Token Resources are filtered.",
+        })}
+      </p>
+      <a href="https://github.com/onbloc/gno-token-resource" target="_blank" rel="noreferrer">
+        {t("Main:tokenList.verifyToken", { defaultValue: "Verify your token" })}
+        <IconNewTab />
+      </a>
+    </UnverifiedTokensTooltipContent>
+  );
 
-  const renderFilters = () => (
-    <div
-      className="filters-wrapper"
-      onMouseEnter={() => setIsFiltersOpen(true)}
-      onMouseLeave={() => setIsFiltersOpen(false)}
-    >
-      <button type="button" className="filters-trigger" aria-haspopup="dialog" aria-expanded={isFiltersOpen}>
-        {t("Wallet:assets.filters", { defaultValue: "Filters" })}
-        <IconArrowDown className="filters-arrow" />
-      </button>
-      {isFiltersOpen && (
-        <div
-          className="filters-dropdown"
-          role="dialog"
-          aria-label={t("Wallet:assets.filters", { defaultValue: "Filters" })}
-        >
-          <Switch
-            id="show-unverified-tokens"
-            checked={showUnverifiedTokens}
-            onChange={toggleShowUnverifiedTokens}
-            hasLabel={true}
-            labelText={t("Wallet:assets.showUnverifiedTokens")}
-          />
-          {connected && (
-            <Switch
-              id="hide-zero-balances"
-              checked={invisibleZeroBalance}
-              onChange={toggleInvisibleZeroBalance}
-              hasLabel={true}
-              labelText={t("Wallet:assets.hideZeroAmt")}
-            />
-          )}
-        </div>
-      )}
-    </div>
+  const unverifiedTokensInfo = (
+    <Tooltip placement="top" FloatingContent={unverifiedTokensTooltip} className="show-unverified-info">
+      <IconInfo size={16} />
+    </Tooltip>
+  );
+
+  const showUnverifiedTokensSwitch = (
+    <Switch
+      id="show-unverified-tokens"
+      checked={showUnverifiedTokens}
+      onChange={toggleShowUnverifiedTokens}
+      hasLabel={true}
+      labelText={t("Main:tokenList.showUnverifiedTokens")}
+      labelExtra={unverifiedTokensInfo}
+      labelExtraPosition="before"
+    />
   );
 
   return (
@@ -103,7 +92,7 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
               </div>
             ) : (
               <>
-                {renderFilters()}
+                {showUnverifiedTokensSwitch}
                 <div className="icon-wrap" onClick={onTogleSearch}>
                   <IconSearch className="search-icon" />
                 </div>
@@ -114,7 +103,7 @@ const AssetListHeader: React.FC<AssetListHeaderProps> = ({
       </div>
       {breakpoint !== DEVICE_TYPE.MOBILE ? (
         <div className="right-section">
-          {renderFilters()}
+          {showUnverifiedTokensSwitch}
           <SearchInput width={300} value={keyword} onChange={search} className="assets-search" />
         </div>
       ) : (

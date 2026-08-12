@@ -10,17 +10,14 @@ import { AssetListWrapper } from "./AssetList.styles";
 
 interface AssetListProps {
   assets: Asset[];
-  connected: boolean;
   isFetched: boolean;
   assetType?: ASSET_FILTER_TYPE;
-  invisibleZeroBalance: boolean;
   showUnverifiedTokens: boolean;
   keyword: string;
   extended: boolean;
   hasLoader: boolean;
   changeAssetType: (assetType: string) => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  toggleInvisibleZeroBalance: () => void;
   toggleShowUnverifiedTokens: () => void;
   toggleExtended: () => void;
   deposit: (asset: Asset) => void;
@@ -37,17 +34,14 @@ interface AssetListProps {
 
 const AssetList: React.FC<AssetListProps> = ({
   assets,
-  connected,
   isFetched,
   assetType = ASSET_FILTER_TYPE.ALL,
-  invisibleZeroBalance,
   showUnverifiedTokens,
   keyword,
   extended,
   hasLoader,
   changeAssetType,
   search,
-  toggleInvisibleZeroBalance,
   toggleShowUnverifiedTokens,
   toggleExtended,
   deposit,
@@ -64,12 +58,9 @@ const AssetList: React.FC<AssetListProps> = ({
   <AssetListWrapper>
     <AssetListHeader
       assetType={assetType}
-      connected={connected}
-      invisibleZeroBalance={invisibleZeroBalance}
       showUnverifiedTokens={showUnverifiedTokens}
       keyword={keyword}
       changeAssetType={changeAssetType}
-      toggleInvisibleZeroBalance={toggleInvisibleZeroBalance}
       toggleShowUnverifiedTokens={toggleShowUnverifiedTokens}
       search={search}
       breakpoint={breakpoint}

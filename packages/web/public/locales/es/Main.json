@@ -21,7 +21,7 @@
   "swapComp": "Intercambiar",
   "swapNowBtn": "Ir a Intercambio",
   "theFirst": "El primer AMM DEX de liquidez concentrada creado con Gnolang",
-  "theOne": "la Plataforma DeFi Integral Gnoland",
+  "theOne": "la Plataforma DeFi de Gno.land de una sola parada",
   "tokenList": {
     "emptyText": "No se han encontrado fichas",
     "header": {
@@ -34,7 +34,7 @@
     },
     "showUnverifiedTokens": "Mostrar tokens no verificados",
     "title": "Fichas",
-    "unverifiedTokensTooltip": "Se filtran los tokens que no están registrados en «Token Resources» de gno.land.",
+    "unverifiedTokensTooltip": "Se filtran los tokens que no están registrados en «Token Resources» de Gno.land.",
     "verifyToken": "Verifica tu token"
   },
   "toOffer": "ofrecer la experiencia DeFi más simplificada y fácil de usar para los comerciantes.",

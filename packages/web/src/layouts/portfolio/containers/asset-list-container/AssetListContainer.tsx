@@ -34,13 +34,6 @@ export const ASSET_TYPE = {
 
 export type ASSET_TYPE = ValuesType<typeof ASSET_TYPE>;
 
-function filterZeroBalance(asset: Asset) {
-  if (asset?.balance === "-") return false;
-
-  const balance = BigNumber(asset?.balance?.toString().replace(/,/g, "") ?? 0);
-  return balance.isGreaterThan(0);
-}
-
 function filterType(asset: Asset, type: ASSET_FILTER_TYPE) {
   if (type === "All") return true;
   return asset.type.toUpperCase() === type.toUpperCase();
@@ -79,7 +72,6 @@ const AssetListContainer: React.FC = () => {
 
   const [address] = useState("");
   const [assetType, setAssetType] = useState<ASSET_FILTER_TYPE>(ASSET_FILTER_TYPE.ALL);
-  const [invisibleZeroBalance, setInvisibleZeroBalance] = useState(false);
   const [showUnverifiedTokens, setShowUnverifiedTokens] = useState(false);
   const [keyword, setKeyword] = useState("");
   const [extended, setExtened] = useState(true);
@@ -210,13 +202,11 @@ const AssetListContainer: React.FC = () => {
       }),
       showUnverifiedTokens,
     )
-      .filter(asset => invisibleZeroBalance === false || filterZeroBalance(asset))
       .filter(asset => filterKeyword(asset, keyword))
       .filter(asset => filterType(asset, assetType));
   }, [
     balances,
     displayBalanceMap,
-    invisibleZeroBalance,
     isSwitchNetwork,
     tokenPrices,
     tokens,
@@ -273,8 +263,7 @@ const AssetListContainer: React.FC = () => {
           tokenPrice: tokenPrice || 0,
           sortPrice: price.toString(),
         };
-      })
-      .filter(asset => invisibleZeroBalance === false || filterZeroBalance(asset));
+      });
 
     if (sortOption?.key === ASSET_HEAD.ASSET) {
       mappedTokens = mappedTokens.sort((x, y) => {
@@ -328,7 +317,6 @@ const AssetListContainer: React.FC = () => {
     balances,
     tokenPrices,
     displayBalanceMap,
-    invisibleZeroBalance,
     assetType,
     keyword,
     isSwitchNetwork,
@@ -347,10 +335,6 @@ const AssetListContainer: React.FC = () => {
         setAssetType(ASSET_FILTER_TYPE.ALL);
     }
   }, []);
-
-  const toggleInvisibleZeroBalance = useCallback(() => {
-    setInvisibleZeroBalance(!invisibleZeroBalance);
-  }, [invisibleZeroBalance]);
 
   const toggleShowUnverifiedTokens = useCallback(() => {
     setShowUnverifiedTokens(!showUnverifiedTokens);
@@ -445,19 +429,16 @@ const AssetListContainer: React.FC = () => {
     <>
       <AssetList
         assets={[...fixedTokens, ...filteredTokens]}
-        connected={connected}
         isFetched={
           isFetched && !isLoadingTokens && !isLoadingPosition && !(isEmptyObject(balances) && account?.address)
         }
         assetType={assetType}
-        invisibleZeroBalance={invisibleZeroBalance}
         showUnverifiedTokens={showUnverifiedTokens}
         keyword={keyword}
         extended={extended}
         hasLoader={hasLoader}
         changeAssetType={changeAssetType}
         search={search}
-        toggleInvisibleZeroBalance={toggleInvisibleZeroBalance}
         toggleShowUnverifiedTokens={toggleShowUnverifiedTokens}
         toggleExtended={toggleExtended}
         deposit={deposit}

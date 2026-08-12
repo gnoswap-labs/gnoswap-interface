@@ -69,80 +69,25 @@ export const AssetListHeaderWrapper = styled.div`
     flex-shrink: 0;
     gap: 36px;
   }
-  .filters-wrapper {
-    position: relative;
-
-    &::after {
-      position: absolute;
-      top: 100%;
-      right: 0;
-      width: 100%;
-      height: 12px;
-      content: "";
-    }
-  }
-  .filters-trigger {
-    ${mixins.flexbox("row", "center", "center")};
-    gap: 8px;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    color: ${({ theme }) => theme.color.text04};
-    cursor: pointer;
-    font: inherit;
-    white-space: nowrap;
-    transition: color 0.2s ease;
-
-    &:hover,
-    &[aria-expanded="true"] {
-      color: ${({ theme }) => theme.color.text01};
-
-      .filters-arrow path {
-        fill: ${({ theme }) => theme.color.text01};
-      }
-    }
-  }
-  .filters-arrow {
+  .show-unverified-info {
+    display: flex;
+    flex: 0 0 16px;
     width: 16px;
     height: 16px;
+    cursor: default;
+    margin-right: -8px;
 
-    path {
-      fill: ${({ theme }) => theme.color.icon08};
-      transition: fill 0.2s ease;
-    }
-  }
-  .filters-dropdown {
-    position: absolute;
-    z-index: 10;
-    top: calc(100% + 12px);
-    right: 0;
-    box-sizing: border-box;
-    width: 280px;
-    padding: 16px;
-    border: 1px solid ${({ theme }) => theme.color.border01};
-    border-radius: 8px;
-    background: ${({ theme }) => theme.color.background01};
-    box-shadow: 0 8px 24px rgb(0 0 0 / 20%);
-
-    .switch-button {
-      width: 100%;
-      justify-content: space-between;
-      gap: 16px;
-
-      label {
-        flex: 1;
-        min-width: 0;
-        color: ${({ theme }) => theme.color.text04};
-      }
-
-      input {
-        flex: 0 0 auto;
-        margin: 0;
-      }
+    ${media.mobile} {
+      margin-right: 0;
     }
 
-    .switch-button + .switch-button {
-      margin-top: 16px;
+    svg {
+      width: 16px;
+      height: 16px;
+
+      path {
+        fill: ${({ theme }) => theme.color.icon08};
+      }
     }
   }
   .assets-search {
@@ -151,5 +96,40 @@ export const AssetListHeaderWrapper = styled.div`
         color: ${({ theme }) => theme.color.text17};
       }
     }
+  }
+`;
+
+export const UnverifiedTokensTooltipContent = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  gap: 16px;
+  width: 320px;
+  color: ${({ theme }) => theme.color.text02};
+  ${fonts.body12};
+
+  p {
+    margin: 0;
+  }
+
+  a {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    gap: 8px;
+    color: ${({ theme }) => theme.color.text04};
+    text-decoration: none;
+
+    &:hover {
+      color: ${({ theme }) => theme.color.text01};
+    }
+
+    svg {
+      flex: 0 0 16px;
+
+      path {
+        fill: currentColor;
+      }
+    }
+  }
+
+  ${media.mobile} {
+    width: min(320px, calc(100vw - 32px));
   }
 `;
