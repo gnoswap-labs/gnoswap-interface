@@ -17,20 +17,19 @@ const WalletMyPositionsHeader: React.FC<WalletMyPositionsHeaderProps> = ({ toggl
   const { t } = useTranslation();
   const { isSwitchNetwork } = useWallet();
 
-  const {
-    positions,
-    isFetchedPosition: isFetchedPosition,
-    totalPositionCount,
-  } = usePositionData({
-    withClosed: true,
+  const { isFetchedPosition: isFetchedOpenPositions, totalPositionCount: openPositionCount } = usePositionData({
+    withClosed: false,
     scopeId: "WalletMyPositionsHeader",
   });
+  const { isFetchedPosition: isFetchedAllPositions, totalPositionCount: allPositionCount } = usePositionData({
+    withClosed: true,
+    scopeId: "WalletMyPositionsHeader:closed-check",
+  });
 
-  const hasClosedPositions = React.useMemo(() => {
-    return positions.some(position => position.closed);
-  }, [positions]);
+  const totalPositionCount = isClosed ? allPositionCount : openPositionCount;
+  const hasClosedPositions = allPositionCount > openPositionCount;
 
-  if (!isFetchedPosition || isSwitchNetwork) return null;
+  if (!isFetchedOpenPositions || !isFetchedAllPositions || isSwitchNetwork) return null;
 
   return (
     <div css={wrapper}>

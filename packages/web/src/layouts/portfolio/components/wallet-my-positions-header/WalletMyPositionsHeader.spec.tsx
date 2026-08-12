@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 
@@ -29,32 +29,46 @@ const mockUsePositionData = usePositionData as jest.Mock;
 
 describe("WalletMyPositionsHeader", () => {
   beforeEach(() => {
-    mockUsePositionData.mockReturnValue({
+    mockUsePositionData.mockImplementation(({ withClosed }: { withClosed?: boolean }) => ({
       positions: [],
       isFetchedPosition: true,
-      totalPositionCount: 1,
-    });
+      totalPositionCount: withClosed ? 3 : 2,
+    }));
   });
 
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it("always fetches all positions to determine if closed positions exist", () => {
+  it("uses the open position count when closed positions are hidden", () => {
     render(<WalletMyPositionsHeader toggleClosed={jest.fn()} isClosed={false} />);
 
-    expect(mockUsePositionData).toHaveBeenCalledWith({
-      withClosed: true,
+    expect(screen.getByRole("heading")).toHaveTextContent("Wallet:myPosi (2)");
+    expect(mockUsePositionData).toHaveBeenNthCalledWith(1, {
+      withClosed: false,
       scopeId: "WalletMyPositionsHeader",
+    });
+    expect(mockUsePositionData).toHaveBeenNthCalledWith(2, {
+      withClosed: true,
+      scopeId: "WalletMyPositionsHeader:closed-check",
     });
   });
 
-  it("still fetches all positions even when toggle shows closed positions", () => {
+  it("uses the inclusive position count when closed positions are shown", () => {
     render(<WalletMyPositionsHeader toggleClosed={jest.fn()} isClosed={true} />);
 
-    expect(mockUsePositionData).toHaveBeenCalledWith({
-      withClosed: true,
-      scopeId: "WalletMyPositionsHeader",
-    });
+    expect(screen.getByRole("heading")).toHaveTextContent("Wallet:myPosi (3)");
+  });
+
+  it("shows the closed switch when a closed position exists outside the first page", () => {
+    mockUsePositionData.mockImplementation(({ withClosed }: { withClosed?: boolean }) => ({
+      positions: [],
+      isFetchedPosition: true,
+      totalPositionCount: withClosed ? 21 : 20,
+    }));
+
+    render(<WalletMyPositionsHeader toggleClosed={jest.fn()} isClosed={false} />);
+
+    expect(screen.getByRole("checkbox")).toBeInTheDocument();
   });
 });
