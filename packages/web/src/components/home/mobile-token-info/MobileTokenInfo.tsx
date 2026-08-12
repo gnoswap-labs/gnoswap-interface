@@ -48,7 +48,7 @@ const MobileTokenInfo: React.FC<TokenInfoProps> = ({ item }) => {
     <TokenInfoWrapper>
       <HoverSection onClick={() => onClickItem(token.path)}>
         <TableColumn className="name-col left" tdWidth={MOBILE_TOKEN_TD_WIDTH[1]}>
-          <TokenInfoCell token={token} isNative={item.isNative} breakpoint={DEVICE_TYPE.MOBILE} />
+          <TokenInfoCell token={token} isNative={item.isNative} breakpoint={DEVICE_TYPE.MOBILE} truncateName />
         </TableColumn>
         <TableColumn className={cx("price-col", priceStyle.className)} tdWidth={MOBILE_TOKEN_TD_WIDTH[2]}>
           <span>

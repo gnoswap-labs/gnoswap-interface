@@ -11,6 +11,7 @@ import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 import PriceWarning from "@components/common/price-warning/PriceWarning";
 import { cx } from "@emotion/css";
 import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
+import { formatDisplayTokenName } from "@utils/token-utils";
 
 export interface TokenChartInfoProps {
   token: {
@@ -82,7 +83,7 @@ const TokenChartInfo: React.FC<TokenChartInfoProps> = ({ token, priceInfo, loadi
           )}
           {!loading && (
             <div>
-              <span className="token-name">{token.name}</span>
+              <span className="token-name">{formatDisplayTokenName(token.name)}</span>
               <span className="token-symbol">{token.displaySymbol}</span>
             </div>
           )}

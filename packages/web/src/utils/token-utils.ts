@@ -20,6 +20,12 @@ export function formatDisplayTokenSymbol(symbol: string): string {
   return `${symbol.slice(0, TOKEN_DISPLAY_MAX_LENGTH)}...`;
 }
 
+export function formatDisplayTokenName(name: string): string {
+  if (name.length <= TOKEN_DISPLAY_MAX_LENGTH) return name;
+
+  return `${name.slice(0, TOKEN_DISPLAY_MAX_LENGTH).trimEnd()}...`;
+}
+
 export function makeRawTokenAmount(token: TokenModel, amount: string | number) {
   const number = BigNumber(amount.toString());
   if (number.isNaN()) {
