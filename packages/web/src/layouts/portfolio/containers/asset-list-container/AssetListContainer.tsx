@@ -52,6 +52,21 @@ function filterKeyword(asset: Asset, keyword: string) {
   return asset.name.toLowerCase().includes(searchKeyword) || asset.symbol.toLowerCase().includes(searchKeyword);
 }
 
+const MIN_USD_BALANCE_DISPLAY = 0.01;
+const getUsdBalance = (
+  tokenPrice: number | null | undefined,
+  usdPrice: string | null | undefined,
+  decimals: number,
+) => {
+  if (!tokenPrice || Number.isNaN(tokenPrice) || !usdPrice) {
+    return BigNumber(0);
+  }
+
+  return BigNumber(tokenPrice)
+    .multipliedBy(usdPrice)
+    .dividedBy(10 ** decimals);
+};
+
 const DEPOSIT_INFO: TokenModel = {
   chainId: "dev",
   createdAt: "2023-10-10T08:48:46+09:00",
@@ -166,6 +181,8 @@ const AssetListContainer: React.FC = () => {
     return keepVerified(
       [gnot, wugnot, gns].map(item => {
         const tokenPrice = balances[item.priceID];
+        const usdPrice = tokenPrices[checkGnotPath(item?.path)]?.usd;
+        const usdValue = getUsdBalance(tokenPrice, usdPrice, item.decimals);
 
         const price = (() => {
           if (!connected || isSwitchNetwork) {
@@ -181,14 +198,10 @@ const AssetListContainer: React.FC = () => {
             return "$0";
           }
 
-          return formatPrice(
-            BigNumber(tokenPrice)
-              .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || 0)
-              .dividedBy(10 ** item.decimals),
-            {
-              isKMB: false,
-            },
-          );
+          return formatPrice(usdValue, {
+            isKMB: false,
+            minLimit: MIN_USD_BALANCE_DISPLAY,
+          });
         })();
 
         const balance = (() => {
@@ -205,7 +218,7 @@ const AssetListContainer: React.FC = () => {
           price,
           balance,
           tokenPrice: tokenPrice || 0,
-          sortPrice: price.toString(),
+          sortPrice: price === "-" ? "-" : usdValue.toString(),
         };
       }),
       showUnverifiedTokens,
@@ -232,6 +245,8 @@ const AssetListContainer: React.FC = () => {
       .filter(item => item.path !== GNOT_TOKEN.path && item.path !== GNS_TOKEN.path && item.path !== WUGNOT_TOKEN.path)
       .map(item => {
         const tokenPrice = balances[item.priceID];
+        const usdPrice = tokenPrices[checkGnotPath(item?.path)]?.usd;
+        const usdValue = getUsdBalance(tokenPrice, usdPrice, item.decimals);
 
         const price = (() => {
           if (!connected || isSwitchNetwork) {
@@ -247,14 +262,10 @@ const AssetListContainer: React.FC = () => {
             return "$0";
           }
 
-          return formatPrice(
-            BigNumber(tokenPrice)
-              .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || 0)
-              .dividedBy(10 ** item.decimals),
-            {
-              isKMB: false,
-            },
-          );
+          return formatPrice(usdValue, {
+            isKMB: false,
+            minLimit: MIN_USD_BALANCE_DISPLAY,
+          });
         })();
 
         const balance = (() => {
@@ -271,7 +282,7 @@ const AssetListContainer: React.FC = () => {
           price: price,
           balance: balance,
           tokenPrice: tokenPrice || 0,
-          sortPrice: price.toString(),
+          sortPrice: price === "-" ? "-" : usdValue.toString(),
         };
       })
       .filter(asset => invisibleZeroBalance === false || filterZeroBalance(asset));
