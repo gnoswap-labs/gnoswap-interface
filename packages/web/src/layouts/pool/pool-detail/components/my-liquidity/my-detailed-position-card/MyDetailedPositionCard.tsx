@@ -46,13 +46,11 @@ import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { isClaimableReward, mapToDisplayRewardType } from "@utils/reward-utils";
-import { makeDisplayPrice, sortTokensByPoolOrder } from "@utils/pool-utils";
+import { calculateTokenDepositRatio, makeDisplayPrice, sortTokensByPoolOrder } from "@utils/pool-utils";
 
 import { BalanceTooltipContent, PositionBalanceInfo } from "./BalanceTooltipContent";
 import ManageButton from "./manage-button/ManageButton";
 import PositionHistory from "./PositionHistory";
-import { DEFAULT_TOKEN_PRICE_RATIO } from "@common/values";
-
 import {
   CopyTooltip,
   LoadingChart,
@@ -211,10 +209,8 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       return 0.5;
     }
 
-    const priceRatio = position?.pool?.price || DEFAULT_TOKEN_PRICE_RATIO;
-
-    return tokenABalance / (tokenABalance + tokenBBalance / priceRatio);
-  }, [tokenABalance, tokenBBalance, position?.pool?.price]);
+    return calculateTokenDepositRatio(tokenABalance, tokenBBalance, position?.pool?.price, tokenA, tokenB);
+  }, [tokenABalance, tokenBBalance, position?.pool?.price, tokenA, tokenB]);
 
   const depositRatioStrOfTokenA = useMemo(() => {
     const depositStr = `${Math.round(depositRatio * 100)}%`;

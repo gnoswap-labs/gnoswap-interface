@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { cx } from "@emotion/css";
 
-import { STATIC_TEXT, DEFAULT_TOKEN_PRICE_RATIO } from "@common/values";
+import { STATIC_TEXT } from "@common/values";
 import IconStar from "@components/common/icons/IconStar";
 import IconAdd from "@components/common/icons/IconAdd";
 import IconRemove from "@components/common/icons/IconRemove";
@@ -22,7 +22,7 @@ import { PoolLiquiditySegmentModel } from "@models/pool/pool-liquidity-model";
 import { TokenModel } from "@models/token/token-model";
 import { ThemeState } from "@states/index";
 import { formatOtherPrice, formatPoolPairAmount, formatRate } from "@utils/new-number-utils";
-import { makeDisplayPrice } from "@utils/pool-utils";
+import { calculateTokenDepositRatio, makeDisplayPrice } from "@utils/pool-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 
 import {
@@ -97,10 +97,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
       return 0.5;
     }
 
-    const priceRatio = pool.price || DEFAULT_TOKEN_PRICE_RATIO;
-
-    return tokenABalanceNum / (tokenABalanceNum + tokenBBalanceNum / priceRatio);
-  }, [tokenABalance, tokenBBalance, pool.price]);
+    return calculateTokenDepositRatio(tokenABalanceNum, tokenBBalanceNum, pool.price, pool.tokenA, pool.tokenB);
+  }, [tokenABalance, tokenBBalance, pool.price, pool.tokenA, pool.tokenB]);
 
   const depositRatioStrOfTokenA = useMemo(() => {
     if (Number.isNaN(depositRatio)) return "(0%)";
