@@ -13,9 +13,6 @@
       "chain": "Chain"
     },
     "empty": "No tokens found",
-    "filters": "Filters",
-    "hideZeroAmt": "Hide zero amounts",
-    "showUnverifiedTokens": "Show unverified tokens",
     "title": "Assets"
   },
   "assetSendModal": {

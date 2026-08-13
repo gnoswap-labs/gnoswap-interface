@@ -176,5 +176,10 @@
     }
   },
   "swapUrlCopied": "已复制的交换 URL！",
+  "tokenList": {
+    "showUnverifiedTokens": "显示未验证的代币",
+    "unverifiedTokensTooltip": "未在 Gno.land 代币资源中注册的代币会被过滤掉。",
+    "verifyToken": "验证您的令牌"
+  },
   "urlCopied": "复制的 URL！"
 }

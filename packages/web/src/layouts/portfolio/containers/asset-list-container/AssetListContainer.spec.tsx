@@ -137,7 +137,6 @@ const unverifiedZero = makeToken({
 
 const ALL_TEST_TOKENS = [verifiedWithBalance, verifiedZero, unverifiedWithBalance, unverifiedZero];
 
-// Positive balances through displayBalanceMap; zero-balance tokens have no entry, rendering "-"
 const displayBalanceMap: Record<string, number> = {
   [verifiedWithBalance.path]: 100,
   [unverifiedWithBalance.path]: 50,
@@ -169,9 +168,7 @@ const setBalanceMap = () => {
   });
 };
 
-const openFilters = () => fireEvent.mouseEnter(screen.getByRole("button", { name: "Wallet:assets.filters" }));
-const getShowUnverifiedToggle = () => screen.getByLabelText("Wallet:assets.showUnverifiedTokens");
-const getHideZeroToggle = () => screen.getByLabelText("Wallet:assets.hideZeroAmt");
+const getShowUnverifiedToggle = () => screen.getByLabelText("common:tokenList.showUnverifiedTokens");
 const getVisibleRows = () => screen.getAllByTestId("asset-row").map(row => row.textContent);
 
 describe("AssetListContainer unverified token filtering", () => {
@@ -190,7 +187,6 @@ describe("AssetListContainer unverified token filtering", () => {
   it("renders the toggle in OFF state by default and hides unverified assets", () => {
     renderContainer();
 
-    openFilters();
     expect(getShowUnverifiedToggle()).not.toBeChecked();
     expect(useGetTokens).toHaveBeenLastCalledWith(false);
     expect(useTokenData).toHaveBeenLastCalledWith(false);
@@ -200,8 +196,6 @@ describe("AssetListContainer unverified token filtering", () => {
 
   it("shows unverified assets when the toggle is switched on", () => {
     renderContainer();
-
-    openFilters();
     fireEvent.click(getShowUnverifiedToggle());
 
     expect(useGetTokens).toHaveBeenLastCalledWith(true);
@@ -213,39 +207,23 @@ describe("AssetListContainer unverified token filtering", () => {
   });
 
   it.each([
-    { hideZero: false, showUnverified: false, visible: ["VerifiedBal", "VerifiedZero"] },
-    { hideZero: true, showUnverified: false, visible: ["VerifiedBal"] },
-    {
-      hideZero: false,
-      showUnverified: true,
-      visible: ["VerifiedBal", "VerifiedZero", "UnverifiedBal", "UnverifiedZero"],
-    },
-    { hideZero: true, showUnverified: true, visible: ["VerifiedBal", "UnverifiedBal"] },
-  ])(
-    "combines hide-zero ($hideZero) and show-unverified ($showUnverified) independently",
-    ({ hideZero, showUnverified, visible }) => {
-      renderContainer();
-
-      openFilters();
-      if (hideZero) fireEvent.click(getHideZeroToggle());
-      if (showUnverified) fireEvent.click(getShowUnverifiedToggle());
-
-      const rows = getVisibleRows();
-      for (const name of ["VerifiedBal", "VerifiedZero", "UnverifiedBal", "UnverifiedZero"]) {
-        const shouldShow = visible.includes(name);
-        expect(rows.some(row => row?.includes(name))).toBe(shouldShow);
-      }
-    },
-  );
-
-  it("keeps zero-balance, type, and search filters working with the toggle on", () => {
+    { showUnverified: false, visible: ["VerifiedBal", "VerifiedZero"] },
+    { showUnverified: true, visible: ["VerifiedBal", "VerifiedZero", "UnverifiedBal", "UnverifiedZero"] },
+  ])("shows zero-balance assets and filters verification ($showUnverified)", ({ showUnverified, visible }) => {
     renderContainer();
+    if (showUnverified) fireEvent.click(getShowUnverifiedToggle());
 
-    openFilters();
+    const rows = getVisibleRows();
+    for (const name of ["VerifiedBal", "VerifiedZero", "UnverifiedBal", "UnverifiedZero"]) {
+      const shouldShow = visible.includes(name);
+      expect(rows.some(row => row?.includes(name))).toBe(shouldShow);
+    }
+  });
+
+  it("keeps type and search filters working with the toggle on", () => {
+    renderContainer();
     fireEvent.click(getShowUnverifiedToggle());
-    fireEvent.click(getHideZeroToggle());
 
-    // search filter stays independent: only the unverified token with balance matches
     const searchInput = screen.getByRole("textbox");
     fireEvent.change(searchInput, { target: { value: "ubal" } });
 
@@ -273,10 +251,8 @@ describe("AssetListContainer unverified token filtering", () => {
 
       renderContainer();
 
-      // unverified fallback entries are hidden by default
       expect(screen.queryAllByTestId("asset-row")).toHaveLength(0);
 
-      openFilters();
       fireEvent.click(getShowUnverifiedToggle());
 
       const rows = getVisibleRows();

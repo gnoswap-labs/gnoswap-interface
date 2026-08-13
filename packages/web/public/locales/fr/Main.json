@@ -21,7 +21,7 @@
   "swapComp": "Échange",
   "swapNowBtn": "Aller à l'échange",
   "theFirst": "Le premier DEX AMM à liquidité concentrée construit à l'aide de Gnolang",
-  "theOne": "la plateforme DeFi tout-en-un Gnoland",
+  "theOne": "la plateforme DeFi Gno.land tout-en-un",
   "tokenList": {
     "emptyText": "Aucun jeton trouvé",
     "header": {
@@ -32,10 +32,7 @@
       "priceCol": "Prix",
       "volumeCol": "Volume (24h)"
     },
-    "showUnverifiedTokens": "Afficher les jetons non vérifiés",
-    "title": "Jetons",
-    "unverifiedTokensTooltip": "Les jetons non enregistrés sur gno.land sont filtrés dans les ressources de jetons.",
-    "verifyToken": "Vérifiez votre jeton"
+    "title": "Jetons"
   },
   "toOffer": "pour offrir aux traders l'expérience DeFi la plus simplifiée et la plus conviviale.",
   "trending": "Tendance"
