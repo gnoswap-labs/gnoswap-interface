@@ -116,6 +116,20 @@ describe("makePriceRangesWithApr", () => {
       initialRanges.find(range => range.type === "Custom")?.apr,
     );
   });
+
+  it("does not calculate Custom APR when the selected range is out of range", () => {
+    const ranges = makePriceRangesWithApr([...priceRanges], {
+      currentPrice: 0.99506,
+      feeTier: "FEE_3000",
+      tickSpacing: 60,
+      feeApr: "4.32",
+      isCustomSelected: true,
+      customMinPrice: 0.548828,
+      customMaxPrice: 0.731992,
+    });
+
+    expect(ranges.find(range => range.type === "Custom")?.apr).toBeUndefined();
+  });
 });
 
 describe("formatPriceRangeApr", () => {
