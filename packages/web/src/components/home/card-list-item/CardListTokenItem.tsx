@@ -4,6 +4,7 @@ import IconTriangleArrowUp from "@components/common/icons/IconTriangleArrowUp";
 import IconTriangleArrowDown from "@components/common/icons/IconTriangleArrowDown";
 import { CardListTokenInfo } from "@models/common/card-list-item-info";
 import { useCallback, useMemo } from "react";
+import { formatDisplayTokenName } from "@utils/token-utils";
 
 interface CardListTokenItemProps {
   index: number;
@@ -35,7 +36,7 @@ const CardListTokenItem: React.FC<CardListTokenItemProps> = ({ index, item, onCl
         width={20}
         mobileWidth={20}
       />
-      <strong className="token-name">{item.token.name}</strong>
+      <strong className="token-name">{formatDisplayTokenName(item.token.name)}</strong>
       <span className="list-content">{item.token.displaySymbol}</span>
       {visibleUp && <IconTriangleArrowUp className="arrow-up" />}
       {visibleDown && <IconTriangleArrowDown className="arrow-down" />}

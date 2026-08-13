@@ -21,7 +21,7 @@
   "swapComp": "Hoán đổi",
   "swapNowBtn": "Đi đến Hoán đổi",
   "theFirst": "Sàn giao dịch phi tập trung (DEX) AMM với tính thanh khoản tập trung đầu tiên được xây dựng bằng ngôn ngữ lập trình Go",
-  "theOne": "Nền tảng DeFi một cửa Gnoland",
+  "theOne": "Nền tảng DeFi Gno.land một điểm dừng",
   "tokenList": {
     "emptyText": "Không tìm thấy mã thông báo nào",
     "header": {
@@ -32,10 +32,7 @@
       "priceCol": "Giá",
       "volumeCol": "Khối lượng (24 giờ)"
     },
-    "showUnverifiedTokens": "Hiển thị các mã thông báo chưa được xác minh",
-    "title": "Token",
-    "unverifiedTokensTooltip": "Các token chưa được đăng ký trên gno.land sẽ bị loại trừ khỏi danh sách Tài nguyên token.",
-    "verifyToken": "Xác minh mã xác thực của bạn"
+    "title": "Token"
   },
   "toOffer": "nhằm mang đến trải nghiệm DeFi đơn giản nhất và thân thiện nhất với người dùng cho các nhà giao dịch.",
   "trending": "Xu hướng"

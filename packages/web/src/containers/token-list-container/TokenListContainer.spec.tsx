@@ -10,6 +10,10 @@ jest.mock("next-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
+jest.mock("react-i18next", () => ({
+  useTranslation: () => ({ t: (key: string) => key }),
+}));
+
 jest.mock("@hooks/token/data/use-token-data", () => ({
   useTokenData: jest.fn(),
 }));
@@ -114,7 +118,7 @@ describe("TokenListContainer unverified token filtering", () => {
     jest.clearAllMocks();
   });
 
-  const getToggle = () => screen.getByLabelText("Main:tokenList.showUnverifiedTokens");
+  const getToggle = () => screen.getByLabelText("common:tokenList.showUnverifiedTokens");
   const getRenderedTokenRows = () => screen.queryAllByTestId("token-row").map(row => row.textContent ?? "");
 
   it("renders the toggle in OFF state by default", () => {

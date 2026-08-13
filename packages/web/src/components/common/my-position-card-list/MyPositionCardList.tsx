@@ -57,7 +57,6 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   currentPage,
   totalPage,
   movePage,
-  limit,
 }) => {
   const breakpoint = width >= 920 ? DEVICE_TYPE.WEB : DEVICE_TYPE.MOBILE;
 
@@ -67,13 +66,12 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   const shouldShowLoadMoreButton = !mobile && !isLoading && showLoadMore && !!onClickLoadMore;
   const shouldShowPositionIndicator = showPositionIndicator && isFetched && hasPositions && !isLoading;
   const shouldShowPagination = Boolean(totalPage && totalPage > 1 && (mobile || !loadMore));
-  const targetCount = shouldShowPagination && limit ? limit : maxDisplayCount;
   const shouldShowBlankCards = isFetched && !isLoading && hasPositions && positions.length < maxDisplayCount;
 
   const blankCardCount = useMemo(() => {
     if (!shouldShowBlankCards) return 0;
-    return targetCount - positions.length;
-  }, [shouldShowBlankCards, targetCount, positions.length]);
+    return Math.max(0, maxDisplayCount - positions.length);
+  }, [shouldShowBlankCards, maxDisplayCount, positions.length]);
 
   return (
     <CardListWrapper $loading={isLoading}>
@@ -95,7 +93,8 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
           Array(blankCardCount)
             .fill(1)
             .map((_, index) => <BlankPositionCard key={index} />)}
-        {shouldShowSkeleton && !hasPositions &&
+        {shouldShowSkeleton &&
+          !hasPositions &&
           Array.from({ length: maxDisplayCount }).map((_, idx) => (
             <span key={idx} className="card-skeleton" css={pulseSkeletonStyle({ w: "100%", tone: "600" })} />
           ))}

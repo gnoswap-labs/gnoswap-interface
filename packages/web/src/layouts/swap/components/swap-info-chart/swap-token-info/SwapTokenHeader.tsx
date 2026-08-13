@@ -16,7 +16,7 @@ import IconOpenLink from "@components/common/icons/IconOpenLink";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { nullish } from "@utils/nullish-utils";
-import { formatTokenPath } from "@utils/token-utils";
+import { formatDisplayTokenName, formatTokenPath } from "@utils/token-utils";
 import { SwapTokenHeaderWrapper } from "./SwapTokenHeader.styles";
 
 import PriceWarning from "@components/common/price-warning/PriceWarning";
@@ -47,6 +47,7 @@ const SwapTokenHeader = ({
 }: SwapTokenHeaderProps) => {
   const router = useCustomRouter();
   const elementId = React.useMemo(() => `${tokenInfo.name}`, [tokenInfo.name]);
+  const displayTokenName = React.useMemo(() => formatDisplayTokenName(tokenInfo.name), [tokenInfo.name]);
 
   const { priceStyle, shouldShowPriceWarning } = useTokenPriceInfo({ priceGradeType });
 
@@ -115,7 +116,7 @@ const SwapTokenHeader = ({
               ref={tokenNameRef}
               onClick={onClickTokenName}
             >
-              {tokenInfo.name}
+              {displayTokenName}
             </button>
             <button className="link" onClick={onClickPath}>
               <span>{displayTokenPath}</span>

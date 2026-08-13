@@ -21,7 +21,7 @@
   "swapComp": "Swap",
   "swapNowBtn": "Go to Swap",
   "theFirst": "The first Concentrated Liquidity AMM DEX built using Gnolang",
-  "theOne": "the One-stop Gnoland DeFi Platform",
+  "theOne": "the One-stop Gno.land DeFi Platform",
   "tokenList": {
     "emptyText": "No tokens found",
     "header": {
@@ -32,10 +32,7 @@
       "priceCol": "Price",
       "volumeCol": "Volume (24h)"
     },
-    "showUnverifiedTokens": "Show unverified tokens",
-    "title": "Tokens",
-    "unverifiedTokensTooltip": "Tokens unregistered on gno.land Token Resources are filtered.",
-    "verifyToken": "Verify your token"
+    "title": "Tokens"
   },
   "toOffer": "to offer the most simplified and user-friendly DeFi experience for traders.",
   "trending": "Trending"

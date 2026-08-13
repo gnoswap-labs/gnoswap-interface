@@ -41,7 +41,7 @@ export const useGnoscanUrl = () => {
 
   const getTxUrl = useCallback(
     (txHash: string) => {
-      return getGnoscanUrl(GnoscanDataType.Transactions, `details?txhash=${txHash}`);
+      return getGnoscanUrl(GnoscanDataType.Transactions, `details?txhash=${encodeURIComponent(txHash)}`);
     },
     [getGnoscanUrl],
   );

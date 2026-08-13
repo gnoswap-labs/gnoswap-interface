@@ -176,5 +176,10 @@
     }
   },
   "swapUrlCopied": "Đã sao chép URL!",
+  "tokenList": {
+    "showUnverifiedTokens": "Hiển thị các mã thông báo chưa được xác minh",
+    "unverifiedTokensTooltip": "Các token chưa được đăng ký trên Gno.land Token Resources sẽ bị lọc ra.",
+    "verifyToken": "Xác minh mã xác thực của bạn"
+  },
   "urlCopied": "Đã sao chép URL!"
 }

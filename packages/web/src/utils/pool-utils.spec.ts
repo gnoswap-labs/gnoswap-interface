@@ -1,5 +1,6 @@
 import { TokenModel } from "@models/token/token-model";
 import {
+  calculateTokenDepositRatio,
   invertSqrtPriceX96,
   isOrderedTokenPaths,
   isValidCurrentPrice,
@@ -84,6 +85,36 @@ describe("isOrderedTokenPaths", () => {
     // "gno.land/r/gnoland/wugnot" < "gno.land/r/gnoswap/gns" lexicographically
     expect(isOrderedTokenPaths(wgnotPath, gnsPath)).toBe(true);
     expect(isOrderedTokenPaths(gnsPath, wgnotPath)).toBe(false);
+  });
+});
+
+describe("token deposit ratio", () => {
+  it("should calculate an equal value split for tokens with different decimals", () => {
+    const sol = makeToken("SOL", 9);
+    const usdc = makeToken("USDC", 6);
+
+    expect(calculateTokenDepositRatio(100, 1036.45, 0.0103645, sol, usdc)).toBeCloseTo(0.5, 10);
+  });
+
+  it("should calculate an equal value split for BTC and USDC", () => {
+    const btc = makeToken("BTC", 8);
+    const usdc = makeToken("USDC", 6);
+
+    expect(calculateTokenDepositRatio(1, 49260, 492.6, btc, usdc)).toBeCloseTo(0.5, 10);
+  });
+
+  it("should preserve the ratio for tokens with equal decimals", () => {
+    const tokenA = makeToken("A", 6);
+    const tokenB = makeToken("B", 6);
+
+    expect(calculateTokenDepositRatio(100, 200, 2, tokenA, tokenB)).toBeCloseTo(0.5, 10);
+  });
+
+  it("should return an equal split when both balances are zero", () => {
+    const tokenA = makeToken("A", 9);
+    const tokenB = makeToken("B", 6);
+
+    expect(calculateTokenDepositRatio(0, 0, 1, tokenA, tokenB)).toBe(0.5);
   });
 });
 

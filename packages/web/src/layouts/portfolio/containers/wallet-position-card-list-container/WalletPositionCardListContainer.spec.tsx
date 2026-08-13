@@ -9,9 +9,13 @@ jest.mock("jotai", () => ({
   useAtomValue: () => "light",
 }));
 
+const mockMyPositionCardList = jest.fn();
 jest.mock("@components/common/my-position-card-list/MyPositionCardList", () => ({
   __esModule: true,
-  default: () => <div data-testid="my-position-card-list" />,
+  default: (props: { isLoading: boolean }) => {
+    mockMyPositionCardList(props);
+    return <div data-testid="my-position-card-list" />;
+  },
 }));
 
 jest.mock("@hooks/common/use-custom-router", () => ({
@@ -73,6 +77,7 @@ describe("WalletPositionCardListContainer", () => {
   beforeEach(() => {
     mockUsePositionData.mockReturnValue({
       isFetchedPosition: true,
+      isPositionDataAvailable: true,
       loading: false,
       positions: [],
       totalPositionCount: 0,
@@ -103,5 +108,37 @@ describe("WalletPositionCardListContainer", () => {
         page: 1,
       }),
     );
+  });
+
+  it("does not show a loading state while switching a fetched position list", () => {
+    const { rerender } = render(<WalletPositionCardListContainer isClosed={false} />);
+
+    expect(mockMyPositionCardList.mock.calls.some(([props]) => props.isLoading)).toBe(false);
+
+    mockMyPositionCardList.mockClear();
+    rerender(<WalletPositionCardListContainer isClosed={true} />);
+
+    expect(mockMyPositionCardList.mock.calls.some(([props]) => props.isLoading)).toBe(false);
+  });
+
+  it("keeps the card list renderable while the filtered position query is transitioning", () => {
+    let isFetchedPosition = true;
+    mockUsePositionData.mockImplementation(() => ({
+      isFetchedPosition,
+      isPositionDataAvailable: true,
+      loading: false,
+      positions: [],
+      totalPositionCount: 0,
+    }));
+
+    const { rerender } = render(<WalletPositionCardListContainer isClosed={false} />);
+    isFetchedPosition = false;
+    mockMyPositionCardList.mockClear();
+
+    rerender(<WalletPositionCardListContainer isClosed={true} />);
+
+    const [lastProps] = mockMyPositionCardList.mock.calls.at(-1) as [{ isFetched: boolean; isLoading: boolean }];
+    expect(lastProps.isFetched).toBe(true);
+    expect(lastProps.isLoading).toBe(false);
   });
 });

@@ -20,10 +20,8 @@ type Story = StoryObj<typeof AssetListHeader>;
 export const Default: Story = {
   args: {
     assetType: ASSET_FILTER_TYPE.ALL,
-    invisibleZeroBalance: true,
     showUnverifiedTokens: false,
     changeAssetType: fn(),
-    toggleInvisibleZeroBalance: fn(),
     toggleShowUnverifiedTokens: fn(),
     search: fn(),
     breakpoint: DEVICE_TYPE.WEB,

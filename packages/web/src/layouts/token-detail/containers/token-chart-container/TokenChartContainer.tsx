@@ -1,4 +1,3 @@
-import BigNumber from "bignumber.js";
 import dayjs from "dayjs";
 import { useAtom } from "jotai";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -17,6 +16,7 @@ import { IPriceResponse, IPrices1d } from "@repositories/token";
 import { TokenState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
 import { getLabelChartV2, getLocalizeTime, getNumberOfAxis } from "@utils/chart";
+import { getYAxisInfo } from "@utils/chart-y-axis";
 import { checkPositivePrice, generateDateSequence } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
 
@@ -89,149 +89,6 @@ function createXAxisDatas(
     default:
       return labelX;
   }
-}
-
-// Allowed y-axis scale units — `{1..9} * 10^n` (e.g., 0.01, 0.02, 1, 10, 20, 300, 700000).
-const SINGLE_DIGIT_SCALE_BASES = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-/**
- * Find the smallest allowed scale unit that satisfies `candidate >= threshold` (or
- * `candidate > threshold` when `inclusive` is false).
- */
-function findAllowedScaleUnit(threshold: BigNumber, inclusive = true): BigNumber {
-  const thresholdNumber = threshold.toNumber();
-  if (!isFinite(thresholdNumber) || thresholdNumber <= 0) {
-    return new BigNumber(1);
-  }
-
-  const startExponent = Math.floor(Math.log10(thresholdNumber)) - 1;
-  for (let e = startExponent; e <= startExponent + 4; e++) {
-    const magnitude = new BigNumber(10).pow(e);
-    for (const base of SINGLE_DIGIT_SCALE_BASES) {
-      const candidate = magnitude.multipliedBy(base);
-      const satisfied = inclusive ? candidate.isGreaterThanOrEqualTo(threshold) : candidate.isGreaterThan(threshold);
-      if (satisfied) return candidate;
-    }
-  }
-
-  return new BigNumber(1);
-}
-
-function roundToMultiple(value: BigNumber, unit: BigNumber, mode: "ceil" | "floor"): BigNumber {
-  if (unit.isZero()) return value;
-  const roundingMode = mode === "ceil" ? BigNumber.ROUND_CEIL : BigNumber.ROUND_FLOOR;
-  return value.dividedBy(unit).integerValue(roundingMode).multipliedBy(unit);
-}
-
-function trimTrailingZeros(value: string): string {
-  return value
-    .replace(/(\.\d*?[1-9])0+$/g, "$1")
-    .replace(/\.0+$/g, "")
-    .replace(/\.$/g, "");
-}
-
-function truncateToSignificantDigits(value: BigNumber, significantDigits: number): string {
-  if (!value.isFinite() || value.isZero()) return "0";
-
-  const negative = value.isNegative();
-  const absValue = value.abs();
-  const exponent = absValue.e ?? 0;
-  const decimalPlaces = Math.max(significantDigits - exponent - 1, 0);
-  const factor = new BigNumber(10).pow(decimalPlaces);
-  const truncated = absValue.multipliedBy(factor).integerValue(BigNumber.ROUND_FLOOR).dividedBy(factor);
-  const normalized = trimTrailingZeros(truncated.toFixed(decimalPlaces));
-
-  return negative ? `-${normalized}` : normalized;
-}
-
-function getYAxisInfo(datas: string[], tokenPrice?: number): { labels: string[]; minValue: string; maxValue: string } {
-  const Y_AXIS_LABEL_COUNT = 6;
-  const Y_AXIS_STEP_COUNT = Y_AXIS_LABEL_COUNT - 1;
-  // Fall back to fixed-decimal formatting until the price query resolves to avoid
-  // a visible flicker where high-priced tokens briefly render with significant
-  // digits before switching.
-  const useSignificantFormat = tokenPrice !== undefined && tokenPrice < 1;
-
-  // Derive the number of decimals from the step unit so narrow ranges on tokens
-  // priced >= $1 still get distinct labels (e.g., step 0.001 -> 3 decimals).
-  const formatYAxisValue = (value: BigNumber, scaleUnit?: BigNumber) => {
-    if (useSignificantFormat) {
-      return truncateToSignificantDigits(value, 3);
-    }
-    const unitDecimals = scaleUnit ? Math.max(0, -(scaleUnit.e ?? 0)) : 0;
-    const decimals = Math.max(2, unitDecimals);
-    return value.toFixed(decimals);
-  };
-
-  const numericDatas = datas.map(item => new BigNumber(item)).filter(item => !item.isNaN());
-
-  if (numericDatas.length === 0) {
-    return {
-      labels: new Array(Y_AXIS_LABEL_COUNT).fill(formatYAxisValue(new BigNumber(0))),
-      minValue: "0",
-      maxValue: "0",
-    };
-  }
-
-  const lowest = BigNumber.min(...numericDatas);
-  const highest = BigNumber.max(...numericDatas);
-
-  if (highest.isZero() && lowest.isZero()) {
-    return {
-      labels: new Array(Y_AXIS_LABEL_COUNT).fill(formatYAxisValue(new BigNumber(0))),
-      minValue: "0",
-      maxValue: "0",
-    };
-  }
-
-  const targetMax = highest.multipliedBy(1.2);
-  const targetMin = lowest.multipliedBy(0.8);
-  const targetRange = targetMax.minus(targetMin);
-
-  // Pick the smallest allowed scale unit so the window [minPoint..maxPoint] covers
-  let scaleUnit = findAllowedScaleUnit(targetRange.dividedBy(Y_AXIS_STEP_COUNT));
-
-  let maxPoint = roundToMultiple(targetMax, scaleUnit, "ceil");
-  let minPoint = roundToMultiple(targetMin, scaleUnit, "floor");
-  let actualSteps = maxPoint.minus(minPoint).dividedBy(scaleUnit).integerValue(BigNumber.ROUND_HALF_UP).toNumber();
-
-  for (let attempt = 0; attempt < 16 && actualSteps > Y_AXIS_STEP_COUNT; attempt++) {
-    scaleUnit = findAllowedScaleUnit(scaleUnit, false);
-    maxPoint = roundToMultiple(targetMax, scaleUnit, "ceil");
-    minPoint = roundToMultiple(targetMin, scaleUnit, "floor");
-    actualSteps = maxPoint.minus(minPoint).dividedBy(scaleUnit).integerValue(BigNumber.ROUND_HALF_UP).toNumber();
-  }
-
-  // If the snapped window fits in fewer than 5 steps, expand so we always render
-  while (
-    maxPoint.minus(minPoint).dividedBy(scaleUnit).integerValue(BigNumber.ROUND_HALF_UP).toNumber() < Y_AXIS_STEP_COUNT
-  ) {
-    const topSlack = maxPoint.minus(targetMax).abs();
-    const bottomSlack = targetMin.minus(minPoint).abs();
-
-    if (topSlack.isLessThanOrEqualTo(bottomSlack)) {
-      maxPoint = maxPoint.plus(scaleUnit);
-    } else {
-      const candidateMin = minPoint.minus(scaleUnit);
-      if (lowest.isGreaterThanOrEqualTo(0) && candidateMin.isLessThan(0)) {
-        maxPoint = maxPoint.plus(scaleUnit);
-      } else {
-        minPoint = candidateMin;
-      }
-    }
-  }
-
-  const labels: string[] = [];
-  for (let i = 0; i <= Y_AXIS_STEP_COUNT; i++) {
-    const value = minPoint.plus(scaleUnit.multipliedBy(i));
-    labels.push(formatYAxisValue(value, scaleUnit));
-  }
-
-  return {
-    labels,
-    minValue: minPoint.toFixed(),
-    maxValue: maxPoint.toFixed(),
-  };
 }
 
 const priceChangeDetailInit = {

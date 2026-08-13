@@ -1,24 +1,29 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
+import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import TokenChartInfo, { TokenChartInfoProps } from "./TokenChartInfo";
 
 describe("TokenChartInfo Component", () => {
-  it("TokenChartInfo render", () => {
+  it("truncates a long token name while preserving the chart info layout", async () => {
     const args: TokenChartInfoProps = {
       token: {
-        name: "",
-        symbol: "",
-        displaySymbol: "",
+        name: "FOOTBALL WORLD CUB",
+        symbol: "FWC",
+        displaySymbol: "FWC",
         image: "",
       },
       priceInfo: {
         amount: {
-          value: 0,
-          denom: "",
+          value: 1,
+          denom: "GNOT",
+          status: MATH_NEGATIVE_TYPE.NONE,
         },
-        changedRate: 0,
+        priceGradeType: "NONE",
+        changedRate: "0%",
       },
+      isEmpty: false,
+      loading: false,
     };
 
     render(
@@ -28,5 +33,8 @@ describe("TokenChartInfo Component", () => {
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );
+
+    expect(await screen.findByText("FOOTBALL...")).toBeInTheDocument();
+    expect(screen.queryByText("FOOTBALL WORLD CUB")).not.toBeInTheDocument();
   });
 });

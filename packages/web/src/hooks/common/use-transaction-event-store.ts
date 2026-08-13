@@ -87,9 +87,7 @@ export const useTransactionEventStore = () => {
     visibleEmitResult?: boolean;
     checkWugnotTransfer?: boolean;
     checkStakePosition?: boolean;
-    formatData?: (
-      result: string[] | null,
-    ) => {
+    formatData?: (result: string[] | null) => {
       tokenASymbol?: string;
       tokenBSymbol?: string;
       tokenAAmount?: string;
@@ -105,7 +103,7 @@ export const useTransactionEventStore = () => {
     }
 
     const pendingSnackbarConfig = makeSnackbarConfig("pending");
-    enqueue(undefined, pendingSnackbarConfig);
+    enqueue({ txHash }, pendingSnackbarConfig);
 
     const updatingSnackbarConfig = makeSnackbarConfig("updating", UPDATING_SNACKBAR_TIMEOUT);
     const receiveWugnotSnackbarConfig = makeSnackbarConfig("receive-wugnot", BADGE_SNACKBAR_TIMEOUT);
