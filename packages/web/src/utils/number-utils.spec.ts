@@ -62,7 +62,7 @@ describe("toMillionFormat returns Million or FormatNumber", () => {
     expect(toMillionFormat(num)).toBe("1.23m");
   });
 
-  test("\"\" to null", () => {
+  test("empty string to null", () => {
     const num = "";
     expect(toMillionFormat(num)).toBe(null);
   });
