@@ -93,6 +93,14 @@ export const calculatePriceRangeApr = (
   return estimatedAPR === null ? undefined : estimatedAPR.toString();
 };
 
+export const isPriceRangeOutOfRange = (currentPrice: number | null, minPrice: number, maxPrice: number): boolean => {
+  if (currentPrice === null || !Number.isFinite(currentPrice)) {
+    return false;
+  }
+
+  return (minPrice > currentPrice && maxPrice > currentPrice) || (minPrice < currentPrice && maxPrice < currentPrice);
+};
+
 export const makePriceRangesWithApr = (
   priceRanges: PriceRangeMeta[],
   {
@@ -114,10 +122,17 @@ export const makePriceRangesWithApr = (
           ? { minPrice: customMinPrice, maxPrice: customMaxPrice }
           : null
         : getPriceRangeByType(currentPrice, feeTier, tickSpacing, priceRange.type);
+    const isOutOfRange =
+      priceRange.type === "Custom" && prices
+        ? isPriceRangeOutOfRange(currentPrice, prices.minPrice, prices.maxPrice)
+        : false;
 
     return {
       ...priceRange,
-      apr: prices ? calculatePriceRangeApr(feeApr, prices.minPrice, prices.maxPrice, minPriceLimit) : undefined,
+      apr:
+        prices && !isOutOfRange
+          ? calculatePriceRangeApr(feeApr, prices.minPrice, prices.maxPrice, minPriceLimit)
+          : undefined,
     };
   });
 };
