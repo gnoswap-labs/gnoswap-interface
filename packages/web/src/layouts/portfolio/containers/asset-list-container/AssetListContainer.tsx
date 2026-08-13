@@ -16,7 +16,8 @@ import { TokenModel } from "@models/token/token-model";
 import { useGetAvgBlockTime } from "@query/address";
 import { useGetTokens } from "@query/token";
 import { checkGnotPath } from "@utils/common";
-import { formatPoolPairAmount, formatPrice } from "@utils/new-number-utils";
+import { formatRawAmount, formatUsd } from "@utils/display-number-utils";
+import { getUsdBalance } from "@utils/number-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
 import { keepVerified } from "@utils/token-verification-filter";
 import { isEmptyObject } from "@utils/validation-utils";
@@ -44,21 +45,6 @@ function filterKeyword(asset: Asset, keyword: string) {
   if (searchKeyword === "") return true;
   return asset.name.toLowerCase().includes(searchKeyword) || asset.symbol.toLowerCase().includes(searchKeyword);
 }
-
-const MIN_USD_BALANCE_DISPLAY = 0.01;
-const getUsdBalance = (
-  tokenPrice: number | null | undefined,
-  usdPrice: string | null | undefined,
-  decimals: number,
-) => {
-  if (!tokenPrice || Number.isNaN(tokenPrice) || !usdPrice) {
-    return BigNumber(0);
-  }
-
-  return BigNumber(tokenPrice)
-    .multipliedBy(usdPrice)
-    .dividedBy(10 ** decimals);
-};
 
 const DEPOSIT_INFO: TokenModel = {
   chainId: "dev",
@@ -136,7 +122,7 @@ const AssetListContainer: React.FC = () => {
     }
   }, [isClickOutside, keyword]);
 
-  const { displayBalanceMap, balances, tokenPrices, isFetched, updateBalances } = useTokenData(showUnverifiedTokens);
+  const { rawBalanceMap, balances, tokenPrices, isFetched, updateBalances } = useTokenData(showUnverifiedTokens);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -173,8 +159,9 @@ const AssetListContainer: React.FC = () => {
     return keepVerified(
       [gnot, wugnot, gns].map(item => {
         const tokenPrice = balances[item.priceID];
+        const rawAmount = rawBalanceMap[item.priceID] ?? tokenPrice;
         const usdPrice = tokenPrices[checkGnotPath(item?.path)]?.usd;
-        const usdValue = getUsdBalance(tokenPrice, usdPrice, item.decimals);
+        const usdValue = getUsdBalance(rawAmount, usdPrice, item.decimals);
 
         const price = (() => {
           if (!connected || isSwitchNetwork) {
@@ -190,19 +177,13 @@ const AssetListContainer: React.FC = () => {
             return "$0";
           }
 
-          return formatPrice(usdValue, {
-            isKMB: false,
-            minLimit: MIN_USD_BALANCE_DISPLAY,
-          });
+          return formatUsd(usdValue);
         })();
 
         const balance = (() => {
-          if (isSwitchNetwork || !displayBalanceMap[item.path]) return "-";
+          if (isSwitchNetwork || rawAmount === null || rawAmount === undefined) return "-";
 
-          return formatPoolPairAmount(displayBalanceMap[item.path], {
-            isKMB: false,
-            decimals: item.decimals,
-          });
+          return formatRawAmount(rawAmount, item.decimals);
         })();
 
         return {
@@ -235,8 +216,9 @@ const AssetListContainer: React.FC = () => {
       .filter(item => item.path !== GNOT_TOKEN.path && item.path !== GNS_TOKEN.path && item.path !== WUGNOT_TOKEN.path)
       .map(item => {
         const tokenPrice = balances[item.priceID];
+        const rawAmount = rawBalanceMap[item.priceID] ?? tokenPrice;
         const usdPrice = tokenPrices[checkGnotPath(item?.path)]?.usd;
-        const usdValue = getUsdBalance(tokenPrice, usdPrice, item.decimals);
+        const usdValue = getUsdBalance(rawAmount, usdPrice, item.decimals);
 
         const price = (() => {
           if (!connected || isSwitchNetwork) {
@@ -252,19 +234,13 @@ const AssetListContainer: React.FC = () => {
             return "$0";
           }
 
-          return formatPrice(usdValue, {
-            isKMB: false,
-            minLimit: MIN_USD_BALANCE_DISPLAY,
-          });
+          return formatUsd(usdValue);
         })();
 
         const balance = (() => {
-          if (isSwitchNetwork || !displayBalanceMap[item.path]) return "-";
+          if (isSwitchNetwork || rawAmount === null || rawAmount === undefined) return "-";
 
-          return formatPoolPairAmount(displayBalanceMap[item.path], {
-            isKMB: false,
-            decimals: item.decimals,
-          });
+          return formatRawAmount(rawAmount, item.decimals);
         })();
 
         return {
