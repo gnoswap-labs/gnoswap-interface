@@ -137,9 +137,15 @@ const unverifiedZero = makeToken({
 
 const ALL_TEST_TOKENS = [verifiedWithBalance, verifiedZero, unverifiedWithBalance, unverifiedZero];
 
+// Positive balances through rawBalanceMap; zero-balance tokens have no entry, rendering "-"
 const displayBalanceMap: Record<string, number> = {
   [verifiedWithBalance.path]: 100,
   [unverifiedWithBalance.path]: 50,
+};
+
+const rawBalanceMap: Record<string, string> = {
+  [verifiedWithBalance.priceID]: "100000000",
+  [unverifiedWithBalance.priceID]: "50000000",
 };
 
 const renderContainer = () =>
@@ -160,6 +166,7 @@ const setBalanceMap = () => {
     void showUnverified;
     return {
       displayBalanceMap,
+      rawBalanceMap,
       balances: { ugnot: 1 },
       tokenPrices: {},
       isFetched: true,

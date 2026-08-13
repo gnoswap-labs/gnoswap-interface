@@ -1,5 +1,12 @@
 import BigNumber from "bignumber.js";
-import { mathSybmolAbsFormat, rawToDisplayAmount, toMillionFormat, toNumberFormat, toUnitFormat } from "./number-utils";
+import {
+  getUsdBalance,
+  mathSybmolAbsFormat,
+  rawToDisplayAmount,
+  toMillionFormat,
+  toNumberFormat,
+  toUnitFormat,
+} from "./number-utils";
 
 describe("bignumber.js convert to format string", () => {
   test("123123123.123123123 to 123,123,123.123123123", () => {
@@ -55,7 +62,7 @@ describe("toMillionFormat returns Million or FormatNumber", () => {
     expect(toMillionFormat(num)).toBe("1.23m");
   });
 
-  test("\"\" to null", () => {
+  test("empty string to null", () => {
     const num = "";
     expect(toMillionFormat(num)).toBe(null);
   });
@@ -97,5 +104,21 @@ describe("rawToDisplayAmount", () => {
 
   it("should handle very large amounts", () => {
     expect(rawToDisplayAmount("1000000000000", 6)).toBe(1000000);
+  });
+});
+
+describe("getUsdBalance", () => {
+  it("converts a raw token amount to its USD balance", () => {
+    expect(getUsdBalance("1000000", "1.13", 6).toString()).toBe("1.13");
+  });
+
+  it("preserves raw amount precision without converting through a JavaScript number", () => {
+    expect(getUsdBalance("9007199254740993", "1", 0).toString()).toBe("9007199254740993");
+  });
+
+  it("returns zero for missing or invalid inputs", () => {
+    expect(getUsdBalance(null, "1", 6).isZero()).toBe(true);
+    expect(getUsdBalance("1", "not-a-price", 6).isZero()).toBe(true);
+    expect(getUsdBalance("1", "1", -1).isZero()).toBe(true);
   });
 });

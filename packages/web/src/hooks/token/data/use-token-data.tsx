@@ -64,6 +64,25 @@ export const useTokenData = (showUnverified = true) => {
     return tokenBalanceMap;
   }, [balances, tokens]);
 
+  const rawBalanceMap = useMemo(() => {
+    const tokenBalanceMap: Record<string, string | null> = {};
+    if (tokens.length === 0) return tokenBalanceMap;
+
+    tokens.forEach(token => {
+      const balance = balances[token.priceID];
+      if (isNativeTokenByType(token.type)) {
+        tokenBalanceMap[token.priceID] = balance === null || balance === undefined ? null : balance.toString();
+        return;
+      }
+
+      const apiBalance = grc20BalancesData?.data?.find(item => item.path === token.path);
+      tokenBalanceMap[token.priceID] =
+        apiBalance?.amount ?? (balance === null || balance === undefined ? null : balance.toString());
+    });
+
+    return tokenBalanceMap;
+  }, [balances, grc20BalancesData, tokens]);
+
   const trendingTokens: CardListTokenInfo[] = useMemo(() => {
     const sortedTokens = tokens
       .sort((t1: { path: string }, t2: { path: string }) => {
@@ -102,11 +121,11 @@ export const useTokenData = (showUnverified = true) => {
 
       return {
         token: {
-            ...token,
-            symbol: getGnotPath(token).symbol,
-            displaySymbol: getGnotPath(token).displaySymbol,
-            name: getGnotPath(token).name,
-            logoURI: getGnotPath(token).logoURI,
+          ...token,
+          symbol: getGnotPath(token).symbol,
+          displaySymbol: getGnotPath(token).displaySymbol,
+          name: getGnotPath(token).name,
+          logoURI: getGnotPath(token).logoURI,
         },
         upDown: data1D.status === MATH_NEGATIVE_TYPE.POSITIVE ? "up" : "down",
         content: data1D.percentDisplay.replace(/[+-]/g, ""),
@@ -299,6 +318,7 @@ export const useTokenData = (showUnverified = true) => {
     tokens,
     tokenPrices,
     displayBalanceMap,
+    rawBalanceMap,
     balances,
     trendingTokens,
     recentlyAddedTokens,

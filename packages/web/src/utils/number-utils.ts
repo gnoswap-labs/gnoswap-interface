@@ -239,3 +239,28 @@ export function rawToDisplayAmount(amount: string | number | undefined | null, d
   const rawAmount = typeof amount === "string" ? amount : amount.toString();
   return Number(rawAmount) / Math.pow(10, decimals);
 }
+
+export function getUsdBalance(
+  rawAmount: BigNumber | bigint | string | number | undefined | null,
+  usdPrice: BigNumber | bigint | string | number | undefined | null,
+  decimals: number,
+): BigNumber {
+  if (
+    !Number.isInteger(decimals) ||
+    decimals < 0 ||
+    rawAmount === null ||
+    rawAmount === undefined ||
+    usdPrice === null ||
+    usdPrice === undefined
+  ) {
+    return BigNumber(0);
+  }
+
+  const amount = BigNumber(rawAmount.toString().replace(/,/g, ""));
+  const price = BigNumber(usdPrice.toString().replace(/,/g, ""));
+  if (!amount.isFinite() || amount.isNaN() || !price.isFinite() || price.isNaN()) {
+    return BigNumber(0);
+  }
+
+  return amount.multipliedBy(price).shiftedBy(-decimals);
+}
