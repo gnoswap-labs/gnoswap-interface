@@ -40,16 +40,36 @@ describe("WalletMyPositionsHeader", () => {
     jest.clearAllMocks();
   });
 
-  it("uses the open position count when closed positions are hidden", () => {
+  it("uses the open position count and hides the switch when no closed positions exist", () => {
+    mockUsePositionData.mockImplementation(({ withClosed }: { withClosed?: boolean }) => ({
+      isFetchedPosition: true,
+      isPositionDataAvailable: true,
+      totalPositionCount: withClosed ? 2 : 2,
+    }));
+
+    render(<WalletMyPositionsHeader toggleClosed={jest.fn()} isClosed={false} />);
+
+    expect(screen.getByRole("heading")).toHaveTextContent("Wallet:myPosi (2)");
+    expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
+    expect(mockUsePositionData).toHaveBeenNthCalledWith(1, {
+      withClosed: false,
+      page: 1,
+      limit: 1,
+      scopeId: "WalletMyPositionsHeader-open",
+    });
+    expect(mockUsePositionData).toHaveBeenNthCalledWith(2, {
+      withClosed: true,
+      page: 1,
+      limit: 1,
+      scopeId: "WalletMyPositionsHeader-all",
+    });
+  });
+
+  it("shows the switch when a closed position exists outside the current page", () => {
     render(<WalletMyPositionsHeader toggleClosed={jest.fn()} isClosed={false} />);
 
     expect(screen.getByRole("heading")).toHaveTextContent("Wallet:myPosi (2)");
     expect(screen.getByRole("checkbox")).toBeInTheDocument();
-    expect(mockUsePositionData).toHaveBeenCalledTimes(1);
-    expect(mockUsePositionData).toHaveBeenCalledWith({
-      withClosed: false,
-      scopeId: "WalletMyPositionsHeader",
-    });
   });
 
   it("uses the inclusive position count when closed positions are shown", () => {
@@ -57,35 +77,31 @@ describe("WalletMyPositionsHeader", () => {
 
     expect(screen.getByRole("heading")).toHaveTextContent("Wallet:myPosi (3)");
     expect(screen.getByRole("checkbox")).toBeInTheDocument();
-    expect(mockUsePositionData).toHaveBeenCalledTimes(1);
-    expect(mockUsePositionData).toHaveBeenCalledWith({
-      withClosed: true,
-      scopeId: "WalletMyPositionsHeader",
-    });
   });
 
-  it("keeps the closed switch visible without relying on a current-page closed position", () => {
+  it("keeps the header available while the position queries are transitioning", () => {
+    mockUsePositionData.mockImplementation(({ withClosed }: { withClosed?: boolean }) => ({
+      isFetchedPosition: false,
+      isPositionDataAvailable: true,
+      totalPositionCount: withClosed ? 3 : 2,
+    }));
+
+    render(<WalletMyPositionsHeader toggleClosed={jest.fn()} isClosed={true} />);
+
+    expect(screen.getByRole("heading")).toHaveTextContent("Wallet:myPosi (3)");
+    expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
+  });
+
+  it("hides the header while position data is unavailable", () => {
     mockUsePositionData.mockReturnValue({
       isFetchedPosition: true,
-      isPositionDataAvailable: true,
+      isPositionDataAvailable: false,
       totalPositionCount: 0,
     });
 
     render(<WalletMyPositionsHeader toggleClosed={jest.fn()} isClosed={false} />);
 
-    expect(screen.getByRole("checkbox")).toBeInTheDocument();
-  });
-
-  it("keeps the rendered header while the filtered position query is transitioning", () => {
-    mockUsePositionData.mockReturnValue({
-      isFetchedPosition: false,
-      isPositionDataAvailable: true,
-      totalPositionCount: 43,
-    });
-
-    render(<WalletMyPositionsHeader toggleClosed={jest.fn()} isClosed={true} />);
-
-    expect(screen.getByRole("heading")).toHaveTextContent("Wallet:myPosi (43)");
-    expect(screen.getByRole("checkbox")).toBeInTheDocument();
+    expect(screen.queryByRole("heading")).not.toBeInTheDocument();
+    expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
   });
 });

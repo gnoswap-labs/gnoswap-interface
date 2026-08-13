@@ -41,6 +41,7 @@ export interface EarnMyPositionsProps {
   account: AccountModel | null;
   /** UI toggle state: whether closed positions should be shown in this view. */
   isClosed: boolean;
+  hasClosedPositions: boolean;
   handleChangeClosed: () => void;
   tokenPrices: Record<string, TokenPriceModel>;
   highestApr: number;
@@ -82,6 +83,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
   themeKey,
   account,
   isClosed,
+  hasClosedPositions,
   handleChangeClosed,
   tokenPrices,
   highestApr,
@@ -104,6 +106,7 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
       moveEarnStake={moveEarnStake}
       isSwitchNetwork={isSwitchNetwork}
       isClosed={isClosed}
+      hasClosedPositions={hasClosedPositions}
       handleChangeClosed={handleChangeClosed}
       positions={positions}
       onOpenVideoGuide={onOpenVideoGuide}
