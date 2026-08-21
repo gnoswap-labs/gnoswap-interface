@@ -12,6 +12,7 @@ export interface CalendarItem {
 
 interface CalendarProps {
   selectedDate: CalendarItem;
+  minDate?: CalendarItem;
   dayOfWeeks?: string[];
   onClickDate: (date: CalendarItem) => void;
 }
@@ -33,6 +34,7 @@ const MONTH_NAMES = [
 
 const Calendar: React.FC<CalendarProps> = ({
   selectedDate,
+  minDate,
   dayOfWeeks = ["S", "M", "T", "W", "T", "F", "S"],
   onClickDate,
 }) => {
@@ -55,7 +57,16 @@ const Calendar: React.FC<CalendarProps> = ({
     const currentDateWithoutTime = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     const checkDateWithoutTime = new Date(checkDate.getFullYear(), checkDate.getMonth(), checkDate.getDate());
 
-    return currentDateWithoutTime < checkDateWithoutTime;
+    if (currentDateWithoutTime >= checkDateWithoutTime) {
+      return false;
+    }
+
+    if (minDate) {
+      const minimumDateWithoutTime = new Date(minDate.year, minDate.month - 1, minDate.date);
+      return minimumDateWithoutTime <= checkDateWithoutTime;
+    }
+
+    return true;
   }
 
   const getCurrent = useCallback(() => {
@@ -100,6 +111,10 @@ const Calendar: React.FC<CalendarProps> = ({
   );
 
   const onClickCalendarDate = (date: number) => {
+    if (!verifyDate(date)) {
+      return;
+    }
+
     onClickDate({
       year: currentDate.year,
       month: currentDate.month,

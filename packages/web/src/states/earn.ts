@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import { atom } from "jotai";
 
 import { TokenAmountInputModel } from "@hooks/token/data/use-token-amount-input";
@@ -15,15 +14,21 @@ export interface PoolInfoQuery {
   isLoading: boolean;
 }
 
-export const DefaultDate = (() => {
-  const date = dayjs().add(1, "day");
+const SECONDS_PER_DAY = 24 * 60 * 60;
+
+export const getMinimumIncentiveStartDate = (now = Date.now()): DistributionPeriodDate => {
+  const currentTimestamp = Math.floor(now / 1000);
+  const minimumStartTimestamp = Math.ceil((currentTimestamp + SECONDS_PER_DAY) / SECONDS_PER_DAY) * SECONDS_PER_DAY;
+  const date = new Date(minimumStartTimestamp * 1000);
 
   return {
-    year: date.get("year"),
-    month: date.get("month") + 1,
-    date: date.get("date"),
+    year: date.getUTCFullYear(),
+    month: date.getUTCMonth() + 1,
+    date: date.getUTCDate(),
   };
-})();
+};
+
+export const DefaultDate = getMinimumIncentiveStartDate();
 
 export const isOneClick = atom<boolean>(false);
 export const currentPoolPath = atom<string | null>(null);

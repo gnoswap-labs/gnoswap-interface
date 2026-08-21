@@ -3,7 +3,7 @@ import React, { useCallback, useRef, useState } from "react";
 import Calendar from "@components/common/calendar/Calendar";
 import IconCalender from "@components/common/icons/IconCalender";
 import useModalCloseEvent from "@hooks/common/use-modal-close-event";
-import { DefaultDate, DistributionPeriodDate } from "@states/earn";
+import { DistributionPeriodDate, getMinimumIncentiveStartDate } from "@states/earn";
 
 import { SelectDistributionDateInputWrapper } from "./SelectDistributionDateInput.styles";
 
@@ -16,6 +16,7 @@ export interface SelectDistributionDateInputProps {
 const SelectDistributionDateInput: React.FC<SelectDistributionDateInputProps> = ({ title, date, setDate }) => {
   const [opened, setOpened] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
+  const minimumStartDate = getMinimumIncentiveStartDate();
 
   const toggleModal = useCallback(() => setOpened(!opened), [opened]);
   const closeModal = useCallback(() => setOpened(false), []);
@@ -45,7 +46,11 @@ const SelectDistributionDateInput: React.FC<SelectDistributionDateInputProps> = 
 
       <div className="calendar-container">
         <div ref={modalRef} className={`calendar-wrapper ${opened && "open"}`}>
-          <Calendar selectedDate={date || DefaultDate} onClickDate={onClickCalendarDate} />
+          <Calendar
+            selectedDate={date || minimumStartDate}
+            minDate={minimumStartDate}
+            onClickDate={onClickCalendarDate}
+          />
         </div>
       </div>
     </SelectDistributionDateInputWrapper>
