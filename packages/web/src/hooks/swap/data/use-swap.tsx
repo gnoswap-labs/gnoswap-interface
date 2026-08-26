@@ -49,6 +49,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
   const { data: gasPrice } = useGetGasPrice();
 
   const SWAP_AMOUNT_DEBOUNCE_TIME_MS = 500;
+  const SIMULATE_DEBOUNCE_TIME_MS = 500;
   const [swapAmount, setSwapAmount] = useState<number | null>(null);
   const debouncedAmount = useDebounce(swapAmount, swapAmount ? SWAP_AMOUNT_DEBOUNCE_TIME_MS : 0);
   const [estimatedLiquidityMax, setEstimatedLiquidityMax] = useState<number | null>(null);
@@ -367,6 +368,15 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     swapAmount,
   ]);
 
+  /**
+   * Debounced snapshot of the simulation input.
+   *
+   * Amount changes arrive on every keystroke, so simulating on the raw value
+   * would build a transaction message and estimate gas for each intermediate
+   * amount. Debouncing keeps a burst of changes down to a single simulation.
+   */
+  const debouncedSwapTransactionRequests = useDebounce(swapTransactionRequests, SIMULATE_DEBOUNCE_TIME_MS);
+
   const initTransactionData = useCallback(async (): Promise<boolean> => {
     if (!transactionMessage) {
       setTransactionDocument(null);
@@ -395,7 +405,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
   }, [account?.address, gasTokenPrice?.usd, transactionDocument, networkFee]);
 
   /**
-   * Generate a transaction message based on the swapTransactionRequests and store it in the state,
+   * Generate a transaction message based on the debouncedSwapTransactionRequests and store it in the state,
    * initialise the transactionDocument required for network fee calculation based on the message.
    *
    * - Does not work if there is no account, token information.
@@ -403,8 +413,8 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
   useEffect(() => {
     if (
       !rpcProvider ||
-      !swapTransactionRequests.inputToken ||
-      !swapTransactionRequests.outputToken ||
+      !debouncedSwapTransactionRequests.inputToken ||
+      !debouncedSwapTransactionRequests.outputToken ||
       !account?.address
     ) {
       setTransactionDocument(null);
@@ -415,20 +425,20 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     const fetchTransactionMessage = async () => {
       try {
         let message: TransactionMessage[] | null = null;
-        const inputToken = swapTransactionRequests.inputToken as TokenModel;
-        const outputToken = swapTransactionRequests.outputToken as TokenModel;
+        const inputToken = debouncedSwapTransactionRequests.inputToken as TokenModel;
+        const outputToken = debouncedSwapTransactionRequests.outputToken as TokenModel;
         const caller = account.address;
-        const tokenAmount = String(swapTransactionRequests.tokenAmount);
+        const tokenAmount = String(debouncedSwapTransactionRequests.tokenAmount);
 
         const commonProps = {
           inputToken,
           outputToken,
-          tokenAmount: swapTransactionRequests.tokenAmount,
-          estimatedRoutes: swapTransactionRequests.estimatedRoutes || [],
-          tokenAmountLimit: swapTransactionRequests.tokenAmountLimit,
-          deadline: swapTransactionRequests.deadline,
+          tokenAmount: debouncedSwapTransactionRequests.tokenAmount,
+          estimatedRoutes: debouncedSwapTransactionRequests.estimatedRoutes || [],
+          tokenAmountLimit: debouncedSwapTransactionRequests.tokenAmountLimit,
+          deadline: debouncedSwapTransactionRequests.deadline,
           caller,
-          referrerAddress: swapTransactionRequests.referrerAddress,
+          referrerAddress: debouncedSwapTransactionRequests.referrerAddress,
         };
 
         const getAllowance = (packagePath: string, owner: string, spender: string) => {
@@ -465,7 +475,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     };
 
     fetchTransactionMessage();
-  }, [account, direction, isSameToken, rpcProvider, swapTransactionRequests]);
+  }, [account, direction, isSameToken, rpcProvider, debouncedSwapTransactionRequests]);
 
   // Update transactionDocument whenever transactionMessage changes
   useEffect(() => {
