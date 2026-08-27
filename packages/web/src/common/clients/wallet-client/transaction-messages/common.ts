@@ -118,10 +118,12 @@ export function makeDepositGNOTMessage(amount: string | number | null, caller: s
 
 type SumApproveMessageType = { [key in string]: { [key in string]: { amount: string; caller: string } } };
 
+// Without `fetchAllowance` every approve message is kept, which is what the swap
+// simulation wants: it must not query an allowance it never broadcasts.
 export async function makeTransactionMessagesWithApproves(
   transactionMessages: TransactionMessage[],
   approveInfos: TokenApproveMessageInfo[],
-  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+  fetchAllowance?: (packagePath: string, owner: string, spender: string) => Promise<number>,
   allowanceLimit: number = DEFAULT_ALLOWANCE_LIMIT,
   withReset: boolean = true,
 ): Promise<TransactionMessage[]> {
@@ -184,26 +186,28 @@ export async function makeTransactionMessagesWithApproves(
       })),
   );
 
-  const allowanceApproveMessageInfos: TokenApproveMessageInfo[] = await Promise.all(
-    combinedApproveMessageInfos.map(messageInfo =>
-      fetchAllowance(messageInfo.tokenPath, messageInfo.caller, messageInfo.targetAddress)
-        .then(allowance => ({
-          tokenPath: messageInfo.tokenPath,
-          targetAddress: messageInfo.targetAddress,
-          amount: messageInfo.amount,
-          caller: messageInfo.caller,
-          allowance,
-        }))
-        .catch(e => {
-          console.log(e);
-          return null;
-        }),
-    ),
-  ).then(allowancesInfos => {
-    return allowancesInfos.filter(
-      allowancesInfo => allowancesInfo !== null && allowancesInfo.allowance <= allowanceLimit,
-    ) as TokenApproveMessageInfo[];
-  });
+  const allowanceApproveMessageInfos: TokenApproveMessageInfo[] = !fetchAllowance
+    ? combinedApproveMessageInfos
+    : await Promise.all(
+        combinedApproveMessageInfos.map(messageInfo =>
+          fetchAllowance(messageInfo.tokenPath, messageInfo.caller, messageInfo.targetAddress)
+            .then(allowance => ({
+              tokenPath: messageInfo.tokenPath,
+              targetAddress: messageInfo.targetAddress,
+              amount: messageInfo.amount,
+              caller: messageInfo.caller,
+              allowance,
+            }))
+            .catch(e => {
+              console.log(e);
+              return null;
+            }),
+        ),
+      ).then(allowancesInfos => {
+        return allowancesInfos.filter(
+          allowancesInfo => allowancesInfo !== null && allowancesInfo.allowance <= allowanceLimit,
+        ) as TokenApproveMessageInfo[];
+      });
 
   const approveMessages = allowanceApproveMessageInfos.map(approveInfo =>
     makeTokenApproveMessage(approveInfo.tokenPath, approveInfo.targetAddress, approveInfo.amount, approveInfo.caller),

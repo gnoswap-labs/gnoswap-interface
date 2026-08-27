@@ -1,7 +1,6 @@
 import BigNumber from "bignumber.js";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
 import useDebounce from "@hooks/common/use-debounce";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useNetworkFee } from "@hooks/common/use-network-fee";
@@ -430,10 +429,6 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
           referrerAddress: debouncedSwapTransactionRequests.referrerAddress,
         };
 
-        const getAllowance = (packagePath: string, owner: string, spender: string) => {
-          return fetchAllowance(rpcProvider, packagePath, owner, spender);
-        };
-
         if (isSameToken && isNativeToken(inputToken)) {
           // Wrap
           message = makeWrapTokenMessages({
@@ -450,10 +445,11 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
           });
         } else if (direction === "EXACT_IN") {
           // Exact-In
-          message = await makeExactInSwapRouteMessageWithApproves(commonProps, getAllowance);
+          // No allowance lookup: Confirm Swap resolves it on the broadcast path.
+          message = await makeExactInSwapRouteMessageWithApproves(commonProps);
         } else if (direction === "EXACT_OUT") {
           // Exact-Out
-          message = await makeExactOutSwapRouteMessageWithApproves(commonProps, getAllowance);
+          message = await makeExactOutSwapRouteMessageWithApproves(commonProps);
         }
 
         setTransactionMessage(message);
