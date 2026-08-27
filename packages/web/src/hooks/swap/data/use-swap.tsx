@@ -20,7 +20,7 @@ import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { TransactionMessage } from "@common/clients/wallet-client/protocols";
 import { SwapDirectionType } from "@common/values";
 import { GasToken } from "@common/values/token-constant";
-import { NetworkFee, getGasUsed, useGetGasPrice } from "@hooks/gas";
+import { NetworkFee, getGasUsed } from "@hooks/gas";
 import { EstimatedRoute } from "@models/swap/swap-route-info";
 import { TokenModel, isNativeToken } from "@models/token/token-model";
 import { Document } from "src/types/transaction-messages.types";
@@ -46,10 +46,17 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
   const currentGasUsed = getGasUsed(currentGasInfo);
 
   const { account } = useWallet();
-  const { data: gasPrice } = useGetGasPrice();
 
   const SWAP_AMOUNT_DEBOUNCE_TIME_MS = 500;
   const SIMULATE_DEBOUNCE_TIME_MS = 500;
+  const SWAP_DEADLINE_SEC = 60 * 5;
+  /**
+   * The document built here is only ever fed to the gas simulation - the broadcast
+   * path rebuilds its messages with a fresh SWAP_DEADLINE_SEC deadline. Giving the
+   * simulated message a long horizon keeps a document that stays cached across the
+   * 5s simulation refetches from expiring while the user sits on the page.
+   */
+  const SIMULATE_DEADLINE_SEC = 60 * 60 * 24;
   const [swapAmount, setSwapAmount] = useState<number | null>(null);
   const debouncedAmount = useDebounce(swapAmount, swapAmount ? SWAP_AMOUNT_DEBOUNCE_TIME_MS : 0);
   const [estimatedLiquidityMax, setEstimatedLiquidityMax] = useState<number | null>(null);
@@ -296,7 +303,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
           slippage: slippage,
           originAmount: estimatedSwapResult?.originAmount || 0,
           tokenAmountLimit: tokenAmountLimit,
-          deadline: Math.floor(Date.now() / 1000) + 60 * 5,
+          deadline: Math.floor(Date.now() / 1000) + SWAP_DEADLINE_SEC,
           referrerAddress: currentReferralAddress,
           ...gasInfo,
         });
@@ -311,7 +318,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
           slippage: slippage,
           originAmount: estimatedSwapResult?.originAmount || 0,
           tokenAmountLimit: tokenAmountLimit,
-          deadline: Math.floor(Date.now() / 1000) + 60 * 5,
+          deadline: Math.floor(Date.now() / 1000) + SWAP_DEADLINE_SEC,
           referrerAddress: currentReferralAddress,
           ...gasInfo,
         });
@@ -333,6 +340,16 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     ],
   );
 
+  /**
+   * Input for the swap transaction message build.
+   *
+   * Only the fields the message build actually consumes belong here. Carrying
+   * anything else (gas price, slippage, the raw origin amount) would rebuild the
+   * message - and re-run the gas simulation - without changing the transaction
+   * being simulated. The deadline is left out for the same reason: it is derived
+   * from the current time, so keeping it here turned every recomputation into a
+   * new simulation query key.
+   */
   const swapTransactionRequests = useMemo(() => {
     let tokenAmount = 0;
     if (isSameToken) {
@@ -346,12 +363,8 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       outputToken: tokenB,
       tokenAmount,
       estimatedRoutes: estimatedRoutes,
-      slippage: slippage,
-      originAmount: estimatedSwapResult?.originAmount || 0,
       tokenAmountLimit: tokenAmountLimit,
-      deadline: Math.floor(Date.now() / 1000) + 60 * 5,
       referrerAddress: nextReferralAddress,
-      gasPrice: gasPrice ?? 0,
     };
   }, [
     direction,
@@ -360,10 +373,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     tokenB,
     debouncedSwapAmount,
     estimatedRoutes,
-    slippage,
-    estimatedSwapResult?.originAmount,
     tokenAmountLimit,
-    gasPrice,
     nextReferralAddress,
     swapAmount,
   ]);
@@ -436,7 +446,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
           tokenAmount: debouncedSwapTransactionRequests.tokenAmount,
           estimatedRoutes: debouncedSwapTransactionRequests.estimatedRoutes || [],
           tokenAmountLimit: debouncedSwapTransactionRequests.tokenAmountLimit,
-          deadline: debouncedSwapTransactionRequests.deadline,
+          deadline: Math.floor(Date.now() / 1000) + SIMULATE_DEADLINE_SEC,
           caller,
           referrerAddress: debouncedSwapTransactionRequests.referrerAddress,
         };
