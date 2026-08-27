@@ -402,12 +402,12 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
    * - Does not work if there is no account, token information.
    */
   useEffect(() => {
-    if (
-      !rpcProvider ||
-      !debouncedSwapTransactionRequests.inputToken ||
-      !debouncedSwapTransactionRequests.outputToken ||
-      !account?.address
-    ) {
+    const { inputToken, outputToken, tokenAmount, estimatedRoutes: routes } = debouncedSwapTransactionRequests;
+    // Without routes the simulation would run on a message that cannot be swapped,
+    // so wait for the estimate instead of simulating once per intermediate state.
+    const canSimulate = tokenAmount > 0 && (isSameToken || Boolean(routes?.length));
+
+    if (!rpcProvider || !inputToken || !outputToken || !account?.address || !canSimulate) {
       setTransactionDocument(null);
       setTransactionMessage(null);
       return;
@@ -416,16 +416,14 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     const fetchTransactionMessage = async () => {
       try {
         let message: TransactionMessage[] | null = null;
-        const inputToken = debouncedSwapTransactionRequests.inputToken as TokenModel;
-        const outputToken = debouncedSwapTransactionRequests.outputToken as TokenModel;
         const caller = account.address;
-        const tokenAmount = String(debouncedSwapTransactionRequests.tokenAmount);
+        const rawTokenAmount = String(tokenAmount);
 
         const commonProps = {
           inputToken,
           outputToken,
-          tokenAmount: debouncedSwapTransactionRequests.tokenAmount,
-          estimatedRoutes: debouncedSwapTransactionRequests.estimatedRoutes || [],
+          tokenAmount,
+          estimatedRoutes: routes || [],
           tokenAmountLimit: debouncedSwapTransactionRequests.tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + SIMULATE_DEADLINE_SEC,
           caller,
@@ -440,14 +438,14 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
           // Wrap
           message = makeWrapTokenMessages({
             token: inputToken,
-            tokenAmount,
+            tokenAmount: rawTokenAmount,
             caller,
           });
         } else if (isSameToken && isNativeToken(outputToken)) {
           // Unwrap
           message = makeUnwrapTokenMessages({
             token: inputToken,
-            tokenAmount,
+            tokenAmount: rawTokenAmount,
             caller,
           });
         } else if (direction === "EXACT_IN") {
