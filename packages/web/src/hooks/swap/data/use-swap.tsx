@@ -47,7 +47,6 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
   const { account } = useWallet();
 
   const SWAP_AMOUNT_DEBOUNCE_TIME_MS = 500;
-  const SIMULATE_DEBOUNCE_TIME_MS = 500;
   const SWAP_DEADLINE_SEC = 60 * 5;
   // Simulation-only: the broadcast path builds its own SWAP_DEADLINE_SEC deadline.
   const SIMULATE_DEADLINE_SEC = 60 * 60 * 24;
@@ -337,12 +336,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
   // Only what the message build consumes: extra fields rebuild the message and
   // re-run the gas simulation without changing the simulated transaction.
   const swapTransactionRequests = useMemo(() => {
-    let tokenAmount = 0;
-    if (isSameToken) {
-      tokenAmount = swapAmount || 0;
-    } else {
-      tokenAmount = direction === "EXACT_IN" ? Number(debouncedSwapAmount || 0) : Number(debouncedSwapAmount || 0);
-    }
+    const tokenAmount = Number(debouncedSwapAmount || 0);
 
     return {
       inputToken: tokenA,
@@ -352,20 +346,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       tokenAmountLimit: tokenAmountLimit,
       referrerAddress: nextReferralAddress,
     };
-  }, [
-    direction,
-    isSameToken,
-    tokenA,
-    tokenB,
-    debouncedSwapAmount,
-    estimatedRoutes,
-    tokenAmountLimit,
-    nextReferralAddress,
-    swapAmount,
-  ]);
-
-  // Collapses a burst of amount changes into a single message build + simulation.
-  const debouncedSwapTransactionRequests = useDebounce(swapTransactionRequests, SIMULATE_DEBOUNCE_TIME_MS);
+  }, [tokenA, tokenB, debouncedSwapAmount, estimatedRoutes, tokenAmountLimit, nextReferralAddress]);
 
   const initTransactionData = useCallback(async (): Promise<boolean> => {
     if (!transactionMessage) {
@@ -395,13 +376,13 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
   }, [account?.address, gasTokenPrice?.usd, transactionDocument, networkFee]);
 
   /**
-   * Generate a transaction message based on the debouncedSwapTransactionRequests and store it in the state,
+   * Generate a transaction message based on the swapTransactionRequests and store it in the state,
    * initialise the transactionDocument required for network fee calculation based on the message.
    *
    * - Does not work if there is no account, token information.
    */
   useEffect(() => {
-    const { inputToken, outputToken, tokenAmount, estimatedRoutes: routes } = debouncedSwapTransactionRequests;
+    const { inputToken, outputToken, tokenAmount, estimatedRoutes: routes } = swapTransactionRequests;
     // Without routes the simulation would run on a message that cannot be swapped,
     // so wait for the estimate instead of simulating once per intermediate state.
     const canSimulate = tokenAmount > 0 && (isSameToken || Boolean(routes?.length));
@@ -423,10 +404,10 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
           outputToken,
           tokenAmount,
           estimatedRoutes: routes || [],
-          tokenAmountLimit: debouncedSwapTransactionRequests.tokenAmountLimit,
+          tokenAmountLimit: swapTransactionRequests.tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + SIMULATE_DEADLINE_SEC,
           caller,
-          referrerAddress: debouncedSwapTransactionRequests.referrerAddress,
+          referrerAddress: swapTransactionRequests.referrerAddress,
         };
 
         if (isSameToken && isNativeToken(inputToken)) {
@@ -460,7 +441,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     };
 
     fetchTransactionMessage();
-  }, [account, direction, isSameToken, rpcProvider, debouncedSwapTransactionRequests]);
+  }, [account, direction, isSameToken, rpcProvider, swapTransactionRequests]);
 
   // Update transactionDocument whenever transactionMessage changes
   useEffect(() => {
