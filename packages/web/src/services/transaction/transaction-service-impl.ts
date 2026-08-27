@@ -27,14 +27,16 @@ export class TransactionServiceImpl implements TransactionService {
     // gasFee,
     // gasWanted,
     memo,
+    account,
   }: CreateTransactionDocumentParameters): Promise<Document> => {
     if (!this.walletClient) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
 
-    const accountInfo = await this.walletClient.getAccount();
-    const accountNumber = accountInfo?.data?.accountNumber ?? 0;
-    const accountSequence = accountInfo?.data?.sequence ?? 0;
+    const accountInfo = account ? null : await this.walletClient.getAccount();
+    const accountNumber = account?.accountNumber ?? accountInfo?.data?.accountNumber ?? 0;
+    const accountSequence = account?.sequence ?? accountInfo?.data?.sequence ?? 0;
+    const caller = account?.address ?? accountInfo?.data?.address ?? "";
 
     const processedMsgs = messages.map(message => {
       if (isContractMessage(message)) {
@@ -48,7 +50,7 @@ export class TransactionServiceImpl implements TransactionService {
     });
 
     return {
-      msgs: mappedDocumentMessagesWithCaller(processedMsgs, accountInfo.data?.address || ""),
+      msgs: mappedDocumentMessagesWithCaller(processedMsgs, caller),
       fee: {
         amount: [{ amount: "", denom: GasToken.denom as string }],
         gas: "",

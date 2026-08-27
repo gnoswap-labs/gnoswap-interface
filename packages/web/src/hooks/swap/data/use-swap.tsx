@@ -354,14 +354,17 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       return false;
     }
     try {
-      const document = await transactionService.createDocument({ messages: transactionMessage });
+      const document = await transactionService.createDocument({
+        messages: transactionMessage,
+        account: account ?? undefined,
+      });
       setTransactionDocument(document);
       return true;
     } catch {
       setTransactionDocument(null);
       return false;
     }
-  }, [transactionMessage, transactionService]);
+  }, [account, transactionMessage, transactionService]);
 
   const displayNetworkFee: NetworkFee | null = useMemo(() => {
     if (!transactionDocument || !networkFee || !account?.address) return null;

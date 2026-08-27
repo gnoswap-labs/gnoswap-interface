@@ -44,7 +44,7 @@ export const useGetEstimateGasInfo = (
     },
     refetchInterval: REFETCH_INTERVAL,
     keepPreviousData: true,
-    enabled: !!document && !!transactionGasService,
+    enabled: !!document && !!transactionGasService && !!gasPrice,
     ...options,
   });
 };
