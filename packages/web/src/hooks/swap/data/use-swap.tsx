@@ -37,7 +37,6 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
   const { getNextReferralAddress, nextReferralAddress } = useReferral();
   const { data: gasTokenPrice } = useGetTokenPrices(GasToken.path);
 
-  const [transactionMessage, setTransactionMessage] = useState<TransactionMessage[] | null>(null);
   const [transactionDocument, setTransactionDocument] = useState<Document | null>(null);
   const useNetworkFeeReturn = useNetworkFee(transactionDocument);
   const networkFee = useNetworkFeeReturn.networkFee;
@@ -348,24 +347,6 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     };
   }, [tokenA, tokenB, debouncedSwapAmount, estimatedRoutes, tokenAmountLimit, nextReferralAddress]);
 
-  const initTransactionData = useCallback(async (): Promise<boolean> => {
-    if (!transactionMessage) {
-      setTransactionDocument(null);
-      return false;
-    }
-    try {
-      const document = await transactionService.createDocument({
-        messages: transactionMessage,
-        account: account ?? undefined,
-      });
-      setTransactionDocument(document);
-      return true;
-    } catch {
-      setTransactionDocument(null);
-      return false;
-    }
-  }, [account, transactionMessage, transactionService]);
-
   const displayNetworkFee: NetworkFee | null = useMemo(() => {
     if (!transactionDocument || !networkFee || !account?.address) return null;
 
@@ -379,8 +360,8 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
   }, [account?.address, gasTokenPrice?.usd, transactionDocument, networkFee]);
 
   /**
-   * Generate a transaction message based on the swapTransactionRequests and store it in the state,
-   * initialise the transactionDocument required for network fee calculation based on the message.
+   * Build the transaction message and the document the network fee calculation
+   * needs, in one pass so the simulation starts as soon as the estimate lands.
    *
    * - Does not work if there is no account, token information.
    */
@@ -392,11 +373,12 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
 
     if (!rpcProvider || !inputToken || !outputToken || !account?.address || !canSimulate) {
       setTransactionDocument(null);
-      setTransactionMessage(null);
       return;
     }
 
-    const fetchTransactionMessage = async () => {
+    let cancelled = false;
+
+    const updateTransactionDocument = async () => {
       try {
         let message: TransactionMessage[] | null = null;
         const caller = account.address;
@@ -436,20 +418,32 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
           message = await makeExactOutSwapRouteMessageWithApproves(commonProps);
         }
 
-        setTransactionMessage(message);
+        if (!message) {
+          if (!cancelled) {
+            setTransactionDocument(null);
+          }
+          return;
+        }
+
+        const document = await transactionService.createDocument({ messages: message, account });
+
+        if (!cancelled) {
+          setTransactionDocument(document);
+        }
       } catch (error) {
         console.error("Transaction message generation errors:", error);
-        setTransactionMessage(null);
+        if (!cancelled) {
+          setTransactionDocument(null);
+        }
       }
     };
 
-    fetchTransactionMessage();
-  }, [account, direction, isSameToken, rpcProvider, swapTransactionRequests]);
+    updateTransactionDocument();
 
-  // Update transactionDocument whenever transactionMessage changes
-  useEffect(() => {
-    initTransactionData();
-  }, [initTransactionData]);
+    return () => {
+      cancelled = true;
+    };
+  }, [account, direction, isSameToken, rpcProvider, swapTransactionRequests, transactionService]);
 
   useEffect(() => {
     if (estimatedRoutes === null || !tokenA || !tokenB) return;

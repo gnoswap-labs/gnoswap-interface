@@ -6,7 +6,6 @@ import { TokenModel } from "@models/token/token-model";
 import { GetRoutesResponse } from "@repositories/swap-router/response/get-routes-response";
 
 import { QUERY_KEY } from "../query-keys";
-import { useGetAllTokenPrices } from "@query/token";
 
 const REFETCH_INTERVAL = 5_000;
 const STALE_TIME = 0;
@@ -21,7 +20,6 @@ export const useGetRoutes = (
   options?: UseQueryOptions<GetRoutesResponse, Error>,
 ) => {
   const { swapRouterRepository } = useGnoswapContext();
-  const { refetch: refetchAllTokenPrices } = useGetAllTokenPrices();
 
   return useQuery<GetRoutesResponse, Error>({
     queryKey: [
@@ -60,9 +58,6 @@ export const useGetRoutes = (
           status: "NO_LIQUIDITY",
         };
       }
-
-      // Updating Swap Route Data while also updating token price information
-      refetchAllTokenPrices();
 
       const availRoute = result.estimatedRoutes.reduce((accumulated, current) => accumulated + current.quote, 0);
 
