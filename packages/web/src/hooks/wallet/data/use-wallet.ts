@@ -25,6 +25,7 @@ import * as uuid from "uuid";
 import { isWalletLockedError, isWalletLockedResponse } from "./use-wallet.util";
 
 const balanceQueryKey = ["token-balance", "ugnot"];
+const GNOT_BALANCE_REFETCH_INTERVAL = 5_000;
 const defaultGnoswapMemo = "Executed through gnoswap.io";
 let connectingAdenaAccount = false;
 
@@ -91,6 +92,7 @@ export const useWallet = () => {
     "ugnot",
     {
       enabled: !!walletAccount?.address && availNetwork,
+      refetchInterval: GNOT_BALANCE_REFETCH_INTERVAL,
     },
   );
 

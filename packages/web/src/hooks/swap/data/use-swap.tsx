@@ -50,12 +50,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
   const SWAP_AMOUNT_DEBOUNCE_TIME_MS = 500;
   const SIMULATE_DEBOUNCE_TIME_MS = 500;
   const SWAP_DEADLINE_SEC = 60 * 5;
-  /**
-   * The document built here is only ever fed to the gas simulation - the broadcast
-   * path rebuilds its messages with a fresh SWAP_DEADLINE_SEC deadline. Giving the
-   * simulated message a long horizon keeps a document that stays cached across the
-   * 5s simulation refetches from expiring while the user sits on the page.
-   */
+  // Simulation-only: the broadcast path builds its own SWAP_DEADLINE_SEC deadline.
   const SIMULATE_DEADLINE_SEC = 60 * 60 * 24;
   const [swapAmount, setSwapAmount] = useState<number | null>(null);
   const debouncedAmount = useDebounce(swapAmount, swapAmount ? SWAP_AMOUNT_DEBOUNCE_TIME_MS : 0);
@@ -340,16 +335,8 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     ],
   );
 
-  /**
-   * Input for the swap transaction message build.
-   *
-   * Only the fields the message build actually consumes belong here. Carrying
-   * anything else (gas price, slippage, the raw origin amount) would rebuild the
-   * message - and re-run the gas simulation - without changing the transaction
-   * being simulated. The deadline is left out for the same reason: it is derived
-   * from the current time, so keeping it here turned every recomputation into a
-   * new simulation query key.
-   */
+  // Only what the message build consumes: extra fields rebuild the message and
+  // re-run the gas simulation without changing the simulated transaction.
   const swapTransactionRequests = useMemo(() => {
     let tokenAmount = 0;
     if (isSameToken) {
@@ -378,13 +365,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     swapAmount,
   ]);
 
-  /**
-   * Debounced snapshot of the simulation input.
-   *
-   * Amount changes arrive on every keystroke, so simulating on the raw value
-   * would build a transaction message and estimate gas for each intermediate
-   * amount. Debouncing keeps a burst of changes down to a single simulation.
-   */
+  // Collapses a burst of amount changes into a single message build + simulation.
   const debouncedSwapTransactionRequests = useDebounce(swapTransactionRequests, SIMULATE_DEBOUNCE_TIME_MS);
 
   const initTransactionData = useCallback(async (): Promise<boolean> => {

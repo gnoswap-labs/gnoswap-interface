@@ -236,10 +236,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     return address;
   }
 
-  /**
-   * Kept for reuse: the swap flow no longer runs a DrySwapRoute check before
-   * broadcasting, but the dry-swap validation path itself stays implemented.
-   */
+  // Kept for reuse: the swap flow no longer runs this check before broadcasting.
   private async validateAndGetDrySwap(request: SwapRouteRequest, exactType: "EXACT_IN" | "EXACT_OUT"): Promise<number> {
     const drySwapRequest: DrySwapRequest = {
       inputToken: request.inputToken,
