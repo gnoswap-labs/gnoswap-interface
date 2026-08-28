@@ -15,7 +15,7 @@ export const useGetEstimateGasInfo = (
   gasUsed: number,
   options?: UseQueryOptions<GasInfo | null, Error>,
 ): UseQueryResult<GasInfo | null> => {
-  const { data: gasPrice } = useGetGasPrice();
+  const { data: gasPrice } = useGetGasPrice({ refetchInterval: document ? REFETCH_INTERVAL : false });
   const { transactionService, transactionGasService } = useGnoswapContext();
 
   async function makeSimulateTransaction(document: Document | null | undefined) {
@@ -44,7 +44,7 @@ export const useGetEstimateGasInfo = (
     },
     refetchInterval: REFETCH_INTERVAL,
     keepPreviousData: true,
-    enabled: !!document && !!transactionGasService,
+    enabled: !!document && !!transactionGasService && !!gasPrice,
     ...options,
   });
 };

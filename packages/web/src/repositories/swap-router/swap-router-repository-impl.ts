@@ -114,8 +114,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const address = await this.getAddress();
 
-    await this.validateAndGetDrySwap(request, "EXACT_IN");
-
     const { gasFee, gasUsed, ...requests } = request;
 
     const messages = await makeExactInSwapRouteMessageWithApproves(
@@ -145,8 +143,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     }
 
     const address = await this.getAddress();
-
-    await this.validateAndGetDrySwap(request, "EXACT_OUT");
 
     const { gasFee, gasUsed, ...requests } = request;
 
@@ -240,6 +236,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     return address;
   }
 
+  // Kept for reuse: the swap flow no longer runs this check before broadcasting.
   private async validateAndGetDrySwap(request: SwapRouteRequest, exactType: "EXACT_IN" | "EXACT_OUT"): Promise<number> {
     const drySwapRequest: DrySwapRequest = {
       inputToken: request.inputToken,

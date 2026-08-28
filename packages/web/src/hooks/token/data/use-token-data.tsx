@@ -31,7 +31,7 @@ export const useTokenData = (showUnverified = true) => {
     isFetched: isFetchedTokenPrices,
     refetch: refetchTokenPrices,
   } = useGetAllTokenPrices();
-  const { account, availNetwork, refetchGnotBalance } = useWallet();
+  const { account, availNetwork, refetchGnotBalance, gnotBalance } = useWallet();
   const {
     data: grc20BalancesData,
     isLoading: isLoadingGrc20Balances,
@@ -199,17 +199,14 @@ export const useTokenData = (showUnverified = true) => {
     refetchTokenPrices();
   }
 
-  const fetchNativeTokenBalance = useCallback(
-    async (token: TokenModel) => {
-      if (!rpcProvider || !account || !availNetwork) {
-        return null;
-      }
+  // Reuses the shared native balance query instead of one RPC call per hook instance.
+  const fetchNativeTokenBalance = useCallback(() => {
+    if (!rpcProvider || !account || !availNetwork) {
+      return null;
+    }
 
-      const res = await rpcProvider.getBalance(account.address, token.denom || "ugnot").catch(() => null);
-      return res;
-    },
-    [account, availNetwork, rpcProvider],
-  );
+    return gnotBalance ?? null;
+  }, [account, availNetwork, gnotBalance, rpcProvider]);
 
   const getGrc20Balance = useCallback(
     (token: TokenModel) => {
@@ -229,7 +226,7 @@ export const useTokenData = (showUnverified = true) => {
       }
 
       if (isNativeTokenByType(token.type)) {
-        return await fetchNativeTokenBalance(token);
+        return fetchNativeTokenBalance();
       }
 
       return getGrc20Balance(token);
@@ -292,7 +289,7 @@ export const useTokenData = (showUnverified = true) => {
    */
   useEffect(() => {
     updateBalances();
-  }, [grc20BalancesData]);
+  }, [grc20BalancesData, gnotBalance]);
 
   return {
     gnotToken,
