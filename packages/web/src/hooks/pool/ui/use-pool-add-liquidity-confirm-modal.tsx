@@ -114,17 +114,21 @@ export const usePoolAddLiquidityConfirmModal = ({
   const [openedModal, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
   const { invalidateQueryKey } = useInvalidateQueries();
+  const { poolPath: selectedPoolPath, refetchPoolData } = selectPool;
 
   const handleRefreshData = useCallback(async () => {
-    const poolPath = selectPool.poolPath || "";
+    const poolPath = selectedPoolPath || "";
+
+    await refetchPoolData();
 
     invalidateQueryKey("AddLiquidity", [
       [QUERY_KEY.positions, currentChainId, address],
       [QUERY_KEY.pools],
+      [QUERY_KEY.rpcPools],
       [QUERY_KEY.poolDetail, poolPath],
       [QUERY_KEY.poolLiquidityTicks],
     ]);
-  }, [invalidateQueryKey, selectPool.poolPath, currentChainId, address]);
+  }, [invalidateQueryKey, selectedPoolPath, refetchPoolData, currentChainId, address]);
 
   const tokenAAmount = useMemo(() => {
     const depositRatio = selectPool.depositRatio;
@@ -409,7 +413,7 @@ export const usePoolAddLiquidityConfirmModal = ({
             },
             onEmit: async () => {
               await delay(1000);
-              handleRefreshData();
+              await handleRefreshData();
             },
             onSuccess: handleRefreshData,
           });
@@ -473,6 +477,7 @@ export const usePoolAddLiquidityConfirmModal = ({
     slippage,
     createPool,
     rpcProvider,
+    handleRefreshData,
   ]);
 
   const openAddPositionModal = useCallback(() => {
