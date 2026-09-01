@@ -1,4 +1,4 @@
-import { PACKAGE_COMMON_PATH } from "@constants/environment.constant";
+import { PACKAGE_GRC20_REGISTRY_PATH } from "@constants/environment.constant";
 
 import { TransactionRunMessage } from "./run";
 
@@ -22,11 +22,11 @@ function makeExpectedRunMessage(caller: string, statements: string[]): Transacti
             "package main",
             "",
             "import (",
-            `\tcommon "${PACKAGE_COMMON_PATH}"`,
+            `\tgrc20reg "${PACKAGE_GRC20_REGISTRY_PATH}"`,
             ")",
             "",
             "func main(cur realm) {",
-            ...statements.flatMap(statement => [`\tif err := ${statement}; err != nil {`, "\t\tpanic(err)", "\t}"]),
+            ...statements.map(statement => `\t${statement}`),
             "}",
             "",
           ].join("\n"),
@@ -47,7 +47,7 @@ export function makeExpectedApproveRunMessage({
     caller,
     approves.map(
       approve =>
-        `common.Approve(cross(cur), "${approve.tokenPath}", address("${approve.spenderAddress}"), ${approve.amount})`,
+        `grc20reg.Approve(0, cur, "${approve.tokenPath}", address("${approve.spenderAddress}"), ${approve.amount})`,
     ),
   );
 }
@@ -64,7 +64,7 @@ export function makeExpectedTransferRunMessage({
   amount: string;
 }): TransactionRunMessage {
   return makeExpectedRunMessage(caller, [
-    `common.Transfer(cross(cur), "${tokenPath}", address("${toAddress}"), ${amount})`,
+    `grc20reg.Transfer(0, cur, "${tokenPath}", address("${toAddress}"), ${amount})`,
   ]);
 }
 

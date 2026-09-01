@@ -10,7 +10,7 @@ import type { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 
 jest.mock("@constants/environment.constant", () => ({
-  PACKAGE_COMMON_PATH: "common_path",
+  PACKAGE_GRC20_REGISTRY_PATH: "grc20reg_path",
   // GNOT wrapper
   WRAPPED_GNOT_PATH: "wugnot",
   WRAPPED_GNOT_PACKAGE_PATH: "wugnot",
@@ -132,7 +132,7 @@ const splitMessagesByApproveReset = (
 
 // Approves are MsgRun messages, so the matching reset is the same ephemeral
 // package with the approved amount rewritten to 0.
-const APPROVE_AMOUNT_PATTERN = /, \d+\); err != nil \{/g;
+const APPROVE_AMOUNT_PATTERN = /, \d+\)$/gm;
 
 const toResetApproveMessage = (message: TransactionMessage): TransactionMessage => {
   if (!isTransactionRunMessage(message)) {
@@ -149,7 +149,7 @@ const toResetApproveMessage = (message: TransactionMessage): TransactionMessage 
     ...message,
     package: {
       ...message.package,
-      files: [{ ...file, body: file.body.replace(APPROVE_AMOUNT_PATTERN, ", 0); err != nil {") }],
+      files: [{ ...file, body: file.body.replace(APPROVE_AMOUNT_PATTERN, ", 0)") }],
     },
   };
 };

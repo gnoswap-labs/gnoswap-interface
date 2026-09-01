@@ -7,7 +7,7 @@ import type { EstimatedRoute } from "@models/swap/swap-route-info";
 import type { TokenModel } from "@models/token/token-model";
 
 jest.mock("@constants/environment.constant", () => ({
-  PACKAGE_COMMON_PATH: "common_path",
+  PACKAGE_GRC20_REGISTRY_PATH: "grc20reg_path",
   PACKAGE_ROUTER_ADDRESS: "router_address",
   PACKAGE_ROUTER_PATH: "router_path",
   WRAPPED_GNOT_PATH: "wugnot",
@@ -98,9 +98,9 @@ describe("swap-router.message.ts", () => {
       }),
     ]);
     expect(messages.some(message => getRunMessageBody(message).includes("address(\"pool_address\")"))).toBe(false);
-    expect(
-      messages.some(message => getRunMessageBody(message).includes("common.Approve(cross(cur), \"token_out\"")),
-    ).toBe(false);
+    expect(messages.some(message => getRunMessageBody(message).includes("grc20reg.Approve(0, cur, \"token_out\""))).toBe(
+      false,
+    );
   });
 
   it("approves only input token for exact-out swaps using max sent amount", async () => {
@@ -144,8 +144,8 @@ describe("swap-router.message.ts", () => {
       }),
     ]);
     expect(messages.some(message => getRunMessageBody(message).includes("address(\"pool_address\")"))).toBe(false);
-    expect(
-      messages.some(message => getRunMessageBody(message).includes("common.Approve(cross(cur), \"token_out\"")),
-    ).toBe(false);
+    expect(messages.some(message => getRunMessageBody(message).includes("grc20reg.Approve(0, cur, \"token_out\""))).toBe(
+      false,
+    );
   });
 });

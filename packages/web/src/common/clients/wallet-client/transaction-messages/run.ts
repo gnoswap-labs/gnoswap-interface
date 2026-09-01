@@ -2,16 +2,17 @@ import BigNumber from "bignumber.js";
 
 import { TransactionMessageOfRun } from "@common/clients/wallet-client/protocols";
 import { TransactionMessageError } from "@common/errors";
-import { PACKAGE_COMMON_PATH } from "@constants/environment.constant";
+import { PACKAGE_GRC20_REGISTRY_PATH } from "@constants/environment.constant";
 
 /**
  * GRC20 balance mutations are expressed as `MsgRun` instead of `MsgCall`.
  *
- * The gnoswap `common` realm exposes GRC20 helpers as crossing functions
- * (`Approve(cur realm, ...)`, `Transfer(cur realm, ...)`) that derive the token
- * actor from `cur.Previous()`. Running an ephemeral `main` package keeps that
- * actor bound to the signer: the node executes `MsgRun` in the reserved
- * `gno.land/e/<caller>/run` realm, whose address is the caller address itself.
+ * The registry helpers take the caller realm as a secondary parameter
+ * (`Approve(_ int, rlm realm, ...)`) and act as `rlm` itself, so `MsgCall`
+ * cannot reach them at all — it cannot build a realm argument. Running an
+ * ephemeral `main` package and forwarding its own `cur` binds the actor to the
+ * signer: the node executes `MsgRun` in the reserved `gno.land/e/<caller>/run`
+ * realm, whose derived address is the caller address itself.
  *
  * @see {@link https://github.com/onbloc/adena-wallet/blob/3e91e597a966ee0ab14bd45a9bcd67a2717186c2/packages/adena-extension/src/pages/popup/wallet/transfer-summary/index.tsx#L328-L387}
  */
@@ -23,7 +24,7 @@ const RUN_PACKAGE_NAME = "main";
 const RUN_PACKAGE_PATH = "";
 const RUN_FILE_NAME = "main.gno";
 /** Import alias, so the generated source does not depend on the realm path shape. */
-const COMMON_REALM_ALIAS = "common";
+const GRC20_REGISTRY_ALIAS = "grc20reg";
 
 /** Written as an escape sequence so this file keeps double-quoted strings. */
 const DOUBLE_QUOTE = "\u0022";
@@ -78,10 +79,13 @@ export function gnoInt64Literal(amount: string | number | bigint): string {
 }
 
 /**
- * Wraps one or more `common` realm calls in a single ephemeral package, so a
- * run of statements (consecutive approves, for instance) costs one message.
+ * Wraps one or more registry calls in a single ephemeral package, so a run of
+ * statements (consecutive approves, for instance) costs one message.
+ *
+ * The registry helpers panic on failure, so the statements carry no error
+ * handling of their own.
  */
-function makeCommonRealmRunMessage(caller: string, statements: string[]): TransactionRunMessage {
+function makeGRC20RegistryRunMessage(caller: string, statements: string[]): TransactionRunMessage {
   if (statements.length === 0) {
     throw new TransactionMessageError("FAILED_BUILD_RUN_MESSAGE", statements);
   }
@@ -90,11 +94,11 @@ function makeCommonRealmRunMessage(caller: string, statements: string[]): Transa
     "package main",
     "",
     "import (",
-    `\t${COMMON_REALM_ALIAS} ${gnoStringLiteral(PACKAGE_COMMON_PATH)}`,
+    `\t${GRC20_REGISTRY_ALIAS} ${gnoStringLiteral(PACKAGE_GRC20_REGISTRY_PATH)}`,
     ")",
     "",
     "func main(cur realm) {",
-    ...statements.flatMap(statement => [`\tif err := ${statement}; err != nil {`, "\t\tpanic(err)", "\t}"]),
+    ...statements.map(statement => `\t${statement}`),
     "}",
     "",
   ].join("\n");
@@ -117,7 +121,7 @@ export interface GRC20ApproveRunMessageInfo {
 }
 
 /**
- * Builds one `MsgRun` message that runs every given `common.Approve` call.
+ * Builds one `MsgRun` message that runs every given `grc20reg.Approve` call.
  *
  * Approves always travel as a consecutive block, so batching them into a
  * single ephemeral package keeps the wallet to one message instead of one per
@@ -132,16 +136,16 @@ export function makeGRC20ApproveRunMessage({
 }): TransactionRunMessage {
   const statements = approves.map(
     approve =>
-      `${COMMON_REALM_ALIAS}.Approve(cross(cur), ${gnoStringLiteral(approve.tokenPath)}, address(${gnoStringLiteral(
+      `${GRC20_REGISTRY_ALIAS}.Approve(0, cur, ${gnoStringLiteral(approve.tokenPath)}, address(${gnoStringLiteral(
         approve.spenderAddress,
       )}), ${gnoInt64Literal(approve.amount)})`,
   );
 
-  return makeCommonRealmRunMessage(caller, statements);
+  return makeGRC20RegistryRunMessage(caller, statements);
 }
 
 /**
- * Builds the `MsgRun` equivalent of `common.Transfer(tokenKey, to, amount)`.
+ * Builds the `MsgRun` equivalent of `grc20reg.Transfer(tokenKey, to, amount)`.
  */
 export function makeGRC20TransferRunMessage({
   tokenPath,
@@ -154,9 +158,9 @@ export function makeGRC20TransferRunMessage({
   amount: string | bigint | number;
   caller: string;
 }): TransactionRunMessage {
-  const statement = `${COMMON_REALM_ALIAS}.Transfer(cross(cur), ${gnoStringLiteral(
+  const statement = `${GRC20_REGISTRY_ALIAS}.Transfer(0, cur, ${gnoStringLiteral(
     tokenPath,
   )}, address(${gnoStringLiteral(toAddress)}), ${gnoInt64Literal(amount)})`;
 
-  return makeCommonRealmRunMessage(caller, [statement]);
+  return makeGRC20RegistryRunMessage(caller, [statement]);
 }

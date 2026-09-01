@@ -1,7 +1,7 @@
 import type { TokenModel } from "@models/token/token-model";
 
 jest.mock("@constants/environment.constant", () => ({
-  PACKAGE_COMMON_PATH: "common_path",
+  PACKAGE_GRC20_REGISTRY_PATH: "grc20reg_path",
   GNS_TOKEN_PATH: "gns_token_path",
   PACKAGE_POOL_ADDRESS: "pool_address",
   PACKAGE_POOL_PATH: "pool_path",

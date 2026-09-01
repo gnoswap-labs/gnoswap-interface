@@ -1,5 +1,5 @@
 jest.mock("@constants/environment.constant", () => ({
-  PACKAGE_COMMON_PATH: "common_path",
+  PACKAGE_GRC20_REGISTRY_PATH: "grc20reg_path",
   GNS_TOKEN_PATH: "gns_token_path",
   PACKAGE_GOVERNANCE_PATH: "governance_path",
   PACKAGE_GOVERNANCE_STAKER_ADDRESS: "governance_staker_address",

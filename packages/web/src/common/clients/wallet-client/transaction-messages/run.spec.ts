@@ -1,4 +1,4 @@
-import { PACKAGE_COMMON_PATH } from "@constants/environment.constant";
+import { PACKAGE_GRC20_REGISTRY_PATH } from "@constants/environment.constant";
 
 import { gnoInt64Literal, gnoStringLiteral, makeGRC20ApproveRunMessage, makeGRC20TransferRunMessage } from "./run";
 
@@ -29,7 +29,7 @@ describe("gnoInt64Literal", () => {
 });
 
 describe("makeGRC20ApproveRunMessage", () => {
-  it("runs common.Approve in an ephemeral main package", () => {
+  it("runs grc20reg.Approve in an ephemeral main package", () => {
     const message = makeGRC20ApproveRunMessage({
       approves: [{ tokenPath: "gno.land/r/gnoswap/v1/gns", spenderAddress: "g1router", amount: "1250000" }],
       caller: "g1caller",
@@ -48,13 +48,11 @@ describe("makeGRC20ApproveRunMessage", () => {
               "package main\n" +
               "\n" +
               "import (\n" +
-              `\tcommon "${PACKAGE_COMMON_PATH}"\n` +
+              `\tgrc20reg "${PACKAGE_GRC20_REGISTRY_PATH}"\n` +
               ")\n" +
               "\n" +
               "func main(cur realm) {\n" +
-              "\tif err := common.Approve(cross(cur), \"gno.land/r/gnoswap/v1/gns\", address(\"g1router\"), 1250000); err != nil {\n" +
-              "\t\tpanic(err)\n" +
-              "\t}\n" +
+              "\tgrc20reg.Approve(0, cur, \"gno.land/r/gnoswap/v1/gns\", address(\"g1router\"), 1250000)\n" +
               "}\n",
           },
         ],
@@ -76,16 +74,12 @@ describe("makeGRC20ApproveRunMessage", () => {
       "package main\n" +
         "\n" +
         "import (\n" +
-        `\tcommon "${PACKAGE_COMMON_PATH}"\n` +
+        `\tgrc20reg "${PACKAGE_GRC20_REGISTRY_PATH}"\n` +
         ")\n" +
         "\n" +
         "func main(cur realm) {\n" +
-        "\tif err := common.Approve(cross(cur), \"tokenA\", address(\"g1pool\"), 1250000); err != nil {\n" +
-        "\t\tpanic(err)\n" +
-        "\t}\n" +
-        "\tif err := common.Approve(cross(cur), \"tokenB\", address(\"g1pool\"), 3000000); err != nil {\n" +
-        "\t\tpanic(err)\n" +
-        "\t}\n" +
+        "\tgrc20reg.Approve(0, cur, \"tokenA\", address(\"g1pool\"), 1250000)\n" +
+        "\tgrc20reg.Approve(0, cur, \"tokenB\", address(\"g1pool\"), 3000000)\n" +
         "}\n",
     );
   });
@@ -96,7 +90,7 @@ describe("makeGRC20ApproveRunMessage", () => {
 });
 
 describe("makeGRC20TransferRunMessage", () => {
-  it("runs common.Transfer in an ephemeral main package", () => {
+  it("runs grc20reg.Transfer in an ephemeral main package", () => {
     const message = makeGRC20TransferRunMessage({
       tokenPath: "gno.land/r/gnoswap/v1/gns",
       toAddress: "g1receiver",
@@ -105,7 +99,7 @@ describe("makeGRC20TransferRunMessage", () => {
     });
 
     expect(message.package.files[0].body).toContain(
-      "\tif err := common.Transfer(cross(cur), \"gno.land/r/gnoswap/v1/gns\", address(\"g1receiver\"), 1000); err != nil {",
+      "\tgrc20reg.Transfer(0, cur, \"gno.land/r/gnoswap/v1/gns\", address(\"g1receiver\"), 1000)\n",
     );
   });
 });
