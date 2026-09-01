@@ -3,6 +3,7 @@ import BigNumber from "bignumber.js";
 import { TransactionMessageOfRun } from "@common/clients/wallet-client/protocols";
 import { TransactionMessageError } from "@common/errors";
 import { PACKAGE_GRC20_REGISTRY_PATH } from "@constants/environment.constant";
+import { MAX_INT64_STR } from "@utils/math.utils";
 
 /**
  * GRC20 balance mutations are expressed as `MsgRun` instead of `MsgCall`.
@@ -65,13 +66,16 @@ export function gnoStringLiteral(value: string): string {
 /**
  * Renders an amount as a gno `int64` literal.
  *
- * Amounts are inlined without quotes, so anything that is not a non-negative
- * integer is rejected instead of being written into the source.
+ * Amounts are inlined without quotes, so anything that is not an integer
+ * within the `int64` range is rejected instead of being written into the
+ * source. An out-of-range literal would otherwise reach the chain and panic
+ * there with "bigint overflows target kind" when the registry helper converts
+ * it to its `int64` parameter.
  */
 export function gnoInt64Literal(amount: string | number | bigint): string {
   const amountBN = BigNumber(amount.toString());
 
-  if (!amountBN.isFinite() || !amountBN.isInteger() || amountBN.isNegative()) {
+  if (!amountBN.isFinite() || !amountBN.isInteger() || amountBN.isNegative() || amountBN.isGreaterThan(MAX_INT64_STR)) {
     throw new TransactionMessageError("FAILED_BUILD_RUN_MESSAGE", amount);
   }
 

@@ -1,4 +1,5 @@
 import { PACKAGE_GRC20_REGISTRY_PATH } from "@constants/environment.constant";
+import { MAX_INT64_STR } from "@utils/math.utils";
 
 import { gnoInt64Literal, gnoStringLiteral, makeGRC20ApproveRunMessage, makeGRC20TransferRunMessage } from "./run";
 
@@ -25,6 +26,12 @@ describe("gnoInt64Literal", () => {
     expect(() => gnoInt64Literal("1.5")).toThrow();
     expect(() => gnoInt64Literal("-1")).toThrow();
     expect(() => gnoInt64Literal("100); evil(")).toThrow();
+  });
+
+  it("rejects amounts above the int64 maximum", () => {
+    expect(gnoInt64Literal(MAX_INT64_STR)).toBe(MAX_INT64_STR);
+    expect(() => gnoInt64Literal("9223372036854775808")).toThrow();
+    expect(() => gnoInt64Literal("99999999999999999999999999")).toThrow();
   });
 });
 

@@ -1,4 +1,5 @@
 import { GNS_TOKEN, GNOT_UNIT_DENOM } from "@common/values/token-constant";
+import { MAX_INT64_STR } from "@utils/math.utils";
 import { isRunMessage } from "@common/clients/wallet-client/protocols";
 import { makeExpectedTransferRunMessage } from "@common/clients/wallet-client/transaction-messages/run.test-fixtures";
 
@@ -22,7 +23,8 @@ describe("wallet messages", () => {
   });
 
   it("preserves GRC20 transfer raw amounts as strings", () => {
-    const rawAmount = "123456789012345678901234567890";
+    // Past Number.MAX_SAFE_INTEGER, so a float round-trip would corrupt it.
+    const rawAmount = MAX_INT64_STR;
     const token = {
       ...GNS_TOKEN,
       path: "gno.land/r/gnoswap/v1/gns",
@@ -44,5 +46,21 @@ describe("wallet messages", () => {
         amount: rawAmount,
       }),
     );
+  });
+
+  it("rejects GRC20 transfer amounts above the int64 maximum", () => {
+    const token = {
+      ...GNS_TOKEN,
+      path: "gno.land/r/gnoswap/v1/gns",
+    };
+
+    expect(() =>
+      makeTransferGRC20TokenMessages({
+        token,
+        tokenAmount: "9223372036854775808",
+        fromAddress: "g1from",
+        toAddress: "g1to",
+      }),
+    ).toThrow();
   });
 });
