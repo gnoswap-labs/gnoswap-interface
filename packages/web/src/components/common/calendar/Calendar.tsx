@@ -13,6 +13,7 @@ export interface CalendarItem {
 interface CalendarProps {
   selectedDate: CalendarItem;
   minDate?: CalendarItem;
+  maxDate?: CalendarItem;
   dayOfWeeks?: string[];
   onClickDate: (date: CalendarItem) => void;
 }
@@ -35,6 +36,7 @@ const MONTH_NAMES = [
 const Calendar: React.FC<CalendarProps> = ({
   selectedDate,
   minDate,
+  maxDate,
   dayOfWeeks = ["S", "M", "T", "W", "T", "F", "S"],
   onClickDate,
 }) => {
@@ -63,7 +65,16 @@ const Calendar: React.FC<CalendarProps> = ({
 
     if (minDate) {
       const minimumDateWithoutTime = new Date(minDate.year, minDate.month - 1, minDate.date);
-      return minimumDateWithoutTime <= checkDateWithoutTime;
+      if (minimumDateWithoutTime > checkDateWithoutTime) {
+        return false;
+      }
+    }
+
+    if (maxDate) {
+      const maximumDateWithoutTime = new Date(maxDate.year, maxDate.month - 1, maxDate.date);
+      if (maximumDateWithoutTime < checkDateWithoutTime) {
+        return false;
+      }
     }
 
     return true;
