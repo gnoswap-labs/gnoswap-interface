@@ -1,5 +1,6 @@
 import { GNS_TOKEN, GNOT_UNIT_DENOM } from "@common/values/token-constant";
-import { isContractMessage } from "@common/clients/wallet-client/protocols";
+import { isRunMessage } from "@common/clients/wallet-client/protocols";
+import { makeExpectedTransferRunMessage } from "@common/clients/wallet-client/transaction-messages/run.test-fixtures";
 
 import { makeTransferGNOTTokenMessages, makeTransferGRC20TokenMessages } from "./wallet.message";
 
@@ -34,9 +35,14 @@ describe("wallet messages", () => {
       toAddress: "g1to",
     });
 
-    expect(isContractMessage(message)).toBe(true);
-    if (isContractMessage(message)) {
-      expect(message.args).toEqual([token.path, "g1to", rawAmount]);
-    }
+    expect(isRunMessage(message)).toBe(true);
+    expect(message).toEqual(
+      makeExpectedTransferRunMessage({
+        caller: "g1from",
+        tokenPath: token.path,
+        toAddress: "g1to",
+        amount: rawAmount,
+      }),
+    );
   });
 });

@@ -4,6 +4,7 @@ import { eventBus } from "./event-bus";
 
 import {
   isContractMessage,
+  isRunMessage,
   SendTransactionRequestParam,
   TransactionMessage,
   WalletResponse,
@@ -25,7 +26,7 @@ export const TX_EVENTS = {
   REJECTED: "transaction-rejected",
 } as const;
 
-export type TransactionEvent = typeof TX_EVENTS[keyof typeof TX_EVENTS];
+export type TransactionEvent = (typeof TX_EVENTS)[keyof typeof TX_EVENTS];
 
 export interface TransactionApprovalModalHandlers {
   handleApprove: (document: Document) => void;
@@ -116,6 +117,15 @@ const transformMessages = (messages: TransactionMessage[]): ContractMessage[] =>
           func: message.func,
           args: message.args,
         } as MsgCall,
+      };
+    } else if (isRunMessage(message)) {
+      return {
+        type: "/vm.m_run" as const,
+        value: {
+          caller: message.caller,
+          send: message.send,
+          package: message.package,
+        } as MsgRun,
       };
     } else {
       return {
@@ -437,7 +447,9 @@ function encodeMessageValue(message: { type: string; value: any }) {
       const msgRun = MsgRun.create({
         caller: value.caller,
         package: packageData,
-        send: value.send || "0ugnot",
+        // A zero-amount coin string fails MsgRun.ValidateBasic; "no send" is empty.
+        send: value.send || "",
+        max_deposit: "",
       });
       return Any.create({
         type_url: MsgEndpoint.MSG_RUN,

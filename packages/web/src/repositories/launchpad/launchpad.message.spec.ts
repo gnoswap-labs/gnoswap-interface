@@ -5,6 +5,7 @@ jest.mock("@constants/environment.constant", () => ({
   PACKAGE_LAUNCHPAD_PATH: "launchpad_path",
 }));
 
+import { makeExpectedApproveRunMessage } from "@common/clients/wallet-client/transaction-messages/run.test-fixtures";
 import {
   makeCollectProtocolFeeMessage,
   makeDepositGNSMessageWithApproves,
@@ -20,12 +21,12 @@ describe("launchpad.message.ts", () => {
       fetchAllowance,
     );
 
-    expect(messages[0]).toMatchObject({
-      caller,
-      pkg_path: "common_path",
-      func: "Approve",
-      args: ["gns_token_path", "launchpad_address", "456000000"],
-    });
+    expect(messages[0]).toEqual(
+      makeExpectedApproveRunMessage({
+        caller,
+        approves: [{ tokenPath: "gns_token_path", spenderAddress: "launchpad_address", amount: "456000000" }],
+      }),
+    );
     expect(messages[1]).toMatchObject({
       caller,
       pkg_path: "launchpad_path",

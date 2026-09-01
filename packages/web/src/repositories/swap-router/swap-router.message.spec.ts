@@ -1,3 +1,7 @@
+import {
+  getRunMessageBody,
+  makeExpectedApproveRunMessage,
+} from "@common/clients/wallet-client/transaction-messages/run.test-fixtures";
 import type { TransactionMessage } from "@common/clients/wallet-client/transaction-messages/common";
 import type { EstimatedRoute } from "@models/swap/swap-route-info";
 import type { TokenModel } from "@models/token/token-model";
@@ -76,14 +80,10 @@ describe("swap-router.message.ts", () => {
     const { approveMessages, txMessages, resetMessages } = splitMessages(messages, 1);
 
     expect(approveMessages).toEqual([
-      {
+      makeExpectedApproveRunMessage({
         caller,
-        send: "",
-        pkg_path: "common_path",
-        func: "Approve",
-        args: ["token_in", "router_address", "1250000"],
-        gasFee: undefined,
-      },
+        approves: [{ tokenPath: "token_in", spenderAddress: "router_address", amount: "1250000" }],
+      }),
     ]);
     expect(txMessages).toHaveLength(1);
     expect(txMessages[0]).toMatchObject({
@@ -91,11 +91,16 @@ describe("swap-router.message.ts", () => {
       func: "ExactInSwapRoute",
       args: ["token_in", "token_out", "1250000", "token_in:token_out:3000", "1", "2000000", "123", ""],
     });
-    expect(resetMessages).toEqual(
-      approveMessages.map(message => ({ ...message, args: [message.args?.[0] || "", message.args?.[1] || "", "0"] })),
-    );
-    expect(messages.some(message => message.args?.[1] === "pool_address" && message.func === "Approve")).toBe(false);
-    expect(messages.some(message => message.args?.[0] === "token_out" && message.func === "Approve")).toBe(false);
+    expect(resetMessages).toEqual([
+      makeExpectedApproveRunMessage({
+        caller,
+        approves: [{ tokenPath: "token_in", spenderAddress: "router_address", amount: "0" }],
+      }),
+    ]);
+    expect(messages.some(message => getRunMessageBody(message).includes("address(\"pool_address\")"))).toBe(false);
+    expect(
+      messages.some(message => getRunMessageBody(message).includes("common.Approve(cross(cur), \"token_out\"")),
+    ).toBe(false);
   });
 
   it("approves only input token for exact-out swaps using max sent amount", async () => {
@@ -121,14 +126,10 @@ describe("swap-router.message.ts", () => {
     const { approveMessages, txMessages, resetMessages } = splitMessages(messages, 1);
 
     expect(approveMessages).toEqual([
-      {
+      makeExpectedApproveRunMessage({
         caller,
-        send: "",
-        pkg_path: "common_path",
-        func: "Approve",
-        args: ["token_in", "router_address", "1250000"],
-        gasFee: undefined,
-      },
+        approves: [{ tokenPath: "token_in", spenderAddress: "router_address", amount: "1250000" }],
+      }),
     ]);
     expect(txMessages).toHaveLength(1);
     expect(txMessages[0]).toMatchObject({
@@ -136,10 +137,15 @@ describe("swap-router.message.ts", () => {
       func: "ExactOutSwapRoute",
       args: ["token_in", "token_out", "2000000", "token_in:token_out:3000", "1", "1250000", "123", ""],
     });
-    expect(resetMessages).toEqual(
-      approveMessages.map(message => ({ ...message, args: [message.args?.[0] || "", message.args?.[1] || "", "0"] })),
-    );
-    expect(messages.some(message => message.args?.[1] === "pool_address" && message.func === "Approve")).toBe(false);
-    expect(messages.some(message => message.args?.[0] === "token_out" && message.func === "Approve")).toBe(false);
+    expect(resetMessages).toEqual([
+      makeExpectedApproveRunMessage({
+        caller,
+        approves: [{ tokenPath: "token_in", spenderAddress: "router_address", amount: "0" }],
+      }),
+    ]);
+    expect(messages.some(message => getRunMessageBody(message).includes("address(\"pool_address\")"))).toBe(false);
+    expect(
+      messages.some(message => getRunMessageBody(message).includes("common.Approve(cross(cur), \"token_out\"")),
+    ).toBe(false);
   });
 });

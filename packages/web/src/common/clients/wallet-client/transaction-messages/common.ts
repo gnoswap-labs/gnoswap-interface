@@ -4,8 +4,10 @@ import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { TransactionMessageError } from "@common/errors";
 import { DEFAULT_ALLOWANCE_LIMIT } from "@common/values";
-import { PACKAGE_COMMON_PATH, PACKAGE_NFT_PATH, WRAPPED_GNOT_PACKAGE_PATH } from "@constants/environment.constant";
+import { PACKAGE_NFT_PATH, WRAPPED_GNOT_PACKAGE_PATH } from "@constants/environment.constant";
 import { MAX_INT64_STR } from "@utils/math.utils";
+
+import { GRC20ApproveRunMessageInfo, makeGRC20ApproveRunMessage, TransactionRunMessage } from "./run";
 
 export interface TransactionBankMessage {
   from_address: string;
@@ -13,13 +15,31 @@ export interface TransactionBankMessage {
   amount: string;
 }
 
-export interface TransactionMessage {
+export interface TransactionCallMessage {
   caller: string;
   send: string;
   pkg_path: string;
   func: string;
   args: string[] | null;
   gasFee?: string;
+}
+
+/**
+ * Message shapes a transaction can carry, other than a bank send.
+ *
+ * GRC20 balance mutations are built as {@link TransactionRunMessage}; every
+ * other realm interaction stays a {@link TransactionCallMessage}.
+ */
+export type TransactionMessage = TransactionCallMessage | TransactionRunMessage;
+
+export type { TransactionRunMessage };
+
+export function isTransactionCallMessage(message: TransactionMessage): message is TransactionCallMessage {
+  return "func" in message;
+}
+
+export function isTransactionRunMessage(message: TransactionMessage): message is TransactionRunMessage {
+  return "package" in message;
 }
 
 export interface TokenApproveMessageInfo {
@@ -61,7 +81,7 @@ export function makeTransactionMessage({
   func: string;
   args: string[] | null;
   gasFee?: string;
-}): TransactionMessage {
+}): TransactionCallMessage {
   return {
     caller: caller,
     send: send,
@@ -72,18 +92,44 @@ export function makeTransactionMessage({
   };
 }
 
+/**
+ * Batches a block of approves into as few `MsgRun` messages as possible.
+ *
+ * Approves are emitted consecutively, so every adjacent run sharing a caller
+ * collapses into a single ephemeral package instead of one message each.
+ */
+export function makeTokenApproveMessages(approveInfos: TokenApproveMessageInfo[]): TransactionRunMessage[] {
+  const approveGroups: { caller: string; approves: GRC20ApproveRunMessageInfo[] }[] = [];
+
+  for (const approveInfo of approveInfos) {
+    const approve: GRC20ApproveRunMessageInfo = {
+      tokenPath: approveInfo.tokenPath,
+      spenderAddress: approveInfo.targetAddress,
+      amount: approveInfo.amount,
+    };
+    const currentGroup = approveGroups[approveGroups.length - 1];
+
+    if (currentGroup && currentGroup.caller === approveInfo.caller) {
+      currentGroup.approves.push(approve);
+    } else {
+      approveGroups.push({ caller: approveInfo.caller, approves: [approve] });
+    }
+  }
+
+  return approveGroups.map(approveGroup =>
+    makeGRC20ApproveRunMessage({ approves: approveGroup.approves, caller: approveGroup.caller }),
+  );
+}
+
 export function makeTokenApproveMessage(
   tokenPath: string,
   targetAddress: string,
   amount: string | bigint | number,
   caller: string,
-): TransactionMessage {
-  return makeTransactionMessage({
+): TransactionRunMessage {
+  return makeGRC20ApproveRunMessage({
+    approves: [{ tokenPath, spenderAddress: targetAddress, amount }],
     caller,
-    send: "",
-    packagePath: PACKAGE_COMMON_PATH,
-    func: "Approve",
-    args: [tokenPath, targetAddress, amount.toString()],
   });
 }
 
@@ -91,7 +137,7 @@ export function makeNFTApproveMessage(
   targetAddress: string,
   lpTokenId: string | bigint | number,
   caller: string,
-): TransactionMessage {
+): TransactionCallMessage {
   return makeTransactionMessage({
     caller,
     send: "",
@@ -101,7 +147,7 @@ export function makeNFTApproveMessage(
   });
 }
 
-export function makeDepositGNOTMessage(amount: string | number | null, caller: string): TransactionMessage | null {
+export function makeDepositGNOTMessage(amount: string | number | null, caller: string): TransactionCallMessage | null {
   const minDepositAmount = 1000;
   if (!amount || BigNumber(amount).isLessThan(minDepositAmount)) {
     return null;
@@ -209,16 +255,14 @@ export async function makeTransactionMessagesWithApproves(
         ) as TokenApproveMessageInfo[];
       });
 
-  const approveMessages = allowanceApproveMessageInfos.map(approveInfo =>
-    makeTokenApproveMessage(approveInfo.tokenPath, approveInfo.targetAddress, approveInfo.amount, approveInfo.caller),
-  );
+  const approveMessages = makeTokenApproveMessages(allowanceApproveMessageInfos);
 
   if (!withReset) {
     return [...approveMessages, ...transactionMessages];
   }
 
-  const approveResetMessages = combinedApproveMessageInfos.map(approveInfo =>
-    makeTokenApproveMessage(approveInfo.tokenPath, approveInfo.targetAddress, 0, approveInfo.caller),
+  const approveResetMessages = makeTokenApproveMessages(
+    combinedApproveMessageInfos.map(approveInfo => ({ ...approveInfo, amount: 0 })),
   );
 
   return [...approveMessages, ...transactionMessages, ...approveResetMessages];

@@ -5,6 +5,10 @@ const ERROR_VALUE = {
     status: 400,
     type: "Failed to parse the approve message",
   },
+  FAILED_BUILD_RUN_MESSAGE: {
+    status: 400,
+    type: "Failed to build the run message",
+  },
 };
 
 type ErrorType = keyof typeof ERROR_VALUE;

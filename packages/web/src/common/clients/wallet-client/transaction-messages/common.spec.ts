@@ -1,11 +1,10 @@
-import { PACKAGE_COMMON_PATH } from "@constants/environment.constant";
-
 import {
   makeTransactionMessage,
   makeTransactionMessagesWithApproves,
   TokenApproveMessageInfo,
   TransactionMessage,
 } from "./common";
+import { makeExpectedApproveRunMessage } from "./run.test-fixtures";
 
 describe("makeTransactionMessagesWithApproves", () => {
   const caller = "caller";
@@ -35,23 +34,12 @@ describe("makeTransactionMessagesWithApproves", () => {
     const messages = await makeTransactionMessagesWithApproves([transactionMessage], approveInfos, fetchAllowance);
 
     expect(messages).toEqual([
-      {
+      makeExpectedApproveRunMessage({
         caller,
-        send: "",
-        pkg_path: PACKAGE_COMMON_PATH,
-        func: "Approve",
-        args: [tokenPath, targetAddress, "100"],
-        gasFee: undefined,
-      },
+        approves: [{ tokenPath, spenderAddress: targetAddress, amount: "100" }],
+      }),
       transactionMessage,
-      {
-        caller,
-        send: "",
-        pkg_path: PACKAGE_COMMON_PATH,
-        func: "Approve",
-        args: [tokenPath, targetAddress, "0"],
-        gasFee: undefined,
-      },
+      makeExpectedApproveRunMessage({ caller, approves: [{ tokenPath, spenderAddress: targetAddress, amount: "0" }] }),
     ]);
   });
 
@@ -62,14 +50,7 @@ describe("makeTransactionMessagesWithApproves", () => {
 
     expect(messages).toEqual([
       transactionMessage,
-      {
-        caller,
-        send: "",
-        pkg_path: PACKAGE_COMMON_PATH,
-        func: "Approve",
-        args: [tokenPath, targetAddress, "0"],
-        gasFee: undefined,
-      },
+      makeExpectedApproveRunMessage({ caller, approves: [{ tokenPath, spenderAddress: targetAddress, amount: "0" }] }),
     ]);
   });
 
@@ -97,31 +78,18 @@ describe("makeTransactionMessagesWithApproves", () => {
     );
 
     expect(messages).toEqual([
-      {
+      makeExpectedApproveRunMessage({
         caller,
-        send: "",
-        pkg_path: PACKAGE_COMMON_PATH,
-        func: "Approve",
-        args: [tokenPath, targetAddress, "100"],
-        gasFee: undefined,
-      },
+        approves: [{ tokenPath, spenderAddress: targetAddress, amount: "100" }],
+      }),
       transactionMessage,
-      {
+      makeExpectedApproveRunMessage({
         caller,
-        send: "",
-        pkg_path: PACKAGE_COMMON_PATH,
-        func: "Approve",
-        args: [tokenPath, targetAddress, "0"],
-        gasFee: undefined,
-      },
-      {
-        caller,
-        send: "",
-        pkg_path: PACKAGE_COMMON_PATH,
-        func: "Approve",
-        args: [tokenPath, skippedTargetAddress, "0"],
-        gasFee: undefined,
-      },
+        approves: [
+          { tokenPath, spenderAddress: targetAddress, amount: "0" },
+          { tokenPath, spenderAddress: skippedTargetAddress, amount: "0" },
+        ],
+      }),
     ]);
   });
 
@@ -137,20 +105,17 @@ describe("makeTransactionMessagesWithApproves", () => {
     );
 
     expect(messages).toEqual([
-      {
+      makeExpectedApproveRunMessage({
         caller,
-        send: "",
-        pkg_path: PACKAGE_COMMON_PATH,
-        func: "Approve",
-        args: [tokenPath, targetAddress, "100"],
-        gasFee: undefined,
-      },
+        approves: [{ tokenPath, spenderAddress: targetAddress, amount: "100" }],
+      }),
       transactionMessage,
     ]);
   });
 
   it("uses common realm Approve for IBC token approve and reset messages", async () => {
-    const ibcTokenPath = "gno.land/r/aib/ibc/apps/transfer.9C935EC805585DF5162725E2C857BF2F5E390F2418B3DB7595448A5485BC6F8A";
+    const ibcTokenPath =
+      "gno.land/r/aib/ibc/apps/transfer.9C935EC805585DF5162725E2C857BF2F5E390F2418B3DB7595448A5485BC6F8A";
     const fetchAllowance = jest.fn(async () => 0);
 
     const messages = await makeTransactionMessagesWithApproves(
@@ -167,23 +132,15 @@ describe("makeTransactionMessagesWithApproves", () => {
     );
 
     expect(messages).toEqual([
-      {
+      makeExpectedApproveRunMessage({
         caller,
-        send: "",
-        pkg_path: PACKAGE_COMMON_PATH,
-        func: "Approve",
-        args: [ibcTokenPath, targetAddress, "100"],
-        gasFee: undefined,
-      },
+        approves: [{ tokenPath: ibcTokenPath, spenderAddress: targetAddress, amount: "100" }],
+      }),
       transactionMessage,
-      {
+      makeExpectedApproveRunMessage({
         caller,
-        send: "",
-        pkg_path: PACKAGE_COMMON_PATH,
-        func: "Approve",
-        args: [ibcTokenPath, targetAddress, "0"],
-        gasFee: undefined,
-      },
+        approves: [{ tokenPath: ibcTokenPath, spenderAddress: targetAddress, amount: "0" }],
+      }),
     ]);
   });
 });

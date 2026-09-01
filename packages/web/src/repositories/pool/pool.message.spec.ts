@@ -12,6 +12,8 @@ jest.mock("@constants/environment.constant", () => ({
   WRAPPED_GNOT_PACKAGE_PATH: "wugnot",
 }));
 
+import { isTransactionCallMessage } from "@common/clients/wallet-client/transaction-messages/common";
+import { makeExpectedApproveRunMessage } from "@common/clients/wallet-client/transaction-messages/run.test-fixtures";
 import {
   makeCreateExternalIncentiveMessageWithApproves,
   makeCreatePoolMessageWithApproves,
@@ -52,24 +54,24 @@ describe("pool.message.ts", () => {
       fetchAllowance,
     );
 
-    expect(messages[0]).toMatchObject({
-      caller,
-      pkg_path: "common_path",
-      func: "Approve",
-      args: ["tokenA_path", "pool_address", "1250000"],
-    });
-    expect(messages[1]).toMatchObject({
-      caller,
-      pkg_path: "common_path",
-      func: "Approve",
-      args: ["tokenB_path", "pool_address", "3000000"],
-    });
-    expect(messages[2]).toMatchObject({
+    expect(messages[0]).toEqual(
+      makeExpectedApproveRunMessage({
+        caller,
+        approves: [
+          { tokenPath: "tokenA_path", spenderAddress: "pool_address", amount: "1250000" },
+          { tokenPath: "tokenB_path", spenderAddress: "pool_address", amount: "3000000" },
+        ],
+      }),
+    );
+
+    const mintMessage = messages.filter(isTransactionCallMessage).find(message => message.func === "Mint");
+
+    expect(mintMessage).toMatchObject({
       caller,
       pkg_path: "position_path",
       func: "Mint",
     });
-    expect(messages[2].args?.slice(0, 7)).toEqual([
+    expect(mintMessage?.args?.slice(0, 7)).toEqual([
       "tokenA_path",
       "tokenB_path",
       "3000",
@@ -99,8 +101,12 @@ describe("pool.message.ts", () => {
       fetchAllowance,
     );
 
-    const orderedArgs = orderedMessages.find(message => message.func === "CreatePool")?.args;
-    const reversedArgs = reversedMessages.find(message => message.func === "CreatePool")?.args;
+    const orderedArgs = orderedMessages
+      .filter(isTransactionCallMessage)
+      .find(message => message.func === "CreatePool")?.args;
+    const reversedArgs = reversedMessages
+      .filter(isTransactionCallMessage)
+      .find(message => message.func === "CreatePool")?.args;
 
     expect(orderedArgs?.slice(0, 3)).toEqual(["tokenA_path", "tokenB_path", "3000"]);
     expect(reversedArgs).toEqual(orderedArgs);
@@ -126,7 +132,7 @@ describe("pool.message.ts", () => {
       fetchAllowance,
     );
 
-    const mintMessage = messages.find(message => message.func === "Mint");
+    const mintMessage = messages.filter(isTransactionCallMessage).find(message => message.func === "Mint");
 
     expect(mintMessage?.args?.slice(0, 9)).toEqual([
       "tokenA_path",
@@ -158,12 +164,12 @@ describe("pool.message.ts", () => {
       fetchAllowance,
     );
 
-    expect(messages[0]).toMatchObject({
-      caller,
-      pkg_path: "common_path",
-      func: "Approve",
-      args: ["gns_token_path", "staker_address", "1750000000"],
-    });
+    expect(messages[0]).toEqual(
+      makeExpectedApproveRunMessage({
+        caller,
+        approves: [{ tokenPath: "gns_token_path", spenderAddress: "staker_address", amount: "1750000000" }],
+      }),
+    );
     expect(messages[1]).toMatchObject({
       caller,
       pkg_path: "staker_path",
