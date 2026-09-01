@@ -97,6 +97,9 @@ function matchStringValues(str: string): string[] {
 }
 
 function parseABCIValue(str: string): string {
-  const regexp = /\s.*$/;
-  return str.replace(regexp, "").slice(1);
+  const value = str.trim();
+  const valueWithoutParentheses = value.startsWith("(") && value.endsWith(")") ? value.slice(1, -1) : value;
+  const typeSeparatorIndex = valueWithoutParentheses.lastIndexOf(" ");
+
+  return typeSeparatorIndex === -1 ? valueWithoutParentheses : valueWithoutParentheses.slice(0, typeSeparatorIndex);
 }

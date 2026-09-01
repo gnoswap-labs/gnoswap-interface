@@ -21,12 +21,12 @@ function makeDrySwapResponse(abciResponse: string): DrySwapResponse {
     return { available: false, inputAmount: 0, outputAmount: 0 };
   }
 
-  const [inputAmount, outputAmount, available] = drySwapResponse;
+  const [inputAmount, outputAmount, error] = drySwapResponse;
 
   return {
     inputAmount: BigNumber(inputAmount).toNumber(),
     outputAmount: BigNumber(outputAmount).toNumber(),
-    available: available === "true",
+    available: error === "undefined",
   };
 }
 
