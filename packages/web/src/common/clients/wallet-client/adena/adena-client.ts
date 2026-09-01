@@ -8,6 +8,7 @@ import {
   SendTransactionResponse,
   WalletResponse,
   isContractMessage,
+  isRunMessage,
 } from "../protocols";
 import { AddNetworkRequestParam, AddNetworkResponse, SwitchNetworkResponse } from "../protocols/wallet-network";
 import { WalletClient } from "../wallet-client";
@@ -82,6 +83,12 @@ export class AdenaClient implements WalletClient {
         if (isContractMessage(message)) {
           return {
             type: "/vm.m_call",
+            value: message,
+          };
+        }
+        if (isRunMessage(message)) {
+          return {
+            type: "/vm.m_run",
             value: message,
           };
         }

@@ -7,6 +7,7 @@ import {
   SocialTwitterConfigure,
   WalletResponseExecuteType,
   makeMsgCallMessage,
+  makeMsgRunMessage,
   makeMsgSendMessage,
   TransactionBuilder,
 } from "@adena-wallet/sdk";
@@ -28,6 +29,7 @@ import {
   SwitchNetworkResponse,
   WalletResponse,
   isContractMessage,
+  isRunMessage,
 } from "../protocols";
 import { WalletClient } from "../wallet-client";
 import { getSocialWalletConfig } from "./config";
@@ -210,6 +212,12 @@ export class SocialWalletClient implements WalletClient {
           ...message,
           max_deposit: "",
           args: message.args?.map(arg => `${arg}`) || [],
+        });
+      }
+      if (isRunMessage(message)) {
+        return makeMsgRunMessage({
+          ...message,
+          max_deposit: "",
         });
       }
       return makeMsgSendMessage(message);

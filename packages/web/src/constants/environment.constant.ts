@@ -37,6 +37,10 @@ export const PACKAGE_NFT_PATH = process.env.NEXT_PUBLIC_PACKAGE_NFT_PATH || "";
 
 export const PACKAGE_COMMON_PATH = process.env.NEXT_PUBLIC_PACKAGE_COMMON_PATH || "gno.land/r/gnoswap/common";
 
+/** GRC20 registry realm used by `MsgRun` messages to move token balances. */
+export const PACKAGE_GRC20_REGISTRY_PATH =
+  process.env.NEXT_PUBLIC_PACKAGE_GRC20_REGISTRY_PATH || "gno.land/r/demo/defi/grc20reg";
+
 export const PACKAGE_GOVERNANCE_PATH = process.env.NEXT_PUBLIC_PACKAGE_GOVERNANCE_PATH || "";
 
 export const PACKAGE_GOVERNANCE_STAKER_PATH = process.env.NEXT_PUBLIC_PACKAGE_GOVERNANCE_STAKER_PATH || "";

@@ -1,6 +1,5 @@
-import { PACKAGE_COMMON_PATH } from "@constants/environment.constant";
-import { TransactionMessage } from "../protocols";
-import { TransactionBankMessage, makeTransactionMessage } from "./common";
+import { TransactionBankMessage } from "./common";
+import { makeGRC20TransferRunMessage, TransactionRunMessage } from "./run";
 
 export function makeTransferNativeTokenMessage(
   amount: string,
@@ -20,12 +19,11 @@ export function makeTransferGRC20TokenMessage(
   amount: string,
   fromAddress: string,
   toAddress: string,
-): TransactionMessage {
-  return makeTransactionMessage({
-    packagePath: PACKAGE_COMMON_PATH,
-    send: "",
-    func: "Transfer",
-    args: [tokenPath, toAddress, amount],
+): TransactionRunMessage {
+  return makeGRC20TransferRunMessage({
+    tokenPath,
+    toAddress,
+    amount,
     caller: fromAddress,
   });
 }

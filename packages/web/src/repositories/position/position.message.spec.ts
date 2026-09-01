@@ -1,4 +1,7 @@
-import type { TransactionMessage } from "@common/clients/wallet-client/transaction-messages/common";
+import {
+  isTransactionRunMessage,
+  type TransactionMessage,
+} from "@common/clients/wallet-client/transaction-messages/common";
 import type { RewardType } from "@constants/option.constant";
 import type { PoolPositionModel } from "@models/position/pool-position-model";
 import type { PositionModel } from "@models/position/position-model";
@@ -7,7 +10,7 @@ import type { TokenModel } from "@models/token/token-model";
 import BigNumber from "bignumber.js";
 
 jest.mock("@constants/environment.constant", () => ({
-  PACKAGE_COMMON_PATH: "common_path",
+  PACKAGE_GRC20_REGISTRY_PATH: "grc20reg_path",
   // GNOT wrapper
   WRAPPED_GNOT_PATH: "wugnot",
   WRAPPED_GNOT_PACKAGE_PATH: "wugnot",
@@ -26,6 +29,7 @@ jest.mock("@constants/environment.constant", () => ({
   XGNS_TOKEN_PATH: "xgns_token_path",
 }));
 
+import { makeExpectedApproveRunMessage } from "@common/clients/wallet-client/transaction-messages/run.test-fixtures";
 import {
   makeClaimAllMessageWithApproves,
   makeClaimMessageWithApproves,
@@ -108,9 +112,9 @@ const createPosition = (lpTokenId: string, rewards: RewardModel[]): PositionMode
 
 const createPoolPosition = (lpTokenId: string, rewards: RewardModel[]): PoolPositionModel => {
   return {
-    ...((createPosition(lpTokenId, rewards) as unknown) as PositionModel),
+    ...(createPosition(lpTokenId, rewards) as unknown as PositionModel),
     feeTier: "NONE",
-    pool: ({} as unknown) as PoolPositionModel["pool"],
+    pool: {} as unknown as PoolPositionModel["pool"],
   };
 };
 
@@ -126,17 +130,27 @@ const splitMessagesByApproveReset = (
   };
 };
 
-const toResetApproveMessage = (message: TransactionMessage): TransactionMessage => {
-  const tokenPath = message.args?.[0];
-  const targetAddress = message.args?.[1];
+// Approves are MsgRun messages, so the matching reset is the same ephemeral
+// package with the approved amount rewritten to 0.
+const APPROVE_AMOUNT_PATTERN = /, \d+\)$/gm;
 
-  if (message.func !== "Approve" || !tokenPath || !targetAddress) {
-    throw new Error("Approve message must include token and target addresses");
+const toResetApproveMessage = (message: TransactionMessage): TransactionMessage => {
+  if (!isTransactionRunMessage(message)) {
+    throw new Error("Approve message must be a run message");
+  }
+
+  const [file] = message.package.files;
+
+  if (!file.body.match(APPROVE_AMOUNT_PATTERN)) {
+    throw new Error("Approve message must include an approved amount");
   }
 
   return {
     ...message,
-    args: [tokenPath, targetAddress, "0"],
+    package: {
+      ...message.package,
+      files: [{ ...file, body: file.body.replace(APPROVE_AMOUNT_PATTERN, ", 0)") }],
+    },
   };
 };
 
@@ -410,29 +424,17 @@ describe("position.message.ts", () => {
         fetchAllowance,
       );
 
-      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 2);
+      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 1);
 
-      expect(approveMessages).toHaveLength(2);
-      expect(approveMessages).toEqual(
-        expect.arrayContaining([
-          {
-            caller,
-            send: "",
-            pkg_path: "common_path",
-            func: "Approve",
-            args: ["wugnot", "pool_address", "2500"],
-            gasFee: undefined,
-          },
-          {
-            caller,
-            send: "",
-            pkg_path: "common_path",
-            func: "Approve",
-            args: ["tokenB_path", "pool_address", "3000000"],
-            gasFee: undefined,
-          },
-        ]),
-      );
+      expect(approveMessages).toEqual([
+        makeExpectedApproveRunMessage({
+          caller,
+          approves: [
+            { tokenPath: "wugnot", spenderAddress: "pool_address", amount: "2500" },
+            { tokenPath: "tokenB_path", spenderAddress: "pool_address", amount: "3000000" },
+          ],
+        }),
+      ]);
 
       expect(txMessages).toEqual([
         {
@@ -526,29 +528,17 @@ describe("position.message.ts", () => {
         fetchAllowance,
       );
 
-      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 2);
+      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 1);
 
-      expect(approveMessages).toHaveLength(2);
-      expect(approveMessages).toEqual(
-        expect.arrayContaining([
-          {
-            caller,
-            send: "",
-            pkg_path: "common_path",
-            func: "Approve",
-            args: ["wugnot", "pool_address", "2500"],
-            gasFee: undefined,
-          },
-          {
-            caller,
-            send: "",
-            pkg_path: "common_path",
-            func: "Approve",
-            args: ["tokenB_path", "pool_address", "3000000"],
-            gasFee: undefined,
-          },
-        ]),
-      );
+      expect(approveMessages).toEqual([
+        makeExpectedApproveRunMessage({
+          caller,
+          approves: [
+            { tokenPath: "wugnot", spenderAddress: "pool_address", amount: "2500" },
+            { tokenPath: "tokenB_path", spenderAddress: "pool_address", amount: "3000000" },
+          ],
+        }),
+      ]);
 
       expect(txMessages).toEqual([
         {

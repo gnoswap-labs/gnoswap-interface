@@ -1,8 +1,9 @@
 import { TransactionMessage } from "@common/clients/wallet-client/protocols";
-import { makeTransactionMessage } from "@common/clients/wallet-client/transaction-messages";
-import { makeTransferNativeTokenMessage } from "@common/clients/wallet-client/transaction-messages/token";
+import {
+  makeTransferGRC20TokenMessage,
+  makeTransferNativeTokenMessage,
+} from "@common/clients/wallet-client/transaction-messages/token";
 import { GNOT_UNIT_DENOM } from "@common/values/token-constant";
-import { PACKAGE_COMMON_PATH } from "@constants/environment.constant";
 import { TokenModel } from "@models/token/token-model";
 
 export function makeTransferGNOTTokenMessages({
@@ -30,13 +31,7 @@ export function makeTransferGRC20TokenMessages({
   fromAddress: string;
   toAddress: string;
 }): TransactionMessage[] {
-  const transferGRC20TokenMessage = makeTransactionMessage({
-    packagePath: PACKAGE_COMMON_PATH,
-    send: "",
-    func: "Transfer",
-    args: [token.path, toAddress, tokenAmount],
-    caller: fromAddress,
-  });
+  const transferGRC20TokenMessage = makeTransferGRC20TokenMessage(token.path, tokenAmount, fromAddress, toAddress);
 
   return [transferGRC20TokenMessage];
 }

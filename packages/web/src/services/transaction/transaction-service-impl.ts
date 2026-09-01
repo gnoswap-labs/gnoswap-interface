@@ -10,8 +10,8 @@ import { EncodeTxSignature } from "./types";
 
 import { GasToken } from "@common/values/token-constant";
 import { mappedDocumentMessagesWithCaller } from "@utils/messages.utils";
-import { isContractMessage } from "@common/clients/wallet-client/protocols";
-import { makeMsgCallMessage, makeMsgSendMessage } from "@adena-wallet/sdk";
+import { isContractMessage, isRunMessage } from "@common/clients/wallet-client/protocols";
+import { makeMsgCallMessage, makeMsgRunMessage, makeMsgSendMessage } from "@adena-wallet/sdk";
 
 export class TransactionServiceImpl implements TransactionService {
   private rpcProvider: GnoProvider | null;
@@ -44,6 +44,12 @@ export class TransactionServiceImpl implements TransactionService {
           ...message,
           max_deposit: "0ugnot",
           args: message.args?.map(arg => `${arg}`) || [],
+        });
+      }
+      if (isRunMessage(message)) {
+        return makeMsgRunMessage({
+          ...message,
+          max_deposit: "",
         });
       }
       return makeMsgSendMessage(message);

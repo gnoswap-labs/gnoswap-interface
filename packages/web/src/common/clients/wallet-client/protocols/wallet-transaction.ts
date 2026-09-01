@@ -25,7 +25,10 @@ export interface SendTransactionRequestParam {
 /**
  * Transaction Request Message
  */
-export type TransactionMessage = TransactionMessageOfBankMsgSend | TransactionMessageOfContract;
+export type TransactionMessage =
+  | TransactionMessageOfBankMsgSend
+  | TransactionMessageOfContract
+  | TransactionMessageOfRun;
 
 export interface TransactionMessageOfBankMsgSend {
   from_address: string;
@@ -39,6 +42,32 @@ export interface TransactionMessageOfContract {
   pkg_path: string;
   func: string;
   args: (string | number | boolean)[] | null;
+}
+
+/**
+ * Single gno source file of an ephemeral `MsgRun` package.
+ */
+export interface TransactionMessageOfRunFile {
+  name: string;
+  body: string;
+}
+
+/**
+ * Ephemeral package executed by `MsgRun`.
+ *
+ * The node requires the package name to be "main" and auto-assigns the reserved
+ * run path (`gno.land/e/<caller>/run`) when the path is left empty.
+ */
+export interface TransactionMessageOfRunPackage {
+  name: string;
+  path: string;
+  files: TransactionMessageOfRunFile[];
+}
+
+export interface TransactionMessageOfRun {
+  caller: string;
+  send: string;
+  package: TransactionMessageOfRunPackage;
 }
 
 /**
@@ -58,8 +87,10 @@ export interface SendTransactionErrorResponse {
   message: string;
 }
 
-export function isContractMessage(
-  message: TransactionMessageOfBankMsgSend | TransactionMessageOfContract,
-): message is TransactionMessageOfContract {
+export function isContractMessage(message: TransactionMessage): message is TransactionMessageOfContract {
   return "func" in message;
+}
+
+export function isRunMessage(message: TransactionMessage): message is TransactionMessageOfRun {
+  return "package" in message;
 }

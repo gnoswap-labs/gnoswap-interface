@@ -42,7 +42,7 @@ interface SendTransactionRequestParam {
 /**
  * Transaction Request Message
  */
-type TransactionMessage = TransactionMessageOfBankMsgSend | TransactionMessageOfContract;
+type TransactionMessage = TransactionMessageOfBankMsgSend | TransactionMessageOfContract | TransactionMessageOfRun;
 
 interface TransactionMessageForm<T> {
   type: string;
@@ -61,6 +61,16 @@ interface TransactionMessageOfContract {
   pkg_path: string;
   func: string;
   args: (string | number | boolean)[] | null;
+}
+
+interface TransactionMessageOfRun {
+  caller: string;
+  send: string;
+  package: {
+    name: string;
+    path: string;
+    files: { name: string; body: string }[];
+  };
 }
 
 /**
