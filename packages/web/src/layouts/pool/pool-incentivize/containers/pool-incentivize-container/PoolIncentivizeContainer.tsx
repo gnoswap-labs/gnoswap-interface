@@ -17,6 +17,7 @@ import { TokenModel } from "@models/token/token-model";
 import { useGetIncentiveCreationDeposit, useGetPoolList } from "@query/pools";
 import PoolDetailData from "@repositories/pool/mock/pool-detail.json";
 import { EarnState } from "@states/index";
+import { getMinimumIncentiveStartDate, isIncentiveStartDateValid } from "@states/earn";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 
 import PoolIncentivize from "../../components/pool-incentivize/PoolIncentivize";
@@ -106,10 +107,16 @@ const PoolIncentivizeContainer: React.FC = () => {
   const handleConfirmIncentivize = useCallback(() => {
     if (!connected) {
       openConnectWalletModal();
-    } else {
-      openModal();
+      return;
     }
-  }, [connected, openConnectWalletModal, openModal]);
+
+    if (!isIncentiveStartDateValid(startDate)) {
+      setStartDate(getMinimumIncentiveStartDate());
+      return;
+    }
+
+    openModal();
+  }, [connected, openConnectWalletModal, openModal, setStartDate, startDate]);
 
   const btnStatus: { text: string; disabled: boolean } = useMemo(() => {
     const depositDisplayAmount = makeDisplayTokenAmount(GNS_TOKEN, depositGnsAmount) || 0;
