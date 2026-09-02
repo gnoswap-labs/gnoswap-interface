@@ -54,7 +54,7 @@ const SubMenuButton: React.FC<SubMenuButtonProps> = ({
     if (element) document.addEventListener("mousemove", mouseEventHandler);
 
     return () => {
-      if (element) document.removeEventListener("mouseover", mouseEventHandler);
+      if (element) document.removeEventListener("mousemove", mouseEventHandler);
     };
   }, []);
 
