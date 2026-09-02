@@ -8,6 +8,5 @@ export interface NotificationRepository {
   getAccountOnchainActivity: (req: AccountActivityRequest) => Promise<ActivityData[]>;
 
   getGroupedNotification: (req: AccountActivityRequest) => Promise<TransactionGroupsType[]>;
-  appendRemovedTx: (txs: string[]) => void;
-  clearNotification: (req: DeleteAccountActivityRequest) => void;
+  clearNotification: (req: DeleteAccountActivityRequest) => Promise<void>;
 }
