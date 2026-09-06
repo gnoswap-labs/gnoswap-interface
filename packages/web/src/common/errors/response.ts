@@ -1,4 +1,4 @@
-export interface ErrorResponse<T = any> {
+export interface ErrorResponse<T = unknown> {
   isError: boolean;
 
   status: number;
