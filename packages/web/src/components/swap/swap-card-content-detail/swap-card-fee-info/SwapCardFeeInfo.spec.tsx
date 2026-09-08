@@ -1,6 +1,7 @@
 import { PriceImpactStatus, SwapRateAction } from "@hooks/swap/data/use-swap-handler";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
+import { TokenModel } from "@models/token/token-model";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
@@ -14,40 +15,41 @@ jest.mock("@adena-wallet/sdk", () => ({
   TransactionBuilder: jest.fn(),
 }));
 
+const tokenA: TokenModel = {
+  type: "GRC20",
+  chainId: "dev.gnoswap",
+  createdAt: "2023-12-08T03:57:43Z",
+  name: "Foo",
+  path: "gno.land/r/foo",
+  decimals: 4,
+  symbol: "FOO",
+  displaySymbol: "FOO",
+  logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+  priceID: "gno.land/r/foo",
+  address: "",
+};
+
+const tokenB: TokenModel = {
+  ...tokenA,
+  name: "Bar",
+  path: "gno.land/r/bar",
+  decimals: 6,
+  symbol: "BAR",
+  displaySymbol: "BAR",
+  logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
+  priceID: "gno.land/r/bar",
+};
+
 const swapSummaryInfo: SwapSummaryInfo = {
-  tokenA: {
-    type: "GRC20",
-    chainId: "dev.gnoswap",
-    createdAt: "2023-12-08T03:57:43Z",
-    name: "Foo",
-    path: "gno.land/r/foo",
-    decimals: 4,
-    symbol: "FOO",
-    displaySymbol: "FOO",
-    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-    priceID: "gno.land/r/foo",
-    address: "",
-  },
-  tokenB: {
-    type: "GRC20",
-    chainId: "dev.gnoswap",
-    createdAt: "2023-12-08T03:57:43Z",
-    name: "Foo",
-    path: "gno.land/r/foo",
-    decimals: 4,
-    symbol: "FOO",
-    displaySymbol: "FOO",
-    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-    priceID: "gno.land/r/foo",
-    address: "",
-  },
+  tokenA,
+  tokenB,
   swapDirection: "EXACT_IN",
   swapRate: 1.14,
   swapRateUSD: 1.14,
   priceImpact: 0.3,
   guaranteedAmount: {
     amount: 45124,
-    currency: "GNOT",
+    currency: tokenB.displaySymbol,
   },
   gasFee: {
     amount: 0.000001,
@@ -63,46 +65,22 @@ const swapSummaryInfo: SwapSummaryInfo = {
 
 const swapTokenInfo: SwapTokenInfo = {
   tokenA: {
-    token: {
-      chainId: "dev",
-      createdAt: "2023-10-17T05:58:00+09:00",
-      name: "Foo",
-      address: "g1evezrh92xaucffmtgsaa3rvmz5s8kedffsg469",
-      path: "gno.land/r/foo",
-      decimals: 4,
-      symbol: "FOO",
-      displaySymbol: "FOO",
-      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-      type: "GRC20",
-      priceID: "gno.land/r/foo",
-    },
+    token: tokenA,
     amount: "0",
     balance: "0",
     usd: 0,
     usdStr: "0",
     priceGrade: "NONE",
-    decimals: 4,
+    decimals: tokenA.decimals,
   },
   tokenB: {
-    token: {
-      chainId: "dev",
-      createdAt: "2023-10-17T05:58:00+09:00",
-      name: "Foo",
-      address: "g1evezrh92xaucffmtgsaa3rvmz5s8kedffsg469",
-      path: "gno.land/r/foo",
-      decimals: 4,
-      symbol: "FOO",
-      displaySymbol: "FOO",
-      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-      type: "GRC20",
-      priceID: "gno.land/r/foo",
-    },
+    token: tokenB,
     amount: "0",
     balance: "0",
     usd: 0,
     usdStr: "0",
     priceGrade: "NONE",
-    decimals: 4,
+    decimals: tokenB.decimals,
   },
   direction: "EXACT_IN",
   slippage: 0,
@@ -141,8 +119,8 @@ describe("formatRouterFeeStr", () => {
   it.each([
     [100, "100", 4, "$0.15"],
     [1, "100", 4, "<$0.01"],
-    [0, "100", 4, "0.15 FOO"],
-    [0, "1000", 0, "1.5 FOO"],
+    [0, "100", 4, "0.15 BAR"],
+    [0, "1000", 0, "1.5 BAR"],
     [0, "", 4, swapSummaryInfo.protocolFee],
   ])("formats usd=%s amount=%s decimals=%s", (usd, amount, decimals, expected) => {
     const tokenB = swapTokenInfo.tokenB;
@@ -150,7 +128,7 @@ describe("formatRouterFeeStr", () => {
     expect(
       formatRouterFeeStr(swapSummaryInfo, {
         ...swapTokenInfo,
-        tokenB: { ...tokenB, usd, amount, decimals },
+        tokenB: { ...tokenB, token: { ...tokenB.token, decimals }, usd, amount, decimals },
       }),
     ).toBe(expected);
   });
