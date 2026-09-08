@@ -5,6 +5,7 @@ import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapTheme
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import SwapCardFeeInfo from "./SwapCardFeeInfo";
+import { formatRouterFeeStr } from "@utils/swap-utils";
 
 // Mock @adena-wallet/sdk
 jest.mock("@adena-wallet/sdk", () => ({
@@ -62,41 +63,47 @@ const swapSummaryInfo: SwapSummaryInfo = {
 
 const swapTokenInfo: SwapTokenInfo = {
   tokenA: {
-    chainId: "dev",
-    createdAt: "2023-10-17T05:58:00+09:00",
-    name: "Foo",
-    address: "g1evezrh92xaucffmtgsaa3rvmz5s8kedffsg469",
-    path: "gno.land/r/foo",
+    token: {
+      chainId: "dev",
+      createdAt: "2023-10-17T05:58:00+09:00",
+      name: "Foo",
+      address: "g1evezrh92xaucffmtgsaa3rvmz5s8kedffsg469",
+      path: "gno.land/r/foo",
+      decimals: 4,
+      symbol: "FOO",
+      displaySymbol: "FOO",
+      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+      type: "GRC20",
+      priceID: "gno.land/r/foo",
+    },
+    amount: "0",
+    balance: "0",
+    usd: 0,
+    usdStr: "0",
+    priceGrade: "NONE",
     decimals: 4,
-    symbol: "FOO",
-    displaySymbol: "FOO",
-    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-    type: "GRC20",
-    priceID: "gno.land/r/foo",
   },
-  tokenAAmount: "0",
-  tokenABalance: "0",
-  tokenAUSD: 0,
-  tokenAUSDStr: "0",
-  tokenAPriceGrade: "NONE",
-  tokenBPriceGrade: "NONE",
   tokenB: {
-    chainId: "dev",
-    createdAt: "2023-10-17T05:58:00+09:00",
-    name: "Foo",
-    address: "g1evezrh92xaucffmtgsaa3rvmz5s8kedffsg469",
-    path: "gno.land/r/foo",
+    token: {
+      chainId: "dev",
+      createdAt: "2023-10-17T05:58:00+09:00",
+      name: "Foo",
+      address: "g1evezrh92xaucffmtgsaa3rvmz5s8kedffsg469",
+      path: "gno.land/r/foo",
+      decimals: 4,
+      symbol: "FOO",
+      displaySymbol: "FOO",
+      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+      type: "GRC20",
+      priceID: "gno.land/r/foo",
+    },
+    amount: "0",
+    balance: "0",
+    usd: 0,
+    usdStr: "0",
+    priceGrade: "NONE",
     decimals: 4,
-    symbol: "FOO",
-    displaySymbol: "FOO",
-    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-    type: "GRC20",
-    priceID: "gno.land/r/foo",
   },
-  tokenBAmount: "0",
-  tokenBBalance: "0",
-  tokenBUSD: 0,
-  tokenBUSDStr: "0",
   direction: "EXACT_IN",
   slippage: 0,
 };
@@ -122,5 +129,29 @@ describe("SwapCardFeeInfo Component", () => {
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );
+  });
+});
+
+describe("formatRouterFeeStr", () => {
+  it("falls back to the protocol fee when the output side is absent", () => {
+    expect(formatRouterFeeStr(swapSummaryInfo, { ...swapTokenInfo, tokenB: null })).toBe(swapSummaryInfo.protocolFee);
+    expect(formatRouterFeeStr(swapSummaryInfo, null)).toBe("-");
+  });
+
+  it.each([
+    [100, "100", 4, "$0.15"],
+    [1, "100", 4, "<$0.01"],
+    [0, "100", 4, "0.15 FOO"],
+    [0, "1000", 0, "1.5 FOO"],
+    [0, "", 4, swapSummaryInfo.protocolFee],
+  ])("formats usd=%s amount=%s decimals=%s", (usd, amount, decimals, expected) => {
+    const tokenB = swapTokenInfo.tokenB;
+    if (!tokenB) throw new Error("Expected a selected output token in the fixture");
+    expect(
+      formatRouterFeeStr(swapSummaryInfo, {
+        ...swapTokenInfo,
+        tokenB: { ...tokenB, usd, amount, decimals },
+      }),
+    ).toBe(expected);
   });
 });

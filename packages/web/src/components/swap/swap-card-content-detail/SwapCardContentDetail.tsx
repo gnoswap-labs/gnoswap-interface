@@ -76,17 +76,17 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
 
   const unitSwapPrice = useMemo(() => {
     const { swapRateAction, swapRate } = swapSummaryInfo;
-    const { tokenAUSD, tokenBUSD, tokenAAmount, tokenBAmount } = swapTokenInfo;
+    const { tokenA, tokenB } = swapTokenInfo;
     if (swapRateAction === SwapRateAction.ATOB) {
-      if (!tokenBUSD || tokenBUSD === 0) return "-";
-      return convertToKMBWithPrefix(floorNumber((tokenBUSD / Number(tokenBAmount)) * swapRate).toFixed(3), {
+      if (!tokenB?.usd) return "-";
+      return convertToKMBWithPrefix(floorNumber((tokenB.usd / Number(tokenB.amount)) * swapRate).toFixed(3), {
         isIgnoreKFormat: true,
         approx: true,
         usd: true,
       });
     } else {
-      if (!tokenAUSD || tokenAUSD === 0) return "-";
-      return convertToKMBWithPrefix(floorNumber((tokenAUSD / Number(tokenAAmount)) * swapRate).toFixed(3), {
+      if (!tokenA?.usd) return "-";
+      return convertToKMBWithPrefix(floorNumber((tokenA.usd / Number(tokenA.amount)) * swapRate).toFixed(3), {
         isIgnoreKFormat: true,
         approx: true,
         usd: true,

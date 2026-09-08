@@ -287,6 +287,9 @@ export function getDepositAmountsByLiquidity(
   };
 }
 
+/** 
+ * Uses output-token units when usd is zero, which also represents an unavailable valuation.
+ */
 export function formatRouterFeeStr(swapSummaryInfo: SwapSummaryInfo | null, swapTokenInfo: SwapTokenInfo | null) {
   if (!swapSummaryInfo || !swapTokenInfo) return "-";
 
@@ -294,25 +297,20 @@ export function formatRouterFeeStr(swapSummaryInfo: SwapSummaryInfo | null, swap
     return swapSummaryInfo.protocolFee;
   }
 
-  const tokenAmount = swapTokenInfo.tokenBAmount;
-  const tokenUSD = swapTokenInfo.tokenBUSD;
-  const tokenSymbol = swapTokenInfo.tokenB?.displaySymbol;
-  const tokenDecimals = swapTokenInfo.tokenBDecimals;
-
-  if (!tokenAmount) {
+  const side = swapTokenInfo.tokenB;
+  if (!side || !side.amount) {
     return swapSummaryInfo.protocolFee;
   }
 
   const feeRate = swapSummaryInfo.routerFee / 100;
 
-  if (tokenUSD != null) {
-    const feeAmountUSD = BigNumber(tokenUSD).multipliedBy(feeRate).toNumber();
+  if (side.usd > 0) {
+    const feeAmountUSD = BigNumber(side.usd).multipliedBy(feeRate).toNumber();
     return feeAmountUSD < 0.01 ? "<$0.01" : `$${toNumberFormat(feeAmountUSD, 2)}`;
   }
 
-  const feeAmount = BigNumber(tokenAmount).multipliedBy(feeRate).toNumber();
-  const decimals = tokenDecimals || 6;
-  return `${toNumberFormat(feeAmount, decimals)} ${tokenSymbol || ""}`;
+  const feeAmount = BigNumber(side.amount).multipliedBy(feeRate).toNumber();
+  return `${toNumberFormat(feeAmount, side.decimals)} ${side.token.displaySymbol}`;
 }
 
 export type BroadcastMessageData = {

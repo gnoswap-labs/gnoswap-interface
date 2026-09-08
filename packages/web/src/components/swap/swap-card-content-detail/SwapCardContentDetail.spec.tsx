@@ -69,22 +69,26 @@ const swapSummaryInfo: SwapSummaryInfo = {
 };
 
 const swapTokenInfo: SwapTokenInfo = {
+  tokenA: {
+    token: tokenA,
+    amount: "1",
+    balance: "10",
+    usd: 1,
+    usdStr: "1",
+    priceGrade: "NONE",
+    decimals: 6,
+  },
+  tokenB: {
+    token: tokenB,
+    amount: "2",
+    balance: "10",
+    usd: 0.5,
+    usdStr: "0.5",
+    priceGrade: "NONE",
+    decimals: 6,
+  },
   direction: "EXACT_IN",
   slippage: 0.5,
-  tokenA: tokenA,
-  tokenAAmount: "1",
-  tokenABalance: "10",
-  tokenAUSD: 1,
-  tokenAUSDStr: "1",
-  tokenADecimals: 6,
-  tokenB: tokenB,
-  tokenBAmount: "2",
-  tokenBBalance: "10",
-  tokenBUSD: 0.5,
-  tokenBUSDStr: "0.5",
-  tokenBDecimals: 6,
-  tokenAPriceGrade: "NONE",
-  tokenBPriceGrade: "NONE",
 };
 
 describe("SwapCardContentDetail Component", () => {

@@ -57,7 +57,13 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
       guaranteedTypeStr: t(swapDirectionToGuaranteedType(swapDirection)),
       guaranteedStr: `${toNumberFormat(amount || 0, guaranteedToken.decimals)} ${currency}`,
     };
-  }, [swapSummaryInfo.swapDirection, swapSummaryInfo.guaranteedAmount, swapSummaryInfo.tokenA, swapSummaryInfo.tokenB, t]);
+  }, [
+    swapSummaryInfo.swapDirection,
+    swapSummaryInfo.guaranteedAmount,
+    swapSummaryInfo.tokenA,
+    swapSummaryInfo.tokenB,
+    t,
+  ]);
 
   const { gasFeeStr, gasFeeUSDStr } = useMemo(() => {
     const { amount, currency } = swapSummaryInfo.gasFee;
@@ -96,19 +102,7 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
 
   const routerFeeStr = useMemo(() => {
     return formatRouterFeeStr(swapSummaryInfo, swapTokenInfo);
-  }, [
-    swapSummaryInfo.routerFee,
-    swapSummaryInfo.protocolFee,
-    swapTokenInfo.direction,
-    swapTokenInfo.tokenAAmount,
-    swapTokenInfo.tokenBAmount,
-    swapTokenInfo.tokenAUSD,
-    swapTokenInfo.tokenBUSD,
-    swapTokenInfo.tokenA?.symbol,
-    swapTokenInfo.tokenB?.symbol,
-    swapTokenInfo.tokenADecimals,
-    swapTokenInfo.tokenBDecimals,
-  ]);
+  }, [swapSummaryInfo, swapTokenInfo]);
 
   return (
     <FeeWrapper>

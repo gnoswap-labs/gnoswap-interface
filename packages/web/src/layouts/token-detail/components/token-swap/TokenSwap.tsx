@@ -14,7 +14,7 @@ import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { TokenModel } from "@models/token/token-model";
-import { DataTokenInfo } from "@models/token/token-swap-model";
+import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
 
 import { CopyTooltip, wrapper } from "./TokenSwap.styles";
@@ -27,7 +27,6 @@ export interface TokenSwapProps {
   connectedWallet: boolean;
   copied: boolean;
   themeKey: "dark" | "light";
-  dataTokenInfo: DataTokenInfo;
   isLoading: boolean;
   isLoadingGasInfo: boolean;
   swapButtonText: string;
@@ -66,7 +65,6 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   handleSetting,
   switchNetwork,
   isSwitchNetwork,
-  dataTokenInfo,
   changeTokenA,
   changeTokenAAmount,
   changeTokenB,
@@ -84,13 +82,13 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   isRefetching,
 }) => {
   const { t } = useTranslation();
-  const tokenA = dataTokenInfo.tokenA;
-  const tokenB = dataTokenInfo.tokenB;
+  const tokenA = swapTokenInfo.tokenA?.token ?? null;
+  const tokenB = swapTokenInfo.tokenB?.token ?? null;
   const direction = swapSummaryInfo?.swapDirection;
 
   const { tokenA: balanceADisplay, tokenB: balanceBDisplay } = useTokenBalancesDisplay(
-    dataTokenInfo.tokenABalance,
-    dataTokenInfo.tokenBBalance,
+    swapTokenInfo.tokenA?.balance ?? "-",
+    swapTokenInfo.tokenB?.balance ?? "-",
     connectedWallet,
   );
 
@@ -119,24 +117,20 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   );
 
   const handleAutoFillTokenA = useCallback(() => {
-    if (connectedWallet) {
-      const formatValue = parseFloat(dataTokenInfo.tokenABalance.replace(/,/g, "")).toString();
+    if (connectedWallet && swapTokenInfo.tokenA) {
+      const formatValue = parseFloat(swapTokenInfo.tokenA.balance.replace(/,/g, "")).toString();
       changeTokenAAmount(formatValue);
     }
-  }, [changeTokenAAmount, connectedWallet, dataTokenInfo]);
+  }, [changeTokenAAmount, connectedWallet, swapTokenInfo]);
 
-  /**
-   * Ensure tokenABalance is a valid value (not empty (“-”) or zero)
-   * Note: Consider using includes when you have more than 3 comparisons
-   * return !(["-", "0", "undefined"].includes(swapTokenInfo.tokenABalance));
-   */
   const hasTokenABalance = useMemo(() => {
-    return swapTokenInfo.tokenABalance !== "-" && swapTokenInfo.tokenABalance !== "0";
-  }, [swapTokenInfo.tokenABalance]);
+    const side = swapTokenInfo.tokenA;
+    return !!side && side.balance !== "-" && side.balance !== "0";
+  }, [swapTokenInfo.tokenA]);
 
   const isShowInfoSection = useMemo(() => {
-    return (!!Number(dataTokenInfo.tokenAAmount) && !!Number(dataTokenInfo.tokenBAmount)) || isLoading;
-  }, [dataTokenInfo, isLoading]);
+    return (!!Number(swapTokenInfo.tokenA?.amount) && !!Number(swapTokenInfo.tokenB?.amount)) || isLoading;
+  }, [swapTokenInfo, isLoading]);
 
   const isLoadingTokenA = useMemo((): boolean => {
     return (isLoading && direction !== "EXACT_IN") || (isRefetching && direction === "EXACT_OUT");
@@ -147,11 +141,11 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   }, [isLoading, direction, isRefetching]);
 
   const { priceStyle: tokenAPriceStyle, shouldShowPriceWarning: tokenAShouldShowPriceWarning } = useTokenPriceInfo({
-    priceGradeType: swapTokenInfo.tokenAPriceGrade,
+    priceGradeType: swapTokenInfo.tokenA?.priceGrade ?? TOKEN_PRICE_GRADE_TYPE.NONE,
   });
 
   const { priceStyle: tokenBPriceStyle, shouldShowPriceWarning: tokenBShouldShowPriceWarning } = useTokenPriceInfo({
-    priceGradeType: swapTokenInfo.tokenBPriceGrade,
+    priceGradeType: swapTokenInfo.tokenB?.priceGrade ?? TOKEN_PRICE_GRADE_TYPE.NONE,
   });
 
   return (
@@ -183,7 +177,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
                 "text-opacity": isLoadingTokenA,
               })}
               aria-busy={isLoadingTokenA}
-              value={dataTokenInfo.tokenAAmount}
+              value={swapTokenInfo.tokenA?.amount ?? ""}
               onChange={onChangeTokenAAmount}
               placeholder="0"
               autoComplete={"off"}
@@ -199,8 +193,8 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               className={cx("price-text", tokenAPriceStyle.className, { "text-opacity": isLoadingTokenA })}
               aria-busy={isLoadingTokenA}
             >
-              {dataTokenInfo.tokenAUSDStr}
-              {tokenAShouldShowPriceWarning && dataTokenInfo.tokenAAmount && <PriceWarning type="PRICE" />}
+              {swapTokenInfo.tokenA?.usdStr ?? "-"}
+              {tokenAShouldShowPriceWarning && swapTokenInfo.tokenA?.amount && <PriceWarning type="PRICE" />}
             </span>
             <div className="balance-wrapper">
               {connectedWallet && <IconWallet />}
@@ -220,7 +214,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
             <input
               className={cx("amount-text", { "text-opacity": isLoadingTokenB })}
               aria-busy={isLoadingTokenB}
-              value={dataTokenInfo.tokenBAmount}
+              value={swapTokenInfo.tokenB?.amount ?? ""}
               onChange={onChangeTokenBAmount}
               placeholder="0"
               autoComplete={"off"}
@@ -236,8 +230,8 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               className={cx("price-text", tokenBPriceStyle.className, { "text-opacity": isLoadingTokenB })}
               aria-busy={isLoadingTokenB}
             >
-              {dataTokenInfo.tokenBUSDStr}
-              {tokenBShouldShowPriceWarning && dataTokenInfo.tokenBAmount && <PriceWarning type="PRICE" />}
+              {swapTokenInfo.tokenB?.usdStr ?? "-"}
+              {tokenBShouldShowPriceWarning && swapTokenInfo.tokenB?.amount && <PriceWarning type="PRICE" />}
             </span>
             <div className="balance-wrapper">
               {connectedWallet && <IconWallet />}

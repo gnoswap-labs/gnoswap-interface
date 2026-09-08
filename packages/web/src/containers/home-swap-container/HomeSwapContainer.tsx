@@ -97,24 +97,43 @@ const HomeSwapContainer: React.FC = () => {
       tokenPrices[checkGnotPath(tokenB?.path || "")]?.priceGradeType || TOKEN_PRICE_GRADE_TYPE.NONE;
 
     return {
-      tokenA,
-      tokenAAmount,
-      tokenABalance,
-      tokenAUSD,
-      tokenAUSDStr: formatPrice(tokenAUSD, { isKMB: false, approx: true }),
-      tokenAPriceGrade,
-      tokenB,
-      tokenBAmount,
-      tokenBBalance,
-      tokenBUSD,
-      tokenBUSDStr: formatPrice(tokenBUSD, { isKMB: false }),
-      tokenBPriceGrade,
+      tokenA: tokenA
+        ? {
+            token: tokenA,
+            amount: tokenAAmount,
+            balance: tokenABalance,
+            usd: tokenAUSD ?? 0,
+            usdStr: formatPrice(tokenAUSD, { isKMB: false, approx: true }),
+            priceGrade: tokenAPriceGrade,
+            decimals: tokenA.decimals,
+          }
+        : null,
+      tokenB: tokenB
+        ? {
+            token: tokenB,
+            amount: tokenBAmount,
+            balance: tokenBBalance,
+            usd: tokenBUSD ?? 0,
+            usdStr: formatPrice(tokenBUSD, { isKMB: false }),
+            priceGrade: tokenBPriceGrade,
+            decimals: tokenB.decimals,
+          }
+        : null,
       direction: "EXACT_IN",
       slippage,
-      tokenADecimals: tokenA?.decimals,
-      tokenBDecimals: tokenB?.decimals,
     };
-  }, [slippage, tokenA, tokenAAmount, tokenABalance, tokenAUSD, tokenB, tokenBAmount, tokenBBalance, tokenBUSD]);
+  }, [
+    slippage,
+    tokenA,
+    tokenAAmount,
+    tokenABalance,
+    tokenAUSD,
+    tokenB,
+    tokenBAmount,
+    tokenBBalance,
+    tokenBUSD,
+    tokenPrices,
+  ]);
 
   const swapNow = useCallback(() => {
     if (!tokenAAmount) return;
