@@ -203,13 +203,26 @@ export function isEndTickBy(tick: number, fee: string): boolean {
   return tick === maxTick || tick === minTick;
 }
 
-export function getDepositAmountsByAmountA(
-  currentPrice: number,
-  sqrtPriceX96: bigint,
-  minPrice: number,
-  maxPrice: number,
-  amount: bigint,
-) {
+export interface DepositAmountsParams {
+  currentPrice: number;
+  sqrtPriceX96: bigint;
+  minPrice: number;
+  maxPrice: number;
+  amount: bigint;
+}
+
+export interface DepositAmountsResult {
+  amountA: bigint | 0;
+  amountB: bigint | 0;
+}
+
+export function getDepositAmountsByAmountA({
+  currentPrice,
+  sqrtPriceX96,
+  minPrice,
+  maxPrice,
+  amount,
+}: DepositAmountsParams): DepositAmountsResult {
   if (maxPrice < currentPrice) {
     return {
       amountA: 0,
@@ -236,13 +249,13 @@ export function getDepositAmountsByAmountA(
   };
 }
 
-export function getDepositAmountsByAmountB(
-  currentPrice: number,
-  sqrtPriceX96: bigint,
-  minPrice: number,
-  maxPrice: number,
-  amount: bigint,
-) {
+export function getDepositAmountsByAmountB({
+  currentPrice,
+  sqrtPriceX96,
+  minPrice,
+  maxPrice,
+  amount,
+}: DepositAmountsParams): DepositAmountsResult {
   if (maxPrice < currentPrice) {
     return {
       amountA: 0,

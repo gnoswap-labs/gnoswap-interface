@@ -4,6 +4,8 @@ import { tickToSqrtPriceX96 } from "./math.utils";
 import {
   BroadcastMessageData,
   feeBoostRateByPrices,
+  getDepositAmountsByAmountA,
+  getDepositAmountsByAmountB,
   getSwappedTokenData,
   isEndTickBy,
   priceToBoundedTick,
@@ -12,6 +14,43 @@ import {
   SwapResponse,
   tickToPrice,
 } from "./swap-utils";
+
+describe("deposit amounts", () => {
+  const params = {
+    currentPrice: 1,
+    sqrtPriceX96: tickToSqrtPriceX96(0),
+    minPrice: 0.5,
+    maxPrice: 2,
+    amount: 1_000_000n,
+  };
+
+  test("keeps only the eligible token outside the price range", () => {
+    expect(getDepositAmountsByAmountA({ ...params, minPrice: 1.5 })).toEqual({
+      amountA: params.amount,
+      amountB: 0,
+    });
+    expect(getDepositAmountsByAmountB({ ...params, minPrice: 1.5 })).toEqual({ amountA: 0, amountB: 0 });
+    expect(getDepositAmountsByAmountA({ ...params, maxPrice: 0.75 })).toEqual({ amountA: 0, amountB: 0 });
+    expect(getDepositAmountsByAmountB({ ...params, maxPrice: 0.75 })).toEqual({
+      amountA: 0,
+      amountB: params.amount,
+    });
+  });
+
+  test("calculates the paired amount inside the range", () => {
+    const fromA = getDepositAmountsByAmountA(params);
+    const fromB = getDepositAmountsByAmountB(params);
+    expect(fromA.amountA).toBe(params.amount);
+    expect(fromA.amountB).toBeGreaterThan(0n);
+    expect(fromB.amountA).toBeGreaterThan(0n);
+    expect(fromB.amountB).toBe(params.amount);
+  });
+
+  test("preserves zero amounts", () => {
+    expect(getDepositAmountsByAmountA({ ...params, amount: 0n })).toEqual({ amountA: 0n, amountB: 0n });
+    expect(getDepositAmountsByAmountB({ ...params, amount: 0n })).toEqual({ amountA: 0n, amountB: 0n });
+  });
+});
 
 describe("tick convert to price", () => {
   test("0 to 1", () => {

@@ -125,7 +125,7 @@ const TransactionApprovalModal = ({
             {contracts.map((contract, index) => {
               return (
                 <InfoCard key={`${contract.type}-${contract.function}-${index}`} flexDirection="column" gap={16}>
-                  {contract.value.pkg_path && (
+                  {contract.type === "/vm.m_call" && contract.value.pkg_path && (
                     <div className="flex-box">
                       <div className="label">{t("common:social.modal.transaction.column.realm")}</div>
                       <div className="value">

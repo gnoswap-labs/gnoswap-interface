@@ -2,10 +2,10 @@ export interface ITokenDetailResponse {
   market: IMarketResponse;
   bestPools: IBestPoolResponse[];
   currentPrice: string;
-  prices1d: IPrices1d[];
-  prices7d: IPrices7d[];
-  prices1m: IPrices1m[];
-  prices1y: IPrices1y[];
+  prices1d: IPriceResponse[];
+  prices7d: IPriceResponse[];
+  prices1m: IPriceResponse[];
+  prices1y: IPriceResponse[];
   pricesBefore: IPricesBefore;
 }
 
@@ -24,13 +24,13 @@ export interface IMarketResponse {
 export interface IBestPoolResponse {
   poolPath: string;
   fee: string;
-  tokenA: ITokenA;
-  tokenB: ITokenB;
+  tokenA: IBestPoolToken;
+  tokenB: IBestPoolToken;
   tvlUsd: string;
   apr: string;
 }
 
-export interface ITokenA {
+export interface IBestPoolToken {
   type: string;
   name: string;
   path: string;
@@ -38,36 +38,6 @@ export interface ITokenA {
   symbol: string;
   displaySymbol: string;
   logoURI: string;
-}
-
-export interface ITokenB {
-  type: string;
-  name: string;
-  path: string;
-  tokenId: string;
-  symbol: string;
-  displaySymbol: string;
-  logoURI: string;
-}
-
-export interface IPrices1d {
-  time: string;
-  price: string;
-}
-
-export interface IPrices7d {
-  time: string;
-  price: string;
-}
-
-export interface IPrices1m {
-  time: string;
-  price: string;
-}
-
-export interface IPrices1y {
-  time: string;
-  price: string;
 }
 
 export interface IPricesBefore {

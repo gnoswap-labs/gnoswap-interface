@@ -1,15 +1,17 @@
 import BigNumber from "bignumber.js";
 import { DEFAULT_GAS_WANTED } from "@common/values";
 
+export interface AdjustedGasFeeResult {
+  gasFee: number;
+  gasUsed: number;
+  gasWanted: number;
+}
+
 export function calculateAdjustedGasFee(
   gasUsed: number | null | undefined,
   gasPrice: string | number,
   multiplier: number,
-): {
-  gasFee: number;
-  gasUsed: number;
-  gasWanted: number;
-} {
+): AdjustedGasFeeResult {
   const used = gasUsed || DEFAULT_GAS_WANTED;
 
   const adjustGasUsedBN = BigNumber(used).multipliedBy(multiplier);

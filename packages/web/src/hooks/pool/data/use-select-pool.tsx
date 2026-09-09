@@ -320,13 +320,13 @@ export const useSelectPool = ({
       return null;
     }
 
-    const { amountA, amountB } = getDepositAmountsByAmountA(
+    const { amountA, amountB } = getDepositAmountsByAmountA({
       currentPrice,
-      currentSqrtPriceX96,
-      currentMinPrice,
-      currentMaxPrice,
-      adjustAmountA,
-    );
+      sqrtPriceX96: currentSqrtPriceX96,
+      minPrice: currentMinPrice,
+      maxPrice: currentMaxPrice,
+      amount: adjustAmountA,
+    });
 
     const tokenAAmount = makeDisplayTokenAmount(tokenA, amountA) || 0;
     const tokenBAmount = makeDisplayTokenAmount(tokenB, amountB) || 0;
