@@ -121,7 +121,7 @@ export const useRepositionHandle = () => {
     return tickToPrice(selectedPosition.tickUpper);
   }, [selectedPosition]);
 
-  const { openModal: openConfirmModal, update: updateConfirmModalData } = useTransactionConfirmModal();
+  const { openModal: openConfirmModal } = useTransactionConfirmModal();
 
   const [priceRange, setPriceRange] = useState<PriceRangeMeta>({
     type: "Custom",
@@ -722,7 +722,6 @@ export const useRepositionHandle = () => {
             }
 
             if (result.code === 0) {
-              const resultData = result?.data as RepositionLiquiditySuccessResponse;
               broadcastSuccess(
                 getMessage(
                   DexEvent.REPOSITION,
@@ -737,10 +736,10 @@ export const useRepositionHandle = () => {
                       maximumFractionDigits: request.tokenB.decimals,
                     }),
                   },
-                  resultData.hash,
+                  result.data?.hash,
                 ),
+                () => router.back(),
               );
-              updateConfirmModalData("success", "Reposition Complete", "", null, () => router.back());
               openConfirmModal();
             } else if (result.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
               broadcastRejected(
@@ -775,7 +774,6 @@ export const useRepositionHandle = () => {
       positionRepository,
       router,
       updateBalances,
-      updateConfirmModalData,
     ],
   );
 
@@ -806,14 +804,14 @@ export const useRepositionHandle = () => {
         .repositionLiquidity(requestWithGasInfo)
         .then(result => {
           if (result.code === 0) {
-            updateConfirmModalData("success", "Reposition Complete", "", null, () => router.back());
+            broadcastSuccess({ title: "Reposition Complete", txHash: result.data?.hash }, () => router.back());
             openConfirmModal();
           }
           return result;
         })
         .catch(() => null);
     },
-    [estimateNetworkFee, openConfirmModal, positionRepository, router, transactionService, updateConfirmModalData],
+    [broadcastSuccess, estimateNetworkFee, openConfirmModal, positionRepository, router, transactionService],
   );
 
   const reposition = useCallback(
