@@ -2,6 +2,7 @@ import { Document, TransactionData, ContractMessage } from "src/types/transactio
 
 /** Maps protocol messages to the fields displayed in the approval modal. */
 function mapTransactionContract(message: ContractMessage): TransactionData["contracts"][number] {
+  const rawType = message.type;
   switch (message.type) {
     case "/bank.MsgSend":
       return { ...message, function: "Transfer" };
@@ -18,7 +19,7 @@ function mapTransactionContract(message: ContractMessage): TransactionData["cont
       return { type: message.type, function: "Run", value: { caller, send, package: packageData } };
     }
     default:
-      throw new Error("Unsupported transaction message type");
+      return { type: "unknown", rawType, function: "", value: {} };
   }
 }
 

@@ -82,7 +82,7 @@ const TransactionApprovalModalContainer = ({ onApprove, onReject, document }: Pr
   }, [document]);
 
   const firstContract = transactionData?.contracts[0];
-  const caller = !firstContract
+  const caller = !firstContract || firstContract.type === "unknown"
     ? ""
     : firstContract.type === "/bank.MsgSend"
     ? firstContract.value.from_address

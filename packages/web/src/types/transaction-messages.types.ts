@@ -48,6 +48,7 @@ export type TransactionContract = { function: string } & (
   | { type: "/vm.m_call"; value: Pick<MsgCall, "caller" | "send" | "pkg_path" | "func" | "args"> }
   | { type: "/vm.m_addpkg"; value: Pick<MsgAddPackage, "creator" | "package"> }
   | { type: "/vm.m_run"; value: Pick<MsgRun, "caller" | "send" | "package"> }
+  | { type: "unknown"; rawType: string; value: Record<string, never> }
 );
 
 /**

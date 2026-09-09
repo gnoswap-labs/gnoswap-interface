@@ -16,6 +16,12 @@ jest.mock("@components/common/transaction-approval-modal/TransactionApprovalModa
 const cases: { name: string; messages: ContractMessage[]; caller: string }[] = [
   { name: "empty", messages: [], caller: "" },
   {
+    name: "unknown",
+    // Simulate an unexpected runtime payload outside the supported message union.
+    messages: JSON.parse("[{\"type\":\"/vm.future\",\"value\":{\"caller\":\"g1untrusted\"}}]"),
+    caller: "",
+  },
+  {
     name: "call",
     messages: [{ type: "/vm.m_call", value: MsgCall.create({ caller: "g1caller" }) }],
     caller: "g1caller",

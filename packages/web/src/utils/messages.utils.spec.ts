@@ -73,6 +73,34 @@ describe("messages.utils", () => {
   });
 
   describe("mappedTransactionData", () => {
+    it("keeps an unknown message as a placeholder without changing the signing document", () => {
+      const knownMessage: ContractMessage = {
+        type: "/bank.MsgSend",
+        value: MsgSend.create({ from_address: "g1sender", to_address: "g1receiver", amount: "1000ugnot" }),
+      };
+      const document = createDocument({
+        accountSequence: 1,
+        accountNumber: 1,
+        chainId: "test-chain",
+        messages: [knownMessage],
+        gasWanted: 1000,
+        gasFee: 1,
+      });
+      // Simulate an unexpected runtime payload outside the supported message union.
+      document.msgs.unshift(JSON.parse("{\"type\":\"/vm.future\",\"value\":{\"data\":\"preserved\"}}"));
+      const original = JSON.stringify(document);
+
+      const result = mappedTransactionData(document);
+
+      expect(result.contracts).toEqual([
+        { type: "unknown", rawType: "/vm.future", function: "", value: {} },
+        { ...knownMessage, function: "Transfer" },
+      ]);
+      expect(result.messages).toBe(document.msgs);
+      expect(result.document).toBe(document);
+      expect(JSON.stringify(document)).toBe(original);
+    });
+
     it("preserves package display fields for deployment and run messages", () => {
       const packageData = { name: "test", path: "gno.land/r/demo/test", files: [] };
       const messages: ContractMessage[] = [
