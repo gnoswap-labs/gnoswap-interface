@@ -358,14 +358,14 @@ export const useRepositionHandle = () => {
     if (!initialEstimatedRepositionAmounts) {
       return "NON_SELECTED_RANGE";
     }
-    if (isErrorLiquidity) {
+    if (isErrorLiquidity || (estimatedSwapResult && estimatedSwapResult.status !== "SUCCESS")) {
       return "INSUFFICIENT_LIQUIDITY";
     }
     if (isEstimatedRemainSwapLoading) {
       return "LOADING";
     }
     return "REPOSITION";
-  }, [initialEstimatedRepositionAmounts, isErrorLiquidity, isEstimatedRemainSwapLoading]);
+  }, [initialEstimatedRepositionAmounts, isErrorLiquidity, isEstimatedRemainSwapLoading, estimatedSwapResult]);
 
   const estimatedRepositionAmounts = useMemo(() => {
     if (
@@ -386,7 +386,11 @@ export const useRepositionHandle = () => {
       };
     }
 
-    if (!estimateSwapRequest?.inputToken || isEstimatedRemainSwapLoading || !estimatedSwapResult) {
+    if (
+      !estimateSwapRequest?.inputToken ||
+      isEstimatedRemainSwapLoading ||
+      estimatedSwapResult?.status !== "SUCCESS"
+    ) {
       return null;
     }
 
@@ -608,7 +612,7 @@ export const useRepositionHandle = () => {
     }: {
       rpcProvider: GnoProvider | null;
     }): Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse> | null> => {
-      if (!address || !estimatedSwapResult || !estimateSwapRequest) {
+      if (!address || estimatedSwapResult?.status !== "SUCCESS" || !estimateSwapRequest) {
         return null;
       }
 

@@ -149,7 +149,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       return null;
     }
 
-    if (swapState !== "SUCCESS" || !estimatedSwapResult) {
+    if (swapState !== "SUCCESS" || estimatedSwapResult?.status !== "SUCCESS") {
       return [];
     }
 
@@ -165,7 +165,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       return null;
     }
 
-    if (swapState !== "SUCCESS" || !estimatedSwapResult) {
+    if (swapState !== "SUCCESS" || estimatedSwapResult?.status !== "SUCCESS") {
       return null;
     }
 
@@ -275,7 +275,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       if (!account) {
         return null;
       }
-      if (!selectedTokenPair) {
+      if (!selectedTokenPair || estimatedSwapResult?.status !== "SUCCESS") {
         return null;
       }
 
@@ -293,7 +293,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
           tokenAmount: Number(tokenAmount),
           estimatedRoutes: estimatedRoutes,
           slippage: slippage,
-          originAmount: estimatedSwapResult?.originAmount || 0,
+          originAmount: estimatedSwapResult.originAmount,
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + SWAP_DEADLINE_SEC,
           referrerAddress: currentReferralAddress,
@@ -308,7 +308,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
           tokenAmount: Number(tokenAmount),
           estimatedRoutes: estimatedRoutes,
           slippage: slippage,
-          originAmount: estimatedSwapResult?.originAmount || 0,
+          originAmount: estimatedSwapResult.originAmount,
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + SWAP_DEADLINE_SEC,
           referrerAddress: currentReferralAddress,
@@ -322,7 +322,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       selectedTokenPair,
       swapRouterRepository,
       tokenA,
-      estimatedSwapResult?.originAmount,
+      estimatedSwapResult,
       slippage,
       tokenAmountLimit,
       tokenB,

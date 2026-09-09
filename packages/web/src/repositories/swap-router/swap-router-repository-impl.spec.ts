@@ -7,7 +7,6 @@ import {
 } from "@common/clients/network-client/protocols";
 import { TokenModel } from "@models/token/token-model";
 
-import { GetRoutesResponse } from "./response/get-routes-response";
 import { SwapRouterRepositoryImpl } from "./swap-router-repository-impl";
 
 const createToken = (symbol: string, decimals: number): TokenModel => ({
@@ -24,52 +23,57 @@ const createToken = (symbol: string, decimals: number): TokenModel => ({
 });
 
 describe("SwapRouterRepositoryImpl", () => {
-  it("uses output token decimals for exact-out route quotes", async () => {
-    const response: GetRoutesResponse = {
-      estimatedRoutes: [],
-      originAmount: 0,
-      amount: "0",
-      status: "SUCCESS",
-    };
-    const post = jest.fn();
-    const networkClient: NetworkClient = {
-      get: async <R>(): Promise<HttpResponse<R>> => ({ status: 200, message: "", data: response as R }),
-      post: async <_T, R>(params: HttpPostRequestParam<_T>): Promise<HttpResponse<R>> => {
-        post(params);
-        return { status: 200, message: "", data: response as R };
-      },
-      put: async <T, R>(params: HttpPutRequestParam<T>): Promise<HttpResponse<R>> => {
-        void params;
-        return {
-          status: 200,
-          message: "",
-          data: response as R,
-        };
-      },
-      delete: async <T, R>(params: HttpDeleteRequestParam<T>): Promise<HttpResponse<R>> => {
-        void params;
-        return {
-          status: 200,
-          message: "",
-          data: response as R,
-        };
-      },
-    };
-    const repository = new SwapRouterRepositoryImpl(null, null, networkClient);
+  it.each(["SUCCESS", "NO_LIQUIDITY", "INVALID_PARAMS"] as const)(
+    "uses output token decimals and normalizes %s route responses",
+    async status => {
+      const response = {
+        estimatedRoutes: [],
+        originAmount: 0,
+        amount: "0",
+        status,
+      };
+      const post = jest.fn();
+      const networkClient: NetworkClient = {
+        get: async <R>(): Promise<HttpResponse<R>> => ({ status: 200, message: "", data: response as R }),
+        post: async <_T, R>(params: HttpPostRequestParam<_T>): Promise<HttpResponse<R>> => {
+          post(params);
+          return { status: 200, message: "", data: response as R };
+        },
+        put: async <T, R>(params: HttpPutRequestParam<T>): Promise<HttpResponse<R>> => {
+          void params;
+          return {
+            status: 200,
+            message: "",
+            data: response as R,
+          };
+        },
+        delete: async <T, R>(params: HttpDeleteRequestParam<T>): Promise<HttpResponse<R>> => {
+          void params;
+          return {
+            status: 200,
+            message: "",
+            data: response as R,
+          };
+        },
+      };
+      const repository = new SwapRouterRepositoryImpl(null, null, networkClient);
 
-    await repository.getRoutes({
-      inputToken: createToken("IN", 6),
-      outputToken: createToken("OUT", 8),
-      tokenAmount: 1.23,
-      exactType: "EXACT_OUT",
-    });
+      const result = await repository.getRoutes({
+        inputToken: createToken("IN", 6),
+        outputToken: createToken("OUT", 8),
+        tokenAmount: 1.23,
+        exactType: "EXACT_OUT",
+      });
 
-    expect(post).toHaveBeenCalledWith(
-      expect.objectContaining({
-        body: expect.objectContaining({
-          amount: "123000000",
+      expect(result).toEqual(status === "SUCCESS" ? response : { status });
+
+      expect(post).toHaveBeenCalledWith(
+        expect.objectContaining({
+          body: expect.objectContaining({
+            amount: "123000000",
+          }),
         }),
-      }),
-    );
-  });
+      );
+    },
+  );
 });
