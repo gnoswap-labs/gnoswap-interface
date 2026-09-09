@@ -629,16 +629,19 @@ export const useSwapHandler = () => {
 
   // If the data required for the modal configuration is updated, update the modal data as well
   useEffect(() => {
-    if (!swapTokenInfo || !swapSummaryInfo) return;
+    if (!swapTokenInfo || !swapSummaryInfo) {
+      setSwapConfirmModalState({ status: "idle" });
+      return;
+    }
 
-    setSwapConfirmModalState(prev => ({
-      ...prev,
+    setSwapConfirmModalState({
+      status: "ready",
       swapTokenInfo,
       swapSummaryInfo,
       isRefetching,
       estimatedAmount,
       tokenAmountLimit,
-    }));
+    });
   }, [swapTokenInfo, swapSummaryInfo, isRefetching, estimatedAmount, tokenAmountLimit]);
 
   const isAvailSwap = useMemo(() => {
