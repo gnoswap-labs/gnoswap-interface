@@ -4,7 +4,7 @@ describe("buildGasInfo", () => {
   it("returns error gas info when result is null", () => {
     expect(buildGasInfo(null, 1)).toEqual({
       status: "error",
-      simulateErrorMessage: "",
+      simulateErrorMessage: "Gas estimation failed",
     });
   });
 
@@ -20,6 +20,13 @@ describe("buildGasInfo", () => {
     ).toEqual({
       status: "error",
       simulateErrorMessage: "simulation failed",
+    });
+  });
+
+  it("uses a fallback when the simulation error message is empty", () => {
+    expect(buildGasInfo({ gasUsed: 0, errorMessage: "" }, 1)).toEqual({
+      status: "error",
+      simulateErrorMessage: "Gas estimation failed",
     });
   });
 

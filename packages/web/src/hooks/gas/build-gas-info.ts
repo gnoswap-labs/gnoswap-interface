@@ -10,14 +10,14 @@ export function buildGasInfo(
   if (!resultGasUsed) {
     return {
       status: "error",
-      simulateErrorMessage: "",
+      simulateErrorMessage: "Gas estimation failed",
     };
   }
 
   if (resultGasUsed.errorMessage !== null) {
     return {
       status: "error",
-      simulateErrorMessage: resultGasUsed.errorMessage,
+      simulateErrorMessage: resultGasUsed.errorMessage || "Gas estimation failed",
     };
   }
 
