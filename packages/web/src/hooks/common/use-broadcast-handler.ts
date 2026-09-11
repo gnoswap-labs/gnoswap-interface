@@ -69,7 +69,6 @@ export const useBroadcastHandler = () => {
           status: "error",
           title: BROADCAST_ERROR_VALUE.DEFAULT.title,
           description: BROADCAST_ERROR_VALUE.DEFAULT.description,
-          callback,
         });
         return;
       }

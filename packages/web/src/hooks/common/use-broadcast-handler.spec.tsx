@@ -69,12 +69,15 @@ it("preserves loading text and the successful transaction link and close callbac
 
 it.each([undefined, ""])("does not create a success state with missing hash %s", txHash => {
   const { result, store } = setup();
-  act(() => result.current.broadcastSuccess({ txHash }));
+  const callback = jest.fn();
+  act(() => result.current.broadcastSuccess({ txHash }, callback));
   expect(store.get(CommonState.transactionModalData)).toMatchObject({
     status: "error",
     title: BROADCAST_ERROR_VALUE.DEFAULT.title,
     description: BROADCAST_ERROR_VALUE.DEFAULT.description,
   });
+  fireEvent.click(screen.getByRole("button", { name: "common:action.close" }));
+  expect(callback).not.toHaveBeenCalled();
 });
 
 it("replaces success data with error and rejected states and preserves callbacks", () => {
