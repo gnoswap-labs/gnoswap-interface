@@ -2,36 +2,31 @@ import { SwapDirectionType } from "@common/values";
 import { TokenModel } from "@models/token/token-model";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 
+/**
+ * A selected token and its values.
+ * An unselected token is represented by a null side.
+ */
+export interface SwapTokenSide {
+  token: TokenModel;
+  amount: string;
+  balance: string;
+  /**
+   * Zero also indicates an unavailable valuation.
+   * usdStr preserves the display placeholder.
+   */
+  usd: number;
+  usdStr: string;
+  priceGrade: TOKEN_PRICE_GRADE_TYPE;
+  decimals: number;
+}
+
+/** 
+ * Swap token values and execution settings with null sides
+ * for unselected tokens.
+ */
 export interface SwapTokenInfo {
-  tokenA: TokenModel | null;
-
-  tokenAAmount: string;
-
-  tokenABalance: string;
-
-  tokenAUSD: number | null;
-
-  tokenAUSDStr: string;
-
-  tokenAPriceGrade: TOKEN_PRICE_GRADE_TYPE;
-
-  tokenB: TokenModel | null;
-
-  tokenBAmount: string;
-
-  tokenBBalance: string;
-
-  tokenBUSD: number | null;
-
-  tokenBUSDStr: string;
-
-  tokenBPriceGrade: TOKEN_PRICE_GRADE_TYPE;
-
+  tokenA: SwapTokenSide | null;
+  tokenB: SwapTokenSide | null;
   direction: SwapDirectionType;
-
   slippage: number;
-
-  tokenADecimals?: number;
-
-  tokenBDecimals?: number;
 }

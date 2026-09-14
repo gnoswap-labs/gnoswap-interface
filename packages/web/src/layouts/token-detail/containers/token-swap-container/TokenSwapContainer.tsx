@@ -132,7 +132,7 @@ const TokenSwapContainer: React.FC = () => {
   }, []);
 
   const handleChangeTokenB = (token: TokenModel) => {
-    if (token.path === swapTokenInfo.tokenB?.path) return;
+    if (token.path === swapTokenInfo.tokenB?.token.path) return;
 
     router.movePageWithTokenPath("TOKEN", token.path);
     changeTokenB(token);
@@ -162,7 +162,6 @@ const TokenSwapContainer: React.FC = () => {
         handleSetting={() => setOpenedSlippage(true)}
         isSwitchNetwork={isSwitchNetwork}
         switchNetwork={switchNetwork}
-        dataTokenInfo={swapTokenInfo}
         changeTokenA={handleChangeTokenA}
         changeTokenB={handleChangeTokenB}
         changeTokenAAmount={changeTokenAAmount}

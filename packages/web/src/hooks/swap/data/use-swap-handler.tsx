@@ -164,7 +164,7 @@ export const useSwapHandler = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { connected: connectedWallet, isSwitchNetwork, switchNetwork } = useWallet();
   const { tokens, tokenPrices, displayBalanceMap, updateBalances, getTokenUSDPrice, refetchGrc20Balances } =
-  useTokenData(true);
+    useTokenData(true);
   const { slippage, changeSlippage } = useSlippage();
   const { openModal } = useConnectWalletModal();
   const { data: swapFee } = useGetSwapFee();
@@ -484,22 +484,30 @@ export const useSwapHandler = () => {
       tokenPrices[checkGnotPath(tokenB?.path || "")]?.priceGradeType || TOKEN_PRICE_GRADE_TYPE.NONE;
 
     return {
-      tokenA,
-      tokenAAmount: quotedTokenAAmount,
-      tokenABalance,
-      tokenAUSD,
-      tokenAUSDStr: formatPrice(tokenAUSD, { usd: true, isKMB: false, approx: true }),
-      tokenAPriceGrade,
-      tokenB,
-      tokenBAmount: quotedTokenBAmount,
-      tokenBBalance,
-      tokenBUSD,
-      tokenBUSDStr: formatPrice(tokenBUSD, { usd: true, isKMB: false, approx: true }),
-      tokenBPriceGrade,
+      tokenA: tokenA
+        ? {
+            token: tokenA,
+            amount: quotedTokenAAmount,
+            balance: tokenABalance,
+            usd: tokenAUSD ?? 0,
+            usdStr: formatPrice(tokenAUSD, { usd: true, isKMB: false, approx: true }),
+            priceGrade: tokenAPriceGrade,
+            decimals: tokenA.decimals,
+          }
+        : null,
+      tokenB: tokenB
+        ? {
+            token: tokenB,
+            amount: quotedTokenBAmount,
+            balance: tokenBBalance,
+            usd: tokenBUSD ?? 0,
+            usdStr: formatPrice(tokenBUSD, { usd: true, isKMB: false, approx: true }),
+            priceGrade: tokenBPriceGrade,
+            decimals: tokenB.decimals,
+          }
+        : null,
       direction: type,
       slippage,
-      tokenADecimals: tokenA?.decimals,
-      tokenBDecimals: tokenB?.decimals,
     };
   }, [
     slippage,
@@ -1114,7 +1122,7 @@ export const useSwapHandler = () => {
   };
 
   function executeSwap(swapTokenInfo: SwapTokenInfo, estimatedAmount: string | null) {
-    if (!tokenA || !tokenB) {
+    if (!tokenA || !tokenB || !swapTokenInfo.tokenA || !swapTokenInfo.tokenB) {
       return;
     }
 
@@ -1125,13 +1133,13 @@ export const useSwapHandler = () => {
     setSubmitted(true);
 
     const isExactIn = type === "EXACT_IN";
-    const swapAmount = isExactIn ? swapTokenInfo.tokenAAmount : swapTokenInfo.tokenBAmount;
+    const swapAmount = isExactIn ? swapTokenInfo.tokenA.amount : swapTokenInfo.tokenB.amount;
 
     const broadcastMessage = {
       tokenASymbol: tokenA.symbol,
       tokenBSymbol: tokenB.symbol,
-      tokenAAmount: isExactIn ? swapTokenInfo.tokenAAmount : nullish.handleFalsy(estimatedAmount, "0"),
-      tokenBAmount: isExactIn ? nullish.handleFalsy(estimatedAmount, "0") : swapTokenInfo.tokenBAmount,
+      tokenAAmount: isExactIn ? swapTokenInfo.tokenA.amount : nullish.handleFalsy(estimatedAmount, "0"),
+      tokenBAmount: isExactIn ? nullish.handleFalsy(estimatedAmount, "0") : swapTokenInfo.tokenB.amount,
     };
 
     // Handle Wrap and Unwrap

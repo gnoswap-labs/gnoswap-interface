@@ -84,11 +84,11 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, connected, 
           <div className="amount">
             <div className="amount-text">{UI_SAMPLE_VALUE}</div>
             <div className="token">
-              <SelectPairButton token={swapTokenInfo.tokenA} hiddenModal />
+              <SelectPairButton token={swapTokenInfo.tokenA?.token ?? null} hiddenModal />
             </div>
           </div>
           <div className="info">
-            <span className="price-text">{swapTokenInfo.tokenAUSDStr}</span>
+            <span className="price-text">{swapTokenInfo.tokenA?.usdStr ?? "-"}</span>
             <span className={`balance-text ${connected ? "balance-text-disabled" : ""}`}>
               <IconWallet />
               {UI_SAMPLE_VALUE.toLocaleString()}
@@ -99,7 +99,11 @@ const HomeSwap: React.FC<HomeSwapProps> = ({ swapTokenInfo, swapNow, connected, 
           <div className="amount">
             <div className="skeleton" css={pulseSkeletonStyle({ w: "100px", h: "32px" })} />
             <div className="token">
-              <SelectPairButton token={swapTokenInfo.tokenB} hiddenModal isChanging={tokenBTransition?.isChanging} />
+              <SelectPairButton
+                token={swapTokenInfo.tokenB?.token ?? null}
+                hiddenModal
+                isChanging={tokenBTransition?.isChanging}
+              />
             </div>
           </div>
           <div className="info">

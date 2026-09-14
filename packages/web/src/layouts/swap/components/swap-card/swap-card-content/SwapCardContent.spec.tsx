@@ -14,49 +14,60 @@ jest.mock("@adena-wallet/sdk", () => ({
 
 const swapTokenInfo: SwapTokenInfo = {
   tokenA: {
-    type: "GRC20",
-    chainId: "dev.gnoswap",
-    createdAt: "2023-12-08T03:57:43Z",
-    name: "Foo",
-    path: "gno.land/r/foo",
+    token: {
+      type: "GRC20",
+      chainId: "dev.gnoswap",
+      createdAt: "2023-12-08T03:57:43Z",
+      name: "Foo",
+      path: "gno.land/r/foo",
+      decimals: 4,
+      symbol: "FOO",
+      displaySymbol: "FOO",
+      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+      priceID: "gno.land/r/foo",
+      address: "",
+    },
+    amount: "",
+    balance: "",
+    usd: 0,
+    usdStr: "0",
+    priceGrade: "NONE",
     decimals: 4,
-    symbol: "FOO",
-    displaySymbol: "FOO",
-    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-    priceID: "gno.land/r/foo",
-    address: "",
   },
-  tokenAAmount: "",
-  tokenABalance: "",
-  tokenAUSD: 0,
-  tokenAUSDStr: "0",
-  tokenAPriceGrade: "NONE",
-  tokenBPriceGrade: "NONE",
   tokenB: {
-    type: "GRC20",
-    chainId: "dev.gnoswap",
-    createdAt: "2023-12-08T03:57:43Z",
-    name: "Foo",
-    path: "gno.land/r/foo",
+    token: {
+      type: "GRC20",
+      chainId: "dev.gnoswap",
+      createdAt: "2023-12-08T03:57:43Z",
+      name: "Foo",
+      path: "gno.land/r/foo",
+      decimals: 4,
+      symbol: "FOO",
+      displaySymbol: "FOO",
+      logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
+      priceID: "gno.land/r/foo",
+      address: "",
+    },
+    amount: "",
+    balance: "",
+    usd: 0,
+    usdStr: "0",
+    priceGrade: "NONE",
     decimals: 4,
-    symbol: "FOO",
-    displaySymbol: "FOO",
-    logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
-    priceID: "gno.land/r/foo",
-    address: "",
   },
-  tokenBAmount: "",
-  tokenBBalance: "",
-  tokenBUSD: 0,
-  tokenBUSDStr: "0",
   direction: "EXACT_IN",
   slippage: 10,
 };
 
 describe("SwapCardContent Component", () => {
-  it("SwapCardContent render", () => {
+  it.each([
+    [swapTokenInfo.tokenA, swapTokenInfo.tokenB],
+    [null, swapTokenInfo.tokenB],
+    [swapTokenInfo.tokenA, null],
+    [null, null],
+  ])("renders selected and absent token sides (%#)", (tokenA, tokenB) => {
     const mockProps = {
-      swapTokenInfo,
+      swapTokenInfo: { ...swapTokenInfo, tokenA, tokenB },
       swapSummaryInfo: null,
       swapRouteInfos: [],
       changeTokenA: () => null,
@@ -77,12 +88,18 @@ describe("SwapCardContent Component", () => {
       isRefetching: false,
     };
 
-    render(
+    const { getAllByRole, container } = render(
       <JotaiProvider>
         <GnoswapThemeProvider>
           <SwapCardContent {...mockProps} />
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );
+    expect(getAllByRole("textbox")).toHaveLength(2);
+    expect(getAllByRole("textbox")[0]).toHaveValue(tokenA?.amount ?? "");
+    expect(getAllByRole("textbox")[1]).toHaveValue(tokenB?.amount ?? "");
+    if (!tokenA) {
+      expect(container.querySelector(".balance-max-button")).not.toBeInTheDocument();
+    }
   });
 });
