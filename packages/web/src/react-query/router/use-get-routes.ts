@@ -52,26 +52,23 @@ export const useGetRoutes = (
 
       if (!result) {
         return {
-          estimatedRoutes: [],
-          originAmount: 0,
-          amount: "0",
           status: "NO_LIQUIDITY",
         };
+      }
+
+      if (result.status !== "SUCCESS") {
+        return { status: result.status };
       }
 
       const availRoute = result.estimatedRoutes.reduce((accumulated, current) => accumulated + current.quote, 0);
 
       if (availRoute < 100) {
         return {
-          ...result,
           status: "NO_LIQUIDITY",
         };
       }
 
-      return {
-        ...result,
-        status: "SUCCESS",
-      };
+      return result;
     },
     retry: 1,
     refetchInterval: REFETCH_INTERVAL,

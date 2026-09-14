@@ -81,7 +81,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       throw new SwapError("SWAP_FAILED");
     }
 
-    return response.data;
+    return response.data.status === "SUCCESS" ? response.data : { status: response.data.status };
   };
 
   public getDrySwap = async (request: DrySwapRequest): Promise<number> => {
