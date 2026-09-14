@@ -117,7 +117,7 @@ describe("getSearchLogs", () => {
     let error = null;
 
     try {
-      expect(await tokenRepository.getSearchLogs()).toThrowError();
+      expect(await tokenRepository.getSearchLogs()).toThrow();
     } catch (e) {
       error = e;
     }
