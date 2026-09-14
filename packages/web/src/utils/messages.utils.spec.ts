@@ -8,13 +8,13 @@ describe("messages.utils", () => {
     it("should create a document with the correct structure", () => {
       const msgCall: ContractMessage = {
         type: "/vm.m_call",
-        value: {
+        value: MsgCall.create({
           caller: "g1234567890",
           send: "",
           pkg_path: "gno.land/r/demo/foo",
           func: "bar",
           args: ["test"],
-        } as MsgCall,
+        }),
       };
 
       const args = {
@@ -50,11 +50,11 @@ describe("messages.utils", () => {
     it("should handle empty memo", () => {
       const msgSend: ContractMessage = {
         type: "/bank.MsgSend",
-        value: {
+        value: MsgSend.create({
           from_address: "g1sender",
           to_address: "g1receiver",
           amount: "1000ugnot",
-        } as MsgSend,
+        }),
       };
 
       const args = {
@@ -73,16 +73,66 @@ describe("messages.utils", () => {
   });
 
   describe("mappedTransactionData", () => {
+    it("keeps an unknown message as a placeholder without changing the signing document", () => {
+      const knownMessage: ContractMessage = {
+        type: "/bank.MsgSend",
+        value: MsgSend.create({ from_address: "g1sender", to_address: "g1receiver", amount: "1000ugnot" }),
+      };
+      const document = createDocument({
+        accountSequence: 1,
+        accountNumber: 1,
+        chainId: "test-chain",
+        messages: [knownMessage],
+        gasWanted: 1000,
+        gasFee: 1,
+      });
+      // Simulate an unexpected runtime payload outside the supported message union.
+      document.msgs.unshift(JSON.parse("{\"type\":\"/vm.future\",\"value\":{\"data\":\"preserved\"}}"));
+      const original = JSON.stringify(document);
+
+      const result = mappedTransactionData(document);
+
+      expect(result.contracts).toEqual([
+        { type: "unknown", rawType: "/vm.future", function: "", value: {} },
+        { ...knownMessage, function: "Transfer" },
+      ]);
+      expect(result.messages).toBe(document.msgs);
+      expect(result.document).toBe(document);
+      expect(JSON.stringify(document)).toBe(original);
+    });
+
+    it("preserves package display fields for deployment and run messages", () => {
+      const packageData = { name: "test", path: "gno.land/r/demo/test", files: [] };
+      const messages: ContractMessage[] = [
+        { type: "/vm.m_addpkg", value: MsgAddPackage.create({ creator: "g1creator", package: packageData }) },
+        { type: "/vm.m_run", value: MsgRun.create({ caller: "g1caller", send: "", package: packageData }) },
+      ];
+      const document = createDocument({
+        accountSequence: 1,
+        accountNumber: 1,
+        chainId: "test-chain",
+        messages,
+        gasWanted: 1000,
+        gasFee: 1,
+      });
+
+      expect(mappedTransactionData(document).contracts).toEqual([
+        { type: "/vm.m_addpkg", function: "AddPackage", value: { creator: "g1creator", package: packageData } },
+        { type: "/vm.m_run", function: "Run", value: { caller: "g1caller", send: "", package: packageData } },
+      ]);
+      expect(mappedTransactionData({ ...document, msgs: [] }).contracts).toEqual([]);
+    });
+
     it("should map document to transaction data", () => {
       const msgCall: ContractMessage = {
         type: "/vm.m_call",
-        value: {
+        value: MsgCall.create({
           caller: "g1234567890",
           send: "1000ugnot",
           pkg_path: "gno.land/r/demo/foo",
           func: "transfer",
           args: ["g1receiver", "100"],
-        } as MsgCall,
+        }),
       };
 
       const document: Document = {
@@ -121,11 +171,11 @@ describe("messages.utils", () => {
     it("should handle MsgSend correctly", () => {
       const msgSend: ContractMessage = {
         type: "/bank.MsgSend",
-        value: {
+        value: MsgSend.create({
           from_address: "g1sender",
           to_address: "g1receiver",
           amount: "1000ugnot",
-        } as MsgSend,
+        }),
       };
 
       const document: Document = {
@@ -152,33 +202,33 @@ describe("messages.utils", () => {
     it("should add caller to MsgCall if not present", () => {
       const msgCall: ContractMessage = {
         type: "/vm.m_call",
-        value: {
+        value: MsgCall.create({
           caller: "",
           send: "",
           pkg_path: "gno.land/r/demo/foo",
           func: "bar",
           args: [],
-        } as MsgCall,
+        }),
       };
 
       const result = mappedDocumentMessagesWithCaller([msgCall], currentAddress);
 
       expect(result).toHaveLength(1);
       expect(result[0].type).toBe("/vm.m_call");
-      expect((result[0].value as MsgCall).caller).toBe(currentAddress);
+      expect(result[0].type === "/vm.m_call" && result[0].value.caller).toBe(currentAddress);
     });
 
     it("should preserve existing caller in MsgCall", () => {
       const existingCaller = "g1existingcaller";
       const msgCall: ContractMessage = {
         type: "/vm.m_call",
-        value: {
+        value: MsgCall.create({
           caller: existingCaller,
           send: "",
           pkg_path: "gno.land/r/demo/foo",
           func: "bar",
           args: [],
-        } as MsgCall,
+        }),
       };
 
       const result = mappedDocumentMessagesWithCaller([msgCall], currentAddress);
@@ -189,11 +239,11 @@ describe("messages.utils", () => {
     it("should add from_address to MsgSend if not present", () => {
       const msgSend: ContractMessage = {
         type: "/bank.MsgSend",
-        value: {
+        value: MsgSend.create({
           from_address: "",
           to_address: "g1receiver",
           amount: "1000ugnot",
-        } as MsgSend,
+        }),
       };
 
       const result = mappedDocumentMessagesWithCaller([msgSend], currentAddress);
@@ -206,15 +256,15 @@ describe("messages.utils", () => {
     it("should add creator to MsgAddPackage if not present", () => {
       const msgAddPackage: ContractMessage = {
         type: "/vm.m_addpkg",
-        value: {
+        value: MsgAddPackage.create({
           creator: "",
           package: {
             name: "test",
             path: "gno.land/p/demo/test",
             files: [],
           },
-          deposit: "",
-        } as MsgAddPackage,
+          send: "",
+        }),
       };
 
       const result = mappedDocumentMessagesWithCaller([msgAddPackage], currentAddress);
@@ -227,7 +277,7 @@ describe("messages.utils", () => {
     it("should add caller to MsgRun if not present", () => {
       const msgRun: ContractMessage = {
         type: "/vm.m_run",
-        value: {
+        value: MsgRun.create({
           caller: "",
           send: "",
           package: {
@@ -235,7 +285,7 @@ describe("messages.utils", () => {
             path: "",
             files: [],
           },
-        } as MsgRun,
+        }),
       };
 
       const result = mappedDocumentMessagesWithCaller([msgRun], currentAddress);
@@ -254,21 +304,21 @@ describe("messages.utils", () => {
       const messages: ContractMessage[] = [
         {
           type: "/bank.MsgSend",
-          value: {
+          value: MsgSend.create({
             from_address: "",
             to_address: "g1receiver",
             amount: "1000ugnot",
-          } as MsgSend,
+          }),
         },
         {
           type: "/vm.m_call",
-          value: {
+          value: MsgCall.create({
             caller: "",
             send: "",
             pkg_path: "gno.land/r/demo/foo",
             func: "bar",
             args: [],
-          } as MsgCall,
+          }),
         },
       ];
 

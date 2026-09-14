@@ -283,13 +283,13 @@ const PoolAddLiquidityContainer: React.FC = () => {
       }
 
       const amountRaw = makeRawTokenAmount(tokenA, amount) || 0;
-      const { amountB } = getDepositAmountsByAmountA(
-        selectPool.currentPrice,
-        currentSqrtPriceX96,
-        selectPool.minPrice,
-        selectPool.maxPrice,
-        BigInt(amountRaw),
-      );
+      const { amountB } = getDepositAmountsByAmountA({
+        currentPrice: selectPool.currentPrice,
+        sqrtPriceX96: currentSqrtPriceX96,
+        minPrice: selectPool.minPrice,
+        maxPrice: selectPool.maxPrice,
+        amount: BigInt(amountRaw),
+      });
       const expectedTokenAmount = makeDisplayTokenAmount(tokenB, amountB) || "0";
       tokenBAmountInput.changeAmount(expectedTokenAmount.toString());
     },
@@ -329,13 +329,13 @@ const PoolAddLiquidityContainer: React.FC = () => {
       }
 
       const amountRaw = makeRawTokenAmount(tokenB, amount) || 0;
-      const { amountA } = getDepositAmountsByAmountB(
-        selectPool.currentPrice,
-        currentSqrtPriceX96,
-        selectPool.minPrice,
-        selectPool.maxPrice,
-        BigInt(amountRaw),
-      );
+      const { amountA } = getDepositAmountsByAmountB({
+        currentPrice: selectPool.currentPrice,
+        sqrtPriceX96: currentSqrtPriceX96,
+        minPrice: selectPool.minPrice,
+        maxPrice: selectPool.maxPrice,
+        amount: BigInt(amountRaw),
+      });
       const expectedTokenAmount = makeDisplayTokenAmount(tokenA, amountA) || "0";
       tokenAAmountInput.changeAmount(expectedTokenAmount.toString());
     },

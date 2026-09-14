@@ -8,7 +8,7 @@ import { MsgRun } from "@gnolang/gno-js-client/bin/proto/gno/vm";
  * @see {@link https://github.com/gnolang/gno/tree/master/tm2/pkg/sdk/bank} - Bank module messages
  * @see {@link https://github.com/gnolang/gno/tree/master/gnovm/pkg/gnolang} - VM module messages
  */
-export type EMessageType = "/bank.MsgSend" | "/vm.m_call" | "/vm.m_addpkg" | "/vm.m_run";
+export type EMessageType = ContractMessage["type"];
 
 /**
  * Union type of all possible message value types from the gno-js-client.
@@ -19,11 +19,11 @@ export type EMessageType = "/bank.MsgSend" | "/vm.m_call" | "/vm.m_addpkg" | "/v
  * - MsgAddPackage: Package/realm deployment to the blockchain
  * - MsgRun: Execute arbitrary Gno code (used for testing/development)
  */
-export type TMessage = MsgAddPackage | MsgCall | MsgSend | MsgRun;
+export type TMessage = ContractMessage["value"];
 
 /**
  * Represents a typed message that can be included in a transaction.
- * This interface provides type safety by linking message types with their corresponding value structures.
+ * The discriminant links each message type with its required value fields.
  *
  * @example
  * ```typescript
@@ -33,14 +33,23 @@ export type TMessage = MsgAddPackage | MsgCall | MsgSend | MsgRun;
  *     from_address: "g1sender",
  *     to_address: "g1receiver",
  *     amount: "1000ugnot"
- *   } as MsgSend
+ *   }
  * };
  * ```
  */
-export interface ContractMessage {
-  type: EMessageType;
-  value: TMessage;
-}
+export type ContractMessage =
+  | { type: "/bank.MsgSend"; value: MsgSend }
+  | { type: "/vm.m_call"; value: MsgCall }
+  | { type: "/vm.m_addpkg"; value: MsgAddPackage }
+  | { type: "/vm.m_run"; value: MsgRun };
+
+export type TransactionContract = { function: string } & (
+  | { type: "/bank.MsgSend"; value: MsgSend }
+  | { type: "/vm.m_call"; value: Pick<MsgCall, "caller" | "send" | "pkg_path" | "func" | "args"> }
+  | { type: "/vm.m_addpkg"; value: Pick<MsgAddPackage, "creator" | "package"> }
+  | { type: "/vm.m_run"; value: Pick<MsgRun, "caller" | "send" | "package"> }
+  | { type: "unknown"; rawType: string; value: Record<string, never> }
+);
 
 /**
  * Represents a transaction document that follows the Cosmos SDK transaction format.
@@ -98,45 +107,8 @@ export interface Document {
 export interface TransactionData {
   /** Read-only array of blockchain messages to be sent */
   messages: readonly ContractMessage[];
-  /**
-   * Simplified contract information for UI display.
-   * Each entry corresponds to a message but with flattened structure for easier access.
-   */
-  contracts: {
-    /** The message type (e.g., "/vm.m_call", "/bank.MsgSend") */
-    type: string;
-    /** Human-readable function name (e.g., "Transfer", "Swap", "AddLiquidity") */
-    function: string;
-    /**
-     * Flattened value object containing all possible fields from different message types.
-     * This approach was chosen over a union type to simplify UI rendering logic.
-     * Only relevant fields will be populated based on the message type.
-     */
-    value: {
-      /** Address initiating the contract call (MsgCall, MsgRun) */
-      caller?: string;
-      /** Amount to send with the transaction (MsgCall, MsgRun) */
-      send?: string;
-      /** Package path for contract calls (MsgCall) */
-      pkg_path?: string;
-      /** Function name being called (MsgCall) */
-      func?: string;
-      /** Function arguments (MsgCall) */
-      args?: string[] | null;
-      /** Sender address for transfers (MsgSend) */
-      from_address?: string;
-      /** Recipient address for transfers (MsgSend) */
-      to_address?: string;
-      /** Transfer amount (MsgSend) */
-      amount?: string;
-      /** Package creator (MsgAddPackage) */
-      creator?: string;
-      /** Package data (MsgAddPackage, MsgRun) */
-      package?: unknown;
-      /** Deposit amount for package deployment (MsgAddPackage) */
-      deposit?: string;
-    };
-  }[];
+  /** Message-specific fields used to display transaction details. */
+  contracts: TransactionContract[];
   /** Requested gas limit as string */
   gasWanted: string;
   /** Gas fee in format "amount+denom" (e.g., "1000000ugnot") */

@@ -81,11 +81,20 @@ const TransactionApprovalModalContainer = ({ onApprove, onReject, document }: Pr
     setMemo(document.memo || "");
   }, [document]);
 
+  const firstContract = transactionData?.contracts[0];
+  const caller = !firstContract || firstContract.type === "unknown"
+    ? ""
+    : firstContract.type === "/bank.MsgSend"
+    ? firstContract.value.from_address
+    : firstContract.type === "/vm.m_addpkg"
+    ? firstContract.value.creator
+    : firstContract.value.caller;
+
   return (
     <TransactionApprovalModal
       onConfirm={handleApprove}
       onCancel={onReject}
-      caller={transactionData?.contracts[0].value.caller || ""}
+      caller={caller}
       contracts={transactionData?.contracts || []}
       transactionMessageRaw={JSON.stringify(transactionDocument, null, 2)}
       memo={memo}

@@ -240,13 +240,13 @@ export const useIncreaseHandle = () => {
         return;
       }
       const amountAAmountRaw = makeRawTokenAmount(tokenA, amount) || "0";
-      const { amountB } = getDepositAmountsByAmountA(
-        selectPool.currentPrice,
+      const { amountB } = getDepositAmountsByAmountA({
+        currentPrice: selectPool.currentPrice,
         sqrtPriceX96,
         minPrice,
         maxPrice,
-        BigInt(amountAAmountRaw),
-      );
+        amount: BigInt(amountAAmountRaw),
+      });
 
       const tokenBAmount = makeDisplayTokenAmount(tokenB, amountB) || "0";
       tokenBAmountInput.changeAmount(tokenBAmount.toString());
@@ -268,13 +268,13 @@ export const useIncreaseHandle = () => {
       }
 
       const amountBAmountRaw = makeRawTokenAmount(tokenB, amount) || "0";
-      const { amountA } = getDepositAmountsByAmountB(
-        selectPool.currentPrice,
+      const { amountA } = getDepositAmountsByAmountB({
+        currentPrice: selectPool.currentPrice,
         sqrtPriceX96,
         minPrice,
         maxPrice,
-        BigInt(amountBAmountRaw),
-      );
+        amount: BigInt(amountBAmountRaw),
+      });
 
       const tokenAAmount = makeDisplayTokenAmount(tokenA, amountA) || "0";
       tokenAAmountInput.changeAmount(tokenAAmount.toString());

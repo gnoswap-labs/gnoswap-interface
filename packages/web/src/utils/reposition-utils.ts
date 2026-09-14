@@ -22,25 +22,37 @@ export function getRepositionAmountsByPriceRange(
 } {
   const originDepositAmounts =
     currentPrice <= originMaxPrice
-      ? getDepositAmountsByAmountA(currentPrice, sqrtPriceX96, originMinPrice, originMaxPrice, DEPOSIT_AMOUNT_10_POW_8)
-      : getDepositAmountsByAmountB(currentPrice, sqrtPriceX96, originMinPrice, originMaxPrice, DEPOSIT_AMOUNT_10_POW_8);
+      ? getDepositAmountsByAmountA({
+          currentPrice,
+          sqrtPriceX96,
+          minPrice: originMinPrice,
+          maxPrice: originMaxPrice,
+          amount: DEPOSIT_AMOUNT_10_POW_8,
+        })
+      : getDepositAmountsByAmountB({
+          currentPrice,
+          sqrtPriceX96,
+          minPrice: originMinPrice,
+          maxPrice: originMaxPrice,
+          amount: DEPOSIT_AMOUNT_10_POW_8,
+        });
 
   const newDepositAmounts =
     currentPrice <= repositionMaxPrice
-      ? getDepositAmountsByAmountA(
+      ? getDepositAmountsByAmountA({
           currentPrice,
           sqrtPriceX96,
-          repositionMinPrice,
-          repositionMaxPrice,
-          DEPOSIT_AMOUNT_10_POW_8,
-        )
-      : getDepositAmountsByAmountB(
+          minPrice: repositionMinPrice,
+          maxPrice: repositionMaxPrice,
+          amount: DEPOSIT_AMOUNT_10_POW_8,
+        })
+      : getDepositAmountsByAmountB({
           currentPrice,
           sqrtPriceX96,
-          repositionMinPrice,
-          repositionMaxPrice,
-          DEPOSIT_AMOUNT_10_POW_8,
-        );
+          minPrice: repositionMinPrice,
+          maxPrice: repositionMaxPrice,
+          amount: DEPOSIT_AMOUNT_10_POW_8,
+        });
 
   const originDepositRatioBN = BigNumber(originDepositAmounts.amountA.toString()).dividedBy(
     Number(originDepositAmounts.amountA.toString()) + Number(originDepositAmounts.amountB.toString()),
@@ -121,26 +133,26 @@ export function getRepositionAmountsWithSwapSimulation(
     const isInsufficientQuantity = repositionAmountB > estimatedAmountB;
 
     if (isInsufficientQuantity) {
-      const depositAmounts = getDepositAmountsByAmountB(
+      const depositAmounts = getDepositAmountsByAmountB({
         currentPrice,
         sqrtPriceX96,
-        repositionMinPrice || 1,
-        repositionMaxPrice || 1,
-        toShiftBitInt(estimatedAmountB || 0, tokenB.decimals),
-      );
+        minPrice: repositionMinPrice || 1,
+        maxPrice: repositionMaxPrice || 1,
+        amount: toShiftBitInt(estimatedAmountB || 0, tokenB.decimals),
+      });
       return {
         amountA: makeShiftAmount(depositAmounts.amountA, tokenA.decimals * -1).toString(),
         amountB: makeShiftAmount(depositAmounts.amountB, tokenB.decimals * -1).toString(),
       };
     }
 
-    const depositAmounts = getDepositAmountsByAmountA(
+    const depositAmounts = getDepositAmountsByAmountA({
       currentPrice,
       sqrtPriceX96,
-      repositionMinPrice || 1,
-      repositionMaxPrice || 1,
-      toShiftBitInt(estimatedAmountA, tokenA.decimals),
-    );
+      minPrice: repositionMinPrice || 1,
+      maxPrice: repositionMaxPrice || 1,
+      amount: toShiftBitInt(estimatedAmountA, tokenA.decimals),
+    });
     return {
       amountA: makeShiftAmount(depositAmounts.amountA, tokenA.decimals * -1).toString(),
       amountB: makeShiftAmount(depositAmounts.amountB, tokenB.decimals * -1).toString(),
@@ -160,26 +172,26 @@ export function getRepositionAmountsWithSwapSimulation(
   const isInsufficientQuantity = repositionAmountA > estimatedAmountA;
 
   if (isInsufficientQuantity) {
-    const depositAmounts = getDepositAmountsByAmountA(
+    const depositAmounts = getDepositAmountsByAmountA({
       currentPrice,
       sqrtPriceX96,
-      repositionMinPrice || 1,
-      repositionMaxPrice || 1,
-      toShiftBitInt(estimatedAmountA || 0, tokenA.decimals),
-    );
+      minPrice: repositionMinPrice || 1,
+      maxPrice: repositionMaxPrice || 1,
+      amount: toShiftBitInt(estimatedAmountA || 0, tokenA.decimals),
+    });
     return {
       amountA: makeShiftAmount(depositAmounts.amountA, tokenA.decimals * -1).toString(),
       amountB: makeShiftAmount(depositAmounts.amountB, tokenB.decimals * -1).toString(),
     };
   }
 
-  const depositAmounts = getDepositAmountsByAmountB(
+  const depositAmounts = getDepositAmountsByAmountB({
     currentPrice,
     sqrtPriceX96,
-    repositionMinPrice || 1,
-    repositionMaxPrice || 1,
-    toShiftBitInt(estimatedAmountB || 0, tokenB.decimals),
-  );
+    minPrice: repositionMinPrice || 1,
+    maxPrice: repositionMaxPrice || 1,
+    amount: toShiftBitInt(estimatedAmountB || 0, tokenB.decimals),
+  });
 
   return {
     amountA: makeShiftAmount(depositAmounts.amountA, tokenA.decimals * -1).toString(),

@@ -12,7 +12,7 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useTokenWarningModal } from "@hooks/token/ui/use-token-warning-modal";
 import { useGetToken, useGetTokenDetails, useGetTokenPrices } from "@query/token";
-import { IPriceResponse, IPrices1d } from "@repositories/token";
+import { IPriceResponse } from "@repositories/token";
 import { TokenState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
 import { getLabelChartV2, getLocalizeTime, getNumberOfAxis } from "@utils/chart";
@@ -68,7 +68,7 @@ export const dummyTokenInfo: TokenInfo = {
 
 function createXAxisDatas(
   currentTab: TokenChartGraphPeriodType,
-  chartData: IPrices1d[],
+  chartData: IPriceResponse[],
   numberAxis: number,
   date: Date[],
   space: number,

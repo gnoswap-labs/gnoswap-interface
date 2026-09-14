@@ -49,9 +49,7 @@ export interface TokenModel {
   priceID: string;
 }
 
-export interface NativeTokenModel extends TokenModel {
-  wrappedPath: string;
-}
+export type NativeTokenModel = TokenModel & Required<Pick<TokenModel, "wrappedPath">>;
 
 export function isNativeToken(token: TokenModel): token is NativeTokenModel {
   return token.type?.toLowerCase() === "native";
