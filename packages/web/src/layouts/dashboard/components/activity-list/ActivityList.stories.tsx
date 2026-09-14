@@ -1,7 +1,7 @@
 import React from "react";
 import { css, Theme } from "@emotion/react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 import { ActivityData, dummyActivityData } from "@repositories/activity/responses/activity-responses";
 import { ActivityType } from "@repositories/dashboard";
 import { DEVICE_TYPE } from "@styles/media";

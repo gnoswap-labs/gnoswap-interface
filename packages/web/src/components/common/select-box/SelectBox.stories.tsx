@@ -1,4 +1,4 @@
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 import SelectBox, { type SelectBoxProps } from "./SelectBox";
 import { Meta, StoryObj } from "@storybook/nextjs";
 

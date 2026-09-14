@@ -1,4 +1,4 @@
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 import SelectTokenBalance, { type SelectTokenBalanceProps } from "./SelectTokenBalance";
 import { Meta, StoryObj } from "@storybook/nextjs";
 
