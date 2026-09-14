@@ -155,6 +155,7 @@ describe("messages.utils", () => {
         value: {
           caller: "",
           send: "",
+          max_deposit: "",
           pkg_path: "gno.land/r/demo/foo",
           func: "bar",
           args: [],
@@ -175,6 +176,7 @@ describe("messages.utils", () => {
         value: {
           caller: existingCaller,
           send: "",
+          max_deposit: "",
           pkg_path: "gno.land/r/demo/foo",
           func: "bar",
           args: [],
@@ -214,6 +216,8 @@ describe("messages.utils", () => {
             files: [],
           },
           deposit: "",
+          send: "",
+          max_deposit: "",
         } as MsgAddPackage,
       };
 
@@ -230,6 +234,7 @@ describe("messages.utils", () => {
         value: {
           caller: "",
           send: "",
+          max_deposit: "",
           package: {
             name: "test",
             path: "",
@@ -265,6 +270,7 @@ describe("messages.utils", () => {
           value: {
             caller: "",
             send: "",
+            max_deposit: "",
             pkg_path: "gno.land/r/demo/foo",
             func: "bar",
             args: [],

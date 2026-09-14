@@ -21,8 +21,16 @@ const customJestConfig = {
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   testEnvironment: "jest-environment-jsdom",
   testMatch: ["<rootDir>/**/*.spec.(js|jsx|ts|tsx)"],
-  transformIgnorePatterns: ["<rootDir>/node_modules/"],
 };
 
-// createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
-module.exports = createJestConfig(customJestConfig);
+// faker v10 ships ESM only and next/jest otherwise ignores node_modules so its
+// transform patterns are replaced to add @faker-js to the allowlist
+module.exports = async () => {
+  const config = await createJestConfig(customJestConfig)();
+  config.transformIgnorePatterns = [
+    "/node_modules/(?!.pnpm)(?!(geist|@faker-js)/)",
+    "/node_modules/.pnpm/(?!(geist|@faker-js)@)",
+    "^.+\\.module\\.(css|sass|scss)$",
+  ];
+  return config;
+};
