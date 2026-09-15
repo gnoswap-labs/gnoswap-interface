@@ -3,6 +3,7 @@ import { SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.
 import { tickToSqrtPriceX96 } from "./math.utils";
 import {
   BroadcastMessageData,
+  calculateSlippageLimitAmount,
   feeBoostRateByPrices,
   getSwappedTokenData,
   isEndTickBy,
@@ -364,5 +365,34 @@ describe("getSwappedTokenData()", () => {
       expect(exactOutResult.token0Symbol).toBe(mockBroadcastMessage.tokenBSymbol);
       expect(exactOutResult.token1Symbol).toBe(mockBroadcastMessage.tokenASymbol);
     });
+  });
+});
+
+describe("calculateSlippageLimitAmount", () => {
+  it("rounds the exact-in minimum output down", () => {
+    expect(calculateSlippageLimitAmount("1", 0.5, "EXACT_IN", 6)).toBe("0.995");
+    // 0.000001 * 0.995 = 0.000000995 -> floor to 0 (nothing can be guaranteed below one raw unit)
+    expect(calculateSlippageLimitAmount("0.000001", 0.5, "EXACT_IN", 6)).toBe("0");
+    expect(calculateSlippageLimitAmount("0.000002", 0.5, "EXACT_IN", 6)).toBe("0.000001");
+  });
+
+  it("rounds the exact-out maximum input up at an atomic-unit boundary", () => {
+    // 0.000001 * 1.005 = 0.000001005 -> must become 2 raw units, not 1
+    expect(calculateSlippageLimitAmount("0.000001", 0.5, "EXACT_OUT", 6)).toBe("0.000002");
+    expect(calculateSlippageLimitAmount("1", 0.5, "EXACT_OUT", 6)).toBe("1.005");
+    expect(calculateSlippageLimitAmount("1", 0.5, "EXACT_OUT", 2)).toBe("1.01");
+  });
+
+  it("keeps full precision for amounts above Number.MAX_SAFE_INTEGER", () => {
+    // 62667447936.264477 * 0.995 = 62354110696.583154615 -> rounded down at 6 decimals
+    expect(calculateSlippageLimitAmount("62667447936.264477", 0.5, "EXACT_IN", 6)).toBe("62354110696.583154");
+    // 62667447936.264477 * 1.005 = 62980785175.945799385 -> rounded up at 6 decimals
+    expect(calculateSlippageLimitAmount("62667447936.264477", 0.5, "EXACT_OUT", 6)).toBe("62980785175.9458");
+  });
+
+  it("returns 0 for invalid input", () => {
+    expect(calculateSlippageLimitAmount("abc", 0.5, "EXACT_IN", 6)).toBe("0");
+    expect(calculateSlippageLimitAmount("1", NaN, "EXACT_IN", 6)).toBe("0");
+    expect(calculateSlippageLimitAmount("0", 0.5, "EXACT_OUT", 6)).toBe("0");
   });
 });

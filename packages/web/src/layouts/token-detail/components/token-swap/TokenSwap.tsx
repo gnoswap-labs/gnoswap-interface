@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import React, { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { cx } from "@emotion/css";
@@ -29,7 +30,6 @@ export interface TokenSwapProps {
   themeKey: "dark" | "light";
   dataTokenInfo: DataTokenInfo;
   isLoading: boolean;
-  isLoadingGasInfo: boolean;
   swapButtonText: string;
   isAvailSwap: boolean;
   swapSummaryInfo: SwapSummaryInfo | null;
@@ -73,7 +73,6 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   changeTokenBAmount,
   switchSwapDirection,
   isLoading,
-  isLoadingGasInfo,
   swapButtonText,
   isAvailSwap,
   swapSummaryInfo,
@@ -120,7 +119,8 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
 
   const handleAutoFillTokenA = useCallback(() => {
     if (connectedWallet) {
-      const formatValue = parseFloat(dataTokenInfo.tokenABalance.replace(/,/g, "")).toString();
+      // Keep the full precision: parseFloat rounds balances with more than ~16 significant digits
+      const formatValue = BigNumber(dataTokenInfo.tokenABalance.replace(/,/g, "")).toFixed();
       changeTokenAAmount(formatValue);
     }
   }, [changeTokenAAmount, connectedWallet, dataTokenInfo]);
@@ -258,11 +258,9 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
           swapSummaryInfo={swapSummaryInfo}
           swapRouteInfos={swapRouteInfos}
           isLoading={isLoading}
-          isLoadingGasInfo={isLoadingGasInfo}
           setSwapRateAction={setSwapRateAction}
           priceImpactStatus={priceImpactStatus}
           swapTokenInfo={swapTokenInfo}
-          connectedWallet={connectedWallet}
         />
       )}
       <div className="footer">

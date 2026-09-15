@@ -358,7 +358,7 @@ describe("position.message.ts", () => {
   });
 
   describe("makeUnStakePositionsMessagesWithApproves", () => {
-    it("creates one UnStakeToken per position without token approve messages", async () => {
+    it("creates UnStakeToken followed by CollectReward per position without token approve messages", async () => {
       const caller = "caller";
 
       const positions: PoolPositionModel[] = [
@@ -390,7 +390,23 @@ describe("position.message.ts", () => {
           caller,
           send: "",
           pkg_path: "staker_path",
+          func: "CollectReward",
+          args: ["lp1"],
+          gasFee: undefined,
+        },
+        {
+          caller,
+          send: "",
+          pkg_path: "staker_path",
           func: "UnStakeToken",
+          args: ["lp2"],
+          gasFee: undefined,
+        },
+        {
+          caller,
+          send: "",
+          pkg_path: "staker_path",
+          func: "CollectReward",
           args: ["lp2"],
           gasFee: undefined,
         },

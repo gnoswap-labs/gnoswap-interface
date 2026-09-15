@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import ExchangeRate from "@components/common/exchange-rate/ExchangeRate";
-import { IconGasFilled } from "@components/common/icons/IconsGasFilled";
 import IconStrokeArrowDown from "@components/common/icons/IconStrokeArrowDown";
 import IconStrokeArrowUp from "@components/common/icons/IconStrokeArrowUp";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
@@ -12,24 +11,21 @@ import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { DEVICE_TYPE } from "@styles/media";
-import { floorNumber, toNumberFormat } from "@utils/number-utils";
+import { floorNumber } from "@utils/number-utils";
 import { convertToKMBWithPrefix } from "@utils/stake-position-utils";
 
 import SwapCardAutoRouter from "./swap-card-auto-router/SwapCardAutoRouter";
 import SwapCardFeeInfo from "./swap-card-fee-info/SwapCardFeeInfo";
 
 import { DetailWrapper, FeelWrapper } from "./SwapCardContentDetail.styles";
-import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 
 export interface SwapCardContentDetailProps {
   swapSummaryInfo: SwapSummaryInfo;
   swapRouteInfos: SwapRouteInfo[];
   isLoading: boolean;
-  isLoadingGasInfo: boolean;
   setSwapRateAction: (type: SwapRateAction) => void;
   priceImpactStatus: PriceImpactStatus;
   swapTokenInfo: SwapTokenInfo;
-  connectedWallet: boolean;
 }
 
 export const convertSwapRate = (value: number) => {
@@ -37,17 +33,13 @@ export const convertSwapRate = (value: number) => {
   return value.toFixed(15);
 };
 
-const SkeletonLoader = () => <span css={pulseSkeletonStyle({ h: 18, w: "30px!important" })} />;
-
 const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
   swapSummaryInfo,
   swapRouteInfos,
   isLoading,
-  isLoadingGasInfo,
   setSwapRateAction,
   priceImpactStatus,
   swapTokenInfo,
-  connectedWallet,
 }) => {
   const { t } = useTranslation();
   const { breakpoint } = useWindowSize();
@@ -94,14 +86,6 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
     }
   }, [swapSummaryInfo, swapTokenInfo]);
 
-  const gasFeeUSDStr = useMemo(() => {
-    const gasFeeUSD = swapSummaryInfo.gasFeeUSD;
-
-    if (Number(gasFeeUSD) < 0.01) return "<$0.01";
-
-    return `$${toNumberFormat(gasFeeUSD)}`;
-  }, [swapSummaryInfo.gasFeeUSD]);
-
   const toggleDetailInfo = useCallback(() => {
     setOpenedDetailInfo(!openedDetailInfo);
   }, [openedDetailInfo]);
@@ -111,10 +95,6 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
       swapSummaryInfo.swapRateAction === SwapRateAction.ATOB ? SwapRateAction.BTOA : SwapRateAction.ATOB,
     );
   }, [swapSummaryInfo.swapRateAction]);
-
-  const gasEstimateSuccess = useMemo(() => {
-    return swapSummaryInfo.gasEstimateSuccess;
-  }, [swapSummaryInfo.gasEstimateSuccess]);
 
   return (
     <>
@@ -136,12 +116,6 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
               </div>
             )}
             <div className="price-info">
-              {gasEstimateSuccess && (
-                <>
-                  <IconGasFilled className="price-icon note-icon" />
-                  {isLoading || isLoadingGasInfo ? <SkeletonLoader /> : <span>{gasFeeUSDStr}</span>}
-                </>
-              )}
               {openedDetailInfo ? (
                 <IconStrokeArrowUp className="price-icon" onClick={toggleDetailInfo} />
               ) : (
@@ -159,11 +133,8 @@ const SwapCardContentDetail: React.FC<SwapCardContentDetailProps> = ({
               <SwapCardFeeInfo
                 swapSummaryInfo={swapSummaryInfo}
                 isLoading={isLoading}
-                isLoadingGasInfo={isLoadingGasInfo}
                 priceImpactStatus={priceImpactStatus}
                 swapTokenInfo={swapTokenInfo}
-                connectedWallet={connectedWallet}
-                gasEstimateSuccess={gasEstimateSuccess}
               />
             )}
             <SwapCardAutoRouter
