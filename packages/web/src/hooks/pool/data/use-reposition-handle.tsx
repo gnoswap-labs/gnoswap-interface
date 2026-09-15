@@ -44,10 +44,15 @@ import { IncreaseState } from "@states/index";
 import { checkGnotPath, delay } from "@utils/common";
 import { subscriptFormat } from "@utils/number-utils";
 import { makeDisplayPrice } from "@utils/pool-utils";
-import { getRepositionAmountsByPriceRange, getRepositionAmountsWithSwapSimulation } from "@utils/reposition-utils";
+import {
+  getRepositionAmountsByPriceRange,
+  getRepositionAmountsWithSwapSimulation,
+  makeRepositionSwapAmounts,
+  makeRepositionSwapEstimateRequest,
+} from "@utils/reposition-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { makeDisplayTokenAmount, makeDisplayTokenAmountString } from "@utils/token-utils";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -265,8 +270,8 @@ export const useRepositionHandle = () => {
     }
 
     return {
-      amountA: String(makeDisplayTokenAmount(selectedPosition.pool.tokenA, selectedPosition.tokenABalance) ?? 0),
-      amountB: String(makeDisplayTokenAmount(selectedPosition.pool.tokenB, selectedPosition.tokenBBalance) ?? 0),
+      amountA: makeDisplayTokenAmountString(selectedPosition.pool.tokenA, selectedPosition.tokenABalance) ?? "0",
+      amountB: makeDisplayTokenAmountString(selectedPosition.pool.tokenB, selectedPosition.tokenBBalance) ?? "0",
     };
   }, [selectedPosition]);
 
@@ -291,8 +296,8 @@ export const useRepositionHandle = () => {
       selectPool.maxPrice,
       tickToPrice(ordered ? selectedPosition.tickLower : selectedPosition.tickUpper * -1),
       tickToPrice(ordered ? selectedPosition.tickUpper : selectedPosition.tickLower * -1),
-      String(makeDisplayTokenAmount(tokenA, selectedPosition.tokenABalance) ?? 0),
-      String(makeDisplayTokenAmount(tokenB, selectedPosition.tokenBBalance) ?? 0),
+      makeDisplayTokenAmountString(tokenA, selectedPosition.tokenABalance) ?? "0",
+      makeDisplayTokenAmountString(tokenB, selectedPosition.tokenBBalance) ?? "0",
     );
 
     return repositionAmountsByNewPriceRange;
@@ -311,24 +316,12 @@ export const useRepositionHandle = () => {
     if (!currentAmounts || !initialEstimatedRepositionAmounts || !selectedPosition) {
       return null;
     }
-    const { amountA, amountB } = currentAmounts;
-    const { amountA: repositionAmountA, amountB: repositionAmountB } = initialEstimatedRepositionAmounts;
-
-    const isSwapAtoB = BigNumber(amountA).isGreaterThan(repositionAmountA);
-    if (isSwapAtoB) {
-      return {
-        inputToken: selectedPosition.pool.tokenA,
-        outputToken: selectedPosition.pool.tokenB,
-        tokenAmount: Number(amountA) - repositionAmountA || 0,
-        exactType: "EXACT_IN" as const,
-      };
-    }
-    return {
-      inputToken: selectedPosition.pool.tokenB,
-      outputToken: selectedPosition.pool.tokenA,
-      tokenAmount: Number(amountB) - repositionAmountB || 0,
-      exactType: "EXACT_IN" as const,
-    };
+    return makeRepositionSwapEstimateRequest(
+      selectedPosition.pool.tokenA,
+      selectedPosition.pool.tokenB,
+      currentAmounts,
+      initialEstimatedRepositionAmounts,
+    );
   }, [currentAmounts, initialEstimatedRepositionAmounts, selectedPosition]);
 
   const {
@@ -364,7 +357,7 @@ export const useRepositionHandle = () => {
       return null;
     }
 
-    if (estimateSwapRequest?.tokenAmount === 0) {
+    if (estimateSwapRequest?.tokenAmount === null) {
       return {
         amountA: currentAmounts.amountA.toString(),
         amountB: currentAmounts.amountB.toString(),
@@ -401,7 +394,7 @@ export const useRepositionHandle = () => {
   ]);
 
   const isSkipSwap = useMemo(() => {
-    if (estimateSwapRequest?.tokenAmount === 0) {
+    if (estimateSwapRequest?.tokenAmount === null) {
       return true;
     }
     if (
@@ -503,27 +496,25 @@ export const useRepositionHandle = () => {
     const isSwapAtoB = estimateSwapRequest.inputToken === selectedPosition?.pool.tokenA;
     const isExactIn = estimateSwapRequest.exactType === "EXACT_IN";
 
-    const inputAmount = isSwapAtoB
-      ? BigNumber(currentAmounts?.amountA || 0).minus(BigNumber(estimatedRepositionAmounts?.amountA || 0))
-      : BigNumber(currentAmounts?.amountB || 0).minus(BigNumber(estimatedRepositionAmounts?.amountB || 0));
-
-    const outputAmount = isSwapAtoB
-      ? BigNumber(estimatedRepositionAmounts?.amountB || 0).minus(BigNumber(currentAmounts?.amountB || 0))
-      : BigNumber(estimatedRepositionAmounts?.amountA || 0).minus(BigNumber(currentAmounts?.amountA || 0));
-
     const deadline = Math.floor(Date.now() / 1000) + 300;
     const currentReferralAddress = getNextReferralAddress();
+
+    // Amounts stay decimal strings end-to-end so values above Number.MAX_SAFE_INTEGER remain exact
+    const swapAmounts = makeRepositionSwapAmounts(
+      estimateSwapRequest,
+      isSwapAtoB,
+      currentAmounts ?? { amountA: "0", amountB: "0" },
+      estimatedRepositionAmounts ?? { amountA: "0", amountB: "0" },
+      DEFAULT_SLIPPAGE,
+    );
 
     const request: SwapRouteRequest = {
       inputToken: estimateSwapRequest.inputToken,
       outputToken: estimateSwapRequest.outputToken,
       estimatedRoutes: estimatedSwapResult.estimatedRoutes,
-      tokenAmount: isExactIn ? inputAmount.toNumber() : outputAmount.toNumber(),
+      ...swapAmounts,
       slippage: slippage,
       originAmount: estimatedSwapResult.originAmount,
-      tokenAmountLimit: isExactIn
-        ? outputAmount.toNumber() * ((100 - DEFAULT_SLIPPAGE) / 100)
-        : inputAmount.toNumber() * ((100 + DEFAULT_SLIPPAGE) / 100),
       deadline,
       referrerAddress: currentReferralAddress,
     };

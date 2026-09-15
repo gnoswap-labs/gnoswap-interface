@@ -1,7 +1,7 @@
 import { PriceImpactStatus, SwapRateAction } from "@hooks/swap/data/use-swap-handler";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import { render } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import SwapCardContent from "./SwapCardContent";
 
@@ -53,7 +53,49 @@ const swapTokenInfo: SwapTokenInfo = {
   slippage: 10,
 };
 
+// On-chain USDC balance (raw 62667447936264477, 6 decimals) that exceeds Number.MAX_SAFE_INTEGER
+const LARGE_BALANCE = "62667447936.264477";
+
 describe("SwapCardContent Component", () => {
+  it("Max forwards the exact balance string without number rounding", () => {
+    const changeTokenAAmount = jest.fn();
+    const mockProps = {
+      swapTokenInfo: {
+        ...swapTokenInfo,
+        tokenA: { ...swapTokenInfo.tokenA!, decimals: 6 },
+        tokenABalance: LARGE_BALANCE,
+      },
+      swapSummaryInfo: null,
+      swapRouteInfos: [],
+      changeTokenA: () => null,
+      changeTokenAAmount,
+      changeTokenB: () => null,
+      changeTokenBAmount: () => null,
+      switchSwapDirection: () => null,
+      connectedWallet: true,
+      isLoading: false,
+      setSwapRateAction: () => null,
+      isSwitchNetwork: false,
+      priceImpactStatus: "NONE" as PriceImpactStatus,
+      isSameToken: false,
+      resetEstimatedLiquidity: (): void => {},
+      isRefetching: false,
+    };
+
+    render(
+      <JotaiProvider>
+        <GnoswapThemeProvider>
+          <SwapCardContent {...mockProps} />
+        </GnoswapThemeProvider>
+      </JotaiProvider>,
+    );
+
+    fireEvent.click(screen.getByText("common:max"));
+
+    expect(changeTokenAAmount).toHaveBeenCalledWith(LARGE_BALANCE);
+    expect(parseFloat(LARGE_BALANCE).toString()).not.toBe(LARGE_BALANCE);
+  });
+
   it("SwapCardContent render", () => {
     const mockProps = {
       swapTokenInfo,

@@ -162,7 +162,7 @@ export const useSwapHandler = () => {
   const [openedConfirmModal, setOpenedConfirmModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { connected: connectedWallet, isSwitchNetwork, switchNetwork } = useWallet();
-  const { tokens, tokenPrices, displayBalanceMap, updateBalances, getTokenUSDPrice, refetchGrc20Balances } =
+  const { tokens, tokenPrices, displayBalanceStringMap, updateBalances, getTokenUSDPrice, refetchGrc20Balances } =
   useTokenData(true);
   const { slippage, changeSlippage } = useSlippage();
   const { openModal } = useConnectWalletModal();
@@ -215,27 +215,19 @@ export const useSwapHandler = () => {
     }));
   }, [estimatedRoutes, tokenA, tokenB]);
 
+  // Exact decimal balances: used for validation and the Max button.
+  // Display formatting is applied separately (useTokenBalancesDisplay).
   const tokenABalance = useMemo(() => {
     if (isSwitchNetwork || !tokenA) return "-";
 
-    // Only the balance in the swap card should be formatted the same with price
-    return formatPrice(displayBalanceMap?.[tokenA.priceID], {
-      isKMB: false,
-      usd: false,
-      greaterThan1Decimals: 6,
-    });
-  }, [isSwitchNetwork, displayBalanceMap, tokenA]);
+    return displayBalanceStringMap?.[tokenA.priceID] ?? "-";
+  }, [isSwitchNetwork, displayBalanceStringMap, tokenA]);
 
   const tokenBBalance = useMemo(() => {
     if (isSwitchNetwork || !tokenB) return "-";
 
-    // Only the balance in the swap card should be formatted the same with price
-    return formatPrice(displayBalanceMap?.[tokenB.priceID], {
-      isKMB: false,
-      usd: false,
-      greaterThan1Decimals: 6,
-    });
-  }, [isSwitchNetwork, displayBalanceMap, tokenB]);
+    return displayBalanceStringMap?.[tokenB.priceID] ?? "-";
+  }, [isSwitchNetwork, displayBalanceStringMap, tokenB]);
 
   const quotedTokenAAmount = useMemo(() => {
     return type === "EXACT_OUT" && estimatedAmount !== null ? estimatedAmount : tokenAAmount;
@@ -561,7 +553,8 @@ export const useSwapHandler = () => {
       priceImpact: formatPriceImpact(priceImpact),
 
       guaranteedAmount: {
-        amount: tokenAmountLimit || 0,
+        // Display only; the transaction uses the string `tokenAmountLimit`
+        amount: Number(tokenAmountLimit) || 0,
         currency: (type === "EXACT_IN" ? tokenB : tokenA).symbol,
       },
       swapRateAction,

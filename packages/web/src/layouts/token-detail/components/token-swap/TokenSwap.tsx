@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import React, { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { cx } from "@emotion/css";
@@ -118,7 +119,8 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
 
   const handleAutoFillTokenA = useCallback(() => {
     if (connectedWallet) {
-      const formatValue = parseFloat(dataTokenInfo.tokenABalance.replace(/,/g, "")).toString();
+      // Keep the full precision: parseFloat rounds balances with more than ~16 significant digits
+      const formatValue = BigNumber(dataTokenInfo.tokenABalance.replace(/,/g, "")).toFixed();
       changeTokenAAmount(formatValue);
     }
   }, [changeTokenAAmount, connectedWallet, dataTokenInfo]);

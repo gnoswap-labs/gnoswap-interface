@@ -27,7 +27,7 @@ export interface SwapConfirmModalState {
   swapSummaryInfo: SwapSummaryInfo | null;
   isRefetching: boolean;
   estimatedAmount: string | null;
-  tokenAmountLimit: number;
+  tokenAmountLimit: string;
 }
 
 export const swapConfirmModalState = atom<SwapConfirmModalState>({
@@ -35,5 +35,5 @@ export const swapConfirmModalState = atom<SwapConfirmModalState>({
   swapSummaryInfo: null,
   isRefetching: false,
   estimatedAmount: null,
-  tokenAmountLimit: 0,
+  tokenAmountLimit: "0",
 });

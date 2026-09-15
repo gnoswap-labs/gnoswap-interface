@@ -57,6 +57,41 @@ const splitMessages = (messages: TransactionMessage[], approveCount: number) => 
 });
 
 describe("swap-router.message.ts", () => {
+  it("keeps the exact raw amount in swap args and approval for a balance above Number.MAX_SAFE_INTEGER", async () => {
+    // Regression: on-chain USDC balance 62667447936264477 (6 decimals)
+    const caller = "caller";
+    const inputToken = createTokenModel("token_in");
+    const outputToken = createTokenModel("token_out");
+    const fetchAllowance = jest.fn(async () => 0);
+
+    const messages = await makeExactInSwapRouteMessageWithApproves(
+      {
+        inputToken,
+        outputToken,
+        tokenAmount: "62667447936.264477",
+        estimatedRoutes: [route],
+        tokenAmountLimit: "2",
+        deadline: 123,
+        caller,
+        referrerAddress: null,
+      },
+      fetchAllowance,
+    );
+
+    const { approveMessages, txMessages } = splitMessages(messages, 1);
+
+    expect(approveMessages).toEqual([
+      makeExpectedApproveRunMessage({
+        caller,
+        approves: [{ tokenPath: "token_in", spenderAddress: "router_address", amount: "62667447936264477" }],
+      }),
+    ]);
+    expect(txMessages[0]).toMatchObject({
+      func: "ExactInSwapRoute",
+      args: ["token_in", "token_out", "62667447936264477", "token_in:token_out:3000", "1", "2000000", "123", ""],
+    });
+  });
+
   it("approves only input token for exact-in swaps using exact input amount", async () => {
     const caller = "caller";
     const inputToken = createTokenModel("token_in");
@@ -67,9 +102,9 @@ describe("swap-router.message.ts", () => {
       {
         inputToken,
         outputToken,
-        tokenAmount: 1.25,
+        tokenAmount: "1.25",
         estimatedRoutes: [route],
-        tokenAmountLimit: 2,
+        tokenAmountLimit: "2",
         deadline: 123,
         caller,
         referrerAddress: null,
@@ -113,9 +148,9 @@ describe("swap-router.message.ts", () => {
       {
         inputToken,
         outputToken,
-        tokenAmount: 2,
+        tokenAmount: "2",
         estimatedRoutes: [route],
-        tokenAmountLimit: 1.25,
+        tokenAmountLimit: "1.25",
         deadline: 123,
         caller,
         referrerAddress: null,
