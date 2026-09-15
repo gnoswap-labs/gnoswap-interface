@@ -5,6 +5,7 @@ import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { PACKAGE_GOVERNANCE_STAKER_PATH } from "@constants/environment.constant";
 
+import { makeLaunchpadCollectProtocolFeeRewardMessages } from "../launchpad/launchpad.message";
 import { GovernanceRepository } from "./governance-repository";
 import {
   ClaimableRewards,
@@ -61,7 +62,6 @@ import { DEFAULT_GAS_FEE } from "@common/values";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import {
   makeCancelMessages,
-  makeCollectProtocolFeeRewardFromLaunchPadMessages,
   makeCollectProtocolFeeRewardMessages,
   makeCollectUnDelegatedGNSMessages,
   makeDelegateMessagesWithApproves,
@@ -448,7 +448,7 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
         tokenPaths: getClaimableTokenPaths(claimableGovernanceRewards),
         caller,
       }),
-      ...makeCollectProtocolFeeRewardFromLaunchPadMessages({
+      ...makeLaunchpadCollectProtocolFeeRewardMessages({
         tokenPaths: getClaimableTokenPaths(claimableLaunchpadRewards),
         caller,
       }),

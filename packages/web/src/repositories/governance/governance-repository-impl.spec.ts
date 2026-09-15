@@ -37,7 +37,7 @@ const createWalletClient = () => {
 
 describe("GovernanceRepositoryImpl", () => {
   describe("sendCollectReward", () => {
-    it("sends collect protocol fee reward from launchpad per token when only launchpad rewards are claimable", async () => {
+    it("sends launchpad collect protocol fee reward per token when only launchpad rewards are claimable", async () => {
       const walletClient = createWalletClient();
       const governanceRepository = new GovernanceRepositoryImpl(null, walletClient, null);
 
@@ -54,15 +54,15 @@ describe("GovernanceRepositoryImpl", () => {
           messages: [
             expect.objectContaining({
               caller: "caller",
-              pkg_path: "governance_staker_path",
-              func: "CollectProtocolFeeRewardFromLaunchPad",
-              args: ["caller", "token_a"],
+              pkg_path: "launchpad_path",
+              func: "CollectProtocolFeeReward",
+              args: ["token_a"],
             }),
             expect.objectContaining({
               caller: "caller",
-              pkg_path: "governance_staker_path",
-              func: "CollectProtocolFeeRewardFromLaunchPad",
-              args: ["caller", "token_b"],
+              pkg_path: "launchpad_path",
+              func: "CollectProtocolFeeReward",
+              args: ["token_b"],
             }),
           ],
         }),
@@ -92,9 +92,9 @@ describe("GovernanceRepositoryImpl", () => {
             }),
             expect.objectContaining({
               caller: "caller",
-              pkg_path: "governance_staker_path",
-              func: "CollectProtocolFeeRewardFromLaunchPad",
-              args: ["caller", "token_c"],
+              pkg_path: "launchpad_path",
+              func: "CollectProtocolFeeReward",
+              args: ["token_c"],
             }),
           ],
         }),
