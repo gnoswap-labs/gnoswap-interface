@@ -39,6 +39,8 @@ export interface TransactionMessageOfBankMsgSend {
 export interface TransactionMessageOfContract {
   caller: string;
   send: string;
+  /** Funds locked for storage, as "<amount><denom>". Omit for no deposit. */
+  max_deposit?: string;
   pkg_path: string;
   func: string;
   args: (string | number | boolean)[] | null;
@@ -67,6 +69,8 @@ export interface TransactionMessageOfRunPackage {
 export interface TransactionMessageOfRun {
   caller: string;
   send: string;
+  /** Funds locked for storage, as "<amount><denom>". Omit for no deposit. */
+  max_deposit?: string;
   package: TransactionMessageOfRunPackage;
 }
 

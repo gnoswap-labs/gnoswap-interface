@@ -12,7 +12,7 @@ import { useGetAllTokenPrices, useGetGrc20Balances, useGetTokens } from "@query/
 import { TokenState } from "@states/index";
 import { checkPositivePrice } from "@utils/common";
 import { toUnitFormat } from "@utils/number-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { makeDisplayTokenAmount, makeDisplayTokenAmountString } from "@utils/token-utils";
 import { isEmptyObject } from "@utils/validation-utils";
 
 import { useGnotToGnot } from "./use-gnot-wugnot";
@@ -63,6 +63,29 @@ export const useTokenData = (showUnverified = true) => {
     });
     return tokenBalanceMap;
   }, [balances, tokens]);
+
+  /**
+   * Display balances built from the raw balance strings without passing through a JS number.
+   * `displayBalanceMap` rounds raw balances above Number.MAX_SAFE_INTEGER (2^53), which can
+   * produce a balance slightly larger than the on-chain balance.
+   */
+  const displayBalanceStringMap = useMemo(() => {
+    const balanceMap: { [key in string]: string | null } = {};
+    if (tokens.length === 0) return {};
+
+    tokens.forEach(token => {
+      if (isNativeTokenByType(token.type)) {
+        balanceMap[token.priceID] =
+          gnotBalance === null || gnotBalance === undefined ? null : makeDisplayTokenAmountString(token, gnotBalance);
+        return;
+      }
+
+      const rawBalance = grc20BalancesData?.data?.find(balance => balance.path === token.path)?.amount;
+      balanceMap[token.priceID] = rawBalance === undefined ? null : makeDisplayTokenAmountString(token, rawBalance);
+    });
+
+    return balanceMap;
+  }, [tokens, gnotBalance, grc20BalancesData]);
 
   const trendingTokens: CardListTokenInfo[] = useMemo(() => {
     const sortedTokens = tokens
@@ -296,6 +319,7 @@ export const useTokenData = (showUnverified = true) => {
     tokens,
     tokenPrices,
     displayBalanceMap,
+    displayBalanceStringMap,
     balances,
     trendingTokens,
     recentlyAddedTokens,

@@ -30,7 +30,6 @@ import { makeRawTokenAmount } from "@utils/token-utils";
 import { isEmptyObject } from "@utils/validation-utils";
 
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
-import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import useSendAsset from "@hooks/wallet/data/useSendAsset";
 import { BalanceDetailInfo } from "@layouts/portfolio/components/wallet-balance/wallet-balance-detail/WalletBalanceDetail";
 import { BalanceSummaryInfo } from "@layouts/portfolio/components/wallet-balance/wallet-balance-summary/wallet-balance-summary-info/WalletBalanceSummaryInfo";
@@ -38,7 +37,6 @@ import AssetSendModal from "../../components/asset-send-modal/AssetSendModal";
 import WalletBalance from "../../components/wallet-balance/WalletBalance";
 
 const WalletBalanceContainer: React.FC = () => {
-  const { rpcProvider } = useGnoswapContext();
   const { connected, isSwitchNetwork, loadingConnect, account, walletType, currentChainId } = useWallet();
   const { address: userAddress = "" } = useAddress();
   const [address] = useState("");
@@ -137,7 +135,7 @@ const WalletBalanceContainer: React.FC = () => {
     broadcastLoading(getMessage(DexEvent.CLAIM_FEE, "pending", messageData));
 
     setLoadingTransactionClaim(true);
-    claimAll({ rpcProvider, input: claimAllInput }).then(response => {
+    claimAll({ input: claimAllInput }).then(response => {
       if (response) {
         if (response?.code === 0 || response?.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
           enqueueEvent({

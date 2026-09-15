@@ -218,7 +218,9 @@ export function makeUnStakePositionsMessagesWithApproves(
 ): Promise<TransactionMessage[]> {
   const approveMessageInfos: TokenApproveMessageInfo[] = [];
 
-  const unstakeMessages = positions.map(position =>
+  // UnStakeToken only records an exit checkpoint on-chain, so the rewards
+  // of each position are collected right after it in the same transaction.
+  const unstakeMessages = positions.flatMap(position => [
     makeTransactionMessage({
       send: "",
       func: TransactionMessageFunctionType.UnStakeToken,
@@ -226,7 +228,14 @@ export function makeUnStakePositionsMessagesWithApproves(
       args: [position.lpTokenId.toString()],
       caller,
     }),
-  );
+    makeTransactionMessage({
+      send: "",
+      func: TransactionMessageFunctionType.CollectReward,
+      packagePath: PACKAGE_STAKER_PATH,
+      args: [position.lpTokenId.toString()],
+      caller,
+    }),
+  ]);
 
   return makeTransactionMessagesWithApproves(unstakeMessages, approveMessageInfos, fetchAllowance);
 }

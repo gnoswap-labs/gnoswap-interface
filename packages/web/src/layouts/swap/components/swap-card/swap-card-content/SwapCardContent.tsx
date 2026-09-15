@@ -37,7 +37,6 @@ interface ContentProps {
   resetEstimatedLiquidity: () => void;
   connectedWallet: boolean;
   isLoading: boolean;
-  isLoadingGasInfo: boolean;
   setSwapRateAction: (type: SwapRateAction) => void;
   isSwitchNetwork: boolean;
   priceImpactStatus: PriceImpactStatus;
@@ -56,7 +55,6 @@ const SwapCardContent: React.FC<ContentProps> = ({
   switchSwapDirection,
   connectedWallet,
   isLoading,
-  isLoadingGasInfo,
   setSwapRateAction,
   priceImpactStatus,
   isSameToken,
@@ -104,7 +102,8 @@ const SwapCardContent: React.FC<ContentProps> = ({
   const handleAutoFillTokenA = useCallback(() => {
     if (connectedWallet) {
       resetEstimatedLiquidity();
-      const formatValue = parseFloat(swapTokenInfo.tokenABalance.replace(/,/g, "")).toString();
+      // Keep the full precision: parseFloat rounds balances with more than ~16 significant digits
+      const formatValue = BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, "")).toFixed();
       changeTokenAAmount(formatValue);
     }
   }, [changeTokenAAmount, connectedWallet, swapTokenInfo]);
@@ -253,11 +252,9 @@ const SwapCardContent: React.FC<ContentProps> = ({
               swapSummaryInfo={swapSummaryInfo}
               swapRouteInfos={swapRouteInfos}
               isLoading={isLoading}
-              isLoadingGasInfo={isLoadingGasInfo}
               setSwapRateAction={setSwapRateAction}
               priceImpactStatus={priceImpactStatus}
               swapTokenInfo={swapTokenInfo}
-              connectedWallet={connectedWallet}
             />
           )}
         </SwapDetailSectionWrapper>
