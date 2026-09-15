@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 import POOLS from "@repositories/pool/mock/pools.json";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";

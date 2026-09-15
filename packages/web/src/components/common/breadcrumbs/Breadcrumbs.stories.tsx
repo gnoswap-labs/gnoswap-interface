@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import Breadcrumbs from "./Breadcrumbs";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 const meta = {
   title: "common/Breadcrumbs",

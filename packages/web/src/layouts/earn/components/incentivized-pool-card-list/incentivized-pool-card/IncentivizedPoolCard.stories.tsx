@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { IncentivizePoolModel } from "@models/pool/pool-model";
