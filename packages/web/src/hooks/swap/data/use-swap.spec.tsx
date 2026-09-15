@@ -6,9 +6,10 @@ import { useSwap } from "./use-swap";
 
 const useGetRoutesMock = jest.fn();
 const sendExactInSwapRoute = jest.fn(async () => ({ code: 0, data: null, status: "success", type: "" }));
+const sendExactOutSwapRoute = jest.fn(async () => ({ code: 0, data: null, status: "success", type: "" }));
 
 jest.mock("@hooks/common/use-gnoswap-context", () => ({
-  useGnoswapContext: () => ({ swapRouterRepository: { sendExactInSwapRoute } }),
+  useGnoswapContext: () => ({ swapRouterRepository: { sendExactInSwapRoute, sendExactOutSwapRoute } }),
 }));
 jest.mock("@hooks/common/use-referral", () => ({
   useReferral: () => ({ getNextReferralAddress: () => null }),
@@ -52,6 +53,7 @@ describe("useSwap amount precision", () => {
       error: null,
     });
     sendExactInSwapRoute.mockClear();
+    sendExactOutSwapRoute.mockClear();
   });
 
   afterEach(() => {
@@ -83,6 +85,43 @@ describe("useSwap amount precision", () => {
         tokenAmount: LARGE_AMOUNT,
         tokenAmountLimit: "0.995",
       }),
+    );
+  });
+
+  it("rounds the exact-out maximum input up at an atomic-unit boundary", async () => {
+    // Estimated input of 1 raw unit (0.000001) with 0.5% slippage must allow 2 raw units
+    useGetRoutesMock.mockReturnValue({
+      data: {
+        estimatedRoutes: [{ quote: 100, amountIn: 0n, amountOut: 0n, pools: [] }],
+        originAmount: 0,
+        amount: "1",
+        status: "SUCCESS",
+      },
+      isLoading: false,
+      isRefetching: false,
+      error: null,
+    });
+
+    const { result } = renderHook(() =>
+      useSwap({ tokenA: createToken("USDC"), tokenB: createToken("ATOM"), direction: "EXACT_OUT", slippage: 0.5 }),
+    );
+
+    act(() => {
+      result.current.updateSwapAmount("1");
+    });
+    act(() => {
+      jest.advanceTimersByTime(1_000);
+    });
+
+    expect(result.current.estimatedAmount).toBe("0.000001");
+    expect(result.current.tokenAmountLimit).toBe("0.000002");
+
+    await act(async () => {
+      await result.current.swap(result.current.estimatedRoutes || [], "1");
+    });
+
+    expect(sendExactOutSwapRoute).toHaveBeenCalledWith(
+      expect.objectContaining({ tokenAmount: "1", tokenAmountLimit: "0.000002" }),
     );
   });
 });

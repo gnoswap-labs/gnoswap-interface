@@ -6,6 +6,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useReferral } from "@hooks/common/use-referral";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetRoutes } from "@query/router";
+import { calculateSlippageLimitAmount } from "@utils/swap-utils";
 import { makeDisplayTokenAmountString } from "@utils/token-utils";
 
 import { SwapDirectionType } from "@common/values";
@@ -168,19 +169,10 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       return "0";
     }
 
-    // EXACT_IN: minimum output (tokenB). EXACT_OUT: maximum input (tokenA).
+    // EXACT_IN: minimum output (tokenB, rounded down). EXACT_OUT: maximum input (tokenA, rounded up).
     const limitToken = direction === "EXACT_IN" ? tokenB : tokenA;
-    const slippageMultiplier = direction === "EXACT_IN" ? 100 - slippage : 100 + slippage;
-    const limit = BigNumber(estimatedAmount)
-      .multipliedBy(slippageMultiplier)
-      .dividedBy(100)
-      .decimalPlaces(limitToken.decimals, BigNumber.ROUND_DOWN);
 
-    if (limit.isLessThanOrEqualTo(0)) {
-      return "0";
-    }
-
-    return limit.toFixed();
+    return calculateSlippageLimitAmount(estimatedAmount, slippage, direction, limitToken.decimals);
   }, [direction, estimatedAmount, slippage, tokenA, tokenB]);
 
   const updateSwapAmount = (amount: string) => {

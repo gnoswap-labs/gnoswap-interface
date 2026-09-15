@@ -46,8 +46,8 @@ import { subscriptFormat } from "@utils/number-utils";
 import { makeDisplayPrice } from "@utils/pool-utils";
 import { getRepositionAmountsByPriceRange, getRepositionAmountsWithSwapSimulation } from "@utils/reposition-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
-import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { calculateSlippageLimitAmount, priceToNearTick, tickToPrice } from "@utils/swap-utils";
+import { makeDisplayTokenAmount, makeDisplayTokenAmountString } from "@utils/token-utils";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -58,8 +58,8 @@ export interface IPriceRange {
 export type REPOSITION_BUTTON_TYPE = "REPOSITION" | "LOADING" | "NON_SELECTED_RANGE" | "INSUFFICIENT_LIQUIDITY";
 
 /** Route lookups take the amount as a decimal string; a zero (or invalid) remainder means nothing to swap. */
-function makeSwapRequestAmount(amount: number): string | null {
-  return Number.isFinite(amount) && amount !== 0 ? amount.toString() : null;
+function makeSwapRequestAmount(amount: BigNumber): string | null {
+  return amount.isFinite() && !amount.isZero() ? amount.toFixed() : null;
 }
 
 export const useRepositionHandle = () => {
@@ -270,8 +270,8 @@ export const useRepositionHandle = () => {
     }
 
     return {
-      amountA: String(makeDisplayTokenAmount(selectedPosition.pool.tokenA, selectedPosition.tokenABalance) ?? 0),
-      amountB: String(makeDisplayTokenAmount(selectedPosition.pool.tokenB, selectedPosition.tokenBBalance) ?? 0),
+      amountA: makeDisplayTokenAmountString(selectedPosition.pool.tokenA, selectedPosition.tokenABalance) ?? "0",
+      amountB: makeDisplayTokenAmountString(selectedPosition.pool.tokenB, selectedPosition.tokenBBalance) ?? "0",
     };
   }, [selectedPosition]);
 
@@ -296,8 +296,8 @@ export const useRepositionHandle = () => {
       selectPool.maxPrice,
       tickToPrice(ordered ? selectedPosition.tickLower : selectedPosition.tickUpper * -1),
       tickToPrice(ordered ? selectedPosition.tickUpper : selectedPosition.tickLower * -1),
-      String(makeDisplayTokenAmount(tokenA, selectedPosition.tokenABalance) ?? 0),
-      String(makeDisplayTokenAmount(tokenB, selectedPosition.tokenBBalance) ?? 0),
+      makeDisplayTokenAmountString(tokenA, selectedPosition.tokenABalance) ?? "0",
+      makeDisplayTokenAmountString(tokenB, selectedPosition.tokenBBalance) ?? "0",
     );
 
     return repositionAmountsByNewPriceRange;
@@ -324,14 +324,14 @@ export const useRepositionHandle = () => {
       return {
         inputToken: selectedPosition.pool.tokenA,
         outputToken: selectedPosition.pool.tokenB,
-        tokenAmount: makeSwapRequestAmount(Number(amountA) - repositionAmountA),
+        tokenAmount: makeSwapRequestAmount(BigNumber(amountA).minus(repositionAmountA)),
         exactType: "EXACT_IN" as const,
       };
     }
     return {
       inputToken: selectedPosition.pool.tokenB,
       outputToken: selectedPosition.pool.tokenA,
-      tokenAmount: makeSwapRequestAmount(Number(amountB) - repositionAmountB),
+      tokenAmount: makeSwapRequestAmount(BigNumber(amountB).minus(repositionAmountB)),
       exactType: "EXACT_IN" as const,
     };
   }, [currentAmounts, initialEstimatedRepositionAmounts, selectedPosition]);
@@ -523,12 +523,23 @@ export const useRepositionHandle = () => {
       inputToken: estimateSwapRequest.inputToken,
       outputToken: estimateSwapRequest.outputToken,
       estimatedRoutes: estimatedSwapResult.estimatedRoutes,
-      tokenAmount: isExactIn ? inputAmount.toNumber() : outputAmount.toNumber(),
+      // Keep amounts as decimal strings so values above Number.MAX_SAFE_INTEGER stay exact
+      tokenAmount: isExactIn ? inputAmount.toFixed() : outputAmount.toFixed(),
       slippage: slippage,
       originAmount: estimatedSwapResult.originAmount,
       tokenAmountLimit: isExactIn
-        ? outputAmount.toNumber() * ((100 - DEFAULT_SLIPPAGE) / 100)
-        : inputAmount.toNumber() * ((100 + DEFAULT_SLIPPAGE) / 100),
+        ? calculateSlippageLimitAmount(
+            outputAmount.toFixed(),
+            DEFAULT_SLIPPAGE,
+            "EXACT_IN",
+            estimateSwapRequest.outputToken.decimals,
+          )
+        : calculateSlippageLimitAmount(
+            inputAmount.toFixed(),
+            DEFAULT_SLIPPAGE,
+            "EXACT_OUT",
+            estimateSwapRequest.inputToken.decimals,
+          ),
       deadline,
       referrerAddress: currentReferralAddress,
     };

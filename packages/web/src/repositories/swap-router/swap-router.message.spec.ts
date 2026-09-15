@@ -102,9 +102,9 @@ describe("swap-router.message.ts", () => {
       {
         inputToken,
         outputToken,
-        tokenAmount: 1.25,
+        tokenAmount: "1.25",
         estimatedRoutes: [route],
-        tokenAmountLimit: 2,
+        tokenAmountLimit: "2",
         deadline: 123,
         caller,
         referrerAddress: null,
@@ -148,9 +148,9 @@ describe("swap-router.message.ts", () => {
       {
         inputToken,
         outputToken,
-        tokenAmount: 2,
+        tokenAmount: "2",
         estimatedRoutes: [route],
-        tokenAmountLimit: 1.25,
+        tokenAmountLimit: "1.25",
         deadline: 123,
         caller,
         referrerAddress: null,
