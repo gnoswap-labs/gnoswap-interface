@@ -29,7 +29,7 @@ export interface ExactSwapRouteMessageRequest {
   outputToken: TokenModel;
   tokenAmount: number | string;
   estimatedRoutes: EstimatedRoute[];
-  tokenAmountLimit: number;
+  tokenAmountLimit: number | string;
   deadline: number;
   caller: string;
   referrerAddress: string | null;

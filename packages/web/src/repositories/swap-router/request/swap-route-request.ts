@@ -16,7 +16,7 @@ export interface DrySwapRequest {
 
   originAmount: number;
 
-  tokenAmountLimit: number;
+  tokenAmountLimit: number | string;
 }
 
 export interface SwapRouteRequest {
@@ -32,7 +32,7 @@ export interface SwapRouteRequest {
 
   originAmount: number;
 
-  tokenAmountLimit: number;
+  tokenAmountLimit: number | string;
 
   deadline: number;
 

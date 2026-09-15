@@ -215,26 +215,18 @@ export const useSwapHandler = () => {
     }));
   }, [estimatedRoutes, tokenA, tokenB]);
 
+  // Exact decimal balances: used for validation and the Max button.
+  // Display formatting is applied separately (useTokenBalancesDisplay).
   const tokenABalance = useMemo(() => {
     if (isSwitchNetwork || !tokenA) return "-";
 
-    // Only the balance in the swap card should be formatted the same with price
-    return formatPrice(displayBalanceStringMap?.[tokenA.priceID], {
-      isKMB: false,
-      usd: false,
-      greaterThan1Decimals: 6,
-    });
+    return displayBalanceStringMap?.[tokenA.priceID] ?? "-";
   }, [isSwitchNetwork, displayBalanceStringMap, tokenA]);
 
   const tokenBBalance = useMemo(() => {
     if (isSwitchNetwork || !tokenB) return "-";
 
-    // Only the balance in the swap card should be formatted the same with price
-    return formatPrice(displayBalanceStringMap?.[tokenB.priceID], {
-      isKMB: false,
-      usd: false,
-      greaterThan1Decimals: 6,
-    });
+    return displayBalanceStringMap?.[tokenB.priceID] ?? "-";
   }, [isSwitchNetwork, displayBalanceStringMap, tokenB]);
 
   const quotedTokenAAmount = useMemo(() => {
@@ -561,7 +553,8 @@ export const useSwapHandler = () => {
       priceImpact: formatPriceImpact(priceImpact),
 
       guaranteedAmount: {
-        amount: tokenAmountLimit || 0,
+        // Display only; the transaction uses the string `tokenAmountLimit`
+        amount: Number(tokenAmountLimit) || 0,
         currency: (type === "EXACT_IN" ? tokenB : tokenA).symbol,
       },
       swapRateAction,

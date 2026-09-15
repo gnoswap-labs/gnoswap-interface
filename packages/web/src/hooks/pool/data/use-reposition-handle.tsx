@@ -57,6 +57,11 @@ export interface IPriceRange {
 
 export type REPOSITION_BUTTON_TYPE = "REPOSITION" | "LOADING" | "NON_SELECTED_RANGE" | "INSUFFICIENT_LIQUIDITY";
 
+/** Route lookups take the amount as a decimal string; a zero (or invalid) remainder means nothing to swap. */
+function makeSwapRequestAmount(amount: number): string | null {
+  return Number.isFinite(amount) && amount !== 0 ? amount.toString() : null;
+}
+
 export const useRepositionHandle = () => {
   const router = useRouter();
   const { getNextReferralAddress } = useReferral();
@@ -319,14 +324,14 @@ export const useRepositionHandle = () => {
       return {
         inputToken: selectedPosition.pool.tokenA,
         outputToken: selectedPosition.pool.tokenB,
-        tokenAmount: Number(amountA) - repositionAmountA || 0,
+        tokenAmount: makeSwapRequestAmount(Number(amountA) - repositionAmountA),
         exactType: "EXACT_IN" as const,
       };
     }
     return {
       inputToken: selectedPosition.pool.tokenB,
       outputToken: selectedPosition.pool.tokenA,
-      tokenAmount: Number(amountB) - repositionAmountB || 0,
+      tokenAmount: makeSwapRequestAmount(Number(amountB) - repositionAmountB),
       exactType: "EXACT_IN" as const,
     };
   }, [currentAmounts, initialEstimatedRepositionAmounts, selectedPosition]);
@@ -364,7 +369,7 @@ export const useRepositionHandle = () => {
       return null;
     }
 
-    if (estimateSwapRequest?.tokenAmount === 0) {
+    if (estimateSwapRequest?.tokenAmount === null) {
       return {
         amountA: currentAmounts.amountA.toString(),
         amountB: currentAmounts.amountB.toString(),
@@ -401,7 +406,7 @@ export const useRepositionHandle = () => {
   ]);
 
   const isSkipSwap = useMemo(() => {
-    if (estimateSwapRequest?.tokenAmount === 0) {
+    if (estimateSwapRequest?.tokenAmount === null) {
       return true;
     }
     if (
