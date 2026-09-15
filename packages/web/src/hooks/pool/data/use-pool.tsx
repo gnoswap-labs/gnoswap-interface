@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo } from "react";
 
-import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useReferral } from "@hooks/common/use-referral";
@@ -126,7 +125,6 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
       maxTick,
       slippage,
     }: {
-      rpcProvider: GnoProvider | null;
       tokenAAmount: string;
       tokenBAmount: string;
       swapFeeTier: SwapFeeTierType;
@@ -186,7 +184,6 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
       maxTick,
       slippage,
     }: {
-      rpcProvider: GnoProvider | null;
       tokenAAmount: string;
       tokenBAmount: string;
       swapFeeTier: SwapFeeTierType;

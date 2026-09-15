@@ -6,8 +6,7 @@ import { useTranslation } from "react-i18next";
 
 import { ERROR_VALUE } from "@common/errors/adena";
 import { ERROR_VALUE as SWAP_ERROR_VALUE } from "@common/errors/swap";
-import { DEFAULT_GAS_FEE, MINIMUM_GNOT_SWAP_AMOUNT } from "@common/values";
-import { GNOT_TOKEN } from "@common/values/token-constant";
+import { MINIMUM_GNOT_SWAP_AMOUNT } from "@common/values";
 import ConfirmSwapModal from "@components/swap/confirm-swap-modal/ConfirmSwapModal";
 import { PAGE_PATH } from "@constants/page.constant";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
@@ -198,19 +197,6 @@ export const useSwapHandler = () => {
 
   const { getMessage } = useMessage();
 
-  const gnotToken = useMemo(() => tokens.find(item => item.symbol === "GNOT"), [tokens]);
-  const defaultGasFeeAmount = useMemo(
-    () =>
-      BigNumber(DEFAULT_GAS_FEE)
-        .shiftedBy(-(gnotToken?.decimals ?? GNOT_TOKEN.decimals))
-        .toNumber(),
-    [gnotToken?.decimals],
-  );
-  const gasFeeUSD = useMemo(
-    () => getTokenUSDPrice(checkGnotPath(gnotToken?.path ?? ""), defaultGasFeeAmount) ?? 0,
-    [defaultGasFeeAmount, getTokenUSDPrice, gnotToken?.path],
-  );
-
   const swapRouteInfos: SwapRouteInfo[] = useMemo(() => {
     if (!tokenA || !tokenB) {
       return [];
@@ -226,13 +212,8 @@ export const useSwapHandler = () => {
       to: tokenB,
       pools: route.pools,
       weight: route.quote,
-      gasFee: {
-        amount: defaultGasFeeAmount,
-        currency: "GNOT",
-      },
-      gasFeeUSD,
     }));
-  }, [defaultGasFeeAmount, estimatedRoutes, gasFeeUSD, tokenA, tokenB]);
+  }, [estimatedRoutes, tokenA, tokenB]);
 
   const tokenABalance = useMemo(() => {
     if (isSwitchNetwork || !tokenA) return "-";

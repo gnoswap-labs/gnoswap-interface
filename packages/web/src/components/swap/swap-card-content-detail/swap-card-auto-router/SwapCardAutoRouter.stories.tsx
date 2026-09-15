@@ -32,11 +32,6 @@ const swapRouteInfos: SwapRouteInfo[] = [
       priceID: "gno.land/r/foo",
       address: "",
     },
-    gasFee: {
-      amount: 0.000001,
-      currency: "GNOT",
-    },
-    gasFeeUSD: 0.1,
     pools: [],
     version: "V1",
     weight: 100,

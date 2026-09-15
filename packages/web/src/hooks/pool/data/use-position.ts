@@ -1,4 +1,3 @@
-import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
@@ -56,7 +55,7 @@ export const usePosition = (_positions?: PositionModel[]) => {
   };
 
   const claimAll = useCallback(
-    async ({ input }: { rpcProvider: GnoProvider | null; input: ClaimAllInput }) => {
+    async ({ input }: { input: ClaimAllInput }) => {
       const address = account?.address;
       if (!address) {
         return null;
@@ -84,7 +83,7 @@ export const usePosition = (_positions?: PositionModel[]) => {
   };
 
   const claim = useCallback(
-    async (rpcProvider: GnoProvider | null, position: PoolPositionModel) => {
+    async (position: PoolPositionModel) => {
       const address = account?.address;
       if (!address) {
         return null;
