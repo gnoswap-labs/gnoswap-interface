@@ -8,7 +8,7 @@ import { GetRoutesResponse } from "@repositories/swap-router/response/get-routes
 
 import { QUERY_KEY } from "../query-keys";
 
-const REFETCH_INTERVAL = 5_000;
+const REFETCH_INTERVAL = 3_000;
 const STALE_TIME = 0;
 
 export const useGetRoutes = (

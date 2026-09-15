@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import React from "react";
 
 import { TokenModel } from "@models/token/token-model";
@@ -30,6 +30,14 @@ const createToken = (symbol: string): TokenModel => ({
 });
 
 describe("useGetRoutes", () => {
+  beforeEach(() => {
+    getRoutes.mockClear();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   it("passes the amount string through without converting it to a number", async () => {
     // On-chain USDC balance (raw 62667447936264477) that exceeds Number.MAX_SAFE_INTEGER
     const amount = "62667447936.264477";
@@ -52,5 +60,40 @@ describe("useGetRoutes", () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     expect(getRoutes).toHaveBeenCalledWith(expect.objectContaining({ tokenAmount: amount }));
+  });
+
+  it("refreshes route estimates every three seconds", async () => {
+    jest.useFakeTimers();
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    );
+
+    renderHook(
+      () =>
+        useGetRoutes({
+          inputToken: createToken("USDC"),
+          outputToken: createToken("ATOM"),
+          exactType: "EXACT_IN",
+          tokenAmount: "1",
+        }),
+      { wrapper },
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(getRoutes).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      jest.advanceTimersByTime(2_999);
+    });
+    expect(getRoutes).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      jest.advanceTimersByTime(1);
+      await Promise.resolve();
+    });
+    expect(getRoutes).toHaveBeenCalledTimes(2);
   });
 });
