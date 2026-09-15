@@ -42,7 +42,8 @@ export class TransactionServiceImpl implements TransactionService {
       if (isContractMessage(message)) {
         return makeMsgCallMessage({
           ...message,
-          max_deposit: "0ugnot",
+          // A zero-amount coin string fails ValidateBasic; "no deposit" is empty.
+          max_deposit: "",
           args: message.args?.map(arg => `${arg}`) || [],
         });
       }

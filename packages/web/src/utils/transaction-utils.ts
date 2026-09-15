@@ -399,13 +399,10 @@ function encodeMessageValue(message: { type: string; value: any }) {
       const msgAddPackage = MsgAddPackage.create({
         creator: value.creator,
         package: packageData,
-        // deposit: value.deposit || null,
+        send: value.send || "",
+        max_deposit: value.max_deposit || "",
       });
 
-      //   creator: value.creator,
-      //   // deposit: value.deposit || null,
-      //   package: value.package ? createMemPackage(value.package) : undefined,
-      // });
       return Any.create({
         type_url: MsgEndpoint.MSG_ADD_PKG,
         value: MsgAddPackage.encode(msgAddPackage).finish(),
@@ -419,7 +416,7 @@ function encodeMessageValue(message: { type: string; value: any }) {
         func: message.value.func,
         pkg_path: message.value.pkg_path,
         send: message.value.send || "",
-        max_deposit: "",
+        max_deposit: message.value.max_deposit || "",
       });
       return Any.create({
         type_url: MsgEndpoint.MSG_CALL,
@@ -450,7 +447,7 @@ function encodeMessageValue(message: { type: string; value: any }) {
         package: packageData,
         // A zero-amount coin string fails MsgRun.ValidateBasic; "no send" is empty.
         send: value.send || "",
-        max_deposit: "",
+        max_deposit: value.max_deposit || "",
       });
       return Any.create({
         type_url: MsgEndpoint.MSG_RUN,
