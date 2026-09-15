@@ -113,11 +113,25 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
   const routerApiClient = chainClients?.routerApiClient ?? null;
   const rpcProvider = chainClients?.rpcProvider ?? null;
 
+  // The chain the wallet is asking for, which is not necessarily the one the
+  // published clients belong to while a switch is in flight.
+  const network = useMemo(() => {
+    const currentChainId = SUPPORT_CHAIN_IDS.includes(walletAccount?.chainId || "")
+      ? walletAccount?.chainId
+      : DEFAULT_CHAIN_ID;
+
+    return NetworkData.find(info => info.chainId === currentChainId) || NetworkData[0];
+  }, [walletAccount?.chainId]);
+
   const initialized = useMemo(() => {
     return rpcProvider !== null && window !== undefined;
   }, [rpcProvider]);
 
-  const loadedProviders = chainClients !== null;
+  // Only the bundle that belongs to the requested chain may render children.
+  // Everything else in the tree (eventStore, walletAccount) moves to the new
+  // chain as soon as the wallet does, so rendering an older bundle would pair
+  // clients from two different chains.
+  const loadedProviders = chainClients?.chainId === network.chainId;
 
   const retryConnection = useCallback(() => {
     setConnectionFailed(false);
@@ -149,11 +163,6 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
       return;
     }
 
-    const currentChainId = SUPPORT_CHAIN_IDS.includes(walletAccount?.chainId || "")
-      ? walletAccount?.chainId
-      : DEFAULT_CHAIN_ID;
-    const network = NetworkData.find(info => info.chainId === currentChainId) || NetworkData[0];
-
     // Connecting is a network round trip now, so a re-run of this effect that
     // does not change the chain must not open a second connection.
     if (chainClients?.chainId === network.chainId) {
@@ -163,6 +172,10 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
     // Creating a provider requires a round trip to the node since gno-js-client v3,
     // so ignore the result once the effect has been superseded.
     let stale = false;
+
+    // A pending attempt must not show the failure screen left over from an
+    // earlier one; children are hidden while this runs either way.
+    setConnectionFailed(false);
 
     GnoProvider.create(network.rpcUrl || "")
       .then(rpcProvider => {
@@ -181,8 +194,6 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
       .catch(error => {
         console.error("Failed to connect to the RPC provider", error);
         if (!stale) {
-          // A failed chain switch keeps the previous, working set of clients;
-          // only a failed first connection leaves the app with nothing to render.
           setConnectionFailed(true);
         }
       });
@@ -190,18 +201,12 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
     return () => {
       stale = true;
     };
-  }, [chainClients?.chainId, loadedProviders, retryCount, router, status, walletAccount, walletAccount?.chainId]);
+  }, [chainClients?.chainId, loadedProviders, network, retryCount, router, status, walletAccount]);
 
   const eventStore = useMemo(() => {
-    const currentChainId = SUPPORT_CHAIN_IDS.includes(walletAccount?.chainId || "")
-      ? walletAccount?.chainId
-      : DEFAULT_CHAIN_ID;
-
-    const network = NetworkData.find(info => info.chainId === currentChainId) || NetworkData[0];
-
     const axiosClient = axios.create({ baseURL: network.rpcUrl });
     return new TransactionEventStore(axiosClient);
-  }, [walletAccount]);
+  }, [network]);
 
   const accountRepository = useMemo(() => {
     return new AccountRepositoryImpl(

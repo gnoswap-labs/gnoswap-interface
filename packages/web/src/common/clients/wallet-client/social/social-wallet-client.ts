@@ -243,14 +243,14 @@ export class SocialWalletClient implements WalletClient {
       if (isContractMessage(message)) {
         return makeMsgCallMessage({
           ...message,
-          max_deposit: "",
+          max_deposit: message.max_deposit ?? "",
           args: message.args?.map(arg => `${arg}`) || [],
         });
       }
       if (isRunMessage(message)) {
         return makeMsgRunMessage({
           ...message,
-          max_deposit: "",
+          max_deposit: message.max_deposit ?? "",
         });
       }
       return makeMsgSendMessage(message);
