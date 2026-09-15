@@ -14,6 +14,7 @@ import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confir
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { DexEvent, DexEventType } from "@repositories/common";
+import { ClaimableRewards } from "@repositories/governance";
 import { makeRawTokenAmount } from "@utils/token-utils";
 
 export const useGovernanceTx = () => {
@@ -195,8 +196,8 @@ export const useGovernanceTx = () => {
 
   const collectReward = (
     usdValue: string,
-    claimGovernanceRewards: boolean,
-    claimLaunchpadRewards: boolean,
+    claimableGovernanceRewards: ClaimableRewards[],
+    claimableLaunchpadRewards: ClaimableRewards[],
     emitCallback: () => Promise<void>,
   ) => {
     if (!account) {
@@ -208,7 +209,7 @@ export const useGovernanceTx = () => {
     };
 
     processTx(
-      () => governanceRepository.sendCollectReward(claimGovernanceRewards, claimLaunchpadRewards),
+      () => governanceRepository.sendCollectReward(claimableGovernanceRewards, claimableLaunchpadRewards),
       DexEvent.COLLECT_GOV_REWARD,
       messageData,
       () => messageData,

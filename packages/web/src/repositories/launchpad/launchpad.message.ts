@@ -11,6 +11,8 @@ enum TransactionMessageFunctionType {
   CollectRewardByDepositId = "CollectRewardByDepositId",
   CollectDepositGns = "CollectDepositGns",
   CollectProtocolFee = "CollectProtocolFee",
+  CollectEmissionReward = "CollectEmissionReward",
+  CollectProtocolFeeReward = "CollectProtocolFeeReward",
 }
 
 export function makeDepositGNSMessageWithApproves(
@@ -147,4 +149,34 @@ export function makeCollectProtocolFeeMessage({ caller }: { caller: string }): T
   });
 
   return [collectProtocolFeeMessage];
+}
+
+export function makeLaunchpadCollectProtocolFeeRewardMessages({
+  tokenPaths,
+  caller,
+}: {
+  tokenPaths: string[];
+  caller: string;
+}): TransactionMessage[] {
+  return tokenPaths.map(tokenPath =>
+    makeTransactionMessage({
+      packagePath: PACKAGE_LAUNCHPAD_PATH,
+      send: "",
+      func: TransactionMessageFunctionType.CollectProtocolFeeReward,
+      args: [tokenPath],
+      caller,
+    }),
+  );
+}
+
+export function makeLaunchpadCollectEmissionRewardMessages({ caller }: { caller: string }): TransactionMessage[] {
+  return [
+    makeTransactionMessage({
+      packagePath: PACKAGE_LAUNCHPAD_PATH,
+      send: "",
+      func: TransactionMessageFunctionType.CollectEmissionReward,
+      args: [],
+      caller,
+    }),
+  ];
 }

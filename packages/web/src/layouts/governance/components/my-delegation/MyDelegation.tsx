@@ -10,6 +10,7 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { useTokenPricing } from "@hooks/token/data/use-token-pricing";
 import {
+  ClaimableRewards,
   DelegationItemInfo,
   MyDelegatesInfo,
   MyDelegationInfo,
@@ -48,7 +49,11 @@ interface MyDelegationProps {
   delegateGNS: (toName: string, toAddress: string, amount: string) => void;
   undelegateGNS: (fromName: string, fromAddress: string, amount: string) => void;
   collectUndelegated: (amount: string) => void;
-  collectReward: (usdValue: string, claimGovernanceRewards: boolean, claimLaunchpadRewards: boolean) => void;
+  collectReward: (
+    usdValue: string,
+    claimableGovernanceRewards: ClaimableRewards[],
+    claimableLaunchpadRewards: ClaimableRewards[],
+  ) => void;
 }
 
 const MyDelegation: React.FC<MyDelegationProps> = ({
@@ -399,8 +404,8 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                           formatOtherPrice(totalClaimableRewardUsd, {
                             isKMB: false,
                           }),
-                          myDelegationInfo.claimableGovernanceRewards.length > 0,
-                          myDelegationInfo.claimableLaunchpadRewards.length > 0,
+                          myDelegationInfo.claimableGovernanceRewards,
+                          myDelegationInfo.claimableLaunchpadRewards,
                         );
                       },
                       disabled: !visibleRewardInfoTooltip,
