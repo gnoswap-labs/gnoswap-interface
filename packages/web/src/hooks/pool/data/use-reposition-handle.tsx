@@ -44,9 +44,14 @@ import { IncreaseState } from "@states/index";
 import { checkGnotPath, delay } from "@utils/common";
 import { subscriptFormat } from "@utils/number-utils";
 import { makeDisplayPrice } from "@utils/pool-utils";
-import { getRepositionAmountsByPriceRange, getRepositionAmountsWithSwapSimulation } from "@utils/reposition-utils";
+import {
+  getRepositionAmountsByPriceRange,
+  getRepositionAmountsWithSwapSimulation,
+  makeRepositionSwapAmounts,
+  makeRepositionSwapEstimateRequest,
+} from "@utils/reposition-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
-import { calculateSlippageLimitAmount, priceToNearTick, tickToPrice } from "@utils/swap-utils";
+import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
 import { makeDisplayTokenAmount, makeDisplayTokenAmountString } from "@utils/token-utils";
 
 export interface IPriceRange {
@@ -56,11 +61,6 @@ export interface IPriceRange {
 }
 
 export type REPOSITION_BUTTON_TYPE = "REPOSITION" | "LOADING" | "NON_SELECTED_RANGE" | "INSUFFICIENT_LIQUIDITY";
-
-/** Route lookups take the amount as a decimal string; a zero (or invalid) remainder means nothing to swap. */
-function makeSwapRequestAmount(amount: BigNumber): string | null {
-  return amount.isFinite() && !amount.isZero() ? amount.toFixed() : null;
-}
 
 export const useRepositionHandle = () => {
   const router = useRouter();
@@ -316,24 +316,12 @@ export const useRepositionHandle = () => {
     if (!currentAmounts || !initialEstimatedRepositionAmounts || !selectedPosition) {
       return null;
     }
-    const { amountA, amountB } = currentAmounts;
-    const { amountA: repositionAmountA, amountB: repositionAmountB } = initialEstimatedRepositionAmounts;
-
-    const isSwapAtoB = BigNumber(amountA).isGreaterThan(repositionAmountA);
-    if (isSwapAtoB) {
-      return {
-        inputToken: selectedPosition.pool.tokenA,
-        outputToken: selectedPosition.pool.tokenB,
-        tokenAmount: makeSwapRequestAmount(BigNumber(amountA).minus(repositionAmountA)),
-        exactType: "EXACT_IN" as const,
-      };
-    }
-    return {
-      inputToken: selectedPosition.pool.tokenB,
-      outputToken: selectedPosition.pool.tokenA,
-      tokenAmount: makeSwapRequestAmount(BigNumber(amountB).minus(repositionAmountB)),
-      exactType: "EXACT_IN" as const,
-    };
+    return makeRepositionSwapEstimateRequest(
+      selectedPosition.pool.tokenA,
+      selectedPosition.pool.tokenB,
+      currentAmounts,
+      initialEstimatedRepositionAmounts,
+    );
   }, [currentAmounts, initialEstimatedRepositionAmounts, selectedPosition]);
 
   const {
@@ -508,38 +496,25 @@ export const useRepositionHandle = () => {
     const isSwapAtoB = estimateSwapRequest.inputToken === selectedPosition?.pool.tokenA;
     const isExactIn = estimateSwapRequest.exactType === "EXACT_IN";
 
-    const inputAmount = isSwapAtoB
-      ? BigNumber(currentAmounts?.amountA || 0).minus(BigNumber(estimatedRepositionAmounts?.amountA || 0))
-      : BigNumber(currentAmounts?.amountB || 0).minus(BigNumber(estimatedRepositionAmounts?.amountB || 0));
-
-    const outputAmount = isSwapAtoB
-      ? BigNumber(estimatedRepositionAmounts?.amountB || 0).minus(BigNumber(currentAmounts?.amountB || 0))
-      : BigNumber(estimatedRepositionAmounts?.amountA || 0).minus(BigNumber(currentAmounts?.amountA || 0));
-
     const deadline = Math.floor(Date.now() / 1000) + 300;
     const currentReferralAddress = getNextReferralAddress();
+
+    // Amounts stay decimal strings end-to-end so values above Number.MAX_SAFE_INTEGER remain exact
+    const swapAmounts = makeRepositionSwapAmounts(
+      estimateSwapRequest,
+      isSwapAtoB,
+      currentAmounts ?? { amountA: "0", amountB: "0" },
+      estimatedRepositionAmounts ?? { amountA: "0", amountB: "0" },
+      DEFAULT_SLIPPAGE,
+    );
 
     const request: SwapRouteRequest = {
       inputToken: estimateSwapRequest.inputToken,
       outputToken: estimateSwapRequest.outputToken,
       estimatedRoutes: estimatedSwapResult.estimatedRoutes,
-      // Keep amounts as decimal strings so values above Number.MAX_SAFE_INTEGER stay exact
-      tokenAmount: isExactIn ? inputAmount.toFixed() : outputAmount.toFixed(),
+      ...swapAmounts,
       slippage: slippage,
       originAmount: estimatedSwapResult.originAmount,
-      tokenAmountLimit: isExactIn
-        ? calculateSlippageLimitAmount(
-            outputAmount.toFixed(),
-            DEFAULT_SLIPPAGE,
-            "EXACT_IN",
-            estimateSwapRequest.outputToken.decimals,
-          )
-        : calculateSlippageLimitAmount(
-            inputAmount.toFixed(),
-            DEFAULT_SLIPPAGE,
-            "EXACT_OUT",
-            estimateSwapRequest.inputToken.decimals,
-          ),
       deadline,
       referrerAddress: currentReferralAddress,
     };
