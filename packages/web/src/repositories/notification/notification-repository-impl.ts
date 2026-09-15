@@ -20,30 +20,12 @@ export class NotificationRepositoryImpl implements NotificationRepository {
     this.storage = localStorageClient;
   }
 
-  private getRemovedTx = (): string[] => {
-    return JSON.parse(this.storage.get("notification-removed-tx") ?? "[]") as string[];
-  };
-
   private getSeenTx = (): string[] => {
     return JSON.parse(this.storage.get("notification-seen-tx") ?? "[]") as string[];
   };
 
-  public setRemovedTx = (txs: string[]): void => {
-    this.storage.set("notification-removed-tx", JSON.stringify(txs));
-  };
-
   public setSeenTx = (txs: string[]): void => {
     this.storage.set("notification-seen-tx", JSON.stringify(txs));
-  };
-
-  public appendRemovedTx = (txs: string[]) => {
-    const oldTx = this.getRemovedTx();
-    oldTx.push(...txs);
-
-    /**
-     * Use set to make it don't have duplicate tx ( reduce storage size )
-     */
-    this.storage.set("notification-removed-tx", JSON.stringify([...new Set(oldTx)]));
   };
 
   public appendSeenTx = (txs: string[]) => {
@@ -79,17 +61,11 @@ export class NotificationRepositoryImpl implements NotificationRepository {
 
   public getGroupedNotification = async (request: AccountActivityRequest): Promise<TransactionGroupsType[]> => {
     const data = await this.getAccountOnchainActivity(request);
-    const removedTxs = this.getRemovedTx();
     const seenTxs = this.getSeenTx();
 
     const transactionResult = [];
 
     for (const tx of data ?? []) {
-      /**
-       * *If tx is removed then ignore it
-       **/
-      if (removedTxs.includes(tx.txHash)) continue;
-
       const txModel: TransactionModel = {
         txType: tx.tokenB?.name ? 1 : 0,
         txHash: tx.txHash,
