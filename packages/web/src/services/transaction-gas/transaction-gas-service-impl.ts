@@ -28,6 +28,7 @@ export class TransactionGasServiceImpl implements TransactionGasService {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }
 
-    return this.rpcProvider.estimateGas(tx);
+    // estimateGas returns a bigint since tm2-js-client v3
+    return Number(await this.rpcProvider.estimateGas(tx));
   }
 }

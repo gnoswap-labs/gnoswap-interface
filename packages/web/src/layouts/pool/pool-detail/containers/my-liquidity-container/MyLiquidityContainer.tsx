@@ -18,7 +18,6 @@ import { delay } from "@utils/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
-import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionConverter } from "@services/converters/position";
@@ -36,7 +35,6 @@ interface MyLiquidityContainerProps {
 }
 
 const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable, addressContext }) => {
-  const { rpcProvider } = useGnoswapContext();
   const { urlAddress, connectAddress } = addressContext;
 
   const address = useMemo(() => {
@@ -202,7 +200,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
       broadcastLoading(getMessage(DexEvent.CLAIM_FEE, "pending", messageData));
 
       setLoadingTransactionClaim(true);
-      claim(rpcProvider, position).then(response => {
+      claim(position).then(response => {
         if (response) {
           if (response.code === 0 || response.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
             enqueueEvent({
@@ -257,7 +255,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
 
     setLoadingTransactionClaim(true);
     const claimAllInput = buildClaimAllInputFromPositions(openedPosition.filter(item => !item.closed));
-    claimAll({ rpcProvider, input: claimAllInput }).then(response => {
+    claimAll({ input: claimAllInput }).then(response => {
       if (response) {
         if (response.code === 0 || response.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
           enqueueEvent({

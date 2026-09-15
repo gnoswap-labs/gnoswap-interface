@@ -53,6 +53,27 @@ export function makeDisplayTokenAmount(
   return number.shiftedBy(-token.decimals).toNumber();
 }
 
+/**
+ * Converts a raw token amount to its display amount as a decimal string.
+ * Unlike makeDisplayTokenAmount, this never goes through a JS number, so raw
+ * amounts above Number.MAX_SAFE_INTEGER keep every digit.
+ */
+export function makeDisplayTokenAmountString(
+  token: Pick<TokenModel | OnchainToken, "decimals">,
+  amount: bigint | string | number | null | undefined,
+): string | null {
+  if (amount === null || amount === undefined || amount === "") {
+    return null;
+  }
+
+  const number = BigNumber(amount.toString());
+  if (number.isNaN()) {
+    return null;
+  }
+
+  return number.shiftedBy(-token.decimals).toFixed();
+}
+
 export function isAmountLessThanTokenMinimum(
   token: Pick<TokenModel | OnchainToken, "decimals">,
   amount: string | number,

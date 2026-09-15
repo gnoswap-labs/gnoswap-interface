@@ -8,6 +8,21 @@ const createJestConfig = nextJest({
   dir: "./",
 });
 
+// The gno clients and a part of their dependency tree (uuid, @scure, @noble, @cosmjs)
+// are published as ESM only, so they have to go through the transformer instead of
+// being required as-is. Every enclosing scope has to be listed as well, otherwise the
+// pattern still matches on the outer `node_modules/` segment of a nested dependency.
+// faker v10 and geist also ship ESM only, so they join the allowlist below.
+const ESM_ONLY_PACKAGES = [
+  "@gnolang",
+  "@cosmjs",
+  "@scure",
+  "@noble",
+  "uuid",
+  "geist",
+  "@faker-js",
+];
+
 // Add any custom config to be passed to Jest
 const customJestConfig = {
   roots: ["<rootDir>"],
@@ -23,14 +38,15 @@ const customJestConfig = {
   testMatch: ["<rootDir>/**/*.spec.(js|jsx|ts|tsx)"],
 };
 
-// faker v10 ships ESM only and next/jest otherwise ignores node_modules so its
-// transform patterns are replaced to add @faker-js to the allowlist
+// next/jest always ignores `node_modules` for transforms and only lets custom config
+// append to that list, so the resolved config is patched after the fact.
 module.exports = async () => {
   const config = await createJestConfig(customJestConfig)();
+
   config.transformIgnorePatterns = [
-    "/node_modules/(?!.pnpm)(?!(geist|@faker-js)/)",
-    "/node_modules/.pnpm/(?!(geist|@faker-js)@)",
     "^.+\\.module\\.(css|sass|scss)$",
+    `/node_modules/(?!(${ESM_ONLY_PACKAGES.join("|")})/)`,
   ];
+
   return config;
 };
