@@ -40,7 +40,6 @@ const SwapContainer: React.FC = () => {
     isSwitchNetwork,
     switchNetwork,
     isLoading,
-    isLoadingGasInfo,
     isRefetching,
     setSwapValue,
     setSwapRateAction,
@@ -139,7 +138,6 @@ const SwapContainer: React.FC = () => {
       isSwitchNetwork={isSwitchNetwork}
       switchNetwork={switchNetwork}
       isLoading={isLoading}
-      isLoadingGasInfo={isLoadingGasInfo}
       setSwapRateAction={setSwapRateAction}
       priceImpactStatus={priceImpactStatus}
       resetEstimatedLiquidity={handleResetEstimatedLiquidity}
