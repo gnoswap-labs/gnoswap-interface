@@ -88,8 +88,21 @@ export const toUnitFormat = (
   return (usd ? "$" : "") + bigNumber.decimalPlaces(2).toNumber().toLocaleString("en", { minimumFractionDigits: 2 });
 };
 
+/**
+ * Formats a BigNumber into a compact K/M/B string (e.g. "1.23K", "$4.56M").
+ *
+ * Expects a **non-negative** BigNumber (absolute value). Sign handling is
+ * the caller's responsibility via `resolveSign`. This keeps the function
+ * focused on magnitude formatting and avoids redundant re-parsing.
+ *
+ * @param value - A non-negative BigNumber to format.
+ * @param options.usd - When true, prepends "$" to the result.
+ * @param options.isIgnoreKFormat - When true, skips the "K" (thousands) tier.
+ * @returns The KMB-formatted string, or `undefined` when the value is below
+ *   the smallest applicable tier (caller should fall through to decimal formatting).
+ */
 export const toKMBFormat = (
-  value: BigNumber | string | number,
+  value: BigNumber,
   {
     usd = false,
     isIgnoreKFormat = false,
@@ -98,43 +111,22 @@ export const toKMBFormat = (
     isIgnoreKFormat?: boolean;
   } = {},
 ) => {
-  const valueWithoutComma = value.toString().replace(/,/g, "");
+  if (value.isNaN()) return undefined;
 
-  if (!isNumber(valueWithoutComma)) {
-    return usd ? "$0" : "0";
-  }
-
-  const bigNumber = BigNumber(valueWithoutComma).abs();
   const prefix = usd ? "$" : "";
-  const negativeSign = BigNumber(value).isLessThan(0) ? "-" : "";
 
-  if (bigNumber.isGreaterThan(999.99 * 1e9)) return ">999.99B";
+  if (value.isGreaterThan(999.99 * 1e9)) return ">999.99B";
 
-  if (bigNumber.isGreaterThanOrEqualTo(1e9)) {
-    return (
-      negativeSign +
-      prefix +
-      bigNumber.dividedBy(Math.pow(10, 9)).toFixed(2, BigNumber.ROUND_DOWN) +
-      unitsUpperCase.billion
-    );
+  if (value.isGreaterThanOrEqualTo(1e9)) {
+    return prefix + value.dividedBy(1e9).toFixed(2, BigNumber.ROUND_DOWN) + unitsUpperCase.billion;
   }
 
-  if (bigNumber.isGreaterThanOrEqualTo(1e6)) {
-    return (
-      negativeSign +
-      prefix +
-      bigNumber.dividedBy(Math.pow(10, 6)).toFixed(2, BigNumber.ROUND_DOWN) +
-      unitsUpperCase.million
-    );
+  if (value.isGreaterThanOrEqualTo(1e6)) {
+    return prefix + value.dividedBy(1e6).toFixed(2, BigNumber.ROUND_DOWN) + unitsUpperCase.million;
   }
 
-  if (!isIgnoreKFormat && bigNumber.isGreaterThanOrEqualTo(1e3)) {
-    return (
-      negativeSign +
-      prefix +
-      bigNumber.dividedBy(Math.pow(10, 3)).toFixed(2, BigNumber.ROUND_DOWN) +
-      unitsUpperCase.thousand
-    );
+  if (!isIgnoreKFormat && value.isGreaterThanOrEqualTo(1e3)) {
+    return prefix + value.dividedBy(1e3).toFixed(2, BigNumber.ROUND_DOWN) + unitsUpperCase.thousand;
   }
 };
 
