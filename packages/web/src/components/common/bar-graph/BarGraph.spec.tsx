@@ -8,6 +8,7 @@ describe("BarGraph Component", () => {
     const args: BarGraphProps = {
       color: "#FFFFFF",
       datas: [],
+      fees: [],
     };
 
     render(
