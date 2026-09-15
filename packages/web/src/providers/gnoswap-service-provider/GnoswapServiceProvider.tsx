@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useAtom } from "jotai";
 import { useRouter } from "next/navigation";
-import { createContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 
 import { NetworkClient } from "@common/clients/network-client";
 import { AxiosClient } from "@common/clients/network-client/axios-client";
@@ -30,6 +30,7 @@ import { TransactionService, TransactionServiceImpl } from "@services/transactio
 import { TransactionGasService, TransactionGasServiceImpl } from "@services/transaction-gas";
 import { FaucetService, FaucetServiceImpl } from "@services/faucet";
 import { FaucetRepositoryImpl } from "@repositories/faucet";
+import RpcConnectionFailed from "./RpcConnectionFailed";
 
 interface GnoswapContextProps {
   initialized: boolean;
@@ -79,6 +80,14 @@ const getStatus = () => {
   return null;
 };
 
+/** The set of clients that belong to one chain and are swapped as a unit. */
+interface ChainClients {
+  chainId: string;
+  gnoswapApiClient: NetworkClient;
+  routerApiClient: NetworkClient;
+  rpcProvider: GnoProvider;
+}
+
 export const GnoswapContext = createContext<GnoswapContextProps | null>(null);
 
 const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
@@ -87,27 +96,47 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
   const [walletAccount, setWalletAccount] = useAtom(WalletState.account);
   const [status, setStatus] = useAtom(WalletState.status);
 
-  const [gnoswapApiClient, setGnoswapApiClient] = useState<NetworkClient | null>(null);
-  const [routerApiClient, setRouterApiClient] = useState<NetworkClient | null>(null);
-
   const [localStorageClient, setLocalStorageClient] = useState(WebStorageClient.createLocalStorageClient());
 
   const [sessionStorageClient, setSessionStorageClient] = useState(WebStorageClient.createSessionStorageClient());
 
   const [walletClient] = useAtom(WalletState.client);
 
-  const [rpcProvider, setRPCProvider] = useState<GnoProvider | null>(null);
+  // The API clients and the RPC provider are published together so that a chain
+  // switch can never pair one chain's API with another chain's RPC node: the
+  // previous, consistent set stays in place until the new one is fully built.
+  const [chainClients, setChainClients] = useState<ChainClients | null>(null);
+  const [connectionFailed, setConnectionFailed] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+
+  const gnoswapApiClient = chainClients?.gnoswapApiClient ?? null;
+  const routerApiClient = chainClients?.routerApiClient ?? null;
+  const rpcProvider = chainClients?.rpcProvider ?? null;
+
+  // The chain the wallet is asking for, which is not necessarily the one the
+  // published clients belong to while a switch is in flight.
+  const network = useMemo(() => {
+    const currentChainId = SUPPORT_CHAIN_IDS.includes(walletAccount?.chainId || "")
+      ? walletAccount?.chainId
+      : DEFAULT_CHAIN_ID;
+
+    return NetworkData.find(info => info.chainId === currentChainId) || NetworkData[0];
+  }, [walletAccount?.chainId]);
 
   const initialized = useMemo(() => {
     return rpcProvider !== null && window !== undefined;
   }, [rpcProvider]);
 
-  const loadedProviders = useMemo(() => {
-    if (!gnoswapApiClient || !routerApiClient || !rpcProvider) {
-      return false;
-    }
-    return true;
-  }, [gnoswapApiClient, routerApiClient, rpcProvider]);
+  // Only the bundle that belongs to the requested chain may render children.
+  // Everything else in the tree (eventStore, walletAccount) moves to the new
+  // chain as soon as the wallet does, so rendering an older bundle would pair
+  // clients from two different chains.
+  const loadedProviders = chainClients?.chainId === network.chainId;
+
+  const retryConnection = useCallback(() => {
+    setConnectionFailed(false);
+    setRetryCount(count => count + 1);
+  }, []);
 
   useEffect(() => {
     const sessionId = getSessionId();
@@ -134,30 +163,50 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
       return;
     }
 
-    const currentChainId = SUPPORT_CHAIN_IDS.includes(walletAccount?.chainId || "")
-      ? walletAccount?.chainId
-      : DEFAULT_CHAIN_ID;
-    const network = NetworkData.find(info => info.chainId === currentChainId) || NetworkData[0];
+    // Connecting is a network round trip now, so a re-run of this effect that
+    // does not change the chain must not open a second connection.
+    if (chainClients?.chainId === network.chainId) {
+      return;
+    }
 
-    setGnoswapApiClient(
-      new AxiosClient(network.apiUrl, () => {
-        router.push("/500");
-      }),
-    );
-    setRouterApiClient(new AxiosClient(network.routerUrl));
-    setRPCProvider(new GnoProvider(network.rpcUrl || ""));
-  }, [loadedProviders, router, status, walletAccount, walletAccount?.chainId]);
+    // Creating a provider requires a round trip to the node since gno-js-client v3,
+    // so ignore the result once the effect has been superseded.
+    let stale = false;
+
+    // A pending attempt must not show the failure screen left over from an
+    // earlier one; children are hidden while this runs either way.
+    setConnectionFailed(false);
+
+    GnoProvider.create(network.rpcUrl || "")
+      .then(rpcProvider => {
+        if (stale) {
+          return;
+        }
+        setChainClients({
+          chainId: network.chainId,
+          gnoswapApiClient: new AxiosClient(network.apiUrl, () => {
+            router.push("/500");
+          }),
+          routerApiClient: new AxiosClient(network.routerUrl),
+          rpcProvider,
+        });
+      })
+      .catch(error => {
+        console.error("Failed to connect to the RPC provider", error);
+        if (!stale) {
+          setConnectionFailed(true);
+        }
+      });
+
+    return () => {
+      stale = true;
+    };
+  }, [chainClients?.chainId, loadedProviders, network, retryCount, router, status, walletAccount]);
 
   const eventStore = useMemo(() => {
-    const currentChainId = SUPPORT_CHAIN_IDS.includes(walletAccount?.chainId || "")
-      ? walletAccount?.chainId
-      : DEFAULT_CHAIN_ID;
-
-    const network = NetworkData.find(info => info.chainId === currentChainId) || NetworkData[0];
-
     const axiosClient = axios.create({ baseURL: network.rpcUrl });
     return new TransactionEventStore(axiosClient);
-  }, [walletAccount]);
+  }, [network]);
 
   const accountRepository = useMemo(() => {
     return new AccountRepositoryImpl(
@@ -268,7 +317,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
         faucetService,
       }}
     >
-      {loadedProviders && children}
+      {loadedProviders ? children : connectionFailed ? <RpcConnectionFailed onRetry={retryConnection} /> : null}
     </GnoswapContext.Provider>
   );
 };

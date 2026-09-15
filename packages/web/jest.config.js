@@ -8,6 +8,12 @@ const createJestConfig = nextJest({
   dir: "./",
 });
 
+// The gno clients and a part of their dependency tree (uuid, @scure, @noble, @cosmjs)
+// are published as ESM only, so they have to go through the transformer instead of
+// being required as-is. Every enclosing scope has to be listed as well, otherwise the
+// pattern still matches on the outer `node_modules/` segment of a nested dependency.
+const ESM_ONLY_PACKAGES = ["@gnolang", "@cosmjs", "@scure", "@noble", "uuid"];
+
 // Add any custom config to be passed to Jest
 const customJestConfig = {
   roots: ["<rootDir>"],
@@ -21,8 +27,17 @@ const customJestConfig = {
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   testEnvironment: "jest-environment-jsdom",
   testMatch: ["<rootDir>/**/*.spec.(js|jsx|ts|tsx)"],
-  transformIgnorePatterns: ["<rootDir>/node_modules/"],
 };
 
-// createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
-module.exports = createJestConfig(customJestConfig);
+// next/jest always ignores `node_modules` for transforms and only lets custom config
+// append to that list, so the resolved config is patched after the fact.
+module.exports = async () => {
+  const config = await createJestConfig(customJestConfig)();
+
+  config.transformIgnorePatterns = [
+    "^.+\\.module\\.(css|sass|scss)$",
+    `/node_modules/(?!(${ESM_ONLY_PACKAGES.join("|")})/)`,
+  ];
+
+  return config;
+};
