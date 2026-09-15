@@ -198,7 +198,17 @@ export function makeUnDelegateMessages({
   amount: string;
   caller: string;
 }): TransactionMessage[] {
-  const delegateTransactionMessage = makeTransactionMessage({
+  // Undelegate no longer collects rewards on-chain, so the accrued
+  // emission and protocol fee rewards are collected in the same transaction.
+  const collectRewardTransactionMessage = makeTransactionMessage({
+    packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
+    send: "",
+    func: TransactionMessageFunctionType.CollectReward,
+    args: [],
+    caller,
+  });
+
+  const undelegateTransactionMessage = makeTransactionMessage({
     packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
     send: "",
     func: TransactionMessageFunctionType.Undelegate,
@@ -206,7 +216,7 @@ export function makeUnDelegateMessages({
     caller,
   });
 
-  return [delegateTransactionMessage];
+  return [collectRewardTransactionMessage, undelegateTransactionMessage];
 }
 
 export function makeReDelegateMessagesWithApproves(
