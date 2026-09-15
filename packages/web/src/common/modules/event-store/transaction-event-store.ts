@@ -1,6 +1,6 @@
 import { Axios } from "axios";
 import { Event, EventStore, EventStatus } from ".";
-import { makeHexByBase64, parseABCIValue } from "./utility";
+import { makeRpcTransactionHash, parseABCIValue } from "./utility";
 
 type ResponseDataType = string[];
 
@@ -190,7 +190,7 @@ export class TransactionEventStore implements EventStore<ResponseDataType> {
     hasError: boolean;
     data: ResponseDataType;
   } | null> {
-    const result = await this.networkClient.get("/tx?hash=" + makeHexByBase64(transactionHash));
+    const result = await this.networkClient.get("/tx?hash=" + makeRpcTransactionHash(transactionHash));
 
     const height = Number(result.data?.result?.height || 0);
     if (!height) {

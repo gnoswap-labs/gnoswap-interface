@@ -1,7 +1,6 @@
 import { mappedTransactionData, createDocument, mappedDocumentMessagesWithCaller } from "./messages.utils";
 import { Document, ContractMessage } from "src/types/transaction-messages.types";
-import { MsgCall, MsgSend, MsgAddPackage } from "@gnolang/gno-js-client";
-import { MsgRun } from "@gnolang/gno-js-client/bin/proto/gno/vm";
+import { MsgCall, MsgSend, MsgAddPackage, MsgRun } from "@gnolang/gno-js-client";
 
 describe("messages.utils", () => {
   describe("createDocument", () => {
@@ -215,7 +214,6 @@ describe("messages.utils", () => {
             path: "gno.land/p/demo/test",
             files: [],
           },
-          deposit: "",
           send: "",
           max_deposit: "",
         } as MsgAddPackage,

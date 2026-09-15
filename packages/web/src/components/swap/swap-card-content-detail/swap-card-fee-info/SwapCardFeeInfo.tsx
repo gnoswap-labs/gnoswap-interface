@@ -22,11 +22,8 @@ import { formatRouterFeeStr } from "@utils/swap-utils";
 interface ContentProps {
   swapSummaryInfo: SwapSummaryInfo;
   isLoading: boolean;
-  isLoadingGasInfo: boolean;
   priceImpactStatus: PriceImpactStatus;
   swapTokenInfo: SwapTokenInfo;
-  connectedWallet: boolean;
-  gasEstimateSuccess: boolean;
 }
 
 const SkeletonLoader = () => <span css={pulseSkeletonStyle({ h: 18, w: "100px!important" })} />;
@@ -34,11 +31,8 @@ const SkeletonLoader = () => <span css={pulseSkeletonStyle({ h: 18, w: "100px!im
 const SwapCardFeeInfo: React.FC<ContentProps> = ({
   swapSummaryInfo,
   isLoading,
-  isLoadingGasInfo,
   priceImpactStatus,
   swapTokenInfo,
-  connectedWallet,
-  gasEstimateSuccess,
 }) => {
   const { t } = useTranslation();
 
@@ -58,16 +52,6 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
       guaranteedStr: `${toNumberFormat(amount || 0, guaranteedToken.decimals)} ${currency}`,
     };
   }, [swapSummaryInfo.swapDirection, swapSummaryInfo.guaranteedAmount, swapSummaryInfo.tokenA, swapSummaryInfo.tokenB, t]);
-
-  const { gasFeeStr, gasFeeUSDStr } = useMemo(() => {
-    const { amount, currency } = swapSummaryInfo.gasFee;
-    const gasFeeUSD = swapSummaryInfo.gasFeeUSD;
-
-    return {
-      gasFeeStr: `${toNumberFormat(amount)} ${currency}`,
-      gasFeeUSDStr: Number(gasFeeUSD) < 0.01 ? "<$0.01" : `$${toNumberFormat(gasFeeUSD)}`,
-    };
-  }, [swapSummaryInfo.gasFee, swapSummaryInfo.gasFeeUSD]);
 
   const slippageStr = useMemo(() => {
     return `${swapTokenInfo.slippage}%`;
@@ -152,20 +136,6 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
         </div>
         {isLoading ? <SkeletonLoader /> : <span className="white-text">{routerFeeStr}</span>}
       </div>
-      {connectedWallet && gasEstimateSuccess && (
-        <div className="swap-fee-row  gas-fee">
-          <span className="gray-text">{t("Swap:swapInfo.gasFee")}</span>
-
-          {isLoading || isLoadingGasInfo ? (
-            <SkeletonLoader />
-          ) : (
-            <span className="white-text">
-              {gasFeeStr}
-              <span className="gray-text">{`(${gasFeeUSDStr})`}</span>
-            </span>
-          )}
-        </div>
-      )}
       <SwapDivider />
       <div className="auto-router">
         <div className="auto-wrapper">

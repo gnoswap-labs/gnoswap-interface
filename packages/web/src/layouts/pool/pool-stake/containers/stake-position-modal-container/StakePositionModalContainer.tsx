@@ -9,18 +9,15 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { useMessage } from "@hooks/common/use-message";
-import { useNetworkFee } from "@hooks/common/use-network-fee";
 import { useReferral } from "@hooks/common/use-referral";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { getGasUsed } from "@hooks/gas";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
 import { QUERY_KEY } from "@query/query-keys";
 import { DexEvent } from "@repositories/common";
-import { makeStakePositionsMessagesWithApproves } from "@repositories/position/position.message";
 import { StakePositionsRequest } from "@repositories/position/request";
 import { delay } from "@utils/common";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
@@ -46,8 +43,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
   const { refetch: refetchPools } = useGetPoolList();
   const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(poolPath);
 
-  const { transactionService, positionRepository } = useGnoswapContext();
-  const { estimateNetworkFee } = useNetworkFee(null);
+  const { positionRepository } = useGnoswapContext();
 
   const { getNextReferralAddress, removeReferrerFromLocalStorage } = useReferral();
   const clearModal = useClearModal();
@@ -81,9 +77,9 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
   // with a mixed-pool selection it keeps the (symbol, amount) pairs consistent
   // instead of mislabeling sums under positions[0]'s tokens.
   const pooledTokenInfos = useMemo(() => {
-    const grouped = new Map<string, { token: typeof positions[number]["pool"]["tokenA"]; amount: number }>();
+    const grouped = new Map<string, { token: (typeof positions)[number]["pool"]["tokenA"]; amount: number }>();
 
-    const add = (token: typeof positions[number]["pool"]["tokenA"], balance: string | number | null | undefined) => {
+    const add = (token: (typeof positions)[number]["pool"]["tokenA"], balance: string | number | null | undefined) => {
       if (!token?.path) return;
       const rawAmount = Number(balance ?? 0);
       const amount = Number.isFinite(rawAmount) ? rawAmount : 0;
@@ -104,30 +100,11 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
     return Array.from(grouped.values());
   }, [positions]);
 
-  const buildAdenaWalletAction = useCallback(
+  const buildWalletAction = useCallback(
     async (request: StakePositionsRequest) => {
       return await positionRepository.stakePositions(request).catch(() => null);
     },
     [positionRepository],
-  );
-
-  const buildSocialWalletAction = useCallback(
-    async (request: StakePositionsRequest) => {
-      const txMessages = makeStakePositionsMessagesWithApproves(request);
-
-      const txDoc = await transactionService.createDocument({ messages: txMessages });
-      await transactionService.createTransaction(txDoc);
-
-      const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
-      const requestWithGasInfo: StakePositionsRequest = {
-        ...request,
-        gasFee: networkFee?.amount,
-        gasUsed: getGasUsed(currentGasInfo).toString(),
-      };
-
-      return await positionRepository.stakePositions(requestWithGasInfo).catch(() => null);
-    },
-    [estimateNetworkFee, positionRepository, transactionService],
   );
 
   const stakeOnSubmit = useCallback(async () => {
@@ -167,9 +144,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
     }
 
     try {
-      const result = await (walletType === "ADENA"
-        ? buildAdenaWalletAction(request)
-        : buildSocialWalletAction(request));
+      const result = await buildWalletAction(request);
 
       if (result) {
         if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
@@ -249,8 +224,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
   }, [
     walletClient,
     account?.address,
-    buildAdenaWalletAction,
-    buildSocialWalletAction,
+    buildWalletAction,
     handleRefreshData,
     positions,
     pooledTokenInfos,
