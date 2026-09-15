@@ -57,15 +57,9 @@ const swapSummaryInfo: SwapSummaryInfo = {
     amount: 45124,
     currency: "GNOT",
   },
-  gasFee: {
-    amount: 0.000001,
-    currency: "GNOT",
-  },
-  gasFeeUSD: 0.1,
   protocolFee: "0.15",
   swapRateAction: SwapRateAction.ATOB,
   routerFee: 0,
-  gasEstimateSuccess: true,
 };
 
 const swapTokenInfo: SwapTokenInfo = {
@@ -98,8 +92,6 @@ describe("SwapCardContentDetail Component", () => {
       },
       isLoading: false,
       priceImpactStatus: "MEDIUM",
-      isLoadingGasInfo: false,
-      connectedWallet: false,
     };
 
     render(

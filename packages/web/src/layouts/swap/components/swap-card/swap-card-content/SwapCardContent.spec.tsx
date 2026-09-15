@@ -73,7 +73,6 @@ describe("SwapCardContent Component", () => {
       priceImpactStatus: "NONE" as PriceImpactStatus,
       isSameToken: false,
       resetEstimatedLiquidity: (): void => {},
-      isLoadingGasInfo: false,
       isRefetching: false,
     };
 
