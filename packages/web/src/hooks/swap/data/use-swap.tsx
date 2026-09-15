@@ -262,7 +262,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
         return swapRouterRepository.sendExactInSwapRoute({
           inputToken: tokenA,
           outputToken: tokenB,
-          tokenAmount: Number(tokenAmount),
+          tokenAmount,
           estimatedRoutes: estimatedRoutes,
           slippage: slippage,
           originAmount: estimatedSwapResult?.originAmount || 0,
@@ -276,7 +276,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
         return swapRouterRepository.sendExactOutSwapRoute({
           inputToken: tokenA,
           outputToken: tokenB,
-          tokenAmount: Number(tokenAmount),
+          tokenAmount,
           estimatedRoutes: estimatedRoutes,
           slippage: slippage,
           originAmount: estimatedSwapResult?.originAmount || 0,

@@ -27,7 +27,7 @@ enum TransactionMessageFunctionType {
 export interface ExactSwapRouteMessageRequest {
   inputToken: TokenModel;
   outputToken: TokenModel;
-  tokenAmount: number;
+  tokenAmount: number | string;
   estimatedRoutes: EstimatedRoute[];
   tokenAmountLimit: number;
   deadline: number;

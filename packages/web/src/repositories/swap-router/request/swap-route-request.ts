@@ -6,7 +6,7 @@ export interface DrySwapRequest {
 
   outputToken: TokenModel;
 
-  tokenAmount: number;
+  tokenAmount: number | string;
 
   exactType: "EXACT_IN" | "EXACT_OUT";
 
@@ -24,7 +24,7 @@ export interface SwapRouteRequest {
 
   outputToken: TokenModel;
 
-  tokenAmount: number;
+  tokenAmount: number | string;
 
   estimatedRoutes: EstimatedRoute[];
 
