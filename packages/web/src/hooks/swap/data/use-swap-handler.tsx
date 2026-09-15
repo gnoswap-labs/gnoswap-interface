@@ -178,12 +178,10 @@ export const useSwapHandler = () => {
     swap,
     wrap,
     unwrap,
-    displayNetworkFee,
     updateSwapAmount,
     resetSwapAmount,
     isTyping,
     isRefetching,
-    isLoadingGasInfo,
     handleResetEstimatedLiquidity,
   } = useSwap({
     tokenA,
@@ -542,10 +540,6 @@ export const useSwapHandler = () => {
     const protocolFee = `${(swapFee || 0) / 100}%`;
     const routerFee = (swapFee || 0) / 100;
 
-    const networkFeeAmount = Number(displayNetworkFee?.amount ?? 0) || defaultGasFeeAmount;
-    const networkFeeUSD = Number(displayNetworkFee?.usdValue ?? 0) || gasFeeUSD;
-    const gasEstimateSuccess = !!displayNetworkFee && displayNetworkFee.amount != "0";
-
     if (isSameToken) {
       return {
         tokenA,
@@ -558,16 +552,10 @@ export const useSwapHandler = () => {
           amount: Number(tokenAAmount),
           currency: tokenB.symbol,
         },
-        gasFee: {
-          amount: networkFeeAmount,
-          currency: "GNOT",
-        },
-        gasFeeUSD: networkFeeUSD,
         swapRateAction,
         swapRate1USD,
         protocolFee,
         routerFee,
-        gasEstimateSuccess,
       };
     }
 
@@ -595,17 +583,11 @@ export const useSwapHandler = () => {
         amount: tokenAmountLimit || 0,
         currency: (type === "EXACT_IN" ? tokenB : tokenA).symbol,
       },
-      gasFee: {
-        amount: networkFeeAmount,
-        currency: "GNOT",
-      },
-      gasFeeUSD: networkFeeUSD,
       swapRateAction,
       swapRate1USD,
       direction: type,
       protocolFee,
       routerFee,
-      gasEstimateSuccess,
     };
   }, [
     tokenA,
@@ -617,14 +599,10 @@ export const useSwapHandler = () => {
     tokenAmountLimit,
     swapRateAction,
     type,
-    gnotToken,
-    defaultGasFeeAmount,
-    gasFeeUSD,
     tokenPrices,
     priceImpact,
     formatPriceImpact,
     swapFee,
-    displayNetworkFee,
   ]);
 
   // If the data required for the modal configuration is updated, update the modal data as well
@@ -690,14 +668,12 @@ export const useSwapHandler = () => {
         isWrapOrUnwrap={swapButtonState === "WRAP" || swapButtonState === "UNWRAP"}
         isLoading={isRefetching}
         priceImpactStatus={priceImpactStatus}
-        connectedWallet={connectedWallet}
         title={confirmModalTitle}
       />
     ),
     [
       closeModal,
       confirmModalTitle,
-      connectedWallet,
       executeLatestSwap,
       isRefetching,
       priceImpactStatus,
@@ -1297,7 +1273,6 @@ export const useSwapHandler = () => {
     slippage,
     connectedWallet,
     copied,
-    displayNetworkFee,
     swapTokenInfo,
     swapSummaryInfo,
     swapRouteInfos,
@@ -1320,7 +1295,6 @@ export const useSwapHandler = () => {
     isSwitchNetwork,
     switchNetwork,
     isLoading: swapState === "LOADING" || isTyping,
-    isLoadingGasInfo,
     isRefetching,
     setSwapValue,
     tokenA,

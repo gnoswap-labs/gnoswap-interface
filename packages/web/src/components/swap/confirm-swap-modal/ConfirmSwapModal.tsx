@@ -35,7 +35,6 @@ interface ConfirmSwapModalProps {
   isWrapOrUnwrap: boolean;
   priceImpactStatus: PriceImpactStatus;
   isLoading: boolean;
-  connectedWallet: boolean;
 
   setSwapRateAction: (type: SwapRateAction) => void;
   swap: (swapTokenInfo: SwapTokenInfo, estimatedAmount: string | null) => void;
@@ -52,7 +51,6 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   isWrapOrUnwrap,
   priceImpactStatus,
   isLoading,
-  connectedWallet,
 }) => {
   const swapConfirmModalState = useAtomValue(SwapState.swapConfirmModalState);
   const { swapSummaryInfo, swapTokenInfo, estimatedAmount, isRefetching } = swapConfirmModalState;
@@ -114,21 +112,6 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
       swapSummaryInfo.swapDirection === "EXACT_IN" ? swapSummaryInfo.tokenB : swapSummaryInfo.tokenA;
     return `${toNumberFormat(amount, guaranteedToken.decimals)} ${currency}`;
   }, [swapSummaryInfo]);
-
-  const gasFeeStr = useMemo(() => {
-    if (!swapSummaryInfo) return;
-    const { amount, currency } = swapSummaryInfo.gasFee;
-    return `${toNumberFormat(amount)} ${currency}`;
-  }, [swapSummaryInfo?.gasFee]);
-
-  const gasFeeUSDStr = useMemo(() => {
-    if (!swapSummaryInfo) return;
-    const gasFeeUSD = swapSummaryInfo.gasFeeUSD;
-
-    if (Number(gasFeeUSD) < 0.01) return "<$0.01";
-
-    return `$${toNumberFormat(gasFeeUSD)}`;
-  }, [swapSummaryInfo?.gasFeeUSD]);
 
   const showPriceImpact = useMemo(() => !!swapSummaryInfo?.priceImpact, [swapSummaryInfo?.priceImpact]);
 
@@ -195,10 +178,6 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     if (!swapTokenInfo) return;
     swap(swapTokenInfo, estimatedAmount);
   }, [estimatedAmount, swap, swapTokenInfo]);
-
-  const gasEstimateSuccess = useMemo(() => {
-    return Boolean(swapSummaryInfo?.gasEstimateSuccess);
-  }, [swapSummaryInfo?.gasEstimateSuccess]);
 
   return (
     <ConfirmModal>
@@ -319,16 +298,6 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                   </div>
                 </div>
               </>
-            )}
-
-            {connectedWallet && gasEstimateSuccess && (
-              <div className="gas-fee">
-                <span className="gray-text">{t("Swap:swapInfo.gasFee")}</span>
-                <span className="white-text">
-                  {gasFeeStr}
-                  <span className="gray-text">({gasFeeUSDStr})</span>
-                </span>
-              </div>
             )}
           </div>
         </div>

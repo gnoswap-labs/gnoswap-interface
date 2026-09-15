@@ -13,9 +13,6 @@ import { TransferGRC20TokenRequest, TransferNativeTokenRequest } from "@reposito
 import { CommonState, WalletState } from "@states/index";
 import { formatPoolPairAmount } from "@utils/new-number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { makeTransferGNOTTokenMessages, makeTransferGRC20TokenMessages } from "@repositories/wallet/wallet.message";
-import { useNetworkFee } from "@hooks/common/use-network-fee";
-import { getGasUsed } from "@hooks/gas";
 
 type Request = TransferGRC20TokenRequest | TransferNativeTokenRequest;
 export type WithdrawResponse = {
@@ -27,10 +24,9 @@ export type WithdrawResponse = {
 const useSendAsset = () => {
   // ---------- external state / services ----------
   const walletClient = useAtomValue(WalletState.client);
-  const { walletRepository, transactionService } = useGnoswapContext();
+  const { walletRepository } = useGnoswapContext();
   const { enqueueEvent } = useTransactionEventStore();
   const { updateBalances, refetchGrc20Balances } = useTokenData(true);
-  const { estimateNetworkFee } = useNetworkFee(null);
 
   // ---------- broadcast helpers ----------
   const { broadcastLoading, broadcastSuccess, broadcastError, broadcastRejected } = useBroadcastHandler();
@@ -58,36 +54,9 @@ const useSendAsset = () => {
   }, []);
 
   // --------------------
-  // Helper : Social wallet action builder
+  // Helper : Wallet action builder
   // --------------------
-  const buildSocialWalletAction = useCallback(
-    async (request: Request, type: "Native" | "GRC20") => {
-      const isNativeTransfer = type === "Native";
-
-      const txMessage = isNativeTransfer
-        ? makeTransferGNOTTokenMessages({ ...request })
-        : makeTransferGRC20TokenMessages({ ...request });
-      const txDoc = await transactionService.createDocument({ messages: txMessage });
-      await transactionService.createTransaction(txDoc);
-
-      const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
-      const requestWithGasInfo = {
-        ...request,
-        gasFee: networkFee?.amount,
-        gasUsed: getGasUsed(currentGasInfo).toString(),
-      } as Request & { gasFee?: string; gasUsed?: string };
-
-      return isNativeTransfer
-        ? walletRepository.transferGNOTToken(requestWithGasInfo)
-        : walletRepository.transferGRC20Token(requestWithGasInfo);
-    },
-    [estimateNetworkFee, transactionService, walletRepository],
-  );
-
-  // --------------------
-  // Helper : Adena wallet action builder
-  // --------------------
-  const buildAdenaWalletAction = useCallback(
+  const buildWalletAction = useCallback(
     (request: Request, type: "Native" | "GRC20") => {
       return type === "Native"
         ? walletRepository.transferGNOTToken(request)
@@ -112,9 +81,7 @@ const useSendAsset = () => {
     }
 
     try {
-      const response = await (walletType === "ADENA"
-        ? buildAdenaWalletAction(request, type)
-        : buildSocialWalletAction(request, type));
+      const response = await buildWalletAction(request, type);
 
       if (response.code === 0 || response.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
         enqueueEvent({

@@ -47,7 +47,6 @@ const TokenSwapContainer: React.FC = () => {
     isSwitchNetwork,
     switchNetwork,
     isLoading,
-    isLoadingGasInfo,
     isRefetching,
     swapValue,
     setSwapRateAction,
@@ -168,7 +167,6 @@ const TokenSwapContainer: React.FC = () => {
         changeTokenAAmount={changeTokenAAmount}
         changeTokenBAmount={changeTokenBAmount}
         isLoading={isLoading}
-        isLoadingGasInfo={isLoadingGasInfo}
         isAvailSwap={isAvailSwap}
         swapButtonText={swapButtonText}
         swapSummaryInfo={swapSummaryInfo}
