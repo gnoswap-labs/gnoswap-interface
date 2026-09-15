@@ -53,6 +53,18 @@ export function makeDisplayTokenAmount(
   return number.shiftedBy(-token.decimals).toNumber();
 }
 
+export function makeDisplayTokenAmountString(
+  token: TokenModel | OnchainToken,
+  amount: bigint | string | number,
+): string | null {
+  const number = BigNumber(amount.toString());
+  if (number.isNaN()) {
+    return null;
+  }
+
+  return number.shiftedBy(-token.decimals).toFixed();
+}
+
 export function isAmountLessThanTokenMinimum(
   token: Pick<TokenModel | OnchainToken, "decimals">,
   amount: string | number,

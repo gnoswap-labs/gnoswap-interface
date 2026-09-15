@@ -67,9 +67,9 @@ describe("swap-router.message.ts", () => {
       {
         inputToken,
         outputToken,
-        tokenAmount: 1.25,
+        tokenAmount: "1.25",
         estimatedRoutes: [route],
-        tokenAmountLimit: 2,
+        tokenAmountLimit: "2",
         deadline: 123,
         caller,
         referrerAddress: null,
@@ -113,9 +113,9 @@ describe("swap-router.message.ts", () => {
       {
         inputToken,
         outputToken,
-        tokenAmount: 2,
+        tokenAmount: "2",
         estimatedRoutes: [route],
-        tokenAmountLimit: 1.25,
+        tokenAmountLimit: "1.25",
         deadline: 123,
         caller,
         referrerAddress: null,
@@ -147,5 +147,36 @@ describe("swap-router.message.ts", () => {
     expect(messages.some(message => getRunMessageBody(message).includes("grc20reg.Approve(0, cur, \"token_out\""))).toBe(
       false,
     );
+  });
+
+  it("preserves an exact Max amount beyond JavaScript safe integers", async () => {
+    const caller = "caller";
+    const inputToken = createTokenModel("token_in");
+    const outputToken = createTokenModel("token_out");
+
+    const messages = await makeExactInSwapRouteMessageWithApproves(
+      {
+        inputToken,
+        outputToken,
+        tokenAmount: "99999999999.999995",
+        estimatedRoutes: [route],
+        tokenAmountLimit: "2",
+        deadline: 123,
+        caller,
+        referrerAddress: null,
+      },
+      async () => 0,
+    );
+
+    const { approveMessages, txMessages } = splitMessages(messages, 1);
+    expect(approveMessages).toEqual([
+      makeExpectedApproveRunMessage({
+        caller,
+        approves: [{ tokenPath: "token_in", spenderAddress: "router_address", amount: "99999999999999995" }],
+      }),
+    ]);
+    expect(txMessages[0]).toMatchObject({
+      args: ["token_in", "token_out", "99999999999999995", "token_in:token_out:3000", "1", "2000000", "123", ""],
+    });
   });
 });

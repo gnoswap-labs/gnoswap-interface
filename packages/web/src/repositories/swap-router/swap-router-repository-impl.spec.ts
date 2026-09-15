@@ -60,7 +60,7 @@ describe("SwapRouterRepositoryImpl", () => {
     await repository.getRoutes({
       inputToken: createToken("IN", 6),
       outputToken: createToken("OUT", 8),
-      tokenAmount: 1.23,
+      tokenAmount: "1.23",
       exactType: "EXACT_OUT",
     });
 

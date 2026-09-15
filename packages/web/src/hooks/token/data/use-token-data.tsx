@@ -12,7 +12,7 @@ import { useGetAllTokenPrices, useGetGrc20Balances, useGetTokens } from "@query/
 import { TokenState } from "@states/index";
 import { checkPositivePrice } from "@utils/common";
 import { toUnitFormat } from "@utils/number-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { makeDisplayTokenAmount, makeDisplayTokenAmountString } from "@utils/token-utils";
 import { isEmptyObject } from "@utils/validation-utils";
 
 import { useGnotToGnot } from "./use-gnot-wugnot";
@@ -64,6 +64,19 @@ export const useTokenData = (showUnverified = true) => {
     return tokenBalanceMap;
   }, [balances, tokens]);
 
+  const exactBalanceMap = useMemo(() => {
+    const tokenBalanceMap: Record<string, string> = {};
+
+    tokens.forEach(token => {
+      const rawBalance = isNativeTokenByType(token.type)
+        ? gnotBalance
+        : grc20BalancesData?.data.find(balance => balance.path === token.path)?.amount;
+      tokenBalanceMap[token.priceID] = makeDisplayTokenAmountString(token, rawBalance ?? "0") ?? "0";
+    });
+
+    return tokenBalanceMap;
+  }, [gnotBalance, grc20BalancesData, tokens]);
+
   const trendingTokens: CardListTokenInfo[] = useMemo(() => {
     const sortedTokens = tokens
       .sort((t1: { path: string }, t2: { path: string }) => {
@@ -102,11 +115,11 @@ export const useTokenData = (showUnverified = true) => {
 
       return {
         token: {
-            ...token,
-            symbol: getGnotPath(token).symbol,
-            displaySymbol: getGnotPath(token).displaySymbol,
-            name: getGnotPath(token).name,
-            logoURI: getGnotPath(token).logoURI,
+          ...token,
+          symbol: getGnotPath(token).symbol,
+          displaySymbol: getGnotPath(token).displaySymbol,
+          name: getGnotPath(token).name,
+          logoURI: getGnotPath(token).logoURI,
         },
         upDown: data1D.status === MATH_NEGATIVE_TYPE.POSITIVE ? "up" : "down",
         content: data1D.percentDisplay.replace(/[+-]/g, ""),
@@ -296,6 +309,7 @@ export const useTokenData = (showUnverified = true) => {
     tokens,
     tokenPrices,
     displayBalanceMap,
+    exactBalanceMap,
     balances,
     trendingTokens,
     recentlyAddedTokens,

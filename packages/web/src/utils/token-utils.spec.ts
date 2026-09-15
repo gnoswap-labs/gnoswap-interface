@@ -9,6 +9,7 @@ import {
   isAmountLessThanTokenMinimum,
   isNativeTokenPath,
   makeDisplayTokenAmount,
+  makeDisplayTokenAmountString,
   makeRawTokenAmount,
 } from "./token-utils";
 
@@ -131,6 +132,15 @@ describe("make token display price", () => {
     };
     const result = makeDisplayTokenAmount(token, "123000000");
     expect(result).toBe(1.23);
+  });
+
+  test("preserves display precision beyond JavaScript safe integers", () => {
+    const token = {
+      ...DEFAULT_TOKEN,
+      decimals: 6,
+    };
+
+    expect(makeDisplayTokenAmountString(token, "99999999999999995")).toBe("99999999999.999995");
   });
 });
 

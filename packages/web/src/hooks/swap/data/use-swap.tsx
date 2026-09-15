@@ -6,7 +6,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useReferral } from "@hooks/common/use-referral";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetRoutes } from "@query/router";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { makeDisplayTokenAmountString } from "@utils/token-utils";
 
 import { SwapDirectionType } from "@common/values";
 import { EstimatedRoute } from "@models/swap/swap-route-info";
@@ -28,24 +28,23 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
 
   const SWAP_AMOUNT_DEBOUNCE_TIME_MS = 500;
   const SWAP_DEADLINE_SEC = 60 * 5;
-  const [swapAmount, setSwapAmount] = useState<number | null>(null);
+  const [swapAmount, setSwapAmount] = useState<string | null>(null);
   const debouncedAmount = useDebounce(swapAmount, swapAmount ? SWAP_AMOUNT_DEBOUNCE_TIME_MS : 0);
-  const [estimatedLiquidityMax, setEstimatedLiquidityMax] = useState<number | null>(null);
+  const [estimatedLiquidityMax, setEstimatedLiquidityMax] = useState<string | null>(null);
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeoutRef = useRef<NodeJS.Timeout>();
   const debouncedSwapAmount = useMemo(() => {
-    if (!swapAmount || swapAmount === 0) {
+    if (!swapAmount || BigNumber(swapAmount).isZero()) {
       return swapAmount;
     }
     return debouncedAmount;
   }, [swapAmount, debouncedAmount]);
 
   const shouldFetchData = useCallback(
-    (amount: number | null) => {
-      if (!tokenA || !tokenB) return false;
-      if (!amount) return false;
-      if (!estimatedLiquidityMax) return true;
-      return amount < estimatedLiquidityMax;
+    (amount: string | null) => {
+      if (!tokenA || !tokenB || !amount || !BigNumber(amount).isGreaterThan(0)) return false;
+      if (estimatedLiquidityMax === null) return true;
+      return BigNumber(amount).isLessThan(estimatedLiquidityMax);
     },
     [estimatedLiquidityMax, tokenA, tokenB],
   );
@@ -66,7 +65,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     return false;
   }, [tokenA, tokenB]);
 
-  const hasValidSwapAmount = Boolean(debouncedSwapAmount && debouncedSwapAmount > 0);
+  const hasValidSwapAmount = Boolean(debouncedSwapAmount && BigNumber(debouncedSwapAmount).isGreaterThan(0));
   const hasValidTokenPaths = Boolean(tokenA?.path) && Boolean(tokenB?.path);
   const isDifferentTokens = !isSameToken;
 
@@ -80,7 +79,12 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     return debouncedSwapAmount;
   }, [debouncedSwapAmount, direction]);
 
-  const { data: estimatedSwapResult, isLoading: isEstimatedSwapLoading, isRefetching, error } = useGetRoutes(
+  const {
+    data: estimatedSwapResult,
+    isLoading: isEstimatedSwapLoading,
+    isRefetching,
+    error,
+  } = useGetRoutes(
     {
       inputToken: tokenA,
       outputToken: tokenB,
@@ -151,28 +155,26 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     const amount = estimatedSwapResult.amount;
 
     return direction === "EXACT_IN"
-      ? makeDisplayTokenAmount(tokenB, amount)?.toString() || null
-      : makeDisplayTokenAmount(tokenA, amount)?.toString() || null;
+      ? makeDisplayTokenAmountString(tokenB, amount)
+      : makeDisplayTokenAmountString(tokenA, amount);
   }, [debouncedSwapAmount, direction, error, estimatedSwapResult, isTyping, swapState, tokenA, tokenB]);
 
   const tokenAmountLimit = useMemo(() => {
-    if (estimatedAmount && !Number.isNaN(slippage)) {
-      const tokenAmountLimit =
-        direction === "EXACT_IN"
-          ? BigNumber(estimatedAmount)
-              .multipliedBy((100 - slippage) / 100)
-              .toNumber()
-          : BigNumber(estimatedAmount)
-              .multipliedBy((100 + slippage) / 100)
-              .toNumber();
-
-      if (tokenAmountLimit <= 0) {
-        return 0;
-      }
-
-      return tokenA ? tokenAmountLimit || 0 : 0;
+    if (!estimatedAmount || Number.isNaN(slippage)) {
+      return "0";
     }
-    return 0;
+
+    const slippageFactor =
+      direction === "EXACT_IN"
+        ? BigNumber(100).minus(slippage).dividedBy(100)
+        : BigNumber(100).plus(slippage).dividedBy(100);
+    const amountLimit = BigNumber(estimatedAmount).multipliedBy(slippageFactor);
+
+    if (!amountLimit.isGreaterThan(0)) {
+      return "0";
+    }
+
+    return tokenA ? amountLimit.toFixed() : "0";
   }, [direction, estimatedAmount, slippage, tokenA]);
 
   const updateSwapAmount = (amount: string) => {
@@ -182,7 +184,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       return;
     }
     const processedAmount = amount.endsWith(".") ? amount.slice(0, -1) : amount;
-    const newAmount = BigNumber(processedAmount).isZero() ? 0 : BigNumber(processedAmount).toNumber();
+    const newAmount = BigNumber(processedAmount).isZero() ? "0" : processedAmount;
 
     if (!tokenA || !tokenB) {
       setSwapAmount(newAmount);
@@ -262,7 +264,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
         return swapRouterRepository.sendExactInSwapRoute({
           inputToken: tokenA,
           outputToken: tokenB,
-          tokenAmount: Number(tokenAmount),
+          tokenAmount,
           estimatedRoutes: estimatedRoutes,
           slippage: slippage,
           originAmount: estimatedSwapResult?.originAmount || 0,
@@ -276,7 +278,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
         return swapRouterRepository.sendExactOutSwapRoute({
           inputToken: tokenA,
           outputToken: tokenB,
-          tokenAmount: Number(tokenAmount),
+          tokenAmount,
           estimatedRoutes: estimatedRoutes,
           slippage: slippage,
           originAmount: estimatedSwapResult?.originAmount || 0,
@@ -304,9 +306,9 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     if (estimatedRoutes === null || !tokenA || !tokenB) return;
 
     if (estimatedRoutes.length === 0) {
-      if (!estimatedLiquidityMax) {
+      if (estimatedLiquidityMax === null) {
         setEstimatedLiquidityMax(debouncedSwapAmount || null);
-      } else if (debouncedSwapAmount && debouncedSwapAmount < estimatedLiquidityMax) {
+      } else if (debouncedSwapAmount && BigNumber(debouncedSwapAmount).isLessThan(estimatedLiquidityMax)) {
         setEstimatedLiquidityMax(debouncedSwapAmount);
       }
     } else {
@@ -355,7 +357,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     isRefetching,
     handleResetEstimatedLiquidity,
     resetSwapAmount: () => {
-      setSwapAmount(0);
+      setSwapAmount("0");
       setIsTyping(false);
       setEstimatedLiquidityMax(null);
     },

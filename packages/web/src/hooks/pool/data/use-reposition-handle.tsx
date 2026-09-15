@@ -75,16 +75,19 @@ export const useRepositionHandle = () => {
   const { slippage, changeSlippage } = useSlippage();
   const { connected, account, walletClient } = useWallet();
   const [initialized, setInitialized] = useState(false);
-  const { positions, loading: isLoadingPosition, refetch: refetchPositions } = usePositionData({
+  const {
+    positions,
+    loading: isLoadingPosition,
+    refetch: refetchPositions,
+  } = usePositionData({
     poolPath,
   });
   const { invalidateQueryKey } = useInvalidateQueries();
 
-  const selectedPosition = useMemo(() => positions.find(item => item.id.toString() === positionId) || defaultPosition, [
-    defaultPosition,
-    positionId,
-    positions,
-  ]);
+  const selectedPosition = useMemo(
+    () => positions.find(item => item.id.toString() === positionId) || defaultPosition,
+    [defaultPosition, positionId, positions],
+  );
 
   const calculatedLiquidity = useMemo(() => {
     if (!selectedPosition?.liquidity) return BigNumber(0);
@@ -319,14 +322,14 @@ export const useRepositionHandle = () => {
       return {
         inputToken: selectedPosition.pool.tokenA,
         outputToken: selectedPosition.pool.tokenB,
-        tokenAmount: Number(amountA) - repositionAmountA || 0,
+        tokenAmount: BigNumber(amountA).minus(repositionAmountA).toFixed(),
         exactType: "EXACT_IN" as const,
       };
     }
     return {
       inputToken: selectedPosition.pool.tokenB,
       outputToken: selectedPosition.pool.tokenA,
-      tokenAmount: Number(amountB) - repositionAmountB || 0,
+      tokenAmount: BigNumber(amountB).minus(repositionAmountB).toFixed(),
       exactType: "EXACT_IN" as const,
     };
   }, [currentAmounts, initialEstimatedRepositionAmounts, selectedPosition]);
@@ -364,7 +367,7 @@ export const useRepositionHandle = () => {
       return null;
     }
 
-    if (estimateSwapRequest?.tokenAmount === 0) {
+    if (BigNumber(estimateSwapRequest?.tokenAmount ?? 0).isZero()) {
       return {
         amountA: currentAmounts.amountA.toString(),
         amountB: currentAmounts.amountB.toString(),
@@ -401,7 +404,7 @@ export const useRepositionHandle = () => {
   ]);
 
   const isSkipSwap = useMemo(() => {
-    if (estimateSwapRequest?.tokenAmount === 0) {
+    if (BigNumber(estimateSwapRequest?.tokenAmount ?? 0).isZero()) {
       return true;
     }
     if (
@@ -518,12 +521,12 @@ export const useRepositionHandle = () => {
       inputToken: estimateSwapRequest.inputToken,
       outputToken: estimateSwapRequest.outputToken,
       estimatedRoutes: estimatedSwapResult.estimatedRoutes,
-      tokenAmount: isExactIn ? inputAmount.toNumber() : outputAmount.toNumber(),
+      tokenAmount: isExactIn ? inputAmount.toFixed() : outputAmount.toFixed(),
       slippage: slippage,
       originAmount: estimatedSwapResult.originAmount,
       tokenAmountLimit: isExactIn
-        ? outputAmount.toNumber() * ((100 - DEFAULT_SLIPPAGE) / 100)
-        : inputAmount.toNumber() * ((100 + DEFAULT_SLIPPAGE) / 100),
+        ? outputAmount.multipliedBy(BigNumber(100).minus(DEFAULT_SLIPPAGE).dividedBy(100)).toFixed()
+        : inputAmount.multipliedBy(BigNumber(100).plus(DEFAULT_SLIPPAGE).dividedBy(100)).toFixed(),
       deadline,
       referrerAddress: currentReferralAddress,
     };

@@ -1,7 +1,7 @@
 import { PriceImpactStatus, SwapRateAction } from "@hooks/swap/data/use-swap-handler";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import { render } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import SwapCardContent from "./SwapCardContent";
 
@@ -53,29 +53,29 @@ const swapTokenInfo: SwapTokenInfo = {
   slippage: 10,
 };
 
+const mockProps = {
+  swapTokenInfo,
+  swapSummaryInfo: null,
+  swapRouteInfos: [],
+  changeTokenA: () => null,
+  changeTokenAAmount: () => null,
+  changeTokenB: () => null,
+  changeTokenBAmount: () => null,
+  switchSwapDirection: () => null,
+  connectedWallet: false,
+  isLoading: false,
+  setSwapRateAction: (type: SwapRateAction) => {
+    console.log(type);
+  },
+  isSwitchNetwork: false,
+  priceImpactStatus: "NONE" as PriceImpactStatus,
+  isSameToken: false,
+  resetEstimatedLiquidity: (): void => {},
+  isRefetching: false,
+};
+
 describe("SwapCardContent Component", () => {
   it("SwapCardContent render", () => {
-    const mockProps = {
-      swapTokenInfo,
-      swapSummaryInfo: null,
-      swapRouteInfos: [],
-      changeTokenA: () => null,
-      changeTokenAAmount: () => null,
-      changeTokenB: () => null,
-      changeTokenBAmount: () => null,
-      switchSwapDirection: () => null,
-      connectedWallet: false,
-      isLoading: false,
-      setSwapRateAction: (type: SwapRateAction) => {
-        console.log(type);
-      },
-      isSwitchNetwork: false,
-      priceImpactStatus: "NONE" as PriceImpactStatus,
-      isSameToken: false,
-      resetEstimatedLiquidity: (): void => {},
-      isRefetching: false,
-    };
-
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
@@ -83,5 +83,26 @@ describe("SwapCardContent Component", () => {
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );
+  });
+
+  it("fills the exact token balance when Max is selected", () => {
+    const changeTokenAAmount = jest.fn();
+
+    render(
+      <JotaiProvider>
+        <GnoswapThemeProvider>
+          <SwapCardContent
+            {...mockProps}
+            connectedWallet
+            changeTokenAAmount={changeTokenAAmount}
+            swapTokenInfo={{ ...swapTokenInfo, tokenABalance: "99999999999.999995" }}
+          />
+        </GnoswapThemeProvider>
+      </JotaiProvider>,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /max/i }));
+
+    expect(changeTokenAAmount).toHaveBeenCalledWith("99999999999.999995");
   });
 });

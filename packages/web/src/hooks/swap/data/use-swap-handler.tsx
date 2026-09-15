@@ -162,8 +162,8 @@ export const useSwapHandler = () => {
   const [openedConfirmModal, setOpenedConfirmModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { connected: connectedWallet, isSwitchNetwork, switchNetwork } = useWallet();
-  const { tokens, tokenPrices, displayBalanceMap, updateBalances, getTokenUSDPrice, refetchGrc20Balances } =
-  useTokenData(true);
+  const { tokens, tokenPrices, exactBalanceMap, updateBalances, getTokenUSDPrice, refetchGrc20Balances } =
+    useTokenData(true);
   const { slippage, changeSlippage } = useSlippage();
   const { openModal } = useConnectWalletModal();
   const { data: swapFee } = useGetSwapFee();
@@ -218,24 +218,14 @@ export const useSwapHandler = () => {
   const tokenABalance = useMemo(() => {
     if (isSwitchNetwork || !tokenA) return "-";
 
-    // Only the balance in the swap card should be formatted the same with price
-    return formatPrice(displayBalanceMap?.[tokenA.priceID], {
-      isKMB: false,
-      usd: false,
-      greaterThan1Decimals: 6,
-    });
-  }, [isSwitchNetwork, displayBalanceMap, tokenA]);
+    return exactBalanceMap[tokenA.priceID] ?? "0";
+  }, [isSwitchNetwork, exactBalanceMap, tokenA]);
 
   const tokenBBalance = useMemo(() => {
     if (isSwitchNetwork || !tokenB) return "-";
 
-    // Only the balance in the swap card should be formatted the same with price
-    return formatPrice(displayBalanceMap?.[tokenB.priceID], {
-      isKMB: false,
-      usd: false,
-      greaterThan1Decimals: 6,
-    });
-  }, [isSwitchNetwork, displayBalanceMap, tokenB]);
+    return exactBalanceMap[tokenB.priceID] ?? "0";
+  }, [isSwitchNetwork, exactBalanceMap, tokenB]);
 
   const quotedTokenAAmount = useMemo(() => {
     return type === "EXACT_OUT" && estimatedAmount !== null ? estimatedAmount : tokenAAmount;
@@ -561,7 +551,7 @@ export const useSwapHandler = () => {
       priceImpact: formatPriceImpact(priceImpact),
 
       guaranteedAmount: {
-        amount: tokenAmountLimit || 0,
+        amount: Number(tokenAmountLimit),
         currency: (type === "EXACT_IN" ? tokenB : tokenA).symbol,
       },
       swapRateAction,
@@ -596,9 +586,8 @@ export const useSwapHandler = () => {
       swapSummaryInfo,
       isRefetching,
       estimatedAmount,
-      tokenAmountLimit,
     }));
-  }, [swapTokenInfo, swapSummaryInfo, isRefetching, estimatedAmount, tokenAmountLimit]);
+  }, [swapTokenInfo, swapSummaryInfo, isRefetching, estimatedAmount]);
 
   const isAvailSwap = useMemo(() => {
     return (
@@ -652,15 +641,7 @@ export const useSwapHandler = () => {
         title={confirmModalTitle}
       />
     ),
-    [
-      closeModal,
-      confirmModalTitle,
-      executeLatestSwap,
-      isRefetching,
-      priceImpactStatus,
-      swapButtonState,
-      swapResult,
-    ],
+    [closeModal, confirmModalTitle, executeLatestSwap, isRefetching, priceImpactStatus, swapButtonState, swapResult],
   );
 
   const openConfirmModal = useCallback(() => {

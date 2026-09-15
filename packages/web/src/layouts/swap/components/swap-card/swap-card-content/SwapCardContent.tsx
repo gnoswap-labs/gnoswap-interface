@@ -102,8 +102,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
   const handleAutoFillTokenA = useCallback(() => {
     if (connectedWallet) {
       resetEstimatedLiquidity();
-      const formatValue = parseFloat(swapTokenInfo.tokenABalance.replace(/,/g, "")).toString();
-      changeTokenAAmount(formatValue);
+      changeTokenAAmount(swapTokenInfo.tokenABalance.replace(/,/g, ""));
     }
   }, [changeTokenAAmount, connectedWallet, swapTokenInfo]);
 
