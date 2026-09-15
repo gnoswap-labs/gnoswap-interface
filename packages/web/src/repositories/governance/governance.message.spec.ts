@@ -7,7 +7,7 @@ jest.mock("@constants/environment.constant", () => ({
 }));
 
 import { makeExpectedApproveRunMessage } from "@common/clients/wallet-client/transaction-messages/run.test-fixtures";
-import { makeDelegateMessagesWithApproves } from "@repositories/governance/governance.message";
+import { makeDelegateMessagesWithApproves, makeUnDelegateMessages } from "@repositories/governance/governance.message";
 
 describe("governance.message.ts", () => {
   it("approves delegation with the exact delegated amount", async () => {
@@ -31,5 +31,22 @@ describe("governance.message.ts", () => {
       func: "Delegate",
       args: ["validator", "123000000", ""],
     });
+  });
+
+  it("creates a single Undelegate message without collecting rewards", () => {
+    const caller = "caller";
+
+    const messages = makeUnDelegateMessages({ to: "validator", amount: "123000000", caller });
+
+    expect(messages).toEqual([
+      {
+        caller,
+        send: "",
+        pkg_path: "governance_staker_path",
+        func: "Undelegate",
+        args: ["validator", "123000000"],
+        gasFee: undefined,
+      },
+    ]);
   });
 });

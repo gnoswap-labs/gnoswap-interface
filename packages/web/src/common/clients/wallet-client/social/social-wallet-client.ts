@@ -6,11 +6,13 @@ import {
   SocialGoogleConfigure,
   SocialTwitterConfigure,
   WalletResponseExecuteType,
+  makeAddPackageMessage,
   makeMsgCallMessage,
   makeMsgRunMessage,
   makeMsgSendMessage,
   TransactionBuilder,
 } from "@adena-wallet/sdk";
+import { MsgAddPackage, MsgCall, MsgRun, MsgSend } from "@gnolang/gno-js-client";
 import { base64ToUint8Array, Provider, Tx, TxSignature } from "@gnolang/tm2-js-client";
 
 import { createTimeout } from "@common/utils/client-util";
@@ -36,7 +38,38 @@ import { getSocialWalletConfig } from "./config";
 import { GNOT_UNIT_DENOM } from "@common/values/token-constant";
 import { AUTH_STORE_KEY } from "@hooks/common/use-auto-disconnect";
 import { documentToTx } from "@utils/transaction-utils";
-import { Document } from "src/types/transaction-messages.types";
+import { ContractMessage, Document } from "src/types/transaction-messages.types";
+
+const toSDKMessage = (message: ContractMessage): SDKTransactionMessage => {
+  switch (message.type) {
+    case "/bank.MsgSend":
+      return makeMsgSendMessage(message.value as MsgSend);
+    case "/vm.m_addpkg":
+      return makeAddPackageMessage(message.value as MsgAddPackage);
+    case "/vm.m_run":
+      return makeMsgRunMessage(message.value as MsgRun);
+    default:
+      return makeMsgCallMessage(message.value as MsgCall);
+  }
+};
+
+/**
+ * Rebuilds a document as an SDK transaction.
+ *
+ * The Adena SDK still bundles tm2-js-client v1, where `TxFee.gas_wanted` is a
+ * protobufjs `Long` rather than the `bigint` used from v3 on. Going through the
+ * SDK's own builder keeps the fee in the shape its encoder expects.
+ */
+const documentToSDKTx = (document: Document) => {
+  const [gasFee] = document.fee.amount;
+
+  return TransactionBuilder.create()
+    .messages(...document.msgs.map(toSDKMessage))
+    .gasWanted(Number(document.fee.gas) || DEFAULT_GAS_WANTED)
+    .fee(Number(gasFee?.amount) || 0, gasFee?.denom || GNOT_UNIT_DENOM)
+    .memo(document.memo || "")
+    .build();
+};
 
 export class SocialWalletClient implements WalletClient {
   private sdk: AdenaSDK | null;
@@ -121,7 +154,7 @@ export class SocialWalletClient implements WalletClient {
     }
 
     const tx = documentToTx(document);
-    const { data } = await this.sdk.signTransaction({ tx });
+    const { data } = await this.sdk.signTransaction({ tx: documentToSDKTx(document) });
 
     if (!data?.encodedTransaction) {
       return {
@@ -210,14 +243,14 @@ export class SocialWalletClient implements WalletClient {
       if (isContractMessage(message)) {
         return makeMsgCallMessage({
           ...message,
-          max_deposit: "",
+          max_deposit: message.max_deposit ?? "",
           args: message.args?.map(arg => `${arg}`) || [],
         });
       }
       if (isRunMessage(message)) {
         return makeMsgRunMessage({
           ...message,
-          max_deposit: "",
+          max_deposit: message.max_deposit ?? "",
         });
       }
       return makeMsgSendMessage(message);

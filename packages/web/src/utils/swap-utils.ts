@@ -347,3 +347,34 @@ export function getSwappedTokenData(
     token1Amount: isExactIn ? amount1 : amount0,
   };
 }
+
+/**
+ * Applies the slippage tolerance to an estimated amount and returns the limit as a decimal string.
+ *
+ * - EXACT_IN: minimum output. Rounded down so the limit never exceeds what the quote guarantees.
+ * - EXACT_OUT: maximum input. Rounded up so an atomic-unit boundary does not understate the
+ *   configured tolerance (e.g. 0.000001 * 1.005 -> 0.000002 for a 6-decimal token).
+ *
+ * All arithmetic stays in BigNumber; amounts above Number.MAX_SAFE_INTEGER keep every digit.
+ */
+export function calculateSlippageLimitAmount(
+  estimatedAmount: string,
+  slippage: number,
+  direction: "EXACT_IN" | "EXACT_OUT",
+  decimals: number,
+): string {
+  const estimated = BigNumber(estimatedAmount);
+  if (!estimated.isFinite() || Number.isNaN(slippage)) {
+    return "0";
+  }
+
+  const slippageMultiplier = direction === "EXACT_IN" ? 100 - slippage : 100 + slippage;
+  const roundingMode = direction === "EXACT_IN" ? BigNumber.ROUND_DOWN : BigNumber.ROUND_UP;
+  const limit = estimated.multipliedBy(slippageMultiplier).dividedBy(100).decimalPlaces(decimals, roundingMode);
+
+  if (limit.isLessThanOrEqualTo(0)) {
+    return "0";
+  }
+
+  return limit.toFixed();
+}
