@@ -1,10 +1,12 @@
 /**
- * Converts a base64-encoded hash to hex.
- * Use when calling the tx endpoint of an RPC.
+ * Normalizes wallet hex and RPC base64 transaction hashes for the RPC tx endpoint.
  */
-export function makeHexByBase64(base64Hash: string) {
-  const buffer = Buffer.from(base64Hash, "base64");
-  return "0x" + buffer.toString("hex");
+export function makeRpcTransactionHash(hash: string): string {
+  if (/^(0x)?[0-9a-f]{64}$/i.test(hash)) {
+    return "0x" + hash.slice(-64).toLowerCase();
+  }
+
+  return "0x" + Buffer.from(hash, "base64").toString("hex");
 }
 
 export function parseABCIValue(str: string): string[] {
