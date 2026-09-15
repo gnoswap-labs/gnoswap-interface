@@ -33,20 +33,12 @@ describe("governance.message.ts", () => {
     });
   });
 
-  it("collects rewards before undelegating in the same transaction", () => {
+  it("creates a single Undelegate message without collecting rewards", () => {
     const caller = "caller";
 
     const messages = makeUnDelegateMessages({ to: "validator", amount: "123000000", caller });
 
     expect(messages).toEqual([
-      {
-        caller,
-        send: "",
-        pkg_path: "governance_staker_path",
-        func: "CollectReward",
-        args: [],
-        gasFee: undefined,
-      },
       {
         caller,
         send: "",
