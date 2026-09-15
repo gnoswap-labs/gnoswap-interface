@@ -1,12 +1,8 @@
 /**
- * Normalizes wallet hex and RPC base64 transaction hashes for the RPC tx endpoint.
+ * Formats wallet transaction hashes for the RPC tx endpoint.
  */
 export function makeRpcTransactionHash(hash: string): string {
-  if (/^(0x)?[0-9a-f]{64}$/i.test(hash)) {
-    return "0x" + hash.slice(-64).toLowerCase();
-  }
-
-  return "0x" + Buffer.from(hash, "base64").toString("hex");
+  return "0x" + hash;
 }
 
 export function parseABCIValue(str: string): string[] {
