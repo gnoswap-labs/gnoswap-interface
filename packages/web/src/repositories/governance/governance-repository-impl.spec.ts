@@ -37,31 +37,17 @@ const createWalletClient = () => {
 
 describe("GovernanceRepositoryImpl", () => {
   describe("sendCollectReward", () => {
-    it("sends only collect protocol fee when governance rewards are not claimed", async () => {
+    it("sends collect protocol fee reward from launchpad per token when only launchpad rewards are claimable", async () => {
       const walletClient = createWalletClient();
       const governanceRepository = new GovernanceRepositoryImpl(null, walletClient, null);
 
-      await governanceRepository.sendCollectReward(false, true);
-
-      expect(walletClient.sendTransaction).toHaveBeenCalledWith(
-        expect.objectContaining({
-          messages: [
-            expect.objectContaining({
-              caller: "caller",
-              pkg_path: "launchpad_path",
-              func: "CollectProtocolFee",
-              args: [],
-            }),
-          ],
-        }),
+      await governanceRepository.sendCollectReward(
+        [{ path: "gns_token_path", amount: "0" }],
+        [
+          { path: "token_a", amount: "10" },
+          { path: "token_b", amount: "20" },
+        ],
       );
-    });
-
-    it("sends both collect reward and collect protocol fee when both are claimed", async () => {
-      const walletClient = createWalletClient();
-      const governanceRepository = new GovernanceRepositoryImpl(null, walletClient, null);
-
-      await governanceRepository.sendCollectReward(true, true);
 
       expect(walletClient.sendTransaction).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -69,14 +55,46 @@ describe("GovernanceRepositoryImpl", () => {
             expect.objectContaining({
               caller: "caller",
               pkg_path: "governance_staker_path",
-              func: "CollectReward",
-              args: [],
+              func: "CollectProtocolFeeRewardFromLaunchPad",
+              args: ["caller", "token_a"],
             }),
             expect.objectContaining({
               caller: "caller",
-              pkg_path: "launchpad_path",
-              func: "CollectProtocolFee",
-              args: [],
+              pkg_path: "governance_staker_path",
+              func: "CollectProtocolFeeRewardFromLaunchPad",
+              args: ["caller", "token_b"],
+            }),
+          ],
+        }),
+      );
+    });
+
+    it("sends collect protocol fee reward messages per token for governance and launchpad rewards", async () => {
+      const walletClient = createWalletClient();
+      const governanceRepository = new GovernanceRepositoryImpl(null, walletClient, null);
+
+      await governanceRepository.sendCollectReward(
+        [
+          { path: "token_a", amount: "10" },
+          { path: "token_b", amount: "0" },
+        ],
+        [{ path: "token_c", amount: "30" }],
+      );
+
+      expect(walletClient.sendTransaction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          messages: [
+            expect.objectContaining({
+              caller: "caller",
+              pkg_path: "governance_staker_path",
+              func: "CollectProtocolFeeReward",
+              args: ["token_a"],
+            }),
+            expect.objectContaining({
+              caller: "caller",
+              pkg_path: "governance_staker_path",
+              func: "CollectProtocolFeeRewardFromLaunchPad",
+              args: ["caller", "token_c"],
             }),
           ],
         }),

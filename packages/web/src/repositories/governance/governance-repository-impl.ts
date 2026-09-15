@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { NetworkClient } from "@common/clients/network-client";
 import { WalletClient } from "@common/clients/wallet-client";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
@@ -6,6 +7,7 @@ import { PACKAGE_GOVERNANCE_STAKER_PATH } from "@constants/environment.constant"
 
 import { GovernanceRepository } from "./governance-repository";
 import {
+  ClaimableRewards,
   GovernanceSummaryInfo,
   MyDelegatesInfo,
   MyDelegationInfo,
@@ -59,7 +61,8 @@ import { DEFAULT_GAS_FEE } from "@common/values";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import {
   makeCancelMessages,
-  makeCollectRewardMessages,
+  makeCollectProtocolFeeRewardFromLaunchPadMessages,
+  makeCollectProtocolFeeRewardMessages,
   makeCollectUnDelegatedGNSMessages,
   makeDelegateMessagesWithApproves,
   makeExecuteMessages,
@@ -70,7 +73,10 @@ import {
   makeUnDelegateMessages,
   makeVoteMessages,
 } from "./governance.message";
-import { makeCollectProtocolFeeMessage } from "../launchpad/launchpad.message";
+
+function getClaimableTokenPaths(rewards: ClaimableRewards[]): string[] {
+  return rewards.filter(reward => BigNumber(reward.amount || 0).isGreaterThan(0)).map(reward => reward.path);
+}
 
 export class GovernanceRepositoryImpl implements GovernanceRepository {
   private networkClient: NetworkClient | null;
@@ -433,13 +439,19 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
   };
 
   public sendCollectReward = async (
-    claimGovernanceRewards: boolean,
-    claimLaunchpadRewards: boolean,
+    claimableGovernanceRewards: ClaimableRewards[],
+    claimableLaunchpadRewards: ClaimableRewards[],
   ): Promise<WalletResponse<{ hash: string }>> => {
     const caller = await this.getAddress();
     const messages = [
-      ...(claimGovernanceRewards ? makeCollectRewardMessages({ caller }) : []),
-      ...(claimLaunchpadRewards ? makeCollectProtocolFeeMessage({ caller }) : []),
+      ...makeCollectProtocolFeeRewardMessages({
+        tokenPaths: getClaimableTokenPaths(claimableGovernanceRewards),
+        caller,
+      }),
+      ...makeCollectProtocolFeeRewardFromLaunchPadMessages({
+        tokenPaths: getClaimableTokenPaths(claimableLaunchpadRewards),
+        caller,
+      }),
     ];
 
     const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });

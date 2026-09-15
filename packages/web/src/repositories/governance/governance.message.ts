@@ -23,7 +23,10 @@ enum TransactionMessageFunctionType {
   Undelegate = "Undelegate",
   Redelegate = "Redelegate",
   CollectUnDelegatedGNS = "CollectUndelegatedGns",
-  CollectReward = "CollectReward",
+  CollectProtocolFeeReward = "CollectProtocolFeeReward",
+  CollectProtocolFeeRewardFromLaunchPad = "CollectProtocolFeeRewardFromLaunchPad",
+  CollectEmissionReward = "CollectEmissionReward",
+  CollectEmissionRewardFromLaunchPad = "CollectEmissionRewardFromLaunchPad",
 }
 
 export function makeProposalTextMessages({
@@ -255,14 +258,62 @@ export function makeCollectUnDelegatedGNSMessages({ caller }: { caller: string }
   return [collectUnDelegateGNSTransactionMessage];
 }
 
-export function makeCollectRewardMessages({ caller }: { caller: string }): TransactionMessage[] {
-  const collectUnDelegateGNSTransactionMessage = makeTransactionMessage({
-    packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
-    send: "",
-    func: TransactionMessageFunctionType.CollectReward,
-    args: [],
-    caller,
-  });
+export function makeCollectProtocolFeeRewardMessages({
+  tokenPaths,
+  caller,
+}: {
+  tokenPaths: string[];
+  caller: string;
+}): TransactionMessage[] {
+  return tokenPaths.map(tokenPath =>
+    makeTransactionMessage({
+      packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
+      send: "",
+      func: TransactionMessageFunctionType.CollectProtocolFeeReward,
+      args: [tokenPath],
+      caller,
+    }),
+  );
+}
 
-  return [collectUnDelegateGNSTransactionMessage];
+export function makeCollectProtocolFeeRewardFromLaunchPadMessages({
+  tokenPaths,
+  caller,
+}: {
+  tokenPaths: string[];
+  caller: string;
+}): TransactionMessage[] {
+  return tokenPaths.map(tokenPath =>
+    makeTransactionMessage({
+      packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
+      send: "",
+      func: TransactionMessageFunctionType.CollectProtocolFeeRewardFromLaunchPad,
+      args: [caller, tokenPath],
+      caller,
+    }),
+  );
+}
+
+export function makeCollectEmissionRewardMessages({ caller }: { caller: string }): TransactionMessage[] {
+  return [
+    makeTransactionMessage({
+      packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
+      send: "",
+      func: TransactionMessageFunctionType.CollectEmissionReward,
+      args: [],
+      caller,
+    }),
+  ];
+}
+
+export function makeCollectEmissionRewardFromLaunchPadMessages({ caller }: { caller: string }): TransactionMessage[] {
+  return [
+    makeTransactionMessage({
+      packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
+      send: "",
+      func: TransactionMessageFunctionType.CollectEmissionRewardFromLaunchPad,
+      args: [caller],
+      caller,
+    }),
+  ];
 }
