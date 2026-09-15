@@ -145,7 +145,26 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
       }),
     );
     setRouterApiClient(new AxiosClient(network.routerUrl));
-    setRPCProvider(new GnoProvider(network.rpcUrl || ""));
+
+    // Creating a provider requires a round trip to the node since gno-js-client v3,
+    // so ignore the result once the effect has been superseded.
+    let stale = false;
+    GnoProvider.create(network.rpcUrl || "")
+      .then(provider => {
+        if (!stale) {
+          setRPCProvider(provider);
+        }
+      })
+      .catch(error => {
+        console.error("Failed to connect to the RPC provider", error);
+        if (!stale) {
+          setRPCProvider(null);
+        }
+      });
+
+    return () => {
+      stale = true;
+    };
   }, [loadedProviders, router, status, walletAccount, walletAccount?.chainId]);
 
   const eventStore = useMemo(() => {

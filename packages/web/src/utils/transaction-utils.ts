@@ -350,7 +350,7 @@ export function documentToTx(document: Document): Tx {
   return {
     messages,
     fee: TxFee.create({
-      gas_wanted: document.fee.gas || "0",
+      gas_wanted: BigInt(document.fee.gas || "0"),
       gas_fee: document.fee.amount.map(feeAmount => `${feeAmount.amount}${feeAmount.denom}`).join(","),
     }),
     signatures: [],
@@ -363,7 +363,7 @@ export function documentToDefaultTx(document: Document): Tx {
   return {
     messages,
     fee: TxFee.create({
-      gas_wanted: document.fee.gas,
+      gas_wanted: BigInt(document.fee.gas || "0"),
       gas_fee: document.fee.amount.map(feeAmount => `${feeAmount.amount}${feeAmount.denom}`).join(","),
     }),
     signatures: [
@@ -373,6 +373,7 @@ export function documentToDefaultTx(document: Document): Tx {
           value: new Uint8Array(),
         },
         signature: new Uint8Array(),
+        session_addr: "",
       },
     ],
     memo: document.memo,
