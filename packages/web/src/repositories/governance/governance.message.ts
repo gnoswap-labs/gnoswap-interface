@@ -198,7 +198,7 @@ export function makeUnDelegateMessages({
   amount: string;
   caller: string;
 }): TransactionMessage[] {
-  const delegateTransactionMessage = makeTransactionMessage({
+  const undelegateTransactionMessage = makeTransactionMessage({
     packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
     send: "",
     func: TransactionMessageFunctionType.Undelegate,
@@ -206,7 +206,7 @@ export function makeUnDelegateMessages({
     caller,
   });
 
-  return [delegateTransactionMessage];
+  return [undelegateTransactionMessage];
 }
 
 export function makeReDelegateMessagesWithApproves(
