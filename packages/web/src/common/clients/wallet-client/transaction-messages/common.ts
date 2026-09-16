@@ -28,9 +28,7 @@ export interface TransactionCallMessage {
 /**
  * Message shapes a transaction can carry, other than a bank send.
  *
- * GRC20 balance mutations are built as {@link TransactionRunMessage} unless the
- * token is registered in `resources/grc20-method-specs.json`, in which case they
- * call the token realm directly as a {@link TransactionCallMessage}. Every
+ * GRC20 balance mutations are built as {@link TransactionRunMessage}; every
  * other realm interaction stays a {@link TransactionCallMessage}.
  */
 export type TransactionMessage = TransactionCallMessage | TransactionRunMessage;
@@ -95,13 +93,6 @@ export function makeTransactionMessage({
   };
 }
 
-/**
- * Builds the approve message of a single token/spender pair.
- *
- * Tokens registered in `resources/grc20-method-specs.json` are approved with a
- * direct `MsgCall` to their realm; every other token goes through the GRC20
- * registry as a `MsgRun` message.
- */
 export function makeTokenApproveMessage(
   tokenPath: string,
   targetAddress: string,
@@ -127,12 +118,11 @@ export function makeTokenApproveMessage(
 }
 
 /**
- * Builds a block of approves with as few messages as possible.
+ * Batches a block of approves into as few `MsgRun` messages as possible.
  *
- * Registered tokens become one `MsgCall` each, in place. The remaining
- * approves are emitted consecutively, so every adjacent run sharing a caller
- * collapses into a single ephemeral `MsgRun` package instead of one message
- * each.
+ * Approves are emitted consecutively, so every adjacent run sharing a caller
+ * collapses into a single ephemeral package instead of one message each.
+ * Tokens with a GRC20 method spec are sent as a direct `MsgCall` instead.
  */
 export function makeTokenApproveMessages(approveInfos: TokenApproveMessageInfo[]): TransactionMessage[] {
   const messages: TransactionMessage[] = [];

@@ -16,13 +16,6 @@ export function makeTransferNativeTokenMessage(
   };
 }
 
-/**
- * Builds the transfer message of a GRC20 token.
- *
- * Tokens registered in `resources/grc20-method-specs.json` are transferred with a
- * direct `MsgCall` to their realm; every other token goes through the GRC20
- * registry as a `MsgRun` message.
- */
 export function makeTransferGRC20TokenMessage(
   tokenPath: string,
   amount: string,
