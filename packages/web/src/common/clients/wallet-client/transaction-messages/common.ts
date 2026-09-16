@@ -5,7 +5,7 @@ import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { TransactionMessageError } from "@common/errors";
 import { DEFAULT_ALLOWANCE_LIMIT } from "@common/values";
 import { PACKAGE_NFT_PATH, WRAPPED_GNOT_PACKAGE_PATH } from "@constants/environment.constant";
-import { getTokenMessageConfig } from "@constants/token-message.constant";
+import { getGrc20MethodSpec } from "@constants/grc20-method-spec.constant";
 import { MAX_INT64_STR } from "@utils/math.utils";
 
 import { gnoInt64Literal, GRC20ApproveRunMessageInfo, makeGRC20ApproveRunMessage, TransactionRunMessage } from "./run";
@@ -29,7 +29,7 @@ export interface TransactionCallMessage {
  * Message shapes a transaction can carry, other than a bank send.
  *
  * GRC20 balance mutations are built as {@link TransactionRunMessage} unless the
- * token is registered in `resources/token-messages.json`, in which case they
+ * token is registered in `resources/grc20-method-specs.json`, in which case they
  * call the token realm directly as a {@link TransactionCallMessage}. Every
  * other realm interaction stays a {@link TransactionCallMessage}.
  */
@@ -98,7 +98,7 @@ export function makeTransactionMessage({
 /**
  * Builds the approve message of a single token/spender pair.
  *
- * Tokens registered in `resources/token-messages.json` are approved with a
+ * Tokens registered in `resources/grc20-method-specs.json` are approved with a
  * direct `MsgCall` to their realm; every other token goes through the GRC20
  * registry as a `MsgRun` message.
  */
@@ -108,14 +108,14 @@ export function makeTokenApproveMessage(
   amount: string | bigint | number,
   caller: string,
 ): TransactionMessage {
-  const tokenMessageConfig = getTokenMessageConfig(tokenPath);
+  const grc20MethodSpec = getGrc20MethodSpec(tokenPath);
 
-  if (tokenMessageConfig) {
+  if (grc20MethodSpec) {
     return makeTransactionMessage({
       caller,
       send: "",
-      packagePath: tokenMessageConfig.packagePath,
-      func: tokenMessageConfig.approveMethod,
+      packagePath: grc20MethodSpec.packagePath,
+      func: grc20MethodSpec.approveMethod,
       args: [targetAddress, gnoInt64Literal(amount)],
     });
   }
@@ -146,7 +146,7 @@ export function makeTokenApproveMessages(approveInfos: TokenApproveMessageInfo[]
   };
 
   for (const approveInfo of approveInfos) {
-    if (getTokenMessageConfig(approveInfo.tokenPath)) {
+    if (getGrc20MethodSpec(approveInfo.tokenPath)) {
       flushRunGroup();
       messages.push(
         makeTokenApproveMessage(

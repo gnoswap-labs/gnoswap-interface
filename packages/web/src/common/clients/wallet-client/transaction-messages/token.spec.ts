@@ -6,7 +6,7 @@ describe("makeTransferGRC20TokenMessage", () => {
   const fromAddress = "from";
   const toAddress = "to";
 
-  it("uses a direct MsgCall for tokens registered in token-messages.json", () => {
+  it("uses a direct MsgCall for tokens registered in grc20-method-specs.json", () => {
     const message = makeTransferGRC20TokenMessage("gno.land/r/gnoswap/gns.GNS", "100", fromAddress, toAddress);
 
     expect(message).toEqual(

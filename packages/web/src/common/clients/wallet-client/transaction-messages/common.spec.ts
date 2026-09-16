@@ -145,7 +145,7 @@ describe("makeTransactionMessagesWithApproves", () => {
     ]);
   });
 
-  it("uses a direct MsgCall for tokens registered in token-messages.json", async () => {
+  it("uses a direct MsgCall for tokens registered in grc20-method-specs.json", async () => {
     const gnsTokenKey = "gno.land/r/gnoswap/gns.GNS";
     const fetchAllowance = jest.fn(async () => 0);
 

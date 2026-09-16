@@ -1,4 +1,4 @@
-import { getTokenMessageConfig } from "@constants/token-message.constant";
+import { getGrc20MethodSpec } from "@constants/grc20-method-spec.constant";
 
 import { makeTransactionMessage, TransactionBankMessage, TransactionMessage } from "./common";
 import { gnoInt64Literal, makeGRC20TransferRunMessage } from "./run";
@@ -19,7 +19,7 @@ export function makeTransferNativeTokenMessage(
 /**
  * Builds the transfer message of a GRC20 token.
  *
- * Tokens registered in `resources/token-messages.json` are transferred with a
+ * Tokens registered in `resources/grc20-method-specs.json` are transferred with a
  * direct `MsgCall` to their realm; every other token goes through the GRC20
  * registry as a `MsgRun` message.
  */
@@ -29,14 +29,14 @@ export function makeTransferGRC20TokenMessage(
   fromAddress: string,
   toAddress: string,
 ): TransactionMessage {
-  const tokenMessageConfig = getTokenMessageConfig(tokenPath);
+  const grc20MethodSpec = getGrc20MethodSpec(tokenPath);
 
-  if (tokenMessageConfig) {
+  if (grc20MethodSpec) {
     return makeTransactionMessage({
       caller: fromAddress,
       send: "",
-      packagePath: tokenMessageConfig.packagePath,
-      func: tokenMessageConfig.transferMethod,
+      packagePath: grc20MethodSpec.packagePath,
+      func: grc20MethodSpec.transferMethod,
       args: [toAddress, gnoInt64Literal(amount)],
     });
   }
