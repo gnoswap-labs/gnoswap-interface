@@ -5,9 +5,13 @@ import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { PACKAGE_GOVERNANCE_STAKER_PATH } from "@constants/environment.constant";
 
-import { makeLaunchpadCollectProtocolFeeRewardMessages } from "../launchpad/launchpad.message";
+import {
+  makeLaunchpadCollectEmissionRewardMessages,
+  makeLaunchpadCollectProtocolFeeRewardMessages,
+} from "../launchpad/launchpad.message";
 import { GovernanceRepository } from "./governance-repository";
 import {
+  ClaimableRewardType,
   ClaimableRewards,
   GovernanceSummaryInfo,
   MyDelegatesInfo,
@@ -62,6 +66,7 @@ import { DEFAULT_GAS_FEE } from "@common/values";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import {
   makeCancelMessages,
+  makeCollectEmissionRewardMessages,
   makeCollectProtocolFeeRewardMessages,
   makeCollectUnDelegatedGNSMessages,
   makeDelegateMessagesWithApproves,
@@ -74,8 +79,16 @@ import {
   makeVoteMessages,
 } from "./governance.message";
 
-function getClaimableTokenPaths(rewards: ClaimableRewards[]): string[] {
-  return rewards.filter(reward => BigNumber(reward.amount || 0).isGreaterThan(0)).map(reward => reward.path);
+function getClaimableProtocolFeeTokenPaths(rewards: ClaimableRewards[]): string[] {
+  const tokenPaths = new Set<string>();
+
+  for (const reward of rewards) {
+    if (reward.type === ClaimableRewardType.PROTOCOL_FEE && BigNumber(reward.amount || 0).isGreaterThan(0)) {
+      tokenPaths.add(reward.path);
+    }
+  }
+
+  return [...tokenPaths];
 }
 
 export class GovernanceRepositoryImpl implements GovernanceRepository {
@@ -443,13 +456,21 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     claimableLaunchpadRewards: ClaimableRewards[],
   ): Promise<WalletResponse<{ hash: string }>> => {
     const caller = await this.getAddress();
+    const hasClaimableGovernanceEmission = claimableGovernanceRewards.some(
+      reward => reward.type === ClaimableRewardType.EMISSION && BigNumber(reward.amount || 0).isGreaterThan(0),
+    );
+    const hasClaimableLaunchpadEmission = claimableLaunchpadRewards.some(
+      reward => reward.type === ClaimableRewardType.EMISSION && BigNumber(reward.amount || 0).isGreaterThan(0),
+    );
     const messages = [
+      ...(hasClaimableGovernanceEmission ? makeCollectEmissionRewardMessages({ caller }) : []),
       ...makeCollectProtocolFeeRewardMessages({
-        tokenPaths: getClaimableTokenPaths(claimableGovernanceRewards),
+        tokenPaths: getClaimableProtocolFeeTokenPaths(claimableGovernanceRewards),
         caller,
       }),
+      ...(hasClaimableLaunchpadEmission ? makeLaunchpadCollectEmissionRewardMessages({ caller }) : []),
       ...makeLaunchpadCollectProtocolFeeRewardMessages({
-        tokenPaths: getClaimableTokenPaths(claimableLaunchpadRewards),
+        tokenPaths: getClaimableProtocolFeeTokenPaths(claimableLaunchpadRewards),
         caller,
       }),
     ];
