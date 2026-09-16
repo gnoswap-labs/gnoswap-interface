@@ -42,10 +42,10 @@ describe("GovernanceRepositoryImpl", () => {
       const governanceRepository = new GovernanceRepositoryImpl(null, walletClient, null);
 
       await governanceRepository.sendCollectReward(
-        [{ path: "gns_token_path", amount: "0" }],
+        [{ path: "gns_token_path", amount: "0", type: "EMISSION" }],
         [
-          { path: "token_a", amount: "10" },
-          { path: "token_b", amount: "20" },
+          { path: "token_a", amount: "10", type: "PROTOCOL_FEE" },
+          { path: "token_b", amount: "20", type: "PROTOCOL_FEE" },
         ],
       );
 
@@ -75,10 +75,14 @@ describe("GovernanceRepositoryImpl", () => {
 
       await governanceRepository.sendCollectReward(
         [
-          { path: "token_a", amount: "10" },
-          { path: "token_b", amount: "0" },
+          { path: "gns_token_path", amount: "10", type: "EMISSION" },
+          { path: "token_a", amount: "10", type: "PROTOCOL_FEE" },
+          { path: "token_b", amount: "0", type: "PROTOCOL_FEE" },
         ],
-        [{ path: "token_c", amount: "30" }],
+        [
+          { path: "gns_token_path", amount: "20", type: "EMISSION" },
+          { path: "token_c", amount: "30", type: "PROTOCOL_FEE" },
+        ],
       );
 
       expect(walletClient.sendTransaction).toHaveBeenCalledWith(
@@ -87,8 +91,20 @@ describe("GovernanceRepositoryImpl", () => {
             expect.objectContaining({
               caller: "caller",
               pkg_path: "governance_staker_path",
+              func: "CollectEmissionReward",
+              args: [],
+            }),
+            expect.objectContaining({
+              caller: "caller",
+              pkg_path: "governance_staker_path",
               func: "CollectProtocolFeeReward",
               args: ["token_a"],
+            }),
+            expect.objectContaining({
+              caller: "caller",
+              pkg_path: "launchpad_path",
+              func: "CollectEmissionReward",
+              args: [],
             }),
             expect.objectContaining({
               caller: "caller",

@@ -3,22 +3,26 @@
   "claimableGovernanceRewards": [
     {
       "amount": "1250.50",
-      "path": "ugnot"
+      "path": "ugnot",
+      "type": "PROTOCOL_FEE"
     },
     {
       "amount": "850.25",
-      "path": "gno.land/r/gnoswap/v1/test_token/usdc"
+      "path": "gno.land/r/gnoswap/v1/test_token/usdc",
+      "type": "PROTOCOL_FEE"
     },
     {
       "amount": "650.75",
-      "path": "gno.land/r/gnoswap/gns"
+      "path": "gno.land/r/gnoswap/gns",
+      "type": "EMISSION"
     }
   ],
   "claimableGovernanceRewardUsd": "2751.50",
   "claimableLaunchpadRewards": [
     {
       "amount": "125.50",
-      "path": "ugnot"
+      "path": "ugnot",
+      "type": "PROTOCOL_FEE"
     }
   ],
   "claimableLaunchpadRewardUsd": "125.50",

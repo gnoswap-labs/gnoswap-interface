@@ -9,9 +9,17 @@ export interface MyDelegationInfo {
   votingWeight: string;
 }
 
+export const ClaimableRewardType = {
+  EMISSION: "EMISSION",
+  PROTOCOL_FEE: "PROTOCOL_FEE",
+} as const;
+
+export type ClaimableRewardType = (typeof ClaimableRewardType)[keyof typeof ClaimableRewardType];
+
 export interface ClaimableRewards {
   amount: string;
   path: string;
+  type: ClaimableRewardType;
 }
 
 export const nullMyDelegationInfo: MyDelegationInfo = {
