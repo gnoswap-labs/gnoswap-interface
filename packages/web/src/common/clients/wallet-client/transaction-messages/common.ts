@@ -5,9 +5,10 @@ import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { TransactionMessageError } from "@common/errors";
 import { DEFAULT_ALLOWANCE_LIMIT } from "@common/values";
 import { PACKAGE_NFT_PATH, WRAPPED_GNOT_PACKAGE_PATH } from "@constants/environment.constant";
+import { getGrc20MethodSpec } from "@constants/grc20-method-spec.constant";
 import { MAX_INT64_STR } from "@utils/math.utils";
 
-import { GRC20ApproveRunMessageInfo, makeGRC20ApproveRunMessage, TransactionRunMessage } from "./run";
+import { gnoInt64Literal, GRC20ApproveRunMessageInfo, makeGRC20ApproveRunMessage, TransactionRunMessage } from "./run";
 
 export interface TransactionBankMessage {
   from_address: string;
@@ -92,45 +93,79 @@ export function makeTransactionMessage({
   };
 }
 
-/**
- * Batches a block of approves into as few `MsgRun` messages as possible.
- *
- * Approves are emitted consecutively, so every adjacent run sharing a caller
- * collapses into a single ephemeral package instead of one message each.
- */
-export function makeTokenApproveMessages(approveInfos: TokenApproveMessageInfo[]): TransactionRunMessage[] {
-  const approveGroups: { caller: string; approves: GRC20ApproveRunMessageInfo[] }[] = [];
-
-  for (const approveInfo of approveInfos) {
-    const approve: GRC20ApproveRunMessageInfo = {
-      tokenPath: approveInfo.tokenPath,
-      spenderAddress: approveInfo.targetAddress,
-      amount: approveInfo.amount,
-    };
-    const currentGroup = approveGroups[approveGroups.length - 1];
-
-    if (currentGroup && currentGroup.caller === approveInfo.caller) {
-      currentGroup.approves.push(approve);
-    } else {
-      approveGroups.push({ caller: approveInfo.caller, approves: [approve] });
-    }
-  }
-
-  return approveGroups.map(approveGroup =>
-    makeGRC20ApproveRunMessage({ approves: approveGroup.approves, caller: approveGroup.caller }),
-  );
-}
-
 export function makeTokenApproveMessage(
   tokenPath: string,
   targetAddress: string,
   amount: string | bigint | number,
   caller: string,
-): TransactionRunMessage {
+): TransactionMessage {
+  const grc20MethodSpec = getGrc20MethodSpec(tokenPath);
+
+  if (grc20MethodSpec) {
+    return makeTransactionMessage({
+      caller,
+      send: "",
+      packagePath: grc20MethodSpec.packagePath,
+      func: grc20MethodSpec.approveMethod,
+      args: [targetAddress, gnoInt64Literal(amount)],
+    });
+  }
+
   return makeGRC20ApproveRunMessage({
     approves: [{ tokenPath, spenderAddress: targetAddress, amount }],
     caller,
   });
+}
+
+/**
+ * Batches a block of approves into as few `MsgRun` messages as possible.
+ *
+ * Approves are emitted consecutively, so every adjacent run sharing a caller
+ * collapses into a single ephemeral package instead of one message each.
+ * Tokens with a GRC20 method spec are sent as a direct `MsgCall` instead.
+ */
+export function makeTokenApproveMessages(approveInfos: TokenApproveMessageInfo[]): TransactionMessage[] {
+  const messages: TransactionMessage[] = [];
+  let currentRunGroup: { caller: string; approves: GRC20ApproveRunMessageInfo[] } | null = null;
+
+  const flushRunGroup = () => {
+    if (currentRunGroup) {
+      messages.push(makeGRC20ApproveRunMessage(currentRunGroup));
+      currentRunGroup = null;
+    }
+  };
+
+  for (const approveInfo of approveInfos) {
+    if (getGrc20MethodSpec(approveInfo.tokenPath)) {
+      flushRunGroup();
+      messages.push(
+        makeTokenApproveMessage(
+          approveInfo.tokenPath,
+          approveInfo.targetAddress,
+          approveInfo.amount,
+          approveInfo.caller,
+        ),
+      );
+      continue;
+    }
+
+    const approve: GRC20ApproveRunMessageInfo = {
+      tokenPath: approveInfo.tokenPath,
+      spenderAddress: approveInfo.targetAddress,
+      amount: approveInfo.amount,
+    };
+
+    if (currentRunGroup && currentRunGroup.caller === approveInfo.caller) {
+      currentRunGroup.approves.push(approve);
+    } else {
+      flushRunGroup();
+      currentRunGroup = { caller: approveInfo.caller, approves: [approve] };
+    }
+  }
+
+  flushRunGroup();
+
+  return messages;
 }
 
 export function makeNFTApproveMessage(

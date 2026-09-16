@@ -1,0 +1,14 @@
+[
+  {
+    "tokenKey": "gno.land/r/gnoswap/gns.GNS",
+    "packagePath": "gno.land/r/gnoswap/gns",
+    "transferMethod": "Transfer",
+    "approveMethod": "Approve"
+  },
+  {
+    "tokenKey": "gno.land/r/gnoland/wugnot.wugnot",
+    "packagePath": "gno.land/r/gnoland/wugnot",
+    "transferMethod": "Transfer",
+    "approveMethod": "Approve"
+  }
+]

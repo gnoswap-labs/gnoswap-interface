@@ -1,4 +1,5 @@
 import {
+  makeTokenApproveMessages,
   makeTransactionMessage,
   makeTransactionMessagesWithApproves,
   TokenApproveMessageInfo,
@@ -140,6 +141,71 @@ describe("makeTransactionMessagesWithApproves", () => {
       makeExpectedApproveRunMessage({
         caller,
         approves: [{ tokenPath: ibcTokenPath, spenderAddress: targetAddress, amount: "0" }],
+      }),
+    ]);
+  });
+
+  it("uses a direct MsgCall for tokens registered in grc20-method-specs.json", async () => {
+    const gnsTokenKey = "gno.land/r/gnoswap/gns.GNS";
+    const fetchAllowance = jest.fn(async () => 0);
+
+    const messages = await makeTransactionMessagesWithApproves(
+      [transactionMessage],
+      [{ tokenPath: gnsTokenKey, targetAddress, amount: "100", caller }],
+      fetchAllowance,
+    );
+
+    expect(messages).toEqual([
+      makeTransactionMessage({
+        caller,
+        send: "",
+        packagePath: "gno.land/r/gnoswap/gns",
+        func: "Approve",
+        args: [targetAddress, "100"],
+      }),
+      transactionMessage,
+      makeTransactionMessage({
+        caller,
+        send: "",
+        packagePath: "gno.land/r/gnoswap/gns",
+        func: "Approve",
+        args: [targetAddress, "0"],
+      }),
+    ]);
+  });
+});
+
+describe("makeTokenApproveMessages", () => {
+  const caller = "caller";
+  const targetAddress = "target";
+  const wugnotTokenKey = "gno.land/r/gnoland/wugnot.wugnot";
+
+  it("keeps registered tokens as MsgCall and batches the rest into run messages in order", () => {
+    const messages = makeTokenApproveMessages([
+      { tokenPath: "token_a", targetAddress, amount: "1", caller },
+      { tokenPath: "token_b", targetAddress, amount: "2", caller },
+      { tokenPath: wugnotTokenKey, targetAddress, amount: "3", caller },
+      { tokenPath: "token_c", targetAddress, amount: "4", caller },
+    ]);
+
+    expect(messages).toEqual([
+      makeExpectedApproveRunMessage({
+        caller,
+        approves: [
+          { tokenPath: "token_a", spenderAddress: targetAddress, amount: "1" },
+          { tokenPath: "token_b", spenderAddress: targetAddress, amount: "2" },
+        ],
+      }),
+      makeTransactionMessage({
+        caller,
+        send: "",
+        packagePath: "gno.land/r/gnoland/wugnot",
+        func: "Approve",
+        args: [targetAddress, "3"],
+      }),
+      makeExpectedApproveRunMessage({
+        caller,
+        approves: [{ tokenPath: "token_c", spenderAddress: targetAddress, amount: "4" }],
       }),
     ]);
   });
