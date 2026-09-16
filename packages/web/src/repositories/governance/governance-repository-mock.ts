@@ -47,7 +47,7 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
 
   public getMyDelegation = async (request: GetMyDelegationRequest): Promise<MyDelegationInfo> => {
     console.log(request);
-    const result = MockGovernanceMyDelegationResponse;
+    const result = MockGovernanceMyDelegationResponse as MyDelegationInfo;
     return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);
   };
 

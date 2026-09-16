@@ -13,6 +13,7 @@ import { GovernanceRepository } from "./governance-repository";
 import {
   ClaimableRewardType,
   ClaimableRewards,
+  GovernanceSummaryInfo,
   MyDelegatesInfo,
   MyDelegationInfo,
   nullGovernanceSummaryInfo,
@@ -68,6 +69,7 @@ import {
   makeCollectEmissionRewardMessages,
   makeCollectProtocolFeeRewardMessages,
   makeCollectUnDelegatedGNSMessages,
+  makeDelegateMessagesWithApproves,
   makeExecuteMessages,
   makeProposalTextMessages,
   makeProposeCommunityPoolSpendMessages,
