@@ -137,15 +137,9 @@ const unverifiedZero = makeToken({
 
 const ALL_TEST_TOKENS = [verifiedWithBalance, verifiedZero, unverifiedWithBalance, unverifiedZero];
 
-
-const displayBalanceMap: Record<string, number> = {
-  [verifiedWithBalance.path]: 100,
-  [unverifiedWithBalance.path]: 50,
-};
-
-const rawBalanceMap: Record<string, string> = {
-  [verifiedWithBalance.priceID]: "100000000",
-  [unverifiedWithBalance.priceID]: "50000000",
+const displayBalanceStringMap: Record<string, string> = {
+  [verifiedWithBalance.priceID]: "100",
+  [unverifiedWithBalance.priceID]: "50",
 };
 
 const renderContainer = () =>
@@ -165,8 +159,7 @@ const setBalanceMap = () => {
   useTokenData.mockImplementation((showUnverified: boolean) => {
     void showUnverified;
     return {
-      displayBalanceMap,
-      rawBalanceMap,
+      displayBalanceStringMap,
       balances: { ugnot: 1 },
       tokenPrices: {},
       isFetched: true,
@@ -239,6 +232,83 @@ describe("AssetListContainer unverified token filtering", () => {
     expect(rows.some(row => row?.includes("VerifiedBal"))).toBe(false);
   });
 
+  it("sorts adjacent USD balances above Number.MAX_SAFE_INTEGER without losing precision", () => {
+    const lowerBalance = makeToken({
+      path: "gno.land/r/demo/lower-balance",
+      name: "LowerBalance",
+      symbol: "LOW",
+      priceID: "gno.land/r/demo/lower-balance",
+      isVerified: true,
+    });
+    const higherBalance = makeToken({
+      path: "gno.land/r/demo/higher-balance",
+      name: "HigherBalance",
+      symbol: "HIGH",
+      priceID: "gno.land/r/demo/higher-balance",
+      isVerified: true,
+    });
+
+    setTokens([lowerBalance, higherBalance]);
+    useTokenData.mockReturnValue({
+      displayBalanceStringMap: {
+        [lowerBalance.priceID]: "9007199254740992",
+        [higherBalance.priceID]: "9007199254740993",
+      },
+      balances: {
+        [lowerBalance.priceID]: 1,
+        [higherBalance.priceID]: 1,
+      },
+      tokenPrices: {
+        [lowerBalance.path]: { usd: "1" },
+        [higherBalance.path]: { usd: "1" },
+      },
+      isFetched: true,
+      updateBalances: jest.fn(),
+    });
+
+    renderContainer();
+
+    const sortedRows = getVisibleRows().filter(row => row?.includes("Balance"));
+    expect(sortedRows).toEqual(["HigherBalance (HIGH)", "LowerBalance (LOW)"]);
+  });
+
+  it("sorts positive sub-minimum amounts ahead of zero", () => {
+    const zeroBalance = makeToken({
+      path: "gno.land/r/demo/zero-balance",
+      name: "ZeroBalance",
+      symbol: "ZERO",
+      priceID: "gno.land/r/demo/zero-balance",
+      isVerified: true,
+    });
+    const tinyBalance = makeToken({
+      path: "gno.land/r/demo/tiny-balance",
+      name: "TinyBalance",
+      symbol: "TINY",
+      priceID: "gno.land/r/demo/tiny-balance",
+      isVerified: true,
+    });
+
+    setTokens([zeroBalance, tinyBalance]);
+    useTokenData.mockReturnValue({
+      displayBalanceStringMap: {
+        [zeroBalance.priceID]: "0",
+        [tinyBalance.priceID]: "0.0000001",
+      },
+      balances: {
+        [zeroBalance.priceID]: 0,
+        [tinyBalance.priceID]: 1,
+      },
+      tokenPrices: {},
+      isFetched: true,
+      updateBalances: jest.fn(),
+    });
+
+    renderContainer();
+    fireEvent.click(screen.getByText("Wallet:assets.col.amount"));
+
+    const sortedRows = getVisibleRows().filter(row => row?.includes("Balance"));
+    expect(sortedRows).toEqual(["TinyBalance (TINY)", "ZeroBalance (ZERO)"]);
+  });
   describe("fixed core-token fallback entries", () => {
     it("shows core tokens from fixed fallbacks by default because they are verified", () => {
       setTokens([]);

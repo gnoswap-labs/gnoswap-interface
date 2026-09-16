@@ -16,8 +16,7 @@ import { TokenModel } from "@models/token/token-model";
 import { useGetAvgBlockTime } from "@query/address";
 import { useGetTokens } from "@query/token";
 import { checkGnotPath } from "@utils/common";
-import { formatRawAmount, formatUsd } from "@utils/display-number-utils";
-import { getUsdBalance } from "@utils/number-utils";
+import { formatPoolPairAmount, formatPrice } from "@utils/new-number-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
 import { keepVerified } from "@utils/token-verification-filter";
 import { isEmptyObject } from "@utils/validation-utils";
@@ -45,6 +44,23 @@ function filterKeyword(asset: Asset, keyword: string) {
   if (searchKeyword === "") return true;
   return asset.name.toLowerCase().includes(searchKeyword) || asset.symbol.toLowerCase().includes(searchKeyword);
 }
+const AMOUNT_DISPLAY_DECIMALS = 6;
+const MIN_AMOUNT_DISPLAY = 0.000001;
+const MIN_USD_BALANCE_DISPLAY = 0.01;
+
+const calculateUsdBalance = (displayAmount: string | null | undefined, usdPrice: string | null | undefined) => {
+  if (displayAmount === null || displayAmount === undefined || !usdPrice) {
+    return BigNumber(0);
+  }
+
+  const amount = BigNumber(displayAmount);
+  const price = BigNumber(usdPrice);
+  if (!amount.isFinite() || !price.isFinite()) {
+    return BigNumber(0);
+  }
+
+  return amount.multipliedBy(price);
+};
 
 const DEPOSIT_INFO: TokenModel = {
   chainId: "dev",
@@ -64,7 +80,8 @@ interface SortedProps extends TokenModel {
   balance: string;
   price?: string;
   tokenPrice: number;
-  sortPrice?: string;
+  sortAmount: string;
+  sortPrice: string;
 }
 
 const AssetListContainer: React.FC = () => {
@@ -122,7 +139,8 @@ const AssetListContainer: React.FC = () => {
     }
   }, [isClickOutside, keyword]);
 
-  const { rawBalanceMap, balances, tokenPrices, isFetched, updateBalances } = useTokenData(showUnverifiedTokens);
+  const { displayBalanceStringMap, balances, tokenPrices, isFetched, updateBalances } =
+    useTokenData(showUnverifiedTokens);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -159,31 +177,33 @@ const AssetListContainer: React.FC = () => {
     return keepVerified(
       [gnot, wugnot, gns].map(item => {
         const tokenPrice = balances[item.priceID];
-        const rawAmount = rawBalanceMap[item.priceID] ?? tokenPrice;
+        const displayAmount = displayBalanceStringMap[item.priceID];
         const usdPrice = tokenPrices[checkGnotPath(item?.path)]?.usd;
-        const usdValue = getUsdBalance(rawAmount, usdPrice, item.decimals);
+        const usdValue = calculateUsdBalance(displayAmount, usdPrice);
 
         const price = (() => {
           if (!connected || isSwitchNetwork) {
             return "-";
           }
 
-          if (
-            !tokenPrice ||
-            Number.isNaN(tokenPrice) ||
-            !tokenPrices[checkGnotPath(item?.path)]?.usd ||
-            !balances[item.priceID]
-          ) {
+          if (displayAmount === null || displayAmount === undefined || !usdPrice) {
             return "$0";
           }
 
-          return formatUsd(usdValue);
+          return formatPrice(usdValue, {
+            isKMB: false,
+            minLimit: MIN_USD_BALANCE_DISPLAY,
+          });
         })();
 
         const balance = (() => {
-          if (isSwitchNetwork || rawAmount === null || rawAmount === undefined) return "-";
+          if (isSwitchNetwork || displayAmount === null || displayAmount === undefined) return "-";
 
-          return formatRawAmount(rawAmount, item.decimals);
+          return formatPoolPairAmount(displayAmount, {
+            decimals: AMOUNT_DISPLAY_DECIMALS,
+            minLimit: MIN_AMOUNT_DISPLAY,
+            isKMB: false,
+          });
         })();
 
         return {
@@ -191,7 +211,8 @@ const AssetListContainer: React.FC = () => {
           price,
           balance,
           tokenPrice: tokenPrice || 0,
-          sortPrice: price === "-" ? "-" : usdValue.toString(),
+          sortAmount: displayAmount ?? "-1",
+          sortPrice: price === "-" ? "-1" : usdValue.toString(),
         };
       }),
       showUnverifiedTokens,
@@ -200,7 +221,7 @@ const AssetListContainer: React.FC = () => {
       .filter(asset => filterType(asset, assetType));
   }, [
     balances,
-    displayBalanceMap,
+    displayBalanceStringMap,
     isSwitchNetwork,
     tokenPrices,
     tokens,
@@ -216,31 +237,33 @@ const AssetListContainer: React.FC = () => {
       .filter(item => item.path !== GNOT_TOKEN.path && item.path !== GNS_TOKEN.path && item.path !== WUGNOT_TOKEN.path)
       .map(item => {
         const tokenPrice = balances[item.priceID];
-        const rawAmount = rawBalanceMap[item.priceID] ?? tokenPrice;
+        const displayAmount = displayBalanceStringMap[item.priceID];
         const usdPrice = tokenPrices[checkGnotPath(item?.path)]?.usd;
-        const usdValue = getUsdBalance(rawAmount, usdPrice, item.decimals);
+        const usdValue = calculateUsdBalance(displayAmount, usdPrice);
 
         const price = (() => {
           if (!connected || isSwitchNetwork) {
             return "-";
           }
 
-          if (
-            !tokenPrice ||
-            Number.isNaN(tokenPrice) ||
-            !tokenPrices[checkGnotPath(item?.path)]?.usd ||
-            !balances[item.priceID]
-          ) {
+          if (displayAmount === null || displayAmount === undefined || !usdPrice) {
             return "$0";
           }
 
-          return formatUsd(usdValue);
+          return formatPrice(usdValue, {
+            isKMB: false,
+            minLimit: MIN_USD_BALANCE_DISPLAY,
+          });
         })();
 
         const balance = (() => {
-          if (isSwitchNetwork || rawAmount === null || rawAmount === undefined) return "-";
+          if (isSwitchNetwork || displayAmount === null || displayAmount === undefined) return "-";
 
-          return formatRawAmount(rawAmount, item.decimals);
+          return formatPoolPairAmount(displayAmount, {
+            decimals: AMOUNT_DISPLAY_DECIMALS,
+            minLimit: MIN_AMOUNT_DISPLAY,
+            isKMB: false,
+          });
         })();
 
         return {
@@ -248,7 +271,8 @@ const AssetListContainer: React.FC = () => {
           price: price,
           balance: balance,
           tokenPrice: tokenPrice || 0,
-          sortPrice: price === "-" ? "-" : usdValue.toString(),
+          sortAmount: displayAmount ?? "-1",
+          sortPrice: price === "-" ? "-1" : usdValue.toString(),
         };
       });
 
@@ -264,27 +288,19 @@ const AssetListContainer: React.FC = () => {
     }
 
     if (sortOption?.key === ASSET_HEAD.AMOUNT) {
-      mappedTokens = mappedTokens.sort((x, y) => {
-        const xBalance = x.balance === "-" ? "-1" : x.balance;
-        const yBalance = y.balance === "-" ? "-1" : y.balance;
-
-        return sortOption?.direction === "desc"
-          ? Number(yBalance.replace(/,/g, "")) - Number(xBalance.replace(/,/g, ""))
-          : Number(xBalance.replace(/,/g, "")) - Number(yBalance.replace(/,/g, ""));
-      });
+      mappedTokens = mappedTokens.sort((x, y) =>
+        sortOption?.direction === "desc"
+          ? BigNumber(y.sortAmount).comparedTo(x.sortAmount)
+          : BigNumber(x.sortAmount).comparedTo(y.sortAmount),
+      );
     }
 
     if (sortOption?.key === ASSET_HEAD.BALANCE) {
-      mappedTokens = mappedTokens.sort((x, y) => {
-        if (x.sortPrice === undefined || y.sortPrice === undefined || x.sortPrice === null || y.sortPrice === null) {
-          return 0;
-        }
-
-        const xPrice = x.sortPrice === "-" ? "-1" : x.sortPrice.replace("$", "").replace(/,/g, "");
-        const yPrice = y.sortPrice === "-" ? "-1" : y.sortPrice.replace("$", "").replace(/,/g, "");
-
-        return sortOption?.direction === "desc" ? Number(yPrice) - Number(xPrice) : Number(xPrice) - Number(yPrice);
-      });
+      mappedTokens = mappedTokens.sort((x, y) =>
+        sortOption?.direction === "desc"
+          ? BigNumber(y.sortPrice).comparedTo(x.sortPrice)
+          : BigNumber(x.sortPrice).comparedTo(y.sortPrice),
+      );
     }
 
     mappedTokens = mappedTokens
@@ -303,7 +319,7 @@ const AssetListContainer: React.FC = () => {
     extended,
     balances,
     tokenPrices,
-    displayBalanceMap,
+    displayBalanceStringMap,
     assetType,
     keyword,
     isSwitchNetwork,
