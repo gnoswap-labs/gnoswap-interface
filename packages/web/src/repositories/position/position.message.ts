@@ -272,12 +272,16 @@ export function makeIncreaseLiquidityMessagesWithApproves(
   const approveMessageInfos: TokenApproveMessageInfo[] = [
     {
       tokenPath: tokenAWrappedPath,
+      pkgPath: tokenA.pkgPath,
+      routes: tokenA.routes,
       targetAddress: PACKAGE_POOL_ADDRESS,
       amount: tokenAAmountRaw,
       caller,
     },
     {
       tokenPath: tokenBWrappedPath,
+      pkgPath: tokenB.pkgPath,
+      routes: tokenB.routes,
       targetAddress: PACKAGE_POOL_ADDRESS,
       amount: tokenBAmountRaw,
       caller,
@@ -398,12 +402,16 @@ export function makeRepositionLiquidityMessagesWithApproves(
   const approveMessageInfos: TokenApproveMessageInfo[] = [
     {
       tokenPath: tokenAWrappedPath,
+      pkgPath: tokenA.pkgPath,
+      routes: tokenA.routes,
       targetAddress: PACKAGE_POOL_ADDRESS,
       amount: tokenAAmountRaw,
       caller,
     },
     {
       tokenPath: tokenBWrappedPath,
+      pkgPath: tokenB.pkgPath,
+      routes: tokenB.routes,
       targetAddress: PACKAGE_POOL_ADDRESS,
       amount: tokenBAmountRaw,
       caller,

@@ -5,9 +5,10 @@ import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { TransactionMessageError } from "@common/errors";
 import { DEFAULT_ALLOWANCE_LIMIT } from "@common/values";
 import { PACKAGE_NFT_PATH, WRAPPED_GNOT_PACKAGE_PATH } from "@constants/environment.constant";
-import { getGrc20MethodSpec } from "@constants/grc20-method-spec.constant";
+import { Grc20Routes } from "@models/token/token-model";
 import { MAX_INT64_STR } from "@utils/math.utils";
 
+import { resolveGrc20Route } from "./grc20-route";
 import { gnoInt64Literal, GRC20ApproveRunMessageInfo, makeGRC20ApproveRunMessage, TransactionRunMessage } from "./run";
 
 export interface TransactionBankMessage {
@@ -48,6 +49,8 @@ export interface TokenApproveMessageInfo {
   targetAddress: string;
   amount: string | bigint | number;
   caller: string;
+  pkgPath?: string;
+  routes?: Grc20Routes;
 }
 
 export function makeBankSendGNOTMessage({
@@ -93,27 +96,32 @@ export function makeTransactionMessage({
   };
 }
 
-export function makeTokenApproveMessage(
-  tokenPath: string,
-  targetAddress: string,
-  amount: string | bigint | number,
-  caller: string,
-): TransactionMessage {
-  const grc20MethodSpec = getGrc20MethodSpec(tokenPath);
+export function makeTokenApproveMessage(approveInfo: TokenApproveMessageInfo): TransactionMessage {
+  const amountLiteral = gnoInt64Literal(approveInfo.amount);
+  const route = resolveGrc20Route(
+    { path: approveInfo.tokenPath, pkgPath: approveInfo.pkgPath, routes: approveInfo.routes },
+    "approve",
+    {
+      $spender: approveInfo.targetAddress,
+      $amount: amountLiteral,
+    },
+  );
 
-  if (grc20MethodSpec) {
+  if (route) {
     return makeTransactionMessage({
-      caller,
+      caller: approveInfo.caller,
       send: "",
-      packagePath: grc20MethodSpec.packagePath,
-      func: grc20MethodSpec.approveMethod,
-      args: [targetAddress, gnoInt64Literal(amount)],
+      packagePath: route.packagePath,
+      func: route.func,
+      args: route.args,
     });
   }
 
   return makeGRC20ApproveRunMessage({
-    approves: [{ tokenPath, spenderAddress: targetAddress, amount }],
-    caller,
+    approves: [
+      { tokenPath: approveInfo.tokenPath, spenderAddress: approveInfo.targetAddress, amount: approveInfo.amount },
+    ],
+    caller: approveInfo.caller,
   });
 }
 
@@ -136,16 +144,10 @@ export function makeTokenApproveMessages(approveInfos: TokenApproveMessageInfo[]
   };
 
   for (const approveInfo of approveInfos) {
-    if (getGrc20MethodSpec(approveInfo.tokenPath)) {
+    const approveMessage = makeTokenApproveMessage(approveInfo);
+    if (isTransactionCallMessage(approveMessage)) {
       flushRunGroup();
-      messages.push(
-        makeTokenApproveMessage(
-          approveInfo.tokenPath,
-          approveInfo.targetAddress,
-          approveInfo.amount,
-          approveInfo.caller,
-        ),
-      );
+      messages.push(approveMessage);
       continue;
     }
 
@@ -197,7 +199,16 @@ export function makeDepositGNOTMessage(amount: string | number | null, caller: s
   });
 }
 
-type SumApproveMessageType = { [key in string]: { [key in string]: { amount: string; caller: string } } };
+type SumApproveMessageType = {
+  [tokenPath: string]: {
+    [targetAddress: string]: {
+      amount: string;
+      caller: string;
+      pkgPath?: string;
+      routes?: Grc20Routes;
+    };
+  };
+};
 
 // Without `fetchAllowance` every approve message is kept, which is what the swap
 // simulation wants: it must not query an allowance it never broadcasts.
@@ -243,6 +254,8 @@ export async function makeTransactionMessagesWithApproves(
       accumulated[current.tokenPath][current.targetAddress] = {
         amount: "0",
         caller: current.caller,
+        pkgPath: current.pkgPath,
+        routes: current.routes,
       };
     }
 
@@ -264,6 +277,8 @@ export async function makeTransactionMessagesWithApproves(
         targetAddress,
         amount: messageInfo.amount,
         caller: messageInfo.caller,
+        pkgPath: messageInfo.pkgPath,
+        routes: messageInfo.routes,
       })),
   );
 
@@ -277,6 +292,8 @@ export async function makeTransactionMessagesWithApproves(
               targetAddress: messageInfo.targetAddress,
               amount: messageInfo.amount,
               caller: messageInfo.caller,
+              pkgPath: messageInfo.pkgPath,
+              routes: messageInfo.routes,
               allowance,
             }))
             .catch(e => {

@@ -145,13 +145,27 @@ describe("makeTransactionMessagesWithApproves", () => {
     ]);
   });
 
-  it("uses a direct MsgCall for tokens registered in grc20-method-specs.json", async () => {
-    const gnsTokenKey = "gno.land/r/gnoswap/gns.GNS";
+  it("uses resource route metadata for approve and reset messages", async () => {
+    const tokenPath = "gno.land/r/example/factory.FOO";
     const fetchAllowance = jest.fn(async () => 0);
+    const routes = {
+      funcs: {
+        approve: { name: "SetAllowance", args: ["FOO", "$spender", "$amount"] },
+      },
+    };
 
     const messages = await makeTransactionMessagesWithApproves(
       [transactionMessage],
-      [{ tokenPath: gnsTokenKey, targetAddress, amount: "100", caller }],
+      [
+        {
+          tokenPath,
+          pkgPath: "gno.land/r/example/factory",
+          routes,
+          targetAddress,
+          amount: "100",
+          caller,
+        },
+      ],
       fetchAllowance,
     );
 
@@ -159,17 +173,17 @@ describe("makeTransactionMessagesWithApproves", () => {
       makeTransactionMessage({
         caller,
         send: "",
-        packagePath: "gno.land/r/gnoswap/gns",
-        func: "Approve",
-        args: [targetAddress, "100"],
+        packagePath: "gno.land/r/example/factory",
+        func: "SetAllowance",
+        args: ["FOO", targetAddress, "100"],
       }),
       transactionMessage,
       makeTransactionMessage({
         caller,
         send: "",
-        packagePath: "gno.land/r/gnoswap/gns",
-        func: "Approve",
-        args: [targetAddress, "0"],
+        packagePath: "gno.land/r/example/factory",
+        func: "SetAllowance",
+        args: ["FOO", targetAddress, "0"],
       }),
     ]);
   });
@@ -180,11 +194,18 @@ describe("makeTokenApproveMessages", () => {
   const targetAddress = "target";
   const wugnotTokenKey = "gno.land/r/gnoland/wugnot.wugnot";
 
-  it("keeps registered tokens as MsgCall and batches the rest into run messages in order", () => {
+  it("keeps tokens with routes as MsgCall and batches the rest into run messages in order", () => {
     const messages = makeTokenApproveMessages([
       { tokenPath: "token_a", targetAddress, amount: "1", caller },
       { tokenPath: "token_b", targetAddress, amount: "2", caller },
-      { tokenPath: wugnotTokenKey, targetAddress, amount: "3", caller },
+      {
+        tokenPath: wugnotTokenKey,
+        pkgPath: "gno.land/r/gnoland/wugnot",
+        routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
+        targetAddress,
+        amount: "3",
+        caller,
+      },
       { tokenPath: "token_c", targetAddress, amount: "4", caller },
     ]);
 

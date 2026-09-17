@@ -1,6 +1,7 @@
-import { getGrc20MethodSpec } from "@constants/grc20-method-spec.constant";
+import { Grc20Routes } from "@models/token/token-model";
 
 import { makeTransactionMessage, TransactionBankMessage, TransactionMessage } from "./common";
+import { resolveGrc20Route } from "./grc20-route";
 import { gnoInt64Literal, makeGRC20TransferRunMessage } from "./run";
 
 export function makeTransferNativeTokenMessage(
@@ -17,25 +18,26 @@ export function makeTransferNativeTokenMessage(
 }
 
 export function makeTransferGRC20TokenMessage(
-  tokenPath: string,
+  token: { path: string; pkgPath?: string; routes?: Grc20Routes },
   amount: string,
   fromAddress: string,
   toAddress: string,
 ): TransactionMessage {
-  const grc20MethodSpec = getGrc20MethodSpec(tokenPath);
+  const amountLiteral = gnoInt64Literal(amount);
+  const route = resolveGrc20Route(token, "transfer", { $to: toAddress, $amount: amountLiteral });
 
-  if (grc20MethodSpec) {
+  if (route) {
     return makeTransactionMessage({
       caller: fromAddress,
       send: "",
-      packagePath: grc20MethodSpec.packagePath,
-      func: grc20MethodSpec.transferMethod,
-      args: [toAddress, gnoInt64Literal(amount)],
+      packagePath: route.packagePath,
+      func: route.func,
+      args: route.args,
     });
   }
 
   return makeGRC20TransferRunMessage({
-    tokenPath,
+    tokenPath: token.path,
     toAddress,
     amount,
     caller: fromAddress,
