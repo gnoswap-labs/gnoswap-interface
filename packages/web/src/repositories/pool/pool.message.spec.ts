@@ -86,6 +86,7 @@ describe("pool.message.ts", () => {
     const caller = "caller";
     const fetchAllowance = jest.fn(async () => 0);
     const request = {
+      gnsToken: createTokenModel("gns_token_path"),
       feeTier: "FEE_3000" as const,
       startPrice: "50",
       createPoolFee: 0,
@@ -149,12 +150,18 @@ describe("pool.message.ts", () => {
 
   it("sums GNS incentive reward and creation deposit approvals for the same spender", async () => {
     const caller = "caller";
+    const gnsToken = {
+      ...createTokenModel("gns_token_path"),
+      pkgPath: "gns_package_path",
+      routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
+    };
     const fetchAllowance = jest.fn(async () => 0);
 
     const messages = await makeCreateExternalIncentiveMessageWithApproves(
       {
         poolPath: "pool_path",
         rewardToken: createTokenModel("gns_token_path"),
+        gnsToken,
         rewardAmount: "250",
         incentiveCreationDepositGnsAmount: "1500000000",
         startTime: 100,
@@ -163,13 +170,12 @@ describe("pool.message.ts", () => {
       },
       fetchAllowance,
     );
-
-    expect(messages[0]).toEqual(
-      makeExpectedApproveRunMessage({
-        caller,
-        approves: [{ tokenPath: "gns_token_path", spenderAddress: "staker_address", amount: "1750000000" }],
-      }),
-    );
+    expect(messages[0]).toMatchObject({
+      caller,
+      pkg_path: "gns_package_path",
+      func: "Approve",
+      args: ["staker_address", "1750000000"],
+    });
     expect(messages[1]).toMatchObject({
       caller,
       pkg_path: "staker_path",

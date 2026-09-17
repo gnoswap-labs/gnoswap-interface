@@ -59,7 +59,8 @@ export const useLaunchpadHandler = () => {
   const selectPoolId = useAtomValue(LaunchpadState.selectLaunchpadPool);
 
   const { connected: connectedWallet, account, isSwitchNetwork, switchNetwork } = useWallet();
-  const { displayBalanceMap, tokens } = useTokenData(true);
+  const { displayBalanceMap, tokens, isFetched: isFetchedTokens } = useTokenData(true);
+  const gnsToken = useMemo(() => tokens.find(token => token.path === GNS_TOKEN.path) ?? GNS_TOKEN, [tokens]);
 
   const { launchpadRepository } = useGnoswapContext();
   const { data: tokenPriceMap } = useGetAllTokenPrices();
@@ -111,7 +112,7 @@ export const useLaunchpadHandler = () => {
    * @param emitCallback A callback function that runs when a transaction send event is successfully fired. You can proceed to update data with refetch.
    */
   const deposit = (projectPoolID: string, depositAmount: string, emitCallback: () => Promise<void>) => {
-    if (!account) {
+    if (!account || !isFetchedTokens) {
       return;
     }
 
@@ -129,6 +130,7 @@ export const useLaunchpadHandler = () => {
       () =>
         launchpadRepository.depositLaunchpadPoolBy(
           projectPoolID,
+          gnsToken,
           BigInt(unitAmount),
           account.address,
           currentReferralAddress,

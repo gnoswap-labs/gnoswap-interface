@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
@@ -6,12 +6,14 @@ import { ERROR_VALUE } from "@common/errors/adena";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
+import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useMessage } from "@hooks/common/use-message";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useReferral } from "@hooks/common/use-referral";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { DexEvent, DexEventType } from "@repositories/common";
 import { ClaimableRewards } from "@repositories/governance";
@@ -23,6 +25,8 @@ export const useGovernanceTx = () => {
   const { t } = useTranslation();
   const { account } = useWallet();
   const { governanceRepository } = useGnoswapContext();
+  const { tokens, isFetched: isFetchedTokens } = useTokenData(true);
+  const gnsToken = useMemo(() => tokens.find(token => token.path === GNS_TOKEN_PATH) ?? GNS_TOKEN, [tokens]);
   const { getMessage } = useMessage();
 
   const [openedConfirmModal] = useState(false);
@@ -99,7 +103,7 @@ export const useGovernanceTx = () => {
   };
 
   const delegateGNS = (toName: string, toAddress: string, amount: string, emitCallback: () => Promise<void>) => {
-    if (!account) {
+    if (!account || !isFetchedTokens) {
       return;
     }
 
@@ -116,6 +120,7 @@ export const useGovernanceTx = () => {
     processTx(
       () =>
         governanceRepository.sendDelegate({
+          gnsToken,
           to: toAddress,
           amount: unitAmount,
           referrerAddress: currentReferralAddress,

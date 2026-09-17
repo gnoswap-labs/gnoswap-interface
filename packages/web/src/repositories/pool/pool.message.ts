@@ -38,6 +38,7 @@ export function makeCreatePoolMessageWithApproves(
   {
     tokenA,
     tokenB,
+    gnsToken,
     feeTier,
     startPrice,
     createPoolFee,
@@ -45,6 +46,7 @@ export function makeCreatePoolMessageWithApproves(
   }: {
     tokenA: TokenModel;
     tokenB: TokenModel;
+    gnsToken: TokenModel;
     feeTier: SwapFeeTierType;
     startPrice: string;
     createPoolFee: number;
@@ -62,6 +64,8 @@ export function makeCreatePoolMessageWithApproves(
   if (createPoolFee > 0) {
     approveMessageInfos.push({
       tokenPath: GNS_TOKEN_PATH,
+      pkgPath: gnsToken.pkgPath,
+      routes: gnsToken.routes,
       targetAddress: PACKAGE_POOL_ADDRESS,
       amount: createPoolFee,
       caller,
@@ -188,6 +192,7 @@ export function makeCreateExternalIncentiveMessageWithApproves(
   {
     poolPath,
     rewardToken,
+    gnsToken,
     rewardAmount,
     incentiveCreationDepositGnsAmount,
     startTime,
@@ -196,6 +201,7 @@ export function makeCreateExternalIncentiveMessageWithApproves(
   }: {
     poolPath: string;
     rewardToken: TokenModel;
+    gnsToken: TokenModel;
     rewardAmount: string;
     incentiveCreationDepositGnsAmount: string;
     startTime: number;
@@ -214,16 +220,16 @@ export function makeCreateExternalIncentiveMessageWithApproves(
   if (isIncentivizeGNSToken) {
     approveMessageInfos.push({
       tokenPath: GNS_TOKEN_PATH,
-      pkgPath: rewardToken.pkgPath,
-      routes: rewardToken.routes,
+      pkgPath: gnsToken.pkgPath,
+      routes: gnsToken.routes,
       targetAddress: PACKAGE_STAKER_ADDRESS,
       amount: incentiveCreationDepositGnsAmount,
       caller,
     });
     approveMessageInfos.push({
       tokenPath: GNS_TOKEN_PATH,
-      pkgPath: rewardToken.pkgPath,
-      routes: rewardToken.routes,
+      pkgPath: gnsToken.pkgPath,
+      routes: gnsToken.routes,
       targetAddress: PACKAGE_STAKER_ADDRESS,
       amount: rewardAmountRaw,
       caller,
@@ -231,6 +237,8 @@ export function makeCreateExternalIncentiveMessageWithApproves(
   } else {
     approveMessageInfos.push({
       tokenPath: GNS_TOKEN_PATH,
+      pkgPath: gnsToken.pkgPath,
+      routes: gnsToken.routes,
       targetAddress: PACKAGE_STAKER_ADDRESS,
       amount: incentiveCreationDepositGnsAmount,
       caller,

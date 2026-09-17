@@ -1,9 +1,11 @@
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 import { ERROR_VALUE } from "@common/errors/adena";
 import { DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT } from "@common/values";
+import { GNS_TOKEN } from "@common/values/token-constant";
+import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 import { useAddress } from "@hooks/common/use-address";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
@@ -51,7 +53,8 @@ const IncentivizePoolModalContainer: React.FC<IncentivizePoolModalContainerProps
   const { address } = useAddress();
 
   // refetch functions
-  const { updateBalances } = useTokenData(true);
+  const { tokens, isFetched: isFetchedTokens, updateBalances } = useTokenData(true);
+  const gnsToken = useMemo(() => tokens.find(token => token.path === GNS_TOKEN_PATH) ?? GNS_TOKEN, [tokens]);
   const { refetch: refetchPositions } = usePositionData({ address, scopeId: "IncentivizePoolModalContainer" });
 
   const { refetch: refetchPools } = useGetPoolList();
@@ -83,7 +86,7 @@ const IncentivizePoolModalContainer: React.FC<IncentivizePoolModalContainerProps
   };
 
   const createExternalIncentive = useCallback(async () => {
-    if (!pool || !dataModal?.token || !address) {
+    if (!pool || !dataModal?.token || !address || !isFetchedTokens) {
       return null;
     }
     const startUTCDate = Date.UTC(startDate.year, startDate.month - 1, startDate.date, 0, 0, 0, 0);
@@ -99,6 +102,7 @@ const IncentivizePoolModalContainer: React.FC<IncentivizePoolModalContainerProps
     const request: CreateExternalIncentiveRequest = {
       poolPath: pool.poolPath,
       rewardToken: dataModal.token,
+      gnsToken,
       rewardAmount: dataModal.amount || "0",
       incentiveCreationDepositGnsAmount,
       startTime,
@@ -172,6 +176,8 @@ const IncentivizePoolModalContainer: React.FC<IncentivizePoolModalContainerProps
     poolRepository,
     dataModal,
     incentiveCreationDepositGnsAmount,
+    gnsToken,
+    isFetchedTokens,
     period,
     pool,
     router,

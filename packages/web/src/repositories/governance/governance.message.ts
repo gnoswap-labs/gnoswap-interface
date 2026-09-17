@@ -10,6 +10,7 @@ import {
   PACKAGE_GOVERNANCE_STAKER_ADDRESS,
   PACKAGE_GOVERNANCE_STAKER_PATH,
 } from "@constants/environment.constant";
+import { TokenModel } from "@models/token/token-model";
 import { makeProposalVariablesQuery } from "@utils/governance-utils";
 
 enum TransactionMessageFunctionType {
@@ -159,11 +160,13 @@ export function makeExecuteMessages({
 export function makeDelegateMessagesWithApproves(
   {
     to,
+    gnsToken,
     amount,
     caller,
     referrerAddress,
   }: {
     to: string;
+    gnsToken: TokenModel;
     amount: string;
     caller: string;
     referrerAddress: string | null;
@@ -181,6 +184,8 @@ export function makeDelegateMessagesWithApproves(
   const approveMessageInfos: TokenApproveMessageInfo[] = [
     {
       tokenPath: GNS_TOKEN_PATH,
+      pkgPath: gnsToken.pkgPath,
+      routes: gnsToken.routes,
       targetAddress: PACKAGE_GOVERNANCE_STAKER_ADDRESS,
       amount,
       caller,
@@ -213,11 +218,13 @@ export function makeUnDelegateMessages({
 export function makeReDelegateMessagesWithApproves(
   {
     from,
+    gnsToken,
     to,
     amount,
     caller,
   }: {
     from: string;
+    gnsToken: TokenModel;
     to: string;
     amount: string;
     caller: string;
@@ -235,6 +242,8 @@ export function makeReDelegateMessagesWithApproves(
   const approveMessageInfos: TokenApproveMessageInfo[] = [
     {
       tokenPath: GNS_TOKEN_PATH,
+      pkgPath: gnsToken.pkgPath,
+      routes: gnsToken.routes,
       targetAddress: PACKAGE_GOVERNANCE_STAKER_ADDRESS,
       amount,
       caller,

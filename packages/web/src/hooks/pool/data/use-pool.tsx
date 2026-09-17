@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useMemo } from "react";
 
+import { GNS_TOKEN } from "@common/values/token-constant";
+import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useReferral } from "@hooks/common/use-referral";
 import { usePoolData } from "@hooks/pool/data/use-pool-data";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolModel } from "@models/pool/pool-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
@@ -26,6 +29,8 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
   const { account } = useWallet();
   const { poolRepository } = useGnoswapContext();
   const { pools, updatePools, isFetchedPools, loading } = usePoolData();
+  const { tokens, isFetched: isFetchedTokens } = useTokenData(true);
+  const gnsToken = useMemo(() => tokens.find(token => token.path === GNS_TOKEN_PATH) ?? GNS_TOKEN, [tokens]);
   const { data: createPoolFee } = useGetPoolCreationFee();
 
   const allPoolPaths = useMemo(() => {
@@ -133,7 +138,7 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
       maxTick: number;
       slippage: number;
     }) => {
-      if (!tokenA || !tokenB || !account || createPoolFee === undefined) {
+      if (!tokenA || !tokenB || !account || createPoolFee === undefined || !isFetchedTokens) {
         return null;
       }
       const currentTokenData = getCurrentTokenPairAmount(tokenAAmount, tokenBAmount);
@@ -146,6 +151,7 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
       const request: CreatePoolRequest = {
         tokenA: currentTokenData.tokenA,
         tokenB: currentTokenData.tokenB,
+        gnsToken,
         tokenAAmount: currentTokenData.tokenAAmount,
         tokenBAmount: currentTokenData.tokenBAmount,
         feeTier: swapFeeTier,
@@ -160,7 +166,17 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
 
       return buildCreatePoolAction(request, poolRepository);
     },
-    [tokenA, tokenB, account, getCurrentTokenPairAmount, poolRepository, getNextReferralAddress, createPoolFee],
+    [
+      tokenA,
+      tokenB,
+      account,
+      getCurrentTokenPairAmount,
+      poolRepository,
+      getNextReferralAddress,
+      createPoolFee,
+      gnsToken,
+      isFetchedTokens,
+    ],
   );
 
   const buildAddLiquidityAction = async (
