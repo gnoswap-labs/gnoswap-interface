@@ -13,7 +13,7 @@ describe("makeTransferGRC20TokenMessage", () => {
         pkgPath: "gno.land/r/example/factory",
         routes: {
           funcs: {
-            transfer: { name: "VoucherSend", args: ["FOO", "$to", "$$literal", "$amount"] },
+            transfer: { name: "VoucherSend", args: ["FOO", "$from", "$to", "$$literal", "$amount"] },
           },
         },
       },
@@ -28,7 +28,7 @@ describe("makeTransferGRC20TokenMessage", () => {
         send: "",
         packagePath: "gno.land/r/example/factory",
         func: "VoucherSend",
-        args: ["FOO", toAddress, "$literal", "100"],
+        args: ["FOO", fromAddress, toAddress, "$literal", "100"],
       }),
     );
   });

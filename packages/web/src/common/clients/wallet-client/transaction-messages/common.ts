@@ -102,6 +102,7 @@ export function makeTokenApproveMessage(approveInfo: TokenApproveMessageInfo): T
     { path: approveInfo.tokenPath, pkgPath: approveInfo.pkgPath, routes: approveInfo.routes },
     "approve",
     {
+      $owner: approveInfo.caller,
       $spender: approveInfo.targetAddress,
       $amount: amountLiteral,
     },

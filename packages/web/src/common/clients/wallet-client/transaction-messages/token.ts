@@ -24,7 +24,11 @@ export function makeTransferGRC20TokenMessage(
   toAddress: string,
 ): TransactionMessage {
   const amountLiteral = gnoInt64Literal(amount);
-  const route = resolveGrc20Route(token, "transfer", { $to: toAddress, $amount: amountLiteral });
+  const route = resolveGrc20Route(token, "transfer", {
+    $from: fromAddress,
+    $to: toAddress,
+    $amount: amountLiteral,
+  });
 
   if (route) {
     return makeTransactionMessage({

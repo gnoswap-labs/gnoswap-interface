@@ -150,7 +150,7 @@ describe("makeTransactionMessagesWithApproves", () => {
     const fetchAllowance = jest.fn(async () => 0);
     const routes = {
       funcs: {
-        approve: { name: "SetAllowance", args: ["FOO", "$spender", "$amount"] },
+        approve: { name: "SetAllowance", args: ["FOO", "$owner", "$spender", "$amount"] },
       },
     };
 
@@ -175,7 +175,7 @@ describe("makeTransactionMessagesWithApproves", () => {
         send: "",
         packagePath: "gno.land/r/example/factory",
         func: "SetAllowance",
-        args: ["FOO", targetAddress, "100"],
+        args: ["FOO", caller, targetAddress, "100"],
       }),
       transactionMessage,
       makeTransactionMessage({
@@ -183,7 +183,7 @@ describe("makeTransactionMessagesWithApproves", () => {
         send: "",
         packagePath: "gno.land/r/example/factory",
         func: "SetAllowance",
-        args: ["FOO", targetAddress, "0"],
+        args: ["FOO", caller, targetAddress, "0"],
       }),
     ]);
   });
