@@ -16,8 +16,6 @@ export const PATH = ["/earn"];
 export const PATH_10SECOND = ["/token"];
 export const PATH_60SECOND = ["/wallet", "/earn/pool/stake", "/earn/pool/unstake", "/earn/pool", "/earn/pool/remove"];
 
-export const HTTP_5XX_ERROR = [500, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511];
-
 export const CAN_SCROLL_UP_ID = "CAN_SCROLL_UP_ID";
 
 export const getCanScrollUpId = (id: string) => `${CAN_SCROLL_UP_ID}_${id}`;

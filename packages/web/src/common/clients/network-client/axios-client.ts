@@ -1,5 +1,4 @@
-import { HTTP_5XX_ERROR } from "@constants/common.constant";
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { NetworkClient } from "./network-client";
 import {
   HttpDeleteRequestParam,
@@ -10,57 +9,34 @@ import {
 } from "./protocols";
 
 export class AxiosClient implements NetworkClient {
-  private baseURL: string;
-  private serverErrorCb: () => void;
+  private client: AxiosInstance;
 
-  constructor(baseURL?: string, serverErrorCb?: () => void) {
-    this.baseURL = baseURL || "";
-    this.serverErrorCb =
-      serverErrorCb ??
-      (() => {
-        return;
-      });
-
-    axios.interceptors.response.use(
-      res => {
-        if (HTTP_5XX_ERROR.includes(res?.status)) {
-          this.serverErrorCb?.();
-        }
-
-        return res;
-      },
-      (err: AxiosError) => {
-        if (HTTP_5XX_ERROR.includes(err.response?.status ?? 0)) {
-          this.serverErrorCb?.();
-        }
-
-        return Promise.reject(err);
-      },
-    );
+  constructor(baseURL?: string) {
+    this.client = axios.create({ baseURL });
   }
 
   public get = <R>(params: HttpGetRequestParam): Promise<HttpResponse<R>> => {
     const { url } = params;
     const headers = this.createHeaders();
-    return axios.get(url, { headers, baseURL: this.baseURL }).then(this.createResponse);
+    return this.client.get(url, { headers }).then(this.createResponse);
   };
 
   public post = async <T, R>(params: HttpPostRequestParam<T>): Promise<HttpResponse<R>> => {
     const { url, body } = params;
     const headers = this.createHeaders();
-    return axios.post(url, body, { headers, baseURL: this.baseURL }).then(this.createResponse);
+    return this.client.post(url, body, { headers }).then(this.createResponse);
   };
 
   public put = async <T, R>(params: HttpPutRequestParam<T>): Promise<HttpResponse<R>> => {
     const { url, body } = params;
     const headers = this.createHeaders();
-    return axios.put(url, body, { headers, baseURL: this.baseURL }).then(this.createResponse);
+    return this.client.put(url, body, { headers }).then(this.createResponse);
   };
 
   public delete = async <T, R>(params: HttpDeleteRequestParam<T>): Promise<HttpResponse<R>> => {
     const { url } = params;
     const headers = this.createHeaders();
-    return axios.delete(url, { headers, baseURL: this.baseURL }).then(this.createResponse);
+    return this.client.delete(url, { headers }).then(this.createResponse);
   };
 
   private createHeaders = () => {
