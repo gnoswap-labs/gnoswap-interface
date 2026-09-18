@@ -7,6 +7,7 @@ describe("EarnMyPositionsHeader Component", () => {
   it("EarnMyPositionsHeader render", () => {
     const args: EarnMyPositionsHeaderProps = {
       connected: false,
+      isOtherPosition: false,
       visiblePositions: true,
       positionLength: 0,
       hasClosedPositions: true,
@@ -23,6 +24,9 @@ describe("EarnMyPositionsHeader Component", () => {
         return;
       },
       positions: [],
+      onOpenVideoGuide: () => {
+        return;
+      },
     };
 
     render(
@@ -37,6 +41,7 @@ describe("EarnMyPositionsHeader Component", () => {
   it("hides both closed-position switches when no closed position exists", () => {
     const args: EarnMyPositionsHeaderProps = {
       connected: true,
+      isOtherPosition: false,
       visiblePositions: true,
       positionLength: 2,
       hasClosedPositions: false,
@@ -64,6 +69,7 @@ describe("EarnMyPositionsHeader Component", () => {
   it("renders both desktop and mobile closed-position switches when a closed position exists", () => {
     const args: EarnMyPositionsHeaderProps = {
       connected: true,
+      isOtherPosition: false,
       visiblePositions: true,
       positionLength: 2,
       hasClosedPositions: true,

@@ -13,7 +13,13 @@ describe("SupplyOverview Component", () => {
         dailyBlockEmissions: "580 GNOS",
         totalStaked: "152,412,148 GNOS",
         stakingRatio: "55.15%",
+        dailyBlockEmissionsInfo: {
+          liquidityStaking: "",
+          devOps: "",
+          community: "",
+        },
       },
+      loading: false,
     };
 
     render(
