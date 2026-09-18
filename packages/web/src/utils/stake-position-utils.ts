@@ -68,7 +68,7 @@ export const formatTokenExchangeRate = (
   if (minLimit && inputAsNumber.isLessThan(minLimit) && inputAsNumber.isGreaterThan(0)) return `<${minLimit}`;
 
   if (!isIgnoreKMBFormat) {
-    const kmbNumber = toKMBFormat(inputAsNumber.toFixed(), {
+    const kmbNumber = toKMBFormat(inputAsNumber.abs(), {
       usd: false,
       isIgnoreKFormat: isIgnoreKFormat,
     });
