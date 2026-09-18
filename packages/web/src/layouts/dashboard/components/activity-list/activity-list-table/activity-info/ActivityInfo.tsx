@@ -26,6 +26,18 @@ import {
 
 dayjs.extend(relativeTime);
 
+const formatActivityTime = (time: string): string => {
+  const activityTime = dayjs(time);
+  const now = dayjs();
+  const elapsedHours = now.diff(activityTime, "hour");
+
+  if (elapsedHours >= 1 && elapsedHours < 24) {
+    return now.subtract(elapsedHours, "hour").from(now);
+  }
+
+  return activityTime.from(now);
+};
+
 export interface Activity {
   action: ReactNode;
   totalValue: string;
@@ -83,7 +95,7 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
         </TableColumn>
         <TableColumn className="right" tdWidth={ACTIVITY_INFO.list[5].width}>
           <DateTimeTooltip date={time}>
-            <span className="token-index tooltip-label">{dayjs(time).fromNow()}</span>
+            <span className="token-index tooltip-label">{formatActivityTime(time)}</span>
           </DateTimeTooltip>
         </TableColumn>
       </HoverSection>
@@ -132,7 +144,7 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
         </MobileTableColumn>
         <MobileTableColumn className="right" tdWidth={MOBILE_ACTIVITY_INFO.list[5].width}>
           <DateTimeTooltip placement={"top-end"} date={time}>
-            <span className="cell">{dayjs(time).fromNow()}</span>
+            <span className="cell">{formatActivityTime(time)}</span>
           </DateTimeTooltip>
         </MobileTableColumn>
       </HoverSection>
