@@ -1,17 +1,17 @@
 import BigNumber from "bignumber.js";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { SwapDirectionType } from "@common/values";
 import useDebounce from "@hooks/common/use-debounce";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useReferral } from "@hooks/common/use-referral";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { EstimatedRoute } from "@models/swap/swap-route-info";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { useGetRoutes } from "@query/router";
 import { calculateSlippageLimitAmount } from "@utils/swap-utils";
-import { makeDisplayTokenAmountString } from "@utils/token-utils";
-
-import { SwapDirectionType } from "@common/values";
-import { EstimatedRoute } from "@models/swap/swap-route-info";
-import { TokenModel, isNativeToken } from "@models/token/token-model";
+import { makeDisplayTokenAmountString, withTokenRouteMetadata } from "@utils/token-utils";
 
 interface UseSwapProps {
   tokenA: TokenModel | null;
@@ -33,6 +33,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
   const { getNextReferralAddress } = useReferral();
 
   const { account } = useWallet();
+  const { tokens, isFetched: isFetchedTokens } = useTokenData(true);
 
   const SWAP_AMOUNT_DEBOUNCE_TIME_MS = 500;
   const SWAP_DEADLINE_SEC = 60 * 5;
@@ -89,7 +90,12 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     return debouncedSwapAmount;
   }, [debouncedSwapAmount, direction]);
 
-  const { data: estimatedSwapResult, isLoading: isEstimatedSwapLoading, isRefetching, error } = useGetRoutes(
+  const {
+    data: estimatedSwapResult,
+    isLoading: isEstimatedSwapLoading,
+    isRefetching,
+    error,
+  } = useGetRoutes(
     {
       inputToken: tokenA,
       outputToken: tokenB,
@@ -254,7 +260,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       if (!account) {
         return null;
       }
-      if (!selectedTokenPair) {
+      if (!selectedTokenPair || !isFetchedTokens) {
         return null;
       }
 
@@ -262,7 +268,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
 
       if (direction === "EXACT_IN") {
         return swapRouterRepository.sendExactInSwapRoute({
-          inputToken: tokenA,
+          inputToken: withTokenRouteMetadata(tokenA, tokens),
           outputToken: tokenB,
           tokenAmount,
           estimatedRoutes: estimatedRoutes,
@@ -276,7 +282,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
 
       if (direction === "EXACT_OUT") {
         return swapRouterRepository.sendExactOutSwapRoute({
-          inputToken: tokenA,
+          inputToken: withTokenRouteMetadata(tokenA, tokens),
           outputToken: tokenB,
           tokenAmount,
           estimatedRoutes: estimatedRoutes,
@@ -292,12 +298,14 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       account,
       direction,
       selectedTokenPair,
+      isFetchedTokens,
       swapRouterRepository,
       tokenA,
       estimatedSwapResult?.originAmount,
       slippage,
       tokenAmountLimit,
       tokenB,
+      tokens,
       getNextReferralAddress,
     ],
   );
@@ -308,7 +316,10 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     if (estimatedRoutes.length === 0) {
       if (!estimatedLiquidityMax) {
         setEstimatedLiquidityMax(isPositiveAmount(debouncedSwapAmount) ? debouncedSwapAmount : null);
-      } else if (isPositiveAmount(debouncedSwapAmount) && BigNumber(debouncedSwapAmount).isLessThan(estimatedLiquidityMax)) {
+      } else if (
+        isPositiveAmount(debouncedSwapAmount) &&
+        BigNumber(debouncedSwapAmount).isLessThan(estimatedLiquidityMax)
+      ) {
         setEstimatedLiquidityMax(debouncedSwapAmount);
       }
     } else {

@@ -67,6 +67,12 @@ const createTokenModel = (
   };
 };
 
+const routedNativeGnot = createTokenModel("ugnot", "Native", {
+  wrappedPath: "wugnot",
+  pkgPath: "wugnot_package",
+  routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
+});
+
 const createReward = ({ rewardType, rewardTokenPath, claimableAmount }: RewardOverrides): RewardModel => {
   const rewardToken: RewardModel["rewardToken"] = {
     ...createTokenModel(rewardTokenPath, rewardTokenPath === "ugnot" ? "Native" : "GRC20"),
@@ -472,6 +478,37 @@ describe("position.message.ts", () => {
       ]);
       expectResetMessages(resetMessages, approveMessages);
     });
+
+    it("uses wrapped GNOT route metadata for native GNOT approvals and resets", async () => {
+      const messages = await makeIncreaseLiquidityMessagesWithApproves(
+        {
+          lpTokenId: "lp1",
+          tokenA: routedNativeGnot,
+          tokenB: createTokenModel("tokenB_path"),
+          tokenAAmount: 1.25,
+          tokenBAmount: 0,
+          caller: "caller",
+          slippage: 0,
+          deadline: "deadline",
+        },
+        jest.fn(async () => 0),
+      );
+
+      expect(messages).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            pkg_path: "wugnot_package",
+            func: "Approve",
+            args: ["pool_address", "1250000"],
+          }),
+          expect.objectContaining({
+            pkg_path: "wugnot_package",
+            func: "Approve",
+            args: ["pool_address", "0"],
+          }),
+        ]),
+      );
+    });
   });
 
   describe("makeDecreaseLiquidityMessagesWithApproves", () => {
@@ -575,6 +612,39 @@ describe("position.message.ts", () => {
         },
       ]);
       expectResetMessages(resetMessages, approveMessages);
+    });
+
+    it("uses wrapped GNOT route metadata for native GNOT approvals and resets", async () => {
+      const messages = await makeRepositionLiquidityMessagesWithApproves(
+        {
+          lpTokenId: "lp1",
+          tokenA: routedNativeGnot,
+          tokenB: createTokenModel("tokenB_path"),
+          tokenAAmount: "1.25",
+          tokenBAmount: "0",
+          minTick: -10,
+          maxTick: 10,
+          slippage: 0,
+          caller: "caller",
+          deadline: "deadline",
+        },
+        jest.fn(async () => 0),
+      );
+
+      expect(messages).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            pkg_path: "wugnot_package",
+            func: "Approve",
+            args: ["pool_address", "1250000"],
+          }),
+          expect.objectContaining({
+            pkg_path: "wugnot_package",
+            func: "Approve",
+            args: ["pool_address", "0"],
+          }),
+        ]),
+      );
     });
   });
 

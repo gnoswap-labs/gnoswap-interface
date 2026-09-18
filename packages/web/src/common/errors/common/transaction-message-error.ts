@@ -9,6 +9,10 @@ const ERROR_VALUE = {
     status: 400,
     type: "Failed to build the run message",
   },
+  FAILED_BUILD_GRC20_ROUTE: {
+    status: 400,
+    type: "Failed to build the GRC20 route",
+  },
 };
 
 type ErrorType = keyof typeof ERROR_VALUE;

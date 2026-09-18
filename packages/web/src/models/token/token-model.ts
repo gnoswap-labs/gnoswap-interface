@@ -5,6 +5,17 @@ export interface MostLiquidPool {
   tokenPair: TokenPairInfo;
   feeRate: string;
 }
+export type Grc20RoutePlaceholder = "$to" | "$from" | "$spender" | "$owner" | "$amount";
+
+export interface Grc20Route {
+  name: string;
+  args: string[];
+}
+
+export interface Grc20Routes {
+  funcs: Record<string, Grc20Route>;
+}
+
 export interface TokenModel {
   path: string;
 
@@ -47,6 +58,10 @@ export interface TokenModel {
   isVerified?: boolean;
 
   priceID: string;
+
+  pkgPath?: string;
+
+  routes?: Grc20Routes;
 }
 
 export interface NativeTokenModel extends TokenModel {

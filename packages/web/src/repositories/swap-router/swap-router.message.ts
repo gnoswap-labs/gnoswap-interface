@@ -87,6 +87,8 @@ export function makeExactInSwapRouteMessageWithApproves(
   const approveInfos: TokenApproveMessageInfo[] = [
     {
       tokenPath: inputTokenWrappedPath,
+      pkgPath: inputToken.pkgPath,
+      routes: inputToken.routes,
       targetAddress: PACKAGE_ROUTER_ADDRESS,
       amount: tokenAmountRaw,
       caller,
@@ -148,6 +150,8 @@ export function makeExactOutSwapRouteMessageWithApproves(
   const approveInfos: TokenApproveMessageInfo[] = [
     {
       tokenPath: inputTokenWrappedPath,
+      pkgPath: inputToken.pkgPath,
+      routes: inputToken.routes,
       targetAddress: PACKAGE_ROUTER_ADDRESS,
       amount: tokenAmountLimitRaw,
       caller,

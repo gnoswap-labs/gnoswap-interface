@@ -33,6 +33,13 @@ const createTokenModel = (path: string, overrides?: Partial<TokenModel>): TokenM
   ...overrides,
 });
 
+const routedNativeGnot = createTokenModel("ugnot", {
+  type: "Native",
+  wrappedPath: "wugnot",
+  pkgPath: "wugnot_package",
+  routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
+});
+
 const route: EstimatedRoute = {
   quote: 1,
   amountIn: 1_000_000n,
@@ -181,6 +188,69 @@ describe("swap-router.message.ts", () => {
     expect(messages.some(message => getRunMessageBody(message).includes("address(\"pool_address\")"))).toBe(false);
     expect(messages.some(message => getRunMessageBody(message).includes("grc20reg.Approve(0, cur, \"token_out\""))).toBe(
       false,
+    );
+  });
+
+  it("uses wrapped GNOT route metadata for native GNOT swap approvals and resets", async () => {
+    const caller = "caller";
+    const inputToken = routedNativeGnot;
+    const outputToken = createTokenModel("token_out");
+    const fetchAllowance = jest.fn(async () => 0);
+
+    const exactInMessages = await makeExactInSwapRouteMessageWithApproves(
+      {
+        inputToken,
+        outputToken,
+        tokenAmount: "1",
+        estimatedRoutes: [route],
+        tokenAmountLimit: "2",
+        deadline: 123,
+        caller,
+        referrerAddress: null,
+      },
+      fetchAllowance,
+    );
+    const exactOutMessages = await makeExactOutSwapRouteMessageWithApproves(
+      {
+        inputToken,
+        outputToken,
+        tokenAmount: "2",
+        estimatedRoutes: [route],
+        tokenAmountLimit: "1.25",
+        deadline: 123,
+        caller,
+        referrerAddress: null,
+      },
+      fetchAllowance,
+    );
+
+    expect(exactInMessages).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          pkg_path: "wugnot_package",
+          func: "Approve",
+          args: ["router_address", "1000000"],
+        }),
+        expect.objectContaining({
+          pkg_path: "wugnot_package",
+          func: "Approve",
+          args: ["router_address", "0"],
+        }),
+      ]),
+    );
+    expect(exactOutMessages).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          pkg_path: "wugnot_package",
+          func: "Approve",
+          args: ["router_address", "1250000"],
+        }),
+        expect.objectContaining({
+          pkg_path: "wugnot_package",
+          func: "Approve",
+          args: ["router_address", "0"],
+        }),
+      ]),
     );
   });
 });

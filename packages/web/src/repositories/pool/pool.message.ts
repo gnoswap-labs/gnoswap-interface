@@ -38,6 +38,7 @@ export function makeCreatePoolMessageWithApproves(
   {
     tokenA,
     tokenB,
+    gnsToken,
     feeTier,
     startPrice,
     createPoolFee,
@@ -45,6 +46,7 @@ export function makeCreatePoolMessageWithApproves(
   }: {
     tokenA: TokenModel;
     tokenB: TokenModel;
+    gnsToken: TokenModel;
     feeTier: SwapFeeTierType;
     startPrice: string;
     createPoolFee: number;
@@ -62,6 +64,8 @@ export function makeCreatePoolMessageWithApproves(
   if (createPoolFee > 0) {
     approveMessageInfos.push({
       tokenPath: GNS_TOKEN_PATH,
+      pkgPath: gnsToken.pkgPath,
+      routes: gnsToken.routes,
       targetAddress: PACKAGE_POOL_ADDRESS,
       amount: createPoolFee,
       caller,
@@ -129,6 +133,8 @@ export function makePositionMintMessageWithApproves(
   if (BigNumber(tokenAAmount).isGreaterThan(0)) {
     approveMessageInfos.push({
       tokenPath: tokenAWrappedPath,
+      pkgPath: tokenA.pkgPath,
+      routes: tokenA.routes,
       targetAddress: PACKAGE_POOL_ADDRESS,
       amount: tokenAAmountRaw,
       caller,
@@ -138,6 +144,8 @@ export function makePositionMintMessageWithApproves(
   if (BigNumber(tokenBAmount).isGreaterThan(0)) {
     approveMessageInfos.push({
       tokenPath: tokenBWrappedPath,
+      pkgPath: tokenB.pkgPath,
+      routes: tokenB.routes,
       targetAddress: PACKAGE_POOL_ADDRESS,
       amount: tokenBAmountRaw,
       caller,
@@ -161,9 +169,7 @@ export function makePositionMintMessageWithApproves(
   const [token0Path, token1Path] = isOrdered
     ? [tokenAWrappedPath, tokenBWrappedPath]
     : [tokenBWrappedPath, tokenAWrappedPath];
-  const [amount0Raw, amount1Raw] = isOrdered
-    ? [tokenAAmountRaw, tokenBAmountRaw]
-    : [tokenBAmountRaw, tokenAAmountRaw];
+  const [amount0Raw, amount1Raw] = isOrdered ? [tokenAAmountRaw, tokenBAmountRaw] : [tokenBAmountRaw, tokenAAmountRaw];
 
   const mintMessage = makePositionMintMessage(
     token0Path,
@@ -186,6 +192,7 @@ export function makeCreateExternalIncentiveMessageWithApproves(
   {
     poolPath,
     rewardToken,
+    gnsToken,
     rewardAmount,
     incentiveCreationDepositGnsAmount,
     startTime,
@@ -194,6 +201,7 @@ export function makeCreateExternalIncentiveMessageWithApproves(
   }: {
     poolPath: string;
     rewardToken: TokenModel;
+    gnsToken: TokenModel;
     rewardAmount: string;
     incentiveCreationDepositGnsAmount: string;
     startTime: number;
@@ -212,12 +220,16 @@ export function makeCreateExternalIncentiveMessageWithApproves(
   if (isIncentivizeGNSToken) {
     approveMessageInfos.push({
       tokenPath: GNS_TOKEN_PATH,
+      pkgPath: gnsToken.pkgPath,
+      routes: gnsToken.routes,
       targetAddress: PACKAGE_STAKER_ADDRESS,
       amount: incentiveCreationDepositGnsAmount,
       caller,
     });
     approveMessageInfos.push({
       tokenPath: GNS_TOKEN_PATH,
+      pkgPath: gnsToken.pkgPath,
+      routes: gnsToken.routes,
       targetAddress: PACKAGE_STAKER_ADDRESS,
       amount: rewardAmountRaw,
       caller,
@@ -225,12 +237,16 @@ export function makeCreateExternalIncentiveMessageWithApproves(
   } else {
     approveMessageInfos.push({
       tokenPath: GNS_TOKEN_PATH,
+      pkgPath: gnsToken.pkgPath,
+      routes: gnsToken.routes,
       targetAddress: PACKAGE_STAKER_ADDRESS,
       amount: incentiveCreationDepositGnsAmount,
       caller,
     });
     approveMessageInfos.push({
       tokenPath: rewardTokenPath,
+      pkgPath: rewardToken.pkgPath,
+      routes: rewardToken.routes,
       targetAddress: PACKAGE_STAKER_ADDRESS,
       amount: rewardAmountRaw,
       caller,

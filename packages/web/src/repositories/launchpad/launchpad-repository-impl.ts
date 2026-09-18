@@ -5,6 +5,7 @@ import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { DEFAULT_GAS_FEE } from "@common/values";
 import { GnoProvider } from "@gnolang/gno-js-client";
+import { TokenModel } from "@models/token/token-model";
 import { makeQueryParameter } from "@utils/network.utils";
 import { withTransactionGuard, generateSendTransactionParams } from "@utils/transaction-utils";
 import { LaunchpadRepository } from "./launchpad-repository";
@@ -148,6 +149,7 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
 
   async depositLaunchpadPoolBy(
     poolId: string,
+    gnsToken: TokenModel,
     gnsTokenAmount: bigint,
     caller: string,
     referrerAddress: string,
@@ -161,7 +163,7 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
     }
 
     const messages = await makeDepositGNSMessageWithApproves(
-      { poolId, gnsTokenAmount, caller, referrerAddress },
+      { poolId, gnsToken, gnsTokenAmount, caller, referrerAddress },
       (packagePath, owner, spender) => getGRC20Allowance(this.gnoProvider!, packagePath, owner, spender),
     );
 

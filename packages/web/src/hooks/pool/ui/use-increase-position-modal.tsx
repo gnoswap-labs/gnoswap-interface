@@ -23,7 +23,7 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { QUERY_KEY } from "@query/query-keys";
 import { IncreaseLiquidityRequest } from "@repositories/position/request";
 import { delay } from "@utils/common";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { makeDisplayTokenAmount, withTokenRouteMetadata } from "@utils/token-utils";
 import IncreasePositionModalContainer from "../../../layouts/pool/pool-increase-liquidity/containers/increase-position-modal-container/IncreasePositionModalContainer";
 
 export interface Props {
@@ -74,7 +74,7 @@ export const useIncreasePositionModal = ({
   const poolPath = selectedPosition?.poolPath || "";
 
   // Refetch functions
-  const { updateBalances } = useTokenData(true);
+  const { tokens, isFetched: isFetchedTokens, updateBalances } = useTokenData(true);
 
   const handleRefreshData = useCallback(async () => {
     invalidateQueryKey("IncreasePosition", [
@@ -119,7 +119,7 @@ export const useIncreasePositionModal = ({
   };
 
   const increaseLiquidity = async () => {
-    if (!address || !selectedPosition) {
+    if (!address || !selectedPosition || !isFetchedTokens) {
       return false;
     }
 
@@ -146,8 +146,8 @@ export const useIncreasePositionModal = ({
     const deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString();
     const request: IncreaseLiquidityRequest = {
       lpTokenId: selectedPosition.id.toString(),
-      tokenA: tokenA,
-      tokenB: tokenB,
+      tokenA: withTokenRouteMetadata(tokenA, tokens),
+      tokenB: withTokenRouteMetadata(tokenB, tokens),
       tokenAAmount: Number(tokenAAmountInput.amount),
       tokenBAmount: Number(tokenBAmountInput.amount),
       slippage: slippage,

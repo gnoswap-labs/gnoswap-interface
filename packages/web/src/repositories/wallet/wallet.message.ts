@@ -31,7 +31,7 @@ export function makeTransferGRC20TokenMessages({
   fromAddress: string;
   toAddress: string;
 }): TransactionMessage[] {
-  const transferGRC20TokenMessage = makeTransferGRC20TokenMessage(token.path, tokenAmount, fromAddress, toAddress);
+  const transferGRC20TokenMessage = makeTransferGRC20TokenMessage(token, tokenAmount, fromAddress, toAddress);
 
   return [transferGRC20TokenMessage];
 }

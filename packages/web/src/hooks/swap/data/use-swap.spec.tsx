@@ -17,6 +17,9 @@ jest.mock("@hooks/common/use-referral", () => ({
 jest.mock("@hooks/wallet/data/use-wallet", () => ({
   useWallet: () => ({ account: { address: "g1user" } }),
 }));
+jest.mock("@hooks/token/data/use-token-data", () => ({
+  useTokenData: () => ({ tokens: [], isFetched: true }),
+}));
 jest.mock("@query/router", () => ({
   useGetRoutes: (...args: unknown[]) => useGetRoutesMock(...args),
 }));

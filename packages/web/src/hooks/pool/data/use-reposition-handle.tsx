@@ -52,7 +52,7 @@ import {
 } from "@utils/reposition-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
-import { makeDisplayTokenAmount, makeDisplayTokenAmountString } from "@utils/token-utils";
+import { makeDisplayTokenAmount, makeDisplayTokenAmountString, withTokenRouteMetadata } from "@utils/token-utils";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -74,22 +74,25 @@ export const useRepositionHandle = () => {
   const { getMessage } = useMessage();
 
   const { address } = useAddress();
-  const { updateBalances } = useTokenData(true);
+  const { tokens, isFetched: isFetchedTokens, updateBalances } = useTokenData(true);
   const { swapRouterRepository, positionRepository } = useGnoswapContext();
   const { getGnotPath } = useGnotToGnot();
   const { slippage, changeSlippage } = useSlippage();
   const { connected, account, walletClient } = useWallet();
   const [initialized, setInitialized] = useState(false);
-  const { positions, loading: isLoadingPosition, refetch: refetchPositions } = usePositionData({
+  const {
+    positions,
+    loading: isLoadingPosition,
+    refetch: refetchPositions,
+  } = usePositionData({
     poolPath,
   });
   const { invalidateQueryKey } = useInvalidateQueries();
 
-  const selectedPosition = useMemo(() => positions.find(item => item.id.toString() === positionId) || defaultPosition, [
-    defaultPosition,
-    positionId,
-    positions,
-  ]);
+  const selectedPosition = useMemo(
+    () => positions.find(item => item.id.toString() === positionId) || defaultPosition,
+    [defaultPosition, positionId, positions],
+  );
 
   const calculatedLiquidity = useMemo(() => {
     if (!selectedPosition?.liquidity) return BigNumber(0);
@@ -489,7 +492,7 @@ export const useRepositionHandle = () => {
   const swapRemainToken = useCallback(async (): Promise<WalletResponse<
     SwapRouteSuccessResponse | SwapRouteFailedResponse
   > | null> => {
-    if (!address || !estimatedSwapResult || !estimateSwapRequest) {
+    if (!address || !estimatedSwapResult || !estimateSwapRequest || !isFetchedTokens) {
       return null;
     }
 
@@ -509,7 +512,7 @@ export const useRepositionHandle = () => {
     );
 
     const request: SwapRouteRequest = {
-      inputToken: estimateSwapRequest.inputToken,
+      inputToken: withTokenRouteMetadata(estimateSwapRequest.inputToken, tokens),
       outputToken: estimateSwapRequest.outputToken,
       estimatedRoutes: estimatedSwapResult.estimatedRoutes,
       ...swapAmounts,
@@ -533,6 +536,7 @@ export const useRepositionHandle = () => {
     address,
     estimateSwapRequest,
     estimatedSwapResult,
+    isFetchedTokens,
     estimatedRepositionAmounts,
     currentAmounts,
     selectedPosition?.pool.tokenA,
@@ -541,6 +545,7 @@ export const useRepositionHandle = () => {
     broadcastError,
     getNextReferralAddress,
     slippage,
+    tokens,
   ]);
 
   const buildAdenaWalletRepositionAction = useCallback(
@@ -672,6 +677,7 @@ export const useRepositionHandle = () => {
         !address ||
         !selectedPosition ||
         !tokenA ||
+        !isFetchedTokens ||
         !tokenB ||
         !selectPool.feeTier ||
         selectPool.minPrice === null ||
@@ -704,8 +710,8 @@ export const useRepositionHandle = () => {
 
       const request: RepositionLiquidityRequest = {
         lpTokenId: selectedPosition.lpTokenId,
-        tokenA,
-        tokenB,
+        tokenA: withTokenRouteMetadata(tokenA, tokens),
+        tokenB: withTokenRouteMetadata(tokenB, tokens),
         tokenAAmount,
         tokenBAmount,
         slippage: DEFAULT_SLIPPAGE,
@@ -720,6 +726,7 @@ export const useRepositionHandle = () => {
     },
     [
       address,
+      isFetchedTokens,
       selectedPosition,
       tokenA,
       tokenB,
@@ -732,6 +739,7 @@ export const useRepositionHandle = () => {
       buildAdenaWalletRepositionAction,
       buildSocialWalletRepositionAction,
       walletClient,
+      tokens,
     ],
   );
 

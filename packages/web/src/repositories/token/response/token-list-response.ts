@@ -1,4 +1,4 @@
-import { TokenModel } from "@models/token/token-model";
+import { Grc20Routes, TokenModel } from "@models/token/token-model";
 
 export interface TokenListResponse {
   tokens: TokenModel[];
@@ -24,4 +24,6 @@ export interface ITokenResponse {
   displayPath: string;
   wrappedPath: string;
   isVerified: boolean;
+  pkgPath?: string;
+  routes?: Grc20Routes;
 }
