@@ -10,6 +10,8 @@ import { EventStore, TransactionEventStore } from "@common/modules/event-store";
 import { NetworkData } from "@constants/chains.constant";
 import { DEFAULT_CHAIN_ID, SUPPORT_CHAIN_IDS } from "@constants/environment.constant";
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
+import { RPC_REQUEST_TIMEOUT_MS } from "@common/clients/gno-provider/fallback-rpc-client";
+import { RpcEndpointSelector } from "@common/clients/gno-provider/rpc-endpoint-selector";
 import { AccountRepository, AccountRepositoryImpl } from "@repositories/account";
 import { DashboardRepository, DashboardRepositoryImpl } from "@repositories/dashboard";
 import { GovernanceRepository, GovernanceRepositoryImpl } from "@repositories/governance";
@@ -177,7 +179,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
     // earlier one; children are hidden while this runs either way.
     setConnectionFailed(false);
 
-    GnoProvider.create(network.rpcUrl || "")
+    GnoProvider.create(network.rpcUrl || "", { fallbackRpcUrl: network.fallbackRpcUrl })
       .then(rpcProvider => {
         if (stale) {
           return;
@@ -204,8 +206,15 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
   }, [chainClients?.chainId, loadedProviders, network, retryCount, router, status, walletAccount]);
 
   const eventStore = useMemo(() => {
-    const axiosClient = axios.create({ baseURL: network.rpcUrl });
-    return new TransactionEventStore(axiosClient);
+    // Polling for a transaction result fails over the same way the provider
+    // does, so a node going down mid-transaction does not leave the receipt
+    // pending forever. The timeout is what makes that possible: without one a
+    // blackholed endpoint never rejects, and the selector only rotates once a
+    // request fails.
+    const endpoints = new RpcEndpointSelector(network.rpcUrl, network.fallbackRpcUrl);
+    return new TransactionEventStore({
+      get: path => endpoints.run(endpoint => axios.get(endpoint + path, { timeout: RPC_REQUEST_TIMEOUT_MS })),
+    });
   }, [network]);
 
   const accountRepository = useMemo(() => {
