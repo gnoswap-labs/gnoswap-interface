@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useAtom } from "jotai";
-import { useRouter } from "next/navigation";
 import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 
 import { NetworkClient } from "@common/clients/network-client";
@@ -93,7 +92,6 @@ interface ChainClients {
 export const GnoswapContext = createContext<GnoswapContextProps | null>(null);
 
 const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-  const router = useRouter();
   const [sessionId, setSessionId] = useAtom(CommonState.sessionId);
   const [walletAccount, setWalletAccount] = useAtom(WalletState.account);
   const [status, setStatus] = useAtom(WalletState.status);
@@ -186,9 +184,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
         }
         setChainClients({
           chainId: network.chainId,
-          gnoswapApiClient: new AxiosClient(network.apiUrl, () => {
-            router.push("/500");
-          }),
+          gnoswapApiClient: new AxiosClient(network.apiUrl),
           routerApiClient: new AxiosClient(network.routerUrl),
           rpcProvider,
         });
@@ -203,7 +199,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
     return () => {
       stale = true;
     };
-  }, [chainClients?.chainId, loadedProviders, network, retryCount, router, status, walletAccount]);
+  }, [chainClients?.chainId, loadedProviders, network, retryCount, status, walletAccount]);
 
   const eventStore = useMemo(() => {
     // Polling for a transaction result fails over the same way the provider
