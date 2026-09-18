@@ -4,18 +4,21 @@ import { RpcClient, Tm2Client } from "@gnolang/tm2-rpc";
 
 import { parseTokenAmount } from "@utils/token-utils";
 
-import { FallbackRpcClient } from "./fallback-rpc-client";
+import { FallbackRpcClient, RPC_REQUEST_TIMEOUT_MS } from "./fallback-rpc-client";
 import { RpcEndpointSelector } from "./rpc-endpoint-selector";
 
-const DEFAULT_CONNECT_TIMEOUT_MS = 15_000;
-const DEFAULT_REQUEST_TIMEOUT_MS = 10_000;
+const MIN_CONNECT_TIMEOUT_MS = 15_000;
 
 export interface GnoProviderOptions {
   /** Optional second endpoint used once the primary one stops answering. */
   fallbackRpcUrl?: string;
   /** Bounds a single attempt against one endpoint, after which the next one is tried. */
   requestTimeoutMs?: number;
-  /** Bounds {@link GnoProvider.create} as a whole, across every endpoint. */
+  /**
+   * Bounds {@link GnoProvider.create} as a whole, across every endpoint.
+   * Defaults to a budget wide enough for every endpoint to use its full
+   * request timeout, so the fallback is never cut short by the primary's.
+   */
   connectTimeoutMs?: number;
 }
 
@@ -31,13 +34,11 @@ export class GnoProvider extends GnoJSONRPCProvider {
    * surface a failure instead of hanging on a blackholed node.
    */
   public static async create(baseURL: string, options: GnoProviderOptions = {}): Promise<GnoProvider> {
-    const {
-      fallbackRpcUrl,
-      requestTimeoutMs = DEFAULT_REQUEST_TIMEOUT_MS,
-      connectTimeoutMs = DEFAULT_CONNECT_TIMEOUT_MS,
-    } = options;
+    const { fallbackRpcUrl, requestTimeoutMs = RPC_REQUEST_TIMEOUT_MS } = options;
 
     const endpoints = new RpcEndpointSelector(baseURL, fallbackRpcUrl);
+    const connectTimeoutMs =
+      options.connectTimeoutMs ?? Math.max(MIN_CONNECT_TIMEOUT_MS, requestTimeoutMs * endpoints.count);
     const connecting = GnoProvider.connect(new FallbackRpcClient(endpoints, requestTimeoutMs));
 
     let timer: ReturnType<typeof setTimeout> | undefined;

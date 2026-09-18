@@ -1,76 +1,65 @@
+import axios, { AxiosError } from "axios";
+
 import { FallbackRpcClient } from "./fallback-rpc-client";
+import { JsonRpcResponseError } from "./json-rpc-response-error";
 import { RpcEndpointSelector } from "./rpc-endpoint-selector";
 
 const PRIMARY = "https://primary.rpc";
 const FALLBACK = "https://fallback.rpc";
+const REQUEST = { jsonrpc: "2.0" as const, id: 7, method: "status", params: {} };
 
-const execute = jest.fn();
-const disconnect = jest.fn();
-const constructed: string[] = [];
-
-jest.mock("@gnolang/tm2-rpc", () => ({
-  HttpClient: jest.fn().mockImplementation((endpoint: string) => {
-    constructed.push(endpoint);
-    return {
-      execute: (request: unknown) => execute(endpoint, request),
-      disconnect,
-    };
-  }),
-}));
-
-const REQUEST = { jsonrpc: "2.0" as const, id: 1, method: "status", params: {} };
-
-function unreachable(endpoint: string): Error {
-  return new Error(`Failed to fetch ${endpoint}`);
+function answers(result: unknown): { data: unknown } {
+  return { data: { jsonrpc: "2.0", id: REQUEST.id, result } };
 }
 
 describe("FallbackRpcClient", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    constructed.length = 0;
+  const post = jest.spyOn(axios, "post");
+
+  afterEach(() => {
+    post.mockReset();
+  });
+
+  afterAll(() => {
+    post.mockRestore();
   });
 
   it("retries on the fallback endpoint when the primary is unreachable", async () => {
-    execute.mockImplementation(async (endpoint: string) => {
+    post.mockImplementation(async (endpoint: string) => {
       if (endpoint === PRIMARY) {
-        throw unreachable(endpoint);
+        throw new AxiosError("Network Error", AxiosError.ERR_NETWORK);
       }
-      return { jsonrpc: "2.0", id: 1, result: endpoint };
+      return answers(endpoint);
     });
-    const client = new FallbackRpcClient(new RpcEndpointSelector(PRIMARY, FALLBACK), 1_000);
+    const client = new FallbackRpcClient(new RpcEndpointSelector(PRIMARY, FALLBACK));
 
-    await expect(client.execute(REQUEST)).resolves.toEqual({ jsonrpc: "2.0", id: 1, result: FALLBACK });
-    expect(execute.mock.calls.map(([endpoint]) => endpoint)).toEqual([PRIMARY, FALLBACK]);
+    await expect(client.execute(REQUEST)).resolves.toEqual({ jsonrpc: "2.0", id: REQUEST.id, result: FALLBACK });
+    expect(post.mock.calls.map(([endpoint]) => endpoint)).toEqual([PRIMARY, FALLBACK]);
   });
 
-  it("reuses one HTTP client per endpoint and disconnects all of them", async () => {
-    execute.mockImplementation(async (endpoint: string) => {
+  it("bounds every request, so an endpoint that never answers still rotates", async () => {
+    post.mockImplementation(async (endpoint: string) => {
       if (endpoint === PRIMARY) {
-        throw unreachable(endpoint);
+        // What axios raises once it aborts the request on its own timeout.
+        throw new AxiosError("timeout of 10000ms exceeded", AxiosError.ECONNABORTED);
       }
-      return { jsonrpc: "2.0", id: 1, result: endpoint };
+      return answers(endpoint);
     });
-    const client = new FallbackRpcClient(new RpcEndpointSelector(PRIMARY, FALLBACK), 1_000);
+    const client = new FallbackRpcClient(new RpcEndpointSelector(PRIMARY, FALLBACK), 10_000);
 
-    await client.execute(REQUEST);
-    await client.execute(REQUEST);
-
-    expect(constructed).toEqual([PRIMARY, FALLBACK]);
-    client.disconnect();
-    expect(disconnect).toHaveBeenCalledTimes(2);
+    await expect(client.execute(REQUEST)).resolves.toEqual({ jsonrpc: "2.0", id: REQUEST.id, result: FALLBACK });
+    expect(post).toHaveBeenNthCalledWith(1, PRIMARY, REQUEST, { timeout: 10_000 });
   });
 
-  it("moves on to the fallback once an endpoint stops answering at all", async () => {
-    execute.mockImplementation((endpoint: string) => {
-      // A blackholed node never rejects on its own, so only the timeout can
-      // rotate away from it.
-      if (endpoint === PRIMARY) {
-        return new Promise(() => undefined);
-      }
-      return Promise.resolve({ jsonrpc: "2.0", id: 1, result: endpoint });
-    });
-    const client = new FallbackRpcClient(new RpcEndpointSelector(PRIMARY, FALLBACK), 10);
+  it("raises a response error, and does not fail over, when the node answers with one", async () => {
+    post.mockResolvedValue({ data: { jsonrpc: "2.0", id: REQUEST.id, error: { code: -32603, message: "timeout" } } });
+    const client = new FallbackRpcClient(new RpcEndpointSelector(PRIMARY, FALLBACK));
 
-    await expect(client.execute(REQUEST)).resolves.toEqual({ jsonrpc: "2.0", id: 1, result: FALLBACK });
+    // The message mentions a timeout, which must not be mistaken for one.
+    await expect(client.execute(REQUEST)).rejects.toBeInstanceOf(JsonRpcResponseError);
+    expect(post).toHaveBeenCalledTimes(1);
+  });
+
+  it("rejects an endpoint URL without a protocol instead of posting to a relative path", () => {
+    expect(() => new FallbackRpcClient(new RpcEndpointSelector(""))).toThrow("missing a protocol");
   });
 });

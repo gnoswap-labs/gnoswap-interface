@@ -10,6 +10,7 @@ import { EventStore, TransactionEventStore } from "@common/modules/event-store";
 import { NetworkData } from "@constants/chains.constant";
 import { DEFAULT_CHAIN_ID, SUPPORT_CHAIN_IDS } from "@constants/environment.constant";
 import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
+import { RPC_REQUEST_TIMEOUT_MS } from "@common/clients/gno-provider/fallback-rpc-client";
 import { RpcEndpointSelector } from "@common/clients/gno-provider/rpc-endpoint-selector";
 import { AccountRepository, AccountRepositoryImpl } from "@repositories/account";
 import { DashboardRepository, DashboardRepositoryImpl } from "@repositories/dashboard";
@@ -207,10 +208,12 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
   const eventStore = useMemo(() => {
     // Polling for a transaction result fails over the same way the provider
     // does, so a node going down mid-transaction does not leave the receipt
-    // pending forever.
+    // pending forever. The timeout is what makes that possible: without one a
+    // blackholed endpoint never rejects, and the selector only rotates once a
+    // request fails.
     const endpoints = new RpcEndpointSelector(network.rpcUrl, network.fallbackRpcUrl);
     return new TransactionEventStore({
-      get: path => endpoints.run(endpoint => axios.get(endpoint + path)),
+      get: path => endpoints.run(endpoint => axios.get(endpoint + path, { timeout: RPC_REQUEST_TIMEOUT_MS })),
     });
   }, [network]);
 
