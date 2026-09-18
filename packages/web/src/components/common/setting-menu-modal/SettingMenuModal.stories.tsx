@@ -1,6 +1,6 @@
 import React from "react";
 import { css } from "@emotion/react";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import SettingMenuModal from "./SettingMenuModal";
 
