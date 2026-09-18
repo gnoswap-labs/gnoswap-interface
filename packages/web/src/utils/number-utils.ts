@@ -1,5 +1,7 @@
 import BigNumber from "bignumber.js";
 
+import { toBigNumber } from "@utils/bignumber-utils";
+
 import { MathSymbolType } from "@common/values/data-constant";
 import { unitsUpperCase } from "@common/values/global-initial-value";
 
@@ -139,7 +141,7 @@ export const toKMBFormat = (
 };
 
 export function toMillionFormat(value: number | string) {
-  const num = BigNumber(value);
+  const num = toBigNumber(value);
   if (num.isNaN()) {
     return null;
   }
