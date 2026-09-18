@@ -117,7 +117,7 @@ export const useAutoDisconnect = () => {
         clearTimeout(inactivityTimerRef.current);
       }
       if (backgroundCheckIntervalRef.current) {
-        clearTimeout(backgroundCheckIntervalRef.current);
+        clearInterval(backgroundCheckIntervalRef.current);
       }
     };
   }, [updateLastActiveTimestamp, checkBackgroundInactivity, walletClient, account]);
