@@ -20,7 +20,11 @@ import {
   makePositionMintMessageWithApproves,
 } from "@repositories/pool/pool.message";
 
-const createTokenModel = (path: string, type: TokenModel["type"] = "GRC20"): TokenModel => ({
+const createTokenModel = (
+  path: string,
+  type: TokenModel["type"] = "GRC20",
+  overrides?: Partial<TokenModel>,
+): TokenModel => ({
   path,
   type,
   chainId: "dev.gnoswap",
@@ -31,6 +35,13 @@ const createTokenModel = (path: string, type: TokenModel["type"] = "GRC20"): Tok
   decimals: 6,
   logoURI: "",
   priceID: path,
+  ...overrides,
+});
+
+const wugnotToken = createTokenModel("wugnot");
+const routedWugnotToken = createTokenModel("wugnot", "GRC20", {
+  pkgPath: "wugnot_package",
+  routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
 });
 
 describe("pool.message.ts", () => {
@@ -42,6 +53,7 @@ describe("pool.message.ts", () => {
       {
         tokenA: createTokenModel("tokenA_path"),
         tokenB: createTokenModel("tokenB_path"),
+        wugnotToken,
         feeTier: "FEE_3000",
         tokenAAmount: "1.25",
         tokenBAmount: "3",
@@ -121,6 +133,7 @@ describe("pool.message.ts", () => {
       {
         tokenA: createTokenModel("tokenB_path"),
         tokenB: createTokenModel("tokenA_path"),
+        wugnotToken,
         feeTier: "FEE_3000",
         tokenAAmount: "3",
         tokenBAmount: "1.25",
@@ -162,6 +175,7 @@ describe("pool.message.ts", () => {
         poolPath: "pool_path",
         rewardToken: createTokenModel("gns_token_path"),
         gnsToken,
+        wugnotToken,
         rewardAmount: "250",
         incentiveCreationDepositGnsAmount: "1500000000",
         startTime: 100,
@@ -182,5 +196,71 @@ describe("pool.message.ts", () => {
       func: "CreateExternalIncentive",
       args: ["pool_path", "gns_token_path", "250000000", "100", "200"],
     });
+  });
+
+  it("uses wrapped GNOT route metadata for native GNOT mint approvals and resets", async () => {
+    const messages = await makePositionMintMessageWithApproves(
+      {
+        tokenA: createTokenModel("ugnot", "Native", { wrappedPath: "wugnot" }),
+        tokenB: createTokenModel("tokenB_path"),
+        wugnotToken: routedWugnotToken,
+        feeTier: "FEE_3000",
+        tokenAAmount: "1.25",
+        tokenBAmount: "0",
+        minTick: -10,
+        maxTick: 10,
+        slippage: 0,
+        caller: "caller",
+        referrerAddress: null,
+      },
+      jest.fn(async () => 0),
+    );
+
+    expect(messages).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          pkg_path: "wugnot_package",
+          func: "Approve",
+          args: ["pool_address", "1250000"],
+        }),
+        expect.objectContaining({
+          pkg_path: "wugnot_package",
+          func: "Approve",
+          args: ["pool_address", "0"],
+        }),
+      ]),
+    );
+  });
+
+  it("uses wrapped GNOT route metadata for native GNOT incentive approvals and resets", async () => {
+    const messages = await makeCreateExternalIncentiveMessageWithApproves(
+      {
+        poolPath: "pool_path",
+        rewardToken: createTokenModel("ugnot", "Native", { wrappedPath: "wugnot" }),
+        gnsToken: createTokenModel("gns_token_path"),
+        wugnotToken: routedWugnotToken,
+        rewardAmount: "1.25",
+        incentiveCreationDepositGnsAmount: "0",
+        startTime: 100,
+        endTime: 200,
+        caller: "caller",
+      },
+      jest.fn(async () => 0),
+    );
+
+    expect(messages).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          pkg_path: "wugnot_package",
+          func: "Approve",
+          args: ["staker_address", "1250000"],
+        }),
+        expect.objectContaining({
+          pkg_path: "wugnot_package",
+          func: "Approve",
+          args: ["staker_address", "0"],
+        }),
+      ]),
+    );
   });
 });

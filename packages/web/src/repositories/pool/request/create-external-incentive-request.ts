@@ -5,6 +5,7 @@ export interface CreateExternalIncentiveRequest {
 
   rewardToken: TokenModel;
   gnsToken: TokenModel;
+  wugnotToken: TokenModel;
 
   rewardAmount: string;
 

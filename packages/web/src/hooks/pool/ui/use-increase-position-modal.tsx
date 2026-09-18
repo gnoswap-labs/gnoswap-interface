@@ -2,6 +2,8 @@ import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 
 import { ERROR_VALUE } from "@common/errors/adena";
+import { WUGNOT_TOKEN } from "@common/values/token-constant";
+import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { RANGE_STATUS_OPTION, SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import { useAddress } from "@hooks/common/use-address";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
@@ -74,7 +76,8 @@ export const useIncreasePositionModal = ({
   const poolPath = selectedPosition?.poolPath || "";
 
   // Refetch functions
-  const { updateBalances } = useTokenData(true);
+  const { tokens, isFetched: isFetchedTokens, updateBalances } = useTokenData(true);
+  const wugnotToken = useMemo(() => tokens.find(token => token.path === WRAPPED_GNOT_PATH) ?? WUGNOT_TOKEN, [tokens]);
 
   const handleRefreshData = useCallback(async () => {
     invalidateQueryKey("IncreasePosition", [
@@ -119,7 +122,7 @@ export const useIncreasePositionModal = ({
   };
 
   const increaseLiquidity = async () => {
-    if (!address || !selectedPosition) {
+    if (!address || !selectedPosition || !isFetchedTokens) {
       return false;
     }
 
@@ -148,6 +151,7 @@ export const useIncreasePositionModal = ({
       lpTokenId: selectedPosition.id.toString(),
       tokenA: tokenA,
       tokenB: tokenB,
+      wugnotToken,
       tokenAAmount: Number(tokenAAmountInput.amount),
       tokenBAmount: Number(tokenBAmountInput.amount),
       slippage: slippage,

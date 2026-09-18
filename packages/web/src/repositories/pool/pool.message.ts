@@ -93,6 +93,7 @@ export function makePositionMintMessageWithApproves(
   {
     tokenA,
     tokenB,
+    wugnotToken,
     feeTier,
     tokenAAmount,
     tokenBAmount,
@@ -104,6 +105,7 @@ export function makePositionMintMessageWithApproves(
   }: {
     tokenA: TokenModel;
     tokenB: TokenModel;
+    wugnotToken: TokenModel;
     feeTier: SwapFeeTierType;
     tokenAAmount: string;
     tokenBAmount: string;
@@ -120,6 +122,8 @@ export function makePositionMintMessageWithApproves(
 
   const tokenAWrappedPath = tokenA.wrappedPath || wrapNativeTokenPath(tokenA.path);
   const tokenBWrappedPath = tokenB.wrappedPath || wrapNativeTokenPath(tokenB.path);
+  const tokenAApprovalToken = tokenAWrappedPath === WRAPPED_GNOT_PATH ? wugnotToken : tokenA;
+  const tokenBApprovalToken = tokenBWrappedPath === WRAPPED_GNOT_PATH ? wugnotToken : tokenB;
 
   const approveMessageInfos: TokenApproveMessageInfo[] = [];
 
@@ -127,14 +131,14 @@ export function makePositionMintMessageWithApproves(
   const sendAmount: string | null = isNativeTokenPath(tokenA.path)
     ? tokenAAmountRaw
     : isNativeTokenPath(tokenB.path)
-      ? tokenBAmountRaw
-      : null;
+    ? tokenBAmountRaw
+    : null;
 
   if (BigNumber(tokenAAmount).isGreaterThan(0)) {
     approveMessageInfos.push({
       tokenPath: tokenAWrappedPath,
-      pkgPath: tokenA.pkgPath,
-      routes: tokenA.routes,
+      pkgPath: tokenAApprovalToken.pkgPath,
+      routes: tokenAApprovalToken.routes,
       targetAddress: PACKAGE_POOL_ADDRESS,
       amount: tokenAAmountRaw,
       caller,
@@ -144,8 +148,8 @@ export function makePositionMintMessageWithApproves(
   if (BigNumber(tokenBAmount).isGreaterThan(0)) {
     approveMessageInfos.push({
       tokenPath: tokenBWrappedPath,
-      pkgPath: tokenB.pkgPath,
-      routes: tokenB.routes,
+      pkgPath: tokenBApprovalToken.pkgPath,
+      routes: tokenBApprovalToken.routes,
       targetAddress: PACKAGE_POOL_ADDRESS,
       amount: tokenBAmountRaw,
       caller,
@@ -193,6 +197,7 @@ export function makeCreateExternalIncentiveMessageWithApproves(
     poolPath,
     rewardToken,
     gnsToken,
+    wugnotToken,
     rewardAmount,
     incentiveCreationDepositGnsAmount,
     startTime,
@@ -202,6 +207,7 @@ export function makeCreateExternalIncentiveMessageWithApproves(
     poolPath: string;
     rewardToken: TokenModel;
     gnsToken: TokenModel;
+    wugnotToken: TokenModel;
     rewardAmount: string;
     incentiveCreationDepositGnsAmount: string;
     startTime: number;
@@ -212,6 +218,7 @@ export function makeCreateExternalIncentiveMessageWithApproves(
 ): Promise<TransactionMessage[]> {
   const rewardTokenPath = checkGnotPath(rewardToken.path);
   const rewardAmountRaw = makeRawTokenAmount(rewardToken, rewardAmount) || "0";
+  const rewardApprovalToken = rewardTokenPath === WRAPPED_GNOT_PATH ? wugnotToken : rewardToken;
   const isGNOT = isGNOTPath(rewardTokenPath);
 
   const approveMessageInfos: TokenApproveMessageInfo[] = [];
@@ -245,8 +252,8 @@ export function makeCreateExternalIncentiveMessageWithApproves(
     });
     approveMessageInfos.push({
       tokenPath: rewardTokenPath,
-      pkgPath: rewardToken.pkgPath,
-      routes: rewardToken.routes,
+      pkgPath: rewardApprovalToken.pkgPath,
+      routes: rewardApprovalToken.routes,
       targetAddress: PACKAGE_STAKER_ADDRESS,
       amount: rewardAmountRaw,
       caller,

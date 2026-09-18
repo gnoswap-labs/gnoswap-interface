@@ -24,6 +24,8 @@ export interface SwapRouteRequest {
 
   outputToken: TokenModel;
 
+  wugnotToken: TokenModel;
+
   tokenAmount: string;
 
   estimatedRoutes: EstimatedRoute[];

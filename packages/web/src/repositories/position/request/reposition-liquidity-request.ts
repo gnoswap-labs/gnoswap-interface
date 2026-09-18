@@ -7,6 +7,8 @@ export interface RepositionLiquidityRequest {
 
   tokenB: TokenModel;
 
+  wugnotToken: TokenModel;
+
   tokenAAmount: string;
 
   tokenBAmount: string;

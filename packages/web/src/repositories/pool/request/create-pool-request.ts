@@ -5,6 +5,7 @@ export interface CreatePoolRequest {
   tokenA: TokenModel;
   tokenB: TokenModel;
   gnsToken: TokenModel;
+  wugnotToken: TokenModel;
   feeTier: SwapFeeTierType;
   tokenAAmount: string;
   tokenBAmount: string;

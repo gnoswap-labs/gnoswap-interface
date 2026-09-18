@@ -3,6 +3,7 @@ import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
+import { WUGNOT_TOKEN } from "@common/values/token-constant";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { ERROR_VALUE as SWAP_ERROR_VALUE } from "@common/errors/swap";
@@ -13,6 +14,7 @@ import {
   SwapFeeTierMaxPriceRangeMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
+import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { useAddress } from "@hooks/common/use-address";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import useRouter from "@hooks/common/use-custom-router";
@@ -74,22 +76,26 @@ export const useRepositionHandle = () => {
   const { getMessage } = useMessage();
 
   const { address } = useAddress();
-  const { updateBalances } = useTokenData(true);
+  const { tokens, isFetched: isFetchedTokens, updateBalances } = useTokenData(true);
+  const wugnotToken = useMemo(() => tokens.find(token => token.path === WRAPPED_GNOT_PATH) ?? WUGNOT_TOKEN, [tokens]);
   const { swapRouterRepository, positionRepository } = useGnoswapContext();
   const { getGnotPath } = useGnotToGnot();
   const { slippage, changeSlippage } = useSlippage();
   const { connected, account, walletClient } = useWallet();
   const [initialized, setInitialized] = useState(false);
-  const { positions, loading: isLoadingPosition, refetch: refetchPositions } = usePositionData({
+  const {
+    positions,
+    loading: isLoadingPosition,
+    refetch: refetchPositions,
+  } = usePositionData({
     poolPath,
   });
   const { invalidateQueryKey } = useInvalidateQueries();
 
-  const selectedPosition = useMemo(() => positions.find(item => item.id.toString() === positionId) || defaultPosition, [
-    defaultPosition,
-    positionId,
-    positions,
-  ]);
+  const selectedPosition = useMemo(
+    () => positions.find(item => item.id.toString() === positionId) || defaultPosition,
+    [defaultPosition, positionId, positions],
+  );
 
   const calculatedLiquidity = useMemo(() => {
     if (!selectedPosition?.liquidity) return BigNumber(0);
@@ -489,7 +495,7 @@ export const useRepositionHandle = () => {
   const swapRemainToken = useCallback(async (): Promise<WalletResponse<
     SwapRouteSuccessResponse | SwapRouteFailedResponse
   > | null> => {
-    if (!address || !estimatedSwapResult || !estimateSwapRequest) {
+    if (!address || !estimatedSwapResult || !estimateSwapRequest || !isFetchedTokens) {
       return null;
     }
 
@@ -511,6 +517,7 @@ export const useRepositionHandle = () => {
     const request: SwapRouteRequest = {
       inputToken: estimateSwapRequest.inputToken,
       outputToken: estimateSwapRequest.outputToken,
+      wugnotToken,
       estimatedRoutes: estimatedSwapResult.estimatedRoutes,
       ...swapAmounts,
       slippage: slippage,
@@ -533,6 +540,7 @@ export const useRepositionHandle = () => {
     address,
     estimateSwapRequest,
     estimatedSwapResult,
+    isFetchedTokens,
     estimatedRepositionAmounts,
     currentAmounts,
     selectedPosition?.pool.tokenA,
@@ -541,6 +549,7 @@ export const useRepositionHandle = () => {
     broadcastError,
     getNextReferralAddress,
     slippage,
+    wugnotToken,
   ]);
 
   const buildAdenaWalletRepositionAction = useCallback(
@@ -672,6 +681,7 @@ export const useRepositionHandle = () => {
         !address ||
         !selectedPosition ||
         !tokenA ||
+        !isFetchedTokens ||
         !tokenB ||
         !selectPool.feeTier ||
         selectPool.minPrice === null ||
@@ -706,6 +716,7 @@ export const useRepositionHandle = () => {
         lpTokenId: selectedPosition.lpTokenId,
         tokenA,
         tokenB,
+        wugnotToken,
         tokenAAmount,
         tokenBAmount,
         slippage: DEFAULT_SLIPPAGE,
@@ -720,6 +731,7 @@ export const useRepositionHandle = () => {
     },
     [
       address,
+      isFetchedTokens,
       selectedPosition,
       tokenA,
       tokenB,
@@ -732,6 +744,7 @@ export const useRepositionHandle = () => {
       buildAdenaWalletRepositionAction,
       buildSocialWalletRepositionAction,
       walletClient,
+      wugnotToken,
     ],
   );
 
