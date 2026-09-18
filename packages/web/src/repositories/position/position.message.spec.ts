@@ -67,8 +67,8 @@ const createTokenModel = (
   };
 };
 
-const wugnotToken = createTokenModel("wugnot");
-const routedWugnotToken = createTokenModel("wugnot", "GRC20", {
+const routedNativeGnot = createTokenModel("ugnot", "Native", {
+  wrappedPath: "wugnot",
   pkgPath: "wugnot_package",
   routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
 });
@@ -437,7 +437,6 @@ describe("position.message.ts", () => {
           lpTokenId,
           tokenA,
           tokenB,
-          wugnotToken,
           tokenAAmount: 0.0025,
           tokenBAmount: 3,
           caller,
@@ -484,9 +483,8 @@ describe("position.message.ts", () => {
       const messages = await makeIncreaseLiquidityMessagesWithApproves(
         {
           lpTokenId: "lp1",
-          tokenA: createTokenModel("ugnot", "Native", { wrappedPath: "wugnot" }),
+          tokenA: routedNativeGnot,
           tokenB: createTokenModel("tokenB_path"),
-          wugnotToken: routedWugnotToken,
           tokenAAmount: 1.25,
           tokenBAmount: 0,
           caller: "caller",
@@ -572,7 +570,6 @@ describe("position.message.ts", () => {
           lpTokenId,
           tokenA,
           tokenB,
-          wugnotToken,
           tokenAAmount: "0.0025",
           tokenBAmount: "3",
           minTick: -10,
@@ -621,9 +618,8 @@ describe("position.message.ts", () => {
       const messages = await makeRepositionLiquidityMessagesWithApproves(
         {
           lpTokenId: "lp1",
-          tokenA: createTokenModel("ugnot", "Native", { wrappedPath: "wugnot" }),
+          tokenA: routedNativeGnot,
           tokenB: createTokenModel("tokenB_path"),
-          wugnotToken: routedWugnotToken,
           tokenAAmount: "1.25",
           tokenBAmount: "0",
           minTick: -10,

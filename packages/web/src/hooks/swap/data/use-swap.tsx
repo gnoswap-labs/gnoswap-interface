@@ -1,20 +1,17 @@
 import BigNumber from "bignumber.js";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { SwapDirectionType } from "@common/values";
 import useDebounce from "@hooks/common/use-debounce";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useReferral } from "@hooks/common/use-referral";
-import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { EstimatedRoute } from "@models/swap/swap-route-info";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { useGetRoutes } from "@query/router";
 import { calculateSlippageLimitAmount } from "@utils/swap-utils";
-import { makeDisplayTokenAmountString } from "@utils/token-utils";
-
-import { WUGNOT_TOKEN } from "@common/values/token-constant";
-import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
-import { SwapDirectionType } from "@common/values";
-import { EstimatedRoute } from "@models/swap/swap-route-info";
-import { TokenModel, isNativeToken } from "@models/token/token-model";
+import { makeDisplayTokenAmountString, withTokenRouteMetadata } from "@utils/token-utils";
 
 interface UseSwapProps {
   tokenA: TokenModel | null;
@@ -37,7 +34,6 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
 
   const { account } = useWallet();
   const { tokens, isFetched: isFetchedTokens } = useTokenData(true);
-  const wugnotToken = useMemo(() => tokens.find(token => token.path === WRAPPED_GNOT_PATH) ?? WUGNOT_TOKEN, [tokens]);
 
   const SWAP_AMOUNT_DEBOUNCE_TIME_MS = 500;
   const SWAP_DEADLINE_SEC = 60 * 5;
@@ -272,9 +268,8 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
 
       if (direction === "EXACT_IN") {
         return swapRouterRepository.sendExactInSwapRoute({
-          inputToken: tokenA,
+          inputToken: withTokenRouteMetadata(tokenA, tokens),
           outputToken: tokenB,
-          wugnotToken,
           tokenAmount,
           estimatedRoutes: estimatedRoutes,
           slippage: slippage,
@@ -287,9 +282,8 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
 
       if (direction === "EXACT_OUT") {
         return swapRouterRepository.sendExactOutSwapRoute({
-          inputToken: tokenA,
+          inputToken: withTokenRouteMetadata(tokenA, tokens),
           outputToken: tokenB,
-          wugnotToken,
           tokenAmount,
           estimatedRoutes: estimatedRoutes,
           slippage: slippage,
@@ -311,7 +305,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       slippage,
       tokenAmountLimit,
       tokenB,
-      wugnotToken,
+      tokens,
       getNextReferralAddress,
     ],
   );

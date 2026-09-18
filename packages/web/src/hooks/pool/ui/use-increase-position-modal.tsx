@@ -2,8 +2,6 @@ import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 
 import { ERROR_VALUE } from "@common/errors/adena";
-import { WUGNOT_TOKEN } from "@common/values/token-constant";
-import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { RANGE_STATUS_OPTION, SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import { useAddress } from "@hooks/common/use-address";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
@@ -25,7 +23,7 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { QUERY_KEY } from "@query/query-keys";
 import { IncreaseLiquidityRequest } from "@repositories/position/request";
 import { delay } from "@utils/common";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { makeDisplayTokenAmount, withTokenRouteMetadata } from "@utils/token-utils";
 import IncreasePositionModalContainer from "../../../layouts/pool/pool-increase-liquidity/containers/increase-position-modal-container/IncreasePositionModalContainer";
 
 export interface Props {
@@ -77,7 +75,6 @@ export const useIncreasePositionModal = ({
 
   // Refetch functions
   const { tokens, isFetched: isFetchedTokens, updateBalances } = useTokenData(true);
-  const wugnotToken = useMemo(() => tokens.find(token => token.path === WRAPPED_GNOT_PATH) ?? WUGNOT_TOKEN, [tokens]);
 
   const handleRefreshData = useCallback(async () => {
     invalidateQueryKey("IncreasePosition", [
@@ -149,9 +146,8 @@ export const useIncreasePositionModal = ({
     const deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString();
     const request: IncreaseLiquidityRequest = {
       lpTokenId: selectedPosition.id.toString(),
-      tokenA: tokenA,
-      tokenB: tokenB,
-      wugnotToken,
+      tokenA: withTokenRouteMetadata(tokenA, tokens),
+      tokenB: withTokenRouteMetadata(tokenB, tokens),
       tokenAAmount: Number(tokenAAmountInput.amount),
       tokenBAmount: Number(tokenBAmountInput.amount),
       slippage: slippage,

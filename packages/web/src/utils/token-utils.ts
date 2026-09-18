@@ -14,6 +14,20 @@ export interface RewardTokenModelWithMultipleTypes extends Omit<RewardTokenModel
 
 export const TOKEN_DISPLAY_MAX_LENGTH = 9;
 
+export function withTokenRouteMetadata(token: TokenModel, currentTokens: TokenModel[]): TokenModel {
+  const transactionPath = token.wrappedPath || token.path;
+  const currentToken = currentTokens.find(candidate => candidate.path === transactionPath);
+  if (!currentToken) {
+    return token;
+  }
+
+  return {
+    ...token,
+    pkgPath: currentToken.pkgPath,
+    routes: currentToken.routes,
+  };
+}
+
 export function formatDisplayTokenSymbol(symbol: string): string {
   if (symbol.length <= TOKEN_DISPLAY_MAX_LENGTH) return symbol;
 

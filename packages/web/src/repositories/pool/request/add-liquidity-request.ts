@@ -4,7 +4,6 @@ import { TokenModel } from "@models/token/token-model";
 export interface AddLiquidityRequest {
   tokenA: TokenModel;
   tokenB: TokenModel;
-  wugnotToken: TokenModel;
   feeTier: SwapFeeTierType;
   tokenAAmount: string;
   tokenBAmount: string;

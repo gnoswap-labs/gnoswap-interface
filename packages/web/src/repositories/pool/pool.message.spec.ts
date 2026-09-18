@@ -38,8 +38,8 @@ const createTokenModel = (
   ...overrides,
 });
 
-const wugnotToken = createTokenModel("wugnot");
-const routedWugnotToken = createTokenModel("wugnot", "GRC20", {
+const routedNativeGnot = createTokenModel("ugnot", "Native", {
+  wrappedPath: "wugnot",
   pkgPath: "wugnot_package",
   routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
 });
@@ -53,7 +53,6 @@ describe("pool.message.ts", () => {
       {
         tokenA: createTokenModel("tokenA_path"),
         tokenB: createTokenModel("tokenB_path"),
-        wugnotToken,
         feeTier: "FEE_3000",
         tokenAAmount: "1.25",
         tokenBAmount: "3",
@@ -133,7 +132,6 @@ describe("pool.message.ts", () => {
       {
         tokenA: createTokenModel("tokenB_path"),
         tokenB: createTokenModel("tokenA_path"),
-        wugnotToken,
         feeTier: "FEE_3000",
         tokenAAmount: "3",
         tokenBAmount: "1.25",
@@ -175,7 +173,6 @@ describe("pool.message.ts", () => {
         poolPath: "pool_path",
         rewardToken: createTokenModel("gns_token_path"),
         gnsToken,
-        wugnotToken,
         rewardAmount: "250",
         incentiveCreationDepositGnsAmount: "1500000000",
         startTime: 100,
@@ -201,9 +198,8 @@ describe("pool.message.ts", () => {
   it("uses wrapped GNOT route metadata for native GNOT mint approvals and resets", async () => {
     const messages = await makePositionMintMessageWithApproves(
       {
-        tokenA: createTokenModel("ugnot", "Native", { wrappedPath: "wugnot" }),
+        tokenA: routedNativeGnot,
         tokenB: createTokenModel("tokenB_path"),
-        wugnotToken: routedWugnotToken,
         feeTier: "FEE_3000",
         tokenAAmount: "1.25",
         tokenBAmount: "0",
@@ -236,9 +232,8 @@ describe("pool.message.ts", () => {
     const messages = await makeCreateExternalIncentiveMessageWithApproves(
       {
         poolPath: "pool_path",
-        rewardToken: createTokenModel("ugnot", "Native", { wrappedPath: "wugnot" }),
+        rewardToken: routedNativeGnot,
         gnsToken: createTokenModel("gns_token_path"),
-        wugnotToken: routedWugnotToken,
         rewardAmount: "1.25",
         incentiveCreationDepositGnsAmount: "0",
         startTime: 100,

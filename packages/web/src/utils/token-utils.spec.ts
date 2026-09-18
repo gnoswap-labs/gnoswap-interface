@@ -10,6 +10,7 @@ import {
   isNativeTokenPath,
   makeDisplayTokenAmount,
   makeRawTokenAmount,
+  withTokenRouteMetadata,
 } from "./token-utils";
 
 const DEFAULT_TOKEN: TokenModel = {
@@ -25,6 +26,29 @@ const DEFAULT_TOKEN: TokenModel = {
   logoURI: "",
   createdAt: "",
 };
+
+describe("withTokenRouteMetadata", () => {
+  it("uses metadata from the token matching the wrapped transaction path", () => {
+    const nativeToken: TokenModel = {
+      ...DEFAULT_TOKEN,
+      path: "ugnot",
+      type: "Native",
+      wrappedPath: "wugnot",
+    };
+    const wrappedToken: TokenModel = {
+      ...DEFAULT_TOKEN,
+      path: "wugnot",
+      pkgPath: "wugnot_package",
+      routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
+    };
+
+    expect(withTokenRouteMetadata(nativeToken, [wrappedToken])).toEqual({
+      ...nativeToken,
+      pkgPath: wrappedToken.pkgPath,
+      routes: wrappedToken.routes,
+    });
+  });
+});
 
 describe("format display token symbol", () => {
   it("should keep token symbols with 9 or fewer characters", () => {

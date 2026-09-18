@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from "react";
 
-import { GNS_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
-import { GNS_TOKEN_PATH, WRAPPED_GNOT_PATH } from "@constants/environment.constant";
+import { GNS_TOKEN } from "@common/values/token-constant";
+import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 import { SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useReferral } from "@hooks/common/use-referral";
@@ -15,6 +15,7 @@ import { AddLiquidityRequest } from "@repositories/pool/request/add-liquidity-re
 import { CreatePoolRequest } from "@repositories/pool/request/create-pool-request";
 import { checkGnotPath } from "@utils/common";
 import { sortTokenPaths } from "@utils/sort-utils";
+import { withTokenRouteMetadata } from "@utils/token-utils";
 
 interface Props {
   compareToken: TokenModel | null;
@@ -31,7 +32,6 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
   const { pools, updatePools, isFetchedPools, loading } = usePoolData();
   const { tokens, isFetched: isFetchedTokens } = useTokenData(true);
   const gnsToken = useMemo(() => tokens.find(token => token.path === GNS_TOKEN_PATH) ?? GNS_TOKEN, [tokens]);
-  const wugnotToken = useMemo(() => tokens.find(token => token.path === WRAPPED_GNOT_PATH) ?? WUGNOT_TOKEN, [tokens]);
   const { data: createPoolFee } = useGetPoolCreationFee();
 
   const allPoolPaths = useMemo(() => {
@@ -150,10 +150,9 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
       const currentReferralAddress = getNextReferralAddress();
 
       const request: CreatePoolRequest = {
-        tokenA: currentTokenData.tokenA,
-        tokenB: currentTokenData.tokenB,
+        tokenA: withTokenRouteMetadata(currentTokenData.tokenA, tokens),
+        tokenB: withTokenRouteMetadata(currentTokenData.tokenB, tokens),
         gnsToken,
-        wugnotToken,
         tokenAAmount: currentTokenData.tokenAAmount,
         tokenBAmount: currentTokenData.tokenBAmount,
         feeTier: swapFeeTier,
@@ -177,7 +176,7 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
       getNextReferralAddress,
       createPoolFee,
       gnsToken,
-      wugnotToken,
+      tokens,
       isFetchedTokens,
     ],
   );
@@ -221,9 +220,8 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
       const currentReferralAddress = getNextReferralAddress();
 
       const request: AddLiquidityRequest = {
-        tokenA: currentTokenData.tokenA,
-        tokenB: currentTokenData.tokenB,
-        wugnotToken,
+        tokenA: withTokenRouteMetadata(currentTokenData.tokenA, tokens),
+        tokenB: withTokenRouteMetadata(currentTokenData.tokenB, tokens),
         tokenAAmount: currentTokenData.tokenAAmount,
         tokenBAmount: currentTokenData.tokenBAmount,
         feeTier: swapFeeTier,
@@ -244,7 +242,7 @@ export const usePool = ({ compareToken, tokenA, tokenB, isReverted = false }: Pr
       poolRepository,
       getNextReferralAddress,
       isFetchedTokens,
-      wugnotToken,
+      tokens,
     ],
   );
 

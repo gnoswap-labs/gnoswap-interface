@@ -7,8 +7,6 @@ export interface IncreaseLiquidityRequest {
 
   tokenB: TokenModel;
 
-  wugnotToken: TokenModel;
-
   tokenAAmount: number;
 
   tokenBAmount: number;

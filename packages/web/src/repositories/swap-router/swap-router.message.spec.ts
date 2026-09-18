@@ -33,8 +33,9 @@ const createTokenModel = (path: string, overrides?: Partial<TokenModel>): TokenM
   ...overrides,
 });
 
-const wugnotToken = createTokenModel("wugnot");
-const routedWugnotToken = createTokenModel("wugnot", {
+const routedNativeGnot = createTokenModel("ugnot", {
+  type: "Native",
+  wrappedPath: "wugnot",
   pkgPath: "wugnot_package",
   routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
 });
@@ -74,7 +75,6 @@ describe("swap-router.message.ts", () => {
       {
         inputToken,
         outputToken,
-        wugnotToken,
         tokenAmount: "62667447936.264477",
         estimatedRoutes: [route],
         tokenAmountLimit: "2",
@@ -109,7 +109,6 @@ describe("swap-router.message.ts", () => {
       {
         inputToken,
         outputToken,
-        wugnotToken,
         tokenAmount: "1.25",
         estimatedRoutes: [route],
         tokenAmountLimit: "2",
@@ -156,7 +155,6 @@ describe("swap-router.message.ts", () => {
       {
         inputToken,
         outputToken,
-        wugnotToken,
         tokenAmount: "2",
         estimatedRoutes: [route],
         tokenAmountLimit: "1.25",
@@ -195,7 +193,7 @@ describe("swap-router.message.ts", () => {
 
   it("uses wrapped GNOT route metadata for native GNOT swap approvals and resets", async () => {
     const caller = "caller";
-    const inputToken = createTokenModel("ugnot", { type: "Native", wrappedPath: "wugnot" });
+    const inputToken = routedNativeGnot;
     const outputToken = createTokenModel("token_out");
     const fetchAllowance = jest.fn(async () => 0);
 
@@ -203,7 +201,6 @@ describe("swap-router.message.ts", () => {
       {
         inputToken,
         outputToken,
-        wugnotToken: routedWugnotToken,
         tokenAmount: "1",
         estimatedRoutes: [route],
         tokenAmountLimit: "2",
@@ -217,7 +214,6 @@ describe("swap-router.message.ts", () => {
       {
         inputToken,
         outputToken,
-        wugnotToken: routedWugnotToken,
         tokenAmount: "2",
         estimatedRoutes: [route],
         tokenAmountLimit: "1.25",

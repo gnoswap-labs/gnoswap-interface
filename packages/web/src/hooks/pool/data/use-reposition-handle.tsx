@@ -3,7 +3,6 @@ import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
-import { WUGNOT_TOKEN } from "@common/values/token-constant";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { ERROR_VALUE as SWAP_ERROR_VALUE } from "@common/errors/swap";
@@ -14,7 +13,6 @@ import {
   SwapFeeTierMaxPriceRangeMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
-import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { useAddress } from "@hooks/common/use-address";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import useRouter from "@hooks/common/use-custom-router";
@@ -54,7 +52,7 @@ import {
 } from "@utils/reposition-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
-import { makeDisplayTokenAmount, makeDisplayTokenAmountString } from "@utils/token-utils";
+import { makeDisplayTokenAmount, makeDisplayTokenAmountString, withTokenRouteMetadata } from "@utils/token-utils";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -77,7 +75,6 @@ export const useRepositionHandle = () => {
 
   const { address } = useAddress();
   const { tokens, isFetched: isFetchedTokens, updateBalances } = useTokenData(true);
-  const wugnotToken = useMemo(() => tokens.find(token => token.path === WRAPPED_GNOT_PATH) ?? WUGNOT_TOKEN, [tokens]);
   const { swapRouterRepository, positionRepository } = useGnoswapContext();
   const { getGnotPath } = useGnotToGnot();
   const { slippage, changeSlippage } = useSlippage();
@@ -515,9 +512,8 @@ export const useRepositionHandle = () => {
     );
 
     const request: SwapRouteRequest = {
-      inputToken: estimateSwapRequest.inputToken,
+      inputToken: withTokenRouteMetadata(estimateSwapRequest.inputToken, tokens),
       outputToken: estimateSwapRequest.outputToken,
-      wugnotToken,
       estimatedRoutes: estimatedSwapResult.estimatedRoutes,
       ...swapAmounts,
       slippage: slippage,
@@ -549,7 +545,7 @@ export const useRepositionHandle = () => {
     broadcastError,
     getNextReferralAddress,
     slippage,
-    wugnotToken,
+    tokens,
   ]);
 
   const buildAdenaWalletRepositionAction = useCallback(
@@ -714,9 +710,8 @@ export const useRepositionHandle = () => {
 
       const request: RepositionLiquidityRequest = {
         lpTokenId: selectedPosition.lpTokenId,
-        tokenA,
-        tokenB,
-        wugnotToken,
+        tokenA: withTokenRouteMetadata(tokenA, tokens),
+        tokenB: withTokenRouteMetadata(tokenB, tokens),
         tokenAAmount,
         tokenBAmount,
         slippage: DEFAULT_SLIPPAGE,
@@ -744,7 +739,7 @@ export const useRepositionHandle = () => {
       buildAdenaWalletRepositionAction,
       buildSocialWalletRepositionAction,
       walletClient,
-      wugnotToken,
+      tokens,
     ],
   );
 

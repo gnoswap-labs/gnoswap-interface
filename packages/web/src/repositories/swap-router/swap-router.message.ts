@@ -27,7 +27,6 @@ enum TransactionMessageFunctionType {
 export interface ExactSwapRouteMessageRequest {
   inputToken: TokenModel;
   outputToken: TokenModel;
-  wugnotToken: TokenModel;
   tokenAmount: string;
   estimatedRoutes: EstimatedRoute[];
   tokenAmountLimit: string;
@@ -40,7 +39,6 @@ export function makeExactInSwapRouteMessageWithApproves(
   {
     inputToken,
     outputToken,
-    wugnotToken,
     tokenAmount,
     estimatedRoutes,
     tokenAmountLimit,
@@ -59,7 +57,6 @@ export function makeExactInSwapRouteMessageWithApproves(
 
   const inputTokenWrappedPath = checkGnotPath(inputToken.path);
   const outputTokenWrappedPath = checkGnotPath(outputToken.path);
-  const approvalToken = inputTokenWrappedPath === WRAPPED_GNOT_PACKAGE_PATH ? wugnotToken : inputToken;
 
   const messages: TransactionMessage[] = [];
   if (isNativeTokenPath(inputToken.path)) {
@@ -90,8 +87,8 @@ export function makeExactInSwapRouteMessageWithApproves(
   const approveInfos: TokenApproveMessageInfo[] = [
     {
       tokenPath: inputTokenWrappedPath,
-      pkgPath: approvalToken.pkgPath,
-      routes: approvalToken.routes,
+      pkgPath: inputToken.pkgPath,
+      routes: inputToken.routes,
       targetAddress: PACKAGE_ROUTER_ADDRESS,
       amount: tokenAmountRaw,
       caller,
@@ -105,7 +102,6 @@ export function makeExactOutSwapRouteMessageWithApproves(
   {
     inputToken,
     outputToken,
-    wugnotToken,
     tokenAmount,
     estimatedRoutes,
     tokenAmountLimit,
@@ -124,7 +120,6 @@ export function makeExactOutSwapRouteMessageWithApproves(
 
   const inputTokenWrappedPath = checkGnotPath(inputToken.path);
   const outputTokenWrappedPath = checkGnotPath(outputToken.path);
-  const approvalToken = inputTokenWrappedPath === WRAPPED_GNOT_PACKAGE_PATH ? wugnotToken : inputToken;
 
   const messages: TransactionMessage[] = [];
   if (isNativeTokenPath(inputToken.path)) {
@@ -155,8 +150,8 @@ export function makeExactOutSwapRouteMessageWithApproves(
   const approveInfos: TokenApproveMessageInfo[] = [
     {
       tokenPath: inputTokenWrappedPath,
-      pkgPath: approvalToken.pkgPath,
-      routes: approvalToken.routes,
+      pkgPath: inputToken.pkgPath,
+      routes: inputToken.routes,
       targetAddress: PACKAGE_ROUTER_ADDRESS,
       amount: tokenAmountLimitRaw,
       caller,

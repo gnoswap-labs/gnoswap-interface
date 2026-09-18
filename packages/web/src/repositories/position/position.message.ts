@@ -11,7 +11,6 @@ import {
   PACKAGE_POSITION_PATH,
   PACKAGE_STAKER_ADDRESS,
   PACKAGE_STAKER_PATH,
-  WRAPPED_GNOT_PATH,
 } from "@constants/environment.constant";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionModel } from "@models/position/position-model";
@@ -246,7 +245,6 @@ export function makeIncreaseLiquidityMessagesWithApproves(
     lpTokenId,
     tokenA,
     tokenB,
-    wugnotToken,
     tokenAAmount,
     tokenBAmount,
     caller,
@@ -256,7 +254,6 @@ export function makeIncreaseLiquidityMessagesWithApproves(
     lpTokenId: string;
     tokenA: TokenModel;
     tokenB: TokenModel;
-    wugnotToken: TokenModel;
     tokenAAmount: number;
     tokenBAmount: number;
     caller: string;
@@ -267,8 +264,6 @@ export function makeIncreaseLiquidityMessagesWithApproves(
 ): Promise<TransactionMessage[]> {
   const tokenAWrappedPath = tokenA.wrappedPath || wrapNativeTokenPath(tokenA.path);
   const tokenBWrappedPath = tokenB.wrappedPath || wrapNativeTokenPath(tokenB.path);
-  const tokenAApprovalToken = tokenAWrappedPath === WRAPPED_GNOT_PATH ? wugnotToken : tokenA;
-  const tokenBApprovalToken = tokenBWrappedPath === WRAPPED_GNOT_PATH ? wugnotToken : tokenB;
 
   const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
   const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
@@ -277,16 +272,16 @@ export function makeIncreaseLiquidityMessagesWithApproves(
   const approveMessageInfos: TokenApproveMessageInfo[] = [
     {
       tokenPath: tokenAWrappedPath,
-      pkgPath: tokenAApprovalToken.pkgPath,
-      routes: tokenAApprovalToken.routes,
+      pkgPath: tokenA.pkgPath,
+      routes: tokenA.routes,
       targetAddress: PACKAGE_POOL_ADDRESS,
       amount: tokenAAmountRaw,
       caller,
     },
     {
       tokenPath: tokenBWrappedPath,
-      pkgPath: tokenBApprovalToken.pkgPath,
-      routes: tokenBApprovalToken.routes,
+      pkgPath: tokenB.pkgPath,
+      routes: tokenB.routes,
       targetAddress: PACKAGE_POOL_ADDRESS,
       amount: tokenBAmountRaw,
       caller,
@@ -372,7 +367,6 @@ export function makeRepositionLiquidityMessagesWithApproves(
     lpTokenId,
     tokenA,
     tokenB,
-    wugnotToken,
     tokenAAmount,
     tokenBAmount,
     minTick,
@@ -384,7 +378,6 @@ export function makeRepositionLiquidityMessagesWithApproves(
     lpTokenId: string;
     tokenA: TokenModel;
     tokenB: TokenModel;
-    wugnotToken: TokenModel;
     tokenAAmount: string;
     tokenBAmount: string;
     minTick: number;
@@ -398,8 +391,6 @@ export function makeRepositionLiquidityMessagesWithApproves(
 ): Promise<TransactionMessage[]> {
   const tokenAWrappedPath = tokenA.wrappedPath || checkGnotPath(tokenA.path);
   const tokenBWrappedPath = tokenB.wrappedPath || checkGnotPath(tokenB.path);
-  const tokenAApprovalToken = tokenAWrappedPath === WRAPPED_GNOT_PATH ? wugnotToken : tokenA;
-  const tokenBApprovalToken = tokenBWrappedPath === WRAPPED_GNOT_PATH ? wugnotToken : tokenB;
 
   const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
   const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
@@ -411,16 +402,16 @@ export function makeRepositionLiquidityMessagesWithApproves(
   const approveMessageInfos: TokenApproveMessageInfo[] = [
     {
       tokenPath: tokenAWrappedPath,
-      pkgPath: tokenAApprovalToken.pkgPath,
-      routes: tokenAApprovalToken.routes,
+      pkgPath: tokenA.pkgPath,
+      routes: tokenA.routes,
       targetAddress: PACKAGE_POOL_ADDRESS,
       amount: tokenAAmountRaw,
       caller,
     },
     {
       tokenPath: tokenBWrappedPath,
-      pkgPath: tokenBApprovalToken.pkgPath,
-      routes: tokenBApprovalToken.routes,
+      pkgPath: tokenB.pkgPath,
+      routes: tokenB.routes,
       targetAddress: PACKAGE_POOL_ADDRESS,
       amount: tokenBAmountRaw,
       caller,
