@@ -26,13 +26,37 @@ import {
 
 dayjs.extend(relativeTime);
 
+const relativeTimeFormatters = new Map<string, Intl.RelativeTimeFormat>();
+
 const formatActivityTime = (time: string): string => {
   const activityTime = dayjs(time);
   const now = dayjs();
-  const elapsedHours = now.diff(activityTime, "hour");
+  const elapsedMinutes = now.diff(activityTime, "minute");
 
-  if (elapsedHours >= 1 && elapsedHours < 24) {
-    return now.subtract(elapsedHours, "hour").from(now);
+  if (elapsedMinutes < 1) {
+    return activityTime.from(now);
+  }
+
+  const locale = dayjs.locale();
+  let formatter = relativeTimeFormatters.get(locale);
+
+  if (!formatter) {
+    formatter = new Intl.RelativeTimeFormat(locale, { numeric: "always" });
+    relativeTimeFormatters.set(locale, formatter);
+  }
+
+  if (elapsedMinutes < 60) {
+    return formatter.format(-elapsedMinutes, "minute");
+  }
+
+  const elapsedHours = now.diff(activityTime, "hour");
+  if (elapsedHours < 24) {
+    return formatter.format(-elapsedHours, "hour");
+  }
+
+  const elapsedDays = now.diff(activityTime, "day");
+  if (elapsedDays < 30) {
+    return formatter.format(-elapsedDays, "day");
   }
 
   return activityTime.from(now);
