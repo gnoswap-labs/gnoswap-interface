@@ -29,10 +29,30 @@ describe("makeTransactionMessagesWithApproves", () => {
     },
   ];
 
-  it("adds approve reset messages after transactions by default", async () => {
+  it("omits approve reset messages by default", async () => {
     const fetchAllowance = jest.fn(async () => 0);
 
     const messages = await makeTransactionMessagesWithApproves([transactionMessage], approveInfos, fetchAllowance);
+
+    expect(messages).toEqual([
+      makeExpectedApproveRunMessage({
+        caller,
+        approves: [{ tokenPath, spenderAddress: targetAddress, amount: "100" }],
+      }),
+      transactionMessage,
+    ]);
+  });
+
+  it("adds approve reset messages after transactions when reset is enabled", async () => {
+    const fetchAllowance = jest.fn(async () => 0);
+
+    const messages = await makeTransactionMessagesWithApproves(
+      [transactionMessage],
+      approveInfos,
+      fetchAllowance,
+      undefined,
+      true,
+    );
 
     expect(messages).toEqual([
       makeExpectedApproveRunMessage({
@@ -47,7 +67,13 @@ describe("makeTransactionMessagesWithApproves", () => {
   it("resets existing allowances even when a new approve message is skipped", async () => {
     const fetchAllowance = jest.fn(async () => 2);
 
-    const messages = await makeTransactionMessagesWithApproves([transactionMessage], approveInfos, fetchAllowance, 1);
+    const messages = await makeTransactionMessagesWithApproves(
+      [transactionMessage],
+      approveInfos,
+      fetchAllowance,
+      1,
+      true,
+    );
 
     expect(messages).toEqual([
       transactionMessage,
@@ -76,6 +102,7 @@ describe("makeTransactionMessagesWithApproves", () => {
       approveInfosWithMixedAllowances,
       fetchAllowance,
       1,
+      true,
     );
 
     expect(messages).toEqual([
@@ -130,6 +157,8 @@ describe("makeTransactionMessagesWithApproves", () => {
         },
       ],
       fetchAllowance,
+      undefined,
+      true,
     );
 
     expect(messages).toEqual([
@@ -153,6 +182,8 @@ describe("makeTransactionMessagesWithApproves", () => {
       [transactionMessage],
       [{ tokenPath: gnsTokenKey, targetAddress, amount: "100", caller }],
       fetchAllowance,
+      undefined,
+      true,
     );
 
     expect(messages).toEqual([

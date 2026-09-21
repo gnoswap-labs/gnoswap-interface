@@ -1,7 +1,4 @@
-import {
-  isTransactionRunMessage,
-  type TransactionMessage,
-} from "@common/clients/wallet-client/transaction-messages/common";
+import type { TransactionMessage } from "@common/clients/wallet-client/transaction-messages/common";
 import type { RewardType } from "@constants/option.constant";
 import type { PoolPositionModel } from "@models/position/pool-position-model";
 import type { PositionModel } from "@models/position/position-model";
@@ -128,34 +125,6 @@ const splitMessagesByApproveReset = (
     txMessages: messages.slice(approveCount, messages.length - resetCount),
     resetMessages: resetCount > 0 ? messages.slice(messages.length - resetCount) : [],
   };
-};
-
-// Approves are MsgRun messages, so the matching reset is the same ephemeral
-// package with the approved amount rewritten to 0.
-const APPROVE_AMOUNT_PATTERN = /, \d+\)$/gm;
-
-const toResetApproveMessage = (message: TransactionMessage): TransactionMessage => {
-  if (!isTransactionRunMessage(message)) {
-    throw new Error("Approve message must be a run message");
-  }
-
-  const [file] = message.package.files;
-
-  if (!file.body.match(APPROVE_AMOUNT_PATTERN)) {
-    throw new Error("Approve message must include an approved amount");
-  }
-
-  return {
-    ...message,
-    package: {
-      ...message.package,
-      files: [{ ...file, body: file.body.replace(APPROVE_AMOUNT_PATTERN, ", 0)") }],
-    },
-  };
-};
-
-const expectResetMessages = (resetMessages: TransactionMessage[], approveMessages: TransactionMessage[]) => {
-  expect(resetMessages).toEqual(approveMessages.map(toResetApproveMessage));
 };
 
 describe("position.message.ts", () => {
@@ -440,7 +409,7 @@ describe("position.message.ts", () => {
         fetchAllowance,
       );
 
-      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 1);
+      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 1, 0);
 
       expect(approveMessages).toEqual([
         makeExpectedApproveRunMessage({
@@ -470,8 +439,9 @@ describe("position.message.ts", () => {
           gasFee: undefined,
         },
       ]);
-      expectResetMessages(resetMessages, approveMessages);
+      expect(resetMessages).toHaveLength(0);
     });
+
   });
 
   describe("makeDecreaseLiquidityMessagesWithApproves", () => {
@@ -544,7 +514,7 @@ describe("position.message.ts", () => {
         fetchAllowance,
       );
 
-      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 1);
+      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 1, 0);
 
       expect(approveMessages).toEqual([
         makeExpectedApproveRunMessage({
@@ -574,8 +544,9 @@ describe("position.message.ts", () => {
           gasFee: undefined,
         },
       ]);
-      expectResetMessages(resetMessages, approveMessages);
+      expect(resetMessages).toHaveLength(0);
     });
+
   });
 
   describe("makeRemoveLiquidityMessagesWithApproves", () => {
