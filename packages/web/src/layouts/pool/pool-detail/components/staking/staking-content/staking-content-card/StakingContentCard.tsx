@@ -11,7 +11,7 @@ import IconStar from "@components/common/icons/IconStar";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { StakingPeriodType, STAKING_PERIOD_INFO, RewardType } from "@constants/option.constant";
+import { RewardType } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionModel } from "@models/position/position-model";
@@ -22,6 +22,8 @@ import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { toUnitFormat } from "@utils/number-utils";
 import { isInternalRewardType, mapToDisplayRewardType } from "@utils/reward-utils";
 
+import { StakingTier } from "../staking-tier";
+
 import {
   PriceTooltipContentWrapper,
   StakingContentCardWrapper,
@@ -30,9 +32,9 @@ import {
 } from "./StakingContentCard.styles";
 
 interface StakingContentCardProps {
-  period: StakingPeriodType;
+  tier: StakingTier;
   stakingApr?: string;
-  checkPoints: StakingPeriodType[];
+  checkPoints: string[];
   positions: PoolPositionModel[];
   breakpoint: DEVICE_TYPE;
   loading: boolean;
@@ -97,7 +99,7 @@ const PriceTooltipContent = ({ positions, period }: { positions: PoolPositionMod
 };
 
 const StakingContentCard: React.FC<StakingContentCardProps> = ({
-  period,
+  tier,
   checkPoints,
   positions,
   stakingApr,
@@ -109,12 +111,8 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   const hasPosition = positions.length > 0;
 
   const checkedStep = useMemo(() => {
-    return checkPoints.includes(period);
-  }, [checkPoints, period]);
-
-  const periodInfo = useMemo(() => {
-    return STAKING_PERIOD_INFO[period];
-  }, [period]);
+    return checkPoints.includes(tier.key);
+  }, [checkPoints, tier.key]);
 
   const totalUSD = useMemo(() => {
     if (positions.length === 0) {
@@ -158,8 +156,8 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   }, [positionRewards, tokenPrices]);
 
   const aprNumber = useMemo(
-    () => (stakingApr ? BigNumber(stakingApr).multipliedBy(STAKING_PERIOD_INFO[period].rate) : null),
-    [period, stakingApr],
+    () => (stakingApr ? BigNumber(stakingApr).multipliedBy(tier.rate) : null),
+    [tier.rate, stakingApr],
   );
 
   const aprStr = useMemo(() => {
@@ -188,13 +186,13 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
           <div className="name-wrap">
             <span className="symbol-text">
               {t("Pool:staking.period.title", {
-                days: periodInfo.period,
+                days: tier.endPeriod,
               })}
             </span>
             <div className="icon-wrap">
               <span className="content-text">
                 {t("Pool:staking.period.subtitle", {
-                  percent: periodInfo.rate * 100 + "%",
+                  percent: tier.rate * 100 + "%",
                 })}
               </span>
               <Tooltip
@@ -202,7 +200,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
                 FloatingContent={
                   <ToolTipContentWrapper>
                     {t("Pool:staking.period.subtitleTooltip", {
-                      percent: periodInfo.rate * 100 + "%",
+                      percent: tier.rate * 100 + "%",
                     })}
                   </ToolTipContentWrapper>
                 }
@@ -235,7 +233,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
                   scroll
                   FloatingContent={
                     <div>
-                      <PriceTooltipContent positions={positions} period={periodInfo.period} />
+                      <PriceTooltipContent positions={positions} period={tier.endPeriod} />
                     </div>
                   }
                 >
@@ -274,27 +272,29 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
 };
 
 interface SummuryAprProps {
-  period: StakingPeriodType;
-  checkPoints: StakingPeriodType[];
+  tier: StakingTier;
+  checkPoints: string[];
   positions: PoolPositionModel[];
   stakingApr?: string;
   loading: boolean;
   breakpoint: DEVICE_TYPE;
 }
 
-export const SummuryApr: React.FC<SummuryAprProps> = ({ period, checkPoints, positions, stakingApr, loading }) => {
+export const SummuryApr: React.FC<SummuryAprProps> = ({
+  tier,
+  checkPoints,
+  positions,
+  stakingApr,
+  loading,
+}) => {
   const { t } = useTranslation();
   const { data: tokenPrices = {} } = useGetAllTokenPrices();
 
   const hasPosition = positions.length > 0;
 
   const checkedStep = useMemo(() => {
-    return checkPoints.includes(period);
-  }, [checkPoints, period]);
-
-  const periodInfo = useMemo(() => {
-    return STAKING_PERIOD_INFO[period];
-  }, [period]);
+    return checkPoints.includes(tier.key);
+  }, [checkPoints, tier.key]);
 
   const positionRewards = useMemo(() => {
     return positions.flatMap(position => position.rewards);
@@ -331,8 +331,8 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({ period, checkPoints, pos
   }, [positionRewards, tokenPrices]);
 
   const aprNumber = useMemo(
-    () => (stakingApr ? BigNumber(stakingApr).multipliedBy(STAKING_PERIOD_INFO[period].rate) : null),
-    [period, stakingApr],
+    () => (stakingApr ? BigNumber(stakingApr).multipliedBy(tier.rate) : null),
+    [tier.rate, stakingApr],
   );
 
   const aprStr = useMemo(() => {
@@ -354,14 +354,14 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({ period, checkPoints, pos
             <span className="symbol-text">
               {t("Pool:staking.period.title", {
                 context: "max",
-                days: periodInfo.period,
+                days: tier.period,
               })}
             </span>
             <div className="icon-wrap">
               <span className="content-gd-text">
                 {t("Pool:staking.period.subtitle", {
                   context: "max",
-                  percent: periodInfo.rate * 100 + "%",
+                  percent: tier.rate * 100 + "%",
                 })}
               </span>
               <Tooltip
@@ -370,7 +370,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({ period, checkPoints, pos
                   <ToolTipContentWrapper>
                     {t("Pool:staking.period.subtitleTooltip", {
                       context: "max",
-                      percent: periodInfo.rate * 100 + "%",
+                      percent: tier.rate * 100 + "%",
                     })}
                   </ToolTipContentWrapper>
                 }
@@ -403,7 +403,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({ period, checkPoints, pos
                   scroll
                   FloatingContent={
                     <div>
-                      <PriceTooltipContent positions={positions} period={periodInfo.period} />
+                      <PriceTooltipContent positions={positions} period={tier.endPeriod} />
                     </div>
                   }
                 >
