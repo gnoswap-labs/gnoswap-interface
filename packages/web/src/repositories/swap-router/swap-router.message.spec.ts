@@ -59,8 +59,7 @@ const route: EstimatedRoute = {
 
 const splitMessages = (messages: TransactionMessage[], approveCount: number) => ({
   approveMessages: messages.slice(0, approveCount),
-  txMessages: messages.slice(approveCount, messages.length - approveCount),
-  resetMessages: messages.slice(messages.length - approveCount),
+  txMessages: messages.slice(approveCount),
 });
 
 describe("swap-router.message.ts", () => {
@@ -119,7 +118,7 @@ describe("swap-router.message.ts", () => {
       fetchAllowance,
     );
 
-    const { approveMessages, txMessages, resetMessages } = splitMessages(messages, 1);
+    const { approveMessages, txMessages } = splitMessages(messages, 1);
 
     expect(approveMessages).toEqual([
       makeExpectedApproveRunMessage({
@@ -133,12 +132,9 @@ describe("swap-router.message.ts", () => {
       func: "ExactInSwapRoute",
       args: ["token_in", "token_out", "1250000", "token_in:token_out:3000", "1", "2000000", "123", ""],
     });
-    expect(resetMessages).toEqual([
-      makeExpectedApproveRunMessage({
-        caller,
-        approves: [{ tokenPath: "token_in", spenderAddress: "router_address", amount: "0" }],
-      }),
-    ]);
+    expect(
+      messages.some(message => getRunMessageBody(message).includes("address(\"router_address\"), 0)")),
+    ).toBe(false);
     expect(messages.some(message => getRunMessageBody(message).includes("address(\"pool_address\")"))).toBe(false);
     expect(messages.some(message => getRunMessageBody(message).includes("grc20reg.Approve(0, cur, \"token_out\""))).toBe(
       false,
@@ -165,7 +161,7 @@ describe("swap-router.message.ts", () => {
       fetchAllowance,
     );
 
-    const { approveMessages, txMessages, resetMessages } = splitMessages(messages, 1);
+    const { approveMessages, txMessages } = splitMessages(messages, 1);
 
     expect(approveMessages).toEqual([
       makeExpectedApproveRunMessage({
@@ -179,19 +175,16 @@ describe("swap-router.message.ts", () => {
       func: "ExactOutSwapRoute",
       args: ["token_in", "token_out", "2000000", "token_in:token_out:3000", "1", "1250000", "123", ""],
     });
-    expect(resetMessages).toEqual([
-      makeExpectedApproveRunMessage({
-        caller,
-        approves: [{ tokenPath: "token_in", spenderAddress: "router_address", amount: "0" }],
-      }),
-    ]);
+    expect(
+      messages.some(message => getRunMessageBody(message).includes("address(\"router_address\"), 0)")),
+    ).toBe(false);
     expect(messages.some(message => getRunMessageBody(message).includes("address(\"pool_address\")"))).toBe(false);
     expect(messages.some(message => getRunMessageBody(message).includes("grc20reg.Approve(0, cur, \"token_out\""))).toBe(
       false,
     );
   });
 
-  it("uses wrapped GNOT route metadata for native GNOT swap approvals and resets", async () => {
+  it("uses wrapped GNOT route metadata for native GNOT swap approvals", async () => {
     const caller = "caller";
     const inputToken = routedNativeGnot;
     const outputToken = createTokenModel("token_out");
@@ -224,6 +217,14 @@ describe("swap-router.message.ts", () => {
       fetchAllowance,
     );
 
+    const resetApproveMessage = expect.arrayContaining([
+      expect.objectContaining({
+        pkg_path: "wugnot_package",
+        func: "Approve",
+        args: ["router_address", "0"],
+      }),
+    ]);
+
     expect(exactInMessages).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -231,13 +232,9 @@ describe("swap-router.message.ts", () => {
           func: "Approve",
           args: ["router_address", "1000000"],
         }),
-        expect.objectContaining({
-          pkg_path: "wugnot_package",
-          func: "Approve",
-          args: ["router_address", "0"],
-        }),
       ]),
     );
+    expect(exactInMessages).not.toEqual(resetApproveMessage);
     expect(exactOutMessages).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -245,12 +242,8 @@ describe("swap-router.message.ts", () => {
           func: "Approve",
           args: ["router_address", "1250000"],
         }),
-        expect.objectContaining({
-          pkg_path: "wugnot_package",
-          func: "Approve",
-          args: ["router_address", "0"],
-        }),
       ]),
     );
+    expect(exactOutMessages).not.toEqual(resetApproveMessage);
   });
 });

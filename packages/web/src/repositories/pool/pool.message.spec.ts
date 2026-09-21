@@ -195,7 +195,7 @@ describe("pool.message.ts", () => {
     });
   });
 
-  it("uses wrapped GNOT route metadata for native GNOT mint approvals and resets", async () => {
+  it("uses wrapped GNOT route metadata for native GNOT mint approvals", async () => {
     const messages = await makePositionMintMessageWithApproves(
       {
         tokenA: routedNativeGnot,
@@ -219,6 +219,10 @@ describe("pool.message.ts", () => {
           func: "Approve",
           args: ["pool_address", "1250000"],
         }),
+      ]),
+    );
+    expect(messages).not.toEqual(
+      expect.arrayContaining([
         expect.objectContaining({
           pkg_path: "wugnot_package",
           func: "Approve",
@@ -228,7 +232,7 @@ describe("pool.message.ts", () => {
     );
   });
 
-  it("uses wrapped GNOT route metadata for native GNOT incentive approvals and resets", async () => {
+  it("uses wrapped GNOT route metadata for native GNOT incentive approvals", async () => {
     const messages = await makeCreateExternalIncentiveMessageWithApproves(
       {
         poolPath: "pool_path",
@@ -250,6 +254,10 @@ describe("pool.message.ts", () => {
           func: "Approve",
           args: ["staker_address", "1250000"],
         }),
+      ]),
+    );
+    expect(messages).not.toEqual(
+      expect.arrayContaining([
         expect.objectContaining({
           pkg_path: "wugnot_package",
           func: "Approve",
