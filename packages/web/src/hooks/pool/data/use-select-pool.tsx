@@ -18,6 +18,7 @@ import { useGetPoolFromDb, useGetPoolLiquidity, useGetPoolSqrtPriceX96, useGetPo
 import { EarnState } from "@states/index";
 import { checkGnotPath, encryptId } from "@utils/common";
 import { invertSqrtPriceX96, isValidCurrentPrice } from "@utils/pool-utils";
+import { calculateEstimatedAPR } from "@utils/pool-apr-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
 import {
   feeBoostRateByPrices,
@@ -64,6 +65,7 @@ export interface SelectPool {
   maxPrice: number | null;
   depositRatio: number | null;
   feeBoost: string | null;
+  feeApr: string | null;
   estimatedAPR: number | null;
   increaseMinTick: () => void;
   decreaseMinTick: () => void;
@@ -359,7 +361,7 @@ export const useSelectPool = ({
   }, [maxPrice, minPrice, swapFeeTierMaxPriceRangeMap]);
 
   const estimatedAPR = useMemo(() => {
-    return Number(poolFromDb?.feeApr || 0) * Number(feeBoost ?? 0);
+    return calculateEstimatedAPR(poolFromDb?.feeApr, feeBoost);
   }, [feeBoost, poolFromDb?.feeApr]);
 
   function excuteInteraction(callback: () => void) {
@@ -554,6 +556,7 @@ export const useSelectPool = ({
     maxPrice,
     depositRatio,
     feeBoost,
+    feeApr: poolFromDb?.feeApr || null,
     estimatedAPR,
     increaseMinTick,
     decreaseMinTick,
