@@ -185,6 +185,53 @@ describe("TransactionGasServiceImpl.estimateMaxNativeAmount", () => {
     expect(Number(max.amount) + Number(max.reserve.total)).toBe(tinyBalance);
   });
 
+  it("probes a balance under the offered fee at a hundredth of itself", async () => {
+    // Holding back a tenth would still leave nothing for the fee, so there is
+    // no ceiling to probe near.
+    const smallBalance = 500_000;
+    const makeMessages = jest.fn().mockReturnValue([{}]);
+    const simulateTx = jest.fn().mockResolvedValue(result(140_000_000));
+    const { service } = makeService(simulateTx);
+
+    const max = await service.estimateMaxNativeAmount(request(smallBalance, makeMessages));
+
+    expect(makeMessages).toHaveBeenNthCalledWith(1, `${smallBalance / 100}`);
+    expect(max.simulated).toBe(true);
+  });
+
+  it("drops the flat-fee floor for a balance that could never pay it", async () => {
+    // 140M gas x 1.5 x 0.001 = 210_000 ugnot, which is the honest figure here:
+    // a wallet charging the flat 1 GNOT could not spend this balance at all.
+    const smallBalance = 500_000;
+    const simulateTx = jest.fn().mockResolvedValue(result(140_000_000));
+    const { service } = makeService(simulateTx);
+
+    const max = await service.estimateMaxNativeAmount(request(smallBalance));
+
+    expect(max.reserve.gasFee).toBe("210000");
+    expect(Number(max.amount)).toBeGreaterThan(0);
+    expect(Number(max.amount) + Number(max.reserve.total)).toBe(smallBalance);
+  });
+
+  it("keeps the flat-fee floor as soon as the balance can bear it", async () => {
+    const simulateTx = jest.fn().mockResolvedValue(result(140_000_000));
+    const { service } = makeService(simulateTx);
+
+    const max = await service.estimateMaxNativeAmount(request(2_000_000));
+
+    expect(max.reserve.gasFee).toBe(`${OFFERED_GAS_FEE}`);
+  });
+
+  it("falls back when even a hundredth of the balance cannot be simulated", async () => {
+    const simulateTx = jest.fn().mockRejectedValue(new Error("no route"));
+    const { service } = makeService(simulateTx);
+
+    const max = await service.estimateMaxNativeAmount(request(100_000));
+
+    expect(max.simulated).toBe(false);
+    expect(max.amount).toBe("0");
+  });
+
   it("honours a caller that offers a different fee", async () => {
     const simulateTx = jest.fn().mockResolvedValue(result(1_000_000));
     const { service } = makeService(simulateTx);

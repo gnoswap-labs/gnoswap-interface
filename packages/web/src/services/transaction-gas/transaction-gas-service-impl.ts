@@ -13,6 +13,7 @@ import {
   NATIVE_AMOUNT_RESERVE_BUFFER,
   PROBE_HEADROOM_CAP,
   PROBE_HEADROOM_RATIO,
+  SMALL_BALANCE_PROBE_DIVISOR,
   STORAGE_DEPOSIT_BUFFER_MULTIPLIER,
 } from "@common/values";
 import { GasToken } from "@common/values/token-constant";
@@ -75,20 +76,29 @@ function makeReserve(
 }
 
 /**
- * How much of the balance to hold back while probing. Proportional rather than
- * flat: both costs fall with the amount, so a fixed GNOT would probe a small
- * balance at a fraction of its ceiling and measure costs nothing like the ones
- * the final amount incurs.
+ * The amounts to try probing at, in order of preference.
+ *
+ * A balance that can bear the fee is probed just below its ceiling, holding
+ * back a share rather than a flat figure: both costs fall with the amount, so
+ * a fixed GNOT would probe a small balance at a fraction of its ceiling and
+ * measure costs nothing like the ones the final amount incurs. The wider share
+ * is the retry, for when an extreme amount crosses enough ticks to lock a
+ * deposit the first hold-back cannot cover.
+ *
+ * A balance smaller than the fee has no ceiling to probe near — holding back a
+ * tenth still leaves nothing for the fee — so it is probed at a fraction of
+ * itself, leaving almost all of it free to cover the costs being measured.
  */
-function probeHeadrooms(balance: BigNumber): string[] {
+function probeAmounts(balance: BigNumber, offeredGasFee: string): string[] {
+  if (balance.isLessThanOrEqualTo(offeredGasFee)) {
+    return [toUgnot(balance.dividedBy(SMALL_BALANCE_PROBE_DIVISOR))];
+  }
+
   const proportional = ceilToUgnot(balance.multipliedBy(PROBE_HEADROOM_RATIO));
   const capped = BigNumber.minimum(PROBE_HEADROOM_CAP, proportional).toFixed(0);
+  const headrooms = capped === proportional ? [capped] : [capped, proportional];
 
-  // The capped figure keeps the probe close to the ceiling, which is where the
-  // measurement is worth taking. It is not always enough: at an extreme amount
-  // a swap crosses enough ticks to lock a deposit of several GNOT, and the
-  // probe then fails on affordability. The proportional figure is the retry.
-  return capped === proportional ? [capped] : [capped, proportional];
+  return headrooms.map(headroom => toUgnot(balance.minus(headroom)));
 }
 
 function makeFallbackMaxNativeAmount(balance: BigNumber, reserve: BigNumber): MaxNativeAmount {
@@ -158,18 +168,18 @@ export class TransactionGasServiceImpl implements TransactionGasService {
       let probeAmount: BigNumber | null = null;
       let probe: SimulateTxResult | null = null;
 
-      for (const headroom of probeHeadrooms(available)) {
-        const candidate = BigNumber(toUgnot(available.minus(headroom)));
-        if (candidate.isLessThanOrEqualTo(0)) continue;
+      for (const candidate of probeAmounts(available, offeredGasFee)) {
+        if (BigNumber(candidate).isLessThanOrEqualTo(0)) continue;
 
         // The fee only has to be payable for the measurement to run — gas used
-        // does not depend on it — so it is the realistic figure where the
-        // headroom covers it and the largest affordable one otherwise.
+        // does not depend on it — so it is the realistic figure where what the
+        // probe held back covers it, and everything held back otherwise.
+        const headroom = available.minus(candidate);
         const probeGasFee = BigNumber.minimum(headroom, ceilToUgnot(BigNumber(gasWanted).multipliedBy(gasPrice)));
 
         try {
-          probe = await this.simulate(toUgnot(candidate), makeMessages, gasWanted, probeGasFee.toFixed(0), account);
-          probeAmount = candidate;
+          probe = await this.simulate(candidate, makeMessages, gasWanted, probeGasFee.toFixed(0), account);
+          probeAmount = BigNumber(candidate);
           break;
         } catch {
           continue;
@@ -178,13 +188,18 @@ export class TransactionGasServiceImpl implements TransactionGasService {
 
       if (!probe || !probeAmount) return fallback;
 
+      // A balance under the offered fee could not be spent at all by a wallet
+      // that charged it, so holding that much back would only ever return
+      // nothing. What the simulation measured is the honest figure there.
+      const feeFloor = available.isGreaterThan(offeredGasFee) ? offeredGasFee : "0";
+
       // The probe is the largest amount known to work, so it is the floor for
       // the answer. Each attempt reaches above it, and a failure bisects the
       // gap rather than trimming a percentage: on a large balance a relative
       // step throws away thousands of GNOT, while the costs it is groping for
       // are a few.
       let best = probeAmount;
-      let reserve = makeReserve(probe, gasPrice, offeredGasFee);
+      let reserve = makeReserve(probe, gasPrice, feeFloor);
       let candidate = BigNumber(toUgnot(available.minus(reserve.total)));
 
       for (let attempt = 0; attempt < VERIFY_ATTEMPTS; attempt += 1) {
@@ -199,7 +214,7 @@ export class TransactionGasServiceImpl implements TransactionGasService {
             account,
           );
 
-          reserve = makeReserve(verification, gasPrice, offeredGasFee);
+          reserve = makeReserve(verification, gasPrice, feeFloor);
           best = candidate;
           candidate = BigNumber(toUgnot(available.minus(reserve.total)));
         } catch {

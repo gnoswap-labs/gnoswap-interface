@@ -54,6 +54,13 @@ export const PROBE_HEADROOM_CAP = 5_000_000 as const;
  * amount, so a proportional headroom stays representative at either end.
  */
 export const PROBE_HEADROOM_RATIO = 0.1 as const;
+/**
+ * A balance this small cannot hold back a headroom and still cover the fee, so
+ * it is probed at a fraction of itself instead. Gas barely moves across small
+ * amounts — a hundredfold rise measured 0.17% more — so the reading still
+ * stands for the whole balance.
+ */
+export const SMALL_BALANCE_PROBE_DIVISOR = 100 as const;
 
 export const MINIMUM_GNOT_SWAP_AMOUNT = 0.001;
 export const DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT = "100000000000" as const;
