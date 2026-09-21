@@ -1,7 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import { css, Theme } from "@emotion/react";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 import Header from "./Header";
 import { DEVICE_TYPE } from "@styles/media";
