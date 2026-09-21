@@ -8,7 +8,7 @@ describe("ThemeModeButton Component", () => {
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
-          <ThemeModeButton />
+          <ThemeModeButton themeKey="dark" toggleTheme={() => {}} />
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );
