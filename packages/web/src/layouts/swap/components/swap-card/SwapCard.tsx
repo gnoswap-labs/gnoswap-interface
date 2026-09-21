@@ -12,6 +12,8 @@ import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { TokenModel } from "@models/token/token-model";
 
+import { MaxNativeAmountParams } from "@hooks/gas";
+
 import SwapCardContent from "./swap-card-content/SwapCardContent";
 import SwapCardHeader from "./swap-card-header/SwapCardHeader";
 
@@ -50,6 +52,7 @@ interface SwapCardProps {
   switchNetwork: () => void;
   setSwapRateAction: (type: SwapRateAction) => void;
   priceImpactStatus: PriceImpactStatus;
+  makeMaxAmountMessages?: MaxNativeAmountParams["makeMessages"];
 }
 
 const SwapCard: React.FC<SwapCardProps> = ({
@@ -78,6 +81,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
   priceImpactStatus,
   isSameToken,
   isRefetching,
+  makeMaxAmountMessages,
 }) => {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -113,6 +117,7 @@ const SwapCard: React.FC<SwapCardProps> = ({
         isSameToken={isSameToken}
         isRefetching={isRefetching}
         resetEstimatedLiquidity={resetEstimatedLiquidity}
+        makeMaxAmountMessages={makeMaxAmountMessages}
       />
       {shouldShowPriceImpactWarning && (
         <SwapWarningSection>

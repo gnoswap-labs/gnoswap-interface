@@ -1,7 +1,7 @@
-import { WalletResponse } from "@common/clients/wallet-client/protocols";
+import { TransactionMessage, WalletResponse } from "@common/clients/wallet-client/protocols";
 
 import { GetRoutesRequest } from "./request/get-routes-request";
-import { DrySwapRequest, SwapRouteRequest } from "./request/swap-route-request";
+import { DrySwapRequest, SwapRouteMessagesRequest, SwapRouteRequest } from "./request/swap-route-request";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
 import { WrapTokenRequest } from "./request/wrap-token-request";
 import { GetRoutesResponse } from "./response/get-routes-response";
@@ -11,6 +11,15 @@ export interface SwapRouterRepository {
   getRoutes: (request: GetRoutesRequest) => Promise<GetRoutesResponse>;
 
   getDrySwap: (request: DrySwapRequest) => Promise<number>;
+
+  /**
+   * The messages `sendExactInSwapRoute` would broadcast, approvals and the
+   * wrapping deposit included. Exposed so a caller can weigh the transaction
+   * before sending it.
+   */
+  makeExactInSwapRouteMessages: (request: SwapRouteMessagesRequest) => Promise<TransactionMessage[]>;
+
+  makeExactOutSwapRouteMessages: (request: SwapRouteMessagesRequest) => Promise<TransactionMessage[]>;
 
   sendExactInSwapRoute: (
     request: SwapRouteRequest,

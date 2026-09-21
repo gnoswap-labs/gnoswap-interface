@@ -70,6 +70,10 @@ export class PoolRepositoryMock implements PoolRepository {
     throw new Error("Not implements");
   };
 
+  makeAddLiquidityMessages = async () => {
+    throw new Error("Mock makeAddLiquidityMessages");
+  };
+
   addLiquidity = async () => {
     throw new Error("Not implements");
   };

@@ -15,9 +15,9 @@ import SelectPairButton from "@components/common/select-pair-button/SelectPairBu
 import Tooltip from "@components/common/tooltip/Tooltip";
 import WarningCard from "@components/common/warning-card/WarningCard";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
+import { useOptionalGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useMaxNativeAmount } from "@hooks/gas";
 import { useTokenData } from "@hooks/token/data/use-token-data";
-import { makeTransferGNOTTokenMessages } from "@repositories/wallet/wallet.message";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { usePositionModal } from "@hooks/wallet/ui/use-position-modal";
 import { TokenModel } from "@models/token/token-model";
@@ -104,6 +104,7 @@ const AssetSendModal: React.FC<Props> = ({
 
   const { account } = useWallet();
   const { getMaxAmount, loading: loadingMaxAmount } = useMaxNativeAmount();
+  const walletRepository = useOptionalGnoswapContext()?.walletRepository;
 
   const { tokenPrices, displayBalanceMap } = useTokenData(true);
 
@@ -201,14 +202,18 @@ const AssetSendModal: React.FC<Props> = ({
     const maxAmount = await getMaxAmount({
       token: withdrawInfo ?? null,
       balance: `${currentAvailableBalance}`,
-      makeMessages: tokenAmount =>
-        makeTransferGNOTTokenMessages({
-          tokenAmount,
-          fromAddress: account?.address ?? "",
-          // The recipient is not known yet while the amount is being filled in,
-          // and a send costs the same either way.
-          toAddress: isValidAddress(address) ? address : account?.address ?? "",
-        }),
+      makeMessages:
+        walletRepository && withdrawInfo
+          ? tokenAmount =>
+              walletRepository.makeTransferGNOTTokenMessages({
+                token: withdrawInfo,
+                tokenAmount,
+                fromAddress: account?.address ?? "",
+                // The recipient is not known yet while the amount is being
+                // filled in, and a send costs the same either way.
+                toAddress: isValidAddress(address) ? address : account?.address ?? "",
+              })
+          : undefined,
     });
 
     setAmount(maxAmount);

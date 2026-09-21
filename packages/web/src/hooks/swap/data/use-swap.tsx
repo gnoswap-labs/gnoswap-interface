@@ -1,6 +1,7 @@
 import BigNumber from "bignumber.js";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { TransactionMessage } from "@common/clients/wallet-client/protocols";
 import { SwapDirectionType } from "@common/values";
 import useDebounce from "@hooks/common/use-debounce";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
@@ -310,6 +311,56 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     ],
   );
 
+  /**
+   * Builds the messages a swap of `rawAmount` would broadcast.
+   *
+   * Routes are fetched for that exact amount rather than reused from the
+   * current input: how many pools the swap crosses decides the message set and
+   * the storage it touches, and that changes with the amount.
+   */
+  const makeMaxAmountMessages = useCallback(
+    async (rawAmount: string): Promise<TransactionMessage[]> => {
+      if (!account || !selectedTokenPair || !isFetchedTokens) return [];
+
+      const tokenAmount = makeDisplayTokenAmountString(tokenA, rawAmount);
+      if (!isPositiveAmount(tokenAmount)) return [];
+
+      const routes = await swapRouterRepository.getRoutes({
+        inputToken: tokenA,
+        outputToken: tokenB,
+        exactType: "EXACT_IN",
+        tokenAmount,
+      });
+
+      if (routes.status !== "SUCCESS" || routes.estimatedRoutes.length === 0) return [];
+
+      const outputAmount = makeDisplayTokenAmountString(tokenB, routes.amount) ?? "0";
+
+      return swapRouterRepository.makeExactInSwapRouteMessages({
+        inputToken: withTokenRouteMetadata(tokenA, tokens),
+        outputToken: tokenB,
+        tokenAmount,
+        estimatedRoutes: routes.estimatedRoutes,
+        slippage,
+        originAmount: routes.originAmount,
+        tokenAmountLimit: calculateSlippageLimitAmount(outputAmount, slippage, "EXACT_IN", tokenB.decimals),
+        deadline: Math.floor(Date.now() / 1000) + SWAP_DEADLINE_SEC,
+        referrerAddress: getNextReferralAddress(),
+      });
+    },
+    [
+      account,
+      selectedTokenPair,
+      isFetchedTokens,
+      swapRouterRepository,
+      tokenA,
+      tokenB,
+      tokens,
+      slippage,
+      getNextReferralAddress,
+    ],
+  );
+
   useEffect(() => {
     if (estimatedRoutes === null || !tokenA || !tokenB) return;
 
@@ -362,6 +413,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     swap,
     wrap,
     unwrap,
+    makeMaxAmountMessages,
     updateSwapAmount,
     isEstimatedSwapLoading,
     isTyping,

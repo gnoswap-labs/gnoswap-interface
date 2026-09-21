@@ -30,6 +30,7 @@ const IncreaseLiquidityContainer: React.FC = () => {
     isDepositTokenB,
     loading,
     refetchPositions,
+    makeMaxAmountMessages,
   } = useIncreaseHandle();
 
   const { openModal } = useIncreasePositionModal({
@@ -73,6 +74,7 @@ const IncreaseLiquidityContainer: React.FC = () => {
       changeSlippage={changeSlippage}
       buttonType={buttonType}
       onSubmit={openModal}
+      makeMaxAmountMessages={makeMaxAmountMessages}
     />
   );
 };

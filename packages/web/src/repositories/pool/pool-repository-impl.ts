@@ -4,6 +4,7 @@ import { WalletClient } from "@common/clients/wallet-client";
 import {
   SendTransactionResponse,
   SendTransactionSuccessResponse,
+  TransactionMessage,
   WalletResponse,
 } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
@@ -40,7 +41,7 @@ import {
   makePositionMintMessageWithApproves,
   makeRemoveExternalIncentiveMessageWithApproves,
 } from "./pool.message";
-import { AddLiquidityRequest } from "./request/add-liquidity-request";
+import { AddLiquidityMessagesRequest, AddLiquidityRequest } from "./request/add-liquidity-request";
 import { CollectExternalIncentivePenaltyRequest } from "./request/collect-external-incentive-penalty-request";
 import { CreateExternalIncentiveRequest } from "./request/create-external-incentive-request";
 import { CreatePoolRequest } from "./request/create-pool-request";
@@ -385,28 +386,22 @@ export class PoolRepositoryImpl implements PoolRepository {
     });
   };
 
-  addLiquidity = async (
-    request: AddLiquidityRequest,
-  ): Promise<WalletResponse<AddLiquiditySuccessResponse | AddLiquidityFailedResponse>> => {
+  makeAddLiquidityMessages = async (request: AddLiquidityMessagesRequest): Promise<TransactionMessage[]> => {
     if (!this.rpcProvider) {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }
 
-    const { gasFee, gasUsed, caller, ...requests } = request;
-    const makeTxMessageRequests = {
-      caller,
-      ...requests,
-    };
-
-    /**
-     * Add Position Mint message
-     */
-    const mintMessages = await makePositionMintMessageWithApproves(
-      makeTxMessageRequests,
-      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    return makePositionMintMessageWithApproves(request, (packagePath, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
+  };
 
-    const messages = [...mintMessages];
+  addLiquidity = async (
+    request: AddLiquidityRequest,
+  ): Promise<WalletResponse<AddLiquiditySuccessResponse | AddLiquidityFailedResponse>> => {
+    const { gasFee, gasUsed, ...requests } = request;
+
+    const messages = await this.makeAddLiquidityMessages(requests);
 
     const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
 
