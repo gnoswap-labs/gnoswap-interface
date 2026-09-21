@@ -292,7 +292,7 @@ export const getWrappedGNOTDepositAmount = (
   return "0";
 };
 
-const MINIMUM_GAS_PRICE = 0.001 as const;
+export const MINIMUM_GAS_PRICE = 0.001 as const;
 
 export function makeGasInfoBy(
   gasUsed: number | null | undefined,
@@ -317,7 +317,7 @@ export async function makeEstimateGasTransaction(
   const { gasFee, gasWanted } = makeGasInfoBy(gasUsed, gasPrice);
   if (!transactionService || !gasFee || !gasWanted) return null;
 
-  const modifedDocument = modifyDocument(document, gasWanted, gasFee);
+  const modifedDocument = withGasFee(document, gasWanted, gasFee);
 
   const { signed } = await transactionService.createTransaction(modifedDocument).catch(() => {
     return { signed: null };
@@ -329,7 +329,7 @@ export async function makeEstimateGasTransaction(
   return signed;
 }
 
-function modifyDocument(document: Document, gasWanted: number, gasFee: number): Document {
+export function withGasFee(document: Document, gasWanted: number, gasFee: number): Document {
   return {
     ...document,
     fee: {

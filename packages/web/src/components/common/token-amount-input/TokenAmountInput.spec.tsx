@@ -4,6 +4,11 @@ import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import TokenAmountInput, { TokenAmountInputProps } from "./TokenAmountInput";
 
+jest.mock("@hooks/common/use-gnoswap-context", () => ({
+  useGnoswapContext: () => ({ transactionGasService: null }),
+  useOptionalGnoswapContext: () => null,
+}));
+
 // Mock @adena-wallet/sdk
 jest.mock("@adena-wallet/sdk", () => ({
   makeMsgCallMessage: jest.fn(),

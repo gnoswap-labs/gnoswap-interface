@@ -21,6 +21,7 @@ import {
 } from "./SwapCardContent.styles";
 import IconWallet from "@components/common/icons/IconWallet";
 import { useTranslation } from "react-i18next";
+import { MaxNativeAmountParams, useMaxNativeAmount } from "@hooks/gas";
 import { useTokenBalancesDisplay } from "@hooks/token/ui/use-token-balance-display";
 import PriceWarning from "@components/common/price-warning/PriceWarning";
 import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
@@ -42,6 +43,7 @@ interface ContentProps {
   priceImpactStatus: PriceImpactStatus;
   isSameToken: boolean;
   isRefetching: boolean;
+  makeMaxAmountMessages?: MaxNativeAmountParams["makeMessages"];
 }
 
 const SwapCardContent: React.FC<ContentProps> = ({
@@ -60,8 +62,10 @@ const SwapCardContent: React.FC<ContentProps> = ({
   isSameToken,
   resetEstimatedLiquidity,
   isRefetching,
+  makeMaxAmountMessages,
 }) => {
   const { t } = useTranslation();
+  const { getMaxAmount, loading: loadingMaxAmount } = useMaxNativeAmount();
 
   const tokenA = swapTokenInfo.tokenA;
   const tokenB = swapTokenInfo.tokenB;
@@ -99,14 +103,22 @@ const SwapCardContent: React.FC<ContentProps> = ({
     [changeTokenBAmount, digitRegex],
   );
 
-  const handleAutoFillTokenA = useCallback(() => {
-    if (connectedWallet) {
-      resetEstimatedLiquidity();
-      // Keep the full precision: parseFloat rounds balances with more than ~16 significant digits
-      const formatValue = BigNumber(swapTokenInfo.tokenABalance.replace(/,/g, "")).toFixed();
-      changeTokenAAmount(formatValue);
-    }
-  }, [changeTokenAAmount, connectedWallet, swapTokenInfo]);
+  const handleAutoFillTokenA = useCallback(async () => {
+    if (!connectedWallet) return;
+
+    resetEstimatedLiquidity();
+
+    // GNOT pays for the swap out of the same balance, so the whole balance is
+    // never swappable. getMaxAmount keeps the full precision of the balance,
+    // which parseFloat would lose past ~16 significant digits.
+    const spendable = await getMaxAmount({
+      token: tokenA,
+      balance: swapTokenInfo.tokenABalance,
+      makeMessages: makeMaxAmountMessages,
+    });
+
+    changeTokenAAmount(spendable);
+  }, [changeTokenAAmount, connectedWallet, getMaxAmount, makeMaxAmountMessages, resetEstimatedLiquidity, swapTokenInfo, tokenA]);
 
   const isShowInfoSection = useMemo(() => {
     return (
@@ -192,7 +204,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
               {balanceADisplay}
             </span>
             {hasTokenABalance && (
-              <button className="balance-max-button" onClick={handleAutoFillTokenA}>
+              <button className="balance-max-button" onClick={handleAutoFillTokenA} disabled={loadingMaxAmount}>
                 {t("common:max")}
               </button>
             )}

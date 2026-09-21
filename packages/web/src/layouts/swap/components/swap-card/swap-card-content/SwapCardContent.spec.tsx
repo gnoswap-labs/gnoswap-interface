@@ -1,9 +1,14 @@
 import { PriceImpactStatus, SwapRateAction } from "@hooks/swap/data/use-swap-handler";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import SwapCardContent from "./SwapCardContent";
+
+jest.mock("@hooks/common/use-gnoswap-context", () => ({
+  useGnoswapContext: () => ({ transactionGasService: null }),
+  useOptionalGnoswapContext: () => null,
+}));
 
 // Mock @adena-wallet/sdk
 jest.mock("@adena-wallet/sdk", () => ({
@@ -57,7 +62,7 @@ const swapTokenInfo: SwapTokenInfo = {
 const LARGE_BALANCE = "62667447936.264477";
 
 describe("SwapCardContent Component", () => {
-  it("Max forwards the exact balance string without number rounding", () => {
+  it("Max forwards the exact balance string without number rounding", async () => {
     const changeTokenAAmount = jest.fn();
     const mockProps = {
       swapTokenInfo: {
@@ -92,7 +97,7 @@ describe("SwapCardContent Component", () => {
 
     fireEvent.click(screen.getByText("common:max"));
 
-    expect(changeTokenAAmount).toHaveBeenCalledWith(LARGE_BALANCE);
+    await waitFor(() => expect(changeTokenAAmount).toHaveBeenCalledWith(LARGE_BALANCE));
     expect(parseFloat(LARGE_BALANCE).toString()).not.toBe(LARGE_BALANCE);
   });
 

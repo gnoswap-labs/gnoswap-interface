@@ -1,13 +1,27 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
-import { adaptAbciQueryResponse, parseABCI } from "@gnolang/tm2-js-client";
+import {
+  adaptAbciQueryResponse,
+  extractSimulateFromResponse,
+  parseABCI,
+  Tx,
+  uint8ArrayToBase64,
+} from "@gnolang/tm2-js-client";
 import { RpcClient, Tm2Client } from "@gnolang/tm2-rpc";
 
 import { parseTokenAmount } from "@utils/token-utils";
 
 import { FallbackRpcClient, RPC_REQUEST_TIMEOUT_MS } from "./fallback-rpc-client";
+import { sumStorageDeposit } from "./methods/storage-deposit-event";
 import { RpcEndpointSelector } from "./rpc-endpoint-selector";
 
 const MIN_CONNECT_TIMEOUT_MS = 15_000;
+
+export interface SimulateTxResult {
+  /** Gas the transaction actually burned. */
+  gasUsed: number;
+  /** Storage deposit, in ugnot, the transaction would lock. */
+  storageDeposit: number;
+}
 
 export interface GnoProviderOptions {
   /** Optional second endpoint used once the primary one stops answering. */
@@ -97,5 +111,39 @@ export class GnoProvider extends GnoJSONRPCProvider {
     }
 
     return priceAmount / gasPrice.gas;
+  }
+
+  /**
+   * Dry-runs the transaction and reports both costs it would incur.
+   *
+   * Unlike {@link estimateGas}, which discards everything but the gas, this
+   * keeps the emitted events so the storage deposit is visible too. The node
+   * runs the ante handler and the messages against a throwaway cache, so the
+   * signer must be able to afford the offered fee, the sent coins, and the
+   * deposit for the call to succeed.
+   */
+  public async simulateTx(tx: Tx): Promise<SimulateTxResult> {
+    const encodedTx = uint8ArrayToBase64(Tx.encode(tx).finish());
+
+    const result = extractSimulateFromResponse(
+      adaptAbciQueryResponse(
+        await this.client.abciQuery({
+          path: ".app/simulate",
+          data: new TextEncoder().encode(encodedTx),
+          height: 0,
+          prove: false,
+        }),
+      ),
+    );
+
+    const errorType = result.response_base?.error?.type_url;
+    if (errorType) {
+      throw new Error(`Transaction simulation failed: ${errorType}`);
+    }
+
+    return {
+      gasUsed: Number(result.gas_used),
+      storageDeposit: sumStorageDeposit(result.response_base?.events),
+    };
   }
 }

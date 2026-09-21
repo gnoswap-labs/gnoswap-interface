@@ -9,3 +9,9 @@ export const useGnoswapContext = () => {
   }
   return context;
 };
+
+/**
+ * Same context, but for consumers that have a meaningful behaviour without the
+ * services — a component rendered in isolation, for instance.
+ */
+export const useOptionalGnoswapContext = () => useContext(GnoswapContext);

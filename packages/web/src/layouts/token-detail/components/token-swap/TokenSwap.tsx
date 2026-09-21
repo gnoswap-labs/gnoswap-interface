@@ -1,4 +1,3 @@
-import BigNumber from "bignumber.js";
 import React, { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { cx } from "@emotion/css";
@@ -20,6 +19,7 @@ import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
 
 import { CopyTooltip, wrapper } from "./TokenSwap.styles";
 import IconWallet from "@components/common/icons/IconWallet";
+import { MaxNativeAmountParams, useMaxNativeAmount } from "@hooks/gas";
 import { useTokenBalancesDisplay } from "@hooks/token/ui/use-token-balance-display";
 import PriceWarning from "@components/common/price-warning/PriceWarning";
 
@@ -49,6 +49,7 @@ export interface TokenSwapProps {
   switchNetwork: () => void;
   setSwapRateAction: (type: SwapRateAction) => void;
   priceImpactStatus: PriceImpactStatus;
+  makeMaxAmountMessages?: MaxNativeAmountParams["makeMessages"];
 }
 
 function isAmount(str: string) {
@@ -81,8 +82,10 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   priceImpactStatus,
   swapTokenInfo,
   isRefetching,
+  makeMaxAmountMessages,
 }) => {
   const { t } = useTranslation();
+  const { getMaxAmount, loading: loadingMaxAmount } = useMaxNativeAmount();
   const tokenA = dataTokenInfo.tokenA;
   const tokenB = dataTokenInfo.tokenB;
   const direction = swapSummaryInfo?.swapDirection;
@@ -117,13 +120,20 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
     [changeTokenBAmount],
   );
 
-  const handleAutoFillTokenA = useCallback(() => {
-    if (connectedWallet) {
-      // Keep the full precision: parseFloat rounds balances with more than ~16 significant digits
-      const formatValue = BigNumber(dataTokenInfo.tokenABalance.replace(/,/g, "")).toFixed();
-      changeTokenAAmount(formatValue);
-    }
-  }, [changeTokenAAmount, connectedWallet, dataTokenInfo]);
+  const handleAutoFillTokenA = useCallback(async () => {
+    if (!connectedWallet) return;
+
+    // GNOT pays for the swap out of the same balance, so the whole balance is
+    // never swappable. getMaxAmount keeps the full precision of the balance,
+    // which parseFloat would lose past ~16 significant digits.
+    const spendable = await getMaxAmount({
+      token: tokenA,
+      balance: dataTokenInfo.tokenABalance,
+      makeMessages: makeMaxAmountMessages,
+    });
+
+    changeTokenAAmount(spendable);
+  }, [changeTokenAAmount, connectedWallet, dataTokenInfo, getMaxAmount, makeMaxAmountMessages, tokenA]);
 
   /**
    * Ensure tokenABalance is a valid value (not empty (“-”) or zero)
@@ -208,7 +218,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
                 {balanceADisplay}
               </span>
               {hasTokenABalance && (
-                <button className="balance-max-button" onClick={handleAutoFillTokenA}>
+                <button className="balance-max-button" onClick={handleAutoFillTokenA} disabled={loadingMaxAmount}>
                   {t("common:max")}
                 </button>
               )}

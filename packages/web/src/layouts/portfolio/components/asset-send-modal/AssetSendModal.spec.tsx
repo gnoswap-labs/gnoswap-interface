@@ -15,6 +15,11 @@ jest.mock("react-i18next", () => ({
 
 jest.mock("@hooks/common/use-esc-close-modal", () => jest.fn());
 
+jest.mock("@hooks/common/use-gnoswap-context", () => ({
+  useGnoswapContext: () => ({ transactionGasService: null }),
+  useOptionalGnoswapContext: () => null,
+}));
+
 jest.mock("@hooks/wallet/ui/use-position-modal", () => ({
   usePositionModal: jest.fn(),
 }));
