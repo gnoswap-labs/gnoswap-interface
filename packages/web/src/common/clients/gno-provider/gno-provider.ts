@@ -4,7 +4,6 @@ import {
   extractSimulateFromResponse,
   parseABCI,
   Tx,
-  uint8ArrayToBase64,
 } from "@gnolang/tm2-js-client";
 import { RpcClient, Tm2Client } from "@gnolang/tm2-rpc";
 
@@ -123,13 +122,15 @@ export class GnoProvider extends GnoJSONRPCProvider {
    * deposit for the call to succeed.
    */
   public async simulateTx(tx: Tx): Promise<SimulateTxResult> {
-    const encodedTx = uint8ArrayToBase64(Tx.encode(tx).finish());
-
     const result = extractSimulateFromResponse(
       adaptAbciQueryResponse(
         await this.client.abciQuery({
+          // The encoded transaction goes in as raw bytes: the RPC layer
+          // base64-encodes `data` on the way out, and the node rejects a
+          // second layer of it with TxDecodeError. tm2-js-client's own
+          // estimateGas passes the base64 text here and fails for that reason.
           path: ".app/simulate",
-          data: new TextEncoder().encode(encodedTx),
+          data: Tx.encode(tx).finish(),
           height: 0,
           prove: false,
         }),

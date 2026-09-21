@@ -9,9 +9,10 @@ import {
   DEFAULT_GAS_FEE,
   DEFAULT_GAS_WANTED,
   DEFAULT_NATIVE_AMOUNT_RESERVE,
+  GAS_FEE_RESERVE_MARGIN,
   NATIVE_AMOUNT_RESERVE_BUFFER,
-  PROBE_STORAGE_DEPOSIT_ALLOWANCE,
-  PROBE_STORAGE_DEPOSIT_ALLOWANCE_RATIO,
+  PROBE_HEADROOM_CAP,
+  PROBE_HEADROOM_RATIO,
   STORAGE_DEPOSIT_BUFFER_MULTIPLIER,
 } from "@common/values";
 import { GasToken } from "@common/values/token-constant";
@@ -27,13 +28,21 @@ import {
 } from "./transaction-gas-service";
 
 /**
- * The fee every send path offers, in ugnot. Derived the way
+ * The flat fee a send path offers, in ugnot. Derived the way
  * `generateSendTransactionParams` derives it so the two cannot drift apart.
+ * It is a floor for the reserve, not the whole of it: the wallet re-prices the
+ * fee from its own gas estimate, and a heavy route costs more than this.
  */
 const OFFERED_GAS_FEE = makeRawTokenAmount(GasToken, DEFAULT_GAS_FEE) ?? `${DEFAULT_NATIVE_AMOUNT_RESERVE}`;
 
-const VERIFY_ATTEMPTS = 2;
-const SHRINK_MULTIPLIER = 0.995;
+const MINIMUM_GAS_PRICE = 0.001;
+
+/**
+ * How many times to narrow the amount after the probe. Each one is a route
+ * lookup and a simulation, so the count trades latency for precision: from a
+ * headroom of H the remaining slack is about H / 2^ATTEMPTS.
+ */
+const VERIFY_ATTEMPTS = 3;
 
 type TransactionAccount = NonNullable<CreateTransactionDocumentParameters["account"]>;
 
@@ -42,10 +51,18 @@ const toUgnot = (value: BigNumber) => value.toFixed(0, BigNumber.ROUND_DOWN);
 const ceilToUgnot = (value: BigNumber) => value.toFixed(0, BigNumber.ROUND_CEIL);
 
 /**
- * The gas fee is reserved exactly as offered; only the deposit is padded, since
- * it is the part that can grow between the probe and the final amount.
+ * Both costs are padded over what the probe measured, since both grow with the
+ * amount. The fee never drops below what a send path offers outright, because
+ * a wallet that takes the offered figure at face value would charge that much.
  */
-function makeReserve(storageDeposit: number, gasFee: string): NativeAmountReserve {
+function makeReserve(
+  { gasUsed, storageDeposit }: SimulateTxResult,
+  gasPrice: number,
+  offeredGasFee: string,
+): NativeAmountReserve {
+  const pricedGasFee = BigNumber(gasUsed).multipliedBy(GAS_FEE_RESERVE_MARGIN).multipliedBy(gasPrice);
+
+  const gasFee = BigNumber.maximum(offeredGasFee, ceilToUgnot(pricedGasFee)).toFixed(0);
   const deposit = ceilToUgnot(BigNumber(storageDeposit).multipliedBy(STORAGE_DEPOSIT_BUFFER_MULTIPLIER));
   const buffer = `${NATIVE_AMOUNT_RESERVE_BUFFER}`;
 
@@ -58,15 +75,20 @@ function makeReserve(storageDeposit: number, gasFee: string): NativeAmountReserv
 }
 
 /**
- * How much of the spendable balance to leave for the deposit while probing.
- * Proportional rather than flat: both costs fall with the amount, so holding
- * back a fixed GNOT would probe a small balance at a fraction of its ceiling
- * and measure a deposit nothing like the one the final amount incurs.
+ * How much of the balance to hold back while probing. Proportional rather than
+ * flat: both costs fall with the amount, so a fixed GNOT would probe a small
+ * balance at a fraction of its ceiling and measure costs nothing like the ones
+ * the final amount incurs.
  */
-function probeDepositAllowance(ceiling: BigNumber): string {
-  const proportional = ceilToUgnot(ceiling.multipliedBy(PROBE_STORAGE_DEPOSIT_ALLOWANCE_RATIO));
+function probeHeadrooms(balance: BigNumber): string[] {
+  const proportional = ceilToUgnot(balance.multipliedBy(PROBE_HEADROOM_RATIO));
+  const capped = BigNumber.minimum(PROBE_HEADROOM_CAP, proportional).toFixed(0);
 
-  return BigNumber.minimum(PROBE_STORAGE_DEPOSIT_ALLOWANCE, proportional).toFixed(0);
+  // The capped figure keeps the probe close to the ceiling, which is where the
+  // measurement is worth taking. It is not always enough: at an extreme amount
+  // a swap crosses enough ticks to lock a deposit of several GNOT, and the
+  // probe then fails on affordability. The proportional figure is the retry.
+  return capped === proportional ? [capped] : [capped, proportional];
 }
 
 function makeFallbackMaxNativeAmount(balance: BigNumber, reserve: BigNumber): MaxNativeAmount {
@@ -115,9 +137,9 @@ export class TransactionGasServiceImpl implements TransactionGasService {
   public async estimateMaxNativeAmount(request: MaxNativeAmountRequest): Promise<MaxNativeAmount> {
     const { balance, makeMessages, gasWanted = DEFAULT_GAS_WANTED } = request;
 
-    const gasFee = request.gasFee ?? OFFERED_GAS_FEE;
-    // Without a measurement the fee is still certain, so it is the floor.
-    const fallbackReserve = request.fallbackReserve ?? gasFee;
+    const offeredGasFee = request.gasFee ?? OFFERED_GAS_FEE;
+    // Without a measurement the offered fee is the only certain cost.
+    const fallbackReserve = request.fallbackReserve ?? offeredGasFee;
 
     const available = BigNumber(balance);
     const fallback = makeFallbackMaxNativeAmount(available, BigNumber(fallbackReserve));
@@ -126,53 +148,87 @@ export class TransactionGasServiceImpl implements TransactionGasService {
 
     // Simulating at the maximum would fail on the very costs being measured:
     // the node deducts the fee and locks the deposit against the real balance.
-    // So the probe holds back the fee plus room for a deposit, which makes it a
-    // transaction that could have been broadcast as it stands.
-    const ceiling = available.minus(gasFee).minus(NATIVE_AMOUNT_RESERVE_BUFFER);
-    const probeAmount = BigNumber(toUgnot(ceiling.minus(probeDepositAllowance(ceiling))));
-    if (probeAmount.isLessThanOrEqualTo(0)) return fallback;
-
+    // So the probe holds back room for both, which makes it an amount that
+    // could have been broadcast as it stands.
     try {
+      const gasPrice = (await this.getGasPrices()) || MINIMUM_GAS_PRICE;
       // Resolved once so the simulations below don't each ask the wallet.
       const account = await this.getAccountInfo();
 
-      const probe = await this.simulate(toUgnot(probeAmount), makeMessages, gasWanted, gasFee, account);
+      let probeAmount: BigNumber | null = null;
+      let probe: SimulateTxResult | null = null;
 
-      let reserve = makeReserve(probe.storageDeposit, gasFee);
-      let amount = BigNumber(toUgnot(available.minus(reserve.total)));
-      let settled = false;
+      for (const headroom of probeHeadrooms(available)) {
+        const candidate = BigNumber(toUgnot(available.minus(headroom)));
+        if (candidate.isLessThanOrEqualTo(0)) continue;
 
-      for (let attempt = 0; attempt < VERIFY_ATTEMPTS && !settled; attempt += 1) {
-        // The deposit never shrinks as the amount grows, so one measured at the
-        // larger probe already covers this amount.
-        if (amount.isLessThanOrEqualTo(probeAmount)) {
-          settled = true;
-          break;
-        }
+        // The fee only has to be payable for the measurement to run — gas used
+        // does not depend on it — so it is the realistic figure where the
+        // headroom covers it and the largest affordable one otherwise.
+        const probeGasFee = BigNumber.minimum(headroom, ceilToUgnot(BigNumber(gasWanted).multipliedBy(gasPrice)));
 
         try {
-          const verification = await this.simulate(toUgnot(amount), makeMessages, gasWanted, gasFee, account);
-          const verified = makeReserve(verification.storageDeposit, gasFee);
-          const verifiedAmount = BigNumber(toUgnot(available.minus(verified.total)));
-
-          reserve = verified;
-          if (verifiedAmount.isGreaterThanOrEqualTo(amount)) {
-            settled = true;
-          } else {
-            amount = verifiedAmount;
-          }
+          probe = await this.simulate(toUgnot(candidate), makeMessages, gasWanted, probeGasFee.toFixed(0), account);
+          probeAmount = candidate;
+          break;
         } catch {
-          amount = BigNumber(toUgnot(amount.multipliedBy(SHRINK_MULTIPLIER)));
+          continue;
         }
       }
 
-      if (!settled) {
-        amount = BigNumber.minimum(amount, probeAmount);
+      if (!probe || !probeAmount) return fallback;
+
+      // The probe is the largest amount known to work, so it is the floor for
+      // the answer. Each attempt reaches above it, and a failure bisects the
+      // gap rather than trimming a percentage: on a large balance a relative
+      // step throws away thousands of GNOT, while the costs it is groping for
+      // are a few.
+      let best = probeAmount;
+      let reserve = makeReserve(probe, gasPrice, offeredGasFee);
+      let candidate = BigNumber(toUgnot(available.minus(reserve.total)));
+
+      for (let attempt = 0; attempt < VERIFY_ATTEMPTS; attempt += 1) {
+        if (candidate.isLessThanOrEqualTo(best)) break;
+
+        try {
+          const verification = await this.simulate(
+            toUgnot(candidate),
+            makeMessages,
+            gasWanted,
+            reserve.gasFee,
+            account,
+          );
+
+          reserve = makeReserve(verification, gasPrice, offeredGasFee);
+          best = candidate;
+          candidate = BigNumber(toUgnot(available.minus(reserve.total)));
+        } catch {
+          candidate = BigNumber(toUgnot(best.plus(candidate).dividedBy(2)));
+        }
       }
 
-      if (amount.isLessThanOrEqualTo(0)) return fallback;
+      // The probe proves its own amount affordable, but the reserve can still
+      // come out above the headroom it held back — a light action whose priced
+      // fee lands under the flat one a send path offers. Keep both bounds.
+      best = BigNumber.minimum(best, toUgnot(available.minus(reserve.total)));
 
-      return { amount: toUgnot(amount), reserve, simulated: true };
+      if (best.isLessThanOrEqualTo(0)) return fallback;
+
+      // Report what is actually held back. The search can stop above the
+      // computed reserve — a cost the probe could not see keeps the amount
+      // down — and the breakdown should not claim otherwise.
+      const withheld = available.minus(best);
+      const measured = BigNumber(reserve.gasFee).plus(reserve.storageDeposit);
+
+      return {
+        amount: toUgnot(best),
+        reserve: {
+          ...reserve,
+          buffer: BigNumber.maximum(withheld.minus(measured), 0).toFixed(0),
+          total: withheld.toFixed(0),
+        },
+        simulated: true,
+      };
     } catch {
       return fallback;
     }

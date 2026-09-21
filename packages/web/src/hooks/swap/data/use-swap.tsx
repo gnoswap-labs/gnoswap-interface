@@ -22,6 +22,15 @@ interface UseSwapProps {
   swapFee?: number;
 }
 
+/** The router splits an amount across pools; the quotes only add up to 100 when it is fully routable. */
+const FULL_ROUTE_COVERAGE = 100;
+
+function hasFullRouteCoverage(routes: EstimatedRoute[]): boolean {
+  if (routes.length === 0) return false;
+
+  return routes.reduce((total, route) => total + route.quote, 0) >= FULL_ROUTE_COVERAGE;
+}
+
 /** Returns true when the amount string is a positive number. */
 function isPositiveAmount(amount: string | null): amount is string {
   if (amount === null) return false;
@@ -332,7 +341,9 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
         tokenAmount,
       });
 
-      if (routes.status !== "SUCCESS" || routes.estimatedRoutes.length === 0) return [];
+      // getRoutes leaves `status` unset; liquidity is judged from the quotes,
+      // the same rule useGetRoutes applies.
+      if (!hasFullRouteCoverage(routes.estimatedRoutes)) return [];
 
       const outputAmount = makeDisplayTokenAmountString(tokenB, routes.amount) ?? "0";
 

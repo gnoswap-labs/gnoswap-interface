@@ -36,17 +36,24 @@ export const NATIVE_AMOUNT_RESERVE_BUFFER = 10_000 as const;
 /** Storage deposit grows with the amount, so the measured value is padded. */
 export const STORAGE_DEPOSIT_BUFFER_MULTIPLIER = 1.5 as const;
 /**
- * Upper bound on the room left for the storage deposit while probing, in
- * ugnot. At the default storage price of 100 ugnot per byte this covers 10 KB
- * of new realm state, well above what a swap or a mint writes.
+ * Margin over the measured gas when pricing the fee to reserve. The wallet
+ * re-prices the fee at the live gas price for a gas-wanted of gasUsed x 1.1,
+ * so this has to clear that multiplier and the gas the amount still gains
+ * between the probe and the final figure.
  */
-export const PROBE_STORAGE_DEPOSIT_ALLOWANCE = 1_000_000 as const;
+export const GAS_FEE_RESERVE_MARGIN = 1.5 as const;
 /**
- * The same room as a share of what is spendable, so a small balance is probed
- * near its own ceiling instead of at a fraction of it. Both costs fall with the
- * amount, so a proportional allowance stays representative at either end.
+ * Upper bound on the room held back while probing, in ugnot. Gas dominates a
+ * swap — a heavy route can cost well over a GNOT — so this is far above the
+ * storage deposit alone.
  */
-export const PROBE_STORAGE_DEPOSIT_ALLOWANCE_RATIO = 0.1 as const;
+export const PROBE_HEADROOM_CAP = 5_000_000 as const;
+/**
+ * The same room as a share of the balance, so a small balance is probed near
+ * its own ceiling instead of at a fraction of it. Both costs fall with the
+ * amount, so a proportional headroom stays representative at either end.
+ */
+export const PROBE_HEADROOM_RATIO = 0.1 as const;
 
 export const MINIMUM_GNOT_SWAP_AMOUNT = 0.001;
 export const DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT = "100000000000" as const;
