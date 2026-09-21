@@ -1,6 +1,5 @@
 import React from "react";
 
-import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 
 import { wrapper } from "./WalletMyPositions.styles";
@@ -11,10 +10,8 @@ interface WalletMyPositionsProps {
 }
 
 const WalletMyPositions: React.FC<WalletMyPositionsProps> = ({ header, cardList }) => {
-  const { isFetchedPosition, positions, loading } = usePositionData();
   const { connected } = useWallet();
   if (!connected) return null;
-  if (isFetchedPosition && positions.length === 0 && loading) return null;
   return (
     <div css={wrapper}>
       {header}
