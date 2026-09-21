@@ -12,36 +12,49 @@ import {
 import { WalletClient } from "@common/clients/wallet-client";
 import { CommonError } from "@common/errors";
 import {
+  DEFAULT_GAS_FEE,
   DEFAULT_GAS_WANTED,
   DEFAULT_NATIVE_AMOUNT_RESERVE,
-  GAS_WANTED_BUFFER_SAFE_MARGIN,
   NATIVE_AMOUNT_RESERVE_BUFFER,
+  PROBE_STORAGE_DEPOSIT_ALLOWANCE,
   STORAGE_DEPOSIT_BUFFER_MULTIPLIER,
 } from "@common/values";
+import { GasToken } from "@common/values/token-constant";
 import { TransactionService } from "@services/transaction";
 import { CreateTransactionDocumentParameters } from "@services/transaction/request";
-import { documentToDefaultTx, MINIMUM_GAS_PRICE, withGasFee } from "@utils/transaction-utils";
+import { makeRawTokenAmount } from "@utils/token-utils";
+import { documentToDefaultTx, withGasFee } from "@utils/transaction-utils";
 
 /**
- * The probe runs with no fee at all. The ante handler skips the deduction for a
- * zero fee and does not enforce the gas price floor while simulating, so the
- * probe survives a balance that is almost entirely committed to the amount.
+ * The fee every send path offers, in ugnot. Derived the way
+ * `generateSendTransactionParams` derives it so the two cannot drift apart.
  */
-const PROBE_GAS_FEE = 0;
+const OFFERED_GAS_FEE = makeRawTokenAmount(GasToken, DEFAULT_GAS_FEE) ?? `${DEFAULT_NATIVE_AMOUNT_RESERVE}`;
 
 const VERIFY_ATTEMPTS = 2;
 const SHRINK_MULTIPLIER = 0.995;
 
 type TransactionAccount = NonNullable<CreateTransactionDocumentParameters["account"]>;
 
-interface MeasuredCost {
-  gasWanted: number;
-  reserve: NativeAmountReserve;
-}
-
 const toUgnot = (value: BigNumber) => value.toFixed(0, BigNumber.ROUND_DOWN);
 
 const ceilToUgnot = (value: BigNumber) => value.toFixed(0, BigNumber.ROUND_CEIL);
+
+/**
+ * The gas fee is reserved exactly as offered; only the deposit is padded, since
+ * it is the part that can grow between the probe and the final amount.
+ */
+function makeReserve(storageDeposit: number, gasFee: string): NativeAmountReserve {
+  const deposit = ceilToUgnot(BigNumber(storageDeposit).multipliedBy(STORAGE_DEPOSIT_BUFFER_MULTIPLIER));
+  const buffer = `${NATIVE_AMOUNT_RESERVE_BUFFER}`;
+
+  return {
+    gasFee,
+    storageDeposit: deposit,
+    buffer,
+    total: BigNumber(gasFee).plus(deposit).plus(buffer).toFixed(0),
+  };
+}
 
 function makeFallbackMaxNativeAmount(balance: BigNumber, reserve: BigNumber): MaxNativeAmount {
   const total = ceilToUgnot(reserve);
@@ -87,52 +100,49 @@ export class TransactionGasServiceImpl implements TransactionGasService {
   }
 
   public async estimateMaxNativeAmount(request: MaxNativeAmountRequest): Promise<MaxNativeAmount> {
-    const { balance, makeMessages, fallbackReserve = `${DEFAULT_NATIVE_AMOUNT_RESERVE}` } = request;
+    const { balance, makeMessages, gasWanted = DEFAULT_GAS_WANTED } = request;
+
+    const gasFee = request.gasFee ?? OFFERED_GAS_FEE;
+    // Without a measurement the fee is still certain, so it is the floor.
+    const fallbackReserve = request.fallbackReserve ?? gasFee;
 
     const available = BigNumber(balance);
     const fallback = makeFallbackMaxNativeAmount(available, BigNumber(fallbackReserve));
 
-    const probeAmount = BigNumber(toUgnot(available.minus(fallbackReserve)));
-    if (!this.rpcProvider || !this.transactionService || probeAmount.isLessThanOrEqualTo(0)) {
-      return fallback;
-    }
+    if (!this.rpcProvider || !this.transactionService) return fallback;
+
+    // Simulating at the maximum would fail on the very costs being measured:
+    // the node deducts the fee and locks the deposit against the real balance.
+    // So the probe holds back the fee plus room for a realistic deposit, which
+    // makes it a transaction that could have been broadcast as it stands.
+    const probeReserve = BigNumber(gasFee).plus(PROBE_STORAGE_DEPOSIT_ALLOWANCE).plus(NATIVE_AMOUNT_RESERVE_BUFFER);
+    const probeAmount = BigNumber(toUgnot(available.minus(probeReserve)));
+    if (probeAmount.isLessThanOrEqualTo(0)) return fallback;
 
     try {
-      const gasPrice = (await this.getGasPrices()) || MINIMUM_GAS_PRICE;
-      // Resolved once so the two simulations below don't each ask the wallet.
+      // Resolved once so the simulations below don't each ask the wallet.
       const account = await this.getAccountInfo();
 
-      const probe = await this.simulate(
-        toUgnot(probeAmount),
-        makeMessages,
-        DEFAULT_GAS_WANTED,
-        PROBE_GAS_FEE,
-        account,
-      );
-      let measured = this.measureCost(probe, gasPrice);
-      let amount = BigNumber(toUgnot(available.minus(measured.reserve.total)));
+      const probe = await this.simulate(toUgnot(probeAmount), makeMessages, gasWanted, gasFee, account);
+
+      let reserve = makeReserve(probe.storageDeposit, gasFee);
+      let amount = BigNumber(toUgnot(available.minus(reserve.total)));
       let settled = false;
 
       for (let attempt = 0; attempt < VERIFY_ATTEMPTS && !settled; attempt += 1) {
-        // The reserve never shrinks as the amount grows, so a reserve measured
-        // at the larger probe already covers this amount.
+        // The deposit never shrinks as the amount grows, so one measured at the
+        // larger probe already covers this amount.
         if (amount.isLessThanOrEqualTo(probeAmount)) {
           settled = true;
           break;
         }
 
         try {
-          const verification = await this.simulate(
-            toUgnot(amount),
-            makeMessages,
-            measured.gasWanted,
-            Number(measured.reserve.gasFee),
-            account,
-          );
-          const verified = this.measureCost(verification, gasPrice);
-          const verifiedAmount = BigNumber(toUgnot(available.minus(verified.reserve.total)));
+          const verification = await this.simulate(toUgnot(amount), makeMessages, gasWanted, gasFee, account);
+          const verified = makeReserve(verification.storageDeposit, gasFee);
+          const verifiedAmount = BigNumber(toUgnot(available.minus(verified.total)));
 
-          measured = verified;
+          reserve = verified;
           if (verifiedAmount.isGreaterThanOrEqualTo(amount)) {
             settled = true;
           } else {
@@ -149,7 +159,7 @@ export class TransactionGasServiceImpl implements TransactionGasService {
 
       if (amount.isLessThanOrEqualTo(0)) return fallback;
 
-      return { amount: toUgnot(amount), reserve: measured.reserve, simulated: true };
+      return { amount: toUgnot(amount), reserve, simulated: true };
     } catch {
       return fallback;
     }
@@ -159,7 +169,7 @@ export class TransactionGasServiceImpl implements TransactionGasService {
     amount: string,
     makeMessages: MaxNativeAmountRequest["makeMessages"],
     gasWanted: number,
-    gasFee: number,
+    gasFee: string,
     account?: TransactionAccount,
   ): Promise<SimulateTxResult> {
     if (!this.rpcProvider || !this.transactionService) {
@@ -167,9 +177,15 @@ export class TransactionGasServiceImpl implements TransactionGasService {
     }
 
     const messages = await makeMessages(amount);
+    // An action that cannot build its messages for this amount has nothing to
+    // measure, so the caller's fallback reserve is the honest answer.
+    if (messages.length === 0) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
     const document = await this.transactionService.createDocument({ messages, memo: "", account });
 
-    return this.rpcProvider.simulateTx(documentToDefaultTx(withGasFee(document, gasWanted, gasFee)));
+    return this.rpcProvider.simulateTx(documentToDefaultTx(withGasFee(document, gasWanted, Number(gasFee))));
   }
 
   private async getAccountInfo(): Promise<TransactionAccount | undefined> {
@@ -182,23 +198,5 @@ export class TransactionGasServiceImpl implements TransactionGasService {
     } catch {
       return undefined;
     }
-  }
-
-  private measureCost({ gasUsed, storageDeposit }: SimulateTxResult, gasPrice: number): MeasuredCost {
-    const gasWanted = BigNumber(gasUsed).multipliedBy(GAS_WANTED_BUFFER_SAFE_MARGIN);
-
-    const gasFee = ceilToUgnot(gasWanted.multipliedBy(gasPrice));
-    const deposit = ceilToUgnot(BigNumber(storageDeposit).multipliedBy(STORAGE_DEPOSIT_BUFFER_MULTIPLIER));
-    const buffer = `${NATIVE_AMOUNT_RESERVE_BUFFER}`;
-
-    return {
-      gasWanted: Number(ceilToUgnot(gasWanted)),
-      reserve: {
-        gasFee,
-        storageDeposit: deposit,
-        buffer,
-        total: BigNumber(gasFee).plus(deposit).plus(buffer).toFixed(0),
-      },
-    };
   }
 }

@@ -2,13 +2,17 @@ import BigNumber from "bignumber.js";
 import { useCallback, useState } from "react";
 
 import { TransactionMessage } from "@common/clients/wallet-client/protocols";
-import { DEFAULT_CONTRACT_USE_FEE, DEFAULT_GAS_FEE } from "@common/values";
+import { DEFAULT_GAS_FEE } from "@common/values";
+import { GasToken } from "@common/values/token-constant";
 import { useOptionalGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { makeDisplayTokenAmountString, makeRawTokenAmount } from "@utils/token-utils";
 
-/** Preserves the flat reserve the MAX button used before simulation was wired in. */
-const FALLBACK_RESERVE = `${DEFAULT_CONTRACT_USE_FEE + DEFAULT_GAS_FEE}`;
+/**
+ * The flat fee every send path offers, in ugnot. It is deducted in full, so it
+ * is the one cost that can be reserved without measuring anything.
+ */
+const OFFERED_GAS_FEE = makeRawTokenAmount(GasToken, DEFAULT_GAS_FEE) ?? "0";
 
 export interface MaxNativeAmountParams {
   token: TokenModel | null;
@@ -16,8 +20,8 @@ export interface MaxNativeAmountParams {
   balance: string;
   /**
    * Builds the messages the action would broadcast for a candidate raw amount.
-   * Without it the reserve falls back to {@link FALLBACK_RESERVE}, since there
-   * is nothing to simulate.
+   * Without it only the gas fee is reserved, since there is nothing to simulate
+   * the storage deposit against.
    */
   makeMessages?: (amount: string) => TransactionMessage[] | Promise<TransactionMessage[]>;
 }
@@ -46,7 +50,7 @@ export const useMaxNativeAmount = () => {
       if (!rawBalance) return displayBalance.toFixed();
 
       if (!makeMessages || !transactionGasService) {
-        const spendable = BigNumber(rawBalance).minus(FALLBACK_RESERVE);
+        const spendable = BigNumber(rawBalance).minus(OFFERED_GAS_FEE);
 
         return makeDisplayTokenAmountString(token, BigNumber.maximum(spendable, 0).toFixed(0)) ?? "0";
       }
@@ -57,7 +61,6 @@ export const useMaxNativeAmount = () => {
         const { amount } = await transactionGasService.estimateMaxNativeAmount({
           balance: rawBalance,
           makeMessages,
-          fallbackReserve: FALLBACK_RESERVE,
         });
 
         return makeDisplayTokenAmountString(token, amount) ?? "0";

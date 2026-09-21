@@ -292,7 +292,7 @@ export const getWrappedGNOTDepositAmount = (
   return "0";
 };
 
-export const MINIMUM_GAS_PRICE = 0.001 as const;
+const MINIMUM_GAS_PRICE = 0.001 as const;
 
 export function makeGasInfoBy(
   gasUsed: number | null | undefined,
