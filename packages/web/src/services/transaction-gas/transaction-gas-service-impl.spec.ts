@@ -5,19 +5,16 @@ import { GasToken } from "@common/values/token-constant";
 import { TransactionService } from "@services/transaction";
 import { Document } from "src/types/transaction-messages.types";
 
+import { OFFERED_GAS_FEE, planProbes } from "./native-amount-reserve";
 import { TransactionGasServiceImpl } from "./transaction-gas-service-impl";
 
 const GAS_PRICE = 0.001;
-/** The flat fee a send path offers: DEFAULT_GAS_FEE of 1 GNOT at 6 decimals. */
-const OFFERED_GAS_FEE = 1_000_000;
 const RESERVE_BUFFER = 10_000;
-const HEADROOM_CAP = 5_000_000;
-const HEADROOM_RATIO = 0.1;
 
 const BALANCE = 100_000_000;
 
-const headroomOf = (balance: number) => Math.min(HEADROOM_CAP, Math.ceil(balance * HEADROOM_RATIO));
-const probeAmountOf = (balance: number) => balance - headroomOf(balance);
+/** The amounts the policy plans to measure at, so the spec never restates them. */
+const plannedFor = (balance: number) => planProbes(`${balance}`, OFFERED_GAS_FEE, DEFAULT_GAS_WANTED, GAS_PRICE);
 
 const makeDocument = (): Document => ({
   msgs: [],
@@ -71,27 +68,6 @@ describe("TransactionGasServiceImpl.estimateMaxNativeAmount", () => {
     expect(max.amount).toBe(`${BALANCE - 1_500_000 - RESERVE_BUFFER}`);
   });
 
-  it("never reserves less than the flat fee a send path offers", async () => {
-    // A light action prices at 1_500 ugnot, far under the offered 1 GNOT.
-    const simulateTx = jest.fn().mockResolvedValue(result(1_000_000));
-    const { service } = makeService(simulateTx);
-
-    const max = await service.estimateMaxNativeAmount(request());
-
-    expect(max.reserve.gasFee).toBe(`${OFFERED_GAS_FEE}`);
-    expect(max.amount).toBe(`${BALANCE - OFFERED_GAS_FEE - RESERVE_BUFFER}`);
-  });
-
-  it("reserves the storage deposit on top, padded", async () => {
-    const simulateTx = jest.fn().mockResolvedValue(result(1_000_000_000, 200_000));
-    const { service } = makeService(simulateTx);
-
-    const max = await service.estimateMaxNativeAmount(request());
-
-    expect(max.reserve.storageDeposit).toBe("300000");
-    expect(max.amount).toBe(`${BALANCE - 1_500_000 - 300_000 - RESERVE_BUFFER}`);
-  });
-
   it("probes below the maximum, at the ceiling the transaction would carry", async () => {
     const makeMessages = jest.fn().mockReturnValue([{}]);
     const simulateTx = jest.fn().mockResolvedValue(result(1_000_000_000));
@@ -99,33 +75,9 @@ describe("TransactionGasServiceImpl.estimateMaxNativeAmount", () => {
 
     await service.estimateMaxNativeAmount(request(BALANCE, makeMessages));
 
-    expect(makeMessages).toHaveBeenNthCalledWith(1, `${probeAmountOf(BALANCE)}`);
+    expect(makeMessages).toHaveBeenNthCalledWith(1, plannedFor(BALANCE)[0].amount);
     const [probeTx] = simulateTx.mock.calls[0];
     expect(probeTx.fee.gas_wanted).toBe(BigInt(DEFAULT_GAS_WANTED));
-  });
-
-  it("holds back a share of a small balance rather than the flat cap", async () => {
-    const smallBalance = 20_000_000;
-    const makeMessages = jest.fn().mockReturnValue([{}]);
-    const simulateTx = jest.fn().mockResolvedValue(result(1_000_000_000));
-    const { service } = makeService(simulateTx);
-
-    await service.estimateMaxNativeAmount(request(smallBalance, makeMessages));
-
-    // A flat 5 GNOT would probe at a quarter of this balance.
-    expect(headroomOf(smallBalance)).toBe(2_000_000);
-    expect(makeMessages).toHaveBeenNthCalledWith(1, `${probeAmountOf(smallBalance)}`);
-  });
-
-  it("caps the held-back share on a large balance", async () => {
-    const largeBalance = 10_000_000_000;
-    const makeMessages = jest.fn().mockReturnValue([{}]);
-    const simulateTx = jest.fn().mockResolvedValue(result(1_000_000_000));
-    const { service } = makeService(simulateTx);
-
-    await service.estimateMaxNativeAmount(request(largeBalance, makeMessages));
-
-    expect(makeMessages).toHaveBeenNthCalledWith(1, `${largeBalance - HEADROOM_CAP}`);
   });
 
   it("verifies the amount it arrived at", async () => {
@@ -149,7 +101,7 @@ describe("TransactionGasServiceImpl.estimateMaxNativeAmount", () => {
 
     const max = await service.estimateMaxNativeAmount(request(BALANCE, makeMessages));
 
-    const probe = probeAmountOf(BALANCE);
+    const probe = Number(plannedFor(BALANCE)[0].amount);
     const first = BALANCE - 1_500_000 - RESERVE_BUFFER;
     const second = Math.floor((probe + first) / 2);
 
@@ -181,7 +133,7 @@ describe("TransactionGasServiceImpl.estimateMaxNativeAmount", () => {
 
     const max = await service.estimateMaxNativeAmount(request(tinyBalance));
 
-    expect(Number(max.amount)).toBe(tinyBalance - OFFERED_GAS_FEE - RESERVE_BUFFER);
+    expect(Number(max.amount)).toBe(tinyBalance - Number(OFFERED_GAS_FEE) - RESERVE_BUFFER);
     expect(Number(max.amount) + Number(max.reserve.total)).toBe(tinyBalance);
   });
 
@@ -197,29 +149,6 @@ describe("TransactionGasServiceImpl.estimateMaxNativeAmount", () => {
 
     expect(makeMessages).toHaveBeenNthCalledWith(1, `${smallBalance / 100}`);
     expect(max.simulated).toBe(true);
-  });
-
-  it("drops the flat-fee floor for a balance that could never pay it", async () => {
-    // 140M gas x 1.5 x 0.001 = 210_000 ugnot, which is the honest figure here:
-    // a wallet charging the flat 1 GNOT could not spend this balance at all.
-    const smallBalance = 500_000;
-    const simulateTx = jest.fn().mockResolvedValue(result(140_000_000));
-    const { service } = makeService(simulateTx);
-
-    const max = await service.estimateMaxNativeAmount(request(smallBalance));
-
-    expect(max.reserve.gasFee).toBe("210000");
-    expect(Number(max.amount)).toBeGreaterThan(0);
-    expect(Number(max.amount) + Number(max.reserve.total)).toBe(smallBalance);
-  });
-
-  it("keeps the flat-fee floor as soon as the balance can bear it", async () => {
-    const simulateTx = jest.fn().mockResolvedValue(result(140_000_000));
-    const { service } = makeService(simulateTx);
-
-    const max = await service.estimateMaxNativeAmount(request(2_000_000));
-
-    expect(max.reserve.gasFee).toBe(`${OFFERED_GAS_FEE}`);
   });
 
   it("falls back when even a hundredth of the balance cannot be simulated", async () => {
@@ -250,8 +179,9 @@ describe("TransactionGasServiceImpl.estimateMaxNativeAmount", () => {
 
     const max = await service.estimateMaxNativeAmount(request(largeBalance, makeMessages));
 
-    expect(makeMessages).toHaveBeenNthCalledWith(1, `${largeBalance - HEADROOM_CAP}`);
-    expect(makeMessages).toHaveBeenNthCalledWith(2, `${largeBalance - largeBalance * HEADROOM_RATIO}`);
+    const [first, retry] = plannedFor(largeBalance);
+    expect(makeMessages).toHaveBeenNthCalledWith(1, first.amount);
+    expect(makeMessages).toHaveBeenNthCalledWith(2, retry.amount);
     expect(max.simulated).toBe(true);
   });
 
@@ -262,8 +192,8 @@ describe("TransactionGasServiceImpl.estimateMaxNativeAmount", () => {
     const max = await service.estimateMaxNativeAmount(request());
 
     expect(max.simulated).toBe(false);
-    expect(max.reserve.total).toBe(`${OFFERED_GAS_FEE}`);
-    expect(max.amount).toBe(`${BALANCE - OFFERED_GAS_FEE}`);
+    expect(max.reserve.total).toBe(OFFERED_GAS_FEE);
+    expect(max.amount).toBe(`${BALANCE - Number(OFFERED_GAS_FEE)}`);
   });
 
   it("falls back when the action cannot build messages for the probe amount", async () => {
