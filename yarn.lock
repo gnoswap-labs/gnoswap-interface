@@ -2889,7 +2889,7 @@ __metadata:
     babel-jest: "npm:^30.5.1"
     babel-loader: "npm:^10.1.1"
     bech32: "npm:2.0.0"
-    bignumber.js: "npm:9.1.1"
+    bignumber.js: "npm:^11.1.5"
     crypto: "npm:^1.0.1"
     crypto-js: "npm:^4.2.0"
     d3: "npm:^7.9.0"
@@ -8179,10 +8179,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bignumber.js@npm:9.1.1":
-  version: 9.1.1
-  resolution: "bignumber.js@npm:9.1.1"
-  checksum: 10/1f771bfa883a5863626e1e4274042065d5f975651eda556ecd28560f287c065004681226f826380792a22be116d7666499c3e3300b1a48b2a7bff66e8dde7aa8
+"bignumber.js@npm:^11.1.5":
+  version: 11.1.5
+  resolution: "bignumber.js@npm:11.1.5"
+  checksum: 10/79a5ff40e2459497f4e4023a305ac134cda2ff97f2f4c97847b55f552ea2dae1e9e2330df0f05c2f3fcf63f469bbff35dabe44ca444a23ecb3c900779672c30f
   languageName: node
   linkType: hard
 
