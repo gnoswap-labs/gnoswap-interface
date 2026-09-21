@@ -36,11 +36,17 @@ export const NATIVE_AMOUNT_RESERVE_BUFFER = 10_000 as const;
 /** Storage deposit grows with the amount, so the measured value is padded. */
 export const STORAGE_DEPOSIT_BUFFER_MULTIPLIER = 1.5 as const;
 /**
- * Room left for the storage deposit while probing, in ugnot. At the default
- * storage price of 100 ugnot per byte this covers 10 KB of new realm state,
- * well above what a swap or a mint writes.
+ * Upper bound on the room left for the storage deposit while probing, in
+ * ugnot. At the default storage price of 100 ugnot per byte this covers 10 KB
+ * of new realm state, well above what a swap or a mint writes.
  */
 export const PROBE_STORAGE_DEPOSIT_ALLOWANCE = 1_000_000 as const;
+/**
+ * The same room as a share of what is spendable, so a small balance is probed
+ * near its own ceiling instead of at a fraction of it. Both costs fall with the
+ * amount, so a proportional allowance stays representative at either end.
+ */
+export const PROBE_STORAGE_DEPOSIT_ALLOWANCE_RATIO = 0.1 as const;
 
 export const MINIMUM_GNOT_SWAP_AMOUNT = 0.001;
 export const DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT = "100000000000" as const;

@@ -10,8 +10,18 @@ import { TransactionGasServiceImpl } from "./transaction-gas-service-impl";
 /** What every send path offers: DEFAULT_GAS_FEE of 1 GNOT at 6 decimals. */
 const OFFERED_GAS_FEE = 1_000_000;
 const RESERVE_BUFFER = 10_000;
-/** Room the probe holds back: the fee, a deposit allowance, and the buffer. */
-const PROBE_HEADROOM = OFFERED_GAS_FEE + 1_000_000 + RESERVE_BUFFER;
+const ALLOWANCE_CAP = 1_000_000;
+const ALLOWANCE_RATIO = 0.1;
+
+/** What is spendable before the deposit is known. */
+const ceilingOf = (balance: number) => balance - OFFERED_GAS_FEE - RESERVE_BUFFER;
+
+/** The amount the probe runs at: the ceiling less room for a deposit. */
+const probeAmountOf = (balance: number) => {
+  const ceiling = ceilingOf(balance);
+
+  return ceiling - Math.min(ALLOWANCE_CAP, Math.ceil(ceiling * ALLOWANCE_RATIO));
+};
 
 const BALANCE = 100_000_000;
 
@@ -109,7 +119,7 @@ describe("TransactionGasServiceImpl.estimateMaxNativeAmount", () => {
 
     await service.estimateMaxNativeAmount(request(BALANCE, makeMessages));
 
-    expect(makeMessages).toHaveBeenNthCalledWith(1, `${BALANCE - PROBE_HEADROOM}`);
+    expect(makeMessages).toHaveBeenNthCalledWith(1, `${probeAmountOf(BALANCE)}`);
     expect(makeMessages).toHaveBeenNthCalledWith(2, `${BALANCE - OFFERED_GAS_FEE - RESERVE_BUFFER}`);
   });
 
@@ -145,7 +155,7 @@ describe("TransactionGasServiceImpl.estimateMaxNativeAmount", () => {
     const max = await service.estimateMaxNativeAmount(request());
 
     expect(max.simulated).toBe(true);
-    expect(Number(max.amount)).toBeLessThanOrEqual(BALANCE - PROBE_HEADROOM);
+    expect(Number(max.amount)).toBeLessThanOrEqual(probeAmountOf(BALANCE));
     expect(simulateTx).toHaveBeenCalledTimes(3);
   });
 
@@ -170,15 +180,45 @@ describe("TransactionGasServiceImpl.estimateMaxNativeAmount", () => {
     expect(max.simulated).toBe(false);
   });
 
-  it("falls back without simulating when the balance cannot cover the probe headroom", async () => {
+  it("still probes a balance barely above the fee, near its own ceiling", async () => {
+    // A flat allowance would hold back more than such a balance has spendable
+    // and skip the measurement entirely.
+    const smallBalance = 1_500_000;
+    const makeMessages = jest.fn().mockReturnValue([{}]);
+    const simulateTx = jest.fn().mockResolvedValue(result(20_000));
+    const { service } = makeService(simulateTx);
+
+    const max = await service.estimateMaxNativeAmount(request(smallBalance, makeMessages));
+
+    const probeAmount = probeAmountOf(smallBalance);
+    expect(makeMessages).toHaveBeenNthCalledWith(1, `${probeAmount}`);
+    // Within a tenth of what is spendable, rather than a third of it.
+    expect(probeAmount / ceilingOf(smallBalance)).toBeCloseTo(0.9, 2);
+    expect(max.simulated).toBe(true);
+    expect(max.reserve.storageDeposit).toBe("30000");
+  });
+
+  it("probes a large balance at nearly its ceiling, capped by the allowance", async () => {
+    const largeBalance = 10_000_000_000;
+    const makeMessages = jest.fn().mockReturnValue([{}]);
+    const simulateTx = jest.fn().mockResolvedValue(result(0));
+    const { service } = makeService(simulateTx);
+
+    await service.estimateMaxNativeAmount(request(largeBalance, makeMessages));
+
+    // The proportional share would be 1000 GNOT, so the cap takes over.
+    expect(makeMessages).toHaveBeenNthCalledWith(1, `${ceilingOf(largeBalance) - ALLOWANCE_CAP}`);
+  });
+
+  it("falls back without simulating when the fee alone exhausts the balance", async () => {
     const simulateTx = jest.fn();
     const { service } = makeService(simulateTx);
 
-    const max = await service.estimateMaxNativeAmount(request(1_500_000));
+    const max = await service.estimateMaxNativeAmount(request(1_000_000));
 
     expect(simulateTx).not.toHaveBeenCalled();
     expect(max.simulated).toBe(false);
-    expect(max.amount).toBe(`${1_500_000 - OFFERED_GAS_FEE}`);
+    expect(max.amount).toBe("0");
   });
 
   it("falls back when no transaction service is available to build the document", async () => {

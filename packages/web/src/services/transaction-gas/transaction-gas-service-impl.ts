@@ -3,12 +3,6 @@ import BigNumber from "bignumber.js";
 import { GnoProvider, SimulateTxResult } from "@common/clients/gno-provider/gno-provider";
 import { Tx } from "@gnolang/tm2-js-client";
 
-import {
-  MaxNativeAmount,
-  MaxNativeAmountRequest,
-  NativeAmountReserve,
-  TransactionGasService,
-} from "./transaction-gas-service";
 import { WalletClient } from "@common/clients/wallet-client";
 import { CommonError } from "@common/errors";
 import {
@@ -17,6 +11,7 @@ import {
   DEFAULT_NATIVE_AMOUNT_RESERVE,
   NATIVE_AMOUNT_RESERVE_BUFFER,
   PROBE_STORAGE_DEPOSIT_ALLOWANCE,
+  PROBE_STORAGE_DEPOSIT_ALLOWANCE_RATIO,
   STORAGE_DEPOSIT_BUFFER_MULTIPLIER,
 } from "@common/values";
 import { GasToken } from "@common/values/token-constant";
@@ -24,6 +19,12 @@ import { TransactionService } from "@services/transaction";
 import { CreateTransactionDocumentParameters } from "@services/transaction/request";
 import { makeRawTokenAmount } from "@utils/token-utils";
 import { documentToDefaultTx, withGasFee } from "@utils/transaction-utils";
+import {
+  MaxNativeAmount,
+  MaxNativeAmountRequest,
+  NativeAmountReserve,
+  TransactionGasService,
+} from "./transaction-gas-service";
 
 /**
  * The fee every send path offers, in ugnot. Derived the way
@@ -54,6 +55,18 @@ function makeReserve(storageDeposit: number, gasFee: string): NativeAmountReserv
     buffer,
     total: BigNumber(gasFee).plus(deposit).plus(buffer).toFixed(0),
   };
+}
+
+/**
+ * How much of the spendable balance to leave for the deposit while probing.
+ * Proportional rather than flat: both costs fall with the amount, so holding
+ * back a fixed GNOT would probe a small balance at a fraction of its ceiling
+ * and measure a deposit nothing like the one the final amount incurs.
+ */
+function probeDepositAllowance(ceiling: BigNumber): string {
+  const proportional = ceilToUgnot(ceiling.multipliedBy(PROBE_STORAGE_DEPOSIT_ALLOWANCE_RATIO));
+
+  return BigNumber.minimum(PROBE_STORAGE_DEPOSIT_ALLOWANCE, proportional).toFixed(0);
 }
 
 function makeFallbackMaxNativeAmount(balance: BigNumber, reserve: BigNumber): MaxNativeAmount {
@@ -113,10 +126,10 @@ export class TransactionGasServiceImpl implements TransactionGasService {
 
     // Simulating at the maximum would fail on the very costs being measured:
     // the node deducts the fee and locks the deposit against the real balance.
-    // So the probe holds back the fee plus room for a realistic deposit, which
-    // makes it a transaction that could have been broadcast as it stands.
-    const probeReserve = BigNumber(gasFee).plus(PROBE_STORAGE_DEPOSIT_ALLOWANCE).plus(NATIVE_AMOUNT_RESERVE_BUFFER);
-    const probeAmount = BigNumber(toUgnot(available.minus(probeReserve)));
+    // So the probe holds back the fee plus room for a deposit, which makes it a
+    // transaction that could have been broadcast as it stands.
+    const ceiling = available.minus(gasFee).minus(NATIVE_AMOUNT_RESERVE_BUFFER);
+    const probeAmount = BigNumber(toUgnot(ceiling.minus(probeDepositAllowance(ceiling))));
     if (probeAmount.isLessThanOrEqualTo(0)) return fallback;
 
     try {
