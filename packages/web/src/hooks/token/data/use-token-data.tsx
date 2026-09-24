@@ -86,7 +86,6 @@ export const useTokenData = (showUnverified = true) => {
 
     return balanceMap;
   }, [tokens, gnotBalance, grc20BalancesData]);
-
   const trendingTokens: CardListTokenInfo[] = useMemo(() => {
     const sortedTokens = tokens
       .sort((t1: { path: string }, t2: { path: string }) => {
@@ -125,11 +124,11 @@ export const useTokenData = (showUnverified = true) => {
 
       return {
         token: {
-            ...token,
-            symbol: getGnotPath(token).symbol,
-            displaySymbol: getGnotPath(token).displaySymbol,
-            name: getGnotPath(token).name,
-            logoURI: getGnotPath(token).logoURI,
+          ...token,
+          symbol: getGnotPath(token).symbol,
+          displaySymbol: getGnotPath(token).displaySymbol,
+          name: getGnotPath(token).name,
+          logoURI: getGnotPath(token).logoURI,
         },
         upDown: data1D.status === MATH_NEGATIVE_TYPE.POSITIVE ? "up" : "down",
         content: data1D.percentDisplay.replace(/[+-]/g, ""),
