@@ -315,7 +315,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 >
                   <div className={visibleInfoTooltip ? "value-wrapper-for-hover" : "value-wrapper"}>
                     {activatedDelegateInfoTab
-                      ? formatOtherPrice(rawToDisplayAmount(myDelegationInfo.votingWeight, XGNS_TOKEN.decimals), {
+                      ? formatOtherPrice(currentDelegatedDisplayAmount, {
                           isKMB: false,
                           usd: false,
                         })
