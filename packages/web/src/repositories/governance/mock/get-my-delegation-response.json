@@ -29,5 +29,6 @@
   "unDelegatedAmount": "45000.00",
   "withdrawableAmount": "32500.25",
   "delegatedAmount": "50000000000",
-  "votingWeight": "87.5"
+  "votingWeight": "87.5",
+  "incomingVotingWeight": "12300.25"
 }

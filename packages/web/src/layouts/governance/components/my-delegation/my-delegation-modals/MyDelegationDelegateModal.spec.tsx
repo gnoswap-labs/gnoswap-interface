@@ -48,6 +48,9 @@ const ONBLOC_AGGREGATE_VOTING_POWER_RAW = "5000000000";
 // An unverified address with 1 xGNS received voting power (raw, 6 decimals).
 const CUSTOM_ADDRESS = "g1sqaft388ruvsseu97r04w4rr4szxkh4nn6xpax";
 const CUSTOM_RECEIVED_VOTING_WEIGHT_RAW = "1000000";
+// Deliberately different from the incoming value: if the component ever falls back to the
+// deprecated, misleading legacy `votingWeight` field, this would make the assertions below fail.
+const CUSTOM_LEGACY_OUTGOING_VOTING_WEIGHT_RAW = "9000000000000";
 
 const delegatees: VerifiedDelegateInfo[] = [
   {
@@ -73,9 +76,14 @@ describe("MyDelegationDelegateModal", () => {
       delegateButtonText: "Governance:myDel.delModal.confirmBtn",
       isAvailableDelegate: false,
     });
-    // Simulate the personal summary value independently of the verified list.
+    // Simulate the personal summary value independently of the verified list. The legacy
+    // `votingWeight` is deliberately a different (outgoing) value, so accidentally reading it
+    // instead of `incomingVotingWeight` would make the assertions below fail.
     useGetMyDelegation.mockReturnValue({
-      data: { votingWeight: CUSTOM_RECEIVED_VOTING_WEIGHT_RAW },
+      data: {
+        votingWeight: CUSTOM_LEGACY_OUTGOING_VOTING_WEIGHT_RAW,
+        incomingVotingWeight: CUSTOM_RECEIVED_VOTING_WEIGHT_RAW,
+      },
     });
 
     const modal = (currentDelegatees: VerifiedDelegateInfo[]) => (

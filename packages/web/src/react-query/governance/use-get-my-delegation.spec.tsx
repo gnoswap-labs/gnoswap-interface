@@ -18,7 +18,12 @@ jest.mock("@hooks/common/use-gnoswap-context", () => ({
 const ADDRESS_A = "g1aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 const ADDRESS_B = "g1bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
 
-const summaryA: MyDelegationInfo = { ...nullMyDelegationInfo, delegatedAmount: "1000000000", votingWeight: "5000000000" };
+const summaryA: MyDelegationInfo = {
+  ...nullMyDelegationInfo,
+  delegatedAmount: "1000000000",
+  votingWeight: "5000000000",
+  incomingVotingWeight: "2500000000",
+};
 
 const renderWithClient = (initialAddress: string) => {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
