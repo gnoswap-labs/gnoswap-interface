@@ -131,7 +131,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   // Verified delegates carry aggregate voting power in the list; other addresses use
   // their received voting weight, which stays 0 until that address's summary loads.
   const selectedDelegateVotingPowerRaw =
-    selectedVerifiedDelegate?.votingPower ?? selectedDelegateDelegationInfo?.incomingVotingWeight ?? "0";
+    selectedVerifiedDelegate?.votingPower ?? selectedDelegateDelegationInfo?.votingPower ?? "0";
 
   const votingPowerPercentage = useMemo(() => {
     const displayVotingPower = toDisplayVotingPowerFromRaw(selectedDelegateVotingPowerRaw);

@@ -22,7 +22,7 @@ const summaryA: MyDelegationInfo = {
   ...nullMyDelegationInfo,
   delegatedAmount: "1000000000",
   votingWeight: "5000000000",
-  incomingVotingWeight: "2500000000",
+  votingPower: "2500000000",
 };
 
 const renderWithClient = (initialAddress: string) => {

@@ -78,11 +78,11 @@ describe("MyDelegationDelegateModal", () => {
     });
     // Simulate the personal summary value independently of the verified list. The legacy
     // `votingWeight` is deliberately a different (outgoing) value, so accidentally reading it
-    // instead of `incomingVotingWeight` would make the assertions below fail.
+    // instead of `votingPower` would make the assertions below fail.
     useGetMyDelegation.mockReturnValue({
       data: {
         votingWeight: CUSTOM_LEGACY_OUTGOING_VOTING_WEIGHT_RAW,
-        incomingVotingWeight: CUSTOM_RECEIVED_VOTING_WEIGHT_RAW,
+        votingPower: CUSTOM_RECEIVED_VOTING_WEIGHT_RAW,
       },
     });
 

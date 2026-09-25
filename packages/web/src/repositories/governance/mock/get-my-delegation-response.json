@@ -30,5 +30,5 @@
   "withdrawableAmount": "32500.25",
   "delegatedAmount": "50000000000",
   "votingWeight": "87.5",
-  "incomingVotingWeight": "12300.25"
+  "votingPower": "12300.25"
 }

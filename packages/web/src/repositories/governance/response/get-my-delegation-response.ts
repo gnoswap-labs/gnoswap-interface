@@ -14,9 +14,9 @@ export interface GetMyDelegationResponse {
    * this is the OUTGOING amount delegated away by this address (same value as
    * `delegatedAmount`), not the address's actual voting power. It misrepresents voting
    * power for delegate recipients and MUST NOT be used by new consumers — use
-   * `incomingVotingWeight` for the address's active received voting power instead.
+   * `votingPower` for the address's active received voting power instead.
    */
   votingWeight: string;
   /** Active voting power delegated TO this address by others (incoming, not outgoing). */
-  incomingVotingWeight: string;
+  votingPower: string;
 }
