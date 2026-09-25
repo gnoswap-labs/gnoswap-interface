@@ -8,5 +8,6 @@ export interface GetMyDelegationResponse {
   claimableLaunchpadRewardUsd: string;
   unDelegatedAmount: string;
   withdrawableAmount: string;
+  delegatedAmount: string;
   votingWeight: string;
 }

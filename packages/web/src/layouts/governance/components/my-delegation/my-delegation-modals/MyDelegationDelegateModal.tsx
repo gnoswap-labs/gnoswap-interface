@@ -110,22 +110,27 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
     return isValidAddress(selectedDelegateAddress);
   }, [selectedDelegateAddress]);
 
+  const isKnownVerifiedDelegate =
+    !isSelfDelegateSelected && delegatees.some(item => item.address === selectedDelegateAddress);
+
   const { data: selectedDelegateDelegationInfo } = useGetMyDelegation(
     {
       address: selectedDelegateAddress,
     },
     {
-      enabled: isValidSelectedDelegateAddress,
+      enabled: isValidSelectedDelegateAddress && !isKnownVerifiedDelegate,
     },
   );
 
   const selectedDelegateVotingPowerRaw = useMemo(() => {
-    if (selectedDelegateDelegationInfo?.votingWeight) {
-      return selectedDelegateDelegationInfo.votingWeight;
+    // Verified delegates already have the aggregate voting power in the list.
+    if (isKnownVerifiedDelegate) {
+      return tmpDelegatee.votingPower;
     }
 
-    return tmpDelegatee.votingPower;
-  }, [selectedDelegateDelegationInfo?.votingWeight, tmpDelegatee.votingPower]);
+    // Custom addresses use the received voting weight from their summary.
+    return selectedDelegateDelegationInfo?.votingWeight ?? tmpDelegatee.votingPower;
+  }, [isKnownVerifiedDelegate, tmpDelegatee.votingPower, selectedDelegateDelegationInfo?.votingWeight]);
 
   const votingPowerPercentage = useMemo(() => {
     const displayVotingPower = toDisplayVotingPowerFromRaw(selectedDelegateVotingPowerRaw);

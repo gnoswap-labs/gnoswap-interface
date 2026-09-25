@@ -6,6 +6,7 @@ export interface MyDelegationInfo {
   claimableLaunchpadRewardUsd: string;
   unDelegatedAmount: string;
   withdrawableAmount: string;
+  delegatedAmount: string;
   votingWeight: string;
 }
 
@@ -30,5 +31,6 @@ export const nullMyDelegationInfo: MyDelegationInfo = {
   claimableLaunchpadRewardUsd: "0",
   unDelegatedAmount: "0",
   withdrawableAmount: "0",
+  delegatedAmount: "0",
   votingWeight: "0",
 };
