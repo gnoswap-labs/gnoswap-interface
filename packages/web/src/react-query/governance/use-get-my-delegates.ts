@@ -1,8 +1,10 @@
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import { useAtomValue } from "jotai";
 
+import { DEFAULT_CHAIN_ID } from "@constants/environment.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { GetMyDelegatesRequest, MyDelegatesInfo } from "@repositories/governance";
+import { WalletState } from "@states/index";
 
 import { QUERY_KEY } from "../query-keys";
 
@@ -13,10 +15,10 @@ export const useGetMyDelegates = (
   options?: UseQueryOptions<MyDelegatesInfo, Error>,
 ) => {
   const { governanceRepository } = useGnoswapContext();
-  const { currentChainId } = useWallet();
+  const chainId = useAtomValue(WalletState.account)?.chainId ?? DEFAULT_CHAIN_ID;
 
   return useQuery<MyDelegatesInfo, Error>({
-    queryKey: [QUERY_KEY.governanceMyDelegates, currentChainId, request.address],
+    queryKey: [QUERY_KEY.governanceMyDelegates, chainId, request.address],
     queryFn: () => {
       return governanceRepository.getMyDelegates(request);
     },

@@ -78,55 +78,67 @@ describe("MyDelegationDelegateModal", () => {
       data: { votingWeight: CUSTOM_RECEIVED_VOTING_WEIGHT_RAW },
     });
 
-    const { container } = render(
+    const modal = (currentDelegatees: VerifiedDelegateInfo[]) => (
       <JotaiProvider>
         <GnoswapThemeProvider>
           <MyDelegationDelegateModal
             currentDelegatedDisplayAmount={0}
             totalDelegatedDisplayAmount={10000}
             apy={5}
-            delegatees={delegatees}
+            delegatees={currentDelegatees}
             isWalletConnected={true}
             connectWallet={jest.fn()}
             onSubmit={jest.fn()}
             setIsOpen={jest.fn()}
           />
         </GnoswapThemeProvider>
-      </JotaiProvider>,
+      </JotaiProvider>
     );
+    const { container, rerender } = render(modal(delegatees));
 
     // Move from MAIN into the delegatee selector stage.
     fireEvent.click(screen.getByText("Select"));
 
+    // The voting power row has no accessible name of its own; scope to its value cell.
     const votingPowerValue = () => container.querySelector(".delegatee-info-rows .value.no-wrap");
+    const refetchDelegatees = (next: VerifiedDelegateInfo[]) => rerender(modal(next));
 
-    return { votingPowerValue };
+    return { votingPowerValue, refetchDelegatees };
   };
 
-  it("shows the verified delegate's aggregate votingPower and matching percentage", () => {
-    const { votingPowerValue } = renderModal();
+  const typeSelfAddress = (address: string) => {
+    fireEvent.click(screen.getByText("Governance:myDel.delModal.selectDel.self.chip"));
+    fireEvent.change(screen.getByPlaceholderText("Governance:myDel.delModal.selectDel.self.placeholder"), {
+      target: { value: address },
+    });
+  };
+
+  it("shows the verified delegate's current aggregate votingPower after the list refetches", () => {
+    const { votingPowerValue, refetchDelegatees } = renderModal();
 
     fireEvent.click(screen.getByText("Onbloc"));
+    // Percentage is derived from the same aggregate value: 5,000 / 10,000 * 100 = 50%.
+    expect(votingPowerValue()).toHaveTextContent(/^5,000 xGNS \(50%\)$/);
 
-    const text = votingPowerValue()?.textContent ?? "";
-    expect(text).toContain("5,000");
-    expect(text).toContain("xGNS");
+    refetchDelegatees([{ ...delegatees[0], votingPower: "6000000000" }]);
+    expect(votingPowerValue()).toHaveTextContent(/^6,000 xGNS \(60%\)$/);
+  });
 
-    // Percentage must be derived from the same aggregate value: 5,000 / 10,000 * 100 = 50%.
-    expect(text).toContain("(50%)");
+  it("uses the verified list votingPower when a verified address is typed into Self-Delegate", () => {
+    const { votingPowerValue } = renderModal();
+
+    typeSelfAddress(ONBLOC_ADDRESS);
+
+    // The personal summary (1 xGNS received) must not replace the verified aggregate.
+    expect(votingPowerValue()).toHaveTextContent(/^5,000 xGNS \(50%\)$/);
   });
 
   it("uses received voting power for an unverified self-selected address", () => {
     const { votingPowerValue } = renderModal();
 
-    fireEvent.click(screen.getByText("Governance:myDel.delModal.selectDel.self.chip"));
-    fireEvent.change(screen.getByPlaceholderText("Governance:myDel.delModal.selectDel.self.placeholder"), {
-      target: { value: CUSTOM_ADDRESS },
-    });
+    typeSelfAddress(CUSTOM_ADDRESS);
 
-    // Custom addresses obtain received voting power from the personal summary.
-    const text = votingPowerValue()?.textContent ?? "";
-    expect(text).toContain("1");
-    expect(text).not.toContain("5,000");
+    // 1 / 10,000 * 100 = 0.01%.
+    expect(votingPowerValue()).toHaveTextContent(/^1 xGNS \(0\.01%\)$/);
   });
 });

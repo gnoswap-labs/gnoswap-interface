@@ -144,7 +144,7 @@
     },
     "votingWeight": {
       "title": "Delegación",
-      "tooltip": "La cantidad de xGNS que ha delegado, que representa su peso de voto en el Gobierno de Gnoswap."
+      "tooltip": "La cantidad de xGNS que ha delegado actualmente. El peso de voto pertenece a la dirección que recibe la delegación, por lo que puede diferir de su propio peso de voto."
     }
   },
   "proposalList": {

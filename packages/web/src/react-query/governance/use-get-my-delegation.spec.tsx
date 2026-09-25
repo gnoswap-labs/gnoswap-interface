@@ -1,20 +1,18 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
+import { createStore, Provider as JotaiProvider } from "jotai";
 import React from "react";
 
+import { AccountModel } from "@models/account/account-model";
 import { MyDelegationInfo, nullMyDelegationInfo } from "@repositories/governance";
+import { WalletState } from "@states/index";
 
 import { useGetMyDelegation } from "./use-get-my-delegation";
 
 const getMyDelegation = jest.fn();
-let currentChainId = "chain-a";
 
 jest.mock("@hooks/common/use-gnoswap-context", () => ({
   useGnoswapContext: () => ({ governanceRepository: { getMyDelegation } }),
-}));
-
-jest.mock("@hooks/wallet/data/use-wallet", () => ({
-  useWallet: () => ({ currentChainId }),
 }));
 
 const ADDRESS_A = "g1aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
@@ -24,20 +22,25 @@ const summaryA: MyDelegationInfo = { ...nullMyDelegationInfo, delegatedAmount: "
 
 const renderWithClient = (initialAddress: string) => {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  // No wallet account yet, so the hook starts on the default chain.
+  const store = createStore();
   const wrapper = ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <JotaiProvider store={store}>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </JotaiProvider>
   );
 
-  return renderHook(({ address }: { address: string }) => useGetMyDelegation({ address }), {
+  const hook = renderHook(({ address }: { address: string }) => useGetMyDelegation({ address }), {
     wrapper,
     initialProps: { address: initialAddress },
   });
+
+  return { ...hook, store };
 };
 
 describe("useGetMyDelegation", () => {
   beforeEach(() => {
     getMyDelegation.mockReset();
-    currentChainId = "chain-a";
   });
 
   it("does not expose the previous address's summary while the new address loads", async () => {
@@ -56,11 +59,13 @@ describe("useGetMyDelegation", () => {
   it("does not expose another network's summary for the same address", async () => {
     getMyDelegation.mockResolvedValueOnce(summaryA).mockReturnValueOnce(new Promise(() => undefined));
 
-    const { result, rerender } = renderWithClient(ADDRESS_A);
+    const { result, store } = renderWithClient(ADDRESS_A);
     await waitFor(() => expect(result.current.data).toEqual(summaryA));
 
-    currentChainId = "chain-b";
-    rerender({ address: ADDRESS_A });
+    // Connecting a wallet on a different chain moves the hook off the default chain.
+    act(() => {
+      store.set(WalletState.account, { address: ADDRESS_A, chainId: "other-chain" } as AccountModel);
+    });
 
     await waitFor(() => expect(getMyDelegation).toHaveBeenCalledTimes(2));
     expect(result.current.data).toBeUndefined();

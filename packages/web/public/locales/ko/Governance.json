@@ -144,7 +144,7 @@
     },
     "votingWeight": {
       "title": "위임",
-      "tooltip": "당신이 위임한 xGNS 수량으로, Gnoswap 거버넌스에서의 투표 권한 비율을 나타냅니다."
+      "tooltip": "현재 위임 중인 xGNS 수량입니다. 투표 가중치는 위임을 받은 주소에 귀속되므로 나의 투표 가중치와 다를 수 있습니다."
     }
   },
   "proposalList": {
