@@ -144,7 +144,7 @@
     },
     "votingWeight": {
       "title": "代表团",
-      "tooltip": "您当前已委托的 xGNS 数量。投票权重归属于接收委托的地址，因此可能与您自己的投票权重不同。"
+      "tooltip": "您授权的 xGNS 数量，代表您在 Gnoswap 治理中的投票权重。"
     }
   },
   "proposalList": {

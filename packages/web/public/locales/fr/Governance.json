@@ -144,7 +144,7 @@
     },
     "votingWeight": {
       "title": "Délégation",
-      "tooltip": "La quantité de xGNS que vous avez actuellement déléguée. Le poids de vote appartient à l'adresse qui reçoit la délégation ; il peut donc différer de votre propre poids de vote."
+      "tooltip": "La quantité de xGNS que vous avez déléguée, qui représente votre poids de vote dans la gouvernance de Gnoswap."
     }
   },
   "proposalList": {

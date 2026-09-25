@@ -144,7 +144,7 @@
     },
     "votingWeight": {
       "title": "Phái đoàn",
-      "tooltip": "Số lượng xGNS bạn hiện đang ủy quyền. Trọng số biểu quyết thuộc về địa chỉ nhận ủy quyền, vì vậy có thể khác với trọng số biểu quyết của chính bạn."
+      "tooltip": "Số lượng xGNS mà bạn đã ủy quyền, thể hiện trọng số biểu quyết của bạn trong cơ chế quản trị của Gnoswap."
     }
   },
   "proposalList": {
