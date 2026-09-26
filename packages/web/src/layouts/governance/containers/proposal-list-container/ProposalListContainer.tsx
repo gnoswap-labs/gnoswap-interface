@@ -2,9 +2,11 @@ import React, { useMemo, useState } from "react";
 import { useRouter } from "next/router";
 
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetMyDelegation, useGetProposalParameters, useGetProposals } from "@query/governance";
+import { QUERY_KEY } from "@query/query-keys";
 
 import { useCreateProposalModal } from "@hooks/governance/ui/use-create-proposal-modal";
 import ProposalList from "../../components/proposals-list/ProposalList";
@@ -23,6 +25,7 @@ const ProposalListContainer: React.FC = () => {
   const { isSwitchNetwork, connected, switchNetwork, account } = useWallet();
   const { openModal } = useConnectWalletModal();
   const { openModal: openCreateProposalModal } = useCreateProposalModal();
+  const { invalidateQueryKey } = useInvalidateQueries();
 
   const {
     proposeCommunityPoolSpendProposal,
@@ -130,10 +133,13 @@ const ProposalListContainer: React.FC = () => {
           await refetchProposals();
         })
       }
-      voteProposal={(...params) =>
-        voteProposal(...params, async () => {
-          await refetchProposals();
-        })
+      voteProposal={(proposalId, voteYes) =>
+        voteProposal(proposalId, voteYes, () =>
+          invalidateQueryKey("Governance Vote", [
+            [QUERY_KEY.governanceProposals],
+            [QUERY_KEY.governanceProposalDetails, proposalId],
+          ]),
+        )
       }
       executeProposal={(...params) =>
         executeProposal(...params, async () => {
