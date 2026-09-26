@@ -80,7 +80,7 @@ const MyDelegationContainer: React.FC<MyDelegationContainerProps> = ({
       isLoadingCommon={
         (!isFetchedGovernanceSummaryInfo || !isFetchedDelegatees) && (!governanceSummaryInfo || !delegatees)
       }
-      isLoadingMyDelegation={!isFetchedMyDelegation && !MyDelegation}
+      isLoadingMyDelegation={!isFetchedMyDelegation && !myDelegationInfo}
       isWalletConnected={connected}
       connectWallet={openModal}
       isOpenDelegateModal={isOpenDelegateModal}

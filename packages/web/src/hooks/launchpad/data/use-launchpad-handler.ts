@@ -68,7 +68,7 @@ export const useLaunchpadHandler = () => {
   const { data: myDelegationInfo } = useGetMyDelegation({
     address: account?.address || "",
   });
-  const xGnsBalance = myDelegationInfo?.votingWeight;
+  const xGnsBalance = myDelegationInfo?.delegatedAmount;
 
   const [openedConfirmModal] = useState(false);
   const { processTx } = useBroadcastHandler();

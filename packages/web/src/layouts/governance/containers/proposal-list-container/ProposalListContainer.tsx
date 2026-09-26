@@ -106,7 +106,7 @@ const ProposalListContainer: React.FC = () => {
       switchNetwork={switchNetwork}
       isShowActiveOnly={isShowActiveOnly}
       toggleIsShowActiveOnly={toggleIsShowActiveOnly}
-      myVotingWeight={rawToDisplayAmount(Number(myDelegationInfo?.votingWeight) || 0, XGNS_TOKEN.decimals)}
+      myVotingWeight={rawToDisplayAmount(Number(myDelegationInfo?.votingPower) || 0, XGNS_TOKEN.decimals)}
       proposalCreationThreshold={proposalCreationThreshold}
       proposalList={ProposalsInfo?.pages.flatMap(item => item.proposals) || []}
       fetchMore={fetchNextItems}
