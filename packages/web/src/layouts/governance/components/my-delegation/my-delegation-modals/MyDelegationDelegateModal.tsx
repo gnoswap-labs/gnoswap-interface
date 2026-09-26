@@ -110,22 +110,28 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
     return isValidAddress(selectedDelegateAddress);
   }, [selectedDelegateAddress]);
 
+  // Look up the verified entry from the latest list (not the tmpDelegatee snapshot),
+  // also when a verified address is typed into Self-Delegate, so refetches are reflected.
+  const selectedVerifiedDelegate = useMemo(() => {
+    if (selectedDelegateAddress === "") {
+      return undefined;
+    }
+    return delegatees.find(item => item.address === selectedDelegateAddress);
+  }, [delegatees, selectedDelegateAddress]);
+
   const { data: selectedDelegateDelegationInfo } = useGetMyDelegation(
     {
       address: selectedDelegateAddress,
     },
     {
-      enabled: isValidSelectedDelegateAddress,
+      enabled: isValidSelectedDelegateAddress && !selectedVerifiedDelegate,
     },
   );
 
-  const selectedDelegateVotingPowerRaw = useMemo(() => {
-    if (selectedDelegateDelegationInfo?.votingWeight) {
-      return selectedDelegateDelegationInfo.votingWeight;
-    }
-
-    return tmpDelegatee.votingPower;
-  }, [selectedDelegateDelegationInfo?.votingWeight, tmpDelegatee.votingPower]);
+  // Verified delegates carry aggregate voting power in the list; other addresses use
+  // their received voting weight, which stays 0 until that address's summary loads.
+  const selectedDelegateVotingPowerRaw =
+    selectedVerifiedDelegate?.votingPower ?? selectedDelegateDelegationInfo?.votingPower ?? "0";
 
   const votingPowerPercentage = useMemo(() => {
     const displayVotingPower = toDisplayVotingPowerFromRaw(selectedDelegateVotingPowerRaw);
