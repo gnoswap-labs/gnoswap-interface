@@ -276,8 +276,8 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
   }, [rpcProvider, walletClient]);
 
   const transactionGasService = useMemo(() => {
-    return new TransactionGasServiceImpl(rpcProvider, walletClient);
-  }, [rpcProvider, walletClient]);
+    return new TransactionGasServiceImpl(rpcProvider, walletClient, transactionService);
+  }, [rpcProvider, walletClient, transactionService]);
 
   const axiosInstance = axios.create({ timeout: 20_000 });
 

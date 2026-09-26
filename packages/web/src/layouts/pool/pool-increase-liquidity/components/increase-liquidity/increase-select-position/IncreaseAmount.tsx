@@ -5,6 +5,7 @@ import IconAdd from "@components/common/icons/IconAdd";
 import IconSettings from "@components/common/icons/IconSettings";
 import SettingMenuModal from "@components/common/setting-menu-modal/SettingMenuModal";
 import TokenAmountInput from "@components/common/token-amount-input/TokenAmountInput";
+import { MaxNativeAmountParams } from "@hooks/gas";
 import { TokenAmountInputModel } from "@hooks/token/data/use-token-amount-input";
 import { TokenModel } from "@models/token/token-model";
 
@@ -22,6 +23,7 @@ export interface IncreaseSelectPositionProps {
   changeTokenBAmount: (amount: string) => void;
   slippage: number;
   changeSlippage: (value: number) => void;
+  makeMaxAmountMessages?: (deposited: "A" | "B") => MaxNativeAmountParams["makeMessages"];
 }
 
 const IncreaseAmountPosition: React.FC<IncreaseSelectPositionProps> = ({
@@ -36,6 +38,7 @@ const IncreaseAmountPosition: React.FC<IncreaseSelectPositionProps> = ({
   changeTokenBAmount,
   slippage,
   changeSlippage,
+  makeMaxAmountMessages,
 }) => {
   const { t } = useTranslation();
   const [openedSetting, setOpenedSetting] = useState(false);
@@ -64,6 +67,7 @@ const IncreaseAmountPosition: React.FC<IncreaseSelectPositionProps> = ({
             connected={connected}
             changeAmount={changeTokenAAmount}
             changeToken={() => {}}
+            makeMaxAmountMessages={makeMaxAmountMessages?.("A")}
           />
         )}
         {isDepositTokenB && (
@@ -73,6 +77,7 @@ const IncreaseAmountPosition: React.FC<IncreaseSelectPositionProps> = ({
             connected={connected}
             changeAmount={changeTokenBAmount}
             changeToken={() => {}}
+            makeMaxAmountMessages={makeMaxAmountMessages?.("B")}
           />
         )}
         {isDepositTokenA && isDepositTokenB && (

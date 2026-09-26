@@ -42,3 +42,6 @@ export interface SwapRouteRequest {
 
   gasUsed?: string;
 }
+
+/** A swap route request without the gas figures, which only the send path needs. */
+export type SwapRouteMessagesRequest = Omit<SwapRouteRequest, "gasFee" | "gasUsed">;

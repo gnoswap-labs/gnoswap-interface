@@ -25,6 +25,14 @@ export class SwapRouterRepositoryMock implements SwapRouterRepository {
     throw new Error("Mcok drySwapRoute");
   };
 
+  public makeExactInSwapRouteMessages = async () => {
+    throw new Error("Mock makeExactInSwapRouteMessages");
+  };
+
+  public makeExactOutSwapRouteMessages = async () => {
+    throw new Error("Mock makeExactOutSwapRouteMessages");
+  };
+
   public sendExactInSwapRoute = async () => {
     throw new Error("Mock sendExactInSwapRoute");
   };

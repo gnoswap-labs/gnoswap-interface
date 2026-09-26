@@ -1,8 +1,9 @@
-import { SendTransactionResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
+import { SendTransactionResponse, TransactionMessage, WalletResponse } from "@common/clients/wallet-client/protocols";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { PositionModel } from "@models/position/position-model";
 
 import { DecreaseLiquidityRequest, IncreaseLiquidityRequest, RepositionLiquidityRequest } from "./request";
+import { IncreaseLiquidityMessagesRequest } from "./request/increase-liquidity-request";
 import { ClaimAllRequest } from "./request/claim-all-request";
 import { ClaimRequest } from "./request/claim-request";
 import { RemoveLiquidityRequest } from "./request/remove-liquidity-request";
@@ -45,6 +46,9 @@ export interface PositionRepository {
   unstakePositions: (
     request: UnstakePositionsRequest,
   ) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
+
+  /** The messages `increaseLiquidity` would broadcast, approvals included. */
+  makeIncreaseLiquidityMessages: (request: IncreaseLiquidityMessagesRequest) => Promise<TransactionMessage[]>;
 
   increaseLiquidity: (
     request: IncreaseLiquidityRequest,

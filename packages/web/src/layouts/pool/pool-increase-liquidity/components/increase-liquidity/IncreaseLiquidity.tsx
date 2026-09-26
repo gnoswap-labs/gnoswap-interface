@@ -7,6 +7,8 @@ import { TokenAmountInputModel } from "@hooks/token/data/use-token-amount-input"
 import { TokenModel } from "@models/token/token-model";
 
 import { INCREASE_BUTTON_TYPE, IPriceRange } from "@hooks/pool/data/use-increase-handle";
+import { MaxNativeAmountParams } from "@hooks/gas";
+
 import IncreaseAmountPosition from "./increase-select-position/IncreaseAmount";
 import IncreaseSelectPosition from "./increase-select-position/IncreaseSelectPosition";
 
@@ -32,6 +34,7 @@ interface IncreaseLiquidityProps {
   changeSlippage: (value: number) => void;
   buttonType: INCREASE_BUTTON_TYPE;
   onSubmit: () => void;
+  makeMaxAmountMessages?: (deposited: "A" | "B") => MaxNativeAmountParams["makeMessages"];
 }
 
 const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({
@@ -54,6 +57,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({
   changeSlippage,
   buttonType,
   onSubmit,
+  makeMaxAmountMessages,
 }) => {
   const { t } = useTranslation();
 
@@ -105,6 +109,7 @@ const IncreaseLiquidity: React.FC<IncreaseLiquidityProps> = ({
           changeTokenAAmount={changeTokenAAmount}
           changeSlippage={changeSlippage}
           slippage={slippage}
+          makeMaxAmountMessages={makeMaxAmountMessages}
         />
       </article>
       <Button

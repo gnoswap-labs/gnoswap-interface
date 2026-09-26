@@ -317,7 +317,7 @@ export async function makeEstimateGasTransaction(
   const { gasFee, gasWanted } = makeGasInfoBy(gasUsed, gasPrice);
   if (!transactionService || !gasFee || !gasWanted) return null;
 
-  const modifedDocument = modifyDocument(document, gasWanted, gasFee);
+  const modifedDocument = withGasFee(document, gasWanted, gasFee);
 
   const { signed } = await transactionService.createTransaction(modifedDocument).catch(() => {
     return { signed: null };
@@ -329,7 +329,7 @@ export async function makeEstimateGasTransaction(
   return signed;
 }
 
-function modifyDocument(document: Document, gasWanted: number, gasFee: number): Document {
+export function withGasFee(document: Document, gasWanted: number, gasFee: number): Document {
   return {
     ...document,
     fee: {

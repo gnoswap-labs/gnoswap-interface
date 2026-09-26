@@ -182,6 +182,7 @@ export const useSwapHandler = () => {
     isTyping,
     isRefetching,
     handleResetEstimatedLiquidity,
+    makeMaxAmountMessages,
   } = useSwap({
     tokenA,
     tokenB,
@@ -1282,5 +1283,6 @@ export const useSwapHandler = () => {
     isSameToken,
     handleResetEstimatedLiquidity,
     initializeSwapTokenInputAmount,
+    makeMaxAmountMessages,
   };
 };

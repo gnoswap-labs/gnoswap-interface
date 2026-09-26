@@ -7,9 +7,13 @@ import { useSwap } from "./use-swap";
 const useGetRoutesMock = jest.fn();
 const sendExactInSwapRoute = jest.fn(async () => ({ code: 0, data: null, status: "success", type: "" }));
 const sendExactOutSwapRoute = jest.fn(async () => ({ code: 0, data: null, status: "success", type: "" }));
+const getRoutes = jest.fn();
+const makeExactInSwapRouteMessages = jest.fn(async () => [{ caller: "g1user" }]);
 
 jest.mock("@hooks/common/use-gnoswap-context", () => ({
-  useGnoswapContext: () => ({ swapRouterRepository: { sendExactInSwapRoute, sendExactOutSwapRoute } }),
+  useGnoswapContext: () => ({
+    swapRouterRepository: { sendExactInSwapRoute, sendExactOutSwapRoute, getRoutes, makeExactInSwapRouteMessages },
+  }),
 }));
 jest.mock("@hooks/common/use-referral", () => ({
   useReferral: () => ({ getNextReferralAddress: () => null }),
@@ -57,6 +61,14 @@ describe("useSwap amount precision", () => {
     });
     sendExactInSwapRoute.mockClear();
     sendExactOutSwapRoute.mockClear();
+    getRoutes.mockReset();
+    getRoutes.mockResolvedValue({
+      estimatedRoutes: [{ quote: 100, amountIn: 0n, amountOut: 0n, pools: [] }],
+      originAmount: 0,
+      amount: "2000000",
+      status: "SUCCESS",
+    });
+    makeExactInSwapRouteMessages.mockClear();
   });
 
   afterEach(() => {
@@ -126,5 +138,32 @@ describe("useSwap amount precision", () => {
     expect(sendExactOutSwapRoute).toHaveBeenCalledWith(
       expect.objectContaining({ tokenAmount: "1", tokenAmountLimit: "0.000002" }),
     );
+  });
+
+  it("builds the max-amount messages from routes looked up for that amount", async () => {
+    const { result } = renderHook(() =>
+      useSwap({ tokenA: createToken("USDC"), tokenB: createToken("ATOM"), direction: "EXACT_IN", slippage: 0.5 }),
+    );
+
+    // 1.5 USDC in raw units, the shape the reserve estimate hands over.
+    const messages = await result.current.makeMaxAmountMessages("1500000");
+
+    // Routes are looked up for the candidate amount rather than the current input.
+    expect(getRoutes).toHaveBeenCalledWith(expect.objectContaining({ exactType: "EXACT_IN", tokenAmount: "1.5" }));
+    expect(makeExactInSwapRouteMessages).toHaveBeenCalledWith(
+      expect.objectContaining({ tokenAmount: "1.5", tokenAmountLimit: "1.99" }),
+    );
+    expect(messages).toHaveLength(1);
+  });
+
+  it("builds no max-amount messages when the amount has no route", async () => {
+    getRoutes.mockResolvedValue({ estimatedRoutes: [], originAmount: 0, amount: "0", status: "NO_LIQUIDITY" });
+
+    const { result } = renderHook(() =>
+      useSwap({ tokenA: createToken("USDC"), tokenB: createToken("ATOM"), direction: "EXACT_IN", slippage: 0.5 }),
+    );
+
+    await expect(result.current.makeMaxAmountMessages("1500000")).resolves.toEqual([]);
+    expect(makeExactInSwapRouteMessages).not.toHaveBeenCalled();
   });
 });

@@ -1,6 +1,6 @@
 import { NetworkClient } from "@common/clients/network-client";
 import { WalletClient } from "@common/clients/wallet-client";
-import { SendTransactionResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
+import { SendTransactionResponse, TransactionMessage, WalletResponse } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
 import { PACKAGE_STAKER_PATH } from "@constants/environment.constant";
@@ -10,6 +10,7 @@ import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { PositionModel } from "@models/position/position-model";
 import { ActivityResponse } from "@repositories/activity/responses/activity-responses";
 import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
+import { IncreaseLiquidityMessagesRequest } from "./request/increase-liquidity-request";
 
 import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { GnoProvider } from "@gnolang/gno-js-client";
@@ -264,6 +265,18 @@ export class PositionRepositoryImpl implements PositionRepository {
     });
   };
 
+  makeIncreaseLiquidityMessages = async (
+    request: IncreaseLiquidityMessagesRequest,
+  ): Promise<TransactionMessage[]> => {
+    if (this.rpcProvider === null) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
+    return makeIncreaseLiquidityMessagesWithApproves(request, (packagePath, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    );
+  };
+
   increaseLiquidity = async (
     request: IncreaseLiquidityRequest,
   ): Promise<WalletResponse<IncreaseLiquiditySuccessResponse | IncreaseLiquidityFailedResponse | null>> => {
@@ -271,15 +284,9 @@ export class PositionRepositoryImpl implements PositionRepository {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
 
-    if (this.rpcProvider === null) {
-      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
-    }
-
     const { gasFee, gasUsed, ...requests } = request;
 
-    const messages = await makeIncreaseLiquidityMessagesWithApproves({ ...requests }, (packagePath, owner, spender) =>
-      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
-    );
+    const messages = await this.makeIncreaseLiquidityMessages(requests);
 
     const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
 
