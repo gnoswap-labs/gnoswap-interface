@@ -1,4 +1,6 @@
 import React from "react";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
+import { QUERY_KEY } from "@query/query-keys";
 
 import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
@@ -27,6 +29,7 @@ const MyDelegationContainer: React.FC<MyDelegationContainerProps> = ({
   const { account, connected } = useWallet();
   const { openModal } = useConnectWalletModal();
   const { delegateGNS, undelegateGNS, collectUndelegated, collectReward } = useGovernanceTx();
+  const { invalidateQueryKey } = useInvalidateQueries();
 
   const address = React.useMemo(() => {
     return account?.address || "";
@@ -87,7 +90,13 @@ const MyDelegationContainer: React.FC<MyDelegationContainerProps> = ({
       setIsOpenDelegateModal={setIsOpenDelegateModal}
       delegateGNS={(...params) =>
         delegateGNS(...params, async () => {
-          refetch();
+          await invalidateQueryKey("Governance Delegate", [
+            [QUERY_KEY.governanceSummary],
+            [QUERY_KEY.governanceMyDelegation],
+            [QUERY_KEY.governanceVerifiedDelegates],
+            [QUERY_KEY.governanceMyDelegates],
+            [QUERY_KEY.governanceMyUnDelegates],
+          ]);
           updateBalances();
         })
       }
