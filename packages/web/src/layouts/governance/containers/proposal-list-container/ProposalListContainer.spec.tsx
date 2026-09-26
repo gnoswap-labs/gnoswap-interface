@@ -53,7 +53,7 @@ jest.mock("../../components/proposals-list/ProposalList", () => {
     address,
   }: {
     voteProposal: (id: number, yes: boolean) => void;
-    proposalList: { votingInfo: { yesVotingWeight: string } }[];
+    proposalList: { votingInfo: { yesVotingWeight: string }; userVotingInfo: { isVoted: boolean } }[];
     address: string;
   }) => {
     const [detailOpen, setDetailOpen] = React.useState(true);
@@ -61,6 +61,7 @@ jest.mock("../../components/proposals-list/ProposalList", () => {
     return (
       <>
         <span data-testid="list-votes">{proposalList[0]?.votingInfo.yesVotingWeight}</span>
+        <span data-testid="list-voted">{proposalList[0]?.userVotingInfo.isVoted ? "yes" : "no"}</span>
         {detailOpen && <span data-testid="detail-voted">{data?.proposal.userVotingInfo.isVoted ? "yes" : "no"}</span>}
         <button
           onClick={() => {
@@ -90,6 +91,7 @@ describe("proposal refresh after a vote", () => {
           ...nullProposalItemInfo,
           id: 1,
           votingInfo: { ...nullVotingInfo, yesVotingWeight: indexed ? "100" : "0" },
+          userVotingInfo: { ...nullUserVotingInfo, isVoted: indexed, voteType: indexed ? "YES" : "" },
         },
       ],
     }));
@@ -111,6 +113,7 @@ describe("proposal refresh after a vote", () => {
     );
 
     await waitFor(() => expect(screen.getByTestId("list-votes")).toHaveTextContent("0"));
+    expect(screen.getByTestId("list-voted")).toHaveTextContent("no");
     await waitFor(() => expect(getProposalDetails).toHaveBeenCalledTimes(1));
     fireEvent.click(screen.getByText("Vote"));
     fireEvent.click(screen.getByText("Reopen details"));
@@ -123,6 +126,7 @@ describe("proposal refresh after a vote", () => {
     });
 
     await waitFor(() => expect(screen.getByTestId("list-votes")).toHaveTextContent("100"));
+    await waitFor(() => expect(screen.getByTestId("list-voted")).toHaveTextContent("yes"));
     await waitFor(() => expect(screen.getByTestId("detail-voted")).toHaveTextContent("yes"));
     unmount();
     client.clear();
