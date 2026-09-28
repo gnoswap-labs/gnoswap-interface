@@ -37,6 +37,7 @@
       "execute": "実行する",
       "noVoteWeight": "不十分な投票ウエイト",
       "requireSelect": "投票オプションの選択",
+      "tryAgain": "再挑戦",
       "vote": "投票"
     },
     "content": {

@@ -37,6 +37,7 @@
       "execute": "Exécuter",
       "noVoteWeight": "Poids de vote insuffisant",
       "requireSelect": "Sélectionner l'option de vote",
+      "tryAgain": "Réessayer",
       "vote": "Vote"
     },
     "content": {

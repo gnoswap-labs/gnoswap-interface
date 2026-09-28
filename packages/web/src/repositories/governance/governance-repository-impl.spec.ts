@@ -124,11 +124,30 @@ describe("GovernanceRepositoryImpl", () => {
     const createRepository = (get: jest.Mock) =>
       new GovernanceRepositoryImpl({ get } as unknown as NetworkClient, createWalletClient(), null);
 
+    const createHttpError = (status: number) =>
+      Object.assign(new Error(`request failed with status ${status}`), {
+        isAxiosError: true,
+        response: { status },
+      });
+
     it("rejects when the request fails so a transient error is not read as a missing proposal", async () => {
       const error = new Error("network down");
       const repository = createRepository(jest.fn().mockRejectedValue(error));
 
       await expect(repository.getProposalDetails({ proposalId: 1 })).rejects.toThrow(error);
+    });
+
+    it("rejects on a server error rather than reporting a missing proposal", async () => {
+      const error = createHttpError(500);
+      const repository = createRepository(jest.fn().mockRejectedValue(error));
+
+      await expect(repository.getProposalDetails({ proposalId: 1 })).rejects.toThrow(error);
+    });
+
+    it("returns the null proposal when the API answers 404", async () => {
+      const repository = createRepository(jest.fn().mockRejectedValue(createHttpError(404)));
+
+      await expect(repository.getProposalDetails({ proposalId: 999999999 })).resolves.toEqual(nullProposalDetailsInfo);
     });
 
     it("returns the null proposal when the API responds without data", async () => {

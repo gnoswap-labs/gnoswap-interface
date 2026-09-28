@@ -1,3 +1,4 @@
+import axios from "axios";
 import BigNumber from "bignumber.js";
 import { NetworkClient } from "@common/clients/network-client";
 import { WalletClient } from "@common/clients/wallet-client";
@@ -90,6 +91,11 @@ function getClaimableProtocolFeeTokenPaths(rewards: ClaimableRewards[]): string[
 
   return [...tokenPaths];
 }
+
+const NOT_FOUND_STATUS = 404;
+
+const isNotFoundError = (error: unknown): boolean =>
+  axios.isAxiosError(error) && error.response?.status === NOT_FOUND_STATUS;
 
 export class GovernanceRepositoryImpl implements GovernanceRepository {
   private networkClient: NetworkClient | null;
@@ -230,12 +236,20 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
 
     const queries = [request.address !== undefined ? `address=${request.address}` : ""];
 
-    // A failed request is propagated so callers can tell it apart from a missing proposal.
-    const response = await this.networkClient.get<{
-      data: GetProposalDetailsResponse;
-    }>({
-      url: `governance/proposals/${request.proposalId}?${queries.filter(item => !!item).join("&")}`,
-    });
+    const response = await this.networkClient
+      .get<{
+        data: GetProposalDetailsResponse;
+      }>({
+        url: `governance/proposals/${request.proposalId}?${queries.filter(item => !!item).join("&")}`,
+      })
+      // The API answers a missing proposal with 404. Every other failure is propagated
+      // so callers can tell a transient error apart from a proposal that does not exist.
+      .catch(error => {
+        if (isNotFoundError(error)) {
+          return null;
+        }
+        throw error;
+      });
 
     if (!response?.data?.data) {
       return nullProposalDetailsInfo;

@@ -8,7 +8,7 @@ export function parseProposalHash(hash?: string): number {
   if (!/^\d+$/.test(value)) return NONE_PROPOSAL_ID;
 
   const proposalId = Number(value);
-  return proposalId > 0 ? proposalId : NONE_PROPOSAL_ID;
+  return Number.isSafeInteger(proposalId) && proposalId > 0 ? proposalId : NONE_PROPOSAL_ID;
 }
 
 /**

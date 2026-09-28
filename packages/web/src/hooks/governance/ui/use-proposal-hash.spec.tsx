@@ -44,6 +44,8 @@ describe("parseProposalHash", () => {
     ["#abc", 0],
     ["#-1", 0],
     ["#1.5", 0],
+    ["#9007199254740993", 0],
+    ["#99999999999999999999999999", 0],
   ])("parses %p into %p", (hash, expected) => {
     expect(parseProposalHash(hash)).toBe(expected);
   });

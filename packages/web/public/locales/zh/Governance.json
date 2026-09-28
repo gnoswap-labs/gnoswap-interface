@@ -37,6 +37,7 @@
       "execute": "执行",
       "noVoteWeight": "投票权重不足",
       "requireSelect": "选择投票选项",
+      "tryAgain": "再试一次",
       "vote": "投票"
     },
     "content": {
