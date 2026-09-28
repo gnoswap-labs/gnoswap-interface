@@ -5,7 +5,7 @@ import { TokenModel } from "@models/token/token-model";
 import { isAmount } from "@common/utils/data-check-util";
 import SelectPairIncentivizeButton from "../select-pair-button/SelectPairIncentivizeButton";
 import BigNumber from "bignumber.js";
-import { MaxNativeAmountParams, useMaxNativeAmount } from "@hooks/gas";
+import { MaxNativeAmountParams, MaxNativeAmountSubject, useMaxNativeAmount } from "@hooks/gas";
 import { useTranslation } from "react-i18next";
 import IconWallet from "../icons/IconWallet";
 import { useTokenBalanceDisplay } from "@hooks/token/ui/use-token-balance-display";
@@ -23,6 +23,11 @@ export interface TokenAmountInputProps extends TokenAmountInputModel {
    * simulation instead of a flat estimate. See {@link useMaxNativeAmount}.
    */
   makeMaxAmountMessages?: MaxNativeAmountParams["makeMessages"];
+  /**
+   * State the messages are built from that this input does not show — a price
+   * range, a slippage. A pending MAX is dropped when any of it changes.
+   */
+  maxAmountDependsOn?: MaxNativeAmountSubject["dependsOn"];
 }
 
 const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
@@ -39,9 +44,14 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   integersOnly = false,
   poolTokens,
   makeMaxAmountMessages,
+  maxAmountDependsOn,
 }) => {
   const { t } = useTranslation();
-  const { getMaxAmount, loading: loadingMaxAmount } = useMaxNativeAmount({ token, amount });
+  const { getMaxAmount, loading: loadingMaxAmount } = useMaxNativeAmount({
+    token,
+    amount,
+    dependsOn: [balance, ...(maxAmountDependsOn ?? [])],
+  });
 
   const balanceADisplay = useTokenBalanceDisplay(balance, connected);
 

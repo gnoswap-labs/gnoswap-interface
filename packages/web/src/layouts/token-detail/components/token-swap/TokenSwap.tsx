@@ -88,6 +88,10 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   const { getMaxAmount, loading: loadingMaxAmount } = useMaxNativeAmount({
     token: dataTokenInfo.tokenA,
     amount: dataTokenInfo.tokenAAmount,
+    // Neither the output token nor the balance reaches the input field, yet
+    // both decide what the swap costs: the output picks the route, and the
+    // balance is what the answer was subtracted from.
+    dependsOn: [dataTokenInfo.tokenB?.path, dataTokenInfo.tokenABalance],
   });
   const tokenA = dataTokenInfo.tokenA;
   const tokenB = dataTokenInfo.tokenB;

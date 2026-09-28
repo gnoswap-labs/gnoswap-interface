@@ -103,10 +103,6 @@ const AssetSendModal: React.FC<Props> = ({
   const [address, setAddress] = useState("");
 
   const { account } = useWallet();
-  const { getMaxAmount, loading: loadingMaxAmount } = useMaxNativeAmount({
-    token: withdrawInfo ?? null,
-    amount,
-  });
   const walletRepository = useOptionalGnoswapContext()?.walletRepository;
 
   const { tokenPrices, displayBalanceMap } = useTokenData(true);
@@ -157,6 +153,14 @@ const AssetSendModal: React.FC<Props> = ({
   const hasTokenBalance = useMemo(() => {
     return !!currentAvailableBalance;
   }, [currentAvailableBalance]);
+
+  const { getMaxAmount, loading: loadingMaxAmount } = useMaxNativeAmount({
+    token: withdrawInfo ?? null,
+    amount,
+    // The recipient is simulated, and it moves the gas: a send to an address
+    // the chain has not seen costs about twice one back to the sender.
+    dependsOn: [address, currentAvailableBalance],
+  });
 
   const isDisabledWithdraw = useMemo((): boolean => {
     if (!isValidAmount(amount)) return true;

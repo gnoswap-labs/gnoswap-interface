@@ -68,6 +68,10 @@ const SwapCardContent: React.FC<ContentProps> = ({
   const { getMaxAmount, loading: loadingMaxAmount } = useMaxNativeAmount({
     token: swapTokenInfo.tokenA,
     amount: swapTokenInfo.tokenAAmount,
+    // Neither the output token nor the balance reaches the input field, yet
+    // both decide what the swap costs: the output picks the route, and the
+    // balance is what the answer was subtracted from.
+    dependsOn: [swapTokenInfo.tokenB?.path, swapTokenInfo.tokenABalance],
   });
 
   const tokenA = swapTokenInfo.tokenA;

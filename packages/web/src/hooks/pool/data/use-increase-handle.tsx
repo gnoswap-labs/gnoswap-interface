@@ -336,6 +336,16 @@ export const useIncreaseHandle = () => {
     ],
   );
 
+  /**
+   * What the messages above were built from that the amount inputs do not
+   * show. Changing the range or the slippage changes what the deposit costs,
+   * so a MAX still in flight no longer answers the position on screen.
+   */
+  const maxAmountDependsOn = useMemo(
+    () => [selectedPosition?.id, selectPool.currentPrice, sqrtPriceX96, minPrice, maxPrice, slippage],
+    [selectedPosition?.id, selectPool.currentPrice, sqrtPriceX96, minPrice, maxPrice, slippage],
+  );
+
   const buttonType: INCREASE_BUTTON_TYPE = useMemo(() => {
     if (
       (isDepositTokenA && !Number(tokenAAmountInput.amount)) ||
@@ -407,5 +417,6 @@ export const useIncreaseHandle = () => {
     isDepositTokenB,
     refetchPositions,
     makeMaxAmountMessages,
+    maxAmountDependsOn,
   };
 };

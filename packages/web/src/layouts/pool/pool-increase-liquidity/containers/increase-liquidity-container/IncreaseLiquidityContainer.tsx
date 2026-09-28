@@ -31,6 +31,7 @@ const IncreaseLiquidityContainer: React.FC = () => {
     loading,
     refetchPositions,
     makeMaxAmountMessages,
+    maxAmountDependsOn,
   } = useIncreaseHandle();
 
   const { openModal } = useIncreasePositionModal({
@@ -75,6 +76,7 @@ const IncreaseLiquidityContainer: React.FC = () => {
       buttonType={buttonType}
       onSubmit={openModal}
       makeMaxAmountMessages={makeMaxAmountMessages}
+      maxAmountDependsOn={maxAmountDependsOn}
     />
   );
 };

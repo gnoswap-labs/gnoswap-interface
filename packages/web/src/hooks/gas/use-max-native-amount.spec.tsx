@@ -85,6 +85,39 @@ describe("useMaxNativeAmount", () => {
     await expect(pending).resolves.toBeNull();
   });
 
+  it("withholds an answer once the other side of the pair changed", async () => {
+    // The output token never reaches the input field, but it picks the route
+    // and so the gas: a light pair priced into a heavy one falls short.
+    const release = deferredEstimate();
+
+    const { result, rerender } = renderHook(props => useMaxNativeAmount(props), {
+      initialProps: { token: GNOT, amount: "", dependsOn: ["gno.land/r/demo/usdc"] },
+    });
+
+    const pending = result.current.getMaxAmount({ balance: "10", makeMessages: jest.fn().mockReturnValue([{}]) });
+
+    rerender({ token: GNOT, amount: "", dependsOn: ["gno.land/r/demo/gns"] });
+    await act(async () => release());
+
+    await expect(pending).resolves.toBeNull();
+  });
+
+  it("answers when everything it was asked about is unchanged", async () => {
+    const release = deferredEstimate();
+
+    const { result, rerender } = renderHook(props => useMaxNativeAmount(props), {
+      initialProps: { token: GNOT, amount: "", dependsOn: ["gno.land/r/demo/usdc"] },
+    });
+
+    const pending = result.current.getMaxAmount({ balance: "10", makeMessages: jest.fn().mockReturnValue([{}]) });
+
+    // A re-render with the same subject must not throw the answer away.
+    rerender({ token: GNOT, amount: "", dependsOn: ["gno.land/r/demo/usdc"] });
+    await act(async () => release());
+
+    await expect(pending).resolves.toBe("9");
+  });
+
   it("withholds the earlier answer when the button is pressed again", async () => {
     const release = deferredEstimate();
 

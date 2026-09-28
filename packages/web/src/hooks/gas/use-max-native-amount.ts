@@ -16,15 +16,24 @@ const OFFERED_GAS_FEE = makeRawTokenAmount(GasToken, DEFAULT_GAS_FEE) ?? "0";
 
 /**
  * What the pending result belongs to. An estimate takes route lookups and
- * simulations to come back, and by then the field it was asked about may hold
- * another token or something the user typed — neither of which the old figure
- * may overwrite.
+ * simulations to come back, and by then the request it answers may no longer
+ * be the one on screen — an answer priced for one transaction must not be
+ * written into another.
  */
 export interface MaxNativeAmountSubject {
   token: TokenModel | null;
   /** The amount currently in the field the result would be written to. */
   amount?: string;
+  /**
+   * Anything else the messages were built for and that the user can change
+   * while the estimate is out: the other side of a swap, a price range. It
+   * does not show up in the field, but it decides what the transaction costs.
+   */
+  dependsOn?: readonly unknown[];
 }
+
+const sameDependencies = (a: readonly unknown[] = [], b: readonly unknown[] = []) =>
+  a.length === b.length && a.every((value, index) => Object.is(value, b[index]));
 
 export interface MaxNativeAmountParams {
   /** Wallet balance as shown in the UI, so with a decimal point and optional grouping. */
@@ -66,7 +75,8 @@ export const useMaxNativeAmount = (subject: MaxNativeAmountSubject) => {
       const stillWanted = () =>
         press === pressCount.current &&
         current.current.token?.path === asked.token?.path &&
-        current.current.amount === asked.amount;
+        current.current.amount === asked.amount &&
+        sameDependencies(current.current.dependsOn, asked.dependsOn);
 
       const displayBalance = BigNumber(balance.replace(/,/g, ""));
       if (!token || displayBalance.isNaN()) return "0";
