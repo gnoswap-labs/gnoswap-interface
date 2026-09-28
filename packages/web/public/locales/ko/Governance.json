@@ -37,6 +37,7 @@
       "execute": "실행",
       "noVoteWeight": "투표 가중치 부족",
       "requireSelect": "투표 옵션 선택",
+      "tryAgain": "다시 시도하기",
       "vote": "투표"
     },
     "content": {

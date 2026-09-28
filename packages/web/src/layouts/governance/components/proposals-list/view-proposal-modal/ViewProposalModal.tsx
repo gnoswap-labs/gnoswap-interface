@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
+import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
 import IconInfo from "@components/common/icons/IconInfo";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
@@ -30,6 +31,7 @@ import {
   ModalHeaderWrapper,
   ModalQuorum,
   ProposalContentWrapper,
+  ProposalErrorWrapper,
   ViewProposalModalWrapper,
   VotingPowerTooltipContent,
   VotingPowerWrapper,
@@ -69,7 +71,15 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
     [setIsModalOpen],
   );
 
-  const { data, isLoading } = useGetProposalDetails({ proposalId, address });
+  const { data, isLoading, isPreviousData, isError, refetch } = useGetProposalDetails({ proposalId, address });
+
+  // Close the modal only for a confirmed missing proposal (e.g. an invalid URL hash),
+  // never for a failed request, so a valid deep link survives a transient error.
+  useEffect(() => {
+    if (isLoading || isPreviousData || isError || !data) return;
+    if (!data.proposal?.id) setIsModalOpen(false);
+  }, [data, isLoading, isPreviousData, isError]);
+
   const proposalDetail = useMemo(() => {
     if (!data?.proposal) return nullProposalDetailsInfo.proposal;
     return data.proposal;
@@ -131,7 +141,17 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
 
   const hasVoteButton = ["UPCOMING", "ACTIVE"].includes(proposalDetail.status);
 
-  if (isLoading) {
+  // `keepPreviousData` holds the previously opened proposal, so the retained detail
+  // must never be rendered as the requested one.
+  const hasRequestedDetail = !!data && !isPreviousData;
+
+  // A failing background refetch keeps the loaded proposal on screen; only a request
+  // that never produced the requested detail falls back to the error state.
+  if (isError && !hasRequestedDetail) {
+    return <ErrorModal onClose={() => setIsModalOpen(false)} onRetry={() => refetch()} />;
+  }
+
+  if (isLoading || isPreviousData) {
     return <LoadingModal onClose={() => setIsModalOpen(false)} />;
   }
 
@@ -311,11 +331,12 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
 
 export default ViewProposalModal;
 
-interface LoadingModalProps {
+interface StatusModalProps {
   onClose: () => void;
+  children: React.ReactNode;
 }
 
-const LoadingModal = ({ onClose }: LoadingModalProps) => {
+const StatusModal = ({ onClose, children }: StatusModalProps) => {
   const Modal = useMemo(
     () =>
       withLocalModal(ViewProposalModalWrapper, (isOpen: boolean) => {
@@ -343,11 +364,43 @@ const LoadingModal = ({ onClose }: LoadingModalProps) => {
             maxHeight: "100%",
           }}
         >
-          <div className="animation">
-            <LoadingSpinner />
-          </div>
+          {children}
         </ProposalContentWrapper>
       </div>
     </Modal>
+  );
+};
+
+interface LoadingModalProps {
+  onClose: () => void;
+}
+
+const LoadingModal = ({ onClose }: LoadingModalProps) => (
+  <StatusModal onClose={onClose}>
+    <div className="animation">
+      <LoadingSpinner />
+    </div>
+  </StatusModal>
+);
+
+interface ErrorModalProps {
+  onClose: () => void;
+  onRetry: () => void;
+}
+
+const ErrorModal = ({ onClose, onRetry }: ErrorModalProps) => {
+  const { t } = useTranslation();
+
+  return (
+    <StatusModal onClose={onClose}>
+      <ProposalErrorWrapper>
+        <p className="message">{t("Error:issues")}</p>
+        <Button
+          text={t("Governance:detailModal.btn.tryAgain")}
+          onClick={onRetry}
+          style={{ hierarchy: ButtonHierarchy.Primary, height: 41, padding: "10px 16px", fontType: "body9" }}
+        />
+      </ProposalErrorWrapper>
+    </StatusModal>
   );
 };

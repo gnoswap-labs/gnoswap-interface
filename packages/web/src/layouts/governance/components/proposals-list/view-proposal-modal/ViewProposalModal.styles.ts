@@ -291,3 +291,19 @@ export const VotingPowerTooltipContent = styled.div`
   background-color: ${({ theme }) => theme.color.background02};
   color: ${({ theme }) => theme.color.text02};
 `;
+
+export const ProposalErrorWrapper = styled.div`
+  ${mixins.flexbox("column", "center", "center")};
+  width: 100%;
+  gap: 16px;
+  text-align: center;
+  color: ${({ theme }) => theme.color.text04};
+  ${fonts.body12}
+  ${media.mobile} {
+    ${fonts.p2}
+  }
+
+  .message {
+    white-space: pre-wrap;
+  }
+`;
