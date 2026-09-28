@@ -163,12 +163,13 @@ export const useSwapHandler = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { connected: connectedWallet, isSwitchNetwork, switchNetwork } = useWallet();
   const { tokens, tokenPrices, displayBalanceStringMap, updateBalances, getTokenUSDPrice, refetchGrc20Balances } =
-  useTokenData(true);
+    useTokenData(true);
   const { slippage, changeSlippage } = useSlippage();
   const { openModal } = useConnectWalletModal();
   const { data: swapFee } = useGetSwapFee();
 
   const {
+    isIdenticalToken,
     isSameToken,
     estimatedRoutes,
     estimatedAmount,
@@ -362,6 +363,9 @@ export const useSwapHandler = () => {
     if (!tokenA || !tokenB) {
       return "SELECT_TOKEN";
     }
+    if (isIdenticalToken) {
+      return "SELECT_TOKEN";
+    }
     if (!Number(tokenAAmount) && !Number(tokenBAmount)) {
       return "ENTER_AMOUNT";
     }
@@ -409,6 +413,7 @@ export const useSwapHandler = () => {
     tokenB,
     tokenAAmount,
     tokenBAmount,
+    isIdenticalToken,
     type,
     isSameToken,
     swapState,
@@ -645,15 +650,7 @@ export const useSwapHandler = () => {
         title={confirmModalTitle}
       />
     ),
-    [
-      closeModal,
-      confirmModalTitle,
-      executeLatestSwap,
-      isRefetching,
-      priceImpactStatus,
-      swapButtonState,
-      swapResult,
-    ],
+    [closeModal, confirmModalTitle, executeLatestSwap, isRefetching, priceImpactStatus, swapButtonState, swapResult],
   );
 
   const openConfirmModal = useCallback(() => {
@@ -1064,7 +1061,7 @@ export const useSwapHandler = () => {
   };
 
   function executeSwap(swapTokenInfo: SwapTokenInfo, estimatedAmount: string | null) {
-    if (!tokenA || !tokenB) {
+    if (!tokenA || !tokenB || isIdenticalToken) {
       return;
     }
 
