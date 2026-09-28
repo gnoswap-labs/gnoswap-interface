@@ -21,7 +21,6 @@ const ADDRESS_B = "g1bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
 const summaryA: MyDelegationInfo = {
   ...nullMyDelegationInfo,
   delegatedAmount: "1000000000",
-  votingWeight: "5000000000",
   votingPower: "2500000000",
 };
 
