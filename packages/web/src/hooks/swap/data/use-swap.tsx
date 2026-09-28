@@ -115,18 +115,30 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       return "NONE";
     }
 
+    if (swapAmount !== debouncedSwapAmount || isTyping) {
+      return "LOADING";
+    }
+
     if (isEstimatedSwapLoading && shouldFetch) {
       return "LOADING";
     }
 
-    if (estimatedSwapResult?.status === "NO_LIQUIDITY" || estimatedSwapResult?.status === "INVALID_PARAMS") {
+    if (
+      error ||
+      !estimatedSwapResult ||
+      estimatedSwapResult.status === "NO_LIQUIDITY" ||
+      estimatedSwapResult.status === "INVALID_PARAMS"
+    ) {
       return "NO_LIQUIDITY";
     }
 
     return "SUCCESS";
   }, [
+    swapAmount,
+    isTyping,
     debouncedSwapAmount,
-    estimatedSwapResult?.status,
+    error,
+    estimatedSwapResult,
     isEstimatedSwapLoading,
     isSameToken,
     selectedTokenPair,
