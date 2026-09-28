@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { STATIC_TEXT } from "@common/values";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
+import IconLpToken from "@components/common/icons/IconLpToken";
 import IconStar from "@components/common/icons/IconStar";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
@@ -179,7 +180,7 @@ const QuickPoolInfo: React.FC<Props> = ({
                 {!isLoadingPool && (
                   <MissingLogo
                     url={item.tokenUri}
-                    fallbackUrl="/lp-fallback-logo.svg"
+                    fallback={<IconLpToken />}
                     symbol={`ID #${item.id}`}
                     width={24}
                     mobileWidth={24}
@@ -211,7 +212,7 @@ const QuickPoolInfo: React.FC<Props> = ({
               <div className="label">
                 <MissingLogo
                   url={item.tokenUri}
-                  fallbackUrl="/lp-fallback-logo.svg"
+                  fallback={<IconLpToken />}
                   symbol={`ID #${item.id}`}
                   width={24}
                   mobileWidth={24}

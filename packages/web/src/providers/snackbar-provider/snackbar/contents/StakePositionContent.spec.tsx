@@ -9,13 +9,16 @@ describe("StakePositionContent", () => {
 
   it("shows the local placeholder instead of an empty image source", () => {
     render(<StakePositionContent {...props} content={{ logoUrl: "" }} />);
-    expect(screen.getByRole("img", { hidden: true })).toHaveAttribute("src", "/lp-fallback-logo.svg");
+    expect(screen.getByRole("img", { name: "LP position" })).toBeInTheDocument();
   });
 
   it("replaces a failed NFT image with the local placeholder", () => {
-    render(<StakePositionContent {...props} content={{ logoUrl: "/missing-nft.svg" }} />);
+    const { rerender } = render(<StakePositionContent {...props} content={{ logoUrl: "/missing-nft.svg" }} />);
     const image = screen.getByRole("img", { hidden: true });
     fireEvent.error(image);
-    expect(image).toHaveAttribute("src", "/lp-fallback-logo.svg");
+    expect(screen.getByRole("img", { name: "LP position" })).toBeInTheDocument();
+
+    rerender(<StakePositionContent {...props} content={{ logoUrl: "/working-nft.svg" }} />);
+    expect(screen.getByRole("img", { hidden: true })).toHaveAttribute("src", "/working-nft.svg");
   });
 });

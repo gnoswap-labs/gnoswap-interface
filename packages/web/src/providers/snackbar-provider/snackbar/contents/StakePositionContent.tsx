@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import IconArrowRightLine from "@components/common/icons/IconArrowRightLine";
+import IconLpToken from "@components/common/icons/IconLpToken";
 import { Image } from "@components/common/missing-logo/MissingLogo.styles";
 import { sanitizeHtml } from "@utils/sanitize-html";
 import { SnackbarContent } from "./type";
@@ -11,6 +13,8 @@ const StakePositionContent: React.FC<{ content?: SnackbarContent; onClick: () =>
   close,
 }) => {
   const { t } = useTranslation();
+  const [failedLogoUrl, setFailedLogoUrl] = useState<string | null>(null);
+  const logoUrl = content?.logoUrl;
 
   const onClickLink = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.stopPropagation();
@@ -27,18 +31,18 @@ const StakePositionContent: React.FC<{ content?: SnackbarContent; onClick: () =>
   return (
     <div className="notice-body" onClick={onClick}>
       <div className="icon-wrap-wrapper nft-image-wrapper">
-        <Image
-          className="nft-image"
-          mobileWidth={20}
-          width={32}
-          src={content?.logoUrl || "/lp-fallback-logo.svg"}
-          alt=""
-          onError={event => {
-            if (event.currentTarget.getAttribute("src") !== "/lp-fallback-logo.svg") {
-              event.currentTarget.src = "/lp-fallback-logo.svg";
-            }
-          }}
-        />
+        {logoUrl && failedLogoUrl !== logoUrl ? (
+          <Image
+            className="nft-image"
+            mobileWidth={20}
+            width={32}
+            src={logoUrl}
+            alt=""
+            onError={() => setFailedLogoUrl(logoUrl)}
+          />
+        ) : (
+          <IconLpToken className="nft-image" />
+        )}
       </div>
       <div>
         <div>

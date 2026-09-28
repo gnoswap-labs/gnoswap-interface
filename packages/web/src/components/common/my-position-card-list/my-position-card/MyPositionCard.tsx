@@ -13,6 +13,7 @@ import LoadingSpinner from "../../loading-spinner/LoadingSpinner";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import IconStar from "../../icons/IconStar";
+import IconLpToken from "../../icons/IconLpToken";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { useTranslation } from "react-i18next";
 import MissingLogo from "../../missing-logo/MissingLogo";
@@ -346,7 +347,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <MissingLogo
                 symbol={`ID #${position.id}`}
                 url={position.tokenUri}
-                fallbackUrl="/lp-fallback-logo.svg"
+                fallback={<IconLpToken />}
                 width={24}
                 showTooltip
               />

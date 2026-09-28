@@ -8,7 +8,7 @@ interface Props {
   rewardType?: RewardType;
   showRewardType?: boolean;
   url?: string;
-  fallbackUrl?: string;
+  fallback?: React.ReactNode;
   className?: string;
   width: number;
   mobileWidth?: number;
@@ -24,7 +24,7 @@ const MissingLogo: React.FC<Props> = ({
   showRewardType,
   className,
   url,
-  fallbackUrl,
+  fallback,
   width,
   mobileWidth,
   missingLogoClassName,
@@ -33,9 +33,7 @@ const MissingLogo: React.FC<Props> = ({
   showTooltip = false,
 }) => {
   const [failedUrl, setFailedUrl] = React.useState<string | null>(null);
-  const [failedFallbackUrl, setFailedFallbackUrl] = React.useState<string | null>(null);
-  const imageUrl =
-    (url && failedUrl !== url ? url : null) || (fallbackUrl && failedFallbackUrl !== fallbackUrl ? fallbackUrl : null);
+  const imageUrl = url && failedUrl !== url ? url : null;
   const rewardTypeToDisplayText = (rewardType: RewardType): string => {
     switch (rewardType) {
       case RewardTypeEnum.SWAP_FEE:
@@ -82,19 +80,16 @@ const MissingLogo: React.FC<Props> = ({
           src={imageUrl}
           alt="logo"
           className={className}
-          onError={() => {
-            if (url && failedUrl !== url) setFailedUrl(url);
-            else if (fallbackUrl) setFailedFallbackUrl(fallbackUrl);
-          }}
+          onError={() => setFailedUrl(imageUrl)}
         />
       ) : (
         <LogoWrapper
           width={width}
           mobileWidth={mobileWidth}
-          className={`missing-logo ${missingLogoClassName}`}
+          className={fallback ? className : `missing-logo ${missingLogoClassName}`}
           placeholderFontSize={placeholderFontSize}
         >
-          {(symbol || "").slice(0, 3)}
+          {fallback ?? (symbol || "").slice(0, 3)}
         </LogoWrapper>
       )}
     </Tooltip>
