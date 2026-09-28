@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -70,6 +70,13 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   );
 
   const { data, isLoading } = useGetProposalDetails({ proposalId, address });
+
+  // Close the modal when the requested proposal does not exist. (e.g. an invalid URL hash)
+  useEffect(() => {
+    if (isLoading || !data) return;
+    if (!data.proposal?.id) setIsModalOpen(false);
+  }, [data, isLoading]);
+
   const proposalDetail = useMemo(() => {
     if (!data?.proposal) return nullProposalDetailsInfo.proposal;
     return data.proposal;

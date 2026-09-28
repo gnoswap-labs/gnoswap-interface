@@ -9,6 +9,7 @@ import { useGetProposalParameters, useGetProposals } from "@query/governance";
 import { QUERY_KEY } from "@query/query-keys";
 
 import { useCreateProposalModal } from "@hooks/governance/ui/use-create-proposal-modal";
+import { useProposalHash } from "@hooks/governance/ui/use-proposal-hash";
 import ProposalList from "../../components/proposals-list/ProposalList";
 import { useGovernanceTx } from "@hooks/governance/data/use-governance-tx";
 import { XGNS_TOKEN } from "@common/values/token-constant";
@@ -20,7 +21,7 @@ const ProposalListContainer: React.FC = () => {
 
   const { breakpoint } = useWindowSize();
   const [isShowActiveOnly, setIsShowActiveOnly] = useState(active === "true");
-  const [selectedProposalId, setSelectedProposalId] = useState(0);
+  const { selectedProposalId, selectProposal } = useProposalHash();
   const { isSwitchNetwork, connected, switchNetwork, account } = useWallet();
   const { openModal } = useConnectWalletModal();
   const { openModal: openCreateProposalModal } = useCreateProposalModal();
@@ -109,7 +110,7 @@ const ProposalListContainer: React.FC = () => {
       proposalList={ProposalsInfo?.pages.flatMap(item => item.proposals) || []}
       fetchMore={fetchNextItems}
       selectedProposalId={selectedProposalId}
-      setSelectedProposalId={setSelectedProposalId}
+      setSelectedProposalId={selectProposal}
       openCreateProposalModal={openCreateProposalModal}
       executablePackages={executablePackages}
       executableFunctions={executableFunctions}

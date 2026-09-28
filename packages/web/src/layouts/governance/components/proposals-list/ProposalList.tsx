@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 
 import withIntersection from "@components/hoc/with-intersection";
@@ -28,7 +28,7 @@ export interface ProposalListProps {
   proposalList: ProposalItemInfo[];
   fetchMore: () => void;
   selectedProposalId: number;
-  setSelectedProposalId: Dispatch<SetStateAction<number>>;
+  setSelectedProposalId: (proposalId: number) => void;
   openCreateProposalModal: (options: CreateProposalModalOpenOption) => void;
   executablePackages: {
     pkgName: string;
