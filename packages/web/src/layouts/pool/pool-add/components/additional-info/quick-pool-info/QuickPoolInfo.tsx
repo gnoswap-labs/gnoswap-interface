@@ -116,7 +116,8 @@ const QuickPoolInfo: React.FC<Props> = ({
 
     return (
       <>
-        {Number(pool.stakingApr) > 100 && <IconStar size={20} />} {formatRate(pool.stakingApr)}
+        {Number(pool.stakingApr) > 100 && <IconStar size={20} />}
+        {formatRate(pool.stakingApr)}
       </>
     );
   }, [isLoadingPool, pool.stakingApr]);

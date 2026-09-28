@@ -52,6 +52,9 @@ export const QuickPoolInfoWrapper = styled.div`
       .staking-apr-value,
       .fee-apr-value {
         ${mixins.flexbox("row", "center", "flex-end")};
+        font-variant-numeric: tabular-nums;
+        // fits "123.45%" so the logos don't shift on refetch
+        min-width: 7ch;
       }
     }
   }
