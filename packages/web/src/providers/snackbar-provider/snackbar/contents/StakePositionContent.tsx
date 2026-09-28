@@ -27,7 +27,18 @@ const StakePositionContent: React.FC<{ content?: SnackbarContent; onClick: () =>
   return (
     <div className="notice-body" onClick={onClick}>
       <div className="icon-wrap-wrapper nft-image-wrapper">
-        <Image className="nft-image" mobileWidth={20} width={32} src={content?.logoUrl || ""} alt="logo" />
+        <Image
+          className="nft-image"
+          mobileWidth={20}
+          width={32}
+          src={content?.logoUrl || "/fallback-logo.svg"}
+          alt=""
+          onError={event => {
+            if (event.currentTarget.getAttribute("src") !== "/fallback-logo.svg") {
+              event.currentTarget.src = "/fallback-logo.svg";
+            }
+          }}
+        />
       </div>
       <div>
         <div>

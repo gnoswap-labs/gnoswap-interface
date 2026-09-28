@@ -30,6 +30,7 @@ const MissingLogo: React.FC<Props> = ({
   tokenTooltipClassName,
   showTooltip = false,
 }) => {
+  const [failedUrl, setFailedUrl] = React.useState<string | null>(null);
   const rewardTypeToDisplayText = (rewardType: RewardType): string => {
     switch (rewardType) {
       case RewardTypeEnum.SWAP_FEE:
@@ -69,8 +70,15 @@ const MissingLogo: React.FC<Props> = ({
       forcedClose={!showTooltip}
       FloatingContent={<TokenSymbolWrapper>{tooltipContent}</TokenSymbolWrapper>}
     >
-      {url ? (
-        <Image mobileWidth={mobileWidth} width={width} src={url} alt="logo" className={className} />
+      {url && failedUrl !== url ? (
+        <Image
+          mobileWidth={mobileWidth}
+          width={width}
+          src={url}
+          alt="logo"
+          className={className}
+          onError={() => setFailedUrl(url)}
+        />
       ) : (
         <LogoWrapper
           width={width}
