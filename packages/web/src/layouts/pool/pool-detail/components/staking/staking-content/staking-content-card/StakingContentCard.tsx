@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { calculateRemainTime, timeToDateStr } from "@common/utils/date-util";
 import IconCheck from "@components/common/icons/IconCheck";
 import IconInfo from "@components/common/icons/IconInfo";
+import IconLpToken from "@components/common/icons/IconLpToken";
 import IconLine from "@components/common/icons/IconLine";
 import IconLineLong from "@components/common/icons/IconLineLong";
 import IconStar from "@components/common/icons/IconStar";
@@ -71,7 +72,13 @@ const PriceTooltipContent = ({ positions, period }: { positions: PoolPositionMod
         return (
           <React.Fragment key={index}>
             <div className="list list-logo">
-              <MissingLogo url={position.tokenUri} symbol={`ID #${position.id}`} width={18} mobileWidth={16} />
+              <MissingLogo
+                url={position.tokenUri}
+                fallback={<IconLpToken />}
+                symbol={`ID #${position.id}`}
+                width={18}
+                mobileWidth={16}
+              />
               <span className="title">ID #{position.lpTokenId}</span>
             </div>
             <div className="list">

@@ -10,6 +10,7 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconAdd from "@components/common/icons/IconAdd";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconLinkPage from "@components/common/icons/IconLinkPage";
+import IconLpToken from "@components/common/icons/IconLpToken";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import IconRemove from "@components/common/icons/IconRemove";
 import IconStaking from "@components/common/icons/IconStaking";
@@ -631,7 +632,13 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
               )}
               {!loading && (
                 <div className="coin-info">
-                  <MissingLogo url={position.tokenUri} symbol={`ID #${position.id}`} width={36} mobileWidth={24} />
+                  <MissingLogo
+                    url={position.tokenUri}
+                    fallback={<IconLpToken />}
+                    symbol={`ID #${position.id}`}
+                    width={36}
+                    mobileWidth={24}
+                  />
                 </div>
               )}
               {!loading && (
@@ -669,7 +676,13 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
               )}
               {!loading && (
                 <div className="coin-info">
-                  <MissingLogo url={position.tokenUri} symbol={`ID #${position.id}`} width={36} mobileWidth={24} />
+                  <MissingLogo
+                    url={position.tokenUri}
+                    fallback={<IconLpToken />}
+                    symbol={`ID #${position.id}`}
+                    width={36}
+                    mobileWidth={24}
+                  />
                 </div>
               )}
               {!loading && (

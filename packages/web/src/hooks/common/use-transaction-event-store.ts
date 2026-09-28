@@ -1,13 +1,15 @@
 import { DexEventType } from "@repositories/common";
 import React from "react";
+import axios from "axios";
 
 import { GNOT_TOKEN } from "@common/values/token-constant";
+import type { PositionModel } from "@models/position/position-model";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { PAGE_PATH } from "@constants/page.constant";
 import { useWrap } from "@hooks/swap/data/use-wrap";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetNotifications } from "@query/common";
-import { makeRandomId } from "@utils/common";
+import { delay, makeRandomId } from "@utils/common";
 import { formatRate } from "@utils/new-number-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
@@ -110,7 +112,6 @@ export const useTransactionEventStore = () => {
     const stakePositionSnackbarConfig = makeSnackbarConfig("stake-position", BADGE_SNACKBAR_TIMEOUT);
     let updatingSnackbarEnqueued = false;
     let alreadyEmitted = false;
-    let eventData: string[] | null = null;
 
     eventStore.addEvent(
       txHash,
@@ -121,8 +122,6 @@ export const useTransactionEventStore = () => {
         await onUpdate();
 
         if (visibleEmitResult && event.status === "SUCCESS") {
-          eventData = event.data;
-
           // Show updating snackbar after TX_RESULT_SNACKBAR_TIMEOUT
           safeSetTimeout(() => {
             enqueue({ txHash: message.txHash }, updatingSnackbarConfig);
@@ -146,7 +145,7 @@ export const useTransactionEventStore = () => {
           }, TX_RESULT_SNACKBAR_TIMEOUT);
         }
       },
-      async () => {
+      async event => {
         console.log("emitted event");
         alreadyEmitted = true;
         onEmitCommon();
@@ -168,15 +167,16 @@ export const useTransactionEventStore = () => {
           await enqueueWugnotChangeEvent(txHash, account.address, receiveWugnotSnackbarConfig);
         }
 
-        if (checkStakePosition && account && !hasBadgeSnackbar && eventData) {
+        if (checkStakePosition && account && !hasBadgeSnackbar && event.status === "SUCCESS" && event.data) {
           const positionMintResponseSize = 4;
-          if (eventData.length < positionMintResponseSize) {
+          if (event.data.length < positionMintResponseSize) {
             return;
           }
 
-          const positionId = eventData[eventData.length - positionMintResponseSize];
+          const positionId = event.data[event.data.length - positionMintResponseSize];
 
-          await enqueueStakePositionEvent(positionId, stakePositionSnackbarConfig);
+          // Indexing can lag behind the block; do not block other transaction events while polling.
+          void enqueueStakePositionEvent(positionId, stakePositionSnackbarConfig).catch(console.error);
         }
       },
     );
@@ -229,13 +229,31 @@ export const useTransactionEventStore = () => {
   }
 
   async function enqueueStakePositionEvent(positionId: string, config: SnackbarOptions) {
-    const position = await positionRepository.getPositionById(positionId).catch(e => {
-      console.error(e);
-      return null;
-    });
-    if (!position) {
-      return;
+    const deadline = Date.now() + 8_000;
+    let retryDelay = 500;
+    let position: PositionModel | null = null;
+    while (true) {
+      const remaining = deadline - Date.now();
+      if (remaining <= 0) break;
+      try {
+        position = await positionRepository.getPositionById(positionId, remaining);
+      } catch (error) {
+        if (
+          !axios.isAxiosError(error) ||
+          (error.response && error.response.status !== 404 && error.response.status < 500)
+        ) {
+          console.error(error);
+          return;
+        }
+      }
+
+      if (position?.tokenUri) break;
+      const waitRemaining = deadline - Date.now();
+      if (waitRemaining <= 0) break;
+      await delay(Math.min(retryDelay, waitRemaining));
+      retryDelay *= 2;
     }
+    if (!position) return;
 
     const poolPath = position.poolPath;
     const positionLogoUrl = position.tokenUri;

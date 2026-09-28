@@ -13,6 +13,7 @@ import LoadingSpinner from "../../loading-spinner/LoadingSpinner";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import IconStar from "../../icons/IconStar";
+import IconLpToken from "../../icons/IconLpToken";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { useTranslation } from "react-i18next";
 import MissingLogo from "../../missing-logo/MissingLogo";
@@ -343,7 +344,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         >
           <div className="title-wrapper">
             <div className="box-header">
-              <MissingLogo symbol={`ID #${position.id}`} url={position.tokenUri} width={24} showTooltip />
+              <MissingLogo
+                symbol={`ID #${position.id}`}
+                url={position.tokenUri}
+                fallback={<IconLpToken />}
+                width={24}
+                showTooltip
+              />
               <span>{`${tokenA.displaySymbol}/${tokenB.displaySymbol}`}</span>
               <div className="badge-group">
                 <Badge type={BADGE_TYPE.DARK_DEFAULT} text={feeRateStr} />

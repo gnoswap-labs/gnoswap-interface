@@ -1,0 +1,38 @@
+interface IconLpTokenProps {
+  className?: string;
+}
+
+const IconLpToken = ({ className }: IconLpTokenProps) => (
+  <svg
+    className={className}
+    width="100%"
+    height="100%"
+    viewBox="0 0 135 135"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    role="img"
+    aria-label="LP position"
+    focusable="false"
+  >
+    <circle cx="67.5" cy="67.5" r="67.5" fill="#62666E" />
+    <path d="M51.2905 42.9449L66.4895 33L97 52.8061L81.8241 62.7425L51.2905 42.9449Z" fill="white" />
+    <path
+      d="M51.6055 67.5059L66.8044 57.561L97 77.0657L82.1046 87.1793L51.6055 67.5059Z"
+      fill="white"
+      fillOpacity="0.4"
+    />
+    <path
+      d="M36.0464 81.7559L51.2905 71.811L81.7336 91.6547L66.4895 101.508L36.0464 81.7559Z"
+      fill="white"
+      fillOpacity="0.6"
+    />
+    <path d="M36.001 52.8055L51.2884 42.9177L51.2884 71.8145L36.001 81.779L36.001 52.8055Z" fill="white" />
+    <path
+      d="M82.1051 87.1797L97.0016 77.0662L97.016 81.7025L81.7896 91.629L82.1051 87.1797Z"
+      fill="white"
+      fillOpacity="0.5"
+    />
+  </svg>
+);
+
+export default IconLpToken;

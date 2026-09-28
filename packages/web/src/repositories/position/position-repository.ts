@@ -34,7 +34,7 @@ export interface PositionRepository {
 
   getPositionRewardsByAddress: (address: string) => Promise<PositionRewardsResponse | null>;
 
-  getPositionById: (lpTokenId: string) => Promise<PositionModel>;
+  getPositionById: (lpTokenId: string, timeout?: number) => Promise<PositionModel>;
 
   sendClaim: (request: ClaimRequest) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
 

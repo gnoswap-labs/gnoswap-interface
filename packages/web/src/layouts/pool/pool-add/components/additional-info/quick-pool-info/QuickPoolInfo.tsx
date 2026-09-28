@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { STATIC_TEXT } from "@common/values";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
+import IconLpToken from "@components/common/icons/IconLpToken";
 import IconStar from "@components/common/icons/IconStar";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
@@ -177,7 +178,13 @@ const QuickPoolInfo: React.FC<Props> = ({
             <div className="content" key={index}>
               <div className="label">
                 {!isLoadingPool && (
-                  <MissingLogo url={item.tokenUri} symbol={`ID #${item.id}`} width={24} mobileWidth={24} />
+                  <MissingLogo
+                    url={item.tokenUri}
+                    fallback={<IconLpToken />}
+                    symbol={`ID #${item.id}`}
+                    width={24}
+                    mobileWidth={24}
+                  />
                 )}
                 ID #{item.id}
               </div>
@@ -203,7 +210,13 @@ const QuickPoolInfo: React.FC<Props> = ({
           {stakedPositions.map((item, index) => (
             <div className="content" key={index}>
               <div className="label">
-                <MissingLogo url={item.tokenUri} symbol={`ID #${item.id}`} width={24} mobileWidth={24} />
+                <MissingLogo
+                  url={item.tokenUri}
+                  fallback={<IconLpToken />}
+                  symbol={`ID #${item.id}`}
+                  width={24}
+                  mobileWidth={24}
+                />
                 ID #{item.id}
               </div>
               <div className="value">{formatOtherPrice(item.positionUsdValue)}</div>
