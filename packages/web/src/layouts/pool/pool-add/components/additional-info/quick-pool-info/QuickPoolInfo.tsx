@@ -139,7 +139,7 @@ const QuickPoolInfo: React.FC<Props> = ({
         </div>
         <div>
           <div className="label">{t("AddPosition:positionStat.label.feeApr")}</div>
-          <div className="value">
+          <div className="value apr">
             {!isLoadingPool && (
               <DoubleLogo
                 left={tokenA?.logoURI || ""}
@@ -154,7 +154,7 @@ const QuickPoolInfo: React.FC<Props> = ({
         </div>
         <div>
           <div className="label">{t("AddPosition:positionStat.label.stakingApr")}</div>
-          <div className="value">
+          <div className="value apr">
             <OverlapTokenLogo tokens={rewardTokens} size={24} />
             <span className="staking-apr-value">{stakingApr}</span>
           </div>

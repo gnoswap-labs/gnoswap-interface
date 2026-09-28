@@ -14,19 +14,19 @@ const renderAprValues = (feeApr: string, stakingApr: string) =>
     <JotaiProvider>
       <GnoswapThemeProvider>
         <QuickPoolInfoWrapper>
-          <div className="pool-info">
+          <div className="pool-info" data-testid="pool-info">
             <div>
               <div className="label">Fee APR</div>
-              <div className="value">
-                <span className="fee-apr-value" data-testid="fee-apr">
-                  {feeApr}
-                </span>
+              <div className="value apr" data-testid="fee-apr">
+                <span className="logo" />
+                <span className="fee-apr-value">{feeApr}</span>
               </div>
             </div>
             <div>
               <div className="label">Staking APR</div>
-              <div className="value">
-                <span className="staking-apr-value" data-testid="staking-apr">
+              <div className="value apr" data-testid="staking-apr">
+                <span className="logo" />
+                <span className="staking-apr-value">
                   <IconStar size={20} />
                   {stakingApr}
                 </span>
@@ -46,23 +46,32 @@ describe("formatRate output length for APR values", () => {
     [12.5, "12.50%"],
     [123.4, "123.40%"],
     [1234.5, "1,234.50%"],
+    [3284655.48, "3,284,655.48%"],
   ])("formats %p as %p", (value, expected) => {
     expect(formatRate(value)).toBe(expected);
   });
 });
 
-describe("QuickPoolInfoWrapper APR value width", () => {
-  // staking-apr renders the >100% state, where IconStar (20px) sits before the rate
-  it.each(["fee-apr", "staking-apr"])("keeps %s width stable when the value changes", async testId => {
-    renderAprValues(formatRate(99.99), formatRate(100));
+describe("QuickPoolInfoWrapper APR logo position", () => {
+  // jsdom has no layout, so this pins the rules that keep the logos fixed:
+  // the rows share one grid whose label column fits the widest (translated) label,
+  // and each APR value area fills the second column with the rate pushed to its right edge.
+  it("lays the rows out on a shared label column", async () => {
+    renderAprValues(formatRate(99.99), formatRate(3284655.48));
+
+    await waitFor(() => expect(screen.getByTestId("pool-info")).toBeInTheDocument());
+    const poolInfo = screen.getByTestId("pool-info");
+
+    expect(poolInfo).toHaveStyle({ display: "grid", "grid-template-columns": "auto 1fr" });
+    Array.from(poolInfo.children).forEach(row => expect(row).toHaveStyle({ display: "contents" }));
+  });
+
+  it.each(["fee-apr", "staking-apr"])("anchors the %s logo regardless of the rate length", async testId => {
+    renderAprValues(formatRate(99.99), formatRate(3284655.48));
 
     await waitFor(() => expect(screen.getByTestId(testId)).toBeInTheDocument());
     const value = screen.getByTestId(testId);
 
-    // sanity: emotion styles are applied in jsdom
-    expect(value).toHaveStyle({ "justify-content": "flex-end" });
-
-    expect(value).toHaveStyle({ "font-variant-numeric": "tabular-nums" });
-    expect(value).toHaveStyle({ "min-width": "calc(7.5ch + 20px)" });
+    expect(value).toHaveStyle({ "justify-self": "stretch", "justify-content": "space-between" });
   });
 });
