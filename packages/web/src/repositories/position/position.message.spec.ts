@@ -37,6 +37,7 @@ import {
   makeStakePositionsMessagesWithApproves,
   makeUnStakePositionsMessagesWithApproves,
 } from "@repositories/position/position.message";
+import { withTokenRouteMetadata } from "@utils/token-utils";
 
 type RewardOverrides = {
   rewardType: RewardType;
@@ -481,6 +482,35 @@ describe("position.message.ts", () => {
           }),
         ]),
       );
+    });
+
+    it("routes native GNOT approval when position token has no wrappedPath", async () => {
+      const nativeGnot = createTokenModel("ugnot", "Native");
+      const wrappedGnot = createTokenModel("wugnot", "GRC20", {
+        pkgPath: "wugnot_package",
+        routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
+      });
+
+      const messages = await makeIncreaseLiquidityMessagesWithApproves(
+        {
+          lpTokenId: "lp1",
+          tokenA: withTokenRouteMetadata(nativeGnot, [nativeGnot, wrappedGnot]),
+          tokenB: createTokenModel("tokenB_path"),
+          tokenAAmount: 1,
+          tokenBAmount: 0,
+          caller: "caller",
+          slippage: 0,
+          deadline: "deadline",
+        },
+        jest.fn(async () => 0),
+      );
+
+      expect(messages[0]).toMatchObject({
+        caller: "caller",
+        pkg_path: "wugnot_package",
+        func: "Approve",
+        args: ["pool_address", "1000000"],
+      });
     });
   });
 

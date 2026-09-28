@@ -1,5 +1,6 @@
 import { STATIC_TEXT } from "@common/values";
 import { GNOT_TOKEN } from "@common/values/token-constant";
+import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { RewardType } from "@constants/option.constant";
 import { RewardTokenModel } from "@models/position/reward-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
@@ -15,7 +16,7 @@ export interface RewardTokenModelWithMultipleTypes extends Omit<RewardTokenModel
 export const TOKEN_DISPLAY_MAX_LENGTH = 9;
 
 export function withTokenRouteMetadata(token: TokenModel, currentTokens: TokenModel[]): TokenModel {
-  const transactionPath = token.wrappedPath || token.path;
+  const transactionPath = token.wrappedPath || (token.path === GNOT_TOKEN.path ? WRAPPED_GNOT_PATH : token.path);
   const currentToken = currentTokens.find(candidate => candidate.path === transactionPath);
   if (!currentToken) {
     return token;
