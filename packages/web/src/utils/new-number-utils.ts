@@ -1,4 +1,6 @@
 import BigNumber from "bignumber.js";
+
+import { toBigNumber } from "@utils/bignumber-utils";
 import { buildPricePrefix } from "./common";
 import { toKMBFormat } from "./number-utils";
 
@@ -76,7 +78,7 @@ export const formatRate = (
     allowZeroDecimals?: boolean;
   } = {},
 ) => {
-  if (amount === null || amount === undefined || BigNumber(amount).isNaN()) {
+  if (amount === null || amount === undefined || toBigNumber(amount).isNaN()) {
     return "-";
   }
 
@@ -163,7 +165,7 @@ export const formatPrice = (value?: BigNumber | string | number | null, options:
   }
 
   const valueWithoutComma = value.toString().replace(/,/g, "");
-  const valueAsBigNum = BigNumber(valueWithoutComma);
+  const valueAsBigNum = toBigNumber(valueWithoutComma);
   const absValue = valueAsBigNum.abs();
 
   const prefix = buildPricePrefix({ usd, approx });
@@ -216,7 +218,7 @@ export const formatOtherPrice = (
 
   const valueWithoutComma = value.toString().replace(/,/g, "");
 
-  const valueAsBigNum = BigNumber(valueWithoutComma);
+  const valueAsBigNum = toBigNumber(valueWithoutComma);
   const absValue = valueAsBigNum.abs();
 
   const prefix = usd ? "$" : "";

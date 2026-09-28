@@ -1,5 +1,6 @@
-import BigNumber from "bignumber.js";
 import React, { useEffect, useMemo, useRef, useState } from "react";
+
+import { toBigNumber } from "@utils/bignumber-utils";
 
 import IconInfo from "@components/common/icons/IconInfo";
 import Tooltip from "@components/common/tooltip/Tooltip";
@@ -53,10 +54,10 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
   const isClaim = className === "claimable-rewards" && width > 968;
 
   const displayValue = useMemo(() => {
-    if (!value || BigNumber(value).isZero()) {
+    if (!value || toBigNumber(value).isZero()) {
       return "$0";
     }
-    if (BigNumber(value).isLessThan(0.01)) {
+    if (toBigNumber(value).isLessThan(0.01)) {
       return "<$0.01";
     }
     return formatOtherPrice(value, { isKMB: false });

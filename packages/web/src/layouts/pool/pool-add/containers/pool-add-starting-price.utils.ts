@@ -1,5 +1,7 @@
 import BigNumber from "bignumber.js";
 
+import { toBigNumber } from "@utils/bignumber-utils";
+
 import type { TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
 import { makeRawPrice } from "@utils/pool-utils";
@@ -44,7 +46,7 @@ export const resolvePoolAddStartingPrice = (
   tokenB: TokenModel,
   tickSpacing: number,
 ): number | null => {
-  const priceNum = BigNumber(displayPrice).toNumber();
+  const priceNum = toBigNumber(displayPrice).toNumber();
   if (BigNumber(priceNum).isNaN() || !Number.isFinite(priceNum) || priceNum <= 0) {
     return null;
   }

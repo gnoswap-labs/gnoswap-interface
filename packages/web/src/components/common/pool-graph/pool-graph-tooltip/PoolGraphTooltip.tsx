@@ -1,4 +1,6 @@
 import BigNumber from "bignumber.js";
+
+import { toBigNumber } from "@utils/bignumber-utils";
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -17,7 +19,7 @@ function makeClassNameWithSmallFont(className: string, target: string, limitLeng
 }
 
 function formatTooltipTokenAmount(amount: string) {
-  const amountNumber = BigNumber(amount);
+  const amountNumber = toBigNumber(amount);
 
   if (amountNumber.isNaN() || !amountNumber.isFinite()) {
     return amount;

@@ -5,6 +5,8 @@ import { RewardTokenModel } from "@models/position/reward-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { OnchainToken } from "@repositories/activity/responses/activity-responses";
 import BigNumber from "bignumber.js";
+
+import { toBigNumber } from "@utils/bignumber-utils";
 import { formatOtherPrice } from "./new-number-utils";
 import { roundDownDecimalNumber } from "./regex";
 
@@ -92,7 +94,7 @@ export function isAmountLessThanTokenMinimum(
   token: Pick<TokenModel | OnchainToken, "decimals">,
   amount: string | number,
 ) {
-  const number = BigNumber(amount.toString().replace(/,/g, ""));
+  const number = toBigNumber(amount.toString().replace(/,/g, ""));
   if (!number.isFinite() || !number.gt(0)) {
     return false;
   }
