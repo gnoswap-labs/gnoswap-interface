@@ -1,5 +1,7 @@
 import "@testing-library/jest-dom";
 
+import createCache from "@emotion/cache";
+import { CacheProvider } from "@emotion/react";
 import { render, screen, waitFor } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 
@@ -12,19 +14,24 @@ import { ProposalContentWrapper } from "./ViewProposalModal.styles";
 const renderProposalContent = (themeKey: "dark" | "light") => {
   localStorage.setItem(GNOSWAP_THEME_KEY, JSON.stringify(themeKey));
 
+  // a fresh cache per render keeps emotion from skipping style insertion it already did for the other theme
+  const cache = createCache({ key: `test-${themeKey}` });
+
   render(
-    <JotaiProvider>
-      <GnoswapThemeProvider>
-        <ProposalContentWrapper>
-          <div className="content" data-testid="markdown-content">
-            <div className="markdown-style">
-              <h1>Markdown Heading</h1>
-              <p>Markdown Body</p>
+    <CacheProvider value={cache}>
+      <JotaiProvider>
+        <GnoswapThemeProvider>
+          <ProposalContentWrapper>
+            <div className="content" data-testid="markdown-content">
+              <div className="markdown-style">
+                <h1>Markdown Heading</h1>
+                <p>Markdown Body</p>
+              </div>
             </div>
-          </div>
-        </ProposalContentWrapper>
-      </GnoswapThemeProvider>
-    </JotaiProvider>,
+          </ProposalContentWrapper>
+        </GnoswapThemeProvider>
+      </JotaiProvider>
+    </CacheProvider>,
   );
 };
 
@@ -49,14 +56,15 @@ describe("ProposalContentWrapper markdown heading hierarchy", () => {
     async ({ themeKey, headingColor, bodyColor }) => {
       renderProposalContent(themeKey);
 
+      // the theme color applies after the provider reads localStorage so wait for it to cascade
       await waitFor(() => {
-        expect(screen.getByRole("heading", { level: 1, name: "Markdown Heading" })).toBeTruthy();
+        expect(screen.getByRole("heading", { level: 1, name: "Markdown Heading" })).toHaveStyle({
+          color: headingColor,
+        });
       });
 
-      const heading = screen.getByRole("heading", { level: 1, name: "Markdown Heading" });
       const content = screen.getByTestId("markdown-content");
 
-      expect(heading).toHaveStyle({ color: headingColor });
       expect(content).toHaveStyle({ color: bodyColor });
       expect(headingColor).not.toBe(bodyColor);
     },

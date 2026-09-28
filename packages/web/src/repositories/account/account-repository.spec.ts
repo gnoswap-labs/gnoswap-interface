@@ -67,7 +67,7 @@ describe("get account", () => {
     let error: unknown = null;
 
     try {
-      expect(await accountRepository.getAccount()).toThrowError();
+      expect(await accountRepository.getAccount()).toThrow();
     } catch (e) {
       error = e;
     }

@@ -61,7 +61,7 @@ describe("get notifications by address", () => {
     localStorageClient.get = jest.fn().mockReturnValue(stringValue);
 
     try {
-      expect(await accountNotificationRepository.getNotificationsByAddress(address)).toThrowError();
+      expect(await accountNotificationRepository.getNotificationsByAddress(address)).toThrow();
     } catch (e) {
       error = e;
     }

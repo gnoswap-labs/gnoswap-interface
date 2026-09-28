@@ -8,7 +8,7 @@ const withIntersection = <P extends object>(ProposalCard: React.ComponentType<P>
     if (entry?.isIntersecting) callback();
     return (
       <div ref={ref} style={{ width: "100%" }}>
-        <ProposalCard {...props} />
+        {React.createElement(ProposalCard, props)}
       </div>
     );
   };

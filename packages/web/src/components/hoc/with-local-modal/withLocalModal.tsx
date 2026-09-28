@@ -40,7 +40,7 @@ const withLocalModal = <P extends object>(
       <>
         <LocalModalBackground>
           <div className="content-area" ref={modalRef}>
-            <ModalContent {...props} />
+            {React.createElement(ModalContent, props)}
           </div>
         </LocalModalBackground>
         <Overlay onClick={() => setIsOpen(false)} />
