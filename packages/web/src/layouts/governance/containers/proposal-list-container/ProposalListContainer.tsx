@@ -2,9 +2,11 @@ import React, { useMemo, useState } from "react";
 import { useRouter } from "next/router";
 
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetMyDelegation, useGetProposalParameters, useGetProposals } from "@query/governance";
+import { QUERY_KEY } from "@query/query-keys";
 
 import { useCreateProposalModal } from "@hooks/governance/ui/use-create-proposal-modal";
 import ProposalList from "../../components/proposals-list/ProposalList";
@@ -23,6 +25,7 @@ const ProposalListContainer: React.FC = () => {
   const { isSwitchNetwork, connected, switchNetwork, account } = useWallet();
   const { openModal } = useConnectWalletModal();
   const { openModal: openCreateProposalModal } = useCreateProposalModal();
+  const { invalidateQueryKey } = useInvalidateQueries();
 
   const {
     proposeCommunityPoolSpendProposal,
@@ -44,7 +47,6 @@ const ProposalListContainer: React.FC = () => {
     isFetched: isFetchedProposalsInfo,
     hasNextPage,
     fetchNextPage,
-    refetch: refetchProposals,
   } = useGetProposals({
     isActive: isShowActiveOnly,
     address: account?.address,
@@ -78,6 +80,8 @@ const ProposalListContainer: React.FC = () => {
     if (hasNextPage) fetchNextPage();
   };
 
+  const refreshProposals = () => invalidateQueryKey("Governance Proposal", [[QUERY_KEY.governanceProposals]]);
+
   const toggleIsShowActiveOnly = React.useCallback(() => {
     setIsShowActiveOnly(prev => {
       const newActiveState = !prev;
@@ -106,7 +110,7 @@ const ProposalListContainer: React.FC = () => {
       switchNetwork={switchNetwork}
       isShowActiveOnly={isShowActiveOnly}
       toggleIsShowActiveOnly={toggleIsShowActiveOnly}
-      myVotingWeight={rawToDisplayAmount(Number(myDelegationInfo?.votingWeight) || 0, XGNS_TOKEN.decimals)}
+      myVotingWeight={rawToDisplayAmount(Number(myDelegationInfo?.votingPower) || 0, XGNS_TOKEN.decimals)}
       proposalCreationThreshold={proposalCreationThreshold}
       proposalList={ProposalsInfo?.pages.flatMap(item => item.proposals) || []}
       fetchMore={fetchNextItems}
@@ -115,36 +119,19 @@ const ProposalListContainer: React.FC = () => {
       openCreateProposalModal={openCreateProposalModal}
       executablePackages={executablePackages}
       executableFunctions={executableFunctions}
-      proposeTextProposal={(...params) =>
-        proposeTextProposal(...params, async () => {
-          await refetchProposals();
-        })
+      proposeTextProposal={(...params) => proposeTextProposal(...params, refreshProposals)}
+      proposeCommunityPoolSpendProposal={(...params) => proposeCommunityPoolSpendProposal(...params, refreshProposals)}
+      proposeParamChangeProposal={(...params) => proposeParamChangeProposal(...params, refreshProposals)}
+      voteProposal={(proposalId, voteYes) =>
+        voteProposal(proposalId, voteYes, () =>
+          invalidateQueryKey("Governance Vote", [
+            [QUERY_KEY.governanceProposals],
+            [QUERY_KEY.governanceProposalDetails, proposalId],
+          ]),
+        )
       }
-      proposeCommunityPoolSpendProposal={(...params) =>
-        proposeCommunityPoolSpendProposal(...params, async () => {
-          await refetchProposals();
-        })
-      }
-      proposeParamChangeProposal={(...params) =>
-        proposeParamChangeProposal(...params, async () => {
-          await refetchProposals();
-        })
-      }
-      voteProposal={(...params) =>
-        voteProposal(...params, async () => {
-          await refetchProposals();
-        })
-      }
-      executeProposal={(...params) =>
-        executeProposal(...params, async () => {
-          await refetchProposals();
-        })
-      }
-      cancelProposal={(...params) =>
-        cancelProposal(...params, async () => {
-          await refetchProposals();
-        })
-      }
+      executeProposal={(...params) => executeProposal(...params, refreshProposals)}
+      cancelProposal={(...params) => cancelProposal(...params, refreshProposals)}
     />
   );
 };

@@ -157,8 +157,8 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   }, [myDelegationInfo.claimableGovernanceRewardUsd, myDelegationInfo.claimableLaunchpadRewardUsd]);
 
   const currentDelegatedDisplayAmount = useMemo(() => {
-    return rawToDisplayAmount(myDelegationInfo.votingWeight, XGNS_TOKEN.decimals);
-  }, [myDelegationInfo.votingWeight]);
+    return rawToDisplayAmount(myDelegationInfo.delegatedAmount, XGNS_TOKEN.decimals);
+  }, [myDelegationInfo.delegatedAmount]);
 
   const totalDelegatedDisplayAmount = useMemo(() => {
     return rawToDisplayAmount(totalDelegatedAmount, XGNS_TOKEN.decimals);
@@ -315,7 +315,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 >
                   <div className={visibleInfoTooltip ? "value-wrapper-for-hover" : "value-wrapper"}>
                     {activatedDelegateInfoTab
-                      ? formatOtherPrice(rawToDisplayAmount(myDelegationInfo.votingWeight, XGNS_TOKEN.decimals), {
+                      ? formatOtherPrice(currentDelegatedDisplayAmount, {
                           isKMB: false,
                           usd: false,
                         })

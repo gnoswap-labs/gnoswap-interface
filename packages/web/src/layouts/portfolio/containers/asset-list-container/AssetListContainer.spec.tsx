@@ -38,7 +38,7 @@ jest.mock("@hooks/wallet/data/use-wallet", () => ({
 }));
 
 jest.mock("@hooks/pool/data/use-position-data", () => ({
-  usePositionData: () => ({ loading: false }),
+  usePositionData: jest.fn(),
 }));
 
 jest.mock("@hooks/wallet/data/useSendAsset", () => ({
@@ -88,6 +88,8 @@ jest.mock("@layouts/portfolio/components/asset-list/asset-list-table/asset-info/
 const { useGetTokens } = require("@query/token");
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { useTokenData } = require("@hooks/token/data/use-token-data");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { usePositionData } = require("@hooks/pool/data/use-position-data");
 
 const makeToken = (overrides: Partial<TokenModel>): TokenModel => ({
   path: "gno.land/r/demo/token",
@@ -192,6 +194,12 @@ describe("AssetListContainer unverified token filtering", () => {
     expect(useTokenData).toHaveBeenLastCalledWith(false);
     expect(screen.getByText(/VerifiedBal/)).toBeInTheDocument();
     expect(screen.queryByText(/UnverifiedBal/)).not.toBeInTheDocument();
+  });
+
+  it("does not request positions while loading assets", () => {
+    renderContainer();
+
+    expect(usePositionData).not.toHaveBeenCalled();
   });
 
   it("shows unverified assets when the toggle is switched on", () => {
