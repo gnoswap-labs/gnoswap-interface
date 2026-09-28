@@ -5,13 +5,12 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { useGetMyDelegation, useGetProposalParameters, useGetProposals } from "@query/governance";
+import { useGetProposalParameters, useGetProposals } from "@query/governance";
 import { QUERY_KEY } from "@query/query-keys";
 
 import { useCreateProposalModal } from "@hooks/governance/ui/use-create-proposal-modal";
 import ProposalList from "../../components/proposals-list/ProposalList";
 import { useGovernanceTx } from "@hooks/governance/data/use-governance-tx";
-import { rawToDisplayAmount } from "@utils/number-utils";
 import { XGNS_TOKEN } from "@common/values/token-constant";
 import { getProposalCreationThreshold } from "@utils/governance-utils";
 
@@ -37,10 +36,6 @@ const ProposalListContainer: React.FC = () => {
   } = useGovernanceTx();
 
   const { data: proposalParameterInfo, isFetched: isFetchedProposalParameterInfo } = useGetProposalParameters();
-
-  const { data: myDelegationInfo } = useGetMyDelegation({
-    address: account?.address || "",
-  });
 
   const {
     data: ProposalsInfo,
@@ -110,7 +105,6 @@ const ProposalListContainer: React.FC = () => {
       switchNetwork={switchNetwork}
       isShowActiveOnly={isShowActiveOnly}
       toggleIsShowActiveOnly={toggleIsShowActiveOnly}
-      myVotingWeight={rawToDisplayAmount(Number(myDelegationInfo?.votingPower) || 0, XGNS_TOKEN.decimals)}
       proposalCreationThreshold={proposalCreationThreshold}
       proposalList={ProposalsInfo?.pages.flatMap(item => item.proposals) || []}
       fetchMore={fetchNextItems}
