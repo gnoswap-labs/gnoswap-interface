@@ -91,6 +91,26 @@ describe("useSwap amount precision", () => {
     );
   });
 
+  it("does not request or submit a swap when both token paths are identical", async () => {
+    const token = createToken("USDC");
+    const { result } = renderHook(() =>
+      useSwap({ tokenA: token, tokenB: { ...token }, direction: "EXACT_IN", slippage: 0.5 }),
+    );
+
+    act(() => {
+      result.current.updateSwapAmount("1");
+    });
+    act(() => {
+      jest.advanceTimersByTime(1_000);
+    });
+
+    expect(useGetRoutesMock.mock.lastCall?.[1]).toEqual({ enabled: false });
+    await act(async () => {
+      await result.current.swap(result.current.estimatedRoutes || [], "1");
+    });
+    expect(sendExactInSwapRoute).not.toHaveBeenCalled();
+  });
+
   it("rounds the exact-out maximum input up at an atomic-unit boundary", async () => {
     // Estimated input of 1 raw unit (0.000001) with 0.5% slippage must allow 2 raw units
     useGetRoutesMock.mockReturnValue({
