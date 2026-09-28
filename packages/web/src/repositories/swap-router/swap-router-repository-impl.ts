@@ -18,7 +18,7 @@ import { generateSendTransactionParams, withTransactionGuard } from "@utils/tran
 import { GetRoutesRequest } from "./request/get-routes-request";
 import { DrySwapRequest, SwapRouteMessagesRequest, SwapRouteRequest } from "./request/swap-route-request";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
-import { WrapTokenRequest } from "./request/wrap-token-request";
+import { WrapTokenMessagesRequest, WrapTokenRequest } from "./request/wrap-token-request";
 import { GetRoutesResponse } from "./response/get-routes-response";
 import { SwapRouteFailedResponse, SwapRouteSuccessResponse } from "./response/swap-route-response";
 import { SwapRouterRepository } from "./swap-router-repository";
@@ -173,12 +173,16 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     });
   };
 
-  public sendWrapToken = async (request: WrapTokenRequest): Promise<WalletResponse<{ hash: string }>> => {
+  public makeWrapTokenMessages = async (request: WrapTokenMessagesRequest): Promise<TransactionMessage[]> => {
     const address = await this.getAddress();
 
+    return makeWrapTokenMessages({ ...request, caller: address });
+  };
+
+  public sendWrapToken = async (request: WrapTokenRequest): Promise<WalletResponse<{ hash: string }>> => {
     const { gasFee, gasUsed, ...requests } = request;
 
-    const messages = makeWrapTokenMessages({ ...requests, caller: address });
+    const messages = await this.makeWrapTokenMessages(requests);
 
     const gasWanted = this.calculateGasWanted(Number(gasUsed));
 

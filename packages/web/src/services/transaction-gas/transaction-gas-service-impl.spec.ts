@@ -35,7 +35,12 @@ const makeService = (simulateTx: jest.Mock, withTransactionService = true) => {
   const transactionService = { createDocument } as unknown as TransactionService;
 
   const getAccount = jest.fn().mockResolvedValue({
-    data: { address: "g1user", accountNumber: "7", sequence: "3" },
+    data: {
+      address: "g1user",
+      accountNumber: "7",
+      sequence: "3",
+      publicKey: { "@type": "/tm.PubKeySecp256k1", value: "AtGyA6l3UIrUup5z7yXo90bXDcXUOmLiK34YPffgQ6pA" },
+    },
   });
   const walletClient = { getAccount } as unknown as WalletClient;
 
@@ -224,6 +229,21 @@ describe("TransactionGasServiceImpl.estimateMaxNativeAmount", () => {
 
     expect(simulateTx).not.toHaveBeenCalled();
     expect(max.simulated).toBe(false);
+  });
+
+  it("names the signer's key, which an account that never signed has no other source for", async () => {
+    const simulateTx = jest.fn().mockResolvedValue(result(1_000_000_000));
+    const { service } = makeService(simulateTx);
+
+    await service.estimateMaxNativeAmount(request());
+
+    const [probeTx] = simulateTx.mock.calls[0];
+    const [signature] = probeTx.signatures;
+    const raw = Buffer.from("AtGyA6l3UIrUup5z7yXo90bXDcXUOmLiK34YPffgQ6pA", "base64");
+
+    expect(signature.pub_key.type_url).toBe("/tm.PubKeySecp256k1");
+    // A key type is a byte array in amino: one length-delimited field, not bare bytes.
+    expect(Buffer.from(signature.pub_key.value)).toEqual(Buffer.from([0x0a, raw.length, ...raw]));
   });
 
   it("resolves the signing account once for every simulation", async () => {

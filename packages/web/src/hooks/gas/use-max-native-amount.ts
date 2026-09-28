@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import { TransactionMessage } from "@common/clients/wallet-client/protocols";
 import { DEFAULT_GAS_FEE } from "@common/values";
@@ -14,8 +14,19 @@ import { makeDisplayTokenAmountString, makeRawTokenAmount } from "@utils/token-u
  */
 const OFFERED_GAS_FEE = makeRawTokenAmount(GasToken, DEFAULT_GAS_FEE) ?? "0";
 
-export interface MaxNativeAmountParams {
+/**
+ * What the pending result belongs to. An estimate takes route lookups and
+ * simulations to come back, and by then the field it was asked about may hold
+ * another token or something the user typed — neither of which the old figure
+ * may overwrite.
+ */
+export interface MaxNativeAmountSubject {
   token: TokenModel | null;
+  /** The amount currently in the field the result would be written to. */
+  amount?: string;
+}
+
+export interface MaxNativeAmountParams {
   /** Wallet balance as shown in the UI, so with a decimal point and optional grouping. */
   balance: string;
   /**
@@ -33,13 +44,30 @@ export interface MaxNativeAmountParams {
  * the gas fee is consumed and the storage deposit is locked. Both are read off
  * a simulation of the action itself, since an action doing more work for a
  * larger amount also costs more.
+ *
+ * `getMaxAmount` resolves to `null` when the answer no longer belongs to the
+ * field that asked: the token changed, the user typed, or a later press
+ * superseded it. Callers write the result back only when it is not `null`.
  */
-export const useMaxNativeAmount = () => {
+export const useMaxNativeAmount = (subject: MaxNativeAmountSubject) => {
   const transactionGasService = useOptionalGnoswapContext()?.transactionGasService ?? null;
   const [loading, setLoading] = useState(false);
 
+  const current = useRef(subject);
+  current.current = subject;
+  const pressCount = useRef(0);
+
   const getMaxAmount = useCallback(
-    async ({ token, balance, makeMessages }: MaxNativeAmountParams): Promise<string> => {
+    async ({ balance, makeMessages }: MaxNativeAmountParams): Promise<string | null> => {
+      const press = (pressCount.current += 1);
+      const asked = current.current;
+      const { token } = asked;
+
+      const stillWanted = () =>
+        press === pressCount.current &&
+        current.current.token?.path === asked.token?.path &&
+        current.current.amount === asked.amount;
+
       const displayBalance = BigNumber(balance.replace(/,/g, ""));
       if (!token || displayBalance.isNaN()) return "0";
 
@@ -62,6 +90,8 @@ export const useMaxNativeAmount = () => {
           balance: rawBalance,
           makeMessages,
         });
+
+        if (!stillWanted()) return null;
 
         return makeDisplayTokenAmountString(token, amount) ?? "0";
       } finally {

@@ -334,6 +334,12 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       const tokenAmount = makeDisplayTokenAmountString(tokenA, rawAmount);
       if (!isPositiveAmount(tokenAmount)) return [];
 
+      // GNOT and its wrapper are not swapped through a pool; the submit path
+      // wraps instead, and that is what has to be weighed.
+      if (isSameToken) {
+        return swapRouterRepository.makeWrapTokenMessages({ token: tokenA, tokenAmount });
+      }
+
       const routes = await swapRouterRepository.getRoutes({
         inputToken: tokenA,
         outputToken: tokenB,
@@ -363,6 +369,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       account,
       selectedTokenPair,
       isFetchedTokens,
+      isSameToken,
       swapRouterRepository,
       tokenA,
       tokenB,

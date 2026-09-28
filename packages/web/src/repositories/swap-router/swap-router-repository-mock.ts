@@ -41,6 +41,10 @@ export class SwapRouterRepositoryMock implements SwapRouterRepository {
     throw new Error("Mock sendExactOutSwapRoute");
   };
 
+  public makeWrapTokenMessages = async () => {
+    throw new Error("Mock makeWrapTokenMessages");
+  };
+
   public sendWrapToken = async () => {
     throw new Error("Mock sendWrapToken");
   };

@@ -8,7 +8,7 @@ import { CommonError } from "@common/errors";
 import { DEFAULT_GAS_WANTED } from "@common/values";
 import { TransactionService } from "@services/transaction";
 import { CreateTransactionDocumentParameters } from "@services/transaction/request";
-import { documentToDefaultTx, withGasFee } from "@utils/transaction-utils";
+import { documentToDefaultTx, SignerPublicKey, withGasFee } from "@utils/transaction-utils";
 import {
   bisectToward,
   cappedSpendable,
@@ -40,6 +40,7 @@ interface EstimateContext {
   gasPrice: number;
   feeFloor: string;
   account?: TransactionAccount;
+  publicKey?: SignerPublicKey;
 }
 
 interface Measurement {
@@ -98,7 +99,7 @@ export class TransactionGasServiceImpl implements TransactionGasService {
         gasPrice: (await this.getGasPrices()) || MINIMUM_GAS_PRICE,
         feeFloor: gasFeeFloor(balance, offeredGasFee),
         // Resolved once so the simulations below don't each ask the wallet.
-        account: await this.getAccountInfo(),
+        ...(await this.getSigner()),
       };
 
       // 1-2. Measure at the first planned amount the balance can carry.
@@ -189,18 +190,28 @@ export class TransactionGasServiceImpl implements TransactionGasService {
       account: context.account,
     });
 
-    return this.rpcProvider.simulateTx(documentToDefaultTx(withGasFee(document, context.gasWanted, Number(gasFee))));
+    return this.rpcProvider.simulateTx(
+      documentToDefaultTx(withGasFee(document, context.gasWanted, Number(gasFee)), context.publicKey),
+    );
   }
 
-  private async getAccountInfo(): Promise<TransactionAccount | undefined> {
+  /**
+   * The signer, as the wallet knows it. The key matters for an account that has
+   * never signed: the chain has not stored one, and the ante handler refuses a
+   * simulation that cannot name it.
+   */
+  private async getSigner(): Promise<{ account?: TransactionAccount; publicKey?: SignerPublicKey }> {
     try {
       const account = await this.walletClient?.getAccount();
-      const { address, accountNumber, sequence } = account?.data ?? {};
-      if (!address) return undefined;
+      const { address, accountNumber, sequence, publicKey } = account?.data ?? {};
+      if (!address) return {};
 
-      return { address, accountNumber: Number(accountNumber ?? 0), sequence: Number(sequence ?? 0) };
+      return {
+        account: { address, accountNumber: Number(accountNumber ?? 0), sequence: Number(sequence ?? 0) },
+        publicKey: publicKey?.["@type"] ? { typeUrl: publicKey["@type"], value: publicKey.value } : undefined,
+      };
     } catch {
-      return undefined;
+      return {};
     }
   }
 }

@@ -41,7 +41,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   makeMaxAmountMessages,
 }) => {
   const { t } = useTranslation();
-  const { getMaxAmount, loading: loadingMaxAmount } = useMaxNativeAmount();
+  const { getMaxAmount, loading: loadingMaxAmount } = useMaxNativeAmount({ token, amount });
 
   const balanceADisplay = useTokenBalanceDisplay(balance, connected);
 
@@ -84,7 +84,9 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   const handleFillBalance = useCallback(async () => {
     if (!connected) return;
 
-    const spendable = await getMaxAmount({ token, balance, makeMessages: makeMaxAmountMessages });
+    const spendable = await getMaxAmount({ balance, makeMessages: makeMaxAmountMessages });
+    // Null once the field has moved on: another token, or the user typing.
+    if (spendable === null) return;
 
     changeAmount(integersOnly ? BigNumber(spendable).integerValue(BigNumber.ROUND_DOWN).toString() : spendable);
   }, [connected, balance, token, changeAmount, integersOnly, getMaxAmount, makeMaxAmountMessages]);

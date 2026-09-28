@@ -85,7 +85,10 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   makeMaxAmountMessages,
 }) => {
   const { t } = useTranslation();
-  const { getMaxAmount, loading: loadingMaxAmount } = useMaxNativeAmount();
+  const { getMaxAmount, loading: loadingMaxAmount } = useMaxNativeAmount({
+    token: dataTokenInfo.tokenA,
+    amount: dataTokenInfo.tokenAAmount,
+  });
   const tokenA = dataTokenInfo.tokenA;
   const tokenB = dataTokenInfo.tokenB;
   const direction = swapSummaryInfo?.swapDirection;
@@ -127,10 +130,11 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
     // never swappable. getMaxAmount keeps the full precision of the balance,
     // which parseFloat would lose past ~16 significant digits.
     const spendable = await getMaxAmount({
-      token: tokenA,
       balance: dataTokenInfo.tokenABalance,
       makeMessages: makeMaxAmountMessages,
     });
+    // Null once the field has moved on: another token, or the user typing.
+    if (spendable === null) return;
 
     changeTokenAAmount(spendable);
   }, [changeTokenAAmount, connectedWallet, dataTokenInfo, getMaxAmount, makeMaxAmountMessages, tokenA]);

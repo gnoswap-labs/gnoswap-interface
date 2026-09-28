@@ -103,7 +103,10 @@ const AssetSendModal: React.FC<Props> = ({
   const [address, setAddress] = useState("");
 
   const { account } = useWallet();
-  const { getMaxAmount, loading: loadingMaxAmount } = useMaxNativeAmount();
+  const { getMaxAmount, loading: loadingMaxAmount } = useMaxNativeAmount({
+    token: withdrawInfo ?? null,
+    amount,
+  });
   const walletRepository = useOptionalGnoswapContext()?.walletRepository;
 
   const { tokenPrices, displayBalanceMap } = useTokenData(true);
@@ -200,7 +203,6 @@ const AssetSendModal: React.FC<Props> = ({
     if (!currentAvailableBalance) return;
 
     const maxAmount = await getMaxAmount({
-      token: withdrawInfo ?? null,
       balance: `${currentAvailableBalance}`,
       makeMessages:
         walletRepository && withdrawInfo
@@ -215,6 +217,9 @@ const AssetSendModal: React.FC<Props> = ({
               })
           : undefined,
     });
+
+    // Null once the field has moved on: another token, or the user typing.
+    if (maxAmount === null) return;
 
     setAmount(maxAmount);
   };

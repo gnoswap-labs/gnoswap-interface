@@ -65,7 +65,10 @@ const SwapCardContent: React.FC<ContentProps> = ({
   makeMaxAmountMessages,
 }) => {
   const { t } = useTranslation();
-  const { getMaxAmount, loading: loadingMaxAmount } = useMaxNativeAmount();
+  const { getMaxAmount, loading: loadingMaxAmount } = useMaxNativeAmount({
+    token: swapTokenInfo.tokenA,
+    amount: swapTokenInfo.tokenAAmount,
+  });
 
   const tokenA = swapTokenInfo.tokenA;
   const tokenB = swapTokenInfo.tokenB;
@@ -112,10 +115,11 @@ const SwapCardContent: React.FC<ContentProps> = ({
     // never swappable. getMaxAmount keeps the full precision of the balance,
     // which parseFloat would lose past ~16 significant digits.
     const spendable = await getMaxAmount({
-      token: tokenA,
       balance: swapTokenInfo.tokenABalance,
       makeMessages: makeMaxAmountMessages,
     });
+    // Null once the field has moved on: another token, or the user typing.
+    if (spendable === null) return;
 
     changeTokenAAmount(spendable);
   }, [changeTokenAAmount, connectedWallet, getMaxAmount, makeMaxAmountMessages, resetEstimatedLiquidity, swapTokenInfo, tokenA]);

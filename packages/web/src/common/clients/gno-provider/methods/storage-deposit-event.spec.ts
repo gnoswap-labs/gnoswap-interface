@@ -27,11 +27,12 @@ const encodeString = (field: number, value: string): number[] => {
   return [...encodeTag(field, 2), ...encodeUvarint(bytes.length), ...bytes];
 };
 
-const encodeCoin = (field: number, denom: string, amount: number): number[] => {
-  const coin = [...encodeString(1, denom), ...encodeTag(2, 0), ...encodeZigzag(amount)];
-
-  return [...encodeTag(field, 2), ...encodeUvarint(coin.length), ...coin];
-};
+/**
+ * `std.Coin` marshals through `MarshalAmino` to `coin.String()`, so the field
+ * holds `<amount><denom>` as text — and nothing at all when the amount is zero.
+ */
+const encodeCoin = (field: number, denom: string, amount: number): number[] =>
+  amount === 0 ? [] : encodeString(field, `${amount}${denom}`);
 
 const encodeStorageDepositEvent = ({
   bytesDelta,
@@ -56,7 +57,35 @@ const makeEvent = (value: Uint8Array, typeUrl = STORAGE_DEPOSIT_EVENT_TYPE_URL) 
   value,
 });
 
+/**
+ * Captured from `.app/simulate` on the dev chain: wrapping GNOT grew
+ * `gno.land/r/gnoland/wugnot` by 6 bytes, locking 600 ugnot at 100 ugnot a byte.
+ */
+const CHAIN_EVENT = Uint8Array.from(
+  Buffer.from("080c120836303075676e6f741a19676e6f2e6c616e642f722f676e6f6c616e642f7775676e6f74", "hex"),
+);
+
 describe("readStorageDepositEventFee", () => {
+  it("reads an event the chain actually emitted", () => {
+    expect(readStorageDepositEventFee(CHAIN_EVENT)).toBe(600n);
+  });
+
+  it("matches what this spec encodes against that event", () => {
+    const rebuilt = encodeStorageDepositEvent({
+      bytesDelta: 6,
+      amount: 600,
+      pkgPath: "gno.land/r/gnoland/wugnot",
+    });
+
+    expect(Buffer.from(rebuilt).toString("hex")).toBe(Buffer.from(CHAIN_EVENT).toString("hex"));
+  });
+
+  it("ignores a coin in another denomination", () => {
+    const value = encodeStorageDepositEvent({ bytesDelta: 6, amount: 600, pkgPath: "gno.land/r/x", denom: "ugns" });
+
+    expect(readStorageDepositEventFee(value)).toBe(0n);
+  });
+
   it("reads the locked amount out of an encoded event", () => {
     const value = encodeStorageDepositEvent({ bytesDelta: 1234, amount: 123_400, pkgPath: "gno.land/r/gnoswap/pool" });
 

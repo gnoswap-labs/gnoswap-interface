@@ -1,3 +1,4 @@
+import { GasToken } from "@common/values/token-constant";
 import { Any } from "@gnolang/tm2-js-client";
 
 /**
@@ -13,7 +14,13 @@ const WIRE_TYPE_LENGTH_DELIMITED = 2;
 const WIRE_TYPE_FIXED32 = 5;
 
 const STORAGE_DEPOSIT_FEE_DELTA_FIELD = 2;
-const COIN_AMOUNT_FIELD = 2;
+
+/**
+ * `std.Coin` carries a `MarshalAmino` returning `coin.String()`, so the field
+ * is a plain string such as `600ugnot` rather than a nested message — and an
+ * empty one, which amino drops entirely, for a zero amount.
+ */
+const COIN_PATTERN = /^(\d+)(.+)$/;
 
 interface Cursor {
   offset: number;
@@ -36,12 +43,6 @@ function readUvarint(bytes: Uint8Array, cursor: Cursor): bigint {
   throw new Error("truncated varint");
 }
 
-// amino encodes int64 as a zigzag varint, which is protobuf's sint64.
-function readZigzagVarint(bytes: Uint8Array, cursor: Cursor): bigint {
-  const raw = readUvarint(bytes, cursor);
-
-  return (raw >> 1n) ^ -(raw & 1n);
-}
 
 function skipValue(bytes: Uint8Array, cursor: Cursor, wireType: number): void {
   switch (wireType) {
@@ -66,26 +67,15 @@ function skipValue(bytes: Uint8Array, cursor: Cursor, wireType: number): void {
   }
 }
 
-function readCoinAmount(bytes: Uint8Array): bigint {
-  const cursor: Cursor = { offset: 0 };
+function readCoinAmount(bytes: Uint8Array, denom: string): bigint {
+  const matched = COIN_PATTERN.exec(new TextDecoder().decode(bytes));
+  if (!matched || matched[2] !== denom) return 0n;
 
-  while (cursor.offset < bytes.length) {
-    const tag = readUvarint(bytes, cursor);
-    const field = Number(tag >> 3n);
-    const wireType = Number(tag & 7n);
-
-    if (field === COIN_AMOUNT_FIELD && wireType === WIRE_TYPE_VARINT) {
-      return readZigzagVarint(bytes, cursor);
-    }
-
-    skipValue(bytes, cursor, wireType);
-  }
-
-  return 0n;
+  return BigInt(matched[1]);
 }
 
 /** Reads the `fee_delta` amount of a single encoded `StorageDepositEvent`. */
-export function readStorageDepositEventFee(value: Uint8Array): bigint {
+export function readStorageDepositEventFee(value: Uint8Array, denom: string = GasToken.denom): bigint {
   const cursor: Cursor = { offset: 0 };
 
   while (cursor.offset < value.length) {
@@ -98,7 +88,7 @@ export function readStorageDepositEventFee(value: Uint8Array): bigint {
       const coin = value.subarray(cursor.offset, cursor.offset + length);
       cursor.offset += length;
 
-      return readCoinAmount(coin);
+      return readCoinAmount(coin, denom);
     }
 
     skipValue(value, cursor, wireType);
