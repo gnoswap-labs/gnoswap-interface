@@ -123,7 +123,12 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       return "LOADING";
     }
 
-    if (estimatedSwapResult?.status === "NO_LIQUIDITY" || estimatedSwapResult?.status === "INVALID_PARAMS") {
+    if (
+      error ||
+      !estimatedSwapResult ||
+      estimatedSwapResult.status === "NO_LIQUIDITY" ||
+      estimatedSwapResult.status === "INVALID_PARAMS"
+    ) {
       return "NO_LIQUIDITY";
     }
 
@@ -132,7 +137,8 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     swapAmount,
     isTyping,
     debouncedSwapAmount,
-    estimatedSwapResult?.status,
+    error,
+    estimatedSwapResult,
     isEstimatedSwapLoading,
     isSameToken,
     selectedTokenPair,

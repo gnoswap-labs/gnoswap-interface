@@ -230,11 +230,11 @@ export const useSwapHandler = () => {
   }, [isSwitchNetwork, displayBalanceStringMap, tokenB]);
 
   const quotedTokenAAmount = useMemo(() => {
-    return type === "EXACT_OUT" ? estimatedAmount ?? (swapState === "LOADING" ? "" : tokenAAmount) : tokenAAmount;
+    return type === "EXACT_OUT" ? estimatedAmount ?? (swapState === "NONE" ? tokenAAmount : "") : tokenAAmount;
   }, [estimatedAmount, swapState, tokenAAmount, type]);
 
   const quotedTokenBAmount = useMemo(() => {
-    return type === "EXACT_IN" ? estimatedAmount ?? (swapState === "LOADING" ? "" : tokenBAmount) : tokenBAmount;
+    return type === "EXACT_IN" ? estimatedAmount ?? (swapState === "NONE" ? tokenBAmount : "") : tokenBAmount;
   }, [estimatedAmount, swapState, tokenBAmount, type]);
 
   useEffect(() => {
@@ -539,14 +539,15 @@ export const useSwapHandler = () => {
     const tokenAUSDValue = tokenPrices[checkGnotPath(tokenA.path)]?.usd || 1;
     const tokenBUSDValue = tokenPrices[checkGnotPath(tokenB.path)]?.usd || 1;
 
-    const swapRate =
-      swapRateAction === SwapRateAction.ATOB
-        ? Number(quotedTokenBAmount) / Number(quotedTokenAAmount)
-        : Number(quotedTokenAAmount) / Number(quotedTokenBAmount);
-    const swapRateUSD =
-      type === "EXACT_IN"
-        ? BigNumber(quotedTokenBAmount).multipliedBy(tokenBUSDValue).toNumber()
-        : BigNumber(quotedTokenAAmount).multipliedBy(tokenAUSDValue).toNumber();
+    const rateNumerator = Number(swapRateAction === SwapRateAction.ATOB ? quotedTokenBAmount : quotedTokenAAmount);
+    const rateDenominator = Number(swapRateAction === SwapRateAction.ATOB ? quotedTokenAAmount : quotedTokenBAmount);
+    const swapRate = rateDenominator ? rateNumerator / rateDenominator : 0;
+    const quotedResultAmount = type === "EXACT_IN" ? quotedTokenBAmount : quotedTokenAAmount;
+    const swapRateUSD = quotedResultAmount
+      ? BigNumber(quotedResultAmount)
+          .multipliedBy(type === "EXACT_IN" ? tokenBUSDValue : tokenAUSDValue)
+          .toNumber()
+      : 0;
 
     return {
       tokenA,

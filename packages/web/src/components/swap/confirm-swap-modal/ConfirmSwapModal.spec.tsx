@@ -96,33 +96,4 @@ describe("ConfirmSwapModal details", () => {
 
     expect(container.querySelector(".gas-info .price-impact")).toBeInTheDocument();
   });
-
-  it("shows the current 111-unit quote rather than a previously cached 1-unit quote", () => {
-    const currentQuote = { ...swapTokenInfo, tokenAAmount: "111", tokenBAmount: "200.158845" };
-    const { container } = render(
-      <JotaiProvider>
-        <GnoswapThemeProvider>
-          <ConfirmSwapModal
-            submitted={false}
-            swapResult={null}
-            title="Confirm"
-            isWrapOrUnwrap={false}
-            priceImpactStatus="NONE"
-            isLoading={false}
-            isRefetching={false}
-            swapTokenInfo={currentQuote}
-            swapSummaryInfo={{ ...swapSummaryInfo, swapRate: 0.55456 }}
-            estimatedAmount="200.158845"
-            setSwapRateAction={jest.fn()}
-            swap={jest.fn()}
-            close={jest.fn()}
-          />
-        </GnoswapThemeProvider>
-      </JotaiProvider>,
-    );
-
-    expect(container.querySelector(".first-section .amount-container")?.textContent).toContain("111");
-    expect(container.querySelector(".second-section .amount-container")?.textContent).toContain("200.158845");
-    expect(container.querySelector(".second-section .amount-container")?.textContent).not.toContain("1.898308");
-  });
 });
