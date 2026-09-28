@@ -131,7 +131,6 @@ export const useSwapHandler = () => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
-  const [, setSwapConfirmModalState] = useAtom(SwapState.swapConfirmModalState);
 
   const { removeReferrerFromLocalStorage } = useReferral();
   const {
@@ -231,12 +230,12 @@ export const useSwapHandler = () => {
   }, [isSwitchNetwork, displayBalanceStringMap, tokenB]);
 
   const quotedTokenAAmount = useMemo(() => {
-    return type === "EXACT_OUT" && estimatedAmount !== null ? estimatedAmount : tokenAAmount;
-  }, [estimatedAmount, tokenAAmount, type]);
+    return type === "EXACT_OUT" ? estimatedAmount ?? (swapState === "LOADING" ? "" : tokenAAmount) : tokenAAmount;
+  }, [estimatedAmount, swapState, tokenAAmount, type]);
 
   const quotedTokenBAmount = useMemo(() => {
-    return type === "EXACT_IN" && estimatedAmount !== null ? estimatedAmount : tokenBAmount;
-  }, [estimatedAmount, tokenBAmount, type]);
+    return type === "EXACT_IN" ? estimatedAmount ?? (swapState === "LOADING" ? "" : tokenBAmount) : tokenBAmount;
+  }, [estimatedAmount, swapState, tokenBAmount, type]);
 
   useEffect(() => {
     if (estimatedAmount === null) {
@@ -584,20 +583,6 @@ export const useSwapHandler = () => {
     swapFee,
   ]);
 
-  // If the data required for the modal configuration is updated, update the modal data as well
-  useEffect(() => {
-    if (!swapTokenInfo || !swapSummaryInfo) return;
-
-    setSwapConfirmModalState(prev => ({
-      ...prev,
-      swapTokenInfo,
-      swapSummaryInfo,
-      isRefetching,
-      estimatedAmount,
-      tokenAmountLimit,
-    }));
-  }, [swapTokenInfo, swapSummaryInfo, isRefetching, estimatedAmount, tokenAmountLimit]);
-
   const isAvailSwap = useMemo(() => {
     return (
       swapButtonState === "SWAP" ||
@@ -645,12 +630,29 @@ export const useSwapHandler = () => {
         swap={executeLatestSwap}
         close={closeModal}
         isWrapOrUnwrap={swapButtonState === "WRAP" || swapButtonState === "UNWRAP"}
-        isLoading={isRefetching}
+        isLoading={swapState === "LOADING" || isTyping || isRefetching}
+        isRefetching={isRefetching}
+        swapTokenInfo={swapTokenInfo}
+        swapSummaryInfo={swapSummaryInfo}
+        estimatedAmount={estimatedAmount}
         priceImpactStatus={priceImpactStatus}
         title={confirmModalTitle}
       />
     ),
-    [closeModal, confirmModalTitle, executeLatestSwap, isRefetching, priceImpactStatus, swapButtonState, swapResult],
+    [
+      closeModal,
+      confirmModalTitle,
+      estimatedAmount,
+      executeLatestSwap,
+      isRefetching,
+      isTyping,
+      priceImpactStatus,
+      swapState,
+      swapButtonState,
+      swapResult,
+      swapSummaryInfo,
+      swapTokenInfo,
+    ],
   );
 
   const openConfirmModal = useCallback(() => {

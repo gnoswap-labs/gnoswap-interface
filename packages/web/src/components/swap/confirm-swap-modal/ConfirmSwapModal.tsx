@@ -1,11 +1,9 @@
 import React, { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useAtomValue } from "jotai";
 
-import { SwapState } from "@states/index";
 import { PriceImpactStatus, SwapRateAction } from "@hooks/swap/data/use-swap-handler";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
-import { swapDirectionToGuaranteedType } from "@models/swap/swap-summary-info";
+import { swapDirectionToGuaranteedType, SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { floorNumber, toNumberFormat } from "@utils/number-utils";
 import { convertToKMBWithPrefix } from "@utils/stake-position-utils";
@@ -35,6 +33,10 @@ interface ConfirmSwapModalProps {
   isWrapOrUnwrap: boolean;
   priceImpactStatus: PriceImpactStatus;
   isLoading: boolean;
+  isRefetching: boolean;
+  swapTokenInfo: SwapTokenInfo;
+  swapSummaryInfo: SwapSummaryInfo | null;
+  estimatedAmount: string | null;
 
   setSwapRateAction: (type: SwapRateAction) => void;
   swap: (swapTokenInfo: SwapTokenInfo, estimatedAmount: string | null) => void;
@@ -51,10 +53,11 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   isWrapOrUnwrap,
   priceImpactStatus,
   isLoading,
+  isRefetching,
+  swapTokenInfo,
+  swapSummaryInfo,
+  estimatedAmount,
 }) => {
-  const swapConfirmModalState = useAtomValue(SwapState.swapConfirmModalState);
-  const { swapSummaryInfo, swapTokenInfo, estimatedAmount, isRefetching } = swapConfirmModalState;
-
   const { t } = useTranslation();
 
   const swapRateDescription = useMemo(() => {

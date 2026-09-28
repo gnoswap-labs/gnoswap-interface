@@ -115,6 +115,10 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       return "NONE";
     }
 
+    if (swapAmount !== debouncedSwapAmount || isTyping) {
+      return "LOADING";
+    }
+
     if (isEstimatedSwapLoading && shouldFetch) {
       return "LOADING";
     }
@@ -125,6 +129,8 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
 
     return "SUCCESS";
   }, [
+    swapAmount,
+    isTyping,
     debouncedSwapAmount,
     estimatedSwapResult?.status,
     isEstimatedSwapLoading,
