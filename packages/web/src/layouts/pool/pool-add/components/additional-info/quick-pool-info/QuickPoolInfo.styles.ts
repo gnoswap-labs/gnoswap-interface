@@ -53,8 +53,8 @@ export const QuickPoolInfoWrapper = styled.div`
       .fee-apr-value {
         ${mixins.flexbox("row", "center", "flex-end")};
         font-variant-numeric: tabular-nums;
-        // fits "123.45%" so the logos don't shift on refetch
-        min-width: 7ch;
+        // fits "999.99%" plus the 20px IconStar shown above 100%, so the logos don't shift on refetch. 7.5ch covers the wider "." and "%" glyphs
+        min-width: calc(7.5ch + 20px);
       }
     }
   }

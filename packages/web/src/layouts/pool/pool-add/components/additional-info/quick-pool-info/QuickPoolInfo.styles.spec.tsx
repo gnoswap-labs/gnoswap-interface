@@ -3,6 +3,7 @@ import "@testing-library/jest-dom";
 import { render, screen, waitFor } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 
+import IconStar from "@components/common/icons/IconStar";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { formatRate } from "@utils/new-number-utils";
 
@@ -26,6 +27,7 @@ const renderAprValues = (feeApr: string, stakingApr: string) =>
               <div className="label">Staking APR</div>
               <div className="value">
                 <span className="staking-apr-value" data-testid="staking-apr">
+                  <IconStar size={20} />
                   {stakingApr}
                 </span>
               </div>
@@ -50,8 +52,9 @@ describe("formatRate output length for APR values", () => {
 });
 
 describe("QuickPoolInfoWrapper APR value width", () => {
+  // staking-apr renders the >100% state, where IconStar (20px) sits before the rate
   it.each(["fee-apr", "staking-apr"])("keeps %s width stable when the value changes", async testId => {
-    renderAprValues(formatRate(9.99), formatRate(1234.5));
+    renderAprValues(formatRate(99.99), formatRate(100));
 
     await waitFor(() => expect(screen.getByTestId(testId)).toBeInTheDocument());
     const value = screen.getByTestId(testId);
@@ -60,6 +63,6 @@ describe("QuickPoolInfoWrapper APR value width", () => {
     expect(value).toHaveStyle({ "justify-content": "flex-end" });
 
     expect(value).toHaveStyle({ "font-variant-numeric": "tabular-nums" });
-    expect(value).toHaveStyle({ "min-width": "7ch" });
+    expect(value).toHaveStyle({ "min-width": "calc(7.5ch + 20px)" });
   });
 });
