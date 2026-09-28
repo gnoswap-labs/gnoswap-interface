@@ -631,7 +631,13 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
               )}
               {!loading && (
                 <div className="coin-info">
-                  <MissingLogo url={position.tokenUri} symbol={`ID #${position.id}`} width={36} mobileWidth={24} />
+                  <MissingLogo
+                    url={position.tokenUri}
+                    fallbackUrl="/fallback-logo.svg"
+                    symbol={`ID #${position.id}`}
+                    width={36}
+                    mobileWidth={24}
+                  />
                 </div>
               )}
               {!loading && (
@@ -669,7 +675,13 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
               )}
               {!loading && (
                 <div className="coin-info">
-                  <MissingLogo url={position.tokenUri} symbol={`ID #${position.id}`} width={36} mobileWidth={24} />
+                  <MissingLogo
+                    url={position.tokenUri}
+                    fallbackUrl="/fallback-logo.svg"
+                    symbol={`ID #${position.id}`}
+                    width={36}
+                    mobileWidth={24}
+                  />
                 </div>
               )}
               {!loading && (

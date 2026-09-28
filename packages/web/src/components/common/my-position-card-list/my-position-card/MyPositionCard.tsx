@@ -343,7 +343,13 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
         >
           <div className="title-wrapper">
             <div className="box-header">
-              <MissingLogo symbol={`ID #${position.id}`} url={position.tokenUri} width={24} showTooltip />
+              <MissingLogo
+                symbol={`ID #${position.id}`}
+                url={position.tokenUri}
+                fallbackUrl="/fallback-logo.svg"
+                width={24}
+                showTooltip
+              />
               <span>{`${tokenA.displaySymbol}/${tokenB.displaySymbol}`}</span>
               <div className="badge-group">
                 <Badge type={BADGE_TYPE.DARK_DEFAULT} text={feeRateStr} />

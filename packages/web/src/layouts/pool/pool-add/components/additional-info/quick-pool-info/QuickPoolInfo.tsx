@@ -177,7 +177,13 @@ const QuickPoolInfo: React.FC<Props> = ({
             <div className="content" key={index}>
               <div className="label">
                 {!isLoadingPool && (
-                  <MissingLogo url={item.tokenUri} symbol={`ID #${item.id}`} width={24} mobileWidth={24} />
+                  <MissingLogo
+                    url={item.tokenUri}
+                    fallbackUrl="/fallback-logo.svg"
+                    symbol={`ID #${item.id}`}
+                    width={24}
+                    mobileWidth={24}
+                  />
                 )}
                 ID #{item.id}
               </div>
@@ -203,7 +209,13 @@ const QuickPoolInfo: React.FC<Props> = ({
           {stakedPositions.map((item, index) => (
             <div className="content" key={index}>
               <div className="label">
-                <MissingLogo url={item.tokenUri} symbol={`ID #${item.id}`} width={24} mobileWidth={24} />
+                <MissingLogo
+                  url={item.tokenUri}
+                  fallbackUrl="/fallback-logo.svg"
+                  symbol={`ID #${item.id}`}
+                  width={24}
+                  mobileWidth={24}
+                />
                 ID #{item.id}
               </div>
               <div className="value">{formatOtherPrice(item.positionUsdValue)}</div>

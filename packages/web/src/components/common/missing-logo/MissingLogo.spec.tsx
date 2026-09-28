@@ -20,4 +20,24 @@ describe("MissingLogo", () => {
     );
     expect(screen.getByRole("img")).toHaveAttribute("src", "/working.svg");
   });
+
+  it("shows the position fallback immediately and after a failed NFT URL", () => {
+    const { rerender } = render(
+      <GnoswapThemeProvider>
+        <MissingLogo symbol="ID #7" url="" fallbackUrl="/fallback-logo.svg" width={24} mobileWidth={24} />
+      </GnoswapThemeProvider>,
+    );
+    expect(screen.getByRole("img")).toHaveAttribute("src", "/fallback-logo.svg");
+
+    rerender(
+      <GnoswapThemeProvider>
+        <MissingLogo symbol="ID #7" url="/broken.svg" fallbackUrl="/fallback-logo.svg" width={24} mobileWidth={24} />
+      </GnoswapThemeProvider>,
+    );
+    fireEvent.error(screen.getByRole("img"));
+    expect(screen.getByRole("img")).toHaveAttribute("src", "/fallback-logo.svg");
+
+    fireEvent.error(screen.getByRole("img"));
+    expect(screen.getByText("ID")).toBeInTheDocument();
+  });
 });

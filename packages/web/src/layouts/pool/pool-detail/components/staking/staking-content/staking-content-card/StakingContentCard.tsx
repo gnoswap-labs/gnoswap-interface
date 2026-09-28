@@ -71,7 +71,13 @@ const PriceTooltipContent = ({ positions, period }: { positions: PoolPositionMod
         return (
           <React.Fragment key={index}>
             <div className="list list-logo">
-              <MissingLogo url={position.tokenUri} symbol={`ID #${position.id}`} width={18} mobileWidth={16} />
+              <MissingLogo
+                url={position.tokenUri}
+                fallbackUrl="/fallback-logo.svg"
+                symbol={`ID #${position.id}`}
+                width={18}
+                mobileWidth={16}
+              />
               <span className="title">ID #{position.lpTokenId}</span>
             </div>
             <div className="list">

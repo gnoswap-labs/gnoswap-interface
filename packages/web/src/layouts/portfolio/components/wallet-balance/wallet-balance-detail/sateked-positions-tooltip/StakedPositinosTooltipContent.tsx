@@ -26,7 +26,13 @@ const StakedPostionsTooltipContent: React.FC<StakedPostionsTooltipContentProps> 
           <>
             <S.TokenItem key={index}>
               <S.ItemHeader>
-                <MissingLogo url={item.tokenUri} symbol={`ID #${item.lpId}`} width={18} mobileWidth={16} />
+                <MissingLogo
+                  url={item.tokenUri}
+                  fallbackUrl="/fallback-logo.svg"
+                  symbol={`ID #${item.lpId}`}
+                  width={18}
+                  mobileWidth={16}
+                />
                 <S.ItemHeaderSymbol>ID #{item.lpId}</S.ItemHeaderSymbol>
               </S.ItemHeader>
               <S.DataGrid>
