@@ -9,8 +9,14 @@ import {
   TransactionMessage,
   WalletResponse,
 } from "@common/clients/wallet-client/protocols";
-import { DEFAULT_GAS_WANTED } from "@common/values";
-import { DEFAULT_CHAIN_ID, WRAPPED_GNOT_PATH } from "@constants/environment.constant";
+import { DEFAULT_GAS_WANTED, GAS_WANTED_BUFFER_SAFE_MARGIN } from "@common/values";
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
+import {
+  DEFAULT_CHAIN_FALLBACK_RPC_URL,
+  DEFAULT_CHAIN_ID,
+  DEFAULT_CHAIN_RPC_URL,
+  WRAPPED_GNOT_PATH,
+} from "@constants/environment.constant";
 import { ContractMessage, Document } from "src/types/transaction-messages.types";
 
 import { GasToken } from "@common/values/token-constant";
@@ -36,6 +42,7 @@ export interface TransactionApprovalModalHandlers {
 
 const TIMEOUT_MS = 1 * 60 * 1000; // 1 minute
 const DEFAULT_GAS_FEE = 1_000_000;
+const MINIMUM_GAS_PRICE = 0.001 as const;
 
 export interface RawMemPackage {
   name: string;
@@ -167,6 +174,41 @@ const generateTransactionDataDocument = async (
   });
 };
 
+let socialRpcProvider: Promise<GnoProvider> | null = null;
+
+// The social wallet is always bound to the default chain, see social/config.ts.
+const getSocialRpcProvider = () => {
+  socialRpcProvider ??= GnoProvider.create(DEFAULT_CHAIN_RPC_URL, {
+    fallbackRpcUrl: DEFAULT_CHAIN_FALLBACK_RPC_URL,
+  }).catch(error => {
+    socialRpcProvider = null;
+    throw error;
+  });
+  return socialRpcProvider;
+};
+
+/**
+ * Simulates the document and prices the resulting gasWanted at the chain's current gas price.
+ */
+export const estimateSocialWalletFee = async (
+  document: Document,
+  provider: Pick<GnoProvider, "estimateGas" | "getGasPrice"> | null = null,
+): Promise<{ gasWanted: number; gasFee: number }> => {
+  const rpcProvider = provider ?? (await getSocialRpcProvider());
+  const [gasUsed, gasPrice] = await Promise.all([
+    rpcProvider.estimateGas(documentToDefaultTx(document)),
+    rpcProvider.getGasPrice(),
+  ]);
+
+  const gasWanted = Math.ceil(Number(gasUsed) * GAS_WANTED_BUFFER_SAFE_MARGIN);
+  const gasFee = BigNumber(gasWanted)
+    .multipliedBy(gasPrice || MINIMUM_GAS_PRICE)
+    .integerValue(BigNumber.ROUND_UP)
+    .toNumber();
+
+  return { gasWanted, gasFee };
+};
+
 /**
  *
  * Higher-order function that wraps a transaction execution with social-wallet approval flow
@@ -192,7 +234,18 @@ export const withTransactionGuard = async <T>(
 
     if (walletClient.getWalletType() === "SOCIAL_WALLET") {
       const document = await generateTransactionDataDocument(walletClient, transaction);
-      const approvedDocument = await showTransactionApprovalModal(document);
+
+      // Unlike the Adena extension, the social wallet broadcasts the fee as given,
+      // so it has to cover gasWanted at the chain's gas price or the node rejects it.
+      const fee = await estimateSocialWalletFee(document).catch(error => {
+        console.warn("Failed to estimate the transaction fee:", error);
+        return null;
+      });
+      const estimatedTransaction = fee ? { ...transaction, ...fee } : transaction;
+
+      const approvedDocument = await showTransactionApprovalModal(
+        fee ? modifyDocument(document, fee.gasWanted, fee.gasFee) : document,
+      );
 
       if (!approvedDocument) {
         return {
@@ -205,7 +258,7 @@ export const withTransactionGuard = async <T>(
       }
 
       const updatedTransaction = {
-        ...transaction,
+        ...estimatedTransaction,
         memo: approvedDocument.memo,
       };
 
@@ -291,8 +344,6 @@ export const getWrappedGNOTDepositAmount = (
   if (isNativeTokenPath(tokenBPath)) return tokenBAmount;
   return "0";
 };
-
-const MINIMUM_GAS_PRICE = 0.001 as const;
 
 export function makeGasInfoBy(
   gasUsed: number | null | undefined,

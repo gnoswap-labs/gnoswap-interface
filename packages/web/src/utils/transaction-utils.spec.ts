@@ -2,7 +2,7 @@ import { MsgAddPackage, MsgCall, MsgRun, MsgSend } from "@gnolang/gno-js-client"
 
 import { ContractMessage, Document } from "src/types/transaction-messages.types";
 
-import { documentToTx } from "./transaction-utils";
+import { documentToTx, estimateSocialWalletFee } from "./transaction-utils";
 
 const makeDocument = (msgs: ContractMessage[]): Document => ({
   chain_id: "dev.gnoswap",
@@ -115,5 +115,31 @@ describe("documentToTx", () => {
     expect(decoded.amount).toBe("1000ugnot");
     expect(tx.fee?.gas_wanted).toBe(5000000n);
     expect(tx.fee?.gas_fee).toBe("1000ugnot");
+  });
+});
+
+describe("estimateSocialWalletFee", () => {
+  const document = makeDocument([]);
+
+  it("covers the buffered gasWanted at the chain gas price", async () => {
+    const provider = {
+      estimateGas: jest.fn().mockResolvedValue(BigInt(1_000_001)),
+      getGasPrice: jest.fn().mockResolvedValue(0.001),
+    };
+
+    const { gasWanted, gasFee } = await estimateSocialWalletFee(document, provider);
+
+    expect(gasWanted).toBe(1_200_002);
+    expect(gasFee).toBe(1_201);
+    expect(gasFee).toBeGreaterThanOrEqual(gasWanted * 0.001);
+  });
+
+  it("falls back to the minimum gas price when the chain reports none", async () => {
+    const provider = {
+      estimateGas: jest.fn().mockResolvedValue(BigInt(1_000_000)),
+      getGasPrice: jest.fn().mockResolvedValue(0),
+    };
+
+    expect(await estimateSocialWalletFee(document, provider)).toEqual({ gasWanted: 1_200_000, gasFee: 1_200 });
   });
 });
