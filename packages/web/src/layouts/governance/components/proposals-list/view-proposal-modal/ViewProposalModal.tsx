@@ -223,9 +223,12 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
                 ))}
               </div>
             )}
-            <ReactMarkdown remarkPlugins={[remarkGfm]} className="markdown-style">
-              {`${proposalDetailContent.description.replaceAll("\\n", "\n")}`}
-            </ReactMarkdown>
+            <div className="markdown-style">
+              {/* react-markdown 10 dropped the className prop so the wrapper carries the style hook */}
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {`${proposalDetailContent.description.replaceAll("\\n", "\n")}`}
+              </ReactMarkdown>
+            </div>
           </div>
         </ProposalContentWrapper>
         <ModalQuorum>
