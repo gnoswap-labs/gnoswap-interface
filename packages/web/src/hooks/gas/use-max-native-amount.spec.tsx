@@ -1,10 +1,16 @@
 import { act, renderHook } from "@testing-library/react";
+import { useAtomValue } from "jotai";
 
 import { TokenModel } from "@models/token/token-model";
 
 import { useMaxNativeAmount } from "./use-max-native-amount";
 
 const estimateMaxNativeAmount = jest.fn();
+
+jest.mock("jotai", () => ({ ...jest.requireActual("jotai"), useAtomValue: jest.fn() }));
+
+const connectedAs = (address: string | null) =>
+  (useAtomValue as jest.Mock).mockReturnValue(address ? { address } : null);
 
 jest.mock("@hooks/common/use-gnoswap-context", () => ({
   useGnoswapContext: () => ({ transactionGasService: { estimateMaxNativeAmount } }),
@@ -27,21 +33,32 @@ const GNOT: TokenModel = {
 };
 const OTHER_GNOT: TokenModel = { ...GNOT, path: "ugnot2", symbol: "GNOT2", priceID: "ugnot2" };
 
-/** Resolves only once released, so the subject can move while the call is out. */
+/**
+ * Holds every estimate open until released, one gate per call, so a test can
+ * settle an earlier call while a later one is still out.
+ */
 const deferredEstimate = () => {
-  let release: (() => void) | undefined;
-  const pending = new Promise<void>(resolve => (release = resolve));
+  const gates: Array<() => void> = [];
 
   estimateMaxNativeAmount.mockImplementation(async () => {
-    await pending;
+    await new Promise<void>(resolve => gates.push(resolve));
     return { amount: "9000000", reserve: {}, simulated: true };
   });
 
-  return () => release?.();
+  const release = (index?: number) => {
+    if (index === undefined) {
+      gates.splice(0).forEach(open => open());
+      return;
+    }
+    gates[index]?.();
+  };
+
+  return release;
 };
 
 beforeEach(() => {
   estimateMaxNativeAmount.mockReset();
+  connectedAs("g1user");
 });
 
 describe("useMaxNativeAmount", () => {
@@ -116,6 +133,51 @@ describe("useMaxNativeAmount", () => {
     await act(async () => release());
 
     await expect(pending).resolves.toBe("9");
+  });
+
+  it("withholds an answer once another account is connected", async () => {
+    const release = deferredEstimate();
+
+    const { result, rerender } = renderHook(props => useMaxNativeAmount(props), {
+      initialProps: { token: GNOT, amount: "" },
+    });
+
+    const pending = result.current.getMaxAmount({ balance: "10", makeMessages: jest.fn().mockReturnValue([{}]) });
+
+    connectedAs("g1other");
+    rerender({ token: GNOT, amount: "" });
+    await act(async () => release());
+
+    await expect(pending).resolves.toBeNull();
+  });
+
+  it("stays loading when an earlier press settles while a later one is still out", async () => {
+    const release = deferredEstimate();
+
+    const { result } = renderHook(() => useMaxNativeAmount({ token: GNOT, amount: "" }));
+
+    const makeMessages = jest.fn().mockReturnValue([{}]);
+    let first: Promise<string | null> = Promise.resolve(null);
+    let second: Promise<string | null> = Promise.resolve(null);
+
+    await act(async () => {
+      first = result.current.getMaxAmount({ balance: "10", makeMessages });
+      second = result.current.getMaxAmount({ balance: "10", makeMessages });
+    });
+    expect(result.current.loading).toBe(true);
+
+    // Settle only the first: the button must stay disabled for the second.
+    await act(async () => {
+      release(0);
+      await first;
+    });
+    expect(result.current.loading).toBe(true);
+
+    await act(async () => {
+      release(1);
+      await second;
+    });
+    expect(result.current.loading).toBe(false);
   });
 
   it("withholds the earlier answer when the button is pressed again", async () => {

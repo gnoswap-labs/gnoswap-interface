@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+import { useAtomValue } from "jotai";
 import { useCallback, useRef, useState } from "react";
 
 import { TransactionMessage } from "@common/clients/wallet-client/protocols";
@@ -6,6 +7,7 @@ import { DEFAULT_GAS_FEE } from "@common/values";
 import { GasToken } from "@common/values/token-constant";
 import { useOptionalGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
+import { WalletState } from "@states/index";
 import { makeDisplayTokenAmountString, makeRawTokenAmount } from "@utils/token-utils";
 
 /**
@@ -62,21 +64,28 @@ export const useMaxNativeAmount = (subject: MaxNativeAmountSubject) => {
   const transactionGasService = useOptionalGnoswapContext()?.transactionGasService ?? null;
   const [loading, setLoading] = useState(false);
 
-  const current = useRef(subject);
-  current.current = subject;
+  // Every action is built for, and simulated as, the connected account. Tracked
+  // here rather than left to each caller, since none of them can afford to
+  // forget it and the answer is meaningless for a different signer.
+  const signer = useAtomValue(WalletState.account)?.address ?? null;
+
+  const current = useRef({ subject, signer });
+  current.current = { subject, signer };
   const pressCount = useRef(0);
 
   const getMaxAmount = useCallback(
     async ({ balance, makeMessages }: MaxNativeAmountParams): Promise<string | null> => {
       const press = (pressCount.current += 1);
       const asked = current.current;
-      const { token } = asked;
+      const { token } = asked.subject;
 
+      const isLatest = () => press === pressCount.current;
       const stillWanted = () =>
-        press === pressCount.current &&
-        current.current.token?.path === asked.token?.path &&
-        current.current.amount === asked.amount &&
-        sameDependencies(current.current.dependsOn, asked.dependsOn);
+        isLatest() &&
+        current.current.signer === asked.signer &&
+        current.current.subject.token?.path === asked.subject.token?.path &&
+        current.current.subject.amount === asked.subject.amount &&
+        sameDependencies(current.current.subject.dependsOn, asked.subject.dependsOn);
 
       const displayBalance = BigNumber(balance.replace(/,/g, ""));
       if (!token || displayBalance.isNaN()) return "0";
@@ -105,7 +114,9 @@ export const useMaxNativeAmount = (subject: MaxNativeAmountSubject) => {
 
         return makeDisplayTokenAmountString(token, amount) ?? "0";
       } finally {
-        setLoading(false);
+        // An earlier press finishing must not re-enable the button while a
+        // later one is still out.
+        if (isLatest()) setLoading(false);
       }
     },
     [transactionGasService],
