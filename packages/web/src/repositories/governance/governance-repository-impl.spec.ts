@@ -8,9 +8,11 @@ jest.mock("@constants/environment.constant", () => ({
   WRAPPED_GNOT_PATH: "wrapped_gnot_path",
 }));
 
+import { NetworkClient } from "@common/clients/network-client";
 import { WalletClient } from "@common/clients/wallet-client";
 import { AdenaClient } from "@common/clients/wallet-client/adena/adena-client";
 import { GovernanceRepositoryImpl } from "./governance-repository-impl";
+import { nullProposalDetailsInfo } from "./model/proposal-details-info";
 
 const createWalletClient = () => {
   const walletClient: WalletClient = new AdenaClient();
@@ -115,6 +117,31 @@ describe("GovernanceRepositoryImpl", () => {
           ],
         }),
       );
+    });
+  });
+
+  describe("getProposalDetails", () => {
+    const createRepository = (get: jest.Mock) =>
+      new GovernanceRepositoryImpl({ get } as unknown as NetworkClient, createWalletClient(), null);
+
+    it("rejects when the request fails so a transient error is not read as a missing proposal", async () => {
+      const error = new Error("network down");
+      const repository = createRepository(jest.fn().mockRejectedValue(error));
+
+      await expect(repository.getProposalDetails({ proposalId: 1 })).rejects.toThrow(error);
+    });
+
+    it("returns the null proposal when the API responds without data", async () => {
+      const repository = createRepository(jest.fn().mockResolvedValue({ data: {} }));
+
+      await expect(repository.getProposalDetails({ proposalId: 1 })).resolves.toEqual(nullProposalDetailsInfo);
+    });
+
+    it("returns the proposal when the API responds with data", async () => {
+      const proposal = { ...nullProposalDetailsInfo.proposal, id: 1 };
+      const repository = createRepository(jest.fn().mockResolvedValue({ data: { data: { proposal } } }));
+
+      await expect(repository.getProposalDetails({ proposalId: 1 })).resolves.toEqual({ proposal });
     });
   });
 });

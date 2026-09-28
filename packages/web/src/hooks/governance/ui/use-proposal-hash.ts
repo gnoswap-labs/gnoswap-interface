@@ -27,8 +27,14 @@ export function useProposalHash() {
       setSelectedProposalId(parseProposalHash(url.split("#")[1]));
     };
 
+    // Next.js emits `hashChangeComplete` only for hash-only transitions,
+    // so query changes that also move the hash arrive as `routeChangeComplete`.
     router.events.on("hashChangeComplete", syncWithHash);
-    return () => router.events.off("hashChangeComplete", syncWithHash);
+    router.events.on("routeChangeComplete", syncWithHash);
+    return () => {
+      router.events.off("hashChangeComplete", syncWithHash);
+      router.events.off("routeChangeComplete", syncWithHash);
+    };
   }, [router.events]);
 
   const selectProposal = useCallback(

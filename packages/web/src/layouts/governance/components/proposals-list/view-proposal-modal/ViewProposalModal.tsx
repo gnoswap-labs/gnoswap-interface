@@ -69,13 +69,14 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
     [setIsModalOpen],
   );
 
-  const { data, isLoading } = useGetProposalDetails({ proposalId, address });
+  const { data, isLoading, isError } = useGetProposalDetails({ proposalId, address });
 
-  // Close the modal when the requested proposal does not exist. (e.g. an invalid URL hash)
+  // Close the modal only for a confirmed missing proposal (e.g. an invalid URL hash),
+  // never for a failed request, so a valid deep link survives a transient error.
   useEffect(() => {
-    if (isLoading || !data) return;
+    if (isLoading || isError || !data) return;
     if (!data.proposal?.id) setIsModalOpen(false);
-  }, [data, isLoading]);
+  }, [data, isLoading, isError]);
 
   const proposalDetail = useMemo(() => {
     if (!data?.proposal) return nullProposalDetailsInfo.proposal;

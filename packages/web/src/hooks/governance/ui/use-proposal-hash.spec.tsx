@@ -23,9 +23,9 @@ jest.mock("next/router", () => ({
   }),
 }));
 
-const emitHashChange = (url: string) => {
+const emit = (event: string, url: string) => {
   act(() => {
-    (listeners["hashChangeComplete"] || []).forEach(handler => handler(url));
+    (listeners[event] || []).forEach(handler => handler(url));
   });
 };
 
@@ -92,10 +92,23 @@ describe("useProposalHash", () => {
   it("syncs with hash changes triggered by history navigation", () => {
     const { result } = renderHook(() => useProposalHash());
 
-    emitHashChange("/governance#5");
+    emit("hashChangeComplete", "/governance#5");
     expect(result.current.selectedProposalId).toBe(5);
 
-    emitHashChange("/governance");
+    emit("hashChangeComplete", "/governance");
+    expect(result.current.selectedProposalId).toBe(0);
+  });
+
+  it("syncs with route changes that move the query and the hash together", () => {
+    setLocationHash("#1");
+
+    const { result } = renderHook(() => useProposalHash());
+    expect(result.current.selectedProposalId).toBe(1);
+
+    emit("routeChangeComplete", "/governance?active=true#2");
+    expect(result.current.selectedProposalId).toBe(2);
+
+    emit("routeChangeComplete", "/governance?active=true");
     expect(result.current.selectedProposalId).toBe(0);
   });
 
@@ -103,9 +116,13 @@ describe("useProposalHash", () => {
     const { unmount } = renderHook(() => useProposalHash());
 
     expect(on).toHaveBeenCalledWith("hashChangeComplete", expect.any(Function));
+    expect(on).toHaveBeenCalledWith("routeChangeComplete", expect.any(Function));
 
     unmount();
 
     expect(off).toHaveBeenCalledWith("hashChangeComplete", expect.any(Function));
+    expect(off).toHaveBeenCalledWith("routeChangeComplete", expect.any(Function));
+    expect(listeners["hashChangeComplete"]).toHaveLength(0);
+    expect(listeners["routeChangeComplete"]).toHaveLength(0);
   });
 });

@@ -230,16 +230,12 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
 
     const queries = [request.address !== undefined ? `address=${request.address}` : ""];
 
-    const response = await this.networkClient
-      .get<{
-        data: GetProposalDetailsResponse;
-      }>({
-        url: `governance/proposals/${request.proposalId}?${queries.filter(item => !!item).join("&")}`,
-      })
-      .catch(e => {
-        console.error(e);
-        return null;
-      });
+    // A failed request is propagated so callers can tell it apart from a missing proposal.
+    const response = await this.networkClient.get<{
+      data: GetProposalDetailsResponse;
+    }>({
+      url: `governance/proposals/${request.proposalId}?${queries.filter(item => !!item).join("&")}`,
+    });
 
     if (!response?.data?.data) {
       return nullProposalDetailsInfo;
