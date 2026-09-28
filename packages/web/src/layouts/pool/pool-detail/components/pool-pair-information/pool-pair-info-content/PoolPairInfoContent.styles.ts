@@ -47,6 +47,10 @@ export const ContentWrapper = styled.div`
         -moz-user-select: none;
         -o-user-select: none;
         user-select: none;
+        @media (max-width: 767px) {
+          width: auto;
+          justify-content: center;
+        }
         button {
           display: flex;
           padding: 2px;
