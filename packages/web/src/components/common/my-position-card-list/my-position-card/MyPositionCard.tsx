@@ -346,7 +346,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <MissingLogo
                 symbol={`ID #${position.id}`}
                 url={position.tokenUri}
-                fallbackUrl="/fallback-logo.svg"
+                fallbackUrl="/lp-fallback-logo.svg"
                 width={24}
                 showTooltip
               />

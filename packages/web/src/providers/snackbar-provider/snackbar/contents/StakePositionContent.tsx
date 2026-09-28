@@ -31,11 +31,11 @@ const StakePositionContent: React.FC<{ content?: SnackbarContent; onClick: () =>
           className="nft-image"
           mobileWidth={20}
           width={32}
-          src={content?.logoUrl || "/fallback-logo.svg"}
+          src={content?.logoUrl || "/lp-fallback-logo.svg"}
           alt=""
           onError={event => {
-            if (event.currentTarget.getAttribute("src") !== "/fallback-logo.svg") {
-              event.currentTarget.src = "/fallback-logo.svg";
+            if (event.currentTarget.getAttribute("src") !== "/lp-fallback-logo.svg") {
+              event.currentTarget.src = "/lp-fallback-logo.svg";
             }
           }}
         />

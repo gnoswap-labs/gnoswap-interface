@@ -73,7 +73,7 @@ const PriceTooltipContent = ({ positions, period }: { positions: PoolPositionMod
             <div className="list list-logo">
               <MissingLogo
                 url={position.tokenUri}
-                fallbackUrl="/fallback-logo.svg"
+                fallbackUrl="/lp-fallback-logo.svg"
                 symbol={`ID #${position.id}`}
                 width={18}
                 mobileWidth={16}

@@ -633,7 +633,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
                 <div className="coin-info">
                   <MissingLogo
                     url={position.tokenUri}
-                    fallbackUrl="/fallback-logo.svg"
+                    fallbackUrl="/lp-fallback-logo.svg"
                     symbol={`ID #${position.id}`}
                     width={36}
                     mobileWidth={24}
@@ -677,7 +677,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
                 <div className="coin-info">
                   <MissingLogo
                     url={position.tokenUri}
-                    fallbackUrl="/fallback-logo.svg"
+                    fallbackUrl="/lp-fallback-logo.svg"
                     symbol={`ID #${position.id}`}
                     width={36}
                     mobileWidth={24}

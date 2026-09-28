@@ -28,7 +28,7 @@ const StakedPostionsTooltipContent: React.FC<StakedPostionsTooltipContentProps> 
               <S.ItemHeader>
                 <MissingLogo
                   url={item.tokenUri}
-                  fallbackUrl="/fallback-logo.svg"
+                  fallbackUrl="/lp-fallback-logo.svg"
                   symbol={`ID #${item.lpId}`}
                   width={18}
                   mobileWidth={16}

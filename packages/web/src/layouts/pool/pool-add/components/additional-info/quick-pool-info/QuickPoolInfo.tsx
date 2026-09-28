@@ -179,7 +179,7 @@ const QuickPoolInfo: React.FC<Props> = ({
                 {!isLoadingPool && (
                   <MissingLogo
                     url={item.tokenUri}
-                    fallbackUrl="/fallback-logo.svg"
+                    fallbackUrl="/lp-fallback-logo.svg"
                     symbol={`ID #${item.id}`}
                     width={24}
                     mobileWidth={24}
@@ -211,7 +211,7 @@ const QuickPoolInfo: React.FC<Props> = ({
               <div className="label">
                 <MissingLogo
                   url={item.tokenUri}
-                  fallbackUrl="/fallback-logo.svg"
+                  fallbackUrl="/lp-fallback-logo.svg"
                   symbol={`ID #${item.id}`}
                   width={24}
                   mobileWidth={24}
