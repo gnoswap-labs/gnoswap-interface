@@ -19,6 +19,7 @@ import {
   makeCreatePoolMessageWithApproves,
   makePositionMintMessageWithApproves,
 } from "@repositories/pool/pool.message";
+import { withTokenRouteMetadata } from "@utils/token-utils";
 
 const createTokenModel = (
   path: string,
@@ -91,6 +92,56 @@ describe("pool.message.ts", () => {
       "1250000",
       "3000000",
     ]);
+  });
+
+  it("uses a MsgCall to approve wUGNOT after the pool-add page displays it as GNOT", async () => {
+    const wrappedGnot = createTokenModel("wugnot", "GRC20", {
+      wrappedPath: "",
+      pkgPath: "wugnot_package",
+      routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
+    });
+    const nativeGnot = createTokenModel("ugnot", "Native", { wrappedPath: "wugnot" });
+    const gns = createTokenModel("gns_token_path", "GRC20", {
+      pkgPath: "gns_package",
+      routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
+    });
+    // The pool-add URL selects wUGNOT, then replaces only its display fields and path with native GNOT.
+    const displayedGnot = {
+      ...wrappedGnot,
+      path: nativeGnot.path,
+      wrappedPath: wrappedGnot.path,
+      name: nativeGnot.name,
+      symbol: nativeGnot.symbol,
+      displaySymbol: nativeGnot.displaySymbol,
+      logoURI: nativeGnot.logoURI,
+    };
+    const tokens = [nativeGnot, wrappedGnot, gns];
+    const messages = await makePositionMintMessageWithApproves(
+      {
+        tokenA: withTokenRouteMetadata(displayedGnot, tokens),
+        tokenB: withTokenRouteMetadata(gns, tokens),
+        feeTier: "FEE_3000",
+        tokenAAmount: "1",
+        tokenBAmount: "1",
+        minTick: -66000,
+        maxTick: -52140,
+        slippage: 0,
+        caller: "caller",
+        referrerAddress: null,
+      },
+      jest.fn(async () => 0),
+    );
+
+    expect(messages).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          caller: "caller",
+          pkg_path: "wugnot_package",
+          func: "Approve",
+          args: ["pool_address", "1000000"],
+        }),
+      ]),
+    );
   });
 
   it("uses the given start price as is, whichever order the token pair is passed in", async () => {
