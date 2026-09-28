@@ -254,52 +254,50 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
               <span className="exchange-price">{`(${unitSwapPrice})`}</span>
             </div>
           </div>
-          <div className="gas-info">
-            {!isWrapOrUnwrap && (
-              <>
-                <div className="price-impact">
-                  <span className="gray-text">{t("Swap:swapInfo.priceImpact")}</span>
-                  <span className="white-text">
-                    <PriceImpactStatusWrapper priceImpact={priceImpactStatus}>
-                      {priceImpactStatusDisplay}
-                    </PriceImpactStatusWrapper>{" "}
-                    <PriceImpactStrWrapper priceImpact={priceImpactStatus}>
-                      {"("}
-                      {(swapSummaryInfo?.priceImpact || 0) > 0 ? "+" : ""}
-                      {priceImpactStr}
-                      {")"}
-                    </PriceImpactStrWrapper>
-                  </span>
-                </div>
-                <div className="slippage">
-                  <span className="gray-text">{t("Swap:swapInfo.slippageSet")}</span>
-                  <span className="white-text">{slippageStr}</span>
-                </div>
-                <div className="received">
-                  <span className="gray-text">{guaranteedTypeStr}</span>
-                  <span className="white-text">{guaranteedStr}</span>
-                </div>
-                <div className="received">
-                  <div className="protocol">
-                    <div>
-                      <span className="">
-                        {t("business:protocolFee.txt")} {routerFeePercentageStr}
-                      </span>
-                      <Tooltip
-                        placement="top"
-                        FloatingContent={
-                          <ToolTipContentWrapper>{t("Swap:swapInfo.tooltip.swapFee")}</ToolTipContentWrapper>
-                        }
-                      >
-                        <IconInfo />
-                      </Tooltip>
-                    </div>
-                    <span className="white-text">{routerFeeStr}</span>
+          {!isWrapOrUnwrap && (
+            <div className="gas-info">
+              <div className="price-impact">
+                <span className="gray-text">{t("Swap:swapInfo.priceImpact")}</span>
+                <span className="white-text">
+                  <PriceImpactStatusWrapper priceImpact={priceImpactStatus}>
+                    {priceImpactStatusDisplay}
+                  </PriceImpactStatusWrapper>{" "}
+                  <PriceImpactStrWrapper priceImpact={priceImpactStatus}>
+                    {"("}
+                    {(swapSummaryInfo?.priceImpact || 0) > 0 ? "+" : ""}
+                    {priceImpactStr}
+                    {")"}
+                  </PriceImpactStrWrapper>
+                </span>
+              </div>
+              <div className="slippage">
+                <span className="gray-text">{t("Swap:swapInfo.slippageSet")}</span>
+                <span className="white-text">{slippageStr}</span>
+              </div>
+              <div className="received">
+                <span className="gray-text">{guaranteedTypeStr}</span>
+                <span className="white-text">{guaranteedStr}</span>
+              </div>
+              <div className="received">
+                <div className="protocol">
+                  <div>
+                    <span className="">
+                      {t("business:protocolFee.txt")} {routerFeePercentageStr}
+                    </span>
+                    <Tooltip
+                      placement="top"
+                      FloatingContent={
+                        <ToolTipContentWrapper>{t("Swap:swapInfo.tooltip.swapFee")}</ToolTipContentWrapper>
+                      }
+                    >
+                      <IconInfo />
+                    </Tooltip>
                   </div>
+                  <span className="white-text">{routerFeeStr}</span>
                 </div>
-              </>
-            )}
-          </div>
+              </div>
+            </div>
+          )}
         </div>
         <div className="modal-button">
           <Button
