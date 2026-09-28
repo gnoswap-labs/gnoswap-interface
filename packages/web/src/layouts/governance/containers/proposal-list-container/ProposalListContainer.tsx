@@ -47,7 +47,6 @@ const ProposalListContainer: React.FC = () => {
     isFetched: isFetchedProposalsInfo,
     hasNextPage,
     fetchNextPage,
-    refetch: refetchProposals,
   } = useGetProposals({
     isActive: isShowActiveOnly,
     address: account?.address,
@@ -80,6 +79,8 @@ const ProposalListContainer: React.FC = () => {
   const fetchNextItems = () => {
     if (hasNextPage) fetchNextPage();
   };
+
+  const refreshProposals = () => invalidateQueryKey("Governance Proposal", [[QUERY_KEY.governanceProposals]]);
 
   const toggleIsShowActiveOnly = React.useCallback(() => {
     setIsShowActiveOnly(prev => {
@@ -118,21 +119,9 @@ const ProposalListContainer: React.FC = () => {
       openCreateProposalModal={openCreateProposalModal}
       executablePackages={executablePackages}
       executableFunctions={executableFunctions}
-      proposeTextProposal={(...params) =>
-        proposeTextProposal(...params, async () => {
-          await refetchProposals();
-        })
-      }
-      proposeCommunityPoolSpendProposal={(...params) =>
-        proposeCommunityPoolSpendProposal(...params, async () => {
-          await refetchProposals();
-        })
-      }
-      proposeParamChangeProposal={(...params) =>
-        proposeParamChangeProposal(...params, async () => {
-          await refetchProposals();
-        })
-      }
+      proposeTextProposal={(...params) => proposeTextProposal(...params, refreshProposals)}
+      proposeCommunityPoolSpendProposal={(...params) => proposeCommunityPoolSpendProposal(...params, refreshProposals)}
+      proposeParamChangeProposal={(...params) => proposeParamChangeProposal(...params, refreshProposals)}
       voteProposal={(proposalId, voteYes) =>
         voteProposal(proposalId, voteYes, () =>
           invalidateQueryKey("Governance Vote", [
@@ -141,16 +130,8 @@ const ProposalListContainer: React.FC = () => {
           ]),
         )
       }
-      executeProposal={(...params) =>
-        executeProposal(...params, async () => {
-          await refetchProposals();
-        })
-      }
-      cancelProposal={(...params) =>
-        cancelProposal(...params, async () => {
-          await refetchProposals();
-        })
-      }
+      executeProposal={(...params) => executeProposal(...params, refreshProposals)}
+      cancelProposal={(...params) => cancelProposal(...params, refreshProposals)}
     />
   );
 };

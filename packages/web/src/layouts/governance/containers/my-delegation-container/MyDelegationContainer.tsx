@@ -36,26 +36,14 @@ const MyDelegationContainer: React.FC<MyDelegationContainerProps> = ({
   }, [account]);
 
   const { updateBalances } = useTokenData(true);
-  const {
-    data: governanceSummaryInfo,
-    isFetched: isFetchedGovernanceSummaryInfo,
-    refetch: refetchSummary,
-  } = useGetGovernanceSummary();
+  const { data: governanceSummaryInfo, isFetched: isFetchedGovernanceSummaryInfo } = useGetGovernanceSummary();
 
-  const {
-    data: myDelegationInfo,
-    isFetched: isFetchedMyDelegation,
-    refetch: refetchMyDelegation,
-  } = useGetMyDelegation({ address });
+  const { data: myDelegationInfo, isFetched: isFetchedMyDelegation } = useGetMyDelegation({ address });
 
-  const { data: myDelegates, refetch: refetchMyDelegates } = useGetMyDelegates({ address });
-  const { data: myUnDelegates, refetch: refetchMyUnDelegates } = useGetMyUnDelegates({ address });
+  const { data: myDelegates } = useGetMyDelegates({ address });
+  const { data: myUnDelegates } = useGetMyUnDelegates({ address });
 
-  const {
-    data: verifiedDelegates,
-    isFetched: isFetchedDelegatees,
-    refetch: refetchDelegatees,
-  } = useGetVerifiedDelegates();
+  const { data: verifiedDelegates, isFetched: isFetchedDelegatees } = useGetVerifiedDelegates();
 
   const delegatees = React.useMemo(() => {
     if (!verifiedDelegates) return [];
@@ -63,12 +51,14 @@ const MyDelegationContainer: React.FC<MyDelegationContainerProps> = ({
     return verifiedDelegates.delegates;
   }, [verifiedDelegates]);
 
-  const refetch = async () => {
-    await refetchSummary();
-    await refetchMyDelegation();
-    await refetchDelegatees();
-    await refetchMyDelegates();
-    await refetchMyUnDelegates();
+  const refreshGovernance = async () => {
+    await invalidateQueryKey("Governance Delegation", [
+      [QUERY_KEY.governanceSummary],
+      [QUERY_KEY.governanceMyDelegation],
+      [QUERY_KEY.governanceVerifiedDelegates],
+      [QUERY_KEY.governanceMyDelegates],
+      [QUERY_KEY.governanceMyUnDelegates],
+    ]);
     updateBalances();
   };
 
@@ -88,36 +78,10 @@ const MyDelegationContainer: React.FC<MyDelegationContainerProps> = ({
       connectWallet={openModal}
       isOpenDelegateModal={isOpenDelegateModal}
       setIsOpenDelegateModal={setIsOpenDelegateModal}
-      delegateGNS={(...params) =>
-        delegateGNS(...params, async () => {
-          await invalidateQueryKey("Governance Delegate", [
-            [QUERY_KEY.governanceSummary],
-            [QUERY_KEY.governanceMyDelegation],
-            [QUERY_KEY.governanceVerifiedDelegates],
-            [QUERY_KEY.governanceMyDelegates],
-            [QUERY_KEY.governanceMyUnDelegates],
-          ]);
-          updateBalances();
-        })
-      }
-      undelegateGNS={(...params) =>
-        undelegateGNS(...params, async () => {
-          refetch();
-          updateBalances();
-        })
-      }
-      collectUndelegated={(...params) =>
-        collectUndelegated(...params, async () => {
-          refetch();
-          updateBalances();
-        })
-      }
-      collectReward={(...params) =>
-        collectReward(...params, async () => {
-          refetch();
-          updateBalances();
-        })
-      }
+      delegateGNS={(...params) => delegateGNS(...params, refreshGovernance)}
+      undelegateGNS={(...params) => undelegateGNS(...params, refreshGovernance)}
+      collectUndelegated={(...params) => collectUndelegated(...params, refreshGovernance)}
+      collectReward={(...params) => collectReward(...params, refreshGovernance)}
     />
   );
 };
