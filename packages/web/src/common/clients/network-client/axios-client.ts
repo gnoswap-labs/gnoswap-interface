@@ -16,9 +16,9 @@ export class AxiosClient implements NetworkClient {
   }
 
   public get = <R>(params: HttpGetRequestParam): Promise<HttpResponse<R>> => {
-    const { url } = params;
+    const { url, timeout } = params;
     const headers = this.createHeaders();
-    return this.client.get(url, { headers }).then(this.createResponse);
+    return this.client.get(url, { headers, timeout }).then(this.createResponse);
   };
 
   public post = async <T, R>(params: HttpPostRequestParam<T>): Promise<HttpResponse<R>> => {

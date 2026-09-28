@@ -233,8 +233,10 @@ export const useTransactionEventStore = () => {
     let retryDelay = 500;
     let position: PositionModel | null = null;
     while (true) {
+      const remaining = deadline - Date.now();
+      if (remaining <= 0) break;
       try {
-        position = await positionRepository.getPositionById(positionId);
+        position = await positionRepository.getPositionById(positionId, remaining);
       } catch (error) {
         if (
           !axios.isAxiosError(error) ||
@@ -246,9 +248,9 @@ export const useTransactionEventStore = () => {
       }
 
       if (position?.tokenUri) break;
-      const remaining = deadline - Date.now();
-      if (remaining <= 0) break;
-      await delay(Math.min(retryDelay, remaining));
+      const waitRemaining = deadline - Date.now();
+      if (waitRemaining <= 0) break;
+      await delay(Math.min(retryDelay, waitRemaining));
       retryDelay *= 2;
     }
     if (!position) return;

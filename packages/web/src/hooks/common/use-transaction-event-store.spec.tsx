@@ -126,7 +126,6 @@ describe("useTransactionEventStore", () => {
     const { onEmit, getStakePositionMessage } = setupStakeEvent(getPositionById);
     await onEmit({ status: "SUCCESS", data: ["7", "a", "b", "c"] });
 
-    expect(getPositionById).toHaveBeenCalledWith("7");
     await waitFor(() =>
       expect(getStakePositionMessage).toHaveBeenCalledWith(
         "7",
@@ -192,6 +191,70 @@ describe("useTransactionEventStore", () => {
       expect(enqueue).toHaveBeenCalledWith(
         expect.objectContaining({ title: "Stake" }),
         expect.objectContaining({ type: "stake-position" }),
+      );
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it("does not start another lookup when the retry deadline expires", async () => {
+    jest.useFakeTimers();
+    try {
+      const position = { poolPath: "pool", tokenUri: "" };
+      const deadline = Date.now() + 8_000;
+      const getPositionById = jest.fn().mockImplementation(() => {
+        if (Date.now() >= deadline) return new Promise(() => {});
+        return Promise.resolve(position);
+      });
+      const { onEmit, getStakePositionMessage } = setupStakeEvent(getPositionById);
+      await onEmit({ status: "SUCCESS", data: ["7", "a", "b", "c"] });
+      await (
+        jest as typeof jest & { advanceTimersByTimeAsync: (ms: number) => Promise<void> }
+      ).advanceTimersByTimeAsync(7_999);
+      const callsBeforeDeadline = getPositionById.mock.calls.length;
+      await (
+        jest as typeof jest & { advanceTimersByTimeAsync: (ms: number) => Promise<void> }
+      ).advanceTimersByTimeAsync(1);
+
+      expect(getPositionById).toHaveBeenCalledTimes(callsBeforeDeadline);
+      expect(getStakePositionMessage).toHaveBeenCalledWith(
+        "7",
+        expect.any(String),
+        "",
+        expect.any(Function),
+        expect.any(Function),
+      );
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it("shows guidance from the saved position when an in-flight lookup reaches the deadline", async () => {
+    jest.useFakeTimers();
+    try {
+      const position = { poolPath: "pool", tokenUri: "" };
+      const getPositionById = jest
+        .fn()
+        .mockResolvedValueOnce(position)
+        .mockImplementation((_id, timeout?: number) => {
+          if (timeout === undefined) return new Promise(() => {});
+          return new Promise((_, reject) =>
+            setTimeout(() => reject(Object.assign(new Error("timeout"), { isAxiosError: true })), timeout),
+          );
+        });
+      const { onEmit, getStakePositionMessage } = setupStakeEvent(getPositionById);
+      await onEmit({ status: "SUCCESS", data: ["7", "a", "b", "c"] });
+      await (
+        jest as typeof jest & { advanceTimersByTimeAsync: (ms: number) => Promise<void> }
+      ).advanceTimersByTimeAsync(8_000);
+
+      expect(getPositionById).toHaveBeenCalledTimes(2);
+      expect(getStakePositionMessage).toHaveBeenCalledWith(
+        "7",
+        expect.any(String),
+        "",
+        expect.any(Function),
+        expect.any(Function),
       );
     } finally {
       jest.useRealTimers();
