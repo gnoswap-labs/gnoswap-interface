@@ -109,6 +109,7 @@ describe("pool.message.ts", () => {
     const displayedGnot = {
       ...wrappedGnot,
       path: nativeGnot.path,
+      wrappedPath: wrappedGnot.path,
       name: nativeGnot.name,
       symbol: nativeGnot.symbol,
       displaySymbol: nativeGnot.displaySymbol,

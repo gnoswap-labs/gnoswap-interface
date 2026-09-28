@@ -2,7 +2,6 @@ import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import {
   AddLiquiditySubmitType,
   DefaultTick,
@@ -489,7 +488,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
           ? {
               ...currentTokenA,
               path: getGnotPath(currentTokenA).path,
-              wrappedPath: currentTokenA.path === WRAPPED_GNOT_PATH ? currentTokenA.path : currentTokenA.wrappedPath,
+              wrappedPath: getGnotPath(currentTokenA).wrappedPath,
               name: getGnotPath(currentTokenA).name,
               symbol: getGnotPath(currentTokenA).symbol,
               displaySymbol: getGnotPath(currentTokenA).displaySymbol,
@@ -500,7 +499,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
           ? {
               ...currentTokenB,
               path: getGnotPath(currentTokenB).path,
-              wrappedPath: currentTokenB.path === WRAPPED_GNOT_PATH ? currentTokenB.path : currentTokenB.wrappedPath,
+              wrappedPath: getGnotPath(currentTokenB).wrappedPath,
               name: getGnotPath(currentTokenB).name,
               symbol: getGnotPath(currentTokenB).symbol,
               displaySymbol: getGnotPath(currentTokenB).displaySymbol,
