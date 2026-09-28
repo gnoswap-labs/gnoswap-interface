@@ -7,6 +7,8 @@ describe("VolumeChartGraph Component", () => {
   it("VolumeChartGraph render", () => {
     const args: VolumeChartGraphProps = {
       datas: [],
+      fees: [],
+      times: [],
       xAxisLabels: [],
     };
 

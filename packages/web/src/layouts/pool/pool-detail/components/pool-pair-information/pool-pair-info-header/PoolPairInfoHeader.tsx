@@ -13,7 +13,7 @@ import { PoolInfoHeaderWrapper } from "./PoolPairInfoHeader.styles";
 interface PoolPairInfoHeaderProps {
   tokenA: TokenModel;
   tokenB: TokenModel;
-  incentivzed: boolean;
+  incentivized: boolean;
   rewardTokens: RewardTokenModel[];
   isMobile: boolean;
   feeStr: string;
@@ -25,13 +25,13 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
   feeStr,
   rewardTokens,
   isMobile,
-  incentivzed,
+  incentivized,
 }) => {
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
   const incentivezedStr = useMemo(() => {
-    return incentivzed ? t("business:incentive") : "";
-  }, [incentivzed, t]);
+    return incentivized ? t("business:incentive") : "";
+  }, [incentivized, t]);
 
   const rewardTokenLogos = useMemo(() => {
     return getUniqueRewardTokensWithMultipleRewardTypes(rewardTokens, getGnotPath);

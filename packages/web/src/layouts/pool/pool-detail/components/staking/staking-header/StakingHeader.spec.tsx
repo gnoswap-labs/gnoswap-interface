@@ -8,6 +8,13 @@ describe("StakingHeader Component", () => {
   it("StakingHeader render", () => {
     const mockProps = {
       breakpoint: DEVICE_TYPE.WEB,
+      isDisabledButton: false,
+      handleClickStakeRedirect: () => null,
+      handleClickUnStakeRedirect: () => null,
+      canUnstake: false,
+      isOtherPosition: false,
+      canStake: false,
+      onOpenVideoGuide: () => null,
     };
 
     render(

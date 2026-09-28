@@ -9,7 +9,9 @@ describe("WalletBalanceSummaryInfo Component", () => {
       balanceSummaryInfo: {
         amount: "1,000.00",
         changeRate: "+1.10%",
+        loading: false,
       },
+      connected: false,
     };
 
     render(

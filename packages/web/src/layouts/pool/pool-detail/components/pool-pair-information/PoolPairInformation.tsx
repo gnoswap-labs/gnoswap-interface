@@ -76,7 +76,7 @@ const PoolPairInformation: React.FC<PoolPairInformationProps> = ({
           <PoolPairInfoHeader
             tokenA={pool.tokenA}
             tokenB={pool.tokenB}
-            incentivzed={pool.incentivized}
+            incentivized={pool.incentivized}
             rewardTokens={pool.rewardTokens}
             isMobile={isMobile}
             feeStr={feeStr || ""}

@@ -10,6 +10,7 @@ describe("SwapCardHeader Component", () => {
       copyURL: () => null,
       slippage: 0,
       changeSlippage: () => null,
+      themeKey: "dark" as const,
     };
 
     render(

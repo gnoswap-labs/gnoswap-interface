@@ -10,7 +10,8 @@ describe("VolumeChart Component", () => {
       volumeChartType: CHART_TYPE["7D"],
       changeVolumeChartType: () => {},
       volumePriceInfo: { amount: "$100,450,000", fee: "$12,231" },
-      volumeChartInfo: { xAxisLabels: [], datas: [] },
+      volumeChartInfo: { xAxisLabels: [], datas: [], times: [], fees: [] },
+      loading: false,
     };
 
     render(

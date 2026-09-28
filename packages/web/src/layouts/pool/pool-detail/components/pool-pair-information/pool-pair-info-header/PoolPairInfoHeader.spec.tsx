@@ -27,6 +27,7 @@ describe("PoolPairInfoHeader Component", () => {
       tokenB: pool.tokenB,
       feeStr: "0.01%",
       incentivized: true,
+      isMobile: false,
       rewardTokens: [],
     };
 

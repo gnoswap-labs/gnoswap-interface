@@ -32,6 +32,7 @@ describe("ProposalList Component", () => {
       openCreateProposalModal: () => {
         console.log("open");
       },
+      executablePackages: [],
       executableFunctions: [],
       fetchMore: () => null,
       isSwitchNetwork: false,

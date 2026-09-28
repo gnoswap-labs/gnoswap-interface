@@ -12,7 +12,16 @@ const createJestConfig = nextJest({
 // are published as ESM only, so they have to go through the transformer instead of
 // being required as-is. Every enclosing scope has to be listed as well, otherwise the
 // pattern still matches on the outer `node_modules/` segment of a nested dependency.
-const ESM_ONLY_PACKAGES = ["@gnolang", "@cosmjs", "@scure", "@noble", "uuid"];
+// faker v10 and geist also ship ESM only, so they join the allowlist below.
+const ESM_ONLY_PACKAGES = [
+  "@gnolang",
+  "@cosmjs",
+  "@scure",
+  "@noble",
+  "uuid",
+  "geist",
+  "@faker-js",
+];
 
 // Add any custom config to be passed to Jest
 const customJestConfig = {

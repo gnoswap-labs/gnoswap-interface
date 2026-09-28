@@ -2,10 +2,8 @@ import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import SelectToken, { SelectTokenProps } from "./SelectToken";
-import React from "react";
 import { DEVICE_TYPE } from "@styles/media";
 
-// Mock @adena-wallet/sdk
 jest.mock("@adena-wallet/sdk", () => ({
   makeMsgCallMessage: jest.fn(),
   makeMsgSendMessage: jest.fn(),
@@ -13,7 +11,6 @@ jest.mock("@adena-wallet/sdk", () => ({
 }));
 
 describe("SelectToken Component", () => {
-  const modalRef = React.createRef();
   it("SelectToken render", () => {
     const args: SelectTokenProps = {
       keyword: "",
@@ -30,9 +27,9 @@ describe("SelectToken Component", () => {
         return;
       },
       themeKey: "dark",
-      modalRef,
       breakpoint: DEVICE_TYPE.WEB,
       recents: [],
+      isSwitchNetwork: false,
     };
 
     render(

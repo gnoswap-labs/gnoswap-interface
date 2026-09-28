@@ -183,7 +183,7 @@ describe("denom-util", () => {
 
     it("should convert amount with string value", () => {
       const amount = { value: "100.5", denom: "GNOT" };
-      const result = amountFormatToBignum(amount);
+      const result = amountFormatToBignum(amount as unknown as { value: number; denom: string });
 
       expect(result.value).toBeInstanceOf(BigNumber);
       expect(result.value.toString()).toBe("100.5");

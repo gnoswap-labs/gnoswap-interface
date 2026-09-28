@@ -75,7 +75,11 @@ export const generateNumber = (minNumber: number, maxNumber: number) => {
 };
 
 export const generateTime = () => {
-  const times = faker.date.betweens("2020-01-01T00:00:00.000Z", "2030-01-01T00:00:00.000Z", 1);
+  const times = faker.date.betweens({
+    from: "2020-01-01T00:00:00.000Z",
+    to: "2030-01-01T00:00:00.000Z",
+    count: 1,
+  });
   return times[0];
 };
 

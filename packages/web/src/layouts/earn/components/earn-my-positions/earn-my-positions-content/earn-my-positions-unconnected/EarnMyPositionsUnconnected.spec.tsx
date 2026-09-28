@@ -9,6 +9,7 @@ describe("EarnMyPositionsUnconnected Component", () => {
       connect: () => {
         return;
       },
+      connected: false,
     };
 
     render(
