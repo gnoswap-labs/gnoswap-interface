@@ -301,6 +301,10 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       return claimedRewardsUsd === null ? null : accum + claimedRewardsUsd;
     }, 0);
 
+    if (!totalClaimedUsd) {
+      return "-";
+    }
+
     return formatOtherPrice(totalClaimedUsd, { isKMB: false });
   }, [canShowData, positions, tokenPrices]);
 
