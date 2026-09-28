@@ -24,7 +24,6 @@ export interface ProposalListProps {
   isShowActiveOnly: boolean;
   address: string;
   toggleIsShowActiveOnly: () => void;
-  myVotingWeight: number;
   proposalCreationThreshold: number;
   proposalList: ProposalItemInfo[];
   fetchMore: () => void;
@@ -72,7 +71,6 @@ const ProposalList: React.FC<ProposalListProps> = ({
   address,
   isShowActiveOnly,
   toggleIsShowActiveOnly,
-  myVotingWeight,
   proposalCreationThreshold,
   proposalList,
   fetchMore,
@@ -94,7 +92,6 @@ const ProposalList: React.FC<ProposalListProps> = ({
   const onClickCreateProposal = () => {
     openCreateProposalModal({
       breakpoint: breakpoint,
-      myVotingWeight: myVotingWeight,
       proposalCreationThreshold: proposalCreationThreshold,
       executablePackages: executablePackages,
       executableFunctions: executableFunctions,
