@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 import WalletConnectorButton from "./WalletConnectorButton";
 import { AccountModel } from "@models/account/account-model";
 

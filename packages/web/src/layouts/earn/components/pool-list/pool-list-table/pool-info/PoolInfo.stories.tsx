@@ -1,6 +1,6 @@
 import { css, Theme } from "@emotion/react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 import { IncentivizePoolCardInfoWithPriceGrade } from "@models/pool/info/pool-card-info";
 import PoolInfo from "./PoolInfo";

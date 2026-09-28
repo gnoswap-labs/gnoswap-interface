@@ -1,7 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import { css } from "@emotion/react";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 import ConfirmSwapModal from "./ConfirmSwapModal";
 

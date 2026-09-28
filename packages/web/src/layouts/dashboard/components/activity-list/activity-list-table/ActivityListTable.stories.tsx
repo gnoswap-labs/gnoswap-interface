@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 import { dummyActivityData } from "@repositories/activity/responses/activity-responses";
 import { DEVICE_TYPE } from "@styles/media";
 import ActivityListTable from "./ActivityListTable";

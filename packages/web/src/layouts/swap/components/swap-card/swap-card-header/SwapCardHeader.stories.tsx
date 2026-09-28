@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 import SwapCardHeader from "./SwapCardHeader";
 
