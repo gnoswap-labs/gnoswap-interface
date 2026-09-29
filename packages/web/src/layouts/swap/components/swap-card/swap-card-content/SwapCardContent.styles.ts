@@ -83,31 +83,21 @@ export const ContentWrapper = styled.div`
       justify-content: center;
       gap: 4px;
       .balance-max-button {
-        box-sizing: content-box;
+        /* The badge is the target: what is drawn and what responds are the same
+           box, so there is no invisible margin around it that also reacts. It
+           carries its own padding to be worth aiming at. */
+        box-sizing: border-box;
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 1px 6px;
-        height: 14px;
+        padding: 0 10px;
+        height: 24px;
         border-radius: 36px;
         background: rgba(0, 89, 255, 0.2);
         font-size: 11px;
         font-weight: 500;
         color: #007aff;
         cursor: pointer;
-        /* The pill is barely taller than its text, so the hit area is widened
-           well past it without changing how it looks. Offsets are spelled out
-           rather than using inset, and the top stays inside the 8px gap above
-           so the token selector keeps its own clicks. */
-        position: relative;
-        &::after {
-          content: "";
-          position: absolute;
-          top: -6px;
-          right: -14px;
-          bottom: -14px;
-          left: -14px;
-        }
         &:hover {
           background: ${({ theme }) => (theme.themeKey === "dark" ? "rgba(0, 89, 255, 0.1)" : "rgba(0, 89, 255, 0.3)")};
         }
