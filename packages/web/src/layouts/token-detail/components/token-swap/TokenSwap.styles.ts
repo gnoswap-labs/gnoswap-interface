@@ -79,7 +79,9 @@ export const wrapper = (theme: Theme) => css`
       background-color: ${theme.color.background20};
       border: 1px solid ${theme.color.border02};
       border-radius: 8px;
-      &:focus-within {
+      /* Highlighted once the field holds an amount, not merely because
+         something inside it took focus — MAX used to light it up on its own. */
+      &.has-amount {
         border: 1px solid ${theme.color.border15};
       }
     }
@@ -111,6 +113,14 @@ export const wrapper = (theme: Theme) => css`
           font-weight: 500;
           color: #007aff;
           cursor: pointer;
+          /* The pill is barely taller than its text, so the hit area is widened
+             past it without changing how it looks. */
+          position: relative;
+          &::after {
+            content: "";
+            position: absolute;
+            inset: -8px -6px;
+          }
           &:hover {
             background: ${theme.themeKey === "dark" ? "rgba(0, 89, 255, 0.1)" : "rgba(0, 89, 255, 0.3)"};
           }
@@ -133,6 +143,9 @@ export const wrapper = (theme: Theme) => css`
       margin-right: 30px;
       &::placeholder {
         color: ${theme.color.text02};
+      }
+      &.amount-pending::placeholder {
+        opacity: 0.5;
       }
     }
 

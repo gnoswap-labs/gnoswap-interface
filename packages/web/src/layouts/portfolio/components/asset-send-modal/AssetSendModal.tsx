@@ -1,3 +1,4 @@
+import { cx } from "@emotion/css";
 import { useTheme } from "@emotion/react";
 import Link from "next/link";
 import BigNumber from "bignumber.js";
@@ -154,7 +155,7 @@ const AssetSendModal: React.FC<Props> = ({
     return !!currentAvailableBalance;
   }, [currentAvailableBalance]);
 
-  const { getMaxAmount, loading: loadingMaxAmount } = useMaxNativeAmount({
+  const { getMaxAmount, loading: loadingMaxAmount, pendingBalance } = useMaxNativeAmount({
     token: withdrawInfo ?? null,
     amount,
     // The recipient is simulated, and it moves the gas: a send to an address
@@ -269,10 +270,14 @@ const AssetSendModal: React.FC<Props> = ({
               <div className="withdraw">
                 <div className="amount">
                   <input
-                    className="amount-text"
-                    value={amount}
+                    className={cx("amount-text", { "amount-pending": !!pendingBalance })}
+                    aria-busy={!!pendingBalance}
+                    // While the reserve is being measured the whole balance
+                    // stands in as a placeholder: the answer is that, less what
+                    // it costs to send.
+                    value={pendingBalance ? "" : amount}
                     onChange={onChangeAmount}
-                    placeholder="0"
+                    placeholder={pendingBalance ?? "0"}
                     autoComplete={"off"}
                     spellCheck={"false"}
                     inputMode={"decimal"}

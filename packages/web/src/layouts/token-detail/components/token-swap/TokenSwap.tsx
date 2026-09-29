@@ -85,7 +85,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   makeMaxAmountMessages,
 }) => {
   const { t } = useTranslation();
-  const { getMaxAmount, loading: loadingMaxAmount } = useMaxNativeAmount({
+  const { getMaxAmount, loading: loadingMaxAmount, pendingBalance } = useMaxNativeAmount({
     token: dataTokenInfo.tokenA,
     amount: dataTokenInfo.tokenAAmount,
     // Neither the output token nor the balance reaches the input field, yet
@@ -194,16 +194,19 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
         </div>
       </div>
       <div className="inputs">
-        <div className="from">
+        <div className={cx("from", { "has-amount": !!dataTokenInfo.tokenAAmount })}>
           <div className="amount">
             <input
               className={cx("amount-text", {
                 "text-opacity": isLoadingTokenA,
+                "amount-pending": !!pendingBalance,
               })}
-              aria-busy={isLoadingTokenA}
-              value={dataTokenInfo.tokenAAmount}
+              aria-busy={isLoadingTokenA || !!pendingBalance}
+              // While the reserve is being measured the whole balance stands in
+              // as a placeholder: the answer is that, less what it costs to send.
+              value={pendingBalance ? "" : dataTokenInfo.tokenAAmount}
               onChange={onChangeTokenAAmount}
-              placeholder="0"
+              placeholder={pendingBalance ?? "0"}
               autoComplete={"off"}
               spellCheck={"false"}
               inputMode={"decimal"}
@@ -233,7 +236,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
             </div>
           </div>
         </div>
-        <div className="to">
+        <div className={cx("to", { "has-amount": !!dataTokenInfo.tokenBAmount })}>
           <div className="amount">
             <input
               className={cx("amount-text", { "text-opacity": isLoadingTokenB })}

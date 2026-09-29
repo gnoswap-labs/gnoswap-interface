@@ -72,6 +72,40 @@ describe("useMaxNativeAmount", () => {
     ).resolves.toBe("9");
   });
 
+  it("offers the whole balance to stand in while the estimate is out", async () => {
+    const release = deferredEstimate();
+
+    const { result } = renderHook(() => useMaxNativeAmount({ token: GNOT, amount: "" }));
+
+    let pending: Promise<string | null> = Promise.resolve(null);
+    await act(async () => {
+      pending = result.current.getMaxAmount({ balance: "1,234.5", makeMessages: jest.fn().mockReturnValue([{}]) });
+    });
+
+    // Grouping stripped, so the field can show it the way an amount is typed.
+    expect(result.current.pendingBalance).toBe("1234.5");
+    expect(result.current.loading).toBe(true);
+
+    await act(async () => {
+      release();
+      await pending;
+    });
+
+    expect(result.current.pendingBalance).toBeNull();
+  });
+
+  it("offers nothing to stand in when no estimate is needed", async () => {
+    const { result } = renderHook(() => useMaxNativeAmount({ token: GNOT, amount: "" }));
+
+    // Without a message builder the reserve is the flat fee, answered outright.
+    await act(async () => {
+      await result.current.getMaxAmount({ balance: "10" });
+    });
+
+    expect(result.current.pendingBalance).toBeNull();
+    expect(estimateMaxNativeAmount).not.toHaveBeenCalled();
+  });
+
   it("withholds an answer once the field holds another token", async () => {
     const release = deferredEstimate();
 

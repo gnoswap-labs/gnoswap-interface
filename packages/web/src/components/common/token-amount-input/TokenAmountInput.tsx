@@ -5,6 +5,7 @@ import { TokenModel } from "@models/token/token-model";
 import { isAmount } from "@common/utils/data-check-util";
 import SelectPairIncentivizeButton from "../select-pair-button/SelectPairIncentivizeButton";
 import BigNumber from "bignumber.js";
+import { cx } from "@emotion/css";
 import { MaxNativeAmountParams, MaxNativeAmountSubject, useMaxNativeAmount } from "@hooks/gas";
 import { useTranslation } from "react-i18next";
 import IconWallet from "../icons/IconWallet";
@@ -47,7 +48,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
   maxAmountDependsOn,
 }) => {
   const { t } = useTranslation();
-  const { getMaxAmount, loading: loadingMaxAmount } = useMaxNativeAmount({
+  const { getMaxAmount, loading: loadingMaxAmount, pendingBalance } = useMaxNativeAmount({
     token,
     amount,
     dependsOn: [balance, ...(maxAmountDependsOn ?? [])],
@@ -117,10 +118,13 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
     <TokenAmountInputWrapper style={style}>
       <div className="amount">
         <input
-          value={amount}
-          className="amount-text"
+          // While the reserve is being measured the whole balance stands in as
+          // a placeholder: the answer is that, less what it costs to send.
+          value={pendingBalance ? "" : amount}
+          className={cx("amount-text", { "amount-pending": !!pendingBalance })}
+          aria-busy={!!pendingBalance}
           onChange={onChangeAmountInput}
-          placeholder="0"
+          placeholder={pendingBalance ?? "0"}
           onKeyUp={preventArrowKeys}
           onKeyDown={preventArrowKeys}
           autoComplete={"off"}

@@ -59,10 +59,14 @@ export interface MaxNativeAmountParams {
  * `getMaxAmount` resolves to `null` when the answer no longer belongs to the
  * field that asked: the token changed, the user typed, or a later press
  * superseded it. Callers write the result back only when it is not `null`.
+ *
+ * While an estimate is out, `pendingBalance` holds the whole balance for the
+ * field to show as a placeholder — the answer is the balance less a reserve, so
+ * this is what the user is about to get, rounded down by however much it costs.
  */
 export const useMaxNativeAmount = (subject: MaxNativeAmountSubject) => {
   const transactionGasService = useOptionalGnoswapContext()?.transactionGasService ?? null;
-  const [loading, setLoading] = useState(false);
+  const [pendingBalance, setPendingBalance] = useState<string | null>(null);
 
   // Every action is built for, and simulated as, the connected account. Tracked
   // here rather than left to each caller, since none of them can afford to
@@ -102,7 +106,7 @@ export const useMaxNativeAmount = (subject: MaxNativeAmountSubject) => {
         return makeDisplayTokenAmountString(token, BigNumber.maximum(spendable, 0).toFixed(0)) ?? "0";
       }
 
-      setLoading(true);
+      setPendingBalance(displayBalance.toFixed());
 
       try {
         const { amount } = await transactionGasService.estimateMaxNativeAmount({
@@ -116,11 +120,11 @@ export const useMaxNativeAmount = (subject: MaxNativeAmountSubject) => {
       } finally {
         // An earlier press finishing must not re-enable the button while a
         // later one is still out.
-        if (isLatest()) setLoading(false);
+        if (isLatest()) setPendingBalance(null);
       }
     },
     [transactionGasService],
   );
 
-  return { getMaxAmount, loading };
+  return { getMaxAmount, pendingBalance, loading: pendingBalance !== null };
 };
