@@ -1,13 +1,9 @@
 import styled from "@emotion/styled";
 import { priceWarningStyle } from "@layouts/leaderboard-layout/components/common/common.styles";
 
-interface Props {
-  containerWidth: number;
-  priceWidth: number;
-  tokenNameWidth: number;
-}
+export const SwapTokenHeaderWrapper = styled.div`
 
-export const SwapTokenHeaderWrapper = styled.div<Props>`
+  gap: 10px;
   width: 100%;
   display: flex;
   align-items: center;
@@ -17,8 +13,8 @@ export const SwapTokenHeaderWrapper = styled.div<Props>`
     justify-content: flex-start;
     align-items: flex-start;
     gap: 8px;
-    max-width: ${({ containerWidth, priceWidth }) => `calc(${containerWidth}px - 10px - ${priceWidth}px)`};
-    width: 100%;
+    flex: 1 1 auto;
+    min-width: 0;
     .token-title {
       display: flex;
       flex-direction: column;
@@ -26,23 +22,32 @@ export const SwapTokenHeaderWrapper = styled.div<Props>`
       align-items: flex-start;
       gap: 2px;
       font-weight: 500;
+      min-width: 0;
+      flex: 1 1 auto;
       .name {
         display: flex;
         align-items: center;
         gap: 8px;
+        min-width: 0;
+        width: 100%;
 
         color: ${({ theme }) => theme.color.text02};
         font-size: 18px;
         .token-name {
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          flex: 0 0 auto;
           cursor: pointer;
           &:hover {
             color: ${({ theme }) => theme.color.text07};
           }
         }
         .link {
-          max-width: ${({ containerWidth, tokenNameWidth, priceWidth }) =>
-            `calc(${containerWidth}px - 58px - ${tokenNameWidth}px - ${priceWidth}px)`};
-          width: 100%;
+          flex: 0 1 auto;
+          min-width: 0;
+          overflow: hidden;
           display: flex;
           align-items: center;
           gap: 4px;
@@ -53,6 +58,8 @@ export const SwapTokenHeaderWrapper = styled.div<Props>`
           border-radius: 4px;
           background-color: ${({ theme }) => (theme.themeKey === "dark" ? "#0D121C" : "rgba(224, 232, 244, 0.40)")};
           span {
+            flex: 1 1 auto;
+            min-width: 0;
             overflow: hidden;
             text-overflow: ellipsis;
             direction: rtl;
@@ -80,6 +87,7 @@ export const SwapTokenHeaderWrapper = styled.div<Props>`
     }
   }
   .right {
+    flex: 0 0 auto;
     display: flex;
     justify-content: flex-end;
     align-items: center;

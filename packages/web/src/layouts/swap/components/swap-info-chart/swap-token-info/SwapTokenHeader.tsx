@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import { LineGraphData } from "@components/common/line-graph/LineGraph";
 import { useTheme } from "@emotion/react";
-import useElementWidth from "@hooks/common/use-element-width";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
@@ -36,7 +35,6 @@ interface SwapTokenHeaderProps {
   priceGradeType: TOKEN_PRICE_GRADE_TYPE;
   currentPrice: string | undefined;
   chartData?: LineGraphData;
-  containerWidth: number;
 }
 
 const SwapTokenHeader = ({
@@ -44,7 +42,6 @@ const SwapTokenHeader = ({
   priceGradeType,
   currentPrice,
   chartData,
-  containerWidth,
 }: SwapTokenHeaderProps) => {
   const router = useCustomRouter();
   const extension = React.useMemo(() => getSwapExtensionByOriginPath(tokenInfo.path), [tokenInfo.path]);
@@ -56,11 +53,6 @@ const SwapTokenHeader = ({
 
   const { priceStyle, shouldShowPriceWarning } = useTokenPriceInfo({ priceGradeType });
 
-  const priceRef = React.useRef<HTMLDivElement>(null);
-  const tokenNameRef = React.useRef<HTMLButtonElement>(null);
-
-  const priceWidth = useElementWidth(priceRef, [tokenInfo]);
-  const tokenNameWidth = useElementWidth(tokenNameRef, [tokenInfo]);
 
   const theme = useTheme();
   const { t } = useTranslation();
@@ -115,7 +107,7 @@ const SwapTokenHeader = ({
   );
 
   return (
-    <SwapTokenHeaderWrapper containerWidth={containerWidth} priceWidth={priceWidth} tokenNameWidth={tokenNameWidth}>
+    <SwapTokenHeaderWrapper>
       <div className="left">
         <MissingLogo url={tokenInfo.logoURI} symbol={tokenInfo.symbol} width={32} />
         <div className="token-title">
@@ -123,8 +115,6 @@ const SwapTokenHeader = ({
             <button
               className="token-name"
               id={elementId}
-              style={{ flexShrink: 0 }}
-              ref={tokenNameRef}
               onClick={onClickTokenName}
             >
               {displayTokenName}
@@ -139,7 +129,7 @@ const SwapTokenHeader = ({
       </div>
       <div className="right">
         <div className="token-price">
-          <div className={cx("price", priceStyle.className)} ref={priceRef}>
+          <div className={cx("price", priceStyle.className)}>
             {displayPrice}
             {shouldShowPriceWarning && <PriceWarning type="PRICE" />}
           </div>

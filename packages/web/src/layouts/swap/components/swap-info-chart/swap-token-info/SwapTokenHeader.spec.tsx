@@ -9,11 +9,6 @@ const mockMovePageWithTokenPath = jest.fn();
 const mockGetRealmUrl = jest.fn((path: string) => `https://gnoscan.io/realms/details?path=${path}`);
 
 
-jest.mock("@hooks/common/use-element-width", () => ({
-  __esModule: true,
-  default: () => 0,
-}));
-
 jest.mock("@hooks/common/use-custom-router", () => ({
   __esModule: true,
   default: () => ({
@@ -46,7 +41,6 @@ describe("SwapTokenHeader", () => {
             }}
             priceGradeType="NONE"
             currentPrice="$1.00"
-            containerWidth={600}
           />
         </GnoswapThemeProvider>
       </JotaiProvider>,
@@ -74,7 +68,6 @@ describe("SwapTokenHeader", () => {
             }}
             priceGradeType="NONE"
             currentPrice="$0.189"
-            containerWidth={600}
           />
         </GnoswapThemeProvider>
       </JotaiProvider>,
