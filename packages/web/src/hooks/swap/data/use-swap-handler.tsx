@@ -28,7 +28,7 @@ import { QUERY_KEY } from "@query/query-keys";
 import { useGetSwapFee } from "@query/router";
 import { DexEvent } from "@repositories/common";
 import { SwapRouteSuccessResponse } from "@repositories/swap-router/response/swap-route-response";
-import { getSwapExtensionByOriginPath } from "@resources/swap-extension";
+import { getSwapExtensionByOriginPath, isSwapExtensionPair } from "@resources/swap-extension";
 import { CommonState, SwapState } from "@states/index";
 import { checkGnotPath, isGNOTPath, toNativePath } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
@@ -829,6 +829,9 @@ export const useSwapHandler = () => {
     if (!tokenA_ || !tokenB_) {
       return false;
     }
+    if (isSwapExtensionPair(tokenA_, tokenB_)) {
+      return true;
+    }
     if (isNativeToken(tokenA_)) {
       return tokenA_.wrappedPath === tokenB_.path;
     }
@@ -840,8 +843,25 @@ export const useSwapHandler = () => {
 
   const changeTokenA = useCallback(
     (token: TokenModel) => {
+      const selectedExtension = getSwapExtensionByOriginPath(token.path);
+      const oppositeExtension = getSwapExtensionByOriginPath(tokenB?.path);
+      const selectedWrappedToken = selectedExtension
+        ? tokens.find(candidate => candidate.path === selectedExtension.grc20WrappedTokenPath) ?? null
+        : null;
+      const oppositeWrappedToken = oppositeExtension
+        ? tokens.find(candidate => candidate.path === oppositeExtension.grc20WrappedTokenPath) ?? null
+        : null;
       const nextTokenA = tokenB?.path === token.path ? tokenB : token;
-      const nextTokenB = tokenB?.path === token.path ? tokenA : tokenB;
+      const nextTokenB =
+        tokenB?.path === token.path
+          ? tokenA
+          : selectedExtension
+            ? selectedWrappedToken
+            : oppositeExtension?.grc20WrappedTokenPath === token.path
+              ? tokenB
+              : oppositeExtension
+                ? oppositeWrappedToken
+                : tokenB;
       const isWrapPair = isSameTokenFn(nextTokenB, nextTokenA);
       if (isWrapPair) {
         setTokenAAmount(tokenAAmount);
@@ -856,12 +876,29 @@ export const useSwapHandler = () => {
         setIsLoading(true);
       }
     },
-    [isSameTokenFn, setSwapValue, tokenA, tokenAAmount, tokenB, type],
+    [isSameTokenFn, setSwapValue, tokenA, tokenAAmount, tokenB, tokens, type],
   );
 
   const changeTokenB = useCallback(
     (token: TokenModel) => {
-      const nextTokenA = tokenA?.path === token.path ? tokenB : tokenA;
+      const selectedExtension = getSwapExtensionByOriginPath(token.path);
+      const oppositeExtension = getSwapExtensionByOriginPath(tokenA?.path);
+      const selectedWrappedToken = selectedExtension
+        ? tokens.find(candidate => candidate.path === selectedExtension.grc20WrappedTokenPath) ?? null
+        : null;
+      const oppositeWrappedToken = oppositeExtension
+        ? tokens.find(candidate => candidate.path === oppositeExtension.grc20WrappedTokenPath) ?? null
+        : null;
+      const nextTokenA =
+        tokenA?.path === token.path
+          ? tokenB
+          : selectedExtension
+            ? selectedWrappedToken
+            : oppositeExtension?.grc20WrappedTokenPath === token.path
+              ? tokenA
+              : oppositeExtension
+                ? oppositeWrappedToken
+                : tokenA;
       const nextTokenB = tokenA?.path === token.path ? tokenA : token;
       const isWrapPair = isSameTokenFn(nextTokenA, nextTokenB);
       if (isWrapPair) {
@@ -877,7 +914,7 @@ export const useSwapHandler = () => {
         setIsLoading(true);
       }
     },
-    [isSameTokenFn, setSwapValue, tokenA, tokenAAmount, tokenB, type],
+    [isSameTokenFn, setSwapValue, tokenA, tokenAAmount, tokenB, tokens, type],
   );
 
   const switchSwapDirection = useCallback(() => {

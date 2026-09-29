@@ -153,6 +153,26 @@ describe("useSwapHandler quote consistency", () => {
     unmount();
   });
 
+  it("pairs an origin token selection with its wrapper", () => {
+    const { result, unmount } = renderSwapHandler("EXACT_IN", mockTokenA, null);
+
+    act(() => result.current.changeTokenA(mockOriginBubble));
+
+    expect(result.current.tokenA).toBe(mockOriginBubble);
+    expect(result.current.tokenB).toBe(mockWrappedBubble);
+    unmount();
+  });
+
+  it("replaces an origin token before selecting an ordinary opposite token", () => {
+    const { result, unmount } = renderSwapHandler("EXACT_IN", mockOriginBubble, mockWrappedBubble);
+
+    act(() => result.current.changeTokenB(mockTokenB));
+
+    expect(result.current.tokenA).toBe(mockWrappedBubble);
+    expect(result.current.tokenB).toBe(mockTokenB);
+    unmount();
+  });
+
   it("blocks a swap when the selected input token has no reported balance", () => {
     mockDisplayBalanceStringMap = {
       [mockTokenA.path]: "1000000000000",
