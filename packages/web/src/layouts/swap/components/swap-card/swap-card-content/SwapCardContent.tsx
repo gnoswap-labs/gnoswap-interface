@@ -220,7 +220,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
             </span>
             {hasTokenABalance && (
               <button className="balance-max-button" onClick={handleAutoFillTokenA} disabled={loadingMaxAmount}>
-                {t("common:max")}
+                <span className="max-badge">{t("common:max")}</span>
               </button>
             )}
           </div>

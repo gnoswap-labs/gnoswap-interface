@@ -304,7 +304,7 @@ const AssetSendModal: React.FC<Props> = ({
                         onClick={handleEnterAllBalanceAvailable}
                         disabled={loadingMaxAmount}
                       >
-                        {t("common:max")}
+                        <span className="max-badge">{t("common:max")}</span>
                       </button>
                     )}
                   </div>

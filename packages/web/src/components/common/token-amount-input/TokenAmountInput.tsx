@@ -148,7 +148,7 @@ const TokenAmountInput: React.FC<TokenAmountInputProps> = ({
           <span className={`balance-text ${!connected ? "disable-pointer" : ""}`}>{balanceADisplay}</span>
           {isVisibleMaxButton && hasTokenBalance && (
             <button className="balance-max-button" onClick={handleFillBalance} disabled={loadingMaxAmount}>
-              {t("common:max")}
+              <span className="max-badge">{t("common:max")}</span>
             </button>
           )}
         </div>

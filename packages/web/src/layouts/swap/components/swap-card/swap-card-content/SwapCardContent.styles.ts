@@ -83,22 +83,32 @@ export const ContentWrapper = styled.div`
       justify-content: center;
       gap: 4px;
       .balance-max-button {
-        /* The badge is the target: what is drawn and what responds are the same
-           box, so there is no invisible margin around it that also reacts. It
-           carries its own padding to be worth aiming at. */
-        box-sizing: border-box;
+        /* The wrapper is the target and the badge is only what is drawn, so the
+           area that responds can be comfortable without the pill growing with
+           it. The negative margins hand the row back the height and spacing the
+           padding took, and 6px above stays inside the 8px gap so the token
+           selector keeps its own clicks. */
         display: flex;
-        justify-content: center;
         align-items: center;
-        padding: 0 10px;
-        height: 24px;
-        border-radius: 36px;
-        background: rgba(0, 89, 255, 0.2);
-        font-size: 11px;
-        font-weight: 500;
-        color: #007aff;
+        justify-content: center;
+        padding: 6px 10px;
+        margin: -6px -10px;
         cursor: pointer;
-        &:hover {
+
+        .max-badge {
+          box-sizing: content-box;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 1px 6px;
+          height: 14px;
+          border-radius: 36px;
+          background: rgba(0, 89, 255, 0.2);
+          font-size: 11px;
+          font-weight: 500;
+          color: #007aff;
+        }
+        &:hover .max-badge {
           background: ${({ theme }) => (theme.themeKey === "dark" ? "rgba(0, 89, 255, 0.1)" : "rgba(0, 89, 255, 0.3)")};
         }
       }
