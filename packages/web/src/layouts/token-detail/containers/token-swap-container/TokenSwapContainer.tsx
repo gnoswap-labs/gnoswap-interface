@@ -138,7 +138,12 @@ const TokenSwapContainer: React.FC = () => {
 
     const extension = getSwapExtensionByOriginPath(token.path);
     const tokenPath = extension?.grc20WrappedTokenPath ?? token.path;
-    const nextTokenAPath = swapTokenInfo.tokenA?.path;
+    const tokenAExtension = getSwapExtensionByOriginPath(swapTokenInfo.tokenA?.path);
+    const nextTokenAPath = tokenAExtension
+      ? token.path === tokenAExtension.grc20WrappedTokenPath
+        ? undefined
+        : tokenAExtension.grc20WrappedTokenPath
+      : swapTokenInfo.tokenA?.path;
     changeTokenB(token);
     router.movePage("TOKEN", {
       path: tokenPath,

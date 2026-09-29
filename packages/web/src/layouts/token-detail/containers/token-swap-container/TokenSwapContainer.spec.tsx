@@ -148,3 +148,64 @@ it("keeps a lower origin selection in the lower slot after token-page navigation
   expect(swapValue.tokenA).toBe(wrappedBubble);
   expect(swapValue.tokenB).toBe(originBubble);
 });
+
+it("routes a selected origin token through its wrapper when the counter token changes", () => {
+  let routePath = native.path;
+  let routeTokenAPath: string | null = null;
+  let swapValue = {
+    tokenA: originBubble as TokenModel | null,
+    tokenB: native as TokenModel | null,
+    type: "EXACT_IN",
+  };
+  const setSwapValue = jest.fn(updater => {
+    swapValue = typeof updater === "function" ? updater(swapValue) : updater;
+  });
+  const changeTokenB = jest.fn((token: TokenModel) => {
+    swapValue = { ...swapValue, tokenA: wrappedBubble, tokenB: token };
+  });
+  const movePage = jest.fn((_page, params: { path: string; tokenA?: string }) => {
+    routePath = params.path;
+    routeTokenAPath = params.tokenA ?? null;
+  });
+  mockSwapExtensionTokens = [originBubble];
+  (useCustomRouter as jest.Mock).mockImplementation(() => ({
+    query: { path: routePath, tokenA: routeTokenAPath },
+    getTokenPath: () => routePath,
+    getParameter: () => routeTokenAPath,
+    movePage,
+  }));
+  (useGetToken as jest.Mock).mockImplementation((path: string) => ({
+    data: [native, wrapped, wrappedBubble].find(token => token.path === path),
+  }));
+  (useGnotToGnot as jest.Mock).mockReturnValue({
+    getGnotPath: (token: TokenModel) => token,
+  });
+  (useSwapHandler as jest.Mock).mockImplementation(() => ({
+    setSwapValue,
+    setTokenAAmount: jest.fn(),
+    initializeSwapTokenInputAmount: jest.fn(),
+    changeTokenB,
+    swapTokenInfo: { tokenA: swapValue.tokenA, tokenB: swapValue.tokenB },
+    swapValue,
+  }));
+  const { unmount } = render(<TokenSwapContainer />);
+  const tokenSwapProps = mockTokenSwap.mock.calls.at(-1)?.[0] as {
+    changeTokenB: (token: TokenModel) => void;
+  };
+
+  tokenSwapProps.changeTokenB(wrapped);
+  unmount();
+  swapValue = {
+    tokenA: null,
+    tokenB: null,
+    type: "EXACT_IN",
+  };
+  render(<TokenSwapContainer />);
+
+  expect(movePage).toHaveBeenCalledWith("TOKEN", {
+    path: wrapped.path,
+    tokenA: wrappedBubble.path,
+  });
+  expect(swapValue.tokenA).toBe(wrappedBubble);
+  expect(swapValue.tokenB).toBe(wrapped);
+});
