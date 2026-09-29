@@ -5,9 +5,17 @@ import { RpcClient, Tm2Client } from "@gnolang/tm2-rpc";
 import { parseTokenAmount } from "@utils/token-utils";
 
 import { FallbackRpcClient, RPC_REQUEST_TIMEOUT_MS } from "./fallback-rpc-client";
+import { sumStorageDeposit } from "./methods/storage-deposit-event";
 import { RpcEndpointSelector } from "./rpc-endpoint-selector";
 
 const MIN_CONNECT_TIMEOUT_MS = 15_000;
+
+export interface SimulateTxResult {
+  /** Gas the transaction actually burned. */
+  gasUsed: number;
+  /** Storage deposit, in ugnot, the transaction would lock. */
+  storageDeposit: number;
+}
 
 export interface GnoProviderOptions {
   /** Optional second endpoint used once the primary one stops answering. */
@@ -77,20 +85,9 @@ export class GnoProvider extends GnoJSONRPCProvider {
    * RPC client's own encoding, so the node fails with "unable to decode tx".
    */
   public async estimateGas(tx: Tx): Promise<bigint> {
-    const rpcResponse = await this.client.abciQuery({
-      path: ".app/simulate",
-      data: Tx.encode(tx).finish(),
-      height: 0,
-      prove: false,
-    });
+    const { gasUsed } = await this.simulateTx(tx);
 
-    const simulateResult = extractSimulateFromResponse(adaptAbciQueryResponse(rpcResponse));
-    const errorType = simulateResult.response_base?.error?.type_url;
-    if (errorType) {
-      throw new Error(`Failed to simulate the transaction: ${errorType}`);
-    }
-
-    return BigInt(simulateResult.gas_used);
+    return BigInt(gasUsed);
   }
 
   public async getGasPrice(height?: number | undefined): Promise<number> {
@@ -120,5 +117,40 @@ export class GnoProvider extends GnoJSONRPCProvider {
     }
 
     return priceAmount / gasPrice.gas;
+  }
+
+  /**
+   * Dry-runs the transaction and reports both costs it would incur.
+   *
+   * The gas alone is what {@link estimateGas} answers with; this keeps the
+   * emitted events as well, so the storage deposit is visible too. The node
+   * runs the ante handler and the messages against a throwaway cache, so the
+   * signer must be able to afford the offered fee, the sent coins, and the
+   * deposit for the call to succeed.
+   */
+  public async simulateTx(tx: Tx): Promise<SimulateTxResult> {
+    const result = extractSimulateFromResponse(
+      adaptAbciQueryResponse(
+        await this.client.abciQuery({
+          // The encoded transaction goes in as raw bytes: the RPC layer
+          // base64-encodes `data` on the way out, and the node rejects a
+          // second layer of it with TxDecodeError.
+          path: ".app/simulate",
+          data: Tx.encode(tx).finish(),
+          height: 0,
+          prove: false,
+        }),
+      ),
+    );
+
+    const errorType = result.response_base?.error?.type_url;
+    if (errorType) {
+      throw new Error(`Failed to simulate the transaction: ${errorType}`);
+    }
+
+    return {
+      gasUsed: Number(result.gas_used),
+      storageDeposit: sumStorageDeposit(result.response_base?.events),
+    };
   }
 }

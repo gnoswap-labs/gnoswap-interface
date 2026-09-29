@@ -61,6 +61,7 @@ const SwapContainer: React.FC = () => {
     isSameToken,
     handleResetEstimatedLiquidity,
     initializeSwapTokenInputAmount,
+    makeMaxAmountMessages,
   } = useSwapHandler();
   const additionalTokenATokens = useMemo(() => {
     const extension = getSwapExtensionForTokenSelector(swapTokenInfo.tokenA?.path, swapTokenInfo.tokenB?.path);
@@ -172,6 +173,7 @@ const SwapContainer: React.FC = () => {
       resetEstimatedLiquidity={handleResetEstimatedLiquidity}
       isSameToken={isSameToken}
       isRefetching={isRefetching}
+      makeMaxAmountMessages={makeMaxAmountMessages}
     />
   );
 };

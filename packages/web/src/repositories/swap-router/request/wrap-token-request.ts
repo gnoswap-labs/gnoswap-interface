@@ -9,3 +9,6 @@ export interface WrapTokenRequest {
 
   gasUsed?: string;
 }
+
+/** A wrap request without the gas figures, which only the send path needs. */
+export type WrapTokenMessagesRequest = Omit<WrapTokenRequest, "gasFee" | "gasUsed">;

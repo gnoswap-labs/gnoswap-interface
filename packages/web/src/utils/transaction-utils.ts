@@ -216,7 +216,7 @@ export const estimateSocialWalletFee = async (
   const rpcProvider = provider ?? (await getSocialRpcProvider());
   const { signed } = await walletClient.sign(
     rpcProvider as GnoProvider,
-    modifyDocument(document, Number(document.fee.gas) || DEFAULT_GAS_WANTED, 1),
+    withGasFee(document, Number(document.fee.gas) || DEFAULT_GAS_WANTED, 1),
   );
   const [gasUsed, gasPrice] = await Promise.all([rpcProvider.estimateGas(signed), rpcProvider.getGasPrice()]);
 
@@ -261,7 +261,7 @@ export const withTransactionGuard = async <T>(
       const fee = await estimateSocialWalletFee(walletClient, document);
       const estimatedTransaction = { ...transaction, ...fee };
 
-      const approvedDocument = await showTransactionApprovalModal(modifyDocument(document, fee.gasWanted, fee.gasFee));
+      const approvedDocument = await showTransactionApprovalModal(withGasFee(document, fee.gasWanted, fee.gasFee));
 
       if (!approvedDocument) {
         return {
@@ -384,7 +384,7 @@ export async function makeEstimateGasTransaction(
   const { gasFee, gasWanted } = makeGasInfoBy(gasUsed, gasPrice);
   if (!transactionService || !gasFee || !gasWanted) return null;
 
-  const modifedDocument = modifyDocument(document, gasWanted, gasFee);
+  const modifedDocument = withGasFee(document, gasWanted, gasFee);
 
   const { signed } = await transactionService.createTransaction(modifedDocument).catch(() => {
     return { signed: null };
@@ -396,7 +396,7 @@ export async function makeEstimateGasTransaction(
   return signed;
 }
 
-function modifyDocument(document: Document, gasWanted: number, gasFee: number): Document {
+export function withGasFee(document: Document, gasWanted: number, gasFee: number): Document {
   return {
     ...document,
     fee: {
@@ -425,7 +425,35 @@ export function documentToTx(document: Document): Tx {
   };
 }
 
-export function documentToDefaultTx(document: Document): Tx {
+/** A signer's key as a wallet reports it: an amino type URL and base64 bytes. */
+export interface SignerPublicKey {
+  typeUrl: string;
+  value: string;
+}
+
+/**
+ * The signer key an unsigned simulation carries.
+ *
+ * Simulation skips signature verification, but the ante handler still has to
+ * resolve a key for the signer, and it falls back to the one stored on the
+ * account. An account that has never signed has none, so leaving this empty
+ * fails such an account with `PubKey not found` before the verification bypass
+ * is ever reached.
+ *
+ * A key type is a byte array in amino, which encodes as one length-delimited
+ * field rather than the bare bytes.
+ */
+function encodeSignerPublicKey(publicKey?: SignerPublicKey): { type_url: string; value: Uint8Array } {
+  const empty = { type_url: "", value: new Uint8Array() };
+  if (!publicKey?.typeUrl || !publicKey.value) return empty;
+
+  const raw = Buffer.from(publicKey.value, "base64");
+  if (raw.length === 0 || raw.length > 0x7f) return empty;
+
+  return { type_url: publicKey.typeUrl, value: new Uint8Array([0x0a, raw.length, ...raw]) };
+}
+
+export function documentToDefaultTx(document: Document, publicKey?: SignerPublicKey): Tx {
   const messages: Any[] = document.msgs.map(encodeMessageValue);
   return {
     messages,
@@ -435,10 +463,7 @@ export function documentToDefaultTx(document: Document): Tx {
     }),
     signatures: [
       {
-        pub_key: {
-          type_url: "",
-          value: new Uint8Array(),
-        },
+        pub_key: encodeSignerPublicKey(publicKey),
         signature: new Uint8Array(),
         session_addr: "",
       },

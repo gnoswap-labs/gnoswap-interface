@@ -61,6 +61,7 @@ const TokenSwapContainer: React.FC = () => {
     priceImpactStatus,
     initializeSwapTokenInputAmount,
     isSameToken,
+    makeMaxAmountMessages,
   } = useSwapHandler();
   const additionalTokenATokens = useMemo(() => {
     const extension = getSwapExtensionForTokenSelector(swapValue?.tokenA?.path, swapValue?.tokenB?.path);
@@ -203,6 +204,7 @@ const TokenSwapContainer: React.FC = () => {
         swapTokenInfo={swapTokenInfo}
         isRefetching={isRefetching}
         isSameToken={isSameToken}
+        makeMaxAmountMessages={makeMaxAmountMessages}
       />
       {openedSlippage && (
         <SettingMenuModal
