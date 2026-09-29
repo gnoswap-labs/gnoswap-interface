@@ -36,23 +36,37 @@ export const QuickPoolInfoWrapper = styled.div`
       ${fonts.body7};
     }
   }
+  // APR can reach millions of percent, so the APR logos are pinned to a shared label column
+  // instead of following the rate width. The column fits the widest translated label.
   .pool-info {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 8px;
     > div {
-      height: 34px;
-      &:last-of-type {
+      display: contents;
+      > div {
+        height: 34px;
+      }
+      &:last-of-type > div {
         height: 33px;
       }
     }
     .label {
+      justify-self: start;
       color: ${({ theme }) => theme.color.text04};
     }
     .value {
+      justify-self: end;
       color: ${({ theme }) => theme.color.text02};
 
       .staking-apr-value,
       .fee-apr-value {
         ${mixins.flexbox("row", "center", "flex-end")};
       }
+    }
+    .value.apr {
+      justify-self: stretch;
+      justify-content: space-between;
     }
   }
   .unstake-info,
