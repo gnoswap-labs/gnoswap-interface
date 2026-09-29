@@ -193,10 +193,10 @@ export const ProposalContentWrapper = styled.div`
       ol {
         padding-left: 2em;
       }
-      ul li {
+      ul > li {
         list-style: disc;
       }
-      ol li {
+      ol > li {
         list-style: decimal;
       }
       li > ul,
