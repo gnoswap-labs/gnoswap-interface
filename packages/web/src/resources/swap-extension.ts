@@ -27,6 +27,9 @@ export interface SwapExtensionExecution {
 export interface SwapExtension {
   grc20WrappedTokenPath: string;
   grc20WrappedPackagePath: string;
+  wrappedTokenInfo: {
+    displaySymbol: string;
+  };
   originTokenPath: string;
   originTokenInfo: {
     name: string;
@@ -66,6 +69,7 @@ export function getSwapExtensionByWrappedPath(path?: string | null) {
 export function getSwapExtension(path?: string | null) {
   return getSwapExtensionByOriginPath(path) ?? getSwapExtensionByWrappedPath(path);
 }
+
 
 export function createOriginToken(extension: SwapExtension, wrappedToken: TokenModel): TokenModel {
   const { originTokenInfo } = extension;

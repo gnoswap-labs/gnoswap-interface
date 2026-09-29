@@ -1,5 +1,6 @@
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import { TokenModel } from "@models/token/token-model";
+import { swapExtensions } from "@resources/swap-extension";
 import {
   formatDisplayTokenName,
   formatDisplayTokenSymbol,
@@ -62,6 +63,13 @@ describe("format display token symbol", () => {
     expect(formatDisplayTokenSymbol("ibc/488D610A5FB7878660703092A35BC4E7D0C88E2EA71174337AA317A22C05177F")).toBe(
       "ibc/488D6...",
     );
+  });
+
+  it("uses extension metadata for a wrapped token display symbol", () => {
+    const extension = swapExtensions[0];
+
+    expect(formatDisplayTokenSymbol("BUBBLE", extension.grc20WrappedTokenPath)).toBe("wBUBBLE");
+    expect(formatDisplayTokenSymbol("BUBBLE", extension.originTokenPath)).toBe("BUBBLE");
   });
 });
 

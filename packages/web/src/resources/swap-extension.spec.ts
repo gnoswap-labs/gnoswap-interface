@@ -28,6 +28,7 @@ describe("swap-extension metadata", () => {
     expect(extension.grc20WrappedTokenPath).toBe(`${extension.grc20WrappedPackagePath}.BUBBLE`);
     expect(getSwapExtensionByOriginPath(extension.originTokenPath)).toBe(extension);
     expect(getSwapExtensionByWrappedPath(extension.grc20WrappedTokenPath)).toBe(extension);
+    expect(extension.wrappedTokenInfo.displaySymbol).toBe("wBUBBLE");
   });
 
   it("creates the origin token from extension metadata and wrapped-token runtime data", () => {

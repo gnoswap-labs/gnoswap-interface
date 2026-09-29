@@ -2,6 +2,9 @@
   {
     "grc20WrappedTokenPath": "gno.land/r/g1leu8d2vsplhehcfkjg50mwgdpxdkt8tztu95wr/wbubble.BUBBLE",
     "grc20WrappedPackagePath": "gno.land/r/g1leu8d2vsplhehcfkjg50mwgdpxdkt8tztu95wr/wbubble",
+    "wrappedTokenInfo": {
+      "displaySymbol": "wBUBBLE"
+    },
     "originTokenPath": "gno.land/r/g1leu8d2vsplhehcfkjg50mwgdpxdkt8tztu95wr/bubble",
     "originTokenInfo": {
       "name": "Bubble",

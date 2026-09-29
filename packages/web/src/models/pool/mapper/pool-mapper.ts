@@ -110,16 +110,16 @@ export class PoolMapper {
       hasStakedPosition: pool.hasStakedPosition,
       tokenA: {
         ...pool.tokenA,
-        displaySymbol: formatDisplayTokenSymbol(pool.tokenA.symbol),
+        displaySymbol: formatDisplayTokenSymbol(pool.tokenA.symbol, pool.tokenA.path),
       },
       tokenB: {
         ...pool.tokenB,
-        displaySymbol: formatDisplayTokenSymbol(pool.tokenB.symbol),
+        displaySymbol: formatDisplayTokenSymbol(pool.tokenB.symbol, pool.tokenB.path),
       },
       rewardTokens:
         pool.rewardTokens?.map(token => ({
           ...token,
-          displaySymbol: formatDisplayTokenSymbol(token.symbol),
+          displaySymbol: formatDisplayTokenSymbol(token.symbol, token.path),
         })) || [],
       apr: pool.totalApr,
       stakingApr,
@@ -141,16 +141,16 @@ export class PoolMapper {
       hasStakedPosition: pool.hasStakedPosition,
       tokenA: {
         ...pool.tokenA,
-        displaySymbol: formatDisplayTokenSymbol(pool.tokenA.symbol),
+        displaySymbol: formatDisplayTokenSymbol(pool.tokenA.symbol, pool.tokenA.path),
       },
       tokenB: {
         ...pool.tokenB,
-        displaySymbol: formatDisplayTokenSymbol(pool.tokenB.symbol),
+        displaySymbol: formatDisplayTokenSymbol(pool.tokenB.symbol, pool.tokenB.path),
       },
       rewardTokens:
         pool.rewardTokens?.map(token => ({
           ...token,
-          displaySymbol: formatDisplayTokenSymbol(token.symbol),
+          displaySymbol: formatDisplayTokenSymbol(token.symbol, token.path),
         })) || [],
       apr: pool.totalApr,
       stakingApr,
@@ -172,16 +172,16 @@ export class PoolMapper {
       hasStakedPosition: pool.hasStakedPosition,
       tokenA: {
         ...pool.tokenA,
-        displaySymbol: formatDisplayTokenSymbol(pool.tokenA.symbol),
+        displaySymbol: formatDisplayTokenSymbol(pool.tokenA.symbol, pool.tokenA.path),
       },
       tokenB: {
         ...pool.tokenB,
-        displaySymbol: formatDisplayTokenSymbol(pool.tokenB.symbol),
+        displaySymbol: formatDisplayTokenSymbol(pool.tokenB.symbol, pool.tokenB.path),
       },
       rewardTokens:
         pool.rewardTokens?.map(token => ({
           ...token,
-          displaySymbol: formatDisplayTokenSymbol(token.symbol),
+          displaySymbol: formatDisplayTokenSymbol(token.symbol, token.path),
         })) || [],
       apr: pool.totalApr ?? "",
       stakingApr,
