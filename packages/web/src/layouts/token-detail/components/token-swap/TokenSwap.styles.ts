@@ -79,9 +79,9 @@ export const wrapper = (theme: Theme) => css`
       background-color: ${theme.color.background20};
       border: 1px solid ${theme.color.border02};
       border-radius: 8px;
-      /* Highlighted once the field holds an amount, not merely because
-         something inside it took focus — MAX used to light it up on its own. */
-      &.has-amount {
+      /* Highlighted while this section's own field has focus. A focus-within
+         rule also fired for the MAX button inside it. */
+      &.is-focused {
         border: 1px solid ${theme.color.border15};
       }
     }

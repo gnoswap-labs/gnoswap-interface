@@ -61,7 +61,58 @@ const swapTokenInfo: SwapTokenInfo = {
 // On-chain USDC balance (raw 62667447936264477, 6 decimals) that exceeds Number.MAX_SAFE_INTEGER
 const LARGE_BALANCE = "62667447936.264477";
 
+const baseProps = {
+  swapTokenInfo,
+  swapSummaryInfo: null,
+  swapRouteInfos: [],
+  changeTokenA: () => null,
+  changeTokenAAmount: () => null,
+  changeTokenB: () => null,
+  changeTokenBAmount: () => null,
+  switchSwapDirection: () => null,
+  connectedWallet: true,
+  isLoading: false,
+  setSwapRateAction: () => null,
+  isSwitchNetwork: false,
+  priceImpactStatus: "NONE" as PriceImpactStatus,
+  isSameToken: false,
+  resetEstimatedLiquidity: (): void => {},
+  isRefetching: false,
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const renderContent = (props: any) =>
+  render(
+    <JotaiProvider>
+      <GnoswapThemeProvider>
+        <SwapCardContent {...props} />
+      </GnoswapThemeProvider>
+    </JotaiProvider>,
+  );
+
 describe("SwapCardContent Component", () => {
+  it("lights the input section only while its own field has focus", async () => {
+    const { container } = renderContent({
+      ...baseProps,
+      swapTokenInfo: { ...swapTokenInfo, tokenABalance: LARGE_BALANCE },
+    });
+
+    const section = container.querySelector(".first-section");
+    const [input] = Array.from(container.querySelectorAll("input.amount-text"));
+
+    expect(section).not.toHaveClass("is-focused");
+
+    fireEvent.focus(input);
+    expect(section).toHaveClass("is-focused");
+
+    fireEvent.blur(input);
+    expect(section).not.toHaveClass("is-focused");
+
+    // The MAX button sits inside the section; pressing it must not light it up.
+    fireEvent.click(screen.getByText("common:max"));
+    await waitFor(() => expect(section).not.toHaveClass("is-focused"));
+  });
+
   it("Max forwards the exact balance string without number rounding", async () => {
     const changeTokenAAmount = jest.fn();
     const mockProps = {

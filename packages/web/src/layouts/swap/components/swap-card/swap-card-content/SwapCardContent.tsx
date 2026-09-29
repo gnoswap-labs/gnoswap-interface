@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { cx } from "@emotion/css";
 
 import { isAmount } from "@common/utils/data-check-util";
@@ -65,6 +65,9 @@ const SwapCardContent: React.FC<ContentProps> = ({
   makeMaxAmountMessages,
 }) => {
   const { t } = useTranslation();
+  // The section highlights while its own field has focus. `:focus-within` used
+  // to do this, but it also fired for the MAX button sitting inside.
+  const [focusedField, setFocusedField] = useState<"A" | "B" | null>(null);
   const { getMaxAmount, loading: loadingMaxAmount, pendingBalance } = useMaxNativeAmount({
     token: swapTokenInfo.tokenA,
     amount: swapTokenInfo.tokenAAmount,
@@ -181,7 +184,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
 
   return (
     <ContentWrapper>
-      <div className={cx("first-section", { "has-amount": !!tokenAAmount })}>
+      <div className={cx("first-section", { "is-focused": focusedField === "A" })}>
         <div className="amount-container">
           <input
             id={tokenA?.priceID}
@@ -191,6 +194,8 @@ const SwapCardContent: React.FC<ContentProps> = ({
             // as a placeholder: the answer is that, less what it costs to send.
             value={pendingBalance ? "" : tokenAAmount}
             onChange={onChangeTokenAAmount}
+            onFocus={() => setFocusedField("A")}
+            onBlur={() => setFocusedField(null)}
             placeholder={pendingBalance ?? "0"}
             autoComplete={"off"}
             spellCheck={"false"}
@@ -226,15 +231,17 @@ const SwapCardContent: React.FC<ContentProps> = ({
           </div>
         </div>
       </div>
-      <div className={cx("second-section", { "has-amount": !!tokenBAmount })}>
+      <div className={cx("second-section", { "is-focused": focusedField === "B" })}>
         <div className="amount-container">
           <input
             id={tokenB?.priceID}
-            className={cx("amount-text", { "text-opacity": isLoadingTokenB })}
-            aria-busy={isLoadingTokenB}
-            value={tokenBAmount}
+            className={cx("amount-text", { "text-opacity": isLoadingTokenB, "amount-pending": !!pendingBalance })}
+            aria-busy={isLoadingTokenB || !!pendingBalance}
+            value={pendingBalance ? "" : tokenBAmount}
             onChange={onChangeTokenBAmount}
-            placeholder="0"
+            onFocus={() => setFocusedField("B")}
+            onBlur={() => setFocusedField(null)}
+            placeholder={pendingBalance ? tokenBAmount || "0" : "0"}
             autoComplete={"off"}
             spellCheck={"false"}
             inputMode={"decimal"}

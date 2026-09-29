@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { cx } from "@emotion/css";
 
@@ -85,6 +85,9 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   makeMaxAmountMessages,
 }) => {
   const { t } = useTranslation();
+  // The section highlights while its own field has focus. `:focus-within` used
+  // to do this, but it also fired for the MAX button sitting inside.
+  const [focusedField, setFocusedField] = useState<"A" | "B" | null>(null);
   const { getMaxAmount, loading: loadingMaxAmount, pendingBalance } = useMaxNativeAmount({
     token: dataTokenInfo.tokenA,
     amount: dataTokenInfo.tokenAAmount,
@@ -194,7 +197,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
         </div>
       </div>
       <div className="inputs">
-        <div className={cx("from", { "has-amount": !!dataTokenInfo.tokenAAmount })}>
+        <div className={cx("from", { "is-focused": focusedField === "A" })}>
           <div className="amount">
             <input
               className={cx("amount-text", {
@@ -206,6 +209,8 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               // as a placeholder: the answer is that, less what it costs to send.
               value={pendingBalance ? "" : dataTokenInfo.tokenAAmount}
               onChange={onChangeTokenAAmount}
+              onFocus={() => setFocusedField("A")}
+              onBlur={() => setFocusedField(null)}
               placeholder={pendingBalance ?? "0"}
               autoComplete={"off"}
               spellCheck={"false"}
@@ -236,14 +241,16 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
             </div>
           </div>
         </div>
-        <div className={cx("to", { "has-amount": !!dataTokenInfo.tokenBAmount })}>
+        <div className={cx("to", { "is-focused": focusedField === "B" })}>
           <div className="amount">
             <input
-              className={cx("amount-text", { "text-opacity": isLoadingTokenB })}
-              aria-busy={isLoadingTokenB}
-              value={dataTokenInfo.tokenBAmount}
+              className={cx("amount-text", { "text-opacity": isLoadingTokenB, "amount-pending": !!pendingBalance })}
+              aria-busy={isLoadingTokenB || !!pendingBalance}
+              value={pendingBalance ? "" : dataTokenInfo.tokenBAmount}
               onChange={onChangeTokenBAmount}
-              placeholder="0"
+              onFocus={() => setFocusedField("B")}
+              onBlur={() => setFocusedField(null)}
+              placeholder={pendingBalance ? dataTokenInfo.tokenBAmount || "0" : "0"}
               autoComplete={"off"}
               spellCheck={"false"}
               inputMode={"decimal"}

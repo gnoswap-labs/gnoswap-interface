@@ -21,9 +21,9 @@ export const ContentWrapper = styled.div`
     border-radius: 8px;
     border: 1px solid ${({ theme }) => theme.color.border02};
     background: ${({ theme }) => theme.color.background20};
-    /* Highlighted once the field holds an amount, not merely because something
-       inside it took focus — pressing MAX used to light it up on its own. */
-    &.has-amount {
+    /* Highlighted while this section's own field has focus. A focus-within
+       rule also fired for the MAX button inside it. */
+    &.is-focused {
       border: 1px solid ${({ theme }) => theme.color.border15};
     }
     ${media.mobile} {
@@ -143,9 +143,9 @@ export const ContentWrapper = styled.div`
     border-radius: 8px;
     background: ${({ theme }) => theme.color.background20};
     border: 1px solid ${({ theme }) => theme.color.border02};
-    /* Highlighted once the field holds an amount, not merely because something
-       inside it took focus — pressing MAX used to light it up on its own. */
-    &.has-amount {
+    /* Highlighted while this section's own field has focus. A focus-within
+       rule also fired for the MAX button inside it. */
+    &.is-focused {
       border: 1px solid ${({ theme }) => theme.color.border15};
     }
     ${media.mobile} {
