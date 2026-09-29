@@ -3,6 +3,7 @@ import React from "react";
 import { RefetchInterval } from "@common/values";
 import { LineGraphData } from "@components/common/line-graph/LineGraph";
 import { isNativeTokenByType, TokenModel } from "@models/token/token-model";
+import { getSwapExtensionByOriginPath } from "@resources/swap-extension";
 
 import useElementWidth from "@hooks/common/use-element-width";
 import { useGetTokenPrices } from "@query/token";
@@ -23,18 +24,21 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
   const containerWidth = useElementWidth(containerRef);
 
   const tokenData = React.useMemo(() => {
+    const isNative = isNativeTokenByType(token.type);
+    const pricePath = isNative ? token.wrappedPath : token.path;
     return {
       name: token.name,
       symbol: token.symbol,
       displaySymbol: token.displaySymbol,
       logoURI: token.logoURI,
-      path: isNativeTokenByType(token.type) ? token.wrappedPath : token.path,
-      isNative: isNativeTokenByType(token.type),
+      path: getSwapExtensionByOriginPath(token.path) ? token.path : pricePath,
+      pricePath,
+      isNative,
     };
   }, [token]);
 
-  const { data: { usd: rawCurrentPrice } = {} } = useGetTokenPrices(tokenData.path as string, {
-    enabled: !!tokenData.path,
+  const { data: { usd: rawCurrentPrice } = {} } = useGetTokenPrices(tokenData.pricePath as string, {
+    enabled: !!tokenData.pricePath,
   });
 
   const currentPrice = React.useMemo(() => {
@@ -46,9 +50,9 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
   }, [rawCurrentPrice]);
 
   const { data: { priceGradeType, last7d = [] } = {}, isLoading, isFetched } = useGetTokenPrices(
-    tokenData.path as string,
+    tokenData.pricePath as string,
     {
-      enabled: !!tokenData.path,
+      enabled: !!tokenData.pricePath,
       refetchInterval: RefetchInterval.Frequent,
     },
   );

@@ -16,6 +16,7 @@ import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
 import { TokenInfo } from "@models/token/token-info";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 import { TokenState } from "@states/index";
+import { getSwapExtensionByOriginPath } from "@resources/swap-extension";
 import { DEVICE_TYPE } from "@styles/media";
 
 import PriceWarning from "@components/common/price-warning/PriceWarning";
@@ -66,6 +67,11 @@ interface SearchMenuModalProps {
   popularTokens: Token[];
   recents: Token[];
 }
+const getTokenNameDisplay = (token: TokenInfo, maxLength: number) => {
+  const name = getSwapExtensionByOriginPath(token.path)?.originTokenInfo.name ?? token.name;
+  return name.length > maxLength ? `${name.slice(0, maxLength)}...` : name;
+};
+
 
 const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   onSearchMenuToggle,
@@ -83,7 +89,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
+  const { getGnoscanUrl, getRealmUrl, getTokenUrl } = useGnoscanUrl();
   const [, setRecentsData] = useAtom(TokenState.recents);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -167,11 +173,13 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
       e.stopPropagation();
       if (token.path === "ugnot") {
         window.open(getGnoscanUrl(), "_blank");
+      } else if (getSwapExtensionByOriginPath(token.path)) {
+        window.open(getRealmUrl(token.path), "_blank");
       } else {
         window.open(getTokenUrl(token.path), "_blank");
       }
     },
-    [getGnoscanUrl, getTokenUrl],
+    [getGnoscanUrl, getRealmUrl, getTokenUrl],
   );
 
   const length = useMemo(() => {
@@ -180,9 +188,10 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
 
   const getTokenPathDisplay = useCallback(
     (path: string, isNative: boolean) => {
-      return formatTokenPath(path, isNative);
+      const isOriginRealm = !!getSwapExtensionByOriginPath(path);
+      return formatTokenPath(path, isNative && !isOriginRealm);
     },
-    [length],
+    [],
   );
 
   return (
@@ -230,9 +239,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           >
                             <div>
                               <span className="token-name" ref={tokenNameRecentsRef.current[idx]}>
-                                {item.token.name.length > length
-                                  ? `${item.token.name.slice(0, length)}...`
-                                  : item.token.name}
+                                {getTokenNameDisplay(item.token, length)}
                               </span>
                               <div
                                 className="token-path"
@@ -309,9 +316,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                         >
                           <div>
                             <span className="token-name" ref={tokenNamePopularRef.current[idx]}>
-                              {item.token.name.length > length
-                                ? `${item.token.name.slice(0, length)}...`
-                                : item.token.name}
+                              {getTokenNameDisplay(item.token, length)}
                             </span>
                             <div
                               className="token-path"

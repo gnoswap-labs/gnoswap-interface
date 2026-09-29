@@ -29,6 +29,7 @@ describe("swap-extension metadata", () => {
     expect(getSwapExtensionByOriginPath(extension.originTokenPath)).toBe(extension);
     expect(getSwapExtensionByWrappedPath(extension.grc20WrappedTokenPath)).toBe(extension);
     expect(extension.wrappedTokenInfo.displaySymbol).toBe("wBUBBLE");
+    expect(extension.originTokenInfo.name).toBe("BUBBLE");
   });
 
   it("creates the origin token from extension metadata and wrapped-token runtime data", () => {
@@ -62,6 +63,21 @@ describe("swap-extension metadata", () => {
     const ordinaryToken = { ...wrappedToken, path: "gno.land/r/demo/foo.FOO" };
 
     expect(normalizeSwapExtensionSelection("A", originToken, ordinaryToken, [wrappedToken])).toMatchObject({
+      tokenA: originToken,
+      tokenB: wrappedToken,
+      isWrapPair: true,
+    });
+  });
+
+  it("pairs a wrapped extension with its origin when the opposite side is empty", () => {
+    const originToken = createOriginToken(extension, wrappedToken);
+
+    expect(normalizeSwapExtensionSelection("A", wrappedToken, null, [wrappedToken])).toMatchObject({
+      tokenA: wrappedToken,
+      tokenB: originToken,
+      isWrapPair: true,
+    });
+    expect(normalizeSwapExtensionSelection("B", wrappedToken, null, [wrappedToken])).toMatchObject({
       tokenA: originToken,
       tokenB: wrappedToken,
       isWrapPair: true,
