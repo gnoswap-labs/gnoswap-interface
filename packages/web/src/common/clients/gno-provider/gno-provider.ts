@@ -1,8 +1,8 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
-import { adaptAbciQueryResponse, extractSimulateFromResponse, parseABCI, Tx } from "@gnolang/tm2-js-client";
+import { adaptAbciQueryResponse, extractSimulateFromResponse, Tx } from "@gnolang/tm2-js-client";
 import { RpcClient, Tm2Client } from "@gnolang/tm2-rpc";
 
-import { parseTokenAmount } from "@utils/token-utils";
+import { GNOT_TOKEN } from "@common/values/token-constant";
 
 import { FallbackRpcClient, RPC_REQUEST_TIMEOUT_MS } from "./fallback-rpc-client";
 import { RpcEndpointSelector } from "./rpc-endpoint-selector";
@@ -93,32 +93,18 @@ export class GnoProvider extends GnoJSONRPCProvider {
     return BigInt(simulateResult.gas_used);
   }
 
-  public async getGasPrice(height?: number | undefined): Promise<number> {
-    const rpcResponse = await this.client
-      .abciQuery({
-        path: "auth/gasprice",
-        data: new Uint8Array(),
-        height: height ?? 0,
-        prove: false,
-      })
-      .catch(() => null);
-
-    const abciData = rpcResponse ? adaptAbciQueryResponse(rpcResponse).response.ResponseBase.Data : null;
-    // Make sure the response is initialized
-    if (!abciData) {
+  /**
+   * Returns the chain gas price as ugnot per gas unit, or 0 when the node has none.
+   *
+   * tm2-js-client 3.3.0 returns the price as { amount, denom, gas }, so this keeps
+   * the per gas number the fee calculation expects.
+   */
+  public async getUgnotPerGas(): Promise<number> {
+    const gasPrice = await this.getGasPrice().catch(() => null);
+    if (!gasPrice || gasPrice.denom !== (GNOT_TOKEN.denom || "ugnot")) {
       return 0;
     }
 
-    const gasPrice = parseABCI<{
-      gas: number;
-      price: string;
-    }>(abciData);
-
-    const priceAmount = parseTokenAmount(gasPrice.price);
-    if (gasPrice.gas === 0 || priceAmount === 0) {
-      return 0;
-    }
-
-    return priceAmount / gasPrice.gas;
+    return gasPrice.amount / gasPrice.gas;
   }
 }

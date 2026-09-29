@@ -211,14 +211,14 @@ const getSocialRpcProvider = () => {
 export const estimateSocialWalletFee = async (
   walletClient: Pick<WalletClient, "sign">,
   document: Document,
-  provider: Pick<GnoProvider, "estimateGas" | "getGasPrice"> | null = null,
+  provider: Pick<GnoProvider, "estimateGas" | "getUgnotPerGas"> | null = null,
 ): Promise<{ gasWanted: number; gasFee: number }> => {
   const rpcProvider = provider ?? (await getSocialRpcProvider());
   const { signed } = await walletClient.sign(
     rpcProvider as GnoProvider,
     modifyDocument(document, Number(document.fee.gas) || DEFAULT_GAS_WANTED, 1),
   );
-  const [gasUsed, gasPrice] = await Promise.all([rpcProvider.estimateGas(signed), rpcProvider.getGasPrice()]);
+  const [gasUsed, gasPrice] = await Promise.all([rpcProvider.estimateGas(signed), rpcProvider.getUgnotPerGas()]);
 
   const gasWanted = Math.ceil(Number(gasUsed) * GAS_WANTED_BUFFER_SAFE_MARGIN);
   const gasFee = BigNumber(gasWanted)
