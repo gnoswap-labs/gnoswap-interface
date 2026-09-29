@@ -62,17 +62,21 @@ const TokenSwapContainer: React.FC = () => {
     isSameToken,
   } = useSwapHandler();
   const additionalTokenATokens = useMemo(() => {
-    const extension = getSwapExtensionByWrappedPath(swapValue?.tokenB?.path);
+    const extension =
+      getSwapExtensionByWrappedPath(swapValue?.tokenB?.path) ??
+      getSwapExtensionByWrappedPath(swapValue?.tokenA?.path);
     if (!extension) return [];
     const originToken = swapExtensionTokens.find(token => token.path === extension.originTokenPath);
     return originToken ? [originToken] : [];
-  }, [swapExtensionTokens, swapValue?.tokenB?.path]);
+  }, [swapExtensionTokens, swapValue?.tokenA?.path, swapValue?.tokenB?.path]);
   const additionalTokenBTokens = useMemo(() => {
-    const extension = getSwapExtensionByWrappedPath(swapValue?.tokenA?.path);
+    const extension =
+      getSwapExtensionByWrappedPath(swapValue?.tokenA?.path) ??
+      getSwapExtensionByWrappedPath(swapValue?.tokenB?.path);
     if (!extension) return [];
     const originToken = swapExtensionTokens.find(token => token.path === extension.originTokenPath);
     return originToken ? [originToken] : [];
-  }, [swapExtensionTokens, swapValue?.tokenA?.path]);
+  }, [swapExtensionTokens, swapValue?.tokenA?.path, swapValue?.tokenB?.path]);
 
   useEffect(() => {
     if (!router.query.tokenA && !router.query.path) {

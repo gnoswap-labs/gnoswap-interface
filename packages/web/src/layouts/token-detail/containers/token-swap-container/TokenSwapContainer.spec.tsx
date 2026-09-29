@@ -145,7 +145,13 @@ it("keeps a lower origin selection in the lower slot after token-page navigation
     tokenB: null,
     type: "EXACT_IN",
   };
-  render(<TokenSwapContainer />);
+  const remounted = render(<TokenSwapContainer />);
+  remounted.rerender(<TokenSwapContainer />);
+  const remountedTokenSwapProps = mockTokenSwap.mock.calls.at(-1)?.[0] as {
+    additionalTokenATokens: TokenModel[];
+  };
+
+  expect(remountedTokenSwapProps.additionalTokenATokens).toContain(originBubble);
 
   expect(movePage).toHaveBeenCalledWith("TOKEN", {
     path: wrappedBubble.path,
