@@ -48,6 +48,12 @@ const originBubble = {
   path: "gno.land/r/g1leu8d2vsplhehcfkjg50mwgdpxdkt8tztu95wr/bubble",
   displaySymbol: "BUBBLE",
 } as TokenModel;
+const gns = {
+  ...wrapped,
+  path: "gno.land/r/gnoswap/gns",
+  symbol: "GNS",
+  displaySymbol: "GNS",
+} as TokenModel;
 
 beforeEach(() => {
   mockSwapExtensionTokens = [];
@@ -208,4 +214,74 @@ it("routes a selected origin token through its wrapper when the counter token ch
   });
   expect(swapValue.tokenA).toBe(wrappedBubble);
   expect(swapValue.tokenB).toBe(wrapped);
+});
+
+it("persists both sides when switching a regular pair on the token page", () => {
+  let routePath = gns.path;
+  let routeTokenAPath: string | null = wrappedBubble.path;
+  let swapValue = {
+    tokenA: wrappedBubble as TokenModel | null,
+    tokenB: gns as TokenModel | null,
+    type: "EXACT_IN",
+  };
+  const setSwapValue = jest.fn(updater => {
+    swapValue = typeof updater === "function" ? updater(swapValue) : updater;
+  });
+  const switchSwapDirection = jest.fn(() => {
+    swapValue = {
+      ...swapValue,
+      tokenA: swapValue.tokenB,
+      tokenB: swapValue.tokenA,
+    };
+  });
+  const movePage = jest.fn((_page, params: { path: string; tokenA?: string }) => {
+    routePath = params.path;
+    routeTokenAPath = params.tokenA ?? null;
+  });
+  const movePageWithTokenPath = jest.fn((_page, tokenPath: string) => {
+    routePath = tokenPath;
+    routeTokenAPath = null;
+  });
+  mockSwapExtensionTokens = [originBubble];
+  (useCustomRouter as jest.Mock).mockImplementation(() => ({
+    query: { path: routePath, tokenA: routeTokenAPath },
+    getTokenPath: () => routePath,
+    getParameter: () => routeTokenAPath,
+    movePage,
+    movePageWithTokenPath,
+  }));
+  (useGetToken as jest.Mock).mockImplementation((path: string) => ({
+    data: [gns, wrappedBubble].find(token => token.path === path),
+  }));
+  (useGnotToGnot as jest.Mock).mockReturnValue({
+    getGnotPath: (token: TokenModel) => token,
+  });
+  (useSwapHandler as jest.Mock).mockImplementation(() => ({
+    setSwapValue,
+    setTokenAAmount: jest.fn(),
+    initializeSwapTokenInputAmount: jest.fn(),
+    switchSwapDirection,
+    swapTokenInfo: { tokenA: swapValue.tokenA, tokenB: swapValue.tokenB },
+    swapValue,
+  }));
+  const { unmount } = render(<TokenSwapContainer />);
+  const tokenSwapProps = mockTokenSwap.mock.calls.at(-1)?.[0] as {
+    switchSwapDirection: () => void;
+  };
+
+  tokenSwapProps.switchSwapDirection();
+  unmount();
+  swapValue = {
+    tokenA: null,
+    tokenB: null,
+    type: "EXACT_IN",
+  };
+  render(<TokenSwapContainer />);
+
+  expect(movePage).toHaveBeenCalledWith("TOKEN", {
+    path: wrappedBubble.path,
+    tokenA: gns.path,
+  });
+  expect(swapValue.tokenA).toBe(gns);
+  expect(swapValue.tokenB).toBe(wrappedBubble);
 });

@@ -159,9 +159,15 @@ const TokenSwapContainer: React.FC = () => {
     if (
       !isSwapExtensionPair(swapValue?.tokenA, swapValue?.tokenB) &&
       swapValue?.tokenA?.path &&
+      swapValue?.tokenB?.path &&
       swapValue.tokenA.path !== path
     ) {
-      router.movePageWithTokenPath("TOKEN", swapValue.tokenA.path);
+      const tokenAExtension = getSwapExtensionByOriginPath(swapValue.tokenB.path);
+      const tokenBExtension = getSwapExtensionByOriginPath(swapValue.tokenA.path);
+      router.movePage("TOKEN", {
+        path: tokenBExtension?.grc20WrappedTokenPath ?? swapValue.tokenA.path,
+        tokenA: tokenAExtension?.grc20WrappedTokenPath ?? swapValue.tokenB.path,
+      });
     }
     switchSwapDirection();
   };
