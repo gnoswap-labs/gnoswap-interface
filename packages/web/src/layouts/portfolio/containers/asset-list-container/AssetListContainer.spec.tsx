@@ -232,7 +232,7 @@ describe("AssetListContainer unverified token filtering", () => {
   it("distinguishes failed balance or price queries from known zero", () => {
     const walletData = {
       displayBalanceMap,
-      balances: { [verifiedZero.priceID]: 0, [verifiedWithBalance.priceID]: 100 },
+      balances: { [GNOT_TOKEN_DEFAULT.priceID]: "0", [verifiedZero.priceID]: "0", [verifiedWithBalance.priceID]: 100 },
       tokenPrices: { [verifiedWithBalance.path]: { usd: "2" } },
       isFetched: true,
       updateBalances: jest.fn(),
@@ -245,8 +245,7 @@ describe("AssetListContainer unverified token filtering", () => {
           <AssetListContainer />
         </GnoswapThemeProvider>,
       );
-    const allPricesUnavailable = () =>
-      screen.getAllByTestId("asset-price").every(price => price.textContent === "-");
+    const allPricesUnavailable = () => screen.getAllByTestId("asset-price").every(price => price.textContent === "-");
     expect(allPricesUnavailable()).toBe(true);
 
     useTokenData.mockReturnValue({ ...walletData, hasBalanceData: true, hasTokenPriceData: false });
@@ -255,7 +254,9 @@ describe("AssetListContainer unverified token filtering", () => {
 
     useTokenData.mockReturnValue({ ...walletData, hasBalanceData: true, hasTokenPriceData: true });
     refresh();
-    expect(screen.getAllByTestId("asset-price").some(price => price.textContent === "$0")).toBe(true);
+    const rows = getVisibleRows();
+    expect(rows.some(row => row?.includes(GNOT_TOKEN_DEFAULT.name) && row.includes("$0"))).toBe(true);
+    expect(rows.some(row => row?.includes(verifiedZero.name) && row.includes("$0"))).toBe(true);
     expect(
       screen.getAllByTestId("asset-price").some(price => price.textContent !== "-" && price.textContent !== "$0"),
     ).toBe(true);

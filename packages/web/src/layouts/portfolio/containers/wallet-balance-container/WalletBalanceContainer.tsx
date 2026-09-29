@@ -194,7 +194,7 @@ const WalletBalanceContainer: React.FC = () => {
     !isEmptyObject(balancesPrice) &&
     Object.entries(balancesPrice).every(([key, value]) => {
       const path = key === "ugnot" ? WRAPPED_GNOT_PATH : key;
-      return value !== null && (value === 0 || tokenPrices[path]?.pricesBefore?.latestPrice != null);
+      return value != null && (BigNumber(value).isZero() || tokenPrices[path]?.pricesBefore?.latestPrice != null);
     });
 
   const availableBalance = useMemo(() => {

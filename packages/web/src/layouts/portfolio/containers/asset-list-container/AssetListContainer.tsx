@@ -159,7 +159,7 @@ const AssetListContainer: React.FC = () => {
             return "-";
           }
           if (!hasBalanceData || !hasTokenPriceData || tokenPrice == null || Number.isNaN(tokenPrice)) return "-";
-          if (tokenPrice === 0) return "$0";
+          if (BigNumber(tokenPrice).isZero()) return "$0";
           if (tokenPrices[checkGnotPath(item.path)]?.usd == null) return "-";
 
           return formatPrice(
@@ -219,7 +219,7 @@ const AssetListContainer: React.FC = () => {
             return "-";
           }
           if (!hasBalanceData || !hasTokenPriceData || tokenPrice == null || Number.isNaN(tokenPrice)) return "-";
-          if (tokenPrice === 0) return "$0";
+          if (BigNumber(tokenPrice).isZero()) return "$0";
           if (tokenPrices[checkGnotPath(item.path)]?.usd == null) return "-";
 
           return formatPrice(

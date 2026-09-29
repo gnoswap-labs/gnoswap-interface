@@ -329,7 +329,7 @@ export const useTokenData = (showUnverified = true) => {
     displayBalanceStringMap,
     balances,
     trendingTokens,
-    hasBalanceData: gnotBalance != null && grc20BalancesData?.data !== undefined,
+    hasBalanceData: gnotBalance != null && grc20BalancesData?.data != null,
     isLoadingBalanceData: isLoadingGrc20Balances,
     hasTokenPriceData: tokenPricesData !== undefined,
     recentlyAddedTokens,
