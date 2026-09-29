@@ -7,7 +7,7 @@ import { DEFAULT_GAS_FEE } from "@common/values";
 import { GasToken } from "@common/values/token-constant";
 import { useOptionalGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
-import { WalletState } from "@states/index";
+import * as WalletState from "@states/wallet";
 import { makeDisplayTokenAmountString, makeRawTokenAmount } from "@utils/token-utils";
 
 /**
