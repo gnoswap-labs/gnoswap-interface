@@ -28,22 +28,32 @@ const IncentivizeTokenDetailTooltipContent: React.FC<Props> = ({ poolStakings }:
   };
 
   const sortedStakings = React.useMemo(() => {
-    return [...poolStakings].sort((a, b) => {
-      if (a.incentiveType === "INTERNAL" && b.incentiveType !== "INTERNAL") return -1;
-      if (a.incentiveType !== "INTERNAL" && b.incentiveType === "INTERNAL") return 1;
+    const now = Date.now();
+    return poolStakings
+      .filter(staking => {
+        if (staking.incentiveType === "INTERNAL") return true;
+        return (
+          staking.isRefunded !== "Y" &&
+          Date.parse(staking.startTimestamp) <= now &&
+          now < Date.parse(staking.endTimestamp)
+        );
+      })
+      .sort((a, b) => {
+        if (a.incentiveType === "INTERNAL" && b.incentiveType !== "INTERNAL") return -1;
+        if (a.incentiveType !== "INTERNAL" && b.incentiveType === "INTERNAL") return 1;
 
-      return new Date(a.startTimestamp).getTime() - new Date(b.startTimestamp).getTime();
-    });
+        return new Date(a.startTimestamp).getTime() - new Date(b.startTimestamp).getTime();
+      });
   }, [poolStakings]);
 
   return (
-    <S.IncentivizeTokenDetailTooltipContent key={JSON.stringify(poolStakings)}>
+    <S.IncentivizeTokenDetailTooltipContent>
       {sortedStakings.map((item, index) => {
         const tokenData = getGnotPath(item.rewardToken);
 
         return (
-          <>
-            <S.TokenItem key={item.startTimestamp + item.incentivizedAmount}>
+          <React.Fragment key={item.incentiveId ?? item.startTimestamp + item.rewardToken.path}>
+            <S.TokenItem>
               <S.ItemHeader>
                 <MissingLogo symbol={tokenData.symbol} url={tokenData.logoURI} width={18} />
                 <S.ItemHeaderSymbol>{tokenData.displaySymbol}</S.ItemHeaderSymbol>
@@ -80,8 +90,8 @@ const IncentivizeTokenDetailTooltipContent: React.FC<Props> = ({ poolStakings }:
                 )}
               </S.DataGrid>
             </S.TokenItem>
-            {index !== poolStakings.length - 1 && <S.Divider key={`div-${index}`} />}
-          </>
+            {index !== sortedStakings.length - 1 && <S.Divider />}
+          </React.Fragment>
         );
       })}
     </S.IncentivizeTokenDetailTooltipContent>
