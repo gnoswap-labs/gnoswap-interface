@@ -40,16 +40,33 @@ import { AUTH_STORE_KEY } from "@hooks/common/use-auto-disconnect";
 import { documentToTx } from "@utils/transaction-utils";
 import { ContractMessage, Document } from "src/types/transaction-messages.types";
 
+/**
+ * Converts a document message into an SDK message.
+ *
+ * Fills send, max_deposit and args, which documents may leave unset and the SDK's
+ * bundled encoders cannot handle.
+ */
 const toSDKMessage = (message: ContractMessage): SDKTransactionMessage => {
   switch (message.type) {
     case "/bank.MsgSend":
       return makeMsgSendMessage(message.value as MsgSend);
-    case "/vm.m_addpkg":
-      return makeAddPackageMessage(message.value as MsgAddPackage);
-    case "/vm.m_run":
-      return makeMsgRunMessage(message.value as MsgRun);
-    default:
-      return makeMsgCallMessage(message.value as MsgCall);
+    case "/vm.m_addpkg": {
+      const value = message.value as MsgAddPackage;
+      return makeAddPackageMessage({ ...value, send: value.send ?? "", max_deposit: value.max_deposit ?? "" });
+    }
+    case "/vm.m_run": {
+      const value = message.value as MsgRun;
+      return makeMsgRunMessage({ ...value, send: value.send ?? "", max_deposit: value.max_deposit ?? "" });
+    }
+    default: {
+      const value = message.value as MsgCall;
+      return makeMsgCallMessage({
+        ...value,
+        send: value.send ?? "",
+        max_deposit: value.max_deposit ?? "",
+        args: value.args ?? [],
+      });
+    }
   }
 };
 
@@ -60,7 +77,7 @@ const toSDKMessage = (message: ContractMessage): SDKTransactionMessage => {
  * protobufjs `Long` rather than the `bigint` used from v3 on. Going through the
  * SDK's own builder keeps the fee in the shape its encoder expects.
  */
-const documentToSDKTx = (document: Document) => {
+export const documentToSDKTx = (document: Document) => {
   const [gasFee] = document.fee.amount;
 
   return TransactionBuilder.create()

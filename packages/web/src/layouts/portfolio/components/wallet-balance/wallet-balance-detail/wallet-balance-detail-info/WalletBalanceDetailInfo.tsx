@@ -53,6 +53,7 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
   const isClaim = className === "claimable-rewards" && width > 968;
 
   const displayValue = useMemo(() => {
+    if (value === "-") return "-";
     if (!value || BigNumber(value).isZero()) {
       return "$0";
     }

@@ -53,18 +53,18 @@ export const useGetPositionsByAddress = (
         return { positions: [], totalCount: 0 };
       }
 
-      return await positionRepository
-        .getPositionsByAddress(address, {
+      try {
+        return await positionRepository.getPositionsByAddress(address, {
           poolPath: poolPath ? encodeURIComponent(poolPath) : undefined,
           page: props?.page,
           limit: props?.limit,
           withClosed: props?.withClosed,
           withAvailableStake: props?.withAvailableStake,
-        })
-        .catch(e => {
-          console.error(e);
-          return { positions: [], totalCount: 0 };
         });
+      } catch (error) {
+        console.error("Failed to fetch positions:", error);
+        throw error;
+      }
     },
     {
       keepPreviousData: true,

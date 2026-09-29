@@ -14,7 +14,7 @@ export interface EarnMyPositionsProps {
   addressName?: string;
   isOtherPosition: boolean;
   visiblePositions: boolean;
-  positionLength: number;
+  positionLength?: number;
   connected: boolean;
   fetched: boolean;
   loading: boolean;

@@ -69,7 +69,9 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   });
   const {
     isError,
+    hasPositionData,
     isFetchedPosition,
+    isFetchingWithoutData,
     loading: isLoadingPosition,
     positions,
     totalPositionCount,
@@ -326,11 +328,15 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       addressName={addressName}
       isOtherPosition={!!isOtherPosition}
       visiblePositions={visiblePositions}
-      positionLength={totalPositionCount}
+      positionLength={hasPositionData ? totalPositionCount : undefined}
       connected={connected}
       availableStake={true}
       connect={connect}
-      loading={isLoadingPool || (connected ? isLoadingPosition || !isFetchedPosition : false)}
+      loading={
+        isLoadingPool ||
+        ((isOtherPosition || connected) &&
+          (isLoadingPosition || isFetchingWithoutData || (!isFetchedPosition && !isError)))
+      }
       loadingPositionCardList={loadingPositionCardList}
       fetched={isFetchedPools && isFetchedPosition}
       isError={isError}

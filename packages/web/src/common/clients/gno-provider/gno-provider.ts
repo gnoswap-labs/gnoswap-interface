@@ -1,10 +1,5 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
-import {
-  adaptAbciQueryResponse,
-  extractSimulateFromResponse,
-  parseABCI,
-  Tx,
-} from "@gnolang/tm2-js-client";
+import { adaptAbciQueryResponse, extractSimulateFromResponse, parseABCI, Tx } from "@gnolang/tm2-js-client";
 import { RpcClient, Tm2Client } from "@gnolang/tm2-rpc";
 
 import { parseTokenAmount } from "@utils/token-utils";
@@ -83,6 +78,18 @@ export class GnoProvider extends GnoJSONRPCProvider {
     return new GnoProvider(tm2Client);
   }
 
+  /**
+   * Returns the gas the tx uses when simulated.
+   *
+   * Replaces the tm2-js-client 3.0.0 version, which base64 encodes the tx on top of the
+   * RPC client's own encoding, so the node fails with "unable to decode tx".
+   */
+  public async estimateGas(tx: Tx): Promise<bigint> {
+    const { gasUsed } = await this.simulateTx(tx);
+
+    return BigInt(gasUsed);
+  }
+
   public async getGasPrice(height?: number | undefined): Promise<number> {
     const rpcResponse = await this.client
       .abciQuery({
@@ -115,8 +122,8 @@ export class GnoProvider extends GnoJSONRPCProvider {
   /**
    * Dry-runs the transaction and reports both costs it would incur.
    *
-   * Unlike {@link estimateGas}, which discards everything but the gas, this
-   * keeps the emitted events so the storage deposit is visible too. The node
+   * The gas alone is what {@link estimateGas} answers with; this keeps the
+   * emitted events as well, so the storage deposit is visible too. The node
    * runs the ante handler and the messages against a throwaway cache, so the
    * signer must be able to afford the offered fee, the sent coins, and the
    * deposit for the call to succeed.
@@ -127,8 +134,7 @@ export class GnoProvider extends GnoJSONRPCProvider {
         await this.client.abciQuery({
           // The encoded transaction goes in as raw bytes: the RPC layer
           // base64-encodes `data` on the way out, and the node rejects a
-          // second layer of it with TxDecodeError. tm2-js-client's own
-          // estimateGas passes the base64 text here and fails for that reason.
+          // second layer of it with TxDecodeError.
           path: ".app/simulate",
           data: Tx.encode(tx).finish(),
           height: 0,
@@ -139,7 +145,7 @@ export class GnoProvider extends GnoJSONRPCProvider {
 
     const errorType = result.response_base?.error?.type_url;
     if (errorType) {
-      throw new Error(`Transaction simulation failed: ${errorType}`);
+      throw new Error(`Failed to simulate the transaction: ${errorType}`);
     }
 
     return {

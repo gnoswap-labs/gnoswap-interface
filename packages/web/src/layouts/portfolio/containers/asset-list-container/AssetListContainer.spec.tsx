@@ -77,9 +77,9 @@ jest.mock("@hooks/common/use-prevent-scroll", () => ({
 
 jest.mock("@layouts/portfolio/components/asset-list/asset-list-table/asset-info/AssetInfo", () => ({
   __esModule: true,
-  default: ({ asset }: { asset: { name: string; symbol: string } }) => (
+  default: ({ asset }: { asset: { name: string; symbol: string; price: string } }) => (
     <div data-testid="asset-row">
-      {asset.name} ({asset.symbol})
+      {asset.name} ({asset.symbol}) <span data-testid="asset-price">{asset.price}</span>
     </div>
   ),
 }));
@@ -164,6 +164,8 @@ const setBalanceMap = () => {
       displayBalanceMap,
       balances: { ugnot: 1 },
       tokenPrices: {},
+      hasBalanceData: true,
+      hasTokenPriceData: true,
       isFetched: true,
       updateBalances: jest.fn(),
     };
@@ -226,6 +228,38 @@ describe("AssetListContainer unverified token filtering", () => {
       const shouldShow = visible.includes(name);
       expect(rows.some(row => row?.includes(name))).toBe(shouldShow);
     }
+  });
+  it("distinguishes failed balance or price queries from known zero", () => {
+    const walletData = {
+      displayBalanceMap,
+      balances: { [GNOT_TOKEN_DEFAULT.priceID]: "0", [verifiedZero.priceID]: "0", [verifiedWithBalance.priceID]: 100 },
+      tokenPrices: { [verifiedWithBalance.path]: { usd: "2" } },
+      isFetched: true,
+      updateBalances: jest.fn(),
+    };
+    useTokenData.mockReturnValue({ ...walletData, hasBalanceData: false, hasTokenPriceData: true });
+    const { rerender } = renderContainer();
+    const refresh = () =>
+      rerender(
+        <GnoswapThemeProvider>
+          <AssetListContainer />
+        </GnoswapThemeProvider>,
+      );
+    const allPricesUnavailable = () => screen.getAllByTestId("asset-price").every(price => price.textContent === "-");
+    expect(allPricesUnavailable()).toBe(true);
+
+    useTokenData.mockReturnValue({ ...walletData, hasBalanceData: true, hasTokenPriceData: false });
+    refresh();
+    expect(allPricesUnavailable()).toBe(true);
+
+    useTokenData.mockReturnValue({ ...walletData, hasBalanceData: true, hasTokenPriceData: true });
+    refresh();
+    const rows = getVisibleRows();
+    expect(rows.some(row => row?.includes(GNOT_TOKEN_DEFAULT.name) && row.includes("$0"))).toBe(true);
+    expect(rows.some(row => row?.includes(verifiedZero.name) && row.includes("$0"))).toBe(true);
+    expect(
+      screen.getAllByTestId("asset-price").some(price => price.textContent !== "-" && price.textContent !== "$0"),
+    ).toBe(true);
   });
 
   it("keeps type and search filters working with the toggle on", () => {
