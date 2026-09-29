@@ -2,7 +2,7 @@ import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
 import { constructRequestError, extractSimulateFromResponse, Tm2Client, Tx } from "@gnolang/tm2-js-client";
 import type { RpcClient } from "@gnolang/tm2-rpc";
 
-import { GNOT_TOKEN } from "@common/values/token-constant";
+import { GNOT_UNIT_DENOM } from "@common/values/token-constant";
 
 import { FallbackRpcClient, RPC_REQUEST_TIMEOUT_MS } from "./fallback-rpc-client";
 import { RpcEndpointSelector } from "./rpc-endpoint-selector";
@@ -105,7 +105,7 @@ export class GnoProvider extends GnoJSONRPCProvider {
       console.warn("Failed to fetch the gas price, falling back to the minimum", error);
       return null;
     });
-    if (!gasPrice || gasPrice.denom !== (GNOT_TOKEN.denom || "ugnot")) {
+    if (!gasPrice || gasPrice.denom !== GNOT_UNIT_DENOM) {
       return 0;
     }
 
