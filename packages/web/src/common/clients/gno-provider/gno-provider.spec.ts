@@ -9,13 +9,12 @@ describe("GnoProvider.getUgnotPerGas", () => {
     await expect(provider.getUgnotPerGas()).resolves.toBe(0.001);
   });
 
-  it("returns 0 when the node has no price, uses another denom, or fails", async () => {
-    for (const getGasPrice of [
-      jest.fn().mockResolvedValue(null),
-      jest.fn().mockResolvedValue({ amount: 1, denom: "uatom", gas: 1000 }),
-      jest.fn().mockRejectedValue(new Error("rpc down")),
-    ]) {
-      await expect(providerWithGasPrice(getGasPrice).getUgnotPerGas()).resolves.toBe(0);
-    }
+  it.each([
+    ["the node has no gas price", () => jest.fn().mockResolvedValue(null)],
+    ["the price is in another denom", () => jest.fn().mockResolvedValue({ amount: 1, denom: "uatom", gas: 1000 })],
+    ["the query fails", () => jest.fn().mockRejectedValue(new Error("invalid gas price response"))],
+  ])("returns 0 when %s", async (_, getGasPrice) => {
+    jest.spyOn(console, "warn").mockImplementation(() => undefined);
+    await expect(providerWithGasPrice(getGasPrice()).getUgnotPerGas()).resolves.toBe(0);
   });
 });
