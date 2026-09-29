@@ -8,6 +8,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { CardListTokenInfo, UpDownType } from "@models/common/card-list-item-info";
 import { isNativeTokenByType, TokenModel } from "@models/token/token-model";
+import { TokenPriceModel } from "@models/token/token-price-model";
 import { useGetAllTokenPrices, useGetGrc20Balances, useGetTokens } from "@query/token";
 import { TokenState } from "@states/index";
 import { checkPositivePrice } from "@utils/common";
@@ -16,7 +17,7 @@ import { makeDisplayTokenAmount, makeDisplayTokenAmountString } from "@utils/tok
 import { isEmptyObject } from "@utils/validation-utils";
 
 import { useGnotToGnot } from "./use-gnot-wugnot";
-const EMPTY_TOKEN_PRICES = {};
+const EMPTY_TOKEN_PRICES: Record<string, TokenPriceModel> = {};
 
 export const useTokenData = (showUnverified = true) => {
   const {
