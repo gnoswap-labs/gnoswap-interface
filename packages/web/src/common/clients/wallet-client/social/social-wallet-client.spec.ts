@@ -5,7 +5,7 @@ import { Document } from "src/types/transaction-messages.types";
 
 import { documentToSDKTx } from "./social-wallet-client";
 
-// Mirrors what transformMessages in transaction-utils produces: no max_deposit, args may be null.
+/** Shaped like a document from transformMessages: no max_deposit, and args may be null. */
 const document: Document = {
   chain_id: "dev.gnoswap",
   account_number: "1",

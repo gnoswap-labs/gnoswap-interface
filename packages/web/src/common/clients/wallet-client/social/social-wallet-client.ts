@@ -40,8 +40,12 @@ import { AUTH_STORE_KEY } from "@hooks/common/use-auto-disconnect";
 import { documentToTx } from "@utils/transaction-utils";
 import { ContractMessage, Document } from "src/types/transaction-messages.types";
 
-// The SDK's bundled encoders write every field as is, so a null args or a missing
-// send/max_deposit throws. Documents leave those unset, see transformMessages.
+/**
+ * Converts a document message into an SDK message.
+ *
+ * Fills send, max_deposit and args, which documents may leave unset and the SDK's
+ * bundled encoders cannot handle.
+ */
 const toSDKMessage = (message: ContractMessage): SDKTransactionMessage => {
   switch (message.type) {
     case "/bank.MsgSend":

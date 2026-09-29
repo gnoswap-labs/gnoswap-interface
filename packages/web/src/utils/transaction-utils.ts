@@ -176,7 +176,7 @@ const generateTransactionDataDocument = async (
 
 let socialRpcProvider: Promise<GnoProvider> | null = null;
 
-// The social wallet is always bound to the default chain, see social/config.ts.
+/** Provider for the default chain, the only chain the social wallet uses (see social/config.ts). */
 const getSocialRpcProvider = () => {
   socialRpcProvider ??= GnoProvider.create(DEFAULT_CHAIN_RPC_URL, {
     fallbackRpcUrl: DEFAULT_CHAIN_FALLBACK_RPC_URL,
@@ -188,12 +188,11 @@ const getSocialRpcProvider = () => {
 };
 
 /**
- * Simulates the document and prices the resulting gasWanted at the chain's current gas price.
+ * Estimates gasWanted and gasFee for a social wallet tx at the chain's current gas price.
  *
- * The simulated tx is signed because the node verifies signatures on simulate for
- * MsgRun and MsgAddPackage, and needs the pubkey of an account that has never sent a tx.
- * Its fee is 1ugnot, far below the chain minimum, so any node's mempool rejects the
- * signed tx if someone broadcasts it. Simulation does not check the gas price.
+ * The simulated tx is signed because the node verifies signatures on simulate for MsgRun
+ * and MsgAddPackage, and needs the pubkey of an account that has never sent a tx.
+ * Its 1ugnot fee does not affect simulation but keeps any mempool from accepting it.
  */
 export const estimateSocialWalletFee = async (
   walletClient: Pick<WalletClient, "sign">,
@@ -242,8 +241,7 @@ export const withTransactionGuard = async <T>(
     if (walletClient.getWalletType() === "SOCIAL_WALLET") {
       const document = await generateTransactionDataDocument(walletClient, transaction);
 
-      // Unlike the Adena extension, the social wallet broadcasts the fee as given,
-      // so it has to cover gasWanted at the chain's gas price or the node rejects it.
+      // The social wallet broadcasts the fee as given, unlike the Adena extension.
       const fee = await estimateSocialWalletFee(walletClient, document).catch(error => {
         console.warn("Failed to estimate the transaction fee:", error);
         return null;

@@ -71,9 +71,10 @@ export class GnoProvider extends GnoJSONRPCProvider {
   }
 
   /**
-   * tm2-js-client v3 base64-encodes the tx before handing it to the RPC client,
-   * which encodes it again, so the node rejects it with "unable to decode tx".
-   * The raw bytes are sent here instead.
+   * Returns the gas the tx uses when simulated.
+   *
+   * Replaces the tm2-js-client 3.0.0 version, which base64 encodes the tx on top of the
+   * RPC client's own encoding, so the node fails with "unable to decode tx".
    */
   public async estimateGas(tx: Tx): Promise<bigint> {
     const rpcResponse = await this.client.abciQuery({
