@@ -130,7 +130,7 @@ describe("estimateSocialWalletFee", () => {
   it("simulates a tx signed with a fee the mempool rejects", async () => {
     const provider = {
       estimateGas: jest.fn().mockResolvedValue(BigInt(1_000_000)),
-      getGasPrice: jest.fn().mockResolvedValue(0.001),
+      getUgnotPerGas: jest.fn().mockResolvedValue(0.001),
     };
 
     await estimateSocialWalletFee(walletClient, document, provider);
@@ -142,7 +142,7 @@ describe("estimateSocialWalletFee", () => {
   it("covers the buffered gasWanted at the chain gas price", async () => {
     const provider = {
       estimateGas: jest.fn().mockResolvedValue(BigInt(1_000_001)),
-      getGasPrice: jest.fn().mockResolvedValue(0.001),
+      getUgnotPerGas: jest.fn().mockResolvedValue(0.001),
     };
 
     const { gasWanted, gasFee } = await estimateSocialWalletFee(walletClient, document, provider);
@@ -155,7 +155,7 @@ describe("estimateSocialWalletFee", () => {
   it("falls back to the minimum gas price when the chain reports none", async () => {
     const provider = {
       estimateGas: jest.fn().mockResolvedValue(BigInt(1_000_000)),
-      getGasPrice: jest.fn().mockResolvedValue(0),
+      getUgnotPerGas: jest.fn().mockResolvedValue(0),
     };
 
     expect(await estimateSocialWalletFee(walletClient, document, provider)).toEqual({

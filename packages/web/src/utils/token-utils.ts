@@ -1,5 +1,5 @@
 import { STATIC_TEXT } from "@common/values";
-import { GNOT_TOKEN } from "@common/values/token-constant";
+import { GNOT_TOKEN, GNOT_UNIT_DENOM } from "@common/values/token-constant";
 import { RewardType } from "@constants/option.constant";
 import { RewardTokenModel } from "@models/position/reward-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
@@ -282,7 +282,7 @@ export const isNativeTokenPath = (path: string): boolean => {
   return path === GNOT_TOKEN.path;
 };
 
-export function parseTokenAmount(tokenAmount: string, denomination = GNOT_TOKEN.denom || "ugnot"): number {
+export function parseTokenAmount(tokenAmount: string, denomination: string = GNOT_UNIT_DENOM): number {
   const pattern = new RegExp(`^(\\d+)${denomination}$`);
   const match = tokenAmount.match(pattern);
 

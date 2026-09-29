@@ -1,8 +1,8 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
-import { adaptAbciQueryResponse, extractSimulateFromResponse, parseABCI, Tx } from "@gnolang/tm2-js-client";
-import { RpcClient, Tm2Client } from "@gnolang/tm2-rpc";
+import { constructRequestError, extractSimulateFromResponse, Tm2Client, Tx } from "@gnolang/tm2-js-client";
+import type { RpcClient } from "@gnolang/tm2-rpc";
 
-import { parseTokenAmount } from "@utils/token-utils";
+import { GNOT_UNIT_DENOM } from "@common/values/token-constant";
 
 import { FallbackRpcClient, RPC_REQUEST_TIMEOUT_MS } from "./fallback-rpc-client";
 import { RpcEndpointSelector } from "./rpc-endpoint-selector";
@@ -73,52 +73,43 @@ export class GnoProvider extends GnoJSONRPCProvider {
   /**
    * Returns the gas the tx uses when simulated.
    *
-   * Replaces the tm2-js-client 3.0.0 version, which base64 encodes the tx on top of the
-   * RPC client's own encoding, so the node fails with "unable to decode tx".
+   * Replaces the tm2-js-client version (still as of 3.3.0), which base64 encodes the tx on
+   * top of the RPC client's own encoding, so the node fails with "unable to decode tx".
    */
   public async estimateGas(tx: Tx): Promise<bigint> {
-    const rpcResponse = await this.client.abciQuery({
+    const abciResponse = await this.abciQuery({
       path: ".app/simulate",
       data: Tx.encode(tx).finish(),
       height: 0,
       prove: false,
     });
 
-    const simulateResult = extractSimulateFromResponse(adaptAbciQueryResponse(rpcResponse));
+    const simulateResult = extractSimulateFromResponse(abciResponse);
     const errorType = simulateResult.response_base?.error?.type_url;
     if (errorType) {
-      throw new Error(`Failed to simulate the transaction: ${errorType}`);
+      throw constructRequestError(errorType, simulateResult.response_base?.log);
     }
 
     return BigInt(simulateResult.gas_used);
   }
 
-  public async getGasPrice(height?: number | undefined): Promise<number> {
-    const rpcResponse = await this.client
-      .abciQuery({
-        path: "auth/gasprice",
-        data: new Uint8Array(),
-        height: height ?? 0,
-        prove: false,
-      })
-      .catch(() => null);
-
-    const abciData = rpcResponse ? adaptAbciQueryResponse(rpcResponse).response.ResponseBase.Data : null;
-    // Make sure the response is initialized
-    if (!abciData) {
+  /**
+   * Returns the chain gas price as ugnot per gas unit, or 0 when the node has none.
+   *
+   * tm2-js-client 3.3.0 returns the price as { amount, denom, gas }, so this keeps
+   * the per gas number the fee calculation expects.
+   */
+  public async getUgnotPerGas(): Promise<number> {
+    const gasPrice = await this.getGasPrice().catch(error => {
+      // Also catches "invalid gas price response", so a change in the node's format shows up here.
+      console.warn("Failed to fetch the gas price, falling back to the minimum", error);
+      return null;
+    });
+    // tm2-js-client 3.3.0 already returns null for zero gas, the check keeps the division finite regardless.
+    if (!gasPrice || gasPrice.denom !== GNOT_UNIT_DENOM || gasPrice.gas === 0) {
       return 0;
     }
 
-    const gasPrice = parseABCI<{
-      gas: number;
-      price: string;
-    }>(abciData);
-
-    const priceAmount = parseTokenAmount(gasPrice.price);
-    if (gasPrice.gas === 0 || priceAmount === 0) {
-      return 0;
-    }
-
-    return priceAmount / gasPrice.gas;
+    return gasPrice.amount / gasPrice.gas;
   }
 }
