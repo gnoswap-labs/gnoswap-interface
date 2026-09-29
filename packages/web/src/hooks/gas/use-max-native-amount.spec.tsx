@@ -106,6 +106,31 @@ describe("useMaxNativeAmount", () => {
     expect(estimateMaxNativeAmount).not.toHaveBeenCalled();
   });
 
+  it("gives the field back at once when it moves on, without waiting the estimate out", async () => {
+    const release = deferredEstimate();
+
+    const { result, rerender } = renderHook(props => useMaxNativeAmount(props), {
+      initialProps: { token: GNOT, amount: "" },
+    });
+
+    let pending: Promise<string | null> = Promise.resolve(null);
+    await act(async () => {
+      pending = result.current.getMaxAmount({ balance: "10", makeMessages: jest.fn().mockReturnValue([{}]) });
+    });
+    expect(result.current.pendingBalance).toBe("10");
+
+    // The estimate is still out; the field is now another token's.
+    rerender({ token: OTHER_GNOT, amount: "" });
+
+    expect(result.current.pendingBalance).toBeNull();
+    expect(result.current.loading).toBe(false);
+
+    await act(async () => {
+      release();
+      await pending;
+    });
+  });
+
   it("withholds an answer once the field holds another token", async () => {
     const release = deferredEstimate();
 

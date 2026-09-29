@@ -37,6 +37,18 @@ export interface MaxNativeAmountSubject {
 const sameDependencies = (a: readonly unknown[] = [], b: readonly unknown[] = []) =>
   a.length === b.length && a.every((value, index) => Object.is(value, b[index]));
 
+/** Everything an answer is priced for: the field it belongs to and who signs. */
+interface AskedFor {
+  subject: MaxNativeAmountSubject;
+  signer: string | null;
+}
+
+const sameAskedFor = (a: AskedFor, b: AskedFor) =>
+  a.signer === b.signer &&
+  a.subject.token?.path === b.subject.token?.path &&
+  a.subject.amount === b.subject.amount &&
+  sameDependencies(a.subject.dependsOn, b.subject.dependsOn);
+
 export interface MaxNativeAmountParams {
   /** Wallet balance as shown in the UI, so with a decimal point and optional grouping. */
   balance: string;
@@ -63,19 +75,28 @@ export interface MaxNativeAmountParams {
  * While an estimate is out, `pendingBalance` holds the whole balance for the
  * field to show as a placeholder — the answer is the balance less a reserve, so
  * this is what the user is about to get, rounded down by however much it costs.
+ * It is worked out as the field renders rather than cleared when the request
+ * settles, so a subject that moves on is not left waiting on an answer that
+ * will be thrown away when it arrives.
  */
 export const useMaxNativeAmount = (subject: MaxNativeAmountSubject) => {
   const transactionGasService = useOptionalGnoswapContext()?.transactionGasService ?? null;
-  const [pendingBalance, setPendingBalance] = useState<string | null>(null);
+  const [pending, setPending] = useState<{ balance: string; askedFor: AskedFor } | null>(null);
 
   // Every action is built for, and simulated as, the connected account. Tracked
   // here rather than left to each caller, since none of them can afford to
   // forget it and the answer is meaningless for a different signer.
   const signer = useAtomValue(WalletState.account)?.address ?? null;
 
-  const current = useRef({ subject, signer });
-  current.current = { subject, signer };
+  const askingFor: AskedFor = { subject, signer };
+  const current = useRef(askingFor);
+  current.current = askingFor;
   const pressCount = useRef(0);
+
+  // Only stands in for the request still on screen. A field that has moved on
+  // gets its placeholder and its button back at once, without waiting out an
+  // estimate whose answer no longer applies to it.
+  const pendingBalance = pending && sameAskedFor(pending.askedFor, askingFor) ? pending.balance : null;
 
   const getMaxAmount = useCallback(
     async ({ balance, makeMessages }: MaxNativeAmountParams): Promise<string | null> => {
@@ -84,12 +105,7 @@ export const useMaxNativeAmount = (subject: MaxNativeAmountSubject) => {
       const { token } = asked.subject;
 
       const isLatest = () => press === pressCount.current;
-      const stillWanted = () =>
-        isLatest() &&
-        current.current.signer === asked.signer &&
-        current.current.subject.token?.path === asked.subject.token?.path &&
-        current.current.subject.amount === asked.subject.amount &&
-        sameDependencies(current.current.subject.dependsOn, asked.subject.dependsOn);
+      const stillWanted = () => isLatest() && sameAskedFor(asked, current.current);
 
       const displayBalance = BigNumber(balance.replace(/,/g, ""));
       if (!token || displayBalance.isNaN()) return "0";
@@ -106,7 +122,7 @@ export const useMaxNativeAmount = (subject: MaxNativeAmountSubject) => {
         return makeDisplayTokenAmountString(token, BigNumber.maximum(spendable, 0).toFixed(0)) ?? "0";
       }
 
-      setPendingBalance(displayBalance.toFixed());
+      setPending({ balance: displayBalance.toFixed(), askedFor: asked });
 
       try {
         const { amount } = await transactionGasService.estimateMaxNativeAmount({
@@ -120,7 +136,7 @@ export const useMaxNativeAmount = (subject: MaxNativeAmountSubject) => {
       } finally {
         // An earlier press finishing must not re-enable the button while a
         // later one is still out.
-        if (isLatest()) setPendingBalance(null);
+        if (isLatest()) setPending(null);
       }
     },
     [transactionGasService],
