@@ -1000,8 +1000,8 @@ export const useSwapHandler = () => {
     const swapAmount = isExactIn ? tokenAAmount : tokenBAmount;
 
     const messageData = {
-      tokenASymbol: tokenA.symbol,
-      tokenBSymbol: tokenB.symbol,
+      tokenASymbol: tokenA.displaySymbol,
+      tokenBSymbol: tokenB.displaySymbol,
       tokenAAmount: swapAmount,
       tokenBAmount: swapAmount,
     };
