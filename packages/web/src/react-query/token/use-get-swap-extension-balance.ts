@@ -50,10 +50,18 @@ export const useGetSwapExtensionBalances = (
       ),
     [extensions, queries],
   );
+  const errors = useMemo(
+    () =>
+      Object.fromEntries(
+        extensions.map((extension, index) => [extension.originTokenPath, queries[index]?.error ?? null]),
+      ),
+    [extensions, queries],
+  );
   const refetch = useCallback(() => Promise.all(queries.map(query => query.refetch())), [queries]);
 
   return {
     data,
+    errors,
     isLoading: queries.some(query => query.isLoading),
     refetch,
   };

@@ -28,6 +28,7 @@
   "swapButton": {
     "amtLow": "Số tiền quá thấp",
     "enterAmount": "Nhập số tiền",
+    "balanceUnavailable": "Không thể tải số dư",
     "insuffiLiq": "Thiếu thanh khoản",
     "review": "Đánh giá",
     "selectToken": "Chọn một mã thông báo",

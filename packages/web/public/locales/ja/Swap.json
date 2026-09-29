@@ -28,6 +28,7 @@
   "swapButton": {
     "amtLow": "金額が低すぎる",
     "enterAmount": "金額を入力",
+    "balanceUnavailable": "残高を取得できません",
     "insuffiLiq": "不十分な流動性",
     "review": "レビュー",
     "selectToken": "トークンの選択",

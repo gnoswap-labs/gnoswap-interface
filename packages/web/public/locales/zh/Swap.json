@@ -28,6 +28,7 @@
   "swapButton": {
     "amtLow": "金额太低",
     "enterAmount": "输入金额",
+    "balanceUnavailable": "无法获取余额",
     "insuffiLiq": "流动性不足",
     "review": "评论",
     "selectToken": "选择令牌",

@@ -50,6 +50,7 @@ type SwapButtonStateType =
   | "ENTER_AMOUNT"
   | "AMOUNT_TOO_LOW"
   | "LOADING"
+  | "BALANCE_UNAVAILABLE"
   | "INSUFFICIENT_BALANCE"
   | "INSUFFICIENT_LIQUIDITY"
   | "WRAP"
@@ -169,6 +170,7 @@ export const useSwapHandler = () => {
     updateBalances,
     getTokenUSDPrice,
     isLoadingSwapExtensionBalances,
+    swapExtensionBalanceErrors,
     refetchGrc20Balances,
     refetchSwapExtensionBalances,
   } = useTokenData(true);
@@ -228,6 +230,9 @@ export const useSwapHandler = () => {
   // Display formatting is applied separately (useTokenBalancesDisplay).
   const tokenABalance = useMemo(() => {
     if (isSwitchNetwork || !tokenA) return "-";
+    if (getSwapExtensionByOriginPath(tokenA.path)) {
+      return displayBalanceStringMap[tokenA.path] ?? "0";
+    }
     return displayBalanceStringMap[tokenA.path] ?? displayBalanceStringMap[tokenA.priceID] ?? "0";
   }, [displayBalanceStringMap, isSwitchNetwork, tokenA]);
 
@@ -375,6 +380,9 @@ export const useSwapHandler = () => {
     if (getSwapExtensionByOriginPath(tokenA.path) && isLoadingSwapExtensionBalances) {
       return "LOADING";
     }
+    if (getSwapExtensionByOriginPath(tokenA.path) && swapExtensionBalanceErrors[tokenA.path]) {
+      return "BALANCE_UNAVAILABLE";
+    }
     if (!Number(tokenAAmount) && !Number(tokenBAmount)) {
       return "ENTER_AMOUNT";
     }
@@ -429,6 +437,7 @@ export const useSwapHandler = () => {
     tokenABalance,
     isLoading,
     isLoadingSwapExtensionBalances,
+    swapExtensionBalanceErrors,
     priceImpactStatus,
     estimatedRoutes?.length,
   ]);
@@ -445,6 +454,8 @@ export const useSwapHandler = () => {
         return t("Swap:swapButton.enterAmount");
       case "LOADING":
         return t("Swap:swapButton.review");
+      case "BALANCE_UNAVAILABLE":
+        return t("Swap:swapButton.balanceUnavailable");
       case "AMOUNT_TOO_LOW":
         return t("Swap:swapButton.amtLow");
       case "INSUFFICIENT_BALANCE":

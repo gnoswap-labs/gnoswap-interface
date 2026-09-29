@@ -28,6 +28,7 @@
   "swapButton": {
     "amtLow": "Amount Too Low",
     "enterAmount": "Enter Amount",
+    "balanceUnavailable": "Balance Unavailable",
     "insuffiLiq": "Insufficient Liquidity",
     "review": "Review",
     "selectToken": "Select a Token",

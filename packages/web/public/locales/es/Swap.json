@@ -28,6 +28,7 @@
   "swapButton": {
     "amtLow": "Importe demasiado bajo",
     "enterAmount": "Introduzca el importe",
+    "balanceUnavailable": "Saldo no disponible",
     "insuffiLiq": "Liquidez insuficiente",
     "review": "Consulte",
     "selectToken": "Seleccione una ficha",

@@ -28,6 +28,7 @@
   "swapButton": {
     "amtLow": "수량이 너무 적음",
     "enterAmount": "수량 입력",
+    "balanceUnavailable": "잔액 조회 불가",
     "insuffiLiq": "유동성 부족",
     "review": "리뷰",
     "selectToken": "토큰 선택",

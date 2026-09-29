@@ -28,6 +28,7 @@
   "swapButton": {
     "amtLow": "Montant trop faible",
     "enterAmount": "Saisir le montant",
+    "balanceUnavailable": "Solde indisponible",
     "insuffiLiq": "Liquidité insuffisante",
     "review": "Révision",
     "selectToken": "Sélectionner un jeton",

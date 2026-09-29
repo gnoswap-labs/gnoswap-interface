@@ -28,6 +28,7 @@
   "swapButton": {
     "amtLow": "Слишком низкая сумма",
     "enterAmount": "Введите сумму",
+    "balanceUnavailable": "Баланс недоступен",
     "insuffiLiq": "Недостаточная ликвидность",
     "review": "Обзор",
     "selectToken": "Выберите токен",

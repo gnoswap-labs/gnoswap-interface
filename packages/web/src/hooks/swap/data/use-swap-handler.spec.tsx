@@ -38,6 +38,12 @@ const mockWrappedBubble: TokenModel = {
   displaySymbol: "wBUBBLE",
   priceID: "gno.land/r/g1leu8d2vsplhehcfkjg50mwgdpxdkt8tztu95wr/wbubble.BUBBLE",
 };
+const mockOriginBubble: TokenModel = {
+  ...mockWrappedBubble,
+  name: "BUBBLE",
+  path: "gno.land/r/g1leu8d2vsplhehcfkjg50mwgdpxdkt8tztu95wr/bubble",
+  displaySymbol: "BUBBLE",
+};
 const mockTokenPrices = {
   [mockTokenA.path]: mockPrice,
   [mockTokenB.path]: mockPrice,
@@ -48,6 +54,7 @@ let mockDisplayBalanceStringMap: Record<string, string> = {
   [mockTokenB.path]: "1000000000000",
   [mockWrappedBubble.path]: "1000000000000",
 };
+let mockSwapExtensionBalanceErrors: Record<string, Error | null> = {};
 
 jest.mock("@adena-wallet/sdk", () => ({
   makeMsgCallMessage: jest.fn(),
@@ -93,6 +100,8 @@ jest.mock("@hooks/token/data/use-token-data", () => ({
     tokens: [mockTokenA, mockTokenB, mockWrappedBubble],
     tokenPrices: mockTokenPrices,
     displayBalanceStringMap: mockDisplayBalanceStringMap,
+    swapExtensionBalanceErrors: mockSwapExtensionBalanceErrors,
+    isLoadingSwapExtensionBalances: false,
     isFetched: true,
     updateBalances: mockUpdateBalances,
     refetchGrc20Balances: jest.fn(),
@@ -129,6 +138,7 @@ describe("useSwapHandler quote consistency", () => {
       [mockTokenB.path]: "1000000000000",
       [mockWrappedBubble.path]: "1000000000000",
     };
+    mockSwapExtensionBalanceErrors = {};
   });
 
   afterEach(() => jest.useRealTimers());
@@ -150,6 +160,35 @@ describe("useSwapHandler quote consistency", () => {
     };
     mockGetRoutes.mockReturnValue({ data: oldQuote, error: null, isLoading: false, isRefetching: false });
     const { result, unmount } = renderSwapHandler("EXACT_IN", mockWrappedBubble, mockTokenA);
+
+    act(() => result.current.changeTokenAAmount("1"));
+    act(() => jest.advanceTimersByTime(1_000));
+
+    expect(result.current.swapButtonText).toBe("common:btn.insuffiBal");
+    unmount();
+  });
+
+  it("reports an unavailable origin balance separately from zero", () => {
+    mockSwapExtensionBalanceErrors = {
+      [mockOriginBubble.path]: new Error("Balance query failed"),
+    };
+    mockGetRoutes.mockReturnValue({ data: oldQuote, error: null, isLoading: false, isRefetching: false });
+    const { result, unmount } = renderSwapHandler("EXACT_IN", mockOriginBubble, mockWrappedBubble);
+
+    act(() => result.current.changeTokenAAmount("1"));
+    act(() => jest.advanceTimersByTime(1_000));
+
+    expect(result.current.swapButtonText).toBe("Swap:swapButton.balanceUnavailable");
+    unmount();
+  });
+
+  it("does not use the wrapped balance for a confirmed zero origin balance", () => {
+    mockDisplayBalanceStringMap = {
+      [mockOriginBubble.path]: "0",
+      [mockWrappedBubble.path]: "100",
+    };
+    mockGetRoutes.mockReturnValue({ data: oldQuote, error: null, isLoading: false, isRefetching: false });
+    const { result, unmount } = renderSwapHandler("EXACT_IN", mockOriginBubble, mockWrappedBubble);
 
     act(() => result.current.changeTokenAAmount("1"));
     act(() => jest.advanceTimersByTime(1_000));
