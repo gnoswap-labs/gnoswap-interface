@@ -1,20 +1,28 @@
 import { useAtomValue } from "jotai";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import SettingMenuModal from "@components/common/setting-menu-modal/SettingMenuModal";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useSwapHandler } from "@hooks/swap/data/use-swap-handler";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import { TokenModel } from "@models/token/token-model";
 import { useGetToken } from "@query/token";
 import { ThemeState } from "@states/index";
+import {
+  getSwapExtensionByOriginPath,
+  getSwapExtensionByWrappedPath,
+  isSwapExtensionPair,
+} from "@resources/swap-extension";
 
 import TokenSwap from "../../components/token-swap/TokenSwap";
+
 
 const TokenSwapContainer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
   const router = useCustomRouter();
   const [openedSlippage, setOpenedSlippage] = useState(false);
   const path = router.getTokenPath();
+  const initializedPathRef = useRef<string | null>(null);
   const tokenAPath = router.getParameter("tokenA");
   const { data: tokenB } = useGetToken(path, {
     enabled: !!path,
@@ -22,6 +30,7 @@ const TokenSwapContainer: React.FC = () => {
   const { data: tokenA = null } = useGetToken(tokenAPath, {
     enabled: !!tokenAPath,
   });
+  const { swapExtensionTokens } = useTokenData(true);
 
   const {
     connectedWallet,
@@ -52,6 +61,18 @@ const TokenSwapContainer: React.FC = () => {
     priceImpactStatus,
     initializeSwapTokenInputAmount,
   } = useSwapHandler();
+  const additionalTokenATokens = useMemo(() => {
+    const extension = getSwapExtensionByWrappedPath(swapValue?.tokenB?.path);
+    if (!extension) return [];
+    const originToken = swapExtensionTokens.find(token => token.path === extension.originTokenPath);
+    return originToken ? [originToken] : [];
+  }, [swapExtensionTokens, swapValue?.tokenB?.path]);
+  const additionalTokenBTokens = useMemo(() => {
+    const extension = getSwapExtensionByWrappedPath(swapValue?.tokenA?.path);
+    if (!extension) return [];
+    const originToken = swapExtensionTokens.find(token => token.path === extension.originTokenPath);
+    return originToken ? [originToken] : [];
+  }, [swapExtensionTokens, swapValue?.tokenA?.path]);
 
   useEffect(() => {
     if (!router.query.tokenA && !router.query.path) {
@@ -67,6 +88,23 @@ const TokenSwapContainer: React.FC = () => {
   useEffect(() => {
     if (!tokenA && !tokenB) return;
 
+    const extension = getSwapExtensionByWrappedPath(tokenB?.path);
+    const originToken = extension
+      ? swapExtensionTokens.find(token => token.path === extension.originTokenPath) ?? null
+      : null;
+    if (extension && !originToken) return;
+    if (initializedPathRef.current === tokenB?.path) return;
+    initializedPathRef.current = tokenB?.path ?? null;
+    if (!tokenA && tokenB && originToken) {
+      setSwapValue(prev => ({
+        ...prev,
+        tokenA: originToken,
+        tokenB,
+        type: "EXACT_IN",
+      }));
+      return;
+    }
+
     let request = {};
     if (tokenA && tokenB && tokenA.path !== tokenB.path) {
       request = { tokenA, tokenB };
@@ -79,7 +117,7 @@ const TokenSwapContainer: React.FC = () => {
       ...prev,
       ...request,
     }));
-  }, [tokenB, tokenA, swapValue?.tokenA?.path]);
+  }, [setSwapValue, swapExtensionTokens, tokenA, tokenB, swapValue?.tokenA?.path]);
 
   // Initialize token information when component mounts/unmounts
   useEffect(() => {
@@ -91,7 +129,8 @@ const TokenSwapContainer: React.FC = () => {
   const handleChangeTokenB = (token: TokenModel) => {
     if (token.path === swapTokenInfo.tokenB?.path) return;
 
-    router.movePageWithTokenPath("TOKEN", token.path);
+    const extension = getSwapExtensionByOriginPath(token.path);
+    router.movePageWithTokenPath("TOKEN", extension?.grc20WrappedTokenPath ?? token.path);
     changeTokenB(token);
   };
 
@@ -100,8 +139,12 @@ const TokenSwapContainer: React.FC = () => {
   };
 
   const handleSwitch = () => {
-    if (swapValue?.tokenA?.path && swapValue?.tokenA?.path !== path) {
-      router.movePageWithTokenPath("TOKEN", swapValue?.tokenA?.path);
+    if (
+      !isSwapExtensionPair(swapValue?.tokenA, swapValue?.tokenB) &&
+      swapValue?.tokenA?.path &&
+      swapValue.tokenA.path !== path
+    ) {
+      router.movePageWithTokenPath("TOKEN", swapValue.tokenA.path);
     }
     switchSwapDirection();
   };
@@ -109,6 +152,8 @@ const TokenSwapContainer: React.FC = () => {
   return (
     <>
       <TokenSwap
+        additionalTokenATokens={additionalTokenATokens}
+        additionalTokenBTokens={additionalTokenBTokens}
         connectedWallet={connectedWallet}
         connectWallet={openConnectWallet}
         swapNow={openConfirmModal}

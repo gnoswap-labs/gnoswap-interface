@@ -36,6 +36,8 @@ export interface TokenSwapProps {
   swapRouteInfos: SwapRouteInfo[];
   swapTokenInfo: SwapTokenInfo;
   isRefetching: boolean;
+  additionalTokenATokens?: TokenModel[];
+  additionalTokenBTokens?: TokenModel[];
 
   swapNow: () => void;
   handleSetting: () => void;
@@ -81,6 +83,8 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   priceImpactStatus,
   swapTokenInfo,
   isRefetching,
+  additionalTokenATokens,
+  additionalTokenBTokens,
 }) => {
   const { t } = useTranslation();
   const tokenA = dataTokenInfo.tokenA;
@@ -191,7 +195,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               inputMode={"decimal"}
             />
             <div className="token">
-              <SelectPairButton token={tokenA} changeToken={changeTokenA} />
+              <SelectPairButton token={tokenA} changeToken={changeTokenA} additionalTokens={additionalTokenATokens} />
             </div>
           </div>
           <div className="info">
@@ -228,7 +232,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               inputMode={"decimal"}
             />
             <div className="token">
-              <SelectPairButton token={tokenB} changeToken={changeTokenB} />
+              <SelectPairButton token={tokenB} changeToken={changeTokenB} additionalTokens={additionalTokenBTokens} />
             </div>
           </div>
           <div className="info">

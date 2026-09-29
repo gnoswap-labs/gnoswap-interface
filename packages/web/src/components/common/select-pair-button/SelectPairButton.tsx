@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 interface SelectPairButtonProps {
   token: TokenModel | null;
   changeToken?: (token: TokenModel) => void;
+  additionalTokens?: TokenModel[];
   disabled?: boolean;
   hiddenModal?: boolean;
   callback?: (value: boolean) => void;
@@ -21,6 +22,7 @@ interface SelectPairButtonProps {
 const SelectPairButton: React.FC<SelectPairButtonProps> = ({
   token,
   changeToken,
+  additionalTokens,
   disabled,
   hiddenModal,
   callback,
@@ -29,7 +31,7 @@ const SelectPairButton: React.FC<SelectPairButtonProps> = ({
   isChanging,
 }) => {
   const { t } = useTranslation();
-  const { openModal } = useSelectTokenModal({ changeToken, callback });
+  const { openModal } = useSelectTokenModal({ changeToken, callback, additionalTokens });
 
   const onClickButton = useCallback(() => {
     if (disabled || hiddenModal) {

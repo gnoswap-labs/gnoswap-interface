@@ -27,6 +27,7 @@ const DEFAULT_TOKEN: TokenModel = {
   createdAt: "",
 };
 
+
 describe("withTokenRouteMetadata", () => {
   it("uses metadata from the token matching the wrapped transaction path", () => {
     const nativeToken: TokenModel = {

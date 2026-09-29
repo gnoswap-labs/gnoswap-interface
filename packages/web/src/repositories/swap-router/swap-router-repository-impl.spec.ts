@@ -65,6 +65,35 @@ describe("SwapRouterRepositoryImpl", () => {
     );
   });
 
+  it("quotes native wrapper tokens through their wrapped path", async () => {
+    const post = jest.fn();
+    const repository = new SwapRouterRepositoryImpl(
+      null,
+      null,
+      createNetworkClient(post, { estimatedRoutes: [], originAmount: 0, amount: "0", status: "SUCCESS" }),
+    );
+
+    await repository.getRoutes({
+      inputToken: {
+        ...createToken("BUBBLE", 6),
+        type: "Native",
+        wrappedPath: "gno.land/r/demo/wbubble.BUBBLE",
+      },
+      outputToken: createToken("OUT", 6),
+      tokenAmount: "1.25",
+      exactType: "EXACT_IN",
+    });
+
+    expect(post).toHaveBeenCalledWith(
+      expect.objectContaining({
+        body: expect.objectContaining({
+          inputTokenPath: "gno.land/r/demo/wbubble.BUBBLE",
+          amount: "1250000",
+        }),
+      }),
+    );
+  });
+
   it("uses output token decimals for exact-out route quotes", async () => {
     const response: GetRoutesResponse = {
       estimatedRoutes: [],

@@ -18,12 +18,15 @@ import { ORDER, customSort } from "@utils/token-sort";
 interface SelectTokenContainerProps {
   changeToken?: (token: TokenModel) => void;
   callback?: (value: boolean) => void;
+  additionalTokens?: TokenModel[];
 }
 
 export interface SortedProps extends TokenModel {
   price: string;
   tokenPrice: number;
 }
+
+const EMPTY_ADDITIONAL_TOKENS: TokenModel[] = [];
 
 export { ORDER, customSort };
 
@@ -62,19 +65,29 @@ const handleSort = (list: SortedProps[]) => {
   return [...rs, ...valueOfBalance, ...amountOfBalance, ...alphabest];
 };
 
-const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({ changeToken, callback }) => {
+const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
+  changeToken,
+  callback,
+  additionalTokens = EMPTY_ADDITIONAL_TOKENS,
+}) => {
   const { breakpoint } = useWindowSize();
-  const { tokens, balances, tokenPrices, displayBalanceMap } = useTokenData(true);
+  const { tokens, tokenPrices, displayBalanceStringMap } = useTokenData(true);
   const [keyword, setKeyword] = useState("");
   const clearModal = useClearModal();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const recentsData = useAtomValue(TokenState.selectRecents);
   const { isSwitchNetwork } = useWallet();
+  const availableTokens = useMemo(() => {
+    const tokenPaths = new Set(tokens.map(token => token.path));
+    return [...tokens, ...additionalTokens.filter(token => !tokenPaths.has(token.path))];
+  }, [additionalTokens, tokens]);
 
   const recents = useMemo(() => {
     const recentTokens = parseJson(recentsData ? recentsData : "[]");
-    return recentTokens.filter((recentToken: TokenModel) => tokens.some(token => token.path === recentToken.path));
-  }, [recentsData, tokens]);
+    return recentTokens.filter((recentToken: TokenModel) =>
+      availableTokens.some(token => token.path === recentToken.path),
+    );
+  }, [availableTokens, recentsData]);
 
   const close = useCallback(() => {
     clearModal();
@@ -94,28 +107,26 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({ changeToken
   useEscCloseModal(close);
 
   const defaultTokens = useMemo(() => {
-    const temp = tokens;
-    const sortedTokenList = temp.sort(customSort);
-    return sortedTokenList.slice(0, 4);
-  }, [tokens]);
+    return [...availableTokens].sort(customSort).slice(0, 4);
+  }, [availableTokens]);
 
   const filteredTokens = useMemo(() => {
     const lowerKeyword = keyword.toLowerCase();
-    const temp: SortedProps[] = tokens.map((item: TokenModel) => {
-      const tokenPrice = balances[item.priceID];
-      if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice)) {
+    const temp: SortedProps[] = availableTokens.map((item: TokenModel) => {
+      const tokenBalance = displayBalanceStringMap[item.path] ?? displayBalanceStringMap[item.priceID];
+      if (!tokenBalance || tokenBalance === null || BigNumber(tokenBalance).isNaN()) {
         return {
           price: "-",
           ...item,
-          tokenPrice: tokenPrice || 0,
+          tokenPrice: BigNumber(tokenBalance || 0).toNumber(),
         };
       }
       return {
         ...item,
-        price: BigNumber(tokenPrice)
-          .multipliedBy(tokenPrices[item?.path]?.usd || "0")
+        price: BigNumber(tokenBalance)
+          .multipliedBy(tokenPrices[item.priceID]?.usd || "0")
           .toFormat(),
-        tokenPrice: tokenPrice || 0,
+        tokenPrice: BigNumber(tokenBalance).toNumber(),
       };
     });
     const sortedData = handleSort(temp);
@@ -125,7 +136,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({ changeToken
         token.symbol.toLowerCase().includes(lowerKeyword) ||
         token.path.toLowerCase().includes(lowerKeyword),
     );
-  }, [keyword, tokens, balances, tokenPrices]);
+  }, [availableTokens, displayBalanceStringMap, keyword, tokenPrices]);
 
   const selectToken = useCallback(
     (token: TokenModel) => {
@@ -151,7 +162,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({ changeToken
       keyword={keyword}
       defaultTokens={defaultTokens}
       tokens={filteredTokens}
-      tokenPrices={displayBalanceMap}
+      tokenPrices={displayBalanceStringMap}
       changeKeyword={changeKeyword}
       changeToken={selectToken}
       close={close}

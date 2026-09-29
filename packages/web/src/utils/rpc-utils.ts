@@ -15,6 +15,10 @@ export function evaluateExpressionToNumber(evaluateExpression: string) {
     return 0;
   }
 }
+export function evaluateExpressionToIntegerString(evaluateExpression: string): string | null {
+  const match = evaluateExpression.match(/\((-?\d+)\s+u?int(?:8|16|32|64)?\)/);
+  return match?.[1] ?? null;
+}
 
 export function evaluateExpressionToObject<T extends object>(evaluateExpression: string): T | null {
   try {

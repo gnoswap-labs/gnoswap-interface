@@ -9,8 +9,9 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { CardListTokenInfo, UpDownType } from "@models/common/card-list-item-info";
 import { isNativeTokenByType, TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
-import { useGetAllTokenPrices, useGetGrc20Balances, useGetTokens } from "@query/token";
+import { useGetAllTokenPrices, useGetGrc20Balances, useGetSwapExtensionBalances, useGetTokens } from "@query/token";
 import { TokenState } from "@states/index";
+import { getOriginToken, swapExtensions } from "@resources/swap-extension";
 import { checkPositivePrice } from "@utils/common";
 import { toUnitFormat } from "@utils/number-utils";
 import { makeDisplayTokenAmount, makeDisplayTokenAmountString } from "@utils/token-utils";
@@ -41,6 +42,17 @@ export const useTokenData = (showUnverified = true) => {
     refetch: refetchGrc20Balances,
   } = useGetGrc20Balances(account?.address || "", { enabled: !!account?.address });
 
+  const enabledSwapExtensions = useMemo(
+    () => swapExtensions.filter(extension => tokens.some(token => token.path === extension.grc20WrappedTokenPath)),
+    [tokens],
+  );
+  const {
+    data: swapExtensionBalances,
+    isLoading: isLoadingSwapExtensionBalances,
+    refetch: refetchSwapExtensionBalances,
+  } = useGetSwapExtensionBalances(enabledSwapExtensions, account?.address || null, {
+    enabled: !!account?.address && enabledSwapExtensions.length > 0,
+  });
   const { rpcProvider } = useGnoswapContext();
   const [balances, setBalances] = useAtom(TokenState.balances);
   const [loadingBalance, setLoadingBalance] = useAtom(TokenState.isLoadingBalances);
@@ -54,7 +66,13 @@ export const useTokenData = (showUnverified = true) => {
     }
     return GNOT_TOKEN;
   }, [tokens]);
-
+  const swapExtensionTokens = useMemo(
+    () =>
+      enabledSwapExtensions
+        .map(extension => getOriginToken(extension, tokens))
+        .filter((token): token is TokenModel => token !== null),
+    [enabledSwapExtensions, tokens],
+  );
   const displayBalanceMap = useMemo(() => {
     const tokenBalanceMap: { [key in string]: number | null } = {};
     if (tokens.length === 0) return {};
@@ -87,8 +105,14 @@ export const useTokenData = (showUnverified = true) => {
       balanceMap[token.priceID] = rawBalance === undefined ? null : makeDisplayTokenAmountString(token, rawBalance);
     });
 
+    swapExtensionTokens.forEach(token => {
+      const rawBalance = swapExtensionBalances[token.path];
+      balanceMap[token.path] =
+        rawBalance === null || rawBalance === undefined ? null : makeDisplayTokenAmountString(token, rawBalance);
+    });
+
     return balanceMap;
-  }, [tokens, gnotBalance, grc20BalancesData]);
+  }, [gnotBalance, grc20BalancesData, swapExtensionBalances, swapExtensionTokens, tokens]);
 
   const trendingTokens: CardListTokenInfo[] = useMemo(() => {
     const sortedTokens = tokens
@@ -184,14 +208,14 @@ export const useTokenData = (showUnverified = true) => {
         return XGNS_TOKEN.symbol;
       }
 
-      const token = tokens.find(token => token.path === tokenPath);
+      const token = [...tokens, ...swapExtensionTokens].find(token => token.path === tokenPath);
       if (token) {
         return token.symbol;
       }
 
       return null;
     },
-    [tokens],
+    [swapExtensionTokens, tokens],
   );
 
   const getTokenUSDPrice = useCallback(
@@ -288,10 +312,8 @@ export const useTokenData = (showUnverified = true) => {
     );
 
     const balancesData: Record<string, number | null> = {};
-    fetchResults.forEach((result, index) => {
-      if (index < tokens.length) {
-        balancesData[result.priceID] = result.balance;
-      }
+    fetchResults.forEach(result => {
+      balancesData[result.priceID] = result.balance;
     });
 
     if (JSON.stringify(balancesData) !== JSON.stringify(balances) && !isEmptyObject(balancesData)) {
@@ -324,6 +346,7 @@ export const useTokenData = (showUnverified = true) => {
   return {
     gnotToken,
     tokens,
+    swapExtensionTokens,
     tokenPrices,
     displayBalanceMap,
     displayBalanceStringMap,
@@ -339,6 +362,7 @@ export const useTokenData = (showUnverified = true) => {
     updateTokens,
     updateTokenPrices,
     updateBalances,
+    isLoadingSwapExtensionBalances,
     loading,
     loadingBalance,
     isFetched,
@@ -348,5 +372,6 @@ export const useTokenData = (showUnverified = true) => {
     isChangeBalancesToken,
     setIsChangeBalancesToken,
     refetchGrc20Balances,
+    refetchSwapExtensionBalances,
   };
 };

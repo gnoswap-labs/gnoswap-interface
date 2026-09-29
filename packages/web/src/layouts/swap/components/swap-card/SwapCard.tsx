@@ -23,6 +23,8 @@ interface SwapCardProps {
   swapTokenInfo: SwapTokenInfo;
   swapSummaryInfo: SwapSummaryInfo | null;
   swapRouteInfos: SwapRouteInfo[];
+  additionalTokenATokens?: TokenModel[];
+  additionalTokenBTokens?: TokenModel[];
   isAvailSwap: boolean;
   swapButtonText: string;
   submitted: boolean;
@@ -58,6 +60,8 @@ const SwapCard: React.FC<SwapCardProps> = ({
   swapTokenInfo,
   swapSummaryInfo,
   swapRouteInfos,
+  additionalTokenATokens,
+  additionalTokenBTokens,
   isAvailSwap,
   swapButtonText,
   changeTokenA,
@@ -100,6 +104,8 @@ const SwapCard: React.FC<SwapCardProps> = ({
         swapTokenInfo={swapTokenInfo}
         swapSummaryInfo={swapSummaryInfo}
         swapRouteInfos={swapRouteInfos}
+        additionalTokenATokens={additionalTokenATokens}
+        additionalTokenBTokens={additionalTokenBTokens}
         changeTokenA={changeTokenA}
         changeTokenAAmount={changeTokenAAmount}
         changeTokenB={changeTokenB}

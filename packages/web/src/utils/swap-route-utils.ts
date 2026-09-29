@@ -1,6 +1,12 @@
 import BigNumber from "bignumber.js";
 
 import { EstimatedRoute } from "@models/swap/swap-route-info";
+import { TokenModel } from "@models/token/token-model";
+import { checkGnotPath } from "@utils/common";
+
+export function getSwapTokenPath(token: Pick<TokenModel, "path" | "wrappedPath">): string {
+  return token.wrappedPath || checkGnotPath(token.path);
+}
 
 export function makeRoutesQuery(routes: EstimatedRoute[], fromPath: string) {
   const POOL_DIVIDER = "*POOL*";

@@ -5,6 +5,8 @@ import {
 import type { TransactionMessage } from "@common/clients/wallet-client/transaction-messages/common";
 import type { EstimatedRoute } from "@models/swap/swap-route-info";
 import type { TokenModel } from "@models/token/token-model";
+import { createOriginToken, swapExtensions } from "@resources/swap-extension";
+import { getAddressByPackagePath } from "@utils/package-utils";
 
 jest.mock("@constants/environment.constant", () => ({
   PACKAGE_GRC20_REGISTRY_PATH: "grc20reg_path",
@@ -14,9 +16,12 @@ jest.mock("@constants/environment.constant", () => ({
   WRAPPED_GNOT_PACKAGE_PATH: "wugnot",
 }));
 
+
 import {
   makeExactInSwapRouteMessageWithApproves,
   makeExactOutSwapRouteMessageWithApproves,
+  makeUnwrapTokenMessages,
+  makeWrapTokenMessages,
 } from "@repositories/swap-router/swap-router.message";
 
 const createTokenModel = (path: string, overrides?: Partial<TokenModel>): TokenModel => ({
@@ -39,6 +44,12 @@ const routedNativeGnot = createTokenModel("ugnot", {
   pkgPath: "wugnot_package",
   routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
 });
+
+const bubbleExtension = swapExtensions[0];
+const wrappedBubbleToken = createTokenModel(bubbleExtension.grc20WrappedTokenPath, {
+  pkgPath: bubbleExtension.grc20WrappedPackagePath,
+});
+const bubbleToken = createOriginToken(bubbleExtension, wrappedBubbleToken);
 
 const route: EstimatedRoute = {
   quote: 1,
@@ -132,9 +143,7 @@ describe("swap-router.message.ts", () => {
       func: "ExactInSwapRoute",
       args: ["token_in", "token_out", "1250000", "token_in:token_out:3000", "1", "2000000", "123", ""],
     });
-    expect(
-      messages.some(message => getRunMessageBody(message).includes("address(\"router_address\"), 0)")),
-    ).toBe(false);
+    expect(messages.some(message => getRunMessageBody(message).includes("address(\"router_address\"), 0)"))).toBe(false);
     expect(messages.some(message => getRunMessageBody(message).includes("address(\"pool_address\")"))).toBe(false);
     expect(messages.some(message => getRunMessageBody(message).includes("grc20reg.Approve(0, cur, \"token_out\""))).toBe(
       false,
@@ -175,9 +184,7 @@ describe("swap-router.message.ts", () => {
       func: "ExactOutSwapRoute",
       args: ["token_in", "token_out", "2000000", "token_in:token_out:3000", "1", "1250000", "123", ""],
     });
-    expect(
-      messages.some(message => getRunMessageBody(message).includes("address(\"router_address\"), 0)")),
-    ).toBe(false);
+    expect(messages.some(message => getRunMessageBody(message).includes("address(\"router_address\"), 0)"))).toBe(false);
     expect(messages.some(message => getRunMessageBody(message).includes("address(\"pool_address\")"))).toBe(false);
     expect(messages.some(message => getRunMessageBody(message).includes("grc20reg.Approve(0, cur, \"token_out\""))).toBe(
       false,
@@ -245,5 +252,49 @@ describe("swap-router.message.ts", () => {
       ]),
     );
     expect(exactOutMessages).not.toEqual(resetApproveMessage);
+  });
+
+  it("wraps Bubble with an approval followed by the wrapper call", () => {
+    const messages = makeWrapTokenMessages({
+      token: bubbleToken,
+      tokenAmount: "1.25",
+      caller: "caller",
+    });
+
+    expect(messages).toEqual([
+      expect.objectContaining({
+        caller: "caller",
+        send: "",
+        pkg_path: bubbleExtension.originTokenPath,
+        func: "Approve",
+        args: [getAddressByPackagePath(bubbleExtension.grc20WrappedPackagePath), "1250000"],
+      }),
+      expect.objectContaining({
+        caller: "caller",
+        send: "",
+        pkg_path: bubbleExtension.grc20WrappedPackagePath,
+        func: "Wrap",
+        args: ["1250000"],
+      }),
+    ]);
+  });
+
+
+  it("unwraps wBUBBLE through its wrapper realm", () => {
+    const messages = makeUnwrapTokenMessages({
+      token: wrappedBubbleToken,
+      tokenAmount: "1.25",
+      caller: "caller",
+    });
+
+    expect(messages).toEqual([
+      expect.objectContaining({
+        caller: "caller",
+        send: "",
+        pkg_path: bubbleExtension.grc20WrappedPackagePath,
+        func: "Unwrap",
+        args: ["1250000"],
+      }),
+    ]);
   });
 });

@@ -6,9 +6,9 @@ import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { SwapError } from "@common/errors/swap";
 import { PACKAGE_ROUTER_PATH } from "@constants/environment.constant";
-import { checkGnotPath } from "@utils/common";
 import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
+import { getSwapTokenPath } from "@utils/swap-route-utils";
 
 import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { drySwap } from "@common/clients/gno-provider/methods/dry-swap";
@@ -51,8 +51,8 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       throw new SwapError("INVALID_PARAMS");
     }
 
-    const inputTokenPath = checkGnotPath(inputToken.path);
-    const outputTokenPath = checkGnotPath(outputToken.path);
+    const inputTokenPath = getSwapTokenPath(inputToken);
+    const outputTokenPath = getSwapTokenPath(outputToken);
 
     const tokenAmountRaw =
       exactType === "EXACT_IN"

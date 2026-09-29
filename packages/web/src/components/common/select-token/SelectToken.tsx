@@ -19,7 +19,7 @@ export interface SelectTokenProps {
   keyword: string;
   defaultTokens: TokenModel[];
   tokens: TokenModel[];
-  tokenPrices: { [key in string]: number | null };
+  tokenPrices: { [key in string]: string | number | null };
   changeKeyword: (keyword: string) => void;
   changeToken: (token: TokenModel) => void;
   close: () => void;
