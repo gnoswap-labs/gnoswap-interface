@@ -5,7 +5,6 @@ import { LineGraphData } from "@components/common/line-graph/LineGraph";
 import { isNativeTokenByType, TokenModel } from "@models/token/token-model";
 import { getSwapExtensionByOriginPath } from "@resources/swap-extension";
 
-import useElementWidth from "@hooks/common/use-element-width";
 import { useGetTokenPrices } from "@query/token";
 import { formatPrice } from "@utils/new-number-utils";
 import SwapTokenChart from "./SwapTokenChart";
@@ -20,8 +19,6 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
   const [chartData, setChartData] = React.useState<LineGraphData | undefined>();
   const [isChartHovered, setIsChartHovered] = React.useState(false);
 
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const containerWidth = useElementWidth(containerRef);
 
   const tokenData = React.useMemo(() => {
     const originExtension = getSwapExtensionByOriginPath(token.path);
@@ -74,13 +71,12 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
   }, [tokenData, handleMouseOut]);
 
   return (
-    <SwapTokenInfoWrapper ref={containerRef}>
+    <SwapTokenInfoWrapper>
       <SwapTokenHeader
         tokenInfo={tokenData}
         priceGradeType={priceGradeType || "NONE"}
         currentPrice={currentPrice}
         chartData={chartData}
-        containerWidth={containerWidth}
       />
       <SwapTokenChart
         data={last7d}
