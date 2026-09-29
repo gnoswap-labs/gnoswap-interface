@@ -2,6 +2,7 @@ import IconClose from "@components/common/icons/IconCancel";
 import IconSearch from "@components/common/icons/IconSearch";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { TokenModel } from "@models/token/token-model";
+import { getSwapExtensionByOriginPath } from "@resources/swap-extension";
 import { ORDER } from "@utils/token-sort";
 import { TokenState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
@@ -50,7 +51,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   const [widthList, setWidthList] = useState<number[]>(tokens.map(() => 0));
   const [tokenNameWidthList, setTokenNameWidthList] = useState<number[]>(tokens.map(() => 0));
   const [, setRecentsData] = useAtom(TokenState.selectRecents);
-  const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
+  const { getGnoscanUrl, getRealmUrl, getTokenUrl } = useGnoscanUrl();
 
   const getTokenPrice = useCallback(
     (token: TokenModel) => {
@@ -122,11 +123,13 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       e.stopPropagation();
       if (token.path === "ugnot") {
         window.open(getGnoscanUrl(), "_blank");
+      } else if (getSwapExtensionByOriginPath(token.path)) {
+        window.open(getRealmUrl(token.path), "_blank");
       } else {
         window.open(getTokenUrl(token.path), "_blank");
       }
     },
-    [getGnoscanUrl, getTokenUrl],
+    [getGnoscanUrl, getRealmUrl, getTokenUrl],
   );
 
   const length = useMemo(() => {
