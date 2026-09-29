@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 
 import withIntersection from "@components/hoc/with-intersection";
@@ -24,12 +24,11 @@ export interface ProposalListProps {
   isShowActiveOnly: boolean;
   address: string;
   toggleIsShowActiveOnly: () => void;
-  myVotingWeight: number;
   proposalCreationThreshold: number;
   proposalList: ProposalItemInfo[];
   fetchMore: () => void;
   selectedProposalId: number;
-  setSelectedProposalId: Dispatch<SetStateAction<number>>;
+  setSelectedProposalId: (proposalId: number) => void;
   openCreateProposalModal: (options: CreateProposalModalOpenOption) => void;
   executablePackages: {
     pkgName: string;
@@ -72,7 +71,6 @@ const ProposalList: React.FC<ProposalListProps> = ({
   address,
   isShowActiveOnly,
   toggleIsShowActiveOnly,
-  myVotingWeight,
   proposalCreationThreshold,
   proposalList,
   fetchMore,
@@ -94,7 +92,6 @@ const ProposalList: React.FC<ProposalListProps> = ({
   const onClickCreateProposal = () => {
     openCreateProposalModal({
       breakpoint: breakpoint,
-      myVotingWeight: myVotingWeight,
       proposalCreationThreshold: proposalCreationThreshold,
       executablePackages: executablePackages,
       executableFunctions: executableFunctions,

@@ -67,7 +67,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     return PositionHistoryMapper.fromList(response.data.data);
   };
 
-  getPositionById = async (lpTokenId: string): Promise<PositionModel> => {
+  getPositionById = async (lpTokenId: string, timeout?: number): Promise<PositionModel> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -75,6 +75,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       data: PositionResponse;
     }>({
       url: "/positions/" + lpTokenId,
+      timeout,
     });
     return PositionMapper.from(response.data.data);
   };

@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import SettingMenuModal from "@components/common/setting-menu-modal/SettingMenuModal";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useSwapHandler } from "@hooks/swap/data/use-swap-handler";
-import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
 import { useGetToken } from "@query/token";
 import { ThemeState } from "@states/index";
@@ -15,7 +14,6 @@ const TokenSwapContainer: React.FC = () => {
   const themeKey = useAtomValue(ThemeState.themeKey);
   const router = useCustomRouter();
   const [openedSlippage, setOpenedSlippage] = useState(false);
-  const { getGnotPath } = useGnotToGnot();
   const path = router.getTokenPath();
   const tokenAPath = router.getParameter("tokenA");
   const { data: tokenB } = useGetToken(path, {
@@ -71,58 +69,18 @@ const TokenSwapContainer: React.FC = () => {
     if (!tokenA && !tokenB) return;
 
     let request = {};
-    if (tokenA && tokenB && tokenA.symbol !== tokenB?.symbol) {
-      request = {
-        tokenB: {
-          ...tokenB,
-          path: getGnotPath(tokenB).path,
-          symbol: getGnotPath(tokenB).symbol,
-          displaySymbol: getGnotPath(tokenB).displaySymbol,
-          logoURI: getGnotPath(tokenB).logoURI,
-          name: getGnotPath(tokenB).name,
-        },
-        tokenA: {
-          ...tokenA,
-          path: getGnotPath(tokenA).path,
-          symbol: getGnotPath(tokenA).symbol,
-          displaySymbol: getGnotPath(tokenA).displaySymbol,
-          logoURI: getGnotPath(tokenA).logoURI,
-          name: getGnotPath(tokenA).name,
-        },
-      };
+    if (tokenA && tokenB && tokenA.path !== tokenB.path) {
+      request = { tokenA, tokenB };
     } else if (tokenA) {
-      request = {
-        tokenA: {
-          ...tokenA,
-          path: getGnotPath(tokenA).path,
-          symbol: getGnotPath(tokenA).symbol,
-          displaySymbol: getGnotPath(tokenA).displaySymbol,
-          logoURI: getGnotPath(tokenA).logoURI,
-          name: getGnotPath(tokenA).name,
-        },
-      };
-    } else {
-      if (swapValue?.tokenA?.symbol === tokenB?.symbol) request = {};
-      else {
-        request = {
-          tokenB: {
-            ...tokenB,
-            path: getGnotPath(tokenB).path,
-            symbol: getGnotPath(tokenB).symbol,
-            displaySymbol: getGnotPath(tokenB).displaySymbol,
-            logoURI: getGnotPath(tokenB).logoURI,
-            name: getGnotPath(tokenB).name,
-          },
-        };
-      }
+      request = { tokenA };
+    } else if (swapValue?.tokenA?.path !== tokenB?.path) {
+      request = { tokenB };
     }
-    setSwapValue(prev => {
-      return {
-        ...prev,
-        ...request,
-      };
-    });
-  }, [tokenB, tokenA, swapValue?.tokenA?.symbol]);
+    setSwapValue(prev => ({
+      ...prev,
+      ...request,
+    }));
+  }, [tokenB, tokenA, swapValue?.tokenA?.path]);
 
   // Initialize token information when component mounts/unmounts
   useEffect(() => {

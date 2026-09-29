@@ -51,7 +51,7 @@ const createToken = (symbol: string): TokenModel => ({
 // On-chain USDC balance (raw 62667447936264477) that exceeds Number.MAX_SAFE_INTEGER
 const LARGE_AMOUNT = "62667447936.264477";
 
-describe("useSwap amount precision", () => {
+describe("useSwap quotes and amount precision", () => {
   beforeEach(() => {
     jest.useFakeTimers();
     useGetRoutesMock.mockReset();
@@ -109,6 +109,57 @@ describe("useSwap amount precision", () => {
         tokenAmountLimit: "0.995",
       }),
     );
+  });
+
+  it("does not request or submit a swap when both token paths are identical", async () => {
+    const token = createToken("USDC");
+    const { result } = renderHook(() =>
+      useSwap({ tokenA: token, tokenB: { ...token }, direction: "EXACT_IN", slippage: 0.5 }),
+    );
+
+    act(() => {
+      result.current.updateSwapAmount("1");
+    });
+    act(() => {
+      jest.advanceTimersByTime(1_000);
+    });
+
+    expect(useGetRoutesMock.mock.lastCall?.[1]).toEqual({ enabled: false });
+    await act(async () => {
+      await result.current.swap(result.current.estimatedRoutes || [], "1");
+    });
+    expect(sendExactInSwapRoute).not.toHaveBeenCalled();
+  });
+
+  it("keeps the previous quote unavailable while a new input is debouncing", () => {
+    useGetRoutesMock.mockImplementation(({ tokenAmount }) => ({
+      data: {
+        estimatedRoutes: [{ quote: 100, amountIn: 0n, amountOut: 0n, pools: [] }],
+        originAmount: 0,
+        amount: tokenAmount === "111" ? "200158845" : "1898308",
+        status: "SUCCESS",
+      },
+      isLoading: false,
+      isRefetching: false,
+      error: null,
+    }));
+
+    const { result } = renderHook(() =>
+      useSwap({ tokenA: createToken("USDC"), tokenB: createToken("ATOM"), direction: "EXACT_IN", slippage: 0.5 }),
+    );
+
+    act(() => result.current.updateSwapAmount("1"));
+    act(() => jest.advanceTimersByTime(1_000));
+    expect(result.current.estimatedAmount).toBe("1.898308");
+
+    act(() => result.current.updateSwapAmount("111"));
+    expect(result.current.swapState).toBe("LOADING");
+    expect(result.current.estimatedAmount).toBeNull();
+    expect(result.current.estimatedRoutes).toBeNull();
+
+    act(() => jest.advanceTimersByTime(1_000));
+    expect(result.current.swapState).toBe("SUCCESS");
+    expect(result.current.estimatedAmount).toBe("200.158845");
   });
 
   it("rounds the exact-out maximum input up at an atomic-unit boundary", async () => {

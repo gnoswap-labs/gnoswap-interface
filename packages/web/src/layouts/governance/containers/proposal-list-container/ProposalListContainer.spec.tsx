@@ -17,7 +17,14 @@ const getProposalDetails = jest.fn();
 const sendVote = jest.fn();
 
 jest.mock("next/router", () => ({
-  useRouter: () => ({ query: {}, pathname: "/governance", replace: jest.fn() }),
+  useRouter: () => ({
+    query: {},
+    pathname: "/governance",
+    asPath: "/governance",
+    push: jest.fn(),
+    replace: jest.fn(),
+    events: { on: jest.fn(), off: jest.fn() },
+  }),
 }));
 jest.mock("@hooks/common/use-window-size", () => ({
   useWindowSize: () => ({ breakpoint: "web" }),

@@ -72,6 +72,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
   const shouldFetch = shouldFetchData(debouncedSwapAmount);
 
   const selectedTokenPair = tokenA !== null && tokenB !== null;
+  const isIdenticalToken = Boolean(tokenA && tokenB && tokenA.path === tokenB.path);
 
   const isSameToken = useMemo(() => {
     if (!tokenA || !tokenB) {
@@ -88,9 +89,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
 
   const hasValidSwapAmount = isPositiveAmount(debouncedSwapAmount);
   const hasValidTokenPaths = Boolean(tokenA?.path) && Boolean(tokenB?.path);
-  const isDifferentTokens = !isSameToken;
-
-  const isEnabledQuery = shouldFetch && hasValidSwapAmount && hasValidTokenPaths && isDifferentTokens;
+  const isEnabledQuery = shouldFetch && hasValidSwapAmount && hasValidTokenPaths && !isSameToken && !isIdenticalToken;
 
   const getTokenAmount = useMemo(() => {
     if (direction === "EXACT_IN") {
@@ -126,18 +125,30 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       return "NONE";
     }
 
+    if (swapAmount !== debouncedSwapAmount || isTyping) {
+      return "LOADING";
+    }
+
     if (isEstimatedSwapLoading && shouldFetch) {
       return "LOADING";
     }
 
-    if (estimatedSwapResult?.status === "NO_LIQUIDITY" || estimatedSwapResult?.status === "INVALID_PARAMS") {
+    if (
+      error ||
+      !estimatedSwapResult ||
+      estimatedSwapResult.status === "NO_LIQUIDITY" ||
+      estimatedSwapResult.status === "INVALID_PARAMS"
+    ) {
       return "NO_LIQUIDITY";
     }
 
     return "SUCCESS";
   }, [
+    swapAmount,
+    isTyping,
     debouncedSwapAmount,
-    estimatedSwapResult?.status,
+    error,
+    estimatedSwapResult,
     isEstimatedSwapLoading,
     isSameToken,
     selectedTokenPair,
@@ -270,7 +281,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       if (!account) {
         return null;
       }
-      if (!selectedTokenPair || !isFetchedTokens) {
+      if (!selectedTokenPair || !isFetchedTokens || isIdenticalToken) {
         return null;
       }
 
@@ -308,6 +319,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       account,
       direction,
       selectedTokenPair,
+      isIdenticalToken,
       isFetchedTokens,
       swapRouterRepository,
       tokenA,
@@ -423,6 +435,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
   }, [tokenA, tokenB]);
 
   return {
+    isIdenticalToken,
     isSameToken,
     tokenAmountLimit,
     estimatedAmount,
