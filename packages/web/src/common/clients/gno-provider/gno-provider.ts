@@ -100,7 +100,11 @@ export class GnoProvider extends GnoJSONRPCProvider {
    * the per gas number the fee calculation expects.
    */
   public async getUgnotPerGas(): Promise<number> {
-    const gasPrice = await this.getGasPrice().catch(() => null);
+    const gasPrice = await this.getGasPrice().catch(error => {
+      // Also catches "invalid gas price response", so a change in the node's format shows up here.
+      console.warn("Failed to fetch the gas price, falling back to the minimum", error);
+      return null;
+    });
     if (!gasPrice || gasPrice.denom !== (GNOT_TOKEN.denom || "ugnot")) {
       return 0;
     }
