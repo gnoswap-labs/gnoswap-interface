@@ -1,5 +1,5 @@
 import { useAtomValue } from "jotai";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import SettingMenuModal from "@components/common/setting-menu-modal/SettingMenuModal";
 import useCustomRouter from "@hooks/common/use-custom-router";
@@ -22,7 +22,6 @@ const TokenSwapContainer: React.FC = () => {
   const router = useCustomRouter();
   const [openedSlippage, setOpenedSlippage] = useState(false);
   const path = router.getTokenPath();
-  const initializedPathRef = useRef<string | null>(null);
   const tokenAPath = router.getParameter("tokenA");
   const { data: tokenB } = useGetToken(path, {
     enabled: !!path,
@@ -94,8 +93,15 @@ const TokenSwapContainer: React.FC = () => {
       ? swapExtensionTokens.find(token => token.path === extension.originTokenPath) ?? null
       : null;
     if (extension && !originToken) return;
-    if (initializedPathRef.current === tokenB?.path) return;
-    initializedPathRef.current = tokenB?.path ?? null;
+    if (extension && originToken && tokenA?.path === extension.grc20WrappedTokenPath) {
+      setSwapValue(prev => ({
+        ...prev,
+        tokenA,
+        tokenB: originToken,
+        type: "EXACT_IN",
+      }));
+      return;
+    }
     if (!tokenA && tokenB && originToken) {
       setSwapValue(prev => ({
         ...prev,
@@ -111,14 +117,14 @@ const TokenSwapContainer: React.FC = () => {
       request = { tokenA, tokenB };
     } else if (tokenA) {
       request = { tokenA };
-    } else if (swapValue?.tokenA?.path !== tokenB?.path) {
+    } else {
       request = { tokenB };
     }
     setSwapValue(prev => ({
       ...prev,
       ...request,
     }));
-  }, [setSwapValue, swapExtensionTokens, tokenA, tokenB, swapValue?.tokenA?.path]);
+  }, [setSwapValue, swapExtensionTokens, tokenA, tokenB]);
 
   // Initialize token information when component mounts/unmounts
   useEffect(() => {
@@ -131,8 +137,13 @@ const TokenSwapContainer: React.FC = () => {
     if (token.path === swapTokenInfo.tokenB?.path) return;
 
     const extension = getSwapExtensionByOriginPath(token.path);
-    router.movePageWithTokenPath("TOKEN", extension?.grc20WrappedTokenPath ?? token.path);
+    const tokenPath = extension?.grc20WrappedTokenPath ?? token.path;
+    const nextTokenAPath = swapTokenInfo.tokenA?.path;
     changeTokenB(token);
+    router.movePage("TOKEN", {
+      path: tokenPath,
+      tokenA: nextTokenAPath,
+    });
   };
 
   const handleChangeTokenA = (token: TokenModel) => {
