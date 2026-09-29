@@ -189,16 +189,23 @@ const getSocialRpcProvider = () => {
 
 /**
  * Simulates the document and prices the resulting gasWanted at the chain's current gas price.
+ *
+ * The simulated tx is signed because the node verifies signatures on simulate for
+ * MsgRun and MsgAddPackage, and needs the pubkey of an account that has never sent a tx.
+ * Its fee is 1ugnot, far below the chain minimum, so any node's mempool rejects the
+ * signed tx if someone broadcasts it. Simulation does not check the gas price.
  */
 export const estimateSocialWalletFee = async (
+  walletClient: Pick<WalletClient, "sign">,
   document: Document,
   provider: Pick<GnoProvider, "estimateGas" | "getGasPrice"> | null = null,
 ): Promise<{ gasWanted: number; gasFee: number }> => {
   const rpcProvider = provider ?? (await getSocialRpcProvider());
-  const [gasUsed, gasPrice] = await Promise.all([
-    rpcProvider.estimateGas(documentToDefaultTx(document)),
-    rpcProvider.getGasPrice(),
-  ]);
+  const { signed } = await walletClient.sign(
+    rpcProvider as GnoProvider,
+    modifyDocument(document, Number(document.fee.gas) || DEFAULT_GAS_WANTED, 1),
+  );
+  const [gasUsed, gasPrice] = await Promise.all([rpcProvider.estimateGas(signed), rpcProvider.getGasPrice()]);
 
   const gasWanted = Math.ceil(Number(gasUsed) * GAS_WANTED_BUFFER_SAFE_MARGIN);
   const gasFee = BigNumber(gasWanted)
@@ -237,7 +244,7 @@ export const withTransactionGuard = async <T>(
 
       // Unlike the Adena extension, the social wallet broadcasts the fee as given,
       // so it has to cover gasWanted at the chain's gas price or the node rejects it.
-      const fee = await estimateSocialWalletFee(document).catch(error => {
+      const fee = await estimateSocialWalletFee(walletClient, document).catch(error => {
         console.warn("Failed to estimate the transaction fee:", error);
         return null;
       });
