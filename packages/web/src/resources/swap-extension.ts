@@ -128,7 +128,7 @@ export function normalizeSwapExtensionSelection(
   tokens: TokenModel[],
 ) {
   const wrappedExtension = getSwapExtensionByWrappedPath(selectedToken.path);
-  if (wrappedExtension && !oppositeToken) {
+  if (wrappedExtension) {
     const originToken = createOriginToken(wrappedExtension, selectedToken);
     return {
       tokenA: side === "A" ? selectedToken : originToken,

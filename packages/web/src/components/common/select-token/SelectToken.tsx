@@ -7,7 +7,7 @@ import { ORDER } from "@utils/token-sort";
 import { TokenState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
 import { removeDuplicatesByWrappedPath } from "@utils/common";
-import { formatTokenModelPath } from "@utils/token-utils";
+import { formatTokenModelPath, formatTokenPath } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -181,7 +181,9 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       <div className={`token-list-wrapper ${tokens.length === 0 ? "token-list-wrapper-auto-height" : ""}`}>
         {tokens.length > 0 &&
           tokens.map((token, index) => {
-            const displayTokenPath = formatTokenModelPath(token);
+            const displayTokenPath = getSwapExtensionByOriginPath(token.path)
+              ? formatTokenPath(token.path, false)
+              : formatTokenModelPath(token);
             return (
               <div className="list" key={index} onClick={() => onClickToken(token)}>
                 <div className="token-info">

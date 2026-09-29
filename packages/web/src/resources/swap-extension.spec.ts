@@ -69,15 +69,16 @@ describe("swap-extension metadata", () => {
     });
   });
 
-  it("pairs a wrapped extension with its origin when the opposite side is empty", () => {
+  it("pairs a wrapped extension with its origin regardless of the current opposite token", () => {
     const originToken = createOriginToken(extension, wrappedToken);
+    const ordinaryToken = { ...wrappedToken, path: "ugnot", symbol: "GNOT" };
 
     expect(normalizeSwapExtensionSelection("A", wrappedToken, null, [wrappedToken])).toMatchObject({
       tokenA: wrappedToken,
       tokenB: originToken,
       isWrapPair: true,
     });
-    expect(normalizeSwapExtensionSelection("B", wrappedToken, null, [wrappedToken])).toMatchObject({
+    expect(normalizeSwapExtensionSelection("B", wrappedToken, ordinaryToken, [wrappedToken])).toMatchObject({
       tokenA: originToken,
       tokenB: wrappedToken,
       isWrapPair: true,

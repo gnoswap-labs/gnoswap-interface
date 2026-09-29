@@ -1,4 +1,4 @@
-import { fireEvent, render } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import React from "react";
 
@@ -65,6 +65,13 @@ describe("SelectToken Component", () => {
 
   it("renders", () => {
     renderSelectToken();
+  });
+
+  it("shows an origin realm path instead of the native coin label", () => {
+    renderSelectToken();
+
+    expect(screen.getByText(extension.originTokenPath.replace(/^gno\.land\//, ""))).toBeInTheDocument();
+    expect(screen.queryByText("Native Coin")).not.toBeInTheDocument();
   });
 
   it("opens an origin realm in Gnoscan", () => {
