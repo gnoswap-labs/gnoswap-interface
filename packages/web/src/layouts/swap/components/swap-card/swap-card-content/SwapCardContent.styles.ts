@@ -96,12 +96,17 @@ export const ContentWrapper = styled.div`
         color: #007aff;
         cursor: pointer;
         /* The pill is barely taller than its text, so the hit area is widened
-           past it without changing how it looks. */
+           well past it without changing how it looks. Offsets are spelled out
+           rather than using inset, and the top stays inside the 8px gap above
+           so the token selector keeps its own clicks. */
         position: relative;
         &::after {
           content: "";
           position: absolute;
-          inset: -8px -6px;
+          top: -6px;
+          right: -14px;
+          bottom: -14px;
+          left: -14px;
         }
         &:hover {
           background: ${({ theme }) => (theme.themeKey === "dark" ? "rgba(0, 89, 255, 0.1)" : "rgba(0, 89, 255, 0.3)")};
