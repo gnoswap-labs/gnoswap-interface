@@ -11,7 +11,7 @@ jest.mock("@query/token", () => ({
   useGetSwapExtensionBalances: () => ({
     data: {},
     errors: {},
-    isLoading: false,
+    loading: {},
     refetch: jest.fn(),
   }),
 }));

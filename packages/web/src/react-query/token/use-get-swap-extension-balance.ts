@@ -57,12 +57,19 @@ export const useGetSwapExtensionBalances = (
       ),
     [extensions, queries],
   );
+  const loading = useMemo(
+    () =>
+      Object.fromEntries(
+        extensions.map((extension, index) => [extension.originTokenPath, Boolean(queries[index]?.isInitialLoading)]),
+      ),
+    [extensions, queries],
+  );
   const refetch = useCallback(() => Promise.all(queries.map(query => query.refetch())), [queries]);
 
   return {
     data,
     errors,
-    isLoading: queries.some(query => query.isLoading),
+    loading,
     refetch,
   };
 };

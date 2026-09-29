@@ -3,13 +3,7 @@ import { getAddressByPackagePath } from "@utils/package-utils";
 
 import rawSwapExtensions from "./swap-extension.json";
 
-export type SwapExtensionRouteInput =
-  | "$address"
-  | "$amount"
-  | "$from"
-  | "$spender"
-  | "$to"
-  | "$wrappedTokenAddress";
+export type SwapExtensionRouteInput = "$address" | "$amount" | "$from" | "$spender" | "$to" | "$wrappedTokenAddress";
 
 type SwapExtensionPackagePath = "$originTokenPath" | "$grc20WrappedPackagePath";
 
@@ -49,10 +43,7 @@ export interface SwapExtension {
   };
 }
 
-const packagePathPlaceholders = new Set<SwapExtensionPackagePath>([
-  "$originTokenPath",
-  "$grc20WrappedPackagePath",
-]);
+const packagePathPlaceholders = new Set<SwapExtensionPackagePath>(["$originTokenPath", "$grc20WrappedPackagePath"]);
 
 // This bundled file is reviewed and exercised as source code. Keep this assertion at
 // the import boundary so every consumer uses the named contract.
@@ -78,11 +69,10 @@ export function getSwapExtension(path?: string | null) {
   return getSwapExtensionByOriginPath(path) ?? getSwapExtensionByWrappedPath(path);
 }
 
-
 export function createOriginToken(extension: SwapExtension, wrappedToken: TokenModel): TokenModel {
   const { originTokenInfo } = extension;
   return {
-    type: "Native",
+    type: "GRC20",
     chainId: wrappedToken.chainId,
     createdAt: wrappedToken.createdAt,
     name: originTokenInfo.name,
@@ -120,16 +110,24 @@ export function getOriginToken(extension: SwapExtension, tokens: TokenModel[]) {
   return wrappedToken ? createOriginToken(extension, wrappedToken) : null;
 }
 
-export function isSwapExtensionPair(tokenA?: TokenModel | null, tokenB?: TokenModel | null) {
-  if (!tokenA || !tokenB) return false;
-  const extension = getSwapExtensionByOriginPath(tokenA.path) ?? getSwapExtensionByOriginPath(tokenB.path);
-  if (!extension) return false;
-  return (
-    (tokenA.path === extension.originTokenPath && tokenB.path === extension.grc20WrappedTokenPath) ||
-    (tokenB.path === extension.originTokenPath && tokenA.path === extension.grc20WrappedTokenPath)
-  );
+export function getSwapExtensionOperation(
+  tokenA?: TokenModel | null,
+  tokenB?: TokenModel | null,
+): keyof SwapExtension["executions"] | null {
+  if (!tokenA || !tokenB) return null;
+
+  const originExtension = getSwapExtensionByOriginPath(tokenA.path);
+  if (originExtension?.grc20WrappedTokenPath === tokenB.path) return "wrap";
+
+  const wrappedExtension = getSwapExtensionByWrappedPath(tokenA.path);
+  if (wrappedExtension?.originTokenPath === tokenB.path) return "unwrap";
+
+  return null;
 }
 
+export function isSwapExtensionPair(tokenA?: TokenModel | null, tokenB?: TokenModel | null) {
+  return getSwapExtensionOperation(tokenA, tokenB) !== null;
+}
 
 interface ExecutionValues {
   amount: string;

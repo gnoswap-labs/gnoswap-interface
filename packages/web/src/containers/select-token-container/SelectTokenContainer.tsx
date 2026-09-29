@@ -114,19 +114,18 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
     const lowerKeyword = keyword.toLowerCase();
     const temp: SortedProps[] = availableTokens.map((item: TokenModel) => {
       const tokenBalance = displayBalanceStringMap[item.path] ?? displayBalanceStringMap[item.priceID];
-      if (!tokenBalance || tokenBalance === null || BigNumber(tokenBalance).isNaN()) {
+      const balance = BigNumber(tokenBalance ?? "");
+      if (!tokenBalance || balance.isNaN() || balance.isLessThanOrEqualTo(0)) {
         return {
           price: "-",
           ...item,
-          tokenPrice: BigNumber(tokenBalance || 0).toNumber(),
+          tokenPrice: balance.isNaN() ? 0 : balance.toNumber(),
         };
       }
       return {
         ...item,
-        price: BigNumber(tokenBalance)
-          .multipliedBy(tokenPrices[item.priceID]?.usd || "0")
-          .toFormat(),
-        tokenPrice: BigNumber(tokenBalance).toNumber(),
+        price: balance.multipliedBy(tokenPrices[item.priceID]?.usd || "0").toFormat(),
+        tokenPrice: balance.toNumber(),
       };
     });
     const sortedData = handleSort(temp);

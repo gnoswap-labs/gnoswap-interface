@@ -49,7 +49,7 @@ export const useTokenData = (showUnverified = true) => {
   const {
     data: swapExtensionBalances,
     errors: swapExtensionBalanceErrors,
-    isLoading: isLoadingSwapExtensionBalances,
+    loading: swapExtensionBalanceLoading,
     refetch: refetchSwapExtensionBalances,
   } = useGetSwapExtensionBalances(enabledSwapExtensions, account?.address || null, {
     enabled: !!account?.address && enabledSwapExtensions.length > 0,
@@ -364,7 +364,7 @@ export const useTokenData = (showUnverified = true) => {
     updateTokenPrices,
     updateBalances,
     swapExtensionBalanceErrors,
-    isLoadingSwapExtensionBalances,
+    swapExtensionBalanceLoading,
     loading,
     loadingBalance,
     isFetched,

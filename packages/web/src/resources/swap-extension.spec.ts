@@ -4,6 +4,7 @@ import {
   createOriginToken,
   getSwapExtensionByOriginPath,
   getSwapExtensionByWrappedPath,
+  getSwapExtensionOperation,
   getSwapExtensionForTokenSelector,
   resolveSwapExtensionExecution,
   swapExtensions,
@@ -34,13 +35,20 @@ describe("swap-extension metadata", () => {
 
   it("creates the origin token from extension metadata and wrapped-token runtime data", () => {
     expect(createOriginToken(extension, wrappedToken)).toMatchObject({
-      type: "Native",
+      type: "GRC20",
       path: extension.originTokenPath,
       wrappedPath: extension.grc20WrappedTokenPath,
       logoURI: wrappedToken.logoURI,
       priceID: extension.grc20WrappedTokenPath,
       pkgPath: extension.originTokenPath,
     });
+  });
+
+  it("identifies extension direction without treating the origin as a native coin", () => {
+    const originToken = createOriginToken(extension, wrappedToken);
+
+    expect(getSwapExtensionOperation(originToken, wrappedToken)).toBe("wrap");
+    expect(getSwapExtensionOperation(wrappedToken, originToken)).toBe("unwrap");
   });
 
   it("exposes the origin only from the opposite side or within the extension pair", () => {
@@ -72,5 +80,4 @@ describe("swap-extension metadata", () => {
       },
     ]);
   });
-
 });

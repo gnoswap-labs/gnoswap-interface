@@ -28,7 +28,11 @@ import { QUERY_KEY } from "@query/query-keys";
 import { useGetSwapFee } from "@query/router";
 import { DexEvent } from "@repositories/common";
 import { SwapRouteSuccessResponse } from "@repositories/swap-router/response/swap-route-response";
-import { getSwapExtensionByOriginPath, isSwapExtensionPair } from "@resources/swap-extension";
+import {
+  getSwapExtensionByOriginPath,
+  getSwapExtensionOperation,
+  isSwapExtensionPair,
+} from "@resources/swap-extension";
 import { CommonState, SwapState } from "@states/index";
 import { checkGnotPath, isGNOTPath, toNativePath } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
@@ -169,7 +173,7 @@ export const useSwapHandler = () => {
     displayBalanceStringMap,
     updateBalances,
     getTokenUSDPrice,
-    isLoadingSwapExtensionBalances,
+    swapExtensionBalanceLoading,
     swapExtensionBalanceErrors,
     refetchGrc20Balances,
     refetchSwapExtensionBalances,
@@ -234,7 +238,7 @@ export const useSwapHandler = () => {
     if (getSwapExtensionByOriginPath(tokenA.path)) {
       return displayBalanceStringMap[tokenA.path] ?? "0";
     }
-    return displayBalanceStringMap[tokenA.path] ?? displayBalanceStringMap[tokenA.priceID] ?? "0";
+    return displayBalanceStringMap[tokenA.path] ?? displayBalanceStringMap[tokenA.priceID] ?? "-";
   }, [displayBalanceStringMap, isSwitchNetwork, tokenA]);
 
   const tokenBBalance = useMemo(() => {
@@ -242,12 +246,14 @@ export const useSwapHandler = () => {
     return displayBalanceStringMap[tokenB.path] ?? displayBalanceStringMap[tokenB.priceID] ?? "-";
   }, [displayBalanceStringMap, isSwitchNetwork, tokenB]);
 
+  const swapExtensionOperation = getSwapExtensionOperation(tokenA, tokenB);
+
   const quotedTokenAAmount = useMemo(() => {
-    return type === "EXACT_OUT" ? estimatedAmount ?? (swapState === "NONE" ? tokenAAmount : "") : tokenAAmount;
+    return type === "EXACT_OUT" ? (estimatedAmount ?? (swapState === "NONE" ? tokenAAmount : "")) : tokenAAmount;
   }, [estimatedAmount, swapState, tokenAAmount, type]);
 
   const quotedTokenBAmount = useMemo(() => {
-    return type === "EXACT_IN" ? estimatedAmount ?? (swapState === "NONE" ? tokenBAmount : "") : tokenBAmount;
+    return type === "EXACT_IN" ? (estimatedAmount ?? (swapState === "NONE" ? tokenBAmount : "")) : tokenBAmount;
   }, [estimatedAmount, swapState, tokenBAmount, type]);
 
   useEffect(() => {
@@ -378,14 +384,18 @@ export const useSwapHandler = () => {
     if (isIdenticalToken) {
       return "SELECT_TOKEN";
     }
-    if (getSwapExtensionByOriginPath(tokenA.path) && isLoadingSwapExtensionBalances) {
+    const originExtension = getSwapExtensionByOriginPath(tokenA.path);
+    if (originExtension && swapExtensionBalanceLoading[tokenA.path]) {
       return "LOADING";
     }
-    if (getSwapExtensionByOriginPath(tokenA.path) && swapExtensionBalanceErrors[tokenA.path]) {
+    if (originExtension && swapExtensionBalanceErrors[tokenA.path] && displayBalanceStringMap[tokenA.path] == null) {
       return "BALANCE_UNAVAILABLE";
     }
     if (!Number(tokenAAmount) && !Number(tokenBAmount)) {
       return "ENTER_AMOUNT";
+    }
+    if (tokenABalance === "-") {
+      return "LOADING";
     }
     if (
       (type === "EXACT_IN" && isAmountLessThanTokenMinimum(tokenA, tokenAAmount)) ||
@@ -414,7 +424,7 @@ export const useSwapHandler = () => {
     }
 
     if (isSameToken) {
-      if (isNativeToken(tokenA)) {
+      if (swapExtensionOperation === "wrap" || (swapExtensionOperation === null && isNativeToken(tokenA))) {
         return "WRAP";
       }
       return "UNWRAP";
@@ -437,8 +447,10 @@ export const useSwapHandler = () => {
     swapState,
     tokenABalance,
     isLoading,
-    isLoadingSwapExtensionBalances,
+    swapExtensionBalanceLoading,
     swapExtensionBalanceErrors,
+    displayBalanceStringMap,
+    swapExtensionOperation,
     priceImpactStatus,
     estimatedRoutes?.length,
   ]);
@@ -847,10 +859,10 @@ export const useSwapHandler = () => {
       const selectedExtension = getSwapExtensionByOriginPath(token.path);
       const oppositeExtension = getSwapExtensionByOriginPath(tokenB?.path);
       const selectedWrappedToken = selectedExtension
-        ? tokens.find(candidate => candidate.path === selectedExtension.grc20WrappedTokenPath) ?? null
+        ? (tokens.find(candidate => candidate.path === selectedExtension.grc20WrappedTokenPath) ?? null)
         : null;
       const oppositeWrappedToken = oppositeExtension
-        ? tokens.find(candidate => candidate.path === oppositeExtension.grc20WrappedTokenPath) ?? null
+        ? (tokens.find(candidate => candidate.path === oppositeExtension.grc20WrappedTokenPath) ?? null)
         : null;
       const nextTokenA = tokenB?.path === token.path ? tokenB : token;
       const nextTokenB =
@@ -885,10 +897,10 @@ export const useSwapHandler = () => {
       const selectedExtension = getSwapExtensionByOriginPath(token.path);
       const oppositeExtension = getSwapExtensionByOriginPath(tokenA?.path);
       const selectedWrappedToken = selectedExtension
-        ? tokens.find(candidate => candidate.path === selectedExtension.grc20WrappedTokenPath) ?? null
+        ? (tokens.find(candidate => candidate.path === selectedExtension.grc20WrappedTokenPath) ?? null)
         : null;
       const oppositeWrappedToken = oppositeExtension
-        ? tokens.find(candidate => candidate.path === oppositeExtension.grc20WrappedTokenPath) ?? null
+        ? (tokens.find(candidate => candidate.path === oppositeExtension.grc20WrappedTokenPath) ?? null)
         : null;
       const nextTokenA =
         tokenA?.path === token.path
@@ -1007,7 +1019,8 @@ export const useSwapHandler = () => {
       tokenBAmount: swapAmount,
     };
 
-    if (isNativeToken(tokenA)) {
+    const isWrap = swapExtensionOperation === "wrap" || (swapExtensionOperation === null && isNativeToken(tokenA));
+    if (isWrap) {
       broadcastLoading(getMessage(DexEvent.WRAP, "pending", messageData));
       openTransactionConfirmModal();
 

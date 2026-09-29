@@ -11,6 +11,7 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { EstimatedRoute } from "@models/swap/swap-route-info";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { useGetRoutes } from "@query/router";
+import { isSwapExtensionPair } from "@resources/swap-extension";
 import { calculateSlippageLimitAmount } from "@utils/swap-utils";
 import { makeDisplayTokenAmountString, withTokenRouteMetadata } from "@utils/token-utils";
 
@@ -77,6 +78,9 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
   const isSameToken = useMemo(() => {
     if (!tokenA || !tokenB) {
       return false;
+    }
+    if (isSwapExtensionPair(tokenA, tokenB)) {
+      return true;
     }
     if (isNativeToken(tokenA)) {
       return tokenA.wrappedPath === tokenB.path;
