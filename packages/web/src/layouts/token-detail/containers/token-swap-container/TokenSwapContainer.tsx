@@ -11,6 +11,7 @@ import { ThemeState } from "@states/index";
 import {
   getSwapExtensionByOriginPath,
   getSwapExtensionByWrappedPath,
+  getSwapExtensionForTokenSelector,
   isSwapExtensionPair,
 } from "@resources/swap-extension";
 
@@ -62,17 +63,13 @@ const TokenSwapContainer: React.FC = () => {
     isSameToken,
   } = useSwapHandler();
   const additionalTokenATokens = useMemo(() => {
-    const extension =
-      getSwapExtensionByWrappedPath(swapValue?.tokenB?.path) ??
-      getSwapExtensionByWrappedPath(swapValue?.tokenA?.path);
+    const extension = getSwapExtensionForTokenSelector(swapValue?.tokenA?.path, swapValue?.tokenB?.path);
     if (!extension) return [];
     const originToken = swapExtensionTokens.find(token => token.path === extension.originTokenPath);
     return originToken ? [originToken] : [];
   }, [swapExtensionTokens, swapValue?.tokenA?.path, swapValue?.tokenB?.path]);
   const additionalTokenBTokens = useMemo(() => {
-    const extension =
-      getSwapExtensionByWrappedPath(swapValue?.tokenA?.path) ??
-      getSwapExtensionByWrappedPath(swapValue?.tokenB?.path);
+    const extension = getSwapExtensionForTokenSelector(swapValue?.tokenB?.path, swapValue?.tokenA?.path);
     if (!extension) return [];
     const originToken = swapExtensionTokens.find(token => token.path === extension.originTokenPath);
     return originToken ? [originToken] : [];

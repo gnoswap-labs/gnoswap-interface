@@ -4,6 +4,7 @@ import {
   createOriginToken,
   getSwapExtensionByOriginPath,
   getSwapExtensionByWrappedPath,
+  getSwapExtensionForTokenSelector,
   resolveSwapExtensionExecution,
   swapExtensions,
 } from "./swap-extension";
@@ -40,6 +41,21 @@ describe("swap-extension metadata", () => {
       priceID: extension.grc20WrappedTokenPath,
       pkgPath: extension.originTokenPath,
     });
+  });
+
+  it("exposes the origin only from the opposite side or within the extension pair", () => {
+    const otherPath = "gno.land/r/gnoswap/gns.GNS";
+
+    expect(getSwapExtensionForTokenSelector(extension.grc20WrappedTokenPath, extension.originTokenPath)).toBe(
+      extension,
+    );
+    expect(getSwapExtensionForTokenSelector(extension.originTokenPath, extension.grc20WrappedTokenPath)).toBe(
+      extension,
+    );
+    expect(getSwapExtensionForTokenSelector(extension.grc20WrappedTokenPath, otherPath)).toBeNull();
+    expect(getSwapExtensionForTokenSelector(extension.grc20WrappedTokenPath, null)).toBeNull();
+    expect(getSwapExtensionForTokenSelector(otherPath, extension.grc20WrappedTokenPath)).toBe(extension);
+    expect(getSwapExtensionForTokenSelector(null, extension.grc20WrappedTokenPath)).toBe(extension);
   });
 
   it("resolves wrap execution placeholders without embedding a realm address", () => {

@@ -272,8 +272,12 @@ it("persists both sides when switching a regular pair on the token page", () => 
   }));
   const { unmount } = render(<TokenSwapContainer />);
   const tokenSwapProps = mockTokenSwap.mock.calls.at(-1)?.[0] as {
+    additionalTokenATokens: TokenModel[];
+    additionalTokenBTokens: TokenModel[];
     switchSwapDirection: () => void;
   };
+  expect(tokenSwapProps.additionalTokenATokens).not.toContain(originBubble);
+  expect(tokenSwapProps.additionalTokenBTokens).toContain(originBubble);
 
   tokenSwapProps.switchSwapDirection();
   unmount();
@@ -290,4 +294,37 @@ it("persists both sides when switching a regular pair on the token page", () => 
   });
   expect(swapValue.tokenA).toBe(gns);
   expect(swapValue.tokenB).toBe(wrappedBubble);
+});
+
+it("does not expose an origin token in its wrapper's selector when the opposite side is empty", () => {
+  const swapValue = {
+    tokenA: wrappedBubble as TokenModel | null,
+    tokenB: null as TokenModel | null,
+    type: "EXACT_IN",
+  };
+  mockSwapExtensionTokens = [originBubble];
+  (useCustomRouter as jest.Mock).mockReturnValue({
+    query: { tokenA: wrappedBubble.path },
+    getTokenPath: () => null,
+    getParameter: () => wrappedBubble.path,
+  });
+  (useGetToken as jest.Mock).mockImplementation((path: string) => ({
+    data: path === wrappedBubble.path ? wrappedBubble : undefined,
+  }));
+  (useSwapHandler as jest.Mock).mockReturnValue({
+    setSwapValue: jest.fn(),
+    setTokenAAmount: jest.fn(),
+    initializeSwapTokenInputAmount: jest.fn(),
+    swapTokenInfo: { tokenA: swapValue.tokenA, tokenB: swapValue.tokenB },
+    swapValue,
+  });
+
+  render(<TokenSwapContainer />);
+  const tokenSwapProps = mockTokenSwap.mock.calls.at(-1)?.[0] as {
+    additionalTokenATokens: TokenModel[];
+    additionalTokenBTokens: TokenModel[];
+  };
+
+  expect(tokenSwapProps.additionalTokenATokens).not.toContain(originBubble);
+  expect(tokenSwapProps.additionalTokenBTokens).toContain(originBubble);
 });

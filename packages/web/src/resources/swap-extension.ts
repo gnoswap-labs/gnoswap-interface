@@ -66,6 +66,14 @@ export function getSwapExtensionByWrappedPath(path?: string | null) {
   return swapExtensions.find(extension => extension.grc20WrappedTokenPath === path) ?? null;
 }
 
+export function getSwapExtensionForTokenSelector(currentPath?: string | null, oppositePath?: string | null) {
+  const oppositeExtension = getSwapExtensionByWrappedPath(oppositePath);
+  if (oppositeExtension) return oppositeExtension;
+
+  const currentExtension = getSwapExtensionByWrappedPath(currentPath);
+  return currentExtension?.originTokenPath === oppositePath ? currentExtension : null;
+}
+
 export function getSwapExtension(path?: string | null) {
   return getSwapExtensionByOriginPath(path) ?? getSwapExtensionByWrappedPath(path);
 }
