@@ -76,7 +76,7 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
     return <EarnMyPositionsUnconnected connect={connect} connected={connected} />;
   }
 
-  if (isError && positions.length === 0) {
+  if (isError && !fetched && positions.length === 0) {
     return null;
   }
   if (isOtherPosition && positions.length === 0 && !loading) {
