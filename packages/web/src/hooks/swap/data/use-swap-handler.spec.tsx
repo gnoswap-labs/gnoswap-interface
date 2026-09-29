@@ -163,6 +163,16 @@ describe("useSwapHandler quote consistency", () => {
     unmount();
   });
 
+  it("keeps a lower origin selection in the lower slot", () => {
+    const { result, unmount } = renderSwapHandler("EXACT_IN", mockWrappedBubble, mockTokenA);
+
+    act(() => result.current.changeTokenB(mockOriginBubble));
+
+    expect(result.current.tokenA).toBe(mockWrappedBubble);
+    expect(result.current.tokenB).toBe(mockOriginBubble);
+    unmount();
+  });
+
   it("replaces an origin token before selecting an ordinary opposite token", () => {
     const { result, unmount } = renderSwapHandler("EXACT_IN", mockOriginBubble, mockWrappedBubble);
 
