@@ -1,5 +1,5 @@
 import { GnoJSONRPCProvider } from "@gnolang/gno-js-client";
-import { adaptAbciQueryResponse, parseABCI } from "@gnolang/tm2-js-client";
+import { adaptAbciQueryResponse, extractSimulateFromResponse, parseABCI, Tx } from "@gnolang/tm2-js-client";
 import { RpcClient, Tm2Client } from "@gnolang/tm2-rpc";
 
 import { parseTokenAmount } from "@utils/token-utils";
@@ -68,6 +68,29 @@ export class GnoProvider extends GnoJSONRPCProvider {
     await tm2Client.status();
 
     return new GnoProvider(tm2Client);
+  }
+
+  /**
+   * Returns the gas the tx uses when simulated.
+   *
+   * Replaces the tm2-js-client 3.0.0 version, which base64 encodes the tx on top of the
+   * RPC client's own encoding, so the node fails with "unable to decode tx".
+   */
+  public async estimateGas(tx: Tx): Promise<bigint> {
+    const rpcResponse = await this.client.abciQuery({
+      path: ".app/simulate",
+      data: Tx.encode(tx).finish(),
+      height: 0,
+      prove: false,
+    });
+
+    const simulateResult = extractSimulateFromResponse(adaptAbciQueryResponse(rpcResponse));
+    const errorType = simulateResult.response_base?.error?.type_url;
+    if (errorType) {
+      throw new Error(`Failed to simulate the transaction: ${errorType}`);
+    }
+
+    return BigInt(simulateResult.gas_used);
   }
 
   public async getGasPrice(height?: number | undefined): Promise<number> {

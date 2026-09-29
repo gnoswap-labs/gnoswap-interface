@@ -2,7 +2,11 @@ import { MsgAddPackage, MsgCall, MsgRun, MsgSend } from "@gnolang/gno-js-client"
 
 import { ContractMessage, Document } from "src/types/transaction-messages.types";
 
-import { documentToTx } from "./transaction-utils";
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
+import { WalletClient } from "@common/clients/wallet-client";
+
+import { eventBus } from "./event-bus";
+import { documentToTx, estimateSocialWalletFee, withTransactionGuard } from "./transaction-utils";
 
 const makeDocument = (msgs: ContractMessage[]): Document => ({
   chain_id: "dev.gnoswap",
@@ -115,5 +119,66 @@ describe("documentToTx", () => {
     expect(decoded.amount).toBe("1000ugnot");
     expect(tx.fee?.gas_wanted).toBe(5000000n);
     expect(tx.fee?.gas_fee).toBe("1000ugnot");
+  });
+});
+
+describe("estimateSocialWalletFee", () => {
+  const document = makeDocument([]);
+  const signedTx = documentToTx(document);
+  const walletClient = { sign: jest.fn().mockResolvedValue({ signed: signedTx, signature: [] }) };
+
+  it("simulates a tx signed with a fee the mempool rejects", async () => {
+    const provider = {
+      estimateGas: jest.fn().mockResolvedValue(BigInt(1_000_000)),
+      getGasPrice: jest.fn().mockResolvedValue(0.001),
+    };
+
+    await estimateSocialWalletFee(walletClient, document, provider);
+
+    expect(walletClient.sign.mock.calls[0][1].fee.amount).toEqual([{ denom: "ugnot", amount: "1" }]);
+    expect(provider.estimateGas).toHaveBeenCalledWith(signedTx);
+  });
+
+  it("covers the buffered gasWanted at the chain gas price", async () => {
+    const provider = {
+      estimateGas: jest.fn().mockResolvedValue(BigInt(1_000_001)),
+      getGasPrice: jest.fn().mockResolvedValue(0.001),
+    };
+
+    const { gasWanted, gasFee } = await estimateSocialWalletFee(walletClient, document, provider);
+
+    expect(gasWanted).toBe(1_200_002);
+    expect(gasFee).toBe(1_441);
+    expect(gasFee).toBeGreaterThanOrEqual(gasWanted * 0.001);
+  });
+
+  it("falls back to the minimum gas price when the chain reports none", async () => {
+    const provider = {
+      estimateGas: jest.fn().mockResolvedValue(BigInt(1_000_000)),
+      getGasPrice: jest.fn().mockResolvedValue(0),
+    };
+
+    expect(await estimateSocialWalletFee(walletClient, document, provider)).toEqual({
+      gasWanted: 1_200_000,
+      gasFee: 1_440,
+    });
+  });
+});
+
+describe("withTransactionGuard", () => {
+  it("fails without showing the approval modal when the fee cannot be estimated", async () => {
+    jest.spyOn(GnoProvider, "create").mockRejectedValue(new Error("rpc down"));
+    const emit = jest.spyOn(eventBus, "emit");
+    const execute = jest.fn();
+    const walletClient = {
+      getWalletType: () => "SOCIAL_WALLET",
+      getAccount: jest.fn().mockResolvedValue({ data: { accountNumber: 1, sequence: 2 } }),
+    } as unknown as WalletClient;
+
+    const result = await withTransactionGuard(walletClient, { messages: [], gasFee: 1_000_000 }, execute);
+
+    expect(result.status).toBe("failure");
+    expect(emit).not.toHaveBeenCalled();
+    expect(execute).not.toHaveBeenCalled();
   });
 });
