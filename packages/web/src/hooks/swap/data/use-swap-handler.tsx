@@ -864,6 +864,7 @@ export const useSwapHandler = () => {
       const oppositeWrappedToken = oppositeExtension
         ? (tokens.find(candidate => candidate.path === oppositeExtension.grc20WrappedTokenPath) ?? null)
         : null;
+      if (selectedExtension && !selectedWrappedToken) return;
       const nextTokenA = tokenB?.path === token.path ? tokenB : token;
       const nextTokenB =
         tokenB?.path === token.path
@@ -902,6 +903,7 @@ export const useSwapHandler = () => {
       const oppositeWrappedToken = oppositeExtension
         ? (tokens.find(candidate => candidate.path === oppositeExtension.grc20WrappedTokenPath) ?? null)
         : null;
+      if (selectedExtension && !selectedWrappedToken) return;
       const nextTokenA =
         tokenA?.path === token.path
           ? tokenB

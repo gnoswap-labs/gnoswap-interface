@@ -56,6 +56,7 @@ let mockDisplayBalanceStringMap: Record<string, string> = {
 };
 let mockSwapExtensionBalanceErrors: Record<string, Error | null> = {};
 let mockSwapExtensionBalanceLoading: Record<string, boolean> = {};
+let mockTokens: TokenModel[] = [mockTokenA, mockTokenB, mockWrappedBubble];
 
 jest.mock("@adena-wallet/sdk", () => ({
   makeMsgCallMessage: jest.fn(),
@@ -98,7 +99,7 @@ jest.mock("@hooks/wallet/data/use-wallet", () => ({
 }));
 jest.mock("@hooks/token/data/use-token-data", () => ({
   useTokenData: () => ({
-    tokens: [mockTokenA, mockTokenB, mockWrappedBubble],
+    tokens: mockTokens,
     tokenPrices: mockTokenPrices,
     displayBalanceStringMap: mockDisplayBalanceStringMap,
     swapExtensionBalanceErrors: mockSwapExtensionBalanceErrors,
@@ -141,6 +142,7 @@ describe("useSwapHandler quote consistency", () => {
     };
     mockSwapExtensionBalanceErrors = {};
     mockSwapExtensionBalanceLoading = {};
+    mockTokens = [mockTokenA, mockTokenB, mockWrappedBubble];
   });
 
   afterEach(() => jest.useRealTimers());
@@ -152,6 +154,20 @@ describe("useSwapHandler quote consistency", () => {
 
     expect(result.current.tokenA).toBe(mockWrappedBubble);
     expect(result.current.tokenB).toBeNull();
+    unmount();
+  });
+
+  it.each([
+    ["upper", mockTokenA, null, "changeTokenA"],
+    ["lower", null, mockTokenB, "changeTokenB"],
+  ] as const)("ignores an %s origin selection until its wrapper is loaded", (_side, tokenA, tokenB, change) => {
+    mockTokens = [mockTokenA, mockTokenB];
+    const { result, unmount } = renderSwapHandler("EXACT_IN", tokenA, tokenB);
+
+    act(() => result.current[change](mockOriginBubble));
+
+    expect(result.current.tokenA).toBe(tokenA);
+    expect(result.current.tokenB).toBe(tokenB);
     unmount();
   });
 
