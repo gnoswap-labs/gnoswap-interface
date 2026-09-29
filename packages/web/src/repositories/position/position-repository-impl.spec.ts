@@ -23,4 +23,11 @@ describe("PositionRepositoryImpl", () => {
       url: "/users/g1address/position?poolPath=gno.land%2Fr%2Fpool&page=2&limit=10&withClosed=false&withAvailableStake=true",
     });
   });
+
+  it("rejects a successful response without position data instead of reporting no positions", async () => {
+    const get = jest.fn().mockResolvedValue({ status: 200, message: "OK", data: {} });
+    const repository = new PositionRepositoryImpl({ get } as unknown as NetworkClient, null, null);
+
+    await expect(repository.getPositionsByAddress("g1address")).rejects.toThrow("Invalid position list response");
+  });
 });

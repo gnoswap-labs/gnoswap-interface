@@ -83,4 +83,20 @@ describe("usePositionData", () => {
     expect(screen.getByTestId("mapped-position-count")).toHaveTextContent("1");
     expect(mockUseMakePoolPositions).toHaveBeenCalledWith(previousPositions, [], true, true, "");
   });
+
+  it("does not mark failed initial position data as available", () => {
+    mockUseGetPositionsByAddress.mockReturnValue({
+      data: undefined,
+      isFetched: true,
+      isLoading: false,
+      isError: true,
+      refetch: jest.fn(),
+    });
+
+    render(<PositionDataProbe />);
+
+    expect(screen.getByTestId("is-fetched")).toHaveTextContent("false");
+    expect(screen.getByTestId("is-data-available")).toHaveTextContent("false");
+    expect(mockUseMakePoolPositions).toHaveBeenCalledWith([], [], false, true, "");
+  });
 });

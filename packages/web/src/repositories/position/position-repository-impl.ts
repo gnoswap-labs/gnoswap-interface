@@ -108,18 +108,18 @@ export class PositionRepositoryImpl implements PositionRepository {
       url: "/users/" + address + "/position" + (queryString ? `?${queryString}` : ""),
     });
 
-    if (!response?.data?.data) {
-      return { positions: [], totalCount: 0 };
+    const positionList = response?.data?.data;
+    if (!Array.isArray(positionList?.positions) || typeof positionList.totalCount !== "number") {
+      throw new Error("Invalid position list response");
     }
 
-    const { positions, totalCount } = response.data.data;
     return {
-      positions: PositionMapper.fromList(positions),
-      totalCount,
+      positions: PositionMapper.fromList(positionList.positions),
+      totalCount: positionList.totalCount,
     };
   };
 
-  getPositionRewardsByAddress = async (address: string): Promise<PositionRewardsResponse | null> => {
+  getPositionRewardsByAddress = async (address: string): Promise<PositionRewardsResponse> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -130,7 +130,10 @@ export class PositionRepositoryImpl implements PositionRepository {
       url: "/users/" + address + "/position/reward",
     });
 
-    return response?.data?.data ?? null;
+    if (!response?.data?.data) {
+      throw new Error("Missing position rewards response");
+    }
+    return response.data.data;
   };
 
   sendClaim = async (request: ClaimRequest): Promise<WalletResponse<SendTransactionResponse<string[] | null>>> => {

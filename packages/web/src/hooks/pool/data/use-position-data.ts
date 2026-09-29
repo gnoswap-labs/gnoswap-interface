@@ -20,7 +20,7 @@ export interface UsePositionDataOption {
 
 export const usePositionData = (options?: UsePositionDataOption) => {
   const { account, connected: walletConnected } = useWallet();
-  const { pools, loading: isLoadingPool, isFetchedPools } = usePoolData();
+  const { pools, loading: isLoadingPool, isFetchedPools, isError: isPoolError } = usePoolData();
 
   const fetchedAddress = useMemo(() => {
     return options?.address || account?.address;
@@ -31,6 +31,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     refetch,
     isError,
     isFetched: isFetchedPosition,
+    isFetching: isFetchingPosition,
     isLoading: isLoadingPosition,
   } = useGetPositionsByAddress({
     address: fetchedAddress as string,
@@ -42,10 +43,10 @@ export const usePositionData = (options?: UsePositionDataOption) => {
   });
 
   const { totalCount: totalPositionCount = 0, positions: rawPositions = [] } = data ?? {};
-  // React Query keeps the previous result while a filter-specific query is transitioning.
-  // Keep that result available for rendering without changing the meaning of isFetchedPosition.
+  // Keep a previous result available while a filter-specific query is transitioning,
+  // but never treat a completed failed request as an empty result.
   const hasPositionData = data !== undefined;
-  const isPositionDataAvailable = isFetchedPosition || hasPositionData;
+  const isPositionDataAvailable = hasPositionData;
 
   const { isLoading: isCommonLoading } = useLoading();
 
@@ -92,13 +93,15 @@ export const usePositionData = (options?: UsePositionDataOption) => {
 
   return {
     availableStake,
-    isError,
+    isError: isError || isPoolError,
+    hasPositionData,
+    isFetchingWithoutData: isFetchingPosition && data === undefined,
     positions,
     totalPositionCount,
     refetch,
     checkStakedPool,
     getPositions,
-    isFetchedPosition: isFetchedPosition && isFetchedPoolPositions,
+    isFetchedPosition: isFetchedPosition && hasPositionData && isFetchedPoolPositions,
     isPositionDataAvailable: isPositionDataAvailable && isFetchedPoolPositions,
     loading,
     isLoadingPool,

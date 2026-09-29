@@ -49,9 +49,17 @@ const WalletBalanceContainer: React.FC = () => {
   const [sendAssetAmount, setSendAssetAmount] = useState("");
 
   const { data: blockTimeData } = useGetAvgBlockTime();
-  const { balances: balancesPrice, loadingBalance, updateBalances, tokens } = useTokenData(true);
+  const {
+    balances: balancesPrice,
+    loadingBalance,
+    isLoadingBalanceData,
+    hasBalanceData,
+    hasTokenPriceData,
+    updateBalances,
+    tokens,
+  } = useTokenData(true);
 
-  const { positions, loading: loadingPositions } = usePositionData();
+  const { positions, loading: loadingPositions, isPositionDataAvailable } = usePositionData();
   const { data: positionRewards, isLoading: loadingPositionRewards } = useGetPositionRewards();
 
   const { invalidateQueryKey } = useInvalidateQueries();
@@ -64,11 +72,10 @@ const WalletBalanceContainer: React.FC = () => {
     ]);
   }, [invalidateQueryKey, currentChainId, userAddress]);
 
-  const isLoadingPosition = useMemo(() => connected && (loadingPositions || loadingPositionRewards), [
-    connected,
-    loadingPositions,
-    loadingPositionRewards,
-  ]);
+  const isLoadingPosition = useMemo(
+    () => connected && (loadingPositions || loadingPositionRewards),
+    [connected, loadingPositions, loadingPositionRewards],
+  );
 
   const { claimAll } = usePosition([]);
   const { broadcastSuccess, broadcastError, broadcastRejected, broadcastLoading } = useBroadcastHandler();
@@ -177,10 +184,18 @@ const WalletBalanceContainer: React.FC = () => {
       isLoadingPosition ||
       loadingConnect === "loading" ||
       isLoadingTokenPrices ||
-      (account?.address && loadingBalance) ||
-      !!(isEmptyObject(balancesPrice) && account?.address)
+      (!!account?.address && (loadingBalance || isLoadingBalanceData))
     );
-  }, [isLoadingPosition, loadingConnect, account?.address, balancesPrice, isLoadingTokenPrices, loadingBalance]);
+  }, [isLoadingPosition, loadingConnect, account?.address, isLoadingTokenPrices, loadingBalance, isLoadingBalanceData]);
+
+  const hasAvailableBalance =
+    hasBalanceData &&
+    hasTokenPriceData &&
+    !isEmptyObject(balancesPrice) &&
+    Object.entries(balancesPrice).every(([key, value]) => {
+      const path = key === "ugnot" ? WRAPPED_GNOT_PATH : key;
+      return value != null && (BigNumber(value).isZero() || tokenPrices[path]?.pricesBefore?.latestPrice != null);
+    });
 
   const availableBalance = useMemo(() => {
     return Object.entries(balancesPrice).reduce((acc, [key, value]) => {
@@ -282,11 +297,19 @@ const WalletBalanceContainer: React.FC = () => {
     }
 
     return {
-      amount: sumTotalBalance,
+      amount: hasAvailableBalance && isPositionDataAvailable && positionRewards ? sumTotalBalance : "-",
       changeRate: "0.0%",
       loading: loadingTotalBalance,
     };
-  }, [connected, isSwitchNetwork, sumTotalBalance, loadingTotalBalance]);
+  }, [
+    connected,
+    isSwitchNetwork,
+    sumTotalBalance,
+    loadingTotalBalance,
+    hasAvailableBalance,
+    isPositionDataAvailable,
+    positionRewards,
+  ]);
 
   const balanceDetailInfo: BalanceDetailInfo = React.useMemo(() => {
     if (!connected || isSwitchNetwork) {
@@ -301,13 +324,13 @@ const WalletBalanceContainer: React.FC = () => {
       };
     }
     return {
-      availableBalance: `${availableBalanceStr}`,
-      claimableRewards: `${claimableRewards}`,
-      stakedLP: `${stakedBalance}`,
-      unstakedLP: `${unStakedBalance}`,
+      availableBalance: hasAvailableBalance ? `${availableBalanceStr}` : "-",
+      claimableRewards: positionRewards ? `${claimableRewards}` : "-",
+      stakedLP: isPositionDataAvailable ? `${stakedBalance}` : "-",
+      unstakedLP: isPositionDataAvailable ? `${unStakedBalance}` : "-",
       loadingBalance: loadingTotalBalance,
       loadingPositions: loadingTotalBalance,
-      totalClaimedRewards: `${totalClaimedRewards}`,
+      totalClaimedRewards: positionRewards ? `${totalClaimedRewards}` : "-",
     };
   }, [
     connected,
@@ -318,6 +341,9 @@ const WalletBalanceContainer: React.FC = () => {
     unStakedBalance,
     loadingTotalBalance,
     totalClaimedRewards,
+    hasAvailableBalance,
+    isPositionDataAvailable,
+    positionRewards,
   ]);
 
   return (

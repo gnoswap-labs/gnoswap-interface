@@ -20,6 +20,7 @@ import IconInfo from "@components/common/icons/IconInfo";
 interface PoolListTableProps {
   pools: PoolListInfo[];
   isFetched: boolean;
+  isError: boolean;
   sortOption: PoolSortOption | undefined;
   sort: (head: TABLE_HEAD) => void;
   isSortOption: (head: TABLE_HEAD) => boolean;
@@ -31,6 +32,7 @@ interface PoolListTableProps {
 const PoolListTable: React.FC<PoolListTableProps> = ({
   pools,
   isFetched,
+  isError,
   sortOption,
   sort,
   isSortOption,
@@ -115,13 +117,13 @@ const PoolListTable: React.FC<PoolListTableProps> = ({
         })}
       </div>
       <div className="pool-list-body">
-        {isFetched && pools.length === 0 && <div css={noDataText}>{t("Earn:poolList.noPool")}</div>}
+        {isFetched && !isError && pools.length === 0 && <div css={noDataText}>{t("Earn:poolList.noPool")}</div>}
         {isFetched &&
           pools.length > 0 &&
           pools.map((pool, idx) => (
             <PoolInfo pool={pool} key={idx} routeItem={routeItem} themeKey={themeKey} breakpoint={breakpoint} />
           ))}
-        {!isFetched && <TableSkeleton info={poolInfo} />}
+        {!isFetched && !isError && <TableSkeleton info={poolInfo} />}
       </div>
     </TableWrapper>
   );

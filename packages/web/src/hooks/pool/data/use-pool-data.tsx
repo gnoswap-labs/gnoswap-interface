@@ -2,12 +2,21 @@ import { useMemo } from "react";
 
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { CardListPoolInfo } from "@models/common/card-list-item-info";
+import { PoolModel } from "@models/pool/pool-model";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { useGetPoolList } from "@query/pools";
+const EMPTY_POOLS: PoolModel[] = [];
 
 export const usePoolData = () => {
-  const { data: pools = [], isLoading: loading, isFetched: isFetchedPools, refetch: refetchPools } = useGetPoolList();
+  const {
+    data: poolData,
+    isLoading: loading,
+    isFetched: isFetchedQuery,
+    isError,
+    refetch: refetchPools,
+  } = useGetPoolList();
+  const pools = poolData ?? EMPTY_POOLS;
 
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
 
@@ -75,7 +84,8 @@ export const usePoolData = () => {
   }
 
   return {
-    isFetchedPools,
+    isError,
+    isFetchedPools: isFetchedQuery && poolData !== undefined,
     higestAPRs,
     pools,
     poolListInfos,

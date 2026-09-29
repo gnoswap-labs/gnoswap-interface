@@ -8,6 +8,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { CardListTokenInfo, UpDownType } from "@models/common/card-list-item-info";
 import { isNativeTokenByType, TokenModel } from "@models/token/token-model";
+import { TokenPriceModel } from "@models/token/token-price-model";
 import { useGetAllTokenPrices, useGetGrc20Balances, useGetTokens } from "@query/token";
 import { TokenState } from "@states/index";
 import { checkPositivePrice } from "@utils/common";
@@ -16,6 +17,7 @@ import { makeDisplayTokenAmount, makeDisplayTokenAmountString } from "@utils/tok
 import { isEmptyObject } from "@utils/validation-utils";
 
 import { useGnotToGnot } from "./use-gnot-wugnot";
+const EMPTY_TOKEN_PRICES: Record<string, TokenPriceModel> = {};
 
 export const useTokenData = (showUnverified = true) => {
   const {
@@ -26,11 +28,12 @@ export const useTokenData = (showUnverified = true) => {
     refetch: refetchTokenList,
   } = useGetTokens(showUnverified);
   const {
-    data: tokenPrices = {},
+    data: tokenPricesData,
     isLoading: isLoadingTokenPrice,
     isFetched: isFetchedTokenPrices,
     refetch: refetchTokenPrices,
   } = useGetAllTokenPrices();
+  const tokenPrices = tokenPricesData ?? EMPTY_TOKEN_PRICES;
   const { account, availNetwork, refetchGnotBalance, gnotBalance } = useWallet();
   const {
     data: grc20BalancesData,
@@ -125,11 +128,11 @@ export const useTokenData = (showUnverified = true) => {
 
       return {
         token: {
-            ...token,
-            symbol: getGnotPath(token).symbol,
-            displaySymbol: getGnotPath(token).displaySymbol,
-            name: getGnotPath(token).name,
-            logoURI: getGnotPath(token).logoURI,
+          ...token,
+          symbol: getGnotPath(token).symbol,
+          displaySymbol: getGnotPath(token).displaySymbol,
+          name: getGnotPath(token).name,
+          logoURI: getGnotPath(token).logoURI,
         },
         upDown: data1D.status === MATH_NEGATIVE_TYPE.POSITIVE ? "up" : "down",
         content: data1D.percentDisplay.replace(/[+-]/g, ""),
@@ -234,7 +237,7 @@ export const useTokenData = (showUnverified = true) => {
   const getGrc20Balance = useCallback(
     (token: TokenModel) => {
       if (!grc20BalancesData?.data) {
-        return 0;
+        return null;
       }
       const balance = grc20BalancesData.data.find(balance => balance.path === token.path);
       return balance ? Number(balance.amount) : 0;
@@ -269,6 +272,10 @@ export const useTokenData = (showUnverified = true) => {
     }
 
     if (tokens.length === 0) return;
+    if (!grc20BalancesData?.data || gnotBalance == null) {
+      setLoadingBalance(false);
+      return;
+    }
 
     const fetchResults = await Promise.all(
       tokens.map(async token => {
@@ -322,6 +329,9 @@ export const useTokenData = (showUnverified = true) => {
     displayBalanceStringMap,
     balances,
     trendingTokens,
+    hasBalanceData: gnotBalance != null && grc20BalancesData?.data != null,
+    isLoadingBalanceData: isLoadingGrc20Balances,
+    hasTokenPriceData: tokenPricesData !== undefined,
     recentlyAddedTokens,
     getTokenSymbol,
     getTokenUSDPrice,
