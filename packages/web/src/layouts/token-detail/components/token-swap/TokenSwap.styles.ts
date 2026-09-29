@@ -105,7 +105,11 @@ export const wrapper = (theme: Theme) => css`
              the area that responds can be comfortable without the pill growing
              with it. The negative margins hand the row back the height and
              spacing the padding took, and 6px above stays inside the 8px gap so
-             the token selector keeps its own clicks. */
+             the token selector keeps its own clicks. It is lifted over the row
+             it reaches into, so the part hanging past the badge is what takes
+             the click. */
+          position: relative;
+          z-index: 1;
           display: flex;
           align-items: center;
           justify-content: center;
