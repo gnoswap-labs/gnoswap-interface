@@ -31,10 +31,7 @@ export const useGetPositionRewards = (
         return null;
       }
 
-      return await positionRepository.getPositionRewardsByAddress(address).catch(e => {
-        console.error(e);
-        return null;
-      });
+      return positionRepository.getPositionRewardsByAddress(address);
     },
     keepPreviousData: true,
     refetchInterval: REFETCH_INTERVAL,

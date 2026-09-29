@@ -119,7 +119,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     };
   };
 
-  getPositionRewardsByAddress = async (address: string): Promise<PositionRewardsResponse | null> => {
+  getPositionRewardsByAddress = async (address: string): Promise<PositionRewardsResponse> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -130,7 +130,10 @@ export class PositionRepositoryImpl implements PositionRepository {
       url: "/users/" + address + "/position/reward",
     });
 
-    return response?.data?.data ?? null;
+    if (!response?.data?.data) {
+      throw new Error("Missing position rewards response");
+    }
+    return response.data.data;
   };
 
   sendClaim = async (request: ClaimRequest): Promise<WalletResponse<SendTransactionResponse<string[] | null>>> => {

@@ -115,7 +115,8 @@ const AssetListContainer: React.FC = () => {
     }
   }, [isClickOutside, keyword]);
 
-  const { displayBalanceMap, balances, tokenPrices, isFetched, updateBalances } = useTokenData(showUnverifiedTokens);
+  const { displayBalanceMap, balances, tokenPrices, hasBalanceData, hasTokenPriceData, isFetched, updateBalances } =
+    useTokenData(showUnverifiedTokens);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -157,15 +158,9 @@ const AssetListContainer: React.FC = () => {
           if (!connected || isSwitchNetwork) {
             return "-";
           }
-
-          if (
-            !tokenPrice ||
-            Number.isNaN(tokenPrice) ||
-            !tokenPrices[checkGnotPath(item?.path)]?.usd ||
-            !balances[item.priceID]
-          ) {
-            return "$0";
-          }
+          if (!hasBalanceData || !hasTokenPriceData || tokenPrice == null || Number.isNaN(tokenPrice)) return "-";
+          if (tokenPrice === 0) return "$0";
+          if (tokenPrices[checkGnotPath(item.path)]?.usd == null) return "-";
 
           return formatPrice(
             BigNumber(tokenPrice)
@@ -178,7 +173,7 @@ const AssetListContainer: React.FC = () => {
         })();
 
         const balance = (() => {
-          if (isSwitchNetwork || !displayBalanceMap[item.path]) return "-";
+          if (isSwitchNetwork || !hasBalanceData || !displayBalanceMap[item.path]) return "-";
 
           return formatPoolPairAmount(displayBalanceMap[item.path], {
             isKMB: false,
@@ -200,6 +195,8 @@ const AssetListContainer: React.FC = () => {
       .filter(asset => filterType(asset, assetType));
   }, [
     balances,
+    hasBalanceData,
+    hasTokenPriceData,
     displayBalanceMap,
     isSwitchNetwork,
     tokenPrices,
@@ -221,15 +218,9 @@ const AssetListContainer: React.FC = () => {
           if (!connected || isSwitchNetwork) {
             return "-";
           }
-
-          if (
-            !tokenPrice ||
-            Number.isNaN(tokenPrice) ||
-            !tokenPrices[checkGnotPath(item?.path)]?.usd ||
-            !balances[item.priceID]
-          ) {
-            return "$0";
-          }
+          if (!hasBalanceData || !hasTokenPriceData || tokenPrice == null || Number.isNaN(tokenPrice)) return "-";
+          if (tokenPrice === 0) return "$0";
+          if (tokenPrices[checkGnotPath(item.path)]?.usd == null) return "-";
 
           return formatPrice(
             BigNumber(tokenPrice)
@@ -242,7 +233,7 @@ const AssetListContainer: React.FC = () => {
         })();
 
         const balance = (() => {
-          if (isSwitchNetwork || !displayBalanceMap[item.path]) return "-";
+          if (isSwitchNetwork || !hasBalanceData || !displayBalanceMap[item.path]) return "-";
 
           return formatPoolPairAmount(displayBalanceMap[item.path], {
             isKMB: false,
@@ -309,6 +300,8 @@ const AssetListContainer: React.FC = () => {
     sortOption?.direction,
     extended,
     balances,
+    hasBalanceData,
+    hasTokenPriceData,
     tokenPrices,
     displayBalanceMap,
     assetType,
