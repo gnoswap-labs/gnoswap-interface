@@ -48,6 +48,7 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   fetched,
   loading,
   loadingPositionCardList,
+  isError,
   positions,
   connect,
   movePoolDetail,
@@ -71,11 +72,15 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   movePage,
   limit,
 }) => {
-  if (isOtherPosition && positions.length === 0 && !loading) {
-    return <OtherPositionNoLiquidity account={account} />;
-  }
   if ((!connected || isSwitchNetwork) && !loading && !isOtherPosition) {
     return <EarnMyPositionsUnconnected connect={connect} connected={connected} />;
+  }
+
+  if (isError && positions.length === 0) {
+    return null;
+  }
+  if (isOtherPosition && positions.length === 0 && !loading) {
+    return <OtherPositionNoLiquidity account={account} />;
   }
 
   if (connected && positions.length === 0 && !loading) {

@@ -108,14 +108,14 @@ export class PositionRepositoryImpl implements PositionRepository {
       url: "/users/" + address + "/position" + (queryString ? `?${queryString}` : ""),
     });
 
-    if (!response?.data?.data) {
-      return { positions: [], totalCount: 0 };
+    const positionList = response?.data?.data;
+    if (!Array.isArray(positionList?.positions) || typeof positionList.totalCount !== "number") {
+      throw new Error("Invalid position list response");
     }
 
-    const { positions, totalCount } = response.data.data;
     return {
-      positions: PositionMapper.fromList(positions),
-      totalCount,
+      positions: PositionMapper.fromList(positionList.positions),
+      totalCount: positionList.totalCount,
     };
   };
 

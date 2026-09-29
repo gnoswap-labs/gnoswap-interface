@@ -205,13 +205,15 @@ export class PoolRepositoryImpl implements PoolRepository {
 
   getPools = async (): Promise<PoolModel[]> => {
     if (!this.networkClient) {
-      return [];
+      throw new Error("Pool API unavailable");
     }
     const response = await this.networkClient.get<PoolListResponse>({
       url: "/pools",
     });
-    const pools = response?.data?.data ? response.data.data.map(PoolMapper.fromResponse) : [];
-    return pools;
+    if (!Array.isArray(response?.data?.data)) {
+      throw new Error("Invalid pool list response");
+    }
+    return response.data.data.map(PoolMapper.fromResponse);
   };
 
   getIncentivizePools = async (address?: string): Promise<IncentivizePoolModel[]> => {
