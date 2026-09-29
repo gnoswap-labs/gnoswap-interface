@@ -105,7 +105,8 @@ export class GnoProvider extends GnoJSONRPCProvider {
       console.warn("Failed to fetch the gas price, falling back to the minimum", error);
       return null;
     });
-    if (!gasPrice || gasPrice.denom !== GNOT_UNIT_DENOM) {
+    // tm2-js-client 3.3.0 already returns null for zero gas, the check keeps the division finite regardless.
+    if (!gasPrice || gasPrice.denom !== GNOT_UNIT_DENOM || gasPrice.gas === 0) {
       return 0;
     }
 

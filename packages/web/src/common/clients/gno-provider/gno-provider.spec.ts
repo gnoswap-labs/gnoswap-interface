@@ -11,6 +11,7 @@ describe("GnoProvider.getUgnotPerGas", () => {
 
   it.each([
     ["the node has no gas price", () => jest.fn().mockResolvedValue(null)],
+    ["the node reports zero gas", () => jest.fn().mockResolvedValue({ amount: 1, denom: "ugnot", gas: 0 })],
     ["the price is in another denom", () => jest.fn().mockResolvedValue({ amount: 1, denom: "uatom", gas: 1000 })],
     ["the query fails", () => jest.fn().mockRejectedValue(new Error("invalid gas price response"))],
   ])("returns 0 when %s", async (_, getGasPrice) => {
