@@ -8,6 +8,12 @@ jest.mock("@query/token", () => ({
   useGetTokens: () => ({ data: { tokens: [] }, isFetched: true }),
   useGetAllTokenPrices: () => ({ data: {}, isFetched: true }),
   useGetGrc20Balances: (...args: unknown[]) => useGetGrc20Balances(...args),
+  useGetSwapExtensionBalances: () => ({
+    data: {},
+    errors: {},
+    isLoading: false,
+    refetch: jest.fn(),
+  }),
 }));
 
 jest.mock("@hooks/wallet/data/use-wallet", () => ({
