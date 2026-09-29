@@ -51,6 +51,7 @@ const TokenSwapContainer: React.FC = () => {
     setTokenAAmount,
     priceImpactStatus,
     initializeSwapTokenInputAmount,
+    makeMaxAmountMessages,
   } = useSwapHandler();
 
   useEffect(() => {
@@ -133,6 +134,7 @@ const TokenSwapContainer: React.FC = () => {
         priceImpactStatus={priceImpactStatus}
         swapTokenInfo={swapTokenInfo}
         isRefetching={isRefetching}
+        makeMaxAmountMessages={makeMaxAmountMessages}
       />
       {openedSlippage && (
         <SettingMenuModal
