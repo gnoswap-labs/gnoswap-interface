@@ -24,14 +24,16 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
   const containerWidth = useElementWidth(containerRef);
 
   const tokenData = React.useMemo(() => {
+    const originExtension = getSwapExtensionByOriginPath(token.path);
     const isNative = isNativeTokenByType(token.type);
-    const pricePath = isNative ? token.wrappedPath : token.path;
+    // An origin token has no price feed of its own; the wrapped token is the registered one.
+    const pricePath = isNative || originExtension ? token.wrappedPath : token.path;
     return {
       name: token.name,
       symbol: token.symbol,
       displaySymbol: token.displaySymbol,
       logoURI: token.logoURI,
-      path: getSwapExtensionByOriginPath(token.path) ? token.path : pricePath,
+      path: originExtension ? token.path : pricePath,
       pricePath,
       isNative,
     };
@@ -49,13 +51,14 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
     });
   }, [rawCurrentPrice]);
 
-  const { data: { priceGradeType, last7d = [] } = {}, isLoading, isFetched } = useGetTokenPrices(
-    tokenData.pricePath as string,
-    {
-      enabled: !!tokenData.pricePath,
-      refetchInterval: RefetchInterval.Frequent,
-    },
-  );
+  const {
+    data: { priceGradeType, last7d = [] } = {},
+    isLoading,
+    isFetched,
+  } = useGetTokenPrices(tokenData.pricePath as string, {
+    enabled: !!tokenData.pricePath,
+    refetchInterval: RefetchInterval.Frequent,
+  });
 
   const handleMouseMove = React.useCallback((data?: LineGraphData) => {
     setChartData(data);

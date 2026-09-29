@@ -3,7 +3,7 @@ import { Provider as JotaiProvider } from "jotai";
 
 import { TokenModel } from "@models/token/token-model";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import { swapExtensions } from "@resources/swap-extension";
+import { createOriginToken, swapExtensions } from "@resources/swap-extension";
 
 import SwapTokenInfo from "./SwapTokenInfo";
 
@@ -25,12 +25,14 @@ jest.mock("@hooks/common/use-gnoscan-url", () => ({
   }),
 }));
 
+const mockUseGetTokenPrices = jest.fn((_path: string) => ({
+  data: { usd: "0.19", priceGradeType: "NONE", last7d: [] },
+  isLoading: false,
+  isFetched: true,
+}));
+
 jest.mock("@query/token", () => ({
-  useGetTokenPrices: () => ({
-    data: { usd: "0.19", priceGradeType: "NONE", last7d: [] },
-    isLoading: false,
-    isFetched: true,
-  }),
+  useGetTokenPrices: (path: string) => mockUseGetTokenPrices(path),
 }));
 
 jest.mock("./SwapTokenChart", () => ({
@@ -39,22 +41,22 @@ jest.mock("./SwapTokenChart", () => ({
 }));
 
 describe("SwapTokenInfo", () => {
-  it("shows the realm path for a native swap extension", () => {
-    const extension = swapExtensions[0];
-    const token = {
-      path: extension.originTokenPath,
-      wrappedPath: extension.grc20WrappedTokenPath,
-      type: "Native",
-      chainId: "portal-loop",
-      name: "Bubble",
-      symbol: "BUBBLE",
-      displaySymbol: "BUBBLE",
-      decimals: 6,
-      logoURI: "",
-      createdAt: "",
-      priceID: extension.grc20WrappedTokenPath,
-    } satisfies TokenModel;
+  const extension = swapExtensions[0];
+  const wrappedToken = {
+    type: "GRC20",
+    chainId: "portal-loop",
+    createdAt: "",
+    name: "Bubble",
+    path: extension.grc20WrappedTokenPath,
+    decimals: 6,
+    symbol: "BUBBLE",
+    displaySymbol: "wBUBBLE",
+    logoURI: "",
+    priceID: extension.grc20WrappedTokenPath,
+  } satisfies TokenModel;
+  const originToken = createOriginToken(extension, wrappedToken);
 
+  const renderToken = (token: TokenModel) =>
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
@@ -63,8 +65,26 @@ describe("SwapTokenInfo", () => {
       </JotaiProvider>,
     );
 
+  beforeEach(() => mockUseGetTokenPrices.mockClear());
+
+  it("shows the realm path for a swap extension origin token", () => {
+    renderToken(originToken);
+
     expect(screen.getByRole("button", { name: "BUBBLE" })).toBeInTheDocument();
     expect(screen.getByText(extension.originTokenPath.replace(/^gno\.land\//, ""))).toBeInTheDocument();
     expect(screen.queryByText("Native Coin")).not.toBeInTheDocument();
+  });
+
+  it("prices an origin token through its wrapped token", () => {
+    renderToken(originToken);
+
+    expect(mockUseGetTokenPrices).toHaveBeenCalledWith(extension.grc20WrappedTokenPath);
+    expect(mockUseGetTokenPrices).not.toHaveBeenCalledWith(extension.originTokenPath);
+  });
+
+  it("prices a plain GRC20 token through its own path", () => {
+    renderToken(wrappedToken);
+
+    expect(mockUseGetTokenPrices).toHaveBeenCalledWith(extension.grc20WrappedTokenPath);
   });
 });

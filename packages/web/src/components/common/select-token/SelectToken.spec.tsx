@@ -54,11 +54,11 @@ describe("SelectToken Component", () => {
     isSwitchNetwork: false,
   };
 
-  const renderSelectToken = () =>
+  const renderSelectToken = (overrides?: Partial<SelectTokenProps>) =>
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
-          <SelectToken {...args} />
+          <SelectToken {...args} {...overrides} />
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );
@@ -74,6 +74,15 @@ describe("SelectToken Component", () => {
     expect(screen.queryByText("Native Coin")).not.toBeInTheDocument();
   });
 
+  it.each([
+    ["0", "-"],
+    ["1.5", "1.5"],
+  ])("renders a %s balance as %s", (balance, expected) => {
+    renderSelectToken({ tokenPrices: { [token.path]: balance } });
+
+    expect(screen.getByText(expected)).toBeInTheDocument();
+  });
+
   it("opens an origin realm in Gnoscan", () => {
     const open = jest.spyOn(window, "open").mockImplementation();
     const { container } = renderSelectToken();
@@ -81,9 +90,6 @@ describe("SelectToken Component", () => {
     fireEvent.click(container.querySelector(".token-path")!);
 
     expect(mockGetRealmUrl).toHaveBeenCalledWith(extension.originTokenPath);
-    expect(open).toHaveBeenCalledWith(
-      `https://gnoscan.io/realms/details?path=${extension.originTokenPath}`,
-      "_blank",
-    );
+    expect(open).toHaveBeenCalledWith(`https://gnoscan.io/realms/details?path=${extension.originTokenPath}`, "_blank");
   });
 });
