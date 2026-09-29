@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 import { TokenError } from "@common/errors/token";
@@ -7,6 +7,7 @@ import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useGetToken, useGetTokenPrices } from "@query/token";
+import { getSwapExtensionByOriginPath } from "@resources/swap-extension";
 
 import TokenDetail from "@layouts/token-detail/TokenDetail";
 import { TokenSEOContainer } from "@containers/seo-header-container";
@@ -21,7 +22,21 @@ export async function getStaticProps({ locale }: { locale: string }) {
 
 export default function Page() {
   const router = useCustomRouter();
-  const path = router.getTokenPath();
+  const routePath = router.getTokenPath();
+  const extension = getSwapExtensionByOriginPath(routePath);
+  const path = extension?.grc20WrappedTokenPath ?? routePath;
+
+  useEffect(() => {
+    if (!router.isReady || !extension) return;
+
+    router.replace({
+      pathname: "/token",
+      query: {
+        ...router.query,
+        path: extension.grc20WrappedTokenPath,
+      },
+    });
+  }, [extension, router.isReady]);
 
   const { data: token } = useGetToken(path, {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -46,6 +61,10 @@ export default function Page() {
     }
     return getGnotPath(token);
   }, [getGnotPath, token]);
+
+  if (extension) {
+    return null;
+  }
 
   return (
     <>

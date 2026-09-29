@@ -2,11 +2,12 @@ import IconClose from "@components/common/icons/IconCancel";
 import IconSearch from "@components/common/icons/IconSearch";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { TokenModel } from "@models/token/token-model";
+import { getSwapExtensionByOriginPath } from "@resources/swap-extension";
 import { ORDER } from "@utils/token-sort";
 import { TokenState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
 import { removeDuplicatesByWrappedPath } from "@utils/common";
-import { formatTokenModelPath } from "@utils/token-utils";
+import { formatTokenModelPath, formatTokenPath } from "@utils/token-utils";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -19,7 +20,7 @@ export interface SelectTokenProps {
   keyword: string;
   defaultTokens: TokenModel[];
   tokens: TokenModel[];
-  tokenPrices: { [key in string]: number | null };
+  tokenPrices: { [key in string]: string | number | null };
   changeKeyword: (keyword: string) => void;
   changeToken: (token: TokenModel) => void;
   close: () => void;
@@ -50,16 +51,16 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   const [widthList, setWidthList] = useState<number[]>(tokens.map(() => 0));
   const [tokenNameWidthList, setTokenNameWidthList] = useState<number[]>(tokens.map(() => 0));
   const [, setRecentsData] = useAtom(TokenState.selectRecents);
-  const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
+  const { getGnoscanUrl, getRealmUrl, getTokenUrl } = useGnoscanUrl();
 
   const getTokenPrice = useCallback(
     (token: TokenModel) => {
-      const tokenPrice = tokenPrices[token.path];
-      if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice) || isSwitchNetwork) {
+      const balance = BigNumber(tokenPrices[token.path] ?? "");
+      if (balance.isNaN() || balance.isLessThanOrEqualTo(0) || isSwitchNetwork) {
         return "-";
       }
 
-      return BigNumber(tokenPrice).toFormat();
+      return balance.toFormat();
     },
     [tokenPrices, isSwitchNetwork],
   );
@@ -122,11 +123,13 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       e.stopPropagation();
       if (token.path === "ugnot") {
         window.open(getGnoscanUrl(), "_blank");
+      } else if (getSwapExtensionByOriginPath(token.path)) {
+        window.open(getRealmUrl(token.path), "_blank");
       } else {
         window.open(getTokenUrl(token.path), "_blank");
       }
     },
-    [getGnoscanUrl, getTokenUrl],
+    [getGnoscanUrl, getRealmUrl, getTokenUrl],
   );
 
   const length = useMemo(() => {
@@ -178,7 +181,9 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       <div className={`token-list-wrapper ${tokens.length === 0 ? "token-list-wrapper-auto-height" : ""}`}>
         {tokens.length > 0 &&
           tokens.map((token, index) => {
-            const displayTokenPath = formatTokenModelPath(token);
+            const displayTokenPath = getSwapExtensionByOriginPath(token.path)
+              ? formatTokenPath(token.path, false)
+              : formatTokenModelPath(token);
             return (
               <div className="list" key={index} onClick={() => onClickToken(token)}>
                 <div className="token-info">

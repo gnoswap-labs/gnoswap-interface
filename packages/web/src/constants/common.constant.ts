@@ -218,7 +218,7 @@ export const SEOInfo: Record<
   "/token": {
     title: (params = []) => {
       const [tokenPrice, tokenName, tokenSymbol] = params;
-      const tokenSymbolDisplay = tokenSymbol ? `(${tokenSymbol})` : "";
+      const tokenSymbolDisplay = tokenSymbol ? ` (${tokenSymbol})` : "";
       const tokenNameDisplay = `${tokenName}${tokenSymbolDisplay}`;
       const titleDisplay = [tokenPrice, tokenNameDisplay].filter(item => item).join(" | ");
 
@@ -237,7 +237,7 @@ export const SEOInfo: Record<
     ogTitle: (params = []) => {
       if (params.length === 2) {
         const [tokenName, tokenSymbol] = params;
-        return `${tokenName}(${tokenSymbol}) | GnoSwap`;
+        return `${tokenName} (${tokenSymbol}) | GnoSwap`;
       }
       return DefaultTitle;
     },

@@ -30,10 +30,33 @@ const mockTokenB: TokenModel = {
   displaySymbol: "GNS",
   priceID: "gno.land/r/demo/gns",
 };
+const mockWrappedBubble: TokenModel = {
+  ...mockTokenA,
+  name: "BUBBLE (wrapped)",
+  path: "gno.land/r/g1leu8d2vsplhehcfkjg50mwgdpxdkt8tztu95wr/wbubble.BUBBLE",
+  symbol: "BUBBLE",
+  displaySymbol: "wBUBBLE",
+  priceID: "gno.land/r/g1leu8d2vsplhehcfkjg50mwgdpxdkt8tztu95wr/wbubble.BUBBLE",
+};
+const mockOriginBubble: TokenModel = {
+  ...mockWrappedBubble,
+  name: "BUBBLE",
+  path: "gno.land/r/g1leu8d2vsplhehcfkjg50mwgdpxdkt8tztu95wr/bubble",
+  displaySymbol: "BUBBLE",
+};
 const mockTokenPrices = {
   [mockTokenA.path]: mockPrice,
   [mockTokenB.path]: mockPrice,
+  [mockWrappedBubble.path]: mockPrice,
 };
+let mockDisplayBalanceStringMap: Record<string, string> = {
+  [mockTokenA.path]: "1000000000000",
+  [mockTokenB.path]: "1000000000000",
+  [mockWrappedBubble.path]: "1000000000000",
+};
+let mockSwapExtensionBalanceErrors: Record<string, Error | null> = {};
+let mockSwapExtensionBalanceLoading: Record<string, boolean> = {};
+let mockTokens: TokenModel[] = [mockTokenA, mockTokenB, mockWrappedBubble];
 
 jest.mock("@adena-wallet/sdk", () => ({
   makeMsgCallMessage: jest.fn(),
@@ -76,9 +99,11 @@ jest.mock("@hooks/wallet/data/use-wallet", () => ({
 }));
 jest.mock("@hooks/token/data/use-token-data", () => ({
   useTokenData: () => ({
-    tokens: [mockTokenA, mockTokenB],
+    tokens: mockTokens,
     tokenPrices: mockTokenPrices,
-    displayBalanceStringMap: { [mockTokenA.path]: "1000000000000", [mockTokenB.path]: "1000000000000" },
+    displayBalanceStringMap: mockDisplayBalanceStringMap,
+    swapExtensionBalanceErrors: mockSwapExtensionBalanceErrors,
+    swapExtensionBalanceLoading: mockSwapExtensionBalanceLoading,
     isFetched: true,
     updateBalances: mockUpdateBalances,
     refetchGrc20Balances: jest.fn(),
@@ -93,9 +118,13 @@ const oldQuote = {
   status: "SUCCESS",
 };
 
-function renderSwapHandler(type: "EXACT_IN" | "EXACT_OUT" = "EXACT_IN") {
+function renderSwapHandler(
+  type: "EXACT_IN" | "EXACT_OUT" = "EXACT_IN",
+  tokenA: TokenModel | null = mockTokenA,
+  tokenB: TokenModel | null = mockTokenB,
+) {
   const store = createStore();
-  store.set(SwapState.swap, { tokenA: mockTokenA, tokenB: mockTokenB, type });
+  store.set(SwapState.swap, { tokenA, tokenB, type });
   const wrapper = ({ children }: { children: ReactNode }) => <Provider store={store}>{children}</Provider>;
   return renderHook(() => useSwapHandler(), { wrapper });
 }
@@ -105,9 +134,151 @@ describe("useSwapHandler quote consistency", () => {
     jest.useFakeTimers();
     mockGetRoutes.mockReset();
     mockUpdateBalances.mockClear();
+    mockGetRoutes.mockReturnValue({ data: undefined, error: null, isLoading: false, isRefetching: false });
+    mockDisplayBalanceStringMap = {
+      [mockTokenA.path]: "1000000000000",
+      [mockTokenB.path]: "1000000000000",
+      [mockWrappedBubble.path]: "1000000000000",
+    };
+    mockSwapExtensionBalanceErrors = {};
+    mockSwapExtensionBalanceLoading = {};
+    mockTokens = [mockTokenA, mockTokenB, mockWrappedBubble];
   });
 
   afterEach(() => jest.useRealTimers());
+
+  it("changes only the selected side when choosing a wrapped extension token", () => {
+    const { result, unmount } = renderSwapHandler("EXACT_IN", mockTokenA, null);
+
+    act(() => result.current.changeTokenA(mockWrappedBubble));
+
+    expect(result.current.tokenA).toBe(mockWrappedBubble);
+    expect(result.current.tokenB).toBeNull();
+    unmount();
+  });
+
+  it.each([
+    ["upper", mockTokenA, null, "changeTokenA"],
+    ["lower", null, mockTokenB, "changeTokenB"],
+  ] as const)("ignores an %s origin selection until its wrapper is loaded", (_side, tokenA, tokenB, change) => {
+    mockTokens = [mockTokenA, mockTokenB];
+    const { result, unmount } = renderSwapHandler("EXACT_IN", tokenA, tokenB);
+
+    act(() => result.current[change](mockOriginBubble));
+
+    expect(result.current.tokenA).toBe(tokenA);
+    expect(result.current.tokenB).toBe(tokenB);
+    unmount();
+  });
+
+  it("pairs an origin token selection with its wrapper", () => {
+    const { result, unmount } = renderSwapHandler("EXACT_IN", mockTokenA, null);
+
+    act(() => result.current.changeTokenA(mockOriginBubble));
+
+    expect(result.current.tokenA).toBe(mockOriginBubble);
+    expect(result.current.tokenB).toBe(mockWrappedBubble);
+    unmount();
+  });
+
+  it("keeps a lower origin selection in the lower slot", () => {
+    const { result, unmount } = renderSwapHandler("EXACT_IN", mockWrappedBubble, mockTokenA);
+
+    act(() => result.current.changeTokenB(mockOriginBubble));
+
+    expect(result.current.tokenA).toBe(mockWrappedBubble);
+    expect(result.current.tokenB).toBe(mockOriginBubble);
+    unmount();
+  });
+
+  it("replaces an origin token before selecting an ordinary opposite token", () => {
+    const { result, unmount } = renderSwapHandler("EXACT_IN", mockOriginBubble, mockWrappedBubble);
+
+    act(() => result.current.changeTokenB(mockTokenB));
+
+    expect(result.current.tokenA).toBe(mockWrappedBubble);
+    expect(result.current.tokenB).toBe(mockTokenB);
+    unmount();
+  });
+
+  it("keeps an unknown regular-token balance in the loading state", () => {
+    mockDisplayBalanceStringMap = {
+      [mockTokenB.path]: "1000000000000",
+    };
+    mockGetRoutes.mockReturnValue({ data: oldQuote, error: null, isLoading: false, isRefetching: false });
+    const { result, unmount } = renderSwapHandler("EXACT_IN", mockTokenA, mockTokenB);
+
+    act(() => result.current.changeTokenAAmount("1"));
+    act(() => jest.advanceTimersByTime(1_000));
+
+    expect(result.current.swapButtonText).toBe("Swap:swapButton.review");
+    unmount();
+  });
+
+  it("ignores loading from an unrelated extension", () => {
+    mockDisplayBalanceStringMap = {
+      [mockOriginBubble.path]: "100",
+      [mockWrappedBubble.path]: "100",
+    };
+    mockSwapExtensionBalanceLoading = {
+      "gno.land/r/example/other-origin": true,
+    };
+    mockGetRoutes.mockReturnValue({ data: oldQuote, error: null, isLoading: false, isRefetching: false });
+    const { result, unmount } = renderSwapHandler("EXACT_IN", mockOriginBubble, mockWrappedBubble);
+
+    act(() => result.current.changeTokenAAmount("1"));
+    act(() => jest.advanceTimersByTime(1_000));
+
+    expect(result.current.swapButtonText).toBe("Swap:swapButton.wrap");
+    unmount();
+  });
+
+  it("reports an unavailable origin balance separately from zero", () => {
+    mockSwapExtensionBalanceErrors = {
+      [mockOriginBubble.path]: new Error("Balance query failed"),
+    };
+    mockGetRoutes.mockReturnValue({ data: oldQuote, error: null, isLoading: false, isRefetching: false });
+    const { result, unmount } = renderSwapHandler("EXACT_IN", mockOriginBubble, mockWrappedBubble);
+
+    act(() => result.current.changeTokenAAmount("1"));
+    act(() => jest.advanceTimersByTime(1_000));
+
+    expect(result.current.swapButtonText).toBe("Swap:swapButton.balanceUnavailable");
+    unmount();
+  });
+
+  it("uses a cached origin balance after a refetch error", () => {
+    mockDisplayBalanceStringMap = {
+      [mockOriginBubble.path]: "100",
+      [mockWrappedBubble.path]: "100",
+    };
+    mockSwapExtensionBalanceErrors = {
+      [mockOriginBubble.path]: new Error("Refetch failed"),
+    };
+    mockGetRoutes.mockReturnValue({ data: oldQuote, error: null, isLoading: false, isRefetching: false });
+    const { result, unmount } = renderSwapHandler("EXACT_IN", mockOriginBubble, mockWrappedBubble);
+
+    act(() => result.current.changeTokenAAmount("1"));
+    act(() => jest.advanceTimersByTime(1_000));
+
+    expect(result.current.swapButtonText).toBe("Swap:swapButton.wrap");
+    unmount();
+  });
+
+  it("does not use the wrapped balance for a confirmed zero origin balance", () => {
+    mockDisplayBalanceStringMap = {
+      [mockOriginBubble.path]: "0",
+      [mockWrappedBubble.path]: "100",
+    };
+    mockGetRoutes.mockReturnValue({ data: oldQuote, error: null, isLoading: false, isRefetching: false });
+    const { result, unmount } = renderSwapHandler("EXACT_IN", mockOriginBubble, mockWrappedBubble);
+
+    act(() => result.current.changeTokenAAmount("1"));
+    act(() => jest.advanceTimersByTime(1_000));
+
+    expect(result.current.swapButtonText).toBe("common:btn.insuffiBal");
+    unmount();
+  });
 
   it("replaces the prior quote with the new input's output", () => {
     mockGetRoutes.mockImplementation(({ tokenAmount }) => ({

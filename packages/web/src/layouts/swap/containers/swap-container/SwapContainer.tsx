@@ -1,10 +1,16 @@
 import { useAtomValue } from "jotai";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { GNOT_TOKEN_DEFAULT } from "@common/values/token-constant";
 import useRouter from "@hooks/common/use-custom-router";
 import { useSwapHandler } from "@hooks/swap/data/use-swap-handler";
 import { useGetTokens } from "@query/token";
+import {
+  getOriginToken,
+  getSwapExtensionByOriginPath,
+  getSwapExtensionForTokenSelector,
+  swapExtensions,
+} from "@resources/swap-extension";
 import { ThemeState } from "@states/index";
 
 import SwapCard from "../../components/swap-card/SwapCard";
@@ -14,6 +20,13 @@ const SwapContainer: React.FC = () => {
   const router = useRouter();
   const [initialized, setInitialized] = useState(false);
   const { data: { tokens = [] } = {} } = useGetTokens(true);
+  const originTokens = useMemo(
+    () =>
+      swapExtensions
+        .map(extension => getOriginToken(extension, tokens))
+        .filter(token => token !== null),
+    [tokens],
+  );
 
   const {
     connectedWallet,
@@ -50,6 +63,18 @@ const SwapContainer: React.FC = () => {
     initializeSwapTokenInputAmount,
     makeMaxAmountMessages,
   } = useSwapHandler();
+  const additionalTokenATokens = useMemo(() => {
+    const extension = getSwapExtensionForTokenSelector(swapTokenInfo.tokenA?.path, swapTokenInfo.tokenB?.path);
+    if (!extension) return [];
+    const originToken = originTokens.find(token => token.path === extension.originTokenPath);
+    return originToken ? [originToken] : [];
+  }, [originTokens, swapTokenInfo.tokenA?.path, swapTokenInfo.tokenB?.path]);
+  const additionalTokenBTokens = useMemo(() => {
+    const extension = getSwapExtensionForTokenSelector(swapTokenInfo.tokenB?.path, swapTokenInfo.tokenA?.path);
+    if (!extension) return [];
+    const originToken = originTokens.find(token => token.path === extension.originTokenPath);
+    return originToken ? [originToken] : [];
+  }, [originTokens, swapTokenInfo.tokenA?.path, swapTokenInfo.tokenB?.path]);
 
   useEffect(() => {
     if (!initialized && tokens.length > 0) {
@@ -84,17 +109,19 @@ const SwapContainer: React.FC = () => {
       return;
     }
     const query = router.query;
-    const currentTokenA = tokens.find(token => token.path === query.from) || null;
-    const currentTokenB = tokens.find(token => token.path === query.to) || null;
+    let currentTokenA = [...tokens, ...originTokens].find(token => token.path === query.from) || null;
+    let currentTokenB = [...tokens, ...originTokens].find(token => token.path === query.to) || null;
+    const tokenAExtension = getSwapExtensionByOriginPath(currentTokenA?.path);
+    const tokenBExtension = getSwapExtensionByOriginPath(currentTokenB?.path);
+    if (tokenAExtension && currentTokenB?.path !== tokenAExtension.grc20WrappedTokenPath) {
+      currentTokenB = tokens.find(token => token.path === tokenAExtension.grc20WrappedTokenPath) || null;
+    }
+    if (tokenBExtension && currentTokenA?.path !== tokenBExtension.grc20WrappedTokenPath) {
+      currentTokenA = tokens.find(token => token.path === tokenBExtension.grc20WrappedTokenPath) || null;
+    }
     const tokenAAmountQuery = (query.token_a_amount ?? "") as string;
     const tokenBAmountQuery = (query.token_b_amount ?? "") as string;
-    const direction = (() => {
-      if (tokenAAmountQuery) return "EXACT_IN";
-
-      if (tokenBAmountQuery) return "EXACT_OUT";
-
-      return "EXACT_IN";
-    })();
+    const direction = tokenAAmountQuery || tokenAExtension || tokenBExtension ? "EXACT_IN" : tokenBAmountQuery ? "EXACT_OUT" : "EXACT_IN";
     if (!currentTokenA && !currentTokenB) return;
     setSwapValue({
       tokenA: currentTokenA,
@@ -103,7 +130,7 @@ const SwapContainer: React.FC = () => {
       tokenAAmount: tokenAAmountQuery,
       tokenBAmount: tokenBAmountQuery,
     });
-  }, [initialized, router.query, tokens]);
+  }, [initialized, originTokens, router.query, tokens]);
 
   // Initialize token information when component mounts/unmounts
   useEffect(() => {
@@ -119,6 +146,8 @@ const SwapContainer: React.FC = () => {
       swapTokenInfo={swapTokenInfo}
       swapSummaryInfo={swapSummaryInfo}
       swapRouteInfos={swapRouteInfos}
+      additionalTokenATokens={additionalTokenATokens}
+      additionalTokenBTokens={additionalTokenBTokens}
       isAvailSwap={isAvailSwap}
       swapButtonText={swapButtonText}
       submitted={submitted}

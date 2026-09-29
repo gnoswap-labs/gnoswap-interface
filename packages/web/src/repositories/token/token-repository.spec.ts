@@ -1,6 +1,7 @@
 import { MockStorageClient } from "@common/clients/storage-client/mock-storage-client";
 import { NetworkClient } from "@common/clients/network-client";
 import { TokenSearchLogModel } from "@models/token/token-search-log-model";
+import { swapExtensions } from "@resources/swap-extension";
 import { TokenRepositoryMock } from "./token-repository-mock";
 import { TokenRepositoryImpl } from "./token-repository-impl";
 
@@ -33,6 +34,31 @@ describe("getTokens", () => {
 
     expect(networkClient.get).toHaveBeenCalledWith({
       url: `/token-metas?showUnverified=${showUnverified}`,
+    });
+  });
+});
+
+describe("token display metadata", () => {
+  it("preserves the wrapped token symbol while exposing its extension display symbol", async () => {
+    const extension = swapExtensions[0];
+    const networkClient = {
+      get: jest.fn().mockResolvedValue({
+        data: {
+          data: {
+            path: extension.grc20WrappedTokenPath,
+            symbol: "BUBBLE",
+            displaySymbol: "BUBBLE",
+          },
+        },
+      }),
+    } as unknown as NetworkClient;
+    const repository = new TokenRepositoryImpl(networkClient, localStorageClient);
+
+    const token = await repository.getTokenByPath(extension.grc20WrappedTokenPath);
+
+    expect(token).toMatchObject({
+      symbol: "BUBBLE",
+      displaySymbol: "wBUBBLE",
     });
   });
 });

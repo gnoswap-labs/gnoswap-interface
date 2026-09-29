@@ -27,6 +27,7 @@
   "priceImpactWarn": "높은 프라이스 임팩트! 이 거래로 인해 가격이 급격히 변동될 수 있습니다.",
   "swapButton": {
     "amtLow": "수량이 너무 적음",
+    "balanceUnavailable": "잔액 없음",
     "enterAmount": "수량 입력",
     "insuffiLiq": "유동성 부족",
     "review": "리뷰",

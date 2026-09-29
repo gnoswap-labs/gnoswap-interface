@@ -30,6 +30,8 @@ interface ContentProps {
   swapTokenInfo: SwapTokenInfo;
   swapSummaryInfo: SwapSummaryInfo | null;
   swapRouteInfos: SwapRouteInfo[];
+  additionalTokenATokens?: TokenModel[];
+  additionalTokenBTokens?: TokenModel[];
   changeTokenA: (token: TokenModel) => void;
   changeTokenAAmount: (value: string, none?: boolean) => void;
   changeTokenB: (token: TokenModel) => void;
@@ -50,6 +52,8 @@ const SwapCardContent: React.FC<ContentProps> = ({
   swapTokenInfo,
   swapSummaryInfo,
   swapRouteInfos,
+  additionalTokenATokens,
+  additionalTokenBTokens,
   changeTokenA,
   changeTokenAAmount,
   changeTokenB,
@@ -202,7 +206,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
             inputMode={"decimal"}
           />
           <div className="token-selector">
-            <SelectPairButton token={tokenA} changeToken={changeTokenA} />
+            <SelectPairButton token={tokenA} changeToken={changeTokenA} additionalTokens={additionalTokenATokens} />
           </div>
         </div>
         <div className="amount-info">
@@ -247,7 +251,7 @@ const SwapCardContent: React.FC<ContentProps> = ({
             inputMode={"decimal"}
           />
           <div className="token-selector">
-            <SelectPairButton token={tokenB} changeToken={changeTokenB} />
+            <SelectPairButton token={tokenB} changeToken={changeTokenB} additionalTokens={additionalTokenBTokens} />
           </div>
         </div>
         <div className="amount-info">

@@ -20,6 +20,11 @@ import mockedExchangeRateGraph from "./mock/token-exchange-rate-graph.json";
 import { IBalancesByAddressResponse, IGrc20TransferHistoryResponse } from "./response/balance-by-address-response";
 import { TokenExchangeRateGraphResponse } from "./response/token-exchange-rate-response";
 
+const normalizeTokenDisplay = <T extends Pick<ITokenResponse, "path" | "symbol" | "displaySymbol">>(token: T): T => ({
+  ...token,
+  displaySymbol: formatDisplayTokenSymbol(token.symbol, token.path),
+});
+
 export class TokenRepositoryImpl implements TokenRepository {
   private networkClient: NetworkClient | null;
   private localStorageClient: StorageClient<StorageKeyType>;
@@ -41,10 +46,7 @@ export class TokenRepositoryImpl implements TokenRepository {
     const response = await this.networkClient.get<{ data: ITokenResponse }>({
       url: `/token-metas/${tempPath}`,
     });
-    return {
-      ...response.data.data,
-      displaySymbol: formatDisplayTokenSymbol(response.data.data.symbol),
-    };
+    return normalizeTokenDisplay(response.data.data);
   };
 
   public getTokens = async (showUnverified: boolean): Promise<TokenListResponse> => {
@@ -59,10 +61,7 @@ export class TokenRepositoryImpl implements TokenRepository {
     }
     const tokens =
       response?.data?.data
-        .map(token => ({
-          ...token,
-          displaySymbol: formatDisplayTokenSymbol(token.symbol),
-        }))
+        .map(normalizeTokenDisplay)
         .sort(customSort) || [];
     return { tokens };
   };
@@ -102,14 +101,8 @@ export class TokenRepositoryImpl implements TokenRepository {
       ...response.data.data,
       bestPools: response.data.data.bestPools.map(pool => ({
         ...pool,
-        tokenA: {
-          ...pool.tokenA,
-          displaySymbol: formatDisplayTokenSymbol(pool.tokenA.symbol),
-        },
-        tokenB: {
-          ...pool.tokenB,
-          displaySymbol: formatDisplayTokenSymbol(pool.tokenB.symbol),
-        },
+        tokenA: normalizeTokenDisplay(pool.tokenA),
+        tokenB: normalizeTokenDisplay(pool.tokenB),
       })),
     };
   };

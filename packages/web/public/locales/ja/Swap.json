@@ -27,6 +27,7 @@
   "priceImpactWarn": "高い価格インパクト！あなたの取引によって価格が急変する可能性があります。",
   "swapButton": {
     "amtLow": "金額が低すぎる",
+    "balanceUnavailable": "残高がありません",
     "enterAmount": "金額を入力",
     "insuffiLiq": "不十分な流動性",
     "review": "レビュー",

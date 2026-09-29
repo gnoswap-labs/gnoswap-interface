@@ -28,6 +28,11 @@ import { QUERY_KEY } from "@query/query-keys";
 import { useGetSwapFee } from "@query/router";
 import { DexEvent } from "@repositories/common";
 import { SwapRouteSuccessResponse } from "@repositories/swap-router/response/swap-route-response";
+import {
+  getSwapExtensionByOriginPath,
+  getSwapExtensionOperation,
+  isSwapExtensionPair,
+} from "@resources/swap-extension";
 import { CommonState, SwapState } from "@states/index";
 import { checkGnotPath, isGNOTPath, toNativePath } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
@@ -49,6 +54,7 @@ type SwapButtonStateType =
   | "ENTER_AMOUNT"
   | "AMOUNT_TOO_LOW"
   | "LOADING"
+  | "BALANCE_UNAVAILABLE"
   | "INSUFFICIENT_BALANCE"
   | "INSUFFICIENT_LIQUIDITY"
   | "WRAP"
@@ -161,8 +167,17 @@ export const useSwapHandler = () => {
   const [openedConfirmModal, setOpenedConfirmModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { connected: connectedWallet, isSwitchNetwork, switchNetwork } = useWallet();
-  const { tokens, tokenPrices, displayBalanceStringMap, updateBalances, getTokenUSDPrice, refetchGrc20Balances } =
-    useTokenData(true);
+  const {
+    tokens,
+    tokenPrices,
+    displayBalanceStringMap,
+    updateBalances,
+    getTokenUSDPrice,
+    swapExtensionBalanceLoading,
+    swapExtensionBalanceErrors,
+    refetchGrc20Balances,
+    refetchSwapExtensionBalances,
+  } = useTokenData(true);
   const { slippage, changeSlippage } = useSlippage();
   const { openModal } = useConnectWalletModal();
   const { data: swapFee } = useGetSwapFee();
@@ -220,22 +235,25 @@ export const useSwapHandler = () => {
   // Display formatting is applied separately (useTokenBalancesDisplay).
   const tokenABalance = useMemo(() => {
     if (isSwitchNetwork || !tokenA) return "-";
-
-    return displayBalanceStringMap?.[tokenA.priceID] ?? "-";
-  }, [isSwitchNetwork, displayBalanceStringMap, tokenA]);
+    if (getSwapExtensionByOriginPath(tokenA.path)) {
+      return displayBalanceStringMap[tokenA.path] ?? "0";
+    }
+    return displayBalanceStringMap[tokenA.path] ?? displayBalanceStringMap[tokenA.priceID] ?? "-";
+  }, [displayBalanceStringMap, isSwitchNetwork, tokenA]);
 
   const tokenBBalance = useMemo(() => {
     if (isSwitchNetwork || !tokenB) return "-";
+    return displayBalanceStringMap[tokenB.path] ?? displayBalanceStringMap[tokenB.priceID] ?? "-";
+  }, [displayBalanceStringMap, isSwitchNetwork, tokenB]);
 
-    return displayBalanceStringMap?.[tokenB.priceID] ?? "-";
-  }, [isSwitchNetwork, displayBalanceStringMap, tokenB]);
+  const swapExtensionOperation = getSwapExtensionOperation(tokenA, tokenB);
 
   const quotedTokenAAmount = useMemo(() => {
-    return type === "EXACT_OUT" ? estimatedAmount ?? (swapState === "NONE" ? tokenAAmount : "") : tokenAAmount;
+    return type === "EXACT_OUT" ? (estimatedAmount ?? (swapState === "NONE" ? tokenAAmount : "")) : tokenAAmount;
   }, [estimatedAmount, swapState, tokenAAmount, type]);
 
   const quotedTokenBAmount = useMemo(() => {
-    return type === "EXACT_IN" ? estimatedAmount ?? (swapState === "NONE" ? tokenBAmount : "") : tokenBAmount;
+    return type === "EXACT_IN" ? (estimatedAmount ?? (swapState === "NONE" ? tokenBAmount : "")) : tokenBAmount;
   }, [estimatedAmount, swapState, tokenBAmount, type]);
 
   useEffect(() => {
@@ -366,8 +384,18 @@ export const useSwapHandler = () => {
     if (isIdenticalToken) {
       return "SELECT_TOKEN";
     }
+    const originExtension = getSwapExtensionByOriginPath(tokenA.path);
+    if (originExtension && swapExtensionBalanceLoading[tokenA.path]) {
+      return "LOADING";
+    }
+    if (originExtension && swapExtensionBalanceErrors[tokenA.path] && displayBalanceStringMap[tokenA.path] == null) {
+      return "BALANCE_UNAVAILABLE";
+    }
     if (!Number(tokenAAmount) && !Number(tokenBAmount)) {
       return "ENTER_AMOUNT";
+    }
+    if (tokenABalance === "-") {
+      return "LOADING";
     }
     if (
       (type === "EXACT_IN" && isAmountLessThanTokenMinimum(tokenA, tokenAAmount)) ||
@@ -396,7 +424,7 @@ export const useSwapHandler = () => {
     }
 
     if (isSameToken) {
-      if (isNativeToken(tokenA)) {
+      if (swapExtensionOperation === "wrap" || (swapExtensionOperation === null && isNativeToken(tokenA))) {
         return "WRAP";
       }
       return "UNWRAP";
@@ -419,6 +447,10 @@ export const useSwapHandler = () => {
     swapState,
     tokenABalance,
     isLoading,
+    swapExtensionBalanceLoading,
+    swapExtensionBalanceErrors,
+    displayBalanceStringMap,
+    swapExtensionOperation,
     priceImpactStatus,
     estimatedRoutes?.length,
   ]);
@@ -435,6 +467,8 @@ export const useSwapHandler = () => {
         return t("Swap:swapButton.enterAmount");
       case "LOADING":
         return t("Swap:swapButton.review");
+      case "BALANCE_UNAVAILABLE":
+        return t("Swap:swapButton.balanceUnavailable");
       case "AMOUNT_TOO_LOW":
         return t("Swap:swapButton.amtLow");
       case "INSUFFICIENT_BALANCE":
@@ -685,10 +719,11 @@ export const useSwapHandler = () => {
     resetSwapAmount();
     refetchGrc20Balances();
     updateBalances();
+    refetchSwapExtensionBalances();
     queryClient.removeQueries({
       queryKey: [QUERY_KEY.router],
     });
-  }, [queryClient]);
+  }, [queryClient, refetchGrc20Balances, refetchSwapExtensionBalances, resetSwapAmount, updateBalances]);
 
   useEffect(() => {
     if (!tokens.length) {
@@ -756,6 +791,9 @@ export const useSwapHandler = () => {
 
   const changeTokenBAmount = useCallback(
     (changed: string, none?: boolean) => {
+      if (getSwapExtensionByOriginPath(tokenA?.path) && !isSameToken) {
+        return;
+      }
       const result = handleAmount(changed, tokenB, tokenBAmount);
 
       if (!result.isValid) {
@@ -804,6 +842,9 @@ export const useSwapHandler = () => {
     if (!tokenA_ || !tokenB_) {
       return false;
     }
+    if (isSwapExtensionPair(tokenA_, tokenB_)) {
+      return true;
+    }
     if (isNativeToken(tokenA_)) {
       return tokenA_.wrappedPath === tokenB_.path;
     }
@@ -815,42 +856,80 @@ export const useSwapHandler = () => {
 
   const changeTokenA = useCallback(
     (token: TokenModel) => {
-      const changedSwapDirection = type;
-      if (isSameTokenFn(tokenB, token)) {
-        // changedSwapDirection = type;
+      const selectedExtension = getSwapExtensionByOriginPath(token.path);
+      const oppositeExtension = getSwapExtensionByOriginPath(tokenB?.path);
+      const selectedWrappedToken = selectedExtension
+        ? (tokens.find(candidate => candidate.path === selectedExtension.grc20WrappedTokenPath) ?? null)
+        : null;
+      const oppositeWrappedToken = oppositeExtension
+        ? (tokens.find(candidate => candidate.path === oppositeExtension.grc20WrappedTokenPath) ?? null)
+        : null;
+      if (selectedExtension && !selectedWrappedToken) return;
+      const nextTokenA = tokenB?.path === token.path ? tokenB : token;
+      const nextTokenB =
+        tokenB?.path === token.path
+          ? tokenA
+          : selectedExtension
+            ? selectedWrappedToken
+            : oppositeExtension?.grc20WrappedTokenPath === token.path
+              ? tokenB
+              : oppositeExtension
+                ? oppositeWrappedToken
+                : tokenB;
+      const isWrapPair = isSameTokenFn(nextTokenB, nextTokenA);
+      if (isWrapPair) {
         setTokenAAmount(tokenAAmount);
         setTokenBAmount(tokenAAmount);
       }
-      setSwapValue(prev => ({
-        tokenA: prev.tokenB?.path === token.path ? prev.tokenB : token,
-        tokenB: prev.tokenB?.path === token.path ? prev.tokenA : prev.tokenB,
-        type: changedSwapDirection,
-      }));
+      setSwapValue({
+        tokenA: nextTokenA,
+        tokenB: nextTokenB,
+        type: isWrapPair ? "EXACT_IN" : type,
+      });
       if (!!Number(tokenAAmount)) {
         setIsLoading(true);
       }
     },
-    [tokenA, tokenB, type, tokenBAmount, tokenAAmount, isSameToken, isSameTokenFn],
+    [isSameTokenFn, setSwapValue, tokenA, tokenAAmount, tokenB, tokens, type],
   );
 
   const changeTokenB = useCallback(
     (token: TokenModel) => {
-      const changedSwapDirection = type;
-      if (isSameTokenFn(tokenA, token)) {
-        // changedSwapDirection = type === "EXACT_IN" ? "EXACT_OUT" : "EXACT_IN";
+      const selectedExtension = getSwapExtensionByOriginPath(token.path);
+      const oppositeExtension = getSwapExtensionByOriginPath(tokenA?.path);
+      const selectedWrappedToken = selectedExtension
+        ? (tokens.find(candidate => candidate.path === selectedExtension.grc20WrappedTokenPath) ?? null)
+        : null;
+      const oppositeWrappedToken = oppositeExtension
+        ? (tokens.find(candidate => candidate.path === oppositeExtension.grc20WrappedTokenPath) ?? null)
+        : null;
+      if (selectedExtension && !selectedWrappedToken) return;
+      const nextTokenA =
+        tokenA?.path === token.path
+          ? tokenB
+          : selectedExtension
+            ? selectedWrappedToken
+            : oppositeExtension?.grc20WrappedTokenPath === token.path
+              ? tokenA
+              : oppositeExtension
+                ? oppositeWrappedToken
+                : tokenA;
+      const nextTokenB = tokenA?.path === token.path ? tokenA : token;
+      const isWrapPair = isSameTokenFn(nextTokenA, nextTokenB);
+      if (isWrapPair) {
         setTokenAAmount(tokenAAmount);
         setTokenBAmount(tokenAAmount);
       }
-      setSwapValue(prev => ({
-        tokenB: prev.tokenA?.path === token.path ? prev.tokenA : token,
-        tokenA: prev.tokenA?.path === token.path ? prev.tokenB : prev.tokenA,
-        type: changedSwapDirection,
-      }));
+      setSwapValue({
+        tokenA: nextTokenA,
+        tokenB: nextTokenB,
+        type: isWrapPair ? "EXACT_IN" : type,
+      });
       if (!!Number(tokenAAmount)) {
         setIsLoading(true);
       }
     },
-    [tokenA, type, tokenBAmount, tokenAAmount, swapValue, isSameToken, isSameTokenFn],
+    [isSameTokenFn, setSwapValue, tokenA, tokenAAmount, tokenB, tokens, type],
   );
 
   const switchSwapDirection = useCallback(() => {
@@ -936,13 +1015,14 @@ export const useSwapHandler = () => {
     const swapAmount = isExactIn ? tokenAAmount : tokenBAmount;
 
     const messageData = {
-      tokenASymbol: tokenA.symbol,
-      tokenBSymbol: tokenB.symbol,
+      tokenASymbol: tokenA.displaySymbol,
+      tokenBSymbol: tokenB.displaySymbol,
       tokenAAmount: swapAmount,
       tokenBAmount: swapAmount,
     };
 
-    if (isNativeToken(tokenA)) {
+    const isWrap = swapExtensionOperation === "wrap" || (swapExtensionOperation === null && isNativeToken(tokenA));
+    if (isWrap) {
       broadcastLoading(getMessage(DexEvent.WRAP, "pending", messageData));
       openTransactionConfirmModal();
 
@@ -965,10 +1045,12 @@ export const useSwapHandler = () => {
               },
               onUpdate: async () => {
                 await refetchGrc20Balances();
+                await refetchSwapExtensionBalances();
                 await updateBalances();
               },
               onEmit: async () => {
                 await refetchGrc20Balances();
+                await refetchSwapExtensionBalances();
               },
             });
           }
@@ -1019,10 +1101,12 @@ export const useSwapHandler = () => {
               formatData: () => messageData,
               onUpdate: async () => {
                 await refetchGrc20Balances();
+                await refetchSwapExtensionBalances();
                 await updateBalances();
               },
               onEmit: async () => {
                 await refetchGrc20Balances();
+                await refetchSwapExtensionBalances();
               },
             });
           }

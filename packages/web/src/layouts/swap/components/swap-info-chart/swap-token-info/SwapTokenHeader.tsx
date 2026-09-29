@@ -10,6 +10,7 @@ import useElementWidth from "@hooks/common/use-element-width";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
+import { getSwapExtensionByOriginPath } from "@resources/swap-extension";
 import { formatPrice } from "@utils/new-number-utils";
 
 import IconOpenLink from "@components/common/icons/IconOpenLink";
@@ -46,8 +47,12 @@ const SwapTokenHeader = ({
   containerWidth,
 }: SwapTokenHeaderProps) => {
   const router = useCustomRouter();
+  const extension = React.useMemo(() => getSwapExtensionByOriginPath(tokenInfo.path), [tokenInfo.path]);
   const elementId = React.useMemo(() => `${tokenInfo.name}`, [tokenInfo.name]);
-  const displayTokenName = React.useMemo(() => formatDisplayTokenName(tokenInfo.name), [tokenInfo.name]);
+  const displayTokenName = React.useMemo(
+    () => formatDisplayTokenName(extension?.originTokenInfo.name ?? tokenInfo.name),
+    [extension, tokenInfo.name],
+  );
 
   const { priceStyle, shouldShowPriceWarning } = useTokenPriceInfo({ priceGradeType });
 
@@ -60,7 +65,7 @@ const SwapTokenHeader = ({
   const theme = useTheme();
   const { t } = useTranslation();
 
-  const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
+  const { getGnoscanUrl, getRealmUrl, getTokenUrl } = useGnoscanUrl();
 
   const displayPrice = React.useMemo(() => {
     const price = nullish.handleFalsy(chartData?.value, currentPrice);
@@ -79,28 +84,34 @@ const SwapTokenHeader = ({
 
   const displayTokenPath = React.useMemo(() => {
     if (!tokenInfo.path) return null;
-    return formatTokenPath(tokenInfo.path, tokenInfo.isNative);
-  }, [tokenInfo.path, tokenInfo.isNative]);
+    return formatTokenPath(tokenInfo.path, tokenInfo.isNative && !extension);
+  }, [extension, tokenInfo.path, tokenInfo.isNative]);
 
   const onClickTokenName = React.useCallback(() => {
     if (!tokenInfo.path) return;
+    if (extension) {
+      router.movePageWithTokenPath("TOKEN", extension.grc20WrappedTokenPath);
+      return;
+    }
     if (tokenInfo.isNative) {
       router.movePageWithTokenPath("TOKEN", GNOT_TOKEN.path);
       return;
     }
     router.movePageWithTokenPath("TOKEN", tokenInfo.path);
-  }, [router, tokenInfo]);
+  }, [extension, router, tokenInfo]);
 
   const onClickPath = React.useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       e.stopPropagation();
-      if (tokenInfo.isNative) {
+      if (extension) {
+        window.open(getRealmUrl(extension.originTokenPath), "_blank", "noopener,noreferrer");
+      } else if (tokenInfo.isNative) {
         window.open(getGnoscanUrl(), "_blank", "noopener,noreferrer");
       } else {
         window.open(getTokenUrl(tokenInfo.path ?? ""), "_blank", "noopener,noreferrer");
       }
     },
-    [getGnoscanUrl, getTokenUrl, tokenInfo],
+    [extension, getGnoscanUrl, getRealmUrl, getTokenUrl, tokenInfo],
   );
 
   return (

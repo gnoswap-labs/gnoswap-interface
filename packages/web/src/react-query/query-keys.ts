@@ -72,6 +72,7 @@ export enum QUERY_KEY {
   chain = "chain",
   tokenByPath = "token",
   tokenBalancesByAddress = "balances",
+  swapExtensionBalance = "swap_extension_balance",
 
   // launchpad
   launchpadSummary = "launchpad_summary",

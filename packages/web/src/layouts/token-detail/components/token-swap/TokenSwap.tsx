@@ -36,6 +36,9 @@ export interface TokenSwapProps {
   swapRouteInfos: SwapRouteInfo[];
   swapTokenInfo: SwapTokenInfo;
   isRefetching: boolean;
+  isSameToken: boolean;
+  additionalTokenATokens?: TokenModel[];
+  additionalTokenBTokens?: TokenModel[];
 
   swapNow: () => void;
   handleSetting: () => void;
@@ -82,6 +85,9 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   priceImpactStatus,
   swapTokenInfo,
   isRefetching,
+  isSameToken,
+  additionalTokenATokens,
+  additionalTokenBTokens,
   makeMaxAmountMessages,
 }) => {
   const { t } = useTranslation();
@@ -217,7 +223,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               inputMode={"decimal"}
             />
             <div className="token">
-              <SelectPairButton token={tokenA} changeToken={changeTokenA} />
+              <SelectPairButton token={tokenA} changeToken={changeTokenA} additionalTokens={additionalTokenATokens} />
             </div>
           </div>
           <div className="info">
@@ -256,7 +262,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
               inputMode={"decimal"}
             />
             <div className="token">
-              <SelectPairButton token={tokenB} changeToken={changeTokenB} />
+              <SelectPairButton token={tokenB} changeToken={changeTokenB} additionalTokens={additionalTokenBTokens} />
             </div>
           </div>
           <div className="info">
@@ -281,7 +287,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
           </div>
         </div>
       </div>
-      {swapSummaryInfo && isShowInfoSection && (
+      {!isSameToken && swapSummaryInfo && isShowInfoSection && (
         <SwapCardContentDetail
           swapSummaryInfo={swapSummaryInfo}
           swapRouteInfos={swapRouteInfos}

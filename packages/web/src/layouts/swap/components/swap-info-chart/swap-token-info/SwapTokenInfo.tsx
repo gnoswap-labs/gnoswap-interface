@@ -3,6 +3,7 @@ import React from "react";
 import { RefetchInterval } from "@common/values";
 import { LineGraphData } from "@components/common/line-graph/LineGraph";
 import { isNativeTokenByType, TokenModel } from "@models/token/token-model";
+import { getSwapExtensionByOriginPath } from "@resources/swap-extension";
 
 import useElementWidth from "@hooks/common/use-element-width";
 import { useGetTokenPrices } from "@query/token";
@@ -23,18 +24,23 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
   const containerWidth = useElementWidth(containerRef);
 
   const tokenData = React.useMemo(() => {
+    const originExtension = getSwapExtensionByOriginPath(token.path);
+    const isNative = isNativeTokenByType(token.type);
+    // An origin token has no price feed of its own; the wrapped token is the registered one.
+    const pricePath = isNative || originExtension ? token.wrappedPath : token.path;
     return {
       name: token.name,
       symbol: token.symbol,
       displaySymbol: token.displaySymbol,
       logoURI: token.logoURI,
-      path: isNativeTokenByType(token.type) ? token.wrappedPath : token.path,
-      isNative: isNativeTokenByType(token.type),
+      path: originExtension ? token.path : pricePath,
+      pricePath,
+      isNative,
     };
   }, [token]);
 
-  const { data: { usd: rawCurrentPrice } = {} } = useGetTokenPrices(tokenData.path as string, {
-    enabled: !!tokenData.path,
+  const { data: { usd: rawCurrentPrice } = {} } = useGetTokenPrices(tokenData.pricePath as string, {
+    enabled: !!tokenData.pricePath,
   });
 
   const currentPrice = React.useMemo(() => {
@@ -45,13 +51,14 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
     });
   }, [rawCurrentPrice]);
 
-  const { data: { priceGradeType, last7d = [] } = {}, isLoading, isFetched } = useGetTokenPrices(
-    tokenData.path as string,
-    {
-      enabled: !!tokenData.path,
-      refetchInterval: RefetchInterval.Frequent,
-    },
-  );
+  const {
+    data: { priceGradeType, last7d = [] } = {},
+    isLoading,
+    isFetched,
+  } = useGetTokenPrices(tokenData.pricePath as string, {
+    enabled: !!tokenData.pricePath,
+    refetchInterval: RefetchInterval.Frequent,
+  });
 
   const handleMouseMove = React.useCallback((data?: LineGraphData) => {
     setChartData(data);

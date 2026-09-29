@@ -3,6 +3,7 @@ import { GNOT_TOKEN } from "@common/values/token-constant";
 import { RewardType } from "@constants/option.constant";
 import { RewardTokenModel } from "@models/position/reward-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
+import { getSwapExtensionByWrappedPath } from "@resources/swap-extension";
 import { OnchainToken } from "@repositories/activity/responses/activity-responses";
 import BigNumber from "bignumber.js";
 import { formatOtherPrice } from "./new-number-utils";
@@ -28,10 +29,12 @@ export function withTokenRouteMetadata(token: TokenModel, currentTokens: TokenMo
   };
 }
 
-export function formatDisplayTokenSymbol(symbol: string): string {
-  if (symbol.length <= TOKEN_DISPLAY_MAX_LENGTH) return symbol;
+export function formatDisplayTokenSymbol(symbol: string, path?: string): string {
+  const extension = getSwapExtensionByWrappedPath(path);
+  const displaySymbol = extension?.wrappedTokenInfo.displaySymbol ?? symbol;
+  if (displaySymbol.length <= TOKEN_DISPLAY_MAX_LENGTH) return displaySymbol;
 
-  return `${symbol.slice(0, TOKEN_DISPLAY_MAX_LENGTH)}...`;
+  return `${displaySymbol.slice(0, TOKEN_DISPLAY_MAX_LENGTH)}...`;
 }
 
 export function formatDisplayTokenName(name: string): string {

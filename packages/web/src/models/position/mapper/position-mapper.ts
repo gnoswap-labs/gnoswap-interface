@@ -83,6 +83,7 @@ export class PositionMapper {
       ...rewardToken,
       displaySymbol: formatDisplayTokenSymbol(
         rewardToken.symbol || rewardToken.displaySymbol || rewardToken.name || rewardToken.path,
+        rewardToken.path,
       ),
     };
   }
