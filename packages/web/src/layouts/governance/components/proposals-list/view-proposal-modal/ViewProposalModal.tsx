@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -63,12 +63,14 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
   switchNetwork,
   voteProposal,
 }) => {
+  const setIsModalOpenRef = useRef(setIsModalOpen);
+  setIsModalOpenRef.current = setIsModalOpen;
   const Modal = useMemo(
     () =>
       withLocalModal(ViewProposalModalWrapper, (isOpen: boolean) => {
-        if (!isOpen) setIsModalOpen(false);
+        if (!isOpen) setIsModalOpenRef.current(false);
       }),
-    [setIsModalOpen],
+    [],
   );
 
   const { data, isLoading, isPreviousData, isError, refetch } = useGetProposalDetails({ proposalId, address });
