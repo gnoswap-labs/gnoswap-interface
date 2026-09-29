@@ -13,6 +13,7 @@ jest.mock("@states/index", () => ({ ThemeState: { themeKey: {} } }));
 jest.mock("@hooks/common/use-custom-router", () => ({ __esModule: true, default: jest.fn() }));
 jest.mock("@hooks/swap/data/use-swap-handler", () => ({ useSwapHandler: jest.fn() }));
 jest.mock("@hooks/token/data/use-gnot-wugnot", () => ({ useGnotToGnot: jest.fn() }));
+jest.mock("@hooks/token/data/use-token-data", () => ({ useTokenData: () => ({ swapExtensionTokens: [] }) }));
 jest.mock("@query/token", () => ({ useGetToken: jest.fn() }));
 jest.mock("@components/common/setting-menu-modal/SettingMenuModal", () => () => null);
 jest.mock("../../components/token-swap/TokenSwap", () => () => null);

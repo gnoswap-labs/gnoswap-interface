@@ -36,6 +36,7 @@ export interface TokenSwapProps {
   swapRouteInfos: SwapRouteInfo[];
   swapTokenInfo: SwapTokenInfo;
   isRefetching: boolean;
+  isSameToken: boolean;
   additionalTokenATokens?: TokenModel[];
   additionalTokenBTokens?: TokenModel[];
 
@@ -83,6 +84,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   priceImpactStatus,
   swapTokenInfo,
   isRefetching,
+  isSameToken,
   additionalTokenATokens,
   additionalTokenBTokens,
 }) => {
@@ -257,7 +259,7 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
           </div>
         </div>
       </div>
-      {swapSummaryInfo && isShowInfoSection && (
+      {!isSameToken && swapSummaryInfo && isShowInfoSection && (
         <SwapCardContentDetail
           swapSummaryInfo={swapSummaryInfo}
           swapRouteInfos={swapRouteInfos}

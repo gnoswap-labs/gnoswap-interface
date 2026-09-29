@@ -4,7 +4,6 @@ import {
   createOriginToken,
   getSwapExtensionByOriginPath,
   getSwapExtensionByWrappedPath,
-  normalizeSwapExtensionSelection,
   resolveSwapExtensionExecution,
   swapExtensions,
 } from "./swap-extension";
@@ -58,41 +57,4 @@ describe("swap-extension metadata", () => {
     ]);
   });
 
-  it("forces an origin selection into its wrapped pair", () => {
-    const originToken = createOriginToken(extension, wrappedToken);
-    const ordinaryToken = { ...wrappedToken, path: "gno.land/r/demo/foo.FOO" };
-
-    expect(normalizeSwapExtensionSelection("A", originToken, ordinaryToken, [wrappedToken])).toMatchObject({
-      tokenA: originToken,
-      tokenB: wrappedToken,
-      isWrapPair: true,
-    });
-  });
-
-  it("pairs a wrapped extension with its origin regardless of the current opposite token", () => {
-    const originToken = createOriginToken(extension, wrappedToken);
-    const ordinaryToken = { ...wrappedToken, path: "ugnot", symbol: "GNOT" };
-
-    expect(normalizeSwapExtensionSelection("A", wrappedToken, null, [wrappedToken])).toMatchObject({
-      tokenA: wrappedToken,
-      tokenB: originToken,
-      isWrapPair: true,
-    });
-    expect(normalizeSwapExtensionSelection("B", wrappedToken, ordinaryToken, [wrappedToken])).toMatchObject({
-      tokenA: originToken,
-      tokenB: wrappedToken,
-      isWrapPair: true,
-    });
-  });
-
-  it("replaces an origin with its wrapper before selecting an ordinary token", () => {
-    const originToken = createOriginToken(extension, wrappedToken);
-    const ordinaryToken = { ...wrappedToken, path: "gno.land/r/demo/foo.FOO" };
-
-    expect(normalizeSwapExtensionSelection("B", ordinaryToken, originToken, [wrappedToken])).toMatchObject({
-      tokenA: wrappedToken,
-      tokenB: ordinaryToken,
-      isWrapPair: false,
-    });
-  });
 });

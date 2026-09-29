@@ -60,6 +60,7 @@ const TokenSwapContainer: React.FC = () => {
     setTokenAAmount,
     priceImpactStatus,
     initializeSwapTokenInputAmount,
+    isSameToken,
   } = useSwapHandler();
   const additionalTokenATokens = useMemo(() => {
     const extension = getSwapExtensionByWrappedPath(swapValue?.tokenB?.path);
@@ -178,6 +179,7 @@ const TokenSwapContainer: React.FC = () => {
         priceImpactStatus={priceImpactStatus}
         swapTokenInfo={swapTokenInfo}
         isRefetching={isRefetching}
+        isSameToken={isSameToken}
       />
       {openedSlippage && (
         <SettingMenuModal

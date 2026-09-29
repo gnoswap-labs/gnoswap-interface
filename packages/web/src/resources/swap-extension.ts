@@ -121,43 +121,6 @@ export function isSwapExtensionPair(tokenA?: TokenModel | null, tokenB?: TokenMo
     (tokenB.path === extension.originTokenPath && tokenA.path === extension.grc20WrappedTokenPath)
   );
 }
-export function normalizeSwapExtensionSelection(
-  side: "A" | "B",
-  selectedToken: TokenModel,
-  oppositeToken: TokenModel | null,
-  tokens: TokenModel[],
-) {
-  const wrappedExtension = getSwapExtensionByWrappedPath(selectedToken.path);
-  if (wrappedExtension) {
-    const originToken = createOriginToken(wrappedExtension, selectedToken);
-    return {
-      tokenA: side === "A" ? selectedToken : originToken,
-      tokenB: side === "B" ? selectedToken : originToken,
-      isWrapPair: true,
-    };
-  }
-
-  const selectedExtension = getSwapExtensionByOriginPath(selectedToken.path);
-  if (selectedExtension) {
-    const wrappedToken =
-      tokens.find(token => token.path === selectedExtension.grc20WrappedTokenPath) ?? oppositeToken;
-    return {
-      tokenA: side === "A" ? selectedToken : wrappedToken,
-      tokenB: side === "B" ? selectedToken : wrappedToken,
-      isWrapPair: wrappedToken?.path === selectedExtension.grc20WrappedTokenPath,
-    };
-  }
-
-  const oppositeExtension = getSwapExtensionByOriginPath(oppositeToken?.path);
-  const normalizedOpposite = oppositeExtension
-    ? tokens.find(token => token.path === oppositeExtension.grc20WrappedTokenPath) ?? oppositeToken
-    : oppositeToken;
-  return {
-    tokenA: side === "A" ? selectedToken : normalizedOpposite,
-    tokenB: side === "B" ? selectedToken : normalizedOpposite,
-    isWrapPair: false,
-  };
-}
 
 
 interface ExecutionValues {

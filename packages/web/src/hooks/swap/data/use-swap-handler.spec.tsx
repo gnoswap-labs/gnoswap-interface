@@ -30,9 +30,23 @@ const mockTokenB: TokenModel = {
   displaySymbol: "GNS",
   priceID: "gno.land/r/demo/gns",
 };
+const mockWrappedBubble: TokenModel = {
+  ...mockTokenA,
+  name: "BUBBLE (wrapped)",
+  path: "gno.land/r/g1leu8d2vsplhehcfkjg50mwgdpxdkt8tztu95wr/wbubble.BUBBLE",
+  symbol: "BUBBLE",
+  displaySymbol: "wBUBBLE",
+  priceID: "gno.land/r/g1leu8d2vsplhehcfkjg50mwgdpxdkt8tztu95wr/wbubble.BUBBLE",
+};
 const mockTokenPrices = {
   [mockTokenA.path]: mockPrice,
   [mockTokenB.path]: mockPrice,
+  [mockWrappedBubble.path]: mockPrice,
+};
+let mockDisplayBalanceStringMap: Record<string, string> = {
+  [mockTokenA.path]: "1000000000000",
+  [mockTokenB.path]: "1000000000000",
+  [mockWrappedBubble.path]: "1000000000000",
 };
 
 jest.mock("@adena-wallet/sdk", () => ({
@@ -76,9 +90,9 @@ jest.mock("@hooks/wallet/data/use-wallet", () => ({
 }));
 jest.mock("@hooks/token/data/use-token-data", () => ({
   useTokenData: () => ({
-    tokens: [mockTokenA, mockTokenB],
+    tokens: [mockTokenA, mockTokenB, mockWrappedBubble],
     tokenPrices: mockTokenPrices,
-    displayBalanceStringMap: { [mockTokenA.path]: "1000000000000", [mockTokenB.path]: "1000000000000" },
+    displayBalanceStringMap: mockDisplayBalanceStringMap,
     isFetched: true,
     updateBalances: mockUpdateBalances,
     refetchGrc20Balances: jest.fn(),
@@ -93,9 +107,13 @@ const oldQuote = {
   status: "SUCCESS",
 };
 
-function renderSwapHandler(type: "EXACT_IN" | "EXACT_OUT" = "EXACT_IN") {
+function renderSwapHandler(
+  type: "EXACT_IN" | "EXACT_OUT" = "EXACT_IN",
+  tokenA: TokenModel | null = mockTokenA,
+  tokenB: TokenModel | null = mockTokenB,
+) {
   const store = createStore();
-  store.set(SwapState.swap, { tokenA: mockTokenA, tokenB: mockTokenB, type });
+  store.set(SwapState.swap, { tokenA, tokenB, type });
   const wrapper = ({ children }: { children: ReactNode }) => <Provider store={store}>{children}</Provider>;
   return renderHook(() => useSwapHandler(), { wrapper });
 }
@@ -105,9 +123,40 @@ describe("useSwapHandler quote consistency", () => {
     jest.useFakeTimers();
     mockGetRoutes.mockReset();
     mockUpdateBalances.mockClear();
+    mockGetRoutes.mockReturnValue({ data: undefined, error: null, isLoading: false, isRefetching: false });
+    mockDisplayBalanceStringMap = {
+      [mockTokenA.path]: "1000000000000",
+      [mockTokenB.path]: "1000000000000",
+      [mockWrappedBubble.path]: "1000000000000",
+    };
   });
 
   afterEach(() => jest.useRealTimers());
+
+  it("changes only the selected side when choosing a wrapped extension token", () => {
+    const { result, unmount } = renderSwapHandler("EXACT_IN", mockTokenA, null);
+
+    act(() => result.current.changeTokenA(mockWrappedBubble));
+
+    expect(result.current.tokenA).toBe(mockWrappedBubble);
+    expect(result.current.tokenB).toBeNull();
+    unmount();
+  });
+
+  it("blocks a swap when the selected input token has no reported balance", () => {
+    mockDisplayBalanceStringMap = {
+      [mockTokenA.path]: "1000000000000",
+      [mockTokenB.path]: "1000000000000",
+    };
+    mockGetRoutes.mockReturnValue({ data: oldQuote, error: null, isLoading: false, isRefetching: false });
+    const { result, unmount } = renderSwapHandler("EXACT_IN", mockWrappedBubble, mockTokenA);
+
+    act(() => result.current.changeTokenAAmount("1"));
+    act(() => jest.advanceTimersByTime(1_000));
+
+    expect(result.current.swapButtonText).toBe("common:btn.insuffiBal");
+    unmount();
+  });
 
   it("replaces the prior quote with the new input's output", () => {
     mockGetRoutes.mockImplementation(({ tokenAmount }) => ({

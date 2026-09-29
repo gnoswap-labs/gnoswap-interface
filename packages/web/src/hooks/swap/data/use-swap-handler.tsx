@@ -28,7 +28,7 @@ import { QUERY_KEY } from "@query/query-keys";
 import { useGetSwapFee } from "@query/router";
 import { DexEvent } from "@repositories/common";
 import { SwapRouteSuccessResponse } from "@repositories/swap-router/response/swap-route-response";
-import { getSwapExtensionByOriginPath, normalizeSwapExtensionSelection } from "@resources/swap-extension";
+import { getSwapExtensionByOriginPath } from "@resources/swap-extension";
 import { CommonState, SwapState } from "@states/index";
 import { checkGnotPath, isGNOTPath, toNativePath } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
@@ -228,7 +228,7 @@ export const useSwapHandler = () => {
   // Display formatting is applied separately (useTokenBalancesDisplay).
   const tokenABalance = useMemo(() => {
     if (isSwitchNetwork || !tokenA) return "-";
-    return displayBalanceStringMap[tokenA.path] ?? displayBalanceStringMap[tokenA.priceID] ?? "-";
+    return displayBalanceStringMap[tokenA.path] ?? displayBalanceStringMap[tokenA.priceID] ?? "0";
   }, [displayBalanceStringMap, isSwitchNetwork, tokenA]);
 
   const tokenBBalance = useMemo(() => {
@@ -829,44 +829,44 @@ export const useSwapHandler = () => {
 
   const changeTokenA = useCallback(
     (token: TokenModel) => {
-      const normalized = normalizeSwapExtensionSelection("A", token, tokenB, tokens);
-      const nextTokenA = tokenB?.path === token.path ? tokenB : normalized.tokenA;
-      const nextTokenB = tokenB?.path === token.path ? tokenA : normalized.tokenB;
-      if (normalized.isWrapPair || isSameTokenFn(nextTokenB, nextTokenA)) {
+      const nextTokenA = tokenB?.path === token.path ? tokenB : token;
+      const nextTokenB = tokenB?.path === token.path ? tokenA : tokenB;
+      const isWrapPair = isSameTokenFn(nextTokenB, nextTokenA);
+      if (isWrapPair) {
         setTokenAAmount(tokenAAmount);
         setTokenBAmount(tokenAAmount);
       }
       setSwapValue({
         tokenA: nextTokenA,
         tokenB: nextTokenB,
-        type: normalized.isWrapPair ? "EXACT_IN" : type,
+        type: isWrapPair ? "EXACT_IN" : type,
       });
       if (!!Number(tokenAAmount)) {
         setIsLoading(true);
       }
     },
-    [isSameTokenFn, setSwapValue, tokenA, tokenAAmount, tokenB, tokens, type],
+    [isSameTokenFn, setSwapValue, tokenA, tokenAAmount, tokenB, type],
   );
 
   const changeTokenB = useCallback(
     (token: TokenModel) => {
-      const normalized = normalizeSwapExtensionSelection("B", token, tokenA, tokens);
-      const nextTokenA = tokenA?.path === token.path ? tokenB : normalized.tokenA;
-      const nextTokenB = tokenA?.path === token.path ? tokenA : normalized.tokenB;
-      if (normalized.isWrapPair || isSameTokenFn(nextTokenA, nextTokenB)) {
+      const nextTokenA = tokenA?.path === token.path ? tokenB : tokenA;
+      const nextTokenB = tokenA?.path === token.path ? tokenA : token;
+      const isWrapPair = isSameTokenFn(nextTokenA, nextTokenB);
+      if (isWrapPair) {
         setTokenAAmount(tokenAAmount);
         setTokenBAmount(tokenAAmount);
       }
       setSwapValue({
         tokenA: nextTokenA,
         tokenB: nextTokenB,
-        type: normalized.isWrapPair ? "EXACT_IN" : type,
+        type: isWrapPair ? "EXACT_IN" : type,
       });
       if (!!Number(tokenAAmount)) {
         setIsLoading(true);
       }
     },
-    [isSameTokenFn, setSwapValue, tokenA, tokenAAmount, tokenB, tokens, type],
+    [isSameTokenFn, setSwapValue, tokenA, tokenAAmount, tokenB, type],
   );
 
   const switchSwapDirection = useCallback(() => {
