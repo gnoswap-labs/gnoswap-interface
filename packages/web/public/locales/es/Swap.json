@@ -27,8 +27,8 @@
   "priceImpactWarn": "¡Alto impacto en los precios! Su operación puede provocar un cambio brusco en el precio.",
   "swapButton": {
     "amtLow": "Importe demasiado bajo",
-    "enterAmount": "Introduzca el importe",
     "balanceUnavailable": "Saldo no disponible",
+    "enterAmount": "Introduzca el importe",
     "insuffiLiq": "Liquidez insuficiente",
     "review": "Consulte",
     "selectToken": "Seleccione una ficha",

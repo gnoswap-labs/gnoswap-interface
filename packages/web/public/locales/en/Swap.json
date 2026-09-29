@@ -27,8 +27,8 @@
   "priceImpactWarn": "High price impact! Your trade may result in a sharp change in price.",
   "swapButton": {
     "amtLow": "Amount Too Low",
-    "enterAmount": "Enter Amount",
     "balanceUnavailable": "Balance Unavailable",
+    "enterAmount": "Enter Amount",
     "insuffiLiq": "Insufficient Liquidity",
     "review": "Review",
     "selectToken": "Select a Token",
