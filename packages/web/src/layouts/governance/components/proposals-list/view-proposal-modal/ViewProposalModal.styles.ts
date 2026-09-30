@@ -6,7 +6,8 @@ import mixins from "@styles/mixins";
 
 export const ViewProposalModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
-  overflow: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
   min-width: 328px;
   max-width: 700px;
   width: 90vw;
@@ -122,7 +123,8 @@ export const ProposalContentWrapper = styled.div`
   width: 100%;
   border: 1px solid ${({ theme }) => theme.color.border02};
   max-height: 500px;
-  overflow: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: 24px;
   gap: 12px;
   border-radius: 8px;
@@ -131,7 +133,9 @@ export const ProposalContentWrapper = styled.div`
 
   .content {
     flex: 1;
+    min-width: 0;
     width: 100%;
+    overflow-wrap: anywhere;
     color: ${({ theme }) => theme.color.text04};
     ${fonts.body12}
     ${media.mobile} {
@@ -149,11 +153,20 @@ export const ProposalContentWrapper = styled.div`
 
     .markdown-style {
       width: 100%;
-      white-space: pre-wrap;
+      min-width: 0;
+      white-space: normal;
+
+      > :first-child {
+        margin-top: 0;
+      }
+      > :last-child {
+        margin-bottom: 0;
+      }
       h1,
       h2,
       h3 {
         color: ${({ theme }) => theme.color.text03};
+        margin: 24px 0 16px;
       }
       h1 {
         ${fonts.body5}
@@ -164,22 +177,54 @@ export const ProposalContentWrapper = styled.div`
       h3 {
         ${fonts.body9}
       }
+      p,
+      ul,
+      ol,
+      blockquote,
+      pre,
+      table,
       hr {
-        border-color: ${({ theme }) => theme.color.border02};
+        margin: 0 0 16px;
       }
-      ul {
-        padding-left: 16px;
-        padding-bottom: 4px;
-        li {
-          list-style: circle;
-        }
+      hr {
+        border-top: 1px solid ${({ theme }) => theme.color.border02};
       }
+      ul,
       ol {
-        list-style: decimal;
-        padding-left: 8px;
+        padding-left: 2em;
       }
-      p {
-        white-space: pre-line;
+      ul > li {
+        list-style: disc;
+      }
+      ol > li {
+        list-style: decimal;
+      }
+      li > ul,
+      li > ol {
+        margin-bottom: 0;
+      }
+      blockquote {
+        padding-left: 1em;
+        border-left: 4px solid ${({ theme }) => theme.color.border02};
+      }
+      pre,
+      code {
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+      table {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 6px 12px;
+        border: 1px solid ${({ theme }) => theme.color.border02};
+      }
+      img {
+        max-width: 100%;
+        height: auto;
       }
     }
   }

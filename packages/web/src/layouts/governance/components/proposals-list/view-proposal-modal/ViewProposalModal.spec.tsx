@@ -1,5 +1,6 @@
 import "@testing-library/jest-dom";
 
+import React, { useState } from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 
@@ -139,5 +140,54 @@ describe("ViewProposalModal deep link resilience", () => {
 
     await waitFor(() => expect(useGetProposalDetails).toHaveBeenCalled());
     expect(setIsModalOpen).not.toHaveBeenCalled();
+  });
+
+  it("keeps the description scroll position when the proposal list rerenders", () => {
+    mockQueryResult({
+      data: {
+        proposal: {
+          ...nullProposalDetailsInfo.proposal,
+          id: 1,
+          title: "Long proposal",
+          status: "EXECUTED",
+          content: { ...nullProposalDetailsInfo.proposal.content, description: "A long proposal description" },
+        },
+      },
+    });
+
+    const Parent = () => {
+      const [update, setUpdate] = useState(0);
+      return (
+        <JotaiProvider>
+          <GnoswapThemeProvider>
+            <button onClick={() => setUpdate(value => value + 1)}>Refresh {update}</button>
+            <ViewProposalModal
+              address="g1voter"
+              proposalId={1}
+              breakpoint={DEVICE_TYPE.WEB}
+              setIsModalOpen={isOpen => {
+                if (!isOpen) setUpdate(0);
+              }}
+              isConnected
+              isSwitchNetwork={false}
+              getTooltipTextI18nKey={() => "proposal.tooltip.executed"}
+              connectWallet={jest.fn()}
+              switchNetwork={jest.fn()}
+              voteProposal={jest.fn()}
+            />
+          </GnoswapThemeProvider>
+        </JotaiProvider>
+      );
+    };
+
+    render(<Parent />);
+    const description = screen.getByText("A long proposal description");
+    const scroller = description.closest(".content")?.parentElement as HTMLElement;
+    scroller.scrollTop = 120;
+
+    fireEvent.click(screen.getByText("Refresh 0"));
+
+    expect(screen.getByText("A long proposal description").closest(".content")?.parentElement).toBe(scroller);
+    expect(scroller.scrollTop).toBe(120);
   });
 });
