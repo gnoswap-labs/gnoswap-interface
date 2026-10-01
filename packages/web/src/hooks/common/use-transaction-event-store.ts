@@ -172,8 +172,8 @@ export const useTransactionEventStore = () => {
           safeSetTimeout(() => dequeue(updatingSnackbarConfig.id), DEFAULT_SNACKBAR_TIMEOUT, updatingSnackbarConfig.id);
         }
 
-        // Transfer projection can lag behind a successful transaction; poll without blocking other events.
-        if (checkWugnotTransfer && account && !hasBadgeSnackbar && event.status === "SUCCESS" && !wugnotCheckStarted) {
+        // An open receive badge still needs its balance refreshed after each successful swap.
+        if (checkWugnotTransfer && account && event.status === "SUCCESS" && !wugnotCheckStarted) {
           wugnotCheckStarted = true;
           const controller = new AbortController();
           activeTransferChecksRef.current.add(controller);
@@ -197,7 +197,12 @@ export const useTransactionEventStore = () => {
     );
   }
 
-  async function enqueueWugnotChangeEvent(txHash: string, address: string, config: SnackbarOptions, signal: AbortSignal) {
+  async function enqueueWugnotChangeEvent(
+    txHash: string,
+    address: string,
+    config: SnackbarOptions,
+    signal: AbortSignal,
+  ) {
     const deadline = Date.now() + WUGNOT_TRANSFER_RETRY_DEADLINE;
     let transferHistory: IGrc20TransferHistoryResponse["data"] = [];
     while (!signal.aborted) {

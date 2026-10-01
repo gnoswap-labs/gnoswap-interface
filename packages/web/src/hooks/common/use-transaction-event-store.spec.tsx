@@ -101,7 +101,7 @@ describe("useTransactionEventStore", () => {
     return { onEmit: eventStore.addEvent.mock.calls[0][2], getStakePositionMessage };
   }
 
-  function setupTransferEvent(getTransfers: jest.Mock) {
+  function setupTransferEvent(getTransfers: jest.Mock, balance = "20000") {
     (useGnoswapContext as jest.Mock).mockReturnValue({
       eventStore,
       tokenRepository: { getGrc20TransferHistoryByTxHash: getTransfers },
@@ -116,7 +116,7 @@ describe("useTransactionEventStore", () => {
       getStakePositionMessage: jest.fn(),
     });
     (useWrap as jest.Mock).mockReturnValue({
-      fetchWugnotBalance: jest.fn().mockResolvedValue("20000"),
+      fetchWugnotBalance: jest.fn().mockResolvedValue(balance),
       unwrapAll: jest.fn(),
     });
     const Probe = () => {
@@ -162,6 +162,23 @@ describe("useTransactionEventStore", () => {
     } finally {
       jest.useRealTimers();
     }
+  });
+
+  it("refreshes the receive badge balance after a later swap while a badge is already open", async () => {
+    (useSnackbar as jest.Mock).mockReturnValue({
+      hasBadgeSnackbar: true,
+      enqueue,
+      dequeue: jest.fn(),
+      change: jest.fn(),
+    });
+    const getTransfers = jest.fn().mockResolvedValue({
+      data: [{ fromAddress: "g1other", toAddress: "g1user", tokenAmount: "1000000" }],
+    });
+    const { onEmit, getReceiveWugnotMessage } = setupTransferEvent(getTransfers, "2000000");
+    await onEmit({ status: "SUCCESS", data: [] });
+    await waitFor(() => expect(getReceiveWugnotMessage).toHaveBeenCalledWith(txHash, "2", expect.any(Function)));
+    expect(getTransfers).toHaveBeenCalledWith(txHash, expect.any(String));
+    expect(enqueue.mock.calls.filter(([, config]) => config.type === "receive-wugnot")).toHaveLength(1);
   });
 
   it("stops polling permanently empty transfers without showing a receive badge", async () => {
