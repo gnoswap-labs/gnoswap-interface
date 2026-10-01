@@ -54,6 +54,14 @@ const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
   const enqueue = useCallback<SnackbarContenxtProps["enqueue"]>(
     (content, options) => {
       setSnackbars(prev => {
+        if (options.type === "receive-wugnot") {
+          const existingIndex = prev.findIndex(item => item.type === "receive-wugnot" && !item.isClosing);
+          if (existingIndex !== -1) {
+            return prev.map((item, index) =>
+              index === existingIndex ? { ...item, content, onClick: content?.onClick } : item,
+            );
+          }
+        }
         const previousSnackbars =
           options.type === "stake-position"
             ? prev.map(item => (item.type === "stake-position" ? { ...item, isClosing: true } : item))

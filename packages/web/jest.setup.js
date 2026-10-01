@@ -7,3 +7,16 @@ import "@testing-library/jest-dom/extend-expect";
 import { TextEncoder, TextDecoder } from "util";
 
 Object.assign(global, { TextEncoder, TextDecoder });
+
+// CI runs Node 20, which does not implement this browser API used by the retry timer.
+if (!Promise.withResolvers) {
+  Promise.withResolvers = function withResolvers() {
+    let resolve;
+    let reject;
+    const promise = new Promise((resolvePromise, rejectPromise) => {
+      resolve = resolvePromise;
+      reject = rejectPromise;
+    });
+    return { promise, resolve, reject };
+  };
+}

@@ -3,6 +3,7 @@ import React from "react";
 import axios from "axios";
 
 import { GNOT_TOKEN } from "@common/values/token-constant";
+import type { IGrc20TransferHistoryResponse } from "@repositories/token/response/balance-by-address-response";
 import type { PositionModel } from "@models/position/position-model";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { PAGE_PATH } from "@constants/page.constant";
@@ -23,6 +24,23 @@ const TX_RESULT_SNACKBAR_TIMEOUT = 4_000;
 const UPDATING_SNACKBAR_TIMEOUT = 60_000;
 const BADGE_SNACKBAR_TIMEOUT = 0;
 const WUGNOT_CHANGE_THRESHOLD = 10000;
+// The activity API caches empty transfer projections for one second after a block is emitted.
+const WUGNOT_TRANSFER_RETRY_INTERVAL = 1_200;
+const WUGNOT_TRANSFER_RETRY_DEADLINE = 8_000;
+
+function waitForWugnotRetry(signal: AbortSignal): Promise<void> {
+  const { promise, resolve } = Promise.withResolvers<void>();
+  const timer = setTimeout(() => {
+    signal.removeEventListener("abort", onAbort);
+    resolve();
+  }, WUGNOT_TRANSFER_RETRY_INTERVAL);
+  function onAbort() {
+    clearTimeout(timer);
+    resolve();
+  }
+  signal.addEventListener("abort", onAbort, { once: true });
+  return promise;
+}
 
 function makeSnackbarConfig(type: SnackbarType, timeout = DEFAULT_SNACKBAR_TIMEOUT): SnackbarOptions {
   return {
@@ -44,12 +62,17 @@ export const useTransactionEventStore = () => {
 
   // ref to track the active timer
   const activeTimersRef = React.useRef<Map<number, NodeJS.Timeout>>(new Map());
+  const activeTransferChecksRef = React.useRef<Set<AbortController>>(new Set());
 
   // Clean up all timers when unmounting components
   React.useEffect(() => {
+    const timers = activeTimersRef.current;
+    const transferChecks = activeTransferChecksRef.current;
     return () => {
-      activeTimersRef.current.forEach(timer => clearTimeout(timer));
-      activeTimersRef.current.clear();
+      timers.forEach(timer => clearTimeout(timer));
+      transferChecks.forEach(controller => controller.abort());
+      transferChecks.clear();
+      timers.clear();
     };
   }, []);
 
@@ -112,6 +135,7 @@ export const useTransactionEventStore = () => {
     const stakePositionSnackbarConfig = makeSnackbarConfig("stake-position", BADGE_SNACKBAR_TIMEOUT);
     let updatingSnackbarEnqueued = false;
     let alreadyEmitted = false;
+    let wugnotCheckStarted = false;
 
     eventStore.addEvent(
       txHash,
@@ -162,9 +186,14 @@ export const useTransactionEventStore = () => {
           safeSetTimeout(() => dequeue(updatingSnackbarConfig.id), DEFAULT_SNACKBAR_TIMEOUT, updatingSnackbarConfig.id);
         }
 
-        // if the wugnot transfer is checked and the account is connected and the badge snackbar is not shown, enqueue the wugnot change event
-        if (checkWugnotTransfer && account && !hasBadgeSnackbar) {
-          await enqueueWugnotChangeEvent(txHash, account.address, receiveWugnotSnackbarConfig);
+        // An open receive badge still needs its balance refreshed after each successful swap.
+        if (checkWugnotTransfer && account && event.status === "SUCCESS" && !wugnotCheckStarted) {
+          wugnotCheckStarted = true;
+          const controller = new AbortController();
+          activeTransferChecksRef.current.add(controller);
+          void enqueueWugnotChangeEvent(txHash, account.address, receiveWugnotSnackbarConfig, controller.signal)
+            .catch(console.error)
+            .finally(() => activeTransferChecksRef.current.delete(controller));
         }
 
         if (checkStakePosition && account && !hasBadgeSnackbar && event.status === "SUCCESS" && event.data) {
@@ -182,22 +211,29 @@ export const useTransactionEventStore = () => {
     );
   }
 
-  async function enqueueWugnotChangeEvent(txHash: string, address: string, config: SnackbarOptions) {
-    // get the transfer history
-    const wugnotPath = WRAPPED_GNOT_PATH;
-    const transferHistoryResponse = await tokenRepository
-      .getGrc20TransferHistoryByTxHash(txHash, wugnotPath)
-      .catch(e => {
-        console.error(e);
-        return {
-          data: [],
-        };
-      });
+  async function enqueueWugnotChangeEvent(
+    txHash: string,
+    address: string,
+    config: SnackbarOptions,
+    signal: AbortSignal,
+  ) {
+    const deadline = Date.now() + WUGNOT_TRANSFER_RETRY_DEADLINE;
+    let transferHistory: IGrc20TransferHistoryResponse["data"] = [];
+    while (!signal.aborted) {
+      try {
+        transferHistory = (await tokenRepository.getGrc20TransferHistoryByTxHash(txHash, WRAPPED_GNOT_PATH)).data;
+      } catch (error) {
+        console.error(error);
+        return;
+      }
 
-    const transferHistory = transferHistoryResponse.data;
-    if (transferHistory.length === 0) {
-      return;
+      if (signal.aborted) return;
+      if (transferHistory.length > 0) break;
+      // Only retry an empty projection, and never start a request at or past the deadline.
+      if (deadline - Date.now() < WUGNOT_TRANSFER_RETRY_INTERVAL) return;
+      await waitForWugnotRetry(signal);
     }
+    if (signal.aborted) return;
 
     const wugnotChange = transferHistory.reduce((acc, history): BigNumber => {
       const amount = new BigNumber(history.tokenAmount);
@@ -217,15 +253,26 @@ export const useTransactionEventStore = () => {
       return;
     }
 
-    const wugnotBalance = await fetchWugnotBalance();
+    while (!signal.aborted) {
+      const wugnotBalance = await fetchWugnotBalance();
+      if (signal.aborted) return;
 
-    const tokenAAmount = (makeDisplayTokenAmount(GNOT_TOKEN, wugnotBalance.toString()) || 0).toLocaleString("en-US", {
-      maximumFractionDigits: 2,
-    });
-    enqueue(
-      getReceiveWugnotMessage(txHash, tokenAAmount, () => unwrapAll()),
-      config,
-    );
+      const balance = new BigNumber(wugnotBalance);
+      if (balance.isFinite() && balance.isGreaterThan(0)) {
+        const tokenAAmount = (makeDisplayTokenAmount(GNOT_TOKEN, wugnotBalance) || 0).toLocaleString("en-US", {
+          maximumFractionDigits: GNOT_TOKEN.decimals,
+        });
+        enqueue(
+          getReceiveWugnotMessage(txHash, tokenAAmount, () => unwrapAll()),
+          config,
+        );
+        return;
+      }
+
+      // The transfer projection can precede the wallet balance; never display a stale zero.
+      if (deadline - Date.now() < WUGNOT_TRANSFER_RETRY_INTERVAL) return;
+      await waitForWugnotRetry(signal);
+    }
   }
 
   async function enqueueStakePositionEvent(positionId: string, config: SnackbarOptions) {
