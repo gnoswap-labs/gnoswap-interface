@@ -28,6 +28,20 @@ const WUGNOT_CHANGE_THRESHOLD = 10000;
 const WUGNOT_TRANSFER_RETRY_INTERVAL = 1_200;
 const WUGNOT_TRANSFER_RETRY_DEADLINE = 8_000;
 
+function waitForWugnotRetry(signal: AbortSignal): Promise<void> {
+  const { promise, resolve } = Promise.withResolvers<void>();
+  const timer = setTimeout(() => {
+    signal.removeEventListener("abort", onAbort);
+    resolve();
+  }, WUGNOT_TRANSFER_RETRY_INTERVAL);
+  function onAbort() {
+    clearTimeout(timer);
+    resolve();
+  }
+  signal.addEventListener("abort", onAbort, { once: true });
+  return promise;
+}
+
 function makeSnackbarConfig(type: SnackbarType, timeout = DEFAULT_SNACKBAR_TIMEOUT): SnackbarOptions {
   return {
     id: makeRandomId(),
@@ -217,17 +231,7 @@ export const useTransactionEventStore = () => {
       if (transferHistory.length > 0) break;
       // Only retry an empty projection, and never start a request at or past the deadline.
       if (deadline - Date.now() < WUGNOT_TRANSFER_RETRY_INTERVAL) return;
-      await new Promise<void>(resolve => {
-        const timer = setTimeout(() => {
-          signal.removeEventListener("abort", onAbort);
-          resolve();
-        }, WUGNOT_TRANSFER_RETRY_INTERVAL);
-        function onAbort() {
-          clearTimeout(timer);
-          resolve();
-        }
-        signal.addEventListener("abort", onAbort, { once: true });
-      });
+      await waitForWugnotRetry(signal);
     }
     if (signal.aborted) return;
 
@@ -249,16 +253,26 @@ export const useTransactionEventStore = () => {
       return;
     }
 
-    const wugnotBalance = await fetchWugnotBalance();
-    if (signal.aborted) return;
+    while (!signal.aborted) {
+      const wugnotBalance = await fetchWugnotBalance();
+      if (signal.aborted) return;
 
-    const tokenAAmount = (makeDisplayTokenAmount(GNOT_TOKEN, wugnotBalance.toString()) || 0).toLocaleString("en-US", {
-      maximumFractionDigits: 2,
-    });
-    enqueue(
-      getReceiveWugnotMessage(txHash, tokenAAmount, () => unwrapAll()),
-      config,
-    );
+      const balance = new BigNumber(wugnotBalance);
+      if (balance.isFinite() && balance.isGreaterThan(0)) {
+        const tokenAAmount = (makeDisplayTokenAmount(GNOT_TOKEN, wugnotBalance) || 0).toLocaleString("en-US", {
+          maximumFractionDigits: GNOT_TOKEN.decimals,
+        });
+        enqueue(
+          getReceiveWugnotMessage(txHash, tokenAAmount, () => unwrapAll()),
+          config,
+        );
+        return;
+      }
+
+      // The transfer projection can precede the wallet balance; never display a stale zero.
+      if (deadline - Date.now() < WUGNOT_TRANSFER_RETRY_INTERVAL) return;
+      await waitForWugnotRetry(signal);
+    }
   }
 
   async function enqueueStakePositionEvent(positionId: string, config: SnackbarOptions) {
