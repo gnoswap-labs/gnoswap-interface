@@ -1,5 +1,4 @@
 export type StorageKeyType =
-  | "notification-removed-tx"
   | "notification-seen-tx"
   | "transaction-history"
   | "theme-mode"
