@@ -127,10 +127,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     tokenA: { [key in number]: string };
     tokenB: { [key in number]: string };
   }>({ tokenA: {}, tokenB: {} });
-  const [tooltipInfo, setTooltipInfo] = useState<TooltipInfo | null>(null);
   const [positionX, setPositionX] = useState<number | null>(null);
   const [positionY, setPositionY] = useState<number | null>(null);
-  const [hoverBarIndex, setHoverBarIndex] = useState<number | null>(null);
 
   const { redColor, greenColor } = useColorGraph();
 
@@ -255,6 +253,52 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       };
     });
   }, [graphBins, graphMinTick]);
+
+  const hoveredBin = useMemo(() => {
+    if (positionX === null || positionY === null || fullRange || positionY <= 0 || positionY > boundsHeight) {
+      return null;
+    }
+    const mouseTick = scaleX.invert(positionX) + graphMinTick;
+    if (minPrice && maxPrice && priceToTick(minPrice) < mouseTick && priceToTick(maxPrice) > mouseTick) {
+      return null;
+    }
+    return (
+      resolvedDisplayBins.find(
+        bin =>
+          bin.height > 0 &&
+          ((mouseTick >= bin.minTick && mouseTick <= bin.maxTick) || Math.abs(bin.maxTick - mouseTick) <= 0.5) &&
+          positionY >= getVisibleBarDimensions(scaleY(bin.height), boundsHeight).y,
+      ) || null
+    );
+  }, [
+    positionX,
+    positionY,
+    fullRange,
+    boundsHeight,
+    scaleX,
+    graphMinTick,
+    minPrice,
+    maxPrice,
+    resolvedDisplayBins,
+    scaleY,
+  ]);
+  const hoverBarIndex = hoveredBin?.index ?? null;
+
+  const tooltipInfo = useMemo<TooltipInfo | null>(() => {
+    if (!hoveredBin) {
+      return null;
+    }
+    const tooltipTick = getPoolSelectionGraphTooltipTick(hoveredBin);
+    return {
+      tokenA: displayTokenA,
+      tokenB: displayTokenB,
+      tokenAAmount: hoveredBin.reserveTokenA ? convertToKMB(hoveredBin.reserveTokenA.toString()) : "-",
+      tokenBAmount: hoveredBin.reserveTokenB ? convertToKMB(hoveredBin.reserveTokenB.toString()) : "-",
+      tokenAVisible: hoveredBin.reserveTokenA > 0,
+      tokenBVisible: hoveredBin.reserveTokenB > 0,
+      price: priceOfTick.tokenA[tooltipTick] || "0",
+    };
+  }, [hoveredBin, displayTokenA, displayTokenB, priceOfTick]);
 
   const tooltipPosition = useMemo((): FloatingPosition => {
     if (position) {
@@ -553,83 +597,24 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
   // mouse over event
   function onMouseoverChartBin(event: MouseEvent) {
-    const mouseX = event.offsetX;
-    const mouseY = event.offsetY;
-    const mouseXTick = scaleX.invert(event.offsetX) + graphMinTick;
-
-    if (minPrice && maxPrice) {
-      if (priceToTick(minPrice) < mouseXTick && priceToTick(maxPrice) > mouseXTick) {
-        setTooltipInfo(null);
-        setHoverBarIndex(null);
-        return;
-      }
-    }
-
-    const bin = resolvedDisplayBins.find(bin => {
-      if (mouseY < 0.000001 || boundsHeight < mouseY) {
-        return false;
-      }
-      if (bin.height < 0 || !bin.height) {
-        return false;
-      }
-
-      return (mouseXTick >= bin.minTick && mouseXTick <= bin.maxTick) || Math.abs(bin.maxTick - mouseXTick) <= 0.5;
-    });
-
-    if (!bin) {
-      setPositionX(null);
-      setPositionY(null);
-      setTooltipInfo(null);
-      setHoverBarIndex(null);
-      return;
-    }
-
-    // Hit-test the rendered bar, including its minimum visible height.
-    if (mouseY < getVisibleBarDimensions(scaleY(bin.height), boundsHeight).y) {
-      setPositionX(null);
-      setPositionY(null);
-      setTooltipInfo(null);
-      setHoverBarIndex(null);
-      return;
-    }
-
-    setHoverBarIndex(bin.index);
-
-    const tooltipTick = getPoolSelectionGraphTooltipTick(bin);
-
-    const tokenAAmountStr = bin.reserveTokenA;
-    const tokenBAmountStr = bin.reserveTokenB;
-
-    setTooltipInfo({
-      tokenA: displayTokenA,
-      tokenB: displayTokenB,
-      tokenAAmount: tokenAAmountStr ? convertToKMB(tokenAAmountStr.toString()) : "-",
-      tokenBAmount: tokenBAmountStr ? convertToKMB(tokenBAmountStr.toString()) : "-",
-      tokenAVisible: tokenAAmountStr > 0,
-      tokenBVisible: tokenBAmountStr > 0,
-      price: priceOfTick.tokenA[tooltipTick] || "0",
-    });
-    setPositionX(mouseX);
-    setPositionY(mouseY);
+    setPositionX(event.offsetX);
+    setPositionY(event.offsetY);
   }
 
   function onMouseoutChartBin() {
     setPositionX(null);
     setPositionY(null);
-    setHoverBarIndex(null);
   }
 
   function onMouseoverClear(event: MouseEvent) {
     const { clientX, clientY } = event;
     if (!svgRef.current?.getClientRects()[0]) {
-      setTooltipInfo(null);
-      setHoverBarIndex(null);
+      onMouseoutChartBin();
       return;
     }
     const { left, right, top, bottom } = svgRef.current?.getClientRects()[0];
     if (clientX < left || clientX > right || clientY < top || clientY > bottom) {
-      setTooltipInfo(null);
-      setHoverBarIndex(null);
+      onMouseoutChartBin();
     }
   }
 
