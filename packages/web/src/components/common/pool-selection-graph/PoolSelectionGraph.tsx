@@ -597,8 +597,9 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
   // mouse over event
   function onMouseoverChartBin(event: MouseEvent) {
-    setPositionX(event.offsetX);
-    setPositionY(event.offsetY);
+    const [mouseX, mouseY] = d3.pointer(event, chartRef.current);
+    setPositionX(mouseX);
+    setPositionY(mouseY);
   }
 
   function onMouseoutChartBin() {
