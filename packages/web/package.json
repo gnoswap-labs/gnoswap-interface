@@ -45,6 +45,7 @@
     "i18next-http-backend": "^2.5.2",
     "i18next-localstorage-backend": "^4.2.0",
     "jotai": "2.2.1",
+    "lightweight-charts": "^5.0.0",
     "ms": "^2.1.3",
     "next": "^15.5.7",
     "next-i18next": "^15.3.0",

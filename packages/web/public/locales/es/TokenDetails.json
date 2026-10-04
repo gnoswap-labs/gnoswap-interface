@@ -7,6 +7,19 @@
     },
     "title": "Mejores Pools para {{symbol}}"
   },
+  "chart": {
+    "controls": "Vista del gráfico",
+    "line": "Línea",
+    "candles": "Velas",
+    "interval": "Intervalo de velas",
+    "candleLabel": "Precio de {{symbol}} en USD, velas OHLC y volumen en USD",
+    "loading": "Cargando velas de precios…",
+    "empty": "No hay velas de precios para este intervalo.",
+    "error": "No se pudieron cargar las velas de precios.",
+    "retry": "Reintentar",
+    "loadingOlder": "Cargando velas anteriores…",
+    "volumeUsd": "Volumen (USD)"
+  },
   "description": {
     "empty": "No hay información sobre fichas",
     "links": "Enlaces",

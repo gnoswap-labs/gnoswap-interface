@@ -1,4 +1,21 @@
 {
+  "chart": {
+    "section": "Graphique du pool",
+    "mode": "Vue du graphique",
+    "price": "Prix",
+    "liquidity": "Liquidité",
+    "range": "Intervalle des bougies",
+    "reverse": "Inverser la paire de prix",
+    "zoomIn": "Agrandir",
+    "zoomOut": "Réduire",
+    "priceChartLabel": "Graphique du prix et du volume USD de {{pair}}",
+    "volumeUsd": "Volume (USD)",
+    "loading": "Chargement de l'historique des prix…",
+    "loadingOlder": "Chargement des prix précédents…",
+    "empty": "Aucun historique de prix pour ce pool.",
+    "error": "Impossible de charger l'historique des prix.",
+    "retry": "Réessayer"
+  },
   "gotoIncentivizeGuide": {
     "add": "Vous voulez ajouter des incitants pour cette piscine ?",
     "boost": "Vous souhaitez renforcer les mesures d'incitation pour cette piscine ?"

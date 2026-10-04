@@ -1,4 +1,21 @@
 {
+  "chart": {
+    "section": "Pool chart",
+    "mode": "Chart view",
+    "price": "Price",
+    "liquidity": "Liquidity",
+    "range": "Candle interval",
+    "reverse": "Reverse price pair",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "priceChartLabel": "{{pair}} price and USD volume chart",
+    "volumeUsd": "Volume (USD)",
+    "loading": "Loading price history…",
+    "loadingOlder": "Loading older prices…",
+    "empty": "No price history for this pool yet.",
+    "error": "Could not load price history.",
+    "retry": "Retry"
+  },
   "gotoIncentivizeGuide": {
     "add": "Want to add up incentives for this pool?",
     "boost": "Want to boost up incentives for this pool?"

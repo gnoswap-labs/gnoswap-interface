@@ -1,4 +1,21 @@
 {
+  "chart": {
+    "section": "Biểu đồ pool",
+    "mode": "Chế độ biểu đồ",
+    "price": "Giá",
+    "liquidity": "Thanh khoản",
+    "range": "Khoảng nến",
+    "reverse": "Đảo cặp giá",
+    "zoomIn": "Phóng to",
+    "zoomOut": "Thu nhỏ",
+    "priceChartLabel": "Biểu đồ giá và khối lượng USD của {{pair}}",
+    "volumeUsd": "Khối lượng (USD)",
+    "loading": "Đang tải lịch sử giá…",
+    "loadingOlder": "Đang tải giá cũ hơn…",
+    "empty": "Pool này chưa có lịch sử giá.",
+    "error": "Không thể tải lịch sử giá.",
+    "retry": "Thử lại"
+  },
   "gotoIncentivizeGuide": {
     "add": "Bạn có muốn cộng các khoản khuyến khích cho nhóm này không?",
     "boost": "Bạn có muốn tăng mức thưởng cho nhóm này không?"

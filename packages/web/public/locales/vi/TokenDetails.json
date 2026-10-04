@@ -7,6 +7,19 @@
     },
     "title": "Các Pool tốt nhất cho {{symbol}}"
   },
+  "chart": {
+    "controls": "Hiển thị biểu đồ",
+    "line": "Đường",
+    "candles": "Nến",
+    "interval": "Khung thời gian nến",
+    "candleLabel": "Giá {{symbol}} theo USD, nến OHLC và khối lượng USD",
+    "loading": "Đang tải nến giá…",
+    "empty": "Không có nến giá cho khung thời gian này.",
+    "error": "Không thể tải nến giá.",
+    "retry": "Thử lại",
+    "loadingOlder": "Đang tải nến cũ hơn…",
+    "volumeUsd": "Khối lượng (USD)"
+  },
   "description": {
     "empty": "Không có thông tin về token",
     "links": "Liên kết",

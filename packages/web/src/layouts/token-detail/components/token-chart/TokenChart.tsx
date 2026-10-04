@@ -1,17 +1,22 @@
-import React, { useMemo } from "react";
+import dynamic from "next/dynamic";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import type { NetworkClient } from "@common/clients/network-client";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
-import { ComponentSize } from "@hooks/common/use-component-size";
-import { DEVICE_TYPE } from "@styles/media";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
+import { ComponentSize } from "@hooks/common/use-component-size";
+import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
+import { DEVICE_TYPE } from "@styles/media";
 
+import { CandleChartWrapper, ChartControls, ChartNotFound, LoadingChart, TokenChartWrapper } from "./TokenChart.styles";
+import type { CandleResolution } from "./token-candle-data";
 import TokenChartGraphTab from "./token-chart-graph-tab/TokenChartGraphTab";
 import TokenChartGraph from "./token-chart-graph/TokenChartGraph";
 import TokenChartInfo from "./token-chart-info/TokenChartInfo";
 
-import { ChartNotFound, LoadingChart, TokenChartWrapper } from "./TokenChart.styles";
-import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
+// Browser-only canvas dependency stays outside SSR and the default line chart bundle.
+const TokenCandles = dynamic(() => import("./TokenCandles"), { ssr: false });
 
 export interface TokenInfo {
   token: {
@@ -59,6 +64,9 @@ export interface TokenChartProps {
   componentRef: React.RefObject<HTMLDivElement>;
   size: ComponentSize;
   breakpoint: DEVICE_TYPE;
+  candleClient?: NetworkClient | null;
+  candlePath?: string;
+  candleSymbol?: string;
 }
 
 const TokenChart: React.FC<TokenChartProps> = ({
@@ -71,40 +79,85 @@ const TokenChart: React.FC<TokenChartProps> = ({
   componentRef,
   size,
   breakpoint,
+  candleClient,
+  candlePath,
+  candleSymbol,
 }) => {
   const { t } = useTranslation();
+  const [mode, setMode] = useState<"line" | "candles">("line");
+  const [resolution, setResolution] = useState<CandleResolution>("1h");
 
   const isAllZero = useMemo(() => {
     return (
       (chartInfo?.datas?.length || 0) === 0 ||
-      chartInfo?.datas.every(item => {
-        return Number(item.amount.value) === 0;
-      })
+      (chartInfo?.datas.every(item => Number(item.amount.value) === 0) ?? false)
     );
   }, [chartInfo?.datas]);
 
   return (
     <TokenChartWrapper>
-      <TokenChartInfo {...tokenInfo} isEmpty={loading || isAllZero || false} loading={loading} />
-      <TokenChartGraphTab tabs={tabs} currentTab={currentTab} changeTab={changeTab} />
-      {(chartInfo?.datas.length === 0 || isAllZero) && !loading && <ChartNotFound>{t("common:noData")}</ChartNotFound>}
-      {loading && (
-        <LoadingChart>
-          <LoadingSpinner />
-        </LoadingChart>
-      )}
-      {chartInfo?.datas.length !== 0 && !loading && !isAllZero && (
-        <TokenChartGraph
-          xAxisLabels={chartInfo?.xAxisLabels || []}
-          yAxisLabels={chartInfo?.yAxisLabels || []}
-          yAxisMin={chartInfo?.yAxisMin}
-          yAxisMax={chartInfo?.yAxisMax}
-          datas={chartInfo?.datas || []}
-          currentTab={currentTab}
-          componentRef={componentRef}
-          size={size}
-          breakpoint={breakpoint}
-        />
+      <TokenChartInfo {...tokenInfo} isEmpty={loading || (mode === "line" && isAllZero)} loading={loading} />
+      <ChartControls role="group" aria-label={t("TokenDetails:chart.controls")}>
+        <div className="chart-mode">
+          <button type="button" aria-pressed={mode === "line"} onClick={() => setMode("line")}>
+            {t("TokenDetails:chart.line")}
+          </button>
+          <button type="button" aria-pressed={mode === "candles"} onClick={() => setMode("candles")}>
+            {t("TokenDetails:chart.candles")}
+          </button>
+        </div>
+        {mode === "candles" && (
+          <div className="chart-intervals" role="group" aria-label={t("TokenDetails:chart.interval")}>
+            {(["5m", "1h", "1d"] as const).map(interval => (
+              <button
+                key={interval}
+                type="button"
+                aria-pressed={resolution === interval}
+                onClick={() => setResolution(interval)}
+              >
+                {interval}
+              </button>
+            ))}
+          </div>
+        )}
+      </ChartControls>
+      {mode === "line" ? (
+        <>
+          <TokenChartGraphTab tabs={tabs} currentTab={currentTab} changeTab={changeTab} />
+          {(chartInfo?.datas.length === 0 || isAllZero) && !loading && (
+            <ChartNotFound>{t("common:noData")}</ChartNotFound>
+          )}
+          {loading && (
+            <LoadingChart>
+              <LoadingSpinner />
+            </LoadingChart>
+          )}
+          {chartInfo?.datas.length !== 0 && !loading && !isAllZero && (
+            <TokenChartGraph
+              xAxisLabels={chartInfo?.xAxisLabels || []}
+              yAxisLabels={chartInfo?.yAxisLabels || []}
+              yAxisMin={chartInfo?.yAxisMin}
+              yAxisMax={chartInfo?.yAxisMax}
+              datas={chartInfo?.datas || []}
+              currentTab={currentTab}
+              componentRef={componentRef}
+              size={size}
+              breakpoint={breakpoint}
+            />
+          )}
+        </>
+      ) : candleClient && candlePath ? (
+        <CandleChartWrapper>
+          <TokenCandles
+            key={`${candlePath}:${resolution}`}
+            client={candleClient}
+            tokenPath={candlePath}
+            symbol={candleSymbol || tokenInfo.token.displaySymbol}
+            resolution={resolution}
+          />
+        </CandleChartWrapper>
+      ) : (
+        <ChartNotFound role="status">{t("TokenDetails:chart.loading")}</ChartNotFound>
       )}
     </TokenChartWrapper>
   );

@@ -7,6 +7,19 @@
     },
     "title": "Meilleures Pools pour {{symbol}}"
   },
+  "chart": {
+    "controls": "Affichage du graphique",
+    "line": "Courbe",
+    "candles": "Bougies",
+    "interval": "Intervalle des bougies",
+    "candleLabel": "Prix de {{symbol}} en USD, bougies OHLC et volume en USD",
+    "loading": "Chargement des bougies de prix…",
+    "empty": "Aucune bougie de prix pour cet intervalle.",
+    "error": "Impossible de charger les bougies de prix.",
+    "retry": "Réessayer",
+    "loadingOlder": "Chargement des anciennes bougies…",
+    "volumeUsd": "Volume (USD)"
+  },
   "description": {
     "empty": "Pas d'information sur les jetons",
     "links": "Liens",

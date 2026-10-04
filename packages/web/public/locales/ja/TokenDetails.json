@@ -7,6 +7,19 @@
     },
     "title": "{{symbol}}のおすすめプール"
   },
+  "chart": {
+    "controls": "チャート表示",
+    "line": "ライン",
+    "candles": "ローソク足",
+    "interval": "ローソク足の間隔",
+    "candleLabel": "{{symbol}}のUSD価格、OHLCローソク足とUSD出来高",
+    "loading": "価格のローソク足を読み込み中…",
+    "empty": "この間隔の価格データはありません。",
+    "error": "価格のローソク足を読み込めませんでした。",
+    "retry": "再試行",
+    "loadingOlder": "過去のローソク足を読み込み中…",
+    "volumeUsd": "出来高 (USD)"
+  },
   "description": {
     "empty": "トークン情報なし",
     "links": "リンク",

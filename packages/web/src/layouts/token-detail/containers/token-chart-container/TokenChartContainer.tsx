@@ -6,6 +6,7 @@ import { RefetchInterval } from "@common/values";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useComponentSize from "@hooks/common/use-component-size";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
@@ -116,6 +117,7 @@ const TokenChartContainer: React.FC = () => {
   const clearModal = useClearModal();
   const { breakpoint } = useWindowSize();
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
+  const { gnoswapApiClient } = useGnoswapContext();
   const { isLoading: isLoadingCommon } = useLoading();
 
   const { openModal: openWarningModal } = useTokenWarningModal({
@@ -293,6 +295,9 @@ const TokenChartContainer: React.FC = () => {
       componentRef={componentRef}
       size={size}
       breakpoint={breakpoint}
+      candleClient={gnoswapApiClient}
+      candlePath={(path === "ugnot" ? wugnotPath : path) || undefined}
+      candleSymbol={tokenB?.displaySymbol || ""}
     />
   );
 };

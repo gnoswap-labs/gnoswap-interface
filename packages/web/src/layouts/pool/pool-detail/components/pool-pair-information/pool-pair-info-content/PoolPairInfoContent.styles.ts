@@ -23,6 +23,144 @@ export const ContentWrapper = styled.div`
     padding: 16px 48px;
     margin: 16px 24px 24px 24px;
     gap: 16px;
+    &.price-mode {
+      padding: 14px 24px 12px;
+      gap: 10px;
+    }
+    .chart-controls {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      min-height: 36px;
+      color: ${({ theme }) => theme.color.text04};
+      ${fonts.body12};
+    }
+    .chart-tabs,
+    .chart-ranges {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .chart-ranges {
+      justify-self: end;
+    }
+    .chart-pair {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      color: ${({ theme }) => theme.color.text10};
+    }
+    .chart-controls button {
+      min-width: 40px;
+      min-height: 36px;
+      padding: 6px 10px;
+      border-radius: 4px;
+      color: ${({ theme }) => theme.color.text04};
+      &:hover,
+      &:focus-visible {
+        color: ${({ theme }) => theme.color.text02};
+      }
+      &:focus-visible {
+        outline: 2px solid ${({ theme }) => theme.color.text02};
+        outline-offset: 2px;
+      }
+      &[aria-pressed="true"] {
+        background: ${({ theme }) => theme.color.background05};
+        color: ${({ theme }) => theme.color.text02};
+      }
+    }
+    .chart-pair button {
+      font-size: 20px;
+      line-height: 1;
+      padding: 4px;
+    }
+    .price-chart-shell {
+      position: relative;
+      width: 100%;
+      height: 350px;
+      background: ${({ theme }) => theme.color.background28};
+      color: ${({ theme }) => theme.color.text04};
+    }
+    .price-chart-canvas {
+      width: 100%;
+      height: calc(100% - 48px);
+    }
+    .price-chart-status {
+      position: absolute;
+      inset: 0 0 48px;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: ${({ theme }) => theme.color.background28};
+      color: ${({ theme }) => theme.color.text02};
+    }
+    .price-chart-status button {
+      text-decoration: underline;
+      color: ${({ theme }) => theme.color.text02};
+    }
+    .price-chart-volume-label,
+    .price-chart-attribution,
+    .price-chart-paging {
+      position: absolute;
+      left: 12px;
+      font-size: 11px;
+      color: ${({ theme }) => theme.color.text04};
+    }
+    .price-chart-volume-label {
+      bottom: 110px;
+      pointer-events: none;
+    }
+    .price-chart-attribution {
+      bottom: 4px;
+      max-width: calc(100% - 24px);
+      line-height: 1.3;
+      overflow-wrap: anywhere;
+      text-decoration: underline;
+    }
+    .price-chart-paging {
+      top: 8px;
+      z-index: 3;
+    }
+    @media (max-width: 767px) {
+      &.price-mode {
+        padding: 12px;
+      }
+      .chart-controls {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .chart-tabs {
+        grid-row: 1;
+      }
+      .chart-ranges {
+        grid-column: 1;
+        grid-row: 2;
+        justify-self: start;
+        width: 100%;
+        overflow-x: auto;
+      }
+      .chart-pair {
+        grid-column: 1;
+        grid-row: 3;
+        justify-self: start;
+      }
+      .chart-controls button {
+        min-width: 44px;
+        min-height: 44px;
+        padding: 6px 8px;
+        flex-shrink: 0;
+      }
+      .price-chart-shell {
+        height: 300px;
+      }
+      .price-chart-attribution {
+        font-size: 10px;
+      }
+    }
     .position-header {
       display: grid;
       grid-template-columns: 140px 1fr 140px;
