@@ -584,10 +584,10 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       return;
     }
 
-    // To reduce the computation of scaleY, the Y-axis condition check is done separately.
-    if (mouseY < scaleY(bin.height)) {
+    // Hit-test the rendered bar, including its minimum visible height.
+    if (mouseY < getVisibleBarDimensions(scaleY(bin.height), boundsHeight).y) {
       setPositionX(null);
-      setPositionX(null);
+      setPositionY(null);
       setTooltipInfo(null);
       setHoverBarIndex(null);
       return;
@@ -710,6 +710,9 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     maxLiquidity,
     resolvedDisplayBins,
     hoverBarIndex,
+    displayTokenA,
+    displayTokenB,
+    priceOfTick,
     themeKey,
     svgRef?.current,
     chartRef?.current,
