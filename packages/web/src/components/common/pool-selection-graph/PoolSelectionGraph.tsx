@@ -259,7 +259,12 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       return null;
     }
     const mouseTick = scaleX.invert(positionX) + graphMinTick;
-    if (minPrice && maxPrice && priceToTick(minPrice) < mouseTick && priceToTick(maxPrice) > mouseTick) {
+    if (
+      minPrice !== null &&
+      maxPrice !== null &&
+      (minPrice === 0 || priceToTick(minPrice) < mouseTick) &&
+      priceToTick(maxPrice) > mouseTick
+    ) {
       return null;
     }
     return (
