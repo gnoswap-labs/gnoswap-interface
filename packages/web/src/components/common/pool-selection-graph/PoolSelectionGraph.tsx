@@ -345,7 +345,13 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       isBrushMovingRef.current = true;
     }
 
-    const selection = event.selection ? event.selection : [0, 0];
+    const brushElement = d3.select(brushRef.current);
+    if (!event.selection) {
+      brushElement.selectAll(".resize").attr("display", "none");
+      return;
+    }
+    brushElement.selectAll(".resize").attr("display", null);
+    const selection = event.selection;
     const startPosition = selection[0] as number;
     const endPosition = selection[1] as number;
 
@@ -356,8 +362,6 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const endRate = currentPrice ? ((Number(endPrice) - currentPrice) / currentPrice) * 100 : 0;
 
     const selectionColor = getSelectionColor(startRate >= 0 ? "1" : "-1", endRate >= 0 ? "1" : "-1");
-
-    const brushElement = d3.select(brushRef.current);
 
     const startLine = brushElement.select("#start");
     if (event.type === "start") {
@@ -704,29 +708,6 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     chartRef?.current,
   ]);
 
-  // Brush settings, on currentPrice change, zoom, move ...
-  useEffect(() => {
-    if (minPrice === null || maxPrice === null) {
-      return;
-    }
-    if (isBrushMovingRef.current) {
-      return;
-    }
-    if (!brushRef?.current) {
-      return;
-    }
-    const brushElement = d3.select(brushRef.current);
-
-    if (fullRange) {
-      brush.move(brushElement, [0, boundsWidth]);
-    } else {
-      brush.move(brushElement, [
-        scaleX(priceToTick(minPrice) - graphMinTick),
-        scaleX(priceToTick(maxPrice) - graphMinTick),
-      ]);
-    }
-  }, [minPrice, maxPrice, zoomLevel, fullRange, graphBins, graphMinTick, boundsWidth, scaleX]);
-
   useEffect(() => {
     if (!brushRef.current) {
       return;
@@ -747,6 +728,25 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const selectionElement = brushElement.select(".selection");
     selectionElement.style("fill", "url(#gradient-selection-area)");
   }, [boundsHeight, brush, brushRef, scaleX]);
+
+  // Synchronize the selection only after the brush and its custom handles exist.
+  useEffect(() => {
+    if (isBrushMovingRef.current || !brushRef.current) {
+      return;
+    }
+    const brushElement = d3.select(brushRef.current);
+
+    if (fullRange) {
+      brush.move(brushElement, [0, boundsWidth]);
+    } else if (minPrice === null || maxPrice === null) {
+      brush.move(brushElement, null);
+    } else {
+      brush.move(brushElement, [
+        scaleX(priceToTick(minPrice) - graphMinTick),
+        scaleX(priceToTick(maxPrice) - graphMinTick),
+      ]);
+    }
+  }, [minPrice, maxPrice, zoomLevel, fullRange, graphBins, graphMinTick, boundsWidth, scaleX]);
 
   // On scroll, remove tooltip
   useEffect(() => {
