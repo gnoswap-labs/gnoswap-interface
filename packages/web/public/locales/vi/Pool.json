@@ -2,9 +2,10 @@
   "chart": {
     "section": "Biểu đồ pool",
     "mode": "Chế độ biểu đồ",
-    "price": "Giá",
+    "line": "Đường",
+    "candles": "Nến",
     "liquidity": "Thanh khoản",
-    "range": "Khoảng nến",
+    "range": "Khoảng biểu đồ",
     "reverse": "Đảo cặp giá",
     "zoomIn": "Phóng to",
     "zoomOut": "Thu nhỏ",

@@ -22,7 +22,14 @@ export const ContentWrapper = styled.div`
     border-radius: 10px;
     padding: 16px 48px;
     margin: 16px 24px 24px 24px;
+    min-width: 0;
     gap: 16px;
+    .chart-title {
+      ${fonts.body10};
+      color: ${({ theme }) => theme.color.text02};
+      width: 100%;
+      margin: 0;
+    }
     &.price-mode {
       padding: 14px 24px 12px;
       gap: 10px;
@@ -50,7 +57,7 @@ export const ContentWrapper = styled.div`
       display: flex;
       align-items: center;
       gap: 8px;
-      white-space: nowrap;
+      overflow-wrap: anywhere;
       color: ${({ theme }) => theme.color.text10};
     }
     .chart-controls button {
@@ -145,6 +152,7 @@ export const ContentWrapper = styled.div`
       }
       .chart-pair {
         grid-column: 1;
+        max-width: 100%;
         grid-row: 3;
         justify-self: start;
       }

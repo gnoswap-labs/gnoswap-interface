@@ -2,9 +2,10 @@
   "chart": {
     "section": "풀 차트",
     "mode": "차트 보기",
-    "price": "가격",
+    "line": "라인",
+    "candles": "캔들",
     "liquidity": "유동성",
-    "range": "캔들 간격",
+    "range": "차트 기간",
     "reverse": "가격 방향 전환",
     "zoomIn": "확대",
     "zoomOut": "축소",

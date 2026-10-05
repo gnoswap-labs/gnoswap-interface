@@ -2,9 +2,10 @@
   "chart": {
     "section": "Graphique du pool",
     "mode": "Vue du graphique",
-    "price": "Prix",
+    "line": "Courbe",
+    "candles": "Bougies",
     "liquidity": "Liquidité",
-    "range": "Intervalle des bougies",
+    "range": "Période du graphique",
     "reverse": "Inverser la paire de prix",
     "zoomIn": "Agrandir",
     "zoomOut": "Réduire",

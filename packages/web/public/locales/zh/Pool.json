@@ -2,9 +2,10 @@
   "chart": {
     "section": "池图表",
     "mode": "图表视图",
-    "price": "价格",
+    "line": "折线",
+    "candles": "K线",
     "liquidity": "流动性",
-    "range": "K线周期",
+    "range": "图表区间",
     "reverse": "反转价格交易对",
     "zoomIn": "放大",
     "zoomOut": "缩小",

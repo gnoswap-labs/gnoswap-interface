@@ -2,9 +2,10 @@
   "chart": {
     "section": "Gráfico del pool",
     "mode": "Vista del gráfico",
-    "price": "Precio",
+    "line": "Línea",
+    "candles": "Velas",
     "liquidity": "Liquidez",
-    "range": "Intervalo de velas",
+    "range": "Rango del gráfico",
     "reverse": "Invertir par de precios",
     "zoomIn": "Acercar",
     "zoomOut": "Alejar",

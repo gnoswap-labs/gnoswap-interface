@@ -14,33 +14,51 @@ export const TokenChartWrapper = styled.div`
   border-radius: 8px;
   ${media.mobile} {
     background-color: transparent;
+    max-width: calc(100vw - 32px);
     border: none;
     padding: 0;
     gap: 16px;
   }
-  .chart-tab-wrapper {
-  }
+`;
 
-  .chart-graph-wrapper {
+export const ChartRegion = styled.div`
+  min-width: 0;
+  background-color: ${({ theme }) => theme.color.background15};
+  border-radius: 8px;
+
+  ${media.mobile} {
+    width: 100%;
   }
 `;
+
 export const ChartControls = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
-  margin: 12px 0;
+  gap: 4px 12px;
+  min-width: 0;
+  padding: 8px 12px;
+  border-bottom: 1px solid ${({ theme }) => theme.color.border02};
+
   .chart-mode,
   .chart-intervals {
     display: flex;
     align-items: center;
     gap: 4px;
   }
+
+  .chart-intervals {
+    margin-left: auto;
+  }
+
+  .chart-tab-wrapper {
+    margin: 0 0 0 auto;
+  }
+
   button {
     min-width: 44px;
-    min-height: 36px;
-    padding: 6px 10px;
+    min-height: 32px;
+    padding: 4px 8px;
     border-radius: 4px;
     color: ${({ theme }) => theme.color.text04};
     &:hover,
@@ -49,15 +67,28 @@ export const ChartControls = styled.div`
     }
     &:focus-visible {
       outline: 2px solid ${({ theme }) => theme.color.text02};
-      outline-offset: 2px;
+      outline-offset: -2px;
     }
     &[aria-pressed="true"] {
       background: ${({ theme }) => theme.color.background05};
       color: ${({ theme }) => theme.color.text02};
     }
   }
+
   ${media.mobile} {
-    margin: 0;
+    padding: 8px;
+
+    .chart-tab-wrapper {
+      width: 100%;
+      margin-left: 0;
+    }
+    .select-tab-wrapper {
+      width: 100%;
+    }
+    .chart-select-button {
+      min-width: 0;
+      padding: 4px;
+    }
     button {
       min-height: 44px;
     }
@@ -69,7 +100,7 @@ export const CandleChartWrapper = styled.div`
     position: relative;
     width: 100%;
     height: 350px;
-    background: ${({ theme }) => theme.color.background28};
+    background: ${({ theme }) => theme.color.background15};
     color: ${({ theme }) => theme.color.text04};
   }
   .price-chart-currency {
@@ -92,13 +123,17 @@ export const CandleChartWrapper = styled.div`
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
+    align-content: center;
     gap: 8px;
     padding: 12px;
     text-align: center;
-    background: ${({ theme }) => theme.color.background28};
+    background: ${({ theme }) => theme.color.background15};
     color: ${({ theme }) => theme.color.text02};
   }
   .price-chart-status button {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px;
     text-decoration: underline;
     color: ${({ theme }) => theme.color.text02};
     &:focus-visible {

@@ -9,7 +9,14 @@ import { ComponentSize } from "@hooks/common/use-component-size";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 import { DEVICE_TYPE } from "@styles/media";
 
-import { CandleChartWrapper, ChartControls, ChartNotFound, LoadingChart, TokenChartWrapper } from "./TokenChart.styles";
+import {
+  CandleChartWrapper,
+  ChartControls,
+  ChartNotFound,
+  ChartRegion,
+  LoadingChart,
+  TokenChartWrapper,
+} from "./TokenChart.styles";
 import type { CandleResolution } from "./token-candle-data";
 import TokenChartGraphTab from "./token-chart-graph-tab/TokenChartGraphTab";
 import TokenChartGraph from "./token-chart-graph/TokenChartGraph";
@@ -97,68 +104,75 @@ const TokenChart: React.FC<TokenChartProps> = ({
   return (
     <TokenChartWrapper>
       <TokenChartInfo {...tokenInfo} isEmpty={loading || (mode === "line" && isAllZero)} loading={loading} />
-      <ChartControls role="group" aria-label={t("TokenDetails:chart.controls")}>
-        <div className="chart-mode">
-          <button type="button" aria-pressed={mode === "line"} onClick={() => setMode("line")}>
-            {t("TokenDetails:chart.line")}
-          </button>
-          <button type="button" aria-pressed={mode === "candles"} onClick={() => setMode("candles")}>
-            {t("TokenDetails:chart.candles")}
-          </button>
-        </div>
-        {mode === "candles" && (
-          <div className="chart-intervals" role="group" aria-label={t("TokenDetails:chart.interval")}>
-            {(["5m", "1h", "1d"] as const).map(interval => (
-              <button
-                key={interval}
-                type="button"
-                aria-pressed={resolution === interval}
-                onClick={() => setResolution(interval)}
-              >
-                {interval}
-              </button>
-            ))}
+      <ChartRegion>
+        <ChartControls role="group" aria-label={t("TokenDetails:chart.controls")}>
+          <div className="chart-mode">
+            <button type="button" aria-pressed={mode === "line"} onClick={() => setMode("line")}>
+              {t("TokenDetails:chart.line")}
+            </button>
+            <button type="button" aria-pressed={mode === "candles"} onClick={() => setMode("candles")}>
+              {t("TokenDetails:chart.candles")}
+            </button>
           </div>
-        )}
-      </ChartControls>
-      {mode === "line" ? (
-        <>
-          <TokenChartGraphTab tabs={tabs} currentTab={currentTab} changeTab={changeTab} />
-          {(chartInfo?.datas.length === 0 || isAllZero) && !loading && (
-            <ChartNotFound>{t("common:noData")}</ChartNotFound>
+          {mode === "line" ? (
+            <div className="chart-tab-wrapper" role="group" aria-label={t("TokenDetails:chart.interval")}>
+              <TokenChartGraphTab tabs={tabs} currentTab={currentTab} changeTab={changeTab} />
+            </div>
+          ) : (
+            <div className="chart-intervals" role="group" aria-label={t("TokenDetails:chart.interval")}>
+              {(["5m", "1h", "1d"] as const).map(interval => (
+                <button
+                  key={interval}
+                  type="button"
+                  aria-pressed={resolution === interval}
+                  onClick={() => setResolution(interval)}
+                >
+                  {interval}
+                </button>
+              ))}
+            </div>
           )}
-          {loading && (
-            <LoadingChart>
-              <LoadingSpinner />
-            </LoadingChart>
-          )}
-          {chartInfo?.datas.length !== 0 && !loading && !isAllZero && (
-            <TokenChartGraph
-              xAxisLabels={chartInfo?.xAxisLabels || []}
-              yAxisLabels={chartInfo?.yAxisLabels || []}
-              yAxisMin={chartInfo?.yAxisMin}
-              yAxisMax={chartInfo?.yAxisMax}
-              datas={chartInfo?.datas || []}
-              currentTab={currentTab}
-              componentRef={componentRef}
-              size={size}
-              breakpoint={breakpoint}
+        </ChartControls>
+        {mode === "line" ? (
+          <>
+            {(chartInfo?.datas.length === 0 || isAllZero) && !loading && (
+              <ChartNotFound>{t("common:noData")}</ChartNotFound>
+            )}
+            {loading && (
+              <LoadingChart>
+                <LoadingSpinner />
+              </LoadingChart>
+            )}
+            {chartInfo?.datas.length !== 0 && !loading && !isAllZero && (
+              <TokenChartGraph
+                xAxisLabels={chartInfo?.xAxisLabels || []}
+                yAxisLabels={chartInfo?.yAxisLabels || []}
+                yAxisMin={chartInfo?.yAxisMin}
+                yAxisMax={chartInfo?.yAxisMax}
+                datas={chartInfo?.datas || []}
+                currentTab={currentTab}
+                componentRef={componentRef}
+                size={size}
+                breakpoint={breakpoint}
+              />
+            )}
+          </>
+        ) : candleClient && candlePath ? (
+          <CandleChartWrapper>
+            <TokenCandles
+              key={`${candlePath}:${resolution}`}
+              client={candleClient}
+              tokenPath={candlePath}
+              symbol={candleSymbol || tokenInfo.token.displaySymbol}
+              resolution={resolution}
             />
-          )}
-        </>
-      ) : candleClient && candlePath ? (
-        <CandleChartWrapper>
-          <TokenCandles
-            key={`${candlePath}:${resolution}`}
-            client={candleClient}
-            tokenPath={candlePath}
-            symbol={candleSymbol || tokenInfo.token.displaySymbol}
-            resolution={resolution}
-          />
-        </CandleChartWrapper>
-      ) : (
-        <ChartNotFound role="status">{t("TokenDetails:chart.loading")}</ChartNotFound>
-      )}
+          </CandleChartWrapper>
+        ) : (
+          <ChartNotFound role="status">
+            {loading ? t("TokenDetails:chart.loading") : t("TokenDetails:chart.error")}
+          </ChartNotFound>
+        )}
+      </ChartRegion>
     </TokenChartWrapper>
   );
 };

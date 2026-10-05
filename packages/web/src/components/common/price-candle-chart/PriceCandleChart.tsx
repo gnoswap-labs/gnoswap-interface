@@ -1,5 +1,13 @@
 import { useTheme } from "@emotion/react";
-import type { LogicalRange, UTCTimestamp } from "lightweight-charts";
+import {
+  CandlestickSeries,
+  ColorType,
+  createChart,
+  HistogramSeries,
+  LineSeries,
+  type LogicalRange,
+  type UTCTimestamp,
+} from "lightweight-charts";
 import { useEffect, useRef, useState } from "react";
 
 export interface PriceBar {
@@ -11,10 +19,16 @@ export interface PriceBar {
   volume: number;
 }
 
+export interface PricePoint {
+  time: number;
+  value: number;
+}
+
 interface Props {
   identity: string;
   daily: boolean;
   all?: boolean;
+  linePoints?: PricePoint[];
   label: string;
   volumeLabel: string;
   priceLabel?: string;
@@ -30,6 +44,7 @@ export default function PriceCandleChart({
   identity,
   daily,
   all = false,
+  linePoints,
   label,
   volumeLabel,
   priceLabel,
@@ -55,7 +70,6 @@ export default function PriceCandleChart({
     setPaging(false);
 
     async function initialize() {
-      const { createChart, CandlestickSeries, HistogramSeries, ColorType } = await import("lightweight-charts");
       if (cancelled || !element) return;
       const positive = theme.color.green01;
       const negative = theme.color.red01;
@@ -71,7 +85,10 @@ export default function PriceCandleChart({
           vertLines: { color: theme.color.border14 },
           horzLines: { color: theme.color.border14 },
         },
-        rightPriceScale: { borderColor: theme.color.border14, scaleMargins: { top: 0.08, bottom: 0.24 } },
+        rightPriceScale: {
+          borderColor: theme.color.border14,
+          scaleMargins: { top: 0.08, bottom: linePoints ? 0.08 : 0.24 },
+        },
         timeScale: { borderColor: theme.color.border14, timeVisible: !daily, secondsVisible: false },
         crosshair: {
           vertLine: { labelBackgroundColor: theme.color.background05 },
@@ -79,6 +96,36 @@ export default function PriceCandleChart({
         },
         handleScroll: { mouseWheel: true, pressedMouseMove: true, horzTouchDrag: true, vertTouchDrag: false },
       });
+      const observer = new ResizeObserver(entries => {
+        const { width, height } = entries[0].contentRect;
+        chart.resize(width, height);
+      });
+      observer.observe(element);
+      if (linePoints) {
+        const latest = linePoints[linePoints.length - 1]?.value ?? 1;
+        const precision = Math.max(2, Math.ceil(-Math.log10(latest)) + 4);
+        const line = chart.addSeries(LineSeries, {
+          color: theme.color.point,
+          lineWidth: 2,
+          priceLineVisible: false,
+          priceFormat:
+            precision > 12
+              ? {
+                  type: "custom",
+                  minMove: Math.max(Number.MIN_VALUE, 10 ** -precision),
+                  formatter: (price: number) => price.toExponential(4),
+                }
+              : { type: "price", precision, minMove: 10 ** -precision },
+        });
+        line.setData(linePoints.map(({ time, value }) => ({ time: time as UTCTimestamp, value })));
+        chart.timeScale().fitContent();
+        setState(linePoints.length ? "ready" : "empty");
+        dispose = () => {
+          observer.disconnect();
+          chart.remove();
+        };
+        return;
+      }
       const candles = chart.addSeries(CandlestickSeries, {
         upColor: positive,
         downColor: negative,
@@ -94,11 +141,6 @@ export default function PriceCandleChart({
         lastValueVisible: false,
       });
       chart.priceScale("volume").applyOptions({ scaleMargins: { top: 0.78, bottom: 0 }, visible: false });
-      const observer = new ResizeObserver(entries => {
-        const { width, height } = entries[0].contentRect;
-        chart.resize(width, height);
-      });
-      observer.observe(element);
       let bars: PriceBar[] = [];
       let exhausted = false;
       let fetching = false;
@@ -204,7 +246,7 @@ export default function PriceCandleChart({
       cancelled = true;
       dispose?.();
     };
-  }, [identity, daily, all, retry, theme, loadPage]);
+  }, [identity, daily, all, retry, theme, loadPage, linePoints]);
 
   return (
     <div className="price-chart-shell" aria-label={label}>
@@ -228,8 +270,8 @@ export default function PriceCandleChart({
           {loadingOlderLabel}
         </span>
       )}
-      <span className="price-chart-volume-label">{volumeLabel}</span>
-      {priceLabel && <span className="price-chart-currency">{priceLabel}</span>}
+      {!linePoints && <span className="price-chart-volume-label">{volumeLabel}</span>}
+      {!linePoints && priceLabel && <span className="price-chart-currency">{priceLabel}</span>}
       <a
         className="price-chart-attribution"
         href="https://www.tradingview.com/"

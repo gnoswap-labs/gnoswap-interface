@@ -1,7 +1,7 @@
 import { cx } from "@emotion/css";
 import { useAtomValue } from "jotai";
 import dynamic from "next/dynamic";
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import { STATIC_TEXT } from "@common/values";
@@ -43,16 +43,8 @@ import {
   VolumeSectionWrapper,
 } from "./PoolPairInfoContent.styles";
 import TooltipAPR from "./TooltipAPR";
-import type { Resolution } from "./price-chart-data";
 
 const PoolPriceChart = dynamic(() => import("./PoolPriceChart"), { ssr: false });
-const CHART_RANGES: { label: string; resolution: Resolution }[] = [
-  { label: "5m", resolution: "5" },
-  { label: "1h", resolution: "60" },
-  { label: "4h", resolution: "240" },
-  { label: "1d", resolution: "1D" },
-  { label: "All", resolution: "1D" },
-];
 
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;
@@ -82,9 +74,6 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const { getGnotPath } = useGnotToGnot();
   const { gnoswapApiClient } = useGnoswapContext();
   const poolPath = useCustomRouter().getPoolPath();
-  const [chartTab, setChartTab] = useState<"price" | "liquidity">("price");
-  const [chartRange, setChartRange] = useState("1h");
-  const [reversed, setReversed] = useState(false);
 
   const { priceStyle: tokenAPriceStyle, shouldShowPriceWarning: tokenAShouldShowPriceWarning } = useTokenPriceInfo({
     priceGradeType: pool.tokenAPriceGrade,
@@ -298,7 +287,15 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
         {liquidityChangedValue}
       </div>
     );
-  }, [liquidityChangedValue, liquidityValue, loading, shouldShowPriceWarning, isMobile]);
+  }, [
+    liquidityChangedValue,
+    liquidityValue,
+    loading,
+    shouldShowPriceWarning,
+    isMobile,
+    tokenAPriceStyle.className,
+    tokenBPriceStyle.className,
+  ]);
 
   return (
     <ContentWrapper>
@@ -485,150 +482,104 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
         </AprSectionWrapper>
       </PoolPairInfoContentWrapper>
       <section className="chart-chart-container" aria-label={t("Pool:chart.section")}>
-        <div className={cx("position-wrapper-chart", { "price-mode": chartTab === "price" })}>
-          <div className="chart-controls">
-            <div className="chart-tabs" role="group" aria-label={t("Pool:chart.mode")}>
-              <button type="button" aria-pressed={chartTab === "price"} onClick={() => setChartTab("price")}>
-                {t("Pool:chart.price")}
-              </button>
-              <button type="button" aria-pressed={chartTab === "liquidity"} onClick={() => setChartTab("liquidity")}>
-                {t("Pool:chart.liquidity")}
-              </button>
-            </div>
-            {chartTab === "price" && (
-              <>
-                {!loading && (
-                  <div className="chart-pair">
-                    {`1 ${reversed ? pool.tokenB.displaySymbol : pool.tokenA.displaySymbol} = ${
-                      reversed ? currentPriceReverse : currentPriceRatio
-                    } ${reversed ? pool.tokenA.displaySymbol : pool.tokenB.displaySymbol}`}
-                    <button
-                      type="button"
-                      onClick={() => setReversed(value => !value)}
-                      aria-label={t("Pool:chart.reverse")}
-                      title={t("Pool:chart.reverse")}
-                    >
-                      ⇄
-                    </button>
-                  </div>
-                )}
-                <div className="chart-ranges" role="group" aria-label={t("Pool:chart.range")}>
-                  {CHART_RANGES.map(({ label }) => (
-                    <button
-                      key={label}
-                      type="button"
-                      aria-pressed={chartRange === label}
-                      onClick={() => setChartRange(label)}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-          {chartTab === "liquidity" && (
-            <>
-              <div className="position-header">
-                <div aria-hidden="true" className="spacer" />
-                <div className="position-header-wrapper">
-                  <div>{t("business:currentPrice")}</div>
-                  <div className="swap-price">
-                    {!loading && (
-                      <div className="left">
-                        <MissingLogo
-                          symbol={pool.tokenA.symbol}
-                          url={pool.tokenA.logoURI}
-                          width={20}
-                          className="image-logo"
-                        />
-                        {width >= 768 && `1 ${pool.tokenA.displaySymbol}`} = {currentPriceRatio}{" "}
-                        {pool.tokenB.displaySymbol}
-                      </div>
-                    )}
-                    {loading && (
-                      <PulseSkeletonWrapper height={18} mobileHeight={18}>
-                        <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
-                      </PulseSkeletonWrapper>
-                    )}
-                    <AprDivider className="divider" />
-                    {loading && (
-                      <PulseSkeletonWrapper height={18} mobileHeight={18}>
-                        <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
-                      </PulseSkeletonWrapper>
-                    )}
-                    {!loading && (
-                      <div className="right">
-                        <MissingLogo
-                          symbol={pool.tokenB.symbol}
-                          url={pool.tokenB.logoURI}
-                          width={20}
-                          className="image-logo"
-                        />
-                        {width >= 768 && `1 ${pool.tokenB.displaySymbol}`} = {currentPriceReverse}{" "}
-                        {pool.tokenA.displaySymbol}
-                      </div>
-                    )}
-                  </div>
-                </div>
-                {!loadingBins && (
-                  <div className="zoom-controller">
-                    <button
-                      type="button"
-                      disabled={!availInfo.availZoomOut}
-                      aria-label={t("Pool:chart.zoomOut")}
-                      onClick={onZoomOut}
-                    >
-                      <IconRemove />
-                    </button>
-                    <button
-                      type="button"
-                      disabled={!availInfo.availZoomIn}
-                      aria-label={t("Pool:chart.zoomIn")}
-                      onClick={onZoomIn}
-                    >
-                      <IconAdd />
-                    </button>
-                  </div>
-                )}
-              </div>
-              {!loadingBins ? (
-                <PoolGraph
-                  tokenA={pool.tokenA}
-                  tokenB={pool.tokenB}
-                  liquiditySegments={liquiditySegments}
-                  currentTick={pool.currentTick}
-                  currentSqrtPriceX96={currentSqrtPriceX96}
-                  currentPrice={pool.price}
-                  width={GRAPWIDTH}
-                  height={150}
-                  mouseover
-                  themeKey={themeKey}
-                  position="top"
-                  offset={40}
-                  disabled={isHideBar}
-                  disableBlackBars={true}
-                />
-              ) : (
-                <LoadingChart>
-                  <LoadingSpinner />
-                </LoadingChart>
-              )}
-            </>
-          )}
-          {chartTab === "price" && !loading && gnoswapApiClient && poolPath && (
+        <div className="position-wrapper-chart price-mode">
+          {!loading && gnoswapApiClient && poolPath ? (
             <PoolPriceChart
               client={gnoswapApiClient}
               poolPath={poolPath}
               tokenA={pool.tokenA}
               tokenB={pool.tokenB}
-              resolution={CHART_RANGES.find(range => range.label === chartRange)!.resolution}
-              all={chartRange === "All"}
-              reversed={reversed}
+              currentPriceRatio={currentPriceRatio}
+              currentPriceReverse={currentPriceReverse}
             />
-          )}
-          {chartTab === "price" && loading && (
+          ) : (
             <LoadingChart role="status">
+              <LoadingSpinner />
+            </LoadingChart>
+          )}
+        </div>
+        <div className="position-wrapper-chart">
+          <h3 className="chart-title">{t("Pool:chart.liquidity")}</h3>
+          <div className="position-header">
+            <div aria-hidden="true" className="spacer" />
+            <div className="position-header-wrapper">
+              <div>{t("business:currentPrice")}</div>
+              <div className="swap-price">
+                {!loading && (
+                  <div className="left">
+                    <MissingLogo
+                      symbol={pool.tokenA.symbol}
+                      url={pool.tokenA.logoURI}
+                      width={20}
+                      className="image-logo"
+                    />
+                    1 {pool.tokenA.displaySymbol} = {currentPriceRatio} {pool.tokenB.displaySymbol}
+                  </div>
+                )}
+                {loading && (
+                  <PulseSkeletonWrapper height={18} mobileHeight={18}>
+                    <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
+                  </PulseSkeletonWrapper>
+                )}
+                <AprDivider className="divider" />
+                {loading && (
+                  <PulseSkeletonWrapper height={18} mobileHeight={18}>
+                    <span css={pulseSkeletonStyle({ h: 20, w: "80px" })} />
+                  </PulseSkeletonWrapper>
+                )}
+                {!loading && (
+                  <div className="right">
+                    <MissingLogo
+                      symbol={pool.tokenB.symbol}
+                      url={pool.tokenB.logoURI}
+                      width={20}
+                      className="image-logo"
+                    />
+                    1 {pool.tokenB.displaySymbol} = {currentPriceReverse} {pool.tokenA.displaySymbol}
+                  </div>
+                )}
+              </div>
+            </div>
+            {!loadingBins && (
+              <div className="zoom-controller">
+                <button
+                  type="button"
+                  disabled={!availInfo.availZoomOut}
+                  aria-label={t("Pool:chart.zoomOut")}
+                  onClick={onZoomOut}
+                >
+                  <IconRemove />
+                </button>
+                <button
+                  type="button"
+                  disabled={!availInfo.availZoomIn}
+                  aria-label={t("Pool:chart.zoomIn")}
+                  onClick={onZoomIn}
+                >
+                  <IconAdd />
+                </button>
+              </div>
+            )}
+          </div>
+          {!loadingBins ? (
+            <PoolGraph
+              tokenA={pool.tokenA}
+              tokenB={pool.tokenB}
+              liquiditySegments={liquiditySegments}
+              currentTick={pool.currentTick}
+              currentSqrtPriceX96={currentSqrtPriceX96}
+              currentPrice={pool.price}
+              width={GRAPWIDTH}
+              height={150}
+              mouseover
+              themeKey={themeKey}
+              position="top"
+              offset={40}
+              disabled={isHideBar}
+              disableBlackBars={true}
+            />
+          ) : (
+            <LoadingChart>
               <LoadingSpinner />
             </LoadingChart>
           )}

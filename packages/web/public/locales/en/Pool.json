@@ -2,9 +2,10 @@
   "chart": {
     "section": "Pool chart",
     "mode": "Chart view",
-    "price": "Price",
+    "line": "Line",
+    "candles": "Candles",
     "liquidity": "Liquidity",
-    "range": "Candle interval",
+    "range": "Chart range",
     "reverse": "Reverse price pair",
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
