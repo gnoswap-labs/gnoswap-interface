@@ -83,7 +83,6 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
 
   const svgRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
-  const lastHoverBinIndexRef = useRef<number | undefined>();
   const { data: tokenPrices = {} } = useGetAllTokenPrices();
 
   const boundsWidth = width - margin.right - margin.left;
@@ -156,7 +155,7 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     tokenA: { [key in number]: string };
     tokenB: { [key in number]: string };
   }>({ tokenA: {}, tokenB: {} });
-  const [tooltipInfo, setTooltipInfo] = useState<TooltipInfo | null>(null);
+  const [hoveredBinIndex, setHoveredBinIndex] = useState<number | null>(null);
   const [positionX, setPositionX] = useState<number | null>(null);
   const [positionY, setPositionY] = useState<number | null>(null);
 
@@ -195,6 +194,89 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
     return `${isStart ? "right" : "left"}`;
   }, [width, height, positionX, positionY, position]);
 
+  const tooltipInfo = useMemo<TooltipInfo | null>(() => {
+    const currentBin = reservedBins.find(bin => bin.index === hoveredBinIndex);
+    if (!currentBin) {
+      return null;
+    }
+
+    const tooltipTick = getPoolGraphTooltipTick(currentBin);
+
+    const tokenAAmountStr = currentBin.reserveTokenA;
+    const tokenBAmountStr = currentBin.reserveTokenB;
+    const positionTokenAAmountStr = currentBin?.reserveTokenAMyAmount;
+    const positionTokenBAmountStr = currentBin?.reserveTokenBMyAmount;
+    const hasNoPositionLiquidity = !disableBlackBars && isPosition && !currentBin.isPositionActive;
+
+    const tokenAAmount = tokenAAmountStr
+      ? formatTokenExchangeRate(tokenAAmountStr, {
+          maxSignificantDigits: displayTokenA.decimals + 1,
+          minLimit: 0.000001,
+        })
+      : "-";
+    const tokenBAmount = tokenBAmountStr
+      ? formatTokenExchangeRate(tokenBAmountStr, {
+          maxSignificantDigits: displayTokenB.decimals + 1,
+          minLimit: 0.000001,
+        })
+      : "-";
+    const positionTokenAAmount =
+      !positionTokenAAmountStr || hasNoPositionLiquidity
+        ? "0"
+        : formatTokenExchangeRate(positionTokenAAmountStr, {
+            maxSignificantDigits: displayTokenA.decimals + 1,
+            minLimit: 0.000001,
+          }) || "0";
+    const positionTokenBAmount =
+      !positionTokenBAmountStr || hasNoPositionLiquidity
+        ? "0"
+        : formatTokenExchangeRate(positionTokenBAmountStr, {
+            maxSignificantDigits: displayTokenB.decimals + 1,
+            minLimit: 0.000001,
+          }) || "0";
+    const positionTokenAUsd = formatPoolGraphTokenUsd(
+      hasNoPositionLiquidity ? "0" : positionTokenAAmountStr,
+      displayTokenA,
+      tokenPrices,
+    );
+    const positionTokenBUsd = formatPoolGraphTokenUsd(
+      hasNoPositionLiquidity ? "0" : positionTokenBAmountStr,
+      displayTokenB,
+      tokenPrices,
+    );
+
+    return {
+      tokenA: displayTokenA,
+      tokenB: displayTokenB,
+      tokenAAmount,
+      tokenBAmount,
+      tokenAUsd: formatPoolGraphTokenUsd(tokenAAmountStr, displayTokenA, tokenPrices),
+      tokenBUsd: formatPoolGraphTokenUsd(tokenBAmountStr, displayTokenB, tokenPrices),
+      positionTokenAAmount,
+      positionTokenBAmount,
+      positionTokenAUsd,
+      positionTokenBUsd,
+      tokenAVisible: currentBin.reserveTokenAVisible,
+      tokenBVisible: currentBin.reserveTokenBVisible,
+      positionTokenAVisible: currentBin.positionReserveTokenAVisible,
+      positionTokenBVisible: currentBin.positionReserveTokenBVisible,
+      isPositionActive: currentBin.isPositionActive,
+      positionLiquidityShare: hasNoPositionLiquidity ? "0%" : currentBin.positionLiquidityShare,
+      price: isReversed ? tickOfPrices.tokenB[tooltipTick] : tickOfPrices.tokenA[tooltipTick],
+      disabled: false,
+    };
+  }, [
+    hoveredBinIndex,
+    reservedBins,
+    disableBlackBars,
+    isPosition,
+    displayTokenA,
+    displayTokenB,
+    tokenPrices,
+    isReversed,
+    tickOfPrices,
+  ]);
+
   const onMouseMoveChartBin = useCallback(
     (event: MouseEvent) => {
       if (!mouseover || Object.keys(tickOfPrices.tokenA).length === 0) {
@@ -226,26 +308,14 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       });
 
       if (!currentBin) {
-        lastHoverBinIndexRef.current = -1;
         setPositionX(null);
         setPositionY(null);
 
         if (!nextSpacing) {
-          setTooltipInfo(null);
+          setHoveredBinIndex(null);
         }
         return;
       }
-
-      // Only updates the position when the hovered area is the same bar and has tooltip information.
-      if (currentBin.index === lastHoverBinIndexRef.current) {
-        if (tooltipInfo) {
-          setPositionX(mouseX);
-          setPositionY(mouseY);
-          return;
-        }
-      }
-
-      lastHoverBinIndexRef.current = currentBin.index;
 
       if (
         Math.abs(height - mouseY - 0.0001) >
@@ -255,89 +325,14 @@ const PoolGraph: React.FC<PoolGraphProps> = ({
       ) {
         setPositionX(null);
         setPositionY(null);
-        setTooltipInfo(null);
+        setHoveredBinIndex(null);
         return;
       }
-      const tooltipTick = getPoolGraphTooltipTick(currentBin);
-
-      const tokenAAmountStr = currentBin.reserveTokenA;
-      const tokenBAmountStr = currentBin.reserveTokenB;
-      const positionTokenAAmountStr = currentBin?.reserveTokenAMyAmount;
-      const positionTokenBAmountStr = currentBin?.reserveTokenBMyAmount;
-      const hasNoPositionLiquidity = !disableBlackBars && isPosition && !currentBin.isPositionActive;
-
-      const tokenAAmount = tokenAAmountStr
-        ? formatTokenExchangeRate(tokenAAmountStr, {
-            maxSignificantDigits: displayTokenA.decimals + 1,
-            minLimit: 0.000001,
-          })
-        : "-";
-      const tokenBAmount = tokenBAmountStr
-        ? formatTokenExchangeRate(tokenBAmountStr, {
-            maxSignificantDigits: displayTokenB.decimals + 1,
-            minLimit: 0.000001,
-          })
-        : "-";
-      const positionTokenAAmount =
-        !positionTokenAAmountStr || hasNoPositionLiquidity
-          ? "0"
-          : formatTokenExchangeRate(positionTokenAAmountStr, {
-              maxSignificantDigits: displayTokenA.decimals + 1,
-              minLimit: 0.000001,
-            }) || "0";
-      const positionTokenBAmount =
-        !positionTokenBAmountStr || hasNoPositionLiquidity
-          ? "0"
-          : formatTokenExchangeRate(positionTokenBAmountStr, {
-              maxSignificantDigits: displayTokenB.decimals + 1,
-              minLimit: 0.000001,
-            }) || "0";
-      const positionTokenAUsd = formatPoolGraphTokenUsd(
-        hasNoPositionLiquidity ? "0" : positionTokenAAmountStr,
-        displayTokenA,
-        tokenPrices,
-      );
-      const positionTokenBUsd = formatPoolGraphTokenUsd(
-        hasNoPositionLiquidity ? "0" : positionTokenBAmountStr,
-        displayTokenB,
-        tokenPrices,
-      );
-
-      setTooltipInfo({
-        tokenA: displayTokenA,
-        tokenB: displayTokenB,
-        tokenAAmount,
-        tokenBAmount,
-        tokenAUsd: formatPoolGraphTokenUsd(tokenAAmountStr, displayTokenA, tokenPrices),
-        tokenBUsd: formatPoolGraphTokenUsd(tokenBAmountStr, displayTokenB, tokenPrices),
-        positionTokenAAmount,
-        positionTokenBAmount,
-        positionTokenAUsd,
-        positionTokenBUsd,
-        tokenAVisible: currentBin.reserveTokenAVisible,
-        tokenBVisible: currentBin.reserveTokenBVisible,
-        positionTokenAVisible: currentBin.positionReserveTokenAVisible,
-        positionTokenBVisible: currentBin.positionReserveTokenBVisible,
-        isPositionActive: currentBin.isPositionActive,
-        positionLiquidityShare: hasNoPositionLiquidity ? "0%" : currentBin.positionLiquidityShare,
-        price: isReversed ? tickOfPrices.tokenB[tooltipTick] : tickOfPrices.tokenA[tooltipTick],
-        disabled: false,
-      });
+      setHoveredBinIndex(currentBin.index);
       setPositionX(mouseX);
       setPositionY(mouseY);
     },
-    [
-      mouseover,
-      tickOfPrices,
-      reservedBins,
-      binSpacing,
-      disableBlackBars,
-      isPosition,
-      displayTokenA,
-      displayTokenB,
-      tokenPrices,
-      isReversed,
-    ],
+    [mouseover, tickOfPrices, reservedBins, height, boundsHeight, scaleY, getBinId, nextSpacing],
   );
 
   function onMouseOutChartBin() {

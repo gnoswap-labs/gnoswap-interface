@@ -89,24 +89,7 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
     return flip ? { ...tokenA, ...getGnotPath(tokenA) } : { ...tokenB, ...getGnotPath(tokenB) };
   }, [flip, getGnotPath, tokenA, tokenB]);
 
-  const currentPrice = useMemo(() => {
-    if (selectPool.startPrice) {
-      if (!selectPool.startPrice) return 0;
-
-      if (flip) {
-        // return 1 / selectPool.startPrice;
-      }
-      return selectPool.startPrice;
-    }
-
-    if (flip) {
-      if (!selectPool.currentPrice) {
-        return 0;
-      }
-      return 1 / selectPool.currentPrice;
-    }
-    return selectPool.currentPrice;
-  }, [flip, selectPool.currentPrice, selectPool.startPrice]);
+  const currentPrice = selectPool.startPrice || selectPool.currentPrice;
 
   const currentPriceStr = useMemo(() => {
     if (!currentPrice) {
