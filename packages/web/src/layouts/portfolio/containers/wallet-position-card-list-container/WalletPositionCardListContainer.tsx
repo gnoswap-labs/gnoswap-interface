@@ -1,7 +1,9 @@
 import { useAtomValue } from "jotai";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
+import IconInbox from "@components/common/icons/IconInbox";
 import useRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useWindowSize } from "@hooks/common/use-window-size";
@@ -14,6 +16,7 @@ import { PoolPositionModel } from "@models/position/pool-position-model";
 import { ThemeState } from "@states/index";
 import { PositionConverter } from "@services/converters/position";
 import { POSITION_CARD_BREAKPOINTS, POSITION_CARD_DISPLAY_COUNT, POSITION_CARD_LIST_BREAKPOINTS } from "@common/values";
+import { emptyPositions } from "../../components/wallet-my-positions/WalletMyPositions.styles";
 
 interface WalletPositionCardListContainerProps {
   /** UI toggle state: whether closed positions should be shown in this view. */
@@ -21,6 +24,7 @@ interface WalletPositionCardListContainerProps {
 }
 
 const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerProps> = ({ isClosed }) => {
+  const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
   const [currentIndex, setCurrentIndex] = useState(1);
   const router = useRouter();
@@ -266,6 +270,15 @@ const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerP
   useEffect(() => {
     setPage(1);
   }, [isClosed]);
+
+  if (connected && isPositionDataAvailable && !loading && !isLoadingPosition && totalPositionCount === 0) {
+    return (
+      <div css={emptyPositions} role="status">
+        <IconInbox aria-hidden="true" />
+        <span>{t("common:noDataFound")}</span>
+      </div>
+    );
+  }
 
   return (
     <MyPositionCardList
