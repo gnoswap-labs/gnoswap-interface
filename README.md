@@ -8,9 +8,9 @@ This repository hosts the codebase for the Gnoswap interface, which enables user
 
 ## Pool Price Chart
 
-The pool detail shows a historical Line price chart (7D, 30D, All) above a separate Liquidity distribution chart. Line uses `/v1/pools/{poolPath}/prices` and retains the existing price history when candle data is unavailable. The chart's Candles mode reads sparse, UTC-aligned OHLCV bars from the GnoSwap API's `/v1/tradingview/history` UDF endpoint. It supports 5-minute, 1-hour, 4-hour, and daily candles; All uses daily candles and loads older bars when the user pans left.
+The pool detail shares one chart area between Price candles and the Liquidity distribution. The Price view uses TradingView Lightweight Charts and loads sparse, UTC-aligned OHLCV bars from `/v1/tradingview/history` at 5-minute, 1-hour, 4-hour, or daily intervals. All uses daily bars and loads older history when panned left. Both views use the same reversible token pair; the mobile layout keeps the tabs, price direction, zoom controls, and interval selector within the chart card.
 
-Prices are displayed in token units after applying token decimals; reversing the pair inverts OHLC values and swaps high/low. The volume bars estimate USD traded using the directional input amount and the stored token price, which may not be the historical price at the trade block. The chart uses TradingView Lightweight Charts, with attribution shown below it.
+Prices apply token decimals before display; reversing the pair inverts OHLC and swaps high/low. USD volume is estimated from the directional input amount and its stored token price, which may differ from the price at the trade block. TradingView attribution remains visible beneath the chart.
 
 ## Token Price Candles
 

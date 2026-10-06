@@ -843,7 +843,6 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   const cardGraph = (
     <div className="position-wrapper-chart">
       <div className="position-header">
-        <div>{t("business:currentPrice")}</div>
         <div className="swap-price">
           {!loading && (
             <MissingLogo

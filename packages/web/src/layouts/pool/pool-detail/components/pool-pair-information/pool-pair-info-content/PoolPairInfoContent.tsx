@@ -497,6 +497,11 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             </button>
           </div>
           <div className="chart-pair">
+            <MissingLogo
+              symbol={isChartReversed ? pool.tokenB.symbol : pool.tokenA.symbol}
+              url={isChartReversed ? pool.tokenB.logoURI : pool.tokenA.logoURI}
+              width={16}
+            />
             <span>
               1 {isChartReversed ? pool.tokenB.displaySymbol : pool.tokenA.displaySymbol} ={" "}
               {isChartReversed ? currentPriceReverse : currentPriceRatio}{" "}
@@ -511,7 +516,29 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               ⇄
             </button>
           </div>
-          <div className={chartMode === "price" ? "chart-body" : "chart-body liquidity-body"}>
+          {chartMode === "liquidity" && !loadingBins && (
+            <div className="position-header">
+              <div className="zoom-controller">
+                <button
+                  type="button"
+                  disabled={!availInfo.availZoomOut}
+                  aria-label={t("Pool:chart.zoomOut")}
+                  onClick={onZoomOut}
+                >
+                  <IconRemove />
+                </button>
+                <button
+                  type="button"
+                  disabled={!availInfo.availZoomIn}
+                  aria-label={t("Pool:chart.zoomIn")}
+                  onClick={onZoomIn}
+                >
+                  <IconAdd />
+                </button>
+              </div>
+            </div>
+          )}
+          <div className="chart-body" key={chartMode}>
             {chartMode === "price" ? (
               !loading && gnoswapApiClient && poolPath ? (
                 <PoolPriceChart
@@ -529,28 +556,6 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               )
             ) : (
               <>
-                <div className="position-header">
-                  {!loadingBins && (
-                    <div className="zoom-controller">
-                      <button
-                        type="button"
-                        disabled={!availInfo.availZoomOut}
-                        aria-label={t("Pool:chart.zoomOut")}
-                        onClick={onZoomOut}
-                      >
-                        <IconRemove />
-                      </button>
-                      <button
-                        type="button"
-                        disabled={!availInfo.availZoomIn}
-                        aria-label={t("Pool:chart.zoomIn")}
-                        onClick={onZoomIn}
-                      >
-                        <IconAdd />
-                      </button>
-                    </div>
-                  )}
-                </div>
                 {!loadingBins ? (
                   <PoolGraph
                     tokenA={pool.tokenA}
@@ -560,7 +565,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     currentSqrtPriceX96={currentSqrtPriceX96}
                     currentPrice={pool.price}
                     width={GRAPWIDTH}
-                    height={150}
+                    height={isMobile ? 176 : 350}
                     mouseover
                     themeKey={themeKey}
                     position="top"

@@ -278,17 +278,18 @@ export const MyPositionCardWrapper = styled.div<Props>`
       width: 100%;
       gap: 8px;
       color: ${({ theme }) => theme.color.text04};
+      padding-top: 32px;
       ${fonts.body12}
       position: relative;
       .range-badge {
         position: absolute;
-        top: 14.5px;
+        top: 0;
         left: 0;
       }
       .zoom-controller {
         ${mixins.flexbox("row", "center", "flex-end")};
         position: absolute;
-        top: 6px;
+        top: 0;
         right: 0;
         gap: 4px;
         -webkit-user-select: none;

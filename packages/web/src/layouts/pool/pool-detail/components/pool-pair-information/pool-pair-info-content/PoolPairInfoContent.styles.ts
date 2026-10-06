@@ -26,11 +26,12 @@ export const ContentWrapper = styled.div`
     gap: 16px;
     &.chart-panel {
       display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
       grid-template-rows: 36px auto;
       align-items: center;
       padding: 14px 24px 12px;
       gap: 10px 16px;
+      position: relative;
     }
     .chart-tabs,
     .chart-ranges {
@@ -58,6 +59,7 @@ export const ContentWrapper = styled.div`
     .chart-ranges {
       grid-column: 3;
       grid-row: 1;
+      justify-self: end;
     }
     .chart-ranges.hidden {
       visibility: hidden;
@@ -69,8 +71,18 @@ export const ContentWrapper = styled.div`
       min-width: 0;
       min-height: 350px;
     }
-    .liquidity-body {
-      min-height: 0;
+    @media (prefers-reduced-motion: no-preference) {
+      .chart-body {
+        animation: chart-enter 180ms ease-out;
+      }
+      @keyframes chart-enter {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
     }
     .chart-tabs button,
     .chart-ranges button,
@@ -93,8 +105,12 @@ export const ContentWrapper = styled.div`
         color: ${({ theme }) => theme.color.text02};
       }
     }
+    .chart-tabs button {
+      width: 80px;
+      transition: background-color 180ms ease-out, color 180ms ease-out;
+    }
     .chart-pair button {
-      font-size: 20px;
+      font-size: 16px;
       line-height: 1;
       padding: 4px;
     }
@@ -151,32 +167,60 @@ export const ContentWrapper = styled.div`
       &.chart-panel {
         display: flex;
         align-items: stretch;
+        margin: 0;
         padding: 12px;
+        gap: 8px;
       }
       .chart-tabs,
-      .chart-pair {
+      .chart-ranges {
+        height: 24px;
+        gap: 0;
+        padding: 2px;
+        border-radius: 4px;
+        background: ${({ theme }) => theme.color.background28};
+      }
+      .chart-tabs {
+        width: 130px;
         align-self: flex-start;
+      }
+      .chart-pair {
+        align-self: center;
+        gap: 4px;
+        font-size: 14px;
+        line-height: 20px;
       }
       .chart-ranges {
         width: 100%;
-        overflow-x: auto;
+      }
+      .chart-ranges.hidden {
+        display: none;
       }
       .chart-tabs button,
-      .chart-ranges button,
+      .chart-ranges button {
+        flex: 1;
+        min-width: 0;
+        min-height: 20px;
+        height: 20px;
+        padding: 0;
+        font-size: 12px;
+        line-height: 20px;
+        position: relative;
+        &::before {
+          content: "";
+          position: absolute;
+          inset: -12px 0;
+        }
+      }
       .chart-pair button {
-        min-width: 44px;
-        min-height: 44px;
-        padding: 6px 8px;
-        flex-shrink: 0;
+        min-width: 24px;
+        min-height: 24px;
+        padding: 0;
       }
       .chart-body {
-        min-height: 300px;
-      }
-      .liquidity-body {
-        min-height: 0;
+        min-height: 176px;
       }
       .price-chart-shell {
-        height: 300px;
+        height: 176px;
       }
       .price-chart-attribution {
         font-size: 10px;
@@ -186,10 +230,13 @@ export const ContentWrapper = styled.div`
       display: flex;
       justify-content: flex-end;
       width: 100%;
+      grid-column: 3;
+      grid-row: 1;
+      justify-self: end;
       .zoom-controller {
         ${mixins.flexbox("row", "center", "flex-end")};
         justify-self: end;
-        width: 140px;
+        width: auto;
         gap: 4px;
         -webkit-user-select: none;
         -khtml-user-select: none;
@@ -252,7 +299,10 @@ export const ContentWrapper = styled.div`
       margin: 16px 12px;
       padding: 16px 12px;
       .position-header {
-        justify-content: flex-end;
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: auto;
       }
     }
   }
