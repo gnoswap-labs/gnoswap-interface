@@ -205,7 +205,6 @@ export const createPoolGraphBins = ({
     const normalizedMaxTick = Math.max(displayMinTick, displayMaxTick);
     const visualOverlapBounds = getPositionOverlapBounds(segment, positionTickLower, positionTickUpper);
     const isPositionActive = visualOverlapBounds !== null;
-    const isPositionVisualActive = visualOverlapBounds !== null;
     const positionAmounts =
       visualOverlapBounds && positionLiquidity
         ? derivePoolLiquidityTokenAmounts({
@@ -274,7 +273,6 @@ export const createPoolGraphBins = ({
       reserveTokenA,
       reserveTokenB,
       isPositionActive,
-      isPositionVisualActive,
     };
   });
 };

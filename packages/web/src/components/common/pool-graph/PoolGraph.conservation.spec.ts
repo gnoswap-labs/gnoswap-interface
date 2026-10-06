@@ -80,11 +80,11 @@ it("conserves owned and pool token amounts at every zoom level and in either tok
 });
 
 it("reports the share of the displayed bin amounts and updates when pool liquidity changes", () => {
-  const bin = binsFor(LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES[0]).find(bin => bin.isPositionVisualActive)!;
+  const bin = binsFor(LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES[0]).find(bin => bin.isPositionActive)!;
   // The pool includes 3L only over [-10, 10], not over the owned position's entire range.
   expect(bin.positionLiquidityShare).toBe("76.88%");
   const updated = binsFor(LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES[0], false, [ticks[0], ticks[3]]).find(
-    bin => bin.isPositionVisualActive,
+    bin => bin.isPositionActive,
   )!;
   expect(updated.positionLiquidityShare).toBe("100%");
 });
