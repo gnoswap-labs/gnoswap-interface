@@ -9,13 +9,14 @@
   },
   "chart": {
     "interval": "Période du graphique",
-    "candleLabel": "Prix de {{symbol}} en USD, bougies OHLC et volume en USD",
+    "candleLabel": "Prix de {{symbol}} en USD, bougies OHLC et volume en {{symbol}}",
     "loading": "Chargement des bougies de prix…",
     "empty": "Aucune bougie de prix pour cet intervalle.",
+    "searchOlder": "Rechercher l'historique antérieur",
     "error": "Impossible de charger les bougies de prix.",
     "retry": "Réessayer",
     "loadingOlder": "Chargement des anciennes bougies…",
-    "volumeUsd": "Volume (USD)"
+    "volumeToken": "Volume ({{symbol}})"
   },
   "description": {
     "empty": "Pas d'information sur les jetons",

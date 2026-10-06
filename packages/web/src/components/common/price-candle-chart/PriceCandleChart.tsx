@@ -20,6 +20,7 @@ export interface PriceBar {
 
 interface Props {
   identity: string;
+  interval: number;
   daily: boolean;
   all?: boolean;
   label: string;
@@ -27,14 +28,16 @@ interface Props {
   priceLabel?: string;
   loadingLabel: string;
   emptyLabel: string;
+  searchOlderLabel: string;
   errorLabel: string;
   retryLabel: string;
   loadingOlderLabel: string;
-  loadPage: (to: number) => Promise<PriceBar[]>;
+  loadPage: (start: number, end: number) => Promise<PriceBar[]>;
 }
 
 export default function PriceCandleChart({
   identity,
+  interval,
   daily,
   all = false,
   label,
@@ -42,6 +45,7 @@ export default function PriceCandleChart({
   priceLabel,
   loadingLabel,
   emptyLabel,
+  searchOlderLabel,
   errorLabel,
   retryLabel,
   loadingOlderLabel,
@@ -49,10 +53,12 @@ export default function PriceCandleChart({
 }: Props) {
   const theme = useTheme();
   const chartElement = useRef<HTMLDivElement>(null);
+  const searchOlder = useRef<(() => void) | null>(null);
   const [state, setState] = useState<"loading" | "ready" | "empty" | "error">("loading");
   const [paging, setPaging] = useState(false);
   const [pagingError, setPagingError] = useState(false);
   const [retry, setRetry] = useState(0);
+  const [canSearchOlder, setCanSearchOlder] = useState(true);
 
   useEffect(() => {
     const element = chartElement.current;
@@ -62,6 +68,7 @@ export default function PriceCandleChart({
     setState("loading");
     setPaging(false);
     setPagingError(false);
+    setCanSearchOlder(true);
 
     async function initialize() {
       if (cancelled || !element) return;
@@ -111,26 +118,42 @@ export default function PriceCandleChart({
       });
       chart.priceScale("volume").applyOptions({ scaleMargins: { top: 0.78, bottom: 0 }, visible: false });
       let bars: PriceBar[] = [];
+      // The cursor is the exclusive boundary of the last requested window, not the
+      // first returned candle. Sparse and empty windows must still advance it.
+      let cursor = (Math.floor(Date.now() / 1000 / interval) + 1) * interval;
+      const windowSeconds = Math.min(120 * interval, 30 * 86400);
       let exhausted = false;
       let fetching = false;
       const loadOlder = async () => {
-        if (cancelled || exhausted || fetching) return;
-        const to = bars.length ? bars[0].time : Math.floor(Date.now() / 1000) + 1;
-        if (to <= 0) return;
+        if (cancelled || exhausted || fetching || cursor <= 0) return;
+        const end = cursor;
+        const start = Math.max(0, end - windowSeconds);
         fetching = true;
         if (bars.length) {
           setPaging(true);
           setPagingError(false);
+        } else {
+          setState("loading");
         }
         try {
-          const older = await loadPage(to);
+          const older = await loadPage(start, end);
           if (cancelled) return;
+          if (older.some(bar => bar.time < start || bar.time >= end)) {
+            throw new Error("Invalid price history response");
+          }
           if (older.length === 0) {
-            exhausted = true;
+            cursor = start;
+            exhausted = cursor === 0;
+            setCanSearchOlder(!exhausted);
             if (!bars.length) setState("empty");
             return;
           }
-          if (older[older.length - 1].time >= to) throw new Error("Invalid price history response");
+          if (bars.length && older[older.length - 1].time >= bars[0].time) {
+            throw new Error("Invalid price history response");
+          }
+          cursor = start;
+          exhausted = cursor === 0;
+          setCanSearchOlder(!exhausted);
           const latest = bars.length ? bars[bars.length - 1].close : older[older.length - 1].close;
           const precision = Math.max(2, Math.ceil(-Math.log10(latest)) + 4);
           candles.applyOptions({
@@ -174,6 +197,7 @@ export default function PriceCandleChart({
           if (!cancelled) setPaging(false);
         }
       };
+      searchOlder.current = () => void loadOlder();
       // Programmatic setData/fitContent/resize also emit range changes. Page only after a user interaction.
       let userPanned = false;
       let pointerStart: number | null = null;
@@ -219,9 +243,10 @@ export default function PriceCandleChart({
     });
     return () => {
       cancelled = true;
+      searchOlder.current = null;
       dispose?.();
     };
-  }, [identity, daily, all, retry, theme, loadPage]);
+  }, [identity, interval, daily, all, retry, theme, loadPage]);
 
   return (
     <div className="price-chart-shell" aria-label={label}>
@@ -230,6 +255,11 @@ export default function PriceCandleChart({
         <div className="price-chart-status" role="status" aria-live="polite">
           {state === "loading" && loadingLabel}
           {state === "empty" && emptyLabel}
+          {state === "empty" && canSearchOlder && (
+            <button type="button" onClick={() => void searchOlder.current?.()}>
+              {searchOlderLabel}
+            </button>
+          )}
           {state === "error" && (
             <>
               {errorLabel}{" "}

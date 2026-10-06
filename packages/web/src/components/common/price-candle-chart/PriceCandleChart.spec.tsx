@@ -46,17 +46,19 @@ jest.mock(
 );
 
 const firstPage: PriceBar[] = [
-  { time: 100, open: 1, high: 2, low: 1, close: 2, volume: 3 },
-  { time: 200, open: 2, high: 3, low: 2, close: 3, volume: 4 },
+  { time: 264600, open: 1, high: 2, low: 1, close: 2, volume: 3 },
+  { time: 264900, open: 2, high: 3, low: 2, close: 3, volume: 4 },
 ];
-const olderPage: PriceBar[] = [{ time: 50, open: 1, high: 1, low: 1, close: 1, volume: 2 }];
+const olderPage: PriceBar[] = [{ time: 264000, open: 1, high: 1, low: 1, close: 1, volume: 2 }];
 const props = {
   identity: "pool",
+  interval: 300,
   daily: false,
   label: "Price chart",
-  volumeLabel: "Volume (USD)",
+  volumeLabel: "Volume (GNOT)",
   loadingLabel: "Loading price history",
   emptyLabel: "No price history",
+  searchOlderLabel: "Search older history",
   errorLabel: "Could not load price history",
   retryLabel: "Retry",
   loadingOlderLabel: "Loading older history",
@@ -73,6 +75,10 @@ beforeAll(() => {
 beforeEach(() => {
   jest.clearAllMocks();
   mockTimeScale.getVisibleRange.mockReturnValue({ from: 100, to: 200 });
+  jest.spyOn(Date, "now").mockReturnValue(300000000);
+});
+afterEach(() => {
+  jest.restoreAllMocks();
 });
 
 it("keeps loaded candles and the visible range after an older page fails, then retries on the next pan", async () => {
@@ -101,7 +107,7 @@ it("keeps loaded candles and the visible range after an older page fails, then r
   panLeft();
   await waitFor(() => expect(loadPage).toHaveBeenCalledTimes(3));
   await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(2));
-  expect(loadPage).toHaveBeenNthCalledWith(3, 100);
+  expect(loadPage).toHaveBeenNthCalledWith(3, 228300, 264300);
   expect(mockTimeScale.setVisibleRange).toHaveBeenCalledWith({ from: 100, to: 200 });
   expect(screen.queryByText("Could not load price history")).not.toBeInTheDocument();
   expect(mockCreateChart).toHaveBeenCalledTimes(1);
@@ -115,4 +121,57 @@ it("offers a full retry when the initial history page fails", async () => {
   fireEvent.click(screen.getByRole("button", { name: "Retry" }));
   await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
   expect(screen.queryByRole("button", { name: "Retry" })).not.toBeInTheDocument();
+});
+
+it("advances one bounded window per action across empty and sparse history without using candle time as the cursor", async () => {
+  const sparse = [{ ...firstPage[0], time: 192600 }];
+  const earlier = [{ ...olderPage[0], time: 120600 }];
+  const loadPage = jest
+    .fn()
+    .mockResolvedValueOnce([])
+    .mockResolvedValueOnce([])
+    .mockResolvedValueOnce(sparse)
+    .mockResolvedValueOnce([])
+    .mockResolvedValueOnce(earlier);
+  const { container } = render(<PriceCandleChart {...props} loadPage={loadPage} />);
+  await screen.findByRole("button", { name: "Search older history" });
+  expect(loadPage).toHaveBeenNthCalledWith(1, 264300, 300300);
+  expect(loadPage).toHaveBeenCalledTimes(1);
+
+  fireEvent.click(screen.getByRole("button", { name: "Search older history" }));
+  await waitFor(() => expect(loadPage).toHaveBeenCalledTimes(2));
+  await screen.findByRole("button", { name: "Search older history" });
+  fireEvent.click(screen.getByRole("button", { name: "Search older history" }));
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+  expect(loadPage).toHaveBeenNthCalledWith(2, 228300, 264300);
+  expect(loadPage).toHaveBeenNthCalledWith(3, 192300, 228300);
+  expect(screen.getByText("Volume (GNOT)")).toBeInTheDocument();
+
+  const panLeft = () => {
+    act(() => {
+      fireEvent.wheel(container.querySelector(".price-chart-canvas")!);
+      mockTimeScale.subscribeVisibleLogicalRangeChange.mock.calls[0][0]({ from: 0, to: 10 });
+    });
+  };
+  panLeft();
+  await waitFor(() => expect(loadPage).toHaveBeenCalledTimes(4));
+  expect(mockCandles.setData).toHaveBeenCalledTimes(1);
+  expect(loadPage).toHaveBeenNthCalledWith(4, 156300, 192300);
+  panLeft();
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(2));
+  expect(loadPage).toHaveBeenNthCalledWith(5, 120300, 156300);
+});
+
+it("limits All daily requests to 30-day windows and pages older only on action", async () => {
+  jest.spyOn(Date, "now").mockReturnValue(100 * 86400 * 1000);
+  const loadPage = jest.fn().mockResolvedValue([]);
+  render(<PriceCandleChart {...props} interval={86400} daily all loadPage={loadPage} />);
+  await screen.findByRole("button", { name: "Search older history" });
+  expect(loadPage).toHaveBeenCalledTimes(1);
+  const [start, end] = loadPage.mock.calls[0];
+  expect(end - start).toBe(30 * 86400);
+  expect(start % 86400).toBe(0);
+  fireEvent.click(screen.getByRole("button", { name: "Search older history" }));
+  await waitFor(() => expect(loadPage).toHaveBeenCalledTimes(2));
+  expect(loadPage).toHaveBeenNthCalledWith(2, start - 30 * 86400, start);
 });

@@ -3,109 +3,80 @@ import type { NetworkClient } from "@common/clients/network-client";
 import { decodeTokenCandles, getTokenCandlePage } from "./token-candle-data";
 
 const tokenPath = "gno.land/r/demo/token";
+const interval = 3600;
+const start = 0;
+const end = 14400;
 const candle = {
-  bucketStart: 3600,
+  start: "1970-01-01T01:00:00Z",
   open: "0.00000000000001",
   high: "0.00000000000004",
   low: "0.00000000000001",
   close: "0.00000000000003",
-  volumeUsd: "12.5",
+  volume: "12.5",
 };
 const body = {
-  message: "OK",
-  data: { tokenPath, resolutionSeconds: 3600, candles: [candle, { ...candle, bucketStart: 10800 }] },
+  interval,
+  start,
+  end,
+  data: [candle, { ...candle, start: "1970-01-01T03:00:00Z" }],
 };
 
 describe("token USD candles", () => {
-  it("keeps UTC seconds and sparse intervals, including very small USD prices", () => {
-    expect(decodeTokenCandles(body, tokenPath, "1h")).toEqual([
+  it("keeps UTC seconds and sparse intervals, including small USD prices and token-denominated volume", () => {
+    expect(decodeTokenCandles(body, interval, start, end)).toEqual([
       { time: 3600, open: 1e-14, high: 4e-14, low: 1e-14, close: 3e-14, volume: 12.5 },
       { time: 10800, open: 1e-14, high: 4e-14, low: 1e-14, close: 3e-14, volume: 12.5 },
     ]);
   });
 
-  it("rejects mismatched identity, ordering, malformed OHLC, and values outside chart number range", () => {
-    expect(() => decodeTokenCandles(body, "other", "1h")).toThrow();
-    expect(() => decodeTokenCandles(body, tokenPath, "1d")).toThrow();
+  it("validates metadata, UTC window, ordering, OHLC and representable decimal amounts", () => {
+    expect(decodeTokenCandles({ ...body, data: [] }, interval, start, end)).toEqual([]);
+    expect(() => decodeTokenCandles({ ...body, interval: 300 }, interval, start, end)).toThrow();
+    expect(() => decodeTokenCandles({ ...body, start: 3600 }, interval, start, end)).toThrow();
+    for (const invalid of ["1970-01-01T04:00:00Z", "1970-01-01T01:00:00+00:00", "1970-01-01T01:01:00Z"]) {
+      expect(() =>
+        decodeTokenCandles({ ...body, data: [{ ...candle, start: invalid }] }, interval, start, end),
+      ).toThrow();
+    }
+    expect(() => decodeTokenCandles({ ...body, data: [candle, candle] }, interval, start, end)).toThrow();
     expect(() =>
-      decodeTokenCandles({ ...body, data: { ...body.data, candles: [candle, candle] } }, tokenPath, "1h"),
+      decodeTokenCandles({ ...body, data: [{ ...candle, high: "0.00000000000002" }] }, interval, start, end),
     ).toThrow();
     expect(() =>
-      decodeTokenCandles(
-        { ...body, data: { ...body.data, candles: [{ ...candle, high: "0.00000000000002" }] } },
-        tokenPath,
-        "1h",
-      ),
+      decodeTokenCandles({ ...body, data: [{ ...candle, volume: "-3" }] }, interval, start, end),
     ).toThrow();
     expect(() =>
-      decodeTokenCandles(
-        { ...body, data: { ...body.data, candles: [{ ...candle, open: `0.${"0".repeat(400)}1` }] } },
-        tokenPath,
-        "1h",
-      ),
+      decodeTokenCandles({ ...body, data: [{ ...candle, open: `0.${"0".repeat(400)}1` }] }, interval, start, end),
     ).toThrow();
   });
 
-  it("requests an exclusive UTC cutoff with a single encoded token path segment", async () => {
+  it("requests the encoded token history route with explicit bounded windows", async () => {
     const get = jest.fn().mockResolvedValue({ data: body });
-    const result = await getTokenCandlePage({ get } as unknown as NetworkClient, tokenPath, "1h", 14400);
+    const result = await getTokenCandlePage({ get } as unknown as NetworkClient, tokenPath, "1h", start, end);
     expect(result.map(bar => bar.time)).toEqual([3600, 10800]);
-    const url = get.mock.calls[0][0].url as string;
-    expect(url).toBe("/tokens/gno.land%2Fr%2Fdemo%2Ftoken/candles?resolution=1h&from=0&to=14400&countback=300");
-  });
-  it("rolls hourly OHLCV into aligned four-hour bars without losing the oldest partial group", async () => {
-    const hourly = (
-      bucketStart: number,
-      open: string,
-      high: string,
-      low: string,
-      close: string,
-      volumeUsd: string,
-    ) => ({
-      bucketStart,
-      open,
-      high,
-      low,
-      close,
-      volumeUsd,
+    expect(get).toHaveBeenCalledWith({
+      url: "/tokens/gno.land%2Fr%2Fdemo%2Ftoken/price/history?interval=3600&start=0&end=14400",
     });
-    const get = jest
-      .fn()
-      .mockResolvedValueOnce({
+  });
+
+  it("sources four-hour bars directly and pages All with daily intervals", async () => {
+    const get = jest.fn().mockImplementation(({ url }: { url: string }) => {
+      const params = new URL(url, "https://example.test").searchParams;
+      return Promise.resolve({
         data: {
-          message: "OK",
-          data: {
-            tokenPath,
-            resolutionSeconds: 3600,
-            candles: [
-              hourly(3600, "2", "3", "1", "2.5", "4"),
-              hourly(7200, "2.5", "4", "2", "3", "5"),
-              hourly(14400, "3", "5", "2.5", "4", "7"),
-            ],
-          },
-        },
-      })
-      .mockResolvedValueOnce({
-        data: {
-          message: "OK",
-          data: { tokenPath, resolutionSeconds: 3600, candles: [hourly(0, "1", "2", "0.5", "2", "3")] },
+          interval: Number(params.get("interval")),
+          start: Number(params.get("start")),
+          end: Number(params.get("end")),
+          data: [],
         },
       });
-    expect(await getTokenCandlePage({ get } as unknown as NetworkClient, tokenPath, "4h", 18000)).toEqual([
-      { time: 0, open: 1, high: 4, low: 0.5, close: 3, volume: 12 },
-      { time: 14400, open: 3, high: 5, low: 2.5, close: 4, volume: 7 },
-    ]);
-    expect(get).toHaveBeenCalledTimes(2);
-  });
-
-  it("uses daily candles for All without changing the source OHLCV", async () => {
-    const get = jest.fn().mockResolvedValue({
-      data: {
-        message: "OK",
-        data: { tokenPath, resolutionSeconds: 86400, candles: [{ ...candle, bucketStart: 86400 }] },
-      },
     });
-    const bars = await getTokenCandlePage({ get } as unknown as NetworkClient, tokenPath, "All", 172800);
-    expect(bars).toEqual([{ time: 86400, open: 1e-14, high: 4e-14, low: 1e-14, close: 3e-14, volume: 12.5 }]);
+    const client = { get } as unknown as NetworkClient;
+    expect(await getTokenCandlePage(client, tokenPath, "4h", 0, 14400)).toEqual([]);
+    expect(await getTokenCandlePage(client, tokenPath, "All", 0, 86400)).toEqual([]);
+    expect(get.mock.calls.map(([request]) => request.url)).toEqual([
+      "/tokens/gno.land%2Fr%2Fdemo%2Ftoken/price/history?interval=14400&start=0&end=14400",
+      "/tokens/gno.land%2Fr%2Fdemo%2Ftoken/price/history?interval=86400&start=0&end=86400",
+    ]);
   });
 });

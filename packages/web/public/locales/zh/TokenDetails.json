@@ -9,13 +9,14 @@
   },
   "chart": {
     "interval": "图表区间",
-    "candleLabel": "{{symbol}} 的美元价格、OHLC K线及美元成交量",
+    "candleLabel": "{{symbol}} 的美元价格、OHLC K线及 {{symbol}} 成交量",
     "loading": "正在加载价格K线…",
     "empty": "此周期暂无价格K线。",
+    "searchOlder": "搜索更早历史",
     "error": "无法加载价格K线。",
     "retry": "重试",
     "loadingOlder": "正在加载更早的K线…",
-    "volumeUsd": "成交量 (USD)"
+    "volumeToken": "成交量 ({{symbol}})"
   },
   "description": {
     "empty": "没有令牌信息",

@@ -1,18 +1,16 @@
-import type { TokenModel } from "@models/token/token-model";
-import { makeDisplayPrice } from "@utils/pool-utils";
+import { DECIMAL, mapHistoryRows, type HistoryResponse } from "@components/common/price-candle-chart/price-history-data";
 
-export type Resolution = "5" | "60" | "240" | "1D";
-
-export interface UdfHistory {
-  s: "ok" | "no_data" | "error";
-  t?: number[];
-  o?: number[];
-  h?: number[];
-  l?: number[];
-  c?: number[];
-  v?: number[];
-  errmsg?: string;
+export interface PoolCandle {
+  start: string;
+  open: string;
+  high: string;
+  low: string;
+  close: string;
+  volume0: string;
+  volume1: string;
 }
+
+export type PoolHistory = HistoryResponse<PoolCandle>;
 
 export interface PriceBar {
   time: number;
@@ -24,36 +22,33 @@ export interface PriceBar {
 }
 
 export function decodeHistory(
-  history: UdfHistory,
-  tokenA: TokenModel,
-  tokenB: TokenModel,
+  history: PoolHistory,
   reversed: boolean,
+  interval: number,
+  start: number,
+  end: number,
 ): PriceBar[] {
-  if (history.s === "no_data") return [];
-  if (history.s !== "ok") throw new Error(history.errmsg || "Price history unavailable");
-  const { t, o, h, l, c, v } = history;
-  if (!t || !o || !h || !l || !c || !v || [o, h, l, c, v].some(values => values.length !== t.length)) {
-    throw new Error("Invalid price history response");
-  }
-  return t.map((time, index) => {
-    const raw = [o[index], h[index], l[index], c[index]];
-    if (
-      !Number.isInteger(time) ||
-      raw.some(price => !Number.isFinite(price) || price <= 0) ||
-      !Number.isFinite(v[index]) ||
-      v[index] < 0 ||
-      (index > 0 && time <= t[index - 1])
-    ) {
+  return mapHistoryRows(history, interval, start, end, (candle, time) => {
+    const values = [candle.open, candle.high, candle.low, candle.close, candle.volume0, candle.volume1];
+    if (values.some(value => typeof value !== "string" || !DECIMAL.test(value))) {
       throw new Error("Invalid price history response");
     }
-    const [open, high, low, close] = raw.map(price => makeDisplayPrice(price, tokenA, tokenB));
-    if ([open, high, low, close].some(price => !Number.isFinite(price) || price <= 0)) {
+    // The API already quotes whole token1 per whole token0, regardless of decimals.
+    const [open, high, low, close, volume0, volume1] = values.map(Number);
+    if (
+      [open, high, low, close].some(price => !Number.isFinite(price) || price <= 0) ||
+      !Number.isFinite(volume0) ||
+      !Number.isFinite(volume1) ||
+      high < Math.max(open, close, low) ||
+      low > Math.min(open, close, high)
+    ) {
       throw new Error("Price history cannot be displayed at this token precision");
     }
+    const volume = reversed ? volume1 : volume0;
     const bar = reversed
-      ? { time, open: 1 / open, high: 1 / low, low: 1 / high, close: 1 / close, volume: v[index] }
-      : { time, open, high, low, close, volume: v[index] };
-    if ([bar.open, bar.high, bar.low, bar.close].some(price => !Number.isFinite(price) || price <= 0)) {
+      ? { time, open: 1 / open, high: 1 / low, low: 1 / high, close: 1 / close, volume }
+      : { time, open, high, low, close, volume };
+    if (reversed && [bar.open, bar.high, bar.low, bar.close].some(price => !Number.isFinite(price) || price <= 0)) {
       throw new Error("Price history cannot be displayed at this token precision");
     }
     return bar;

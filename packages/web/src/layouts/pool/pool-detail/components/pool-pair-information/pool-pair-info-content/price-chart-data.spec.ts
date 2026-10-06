@@ -1,52 +1,61 @@
-import type { TokenModel } from "@models/token/token-model";
-
 import { decodeHistory } from "./price-chart-data";
 
-const tokenA = { decimals: 6 } as TokenModel;
-const tokenB = { decimals: 8 } as TokenModel;
-const history = {
-  s: "ok" as const,
-  t: [300, 600],
-  o: [100, 200],
-  h: [400, 500],
-  l: [50, 100],
-  c: [200, 400],
-  v: [0, 24],
+const interval = 300;
+const start = 300;
+const end = 1200;
+const candle = {
+  start: "1970-01-01T00:05:00Z",
+  open: "1",
+  high: "4",
+  low: "0.5",
+  close: "2",
+  volume0: "12.5",
+  volume1: "24",
 };
+const history = {
+  interval,
+  start,
+  end,
+  data: [candle, { ...candle, start: "1970-01-01T00:15:00Z" }],
+};
+const decode = (body: typeof history, reversed = false) => decodeHistory(body, reversed, interval, start, end);
 
 describe("pool price candle conversion", () => {
-  it("applies token decimals and reverses high and low without altering USD volume or UTC timestamps", () => {
-    expect(decodeHistory(history, tokenA, tokenB, false)).toEqual([
-      { time: 300, open: 1, high: 4, low: 0.5, close: 2, volume: 0 },
-      { time: 600, open: 2, high: 5, low: 1, close: 4, volume: 24 },
+  it("uses the API's whole-token prices directly, reverses extrema, and selects the visible base token volume", () => {
+    expect(decode(history)).toEqual([
+      { time: 300, open: 1, high: 4, low: 0.5, close: 2, volume: 12.5 },
+      { time: 900, open: 1, high: 4, low: 0.5, close: 2, volume: 12.5 },
     ]);
-    expect(decodeHistory(history, tokenA, tokenB, true)).toEqual([
-      { time: 300, open: 1, high: 2, low: 0.25, close: 0.5, volume: 0 },
-      { time: 600, open: 0.5, high: 1, low: 0.2, close: 0.25, volume: 24 },
+    expect(decode(history, true)).toEqual([
+      { time: 300, open: 1, high: 2, low: 0.25, close: 0.5, volume: 24 },
+      { time: 900, open: 1, high: 2, low: 0.25, close: 0.5, volume: 24 },
     ]);
   });
 
-  it("preserves sparse buckets and rejects unequal arrays or out-of-order bars", () => {
-    expect(decodeHistory({ ...history, t: [300, 900] }, tokenA, tokenB, false).map(bar => bar.time)).toEqual([
-      300, 900,
-    ]);
-    expect(() => decodeHistory({ ...history, v: [3] }, tokenA, tokenB, false)).toThrow(
-      "Invalid price history response",
-    );
-    expect(() => decodeHistory({ ...history, t: [600, 300] }, tokenA, tokenB, false)).toThrow(
-      "Invalid price history response",
-    );
+  it("accepts empty windows and rejects mismatched metadata, bad UTC starts, and unordered buckets", () => {
+    expect(decode({ ...history, data: [] })).toEqual([]);
+    expect(() => decode({ ...history, interval: 3600 })).toThrow("Invalid price history response");
+    expect(() => decode({ ...history, end: 1500 })).toThrow("Invalid price history response");
+    for (const invalid of ["1970-01-01T00:20:00Z", "1970-01-01T00:05:00+00:00", "1970-01-01T00:06:00Z"]) {
+      expect(() => decode({ ...history, data: [{ ...candle, start: invalid }] })).toThrow(
+        "Invalid price history response",
+      );
+    }
+    expect(() => decode({ ...history, data: [candle, candle] })).toThrow("Invalid price history response");
   });
-  it("rejects finite raw candles whose decimal conversion or reciprocal exceeds the chart number range", () => {
-    const tiny = { s: "ok" as const, t: [300], o: [1e-100], h: [2e-100], l: [1e-100], c: [2e-100], v: [1] };
-    const large = { s: "ok" as const, t: [300], o: [1e100], h: [2e100], l: [1e100], c: [2e100], v: [1] };
-    expect(() => decodeHistory(tiny, { decimals: 0 } as TokenModel, { decimals: 300 } as TokenModel, false)).toThrow(
+
+  it("rejects invalid amounts and prices outside the chart number range", () => {
+    expect(() => decode({ ...history, data: [{ ...candle, volume0: "-1" }] })).toThrow(
+      "Invalid price history response",
+    );
+    expect(() => decode({ ...history, data: [{ ...candle, high: "1" }] })).toThrow(
       "Price history cannot be displayed",
     );
-    expect(() => decodeHistory(large, { decimals: 300 } as TokenModel, { decimals: 0 } as TokenModel, false)).toThrow(
-      "Price history cannot be displayed",
-    );
-    expect(() => decodeHistory(tiny, { decimals: 0 } as TokenModel, { decimals: 220 } as TokenModel, true)).toThrow(
+    const tinyPrice = `0.${"0".repeat(319)}1`;
+    const tiny = { ...candle, open: tinyPrice, high: tinyPrice, low: tinyPrice, close: tinyPrice };
+    expect(() => decode({ ...history, data: [tiny] }, true)).toThrow("Price history cannot be displayed");
+    const underflow = `0.${"0".repeat(400)}1`;
+    expect(() => decode({ ...history, data: [{ ...tiny, open: underflow }] })).toThrow(
       "Price history cannot be displayed",
     );
   });

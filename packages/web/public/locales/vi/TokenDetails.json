@@ -9,13 +9,14 @@
   },
   "chart": {
     "interval": "Khoảng thời gian biểu đồ",
-    "candleLabel": "Giá {{symbol}} theo USD, nến OHLC và khối lượng USD",
+    "candleLabel": "Giá {{symbol}} theo USD, nến OHLC và khối lượng {{symbol}}",
     "loading": "Đang tải nến giá…",
     "empty": "Không có nến giá cho khung thời gian này.",
+    "searchOlder": "Tìm lịch sử cũ hơn",
     "error": "Không thể tải nến giá.",
     "retry": "Thử lại",
     "loadingOlder": "Đang tải nến cũ hơn…",
-    "volumeUsd": "Khối lượng (USD)"
+    "volumeToken": "Khối lượng ({{symbol}})"
   },
   "description": {
     "empty": "Không có thông tin về token",

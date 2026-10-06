@@ -5,7 +5,7 @@ import type { NetworkClient } from "@common/clients/network-client";
 import PriceCandleChart from "@components/common/price-candle-chart/PriceCandleChart";
 import type { TokenModel } from "@models/token/token-model";
 
-import { decodeHistory, type Resolution, type UdfHistory } from "./price-chart-data";
+import { decodeHistory, type PoolHistory } from "./price-chart-data";
 
 interface Props {
   client: NetworkClient;
@@ -16,49 +16,51 @@ interface Props {
   range: CandleRange;
 }
 
-const PAGE_SIZE = 300;
 export type CandleRange = "5m" | "1h" | "4h" | "1d" | "All";
-const RESOLUTIONS: Record<CandleRange, Resolution> = {
-  "5m": "5",
-  "1h": "60",
-  "4h": "240",
-  "1d": "1D",
-  All: "1D",
+const INTERVALS: Record<CandleRange, number> = {
+  "5m": 300,
+  "1h": 3600,
+  "4h": 14400,
+  "1d": 86400,
+  All: 86400,
 };
 
 export default function PoolPriceChart({ client, poolPath, tokenA, tokenB, reversed, range }: Props) {
   const { t } = useTranslation();
-  const resolution = RESOLUTIONS[range];
+  const interval = INTERVALS[range];
   const loadPage = useCallback(
-    async (to: number) => {
+    async (start: number, end: number) => {
       const params = new URLSearchParams({
-        symbol: poolPath,
-        resolution,
-        from: "0",
-        to: String(to),
-        countback: String(PAGE_SIZE),
+        interval: String(interval),
+        start: String(start),
+        end: String(end),
       });
-      const response = await client.get<UdfHistory>({ url: `/tradingview/history?${params.toString()}` });
-      return decodeHistory(response.data, tokenA, tokenB, reversed);
+      const response = await client.get<PoolHistory>({
+        url: `/pools/${encodeURIComponent(poolPath)}/price/history?${params.toString()}`,
+      });
+      return decodeHistory(response.data, reversed, interval, start, end);
     },
-    [client, poolPath, tokenA, tokenB, resolution, reversed],
+    [client, poolPath, interval, reversed],
   );
   return (
     <PriceCandleChart
       identity={`${poolPath}:${range}:${reversed}`}
-      daily={resolution === "1D"}
+      interval={interval}
+      daily={interval === 86400}
       all={range === "All"}
       label={t("Pool:chart.priceChartLabel", {
         pair: `${reversed ? tokenB.displaySymbol : tokenA.displaySymbol}/${
           reversed ? tokenA.displaySymbol : tokenB.displaySymbol
         }`,
+        symbol: reversed ? tokenB.displaySymbol : tokenA.displaySymbol,
       })}
       loadingLabel={t("Pool:chart.loading")}
       emptyLabel={t("Pool:chart.empty")}
+      searchOlderLabel={t("Pool:chart.searchOlder")}
       errorLabel={t("Pool:chart.error")}
       retryLabel={t("Pool:chart.retry")}
       loadingOlderLabel={t("Pool:chart.loadingOlder")}
-      volumeLabel={t("Pool:chart.volumeUsd")}
+      volumeLabel={t("Pool:chart.volumeToken", { symbol: reversed ? tokenB.displaySymbol : tokenA.displaySymbol })}
       loadPage={loadPage}
     />
   );

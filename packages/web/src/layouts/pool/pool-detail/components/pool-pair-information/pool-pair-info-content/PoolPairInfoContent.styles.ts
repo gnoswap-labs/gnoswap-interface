@@ -131,14 +131,24 @@ export const ContentWrapper = styled.div`
       z-index: 3;
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
+      align-content: center;
       justify-content: center;
       gap: 8px;
       background: ${({ theme }) => theme.color.background28};
       color: ${({ theme }) => theme.color.text02};
+      padding: 12px;
+      text-align: center;
     }
     .price-chart-status button {
+      min-width: 44px;
+      min-height: 44px;
+      padding: 8px;
       text-decoration: underline;
       color: ${({ theme }) => theme.color.text02};
+      &:focus-visible {
+        outline: 2px solid ${({ theme }) => theme.color.text02};
+      }
     }
     .price-chart-volume-label,
     .price-chart-attribution,

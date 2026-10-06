@@ -9,13 +9,14 @@
   },
   "chart": {
     "interval": "Период графика",
-    "candleLabel": "Цена {{symbol}} в USD, свечи OHLC и объём в USD",
+    "candleLabel": "Цена {{symbol}} в USD, свечи OHLC и объём в {{symbol}}",
     "loading": "Загрузка ценовых свечей…",
     "empty": "Для этого интервала нет ценовых свечей.",
+    "searchOlder": "Найти более раннюю историю",
     "error": "Не удалось загрузить ценовые свечи.",
     "retry": "Повторить",
     "loadingOlder": "Загрузка предыдущих свечей…",
-    "volumeUsd": "Объём (USD)"
+    "volumeToken": "Объём ({{symbol}})"
   },
   "description": {
     "empty": "Нет информации о жетонах",

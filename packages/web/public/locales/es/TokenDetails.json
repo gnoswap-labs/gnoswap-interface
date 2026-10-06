@@ -9,13 +9,14 @@
   },
   "chart": {
     "interval": "Intervalo del gráfico",
-    "candleLabel": "Precio de {{symbol}} en USD, velas OHLC y volumen en USD",
+    "candleLabel": "Precio de {{symbol}} en USD, velas OHLC y volumen de {{symbol}}",
     "loading": "Cargando velas de precios…",
     "empty": "No hay velas de precios para este intervalo.",
+    "searchOlder": "Buscar historial anterior",
     "error": "No se pudieron cargar las velas de precios.",
     "retry": "Reintentar",
     "loadingOlder": "Cargando velas anteriores…",
-    "volumeUsd": "Volumen (USD)"
+    "volumeToken": "Volumen ({{symbol}})"
   },
   "description": {
     "empty": "No hay información sobre fichas",
