@@ -1,9 +1,7 @@
 {
   "chart": {
     "section": "Biểu đồ pool",
-    "mode": "Chế độ biểu đồ",
-    "line": "Đường",
-    "candles": "Nến",
+    "price": "Giá",
     "liquidity": "Thanh khoản",
     "range": "Khoảng biểu đồ",
     "reverse": "Đảo cặp giá",

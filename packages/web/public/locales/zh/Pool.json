@@ -1,9 +1,7 @@
 {
   "chart": {
     "section": "池图表",
-    "mode": "图表视图",
-    "line": "折线",
-    "candles": "K线",
+    "price": "价格",
     "liquidity": "流动性",
     "range": "图表区间",
     "reverse": "反转价格交易对",

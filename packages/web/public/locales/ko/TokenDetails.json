@@ -8,10 +8,7 @@
     "title": "{{symbol}}에 최적인 풀"
   },
   "chart": {
-    "controls": "차트 표시",
-    "line": "선형",
-    "candles": "캔들",
-    "interval": "캔들 간격",
+    "interval": "차트 기간",
     "candleLabel": "{{symbol}} USD 가격 OHLC 캔들 및 USD 거래량",
     "loading": "가격 캔들을 불러오는 중…",
     "empty": "이 간격의 가격 캔들이 없습니다.",

@@ -7,7 +7,7 @@ import PriceCandleChart from "@components/common/price-candle-chart/PriceCandleC
 import { getTokenCandlePage, type CandleResolution } from "./token-candle-data";
 
 interface Props {
-  client: NetworkClient;
+  client?: NetworkClient | null;
   tokenPath: string;
   symbol: string;
   resolution: CandleResolution;
@@ -16,14 +16,17 @@ interface Props {
 export default function TokenCandles({ client, tokenPath, symbol, resolution }: Props) {
   const { t } = useTranslation();
   const loadPage = useCallback(
-    (to: number) => getTokenCandlePage(client, tokenPath, resolution, to),
+    (to: number) => {
+      if (!client) throw new Error("Token candle client is unavailable");
+      return getTokenCandlePage(client, tokenPath, resolution, to);
+    },
     [client, tokenPath, resolution],
   );
   return (
     <PriceCandleChart
-      key={`${tokenPath}:${resolution}`}
       identity={`${tokenPath}:${resolution}`}
-      daily={resolution === "1d"}
+      daily={resolution === "1d" || resolution === "All"}
+      all={resolution === "All"}
       priceLabel="USD"
       label={t("TokenDetails:chart.candleLabel", { symbol })}
       loadingLabel={t("TokenDetails:chart.loading")}

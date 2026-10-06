@@ -24,43 +24,54 @@ export const ContentWrapper = styled.div`
     margin: 16px 24px 24px 24px;
     min-width: 0;
     gap: 16px;
-    .chart-title {
-      ${fonts.body10};
-      color: ${({ theme }) => theme.color.text02};
-      width: 100%;
-      margin: 0;
-    }
-    &.price-mode {
-      padding: 14px 24px 12px;
-      gap: 10px;
-    }
-    .chart-controls {
+    &.chart-panel {
       display: grid;
-      grid-template-columns: 1fr auto 1fr;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      grid-template-rows: 36px auto;
       align-items: center;
-      gap: 12px;
-      width: 100%;
-      min-height: 36px;
-      color: ${({ theme }) => theme.color.text04};
-      ${fonts.body12};
+      padding: 14px 24px 12px;
+      gap: 10px 16px;
     }
     .chart-tabs,
     .chart-ranges {
       display: flex;
       align-items: center;
       gap: 4px;
+      white-space: nowrap;
     }
-    .chart-ranges {
-      justify-self: end;
+    .chart-tabs {
+      grid-column: 1;
+      grid-row: 1;
     }
     .chart-pair {
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: center;
       display: flex;
       align-items: center;
       gap: 8px;
+      min-width: 0;
       overflow-wrap: anywhere;
       color: ${({ theme }) => theme.color.text10};
+      ${fonts.body10};
     }
-    .chart-controls button {
+    .chart-ranges {
+      grid-column: 3;
+      grid-row: 1;
+    }
+    .chart-ranges.hidden {
+      visibility: hidden;
+    }
+    .chart-body {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      width: 100%;
+      min-width: 0;
+      min-height: 350px;
+    }
+    .chart-tabs button,
+    .chart-ranges button,
+    .chart-pair button {
       min-width: 40px;
       min-height: 36px;
       padding: 6px 10px;
@@ -134,33 +145,29 @@ export const ContentWrapper = styled.div`
       z-index: 3;
     }
     @media (max-width: 767px) {
-      &.price-mode {
+      &.chart-panel {
+        display: flex;
+        align-items: stretch;
         padding: 12px;
       }
-      .chart-controls {
-        grid-template-columns: minmax(0, 1fr);
-      }
-      .chart-tabs {
-        grid-row: 1;
+      .chart-tabs,
+      .chart-pair {
+        align-self: flex-start;
       }
       .chart-ranges {
-        grid-column: 1;
-        grid-row: 2;
-        justify-self: start;
         width: 100%;
         overflow-x: auto;
       }
-      .chart-pair {
-        grid-column: 1;
-        max-width: 100%;
-        grid-row: 3;
-        justify-self: start;
-      }
-      .chart-controls button {
+      .chart-tabs button,
+      .chart-ranges button,
+      .chart-pair button {
         min-width: 44px;
         min-height: 44px;
         padding: 6px 8px;
         flex-shrink: 0;
+      }
+      .chart-body {
+        min-height: 300px;
       }
       .price-chart-shell {
         height: 300px;
@@ -170,19 +177,9 @@ export const ContentWrapper = styled.div`
       }
     }
     .position-header {
-      display: grid;
-      grid-template-columns: 140px 1fr 140px;
-      align-items: center;
+      display: flex;
+      justify-content: flex-end;
       width: 100%;
-      gap: 8px;
-      color: ${({ theme }) => theme.color.text04};
-      ${fonts.body12}
-      position: relative;
-      .position-header-wrapper {
-        ${mixins.flexbox("column", "center", "space-between")};
-        width: 100%;
-        gap: 8px;
-      }
       .zoom-controller {
         ${mixins.flexbox("row", "center", "flex-end")};
         justify-self: end;
@@ -245,69 +242,11 @@ export const ContentWrapper = styled.div`
         }
       }
     }
-    .swap-price {
-      height: 20px;
-      ${mixins.flexbox("row", "center", "center")};
-      ${fonts.body11}
-      text-align: center;
-      color: ${({ theme }) => theme.color.text10};
-      svg {
-        cursor: pointer;
-        * {
-          fill: ${({ theme }) => theme.color.icon03};
-        }
-      }
-      svg:hover * {
-        fill: ${({ theme }) => theme.color.icon07};
-      }
-      .left {
-        gap: 4px;
-        position: absolute;
-        ${mixins.flexbox("row", "center", "center")};
-        transform: translateX(calc(-100% - 10px));
-        left: 50%;
-      }
-      .right {
-        gap: 4px;
-        position: absolute;
-        ${mixins.flexbox("row", "center", "center")};
-        left: calc(50% + 10px);
-      }
-    }
-    .convert-price {
-      ${mixins.flexbox("row", "center", "center")};
-      color: ${({ theme }) => theme.color.text04};
-      ${fonts.body12}
-      svg {
-        width: 16px;
-        height: 16px;
-        * {
-          fill: ${({ theme }) => theme.color.icon03};
-        }
-      }
-      > div {
-        ${mixins.flexbox("row", "center", "center")};
-      }
-      ${media.mobile} {
-        ${mixins.flexbox("column", "center", "center")};
-        > div {
-        }
-      }
-    }
-    .image-logo {
-      width: 20px;
-    }
-    .divider {
-      margin: 0 6px;
-    }
     @media (max-width: 767px) {
       margin: 16px 12px;
       padding: 16px 12px;
       .position-header {
-        ${mixins.flexbox("column", "center", "center")};
-        gap: 8px;
-        > div:first-of-type {
-        }
+        justify-content: flex-end;
       }
     }
   }

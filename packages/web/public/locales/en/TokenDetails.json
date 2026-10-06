@@ -8,10 +8,7 @@
     "title": "Best Pools for {{symbol}}"
   },
   "chart": {
-    "controls": "Chart display",
-    "line": "Line",
-    "candles": "Candles",
-    "interval": "Candle interval",
+    "interval": "Chart interval",
     "candleLabel": "{{symbol}} price in USD, with OHLC candles and USD volume",
     "loading": "Loading price candles…",
     "empty": "No price candles are available for this interval.",

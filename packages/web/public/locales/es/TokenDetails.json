@@ -8,10 +8,7 @@
     "title": "Mejores Pools para {{symbol}}"
   },
   "chart": {
-    "controls": "Vista del gráfico",
-    "line": "Línea",
-    "candles": "Velas",
-    "interval": "Intervalo de velas",
+    "interval": "Intervalo del gráfico",
     "candleLabel": "Precio de {{symbol}} en USD, velas OHLC y volumen en USD",
     "loading": "Cargando velas de precios…",
     "empty": "No hay velas de precios para este intervalo.",

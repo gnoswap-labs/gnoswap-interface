@@ -1,9 +1,7 @@
 {
   "chart": {
     "section": "プールチャート",
-    "mode": "チャート表示",
-    "line": "ライン",
-    "candles": "ローソク足",
+    "price": "価格",
     "liquidity": "流動性",
     "range": "チャート期間",
     "reverse": "価格ペアを反転",

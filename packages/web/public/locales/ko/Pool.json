@@ -1,9 +1,7 @@
 {
   "chart": {
     "section": "풀 차트",
-    "mode": "차트 보기",
-    "line": "라인",
-    "candles": "캔들",
+    "price": "가격",
     "liquidity": "유동성",
     "range": "차트 기간",
     "reverse": "가격 방향 전환",

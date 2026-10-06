@@ -1,9 +1,7 @@
 {
   "chart": {
     "section": "Gráfico del pool",
-    "mode": "Vista del gráfico",
-    "line": "Línea",
-    "candles": "Velas",
+    "price": "Precio",
     "liquidity": "Liquidez",
     "range": "Rango del gráfico",
     "reverse": "Invertir par de precios",

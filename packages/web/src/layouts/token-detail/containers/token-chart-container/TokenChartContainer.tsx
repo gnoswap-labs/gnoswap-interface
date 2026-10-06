@@ -1,49 +1,20 @@
-import dayjs from "dayjs";
 import { useAtom } from "jotai";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { RefetchInterval } from "@common/values";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useClearModal } from "@hooks/common/use-clear-modal";
-import useComponentSize from "@hooks/common/use-component-size";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
-import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useTokenWarningModal } from "@hooks/token/ui/use-token-warning-modal";
-import { useGetToken, useGetTokenDetails, useGetTokenPrices } from "@query/token";
-import { IPriceResponse, IPrices1d } from "@repositories/token";
+import { useGetToken, useGetTokenPrices } from "@query/token";
 import { TokenState } from "@states/index";
-import { DEVICE_TYPE } from "@styles/media";
-import { getLabelChartV2, getLocalizeTime, getNumberOfAxis } from "@utils/chart";
-import { getYAxisInfo } from "@utils/chart-y-axis";
-import { checkPositivePrice, generateDateSequence } from "@utils/common";
+import { checkPositivePrice } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
 
-import TokenChart, { ChartInfo, TokenInfo } from "../../components/token-chart/TokenChart";
-
-const TokenChartGraphPeriods: Readonly<string[]> = ["1D", "7D", "1M", "1Y", "All"] as const;
-export type TokenChartGraphPeriodType = (typeof TokenChartGraphPeriods)[number];
-
-const DEFAULT_PADDING = 12;
-const DEFAULT_X_LABEL_WIDTH = 82;
-const DEFAULT_X_LABEL_WIDTH_MOBILE = 70;
-
-const getXaxis1Day = (data: Date[]): string[] => {
-  const currentLocale = dayjs.locale();
-  const rs: string[] = [];
-  const formatOptions: Intl.DateTimeFormatOptions = {
-    hour: "numeric",
-    minute: "numeric",
-    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-  };
-  for (const entry of data) {
-    const data = new Date(entry).toLocaleTimeString(currentLocale, formatOptions);
-    rs.push(data);
-  }
-  return rs;
-};
+import TokenChart, { type TokenInfo } from "../../components/token-chart/TokenChart";
 
 export const dummyTokenInfo: TokenInfo = {
   token: {
@@ -67,31 +38,6 @@ export const dummyTokenInfo: TokenInfo = {
   },
 };
 
-function createXAxisDatas(
-  currentTab: TokenChartGraphPeriodType,
-  chartData: IPrices1d[],
-  numberAxis: number,
-  date: Date[],
-  space: number,
-) {
-  const setData = chartData.slice(space).map(entry => entry.time.split(" ")[0]);
-  const labelX = getLabelChartV2(setData, Math.round((setData.length - space) / (numberAxis - 1)));
-
-  switch (currentTab) {
-    case "1D":
-      return getXaxis1Day(date);
-    case "7D":
-      return labelX;
-    case "1M":
-      return labelX;
-    case "1Y":
-      return labelX;
-    case "ALL":
-    default:
-      return labelX;
-  }
-}
-
 const priceChangeDetailInit = {
   latestPrice: "",
   priceToday: "",
@@ -111,11 +57,9 @@ const priceChangeDetailInit = {
 
 const TokenChartContainer: React.FC = () => {
   const [tokenInfo, setTokenInfo] = useState<TokenInfo>(dummyTokenInfo);
-  const [currentTab, setCurrentTab] = useState<TokenChartGraphPeriodType>("1D");
   const router = useCustomRouter();
   const [fromSelectToken, setFromSelectToken] = useAtom(TokenState.fromSelectToken);
   const clearModal = useClearModal();
-  const { breakpoint } = useWindowSize();
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
   const { gnoswapApiClient } = useGnoswapContext();
   const { isLoading: isLoadingCommon } = useLoading();
@@ -130,15 +74,9 @@ const TokenChartContainer: React.FC = () => {
     },
   });
   const path = router.getTokenPath();
-  const { data: tokenB } = useGetToken(path, {
+  const { data: tokenB, isLoading } = useGetToken(path, {
     enabled: !!path,
   });
-  const { data: { prices1d = [], prices7d = [], prices1m = [], prices1y = [] } = {}, isLoading } = useGetTokenDetails(
-    path === "ugnot" ? wugnotPath : path,
-    {
-      enabled: !!path,
-    },
-  );
 
   const { data: { priceGradeType, usd: currentPrice, pricesBefore = priceChangeDetailInit } = {} } = useGetTokenPrices(
     path === "ugnot" ? wugnotPath : path,
@@ -147,8 +85,6 @@ const TokenChartContainer: React.FC = () => {
       refetchInterval: RefetchInterval.Frequent,
     },
   );
-
-  const [componentRef, size] = useComponentSize(isLoading || isLoadingCommon || path);
 
   useEffect(() => {
     if (tokenB) {
@@ -191,110 +127,10 @@ const TokenChartContainer: React.FC = () => {
     priceGradeType,
   ]);
 
-  const changeTab = useCallback((tab: string) => {
-    const currentTab = TokenChartGraphPeriods.find(period => `${period}` === tab) || "1D";
-    setCurrentTab(currentTab);
-  }, []);
-
-  const countXAxis = useMemo(() => {
-    if (breakpoint === DEVICE_TYPE.MOBILE)
-      return Math.floor(((size.width || 0) + 20 - 25) / (currentTab === TokenChartGraphPeriods[0] ? 80 : 100));
-
-    return Math.floor(((size.width || 0) + 20 - 8) / (currentTab === TokenChartGraphPeriods[0] ? 70 : 90));
-  }, [size.width, breakpoint, currentTab]);
-
-  const chartData = useMemo(() => {
-    let temp = prices1y || [];
-    if (currentTab === TokenChartGraphPeriods[0]) {
-      temp = prices1d || [];
-    }
-    if (currentTab === TokenChartGraphPeriods[1]) {
-      temp = prices7d || [];
-    }
-    if (currentTab === TokenChartGraphPeriods[2]) {
-      temp = prices1m || [];
-    }
-    if (currentTab === TokenChartGraphPeriods[3]) {
-      temp = prices1y || [];
-    }
-    return temp.map(item => ({
-      ...item,
-      date: item.time,
-    }));
-  }, [prices1d, prices7d, prices1m, prices1y, currentTab]);
-
-  const chartInfo = useMemo<ChartInfo>(() => {
-    // You will ask me why the code is like this. old data it needs like that
-    const length =
-      currentTab === TokenChartGraphPeriods[0]
-        ? 144
-        : currentTab === TokenChartGraphPeriods[1]
-        ? 168
-        : currentTab === TokenChartGraphPeriods[2]
-        ? 180
-        : currentTab === TokenChartGraphPeriods[3]
-        ? 365
-        : 144;
-    const currentLength = chartData.length;
-    const startTime = Math.max(0, currentLength - length - 1);
-
-    const temp = generateDateSequence(
-      getLocalizeTime(chartData?.[startTime]?.time),
-      getLocalizeTime(chartData[currentLength - 1]?.time),
-      countXAxis > 2 ? Math.floor(24 / Math.min(countXAxis, 7)) : 3,
-    );
-
-    const labelWidth = breakpoint === DEVICE_TYPE.MOBILE ? DEFAULT_X_LABEL_WIDTH_MOBILE : DEFAULT_X_LABEL_WIDTH;
-    const spaceBetweenLeftYAxisWithFirstLabel = Math.round(
-      (labelWidth / 2 + DEFAULT_PADDING) / (size.width / chartData.length),
-    );
-    const numberOfAxis = getNumberOfAxis(chartData.length - DEFAULT_PADDING * 2 - labelWidth, countXAxis, 3);
-    const xAxisLabels = createXAxisDatas(
-      currentTab,
-      chartData,
-      numberOfAxis,
-      temp,
-      spaceBetweenLeftYAxisWithFirstLabel,
-    );
-
-    const datas = chartData
-      .map((item: IPriceResponse) => ({
-        amount: {
-          value: `${item.price}`,
-          denom: "",
-        },
-        time: getLocalizeTime(item.time),
-      }))
-      .reverse();
-
-    const {
-      labels: yAxisLabels,
-      minValue: yAxisMin,
-      maxValue: yAxisMax,
-    } = getYAxisInfo(
-      datas.map(item => item.amount.value),
-      currentPrice !== undefined ? Number(currentPrice) : undefined,
-    );
-    return {
-      xAxisLabels,
-      yAxisLabels,
-      yAxisMin,
-      yAxisMax,
-      datas: datas,
-    };
-  }, [currentTab, chartData, countXAxis, breakpoint, currentPrice, size.width]);
-
   return (
     <TokenChart
       tokenInfo={tokenInfo}
-      chartInfo={chartInfo}
-      tabs={TokenChartGraphPeriods}
-      currentTab={currentTab}
-      changeTab={changeTab}
       loading={isLoading || isLoadingCommon}
-      componentRef={componentRef}
-      size={size}
-      breakpoint={breakpoint}
       candleClient={gnoswapApiClient}
       candlePath={(path === "ugnot" ? wugnotPath : path) || undefined}
       candleSymbol={tokenB?.displaySymbol || ""}

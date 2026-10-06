@@ -1,9 +1,7 @@
 {
   "chart": {
     "section": "Graphique du pool",
-    "mode": "Vue du graphique",
-    "line": "Courbe",
-    "candles": "Bougies",
+    "price": "Prix",
     "liquidity": "Liquidité",
     "range": "Période du graphique",
     "reverse": "Inverser la paire de prix",

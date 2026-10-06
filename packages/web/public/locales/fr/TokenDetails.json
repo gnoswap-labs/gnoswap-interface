@@ -8,10 +8,7 @@
     "title": "Meilleures Pools pour {{symbol}}"
   },
   "chart": {
-    "controls": "Affichage du graphique",
-    "line": "Courbe",
-    "candles": "Bougies",
-    "interval": "Intervalle des bougies",
+    "interval": "Période du graphique",
     "candleLabel": "Prix de {{symbol}} en USD, bougies OHLC et volume en USD",
     "loading": "Chargement des bougies de prix…",
     "empty": "Aucune bougie de prix pour cet intervalle.",

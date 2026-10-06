@@ -8,10 +8,7 @@
     "title": "{{symbol}}のおすすめプール"
   },
   "chart": {
-    "controls": "チャート表示",
-    "line": "ライン",
-    "candles": "ローソク足",
-    "interval": "ローソク足の間隔",
+    "interval": "チャート期間",
     "candleLabel": "{{symbol}}のUSD価格、OHLCローソク足とUSD出来高",
     "loading": "価格のローソク足を読み込み中…",
     "empty": "この間隔の価格データはありません。",

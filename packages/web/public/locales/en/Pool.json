@@ -1,9 +1,7 @@
 {
   "chart": {
     "section": "Pool chart",
-    "mode": "Chart view",
-    "line": "Line",
-    "candles": "Candles",
+    "price": "Price",
     "liquidity": "Liquidity",
     "range": "Chart range",
     "reverse": "Reverse price pair",

@@ -8,10 +8,7 @@
     "title": "Các Pool tốt nhất cho {{symbol}}"
   },
   "chart": {
-    "controls": "Hiển thị biểu đồ",
-    "line": "Đường",
-    "candles": "Nến",
-    "interval": "Khung thời gian nến",
+    "interval": "Khoảng thời gian biểu đồ",
     "candleLabel": "Giá {{symbol}} theo USD, nến OHLC và khối lượng USD",
     "loading": "Đang tải nến giá…",
     "empty": "Không có nến giá cho khung thời gian này.",

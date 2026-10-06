@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
-import mixins from "@styles/mixins";
 
 export const TokenChartWrapper = styled.div`
   display: flex;
@@ -34,27 +33,9 @@ export const ChartRegion = styled.div`
 export const ChartControls = styled.div`
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 4px 12px;
-  min-width: 0;
+  justify-content: flex-start;
+  gap: 4px;
   padding: 8px 12px;
-  border-bottom: 1px solid ${({ theme }) => theme.color.border02};
-
-  .chart-mode,
-  .chart-intervals {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .chart-intervals {
-    margin-left: auto;
-  }
-
-  .chart-tab-wrapper {
-    margin: 0 0 0 auto;
-  }
-
   button {
     min-width: 44px;
     min-height: 32px;
@@ -74,21 +55,8 @@ export const ChartControls = styled.div`
       color: ${({ theme }) => theme.color.text02};
     }
   }
-
   ${media.mobile} {
     padding: 8px;
-
-    .chart-tab-wrapper {
-      width: 100%;
-      margin-left: 0;
-    }
-    .select-tab-wrapper {
-      width: 100%;
-    }
-    .chart-select-button {
-      min-width: 0;
-      padding: 4px;
-    }
     button {
       min-height: 44px;
     }
@@ -169,43 +137,5 @@ export const CandleChartWrapper = styled.div`
     .price-chart-attribution {
       font-size: 10px;
     }
-  }
-`;
-
-export const LoadingChart = styled.div`
-  ${mixins.flexbox("row", "center", "center")}
-  width: 100%;
-  height: 361px;
-  background-color: ${({ theme }) => theme.color.background15};
-  border-radius: 8px;
-  > div {
-    &::before {
-      background-color: ${({ theme }) => theme.color.background01};
-    }
-    &::after {
-      ${mixins.positionCenter()};
-      content: "";
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      @media (min-width: 769px) {
-        background-color: ${({ theme }) => theme.color.background15};
-      }
-    }
-  }
-  ${media.mobile} {
-    height: 282px;
-  }
-`;
-
-export const ChartNotFound = styled.div`
-  ${mixins.flexbox("row", "center", "center")}
-  width: 100%;
-  height: 361px;
-  background-color: ${({ theme }) => theme.color.background15};
-  border-radius: 8px;
-  color: ${({ theme }) => theme.color.text04};
-  ${media.mobile} {
-    height: 252px;
   }
 `;
