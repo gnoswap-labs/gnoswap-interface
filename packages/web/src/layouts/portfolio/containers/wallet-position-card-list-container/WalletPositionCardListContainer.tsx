@@ -274,7 +274,9 @@ const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerP
   if (connected && isPositionDataAvailable && !loading && !isLoadingPosition && totalPositionCount === 0) {
     return (
       <div css={emptyPositions} role="status">
-        <IconInbox aria-hidden="true" />
+        <span aria-hidden="true">
+          <IconInbox />
+        </span>
         <span>{t("common:noDataFound")}</span>
       </div>
     );

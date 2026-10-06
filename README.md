@@ -6,7 +6,7 @@ _Note: Gnoswap is in active development and not yet in production, and we welcom
 ## Project Overview
 This repository hosts the codebase for the Gnoswap interface, which enables users to interact with Gnoswap. The interface is built using TypeScript and is designed to be user-friendly, secure, and accessible, despite having complex mechanisms such as concentrated liquidity and staking as part of its core service.
 
-The portfolio's My Positions section keeps its heading and filtered count visible when no positions match. Closed positions remain accessible through the “Show closed positions” toggle, and an empty filtered list displays an empty-state message.
+The portfolio's My Positions section keeps its heading and filtered count visible when no positions match. Closed positions remain accessible through the “Show closed positions” toggle, and an empty filtered list displays an empty-state message. The message remains available to assistive technology while its decorative icon is hidden.
 
 ## Development Setup
 The Node.js version is 20.10.0.  

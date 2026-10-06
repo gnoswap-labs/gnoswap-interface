@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { isInaccessible, render, screen } from "@testing-library/react";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 
 import { usePositionData } from "@hooks/pool/data/use-position-data";
@@ -96,7 +96,12 @@ describe("WalletPositionCardListContainer", () => {
       </GnoswapThemeProvider>,
     );
 
-    expect(screen.getByRole("status")).toHaveTextContent("common:noDataFound");
+    const status = screen.getByRole("status");
+    expect(status).toHaveTextContent("common:noDataFound");
+    expect(isInaccessible(status)).toBe(false);
+    const icon = status.querySelector("svg");
+    expect(icon).not.toBeNull();
+    expect(isInaccessible(icon!)).toBe(true);
     expect(screen.queryByTestId("my-position-card-list")).not.toBeInTheDocument();
   });
 
