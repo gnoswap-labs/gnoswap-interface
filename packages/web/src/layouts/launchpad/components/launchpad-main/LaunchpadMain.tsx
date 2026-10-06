@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 
 import { LaunchpadProjectSummaryModel } from "@models/launchpad";
+import { EXT_URL } from "@constants/external-url.contant";
 import { DEVICE_TYPE } from "@styles/media";
 
 import Button from "@components/common/button/Button";
@@ -78,10 +79,7 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({ data, isLoading, breakpoi
             />
           </span>
           <span className="launchpad-guide-button">
-            <Link
-              href="https://docs.google.com/forms/d/e/1FAIpQLSf8ZIBfQF8fPAKiWXyHjgpznD_lZ75tLtROqA0IzHJ4YJbNZQ/viewform"
-              target="_blank"
-            >
+            <Link href={EXT_URL.LAUNCHPAD.SUBMIT_PROJECT} target="_blank">
               <Button
                 text={t("Launchpad:main.button.submitProject")}
                 style={defaultStyle}
