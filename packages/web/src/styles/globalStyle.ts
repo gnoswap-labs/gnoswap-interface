@@ -92,7 +92,7 @@ const globalStyle = (theme: Theme) => css`
     list-style: none;
   }
 
-  /* Firefox has no ::-webkit-scrollbar, so hide scrollbars there with the standard property */
+  /* Engines without ::-webkit-scrollbar still need the standard hiding rule */
   @supports not selector(::-webkit-scrollbar) {
     * {
       scrollbar-width: none;
