@@ -331,18 +331,8 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
 
   const haveNotClosedPosition = useMemo(() => openedPosition.length > 0, [openedPosition.length]);
 
-  const showClosePositionButton = useMemo(() => {
-    if (!connectedWallet || isSwitchNetwork) {
-      return false;
-    }
-    return allPositionData.isFetchedPosition && openPositionData.isFetchedPosition && hasMeaningfulClosedToggle;
-  }, [
-    allPositionData.isFetchedPosition,
-    connectedWallet,
-    hasMeaningfulClosedToggle,
-    isSwitchNetwork,
-    openPositionData.isFetchedPosition,
-  ]);
+  const showClosePositionButton =
+    allPositionData.isFetchedPosition && openPositionData.isFetchedPosition && hasMeaningfulClosedToggle;
 
   const isShowRemovePositionButton = useMemo(() => {
     if (!connectedWallet || isSwitchNetwork) {

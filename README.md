@@ -6,6 +6,9 @@ _Note: Gnoswap is in active development and not yet in production, and we welcom
 ## Project Overview
 This repository hosts the codebase for the Gnoswap interface, which enables users to interact with Gnoswap. The interface is built using TypeScript and is designed to be user-friendly, secure, and accessible, despite having complex mechanisms such as concentrated liquidity and staking as part of its core service.
 
+## Viewing Closed Positions
+Pool details show the **Show closed positions** toggle when the selected address has closed positions in that pool, including positions outside the current page. Viewing another address does not require a wallet login. Wallet requirements for transaction actions remain unchanged.
+
 ## Development Setup
 The Node.js version is 20.10.0.  
 We recommend using [nvm](https://github.com/nvm-sh/nvm).
