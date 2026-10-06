@@ -175,7 +175,7 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
                 return getVisibleBarDimensions(scaleYComputation, boundsHeight).height;
               });
 
-            if (isPosition && !disableBlackBars && bin.isPositionVisualActive && bin.positionReserveTokenMap > 0) {
+            if (isPosition && !disableBlackBars && bin.isPositionActive && bin.positionReserveTokenMap > 0) {
               select(this)
                 .append("rect")
                 .style("fill", fillByBin(bin))

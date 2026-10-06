@@ -41,5 +41,4 @@ export interface ReservedBin {
   reserveTokenA: string | null;
   reserveTokenB: string | null;
   isPositionActive: boolean;
-  isPositionVisualActive: boolean;
 }

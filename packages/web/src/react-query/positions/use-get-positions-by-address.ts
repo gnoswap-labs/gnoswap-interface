@@ -27,7 +27,7 @@ export const useGetPositionsByAddress = (
   >,
 ) => {
   const { positionRepository } = useGnoswapContext();
-  const { account, currentChainId, availNetwork } = useWallet();
+  const { account, currentChainId } = useWallet();
 
   const address = useMemo(() => {
     return props?.address || account?.address || "";
@@ -49,7 +49,7 @@ export const useGetPositionsByAddress = (
       props?.withAvailableStake,
     ],
     async () => {
-      if (!availNetwork || !address) {
+      if (!address) {
         return { positions: [], totalCount: 0 };
       }
 

@@ -104,6 +104,12 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
       return compareTokenPaths[0] !== checkGnotPath(selectPool.compareToken?.path || "");
     }, [selectPool.compareToken, tokenA.path, tokenB.path]);
 
+    // Tick amounts use canonical pool order; the graph applies the display flip once.
+    const graphTokens = useMemo(
+      () => [tokenA, tokenB].sort((left, right) => sortTokenPaths(checkGnotPath(left.path), checkGnotPath(right.path))),
+      [tokenA, tokenB],
+    );
+
     const currentPriceStr = useMemo(() => {
       if (!selectPool.currentPrice) {
         return "-";
@@ -373,8 +379,8 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
                   {!showDim && (
                     <div className="range-graph-wrapper">
                       <PoolSelectionGraph
-                        tokenA={tokenA}
-                        tokenB={tokenB}
+                        tokenA={graphTokens[0]}
+                        tokenB={graphTokens[1]}
                         liquiditySegments={selectPool.liquiditySegments}
                         feeTier={selectPool.feeTier || "NONE"}
                         tickSpacing={selectPool.tickSpacing || 1}
