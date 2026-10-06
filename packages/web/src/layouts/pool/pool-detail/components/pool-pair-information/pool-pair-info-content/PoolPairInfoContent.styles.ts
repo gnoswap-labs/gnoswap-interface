@@ -69,6 +69,9 @@ export const ContentWrapper = styled.div`
       min-width: 0;
       min-height: 350px;
     }
+    .liquidity-body {
+      min-height: 0;
+    }
     .chart-tabs button,
     .chart-ranges button,
     .chart-pair button {
@@ -168,6 +171,9 @@ export const ContentWrapper = styled.div`
       }
       .chart-body {
         min-height: 300px;
+      }
+      .liquidity-body {
+        min-height: 0;
       }
       .price-chart-shell {
         height: 300px;

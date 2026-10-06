@@ -511,7 +511,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               ⇄
             </button>
           </div>
-          <div className="chart-body">
+          <div className={chartMode === "price" ? "chart-body" : "chart-body liquidity-body"}>
             {chartMode === "price" ? (
               !loading && gnoswapApiClient && poolPath ? (
                 <PoolPriceChart
