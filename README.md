@@ -16,6 +16,8 @@ Prices apply token decimals before display; reversing the pair inverts OHLC and 
 
 The token detail shows 5-minute, hourly, 4-hour, daily, and all-history USD OHLC candles from `/v1/tokens/{tokenPath}/candles`. Interval controls live inside the chart. Candles display USD swap volume, preserve gaps with no recorded price samples, and load older bars when panned left. Historical candles begin when the API's recording source becomes available.
 
+In either candle chart, a failed older-page request leaves the loaded bars and visible range in place; panning left again retries. An initial-page failure instead shows the full Retry state.
+
 ## Development Setup
 The Node.js version is 20.10.0.  
 We recommend using [nvm](https://github.com/nvm-sh/nvm).

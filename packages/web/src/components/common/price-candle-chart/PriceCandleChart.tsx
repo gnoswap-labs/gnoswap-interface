@@ -51,6 +51,7 @@ export default function PriceCandleChart({
   const chartElement = useRef<HTMLDivElement>(null);
   const [state, setState] = useState<"loading" | "ready" | "empty" | "error">("loading");
   const [paging, setPaging] = useState(false);
+  const [pagingError, setPagingError] = useState(false);
   const [retry, setRetry] = useState(0);
 
   useEffect(() => {
@@ -60,6 +61,7 @@ export default function PriceCandleChart({
     let dispose: (() => void) | undefined;
     setState("loading");
     setPaging(false);
+    setPagingError(false);
 
     async function initialize() {
       if (cancelled || !element) return;
@@ -116,7 +118,10 @@ export default function PriceCandleChart({
         const to = bars.length ? bars[0].time : Math.floor(Date.now() / 1000) + 1;
         if (to <= 0) return;
         fetching = true;
-        if (bars.length) setPaging(true);
+        if (bars.length) {
+          setPaging(true);
+          setPagingError(false);
+        }
         try {
           const older = await loadPage(to);
           if (cancelled) return;
@@ -160,7 +165,10 @@ export default function PriceCandleChart({
           }
           setState("ready");
         } catch {
-          if (!cancelled) setState("error");
+          if (!cancelled) {
+            if (bars.length) setPagingError(true);
+            else setState("error");
+          }
         } finally {
           fetching = false;
           if (!cancelled) setPaging(false);
@@ -235,6 +243,11 @@ export default function PriceCandleChart({
       {paging && state === "ready" && (
         <span className="price-chart-paging" role="status">
           {loadingOlderLabel}
+        </span>
+      )}
+      {pagingError && state === "ready" && !paging && (
+        <span className="price-chart-paging price-chart-paging-error" role="status">
+          {errorLabel}
         </span>
       )}
       <span className="price-chart-volume-label">{volumeLabel}</span>

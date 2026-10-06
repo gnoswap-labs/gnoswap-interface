@@ -130,6 +130,9 @@ export const CandleChartWrapper = styled.div`
     top: 8px;
     z-index: 3;
   }
+  .price-chart-paging-error {
+    color: ${({ theme }) => theme.color.red01};
+  }
   ${media.mobile} {
     .price-chart-shell {
       height: 300px;

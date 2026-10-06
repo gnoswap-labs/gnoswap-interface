@@ -163,6 +163,9 @@ export const ContentWrapper = styled.div`
       top: 8px;
       z-index: 3;
     }
+    .price-chart-paging-error {
+      color: ${({ theme }) => theme.color.red01};
+    }
     @media (max-width: 767px) {
       &.chart-panel {
         display: flex;
