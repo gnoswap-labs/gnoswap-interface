@@ -17,7 +17,7 @@ const baseConfig = {
   chainId: DEFAULT_CHAIN_ID,
   name: "Adena Wallet",
   rpcTarget: DEFAULT_CHAIN_RPC_URL,
-  network: "testnet" as const,
+  network: "mainnet" as const,
   clientId: SOCIAL_WALLET_WEB3AUTH_CLIENT_ID,
   authClientId: SOCIAL_WALLET_AUTH_CLIENT_ID,
   addressPrefix: "g",
