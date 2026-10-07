@@ -81,11 +81,11 @@ export const CandleChartWrapper = styled.div`
   }
   .price-chart-canvas {
     width: 100%;
-    height: calc(100% - 40px);
+    height: 100%;
   }
   .price-chart-status {
     position: absolute;
-    inset: 0 0 40px;
+    inset: 0;
     z-index: 3;
     display: flex;
     align-items: center;

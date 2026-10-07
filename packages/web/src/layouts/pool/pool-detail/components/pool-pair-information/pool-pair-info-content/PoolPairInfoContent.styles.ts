@@ -131,11 +131,11 @@ export const ContentWrapper = styled.div`
     }
     .price-chart-canvas {
       width: 100%;
-      height: calc(100% - 48px);
+      height: 100%;
     }
     .price-chart-status {
       position: absolute;
-      inset: 0 0 48px;
+      inset: 0;
       z-index: 3;
       display: flex;
       align-items: center;
