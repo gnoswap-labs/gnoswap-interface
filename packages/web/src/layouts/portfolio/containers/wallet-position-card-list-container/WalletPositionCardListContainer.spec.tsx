@@ -1,21 +1,22 @@
-import { render } from "@testing-library/react";
+import { isInaccessible, render, screen } from "@testing-library/react";
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 
 import WalletPositionCardListContainer from "./WalletPositionCardListContainer";
+
+jest.mock("react-i18next", () => ({
+  useTranslation: () => ({ t: (key: string) => key }),
+}));
 
 jest.mock("jotai", () => ({
   ...jest.requireActual("jotai"),
   useAtomValue: () => "light",
 }));
 
-const mockMyPositionCardList = jest.fn();
 jest.mock("@components/common/my-position-card-list/MyPositionCardList", () => ({
   __esModule: true,
-  default: (props: { isLoading: boolean }) => {
-    mockMyPositionCardList(props);
-    return <div data-testid="my-position-card-list" />;
-  },
+  default: () => <div data-testid="my-position-card-list" />,
 }));
 
 jest.mock("@hooks/common/use-custom-router", () => ({
@@ -27,7 +28,7 @@ jest.mock("@hooks/common/use-custom-router", () => ({
 }));
 
 jest.mock("@hooks/common/use-window-size", () => {
-  const size = { width: 1200 };
+  const size = { width: 1200, handleBreakpoint: jest.fn() };
   return {
     useWindowSize: () => size,
   };
@@ -88,57 +89,36 @@ describe("WalletPositionCardListContainer", () => {
     jest.clearAllMocks();
   });
 
-  it("requests only open positions when closed positions are hidden", () => {
-    render(<WalletPositionCardListContainer isClosed={false} />);
-
-    expect(mockUsePositionData).toHaveBeenCalledWith(
-      expect.objectContaining({
-        withClosed: false,
-        page: 1,
-      }),
+  it("shows an empty state when the fetched filter contains no positions", () => {
+    render(
+      <GnoswapThemeProvider>
+        <WalletPositionCardListContainer isClosed={false} />
+      </GnoswapThemeProvider>,
     );
+
+    const status = screen.getByRole("status");
+    expect(status).toHaveTextContent("common:noDataFound");
+    expect(isInaccessible(status)).toBe(false);
+    const icon = status.querySelector("svg");
+    expect(icon).not.toBeNull();
+    expect(isInaccessible(icon!)).toBe(true);
+    expect(screen.queryByTestId("my-position-card-list")).not.toBeInTheDocument();
   });
 
-  it("requests open and closed positions when closed positions are shown", () => {
-    render(<WalletPositionCardListContainer isClosed={true} />);
+  it.each([
+    { isPositionDataAvailable: false, loading: true, totalPositionCount: 0 },
+    { isPositionDataAvailable: true, loading: true, totalPositionCount: 0 },
+    { isPositionDataAvailable: true, loading: false, totalPositionCount: 15 },
+  ])("does not show an empty state for unavailable, loading, or nonempty data: %j", positionData => {
+    mockUsePositionData.mockReturnValue({ positions: [], ...positionData });
 
-    expect(mockUsePositionData).toHaveBeenCalledWith(
-      expect.objectContaining({
-        withClosed: true,
-        page: 1,
-      }),
+    render(
+      <GnoswapThemeProvider>
+        <WalletPositionCardListContainer isClosed={true} />
+      </GnoswapThemeProvider>,
     );
-  });
 
-  it("does not show a loading state while switching a fetched position list", () => {
-    const { rerender } = render(<WalletPositionCardListContainer isClosed={false} />);
-
-    expect(mockMyPositionCardList.mock.calls.some(([props]) => props.isLoading)).toBe(false);
-
-    mockMyPositionCardList.mockClear();
-    rerender(<WalletPositionCardListContainer isClosed={true} />);
-
-    expect(mockMyPositionCardList.mock.calls.some(([props]) => props.isLoading)).toBe(false);
-  });
-
-  it("keeps the card list renderable while the filtered position query is transitioning", () => {
-    let isFetchedPosition = true;
-    mockUsePositionData.mockImplementation(() => ({
-      isFetchedPosition,
-      isPositionDataAvailable: true,
-      loading: false,
-      positions: [],
-      totalPositionCount: 0,
-    }));
-
-    const { rerender } = render(<WalletPositionCardListContainer isClosed={false} />);
-    isFetchedPosition = false;
-    mockMyPositionCardList.mockClear();
-
-    rerender(<WalletPositionCardListContainer isClosed={true} />);
-
-    const [lastProps] = mockMyPositionCardList.mock.calls.at(-1) as [{ isFetched: boolean; isLoading: boolean }];
-    expect(lastProps.isFetched).toBe(true);
-    expect(lastProps.isLoading).toBe(false);
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    expect(screen.getByTestId("my-position-card-list")).toBeInTheDocument();
   });
 });
