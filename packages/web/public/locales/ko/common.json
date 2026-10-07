@@ -23,8 +23,7 @@
     "low": "낮음",
     "open": "열기",
     "close": "닫기",
-    "volume": "거래량",
-    "swaps": "스왑"
+    "volume": "거래량"
   },
   "btn": {
     "amountTooLow": "수량이 너무 적음",

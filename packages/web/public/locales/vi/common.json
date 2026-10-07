@@ -23,8 +23,7 @@
     "low": "Thấp",
     "open": "Mở",
     "close": "Đóng",
-    "volume": "Khối lượng",
-    "swaps": "Giao dịch"
+    "volume": "Khối lượng"
   },
   "btn": {
     "amountTooLow": "Số tiền quá thấp",

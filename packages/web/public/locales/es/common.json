@@ -23,8 +23,7 @@
     "low": "Mínimo",
     "open": "Apertura",
     "close": "Cierre",
-    "volume": "Volumen",
-    "swaps": "Intercambios"
+    "volume": "Volumen"
   },
   "btn": {
     "amountTooLow": "Importe demasiado bajo",

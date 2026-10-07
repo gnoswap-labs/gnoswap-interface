@@ -23,8 +23,7 @@
     "low": "Bas",
     "open": "Ouverture",
     "close": "Clôture",
-    "volume": "Volume",
-    "swaps": "Échanges"
+    "volume": "Volume"
   },
   "btn": {
     "amountTooLow": "Montant trop faible",

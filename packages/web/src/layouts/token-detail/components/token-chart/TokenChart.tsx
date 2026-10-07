@@ -51,7 +51,7 @@ const TokenChart: React.FC<TokenChartProps> = ({ tokenInfo, loading, candleClien
       <TokenChartInfo {...tokenInfo} isEmpty={loading} loading={loading} />
       <ChartRegion>
         <ChartControls role="group" aria-label={t("TokenDetails:chart.interval")}>
-          {(["5m", "15m", "30m", "1h", "4h", "12h", "1d", "All"] as const).map(interval => (
+          {(["5m", "1h", "4h", "1d", "All"] as const).map(interval => (
             <button
               key={interval}
               type="button"

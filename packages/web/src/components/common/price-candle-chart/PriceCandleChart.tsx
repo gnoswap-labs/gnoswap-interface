@@ -24,7 +24,6 @@ export interface PriceBar {
   close: number;
   volume: number;
   quoteVolume?: number;
-  tradeCount?: number;
 }
 
 interface Props {
@@ -330,12 +329,6 @@ export default function PriceCandleChart({
                 {t("common:candleTooltip.volume")} {volumeSymbols[1]}
               </span>
               <strong>{formatCandleNumber(hovered.bar.quoteVolume)}</strong>
-            </div>
-          )}
-          {hovered.bar.tradeCount !== undefined && (
-            <div>
-              <span>{t("common:candleTooltip.swaps")}</span>
-              <strong>{formatCandleNumber(hovered.bar.tradeCount)}</strong>
             </div>
           )}
         </CandleTooltip>

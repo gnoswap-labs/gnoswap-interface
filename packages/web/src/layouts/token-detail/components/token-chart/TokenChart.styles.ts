@@ -36,14 +36,8 @@ export const ChartControls = styled.div`
   justify-content: flex-start;
   gap: 4px;
   padding: 8px 12px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
   button {
     min-width: 44px;
-    flex: 0 0 auto;
     min-height: 32px;
     padding: 4px 8px;
     border-radius: 4px;

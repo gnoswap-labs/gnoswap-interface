@@ -12,7 +12,6 @@ export interface PoolCandle {
   close: string;
   volume0: string;
   volume1: string;
-  tradeCount: number;
 }
 
 export type PoolHistory = HistoryResponse<PoolCandle>;
@@ -25,7 +24,6 @@ export interface PriceBar {
   close: number;
   volume: number;
   quoteVolume: number;
-  tradeCount: number;
 }
 
 export function decodeHistory(
@@ -47,8 +45,6 @@ export function decodeHistory(
       !Number.isFinite(volume0) ||
       !Number.isFinite(volume1) ||
       high < Math.max(open, close, low) ||
-      !Number.isSafeInteger(candle.tradeCount) ||
-      candle.tradeCount < 0 ||
       low > Math.min(open, close, high)
     ) {
       throw new Error("Price history cannot be displayed at this token precision");
@@ -64,9 +60,8 @@ export function decodeHistory(
           close: 1 / close,
           volume,
           quoteVolume,
-          tradeCount: candle.tradeCount,
         }
-      : { time, open, high, low, close, volume, quoteVolume, tradeCount: candle.tradeCount };
+      : { time, open, high, low, close, volume, quoteVolume };
     if (reversed && [bar.open, bar.high, bar.low, bar.close].some(price => !Number.isFinite(price) || price <= 0)) {
       throw new Error("Price history cannot be displayed at this token precision");
     }

@@ -86,8 +86,8 @@ afterEach(() => {
   jest.restoreAllMocks();
 });
 
-it("reveals the hovered candle's OHLC, both token volumes, and swap count without a permanent volume caption", async () => {
-  const bar = { ...firstPage[0], quoteVolume: 7, tradeCount: 2 };
+it("reveals the hovered candle's OHLC and both token volumes without a permanent volume caption", async () => {
+  const bar = { ...firstPage[0], quoteVolume: 7 };
   render(<PriceCandleChart {...props} loadPage={jest.fn().mockResolvedValue([bar])} />);
   await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
   const onMove = mockSubscribeCrosshairMove.mock.calls[0][0];
@@ -108,7 +108,6 @@ it("reveals the hovered candle's OHLC, both token volumes, and swap count withou
     "2",
     "3",
     "7",
-    "2",
   ]);
   expect(tooltip).toHaveTextContent(/GNOT3/);
   expect(tooltip).toHaveTextContent(/GNS7/);

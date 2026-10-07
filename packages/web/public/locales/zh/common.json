@@ -23,8 +23,7 @@
     "low": "最低",
     "open": "开盘",
     "close": "收盘",
-    "volume": "成交量",
-    "swaps": "兑换"
+    "volume": "成交量"
   },
   "btn": {
     "amountTooLow": "金额太低",

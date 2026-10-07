@@ -11,7 +11,6 @@ const candle = {
   close: "2",
   volume0: "12.5",
   volume1: "24",
-  tradeCount: 2,
 };
 const history = {
   interval,
@@ -24,12 +23,12 @@ const decode = (body: typeof history, reversed = false) => decodeHistory(body, r
 describe("pool price candle conversion", () => {
   it("uses the API's whole-token prices directly, reverses extrema, and selects the visible base token volume", () => {
     expect(decode(history)).toEqual([
-      { time: 300, open: 1, high: 4, low: 0.5, close: 2, volume: 12.5, quoteVolume: 24, tradeCount: 2 },
-      { time: 900, open: 1, high: 4, low: 0.5, close: 2, volume: 12.5, quoteVolume: 24, tradeCount: 2 },
+      { time: 300, open: 1, high: 4, low: 0.5, close: 2, volume: 12.5, quoteVolume: 24 },
+      { time: 900, open: 1, high: 4, low: 0.5, close: 2, volume: 12.5, quoteVolume: 24 },
     ]);
     expect(decode(history, true)).toEqual([
-      { time: 300, open: 1, high: 2, low: 0.25, close: 0.5, volume: 24, quoteVolume: 12.5, tradeCount: 2 },
-      { time: 900, open: 1, high: 2, low: 0.25, close: 0.5, volume: 24, quoteVolume: 12.5, tradeCount: 2 },
+      { time: 300, open: 1, high: 2, low: 0.25, close: 0.5, volume: 24, quoteVolume: 12.5 },
+      { time: 900, open: 1, high: 2, low: 0.25, close: 0.5, volume: 24, quoteVolume: 12.5 },
     ]);
   });
 
@@ -55,9 +54,6 @@ describe("pool price candle conversion", () => {
     expect(() => decode({ ...history, data: [tiny] }, true)).toThrow("Price history cannot be displayed");
     const underflow = `0.${"0".repeat(400)}1`;
     expect(() => decode({ ...history, data: [{ ...tiny, open: underflow }] })).toThrow(
-      "Price history cannot be displayed",
-    );
-    expect(() => decode({ ...history, data: [{ ...candle, tradeCount: -1 }] })).toThrow(
       "Price history cannot be displayed",
     );
   });

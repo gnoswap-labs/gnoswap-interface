@@ -23,8 +23,7 @@
     "low": "安値",
     "open": "始値",
     "close": "終値",
-    "volume": "出来高",
-    "swaps": "スワップ"
+    "volume": "出来高"
   },
   "btn": {
     "amountTooLow": "金額が低すぎる",
