@@ -41,13 +41,17 @@ const mockTheme = {
   },
 };
 jest.mock("@emotion/react", () => ({ useTheme: () => mockTheme }));
-jest.mock("react-i18next", () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
+let mockLanguage = "en";
+jest.mock("react-i18next", () => ({
+  useTranslation: () => ({ t: (key: string) => key, i18n: { language: mockLanguage, resolvedLanguage: mockLanguage } }),
+}));
 jest.mock("./PriceCandleChart.styles", () => ({ CandleTooltip: "div" }));
 jest.mock(
   "lightweight-charts",
   () => ({
     CandlestickSeries: "candles",
     HistogramSeries: "volume",
+    TickMarkType: { Year: 0, Month: 1, DayOfMonth: 2, Time: 3, TimeWithSeconds: 4 },
     ColorType: { Solid: "solid" },
     createChart: (...args: unknown[]) => mockCreateChart(...args),
   }),
@@ -83,6 +87,7 @@ beforeAll(() => {
 
 beforeEach(() => {
   jest.clearAllMocks();
+  mockLanguage = "en";
   mockTimeScale.getVisibleRange.mockReturnValue({ from: 100, to: 200 });
   jest.spyOn(Date, "now").mockReturnValue(300000000);
 });
@@ -298,4 +303,65 @@ it("limits All daily requests to 30-day windows and pages older only on action",
   fireEvent.click(screen.getByRole("button", { name: "Search older history" }));
   await waitFor(() => expect(loadPage).toHaveBeenCalledTimes(2));
   expect(loadPage).toHaveBeenNthCalledWith(2, start - 30 * 86400, start);
+});
+
+it("formats crosshair and ticks in the app language and browser local time", async () => {
+  render(<PriceCandleChart {...props} loadPage={jest.fn().mockResolvedValue(firstPage)} />);
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+  const options = mockCreateChart.mock.calls[0][1];
+  const time = Date.parse("2026-10-07T23:30:00Z") / 1000;
+  const date = new Date(time * 1000);
+  expect(options.localization.locale).toBe("en");
+  expect(options.timeScale.tickMarkFormatter(time, 2, "ko-KR")).toBe(
+    new Intl.DateTimeFormat("en", { month: "short", day: "numeric" }).format(date),
+  );
+  expect(options.localization.timeFormatter(time)).toBe(
+    new Intl.DateTimeFormat("en", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).format(date),
+  );
+});
+
+it("uses Korean local dates when the app language is Korean", async () => {
+  mockLanguage = "ko";
+  render(<PriceCandleChart {...props} daily loadPage={jest.fn().mockResolvedValue(firstPage)} />);
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+  const options = mockCreateChart.mock.calls[0][1];
+  const time = Date.parse("2026-10-07T23:30:00Z") / 1000;
+  const date = new Date(time * 1000);
+  expect(options.timeScale.tickMarkFormatter(time, 2, "en-US")).toBe(
+    new Intl.DateTimeFormat("ko", { month: "short", day: "numeric" }).format(date),
+  );
+  expect(options.localization.timeFormatter(time)).toBe(
+    new Intl.DateTimeFormat("ko", { year: "numeric", month: "short", day: "numeric" }).format(date),
+  );
+});
+
+it("rebuilds the chart and formats both volumes when the app language changes", async () => {
+  const bar = { ...firstPage[0], volume: 1234.5, quoteVolume: 1234.5 };
+  const loadPage = jest.fn().mockResolvedValue([bar]);
+  const { rerender } = render(<PriceCandleChart {...props} loadPage={loadPage} />);
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+
+  mockLanguage = "fr";
+  rerender(<PriceCandleChart {...props} loadPage={loadPage} />);
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(2));
+  expect(mockCreateChart.mock.calls[1][1].localization.locale).toBe("fr");
+
+  act(() => {
+    mockSubscribeCrosshairMove.mock.calls[1][0]({
+      point: { x: 40, y: 100 },
+      time: bar.time,
+      seriesData: new Map([[mockCandles, bar]]),
+    });
+  });
+  const localizedVolume = new Intl.NumberFormat("fr", { maximumSignificantDigits: 12 }).format(bar.volume);
+  expect(Array.from(screen.getByRole("tooltip").querySelectorAll("strong"), node => node.textContent).slice(4)).toEqual(
+    [`${localizedVolume} GNOT`, `${localizedVolume} GNS`],
+  );
 });

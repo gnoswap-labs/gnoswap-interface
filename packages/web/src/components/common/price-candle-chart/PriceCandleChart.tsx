@@ -4,17 +4,16 @@ import {
   ColorType,
   createChart,
   HistogramSeries,
+  TickMarkType,
   type LogicalRange,
+  type Time,
   type UTCTimestamp,
 } from "lightweight-charts";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { CandleTooltip } from "./PriceCandleChart.styles";
 
-const candleNumberFormatter = new Intl.NumberFormat("en-US", { maximumSignificantDigits: 12 });
-const formatCandleNumber = (value: number) =>
-  value !== 0 && Math.abs(value) < 1e-18 ? value.toExponential(4) : candleNumberFormatter.format(value);
 
 export interface PriceBar {
   time: number;
@@ -66,8 +65,19 @@ export default function PriceCandleChart({
   const [pagingError, setPagingError] = useState(false);
   const [retry, setRetry] = useState(0);
   const [canSearchOlder, setCanSearchOlder] = useState(true);
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [hovered, setHovered] = useState<{ bar: PriceBar; x: number; y: number } | null>(null);
+  const locale = i18n.resolvedLanguage ?? i18n.language;
+  const formatCandleNumber = useMemo(() => {
+    const decimal = new Intl.NumberFormat(locale, { maximumSignificantDigits: 12 });
+    const scientific = new Intl.NumberFormat(locale, {
+      notation: "scientific",
+      minimumSignificantDigits: 5,
+      maximumSignificantDigits: 5,
+    });
+    return (value: number) =>
+      value !== 0 && Math.abs(value) < 1e-18 ? scientific.format(value) : decimal.format(value);
+  }, [locale]);
 
   useEffect(() => {
     const element = chartElement.current;
@@ -82,6 +92,23 @@ export default function PriceCandleChart({
     async function initialize() {
       if (cancelled || !element) return;
       const positive = theme.color.green01;
+      const localFormat = (options: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat(locale, options);
+      const axisFormats = {
+        [TickMarkType.Year]: localFormat({ year: "numeric" }),
+        [TickMarkType.Month]: localFormat({ month: "short" }),
+        [TickMarkType.DayOfMonth]: localFormat({ month: "short", day: "numeric" }),
+        [TickMarkType.Time]: localFormat({ hour: "2-digit", minute: "2-digit", hour12: false }),
+        [TickMarkType.TimeWithSeconds]: localFormat({
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }),
+      };
+      const crosshairFormat = localFormat(
+        daily
+          ? { year: "numeric", month: "short", day: "numeric" }
+          : { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false },
+      );
       const negative = theme.color.red01;
       const chart = createChart(element, {
         width: element.clientWidth,
@@ -101,7 +128,18 @@ export default function PriceCandleChart({
           borderColor: theme.color.border14,
           scaleMargins: { top: 0.08, bottom: 0.24 },
         },
-        timeScale: { borderColor: theme.color.border14, timeVisible: !daily, secondsVisible: false },
+        localization: {
+          locale,
+          timeFormatter: (time: Time) =>
+            typeof time === "number" ? crosshairFormat.format(new Date(time * 1000)) : String(time),
+        },
+        timeScale: {
+          borderColor: theme.color.border14,
+          timeVisible: !daily,
+          secondsVisible: false,
+          tickMarkFormatter: (time: Time, type: TickMarkType) =>
+            typeof time === "number" ? axisFormats[type].format(new Date(time * 1000)) : String(time),
+        },
         crosshair: {
           vertLine: { labelBackgroundColor: theme.color.background05 },
           horzLine: { labelBackgroundColor: theme.color.background05 },
@@ -278,7 +316,7 @@ export default function PriceCandleChart({
       searchOlder.current = null;
       dispose?.();
     };
-  }, [identity, interval, daily, all, retry, theme, loadPage, formatCandlePrice]);
+  }, [identity, interval, daily, all, locale, retry, theme, loadPage, formatCandlePrice]);
 
   return (
     <div className="price-chart-shell" aria-label={label}>
