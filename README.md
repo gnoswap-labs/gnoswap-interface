@@ -14,7 +14,7 @@ The pool API quotes whole token B per whole token A, with token decimals applied
 
 ## Token Price Candles
 
-The token detail requests the same window parameters from `/v1/tokens/{encodedTokenPath}/ohlcv`. Its USD-per-token OHLC candles use direct 5-minute, hourly, 4-hour, or daily intervals; All pages daily bars. `volume` is the token quantity, while the separate 24h summary volume remains USD. Both APIs return an unwrapped `{interval,start,end,data}` body with ISO UTC candle starts. After a valid priced trade, no-trade intervals carry the last close with zero volume; intervals before the first priced trade and intervals containing only unpriced trades remain absent.
+The token detail requests the same window parameters from `/v1/tokens/{encodedTokenPath}/ohlcv`. Its USD-per-token OHLC candles use direct 5-minute, hourly, 4-hour, or daily intervals; All pages daily bars. Prices are sampled from the resolved token USD valuation (TWAP for regular tokens, external price for wrapped GNOT), independently of swaps. `volume` is the internally traded token quantity, while the separate 24h summary volume remains USD. Both APIs return an unwrapped `{interval,start,end,data}` body with ISO UTC candle starts. Price samples can produce zero-volume bars without trades; swap-only intervals without a price observation and intervals before the first observation remain absent. Missing price observations are not filled from a previous close.
 
 An empty window does not mark history exhausted: panning left searches the preceding window, or the Search older history button continues from an empty initial window. A failed older-page request leaves loaded bars and visible range in place; panning left again retries. An initial-page failure shows Retry.
 

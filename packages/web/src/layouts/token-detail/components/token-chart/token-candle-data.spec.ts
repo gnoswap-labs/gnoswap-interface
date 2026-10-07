@@ -15,14 +15,14 @@ const body = {
   interval,
   start,
   end,
-  data: [candle, { ...candle, start: "1970-01-01T03:00:00Z" }],
+  data: [candle, { ...candle, start: "1970-01-01T03:00:00Z", volume: "0" }],
 };
 
 describe("token USD candles", () => {
-  it("keeps UTC seconds and sparse intervals, including small USD prices and token-denominated volume", () => {
+  it("keeps sparse sampled-price bars without swaps alongside token-denominated swap volume", () => {
     expect(decodeTokenCandles(body, interval, start, end)).toEqual([
       { time: 3600, open: 1e-14, high: 4e-14, low: 1e-14, close: 3e-14, volume: 12.5 },
-      { time: 10800, open: 1e-14, high: 4e-14, low: 1e-14, close: 3e-14, volume: 12.5 },
+      { time: 10800, open: 1e-14, high: 4e-14, low: 1e-14, close: 3e-14, volume: 0 },
     ]);
   });
 
