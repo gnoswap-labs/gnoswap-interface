@@ -9,6 +9,7 @@ import IconStar from "@components/common/icons/IconStar";
 import IconAdd from "@components/common/icons/IconAdd";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconRemove from "@components/common/icons/IconRemove";
+import IconSwap from "@components/common/icons/IconSwap";
 import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
 import IconTriangleArrowUpV2 from "@components/common/icons/IconTriangleArrowUpV2";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
@@ -513,7 +514,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               aria-label={t("Pool:chart.reverse")}
               title={t("Pool:chart.reverse")}
             >
-              ⇄
+              <IconSwap />
             </button>
           </div>
           {chartMode === "liquidity" && !loadingBins && (

@@ -117,9 +117,13 @@ export const ContentWrapper = styled.div`
       transition: background-color 180ms ease-out, color 180ms ease-out;
     }
     .chart-pair button {
-      font-size: 16px;
-      line-height: 1;
       padding: 4px;
+      svg * {
+        fill: ${({ theme }) => theme.color.icon03};
+      }
+      &:hover svg * {
+        fill: ${({ theme }) => theme.color.icon07};
+      }
     }
     .price-chart-shell {
       position: relative;
