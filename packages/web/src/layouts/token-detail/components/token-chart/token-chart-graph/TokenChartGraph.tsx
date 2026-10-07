@@ -19,6 +19,8 @@ export interface TokenChartGraphProps {
   }[];
   xAxisLabels: string[];
   yAxisLabels: string[];
+  yAxisMin?: string;
+  yAxisMax?: string;
   currentTab: string;
   componentRef: React.RefObject<HTMLDivElement> | null;
   size: ComponentSize;
@@ -62,6 +64,8 @@ function makeTimePeriodFormatInfo(period: string) {
 const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
   datas,
   yAxisLabels,
+  yAxisMin,
+  yAxisMax,
   componentRef,
   size,
   breakpoint,
@@ -201,9 +205,13 @@ const TokenChartGraph: React.FC<TokenChartGraphProps> = ({
           strokeWidth={1}
           datas={chartData}
           firstPointColor={theme.color.border05}
+          referenceTimeForFirstLine={datas[0]?.time}
           customData={customData}
           forcedPosition={"top"}
           displayLastDayAsNow
+          yAxisMin={yAxisMin}
+          yAxisMax={yAxisMax}
+          fillAreaBelowLine
         />
         <div className={`xaxis-wrapper ${xAxisLabels.length === 1 ? "xaxis-wrapper-center" : ""}`}>
           {displayXAxisLabels.map((value, index) => (

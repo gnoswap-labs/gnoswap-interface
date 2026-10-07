@@ -4,9 +4,10 @@ import { SnackbarContext, SnackbarOptions } from "@providers/snackbar-provider";
 import { SnackbarContent, SnackbarType } from "@providers/snackbar-provider/snackbar";
 
 export const useSnackbar = () => {
-  const { enqueue, dequeue, change, clear } = useContext(SnackbarContext);
+  const { hasBadgeSnackbar, enqueue, dequeue, change, clear } = useContext(SnackbarContext);
 
   return {
+    hasBadgeSnackbar,
     enqueue,
     change,
     dequeue,
@@ -14,4 +15,4 @@ export const useSnackbar = () => {
   };
 };
 
-export type { SnackbarOptions, SnackbarContent, SnackbarType };
+export type { SnackbarContent, SnackbarOptions, SnackbarType };

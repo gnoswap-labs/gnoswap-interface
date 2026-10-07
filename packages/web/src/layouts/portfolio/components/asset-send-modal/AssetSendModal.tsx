@@ -1,3 +1,4 @@
+import { cx } from "@emotion/css";
 import { useTheme } from "@emotion/react";
 import Link from "next/link";
 import BigNumber from "bignumber.js";
@@ -15,6 +16,8 @@ import SelectPairButton from "@components/common/select-pair-button/SelectPairBu
 import Tooltip from "@components/common/tooltip/Tooltip";
 import WarningCard from "@components/common/warning-card/WarningCard";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
+import { useOptionalGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useMaxNativeAmount } from "@hooks/gas";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { usePositionModal } from "@hooks/wallet/ui/use-position-modal";
@@ -22,6 +25,7 @@ import { TokenModel } from "@models/token/token-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { formatPrice } from "@utils/new-number-utils";
 import { capitalize } from "@utils/string-utils";
+import { isAmountLessThanTokenMinimum } from "@utils/token-utils";
 import { isValidAddress } from "@utils/validation-utils";
 
 import IconWallet from "@components/common/icons/IconWallet";
@@ -100,8 +104,9 @@ const AssetSendModal: React.FC<Props> = ({
   const [address, setAddress] = useState("");
 
   const { account } = useWallet();
+  const walletRepository = useOptionalGnoswapContext()?.walletRepository;
 
-  const { tokenPrices, displayBalanceMap } = useTokenData();
+  const { tokenPrices, displayBalanceMap } = useTokenData(true);
 
   useEscCloseModal(close);
   usePositionModal(modalRef);
@@ -109,7 +114,8 @@ const AssetSendModal: React.FC<Props> = ({
   const onChangeAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
-      const decimals = withdrawInfo?.decimals || 0;
+      if (!withdrawInfo) return;
+      const decimals = withdrawInfo.decimals;
 
       if (value === "") {
         setAmount("");
@@ -125,7 +131,7 @@ const AssetSendModal: React.FC<Props> = ({
 
       setAmount(value.replace(/^0+(?=\d)|(\.\d*)$/g, "$1"));
     },
-    [setAmount, withdrawInfo?.decimals],
+    [setAmount, withdrawInfo],
   );
 
   const onChangeAddress = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -149,12 +155,22 @@ const AssetSendModal: React.FC<Props> = ({
     return !!currentAvailableBalance;
   }, [currentAvailableBalance]);
 
+  const { getMaxAmount, loading: loadingMaxAmount, pendingBalance } = useMaxNativeAmount({
+    token: withdrawInfo ?? null,
+    amount,
+    // The recipient is simulated, and it moves the gas: a send to an address
+    // the chain has not seen costs about twice one back to the sender.
+    dependsOn: [address, currentAvailableBalance],
+  });
+
   const isDisabledWithdraw = useMemo((): boolean => {
     if (!isValidAmount(amount)) return true;
 
     if (!address || !isValidAddress(address)) return true;
 
     if (!withdrawInfo) return true;
+
+    if (isAmountLessThanTokenMinimum(withdrawInfo, amount)) return true;
 
     if (!isBalanceSufficient(amount, currentAvailableBalance ?? "0")) return true;
 
@@ -188,10 +204,29 @@ const AssetSendModal: React.FC<Props> = ({
     });
   }, [amount, tokenPrices, withdrawInfo]);
 
-  const handleEnterAllBalanceAvailable = () => {
-    if (currentAvailableBalance) {
-      setAmount(`${currentAvailableBalance}`);
-    }
+  const handleEnterAllBalanceAvailable = async () => {
+    if (!currentAvailableBalance) return;
+
+    const maxAmount = await getMaxAmount({
+      balance: `${currentAvailableBalance}`,
+      makeMessages:
+        walletRepository && withdrawInfo
+          ? tokenAmount =>
+              walletRepository.makeTransferGNOTTokenMessages({
+                token: withdrawInfo,
+                tokenAmount,
+                fromAddress: account?.address ?? "",
+                // The recipient is not known yet while the amount is being
+                // filled in, and a send costs the same either way.
+                toAddress: isValidAddress(address) ? address : account?.address ?? "",
+              })
+          : undefined,
+    });
+
+    // Null once the field has moved on: another token, or the user typing.
+    if (maxAmount === null) return;
+
+    setAmount(maxAmount);
   };
   const buttonText = useMemo(() => {
     if (!withdrawInfo) {
@@ -200,7 +235,7 @@ const AssetSendModal: React.FC<Props> = ({
     if (amount === "") {
       return t("Wallet:assetSendModal.btn.enterAmt");
     }
-    if (Number(amount) < 0.000001) {
+    if (isAmountLessThanTokenMinimum(withdrawInfo, amount)) {
       return t("Wallet:assetSendModal.btn.lowAmt");
     }
     if (
@@ -235,10 +270,14 @@ const AssetSendModal: React.FC<Props> = ({
               <div className="withdraw">
                 <div className="amount">
                   <input
-                    className="amount-text"
-                    value={amount}
+                    className={cx("amount-text", { "amount-pending": !!pendingBalance })}
+                    aria-busy={!!pendingBalance}
+                    // While the reserve is being measured the whole balance
+                    // stands in as a placeholder: the answer is that, less what
+                    // it costs to send.
+                    value={pendingBalance ? "" : amount}
                     onChange={onChangeAmount}
-                    placeholder="0"
+                    placeholder={pendingBalance ?? "0"}
                     autoComplete={"off"}
                     spellCheck={"false"}
                     inputMode={"decimal"}
@@ -260,8 +299,12 @@ const AssetSendModal: React.FC<Props> = ({
                         : "-"
                     }`}</span>
                     {hasTokenBalance && (
-                      <button className="balance-max-button" onClick={handleEnterAllBalanceAvailable}>
-                        {t("common:max")}
+                      <button
+                        className="balance-max-button"
+                        onClick={handleEnterAllBalanceAvailable}
+                        disabled={loadingMaxAmount}
+                      >
+                        <span className="max-badge">{t("common:max")}</span>
                       </button>
                     )}
                   </div>

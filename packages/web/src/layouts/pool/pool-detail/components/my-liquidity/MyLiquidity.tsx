@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 
+import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { DEVICE_TYPE } from "@styles/media";
@@ -18,6 +19,7 @@ interface MyLiquidityProps {
   isOtherPosition: boolean;
   openedPosition: PoolPositionModel[];
   closedPosition: PoolPositionModel[];
+  totalPositionCount: number;
   breakpoint: DEVICE_TYPE;
   connected: boolean;
   isSwitchNetwork: boolean;
@@ -31,12 +33,15 @@ interface MyLiquidityProps {
   isStakable: boolean;
   isShowRemovePositionButton: boolean;
   loading: boolean;
+  isHeaderLoading: boolean;
   loadingTransactionClaim: boolean;
   isShowClosePosition: boolean;
   handleSetIsClosePosition: () => void;
   isHiddenAddPosition: boolean;
   showClosePositionButton: boolean;
   tokenPrices: Record<string, TokenPriceModel>;
+  showViewMorePositions: boolean;
+  handleViewMorePositions: () => void;
 }
 
 const MyLiquidity: React.FC<MyLiquidityProps> = ({
@@ -45,6 +50,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   isOwnerAddress,
   addressName,
   openedPosition,
+  totalPositionCount,
   breakpoint,
   connected,
   isSwitchNetwork,
@@ -58,6 +64,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   isStakable,
   isShowRemovePositionButton,
   loading,
+  isHeaderLoading,
   loadingTransactionClaim,
   isShowClosePosition,
   handleSetIsClosePosition,
@@ -65,6 +72,8 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
   showClosePositionButton,
   tokenPrices,
   closedPosition,
+  showViewMorePositions,
+  handleViewMorePositions,
 }) => {
   const showedPositions = useMemo(() => {
     if (!isShowClosePosition) {
@@ -84,7 +93,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
           isSwitchNetwork={isSwitchNetwork}
           address={address}
           addressName={addressName}
-          positionLength={showedPositions.length}
+          positionLength={totalPositionCount}
           isShowRemovePositionButton={isShowRemovePositionButton}
           handleClickAddPosition={handleClickAddPosition}
           handleClickRemovePosition={handleClickRemovePosition}
@@ -92,7 +101,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
           handleSetIsClosePosition={handleSetIsClosePosition}
           isHiddenAddPosition={isHiddenAddPosition}
           showClosePositionButton={showClosePositionButton}
-          isLoadingPositionsById={loading}
+          isLoadingPositionsById={isHeaderLoading}
         />
         <MyLiquidityContent
           connected={connected}
@@ -159,6 +168,11 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
             )}
           </>
         ))}
+      {showViewMorePositions && (
+        <div className="view-more-wrap">
+          <LoadMoreButton show={true} onClick={handleViewMorePositions} />
+        </div>
+      )}
     </MyLiquidityWrapper>
   );
 };

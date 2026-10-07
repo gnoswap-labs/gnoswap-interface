@@ -157,7 +157,7 @@
       "tokensDistributed": "分发的代币",
       "totalDeposits": "存款总额"
     },
-    "description": "{{month}} 的赌注。<br/> {{day}} 天后可从<br/>开始领取奖励。",
+    "description": "{{month}} 。",
     "title": "游泳池{{idx}}"
   },
   "projects": {

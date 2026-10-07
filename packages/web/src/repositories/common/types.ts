@@ -36,6 +36,8 @@ export const DexEvent = {
   LAUNCHPAD_COLLECT_REWARD: "LAUNCHPAD_CLAIM_REWARD",
   // faucet
   FAUCET_RECEIVE: "FAUCET_RECEIVE",
+  // wugnot transfer
+  RECEIVE_WUGNOT: "RECEIVE_WUGNOT",
 } as const;
 
 export type DexEventType = ValuesType<typeof DexEvent>;

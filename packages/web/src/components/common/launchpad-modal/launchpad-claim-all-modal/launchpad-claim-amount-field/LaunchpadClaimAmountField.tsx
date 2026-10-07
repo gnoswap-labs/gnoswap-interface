@@ -3,8 +3,8 @@ import Image from "next/image";
 import BigNumber from "bignumber.js";
 
 import { GNS_TOKEN } from "@common/values/token-constant";
-import { useTokenData } from "@hooks/token/data/use-token-data";
 import { ProjectRewardInfoModel } from "@layouts/launchpad/launchpad-detail/LaunchpadDetail";
+import { useGetAllTokenPrices } from "@query/token";
 
 import { ClaimAllFieldWrapper } from "./LaunchpadClaimAmountField.styled";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -20,7 +20,7 @@ interface LaunchpadClaimAmountFieldProps {
 const DEFAULT_DEPOSIT_TOKEN = GNS_TOKEN;
 
 const LaunchpadClaimAmountField = ({ amount, rewardInfo, type }: LaunchpadClaimAmountFieldProps) => {
-  const { tokenPrices } = useTokenData();
+  const { data: tokenPrices = {} } = useGetAllTokenPrices();
 
   const estimatePrice = React.useMemo(() => {
     const calculatePrice = (tokenPath: string | undefined, amountValue: number) => {
@@ -56,7 +56,7 @@ const LaunchpadClaimAmountField = ({ amount, rewardInfo, type }: LaunchpadClaimA
             src={DEFAULT_DEPOSIT_TOKEN?.logoURI}
             alt={`${DEFAULT_DEPOSIT_TOKEN?.symbol} token symbol image`}
           />
-          {toNumberFormat(amount, 6)} {DEFAULT_DEPOSIT_TOKEN?.symbol}
+          {toNumberFormat(amount, DEFAULT_DEPOSIT_TOKEN.decimals)} {DEFAULT_DEPOSIT_TOKEN?.symbol}
         </div>
         <div className="value-price">{estimatePrice}</div>
       </ClaimAllFieldWrapper>
@@ -68,7 +68,7 @@ const LaunchpadClaimAmountField = ({ amount, rewardInfo, type }: LaunchpadClaimA
       <ClaimAllFieldWrapper>
         <div className="value-token">
           <MissingLogo symbol={rewardInfo.rewardTokenSymbol} url={rewardInfo?.rewardTokenLogoURL} width={24} />
-          {toNumberFormat(amount, 6)} {rewardInfo?.rewardTokenSymbol}
+          {toNumberFormat(amount, rewardInfo.rewardTokenDecimals)} {rewardInfo?.rewardTokenSymbol}
         </div>
         <div className="value-price">{estimatePrice}</div>
       </ClaimAllFieldWrapper>

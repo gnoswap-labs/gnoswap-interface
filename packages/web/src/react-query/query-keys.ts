@@ -36,31 +36,28 @@ export enum QUERY_KEY {
   pools = "pools",
   rpcPools = "rpcPools",
   poolCreationFee = "poolCreationFee",
+  incentiveCreationDeposit = "incentiveCreationDeposit",
   poolDetail = "pool_details",
-  bins = "bins",
-  poolPairBins = "poolPairBins",
   prices = "prices",
-  lazyBins = "lazyBins",
-  initializeBins = "initializeBins",
   incentivizePools = "incentivizePools",
-  poolBins = "poolBins",
+  allowedExternalRewardTokenPaths = "allowed_external_reward_token_paths",
   poolWithdrawalFee = "pool_withdrawal_fee",
   unstakingFee = "unstaking_fee",
   poolStakingList = "pool_staking_list",
   lastedBlockHeight = "lasted_block_height",
   removeExternalIncentive = "remove_external_incentive",
   poolLiquidity = "pool_liquidity",
+  poolLiquidityTicks = "pool_liquidity_ticks",
   poolTicks = "pool_ticks",
   poolTickSpacing = "pool_tick_spacing",
   poolSqrtPriceX96 = "pool_sqrt_price_x96",
   poolFromDb = "pool_from_db",
   // positions
   positions = "positions",
+  positionRewards = "positionRewards",
   positionHistory = "positionHistory",
   poolPositions = "poolPositions",
   estimateReposition = "estimateReposition",
-  positionBins = "positionBins",
-  positionLazyBins = "positionLazyBins",
   positionDetail = "positionDetail",
   // swap
   swapHistory = "swap-history",
@@ -75,6 +72,7 @@ export enum QUERY_KEY {
   chain = "chain",
   tokenByPath = "token",
   tokenBalancesByAddress = "balances",
+  swapExtensionBalance = "swap_extension_balance",
 
   // launchpad
   launchpadSummary = "launchpad_summary",
@@ -85,7 +83,6 @@ export enum QUERY_KEY {
 
   // gas
   gasPrice = "gas_price",
-  gasInfo = "gas_info",
 
   // faucet
   faucetNativeIsSupported = "faucetNative/isSupported",

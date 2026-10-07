@@ -283,7 +283,65 @@ export const MyPositionCardWrapper = styled.div<Props>`
       .range-badge {
         position: absolute;
         top: 14.5px;
+        left: 0;
+      }
+      .zoom-controller {
+        ${mixins.flexbox("row", "center", "flex-end")};
+        position: absolute;
+        top: 6px;
         right: 0;
+        gap: 4px;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -o-user-select: none;
+        user-select: none;
+        button {
+          display: flex;
+          padding: 2px;
+          width: 32px;
+          height: 32px;
+          border-radius: 4px;
+          justify-content: center;
+          align-items: center;
+          background: ${({ theme }) => theme.color.background05};
+          svg * {
+            fill: ${({ theme }) => theme.color.icon05};
+          }
+          line-height: 22px;
+          @media (hover: hover) {
+            &:hover {
+              background: ${({ theme }) => theme.color.backgroundOpacity};
+            }
+          }
+          @media (hover: none) {
+            &:active {
+              background: ${({ theme }) => theme.color.backgroundOpacity};
+            }
+          }
+          position: relative;
+          ${media.mobile} {
+            width: 24px;
+            height: 24px;
+            svg {
+              width: 16px;
+              height: 16px;
+            }
+          }
+          &.disabled {
+            pointer-events: none;
+            &::before {
+              position: absolute;
+              content: "";
+              width: 100%;
+              border-radius: 4px;
+              height: 100%;
+              top: 0;
+              background: ${({ theme }) => theme.color.backgroundOpacity8};
+              left: 0;
+            }
+          }
+        }
       }
     }
     .swap-price {

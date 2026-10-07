@@ -1,6 +1,5 @@
 import { FloatingArrow, FloatingPortal } from "@floating-ui/react";
-import type { ElementRef } from "react";
-import React, { cloneElement, forwardRef, useEffect, useMemo, useRef } from "react";
+import React, { cloneElement, forwardRef, useEffect, useMemo, useRef, type ElementRef } from "react";
 
 import { useTheme } from "@emotion/react";
 import { FloatingPosition, useFloatingTooltip } from "@hooks/common/use-floating-tooltip";

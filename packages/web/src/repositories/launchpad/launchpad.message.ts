@@ -5,22 +5,27 @@ import {
   TokenApproveMessageInfo,
 } from "@common/clients/wallet-client/transaction-messages";
 import { GNS_TOKEN_PATH, PACKAGE_LAUNCHPAD_ADDRESS, PACKAGE_LAUNCHPAD_PATH } from "@constants/environment.constant";
-import { MAX_INT64 } from "@utils/math.utils";
+import { TokenModel } from "@models/token/token-model";
 
 enum TransactionMessageFunctionType {
   DepositGns = "DepositGns",
   CollectRewardByDepositId = "CollectRewardByDepositId",
   CollectDepositGns = "CollectDepositGns",
+  CollectProtocolFee = "CollectProtocolFee",
+  CollectEmissionReward = "CollectEmissionReward",
+  CollectProtocolFeeReward = "CollectProtocolFeeReward",
 }
 
 export function makeDepositGNSMessageWithApproves(
   {
     poolId,
+    gnsToken,
     gnsTokenAmount,
     caller,
     referrerAddress,
   }: {
     poolId: string;
+    gnsToken: TokenModel;
     gnsTokenAmount: bigint;
     caller: string;
     referrerAddress: string | null;
@@ -38,8 +43,10 @@ export function makeDepositGNSMessageWithApproves(
   const approveMessageInfos: TokenApproveMessageInfo[] = [
     {
       tokenPath: GNS_TOKEN_PATH,
+      pkgPath: gnsToken.pkgPath,
+      routes: gnsToken.routes,
       targetAddress: PACKAGE_LAUNCHPAD_ADDRESS,
-      amount: MAX_INT64,
+      amount: gnsTokenAmount,
       caller,
     },
   ];
@@ -135,4 +142,46 @@ export function makeCollectRewardWithDepositBydepositIDMessage({
   });
 
   return [collectRewardBydepositIDMessage, collectDepositGnsMessage];
+}
+
+export function makeCollectProtocolFeeMessage({ caller }: { caller: string }): TransactionMessage[] {
+  const collectProtocolFeeMessage = makeTransactionMessage({
+    packagePath: PACKAGE_LAUNCHPAD_PATH,
+    send: "",
+    func: TransactionMessageFunctionType.CollectProtocolFee,
+    args: [],
+    caller,
+  });
+
+  return [collectProtocolFeeMessage];
+}
+
+export function makeLaunchpadCollectProtocolFeeRewardMessages({
+  tokenPaths,
+  caller,
+}: {
+  tokenPaths: string[];
+  caller: string;
+}): TransactionMessage[] {
+  return tokenPaths.map(tokenPath =>
+    makeTransactionMessage({
+      packagePath: PACKAGE_LAUNCHPAD_PATH,
+      send: "",
+      func: TransactionMessageFunctionType.CollectProtocolFeeReward,
+      args: [tokenPath],
+      caller,
+    }),
+  );
+}
+
+export function makeLaunchpadCollectEmissionRewardMessages({ caller }: { caller: string }): TransactionMessage[] {
+  return [
+    makeTransactionMessage({
+      packagePath: PACKAGE_LAUNCHPAD_PATH,
+      send: "",
+      func: TransactionMessageFunctionType.CollectEmissionReward,
+      args: [],
+      caller,
+    }),
+  ];
 }

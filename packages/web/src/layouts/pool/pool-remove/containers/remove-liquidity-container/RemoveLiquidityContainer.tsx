@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo, useState } from "react";
 import BigNumber from "bignumber.js";
+import React, { useCallback, useMemo, useState } from "react";
 
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
@@ -7,13 +7,12 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionConverter } from "@services/converters/position";
 
-import RemoveLiquidity from "../../components/remove-liquidity/RemoveLiquidity";
 import { useRemovePositionModal } from "@hooks/pool/ui/use-remove-position-modal";
+import RemoveLiquidity from "../../components/remove-liquidity/RemoveLiquidity";
 
 const RemoveLiquidityContainer: React.FC = () => {
   const router = useCustomRouter();
   const { connected } = useWallet();
-  const [isGetWGNOT, setIsGetWGNOT] = useState(false);
   const poolPath = router.getPoolPath();
   const positionId = router.getPositionId();
   const [checkedList, setCheckedList] = useState<number[]>(positionId ? [Number(positionId)] : []);
@@ -22,8 +21,8 @@ const RemoveLiquidityContainer: React.FC = () => {
     loading: isLoadingPositions,
     refetch: refetchPositions,
   } = usePositionData({
-    isClosed: false,
     poolPath,
+    withClosed: false,
     queryOption: {
       enabled: !!poolPath,
     },
@@ -36,7 +35,7 @@ const RemoveLiquidityContainer: React.FC = () => {
   const stakedPositions = useMemo(() => {
     if (!connected) return [];
     return positionList.filter(position => position.poolPath === poolPath && position.staked);
-  }, [positionList, connected]);
+  }, [positionList, connected, poolPath]);
 
   const unstakedPositions = useMemo(() => {
     if (!connected) return [];
@@ -60,7 +59,6 @@ const RemoveLiquidityContainer: React.FC = () => {
     positions: positionList,
     positionLiquidities,
     selectedIds: checkedList,
-    isGetWGNOT,
     refetchPositions: async () => {
       await refetchPositions();
     },
@@ -108,8 +106,6 @@ const RemoveLiquidityContainer: React.FC = () => {
       checkedAll={checkedAll}
       removeLiquidity={removeLiquidity}
       isLoading={isLoadingPositions}
-      isGetWGNOT={isGetWGNOT}
-      setIsGetWGNOT={() => setIsGetWGNOT(prev => !prev)}
     />
   );
 };

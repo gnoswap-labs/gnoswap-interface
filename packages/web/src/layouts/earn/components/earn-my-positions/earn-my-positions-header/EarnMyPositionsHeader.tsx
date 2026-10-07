@@ -3,26 +3,28 @@ import { useTranslation } from "react-i18next";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import Switch from "@components/common/switch/Switch";
+import { VIDEO_GUIDE_TYPES } from "@constants/video-guide.constant";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { VIDEO_GUIDE_TYPES } from "@constants/video-guide.constant";
 
-import { HeaderTextWrapper, PositionsWrapper } from "./EarnMyPositionsHeader.styles";
 import VideoGuideTrigger from "@components/common/video-guide-trigger/VideoGuideTrigger";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { HeaderTextWrapper, PositionsWrapper } from "./EarnMyPositionsHeader.styles";
 
 export interface EarnMyPositionsHeaderProps {
   address?: string | null;
   addressName?: string;
   isOtherPosition: boolean;
   visiblePositions: boolean;
-  positionLength: number;
+  positionLength?: number;
   connected: boolean;
   isSwitchNetwork: boolean;
   availableStake: boolean;
   moveEarnAdd: () => void;
   moveEarnStake: () => void;
+  /** UI toggle state: whether closed positions should be shown in this view. */
   isClosed: boolean;
+  hasClosedPositions: boolean;
   handleChangeClosed: () => void;
   positions: PoolPositionModel[];
   onOpenVideoGuide: (type: "POSITION") => void;
@@ -35,11 +37,11 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
   visiblePositions,
   positionLength,
   connected,
-  isSwitchNetwork,
   availableStake,
   moveEarnAdd,
   moveEarnStake,
   isClosed,
+  hasClosedPositions,
   handleChangeClosed,
   onOpenVideoGuide,
 }) => {
@@ -52,8 +54,8 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
   }, [onOpenVideoGuide]);
 
   const disabledStake = useMemo(() => {
-    return !connected || isSwitchNetwork || !availableStake;
-  }, [availableStake, connected, isSwitchNetwork]);
+    return !availableStake;
+  }, [availableStake]);
 
   const onClickAddressPosition = useCallback(() => {
     if (address) window.open(getAccountUrl(address), "_blank");
@@ -71,15 +73,21 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
             <span className="name" onClick={onClickAddressPosition}>
               {addressName}
             </span>
-            <span>{`${t("Earn:positions.title", {
-              context: "other",
-            })} (${positionLength.toLocaleString()})`}</span>
+            <span>
+              {t("Earn:positions.title", { context: "other" })}
+              {positionLength !== undefined && ` (${positionLength.toLocaleString()})`}
+            </span>
           </>
         );
       }
 
       if (connected) {
-        return <span>{`${t("Earn:positions.title")} (${positionLength.toLocaleString()})`}</span>;
+        return (
+          <span>
+            {t("Earn:positions.title")}
+            {positionLength !== undefined && ` (${positionLength.toLocaleString()})`}
+          </span>
+        );
       }
 
       return <span>{t("Earn:positions.title")}</span>;
@@ -101,7 +109,7 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
     <PositionsWrapper>
       <div className="header-content">
         <HeaderTextWrapper>{renderMyPositionTitle()}</HeaderTextWrapper>
-        {visiblePositions && (
+        {visiblePositions && hasClosedPositions && (
           <Switch
             checked={isClosed}
             onChange={handleChangeClosed}
@@ -117,7 +125,7 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
         )}
       </div>
       <div className="button-wrapper">
-        {visiblePositions && (
+        {visiblePositions && hasClosedPositions && (
           <Switch
             checked={isClosed}
             onChange={handleChangeClosed}

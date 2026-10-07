@@ -1,15 +1,24 @@
-import { Axios } from "axios";
 import { Event, EventStore, EventStatus } from ".";
-import { makeHexByBase64, parseABCIValue } from "./utility";
+import { makeRpcTransactionHash, parseABCIValue } from "./utility";
 
 type ResponseDataType = string[];
 
+/**
+ * The slice of an RPC HTTP client this store needs. An Axios instance already
+ * satisfies it, and so does a client that spreads its requests over a primary
+ * and a fallback endpoint.
+ */
+export interface TransactionQueryClient {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  get(path: string): Promise<{ data: any }>;
+}
+
 export class TransactionEventStore implements EventStore<ResponseDataType> {
-  private networkClient: Axios;
+  private networkClient: TransactionQueryClient;
 
   private events: Map<string, Event<ResponseDataType>>;
 
-  constructor(networkClient: Axios) {
+  constructor(networkClient: TransactionQueryClient) {
     this.events = new Map();
     this.networkClient = networkClient;
   }
@@ -190,7 +199,7 @@ export class TransactionEventStore implements EventStore<ResponseDataType> {
     hasError: boolean;
     data: ResponseDataType;
   } | null> {
-    const result = await this.networkClient.get("/tx?hash=" + makeHexByBase64(transactionHash));
+    const result = await this.networkClient.get("/tx?hash=" + makeRpcTransactionHash(transactionHash));
 
     const height = Number(result.data?.result?.height || 0);
     if (!height) {

@@ -5,10 +5,15 @@ export type SnackbarType =
   | "updating"
   | "updating-done"
   | "withdraw-success"
-  | "withdraw-error";
+  | "withdraw-error"
+  | "receive-wugnot"
+  | "stake-position";
 
 export interface SnackbarContent {
   title?: string;
   description?: string;
   txHash?: string;
+  logoUrl?: string;
+  onClick?: () => void;
+  onClickLink?: () => void;
 }

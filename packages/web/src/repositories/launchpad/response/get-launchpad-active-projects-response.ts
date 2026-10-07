@@ -4,6 +4,7 @@ export interface LaunchpadActiveProjectPool extends LaunchpadPoolModel {
   createBlockHeight: number;
   startBlockHeight: number;
   endBlockHeight: number;
+  /** Seconds after deposit before rewards become claimable. */
   claimableThreshold: number;
   apr: number;
   status: "UPCOMING" | "ONGOING" | "ENDED";

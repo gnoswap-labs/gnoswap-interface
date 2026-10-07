@@ -1,31 +1,19 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useAtomValue, useStore } from "jotai";
 import BigNumber from "bignumber.js";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { TransactionMessage } from "@common/clients/wallet-client/protocols";
+import { SwapDirectionType } from "@common/values";
 import useDebounce from "@hooks/common/use-debounce";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { useGetRoutes } from "@query/router";
 import { useReferral } from "@hooks/common/use-referral";
-import { useNetworkFee } from "@hooks/common/use-network-fee";
-import { useGetTokenPrices } from "@query/token";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
-import {
-  makeExactInSwapRouteMessageWithApproves,
-  makeExactOutSwapRouteMessageWithApproves,
-  makeUnwrapTokenMessages,
-  makeWrapTokenMessages,
-} from "@repositories/swap-router/swap-router.message";
-import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
-
-import { SwapDirectionType } from "@common/values";
-import { TokenModel, isNativeToken } from "@models/token/token-model";
+import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { EstimatedRoute } from "@models/swap/swap-route-info";
-import { SwapState } from "@states/index";
-import { NetworkFee, useGetGasPrice } from "@hooks/gas";
-import { TransactionMessage } from "@common/clients/wallet-client/protocols";
-import { Document } from "src/types/transaction-messages.types";
-import { GasToken } from "@common/values/token-constant";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
+import { useGetRoutes } from "@query/router";
+import { isSwapExtensionPair } from "@resources/swap-extension";
+import { calculateSlippageLimitAmount } from "@utils/swap-utils";
+import { makeDisplayTokenAmountString, withTokenRouteMetadata } from "@utils/token-utils";
 
 interface UseSwapProps {
   tokenA: TokenModel | null;
@@ -35,54 +23,64 @@ interface UseSwapProps {
   swapFee?: number;
 }
 
-export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: UseSwapProps) => {
-  const { transactionService, swapRouterRepository, rpcProvider } = useGnoswapContext();
-  const { getCurrentReferralAddress } = useReferral();
-  const { data: gasTokenPrice } = useGetTokenPrices(GasToken.path);
+/** The router splits an amount across pools; the quotes only add up to 100 when it is fully routable. */
+const FULL_ROUTE_COVERAGE = 100;
 
-  const [transactionMessage, setTransactionMessage] = useState<TransactionMessage[] | null>(null);
-  const [transactionDocument, setTransactionDocument] = useState<Document | null>(null);
-  const useNetworkFeeReturn = useNetworkFee(transactionDocument);
-  const networkFee = useNetworkFeeReturn.networkFee;
-  const currentGasInfo = useNetworkFeeReturn.currentGasInfo;
+function hasFullRouteCoverage(routes: EstimatedRoute[]): boolean {
+  if (routes.length === 0) return false;
 
-  const store = useStore();
+  return routes.reduce((total, route) => total + route.quote, 0) >= FULL_ROUTE_COVERAGE;
+}
+
+/** Returns true when the amount string is a positive number. */
+function isPositiveAmount(amount: string | null): amount is string {
+  if (amount === null) return false;
+  const value = BigNumber(amount);
+  return value.isFinite() && value.isGreaterThan(0);
+}
+
+export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) => {
+  const { swapRouterRepository } = useGnoswapContext();
+  const { getNextReferralAddress } = useReferral();
+
   const { account } = useWallet();
-  const swapSummaryInfo = useAtomValue(SwapState.swapConfirmModalState);
-  const { tokenAmountLimit: currentTokenAmountLimit } = swapSummaryInfo;
-  const { data: gasPrice } = useGetGasPrice();
+  const { tokens, isFetched: isFetchedTokens } = useTokenData(true);
 
   const SWAP_AMOUNT_DEBOUNCE_TIME_MS = 500;
-  const [swapAmount, setSwapAmount] = useState<number | null>(null);
-  const debouncedAmount = useDebounce(swapAmount, swapAmount ? SWAP_AMOUNT_DEBOUNCE_TIME_MS : 0);
-  const [estimatedLiquidityMax, setEstimatedLiquidityMax] = useState<number | null>(null);
+  const SWAP_DEADLINE_SEC = 60 * 5;
+  // Amounts are kept as decimal strings: a JS number cannot represent balances above 2^53 raw units
+  const [swapAmount, setSwapAmount] = useState<string | null>(null);
+  const debouncedAmount = useDebounce(swapAmount, isPositiveAmount(swapAmount) ? SWAP_AMOUNT_DEBOUNCE_TIME_MS : 0);
+  const [estimatedLiquidityMax, setEstimatedLiquidityMax] = useState<string | null>(null);
   const [isTyping, setIsTyping] = useState(false);
   const typingTimeoutRef = useRef<NodeJS.Timeout>();
   const debouncedSwapAmount = useMemo(() => {
-    if (!swapAmount || swapAmount === 0) {
+    if (!isPositiveAmount(swapAmount)) {
       return swapAmount;
     }
     return debouncedAmount;
   }, [swapAmount, debouncedAmount]);
 
   const shouldFetchData = useCallback(
-    (amount: number | null) => {
+    (amount: string | null) => {
       if (!tokenA || !tokenB) return false;
-      if (!amount) return false;
+      if (!isPositiveAmount(amount)) return false;
       if (!estimatedLiquidityMax) return true;
-      return amount < estimatedLiquidityMax;
+      return BigNumber(amount).isLessThan(estimatedLiquidityMax);
     },
     [estimatedLiquidityMax, tokenA, tokenB],
   );
   const shouldFetch = shouldFetchData(debouncedSwapAmount);
 
   const selectedTokenPair = tokenA !== null && tokenB !== null;
-
-  const exactOutPadding = 1 / (1 - swapFee / 10000);
+  const isIdenticalToken = Boolean(tokenA && tokenB && tokenA.path === tokenB.path);
 
   const isSameToken = useMemo(() => {
     if (!tokenA || !tokenB) {
       return false;
+    }
+    if (isSwapExtensionPair(tokenA, tokenB)) {
+      return true;
     }
     if (isNativeToken(tokenA)) {
       return tokenA.wrappedPath === tokenB.path;
@@ -93,19 +91,17 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     return false;
   }, [tokenA, tokenB]);
 
-  const hasValidSwapAmount = Boolean(debouncedSwapAmount && debouncedSwapAmount > 0);
+  const hasValidSwapAmount = isPositiveAmount(debouncedSwapAmount);
   const hasValidTokenPaths = Boolean(tokenA?.path) && Boolean(tokenB?.path);
-  const isDifferentTokens = !isSameToken;
-
-  const isEnabledQuery = shouldFetch && hasValidSwapAmount && hasValidTokenPaths && isDifferentTokens;
+  const isEnabledQuery = shouldFetch && hasValidSwapAmount && hasValidTokenPaths && !isSameToken && !isIdenticalToken;
 
   const getTokenAmount = useMemo(() => {
     if (direction === "EXACT_IN") {
       return debouncedSwapAmount;
     }
 
-    return debouncedSwapAmount ? debouncedSwapAmount * exactOutPadding : debouncedSwapAmount;
-  }, [debouncedSwapAmount, direction, exactOutPadding]);
+    return debouncedSwapAmount;
+  }, [debouncedSwapAmount, direction]);
 
   const {
     data: estimatedSwapResult,
@@ -125,31 +121,50 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
   );
 
   const swapState: "NONE" | "LOADING" | "NO_LIQUIDITY" | "SUCCESS" = useMemo(() => {
-    if (!selectedTokenPair || !debouncedSwapAmount) {
+    if (!selectedTokenPair || !isPositiveAmount(debouncedSwapAmount)) {
       return "NONE";
     }
 
     if (isSameToken) {
       return "NONE";
+    }
+
+    if (swapAmount !== debouncedSwapAmount || isTyping) {
+      return "LOADING";
     }
 
     if (isEstimatedSwapLoading && shouldFetch) {
       return "LOADING";
     }
 
-    if (estimatedSwapResult?.status === "NO_LIQUIDITY" || estimatedSwapResult?.status === "INVALID_PARAMS") {
+    if (
+      error ||
+      !estimatedSwapResult ||
+      estimatedSwapResult.status === "NO_LIQUIDITY" ||
+      estimatedSwapResult.status === "INVALID_PARAMS"
+    ) {
       return "NO_LIQUIDITY";
     }
 
     return "SUCCESS";
-  }, [debouncedSwapAmount, error, estimatedSwapResult?.amount, isEstimatedSwapLoading, isSameToken, selectedTokenPair]);
+  }, [
+    swapAmount,
+    isTyping,
+    debouncedSwapAmount,
+    error,
+    estimatedSwapResult,
+    isEstimatedSwapLoading,
+    isSameToken,
+    selectedTokenPair,
+    shouldFetch,
+  ]);
 
   const estimatedRoutes: EstimatedRoute[] | null = useMemo(() => {
     if (isSameToken) {
       return [];
     }
 
-    if (swapState === "LOADING" || !debouncedSwapAmount || isTyping) {
+    if (swapState === "LOADING" || !isPositiveAmount(debouncedSwapAmount) || isTyping) {
       return null;
     }
 
@@ -165,7 +180,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       return null;
     }
 
-    if (!debouncedSwapAmount || error || isTyping) {
+    if (!isPositiveAmount(debouncedSwapAmount) || error || isTyping) {
       return null;
     }
 
@@ -176,29 +191,20 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     const amount = estimatedSwapResult.amount;
 
     return direction === "EXACT_IN"
-      ? makeDisplayTokenAmount(tokenB, amount)?.toString() || null
-      : makeDisplayTokenAmount(tokenA, amount)?.toString() || null;
-  }, [debouncedSwapAmount, error, swapState, estimatedSwapResult, isTyping]);
+      ? makeDisplayTokenAmountString(tokenB, amount)
+      : makeDisplayTokenAmountString(tokenA, amount);
+  }, [debouncedSwapAmount, direction, error, estimatedSwapResult, isTyping, swapState, tokenA, tokenB]);
 
   const tokenAmountLimit = useMemo(() => {
-    if (estimatedAmount && !Number.isNaN(slippage)) {
-      const tokenAmountLimit =
-        direction === "EXACT_IN"
-          ? BigNumber(estimatedAmount)
-              .multipliedBy((100 - slippage) / 100)
-              .toNumber()
-          : BigNumber(estimatedAmount)
-              .multipliedBy((100 + slippage) / 100)
-              .toNumber();
-
-      if (tokenAmountLimit <= 0) {
-        return 0;
-      }
-
-      return tokenA ? tokenAmountLimit || 0 : 0;
+    if (!tokenA || !tokenB || !estimatedAmount || Number.isNaN(slippage)) {
+      return "0";
     }
-    return 0;
-  }, [direction, estimatedAmount, slippage, tokenA]);
+
+    // EXACT_IN: minimum output (tokenB, rounded down). EXACT_OUT: maximum input (tokenA, rounded up).
+    const limitToken = direction === "EXACT_IN" ? tokenB : tokenA;
+
+    return calculateSlippageLimitAmount(estimatedAmount, slippage, direction, limitToken.decimals);
+  }, [direction, estimatedAmount, slippage, tokenA, tokenB]);
 
   const updateSwapAmount = (amount: string) => {
     if (!amount) {
@@ -207,7 +213,9 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       return;
     }
     const processedAmount = amount.endsWith(".") ? amount.slice(0, -1) : amount;
-    const newAmount = BigNumber(processedAmount).isZero() ? 0 : BigNumber(processedAmount).toNumber();
+    const parsedAmount = BigNumber(processedAmount);
+    // Normalize without converting to a JS number so every digit of the input survives
+    const newAmount = !parsedAmount.isFinite() || parsedAmount.isZero() ? "0" : parsedAmount.toFixed();
 
     if (!tokenA || !tokenB) {
       setSwapAmount(newAmount);
@@ -251,11 +259,9 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       return swapRouterRepository.sendWrapToken({
         token: tokenA,
         tokenAmount,
-        gasFee: networkFee?.amount,
-        gasUsed: String(currentGasInfo?.gasUsed),
       });
     },
-    [account, selectedTokenPair, swapRouterRepository, tokenA, networkFee?.amount, currentGasInfo?.gasWanted],
+    [account, selectedTokenPair, swapRouterRepository, tokenA],
   );
 
   const unwrap = useCallback(
@@ -269,11 +275,9 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       return swapRouterRepository.sendUnwrapToken({
         token: tokenA,
         tokenAmount,
-        gasFee: networkFee?.amount,
-        gasUsed: String(currentGasInfo?.gasUsed),
       });
     },
-    [account, selectedTokenPair, swapRouterRepository, tokenA, networkFee?.amount, currentGasInfo?.gasWanted],
+    [account, selectedTokenPair, swapRouterRepository, tokenA],
   );
 
   const swap = useCallback(
@@ -281,44 +285,37 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       if (!account) {
         return null;
       }
-      if (!selectedTokenPair) {
+      if (!selectedTokenPair || !isFetchedTokens || isIdenticalToken) {
         return null;
       }
 
-      const currentReferralAddress = getCurrentReferralAddress();
-
-      const gasInfo = {
-        gasFee: networkFee?.amount,
-        gasUsed: String(currentGasInfo?.gasUsed),
-      };
+      const currentReferralAddress = getNextReferralAddress();
 
       if (direction === "EXACT_IN") {
         return swapRouterRepository.sendExactInSwapRoute({
-          inputToken: tokenA,
+          inputToken: withTokenRouteMetadata(tokenA, tokens),
           outputToken: tokenB,
-          tokenAmount: Number(tokenAmount),
+          tokenAmount,
           estimatedRoutes: estimatedRoutes,
           slippage: slippage,
           originAmount: estimatedSwapResult?.originAmount || 0,
           tokenAmountLimit: tokenAmountLimit,
-          deadline: Math.floor(Date.now() / 1000) + 60 * 5,
+          deadline: Math.floor(Date.now() / 1000) + SWAP_DEADLINE_SEC,
           referrerAddress: currentReferralAddress,
-          ...gasInfo,
         });
       }
 
       if (direction === "EXACT_OUT") {
         return swapRouterRepository.sendExactOutSwapRoute({
-          inputToken: tokenA,
+          inputToken: withTokenRouteMetadata(tokenA, tokens),
           outputToken: tokenB,
-          tokenAmount: Number(tokenAmount) * exactOutPadding,
+          tokenAmount,
           estimatedRoutes: estimatedRoutes,
           slippage: slippage,
           originAmount: estimatedSwapResult?.originAmount || 0,
           tokenAmountLimit: tokenAmountLimit,
-          deadline: Math.floor(Date.now() / 1000) + 60 * 5,
+          deadline: Math.floor(Date.now() / 1000) + SWAP_DEADLINE_SEC,
           referrerAddress: currentReferralAddress,
-          ...gasInfo,
         });
       }
     },
@@ -326,170 +323,88 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
       account,
       direction,
       selectedTokenPair,
+      isIdenticalToken,
+      isFetchedTokens,
       swapRouterRepository,
       tokenA,
       estimatedSwapResult?.originAmount,
       slippage,
       tokenAmountLimit,
-      currentTokenAmountLimit,
       tokenB,
-      exactOutPadding,
-      store,
-      getCurrentReferralAddress,
-      networkFee?.amount,
-      currentGasInfo?.gasWanted,
+      tokens,
+      getNextReferralAddress,
     ],
   );
 
-  const swapTransactionRequests = useMemo(() => {
-    const currentReferralAddress = getCurrentReferralAddress();
-
-    let tokenAmount = 0;
-    if (isSameToken) {
-      tokenAmount = swapAmount || 0;
-    } else {
-      tokenAmount =
-        direction === "EXACT_IN"
-          ? Number(debouncedSwapAmount || 0)
-          : Number(debouncedSwapAmount || 0) * exactOutPadding;
-    }
-
-    return {
-      inputToken: tokenA,
-      outputToken: tokenB,
-      tokenAmount,
-      estimatedRoutes: estimatedRoutes,
-      slippage: slippage,
-      originAmount: estimatedSwapResult?.originAmount || 0,
-      tokenAmountLimit: tokenAmountLimit,
-      deadline: Math.floor(Date.now() / 1000) + 60 * 5,
-      referrerAddress: currentReferralAddress,
-      gasPrice: gasPrice ?? 0,
-    };
-  }, [
-    direction,
-    tokenA,
-    tokenB,
-    debouncedSwapAmount,
-    estimatedRoutes,
-    slippage,
-    estimatedSwapResult?.originAmount,
-    tokenAmountLimit,
-    gasPrice,
-  ]);
-
-  const initTransactionData = async (): Promise<boolean> => {
-    if (!transactionMessage) {
-      setTransactionDocument(null);
-      return false;
-    }
-    try {
-      const document = await transactionService.createDocument({ messages: transactionMessage });
-      setTransactionDocument(document);
-      return true;
-    } catch {
-      setTransactionDocument(null);
-      return false;
-    }
-  };
-
-  const displayNetworkFee: NetworkFee | null = useMemo(() => {
-    if (!transactionDocument || !networkFee || !account?.address) return null;
-
-    const usdValue = gasTokenPrice?.usd ? BigNumber(networkFee.amount).multipliedBy(gasTokenPrice.usd).toFixed(2) : "0";
-
-    return {
-      amount: networkFee.amount || "0",
-      denom: networkFee.denom || GasToken.symbol,
-      usdValue,
-    };
-  }, [account?.address, transactionDocument, networkFee]);
-
   /**
-   * Generate a transaction message based on the swapTransactionRequests and store it in the state,
-   * initialise the transactionDocument required for network fee calculation based on the message.
+   * Builds the messages a swap of `rawAmount` would broadcast.
    *
-   * - Does not work if there is no account, token information.
+   * Routes are fetched for that exact amount rather than reused from the
+   * current input: how many pools the swap crosses decides the message set and
+   * the storage it touches, and that changes with the amount.
    */
-  useEffect(() => {
-    if (
-      !rpcProvider ||
-      !swapTransactionRequests.inputToken ||
-      !swapTransactionRequests.outputToken ||
-      !account?.address
-    ) {
-      setTransactionDocument(null);
-      setTransactionMessage(null);
-      return;
-    }
+  const makeMaxAmountMessages = useCallback(
+    async (rawAmount: string): Promise<TransactionMessage[]> => {
+      if (!account || !selectedTokenPair || !isFetchedTokens) return [];
 
-    const fetchTransactionMessage = async () => {
-      try {
-        let message: TransactionMessage[] | null = null;
-        const inputToken = swapTransactionRequests.inputToken as TokenModel;
-        const outputToken = swapTransactionRequests.outputToken as TokenModel;
-        const caller = account.address;
-        const tokenAmount = String(swapTransactionRequests.tokenAmount);
+      const tokenAmount = makeDisplayTokenAmountString(tokenA, rawAmount);
+      if (!isPositiveAmount(tokenAmount)) return [];
 
-        const commonProps = {
-          inputToken,
-          outputToken,
-          tokenAmount: swapTransactionRequests.tokenAmount,
-          estimatedRoutes: swapTransactionRequests.estimatedRoutes || [],
-          tokenAmountLimit: swapTransactionRequests.tokenAmountLimit,
-          deadline: swapTransactionRequests.deadline,
-          caller,
-          referrerAddress: swapTransactionRequests.referrerAddress,
-        };
-
-        const getAllowance = (packagePath: string, owner: string, spender: string) => {
-          return fetchAllowance(rpcProvider, packagePath, owner, spender);
-        };
-
-        if (isSameToken && isNativeToken(inputToken)) {
-          // Wrap
-          message = makeWrapTokenMessages({
-            token: inputToken,
-            tokenAmount,
-            caller,
-          });
-        } else if (isSameToken && isNativeToken(outputToken)) {
-          // Unwrap
-          message = makeUnwrapTokenMessages({
-            token: inputToken,
-            tokenAmount,
-            caller,
-          });
-        } else if (direction === "EXACT_IN") {
-          // Exact-In
-          message = await makeExactInSwapRouteMessageWithApproves(commonProps, getAllowance);
-        } else if (direction === "EXACT_OUT") {
-          // Exact-Out
-          message = await makeExactOutSwapRouteMessageWithApproves(commonProps, getAllowance);
-        }
-
-        setTransactionMessage(message);
-      } catch (error) {
-        console.error("Transaction message generation errors:", error);
-        setTransactionMessage(null);
+      // GNOT and its wrapper are not swapped through a pool; the submit path
+      // wraps instead, and that is what has to be weighed.
+      if (isSameToken) {
+        return swapRouterRepository.makeWrapTokenMessages({ token: tokenA, tokenAmount });
       }
-    };
 
-    fetchTransactionMessage();
-  }, [account, swapTransactionRequests, isSameToken, direction]);
+      const routes = await swapRouterRepository.getRoutes({
+        inputToken: tokenA,
+        outputToken: tokenB,
+        exactType: "EXACT_IN",
+        tokenAmount,
+      });
 
-  // Update transactionDocument whenever transactionMessage changes
-  useEffect(() => {
-    initTransactionData();
-  }, [transactionMessage]);
+      // getRoutes leaves `status` unset; liquidity is judged from the quotes,
+      // the same rule useGetRoutes applies.
+      if (!hasFullRouteCoverage(routes.estimatedRoutes)) return [];
+
+      const outputAmount = makeDisplayTokenAmountString(tokenB, routes.amount) ?? "0";
+
+      return swapRouterRepository.makeExactInSwapRouteMessages({
+        inputToken: withTokenRouteMetadata(tokenA, tokens),
+        outputToken: tokenB,
+        tokenAmount,
+        estimatedRoutes: routes.estimatedRoutes,
+        slippage,
+        originAmount: routes.originAmount,
+        tokenAmountLimit: calculateSlippageLimitAmount(outputAmount, slippage, "EXACT_IN", tokenB.decimals),
+        deadline: Math.floor(Date.now() / 1000) + SWAP_DEADLINE_SEC,
+        referrerAddress: getNextReferralAddress(),
+      });
+    },
+    [
+      account,
+      selectedTokenPair,
+      isFetchedTokens,
+      isSameToken,
+      swapRouterRepository,
+      tokenA,
+      tokenB,
+      tokens,
+      slippage,
+      getNextReferralAddress,
+    ],
+  );
 
   useEffect(() => {
     if (estimatedRoutes === null || !tokenA || !tokenB) return;
 
     if (estimatedRoutes.length === 0) {
       if (!estimatedLiquidityMax) {
-        setEstimatedLiquidityMax(debouncedSwapAmount || null);
-      } else if (debouncedSwapAmount && debouncedSwapAmount < estimatedLiquidityMax) {
+        setEstimatedLiquidityMax(isPositiveAmount(debouncedSwapAmount) ? debouncedSwapAmount : null);
+      } else if (
+        isPositiveAmount(debouncedSwapAmount) &&
+        BigNumber(debouncedSwapAmount).isLessThan(estimatedLiquidityMax)
+      ) {
         setEstimatedLiquidityMax(debouncedSwapAmount);
       }
     } else {
@@ -524,6 +439,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
   }, [tokenA, tokenB]);
 
   return {
+    isIdenticalToken,
     isSameToken,
     tokenAmountLimit,
     estimatedAmount,
@@ -532,15 +448,14 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage, swapFee = 15 }: U
     swap,
     wrap,
     unwrap,
-    displayNetworkFee,
+    makeMaxAmountMessages,
     updateSwapAmount,
     isEstimatedSwapLoading,
     isTyping,
     isRefetching,
-    isLoadingGasInfo: useNetworkFeeReturn.isLoading,
     handleResetEstimatedLiquidity,
     resetSwapAmount: () => {
-      setSwapAmount(0);
+      setSwapAmount("0");
       setIsTyping(false);
       setEstimatedLiquidityMax(null);
     },

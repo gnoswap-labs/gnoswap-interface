@@ -20,7 +20,7 @@ import { cx } from "@emotion/css";
 import PriceWarning from "@components/common/price-warning/PriceWarning";
 import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
-import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useGetAllTokenPrices } from "@query/token";
 import { isArray } from "@common/utils/data-check-util";
 import { usePrefetchNavigation } from "@hooks/common/use-prefetch-navigation";
 import { QUERY_PARAMETER } from "@constants/page.constant";
@@ -33,7 +33,7 @@ interface PoolInfoProps {
 }
 
 const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
-  const { tokenPrices } = useTokenData();
+  const { data: tokenPrices = {} } = useGetAllTokenPrices();
 
   const {
     poolId,
@@ -174,7 +174,7 @@ const PoolInfo: React.FC<PoolInfoProps> = ({ pool, routeItem, breakpoint }) => {
           leftSymbol={tokenA.symbol}
           rightSymbol={tokenB.symbol}
         />
-        <span className="symbol-pair">{`${tokenA.symbol}/${tokenB.symbol}`}</span>
+        <span className="symbol-pair">{`${tokenA.displaySymbol}/${tokenB.displaySymbol}`}</span>
         <span className="feeRate">{SwapFeeTierInfoMap[feeTier].rateStr}</span>
       </TableColumn>
       {/* TVL */}

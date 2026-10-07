@@ -33,7 +33,7 @@ const BestPoolCardList: React.FC<BestPoolCardListProps> = ({ list, loading }) =>
   const { t } = useTranslation();
 
   const LIST_HEADER_INFO = [
-    { title: "TokenDetails:bestPool.col.pair", class: "pair" },
+    { title: "TokenDetails:bestPool.col.pool", class: "pair" },
     { title: STATIC_TEXT.TVL, class: "tvl" },
     { title: STATIC_TEXT.APR, class: "apr" },
   ];

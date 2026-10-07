@@ -1,5 +1,4 @@
-import { MsgAddPackage, MsgCall, MsgSend } from "@gnolang/gno-js-client";
-import { MsgRun } from "@gnolang/gno-js-client/bin/proto/gno/vm";
+import { MsgAddPackage, MsgCall, MsgRun, MsgSend } from "@gnolang/gno-js-client";
 
 /**
  * Enum-like type for all supported message types in the Gno blockchain.

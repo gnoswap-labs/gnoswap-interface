@@ -2,16 +2,18 @@ import { useAtomValue } from "jotai";
 import React, { useCallback, useMemo, useState } from "react";
 
 import Header from "@components/common/header/Header";
+import { Token } from "@components/common/header/search-menu-modal/SearchMenuModal";
 import { MATH_NEGATIVE_TYPE, SwapFeeTierInfoMap, SwapFeeTierType } from "@constants/option.constant";
 import useRouter from "@hooks/common/use-custom-router";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
-import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { PoolModel } from "@models/pool/pool-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
+import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { useGetAvgBlockTime } from "@query/address";
 import { useGetPoolList } from "@query/pools";
@@ -20,8 +22,6 @@ import { ThemeState, TokenState } from "@states/index";
 import { checkPositivePrice, parseJson } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
 import { formatAddress, formatApr } from "@utils/string-utils";
-import { Token } from "@components/common/header/search-menu-modal/SearchMenuModal";
-import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 
 const HeaderContainer: React.FC = () => {
   const { pathname, movePageWithTokenPath, movePageWithPoolPath } = useRouter();
@@ -57,7 +57,7 @@ const HeaderContainer: React.FC = () => {
   const { data: poolList = [] } = useGetPoolList({
     enabled: !!searchMenuToggle,
   });
-  const { data: { tokens: listTokens = [] } = {}, isFetched, error } = useGetTokens({ enabled: !!searchMenuToggle });
+  const { data: { tokens: listTokens = [] } = {}, isFetched, error } = useGetTokens(true, { enabled: !!searchMenuToggle });
   const { data: tokenPrices = {} } = useGetAllTokenPrices({
     enabled: !!searchMenuToggle,
   });
@@ -82,6 +82,7 @@ const HeaderContainer: React.FC = () => {
           path: item.path,
           name: item.name,
           symbol: item.symbol,
+          displaySymbol: item.displaySymbol,
           logoURI: item.logoURI,
         },
         price: price,
@@ -93,6 +94,7 @@ const HeaderContainer: React.FC = () => {
           path: "",
           name: "",
           symbol: "",
+          displaySymbol: "",
           logoURI: "",
         },
         fee: "",
@@ -109,6 +111,7 @@ const HeaderContainer: React.FC = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return storageData.map((item: any) => {
       if (!item.isLiquid) {
+        const currentToken = listTokens.find((token: TokenModel) => token.path === item?.token?.path);
         const temp: TokenPriceModel = tokenPrices[item?.token?.path] ?? {};
         const isGnot = item?.token?.path === "ugnot";
         const tempWuGnot: TokenPriceModel = tokenPrices[wugnotPath] ?? {};
@@ -121,6 +124,11 @@ const HeaderContainer: React.FC = () => {
         const price = formatPrice(transferData.usd);
         return {
           ...item,
+          token: currentToken
+            ? {
+                ...item.token,
+              }
+            : item.token,
           price: price,
           priceOf1d: {
             status: dataToday.status,
@@ -169,6 +177,7 @@ const HeaderContainer: React.FC = () => {
             path: item.tokenA.path,
             name: item.tokenA.name,
             symbol: getGnotPath(item.tokenA).symbol,
+            displaySymbol: getGnotPath(item.tokenA).displaySymbol,
             logoURI: getGnotPath(item.tokenA).logoURI,
           },
           price: price,
@@ -180,6 +189,7 @@ const HeaderContainer: React.FC = () => {
             path: item.tokenB.path,
             name: item.tokenB.name,
             symbol: getGnotPath(item.tokenB).symbol,
+            displaySymbol: getGnotPath(item.tokenB).displaySymbol,
             logoURI: getGnotPath(item.tokenB).logoURI,
           },
           fee: SwapFeeTierInfoMap[`FEE_${item.fee}` as SwapFeeTierType].rateStr,
@@ -223,6 +233,7 @@ const HeaderContainer: React.FC = () => {
             path: item.path,
             name: item.name,
             symbol: item.symbol,
+            displaySymbol: item.displaySymbol,
             logoURI: item.logoURI,
           },
           price: price,
@@ -234,6 +245,7 @@ const HeaderContainer: React.FC = () => {
             path: "",
             name: "",
             symbol: "",
+            displaySymbol: "",
             logoURI: "",
           },
           fee: "",

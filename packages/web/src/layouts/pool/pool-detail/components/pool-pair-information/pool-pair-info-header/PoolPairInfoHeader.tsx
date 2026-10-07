@@ -52,7 +52,7 @@ const PoolPairInfoHeader: React.FC<PoolPairInfoHeaderProps> = ({
           size={doubleLogoSize}
         />
         <h3>
-          {tokenA.symbol}/{tokenB.symbol}
+          {tokenA.displaySymbol}/{tokenB.displaySymbol}
         </h3>
       </div>
       <div className="badge-wrap">

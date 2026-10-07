@@ -1,5 +1,5 @@
-import styled from "@emotion/styled";
 import { fonts } from "@constants/font.constant";
+import styled from "@emotion/styled";
 import { media } from "@styles/media";
 
 export const TokenChartGraphWrapper = styled.div`
@@ -67,7 +67,7 @@ export const YAxisLabelWrapper = styled.div<{ width: number }>`
   display: flex;
   flex-direction: column-reverse;
   min-width: ${({ width }) => width};
-  padding: 8px 0;
+  padding: 18px 0;
   justify-content: space-between;
   margin: 0 4px;
   margin-bottom: 40px;
@@ -90,7 +90,7 @@ export const YAxisLabelWrapper = styled.div<{ width: number }>`
     ${fonts.p7};
     margin-bottom: 30px;
     min-width: 40px;
-    padding: 4px 0;
+    padding: 14px 0;
     span {
       ${fonts.p7};
     }

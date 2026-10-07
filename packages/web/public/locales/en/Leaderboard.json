@@ -13,9 +13,9 @@
       "staking": "Staking",
       "swap": "Swap",
       "tooltip": {
-        "position": "Fees Earned in USD. Only counts if the pool is receiving $GNS incentives.",
-        "staking": "<ul><li>Position Staking Rewards Earned in USD. Only counts if the position has rewards.</li><li>Protocol Fees Earned in USD. Only counts if rewards have a USD value.</li></ul>",
-        "volume": "Swap Fees Paid in USD. Only counts if the pool is receiving $GNS incentives."
+        "position": "Swap fees claimed in USD. Only counts if the pool is receiving $GNS incentives.",
+        "staking": "<ul><li>Position staking rewards claimed in USD. Only counts internal $GNS incentives.</li><li>Protocol fees claimed in USD. Only counts if the reward token has a USD price.</li></ul>",
+        "volume": "Swap fees paid in USD. Only counts if the pool is receiving internal $GNS incentives."
       },
       "user": "User",
       "xGNS": "xGNS Staking"

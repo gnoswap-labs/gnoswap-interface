@@ -2,13 +2,12 @@ import ConnectWalletModal from "@components/common/connect-wallet-modal/ConnectW
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import { useConnectWalletStatusModal } from "@hooks/wallet/ui/use-connect-status-wallet-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 import useRouter from "@hooks/common/use-custom-router";
 
 const ConnectWalletContainer = () => {
   const clearModal = useClearModal();
   const { connectAdenaClient, loadingConnect, connectAccount, walletClient } = useWallet();
-  const [connectWallet, setConnectWallet] = useState(false);
   const router = useRouter();
 
   const { openModal } = useConnectWalletStatusModal();
@@ -30,20 +29,14 @@ const ConnectWalletContainer = () => {
 
   const connect = useCallback(() => {
     if (walletClient) {
-      connectAdenaClient();
-      connectAccount();
+      connectAccount(walletClient);
     } else {
-      connectAdenaClient();
-      setConnectWallet(true);
+      const adena = connectAdenaClient();
+      if (adena !== null) {
+        connectAccount(adena);
+      }
     }
-  }, [connectAdenaClient, close]);
-
-  useEffect(() => {
-    if (connectWallet && walletClient) {
-      connectAccount();
-      setConnectWallet(false);
-    }
-  }, [connectWallet, String(walletClient)]);
+  }, [connectAdenaClient, connectAccount, walletClient]);
 
   return <ConnectWalletModal close={close} connect={connect} loadingConnect={loadingConnect} />;
 };

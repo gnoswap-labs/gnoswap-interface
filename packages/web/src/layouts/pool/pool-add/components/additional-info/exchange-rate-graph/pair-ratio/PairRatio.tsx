@@ -36,12 +36,12 @@ export function PairRatio({
   overrideValue,
 }: PairRatioProps) {
   const displayTokenSymbol = useMemo(
-    () => replaceGnotSymbol(!isSwap ? pool.tokenA?.symbol : pool.tokenB?.symbol),
-    [isSwap, pool.tokenA?.symbol, pool.tokenB?.symbol],
+    () => replaceGnotSymbol(!isSwap ? pool.tokenA?.displaySymbol : pool.tokenB?.displaySymbol),
+    [isSwap, pool.tokenA?.displaySymbol, pool.tokenB?.displaySymbol],
   );
   const secondTokenSymbol = useMemo(
-    () => replaceGnotSymbol(isSwap ? pool.tokenA?.symbol : pool.tokenB?.symbol),
-    [isSwap, pool.tokenA?.symbol, pool.tokenB?.symbol],
+    () => replaceGnotSymbol(isSwap ? pool.tokenA?.displaySymbol : pool.tokenB?.displaySymbol),
+    [isSwap, pool.tokenA?.displaySymbol, pool.tokenB?.displaySymbol],
   );
 
   function formatExchangeRate(value: number, options?: { feeTier?: SwapFeeTierType }) {
@@ -65,7 +65,7 @@ export function PairRatio({
     <PairRatioWrapper>
       {!loading && (
         <MissingLogo
-          symbol={displayTokenSymbol}
+          symbol={replaceGnotSymbol(!isSwap ? pool.tokenA?.symbol : pool.tokenB?.symbol)}
           url={!isSwap ? pool.tokenA?.logoURI : pool.tokenB?.logoURI}
           width={20}
           className="image-logo"
@@ -74,7 +74,7 @@ export function PairRatio({
       {!loading && (
         <div className="ratio-value">
           {breakpoint !== DEVICE_TYPE.MOBILE && <>1 {displayTokenSymbol}</>} =&nbsp;
-          {formatExchangeRate(overrideValue || pool.price)}&nbsp;
+          {formatExchangeRate(overrideValue ?? pool.price)}&nbsp;
           {secondTokenSymbol}
         </div>
       )}

@@ -13,10 +13,12 @@ export default function LeaderboardTable({
   myAddress,
   currentUserData,
   leaderboardEntries,
+  rankOffset = 0,
 }: {
   myAddress: string | undefined;
   currentUserData?: LeaderboardUser;
   leaderboardEntries: LeaderboardUser[];
+  rankOffset?: number;
 }) {
   const { connected } = useConnection();
   const { isTablet, isMobile } = useWindowSize();
@@ -45,6 +47,7 @@ export default function LeaderboardTable({
           data={leader}
           tdWidths={widths}
           isMobile={isMobile}
+          rankOffset={rankOffset}
         />
       ))}
     </>

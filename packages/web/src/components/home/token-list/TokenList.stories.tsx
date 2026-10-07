@@ -24,5 +24,7 @@ export const Default: Story = {
     totalPage: 10,
     movePage: fn(),
     breakpoint: DEVICE_TYPE.WEB,
+    showUnverifiedTokens: false,
+    toggleShowUnverifiedTokens: fn(),
   },
 };

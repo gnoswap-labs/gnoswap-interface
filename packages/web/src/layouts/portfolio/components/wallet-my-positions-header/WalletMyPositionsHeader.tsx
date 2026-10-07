@@ -7,31 +7,40 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { wrapper } from "./WalletMyPositionsHeader.styles";
 import Switch from "@components/common/switch/Switch";
 
-const WalletMyPositionsHeader: React.FC<{ toggleClosed: () => void; isClosed: boolean }> = ({
-  toggleClosed,
-  isClosed,
-}) => {
+interface WalletMyPositionsHeaderProps {
+  toggleClosed: () => void;
+  /** UI toggle state: whether closed positions should be shown in this view. */
+  isClosed: boolean;
+}
+
+const WalletMyPositionsHeader: React.FC<WalletMyPositionsHeaderProps> = ({ toggleClosed, isClosed }) => {
   const { t } = useTranslation();
   const { isSwitchNetwork } = useWallet();
 
-  const {
-    positions,
-    isFetchedPosition: isFetchedPosition,
-    totalPositionCount,
-  } = usePositionData({
-    isClosed: false,
-    scopeId: "WalletMyPositionsHeader",
+  const openPositionData = usePositionData({
+    withClosed: false,
+    page: 1,
+    limit: 1,
+    scopeId: "WalletMyPositionsHeader-open",
   });
+  const allPositionData = usePositionData({
+    withClosed: true,
+    page: 1,
+    limit: 1,
+    scopeId: "WalletMyPositionsHeader-all",
+  });
+  const activePositionData = isClosed ? allPositionData : openPositionData;
+  const { isPositionDataAvailable, totalPositionCount } = activePositionData;
+  const hasClosedPositions =
+    allPositionData.isFetchedPosition &&
+    openPositionData.isFetchedPosition &&
+    allPositionData.totalPositionCount > openPositionData.totalPositionCount;
 
-  const hasClosedPositions = React.useMemo(() => {
-    return positions.some(position => position.closed);
-  }, [positions]);
-
-  if (!isFetchedPosition || isSwitchNetwork) return null;
+  if (!isPositionDataAvailable || isSwitchNetwork) return null;
 
   return (
     <div css={wrapper}>
-      {totalPositionCount > 0 && <h2>{`${t("Wallet:myPosi")} (${totalPositionCount.toLocaleString()})`}</h2>}
+      <h2>{`${t("Wallet:myPosi")} (${totalPositionCount.toLocaleString()})`}</h2>
       {hasClosedPositions && (
         <Switch
           checked={isClosed}

@@ -1,32 +1,31 @@
 import React, { useMemo } from "react";
 
+import {
+  LIQUIDITY_GRAPH_BIN_COUNT,
+  LIQUIDITY_GRAPH_INITIAL_ZOOM_LEVEL,
+  LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES,
+} from "@constants/graph.constant";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { usePoolLiquiditySegmentsByPath } from "@hooks/pool/data/use-pool-liquidity-segments-by-path";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
-import { useGetBinsByPath, useGetPoolDetailByPath } from "@query/pools";
-import { makeSwapFeeTier } from "@utils/swap-utils";
-import { useWindowSize } from "@hooks/common/use-window-size";
-import { useTokenData } from "@hooks/token/data/use-token-data";
+import { useGetPoolDetailByPath, useGetPoolSqrtPriceX96 } from "@query/pools";
+import { useGetAllTokenPrices } from "@query/token";
 import { PoolConverter } from "@services/converters/pool";
+import { makeSwapFeeTier } from "@utils/swap-utils";
 
-import PoolPairInformation from "../../components/pool-pair-information/PoolPairInformation";
-import { ZOOL_VALUES } from "@constants/graph.constant";
-import { checkGnotPath } from "@utils/common";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
-import { QUERY_KEY } from "@query/query-keys";
+import { checkGnotPath } from "@utils/common";
+import PoolPairInformation from "../../components/pool-pair-information/PoolPairInformation";
 
 interface PoolPairInformationContainerProps {
   address?: string | undefined;
 }
 
 const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> = ({ address }) => {
-  const [zoomLevel, setZoomLevel] = React.useState<number>(0);
-  const [shiftIndex, setShiftIndex] = React.useState<number>(0);
-  const binCount = React.useMemo(() => ZOOL_VALUES[zoomLevel], [zoomLevel]);
-
-  const DISPLAY_BIN_COUNT = 40;
-
+  const [zoomLevel, setZoomLevel] = React.useState<number>(LIQUIDITY_GRAPH_INITIAL_ZOOM_LEVEL);
   const router = useCustomRouter();
   const { getGnotPath } = useGnotToGnot();
   const poolPath = router.getPoolPath();
@@ -34,20 +33,20 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
   const { data, isLoading: loading } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,
   });
+  const { data: currentSqrtPriceX96, isLoading: isLoadingSqrtPriceX96 } = useGetPoolSqrtPriceX96(poolPath as string, {
+    enabled: !!poolPath,
+  });
   const { loading: loadingPosition } = usePositionData({
     address,
     poolPath,
+    withClosed: false,
     queryOption: {
       enabled: !!poolPath,
     },
   });
-  const { data: bins = [], isLoading: isLoadingBins } = useGetBinsByPath(poolPath as string, binCount, {
-    keepPreviousData: true,
-    staleTime: 60_000,
-    enabled: !!poolPath,
-    queryKey: [QUERY_KEY.poolPairBins, poolPath, zoomLevel],
-  });
-  const { tokenPrices } = useTokenData();
+
+  const { data: tokenPrices = {} } = useGetAllTokenPrices();
+  const visibleTickRange = React.useMemo(() => LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES[zoomLevel], [zoomLevel]);
 
   const onClickPath = (path: string) => {
     router.push(path);
@@ -67,11 +66,13 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
     const tokenB = convertedPool.tokenB;
     return {
       ...convertedPool,
+      currentTick: convertedPool.currentTick,
       tokenA: {
         ...tokenA,
         path: getGnotPath(tokenA).path,
         name: getGnotPath(tokenA).name,
         symbol: getGnotPath(tokenA).symbol,
+        displaySymbol: getGnotPath(tokenA).displaySymbol,
         logoURI: getGnotPath(tokenA).logoURI,
       },
       tokenB: {
@@ -79,12 +80,30 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
         path: getGnotPath(tokenB).path,
         name: getGnotPath(tokenB).name,
         symbol: getGnotPath(tokenB).symbol,
+        displaySymbol: getGnotPath(tokenB).displaySymbol,
         logoURI: getGnotPath(tokenB).logoURI,
       },
       tokenAPriceGrade,
       tokenBPriceGrade,
     };
-  }, [data, bins, tokenPrices]);
+  }, [convertedPool, tokenPrices, getGnotPath]);
+
+  const { liquiditySegments, isLoading: isLoadingLiquiditySegments } = usePoolLiquiditySegmentsByPath(
+    poolPath as string,
+    {
+      currentTick: pool.currentTick,
+      currentSqrtPriceX96: currentSqrtPriceX96 ?? undefined,
+      currentPrice: pool.price,
+      tokenA: pool.tokenA,
+      tokenB: pool.tokenB,
+      includeTokenAmounts: true,
+      visibleTickRange,
+      binCount: LIQUIDITY_GRAPH_BIN_COUNT,
+    },
+    {
+      enabled: !!poolPath,
+    },
+  );
 
   const feeStr = useMemo(() => {
     if (!pool?.fee) {
@@ -93,45 +112,25 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
     return SwapFeeTierInfoMap[makeSwapFeeTier(pool.fee)].rateStr;
   }, [pool?.fee]);
 
-  const availInfo = React.useMemo(() => {
-    const halfDisplayBinCount = DISPLAY_BIN_COUNT / 2;
-
-    const maxLeftShift = Math.floor(bins.length / 2) - halfDisplayBinCount;
-    const maxRightShift = Math.floor(bins.length / 2) - halfDisplayBinCount;
-
-    return {
-      availZoomIn: zoomLevel < ZOOL_VALUES.length - 1,
+  const availInfo = React.useMemo(
+    () => ({
+      availZoomIn: zoomLevel < LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES.length - 1,
       availZoomOut: zoomLevel > 0,
-      availMoveLeft: shiftIndex > -maxLeftShift,
-      availMoveRight: shiftIndex < maxRightShift,
-    };
-  }, [zoomLevel, shiftIndex, bins.length]);
+    }),
+    [zoomLevel],
+  );
 
   const handleZoomIn = React.useCallback(() => {
-    if (availInfo.availZoomIn && zoomLevel + 1 < ZOOL_VALUES.length) {
+    if (availInfo.availZoomIn && zoomLevel + 1 < LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES.length) {
       setZoomLevel(zoomLevel + 1);
     }
-    setShiftIndex(0);
   }, [zoomLevel, availInfo.availZoomIn]);
 
   const handleZoomOut = React.useCallback(() => {
     if (availInfo.availZoomOut && zoomLevel > 0) {
       setZoomLevel(zoomLevel - 1);
     }
-    setShiftIndex(0);
   }, [zoomLevel, availInfo.availZoomOut]);
-
-  const handleMoveLeft = React.useCallback(() => {
-    if (availInfo.availMoveLeft) {
-      setShiftIndex(value => value - 1);
-    }
-  }, [availInfo.availMoveLeft]);
-
-  const handleMoveRight = React.useCallback(() => {
-    if (availInfo.availMoveRight) {
-      setShiftIndex(value => value + 1);
-    }
-  }, [availInfo.availMoveRight]);
 
   return (
     <PoolPairInformation
@@ -142,18 +141,14 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
       }}
       isMobile={isMobile}
       onClickPath={onClickPath}
-      shiftIndex={shiftIndex}
-      displayBinCount={DISPLAY_BIN_COUNT}
-      zoomLevel={zoomLevel}
-      onZoomIn={handleZoomIn}
-      onZoomOut={handleZoomOut}
-      onMoveLeft={handleMoveLeft}
-      onMoveRight={handleMoveRight}
-      availInfo={availInfo}
       feeStr={feeStr}
       loading={loading || loadingPosition}
-      loadingBins={loading || loadingPosition || isLoadingBins}
-      poolBins={bins}
+      loadingBins={loading || loadingPosition || isLoadingLiquiditySegments || isLoadingSqrtPriceX96}
+      liquiditySegments={liquiditySegments}
+      currentSqrtPriceX96={currentSqrtPriceX96}
+      availInfo={availInfo}
+      onZoomIn={handleZoomIn}
+      onZoomOut={handleZoomOut}
     />
   );
 };

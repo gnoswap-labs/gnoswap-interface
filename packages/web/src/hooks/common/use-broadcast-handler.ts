@@ -5,12 +5,12 @@ import { CommonState } from "@states/index";
 
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { ERROR_VALUE } from "@common/errors/adena";
+import { BROADCAST_ERROR_VALUE, BroadcastErrorContent } from "@common/errors/broadcast/broadcast-error";
 import { DexEventType } from "@repositories/common";
 import { useMessage } from "./use-message";
 import { SnackbarContent, useSnackbar } from "./use-snackbar";
 import { useTransactionConfirmModal } from "./use-transaction-confirm-modal";
 import { useTransactionEventStore } from "./use-transaction-event-store";
-import { BroadcastErrorContent, BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 
 /**
  * PENDING
@@ -45,7 +45,7 @@ import { BroadcastErrorContent, BROADCAST_ERROR_VALUE } from "@common/errors/bro
  */
 
 export const useBroadcastHandler = () => {
-  const { enqueue, clear } = useSnackbar();
+  const { clear } = useSnackbar();
   const { openModal, closeModal } = useTransactionConfirmModal();
   const { getMessage } = useMessage();
   const [, setTransactionModalData] = useAtom(CommonState.transactionModalData);
@@ -55,9 +55,7 @@ export const useBroadcastHandler = () => {
     (content?: SnackbarContent) => {
       setTransactionModalData({
         status: "loading",
-        title: content?.title || null,
-        description: content?.description || null,
-        txHash: content?.txHash || null,
+        description: content?.description || "",
       });
       openModal();
     },
@@ -65,28 +63,32 @@ export const useBroadcastHandler = () => {
   );
 
   const broadcastSuccess = useCallback(
-    (content?: SnackbarContent, callback?: () => void) => {
+    (content: SnackbarContent, callback?: () => void) => {
+      if (!content.txHash) {
+        setTransactionModalData({
+          status: "error",
+          title: BROADCAST_ERROR_VALUE.DEFAULT.title,
+          description: BROADCAST_ERROR_VALUE.DEFAULT.description,
+        });
+        return;
+      }
       setTransactionModalData({
         status: "success",
-        title: content?.title || null,
-        description: content?.description || null,
-        txHash: content?.txHash || null,
+        title: content.title || "",
+        description: content.description || "",
+        txHash: content.txHash,
         callback,
       });
-      if (content?.txHash) {
-      }
-      // enqueue(content, makeNoticeConfig("success"));
     },
-    [enqueue, setTransactionModalData],
+    [setTransactionModalData],
   );
 
   const broadcastError = useCallback(
     (errorContent: BroadcastErrorContent, callback?: () => void) => {
       setTransactionModalData({
         status: "error",
-        title: errorContent?.title || null,
-        description: errorContent?.description || null,
-        txHash: errorContent?.txHash || null,
+        title: errorContent.title || BROADCAST_ERROR_VALUE.DEFAULT.title,
+        description: errorContent.description || BROADCAST_ERROR_VALUE.DEFAULT.description,
         callback,
       });
     },
@@ -94,12 +96,9 @@ export const useBroadcastHandler = () => {
   );
 
   const broadcastRejected = useCallback(
-    (content?: SnackbarContent, callback?: () => void) => {
+    (_content?: SnackbarContent, callback?: () => void) => {
       setTransactionModalData({
         status: "rejected",
-        title: content?.title || null,
-        description: content?.description || null,
-        txHash: content?.txHash || null,
         callback,
       });
     },
@@ -126,7 +125,9 @@ export const useBroadcastHandler = () => {
       target?: string;
       memo0?: string;
     },
-    formatData: (result: string[] | null) => {
+    formatData: (
+      result: string[] | null,
+    ) => {
       tokenASymbol?: string;
       tokenBSymbol?: string;
       tokenAAmount?: string;
@@ -147,6 +148,7 @@ export const useBroadcastHandler = () => {
           enqueueEvent({
             txHash: response?.data?.hash,
             action: eventType,
+            checkWugnotTransfer: true,
             formatData,
             visibleEmitResult: true,
             onUpdate: async () => {

@@ -6,32 +6,24 @@ import { TokenModel } from "@models/token/token-model";
 import { useAtomValue } from "jotai";
 import { ThemeState } from "@states/index";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
-import { ORDER } from "@containers/select-token-container/SelectTokenContainer";
-import { useAtom } from "jotai";
-import { EarnState } from "@states/index";
+import { useGetAllowedExternalRewardTokenPaths } from "@query/pools";
+import { filterAllowedIncentiveTokens, incentiveTokenPath } from "./incentive-token-filter";
 
 interface SelectTokenIncentivizeContainerProps {
   changeToken?: (token: TokenModel) => void;
   callback?: (value: boolean) => void;
+  poolTokens?: readonly TokenModel[];
 }
-const customSort = (a: TokenModel, b: TokenModel) => {
-  const symbolA = a.symbol.toUpperCase();
-  const symbolB = b.symbol.toUpperCase();
-
-  const indexA = ORDER.slice(0, 2).indexOf(symbolA);
-  const indexB = ORDER.slice(0, 2).indexOf(symbolB);
-
-  if (indexA === -1) return 1;
-  if (indexB === -1) return -1;
-
-  return indexA - indexB;
-};
-const SelectTokenIncentivizeContainer: React.FC<SelectTokenIncentivizeContainerProps> = ({ changeToken, callback }) => {
-  const { tokens, balances, updateTokens, updateBalances } = useTokenData();
+const SelectTokenIncentivizeContainer: React.FC<SelectTokenIncentivizeContainerProps> = ({
+  changeToken,
+  callback,
+  poolTokens,
+}) => {
+  const { tokens, balances, updateTokens, updateBalances } = useTokenData(true);
+  const { data: allowedTokenPaths = [] } = useGetAllowedExternalRewardTokenPaths();
   const [keyword, setKeyword] = useState("");
   const clearModal = useClearModal();
   const themeKey = useAtomValue(ThemeState.themeKey);
-  const [currentPool] = useAtom(EarnState.pool);
 
   useEffect(() => {
     updateTokens();
@@ -41,20 +33,18 @@ const SelectTokenIncentivizeContainer: React.FC<SelectTokenIncentivizeContainerP
     if (tokens.length > 0) updateBalances();
   }, [tokens]);
 
+  const combinedAllowedTokenPaths = useMemo(() => {
+    const poolTokenPaths = (poolTokens ?? []).map(incentiveTokenPath);
+    return [...poolTokenPaths, ...allowedTokenPaths];
+  }, [allowedTokenPaths, poolTokens]);
+
   const defaultTokens = useMemo(() => {
-    return tokens.filter((_, index) => index < 5);
-  }, [tokens]);
+    return filterAllowedIncentiveTokens(tokens, combinedAllowedTokenPaths).filter((_, index) => index < 5);
+  }, [combinedAllowedTokenPaths, tokens]);
 
   const filteredTokens = useMemo(() => {
-    const temp = tokens.sort(customSort);
-    const token1 = tokens.filter(
-      item => item.path === currentPool?.tokenA.path && !item.symbol.includes("GNOT") && item.symbol !== "GNS",
-    );
-    const token2 = tokens.filter(
-      item => item.path === currentPool?.tokenB.path && !item.symbol.includes("GNOT") && item.symbol !== "GNS",
-    );
-    return [...temp.slice(0, 2), ...token1, ...token2];
-  }, [tokens, currentPool]);
+    return filterAllowedIncentiveTokens(tokens, combinedAllowedTokenPaths);
+  }, [combinedAllowedTokenPaths, tokens]);
 
   const selectToken = useCallback(
     (token: TokenModel) => {

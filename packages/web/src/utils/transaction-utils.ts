@@ -1,23 +1,30 @@
+import { WalletClient } from "@common/clients/wallet-client";
 import BigNumber from "bignumber.js";
 import { eventBus } from "./event-bus";
-import { WalletClient } from "@common/clients/wallet-client";
 
 import {
   isContractMessage,
+  isRunMessage,
   SendTransactionRequestParam,
   TransactionMessage,
   WalletResponse,
 } from "@common/clients/wallet-client/protocols";
-import { DEFAULT_CHAIN_ID, WRAPPED_GNOT_PATH } from "@constants/environment.constant";
-import { DEFAULT_GAS_WANTED } from "@common/values";
+import { DEFAULT_GAS_WANTED, GAS_WANTED_BUFFER_SAFE_MARGIN } from "@common/values";
+import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
+import {
+  DEFAULT_CHAIN_FALLBACK_RPC_URL,
+  DEFAULT_CHAIN_ID,
+  DEFAULT_CHAIN_RPC_URL,
+  WRAPPED_GNOT_PATH,
+} from "@constants/environment.constant";
 import { ContractMessage, Document } from "src/types/transaction-messages.types";
 
-import { createDocument } from "./messages.utils";
+import { GasToken } from "@common/values/token-constant";
+import { Any, MsgAddPackage, MsgCall, MsgEndpoint, MsgRun, MsgSend } from "@gnolang/gno-js-client";
 import { Tx, TxFee } from "@gnolang/tm2-js-client";
 import { TransactionService } from "@services/transaction";
-import { GasToken } from "@common/values/token-constant";
-import { Any, MsgAddPackage, MsgCall, MsgEndpoint, MsgSend, MsgRun } from "@gnolang/gno-js-client";
-import { makeRawTokenAmount } from "./token-utils";
+import { createDocument } from "./messages.utils";
+import { isNativeTokenPath, makeRawTokenAmount } from "./token-utils";
 
 export const TX_EVENTS = {
   SHOW_MODAL: "show-approve-modal",
@@ -35,6 +42,12 @@ export interface TransactionApprovalModalHandlers {
 
 const TIMEOUT_MS = 1 * 60 * 1000; // 1 minute
 const DEFAULT_GAS_FEE = 1_000_000;
+const MINIMUM_GAS_PRICE = 0.001 as const;
+/**
+ * Fixed 20% covers gradual rises. Read again the price at approval
+ * if congestion outpaces it.
+ */
+const GAS_PRICE_BUFFER_MULTIPLIER = 1.2 as const;
 
 export interface RawMemPackage {
   name: string;
@@ -112,10 +125,21 @@ const transformMessages = (messages: TransactionMessage[]): ContractMessage[] =>
         value: {
           caller: message.caller,
           send: message.send,
+          max_deposit: message.max_deposit,
           pkg_path: message.pkg_path,
           func: message.func,
           args: message.args,
         } as MsgCall,
+      };
+    } else if (isRunMessage(message)) {
+      return {
+        type: "/vm.m_run" as const,
+        value: {
+          caller: message.caller,
+          send: message.send,
+          max_deposit: message.max_deposit,
+          package: message.package,
+        } as MsgRun,
       };
     } else {
       return {
@@ -157,6 +181,55 @@ const generateTransactionDataDocument = async (
   });
 };
 
+let socialRpcProvider: Promise<GnoProvider> | null = null;
+
+/**
+ * Provider for the default chain, the only chain the social wallet uses (see social/config.ts).
+ *
+ * Kept apart from the app provider, which follows the network the user selects.
+ */
+const getSocialRpcProvider = () => {
+  socialRpcProvider ??= GnoProvider.create(DEFAULT_CHAIN_RPC_URL, {
+    fallbackRpcUrl: DEFAULT_CHAIN_FALLBACK_RPC_URL,
+  }).catch(error => {
+    socialRpcProvider = null;
+    throw error;
+  });
+  return socialRpcProvider;
+};
+
+/**
+ * Estimates gasWanted and gasFee for a social wallet tx at the chain's current gas price.
+ *
+ * The simulated tx is signed because the node verifies signatures on simulate for MsgRun
+ * and MsgAddPackage, and needs the pubkey of an account that has never sent a tx.
+ * Its 1ugnot fee does not affect simulation but keeps any mempool from accepting it.
+ *
+ * The gas price is buffered too, since the block gas price can rise while the user
+ * reviews the approval modal.
+ */
+export const estimateSocialWalletFee = async (
+  walletClient: Pick<WalletClient, "sign">,
+  document: Document,
+  provider: Pick<GnoProvider, "estimateGas" | "getGasPrice"> | null = null,
+): Promise<{ gasWanted: number; gasFee: number }> => {
+  const rpcProvider = provider ?? (await getSocialRpcProvider());
+  const { signed } = await walletClient.sign(
+    rpcProvider as GnoProvider,
+    withGasFee(document, Number(document.fee.gas) || DEFAULT_GAS_WANTED, 1),
+  );
+  const [gasUsed, gasPrice] = await Promise.all([rpcProvider.estimateGas(signed), rpcProvider.getGasPrice()]);
+
+  const gasWanted = Math.ceil(Number(gasUsed) * GAS_WANTED_BUFFER_SAFE_MARGIN);
+  const gasFee = BigNumber(gasWanted)
+    .multipliedBy(gasPrice || MINIMUM_GAS_PRICE)
+    .multipliedBy(GAS_PRICE_BUFFER_MULTIPLIER)
+    .integerValue(BigNumber.ROUND_UP)
+    .toNumber();
+
+  return { gasWanted, gasFee };
+};
+
 /**
  *
  * Higher-order function that wraps a transaction execution with social-wallet approval flow
@@ -182,7 +255,13 @@ export const withTransactionGuard = async <T>(
 
     if (walletClient.getWalletType() === "SOCIAL_WALLET") {
       const document = await generateTransactionDataDocument(walletClient, transaction);
-      const approvedDocument = await showTransactionApprovalModal(document);
+
+      // The social wallet broadcasts the fee as given, unlike the Adena extension.
+      // Without an estimate the tx would be rejected, so the error surfaces before the modal.
+      const fee = await estimateSocialWalletFee(walletClient, document);
+      const estimatedTransaction = { ...transaction, ...fee };
+
+      const approvedDocument = await showTransactionApprovalModal(withGasFee(document, fee.gasWanted, fee.gasFee));
 
       if (!approvedDocument) {
         return {
@@ -195,7 +274,7 @@ export const withTransactionGuard = async <T>(
       }
 
       const updatedTransaction = {
-        ...transaction,
+        ...estimatedTransaction,
         memo: approvedDocument.memo,
       };
 
@@ -271,7 +350,16 @@ export const getSendAmount = (
   return null;
 };
 
-const MINIMUM_GAS_PRICE = 0.001 as const;
+export const getWrappedGNOTDepositAmount = (
+  tokenAPath: string,
+  tokenBPath: string,
+  tokenAAmount: string,
+  tokenBAmount: string,
+): string => {
+  if (isNativeTokenPath(tokenAPath)) return tokenAAmount;
+  if (isNativeTokenPath(tokenBPath)) return tokenBAmount;
+  return "0";
+};
 
 export function makeGasInfoBy(
   gasUsed: number | null | undefined,
@@ -296,7 +384,7 @@ export async function makeEstimateGasTransaction(
   const { gasFee, gasWanted } = makeGasInfoBy(gasUsed, gasPrice);
   if (!transactionService || !gasFee || !gasWanted) return null;
 
-  const modifedDocument = modifyDocument(document, gasWanted, gasFee);
+  const modifedDocument = withGasFee(document, gasWanted, gasFee);
 
   const { signed } = await transactionService.createTransaction(modifedDocument).catch(() => {
     return { signed: null };
@@ -308,7 +396,7 @@ export async function makeEstimateGasTransaction(
   return signed;
 }
 
-function modifyDocument(document: Document, gasWanted: number, gasFee: number): Document {
+export function withGasFee(document: Document, gasWanted: number, gasFee: number): Document {
   return {
     ...document,
     fee: {
@@ -329,7 +417,7 @@ export function documentToTx(document: Document): Tx {
   return {
     messages,
     fee: TxFee.create({
-      gas_wanted: document.fee.gas || "0",
+      gas_wanted: BigInt(document.fee.gas || "0"),
       gas_fee: document.fee.amount.map(feeAmount => `${feeAmount.amount}${feeAmount.denom}`).join(","),
     }),
     signatures: [],
@@ -337,21 +425,47 @@ export function documentToTx(document: Document): Tx {
   };
 }
 
-export function documentToDefaultTx(document: Document): Tx {
+/** A signer's key as a wallet reports it: an amino type URL and base64 bytes. */
+export interface SignerPublicKey {
+  typeUrl: string;
+  value: string;
+}
+
+/**
+ * The signer key an unsigned simulation carries.
+ *
+ * Simulation skips signature verification, but the ante handler still has to
+ * resolve a key for the signer, and it falls back to the one stored on the
+ * account. An account that has never signed has none, so leaving this empty
+ * fails such an account with `PubKey not found` before the verification bypass
+ * is ever reached.
+ *
+ * A key type is a byte array in amino, which encodes as one length-delimited
+ * field rather than the bare bytes.
+ */
+function encodeSignerPublicKey(publicKey?: SignerPublicKey): { type_url: string; value: Uint8Array } {
+  const empty = { type_url: "", value: new Uint8Array() };
+  if (!publicKey?.typeUrl || !publicKey.value) return empty;
+
+  const raw = Buffer.from(publicKey.value, "base64");
+  if (raw.length === 0 || raw.length > 0x7f) return empty;
+
+  return { type_url: publicKey.typeUrl, value: new Uint8Array([0x0a, raw.length, ...raw]) };
+}
+
+export function documentToDefaultTx(document: Document, publicKey?: SignerPublicKey): Tx {
   const messages: Any[] = document.msgs.map(encodeMessageValue);
   return {
     messages,
     fee: TxFee.create({
-      gas_wanted: document.fee.gas,
+      gas_wanted: BigInt(document.fee.gas || "0"),
       gas_fee: document.fee.amount.map(feeAmount => `${feeAmount.amount}${feeAmount.denom}`).join(","),
     }),
     signatures: [
       {
-        pub_key: {
-          type_url: "",
-          value: new Uint8Array(),
-        },
+        pub_key: encodeSignerPublicKey(publicKey),
         signature: new Uint8Array(),
+        session_addr: "",
       },
     ],
     memo: document.memo,
@@ -377,13 +491,10 @@ function encodeMessageValue(message: { type: string; value: any }) {
       const msgAddPackage = MsgAddPackage.create({
         creator: value.creator,
         package: packageData,
-        // deposit: value.deposit || null,
+        send: value.send || "",
+        max_deposit: value.max_deposit || "",
       });
 
-      //   creator: value.creator,
-      //   // deposit: value.deposit || null,
-      //   package: value.package ? createMemPackage(value.package) : undefined,
-      // });
       return Any.create({
         type_url: MsgEndpoint.MSG_ADD_PKG,
         value: MsgAddPackage.encode(msgAddPackage).finish(),
@@ -397,7 +508,7 @@ function encodeMessageValue(message: { type: string; value: any }) {
         func: message.value.func,
         pkg_path: message.value.pkg_path,
         send: message.value.send || "",
-        max_deposit: "",
+        max_deposit: message.value.max_deposit || "",
       });
       return Any.create({
         type_url: MsgEndpoint.MSG_CALL,
@@ -426,7 +537,9 @@ function encodeMessageValue(message: { type: string; value: any }) {
       const msgRun = MsgRun.create({
         caller: value.caller,
         package: packageData,
-        send: value.send || "0ugnot",
+        // A zero-amount coin string fails MsgRun.ValidateBasic; "no send" is empty.
+        send: value.send || "",
+        max_deposit: value.max_deposit || "",
       });
       return Any.create({
         type_url: MsgEndpoint.MSG_RUN,

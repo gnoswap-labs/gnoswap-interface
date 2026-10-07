@@ -2,6 +2,7 @@ import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { makeTransactionMessage } from "@common/clients/wallet-client/transaction-messages";
 import { CommonError } from "@common/errors";
 import { PACKAGE_LAUNCHPAD_PATH } from "@constants/environment.constant";
+import { TokenModel } from "@models/token/token-model";
 import { LaunchpadRepository } from "./launchpad-repository";
 import {
   GetLaunchpadParticipationInfosResponse,
@@ -57,6 +58,7 @@ export class LaunchpadRepositoryMock implements LaunchpadRepository {
 
   async depositLaunchpadPoolBy(
     poolId: string,
+    _gnsToken: TokenModel,
     gnsTokenAmount: bigint,
     caller: string,
   ): Promise<WalletResponse<{ hash: string }>> {

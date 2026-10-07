@@ -4,6 +4,7 @@ import { WalletClient } from "@common/clients/wallet-client";
 import { AdenaClient } from "@common/clients/wallet-client/adena/adena-client";
 import { AccountRepository } from "./account-repository";
 import { AccountRepositoryImpl } from "./account-repository-impl";
+import { AccountRepositoryMock } from "./account-repository-mock";
 import { AxiosClient } from "@common/clients/network-client/axios-client";
 
 let walletClient: WalletClient;
@@ -27,11 +28,13 @@ const defaultAccountInfo = {
 beforeEach(() => {
   walletClient = new AdenaClient();
   localStorageClient = new MockStorageClient("LOCAL");
+  sessionStorageClient = new MockStorageClient("SESSION");
   accountRepository = new AccountRepositoryImpl(
     walletClient,
     new AxiosClient(),
     localStorageClient,
     sessionStorageClient,
+    null,
   );
   jest.clearAllMocks();
 });
@@ -61,7 +64,7 @@ describe("get account", () => {
       message: "Get account.",
       data: null,
     });
-    let error: any = null;
+    let error: unknown = null;
 
     try {
       expect(await accountRepository.getAccount()).toThrowError();
@@ -70,7 +73,43 @@ describe("get account", () => {
     }
 
     expect(error).toBeTruthy();
-    expect(error?.status).toBe(1000);
+    expect(error).toMatchObject({ status: 1000 });
+  });
+});
+
+describe("get balances", () => {
+  it("uses the balances endpoint relative to the API base URL", async () => {
+    const get = jest.fn().mockResolvedValue({
+      status: 200,
+      message: "OK",
+      data: {
+        message: "Success",
+        data: [{ path: "gno.land/r/demo/token", amount: "100" }],
+      },
+    });
+    accountRepository = new AccountRepositoryImpl(
+      walletClient,
+      { get } as unknown as AxiosClient,
+      localStorageClient,
+      sessionStorageClient,
+      null,
+    );
+
+    const balances = await accountRepository.getBalances(defaultAccountInfo.address);
+
+    expect(balances).toEqual([{ path: "gno.land/r/demo/token", amount: "100" }]);
+    expect(get).toHaveBeenCalledWith({
+      url: `/users/${defaultAccountInfo.address}/balances`,
+    });
+  });
+
+  it("returns mock balances with the API item shape", async () => {
+    const balances = await new AccountRepositoryMock(localStorageClient as StorageClient<unknown>).getBalances();
+
+    expect(balances[0]).toEqual({
+      path: "gno.land/r/demo/tong_token",
+      amount: "123456",
+    });
   });
 });
 

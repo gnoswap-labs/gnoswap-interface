@@ -15,6 +15,10 @@ export function evaluateExpressionToNumber(evaluateExpression: string) {
     return 0;
   }
 }
+export function evaluateExpressionToIntegerString(evaluateExpression: string): string | null {
+  const match = evaluateExpression.match(/\((-?\d+)\s+u?int(?:8|16|32|64)?\)/);
+  return match?.[1] ?? null;
+}
 
 export function evaluateExpressionToObject<T extends object>(evaluateExpression: string): T | null {
   try {
@@ -42,10 +46,15 @@ export function evaluateExpressionToStrings(evaluateExpression: string): string[
 
 export function evaluateExpressionToUint256(evaluateExpression: string): bigint {
   try {
+    const stringMatches = evaluateExpression.match(/"(\d+)"/);
+    if (stringMatches?.[1]) {
+      return BigInt(stringMatches[1]);
+    }
+
     const matches = evaluateExpression.match(/\((\d+)\s+uint64\)/g);
 
     if (!matches || matches.length === 0) {
-      console.error("Failed to parse uint64 array from response:", evaluateExpression);
+      console.error("Failed to parse uint256 from response:", evaluateExpression);
       return 0n;
     }
 
@@ -92,6 +101,9 @@ function matchStringValues(str: string): string[] {
 }
 
 function parseABCIValue(str: string): string {
-  const regexp = /\s.*$/;
-  return str.replace(regexp, "").slice(1);
+  const value = str.trim();
+  const valueWithoutParentheses = value.startsWith("(") && value.endsWith(")") ? value.slice(1, -1) : value;
+  const typeSeparatorIndex = valueWithoutParentheses.lastIndexOf(" ");
+
+  return typeSeparatorIndex === -1 ? valueWithoutParentheses : valueWithoutParentheses.slice(0, typeSeparatorIndex);
 }

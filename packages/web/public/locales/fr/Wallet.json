@@ -13,7 +13,6 @@
       "chain": "Chaîne"
     },
     "empty": "Aucun jeton trouvé",
-    "hideZeroAmt": "Cacher les montants nuls",
     "title": "Actifs"
   },
   "assetSendModal": {

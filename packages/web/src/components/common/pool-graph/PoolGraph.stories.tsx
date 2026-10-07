@@ -1,9 +1,33 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import PoolGraph, { type PoolGraphProps } from "./PoolGraph";
-import { Meta, StoryObj } from "@storybook/nextjs";
+import { TokenModel } from "@models/token/token-model";
 import POOLS from "@repositories/pool/mock/pools.json";
+import { Meta, StoryObj } from "@storybook/nextjs";
+import { buildPoolLiquiditySegments } from "@utils/pool-liquidity-utils";
+import PoolGraph, { type PoolGraphProps } from "./PoolGraph";
 
-const pool = POOLS.pools[0] as any;
+const rawPool = POOLS.pools[0];
+const tokenA: TokenModel = {
+  ...rawPool.tokenA,
+  type: "GRC20",
+  displaySymbol: rawPool.tokenA.symbol,
+};
+const tokenB: TokenModel = {
+  ...rawPool.tokenB,
+  type: "GRC20",
+  displaySymbol: rawPool.tokenB.symbol,
+};
+const liquiditySegments = buildPoolLiquiditySegments(
+  [
+    { tick: -20, liquidityNet: "1000000000000000000" },
+    { tick: 0, liquidityNet: "500000000000000000" },
+    { tick: 20, liquidityNet: "-1500000000000000000" },
+  ],
+  {
+    currentTick: 18,
+    tokenA,
+    tokenB,
+    includeTokenAmounts: true,
+  },
+);
 
 export default {
   title: "common/PoolGraph",
@@ -12,14 +36,12 @@ export default {
 
 export const Default: StoryObj<PoolGraphProps> = {
   args: {
-    tokenA: pool.tokenA,
-    tokenB: pool.tokenB,
-    bins: pool.bins,
+    tokenA,
+    tokenB,
+    liquiditySegments,
     mouseover: true,
     currentTick: 18,
     width: 600,
     height: 400,
-    zoomable: false,
-    binsMyAmount: pool.bins,
   },
 };

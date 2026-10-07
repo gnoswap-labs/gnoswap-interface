@@ -1,13 +1,16 @@
 import { MockStorageClient } from "@common/clients/storage-client/mock-storage-client";
+import { NetworkClient } from "@common/clients/network-client";
 import { TokenSearchLogModel } from "@models/token/token-search-log-model";
+import { swapExtensions } from "@resources/swap-extension";
 import { TokenRepositoryMock } from "./token-repository-mock";
+import { TokenRepositoryImpl } from "./token-repository-impl";
 
 const localStorageClient = new MockStorageClient("LOCAL");
 const tokenRepository = new TokenRepositoryMock(localStorageClient);
 
 describe("getTokens", () => {
   it("success", async () => {
-    const response = await tokenRepository.getTokens();
+    const response = await tokenRepository.getTokens(true);
 
     expect(response).toBeTruthy();
     // expect(response.tokens).toBeTruthy();
@@ -19,6 +22,44 @@ describe("getTokens", () => {
     // expect(typeof response.tokens[0].symbol).toBe("string");
     // expect(typeof response.tokens[0].decimals).toBe("number");
     // expect(typeof response.tokens[0].logoURI).toBe("string");
+  });
+
+  it.each([false, true])("requests token verification state %s", async showUnverified => {
+    const networkClient = {
+      get: jest.fn().mockResolvedValue({ data: { data: [] } }),
+    } as unknown as NetworkClient;
+    const repository = new TokenRepositoryImpl(networkClient, localStorageClient);
+
+    await repository.getTokens(showUnverified);
+
+    expect(networkClient.get).toHaveBeenCalledWith({
+      url: `/token-metas?showUnverified=${showUnverified}`,
+    });
+  });
+});
+
+describe("token display metadata", () => {
+  it("preserves the wrapped token symbol while exposing its extension display symbol", async () => {
+    const extension = swapExtensions[0];
+    const networkClient = {
+      get: jest.fn().mockResolvedValue({
+        data: {
+          data: {
+            path: extension.grc20WrappedTokenPath,
+            symbol: "BUBBLE",
+            displaySymbol: "BUBBLE",
+          },
+        },
+      }),
+    } as unknown as NetworkClient;
+    const repository = new TokenRepositoryImpl(networkClient, localStorageClient);
+
+    const token = await repository.getTokenByPath(extension.grc20WrappedTokenPath);
+
+    expect(token).toMatchObject({
+      symbol: "BUBBLE",
+      displaySymbol: "wBUBBLE",
+    });
   });
 });
 
@@ -44,6 +85,7 @@ describe("createSearchLog", () => {
       chainId: "chainId",
       name: "name",
       symbol: "symbol",
+      displaySymbol: "symbol",
       decimals: 6,
       logoURI: "logoURI",
       createdAt: "",
@@ -78,6 +120,7 @@ describe("getSearchLogs", () => {
       chainId: "chainId",
       name: "name",
       symbol: "symbol",
+      displaySymbol: "symbol",
       decimals: 6,
       logoURI: "logoURI",
       createdAt: "",

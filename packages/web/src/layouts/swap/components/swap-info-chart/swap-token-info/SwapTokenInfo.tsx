@@ -1,15 +1,15 @@
 import React from "react";
 
+import { RefetchInterval } from "@common/values";
 import { LineGraphData } from "@components/common/line-graph/LineGraph";
 import { isNativeTokenByType, TokenModel } from "@models/token/token-model";
-import { RefetchInterval } from "@common/values";
+import { getSwapExtensionByOriginPath } from "@resources/swap-extension";
 
-import useElementWidth from "@hooks/common/use-element-width";
 import { useGetTokenPrices } from "@query/token";
+import { formatPrice } from "@utils/new-number-utils";
 import SwapTokenChart from "./SwapTokenChart";
 import SwapTokenHeader from "./SwapTokenHeader";
 import { SwapTokenInfoWrapper } from "./SwapTokenInfo.styles";
-import { formatPrice } from "@utils/new-number-utils";
 
 interface SwapTokenInfoProps {
   token: TokenModel;
@@ -19,21 +19,25 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
   const [chartData, setChartData] = React.useState<LineGraphData | undefined>();
   const [isChartHovered, setIsChartHovered] = React.useState(false);
 
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const containerWidth = useElementWidth(containerRef);
 
   const tokenData = React.useMemo(() => {
+    const originExtension = getSwapExtensionByOriginPath(token.path);
+    const isNative = isNativeTokenByType(token.type);
+    // An origin token has no price feed of its own; the wrapped token is the registered one.
+    const pricePath = isNative || originExtension ? token.wrappedPath : token.path;
     return {
       name: token.name,
       symbol: token.symbol,
+      displaySymbol: token.displaySymbol,
       logoURI: token.logoURI,
-      path: isNativeTokenByType(token.type) ? token.wrappedPath : token.path,
-      isNative: isNativeTokenByType(token.type),
+      path: originExtension ? token.path : pricePath,
+      pricePath,
+      isNative,
     };
   }, [token]);
 
-  const { data: { usd: rawCurrentPrice } = {} } = useGetTokenPrices(tokenData.path as string, {
-    enabled: !!tokenData.path,
+  const { data: { usd: rawCurrentPrice } = {} } = useGetTokenPrices(tokenData.pricePath as string, {
+    enabled: !!tokenData.pricePath,
   });
 
   const currentPrice = React.useMemo(() => {
@@ -48,21 +52,18 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
     data: { priceGradeType, last7d = [] } = {},
     isLoading,
     isFetched,
-  } = useGetTokenPrices(tokenData.path as string, {
-    enabled: !!tokenData.path,
+  } = useGetTokenPrices(tokenData.pricePath as string, {
+    enabled: !!tokenData.pricePath,
     refetchInterval: RefetchInterval.Frequent,
   });
 
-  const handleMouseMove = React.useCallback(
-    (data?: LineGraphData) => {
-      setChartData(data);
-    },
-    [tokenData.path],
-  );
+  const handleMouseMove = React.useCallback((data?: LineGraphData) => {
+    setChartData(data);
+  }, []);
 
   const handleMouseOut = React.useCallback(() => {
     handleMouseMove(undefined);
-  }, [tokenData.path]);
+  }, [handleMouseMove]);
 
   // @dev If the selected token changes, reset the chart data.
   React.useEffect(() => {
@@ -70,13 +71,12 @@ const SwapTokenInfo = ({ token }: SwapTokenInfoProps) => {
   }, [tokenData, handleMouseOut]);
 
   return (
-    <SwapTokenInfoWrapper ref={containerRef}>
+    <SwapTokenInfoWrapper>
       <SwapTokenHeader
         tokenInfo={tokenData}
         priceGradeType={priceGradeType || "NONE"}
         currentPrice={currentPrice}
         chartData={chartData}
-        containerWidth={containerWidth}
       />
       <SwapTokenChart
         data={last7d}

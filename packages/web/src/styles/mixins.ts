@@ -50,6 +50,11 @@ const mixins: MixinsType = {
     right: ${right};
   `,
   useScrollStyle: (thumbBackground: string) => css`
+    @supports (not selector(::-webkit-scrollbar)) or (-moz-appearance: none) {
+      scrollbar-width: thin;
+      scrollbar-color: ${thumbBackground} transparent;
+    }
+
     &::-webkit-scrollbar {
       width: 8px;
       display: block;

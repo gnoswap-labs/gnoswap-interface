@@ -44,6 +44,10 @@
         "title": "Récompenses à réclamer",
         "title_total": "Récompenses totales à réclamer"
       },
+      "claimedReward": {
+        "title": "Récompenses réclamées",
+        "title_total": "Total des récompenses réclamées"
+      },
       "dailyEarn": {
         "title": "Gains journaliers",
         "title_total": "Total des gains journaliers"

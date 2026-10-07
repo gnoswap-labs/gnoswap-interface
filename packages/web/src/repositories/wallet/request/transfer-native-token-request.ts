@@ -4,7 +4,7 @@ export interface TransferNativeTokenRequest {
   token: TokenModel;
 
   // only integer
-  tokenAmount: number;
+  tokenAmount: string;
 
   fromAddress: string;
 
@@ -14,3 +14,6 @@ export interface TransferNativeTokenRequest {
 
   gasUsed?: string;
 }
+
+/** A native transfer request without the gas figures, which only the send path needs. */
+export type TransferNativeTokenMessagesRequest = Omit<TransferNativeTokenRequest, "gasFee" | "gasUsed">;

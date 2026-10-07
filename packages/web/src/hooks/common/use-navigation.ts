@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import useScrollData from "@hooks/common/use-scroll-data";
+import { makeRouteUrl } from "@utils/page.utils";
 
 /**
  * A custom hook to handle navigation with support for:
@@ -23,24 +24,28 @@ export const useNavigation = () => {
   /**
    * Handles navigation with support for opening in new tab
    * @param e Mouse event
-   * @param path Target path
    */
   const handleNavigation = useCallback(
-    (e: React.MouseEvent, path: string) => {
+    (e: React.MouseEvent) => {
       if (shouldOpenInNewTab(e)) {
-        // Let the default behavior handle opening in new tab
         return;
       }
 
-      e.preventDefault();
       saveCurrentScrollHeight(window?.location?.pathname);
-      router.push(path);
     },
-    [router, saveCurrentScrollHeight, shouldOpenInNewTab],
+    [saveCurrentScrollHeight, shouldOpenInNewTab],
+  );
+
+  const getNavigationPath = useCallback(
+    (path: string) => {
+      return makeRouteUrl(path, router.getParamsWithReferrer());
+    },
+    [router],
   );
 
   return {
     handleNavigation,
+    getNavigationPath,
     shouldOpenInNewTab,
   };
 };

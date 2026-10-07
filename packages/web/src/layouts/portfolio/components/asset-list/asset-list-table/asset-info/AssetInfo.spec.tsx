@@ -1,6 +1,6 @@
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { DEVICE_TYPE } from "@styles/media";
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import AssetInfo, { AssetInfoProps } from "./AssetInfo";
 
@@ -17,14 +17,15 @@ jest.mock("next/router", () => ({
 }));
 
 describe("AssetInfo Component", () => {
-  it("AssetInfo render", () => {
+  it("AssetInfo render", async () => {
     const mockProps: AssetInfoProps = {
       asset: {
         path: "gno.land/r/onbloc/gns",
         type: "GRC20",
         chainId: "Gnoland",
-        name: "Gnoswap",
+        name: "FOOTBALL WORLD CUB",
         symbol: "GNS",
+        displaySymbol: "GNS",
         decimals: 6,
         logoURI:
           "https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
@@ -45,5 +46,8 @@ describe("AssetInfo Component", () => {
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );
+
+    expect(await screen.findByText("FOOTBALL...")).toBeInTheDocument();
+    expect(screen.queryByText("FOOTBALL WORLD CUB")).not.toBeInTheDocument();
   });
 });

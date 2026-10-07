@@ -39,7 +39,7 @@ const PoolAddConfirmFeeInfo: React.FC<EarnAddConfirmFeeInfoProps> = ({ token, fe
       <PoolAddConfirmFeeInfoSection $hasError={!!errorMsg}>
         <div className="token-info">
           <img src={token?.logoURI} alt="token logo" />
-          <div>{token?.symbol}</div>
+          <div>{token?.displaySymbol || ""}</div>
         </div>
         <div className="fee-info">
           <span>{fee}</span>

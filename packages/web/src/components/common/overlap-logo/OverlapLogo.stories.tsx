@@ -16,10 +16,12 @@ export const Default: Story = {
       {
         src: "https://picsum.photos/id/7/36/36",
         symbol: "",
+        displaySymbol: "",
       },
       {
         src: "https://picsum.photos/id/101/36/36",
         symbol: "",
+        displaySymbol: "",
       },
     ],
     size: 36,

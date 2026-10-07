@@ -21,3 +21,6 @@ export interface IncreaseLiquidityRequest {
 
   gasUsed?: string;
 }
+
+/** An increase request without the gas figures, which only the send path needs. */
+export type IncreaseLiquidityMessagesRequest = Omit<IncreaseLiquidityRequest, "gasFee" | "gasUsed">;

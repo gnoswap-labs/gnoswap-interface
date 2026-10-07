@@ -1,6 +1,5 @@
 import { Document, TransactionData, ContractMessage, EMessageType } from "src/types/transaction-messages.types";
-import { MsgCall, MsgSend, MsgAddPackage } from "@gnolang/gno-js-client";
-import { MsgRun } from "@gnolang/gno-js-client/bin/proto/gno/vm";
+import { MsgCall, MsgSend, MsgAddPackage, MsgRun } from "@gnolang/gno-js-client";
 
 /*
 ## Context

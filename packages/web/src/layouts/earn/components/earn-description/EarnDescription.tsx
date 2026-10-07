@@ -4,6 +4,7 @@ import { Trans, useTranslation } from "react-i18next";
 
 import IconArrowRight from "@components/common/icons/IconArrowRight";
 import { EXT_URL } from "@constants/external-url.contant";
+import { PAGE_PATH } from "@constants/page.constant";
 
 import { EarnDescriptionWrapper } from "./EarnDescription.styles";
 
@@ -44,7 +45,7 @@ const EarnDescription: React.FC<EarnDescriptionProps> = ({ highestAprInfo }) => 
                 apr: `${BigNumber(highestAprInfo.apr).toFormat(0)}%`,
               }}
             />
-            <a className="link-wrapper-no-flex" href={`/earn/pool?poolPath=${highestAprInfo.path}#staking`}>
+            <a className="link-wrapper-no-flex" href={PAGE_PATH.POOL_STAKE}>
               {t("Earn:earnInstruction.stake.goto")}
               <IconArrowRight />
             </a>

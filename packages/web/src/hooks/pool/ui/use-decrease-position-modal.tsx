@@ -10,29 +10,24 @@ import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { useMessage } from "@hooks/common/use-message";
-import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { TokenModel } from "@models/token/token-model";
-import { DexEvent } from "@repositories/common";
-import { DecreaseLiquiditySuccessResponse } from "@repositories/position/response";
-import { CommonState } from "@states/index";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
+import { useMessage } from "@hooks/common/use-message";
+import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { TokenModel } from "@models/token/token-model";
 import { QUERY_KEY } from "@query/query-keys";
+import { DexEvent } from "@repositories/common";
+import { CommonState } from "@states/index";
 import { delay } from "@utils/common";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
 
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { useTokenData } from "@hooks/token/data/use-token-data";
+import { DecreaseLiquidityRequest } from "@repositories/position/request";
+import { makePoolPath } from "@utils/pool-utils";
 import DecreasePositionModalContainer from "../../../layouts/pool/pool-decrease-liquidity/containers/decrease-position-modal-container/DecreasePositionModalContainer";
 import { IPooledTokenInfo } from "../data/use-decrease-handle";
-import { makePoolPath } from "@utils/pool-utils";
-import { useTokenData } from "@hooks/token/data/use-token-data";
-import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
-import { useNetworkFee } from "@hooks/common/use-network-fee";
-import { DecreaseLiquidityRequest } from "@repositories/position/request";
-import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
-import { CommonError } from "@common/errors";
-import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
-import { makeDecreaseLiquidityMessagesWithApproves } from "@repositories/position/position.message";
 
 export interface Props {
   openModal: () => void;
@@ -49,7 +44,6 @@ export interface DecreasePositionModal {
   rangeStatus: RANGE_STATUS_OPTION;
   calculatedLiquidity: string;
   pooledTokenInfos: IPooledTokenInfo | null;
-  isGetWGNOT: boolean;
   refetchPositions: () => Promise<void>;
 }
 
@@ -64,15 +58,13 @@ export const useDecreasePositionModal = ({
   rangeStatus,
   calculatedLiquidity,
   pooledTokenInfos,
-  isGetWGNOT,
 }: DecreasePositionModal): Props => {
   const { walletClient, currentChainId } = useWallet();
   const router = useRouter();
   const { address } = useAddress();
   const clearModal = useClearModal();
 
-  const { positionRepository, transactionService } = useGnoswapContext();
-  const { estimateNetworkFee } = useNetworkFee(null);
+  const { positionRepository } = useGnoswapContext();
   const { invalidateQueryKey } = useInvalidateQueries();
 
   const onSuccessClose = useCallback(() => {
@@ -81,12 +73,13 @@ export const useDecreasePositionModal = ({
   }, [clearModal, router]);
 
   const { broadcastRejected, broadcastSuccess, broadcastLoading, broadcastError } = useBroadcastHandler();
+  const { openModal: openTransactionConfirmModal } = useTransactionConfirmModal();
   const { enqueueEvent } = useTransactionEventStore();
 
   const poolPath = makePoolPath(tokenA, tokenB, swapFeeTier);
 
   // Refetch functions
-  const { updateBalances } = useTokenData();
+  const { updateBalances } = useTokenData(true);
 
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
@@ -96,54 +89,19 @@ export const useDecreasePositionModal = ({
       [QUERY_KEY.pools],
       [QUERY_KEY.positions, currentChainId, address],
       [QUERY_KEY.poolDetail, poolPath],
-      [QUERY_KEY.poolPairBins],
+      [QUERY_KEY.poolLiquidityTicks],
     ]);
   }, [invalidateQueryKey, poolPath, currentChainId, address]);
 
   const { getMessage } = useMessage();
 
-  const gnotToken = useMemo(() => [tokenA, tokenB].find(item => item?.path === GNOT_TOKEN.path), [tokenA, tokenB]);
-
-  const gnotAmount = useMemo(() => {
-    if (tokenA?.path === gnotToken?.path) {
-      return (
-        Number(pooledTokenInfos?.poolAmountA.replaceAll(",", "") || 0) +
-        Number(pooledTokenInfos?.unClaimTokenAAmount.replaceAll(",", "") || 0)
-      );
+  const tokenTransform = useCallback((token: TokenModel) => {
+    if (token.path === GNOT_TOKEN.path) {
+      return WUGNOT_TOKEN;
     }
-    if (tokenB?.path === gnotToken?.path) {
-      return (
-        Number(pooledTokenInfos?.poolAmountB.replaceAll(",", "") || 0) +
-        Number(pooledTokenInfos?.unClaimTokenBAmount.replaceAll(",", "") || 0)
-      );
-    }
-    return 0;
-  }, [
-    gnotToken?.path,
-    pooledTokenInfos?.poolAmountA,
-    pooledTokenInfos?.poolAmountB,
-    pooledTokenInfos?.unClaimTokenAAmount,
-    pooledTokenInfos?.unClaimTokenBAmount,
-    tokenA?.path,
-    tokenB?.path,
-  ]);
 
-  const willWrap = useMemo(() => {
-    return isGetWGNOT && !!gnotToken && !!gnotAmount;
-  }, [gnotAmount, gnotToken, isGetWGNOT]);
-
-  const tokenTransform = useCallback(
-    (token: TokenModel) => {
-      if (token.path === GNOT_TOKEN.path) {
-        if (willWrap) {
-          return WUGNOT_TOKEN;
-        }
-      }
-
-      return token;
-    },
-    [willWrap],
-  );
+    return token;
+  }, []);
 
   const amountInfo = useMemo(() => {
     if (!tokenA || !tokenB || !swapFeeTier) {
@@ -156,167 +114,133 @@ export const useDecreasePositionModal = ({
     };
   }, [swapFeeTier, tokenA, tokenB]);
 
-  const buildAdenaWalletAction = async (request: DecreaseLiquidityRequest) => {
+  const buildWalletAction = async (request: DecreaseLiquidityRequest) => {
     return await positionRepository.decreaseLiquidity(request).catch(() => null);
   };
 
-  const buildSocialWalletAction = async (rpcProvider: GnoProvider | null, request: DecreaseLiquidityRequest) => {
-    if (!rpcProvider) {
-      console.log("DecreaseLiquidity: ", new CommonError("FAILED_INITIALIZE_GNO_PROVIDER"));
-      return null;
+  const decreaseLiquidity = useCallback(async () => {
+    if (!address || !tokenA || !tokenB) {
+      return false;
     }
 
-    const getAllowance = (packagePath: string, owner: string, spender: string) => {
-      return fetchAllowance(rpcProvider, packagePath, owner, spender);
-    };
+    const deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString();
 
-    const txMessages = await makeDecreaseLiquidityMessagesWithApproves(request, getAllowance);
+    const poolAmountA = BigNumber(pooledTokenInfos?.poolAmountA ?? 0).toNumber();
+    const poolAmountB = BigNumber(pooledTokenInfos?.poolAmountB ?? 0).toNumber();
 
-    const txDoc = await transactionService.createDocument({ messages: txMessages });
-    await transactionService.createTransaction(txDoc);
+    const walletType = walletClient?.getWalletType();
 
-    const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
-    const requestWithGasInfo: DecreaseLiquidityRequest = {
-      ...request,
-      gasFee: networkFee?.amount,
-      gasUsed: currentGasInfo?.gasUsed.toString(),
-    };
-
-    return await positionRepository.decreaseLiquidity(requestWithGasInfo).catch(() => null);
-  };
-
-  const decreaseLiquidity = useCallback(
-    async ({ rpcProvider }: { rpcProvider: GnoProvider | null }) => {
-      if (!address || !tokenA || !tokenB) {
-        return false;
-      }
-
-      const deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString();
-
-      const poolAmountA = BigNumber(pooledTokenInfos?.poolAmountA ?? 0).toNumber();
-      const poolAmountB = BigNumber(pooledTokenInfos?.poolAmountB ?? 0).toNumber();
-
-      const walletType = walletClient?.getWalletType();
-
-      if (walletType === "ADENA") {
-        broadcastLoading(
-          getMessage(DexEvent.REMOVE, "pending", {
-            tokenASymbol: tokenTransform(tokenA).symbol,
-            tokenBSymbol: tokenTransform(tokenB).symbol,
-            tokenAAmount: Number(pooledTokenInfos?.poolAmountA).toLocaleString("en-US", {
-              maximumFractionDigits: tokenTransform(tokenA).decimals,
-            }),
-            tokenBAmount: Number(pooledTokenInfos?.poolAmountB).toLocaleString("en-US", {
-              maximumFractionDigits: tokenTransform(tokenB).decimals,
-            }),
+    if (walletType === "ADENA") {
+      broadcastLoading(
+        getMessage(DexEvent.REMOVE, "pending", {
+          tokenASymbol: tokenTransform(tokenA).symbol,
+          tokenBSymbol: tokenTransform(tokenB).symbol,
+          tokenAAmount: Number(pooledTokenInfos?.poolAmountA).toLocaleString("en-US", {
+            maximumFractionDigits: tokenTransform(tokenA).decimals,
           }),
-        );
+          tokenBAmount: Number(pooledTokenInfos?.poolAmountB).toLocaleString("en-US", {
+            maximumFractionDigits: tokenTransform(tokenB).decimals,
+          }),
+        }),
+      );
+    }
+
+    const defaultMessageData = {
+      tokenASymbol: tokenTransform(tokenA).symbol,
+      tokenBSymbol: tokenTransform(tokenB).symbol,
+      tokenAAmount: Number(poolAmountA).toLocaleString("en-US", {
+        maximumFractionDigits: tokenA.decimals,
+      }),
+      tokenBAmount: Number(poolAmountB).toLocaleString("en-US", {
+        maximumFractionDigits: tokenB.decimals,
+      }),
+    };
+
+    const request: DecreaseLiquidityRequest = {
+      lpTokenId: positionId,
+      calculatedLiquidity,
+      tokenA,
+      tokenB,
+      tokenAAmount: poolAmountA,
+      tokenBAmount: poolAmountB,
+      slippage,
+      caller: address,
+      deadline,
+    };
+
+    const result = await buildWalletAction(request);
+
+    if (result) {
+      if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
+        enqueueEvent({
+          txHash: result.data?.hash,
+          action: DexEvent.REMOVE,
+          visibleEmitResult: true,
+          checkWugnotTransfer: true,
+          formatData: response => {
+            if (!response) {
+              return defaultMessageData;
+            }
+            return {
+              ...defaultMessageData,
+              tokenAAmount: Number(makeDisplayTokenAmount(tokenTransform(tokenA), response[4])).toLocaleString(
+                "en-US",
+                {
+                  maximumFractionDigits: tokenTransform(tokenA).decimals,
+                },
+              ),
+              tokenBAmount: Number(makeDisplayTokenAmount(tokenTransform(tokenB), response[5])).toLocaleString(
+                "en-US",
+                {
+                  maximumFractionDigits: tokenTransform(tokenB).decimals,
+                },
+              ),
+            };
+          },
+          onUpdate: async () => {
+            updateBalances();
+          },
+          onEmit: async () => {
+            await delay(1000);
+            handleRefreshData();
+          },
+          onSuccess: handleRefreshData,
+        });
       }
 
-      const defaultMessageData = {
-        tokenASymbol: tokenTransform(tokenA).symbol,
-        tokenBSymbol: tokenTransform(tokenB).symbol,
-        tokenAAmount: Number(poolAmountA).toLocaleString("en-US", {
-          maximumFractionDigits: tokenA.decimals,
-        }),
-        tokenBAmount: Number(poolAmountB).toLocaleString("en-US", {
-          maximumFractionDigits: tokenB.decimals,
-        }),
-      };
-
-      const request: DecreaseLiquidityRequest = {
-        lpTokenId: positionId,
-        calculatedLiquidity,
-        tokenA,
-        tokenB,
-        tokenAAmount: poolAmountA,
-        tokenBAmount: poolAmountB,
-        slippage,
-        caller: address,
-        isGetWGNOT: willWrap,
-        deadline,
-      };
-
-      const result = await (walletType === "ADENA"
-        ? buildAdenaWalletAction(request)
-        : buildSocialWalletAction(rpcProvider, request));
-
-      if (result) {
-        if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
-          enqueueEvent({
-            txHash: result.data?.hash,
-            action: DexEvent.REMOVE,
-            visibleEmitResult: true,
-            formatData: response => {
-              if (!response) {
-                return defaultMessageData;
-              }
-              return {
-                ...defaultMessageData,
-                tokenAAmount: Number(makeDisplayTokenAmount(tokenTransform(tokenA), response[4])).toLocaleString(
-                  "en-US",
-                  {
-                    maximumFractionDigits: tokenTransform(tokenA).decimals,
-                  },
-                ),
-                tokenBAmount: Number(makeDisplayTokenAmount(tokenTransform(tokenB), response[5])).toLocaleString(
-                  "en-US",
-                  {
-                    maximumFractionDigits: tokenTransform(tokenB).decimals,
-                  },
-                ),
-              };
-            },
-            onUpdate: async () => {
-              updateBalances();
-            },
-            onEmit: async () => {
-              await delay(5000);
-              handleRefreshData();
-            },
-            onSuccess: handleRefreshData,
-          });
-        }
-
-        if (result.code === 0 && result?.data) {
-          const resultData = result?.data as DecreaseLiquiditySuccessResponse;
-
-          // Make display token amount
-          const tokenAAmount = (makeDisplayTokenAmount(tokenA, resultData.removedTokenAAmount) || 0).toLocaleString(
-            "en-US",
-            { maximumFractionDigits: tokenA.decimals },
-          );
-          const tokenBAmount = (makeDisplayTokenAmount(tokenB, resultData.removedTokenBAmount) || 0).toLocaleString(
-            "en-US",
-            { maximumFractionDigits: tokenB.decimals },
-          );
-
-          broadcastSuccess(
-            getMessage(
-              DexEvent.REMOVE,
-              "success",
-              {
-                tokenASymbol: tokenTransform(tokenA).symbol,
-                tokenBSymbol: tokenTransform(tokenB).symbol,
-                tokenAAmount,
-                tokenBAmount,
-              },
-              resultData.hash,
-            ),
-            onSuccessClose,
-          );
-        } else if (
-          result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
-        ) {
-          broadcastRejected(getMessage(DexEvent.REMOVE, "error", defaultMessageData));
-        } else {
-          broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
-        }
+      if (result.code === 0 && result?.data) {
+        openTransactionConfirmModal();
+        broadcastSuccess(getMessage(DexEvent.REMOVE, "success", defaultMessageData, result.data.hash), onSuccessClose);
+      } else if (
+        result.code === ERROR_VALUE.TRANSACTION_REJECTED.status // 4000
+      ) {
+        broadcastRejected(getMessage(DexEvent.REMOVE, "error", defaultMessageData));
+      } else {
+        broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
       }
-      return true;
-    },
-    [address, calculatedLiquidity, pooledTokenInfos, positionId, positionRepository, router, tokenA, tokenB, willWrap],
-  );
+    }
+    return true;
+  }, [
+    address,
+    tokenA,
+    tokenB,
+    pooledTokenInfos,
+    walletClient,
+    positionId,
+    calculatedLiquidity,
+    slippage,
+    getMessage,
+    tokenTransform,
+    enqueueEvent,
+    updateBalances,
+    handleRefreshData,
+    onSuccessClose,
+    openTransactionConfirmModal,
+    broadcastLoading,
+    broadcastSuccess,
+    broadcastRejected,
+    broadcastError,
+  ]);
 
   const openModal = useCallback(() => {
     if (!amountInfo) {

@@ -9,7 +9,7 @@ export class PositionHistoryMapper {
       txHash: res.txHash,
       type: res.actionType as PositionHistoryType,
       tokenASymbol: res.tokenA.symbol,
-      tokenBSymbol: res.tokenB.symbol,
+      tokenBSymbol: res.tokenB?.symbol ?? "",
       amountA: Number(res.tokenAAmount),
       amountB: Number(res.tokenBAmount),
       usdValue: Number(res.totalUsd),

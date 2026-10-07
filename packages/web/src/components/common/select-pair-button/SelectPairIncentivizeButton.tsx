@@ -14,6 +14,7 @@ interface SelectPairIncentivizeButtonProps {
   callback?: (value: boolean) => void;
   isHiddenArrow?: boolean;
   className?: string;
+  poolTokens?: readonly TokenModel[];
 }
 
 const SelectPairIncentivizeButton: React.FC<SelectPairIncentivizeButtonProps> = ({
@@ -24,12 +25,14 @@ const SelectPairIncentivizeButton: React.FC<SelectPairIncentivizeButtonProps> = 
   callback,
   isHiddenArrow,
   className,
+  poolTokens,
 }) => {
   const { t } = useTranslation();
 
   const { openModal } = useSelectTokenIncentivizeModal({
     changeToken,
     callback,
+    poolTokens,
   });
 
   const onClickButton = useCallback(() => {
@@ -49,7 +52,7 @@ const SelectPairIncentivizeButton: React.FC<SelectPairIncentivizeButtonProps> = 
       {token ? (
         <div className="token-pair-wrapper">
           <MissingLogo symbol={token.symbol} url={token.logoURI} className="token-logo" width={24} mobileWidth={24} />
-          <span className="token-symbol">{token.symbol}</span>
+          <span className="token-symbol">{token.displaySymbol}</span>
         </div>
       ) : (
         <span className="token-label-select">{t("common:selectPairBtn.select")}</span>

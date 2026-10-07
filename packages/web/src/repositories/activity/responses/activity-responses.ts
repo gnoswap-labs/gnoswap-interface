@@ -6,7 +6,7 @@ export interface ActivityData {
   txHash: string;
   actionType: DexEventType;
   tokenA: OnchainToken;
-  tokenB: OnchainToken;
+  tokenB: OnchainToken | null;
   tokenAAmount: string;
   tokenBAmount: string;
   totalUsd: string;
@@ -24,6 +24,7 @@ export interface OnchainToken {
   path: string;
   decimals: number;
   symbol: string;
+  displaySymbol: string;
   logoURI: string;
   priceID: string;
 }
@@ -36,6 +37,7 @@ export const emptyToken: OnchainToken = {
   path: "",
   decimals: 6,
   symbol: "-",
+  displaySymbol: "-",
   logoURI: "",
   priceID: "",
 };
@@ -51,6 +53,7 @@ export const dummyActivityData: ActivityData = {
     path: "ugnot",
     decimals: 6,
     symbol: "GNOT",
+    displaySymbol: "GNOT",
     logoURI: "",
     priceID: "ugnot",
   },
@@ -62,6 +65,7 @@ export const dummyActivityData: ActivityData = {
     path: "ugnot",
     decimals: 6,
     symbol: "GNOT",
+    displaySymbol: "GNOT",
     logoURI: "",
     priceID: "ugnot",
   },

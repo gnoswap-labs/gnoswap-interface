@@ -49,7 +49,7 @@ const RemoveLiquiditySelectList: React.FC<RemoveLiquiditySelectListProps> = ({
             })}
           </span>
         </div>
-        <span>{t("business:liquidity")}</span>
+        <span>{t("business:value")}</span>
       </div>
       <ul>
         {isLoading && (

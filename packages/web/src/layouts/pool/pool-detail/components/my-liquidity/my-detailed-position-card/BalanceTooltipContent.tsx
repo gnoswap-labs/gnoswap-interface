@@ -36,7 +36,7 @@ export const BalanceTooltipContent: React.FC<BalanceTooltipContentProps> = ({ ba
               width={20}
               mobileWidth={20}
             />
-            <span className="position">{balance.token.symbol}</span>
+            <span className="position">{balance.token.displaySymbol}</span>
           </div>
           <span className="position">
             {formatPoolPairAmount(balance.balance, {

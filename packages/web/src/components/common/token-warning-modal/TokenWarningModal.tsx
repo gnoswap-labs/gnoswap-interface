@@ -1,14 +1,14 @@
-import React, { useCallback } from "react";
-import IconClose from "../icons/IconCancel";
-import { TokenTradingModalWrapper } from "./TokenWarningModal.styles";
-import IconFailed from "../icons/IconFailed";
-import Button, { ButtonHierarchy } from "../button/Button";
-import IconNewTab from "../icons/IconNewTab";
-import IconCopy from "../icons/IconCopy";
-import IconCheck from "../icons/IconCheck";
-import { TokenModel } from "@models/token/token-model";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { TokenModel } from "@models/token/token-model";
+import React, { useCallback } from "react";
 import { Trans, useTranslation } from "react-i18next";
+import Button, { ButtonHierarchy } from "../button/Button";
+import IconClose from "../icons/IconCancel";
+import IconCheck from "../icons/IconCheck";
+import IconCopy from "../icons/IconCopy";
+import IconFailed from "../icons/IconFailed";
+import IconNewTab from "../icons/IconNewTab";
+import { TokenTradingModalWrapper } from "./TokenWarningModal.styles";
 
 interface TokenWarningModalProps {
   close: () => void;
@@ -27,6 +27,7 @@ const TokenWarningModal: React.FC<TokenWarningModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const { getTokenUrl } = useGnoscanUrl();
+  const tokenUrl = getTokenUrl(token.path);
 
   const onClickClose = useCallback(() => {
     close();
@@ -49,8 +50,8 @@ const TokenWarningModal: React.FC<TokenWarningModalProps> = ({
             </div>
           </div>
           <div className="link">
-            <a className="url-wrapper" href={getTokenUrl(token.path)} target="_blank">
-              <div>{getTokenUrl(token.path)}</div>
+            <a className="url-wrapper" href={tokenUrl} target="_blank" rel="noopener noreferrer">
+              <div>{tokenUrl}</div>
               <IconNewTab className="new-tab" />
             </a>
             <div className="icon-wrapper" onClick={handleChecked}>

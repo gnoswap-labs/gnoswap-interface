@@ -29,6 +29,52 @@ export function makeRouteUrl(
   return `${url}?${queryParams}${hashString}`;
 }
 
+function normalizePath(path: string): string {
+  return path.replace(/\/$/, "") || "/";
+}
+
+function preserveCurrentPathPrefix(currentPath: string, routePath: string, url: string): string {
+  if (currentPath === routePath || !currentPath.endsWith(routePath) || !url.startsWith(routePath)) {
+    return url;
+  }
+
+  return `${currentPath.slice(0, currentPath.length - routePath.length)}${url}`;
+}
+
+function makeNextHistoryState(url: string): unknown {
+  const currentState = window.history.state;
+  if (typeof currentState !== "object" || currentState === null) {
+    return currentState;
+  }
+
+  return {
+    ...currentState,
+    url,
+    as: url,
+  };
+}
+
+export function replaceRouteUrlWithoutNavigation(routePath: string, url: string): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  const currentPath = normalizePath(window.location.pathname);
+  const normalizedRoutePath = normalizePath(routePath);
+  const nextUrl = preserveCurrentPathPrefix(currentPath, normalizedRoutePath, url);
+  const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+  if (currentPath !== normalizedRoutePath && !currentPath.endsWith(normalizedRoutePath)) {
+    return;
+  }
+
+  if (currentUrl === nextUrl) {
+    return;
+  }
+
+  window.history.replaceState(makeNextHistoryState(nextUrl), "", nextUrl);
+}
+
 export function makeTokenRouteUrl(tokenPath: string): string {
   return makeRouteUrl(PAGE_PATH.TOKEN, {
     [QUERY_PARAMETER.TOKEN_PATH]: tokenPath,

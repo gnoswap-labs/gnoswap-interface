@@ -37,6 +37,7 @@
       "execute": "Execute",
       "noVoteWeight": "Insufficient Voting Weight",
       "requireSelect": "Select Voting Option",
+      "tryAgain": "Try Again",
       "vote": "Vote"
     },
     "content": {
@@ -45,6 +46,9 @@
       "recipient": "Recipient"
     },
     "quorum": "Quorum",
+    "tooltip": {
+      "votingWeight": "Voting Weight is calculated as the average of your xGNS balance at two snapshots: 24 hours before the proposal was created, and at the exact moment it was created."
+    },
     "votingWeight": "Your Voting Weight"
   },
   "header": "Governance",
@@ -59,6 +63,7 @@
       "selectDel": {
         "address": "Address",
         "description": "Description",
+        "notice": "Your delegate votes on your behalf with the voting power you delegate. To vote on proposals yourself, choose Self-Delegate.",
         "selectBtn": "Select",
         "self": {
           "chip": "Self-Delegate",
@@ -72,6 +77,7 @@
         "tooltip": "Delegates are community leaders who are selected to make governance decisions on behalf of GNS holders."
       },
       "step2": {
+        "notice": "You'll receive 1 xGNS for each GNS you delegate.",
         "title": "2. Enter Amount"
       },
       "step3": {
@@ -86,8 +92,8 @@
         "select": "Select a Delegate"
       },
       "warning": {
-        "description": "A lock-up period of 7 days is triggered once you undelegate your xGNS. During this period, the locked xGNS tokens will be ineligible to receive protocol rewards and have no voting powers. Be sure to understand the lock-up period before you proceed to delegate.",
-        "title": "Delegation will lock your funds for 7 days"
+        "description": "When you undelegate, your xGNS is locked for 7 days before you can withdraw it. During that time it earns no rewards and has no voting power.",
+        "title": "Undelegating takes 7 days"
       }
     },
     "login": {
@@ -100,7 +106,7 @@
     },
     "switch": {
       "toUndel": "My Undelegation",
-      "toVotingWeight": "My Voting Weight"
+      "toVotingWeight": "My Delegation"
     },
     "title": "My Delegation",
     "tooltip": {
@@ -135,13 +141,13 @@
         "title": "3. Your Balance"
       },
       "warning": {
-        "description": "A lock-up period of 7 days is triggered once you undelegate your xGNS. During this period, the locked xGNS tokens will be ineligible to receive protocol rewards and have no voting powers. Be sure to understand the lock-up period before you proceed to undelegate.",
-        "title": "Undelegation will lock your funds for 7 days"
+        "description": "When you undelegate, your xGNS is locked for 7 days before you can withdraw it. During that time it earns no rewards and has no voting power.",
+        "title": "Undelegating takes 7 days"
       }
     },
     "votingWeight": {
-      "title": "Voting Weight",
-      "tooltip": "The amount of xGNS you have delegated, which represents your voting weight in the Gnoswap Governance."
+      "title": "Delegation",
+      "tooltip": "The total xGNS you've delegated. You can only vote with xGNS you've self-delegated. For the rest, your delegates vote on your behalf."
     }
   },
   "proposalList": {
@@ -165,8 +171,12 @@
       "upcoming": "Upcoming"
     },
     "time": {
+      "cancelled": "Proposal Cancelled {{rel_time}}",
       "end": "Voting Ends {{rel_time}}",
       "ended": "Voting Ended {{rel_time}}",
+      "executable": "Proposal Executable {{rel_time}}",
+      "executed": "Proposal Excuted {{rel_time}}",
+      "expired": "Proposal Expired {{rel_time}}",
       "h": "in {{time}}h",
       "m": "in {{time}}m",
       "start": "Voting Starts {{rel_time}}"

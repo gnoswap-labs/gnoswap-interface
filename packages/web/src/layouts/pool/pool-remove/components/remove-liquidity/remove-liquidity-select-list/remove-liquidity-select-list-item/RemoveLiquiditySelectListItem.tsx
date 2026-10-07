@@ -46,7 +46,7 @@ const TooltipContent: React.FC<TooltipProps> = ({ position, disabled }) => {
       <TokenValueWrapper>
         <div className="value">
           <MissingLogo url={getGnotPath(token).logoURI} symbol={getGnotPath(token).symbol} width={20} />
-          {token.symbol}
+          {token.displaySymbol}
         </div>
         <div className="value">{tokenBalanceByTokenDecimal}</div>
       </TokenValueWrapper>
@@ -125,7 +125,7 @@ const RemoveLiquiditySelectListItem: React.FC<RemoveLiquiditySelectListItemProps
               leftSymbol={tokenA.symbol}
               rightSymbol={tokenB.symbol}
             />
-            {width > 768 && <span className="token-id">{`${tokenA.symbol}/${tokenB.symbol}`}</span>}
+            {width > 768 && <span className="token-id">{`${tokenA.displaySymbol}/${tokenB.displaySymbol}`}</span>}
             <Badge text={feeStr} type={BADGE_TYPE.DARK_DEFAULT} />
           </div>
         </Tooltip>

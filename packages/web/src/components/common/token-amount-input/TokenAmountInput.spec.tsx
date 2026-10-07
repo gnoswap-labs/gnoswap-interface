@@ -4,6 +4,11 @@ import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import TokenAmountInput, { TokenAmountInputProps } from "./TokenAmountInput";
 
+jest.mock("@hooks/common/use-gnoswap-context", () => ({
+  useGnoswapContext: () => ({ transactionGasService: null }),
+  useOptionalGnoswapContext: () => null,
+}));
+
 // Mock @adena-wallet/sdk
 jest.mock("@adena-wallet/sdk", () => ({
   makeMsgCallMessage: jest.fn(),
@@ -19,6 +24,7 @@ const token: TokenModel = {
   path: "gno.land/r/gns",
   decimals: 4,
   symbol: "GNS",
+  displaySymbol: "GNS",
   logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_gns.svg",
   type: "GRC20",
   priceID: "gno.land/r/gns",
@@ -39,6 +45,9 @@ describe("TokenAmountInput Component", () => {
       changeToken: () => {
         return;
       },
+      delegateButtonState: "NONE",
+      delegateButtonText: "",
+      isAvailableDelegate: false,
     };
 
     render(

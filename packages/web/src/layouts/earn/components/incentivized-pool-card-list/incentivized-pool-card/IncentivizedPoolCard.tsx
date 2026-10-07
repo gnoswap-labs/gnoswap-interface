@@ -1,6 +1,7 @@
+import { cx } from "@emotion/css";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { cx } from "@emotion/css";
+import { LIQUIDITY_GRAPH_BIN_COUNT, LIQUIDITY_GRAPH_DEFAULT_VISIBLE_TICK_RANGE } from "@constants/graph.constant";
 
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
@@ -8,30 +9,27 @@ import IconStar from "@components/common/icons/IconStar";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
+import { QUERY_PARAMETER } from "@constants/page.constant";
+import { usePrefetchNavigation } from "@hooks/common/use-prefetch-navigation";
+import { usePoolLiquiditySegmentsByPath } from "@hooks/pool/data/use-pool-liquidity-segments-by-path";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
+import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
 import { IncentivizePoolCardInfoWithPriceGrade } from "@models/pool/info/pool-card-info";
 import { formatRate } from "@utils/new-number-utils";
 import { numberToFormat } from "@utils/string-utils";
-import { useGetBinsByPath } from "@query/pools";
 import { getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils";
-import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
-import { usePrefetchNavigation } from "@hooks/common/use-prefetch-navigation";
-import { QUERY_PARAMETER } from "@constants/page.constant";
 
-import { PoolCardWrapper, PoolCardWrapperWrapperBorder } from "./IncentivizedPoolCard.styles";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import PriceWarning from "@components/common/price-warning/PriceWarning";
+import { PoolCardWrapper, PoolCardWrapperWrapperBorder } from "./IncentivizedPoolCard.styles";
 
 export interface IncentivizedPoolCardProps {
   pool: IncentivizePoolCardInfoWithPriceGrade;
   routeItem: (id: string) => void;
   themeKey: "dark" | "light";
-  checkStakedPool: (poolPath: string | null) => boolean;
 }
 
-const BINS_DATA_DEFAULT_LENGTH = 40;
-
-const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, routeItem, themeKey, checkStakedPool }) => {
+const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, routeItem, themeKey }) => {
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
 
@@ -43,17 +41,27 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
     enabled: Boolean(pool.poolId),
   });
 
-  const { data: bins40, isLoading: isLoadingBins40 } = useGetBinsByPath(pool.poolPath || "", BINS_DATA_DEFAULT_LENGTH, {
-    enabled: !!pool.poolPath,
-  });
+  const { liquiditySegments, isLoading: isLoadingLiquiditySegments } = usePoolLiquiditySegmentsByPath(
+    pool.poolPath || "",
+    {
+      currentTick: pool.currentTick,
+      currentPrice: pool.price,
+      tokenA: pool.tokenA,
+      tokenB: pool.tokenB,
+      includeTokenAmounts: true,
+      visibleTickRange: LIQUIDITY_GRAPH_DEFAULT_VISIBLE_TICK_RANGE,
+      binCount: LIQUIDITY_GRAPH_BIN_COUNT,
+    },
+    {
+      enabled: !!pool.poolPath,
+    },
+  );
 
-  const staked = useMemo(() => {
-    return checkStakedPool(pool.poolPath || null);
-  }, [checkStakedPool, pool.poolPath]);
+  const staked = pool.hasStakedPosition;
 
   const pairName = useMemo(() => {
-    return `${pool.tokenA.symbol}/${pool.tokenB.symbol}`;
-  }, [pool.tokenA.symbol, pool.tokenB.symbol]);
+    return `${pool.tokenA.displaySymbol}/${pool.tokenB.displaySymbol}`;
+  }, [pool.tokenA.displaySymbol, pool.tokenB.displaySymbol]);
 
   const rewardTokenLogos = useMemo(() => {
     if (!pool.incentivized) return null;
@@ -63,12 +71,8 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
   }, [getGnotPath, pool.rewardTokens, pool.incentivized]);
 
   const isHideBar = useMemo(() => {
-    const isAllReserveZeroBin40 = bins40?.every(
-      item => Number(item.reserveTokenA) === 0 && Number(item.reserveTokenB) === 0,
-    );
-
-    return isAllReserveZeroBin40;
-  }, [pool, bins40]);
+    return liquiditySegments.length === 0;
+  }, [liquiditySegments.length]);
 
   const aprStr = useMemo(() => {
     if (!pool.apr) return "-";
@@ -145,7 +149,7 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
               </div>
             </div>
             <div className="pool-content" onClick={(e: React.MouseEvent<HTMLDivElement>) => e.stopPropagation()}>
-              {isLoadingBins40 ? (
+              {isLoadingLiquiditySegments ? (
                 <div className="bins-loading-wrapper">
                   <LoadingSpinner size="MEDIUM" />
                 </div>
@@ -153,23 +157,23 @@ const IncentivizedPoolCard: React.FC<IncentivizedPoolCardProps> = ({ pool, route
                 <PoolGraph
                   tokenA={pool.tokenA}
                   tokenB={pool.tokenB}
-                  bins={bins40 ?? []}
+                  liquiditySegments={liquiditySegments}
                   currentTick={pool.currentTick}
+                  currentPrice={pool.price}
                   width={258}
                   height={80}
                   mouseover
                   themeKey={themeKey}
                   position="top"
                   offset={40}
-                  poolPrice={pool?.price || 1}
                   disabled={isHideBar}
                 />
               )}
               <div className="price-section">
                 <span className="label-text">{t("Earn:incentiPools.card.current.price")}</span>
-                <span className="label-text">{`1 ${pool.tokenA.symbol} = ${numberToFormat(pool.price, {
+                <span className="label-text">{`1 ${pool.tokenA.displaySymbol} = ${numberToFormat(pool.price, {
                   decimals: 2,
-                })} ${pool.tokenB.symbol}`}</span>
+                })} ${pool.tokenB.displaySymbol}`}</span>
               </div>
             </div>
           </div>

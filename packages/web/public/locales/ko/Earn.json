@@ -50,6 +50,7 @@
   "positions": {
     "addPositionBtn": "신규 포지션",
     "card": {
+      "claimedRewards": "수령한 보상",
       "claimRewards": "청구 가능 보상",
       "dailyEarn": "일일 수익",
       "hideRange": "범위 숨기기",

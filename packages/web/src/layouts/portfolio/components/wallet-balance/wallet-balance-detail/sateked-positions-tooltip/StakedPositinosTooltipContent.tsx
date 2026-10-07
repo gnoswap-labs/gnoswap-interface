@@ -2,6 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import { getDateUtcToLocal } from "@common/utils/date-util";
+import IconLpToken from "@components/common/icons/IconLpToken";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
 import * as S from "./StakedPositinosTooltipContent.styles";
@@ -26,7 +27,13 @@ const StakedPostionsTooltipContent: React.FC<StakedPostionsTooltipContentProps> 
           <>
             <S.TokenItem key={index}>
               <S.ItemHeader>
-                <MissingLogo url={item.tokenUri} symbol={`ID #${item.lpId}`} width={18} mobileWidth={16} />
+                <MissingLogo
+                  url={item.tokenUri}
+                  fallback={<IconLpToken />}
+                  symbol={`ID #${item.lpId}`}
+                  width={18}
+                  mobileWidth={16}
+                />
                 <S.ItemHeaderSymbol>ID #{item.lpId}</S.ItemHeaderSymbol>
               </S.ItemHeader>
               <S.DataGrid>

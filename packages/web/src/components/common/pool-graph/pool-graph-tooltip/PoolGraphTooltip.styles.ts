@@ -13,6 +13,17 @@ export const PoolGraphTooltipContainer = styled.div`
     ${fonts.body12};
     line-height: 1em;
 
+    .price-row {
+      display: flex;
+      gap: 4px;
+      color: ${({ theme }) => theme.color.text02};
+      white-space: nowrap;
+
+      .price-value {
+        color: ${({ theme }) => theme.color.text02};
+      }
+    }
+
     .row {
       display: flex;
       flex-direction: row;
@@ -47,13 +58,10 @@ export const PoolGraphTooltipContainer = styled.div`
       color: ${({ theme }) => theme.color.text04};
       justify-content: space-between;
       width: 100%;
+      padding: 3px 0;
 
       &.mt-8 {
         margin-top: 8px;
-      }
-
-      .row {
-        padding: 3px 0;
       }
     }
 
@@ -63,6 +71,10 @@ export const PoolGraphTooltipContainer = styled.div`
       color: ${({ theme }) => theme.color.text02};
       gap: 8px;
       width: 100%;
+
+      &.pool-liquidity-content {
+        margin-top: 8px;
+      }
 
       .row {
         padding: 4px 0;
@@ -113,6 +125,12 @@ export const PoolGraphTooltipContainer = styled.div`
 
       & .small-font {
         font-size: 10px;
+      }
+
+      & .token-price-value {
+        color: ${({ theme }) => theme.color.text04};
+        margin-left: 4px;
+        white-space: nowrap;
       }
 
       &.w-100 {

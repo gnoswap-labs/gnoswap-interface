@@ -45,7 +45,6 @@ export const Default: Story = {
         width={1440}
         showPagination={false}
         isLoading={false}
-        checkStakedPool={() => true}
       />
     ),
   },

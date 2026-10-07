@@ -14,5 +14,5 @@ export default meta;
 type Story = StoryObj<typeof StakePosition>;
 
 export const Default: Story = {
-  render: () => <StakePositionContainer />,
+  render: () => <StakePositionContainer onOpenVideoGuide={() => {}} />,
 };

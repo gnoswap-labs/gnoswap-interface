@@ -5,13 +5,16 @@ import { IncentivizePoolModel, PoolModel } from "@models/pool/pool-model";
 
 import { QUERY_KEY } from "../query-keys";
 
-export const useGetIncentivizePoolList = (options?: UseQueryOptions<IncentivizePoolModel[], Error>) => {
+export const useGetIncentivizePoolList = (
+  address?: string,
+  options?: UseQueryOptions<IncentivizePoolModel[], Error>,
+) => {
   const { poolRepository } = useGnoswapContext();
 
   return useQuery<IncentivizePoolModel[], Error>({
-    queryKey: [QUERY_KEY.incentivizePools],
+    queryKey: [QUERY_KEY.incentivizePools, address],
     queryFn: async () => {
-      const data = await poolRepository.getIncentivizePools();
+      const data = await poolRepository.getIncentivizePools(address);
       data.sort((a: PoolModel, b: PoolModel) => -Number(a.price) + Number(b.price));
       return data;
     },

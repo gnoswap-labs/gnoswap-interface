@@ -30,12 +30,19 @@ const VotingProgressBar: React.FC<VotingProgressBarProps> = ({
     return Boolean(yes) || Boolean(no);
   }, [yes, no]);
 
-  const yesRate = (100 * yes) / max;
-  const noRate = (100 * no) / max;
+  const getProgressRate = (value: number) => {
+    if (!max) return 0;
+
+    return Math.min((100 * value) / max, 100);
+  };
+
+  const yesRate = getProgressRate(yes);
+  const noRate = getProgressRate(no);
+  const totalRate = Math.min(yesRate + noRate, 100);
 
   return (
     <ProgressWrapper>
-      <ProgressBar rateWidth={`${yesRate}%`} noOfQuorumWidth={`${Number(yesRate) + Number(noRate)}%`}>
+      <ProgressBar rateWidth={`${yesRate}%`} noOfQuorumWidth={`${totalRate}%`}>
         <FloatingTooltip
           className="float-progress"
           position="top"

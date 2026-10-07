@@ -140,29 +140,6 @@ export const PoolAddLiquidityWrapper = styled.section`
       fill: ${({ theme }) => theme.color.icon07};
     }
   }
-  .btn-one-click {
-    cursor: pointer;
-    color: ${({ theme }) => theme.color.text03};
-    width: 100%;
-    ${mixins.flexbox("row", "center", "center")};
-    gap: 4px;
-    ${fonts.body12}
-    svg {
-      width: 16px;
-      height: 16px;
-      * {
-        fill: ${({ theme }) => theme.color.icon07};
-      }
-    }
-    &:hover {
-      color: ${({ theme }) => theme.color.text07};
-      svg {
-        * {
-          fill: ${({ theme }) => theme.color.icon06};
-        }
-      }
-    }
-  }
   ${media.mobile} {
     width: 100%;
     margin: 0 auto;
@@ -178,9 +155,6 @@ export const PoolAddLiquidityWrapper = styled.section`
       span {
         ${fonts.body9};
       }
-    }
-    .btn-one-click {
-      ${fonts.p4}
     }
   }
 `;

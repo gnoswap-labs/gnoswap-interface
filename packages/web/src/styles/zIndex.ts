@@ -1,4 +1,5 @@
 export enum Z_INDEX {
+  snackbar = 900,
   dropdown = 1000,
   sticky = 1020,
   fixed = 1030,

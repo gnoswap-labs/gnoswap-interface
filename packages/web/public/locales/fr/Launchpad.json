@@ -167,7 +167,7 @@
       "tokensDistributed": "Jetons distribués",
       "totalDeposits": "Dépôt total"
     },
-    "description": "Mise en jeu pour {{month}}.<br/>Récompenses à réclamer à partir de<br/>après {{day}} jours.",
+    "description": "Piquetage pour {{month}}.",
     "title": "Piscine {{idx}}"
   },
   "projects": {

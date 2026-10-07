@@ -1,6 +1,6 @@
 import { usePoolData } from "@hooks/pool/data/use-pool-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useGetPositionsByAddress, useMakePoolPositions } from "@query/positions";
 import { useLoading } from "@hooks/common/use-loading";
 import { QueryKey, UseQueryOptions } from "@tanstack/react-query";
@@ -8,18 +8,19 @@ import { PositionModel } from "@models/position/position-model";
 
 export interface UsePositionDataOption {
   address?: string;
-  isClosed?: boolean;
   poolPath?: string | null;
   page?: number;
   limit?: number;
+  /** API option: when true, include closed positions in the server response. */
   withClosed?: boolean;
+  withAvailableStake?: boolean;
   scopeId?: string;
   queryOption?: UseQueryOptions<PositionModel[], Error, PositionModel[], QueryKey>;
 }
 
 export const usePositionData = (options?: UsePositionDataOption) => {
   const { account, connected: walletConnected } = useWallet();
-  const { pools, loading: isLoadingPool } = usePoolData();
+  const { pools, loading: isLoadingPool, isFetchedPools, isError: isPoolError } = usePoolData();
 
   const fetchedAddress = useMemo(() => {
     return options?.address || account?.address;
@@ -30,17 +31,22 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     refetch,
     isError,
     isFetched: isFetchedPosition,
+    isFetching: isFetchingPosition,
     isLoading: isLoadingPosition,
   } = useGetPositionsByAddress({
     address: fetchedAddress as string,
-    isClosed: options?.isClosed,
     poolPath: options?.poolPath,
     page: options?.page,
     limit: options?.limit,
     withClosed: options?.withClosed,
+    withAvailableStake: options?.withAvailableStake,
   });
 
   const { totalCount: totalPositionCount = 0, positions: rawPositions = [] } = data ?? {};
+  // Keep a previous result available while a filter-specific query is transitioning,
+  // but never treat a completed failed request as an empty result.
+  const hasPositionData = data !== undefined;
+  const isPositionDataAvailable = hasPositionData;
 
   const { isLoading: isCommonLoading } = useLoading();
 
@@ -48,8 +54,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     data: positions = [],
     isFetched: isFetchedPoolPositions,
     isLoading: isLoadingPoolPositions,
-    refetch: refetchPooPositions,
-  } = useMakePoolPositions(rawPositions, pools, isFetchedPosition, options?.scopeId || "");
+  } = useMakePoolPositions(rawPositions, pools, isPositionDataAvailable, isFetchedPools, options?.scopeId || "");
 
   const availableStake = useMemo(() => {
     if (!isFetchedPoolPositions) {
@@ -86,19 +91,18 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     );
   }, [isCommonLoading, isLoadingPool, isLoadingPoolPositions, isLoadingPosition, walletConnected, account]);
 
-  useEffect(() => {
-    refetchPooPositions();
-  }, [data, pools, refetchPooPositions]);
-
   return {
     availableStake,
-    isError,
+    isError: isError || isPoolError,
+    hasPositionData,
+    isFetchingWithoutData: isFetchingPosition && data === undefined,
     positions,
     totalPositionCount,
     refetch,
     checkStakedPool,
     getPositions,
-    isFetchedPosition: isFetchedPosition && isFetchedPoolPositions,
+    isFetchedPosition: isFetchedPosition && hasPositionData && isFetchedPoolPositions,
+    isPositionDataAvailable: isPositionDataAvailable && isFetchedPoolPositions,
     loading,
     isLoadingPool,
   };

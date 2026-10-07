@@ -13,7 +13,6 @@
       "chain": "チェーン"
     },
     "empty": "トークンが見つかりません",
-    "hideZeroAmt": "ゼロ金額を隠す",
     "title": "資産"
   },
   "assetSendModal": {

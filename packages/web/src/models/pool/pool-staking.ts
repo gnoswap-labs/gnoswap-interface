@@ -1,7 +1,9 @@
+import { YnType } from "@common/types/global-prop-types";
 import { INCENTIVE_TYPE } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 
 export interface PoolStakingModel {
+  incentiveId: string | null;
   incentiveType: INCENTIVE_TYPE;
   tier: string;
   poolPath: string;
@@ -11,6 +13,8 @@ export interface PoolStakingModel {
   startTimestamp: string;
   endTimestamp: string;
   unvestedAmount: string;
+  claimableUnvestedAmount: string;
+  isRefunded: YnType;
   createdBlockHeight: string;
 }
 

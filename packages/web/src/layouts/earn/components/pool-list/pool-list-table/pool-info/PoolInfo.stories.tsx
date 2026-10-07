@@ -1,6 +1,6 @@
+import { css, Theme } from "@emotion/react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import { fn } from "@storybook/test";
-import { css, Theme } from "@emotion/react";
 
 import { IncentivizePoolCardInfoWithPriceGrade } from "@models/pool/info/pool-card-info";
 import PoolInfo from "./PoolInfo";
@@ -15,6 +15,7 @@ const pool: IncentivizePoolCardInfoWithPriceGrade = {
     path: "gno.land/r/bar",
     decimals: 4,
     symbol: "BAR",
+    displaySymbol: "BAR",
     logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
     type: "GRC20",
     priceID: "gno.land/r/bar",
@@ -27,6 +28,7 @@ const pool: IncentivizePoolCardInfoWithPriceGrade = {
     path: "gno.land/r/foo",
     decimals: 4,
     symbol: "FOO",
+    displaySymbol: "FOO",
     logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_foo.svg",
     type: "GRC20",
     priceID: "gno.land/r/foo",
@@ -36,10 +38,12 @@ const pool: IncentivizePoolCardInfoWithPriceGrade = {
   feeTier: "FEE_500",
   liquidity: "$1,182,797",
   apr: "0.12%",
+  stakingApr: "0",
   volume24h: "$1,182,797",
   fees24h: "$131.937491",
   rewardTokens: [],
   incentivized: true,
+  hasStakedPosition: false,
   currentTick: 0,
   price: 0,
   tvl: "0",

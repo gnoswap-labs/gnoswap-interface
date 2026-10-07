@@ -1,1 +1,6 @@
-{"goBackBtn":"Quay lại","issues":"Chúng tôi hiện đang gặp sự cố kỹ thuật. Làm ơn hãy kiểm tra lại sớm.","notFound":"Trang không tìm thấy!","rightBack":"Chúng tôi sẽ quay lại ngay."}
+{
+  "goBackBtn": "Quay lại",
+  "issues": "Hiện tại chúng tôi đang gặp một số sự cố kỹ thuật.\nVui lòng quay lại sau.",
+  "notFound": "Không tìm thấy trang!",
+  "rightBack": "Chúng tôi sẽ quay lại ngay."
+}

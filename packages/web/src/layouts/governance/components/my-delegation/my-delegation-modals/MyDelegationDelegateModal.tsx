@@ -19,22 +19,25 @@ import withLocalModal from "@components/hoc/with-local-modal";
 import { EXT_URL } from "@constants/external-url.contant";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
+import { useGetMyDelegation } from "@query/governance";
 import { nullVerifiedDelegateInfo, VerifiedDelegateInfo } from "@repositories/governance";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { isValidAddress } from "@utils/validation-utils";
+import { openExternalUrl } from "@utils/url-utils";
 
 import DelegateeChip from "./delegatee-chip/DelegateeChip";
 
 import {
   MyDelegationModalWrapper,
+  MyDelNotice,
   MyDelWarningContentWrapper,
   ToolTipContentWrapper,
 } from "./MyDelegationModals.styles";
 import { rawToDisplayAmount } from "@utils/number-utils";
 
 interface MyDelegationDelegateModalProps {
-  currentDelegatedAmount: number;
-  totalDelegatedAmount: number;
+  currentDelegatedDisplayAmount: number;
+  totalDelegatedDisplayAmount: number;
   apy: number;
   delegatees: VerifiedDelegateInfo[];
   isWalletConnected: boolean;
@@ -44,8 +47,8 @@ interface MyDelegationDelegateModalProps {
 }
 
 const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
-  currentDelegatedAmount,
-  totalDelegatedAmount,
+  currentDelegatedDisplayAmount,
+  totalDelegatedDisplayAmount,
   apy,
   delegatees,
   isWalletConnected,
@@ -67,7 +70,12 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   const [tmpDelegatee, setTmpDelegatee] = useState<VerifiedDelegateInfo>(defaultDelegateeInfo);
   const [selfAddress, setSelfAddress] = useState("");
 
-  const safeDisplayAmount = (rawValue: string | number): number => {
+  const toSafeDisplayAmountNumber = (displayValue: string | number): number => {
+    const result = Number(displayValue);
+    return isNaN(result) ? 0 : result;
+  };
+
+  const toDisplayVotingPowerFromRaw = (rawValue: string | number): number => {
     const result = rawToDisplayAmount(rawValue, XGNS_TOKEN.decimals);
     return isNaN(result) ? 0 : result;
   };
@@ -83,12 +91,55 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
     return t("Governance:myDel.delModal.selectDel.selectBtn");
   }, [isValidSelfAddress, selfAddress, t]);
 
+  const isSelfDelegateSelected = useMemo(() => {
+    return tmpDelegatee.name === selfDelegateName;
+  }, [tmpDelegatee.name, selfDelegateName]);
+
+  const selectedDelegateAddress = useMemo(() => {
+    if (tmpDelegatee.address !== "") {
+      return tmpDelegatee.address;
+    }
+
+    if (isSelfDelegateSelected) {
+      return selfAddress;
+    }
+
+    return "";
+  }, [tmpDelegatee.address, isSelfDelegateSelected, selfAddress]);
+
+  const isValidSelectedDelegateAddress = useMemo(() => {
+    return isValidAddress(selectedDelegateAddress);
+  }, [selectedDelegateAddress]);
+
+  // Look up the verified entry from the latest list (not the tmpDelegatee snapshot),
+  // also when a verified address is typed into Self-Delegate, so refetches are reflected.
+  const selectedVerifiedDelegate = useMemo(() => {
+    if (selectedDelegateAddress === "") {
+      return undefined;
+    }
+    return delegatees.find(item => item.address === selectedDelegateAddress);
+  }, [delegatees, selectedDelegateAddress]);
+
+  const { data: selectedDelegateDelegationInfo } = useGetMyDelegation(
+    {
+      address: selectedDelegateAddress,
+    },
+    {
+      enabled: isValidSelectedDelegateAddress && !selectedVerifiedDelegate,
+    },
+  );
+
+  // Verified delegates carry aggregate voting power in the list; other addresses use
+  // their received voting weight, which stays 0 until that address's summary loads.
+  const selectedDelegateVotingPowerRaw =
+    selectedVerifiedDelegate?.votingPower ?? selectedDelegateDelegationInfo?.votingPower ?? "0";
+
   const votingPowerPercentage = useMemo(() => {
-    const displayVotingPower = safeDisplayAmount(tmpDelegatee.votingPower);
-    const displayTotalDelegated = safeDisplayAmount(totalDelegatedAmount);
+    const displayVotingPower = toDisplayVotingPowerFromRaw(selectedDelegateVotingPowerRaw);
+    const displayTotalDelegated = toSafeDisplayAmountNumber(totalDelegatedDisplayAmount);
 
     return displayTotalDelegated ? (displayVotingPower * 100) / displayTotalDelegated : 0;
-  }, [tmpDelegatee.votingPower, totalDelegatedAmount]);
+  }, [selectedDelegateVotingPowerRaw, totalDelegatedDisplayAmount]);
 
   const handleClickSelfDelegateeAddress = useCallback((address: string) => setSelfAddress(address), [delegatees]);
 
@@ -148,8 +199,8 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   );
 
   const delegationCalculations = useMemo(() => {
-    const displayTotalDelegated = safeDisplayAmount(totalDelegatedAmount);
-    const displayCurrentDelegated = safeDisplayAmount(currentDelegatedAmount);
+    const displayTotalDelegated = toSafeDisplayAmountNumber(totalDelegatedDisplayAmount);
+    const displayCurrentDelegated = toSafeDisplayAmountNumber(currentDelegatedDisplayAmount);
     const inputAmount = Number(gnsAmountInput.amount) || 0;
 
     const currentPercentage = displayTotalDelegated ? (displayCurrentDelegated / displayTotalDelegated) * 100 : 0;
@@ -165,7 +216,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
       currentPercentage,
       newPercentage,
     };
-  }, [currentDelegatedAmount, totalDelegatedAmount, gnsAmountInput.amount]);
+  }, [currentDelegatedDisplayAmount, totalDelegatedDisplayAmount, gnsAmountInput.amount]);
 
   const showDelegateInfo = () => (
     <>
@@ -199,7 +250,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
                 className="addr"
                 onClick={e => {
                   e.stopPropagation();
-                  window.open(getAccountUrl(delegatee.address));
+                  openExternalUrl(getAccountUrl(delegatee.address));
                 }}
               >
                 {[delegatee.address.slice(0, 8), delegatee.address.slice(32, 40)].join("...")}
@@ -220,8 +271,8 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           changeAmount={gnsAmountInput.changeAmount}
           changeToken={() => {}}
           style={{ padding: "16px" }}
-          integersOnly={true}
         />
+        <MyDelNotice>{t("Governance:myDel.delModal.step2.notice")}</MyDelNotice>
       </article>
 
       <article>
@@ -230,7 +281,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           <div className="label">{t("Governance:myDel.delModal.step3.currentlyDel")}</div>
           <div className="value">
             <MissingLogo symbol={XGNS_TOKEN.symbol} url={XGNS_TOKEN.logoURI} width={24} />
-            {formatOtherPrice(safeDisplayAmount(currentDelegatedAmount), {
+            {formatOtherPrice(toSafeDisplayAmountNumber(currentDelegatedDisplayAmount), {
               isKMB: false,
               usd: false,
             })}
@@ -288,7 +339,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
         content={
           <MyDelWarningContentWrapper>
             {t("Governance:myDel.delModal.warning.description")}
-            <a href={EXT_URL.DOCS.XGNS} target="_blank" className="learn-more-box">
+            <a href={EXT_URL.DOCS.XGNS} target="_blank" rel="noopener noreferrer" className="learn-more-box">
               <p>{t("common:learnMore")}</p>
               <IconNewTab color={theme.color.icon21} />
             </a>
@@ -384,8 +435,8 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
         <div className="delegatee-info-rows">
           <div className="label">{t("Governance:myDel.delModal.selectDel.votingPower")}</div>
           <div className="value no-wrap">
-            <MissingLogo symbol="xGNS" url={XGNS_TOKEN.logoURI} width={24} />
-            {formatOtherPrice(safeDisplayAmount(tmpDelegatee.votingPower), {
+            <MissingLogo symbol={XGNS_TOKEN.symbol} url={XGNS_TOKEN.logoURI} width={24} />
+            {formatOtherPrice(toDisplayVotingPowerFromRaw(selectedDelegateVotingPowerRaw), {
               isKMB: false,
               usd: false,
             })}{" "}
@@ -395,15 +446,15 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
         </div>
         <div className="delegatee-info-rows">
           <div className="label">{t("Governance:myDel.delModal.selectDel.address")}</div>
-          {tmpDelegatee.address !== "" ? (
+          {selectedDelegateAddress !== "" ? (
             <div
               className="value clickable"
               onClick={e => {
                 e.stopPropagation();
-                window.open(getAccountUrl(tmpDelegatee.address));
+                openExternalUrl(getAccountUrl(selectedDelegateAddress));
               }}
             >
-              {[tmpDelegatee.address.slice(0, 8), tmpDelegatee.address.slice(32, 40)].join("...")}
+              {[selectedDelegateAddress.slice(0, 8), selectedDelegateAddress.slice(32, 40)].join("...")}
               <IconNewTab />
             </div>
           ) : (
@@ -421,7 +472,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
               className="value clickable"
               onClick={e => {
                 e.stopPropagation();
-                window.open(tmpDelegatee.website);
+                openExternalUrl(tmpDelegatee.website);
               }}
             >
               {tmpDelegatee.website}
@@ -432,6 +483,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           )}
         </div>
       </article>
+      <MyDelNotice>{t("Governance:myDel.delModal.selectDel.notice")}</MyDelNotice>
       <Button
         onClick={() => {
           if (tmpDelegatee.address === "") {
@@ -453,7 +505,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   );
 
   return (
-    <Modal className={stage === "MAIN" ? "" : "large-gap selector-box"}>
+    <Modal className={stage === "MAIN" ? "" : "selector-box"}>
       <div className="modal-wrapper">{stage === "MAIN" ? showDelegateInfo() : showDelegateeSelector()}</div>
     </Modal>
   );

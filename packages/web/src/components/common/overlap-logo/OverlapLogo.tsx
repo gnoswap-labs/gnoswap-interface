@@ -9,6 +9,7 @@ import {
 export interface ILogoData {
   src: string;
   symbol: string;
+  displaySymbol: string;
   tooltipContent?: string;
 }
 
@@ -31,7 +32,7 @@ const OverlapLogo = ({ logos, size = 36 }: OverlapLogoProps) => {
             {logo.src ? (
               <img src={logo.src} alt="logo-image" />
             ) : (
-              <div className="missing-logo right-logo">{logo.symbol}</div>
+              <div className="missing-logo right-logo">{logo.displaySymbol}</div>
             )}
           </OverlapLogoImageWrapper>
         </Tooltip>

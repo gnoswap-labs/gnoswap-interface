@@ -3,7 +3,7 @@ import { useGetTokens } from "@query/token";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 
 export const useTokenImage = () => {
-  const { data: { tokens = [] } = {} } = useGetTokens();
+  const { data: { tokens = [] } = {} } = useGetTokens(true);
   const getTokenImage = useCallback(
     (tokenId: string): string | null => {
       const temp = tokenId === WRAPPED_GNOT_PATH ? "ugnot" : tokenId;

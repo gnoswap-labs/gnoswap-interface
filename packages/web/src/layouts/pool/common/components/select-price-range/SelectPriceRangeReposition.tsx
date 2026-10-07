@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import { sanitizeHtml } from "@utils/sanitize-html";
 
 import IconInfo from "@components/common/icons/IconInfo";
 import IconStrokeArrowRight from "@components/common/icons/IconStrokeArrowRight";
@@ -9,6 +10,7 @@ import { SelectPool } from "@hooks/pool/data/use-select-pool";
 import { TokenModel } from "@models/token/token-model";
 
 import SelectPriceRangeCustomReposition from "./select-price-range-custom/SelectPriceRangeCustomReposition";
+import { formatPriceRangeApr } from "./select-price-range.utils";
 
 import { SelectPriceRangeItemWrapper, SelectPriceRangeWrapper, TooltipContentWrapper } from "./SelectPriceRange.styles";
 
@@ -117,12 +119,8 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
   }, [priceRange.type, t]);
 
   const aprStr = useMemo(() => {
-    const apr = priceRange.apr;
-    if (apr) {
-      return `${apr}%`;
-    }
-    return "-";
-  }, [priceRange]);
+    return formatPriceRangeApr(priceRange.apr);
+  }, [priceRange.apr]);
 
   const onClickItem = useCallback(() => {
     changePriceRange(priceRange);
@@ -137,7 +135,9 @@ export const SelectPriceRangeItem: React.FC<SelectPriceRangeItemProps> = ({
           <Tooltip
             placement="top"
             FloatingContent={
-              <TooltipContentWrapper dangerouslySetInnerHTML={{ __html: tooltip }}></TooltipContentWrapper>
+              <TooltipContentWrapper
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(tooltip) }}
+              ></TooltipContentWrapper>
             }
           >
             <IconInfo className="tooltip-icon" />

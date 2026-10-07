@@ -13,7 +13,6 @@
       "chain": "链"
     },
     "empty": "未找到代币",
-    "hideZeroAmt": "隐藏零金额",
     "title": "资产"
   },
   "assetSendModal": {

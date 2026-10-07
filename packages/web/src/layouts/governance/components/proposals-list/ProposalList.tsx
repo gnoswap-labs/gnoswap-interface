@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 
 import withIntersection from "@components/hoc/with-intersection";
@@ -11,6 +11,7 @@ import ProposalHeader from "./proposal-header/ProposalHeader";
 import ViewProposalModal from "./view-proposal-modal/ViewProposalModal";
 
 import { CreateProposalModalOpenOption } from "@hooks/governance/ui/use-create-proposal-modal";
+import { isQuorumReached } from "@utils/governance-utils";
 import { ProposalListWrapper } from "./ProposalList.styles";
 
 export interface ProposalListProps {
@@ -23,12 +24,11 @@ export interface ProposalListProps {
   isShowActiveOnly: boolean;
   address: string;
   toggleIsShowActiveOnly: () => void;
-  myVotingWeight: number;
   proposalCreationThreshold: number;
   proposalList: ProposalItemInfo[];
   fetchMore: () => void;
   selectedProposalId: number;
-  setSelectedProposalId: Dispatch<SetStateAction<number>>;
+  setSelectedProposalId: (proposalId: number) => void;
   openCreateProposalModal: (options: CreateProposalModalOpenOption) => void;
   executablePackages: {
     pkgName: string;
@@ -71,7 +71,6 @@ const ProposalList: React.FC<ProposalListProps> = ({
   address,
   isShowActiveOnly,
   toggleIsShowActiveOnly,
-  myVotingWeight,
   proposalCreationThreshold,
   proposalList,
   fetchMore,
@@ -93,7 +92,6 @@ const ProposalList: React.FC<ProposalListProps> = ({
   const onClickCreateProposal = () => {
     openCreateProposalModal({
       breakpoint: breakpoint,
-      myVotingWeight: myVotingWeight,
       proposalCreationThreshold: proposalCreationThreshold,
       executablePackages: executablePackages,
       executableFunctions: executableFunctions,
@@ -114,6 +112,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
               return "proposal.tooltip.rejected";
             }
           case "PASSED":
+          case "EXECUTABLE":
           case "EXECUTED":
           case "EXPIRED":
             return "proposal.tooltip.passed";
@@ -131,8 +130,7 @@ const ProposalList: React.FC<ProposalListProps> = ({
 
   const calculateIsMajorityVoted = (proposalDetail: ProposalItemInfo) => {
     const { votingInfo } = proposalDetail;
-    const totalVoting = votingInfo.yesVotingWeight + votingInfo.noVotingWeight;
-    return totalVoting >= votingInfo.quorumAmount;
+    return isQuorumReached(votingInfo);
   };
 
   return (

@@ -1,7 +1,11 @@
-export enum LeaderboardVisibilityStatus {
-  HIDDEN = "Y",
-  VISIBLE = "N",
-}
+import { YN_TYPE, YnType } from "@common/types/global-prop-types";
+
+export const LeaderboardVisibilityStatus = {
+  HIDDEN: YN_TYPE.YES,
+  VISIBLE: YN_TYPE.NO,
+} as const satisfies Record<string, YnType>;
+
+export type LeaderboardVisibilityStatus = (typeof LeaderboardVisibilityStatus)[keyof typeof LeaderboardVisibilityStatus];
 
 export interface LeaderboardUser {
   accountAddress: string;

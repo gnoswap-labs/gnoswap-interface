@@ -15,7 +15,7 @@ import TrendingCryptoCardList from "../../components/trending-crypto-card-list/T
 const TrendingCryptoCardListContainer: React.FC = () => {
   const router = useCustomRouter();
   const path = router.getTokenPath();
-  const { data: { tokens = [] } = {}, isLoading: isLoadingListToken } = useGetTokens();
+  const { data: { tokens = [] } = {}, isLoading: isLoadingListToken } = useGetTokens(true);
   const { data: { trending = [] } = {}, isLoading } = useGetChainInfo();
   const { gnot, wugnotPath } = useGnotToGnot();
   const { isLoading: isLoadingTokenDetail } = useGetTokenDetails(path === "ugnot" ? wugnotPath : path, {
@@ -33,6 +33,7 @@ const TrendingCryptoCardListContainer: React.FC = () => {
           path: item.tokenPath === wugnotPath ? gnot?.path || "" : item.tokenPath,
           name: item.tokenPath === wugnotPath ? gnot?.name || "" : temp.name,
           symbol: item.tokenPath === wugnotPath ? gnot?.symbol || "" : temp.symbol,
+          displaySymbol: item.tokenPath === wugnotPath ? gnot?.displaySymbol || "" : temp.displaySymbol,
           logoURI: item.tokenPath === wugnotPath ? gnot?.logoURI || "" : temp.logoURI,
           price: formatPrice(item.tokenPrice),
           change: {

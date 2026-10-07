@@ -1,28 +1,30 @@
 import { useTheme } from "@emotion/react";
 import { useCallback, useMemo, useRef } from "react";
 
+import useElementWidth from "@hooks/common/use-element-width";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { DEVICE_TYPE } from "@styles/media";
-import { formatTokenPath } from "@utils/token-utils";
-import useElementWidth from "@hooks/common/use-element-width";
+import { formatDisplayTokenName, formatTokenPath } from "@utils/token-utils";
 
-import { TokenInfoCellWrapper } from "./TokenInfoCell.styles";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import { TokenInfoCellWrapper } from "./TokenInfoCell.styles";
 
 export interface TokenInfoCellProps {
   token: {
     path: string;
     name: string;
     symbol: string;
+    displaySymbol: string;
     logoURI: string;
   };
   isNative: boolean;
   breakpoint?: DEVICE_TYPE;
+  truncateName?: boolean;
 }
 
-function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
-  const { name, path, symbol, logoURI } = token;
+function TokenInfoCell({ token, breakpoint, isNative, truncateName = false }: TokenInfoCellProps) {
+  const { name, path, symbol, displaySymbol, logoURI } = token;
   const theme = useTheme();
   const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
   const elementId = useMemo(() => `${token.path}`, [token.path]);
@@ -36,6 +38,8 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
   const tokenPathDisplay = useMemo(() => {
     return formatTokenPath(path, isNative);
   }, [isNative, path]);
+
+  const displayName = truncateName ? formatDisplayTokenName(name) : name;
 
   const onClickPath = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -55,14 +59,14 @@ function TokenInfoCell({ token, breakpoint, isNative }: TokenInfoCellProps) {
       <div className={`token-name-symbol-path ${breakpoint === DEVICE_TYPE.MOBILE ? "mobile" : ""}`}>
         <div className="token-name-path">
           <strong className="token-name" ref={tokenNameRef} id={elementId}>
-            {name}
+            {displayName}
           </strong>
           <div className="token-link" onClick={onClickPath}>
             <span>{tokenPathDisplay}</span>
             <IconOpenLink fill={theme.color.text04} className="path-link-icon" />
           </div>
         </div>
-        <span className="token-symbol">{symbol}</span>
+        <span className="token-symbol">{displaySymbol}</span>
       </div>
     </TokenInfoCellWrapper>
   );

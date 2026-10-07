@@ -2,9 +2,13 @@ import { ClaimableRewards } from "../model";
 
 export interface GetMyDelegationResponse {
   availableBalance: string;
-  claimableRewards: ClaimableRewards[];
-  claimableRewardUsd: string;
+  claimableGovernanceRewards: ClaimableRewards[];
+  claimableGovernanceRewardUsd: string;
+  claimableLaunchpadRewards: ClaimableRewards[];
+  claimableLaunchpadRewardUsd: string;
   unDelegatedAmount: string;
   withdrawableAmount: string;
-  votingWeight: string;
+  delegatedAmount: string;
+  /** Active voting power delegated TO this address by others (incoming, not outgoing). */
+  votingPower: string;
 }

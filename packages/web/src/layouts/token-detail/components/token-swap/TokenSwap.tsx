@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { cx } from "@emotion/css";
 
@@ -19,6 +19,7 @@ import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
 
 import { CopyTooltip, wrapper } from "./TokenSwap.styles";
 import IconWallet from "@components/common/icons/IconWallet";
+import { MaxNativeAmountParams, useMaxNativeAmount } from "@hooks/gas";
 import { useTokenBalancesDisplay } from "@hooks/token/ui/use-token-balance-display";
 import PriceWarning from "@components/common/price-warning/PriceWarning";
 
@@ -29,13 +30,15 @@ export interface TokenSwapProps {
   themeKey: "dark" | "light";
   dataTokenInfo: DataTokenInfo;
   isLoading: boolean;
-  isLoadingGasInfo: boolean;
   swapButtonText: string;
   isAvailSwap: boolean;
   swapSummaryInfo: SwapSummaryInfo | null;
   swapRouteInfos: SwapRouteInfo[];
   swapTokenInfo: SwapTokenInfo;
   isRefetching: boolean;
+  isSameToken: boolean;
+  additionalTokenATokens?: TokenModel[];
+  additionalTokenBTokens?: TokenModel[];
 
   swapNow: () => void;
   handleSetting: () => void;
@@ -49,6 +52,7 @@ export interface TokenSwapProps {
   switchNetwork: () => void;
   setSwapRateAction: (type: SwapRateAction) => void;
   priceImpactStatus: PriceImpactStatus;
+  makeMaxAmountMessages?: MaxNativeAmountParams["makeMessages"];
 }
 
 function isAmount(str: string) {
@@ -73,7 +77,6 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   changeTokenBAmount,
   switchSwapDirection,
   isLoading,
-  isLoadingGasInfo,
   swapButtonText,
   isAvailSwap,
   swapSummaryInfo,
@@ -82,8 +85,23 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
   priceImpactStatus,
   swapTokenInfo,
   isRefetching,
+  isSameToken,
+  additionalTokenATokens,
+  additionalTokenBTokens,
+  makeMaxAmountMessages,
 }) => {
   const { t } = useTranslation();
+  // The section highlights while its own field has focus. `:focus-within` used
+  // to do this, but it also fired for the MAX button sitting inside.
+  const [focusedField, setFocusedField] = useState<"A" | "B" | null>(null);
+  const { getMaxAmount, loading: loadingMaxAmount, pendingBalance } = useMaxNativeAmount({
+    token: dataTokenInfo.tokenA,
+    amount: dataTokenInfo.tokenAAmount,
+    // Neither the output token nor the balance reaches the input field, yet
+    // both decide what the swap costs: the output picks the route, and the
+    // balance is what the answer was subtracted from.
+    dependsOn: [dataTokenInfo.tokenB?.path, dataTokenInfo.tokenABalance],
+  });
   const tokenA = dataTokenInfo.tokenA;
   const tokenB = dataTokenInfo.tokenB;
   const direction = swapSummaryInfo?.swapDirection;
@@ -118,12 +136,21 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
     [changeTokenBAmount],
   );
 
-  const handleAutoFillTokenA = useCallback(() => {
-    if (connectedWallet) {
-      const formatValue = parseFloat(dataTokenInfo.tokenABalance.replace(/,/g, "")).toString();
-      changeTokenAAmount(formatValue);
-    }
-  }, [changeTokenAAmount, connectedWallet, dataTokenInfo]);
+  const handleAutoFillTokenA = useCallback(async () => {
+    if (!connectedWallet) return;
+
+    // GNOT pays for the swap out of the same balance, so the whole balance is
+    // never swappable. getMaxAmount keeps the full precision of the balance,
+    // which parseFloat would lose past ~16 significant digits.
+    const spendable = await getMaxAmount({
+      balance: dataTokenInfo.tokenABalance,
+      makeMessages: makeMaxAmountMessages,
+    });
+    // Null once the field has moved on: another token, or the user typing.
+    if (spendable === null) return;
+
+    changeTokenAAmount(spendable);
+  }, [changeTokenAAmount, connectedWallet, dataTokenInfo, getMaxAmount, makeMaxAmountMessages, tokenA]);
 
   /**
    * Ensure tokenABalance is a valid value (not empty (“-”) or zero)
@@ -176,22 +203,27 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
         </div>
       </div>
       <div className="inputs">
-        <div className="from">
+        <div className={cx("from", { "is-focused": focusedField === "A" })}>
           <div className="amount">
             <input
               className={cx("amount-text", {
                 "text-opacity": isLoadingTokenA,
+                "amount-pending": !!pendingBalance,
               })}
-              aria-busy={isLoadingTokenA}
-              value={dataTokenInfo.tokenAAmount}
+              aria-busy={isLoadingTokenA || !!pendingBalance}
+              // While the reserve is being measured the whole balance stands in
+              // as a placeholder: the answer is that, less what it costs to send.
+              value={pendingBalance ? "" : dataTokenInfo.tokenAAmount}
               onChange={onChangeTokenAAmount}
-              placeholder="0"
+              onFocus={() => setFocusedField("A")}
+              onBlur={() => setFocusedField(null)}
+              placeholder={pendingBalance ?? "0"}
               autoComplete={"off"}
               spellCheck={"false"}
               inputMode={"decimal"}
             />
             <div className="token">
-              <SelectPairButton token={tokenA} changeToken={changeTokenA} />
+              <SelectPairButton token={tokenA} changeToken={changeTokenA} additionalTokens={additionalTokenATokens} />
             </div>
           </div>
           <div className="info">
@@ -208,27 +240,29 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
                 {balanceADisplay}
               </span>
               {hasTokenABalance && (
-                <button className="balance-max-button" onClick={handleAutoFillTokenA}>
-                  {t("common:max")}
+                <button className="balance-max-button" onClick={handleAutoFillTokenA} disabled={loadingMaxAmount}>
+                  <span className="max-badge">{t("common:max")}</span>
                 </button>
               )}
             </div>
           </div>
         </div>
-        <div className="to">
+        <div className={cx("to", { "is-focused": focusedField === "B" })}>
           <div className="amount">
             <input
-              className={cx("amount-text", { "text-opacity": isLoadingTokenB })}
-              aria-busy={isLoadingTokenB}
-              value={dataTokenInfo.tokenBAmount}
+              className={cx("amount-text", { "text-opacity": isLoadingTokenB, "amount-pending": !!pendingBalance })}
+              aria-busy={isLoadingTokenB || !!pendingBalance}
+              value={pendingBalance ? "" : dataTokenInfo.tokenBAmount}
               onChange={onChangeTokenBAmount}
-              placeholder="0"
+              onFocus={() => setFocusedField("B")}
+              onBlur={() => setFocusedField(null)}
+              placeholder={pendingBalance ? dataTokenInfo.tokenBAmount || "0" : "0"}
               autoComplete={"off"}
               spellCheck={"false"}
               inputMode={"decimal"}
             />
             <div className="token">
-              <SelectPairButton token={tokenB} changeToken={changeTokenB} />
+              <SelectPairButton token={tokenB} changeToken={changeTokenB} additionalTokens={additionalTokenBTokens} />
             </div>
           </div>
           <div className="info">
@@ -253,16 +287,14 @@ const TokenSwap: React.FC<TokenSwapProps> = ({
           </div>
         </div>
       </div>
-      {swapSummaryInfo && isShowInfoSection && (
+      {!isSameToken && swapSummaryInfo && isShowInfoSection && (
         <SwapCardContentDetail
           swapSummaryInfo={swapSummaryInfo}
           swapRouteInfos={swapRouteInfos}
           isLoading={isLoading}
-          isLoadingGasInfo={isLoadingGasInfo}
           setSwapRateAction={setSwapRateAction}
           priceImpactStatus={priceImpactStatus}
           swapTokenInfo={swapTokenInfo}
-          connectedWallet={connectedWallet}
         />
       )}
       <div className="footer">

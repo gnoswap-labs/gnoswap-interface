@@ -2,6 +2,7 @@ import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { GetLaunchpadProjectsRequestParameters } from "./request";
 import { LaunchpadProjectSummaryModel } from "@models/launchpad";
 import { LaunchpadProjectsInfo, LaunchpadProjectDetailsInfo, LaunchpadParticipationInfo } from "./model";
+import { TokenModel } from "@models/token/token-model";
 
 export interface LaunchpadRepository {
   getLaunchpadSummary(): Promise<LaunchpadProjectSummaryModel>;
@@ -14,6 +15,7 @@ export interface LaunchpadRepository {
 
   depositLaunchpadPoolBy(
     projectPoolID: string,
+    gnsToken: TokenModel,
     gnsTokenAmount: bigint,
     caller: string,
     referrerAddress: string | null,

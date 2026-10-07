@@ -2,12 +2,21 @@ import { useMemo } from "react";
 
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { CardListPoolInfo } from "@models/common/card-list-item-info";
+import { PoolModel } from "@models/pool/pool-model";
 import { PoolListInfo } from "@models/pool/info/pool-list-info";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { useGetPoolList } from "@query/pools";
+const EMPTY_POOLS: PoolModel[] = [];
 
 export const usePoolData = () => {
-  const { data: pools = [], isLoading: loading, isFetched: isFetchedPools, refetch: refetchPools } = useGetPoolList();
+  const {
+    data: poolData,
+    isLoading: loading,
+    isFetched: isFetchedQuery,
+    isError,
+    refetch: refetchPools,
+  } = useGetPoolList();
+  const pools = poolData ?? EMPTY_POOLS;
 
   const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
 
@@ -20,6 +29,7 @@ export const usePoolData = () => {
           ? {
               ...item.tokenA,
               symbol: getGnotPath(item.tokenA).symbol,
+              displaySymbol: getGnotPath(item.tokenA).displaySymbol,
               logoURI: getGnotPath(item.tokenA).logoURI,
               name: getGnotPath(item.tokenA).name,
             }
@@ -28,6 +38,7 @@ export const usePoolData = () => {
           ? {
               ...item.tokenB,
               symbol: getGnotPath(item.tokenB).symbol,
+              displaySymbol: getGnotPath(item.tokenB).displaySymbol,
               logoURI: getGnotPath(item.tokenB).logoURI,
               name: getGnotPath(item.tokenB).name,
             }
@@ -51,12 +62,14 @@ export const usePoolData = () => {
         tokenA: {
           ...pool.tokenA,
           symbol: getGnotPath(pool.tokenA).symbol,
+          displaySymbol: getGnotPath(pool.tokenA).displaySymbol,
           logoURI: getGnotPath(pool.tokenA).logoURI,
           name: getGnotPath(pool.tokenA).name,
         },
         tokenB: {
           ...pool.tokenB,
           symbol: getGnotPath(pool.tokenB).symbol,
+          displaySymbol: getGnotPath(pool.tokenB).displaySymbol,
           logoURI: getGnotPath(pool.tokenB).logoURI,
           name: getGnotPath(pool.tokenB).name,
         },
@@ -71,7 +84,8 @@ export const usePoolData = () => {
   }
 
   return {
-    isFetchedPools,
+    isError,
+    isFetchedPools: isFetchedQuery && poolData !== undefined,
     higestAPRs,
     pools,
     poolListInfos,

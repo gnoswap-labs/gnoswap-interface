@@ -92,6 +92,13 @@ const globalStyle = (theme: Theme) => css`
     list-style: none;
   }
 
+  /* Engines without ::-webkit-scrollbar still need the standard hiding rule */
+  @supports not selector(::-webkit-scrollbar) {
+    * {
+      scrollbar-width: none;
+    }
+  }
+
   ::-webkit-scrollbar {
     width: 0px;
     display: none;

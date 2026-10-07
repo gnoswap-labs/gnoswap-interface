@@ -1,16 +1,21 @@
 import React from "react";
+import { useAtom } from "jotai";
 
 import useCustomRouter from "./use-custom-router";
+import { PACKAGE_REFERRAL_ADDRESS } from "@constants/environment.constant";
 import { GNOSWAP_REFERRAL_CODE } from "@states/common";
+import { ReferralState } from "@states/index";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import {
+  hasValidRegisteredReferrer,
+  ReferralTransactionIntent,
+  resolveReferralAddressForTransaction,
+  resolveStoredReferralTransactionIntent,
+  StoredReferrerInfo,
+} from "@utils/referral-utils";
 import { isValidAddress } from "@utils/validation-utils";
 import { QUERY_PARAMETER } from "@constants/page.constant";
 import { useGetLeaderboardByAddress } from "@query/leaderboard";
-
-export interface StoredReferrerInfo {
-  referrerAddress: string;
-  updatedAt: number;
-}
 
 export interface SaveReferrerResult {
   success: boolean;
@@ -24,15 +29,17 @@ export const useReferral = () => {
     account?.address || "",
   );
 
-  const [referralAddress, setReferralAddress] = React.useState<string>("");
+  const [referralAddress, setReferralAddress] = useAtom(ReferralState.referralAddress);
   const referralAddressRef = React.useRef(referralAddress);
+  const nextReferralAddressRef = React.useRef("");
 
   React.useEffect(() => {
     referralAddressRef.current = referralAddress;
   }, [account?.address, referralAddress]);
 
   const urlReferralAddress = router.getReferrerParameter();
-  const [storedReferralAddress, setStoredReferralAddress] = React.useState<string | null>(null);
+  const [storedReferrerInfo, setStoredReferrerInfo] = useAtom(ReferralState.storedReferrerInfo);
+  const storedReferralAddress = storedReferrerInfo?.referrerAddress ?? null;
   const apiReferrerAddress = leaderboardMyInfo?.referrerAddress || "";
 
   const referralEarnedPoints = React.useMemo(() => {
@@ -48,9 +55,6 @@ export const useReferral = () => {
     return url.toString();
   }, [account?.address]);
 
-  /**
-   * Get referrer information from ClientStorage (internal function)
-   */
   const getStoredReferrerInfo = React.useCallback((): StoredReferrerInfo | null => {
     try {
       const storedData = localStorage.getItem(`${GNOSWAP_REFERRAL_CODE}_${account?.address}`);
@@ -63,47 +67,22 @@ export const useReferral = () => {
     }
   }, [account?.address]);
 
-  const saveToLocalStorage = (referrerAddress: string) => {
-    if (!account?.address) return;
+  const saveToLocalStorage = React.useCallback(
+    (referrerAddress: string, transactionIntent: ReferralTransactionIntent) => {
+      if (!account?.address) return;
 
-    const data: StoredReferrerInfo = {
-      referrerAddress,
-      updatedAt: Date.now(),
-    };
+      const data: StoredReferrerInfo = {
+        referrerAddress,
+        updatedAt: Date.now(),
+        transactionIntent,
+      };
 
-    localStorage.setItem(`${GNOSWAP_REFERRAL_CODE}_${account.address}`, JSON.stringify(data));
-    setStoredReferralAddress(referrerAddress);
-  };
-
-  /**
-   * Functions to store referrer addresses in ClientStorage
-   */
-  const saveReferrerAddress = React.useCallback(
-    (referrerAddress: string): SaveReferrerResult => {
-      if (!account?.address) return { success: false, error: "NO_ACCOUNT" };
-
-      const trimmedAddress = referrerAddress.trim();
-      const isNonEmptyAddress = trimmedAddress !== "";
-
-      if (isNonEmptyAddress && !isValidAddress(trimmedAddress)) {
-        return { success: false, error: "INVALID_ADDRESS" };
-      }
-
-      if (isNonEmptyAddress && trimmedAddress === account.address) {
-        return { success: false, error: "SELF_REFERRAL" };
-      }
-
-      removeReferrerFromUrl();
-      saveToLocalStorage(trimmedAddress);
-
-      return { success: true };
+      localStorage.setItem(`${GNOSWAP_REFERRAL_CODE}_${account.address}`, JSON.stringify(data));
+      setStoredReferrerInfo(data);
     },
-    [account?.address],
+    [account?.address, setStoredReferrerInfo],
   );
 
-  /**
-   * REFERRER query parameter stripping function
-   */
   const removeReferrerFromUrl = React.useCallback(() => {
     const referrer = router.getReferrerParameter();
     if (!referrer) return;
@@ -121,59 +100,102 @@ export const useReferral = () => {
     router.replace(newUrl, undefined, { shallow: true });
   }, [router]);
 
-  /**
-   * Functions to remove referrer addresses from ClientStorage
-   */
+  const saveReferrerAddress = React.useCallback(
+    (referrerAddress: string): SaveReferrerResult => {
+      if (!account?.address) return { success: false, error: "NO_ACCOUNT" };
+
+      const trimmedAddress = referrerAddress.trim();
+      const isNonEmptyAddress = trimmedAddress !== "";
+      const transactionIntent: ReferralTransactionIntent = isNonEmptyAddress
+        ? "set"
+        : hasValidRegisteredReferrer(apiReferrerAddress, account.address)
+          ? "reset"
+          : "keep";
+
+      if (isNonEmptyAddress && !isValidAddress(trimmedAddress)) {
+        return { success: false, error: "INVALID_ADDRESS" };
+      }
+
+      if (isNonEmptyAddress && trimmedAddress === account.address) {
+        return { success: false, error: "SELF_REFERRAL" };
+      }
+
+      removeReferrerFromUrl();
+      saveToLocalStorage(trimmedAddress, transactionIntent);
+
+      return { success: true };
+    },
+    [account?.address, apiReferrerAddress, removeReferrerFromUrl, saveToLocalStorage],
+  );
+
   const removeReferrerFromLocalStorage = React.useCallback(() => {
     if (!account?.address) return;
     localStorage.removeItem(`${GNOSWAP_REFERRAL_CODE}_${account.address}`);
-    setStoredReferralAddress(null);
-  }, [account?.address]);
+    setStoredReferrerInfo(null);
+  }, [account?.address, setStoredReferrerInfo]);
 
   const refreshReferralData = React.useCallback(() => {
-    const storedInfo = getStoredReferrerInfo();
-    const storedAddress = storedInfo?.referrerAddress ?? null;
+    const nextStoredReferrerInfo = getStoredReferrerInfo();
+    const storedAddress = nextStoredReferrerInfo?.referrerAddress ?? null;
+    const storedTransactionIntent = resolveStoredReferralTransactionIntent(
+      nextStoredReferrerInfo,
+      apiReferrerAddress,
+      account?.address,
+    );
 
-    setStoredReferralAddress(storedAddress);
+    setStoredReferrerInfo(nextStoredReferrerInfo);
 
-    // Rank 1: URL parameters
-    const hasUrlReferralAddress = urlReferralAddress != null;
-    if (hasUrlReferralAddress && isValidAddress(urlReferralAddress)) {
-      setReferralAddress(urlReferralAddress);
+    if (hasValidRegisteredReferrer(urlReferralAddress || "", account?.address)) {
+      setReferralAddress(urlReferralAddress || "");
       return;
     }
 
-    // Rank 2: ClientStorage
-    const hasStoredReferralAddress = storedAddress != null;
-    if (hasStoredReferralAddress) {
-      if (storedAddress === "" || isValidAddress(storedAddress)) {
+    if (storedAddress != null) {
+      if (storedTransactionIntent === "set" && isValidAddress(storedAddress)) {
         setReferralAddress(storedAddress);
         return;
       }
+
+      setReferralAddress("");
+      return;
     }
 
-    // Rank 3: API Resopnse(by leaderboard)
-    if (!hasUrlReferralAddress && !hasStoredReferralAddress) {
-      const isValidApiReferrer =
-        apiReferrerAddress && isValidAddress(apiReferrerAddress) && apiReferrerAddress !== account?.address;
+    setReferralAddress(hasValidRegisteredReferrer(apiReferrerAddress, account?.address) ? apiReferrerAddress : "");
+  }, [urlReferralAddress, apiReferrerAddress, account?.address, getStoredReferrerInfo, setReferralAddress, setStoredReferrerInfo]);
 
-      setReferralAddress(isValidApiReferrer ? apiReferrerAddress : "");
-    }
-  }, [urlReferralAddress, apiReferrerAddress, account?.address, getStoredReferrerInfo]);
+  const nextReferralAddress = React.useMemo(
+    () =>
+      resolveReferralAddressForTransaction({
+        urlReferralAddress,
+        storedReferrerInfo,
+        apiReferrerAddress,
+        accountAddress: account?.address,
+        packageReferralAddress: PACKAGE_REFERRAL_ADDRESS,
+      }),
+    [urlReferralAddress, storedReferrerInfo, apiReferrerAddress, account?.address],
+  );
 
-  // Handling URL parameters and ClientStorage priorities
+  React.useEffect(() => {
+    nextReferralAddressRef.current = nextReferralAddress;
+  }, [nextReferralAddress]);
+
   React.useEffect(() => {
     refreshReferralData();
-  }, [urlReferralAddress, storedReferralAddress, apiReferrerAddress, saveToLocalStorage, account?.address]);
+  }, [urlReferralAddress, storedReferralAddress, apiReferrerAddress, refreshReferralData, account?.address]);
+
+  const getCurrentReferralAddress = React.useCallback(() => referralAddressRef.current, []);
+  const getNextReferralAddress = React.useCallback(() => nextReferralAddressRef.current, []);
 
   return {
     referralAddress,
     apiReferrerAddress,
     storedReferralAddress,
+    nextReferralAddress,
     referralEarnedPoints,
     saveReferrerAddress,
     generateReferralLink,
-    getCurrentReferralAddress: () => referralAddressRef.current,
+    getCurrentReferralAddress,
+    getNextReferralAddress,
     refetchLeaderboardMyInfo,
     refreshReferralData,
     removeReferrerFromUrl,

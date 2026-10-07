@@ -1,4 +1,66 @@
-import { PoolRepository, PoolRepositoryMock } from ".";
+import { NetworkClient } from "@common/clients/network-client";
+import {
+  HttpDeleteRequestParam,
+  HttpGetRequestParam,
+  HttpPostRequestParam,
+  HttpPutRequestParam,
+  HttpResponse,
+} from "@common/clients/network-client/protocols";
+import { PoolListResponse, PoolRepository, PoolRepositoryImpl, PoolRepositoryMock } from ".";
+
+class MockNetworkClient implements NetworkClient {
+  public getCalls: HttpGetRequestParam[] = [];
+
+  public constructor(private readonly getResponse?: unknown) {}
+
+  public async get<R>(params: HttpGetRequestParam): Promise<HttpResponse<R>> {
+    this.getCalls.push(params);
+
+    const defaultResponse: PoolListResponse = {
+      meta: {
+        height: 0,
+        timestamp: "",
+      },
+      data: [],
+    };
+
+    return {
+      status: 200,
+      message: "Success",
+      data: (this.getResponse ?? defaultResponse) as R,
+    };
+  }
+
+  public async post<T, R>(params: HttpPostRequestParam<T>): Promise<HttpResponse<R>> {
+    void params;
+
+    return {
+      status: 200,
+      message: "Success",
+      data: {} as R,
+    };
+  }
+
+  public async put<T, R>(params: HttpPutRequestParam<T>): Promise<HttpResponse<R>> {
+    void params;
+
+    return {
+      status: 200,
+      message: "Success",
+      data: {} as R,
+    };
+  }
+
+  public async delete<T, R>(params: HttpDeleteRequestParam<T>): Promise<HttpResponse<R>> {
+    void params;
+
+    return {
+      status: 200,
+      message: "Success",
+      data: {} as R,
+    };
+  }
+}
 
 let poolRepository: PoolRepository;
 
@@ -14,10 +76,16 @@ beforeEach(() => {
 });
 
 describe("getPools", () => {
-  it("success", async () => {
-    const pools = await poolRepository.getPools();
+  it("returns an empty list only when the API explicitly returns an empty list", async () => {
+    const repository = new PoolRepositoryImpl(new MockNetworkClient({ data: [] }), null, null);
 
-    expect(pools).not.toBeNull();
+    await expect(repository.getPools()).resolves.toEqual([]);
+  });
+
+  it("rejects a successful response without pool data", async () => {
+    const repository = new PoolRepositoryImpl(new MockNetworkClient({ meta: {} }), null, null);
+
+    await expect(repository.getPools()).rejects.toThrow("Invalid pool list response");
   });
 });
 
@@ -26,5 +94,76 @@ describe("getPoolDetail", () => {
     const pools = await poolRepository.getPoolDetailByPoolPath("");
 
     expect(pools).not.toBeNull();
+  });
+});
+
+describe("getIncentivizePools", () => {
+  it("requests incentivized pools without address by default", async () => {
+    const networkClient = new MockNetworkClient();
+    const repository = new PoolRepositoryImpl(networkClient, null, null);
+
+    await repository.getIncentivizePools();
+
+    expect(networkClient.getCalls).toEqual([
+      {
+        url: "/pools?incentivized=true",
+      },
+    ]);
+  });
+
+  it("adds an encoded address to the incentivized pool request", async () => {
+    const networkClient = new MockNetworkClient();
+    const repository = new PoolRepositoryImpl(networkClient, null, null);
+
+    await repository.getIncentivizePools("g1abc/?:");
+
+    expect(networkClient.getCalls).toEqual([
+      {
+        url: "/pools?incentivized=true&address=g1abc%2F%3F%3A",
+      },
+    ]);
+  });
+});
+
+describe("getAllowedExternalRewardTokenPaths", () => {
+  it("requests allowed external reward tokens from API", async () => {
+    const networkClient = new MockNetworkClient({
+      data: {
+        tokens: [
+          { tokenPath: "gno.land/r/gnoswap/gns", minRewardAmount: "0" },
+          { tokenPath: "gno.land/r/gnoland/wugnot", minRewardAmount: "100" },
+        ],
+      },
+    });
+    const repository = new PoolRepositoryImpl(networkClient, null, null);
+
+    const tokenPaths = await repository.getAllowedExternalRewardTokenPaths();
+
+    expect(networkClient.getCalls).toEqual([
+      {
+        url: "/incentivize/allowed-tokens",
+      },
+    ]);
+    expect(tokenPaths).toEqual(["gno.land/r/gnoswap/gns", "gno.land/r/gnoland/wugnot"]);
+  });
+});
+
+describe("getLiquidityTicksOfPoolByPath", () => {
+  it("requests pool liquidity ticks and preserves liquidityNet strings", async () => {
+    const liquidityNet = "340282366920938463463374607431768211456";
+    const networkClient = new MockNetworkClient({
+      data: [{ tick: 1, liquidityNet }],
+    });
+    const repository = new PoolRepositoryImpl(networkClient, null, null);
+
+    const ticks = await repository.getLiquidityTicksOfPoolByPath("pool-1");
+
+    expect(networkClient.getCalls).toEqual([
+      {
+        url: "/pools/pool-1/ticks",
+      },
+    ]);
+    expect(ticks).toEqual([{ tick: 1, liquidityNet }]);
+    expect(typeof ticks[0].liquidityNet).toBe("string");
   });
 });

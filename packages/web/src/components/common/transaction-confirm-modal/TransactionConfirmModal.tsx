@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { TransactionConfirmModalWrapper } from "./TransactionConfirmModal.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconSuccess from "@components/common/icons/IconSuccess";
@@ -6,51 +6,44 @@ import IconOpenLink from "@components/common/icons/IconOpenLink";
 import IconFailed from "@components/common/icons/IconFailed";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
-import { TransactionConfirmStatus } from "@states/common";
+import { sanitizeHtml } from "@utils/sanitize-html";
+import { TransactionModal } from "@states/common";
 import IconClose from "../icons/IconCancel";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { Trans, useTranslation } from "react-i18next";
 
 interface TransactionConfirmModalProps {
-  status: TransactionConfirmStatus;
-  title: string | null;
-  description: string | null;
-  txHash: string | null;
+  data: TransactionModal;
   confirm: () => void;
   close: () => void;
 }
 
-const TransactionConfirmModal: React.FC<TransactionConfirmModalProps> = ({
-  status,
-  title,
-  description,
-  txHash,
-  confirm,
-  close,
-}) => {
+const TransactionConfirmModal: React.FC<TransactionConfirmModalProps> = ({ data, confirm, close }) => {
   useEscCloseModal(close);
 
   return (
     <TransactionConfirmModalWrapper className="modal-body-wrapper">
       <div className="modal-body submitted-modal">
         <div className="modal-header model-header-submitted">
-          {status !== "loading" && (
+          {data.status !== "loading" && (
             <div className="close-wrap" onClick={close}>
               <IconClose className="close-icon" />
             </div>
           )}
         </div>
-        {status === "loading" && <TransactionConfirmLoading description={description} />}
-        {status === "success" && <TransactionConfirmSubmitted confirm={confirm} txHash={txHash} close={close} />}
-        {status === "error" && <TransactionConfirmFailed title={title} description={description} close={close} />}
-        {status === "rejected" && <TransactionConfirmRejected close={close} />}
+        {data.status === "loading" && <TransactionConfirmLoading description={data.description} />}
+        {data.status === "success" && <TransactionConfirmSubmitted confirm={confirm} txHash={data.txHash} />}
+        {data.status === "error" && (
+          <TransactionConfirmFailed title={data.title} description={data.description} close={close} />
+        )}
+        {data.status === "rejected" && <TransactionConfirmRejected close={close} />}
       </div>
     </TransactionConfirmModalWrapper>
   );
 };
 
 interface TransactionConfirmLoadingProps {
-  description: string | null;
+  description: string;
 }
 const TransactionConfirmLoading: React.FC<TransactionConfirmLoadingProps> = ({ description }) => {
   const { t } = useTranslation();
@@ -62,7 +55,7 @@ const TransactionConfirmLoading: React.FC<TransactionConfirmLoadingProps> = ({ d
       </div>
       <div className="transaction-state">
         <span className="submitted">{t("Modal:confirm.general.loading.title")}</span>
-        <div className="swap-message" dangerouslySetInnerHTML={{ __html: description || "" }} />
+        <div className="swap-message" dangerouslySetInnerHTML={{ __html: sanitizeHtml(description) }} />
         <div className="view-transaction">
           <span>{t("Modal:confirm.general.loading.desc")}</span>
         </div>
@@ -72,21 +65,12 @@ const TransactionConfirmLoading: React.FC<TransactionConfirmLoadingProps> = ({ d
 };
 
 interface TransactionConfirmSubmittedProps {
-  txHash: string | null;
+  txHash: string;
   confirm: () => void;
-  close: () => void;
 }
-const TransactionConfirmSubmitted: React.FC<TransactionConfirmSubmittedProps> = ({ txHash, confirm, close }) => {
+const TransactionConfirmSubmitted: React.FC<TransactionConfirmSubmittedProps> = ({ txHash, confirm }) => {
   const { t } = useTranslation();
   const { getTxUrl } = useGnoscanUrl();
-
-  const moveScanner = useCallback(() => {
-    if (!txHash) {
-      close();
-      return;
-    }
-    window.open(getTxUrl(txHash), "_blank");
-  }, [close, getTxUrl, txHash]);
 
   return (
     <React.Fragment>
@@ -95,12 +79,12 @@ const TransactionConfirmSubmitted: React.FC<TransactionConfirmSubmittedProps> = 
       </div>
       <div className="transaction-state">
         <span className="submitted">{t("Modal:confirm.general.submitted.title")}</span>
-        <div className="view-transaction">
+        <a className="view-transaction" href={getTxUrl(txHash)} target="_blank" rel="noopener noreferrer">
           <span>{t("Modal:confirm.general.submitted.viewTx")}</span>
-          <div className="open-link" onClick={moveScanner}>
+          <div className="open-link">
             <IconOpenLink className="open-logo" />
           </div>
-        </div>
+        </a>
       </div>
       <div className="close-button">
         <Button
@@ -118,8 +102,8 @@ const TransactionConfirmSubmitted: React.FC<TransactionConfirmSubmittedProps> = 
 };
 
 interface TransactionConfirmFailedProps {
-  title: string | null;
-  description: string | null;
+  title: string;
+  description: string;
   close: () => void;
 }
 const TransactionConfirmFailed: React.FC<TransactionConfirmFailedProps> = ({ title, description, close }) => {

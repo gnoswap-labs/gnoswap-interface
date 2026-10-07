@@ -1,0 +1,83 @@
+import { getAddressByPackagePath } from "@utils/package-utils";
+
+import {
+  createOriginToken,
+  getSwapExtensionByOriginPath,
+  getSwapExtensionByWrappedPath,
+  getSwapExtensionOperation,
+  getSwapExtensionForTokenSelector,
+  resolveSwapExtensionExecution,
+  swapExtensions,
+} from "./swap-extension";
+
+describe("swap-extension metadata", () => {
+  const extension = swapExtensions[0];
+  const wrappedToken = {
+    type: "GRC20" as const,
+    chainId: "gnoland-1",
+    createdAt: "2026-01-01T00:00:00Z",
+    name: "Bubble (wrapped)",
+    path: extension.grc20WrappedTokenPath,
+    decimals: 6,
+    symbol: "BUBBLE",
+    displaySymbol: "BUBBLE",
+    logoURI: "wrapped-logo.svg",
+    priceID: extension.grc20WrappedTokenPath,
+  };
+
+  it("indexes an extension by its distinct origin and wrapped token paths", () => {
+    expect(extension.grc20WrappedTokenPath).toBe(`${extension.grc20WrappedPackagePath}.BUBBLE`);
+    expect(getSwapExtensionByOriginPath(extension.originTokenPath)).toBe(extension);
+    expect(getSwapExtensionByWrappedPath(extension.grc20WrappedTokenPath)).toBe(extension);
+    expect(extension.wrappedTokenInfo.displaySymbol).toBe("wBUBBLE");
+    expect(extension.originTokenInfo.name).toBe("BUBBLE");
+  });
+
+  it("creates the origin token from extension metadata and wrapped-token runtime data", () => {
+    expect(createOriginToken(extension, wrappedToken)).toMatchObject({
+      type: "GRC20",
+      path: extension.originTokenPath,
+      wrappedPath: extension.grc20WrappedTokenPath,
+      logoURI: wrappedToken.logoURI,
+      priceID: extension.grc20WrappedTokenPath,
+      pkgPath: extension.originTokenPath,
+    });
+  });
+
+  it("identifies extension direction without treating the origin as a native coin", () => {
+    const originToken = createOriginToken(extension, wrappedToken);
+
+    expect(getSwapExtensionOperation(originToken, wrappedToken)).toBe("wrap");
+    expect(getSwapExtensionOperation(wrappedToken, originToken)).toBe("unwrap");
+  });
+
+  it("exposes the origin only from the opposite side or within the extension pair", () => {
+    const otherPath = "gno.land/r/gnoswap/gns.GNS";
+
+    expect(getSwapExtensionForTokenSelector(extension.grc20WrappedTokenPath, extension.originTokenPath)).toBe(
+      extension,
+    );
+    expect(getSwapExtensionForTokenSelector(extension.originTokenPath, extension.grc20WrappedTokenPath)).toBe(
+      extension,
+    );
+    expect(getSwapExtensionForTokenSelector(extension.grc20WrappedTokenPath, otherPath)).toBeNull();
+    expect(getSwapExtensionForTokenSelector(extension.grc20WrappedTokenPath, null)).toBeNull();
+    expect(getSwapExtensionForTokenSelector(otherPath, extension.grc20WrappedTokenPath)).toBe(extension);
+    expect(getSwapExtensionForTokenSelector(null, extension.grc20WrappedTokenPath)).toBe(extension);
+  });
+
+  it("resolves wrap execution placeholders without embedding a realm address", () => {
+    expect(resolveSwapExtensionExecution(extension, "wrap", { amount: "1250000" })).toEqual([
+      {
+        packagePath: extension.originTokenPath,
+        function: "Approve",
+        inputs: [getAddressByPackagePath(extension.grc20WrappedPackagePath), "1250000"],
+      },
+      {
+        packagePath: extension.grc20WrappedPackagePath,
+        function: "Wrap",
+        inputs: ["1250000"],
+      },
+    ]);
+  });
+});

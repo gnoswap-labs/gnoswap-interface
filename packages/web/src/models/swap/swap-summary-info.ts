@@ -19,10 +19,6 @@ export interface SwapSummaryInfo {
 
   guaranteedAmount: AmountModel; // Apply slippage
 
-  gasFee: AmountModel;
-
-  gasFeeUSD: number;
-
   swapRateAction: SwapRateAction;
 
   swapRate1USD: number;
@@ -30,8 +26,6 @@ export interface SwapSummaryInfo {
   protocolFee: string;
 
   routerFee: number;
-
-  gasEstimateSuccess: boolean;
 }
 
 export function swapDirectionToGuaranteedType(swapDirection: SwapDirectionType) {

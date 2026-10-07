@@ -4,23 +4,21 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { GNOT_TOKEN } from "@common/values/token-constant";
-import { ZOOL_VALUES } from "@constants/graph.constant";
+import {
+  LIQUIDITY_GRAPH_BIN_COUNT,
+  LIQUIDITY_GRAPH_INITIAL_ZOOM_LEVEL,
+  LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES,
+} from "@constants/graph.constant";
 import { SwapFeeTierInfoMap, SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import { MAX_PRICE, MAX_TICK, MIN_PRICE, MIN_TICK } from "@constants/swap.constant";
 import { useLoading } from "@hooks/common/use-loading";
-import { PoolBinModel } from "@models/pool/pool-bin-model";
+import { PoolLiquiditySegmentModel } from "@models/pool/pool-liquidity-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
-import {
-  useGetBinsByPath,
-  useGetPoolFromDb,
-  useGetPoolLiquidity,
-  useGetPoolSqrtPriceX96,
-  useGetPoolTicks,
-  useGetPoolTickSpacing,
-  useInitializeBins,
-} from "@query/pools";
+import { useGetPoolFromDb, useGetPoolLiquidity, useGetPoolSqrtPriceX96, useGetPoolTickSpacing } from "@query/pools";
 import { EarnState } from "@states/index";
 import { checkGnotPath, encryptId } from "@utils/common";
+import { invertSqrtPriceX96, isValidCurrentPrice } from "@utils/pool-utils";
+import { calculateEstimatedAPR } from "@utils/pool-apr-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
 import {
   feeBoostRateByPrices,
@@ -31,6 +29,7 @@ import {
   tickToPrice,
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { usePoolLiquiditySegmentsByPath } from "./use-pool-liquidity-segments-by-path";
 
 type RenderState = "NONE" | "CREATE" | "LOADING" | "DONE";
 
@@ -48,7 +47,7 @@ interface Props {
 }
 
 export interface SelectPool {
-  bins: PoolBinModel[] | undefined;
+  liquiditySegments: PoolLiquiditySegmentModel[];
   poolPath: string | null;
   isCreate: boolean;
   renderState: (isIgnoreDefaultLoading?: boolean) => RenderState;
@@ -66,6 +65,7 @@ export interface SelectPool {
   maxPrice: number | null;
   depositRatio: number | null;
   feeBoost: string | null;
+  feeApr: string | null;
   estimatedAPR: number | null;
   increaseMinTick: () => void;
   decreaseMinTick: () => void;
@@ -83,6 +83,7 @@ export interface SelectPool {
   liquidityOfTickPoints: [number, number][];
   setInteractionType: (type: "NONE" | "INTERACTION" | "TICK_UPDATE" | "FINISH") => void;
   isChangeMinMax: boolean;
+  isOrderedPrice: boolean;
   setIsChangeMinMax: (value: boolean) => void;
   isLoading: boolean;
 }
@@ -107,7 +108,7 @@ export const useSelectPool = ({
   // Local state
   const [fullRange, setFullRange] = useState(false);
   const [focusPosition, setFocusPosition] = useState<number>(0);
-  const [zoomLevel, setZoomLevel] = useState<number>(0);
+  const [zoomLevel, setZoomLevel] = useState<number>(LIQUIDITY_GRAPH_INITIAL_ZOOM_LEVEL);
   const [minPosition, setMinPosition] = useState<number | null>(null);
   const [maxPosition, setMaxPosition] = useState<number | null>(null);
   const [compareToken, setCompareToken] = useState<TokenModel | null>(tokenA);
@@ -145,41 +146,30 @@ export const useSelectPool = ({
 
   const convertPath = useMemo(() => (calculatedPoolPath ? encryptId(calculatedPoolPath) : null), [calculatedPoolPath]);
 
+  const orderedSegmentTokens = useMemo(() => {
+    if (!tokenA || !tokenB) {
+      return null;
+    }
+
+    return [tokenA, tokenB]
+      .map(token => ({ ...token, path: checkGnotPath(token.path) }))
+      .sort((left, right) => sortTokenPaths(left.path, right.path));
+  }, [tokenA, tokenB]);
+
   const swapFeeTierMaxPriceRangeMap = useMemo(() => {
     return SwapFeeTierMaxPriceRangeMap[feeTier || "NONE"];
   }, [feeTier]);
 
   const shouldRefetch = ["/earn/pool/add", "/earn/add"].includes(router.pathname);
 
-  const { data: bins } = useGetBinsByPath(calculatedPoolPath || "", ZOOL_VALUES[zoomLevel], {
-    enabled: !!calculatedPoolPath && !isCreate,
-    queryKey: ["useSelectPool/getBins", calculatedPoolPath, zoomLevel, isCreate],
-  });
-
-  const { data: initializeBins, isLoading: isLoadingInitializeBins } = useInitializeBins(
-    feeTier,
-    startPrice,
-    ZOOL_VALUES[zoomLevel],
-    isReverse,
-    {
-      enabled: !!feeTier && !!startPrice && !!isCreate,
-      queryKey: ["useSelectPool/initializeBins", feeTier, startPrice, zoomLevel, isReverse, isCreate],
-    },
-  );
-
   const { data: poolFromDb, isLoading: isLoadingPoolFromDb } = useGetPoolFromDb(convertPath, {
     enabled: !!convertPath && !isCreate,
-    refetchInterval: shouldRefetch ? 10_000 : false,
+    refetchInterval: shouldRefetch ? 5_000 : false,
   });
 
   const { data: liquidity, isLoading: isLoadingLiquidity } = useGetPoolLiquidity(calculatedPoolPath, {
     enabled: !!calculatedPoolPath && !isCreate,
-    refetchInterval: shouldRefetch ? 10_000 : false,
-  });
-
-  const { data: ticks, isLoading: isLoadingTicks } = useGetPoolTicks(calculatedPoolPath, {
-    enabled: !!calculatedPoolPath && !isCreate,
-    isReverse,
+    refetchInterval: shouldRefetch ? 5_000 : false,
   });
 
   const { data: tickSpacing, isLoading: isLoadingTickSpacing } = useGetPoolTickSpacing(calculatedPoolPath, {
@@ -189,32 +179,52 @@ export const useSelectPool = ({
 
   const { data: sqrtPriceX96, isLoading: isLoadingSqrtPriceX96 } = useGetPoolSqrtPriceX96(calculatedPoolPath, {
     enabled: !!calculatedPoolPath && !isCreate,
-    refetchInterval: shouldRefetch ? 10_000 : false,
+    refetchInterval: shouldRefetch ? 5_000 : false,
   });
 
-  const isLoadingPoolInfo =
-    isLoadingPoolFromDb || isLoadingLiquidity || isLoadingTicks || isLoadingTickSpacing || isLoadingSqrtPriceX96;
+  const isLoadingPoolInfo = isLoadingPoolFromDb || isLoadingLiquidity || isLoadingTickSpacing || isLoadingSqrtPriceX96;
 
-  const price = useMemo(() => {
+  const segmentCurrentPrice = useMemo(() => {
     if (isCreate) return startPrice || 0;
     if (poolFromDb?.price == null) return 0;
-    const basePrice = poolFromDb.price || tickToPrice(poolFromDb.currentTick);
-    return isReverse ? 1 / basePrice : basePrice;
-  }, [isCreate, startPrice, poolFromDb, isReverse]);
+    return poolFromDb.price || tickToPrice(poolFromDb.currentTick);
+  }, [isCreate, startPrice, poolFromDb]);
+
+  const price = useMemo(() => {
+    if (segmentCurrentPrice === 0) return 0;
+    return isReverse ? 1 / segmentCurrentPrice : segmentCurrentPrice;
+  }, [segmentCurrentPrice, isReverse]);
+
+  const { liquiditySegments, isLoading: isLoadingLiquiditySegments } = usePoolLiquiditySegmentsByPath(
+    calculatedPoolPath,
+    {
+      currentTick: poolFromDb?.currentTick,
+      currentSqrtPriceX96: sqrtPriceX96 ?? undefined,
+      currentPrice: segmentCurrentPrice,
+      tokenA: orderedSegmentTokens?.[0],
+      tokenB: orderedSegmentTokens?.[1],
+      includeTokenAmounts: true,
+      visibleTickRange: LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES[zoomLevel],
+      binCount: LIQUIDITY_GRAPH_BIN_COUNT,
+    },
+    {
+      enabled: !!calculatedPoolPath && !isCreate,
+      queryKey: [
+        "useSelectPool/liquiditySegments",
+        calculatedPoolPath,
+        zoomLevel,
+        isCreate,
+        sqrtPriceX96?.toString(),
+        segmentCurrentPrice,
+      ],
+    },
+  );
 
   const liquidityOfTickPoints: [number, number][] = useMemo(() => {
-    if (!ticks || ticks.length === 0) return [];
+    if (isCreate) return [];
 
-    const result: [number, number][] = ticks
-      .sort((t1, t2) => t1 - t2)
-      .map(tick => {
-        const height = 0;
-        const tickPrice = tickToPrice(tick);
-        return [tickPrice ?? 0, height ?? 0];
-      });
-
-    return [[0, 0], ...result];
-  }, [ticks]);
+    return liquiditySegments.map(segment => [tickToPrice(segment.minTick), Number(segment.graphHeightRatio)]);
+  }, [isCreate, liquiditySegments]);
 
   const poolPath = useMemo(() => {
     return latestPoolPath;
@@ -229,28 +239,16 @@ export const useSelectPool = ({
           return "CREATE";
         }
 
-        if (isLoadingInitializeBins || initializeBins === undefined) {
-          return "LOADING";
-        }
+        return "DONE";
       } else {
-        if (isLoadingPoolInfo || (isIgnoreDefaultLoading ? isLoading : null)) {
+        if (isLoadingPoolInfo || isLoadingLiquiditySegments || (isIgnoreDefaultLoading ? isLoading : null)) {
           return "LOADING";
         }
       }
 
       return "DONE";
     },
-    [
-      feeTier,
-      isCreate,
-      startPrice,
-      tokenA,
-      tokenB,
-      isLoading,
-      isLoadingPoolInfo,
-      isLoadingInitializeBins,
-      initializeBins,
-    ],
+    [feeTier, isCreate, startPrice, tokenA, tokenB, isLoading, isLoadingPoolInfo, isLoadingLiquiditySegments],
   );
 
   const minPrice = useMemo(() => {
@@ -267,14 +265,32 @@ export const useSelectPool = ({
     return maxPosition;
   }, [fullRange, maxPosition, swapFeeTierMaxPriceRangeMap?.maxPrice]);
 
+  const isOrderedPrice = useMemo(() => {
+    if (isCreate) {
+      return true;
+    }
+
+    if (!tokenA || !tokenB || !compareToken) {
+      return true;
+    }
+
+    const checkedTokenAPath = checkGnotPath(tokenA.path);
+    const checkedTokenBPath = checkGnotPath(tokenB.path);
+
+    const isOrderedTokenPath = [checkedTokenAPath, checkedTokenBPath].sort(sortTokenPaths)[0] === checkedTokenAPath;
+
+    const isOrderedCompareTokenPath = checkGnotPath(compareToken.path) === checkedTokenAPath;
+
+    return isOrderedTokenPath === isOrderedCompareTokenPath;
+  }, [isCreate, tokenA, tokenB, compareToken]);
+
   const depositRatio = useMemo(() => {
     if (!tokenA || !tokenB || minPrice === null || maxPrice === null || !compareToken) {
       return null;
     }
 
-    const ordered = checkGnotPath(compareToken.path) === checkGnotPath(tokenA.path);
-    const currentPrice = isCreate ? startPrice : ordered ? price : 1 / price;
-    if (!currentPrice) {
+    const currentPrice = price;
+    if (!isValidCurrentPrice(currentPrice)) {
       return null;
     }
 
@@ -291,17 +307,26 @@ export const useSelectPool = ({
 
     const adjustAmountA = 1_000_000_000n;
 
-    const decimals = tokenB.decimals - tokenA.decimals;
-    const currentSqrtPriceX96 = isCreate ? priceToSqrtX96(currentPrice) : sqrtPriceX96;
+    const currentSqrtPriceX96 = (() => {
+      if (isCreate) {
+        return priceToSqrtX96(currentPrice);
+      }
+
+      if (!isOrderedPrice && sqrtPriceX96) {
+        return invertSqrtPriceX96(sqrtPriceX96);
+      }
+
+      return sqrtPriceX96;
+    })();
     if (!currentSqrtPriceX96) {
       return null;
     }
 
     const { amountA, amountB } = getDepositAmountsByAmountA(
-      BigNumber(currentPrice).shiftedBy(decimals).toNumber(),
+      currentPrice,
       currentSqrtPriceX96,
-      BigNumber(currentMinPrice).shiftedBy(decimals).toNumber(),
-      BigNumber(currentMaxPrice).shiftedBy(decimals).toNumber(),
+      currentMinPrice,
+      currentMaxPrice,
       adjustAmountA,
     );
 
@@ -319,7 +344,7 @@ export const useSelectPool = ({
     maxPrice,
     swapFeeTierMaxPriceRangeMap,
     isCreate,
-    startPrice,
+    isOrderedPrice,
     price,
     fullRange,
   ]);
@@ -336,7 +361,7 @@ export const useSelectPool = ({
   }, [maxPrice, minPrice, swapFeeTierMaxPriceRangeMap]);
 
   const estimatedAPR = useMemo(() => {
-    return Number(poolFromDb?.feeApr || 0) * Number(feeBoost ?? 0);
+    return calculateEstimatedAPR(poolFromDb?.feeApr, feeBoost);
   }, [feeBoost, poolFromDb?.feeApr]);
 
   const interactionTypeRef = useRef(interactionType);
@@ -358,7 +383,7 @@ export const useSelectPool = ({
         setMinPosition(null);
         return;
       }
-      if (num === 0) {
+      if (num <= swapFeeTierMaxPriceRangeMap.minPrice) {
         const { minPrice } = swapFeeTierMaxPriceRangeMap;
         setMinPosition(minPrice);
         return;
@@ -368,17 +393,24 @@ export const useSelectPool = ({
     [swapFeeTierMaxPriceRangeMap],
   );
 
-  const changeMaxPosition = useCallback((num: number | null) => {
-    if (num === null) {
-      setMaxPosition(null);
-      return;
-    }
-    setMaxPosition(num);
-  }, []);
+  const changeMaxPosition = useCallback(
+    (num: number | null) => {
+      if (num === null) {
+        setMaxPosition(null);
+        return;
+      }
+      if (num >= swapFeeTierMaxPriceRangeMap.maxPrice) {
+        setMaxPosition(swapFeeTierMaxPriceRangeMap.maxPrice);
+        return;
+      }
+      setMaxPosition(num);
+    },
+    [swapFeeTierMaxPriceRangeMap],
+  );
 
   const increaseMinTick = useCallback(() => {
     excuteInteraction(() => {
-      if (!tickSpacing || !minPosition) {
+      if (!tickSpacing || minPosition === null) {
         return;
       }
       const nearTick = priceToNearTick(minPosition, tickSpacing);
@@ -390,7 +422,7 @@ export const useSelectPool = ({
 
   const decreaseMinTick = useCallback(() => {
     excuteInteraction(() => {
-      if (!tickSpacing || !minPosition) {
+      if (!tickSpacing || minPosition === null) {
         return;
       }
       if (minPosition === 0) {
@@ -405,7 +437,7 @@ export const useSelectPool = ({
 
   const increaseMaxTick = useCallback(() => {
     excuteInteraction(() => {
-      if (!tickSpacing || !maxPosition) {
+      if (!tickSpacing || maxPosition === null) {
         return;
       }
       const nearTick = priceToNearTick(maxPosition, tickSpacing);
@@ -417,7 +449,7 @@ export const useSelectPool = ({
 
   const decreaseMaxTick = useCallback(() => {
     excuteInteraction(() => {
-      if (!tickSpacing || !maxPosition) {
+      if (!tickSpacing || maxPosition === null) {
         return;
       }
       const nearTick = priceToNearTick(maxPosition, tickSpacing);
@@ -431,7 +463,7 @@ export const useSelectPool = ({
     const [defaultMinPosition, defaultMaxPosition] = priceRangeRef.current;
 
     excuteInteraction(() => {
-      setZoomLevel(0);
+      setZoomLevel(LIQUIDITY_GRAPH_INITIAL_ZOOM_LEVEL);
       setFullRange(false);
       changeMinPosition(defaultMinPosition);
       changeMaxPosition(defaultMaxPosition);
@@ -439,7 +471,7 @@ export const useSelectPool = ({
   }, [excuteInteraction, changeMinPosition, changeMaxPosition]);
 
   const zoomIn = useCallback(() => {
-    if (zoomLevel + 1 < ZOOL_VALUES.length) {
+    if (zoomLevel + 1 < LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES.length) {
       setZoomLevel(zoomLevel + 1);
     }
   }, [zoomLevel]);
@@ -482,12 +514,12 @@ export const useSelectPool = ({
   }, [interactionType, minPosition, maxPosition, tickSpacing]);
 
   useEffect(() => {
-    if (isCreate && startPrice === null) {
-      setLatestPoolPath(null);
-    } else if (calculatedPoolPath) {
+    if (calculatedPoolPath) {
       setLatestPoolPath(calculatedPoolPath);
+    } else {
+      setLatestPoolPath(null);
     }
-  }, [isCreate, calculatedPoolPath, startPrice]);
+  }, [calculatedPoolPath]);
 
   useEffect(() => {
     if (!options || !feeTier) {
@@ -510,7 +542,7 @@ export const useSelectPool = ({
 
   return {
     startPrice,
-    bins: isCreate ? initializeBins : bins,
+    liquiditySegments: isCreate ? [] : liquiditySegments,
     poolPath,
     renderState,
     feeTier,
@@ -529,6 +561,7 @@ export const useSelectPool = ({
     maxPrice,
     depositRatio,
     feeBoost,
+    feeApr: poolFromDb?.feeApr || null,
     estimatedAPR,
     increaseMinTick,
     decreaseMinTick,
@@ -548,11 +581,11 @@ export const useSelectPool = ({
     setInteractionType,
     isChangeMinMax,
     setIsChangeMinMax,
-    isLoading: isLoading || isLoadingPoolInfo,
+    isOrderedPrice,
+    isLoading: isLoading || isLoadingPoolInfo || isLoadingLiquiditySegments,
     currentPoolPath,
     poolFromDb,
     liquidity,
-    ticks,
     sqrtPriceX96,
   };
 };

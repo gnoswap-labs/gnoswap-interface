@@ -39,15 +39,16 @@ export const network = atom<NetworkModel>(NetworkData[0]);
 
 export const slippage = atom<number>(DEFAULT_SLIPPAGE);
 
-export type TransactionConfirmStatus = "loading" | "rejected" | "success" | "error";
-
-export const transactionModalData = atom<{
-  status: TransactionConfirmStatus;
-  title: string | null;
-  description: string | null;
-  txHash: string | null;
+export type TransactionModal = (
+  | { status: "loading"; description: string }
+  | { status: "rejected" }
+  | { status: "error"; title: string; description: string }
+  | { status: "success"; title: string; description: string; txHash: string }
+) & {
   callback?: () => void;
-} | null>(null);
+};
+
+export const transactionModalData = atom<TransactionModal | null>(null);
 
 export const ADENA_SDK_CONNECTION_STATE_KEY = "adena-sdk-connection-state";
 export const GNOSWAP_SESSION_ID_KEY = "session_id";

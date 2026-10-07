@@ -1,0 +1,37 @@
+{
+  "banner": {
+    "description": "Khi bạn sử dụng mã giới thiệu, cả bạn và người bạn giới thiệu đều sẽ nhận được <strong>phần thưởng 10%.</strong>",
+    "title": "Nâng cao thứ hạng của bạn - <strong>Giới thiệu và kiếm tiền!</strong>"
+  },
+  "header": "Bảng xếp hạng",
+  "list": {
+    "column": {
+      "points": "Điểm",
+      "position": "Vị trí",
+      "rank": "Xếp hạng",
+      "referral": "Giới thiệu",
+      "staking": "Staking",
+      "swap": "Hoán đổi",
+      "tooltip": {
+        "position": "Phí hoán đổi được tính bằng USD. Chỉ được tính nếu nhóm đang nhận phần thưởng $GNS.",
+        "staking": "<ul><li>Phần thưởng staking được nhận bằng USD. Chỉ tính các phần thưởng nội bộ bằng $GNS.</li><li>Phí giao thức được nhận bằng USD. Chỉ tính khi token phần thưởng có giá bằng USD.</li></ul>",
+        "volume": "Phí hoán đổi được thanh toán bằng USD. Chỉ được tính nếu nhóm đang nhận các phần thưởng nội bộ bằng $GNS."
+      },
+      "user": "Người dùng",
+      "xGNS": "xGNS Staking"
+    },
+    "hideToggleButton": "Ẩn địa chỉ hoặc tên người dùng của tôi",
+    "mobile": {
+      "hideToggleButton": "Giấu tôi đi"
+    },
+    "nextUpdateTime": "Lần cập nhật tiếp theo vào",
+    "tooltip": {
+      "hideToggleButton": "Tên người dùng hoặc địa chỉ của bạn sẽ được ẩn đi. Những người dùng khác sẽ không thể xem được vị trí của bạn.",
+      "nextUpdateTime": "Bảng xếp hạng được cập nhật mỗi giờ một lần."
+    }
+  },
+  "subHeader": {
+    "copyButton": "Sao chép mã giới thiệu của tôi",
+    "description": "Hãy leo lên bảng xếp hạng bằng cách tích lũy điểm thông qua việc trao đổi, cung cấp thanh khoản, staking hoặc mời bạn bè. Mọi hoạt động trên GnoSwap đều được tính điểm!"
+  }
+}

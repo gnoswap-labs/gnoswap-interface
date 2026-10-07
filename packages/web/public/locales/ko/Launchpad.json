@@ -157,7 +157,7 @@
       "tokensDistributed": "분배된 토큰",
       "totalDeposits": "총 예치금"
     },
-    "description": "{{month}} 동안 스테이킹.<br/>보상은 {{day}}일 이후부터<br/>청구 가능합니다.",
+    "description": "스테이킹 {{month}}.",
     "title": "Pool {{idx}}"
   },
   "projects": {

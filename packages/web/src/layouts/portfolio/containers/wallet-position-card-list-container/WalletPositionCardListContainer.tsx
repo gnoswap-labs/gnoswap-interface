@@ -1,21 +1,30 @@
 import { useAtomValue } from "jotai";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import MyPositionCardList from "@components/common/my-position-card-list/MyPositionCardList";
+import IconInbox from "@components/common/icons/IconInbox";
 import useRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePoolData } from "@hooks/pool/data/use-pool-data";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
-import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { useGetAllTokenPrices } from "@query/token";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { ThemeState } from "@states/index";
 import { PositionConverter } from "@services/converters/position";
 import { POSITION_CARD_BREAKPOINTS, POSITION_CARD_DISPLAY_COUNT, POSITION_CARD_LIST_BREAKPOINTS } from "@common/values";
+import { emptyPositions } from "../../components/wallet-my-positions/WalletMyPositions.styles";
 
-const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isClosed }) => {
+interface WalletPositionCardListContainerProps {
+  /** UI toggle state: whether closed positions should be shown in this view. */
+  isClosed: boolean;
+}
+
+const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerProps> = ({ isClosed }) => {
+  const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
   const [currentIndex, setCurrentIndex] = useState(1);
   const router = useRouter();
@@ -29,18 +38,18 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
     const { DESKTOP, TABLET } = POSITION_CARD_DISPLAY_COUNT;
 
     if (width < DESKTOP_MIN && width >= TABLET_MIN) {
-      return TABLET * 7; // 3 * 7 = 21
+      return TABLET * 7;
     }
-    return DESKTOP * 5; // 4 * 5 = 20
+    return DESKTOP * 5;
   }, [width]);
 
   const {
-    isFetchedPosition,
+    isPositionDataAvailable,
     loading: loadingPositions,
     positions: positionsData = [],
     totalPositionCount,
   } = usePositionData({
-    isClosed: false,
+    withClosed: isClosed,
     page,
     limit,
   });
@@ -50,11 +59,9 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
   const { pools, loading } = usePoolData();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
-  const { tokenPrices = {} } = useTokenData();
+  const { data: tokenPrices = {} } = useGetAllTokenPrices();
 
   const [isViewMorePositions, setIsViewMorePositions] = useState(false);
-  const [mappedData, setMappedData] = useState<PoolPositionModel[]>([]);
-  const [isDataMappingLoading, setIsDataMappingLoading] = useState(true);
 
   const handleClickLoadMore = useCallback(() => {
     setIsViewMorePositions(!isViewMorePositions);
@@ -100,11 +107,13 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
           tokenA: {
             ...pool.tokenA,
             symbol: getGnotPath(pool.tokenA).symbol,
+            displaySymbol: getGnotPath(pool.tokenA).displaySymbol,
             logoURI: getGnotPath(pool.tokenA).logoURI,
           },
           tokenB: {
             ...pool.tokenB,
             symbol: getGnotPath(pool.tokenB).symbol,
+            displaySymbol: getGnotPath(pool.tokenB).displaySymbol,
             logoURI: getGnotPath(pool.tokenB).logoURI,
           },
         };
@@ -127,7 +136,7 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
 
   const showedPosition = useMemo(() => {
     return [...openPosition, ...(isClosed ? closedPosition : [])];
-  }, [closedPosition, isClosed, openPosition, limit]);
+  }, [closedPosition, isClosed, openPosition]);
 
   const handleScroll = useCallback(() => {
     if (divRef.current) {
@@ -212,32 +221,23 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
     }
   }, [showedPosition.length]);
 
-  const getMappedData = (): PoolPositionModel[] => {
-    if (isViewMorePositions) {
-      return showedPosition;
-    }
+  const mappedData = useMemo(() => {
+    let targetPositions: PoolPositionModel[];
 
-    for (const breakpoint of POSITION_CARD_LIST_BREAKPOINTS) {
-      if (width > breakpoint.width) {
-        return showedPosition.slice(0, breakpoint.displayCount);
+    if (isViewMorePositions) {
+      targetPositions = showedPosition;
+    } else {
+      targetPositions = showedPosition;
+      for (const breakpoint of POSITION_CARD_LIST_BREAKPOINTS) {
+        if (width > breakpoint.width) {
+          targetPositions = showedPosition.slice(0, breakpoint.displayCount);
+          break;
+        }
       }
     }
 
-    return showedPosition;
-  };
-
-  const updateDataMapping = useCallback(() => {
-    setIsDataMappingLoading(true);
-    const newMappedData = getMappedData();
-    const convertedMappedData = PositionConverter.convertPositions(newMappedData);
-
-    setMappedData(convertedMappedData);
-    setIsDataMappingLoading(false);
-  }, [isViewMorePositions, width, showedPosition, limit]);
-
-  useEffect(() => {
-    updateDataMapping();
-  }, [updateDataMapping]);
+    return PositionConverter.convertPositions(targetPositions);
+  }, [isViewMorePositions, width, showedPosition]);
 
   /**
    * Navigate to specific page
@@ -271,12 +271,23 @@ const WalletPositionCardListContainer: React.FC<{ isClosed: boolean }> = ({ isCl
     setPage(1);
   }, [isClosed]);
 
+  if (connected && isPositionDataAvailable && !loading && !isLoadingPosition && totalPositionCount === 0) {
+    return (
+      <div css={emptyPositions} role="status">
+        <span aria-hidden="true">
+          <IconInbox />
+        </span>
+        <span>{t("common:noDataFound")}</span>
+      </div>
+    );
+  }
+
   return (
     <MyPositionCardList
       positions={mappedData}
       loadMore={!isViewMorePositions}
-      isFetched={isFetchedPosition}
-      isLoading={loading || isLoadingPosition || isDataMappingLoading}
+      isFetched={isPositionDataAvailable}
+      isLoading={loading || isLoadingPosition}
       movePoolDetail={movePoolDetail}
       currentIndex={currentIndex}
       maxDisplayCount={maxDisplayCount}

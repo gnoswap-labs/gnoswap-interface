@@ -8,13 +8,7 @@ import { CommonState } from "@states/index";
 export interface TransactionConfirmModalResponse {
   openModal: () => void;
   closeModal: () => void;
-  update: (
-    status: CommonState.TransactionConfirmStatus,
-    title: string | null,
-    description: string | null,
-    txHash: string | null,
-    callback?: (() => void) | undefined,
-  ) => void;
+  update: (data: CommonState.TransactionModal) => void;
 }
 
 export interface UseTransactionConfirmModalProps {
@@ -48,24 +42,9 @@ export const useTransactionConfirmModal = (
     }
   }, [transactionModalData, account, props]);
 
-  const update = useCallback(
-    (
-      status: CommonState.TransactionConfirmStatus,
-      title: string | null,
-      description: string | null,
-      txHash: string | null,
-      callback?: (() => void) | undefined,
-    ) => {
-      setTransactionModalData({
-        status,
-        title,
-        description,
-        txHash,
-        callback,
-      });
-    },
-    [],
-  );
+  const update = useCallback((data: CommonState.TransactionModal) => {
+    setTransactionModalData(data);
+  }, []);
 
   const openModal = useCallback(() => {
     setOpenedModal(true);
@@ -73,16 +52,7 @@ export const useTransactionConfirmModal = (
 
   useEffect(() => {
     if (transactionModalData) {
-      setModalContent(
-        <TransactionConfirmModal
-          status={transactionModalData.status}
-          title={transactionModalData.title}
-          description={transactionModalData.description}
-          txHash={transactionModalData.txHash}
-          confirm={confirm}
-          close={confirm}
-        />,
-      );
+      setModalContent(<TransactionConfirmModal data={transactionModalData} confirm={confirm} close={confirm} />);
     }
     return () => {
       setModalContent(null);

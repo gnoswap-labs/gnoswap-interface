@@ -101,7 +101,7 @@ const RewardTooltipContent: React.FC<RewardTooltipContentProps> = ({ rewardInfo,
                       width={20}
                       mobileWidth={20}
                     />
-                    <span className="position">{getGnotPath(reward.token).symbol}</span>
+                    <span className="position">{getGnotPath(reward.token).displaySymbol}</span>
                   </div>
                   <span className="position">
                     {formatPoolPairAmount(reward.amount, {

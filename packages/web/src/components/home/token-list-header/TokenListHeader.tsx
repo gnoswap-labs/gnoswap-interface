@@ -1,11 +1,13 @@
 import React from "react";
+import IconSearch from "@components/common/icons/IconSearch";
 import SearchInput from "@components/common/search-input/SearchInput";
 import SelectTab from "@components/common/select-tab/SelectTab";
+import ShowUnverifiedTokensSwitch from "@components/common/show-unverified-tokens-switch/ShowUnverifiedTokensSwitch";
 import { TOKEN_TYPE } from "@containers/token-list-container/TokenListContainer";
-import { TokenListHeaderwrapper, TokenTitleWrapper } from "./TokenListHeader.styles";
-import IconSearch from "@components/common/icons/IconSearch";
 import { DEVICE_TYPE } from "@styles/media";
 import { useTranslation } from "next-i18next";
+
+import { TokenListHeaderwrapper, TokenTitleWrapper } from "./TokenListHeader.styles";
 
 interface TokenListHeaderProps {
   tokenType: TOKEN_TYPE;
@@ -16,6 +18,8 @@ interface TokenListHeaderProps {
   searchIcon: boolean;
   onTogleSearch: () => void;
   searchRef: React.RefObject<HTMLDivElement>;
+  showUnverifiedTokens: boolean;
+  toggleShowUnverifiedTokens: () => void;
 }
 
 const TokenListHeader: React.FC<TokenListHeaderProps> = ({
@@ -27,6 +31,8 @@ const TokenListHeader: React.FC<TokenListHeaderProps> = ({
   searchIcon,
   onTogleSearch,
   searchRef,
+  showUnverifiedTokens,
+  toggleShowUnverifiedTokens,
 }) => {
   const { t } = useTranslation();
 
@@ -48,19 +54,25 @@ const TokenListHeader: React.FC<TokenListHeaderProps> = ({
             />
           </div>
         ) : (
-          <div className="icon-wrap" onClick={onTogleSearch}>
-            <IconSearch className="search-icon" />
+          <div className="mobile-controls">
+            <ShowUnverifiedTokensSwitch checked={showUnverifiedTokens} onChange={toggleShowUnverifiedTokens} />
+            <div className="icon-wrap" onClick={onTogleSearch}>
+              <IconSearch className="search-icon" />
+            </div>
           </div>
         )}
       </TokenTitleWrapper>
       {breakpoint !== DEVICE_TYPE.MOBILE ? (
-        <SearchInput
-          width={300}
-          value={keyword}
-          onChange={search}
-          className="tokens-search"
-          placeholder={t("Main:search")}
-        />
+        <div className="right-section">
+          <ShowUnverifiedTokensSwitch checked={showUnverifiedTokens} onChange={toggleShowUnverifiedTokens} />
+          <SearchInput
+            width={300}
+            value={keyword}
+            onChange={search}
+            className="tokens-search"
+            placeholder={t("Main:search")}
+          />
+        </div>
       ) : (
         <SelectTab
           selectType={tokenType}

@@ -48,19 +48,21 @@ const PoolAddConfirmPriceRangeInfo: React.FC<PoolAddConfirmPriceRangeInfoProps> 
   const { t } = useTranslation();
 
   const [swap, setSwap] = useState(false);
+  const tokenASymbol = tokenA.info.displaySymbol;
+  const tokenBSymbol = tokenB.info.displaySymbol;
 
   const currentPriceStr = useMemo(() => {
     if (!swap) {
-      return `1 ${tokenA.info.symbol} = ${formatTokenExchangeRate(currentPrice, {
+      return `1 ${tokenASymbol} = ${formatTokenExchangeRate(currentPrice, {
         maxSignificantDigits: 6,
         minLimit: 0.000001,
-      })} ${tokenB.info.symbol}`;
+      })} ${tokenBSymbol}`;
     }
-    return `1 ${tokenB.info.symbol} = ${formatTokenExchangeRate(1 / Number(currentPrice), {
+    return `1 ${tokenBSymbol} = ${formatTokenExchangeRate(1 / Number(currentPrice), {
       maxSignificantDigits: 6,
       minLimit: 0.000001,
-    })} ${tokenA.info.symbol}`;
-  }, [currentPrice, tokenA.info.symbol, tokenB.info.symbol, swap]);
+    })} ${tokenASymbol}`;
+  }, [currentPrice, tokenASymbol, tokenBSymbol, swap]);
 
   const rangeStatus = useMemo(() => {
     return inRange ? RANGE_STATUS_OPTION.IN : RANGE_STATUS_OPTION.OUT;
@@ -68,17 +70,17 @@ const PoolAddConfirmPriceRangeInfo: React.FC<PoolAddConfirmPriceRangeInfoProps> 
 
   const displayPriceLabelMin = useMemo(() => {
     if (breakpoint === DEVICE_TYPE.MOBILE) {
-      return `${tokenA.info.symbol} per ${tokenB.info.symbol}`;
+      return `${tokenASymbol} per ${tokenBSymbol}`;
     }
     return priceLabelMin;
-  }, [breakpoint, priceLabelMin, tokenA, tokenB]);
+  }, [breakpoint, priceLabelMin, tokenASymbol, tokenBSymbol]);
 
   const displayPriceLabelMax = useMemo(() => {
     if (breakpoint === DEVICE_TYPE.MOBILE) {
-      return `${tokenA.info.symbol} per ${tokenB.info.symbol}`;
+      return `${tokenASymbol} per ${tokenBSymbol}`;
     }
     return priceLabelMax;
-  }, [breakpoint, priceLabelMax, tokenA, tokenB]);
+  }, [breakpoint, priceLabelMax, tokenASymbol, tokenBSymbol]);
 
   return (
     <PoolAddConfirmPriceRangeInfoWrapper>

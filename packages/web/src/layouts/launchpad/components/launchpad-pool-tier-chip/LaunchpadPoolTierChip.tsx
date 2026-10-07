@@ -1,8 +1,6 @@
-import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { TierType } from "@utils/launchpad-get-tier-number";
-import { getTierDuration } from "@utils/launchpad-get-tier-number";
+import { getTierDuration, type TierType } from "@utils/launchpad-get-tier-number";
 
 import { PoolTierChipWrapper } from "./LaunchpadPoolTierChip.styles";
 

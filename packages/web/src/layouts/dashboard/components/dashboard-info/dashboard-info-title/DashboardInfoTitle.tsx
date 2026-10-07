@@ -21,7 +21,7 @@ const DashboardInfoTitle: React.FC<DashboardInfoTitleProps> = ({ dashboardTokenI
         <div className="token-image-wrapper">
           <IconLogoWhite />
         </div>
-        <div className="token-symbol">{GNS_TOKEN.symbol}</div>
+        <div className="token-symbol">{GNS_TOKEN.displaySymbol}</div>
       </TokenLogoWrapper>
       <div className="amount-info">{dashboardTokenInfo.gnosAmount}</div>
     </TokenWrapper>

@@ -77,10 +77,8 @@
     "txt": "路由器费用"
   },
   "rangeStatus": {
-    "inRange": "范围内",
-    "inRange_short": "在",
-    "outRange": "超出范围",
-    "outRange_short": "外出"
+    "active": "活跃",
+    "inactive": "不活动"
   },
   "rewardType": {
     "external_reward": "外部奖励",
@@ -98,6 +96,7 @@
   "unstakingFee": {
     "txt": "解冻费"
   },
+  "value": "价值",
   "withdrawalFee": {
     "txt": "退学费用"
   }

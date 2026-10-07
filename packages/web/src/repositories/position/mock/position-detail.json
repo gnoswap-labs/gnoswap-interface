@@ -17,25 +17,6 @@
       "feesBUSD": 39.33637115494873,
       "feesB": 0.024392530977123676,
       "fees": 160.7690202255008,
-      "bins": [
-        {
-          "binId": "12",
-          "poolId": "0x0ce176e1b11a8f88a4ba2535de80e81f88592bad",
-          "currentTick": 11,
-          "reserveA": 112.61356909355652,
-          "reserveB": 360.0467817301862,
-          "lpTokenId": "1",
-          "timestamp": "1695364079",
-          "annualizedFeeGrowth": 0.006368988626613128,
-          "percentage": 1,
-          "path": [],
-          "parentAVolume": 0,
-          "parentBVolume": 0,
-          "parentlpTokenId": "0",
-          "tokenAVolume": 380.9675639393881,
-          "tokenBVolume": 121.96265488561838
-        }
-      ],
       "id": "0x7a80x0ce176e1b11a8f88a4ba2535de80e81f88592bad",
       "nftId": "0x7a8",
       "pool": {
@@ -97,7 +78,6 @@
           "annualizedFeeGrowth": 0.01032467684017463
         },
         "price": 123,
-        "bins": [],
         "block": 18189617,
         "dateUpdatedRaw": 1695364278930,
         "apr": 128.7

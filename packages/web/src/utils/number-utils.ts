@@ -229,8 +229,12 @@ export function subscriptFormat(
 }
 
 export function toShiftBitInt(value: string | number, shifted: number): bigint {
-  const shiftedValue = BigNumber(value).shiftedBy(shifted).toNumber();
-  return BigInt(Math.round(shiftedValue));
+  // Round in BigNumber so values above Number.MAX_SAFE_INTEGER keep every digit
+  const shiftedValue = BigNumber(value).shiftedBy(shifted).integerValue(BigNumber.ROUND_HALF_UP);
+  if (!shiftedValue.isFinite()) {
+    return 0n;
+  }
+  return BigInt(shiftedValue.toFixed(0));
 }
 
 export function rawToDisplayAmount(amount: string | number | undefined | null, decimals: number) {

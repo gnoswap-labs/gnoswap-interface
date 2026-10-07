@@ -25,9 +25,6 @@ interface DecreaseLiquidityProps {
   percent: number;
   handlePercent: (value: number) => void;
   pooledTokenInfos: IPooledTokenInfo | null;
-  isGetWGNOT: boolean;
-  setIsGetWGNOT: () => void;
-  showWGNOTToggle: boolean;
 }
 
 const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
@@ -43,9 +40,6 @@ const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
   handlePercent,
   percent,
   pooledTokenInfos,
-  isGetWGNOT,
-  setIsGetWGNOT,
-  showWGNOTToggle,
 }) => {
   const { t } = useTranslation();
 
@@ -71,9 +65,6 @@ const DecreaseLiquidity: React.FC<DecreaseLiquidityProps> = ({
           handlePercent={handlePercent}
           percent={percent}
           pooledTokenInfos={pooledTokenInfos}
-          isGetWGNOT={isGetWGNOT}
-          setIsGetWGNOT={setIsGetWGNOT}
-          showWGNOTToggle={showWGNOTToggle}
         />
       </article>
       <Button

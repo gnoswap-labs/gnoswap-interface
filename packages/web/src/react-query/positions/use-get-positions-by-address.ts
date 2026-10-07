@@ -7,23 +7,27 @@ import { GetPositionsByAddressResult } from "@repositories/position/response";
 
 import { QUERY_KEY } from "../query-keys";
 
-const REFETCH_INTERVAL = 60_000;
+const REFETCH_INTERVAL = 5_000;
 
 interface UseGetPositionsByAddressProps {
   address?: string;
-  isClosed?: boolean;
   poolPath?: string | null;
   page?: number;
   limit?: number;
+  /** API option: when true, include closed positions in the server response. */
   withClosed?: boolean;
+  withAvailableStake?: boolean;
 }
 
 export const useGetPositionsByAddress = (
   props?: UseGetPositionsByAddressProps,
-  options?: UseQueryOptions<GetPositionsByAddressResult, Error>,
+  options?: Omit<
+    UseQueryOptions<GetPositionsByAddressResult, Error, GetPositionsByAddressResult>,
+    "queryKey" | "queryFn"
+  >,
 ) => {
   const { positionRepository } = useGnoswapContext();
-  const { account, currentChainId, availNetwork } = useWallet();
+  const { account, currentChainId } = useWallet();
 
   const address = useMemo(() => {
     return props?.address || account?.address || "";
@@ -33,8 +37,8 @@ export const useGetPositionsByAddress = (
     return props?.poolPath || "";
   }, [props?.poolPath]);
 
-  return useQuery<GetPositionsByAddressResult, Error>({
-    queryKey: [
+  return useQuery<GetPositionsByAddressResult, Error, GetPositionsByAddressResult>(
+    [
       QUERY_KEY.positions,
       currentChainId,
       address,
@@ -42,39 +46,32 @@ export const useGetPositionsByAddress = (
       props?.page,
       props?.limit,
       props?.withClosed,
-      props?.isClosed,
+      props?.withAvailableStake,
     ],
-    queryFn: async () => {
-      if (!availNetwork || !address) {
+    async () => {
+      if (!address) {
         return { positions: [], totalCount: 0 };
       }
 
-      return await positionRepository
-        .getPositionsByAddress(address, {
+      try {
+        return await positionRepository.getPositionsByAddress(address, {
           poolPath: poolPath ? encodeURIComponent(poolPath) : undefined,
           page: props?.page,
           limit: props?.limit,
           withClosed: props?.withClosed,
-          isClosed: props?.isClosed,
-        })
-        .catch(e => {
-          console.error(e);
-          return { positions: [], totalCount: 0 };
+          withAvailableStake: props?.withAvailableStake,
         });
-    },
-    select: data => {
-      if (props?.isClosed === undefined) {
-        return data;
+      } catch (error) {
+        console.error("Failed to fetch positions:", error);
+        throw error;
       }
-      return {
-        positions: data.positions.filter(p => p.closed === props.isClosed),
-        totalCount: data.totalCount,
-      };
     },
-    keepPreviousData: true,
-    refetchInterval: REFETCH_INTERVAL,
-    refetchOnMount: true,
-    refetchOnReconnect: true,
-    ...options,
-  });
+    {
+      keepPreviousData: true,
+      refetchInterval: REFETCH_INTERVAL,
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+      ...options,
+    },
+  );
 };

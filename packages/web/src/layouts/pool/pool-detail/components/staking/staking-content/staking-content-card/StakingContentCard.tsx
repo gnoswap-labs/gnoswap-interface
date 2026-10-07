@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { calculateRemainTime, timeToDateStr } from "@common/utils/date-util";
 import IconCheck from "@components/common/icons/IconCheck";
 import IconInfo from "@components/common/icons/IconInfo";
+import IconLpToken from "@components/common/icons/IconLpToken";
 import IconLine from "@components/common/icons/IconLine";
 import IconLineLong from "@components/common/icons/IconLineLong";
 import IconStar from "@components/common/icons/IconStar";
@@ -13,7 +14,6 @@ import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSke
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { StakingPeriodType, STAKING_PERIOD_INFO, RewardType } from "@constants/option.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import { useTokenData } from "@hooks/token/data/use-token-data";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionModel } from "@models/position/position-model";
 import { useGetAllTokenPrices } from "@query/token";
@@ -72,7 +72,13 @@ const PriceTooltipContent = ({ positions, period }: { positions: PoolPositionMod
         return (
           <React.Fragment key={index}>
             <div className="list list-logo">
-              <MissingLogo url={position.tokenUri} symbol={`ID #${position.id}`} width={18} mobileWidth={16} />
+              <MissingLogo
+                url={position.tokenUri}
+                fallback={<IconLpToken />}
+                symbol={`ID #${position.id}`}
+                width={18}
+                mobileWidth={16}
+              />
               <span className="title">ID #{position.lpTokenId}</span>
             </div>
             <div className="list">
@@ -106,7 +112,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   loading,
 }) => {
   const { t } = useTranslation();
-  const { tokenPrices } = useTokenData();
+  const { data: tokenPrices = {} } = useGetAllTokenPrices();
   const hasPosition = positions.length > 0;
 
   const checkedStep = useMemo(() => {
@@ -233,6 +239,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
               <span>
                 <Tooltip
                   placement="top"
+                  scroll
                   FloatingContent={
                     <div>
                       <PriceTooltipContent positions={positions} period={periodInfo.period} />
@@ -284,7 +291,7 @@ interface SummuryAprProps {
 
 export const SummuryApr: React.FC<SummuryAprProps> = ({ period, checkPoints, positions, stakingApr, loading }) => {
   const { t } = useTranslation();
-  const { tokenPrices } = useTokenData();
+  const { data: tokenPrices = {} } = useGetAllTokenPrices();
 
   const hasPosition = positions.length > 0;
 
@@ -400,6 +407,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({ period, checkPoints, pos
               <span>
                 <Tooltip
                   placement="top"
+                  scroll
                   FloatingContent={
                     <div>
                       <PriceTooltipContent positions={positions} period={periodInfo.period} />

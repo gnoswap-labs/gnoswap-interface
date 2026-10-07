@@ -1,17 +1,29 @@
+import BigNumber from "bignumber.js";
+
 import {
   DisplayRewardType,
   SwapFeeTierInfoMap,
   SwapFeeTierMaxPriceRangeMap,
   SwapFeeTierType,
 } from "@constants/option.constant";
-import { TokenModel } from "@models/token/token-model";
-import { tickToPriceStr } from "./swap-utils";
-import { sortTokenPaths } from "./sort-utils";
-import { checkGnotPath } from "./common";
 import { PoolModel } from "@models/pool/pool-model";
+import { TokenModel } from "@models/token/token-model";
+import { checkGnotPath } from "./common";
+import { sortTokenPaths } from "./sort-utils";
+import { tickToPriceStr } from "./swap-utils";
 
 const maxTicks = Object.values(SwapFeeTierMaxPriceRangeMap).map(range => range.maxTick);
 const minTicks = Object.values(SwapFeeTierMaxPriceRangeMap).map(range => range.maxTick);
+
+const TWO_192 = BigInt("6277101735386680763835789423207666416102355444464034512896");
+
+export function invertSqrtPriceX96(sqrtPriceX96: bigint): bigint {
+  if (sqrtPriceX96 === 0n) {
+    return 0n;
+  }
+
+  return TWO_192 / sqrtPriceX96;
+}
 
 export function makePoolPath(
   tokenA: TokenModel | null,
@@ -48,8 +60,35 @@ export function toMinPriceStr(tick: number) {
   return tickToPriceStr(tick, { decimals: 6 });
 }
 
-export function checkPoolStakingRewards(incentivized?: boolean) {
-  return incentivized === true;
+export function isValidCurrentPrice(price: number | null | undefined): price is number {
+  return price !== null && price !== undefined && !!price && Number.isFinite(price);
+}
+
+export function makeDisplayPrice(price: number | string, baseToken: TokenModel, quoteToken: TokenModel): number {
+  return BigNumber(price)
+    .shiftedBy(baseToken.decimals - quoteToken.decimals)
+    .toNumber();
+}
+
+export function calculateTokenDepositRatio(
+  tokenABalance: number,
+  tokenBBalance: number,
+  price: number | string | null | undefined,
+  tokenA: TokenModel,
+  tokenB: TokenModel,
+): number {
+  if (tokenABalance + tokenBBalance === 0) {
+    return 0.5;
+  }
+
+  const priceRatio = price ? makeDisplayPrice(price, tokenA, tokenB) : 1;
+  return tokenABalance / (tokenABalance + tokenBBalance / priceRatio);
+}
+
+export function makeRawPrice(price: number | string, baseToken: TokenModel, quoteToken: TokenModel): number {
+  return BigNumber(price)
+    .shiftedBy(quoteToken.decimals - baseToken.decimals)
+    .toNumber();
 }
 
 export function isOrderedTokenPaths(tokenAPath: string, tokenBPath: string): boolean {

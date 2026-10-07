@@ -1,26 +1,32 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { ERROR_VALUE } from "@common/errors/adena";
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
+import { GNS_TOKEN_PATH } from "@constants/environment.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useMessage } from "@hooks/common/use-message";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
+import { useReferral } from "@hooks/common/use-referral";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { DexEvent, DexEventType } from "@repositories/common";
-import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
-import { useReferral } from "@hooks/common/use-referral";
+import { ClaimableRewards } from "@repositories/governance";
+import { makeRawTokenAmount } from "@utils/token-utils";
 
 export const useGovernanceTx = () => {
-  const { getCurrentReferralAddress, removeReferrerFromLocalStorage } = useReferral();
+  const { getNextReferralAddress, removeReferrerFromLocalStorage } = useReferral();
 
   const { t } = useTranslation();
   const { account } = useWallet();
   const { governanceRepository } = useGnoswapContext();
+  const { tokens, isFetched: isFetchedTokens } = useTokenData(true);
+  const gnsToken = useMemo(() => tokens.find(token => token.path === GNS_TOKEN_PATH) ?? GNS_TOKEN, [tokens]);
   const { getMessage } = useMessage();
 
   const [openedConfirmModal] = useState(false);
@@ -65,6 +71,7 @@ export const useGovernanceTx = () => {
           enqueueEvent({
             txHash: response?.data?.hash,
             action: eventType,
+            checkWugnotTransfer: true,
             formatData,
             visibleEmitResult: true,
             onEmit: async () => {
@@ -96,25 +103,26 @@ export const useGovernanceTx = () => {
   };
 
   const delegateGNS = (toName: string, toAddress: string, amount: string, emitCallback: () => Promise<void>) => {
-    if (!account) {
+    if (!account || !isFetchedTokens) {
       return;
     }
 
-    const unitAmount = Math.floor(Number(amount) * 10 ** GNS_TOKEN.decimals);
+    const unitAmount = makeRawTokenAmount(GNS_TOKEN, amount) || "0";
 
     const messageData = {
-      tokenAAmount: (unitAmount / 10 ** GNS_TOKEN.decimals).toLocaleString("en"),
+      tokenAAmount: Number(amount).toLocaleString("en"),
       tokenASymbol: GNS_TOKEN.symbol,
       target: toName,
     };
 
-    const currentReferralAddress = getCurrentReferralAddress();
+    const currentReferralAddress = getNextReferralAddress();
 
     processTx(
       () =>
         governanceRepository.sendDelegate({
+          gnsToken,
           to: toAddress,
-          amount: unitAmount.toString(),
+          amount: unitAmount,
           referrerAddress: currentReferralAddress,
         }),
       DexEvent.DELEGATE,
@@ -139,10 +147,10 @@ export const useGovernanceTx = () => {
       return;
     }
 
-    const unitAmount = Math.floor(Number(amount) * 10 ** GNS_TOKEN.decimals);
+    const unitAmount = makeRawTokenAmount(GNS_TOKEN, amount) || "0";
 
     const messageData = {
-      tokenAAmount: (unitAmount / 10 ** GNS_TOKEN.decimals).toLocaleString("en"),
+      tokenAAmount: Number(amount).toLocaleString("en"),
       tokenASymbol: GNS_TOKEN.symbol,
       target: fromName,
     };
@@ -151,7 +159,7 @@ export const useGovernanceTx = () => {
       () =>
         governanceRepository.sendUndelegate({
           to: fromAddress,
-          amount: unitAmount.toString(),
+          amount: unitAmount,
         }),
       DexEvent.UNDELEGATE,
       messageData,
@@ -191,7 +199,12 @@ export const useGovernanceTx = () => {
     );
   };
 
-  const collectReward = (usdValue: string, emitCallback: () => Promise<void>) => {
+  const collectReward = (
+    usdValue: string,
+    claimableGovernanceRewards: ClaimableRewards[],
+    claimableLaunchpadRewards: ClaimableRewards[],
+    emitCallback: () => Promise<void>,
+  ) => {
     if (!account) {
       return;
     }
@@ -201,7 +214,7 @@ export const useGovernanceTx = () => {
     };
 
     processTx(
-      () => governanceRepository.sendCollectReward(),
+      () => governanceRepository.sendCollectReward(claimableGovernanceRewards, claimableLaunchpadRewards),
       DexEvent.COLLECT_GOV_REWARD,
       messageData,
       () => messageData,
@@ -243,7 +256,7 @@ export const useGovernanceTx = () => {
       return;
     }
 
-    const unitAmount = Math.floor(Number(amount) * 10 ** GNS_TOKEN.decimals);
+    const unitAmount = makeRawTokenAmount(GNS_TOKEN, amount) || "0";
     const messageData = {
       target: t("Governance:proposal.type.community"),
     };
@@ -255,7 +268,7 @@ export const useGovernanceTx = () => {
           description,
           tokenPath,
           to: toAddress,
-          amount: unitAmount.toString(),
+          amount: unitAmount,
         }),
       DexEvent.PROPOSE_COMM_POOL_SPEND,
       messageData,

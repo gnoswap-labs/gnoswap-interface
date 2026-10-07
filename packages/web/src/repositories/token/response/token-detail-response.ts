@@ -34,7 +34,9 @@ export interface ITokenA {
   type: string;
   name: string;
   path: string;
+  tokenId: string;
   symbol: string;
+  displaySymbol: string;
   logoURI: string;
 }
 
@@ -42,7 +44,9 @@ export interface ITokenB {
   type: string;
   name: string;
   path: string;
+  tokenId: string;
   symbol: string;
+  displaySymbol: string;
   logoURI: string;
 }
 

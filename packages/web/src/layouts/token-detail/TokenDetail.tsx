@@ -44,7 +44,7 @@ const TokenDetail: React.FC = () => {
         path: "/",
       },
       {
-        title: `${token?.symbol || ""}`,
+        title: `${token?.displaySymbol || ""}`,
         path: "",
         options: {
           type: "TOKEN_SYMBOL" as BreadcrumbTypes,

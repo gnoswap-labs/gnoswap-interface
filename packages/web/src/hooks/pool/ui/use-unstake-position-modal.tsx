@@ -9,11 +9,10 @@ import UnstakePositionModalContainer from "@layouts/pool/pool-unstake/containers
 interface Props {
   positions: PoolPositionModel[];
   selectedIds: number[];
-  isGetWGNOT: boolean;
   refetchPositions: () => Promise<void>;
 }
 
-export const useUnstakePositionModal = ({ positions, selectedIds, isGetWGNOT, refetchPositions }: Props) => {
+export const useUnstakePositionModal = ({ positions, selectedIds, refetchPositions }: Props) => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
 
@@ -24,13 +23,9 @@ export const useUnstakePositionModal = ({ positions, selectedIds, isGetWGNOT, re
   const openModal = useCallback(() => {
     setOpenedModal(true);
     setModalContent(
-      <UnstakePositionModalContainer
-        positions={selectedPositions}
-        isGetWGNOT={isGetWGNOT}
-        refetchPositions={refetchPositions}
-      />,
+      <UnstakePositionModalContainer positions={selectedPositions} refetchPositions={refetchPositions} />,
     );
-  }, [setModalContent, setOpenedModal, refetchPositions, selectedPositions, isGetWGNOT]);
+  }, [setModalContent, setOpenedModal, refetchPositions, selectedPositions]);
 
   return {
     openModal,

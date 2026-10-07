@@ -13,7 +13,6 @@
       "chain": "Cadena"
     },
     "empty": "No se han encontrado fichas",
-    "hideZeroAmt": "Ocultar importes cero",
     "title": "Activos"
   },
   "assetSendModal": {

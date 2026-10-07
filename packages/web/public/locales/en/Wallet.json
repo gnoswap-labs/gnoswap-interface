@@ -13,7 +13,6 @@
       "chain": "Chain"
     },
     "empty": "No tokens found",
-    "hideZeroAmt": "Hide zero amounts",
     "title": "Assets"
   },
   "assetSendModal": {

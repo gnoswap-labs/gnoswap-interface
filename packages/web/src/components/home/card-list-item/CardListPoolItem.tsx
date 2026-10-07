@@ -17,7 +17,7 @@ interface CardListPoolItemProps {
 const CardListPoolItem: React.FC<CardListPoolItemProps> = ({ index, item, onClickItem }) => {
   const pairName = useMemo(() => {
     const pool = item.pool;
-    return `${pool.tokenA.symbol}/${pool.tokenB.symbol}`;
+    return `${pool.tokenA.displaySymbol}/${pool.tokenB.displaySymbol}`;
   }, [item]);
 
   const poolFeeRate = useMemo(() => {

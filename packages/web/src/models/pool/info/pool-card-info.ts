@@ -11,6 +11,8 @@ export interface IncentivizePoolCardInfo {
 
   incentivized: boolean;
 
+  hasStakedPosition: boolean;
+
   tokenA: TokenModel;
 
   tokenB: TokenModel;
@@ -20,6 +22,8 @@ export interface IncentivizePoolCardInfo {
   liquidity: string;
 
   apr: string;
+
+  stakingApr: string;
 
   volume24h: string;
 

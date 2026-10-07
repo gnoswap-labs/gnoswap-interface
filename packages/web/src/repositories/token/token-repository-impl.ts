@@ -12,12 +12,18 @@ import { NetworkClient } from "@common/clients/network-client";
 import { StorageClient } from "@common/clients/storage-client";
 import { CommonError } from "@common/errors";
 import { StorageKeyType } from "@common/values";
-import { customSort } from "@containers/select-token-container/SelectTokenContainer";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { TokenSearchLogModel } from "@models/token/token-search-log-model";
+import { customSort } from "@utils/token-sort";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 import mockedExchangeRateGraph from "./mock/token-exchange-rate-graph.json";
-import { IBalancesByAddressResponse } from "./response/balance-by-address-response";
+import { IBalancesByAddressResponse, IGrc20TransferHistoryResponse } from "./response/balance-by-address-response";
 import { TokenExchangeRateGraphResponse } from "./response/token-exchange-rate-response";
+
+const normalizeTokenDisplay = <T extends Pick<ITokenResponse, "path" | "symbol" | "displaySymbol">>(token: T): T => ({
+  ...token,
+  displaySymbol: formatDisplayTokenSymbol(token.symbol, token.path),
+});
 
 export class TokenRepositoryImpl implements TokenRepository {
   private networkClient: NetworkClient | null;
@@ -40,20 +46,23 @@ export class TokenRepositoryImpl implements TokenRepository {
     const response = await this.networkClient.get<{ data: ITokenResponse }>({
       url: `/token-metas/${tempPath}`,
     });
-    return response.data.data;
+    return normalizeTokenDisplay(response.data.data);
   };
 
-  public getTokens = async (): Promise<TokenListResponse> => {
+  public getTokens = async (showUnverified: boolean): Promise<TokenListResponse> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
     const response = await this.networkClient.get<{ data: ITokenResponse[] }>({
-      url: "/token-metas",
+      url: `/token-metas?showUnverified=${showUnverified}`,
     });
     if (response.data.data === null) {
       return { tokens: [] };
     }
-    const tokens = response?.data?.data.sort(customSort) || [];
+    const tokens =
+      response?.data?.data
+        .map(normalizeTokenDisplay)
+        .sort(customSort) || [];
     return { tokens };
   };
 
@@ -88,7 +97,14 @@ export class TokenRepositoryImpl implements TokenRepository {
     }>({
       url: `/tokens/${tempPath}/details`,
     });
-    return response.data.data;
+    return {
+      ...response.data.data,
+      bestPools: response.data.data.bestPools.map(pool => ({
+        ...pool,
+        tokenA: normalizeTokenDisplay(pool.tokenA),
+        tokenB: normalizeTokenDisplay(pool.tokenB),
+      })),
+    };
   };
 
   public getChain = async (): Promise<IChainResponse> => {
@@ -107,6 +123,19 @@ export class TokenRepositoryImpl implements TokenRepository {
     }
     const response = await this.networkClient.get<IBalancesByAddressResponse>({
       url: `/users/${address}/balances`,
+    });
+    return response.data;
+  };
+
+  public getGrc20TransferHistoryByTxHash = async (
+    txHash: string,
+    tokenPath: string,
+  ): Promise<IGrc20TransferHistoryResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+    const response = await this.networkClient.get<IGrc20TransferHistoryResponse>({
+      url: `/activity/transfers?txHash=${encodeURIComponent(txHash)}&tokenPath=${encodeURIComponent(tokenPath)}`,
     });
     return response.data;
   };

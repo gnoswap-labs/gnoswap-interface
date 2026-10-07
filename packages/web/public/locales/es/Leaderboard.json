@@ -13,9 +13,9 @@
       "staking": "Estacas",
       "swap": "Intercambiar",
       "tooltip": {
-        "position": "Comisiones ganadas en USD. Solo cuenta si el pool recibe incentivos de $GNS.",
-        "staking": "<ul><li>Recompensas por posición ganadas en USD. Sólo cuenta si la posición tiene recompensas.</li><li>Comisiones de Protocolo Ganadas en USD. Sólo cuenta si las recompensas tienen valor en USD.</li></ul>",
-        "volume": "Cuotas de intercambio pagadas en USD. Sólo cuenta si el pool recibe incentivos en $GNS."
+        "position": "Las comisiones de intercambio se cobran en USD. Solo se tienen en cuenta si el pool recibe incentivos en $GNS.",
+        "staking": "<ul><li>Recompensas por staking reclamadas en USD. Solo se tienen en cuenta los incentivos internos en $GNS.</li><li>Las comisiones del protocolo se cobran en USD. Solo se tienen en cuenta si el token de recompensa tiene un precio en USD.</li></ul>",
+        "volume": "Comisiones de intercambio pagadas en USD. Solo se tiene en cuenta si el pool recibe incentivos internos en $GNS."
       },
       "user": "Usuario",
       "xGNS": "Estacas xGNS"

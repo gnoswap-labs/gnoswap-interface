@@ -79,6 +79,13 @@ export const PoolSelectionGraphTooltipWrapper = styled.div`
     ${fonts.body12};
     line-height: 1em;
 
+    .price-row {
+      display: flex;
+      gap: 4px;
+      color: ${({ theme }) => theme.color.text02};
+      white-space: nowrap;
+    }
+
     .row {
       display: flex;
       flex-direction: row;
@@ -119,6 +126,11 @@ export const PoolSelectionGraphTooltipWrapper = styled.div`
       color: ${({ theme }) => theme.color.text02};
       gap: 8px;
       width: 100%;
+
+      &.pool-liquidity-content {
+        margin-top: 8px;
+      }
+
       .row {
         padding: 4px 0;
       }

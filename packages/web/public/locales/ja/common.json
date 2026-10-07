@@ -176,5 +176,10 @@
     }
   },
   "swapUrlCopied": "コピーされたURLを入れ替える！",
+  "tokenList": {
+    "showUnverifiedTokens": "未確認のトークンを表示する",
+    "unverifiedTokensTooltip": "Gno.landの「Token Resources」に登録されていないトークンは除外されます。",
+    "verifyToken": "トークンを確認してください"
+  },
   "urlCopied": "URLをコピーした！"
 }

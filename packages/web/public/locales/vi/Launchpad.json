@@ -1,0 +1,183 @@
+{
+  "aboutProject": {
+    "links": "Liên kết",
+    "realmPath": "Con đường Vương quốc (Hợp đồng)",
+    "title": "Giới thiệu {{project_name}}"
+  },
+  "clickHere": {
+    "button": "Nhấp vào đây!",
+    "text": "Mời GNS tham gia vào Launchpad."
+  },
+  "common": {
+    "button": {
+      "amountTooLow": "Số tiền quá thấp",
+      "claim": "Yêu cầu",
+      "claimAll": "Nhận tất cả",
+      "conditionsArentMet": "Không đáp ứng các điều kiện",
+      "deposit": "Nạp tiền ngay",
+      "details": "Chi tiết",
+      "enterAmount": "Nhập số tiền",
+      "insufficientBalance": "Số dư không đủ",
+      "selectPool": "Chọn hồ bơi",
+      "showLess": "Hiển thị ít hơn",
+      "showMore": "Xem thêm",
+      "swapPage": "Hoán đổi"
+    },
+    "ended": "Đã kết thúc",
+    "ongoing": "Đang diễn ra",
+    "status": {
+      "ended": "Đã kết thúc",
+      "endsInOneMinute": "Sẽ kết thúc trong 1 phút nữa",
+      "ongoing": "Kết thúc trong {{time}}",
+      "upcoming": "Sắp tới trong {{time}}"
+    },
+    "tierDuration": {
+      "1month": "1 tháng",
+      "3months": "3 tháng",
+      "6months": "6 tháng"
+    },
+    "time": {
+      "days_other": "{{count}} ngày",
+      "daysHoursOrHoursMinutes": "{{time1}} {{time2}}",
+      "hours_other": "{{count}} giờ",
+      "inOneMinute": "trong 1 phút",
+      "inTime": "trong {{time}}",
+      "minutes_other": "{{count}} phút",
+      "minutesOnly": "{{time}}",
+      "month_other": "{{count}} tháng",
+      "monthUpperCase_other": "{{count}} Tháng",
+      "now": "Bây giờ"
+    },
+    "tooltip": {
+      "conditions": {
+        "address": "Địa chỉ ví phải hợp lệ.",
+        "title": "Điều kiện tham gia",
+        "token": "Ít nhất phải có một token {{amount}} {{symbol}} trong ví<br/>\n.",
+        "xGNS": "Phải có ít nhất {{amount}} xGNS được staking<br/>\ntrong hệ thống Quản trị."
+      },
+      "endDate": "Chương trình Launchpad mà bạn đã chọn <br />\nsẽ kết thúc vào ngày này.",
+      "participants": "Tổng số người dùng<br/>\nđã tham gia vào Launchpad.",
+      "rewardsClaimableOn": "Các phần thưởng sẽ có thể nhận được sau thời gian này <br />\nthời điểm này.",
+      "tokensDistributed": "Tổng số lượng token của dự án<br/>\nđược phân phối cho những người tham gia.",
+      "totalAllocation": "Tổng số lượng token của dự án <br />\nđược phân bổ cho Launchpad.",
+      "totalDeposited": "Tổng số GNS<br/>\nđã được nạp vào Launchpad."
+    },
+    "upcoming": "Sắp tới"
+  },
+  "detail": {
+    "title": "Launchpad"
+  },
+  "launchpad": "Launchpad",
+  "main": {
+    "activeProject": {
+      "title": "Các dự án đang triển khai"
+    },
+    "button": {
+      "howToParticipate": "Cách tham gia",
+      "submitProject": "Gửi dự án"
+    },
+    "subTitle": "Nơi những người tiên phong và những người ủng hộ hội tụ — Khám phá “ <br/>” của tương lai \nNhững bước đột phá trên Gno.land, được hỗ trợ bởi $GNS.",
+    "subTitleMobile": "Nơi những người tiên phong và những người ủng hộ hội tụ —<br/>\nKhám phá những bước đột phá của tương lai tại<br/>\nGno.land, được hỗ trợ bởi $GNS.",
+    "title": "GnoSwap Launchpad",
+    "total": {
+      "deposited": "Tổng số GNS đã gửi",
+      "distributed": "Tổng số tiền đã phân phối",
+      "participants": "Tổng số người tham gia"
+    }
+  },
+  "modal": {
+    "claimAll": {
+      "col": {
+        "claimable": "Có thể yêu cầu bồi thường",
+        "depositAmount": "Số tiền đặt cọc",
+        "pool": "Hồ bơi"
+      },
+      "title": "Xác nhận yêu cầu bồi thường tất cả"
+    },
+    "confirm": {
+      "button": "Xác nhận"
+    },
+    "deposit": {
+      "deposit": {
+        "col": {
+          "depositAmount": "Số tiền đặt cọc",
+          "endDate": "Ngày kết thúc",
+          "poolTier": "Cấp độ hồ bơi"
+        },
+        "title": "Chi tiết khoản tiền gửi"
+      },
+      "note": {
+        "learnMore": "Tìm hiểu thêm",
+        "list1": "Hãy kiểm tra lại một lần nữa để xác nhận số tiền nạp của bạn.",
+        "list2": "Chỉ gửi các loại token được hỗ trợ đến địa chỉ nạp tiền này.<br/>\nViệc nạp bất kỳ loại tiền điện tử nào khác vào nền tảng<br/>\nnày sẽ dẫn đến việc bạn mất số tiền của mình.",
+        "title": "Những lưu ý quan trọng"
+      },
+      "reward": {
+        "col": {
+          "network": "Mạng",
+          "rewardsClaimableOn": "Có thể nhận phần thưởng vào",
+          "rewardsToken": "Token phần thưởng"
+        },
+        "title": "Chi tiết về phần thưởng"
+      },
+      "title": "Xác nhận khoản tiền gửi"
+    }
+  },
+  "myParticipation": {
+    "col": {
+      "apr": "APR",
+      "claimable": "Có thể yêu cầu bồi thường",
+      "claimableDate": "Ngày có thể yêu cầu bồi thường",
+      "claimed": "Được tuyên bố",
+      "depositAmounts": "Số tiền đặt cọc",
+      "endDate": "Ngày kết thúc"
+    },
+    "nodata": {
+      "text1": "Nạp tiền vào <span>GNS</span>",
+      "text2": "Giờ đây, bạn có thể kiếm được tới",
+      "text3": "{{apr}}% lãi suất hàng năm (APR)"
+    },
+    "title": "Sự tham gia của tôi",
+    "unconnect": "Vui lòng kết nối ví của bạn tại<br/>\nđể xem thông tin tham gia của bạn."
+  },
+  "participate": {
+    "balance": "Cân bằng",
+    "col": {
+      "depositAmount": "Số tiền đặt cọc",
+      "endDate": "Ngày kết thúc",
+      "poolTier": "Cấp độ hồ bơi",
+      "rewardsClaimableOn": "Có thể nhận phần thưởng vào"
+    },
+    "title": "Tham gia"
+  },
+  "poolList": {
+    "col": {
+      "apr": "APR",
+      "participants": "Những người tham gia",
+      "tokensDistributed": "Số lượng token đã phân phối",
+      "totalDeposits": "Tổng số tiền gửi"
+    },
+    "description": "Tham gia staking cho {{month}}.",
+    "title": "Hồ bơi {{idx}}"
+  },
+  "projects": {
+    "col": {
+      "apr": "APR",
+      "participants": "Những người tham gia",
+      "project": "Các dự án",
+      "status": "Tình trạng",
+      "swap": "Hoán đổi",
+      "totalAllocation": "Tổng mức phân bổ",
+      "totalDeposit": "Tổng số tiền gửi"
+    },
+    "noProjectsFound": "Không tìm thấy dự án nào"
+  },
+  "projectSummary": {
+    "col": {
+      "participants": "Những người tham gia",
+      "tokensDistributed": "Số lượng token đã phân phối",
+      "totalAllocation": "Tổng mức phân bổ",
+      "totalDeposited": "Tổng số tiền đã gửi"
+    }
+  }
+}

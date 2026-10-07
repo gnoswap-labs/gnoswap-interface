@@ -39,7 +39,7 @@ const LoserCard: React.FC<LoserCardListProps> = ({ losers = [], loadingLose }) =
               <NameSectionWrapper>
                 <MissingLogo symbol={loser.symbol} url={loser.logoURI} className="logo" width={20} mobileWidth={20} />
                 <span className="name">{loser.name}</span>
-                <span className="symbol">{loser.symbol}</span>
+                <span className="symbol">{loser.displaySymbol}</span>
               </NameSectionWrapper>
               <span className="price">{loser.price}</span>
               <span

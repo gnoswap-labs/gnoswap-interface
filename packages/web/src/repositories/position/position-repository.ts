@@ -1,9 +1,9 @@
-import { SendTransactionResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
-import { PositionBinModel } from "@models/position/position-bin-model";
+import { SendTransactionResponse, TransactionMessage, WalletResponse } from "@common/clients/wallet-client/protocols";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { PositionModel } from "@models/position/position-model";
 
 import { DecreaseLiquidityRequest, IncreaseLiquidityRequest, RepositionLiquidityRequest } from "./request";
+import { IncreaseLiquidityMessagesRequest } from "./request/increase-liquidity-request";
 import { ClaimAllRequest } from "./request/claim-all-request";
 import { ClaimRequest } from "./request/claim-request";
 import { RemoveLiquidityRequest } from "./request/remove-liquidity-request";
@@ -15,6 +15,7 @@ import {
   GetPositionsByAddressResult,
   IncreaseLiquidityFailedResponse,
   IncreaseLiquiditySuccessResponse,
+  PositionRewardsResponse,
   RepositionLiquidityFailedResponse,
   RepositionLiquiditySuccessResponse,
 } from "./response";
@@ -23,17 +24,18 @@ export interface PositionRepository {
   getPositionsByAddress: (
     address: string,
     options?: {
-      isClosed?: boolean;
       poolPath?: string;
       page?: number;
       limit?: number;
+      /** API option: when true, include closed positions in the server response. */
       withClosed?: boolean;
+      withAvailableStake?: boolean;
     },
   ) => Promise<GetPositionsByAddressResult>;
 
-  getPositionBins: (lpTokenId: string, count: 20 | 40) => Promise<PositionBinModel[]>;
+  getPositionRewardsByAddress: (address: string) => Promise<PositionRewardsResponse | null>;
 
-  getPositionById: (lpTokenId: string) => Promise<PositionModel>;
+  getPositionById: (lpTokenId: string, timeout?: number) => Promise<PositionModel>;
 
   sendClaim: (request: ClaimRequest) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
 
@@ -44,6 +46,9 @@ export interface PositionRepository {
   unstakePositions: (
     request: UnstakePositionsRequest,
   ) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
+
+  /** The messages `increaseLiquidity` would broadcast, approvals included. */
+  makeIncreaseLiquidityMessages: (request: IncreaseLiquidityMessagesRequest) => Promise<TransactionMessage[]>;
 
   increaseLiquidity: (
     request: IncreaseLiquidityRequest,

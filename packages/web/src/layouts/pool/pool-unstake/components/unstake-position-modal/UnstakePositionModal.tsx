@@ -107,7 +107,7 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
                       rightSymbol={position.pool.tokenB.symbol}
                     />
                     {breakpoint !== DEVICE_TYPE.MOBILE && (
-                      <div>{`${position.pool.tokenA.symbol}/${position.pool.tokenB.symbol}`}</div>
+                      <div>{`${position.pool.tokenA.displaySymbol}/${position.pool.tokenB.displaySymbol}`}</div>
                     )}
                     <Badge
                       className="unstake-bar"
@@ -140,7 +140,7 @@ const UnstakePositionModal: React.FC<Props> = ({ positions, close, onSubmit }) =
                           width={24}
                           mobileWidth={24}
                         />
-                        <RewardLogoSymbolWrapper>{rewardInfo.token.symbol}</RewardLogoSymbolWrapper>
+                        <RewardLogoSymbolWrapper>{rewardInfo.token.displaySymbol}</RewardLogoSymbolWrapper>
                       </div>
                       <div className="value">
                         {formatPoolPairAmount(rewardInfo.amount, {

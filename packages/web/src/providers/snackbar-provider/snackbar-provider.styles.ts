@@ -10,14 +10,14 @@ export const SnackbarList = styled.div`
   right: 30px;
   width: 380px;
 
-  z-index: ${Z_INDEX.modalTooltip};
+  z-index: ${Z_INDEX.snackbar};
   ${media.tablet} {
     top: 70px;
     right: 30px;
   }
   ${media.mobile} {
     width: 328px;
-    top: 0px;
+    top: calc(env(safe-area-inset-top, 0px) + 56px);
     left: 50%;
     transform: translateX(-50%);
     right: auto;

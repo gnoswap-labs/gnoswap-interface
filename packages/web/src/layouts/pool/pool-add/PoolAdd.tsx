@@ -40,7 +40,9 @@ const PoolAdd: React.FC<PoolAddProps> = ({ useDedicatedPool }) => {
       base.push({
         title:
           width > DeviceSize.mediumWeb
-            ? `${getGnotPath(data?.tokenA).symbol}/${getGnotPath(data?.tokenB).symbol} (${Number(data?.fee) / 10000}%)`
+            ? `${getGnotPath(data?.tokenA).displaySymbol}/${getGnotPath(data?.tokenB).displaySymbol} (${
+                Number(data?.fee) / 10000
+              }%)`
             : "...",
         path: makeRouteUrl(PAGE_PATH.POOL, {
           [QUERY_PARAMETER.POOL_PATH]: data?.poolPath,

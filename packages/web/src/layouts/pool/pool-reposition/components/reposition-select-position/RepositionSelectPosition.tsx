@@ -50,11 +50,11 @@ const RepositionSelectPosition: React.FC<RepositionSelectPositionProps> = ({
 
     return (
       <>
-        {tokenA?.symbol}/{tokenB?.symbol}
+        {tokenA?.displaySymbol || ""}/{tokenB?.displaySymbol || ""}
         <Badge text={fee} type={BADGE_TYPE.DARK_DEFAULT} />
       </>
     );
-  }, [fee, isLoadingPosition, isMobile, tokenA?.symbol, tokenB?.symbol]);
+  }, [fee, isLoadingPosition, isMobile, tokenA?.displaySymbol, tokenB?.displaySymbol]);
 
   const priceText = useMemo(() => {
     if (isLoadingPosition)

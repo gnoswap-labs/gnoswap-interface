@@ -37,6 +37,7 @@
       "execute": "Exécuter",
       "noVoteWeight": "Poids de vote insuffisant",
       "requireSelect": "Sélectionner l'option de vote",
+      "tryAgain": "Réessayer",
       "vote": "Vote"
     },
     "content": {
@@ -45,6 +46,9 @@
       "recipient": "Destinataire"
     },
     "quorum": "Quorum",
+    "tooltip": {
+      "votingWeight": "La pondération des votes est calculée comme la moyenne de votre solde xGNS à deux moments précis : 24 heures avant la création de la proposition et au moment exact où elle a été créée."
+    },
     "votingWeight": "Votre poids dans le vote"
   },
   "header": "Gouvernance",
@@ -59,6 +63,7 @@
       "selectDel": {
         "address": "Adresse",
         "description": "Description",
+        "notice": "Votre délégué vote en votre nom en utilisant les droits de vote que vous lui avez délégués. Pour voter vous-même sur les propositions, sélectionnez « Délégation à soi-même ».",
         "selectBtn": "Sélectionner",
         "self": {
           "chip": "Autodélégué",
@@ -72,6 +77,7 @@
         "tooltip": "Les délégués sont des dirigeants communautaires sélectionnés pour prendre des décisions de gouvernance au nom des détenteurs de GNS."
       },
       "step2": {
+        "notice": "Vous recevrez 1 xGNS pour chaque GNS que vous délégerez.",
         "title": "2. Saisir le montant"
       },
       "step3": {
@@ -86,8 +92,8 @@
         "select": "Sélectionner un délégué"
       },
       "warning": {
-        "description": "Une période de blocage de 7 jours est déclenchée lorsque vous déléguez vos xGNS. Pendant cette période, les jetons xGNS bloqués ne pourront pas recevoir de récompenses du protocole et n'auront pas de droit de vote. Assurez-vous de bien comprendre la période de blocage avant de procéder à la délégation.",
-        "title": "La délégation bloquera vos fonds pendant 7 jours"
+        "description": "Lorsque vous annulez une délégation, votre xGNS est bloqué pendant 7 jours avant que vous ne puissiez le retirer. Pendant cette période, il ne génère aucune récompense et ne dispose d'aucun droit de vote.",
+        "title": "La révocation d'une délégation prend 7 jours"
       }
     },
     "login": {
@@ -100,7 +106,7 @@
     },
     "switch": {
       "toUndel": "Ma non-délégation",
-      "toVotingWeight": "Mon poids dans les votes"
+      "toVotingWeight": "Ma délégation"
     },
     "title": "Ma délégation",
     "tooltip": {
@@ -112,7 +118,7 @@
     "undel": {
       "btn": "Réclamation",
       "title": "La non-délégation",
-      "tooltip": "Montant des xGNS non délégués qui pourront être réclamés en GNS après la période de blocage."
+      "tooltip": "La quantité de xGNS non délégués qui pourra être réclamée dans GNS à l'issue de la période de blocage."
     },
     "undelegate": "Non-délégué",
     "undelModal": {
@@ -135,13 +141,13 @@
         "title": "3. Votre équilibre"
       },
       "warning": {
-        "description": "Une période de blocage de 7 jours est déclenchée lorsque vous déléguez vos xGNS. Pendant cette période, les jetons xGNS bloqués ne pourront pas recevoir de récompenses protocolaires et n'auront pas de droit de vote. Assurez-vous de bien comprendre la période de blocage avant de procéder à la délégation.",
-        "title": "L'undelegation bloque vos fonds pendant 7 jours."
+        "description": "Lorsque vous annulez une délégation, votre xGNS est bloqué pendant 7 jours avant que vous ne puissiez le retirer. Pendant cette période, il ne génère aucune récompense et ne dispose d'aucun droit de vote.",
+        "title": "La révocation d'une délégation prend 7 jours"
       }
     },
     "votingWeight": {
-      "title": "Poids du vote",
-      "tooltip": "La quantité de xGNS que vous avez déléguée, qui représente votre poids de vote dans la gouvernance de Gnoswap."
+      "title": "Délégation",
+      "tooltip": "Le total des xGNS que vous avez délégués. Vous ne pouvez voter qu'avec les xGNS que vous vous êtes vous-même délégués. Pour le reste, ce sont vos délégués qui votent en votre nom."
     }
   },
   "proposalList": {
@@ -165,8 +171,12 @@
       "upcoming": "À venir"
     },
     "time": {
+      "cancelled": "Proposition annulée {{rel_time}}",
       "end": "Fin du vote {{rel_time}}",
       "ended": "Vote terminé {{rel_time}}",
+      "executable": "Proposition exécutable {{rel_time}}",
+      "executed": "Proposition excutée {{rel_time}}",
+      "expired": "Proposition expirée {{rel_time}}",
       "h": "dans {{time}}h",
       "m": "dans {{time}}m",
       "start": "Début du vote {{rel_time}}"

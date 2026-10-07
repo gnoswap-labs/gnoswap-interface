@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import { tickToSqrtPriceX96 } from "./math.utils";
 import {
   BroadcastMessageData,
+  calculateSlippageLimitAmount,
   feeBoostByPrices,
   feeBoostRateByPrices,
   getSwappedTokenData,
   isEndTickBy,
+  priceToBoundedTick,
   priceToNearTick,
   priceToSqrtX96,
   priceToTick,
@@ -112,6 +115,30 @@ describe("price convert to near tick", () => {
     const price = 0.60651549714;
     const tickSpacing = 4;
     expect(priceToNearTick(price, tickSpacing)).toBe(-5000);
+  });
+});
+
+describe("price convert to bounded tick", () => {
+  const boundaryCases: { feeTier: SwapFeeTierType; minTick: number; maxTick: number }[] = [
+    { feeTier: "FEE_100", minTick: -887272, maxTick: 887272 },
+    { feeTier: "FEE_500", minTick: -887270, maxTick: 887270 },
+    { feeTier: "FEE_3000", minTick: -887220, maxTick: 887220 },
+    { feeTier: "FEE_10000", minTick: -887200, maxTick: 887200 },
+  ];
+
+  test.each(boundaryCases)("clamps prices outside %s fee-tier bounds", ({ feeTier, minTick, maxTick }) => {
+    const { minPrice, maxPrice } = SwapFeeTierMaxPriceRangeMap[feeTier];
+
+    expect(priceToBoundedTick(0, feeTier)).toBe(minTick);
+    expect(priceToBoundedTick(minPrice / 2, feeTier)).toBe(minTick);
+    expect(priceToBoundedTick(minPrice, feeTier)).toBe(minTick);
+    expect(priceToBoundedTick(maxPrice, feeTier)).toBe(maxTick);
+    expect(priceToBoundedTick(maxPrice * 2, feeTier)).toBe(maxTick);
+  });
+
+  test("keeps in-range prices within the fee-tier tick bounds", () => {
+    expect(priceToBoundedTick(1, "FEE_100")).toBe(0);
+    expect(priceToBoundedTick(1, "FEE_500")).toBe(0);
   });
 });
 
@@ -368,5 +395,34 @@ describe("getSwappedTokenData()", () => {
       expect(exactOutResult.token0Symbol).toBe(mockBroadcastMessage.tokenBSymbol);
       expect(exactOutResult.token1Symbol).toBe(mockBroadcastMessage.tokenASymbol);
     });
+  });
+});
+
+describe("calculateSlippageLimitAmount", () => {
+  it("rounds the exact-in minimum output down", () => {
+    expect(calculateSlippageLimitAmount("1", 0.5, "EXACT_IN", 6)).toBe("0.995");
+    // 0.000001 * 0.995 = 0.000000995 -> floor to 0 (nothing can be guaranteed below one raw unit)
+    expect(calculateSlippageLimitAmount("0.000001", 0.5, "EXACT_IN", 6)).toBe("0");
+    expect(calculateSlippageLimitAmount("0.000002", 0.5, "EXACT_IN", 6)).toBe("0.000001");
+  });
+
+  it("rounds the exact-out maximum input up at an atomic-unit boundary", () => {
+    // 0.000001 * 1.005 = 0.000001005 -> must become 2 raw units, not 1
+    expect(calculateSlippageLimitAmount("0.000001", 0.5, "EXACT_OUT", 6)).toBe("0.000002");
+    expect(calculateSlippageLimitAmount("1", 0.5, "EXACT_OUT", 6)).toBe("1.005");
+    expect(calculateSlippageLimitAmount("1", 0.5, "EXACT_OUT", 2)).toBe("1.01");
+  });
+
+  it("keeps full precision for amounts above Number.MAX_SAFE_INTEGER", () => {
+    // 62667447936.264477 * 0.995 = 62354110696.583154615 -> rounded down at 6 decimals
+    expect(calculateSlippageLimitAmount("62667447936.264477", 0.5, "EXACT_IN", 6)).toBe("62354110696.583154");
+    // 62667447936.264477 * 1.005 = 62980785175.945799385 -> rounded up at 6 decimals
+    expect(calculateSlippageLimitAmount("62667447936.264477", 0.5, "EXACT_OUT", 6)).toBe("62980785175.9458");
+  });
+
+  it("returns 0 for invalid input", () => {
+    expect(calculateSlippageLimitAmount("abc", 0.5, "EXACT_IN", 6)).toBe("0");
+    expect(calculateSlippageLimitAmount("1", NaN, "EXACT_IN", 6)).toBe("0");
+    expect(calculateSlippageLimitAmount("0", 0.5, "EXACT_OUT", 6)).toBe("0");
   });
 });

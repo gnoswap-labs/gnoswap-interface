@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import {
   AddLiquiditySubmitType,
@@ -19,27 +19,29 @@ import { useSelectPool } from "@hooks/pool/data/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
 import { useTokenData } from "@hooks/token/data/use-token-data";
-import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
 import { SwapState } from "@states/index";
 import { formatRate } from "@utils/new-number-utils";
-import { makeRouteUrl } from "@utils/page.utils";
-import { checkPoolStakingRewards } from "@utils/pool-utils";
+import { makeRouteUrl, replaceRouteUrlWithoutNavigation } from "@utils/page.utils";
+import { invertSqrtPriceX96, makeDisplayPrice } from "@utils/pool-utils";
+import { sortTokenPaths } from "@utils/sort-utils";
 import {
   getDepositAmountsByAmountA,
   getDepositAmountsByAmountB,
   makeSwapFeeTier,
-  priceToNearTick,
-  priceToTick,
+  priceToBoundedTick,
+  priceToSqrtX96,
   tickToPrice,
 } from "@utils/swap-utils";
 import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
-import { sortTokenPaths } from "@utils/sort-utils";
 
-import PoolAddLiquidity, { PriceRangeSummary } from "../../components/pool-add-liquidity/PoolAddLiquidity";
 import { usePool } from "@hooks/pool/data/use-pool";
 import { usePoolAddLiquidityConfirmModal } from "@hooks/pool/ui/use-pool-add-liquidity-confirm-modal";
+import PoolAddLiquidity, { PriceRangeSummary } from "../../components/pool-add-liquidity/PoolAddLiquidity";
+import { makePriceRangesWithApr } from "../../../common/components/select-price-range/select-price-range.utils";
+import { resolvePoolAddStartingPrice } from "../pool-add-starting-price.utils";
 
 export const SWAP_FEE_TIERS: SwapFeeTierType[] = ["FEE_100", "FEE_500", "FEE_3000", "FEE_10000"];
 
@@ -64,13 +66,14 @@ const PoolAddLiquidityContainer: React.FC = () => {
   const [defaultPrice, setDefaultPrice] = useState<number | null>(null);
   const [priceRangeTypeFromUrl, setPriceRangeTypeFromUrl] = useState<PriceRangeType | null>();
   const [ticksFromUrl, setTickFromUrl] = useState<DefaultTick>();
+  const initializedPriceRangeKey = useRef<string>();
   const { getGnotPath } = useGnotToGnot();
 
   const { openModal: openConnectWalletModal } = useConnectWalletModal();
 
   const { connected: connectedWallet, account, switchNetwork, isSwitchNetwork } = useWallet();
   const { slippage, changeSlippage } = useSlippage();
-  const { tokens, updateTokens, updateBalances, updateTokenPrices, refetchGrc20Balances } = useTokenData();
+  const { tokens, updateTokens, updateBalances, updateTokenPrices, refetchGrc20Balances } = useTokenData(true);
   const [createOption, setCreateOption] = useState<{
     startPrice: number | null;
     isCreate: boolean;
@@ -83,6 +86,28 @@ const PoolAddLiquidityContainer: React.FC = () => {
     startPrice: createOption?.startPrice,
   });
 
+  const priceRangesWithApr = useMemo(
+    () =>
+      makePriceRangesWithApr(PRICE_RANGES, {
+        currentPrice: selectPool.currentPrice,
+        feeTier: swapFeeTier,
+        tickSpacing: selectPool.tickSpacing,
+        feeApr: selectPool.feeApr,
+        isCustomSelected: priceRange?.type === "Custom",
+        customMinPrice: selectPool.minPrice,
+        customMaxPrice: selectPool.maxPrice,
+      }),
+    [
+      selectPool.currentPrice,
+      selectPool.feeApr,
+      selectPool.maxPrice,
+      selectPool.minPrice,
+      selectPool.tickSpacing,
+      priceRange?.type,
+      swapFeeTier,
+    ],
+  );
+
   const { updatePools } = usePoolData();
   const {
     pools,
@@ -93,7 +118,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
     fetching: isFetchingFeetierOfLiquidityMap,
   } = usePool({ tokenA, tokenB, compareToken: selectPool.compareToken });
 
-  const { openAddPositionModal, openAddPositionWithStakingModal } = usePoolAddLiquidityConfirmModal({
+  const { openAddPositionModal } = usePoolAddLiquidityConfirmModal({
     tokenA,
     tokenB,
     tokenAAmountInput,
@@ -107,7 +132,16 @@ const PoolAddLiquidityContainer: React.FC = () => {
   const { isLoading: isLoadingCommon } = useLoading();
 
   const sqrtPriceX96 = useMemo(() => {
-    return selectPool?.sqrtPriceX96 ?? null;
+    if (selectPool?.isOrderedPrice === undefined || selectPool?.isOrderedPrice === null) {
+      return null;
+    }
+
+    const sqrtPriceX96 = selectPool?.sqrtPriceX96 ?? 0n;
+    if (!selectPool.isOrderedPrice) {
+      return invertSqrtPriceX96(sqrtPriceX96);
+    }
+
+    return sqrtPriceX96;
   }, [selectPool]);
 
   const priceRangeSummary: PriceRangeSummary = useMemo(() => {
@@ -116,8 +150,10 @@ const PoolAddLiquidityContainer: React.FC = () => {
     let estimatedApr: string = formatRate(selectPool.estimatedAPR) ?? "-";
 
     if (selectPool.selectedFullRange) {
-      const tokenASymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.symbol : tokenB?.symbol;
-      const tokenBSymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.symbol : tokenA?.symbol;
+      const tokenASymbol =
+        tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.displaySymbol : tokenB?.displaySymbol;
+      const tokenBSymbol =
+        tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.displaySymbol : tokenA?.displaySymbol;
       depositRatio = `50.0% ${tokenASymbol} / 50.0% ${tokenBSymbol}`;
       return {
         depositRatio,
@@ -130,8 +166,10 @@ const PoolAddLiquidityContainer: React.FC = () => {
     if (tokenAdepositRatio !== null) {
       const tokenARatioStr = BigNumber(tokenAdepositRatio).toFixed(1);
       const tokenBRatioStr = BigNumber(100 - tokenAdepositRatio).toFixed(1);
-      const tokenASymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.symbol : tokenB?.symbol;
-      const tokenBSymbol = tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.symbol : tokenA?.symbol;
+      const tokenASymbol =
+        tokenA?.symbol === selectPool.compareToken?.symbol ? tokenA?.displaySymbol : tokenB?.displaySymbol;
+      const tokenBSymbol =
+        tokenA?.symbol === selectPool.compareToken?.symbol ? tokenB?.displaySymbol : tokenA?.displaySymbol;
       depositRatio = `${tokenARatioStr}% ${tokenASymbol} / ${tokenBRatioStr}% ${tokenBSymbol}`;
     }
     if (tokenAdepositRatio === 0 || tokenAdepositRatio === 100) {
@@ -151,7 +189,8 @@ const PoolAddLiquidityContainer: React.FC = () => {
     selectPool.feeBoost,
     selectPool.selectedFullRange,
     tokenA?.symbol,
-    tokenB?.symbol,
+    tokenA?.displaySymbol,
+    tokenB?.displaySymbol,
     selectPool.estimatedAPR,
   ]);
 
@@ -165,7 +204,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
     if (!tokenA || !tokenB) {
       return "INVALID_PAIR";
     }
-    if (selectPool.minPrice && selectPool.maxPrice && selectPool.minPrice >= selectPool.maxPrice) {
+    if (selectPool.minPrice !== null && selectPool.maxPrice !== null && selectPool.minPrice >= selectPool.maxPrice) {
       return "INVALID_RANGE";
     }
     if (!Number(tokenAAmountInput.amount) && !Number(tokenBAmountInput.amount)) {
@@ -243,6 +282,102 @@ const PoolAddLiquidityContainer: React.FC = () => {
     [type],
   );
 
+  const updateTokenBAmountByTokenA = useCallback(
+    (amount: string) => {
+      if (BigNumber(amount).isNaN() || !BigNumber(amount).isFinite()) {
+        return;
+      }
+      if (!selectPool.currentPrice || (!selectPool.isCreate && !sqrtPriceX96)) {
+        return;
+      }
+
+      if (/^0\.0(?:0*)$/.test(amount) || amount.toString() === "0") {
+        tokenBAmountInput.changeAmount("0");
+        return;
+      }
+
+      if (!amount || !tokenA || !tokenB) {
+        return;
+      }
+
+      if (selectPool.minPrice === null || selectPool.maxPrice === null) {
+        return;
+      }
+
+      const currentSqrtPriceX96 = selectPool.isCreate ? priceToSqrtX96(selectPool.currentPrice) : sqrtPriceX96;
+      if (!currentSqrtPriceX96) {
+        return;
+      }
+
+      const amountRaw = makeRawTokenAmount(tokenA, amount) || 0;
+      const { amountB } = getDepositAmountsByAmountA(
+        selectPool.currentPrice,
+        currentSqrtPriceX96,
+        selectPool.minPrice,
+        selectPool.maxPrice,
+        BigInt(amountRaw),
+      );
+      const expectedTokenAmount = makeDisplayTokenAmount(tokenB, amountB) || "0";
+      tokenBAmountInput.changeAmount(expectedTokenAmount.toString());
+    },
+    [
+      selectPool.isCreate,
+      selectPool.currentPrice,
+      sqrtPriceX96,
+      selectPool.minPrice,
+      selectPool.maxPrice,
+      tokenA,
+      tokenB,
+      tokenBAmountInput,
+    ],
+  );
+
+  const updateTokenAAmountByTokenB = useCallback(
+    (amount: string) => {
+      if (BigNumber(amount).isNaN() || !BigNumber(amount).isFinite()) {
+        return;
+      }
+
+      if (!selectPool.currentPrice || (!selectPool.isCreate && !sqrtPriceX96)) {
+        return;
+      }
+
+      if (!amount || !tokenA || !tokenB) {
+        return;
+      }
+
+      if (selectPool.minPrice === null || selectPool.maxPrice === null) {
+        return;
+      }
+
+      const currentSqrtPriceX96 = selectPool.isCreate ? priceToSqrtX96(selectPool.currentPrice) : sqrtPriceX96;
+      if (!currentSqrtPriceX96) {
+        return;
+      }
+
+      const amountRaw = makeRawTokenAmount(tokenB, amount) || 0;
+      const { amountA } = getDepositAmountsByAmountB(
+        selectPool.currentPrice,
+        currentSqrtPriceX96,
+        selectPool.minPrice,
+        selectPool.maxPrice,
+        BigInt(amountRaw),
+      );
+      const expectedTokenAmount = makeDisplayTokenAmount(tokenA, amountA) || "0";
+      tokenAAmountInput.changeAmount(expectedTokenAmount.toString());
+    },
+    [
+      selectPool.isCreate,
+      selectPool.currentPrice,
+      sqrtPriceX96,
+      selectPool.minPrice,
+      selectPool.maxPrice,
+      tokenA,
+      tokenB,
+      tokenAAmountInput,
+    ],
+  );
+
   const changeTokenAAmount = useCallback(
     (amount: string) => {
       tokenAAmountInput.changeAmount(amount);
@@ -255,7 +390,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
 
       updateTokenBAmountByTokenA(amount);
     },
-    [tokenAAmountInput],
+    [tokenAAmountInput, tokenBAmountInput, updateTokenBAmountByTokenA],
   );
 
   const changeTokenBAmount = useCallback(
@@ -270,91 +405,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
 
       updateTokenAAmountByTokenB(amount);
     },
-    [tokenBAmountInput],
-  );
-
-  const updateTokenBAmountByTokenA = useCallback(
-    (amount: string) => {
-      if (BigNumber(amount).isNaN() || !BigNumber(amount).isFinite()) {
-        return;
-      }
-      if (!selectPool.currentPrice || !sqrtPriceX96) {
-        return;
-      }
-
-      if (/^0\.0(?:0*)$/.test(amount) || amount.toString() === "0") {
-        tokenBAmountInput.changeAmount("0");
-        return;
-      }
-
-      if (!amount || !tokenA || !tokenB) {
-        return;
-      }
-
-      if (!selectPool.minPrice || !selectPool.maxPrice) {
-        return;
-      }
-
-      const decimals = tokenB.decimals - tokenA.decimals;
-      const amountRaw = makeRawTokenAmount(tokenA, amount) || 0;
-      const { amountB } = getDepositAmountsByAmountA(
-        BigNumber(selectPool.currentPrice).shiftedBy(decimals).toNumber(),
-        sqrtPriceX96,
-        BigNumber(selectPool.minPrice).shiftedBy(decimals).toNumber(),
-        BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
-        BigInt(amountRaw),
-      );
-      const expectedTokenAmount = makeDisplayTokenAmount(tokenB, amountB) || "0";
-      tokenBAmountInput.changeAmount(expectedTokenAmount.toString());
-    },
-    [
-      selectPool.currentPrice,
-      sqrtPriceX96,
-      selectPool.compareToken?.symbol,
-      selectPool.minPrice,
-      selectPool.maxPrice,
-      tokenA?.symbol,
-    ],
-  );
-
-  const updateTokenAAmountByTokenB = useCallback(
-    (amount: string) => {
-      if (BigNumber(amount).isNaN() || !BigNumber(amount).isFinite()) {
-        return;
-      }
-
-      if (!selectPool.currentPrice || !sqrtPriceX96) {
-        return;
-      }
-
-      if (!amount || !tokenA || !tokenB) {
-        return;
-      }
-
-      if (!selectPool.minPrice || !selectPool.maxPrice) {
-        return;
-      }
-
-      const decimals = tokenB.decimals - tokenA.decimals;
-      const amountRaw = makeRawTokenAmount(tokenB, amount) || 0;
-      const { amountA } = getDepositAmountsByAmountB(
-        BigNumber(selectPool.currentPrice).shiftedBy(decimals).toNumber(),
-        sqrtPriceX96,
-        BigNumber(selectPool.minPrice).shiftedBy(decimals).toNumber(),
-        BigNumber(selectPool.maxPrice).shiftedBy(decimals).toNumber(),
-        BigInt(amountRaw),
-      );
-      const expectedTokenAmount = makeDisplayTokenAmount(tokenA, amountA) || "0";
-      tokenAAmountInput.changeAmount(expectedTokenAmount.toString());
-    },
-    [
-      selectPool.currentPrice,
-      sqrtPriceX96,
-      selectPool.compareToken?.symbol,
-      selectPool.minPrice,
-      selectPool.maxPrice,
-      tokenB?.symbol,
-    ],
+    [tokenAAmountInput, tokenBAmountInput, updateTokenAAmountByTokenB],
   );
 
   const submit = useCallback(() => {
@@ -380,33 +431,6 @@ const PoolAddLiquidityContainer: React.FC = () => {
     priceRange,
     swapFeeTier,
     openAddPositionModal,
-    openConnectWalletModal,
-    switchNetwork,
-  ]);
-
-  const submitOneClickStaking = useCallback(() => {
-    if (submitType === "CONNECT_WALLET") {
-      openConnectWalletModal();
-      return;
-    }
-    if (submitType === "SWITCH_NETWORK") {
-      switchNetwork();
-      return;
-    }
-    if (submitType !== "CREATE_POOL") {
-      return;
-    }
-    if (!tokenA || !tokenB || !priceRange || !swapFeeTier) {
-      return;
-    }
-    openAddPositionWithStakingModal();
-  }, [
-    submitType,
-    tokenA,
-    tokenB,
-    priceRange,
-    swapFeeTier,
-    openAddPositionWithStakingModal,
     openConnectWalletModal,
     switchNetwork,
   ]);
@@ -454,8 +478,8 @@ const PoolAddLiquidityContainer: React.FC = () => {
 
       const poolPath = router.getPoolPath() || "";
       const splitPath: string[] = poolPath.split(":") || [];
-      const currentTokenA = tokens.find(token => token.path === splitPath[0]) || null;
-      const currentTokenB = tokens.find(token => token.path === splitPath[1]) || null;
+      const currentTokenA = tokens.find((token: TokenModel) => token.path === splitPath[0]) || null;
+      const currentTokenB = tokens.find((token: TokenModel) => token.path === splitPath[1]) || null;
       const feeTier = makeSwapFeeTier(splitPath[2]);
       setSwapFeeTier(feeTier);
       setSwapValue(prev => ({
@@ -464,8 +488,10 @@ const PoolAddLiquidityContainer: React.FC = () => {
           ? {
               ...currentTokenA,
               path: getGnotPath(currentTokenA).path,
+              wrappedPath: getGnotPath(currentTokenA).wrappedPath,
               name: getGnotPath(currentTokenA).name,
               symbol: getGnotPath(currentTokenA).symbol,
+              displaySymbol: getGnotPath(currentTokenA).displaySymbol,
               logoURI: getGnotPath(currentTokenA).logoURI,
             }
           : null,
@@ -473,8 +499,10 @@ const PoolAddLiquidityContainer: React.FC = () => {
           ? {
               ...currentTokenB,
               path: getGnotPath(currentTokenB).path,
+              wrappedPath: getGnotPath(currentTokenB).wrappedPath,
               name: getGnotPath(currentTokenB).name,
               symbol: getGnotPath(currentTokenB).symbol,
+              displaySymbol: getGnotPath(currentTokenB).displaySymbol,
               logoURI: getGnotPath(currentTokenB).logoURI,
             }
           : null,
@@ -493,7 +521,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
 
   useEffect(() => {
     if (pools.length > 0 && tokenA && tokenB && selectPool.compareToken) {
-      const tokenPair = [tokenA.wrappedPath, tokenB.wrappedPath].sort(sortTokenPaths);
+      const tokenPair = [tokenA.wrappedPath || tokenA.path, tokenB.wrappedPath || tokenB.path].sort(sortTokenPaths);
       const compareToken = selectPool.compareToken;
       const reverse =
         tokenPair.findIndex(path => {
@@ -502,10 +530,10 @@ const PoolAddLiquidityContainer: React.FC = () => {
           }
           return false;
         }) === 1;
-      const priceOfMaxLiquidity = pools.sort((p1, p2) => Number(p2.tvl) - Number(p1.tvl)).at(0)?.price || null;
+      const priceOfMaxLiquidity = [...pools].sort((p1, p2) => Number(p2.tvl) - Number(p1.tvl)).at(0)?.price ?? null;
       if (priceOfMaxLiquidity) {
         const maxPrice = reverse ? 1 / priceOfMaxLiquidity : priceOfMaxLiquidity;
-        setDefaultPrice(maxPrice);
+        setDefaultPrice(makeDisplayPrice(maxPrice, tokenA, tokenB));
       } else {
         setDefaultPrice(null);
       }
@@ -516,31 +544,29 @@ const PoolAddLiquidityContainer: React.FC = () => {
 
   const changeStartingPrice = useCallback(
     (price: string) => {
-      if (price === "") {
-        setCreateOption({
-          ...createOption,
+      if (price === "" || !tokenA || !tokenB) {
+        setCreateOption(prev => ({
+          ...prev,
           startPrice: null,
-          isCreate: createOption?.isCreate ? true : false,
-        });
+          isCreate: prev?.isCreate ? true : false,
+        }));
         return;
       }
-      const priceNum = BigNumber(price).toNumber();
-      if (BigNumber(Number(priceNum)).isNaN()) {
-        setCreateOption({
-          ...createOption,
+      const startPrice = resolvePoolAddStartingPrice(price, tokenA, tokenB, selectPool.tickSpacing);
+      if (startPrice === null) {
+        setCreateOption(prev => ({
+          ...prev,
           startPrice: null,
-          isCreate: createOption?.isCreate ? true : false,
-        });
+          isCreate: prev?.isCreate ? true : false,
+        }));
         return;
       }
-      const tick = priceToNearTick(priceNum, selectPool.tickSpacing);
-      const nearStartPrice = tickToPrice(tick);
       setCreateOption({
         isCreate: true,
-        startPrice: nearStartPrice,
+        startPrice,
       });
     },
-    [createOption, selectPool.tickSpacing],
+    [selectPool.tickSpacing, tokenA, tokenB],
   );
 
   const handleSwapValue = useCallback(() => {
@@ -574,31 +600,34 @@ const PoolAddLiquidityContainer: React.FC = () => {
     const poolFeeTier = pools.map(pool => makeSwapFeeTier(pool.fee));
     const existPool = poolFeeTier.includes(swapFeeTier);
 
+    const priceRangeKey = [tokenA.path, tokenB.path, swapFeeTier, existPool ? "exists" : "create"].join(":");
+    if (initializedPriceRangeKey.current === priceRangeKey) {
+      return;
+    }
+    initializedPriceRangeKey.current = priceRangeKey;
+
     if (existPool) {
-      if (router.query.price_range_type) {
-        setPriceRange(priceRanges.find(range => range.type === router.query.price_range_type) || null);
-        return;
-      }
-      setPriceRange(priceRanges.find(range => range.type === "Passive") || null);
+      const defaultPriceRangeType = priceRangeTypeFromUrl ?? "Passive";
+      setPriceRange(priceRanges.find(range => range.type === defaultPriceRangeType) || null);
     } else {
       setPriceRange(priceRanges.find(range => range.type === "Custom") || null);
     }
-  }, [swapFeeTier, pools, priceRanges, tokenA, tokenB, router.query.price_range_type]);
+  }, [swapFeeTier, pools, priceRanges, tokenA, tokenB, priceRangeTypeFromUrl]);
 
   useEffect(() => {
     const query = {
       [QUERY_PARAMETER.POOL_PATH]: router.getPoolPath(),
       price_range_type: priceRange?.type,
-      tickLower: selectPool.minPosition !== null ? priceToTick(selectPool.minPosition) : null,
-      tickUpper: selectPool.maxPosition !== null ? priceToTick(selectPool.maxPosition) : null,
+      tickLower:
+        selectPool.minPosition !== null && swapFeeTier ? priceToBoundedTick(selectPool.minPosition, swapFeeTier) : null,
+      tickUpper:
+        selectPool.maxPosition !== null && swapFeeTier ? priceToBoundedTick(selectPool.maxPosition, swapFeeTier) : null,
     };
     if (tokenA?.path && tokenB?.path) {
-      router.replace(makeRouteUrl(PAGE_PATH.POOL_ADD, query), undefined, {
-        shallow: true,
-      });
+      replaceRouteUrlWithoutNavigation(PAGE_PATH.POOL_ADD, makeRouteUrl(PAGE_PATH.POOL_ADD, query));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectPool.minPosition, selectPool.maxPosition, priceRange?.type]);
+  }, [selectPool.minPosition, selectPool.maxPosition, priceRange?.type, swapFeeTier]);
 
   const showDim = useMemo(() => {
     return !!(tokenA && tokenB && selectPool.isCreate && !createOption.startPrice);
@@ -611,11 +640,6 @@ const PoolAddLiquidityContainer: React.FC = () => {
   const isLoadingSelectPriceRange = useMemo(() => {
     return isFetchingPools || isLoadingCommon;
   }, [isFetchingPools, isLoadingCommon]);
-
-  const showOneClickStaking = useMemo(
-    () => checkPoolStakingRewards(selectPool.poolFromDb?.incentivized),
-    [selectPool.poolFromDb?.incentivized],
-  );
 
   return (
     <PoolAddLiquidity
@@ -632,7 +656,7 @@ const PoolAddLiquidityContainer: React.FC = () => {
       feetierOfLiquidityMap={feetierOfLiquidityMap}
       feeTier={swapFeeTier}
       selectFeeTier={selectSwapFeeTier}
-      priceRanges={priceRanges}
+      priceRanges={priceRangesWithApr}
       priceRange={priceRange}
       priceRangeSummary={priceRangeSummary}
       changePriceRange={changePriceRange}
@@ -644,7 +668,6 @@ const PoolAddLiquidityContainer: React.FC = () => {
       connected={connectedWallet}
       slippage={slippage}
       changeSlippage={changeSlippage}
-      submitOneClickStaking={submitOneClickStaking}
       selectPool={selectPool}
       changeStartingPrice={changeStartingPrice}
       createOption={{
@@ -659,7 +682,6 @@ const PoolAddLiquidityContainer: React.FC = () => {
       showDim={showDim}
       isLoadingSelectFeeTier={isLoadingSelectFeeTier}
       isLoadingSelectPriceRange={isLoadingSelectPriceRange}
-      showOneClickStaking={showOneClickStaking}
     />
   );
 };

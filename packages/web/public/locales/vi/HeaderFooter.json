@@ -1,1 +1,92 @@
-{"addPosi":"Thêm vị trí","copied":"Đã sao chép","dashboard":"bảng điều khiển","developersSection":{"item":{"audit":"Kiểm toán","bugBounty":"Tiền thưởng lỗi","docs":"Tài liệu","github":"Github"},"title":"Nhà phát triển"},"documentation":"Tài liệu","earn":"Kiếm","featuresSection":{"item":{"addPosition":"Thêm vị trí","incentivizePool":"Khuyến khích nhóm","stakePosition":"Vị trí cổ phần","swap":"Tráo đổi"},"title":"Đặc trưng"},"governance":"Quản trị","governanceSection":{"item":{"forum":"Diễn đàn","proposals":"Đề xuất","vote":"Bỏ phiếu"},"title":"Quản trị"},"helpCenter":"Trung tâm trợ giúp","helpSection":{"item":{"aboutUs":"Về chúng tôi","faq":"Câu hỏi thường gặp","projectOnboarding":"Triển khai dự án","twitter":"Twitter (X)"},"title":"Giúp đỡ"},"introduction":"Hãy tham gia GnoSwap - hệ sinh thái phát triển nhanh nhất với tham vọng xây dựng nguồn thanh khoản sâu nhất trên Gnoland.","language":"Ngôn ngữ","leaderboard":"Bảng xếp hạng","legal":"Pháp lý & Quyền riêng tư","policySection":{"item":{"privacyPolicy":"Chính sách bảo mật","terms":"Điều khoản sử dụng"},"title":"Chính sách"},"projectOnboarding":"Triển khai dự án","receive":"Nhận được","stakePosi":"Vị trí cổ phần","swap":"Tráo đổi","switchNetwork":"Chuyển mạng","theFastest":"hệ sinh thái phát triển nhanh nhất với tham vọng xây dựng nguồn thanh khoản sâu nhất trên Gnoland.","theme":"chủ đề","wallet":"Cái ví","launchpad":"Launchpad"}
+{
+  "addPosi": "Thêm vị trí",
+  "copied": "Đã sao chép!",
+  "developersSection": {
+    "item": {
+      "audit": "Kiểm toán",
+      "bugBounty": "Chương trình thưởng lỗi",
+      "docs": "Tài liệu",
+      "github": "GitHub"
+    },
+    "title": "Các nhà phát triển"
+  },
+  "documentation": "Tài liệu",
+  "earn": "Kiếm",
+  "explore": "Khám phá",
+  "featuresSection": {
+    "item": {
+      "addPosition": "Thêm vị trí",
+      "incentivizePool": "Quỹ khuyến khích",
+      "launchpad": "Launchpad",
+      "stakePosition": "Vị thế đặt cược",
+      "swap": "Hoán đổi"
+    },
+    "title": "Tính năng"
+  },
+  "gnoBridge": "Cầu Gno",
+  "governance": "Quản trị",
+  "governanceSection": {
+    "item": {
+      "dashboard": "Khám phá",
+      "forum": "Diễn đàn",
+      "proposals": "Các đề xuất",
+      "vote": "Bỏ phiếu",
+      "xgns": "xGNS"
+    },
+    "title": "Quản trị"
+  },
+  "helpCenter": "Trung tâm trợ giúp",
+  "helpSection": {
+    "item": {
+      "aboutUs": "Giới thiệu về chúng tôi",
+      "faq": "Câu hỏi thường gặp",
+      "projectOnboarding": "Quá trình tiếp nhận nhân viên mới",
+      "twitter": "Twitter (X)",
+      "userGuide": "Hướng dẫn sử dụng"
+    },
+    "title": "Trợ giúp"
+  },
+  "introduction": "Tham gia GnoSwap - hệ sinh thái phát triển nhanh nhất với mục tiêu xây dựng nguồn thanh khoản sâu nhất trên Gnoland.",
+  "language": "Ngôn ngữ",
+  "launchpad": "Launchpad",
+  "leaderboard": "Bảng xếp hạng",
+  "legal": "Pháp lý & Quyền riêng tư",
+  "policySection": {
+    "item": {
+      "disclaimer": "Lưu ý",
+      "privacyPolicy": "Chính sách bảo mật",
+      "risk": "Rủi ro và An ninh",
+      "terms": "Điều khoản sử dụng"
+    },
+    "title": "Chính sách"
+  },
+  "portfolio": "Danh mục đầu tư",
+  "projectOnboarding": "Quá trình tiếp nhận dự án",
+  "receive": "Nhận",
+  "referralSection": {
+    "banner": {
+      "content": "Giới thiệu bạn bè để<span>nhận</span> điểm thưởng.<br/><span>Nhận 10%, Tặng 10%</span>"
+    },
+    "footer": {
+      "content": "Tìm hiểu cách thức hoạt động của chương trình giới thiệu"
+    },
+    "input": {
+      "invalidMessage": "Vui lòng nhập một địa chỉ hợp lệ",
+      "notRegistered": "Chưa đăng ký",
+      "placeholder": "Nhập địa chỉ của người giới thiệu"
+    },
+    "item": {
+      "earnedPoints": "Điểm đã tích lũy",
+      "myReferralLink": "Liên kết giới thiệu của tôi",
+      "referredBy": "Được giới thiệu bởi",
+      "tooltip": {
+        "referredBy": "Sau khi đăng ký, mã giới thiệu của bạn sẽ không thể thay đổi trong vòng 24 giờ tiếp theo. Không được phép tự giới thiệu cho chính mình."
+      }
+    }
+  },
+  "stakePosi": "Vị thế đặt cược",
+  "swap": "Hoán đổi",
+  "switchNetwork": "Chuyển đổi Mạng",
+  "theFastest": "hệ sinh thái phát triển nhanh nhất, với mục tiêu xây dựng nguồn thanh khoản dồi dào nhất trên Gnoland.",
+  "theme": "Chủ đề"
+}

@@ -11,8 +11,10 @@ export interface AddLiquidityRequest {
   maxTick: number;
   slippage: number;
   caller: string;
-  withStaking?: boolean;
   referrerAddress: string | null;
   gasFee?: string;
   gasUsed?: string;
 }
+
+/** An add-liquidity request without the gas figures, which only the send path needs. */
+export type AddLiquidityMessagesRequest = Omit<AddLiquidityRequest, "gasFee" | "gasUsed">;

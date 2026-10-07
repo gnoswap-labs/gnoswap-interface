@@ -15,8 +15,8 @@ import { GovernanceSummaryWrapper, GovernanceSummaryTooltipContent } from "./Gov
 import { Divider } from "@components/common/divider/divider";
 import { rawToDisplayAmount, toNumberFormat } from "@utils/number-utils";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
+import { useTokenPricing } from "@hooks/token/data/use-token-pricing";
 import { TokenModel } from "@models/token/token-model";
 import VideoGuideTrigger from "@components/common/video-guide-trigger/VideoGuideTrigger";
 
@@ -43,21 +43,20 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
   const { isMobile } = useWindowSize();
 
   const { getGnotPath } = useGnotToGnot();
-  const { getTokenUSDPrice, tokens } = useTokenData();
+  const { getTokenUSDPrice, tokens } = useTokenPricing();
 
   const displayGovernanceSummary: GovernanceSummaryInfo = React.useMemo(() => {
     const { delegationInfo } = governanceSummary;
-    const GNS_TOKEN_DECIMALS = GNS_TOKEN.decimals;
 
     return {
       ...governanceSummary,
       delegationInfo: {
-        totalDelegationAmount: String(rawToDisplayAmount(delegationInfo.totalDelegationAmount, GNS_TOKEN_DECIMALS)),
+        totalDelegationAmount: String(rawToDisplayAmount(delegationInfo.totalDelegationAmount, GNS_TOKEN.decimals)),
         governanceDelegationAmount: String(
-          rawToDisplayAmount(delegationInfo.governanceDelegationAmount, GNS_TOKEN_DECIMALS),
+          rawToDisplayAmount(delegationInfo.governanceDelegationAmount, GNS_TOKEN.decimals),
         ),
         launchpadDelegationAmount: String(
-          rawToDisplayAmount(delegationInfo.launchpadDelegationAmount, GNS_TOKEN_DECIMALS),
+          rawToDisplayAmount(delegationInfo.launchpadDelegationAmount, GNS_TOKEN.decimals),
         ),
       },
     };
@@ -101,7 +100,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
           ...gnotPathInfo,
         };
 
-        const displayAmount = rawToDisplayAmount(balance.amount, tokenInfo.decimals || 0);
+        const displayAmount = rawToDisplayAmount(balance.amount, tokenInfo.decimals);
         const usdValue = getTokenUSDPrice(balance.path, displayAmount) || 0;
 
         return {
@@ -111,7 +110,14 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
         };
       })
       .sort((a, b) => b.usdValue - a.usdValue);
-  }, [governanceCommunityPoolBalances]);
+  }, [getGnotPath, getTokenUSDPrice, governanceCommunityPoolBalances, tokens]);
+
+  const delegatedRatioValue = React.useMemo(() => {
+    return `${formatOtherPrice(Number(governanceSummary.delegatedRatio) * 100, {
+      isKMB: false,
+      usd: false,
+    })}%`;
+  }, [governanceSummary.delegatedRatio]);
 
   const handleOpenVideoGuide = React.useCallback(() => {
     onOpenVideoGuide(VIDEO_GUIDE_TYPES.GOVERNANCE);
@@ -180,10 +186,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
         />
         <InfoBox
           title={t("Governance:summary.delRatio.title")}
-          value={`${formatOtherPrice(governanceSummary.delegatedRatio, {
-            isKMB: false,
-            usd: false,
-          })}%`}
+          value={delegatedRatioValue}
           tooltip={t("Governance:summary.delRatio.tooltip")}
           isLoading={isLoading}
         />

@@ -1,0 +1,18 @@
+{
+  "seo": {
+    "title": {
+      "default": "Nền tảng DeFi Gno.land một cửa | GnoSwap",
+      "earn": "Kiếm tiền | GnoSwap",
+      "earnAdd": "Thêm vị trí tuyển dụng vào {{tokenASymbol}}/{{tokenBSymbol}} {{feeTier}}",
+      "earnAddDefault": "Thêm vị thế vào các nhóm GnoSwap",
+      "explore": "Khám phá | GnoSwap",
+      "governance": "Quản trị | GnoSwap",
+      "launchpad": "Launchpad | GnoSwap",
+      "leaderboard": "Bảng xếp hạng | GnoSwap",
+      "portfolio": "Danh mục đầu tư | GnoSwap",
+      "privacy": "Chính sách bảo mật | GnoSwap",
+      "swap": "Swap | GnoSwap",
+      "terms": "Điều khoản sử dụng | GnoSwap"
+    }
+  }
+}

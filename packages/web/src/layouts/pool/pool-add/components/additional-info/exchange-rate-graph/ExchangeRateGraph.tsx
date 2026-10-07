@@ -7,6 +7,7 @@ import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolModel } from "@models/pool/pool-model";
 import { TokenExchangeRateGraphResponse } from "@repositories/token/response/token-exchange-rate-response";
 import { useGetPoolPriceByPath } from "@query/pools/use-get-pool-price-by-path";
+import { makeDisplayPrice } from "@utils/pool-utils";
 
 import ChartScopeSelectTab from "./chart-scope-select-tab/ChartScopeSelectTab";
 import ExchangeRateGraphContent from "./exchange-rate-graph-content/ExchangeRateGraphContent";
@@ -66,8 +67,49 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
 
     const processedPool = processTokens(currentPoolData);
 
-    return isReversed ? { ...processedPool, price: 1 / processedPool.price } : processedPool;
+    if (isReversed) {
+      return {
+        ...processedPool,
+        price: makeDisplayPrice(1 / processedPool.price, processedPool.tokenB, processedPool.tokenA),
+      };
+    }
+
+    return {
+      ...processedPool,
+      price: makeDisplayPrice(processedPool.price, processedPool.tokenA, processedPool.tokenB),
+    };
   }, [getGnotPath, currentPoolData, isReversed]);
+
+  const displayPrices = useMemo(() => {
+    return prices.map(item => {
+      const rawPrice = Number(item.ratio);
+      if (!Number.isFinite(rawPrice) || rawPrice === 0) {
+        return item;
+      }
+
+      const displayPrice = isReversed
+        ? makeDisplayPrice(1 / rawPrice, changedPoolInfo.tokenB, changedPoolInfo.tokenA)
+        : makeDisplayPrice(rawPrice, changedPoolInfo.tokenA, changedPoolInfo.tokenB);
+
+      return {
+        ...item,
+        ratio: displayPrice.toString(),
+      };
+    });
+  }, [changedPoolInfo, isReversed, prices]);
+
+  const currentPointDisplayPrice = useMemo(() => {
+    if (!active || currentPoint === undefined || currentPoint === null) {
+      return undefined;
+    }
+
+    const currentPointPrice = Number(currentPoint);
+    if (!Number.isFinite(currentPointPrice) || currentPointPrice === 0) {
+      return undefined;
+    }
+
+    return currentPointPrice;
+  }, [active, currentPoint]);
 
   const hasData = changedPoolInfo.tokenA.name !== undefined && changedPoolInfo.tokenA.name !== "";
 
@@ -76,7 +118,7 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
     return (
       <>
         <ExchangeRateGraphContent
-          pricesData={prices}
+          pricesData={displayPrices}
           onMouseMove={data => {
             setCurrentPoint(data?.value);
           }}
@@ -101,7 +143,7 @@ const ExchangeRateGraph: React.FC<ExchangeRateGraphProps> = ({
               pool={changedPoolInfo}
               loading={isLoading}
               isSwap={isReversed}
-              overrideValue={active ? Number(currentPoint) : undefined}
+              overrideValue={currentPointDisplayPrice}
             />
           ) : (
             <div />

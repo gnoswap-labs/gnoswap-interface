@@ -4,7 +4,7 @@ export interface TransferGRC20TokenRequest {
   token: TokenModel;
 
   // only integer
-  tokenAmount: number;
+  tokenAmount: string;
 
   fromAddress: string;
 

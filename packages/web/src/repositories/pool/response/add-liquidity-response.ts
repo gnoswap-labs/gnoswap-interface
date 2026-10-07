@@ -2,6 +2,7 @@ import { TokenModel } from "@models/token/token-model";
 
 export interface AddLiquiditySuccessResponse {
   hash: string;
+  positionId: string;
   tokenA: TokenModel;
   tokenB: TokenModel;
   tokenAAmount: string;

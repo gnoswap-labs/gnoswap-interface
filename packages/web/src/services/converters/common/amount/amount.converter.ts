@@ -32,8 +32,8 @@ export class AmountConverter {
         return "0";
       }
 
-      const rawDecimals = token?.decimals || 0;
-      const normalizedDecimals = Math.abs(Math.floor(rawDecimals));
+      const rawDecimals = token.decimals;
+      const normalizedDecimals = Number.isFinite(rawDecimals) ? Math.abs(Math.floor(rawDecimals)) : 0;
 
       const divisor = new BigNumber(10).pow(normalizedDecimals);
       const result = amount.dividedBy(divisor);
@@ -41,7 +41,7 @@ export class AmountConverter {
       return result.toFixed();
     } catch (error) {
       console.warn("AmountConverter: Failed to convert token amount", {
-        tokenSymbol: token?.symbol,
+        tokenSymbol: token?.displaySymbol,
         rawAmount,
         decimals: token?.decimals,
         error: error instanceof Error ? error.message : error,

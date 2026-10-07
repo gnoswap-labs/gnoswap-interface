@@ -1,27 +1,26 @@
-import React from "react";
+import BigNumber from "bignumber.js";
 import Link from "next/link";
-import { useTranslation, Trans } from "react-i18next";
-import { css } from "@emotion/react";
+import React from "react";
+import { Trans, useTranslation } from "react-i18next";
 
-import { ExtendedPoolStakingModel } from "@models/pool/pool-staking";
-import { capitalize } from "@utils/string-utils";
-import { useGetPoolDetailByPath } from "@query/pools";
 import { getDateUtcToLocal } from "@common/utils/date-util";
-import { toNumberFormat } from "@utils/number-utils";
-import { PoolMapper } from "@models/pool/mapper/pool-mapper";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { YN_TYPE } from "@common/types/global-prop-types";
 import { GNS_TOKEN } from "@common/values/token-constant";
+import { PoolMapper } from "@models/pool/mapper/pool-mapper";
+import { ExtendedPoolStakingModel } from "@models/pool/pool-staking";
+import { useGetPoolDetailByPath } from "@query/pools";
+import { toNumberFormat } from "@utils/number-utils";
+import { capitalize } from "@utils/string-utils";
 
-import { IncentivizePoolHistoryBoxWrapper } from "./IncentivizePoolHistoryBox.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
-import IconInfo from "@components/common/icons/IconInfo";
-import Tooltip from "@components/common/tooltip/Tooltip";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
-import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import IconInfo from "@components/common/icons/IconInfo";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
-import { historyTooltipContent } from "./IncentivizePoolHistoryBox.styles";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useRemoveExternalIncentive } from "@query/pools/use-remove-external-incentive";
-import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { historyTooltipContent, IncentivizePoolHistoryBoxWrapper } from "./IncentivizePoolHistoryBox.styles";
 
 interface IncentivizePoolHistoryBoxProps {
   stakingData: ExtendedPoolStakingModel;
@@ -30,20 +29,38 @@ interface IncentivizePoolHistoryBoxProps {
 
 const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHistoryBoxProps) => {
   const { t } = useTranslation();
-  const { rpcProvider } = useGnoswapContext();
 
-  const { rewardToken, startTimestamp, endTimestamp } = stakingData;
+  const { rewardToken, incentiveId } = stakingData;
 
-  const { data: pool = null } = useGetPoolDetailByPath(poolPath, {
-    enabled: !!poolPath,
-  });
+  const { data: pool = null } = useGetPoolDetailByPath(poolPath || null);
 
-  const { removeExternalIncentive } = useRemoveExternalIncentive(poolPath, rewardToken, startTimestamp, endTimestamp);
-
+  const { removeExternalIncentive, collectExternalIncentivePenalty } = useRemoveExternalIncentive(
+    poolPath,
+    incentiveId ?? "",
+  );
+  const { getGnotPath } = useGnotToGnot();
   const currentPool = React.useMemo(() => {
-    const temp = pool ? PoolMapper.toPoolSelectItemInfo(pool) : null;
-    return temp;
-  }, [pool]);
+    if (!pool) {
+      return null;
+    }
+
+    const poolInfo = PoolMapper.toPoolSelectItemInfo(pool);
+    return {
+      ...poolInfo,
+      tokenA: {
+        ...poolInfo.tokenA,
+        symbol: getGnotPath(poolInfo.tokenA).symbol,
+        displaySymbol: getGnotPath(poolInfo.tokenA).displaySymbol,
+        logoURI: getGnotPath(poolInfo.tokenA).logoURI,
+      },
+      tokenB: {
+        ...poolInfo.tokenB,
+        symbol: getGnotPath(poolInfo.tokenB).symbol,
+        displaySymbol: getGnotPath(poolInfo.tokenB).displaySymbol,
+        logoURI: getGnotPath(poolInfo.tokenB).logoURI,
+      },
+    };
+  }, [pool, getGnotPath]);
 
   const isSelected = currentPool != null;
 
@@ -54,8 +71,8 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
     return {
       left: currentPool.tokenA.logoURI,
       right: currentPool.tokenB.logoURI,
-      leftSymbol: currentPool.tokenA.symbol,
-      rightSymbol: currentPool.tokenB.symbol,
+      leftSymbol: currentPool.tokenA.displaySymbol,
+      rightSymbol: currentPool.tokenB.displaySymbol,
     };
   }, [currentPool, isSelected]);
 
@@ -63,10 +80,10 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
     return currentPool?.feeRate ? currentPool.feeRate : "-";
   }, [currentPool]);
 
-  const formatAmount = (amount: string | null) => {
+  const formatAmount = (amount: string | null, decimals: number = GNS_TOKEN.decimals) => {
     if (amount == null || amount === "") return "-";
 
-    return toNumberFormat(Number(makeDisplayTokenAmount(GNS_TOKEN, amount)), GNS_TOKEN.decimals);
+    return toNumberFormat(amount, decimals);
   };
 
   const isClaimableTime = React.useMemo(() => {
@@ -75,6 +92,34 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
     return now > endDate;
   }, [stakingData]);
 
+  const hasClaimableUnvestedAmount = React.useMemo(() => {
+    return new BigNumber(stakingData.claimableUnvestedAmount || "0").isGreaterThan(0);
+  }, [stakingData.claimableUnvestedAmount]);
+
+  const isExternalIncentiveRefunded = stakingData.isRefunded === YN_TYPE.YES;
+  const isExternalIncentiveNotRefunded = stakingData.isRefunded === YN_TYPE.NO;
+  const hasKnownExternalIncentiveRefundState = isExternalIncentiveRefunded || isExternalIncentiveNotRefunded;
+
+  const isClaimDisabled = !hasClaimableUnvestedAmount || !hasKnownExternalIncentiveRefundState;
+
+  const handleClaim = React.useCallback(() => {
+    if (isClaimDisabled) {
+      return;
+    }
+
+    if (isExternalIncentiveRefunded) {
+      void collectExternalIncentivePenalty();
+      return;
+    }
+
+    void removeExternalIncentive();
+  }, [
+    collectExternalIncentivePenalty,
+    isClaimDisabled,
+    isExternalIncentiveRefunded,
+    removeExternalIncentive,
+  ]);
+
   const renderDataMapping = () => {
     return (
       <>
@@ -82,7 +127,7 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
           <div className="label">{t("IncentivizePool:incentiPool.history.label.token")}</div>
           <div className="value">
             <MissingLogo symbol={rewardToken.symbol} width={24} url={rewardToken.logoURI} />
-            <span>{rewardToken.symbol}</span>
+            <span>{rewardToken.displaySymbol}</span>
             <Chip text={capitalize(stakingData.incentiveType)} />
           </div>
         </div>
@@ -91,7 +136,7 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
           <div className="value">
             <DoubleLogo {...doubleLogos} size={24} />
             <span>
-              {doubleLogos.leftSymbol}/{doubleLogos.rightSymbol}
+              {doubleLogos.leftSymbol || ""}/{doubleLogos.rightSymbol || ""}
             </span>
             <Chip text={feeRateStr} height={24} />
           </div>
@@ -109,12 +154,8 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
             {t("IncentivizePool:incentiPool.history.label.incentivizedAmount")}
             <Tooltip
               FloatingContent={
-                <span css={tooltipConent}>
-                  <Trans
-                    ns="IncentivizePool"
-                    components={{ br: <br /> }}
-                    i18nKey={"incentiPool.history.tooltip.incentivizedAmount"}
-                  />
+                <span css={historyTooltipContent}>
+                  {t("IncentivizePool:incentiPool.history.tooltip.incentivizedAmount")}
                 </span>
               }
               placement="top"
@@ -123,7 +164,7 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
             </Tooltip>
           </div>
           <div className="value">
-            {toNumberFormat(stakingData.incentivizedAmount, 6)} {rewardToken.symbol}
+            {formatAmount(stakingData.incentivizedAmount, rewardToken.decimals)} {rewardToken.symbol}
           </div>
         </div>
         <div className="row">
@@ -131,12 +172,8 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
             {t("IncentivizePool:incentiPool.history.label.remainingAmount")}
             <Tooltip
               FloatingContent={
-                <span css={tooltipConent}>
-                  <Trans
-                    ns="IncentivizePool"
-                    components={{ br: <br /> }}
-                    i18nKey={"incentiPool.history.tooltip.remainingAmount"}
-                  />
+                <span css={historyTooltipContent}>
+                  {t("IncentivizePool:incentiPool.history.tooltip.remainingAmount")}
                 </span>
               }
               placement="top"
@@ -145,7 +182,7 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
             </Tooltip>
           </div>
           <div className="value">
-            {toNumberFormat(stakingData.remainingAmount, 6)} {rewardToken.symbol}
+            {formatAmount(stakingData.remainingAmount, rewardToken.decimals)} {rewardToken.symbol}
           </div>
         </div>
         <div className="row">
@@ -155,10 +192,8 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
               FloatingContent={
                 <span css={historyTooltipContent}>
                   <Trans
-                    className="test"
                     ns="IncentivizePool"
                     components={{
-                      br: <br />,
                       link: (
                         <Link
                           href="https://docs.gnoswap.io/core-concepts/liquidity-mining#warm-up-periods"
@@ -177,20 +212,18 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
               <IconInfo size={16} />
             </Tooltip>
           </div>
-          <div className="value">-</div>
+          <div className="value">
+            {formatAmount(stakingData.unvestedAmount, rewardToken.decimals)} {rewardToken.symbol}
+          </div>
         </div>
 
         <div className="row">
           <div className="label">
-            {t("IncentivizePool:incentiPool.history.label.depositAmount")}
+            {t("IncentivizePool:incentiPool.history.label.claimableUnvestedAmount")}
             <Tooltip
               FloatingContent={
-                <span css={tooltipConent}>
-                  <Trans
-                    ns="IncentivizePool"
-                    components={{ br: <br /> }}
-                    i18nKey={"incentiPool.history.tooltip.depositAmount"}
-                  />
+                <span css={historyTooltipContent}>
+                  {t("IncentivizePool:incentiPool.history.tooltip.claimableUnvestedAmount")}
                 </span>
               }
               placement="top"
@@ -199,16 +232,36 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
             </Tooltip>
           </div>
           <div className="value">
-            {formatAmount(stakingData.depositGnsAmount)} {GNS_TOKEN.symbol}
+            {formatAmount(stakingData.claimableUnvestedAmount, rewardToken.decimals)} {rewardToken.symbol}
           </div>
         </div>
 
-        {isClaimableTime && (
+        <div className="row">
+          <div className="label">
+            {t("IncentivizePool:incentiPool.history.label.depositAmount")}
+            <Tooltip
+              FloatingContent={
+                <span css={historyTooltipContent}>
+                  {t("IncentivizePool:incentiPool.history.tooltip.depositAmount")}
+                </span>
+              }
+              placement="top"
+            >
+              <IconInfo size={16} />
+            </Tooltip>
+          </div>
+          <div className="value">
+            {formatAmount(stakingData.depositGnsAmount, GNS_TOKEN.decimals)} {GNS_TOKEN.symbol}
+          </div>
+        </div>
+
+        {isClaimableTime && !!incentiveId && (
           <div className="button-wrapper">
             <Button
               text={"Claim"}
               style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
-              onClick={() => removeExternalIncentive({ rpcProvider })}
+              disabled={isClaimDisabled}
+              onClick={handleClaim}
             />
           </div>
         )}
@@ -218,10 +271,6 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
 
   return <IncentivizePoolHistoryBoxWrapper>{renderDataMapping()}</IncentivizePoolHistoryBoxWrapper>;
 };
-
-const tooltipConent = css`
-  font-size: 14px;
-`;
 
 interface ChipProps {
   text: string;

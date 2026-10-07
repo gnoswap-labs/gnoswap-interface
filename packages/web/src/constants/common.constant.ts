@@ -16,8 +16,6 @@ export const PATH = ["/earn"];
 export const PATH_10SECOND = ["/token"];
 export const PATH_60SECOND = ["/wallet", "/earn/pool/stake", "/earn/pool/unstake", "/earn/pool", "/earn/pool/remove"];
 
-export const HTTP_5XX_ERROR = [500, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511];
-
 export const CAN_SCROLL_UP_ID = "CAN_SCROLL_UP_ID";
 
 export const getCanScrollUpId = (id: string) => `${CAN_SCROLL_UP_ID}_${id}`;
@@ -220,7 +218,7 @@ export const SEOInfo: Record<
   "/token": {
     title: (params = []) => {
       const [tokenPrice, tokenName, tokenSymbol] = params;
-      const tokenSymbolDisplay = tokenSymbol ? `(${tokenSymbol})` : "";
+      const tokenSymbolDisplay = tokenSymbol ? ` (${tokenSymbol})` : "";
       const tokenNameDisplay = `${tokenName}${tokenSymbolDisplay}`;
       const titleDisplay = [tokenPrice, tokenNameDisplay].filter(item => item).join(" | ");
 
@@ -239,7 +237,7 @@ export const SEOInfo: Record<
     ogTitle: (params = []) => {
       if (params.length === 2) {
         const [tokenName, tokenSymbol] = params;
-        return `${tokenName}(${tokenSymbol}) | GnoSwap`;
+        return `${tokenName} (${tokenSymbol}) | GnoSwap`;
       }
       return DefaultTitle;
     },
@@ -307,14 +305,13 @@ export const SEOInfo: Record<
 
 export const LANGUAGES = [
   { code: "en", name: "English" },
-  { code: "de", name: "Deutsch" },
   { code: "es", name: "Español" },
   { code: "fr", name: "Français" },
   { code: "ja", name: "日本語" },
   { code: "ko", name: "한국어" },
   { code: "ru", name: "Русский" },
+  { code: "vi", name: "Tiếng Việt" },
   { code: "zh", name: "中文" },
-  { code: "hi", name: "हिन्दी" },
 ];
 
 export const DEFAULT_POOL_ADD_URI = `/earn/add?tokenA=gnot&tokenB=${GNS_TOKEN_PATH}&fee_tier=3000`;
@@ -325,14 +322,13 @@ export const DEFAULT_POOL_PATH = [...DEFAULT_TOKEN_PAIR.sort(sortTokenPaths), "3
 
 export const LANGUAGE_CODE_MAP: Record<string, string> = {
   en: "en-US",
-  de: "de-DE",
   es: "es-ES",
   fr: "fr-FR",
   ja: "ja-JP",
   ko: "ko-KR",
   ru: "ru-RU",
+  vi: "vi-VN",
   zh: "zh-CN",
-  hi: "hi-IN",
 };
 
 export const getLangCode = (code: string) => {

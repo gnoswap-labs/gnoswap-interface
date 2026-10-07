@@ -1,13 +1,12 @@
 import { Hydrate, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import "dayjs/locale/de";
 import "dayjs/locale/en";
 import "dayjs/locale/es";
 import "dayjs/locale/fr";
-import "dayjs/locale/hi";
 import "dayjs/locale/ja";
 import "dayjs/locale/ko";
 import "dayjs/locale/ru";
+import "dayjs/locale/vi";
 import "dayjs/locale/zh";
 import { Provider as JotaiProvider } from "jotai";
 import { appWithTranslation, UserConfig, useTranslation } from "next-i18next";
@@ -26,7 +25,7 @@ import SnackbarProvider from "@providers/snackbar-provider/SnackbarProvider";
 import SocialWalletProvider from "@providers/social-wallet-provider";
 
 import nextI18nextConfig from "next-i18next.config";
-import Custom500 from "./500";
+import Custom500 from "@layouts/custom-500/Custom500";
 
 function App({ Component, pageProps }: AppProps) {
   const { i18n } = useTranslation();

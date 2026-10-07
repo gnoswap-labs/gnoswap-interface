@@ -1,14 +1,14 @@
-import BigNumber from "bignumber.js";
-import React, { useCallback, useEffect, useState, useMemo } from "react";
-import { LineGraphTooltipWrapper, LineGraphWrapper } from "./LineGraph.styles";
-import FloatingTooltip from "../tooltip/FloatingTooltip";
 import { Global, css, useTheme } from "@emotion/react";
-import { subscriptFormat } from "@utils/number-utils";
-import { getLocalizeTime } from "@utils/chart";
-import { convertToKMB } from "@utils/stake-position-utils";
-import { formatPrice } from "@utils/new-number-utils";
-import dayjs from "dayjs";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
+import { getLocalizeTime } from "@utils/chart";
+import { formatPrice } from "@utils/new-number-utils";
+import { subscriptFormat } from "@utils/number-utils";
+import { convertToKMB } from "@utils/stake-position-utils";
+import BigNumber from "bignumber.js";
+import dayjs from "dayjs";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import FloatingTooltip from "../tooltip/FloatingTooltip";
+import { LineGraphTooltipWrapper, LineGraphWrapper } from "./LineGraph.styles";
 
 interface DataItem {
   value: number;
@@ -98,6 +98,7 @@ export interface LineGraphProps {
   onMouseMove?: (LineGraphData?: LineGraphData, dateDisplay?: { date: string; time: string; value?: string }) => void;
   onMouseOut?: (active: boolean) => void;
   baseLineMap?: [boolean, boolean, boolean, boolean];
+  baseLineLabels?: string[];
   baseLineLabelsPosition?: "left" | "right";
   baseLineLabelsTransform?: (value: string) => string;
   graphBorder?: [boolean, boolean, boolean, boolean];
@@ -105,6 +106,11 @@ export interface LineGraphProps {
   displayLastDayAsNow?: boolean;
   popupYValueFormatter?: (value: string) => string;
   hasNoLabel?: boolean;
+  referenceTimeForFirstLine?: string;
+  yAxisMin?: string;
+  yAxisMax?: string;
+  fillAreaBelowLine?: boolean;
+  renderSinglePointAsLine?: boolean;
 }
 
 export interface LineGraphRef {
@@ -163,6 +169,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
   onMouseMove: onLineGraphMouseMove,
   onMouseOut: onLineGraphMouseOut,
   showBaseLineLabels = false,
+  baseLineLabels,
   showPriceRangeLine = true,
   baseLineMap = [true, true, true, true],
   baseLineLabelsPosition = "left",
@@ -172,6 +179,11 @@ const LineGraph: React.FC<LineGraphProps> = ({
   displayLastDayAsNow = false,
   popupYValueFormatter,
   hasNoLabel = false,
+  referenceTimeForFirstLine,
+  yAxisMin,
+  yAxisMax,
+  fillAreaBelowLine = false,
+  renderSinglePointAsLine = false,
 }: LineGraphProps) => {
   const COMPONENT_ID = (Math.random() * 100000).toString();
   const [activated, setActivated] = useState(false);
@@ -182,7 +194,10 @@ const LineGraph: React.FC<LineGraphProps> = ({
   const [baseLineYAxis, setBaseLineYAxis] = useState<string[]>([]);
   const [baseLineNumberWidth, setBaseLineNumberWidth] = useState<number>(0);
   const { height: customHeight = 0, locationTooltip } = customData;
-  const baseLineCount = useMemo(() => 4, []);
+  const baseLineCount = useMemo(
+    () => (baseLineLabels && baseLineLabels.length > 0 ? baseLineLabels.length : 4),
+    [baseLineLabels],
+  );
   const theme = useTheme();
 
   const isFocus = useCallback(() => {
@@ -191,7 +206,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
   useEffect(() => {
     updatePoints(datas, width, height);
-  }, [datas, width, height, baseLineNumberWidth]);
+  }, [baseLineLabels, datas, width, height, baseLineNumberWidth, yAxisMin, yAxisMax]);
 
   useEffect(() => {
     onLineGraphMouseMove?.(datas[currentPointIndex]);
@@ -211,6 +226,12 @@ const LineGraph: React.FC<LineGraphProps> = ({
     let minTime: number;
     let maxTime: number;
 
+    const hasExternalYRange =
+      yAxisMin !== undefined &&
+      yAxisMax !== undefined &&
+      !new BigNumber(yAxisMin).isNaN() &&
+      !new BigNumber(yAxisMax).isNaN();
+
     const mappedDatas = (() => {
       const newDatas = datas.map(item => ({
         value: new BigNumber(item.value).toNumber(),
@@ -220,8 +241,8 @@ const LineGraph: React.FC<LineGraphProps> = ({
       const values = newDatas.map(data => data.value);
       const times = newDatas.map(data => data.time);
 
-      minValue = Math.min(...values);
-      maxValue = Math.max(...values);
+      minValue = hasExternalYRange ? new BigNumber(yAxisMin as string).toNumber() : Math.min(...values);
+      maxValue = hasExternalYRange ? new BigNumber(yAxisMax as string).toNumber() : Math.max(...values);
       minTime = Math.min(...times);
       maxTime = Math.max(...times);
 
@@ -302,68 +323,70 @@ const LineGraph: React.FC<LineGraphProps> = ({
       return maxValueBigNumber.minus(minValueBigNumber);
     })();
 
-    const baseLineData = new Array(baseLineCount).fill("").map((value, index) => {
-      // Gap from lowest value or highest value  to baseline
-      const additionalGap = (() => {
-        if (everyPointEqual) return minMaxGap.dividedBy(2);
+    const baseLineData =
+      baseLineLabels ??
+      new Array(baseLineCount).fill("").map((value, index) => {
+        // Gap from lowest value or highest value  to baseline
+        const additionalGap = (() => {
+          if (everyPointEqual) return minMaxGap.dividedBy(2);
 
-        return minMaxGap.multipliedBy(gapRatio / 2);
-      })();
+          return minMaxGap.multipliedBy(gapRatio / 2);
+        })();
 
-      // Gap between bottom and top base line
-      const baseLineGap = (() => {
-        if (everyPointEqual) return minMaxGap;
+        // Gap between bottom and top base line
+        const baseLineGap = (() => {
+          if (everyPointEqual) return minMaxGap;
 
-        if (minValueBigNumber.isLessThanOrEqualTo(0)) return maxValueBigNumber;
+          if (minValueBigNumber.isLessThanOrEqualTo(0)) return maxValueBigNumber;
 
-        return minMaxGap.multipliedBy(1 + gapRatio);
-      })();
+          return minMaxGap.multipliedBy(1 + gapRatio);
+        })();
 
-      // Lowest baseline value
-      const tempBottomBaseLineValue = minValueBigNumber.minus(additionalGap);
-      const bottomBaseLineValue = tempBottomBaseLineValue.isLessThanOrEqualTo(0)
-        ? BigNumber(0)
-        : tempBottomBaseLineValue;
+        // Lowest baseline value
+        const tempBottomBaseLineValue = minValueBigNumber.minus(additionalGap);
+        const bottomBaseLineValue = tempBottomBaseLineValue.isLessThanOrEqualTo(0)
+          ? BigNumber(0)
+          : tempBottomBaseLineValue;
 
-      const currentBaseLineValue = bottomBaseLineValue.plus(baseLineGap.multipliedBy(index / (baseLineCount - 1)));
+        const currentBaseLineValue = bottomBaseLineValue.plus(baseLineGap.multipliedBy(index / (baseLineCount - 1)));
 
-      if (currentBaseLineValue.isLessThan(-1)) {
-        return (
-          "-" +
-          convertToKMB(currentBaseLineValue.absoluteValue().toFixed(), {
+        if (currentBaseLineValue.isLessThan(-1)) {
+          return (
+            "-" +
+            convertToKMB(currentBaseLineValue.absoluteValue().toFixed(), {
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
+            })
+          );
+        }
+
+        if (currentBaseLineValue.isGreaterThan(-1) && currentBaseLineValue.isLessThan(0)) {
+          return "-" + subscriptFormat(currentBaseLineValue.abs().toFixed());
+        }
+
+        if (currentBaseLineValue.isLessThan(1)) {
+          return subscriptFormat(currentBaseLineValue.toString(), {
+            significantDigits: 3,
+            subscriptOffset: 3,
+          });
+        }
+
+        if (currentBaseLineValue.isGreaterThanOrEqualTo(1) && currentBaseLineValue.isLessThan(100)) {
+          return convertToKMB(currentBaseLineValue.toString(), {
             maximumFractionDigits: 2,
             minimumFractionDigits: 2,
-          })
-        );
-      }
+          });
+        }
 
-      if (currentBaseLineValue.isGreaterThan(-1) && currentBaseLineValue.isLessThan(0)) {
-        return "-" + subscriptFormat(currentBaseLineValue.abs().toFixed());
-      }
+        const result = Math.round(currentBaseLineValue.toNumber()).toString();
 
-      if (currentBaseLineValue.isLessThan(1)) {
-        return subscriptFormat(currentBaseLineValue.toString(), {
-          significantDigits: 3,
-          subscriptOffset: 3,
-        });
-      }
+        if (currentBaseLineValue.isLessThan(1)) return subscriptFormat(currentBaseLineValue.toFixed());
 
-      if (currentBaseLineValue.isGreaterThanOrEqualTo(1) && currentBaseLineValue.isLessThan(100)) {
-        return convertToKMB(currentBaseLineValue.toString(), {
+        return convertToKMB(result, {
           maximumFractionDigits: 2,
           minimumFractionDigits: 2,
         });
-      }
-
-      const result = Math.round(currentBaseLineValue.toNumber()).toString();
-
-      if (currentBaseLineValue.isLessThan(1)) return subscriptFormat(currentBaseLineValue.toFixed());
-
-      return convertToKMB(result, {
-        maximumFractionDigits: 2,
-        minimumFractionDigits: 2,
       });
-    });
 
     setBaseLineYAxis([...baseLineData]);
 
@@ -386,6 +409,17 @@ const LineGraph: React.FC<LineGraphProps> = ({
     setBaseLineNumberWidth(baseLineNumberWidthComputation);
 
     const optimizeValue = function (value: number, height: number) {
+      if (hasExternalYRange) {
+        // Derive gap from the explicit external bounds so the mapping stays correct
+        // for single-point data and for callers that may pass a negative yAxisMin.
+        const externalGap = maxValueBigNumber.minus(minValueBigNumber);
+        if (externalGap.isZero()) {
+          return height / 2;
+        }
+
+        return height - ((value - minValue) * height) / externalGap.toNumber();
+      }
+
       // The base line wrapper will > top and bottom of graph 10 % so the height will be 110% of graph height
       const graphHeight = (() => {
         if (showBaseLine) {
@@ -500,6 +534,12 @@ const LineGraph: React.FC<LineGraphProps> = ({
 
   const getGraphLine = useCallback(
     (smooth?: boolean, fill?: boolean) => {
+      if (renderSinglePointAsLine && points.length === 1) {
+        const startX = showBaseLineLabels && baseLineLabelsPosition === "left" ? baseLineNumberWidth : 0;
+        const endX = width - (showBaseLineLabels && baseLineLabelsPosition === "right" ? baseLineNumberWidth : 0);
+        return `M ${startX},${points[0].y} L ${endX},${points[0].y}`;
+      }
+
       function mappedPoint(point: Point, index: number, points: Point[]) {
         if (index === 0) {
           return `${fill ? "L" : "M"} ${point.x},${point.y}`;
@@ -509,7 +549,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
       }
       return points.map((point, index) => mappedPoint(point, index, points)).join(" ");
     },
-    [points],
+    [baseLineLabelsPosition, baseLineNumberWidth, points, renderSinglePointAsLine, showBaseLineLabels, width],
   );
 
   const firstPoint = useMemo(() => {
@@ -518,6 +558,19 @@ const LineGraph: React.FC<LineGraphProps> = ({
     }
     return points[0];
   }, [points]);
+
+  const firstLineY = useMemo(() => {
+    if (!referenceTimeForFirstLine) {
+      return firstPoint.y;
+    }
+
+    const referenceIndex = datas.findIndex(item => item.time === referenceTimeForFirstLine);
+    if (referenceIndex < 0 || !points[referenceIndex]) {
+      return firstPoint.y;
+    }
+
+    return points[referenceIndex].y;
+  }, [datas, firstPoint.y, points, referenceTimeForFirstLine]);
 
   const locationTooltipPosition = useMemo(() => {
     if (forcedPosition) return forcedPosition;
@@ -548,6 +601,21 @@ const LineGraph: React.FC<LineGraphProps> = ({
       return undefined;
     }
 
+    // When enabled, the gradient area fills from the price line down to the bottom of
+    // the chart so the fill never escapes the curve.
+    if (fillAreaBelowLine) {
+      const bottomY = height + (customHeight || 0);
+      let path = `M ${points[0].x},${bottomY}`;
+      path += ` L ${points[0].x},${points[0].y}`;
+      for (let i = 1; i < points.length; i++) {
+        const point = points[i];
+        path += smooth ? " " + bezierCommand(point, i, points) : ` L ${point.x},${point.y}`;
+      }
+      path += ` L ${points[points.length - 1].x},${bottomY}`;
+      path += " Z";
+      return path;
+    }
+
     // Start at the first point's x coordinate at firstPoint.y level
     let path = `M ${points[0].x},${firstPoint.y}`;
 
@@ -574,7 +642,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
     path += " Z";
 
     return path;
-  }, [points, smooth, firstPoint.y]);
+  }, [points, smooth, firstPoint.y, fillAreaBelowLine, height, customHeight]);
 
   const isLightTheme = theme.themeKey === "light";
 
@@ -662,7 +730,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
             {showBaseLine && (
               <>
                 {baseLineYAxis.map((value, index) => {
-                  const showBaseLine = baseLineMap[index];
+                  const showBaseLine = baseLineMap[index] ?? true;
                   const currentHeight = height - (height * index) / (baseLineCount - 1);
                   const baseWidth =
                     width - (showBaseLineLabels && baseLineLabelsPosition === "left" ? 0 : baseLineNumberWidth);
@@ -700,7 +768,7 @@ const LineGraph: React.FC<LineGraphProps> = ({
                 })}
               </>
             )}
-            {hasOnlyOnePoint && (
+            {hasOnlyOnePoint && !renderSinglePointAsLine && (
               <circle cx={points?.[0]?.x || 0} cy={points?.[0]?.y || 0} r={1} stroke={color} fill={color} />
             )}
             {!isSameData && <path fill={`url(#gradient${COMPONENT_ID})`} stroke={color} strokeWidth={0} d={areaPath} />}
@@ -715,9 +783,9 @@ const LineGraph: React.FC<LineGraphProps> = ({
                   stroke={firstPointColor ? firstPointColor : color}
                   strokeWidth={1}
                   x1={0}
-                  y1={firstPoint.y}
+                  y1={firstLineY}
                   x2={width}
-                  y2={firstPoint.y}
+                  y2={firstLineY}
                   strokeDasharray={3}
                   className="first-line"
                 />

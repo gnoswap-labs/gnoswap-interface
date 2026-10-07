@@ -5,7 +5,7 @@ import { IVolumeResponse } from "@repositories/dashboard/response/volume-respons
 
 import { QUERY_KEY } from "../query-keys";
 
-const REFETCH_INTERVAL = 10_000;
+const REFETCH_INTERVAL = 5_000;
 
 export const useGetDashboardVolume = (options?: UseQueryOptions<IVolumeResponse, Error>) => {
   const { dashboardRepository } = useGnoswapContext();

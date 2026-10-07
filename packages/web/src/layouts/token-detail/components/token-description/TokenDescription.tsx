@@ -12,7 +12,7 @@ interface TokenDescriptionProps {
   tokenName: string;
   tokenSymbol: string;
   content: string;
-  links: { [key: string]: string };
+  links: Record<string, string>;
   loading: boolean;
   copied: boolean;
   copyClick: () => void;

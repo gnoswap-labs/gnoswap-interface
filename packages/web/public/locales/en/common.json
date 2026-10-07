@@ -177,5 +177,10 @@
     }
   },
   "swapUrlCopied": "Swap URL Copied!",
+  "tokenList": {
+    "showUnverifiedTokens": "Show unverified tokens",
+    "unverifiedTokensTooltip": "Tokens unregistered on Gno.land Token Resources are filtered.",
+    "verifyToken": "Verify your token"
+  },
   "urlCopied": "URL Copied!"
 }

@@ -19,6 +19,7 @@ export interface PoolModel {
   fee: string;
 
   incentivized: boolean;
+  hasStakedPosition: boolean;
   rewardTokens: RewardTokenModel[];
 
   tvl: string;
@@ -47,6 +48,7 @@ export const initialPool: PoolModel = {
     path: "",
     decimals: 4,
     symbol: "",
+    displaySymbol: "",
     logoURI: "",
     type: "Native",
     priceID: "",
@@ -59,6 +61,7 @@ export const initialPool: PoolModel = {
     path: "",
     decimals: 4,
     symbol: "",
+    displaySymbol: "",
     logoURI: "",
     type: "Native",
     priceID: "",
@@ -66,6 +69,7 @@ export const initialPool: PoolModel = {
   tokenAPriceGrade: "NONE",
   tokenBPriceGrade: "NONE",
   incentivized: true,
+  hasStakedPosition: false,
   tvl: "0",
   tvlChange: 0,
   volume24h: 0,
@@ -112,7 +116,6 @@ export interface IPoolDetailResponse {
   tokenABalance: string;
   tokenBBalance: string;
   tickSpacing: string;
-  bins: IBin[];
   priceRatio: IPoolPriceRatio;
 }
 
@@ -135,6 +138,7 @@ export interface ITokenA {
   path: string;
   decimals: number;
   symbol: string;
+  displaySymbol: string;
   logoURI: string;
   priceID: string;
 }
@@ -147,16 +151,7 @@ export interface ITokenB {
   path: string;
   decimals: number;
   symbol: string;
+  displaySymbol: string;
   logoURI: string;
   priceID: string;
-}
-
-export interface IBin {
-  index: number;
-  liquidity: string;
-  reserveTokenA: string;
-  reserveTokenB: string;
-  minTick: string;
-  maxTick: string;
-  rewardTokens: TokenModel[];
 }

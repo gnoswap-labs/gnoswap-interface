@@ -50,6 +50,13 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ breakpoint, status, time, two
             {t("Governance:proposal.status.passed")}
           </div>
         );
+      case "EXECUTABLE":
+        return (
+          <div className="status passed">
+            <IconPass className="passed-icon status-icon" />
+            {t("Governance:proposal.status.passed")}
+          </div>
+        );
       case "REJECTED":
         return (
           <div className="status failed">
@@ -75,37 +82,28 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ breakpoint, status, time, two
 
     const timeString = dayjs(time).format("YYYY-MM-DD, HH:mm:ss");
     const relativeTime = dayjs(time).fromNow();
+    const getFormattedTimeInfo = (i18nKey: string, relTime: string) => {
+      const text = t(i18nKey, { rel_time: relTime });
+      return breakpoint === DEVICE_TYPE.MOBILE ? text : `${text} (${timeString})`;
+    };
 
     switch (status) {
       case "UPCOMING":
-        return breakpoint === DEVICE_TYPE.MOBILE
-          ? `${t("Governance:proposal.time.start", {
-              rel_time: relativeTime,
-            })}`
-          : `${t("Governance:proposal.time.start", {
-              rel_time: relativeTime,
-            })} (${timeString})`;
+        return getFormattedTimeInfo("Governance:proposal.time.start", relativeTime);
       case "ACTIVE":
-        return breakpoint === DEVICE_TYPE.MOBILE
-          ? `${t("Governance:proposal.time.end", {
-              rel_time: relativeTime,
-            })}`
-          : `${t("Governance:proposal.time.end", {
-              rel_time: relativeTime,
-            })} (${timeString})`;
+        return getFormattedTimeInfo("Governance:proposal.time.end", relativeTime);
       case "EXECUTED":
+        return getFormattedTimeInfo("Governance:proposal.time.executed", relativeTime);
       case "EXPIRED":
+        return getFormattedTimeInfo("Governance:proposal.time.expired", relativeTime);
+      case "EXECUTABLE":
+        return getFormattedTimeInfo("Governance:proposal.time.executable", relativeTime);
+      case "CANCELLED":
+        return getFormattedTimeInfo("Governance:proposal.time.cancelled", relativeTime);
       case "PASSED":
       case "REJECTED":
-      case "CANCELLED":
       default:
-        return breakpoint === DEVICE_TYPE.MOBILE
-          ? `${t("Governance:proposal.time.ended", {
-              rel_time: "",
-            })}`
-          : `${t("Governance:proposal.time.ended", {
-              rel_time: "",
-            })} (${timeString})`;
+        return getFormattedTimeInfo("Governance:proposal.time.ended", "");
     }
   };
 

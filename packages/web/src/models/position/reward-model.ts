@@ -14,8 +14,6 @@ export interface RewardModel {
 
   claimableUsd: string;
 
-  accuReward1D: string | null;
-
   apr: number | null;
 }
 

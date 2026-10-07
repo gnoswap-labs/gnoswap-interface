@@ -1,6 +1,6 @@
+import { css, Theme } from "@emotion/react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import { fn } from "@storybook/test";
-import { css, Theme } from "@emotion/react";
 
 import { DEVICE_TYPE } from "@styles/media";
 
@@ -35,6 +35,7 @@ export const Default: Story = {
       path: "gno.land/r/bar",
       decimals: 6,
       symbol: "BAR",
+      displaySymbol: "BAR",
       logoURI: "https://raw.githubusercontent.com/onbloc/gno-token-resource/main/grc20/images/gno_land_r_bar.svg",
       priceID: "gno.land/r/bar",
       description: "this_is_desc_section",

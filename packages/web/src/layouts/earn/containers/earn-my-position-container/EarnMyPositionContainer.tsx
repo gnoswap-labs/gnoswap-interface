@@ -1,22 +1,21 @@
 import { useAtom, useAtomValue } from "jotai";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { DEFAULT_POOL_PATH } from "@constants/common.constant";
+import { POSITION_CARD_BREAKPOINTS, POSITION_CARD_DISPLAY_COUNT, POSITION_CARD_LIST_BREAKPOINTS } from "@common/values";
 import { QUERY_PARAMETER } from "@constants/page.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
-import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePoolData } from "@hooks/pool/data/use-pool-data";
-import { useTokenData } from "@hooks/token/data/use-token-data";
-import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
+import { usePositionData } from "@hooks/pool/data/use-position-data";
+import { useGetAllTokenPrices } from "@query/token";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
+import { PoolPositionModel } from "@models/position/pool-position-model";
 import { useGetUsernameByAddress } from "@query/address";
 import { EarnState, ThemeState } from "@states/index";
-import { PoolPositionModel } from "@models/position/pool-position-model";
-import { POSITION_CARD_BREAKPOINTS, POSITION_CARD_DISPLAY_COUNT, POSITION_CARD_LIST_BREAKPOINTS } from "@common/values";
 
-import EarnMyPositions from "../../components/earn-my-positions/EarnMyPositions";
 import { PositionConverter } from "@services/converters/position";
+import EarnMyPositions from "../../components/earn-my-positions/EarnMyPositions";
 
 interface EarnMyPositionContainerProps {
   loadMore?: boolean;
@@ -32,7 +31,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
 }) => {
   const router = useCustomRouter();
   const { connected, connectAdenaClient, isSwitchNetwork, switchNetwork, account } = useWallet();
-  const { tokenPrices = {}, updateTokenPrices } = useTokenData();
+  const { data: tokenPrices = {} } = useGetAllTokenPrices();
   const { isFetchedPools, loading: isLoadingPool, pools } = usePoolData();
   const { width } = useWindowSize();
   const { openModal } = useConnectWalletModal();
@@ -54,10 +53,25 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     return DESKTOP * 5; // 4 * 5 = 20
   }, [width]);
 
+  const openPositionData = usePositionData({
+    address,
+    page: 1,
+    limit: 1,
+    withClosed: false,
+    scopeId: "EarnMyPositionContainer-open",
+  });
+  const allPositionData = usePositionData({
+    address,
+    page: 1,
+    limit: 1,
+    withClosed: true,
+    scopeId: "EarnMyPositionContainer-all",
+  });
   const {
     isError,
-    availableStake,
+    hasPositionData,
     isFetchedPosition,
+    isFetchingWithoutData,
     loading: isLoadingPosition,
     positions,
     totalPositionCount,
@@ -65,11 +79,14 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     address,
     page,
     limit,
+    withClosed: isClosed,
     scopeId: "EarnMyPositionContainer",
   });
 
-  const [mappedData, setMappedData] = useState<PoolPositionModel[]>([]);
-  const [isDataMappingLoading, setIsDataMappingLoading] = useState(true);
+  const hasClosedPositions =
+    allPositionData.isFetchedPosition &&
+    openPositionData.isFetchedPosition &&
+    allPositionData.totalPositionCount > openPositionData.totalPositionCount;
 
   const divRef = useRef<HTMLDivElement | null>(null);
 
@@ -84,7 +101,6 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
     }
   };
   useEffect(() => {
-    updateTokenPrices();
     if (typeof window !== "undefined") {
       if (window.innerWidth < 920) setMobile(true);
       else setMobile(false);
@@ -122,7 +138,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   );
 
   const moveEarnStake = useCallback(() => {
-    router.movePageWithPoolPath("POOL", DEFAULT_POOL_PATH, "staking");
+    router.movePage("POOL_STAKE");
   }, [router]);
 
   const openPosition = useMemo(() => {
@@ -247,40 +263,26 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   }, []);
 
   const visiblePositions = useMemo(() => {
-    const noClosedPosition = closedPosition.length <= 0;
+    return connected || !!address;
+  }, [address, connected]);
 
-    if ((!connected && !address) || noClosedPosition) {
-      return false;
-    }
-    return true;
-  }, [address, closedPosition.length, connected]);
+  const mappedData = useMemo(() => {
+    let targetPositions: PoolPositionModel[];
 
-  const getMappedData = (): PoolPositionModel[] => {
     if (isViewMorePositions) {
-      return showedPosition;
-    }
-
-    for (const breakpoint of POSITION_CARD_LIST_BREAKPOINTS) {
-      if (width > breakpoint.width) {
-        return showedPosition.slice(0, breakpoint.displayCount);
+      targetPositions = showedPosition;
+    } else {
+      targetPositions = showedPosition;
+      for (const breakpoint of POSITION_CARD_LIST_BREAKPOINTS) {
+        if (width > breakpoint.width) {
+          targetPositions = showedPosition.slice(0, breakpoint.displayCount);
+          break;
+        }
       }
     }
 
-    return showedPosition;
-  };
-
-  const updateDataMapping = useCallback(() => {
-    setIsDataMappingLoading(true);
-    const newMappedData = getMappedData();
-    const convertedMappedData = PositionConverter.convertPositions(newMappedData);
-
-    setMappedData(convertedMappedData);
-    setIsDataMappingLoading(false);
-  }, [isViewMorePositions, width, showedPosition, limit]);
-
-  useEffect(() => {
-    updateDataMapping();
-  }, [updateDataMapping]);
+    return PositionConverter.convertPositions(targetPositions);
+  }, [isViewMorePositions, width, showedPosition]);
 
   const highestApr = useMemo(() => {
     return pools.reduce((acc, current) => {
@@ -317,8 +319,8 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   }, [isClosed]);
 
   const loadingPositionCardList = useMemo(() => {
-    return isLoadingPool || isLoadingPosition || isDataMappingLoading;
-  }, [isLoadingPool, isLoadingPosition, isDataMappingLoading]);
+    return isLoadingPool || isLoadingPosition;
+  }, [isLoadingPool, isLoadingPosition]);
 
   return (
     <EarnMyPositions
@@ -326,11 +328,15 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       addressName={addressName}
       isOtherPosition={!!isOtherPosition}
       visiblePositions={visiblePositions}
-      positionLength={totalPositionCount}
+      positionLength={hasPositionData ? totalPositionCount : undefined}
       connected={connected}
-      availableStake={availableStake}
+      availableStake={true}
       connect={connect}
-      loading={isLoadingPool || (connected ? isLoadingPosition || !isFetchedPosition : false) || isDataMappingLoading}
+      loading={
+        isLoadingPool ||
+        ((isOtherPosition || connected) &&
+          (isLoadingPosition || isFetchingWithoutData || (!isFetchedPosition && !isError)))
+      }
       loadingPositionCardList={loadingPositionCardList}
       fetched={isFetchedPools && isFetchedPosition}
       isError={isError}
@@ -352,6 +358,7 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       themeKey={themeKey}
       account={account}
       isClosed={isClosed}
+      hasClosedPositions={hasClosedPositions}
       handleChangeClosed={handleChangeClosed}
       tokenPrices={tokenPrices}
       highestApr={highestApr}

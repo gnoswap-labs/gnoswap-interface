@@ -283,6 +283,16 @@
       "title": "放送取引",
       "viewTx": "取引を見る"
     },
+    "receive-wugnot": {
+      "desc": "ここをクリックして <span>{{tokenAAmount}}</span>GNOT",
+      "link": "また、スワップを介してラップ/アンラップすることもできます。",
+      "title": "あなたはGNOTをラップした！"
+    },
+    "stake-position": {
+      "desc": "クリックすると、<span>ポジション#で</span>最高<span>{{apr}} APRを</span>獲得できます。<span>{{positionId}}</span>",
+      "link": "ステーク報酬を見る",
+      "title": "自分のポジションを確立する！"
+    },
     "success": {
       "defaultDesc": "仕事は正常に終了しました",
       "desc": "インターフェイスが更新されました",

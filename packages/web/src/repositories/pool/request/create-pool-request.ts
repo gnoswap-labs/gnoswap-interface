@@ -4,6 +4,7 @@ import { TokenModel } from "@models/token/token-model";
 export interface CreatePoolRequest {
   tokenA: TokenModel;
   tokenB: TokenModel;
+  gnsToken: TokenModel;
   feeTier: SwapFeeTierType;
   tokenAAmount: string;
   tokenBAmount: string;
@@ -12,7 +13,6 @@ export interface CreatePoolRequest {
   maxTick: number;
   slippage: number;
   caller: string;
-  withStaking?: boolean;
   createPoolFee: number; // fee is Raw Amount
   referrerAddress: string | null;
   gasFee?: string;

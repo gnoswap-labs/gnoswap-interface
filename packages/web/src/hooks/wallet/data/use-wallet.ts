@@ -1,27 +1,33 @@
 import { WalletClient } from "@common/clients/wallet-client";
 import { AdenaClient } from "@common/clients/wallet-client/adena";
-import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { CommonState, WalletState } from "@states/index";
-import { useAtom } from "jotai";
-import { useCallback, useEffect, useMemo } from "react";
 import { NetworkData } from "@constants/chains.constant";
-import * as uuid from "uuid";
+import { DEFAULT_CHAIN_ID, SUPPORT_CHAIN_IDS } from "@constants/environment.constant";
+import { AUTH_STORE_KEY } from "@hooks/common/use-auto-disconnect";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useSocialWalletContext } from "@hooks/common/use-social-wallet-context";
+import { AdenaError } from "@common/errors/adena";
+import { AccountMapper } from "@models/account/mapper/account-mapper";
+import { useGetTokenBalancesFromChain } from "@query/address";
 import {
   ACCOUNT_SESSION_INFO_KEY,
+  ADENA_SDK_CONNECTION_STATE_KEY,
   GNOSWAP_SESSION_ID_KEY,
   GNOSWAP_SOCIAL_LOGIN_TYPE_KEY,
   GNOSWAP_WALLET_TYPE_KEY,
   GNOWSWAP_CONNECTED_KEY,
-  ADENA_SDK_CONNECTION_STATE_KEY,
 } from "@states/common";
+import { CommonState, WalletState } from "@states/index";
 import { useQueryClient } from "@tanstack/react-query";
-import { SUPPORT_CHAIN_IDS, DEFAULT_CHAIN_ID } from "@constants/environment.constant";
-import { useGetTokenBalancesFromChain } from "@query/address";
-import { useSocialWalletContext } from "@hooks/common/use-social-wallet-context";
+import { useAtom } from "jotai";
+import { useCallback, useEffect, useMemo } from "react";
 import { AdenaSdkConnectionState, SocialLoginType, WalletType } from "src/types/wallet.types";
-import { AUTH_STORE_KEY } from "@hooks/common/use-auto-disconnect";
+import * as uuid from "uuid";
+import { isWalletLockedError, isWalletLockedResponse } from "./use-wallet.util";
 
 const balanceQueryKey = ["token-balance", "ugnot"];
+const GNOT_BALANCE_REFETCH_INTERVAL = 5_000;
+const defaultGnoswapMemo = "Executed through gnoswap.io";
+let connectingAdenaAccount = false;
 
 export const useWallet = () => {
   const { accountRepository } = useGnoswapContext();
@@ -80,14 +86,15 @@ export const useWallet = () => {
     return !availNetwork;
   }, [availNetwork, walletAccount]);
 
-  const {
-    data: balance,
-    isLoading: isLoadingBalance,
-    isStale: isBalanceStale,
-    refetch,
-  } = useGetTokenBalancesFromChain(currentChainId, walletAccount?.address, "ugnot", {
-    enabled: !!walletAccount?.address && availNetwork,
-  });
+  const { data: balance, isLoading: isLoadingBalance, isStale: isBalanceStale, refetch } = useGetTokenBalancesFromChain(
+    currentChainId,
+    walletAccount?.address,
+    "ugnot",
+    {
+      enabled: !!walletAccount?.address && availNetwork,
+      refetchInterval: GNOT_BALANCE_REFETCH_INTERVAL,
+    },
+  );
 
   useEffect(() => {
     if (walletClient) {
@@ -135,7 +142,7 @@ export const useWallet = () => {
       if (savedWalletType === "ADENA") {
         connectAdenaClient();
 
-        const adena = AdenaClient.createAdenaClient();
+        const adena = AdenaClient.createAdenaClient(defaultGnoswapMemo);
         const data = await adena?.getAccount();
         if (data?.status === "failure" && data.type !== "WALLET_LOCKED") {
           disconnectWallet();
@@ -147,10 +154,10 @@ export const useWallet = () => {
     }
   }
 
-  const switchNetwork = async () => {
+  const switchNetwork = async (targetWalletClient?: WalletClient | null) => {
     try {
       setLoadingConnect("loading");
-      const adena = AdenaClient.createAdenaClient();
+      const adena = targetWalletClient ?? AdenaClient.createAdenaClient(defaultGnoswapMemo);
       if (!adena) {
         setLoadingConnect("error");
         return;
@@ -159,7 +166,11 @@ export const useWallet = () => {
       const res = await adena?.switchNetwork(DEFAULT_CHAIN_ID);
 
       if (res.code === 0) {
-        const account = await accountRepository.getAccount();
+        const accountResponse = await adena.getAccount();
+        AdenaError.validate(accountResponse);
+        const account = AccountMapper.fromResponse(accountResponse);
+        sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
+        sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "ADENA");
         setWalletAccount(account);
         accountRepository.setConnectedWallet(true);
       }
@@ -182,7 +193,7 @@ export const useWallet = () => {
       setLoadingConnect("loading");
     }
 
-    const adena = AdenaClient.createAdenaClient();
+    const adena = AdenaClient.createAdenaClient(defaultGnoswapMemo);
     if (adena !== null) {
       sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "ADENA");
       adena.initAdena();
@@ -190,35 +201,50 @@ export const useWallet = () => {
       window.open("https://adena.app/", "", "noopener,noreferrer");
     }
     setWalletClient(adena);
+    return adena;
   }, [sessionId, loadingConnect]);
 
-  const connectAccount = async () => {
+  const connectAccount = async (targetWalletClient?: WalletClient | null) => {
+    if (connectingAdenaAccount) {
+      return;
+    }
+
+    connectingAdenaAccount = true;
+
     try {
       setLoadingConnect("loading");
 
-      if (walletClient === null) {
-        const adena = AdenaClient.createAdenaClient();
+      const currentWalletClient = targetWalletClient ?? walletClient;
+
+      if (currentWalletClient === null) {
+        const adena = AdenaClient.createAdenaClient(defaultGnoswapMemo);
         setWalletClient(adena);
+        setLoadingConnect("initial");
         return;
       }
 
-      const established = await accountRepository.addEstablishedSite().catch(() => null);
+      const established = await currentWalletClient.addEstablishedSite("Gnoswap");
 
-      if (established === null) {
+      if (isWalletLockedResponse(established)) {
+        setLoadingConnect("initial");
         return;
       }
       if (established.code === 4000) {
+        setLoadingConnect("initial");
         return;
       }
 
       if (established.code === 0 || established.code === 4001) {
-        const account = await accountRepository.getAccount();
-        sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
-        sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "ADENA");
+        const accountResponse = await currentWalletClient.getAccount();
+        AdenaError.validate(accountResponse);
+        const account = AccountMapper.fromResponse(accountResponse);
         const availNetwork = SUPPORT_CHAIN_IDS.includes(account.chainId);
         if (!availNetwork) {
-          switchNetwork();
+          await switchNetwork(currentWalletClient);
+          return;
         }
+        sessionStorage.setItem(ACCOUNT_SESSION_INFO_KEY, JSON.stringify(account));
+        sessionStorage.setItem(GNOSWAP_WALLET_TYPE_KEY, "ADENA");
         setWalletAccount(account);
         accountRepository.setConnectedWallet(true);
         setLoadingConnect("done");
@@ -227,7 +253,15 @@ export const useWallet = () => {
         setLoadingConnect("error");
       }
     } catch (error) {
+      if (isWalletLockedError(error)) {
+        setLoadingConnect("initial");
+        return;
+      }
+
+      setLoadingConnect("error");
       console.error(error);
+    } finally {
+      connectingAdenaAccount = false;
     }
   };
 

@@ -30,6 +30,8 @@ describe("TokenListHeader Component", () => {
       searchIcon: true,
       onTogleSearch: jest.fn(),
       searchRef,
+      showUnverifiedTokens: false,
+      toggleShowUnverifiedTokens: jest.fn(),
     };
 
     expect(() =>

@@ -45,7 +45,7 @@ const GainerCardList: React.FC<GainerCardListProps> = ({ gainers = [], loadingGa
                   mobileWidth={20}
                 />
                 <span className="name">{gainer.name}</span>
-                <span className="symbol">{gainer.symbol}</span>
+                <span className="symbol">{gainer.displaySymbol}</span>
               </NameSectionWrapper>
               <span className="price">{gainer.price}</span>
               <span

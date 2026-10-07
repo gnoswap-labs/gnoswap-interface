@@ -47,6 +47,7 @@ const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking, onO
   const { positions: allPositions, loading: isLoadingPosition } = usePositionData({
     address,
     poolPath,
+    withClosed: false,
     queryOption: {
       enabled: !!poolPath,
     },
@@ -75,6 +76,7 @@ const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking, onO
         path: getGnotPath(data.tokenA).path,
         name: getGnotPath(data.tokenA).name,
         symbol: getGnotPath(data.tokenA).symbol,
+        displaySymbol: getGnotPath(data.tokenA).displaySymbol,
         logoURI: getGnotPath(data.tokenA).logoURI,
       },
       tokenB: {
@@ -82,6 +84,7 @@ const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking, onO
         path: getGnotPath(data.tokenB).path,
         name: getGnotPath(data.tokenB).name,
         symbol: getGnotPath(data.tokenB).symbol,
+        displaySymbol: getGnotPath(data.tokenB).displaySymbol,
         logoURI: getGnotPath(data.tokenB).logoURI,
       },
     };

@@ -178,5 +178,10 @@
     }
   },
   "swapUrlCopied": "Échange d'URL copiées !",
+  "tokenList": {
+    "showUnverifiedTokens": "Afficher les jetons non vérifiés",
+    "unverifiedTokensTooltip": "Les jetons non enregistrés sur Gno.land Token Resources sont filtrés.",
+    "verifyToken": "Vérifiez votre jeton"
+  },
   "urlCopied": "URL copiée !"
 }

@@ -13,9 +13,9 @@
       "staking": "Jalonnement",
       "swap": "Échange",
       "tooltip": {
-        "position": "Frais gagnés en USD. Ne compte que si le pool reçoit des incitations en $GNS.",
-        "staking": "<ul><li>Récompenses de mise en position gagnées en USD. Ne compte que si la position a des récompenses.</li><li>Frais de protocole gagnés en USD. Ne compte que si les récompenses ont une valeur en USD.</li></ul>",
-        "volume": "Frais d'échange payés en USD. Ne compte que si le pool reçoit des incitations en $GNS."
+        "position": "Frais de swap facturés en USD. Ne s'appliquent que si le pool perçoit des récompenses en $GNS.",
+        "staking": "<ul><li>Rémunérations de staking perçues en USD. Seules les récompenses internes en $GNS sont prises en compte.</li><li>Frais de protocole perçus en USD. Ne sont pris en compte que si le jeton de récompense a un cours en USD.</li></ul>",
+        "volume": "Frais de swap payés en USD. Ne sont pris en compte que si le pool bénéficie d'incitations internes en $GNS."
       },
       "user": "Utilisateur",
       "xGNS": "Jalonnement xGNS"

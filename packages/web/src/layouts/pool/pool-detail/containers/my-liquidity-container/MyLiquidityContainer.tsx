@@ -1,28 +1,29 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { ERROR_VALUE } from "@common/errors/adena";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import useRouter from "@hooks/common/use-custom-router";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { useMessage } from "@hooks/common/use-message";
-import { usePosition } from "@hooks/pool/data/use-position";
-import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { buildClaimAllInputFromPositions, usePosition } from "@hooks/pool/data/use-position";
+import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetUsernameByAddress } from "@query/address";
-import { DexEvent } from "@repositories/common";
-import { formatOtherPrice } from "@utils/new-number-utils";
-import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { QUERY_KEY } from "@query/query-keys";
+import { DexEvent } from "@repositories/common";
 import { delay } from "@utils/common";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import MyLiquidity from "../../components/my-liquidity/MyLiquidity";
-import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { PositionConverter } from "@services/converters/position";
-import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import MyLiquidity from "../../components/my-liquidity/MyLiquidity";
+
+const DEFAULT_POSITION_LIMIT = 20;
 
 interface MyLiquidityContainerProps {
   addressContext: {
@@ -34,7 +35,6 @@ interface MyLiquidityContainerProps {
 }
 
 const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable, addressContext }) => {
-  const { rpcProvider } = useGnoswapContext();
   const { urlAddress, connectAddress } = addressContext;
 
   const address = useMemo(() => {
@@ -46,18 +46,72 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   const { breakpoint } = useWindowSize();
   const { connected: connectedWallet, isSwitchNetwork, account, currentChainId } = useWallet();
   const [currentIndex, setCurrentIndex] = useState(1);
+  const [positionLimit, setPositionLimit] = useState(DEFAULT_POSITION_LIMIT);
   const poolPath = router.getPoolPath();
-  const {
-    positions: positions,
-    loading: isLoadingPosition,
-    refetch: refetchPositions,
-  } = usePositionData({
+  const normalizedAddress = useMemo(() => (address || "").toLowerCase(), [address]);
+  const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
+  const [hasLoadedPositionOnce, setHasLoadedPositionOnce] = useState(false);
+
+  const positionScopeIdPrefix = useMemo(() => {
+    return ["my-liquidity", address || "", poolPath || "", positionLimit].join("-");
+  }, [address, poolPath, positionLimit]);
+
+  useEffect(() => {
+    setPositionLimit(DEFAULT_POSITION_LIMIT);
+    setHasLoadedPositionOnce(false);
+  }, [address, poolPath]);
+
+  const openPositionData = usePositionData({
     address,
     poolPath,
+    page: 1,
+    limit: positionLimit,
+    withClosed: false,
+    scopeId: `${positionScopeIdPrefix}-open`,
     queryOption: {
       enabled: !!poolPath,
     },
   });
+
+  const allPositionData = usePositionData({
+    address,
+    poolPath,
+    page: 1,
+    limit: positionLimit,
+    withClosed: true,
+    scopeId: `${positionScopeIdPrefix}-all`,
+    queryOption: {
+      enabled: !!poolPath,
+    },
+  });
+
+  const activePositionData = isShowClosePosition ? allPositionData : openPositionData;
+  const {
+    positions,
+    loading: isLoadingPosition,
+    refetch: refetchPositions,
+    totalPositionCount,
+  } = activePositionData;
+
+  const loadedPositions = useMemo<PoolPositionModel[]>(() => {
+    if (!address || !poolPath) {
+      return [];
+    }
+
+    return positions.filter(
+      position => position.poolPath === poolPath && position.owner.toLowerCase() === normalizedAddress,
+    );
+  }, [address, poolPath, positions, normalizedAddress]);
+
+  useEffect(() => {
+    if (!isLoadingPosition) {
+      setHasLoadedPositionOnce(true);
+    }
+  }, [isLoadingPosition]);
+
+  const isHeaderLoading = useMemo(() => {
+    return isLoadingPosition && !hasLoadedPositionOnce;
+  }, [hasLoadedPositionOnce, isLoadingPosition]);
 
   const { invalidateQueryKey } = useInvalidateQueries();
 
@@ -65,15 +119,14 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     invalidateQueryKey("MyLiquidity, Claim", [
       [QUERY_KEY.tokenBalancesByAddress, address],
       [QUERY_KEY.positions, currentChainId, address],
-      [QUERY_KEY.poolPairBins],
+      [QUERY_KEY.poolLiquidityTicks],
     ]);
   }, [invalidateQueryKey, currentChainId, address]);
 
-  const { claimAll, claim } = usePosition(positions.filter(item => !item.closed));
+  const { claimAll, claim } = usePosition(loadedPositions.filter(item => !item.closed));
   const [loadingTransactionClaim, setLoadingTransactionClaim] = useState(false);
-  const [isShowClosePosition, setIsShowClosedPosition] = useState(false);
   const { openModal } = useTransactionConfirmModal();
-  const { tokenPrices, updateBalances, refetchGrc20Balances } = useTokenData();
+  const { tokenPrices, updateBalances, refetchGrc20Balances } = useTokenData(true);
 
   const { getMessage } = useMessage();
 
@@ -87,9 +140,9 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   const accountPositions: PoolPositionModel[] = useMemo(() => {
     if (!address || !poolPath) return [];
 
-    const filteredPositions = positions.filter(position => position.poolPath === poolPath);
+    const filteredPositions = loadedPositions.filter(position => position.poolPath === poolPath);
     return PositionConverter.convertPositions(filteredPositions);
-  }, [address, poolPath, positions]);
+  }, [address, poolPath, loadedPositions]);
 
   const visiblePositions = useMemo(() => {
     if (!address) {
@@ -147,13 +200,14 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
       broadcastLoading(getMessage(DexEvent.CLAIM_FEE, "pending", messageData));
 
       setLoadingTransactionClaim(true);
-      claim(rpcProvider, position).then(response => {
+      claim(position).then(response => {
         if (response) {
           if (response.code === 0 || response.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
             enqueueEvent({
               txHash: response?.data?.hash,
               action: DexEvent.CLAIM_FEE,
               visibleEmitResult: true,
+              checkWugnotTransfer: true,
               formatData: () => {
                 return messageData;
               },
@@ -161,7 +215,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
                 updateBalances();
               },
               onEmit: async () => {
-                await delay(5000);
+                await delay(1000);
                 handleRefreshData();
               },
               onSuccess: handleRefreshData,
@@ -200,13 +254,15 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     broadcastLoading(getMessage(DexEvent.CLAIM_FEE, "pending", messageData));
 
     setLoadingTransactionClaim(true);
-    claimAll({ rpcProvider }).then(response => {
+    const claimAllInput = buildClaimAllInputFromPositions(openedPosition.filter(item => !item.closed));
+    claimAll({ input: claimAllInput }).then(response => {
       if (response) {
         if (response.code === 0 || response.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
           enqueueEvent({
             txHash: response?.data?.hash,
             action: DexEvent.CLAIM_FEE,
             visibleEmitResult: true,
+            checkWugnotTransfer: true,
             formatData: () => {
               return messageData;
             },
@@ -215,7 +271,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
               await updateBalances();
             },
             onEmit: async () => {
-              await delay(5000);
+              await delay(1000);
               handleRefreshData();
             },
             onSuccess: handleRefreshData,
@@ -243,6 +299,26 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     setIsShowClosedPosition(!isShowClosePosition);
   };
 
+  const hasMeaningfulClosedToggle = useMemo(() => {
+    return allPositionData.totalPositionCount > openPositionData.totalPositionCount;
+  }, [allPositionData.totalPositionCount, openPositionData.totalPositionCount]);
+
+  useEffect(() => {
+    if (
+      allPositionData.isFetchedPosition &&
+      openPositionData.isFetchedPosition &&
+      !hasMeaningfulClosedToggle &&
+      isShowClosePosition
+    ) {
+      setIsShowClosedPosition(false);
+    }
+  }, [
+    allPositionData.isFetchedPosition,
+    hasMeaningfulClosedToggle,
+    isShowClosePosition,
+    openPositionData.isFetchedPosition,
+  ]);
+
   const closedPosition = useMemo(() => {
     return (
       accountPositions
@@ -253,15 +329,10 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     );
   }, [accountPositions]);
 
-  const haveClosedPosition = useMemo(() => closedPosition.length > 0, [closedPosition.length]);
   const haveNotClosedPosition = useMemo(() => openedPosition.length > 0, [openedPosition.length]);
 
-  const showClosePositionButton = useMemo(() => {
-    if (!connectedWallet || isSwitchNetwork) {
-      return false;
-    }
-    return haveClosedPosition;
-  }, [connectedWallet, haveClosedPosition, isSwitchNetwork]);
+  const showClosePositionButton =
+    allPositionData.isFetchedPosition && openPositionData.isFetchedPosition && hasMeaningfulClosedToggle;
 
   const isShowRemovePositionButton = useMemo(() => {
     if (!connectedWallet || isSwitchNetwork) {
@@ -269,6 +340,18 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     }
     return haveNotClosedPosition;
   }, [connectedWallet, haveNotClosedPosition, isSwitchNetwork]);
+
+  const showViewMorePositions = useMemo(() => {
+    return accountPositions.length > 0 && accountPositions.length < totalPositionCount;
+  }, [accountPositions.length, totalPositionCount]);
+
+  const handleViewMorePositions = useCallback(() => {
+    if (accountPositions.length >= totalPositionCount) {
+      return;
+    }
+
+    setPositionLimit(Math.max(totalPositionCount, DEFAULT_POSITION_LIMIT));
+  }, [accountPositions.length, totalPositionCount]);
 
   return (
     <MyLiquidity
@@ -278,6 +361,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
       isOtherPosition={isOtherPosition}
       openedPosition={visiblePositions ? openedPosition : []}
       closedPosition={closedPosition}
+      totalPositionCount={totalPositionCount}
       breakpoint={breakpoint}
       connected={connectedWallet}
       isSwitchNetwork={isSwitchNetwork}
@@ -291,12 +375,15 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
       isStakable={isStakable}
       isShowRemovePositionButton={isShowRemovePositionButton}
       loading={isLoadingPosition}
+      isHeaderLoading={isHeaderLoading}
       loadingTransactionClaim={loadingTransactionClaim}
       isShowClosePosition={isShowClosePosition}
       handleSetIsClosePosition={handleSetIsClosePosition}
       isHiddenAddPosition={!!((address && account?.address && address !== account?.address) || !account?.address)}
       showClosePositionButton={showClosePositionButton}
       tokenPrices={tokenPrices}
+      showViewMorePositions={showViewMorePositions}
+      handleViewMorePositions={handleViewMorePositions}
     />
   );
 };

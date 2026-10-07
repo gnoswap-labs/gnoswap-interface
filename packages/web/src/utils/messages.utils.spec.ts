@@ -1,7 +1,6 @@
 import { mappedTransactionData, createDocument, mappedDocumentMessagesWithCaller } from "./messages.utils";
 import { Document, ContractMessage } from "src/types/transaction-messages.types";
-import { MsgCall, MsgSend, MsgAddPackage } from "@gnolang/gno-js-client";
-import { MsgRun } from "@gnolang/gno-js-client/bin/proto/gno/vm";
+import { MsgCall, MsgSend, MsgAddPackage, MsgRun } from "@gnolang/gno-js-client";
 
 describe("messages.utils", () => {
   describe("createDocument", () => {
@@ -155,6 +154,7 @@ describe("messages.utils", () => {
         value: {
           caller: "",
           send: "",
+          max_deposit: "",
           pkg_path: "gno.land/r/demo/foo",
           func: "bar",
           args: [],
@@ -175,6 +175,7 @@ describe("messages.utils", () => {
         value: {
           caller: existingCaller,
           send: "",
+          max_deposit: "",
           pkg_path: "gno.land/r/demo/foo",
           func: "bar",
           args: [],
@@ -213,7 +214,8 @@ describe("messages.utils", () => {
             path: "gno.land/p/demo/test",
             files: [],
           },
-          deposit: "",
+          send: "",
+          max_deposit: "",
         } as MsgAddPackage,
       };
 
@@ -230,6 +232,7 @@ describe("messages.utils", () => {
         value: {
           caller: "",
           send: "",
+          max_deposit: "",
           package: {
             name: "test",
             path: "",
@@ -265,6 +268,7 @@ describe("messages.utils", () => {
           value: {
             caller: "",
             send: "",
+            max_deposit: "",
             pkg_path: "gno.land/r/demo/foo",
             func: "bar",
             args: [],

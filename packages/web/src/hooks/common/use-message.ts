@@ -238,5 +238,30 @@ export const useMessage = () => {
     };
   }
 
-  return { getMessage };
+  function getReceiveWugnotMessage(txHash: string, tokenAAmount: string, onClick: () => void): SnackbarContent {
+    return {
+      title: t("Modal:toast.receive-wugnot.title"),
+      description: t("Modal:toast.receive-wugnot.desc", { tokenAAmount }),
+      txHash: txHash || "",
+      onClick,
+    };
+  }
+
+  function getStakePositionMessage(
+    positionId: string,
+    apr: string,
+    positionLogoUrl: string,
+    onClick: () => void,
+    onClickLink: () => void,
+  ): SnackbarContent {
+    return {
+      title: t("Modal:toast.stake-position.title"),
+      description: t("Modal:toast.stake-position.desc", { positionId, apr }),
+      logoUrl: positionLogoUrl,
+      onClick,
+      onClickLink,
+    };
+  }
+
+  return { getMessage, getReceiveWugnotMessage, getStakePositionMessage };
 };

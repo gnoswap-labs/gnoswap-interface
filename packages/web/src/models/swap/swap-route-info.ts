@@ -1,4 +1,3 @@
-import { AmountModel } from "@models/common/amount-model";
 import { TokenModel } from "@models/token/token-model";
 
 export interface Route {
@@ -17,8 +16,6 @@ export interface SwapRouteInfo {
   to: TokenModel;
   pools: RoutePoolInfo[];
   weight: number;
-  gasFee: AmountModel;
-  gasFeeUSD: number;
 }
 
 export interface RoutePoolInfo {

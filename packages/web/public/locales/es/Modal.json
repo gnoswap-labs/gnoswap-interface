@@ -283,6 +283,16 @@
       "title": "Transacción de radiodifusión",
       "viewTx": "Ver transacción"
     },
+    "receive-wugnot": {
+      "desc": "Haga clic aquí para convertir <span>{{tokenAAmount}}</span> a GNOT",
+      "link": "También puede envolver/desenvolver a través de Swap",
+      "title": "¡Has envuelto a GNOT!"
+    },
+    "stake-position": {
+      "desc": "Haga clic para ganar hasta <span>{{apr}} TAE</span> en <span>Posición #{{positionId}}</span>",
+      "link": "Ver las recompensas de las apuestas",
+      "title": "Defiende tu posición."
+    },
     "success": {
       "defaultDesc": "Tu trabajo ha finalizado correctamente",
       "desc": "Se ha actualizado la interfaz",

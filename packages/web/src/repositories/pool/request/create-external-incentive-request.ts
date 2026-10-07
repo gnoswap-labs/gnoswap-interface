@@ -4,8 +4,11 @@ export interface CreateExternalIncentiveRequest {
   poolPath: string;
 
   rewardToken: TokenModel;
+  gnsToken: TokenModel;
 
   rewardAmount: string;
+
+  incentiveCreationDepositGnsAmount: string;
 
   startTime: number;
 

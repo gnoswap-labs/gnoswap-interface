@@ -19,7 +19,7 @@ export interface PositionsRewardsProps {
 }
 
 export const usePositionsRewards = ({ positions }: PositionsRewardsProps) => {
-  const { tokens, tokenPrices } = useTokenData();
+  const { tokens, tokenPrices } = useTokenData(true);
   const { getGnotPath } = useGnotToGnot();
 
   const pooledTokenInfos = useMemo(() => {

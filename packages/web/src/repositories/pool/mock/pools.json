@@ -31,6 +31,7 @@
         "priceID": "gno.land/r/foo"
       },
       "incentivizedType": "INCENTIVIZED",
+      "hasStakedPosition": false,
       "tvl": 1182782.0,
       "tvlChange": 118278200.0,
       "volume": 1182797.0,
@@ -46,7 +47,6 @@
       "tokenABalance": 591391,
       "tokenBBalance": 2777571,
       "tickSpacing": 10,
-      "bins": [],
       "rewardTokens": [],
       "totalApr": 0
     }

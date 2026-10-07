@@ -1,33 +1,30 @@
 import React, { useEffect, useState } from "react";
 
+import { GNS_TOKEN } from "@common/values/token-constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { useLoading } from "@hooks/common/use-loading";
-import { useGetToken } from "@query/token";
 import { TokenModel } from "@models/token/token-model";
-import { GNS_TOKEN } from "@common/values/token-constant";
+import { useGetToken } from "@query/token";
 import { formatTokenModelPath } from "@utils/token-utils";
 
 import TokenDescription from "../../components/token-description/TokenDescription";
 
 export interface DescriptionInfo {
   token: TokenModel;
-  links: {
-    Website: string;
-    Gnoscan: string;
-  };
+  links: Record<string, string>;
 }
 
 export const descriptionInit: DescriptionInfo = {
   token: GNS_TOKEN,
   links: {
     Website: "https://gnoswap.io",
-    Gnoscan: "https://gnoscan.io/tokens/r/demo/wugnot",
+    GnoScan: "https://gnoscan.io/tokens/r/demo/wugnot",
   },
 };
 
 const TokenDescriptionContainer: React.FC = () => {
-  const { getTokenUrl } = useGnoscanUrl();
+  const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
   const [descriptionInfo, setDescriptionInfo] = useState<DescriptionInfo>(descriptionInit);
   const [copied, setCopied] = useState(false);
   const router = useCustomRouter();
@@ -62,16 +59,19 @@ const TokenDescriptionContainer: React.FC = () => {
         },
         links: {
           Website: tokenB.websiteURL || "",
-          Gnoscan: getTokenUrl(tokenB.path),
+          X: tokenB.twitterURL || "",
+          Discord: tokenB.discordURL || "",
+          Docs: tokenB.docsURL || "",
+          GnoScan: tokenB.path === "ugnot" ? getGnoscanUrl() : getTokenUrl(tokenB.path),
         },
       }));
     }
-  }, [router.query, tokenB]);
+  }, [getGnoscanUrl, getTokenUrl, router.query, tokenB]);
 
   return (
     <TokenDescription
       tokenName={descriptionInfo.token.name}
-      tokenSymbol={descriptionInfo.token.symbol}
+      tokenSymbol={descriptionInfo.token.displaySymbol}
       content={descriptionInfo.token.description || ""}
       links={descriptionInfo.links}
       path={displayTokenPath}

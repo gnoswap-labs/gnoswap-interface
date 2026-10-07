@@ -50,7 +50,8 @@ const BreadcrumbsContainer: React.FC<Props> = ({ listBreadcrumb, isLoading, w = 
         path: "/",
       },
       {
-        title: getMapping(tokenB?.symbol || "")[router.pathname] || `${getGnotPath(tokenB)?.symbol || "BTC"}`,
+        title:
+          getMapping(tokenB?.displaySymbol || "")[router.pathname] || `${getGnotPath(tokenB)?.displaySymbol || "BTC"}`,
         path: "",
       },
     ];

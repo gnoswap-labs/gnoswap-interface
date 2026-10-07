@@ -26,10 +26,16 @@ import { TABLET_HIDDEN_NAV_PATHS } from "@constants/page.constant";
 interface HeaderSideMenuModalProps {
   isCollapseNav: boolean;
   onSideMenuToggle: () => void;
-  onNavigation: (e: React.MouseEvent, path: string) => void;
+  onNavigation: (e: React.MouseEvent) => void;
+  getNavigationPath: (path: string) => string;
 }
 
-const SubMenu: React.FC<HeaderSideMenuModalProps> = ({ isCollapseNav, onSideMenuToggle, onNavigation }) => {
+const SubMenu: React.FC<HeaderSideMenuModalProps> = ({
+  isCollapseNav,
+  onSideMenuToggle,
+  onNavigation,
+  getNavigationPath,
+}) => {
   const router = useCustomRouter();
   const menuRef = useRef<HTMLDivElement | null>(null);
   const { t } = useTranslation();
@@ -78,7 +84,7 @@ const SubMenu: React.FC<HeaderSideMenuModalProps> = ({ isCollapseNav, onSideMenu
           {navigationItems.length > 0 && (
             <>
               {navigationItems.map((item, index) => (
-                <Link href={`${item.path}`} key={index} onClick={e => onNavigation(e, item.path)}>
+                <Link href={getNavigationPath(item.path)} key={index} onClick={onNavigation}>
                   <li
                     className="header-side-menu-item"
                     onClick={() => {

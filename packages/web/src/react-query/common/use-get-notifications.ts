@@ -6,7 +6,7 @@ import { QUERY_KEY } from "../query-keys";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TransactionGroupsType } from "@models/notification";
 
-const REFETCH_INTERVAL = 10_000;
+const REFETCH_INTERVAL = 5_000;
 
 export const useGetNotifications = (options?: UseQueryOptions<TransactionGroupsType[], Error>) => {
   const { notificationRepository } = useGnoswapContext();

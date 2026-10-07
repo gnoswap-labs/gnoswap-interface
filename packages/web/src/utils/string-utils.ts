@@ -20,14 +20,14 @@ export function formatAddress(address: string, num?: number): string {
 }
 
 export function tokenPairSymbolToOneCharacter(tokenPair: TokenPairInfo): string {
-  const symbol0 = tokenPair.tokenA.symbol;
-  const symbol1 = tokenPair.tokenB.symbol;
+  const symbol0 = tokenPair.tokenA.displaySymbol;
+  const symbol1 = tokenPair.tokenB.displaySymbol;
   return `${symbol0}/${symbol1}`;
 }
 
 export function makePairName({ tokenA, tokenB }: { tokenA: TokenModel; tokenB: TokenModel }): string {
-  const symbolA = tokenA.symbol;
-  const symbolB = tokenB.symbol;
+  const symbolA = tokenA.displaySymbol;
+  const symbolB = tokenB.displaySymbol;
   return `${symbolA}/${symbolB}`;
 }
 

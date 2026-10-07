@@ -1,11 +1,9 @@
 import React, { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useAtomValue } from "jotai";
 
-import { SwapState } from "@states/index";
 import { PriceImpactStatus, SwapRateAction } from "@hooks/swap/data/use-swap-handler";
 import { SwapResultInfo } from "@models/swap/swap-result-info";
-import { swapDirectionToGuaranteedType } from "@models/swap/swap-summary-info";
+import { swapDirectionToGuaranteedType, SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { floorNumber, toNumberFormat } from "@utils/number-utils";
 import { convertToKMBWithPrefix } from "@utils/stake-position-utils";
@@ -35,7 +33,10 @@ interface ConfirmSwapModalProps {
   isWrapOrUnwrap: boolean;
   priceImpactStatus: PriceImpactStatus;
   isLoading: boolean;
-  connectedWallet: boolean;
+  isRefetching: boolean;
+  swapTokenInfo: SwapTokenInfo;
+  swapSummaryInfo: SwapSummaryInfo | null;
+  estimatedAmount: string | null;
 
   setSwapRateAction: (type: SwapRateAction) => void;
   swap: (swapTokenInfo: SwapTokenInfo, estimatedAmount: string | null) => void;
@@ -52,11 +53,11 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   isWrapOrUnwrap,
   priceImpactStatus,
   isLoading,
-  connectedWallet,
+  isRefetching,
+  swapTokenInfo,
+  swapSummaryInfo,
+  estimatedAmount,
 }) => {
-  const swapConfirmModalState = useAtomValue(SwapState.swapConfirmModalState);
-  const { swapSummaryInfo, swapTokenInfo, estimatedAmount, isRefetching } = swapConfirmModalState;
-
   const { t } = useTranslation();
 
   const swapRateDescription = useMemo(() => {
@@ -67,18 +68,18 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     if (swapRateAction === SwapRateAction.ATOB) {
       return (
         <>
-          1&nbsp;{tokenA.symbol}&nbsp;=&nbsp;
+          1&nbsp;{tokenA.displaySymbol}&nbsp;=&nbsp;
           <ExchangeRate value={convertSwapRate(swapRate)} />
-          &nbsp;{tokenB.symbol}
+          &nbsp;{tokenB.displaySymbol}
         </>
       );
     }
 
     return (
       <>
-        1&nbsp;{tokenB.symbol}&nbsp;=&nbsp;
+        1&nbsp;{tokenB.displaySymbol}&nbsp;=&nbsp;
         <ExchangeRate value={convertSwapRate(swapRate)} />
-        &nbsp;{tokenA.symbol}
+        &nbsp;{tokenA.displaySymbol}
       </>
     );
   }, [swapSummaryInfo]);
@@ -110,23 +111,10 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   const guaranteedStr = useMemo(() => {
     if (!swapSummaryInfo) return;
     const { amount, currency } = swapSummaryInfo.guaranteedAmount;
-    return `${toNumberFormat(amount, 6)} ${currency}`;
-  }, [swapSummaryInfo?.guaranteedAmount]);
-
-  const gasFeeStr = useMemo(() => {
-    if (!swapSummaryInfo) return;
-    const { amount, currency } = swapSummaryInfo.gasFee;
-    return `${toNumberFormat(amount)} ${currency}`;
-  }, [swapSummaryInfo?.gasFee]);
-
-  const gasFeeUSDStr = useMemo(() => {
-    if (!swapSummaryInfo) return;
-    const gasFeeUSD = swapSummaryInfo.gasFeeUSD;
-
-    if (Number(gasFeeUSD) < 0.01) return "<$0.01";
-
-    return `$${toNumberFormat(gasFeeUSD)}`;
-  }, [swapSummaryInfo?.gasFeeUSD]);
+    const guaranteedToken =
+      swapSummaryInfo.swapDirection === "EXACT_IN" ? swapSummaryInfo.tokenB : swapSummaryInfo.tokenA;
+    return `${toNumberFormat(amount, guaranteedToken.decimals)} ${currency}`;
+  }, [swapSummaryInfo]);
 
   const showPriceImpact = useMemo(() => !!swapSummaryInfo?.priceImpact, [swapSummaryInfo?.priceImpact]);
 
@@ -192,11 +180,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
   const handleSwap = useCallback(() => {
     if (!swapTokenInfo) return;
     swap(swapTokenInfo, estimatedAmount);
-  }, [swapTokenInfo, swap]);
-
-  const gasEstimateSuccess = useMemo(() => {
-    return Boolean(swapSummaryInfo?.gasEstimateSuccess);
-  }, [swapSummaryInfo?.gasEstimateSuccess]);
+  }, [estimatedAmount, swap, swapTokenInfo]);
 
   return (
     <ConfirmModal>
@@ -227,7 +211,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                     width={24}
                     mobileWidth={24}
                   />
-                  <span>{swapSummaryInfo?.tokenA.symbol}</span>
+                  <span>{swapSummaryInfo?.tokenA.displaySymbol || ""}</span>
                 </div>
               </div>
               <div className="amount-info">
@@ -252,7 +236,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
                     width={24}
                     mobileWidth={24}
                   />
-                  <span>{swapSummaryInfo?.tokenB.symbol}</span>
+                  <span>{swapSummaryInfo?.tokenB.displaySymbol || ""}</span>
                 </div>
               </div>
               <div className="amount-info">
@@ -273,62 +257,50 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
               <span className="exchange-price">{`(${unitSwapPrice})`}</span>
             </div>
           </div>
-          <div className="gas-info">
-            {!isWrapOrUnwrap && (
-              <>
-                <div className="price-impact">
-                  <span className="gray-text">{t("Swap:swapInfo.priceImpact")}</span>
-                  <span className="white-text">
-                    <PriceImpactStatusWrapper priceImpact={priceImpactStatus}>
-                      {priceImpactStatusDisplay}
-                    </PriceImpactStatusWrapper>{" "}
-                    <PriceImpactStrWrapper priceImpact={priceImpactStatus}>
-                      {"("}
-                      {(swapSummaryInfo?.priceImpact || 0) > 0 ? "+" : ""}
-                      {priceImpactStr}
-                      {")"}
-                    </PriceImpactStrWrapper>
-                  </span>
-                </div>
-                <div className="slippage">
-                  <span className="gray-text">{t("Swap:swapInfo.slippageSet")}</span>
-                  <span className="white-text">{slippageStr}</span>
-                </div>
-                <div className="received">
-                  <span className="gray-text">{guaranteedTypeStr}</span>
-                  <span className="white-text">{guaranteedStr}</span>
-                </div>
-                <div className="received">
-                  <div className="protocol">
-                    <div>
-                      <span className="">
-                        {t("business:protocolFee.txt")} {routerFeePercentageStr}
-                      </span>
-                      <Tooltip
-                        placement="top"
-                        FloatingContent={
-                          <ToolTipContentWrapper>{t("Swap:swapInfo.tooltip.swapFee")}</ToolTipContentWrapper>
-                        }
-                      >
-                        <IconInfo />
-                      </Tooltip>
-                    </div>
-                    <span className="white-text">{routerFeeStr}</span>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {connectedWallet && gasEstimateSuccess && (
-              <div className="gas-fee">
-                <span className="gray-text">{t("Swap:swapInfo.gasFee")}</span>
+          {!isWrapOrUnwrap && (
+            <div className="gas-info">
+              <div className="price-impact">
+                <span className="gray-text">{t("Swap:swapInfo.priceImpact")}</span>
                 <span className="white-text">
-                  {gasFeeStr}
-                  <span className="gray-text">({gasFeeUSDStr})</span>
+                  <PriceImpactStatusWrapper priceImpact={priceImpactStatus}>
+                    {priceImpactStatusDisplay}
+                  </PriceImpactStatusWrapper>{" "}
+                  <PriceImpactStrWrapper priceImpact={priceImpactStatus}>
+                    {"("}
+                    {(swapSummaryInfo?.priceImpact || 0) > 0 ? "+" : ""}
+                    {priceImpactStr}
+                    {")"}
+                  </PriceImpactStrWrapper>
                 </span>
               </div>
-            )}
-          </div>
+              <div className="slippage">
+                <span className="gray-text">{t("Swap:swapInfo.slippageSet")}</span>
+                <span className="white-text">{slippageStr}</span>
+              </div>
+              <div className="received">
+                <span className="gray-text">{guaranteedTypeStr}</span>
+                <span className="white-text">{guaranteedStr}</span>
+              </div>
+              <div className="received">
+                <div className="protocol">
+                  <div>
+                    <span className="">
+                      {t("business:protocolFee.txt")} {routerFeePercentageStr}
+                    </span>
+                    <Tooltip
+                      placement="top"
+                      FloatingContent={
+                        <ToolTipContentWrapper>{t("Swap:swapInfo.tooltip.swapFee")}</ToolTipContentWrapper>
+                      }
+                    >
+                      <IconInfo />
+                    </Tooltip>
+                  </div>
+                  <span className="white-text">{routerFeeStr}</span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
         <div className="modal-button">
           <Button

@@ -9,8 +9,8 @@ import useRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
-import { useTokenData } from "@hooks/token/data/use-token-data";
 import { DEVICE_TYPE } from "@styles/media";
+import { useGetTokens } from "@query/token";
 import { checkGnotPath } from "@utils/common";
 import { makeRouteUrl } from "@utils/page.utils";
 
@@ -26,7 +26,7 @@ const PoolIncentivize: React.FC = () => {
   const poolPath = router.getPoolPath() || "::";
   const [tokenAPath, tokenBPath, fee] = poolPath.split(":");
   const { getGnotPath } = useGnotToGnot();
-  const { tokens } = useTokenData();
+  const { data: { tokens = [] } = {} } = useGetTokens(true);
 
   const { isLoading } = useLoading();
 
@@ -41,7 +41,7 @@ const PoolIncentivize: React.FC = () => {
       base.push({
         title:
           breakpoint === DEVICE_TYPE.WEB || breakpoint === DEVICE_TYPE.MEDIUM_WEB
-            ? `${getGnotPath(tokenA).symbol}/${getGnotPath(tokenB).symbol} (${Number(fee) / 10000}%)`
+            ? `${getGnotPath(tokenA).displaySymbol}/${getGnotPath(tokenB).displaySymbol} (${Number(fee) / 10000}%)`
             : "...",
         path: makeRouteUrl(PAGE_PATH.POOL, {
           [QUERY_PARAMETER.POOL_PATH]: poolPath,
@@ -52,7 +52,7 @@ const PoolIncentivize: React.FC = () => {
     base.push({ title: t("business:pageHeader.incentivzePool"), path: "" });
 
     return base;
-  }, [tokenAPath, tokenBPath, breakpoint, hasDedicatedPool]);
+  }, [breakpoint, fee, getGnotPath, hasDedicatedPool, poolPath, t, tokenAPath, tokenBPath, tokens]);
 
   return (
     <PoolIncentivizeLayout

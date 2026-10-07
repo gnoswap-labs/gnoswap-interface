@@ -5,7 +5,7 @@ import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 import { QUERY_KEY } from "../query-keys";
 
-const REFETCH_INTERVAL = 10_000;
+const REFETCH_INTERVAL = 5_000;
 
 export const useGetChainInfo = (options?: UseQueryOptions<IChainResponse, Error>) => {
   const { tokenRepository } = useGnoswapContext();

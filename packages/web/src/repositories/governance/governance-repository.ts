@@ -1,5 +1,6 @@
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import {
+  ClaimableRewards,
   MyDelegationInfo,
   MyDelegatesInfo,
   MyUnDelegatesInfo,
@@ -68,5 +69,8 @@ export interface GovernanceRepository {
 
   sendCollectUndelegated: () => Promise<WalletResponse<{ hash: string }>>;
 
-  sendCollectReward: () => Promise<WalletResponse<{ hash: string }>>;
+  sendCollectReward: (
+    claimableGovernanceRewards: ClaimableRewards[],
+    claimableLaunchpadRewards: ClaimableRewards[],
+  ) => Promise<WalletResponse<{ hash: string }>>;
 }

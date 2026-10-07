@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { ProjectLinksObject } from "@layouts/launchpad/launchpad-detail/LaunchpadDetail";
 import { capitalize } from "@utils/string-utils";
 import { removePoolPathUrl } from "@utils/launchpad-remove-pool-path-url";
+import { getSafeExternalUrl } from "@utils/url-utils";
 
 import { wrapper } from "./LaunchpadAboutProjectLinks.styles";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
@@ -24,21 +25,26 @@ const LaunchpadAboutProjectLinks: React.FC<LaunchpadAboutProjectLinksProps> = ({
   const { getRealmUrl } = useGnoscanUrl();
   const poolPath = removePoolPathUrl(path);
 
-  const renderLinkButton = (link: string, value: string) => (
-    <Link key={link} href={value} target="_blank">
-      <button>
-        <span>{link === "twitter" ? "X" : capitalize(link)}</span>
-        <IconOpenLink className="link-icon" />
-      </button>
-    </Link>
-  );
+  const renderLinkButton = (link: string, value: string) => {
+    const safeUrl = getSafeExternalUrl(value);
+    if (!safeUrl) return null;
+
+    return (
+      <Link key={link} href={safeUrl} target="_blank" rel="noopener noreferrer">
+        <button>
+          <span>{link === "twitter" ? "X" : capitalize(link)}</span>
+          <IconOpenLink className="link-icon" />
+        </button>
+      </Link>
+    );
+  };
 
   return (
     <div css={wrapper}>
       <div className="contract-path">
         <h3>{t("Launchpad:aboutProject.realmPath")}</h3>
         {!isLoading && (
-          <Link href={getRealmUrl(poolPath)} target="_blank">
+          <Link href={getRealmUrl(poolPath)} target="_blank" rel="noopener noreferrer">
             <button>
               <span>{path.replace(/:\d+/g, "")}</span>
               <div className="icon-wrapper">

@@ -21,14 +21,14 @@ const formatDashboardPrice = (price?: string, unit?: string) => {
 const DashboardInfoContainer: React.FC = () => {
   const { breakpoint } = useWindowSize();
   const { isLoading: isLoadingCommon } = useLoading();
-
   const { data: dashboardTokenData, isFetched: isFetchedDashboardToken } = useGetDashboardToken();
-  const convertedDashboardTokenData = React.useMemo(() => {
-    return ExploreDashboardConverter.convertDashboardToken(dashboardTokenData);
-  }, [dashboardTokenData]);
 
   const { data: governanceOverview = null, isFetched: isFetchedGovernanceOverview } =
     useGetDashboardGovernanceOverview();
+
+  const convertedDashboardTokenData = React.useMemo(() => {
+    return ExploreDashboardConverter.convertDashboardToken(dashboardTokenData);
+  }, [dashboardTokenData]);
 
   const convertedGovernanceOverview = React.useMemo(() => {
     return ExploreDashboardConverter.convertGovernanceOverview(governanceOverview);
@@ -45,7 +45,7 @@ const DashboardInfoContainer: React.FC = () => {
   const progressBar = useMemo(() => {
     if (!convertedDashboardTokenData) return "0%";
     const circSupply = Number(convertedDashboardTokenData?.gnsCirculatingSupply);
-    const totalSupply = Number(convertedDashboardTokenData?.gnsTotalSupply);
+    const totalSupply = Number(convertedDashboardTokenData?.gnsMaxSupply);
     if (totalSupply === 0) return "0%";
     const percent = Math.min((circSupply / totalSupply) * 100, 100);
     return `${percent}%`;
@@ -69,7 +69,7 @@ const DashboardInfoContainer: React.FC = () => {
     };
 
     const circulatingSupply = convertedDashboardTokenData.gnsCirculatingSupply;
-    const totalSupply = convertedDashboardTokenData.gnsTotalSupply;
+    const totalSupply = convertedDashboardTokenData.gnsMaxSupply;
     const totalStaked = Number(convertedDashboardTokenData.gnsTotalStaked);
     const dailyBlockEmissions = Number(convertedDashboardTokenData.gnsDailyBlockEmissions);
 
@@ -99,7 +99,7 @@ const DashboardInfoContainer: React.FC = () => {
         community: formatOtherPrice(Math.floor(emissionDistribution.community), { isKMB: false, usd: false }),
       },
     };
-  }, [dashboardTokenData, progressBar, stakingRatio]);
+  }, [convertedDashboardTokenData, progressBar, stakingRatio]);
 
   const governanceOverviewInfo = useMemo(() => {
     if (!convertedGovernanceOverview) {
@@ -107,7 +107,7 @@ const DashboardInfoContainer: React.FC = () => {
     }
 
     return {
-      totalDelegated: `${numberToFormat(convertedGovernanceOverview.totalDelegated)} ${XGNS_TOKEN.symbol}`,
+      totalDelegated: `${numberToFormat(convertedGovernanceOverview.xgnsTotalSupply)} ${XGNS_TOKEN.symbol}`,
       holders: `${numberToFormat(convertedGovernanceOverview.holders)}`,
       passedCount: `${numberToFormat(convertedGovernanceOverview.passedCount)}`,
       activeCount: `${numberToFormat(convertedGovernanceOverview.activeCount)} `,

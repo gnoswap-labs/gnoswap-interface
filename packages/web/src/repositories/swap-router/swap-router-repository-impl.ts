@@ -2,22 +2,23 @@ import BigNumber from "bignumber.js";
 
 import { NetworkClient } from "@common/clients/network-client";
 import { WalletClient } from "@common/clients/wallet-client";
-import { WalletResponse } from "@common/clients/wallet-client/protocols";
+import { TransactionMessage, WalletResponse } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { SwapError } from "@common/errors/swap";
 import { PACKAGE_ROUTER_PATH } from "@constants/environment.constant";
-import { checkGnotPath } from "@utils/common";
 import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
+import { getSwapTokenPath } from "@utils/swap-route-utils";
 
 import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { drySwap } from "@common/clients/gno-provider/methods/dry-swap";
 import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
 import { GnoProvider } from "@gnolang/gno-js-client";
+import { generateSendTransactionParams, withTransactionGuard } from "@utils/transaction-utils";
 import { GetRoutesRequest } from "./request/get-routes-request";
-import { DrySwapRequest, SwapRouteRequest } from "./request/swap-route-request";
+import { DrySwapRequest, SwapRouteMessagesRequest, SwapRouteRequest } from "./request/swap-route-request";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
-import { WrapTokenRequest } from "./request/wrap-token-request";
+import { WrapTokenMessagesRequest, WrapTokenRequest } from "./request/wrap-token-request";
 import { GetRoutesResponse } from "./response/get-routes-response";
 import { SwapRouteFailedResponse, SwapRouteSuccessResponse } from "./response/swap-route-response";
 import { SwapRouterRepository } from "./swap-router-repository";
@@ -27,7 +28,6 @@ import {
   makeUnwrapTokenMessages,
   makeWrapTokenMessages,
 } from "./swap-router.message";
-import { generateSendTransactionParams, withTransactionGuard } from "@utils/transaction-utils";
 
 export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   private rpcProvider: GnoProvider | null;
@@ -51,13 +51,13 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
       throw new SwapError("INVALID_PARAMS");
     }
 
-    const inputTokenPath = checkGnotPath(inputToken.path);
-    const outputTokenPath = checkGnotPath(outputToken.path);
+    const inputTokenPath = getSwapTokenPath(inputToken);
+    const outputTokenPath = getSwapTokenPath(outputToken);
 
     const tokenAmountRaw =
       exactType === "EXACT_IN"
         ? makeRawTokenAmount(inputToken, tokenAmount)
-        : makeRawTokenAmount(inputToken, tokenAmount);
+        : makeRawTokenAmount(outputToken, tokenAmount);
 
     const response = await this.networkClient.post<
       {
@@ -105,23 +105,38 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     return Number(gasUsed);
   }
 
-  public sendExactInSwapRoute = async (
-    request: SwapRouteRequest,
-  ): Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>> => {
+  public makeExactInSwapRouteMessages = async (request: SwapRouteMessagesRequest): Promise<TransactionMessage[]> => {
     if (this.rpcProvider === null) {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }
 
     const address = await this.getAddress();
 
-    await this.validateAndGetDrySwap(request, "EXACT_IN");
-
-    const { gasFee, gasUsed, ...requests } = request;
-
-    const messages = await makeExactInSwapRouteMessageWithApproves(
-      { ...requests, caller: address },
+    return makeExactInSwapRouteMessageWithApproves(
+      { ...request, caller: address },
       (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
+  };
+
+  public makeExactOutSwapRouteMessages = async (request: SwapRouteMessagesRequest): Promise<TransactionMessage[]> => {
+    if (this.rpcProvider === null) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
+    const address = await this.getAddress();
+
+    return makeExactOutSwapRouteMessageWithApproves(
+      { ...request, caller: address },
+      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    );
+  };
+
+  public sendExactInSwapRoute = async (
+    request: SwapRouteRequest,
+  ): Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>> => {
+    const { gasFee, gasUsed, ...requests } = request;
+
+    const messages = await this.makeExactInSwapRouteMessages(requests);
 
     const gasWanted = this.calculateGasWanted(Number(gasUsed));
 
@@ -140,20 +155,9 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   public sendExactOutSwapRoute = async (
     request: SwapRouteRequest,
   ): Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse>> => {
-    if (this.rpcProvider === null) {
-      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
-    }
-
-    const address = await this.getAddress();
-
-    await this.validateAndGetDrySwap(request, "EXACT_OUT");
-
     const { gasFee, gasUsed, ...requests } = request;
 
-    const messages = await makeExactOutSwapRouteMessageWithApproves(
-      { ...requests, caller: address },
-      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
-    );
+    const messages = await this.makeExactOutSwapRouteMessages(requests);
 
     const gasWanted = this.calculateGasWanted(Number(gasUsed));
 
@@ -169,12 +173,16 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     });
   };
 
-  public sendWrapToken = async (request: WrapTokenRequest): Promise<WalletResponse<{ hash: string }>> => {
+  public makeWrapTokenMessages = async (request: WrapTokenMessagesRequest): Promise<TransactionMessage[]> => {
     const address = await this.getAddress();
 
+    return makeWrapTokenMessages({ ...request, caller: address });
+  };
+
+  public sendWrapToken = async (request: WrapTokenRequest): Promise<WalletResponse<{ hash: string }>> => {
     const { gasFee, gasUsed, ...requests } = request;
 
-    const messages = makeWrapTokenMessages({ ...requests, caller: address });
+    const messages = await this.makeWrapTokenMessages(requests);
 
     const gasWanted = this.calculateGasWanted(Number(gasUsed));
 
@@ -240,6 +248,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     return address;
   }
 
+  // Kept for reuse: the swap flow no longer runs this check before broadcasting.
   private async validateAndGetDrySwap(request: SwapRouteRequest, exactType: "EXACT_IN" | "EXACT_OUT"): Promise<number> {
     const drySwapRequest: DrySwapRequest = {
       inputToken: request.inputToken,

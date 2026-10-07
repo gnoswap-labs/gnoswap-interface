@@ -179,5 +179,10 @@
     }
   },
   "swapUrlCopied": "Обменяйтесь скопированными URL!",
+  "tokenList": {
+    "showUnverifiedTokens": "Показать непроверенные токены",
+    "unverifiedTokensTooltip": "Токены, не зарегистрированные в разделе «Ресурсы токенов» на Gno.land, отфильтровываются.",
+    "verifyToken": "Подтвердите свой токен"
+  },
   "urlCopied": "URL скопирован!"
 }

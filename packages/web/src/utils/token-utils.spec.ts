@@ -1,11 +1,18 @@
+import { GNOT_TOKEN } from "@common/values/token-constant";
 import { TokenModel } from "@models/token/token-model";
+import { swapExtensions } from "@resources/swap-extension";
 import {
+  formatDisplayTokenName,
+  formatDisplayTokenSymbol,
+  formatTokenBalanceDisplay,
+  formatTokenModelPath,
+  formatTokenPath,
+  isAmountLessThanTokenMinimum,
+  isNativeTokenPath,
   makeDisplayTokenAmount,
   makeRawTokenAmount,
-  formatTokenBalanceDisplay,
-  isNativeTokenPath,
+  withTokenRouteMetadata,
 } from "./token-utils";
-import { GNOT_TOKEN } from "@common/values/token-constant";
 
 const DEFAULT_TOKEN: TokenModel = {
   decimals: 6,
@@ -16,9 +23,67 @@ const DEFAULT_TOKEN: TokenModel = {
   chainId: "",
   name: "",
   symbol: "",
+  displaySymbol: "",
   logoURI: "",
   createdAt: "",
 };
+
+
+describe("withTokenRouteMetadata", () => {
+  it("uses metadata from the token matching the wrapped transaction path", () => {
+    const nativeToken: TokenModel = {
+      ...DEFAULT_TOKEN,
+      path: "ugnot",
+      type: "Native",
+      wrappedPath: "wugnot",
+    };
+    const wrappedToken: TokenModel = {
+      ...DEFAULT_TOKEN,
+      path: "wugnot",
+      pkgPath: "wugnot_package",
+      routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
+    };
+
+    expect(withTokenRouteMetadata(nativeToken, [wrappedToken])).toEqual({
+      ...nativeToken,
+      pkgPath: wrappedToken.pkgPath,
+      routes: wrappedToken.routes,
+    });
+  });
+});
+
+describe("format display token symbol", () => {
+  it("should keep token symbols with 9 or fewer characters", () => {
+    expect(formatDisplayTokenSymbol("GNOT")).toBe("GNOT");
+    expect(formatDisplayTokenSymbol("123456789")).toBe("123456789");
+  });
+
+  it("should shorten token symbols longer than 9 characters", () => {
+    expect(formatDisplayTokenSymbol("1234567890")).toBe("123456789...");
+    expect(formatDisplayTokenSymbol("ibc/488D610A5FB7878660703092A35BC4E7D0C88E2EA71174337AA317A22C05177F")).toBe(
+      "ibc/488D6...",
+    );
+  });
+
+  it("uses extension metadata for a wrapped token display symbol", () => {
+    const extension = swapExtensions[0];
+
+    expect(formatDisplayTokenSymbol("BUBBLE", extension.grc20WrappedTokenPath)).toBe("wBUBBLE");
+    expect(formatDisplayTokenSymbol("BUBBLE", extension.originTokenPath)).toBe("BUBBLE");
+  });
+});
+
+describe("format display token name", () => {
+  it("should keep token names with 9 or fewer characters", () => {
+    expect(formatDisplayTokenName("FOOTBALL")).toBe("FOOTBALL");
+    expect(formatDisplayTokenName("123456789")).toBe("123456789");
+  });
+
+  it("should shorten long token names and remove a trailing cut-space", () => {
+    expect(formatDisplayTokenName("FOOTBALL WORLD CUB")).toBe("FOOTBALL...");
+    expect(formatDisplayTokenName("1234567890")).toBe("123456789...");
+  });
+});
 
 describe("make token raw price", () => {
   test("1 to 1000000", () => {
@@ -49,6 +114,15 @@ describe("make token raw price", () => {
     const amount = 0.123456789;
     const result = makeRawTokenAmount(token, amount);
     expect(result).toBe("123456");
+  });
+
+  test("1.23 to 123000000 with 8 decimals", () => {
+    const token = {
+      ...DEFAULT_TOKEN,
+      decimals: 8,
+    };
+    const result = makeRawTokenAmount(token, 1.23);
+    expect(result).toBe("123000000");
   });
 });
 
@@ -81,6 +155,58 @@ describe("make token display price", () => {
     const amount = "1";
     const result = makeDisplayTokenAmount(token, amount);
     expect(result).toBe(0.000001);
+  });
+
+  test("123000000 to 1.23 with 8 decimals", () => {
+    const token = {
+      ...DEFAULT_TOKEN,
+      decimals: 8,
+    };
+    const result = makeDisplayTokenAmount(token, "123000000");
+    expect(result).toBe(1.23);
+  });
+});
+
+describe("is amount less than token minimum", () => {
+  test("uses 6-decimal minimum display amount", () => {
+    const token = {
+      ...DEFAULT_TOKEN,
+      decimals: 6,
+    };
+
+    expect(isAmountLessThanTokenMinimum(token, "0.0000009")).toBe(true);
+    expect(isAmountLessThanTokenMinimum(token, "0.000001")).toBe(false);
+  });
+
+  test("uses 8-decimal minimum display amount", () => {
+    const token = {
+      ...DEFAULT_TOKEN,
+      decimals: 8,
+    };
+
+    expect(isAmountLessThanTokenMinimum(token, "0.000000009")).toBe(true);
+    expect(isAmountLessThanTokenMinimum(token, "0.00000001")).toBe(false);
+  });
+
+  test("uses integer minimum for 0-decimal tokens", () => {
+    const token = {
+      ...DEFAULT_TOKEN,
+      decimals: 0,
+    };
+
+    expect(isAmountLessThanTokenMinimum(token, "0.9")).toBe(true);
+    expect(isAmountLessThanTokenMinimum(token, "1")).toBe(false);
+  });
+
+  test("does not treat empty, zero, or invalid input as below minimum", () => {
+    const token = {
+      ...DEFAULT_TOKEN,
+      decimals: 6,
+    };
+
+    expect(isAmountLessThanTokenMinimum(token, "")).toBe(false);
+    expect(isAmountLessThanTokenMinimum(token, "0")).toBe(false);
+    expect(isAmountLessThanTokenMinimum(token, "abc")).toBe(false);
   });
 });
 
@@ -153,9 +279,31 @@ describe("format token balance display", () => {
   });
 });
 
+describe("format token path", () => {
+  it("should keep non-native token paths unshortened after removing gno.land prefix", () => {
+    expect(formatTokenPath("gno.land/r/gnoswap/gns", false)).toBe("r/gnoswap/gns");
+    expect(formatTokenPath("ibc/488D610A5FB7878660703092A35BC4E7D0C88E2EA71174337AA317A22C05177F", false)).toBe(
+      "ibc/488D610A5FB7878660703092A35BC4E7D0C88E2EA71174337AA317A22C05177F",
+    );
+  });
+
+  it("should keep native token path display unchanged", () => {
+    expect(formatTokenPath(GNOT_TOKEN.path, true)).toBe("Native Coin");
+  });
+
+  it("should keep token model paths unshortened", () => {
+    expect(
+      formatTokenModelPath({
+        ...DEFAULT_TOKEN,
+        path: "ibc/488D610A5FB7878660703092A35BC4E7D0C88E2EA71174337AA317A22C05177F",
+      }),
+    ).toBe("ibc/488D610A5FB7878660703092A35BC4E7D0C88E2EA71174337AA317A22C05177F");
+  });
+});
+
 describe("isNativeTokenPath", () => {
   it("should return true for native token (GNOT)", () => {
-    expect(isNativeTokenPath(GNOT_TOKEN)).toBe(true);
+    expect(isNativeTokenPath(GNOT_TOKEN.path)).toBe(true);
   });
 
   it("should return false for non-native tokens", () => {
@@ -163,7 +311,7 @@ describe("isNativeTokenPath", () => {
       ...DEFAULT_TOKEN,
       path: "gno.land/r/demo/token",
     };
-    expect(isNativeTokenPath(token)).toBe(false);
+    expect(isNativeTokenPath(token.path)).toBe(false);
   });
 
   it("should return false for empty path", () => {
@@ -171,7 +319,7 @@ describe("isNativeTokenPath", () => {
       ...DEFAULT_TOKEN,
       path: "",
     };
-    expect(isNativeTokenPath(token)).toBe(false);
+    expect(isNativeTokenPath(token.path)).toBe(false);
   });
 
   it("should return false for similar but not identical path", () => {
@@ -179,22 +327,10 @@ describe("isNativeTokenPath", () => {
       ...DEFAULT_TOKEN,
       path: GNOT_TOKEN.path + "/extra",
     };
-    expect(isNativeTokenPath(token)).toBe(false);
+    expect(isNativeTokenPath(token.path)).toBe(false);
   });
 
   it("should return false for path null", () => {
-    const token = {
-      ...DEFAULT_TOKEN,
-      path: null,
-    };
-    expect(isNativeTokenPath(token)).toBe(false);
-  });
-
-  it("should return false for path undefined", () => {
-    const token = {
-      ...DEFAULT_TOKEN,
-      path: undefined,
-    };
-    expect(isNativeTokenPath(token)).toBe(false);
+    expect(isNativeTokenPath("")).toBe(false);
   });
 });

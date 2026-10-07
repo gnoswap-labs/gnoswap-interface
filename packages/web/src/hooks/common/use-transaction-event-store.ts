@@ -1,8 +1,20 @@
-import React from "react";
 import { DexEventType } from "@repositories/common";
+import React from "react";
+import axios from "axios";
 
+import { GNOT_TOKEN } from "@common/values/token-constant";
+import type { IGrc20TransferHistoryResponse } from "@repositories/token/response/balance-by-address-response";
+import type { PositionModel } from "@models/position/position-model";
+import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
+import { PAGE_PATH } from "@constants/page.constant";
+import { useWrap } from "@hooks/swap/data/use-wrap";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetNotifications } from "@query/common";
-import { makeRandomId } from "@utils/common";
+import { delay, makeRandomId } from "@utils/common";
+import { formatRate } from "@utils/new-number-utils";
+import { makeDisplayTokenAmount } from "@utils/token-utils";
+import BigNumber from "bignumber.js";
+import useCustomRouter from "./use-custom-router";
 import { useGnoswapContext } from "./use-gnoswap-context";
 import { useMessage } from "./use-message";
 import { SnackbarOptions, SnackbarType, useSnackbar } from "./use-snackbar";
@@ -10,6 +22,25 @@ import { SnackbarOptions, SnackbarType, useSnackbar } from "./use-snackbar";
 const DEFAULT_SNACKBAR_TIMEOUT = 3_000;
 const TX_RESULT_SNACKBAR_TIMEOUT = 4_000;
 const UPDATING_SNACKBAR_TIMEOUT = 60_000;
+const BADGE_SNACKBAR_TIMEOUT = 0;
+const WUGNOT_CHANGE_THRESHOLD = 10000;
+// The activity API caches empty transfer projections for one second after a block is emitted.
+const WUGNOT_TRANSFER_RETRY_INTERVAL = 1_200;
+const WUGNOT_TRANSFER_RETRY_DEADLINE = 8_000;
+
+function waitForWugnotRetry(signal: AbortSignal): Promise<void> {
+  const { promise, resolve } = Promise.withResolvers<void>();
+  const timer = setTimeout(() => {
+    signal.removeEventListener("abort", onAbort);
+    resolve();
+  }, WUGNOT_TRANSFER_RETRY_INTERVAL);
+  function onAbort() {
+    clearTimeout(timer);
+    resolve();
+  }
+  signal.addEventListener("abort", onAbort, { once: true });
+  return promise;
+}
 
 function makeSnackbarConfig(type: SnackbarType, timeout = DEFAULT_SNACKBAR_TIMEOUT): SnackbarOptions {
   return {
@@ -21,19 +52,27 @@ function makeSnackbarConfig(type: SnackbarType, timeout = DEFAULT_SNACKBAR_TIMEO
 }
 
 export const useTransactionEventStore = () => {
-  const { eventStore } = useGnoswapContext();
-  const { enqueue, dequeue, change } = useSnackbar();
-  const { getMessage } = useMessage();
+  const { account } = useWallet();
+  const { eventStore, tokenRepository, poolRepository, positionRepository } = useGnoswapContext();
+  const { hasBadgeSnackbar, enqueue, dequeue, change } = useSnackbar();
+  const router = useCustomRouter();
+  const { fetchWugnotBalance, unwrapAll } = useWrap();
+  const { getMessage, getReceiveWugnotMessage, getStakePositionMessage } = useMessage();
   const { refetch: refetchNotifications } = useGetNotifications();
 
   // ref to track the active timer
   const activeTimersRef = React.useRef<Map<number, NodeJS.Timeout>>(new Map());
+  const activeTransferChecksRef = React.useRef<Set<AbortController>>(new Set());
 
   // Clean up all timers when unmounting components
   React.useEffect(() => {
+    const timers = activeTimersRef.current;
+    const transferChecks = activeTransferChecksRef.current;
     return () => {
-      activeTimersRef.current.forEach(timer => clearTimeout(timer));
-      activeTimersRef.current.clear();
+      timers.forEach(timer => clearTimeout(timer));
+      transferChecks.forEach(controller => controller.abort());
+      transferChecks.clear();
+      timers.clear();
     };
   }, []);
 
@@ -61,6 +100,8 @@ export const useTransactionEventStore = () => {
     txHash,
     action,
     visibleEmitResult = false,
+    checkWugnotTransfer = false,
+    checkStakePosition = false,
     formatData = () => ({}),
     onUpdate = async () => {},
     onEmit,
@@ -69,6 +110,8 @@ export const useTransactionEventStore = () => {
     txHash?: string;
     action: DexEventType;
     visibleEmitResult?: boolean;
+    checkWugnotTransfer?: boolean;
+    checkStakePosition?: boolean;
     formatData?: (result: string[] | null) => {
       tokenASymbol?: string;
       tokenBSymbol?: string;
@@ -85,11 +128,14 @@ export const useTransactionEventStore = () => {
     }
 
     const pendingSnackbarConfig = makeSnackbarConfig("pending");
-    enqueue(undefined, pendingSnackbarConfig);
+    enqueue({ txHash }, pendingSnackbarConfig);
 
     const updatingSnackbarConfig = makeSnackbarConfig("updating", UPDATING_SNACKBAR_TIMEOUT);
+    const receiveWugnotSnackbarConfig = makeSnackbarConfig("receive-wugnot", BADGE_SNACKBAR_TIMEOUT);
+    const stakePositionSnackbarConfig = makeSnackbarConfig("stake-position", BADGE_SNACKBAR_TIMEOUT);
     let updatingSnackbarEnqueued = false;
     let alreadyEmitted = false;
+    let wugnotCheckStarted = false;
 
     eventStore.addEvent(
       txHash,
@@ -123,7 +169,7 @@ export const useTransactionEventStore = () => {
           }, TX_RESULT_SNACKBAR_TIMEOUT);
         }
       },
-      async () => {
+      async event => {
         console.log("emitted event");
         alreadyEmitted = true;
         onEmitCommon();
@@ -139,8 +185,153 @@ export const useTransactionEventStore = () => {
           // If a timer was previously set, cancel it and set a new one
           safeSetTimeout(() => dequeue(updatingSnackbarConfig.id), DEFAULT_SNACKBAR_TIMEOUT, updatingSnackbarConfig.id);
         }
+
+        // An open receive badge still needs its balance refreshed after each successful swap.
+        if (checkWugnotTransfer && account && event.status === "SUCCESS" && !wugnotCheckStarted) {
+          wugnotCheckStarted = true;
+          const controller = new AbortController();
+          activeTransferChecksRef.current.add(controller);
+          void enqueueWugnotChangeEvent(txHash, account.address, receiveWugnotSnackbarConfig, controller.signal)
+            .catch(console.error)
+            .finally(() => activeTransferChecksRef.current.delete(controller));
+        }
+
+        if (checkStakePosition && account && !hasBadgeSnackbar && event.status === "SUCCESS" && event.data) {
+          const positionMintResponseSize = 4;
+          if (event.data.length < positionMintResponseSize) {
+            return;
+          }
+
+          const positionId = event.data[event.data.length - positionMintResponseSize];
+
+          // Indexing can lag behind the block; do not block other transaction events while polling.
+          void enqueueStakePositionEvent(positionId, stakePositionSnackbarConfig).catch(console.error);
+        }
       },
     );
+  }
+
+  async function enqueueWugnotChangeEvent(
+    txHash: string,
+    address: string,
+    config: SnackbarOptions,
+    signal: AbortSignal,
+  ) {
+    const deadline = Date.now() + WUGNOT_TRANSFER_RETRY_DEADLINE;
+    let transferHistory: IGrc20TransferHistoryResponse["data"] = [];
+    while (!signal.aborted) {
+      try {
+        transferHistory = (await tokenRepository.getGrc20TransferHistoryByTxHash(txHash, WRAPPED_GNOT_PATH)).data;
+      } catch (error) {
+        console.error(error);
+        return;
+      }
+
+      if (signal.aborted) return;
+      if (transferHistory.length > 0) break;
+      // Only retry an empty projection, and never start a request at or past the deadline.
+      if (deadline - Date.now() < WUGNOT_TRANSFER_RETRY_INTERVAL) return;
+      await waitForWugnotRetry(signal);
+    }
+    if (signal.aborted) return;
+
+    const wugnotChange = transferHistory.reduce((acc, history): BigNumber => {
+      const amount = new BigNumber(history.tokenAmount);
+
+      if (address === history.fromAddress) {
+        return acc.minus(amount);
+      }
+
+      if (address === history.toAddress) {
+        return acc.plus(amount);
+      }
+
+      return acc;
+    }, BigNumber(0));
+
+    if (wugnotChange.isLessThan(WUGNOT_CHANGE_THRESHOLD)) {
+      return;
+    }
+
+    while (!signal.aborted) {
+      const wugnotBalance = await fetchWugnotBalance();
+      if (signal.aborted) return;
+
+      const balance = new BigNumber(wugnotBalance);
+      if (balance.isFinite() && balance.isGreaterThan(0)) {
+        const tokenAAmount = (makeDisplayTokenAmount(GNOT_TOKEN, wugnotBalance) || 0).toLocaleString("en-US", {
+          maximumFractionDigits: GNOT_TOKEN.decimals,
+        });
+        enqueue(
+          getReceiveWugnotMessage(txHash, tokenAAmount, () => unwrapAll()),
+          config,
+        );
+        return;
+      }
+
+      // The transfer projection can precede the wallet balance; never display a stale zero.
+      if (deadline - Date.now() < WUGNOT_TRANSFER_RETRY_INTERVAL) return;
+      await waitForWugnotRetry(signal);
+    }
+  }
+
+  async function enqueueStakePositionEvent(positionId: string, config: SnackbarOptions) {
+    const deadline = Date.now() + 8_000;
+    let retryDelay = 500;
+    let position: PositionModel | null = null;
+    while (true) {
+      const remaining = deadline - Date.now();
+      if (remaining <= 0) break;
+      try {
+        position = await positionRepository.getPositionById(positionId, remaining);
+      } catch (error) {
+        if (
+          !axios.isAxiosError(error) ||
+          (error.response && error.response.status !== 404 && error.response.status < 500)
+        ) {
+          console.error(error);
+          return;
+        }
+      }
+
+      if (position?.tokenUri) break;
+      const waitRemaining = deadline - Date.now();
+      if (waitRemaining <= 0) break;
+      await delay(Math.min(retryDelay, waitRemaining));
+      retryDelay *= 2;
+    }
+    if (!position) return;
+
+    const poolPath = position.poolPath;
+    const positionLogoUrl = position.tokenUri;
+    const pool = await poolRepository.getPoolDetailByPoolPath(poolPath).catch(e => {
+      console.error(e);
+      return null;
+    });
+    if (!pool) {
+      return;
+    }
+
+    // Only enqueue staking guidance for pools that actually have a staking incentive.
+    const hasStakingIncentive = pool.incentivized || (pool.rewardTokens && pool.rewardTokens.length > 0);
+    if (!hasStakingIncentive) {
+      return;
+    }
+
+    const apr = (() => {
+      if (!pool.stakingApr) return "-";
+      if (!Number(pool.stakingApr)) return "0%";
+
+      return formatRate(pool.stakingApr);
+    })();
+
+    const onClick = () => {
+      router.push(`${PAGE_PATH.POOL_STAKE}?poolPath=${poolPath}&positionId=${positionId}`);
+    };
+    const onClickLink = () => {
+      router.push(`${PAGE_PATH.POOL}?poolPath=${poolPath}#staking`);
+    };
+    enqueue(getStakePositionMessage(positionId, apr, positionLogoUrl, onClick, onClickLink), config);
   }
 
   return { enqueueEvent };

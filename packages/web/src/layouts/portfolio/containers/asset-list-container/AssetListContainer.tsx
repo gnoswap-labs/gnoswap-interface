@@ -9,7 +9,6 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
@@ -17,6 +16,8 @@ import { useGetAvgBlockTime } from "@query/address";
 import { useGetTokens } from "@query/token";
 import { checkGnotPath } from "@utils/common";
 import { formatPoolPairAmount, formatPrice } from "@utils/new-number-utils";
+import { makeRawTokenAmount } from "@utils/token-utils";
+import { keepVerified } from "@utils/token-verification-filter";
 import { isEmptyObject } from "@utils/validation-utils";
 
 import useSendAsset from "@hooks/wallet/data/useSendAsset";
@@ -31,13 +32,6 @@ export const ASSET_TYPE = {
 } as const;
 
 export type ASSET_TYPE = ValuesType<typeof ASSET_TYPE>;
-
-function filterZeroBalance(asset: Asset) {
-  if (asset?.balance === "-") return false;
-
-  const balance = BigNumber(asset?.balance?.toString().replace(/,/g, "") ?? 0);
-  return balance.isGreaterThan(0);
-}
 
 function filterType(asset: Asset, type: ASSET_FILTER_TYPE) {
   if (type === "All") return true;
@@ -58,6 +52,7 @@ const DEPOSIT_INFO: TokenModel = {
   path: "gno.land/r/gns",
   decimals: 4,
   symbol: "ATOM",
+  displaySymbol: "ATOM",
   logoURI: "/atom.svg",
   type: "GRC20",
   priceID: "gno.land/r/gns",
@@ -76,11 +71,14 @@ const AssetListContainer: React.FC = () => {
 
   const [address] = useState("");
   const [assetType, setAssetType] = useState<ASSET_FILTER_TYPE>(ASSET_FILTER_TYPE.ALL);
-  const [invisibleZeroBalance, setInvisibleZeroBalance] = useState(false);
+  const [showUnverifiedTokens, setShowUnverifiedTokens] = useState(false);
   const [keyword, setKeyword] = useState("");
   const [extended, setExtened] = useState(true);
   const [hasLoader] = useState(false);
-  const [sortOption, setTokenSortOption] = useState<AssetSortOption>();
+  const [sortOption, setTokenSortOption] = useState<AssetSortOption>({
+    key: ASSET_HEAD.BALANCE,
+    direction: "desc",
+  });
   const { breakpoint } = useWindowSize();
   const [searchIcon, setSearchIcon] = useState(false);
   const [componentRef, isClickOutside, setIsInside] = useClickOutside();
@@ -90,14 +88,9 @@ const AssetListContainer: React.FC = () => {
   const [withdrawInfo, setWithDrawInfo] = useState<TokenModel>(DEPOSIT_INFO);
   const { isLoadingTokens } = useLoading();
   const { data: blockTimeData } = useGetAvgBlockTime();
-  const { data: { tokens = [] } = {} } = useGetTokens();
-  const { loading: loadingPositions } = usePositionData({
-    isClosed: false,
-  });
+  const { data: { tokens = [] } = {} } = useGetTokens(showUnverifiedTokens);
 
   const [sendAssetAmount, setSendAssetAmount] = useState("");
-
-  const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);
 
   const changeTokenDeposit = useCallback((token: TokenModel) => {
     setDepositInfo(token);
@@ -122,24 +115,14 @@ const AssetListContainer: React.FC = () => {
     }
   }, [isClickOutside, keyword]);
 
-  const { displayBalanceMap, balances, tokenPrices, isFetched, updateBalances } = useTokenData();
+  const { displayBalanceMap, balances, tokenPrices, hasBalanceData, hasTokenPriceData, isFetched, updateBalances } =
+    useTokenData(showUnverifiedTokens);
 
   useEffect(() => {
     const interval = setInterval(() => {
       updateBalances();
     }, 60000);
     return () => clearInterval(interval);
-  }, [tokens]);
-
-  useEffect(() => {
-    if (!tokens) return;
-
-    if (tokens?.length === 0) {
-      setTokenSortOption({
-        key: ASSET_HEAD.BALANCE,
-        direction: "desc",
-      });
-    }
   }, [tokens]);
 
   const fixedTokens: SortedProps[] = useMemo(() => {
@@ -167,28 +150,22 @@ const AssetListContainer: React.FC = () => {
       }
     }
 
-    return [gnot, wugnot, gns]
-      .map(item => {
+    return keepVerified(
+      [gnot, wugnot, gns].map(item => {
         const tokenPrice = balances[item.priceID];
 
         const price = (() => {
           if (!connected || isSwitchNetwork) {
             return "-";
           }
-
-          if (
-            !tokenPrice ||
-            Number.isNaN(tokenPrice) ||
-            !tokenPrices[checkGnotPath(item?.path)]?.usd ||
-            !balances[item.priceID]
-          ) {
-            return "$0";
-          }
+          if (!hasBalanceData || !hasTokenPriceData || tokenPrice == null || Number.isNaN(tokenPrice)) return "-";
+          if (BigNumber(tokenPrice).isZero()) return "$0";
+          if (tokenPrices[checkGnotPath(item.path)]?.usd == null) return "-";
 
           return formatPrice(
             BigNumber(tokenPrice)
               .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || 0)
-              .dividedBy(10 ** (item.decimals || 0)),
+              .dividedBy(10 ** item.decimals),
             {
               isKMB: false,
             },
@@ -196,7 +173,7 @@ const AssetListContainer: React.FC = () => {
         })();
 
         const balance = (() => {
-          if (isSwitchNetwork || !displayBalanceMap[item.path]) return "-";
+          if (isSwitchNetwork || !hasBalanceData || !displayBalanceMap[item.path]) return "-";
 
           return formatPoolPairAmount(displayBalanceMap[item.path], {
             isKMB: false,
@@ -211,20 +188,23 @@ const AssetListContainer: React.FC = () => {
           tokenPrice: tokenPrice || 0,
           sortPrice: price.toString(),
         };
-      })
-      .filter(asset => invisibleZeroBalance === false || filterZeroBalance(asset))
+      }),
+      showUnverifiedTokens,
+    )
       .filter(asset => filterKeyword(asset, keyword))
       .filter(asset => filterType(asset, assetType));
   }, [
     balances,
+    hasBalanceData,
+    hasTokenPriceData,
     displayBalanceMap,
-    invisibleZeroBalance,
     isSwitchNetwork,
     tokenPrices,
     tokens,
     keyword,
     assetType,
     connected,
+    showUnverifiedTokens,
   ]);
 
   const filteredTokens = useMemo(() => {
@@ -238,20 +218,14 @@ const AssetListContainer: React.FC = () => {
           if (!connected || isSwitchNetwork) {
             return "-";
           }
-
-          if (
-            !tokenPrice ||
-            Number.isNaN(tokenPrice) ||
-            !tokenPrices[checkGnotPath(item?.path)]?.usd ||
-            !balances[item.priceID]
-          ) {
-            return "$0";
-          }
+          if (!hasBalanceData || !hasTokenPriceData || tokenPrice == null || Number.isNaN(tokenPrice)) return "-";
+          if (BigNumber(tokenPrice).isZero()) return "$0";
+          if (tokenPrices[checkGnotPath(item.path)]?.usd == null) return "-";
 
           return formatPrice(
             BigNumber(tokenPrice)
               .multipliedBy(tokenPrices[checkGnotPath(item?.path)]?.usd || 0)
-              .dividedBy(10 ** (item.decimals || 0)),
+              .dividedBy(10 ** item.decimals),
             {
               isKMB: false,
             },
@@ -259,7 +233,7 @@ const AssetListContainer: React.FC = () => {
         })();
 
         const balance = (() => {
-          if (isSwitchNetwork || !displayBalanceMap[item.path]) return "-";
+          if (isSwitchNetwork || !hasBalanceData || !displayBalanceMap[item.path]) return "-";
 
           return formatPoolPairAmount(displayBalanceMap[item.path], {
             isKMB: false,
@@ -274,8 +248,7 @@ const AssetListContainer: React.FC = () => {
           tokenPrice: tokenPrice || 0,
           sortPrice: price.toString(),
         };
-      })
-      .filter(asset => invisibleZeroBalance === false || filterZeroBalance(asset));
+      });
 
     if (sortOption?.key === ASSET_HEAD.ASSET) {
       mappedTokens = mappedTokens.sort((x, y) => {
@@ -327,9 +300,10 @@ const AssetListContainer: React.FC = () => {
     sortOption?.direction,
     extended,
     balances,
+    hasBalanceData,
+    hasTokenPriceData,
     tokenPrices,
     displayBalanceMap,
-    invisibleZeroBalance,
     assetType,
     keyword,
     isSwitchNetwork,
@@ -349,9 +323,9 @@ const AssetListContainer: React.FC = () => {
     }
   }, []);
 
-  const toggleInvisibleZeroBalance = useCallback(() => {
-    setInvisibleZeroBalance(!invisibleZeroBalance);
-  }, [invisibleZeroBalance]);
+  const toggleShowUnverifiedTokens = useCallback(() => {
+    setShowUnverifiedTokens(!showUnverifiedTokens);
+  }, [showUnverifiedTokens]);
 
   const toggleExtended = useCallback(() => {
     setExtened(!extended);
@@ -431,7 +405,7 @@ const AssetListContainer: React.FC = () => {
         fromAddress: account.address,
         toAddress: address,
         token: withdrawInfo,
-        tokenAmount: BigNumber(amount).multipliedBy(1000000).toNumber(),
+        tokenAmount: makeRawTokenAmount(withdrawInfo, amount) || "0",
       },
       withdrawInfo.type,
     );
@@ -442,18 +416,15 @@ const AssetListContainer: React.FC = () => {
     <>
       <AssetList
         assets={[...fixedTokens, ...filteredTokens]}
-        connected={connected}
-        isFetched={
-          isFetched && !isLoadingTokens && !isLoadingPosition && !(isEmptyObject(balances) && account?.address)
-        }
+        isFetched={isFetched && !isLoadingTokens && !(isEmptyObject(balances) && account?.address)}
         assetType={assetType}
-        invisibleZeroBalance={invisibleZeroBalance}
+        showUnverifiedTokens={showUnverifiedTokens}
         keyword={keyword}
         extended={extended}
         hasLoader={hasLoader}
         changeAssetType={changeAssetType}
         search={search}
-        toggleInvisibleZeroBalance={toggleInvisibleZeroBalance}
+        toggleShowUnverifiedTokens={toggleShowUnverifiedTokens}
         toggleExtended={toggleExtended}
         deposit={deposit}
         withdraw={withdraw}

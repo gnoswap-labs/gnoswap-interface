@@ -14,6 +14,7 @@ import { TokenModel } from "@models/token/token-model";
 import { IncreaseState } from "@states/index";
 import { checkGnotPath } from "@utils/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
+import { makeDisplayPrice } from "@utils/pool-utils";
 import { getDepositAmountsByLiquidity, isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 
@@ -51,7 +52,7 @@ export const useDecreaseHandle = () => {
     type: "Custom",
   });
   const [percent, setPercent] = useState<number>(50);
-  const { tokenPrices } = useTokenData();
+  const { tokenPrices } = useTokenData(true);
 
   const { positions } = usePositionData({
     poolPath,
@@ -85,24 +86,21 @@ export const useDecreaseHandle = () => {
   const minPriceStr = useMemo(() => {
     if (!selectedPosition) return "-";
     const isEndTick = isEndTickBy(selectedPosition?.tickLower, selectedPosition?.pool.fee);
-    const minPrice = tickToPriceStr(selectedPosition?.tickLower, {
-      decimals: 40,
-      isEnd: isEndTick,
-    });
-    return `${minPrice}`;
-  }, [selectedPosition?.tickUpper, selectedPosition?.tickLower]);
+    const minPrice = tickToPriceStr(selectedPosition?.tickLower, { isEnd: isEndTick });
+    if (minPrice === "0" || minPrice === "∞") return minPrice;
+
+    return `${makeDisplayPrice(tickToPrice(selectedPosition.tickLower), selectedPosition.pool.tokenA, selectedPosition.pool.tokenB)}`;
+  }, [selectedPosition]);
 
   const maxPriceStr = useMemo(() => {
     if (!selectedPosition) return "-";
     const isEndTick = isEndTickBy(selectedPosition?.tickUpper, selectedPosition?.pool.fee);
 
-    const maxPrice = tickToPriceStr(selectedPosition?.tickUpper, {
-      decimals: 40,
-      isEnd: isEndTick,
-    });
+    const maxPrice = tickToPriceStr(selectedPosition?.tickUpper, { isEnd: isEndTick });
+    if (maxPrice === "0" || maxPrice === "∞") return maxPrice;
 
-    return maxPrice;
-  }, [selectedPosition?.tickLower, selectedPosition?.tickUpper]);
+    return `${makeDisplayPrice(tickToPrice(selectedPosition.tickUpper), selectedPosition.pool.tokenA, selectedPosition.pool.tokenB)}`;
+  }, [selectedPosition]);
 
   const fee = poolPath?.split(":")[2];
   const tokenA: TokenModel | null = useMemo(() => {
@@ -111,6 +109,7 @@ export const useDecreaseHandle = () => {
       ...selectedPosition?.pool.tokenA,
       name: getGnotPath(selectedPosition?.pool.tokenA).name,
       symbol: getGnotPath(selectedPosition?.pool.tokenA).symbol,
+      displaySymbol: getGnotPath(selectedPosition?.pool.tokenA).displaySymbol,
       logoURI: getGnotPath(selectedPosition?.pool.tokenA).logoURI,
     };
   }, [selectedPosition?.pool]);
@@ -121,6 +120,7 @@ export const useDecreaseHandle = () => {
       ...selectedPosition?.pool.tokenB,
       name: getGnotPath(selectedPosition?.pool.tokenB).name,
       symbol: getGnotPath(selectedPosition?.pool.tokenB).symbol,
+      displaySymbol: getGnotPath(selectedPosition?.pool.tokenB).displaySymbol,
       logoURI: getGnotPath(selectedPosition?.pool.tokenB).logoURI,
     };
   }, [selectedPosition?.pool]);

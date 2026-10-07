@@ -10,13 +10,11 @@ import PointComposition from "../point-composition/PointComposition";
 import UserColumn from "../user-column/UserColumn";
 import { LeaderboardUser } from "@repositories/leaderboard/response/common/types";
 import { isLeaderboardHidden } from "@utils/leaderboard-utils";
-import { numberToFormat } from "@utils/string-utils";
-import { removeTrailingZeros } from "@utils/number-utils";
+import { formatOtherPrice } from "@utils/new-number-utils";
 
-const formatUsdValue = (value: string | number) => {
+const formatUsdValue = (value: string | number | null) => {
   if (value == null || value === "") return "-";
-  const formattedValue = `$${numberToFormat(value, { decimals: 2, forceDecimals: true, truncateDecimals: true })}`;
-  return removeTrailingZeros(formattedValue);
+  return formatOtherPrice(value, { isKMB: false });
 };
 
 const LeaderboardTableRow = ({
@@ -25,12 +23,14 @@ const LeaderboardTableRow = ({
   tdWidths,
   isMobile,
   isMe = false,
+  rankOffset = 0,
 }: {
   myAddress: string | undefined;
   data: LeaderboardUser;
   tdWidths: number[];
   isMobile: boolean;
   isMe?: boolean;
+  rankOffset?: number;
 }) => {
   const Hover = isMe ? HoverSection : HoverOnBgSection;
   const TableWrapper = isMe ? WrapperHoverBackground : Wrapper;
@@ -48,10 +48,22 @@ const LeaderboardTableRow = ({
     };
   }, [data.swapFeeUsd, data.providedLiquidityFeeUsd, data.stakingRewardsUsd, data.governanceRewardsUsd]);
 
+  const displayRankNumber = React.useMemo(() => {
+    const rank = Number(data.rank);
+    if (!Number.isFinite(rank) || rank <= 0) return "-";
+    if (!rankOffset || rank > rankOffset) return rank;
+    return rank + rankOffset;
+  }, [data.rank, rankOffset]);
+
   const displayRank = React.useMemo(() => {
-    if (!data.rank) return "-";
-    return `#${data.rank}`;
-  }, [data.rank]);
+    if (displayRankNumber === "-") return displayRankNumber;
+    return `#${displayRankNumber}`;
+  }, [displayRankNumber]);
+
+  const displayUser = React.useMemo(() => {
+    if (displayRankNumber === "-" || displayRankNumber === data.rank) return data;
+    return { ...data, rank: displayRankNumber };
+  }, [data, displayRankNumber]);
 
   return (
     <TableWrapper>
@@ -59,7 +71,7 @@ const LeaderboardTableRow = ({
       <Hover style={isLeaderboardHidden(data.hiddenYn) ? { cursor: "auto" } : {}}>
         <UserColumn
           myAddress={myAddress}
-          user={data}
+          user={displayUser}
           isMe={isMe}
           tdWidth={tdWidths.at(1)}
           style={{ justifyContent: "flex-start" }}

@@ -1,7 +1,7 @@
+import { cx } from "@emotion/css";
 import { useAtom } from "jotai";
 import React, { useCallback, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { cx } from "@emotion/css";
 
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import DoubleLogo from "@components/common/double-logo/DoubleLogo";
@@ -12,12 +12,17 @@ import IconTriangleArrowUpV2 from "@components/common/icons/IconTriangleArrowUpV
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
-import { TokenInfo } from "@models/token/token-info";
-import { TokenState } from "@states/index";
-import { DEVICE_TYPE } from "@styles/media";
 import { useTokenPriceInfo } from "@hooks/token/data/use-token-price-info";
+import { TokenInfo } from "@models/token/token-info";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
+import { TokenState } from "@states/index";
+import { getSwapExtensionByOriginPath } from "@resources/swap-extension";
+import { DEVICE_TYPE } from "@styles/media";
 
+import PriceWarning from "@components/common/price-warning/PriceWarning";
+import useElementWidth from "@hooks/common/use-element-width";
+import useElementWidthList from "@hooks/common/use-element-width-list";
+import { formatTokenPath } from "@utils/token-utils";
 import {
   InputStyle,
   ModalContainer,
@@ -27,10 +32,6 @@ import {
   SearchWrapper,
   TokenInfoWrapper,
 } from "./SearchMenuModal.styles";
-import useElementWidth from "@hooks/common/use-element-width";
-import useElementWidthList from "@hooks/common/use-element-width-list";
-import { formatTokenPath } from "@utils/token-utils";
-import PriceWarning from "@components/common/price-warning/PriceWarning";
 
 interface NegativeStatusType {
   status: MATH_NEGATIVE_TYPE;
@@ -66,6 +67,11 @@ interface SearchMenuModalProps {
   popularTokens: Token[];
   recents: Token[];
 }
+const getTokenNameDisplay = (token: TokenInfo, maxLength: number) => {
+  const name = getSwapExtensionByOriginPath(token.path)?.originTokenInfo.name ?? token.name;
+  return name.length > maxLength ? `${name.slice(0, maxLength)}...` : name;
+};
+
 
 const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
   onSearchMenuToggle,
@@ -83,7 +89,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
+  const { getGnoscanUrl, getRealmUrl, getTokenUrl } = useGnoscanUrl();
   const [, setRecentsData] = useAtom(TokenState.recents);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -129,46 +135,51 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
     popularTokenKey,
   ]);
 
-  const onClickItem = (item: Token) => {
-    const current = recents.length > 0 ? [item, recents[0]] : [item];
+  const onClickItem = useCallback(
+    (item: Token) => {
+      const current = recents.length > 0 ? [item, recents[0]] : [item];
 
-    setRecentsData(
-      JSON.stringify(
-        current
-          .filter(recentToken => tokens.some(token => token.token.path === recentToken.token.path))
-          .filter((_item, index) => {
-            const _value = JSON.stringify(_item);
-            return (
-              index ===
-              current.findIndex(obj => {
-                return JSON.stringify(obj) === _value;
-              })
-            );
-          }),
-      ),
-    );
-    onSearchMenuToggle();
-    if (item.isLiquid) {
-      const poolPath = `${item.token.path}:${item?.tokenB?.path}:${
-        Number(item.fee.slice(0, item.fee.length - 1)) * 10000
-      }`;
-      movePoolPage(poolPath);
-    } else {
-      const tokenPath = item.token.path;
-      moveTokenPage(tokenPath);
-    }
-  };
-
-  const onClickPath = useCallback(
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>, path: string) => {
-      e.stopPropagation();
-      if (path === "ugnot") {
-        window.open(getGnoscanUrl(), "_blank");
+      setRecentsData(
+        JSON.stringify(
+          current
+            .filter(recentToken => tokens.some(token => token.token.path === recentToken.token.path))
+            .filter((_item, index) => {
+              const _value = JSON.stringify(_item);
+              return (
+                index ===
+                current.findIndex(obj => {
+                  return JSON.stringify(obj) === _value;
+                })
+              );
+            }),
+        ),
+      );
+      onSearchMenuToggle();
+      if (item.isLiquid) {
+        const poolPath = `${item.token.path}:${item?.tokenB?.path}:${
+          Number(item.fee.slice(0, item.fee.length - 1)) * 10000
+        }`;
+        movePoolPage(poolPath);
       } else {
-        window.open(getTokenUrl(path), "_blank");
+        const tokenPath = item.token.path;
+        moveTokenPage(tokenPath);
       }
     },
-    [getGnoscanUrl, getTokenUrl],
+    [recents, tokens, setRecentsData, onSearchMenuToggle, movePoolPage, moveTokenPage],
+  );
+
+  const onClickPath = useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>, token: TokenInfo) => {
+      e.stopPropagation();
+      if (token.path === "ugnot") {
+        window.open(getGnoscanUrl(), "_blank");
+      } else if (getSwapExtensionByOriginPath(token.path)) {
+        window.open(getRealmUrl(token.path), "_blank");
+      } else {
+        window.open(getTokenUrl(token.path), "_blank");
+      }
+    },
+    [getGnoscanUrl, getRealmUrl, getTokenUrl],
   );
 
   const length = useMemo(() => {
@@ -177,9 +188,10 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
 
   const getTokenPathDisplay = useCallback(
     (path: string, isNative: boolean) => {
-      return formatTokenPath(path, isNative);
+      const isOriginRealm = !!getSwapExtensionByOriginPath(path);
+      return formatTokenPath(path, isNative && !isOriginRealm);
     },
-    [length],
+    [],
   );
 
   return (
@@ -210,7 +222,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                   </div>
                   {recents.map((item, idx) =>
                     !item.isLiquid ? (
-                      <li key={idx} onClick={() => onClickItem(item)}>
+                      <li key={item.path} onClick={() => onClickItem(item)}>
                         <div className="coin-info-wrapper">
                           <MissingLogo
                             symbol={item.token.symbol}
@@ -227,21 +239,19 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           >
                             <div>
                               <span className="token-name" ref={tokenNameRecentsRef.current[idx]}>
-                                {item.token.name.length > length
-                                  ? `${item.token.name.slice(0, length)}...`
-                                  : item.token.name}
+                                {getTokenNameDisplay(item.token, length)}
                               </span>
                               <div
                                 className="token-path"
                                 onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
-                                  onClickPath(e, item.token.path)
+                                  onClickPath(e, item.token)
                                 }
                               >
                                 <div className="path">{getTokenPathDisplay(item.token.path, item.isNative)}</div>
                                 <IconNewTab />
                               </div>
                             </div>
-                            <span>{item.token.symbol}</span>
+                            <span>{item.token.displaySymbol}</span>
                           </TokenInfoWrapper>
                         </div>
                         <div className="coin-infor-value" ref={recentPriceRef.current[idx]}>
@@ -260,7 +270,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                         </div>
                       </li>
                     ) : (
-                      <li key={idx} onClick={() => onClickItem(item)}>
+                      <li key={item.path} onClick={() => onClickItem(item)}>
                         <div className="coin-info">
                           <DoubleLogo
                             size={breakpoint !== DEVICE_TYPE.MOBILE ? 28 : 21}
@@ -270,7 +280,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                             rightSymbol={item?.tokenB?.symbol}
                           />
                           <span className="token-name">
-                            {item.token.symbol}/{item?.tokenB?.symbol}
+                            {item.token.displaySymbol}/{item?.tokenB?.displaySymbol || ""}
                           </span>
                           <Badge text={item.fee} type={BADGE_TYPE.DARK_DEFAULT} />
                         </div>
@@ -289,7 +299,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                     {!keyword ? t("Modal:search.popular") : t("Modal:search.tokens")}
                   </div>
                   {popularTokens.map((item, idx) => (
-                    <li key={idx} onClick={() => onClickItem(item)}>
+                    <li key={item.path} onClick={() => onClickItem(item)}>
                       <div className="coin-info-wrapper">
                         <MissingLogo
                           symbol={item.token.symbol}
@@ -306,21 +316,17 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                         >
                           <div>
                             <span className="token-name" ref={tokenNamePopularRef.current[idx]}>
-                              {item.token.name.length > length
-                                ? `${item.token.name.slice(0, length)}...`
-                                : item.token.name}
+                              {getTokenNameDisplay(item.token, length)}
                             </span>
                             <div
                               className="token-path"
-                              onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
-                                onClickPath(e, item.token.path)
-                              }
+                              onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => onClickPath(e, item.token)}
                             >
                               <div>{getTokenPathDisplay(item.token.path, item.isNative)}</div>
                               <IconNewTab />
                             </div>
                           </div>
-                          <span>{item.token.symbol}</span>
+                          <span>{item.token.displaySymbol}</span>
                         </TokenInfoWrapper>
                       </div>
                       <div className="coin-infor-value" ref={popularPriceRef.current[idx]}>
@@ -345,8 +351,8 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                   <div className="popular-tokens">
                     {!keyword ? t("Modal:search.mostLiquiPools") : t("Modal:search.pools")}
                   </div>
-                  {mostLiquidity.map((item, idx) => (
-                    <li key={idx} onClick={() => onClickItem(item)}>
+                  {mostLiquidity.map(item => (
+                    <li key={item.path} onClick={() => onClickItem(item)}>
                       <div className="coin-info">
                         <DoubleLogo
                           size={breakpoint !== DEVICE_TYPE.MOBILE ? 28 : 21}
@@ -356,7 +362,7 @@ const SearchMenuModal: React.FC<SearchMenuModalProps> = ({
                           rightSymbol={item?.tokenB?.symbol}
                         />
                         <span className="token-name">
-                          {item.token.symbol}/{item?.tokenB?.symbol}
+                          {item.token.displaySymbol}/{item?.tokenB?.displaySymbol || ""}
                         </span>
                         <Badge text={item.fee} type={BADGE_TYPE.DARK_DEFAULT} />
                       </div>

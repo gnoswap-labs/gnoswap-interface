@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { XGNS_TOKEN_PATH } from "@constants/environment.constant";
-import { GNS_TOKEN } from "@common/values/token-constant";
+import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
@@ -21,6 +21,7 @@ import { makeRawTokenAmount } from "@utils/token-utils";
 import { useReferral } from "@hooks/common/use-referral";
 import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
 import { isLaunchpadPoolEnded } from "@utils/launchpad-get-claimable";
+import { getLaunchpadConditionDisplayAmount, getLaunchpadConditionToken } from "@utils/launchpad-condition-utils";
 
 type DepositButtonStateType =
   | "WALLET_LOGIN"
@@ -49,7 +50,7 @@ function calculateUSDValueBy(
 }
 
 export const useLaunchpadHandler = () => {
-  const { getCurrentReferralAddress, removeReferrerFromLocalStorage } = useReferral();
+  const { getNextReferralAddress, removeReferrerFromLocalStorage } = useReferral();
 
   const gnsAmountInput = useTokenAmountInput(GNS_TOKEN);
 
@@ -58,7 +59,8 @@ export const useLaunchpadHandler = () => {
   const selectPoolId = useAtomValue(LaunchpadState.selectLaunchpadPool);
 
   const { connected: connectedWallet, account, isSwitchNetwork, switchNetwork } = useWallet();
-  const { displayBalanceMap } = useTokenData();
+  const { displayBalanceMap, tokens, isFetched: isFetchedTokens } = useTokenData(true);
+  const gnsToken = useMemo(() => tokens.find(token => token.path === GNS_TOKEN.path) ?? GNS_TOKEN, [tokens]);
 
   const { launchpadRepository } = useGnoswapContext();
   const { data: tokenPriceMap } = useGetAllTokenPrices();
@@ -67,7 +69,7 @@ export const useLaunchpadHandler = () => {
   const { data: myDelegationInfo } = useGetMyDelegation({
     address: account?.address || "",
   });
-  const xGnsBalance = myDelegationInfo?.votingWeight;
+  const xGnsBalance = myDelegationInfo?.delegatedAmount;
 
   const [openedConfirmModal] = useState(false);
   const { processTx } = useBroadcastHandler();
@@ -88,11 +90,16 @@ export const useLaunchpadHandler = () => {
 
   // Variables to determine if conditions are met to make a deposit
   const isDepositAllowed = depositConditions.every(condition => {
+    const conditionAmount = getLaunchpadConditionDisplayAmount(condition, tokens);
+
     if (condition.tokenPath === XGNS_TOKEN_PATH) {
-      return Number(xGnsBalance) >= condition.leastTokenAmount;
+      const displayXGnsBalance = BigNumber(xGnsBalance || 0).shiftedBy(-XGNS_TOKEN.decimals);
+      return displayXGnsBalance.isGreaterThanOrEqualTo(conditionAmount);
     } else {
-      const balance = displayBalanceMap[condition.tokenPath] || 0;
-      return balance >= condition.leastTokenAmount;
+      const token = getLaunchpadConditionToken(condition, tokens);
+      const balance =
+        displayBalanceMap[token?.priceID ?? condition.tokenPath] ?? displayBalanceMap[condition.tokenPath] ?? 0;
+      return BigNumber(balance).isGreaterThanOrEqualTo(conditionAmount);
     }
   });
 
@@ -105,7 +112,7 @@ export const useLaunchpadHandler = () => {
    * @param emitCallback A callback function that runs when a transaction send event is successfully fired. You can proceed to update data with refetch.
    */
   const deposit = (projectPoolID: string, depositAmount: string, emitCallback: () => Promise<void>) => {
-    if (!account) {
+    if (!account || !isFetchedTokens) {
       return;
     }
 
@@ -117,12 +124,13 @@ export const useLaunchpadHandler = () => {
       tokenASymbol: GNS_TOKEN.symbol,
     };
 
-    const currentReferralAddress = getCurrentReferralAddress();
+    const currentReferralAddress = getNextReferralAddress();
 
     processTx(
       () =>
         launchpadRepository.depositLaunchpadPoolBy(
           projectPoolID,
+          gnsToken,
           BigInt(unitAmount),
           account.address,
           currentReferralAddress,
@@ -159,7 +167,7 @@ export const useLaunchpadHandler = () => {
 
     // Calculate the USD value of the Deposited USD available for withdrawal.
     const depositAmount = isWithdrawable ? participationInfo.depositAmount : 0;
-    const depositUSDValue = calculateUSDValueBy(depositAmount, tokenPriceMap?.[GNS_TOKEN.path]?.usd);
+    const depositUSDValue = calculateUSDValueBy(depositAmount, tokenPriceMap?.[GNS_TOKEN.priceID]?.usd);
 
     // Calculate the USD value of the claimable reward.
     const rewardAmount = participationInfo.claimableRewardAmount;
@@ -230,7 +238,7 @@ export const useLaunchpadHandler = () => {
       return BigNumber(accumulated).plus(info.depositAmount);
     }, BigNumber(0));
 
-    const depositUSDValue = calculateUSDValueBy(depositAmount, tokenPriceMap?.[GNS_TOKEN.path]?.usd);
+    const depositUSDValue = calculateUSDValueBy(depositAmount, tokenPriceMap?.[GNS_TOKEN.priceID]?.usd);
 
     // Calculate the USD value of the claimable reward.
     const rewardAmount = participationInfos.reduce((accumulated, current) => {

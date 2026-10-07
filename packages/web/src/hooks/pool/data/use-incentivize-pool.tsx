@@ -4,8 +4,8 @@ import { IncentivizePoolCardInfo } from "@models/pool/info/pool-card-info";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { useGetIncentivizePoolList } from "@query/pools";
 
-export const useIncentivizePool = () => {
-  const { data = [], isLoading, isFetched } = useGetIncentivizePoolList();
+export const useIncentivizePool = (address?: string) => {
+  const { data = [], isLoading, isFetched } = useGetIncentivizePoolList(address);
   const { getGnotPath } = useGnotToGnot();
 
   const incentivizePools: IncentivizePoolCardInfo[] = useMemo(() => {
@@ -17,12 +17,14 @@ export const useIncentivizePool = () => {
         tokenA: {
           ...item.tokenA,
           symbol: getGnotPath(item.tokenA).symbol,
+          displaySymbol: getGnotPath(item.tokenA).displaySymbol,
           logoURI: getGnotPath(item.tokenA).logoURI,
           name: getGnotPath(item.tokenA).name,
         },
         tokenB: {
           ...item.tokenB,
           symbol: getGnotPath(item.tokenB).symbol,
+          displaySymbol: getGnotPath(item.tokenB).displaySymbol,
           logoURI: getGnotPath(item.tokenB).logoURI,
           name: getGnotPath(item.tokenB).name,
         },

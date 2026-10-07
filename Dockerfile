@@ -1,4 +1,4 @@
-FROM node:18-alpine AS base
+FROM node:20.19-alpine AS base
 LABEL maintainer="Onbloc Jinoo <jwchoi@onbloc.xyz>"
 LABEL description="gnoswap-interface server with nextjs"
 

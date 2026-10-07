@@ -48,7 +48,7 @@ const SelectLiquidityList: React.FC<SelectLiquidityProps> = ({
             })}
           </span>
         </div>
-        <span>{t("StakePosition:liquidity")}</span>
+        <span>{t("StakePosition:value")}</span>
       </div>
       <ul>
         {isLoading && (

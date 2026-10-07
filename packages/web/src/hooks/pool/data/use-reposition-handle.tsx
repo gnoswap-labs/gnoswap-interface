@@ -3,6 +3,9 @@ import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
+import { ERROR_VALUE } from "@common/errors/adena";
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { ERROR_VALUE as SWAP_ERROR_VALUE } from "@common/errors/swap";
 import {
   DEFAULT_SLIPPAGE,
   PriceRangeMeta,
@@ -11,18 +14,28 @@ import {
   SwapFeeTierType,
 } from "@constants/option.constant";
 import { useAddress } from "@hooks/common/use-address";
+import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { usePositionData } from "@hooks/pool/data/use-position-data";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
+import { useMessage } from "@hooks/common/use-message";
+import { useReferral } from "@hooks/common/use-referral";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
+import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
+import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useSelectPool } from "@hooks/pool/data/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
+import { QUERY_KEY } from "@query/query-keys";
 import { useGetRoutes } from "@query/router";
+import { DexEvent } from "@repositories/common";
+import { RemoveLiquidityRequest, RepositionLiquidityRequest } from "@repositories/position/request";
 import { RepositionLiquidityFailedResponse, RepositionLiquiditySuccessResponse } from "@repositories/position/response";
+import { SwapRouteRequest } from "@repositories/swap-router/request/swap-route-request";
 import {
   SwapRouteFailedResponse,
   SwapRouteSuccessResponse,
@@ -30,36 +43,16 @@ import {
 import { IncreaseState } from "@states/index";
 import { checkGnotPath, delay } from "@utils/common";
 import { subscriptFormat } from "@utils/number-utils";
-import { getRepositionAmountsByPriceRange, getRepositionAmountsWithSwapSimulation } from "@utils/reposition-utils";
+import { makeDisplayPrice } from "@utils/pool-utils";
+import {
+  getRepositionAmountsByPriceRange,
+  getRepositionAmountsWithSwapSimulation,
+  makeRepositionSwapAmounts,
+  makeRepositionSwapEstimateRequest,
+} from "@utils/reposition-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToNearTick, tickToPrice } from "@utils/swap-utils";
-import { useReferral } from "@hooks/common/use-referral";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
-import { RemoveLiquidityRequest, RepositionLiquidityRequest } from "@repositories/position/request";
-import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
-import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
-import {
-  makeRemoveLiquidityMessagesWithApproves,
-  makeRepositionLiquidityMessagesWithApproves,
-} from "@repositories/position/position.message";
-import { useNetworkFee } from "@hooks/common/use-network-fee";
-import { CommonError } from "@common/errors";
-import { SwapRouteRequest } from "@repositories/swap-router/request/swap-route-request";
-import {
-  ExactSwapRouteMessageRequest,
-  makeExactInSwapRouteMessageWithApproves,
-  makeExactOutSwapRouteMessageWithApproves,
-} from "@repositories/swap-router/swap-router.message";
-import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
-import { ERROR_VALUE as SWAP_ERROR_VALUE } from "@common/errors/swap";
-import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
-import { ERROR_VALUE } from "@common/errors/adena";
-import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { DexEvent } from "@repositories/common";
-import { useTokenData } from "@hooks/token/data/use-token-data";
-import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
-import { QUERY_KEY } from "@query/query-keys";
-import { useMessage } from "@hooks/common/use-message";
+import { makeDisplayTokenAmount, makeDisplayTokenAmountString, withTokenRouteMetadata } from "@utils/token-utils";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -71,7 +64,7 @@ export type REPOSITION_BUTTON_TYPE = "REPOSITION" | "LOADING" | "NON_SELECTED_RA
 
 export const useRepositionHandle = () => {
   const router = useRouter();
-  const { getCurrentReferralAddress } = useReferral();
+  const { getNextReferralAddress } = useReferral();
   const poolPath = router.getPoolPath();
   const positionId = router.getPositionId();
   const { broadcastError, broadcastSuccess, broadcastRejected } = useBroadcastHandler();
@@ -81,8 +74,8 @@ export const useRepositionHandle = () => {
   const { getMessage } = useMessage();
 
   const { address } = useAddress();
-  const { updateBalances } = useTokenData();
-  const { swapRouterRepository, positionRepository, transactionService } = useGnoswapContext();
+  const { tokens, isFetched: isFetchedTokens, updateBalances } = useTokenData(true);
+  const { swapRouterRepository, positionRepository } = useGnoswapContext();
   const { getGnotPath } = useGnotToGnot();
   const { slippage, changeSlippage } = useSlippage();
   const { connected, account, walletClient } = useWallet();
@@ -94,7 +87,6 @@ export const useRepositionHandle = () => {
   } = usePositionData({
     poolPath,
   });
-  const { estimateNetworkFee } = useNetworkFee(null);
   const { invalidateQueryKey } = useInvalidateQueries();
 
   const selectedPosition = useMemo(
@@ -113,16 +105,16 @@ export const useRepositionHandle = () => {
       return null;
     }
     return tickToPrice(selectedPosition.tickLower);
-  }, [selectedPosition?.tickLower]);
+  }, [selectedPosition]);
 
   const defaultPositionMaxPrice = useMemo(() => {
     if (!selectedPosition) {
       return null;
     }
     return tickToPrice(selectedPosition.tickUpper);
-  }, [selectedPosition?.tickUpper]);
+  }, [selectedPosition]);
 
-  const { openModal: openConfirmModal, update: updateConfirmModalData } = useTransactionConfirmModal();
+  const { openModal: openConfirmModal } = useTransactionConfirmModal();
 
   const [priceRange, setPriceRange] = useState<PriceRangeMeta>({
     type: "Custom",
@@ -136,9 +128,10 @@ export const useRepositionHandle = () => {
       ...selectedPosition?.pool.tokenA,
       name: getGnotPath(selectedPosition?.pool.tokenA).name,
       symbol: getGnotPath(selectedPosition?.pool.tokenA).symbol,
+      displaySymbol: getGnotPath(selectedPosition?.pool.tokenA).displaySymbol,
       logoURI: getGnotPath(selectedPosition?.pool.tokenA).logoURI,
     };
-  }, [selectedPosition?.pool, selectedPosition]);
+  }, [getGnotPath, selectedPosition]);
 
   const tokenB: TokenModel | null = useMemo(() => {
     if (!selectedPosition) return null;
@@ -146,9 +139,10 @@ export const useRepositionHandle = () => {
       ...selectedPosition?.pool.tokenB,
       name: getGnotPath(selectedPosition?.pool.tokenB).name,
       symbol: getGnotPath(selectedPosition?.pool.tokenB).symbol,
+      displaySymbol: getGnotPath(selectedPosition?.pool.tokenB).displaySymbol,
       logoURI: getGnotPath(selectedPosition?.pool.tokenB).logoURI,
     };
-  }, [selectedPosition?.pool, selectedPosition]);
+  }, [getGnotPath, selectedPosition]);
 
   const aprFee = useMemo(() => {
     if (!selectedPosition) return 0;
@@ -179,25 +173,22 @@ export const useRepositionHandle = () => {
     return selectedPosition?.closed
       ? RANGE_STATUS_OPTION.NONE
       : inRange
-        ? RANGE_STATUS_OPTION.IN
-        : RANGE_STATUS_OPTION.OUT;
+      ? RANGE_STATUS_OPTION.IN
+      : RANGE_STATUS_OPTION.OUT;
   }, [selectedPosition, inRange]);
 
   const resetRange = useCallback(() => {
     selectPool.resetRange();
     selectPool.setMinPosition(defaultPositionMinPrice);
     selectPool.setMaxPosition(defaultPositionMaxPrice);
-  }, [selectPool]);
+  }, [defaultPositionMaxPrice, defaultPositionMinPrice, selectPool]);
 
   const handleRefreshData = useCallback(async () => {
     invalidateQueryKey("Reposition", [
       [QUERY_KEY.pools],
       [QUERY_KEY.positions],
       [QUERY_KEY.poolDetail],
-      [QUERY_KEY.poolPairBins],
-      [QUERY_KEY.bins],
-      [QUERY_KEY.lazyBins],
-      [QUERY_KEY.positionBins],
+      [QUERY_KEY.poolLiquidityTicks],
     ]);
   }, [invalidateQueryKey]);
 
@@ -211,32 +202,40 @@ export const useRepositionHandle = () => {
     setInitialized(true);
     selectPool.setMinPosition(defaultPositionMinPrice);
     selectPool.setMaxPosition(defaultPositionMaxPrice);
-  }, [defaultPositionMinPrice, defaultPositionMaxPrice, selectPool.poolPath]);
+  }, [defaultPositionMaxPrice, defaultPositionMinPrice, initialized, selectPool]);
 
   const formatPriceDisplay = useCallback(
     (price: number | string | BigNumber | null) => {
-      if (price === null || BigNumber(Number(price)).isNaN() || !selectPool.feeTier) {
+      if (price === null || BigNumber(Number(price)).isNaN() || !selectPool.feeTier || !tokenA || !tokenB) {
         return "-";
       }
 
+      const isTokenABase = selectPool.compareToken?.path === tokenA.path;
+      const baseToken = isTokenABase ? tokenA : tokenB;
+      const quoteToken = isTokenABase ? tokenB : tokenA;
+
       const { maxPrice } = SwapFeeTierMaxPriceRangeMap[selectPool.feeTier || "NONE"];
 
-      const currentValue = BigNumber(price).toNumber();
+      const displayPrice = BigNumber(makeDisplayPrice(price.toString(), baseToken, quoteToken));
+      const currentValue = displayPrice.toNumber();
+      const maxPriceWithRatio = BigNumber(maxPrice)
+        .shiftedBy(baseToken.decimals - quoteToken.decimals)
+        .toNumber();
 
       if (currentValue < 1 && currentValue !== 0) {
-        return subscriptFormat(BigNumber(price).toFixed());
+        return subscriptFormat(displayPrice.toFixed());
       }
 
-      if (currentValue / maxPrice > 0.9) {
+      if (currentValue / maxPriceWithRatio > 0.9) {
         return "∞";
       }
 
-      return formatTokenExchangeRate(Number(price), {
+      return formatTokenExchangeRate(displayPrice.toFixed(), {
         maxSignificantDigits: 6,
         minLimit: 0.000001,
       });
     },
-    [selectPool.feeTier],
+    [selectPool.compareToken?.path, selectPool.feeTier, tokenA, tokenB],
   );
 
   const minPriceStr = useMemo(() => {
@@ -274,8 +273,8 @@ export const useRepositionHandle = () => {
     }
 
     return {
-      amountA: String(makeDisplayTokenAmount(selectedPosition.pool.tokenA, selectedPosition.tokenABalance) ?? 0),
-      amountB: String(makeDisplayTokenAmount(selectedPosition.pool.tokenB, selectedPosition.tokenBBalance) ?? 0),
+      amountA: makeDisplayTokenAmountString(selectedPosition.pool.tokenA, selectedPosition.tokenABalance) ?? "0",
+      amountB: makeDisplayTokenAmountString(selectedPosition.pool.tokenB, selectedPosition.tokenBBalance) ?? "0",
     };
   }, [selectedPosition]);
 
@@ -300,8 +299,8 @@ export const useRepositionHandle = () => {
       selectPool.maxPrice,
       tickToPrice(ordered ? selectedPosition.tickLower : selectedPosition.tickUpper * -1),
       tickToPrice(ordered ? selectedPosition.tickUpper : selectedPosition.tickLower * -1),
-      String(makeDisplayTokenAmount(tokenA, selectedPosition.tokenABalance) ?? 0),
-      String(makeDisplayTokenAmount(tokenB, selectedPosition.tokenBBalance) ?? 0),
+      makeDisplayTokenAmountString(tokenA, selectedPosition.tokenABalance) ?? "0",
+      makeDisplayTokenAmountString(tokenB, selectedPosition.tokenBBalance) ?? "0",
     );
 
     return repositionAmountsByNewPriceRange;
@@ -311,6 +310,7 @@ export const useRepositionHandle = () => {
     selectPool.maxPrice,
     selectPool.minPrice,
     selectedPosition,
+    sqrtPriceX96,
     tokenA,
     tokenB,
   ]);
@@ -319,24 +319,12 @@ export const useRepositionHandle = () => {
     if (!currentAmounts || !initialEstimatedRepositionAmounts || !selectedPosition) {
       return null;
     }
-    const { amountA, amountB } = currentAmounts;
-    const { amountA: repositionAmountA, amountB: repositionAmountB } = initialEstimatedRepositionAmounts;
-
-    const isSwapAtoB = BigNumber(amountA).isGreaterThan(repositionAmountA);
-    if (isSwapAtoB) {
-      return {
-        inputToken: selectedPosition.pool.tokenA,
-        outputToken: selectedPosition.pool.tokenB,
-        tokenAmount: Number(amountA) - repositionAmountA || 0,
-        exactType: "EXACT_IN" as const,
-      };
-    }
-    return {
-      inputToken: selectedPosition.pool.tokenB,
-      outputToken: selectedPosition.pool.tokenA,
-      tokenAmount: Number(amountB) - repositionAmountB || 0,
-      exactType: "EXACT_IN" as const,
-    };
+    return makeRepositionSwapEstimateRequest(
+      selectedPosition.pool.tokenA,
+      selectedPosition.pool.tokenB,
+      currentAmounts,
+      initialEstimatedRepositionAmounts,
+    );
   }, [currentAmounts, initialEstimatedRepositionAmounts, selectedPosition]);
 
   const {
@@ -372,7 +360,7 @@ export const useRepositionHandle = () => {
       return null;
     }
 
-    if (estimateSwapRequest?.tokenAmount === 0) {
+    if (estimateSwapRequest?.tokenAmount === null) {
       return {
         amountA: currentAmounts.amountA.toString(),
         amountB: currentAmounts.amountB.toString(),
@@ -409,7 +397,7 @@ export const useRepositionHandle = () => {
   ]);
 
   const isSkipSwap = useMemo(() => {
-    if (estimateSwapRequest?.tokenAmount === 0) {
+    if (estimateSwapRequest?.tokenAmount === null) {
       return true;
     }
     if (
@@ -459,326 +447,229 @@ export const useRepositionHandle = () => {
     [selectPool],
   );
 
-  const buildAdenaWalletRemovePositionAction = async (request: RemoveLiquidityRequest) => {
-    return positionRepository.removeLiquidity(request).catch(() => null);
-  };
-
-  const buildSocialWalletRemovePositionAction = async (
-    rpcProvider: GnoProvider | null,
-    request: RemoveLiquidityRequest,
-  ) => {
-    if (!rpcProvider) {
-      console.log("Reposition(RemoveLiquidity): ", new CommonError("FAILED_INITIALIZE_GNO_PROVIDER"));
-      return null;
-    }
-
-    const getAllowance = (packagePath: string, owner: string, spender: string) => {
-      return fetchAllowance(rpcProvider, packagePath, owner, spender);
-    };
-
-    const txMessages = await makeRemoveLiquidityMessagesWithApproves(request, getAllowance);
-
-    const txDoc = await transactionService.createDocument({ messages: txMessages });
-    await transactionService.createTransaction(txDoc);
-
-    const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
-    const requestWithGasInfo: RemoveLiquidityRequest = {
-      ...request,
-      gasFee: networkFee?.amount,
-      gasUsed: currentGasInfo?.gasUsed.toString(),
-    };
-
-    return positionRepository.removeLiquidity(requestWithGasInfo).catch(() => null);
-  };
-
-  const removePosition = useCallback(
-    async ({ rpcProvider }: { rpcProvider: GnoProvider | null }): Promise<WalletResponse | null> => {
-      if (!address || !selectedPosition) {
-        return null;
-      }
-
-      const positionLiquidity = {
-        [selectedPosition.lpTokenId]: calculatedLiquidity,
-      };
-      const approveTokenPath = [selectedPosition.pool.tokenA.path, selectedPosition.pool.tokenB.path];
-      const deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString();
-
-      const walletType = walletClient?.getWalletType();
-
-      const request: RemoveLiquidityRequest = {
-        lpTokenIds: [selectedPosition.lpTokenId],
-        positionLiquidities: positionLiquidity,
-        tokenPaths: approveTokenPath,
-        caller: address,
-        isGetWGNOT: false,
-        deadline,
-      };
-
-      return await (walletType === "ADENA"
-        ? buildAdenaWalletRemovePositionAction(request)
-        : buildSocialWalletRemovePositionAction(rpcProvider, request));
+  const buildAdenaWalletRemovePositionAction = useCallback(
+    async (request: RemoveLiquidityRequest) => {
+      return positionRepository.removeLiquidity(request).catch(() => null);
     },
-    [address, selectedPosition, calculatedLiquidity, walletClient, positionRepository, estimateNetworkFee],
+    [positionRepository],
   );
 
-  const buildAdenaWalletExactInAction = async (request: SwapRouteRequest) => {
-    return swapRouterRepository.sendExactInSwapRoute(request);
-  };
-  const buildAdenaWalletExactOutAction = async (request: SwapRouteRequest) => {
-    return swapRouterRepository.sendExactOutSwapRoute(request);
-  };
-
-  const buildSocialWalletSwapAction = async (
-    rpcProvider: GnoProvider | null,
-    request: SwapRouteRequest,
-    isExactIn: boolean,
-  ) => {
-    if (!rpcProvider) {
-      console.log("Reposition(SwapRoute): ", new CommonError("FAILED_INITIALIZE_GNO_PROVIDER"));
+  const removePosition = useCallback(async (): Promise<WalletResponse | null> => {
+    if (!address || !selectedPosition) {
       return null;
     }
 
-    const getAllowance = (packagePath: string, owner: string, spender: string) => {
-      return fetchAllowance(rpcProvider, packagePath, owner, spender);
+    const positionLiquidity = {
+      [selectedPosition.lpTokenId]: calculatedLiquidity,
     };
+    const approveTokenPath = [selectedPosition.pool.tokenA.path, selectedPosition.pool.tokenB.path];
+    const deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString();
 
-    const { inputToken, outputToken, tokenAmount, estimatedRoutes, tokenAmountLimit, deadline, referrerAddress } =
-      request;
-    const makeMessageRequests: ExactSwapRouteMessageRequest = {
-      inputToken,
-      outputToken,
-      tokenAmount,
-      estimatedRoutes,
-      tokenAmountLimit,
+    const request: RemoveLiquidityRequest = {
+      lpTokenIds: [selectedPosition.lpTokenId],
+      positionLiquidities: positionLiquidity,
+      tokenPaths: approveTokenPath,
+      caller: address,
       deadline,
-      caller: account?.address || "",
-      referrerAddress,
     };
 
-    const txMessages = isExactIn
-      ? await makeExactInSwapRouteMessageWithApproves(makeMessageRequests, getAllowance)
-      : await makeExactOutSwapRouteMessageWithApproves(makeMessageRequests, getAllowance);
+    return await buildAdenaWalletRemovePositionAction(request);
+  }, [address, buildAdenaWalletRemovePositionAction, calculatedLiquidity, selectedPosition]);
 
-    const txDoc = await transactionService.createDocument({ messages: txMessages });
-    await transactionService.createTransaction(txDoc);
+  const buildAdenaWalletExactInAction = useCallback(
+    async (request: SwapRouteRequest) => {
+      return swapRouterRepository.sendExactInSwapRoute(request);
+    },
+    [swapRouterRepository],
+  );
+  const buildAdenaWalletExactOutAction = useCallback(
+    async (request: SwapRouteRequest) => {
+      return swapRouterRepository.sendExactOutSwapRoute(request);
+    },
+    [swapRouterRepository],
+  );
 
-    const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
-    const requestWithGasInfo: SwapRouteRequest = {
-      ...request,
-      gasFee: networkFee?.amount,
-      gasUsed: currentGasInfo?.gasUsed.toString(),
+  const swapRemainToken = useCallback(async (): Promise<WalletResponse<
+    SwapRouteSuccessResponse | SwapRouteFailedResponse
+  > | null> => {
+    if (!address || !estimatedSwapResult || !estimateSwapRequest || !isFetchedTokens) {
+      return null;
+    }
+
+    const isSwapAtoB = estimateSwapRequest.inputToken === selectedPosition?.pool.tokenA;
+    const isExactIn = estimateSwapRequest.exactType === "EXACT_IN";
+
+    const deadline = Math.floor(Date.now() / 1000) + 300;
+    const currentReferralAddress = getNextReferralAddress();
+
+    // Amounts stay decimal strings end-to-end so values above Number.MAX_SAFE_INTEGER remain exact
+    const swapAmounts = makeRepositionSwapAmounts(
+      estimateSwapRequest,
+      isSwapAtoB,
+      currentAmounts ?? { amountA: "0", amountB: "0" },
+      estimatedRepositionAmounts ?? { amountA: "0", amountB: "0" },
+      DEFAULT_SLIPPAGE,
+    );
+
+    const request: SwapRouteRequest = {
+      inputToken: withTokenRouteMetadata(estimateSwapRequest.inputToken, tokens),
+      outputToken: estimateSwapRequest.outputToken,
+      estimatedRoutes: estimatedSwapResult.estimatedRoutes,
+      ...swapAmounts,
+      slippage: slippage,
+      originAmount: estimatedSwapResult.originAmount,
+      deadline,
+      referrerAddress: currentReferralAddress,
     };
 
-    return isExactIn
-      ? swapRouterRepository.sendExactInSwapRoute(requestWithGasInfo)
-      : swapRouterRepository.sendExactOutSwapRoute(requestWithGasInfo);
-  };
-
-  const swapRemainToken = useCallback(
-    async ({
-      rpcProvider,
-    }: {
-      rpcProvider: GnoProvider | null;
-    }): Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse> | null> => {
-      if (!address || !estimatedSwapResult || !estimateSwapRequest) {
-        return null;
-      }
-
-      const isSwapAtoB = estimateSwapRequest.inputToken === selectedPosition?.pool.tokenA;
-      const isExactIn = estimateSwapRequest.exactType === "EXACT_IN";
-
-      const inputAmount = isSwapAtoB
-        ? BigNumber(currentAmounts?.amountA || 0).minus(BigNumber(estimatedRepositionAmounts?.amountA || 0))
-        : BigNumber(currentAmounts?.amountB || 0).minus(BigNumber(estimatedRepositionAmounts?.amountB || 0));
-
-      const outputAmount = isSwapAtoB
-        ? BigNumber(estimatedRepositionAmounts?.amountB || 0).minus(BigNumber(currentAmounts?.amountB || 0))
-        : BigNumber(estimatedRepositionAmounts?.amountA || 0).minus(BigNumber(currentAmounts?.amountA || 0));
-
-      const deadline = Math.floor(Date.now() / 1000) + 300;
-      const currentReferralAddress = getCurrentReferralAddress();
-
-      const walletType = walletClient?.getWalletType();
-
-      const request: SwapRouteRequest = {
-        inputToken: estimateSwapRequest.inputToken,
-        outputToken: estimateSwapRequest.outputToken,
-        estimatedRoutes: estimatedSwapResult.estimatedRoutes,
-        tokenAmount: isExactIn ? inputAmount.toNumber() : outputAmount.toNumber(),
-        slippage: slippage,
-        originAmount: estimatedSwapResult.originAmount,
-        tokenAmountLimit: isExactIn
-          ? outputAmount.toNumber() * ((100 - DEFAULT_SLIPPAGE) / 100)
-          : inputAmount.toNumber() * ((100 + DEFAULT_SLIPPAGE) / 100),
-        deadline,
-        referrerAddress: currentReferralAddress,
-      };
-
-      return await (
-        walletType === "ADENA"
-          ? isExactIn
-            ? buildAdenaWalletExactInAction(request)
-            : buildAdenaWalletExactOutAction(request)
-          : buildSocialWalletSwapAction(rpcProvider, request, isExactIn)
-      ).catch(e => {
+    return await (isExactIn ? buildAdenaWalletExactInAction(request) : buildAdenaWalletExactOutAction(request)).catch(
+      e => {
         if (e.status === SWAP_ERROR_VALUE.DRY_SWAP_DEVIATION_EXCEEDED.status) {
           broadcastError(BROADCAST_ERROR_VALUE.SLIPPAGE_EXCEEDED);
         } else {
           broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
         }
         return null;
-      });
+      },
+    );
+  }, [
+    address,
+    estimateSwapRequest,
+    estimatedSwapResult,
+    isFetchedTokens,
+    estimatedRepositionAmounts,
+    currentAmounts,
+    selectedPosition?.pool.tokenA,
+    buildAdenaWalletExactInAction,
+    buildAdenaWalletExactOutAction,
+    broadcastError,
+    getNextReferralAddress,
+    slippage,
+    tokens,
+  ]);
+
+  const buildAdenaWalletRepositionAction = useCallback(
+    async (request: RepositionLiquidityRequest) => {
+      return positionRepository
+        .repositionLiquidity(request)
+        .then(async result => {
+          const defaultMessageData = {
+            tokenASymbol: request.tokenA.symbol,
+            tokenBSymbol: request.tokenB.symbol,
+            tokenAAmount: Number(request.tokenAAmount).toLocaleString("en-US", {
+              maximumFractionDigits: request.tokenA.decimals,
+            }),
+            tokenBAmount: Number(request.tokenBAmount).toLocaleString("en-US", {
+              maximumFractionDigits: request.tokenB.decimals,
+            }),
+          };
+
+          if (result) {
+            if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
+              enqueueEvent({
+                txHash: result.data?.hash,
+                action: DexEvent.REPOSITION,
+                visibleEmitResult: true,
+                checkWugnotTransfer: true,
+                formatData: response => {
+                  if (!response) {
+                    return defaultMessageData;
+                  }
+                  return {
+                    ...defaultMessageData,
+                    tokenAAmount: Number(makeDisplayTokenAmount(request.tokenA, response[3])).toLocaleString("en-US", {
+                      maximumFractionDigits: request.tokenA.decimals,
+                    }),
+                    tokenBAmount: Number(makeDisplayTokenAmount(request.tokenB, response[4])).toLocaleString("en-US", {
+                      maximumFractionDigits: request.tokenB.decimals,
+                    }),
+                  };
+                },
+                onUpdate: async () => {
+                  updateBalances();
+                },
+                onEmit: async () => {
+                  await delay(1000);
+                  handleRefreshData();
+                },
+                onSuccess: handleRefreshData,
+              });
+            }
+
+            if (result.code === 0) {
+              broadcastSuccess(
+                getMessage(
+                  DexEvent.REPOSITION,
+                  "success",
+                  {
+                    tokenASymbol: request.tokenA.symbol || "",
+                    tokenBSymbol: request.tokenB.symbol || "",
+                    tokenAAmount: Number(request.tokenAAmount).toLocaleString("en-US", {
+                      maximumFractionDigits: request.tokenA.decimals,
+                    }),
+                    tokenBAmount: Number(request.tokenBAmount).toLocaleString("en-US", {
+                      maximumFractionDigits: request.tokenB.decimals,
+                    }),
+                  },
+                  result.data?.hash,
+                ),
+                () => router.back(),
+              );
+              openConfirmModal();
+            } else if (result.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
+              broadcastRejected(
+                getMessage(DexEvent.REPOSITION, "error", {
+                  tokenASymbol: request.tokenA.symbol,
+                  tokenBSymbol: request.tokenB.symbol,
+                  tokenAAmount: Number(request.tokenAAmount).toLocaleString("en-US", {
+                    maximumFractionDigits: request.tokenA.decimals,
+                  }),
+                  tokenBAmount: Number(request.tokenBAmount).toLocaleString("en-US", {
+                    maximumFractionDigits: request.tokenB.decimals,
+                  }),
+                }),
+              );
+            } else {
+              broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
+            }
+          }
+
+          return result;
+        })
+        .catch(() => null);
     },
     [
-      address,
-      estimateSwapRequest,
-      estimatedSwapResult,
-      estimatedRepositionAmounts,
-      currentAmounts,
-      selectedPosition?.pool.tokenA,
-      swapRouterRepository,
-      getCurrentReferralAddress,
-      walletClient,
-      slippage,
+      broadcastError,
+      broadcastRejected,
+      broadcastSuccess,
+      enqueueEvent,
+      getMessage,
+      handleRefreshData,
+      openConfirmModal,
+      positionRepository,
+      router,
+      updateBalances,
     ],
   );
 
-  const buildAdenaWalletRepositionAction = async (request: RepositionLiquidityRequest) => {
-    return positionRepository
-      .repositionLiquidity(request)
-      .then(async result => {
-        const defaultMessageData = {
-          tokenASymbol: request.tokenA.symbol,
-          tokenBSymbol: request.tokenB.symbol,
-          tokenAAmount: Number(request.tokenAAmount).toLocaleString("en-US", {
-            maximumFractionDigits: request.tokenA.decimals,
-          }),
-          tokenBAmount: Number(request.tokenBAmount).toLocaleString("en-US", {
-            maximumFractionDigits: request.tokenB.decimals,
-          }),
-        };
-
-        if (result) {
-          if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
-            enqueueEvent({
-              txHash: result.data?.hash,
-              action: DexEvent.REPOSITION,
-              visibleEmitResult: true,
-              formatData: response => {
-                if (!response) {
-                  return defaultMessageData;
-                }
-                return {
-                  ...defaultMessageData,
-                  tokenAAmount: Number(makeDisplayTokenAmount(request.tokenA, response[3])).toLocaleString("en-US", {
-                    maximumFractionDigits: request.tokenA.decimals,
-                  }),
-                  tokenBAmount: Number(makeDisplayTokenAmount(request.tokenB, response[4])).toLocaleString("en-US", {
-                    maximumFractionDigits: request.tokenB.decimals,
-                  }),
-                };
-              },
-              onUpdate: async () => {
-                updateBalances();
-              },
-              onEmit: async () => {
-                await delay(5000);
-                handleRefreshData();
-              },
-              onSuccess: handleRefreshData,
-            });
-          }
-
+  const buildSocialWalletRepositionAction = useCallback(
+    async (request: RepositionLiquidityRequest) => {
+      return positionRepository
+        .repositionLiquidity(request)
+        .then(result => {
           if (result.code === 0) {
-            const resultData = result?.data as RepositionLiquiditySuccessResponse;
-            broadcastSuccess(
-              getMessage(
-                DexEvent.REPOSITION,
-                "success",
-                {
-                  tokenASymbol: request.tokenA.symbol || "",
-                  tokenBSymbol: request.tokenB.symbol || "",
-                  tokenAAmount: Number(makeDisplayTokenAmount(request.tokenA, request.tokenAAmount)).toLocaleString(
-                    "en-US",
-                    {
-                      maximumFractionDigits: request.tokenA.decimals,
-                    },
-                  ),
-                  tokenBAmount: Number(makeDisplayTokenAmount(request.tokenB, request.tokenBAmount)).toLocaleString(
-                    "en-US",
-                    {
-                      maximumFractionDigits: request.tokenB.decimals,
-                    },
-                  ),
-                },
-                resultData.hash,
-              ),
-            );
-            await updateConfirmModalData("success", "Reposition Complete", "", null, () => router.back());
+            broadcastSuccess({ title: "Reposition Complete", txHash: result.data?.hash }, () => router.back());
             openConfirmModal();
-          } else if (result.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
-            broadcastRejected(
-              getMessage(DexEvent.REPOSITION, "error", {
-                tokenASymbol: request.tokenA.symbol,
-                tokenBSymbol: request.tokenB.symbol,
-                tokenAAmount: Number(request.tokenAAmount).toLocaleString("en-US", {
-                  maximumFractionDigits: request.tokenA.decimals,
-                }),
-                tokenBAmount: Number(request.tokenBAmount).toLocaleString("en-US", {
-                  maximumFractionDigits: request.tokenB.decimals,
-                }),
-              }),
-            );
-          } else {
-            broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
           }
-        }
-
-        return result;
-      })
-      .catch(() => null);
-  };
-
-  const buildSocialWalletRepositionAction = async (
-    rpcProvider: GnoProvider | null,
-    request: RepositionLiquidityRequest,
-  ) => {
-    if (!rpcProvider) {
-      console.log("Reposition: ", new CommonError("FAILED_INITIALIZE_GNO_PROVIDER"));
-      return null;
-    }
-
-    const getAllowance = (packagePath: string, owner: string, spender: string) => {
-      return fetchAllowance(rpcProvider, packagePath, owner, spender);
-    };
-
-    const txMessages = await makeRepositionLiquidityMessagesWithApproves(request, getAllowance);
-
-    const txDoc = await transactionService.createDocument({ messages: txMessages });
-    await transactionService.createTransaction(txDoc);
-
-    const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
-    const requestWithGasInfo: RepositionLiquidityRequest = {
-      ...request,
-      gasFee: networkFee?.amount,
-      gasUsed: currentGasInfo?.gasUsed.toString(),
-    };
-
-    return positionRepository
-      .repositionLiquidity(requestWithGasInfo)
-      .then(result => {
-        if (result.code === 0) {
-          updateConfirmModalData("success", "Reposition Complete", "", null, () => router.back());
-          openConfirmModal();
-        }
-        return result;
-      })
-      .catch(() => null);
-  };
+          return result;
+        })
+        .catch(() => null);
+    },
+    [broadcastSuccess, openConfirmModal, positionRepository, router],
+  );
 
   const reposition = useCallback(
     async (
-      rpcProvider: GnoProvider | null,
       swapToken: TokenModel | null,
       swapAmount: string | null,
     ): Promise<WalletResponse<RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse> | null> => {
@@ -786,6 +677,7 @@ export const useRepositionHandle = () => {
         !address ||
         !selectedPosition ||
         !tokenA ||
+        !isFetchedTokens ||
         !tokenB ||
         !selectPool.feeTier ||
         selectPool.minPrice === null ||
@@ -818,8 +710,8 @@ export const useRepositionHandle = () => {
 
       const request: RepositionLiquidityRequest = {
         lpTokenId: selectedPosition.lpTokenId,
-        tokenA,
-        tokenB,
+        tokenA: withTokenRouteMetadata(tokenA, tokens),
+        tokenB: withTokenRouteMetadata(tokenB, tokens),
         tokenAAmount,
         tokenBAmount,
         slippage: DEFAULT_SLIPPAGE,
@@ -830,10 +722,11 @@ export const useRepositionHandle = () => {
 
       return walletType === "ADENA"
         ? buildAdenaWalletRepositionAction(request)
-        : buildSocialWalletRepositionAction(rpcProvider, request);
+        : buildSocialWalletRepositionAction(request);
     },
     [
       address,
+      isFetchedTokens,
       selectedPosition,
       tokenA,
       tokenB,
@@ -843,10 +736,10 @@ export const useRepositionHandle = () => {
       selectPool.tickSpacing,
       currentAmounts,
       estimatedRepositionAmounts,
-      positionRepository,
-      updateConfirmModalData,
-      openConfirmModal,
-      router,
+      buildAdenaWalletRepositionAction,
+      buildSocialWalletRepositionAction,
+      walletClient,
+      tokens,
     ],
   );
 
@@ -854,7 +747,7 @@ export const useRepositionHandle = () => {
     if (!account && poolPath) {
       router.push(`/earn/pool/${poolPath}`);
     }
-  }, [account, poolPath]);
+  }, [account, poolPath, router]);
 
   useEffect(() => {
     if (selectPool.isChangeMinMax) {

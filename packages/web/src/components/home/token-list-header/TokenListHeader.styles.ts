@@ -23,6 +23,11 @@ export const TokenListHeaderwrapper = styled.div`
       padding: 4px 24px;
     }
   }
+  .right-section {
+    ${mixins.flexbox("row", "center", "center")};
+    flex-shrink: 0;
+    gap: 36px;
+  }
 `;
 
 export const TokenTitleWrapper = styled.div`
@@ -31,7 +36,7 @@ export const TokenTitleWrapper = styled.div`
   gap: 36px;
   ${media.mobile} {
     justify-content: space-between;
-    height: 24px;
+    min-height: 24px;
   }
   h2 {
     ${fonts.h5};
@@ -41,6 +46,10 @@ export const TokenTitleWrapper = styled.div`
     }
   }
 
+  .mobile-controls {
+    ${mixins.flexbox("row", "center", "center")};
+    gap: 8px;
+  }
   .icon-wrap {
     height: 100%;
     .search-icon {

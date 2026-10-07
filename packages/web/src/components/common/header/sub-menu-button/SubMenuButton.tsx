@@ -13,7 +13,8 @@ interface SubMenuButtonProps {
   sideMenuToggle: boolean;
   isCollapseNav: boolean;
   onSideMenuToggle: (value: boolean) => void;
-  onNavigation: (e: React.MouseEvent, path: string) => void;
+  onNavigation: (e: React.MouseEvent) => void;
+  getNavigationPath: (path: string) => string;
   isBottomNav: boolean;
 }
 
@@ -22,6 +23,7 @@ const SubMenuButton: React.FC<SubMenuButtonProps> = ({
   isCollapseNav,
   onSideMenuToggle,
   onNavigation,
+  getNavigationPath,
   isBottomNav,
 }) => {
   const theme = useTheme();
@@ -61,8 +63,8 @@ const SubMenuButton: React.FC<SubMenuButtonProps> = ({
       ? IconStrokeArrowDown
       : IconStrokeArrowUp
     : sideMenuToggle
-    ? IconStrokeArrowUp
-    : IconStrokeArrowDown;
+      ? IconStrokeArrowUp
+      : IconStrokeArrowDown;
 
   return (
     <SubMenuButtonWrapper ref={buttonRef} className={`${sideMenuToggle ? "selected" : ""}`}>
@@ -75,6 +77,7 @@ const SubMenuButton: React.FC<SubMenuButtonProps> = ({
           <FakeSpaceWrapper></FakeSpaceWrapper>
           <SubMenu
             onNavigation={onNavigation}
+            getNavigationPath={getNavigationPath}
             isCollapseNav={isCollapseNav}
             onSideMenuToggle={() => onSideMenuToggle(false)}
           />

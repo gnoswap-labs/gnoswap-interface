@@ -5,7 +5,7 @@ import { PoolModel } from "@models/pool/pool-model";
 
 import { QUERY_KEY } from "../query-keys";
 
-const REFETCH_INTERVAL = 60_000;
+const REFETCH_INTERVAL = 5_000;
 
 export const useGetPoolList = (options?: UseQueryOptions<PoolModel[], Error>) => {
   const { poolRepository } = useGnoswapContext();
@@ -13,7 +13,10 @@ export const useGetPoolList = (options?: UseQueryOptions<PoolModel[], Error>) =>
   return useQuery<PoolModel[], Error>({
     queryKey: [QUERY_KEY.pools],
     queryFn: async () => {
-      const data = await poolRepository.getPools();
+      const data = await poolRepository.getPools().catch(error => {
+        console.error("Failed to fetch pools:", error);
+        throw error;
+      });
       data.sort((a: PoolModel, b: PoolModel) => -Number(a.price) + Number(b.price));
       return data;
     },

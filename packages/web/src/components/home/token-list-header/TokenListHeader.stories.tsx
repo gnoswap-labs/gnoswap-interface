@@ -23,5 +23,7 @@ export const Default: Story = {
     keyword: "",
     searchIcon: true,
     onTogleSearch: fn(),
+    showUnverifiedTokens: false,
+    toggleShowUnverifiedTokens: fn(),
   },
 };

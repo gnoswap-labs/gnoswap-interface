@@ -10,8 +10,8 @@ import { EncodeTxSignature } from "./types";
 
 import { GasToken } from "@common/values/token-constant";
 import { mappedDocumentMessagesWithCaller } from "@utils/messages.utils";
-import { isContractMessage } from "@common/clients/wallet-client/protocols";
-import { makeMsgCallMessage, makeMsgSendMessage } from "@adena-wallet/sdk";
+import { isContractMessage, isRunMessage } from "@common/clients/wallet-client/protocols";
+import { makeMsgCallMessage, makeMsgRunMessage, makeMsgSendMessage } from "@adena-wallet/sdk";
 
 export class TransactionServiceImpl implements TransactionService {
   private rpcProvider: GnoProvider | null;
@@ -27,28 +27,36 @@ export class TransactionServiceImpl implements TransactionService {
     // gasFee,
     // gasWanted,
     memo,
+    account,
   }: CreateTransactionDocumentParameters): Promise<Document> => {
     if (!this.walletClient) {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
 
-    const accountInfo = await this.walletClient.getAccount();
-    const accountNumber = accountInfo?.data?.accountNumber ?? 0;
-    const accountSequence = accountInfo?.data?.sequence ?? 0;
+    const accountInfo = account ? null : await this.walletClient.getAccount();
+    const accountNumber = account?.accountNumber ?? accountInfo?.data?.accountNumber ?? 0;
+    const accountSequence = account?.sequence ?? accountInfo?.data?.sequence ?? 0;
+    const caller = account?.address ?? accountInfo?.data?.address ?? "";
 
     const processedMsgs = messages.map(message => {
       if (isContractMessage(message)) {
         return makeMsgCallMessage({
           ...message,
-          max_deposit: "0ugnot",
+          max_deposit: message.max_deposit ?? "",
           args: message.args?.map(arg => `${arg}`) || [],
+        });
+      }
+      if (isRunMessage(message)) {
+        return makeMsgRunMessage({
+          ...message,
+          max_deposit: message.max_deposit ?? "",
         });
       }
       return makeMsgSendMessage(message);
     });
 
     return {
-      msgs: mappedDocumentMessagesWithCaller(processedMsgs, accountInfo.data?.address || ""),
+      msgs: mappedDocumentMessagesWithCaller(processedMsgs, caller),
       fee: {
         amount: [{ amount: "", denom: GasToken.denom as string }],
         gas: "",

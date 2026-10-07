@@ -1,15 +1,46 @@
+import { STATIC_TEXT } from "@common/values";
+import { GNOT_TOKEN } from "@common/values/token-constant";
+import { RewardType } from "@constants/option.constant";
 import { RewardTokenModel } from "@models/position/reward-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
+import { getSwapExtensionByWrappedPath } from "@resources/swap-extension";
+import { OnchainToken } from "@repositories/activity/responses/activity-responses";
 import BigNumber from "bignumber.js";
 import { formatOtherPrice } from "./new-number-utils";
 import { roundDownDecimalNumber } from "./regex";
-import { STATIC_TEXT } from "@common/values";
-import { RewardType } from "@constants/option.constant";
-import { OnchainToken } from "@repositories/activity/responses/activity-responses";
-import { GNOT_TOKEN } from "@common/values/token-constant";
 
 export interface RewardTokenModelWithMultipleTypes extends Omit<RewardTokenModel, "rewardType"> {
   rewardType: RewardType | RewardType[];
+}
+
+export const TOKEN_DISPLAY_MAX_LENGTH = 9;
+
+export function withTokenRouteMetadata(token: TokenModel, currentTokens: TokenModel[]): TokenModel {
+  const transactionPath = token.wrappedPath || token.path;
+  const currentToken = currentTokens.find(candidate => candidate.path === transactionPath);
+  if (!currentToken) {
+    return token;
+  }
+
+  return {
+    ...token,
+    pkgPath: currentToken.pkgPath,
+    routes: currentToken.routes,
+  };
+}
+
+export function formatDisplayTokenSymbol(symbol: string, path?: string): string {
+  const extension = getSwapExtensionByWrappedPath(path);
+  const displaySymbol = extension?.wrappedTokenInfo.displaySymbol ?? symbol;
+  if (displaySymbol.length <= TOKEN_DISPLAY_MAX_LENGTH) return displaySymbol;
+
+  return `${displaySymbol.slice(0, TOKEN_DISPLAY_MAX_LENGTH)}...`;
+}
+
+export function formatDisplayTokenName(name: string): string {
+  if (name.length <= TOKEN_DISPLAY_MAX_LENGTH) return name;
+
+  return `${name.slice(0, TOKEN_DISPLAY_MAX_LENGTH).trimEnd()}...`;
 }
 
 export function makeRawTokenAmount(token: TokenModel, amount: string | number) {
@@ -25,7 +56,7 @@ export function makeDisplayTokenAmount(
   amount: bigint | string | number,
   options?: { decimalsWithoutRounding?: number },
 ) {
-  const number = BigNumber(Number(amount));
+  const number = BigNumber(amount.toString());
   if (number.isNaN()) {
     return null;
   }
@@ -36,7 +67,40 @@ export function makeDisplayTokenAmount(
     );
   }
 
-  return number.shiftedBy(-(token.decimals || 0)).toNumber();
+  return number.shiftedBy(-token.decimals).toNumber();
+}
+
+/**
+ * Converts a raw token amount to its display amount as a decimal string.
+ * Unlike makeDisplayTokenAmount, this never goes through a JS number, so raw
+ * amounts above Number.MAX_SAFE_INTEGER keep every digit.
+ */
+export function makeDisplayTokenAmountString(
+  token: Pick<TokenModel | OnchainToken, "decimals">,
+  amount: bigint | string | number | null | undefined,
+): string | null {
+  if (amount === null || amount === undefined || amount === "") {
+    return null;
+  }
+
+  const number = BigNumber(amount.toString());
+  if (number.isNaN()) {
+    return null;
+  }
+
+  return number.shiftedBy(-token.decimals).toFixed();
+}
+
+export function isAmountLessThanTokenMinimum(
+  token: Pick<TokenModel | OnchainToken, "decimals">,
+  amount: string | number,
+) {
+  const number = BigNumber(amount.toString().replace(/,/g, ""));
+  if (!number.isFinite() || !number.gt(0)) {
+    return false;
+  }
+
+  return number.shiftedBy(token.decimals).lt(1);
 }
 
 export function makeShiftAmount(
@@ -92,13 +156,14 @@ export function formatTokenPath(path: string, isNative: boolean): string {
  * @param getGnotPath GNOT path conversion function
  */
 export function getUniqueRewardTokensByPath<
-  T extends { path?: string; name?: string; logoURI?: string; symbol?: string },
+  T extends { path?: string; name?: string; logoURI?: string; symbol?: string; displaySymbol?: string },
 >(
   rewardTokens: RewardTokenModel[],
   getGnotPath: (token: T | null | undefined) => {
     path: string;
     name: string;
     symbol: string;
+    displaySymbol: string;
     logoURI: string;
     wrappedPath: string;
   },
@@ -111,6 +176,7 @@ export function getUniqueRewardTokensByPath<
         ...current,
         logoURI: getGnotPath(current as unknown as T).logoURI,
         symbol: getGnotPath(current as unknown as T).symbol,
+        displaySymbol: getGnotPath(current as unknown as T).displaySymbol,
         path: getGnotPath(current as unknown as T).path,
       });
     }
@@ -128,13 +194,14 @@ export function getUniqueRewardTokensByPath<
  * @param getGnotPath GNOT path conversion function
  */
 export function getUniqueRewardTokensWithMultipleRewardTypes<
-  T extends { path?: string; name?: string; logoURI?: string; symbol?: string },
+  T extends { path?: string; name?: string; logoURI?: string; symbol?: string; displaySymbol?: string },
 >(
   rewardTokens: RewardTokenModel[],
   getGnotPath: (token: T | null | undefined) => {
     path: string;
     name: string;
     symbol: string;
+    displaySymbol: string;
     logoURI: string;
     wrappedPath: string;
   },
@@ -150,6 +217,7 @@ export function getUniqueRewardTokensWithMultipleRewardTypes<
       ...current,
       logoURI: tokenInfo.logoURI,
       symbol: tokenInfo.symbol,
+      displaySymbol: tokenInfo.displaySymbol,
       path: tokenInfo.path,
     };
 
@@ -187,6 +255,7 @@ export function getUniqueRewardTokensWithMultipleRewardTypes<
  */
 function sortRewardTypesByPriority(rewardTypes: RewardType[]): RewardType[] {
   const priorityMap: Record<RewardType, number> = {
+    INTERNAL_REWARD: 1,
     INTERNAL_TIER_1: 1,
     INTERNAL_TIER_2: 1,
     INTERNAL_TIER_3: 1,
@@ -212,8 +281,8 @@ export const formatTokenModelPath = (token: TokenModel): string => {
   return token.path.replace(/^gno\.land\//, "");
 };
 
-export const isNativeTokenPath = (token: TokenModel): boolean => {
-  return token.path === GNOT_TOKEN.path;
+export const isNativeTokenPath = (path: string): boolean => {
+  return path === GNOT_TOKEN.path;
 };
 
 export function parseTokenAmount(tokenAmount: string, denomination = GNOT_TOKEN.denom || "ugnot"): number {

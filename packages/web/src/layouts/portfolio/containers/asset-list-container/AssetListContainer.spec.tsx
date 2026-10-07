@@ -1,0 +1,306 @@
+import React from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
+
+import { GNOT_TOKEN_DEFAULT, GNS_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
+import { TokenModel } from "@models/token/token-model";
+
+import AssetListContainer from "./AssetListContainer";
+
+jest.mock("react-i18next", () => ({
+  useTranslation: () => ({ t: (key: string) => key }),
+}));
+
+jest.mock("@adena-wallet/sdk", () => ({
+  makeMsgCallMessage: jest.fn(),
+  makeMsgSendMessage: jest.fn(),
+  TransactionBuilder: jest.fn(),
+}));
+
+jest.mock("@query/token", () => ({
+  useGetTokens: jest.fn(),
+}));
+
+jest.mock("@query/address", () => ({
+  useGetAvgBlockTime: () => ({ data: { AvgBlockTime: 2.2 } }),
+}));
+
+jest.mock("@hooks/token/data/use-token-data", () => ({
+  useTokenData: jest.fn(),
+}));
+
+jest.mock("@hooks/wallet/data/use-wallet", () => ({
+  useWallet: () => ({
+    connected: true,
+    account: { address: "g1tester" },
+    isSwitchNetwork: false,
+  }),
+}));
+
+jest.mock("@hooks/pool/data/use-position-data", () => ({
+  usePositionData: jest.fn(),
+}));
+
+jest.mock("@hooks/wallet/data/useSendAsset", () => ({
+  __esModule: true,
+  default: () => ({ isConfirm: false, setIsConfirm: jest.fn(), onSubmit: jest.fn() }),
+}));
+
+jest.mock("@hooks/common/use-custom-router", () => ({
+  __esModule: true,
+  default: () => ({ movePageWithTokenPath: jest.fn() }),
+}));
+
+jest.mock("@hooks/common/use-loading", () => ({
+  useLoading: () => ({ isLoadingTokens: false }),
+}));
+
+jest.mock("@hooks/common/use-window-size", () => ({
+  useWindowSize: () => ({
+    breakpoint: "web",
+    handleBreakpoint: jest.fn(),
+    width: 1440,
+    isMobile: false,
+    isWeb: true,
+    isTablet: false,
+  }),
+}));
+
+jest.mock("@hooks/common/use-click-outside", () => ({
+  __esModule: true,
+  default: () => [{ current: null }, false, jest.fn()],
+}));
+
+jest.mock("@hooks/common/use-prevent-scroll", () => ({
+  usePreventScroll: jest.fn(),
+}));
+
+jest.mock("@layouts/portfolio/components/asset-list/asset-list-table/asset-info/AssetInfo", () => ({
+  __esModule: true,
+  default: ({ asset }: { asset: { name: string; symbol: string; price: string } }) => (
+    <div data-testid="asset-row">
+      {asset.name} ({asset.symbol}) <span data-testid="asset-price">{asset.price}</span>
+    </div>
+  ),
+}));
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { useGetTokens } = require("@query/token");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { useTokenData } = require("@hooks/token/data/use-token-data");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { usePositionData } = require("@hooks/pool/data/use-position-data");
+
+const makeToken = (overrides: Partial<TokenModel>): TokenModel => ({
+  path: "gno.land/r/demo/token",
+  type: "GRC20",
+  chainId: "dev",
+  name: "Token",
+  symbol: "TKN",
+  displaySymbol: "TKN",
+  decimals: 6,
+  logoURI: "",
+  createdAt: "2024-01-01T00:00:00Z",
+  priceID: "gno.land/r/demo/token",
+  ...overrides,
+});
+
+const verifiedWithBalance = makeToken({
+  path: "gno.land/r/demo/verified-balance",
+  name: "VerifiedBal",
+  symbol: "VBAL",
+  priceID: "gno.land/r/demo/verified-balance",
+  isVerified: true,
+});
+
+const verifiedZero = makeToken({
+  path: "gno.land/r/demo/verified-zero",
+  name: "VerifiedZero",
+  symbol: "VZERO",
+  priceID: "gno.land/r/demo/verified-zero",
+  isVerified: true,
+});
+
+const unverifiedWithBalance = makeToken({
+  path: "gno.land/r/demo/unverified-balance",
+  name: "UnverifiedBal",
+  symbol: "UBAL",
+  priceID: "gno.land/r/demo/unverified-balance",
+  isVerified: false,
+});
+
+const unverifiedZero = makeToken({
+  path: "gno.land/r/demo/unverified-zero",
+  name: "UnverifiedZero",
+  symbol: "UZERO",
+  priceID: "gno.land/r/demo/unverified-zero",
+  isVerified: false,
+});
+
+const ALL_TEST_TOKENS = [verifiedWithBalance, verifiedZero, unverifiedWithBalance, unverifiedZero];
+
+const displayBalanceMap: Record<string, number> = {
+  [verifiedWithBalance.path]: 100,
+  [unverifiedWithBalance.path]: 50,
+};
+
+const renderContainer = () =>
+  render(
+    <GnoswapThemeProvider>
+      <AssetListContainer />
+    </GnoswapThemeProvider>,
+  );
+
+const setTokens = (tokens: TokenModel[]) => {
+  useGetTokens.mockImplementation((showUnverified: boolean) => ({
+    data: { tokens: showUnverified ? tokens : tokens.filter(token => token.isVerified) },
+  }));
+};
+
+const setBalanceMap = () => {
+  useTokenData.mockImplementation((showUnverified: boolean) => {
+    void showUnverified;
+    return {
+      displayBalanceMap,
+      balances: { ugnot: 1 },
+      tokenPrices: {},
+      hasBalanceData: true,
+      hasTokenPriceData: true,
+      isFetched: true,
+      updateBalances: jest.fn(),
+    };
+  });
+};
+
+const getShowUnverifiedToggle = () => screen.getByLabelText("common:tokenList.showUnverifiedTokens");
+const getVisibleRows = () => screen.getAllByTestId("asset-row").map(row => row.textContent);
+
+describe("AssetListContainer unverified token filtering", () => {
+  beforeEach(() => {
+    setTokens(ALL_TEST_TOKENS);
+    setBalanceMap();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+    GNOT_TOKEN_DEFAULT.isVerified = true;
+    WUGNOT_TOKEN.isVerified = true;
+    GNS_TOKEN.isVerified = true;
+  });
+
+  it("renders the toggle in OFF state by default and hides unverified assets", () => {
+    renderContainer();
+
+    expect(getShowUnverifiedToggle()).not.toBeChecked();
+    expect(useGetTokens).toHaveBeenLastCalledWith(false);
+    expect(useTokenData).toHaveBeenLastCalledWith(false);
+    expect(screen.getByText(/VerifiedBal/)).toBeInTheDocument();
+    expect(screen.queryByText(/UnverifiedBal/)).not.toBeInTheDocument();
+  });
+
+  it("does not request positions while loading assets", () => {
+    renderContainer();
+
+    expect(usePositionData).not.toHaveBeenCalled();
+  });
+
+  it("shows unverified assets when the toggle is switched on", () => {
+    renderContainer();
+    fireEvent.click(getShowUnverifiedToggle());
+
+    expect(useGetTokens).toHaveBeenLastCalledWith(true);
+    expect(useTokenData).toHaveBeenLastCalledWith(true);
+    expect(screen.getByText(/VerifiedBal/)).toBeInTheDocument();
+    expect(screen.getByText(/UnverifiedBal/)).toBeInTheDocument();
+    expect(screen.getByText(/VerifiedZero/)).toBeInTheDocument();
+    expect(screen.getByText(/UnverifiedZero/)).toBeInTheDocument();
+  });
+
+  it.each([
+    { showUnverified: false, visible: ["VerifiedBal", "VerifiedZero"] },
+    { showUnverified: true, visible: ["VerifiedBal", "VerifiedZero", "UnverifiedBal", "UnverifiedZero"] },
+  ])("shows zero-balance assets and filters verification ($showUnverified)", ({ showUnverified, visible }) => {
+    renderContainer();
+    if (showUnverified) fireEvent.click(getShowUnverifiedToggle());
+
+    const rows = getVisibleRows();
+    for (const name of ["VerifiedBal", "VerifiedZero", "UnverifiedBal", "UnverifiedZero"]) {
+      const shouldShow = visible.includes(name);
+      expect(rows.some(row => row?.includes(name))).toBe(shouldShow);
+    }
+  });
+  it("distinguishes failed balance or price queries from known zero", () => {
+    const walletData = {
+      displayBalanceMap,
+      balances: { [GNOT_TOKEN_DEFAULT.priceID]: "0", [verifiedZero.priceID]: "0", [verifiedWithBalance.priceID]: 100 },
+      tokenPrices: { [verifiedWithBalance.path]: { usd: "2" } },
+      isFetched: true,
+      updateBalances: jest.fn(),
+    };
+    useTokenData.mockReturnValue({ ...walletData, hasBalanceData: false, hasTokenPriceData: true });
+    const { rerender } = renderContainer();
+    const refresh = () =>
+      rerender(
+        <GnoswapThemeProvider>
+          <AssetListContainer />
+        </GnoswapThemeProvider>,
+      );
+    const allPricesUnavailable = () => screen.getAllByTestId("asset-price").every(price => price.textContent === "-");
+    expect(allPricesUnavailable()).toBe(true);
+
+    useTokenData.mockReturnValue({ ...walletData, hasBalanceData: true, hasTokenPriceData: false });
+    refresh();
+    expect(allPricesUnavailable()).toBe(true);
+
+    useTokenData.mockReturnValue({ ...walletData, hasBalanceData: true, hasTokenPriceData: true });
+    refresh();
+    const rows = getVisibleRows();
+    expect(rows.some(row => row?.includes(GNOT_TOKEN_DEFAULT.name) && row.includes("$0"))).toBe(true);
+    expect(rows.some(row => row?.includes(verifiedZero.name) && row.includes("$0"))).toBe(true);
+    expect(
+      screen.getAllByTestId("asset-price").some(price => price.textContent !== "-" && price.textContent !== "$0"),
+    ).toBe(true);
+  });
+
+  it("keeps type and search filters working with the toggle on", () => {
+    renderContainer();
+    fireEvent.click(getShowUnverifiedToggle());
+
+    const searchInput = screen.getByRole("textbox");
+    fireEvent.change(searchInput, { target: { value: "ubal" } });
+
+    const rows = getVisibleRows();
+    expect(rows.some(row => row?.includes("UnverifiedBal"))).toBe(true);
+    expect(rows.some(row => row?.includes("VerifiedBal"))).toBe(false);
+  });
+
+  describe("fixed core-token fallback entries", () => {
+    it("shows core tokens from fixed fallbacks by default because they are verified", () => {
+      setTokens([]);
+      renderContainer();
+
+      const rows = getVisibleRows();
+      expect(rows.some(row => row?.includes(GNOT_TOKEN_DEFAULT.name))).toBe(true);
+      expect(rows.some(row => row?.includes(WUGNOT_TOKEN.name))).toBe(true);
+      expect(rows.some(row => row?.includes(GNS_TOKEN.name))).toBe(true);
+    });
+
+    it("routes fixed fallback entries through the same verification filter", () => {
+      setTokens([]);
+      GNOT_TOKEN_DEFAULT.isVerified = false;
+      WUGNOT_TOKEN.isVerified = false;
+      GNS_TOKEN.isVerified = false;
+
+      renderContainer();
+
+      expect(screen.queryAllByTestId("asset-row")).toHaveLength(0);
+
+      fireEvent.click(getShowUnverifiedToggle());
+
+      const rows = getVisibleRows();
+      expect(rows.some(row => row?.includes(GNOT_TOKEN_DEFAULT.name))).toBe(true);
+      expect(rows.some(row => row?.includes(WUGNOT_TOKEN.name))).toBe(true);
+      expect(rows.some(row => row?.includes(GNS_TOKEN.name))).toBe(true);
+    });
+  });
+});

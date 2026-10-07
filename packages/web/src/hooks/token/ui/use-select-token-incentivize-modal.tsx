@@ -7,6 +7,7 @@ import { useCallback } from "react";
 export interface SelectTokenModalProps {
   changeToken?: (token: TokenModel) => void;
   callback?: (value: boolean) => void;
+  poolTokens?: readonly TokenModel[];
 }
 export interface SelectTokenModalModel {
   openModal: () => void;
@@ -15,14 +16,15 @@ export interface SelectTokenModalModel {
 export const useSelectTokenIncentivizeModal = ({
   changeToken,
   callback,
+  poolTokens,
 }: SelectTokenModalProps): SelectTokenModalModel => {
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
 
   const openModal = useCallback(() => {
     setOpenedModal(true);
-    setModalContent(<SelectTokenContainer changeToken={changeToken} callback={callback} />);
-  }, [changeToken, setModalContent, setOpenedModal, callback]);
+    setModalContent(<SelectTokenContainer changeToken={changeToken} callback={callback} poolTokens={poolTokens} />);
+  }, [changeToken, setModalContent, setOpenedModal, callback, poolTokens]);
 
   return {
     openModal,

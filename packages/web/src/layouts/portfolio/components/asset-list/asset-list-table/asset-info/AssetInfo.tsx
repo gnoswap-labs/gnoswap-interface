@@ -49,7 +49,7 @@ const AssetInfo: React.FC<AssetInfoProps> = ({ asset, deposit, withdraw, moveTok
   }, [withdraw, asset]);
 
   const tokenInfoCell = useMemo(
-    () => <TokenInfoCell token={asset} isNative={isNativeToken(asset)} breakpoint={breakpoint} />,
+    () => <TokenInfoCell token={asset} isNative={isNativeToken(asset)} breakpoint={breakpoint} truncateName />,
     [asset, breakpoint],
   );
 

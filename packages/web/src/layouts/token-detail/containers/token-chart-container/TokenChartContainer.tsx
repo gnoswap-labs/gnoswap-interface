@@ -1,8 +1,8 @@
-import BigNumber from "bignumber.js";
 import dayjs from "dayjs";
 import { useAtom } from "jotai";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
+import { RefetchInterval } from "@common/values";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useComponentSize from "@hooks/common/use-component-size";
@@ -16,9 +16,9 @@ import { IPriceResponse, IPrices1d } from "@repositories/token";
 import { TokenState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
 import { getLabelChartV2, getLocalizeTime, getNumberOfAxis } from "@utils/chart";
+import { getYAxisInfo } from "@utils/chart-y-axis";
 import { checkPositivePrice, generateDateSequence } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
-import { RefetchInterval } from "@common/values";
 
 import TokenChart, { ChartInfo, TokenInfo } from "../../components/token-chart/TokenChart";
 
@@ -48,6 +48,7 @@ export const dummyTokenInfo: TokenInfo = {
   token: {
     name: "",
     symbol: "",
+    displaySymbol: "",
     image: "",
     pkg_path: "",
     decimals: 1,
@@ -156,6 +157,7 @@ const TokenChartContainer: React.FC = () => {
         token: {
           name: getGnotPath(tokenB).name,
           symbol: getGnotPath(tokenB).symbol,
+          displaySymbol: getGnotPath(tokenB).displaySymbol,
           image: getGnotPath(tokenB).logoURI,
           pkg_path: getGnotPath(tokenB).path,
           decimals: 1,
@@ -164,7 +166,7 @@ const TokenChartContainer: React.FC = () => {
         },
         priceInfo: {
           amount: {
-            value: formatPrice(currentPrice, { forcedDecimals: true }),
+            value: formatPrice(currentPrice, { isKMB: false, forcedDecimals: true }),
             denom: "USD",
             status: dataToday.status,
           },
@@ -219,7 +221,7 @@ const TokenChartContainer: React.FC = () => {
     }));
   }, [prices1d, prices7d, prices1m, prices1y, currentTab]);
 
-  const getChartInfo = useCallback(() => {
+  const chartInfo = useMemo<ChartInfo>(() => {
     // You will ask me why the code is like this. old data it needs like that
     const length =
       currentTab === TokenChartGraphPeriods[0]
@@ -253,85 +255,37 @@ const TokenChartContainer: React.FC = () => {
       spaceBetweenLeftYAxisWithFirstLabel,
     );
 
-    const datas = [
-      {
-        amount: {
-          value: (pricesBefore.latestPrice || 0).toString(),
-          denom: "",
-        },
-        time: getLocalizeTime(new Date()),
-      },
-      ...chartData.map((item: IPriceResponse) => ({
+    const datas = chartData
+      .map((item: IPriceResponse) => ({
         amount: {
           value: `${item.price}`,
           denom: "",
         },
         time: getLocalizeTime(item.time),
-      })),
-    ].reverse();
+      }))
+      .reverse();
 
-    const yAxisLabels = getYAxisLabels(datas.map(item => BigNumber(item.amount.value).toFormat(6)));
-    const chartInfo: ChartInfo = {
+    const {
+      labels: yAxisLabels,
+      minValue: yAxisMin,
+      maxValue: yAxisMax,
+    } = getYAxisInfo(
+      datas.map(item => item.amount.value),
+      currentPrice !== undefined ? Number(currentPrice) : undefined,
+    );
+    return {
       xAxisLabels,
       yAxisLabels,
+      yAxisMin,
+      yAxisMax,
       datas: datas,
     };
-    return chartInfo;
-  }, [currentTab, chartData, countXAxis, breakpoint]);
-
-  const getYAxisLabels = (datas: string[]): string[] => {
-    const convertNumber = datas.map(item => Number(item));
-    const minValue = BigNumber(Math.min(...convertNumber));
-    const maxValue = BigNumber(Math.max(...convertNumber));
-
-    const originalGap = maxValue.minus(minValue);
-
-    const minPoint = minValue.minus(originalGap.multipliedBy(0.05));
-    const maxPoint = maxValue.plus(originalGap.multipliedBy(0.05));
-
-    if (datas.every(item => item === datas[0])) {
-      return [
-        formatPrice(minValue.multipliedBy(0.95), {
-          usd: false,
-        }),
-        formatPrice(minValue, {
-          usd: false,
-        }),
-        formatPrice(minValue.multipliedBy(1.05), {
-          usd: false,
-        }),
-      ];
-    }
-
-    const gap = maxPoint.minus(minPoint);
-    const space = gap.dividedBy(5);
-    const temp = [
-      formatPrice(minPoint, {
-        usd: false,
-      }),
-    ];
-    for (let i = minPoint.plus(space); i.isLessThan(maxPoint); i = i.plus(space)) {
-      temp.push(
-        `${formatPrice(i, {
-          usd: false,
-        })}`,
-      );
-    }
-    temp.push(
-      formatPrice(maxPoint, {
-        usd: false,
-      }),
-    );
-
-    const uniqueLabel = [...new Set(temp)];
-    if (uniqueLabel.length === 1) uniqueLabel.unshift("0");
-    return uniqueLabel;
-  };
+  }, [currentTab, chartData, countXAxis, breakpoint, currentPrice, size.width]);
 
   return (
     <TokenChart
       tokenInfo={tokenInfo}
-      chartInfo={getChartInfo()}
+      chartInfo={chartInfo}
       tabs={TokenChartGraphPeriods}
       currentTab={currentTab}
       changeTab={changeTab}

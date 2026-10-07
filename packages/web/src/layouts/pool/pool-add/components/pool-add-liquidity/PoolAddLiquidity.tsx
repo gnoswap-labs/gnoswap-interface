@@ -7,7 +7,6 @@ import IconArrowDown from "@components/common/icons/IconArrowDown";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
 import IconFailed from "@components/common/icons/IconFailed";
 import IconSettings from "@components/common/icons/IconSettings";
-import IconStaking from "@components/common/icons/IconStaking";
 import OverlapTokenLogo from "@components/common/overlap-token-logo/OverlapTokenLogo";
 import SettingMenuModal from "@components/common/setting-menu-modal/SettingMenuModal";
 import {
@@ -71,7 +70,6 @@ interface PoolAddLiquidityProps {
   connected: boolean;
   slippage: number;
   changeSlippage: (value: number) => void;
-  submitOneClickStaking: () => void;
   selectPool: SelectPool;
   changeStartingPrice: (price: string) => void;
   createOption: { startPrice: number | null; isCreate: boolean };
@@ -85,7 +83,6 @@ interface PoolAddLiquidityProps {
   showDim: boolean;
   isLoadingSelectFeeTier: boolean;
   isLoadingSelectPriceRange: boolean;
-  showOneClickStaking: boolean;
 }
 
 const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
@@ -113,7 +110,6 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
   connected,
   slippage,
   changeSlippage,
-  submitOneClickStaking,
   selectPool,
   changeStartingPrice,
   handleSwapValue,
@@ -125,7 +121,6 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
   showDim,
   isLoadingSelectFeeTier,
   isLoadingSelectPriceRange,
-  showOneClickStaking,
 }) => {
   const { t } = useTranslation();
 
@@ -284,10 +279,10 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
     );
   }, [selectPool.selectedFullRange, selectPool.minPrice, selectPool.maxPrice, selectPool.currentPrice, tokenA, tokenB]);
 
-  const isLoading = useMemo(
-    () => selectPool.renderState() === "LOADING" || isLoadingCommon,
-    [selectPool.renderState, isLoadingCommon],
-  );
+  const isLoading = useMemo(() => selectPool.renderState() === "LOADING" || isLoadingCommon, [
+    selectPool.renderState,
+    isLoadingCommon,
+  ]);
 
   const tokenPair = useMemo(() => {
     return [isKeepToken ? tokenA : tokenB, !isKeepToken ? tokenA : tokenB].filter(
@@ -423,11 +418,6 @@ const PoolAddLiquidity: React.FC<PoolAddLiquidityProps> = ({
         disabled={!activatedSubmit}
         className="button-submit"
       />
-      {submitType === "CREATE_POOL" && existTokenPair && selectedFeeRate && showOneClickStaking && (
-        <div className="btn-one-click" onClick={submitOneClickStaking}>
-          <IconStaking /> {t("AddPosition:oneClick")}
-        </div>
-      )}
     </PoolAddLiquidityWrapper>
   );
 };

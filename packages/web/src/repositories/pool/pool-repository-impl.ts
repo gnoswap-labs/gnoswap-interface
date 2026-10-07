@@ -4,18 +4,19 @@ import { WalletClient } from "@common/clients/wallet-client";
 import {
   SendTransactionResponse,
   SendTransactionSuccessResponse,
+  TransactionMessage,
   WalletResponse,
 } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { PoolError } from "@common/errors/pool";
-import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
+import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED, DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT } from "@common/values";
 import { PACKAGE_POOL_PATH, PACKAGE_STAKER_PATH } from "@constants/environment.constant";
-import { GnoProvider } from "@gnolang/gno-js-client";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
+import { GnoProvider } from "@gnolang/gno-js-client";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { PoolStakingMapper } from "@models/pool/mapper/pool-staking-mapper";
-import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { PoolLiquidityTickModel } from "@models/pool/pool-liquidity-model";
 import { IncentivizePoolModel, PoolModel } from "@models/pool/pool-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 import {
@@ -25,20 +26,29 @@ import {
   evaluateExpressionToUint256,
   makeABCIParams,
 } from "@utils/rpc-utils";
-import { withTransactionGuard, generateSendTransactionParams } from "@utils/transaction-utils";
-import { PoolListResponse, PoolPricesResponse, PoolRepository, PoolResponse } from ".";
+import { generateSendTransactionParams, withTransactionGuard } from "@utils/transaction-utils";
 import {
+  AllowedExternalRewardTokensResponse,
+  PoolListResponse,
+  PoolPricesResponse,
+  PoolRepository,
+  PoolResponse,
+} from ".";
+import {
+  makeCollectExternalIncentivePenaltyMessageWithApproves,
   makeCreateExternalIncentiveMessageWithApproves,
   makeCreatePoolMessageWithApproves,
   makePositionMintMessageWithApproves,
   makeRemoveExternalIncentiveMessageWithApproves,
 } from "./pool.message";
-import { AddLiquidityRequest } from "./request/add-liquidity-request";
+import { AddLiquidityMessagesRequest, AddLiquidityRequest } from "./request/add-liquidity-request";
+import { CollectExternalIncentivePenaltyRequest } from "./request/collect-external-incentive-penalty-request";
 import { CreateExternalIncentiveRequest } from "./request/create-external-incentive-request";
 import { CreatePoolRequest } from "./request/create-pool-request";
 import { RemoveExternalIncentiveRequest } from "./request/remove-external-incentive-request";
 import { AddLiquidityFailedResponse, AddLiquiditySuccessResponse } from "./response/add-liquidity-response";
 import { CreatePoolFailedResponse, CreatePoolSuccessResponse } from "./response/create-pool-response";
+import { PoolLiquidityTickResponse } from "./response/pool-liquidity-ticks-response";
 import { PoolStakingResponse } from "./response/pool-staking-response";
 
 export class PoolRepositoryImpl implements PoolRepository {
@@ -58,7 +68,8 @@ export class PoolRepositoryImpl implements PoolRepository {
         throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
       }
 
-      const response = await (await this.rpcProvider.getStatus()).sync_info.latest_block_height;
+      const status = await this.rpcProvider.getStatus();
+      const response = status.sync_info.latest_block_height;
 
       return response;
     } catch (error) {
@@ -83,6 +94,42 @@ export class PoolRepositoryImpl implements PoolRepository {
     }
   };
 
+  getIncentiveCreationDeposit = async (): Promise<string> => {
+    if (!this.networkClient) {
+      return DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT;
+    }
+
+    try {
+      const response = await this.networkClient.get<{
+        data: { depositGnsAmount: string };
+      }>({
+        url: "/incentivize/deposit",
+      });
+
+      return response?.data?.data?.depositGnsAmount || DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT;
+    } catch (error) {
+      console.error(error);
+      return DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT;
+    }
+  };
+
+  getAllowedExternalRewardTokenPaths = async (): Promise<string[]> => {
+    if (!this.networkClient) {
+      return [];
+    }
+
+    try {
+      const response = await this.networkClient.get<AllowedExternalRewardTokensResponse>({
+        url: "/incentivize/allowed-tokens",
+      });
+
+      return response?.data?.data?.tokens?.map(token => token.tokenPath) || [];
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  };
+
   getPoolStakingList = async (poolPath: string): Promise<PoolStakingModel[]> => {
     if (!this.networkClient) {
       return [];
@@ -90,7 +137,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     const response = await this.networkClient.get<{
       data: PoolStakingResponse[];
     }>({
-      url: `/staking/${poolPath}?all=true`,
+      url: `/staking/${poolPath}`,
     });
     const pools = response?.data?.data ? response.data.data.map(PoolStakingMapper.fromResponse) : [];
     return pools;
@@ -103,7 +150,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     const response = await this.networkClient.get<{
       data: PoolStakingResponse[];
     }>({
-      url: `/staking/?provider=${address}`,
+      url: `/staking?address=${address}`,
     });
     const pools = response?.data?.data ? response.data.data.map(PoolStakingMapper.fromResponse) : [];
     return pools;
@@ -159,21 +206,26 @@ export class PoolRepositoryImpl implements PoolRepository {
 
   getPools = async (): Promise<PoolModel[]> => {
     if (!this.networkClient) {
-      return [];
+      throw new Error("Pool API unavailable");
     }
     const response = await this.networkClient.get<PoolListResponse>({
       url: "/pools",
     });
-    const pools = response?.data?.data ? response.data.data.map(PoolMapper.fromResponse) : [];
-    return pools;
+    if (!Array.isArray(response?.data?.data)) {
+      throw new Error("Invalid pool list response");
+    }
+    return response.data.data.map(PoolMapper.fromResponse);
   };
 
-  getIncentivizePools = async (): Promise<IncentivizePoolModel[]> => {
+  getIncentivizePools = async (address?: string): Promise<IncentivizePoolModel[]> => {
     if (!this.networkClient) {
       return [];
     }
+    const url = address
+      ? `/pools?incentivized=true&address=${encodeURIComponent(address)}`
+      : "/pools?incentivized=true";
     const response = await this.networkClient.get<PoolListResponse>({
-      url: "/pools?incentivized=true",
+      url,
     });
 
     const pools = response?.data?.data ? response.data.data.map(PoolMapper.toIncentivePool) : [];
@@ -192,15 +244,21 @@ export class PoolRepositoryImpl implements PoolRepository {
     return pool;
   };
 
-  getBinsOfPoolByPath = async (poolPath: string, count?: number): Promise<PoolBinModel[]> => {
+  getLiquidityTicksOfPoolByPath = async (poolPath: string): Promise<PoolLiquidityTickModel[]> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
+
     return this.networkClient
-      .get<{ data: PoolBinModel[] }>({
-        url: `/pools/${encodeURIComponent(poolPath)}/bins?binSize=${count || 40}`,
+      .get<{ data: PoolLiquidityTickResponse[] }>({
+        url: `/pools/${encodeURIComponent(poolPath)}/ticks`,
       })
-      .then(response => response.data.data);
+      .then(response =>
+        response.data.data.map(tick => ({
+          tick: tick.tick,
+          liquidityNet: tick.liquidityNet,
+        })),
+      );
   };
 
   getPoolPriceByPoolPath = async (poolPath: string, period?: CHART_DAY_SCOPE_TYPE): Promise<PoolPricesResponse> => {
@@ -330,28 +388,22 @@ export class PoolRepositoryImpl implements PoolRepository {
     });
   };
 
-  addLiquidity = async (
-    request: AddLiquidityRequest,
-  ): Promise<WalletResponse<AddLiquiditySuccessResponse | AddLiquidityFailedResponse>> => {
+  makeAddLiquidityMessages = async (request: AddLiquidityMessagesRequest): Promise<TransactionMessage[]> => {
     if (!this.rpcProvider) {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }
 
-    const { gasFee, gasUsed, caller, ...requests } = request;
-    const makeTxMessageRequests = {
-      caller,
-      ...requests,
-    };
-
-    /**
-     * Add Position Mint message
-     */
-    const mintMessages = await makePositionMintMessageWithApproves(
-      makeTxMessageRequests,
-      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    return makePositionMintMessageWithApproves(request, (packagePath, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
+  };
 
-    const messages = [...mintMessages];
+  addLiquidity = async (
+    request: AddLiquidityRequest,
+  ): Promise<WalletResponse<AddLiquiditySuccessResponse | AddLiquidityFailedResponse>> => {
+    const { gasFee, gasUsed, ...requests } = request;
+
+    const messages = await this.makeAddLiquidityMessages(requests);
 
     const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
 
@@ -438,7 +490,45 @@ export class PoolRepositoryImpl implements PoolRepository {
       return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
     }).then(response => {
       if (response.code !== 0 || !response.data) {
-        throw new PoolError("FAILED_TO_CREATE_INCENTIVE");
+        throw new PoolError("FAILED_TO_REMOVE_INCENTIVE");
+      }
+      const data = response?.data as SendTransactionSuccessResponse<string[]>;
+      return data?.hash || null;
+    });
+  };
+
+  collectExternalIncentivePenalty = async (request: CollectExternalIncentivePenaltyRequest): Promise<string | null> => {
+    if (!this.rpcProvider) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
+    const address = await this.getAddress();
+
+    const { gasFee, gasUsed, ...requests } = request;
+    const makeTxMessageRequests = {
+      caller: address,
+      ...requests,
+    };
+
+    const messages = await makeCollectExternalIncentivePenaltyMessageWithApproves(
+      makeTxMessageRequests,
+      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    );
+
+    const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
+
+    const sendTransactionParams = generateSendTransactionParams({
+      messages,
+      gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
+      gasWanted: Number(gasWanted.toFixed()),
+      memo: "",
+    });
+
+    return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
+      return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
+    }).then(response => {
+      if (response.code !== 0 || !response.data) {
+        throw new PoolError("FAILED_TO_COLLECT_INCENTIVE");
       }
       const data = response?.data as SendTransactionSuccessResponse<string[]>;
       return data?.hash || null;

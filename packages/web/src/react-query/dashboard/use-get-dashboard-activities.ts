@@ -6,7 +6,7 @@ import { ActivityType } from "@repositories/dashboard";
 
 import { QUERY_KEY } from "../query-keys";
 
-const REFETCH_INTERVAL = 10_000;
+const REFETCH_INTERVAL = 5_000;
 
 export const useGetDashboardActivities = (
   activityType: ActivityType,

@@ -44,7 +44,7 @@ const SelectLiquidity: React.FC<SelectLiquidityProps> = ({
             context: "all",
           })}
         </span>
-        <span className="liquidity-label">{t("business:liquidity")}</span>
+        <span className="liquidity-label">{t("business:value")}</span>
       </div>
       <ul>
         {isLoading && (

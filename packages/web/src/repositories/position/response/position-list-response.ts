@@ -1,4 +1,3 @@
-import { PoolBinModel } from "@models/pool/pool-bin-model";
 import { ClaimedRewardModel } from "@models/position/reward-model";
 import { RewardResponse } from "./reward-response";
 
@@ -40,8 +39,6 @@ export interface PositionResponse {
 
   claimedRewards?: ClaimedRewardModel[];
 
-  bins40: PoolBinModel[];
-
   closed: boolean;
 
   totalClaimedUsd: string;
@@ -50,7 +47,7 @@ export interface PositionResponse {
 
   unclaimedFeeBUsd: string;
 
-  totalDailyRewardsUsd: string;
+  totalDailyRewardsUsd?: string;
 
   stakedUsd?: string;
 

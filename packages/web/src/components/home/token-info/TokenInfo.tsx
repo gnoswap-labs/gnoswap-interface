@@ -108,7 +108,7 @@ const TokenInfo: React.FC<TokenInfoProps> = ({ item, idx }) => {
           <span className="token-index">{idx}</span>
         </TableColumn>
         <TableColumn className="name-col left left-padding" tdWidth={TOKEN_TD_WIDTH[1]}>
-          <TokenInfoCell token={token} isNative={isNative} />
+          <TokenInfoCell token={token} isNative={isNative} truncateName />
         </TableColumn>
         <TableColumn className={cx("right-padding-16", priceStyle.className)} tdWidth={TOKEN_TD_WIDTH[2]}>
           {renderPrice(price)}

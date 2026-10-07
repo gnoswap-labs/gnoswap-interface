@@ -1,5 +1,7 @@
 import { AmountConverter } from "@services/converters/common/amount";
 
+import { emptyToken } from "@repositories/activity/responses/activity-responses";
+
 import { TransactionGroupsType } from "@models/notification";
 import { TransactionModel } from "@models/account/account-history-model";
 
@@ -32,7 +34,7 @@ export class NotificationConverter {
               rawValue: {
                 ...tx.rawValue,
                 tokenAAmount: AmountConverter.convertSingle(tx.rawValue.tokenA, tx.rawValue.tokenAAmount),
-                tokenBAmount: AmountConverter.convertSingle(tx.rawValue.tokenB, tx.rawValue.tokenBAmount),
+                tokenBAmount: AmountConverter.convertSingle(tx.rawValue.tokenB ?? emptyToken, tx.rawValue.tokenBAmount),
               },
             };
           }) || [],

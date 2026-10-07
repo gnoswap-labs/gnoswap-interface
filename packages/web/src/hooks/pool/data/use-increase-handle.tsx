@@ -4,15 +4,19 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { PriceRangeMeta, RANGE_STATUS_OPTION, SwapFeeTierInfoMap } from "@constants/option.constant";
 import { MAX_PRICE, MIN_PRICE } from "@constants/swap.constant";
+import { TransactionMessage } from "@common/clients/wallet-client/protocols";
 import useCustomRouter from "@hooks/common/use-custom-router";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useSlippage } from "@hooks/common/use-slippage";
 import { useSelectPool } from "@hooks/pool/data/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
+import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useTokenAmountInput } from "@hooks/token/data/use-token-amount-input";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { IncreaseState } from "@states/index";
+import { makeDisplayPrice } from "@utils/pool-utils";
 import {
   getDepositAmountsByAmountA,
   getDepositAmountsByAmountB,
@@ -22,7 +26,7 @@ import {
   tickToPrice,
   tickToPriceStr,
 } from "@utils/swap-utils";
-import { makeDisplayTokenAmount, makeRawTokenAmount } from "@utils/token-utils";
+import { makeDisplayTokenAmount, makeRawTokenAmount, withTokenRouteMetadata } from "@utils/token-utils";
 
 export interface IPriceRange {
   tokenARatioStr: string;
@@ -32,8 +36,11 @@ export interface IPriceRange {
 
 export type INCREASE_BUTTON_TYPE = "ENTER_AMOUNT" | "INCREASE_LIQUIDITY" | "INSUFFICIENT_BALANCE";
 
+const INCREASE_DEADLINE_SEC = 60 * 5;
+
 export const useIncreaseHandle = () => {
   const router = useCustomRouter();
+  const { positionRepository } = useGnoswapContext();
   const [selectedPosition, setSelectedPosition] = useAtom(IncreaseState.selectedPosition);
   const poolPath = router.getPoolPath();
   const positionId = router.getPositionId();
@@ -61,28 +68,25 @@ export const useIncreaseHandle = () => {
   }, [selectedPosition, positions, positionId, poolPath]);
 
   const { connected, account, loadingConnect } = useWallet();
+  const { tokens, isFetched: isFetchedTokens } = useTokenData(true);
   const minPriceStr = useMemo(() => {
     if (!selectedPosition) return "-";
     const isEndTick = isEndTickBy(selectedPosition?.tickLower, selectedPosition?.pool.fee);
-    const minPrice = tickToPriceStr(selectedPosition?.tickLower, {
-      decimals: 40,
-      isEnd: isEndTick,
-    });
+    const minPrice = tickToPriceStr(selectedPosition?.tickLower, { isEnd: isEndTick });
+    if (minPrice === "0" || minPrice === "∞") return minPrice;
 
-    return `${minPrice}`;
-  }, [selectedPosition?.tickUpper, selectedPosition?.tickLower]);
+    return `${makeDisplayPrice(tickToPrice(selectedPosition.tickLower), selectedPosition.pool.tokenA, selectedPosition.pool.tokenB)}`;
+  }, [selectedPosition]);
 
   const maxPriceStr = useMemo(() => {
     if (!selectedPosition) return "-";
     const isEndTick = isEndTickBy(selectedPosition?.tickUpper, selectedPosition?.pool.fee);
 
-    const maxPrice = tickToPriceStr(selectedPosition?.tickUpper, {
-      decimals: 40,
-      isEnd: isEndTick,
-    });
+    const maxPrice = tickToPriceStr(selectedPosition?.tickUpper, { isEnd: isEndTick });
+    if (maxPrice === "0" || maxPrice === "∞") return maxPrice;
 
-    return maxPrice;
-  }, [selectedPosition?.tickLower, selectedPosition?.tickUpper]);
+    return `${makeDisplayPrice(tickToPrice(selectedPosition.tickUpper), selectedPosition.pool.tokenA, selectedPosition.pool.tokenB)}`;
+  }, [selectedPosition]);
 
   const feeTier = useMemo(() => {
     return selectedPosition ? makeSwapFeeTier(selectedPosition.pool.fee) : null;
@@ -94,6 +98,7 @@ export const useIncreaseHandle = () => {
       ...selectedPosition?.pool.tokenA,
       name: getGnotPath(selectedPosition?.pool.tokenA).name,
       symbol: getGnotPath(selectedPosition?.pool.tokenA).symbol,
+      displaySymbol: getGnotPath(selectedPosition?.pool.tokenA).displaySymbol,
       logoURI: getGnotPath(selectedPosition?.pool.tokenA).logoURI,
     };
   }, [selectedPosition?.pool]);
@@ -104,6 +109,7 @@ export const useIncreaseHandle = () => {
       ...selectedPosition?.pool.tokenB,
       name: getGnotPath(selectedPosition?.pool.tokenB).name,
       symbol: getGnotPath(selectedPosition?.pool.tokenB).symbol,
+      displaySymbol: getGnotPath(selectedPosition?.pool.tokenB).displaySymbol,
       logoURI: getGnotPath(selectedPosition?.pool.tokenB).logoURI,
     };
   }, [selectedPosition?.pool]);
@@ -283,6 +289,63 @@ export const useIncreaseHandle = () => {
     [tokenBAmountInput, sqrtPriceX96, selectPool.currentPrice, tokenA, tokenB, minPrice, maxPrice],
   );
 
+  /**
+   * Builds the messages an increase of `rawAmount` on one side would broadcast.
+   *
+   * The paired amount is derived the same way the inputs derive it, so the
+   * simulated transaction deposits the pair the user would actually send —
+   * which decides how many ticks get initialized, and with them the storage.
+   */
+  const makeMaxAmountMessages = useCallback(
+    (deposited: "A" | "B") =>
+      async (rawAmount: string): Promise<TransactionMessage[]> => {
+        if (!selectedPosition || !tokenA || !tokenB || !sqrtPriceX96 || !account?.address || !isFetchedTokens) return [];
+
+        const pairAmounts =
+          deposited === "A"
+            ? getDepositAmountsByAmountA(selectPool.currentPrice, sqrtPriceX96, minPrice, maxPrice, BigInt(rawAmount))
+            : getDepositAmountsByAmountB(selectPool.currentPrice, sqrtPriceX96, minPrice, maxPrice, BigInt(rawAmount));
+
+        const rawAmountA = deposited === "A" ? rawAmount : pairAmounts.amountA.toString();
+        const rawAmountB = deposited === "B" ? rawAmount : pairAmounts.amountB.toString();
+
+        return positionRepository.makeIncreaseLiquidityMessages({
+          lpTokenId: selectedPosition.id.toString(),
+          tokenA: withTokenRouteMetadata(tokenA, tokens),
+          tokenB: withTokenRouteMetadata(tokenB, tokens),
+          tokenAAmount: Number(makeDisplayTokenAmount(tokenA, rawAmountA) || 0),
+          tokenBAmount: Number(makeDisplayTokenAmount(tokenB, rawAmountB) || 0),
+          slippage,
+          caller: account.address,
+          deadline: (Math.floor(Date.now() / 1000) + INCREASE_DEADLINE_SEC).toString(),
+        });
+      },
+    [
+      selectedPosition,
+      tokenA,
+      tokenB,
+      sqrtPriceX96,
+      account?.address,
+      isFetchedTokens,
+      selectPool.currentPrice,
+      minPrice,
+      maxPrice,
+      positionRepository,
+      tokens,
+      slippage,
+    ],
+  );
+
+  /**
+   * What the messages above were built from that the amount inputs do not
+   * show. Changing the range or the slippage changes what the deposit costs,
+   * so a MAX still in flight no longer answers the position on screen.
+   */
+  const maxAmountDependsOn = useMemo(
+    () => [selectedPosition?.id, selectPool.currentPrice, sqrtPriceX96, minPrice, maxPrice, slippage],
+    [selectedPosition?.id, selectPool.currentPrice, sqrtPriceX96, minPrice, maxPrice, slippage],
+  );
+
   const buttonType: INCREASE_BUTTON_TYPE = useMemo(() => {
     if (
       (isDepositTokenA && !Number(tokenAAmountInput.amount)) ||
@@ -353,5 +416,7 @@ export const useIncreaseHandle = () => {
     isDepositTokenA,
     isDepositTokenB,
     refetchPositions,
+    makeMaxAmountMessages,
+    maxAmountDependsOn,
   };
 };

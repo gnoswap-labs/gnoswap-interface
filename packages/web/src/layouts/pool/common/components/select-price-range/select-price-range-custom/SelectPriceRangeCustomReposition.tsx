@@ -1,16 +1,14 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
 import IconAdd from "@components/common/icons/IconAdd";
-import IconKeyboardArrowLeft from "@components/common/icons/IconKeyboardArrowLeft";
-import IconKeyboardArrowRight from "@components/common/icons/IconKeyboardArrowRight";
 import IconRefresh from "@components/common/icons/IconRefresh";
 import IconRemove from "@components/common/icons/IconRemove";
 import IconSwap from "@components/common/icons/IconSwap";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import PoolSelectionGraph from "@components/common/pool-selection-graph/PoolSelectionGraph";
 import SelectTab from "@components/common/select-tab/SelectTab";
-import { ZOOL_VALUES } from "@constants/graph.constant";
+import { LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES } from "@constants/graph.constant";
 import { PriceRangeMeta, PriceRangeType, SwapFeeTierPriceRange } from "@constants/option.constant";
 import { MAX_TICK } from "@constants/swap.constant";
 import { useLoading } from "@hooks/common/use-loading";
@@ -18,6 +16,7 @@ import { SelectPool } from "@hooks/pool/data/use-select-pool";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { TokenModel } from "@models/token/token-model";
 import { checkGnotPath } from "@utils/common";
+import { makeDisplayPrice } from "@utils/pool-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { priceToTick, tickToPrice } from "@utils/swap-utils";
 import { sortTokenPaths } from "@utils/sort-utils";
@@ -54,7 +53,6 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
 }) => {
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
-  const [shiftPosition, setShiftPosition] = useState(0);
   const { isLoading: isLoadingCommon } = useLoading();
   const GRAPH_WIDTH = 388;
   const GRAPH_HEIGHT = 160;
@@ -84,96 +82,52 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
   }, [selectPool.compareToken, selectPool.startPrice, tokenA.path, tokenB.path]);
 
   const currentTokenA = useMemo(() => {
-    return flip ? getGnotPath(tokenB) : getGnotPath(tokenA);
-  }, [flip, tokenA, tokenB]);
+    return flip ? { ...tokenB, ...getGnotPath(tokenB) } : { ...tokenA, ...getGnotPath(tokenA) };
+  }, [flip, getGnotPath, tokenA, tokenB]);
 
   const currentTokenB = useMemo(() => {
-    return flip ? getGnotPath(tokenA) : getGnotPath(tokenB);
-  }, [flip, tokenA, tokenB]);
+    return flip ? { ...tokenA, ...getGnotPath(tokenA) } : { ...tokenB, ...getGnotPath(tokenB) };
+  }, [flip, getGnotPath, tokenA, tokenB]);
 
-  const currentPrice = useMemo(() => {
-    if (selectPool.startPrice) {
-      if (!selectPool.startPrice) return 0;
-
-      if (flip) {
-        // return 1 / selectPool.startPrice;
-      }
-      return selectPool.startPrice;
-    }
-
-    if (flip) {
-      if (!selectPool.currentPrice) {
-        return 0;
-      }
-      return 1 / selectPool.currentPrice;
-    }
-    return selectPool.currentPrice;
-  }, [flip, selectPool.currentPrice, selectPool.startPrice]);
+  const currentPrice = selectPool.startPrice || selectPool.currentPrice;
 
   const currentPriceStr = useMemo(() => {
     if (!currentPrice) {
       return "-";
     }
 
-    const priceWithDecimal = (() => {
-      if (selectPool.compareToken?.path === tokenA.path) {
-        return 10 ** ((tokenB.decimals || 0) - (tokenA.decimals || 0)) * currentPrice;
-      }
-
-      return 10 ** ((tokenA.decimals || 0) - (tokenB.decimals || 0)) * currentPrice;
-    })();
+    const displayPrice = makeDisplayPrice(currentPrice, currentTokenA, currentTokenB);
 
     return (
       <>
-        1 {currentTokenA.symbol} =&nbsp;
-        {formatTokenExchangeRate(priceWithDecimal, {
+        1 {currentTokenA.displaySymbol} =&nbsp;
+        {formatTokenExchangeRate(displayPrice, {
           maxSignificantDigits: 6,
           minLimit: 0.000001,
         })}
         &nbsp;
-        {currentTokenB.symbol}
+        {currentTokenB.displaySymbol}
       </>
     );
-  }, [
-    currentPrice,
-    currentTokenA.symbol,
-    currentTokenB.symbol,
-    selectPool.compareToken?.path,
-    tokenA.path,
-    tokenA.decimals,
-    tokenB.decimals,
-  ]);
+  }, [currentPrice, currentTokenA, currentTokenB]);
+
+  const decimalsRatio = useMemo(() => {
+    return currentTokenA.decimals - currentTokenB.decimals;
+  }, [currentTokenA.decimals, currentTokenB.decimals]);
 
   const availZoomIn = useMemo(() => {
-    return selectPool.zoomLevel < ZOOL_VALUES.length - 1;
+    return selectPool.zoomLevel < LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES.length - 1;
   }, [selectPool.zoomLevel]);
 
   const availZoomOut = useMemo(() => {
     return selectPool.zoomLevel > 0;
   }, [selectPool.zoomLevel]);
 
-  const availMoveLeft = useMemo(() => {
-    if (!selectPool.bins) {
-      return false;
-    }
-    const moveRange = selectPool.bins.length / 2 - 20;
-    return shiftPosition + moveRange > 0;
-  }, [selectPool.bins, shiftPosition]);
-
-  const availMoveRight = useMemo(() => {
-    if (!selectPool.bins) {
-      return false;
-    }
-    const moveRange = selectPool.bins.length / 2 - 20;
-    return moveRange - shiftPosition > 0;
-  }, [selectPool.bins, shiftPosition]);
-
   const zoomIn = useCallback(() => {
     if (!availZoomIn) {
       return;
     }
     selectPool.zoomIn();
-    setShiftPosition(0);
   }, [availZoomIn, selectPool]);
 
   const zoomOut = useCallback(() => {
@@ -181,22 +135,7 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
       return;
     }
     selectPool.zoomOut();
-    setShiftPosition(0);
   }, [availZoomOut, selectPool]);
-
-  const moveLeft = useCallback(() => {
-    if (!availMoveLeft) {
-      return;
-    }
-    setShiftPosition(value => value - 1);
-  }, [availMoveLeft]);
-
-  const moveRight = useCallback(() => {
-    if (!availMoveRight) {
-      return;
-    }
-    setShiftPosition(value => value + 1);
-  }, [availMoveRight]);
 
   const onClickTabItem = useCallback(
     (symbol: string) => {
@@ -216,7 +155,6 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
 
   const selectFullRange = useCallback(() => {
     selectPool.selectFullRange();
-    setShiftPosition(0);
     changePriceRange({ type: "Custom" });
   }, [selectPool]);
 
@@ -240,7 +178,6 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
   }
 
   function onResetRange(priceRangeType?: PriceRangeType | null) {
-    setShiftPosition(0);
     if (priceRangeType && priceRangeType !== "Custom") {
       initPriceRange(priceRangeType);
     } else {
@@ -299,24 +236,6 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
                   <div className="graph-option-wrapper">
                     <span
                       className={`graph-option-item decrease ${
-                        isLoading || showDim || !availMoveLeft ? "disabled-option" : ""
-                      }`}
-                      onClick={moveLeft}
-                    >
-                      <IconKeyboardArrowLeft />
-                    </span>
-                    <span
-                      className={`graph-option-item increase ${
-                        isLoading || showDim || !availMoveRight ? "disabled-option" : ""
-                      }`}
-                      onClick={moveRight}
-                    >
-                      <IconKeyboardArrowRight />
-                    </span>
-                  </div>
-                  <div className="graph-option-wrapper">
-                    <span
-                      className={`graph-option-item decrease ${
                         isLoading || showDim || !availZoomOut ? "disabled-option" : ""
                       }`}
                       onClick={zoomOut}
@@ -363,13 +282,12 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
                     <PoolSelectionGraph
                       tokenA={tokenA}
                       tokenB={tokenB}
-                      bins={selectPool.bins || []}
+                      liquiditySegments={selectPool.liquiditySegments}
                       feeTier={selectPool.feeTier || "NONE"}
                       tickSpacing={selectPool.tickSpacing || 1}
                       width={GRAPH_WIDTH}
                       height={GRAPH_HEIGHT}
                       position="top"
-                      offset={selectPool.bins?.length}
                       price={currentPrice || 0}
                       flip={flip}
                       fullRange={selectPool.selectedFullRange}
@@ -378,7 +296,6 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
                       maxPrice={selectPool.maxPrice}
                       setMinPrice={selectPool.setMinPosition}
                       setMaxPrice={selectPool.setMaxPosition}
-                      shiftIndex={shiftPosition}
                       onFinishMove={() => changePriceRange({ type: "Custom" })}
                     />
                   </div>
@@ -398,6 +315,7 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
                       decrease={selectPool.decreaseMinTick}
                       increase={selectPool.increaseMinTick}
                       setIsChangeMinMax={selectPool.setIsChangeMinMax}
+                      priceRatio={decimalsRatio}
                     />
                     <SelectPriceRangeCutomController
                       title={t("Reposition:form.price.max")}
@@ -412,6 +330,7 @@ const SelectPriceRangeCustomReposition: React.FC<SelectPriceRangeCustomRepositio
                       decrease={selectPool.decreaseMaxTick}
                       increase={selectPool.increaseMaxTick}
                       setIsChangeMinMax={selectPool.setIsChangeMinMax}
+                      priceRatio={decimalsRatio}
                     />
                   </div>
                   <div className="extra-wrapper">

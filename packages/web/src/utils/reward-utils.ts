@@ -14,6 +14,7 @@ export const mapToDisplayRewardType = (rewardType: RewardType): DisplayRewardTyp
       return "SWAP_FEE";
     case "EXTERNAL_REWARD":
       return "EXTERNAL_REWARD";
+    case "INTERNAL_REWARD":
     case "INTERNAL_TIER_1":
     case "INTERNAL_TIER_2":
     case "INTERNAL_TIER_3":
@@ -29,7 +30,12 @@ export const mapToDisplayRewardType = (rewardType: RewardType): DisplayRewardTyp
  * @returns boolean
  */
 export const isInternalRewardType = (rewardType: RewardType): boolean => {
-  return rewardType === "INTERNAL_TIER_1" || rewardType === "INTERNAL_TIER_2" || rewardType === "INTERNAL_TIER_3";
+  return (
+    rewardType === "INTERNAL_REWARD" ||
+    rewardType === "INTERNAL_TIER_1" ||
+    rewardType === "INTERNAL_TIER_2" ||
+    rewardType === "INTERNAL_TIER_3"
+  );
 };
 
 /**
