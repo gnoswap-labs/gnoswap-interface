@@ -522,6 +522,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                 <button
                   type="button"
                   disabled={!availInfo.availZoomOut}
+                  className={cx({ disabled: !availInfo.availZoomOut })}
                   aria-label={t("Pool:chart.zoomOut")}
                   onClick={onZoomOut}
                 >
@@ -530,6 +531,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                 <button
                   type="button"
                   disabled={!availInfo.availZoomIn}
+                  className={cx({ disabled: !availInfo.availZoomIn })}
                   aria-label={t("Pool:chart.zoomIn")}
                   onClick={onZoomIn}
                 >

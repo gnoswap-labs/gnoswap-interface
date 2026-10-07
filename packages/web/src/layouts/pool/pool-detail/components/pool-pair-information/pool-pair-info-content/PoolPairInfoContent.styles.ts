@@ -274,12 +274,12 @@ export const ContentWrapper = styled.div`
           }
           line-height: 22px;
           @media (hover: hover) {
-            &:hover {
+            &:not(:disabled):hover {
               background: ${({ theme }) => theme.color.backgroundOpacity};
             }
           }
           @media (hover: none) {
-            &:active {
+            &:not(:disabled):active {
               background: ${({ theme }) => theme.color.backgroundOpacity};
             }
           }
