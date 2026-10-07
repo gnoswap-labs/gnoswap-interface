@@ -36,7 +36,7 @@ export default function PoolPriceChart({ client, poolPath, tokenA, tokenB, rever
         end: String(end),
       });
       const response = await client.get<PoolHistory>({
-        url: `/pools/${encodeURIComponent(poolPath)}/price/history?${params.toString()}`,
+        url: `/pools/${encodeURIComponent(poolPath)}/ohlcv?${params.toString()}`,
       });
       return decodeHistory(response.data, reversed, interval, start, end);
     },

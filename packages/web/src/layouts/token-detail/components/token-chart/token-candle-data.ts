@@ -55,7 +55,7 @@ export async function getTokenCandlePage(
     end: String(end),
   });
   const response = await client.get<TokenHistory>({
-    url: `/tokens/${encodeURIComponent(tokenPath)}/price/history?${params.toString()}`,
+    url: `/tokens/${encodeURIComponent(tokenPath)}/ohlcv?${params.toString()}`,
   });
   return decodeTokenCandles(response.data, interval, start, end);
 }

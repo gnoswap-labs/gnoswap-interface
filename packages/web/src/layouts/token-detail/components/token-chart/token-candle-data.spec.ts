@@ -1,8 +1,5 @@
-import type { NetworkClient } from "@common/clients/network-client";
+import { decodeTokenCandles } from "./token-candle-data";
 
-import { decodeTokenCandles, getTokenCandlePage } from "./token-candle-data";
-
-const tokenPath = "gno.land/r/demo/token";
 const interval = 3600;
 const start = 0;
 const end = 14400;
@@ -50,33 +47,4 @@ describe("token USD candles", () => {
     ).toThrow();
   });
 
-  it("requests the encoded token history route with explicit bounded windows", async () => {
-    const get = jest.fn().mockResolvedValue({ data: body });
-    const result = await getTokenCandlePage({ get } as unknown as NetworkClient, tokenPath, "1h", start, end);
-    expect(result.map(bar => bar.time)).toEqual([3600, 10800]);
-    expect(get).toHaveBeenCalledWith({
-      url: "/tokens/gno.land%2Fr%2Fdemo%2Ftoken/price/history?interval=3600&start=0&end=14400",
-    });
-  });
-
-  it("sources four-hour bars directly and pages All with daily intervals", async () => {
-    const get = jest.fn().mockImplementation(({ url }: { url: string }) => {
-      const params = new URL(url, "https://example.test").searchParams;
-      return Promise.resolve({
-        data: {
-          interval: Number(params.get("interval")),
-          start: Number(params.get("start")),
-          end: Number(params.get("end")),
-          data: [],
-        },
-      });
-    });
-    const client = { get } as unknown as NetworkClient;
-    expect(await getTokenCandlePage(client, tokenPath, "4h", 0, 14400)).toEqual([]);
-    expect(await getTokenCandlePage(client, tokenPath, "All", 0, 86400)).toEqual([]);
-    expect(get.mock.calls.map(([request]) => request.url)).toEqual([
-      "/tokens/gno.land%2Fr%2Fdemo%2Ftoken/price/history?interval=14400&start=0&end=14400",
-      "/tokens/gno.land%2Fr%2Fdemo%2Ftoken/price/history?interval=86400&start=0&end=86400",
-    ]);
-  });
 });

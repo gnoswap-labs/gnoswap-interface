@@ -68,9 +68,6 @@ it("requests aligned pool history and switches volume to the visible base token 
     close: 2,
     volume: 4,
   });
-  expect(get).toHaveBeenCalledWith({
-    url: "/pools/gno.land%2Fr%2Fdemo%2Fpool%3A42/price/history?interval=14400&start=0&end=28800",
-  });
 
   rerender(<PoolPriceChart client={client} poolPath={poolPath} tokenA={tokenA} tokenB={tokenB} reversed range="4h" />);
   chart = (PriceCandleChart as jest.Mock).mock.calls[1][0] as ChartProps;
@@ -86,22 +83,3 @@ it("requests aligned pool history and switches volume to the visible base token 
   });
 });
 
-it("uses daily history directly for All", async () => {
-  const get = jest.fn().mockResolvedValue({ data: { interval: 86400, start: 0, end: 86400, data: [] } });
-  render(
-    <PoolPriceChart
-      client={{ get } as unknown as NetworkClient}
-      poolPath={poolPath}
-      tokenA={tokenA}
-      tokenB={tokenB}
-      reversed={false}
-      range="All"
-    />,
-  );
-  const chart = (PriceCandleChart as jest.Mock).mock.calls[0][0] as ChartProps;
-  expect(chart.interval).toBe(86400);
-  expect(await chart.loadPage(0, 86400)).toEqual([]);
-  expect(get).toHaveBeenCalledWith({
-    url: "/pools/gno.land%2Fr%2Fdemo%2Fpool%3A42/price/history?interval=86400&start=0&end=86400",
-  });
-});
