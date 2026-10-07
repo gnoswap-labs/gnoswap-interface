@@ -165,14 +165,20 @@ export default function PriceCandleChart({
           const latest = bars.length ? bars[bars.length - 1].close : older[older.length - 1].close;
           const precision = Math.max(2, Math.ceil(-Math.log10(latest)) + 4);
           candles.applyOptions({
-            priceFormat:
-              precision > 12
-                ? {
-                    type: "custom",
-                    minMove: Math.max(Number.MIN_VALUE, 10 ** -precision),
-                    formatter: (price: number) => price.toExponential(4),
+            priceFormat: {
+              type: "custom",
+              minMove: Math.max(Number.MIN_VALUE, 10 ** -precision),
+              formatter: formatCandlePrice,
+              tickmarksFormatter: (prices: number[]) => {
+                const labels = prices.map(formatCandlePrice);
+                for (let i = 1; i < labels.length; i++) {
+                  if (labels[i] === labels[i - 1]) {
+                    return prices.map(price => (precision > 12 ? price.toExponential(16) : price.toFixed(precision)));
                   }
-                : { type: "price", precision, minMove: 10 ** -precision },
+                }
+                return labels;
+              },
+            },
           });
           const visible = bars.length ? chart.timeScale().getVisibleRange() : null;
           bars = older.concat(bars);
@@ -272,7 +278,7 @@ export default function PriceCandleChart({
       searchOlder.current = null;
       dispose?.();
     };
-  }, [identity, interval, daily, all, retry, theme, loadPage]);
+  }, [identity, interval, daily, all, retry, theme, loadPage, formatCandlePrice]);
 
   return (
     <div className="price-chart-shell" aria-label={label}>

@@ -146,6 +146,10 @@ it.each([
     <PriceCandleChart {...props} formatCandlePrice={formatCandlePrice} loadPage={jest.fn().mockResolvedValue([bar])} />,
   );
   await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+  const axisFormat = mockCandles.applyOptions.mock.calls[0][0].priceFormat;
+  expect(axisFormat.type).toBe("custom");
+  expect(axisFormat.formatter(bar.open)).toBe(prices[2]);
+  expect(axisFormat.tickmarksFormatter([0.0695, 0.07, 0.0705])).toEqual(["0.0695", "0.07", "0.0705"]);
   const onMove = mockSubscribeCrosshairMove.mock.calls[0][0];
   act(() => {
     onMove({
@@ -159,6 +163,22 @@ it.each([
     "162.504458 GNOT",
     "100 GNS",
   ]);
+});
+
+it("preserves distinct token axis ticks when three significant digits would collapse them", async () => {
+  const bar = { ...firstPage[0], open: 0.07, high: 0.07005, low: 0.06995, close: 0.07 };
+  render(
+    <PriceCandleChart
+      {...props}
+      formatCandlePrice={formatTokenCandlePrice}
+      loadPage={jest.fn().mockResolvedValue([bar])}
+    />,
+  );
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+  const axisFormat = mockCandles.applyOptions.mock.calls[0][0].priceFormat;
+  expect(axisFormat.minMove).toBe(0.000001);
+  expect(axisFormat.formatter(0.07)).toBe("0.07");
+  expect(axisFormat.tickmarksFormatter([0.06995, 0.07, 0.07005])).toEqual(["0.069950", "0.070000", "0.070050"]);
 });
 
 it("keeps loaded candles and the visible range after an older page fails, then retries on the next pan", async () => {
