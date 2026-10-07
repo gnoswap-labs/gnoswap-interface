@@ -1,7 +1,7 @@
 import { cx } from "@emotion/css";
 import { useAtomValue } from "jotai";
 import dynamic from "next/dynamic";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { STATIC_TEXT } from "@common/values";
@@ -91,7 +91,20 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const [chartMode, setChartMode] = useState<"price" | "liquidity">("price");
   const [chartRange, setChartRange] = useState<CandleRange>("1h");
   const [isChartReversed, setIsChartReversed] = useState(false);
-  const GRAPWIDTH = Math.min(width - (width > 767 ? 224 : 80), 1216);
+  const chartBodyRef = useRef<HTMLDivElement>(null);
+  const [chartWidth, setChartWidth] = useState(0);
+  const fallbackGraphWidth = Math.min(width - (width > 767 ? 224 : 80), 1216);
+
+  useEffect(() => {
+    const chartBody = chartBodyRef.current;
+    if (!chartBody || typeof ResizeObserver === "undefined") return;
+
+    const observer = new ResizeObserver(([entry]) => {
+      if (entry.contentRect.width > 0) setChartWidth(entry.contentRect.width);
+    });
+    observer.observe(chartBody);
+    return () => observer.disconnect();
+  }, [chartMode]);
 
   const tokenABalance = useMemo(() => {
     return pool.tokenABalance || 0;
@@ -501,7 +514,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             <MissingLogo
               symbol={isChartReversed ? pool.tokenB.symbol : pool.tokenA.symbol}
               url={isChartReversed ? pool.tokenB.logoURI : pool.tokenA.logoURI}
-              width={16}
+              width={21}
+              mobileWidth={21}
             />
             <span title={t("Pool:chart.priceDifferenceHint")}>
               1 {isChartReversed ? pool.tokenB.displaySymbol : pool.tokenA.displaySymbol} ={" "}
@@ -541,7 +555,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               </div>
             </div>
           )}
-          <div className="chart-body" key={chartMode}>
+          <div className="chart-body" key={chartMode} ref={chartBodyRef}>
             {chartMode === "price" ? (
               !loading && gnoswapApiClient && poolPath ? (
                 <PoolPriceChart
@@ -567,7 +581,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     currentTick={pool.currentTick}
                     currentSqrtPriceX96={currentSqrtPriceX96}
                     currentPrice={pool.price}
-                    width={GRAPWIDTH}
+                    width={chartWidth || fallbackGraphWidth}
                     height={isMobile ? 176 : 350}
                     mouseover
                     themeKey={themeKey}

@@ -43,6 +43,13 @@ export const ContentWrapper = styled.div`
     .chart-tabs {
       grid-column: 1;
       grid-row: 1;
+      width: 200px;
+      height: 31px;
+      padding: 2px;
+      gap: 0;
+      border: 1px solid ${({ theme }) => theme.color.border02};
+      border-radius: 4px;
+      background: ${({ theme }) => theme.color.background28};
     }
     .chart-pair {
       grid-column: 2;
@@ -50,11 +57,12 @@ export const ContentWrapper = styled.div`
       justify-self: center;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 8px;
       min-width: 0;
       overflow-wrap: anywhere;
       color: ${({ theme }) => theme.color.text10};
       ${fonts.body10};
+      font-weight: 300;
     }
     .chart-ranges {
       grid-column: 3;
@@ -106,15 +114,34 @@ export const ContentWrapper = styled.div`
       }
     }
     .chart-tabs button {
-      width: 80px;
-      transition: background-color 180ms ease-out, color 180ms ease-out;
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+      padding: 0;
+      transition:
+        background-color 180ms ease-out,
+        color 180ms ease-out;
     }
     .chart-pair button {
       display: flex;
       align-items: center;
       justify-content: center;
-      min-width: 24px;
+      position: relative;
+      width: 21px;
+      height: 21px;
+      min-width: 21px;
+      min-height: 21px;
       padding: 0;
+      &::before {
+        content: "";
+        position: absolute;
+        inset: -12px;
+      }
+      svg {
+        width: 21px;
+        height: 21px;
+      }
       svg * {
         fill: ${({ theme }) => theme.color.icon03};
       }
@@ -191,15 +218,12 @@ export const ContentWrapper = styled.div`
       }
       .chart-pair {
         align-self: center;
-        gap: 4px;
+        gap: 8px;
         font-size: 14px;
         line-height: 20px;
       }
       .chart-ranges {
         width: 100%;
-      }
-      .chart-ranges.hidden {
-        display: none;
       }
       .chart-tabs button,
       .chart-ranges button {
@@ -217,10 +241,10 @@ export const ContentWrapper = styled.div`
           inset: -12px 0;
         }
       }
-      .chart-pair button {
-        min-width: 24px;
-        min-height: 24px;
-        padding: 0;
+      .chart-tabs button {
+        min-height: 0;
+        height: 100%;
+        line-height: 18px;
       }
       .chart-body {
         min-height: 176px;

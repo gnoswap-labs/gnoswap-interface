@@ -278,7 +278,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
       width: 100%;
       gap: 8px;
       color: ${({ theme }) => theme.color.text04};
-      padding-top: 32px;
+      min-height: 32px;
       ${fonts.body12}
       position: relative;
       .range-badge {
@@ -400,6 +400,7 @@ export const MyPositionCardWrapper = styled.div<Props>`
     ${media.mobile} {
       padding: 12px;
       .position-header {
+        min-height: 24px;
         ${mixins.flexbox("column", "center", "center")};
         gap: 8px;
         .range-badge {
