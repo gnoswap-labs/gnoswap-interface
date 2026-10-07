@@ -3,7 +3,7 @@
     "section": "Graphique du pool",
     "price": "Prix",
     "spotPrice": "Prix actuel du pool",
-    "priceDifferenceHint": "Le prix actuel reflète l'état du pool. Les bougies montrent les prix des swaps exécutés, qui peuvent différer selon l'impact sur le prix ou le temps écoulé depuis la dernière transaction.",
+    "priceDifferenceHint": "Le prix actuel reflète l'état présent du pool. Les bougies utilisent des prix enregistrés de l'état du pool et peuvent être en retard sur le prix actuel ; les swaps contribuent au volume sans déterminer le prix des bougies.",
     "liquidity": "Liquidité",
     "range": "Période du graphique",
     "reverse": "Inverser la paire de prix",

@@ -3,7 +3,7 @@
     "section": "Biểu đồ pool",
     "price": "Giá",
     "spotPrice": "Giá hiện tại của pool",
-    "priceDifferenceHint": "Giá hiện tại dựa trên trạng thái của pool. Nến thể hiện giá swap đã khớp, có thể khác do tác động giá hoặc thời gian kể từ giao dịch gần nhất.",
+    "priceDifferenceHint": "Giá hiện tại phản ánh trạng thái mới nhất của pool. Nến dùng giá trạng thái pool đã ghi nhận nên có thể chậm hơn giá hiện tại; swap đóng góp khối lượng nhưng không quyết định giá nến.",
     "liquidity": "Thanh khoản",
     "range": "Khoảng biểu đồ",
     "reverse": "Đảo cặp giá",
