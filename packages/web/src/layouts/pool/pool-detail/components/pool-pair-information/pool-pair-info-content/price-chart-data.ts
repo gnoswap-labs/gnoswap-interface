@@ -1,3 +1,4 @@
+import type { PriceBar } from "@components/common/price-candle-chart/PriceCandleChart";
 import {
   DECIMAL,
   mapHistoryRows,
@@ -16,23 +17,13 @@ export interface PoolCandle {
 
 export type PoolHistory = HistoryResponse<PoolCandle>;
 
-export interface PriceBar {
-  time: number;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-  volume: number;
-  quoteVolume: number;
-}
-
 export function decodeHistory(
   history: PoolHistory,
   reversed: boolean,
   interval: number,
   start: number,
   end: number,
-): PriceBar[] {
+): Required<PriceBar>[] {
   return mapHistoryRows(history, interval, start, end, (candle, time) => {
     const values = [candle.open, candle.high, candle.low, candle.close, candle.volume0, candle.volume1];
     if (values.some(value => typeof value !== "string" || !DECIMAL.test(value))) {
