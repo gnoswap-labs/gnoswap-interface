@@ -4,6 +4,16 @@ import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
+export const MyDelNotice = styled.p`
+  width: 100%;
+  padding: 16px;
+  border-radius: 8px;
+  color: ${({ theme }) => theme.color.goldenrod};
+  background-color: ${({ theme }) => `${theme.color.goldenrod}14`};
+  border: 1px solid ${({ theme }) => `${theme.color.goldenrod}33`};
+  ${fonts.body12};
+`;
+
 export const MyDelegationModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   min-width: 328px;

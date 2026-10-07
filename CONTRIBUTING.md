@@ -33,3 +33,9 @@ Your pull request title must follow the conventional commits format and start wi
    - Example: **refactor: Optimize database query logic**
 
 This will help maintain a clean and consistent commit history and make it easier for other developers to understand the changes made in each commit.
+
+### Localization
+
+Keep existing translation keys when revising copy; synchronize translations through i18nexus.
+Governance delegation notices use `myDel.delModal.step2.notice` below the amount input and
+`myDel.delModal.selectDel.notice` above the delegate selection button in the `Governance` namespace.
