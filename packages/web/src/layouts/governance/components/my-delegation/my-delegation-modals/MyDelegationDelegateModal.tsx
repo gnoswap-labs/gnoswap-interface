@@ -505,7 +505,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   );
 
   return (
-    <Modal className={stage === "MAIN" ? "" : "large-gap selector-box"}>
+    <Modal className={stage === "MAIN" ? "" : "selector-box"}>
       <div className="modal-wrapper">{stage === "MAIN" ? showDelegateInfo() : showDelegateeSelector()}</div>
     </Modal>
   );
