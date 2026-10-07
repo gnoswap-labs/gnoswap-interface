@@ -151,7 +151,6 @@ export const ContentWrapper = styled.div`
       }
     }
     .price-chart-volume-label,
-    .price-chart-attribution,
     .price-chart-paging {
       position: absolute;
       left: 12px;
@@ -161,13 +160,6 @@ export const ContentWrapper = styled.div`
     .price-chart-volume-label {
       bottom: 110px;
       pointer-events: none;
-    }
-    .price-chart-attribution {
-      bottom: 4px;
-      max-width: calc(100% - 24px);
-      line-height: 1.3;
-      overflow-wrap: anywhere;
-      text-decoration: underline;
     }
     .price-chart-paging {
       top: 8px;
@@ -234,9 +226,6 @@ export const ContentWrapper = styled.div`
       }
       .price-chart-shell {
         height: 176px;
-      }
-      .price-chart-attribution {
-        font-size: 10px;
       }
     }
     .position-header {

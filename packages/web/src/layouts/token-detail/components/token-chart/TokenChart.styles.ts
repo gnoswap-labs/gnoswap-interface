@@ -109,7 +109,6 @@ export const CandleChartWrapper = styled.div`
     }
   }
   .price-chart-volume-label,
-  .price-chart-attribution,
   .price-chart-paging {
     position: absolute;
     left: 12px;
@@ -119,12 +118,6 @@ export const CandleChartWrapper = styled.div`
   .price-chart-volume-label {
     bottom: 120px;
     pointer-events: none;
-  }
-  .price-chart-attribution {
-    bottom: 4px;
-    right: 8px;
-    overflow-wrap: anywhere;
-    text-decoration: underline;
   }
   .price-chart-paging {
     top: 8px;
@@ -136,9 +129,6 @@ export const CandleChartWrapper = styled.div`
   ${media.mobile} {
     .price-chart-shell {
       height: 300px;
-    }
-    .price-chart-attribution {
-      font-size: 10px;
     }
   }
 `;

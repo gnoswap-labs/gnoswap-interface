@@ -76,7 +76,9 @@ export default function PriceCandleChart({
         layout: {
           background: { type: ColorType.Solid, color: theme.color.background28 },
           textColor: theme.color.text04,
-          attributionLogo: false,
+          // TradingView Lightweight Charts™
+          // Copyright (с) 2025 TradingView, Inc. https://www.tradingview.com/
+          attributionLogo: true,
         },
         grid: {
           vertLines: { color: theme.color.border14 },
@@ -268,14 +270,6 @@ export default function PriceCandleChart({
       )}
       <span className="price-chart-volume-label">{volumeLabel}</span>
       {priceLabel && <span className="price-chart-currency">{priceLabel}</span>}
-      <a
-        className="price-chart-attribution"
-        href="https://www.tradingview.com/"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        TradingView Lightweight Charts™ Copyright (с) 2025 TradingView, Inc. https://www.tradingview.com/
-      </a>
     </div>
   );
 }
