@@ -21,7 +21,7 @@ export const CandleTooltip = styled.div`
     justify-content: space-between;
     gap: 16px;
     & + div {
-      margin-top: 1px;
+      margin-top: 2px;
     }
   }
   .quote-volume {

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import type { NetworkClient } from "@common/clients/network-client";
 import PriceCandleChart from "@components/common/price-candle-chart/PriceCandleChart";
 import type { TokenModel } from "@models/token/token-model";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 
 import { decodeHistory, type PoolHistory } from "./price-chart-data";
 
@@ -24,6 +25,9 @@ const INTERVALS: Record<CandleRange, number> = {
   "1d": 86400,
   All: 86400,
 };
+
+const formatPoolCandlePrice = (value: number) =>
+  formatTokenExchangeRate(value, { maxSignificantDigits: 6, minLimit: 0.000001 });
 
 export default function PoolPriceChart({ client, poolPath, tokenA, tokenB, reversed, range }: Props) {
   const { t } = useTranslation();
@@ -48,6 +52,7 @@ export default function PoolPriceChart({ client, poolPath, tokenA, tokenB, rever
       interval={interval}
       daily={interval === 86400}
       all={range === "All"}
+      formatCandlePrice={formatPoolCandlePrice}
       label={t("Pool:chart.priceChartLabel", {
         pair: `${reversed ? tokenB.displaySymbol : tokenA.displaySymbol}/${
           reversed ? tokenA.displaySymbol : tokenB.displaySymbol

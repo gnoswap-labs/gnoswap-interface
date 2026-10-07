@@ -34,6 +34,7 @@ interface Props {
   label: string;
   volumeSymbols: readonly [string, string?];
   priceLabel?: string;
+  formatCandlePrice: (value: number) => string;
   loadingLabel: string;
   emptyLabel: string;
   searchOlderLabel: string;
@@ -50,6 +51,7 @@ export default function PriceCandleChart({
   label,
   volumeSymbols,
   priceLabel,
+  formatCandlePrice,
   loadingLabel,
   emptyLabel,
   searchOlderLabel,
@@ -303,19 +305,19 @@ export default function PriceCandleChart({
         <CandleTooltip role="tooltip" style={{ left: hovered.x, top: hovered.y }}>
           <div>
             <span>{t("common:candleTooltip.high")}</span>
-            <strong>{formatCandleNumber(hovered.bar.high)}</strong>
+            <strong>{formatCandlePrice(hovered.bar.high)}</strong>
           </div>
           <div>
             <span>{t("common:candleTooltip.low")}</span>
-            <strong>{formatCandleNumber(hovered.bar.low)}</strong>
+            <strong>{formatCandlePrice(hovered.bar.low)}</strong>
           </div>
           <div>
             <span>{t("common:candleTooltip.open")}</span>
-            <strong>{formatCandleNumber(hovered.bar.open)}</strong>
+            <strong>{formatCandlePrice(hovered.bar.open)}</strong>
           </div>
           <div>
             <span>{t("common:candleTooltip.close")}</span>
-            <strong>{formatCandleNumber(hovered.bar.close)}</strong>
+            <strong>{formatCandlePrice(hovered.bar.close)}</strong>
           </div>
           <div>
             <span>{t("common:candleTooltip.volume")}</span>

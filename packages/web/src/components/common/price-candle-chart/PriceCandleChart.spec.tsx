@@ -1,4 +1,7 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { formatTokenExchangeRate } from "@utils/stake-position-utils";
+
+import { formatTokenCandlePrice } from "@layouts/token-detail/components/token-chart/TokenCandles";
 
 import PriceCandleChart, { type PriceBar } from "./PriceCandleChart";
 
@@ -62,6 +65,7 @@ const props = {
   daily: false,
   label: "Price chart",
   volumeSymbols: ["GNOT", "GNS"] as const,
+  formatCandlePrice: (value: number) => formatTokenExchangeRate(value, { maxSignificantDigits: 6, minLimit: 0.000001 }),
   loadingLabel: "Loading price history",
   emptyLabel: "No price history",
   searchOlderLabel: "Search older history",
@@ -114,6 +118,47 @@ it("reveals the hovered candle's OHLC and both token volumes without a permanent
 
   act(() => onMove({ point: undefined, time: undefined, seriesData: new Map() }));
   expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+});
+
+it.each([
+  {
+    name: "token",
+    formatCandlePrice: formatTokenCandlePrice,
+    prices: ["2", "0.0012", "1.57", "0.987"],
+  },
+  {
+    name: "pool",
+    formatCandlePrice: (value: number) =>
+      formatTokenExchangeRate(value, { maxSignificantDigits: 6, minLimit: 0.000001 }),
+    prices: ["2", "0.0012", "1.57035", "0.987654"],
+  },
+])("formats $name candle prices without rounding the displayed volumes", async ({ formatCandlePrice, prices }) => {
+  const bar = {
+    time: firstPage[0].time,
+    high: 2,
+    low: 0.0012,
+    open: 1.5703476164,
+    close: 0.987654321,
+    volume: 162.504458,
+    quoteVolume: 100,
+  };
+  render(
+    <PriceCandleChart {...props} formatCandlePrice={formatCandlePrice} loadPage={jest.fn().mockResolvedValue([bar])} />,
+  );
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+  const onMove = mockSubscribeCrosshairMove.mock.calls[0][0];
+  act(() => {
+    onMove({
+      point: { x: 40, y: 100 },
+      time: bar.time,
+      seriesData: new Map([[mockCandles, bar]]),
+    });
+  });
+  expect(Array.from(screen.getByRole("tooltip").querySelectorAll("strong"), node => node.textContent)).toEqual([
+    ...prices,
+    "162.504458 GNOT",
+    "100 GNS",
+  ]);
 });
 
 it("keeps loaded candles and the visible range after an older page fails, then retries on the next pan", async () => {
