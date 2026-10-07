@@ -2,6 +2,8 @@
   "chart": {
     "section": "Pool chart",
     "price": "Price",
+    "spotPrice": "Pool spot",
+    "priceDifferenceHint": "The pool spot price is based on its current state. Candles show executed swap prices, which can differ due to price impact or time since the last trade.",
     "liquidity": "Liquidity",
     "range": "Chart range",
     "reverse": "Reverse price pair",
@@ -10,7 +12,6 @@
     "priceChartLabel": "{{pair}} price and {{symbol}} volume chart",
     "volumeToken": "Volume ({{symbol}})",
     "loading": "Loading price history…",
-    "loadingOlder": "Loading older prices…",
     "empty": "No price candles in this period.",
     "searchOlder": "Search older history",
     "error": "Could not load price history.",

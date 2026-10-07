@@ -15,7 +15,6 @@
     "searchOlder": "Tìm lịch sử cũ hơn",
     "error": "Không thể tải nến giá.",
     "retry": "Thử lại",
-    "loadingOlder": "Đang tải nến cũ hơn…",
     "volumeToken": "Khối lượng ({{symbol}})"
   },
   "description": {

@@ -15,7 +15,6 @@
     "searchOlder": "Search older history",
     "error": "Could not load price candles.",
     "retry": "Retry",
-    "loadingOlder": "Loading older candles…",
     "volumeToken": "Volume ({{symbol}})"
   },
   "description": {

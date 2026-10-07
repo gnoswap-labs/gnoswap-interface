@@ -2,6 +2,8 @@
   "chart": {
     "section": "풀 차트",
     "price": "가격",
+    "spotPrice": "풀 현재가",
+    "priceDifferenceHint": "현재가는 풀의 현재 상태를 기준으로 합니다. 캔들은 실제 스왑 체결가이며, 가격 영향이나 마지막 거래 이후 경과 시간에 따라 다를 수 있습니다.",
     "liquidity": "유동성",
     "range": "차트 기간",
     "reverse": "가격 방향 전환",
@@ -10,7 +12,6 @@
     "priceChartLabel": "{{pair}} 가격 및 {{symbol}} 거래량 차트",
     "volumeToken": "거래량 ({{symbol}})",
     "loading": "가격 기록을 불러오는 중…",
-    "loadingOlder": "이전 가격을 불러오는 중…",
     "empty": "이 기간의 가격 캔들이 없습니다.",
     "searchOlder": "더 이전 기록 검색",
     "error": "가격 기록을 불러올 수 없습니다.",

@@ -61,7 +61,6 @@ const props = {
   searchOlderLabel: "Search older history",
   errorLabel: "Could not load price history",
   retryLabel: "Retry",
-  loadingOlderLabel: "Loading older history",
 };
 
 beforeAll(() => {
@@ -111,6 +110,31 @@ it("keeps loaded candles and the visible range after an older page fails, then r
   expect(mockTimeScale.setVisibleRange).toHaveBeenCalledWith({ from: 100, to: 200 });
   expect(screen.queryByText("Could not load price history")).not.toBeInTheDocument();
   expect(mockCreateChart).toHaveBeenCalledTimes(1);
+});
+
+it("keeps the loaded chart unobstructed while fetching an older page", async () => {
+  let finish!: (bars: PriceBar[]) => void;
+  const loadPage = jest
+    .fn()
+    .mockResolvedValueOnce(firstPage)
+    .mockImplementationOnce(
+      () =>
+        new Promise<PriceBar[]>(resolve => {
+          finish = resolve;
+        }),
+    );
+  const { container } = render(<PriceCandleChart {...props} loadPage={loadPage} />);
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+
+  act(() => {
+    fireEvent.wheel(container.querySelector(".price-chart-canvas")!);
+    mockTimeScale.subscribeVisibleLogicalRangeChange.mock.calls[0][0]({ from: 0, to: 10 });
+  });
+  await waitFor(() => expect(loadPage).toHaveBeenCalledTimes(2));
+  expect(screen.queryByRole("status")).not.toBeInTheDocument();
+  expect(mockCandles.setData).toHaveBeenCalledTimes(1);
+  act(() => finish(olderPage));
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(2));
 });
 
 it("offers a full retry when the initial history page fails", async () => {

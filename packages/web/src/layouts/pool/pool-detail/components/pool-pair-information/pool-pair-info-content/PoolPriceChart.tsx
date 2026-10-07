@@ -59,7 +59,6 @@ export default function PoolPriceChart({ client, poolPath, tokenA, tokenB, rever
       searchOlderLabel={t("Pool:chart.searchOlder")}
       errorLabel={t("Pool:chart.error")}
       retryLabel={t("Pool:chart.retry")}
-      loadingOlderLabel={t("Pool:chart.loadingOlder")}
       volumeLabel={t("Pool:chart.volumeToken", { symbol: reversed ? tokenB.displaySymbol : tokenA.displaySymbol })}
       loadPage={loadPage}
     />

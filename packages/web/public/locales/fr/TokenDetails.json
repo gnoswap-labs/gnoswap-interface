@@ -15,7 +15,6 @@
     "searchOlder": "Rechercher l'historique antérieur",
     "error": "Impossible de charger les bougies de prix.",
     "retry": "Réessayer",
-    "loadingOlder": "Chargement des anciennes bougies…",
     "volumeToken": "Volume ({{symbol}})"
   },
   "description": {

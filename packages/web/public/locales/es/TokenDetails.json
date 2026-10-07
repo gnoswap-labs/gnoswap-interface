@@ -15,7 +15,6 @@
     "searchOlder": "Buscar historial anterior",
     "error": "No se pudieron cargar las velas de precios.",
     "retry": "Reintentar",
-    "loadingOlder": "Cargando velas anteriores…",
     "volumeToken": "Volumen ({{symbol}})"
   },
   "description": {

@@ -2,6 +2,8 @@
   "chart": {
     "section": "Gráfico del pool",
     "price": "Precio",
+    "spotPrice": "Precio actual del pool",
+    "priceDifferenceHint": "El precio actual se basa en el estado del pool. Las velas muestran precios de swaps ejecutados, que pueden diferir por el impacto en el precio o el tiempo transcurrido desde la última operación.",
     "liquidity": "Liquidez",
     "range": "Rango del gráfico",
     "reverse": "Invertir par de precios",
@@ -10,7 +12,6 @@
     "priceChartLabel": "Gráfico de precio de {{pair}} y volumen de {{symbol}}",
     "volumeToken": "Volumen ({{symbol}})",
     "loading": "Cargando historial de precios…",
-    "loadingOlder": "Cargando precios anteriores…",
     "empty": "No hay velas de precios en este período.",
     "searchOlder": "Buscar historial anterior",
     "error": "No se pudo cargar el historial de precios.",

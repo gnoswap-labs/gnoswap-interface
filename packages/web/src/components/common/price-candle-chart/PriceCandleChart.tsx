@@ -31,7 +31,6 @@ interface Props {
   searchOlderLabel: string;
   errorLabel: string;
   retryLabel: string;
-  loadingOlderLabel: string;
   loadPage: (start: number, end: number) => Promise<PriceBar[]>;
 }
 
@@ -48,14 +47,12 @@ export default function PriceCandleChart({
   searchOlderLabel,
   errorLabel,
   retryLabel,
-  loadingOlderLabel,
   loadPage,
 }: Props) {
   const theme = useTheme();
   const chartElement = useRef<HTMLDivElement>(null);
   const searchOlder = useRef<(() => void) | null>(null);
   const [state, setState] = useState<"loading" | "ready" | "empty" | "error">("loading");
-  const [paging, setPaging] = useState(false);
   const [pagingError, setPagingError] = useState(false);
   const [retry, setRetry] = useState(0);
   const [canSearchOlder, setCanSearchOlder] = useState(true);
@@ -66,7 +63,6 @@ export default function PriceCandleChart({
     let cancelled = false;
     let dispose: (() => void) | undefined;
     setState("loading");
-    setPaging(false);
     setPagingError(false);
     setCanSearchOlder(true);
 
@@ -129,12 +125,8 @@ export default function PriceCandleChart({
         const end = cursor;
         const start = Math.max(0, end - windowSeconds);
         fetching = true;
-        if (bars.length) {
-          setPaging(true);
-          setPagingError(false);
-        } else {
-          setState("loading");
-        }
+        if (bars.length) setPagingError(false);
+        else setState("loading");
         try {
           const older = await loadPage(start, end);
           if (cancelled) return;
@@ -194,7 +186,6 @@ export default function PriceCandleChart({
           }
         } finally {
           fetching = false;
-          if (!cancelled) setPaging(false);
         }
       };
       searchOlder.current = () => void loadOlder();
@@ -270,12 +261,7 @@ export default function PriceCandleChart({
           )}
         </div>
       )}
-      {paging && state === "ready" && (
-        <span className="price-chart-paging" role="status">
-          {loadingOlderLabel}
-        </span>
-      )}
-      {pagingError && state === "ready" && !paging && (
+      {pagingError && state === "ready" && (
         <span className="price-chart-paging price-chart-paging-error" role="status">
           {errorLabel}
         </span>

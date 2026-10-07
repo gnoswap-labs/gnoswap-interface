@@ -15,7 +15,6 @@
     "searchOlder": "더 이전 기록 검색",
     "error": "가격 캔들을 불러오지 못했습니다.",
     "retry": "다시 시도",
-    "loadingOlder": "이전 캔들을 불러오는 중…",
     "volumeToken": "거래량 ({{symbol}})"
   },
   "description": {

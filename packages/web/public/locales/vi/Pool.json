@@ -2,6 +2,8 @@
   "chart": {
     "section": "Biểu đồ pool",
     "price": "Giá",
+    "spotPrice": "Giá hiện tại của pool",
+    "priceDifferenceHint": "Giá hiện tại dựa trên trạng thái của pool. Nến thể hiện giá swap đã khớp, có thể khác do tác động giá hoặc thời gian kể từ giao dịch gần nhất.",
     "liquidity": "Thanh khoản",
     "range": "Khoảng biểu đồ",
     "reverse": "Đảo cặp giá",
@@ -10,7 +12,6 @@
     "priceChartLabel": "Biểu đồ giá {{pair}} và khối lượng {{symbol}}",
     "volumeToken": "Khối lượng ({{symbol}})",
     "loading": "Đang tải lịch sử giá…",
-    "loadingOlder": "Đang tải giá cũ hơn…",
     "empty": "Không có nến giá trong khoảng thời gian này.",
     "searchOlder": "Tìm lịch sử cũ hơn",
     "error": "Không thể tải lịch sử giá.",

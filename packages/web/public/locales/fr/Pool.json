@@ -2,6 +2,8 @@
   "chart": {
     "section": "Graphique du pool",
     "price": "Prix",
+    "spotPrice": "Prix actuel du pool",
+    "priceDifferenceHint": "Le prix actuel reflète l'état du pool. Les bougies montrent les prix des swaps exécutés, qui peuvent différer selon l'impact sur le prix ou le temps écoulé depuis la dernière transaction.",
     "liquidity": "Liquidité",
     "range": "Période du graphique",
     "reverse": "Inverser la paire de prix",
@@ -10,7 +12,6 @@
     "priceChartLabel": "Graphique du prix de {{pair}} et du volume de {{symbol}}",
     "volumeToken": "Volume ({{symbol}})",
     "loading": "Chargement de l'historique des prix…",
-    "loadingOlder": "Chargement des prix précédents…",
     "empty": "Aucune bougie de prix sur cette période.",
     "searchOlder": "Rechercher l'historique antérieur",
     "error": "Impossible de charger l'historique des prix.",

@@ -2,6 +2,8 @@
   "chart": {
     "section": "池图表",
     "price": "价格",
+    "spotPrice": "池当前价格",
+    "priceDifferenceHint": "当前价格基于资金池的最新状态。K线显示实际成交的兑换价格，可能因价格冲击或距上一笔交易的时间而不同。",
     "liquidity": "流动性",
     "range": "图表区间",
     "reverse": "反转价格交易对",
@@ -10,7 +12,6 @@
     "priceChartLabel": "{{pair}} 价格与 {{symbol}} 交易量图表",
     "volumeToken": "交易量 ({{symbol}})",
     "loading": "正在加载价格历史…",
-    "loadingOlder": "正在加载更早的价格…",
     "empty": "此时段暂无价格K线。",
     "searchOlder": "搜索更早历史",
     "error": "无法加载价格历史。",

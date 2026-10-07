@@ -35,7 +35,6 @@ export default function TokenCandles({ client, tokenPath, symbol, resolution }: 
       searchOlderLabel={t("TokenDetails:chart.searchOlder")}
       errorLabel={t("TokenDetails:chart.error")}
       retryLabel={t("TokenDetails:chart.retry")}
-      loadingOlderLabel={t("TokenDetails:chart.loadingOlder")}
       volumeLabel={t("TokenDetails:chart.volumeToken", { symbol })}
       loadPage={loadPage}
     />

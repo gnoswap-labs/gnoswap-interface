@@ -502,8 +502,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               url={isChartReversed ? pool.tokenB.logoURI : pool.tokenA.logoURI}
               width={16}
             />
-            <span>
-              1 {isChartReversed ? pool.tokenB.displaySymbol : pool.tokenA.displaySymbol} ={" "}
+            <span title={t("Pool:chart.priceDifferenceHint")}>
+              {t("Pool:chart.spotPrice")}: 1 {isChartReversed ? pool.tokenB.displaySymbol : pool.tokenA.displaySymbol} ={" "}
               {isChartReversed ? currentPriceReverse : currentPriceRatio}{" "}
               {isChartReversed ? pool.tokenA.displaySymbol : pool.tokenB.displaySymbol}
             </span>

@@ -15,7 +15,6 @@
     "searchOlder": "搜索更早历史",
     "error": "无法加载价格K线。",
     "retry": "重试",
-    "loadingOlder": "正在加载更早的K线…",
     "volumeToken": "成交量 ({{symbol}})"
   },
   "description": {

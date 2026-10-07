@@ -8,13 +8,13 @@ This repository hosts the codebase for the Gnoswap interface, which enables user
 
 ## Pool Price Chart
 
-The pool detail shares one chart area between Price candles and Liquidity distribution. The Price view uses TradingView Lightweight Charts and requests sparse UTC OHLCV windows from `/v1/pools/{encodedPoolPath}/ohlcv` with `interval`, `start`, and exclusive `end` Unix seconds. Intervals are 300, 3600, 14400, or 86400 seconds; All pages daily bars. Each window is capped at 120 intervals and 30 days. The mobile layout retains tabs, price direction, zoom controls, and interval selector.
+The pool detail shares one chart area between Price candles and Liquidity distribution. The Price view uses TradingView Lightweight Charts and requests UTC OHLCV windows from `/v1/pools/{encodedPoolPath}/ohlcv` with `interval`, `start`, and exclusive `end` Unix seconds. Intervals are 300, 3600, 14400, or 86400 seconds; All pages daily bars. Each window is capped at 120 intervals and 30 days. After the first trade, no-trade pool intervals carry the last close with zero volume; intervals before the first trade remain empty. The mobile layout retains tabs, price direction, zoom controls, and interval selector.
 
-The pool API already quotes whole token B per whole token A, with token decimals applied. Reversing the pair inverts OHLC, swaps high/low, and selects `volume1` (token B) instead of `volume0` (token A). Volumes are human token quantities, not USD. TradingView attribution remains visible beneath the chart.
+The pool API quotes whole token B per whole token A, with token decimals applied. Reversing the pair inverts OHLC, swaps high/low, and selects `volume1` (token B) instead of `volume0` (token A). Volumes are human token quantities, not USD. The header labels the current pool spot price derived from pool state; candles use executed swap amount ratios. Large trades or elapsed time since the last trade can make their values differ. TradingView attribution remains visible beneath the chart.
 
 ## Token Price Candles
 
-The token detail requests the same window parameters from `/v1/tokens/{encodedTokenPath}/ohlcv`. Its USD-per-token OHLC candles use direct 5-minute, hourly, 4-hour, or daily intervals; All pages daily bars. `volume` is the token quantity, while the separate 24h summary volume remains USD. Both APIs return an unwrapped `{interval,start,end,data}` body with ISO UTC candle starts; gaps are preserved.
+The token detail requests the same window parameters from `/v1/tokens/{encodedTokenPath}/ohlcv`. Its USD-per-token OHLC candles use direct 5-minute, hourly, 4-hour, or daily intervals; All pages daily bars. `volume` is the token quantity, while the separate 24h summary volume remains USD. Both APIs return an unwrapped `{interval,start,end,data}` body with ISO UTC candle starts. Token gaps remain sparse; pool gaps after the first trade are filled by the last close with zero volume.
 
 An empty window does not mark history exhausted: panning left searches the preceding window, or the Search older history button continues from an empty initial window. A failed older-page request leaves loaded bars and visible range in place; panning left again retries. An initial-page failure shows Retry.
 
