@@ -225,6 +225,9 @@ export const ContentWrapper = styled.div`
       .chart-ranges {
         width: 100%;
       }
+      .chart-ranges.hidden {
+        display: none;
+      }
       .chart-tabs button,
       .chart-ranges button {
         flex: 1;
