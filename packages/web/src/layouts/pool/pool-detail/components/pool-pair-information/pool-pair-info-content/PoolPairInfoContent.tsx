@@ -47,7 +47,7 @@ import TooltipAPR from "./TooltipAPR";
 import type { CandleRange } from "./PoolPriceChart";
 
 const PoolPriceChart = dynamic(() => import("./PoolPriceChart"), { ssr: false });
-const CANDLE_RANGES: CandleRange[] = ["5m", "15m", "30m", "1h", "4h", "12h", "1d", "All"];
+const CANDLE_RANGES: CandleRange[] = ["5m", "1h", "4h", "1d", "All"];
 
 interface PoolPairInfoContentProps {
   pool: PoolDetailModel;

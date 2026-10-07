@@ -106,11 +106,10 @@ it("reveals the hovered candle's OHLC and both token volumes without a permanent
     "1",
     "1",
     "2",
-    "3",
-    "7",
+    "3 GNOT",
+    "7 GNS",
   ]);
-  expect(tooltip).toHaveTextContent(/GNOT3/);
-  expect(tooltip).toHaveTextContent(/GNS7/);
+  expect(screen.getAllByText("common:candleTooltip.volume")).toHaveLength(1);
   expect(screen.queryByText("Volume (GNOT)")).not.toBeInTheDocument();
 
   act(() => onMove({ point: undefined, time: undefined, seriesData: new Map() }));

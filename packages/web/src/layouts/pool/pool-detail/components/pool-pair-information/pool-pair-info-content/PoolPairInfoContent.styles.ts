@@ -50,7 +50,7 @@ export const ContentWrapper = styled.div`
       justify-self: center;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 4px;
       min-width: 0;
       overflow-wrap: anywhere;
       color: ${({ theme }) => theme.color.text10};
@@ -60,12 +60,6 @@ export const ContentWrapper = styled.div`
       grid-column: 3;
       grid-row: 1;
       justify-self: end;
-      max-width: 100%;
-      overflow-x: auto;
-      scrollbar-width: none;
-      &::-webkit-scrollbar {
-        display: none;
-      }
     }
     .chart-ranges.hidden {
       visibility: hidden;
@@ -96,7 +90,6 @@ export const ContentWrapper = styled.div`
       min-width: 40px;
       min-height: 36px;
       padding: 6px 10px;
-      flex-shrink: 0;
       border-radius: 4px;
       color: ${({ theme }) => theme.color.text04};
       &:hover,
@@ -117,7 +110,11 @@ export const ContentWrapper = styled.div`
       transition: background-color 180ms ease-out, color 180ms ease-out;
     }
     .chart-pair button {
-      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 24px;
+      padding: 0;
       svg * {
         fill: ${({ theme }) => theme.color.icon03};
       }

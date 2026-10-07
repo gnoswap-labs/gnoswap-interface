@@ -318,17 +318,16 @@ export default function PriceCandleChart({
             <strong>{formatCandleNumber(hovered.bar.close)}</strong>
           </div>
           <div>
-            <span>
-              {t("common:candleTooltip.volume")} {volumeSymbols[0]}
-            </span>
-            <strong>{formatCandleNumber(hovered.bar.volume)}</strong>
+            <span>{t("common:candleTooltip.volume")}</span>
+            <strong>
+              {formatCandleNumber(hovered.bar.volume)} {volumeSymbols[0]}
+            </strong>
           </div>
           {hovered.bar.quoteVolume !== undefined && volumeSymbols[1] && (
-            <div>
-              <span>
-                {t("common:candleTooltip.volume")} {volumeSymbols[1]}
-              </span>
-              <strong>{formatCandleNumber(hovered.bar.quoteVolume)}</strong>
+            <div className="quote-volume">
+              <strong>
+                {formatCandleNumber(hovered.bar.quoteVolume)} {volumeSymbols[1]}
+              </strong>
             </div>
           )}
         </CandleTooltip>

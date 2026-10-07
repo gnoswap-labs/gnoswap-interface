@@ -8,9 +8,11 @@ This repository hosts the codebase for the Gnoswap interface, which enables user
 
 ## Pool Price Chart
 
-The pool detail shares one chart area between Price candles and Liquidity distribution. The Price view uses TradingView Lightweight Charts and requests UTC OHLCV windows from `/v1/pools/{encodedPoolPath}/ohlcv` with `interval`, `start`, and exclusive `end` Unix seconds. Intervals are 300, 900, 1800, 3600, 14400, 43200, or 86400 seconds (5m, 15m, 30m, 1h, 4h, 12h, 1d); All pages daily bars. Each window is capped at 120 intervals and 30 days. After the first pool-state price observation, intervals without a new observation carry the last close; swaps independently contribute token volume, and intervals without swaps have zero volume. Intervals before the first observation remain empty. The mobile layout retains tabs, price direction, zoom controls, and interval selector.
+The pool detail shares one chart area between Price candles and Liquidity distribution. The Price view uses TradingView Lightweight Charts and requests UTC OHLCV windows from `/v1/pools/{encodedPoolPath}/ohlcv` with `interval`, `start`, and exclusive `end` Unix seconds. The selector offers 5m, 1h, 4h, and 1d; All pages daily bars. Each window is capped at 120 intervals and 30 days. After the first pool-state price observation, intervals without a new observation carry the last close; swaps independently contribute token volume, and intervals without swaps have zero volume. Intervals before the first observation remain empty. The mobile layout retains tabs, price direction, zoom controls, and interval selector.
 
 The pool API quotes whole token B per whole token A, with token decimals applied. Reversing the pair inverts OHLC, swaps high/low, and switches which of `volume0` and `volume1` is plotted; hovering shows both human token quantities alongside OHLC, with the candle time on the crosshair axis. Volumes are not USD. The header shows the current pool price derived from pool state; the hover hint explains that candles sample stored pool-state prices and may lag the current spot. Swaps contribute volume but do not set candle prices. The clickable TradingView attribution logo appears inside the chart.
+
+The position-card rate also uses the pool's spot price; the current tick is a discrete price boundary and must not be used as the displayed spot rate.
 
 ## Token Price Candles
 

@@ -22,6 +22,9 @@ export const CandleTooltip = styled.div`
     gap: 16px;
     margin-top: 2px;
   }
+  .quote-volume {
+    justify-content: flex-end;
+  }
   strong {
     color: ${({ theme }) => theme.color.text02};
     font-weight: 500;

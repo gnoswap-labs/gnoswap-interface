@@ -16,14 +16,11 @@ interface Props {
   range: CandleRange;
 }
 
-export type CandleRange = "5m" | "15m" | "30m" | "1h" | "4h" | "12h" | "1d" | "All";
+export type CandleRange = "5m" | "1h" | "4h" | "1d" | "All";
 const INTERVALS: Record<CandleRange, number> = {
   "5m": 300,
-  "15m": 900,
-  "30m": 1800,
   "1h": 3600,
   "4h": 14400,
-  "12h": 43200,
   "1d": 86400,
   All: 86400,
 };
