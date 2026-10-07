@@ -358,8 +358,19 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   }, [isOwnerAddress, positionWithClaimableRewards.rewards]);
 
   const claimedRewardInfo = useMemo((): { [key in DisplayRewardType]: PositionRewardForTooltip[] } | null => {
+    // Nothing claimed yet: list the position's reward tokens at zero so the tooltip matches Claimable Rewards.
     if (position.claimedRewards.length === 0) {
-      return null;
+      if (!totalRewardInfo) {
+        return null;
+      }
+
+      const toZero = (rewards: PositionRewardForTooltip[]) => rewards.map(reward => ({ ...reward, amount: 0, usd: 0 }));
+      return {
+        SWAP_FEE: toZero(totalRewardInfo.SWAP_FEE),
+        EXTERNAL_REWARD: toZero(totalRewardInfo.EXTERNAL_REWARD),
+        INTERNAL_REWARD: toZero(totalRewardInfo.INTERNAL_REWARD),
+        NONE: toZero(totalRewardInfo.NONE),
+      };
     }
 
     const claimedRewardInfo = position.claimedRewards.reduce<{
@@ -413,7 +424,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     });
 
     return claimedRewardInfo;
-  }, [position.claimedRewards, tokenPrices, tokenA.path, tokenB.path]);
+  }, [position.claimedRewards, totalRewardInfo, tokenPrices, tokenA.path, tokenB.path]);
 
   const totalClaimedRewards = useMemo(() => {
     if (position.totalClaimedUsd !== "") {
@@ -819,7 +830,6 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
           <div className="info-box-flex">
             <Tooltip
               placement="top"
-              forcedClose={!isClaimable}
               FloatingContent={
                 <div>{totalRewardInfo && <RewardTooltipContent rewardInfo={totalRewardInfo} sortByUsd={false} />}</div>
               }

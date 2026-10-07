@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { TransactionConfirmModalWrapper } from "./TransactionConfirmModal.styles";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconSuccess from "@components/common/icons/IconSuccess";
@@ -72,10 +72,6 @@ const TransactionConfirmSubmitted: React.FC<TransactionConfirmSubmittedProps> = 
   const { t } = useTranslation();
   const { getTxUrl } = useGnoscanUrl();
 
-  const moveScanner = useCallback(() => {
-    window.open(getTxUrl(txHash), "_blank");
-  }, [getTxUrl, txHash]);
-
   return (
     <React.Fragment>
       <div className="animation">
@@ -83,12 +79,12 @@ const TransactionConfirmSubmitted: React.FC<TransactionConfirmSubmittedProps> = 
       </div>
       <div className="transaction-state">
         <span className="submitted">{t("Modal:confirm.general.submitted.title")}</span>
-        <div className="view-transaction">
+        <a className="view-transaction" href={getTxUrl(txHash)} target="_blank" rel="noopener noreferrer">
           <span>{t("Modal:confirm.general.submitted.viewTx")}</span>
-          <div className="open-link" onClick={moveScanner}>
+          <div className="open-link">
             <IconOpenLink className="open-logo" />
           </div>
-        </div>
+        </a>
       </div>
       <div className="close-button">
         <Button

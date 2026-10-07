@@ -63,6 +63,7 @@
       "selectDel": {
         "address": "Dirección",
         "description": "Descripción",
+        "notice": "Tu delegado vota en tu nombre con el derecho de voto que le hayas delegado. Para votar tú mismo las propuestas, selecciona «Auto-delegación».",
         "selectBtn": "Seleccione",
         "self": {
           "chip": "Autodelegado",
@@ -76,6 +77,7 @@
         "tooltip": "Los delegados son líderes de la comunidad seleccionados para tomar decisiones de gobierno en nombre de los titulares de GNS."
       },
       "step2": {
+        "notice": "Recibirás 1 xGNS por cada GNS que delegues.",
         "title": "2. Introduzca el importe"
       },
       "step3": {
@@ -90,8 +92,8 @@
         "select": "Seleccione un delegado"
       },
       "warning": {
-        "description": "Se activará un periodo de bloqueo de 7 días una vez que haya anulado la delegación de sus xGNS. Durante este periodo, los tokens xGNS bloqueados no podrán recibir recompensas del protocolo y no tendrán derecho a voto. Asegúrese de comprender el periodo de bloqueo antes de delegar.",
-        "title": "La delegación bloqueará sus fondos durante 7 días"
+        "description": "Cuando cancelas la delegación, tu xGNS queda bloqueado durante 7 días antes de que puedas retirarlo. Durante ese tiempo, no genera recompensas ni tiene derecho a voto.",
+        "title": "La revocación de la delegación tarda 7 días"
       }
     },
     "login": {
@@ -116,7 +118,7 @@
     "undel": {
       "btn": "Reclamación",
       "title": "No delegación",
-      "tooltip": "La cantidad de xGNS no delegada que estará disponible para reclamar en GNS tras el periodo de bloqueo."
+      "tooltip": "La cantidad de xGNS no delegados que se podrá reclamar en GNS una vez finalizado el periodo de bloqueo."
     },
     "undelegate": "Undelegate",
     "undelModal": {
@@ -139,13 +141,13 @@
         "title": "3. Su equilibrio"
       },
       "warning": {
-        "description": "Se activará un periodo de bloqueo de 7 días una vez que haya anulado la delegación de sus xGNS. Durante este periodo, los tokens xGNS bloqueados no podrán recibir recompensas del protocolo y no tendrán derecho a voto. Asegúrese de comprender el periodo de bloqueo antes de proceder a la anulación de la delegación.",
-        "title": "La no delegación bloqueará tus fondos durante 7 días"
+        "description": "Cuando cancelas la delegación, tu xGNS queda bloqueado durante 7 días antes de que puedas retirarlo. Durante ese tiempo, no genera recompensas ni tiene derecho a voto.",
+        "title": "La revocación de la delegación tarda 7 días"
       }
     },
     "votingWeight": {
       "title": "Delegación",
-      "tooltip": "La cantidad de xGNS que ha delegado, que representa su peso de voto en el Gobierno de Gnoswap."
+      "tooltip": "El total de xGNS que has delegado. Solo puedes votar con los xGNS que te has delegado a ti mismo. En cuanto al resto, tus delegados votan en tu nombre."
     }
   },
   "proposalList": {

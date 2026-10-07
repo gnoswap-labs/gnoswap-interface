@@ -63,6 +63,7 @@
       "selectDel": {
         "address": "Địa chỉ",
         "description": "Mô tả",
+        "notice": "Đại diện của bạn sẽ bỏ phiếu thay mặt bạn với số phiếu mà bạn ủy quyền. Để tự mình bỏ phiếu cho các đề xuất, hãy chọn “Tự ủy quyền”.",
         "selectBtn": "Chọn",
         "self": {
           "chip": "Tự phân công nhiệm vụ",
@@ -76,6 +77,7 @@
         "tooltip": "Các đại biểu là những nhà lãnh đạo cộng đồng được lựa chọn để đưa ra các quyết định quản trị thay mặt cho các chủ sở hữu GNS."
       },
       "step2": {
+        "notice": "Bạn sẽ nhận được 1 xGNS cho mỗi GNS mà bạn ủy quyền.",
         "title": "2. Nhập số tiền"
       },
       "step3": {
@@ -90,8 +92,8 @@
         "select": "Chọn một đại biểu"
       },
       "warning": {
-        "description": "Thời gian khóa 7 ngày sẽ bắt đầu tính từ thời điểm bạn hủy ủy quyền xGNS. Trong khoảng thời gian này, các token xGNS bị khóa sẽ không đủ điều kiện nhận phần thưởng từ giao thức và không có quyền biểu quyết. Hãy đảm bảo bạn đã hiểu rõ về thời gian khóa trước khi tiến hành ủy quyền.",
-        "title": "Việc ủy quyền sẽ khóa số tiền của bạn trong 7 ngày"
+        "description": "Khi bạn thu hồi ủy quyền, xGNS của bạn sẽ bị khóa trong 7 ngày trước khi bạn có thể rút nó ra. Trong khoảng thời gian đó, xGNS sẽ không nhận được phần thưởng nào và không có quyền biểu quyết.",
+        "title": "Việc thu hồi ủy quyền mất 7 ngày"
       }
     },
     "login": {
@@ -139,13 +141,13 @@
         "title": "3. Số dư của bạn"
       },
       "warning": {
-        "description": "Thời gian khóa 7 ngày sẽ bắt đầu tính từ thời điểm bạn hủy ủy quyền xGNS. Trong khoảng thời gian này, các token xGNS bị khóa sẽ không đủ điều kiện nhận phần thưởng từ giao thức và không có quyền biểu quyết. Hãy đảm bảo bạn đã hiểu rõ về thời gian khóa trước khi tiến hành hủy ủy quyền.",
-        "title": "Việc hủy ủy quyền sẽ khóa số tiền của bạn trong 7 ngày"
+        "description": "Khi bạn thu hồi ủy quyền, xGNS của bạn sẽ bị khóa trong 7 ngày trước khi bạn có thể rút nó ra. Trong khoảng thời gian đó, xGNS sẽ không nhận được phần thưởng nào và không có quyền biểu quyết.",
+        "title": "Việc thu hồi ủy quyền mất 7 ngày"
       }
     },
     "votingWeight": {
       "title": "Phái đoàn",
-      "tooltip": "Số lượng xGNS mà bạn đã ủy quyền, thể hiện trọng số biểu quyết của bạn trong cơ chế quản trị của Gnoswap."
+      "tooltip": "Tổng số xGNS mà bạn đã ủy quyền. Bạn chỉ có thể bỏ phiếu bằng số xGNS mà bạn đã tự ủy quyền cho chính mình. Đối với phần còn lại, những người được bạn ủy quyền sẽ bỏ phiếu thay cho bạn."
     }
   },
   "proposalList": {

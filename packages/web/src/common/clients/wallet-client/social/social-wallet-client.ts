@@ -71,11 +71,8 @@ const toSDKMessage = (message: ContractMessage): SDKTransactionMessage => {
 };
 
 /**
- * Rebuilds a document as an SDK transaction.
- *
- * The Adena SDK still bundles tm2-js-client v1, where `TxFee.gas_wanted` is a
- * protobufjs `Long` rather than the `bigint` used from v3 on. Going through the
- * SDK's own builder keeps the fee in the shape its encoder expects.
+ * Rebuilds a document with the SDK's transaction builder so its messages and
+ * fee use the encoding expected by the SDK's signing path.
  */
 export const documentToSDKTx = (document: Document) => {
   const [gasFee] = document.fee.amount;

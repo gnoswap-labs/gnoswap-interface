@@ -127,10 +127,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     tokenA: { [key in number]: string };
     tokenB: { [key in number]: string };
   }>({ tokenA: {}, tokenB: {} });
-  const [tooltipInfo, setTooltipInfo] = useState<TooltipInfo | null>(null);
   const [positionX, setPositionX] = useState<number | null>(null);
   const [positionY, setPositionY] = useState<number | null>(null);
-  const [hoverBarIndex, setHoverBarIndex] = useState<number | null>(null);
 
   const { redColor, greenColor } = useColorGraph();
 
@@ -256,6 +254,57 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     });
   }, [graphBins, graphMinTick]);
 
+  const hoveredBin = useMemo(() => {
+    if (positionX === null || positionY === null || fullRange || positionY <= 0 || positionY > boundsHeight) {
+      return null;
+    }
+    const mouseTick = scaleX.invert(positionX) + graphMinTick;
+    if (
+      minPrice !== null &&
+      maxPrice !== null &&
+      priceToTick(minPrice) < mouseTick &&
+      priceToTick(maxPrice) > mouseTick
+    ) {
+      return null;
+    }
+    return (
+      resolvedDisplayBins.find(
+        bin =>
+          bin.height > 0 &&
+          ((mouseTick >= bin.minTick && mouseTick <= bin.maxTick) || Math.abs(bin.maxTick - mouseTick) <= 0.5) &&
+          positionY >= getVisibleBarDimensions(scaleY(bin.height), boundsHeight).y,
+      ) || null
+    );
+  }, [
+    positionX,
+    positionY,
+    fullRange,
+    boundsHeight,
+    scaleX,
+    graphMinTick,
+    minPrice,
+    maxPrice,
+    resolvedDisplayBins,
+    scaleY,
+  ]);
+  const hoverBarIndex = hoveredBin?.index ?? null;
+
+  const tooltipInfo = useMemo<TooltipInfo | null>(() => {
+    if (!hoveredBin) {
+      return null;
+    }
+    const tooltipTick = getPoolSelectionGraphTooltipTick(hoveredBin);
+    return {
+      tokenA: displayTokenA,
+      tokenB: displayTokenB,
+      tokenAAmount: hoveredBin.reserveTokenA ? convertToKMB(hoveredBin.reserveTokenA.toString()) : "-",
+      tokenBAmount: hoveredBin.reserveTokenB ? convertToKMB(hoveredBin.reserveTokenB.toString()) : "-",
+      tokenAVisible: hoveredBin.reserveTokenA > 0,
+      tokenBVisible: hoveredBin.reserveTokenB > 0,
+      price: priceOfTick.tokenA[tooltipTick] || "0",
+    };
+  }, [hoveredBin, displayTokenA, displayTokenB, priceOfTick]);
+
   const tooltipPosition = useMemo((): FloatingPosition => {
     if (position) {
       return position;
@@ -301,7 +350,13 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       isBrushMovingRef.current = true;
     }
 
-    const selection = event.selection ? event.selection : [0, 0];
+    const brushElement = d3.select(brushRef.current);
+    if (!event.selection) {
+      brushElement.selectAll(".resize").attr("display", "none");
+      return;
+    }
+    brushElement.selectAll(".resize").attr("display", null);
+    const selection = event.selection;
     const startPosition = selection[0] as number;
     const endPosition = selection[1] as number;
 
@@ -312,8 +367,6 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const endRate = currentPrice ? ((Number(endPrice) - currentPrice) / currentPrice) * 100 : 0;
 
     const selectionColor = getSelectionColor(startRate >= 0 ? "1" : "-1", endRate >= 0 ? "1" : "-1");
-
-    const brushElement = d3.select(brushRef.current);
 
     const startLine = brushElement.select("#start");
     if (event.type === "start") {
@@ -553,62 +606,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
   // mouse over event
   function onMouseoverChartBin(event: MouseEvent) {
-    const mouseX = event.offsetX;
-    const mouseY = event.offsetY;
-    const mouseXTick = scaleX.invert(event.offsetX) + graphMinTick;
-
-    if (minPrice && maxPrice) {
-      if (priceToTick(minPrice) < mouseXTick && priceToTick(maxPrice) > mouseXTick) {
-        setTooltipInfo(null);
-        setHoverBarIndex(null);
-        return;
-      }
-    }
-
-    const bin = resolvedDisplayBins.find(bin => {
-      if (mouseY < 0.000001 || boundsHeight < mouseY) {
-        return false;
-      }
-      if (bin.height < 0 || !bin.height) {
-        return false;
-      }
-
-      return (mouseXTick >= bin.minTick && mouseXTick <= bin.maxTick) || Math.abs(bin.maxTick - mouseXTick) <= 0.5;
-    });
-
-    if (!bin) {
-      setPositionX(null);
-      setPositionY(null);
-      setTooltipInfo(null);
-      setHoverBarIndex(null);
-      return;
-    }
-
-    // To reduce the computation of scaleY, the Y-axis condition check is done separately.
-    if (mouseY < scaleY(bin.height)) {
-      setPositionX(null);
-      setPositionX(null);
-      setTooltipInfo(null);
-      setHoverBarIndex(null);
-      return;
-    }
-
-    setHoverBarIndex(bin.index);
-
-    const tooltipTick = getPoolSelectionGraphTooltipTick(bin);
-
-    const tokenAAmountStr = bin.reserveTokenA;
-    const tokenBAmountStr = bin.reserveTokenB;
-
-    setTooltipInfo({
-      tokenA: displayTokenA,
-      tokenB: displayTokenB,
-      tokenAAmount: tokenAAmountStr ? convertToKMB(tokenAAmountStr.toString()) : "-",
-      tokenBAmount: tokenBAmountStr ? convertToKMB(tokenBAmountStr.toString()) : "-",
-      tokenAVisible: tokenAAmountStr > 0,
-      tokenBVisible: tokenBAmountStr > 0,
-      price: priceOfTick.tokenA[tooltipTick] || "0",
-    });
+    const [mouseX, mouseY] = d3.pointer(event, chartRef.current);
     setPositionX(mouseX);
     setPositionY(mouseY);
   }
@@ -616,20 +614,17 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   function onMouseoutChartBin() {
     setPositionX(null);
     setPositionY(null);
-    setHoverBarIndex(null);
   }
 
   function onMouseoverClear(event: MouseEvent) {
     const { clientX, clientY } = event;
     if (!svgRef.current?.getClientRects()[0]) {
-      setTooltipInfo(null);
-      setHoverBarIndex(null);
+      onMouseoutChartBin();
       return;
     }
     const { left, right, top, bottom } = svgRef.current?.getClientRects()[0];
     if (clientX < left || clientX > right || clientY < top || clientY > bottom) {
-      setTooltipInfo(null);
-      setHoverBarIndex(null);
+      onMouseoutChartBin();
     }
   }
 
@@ -710,33 +705,13 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     maxLiquidity,
     resolvedDisplayBins,
     hoverBarIndex,
+    displayTokenA,
+    displayTokenB,
+    priceOfTick,
     themeKey,
     svgRef?.current,
     chartRef?.current,
   ]);
-
-  // Brush settings, on currentPrice change, zoom, move ...
-  useEffect(() => {
-    if (minPrice === null || maxPrice === null) {
-      return;
-    }
-    if (isBrushMovingRef.current) {
-      return;
-    }
-    if (!brushRef?.current) {
-      return;
-    }
-    const brushElement = d3.select(brushRef.current);
-
-    if (fullRange) {
-      brush.move(brushElement, [0, boundsWidth]);
-    } else {
-      brush.move(brushElement, [
-        scaleX(priceToTick(minPrice) - graphMinTick),
-        scaleX(priceToTick(maxPrice) - graphMinTick),
-      ]);
-    }
-  }, [minPrice, maxPrice, zoomLevel, fullRange, graphBins, graphMinTick, boundsWidth, scaleX]);
 
   useEffect(() => {
     if (!brushRef.current) {
@@ -758,6 +733,25 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const selectionElement = brushElement.select(".selection");
     selectionElement.style("fill", "url(#gradient-selection-area)");
   }, [boundsHeight, brush, brushRef, scaleX]);
+
+  // Synchronize the selection only after the brush and its custom handles exist.
+  useEffect(() => {
+    if (isBrushMovingRef.current || !brushRef.current) {
+      return;
+    }
+    const brushElement = d3.select(brushRef.current);
+
+    if (fullRange) {
+      brush.move(brushElement, [0, boundsWidth]);
+    } else if (minPrice === null || maxPrice === null) {
+      brush.move(brushElement, null);
+    } else {
+      brush.move(brushElement, [
+        scaleX(priceToTick(minPrice) - graphMinTick),
+        scaleX(priceToTick(maxPrice) - graphMinTick),
+      ]);
+    }
+  }, [minPrice, maxPrice, zoomLevel, fullRange, graphBins, graphMinTick, boundsWidth, scaleX]);
 
   // On scroll, remove tooltip
   useEffect(() => {

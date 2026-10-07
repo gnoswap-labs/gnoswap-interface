@@ -42,7 +42,6 @@ function setup() {
 it("preserves loading text and the successful transaction link and close callback", () => {
   const { result, store } = setup();
   const callback = jest.fn();
-  const open = jest.spyOn(window, "open").mockImplementation(() => null);
 
   act(() => result.current.broadcastLoading({ description: "Swapping <b>1 GNOT</b>" }));
   expect(screen.getByText("1 GNOT")).toBeInTheDocument();
@@ -56,15 +55,15 @@ it("preserves loading text and the successful transaction link and close callbac
     txHash: "abc123",
     callback,
   });
-  fireEvent.click(document.querySelector(".open-link")!);
-  expect(open).toHaveBeenCalledWith("https://scanner.test/tx/abc123", "_blank");
+  const txLink = screen.getByRole("link", { name: /Modal:confirm.general.submitted.viewTx/ });
+  expect(txLink).toHaveAttribute("href", "https://scanner.test/tx/abc123");
+  expect(txLink).toHaveAttribute("target", "_blank");
   expect(callback).not.toHaveBeenCalled();
 
   fireEvent.click(screen.getByRole("button", { name: "common:action.close" }));
   expect(callback).toHaveBeenCalledTimes(1);
   expect(store.get(CommonState.transactionModalData)).toBeNull();
   expect(store.get(CommonState.openedTransactionModal)).toBe(false);
-  open.mockRestore();
 });
 
 it.each([undefined, ""])("does not create a success state with missing hash %s", txHash => {
