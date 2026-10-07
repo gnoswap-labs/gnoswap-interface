@@ -4,6 +4,16 @@ import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
+export const MyDelNotice = styled.p`
+  width: 100%;
+  padding: 16px;
+  border-radius: 8px;
+  color: ${({ theme }) => theme.color.text33};
+  background-color: ${({ theme }) => theme.color.background30};
+  border: 1px solid ${({ theme }) => theme.color.border20};
+  ${fonts.body12};
+`;
+
 export const MyDelegationModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   min-width: 328px;
@@ -31,14 +41,17 @@ export const MyDelegationModalWrapper = styled.div`
 
   &.selector-box {
     > .modal-wrapper {
+      gap: 16px;
       overflow: auto;
       max-height: 85dvh;
     }
-  }
 
-  &.large-gap {
-    > .modal-wrapper {
-      gap: 24px;
+    .modal-content-header {
+      margin-bottom: 0;
+    }
+
+    .button-confirm {
+      margin-top: 0;
     }
   }
 
@@ -315,10 +328,9 @@ export const ToolTipContentWrapper = styled.div`
 export const MyDelWarningContentWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start")}
   margin: -4px 0;
-  gap: 24px;
+  gap: 16px;
 
   .learn-more-box {
-    margin-top: 4px;
     ${mixins.flexbox("row", "center")}
     font-weight: 600;
     cursor: pointer;

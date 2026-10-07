@@ -29,6 +29,7 @@ import DelegateeChip from "./delegatee-chip/DelegateeChip";
 
 import {
   MyDelegationModalWrapper,
+  MyDelNotice,
   MyDelWarningContentWrapper,
   ToolTipContentWrapper,
 } from "./MyDelegationModals.styles";
@@ -271,6 +272,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           changeToken={() => {}}
           style={{ padding: "16px" }}
         />
+        <MyDelNotice>{t("Governance:myDel.delModal.step2.notice")}</MyDelNotice>
       </article>
 
       <article>
@@ -481,6 +483,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           )}
         </div>
       </article>
+      <MyDelNotice>{t("Governance:myDel.delModal.selectDel.notice")}</MyDelNotice>
       <Button
         onClick={() => {
           if (tmpDelegatee.address === "") {
@@ -502,7 +505,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   );
 
   return (
-    <Modal className={stage === "MAIN" ? "" : "large-gap selector-box"}>
+    <Modal className={stage === "MAIN" ? "" : "selector-box"}>
       <div className="modal-wrapper">{stage === "MAIN" ? showDelegateInfo() : showDelegateeSelector()}</div>
     </Modal>
   );
