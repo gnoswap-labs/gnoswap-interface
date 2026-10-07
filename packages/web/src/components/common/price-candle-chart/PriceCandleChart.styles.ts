@@ -20,7 +20,9 @@ export const CandleTooltip = styled.div`
     display: flex;
     justify-content: space-between;
     gap: 16px;
-    margin-top: 2px;
+    & + div {
+      margin-top: 1px;
+    }
   }
   .quote-volume {
     justify-content: flex-end;
