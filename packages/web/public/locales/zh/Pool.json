@@ -2,7 +2,6 @@
   "chart": {
     "section": "池图表",
     "price": "价格",
-    "spotPrice": "池当前价格",
     "priceDifferenceHint": "当前价格反映资金池的现时状态。K线使用已记录的资金池状态价格，因此可能落后于当前价格；兑换计入成交量，但不决定K线价格。",
     "liquidity": "流动性",
     "range": "图表区间",

@@ -2,7 +2,6 @@
   "chart": {
     "section": "Gráfico del pool",
     "price": "Precio",
-    "spotPrice": "Precio actual del pool",
     "priceDifferenceHint": "El precio actual refleja el estado presente del pool. Las velas usan precios históricos registrados del estado del pool y pueden ir por detrás del precio actual; los swaps aportan volumen, pero no fijan el precio de las velas.",
     "liquidity": "Liquidez",
     "range": "Rango del gráfico",

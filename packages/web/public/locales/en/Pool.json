@@ -2,7 +2,6 @@
   "chart": {
     "section": "Pool chart",
     "price": "Price",
-    "spotPrice": "Pool spot",
     "priceDifferenceHint": "The pool spot price reflects its current state. Candles sample stored pool-state prices and may lag behind the current spot; swaps contribute volume but do not set candle prices.",
     "liquidity": "Liquidity",
     "range": "Chart range",
