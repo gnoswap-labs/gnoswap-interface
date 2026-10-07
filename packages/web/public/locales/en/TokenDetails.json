@@ -14,8 +14,7 @@
     "empty": "No price candles are available for this interval.",
     "searchOlder": "Search older history",
     "error": "Could not load price candles.",
-    "retry": "Retry",
-    "volumeToken": "Volume ({{symbol}})"
+    "retry": "Retry"
   },
   "description": {
     "empty": "No token information",

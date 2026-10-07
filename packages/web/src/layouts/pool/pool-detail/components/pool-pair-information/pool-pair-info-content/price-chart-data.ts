@@ -1,4 +1,8 @@
-import { DECIMAL, mapHistoryRows, type HistoryResponse } from "@components/common/price-candle-chart/price-history-data";
+import {
+  DECIMAL,
+  mapHistoryRows,
+  type HistoryResponse,
+} from "@components/common/price-candle-chart/price-history-data";
 
 export interface PoolCandle {
   start: string;
@@ -8,6 +12,7 @@ export interface PoolCandle {
   close: string;
   volume0: string;
   volume1: string;
+  tradeCount: number;
 }
 
 export type PoolHistory = HistoryResponse<PoolCandle>;
@@ -19,6 +24,8 @@ export interface PriceBar {
   low: number;
   close: number;
   volume: number;
+  quoteVolume: number;
+  tradeCount: number;
 }
 
 export function decodeHistory(
@@ -40,14 +47,26 @@ export function decodeHistory(
       !Number.isFinite(volume0) ||
       !Number.isFinite(volume1) ||
       high < Math.max(open, close, low) ||
+      !Number.isSafeInteger(candle.tradeCount) ||
+      candle.tradeCount < 0 ||
       low > Math.min(open, close, high)
     ) {
       throw new Error("Price history cannot be displayed at this token precision");
     }
     const volume = reversed ? volume1 : volume0;
+    const quoteVolume = reversed ? volume0 : volume1;
     const bar = reversed
-      ? { time, open: 1 / open, high: 1 / low, low: 1 / high, close: 1 / close, volume }
-      : { time, open, high, low, close, volume };
+      ? {
+          time,
+          open: 1 / open,
+          high: 1 / low,
+          low: 1 / high,
+          close: 1 / close,
+          volume,
+          quoteVolume,
+          tradeCount: candle.tradeCount,
+        }
+      : { time, open, high, low, close, volume, quoteVolume, tradeCount: candle.tradeCount };
     if (reversed && [bar.open, bar.high, bar.low, bar.close].some(price => !Number.isFinite(price) || price <= 0)) {
       throw new Error("Price history cannot be displayed at this token precision");
     }

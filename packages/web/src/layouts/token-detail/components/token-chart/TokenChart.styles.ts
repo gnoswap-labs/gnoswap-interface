@@ -36,8 +36,14 @@ export const ChartControls = styled.div`
   justify-content: flex-start;
   gap: 4px;
   padding: 8px 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
   button {
     min-width: 44px;
+    flex: 0 0 auto;
     min-height: 32px;
     padding: 4px 8px;
     border-radius: 4px;
@@ -108,20 +114,13 @@ export const CandleChartWrapper = styled.div`
       outline: 2px solid ${({ theme }) => theme.color.text02};
     }
   }
-  .price-chart-volume-label,
   .price-chart-paging {
     position: absolute;
+    top: 8px;
     left: 12px;
+    z-index: 3;
     font-size: 11px;
     color: ${({ theme }) => theme.color.text04};
-  }
-  .price-chart-volume-label {
-    bottom: 120px;
-    pointer-events: none;
-  }
-  .price-chart-paging {
-    top: 8px;
-    z-index: 3;
   }
   .price-chart-paging-error {
     color: ${({ theme }) => theme.color.red01};

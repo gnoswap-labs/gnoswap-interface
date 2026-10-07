@@ -10,7 +10,6 @@
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
     "priceChartLabel": "{{pair}} price and {{symbol}} volume chart",
-    "volumeToken": "Volume ({{symbol}})",
     "loading": "Loading price history…",
     "empty": "No price candles in this period.",
     "searchOlder": "Search older history",

@@ -18,6 +18,14 @@
     "fees": "수수료",
     "tradingVol": "거래량"
   },
+  "candleTooltip": {
+    "high": "높음",
+    "low": "낮음",
+    "open": "열기",
+    "close": "닫기",
+    "volume": "거래량",
+    "swaps": "스왑"
+  },
   "btn": {
     "amountTooLow": "수량이 너무 적음",
     "enterAmount": "수량 입력",

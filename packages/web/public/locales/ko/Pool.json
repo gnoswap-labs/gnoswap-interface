@@ -10,7 +10,6 @@
     "zoomIn": "확대",
     "zoomOut": "축소",
     "priceChartLabel": "{{pair}} 가격 및 {{symbol}} 거래량 차트",
-    "volumeToken": "거래량 ({{symbol}})",
     "loading": "가격 기록을 불러오는 중…",
     "empty": "이 기간의 가격 캔들이 없습니다.",
     "searchOlder": "더 이전 기록 검색",

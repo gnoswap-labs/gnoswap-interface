@@ -30,12 +30,12 @@ export default function TokenCandles({ client, tokenPath, symbol, resolution }: 
       all={resolution === "All"}
       priceLabel="USD"
       label={t("TokenDetails:chart.candleLabel", { symbol })}
+      volumeSymbols={[symbol]}
       loadingLabel={t("TokenDetails:chart.loading")}
       emptyLabel={t("TokenDetails:chart.empty")}
       searchOlderLabel={t("TokenDetails:chart.searchOlder")}
       errorLabel={t("TokenDetails:chart.error")}
       retryLabel={t("TokenDetails:chart.retry")}
-      volumeLabel={t("TokenDetails:chart.volumeToken", { symbol })}
       loadPage={loadPage}
     />
   );

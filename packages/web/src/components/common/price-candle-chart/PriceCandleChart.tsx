@@ -8,6 +8,13 @@ import {
   type UTCTimestamp,
 } from "lightweight-charts";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+
+import { CandleTooltip } from "./PriceCandleChart.styles";
+
+const candleNumberFormatter = new Intl.NumberFormat("en-US", { maximumSignificantDigits: 12 });
+const formatCandleNumber = (value: number) =>
+  value !== 0 && Math.abs(value) < 1e-18 ? value.toExponential(4) : candleNumberFormatter.format(value);
 
 export interface PriceBar {
   time: number;
@@ -16,6 +23,8 @@ export interface PriceBar {
   low: number;
   close: number;
   volume: number;
+  quoteVolume?: number;
+  tradeCount?: number;
 }
 
 interface Props {
@@ -24,7 +33,7 @@ interface Props {
   daily: boolean;
   all?: boolean;
   label: string;
-  volumeLabel: string;
+  volumeSymbols: readonly [string, string?];
   priceLabel?: string;
   loadingLabel: string;
   emptyLabel: string;
@@ -40,7 +49,7 @@ export default function PriceCandleChart({
   daily,
   all = false,
   label,
-  volumeLabel,
+  volumeSymbols,
   priceLabel,
   loadingLabel,
   emptyLabel,
@@ -56,6 +65,8 @@ export default function PriceCandleChart({
   const [pagingError, setPagingError] = useState(false);
   const [retry, setRetry] = useState(0);
   const [canSearchOlder, setCanSearchOlder] = useState(true);
+  const { t } = useTranslation();
+  const [hovered, setHovered] = useState<{ bar: PriceBar; x: number; y: number } | null>(null);
 
   useEffect(() => {
     const element = chartElement.current;
@@ -65,6 +76,7 @@ export default function PriceCandleChart({
     setState("loading");
     setPagingError(false);
     setCanSearchOlder(true);
+    setHovered(null);
 
     async function initialize() {
       if (cancelled || !element) return;
@@ -116,6 +128,7 @@ export default function PriceCandleChart({
       });
       chart.priceScale("volume").applyOptions({ scaleMargins: { top: 0.78, bottom: 0 }, visible: false });
       let bars: PriceBar[] = [];
+      const barsByTime = new Map<number, PriceBar>();
       // The cursor is the exclusive boundary of the last requested window, not the
       // first returned candle. Sparse and empty windows must still advance it.
       let cursor = (Math.floor(Date.now() / 1000 / interval) + 1) * interval;
@@ -162,6 +175,7 @@ export default function PriceCandleChart({
           });
           const visible = bars.length ? chart.timeScale().getVisibleRange() : null;
           bars = older.concat(bars);
+          for (const bar of older) barsByTime.set(bar.time, bar);
           candles.setData(
             bars.map(({ time, open, high, low, close }) => ({ time: time as UTCTimestamp, open, high, low, close })),
           );
@@ -212,6 +226,23 @@ export default function PriceCandleChart({
       element.addEventListener("pointermove", movePan, { capture: true });
       element.addEventListener("pointerup", endPan);
       element.addEventListener("pointercancel", endPan);
+      const onCrosshairMove: Parameters<typeof chart.subscribeCrosshairMove>[0] = param => {
+        if (typeof param.time !== "number" || !param.point || !param.seriesData.get(candles)) {
+          setHovered(null);
+          return;
+        }
+        const bar = barsByTime.get(param.time);
+        if (!bar) {
+          setHovered(null);
+          return;
+        }
+        const x = Math.max(8, Math.min(param.point.x + 16, element.clientWidth - 288));
+        const y = Math.max(8, Math.min(param.point.y + 16, element.clientHeight - 212));
+        setHovered(previous =>
+          previous?.bar === bar && previous.x === x && previous.y === y ? previous : { bar, x, y },
+        );
+      };
+      chart.subscribeCrosshairMove(onCrosshairMove);
       const onRange = (range: LogicalRange | null) => {
         if (userPanned && range && (candles.barsInLogicalRange(range)?.barsBefore ?? Infinity) < 30) {
           userPanned = false;
@@ -226,6 +257,7 @@ export default function PriceCandleChart({
         element.removeEventListener("pointerup", endPan);
         element.removeEventListener("pointercancel", endPan);
         chart.timeScale().unsubscribeVisibleLogicalRangeChange(onRange);
+        chart.unsubscribeCrosshairMove(onCrosshairMove);
         observer.disconnect();
         chart.remove();
       };
@@ -268,7 +300,46 @@ export default function PriceCandleChart({
           {errorLabel}
         </span>
       )}
-      <span className="price-chart-volume-label">{volumeLabel}</span>
+      {hovered && (
+        <CandleTooltip role="tooltip" style={{ left: hovered.x, top: hovered.y }}>
+          <div>
+            <span>{t("common:candleTooltip.high")}</span>
+            <strong>{formatCandleNumber(hovered.bar.high)}</strong>
+          </div>
+          <div>
+            <span>{t("common:candleTooltip.low")}</span>
+            <strong>{formatCandleNumber(hovered.bar.low)}</strong>
+          </div>
+          <div>
+            <span>{t("common:candleTooltip.open")}</span>
+            <strong>{formatCandleNumber(hovered.bar.open)}</strong>
+          </div>
+          <div>
+            <span>{t("common:candleTooltip.close")}</span>
+            <strong>{formatCandleNumber(hovered.bar.close)}</strong>
+          </div>
+          <div>
+            <span>
+              {t("common:candleTooltip.volume")} {volumeSymbols[0]}
+            </span>
+            <strong>{formatCandleNumber(hovered.bar.volume)}</strong>
+          </div>
+          {hovered.bar.quoteVolume !== undefined && volumeSymbols[1] && (
+            <div>
+              <span>
+                {t("common:candleTooltip.volume")} {volumeSymbols[1]}
+              </span>
+              <strong>{formatCandleNumber(hovered.bar.quoteVolume)}</strong>
+            </div>
+          )}
+          {hovered.bar.tradeCount !== undefined && (
+            <div>
+              <span>{t("common:candleTooltip.swaps")}</span>
+              <strong>{formatCandleNumber(hovered.bar.tradeCount)}</strong>
+            </div>
+          )}
+        </CandleTooltip>
+      )}
       {priceLabel && <span className="price-chart-currency">{priceLabel}</span>}
     </div>
   );

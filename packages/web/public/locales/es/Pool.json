@@ -10,7 +10,6 @@
     "zoomIn": "Acercar",
     "zoomOut": "Alejar",
     "priceChartLabel": "Gráfico de precio de {{pair}} y volumen de {{symbol}}",
-    "volumeToken": "Volumen ({{symbol}})",
     "loading": "Cargando historial de precios…",
     "empty": "No hay velas de precios en este período.",
     "searchOlder": "Buscar historial anterior",

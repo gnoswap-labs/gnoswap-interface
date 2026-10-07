@@ -18,6 +18,14 @@
     "fees": "费用",
     "tradingVol": "交易量"
   },
+  "candleTooltip": {
+    "high": "最高",
+    "low": "最低",
+    "open": "开盘",
+    "close": "收盘",
+    "volume": "成交量",
+    "swaps": "兑换"
+  },
   "btn": {
     "amountTooLow": "金额太低",
     "enterAmount": "输入金额",

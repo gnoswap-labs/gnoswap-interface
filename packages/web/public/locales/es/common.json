@@ -18,6 +18,14 @@
     "fees": "Tasas",
     "tradingVol": "Volumen de negociación"
   },
+  "candleTooltip": {
+    "high": "Máximo",
+    "low": "Mínimo",
+    "open": "Apertura",
+    "close": "Cierre",
+    "volume": "Volumen",
+    "swaps": "Intercambios"
+  },
   "btn": {
     "amountTooLow": "Importe demasiado bajo",
     "enterAmount": "Introduzca el importe",

@@ -10,7 +10,6 @@
     "zoomIn": "放大",
     "zoomOut": "缩小",
     "priceChartLabel": "{{pair}} 价格与 {{symbol}} 交易量图表",
-    "volumeToken": "交易量 ({{symbol}})",
     "loading": "正在加载价格历史…",
     "empty": "此时段暂无价格K线。",
     "searchOlder": "搜索更早历史",

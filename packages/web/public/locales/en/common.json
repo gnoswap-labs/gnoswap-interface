@@ -18,6 +18,14 @@
     "fees": "Fees",
     "tradingVol": "Trading Volume"
   },
+  "candleTooltip": {
+    "high": "High",
+    "low": "Low",
+    "open": "Open",
+    "close": "Close",
+    "volume": "Volume",
+    "swaps": "Swaps"
+  },
   "btn": {
     "amountTooLow": "Amount Too Low",
     "enterAmount": "Enter Amount",

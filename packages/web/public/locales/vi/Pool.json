@@ -10,7 +10,6 @@
     "zoomIn": "Phóng to",
     "zoomOut": "Thu nhỏ",
     "priceChartLabel": "Biểu đồ giá {{pair}} và khối lượng {{symbol}}",
-    "volumeToken": "Khối lượng ({{symbol}})",
     "loading": "Đang tải lịch sử giá…",
     "empty": "Không có nến giá trong khoảng thời gian này.",
     "searchOlder": "Tìm lịch sử cũ hơn",

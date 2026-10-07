@@ -18,6 +18,14 @@
     "fees": "Тарифы",
     "tradingVol": "Объем торгов"
   },
+  "candleTooltip": {
+    "high": "Максимум",
+    "low": "Минимум",
+    "open": "Открытие",
+    "close": "Закрытие",
+    "volume": "Объём",
+    "swaps": "Обмены"
+  },
   "btn": {
     "amountTooLow": "Слишком низкая сумма",
     "enterAmount": "Введите сумму",

@@ -14,8 +14,7 @@
     "empty": "Không có nến giá cho khung thời gian này.",
     "searchOlder": "Tìm lịch sử cũ hơn",
     "error": "Không thể tải nến giá.",
-    "retry": "Thử lại",
-    "volumeToken": "Khối lượng ({{symbol}})"
+    "retry": "Thử lại"
   },
   "description": {
     "empty": "Không có thông tin về token",

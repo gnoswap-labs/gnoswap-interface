@@ -14,8 +14,7 @@
     "empty": "Aucune bougie de prix pour cet intervalle.",
     "searchOlder": "Rechercher l'historique antérieur",
     "error": "Impossible de charger les bougies de prix.",
-    "retry": "Réessayer",
-    "volumeToken": "Volume ({{symbol}})"
+    "retry": "Réessayer"
   },
   "description": {
     "empty": "Pas d'information sur les jetons",

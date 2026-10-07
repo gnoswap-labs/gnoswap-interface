@@ -14,8 +14,7 @@
     "empty": "この間隔の価格データはありません。",
     "searchOlder": "さらに過去の履歴を検索",
     "error": "価格のローソク足を読み込めませんでした。",
-    "retry": "再試行",
-    "volumeToken": "出来高 ({{symbol}})"
+    "retry": "再試行"
   },
   "description": {
     "empty": "トークン情報なし",

@@ -15,10 +15,14 @@ const mockTimeScale = {
   subscribeVisibleLogicalRangeChange: jest.fn(),
   unsubscribeVisibleLogicalRangeChange: jest.fn(),
 };
+const mockSubscribeCrosshairMove = jest.fn();
+const mockUnsubscribeCrosshairMove = jest.fn();
 const mockCreateChart = jest.fn().mockImplementation(() => ({
   addSeries: jest.fn().mockReturnValueOnce(mockCandles).mockReturnValueOnce(mockVolume),
   priceScale: () => ({ applyOptions: jest.fn() }),
   timeScale: () => mockTimeScale,
+  subscribeCrosshairMove: mockSubscribeCrosshairMove,
+  unsubscribeCrosshairMove: mockUnsubscribeCrosshairMove,
   resize: jest.fn(),
   remove: jest.fn(),
 }));
@@ -34,6 +38,8 @@ const mockTheme = {
   },
 };
 jest.mock("@emotion/react", () => ({ useTheme: () => mockTheme }));
+jest.mock("react-i18next", () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
+jest.mock("./PriceCandleChart.styles", () => ({ CandleTooltip: "div" }));
 jest.mock(
   "lightweight-charts",
   () => ({
@@ -55,7 +61,7 @@ const props = {
   interval: 300,
   daily: false,
   label: "Price chart",
-  volumeLabel: "Volume (GNOT)",
+  volumeSymbols: ["GNOT", "GNS"] as const,
   loadingLabel: "Loading price history",
   emptyLabel: "No price history",
   searchOlderLabel: "Search older history",
@@ -78,6 +84,38 @@ beforeEach(() => {
 });
 afterEach(() => {
   jest.restoreAllMocks();
+});
+
+it("reveals the hovered candle's OHLC, both token volumes, and swap count without a permanent volume caption", async () => {
+  const bar = { ...firstPage[0], quoteVolume: 7, tradeCount: 2 };
+  render(<PriceCandleChart {...props} loadPage={jest.fn().mockResolvedValue([bar])} />);
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+  const onMove = mockSubscribeCrosshairMove.mock.calls[0][0];
+  act(() => {
+    onMove({
+      point: { x: 40, y: 100 },
+      time: bar.time,
+      seriesData: new Map([
+        [mockCandles, { time: bar.time, open: bar.open, high: bar.high, low: bar.low, close: bar.close }],
+      ]),
+    });
+  });
+  const tooltip = screen.getByRole("tooltip");
+  expect(Array.from(tooltip.querySelectorAll("strong"), node => node.textContent)).toEqual([
+    "2",
+    "1",
+    "1",
+    "2",
+    "3",
+    "7",
+    "2",
+  ]);
+  expect(tooltip).toHaveTextContent(/GNOT3/);
+  expect(tooltip).toHaveTextContent(/GNS7/);
+  expect(screen.queryByText("Volume (GNOT)")).not.toBeInTheDocument();
+
+  act(() => onMove({ point: undefined, time: undefined, seriesData: new Map() }));
+  expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
 });
 
 it("keeps loaded candles and the visible range after an older page fails, then retries on the next pan", async () => {
@@ -169,7 +207,6 @@ it("advances one bounded window per action across empty and sparse history witho
   await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
   expect(loadPage).toHaveBeenNthCalledWith(2, 228300, 264300);
   expect(loadPage).toHaveBeenNthCalledWith(3, 192300, 228300);
-  expect(screen.getByText("Volume (GNOT)")).toBeInTheDocument();
 
   const panLeft = () => {
     act(() => {

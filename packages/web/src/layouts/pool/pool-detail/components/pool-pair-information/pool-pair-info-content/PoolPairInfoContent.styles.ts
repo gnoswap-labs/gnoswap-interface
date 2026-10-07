@@ -60,6 +60,12 @@ export const ContentWrapper = styled.div`
       grid-column: 3;
       grid-row: 1;
       justify-self: end;
+      max-width: 100%;
+      overflow-x: auto;
+      scrollbar-width: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
     }
     .chart-ranges.hidden {
       visibility: hidden;
@@ -90,6 +96,7 @@ export const ContentWrapper = styled.div`
       min-width: 40px;
       min-height: 36px;
       padding: 6px 10px;
+      flex-shrink: 0;
       border-radius: 4px;
       color: ${({ theme }) => theme.color.text04};
       &:hover,
@@ -150,20 +157,13 @@ export const ContentWrapper = styled.div`
         outline: 2px solid ${({ theme }) => theme.color.text02};
       }
     }
-    .price-chart-volume-label,
     .price-chart-paging {
       position: absolute;
+      top: 8px;
       left: 12px;
+      z-index: 3;
       font-size: 11px;
       color: ${({ theme }) => theme.color.text04};
-    }
-    .price-chart-volume-label {
-      bottom: 110px;
-      pointer-events: none;
-    }
-    .price-chart-paging {
-      top: 8px;
-      z-index: 3;
     }
     .price-chart-paging-error {
       color: ${({ theme }) => theme.color.red01};

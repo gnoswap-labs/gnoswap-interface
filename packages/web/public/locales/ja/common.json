@@ -18,6 +18,14 @@
     "fees": "料金",
     "tradingVol": "取引量"
   },
+  "candleTooltip": {
+    "high": "高値",
+    "low": "安値",
+    "open": "始値",
+    "close": "終値",
+    "volume": "出来高",
+    "swaps": "スワップ"
+  },
   "btn": {
     "amountTooLow": "金額が低すぎる",
     "enterAmount": "金額を入力",

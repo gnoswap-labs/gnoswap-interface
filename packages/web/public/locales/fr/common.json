@@ -18,6 +18,14 @@
     "fees": "Honoraires",
     "tradingVol": "Volume des échanges"
   },
+  "candleTooltip": {
+    "high": "Haut",
+    "low": "Bas",
+    "open": "Ouverture",
+    "close": "Clôture",
+    "volume": "Volume",
+    "swaps": "Échanges"
+  },
   "btn": {
     "amountTooLow": "Montant trop faible",
     "enterAmount": "Saisir le montant",

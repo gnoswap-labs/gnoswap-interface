@@ -18,6 +18,14 @@
     "fees": "Phí",
     "tradingVol": "Khối lượng giao dịch"
   },
+  "candleTooltip": {
+    "high": "Cao",
+    "low": "Thấp",
+    "open": "Mở",
+    "close": "Đóng",
+    "volume": "Khối lượng",
+    "swaps": "Giao dịch"
+  },
   "btn": {
     "amountTooLow": "Số tiền quá thấp",
     "enterAmount": "Nhập số tiền",

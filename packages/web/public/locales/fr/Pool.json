@@ -10,7 +10,6 @@
     "zoomIn": "Agrandir",
     "zoomOut": "Réduire",
     "priceChartLabel": "Graphique du prix de {{pair}} et du volume de {{symbol}}",
-    "volumeToken": "Volume ({{symbol}})",
     "loading": "Chargement de l'historique des prix…",
     "empty": "Aucune bougie de prix sur cette période.",
     "searchOlder": "Rechercher l'historique antérieur",

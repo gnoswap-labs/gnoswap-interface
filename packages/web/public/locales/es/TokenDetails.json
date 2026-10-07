@@ -14,8 +14,7 @@
     "empty": "No hay velas de precios para este intervalo.",
     "searchOlder": "Buscar historial anterior",
     "error": "No se pudieron cargar las velas de precios.",
-    "retry": "Reintentar",
-    "volumeToken": "Volumen ({{symbol}})"
+    "retry": "Reintentar"
   },
   "description": {
     "empty": "No hay información sobre fichas",
