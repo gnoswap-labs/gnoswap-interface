@@ -384,3 +384,73 @@ it("ends pool paging after the first empty older window following observed bars"
   panLeft();
   expect(loadPage).toHaveBeenCalledTimes(2);
 });
+
+it("refreshes the latest candle and appends new buckets without discarding history or the viewport", async () => {
+  jest.useFakeTimers();
+  jest.setSystemTime(300000000);
+  const recent = { ...firstPage[1], time: 300000 };
+  const updated = { ...recent, high: 5, close: 4, volume: 8 };
+  const next = { ...recent, time: 300300, open: 4, high: 6, close: 6, volume: 2 };
+  const loadPage = jest.fn().mockResolvedValueOnce([firstPage[0], recent]).mockResolvedValueOnce([updated, next]);
+  const { unmount } = render(<PriceCandleChart {...props} loadPage={loadPage} />);
+  try {
+    await act(async () => {});
+    expect(mockCandles.setData).toHaveBeenCalledTimes(1);
+    jest.setSystemTime(300300000);
+    await act(async () => {
+      jest.advanceTimersByTime(5_000);
+    });
+    expect(loadPage).toHaveBeenNthCalledWith(2, 300000, 300600);
+    expect(mockCandles.setData).toHaveBeenLastCalledWith([
+      { time: 264600, open: 1, high: 2, low: 1, close: 2 },
+      { time: 300000, open: 2, high: 5, low: 2, close: 4 },
+      { time: 300300, open: 4, high: 6, low: 2, close: 6 },
+    ]);
+    expect(mockVolume.setData.mock.calls.at(-1)[0].map((bar: { value: number }) => bar.value)).toEqual([3, 8, 2]);
+    expect(mockTimeScale.setVisibleRange).toHaveBeenCalledWith({ from: 100, to: 200 });
+    unmount();
+    await act(async () => {
+      jest.advanceTimersByTime(5_000);
+    });
+    expect(loadPage).toHaveBeenCalledTimes(2);
+  } finally {
+    unmount();
+    jest.useRealTimers();
+  }
+});
+
+it("pauses polling in hidden tabs and retains prices after a refresh failure until recovery", async () => {
+  jest.useFakeTimers();
+  jest.setSystemTime(300000000);
+  let hidden = false;
+  jest.spyOn(document, "hidden", "get").mockImplementation(() => hidden);
+  const bar = { ...firstPage[1], time: 300000 };
+  const loadPage = jest
+    .fn()
+    .mockResolvedValueOnce([bar])
+    .mockRejectedValueOnce(new Error("offline"))
+    .mockResolvedValueOnce([{ ...bar, close: 4, high: 4 }]);
+  const { unmount } = render(<PriceCandleChart {...props} loadPage={loadPage} />);
+  try {
+    await act(async () => {});
+    hidden = true;
+    await act(async () => {
+      jest.advanceTimersByTime(60_000);
+    });
+    expect(loadPage).toHaveBeenCalledTimes(1);
+    hidden = false;
+    await act(async () => {
+      fireEvent(document, new Event("visibilitychange"));
+    });
+    expect(loadPage).toHaveBeenCalledTimes(2);
+    expect(mockCandles.setData).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText("Could not load price history")).not.toBeInTheDocument();
+    await act(async () => {
+      jest.advanceTimersByTime(5_000);
+    });
+    expect(mockCandles.setData).toHaveBeenLastCalledWith([{ time: 300000, open: 2, high: 4, low: 2, close: 4 }]);
+  } finally {
+    unmount();
+    jest.useRealTimers();
+  }
+});

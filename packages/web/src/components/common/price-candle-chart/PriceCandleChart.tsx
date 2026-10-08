@@ -176,6 +176,25 @@ export default function PriceCandleChart({
       const windowSeconds = Math.min(120 * interval, 30 * 86400);
       let exhausted = false;
       let fetching = false;
+      const applyPriceFormat = (latest: number) => {
+        const precision = Math.max(2, Math.ceil(-Math.log10(latest)) + 4);
+        candles.applyOptions({
+          priceFormat: {
+            type: "custom",
+            minMove: Math.max(Number.MIN_VALUE, 10 ** -precision),
+            formatter: formatCandlePrice,
+            tickmarksFormatter: (prices: number[]) => {
+              const labels = prices.map(formatCandlePrice);
+              for (let i = 1; i < labels.length; i++) {
+                if (labels[i] === labels[i - 1]) {
+                  return prices.map(price => (precision > 12 ? price.toExponential(16) : price.toFixed(precision)));
+                }
+              }
+              return labels;
+            },
+          },
+        });
+      };
       const loadOlder = async () => {
         if (cancelled || exhausted || fetching || cursor <= 0) return;
         const end = cursor;
@@ -202,24 +221,7 @@ export default function PriceCandleChart({
           cursor = start;
           exhausted = cursor === 0;
           setCanSearchOlder(!exhausted);
-          const latest = bars.length ? bars[bars.length - 1].close : older[older.length - 1].close;
-          const precision = Math.max(2, Math.ceil(-Math.log10(latest)) + 4);
-          candles.applyOptions({
-            priceFormat: {
-              type: "custom",
-              minMove: Math.max(Number.MIN_VALUE, 10 ** -precision),
-              formatter: formatCandlePrice,
-              tickmarksFormatter: (prices: number[]) => {
-                const labels = prices.map(formatCandlePrice);
-                for (let i = 1; i < labels.length; i++) {
-                  if (labels[i] === labels[i - 1]) {
-                    return prices.map(price => (precision > 12 ? price.toExponential(16) : price.toFixed(precision)));
-                  }
-                }
-                return labels;
-              },
-            },
-          });
+          applyPriceFormat(bars.length ? bars[bars.length - 1].close : older[older.length - 1].close);
           const visible = bars.length ? chart.timeScale().getVisibleRange() : null;
           bars = older.concat(bars);
           for (const bar of older) barsByTime.set(bar.time, bar);
@@ -252,6 +254,65 @@ export default function PriceCandleChart({
         }
       };
       searchOlder.current = () => void loadOlder();
+      const refreshLatest = async () => {
+        if (cancelled || fetching || document.hidden) return;
+        const end = (Math.floor(Date.now() / 1000 / interval) + 1) * interval;
+        const start = Math.max(0, end - windowSeconds, bars.length ? bars[bars.length - 1].time : 0);
+        if (start >= end) return;
+        fetching = true;
+        try {
+          const latest = await loadPage(start, end);
+          if (cancelled || !latest.length) return;
+          if (latest.some(bar => bar.time < start || bar.time >= end)) {
+            throw new Error("Invalid price history response");
+          }
+          const visible = chart.timeScale().getVisibleRange();
+          const previousLastTime = bars.length ? bars[bars.length - 1].time : null;
+          for (const bar of latest) barsByTime.set(bar.time, bar);
+          bars = Array.from(barsByTime.values()).sort((a, b) => a.time - b.time);
+          applyPriceFormat(bars[bars.length - 1].close);
+          candles.setData(
+            bars.map(({ time, open, high, low, close }) => ({ time: time as UTCTimestamp, open, high, low, close })),
+          );
+          volume.setData(
+            bars.map(({ time, volume: value, open, close }) => ({
+              time: time as UTCTimestamp,
+              value,
+              color: close >= open ? positive : negative,
+            })),
+          );
+          if (visible) {
+            const shift =
+              previousLastTime !== null && Number(visible.to) >= previousLastTime
+                ? bars[bars.length - 1].time - previousLastTime
+                : 0;
+            chart.timeScale().setVisibleRange({
+              from: (Number(visible.from) + shift) as UTCTimestamp,
+              to: (Number(visible.to) + shift) as UTCTimestamp,
+            });
+          } else {
+            chart.timeScale().setVisibleLogicalRange({
+              from: Math.max(0, bars.length - 65) - 6,
+              to: bars.length + 4,
+            });
+          }
+          setState("ready");
+          setHovered(previous => {
+            if (!previous) return null;
+            const bar = barsByTime.get(previous.bar.time);
+            return bar ? { ...previous, bar } : null;
+          });
+        } catch {
+          // A transient refresh failure must not replace an already loaded chart.
+        } finally {
+          fetching = false;
+        }
+      };
+      const refreshOnVisibility = () => {
+        if (!document.hidden) void refreshLatest();
+      };
+      const refreshTimer = window.setInterval(() => void refreshLatest(), 5_000);
+      document.addEventListener("visibilitychange", refreshOnVisibility);
       // Programmatic setData/fitContent/resize also emit range changes. Page only after a user interaction.
       let userPanned = false;
       let pointerStart: number | null = null;
@@ -298,6 +359,8 @@ export default function PriceCandleChart({
       };
       chart.timeScale().subscribeVisibleLogicalRangeChange(onRange);
       dispose = () => {
+        window.clearInterval(refreshTimer);
+        document.removeEventListener("visibilitychange", refreshOnVisibility);
         element.removeEventListener("wheel", armPaging, true);
         element.removeEventListener("pointerdown", startPan, true);
         element.removeEventListener("pointermove", movePan, true);
