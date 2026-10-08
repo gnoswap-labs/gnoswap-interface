@@ -62,11 +62,11 @@
     },
     "stakedPosi": {
       "dataTooltip": {
-        "loading": "Chargement des positions stakées…",
-        "empty": "Aucune position stakée",
-        "error": "Impossible de charger les positions stakées.",
-        "retry": "Réessayer",
         "date": "Date du piquetage",
+        "empty": "Aucune position en staking",
+        "error": "Impossible de charger les positions en staking.",
+        "loading": "Chargement des positions ouvertes…",
+        "retry": "Réessayer",
         "totalValue": "Valeur totale"
       },
       "label": "Positions piquetées",
