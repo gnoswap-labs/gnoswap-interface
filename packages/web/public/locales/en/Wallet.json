@@ -62,6 +62,10 @@
     },
     "stakedPosi": {
       "dataTooltip": {
+        "loading": "Loading staked positions…",
+        "empty": "No staked positions",
+        "error": "Unable to load staked positions.",
+        "retry": "Retry",
         "date": "Staked Date",
         "totalValue": "Total Value"
       },

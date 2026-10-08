@@ -27,6 +27,25 @@ $ npm i yarn -g
 $ yarn set version berry
 ```
 
+## Portfolio API Contract
+
+Portfolio LP totals come from `GET /v1/users/{address}/position/summary`, whose
+`data` contains decimal-string `stakedUsd` and `unstakedUsd` values and numeric
+`stakedCount` and `unstakedCount` values for all open positions.
+The frontend does not download every position to calculate these totals.
+
+Rewards are fetched independently from `/position/reward`. A failed principal
+summary does not hide loaded rewards or disable Claim All. A failed reward
+request does not hide loaded principal totals. The combined balance remains
+unavailable until all required monetary data exists.
+
+The Staked Positions tooltip requests open staked positions with
+`stakedOnly=true&withClosed=false&page=1&limit=20` when opened, then loads the
+next page near the bottom of its scroll area. Failed pages can be retried without
+discarding loaded rows or changing the aggregate balance. The API must provide
+the dedicated summary endpoint and filter staked rows before pagination and counting.
+The separate My Positions card list retains its existing page navigation.
+
 ## Contributing & Support
 If you would like to contribute to the Gnoswap Interface or need support, please consider the following options:
 - Read our contributing guidelines: The [CONTRIBUTING.md](https://github.com/gnoswap-labs/gnoswap-interface/blob/develop/CONTRIBUTING.md) file provides detailed information on how to contribute to the project, including submitting pull requests, reporting issues, and suggesting improvements.

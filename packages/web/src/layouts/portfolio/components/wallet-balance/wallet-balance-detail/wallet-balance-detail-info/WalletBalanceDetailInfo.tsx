@@ -18,6 +18,7 @@ interface WalletBalanceDetailInfoProps {
   tooltip?: string;
   value: string;
   valueTooltip?: React.ReactNode;
+  interactiveValueTooltip?: boolean;
   button?: React.ReactNode;
   loading: boolean;
   className?: string;
@@ -32,6 +33,7 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
   tooltip,
   value,
   valueTooltip,
+  interactiveValueTooltip = false,
   button,
   loading,
   className,
@@ -76,9 +78,16 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
               <span css={pulseSkeletonStyle({ h: 20, w: "120px" })} />
             </div>
           ) : (
-            <Tooltip placement="top" forcedClose={!valueTooltip} FloatingContent={valueTooltip} scroll>
+            <Tooltip
+              placement="top"
+              forcedClose={!valueTooltip}
+              FloatingContent={valueTooltip}
+              scroll={!interactiveValueTooltip}
+              interactive={interactiveValueTooltip}
+            >
               <span
                 className={`value ${valueTooltip ? "has-tooltip" : ""}`}
+                tabIndex={interactiveValueTooltip && valueTooltip ? 0 : undefined}
                 style={isClaim ? { fontSize: `${fontSize}px` } : {}}
               >
                 {displayValue}

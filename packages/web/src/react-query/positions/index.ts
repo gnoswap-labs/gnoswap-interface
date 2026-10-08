@@ -2,4 +2,5 @@ export * from "./use-get-position-by-id";
 export * from "./use-get-position-history";
 export * from "./use-get-positions-by-address";
 export * from "./use-get-position-rewards";
+export * from "./use-get-position-summary";
 export * from "./use-make-pool-positions";

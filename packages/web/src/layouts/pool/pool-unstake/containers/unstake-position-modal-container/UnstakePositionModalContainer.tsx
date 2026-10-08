@@ -5,6 +5,7 @@ import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
 import { useMessage } from "@hooks/common/use-message";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
@@ -17,6 +18,7 @@ import { useTransactionEventStore } from "@hooks/common/use-transaction-event-st
 import { usePositionsRewards } from "@hooks/pool/data/use-positions-rewards";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useGetPoolList, useRefetchGetPoolDetailByPath } from "@query/pools";
+import { QUERY_KEY } from "@query/query-keys";
 import { UnstakePositionsRequest } from "@repositories/position/request";
 import UnstakePositionModal from "../../components/unstake-position-modal/UnstakePositionModal";
 
@@ -26,8 +28,9 @@ interface UnstakePositionModalContainerProps {
 }
 
 const UnstakePositionModalContainer = ({ positions, refetchPositions }: UnstakePositionModalContainerProps) => {
-  const { account, walletClient } = useWallet();
+  const { account, walletClient, currentChainId } = useWallet();
   const { positionRepository } = useGnoswapContext();
+  const { invalidateQueryKey } = useInvalidateQueries();
 
   const router = useRouter();
   const clearModal = useClearModal();
@@ -113,6 +116,10 @@ const UnstakePositionModalContainer = ({ positions, refetchPositions }: UnstakeP
               refetchPools();
               refetchPositions();
               refetchPoolDetails();
+              invalidateQueryKey("UnstakePosition", [
+                [QUERY_KEY.positions, currentChainId, address],
+                [QUERY_KEY.positionSummary, currentChainId, address],
+              ]);
             },
             onUpdate: async () => {
               updateBalances();
@@ -185,6 +192,8 @@ const UnstakePositionModalContainer = ({ positions, refetchPositions }: UnstakeP
     refetchPoolDetails,
     updateBalances,
     openModal,
+    invalidateQueryKey,
+    currentChainId,
   ]);
 
   return <UnstakePositionModal positions={positions} close={close} onSubmit={unstakeOnSubmit} />;

@@ -62,6 +62,10 @@
     },
     "stakedPosi": {
       "dataTooltip": {
+        "loading": "Đang tải các vị thế đã đặt cọc…",
+        "empty": "Không có vị thế đã đặt cọc",
+        "error": "Không thể tải các vị thế đã đặt cọc.",
+        "retry": "Thử lại",
         "date": "Ngày đặt cọc",
         "totalValue": "Tổng giá trị"
       },

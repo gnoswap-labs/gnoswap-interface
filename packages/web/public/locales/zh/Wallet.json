@@ -62,6 +62,10 @@
     },
     "stakedPosi": {
       "dataTooltip": {
+        "loading": "正在加载质押仓位…",
+        "empty": "暂无质押仓位",
+        "error": "无法加载质押仓位。",
+        "retry": "重试",
         "date": "定标日期",
         "totalValue": "总价值"
       },

@@ -17,6 +17,7 @@ interface UseGetPositionsByAddressProps {
   /** API option: when true, include closed positions in the server response. */
   withClosed?: boolean;
   withAvailableStake?: boolean;
+  stakedOnly?: boolean;
 }
 
 export const useGetPositionsByAddress = (
@@ -47,6 +48,7 @@ export const useGetPositionsByAddress = (
       props?.limit,
       props?.withClosed,
       props?.withAvailableStake,
+      props?.stakedOnly,
     ],
     async () => {
       if (!address) {
@@ -60,6 +62,7 @@ export const useGetPositionsByAddress = (
           limit: props?.limit,
           withClosed: props?.withClosed,
           withAvailableStake: props?.withAvailableStake,
+          stakedOnly: props?.stakedOnly,
         });
       } catch (error) {
         console.error("Failed to fetch positions:", error);
