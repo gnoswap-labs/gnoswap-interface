@@ -1,5 +1,4 @@
 import { SendTransactionResponse, TransactionMessage, WalletResponse } from "@common/clients/wallet-client/protocols";
-import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { PositionModel } from "@models/position/position-model";
 
 import { DecreaseLiquidityRequest, IncreaseLiquidityRequest, RepositionLiquidityRequest } from "./request";
@@ -12,6 +11,7 @@ import { UnstakePositionsRequest } from "./request/unstake-positions-request";
 import {
   DecreaseLiquidityFailedResponse,
   DecreaseLiquiditySuccessResponse,
+  GetPositionHistoryResult,
   GetPositionsByAddressResult,
   IncreaseLiquidityFailedResponse,
   IncreaseLiquiditySuccessResponse,
@@ -70,7 +70,7 @@ export interface PositionRepository {
     request: RemoveLiquidityRequest,
   ) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
 
-  getPositionHistory: (lpTokenId: string) => Promise<IPositionHistoryModel[]>;
+  getPositionHistory: (lpTokenId: string, page?: number, limit?: number) => Promise<GetPositionHistoryResult>;
 
   getUnstakingFee: () => Promise<number>;
 }

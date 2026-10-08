@@ -5,3 +5,4 @@ export * from "./reposition-liquidity-response";
 export * from "./get-positions-by-address-result";
 export * from "./position-rewards-response";
 export * from "./position-summary-response";
+export * from "./get-position-history-result";
