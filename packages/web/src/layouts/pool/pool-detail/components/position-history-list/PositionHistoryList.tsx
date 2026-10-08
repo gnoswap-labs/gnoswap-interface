@@ -6,7 +6,7 @@ import { DEVICE_TYPE } from "@styles/media";
 
 import PositionHistoryTable from "./position-history-table/PositionHistoryTable";
 
-import { PositionHistoryListWrapper } from "./PositionHistoryList.styles";
+import { PositionHistoryListWrapper, PositionHistoryPaginationWrapper } from "./PositionHistoryList.styles";
 
 interface IPositionHistoryList {
   list: IPositionHistoryModel[];
@@ -33,13 +33,15 @@ const PositionHistoryList: React.FC<IPositionHistoryList> = ({
     <PositionHistoryListWrapper>
       <PositionHistoryTable list={list} isFetched={isFetched} breakpoint={breakpoint} isLoading={isLoading} />
       {totalPage > 1 && (
-        <Pagination
-          currentPage={currentPage}
-          totalPage={totalPage}
-          onPageChange={movePage}
-          disabled={isFetching}
-          siblingCount={breakpoint !== DEVICE_TYPE.MOBILE ? 2 : 1}
-        />
+        <PositionHistoryPaginationWrapper>
+          <Pagination
+            currentPage={currentPage}
+            totalPage={totalPage}
+            onPageChange={movePage}
+            disabled={isFetching}
+            siblingCount={breakpoint !== DEVICE_TYPE.MOBILE ? 2 : 1}
+          />
+        </PositionHistoryPaginationWrapper>
       )}
     </PositionHistoryListWrapper>
   );
