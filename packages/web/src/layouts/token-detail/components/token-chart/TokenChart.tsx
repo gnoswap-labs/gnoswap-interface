@@ -63,12 +63,14 @@ const TokenChart: React.FC<TokenChartProps> = ({ tokenInfo, loading, candleClien
           ))}
         </ChartControls>
         <CandleChartWrapper>
-          <TokenCandles
-            client={candleClient}
-            tokenPath={candlePath || ""}
-            symbol={candleSymbol || tokenInfo.token.displaySymbol}
-            resolution={resolution}
-          />
+          {candlePath && (
+            <TokenCandles
+              client={candleClient}
+              tokenPath={candlePath}
+              symbol={candleSymbol || tokenInfo.token.displaySymbol}
+              resolution={resolution}
+            />
+          )}
         </CandleChartWrapper>
       </ChartRegion>
     </TokenChartWrapper>
