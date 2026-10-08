@@ -6,6 +6,8 @@ _Note: Gnoswap is in active development and not yet in production, and we welcom
 ## Project Overview
 This repository hosts the codebase for the Gnoswap interface, which enables users to interact with Gnoswap. The interface is built using TypeScript and is designed to be user-friendly, secure, and accessible, despite having complex mechanisms such as concentrated liquidity and staking as part of its core service.
 
+Position history is paginated in groups of 30 using the API's `page` and `limit` parameters. The response retains a `data` array and includes a sibling `totalCount` for page navigation. The count is calculated before presentation filtering, so pages may display fewer entries when zero-amount history is hidden.
+
 ## Development Setup
 The Node.js version is 20.10.0.  
 We recommend using [nvm](https://github.com/nvm-sh/nvm).
