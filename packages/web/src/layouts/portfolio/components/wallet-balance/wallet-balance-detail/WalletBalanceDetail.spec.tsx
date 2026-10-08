@@ -22,6 +22,10 @@ jest.mock("react-i18next", () => ({
   }),
 }));
 
+jest.mock("@query/positions/use-get-staked-positions-infinite", () => ({
+  useGetStakedPositionsInfinite: () => ({ positions: [] }),
+}));
+
 jest.mock("./sateked-positions-tooltip/StakedPositinosTooltipContent", () => ({
   __esModule: true,
   default: () => null,

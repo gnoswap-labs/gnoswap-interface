@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
@@ -12,8 +13,16 @@ jest.mock("@adena-wallet/sdk", () => ({
   TransactionBuilder: jest.fn(),
 }));
 
+jest.mock("@hooks/common/use-gnoswap-context", () => ({
+  useGnoswapContext: () => ({ positionRepository: { getPositionsByAddress: jest.fn() } }),
+}));
+jest.mock("@hooks/wallet/data/use-wallet", () => ({
+  useWallet: () => ({ account: { address: "wallet-a" }, currentChainId: "chain-a", availNetwork: true }),
+}));
+
 describe("WalletBalance Component", () => {
   it("WalletBalance render", () => {
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false, cacheTime: 0 } } });
     const mockProps = {
       connected: true,
       balanceSummaryInfo: {
@@ -49,11 +58,13 @@ describe("WalletBalance Component", () => {
     };
 
     render(
-      <JotaiProvider>
-        <GnoswapThemeProvider>
-          <WalletBalance {...mockProps} />
-        </GnoswapThemeProvider>
-      </JotaiProvider>,
+      <QueryClientProvider client={queryClient}>
+        <JotaiProvider>
+          <GnoswapThemeProvider>
+            <WalletBalance {...mockProps} />
+          </GnoswapThemeProvider>
+        </JotaiProvider>
+      </QueryClientProvider>,
     );
   });
 });

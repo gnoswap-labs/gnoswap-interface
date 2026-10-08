@@ -4,27 +4,29 @@ import { useTranslation } from "react-i18next";
 import { getDateUtcToLocal } from "@common/utils/date-util";
 import IconLpToken from "@components/common/icons/IconLpToken";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { useGetStakedPositionsInfinite } from "@query/positions/use-get-staked-positions-infinite";
+import type { StakedPositionsTooltipQuery } from "@query/positions/use-get-staked-positions-infinite";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
 import * as S from "./StakedPositinosTooltipContent.styles";
 
-const StakedPostionsTooltipContent: React.FC<{ count: number }> = ({ count }) => {
+const StakedPostionsTooltipContent: React.FC<{
+  count: number;
+  query: StakedPositionsTooltipQuery;
+}> = ({ count, query }) => {
   const { t } = useTranslation();
-  const { positions, isLoading, isError, isFetchingNextPage, hasNextPage, fetchNextPage } =
-    useGetStakedPositionsInfinite();
+  const { positions, isLoading, isError, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } = query;
   const fetchingNextPage = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const loadNextPage = useCallback(async () => {
-    if (!hasNextPage || isFetchingNextPage || fetchingNextPage.current) return;
+    if (!hasNextPage || isFetching || fetchingNextPage.current) return;
     fetchingNextPage.current = true;
     try {
       await fetchNextPage();
     } finally {
       fetchingNextPage.current = false;
     }
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+  }, [fetchNextPage, hasNextPage, isFetching]);
 
   useEffect(() => {
     const container = containerRef.current;

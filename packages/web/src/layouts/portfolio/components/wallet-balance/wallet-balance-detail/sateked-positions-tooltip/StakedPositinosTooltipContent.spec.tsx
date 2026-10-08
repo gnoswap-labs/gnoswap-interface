@@ -5,6 +5,7 @@ import React from "react";
 
 import { PositionModel } from "@models/position/position-model";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
+import { useGetStakedPositionsInfinite } from "@query/positions/use-get-staked-positions-infinite";
 import StakedPostionsTooltipContent from "./StakedPositinosTooltipContent";
 
 const mockGetPositions = jest.fn();
@@ -34,12 +35,17 @@ const rows = (start: number, count: number) =>
       } as PositionModel),
   );
 
+const QueryContent = () => {
+  const query = useGetStakedPositionsInfinite();
+  return <StakedPostionsTooltipContent count={45} query={query} />;
+};
+
 const renderContent = (open = true, cacheTime = 0) => {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, cacheTime } } });
   const surface = (visible: boolean) => (
     <QueryClientProvider client={client}>
       <JotaiProvider>
-        <GnoswapThemeProvider>{visible && <StakedPostionsTooltipContent count={41} />}</GnoswapThemeProvider>
+        <GnoswapThemeProvider>{visible && <QueryContent />}</GnoswapThemeProvider>
       </JotaiProvider>
     </QueryClientProvider>
   );
@@ -71,8 +77,8 @@ describe("staked position tooltip pagination", () => {
   it("fetches only after mount, only near the bottom, and stops at totalCount", async () => {
     mockGetPositions.mockImplementation((_address, { page }) =>
       Promise.resolve({
-        positions: page === 1 ? rows(1, 20) : page === 2 ? rows(21, 20) : rows(41, 1),
-        totalCount: 41,
+        positions: page === 1 ? rows(1, 20) : page === 2 ? rows(21, 20) : rows(41, 5),
+        totalCount: 45,
       }),
     );
     const view = renderContent(false);
@@ -87,7 +93,7 @@ describe("staked position tooltip pagination", () => {
     expect(mockGetPositions).toHaveBeenCalledTimes(2);
     expect(screen.getByText("ID #1")).toBeInTheDocument();
     scroll(600);
-    await screen.findByText("ID #41");
+    await screen.findByText("ID #45");
     scroll(600);
     expect(mockGetPositions).toHaveBeenCalledTimes(3);
     expect(mockGetPositions).toHaveBeenLastCalledWith(
@@ -184,5 +190,18 @@ describe("staked position tooltip pagination", () => {
     expect(screen.queryByText("ID #1")).not.toBeInTheDocument();
     expect(screen.queryByText("ID #2")).not.toBeInTheDocument();
     expect(mockGetPositions.mock.calls.map(call => call[1].page)).toEqual([1, 2, 3]);
+  });
+
+  it("deduplicates repeated IDs across pages while preserving earlier rows", async () => {
+    mockGetPositions
+      .mockResolvedValueOnce({ positions: rows(1, 20), totalCount: 40 })
+      .mockResolvedValueOnce({ positions: [...rows(20, 1), ...rows(21, 19)], totalCount: 40 });
+    renderContent();
+    await screen.findByText("ID #20");
+    scroll(600);
+    await screen.findByText("ID #39");
+    expect(screen.getAllByText("ID #20")).toHaveLength(1);
+    expect(screen.getByText("ID #1")).toBeInTheDocument();
+    expect(mockGetPositions.mock.calls.map(call => call[1].page)).toEqual([1, 2]);
   });
 });

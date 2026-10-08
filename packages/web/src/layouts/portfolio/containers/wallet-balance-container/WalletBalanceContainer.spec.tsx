@@ -27,7 +27,7 @@ const token: TokenModel = {
   priceID: "USDC",
 };
 const tokenData = {
-  balances: { [token.path]: "100000000" },
+  walletBalances: { [token.path]: "100000000" } as Record<string, string | null>,
   tokens: [token],
   loadingBalance: false,
   isLoadingBalanceData: false,
@@ -36,6 +36,16 @@ const tokenData = {
   updateBalances: jest.fn(),
 };
 const prices = { [token.path]: { pricesBefore: { latestPrice: 1 } } };
+const priceQuery = { data: prices, isLoading: false };
+const wallet = {
+  connected: true,
+  isSwitchNetwork: false,
+  loadingConnect: "done",
+  account: { address: "g1address" },
+  currentChainId: "gnoland1",
+  availNetwork: true,
+  walletType: { type: "ADENA", socialType: null },
+};
 const rewards: PositionRewardsResponse = {
   claimed: { swapFee: [], internalReward: [], externalReward: [] },
   claimable: {
@@ -62,17 +72,9 @@ jest.mock("@hooks/common/use-gnoswap-context", () => ({
   useGnoswapContext: () => ({ positionRepository: { getPositionRewardsByAddress, getPositionSummaryByAddress } }),
 }));
 jest.mock("@hooks/wallet/data/use-wallet", () => ({
-  useWallet: () => ({
-    connected: true,
-    isSwitchNetwork: false,
-    loadingConnect: "done",
-    account: { address: "g1address" },
-    currentChainId: "gnoland1",
-    availNetwork: true,
-    walletType: { type: "ADENA", socialType: null },
-  }),
+  useWallet: () => wallet,
 }));
-jest.mock("@hooks/common/use-address", () => ({ useAddress: () => ({ address: "g1address" }) }));
+jest.mock("@hooks/common/use-address", () => ({ useAddress: () => ({ address: wallet.account.address }) }));
 jest.mock("@hooks/common/use-window-size", () => ({
   useWindowSize: () => ({ breakpoint: DEVICE_TYPE.WEB, width: 1200, handleBreakpoint: jest.fn() }),
 }));
@@ -82,7 +84,7 @@ jest.mock("@query/positions", () => ({
   useGetPositionRewards: jest.requireActual("@query/positions/use-get-position-rewards").useGetPositionRewards,
   useGetPositionSummary: jest.requireActual("@query/positions/use-get-position-summary").useGetPositionSummary,
 }));
-jest.mock("@query/token", () => ({ useGetAllTokenPrices: () => ({ data: prices, isLoading: false }) }));
+jest.mock("@query/token", () => ({ useGetAllTokenPrices: () => priceQuery }));
 jest.mock("@query/address", () => ({ useGetAvgBlockTime: () => ({ data: { AvgBlockTime: 2 } }) }));
 jest.mock("@hooks/common/use-broadcast-handler", () => ({
   useBroadcastHandler: () => ({
@@ -128,21 +130,32 @@ const renderBalance = () => {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false, refetchInterval: false, cacheTime: 0 } },
   });
-  return render(
+  const view = () => (
     <QueryClientProvider client={queryClient}>
       <JotaiProvider>
         <GnoswapThemeProvider>
           <WalletBalanceContainer />
         </GnoswapThemeProvider>
       </JotaiProvider>
-    </QueryClientProvider>,
+    </QueryClientProvider>
   );
+  const rendered = render(view());
+  return { ...rendered, queryClient, rerenderBalance: () => rendered.rerender(view()) };
 };
 
 const detailRow = (label: string) => screen.getByText(label).closest(".wallet-detail-left-side")!;
 
 describe("WalletBalanceContainer independent principal and reward requests", () => {
   beforeEach(() => {
+    wallet.account.address = "g1address";
+    wallet.currentChainId = "gnoland1";
+    wallet.loadingConnect = "done";
+    tokenData.walletBalances = { [token.path]: "100000000" };
+    tokenData.hasBalanceData = true;
+    tokenData.hasTokenPriceData = true;
+    tokenData.loadingBalance = false;
+    tokenData.isLoadingBalanceData = false;
+    priceQuery.isLoading = false;
     getPositionRewardsByAddress.mockReset();
     getPositionSummaryByAddress.mockReset();
     claimAll.mockReset().mockResolvedValue(null);
@@ -224,5 +237,70 @@ describe("WalletBalanceContainer independent principal and reward requests", () 
       resolve(rewards);
     });
     await waitFor(() => expect(container.querySelector(".amount")).toHaveTextContent("$257"));
+  });
+
+  it("keeps cached balances visible throughout reconnect and background refresh", async () => {
+    getPositionRewardsByAddress.mockResolvedValue(rewards);
+    getPositionSummaryByAddress.mockResolvedValue(summary);
+    const { container, queryClient, rerenderBalance } = renderBalance();
+    await waitFor(() => expect(container.querySelector(".amount")).toHaveTextContent("$257"));
+
+    getPositionRewardsByAddress.mockReturnValue(new Promise(() => {}));
+    getPositionSummaryByAddress.mockReturnValue(new Promise(() => {}));
+    tokenData.loadingBalance = true;
+    tokenData.isLoadingBalanceData = true;
+    priceQuery.isLoading = true;
+    wallet.loadingConnect = "loading";
+    await act(async () => {
+      void queryClient.invalidateQueries();
+      rerenderBalance();
+    });
+
+    expect(container.querySelector(".amount")).toHaveTextContent("$257");
+    expect(container.querySelector(".loading-wrapper")).toBeNull();
+    expect(detailRow("Wallet:overral.availBal.label")).toHaveTextContent("$100");
+    expect(detailRow("Wallet:overral.availBal.label").querySelector(".loading")).toBeNull();
+    expect(detailRow("Wallet:overral.stakedPosi.label")).toHaveTextContent("$120");
+    expect(detailRow("Wallet:overral.claimableReward.label")).toHaveTextContent("$7");
+    expect(screen.getByRole("button", { name: "Wallet:overral.claimAll.btn" })).toBeEnabled();
+  });
+
+  it("keeps unavailable wallet data loading without hiding loaded principal or rewards", async () => {
+    getPositionRewardsByAddress.mockResolvedValue(rewards);
+    getPositionSummaryByAddress.mockResolvedValue(summary);
+    tokenData.walletBalances = { [token.path]: null };
+    tokenData.hasBalanceData = false;
+    tokenData.isLoadingBalanceData = true;
+    const { container } = renderBalance();
+    await waitFor(() => expect(detailRow("Wallet:overral.stakedPosi.label")).toHaveTextContent("$120"));
+    expect(detailRow("Wallet:overral.availBal.label").querySelector(".loading")).not.toBeNull();
+    expect(container.querySelector(".loading-wrapper")).not.toBeNull();
+    expect(screen.getByRole("button", { name: "Wallet:overral.claimAll.btn" })).toBeEnabled();
+  });
+
+  it.each(["address", "chain"])("does not reuse totals when the wallet %s changes", async identity => {
+    getPositionRewardsByAddress.mockResolvedValue(rewards);
+    getPositionSummaryByAddress.mockResolvedValue(summary);
+    const { container, rerenderBalance } = renderBalance();
+    await waitFor(() => expect(container.querySelector(".amount")).toHaveTextContent("$257"));
+
+    getPositionRewardsByAddress.mockReturnValue(new Promise(() => {}));
+    getPositionSummaryByAddress.mockReturnValue(new Promise(() => {}));
+    if (identity === "address") {
+      wallet.account.address = "g1new";
+    } else {
+      wallet.currentChainId = "other-chain";
+    }
+    tokenData.walletBalances = { [token.path]: null };
+    tokenData.hasBalanceData = false;
+    tokenData.isLoadingBalanceData = true;
+    rerenderBalance();
+
+    expect(container.querySelector(".amount")).not.toHaveTextContent("$257");
+    expect(container.querySelector(".loading-wrapper")).not.toBeNull();
+    expect(detailRow("Wallet:overral.availBal.label")).not.toHaveTextContent("$100");
+    expect(detailRow("Wallet:overral.stakedPosi.label")).not.toHaveTextContent("$120");
+    expect(detailRow("Wallet:overral.claimableReward.label")).not.toHaveTextContent("$7");
+    expect(screen.queryByRole("button", { name: "Wallet:overral.claimAll.btn" })).not.toBeInTheDocument();
   });
 });

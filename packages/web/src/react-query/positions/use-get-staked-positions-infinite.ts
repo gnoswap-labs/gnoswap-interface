@@ -3,11 +3,22 @@ import { useMemo } from "react";
 
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import type { PositionModel } from "@models/position/position-model";
 import { QUERY_KEY } from "../query-keys";
 
 export const STAKED_POSITIONS_PAGE_SIZE = 20;
 
-export const useGetStakedPositionsInfinite = (props?: { address?: string; poolPath?: string }) => {
+export interface StakedPositionsTooltipQuery {
+  positions: PositionModel[];
+  isLoading: boolean;
+  isError: boolean;
+  isFetching: boolean;
+  isFetchingNextPage: boolean;
+  hasNextPage?: boolean;
+  fetchNextPage: () => Promise<unknown>;
+}
+
+export const useGetStakedPositionsInfinite = (props?: { address?: string; poolPath?: string; enabled?: boolean }) => {
   const { positionRepository } = useGnoswapContext();
   const { account, currentChainId, availNetwork } = useWallet();
   const address = props?.address ?? account?.address ?? "";
@@ -35,7 +46,7 @@ export const useGetStakedPositionsInfinite = (props?: { address?: string; poolPa
       const loadedCount = pages.reduce((count, page) => count + page.positions.length, 0);
       return lastPage.positions.length > 0 && loadedCount < lastPage.totalCount ? pages.length + 1 : undefined;
     },
-    enabled: !!address && availNetwork,
+    enabled: !!address && availNetwork && (props?.enabled ?? true),
     keepPreviousData: false,
     // Reuse loaded pages on reopen, but honor invalidations from position mutations.
     staleTime: Infinity,
@@ -54,5 +65,5 @@ export const useGetStakedPositionsInfinite = (props?: { address?: string; poolPa
         return true;
       });
   }, [query.data]);
-  return { ...query, positions };
+  return { ...query, positions, scopeKey: JSON.stringify([currentChainId, address, poolPath]) };
 };

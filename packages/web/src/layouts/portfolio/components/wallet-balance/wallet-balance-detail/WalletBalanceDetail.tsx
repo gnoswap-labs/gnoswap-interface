@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -9,6 +9,7 @@ import RewardTooltipContent, {
 import { DisplayRewardType } from "@constants/option.constant";
 import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
+import { useGetStakedPositionsInfinite } from "@query/positions/use-get-staked-positions-infinite";
 import {
   PositionRewardTokenAmount,
   PositionRewardsGroupResponse,
@@ -74,6 +75,35 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
   tokens,
 }) => {
   const { t } = useTranslation();
+  const [stakedTooltipActive, setStakedTooltipActive] = useState(false);
+  const canShowStakedTooltip =
+    connected && !isSwitchNetwork && balanceDetailInfo.stakedLP !== "-" && (positionSummary?.stakedCount ?? 0) > 0;
+  const stakedPositions = useGetStakedPositionsInfinite({ enabled: canShowStakedTooltip && stakedTooltipActive });
+  const { positions, data, hasNextPage, isFetching, isError, fetchNextPage } = stakedPositions;
+
+  // Filtered raw pages must advance even before there is any floating content to measure.
+  useEffect(() => {
+    if (
+      canShowStakedTooltip &&
+      stakedTooltipActive &&
+      positions.length === 0 &&
+      data &&
+      hasNextPage &&
+      !isFetching &&
+      !isError
+    ) {
+      void fetchNextPage();
+    }
+  }, [
+    canShowStakedTooltip,
+    stakedTooltipActive,
+    positions.length,
+    data,
+    hasNextPage,
+    isFetching,
+    isError,
+    fetchNextPage,
+  ]);
 
   const tokenByPath = useMemo(() => {
     const map: Record<string, TokenModel> = {};
@@ -155,15 +185,15 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         connected={connected}
         isSwitchNetwork={isSwitchNetwork}
         valueTooltip={
-          connected &&
-          !isSwitchNetwork &&
-          balanceDetailInfo.stakedLP !== "-" &&
-          positionSummary &&
-          positionSummary.stakedCount > 0 ? (
-            <StakedPostionsTooltipContent count={positionSummary.stakedCount} />
+          canShowStakedTooltip ? (
+            <StakedPostionsTooltipContent count={positionSummary?.stakedCount ?? 0} query={stakedPositions} />
           ) : undefined
         }
         interactiveValueTooltip
+        valueTooltipReady={stakedPositions.positions.length > 0}
+        valueTooltipActive={stakedTooltipActive}
+        valueTooltipScope={stakedPositions.scopeKey}
+        onValueTooltipInteractionChange={setStakedTooltipActive}
         breakpoint={breakpoint}
       />
       <WalletBalanceDetailInfo

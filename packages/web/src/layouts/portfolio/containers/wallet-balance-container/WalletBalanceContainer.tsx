@@ -49,7 +49,7 @@ const WalletBalanceContainer: React.FC = () => {
 
   const { data: blockTimeData } = useGetAvgBlockTime();
   const {
-    balances: balancesPrice,
+    walletBalances: balancesPrice,
     loadingBalance,
     isLoadingBalanceData,
     hasBalanceData,
@@ -73,8 +73,8 @@ const WalletBalanceContainer: React.FC = () => {
     ]);
   }, [invalidateQueryKey, currentChainId, userAddress]);
 
-  const isLoadingPosition = connected && loadingPositionSummary;
-  const isLoadingRewards = connected && loadingPositionRewards;
+  const isLoadingPosition = connected && !positionSummary && loadingPositionSummary;
+  const isLoadingRewards = connected && !positionRewards && loadingPositionRewards;
 
   const { claimAll } = usePosition([]);
   const { broadcastSuccess, broadcastError, broadcastRejected, broadcastLoading } = useBroadcastHandler();
@@ -178,24 +178,6 @@ const WalletBalanceContainer: React.FC = () => {
     });
   }, [claimAll, setLoadingTransactionClaim, claimAllInput, positionRewards, openModal]);
 
-  const loadingTotalBalance = useMemo(() => {
-    return (
-      isLoadingPosition ||
-      isLoadingRewards ||
-      loadingConnect === "loading" ||
-      isLoadingTokenPrices ||
-      (!!account?.address && (loadingBalance || isLoadingBalanceData))
-    );
-  }, [
-    isLoadingPosition,
-    isLoadingRewards,
-    loadingConnect,
-    account?.address,
-    isLoadingTokenPrices,
-    loadingBalance,
-    isLoadingBalanceData,
-  ]);
-
   const hasAvailableBalance =
     hasBalanceData &&
     hasTokenPriceData &&
@@ -204,6 +186,17 @@ const WalletBalanceContainer: React.FC = () => {
       const path = key === "ugnot" ? WRAPPED_GNOT_PATH : key;
       return value != null && (BigNumber(value).isZero() || tokenPrices[path]?.pricesBefore?.latestPrice != null);
     });
+
+  const isLoadingAvailableBalance =
+    !hasAvailableBalance &&
+    (loadingConnect === "loading" ||
+      isLoadingTokenPrices ||
+      (!!account?.address && (loadingBalance || isLoadingBalanceData)));
+  const loadingTotalBalance =
+    isLoadingPosition ||
+    isLoadingRewards ||
+    isLoadingAvailableBalance ||
+    (loadingConnect === "loading" && (!isPositionDataAvailable || !positionRewards));
 
   const availableBalance = useMemo(() => {
     return Object.entries(balancesPrice).reduce((acc, [key, value]) => {
@@ -316,10 +309,7 @@ const WalletBalanceContainer: React.FC = () => {
       claimableRewards: positionRewards ? `${claimableRewards}` : "-",
       stakedLP: isPositionDataAvailable ? `${stakedBalance}` : "-",
       unstakedLP: isPositionDataAvailable ? `${unStakedBalance}` : "-",
-      loadingBalance:
-        loadingConnect === "loading" ||
-        isLoadingTokenPrices ||
-        (!!account?.address && (loadingBalance || isLoadingBalanceData)),
+      loadingBalance: isLoadingAvailableBalance,
       loadingPositions: isLoadingPosition,
       loadingRewards: isLoadingRewards,
       totalClaimedRewards: positionRewards ? `${totalClaimedRewards}` : "-",
@@ -331,11 +321,7 @@ const WalletBalanceContainer: React.FC = () => {
     claimableRewards,
     stakedBalance,
     unStakedBalance,
-    loadingConnect,
-    isLoadingTokenPrices,
-    account?.address,
-    loadingBalance,
-    isLoadingBalanceData,
+    isLoadingAvailableBalance,
     isLoadingPosition,
     isLoadingRewards,
     totalClaimedRewards,

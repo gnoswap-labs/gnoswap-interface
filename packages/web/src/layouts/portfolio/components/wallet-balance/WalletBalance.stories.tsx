@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import { fn } from "@storybook/test";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
+
+import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapServiceProvider";
+import { SocialWalletProvider } from "@providers/social-wallet-provider/SocialWalletProvider";
 
 import { DEVICE_TYPE } from "@styles/media";
 
@@ -9,6 +14,21 @@ const meta = {
   title: "wallet/WalletBalance",
   component: WalletBalance,
   tags: ["autodocs"],
+  args: { tokens: [], tokenPrices: {}, positionRewards: null, isSwitchNetwork: false, loadngTransactionClaim: false },
+  decorators: [
+    function WithWalletServices(Story) {
+      const [queryClient] = useState(() => new QueryClient());
+      return (
+        <QueryClientProvider client={queryClient}>
+          <GnoswapServiceProvider>
+            <SocialWalletProvider>
+              <Story />
+            </SocialWalletProvider>
+          </GnoswapServiceProvider>
+        </QueryClientProvider>
+      );
+    },
+  ],
 } satisfies Meta<typeof WalletBalance>;
 
 export default meta;
