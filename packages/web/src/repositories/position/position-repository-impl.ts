@@ -6,7 +6,6 @@ import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
 import { PACKAGE_STAKER_PATH } from "@constants/environment.constant";
 import { PositionHistoryMapper } from "@models/position/mapper/position-history-mapper";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
-import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { PositionModel } from "@models/position/position-model";
 import { ActivityResponse } from "@repositories/activity/responses/activity-responses";
 import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
@@ -33,6 +32,7 @@ import { UnstakePositionsRequest } from "./request/unstake-positions-request";
 import {
   DecreaseLiquidityFailedResponse,
   DecreaseLiquiditySuccessResponse,
+  GetPositionHistoryResult,
   IncreaseLiquidityFailedResponse,
   IncreaseLiquiditySuccessResponse,
   PositionListResponse,
@@ -55,16 +55,20 @@ export class PositionRepositoryImpl implements PositionRepository {
     this.walletClient = walletClient;
   }
 
-  getPositionHistory = async (lpTokenId: string): Promise<IPositionHistoryModel[]> => {
+  getPositionHistory = async (lpTokenId: string, page = 1, limit = 20): Promise<GetPositionHistoryResult> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
     const response = await this.networkClient.get<{
       data: ActivityResponse;
+      totalCount: number;
     }>({
-      url: "/positions/" + lpTokenId + "/history",
+      url: `/positions/${lpTokenId}/history?page=${page}&limit=${limit}`,
     });
-    return PositionHistoryMapper.fromList(response.data.data);
+    return {
+      history: PositionHistoryMapper.fromList(response.data.data),
+      totalCount: response.data.totalCount,
+    };
   };
 
   getPositionById = async (lpTokenId: string, timeout?: number): Promise<PositionModel> => {
