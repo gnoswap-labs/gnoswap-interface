@@ -63,10 +63,6 @@
     "stakedPosi": {
       "dataTooltip": {
         "date": "定标日期",
-        "empty": "无质押头寸",
-        "error": "无法加载质押头寸。",
-        "loading": "正在加载已质押的头寸……",
-        "retry": "重试",
         "totalValue": "总价值"
       },
       "label": "质押位置",

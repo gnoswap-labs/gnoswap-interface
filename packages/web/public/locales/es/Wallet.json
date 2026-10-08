@@ -63,10 +63,6 @@
     "stakedPosi": {
       "dataTooltip": {
         "date": "Fecha apostada",
-        "empty": "Sin posiciones con staking",
-        "error": "No se han podido cargar las posiciones en staking.",
-        "loading": "Cargando posiciones con staking…",
-        "retry": "Volver a intentarlo",
         "totalValue": "Valor total"
       },
       "label": "Posiciones apostadas",

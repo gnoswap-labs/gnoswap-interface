@@ -63,10 +63,6 @@
     "stakedPosi": {
       "dataTooltip": {
         "date": "Ngày đặt cọc",
-        "empty": "Không có vị thế được thế chấp",
-        "error": "Không thể tải các vị thế đã đặt cược.",
-        "loading": "Đang tải các vị thế đã đặt cược…",
-        "retry": "Thử lại",
         "totalValue": "Tổng giá trị"
       },
       "label": "Các vị thế đã đặt cược",

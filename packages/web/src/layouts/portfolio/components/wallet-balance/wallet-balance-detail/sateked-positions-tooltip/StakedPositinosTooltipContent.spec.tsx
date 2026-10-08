@@ -31,7 +31,7 @@ const rows = (start: number, count: number) =>
         stakedUsdValue: "12.5",
         stakedAt: "2026-01-01T00:00:00Z",
         tokenUri: "",
-      }) as PositionModel,
+      } as PositionModel),
   );
 
 const renderContent = (open = true, cacheTime = 0) => {
@@ -102,20 +102,17 @@ describe("staked position tooltip pagination", () => {
     view.setOpen(false);
   });
 
-  it("preserves loaded rows on next-page failure and retries that page without duplicates", async () => {
+  it("preserves loaded rows on next-page failure and stops loading further pages", async () => {
     mockGetPositions
       .mockResolvedValueOnce({ positions: rows(1, 20), totalCount: 40 })
-      .mockRejectedValueOnce(new Error("offline"))
-      .mockResolvedValueOnce({ positions: rows(20, 20), totalCount: 40 });
-    renderContent();
+      .mockRejectedValueOnce(new Error("offline"));
+    const view = renderContent();
     await screen.findByText("ID #20");
     scroll(600);
-    await screen.findByRole("alert");
+    await waitFor(() => expect(view.client.getQueryCache().getAll()[0].state.error).toEqual(new Error("offline")));
     expect(screen.getByText("ID #1")).toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button"));
-    await screen.findByText("ID #39");
-    expect(screen.getAllByText("ID #20")).toHaveLength(1);
-    expect(mockGetPositions.mock.calls.map(call => call[1].page)).toEqual([1, 2, 2]);
+    scroll(600);
+    expect(mockGetPositions.mock.calls.map(call => call[1].page)).toEqual([1, 2]);
   });
 
   it("reloads the first page after a closed tooltip is invalidated by a position mutation", async () => {
@@ -176,32 +173,16 @@ describe("staked position tooltip pagination", () => {
     expect(mockGetPositions.mock.calls.map(call => call[1].page)).toEqual([1, 2, 3]);
   });
 
-  it("continues past filtered pages and stops automatic loading on an error until retry", async () => {
+  it("continues past filtered pages and stops automatic loading on an error", async () => {
     jest.spyOn(HTMLElement.prototype, "scrollHeight", "get").mockReturnValue(200);
     mockGetPositions
       .mockResolvedValueOnce({ positions: rows(1, 1).map(position => ({ ...position, staked: false })), totalCount: 3 })
       .mockResolvedValueOnce({ positions: rows(2, 1).map(position => ({ ...position, closed: true })), totalCount: 3 })
-      .mockRejectedValueOnce(new Error("offline"))
-      .mockResolvedValueOnce({ positions: rows(3, 1), totalCount: 3 });
-    renderContent();
-    await screen.findByRole("alert");
+      .mockRejectedValueOnce(new Error("offline"));
+    const view = renderContent();
+    await waitFor(() => expect(view.client.getQueryCache().getAll()[0].state.error).toEqual(new Error("offline")));
     expect(screen.queryByText("ID #1")).not.toBeInTheDocument();
     expect(screen.queryByText("ID #2")).not.toBeInTheDocument();
     expect(mockGetPositions.mock.calls.map(call => call[1].page)).toEqual([1, 2, 3]);
-    fireEvent.click(screen.getByRole("button"));
-    await screen.findByText("ID #3");
-    expect(mockGetPositions.mock.calls.map(call => call[1].page)).toEqual([1, 2, 3, 3]);
-  });
-
-  it("shows an initial error with retry and a successful empty result", async () => {
-    mockGetPositions
-      .mockRejectedValueOnce(new Error("offline"))
-      .mockResolvedValueOnce({ positions: [], totalCount: 0 });
-    renderContent();
-    await screen.findByRole("alert");
-    fireEvent.click(screen.getByRole("button"));
-    await screen.findByText("Wallet:overral.stakedPosi.dataTooltip.empty");
-    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-    expect(mockGetPositions).toHaveBeenCalledTimes(2);
   });
 });

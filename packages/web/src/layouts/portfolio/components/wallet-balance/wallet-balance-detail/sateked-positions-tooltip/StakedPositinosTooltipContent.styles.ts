@@ -63,22 +63,3 @@ export const Divider = styled.div`
   height: 1px;
   border-top: 1px solid ${({ theme }) => theme.color.border01};
 `;
-
-export const Status = styled.div`
-  width: 100%;
-  ${fonts.body12}
-  color: ${({ theme }) => theme.color.text04};
-`;
-
-export const RetryButton = styled.button`
-  display: block;
-  min-height: 44px;
-  margin-top: 8px;
-  padding: 8px 16px;
-  ${fonts.body12}
-  color: ${({ theme }) => theme.color.text01};
-  background: ${({ theme }) => theme.color.background02};
-  border: 1px solid ${({ theme }) => theme.color.border01};
-  border-radius: 8px;
-  cursor: pointer;
-`;

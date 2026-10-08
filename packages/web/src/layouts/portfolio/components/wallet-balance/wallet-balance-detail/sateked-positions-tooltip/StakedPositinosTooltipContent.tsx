@@ -11,16 +11,8 @@ import * as S from "./StakedPositinosTooltipContent.styles";
 
 const StakedPostionsTooltipContent: React.FC<{ count: number }> = ({ count }) => {
   const { t } = useTranslation();
-  const {
-    positions,
-    isLoading,
-    isError,
-    data,
-    isFetchingNextPage,
-    hasNextPage,
-    fetchNextPage,
-    refetch,
-  } = useGetStakedPositionsInfinite();
+  const { positions, isLoading, isError, isFetchingNextPage, hasNextPage, fetchNextPage } =
+    useGetStakedPositionsInfinite();
   const fetchingNextPage = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -92,20 +84,6 @@ const StakedPostionsTooltipContent: React.FC<{ count: number }> = ({ count }) =>
           {index !== positions.length - 1 && <S.Divider />}
         </React.Fragment>
       ))}
-      {(isLoading || isFetchingNextPage) && (
-        <S.Status role="status">{t("Wallet:overral.stakedPosi.dataTooltip.loading")}</S.Status>
-      )}
-      {!isLoading && !isError && positions.length === 0 && (
-        <S.Status role="status">{t("Wallet:overral.stakedPosi.dataTooltip.empty")}</S.Status>
-      )}
-      {isError && (
-        <S.Status role="alert">
-          {t("Wallet:overral.stakedPosi.dataTooltip.error")}
-          <S.RetryButton type="button" onClick={() => (data?.pages.length ? void loadNextPage() : void refetch())}>
-            {t("Wallet:overral.stakedPosi.dataTooltip.retry")}
-          </S.RetryButton>
-        </S.Status>
-      )}
     </S.StakedPostionsTooltipContentWrapper>
   );
 };

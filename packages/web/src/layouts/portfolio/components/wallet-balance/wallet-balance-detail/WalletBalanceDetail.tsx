@@ -155,7 +155,11 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         connected={connected}
         isSwitchNetwork={isSwitchNetwork}
         valueTooltip={
-          connected && !isSwitchNetwork && balanceDetailInfo.stakedLP !== "-" && positionSummary ? (
+          connected &&
+          !isSwitchNetwork &&
+          balanceDetailInfo.stakedLP !== "-" &&
+          positionSummary &&
+          positionSummary.stakedCount > 0 ? (
             <StakedPostionsTooltipContent count={positionSummary.stakedCount} />
           ) : undefined
         }
