@@ -30,6 +30,7 @@ interface Props {
   interval: number;
   daily: boolean;
   all?: boolean;
+  stopAtEmptyOlderPage?: boolean;
   label: string;
   volumeSymbols: readonly [string, string?];
   priceLabel?: string;
@@ -47,6 +48,7 @@ export default function PriceCandleChart({
   interval,
   daily,
   all = false,
+  stopAtEmptyOlderPage = false,
   label,
   volumeSymbols,
   priceLabel,
@@ -189,7 +191,7 @@ export default function PriceCandleChart({
           }
           if (older.length === 0) {
             cursor = start;
-            exhausted = cursor === 0;
+            exhausted = cursor === 0 || (stopAtEmptyOlderPage && bars.length > 0);
             setCanSearchOlder(!exhausted);
             if (!bars.length) setState("empty");
             return;
@@ -316,7 +318,7 @@ export default function PriceCandleChart({
       searchOlder.current = null;
       dispose?.();
     };
-  }, [identity, interval, daily, all, locale, retry, theme, loadPage, formatCandlePrice]);
+  }, [identity, interval, daily, all, stopAtEmptyOlderPage, locale, retry, theme, loadPage, formatCandlePrice]);
 
   return (
     <div className="price-chart-shell" aria-label={label}>

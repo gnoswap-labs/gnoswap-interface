@@ -365,3 +365,22 @@ it("rebuilds the chart and formats both volumes when the app language changes", 
     [`${localizedVolume} GNOT`, `${localizedVolume} GNS`],
   );
 });
+
+it("ends pool paging after the first empty older window following observed bars", async () => {
+  const loadPage = jest.fn().mockResolvedValueOnce(firstPage).mockResolvedValue([]);
+  const { container } = render(<PriceCandleChart {...props} stopAtEmptyOlderPage loadPage={loadPage} />);
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+  const panLeft = () => {
+    act(() => {
+      fireEvent.wheel(container.querySelector(".price-chart-canvas")!);
+      mockTimeScale.subscribeVisibleLogicalRangeChange.mock.calls[0][0]({ from: 0, to: 10 });
+    });
+  };
+  panLeft();
+  await waitFor(() => expect(loadPage).toHaveBeenCalledTimes(2));
+  await act(async () => {
+    await Promise.resolve();
+  });
+  panLeft();
+  expect(loadPage).toHaveBeenCalledTimes(2);
+});

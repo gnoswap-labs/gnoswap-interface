@@ -49,6 +49,7 @@ export default function PoolPriceChart({ client, poolPath, tokenA, tokenB, rever
   return (
     <PriceCandleChart
       identity={`${poolPath}:${range}:${reversed}`}
+      stopAtEmptyOlderPage
       interval={interval}
       daily={interval === 86400}
       all={range === "All"}

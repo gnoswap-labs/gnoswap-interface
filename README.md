@@ -27,6 +27,9 @@ $ npm i yarn -g
 $ yarn set version berry
 ```
 
+## Pool chart history
+Pool price candles carry the previous price through intervals without new observations. After candles have loaded, the first empty older page ends backward pagination; loaded candles remain visible.
+
 ## Contributing & Support
 If you would like to contribute to the Gnoswap Interface or need support, please consider the following options:
 - Read our contributing guidelines: The [CONTRIBUTING.md](https://github.com/gnoswap-labs/gnoswap-interface/blob/develop/CONTRIBUTING.md) file provides detailed information on how to contribute to the project, including submitting pull requests, reporting issues, and suggesting improvements.
