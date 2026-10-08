@@ -94,12 +94,12 @@ export default function PriceCandleChart({
       if (cancelled || !element) return;
       const positive = theme.color.green01;
       const dateFormat = (options: Intl.DateTimeFormatOptions) =>
-        new Intl.DateTimeFormat(locale, { ...options, timeZone: "UTC" });
+        new Intl.DateTimeFormat(locale, { ...options, timeZone: "UTC", hourCycle: "h23" });
       const axisFormats = {
         [TickMarkType.Year]: dateFormat({ year: "numeric" }),
         [TickMarkType.Month]: dateFormat({ month: "short" }),
         [TickMarkType.DayOfMonth]: dateFormat({ month: "short", day: "numeric" }),
-        [TickMarkType.Time]: dateFormat({ hour: "2-digit", minute: "2-digit", hour12: false }),
+        [TickMarkType.Time]: dateFormat({ hour: "2-digit", minute: "2-digit" }),
         [TickMarkType.TimeWithSeconds]: dateFormat({
           hour: "2-digit",
           minute: "2-digit",
@@ -109,7 +109,7 @@ export default function PriceCandleChart({
       const crosshairFormat = dateFormat(
         daily
           ? { year: "numeric", month: "short", day: "numeric" }
-          : { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false },
+          : { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" },
       );
       const negative = theme.color.red01;
       const chart = createChart(element, {
