@@ -29,7 +29,7 @@ $ yarn set version berry
 
 ## Pool chart history
 Pool price candles carry the previous price through intervals without new observations. After candles have loaded, the first empty older page ends backward pagination; loaded candles remain visible.
-Token candles are mounted only after a token path is available, avoiding requests with an empty token identifier.
+Token candles are mounted only for oracle-grade prices after a token path is available. Other price grades show the existing no-data state without requesting candle history.
 
 ## Contributing & Support
 If you would like to contribute to the Gnoswap Interface or need support, please consider the following options:
