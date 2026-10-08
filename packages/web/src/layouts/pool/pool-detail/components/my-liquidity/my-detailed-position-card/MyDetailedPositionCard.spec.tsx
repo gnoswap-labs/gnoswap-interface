@@ -23,6 +23,9 @@ jest.mock("@hooks/common/use-window-size", () => ({
 jest.mock("@hooks/pool/data/use-pool-liquidity-segments-by-path", () => ({
   usePoolLiquiditySegmentsByPath: () => ({ liquiditySegments: [], isLoading: true }),
 }));
+jest.mock("@hooks/token/data/use-gnot-wugnot", () => ({
+  useGnotToGnot: () => ({ getGnotPath: (token: TokenModel) => token }),
+}));
 jest.mock("@components/common/pool-graph/PoolGraph", () => ({ __esModule: true, default: () => null }));
 jest.mock("./PositionHistory", () => ({ __esModule: true, default: () => null }));
 jest.mock("./manage-button/ManageButton", () => ({ __esModule: true, default: () => null }));
