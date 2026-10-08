@@ -8,9 +8,9 @@ export const PositionHistoryListWrapper = styled.div`
 `;
 
 export const PositionHistoryPaginationWrapper = styled.div`
-  padding: 16px 0 24px;
+  padding: 24px 0;
 
   ${media.mobile} {
-    padding-bottom: 12px;
+    padding: 16px 0 12px;
   }
 `;
