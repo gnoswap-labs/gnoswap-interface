@@ -26,6 +26,8 @@ const rows = (start: number, count: number) =>
     (_, index) =>
       ({
         lpTokenId: `${start + index}`,
+        staked: true,
+        closed: false,
         stakedUsdValue: "12.5",
         stakedAt: "2026-01-01T00:00:00Z",
         tokenUri: "",
@@ -61,6 +63,8 @@ describe("staked position tooltip pagination", () => {
     mockAddress = "wallet-a";
     mockChain = "chain-a";
     jest.spyOn(console, "error").mockImplementation(() => undefined);
+    jest.spyOn(HTMLElement.prototype, "clientHeight", "get").mockReturnValue(400);
+    jest.spyOn(HTMLElement.prototype, "scrollHeight", "get").mockReturnValue(1000);
   });
   afterEach(() => jest.restoreAllMocks());
 
@@ -143,6 +147,50 @@ describe("staked position tooltip pagination", () => {
     mockChain = "chain-b";
     view.setOpen(true);
     await waitFor(() => expect(mockGetPositions).toHaveBeenCalledTimes(3));
+  });
+
+  it("hides unstaked and closed positions even when the API ignores the filters", async () => {
+    const [openStaked, unstaked, closedStaked] = rows(1, 3);
+    mockGetPositions.mockResolvedValue({
+      positions: [openStaked, { ...unstaked, staked: false }, { ...closedStaked, closed: true }],
+      totalCount: 3,
+    });
+    renderContent();
+    await screen.findByText("ID #1");
+    expect(screen.queryByText("ID #2")).not.toBeInTheDocument();
+    expect(screen.queryByText("ID #3")).not.toBeInTheDocument();
+  });
+
+  it("loads short pages without scrolling until the content overflows", async () => {
+    jest.spyOn(HTMLElement.prototype, "scrollHeight", "get").mockImplementation(function (this: HTMLElement) {
+      return this.textContent?.includes("ID #3") ? 500 : 200;
+    });
+    mockGetPositions.mockImplementation((_address, { page }) =>
+      Promise.resolve({ positions: rows(page, 1), totalCount: 4 }),
+    );
+    renderContent();
+    await screen.findByText("ID #3");
+    expect(screen.getByText("ID #1")).toBeInTheDocument();
+    expect(screen.getByText("ID #2")).toBeInTheDocument();
+    expect(screen.queryByText("ID #4")).not.toBeInTheDocument();
+    expect(mockGetPositions.mock.calls.map(call => call[1].page)).toEqual([1, 2, 3]);
+  });
+
+  it("continues past filtered pages and stops automatic loading on an error until retry", async () => {
+    jest.spyOn(HTMLElement.prototype, "scrollHeight", "get").mockReturnValue(200);
+    mockGetPositions
+      .mockResolvedValueOnce({ positions: rows(1, 1).map(position => ({ ...position, staked: false })), totalCount: 3 })
+      .mockResolvedValueOnce({ positions: rows(2, 1).map(position => ({ ...position, closed: true })), totalCount: 3 })
+      .mockRejectedValueOnce(new Error("offline"))
+      .mockResolvedValueOnce({ positions: rows(3, 1), totalCount: 3 });
+    renderContent();
+    await screen.findByRole("alert");
+    expect(screen.queryByText("ID #1")).not.toBeInTheDocument();
+    expect(screen.queryByText("ID #2")).not.toBeInTheDocument();
+    expect(mockGetPositions.mock.calls.map(call => call[1].page)).toEqual([1, 2, 3]);
+    fireEvent.click(screen.getByRole("button"));
+    await screen.findByText("ID #3");
+    expect(mockGetPositions.mock.calls.map(call => call[1].page)).toEqual([1, 2, 3, 3]);
   });
 
   it("shows an initial error with retry and a successful empty result", async () => {

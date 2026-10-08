@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 import { getDateUtcToLocal } from "@common/utils/date-util";
@@ -11,11 +11,20 @@ import * as S from "./StakedPositinosTooltipContent.styles";
 
 const StakedPostionsTooltipContent: React.FC<{ count: number }> = ({ count }) => {
   const { t } = useTranslation();
-  const { positions, isLoading, isError, isFetchingNextPage, hasNextPage, fetchNextPage, refetch } =
-    useGetStakedPositionsInfinite();
+  const {
+    positions,
+    isLoading,
+    isError,
+    data,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+    refetch,
+  } = useGetStakedPositionsInfinite();
   const fetchingNextPage = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const loadNextPage = async () => {
+  const loadNextPage = useCallback(async () => {
     if (!hasNextPage || isFetchingNextPage || fetchingNextPage.current) return;
     fetchingNextPage.current = true;
     try {
@@ -23,7 +32,20 @@ const StakedPostionsTooltipContent: React.FC<{ count: number }> = ({ count }) =>
     } finally {
       fetchingNextPage.current = false;
     }
-  };
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (
+      container &&
+      !isLoading &&
+      !isError &&
+      container.clientHeight > 0 &&
+      container.scrollHeight <= container.clientHeight
+    ) {
+      void loadNextPage();
+    }
+  }, [positions, isLoading, isError, isFetchingNextPage, loadNextPage]);
 
   const onScroll = (event: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, clientHeight, scrollHeight } = event.currentTarget;
@@ -34,6 +56,7 @@ const StakedPostionsTooltipContent: React.FC<{ count: number }> = ({ count }) =>
 
   return (
     <S.StakedPostionsTooltipContentWrapper
+      ref={containerRef}
       tabIndex={0}
       role="region"
       aria-label={`${t("Wallet:overral.stakedPosi.label")} (${count})`}
@@ -78,7 +101,7 @@ const StakedPostionsTooltipContent: React.FC<{ count: number }> = ({ count }) =>
       {isError && (
         <S.Status role="alert">
           {t("Wallet:overral.stakedPosi.dataTooltip.error")}
-          <S.RetryButton type="button" onClick={() => (positions.length > 0 ? void loadNextPage() : void refetch())}>
+          <S.RetryButton type="button" onClick={() => (data?.pages.length ? void loadNextPage() : void refetch())}>
             {t("Wallet:overral.stakedPosi.dataTooltip.retry")}
           </S.RetryButton>
         </S.Status>

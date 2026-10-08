@@ -49,7 +49,7 @@ export const useGetStakedPositionsInfinite = (props?: { address?: string; poolPa
     return (query.data?.pages ?? [])
       .flatMap(page => page.positions)
       .filter(position => {
-        if (seen.has(position.lpTokenId)) return false;
+        if (!position.staked || position.closed || seen.has(position.lpTokenId)) return false;
         seen.add(position.lpTokenId);
         return true;
       });
