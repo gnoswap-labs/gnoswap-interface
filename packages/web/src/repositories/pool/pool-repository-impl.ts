@@ -15,10 +15,12 @@ import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { PoolStakingMapper } from "@models/pool/mapper/pool-staking-mapper";
+import { PoolStakingSummaryMapper } from "@models/pool/mapper/pool-staking-summary-mapper";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolLiquidityTickModel } from "@models/pool/pool-liquidity-model";
 import { IncentivizePoolModel, PoolModel } from "@models/pool/pool-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
+import { PoolStakingSummaryModel } from "@models/pool/pool-staking-summary";
 import {
   evaluateExpressionToNumber,
   evaluateExpressionToObject,
@@ -50,6 +52,7 @@ import { AddLiquidityFailedResponse, AddLiquiditySuccessResponse } from "./respo
 import { CreatePoolFailedResponse, CreatePoolSuccessResponse } from "./response/create-pool-response";
 import { PoolLiquidityTickResponse } from "./response/pool-liquidity-ticks-response";
 import { PoolStakingResponse } from "./response/pool-staking-response";
+import { PoolStakingSummaryResponse } from "./response/pool-staking-summary-response";
 
 export class PoolRepositoryImpl implements PoolRepository {
   private networkClient: NetworkClient | null;
@@ -154,6 +157,18 @@ export class PoolRepositoryImpl implements PoolRepository {
     });
     const pools = response?.data?.data ? response.data.data.map(PoolStakingMapper.fromResponse) : [];
     return pools;
+  };
+
+  getPoolStakingSummary = async (poolPath: string): Promise<PoolStakingSummaryModel | null> => {
+    if (!this.networkClient) {
+      return null;
+    }
+    const response = await this.networkClient.get<{
+      data: PoolStakingSummaryResponse;
+    }>({
+      url: `/staking/${poolPath}/summary`,
+    });
+    return response?.data?.data ? PoolStakingSummaryMapper.fromResponse(response.data.data) : null;
   };
 
   getWithdrawalFee = async (): Promise<number> => {

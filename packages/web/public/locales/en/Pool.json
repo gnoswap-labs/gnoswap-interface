@@ -74,7 +74,7 @@
       "stake": "Stake Position",
       "unstake": "Unstake Position"
     },
-    "intro": "Stake you position to earn rewards up to",
+    "intro": "Stake your position to earn rewards up to",
     "keepStakingNote": {
       "four": "Receiving max rewards ✨",
       "one": "Create your first position to get started ⛵",
@@ -82,6 +82,9 @@
       "two": "Stake your position to get started ⛵"
     },
     "myStake": "My Staking",
+    "positionCount_one": "{{count}} position",
+    "positionCount_other": "{{count}} positions",
+    "totalStaked": "Total Staked",
     "period": {
       "stakedTooltip": {
         "nextTier": "Next Tier",
@@ -92,8 +95,8 @@
       "subtitle_max": "Receiving Max Rewards",
       "subtitleTooltip": "During this staking period, you will only receive {{percent}} of your maximum staking rewards. Keep your position staked to increase your rewards.",
       "subtitleTooltip_max": "During this staking period, you will receive maximum staking rewards. Keep your position staked to maintain your rewards.",
-      "title": "Stake less than {{days}} days",
-      "title_max": "Stake more than {{days}} days"
+      "title": "Staked less than {{days}} days",
+      "title_max": "Staked more than {{days}} days"
     },
     "title": "Staking",
     "tooltip": {

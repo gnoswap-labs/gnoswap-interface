@@ -82,6 +82,9 @@
       "two": "Defiende tu posición para empezar ⛵"
     },
     "myStake": "Mi estaca",
+    "positionCount_one": "{{count}} posición",
+    "positionCount_other": "{{count}} posiciones",
+    "totalStaked": "Total en staking",
     "period": {
       "stakedTooltip": {
         "nextTier": "Siguiente nivel",

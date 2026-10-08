@@ -9,7 +9,11 @@ import { usePoolData } from "@hooks/pool/data/use-pool-data";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { useGetPoolDetailByPath, useGetPoolStakingListByPoolPath } from "@query/pools";
+import {
+  useGetPoolDetailByPath,
+  useGetPoolStakingListByPoolPath,
+  useGetPoolStakingSummaryByPoolPath,
+} from "@query/pools";
 import { formatRate } from "@utils/new-number-utils";
 import { isValidAddress } from "@utils/validation-utils";
 
@@ -54,6 +58,10 @@ const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking, onO
   });
 
   const { data: poolStakings = [] } = useGetPoolStakingListByPoolPath(poolPath || "", {
+    enabled: !!poolPath,
+  });
+
+  const { data: stakingSummary = null } = useGetPoolStakingSummaryByPoolPath(poolPath || "", {
     enabled: !!poolPath,
   });
 
@@ -177,6 +185,7 @@ const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking, onO
       totalApr={totalApr}
       stakedPosition={stakedPositions}
       poolStakings={convertedPoolStakings}
+      stakingSummary={stakingSummary}
       breakpoint={breakpoint}
       mobile={mobile}
       isDisabledButton={isDisabledButton}

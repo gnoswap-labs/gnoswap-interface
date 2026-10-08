@@ -9,6 +9,7 @@ import { AddLiquidityFailedResponse, AddLiquiditySuccessResponse } from "./respo
 import { CreatePoolFailedResponse, CreatePoolSuccessResponse } from "./response/create-pool-response";
 import { SendTransactionResponse, TransactionMessage, WalletResponse } from "@common/clients/wallet-client/protocols";
 import { PoolStakingModel } from "@models/pool/pool-staking";
+import { PoolStakingSummaryModel } from "@models/pool/pool-staking-summary";
 import { PoolPricesResponse } from "./response";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import { PoolLiquidityTickModel } from "@models/pool/pool-liquidity-model";
@@ -58,6 +59,8 @@ export interface PoolRepository {
   getPoolStakingList: (poolPath: string) => Promise<PoolStakingModel[]>;
 
   getPoolStakingListByAddress: (address: string) => Promise<PoolStakingModel[]>;
+
+  getPoolStakingSummary: (poolPath: string) => Promise<PoolStakingSummaryModel | null>;
 
   getPoolLiquidity: (poolPath: string) => Promise<string>;
 

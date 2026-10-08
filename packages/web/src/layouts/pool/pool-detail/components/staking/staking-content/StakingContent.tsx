@@ -10,9 +10,11 @@ import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useIntersectionObserver } from "@hooks/common/use-interaction-observer";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { PoolStakingSummaryModel } from "@models/pool/pool-staking-summary";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { DEVICE_TYPE } from "@styles/media";
+import { toUnitFormat } from "@utils/number-utils";
 import { getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils";
 
 import IncentivizeTokenDetailTooltipContent from "./incentivized-token-detail-tooltip-content/IncentivizeTokenDetailTooltipContent";
@@ -29,6 +31,7 @@ interface StakingContentProps {
   loading: boolean;
   pool: PoolDetailModel | null;
   poolStakings: PoolStakingModel[];
+  stakingSummary: PoolStakingSummaryModel | null;
   hasPoolStaking: boolean;
 }
 
@@ -50,6 +53,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
   loading,
   pool,
   poolStakings,
+  stakingSummary,
   hasPoolStaking,
 }) => {
   const { getGnotPath } = useGnotToGnot();
@@ -201,8 +205,25 @@ const StakingContent: React.FC<StakingContentProps> = ({
         )}
       </div>
       <div className="staking-wrap">
-        <span>{t("Pool:staking.myStake")}</span>
+        <div className="staking-header">
+          <div className="staking-header-left" />
+          <div className="staking-header-columns">
+            <span className="my-staking-title">{t("Pool:staking.myStake")}</span>
+            <div className="total-staked-title">
+              <span>{t("Pool:staking.totalStaked")}</span>
+              {stakingSummary && (
+                <span>
+                  {`${toUnitFormat(stakingSummary.totalStakedUsd, true, true)} · ${t("Pool:staking.positionCount", {
+                    count: stakingSummary.totalPositionCount,
+                  })}`}
+                </span>
+              )}
+            </div>
+            <div className="apr-title" />
+          </div>
+        </div>
         {STAKING_PERIOS.map((period, index) => {
+          const tierSummary = stakingSummary?.tiers.find(tier => tier.period === period);
           return period === "MAX" ? (
             <SummuryApr
               loading={loading}
@@ -212,6 +233,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
               positions={stakingPositionMap[period]}
               checkPoints={checkPoints}
               breakpoint={breakpoint}
+              tierSummary={tierSummary}
             />
           ) : (
             <StakingContentCard
@@ -222,6 +244,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
               breakpoint={breakpoint}
               loading={loading}
               checkPoints={checkPoints}
+              tierSummary={tierSummary}
             />
           );
         })}

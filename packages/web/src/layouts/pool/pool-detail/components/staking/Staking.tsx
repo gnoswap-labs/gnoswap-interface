@@ -2,6 +2,7 @@ import React from "react";
 
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
+import { PoolStakingSummaryModel } from "@models/pool/pool-staking-summary";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { DEVICE_TYPE } from "@styles/media";
 
@@ -15,6 +16,7 @@ interface StakingProps {
   totalApr: string;
   stakedPosition: PoolPositionModel[];
   poolStakings: PoolStakingModel[];
+  stakingSummary: PoolStakingSummaryModel | null;
   breakpoint: DEVICE_TYPE;
   mobile: boolean;
   isDisabledButton: boolean;
@@ -32,6 +34,7 @@ const Staking: React.FC<StakingProps> = ({
   totalApr,
   stakedPosition,
   poolStakings,
+  stakingSummary,
   breakpoint,
   mobile,
   isDisabledButton,
@@ -62,6 +65,7 @@ const Staking: React.FC<StakingProps> = ({
           totalApr={totalApr}
           stakedPosition={stakedPosition}
           poolStakings={poolStakings}
+          stakingSummary={stakingSummary}
           breakpoint={breakpoint}
           mobile={mobile}
           type={type}

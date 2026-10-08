@@ -82,6 +82,11 @@
       "two": "Займите свою позицию, чтобы начать работу ⛵"
     },
     "myStake": "Моя ставка",
+    "positionCount_one": "{{count}} позиция",
+    "positionCount_few": "{{count}} позиции",
+    "positionCount_many": "{{count}} позиций",
+    "positionCount_other": "{{count}} позиций",
+    "totalStaked": "Всего в стейкинге",
     "period": {
       "stakedTooltip": {
         "nextTier": "Следующий ярус",

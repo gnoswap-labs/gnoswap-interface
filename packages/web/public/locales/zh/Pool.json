@@ -82,6 +82,8 @@
       "two": "站稳脚跟，开始行动 ⛵"
     },
     "myStake": "我的赌注",
+    "positionCount_other": "{{count}} 个仓位",
+    "totalStaked": "总质押",
     "period": {
       "stakedTooltip": {
         "nextTier": "下一层",

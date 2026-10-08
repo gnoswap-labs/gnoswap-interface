@@ -82,6 +82,9 @@
       "two": "Prenez position pour commencer ⛵"
     },
     "myStake": "Mon piquetage",
+    "positionCount_one": "{{count}} position",
+    "positionCount_other": "{{count}} positions",
+    "totalStaked": "Total staké",
     "period": {
       "stakedTooltip": {
         "nextTier": "Prochain volet",

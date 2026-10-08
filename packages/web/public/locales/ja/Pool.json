@@ -82,6 +82,8 @@
       "two": "スタートを切るためにポジションを確保する⛵。"
     },
     "myStake": "私のステーキング",
+    "positionCount_other": "{{count}} ポジション",
+    "totalStaked": "総ステーキング",
     "period": {
       "stakedTooltip": {
         "nextTier": "ネクスト・ティア",

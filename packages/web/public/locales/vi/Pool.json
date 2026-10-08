@@ -82,6 +82,8 @@
       "two": "Đặt cược để bắt đầu ⛵"
     },
     "myStake": "Hoạt động Staking của tôi",
+    "positionCount_other": "{{count}} vị thế",
+    "totalStaked": "Tổng đã stake",
     "period": {
       "stakedTooltip": {
         "nextTier": "Cấp độ tiếp theo",

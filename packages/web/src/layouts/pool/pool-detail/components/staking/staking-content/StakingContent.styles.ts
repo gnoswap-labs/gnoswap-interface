@@ -91,6 +91,50 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
     ${media.mobile} {
       gap: 16px;
     }
+    .staking-header {
+      ${mixins.flexbox("row", "center", "space-between")};
+      width: 100%;
+      .staking-header-left {
+        width: 350px;
+        flex-shrink: 0;
+        ${media.tabletMiddle} {
+          display: none;
+        }
+      }
+      .staking-header-columns {
+        ${mixins.flexbox("row", "center", "flex-start")};
+        flex: 1;
+        max-width: 900px;
+        margin-left: auto;
+        gap: 8px;
+        ${media.tabletMiddle} {
+          max-width: none;
+        }
+      }
+      .my-staking-title {
+        flex: 1 1 373px;
+        white-space: nowrap;
+      }
+      .total-staked-title {
+        ${mixins.flexbox("row", "center", "space-between")};
+        flex: 0 1 335px;
+        min-width: 250px;
+        gap: 8px;
+        white-space: nowrap;
+        ${media.tabletMiddle} {
+          display: none;
+        }
+      }
+      .apr-title {
+        flex: 0 0 176px;
+        ${media.tablet} {
+          flex-basis: 140px;
+        }
+        ${media.tabletMiddle} {
+          display: none;
+        }
+      }
+    }
 
     span {
       color: ${({ theme }) => theme.color.text04};

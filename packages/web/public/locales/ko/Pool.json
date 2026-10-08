@@ -82,6 +82,8 @@
       "two": "시작하려면 포지션을 스테이킹하세요 ⛵"
     },
     "myStake": "나의 스테이킹",
+    "positionCount_other": "{{count}}개 포지션",
+    "totalStaked": "총 스테이킹",
     "period": {
       "stakedTooltip": {
         "nextTier": "다음 등급",

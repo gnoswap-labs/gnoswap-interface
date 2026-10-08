@@ -5,6 +5,7 @@ import mixins from "@styles/mixins";
 
 interface Props {
   nonTotal: boolean;
+  isMax: boolean;
 }
 
 export const StakingContentCardWrapper = styled.div<Props>`
@@ -79,6 +80,14 @@ export const StakingContentCardWrapper = styled.div<Props>`
       }
       .symbol-text {
         color: ${({ theme }) => theme.color.text02};
+        .symbol-count {
+          display: none;
+          color: ${({ theme }) => theme.color.text04};
+          font: inherit;
+          ${media.tabletMiddle} {
+            display: inline;
+          }
+        }
 
         ${fonts.body7}
         ${media.tablet} {
@@ -136,17 +145,104 @@ export const StakingContentCardWrapper = styled.div<Props>`
   }
 
   .contents {
+    ${mixins.flexbox("row", "stretch", "flex-start")};
     width: 100%;
     max-width: 900px;
     margin-left: auto;
-    ${mixins.flexbox("row", "center", "space-between")};
-    padding: 12px 16px;
-    border-radius: 8px;
-    border: 1px solid ${({ theme }) => theme.color.border14};
-    background-color: ${({ theme }) => theme.color.backgroundOpacity2};
+    gap: 8px;
     ${media.tabletMiddle} {
+      align-items: center;
+      justify-content: space-between;
       padding: 11px 16px;
       gap: 12px;
+      border-radius: 8px;
+      border: 1px solid ${({ theme, isMax }) => (isMax ? theme.color.text07 : theme.color.border14)};
+      background-color: ${({ theme }) => theme.color.backgroundOpacity2};
+    }
+    .my-staking,
+    .apr-box {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      min-height: 58px;
+      padding: 11px 24px;
+      border-radius: 8px;
+      border: 1px solid ${({ theme, isMax }) => (isMax ? theme.color.text07 : theme.color.border14)};
+      background-color: ${({ theme }) => theme.color.backgroundOpacity2};
+      ${media.tablet} {
+        padding: 11px 16px;
+      }
+      ${media.tabletMiddle} {
+        min-height: auto;
+        padding: 0;
+        border: none;
+        background-color: transparent;
+      }
+    }
+    .my-staking {
+      flex: 1 1 373px;
+      min-width: 0;
+    }
+    .apr-box {
+      flex: 0 0 176px;
+      justify-content: flex-end;
+      ${media.tablet} {
+        flex-basis: 140px;
+      }
+      ${media.tabletMiddle} {
+        flex: none;
+      }
+    }
+    .total-staked {
+      ${mixins.flexbox("column", "stretch", "center")};
+      flex: 0 1 335px;
+      min-width: 250px;
+      padding: 12px 24px;
+      gap: 6px;
+      border-radius: 8px;
+      background-color: ${({ theme }) => theme.color.background26};
+      ${media.tablet} {
+        padding: 12px 16px;
+      }
+      ${media.tabletMiddle} {
+        display: none;
+      }
+      .total-staked-info {
+        ${mixins.flexbox("row", "flex-end", "space-between")};
+        gap: 8px;
+      }
+      .total-staked-value {
+        ${mixins.flexbox("row", "flex-end", "flex-start")};
+        gap: 6px;
+      }
+      .total-staked-usd {
+        ${fonts.body8}
+        line-height: 22px;
+        color: ${({ theme }) => theme.color.text02};
+        ${media.tablet} {
+          ${fonts.body10}
+        }
+      }
+      .total-staked-ratio,
+      .total-staked-count {
+        ${fonts.body10}
+        line-height: 20px;
+        color: ${({ theme }) => theme.color.text05};
+        white-space: nowrap;
+        ${media.tablet} {
+          ${fonts.body12}
+        }
+      }
+      .total-staked-bar {
+        width: 100%;
+        height: 6px;
+        border-radius: 3px;
+        overflow: hidden;
+        background-color: ${({ theme }) => theme.color.backgroundOpacity7};
+      }
+      .total-staked-bar-fill {
+        height: 100%;
+        border-radius: 3px;
+        background-color: ${({ theme }) => theme.color.text05};
+      }
     }
     .price {
       cursor: default;
@@ -157,6 +253,9 @@ export const StakingContentCardWrapper = styled.div<Props>`
           color: ${({ theme }) => theme.color.text02};
           span {
             color: ${({ theme }) => theme.color.text02};
+          }
+          .price-usd {
+            color: ${({ theme }) => theme.color.text07};
           }
           pointer-events: ${({ nonTotal }) => {
             return nonTotal ? "none" : "initial";
@@ -172,17 +271,11 @@ export const StakingContentCardWrapper = styled.div<Props>`
           ${fonts.body7}
         }
         ${media.mobile} {
-          ${fonts.body10}
+          ${fonts.p2}
           > div {
             gap: 4px;
           }
         }
-      }
-      ${media.tablet} {
-        align-items: center;
-      }
-      ${media.mobile} {
-        gap: 8px;
       }
       .price-gd-text {
         background: linear-gradient(308deg, #536cd7 0%, ${({ theme }) => theme.color.text25} 100%);
@@ -209,6 +302,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
         }
         ${media.mobile} {
           margin-left: 0;
+          min-width: auto;
           ${fonts.p4}
           height: 24px;
         }
@@ -216,67 +310,33 @@ export const StakingContentCardWrapper = styled.div<Props>`
       }
     }
     .apr {
-      ${mixins.flexbox("row", "center", "flex-start")};
+      ${mixins.flexbox("row", "center", "flex-end")};
       gap: 16px;
       &.small-gap {
         gap: 4px;
       }
-      ${media.mobile} {
-        justify-content: flex-end;
-        align-items: center;
-        gap: 8px;
-      }
 
-      .apr-text {
+      .apr-text,
+      .apr-gd-text {
         cursor: default;
-        color: ${({ theme }) => theme.color.text03};
-        ${fonts.body6}
-        font-weight: 600;
+        white-space: nowrap;
+        ${fonts.body5}
         ${media.tablet} {
           ${fonts.body8}
           font-size: 17px;
-          font-weight: 600;
         }
         ${media.mobile} {
-          ${fonts.body12}
-          font-weight: 600;
+          ${fonts.p2}
         }
+      }
+      .apr-text {
+        color: ${({ theme }) => theme.color.text03};
       }
       .apr-gd-text {
         background: linear-gradient(308deg, #536cd7 0%, ${({ theme }) => theme.color.text25} 100%);
         background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        cursor: default;
-        ${fonts.body6}
-        font-weight: 600;
-        ${media.tablet} {
-          ${fonts.body8}
-          font-size: 17px;
-          font-weight: 600;
-        }
-        ${media.mobile} {
-          ${fonts.body12}
-          font-weight: 600;
-        }
-      }
-      .coin-info {
-        ${mixins.flexbox("row", "center", "flex-start")};
-        img {
-          width: 36px;
-          height: 36px;
-          ${media.tablet} {
-            width: 24px;
-            height: 24px;
-          }
-          ${media.mobile} {
-            width: 20px;
-            height: 20px;
-          }
-          &:not(:first-of-type) {
-            margin-left: -6px;
-          }
-        }
       }
     }
   }
