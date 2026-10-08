@@ -29,7 +29,6 @@ $ yarn set version berry
 
 ## Pool chart history
 Pool price candles carry the previous price through intervals without new observations. After candles have loaded, the first empty older page ends backward pagination; loaded candles remain visible.
-Shared pool and token candle charts keep the automatic price range nonnegative and omit lower price-axis padding that would introduce negative ticks.
 Token candles are mounted only after a token path is available, avoiding requests with an empty token identifier.
 
 ## Contributing & Support
