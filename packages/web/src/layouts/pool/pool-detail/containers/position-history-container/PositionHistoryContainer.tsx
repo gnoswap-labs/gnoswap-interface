@@ -28,7 +28,7 @@ interface PositionHistoryContainerProps {
   position: PoolPositionModel;
 }
 
-const HISTORY_PAGE_SIZE = 30;
+const HISTORY_PAGE_SIZE = 20;
 const EMPTY_HISTORY: IPositionHistoryModel[] = [];
 
 const PositionHistoryPage: React.FC<PositionHistoryContainerProps> = ({ position }) => {

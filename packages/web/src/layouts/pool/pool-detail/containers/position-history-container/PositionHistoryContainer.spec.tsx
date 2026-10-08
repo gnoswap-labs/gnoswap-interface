@@ -57,10 +57,10 @@ const previousButton = () => screen.getAllByRole("button")[0];
 describe("PositionHistoryContainer pagination", () => {
   beforeEach(() => getPositionHistory.mockReset());
 
-  it.each([31, 61])("keeps all %i history entries reachable even when a page has only zero-amount entries", async totalCount => {
+  it.each([21, 41])("keeps all %i history entries reachable even when a page has only zero-amount entries", async totalCount => {
     getPositionHistory.mockImplementation((_id: string, page: number) =>
       Promise.resolve({
-        history: page === 1 ? Array.from({ length: 30 }, (_, i) => history(`zero-${i}`, 0)) : [history(`page-${page}`)],
+        history: page === 1 ? Array.from({ length: 20 }, (_, i) => history(`zero-${i}`, 0)) : [history(`page-${page}`)],
         totalCount,
       }),
     );
@@ -70,22 +70,22 @@ describe("PositionHistoryContainer pagination", () => {
     expect(screen.queryByText("zero-0")).not.toBeInTheDocument();
     fireEvent.click(nextButton());
     await screen.findByText("page-2");
-    expect(getPositionHistory).toHaveBeenLastCalledWith("42", 2, 30);
-    if (totalCount === 61) {
+    expect(getPositionHistory).toHaveBeenLastCalledWith("42", 2, 20);
+    if (totalCount === 41) {
       fireEvent.click(nextButton());
       await screen.findByText("page-3");
-      expect(getPositionHistory).toHaveBeenLastCalledWith("42", 3, 30);
+      expect(getPositionHistory).toHaveBeenLastCalledWith("42", 3, 20);
     }
     expect(nextButton()).toBeDisabled();
     fireEvent.click(previousButton());
-    await waitFor(() => expect(getPositionHistory).toHaveBeenLastCalledWith("42", totalCount === 61 ? 2 : 1, 30));
+    await waitFor(() => expect(getPositionHistory).toHaveBeenLastCalledWith("42", totalCount === 41 ? 2 : 1, 20));
   });
 
   it("disables navigation during a page request and resets without showing another position's rows", async () => {
     let resolvePage!: (result: GetPositionHistoryResult) => void;
     let resolvePosition!: (result: GetPositionHistoryResult) => void;
     getPositionHistory
-      .mockResolvedValueOnce({ history: [history("position-42-page-1")], totalCount: 61 })
+      .mockResolvedValueOnce({ history: [history("position-42-page-1")], totalCount: 41 })
       .mockImplementationOnce(
         () =>
           new Promise<GetPositionHistoryResult>(resolve => {
@@ -104,19 +104,19 @@ describe("PositionHistoryContainer pagination", () => {
     fireEvent.click(nextButton());
     await waitFor(() => screen.getAllByRole("button").forEach(button => expect(button).toBeDisabled()));
     expect(screen.queryByText("position-42-page-1")).not.toBeInTheDocument();
-    await act(async () => resolvePage({ history: [history("position-42-page-2")], totalCount: 61 }));
+    await act(async () => resolvePage({ history: [history("position-42-page-2")], totalCount: 41 }));
     await screen.findByText("position-42-page-2");
 
     rerender(<PositionHistoryContainer position={position("43")} />);
     expect(screen.queryByText("position-42-page-2")).not.toBeInTheDocument();
-    await waitFor(() => expect(getPositionHistory).toHaveBeenLastCalledWith("43", 1, 30));
-    await act(async () => resolvePosition({ history: [history("position-43-page-1")], totalCount: 31 }));
+    await waitFor(() => expect(getPositionHistory).toHaveBeenLastCalledWith("43", 1, 20));
+    await act(async () => resolvePosition({ history: [history("position-43-page-1")], totalCount: 21 }));
     await screen.findByText("position-43-page-1");
     expect(previousButton()).toBeDisabled();
     expect(nextButton()).not.toBeDisabled();
   });
 
-  it.each([0, 30])("hides pagination for %i total entries", async totalCount => {
+  it.each([0, 20])("hides pagination for %i total entries", async totalCount => {
     getPositionHistory.mockResolvedValue({ history: totalCount ? [history("single-page")] : [], totalCount });
     renderHistory();
     await waitFor(() => expect(screen.queryByText("Loading history")).not.toBeInTheDocument());

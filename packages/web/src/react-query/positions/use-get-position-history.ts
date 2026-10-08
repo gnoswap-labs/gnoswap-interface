@@ -8,7 +8,7 @@ import { GetPositionHistoryResult } from "@repositories/position/response";
 export const useGetPositionHistory = (
   lpTokenId: string,
   page = 1,
-  limit = 30,
+  limit = 20,
   options?: Omit<UseQueryOptions<GetPositionHistoryResult, Error>, "queryKey" | "queryFn">,
 ) => {
   const { positionRepository } = useGnoswapContext();

@@ -55,7 +55,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     this.walletClient = walletClient;
   }
 
-  getPositionHistory = async (lpTokenId: string, page = 1, limit = 30): Promise<GetPositionHistoryResult> => {
+  getPositionHistory = async (lpTokenId: string, page = 1, limit = 20): Promise<GetPositionHistoryResult> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
