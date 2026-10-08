@@ -25,6 +25,13 @@
     "switchNetwork": "Gnoland로 전환",
     "walletLogin": "지갑 로그인"
   },
+  "candleTooltip": {
+    "close": "닫기",
+    "high": "높음",
+    "low": "낮음",
+    "open": "열기",
+    "volume": "권"
+  },
   "clickHere": "여기를 클릭하세요!",
   "closed": "닫힘",
   "conjunction": {

@@ -25,6 +25,13 @@
     "switchNetwork": "转到糯米地",
     "walletLogin": "钱包登录"
   },
+  "candleTooltip": {
+    "close": "关闭",
+    "high": "高",
+    "low": "低",
+    "open": "打开",
+    "volume": "卷"
+  },
   "clickHere": "点击此处！",
   "closed": "关闭",
   "conjunction": {

@@ -22,25 +22,251 @@ export const ContentWrapper = styled.div`
     border-radius: 10px;
     padding: 16px 48px;
     margin: 16px 24px 24px 24px;
+    min-width: 0;
     gap: 16px;
-    .position-header {
+    &.chart-panel {
       display: grid;
-      grid-template-columns: 140px 1fr 140px;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      grid-template-rows: 36px auto;
       align-items: center;
-      width: 100%;
-      gap: 8px;
-      color: ${({ theme }) => theme.color.text04};
-      ${fonts.body12}
+      padding: 14px 24px 12px;
+      gap: 10px 16px;
       position: relative;
-      .position-header-wrapper {
-        ${mixins.flexbox("column", "center", "space-between")};
-        width: 100%;
+    }
+    .chart-tabs,
+    .chart-ranges {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .chart-tabs {
+      grid-column: 1;
+      grid-row: 1;
+      width: 200px;
+      height: 31px;
+      padding: 2px;
+      gap: 0;
+      border: 1px solid ${({ theme }) => theme.color.border02};
+      border-radius: 4px;
+      background: ${({ theme }) => theme.color.background28};
+    }
+    .chart-pair {
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: center;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      overflow-wrap: anywhere;
+      color: ${({ theme }) => theme.color.text10};
+      ${fonts.body10};
+      font-weight: 300;
+    }
+    .chart-ranges {
+      grid-column: 3;
+      grid-row: 1;
+      justify-self: end;
+    }
+    .chart-ranges.hidden {
+      visibility: hidden;
+    }
+    .chart-body {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      width: 100%;
+      min-width: 0;
+      min-height: 350px;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .chart-body {
+        animation: chart-enter 180ms ease-out;
+      }
+      @keyframes chart-enter {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+    }
+    .chart-tabs button,
+    .chart-ranges button,
+    .chart-pair button {
+      min-width: 40px;
+      min-height: 36px;
+      padding: 6px 10px;
+      border-radius: 4px;
+      color: ${({ theme }) => theme.color.text04};
+      &:hover,
+      &:focus-visible {
+        color: ${({ theme }) => theme.color.text02};
+      }
+      &:focus-visible {
+        outline: 2px solid ${({ theme }) => theme.color.text02};
+        outline-offset: 2px;
+      }
+      &[aria-pressed="true"] {
+        background: ${({ theme }) => theme.color.background05};
+        color: ${({ theme }) => theme.color.text02};
+      }
+    }
+    .chart-tabs button {
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+      padding: 0;
+      transition:
+        background-color 180ms ease-out,
+        color 180ms ease-out;
+    }
+    .chart-pair button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      width: 21px;
+      height: 21px;
+      min-width: 21px;
+      min-height: 21px;
+      padding: 0;
+      &::before {
+        content: "";
+        position: absolute;
+        inset: -12px;
+      }
+      svg {
+        width: 21px;
+        height: 21px;
+      }
+      svg * {
+        fill: ${({ theme }) => theme.color.icon03};
+      }
+      &:hover svg * {
+        fill: ${({ theme }) => theme.color.icon07};
+      }
+    }
+    .price-chart-shell {
+      position: relative;
+      width: 100%;
+      height: 350px;
+      background: ${({ theme }) => theme.color.background28};
+      color: ${({ theme }) => theme.color.text04};
+    }
+    .price-chart-canvas {
+      width: 100%;
+      height: 100%;
+    }
+    .price-chart-status {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      align-content: center;
+      justify-content: center;
+      gap: 8px;
+      background: ${({ theme }) => theme.color.background28};
+      color: ${({ theme }) => theme.color.text02};
+      padding: 12px;
+      text-align: center;
+    }
+    .price-chart-status button {
+      min-width: 44px;
+      min-height: 44px;
+      padding: 8px;
+      text-decoration: underline;
+      color: ${({ theme }) => theme.color.text02};
+      &:focus-visible {
+        outline: 2px solid ${({ theme }) => theme.color.text02};
+      }
+    }
+    .price-chart-paging {
+      position: absolute;
+      top: 8px;
+      left: 12px;
+      z-index: 3;
+      font-size: 11px;
+      color: ${({ theme }) => theme.color.text04};
+    }
+    .price-chart-paging-error {
+      color: ${({ theme }) => theme.color.red01};
+    }
+    @media (max-width: 767px) {
+      &.chart-panel {
+        display: flex;
+        align-items: stretch;
+        margin: 0;
+        padding: 12px;
         gap: 8px;
       }
+      .chart-tabs,
+      .chart-ranges {
+        height: 24px;
+        gap: 0;
+        padding: 2px;
+        border-radius: 4px;
+        background: ${({ theme }) => theme.color.background28};
+      }
+      .chart-tabs {
+        width: 130px;
+        align-self: flex-start;
+      }
+      .chart-pair {
+        align-self: center;
+        gap: 8px;
+        font-size: 14px;
+        line-height: 20px;
+      }
+      .chart-ranges {
+        width: 100%;
+      }
+      .chart-ranges.hidden {
+        display: none;
+      }
+      .chart-tabs button,
+      .chart-ranges button {
+        flex: 1;
+        min-width: 0;
+        min-height: 20px;
+        height: 20px;
+        padding: 0;
+        font-size: 12px;
+        line-height: 20px;
+        position: relative;
+        &::before {
+          content: "";
+          position: absolute;
+          inset: -12px 0;
+        }
+      }
+      .chart-tabs button {
+        min-height: 0;
+        height: 100%;
+        line-height: 18px;
+      }
+      .chart-body {
+        min-height: 176px;
+      }
+      .price-chart-shell {
+        height: 176px;
+      }
+    }
+    .position-header {
+      display: flex;
+      justify-content: flex-end;
+      width: 100%;
+      grid-column: 3;
+      grid-row: 1;
+      justify-self: end;
       .zoom-controller {
         ${mixins.flexbox("row", "center", "flex-end")};
         justify-self: end;
-        width: 140px;
+        width: auto;
         gap: 4px;
         -webkit-user-select: none;
         -khtml-user-select: none;
@@ -65,12 +291,12 @@ export const ContentWrapper = styled.div`
           }
           line-height: 22px;
           @media (hover: hover) {
-            &:hover {
+            &:not(:disabled):hover {
               background: ${({ theme }) => theme.color.backgroundOpacity};
             }
           }
           @media (hover: none) {
-            &:active {
+            &:not(:disabled):active {
               background: ${({ theme }) => theme.color.backgroundOpacity};
             }
           }
@@ -99,69 +325,14 @@ export const ContentWrapper = styled.div`
         }
       }
     }
-    .swap-price {
-      height: 20px;
-      ${mixins.flexbox("row", "center", "center")};
-      ${fonts.body11}
-      text-align: center;
-      color: ${({ theme }) => theme.color.text10};
-      svg {
-        cursor: pointer;
-        * {
-          fill: ${({ theme }) => theme.color.icon03};
-        }
-      }
-      svg:hover * {
-        fill: ${({ theme }) => theme.color.icon07};
-      }
-      .left {
-        gap: 4px;
-        position: absolute;
-        ${mixins.flexbox("row", "center", "center")};
-        transform: translateX(calc(-100% - 10px));
-        left: 50%;
-      }
-      .right {
-        gap: 4px;
-        position: absolute;
-        ${mixins.flexbox("row", "center", "center")};
-        left: calc(50% + 10px);
-      }
-    }
-    .convert-price {
-      ${mixins.flexbox("row", "center", "center")};
-      color: ${({ theme }) => theme.color.text04};
-      ${fonts.body12}
-      svg {
-        width: 16px;
-        height: 16px;
-        * {
-          fill: ${({ theme }) => theme.color.icon03};
-        }
-      }
-      > div {
-        ${mixins.flexbox("row", "center", "center")};
-      }
-      ${media.mobile} {
-        ${mixins.flexbox("column", "center", "center")};
-        > div {
-        }
-      }
-    }
-    .image-logo {
-      width: 20px;
-    }
-    .divider {
-      margin: 0 6px;
-    }
     @media (max-width: 767px) {
       margin: 16px 12px;
       padding: 16px 12px;
       .position-header {
-        ${mixins.flexbox("column", "center", "center")};
-        gap: 8px;
-        > div:first-of-type {
-        }
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: auto;
       }
     }
   }

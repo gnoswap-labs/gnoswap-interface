@@ -438,10 +438,8 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   }, [claimedRewardInfo, position.totalClaimedUsd]);
 
   const stringPrice = useMemo(() => {
-    const price = tickToPrice(position?.pool?.currentTick);
-
     if (isSwap) {
-      const displayPrice = makeDisplayPrice(1 / price, tokenB, tokenA);
+      const displayPrice = makeDisplayPrice(1 / position.pool.price, tokenB, tokenA);
       return (
         <>
           1 {tokenB?.displaySymbol || ""} ={" "}
@@ -453,7 +451,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         </>
       );
     }
-    const displayPrice = makeDisplayPrice(price, tokenA, tokenB);
+    const displayPrice = makeDisplayPrice(position.pool.price, tokenA, tokenB);
     return (
       <>
         1 {tokenA?.displaySymbol || ""} ={" "}
@@ -464,7 +462,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         {tokenB?.displaySymbol || ""}
       </>
     );
-  }, [isSwap, tokenA, tokenB, position?.pool?.currentTick]);
+  }, [isSwap, tokenA, tokenB, position.pool.price]);
 
   const isFullRange = useMemo(() => {
     const isMinEndTick = isEndTickBy(position.tickLower, position.pool.fee);
@@ -853,7 +851,6 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   const cardGraph = (
     <div className="position-wrapper-chart">
       <div className="position-header">
-        <div>{t("business:currentPrice")}</div>
         <div className="swap-price">
           {!loading && (
             <MissingLogo

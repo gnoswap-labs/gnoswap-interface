@@ -25,6 +25,13 @@
     "switchNetwork": "Переключитесь на Гноланд",
     "walletLogin": "Вход в кошелек"
   },
+  "candleTooltip": {
+    "close": "Закрыть",
+    "high": "Высокий",
+    "low": "Низкий",
+    "open": "Открыть",
+    "volume": "Объем"
+  },
   "clickHere": "Нажмите здесь!",
   "closed": "Закрытый",
   "conjunction": {

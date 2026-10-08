@@ -25,6 +25,13 @@
     "switchNetwork": "Switch to Gnoland",
     "walletLogin": "Wallet Login"
   },
+  "candleTooltip": {
+    "close": "Close",
+    "high": "High",
+    "low": "Low",
+    "open": "Open",
+    "volume": "Volume"
+  },
   "clickHere": "Click Here!",
   "closed": "Closed",
   "conjunction": {
