@@ -2,7 +2,6 @@
   "chart": {
     "section": "Biểu đồ pool",
     "price": "Giá",
-    "priceDifferenceHint": "Giá hiện tại phản ánh trạng thái mới nhất của pool. Nến dùng giá trạng thái pool đã ghi nhận nên có thể chậm hơn giá hiện tại; swap đóng góp khối lượng nhưng không quyết định giá nến.",
     "liquidity": "Thanh khoản",
     "range": "Khoảng biểu đồ",
     "reverse": "Đảo cặp giá",

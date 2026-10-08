@@ -517,7 +517,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               width={21}
               mobileWidth={21}
             />
-            <span title={t("Pool:chart.priceDifferenceHint")}>
+            <span>
               1 {isChartReversed ? pool.tokenB.displaySymbol : pool.tokenA.displaySymbol} ={" "}
               {isChartReversed ? currentPriceReverse : currentPriceRatio}{" "}
               {isChartReversed ? pool.tokenA.displaySymbol : pool.tokenB.displaySymbol}
