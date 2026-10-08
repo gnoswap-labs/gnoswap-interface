@@ -15,6 +15,7 @@ import { PoolStakingModel } from "@models/pool/pool-staking";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { DEVICE_TYPE } from "@styles/media";
 import { toUnitFormat } from "@utils/number-utils";
+import { getStakingPeriodType } from "@utils/stake-position-utils";
 import { getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils";
 
 import IncentivizeTokenDetailTooltipContent from "./incentivized-token-detail-tooltip-content/IncentivizeTokenDetailTooltipContent";
@@ -41,8 +42,6 @@ const TEXT_BTN = [
   "Pool:staking.keepStakingNote.three",
   "Pool:staking.keepStakingNote.four",
 ];
-
-const DAY_TIME = 24 * 60 * 60 * 1000;
 
 const StakingContent: React.FC<StakingContentProps> = ({
   totalApr,
@@ -109,23 +108,13 @@ const StakingContent: React.FC<StakingContentProps> = ({
       [key in StakingPeriodType]: PoolPositionModel[];
     }>(
       (accum, current) => {
-        const stakedTime = new Date(current.stakedAt).getTime();
-        const difference = (new Date().getTime() - stakedTime) / DAY_TIME;
-        let periodType: StakingPeriodType = "MAX";
-        if (difference < 5) {
-          periodType = "5D";
-        } else if (difference < 10) {
-          periodType = "10D";
-        } else if (difference < 30) {
-          periodType = "30D";
-        }
-        accum[periodType].push(current);
+        accum[getStakingPeriodType(current.stakedAt)].push(current);
         return accum;
       },
       {
         "5D": [],
-        "10D": [],
-        "30D": [],
+        "15D": [],
+        "45D": [],
         MAX: [],
       },
     );

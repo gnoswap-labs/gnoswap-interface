@@ -39,7 +39,7 @@
   "unclaimed": "Unclaimed",
   "unclaimedRewards": "Unclaimed Rewards",
   "warning": {
-    "content": "This will completely reset your staking progress. Once you re-stake, you will have to wait 30 days to start receiving max staking rewards. Be sure to understand how the warm-up period works before unstaking.",
+    "content": "This will completely reset your staking progress. Once you re-stake, you will have to wait 45 days to start receiving max staking rewards. Be sure to understand how the warm-up period works before unstaking.",
     "title": "Your Staking Progress Will be Reset"
   }
 }

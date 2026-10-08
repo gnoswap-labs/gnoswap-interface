@@ -15,12 +15,11 @@ import {
   useGetPoolStakingSummaryByPoolPath,
 } from "@query/pools";
 import { formatRate } from "@utils/new-number-utils";
+import { getStakingPeriodType } from "@utils/stake-position-utils";
 import { isValidAddress } from "@utils/validation-utils";
 
 import Staking from "../../components/staking/Staking";
 import { PoolConverter } from "@services/converters/pool";
-
-const DAY_TIME = 24 * 60 * 60 * 1000;
 
 interface StakingContainerProps {
   hasPoolStaking: boolean;
@@ -136,23 +135,13 @@ const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking, onO
       [key in StakingPeriodType]: PoolPositionModel[];
     }>(
       (accum, current) => {
-        const stakedTime = new Date(current.stakedAt).getTime();
-        const difference = (new Date().getTime() - stakedTime) / DAY_TIME;
-        let periodType: StakingPeriodType = "MAX";
-        if (difference < 5) {
-          periodType = "5D";
-        } else if (difference < 10) {
-          periodType = "10D";
-        } else if (difference < 30) {
-          periodType = "30D";
-        }
-        accum[periodType].push(current);
+        accum[getStakingPeriodType(current.stakedAt)].push(current);
         return accum;
       },
       {
         "5D": [],
-        "10D": [],
-        "30D": [],
+        "15D": [],
+        "45D": [],
         MAX: [],
       },
     );

@@ -480,7 +480,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
                     scroll
                     FloatingContent={
                       <div>
-                        <PriceTooltipContent positions={positions} period={periodInfo.period} />
+                        <PriceTooltipContent positions={positions} period={-1} />
                       </div>
                     }
                   >

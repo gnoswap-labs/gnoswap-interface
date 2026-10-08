@@ -1,4 +1,4 @@
-import { formatTokenExchangeRate } from "./stake-position-utils";
+import { formatTokenExchangeRate, getStakingPeriodType } from "./stake-position-utils";
 
 describe("tokenExchangeRateFormat, token exchange rate format", () => {
   test("12347 to 12.34K", () => {
@@ -47,5 +47,24 @@ describe("tokenExchangeRateFormat, token exchange rate format", () => {
     const num = "1";
 
     expect(formatTokenExchangeRate(num)).toBe("1");
+  });
+});
+
+describe("getStakingPeriodType", () => {
+  const DAY = 24 * 60 * 60 * 1000;
+  const stakedAt = "2026-01-01T00:00:00.000Z";
+  const stakedTime = new Date(stakedAt).getTime();
+
+  it.each([
+    [0, "5D"],
+    [5 * DAY - 1, "5D"],
+    [5 * DAY, "15D"],
+    [15 * DAY - 1, "15D"],
+    [15 * DAY, "45D"],
+    [45 * DAY - 1, "45D"],
+    [45 * DAY, "MAX"],
+    [100 * DAY, "MAX"],
+  ])("returns the contract warmup tier after %i ms", (elapsed, expected) => {
+    expect(getStakingPeriodType(stakedAt, stakedTime + elapsed)).toBe(expected);
   });
 });

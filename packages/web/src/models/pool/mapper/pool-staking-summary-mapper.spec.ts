@@ -18,8 +18,8 @@ describe("PoolStakingSummaryMapper", () => {
     expect(result.totalPositionCount).toBe(10);
     expect(result.tiers).toEqual([
       { period: "5D", stakedUsd: 100, positionCount: 3, stakedRatio: 0.1 },
-      { period: "10D", stakedUsd: 100, positionCount: 1, stakedRatio: 0.1 },
-      { period: "30D", stakedUsd: 200, positionCount: 2, stakedRatio: 0.2 },
+      { period: "15D", stakedUsd: 100, positionCount: 1, stakedRatio: 0.1 },
+      { period: "45D", stakedUsd: 200, positionCount: 2, stakedRatio: 0.2 },
       { period: "MAX", stakedUsd: 600, positionCount: 4, stakedRatio: 0.6 },
     ]);
   });
@@ -32,7 +32,7 @@ describe("PoolStakingSummaryMapper", () => {
       tiers: [],
     });
 
-    expect(result.tiers.map(tier => tier.period)).toEqual(["5D", "10D", "30D", "MAX"]);
+    expect(result.tiers.map(tier => tier.period)).toEqual(["5D", "15D", "45D", "MAX"]);
     expect(result.tiers.every(tier => tier.stakedUsd === 0 && tier.positionCount === 0 && tier.stakedRatio === 0)).toBe(
       true,
     );

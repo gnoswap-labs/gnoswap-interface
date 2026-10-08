@@ -1,3 +1,4 @@
+import { STAKING_PERIOD_INFO, STAKING_PERIOS, StakingPeriodType } from "@constants/option.constant";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import BigNumber from "bignumber.js";
 import { buildPricePrefix } from "./common";
@@ -255,3 +256,10 @@ export function isInRangePosition(position: PoolPositionModel) {
   }
   return true;
 }
+
+const DAY_TIME = 24 * 60 * 60 * 1000;
+
+export const getStakingPeriodType = (stakedAt: string, now = Date.now()): StakingPeriodType => {
+  const stakedDays = (now - new Date(stakedAt).getTime()) / DAY_TIME;
+  return STAKING_PERIOS.find(period => period !== "MAX" && stakedDays < STAKING_PERIOD_INFO[period].period) || "MAX";
+};
