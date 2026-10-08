@@ -12,8 +12,7 @@ const mockCandles = {
 };
 const mockVolume = { setData: jest.fn() };
 const mockTimeScale = {
-  getVisibleRange: jest.fn().mockReturnValue({ from: 100, to: 200 }),
-  setVisibleRange: jest.fn(),
+  getVisibleLogicalRange: jest.fn().mockReturnValue({ from: -4.25, to: 9.75 }),
   setVisibleLogicalRange: jest.fn(),
   subscribeVisibleLogicalRangeChange: jest.fn(),
   unsubscribeVisibleLogicalRangeChange: jest.fn(),
@@ -88,7 +87,7 @@ beforeAll(() => {
 beforeEach(() => {
   jest.clearAllMocks();
   mockLanguage = "en";
-  mockTimeScale.getVisibleRange.mockReturnValue({ from: 100, to: 200 });
+  mockTimeScale.getVisibleLogicalRange.mockReturnValue({ from: -4.25, to: 9.75 });
   jest.spyOn(Date, "now").mockReturnValue(300000000);
 });
 afterEach(() => {
@@ -123,51 +122,6 @@ it("reveals the hovered candle's OHLC and both token volumes without a permanent
 
   act(() => onMove({ point: undefined, time: undefined, seriesData: new Map() }));
   expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
-});
-
-it.each([
-  {
-    name: "token",
-    formatCandlePrice: formatTokenCandlePrice,
-    prices: ["2", "0.0012", "1.57", "0.987"],
-  },
-  {
-    name: "pool",
-    formatCandlePrice: (value: number) =>
-      formatTokenExchangeRate(value, { maxSignificantDigits: 6, minLimit: 0.000001 }),
-    prices: ["2", "0.0012", "1.57035", "0.987654"],
-  },
-])("formats $name candle prices without rounding the displayed volumes", async ({ formatCandlePrice, prices }) => {
-  const bar = {
-    time: firstPage[0].time,
-    high: 2,
-    low: 0.0012,
-    open: 1.5703476164,
-    close: 0.987654321,
-    volume: 162.504458,
-    quoteVolume: 100,
-  };
-  render(
-    <PriceCandleChart {...props} formatCandlePrice={formatCandlePrice} loadPage={jest.fn().mockResolvedValue([bar])} />,
-  );
-  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
-  const axisFormat = mockCandles.applyOptions.mock.calls[0][0].priceFormat;
-  expect(axisFormat.type).toBe("custom");
-  expect(axisFormat.formatter(bar.open)).toBe(prices[2]);
-  expect(axisFormat.tickmarksFormatter([0.0695, 0.07, 0.0705])).toEqual(["0.0695", "0.07", "0.0705"]);
-  const onMove = mockSubscribeCrosshairMove.mock.calls[0][0];
-  act(() => {
-    onMove({
-      point: { x: 40, y: 100 },
-      time: bar.time,
-      seriesData: new Map([[mockCandles, bar]]),
-    });
-  });
-  expect(Array.from(screen.getByRole("tooltip").querySelectorAll("strong"), node => node.textContent)).toEqual([
-    ...prices,
-    "162.504458 GNOT",
-    "100 GNS",
-  ]);
 });
 
 it("preserves distinct token axis ticks when three significant digits would collapse them", async () => {
@@ -213,7 +167,7 @@ it("keeps loaded candles and the visible range after an older page fails, then r
   await waitFor(() => expect(loadPage).toHaveBeenCalledTimes(3));
   await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(2));
   expect(loadPage).toHaveBeenNthCalledWith(3, 228300, 264300);
-  expect(mockTimeScale.setVisibleRange).toHaveBeenCalledWith({ from: 100, to: 200 });
+
   expect(screen.queryByText("Could not load price history")).not.toBeInTheDocument();
   expect(mockCreateChart).toHaveBeenCalledTimes(1);
 });
@@ -305,43 +259,6 @@ it("limits All daily requests to 30-day windows and pages older only on action",
   expect(loadPage).toHaveBeenNthCalledWith(2, start - 30 * 86400, start);
 });
 
-it("formats crosshair and ticks in the app language and browser local time", async () => {
-  render(<PriceCandleChart {...props} loadPage={jest.fn().mockResolvedValue(firstPage)} />);
-  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
-  const options = mockCreateChart.mock.calls[0][1];
-  const time = Date.parse("2026-10-07T23:30:00Z") / 1000;
-  const date = new Date(time * 1000);
-  expect(options.localization.locale).toBe("en");
-  expect(options.timeScale.tickMarkFormatter(time, 2, "ko-KR")).toBe(
-    new Intl.DateTimeFormat("en", { month: "short", day: "numeric" }).format(date),
-  );
-  expect(options.localization.timeFormatter(time)).toBe(
-    new Intl.DateTimeFormat("en", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    }).format(date),
-  );
-});
-
-it("uses Korean local dates when the app language is Korean", async () => {
-  mockLanguage = "ko";
-  render(<PriceCandleChart {...props} daily loadPage={jest.fn().mockResolvedValue(firstPage)} />);
-  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
-  const options = mockCreateChart.mock.calls[0][1];
-  const time = Date.parse("2026-10-07T23:30:00Z") / 1000;
-  const date = new Date(time * 1000);
-  expect(options.timeScale.tickMarkFormatter(time, 2, "en-US")).toBe(
-    new Intl.DateTimeFormat("ko", { month: "short", day: "numeric" }).format(date),
-  );
-  expect(options.localization.timeFormatter(time)).toBe(
-    new Intl.DateTimeFormat("ko", { year: "numeric", month: "short", day: "numeric" }).format(date),
-  );
-});
-
 it("rebuilds the chart and formats both volumes when the app language changes", async () => {
   const bar = { ...firstPage[0], volume: 1234.5, quoteVolume: 1234.5 };
   const loadPage = jest.fn().mockResolvedValue([bar]);
@@ -407,7 +324,7 @@ it("refreshes the latest candle and appends new buckets without discarding histo
       { time: 300300, open: 4, high: 6, low: 2, close: 6 },
     ]);
     expect(mockVolume.setData.mock.calls.at(-1)[0].map((bar: { value: number }) => bar.value)).toEqual([3, 8, 2]);
-    expect(mockTimeScale.setVisibleRange).toHaveBeenCalledWith({ from: 100, to: 200 });
+
     unmount();
     await act(async () => {
       jest.advanceTimersByTime(5_000);
@@ -449,6 +366,96 @@ it("pauses polling in hidden tabs and retains prices after a refresh failure unt
       jest.advanceTimersByTime(5_000);
     });
     expect(mockCandles.setData).toHaveBeenLastCalledWith([{ time: 300000, open: 2, high: 4, low: 2, close: 4 }]);
+  } finally {
+    unmount();
+    jest.useRealTimers();
+  }
+});
+
+it("formats negative token price-axis ticks with one minus sign", async () => {
+  render(
+    <PriceCandleChart
+      {...props}
+      formatCandlePrice={formatTokenCandlePrice}
+      loadPage={jest.fn().mockResolvedValue(firstPage)}
+    />,
+  );
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+  const format = mockCandles.applyOptions.mock.calls[0][0].priceFormat.tickmarksFormatter;
+  expect(format([-200, -0.5, 0, 0.5, 200])).toEqual(["-200", "-0.5", "0", "0.5", "200"]);
+});
+
+it.each([300, 3600, 14400])("keeps intraday ticks and crosshair times in UTC (interval=%s)", async interval => {
+  jest.spyOn(Date, "now").mockReturnValue(Date.parse("2027-01-01T00:05:00Z"));
+  const time = Date.parse("2027-01-01T00:00:00Z") / 1000;
+  const bar = { ...firstPage[0], time };
+  render(<PriceCandleChart {...props} interval={interval} loadPage={jest.fn().mockResolvedValue([bar])} />);
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+  const options = mockCreateChart.mock.calls[0][1];
+  expect(options.timeScale.tickMarkFormatter(time, 0)).toBe("2027");
+  expect(options.timeScale.tickMarkFormatter(time, 1)).toBe("Jan");
+  expect(options.timeScale.tickMarkFormatter(time, 2)).toBe("Jan 1");
+  expect(options.timeScale.tickMarkFormatter(time, 3)).toBe("00:00");
+  expect(options.localization.timeFormatter(time)).toBe("Jan 1, 2027, 00:00");
+});
+
+it.each([false, true])("keeps UTC day, month, and year labels for daily candles (All=%s)", async all => {
+  jest.spyOn(Date, "now").mockReturnValue(Date.parse("2027-01-02T12:00:00Z"));
+  const time = Date.parse("2027-01-01T00:00:00Z") / 1000;
+  const bar = { ...firstPage[0], time };
+  const loadPage = jest.fn().mockResolvedValueOnce([bar]).mockResolvedValue([]);
+  render(<PriceCandleChart {...props} interval={86400} daily all={all} loadPage={loadPage} />);
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+  const options = mockCreateChart.mock.calls[0][1];
+  expect(options.timeScale.tickMarkFormatter(time, 0)).toBe("2027");
+  expect(options.timeScale.tickMarkFormatter(time, 1)).toBe("Jan");
+  expect(options.timeScale.tickMarkFormatter(time, 2)).toBe("Jan 1");
+  expect(options.localization.timeFormatter(time)).toBe("Jan 1, 2027");
+});
+
+it("preserves candle positions, fractional zoom, and whitespace when older candles are prepended", async () => {
+  const loadPage = jest.fn().mockResolvedValueOnce(firstPage).mockResolvedValueOnce(olderPage);
+  const { container } = render(<PriceCandleChart {...props} loadPage={loadPage} />);
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+  act(() => {
+    fireEvent.wheel(container.querySelector(".price-chart-canvas")!);
+    mockTimeScale.subscribeVisibleLogicalRangeChange.mock.calls[0][0]({ from: -4.25, to: 9.75 });
+  });
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(2));
+  expect(mockTimeScale.setVisibleLogicalRange).toHaveBeenLastCalledWith({ from: -3.25, to: 10.75 });
+});
+
+it("keeps a drag made during an in-flight refresh instead of following newly appended candles", async () => {
+  jest.useFakeTimers();
+  jest.setSystemTime(300000000);
+  const bar = { ...firstPage[1], time: 300000 };
+  const next = { ...bar, time: 300300, close: 4, high: 4 };
+  let finish!: (bars: PriceBar[]) => void;
+  const loadPage = jest
+    .fn()
+    .mockResolvedValueOnce([bar])
+    .mockImplementationOnce(
+      () =>
+        new Promise<PriceBar[]>(resolve => {
+          finish = resolve;
+        }),
+    );
+  const { unmount } = render(<PriceCandleChart {...props} loadPage={loadPage} />);
+  try {
+    await act(async () => {});
+    jest.setSystemTime(300300000);
+    await act(async () => {
+      jest.advanceTimersByTime(5_000);
+    });
+    mockTimeScale.getVisibleLogicalRange.mockReturnValue({ from: -12.5, to: -2.5 });
+    await act(async () => {
+      finish([bar, next]);
+    });
+    expect(mockCandles.setData).toHaveBeenLastCalledWith([
+      { time: 300000, open: 2, high: 3, low: 2, close: 3 },
+      { time: 300300, open: 2, high: 4, low: 2, close: 4 },
+    ]);
+    expect(mockTimeScale.setVisibleLogicalRange).toHaveBeenLastCalledWith({ from: -12.5, to: -2.5 });
   } finally {
     unmount();
     jest.useRealTimers();

@@ -14,7 +14,6 @@ import { useTranslation } from "react-i18next";
 
 import { CandleTooltip } from "./PriceCandleChart.styles";
 
-
 export interface PriceBar {
   time: number;
   open: number;
@@ -94,19 +93,20 @@ export default function PriceCandleChart({
     async function initialize() {
       if (cancelled || !element) return;
       const positive = theme.color.green01;
-      const localFormat = (options: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat(locale, options);
+      const dateFormat = (options: Intl.DateTimeFormatOptions) =>
+        new Intl.DateTimeFormat(locale, { ...options, timeZone: "UTC" });
       const axisFormats = {
-        [TickMarkType.Year]: localFormat({ year: "numeric" }),
-        [TickMarkType.Month]: localFormat({ month: "short" }),
-        [TickMarkType.DayOfMonth]: localFormat({ month: "short", day: "numeric" }),
-        [TickMarkType.Time]: localFormat({ hour: "2-digit", minute: "2-digit", hour12: false }),
-        [TickMarkType.TimeWithSeconds]: localFormat({
+        [TickMarkType.Year]: dateFormat({ year: "numeric" }),
+        [TickMarkType.Month]: dateFormat({ month: "short" }),
+        [TickMarkType.DayOfMonth]: dateFormat({ month: "short", day: "numeric" }),
+        [TickMarkType.Time]: dateFormat({ hour: "2-digit", minute: "2-digit", hour12: false }),
+        [TickMarkType.TimeWithSeconds]: dateFormat({
           hour: "2-digit",
           minute: "2-digit",
           second: "2-digit",
         }),
       };
-      const crosshairFormat = localFormat(
+      const crosshairFormat = dateFormat(
         daily
           ? { year: "numeric", month: "short", day: "numeric" }
           : { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false },
@@ -222,7 +222,7 @@ export default function PriceCandleChart({
           exhausted = cursor === 0;
           setCanSearchOlder(!exhausted);
           applyPriceFormat(bars.length ? bars[bars.length - 1].close : older[older.length - 1].close);
-          const visible = bars.length ? chart.timeScale().getVisibleRange() : null;
+          const visible = bars.length ? chart.timeScale().getVisibleLogicalRange() : null;
           bars = older.concat(bars);
           for (const bar of older) barsByTime.set(bar.time, bar);
           candles.setData(
@@ -235,8 +235,11 @@ export default function PriceCandleChart({
               color: close >= open ? positive : negative,
             })),
           );
-          if (visible) chart.timeScale().setVisibleRange(visible);
-          else if (all) chart.timeScale().fitContent();
+          if (visible) {
+            chart
+              .timeScale()
+              .setVisibleLogicalRange({ from: visible.from + older.length, to: visible.to + older.length });
+          } else if (all) chart.timeScale().fitContent();
           else {
             const visibleBars = Math.min(65, Math.max(20, Math.floor(element.clientWidth / 12)));
             chart
@@ -266,8 +269,7 @@ export default function PriceCandleChart({
           if (latest.some(bar => bar.time < start || bar.time >= end)) {
             throw new Error("Invalid price history response");
           }
-          const visible = chart.timeScale().getVisibleRange();
-          const previousLastTime = bars.length ? bars[bars.length - 1].time : null;
+          const visible = chart.timeScale().getVisibleLogicalRange();
           for (const bar of latest) barsByTime.set(bar.time, bar);
           bars = Array.from(barsByTime.values()).sort((a, b) => a.time - b.time);
           applyPriceFormat(bars[bars.length - 1].close);
@@ -282,14 +284,7 @@ export default function PriceCandleChart({
             })),
           );
           if (visible) {
-            const shift =
-              previousLastTime !== null && Number(visible.to) >= previousLastTime
-                ? bars[bars.length - 1].time - previousLastTime
-                : 0;
-            chart.timeScale().setVisibleRange({
-              from: (Number(visible.from) + shift) as UTCTimestamp,
-              to: (Number(visible.to) + shift) as UTCTimestamp,
-            });
+            chart.timeScale().setVisibleLogicalRange(visible);
           } else {
             chart.timeScale().setVisibleLogicalRange({
               from: Math.max(0, bars.length - 65) - 6,

@@ -179,12 +179,12 @@ export const formatPrice = (value?: BigNumber | string | number | null, options:
   }
 
   if (absValue.isLessThan(1)) {
-    const tempNum = valueAsBigNum.toPrecision(lessThan1Significant, BigNumber.ROUND_DOWN);
+    const tempNum = absValue.toPrecision(lessThan1Significant, BigNumber.ROUND_DOWN);
     const formattedValue = `${negativeSign}${prefix}${tempNum}`;
     return formattedValue;
   }
 
-  const formattedNumber = valueAsBigNum.toFormat(greaterThan1Decimals, BigNumber.ROUND_DOWN);
+  const formattedNumber = absValue.toFormat(greaterThan1Decimals, BigNumber.ROUND_DOWN);
   const finalNumber = `${negativeSign}${prefix}${
     forcedDecimals ? formattedNumber : removeTrailingZeros(formattedNumber)
   }`;
