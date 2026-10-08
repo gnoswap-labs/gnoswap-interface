@@ -1,18 +1,12 @@
 {
   "chart": {
-    "section": "Biểu đồ pool",
-    "price": "Giá",
-    "liquidity": "Thanh khoản",
-    "range": "Khoảng biểu đồ",
-    "reverse": "Đảo cặp giá",
-    "zoomIn": "Phóng to",
-    "zoomOut": "Thu nhỏ",
-    "priceChartLabel": "Biểu đồ giá {{pair}} và khối lượng {{symbol}}",
-    "loading": "Đang tải lịch sử giá…",
     "empty": "Không có nến giá trong khoảng thời gian này.",
-    "searchOlder": "Tìm lịch sử cũ hơn",
     "error": "Không thể tải lịch sử giá.",
-    "retry": "Thử lại"
+    "liquidity": "Khả năng thanh khoản",
+    "loading": "Đang tải lịch sử giá…",
+    "price": "Giá",
+    "retry": "Thử lại",
+    "searchOlder": "Tìm kiếm lịch sử trước đây"
   },
   "gotoIncentivizeGuide": {
     "add": "Bạn có muốn cộng các khoản khuyến khích cho nhóm này không?",

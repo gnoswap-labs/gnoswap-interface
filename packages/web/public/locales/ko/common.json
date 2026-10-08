@@ -18,19 +18,19 @@
     "fees": "수수료",
     "tradingVol": "거래량"
   },
-  "candleTooltip": {
-    "high": "높음",
-    "low": "낮음",
-    "open": "열기",
-    "close": "닫기",
-    "volume": "거래량"
-  },
   "btn": {
     "amountTooLow": "수량이 너무 적음",
     "enterAmount": "수량 입력",
     "insuffiBal": "잔액 부족",
     "switchNetwork": "Gnoland로 전환",
     "walletLogin": "지갑 로그인"
+  },
+  "candleTooltip": {
+    "close": "닫기",
+    "high": "높음",
+    "low": "낮음",
+    "open": "열기",
+    "volume": "권"
   },
   "clickHere": "여기를 클릭하세요!",
   "closed": "닫힘",

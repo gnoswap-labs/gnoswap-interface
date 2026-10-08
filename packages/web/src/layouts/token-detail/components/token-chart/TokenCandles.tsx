@@ -34,7 +34,7 @@ export default function TokenCandles({ client, tokenPath, symbol, resolution }: 
       all={resolution === "All"}
       priceLabel="USD"
       formatCandlePrice={formatTokenCandlePrice}
-      label={t("TokenDetails:chart.candleLabel", { symbol })}
+      label={`${symbol} price in USD, with OHLC candles and ${symbol} volume`}
       volumeSymbols={[symbol]}
       loadingLabel={t("TokenDetails:chart.loading")}
       emptyLabel={t("TokenDetails:chart.empty")}

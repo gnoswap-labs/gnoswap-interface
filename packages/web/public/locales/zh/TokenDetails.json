@@ -8,13 +8,11 @@
     "title": "{{symbol}}最佳游泳池"
   },
   "chart": {
-    "interval": "图表区间",
-    "candleLabel": "{{symbol}} 的美元价格、OHLC K线及 {{symbol}} 成交量",
-    "loading": "正在加载价格K线…",
-    "empty": "此周期暂无价格K线。",
-    "searchOlder": "搜索更早历史",
-    "error": "无法加载价格K线。",
-    "retry": "重试"
+    "empty": "该时间段内没有价格K线。",
+    "error": "无法加载价格K线图。",
+    "loading": "正在加载价格K线……",
+    "retry": "重试",
+    "searchOlder": "搜索历史记录"
   },
   "description": {
     "empty": "没有令牌信息",

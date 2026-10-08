@@ -18,19 +18,19 @@
     "fees": "费用",
     "tradingVol": "交易量"
   },
-  "candleTooltip": {
-    "high": "最高",
-    "low": "最低",
-    "open": "开盘",
-    "close": "收盘",
-    "volume": "成交量"
-  },
   "btn": {
     "amountTooLow": "金额太低",
     "enterAmount": "输入金额",
     "insuffiBal": "余额不足",
     "switchNetwork": "转到糯米地",
     "walletLogin": "钱包登录"
+  },
+  "candleTooltip": {
+    "close": "关闭",
+    "high": "高",
+    "low": "低",
+    "open": "打开",
+    "volume": "卷"
   },
   "clickHere": "点击此处！",
   "closed": "关闭",

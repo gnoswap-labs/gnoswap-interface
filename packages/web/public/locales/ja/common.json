@@ -18,19 +18,19 @@
     "fees": "料金",
     "tradingVol": "取引量"
   },
-  "candleTooltip": {
-    "high": "高値",
-    "low": "安値",
-    "open": "始値",
-    "close": "終値",
-    "volume": "出来高"
-  },
   "btn": {
     "amountTooLow": "金額が低すぎる",
     "enterAmount": "金額を入力",
     "insuffiBal": "残高不足",
     "switchNetwork": "グノランドへ移動",
     "walletLogin": "ウォレットログイン"
+  },
+  "candleTooltip": {
+    "close": "閉じる",
+    "high": "高い",
+    "low": "低",
+    "open": "開く",
+    "volume": "巻数"
   },
   "clickHere": "ここをクリック",
   "closed": "クローズド",

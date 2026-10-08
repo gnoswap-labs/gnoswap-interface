@@ -8,13 +8,11 @@
     "title": "Meilleures Pools pour {{symbol}}"
   },
   "chart": {
-    "interval": "Période du graphique",
-    "candleLabel": "Prix de {{symbol}} en USD, bougies OHLC et volume en {{symbol}}",
-    "loading": "Chargement des bougies de prix…",
-    "empty": "Aucune bougie de prix pour cet intervalle.",
-    "searchOlder": "Rechercher l'historique antérieur",
-    "error": "Impossible de charger les bougies de prix.",
-    "retry": "Réessayer"
+    "empty": "Il n'y a pas de chandeliers de cours disponibles pour cet intervalle.",
+    "error": "Impossible de charger les chandeliers de cours.",
+    "loading": "Chargement des chandeliers de prix…",
+    "retry": "Réessayer",
+    "searchOlder": "Rechercher dans l'historique antérieur"
   },
   "description": {
     "empty": "Pas d'information sur les jetons",

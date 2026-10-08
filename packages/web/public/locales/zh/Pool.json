@@ -1,18 +1,12 @@
 {
   "chart": {
-    "section": "池图表",
-    "price": "价格",
+    "empty": "该期间内没有价格K线。",
+    "error": "无法加载价格历史数据。",
     "liquidity": "流动性",
-    "range": "图表区间",
-    "reverse": "反转价格交易对",
-    "zoomIn": "放大",
-    "zoomOut": "缩小",
-    "priceChartLabel": "{{pair}} 价格与 {{symbol}} 交易量图表",
-    "loading": "正在加载价格历史…",
-    "empty": "此时段暂无价格K线。",
-    "searchOlder": "搜索更早历史",
-    "error": "无法加载价格历史。",
-    "retry": "重试"
+    "loading": "正在加载价格历史数据……",
+    "price": "价格",
+    "retry": "重试",
+    "searchOlder": "搜索历史记录"
   },
   "gotoIncentivizeGuide": {
     "add": "想要为这个泳池增加奖励？",

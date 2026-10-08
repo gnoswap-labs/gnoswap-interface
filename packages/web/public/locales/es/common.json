@@ -18,19 +18,19 @@
     "fees": "Tasas",
     "tradingVol": "Volumen de negociación"
   },
-  "candleTooltip": {
-    "high": "Máximo",
-    "low": "Mínimo",
-    "open": "Apertura",
-    "close": "Cierre",
-    "volume": "Volumen"
-  },
   "btn": {
     "amountTooLow": "Importe demasiado bajo",
     "enterAmount": "Introduzca el importe",
     "insuffiBal": "Saldo insuficiente",
     "switchNetwork": "Cambiar a Gnolandia",
     "walletLogin": "Inicio de sesión en Wallet"
+  },
+  "candleTooltip": {
+    "close": "Cerrar",
+    "high": "Alto",
+    "low": "Bajo",
+    "open": "Abrir",
+    "volume": "Volumen"
   },
   "clickHere": "Haga clic aquí",
   "closed": "Cerrado",

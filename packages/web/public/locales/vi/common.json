@@ -18,19 +18,19 @@
     "fees": "Phí",
     "tradingVol": "Khối lượng giao dịch"
   },
-  "candleTooltip": {
-    "high": "Cao",
-    "low": "Thấp",
-    "open": "Mở",
-    "close": "Đóng",
-    "volume": "Khối lượng"
-  },
   "btn": {
     "amountTooLow": "Số tiền quá thấp",
     "enterAmount": "Nhập số tiền",
     "insuffiBal": "Số dư không đủ",
     "switchNetwork": "Chuyển sang Gnoland",
     "walletLogin": "Đăng nhập bằng ví"
+  },
+  "candleTooltip": {
+    "close": "Đóng",
+    "high": "Cao",
+    "low": "Thấp",
+    "open": "Mở",
+    "volume": "Khối lượng"
   },
   "clickHere": "Nhấp vào đây!",
   "closed": "Đã đóng",

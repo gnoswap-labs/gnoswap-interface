@@ -54,12 +54,9 @@ export default function PoolPriceChart({ client, poolPath, tokenA, tokenB, rever
       daily={interval === 86400}
       all={range === "All"}
       formatCandlePrice={formatPoolCandlePrice}
-      label={t("Pool:chart.priceChartLabel", {
-        pair: `${reversed ? tokenB.displaySymbol : tokenA.displaySymbol}/${
-          reversed ? tokenA.displaySymbol : tokenB.displaySymbol
-        }`,
-        symbol: reversed ? tokenB.displaySymbol : tokenA.displaySymbol,
-      })}
+      label={`${reversed ? tokenB.displaySymbol : tokenA.displaySymbol}/${
+        reversed ? tokenA.displaySymbol : tokenB.displaySymbol
+      } price and ${reversed ? tokenB.displaySymbol : tokenA.displaySymbol} volume chart`}
       volumeSymbols={
         reversed ? [tokenB.displaySymbol, tokenA.displaySymbol] : [tokenA.displaySymbol, tokenB.displaySymbol]
       }

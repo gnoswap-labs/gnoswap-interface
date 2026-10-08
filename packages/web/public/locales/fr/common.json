@@ -18,19 +18,19 @@
     "fees": "Honoraires",
     "tradingVol": "Volume des échanges"
   },
-  "candleTooltip": {
-    "high": "Haut",
-    "low": "Bas",
-    "open": "Ouverture",
-    "close": "Clôture",
-    "volume": "Volume"
-  },
   "btn": {
     "amountTooLow": "Montant trop faible",
     "enterAmount": "Saisir le montant",
     "insuffiBal": "Solde insuffisant",
     "switchNetwork": "Passer à Gnoland",
     "walletLogin": "Connexion au portefeuille"
+  },
+  "candleTooltip": {
+    "close": "Fermer",
+    "high": "Élevé",
+    "low": "Faible",
+    "open": "Ouvrir",
+    "volume": "Volume"
   },
   "clickHere": "Cliquez ici !",
   "closed": "Fermé",

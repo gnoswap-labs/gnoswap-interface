@@ -8,13 +8,11 @@
     "title": "Best Pools for {{symbol}}"
   },
   "chart": {
-    "interval": "Chart interval",
-    "candleLabel": "{{symbol}} price in USD, with OHLC candles and {{symbol}} volume",
-    "loading": "Loading price candles…",
     "empty": "No price candles are available for this interval.",
-    "searchOlder": "Search older history",
     "error": "Could not load price candles.",
-    "retry": "Retry"
+    "loading": "Loading price candles…",
+    "retry": "Retry",
+    "searchOlder": "Search older history"
   },
   "description": {
     "empty": "No token information",

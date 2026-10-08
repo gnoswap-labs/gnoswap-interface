@@ -8,13 +8,11 @@
     "title": "{{symbol}}에 최적인 풀"
   },
   "chart": {
-    "interval": "차트 기간",
-    "candleLabel": "{{symbol}} USD 가격 OHLC 캔들 및 {{symbol}} 거래량",
-    "loading": "가격 캔들을 불러오는 중…",
-    "empty": "이 간격의 가격 캔들이 없습니다.",
-    "searchOlder": "더 이전 기록 검색",
-    "error": "가격 캔들을 불러오지 못했습니다.",
-    "retry": "다시 시도"
+    "empty": "이 기간에 대한 가격 캔들이 없습니다.",
+    "error": "가격 캔들을 불러올 수 없습니다.",
+    "loading": "가격 캔들 로딩 중…",
+    "retry": "다시 시도",
+    "searchOlder": "이전 기록 검색"
   },
   "description": {
     "empty": "토큰 정보 없음",

@@ -47,8 +47,8 @@ it("visibly disables only the zoom control at each liquidity scale boundary", as
   const { rerender } = render(view(true, false));
   fireEvent.click(screen.getByRole("button", { name: "Pool:chart.liquidity" }));
 
-  const zoomOut = screen.getByRole("button", { name: "Pool:chart.zoomOut" }) as HTMLButtonElement;
-  const zoomIn = screen.getByRole("button", { name: "Pool:chart.zoomIn" }) as HTMLButtonElement;
+  const zoomOut = screen.getByRole("button", { name: "Zoom out" }) as HTMLButtonElement;
+  const zoomIn = screen.getByRole("button", { name: "Zoom in" }) as HTMLButtonElement;
   expect(zoomOut.disabled).toBe(true);
   expect(zoomOut.classList.contains("disabled")).toBe(true);
   expect(zoomIn.disabled).toBe(false);

@@ -500,9 +500,9 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           </div>
         </AprSectionWrapper>
       </PoolPairInfoContentWrapper>
-      <section className="chart-chart-container" aria-label={t("Pool:chart.section")}>
+      <section className="chart-chart-container" aria-label="Pool chart">
         <div className="position-wrapper-chart chart-panel">
-          <div className="chart-tabs" role="group" aria-label={t("Pool:chart.section")}>
+          <div className="chart-tabs" role="group" aria-label="Pool chart">
             <button type="button" aria-pressed={chartMode === "price"} onClick={() => setChartMode("price")}>
               {t("Pool:chart.price")}
             </button>
@@ -525,8 +525,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
             <button
               type="button"
               onClick={() => setIsChartReversed(value => !value)}
-              aria-label={t("Pool:chart.reverse")}
-              title={t("Pool:chart.reverse")}
+              aria-label="Reverse price pair"
+              title="Reverse price pair"
             >
               <IconSwap />
             </button>
@@ -538,7 +538,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   type="button"
                   disabled={!availInfo.availZoomOut}
                   className={cx({ disabled: !availInfo.availZoomOut })}
-                  aria-label={t("Pool:chart.zoomOut")}
+                  aria-label="Zoom out"
                   onClick={onZoomOut}
                 >
                   <IconRemove />
@@ -547,7 +547,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   type="button"
                   disabled={!availInfo.availZoomIn}
                   className={cx({ disabled: !availInfo.availZoomIn })}
-                  aria-label={t("Pool:chart.zoomIn")}
+                  aria-label="Zoom in"
                   onClick={onZoomIn}
                 >
                   <IconAdd />
@@ -602,7 +602,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
           <div
             className={chartMode === "price" ? "chart-ranges" : "chart-ranges hidden"}
             role="group"
-            aria-label={t("Pool:chart.range")}
+            aria-label="Chart range"
             aria-hidden={chartMode !== "price"}
           >
             {CANDLE_RANGES.map(range => (

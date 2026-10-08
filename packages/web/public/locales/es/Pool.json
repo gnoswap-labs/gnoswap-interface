@@ -1,18 +1,12 @@
 {
   "chart": {
-    "section": "Gráfico del pool",
-    "price": "Precio",
+    "empty": "No hay velas de precio en este periodo.",
+    "error": "No se ha podido cargar el historial de precios.",
     "liquidity": "Liquidez",
-    "range": "Rango del gráfico",
-    "reverse": "Invertir par de precios",
-    "zoomIn": "Acercar",
-    "zoomOut": "Alejar",
-    "priceChartLabel": "Gráfico de precio de {{pair}} y volumen de {{symbol}}",
-    "loading": "Cargando historial de precios…",
-    "empty": "No hay velas de precios en este período.",
-    "searchOlder": "Buscar historial anterior",
-    "error": "No se pudo cargar el historial de precios.",
-    "retry": "Reintentar"
+    "loading": "Cargando el historial de precios…",
+    "price": "Precio",
+    "retry": "Volver a intentarlo",
+    "searchOlder": "Buscar en el historial anterior"
   },
   "gotoIncentivizeGuide": {
     "add": "¿Quieres sumar incentivos para esta piscina?",
