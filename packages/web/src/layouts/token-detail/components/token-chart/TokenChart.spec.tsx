@@ -54,23 +54,28 @@ const view = (priceGradeType: TokenInfo["priceInfo"]["priceGradeType"], loading 
   </JotaiProvider>
 );
 
-it.each(["NONE", "INFORMATIONAL"] as const)(
-  "shows the existing empty state without history actions for %s prices",
-  grade => {
-    render(view(grade));
-    expect(screen.getByRole("status")).toHaveTextContent("No data");
-    expect(screen.queryByRole("button", { name: "Search older history" })).not.toBeInTheDocument();
-  },
-);
+it("shows the existing empty state without history actions when there is no price", () => {
+  render(view("NONE"));
+  expect(screen.getByRole("status")).toHaveTextContent("No data");
+  expect(screen.queryByRole("button", { name: "Search older history" })).not.toBeInTheDocument();
+});
 
-it("switches between the empty state and oracle history when the grade changes", () => {
-  const { rerender } = render(view("INFORMATIONAL"));
+it.each(["ORACLE", "INFORMATIONAL"] as const)("allows price history for %s prices", grade => {
+  render(view(grade));
+  expect(screen.queryByRole("status")).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Search older history" })).toBeInTheDocument();
+});
+
+it("keeps history available for informational prices and removes it only when the price becomes unavailable", () => {
+  const { rerender } = render(view("NONE"));
+  rerender(view("INFORMATIONAL"));
+  expect(screen.queryByRole("status")).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Search older history" })).toBeInTheDocument();
   rerender(view("ORACLE"));
   expect(screen.queryByRole("status")).not.toBeInTheDocument();
-  expect(screen.getByRole("region", { name: "Oracle price history" })).toBeInTheDocument();
   rerender(view("NONE"));
   expect(screen.getByRole("status")).toHaveTextContent("No data");
-  expect(screen.queryByRole("region", { name: "Oracle price history" })).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Search older history" })).not.toBeInTheDocument();
 });
 
 it("does not present an unknown loading grade as a completed no-data result", () => {

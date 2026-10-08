@@ -45,7 +45,7 @@ export interface TokenChartProps {
 const TokenChart: React.FC<TokenChartProps> = ({ tokenInfo, loading, candleClient, candlePath, candleSymbol }) => {
   const { t } = useTranslation();
   const [resolution, setResolution] = useState<CandleResolution>("1h");
-  const hasOraclePrice = tokenInfo.priceInfo.priceGradeType === TOKEN_PRICE_GRADE_TYPE.ORACLE;
+  const hasPrice = tokenInfo.priceInfo.priceGradeType !== TOKEN_PRICE_GRADE_TYPE.NONE;
 
   return (
     <TokenChartWrapper>
@@ -64,7 +64,7 @@ const TokenChart: React.FC<TokenChartProps> = ({ tokenInfo, loading, candleClien
           ))}
         </ChartControls>
         <CandleChartWrapper>
-          {hasOraclePrice && candlePath && (
+          {hasPrice && candlePath && (
             <TokenCandles
               client={candleClient}
               tokenPath={candlePath}
@@ -72,7 +72,7 @@ const TokenChart: React.FC<TokenChartProps> = ({ tokenInfo, loading, candleClien
               resolution={resolution}
             />
           )}
-          {!hasOraclePrice && (
+          {!hasPrice && (
             <div className="price-chart-shell">
               <div className="price-chart-status" role="status">
                 {loading ? t("TokenDetails:chart.loading") : t("common:noData")}
