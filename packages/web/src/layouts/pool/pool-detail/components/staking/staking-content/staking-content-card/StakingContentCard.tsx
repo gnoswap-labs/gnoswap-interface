@@ -124,8 +124,16 @@ const TotalStakedContent = ({
     );
   }
 
-  const stakedUsd = tierSummary ? toUnitFormat(tierSummary.stakedUsd, true, true) : "-";
-  const stakedRatio = tierSummary ? formatRate(tierSummary.stakedRatio * 100, { decimals: 0, minLimit: 1 }) : "-";
+  if (!tierSummary) {
+    return (
+      <div className="total-staked">
+        <span className="total-staked-usd">-</span>
+      </div>
+    );
+  }
+
+  const stakedUsd = toUnitFormat(tierSummary.stakedUsd, true, true);
+  const stakedRatio = formatRate(tierSummary.stakedRatio * 100, { decimals: 0, minLimit: 1 });
 
   return (
     <div className="total-staked">
@@ -135,13 +143,13 @@ const TotalStakedContent = ({
           <span className="total-staked-ratio">{stakedRatio}</span>
         </div>
         <span className="total-staked-count">
-          {t("Pool:staking.positionCount", { count: tierSummary?.positionCount || 0 })}
+          {t("Pool:staking.positionCount", { count: tierSummary.positionCount })}
         </span>
       </div>
       <div className="total-staked-bar">
         <div
           className="total-staked-bar-fill"
-          style={{ width: `${Math.min(Math.max((tierSummary?.stakedRatio || 0) * 100, 0), 100)}%` }}
+          style={{ width: `${Math.min(Math.max(tierSummary.stakedRatio * 100, 0), 100)}%` }}
         />
       </div>
     </div>

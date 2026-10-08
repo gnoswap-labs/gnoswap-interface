@@ -9,17 +9,16 @@ interface Props {
 }
 
 export const StakingContentCardWrapper = styled.div<Props>`
-  ${mixins.flexbox("row", "center", "space-between")};
-  width: 100%;
+  display: contents;
   ${media.tabletMiddle} {
-    flex-direction: column;
-    align-items: flex-end;
+    ${mixins.flexbox("column", "flex-end", "flex-start")};
+    width: 100%;
     gap: 5px;
     align-self: stretch;
   }
   .left {
-    width: 350px;
     ${mixins.flexbox("row", "center", "flex-start")};
+    min-width: 0;
     ${media.tabletMiddle} {
       justify-content: space-between;
       align-self: stretch;
@@ -136,7 +135,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
     }
   }
   .contents-wrap {
-    flex: 1;
+    display: contents;
     ${media.tabletMiddle} {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       width: 100%;
@@ -145,13 +144,10 @@ export const StakingContentCardWrapper = styled.div<Props>`
   }
 
   .contents {
-    ${mixins.flexbox("row", "stretch", "flex-start")};
-    width: 100%;
-    max-width: 900px;
-    margin-left: auto;
-    gap: 8px;
+    display: contents;
     ${media.tabletMiddle} {
-      align-items: center;
+      ${mixins.flexbox("row", "center", "space-between")};
+      width: 100%;
       justify-content: space-between;
       padding: 11px 16px;
       gap: 12px;
@@ -162,6 +158,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
     .my-staking,
     .apr-box {
       ${mixins.flexbox("row", "center", "flex-start")};
+      align-self: stretch;
       min-height: 58px;
       padding: 11px 24px;
       border-radius: 8px;
@@ -178,23 +175,24 @@ export const StakingContentCardWrapper = styled.div<Props>`
       }
     }
     .my-staking {
-      flex: 1 1 373px;
-      min-width: 0;
+      ${media.tabletMiddle} {
+        flex: 1;
+        min-width: 0;
+      }
     }
     .apr-box {
-      flex: 0 0 176px;
       justify-content: flex-end;
+      min-width: 176px;
       ${media.tablet} {
-        flex-basis: 140px;
+        min-width: 140px;
       }
       ${media.tabletMiddle} {
-        flex: none;
+        min-width: 0;
       }
     }
     .total-staked {
       ${mixins.flexbox("column", "stretch", "center")};
-      flex: 0 1 335px;
-      min-width: 250px;
+      align-self: stretch;
       padding: 12px 24px;
       gap: 6px;
       border-radius: 8px;
@@ -249,6 +247,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
       span {
         div {
           ${mixins.flexbox("row", "center", "flex-start")};
+          flex-wrap: wrap;
           gap: 6px;
           color: ${({ theme }) => theme.color.text02};
           span {
@@ -285,6 +284,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
       }
       .badge {
         ${mixins.flexbox("row", "center", "center")};
+        white-space: nowrap;
         margin-left: 10px;
         min-width: 58px;
         height: 34px;
