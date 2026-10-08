@@ -22,6 +22,15 @@ jest.mock("react-i18next", () => ({
   }),
 }));
 
+jest.mock("@query/positions/use-get-staked-positions-infinite", () => ({
+  useGetStakedPositionsInfinite: () => ({ positions: [] }),
+}));
+
+jest.mock("./sateked-positions-tooltip/StakedPositinosTooltipContent", () => ({
+  __esModule: true,
+  default: () => null,
+}));
+
 jest.mock("@components/common/tooltip/Tooltip", () => ({
   __esModule: true,
   default: ({
@@ -83,6 +92,7 @@ describe("WalletBalanceDetail Component", () => {
       claimableRewards: "$1213.23",
       loadingBalance: false,
       loadingPositions: false,
+      loadingRewards: false,
       totalClaimedRewards: "$1213.23",
     },
     connected: true,
@@ -92,8 +102,8 @@ describe("WalletBalanceDetail Component", () => {
     breakpoint: DEVICE_TYPE.WEB,
     isSwitchNetwork: false,
     loadngTransactionClaim: false,
-    positions: [],
     positionRewards: null,
+    positionSummary: null,
     tokens: [],
     tokenPrices: {},
   };

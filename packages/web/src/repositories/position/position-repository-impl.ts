@@ -38,6 +38,7 @@ import {
   PositionListResponse,
   PositionResponse,
   PositionRewardsResponse,
+  PositionSummaryResponse,
   RepositionLiquidityFailedResponse,
   RepositionLiquiditySuccessResponse,
 } from "./response";
@@ -93,6 +94,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       /** API option: when true, include closed positions in the server response. */
       withClosed?: boolean;
       withAvailableStake?: boolean;
+      stakedOnly?: boolean;
     },
   ): Promise<{ positions: PositionModel[]; totalCount: number }> => {
     if (!this.networkClient) {
@@ -104,6 +106,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       options?.limit !== undefined ? `limit=${options.limit}` : "",
       options?.withClosed !== undefined ? `withClosed=${options.withClosed}` : "",
       options?.withAvailableStake !== undefined ? `withAvailableStake=${options.withAvailableStake}` : "",
+      options?.stakedOnly !== undefined ? `stakedOnly=${options.stakedOnly}` : "",
     ];
     const queryString = queries.filter(item => !!item).join("&");
 
@@ -139,6 +142,31 @@ export class PositionRepositoryImpl implements PositionRepository {
       throw new Error("Missing position rewards response");
     }
     return response.data.data;
+  };
+
+  getPositionSummaryByAddress = async (address: string, poolPath?: string): Promise<PositionSummaryResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await this.networkClient.get<{ data: PositionSummaryResponse }>({
+      url: "/users/" + address + "/position/summary" + (poolPath ? `?poolPath=${encodeURIComponent(poolPath)}` : ""),
+    });
+    const summary = response?.data?.data;
+    if (
+      !summary ||
+      typeof summary.stakedUsd !== "string" ||
+      typeof summary.unstakedUsd !== "string" ||
+      !/^\d+(?:\.\d+)?$/.test(summary.stakedUsd) ||
+      !/^\d+(?:\.\d+)?$/.test(summary.unstakedUsd) ||
+      !Number.isSafeInteger(summary.stakedCount) ||
+      summary.stakedCount < 0 ||
+      !Number.isSafeInteger(summary.unstakedCount) ||
+      summary.unstakedCount < 0
+    ) {
+      throw new Error("Invalid position summary response");
+    }
+    return summary;
   };
 
   sendClaim = async (request: ClaimRequest): Promise<WalletResponse<SendTransactionResponse<string[] | null>>> => {
@@ -273,9 +301,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     });
   };
 
-  makeIncreaseLiquidityMessages = async (
-    request: IncreaseLiquidityMessagesRequest,
-  ): Promise<TransactionMessage[]> => {
+  makeIncreaseLiquidityMessages = async (request: IncreaseLiquidityMessagesRequest): Promise<TransactionMessage[]> => {
     if (this.rpcProvider === null) {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }

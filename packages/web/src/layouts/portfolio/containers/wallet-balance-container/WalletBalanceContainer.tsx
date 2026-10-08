@@ -14,12 +14,11 @@ import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confir
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePosition } from "@hooks/pool/data/use-position";
-import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { useGetAvgBlockTime } from "@query/address";
-import { useGetPositionRewards } from "@query/positions";
+import { useGetPositionRewards, useGetPositionSummary } from "@query/positions";
 import { QUERY_KEY } from "@query/query-keys";
 import { useGetAllTokenPrices } from "@query/token";
 import { DexEvent } from "@repositories/common";
@@ -50,7 +49,7 @@ const WalletBalanceContainer: React.FC = () => {
 
   const { data: blockTimeData } = useGetAvgBlockTime();
   const {
-    balances: balancesPrice,
+    walletBalances: balancesPrice,
     loadingBalance,
     isLoadingBalanceData,
     hasBalanceData,
@@ -59,8 +58,9 @@ const WalletBalanceContainer: React.FC = () => {
     tokens,
   } = useTokenData(true);
 
-  const { positions, loading: loadingPositions, isPositionDataAvailable } = usePositionData();
   const { data: positionRewards, isLoading: loadingPositionRewards } = useGetPositionRewards();
+  const { data: positionSummary, isLoading: loadingPositionSummary } = useGetPositionSummary();
+  const isPositionDataAvailable = !!positionSummary;
 
   const { invalidateQueryKey } = useInvalidateQueries();
 
@@ -69,13 +69,12 @@ const WalletBalanceContainer: React.FC = () => {
       [QUERY_KEY.tokenBalancesByAddress, userAddress],
       [QUERY_KEY.positions, currentChainId, userAddress],
       [QUERY_KEY.positionRewards, currentChainId, userAddress],
+      [QUERY_KEY.positionSummary, currentChainId, userAddress],
     ]);
   }, [invalidateQueryKey, currentChainId, userAddress]);
 
-  const isLoadingPosition = useMemo(
-    () => connected && (loadingPositions || loadingPositionRewards),
-    [connected, loadingPositions, loadingPositionRewards],
-  );
+  const isLoadingPosition = connected && !positionSummary && loadingPositionSummary;
+  const isLoadingRewards = connected && !positionRewards && loadingPositionRewards;
 
   const { claimAll } = usePosition([]);
   const { broadcastSuccess, broadcastError, broadcastRejected, broadcastLoading } = useBroadcastHandler();
@@ -179,15 +178,6 @@ const WalletBalanceContainer: React.FC = () => {
     });
   }, [claimAll, setLoadingTransactionClaim, claimAllInput, positionRewards, openModal]);
 
-  const loadingTotalBalance = useMemo(() => {
-    return (
-      isLoadingPosition ||
-      loadingConnect === "loading" ||
-      isLoadingTokenPrices ||
-      (!!account?.address && (loadingBalance || isLoadingBalanceData))
-    );
-  }, [isLoadingPosition, loadingConnect, account?.address, isLoadingTokenPrices, loadingBalance, isLoadingBalanceData]);
-
   const hasAvailableBalance =
     hasBalanceData &&
     hasTokenPriceData &&
@@ -196,6 +186,17 @@ const WalletBalanceContainer: React.FC = () => {
       const path = key === "ugnot" ? WRAPPED_GNOT_PATH : key;
       return value != null && (BigNumber(value).isZero() || tokenPrices[path]?.pricesBefore?.latestPrice != null);
     });
+
+  const isLoadingAvailableBalance =
+    !hasAvailableBalance &&
+    (loadingConnect === "loading" ||
+      isLoadingTokenPrices ||
+      (!!account?.address && (loadingBalance || isLoadingBalanceData)));
+  const loadingTotalBalance =
+    isLoadingPosition ||
+    isLoadingRewards ||
+    isLoadingAvailableBalance ||
+    (loadingConnect === "loading" && (!isPositionDataAvailable || !positionRewards));
 
   const availableBalance = useMemo(() => {
     return Object.entries(balancesPrice).reduce((acc, [key, value]) => {
@@ -215,42 +216,21 @@ const WalletBalanceContainer: React.FC = () => {
     return availableBalance;
   }, [availableBalance]);
 
-  const { stakedBalance, unStakedBalance } = useMemo(() => {
-    if (!positions || positions.length === 0) {
-      return { stakedBalance: 0, unStakedBalance: 0 };
-    }
-
-    return positions.reduce(
-      (acc, curPosition) => {
-        if (curPosition.closed) {
-          return acc;
-        }
-
-        if (curPosition.staked) {
-          acc.stakedBalance = BigNumber(acc.stakedBalance)
-            .plus(Number(curPosition.stakedUsdValue ?? "0"))
-            .toNumber();
-        } else {
-          acc.unStakedBalance = BigNumber(acc.unStakedBalance)
-            .plus(Number(curPosition.usdValue ?? "0"))
-            .toNumber();
-        }
-
-        return acc;
-      },
-      { stakedBalance: 0, unStakedBalance: 0 },
-    );
-  }, [positions]);
+  const stakedBalance = positionSummary?.stakedUsd;
+  const unStakedBalance = positionSummary?.unstakedUsd;
 
   const claimableRewards = Number(positionRewards?.totalUsd.claimable.total ?? "0");
   const totalClaimedRewards = Number(positionRewards?.totalUsd.claimed.total ?? "0");
 
   const sumTotalBalance = useMemo(() => {
+    if (stakedBalance === undefined || unStakedBalance === undefined || !positionRewards) {
+      return "-";
+    }
     return formatOtherPrice(
       BigNumber(availableBalance).plus(unStakedBalance).plus(stakedBalance).plus(claimableRewards),
       { isKMB: false },
     );
-  }, [availableBalance, unStakedBalance, stakedBalance, claimableRewards]);
+  }, [availableBalance, unStakedBalance, stakedBalance, claimableRewards, positionRewards]);
 
   const closeDeposit = () => {
     setIsShowDepositModal(false);
@@ -320,6 +300,7 @@ const WalletBalanceContainer: React.FC = () => {
         unstakedLP: "-",
         loadingBalance: false,
         loadingPositions: false,
+        loadingRewards: false,
         totalClaimedRewards: "-",
       };
     }
@@ -328,8 +309,9 @@ const WalletBalanceContainer: React.FC = () => {
       claimableRewards: positionRewards ? `${claimableRewards}` : "-",
       stakedLP: isPositionDataAvailable ? `${stakedBalance}` : "-",
       unstakedLP: isPositionDataAvailable ? `${unStakedBalance}` : "-",
-      loadingBalance: loadingTotalBalance,
-      loadingPositions: loadingTotalBalance,
+      loadingBalance: isLoadingAvailableBalance,
+      loadingPositions: isLoadingPosition,
+      loadingRewards: isLoadingRewards,
       totalClaimedRewards: positionRewards ? `${totalClaimedRewards}` : "-",
     };
   }, [
@@ -339,7 +321,9 @@ const WalletBalanceContainer: React.FC = () => {
     claimableRewards,
     stakedBalance,
     unStakedBalance,
-    loadingTotalBalance,
+    isLoadingAvailableBalance,
+    isLoadingPosition,
+    isLoadingRewards,
     totalClaimedRewards,
     hasAvailableBalance,
     isPositionDataAvailable,
@@ -358,8 +342,8 @@ const WalletBalanceContainer: React.FC = () => {
         breakpoint={breakpoint}
         isSwitchNetwork={isSwitchNetwork}
         loadngTransactionClaim={loadngTransactionClaim}
-        positions={positions}
         positionRewards={positionRewards ?? null}
+        positionSummary={positionSummary ?? null}
         tokens={tokens}
         tokenPrices={tokenPrices}
         walletType={walletType}
