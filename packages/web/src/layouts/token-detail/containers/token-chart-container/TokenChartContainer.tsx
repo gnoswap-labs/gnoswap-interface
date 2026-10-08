@@ -127,10 +127,13 @@ const TokenChartContainer: React.FC = () => {
     priceGradeType,
   ]);
 
+  const numericPrice = Number(currentPrice);
+
   return (
     <TokenChart
       tokenInfo={tokenInfo}
       loading={isLoading || isLoadingCommon}
+      hasPrice={Number.isFinite(numericPrice) && numericPrice > 0}
       candleClient={gnoswapApiClient}
       candlePath={(path === "ugnot" ? wugnotPath : path) || undefined}
       candleSymbol={tokenB?.displaySymbol || ""}

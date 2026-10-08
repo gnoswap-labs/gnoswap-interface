@@ -37,21 +37,22 @@ export interface TokenInfo {
 export interface TokenChartProps {
   tokenInfo: TokenInfo;
   loading: boolean;
+  hasPrice: boolean;
   candleClient?: NetworkClient | null;
   candlePath?: string;
   candleSymbol?: string;
 }
 
-const TokenChart: React.FC<TokenChartProps> = ({ tokenInfo, loading, candleClient, candlePath, candleSymbol }) => {
+const TokenChart: React.FC<TokenChartProps> = ({ tokenInfo, loading, hasPrice, candleClient, candlePath, candleSymbol }) => {
   const { t } = useTranslation();
   const [resolution, setResolution] = useState<CandleResolution>("1h");
-  const hasPrice = tokenInfo.priceInfo.priceGradeType !== TOKEN_PRICE_GRADE_TYPE.NONE;
+  const canShowCandles = hasPrice && tokenInfo.priceInfo.priceGradeType !== TOKEN_PRICE_GRADE_TYPE.NONE;
 
   return (
     <TokenChartWrapper>
       <TokenChartInfo {...tokenInfo} isEmpty={loading} loading={loading} />
       <ChartRegion>
-        <ChartControls role="group" aria-label={t("TokenDetails:chart.interval")}>
+        <ChartControls role="group" aria-label="Chart interval">
           {(["5m", "1h", "4h", "1d", "All"] as const).map(interval => (
             <button
               key={interval}
@@ -64,7 +65,7 @@ const TokenChart: React.FC<TokenChartProps> = ({ tokenInfo, loading, candleClien
           ))}
         </ChartControls>
         <CandleChartWrapper>
-          {hasPrice && candlePath && (
+          {canShowCandles && candlePath && (
             <TokenCandles
               client={candleClient}
               tokenPath={candlePath}
@@ -72,7 +73,7 @@ const TokenChart: React.FC<TokenChartProps> = ({ tokenInfo, loading, candleClien
               resolution={resolution}
             />
           )}
-          {!hasPrice && (
+          {!canShowCandles && (
             <div className="price-chart-shell">
               <div className="price-chart-status" role="status">
                 {loading ? t("TokenDetails:chart.loading") : t("common:noData")}

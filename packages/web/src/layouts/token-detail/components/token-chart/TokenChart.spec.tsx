@@ -42,12 +42,13 @@ const tokenInfo: TokenInfo = {
     changedRate: "0%",
   },
 };
-const view = (priceGradeType: TokenInfo["priceInfo"]["priceGradeType"], loading = false) => (
+const view = (priceGradeType: TokenInfo["priceInfo"]["priceGradeType"], loading = false, hasPrice = true) => (
   <JotaiProvider>
     <GnoswapThemeProvider>
       <TokenChart
         tokenInfo={{ ...tokenInfo, priceInfo: { ...tokenInfo.priceInfo, priceGradeType } }}
         loading={loading}
+        hasPrice={hasPrice}
         candlePath="gno.land/r/demo/gns"
       />
     </GnoswapThemeProvider>
@@ -64,6 +65,26 @@ it.each(["ORACLE", "INFORMATIONAL"] as const)("allows price history for %s price
   render(view(grade));
   expect(screen.queryByRole("status")).not.toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Search older history" })).toBeInTheDocument();
+});
+
+it.each(["ORACLE", "INFORMATIONAL"] as const)(
+  "shows No data rather than history actions for %s without a current price",
+  grade => {
+    render(view(grade, false, false));
+    expect(screen.getByRole("status")).toHaveTextContent("No data");
+    expect(screen.queryByRole("button", { name: "Search older history" })).not.toBeInTheDocument();
+  },
+);
+
+it("updates informational history when current-price availability changes without a grade change", () => {
+  const { rerender } = render(view("INFORMATIONAL", false, false));
+  expect(screen.getByRole("status")).toHaveTextContent("No data");
+  rerender(view("INFORMATIONAL", false, true));
+  expect(screen.queryByRole("status")).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Search older history" })).toBeInTheDocument();
+  rerender(view("INFORMATIONAL", false, false));
+  expect(screen.getByRole("status")).toHaveTextContent("No data");
+  expect(screen.queryByRole("button", { name: "Search older history" })).not.toBeInTheDocument();
 });
 
 it("keeps history available for informational prices and removes it only when the price becomes unavailable", () => {
