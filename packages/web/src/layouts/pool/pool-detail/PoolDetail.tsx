@@ -97,17 +97,12 @@ const PoolDetail: React.FC = () => {
       return;
     }
 
-    const position = positions.find(item => item.id.toString() === hash);
-    if (position) {
-      const element = document.getElementById(hash as string);
-      if (element && isElementInDOM(element)) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    } else {
-      const element = document.getElementById("liquidity-wrapper");
-      if (element && isElementInDOM(element)) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+    // The target card may not be rendered yet when it is outside the paginated liquidity list.
+    const hasPosition = positions.some(item => item.id.toString() === hash);
+    const positionElement = hasPosition ? document.getElementById(hash as string) : null;
+    const element = isElementInDOM(positionElement) ? positionElement : document.getElementById("liquidity-wrapper");
+    if (element && isElementInDOM(element)) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 

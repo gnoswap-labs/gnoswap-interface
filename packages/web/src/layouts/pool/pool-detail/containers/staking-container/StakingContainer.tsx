@@ -61,9 +61,12 @@ const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking, onO
     enabled: !!poolPath,
   });
 
-  const { data: stakingSummary = null } = useGetPoolStakingSummaryByPoolPath(poolPath || "", {
-    enabled: !!poolPath,
-  });
+  const { data: stakingSummary = null, isInitialLoading: isLoadingStakingSummary } = useGetPoolStakingSummaryByPoolPath(
+    poolPath || "",
+    {
+      enabled: !!poolPath,
+    },
+  );
 
   const convertedPoolStakings = useMemo(() => {
     return PoolConverter.convertPoolStakingModel(poolStakings);
@@ -176,6 +179,7 @@ const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking, onO
       stakedPosition={stakedPositions}
       poolStakings={convertedPoolStakings}
       stakingSummary={stakingSummary}
+      stakingSummaryLoading={isLoadingStakingSummary}
       breakpoint={breakpoint}
       mobile={mobile}
       isDisabledButton={isDisabledButton}

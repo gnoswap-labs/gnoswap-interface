@@ -33,6 +33,7 @@ interface StakingContentProps {
   pool: PoolDetailModel | null;
   poolStakings: PoolStakingModel[];
   stakingSummary: PoolStakingSummaryModel | null;
+  stakingSummaryLoading: boolean;
   hasPoolStaking: boolean;
 }
 
@@ -53,6 +54,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
   pool,
   poolStakings,
   stakingSummary,
+  stakingSummaryLoading,
   hasPoolStaking,
 }) => {
   const { getGnotPath } = useGnotToGnot();
@@ -223,6 +225,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
               checkPoints={checkPoints}
               breakpoint={breakpoint}
               tierSummary={tierSummary}
+              tierSummaryLoading={stakingSummaryLoading}
             />
           ) : (
             <StakingContentCard
@@ -233,6 +236,7 @@ const StakingContent: React.FC<StakingContentProps> = ({
               loading={loading}
               checkPoints={checkPoints}
               tierSummary={tierSummary}
+              tierSummaryLoading={stakingSummaryLoading}
             />
           );
         })}

@@ -153,6 +153,25 @@ export const StakingContentCardWrapper = styled.div<Props>`
       border: 1px solid ${({ theme, isMax }) => (isMax ? theme.color.text07 : theme.color.border14)};
       background-color: ${({ theme }) => theme.color.backgroundOpacity2};
     }
+    .staking-skeleton {
+      flex: 1;
+      width: 100%;
+      min-width: 0;
+    }
+    .my-staking .staking-skeleton {
+      max-width: 400px;
+    }
+    .total-staked .staking-skeleton {
+      flex: none;
+      max-width: 200px;
+    }
+    .apr-box .staking-skeleton {
+      flex: none;
+      width: 120px;
+      ${media.mobile} {
+        width: 50px;
+      }
+    }
     .my-staking,
     .apr-box {
       ${mixins.flexbox("row", "center", "flex-start")};

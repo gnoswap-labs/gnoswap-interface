@@ -17,6 +17,7 @@ interface StakingProps {
   stakedPosition: PoolPositionModel[];
   poolStakings: PoolStakingModel[];
   stakingSummary: PoolStakingSummaryModel | null;
+  stakingSummaryLoading: boolean;
   breakpoint: DEVICE_TYPE;
   mobile: boolean;
   isDisabledButton: boolean;
@@ -35,6 +36,7 @@ const Staking: React.FC<StakingProps> = ({
   stakedPosition,
   poolStakings,
   stakingSummary,
+  stakingSummaryLoading,
   breakpoint,
   mobile,
   isDisabledButton,
@@ -66,6 +68,7 @@ const Staking: React.FC<StakingProps> = ({
           stakedPosition={stakedPosition}
           poolStakings={poolStakings}
           stakingSummary={stakingSummary}
+          stakingSummaryLoading={stakingSummaryLoading}
           breakpoint={breakpoint}
           mobile={mobile}
           type={type}

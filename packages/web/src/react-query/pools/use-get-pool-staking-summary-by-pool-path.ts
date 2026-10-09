@@ -14,6 +14,7 @@ export const useGetPoolStakingSummaryByPoolPath = (
   return useQuery<PoolStakingSummaryModel | null, Error>({
     queryKey: [QUERY_KEY.poolStakingSummary, poolPath],
     queryFn: () => poolRepository.getPoolStakingSummary(encodeURIComponent(poolPath)),
+    refetchOnMount: true,
     ...options,
   });
 };

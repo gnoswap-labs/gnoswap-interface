@@ -36,6 +36,7 @@ interface StakingContentCardProps {
   positions: PoolPositionModel[];
   loading: boolean;
   tierSummary?: PoolStakingTierSummaryModel;
+  tierSummaryLoading?: boolean;
 }
 const DAY_TIME = 24 * 60 * 60 * 1000;
 
@@ -114,8 +115,8 @@ const TotalStakedContent = ({
   if (loading) {
     return (
       <div className="total-staked">
-        <PulseSkeletonWrapper height={34} mobileHeight={24}>
-          <span css={pulseSkeletonStyle({ h: 22, w: "200px", tabletWidth: 140 })} />
+        <PulseSkeletonWrapper className="staking-skeleton" height={34} mobileHeight={24}>
+          <span css={pulseSkeletonStyle({ h: 22, w: "100%" })} />
         </PulseSkeletonWrapper>
       </div>
     );
@@ -160,6 +161,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   stakingApr,
   loading,
   tierSummary,
+  tierSummaryLoading = false,
 }) => {
   const { t } = useTranslation();
   const { data: tokenPrices = {} } = useGetAllTokenPrices();
@@ -272,15 +274,8 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
         <div className="contents">
           <div className="my-staking">
             {loading && (
-              <PulseSkeletonWrapper height={36} mobileHeight={24}>
-                <span
-                  css={pulseSkeletonStyle({
-                    h: 22,
-                    w: "400px",
-                    tabletWidth: 300,
-                    mobileWidth: 100,
-                  })}
-                />
+              <PulseSkeletonWrapper className="staking-skeleton" height={36} mobileHeight={24}>
+                <span css={pulseSkeletonStyle({ h: 22, w: "100%" })} />
               </PulseSkeletonWrapper>
             )}
             {!loading && (
@@ -306,18 +301,11 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
               </div>
             )}
           </div>
-          <TotalStakedContent tierSummary={tierSummary} loading={loading} />
+          <TotalStakedContent tierSummary={tierSummary} loading={loading || tierSummaryLoading} />
           <div className="apr-box">
             {loading && (
-              <PulseSkeletonWrapper height={36} mobileHeight={24}>
-                <span
-                  css={pulseSkeletonStyle({
-                    h: 22,
-                    w: "200px",
-                    tabletWidth: 140,
-                    mobileWidth: 50,
-                  })}
-                />
+              <PulseSkeletonWrapper className="staking-skeleton" height={36} mobileHeight={24}>
+                <span css={pulseSkeletonStyle({ h: 22, w: "100%" })} />
               </PulseSkeletonWrapper>
             )}
             {!loading && (
@@ -341,6 +329,7 @@ interface SummuryAprProps {
   loading: boolean;
   breakpoint: DEVICE_TYPE;
   tierSummary?: PoolStakingTierSummaryModel;
+  tierSummaryLoading?: boolean;
 }
 
 export const SummuryApr: React.FC<SummuryAprProps> = ({
@@ -350,6 +339,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
   stakingApr,
   loading,
   tierSummary,
+  tierSummaryLoading = false,
 }) => {
   const { t } = useTranslation();
   const { data: tokenPrices = {} } = useGetAllTokenPrices();
@@ -458,15 +448,8 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
         <div className="contents">
           <div className="my-staking">
             {loading && (
-              <PulseSkeletonWrapper height={36} mobileHeight={24}>
-                <span
-                  css={pulseSkeletonStyle({
-                    h: 22,
-                    w: "400px",
-                    tabletWidth: 300,
-                    mobileWidth: 100,
-                  })}
-                />
+              <PulseSkeletonWrapper className="staking-skeleton" height={36} mobileHeight={24}>
+                <span css={pulseSkeletonStyle({ h: 22, w: "100%" })} />
               </PulseSkeletonWrapper>
             )}
             {!loading && (
@@ -492,18 +475,11 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
               </div>
             )}
           </div>
-          <TotalStakedContent tierSummary={tierSummary} loading={loading} />
+          <TotalStakedContent tierSummary={tierSummary} loading={loading || tierSummaryLoading} />
           <div className="apr-box">
             {loading && (
-              <PulseSkeletonWrapper height={36} mobileHeight={24}>
-                <span
-                  css={pulseSkeletonStyle({
-                    h: 22,
-                    w: "200px",
-                    tabletWidth: 140,
-                    mobileWidth: 50,
-                  })}
-                />
+              <PulseSkeletonWrapper className="staking-skeleton" height={36} mobileHeight={24}>
+                <span css={pulseSkeletonStyle({ h: 22, w: "100%" })} />
               </PulseSkeletonWrapper>
             )}
             {!loading && (
