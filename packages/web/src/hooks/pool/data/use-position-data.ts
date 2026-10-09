@@ -14,6 +14,10 @@ export interface UsePositionDataOption {
   /** API option: when true, include closed positions in the server response. */
   withClosed?: boolean;
   withAvailableStake?: boolean;
+  /** API option: when true, only include staked positions. */
+  stakedOnly?: boolean;
+  /** When true, fetch every page instead of a single `page` / `limit` window. */
+  fetchAll?: boolean;
   scopeId?: string;
   queryOption?: UseQueryOptions<PositionModel[], Error, PositionModel[], QueryKey>;
 }
@@ -40,6 +44,8 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     limit: options?.limit,
     withClosed: options?.withClosed,
     withAvailableStake: options?.withAvailableStake,
+    stakedOnly: options?.stakedOnly,
+    fetchAll: options?.fetchAll,
   });
 
   const { totalCount: totalPositionCount = 0, positions: rawPositions = [] } = data ?? {};

@@ -5,29 +5,33 @@ import mixins from "@styles/mixins";
 
 interface Props {
   nonTotal: boolean;
+  isHighlighted: boolean;
 }
 
 export const StakingContentCardWrapper = styled.div<Props>`
-  ${mixins.flexbox("row", "center", "space-between")};
-  width: 100%;
+  display: contents;
   ${media.tabletMiddle} {
-    flex-direction: column;
-    align-items: flex-end;
+    ${mixins.flexbox("column", "flex-end", "flex-start")};
+    position: relative;
+    width: 100%;
     gap: 5px;
     align-self: stretch;
   }
   .left {
-    width: 350px;
-    ${mixins.flexbox("row", "center", "flex-start")};
+    ${mixins.flexbox("row", "flex-start", "flex-start")};
+    position: relative;
+    align-self: stretch;
+    min-width: 0;
     ${media.tabletMiddle} {
+      position: static;
       justify-content: space-between;
-      align-self: stretch;
     }
     .mobile-wrap {
       ${mixins.flexbox("row", "center", "flex-start")};
-      height: 50px;
+      height: 58px;
       gap: 24px;
       ${media.tabletMiddle} {
+        height: 50px;
         ${mixins.flexbox("row", "center", "flex-start")};
         gap: 12px;
         flex: 1 0 0;
@@ -35,33 +39,27 @@ export const StakingContentCardWrapper = styled.div<Props>`
     }
     .check-wrap {
       ${mixins.flexbox("row", "center", "center")};
-      position: relative;
       width: 20px;
       height: 20px;
       border-radius: 99px;
       background: ${({ theme }) => theme.color.background04};
       .check-line {
-        height: 49px;
         position: absolute;
-        right: 9px;
-        bottom: -49px;
-        stroke-width: 1px;
-        stroke: var(--point-global-point, #233dbd);
-      }
-      .check-line-long {
-        height: 456px;
-        position: absolute;
-        left: 9px;
-        top: 20px;
-        stroke-width: 1px;
-        stroke: var(--point-global-point, #233dbd);
-      }
-      .border-not-active {
+        left: 10px;
+        top: 39px;
+        bottom: -27px;
         width: 1px;
-        height: 55px;
-        border-left: 1px solid ${({ theme }) => theme.color.border08};
+        transform: translateX(-50%);
+        background-color: ${({ theme }) => theme.color.border08};
+        &.check-line-active {
+          background-color: ${({ theme }) => theme.color.border06};
+        }
         ${media.tabletMiddle} {
-          height: 100px;
+          top: 35px;
+          bottom: -23px;
+        }
+        ${media.mobile} {
+          bottom: -31px;
         }
       }
       &-not-active {
@@ -79,6 +77,14 @@ export const StakingContentCardWrapper = styled.div<Props>`
       }
       .symbol-text {
         color: ${({ theme }) => theme.color.text02};
+        .symbol-count {
+          display: none;
+          color: ${({ theme }) => theme.color.text04};
+          font: inherit;
+          ${media.tabletMiddle} {
+            display: inline;
+          }
+        }
 
         ${fonts.body7}
         ${media.tablet} {
@@ -127,7 +133,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
     }
   }
   .contents-wrap {
-    flex: 1;
+    display: contents;
     ${media.tabletMiddle} {
       ${mixins.flexbox("column", "flex-start", "flex-start")};
       width: 100%;
@@ -136,27 +142,136 @@ export const StakingContentCardWrapper = styled.div<Props>`
   }
 
   .contents {
-    width: 100%;
-    max-width: 900px;
-    margin-left: auto;
-    ${mixins.flexbox("row", "center", "space-between")};
-    padding: 12px 16px;
-    border-radius: 8px;
-    border: 1px solid ${({ theme }) => theme.color.border14};
-    background-color: ${({ theme }) => theme.color.backgroundOpacity2};
+    display: contents;
     ${media.tabletMiddle} {
+      ${mixins.flexbox("row", "center", "space-between")};
+      width: 100%;
+      justify-content: space-between;
       padding: 11px 16px;
       gap: 12px;
+      border-radius: 8px;
+      border: 1px solid ${({ theme, isHighlighted }) => (isHighlighted ? theme.color.text07 : theme.color.border14)};
+      background-color: ${({ theme }) => theme.color.backgroundOpacity2};
+    }
+    .staking-skeleton {
+      flex: 1;
+      width: 100%;
+      min-width: 0;
+    }
+    .my-staking .staking-skeleton {
+      max-width: 400px;
+    }
+    .total-staked .staking-skeleton {
+      flex: none;
+      max-width: 200px;
+    }
+    .apr-box .staking-skeleton {
+      flex: none;
+      width: 120px;
+      ${media.mobile} {
+        width: 50px;
+      }
+    }
+    .my-staking,
+    .apr-box {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      align-self: stretch;
+      min-height: 58px;
+      padding: 11px 24px;
+      border-radius: 8px;
+      border: 1px solid ${({ theme, isHighlighted }) => (isHighlighted ? theme.color.text07 : theme.color.border14)};
+      background-color: ${({ theme }) => theme.color.backgroundOpacity2};
+      ${media.tablet} {
+        padding: 11px 16px;
+      }
+      ${media.tabletMiddle} {
+        min-height: auto;
+        padding: 0;
+        border: none;
+        background-color: transparent;
+      }
+    }
+    .my-staking {
+      ${media.tabletMiddle} {
+        flex: 1;
+        min-width: 0;
+      }
+    }
+    .apr-box {
+      justify-content: flex-end;
+      min-width: 176px;
+      ${media.tablet} {
+        min-width: 140px;
+      }
+      ${media.tabletMiddle} {
+        min-width: 0;
+      }
+    }
+    .total-staked {
+      ${mixins.flexbox("column", "stretch", "center")};
+      align-self: stretch;
+      padding: 12px 24px;
+      gap: 6px;
+      border-radius: 8px;
+      background-color: ${({ theme }) => theme.color.background26};
+      ${media.tablet} {
+        padding: 12px 16px;
+      }
+      ${media.tabletMiddle} {
+        display: none;
+      }
+      .total-staked-info {
+        ${mixins.flexbox("row", "flex-end", "space-between")};
+        gap: 8px;
+      }
+      .total-staked-value {
+        ${mixins.flexbox("row", "flex-end", "flex-start")};
+        gap: 6px;
+      }
+      .total-staked-usd {
+        ${fonts.body8}
+        line-height: 22px;
+        color: ${({ theme }) => theme.color.text02};
+        ${media.tablet} {
+          ${fonts.body10}
+        }
+      }
+      .total-staked-ratio,
+      .total-staked-count {
+        ${fonts.body10}
+        line-height: 20px;
+        color: ${({ theme }) => theme.color.text05};
+        white-space: nowrap;
+        ${media.tablet} {
+          ${fonts.body12}
+        }
+      }
+      .total-staked-bar {
+        width: 100%;
+        height: 6px;
+        border-radius: 3px;
+        overflow: hidden;
+        background-color: ${({ theme }) => theme.color.backgroundOpacity7};
+      }
+      .total-staked-bar-fill {
+        height: 100%;
+        border-radius: 3px;
+        background-color: ${({ theme }) => theme.color.text05};
+      }
     }
     .price {
       cursor: default;
       span {
         div {
           ${mixins.flexbox("row", "center", "flex-start")};
+          flex-wrap: wrap;
           gap: 6px;
           color: ${({ theme }) => theme.color.text02};
           span {
             color: ${({ theme }) => theme.color.text02};
+          }
+          .price-usd {
+            color: ${({ theme }) => theme.color.text07};
           }
           pointer-events: ${({ nonTotal }) => {
             return nonTotal ? "none" : "initial";
@@ -172,17 +287,11 @@ export const StakingContentCardWrapper = styled.div<Props>`
           ${fonts.body7}
         }
         ${media.mobile} {
-          ${fonts.body10}
+          ${fonts.p2}
           > div {
             gap: 4px;
           }
         }
-      }
-      ${media.tablet} {
-        align-items: center;
-      }
-      ${media.mobile} {
-        gap: 8px;
       }
       .price-gd-text {
         background: linear-gradient(308deg, #536cd7 0%, ${({ theme }) => theme.color.text25} 100%);
@@ -192,6 +301,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
       }
       .badge {
         ${mixins.flexbox("row", "center", "center")};
+        white-space: nowrap;
         margin-left: 10px;
         min-width: 58px;
         height: 34px;
@@ -209,6 +319,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
         }
         ${media.mobile} {
           margin-left: 0;
+          min-width: auto;
           ${fonts.p4}
           height: 24px;
         }
@@ -216,67 +327,34 @@ export const StakingContentCardWrapper = styled.div<Props>`
       }
     }
     .apr {
-      ${mixins.flexbox("row", "center", "flex-start")};
+      ${mixins.flexbox("row", "center", "flex-end")};
+      flex-wrap: wrap;
       gap: 16px;
       &.small-gap {
         gap: 4px;
       }
-      ${media.mobile} {
-        justify-content: flex-end;
-        align-items: center;
-        gap: 8px;
-      }
 
-      .apr-text {
+      .apr-text,
+      .apr-gd-text {
         cursor: default;
-        color: ${({ theme }) => theme.color.text03};
-        ${fonts.body6}
-        font-weight: 600;
+        text-align: right;
+        ${fonts.body5}
         ${media.tablet} {
           ${fonts.body8}
           font-size: 17px;
-          font-weight: 600;
         }
         ${media.mobile} {
-          ${fonts.body12}
-          font-weight: 600;
+          ${fonts.p2}
         }
+      }
+      .apr-text {
+        color: ${({ theme }) => theme.color.text03};
       }
       .apr-gd-text {
         background: linear-gradient(308deg, #536cd7 0%, ${({ theme }) => theme.color.text25} 100%);
         background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        cursor: default;
-        ${fonts.body6}
-        font-weight: 600;
-        ${media.tablet} {
-          ${fonts.body8}
-          font-size: 17px;
-          font-weight: 600;
-        }
-        ${media.mobile} {
-          ${fonts.body12}
-          font-weight: 600;
-        }
-      }
-      .coin-info {
-        ${mixins.flexbox("row", "center", "flex-start")};
-        img {
-          width: 36px;
-          height: 36px;
-          ${media.tablet} {
-            width: 24px;
-            height: 24px;
-          }
-          ${media.mobile} {
-            width: 20px;
-            height: 20px;
-          }
-          &:not(:first-of-type) {
-            margin-left: -6px;
-          }
-        }
       }
     }
   }

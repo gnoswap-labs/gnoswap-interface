@@ -82,7 +82,7 @@
       "stake": "ステークポジション",
       "unstake": "ポジションを外す"
     },
-    "intro": "ステイク・ユア・ポジションで、最高額のリワードを獲得できる。",
+    "intro": "ポジションを保有して、最大",
     "keepStakingNote": {
       "four": "最大報酬を受け取る",
       "one": "最初のポジションを作ってスタートする ⛵ 。",
@@ -100,9 +100,11 @@
       "subtitle_max": "マックス・リワードの受け取り",
       "subtitleTooltip": "このステーキング期間中は、最大ステーキング報酬の{{percent}} 。報酬を増やすために、ポジションをステーキングし続けましょう。",
       "subtitleTooltip_max": "この賭け期間中、あなたは最大の賭け報酬を受け取ることができます。報酬を維持するために、ポジションをステーキングし続けましょう。",
-      "title": "{{days}} 日未満",
-      "title_max": "{{days}} 日以上"
+      "title": "{{days}} 日未満のステーキング期間",
+      "title_max": "{{days}} 日以上ステーキング中"
     },
+    "positionCount_one": "{{count}} ポジション",
+    "positionCount_other": "{{count}} 役職",
     "title": "ステーキング",
     "tooltip": {
       "hoverGuide": "カーソルを合わせると詳細が表示されます",
@@ -112,7 +114,8 @@
         "remainingAmt": "残額",
         "startDate": "開始日"
       }
-    }
+    },
+    "totalStaked": "ステーク総額"
   },
   "wanttoaddup": "このプールのインセンティブを高めたい？"
 }

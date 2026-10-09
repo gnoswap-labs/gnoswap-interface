@@ -82,7 +82,7 @@
       "stake": "Vị thế đặt cược",
       "unstake": "Hủy đặt cược"
     },
-    "intro": "Đặt cược vào vị thế của bạn để nhận phần thưởng lên đến",
+    "intro": "Đặt cược để nhận phần thưởng lên đến",
     "keepStakingNote": {
       "four": "Nhận phần thưởng tối đa ✨",
       "one": "Tạo vị thế đầu tiên của bạn để bắt đầu ⛵",
@@ -100,9 +100,11 @@
       "subtitle_max": "Nhận phần thưởng tối đa",
       "subtitleTooltip": "Trong giai đoạn staking này, bạn sẽ chỉ nhận được {{percent}} phần thưởng staking tối đa của mình. Hãy duy trì vị thế staking để tăng phần thưởng của bạn.",
       "subtitleTooltip_max": "Trong giai đoạn staking này, bạn sẽ nhận được phần thưởng staking tối đa. Hãy duy trì trạng thái staking để tiếp tục nhận phần thưởng.",
-      "title": "Thời gian đặt cược dưới {{days}} ngày",
-      "title_max": "Đặt cược trong hơn {{days}} ngày"
+      "title": "Đã đặt cược trong thời gian dưới {{days}} ngày",
+      "title_max": "Đã staking hơn {{days}} ngày"
     },
+    "positionCount_one": "{{count}} vị trí",
+    "positionCount_other": "{{count}} các vị trí",
     "title": "Staking",
     "tooltip": {
       "hoverGuide": "Di chuột vào để xem chi tiết",
@@ -112,7 +114,8 @@
         "remainingAmt": "Số tiền còn lại",
         "startDate": "Ngày bắt đầu"
       }
-    }
+    },
+    "totalStaked": "Tổng số đã đặt cược"
   },
   "wanttoaddup": "Bạn có muốn tăng mức thưởng cho nhóm này không?"
 }

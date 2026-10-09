@@ -12,8 +12,14 @@ const UnstakeLiquidityContainer: React.FC = () => {
   const router = useCustomRouter();
   const poolPath = router.getPoolPath();
   const positionId = router.getPositionId();
-  const { positions: allPosition, loading: isPositionsLoading, refetch: refetchPositions } = usePositionData({
+  const {
+    positions: allPosition,
+    loading: isPositionsLoading,
+    refetch: refetchPositions,
+  } = usePositionData({
     poolPath,
+    stakedOnly: true,
+    fetchAll: true,
     queryOption: {
       enabled: !!poolPath,
     },

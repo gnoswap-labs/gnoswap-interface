@@ -21,18 +21,27 @@ import {
   RepositionLiquiditySuccessResponse,
 } from "./response";
 
+export interface GetPositionsByAddressOptions {
+  poolPath?: string;
+  page?: number;
+  limit?: number;
+  /** API option: when true, include closed positions in the server response. */
+  withClosed?: boolean;
+  withAvailableStake?: boolean;
+  /** API option: when true, only include staked positions. */
+  stakedOnly?: boolean;
+}
+
 export interface PositionRepository {
   getPositionsByAddress: (
     address: string,
-    options?: {
-      poolPath?: string;
-      page?: number;
-      limit?: number;
-      /** API option: when true, include closed positions in the server response. */
-      withClosed?: boolean;
-      withAvailableStake?: boolean;
-      stakedOnly?: boolean;
-    },
+    options?: GetPositionsByAddressOptions,
+  ) => Promise<GetPositionsByAddressResult>;
+
+  /** Fetches every page of `getPositionsByAddress` and merges the results. */
+  getAllPositionsByAddress: (
+    address: string,
+    options?: Omit<GetPositionsByAddressOptions, "page" | "limit">,
   ) => Promise<GetPositionsByAddressResult>;
 
   getPositionRewardsByAddress: (address: string) => Promise<PositionRewardsResponse | null>;

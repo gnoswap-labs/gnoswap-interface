@@ -7,6 +7,7 @@ export * from "./use-get-pool-creation-fee";
 export * from "./use-get-pool-detail-by-path";
 export * from "./use-get-pool-list";
 export * from "./use-get-pool-staking-list-by-pool-path";
+export * from "./use-get-pool-staking-summary-by-pool-path";
 export * from "./use-get-rpc-pools-by";
 export * from "./use-get-unstaking-fee";
 export * from "./use-get-withdrawal-fee";

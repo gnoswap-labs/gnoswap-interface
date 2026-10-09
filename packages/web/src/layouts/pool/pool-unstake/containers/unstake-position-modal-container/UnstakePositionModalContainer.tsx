@@ -119,6 +119,7 @@ const UnstakePositionModalContainer = ({ positions, refetchPositions }: UnstakeP
               invalidateQueryKey("UnstakePosition", [
                 [QUERY_KEY.positions, currentChainId, address],
                 [QUERY_KEY.positionSummary, currentChainId, address],
+                [QUERY_KEY.poolStakingSummary],
               ]);
             },
             onUpdate: async () => {
