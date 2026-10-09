@@ -16,7 +16,7 @@ function TokenChartLoading() {
   return (
     <div className="price-chart-shell">
       <div className="price-chart-status" role="status" aria-label="Loading price candles">
-        <LoadingSpinner size="SMALL" delay={CHART_LOADING_DELAY_MS} />
+        <LoadingSpinner size="CHART" delay={CHART_LOADING_DELAY_MS} />
       </div>
     </div>
   );

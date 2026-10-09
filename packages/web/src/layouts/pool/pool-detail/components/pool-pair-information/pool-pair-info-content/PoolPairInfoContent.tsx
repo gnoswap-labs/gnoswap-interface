@@ -51,7 +51,7 @@ const PoolPriceChart = dynamic(() => import("./PoolPriceChart"), {
   ssr: false,
   loading: () => (
     <LoadingChart role="status" aria-label="Loading price history">
-      <LoadingSpinner size="SMALL" delay={CHART_LOADING_DELAY_MS} />
+      <LoadingSpinner size="CHART" delay={CHART_LOADING_DELAY_MS} />
     </LoadingChart>
   ),
 });
@@ -576,7 +576,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                 />
               ) : (
                 <LoadingChart role="status" aria-label="Loading price history">
-                  <LoadingSpinner size="SMALL" delay={CHART_LOADING_DELAY_MS} />
+                  <LoadingSpinner size="CHART" delay={CHART_LOADING_DELAY_MS} />
                 </LoadingChart>
               )
             ) : (
@@ -600,8 +600,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     disableBlackBars={true}
                   />
                 ) : (
-                  <LoadingChart>
-                    <LoadingSpinner />
+                  <LoadingChart role="status" aria-label="Loading liquidity chart">
+                    <LoadingSpinner size="CHART" delay={CHART_LOADING_DELAY_MS} />
                   </LoadingChart>
                 )}
               </>

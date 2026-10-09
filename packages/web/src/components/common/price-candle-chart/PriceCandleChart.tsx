@@ -391,7 +391,7 @@ export default function PriceCandleChart({
           aria-live="polite"
           aria-label={state === "loading" ? loadingLabel : undefined}
         >
-          {state === "loading" && <LoadingSpinner size="SMALL" delay={CHART_LOADING_DELAY_MS} />}
+          {state === "loading" && <LoadingSpinner size="CHART" delay={CHART_LOADING_DELAY_MS} />}
           {state === "empty" && emptyLabel}
           {state === "empty" && canSearchOlder && (
             <button type="button" onClick={() => void searchOlder.current?.()}>

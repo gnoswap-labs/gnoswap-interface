@@ -24,6 +24,7 @@ export const LoadingSpinnerWrapper = styled.div<{
   mobileContainer: number;
   mobileCircle: number;
   delay: number;
+  hollow: boolean;
 }>`
   position: relative;
   width: ${({ container }) => `${container}px`};
@@ -34,8 +35,11 @@ export const LoadingSpinnerWrapper = styled.div<{
     ${spin} 1s linear infinite,
     ${reveal} 0s ${({ delay }) => delay}ms forwards;
   background: conic-gradient(from 0deg at 50% 50.63%, ${({ theme }) => theme.color.bgLoading} 0deg, #233dbd 360deg);
+  mask-image: ${({ hollow, circle }) =>
+    hollow ? `radial-gradient(circle, transparent ${circle / 2}px, black ${circle / 2}px)` : "none"};
 
   &::before {
+    display: ${({ hollow }) => (hollow ? "none" : "block")};
     ${mixins.positionCenter()};
     content: "";
     background-color: ${({ theme }) => theme.color.background06};
