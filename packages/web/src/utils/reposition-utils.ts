@@ -59,6 +59,10 @@ export function getRepositionAmountsByPriceRange(
   const originDepositRatioBN = originAmountA.dividedBy(originAmountA.plus(originAmountB));
   const newDepositRatioBN = newAmountA.dividedBy(newAmountA.plus(newAmountB));
 
+  if (originDepositRatioBN.isNaN() || newDepositRatioBN.isNaN()) {
+    return { amountA: "0", amountB: "0" };
+  }
+
   const amountARatioBN = newDepositRatioBN.dividedBy(originDepositRatioBN);
   const amountBRatioBN = BigNumber(1).minus(newDepositRatioBN).dividedBy(BigNumber(1).minus(originDepositRatioBN));
 

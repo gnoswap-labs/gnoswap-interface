@@ -184,12 +184,15 @@ const SelectPriceRangeCustom = forwardRef<SelectPriceRangeCustomHandle, SelectPr
         return;
       }
 
-      if (currentPrice !== null && currentPrice > 0 && Number.isFinite(currentPrice) && selectPool.feeTier && currentPriceRangeType) {
+      // Zero-liquidity pools have no valid current price, so fall back to the tick 0 price
+      const effectivePrice =
+        currentPrice !== null && currentPrice > 0 && Number.isFinite(currentPrice) ? currentPrice : tickToPrice(0);
+      if (selectPool.feeTier && currentPriceRangeType) {
         const priceRange = SwapFeeTierPriceRange[selectPool.feeTier][currentPriceRangeType];
 
         const getPriceWithTickSpacing = (range: number) => {
-          const rangeDiffAmount = currentPrice * (range / 100);
-          const currentTick = priceToTick(currentPrice + rangeDiffAmount);
+          const rangeDiffAmount = effectivePrice * (range / 100);
+          const currentTick = priceToTick(effectivePrice + rangeDiffAmount);
           const nearTick = Math.round(currentTick / selectPool.tickSpacing) * selectPool.tickSpacing;
           return tickToPrice(nearTick);
         };
