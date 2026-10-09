@@ -5,7 +5,7 @@ import mixins from "@styles/mixins";
 
 interface Props {
   nonTotal: boolean;
-  isMax: boolean;
+  isHighlighted: boolean;
 }
 
 export const StakingContentCardWrapper = styled.div<Props>`
@@ -150,7 +150,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
       padding: 11px 16px;
       gap: 12px;
       border-radius: 8px;
-      border: 1px solid ${({ theme, isMax }) => (isMax ? theme.color.text07 : theme.color.border14)};
+      border: 1px solid ${({ theme, isHighlighted }) => (isHighlighted ? theme.color.text07 : theme.color.border14)};
       background-color: ${({ theme }) => theme.color.backgroundOpacity2};
     }
     .staking-skeleton {
@@ -179,7 +179,7 @@ export const StakingContentCardWrapper = styled.div<Props>`
       min-height: 58px;
       padding: 11px 24px;
       border-radius: 8px;
-      border: 1px solid ${({ theme, isMax }) => (isMax ? theme.color.text07 : theme.color.border14)};
+      border: 1px solid ${({ theme, isHighlighted }) => (isHighlighted ? theme.color.text07 : theme.color.border14)};
       background-color: ${({ theme }) => theme.color.backgroundOpacity2};
       ${media.tablet} {
         padding: 11px 16px;

@@ -230,7 +230,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   }, [aprNumber]);
 
   return (
-    <StakingContentCardWrapper nonTotal={!hasPosition} isMax={period === "MAX"}>
+    <StakingContentCardWrapper nonTotal={!hasPosition} isHighlighted={hasPosition}>
       <div className="left">
         <div className="mobile-wrap">
           <div className={`check-wrap ${!checkedStep ? "check-wrap-not-active" : ""}`}>
@@ -402,7 +402,7 @@ export const SummuryApr: React.FC<SummuryAprProps> = ({
   }, [aprNumber]);
 
   return (
-    <StakingContentCardWrapper nonTotal={!hasPosition} isMax={period === "MAX"}>
+    <StakingContentCardWrapper nonTotal={!hasPosition} isHighlighted={hasPosition}>
       <div className="left">
         <div className="mobile-wrap">
           <div className={`check-wrap ${!checkedStep ? "check-wrap-not-active" : ""}`}>
