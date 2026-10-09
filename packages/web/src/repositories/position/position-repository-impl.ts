@@ -13,7 +13,7 @@ import { IncreaseLiquidityMessagesRequest } from "./request/increase-liquidity-r
 
 import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { GnoProvider } from "@gnolang/gno-js-client";
-import { PositionRepository } from "./position-repository";
+import { GetPositionsByAddressOptions, PositionRepository } from "./position-repository";
 import {
   makeClaimAllMessageWithApprovesByIds,
   makeClaimMessageWithApproves,
@@ -33,6 +33,7 @@ import {
   DecreaseLiquidityFailedResponse,
   DecreaseLiquiditySuccessResponse,
   GetPositionHistoryResult,
+  GetPositionsByAddressResult,
   IncreaseLiquidityFailedResponse,
   IncreaseLiquiditySuccessResponse,
   PositionListResponse,
@@ -43,6 +44,9 @@ import {
 } from "./response";
 import { ClaimRequest } from "./request/claim-request";
 import { withTransactionGuard, generateSendTransactionParams } from "@utils/transaction-utils";
+
+const ALL_POSITIONS_PAGE_SIZE = 50;
+const ALL_POSITIONS_MAX_PAGES = 100;
 
 export class PositionRepositoryImpl implements PositionRepository {
   private networkClient: NetworkClient | null;
@@ -86,15 +90,8 @@ export class PositionRepositoryImpl implements PositionRepository {
 
   getPositionsByAddress = async (
     address: string,
-    options?: {
-      poolPath?: string;
-      page?: number;
-      limit?: number;
-      /** API option: when true, include closed positions in the server response. */
-      withClosed?: boolean;
-      withAvailableStake?: boolean;
-    },
-  ): Promise<{ positions: PositionModel[]; totalCount: number }> => {
+    options?: GetPositionsByAddressOptions,
+  ): Promise<GetPositionsByAddressResult> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -104,6 +101,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       options?.limit !== undefined ? `limit=${options.limit}` : "",
       options?.withClosed !== undefined ? `withClosed=${options.withClosed}` : "",
       options?.withAvailableStake !== undefined ? `withAvailableStake=${options.withAvailableStake}` : "",
+      options?.stakedOnly !== undefined ? `stakedOnly=${options.stakedOnly}` : "",
     ];
     const queryString = queries.filter(item => !!item).join("&");
 
@@ -122,6 +120,30 @@ export class PositionRepositoryImpl implements PositionRepository {
       positions: PositionMapper.fromList(positionList.positions),
       totalCount: positionList.totalCount,
     };
+  };
+
+  getAllPositionsByAddress = async (
+    address: string,
+    options?: Omit<GetPositionsByAddressOptions, "page" | "limit">,
+  ): Promise<GetPositionsByAddressResult> => {
+    const positions: PositionModel[] = [];
+    let totalCount = 0;
+
+    for (let page = 1; page <= ALL_POSITIONS_MAX_PAGES; page++) {
+      const result = await this.getPositionsByAddress(address, {
+        ...options,
+        page,
+        limit: ALL_POSITIONS_PAGE_SIZE,
+      });
+      positions.push(...result.positions);
+      totalCount = result.totalCount;
+
+      if (result.positions.length < ALL_POSITIONS_PAGE_SIZE || positions.length >= totalCount) {
+        break;
+      }
+    }
+
+    return { positions, totalCount };
   };
 
   getPositionRewardsByAddress = async (address: string): Promise<PositionRewardsResponse> => {
@@ -273,9 +295,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     });
   };
 
-  makeIncreaseLiquidityMessages = async (
-    request: IncreaseLiquidityMessagesRequest,
-  ): Promise<TransactionMessage[]> => {
+  makeIncreaseLiquidityMessages = async (request: IncreaseLiquidityMessagesRequest): Promise<TransactionMessage[]> => {
     if (this.rpcProvider === null) {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }

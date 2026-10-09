@@ -21,9 +21,12 @@ import PoolLayout from "./PoolLayout";
 const PoolDetail: React.FC = () => {
   const router = useCustomRouter();
 
-  const { currentGuide, isOpen: isOpenVideoGuide, openVideoGuide, closeVideoGuide } = useVideoGuide(
-    VIDEO_GUIDE_TYPES.STAKING,
-  );
+  const {
+    currentGuide,
+    isOpen: isOpenVideoGuide,
+    openVideoGuide,
+    closeVideoGuide,
+  } = useVideoGuide(VIDEO_GUIDE_TYPES.STAKING);
 
   const { account } = useWallet();
   const poolPath = router.getPoolPath();
@@ -54,6 +57,7 @@ const PoolDetail: React.FC = () => {
     address: urlAddress ?? connectAddress,
     poolPath,
     withClosed: false,
+    fetchAll: true,
     queryOption: {
       enabled: !!poolPath,
     },

@@ -51,6 +51,7 @@ const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking, onO
     address,
     poolPath,
     withClosed: false,
+    fetchAll: true,
     queryOption: {
       enabled: !!poolPath,
     },

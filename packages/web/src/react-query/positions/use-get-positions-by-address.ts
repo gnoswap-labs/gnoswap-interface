@@ -17,6 +17,10 @@ interface UseGetPositionsByAddressProps {
   /** API option: when true, include closed positions in the server response. */
   withClosed?: boolean;
   withAvailableStake?: boolean;
+  /** API option: when true, only include staked positions. */
+  stakedOnly?: boolean;
+  /** When true, fetch every page instead of a single `page` / `limit` window. */
+  fetchAll?: boolean;
 }
 
 export const useGetPositionsByAddress = (
@@ -47,19 +51,29 @@ export const useGetPositionsByAddress = (
       props?.limit,
       props?.withClosed,
       props?.withAvailableStake,
+      props?.stakedOnly,
+      props?.fetchAll,
     ],
     async () => {
       if (!address) {
         return { positions: [], totalCount: 0 };
       }
 
+      const filterOptions = {
+        poolPath: poolPath ? encodeURIComponent(poolPath) : undefined,
+        withClosed: props?.withClosed,
+        withAvailableStake: props?.withAvailableStake,
+        stakedOnly: props?.stakedOnly,
+      };
+
       try {
+        if (props?.fetchAll) {
+          return await positionRepository.getAllPositionsByAddress(address, filterOptions);
+        }
         return await positionRepository.getPositionsByAddress(address, {
-          poolPath: poolPath ? encodeURIComponent(poolPath) : undefined,
+          ...filterOptions,
           page: props?.page,
           limit: props?.limit,
-          withClosed: props?.withClosed,
-          withAvailableStake: props?.withAvailableStake,
         });
       } catch (error) {
         console.error("Failed to fetch positions:", error);
