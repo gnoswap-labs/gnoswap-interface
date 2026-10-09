@@ -230,7 +230,6 @@ const StakingContent: React.FC<StakingContentProps> = ({
               stakingApr={pool?.stakingApr}
               period={period}
               positions={stakingPositionMap[period]}
-              breakpoint={breakpoint}
               loading={loading}
               checkPoints={checkPoints}
               tierSummary={tierSummary}

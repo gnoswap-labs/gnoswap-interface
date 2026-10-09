@@ -86,12 +86,12 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
   }
   .staking-wrap {
     display: grid;
-    grid-template-columns: 380px minmax(min-content, 1fr) minmax(250px, 335px) max-content;
+    grid-template-columns: 380px minmax(min-content, 1fr) minmax(250px, 335px) minmax(min-content, max-content);
     align-items: center;
     width: 100%;
     gap: 8px;
     ${media.tablet} {
-      grid-template-columns: 260px minmax(min-content, 1fr) minmax(250px, 335px) max-content;
+      grid-template-columns: 260px minmax(min-content, 1fr) minmax(250px, 335px) minmax(min-content, max-content);
     }
     ${media.tabletMiddle} {
       ${mixins.flexbox("column", "flex-start", "flex-start")};

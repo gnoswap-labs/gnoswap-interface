@@ -6,8 +6,6 @@ import { calculateRemainTime, timeToDateStr } from "@common/utils/date-util";
 import IconCheck from "@components/common/icons/IconCheck";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconLpToken from "@components/common/icons/IconLpToken";
-import IconLine from "@components/common/icons/IconLine";
-import IconLineLong from "@components/common/icons/IconLineLong";
 import IconStar from "@components/common/icons/IconStar";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
@@ -36,7 +34,6 @@ interface StakingContentCardProps {
   stakingApr?: string;
   checkPoints: StakingPeriodType[];
   positions: PoolPositionModel[];
-  breakpoint: DEVICE_TYPE;
   loading: boolean;
   tierSummary?: PoolStakingTierSummaryModel;
 }
@@ -161,7 +158,6 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
   checkPoints,
   positions,
   stakingApr,
-  breakpoint,
   loading,
   tierSummary,
 }) => {
@@ -237,14 +233,7 @@ const StakingContentCard: React.FC<StakingContentCardProps> = ({
         <div className="mobile-wrap">
           <div className={`check-wrap ${!checkedStep ? "check-wrap-not-active" : ""}`}>
             {checkedStep && <IconCheck />}
-
-            {breakpoint === DEVICE_TYPE.MOBILE || breakpoint === DEVICE_TYPE.TABLET_M ? (
-              <div className="check-line-long">
-                {checkedStep ? <IconLineLong /> : <div className="border-not-active" />}
-              </div>
-            ) : (
-              <div className="check-line">{checkedStep ? <IconLine /> : <div className="border-not-active" />}</div>
-            )}
+            <div className={`check-line ${checkedStep ? "check-line-active" : ""}`} />
           </div>
           <div className="name-wrap">
             <span className="symbol-text">
