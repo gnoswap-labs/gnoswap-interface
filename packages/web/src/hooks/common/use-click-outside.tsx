@@ -1,5 +1,4 @@
-import { useState, useEffect, useRef } from "react";
-import { Dispatch, SetStateAction } from "react";
+import { useState, useEffect, useRef, Dispatch, SetStateAction } from "react";
 
 function useClickOutside(): [React.RefObject<HTMLDivElement>, boolean, Dispatch<SetStateAction<boolean>>] {
   const [isClickOutside, setIsClickOutside] = useState(true);
