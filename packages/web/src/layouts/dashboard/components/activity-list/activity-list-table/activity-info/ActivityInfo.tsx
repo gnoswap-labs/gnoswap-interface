@@ -26,6 +26,42 @@ import {
 
 dayjs.extend(relativeTime);
 
+const relativeTimeFormatters = new Map<string, Intl.RelativeTimeFormat>();
+
+const formatActivityTime = (time: string): string => {
+  const activityTime = dayjs(time);
+  const now = dayjs();
+  const elapsedMinutes = now.diff(activityTime, "minute");
+
+  if (elapsedMinutes < 1) {
+    return activityTime.from(now);
+  }
+
+  const locale = dayjs.locale();
+  let formatter = relativeTimeFormatters.get(locale);
+
+  if (!formatter) {
+    formatter = new Intl.RelativeTimeFormat(locale, { numeric: "always" });
+    relativeTimeFormatters.set(locale, formatter);
+  }
+
+  if (elapsedMinutes < 60) {
+    return formatter.format(-elapsedMinutes, "minute");
+  }
+
+  const elapsedHours = now.diff(activityTime, "hour");
+  if (elapsedHours < 24) {
+    return formatter.format(-elapsedHours, "hour");
+  }
+
+  const elapsedDays = now.diff(activityTime, "day");
+  if (elapsedDays < 30) {
+    return formatter.format(-elapsedDays, "day");
+  }
+
+  return activityTime.from(now);
+};
+
 export interface Activity {
   action: ReactNode;
   totalValue: string;
@@ -83,7 +119,7 @@ const ActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
         </TableColumn>
         <TableColumn className="right" tdWidth={ACTIVITY_INFO.list[5].width}>
           <DateTimeTooltip date={time}>
-            <span className="token-index tooltip-label">{dayjs(time).fromNow()}</span>
+            <span className="token-index tooltip-label">{formatActivityTime(time)}</span>
           </DateTimeTooltip>
         </TableColumn>
       </HoverSection>
@@ -132,7 +168,7 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
         </MobileTableColumn>
         <MobileTableColumn className="right" tdWidth={MOBILE_ACTIVITY_INFO.list[5].width}>
           <DateTimeTooltip placement={"top-end"} date={time}>
-            <span className="cell">{dayjs(time).fromNow()}</span>
+            <span className="cell">{formatActivityTime(time)}</span>
           </DateTimeTooltip>
         </MobileTableColumn>
       </HoverSection>
