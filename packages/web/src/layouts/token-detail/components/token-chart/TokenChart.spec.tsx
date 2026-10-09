@@ -101,6 +101,15 @@ it("keeps history available for informational prices and removes it only when th
 
 it("does not present an unknown loading grade as a completed no-data result", () => {
   render(view("NONE", true));
-  expect(screen.getByRole("status")).toHaveTextContent("Loading price candles…");
+  expect(screen.getByRole("status")).toHaveAttribute("aria-label", "Loading price candles…");
   expect(screen.queryByText("No data")).not.toBeInTheDocument();
+});
+
+it("waits for price metadata before mounting history, even when a positive price is already available", () => {
+  const { rerender } = render(view("ORACLE", true, true));
+  expect(screen.getByRole("status")).toHaveAttribute("aria-label", "Loading price candles…");
+  expect(screen.queryByRole("button", { name: "Search older history" })).not.toBeInTheDocument();
+  expect(screen.queryByText("No data")).not.toBeInTheDocument();
+  rerender(view("ORACLE", false, true));
+  expect(screen.getByRole("button", { name: "Search older history" })).toBeInTheDocument();
 });

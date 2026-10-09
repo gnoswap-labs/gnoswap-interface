@@ -46,7 +46,14 @@ import {
 import TooltipAPR from "./TooltipAPR";
 import type { CandleRange } from "./PoolPriceChart";
 
-const PoolPriceChart = dynamic(() => import("./PoolPriceChart"), { ssr: false });
+const PoolPriceChart = dynamic(() => import("./PoolPriceChart"), {
+  ssr: false,
+  loading: () => (
+    <LoadingChart role="status">
+      <LoadingSpinner size="SMALL" />
+    </LoadingChart>
+  ),
+});
 const CANDLE_RANGES: CandleRange[] = ["5m", "1h", "4h", "1d", "All"];
 
 interface PoolPairInfoContentProps {
@@ -568,7 +575,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                 />
               ) : (
                 <LoadingChart role="status">
-                  <LoadingSpinner />
+                  <LoadingSpinner size="SMALL" />
                 </LoadingChart>
               )
             ) : (
