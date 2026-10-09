@@ -1,4 +1,9 @@
-import { formatTokenExchangeRate, getStakingPeriodType } from "./stake-position-utils";
+import {
+  formatStakedDuration,
+  formatTokenExchangeRate,
+  getStakedDays,
+  getStakingPeriodType,
+} from "./stake-position-utils";
 
 describe("tokenExchangeRateFormat, token exchange rate format", () => {
   test("12347 to 12.34K", () => {
@@ -66,5 +71,28 @@ describe("getStakingPeriodType", () => {
     [100 * DAY, "MAX"],
   ])("returns the contract warmup tier after %i ms", (elapsed, expected) => {
     expect(getStakingPeriodType(stakedAt, stakedTime + elapsed)).toBe(expected);
+  });
+});
+
+describe("getStakedDays / formatStakedDuration", () => {
+  const DAY = 24 * 60 * 60 * 1000;
+  const stakedAt = "2026-09-16T14:09:24.000Z";
+  const stakedTime = new Date(stakedAt).getTime();
+
+  it.each([
+    [0, 0],
+    [DAY - 1, 0],
+    [DAY, 1],
+    [25 * DAY + 3_600_000, 25],
+  ])("returns whole days elapsed after %i ms", (elapsed, expected) => {
+    expect(getStakedDays(stakedAt, stakedTime + elapsed)).toBe(expected);
+  });
+
+  it("never returns negative days when the clock is behind the stake time", () => {
+    expect(getStakedDays(stakedAt, stakedTime - DAY)).toBe(0);
+  });
+
+  it("formats the elapsed days for tooltips", () => {
+    expect(formatStakedDuration(stakedAt, stakedTime + 25 * DAY)).toBe("(for 25D)");
   });
 });

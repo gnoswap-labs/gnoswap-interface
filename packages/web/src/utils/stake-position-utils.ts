@@ -263,3 +263,11 @@ export const getStakingPeriodType = (stakedAt: string, now = Date.now()): Stakin
   const stakedDays = (now - new Date(stakedAt).getTime()) / DAY_TIME;
   return STAKING_PERIOS.find(period => period !== "MAX" && stakedDays < STAKING_PERIOD_INFO[period].period) || "MAX";
 };
+
+export const getStakedDays = (stakedAt: string, now = Date.now()): number => {
+  return Math.max(0, Math.floor((now - new Date(stakedAt).getTime()) / DAY_TIME));
+};
+
+export const formatStakedDuration = (stakedAt: string, now = Date.now()): string => {
+  return `(for ${getStakedDays(stakedAt, now)}D)`;
+};

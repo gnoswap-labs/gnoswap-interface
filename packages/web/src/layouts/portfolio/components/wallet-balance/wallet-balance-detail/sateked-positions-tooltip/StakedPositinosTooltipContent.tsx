@@ -6,8 +6,14 @@ import IconLpToken from "@components/common/icons/IconLpToken";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import type { StakedPositionsTooltipQuery } from "@query/positions/use-get-staked-positions-infinite";
 import { formatOtherPrice } from "@utils/new-number-utils";
+import { formatStakedDuration } from "@utils/stake-position-utils";
 
 import * as S from "./StakedPositinosTooltipContent.styles";
+
+const formatStakedDate = (stakedAt: string) => {
+  const { value, isEmpty } = getDateUtcToLocal(stakedAt);
+  return isEmpty ? value : `${value} ${formatStakedDuration(stakedAt)}`;
+};
 
 const StakedPostionsTooltipContent: React.FC<{
   count: number;
@@ -79,7 +85,7 @@ const StakedPostionsTooltipContent: React.FC<{
             <S.DataGrid>
               <S.DataGridItem>
                 <S.ItemDataGridLabel>{t("Wallet:overral.stakedPosi.dataTooltip.date")}</S.ItemDataGridLabel>
-                <S.ItemDataGridValue>{getDateUtcToLocal(item.stakedAt).value}</S.ItemDataGridValue>
+                <S.ItemDataGridValue>{formatStakedDate(item.stakedAt)}</S.ItemDataGridValue>
               </S.DataGridItem>
             </S.DataGrid>
           </S.TokenItem>

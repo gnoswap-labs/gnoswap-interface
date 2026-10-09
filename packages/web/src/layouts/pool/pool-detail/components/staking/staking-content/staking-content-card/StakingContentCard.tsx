@@ -20,6 +20,7 @@ import { DEVICE_TYPE } from "@styles/media";
 import { checkGnotPath } from "@utils/common";
 import { formatOtherPrice, formatRate } from "@utils/new-number-utils";
 import { toUnitFormat } from "@utils/number-utils";
+import { formatStakedDuration } from "@utils/stake-position-utils";
 import { isInternalRewardType, mapToDisplayRewardType } from "@utils/reward-utils";
 
 import {
@@ -89,7 +90,9 @@ const PriceTooltipContent = ({ positions, period }: { positions: PoolPositionMod
             </div>
             <div className="list">
               <span className="label">{t("Pool:staking.period.stakedTooltip.stakedDate")}</span>
-              <span className="content">{timeToDateStr(new Date(position.stakedAt).getTime())}</span>
+              <span className="content">
+                {`${timeToDateStr(new Date(position.stakedAt).getTime())} ${formatStakedDuration(position.stakedAt)}`}
+              </span>
             </div>
             <div className="list">
               <span className="label">{t("Pool:staking.period.stakedTooltip.nextTier")}</span>
