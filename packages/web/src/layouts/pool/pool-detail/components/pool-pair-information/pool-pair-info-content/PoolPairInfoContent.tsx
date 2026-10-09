@@ -18,7 +18,7 @@ import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import PriceWarning from "@components/common/price-warning/PriceWarning";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { LOADING_INDICATOR_DELAY_MS } from "@constants/loading.constant";
+import { CHART_LOADING_DELAY_MS } from "@constants/loading.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
@@ -51,7 +51,7 @@ const PoolPriceChart = dynamic(() => import("./PoolPriceChart"), {
   ssr: false,
   loading: () => (
     <LoadingChart role="status" aria-label="Loading price history">
-      <LoadingSpinner size="SMALL" delay={LOADING_INDICATOR_DELAY_MS} />
+      <LoadingSpinner size="SMALL" delay={CHART_LOADING_DELAY_MS} />
     </LoadingChart>
   ),
 });
@@ -576,7 +576,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                 />
               ) : (
                 <LoadingChart role="status" aria-label="Loading price history">
-                  <LoadingSpinner size="SMALL" delay={LOADING_INDICATOR_DELAY_MS} />
+                  <LoadingSpinner size="SMALL" delay={CHART_LOADING_DELAY_MS} />
                 </LoadingChart>
               )
             ) : (

@@ -13,7 +13,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
-import { LOADING_INDICATOR_DELAY_MS } from "@constants/loading.constant";
+import { CHART_LOADING_DELAY_MS } from "@constants/loading.constant";
 
 import { CandleTooltip } from "./PriceCandleChart.styles";
 
@@ -391,7 +391,7 @@ export default function PriceCandleChart({
           aria-live="polite"
           aria-label={state === "loading" ? loadingLabel : undefined}
         >
-          {state === "loading" && <LoadingSpinner size="SMALL" delay={LOADING_INDICATOR_DELAY_MS} />}
+          {state === "loading" && <LoadingSpinner size="SMALL" delay={CHART_LOADING_DELAY_MS} />}
           {state === "empty" && emptyLabel}
           {state === "empty" && canSearchOlder && (
             <button type="button" onClick={() => void searchOlder.current?.()}>
