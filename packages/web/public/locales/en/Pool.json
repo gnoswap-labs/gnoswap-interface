@@ -90,9 +90,6 @@
       "two": "Stake your position to get started ⛵"
     },
     "myStake": "My Staking",
-    "positionCount_one": "{{count}} position",
-    "positionCount_other": "{{count}} positions",
-    "totalStaked": "Total Staked",
     "period": {
       "stakedTooltip": {
         "nextTier": "Next Tier",
@@ -106,6 +103,8 @@
       "title": "Staked less than {{days}} days",
       "title_max": "Staked more than {{days}} days"
     },
+    "positionCount_one": "{{count}} position",
+    "positionCount_other": "{{count}} positions",
     "title": "Staking",
     "tooltip": {
       "hoverGuide": "Hover to view details",
@@ -115,7 +114,8 @@
         "remainingAmt": "Remaining Amount",
         "startDate": "Start Date"
       }
-    }
+    },
+    "totalStaked": "Total Staked"
   },
   "wanttoaddup": "Want to boost up incentives for this pool?"
 }

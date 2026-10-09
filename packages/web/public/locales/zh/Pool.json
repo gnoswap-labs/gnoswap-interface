@@ -82,7 +82,7 @@
       "stake": "桩位",
       "unstake": "解除立场"
     },
-    "intro": "在您的位置上打桩，可获得高达",
+    "intro": "通过质押锁定资产，最高可获得",
     "keepStakingNote": {
       "four": "获得最大奖励 ✨",
       "one": "创建您的第一个位置以开始 ⛵",
@@ -90,8 +90,6 @@
       "two": "站稳脚跟，开始行动 ⛵"
     },
     "myStake": "我的赌注",
-    "positionCount_other": "{{count}} 个仓位",
-    "totalStaked": "总质押",
     "period": {
       "stakedTooltip": {
         "nextTier": "下一层",
@@ -102,9 +100,11 @@
       "subtitle_max": "领取最高奖励",
       "subtitleTooltip": "在此投注期间，您只能获得最高投注奖励的{{percent}} 。保持您的仓位，以增加您的奖励。",
       "subtitleTooltip_max": "在此期间，您将获得最高投注奖励。保持您的仓位，以维持您的奖励。",
-      "title": "赌注少于{{days}} 天",
-      "title_max": "利害关系超过{{days}} 天"
+      "title": "质押时间不足{{days}} 天",
+      "title_max": "质押时间超过{{days}} 天"
     },
+    "positionCount_one": "{{count}} 职位",
+    "positionCount_other": "{{count}} 职位",
     "title": "定标",
     "tooltip": {
       "hoverGuide": "悬停查看详情",
@@ -114,7 +114,8 @@
         "remainingAmt": "剩余金额",
         "startDate": "开始日期"
       }
-    }
+    },
+    "totalStaked": "总质押量"
   },
   "wanttoaddup": "想提高对该泳池的奖励？"
 }

@@ -82,7 +82,7 @@
       "stake": "Posición de la estaca",
       "unstake": "Anular posición"
     },
-    "intro": "Apueste por su posición para ganar recompensas de hasta 1.000 euros.",
+    "intro": "Aporta tus tokens para ganar recompensas de hasta",
     "keepStakingNote": {
       "four": "Recibir recompensas máximas ✨",
       "one": "Crea tu primera posición para empezar ⛵",
@@ -90,9 +90,6 @@
       "two": "Defiende tu posición para empezar ⛵"
     },
     "myStake": "Mi estaca",
-    "positionCount_one": "{{count}} posición",
-    "positionCount_other": "{{count}} posiciones",
-    "totalStaked": "Total en staking",
     "period": {
       "stakedTooltip": {
         "nextTier": "Siguiente nivel",
@@ -103,9 +100,11 @@
       "subtitle_max": "Recibir recompensas máximas",
       "subtitleTooltip": "Durante este periodo de apuesta, sólo recibirá {{percent}} de sus recompensas máximas de apuesta. Mantenga su posición apostada para aumentar sus recompensas.",
       "subtitleTooltip_max": "Durante este periodo de apuesta, recibirá las máximas recompensas de apuesta. Mantenga su posición apostada para conservar sus recompensas.",
-      "title": "Participación inferior a {{days}} días",
-      "title_max": "Estaca más de {{days}} días"
+      "title": "Apostado hace menos de {{days}} días",
+      "title_max": "Ha apostado más de {{days}} días"
     },
+    "positionCount_one": "{{count}} position",
+    "positionCount_other": "{{count}} positions",
     "title": "Estacas",
     "tooltip": {
       "hoverGuide": "Pase el ratón para ver los detalles",
@@ -115,7 +114,8 @@
         "remainingAmt": "Importe restante",
         "startDate": "Fecha de inicio"
       }
-    }
+    },
+    "totalStaked": "Total apostado"
   },
   "wanttoaddup": "¿Quieres aumentar los incentivos para esta piscina?"
 }

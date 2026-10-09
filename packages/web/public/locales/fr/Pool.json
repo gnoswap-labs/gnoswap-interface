@@ -82,7 +82,7 @@
       "stake": "Position de l'enjeu",
       "unstake": "Déblocage de la position"
     },
-    "intro": "Stake vous positionne pour gagner des récompenses jusqu'à",
+    "intro": "Misez vos jetons pour gagner des récompenses pouvant aller jusqu'à",
     "keepStakingNote": {
       "four": "Recevoir des récompenses maximales ✨",
       "one": "Créez votre premier poste pour commencer ⛵",
@@ -90,9 +90,6 @@
       "two": "Prenez position pour commencer ⛵"
     },
     "myStake": "Mon piquetage",
-    "positionCount_one": "{{count}} position",
-    "positionCount_other": "{{count}} positions",
-    "totalStaked": "Total staké",
     "period": {
       "stakedTooltip": {
         "nextTier": "Prochain volet",
@@ -103,9 +100,11 @@
       "subtitle_max": "Recevoir des récompenses maximales",
       "subtitleTooltip": "Pendant cette période de mise, vous ne recevrez que {{percent}} de vos récompenses maximales de mise. Conservez votre position pour augmenter vos récompenses.",
       "subtitleTooltip_max": "Pendant cette période de mise, vous recevrez des récompenses maximales. Maintenez votre position pour conserver vos récompenses.",
-      "title": "Enjeu inférieur à {{days}} jours",
-      "title_max": "Enjeu supérieur à {{days}} jours"
+      "title": "Mise en jeu depuis moins de {{days}} s jours",
+      "title_max": "Plus de {{days}} s de jours de staking"
     },
+    "positionCount_one": "{{count}} position",
+    "positionCount_other": "{{count}} positions",
     "title": "Jalonnement",
     "tooltip": {
       "hoverGuide": "Survoler pour voir les détails",
@@ -115,7 +114,8 @@
         "remainingAmt": "Montant restant",
         "startDate": "Date de début"
       }
-    }
+    },
+    "totalStaked": "Total mis en jeu"
   },
   "wanttoaddup": "Vous souhaitez renforcer les mesures d'incitation pour cette pool?"
 }
