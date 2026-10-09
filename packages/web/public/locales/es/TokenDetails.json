@@ -10,7 +10,6 @@
   "chart": {
     "empty": "No hay velas de precio disponibles para este intervalo.",
     "error": "No se han podido cargar las velas de precios.",
-    "loading": "Cargando las velas de precios…",
     "retry": "Volver a intentarlo",
     "searchOlder": "Buscar en el historial anterior"
   },

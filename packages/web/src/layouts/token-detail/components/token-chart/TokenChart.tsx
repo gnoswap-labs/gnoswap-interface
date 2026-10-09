@@ -13,10 +13,9 @@ import type { CandleResolution } from "./token-candle-data";
 import TokenChartInfo from "./token-chart-info/TokenChartInfo";
 
 function TokenChartLoading() {
-  const { t } = useTranslation();
   return (
     <div className="price-chart-shell">
-      <div className="price-chart-status" role="status" aria-label={t("TokenDetails:chart.loading")}>
+      <div className="price-chart-status" role="status" aria-label="Loading price candles">
         <LoadingSpinner size="SMALL" delay={LOADING_INDICATOR_DELAY_MS} />
       </div>
     </div>

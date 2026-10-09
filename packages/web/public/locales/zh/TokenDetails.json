@@ -10,7 +10,6 @@
   "chart": {
     "empty": "该时间段内没有价格K线。",
     "error": "无法加载价格K线图。",
-    "loading": "正在加载价格K线……",
     "retry": "重试",
     "searchOlder": "搜索历史记录"
   },

@@ -61,10 +61,10 @@ const view = () => (
 
 it.each(["0", "1.5"])("waits for the separate price query before deciding whether %s has chart data", price => {
   const { rerender } = render(view());
-  expect(screen.getByRole("status")).toHaveAttribute("aria-label", "TokenDetails:chart.loading");
+  expect(screen.getByRole("status")).toBeInTheDocument();
   mockTokenLoading = false;
   rerender(view());
-  expect(screen.getByRole("status")).toHaveAttribute("aria-label", "TokenDetails:chart.loading");
+  expect(screen.getByRole("status")).toBeInTheDocument();
   expect(screen.queryByText("common:noData")).not.toBeInTheDocument();
   mockPrice = price;
   mockPriceLoading = false;

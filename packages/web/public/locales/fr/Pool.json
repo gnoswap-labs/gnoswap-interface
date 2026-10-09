@@ -3,7 +3,6 @@
     "empty": "Aucune bougie de cours n'apparaît sur cette période.",
     "error": "Impossible de charger l'historique des prix.",
     "liquidity": "Liquidité",
-    "loading": "Chargement de l'historique des prix…",
     "price": "Prix",
     "retry": "Réessayer",
     "searchOlder": "Rechercher dans l'historique antérieur"

@@ -3,7 +3,6 @@
     "empty": "该期间内没有价格K线。",
     "error": "无法加载价格历史数据。",
     "liquidity": "流动性",
-    "loading": "正在加载价格历史数据……",
     "price": "价格",
     "retry": "重试",
     "searchOlder": "搜索历史记录"

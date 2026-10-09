@@ -10,7 +10,6 @@
   "chart": {
     "empty": "Không có nến giá nào cho khoảng thời gian này.",
     "error": "Không thể tải biểu đồ nến giá.",
-    "loading": "Đang tải biểu đồ nến giá…",
     "retry": "Thử lại",
     "searchOlder": "Tìm kiếm lịch sử trước đây"
   },

@@ -50,7 +50,7 @@ import type { CandleRange } from "./PoolPriceChart";
 const PoolPriceChart = dynamic(() => import("./PoolPriceChart"), {
   ssr: false,
   loading: () => (
-    <LoadingChart role="status">
+    <LoadingChart role="status" aria-label="Loading price history">
       <LoadingSpinner size="SMALL" delay={LOADING_INDICATOR_DELAY_MS} />
     </LoadingChart>
   ),
@@ -575,7 +575,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   range={chartRange}
                 />
               ) : (
-                <LoadingChart role="status">
+                <LoadingChart role="status" aria-label="Loading price history">
                   <LoadingSpinner size="SMALL" delay={LOADING_INDICATOR_DELAY_MS} />
                 </LoadingChart>
               )

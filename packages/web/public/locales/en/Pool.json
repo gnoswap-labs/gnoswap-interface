@@ -3,7 +3,6 @@
     "empty": "No price candles in this period.",
     "error": "Could not load price history.",
     "liquidity": "Liquidity",
-    "loading": "Loading price history…",
     "price": "Price",
     "retry": "Retry",
     "searchOlder": "Search older history"
