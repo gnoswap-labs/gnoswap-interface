@@ -10,7 +10,6 @@
   "chart": {
     "empty": "No price candles are available for this interval.",
     "error": "Could not load price candles.",
-    "loading": "Loading price candles…",
     "retry": "Retry",
     "searchOlder": "Search older history"
   },

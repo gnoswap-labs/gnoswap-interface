@@ -18,6 +18,7 @@ import PoolGraph from "@components/common/pool-graph/PoolGraph";
 import PriceWarning from "@components/common/price-warning/PriceWarning";
 import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSkeletonWrapper.style";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import { CHART_LOADING_DELAY_MS } from "@constants/loading.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
@@ -46,7 +47,14 @@ import {
 import TooltipAPR from "./TooltipAPR";
 import type { CandleRange } from "./PoolPriceChart";
 
-const PoolPriceChart = dynamic(() => import("./PoolPriceChart"), { ssr: false });
+const PoolPriceChart = dynamic(() => import("./PoolPriceChart"), {
+  ssr: false,
+  loading: () => (
+    <LoadingChart role="status" aria-label="Loading price history">
+      <LoadingSpinner size="CHART" delay={CHART_LOADING_DELAY_MS} />
+    </LoadingChart>
+  ),
+});
 const CANDLE_RANGES: CandleRange[] = ["5m", "1h", "4h", "1d", "All"];
 
 interface PoolPairInfoContentProps {
@@ -567,8 +575,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   range={chartRange}
                 />
               ) : (
-                <LoadingChart role="status">
-                  <LoadingSpinner />
+                <LoadingChart role="status" aria-label="Loading price history">
+                  <LoadingSpinner size="CHART" delay={CHART_LOADING_DELAY_MS} />
                 </LoadingChart>
               )
             ) : (
@@ -592,8 +600,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     disableBlackBars={true}
                   />
                 ) : (
-                  <LoadingChart>
-                    <LoadingSpinner />
+                  <LoadingChart role="status" aria-label="Loading liquidity chart">
+                    <LoadingSpinner size="CHART" delay={CHART_LOADING_DELAY_MS} />
                   </LoadingChart>
                 )}
               </>

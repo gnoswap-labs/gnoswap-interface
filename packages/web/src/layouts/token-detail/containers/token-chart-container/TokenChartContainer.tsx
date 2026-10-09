@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import { RefetchInterval } from "@common/values";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
@@ -56,11 +56,10 @@ const priceChangeDetailInit = {
 };
 
 const TokenChartContainer: React.FC = () => {
-  const [tokenInfo, setTokenInfo] = useState<TokenInfo>(dummyTokenInfo);
   const router = useCustomRouter();
   const [fromSelectToken, setFromSelectToken] = useAtom(TokenState.fromSelectToken);
   const clearModal = useClearModal();
-  const { gnot, wugnotPath, getGnotPath } = useGnotToGnot();
+  const { wugnotPath, getGnotPath } = useGnotToGnot();
   const { gnoswapApiClient } = useGnoswapContext();
   const { isLoading: isLoadingCommon } = useLoading();
 
@@ -78,20 +77,19 @@ const TokenChartContainer: React.FC = () => {
     enabled: !!path,
   });
 
-  const { data: { priceGradeType, usd: currentPrice, pricesBefore = priceChangeDetailInit } = {} } = useGetTokenPrices(
-    path === "ugnot" ? wugnotPath : path,
-    {
-      enabled: !!path,
-      refetchInterval: RefetchInterval.Frequent,
-    },
-  );
+  const {
+    data: { priceGradeType, usd: currentPrice, pricesBefore = priceChangeDetailInit } = {},
+    isLoading: isLoadingPrice,
+  } = useGetTokenPrices(path === "ugnot" ? wugnotPath : path, {
+    enabled: !!path,
+    refetchInterval: RefetchInterval.Frequent,
+  });
 
-  useEffect(() => {
-    if (tokenB) {
-      const dataToday = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.price1d, {
-        displayStatusSign: false,
-      });
-      setTokenInfo(() => ({
+  const dataToday = checkPositivePrice(pricesBefore.latestPrice, pricesBefore.price1d, {
+    displayStatusSign: false,
+  });
+  const tokenInfo: TokenInfo = tokenB
+    ? {
         token: {
           name: getGnotPath(tokenB).name,
           symbol: getGnotPath(tokenB).symbol,
@@ -111,28 +109,21 @@ const TokenChartContainer: React.FC = () => {
           priceGradeType: priceGradeType || "NONE",
           changedRate: dataToday.percentDisplay,
         },
-      }));
-      if (!fromSelectToken && !tokenB.logoURI) {
-        openWarningModal(tokenB);
       }
+    : dummyTokenInfo;
+
+  useEffect(() => {
+    if (tokenB && !fromSelectToken && !tokenB.logoURI) {
+      openWarningModal(tokenB);
     }
-  }, [
-    router.query,
-    pricesBefore.latestPrice,
-    currentPrice,
-    tokenB,
-    gnot,
-    pricesBefore.priceToday,
-    fromSelectToken,
-    priceGradeType,
-  ]);
+  }, [tokenB, fromSelectToken]);
 
   const numericPrice = Number(currentPrice);
 
   return (
     <TokenChart
       tokenInfo={tokenInfo}
-      loading={isLoading || isLoadingCommon}
+      loading={isLoading || isLoadingPrice || isLoadingCommon}
       hasPrice={Number.isFinite(numericPrice) && numericPrice > 0}
       candleClient={gnoswapApiClient}
       candlePath={(path === "ugnot" ? wugnotPath : path) || undefined}

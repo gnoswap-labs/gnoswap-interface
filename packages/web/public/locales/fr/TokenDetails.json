@@ -10,7 +10,6 @@
   "chart": {
     "empty": "Il n'y a pas de chandeliers de cours disponibles pour cet intervalle.",
     "error": "Impossible de charger les chandeliers de cours.",
-    "loading": "Chargement des chandeliers de prix…",
     "retry": "Réessayer",
     "searchOlder": "Rechercher dans l'historique antérieur"
   },

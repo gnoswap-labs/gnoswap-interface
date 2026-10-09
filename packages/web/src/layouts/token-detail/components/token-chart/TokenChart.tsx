@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { NetworkClient } from "@common/clients/network-client";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { CHART_LOADING_DELAY_MS } from "@constants/loading.constant";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 
@@ -10,7 +12,20 @@ import { CandleChartWrapper, ChartControls, ChartRegion, TokenChartWrapper } fro
 import type { CandleResolution } from "./token-candle-data";
 import TokenChartInfo from "./token-chart-info/TokenChartInfo";
 
-const TokenCandles = dynamic(() => import("./TokenCandles"), { ssr: false });
+function TokenChartLoading() {
+  return (
+    <div className="price-chart-shell">
+      <div className="price-chart-status" role="status" aria-label="Loading price candles">
+        <LoadingSpinner size="CHART" delay={CHART_LOADING_DELAY_MS} />
+      </div>
+    </div>
+  );
+}
+
+const TokenCandles = dynamic(() => import("./TokenCandles"), {
+  ssr: false,
+  loading: TokenChartLoading,
+});
 
 export interface TokenInfo {
   token: {
@@ -43,7 +58,14 @@ export interface TokenChartProps {
   candleSymbol?: string;
 }
 
-const TokenChart: React.FC<TokenChartProps> = ({ tokenInfo, loading, hasPrice, candleClient, candlePath, candleSymbol }) => {
+const TokenChart: React.FC<TokenChartProps> = ({
+  tokenInfo,
+  loading,
+  hasPrice,
+  candleClient,
+  candlePath,
+  candleSymbol,
+}) => {
   const { t } = useTranslation();
   const [resolution, setResolution] = useState<CandleResolution>("1h");
   const canShowCandles = hasPrice && tokenInfo.priceInfo.priceGradeType !== TOKEN_PRICE_GRADE_TYPE.NONE;
@@ -65,18 +87,19 @@ const TokenChart: React.FC<TokenChartProps> = ({ tokenInfo, loading, hasPrice, c
           ))}
         </ChartControls>
         <CandleChartWrapper>
-          {canShowCandles && candlePath && (
+          {loading ? (
+            <TokenChartLoading />
+          ) : canShowCandles && candlePath ? (
             <TokenCandles
               client={candleClient}
               tokenPath={candlePath}
               symbol={candleSymbol || tokenInfo.token.displaySymbol}
               resolution={resolution}
             />
-          )}
-          {!canShowCandles && (
+          ) : (
             <div className="price-chart-shell">
               <div className="price-chart-status" role="status">
-                {loading ? t("TokenDetails:chart.loading") : t("common:noData")}
+                {t("common:noData")}
               </div>
             </div>
           )}

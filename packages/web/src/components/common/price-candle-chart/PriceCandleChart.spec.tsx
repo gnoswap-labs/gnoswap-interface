@@ -45,6 +45,10 @@ jest.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: mockLanguage, resolvedLanguage: mockLanguage } }),
 }));
 jest.mock("./PriceCandleChart.styles", () => ({ CandleTooltip: "div" }));
+jest.mock("@components/common/loading-spinner/LoadingSpinner", () => ({
+  __esModule: true,
+  default: () => <span />,
+}));
 jest.mock(
   "lightweight-charts",
   () => ({
@@ -92,6 +96,27 @@ beforeEach(() => {
 });
 afterEach(() => {
   jest.restoreAllMocks();
+});
+
+it.each([[firstPage], [[]]])("keeps initial loading visible until the candle request settles", async result => {
+  let resolvePage!: (bars: PriceBar[]) => void;
+  const loadPage = jest.fn(
+    () =>
+      new Promise<PriceBar[]>(resolve => {
+        resolvePage = resolve;
+      }),
+  );
+  render(<PriceCandleChart {...props} loadPage={loadPage} />);
+  await waitFor(() => expect(loadPage).toHaveBeenCalledTimes(1));
+  expect(screen.getByRole("status")).toHaveAttribute("aria-label", props.loadingLabel);
+  expect(screen.queryByText(props.loadingLabel)).not.toBeInTheDocument();
+  expect(screen.queryByText(props.emptyLabel)).not.toBeInTheDocument();
+  await act(async () => resolvePage(result));
+  if (result.length) {
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+  } else {
+    expect(screen.getByRole("status")).toHaveTextContent(props.emptyLabel);
+  }
 });
 
 it("reveals the hovered candle's OHLC and both token volumes without a permanent volume caption", async () => {
