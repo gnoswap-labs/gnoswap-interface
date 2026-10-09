@@ -12,17 +12,27 @@ const spin = keyframes`
   }
 `;
 
+const reveal = keyframes`
+  to {
+    opacity: 1;
+  }
+`;
+
 export const LoadingSpinnerWrapper = styled.div<{
   container: number;
   circle: number;
   mobileContainer: number;
   mobileCircle: number;
+  delay: number;
 }>`
   position: relative;
   width: ${({ container }) => `${container}px`};
   height: ${({ container }) => `${container}px`};
   border-radius: 100%;
-  animation: ${spin} 1s linear infinite;
+  opacity: ${({ delay }) => (delay > 0 ? 0 : 1)};
+  animation:
+    ${spin} 1s linear infinite,
+    ${reveal} 0s ${({ delay }) => delay}ms forwards;
   background: conic-gradient(from 0deg at 50% 50.63%, ${({ theme }) => theme.color.bgLoading} 0deg, #233dbd 360deg);
 
   &::before {

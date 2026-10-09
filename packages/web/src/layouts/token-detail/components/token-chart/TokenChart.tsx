@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import type { NetworkClient } from "@common/clients/network-client";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { LOADING_INDICATOR_DELAY_MS } from "@constants/loading.constant";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 
@@ -16,7 +17,7 @@ function TokenChartLoading() {
   return (
     <div className="price-chart-shell">
       <div className="price-chart-status" role="status" aria-label={t("TokenDetails:chart.loading")}>
-        <LoadingSpinner size="SMALL" />
+        <LoadingSpinner size="SMALL" delay={LOADING_INDICATOR_DELAY_MS} />
       </div>
     </div>
   );

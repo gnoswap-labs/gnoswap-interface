@@ -24,11 +24,13 @@ const LOADING_SIZE_MAP = {
 const LoadingSpinner = ({
   className,
   size = "DEFAULT",
+  delay = 0,
 }: {
   className?: string;
   size?: "DEFAULT" | "SMALL" | "MEDIUM";
+  delay?: number;
 }) => {
-  return <LoadingSpinnerWrapper className={className} {...LOADING_SIZE_MAP[size]} />;
+  return <LoadingSpinnerWrapper className={className} delay={delay} {...LOADING_SIZE_MAP[size]} />;
 };
 
 export default LoadingSpinner;

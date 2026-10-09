@@ -1,0 +1,1 @@
+export const LOADING_INDICATOR_DELAY_MS = 1500;
