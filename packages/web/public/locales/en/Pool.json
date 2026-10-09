@@ -1,4 +1,12 @@
 {
+  "chart": {
+    "empty": "No price candles in this period.",
+    "error": "Could not load price history.",
+    "liquidity": "Liquidity",
+    "price": "Price",
+    "retry": "Retry",
+    "searchOlder": "Search older history"
+  },
   "gotoIncentivizeGuide": {
     "add": "Want to add up incentives for this pool?",
     "boost": "Want to boost up incentives for this pool?"

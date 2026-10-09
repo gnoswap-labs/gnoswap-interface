@@ -42,9 +42,16 @@ describe("useGetPositionRewards", () => {
   });
 
   it("retains previously loaded rewards when a refresh fails", async () => {
-    const rewards = {
-      totalUsd: { claimable: { total: "7" }, claimed: { total: "3" } },
-    } as PositionRewardsResponse;
+    const rewards: PositionRewardsResponse = {
+      claimed: { swapFee: [], internalReward: [], externalReward: [] },
+      claimable: { swapFee: [], internalReward: [], externalReward: [] },
+      positionsWithSwapFee: [],
+      positionsWithStakingReward: [],
+      totalUsd: {
+        claimable: { swapFee: "7", internalReward: "0", externalReward: "0", total: "7" },
+        claimed: { swapFee: "3", internalReward: "0", externalReward: "0", total: "3" },
+      },
+    };
     getPositionRewardsByAddress.mockResolvedValueOnce(rewards).mockRejectedValueOnce(new Error("connection failed"));
     const { result } = renderRewards();
     await waitFor(() => expect(result.current.data).toEqual(rewards));

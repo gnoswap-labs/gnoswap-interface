@@ -33,7 +33,7 @@ export const useGetPositionRewards = (
 
       return positionRepository.getPositionRewardsByAddress(address);
     },
-    keepPreviousData: true,
+    keepPreviousData: false,
     refetchInterval: REFETCH_INTERVAL,
     refetchOnMount: true,
     refetchOnReconnect: true,

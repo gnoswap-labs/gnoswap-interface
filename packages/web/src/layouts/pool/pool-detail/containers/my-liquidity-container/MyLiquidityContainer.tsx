@@ -86,12 +86,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   });
 
   const activePositionData = isShowClosePosition ? allPositionData : openPositionData;
-  const {
-    positions,
-    loading: isLoadingPosition,
-    refetch: refetchPositions,
-    totalPositionCount,
-  } = activePositionData;
+  const { positions, loading: isLoadingPosition, refetch: refetchPositions, totalPositionCount } = activePositionData;
 
   const loadedPositions = useMemo<PoolPositionModel[]>(() => {
     if (!address || !poolPath) {
@@ -119,6 +114,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     invalidateQueryKey("MyLiquidity, Claim", [
       [QUERY_KEY.tokenBalancesByAddress, address],
       [QUERY_KEY.positions, currentChainId, address],
+      [QUERY_KEY.positionSummary, currentChainId, address],
       [QUERY_KEY.poolLiquidityTicks],
     ]);
   }, [invalidateQueryKey, currentChainId, address]);

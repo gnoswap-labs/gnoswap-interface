@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import { fn } from "@storybook/test";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
+
+import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapServiceProvider";
+import { SocialWalletProvider } from "@providers/social-wallet-provider/SocialWalletProvider";
 
 import { DEVICE_TYPE } from "@styles/media";
 
@@ -9,6 +14,21 @@ const meta = {
   title: "wallet/WalletBalance",
   component: WalletBalance,
   tags: ["autodocs"],
+  args: { tokens: [], tokenPrices: {}, positionRewards: null, isSwitchNetwork: false, loadngTransactionClaim: false },
+  decorators: [
+    function WithWalletServices(Story) {
+      const [queryClient] = useState(() => new QueryClient());
+      return (
+        <QueryClientProvider client={queryClient}>
+          <GnoswapServiceProvider>
+            <SocialWalletProvider>
+              <Story />
+            </SocialWalletProvider>
+          </GnoswapServiceProvider>
+        </QueryClientProvider>
+      );
+    },
+  ],
 } satisfies Meta<typeof WalletBalance>;
 
 export default meta;
@@ -17,6 +37,7 @@ type Story = StoryObj<typeof WalletBalance>;
 export const ConnectionSucceeded: Story = {
   args: {
     connected: true,
+    positionSummary: { stakedUsd: "1.20", unstakedUsd: "1.30", stakedCount: 1, unstakedCount: 1 },
     balanceSummaryInfo: {
       amount: "$1,000.00",
       changeRate: "+1.1%",
@@ -29,6 +50,7 @@ export const ConnectionSucceeded: Story = {
       claimableRewards: "$1.40",
       loadingBalance: false,
       loadingPositions: false,
+      loadingRewards: false,
       totalClaimedRewards: "$1.50",
     },
     deposit: fn(),
@@ -41,6 +63,7 @@ export const ConnectionSucceeded: Story = {
 export const ConnectionFailed: Story = {
   args: {
     connected: false,
+    positionSummary: null,
     balanceSummaryInfo: {
       amount: "$0.00",
       changeRate: "+0%",
@@ -53,6 +76,7 @@ export const ConnectionFailed: Story = {
       claimableRewards: "$0.00",
       loadingBalance: false,
       loadingPositions: false,
+      loadingRewards: false,
       totalClaimedRewards: "$1.50",
     },
     deposit: fn(),
@@ -63,6 +87,7 @@ export const ConnectionFailed: Story = {
 export const LoadingData: Story = {
   args: {
     connected: true,
+    positionSummary: null,
     balanceSummaryInfo: {
       amount: "$0.00",
       changeRate: "+0%",
@@ -75,6 +100,7 @@ export const LoadingData: Story = {
       claimableRewards: "$0.00",
       loadingBalance: false,
       loadingPositions: false,
+      loadingRewards: false,
       totalClaimedRewards: "$1.50",
     },
     deposit: fn(),

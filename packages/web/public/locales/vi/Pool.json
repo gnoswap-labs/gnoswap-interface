@@ -1,4 +1,12 @@
 {
+  "chart": {
+    "empty": "Không có nến giá trong khoảng thời gian này.",
+    "error": "Không thể tải lịch sử giá.",
+    "liquidity": "Khả năng thanh khoản",
+    "price": "Giá",
+    "retry": "Thử lại",
+    "searchOlder": "Tìm kiếm lịch sử trước đây"
+  },
   "gotoIncentivizeGuide": {
     "add": "Bạn có muốn cộng các khoản khuyến khích cho nhóm này không?",
     "boost": "Bạn có muốn tăng mức thưởng cho nhóm này không?"

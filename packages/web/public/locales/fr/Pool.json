@@ -1,4 +1,12 @@
 {
+  "chart": {
+    "empty": "Aucune bougie de cours n'apparaît sur cette période.",
+    "error": "Impossible de charger l'historique des prix.",
+    "liquidity": "Liquidité",
+    "price": "Prix",
+    "retry": "Réessayer",
+    "searchOlder": "Rechercher dans l'historique antérieur"
+  },
   "gotoIncentivizeGuide": {
     "add": "Vous voulez ajouter des incitants pour cette piscine ?",
     "boost": "Vous souhaitez renforcer les mesures d'incitation pour cette piscine ?"

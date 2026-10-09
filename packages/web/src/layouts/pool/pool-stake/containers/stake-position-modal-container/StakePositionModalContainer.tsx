@@ -55,6 +55,7 @@ const StakePositionModalContainer = ({ positions, refetchPositions }: StakePosit
     invalidateQueryKey("StakePosition", [
       [QUERY_KEY.pools],
       [QUERY_KEY.positions, currentChainId, address],
+      [QUERY_KEY.positionSummary, currentChainId, address],
       [QUERY_KEY.poolDetail, poolPath],
       [QUERY_KEY.poolLiquidityTicks],
     ]);

@@ -25,6 +25,13 @@
     "switchNetwork": "Chuyển sang Gnoland",
     "walletLogin": "Đăng nhập bằng ví"
   },
+  "candleTooltip": {
+    "close": "Đóng",
+    "high": "Cao",
+    "low": "Thấp",
+    "open": "Mở",
+    "volume": "Khối lượng"
+  },
   "clickHere": "Nhấp vào đây!",
   "closed": "Đã đóng",
   "conjunction": {

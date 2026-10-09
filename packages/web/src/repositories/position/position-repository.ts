@@ -16,6 +16,7 @@ import {
   IncreaseLiquidityFailedResponse,
   IncreaseLiquiditySuccessResponse,
   PositionRewardsResponse,
+  PositionSummaryResponse,
   RepositionLiquidityFailedResponse,
   RepositionLiquiditySuccessResponse,
 } from "./response";
@@ -44,6 +45,8 @@ export interface PositionRepository {
   ) => Promise<GetPositionsByAddressResult>;
 
   getPositionRewardsByAddress: (address: string) => Promise<PositionRewardsResponse | null>;
+
+  getPositionSummaryByAddress: (address: string, poolPath?: string) => Promise<PositionSummaryResponse>;
 
   getPositionById: (lpTokenId: string, timeout?: number) => Promise<PositionModel>;
 

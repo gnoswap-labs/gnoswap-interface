@@ -18,6 +18,11 @@ interface WalletBalanceDetailInfoProps {
   tooltip?: string;
   value: string;
   valueTooltip?: React.ReactNode;
+  interactiveValueTooltip?: boolean;
+  valueTooltipReady?: boolean;
+  valueTooltipActive?: boolean;
+  valueTooltipScope?: string;
+  onValueTooltipInteractionChange?: (active: boolean) => void;
   button?: React.ReactNode;
   loading: boolean;
   className?: string;
@@ -32,6 +37,11 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
   tooltip,
   value,
   valueTooltip,
+  interactiveValueTooltip = false,
+  valueTooltipReady = true,
+  valueTooltipActive,
+  valueTooltipScope,
+  onValueTooltipInteractionChange,
   button,
   loading,
   className,
@@ -41,6 +51,11 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
   const valueRef = useRef<HTMLDivElement | null>(null);
   const [fontSize, setFontSize] = useState(24);
   const { width } = useWindowSize();
+  const hovered = useRef(false);
+  const focused = useRef(false);
+  // Only an already shown tooltip may rely on safePolygon after leaving its amount.
+  const [openTooltipScope, setOpenTooltipScope] = useState<string | null>(null);
+  const valueTooltipOpen = openTooltipScope === (valueTooltipScope ?? "") && valueTooltipReady;
 
   useEffect(() => {
     const divElement = divRef.current;
@@ -76,9 +91,33 @@ const WalletBalanceDetailInfo: React.FC<WalletBalanceDetailInfoProps> = ({
               <span css={pulseSkeletonStyle({ h: 20, w: "120px" })} />
             </div>
           ) : (
-            <Tooltip placement="top" forcedClose={!valueTooltip} FloatingContent={valueTooltip} scroll>
+            <Tooltip
+              placement="top"
+              forcedClose={!valueTooltip || !valueTooltipReady || (valueTooltipActive === false && !valueTooltipOpen)}
+              onChangeOpen={open => setOpenTooltipScope(open ? valueTooltipScope ?? "" : null)}
+              FloatingContent={valueTooltip}
+              scroll={!interactiveValueTooltip}
+              interactive={interactiveValueTooltip}
+            >
               <span
                 className={`value ${valueTooltip ? "has-tooltip" : ""}`}
+                tabIndex={interactiveValueTooltip && valueTooltip ? 0 : undefined}
+                onMouseEnter={() => {
+                  hovered.current = true;
+                  onValueTooltipInteractionChange?.(true);
+                }}
+                onMouseLeave={() => {
+                  hovered.current = false;
+                  onValueTooltipInteractionChange?.(focused.current);
+                }}
+                onFocus={() => {
+                  focused.current = true;
+                  onValueTooltipInteractionChange?.(true);
+                }}
+                onBlur={() => {
+                  focused.current = false;
+                  onValueTooltipInteractionChange?.(hovered.current);
+                }}
                 style={isClaim ? { fontSize: `${fontSize}px` } : {}}
               >
                 {displayValue}

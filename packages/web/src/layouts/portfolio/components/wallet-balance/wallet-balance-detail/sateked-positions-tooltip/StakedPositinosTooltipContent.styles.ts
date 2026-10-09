@@ -3,9 +3,15 @@ import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
 export const StakedPostionsTooltipContentWrapper = styled.div`
-  min-width: 300px;
-  ${mixins.flexbox("column", "center", "center")}
+  width: min(300px, calc(100vw - 42px));
+  max-height: min(65vh, 400px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  ${mixins.flexbox("column", "flex-start", "flex-start")}
   gap: 16px;
+  & > * {
+    flex-shrink: 0;
+  }
 `;
 
 export const TokenItem = styled.div`

@@ -5,7 +5,10 @@ import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import IconAddPositionCircle from "@components/common/icons/IconAddPositionCircle";
 import IconRemovePositionCircle from "@components/common/icons/IconRemovePositionCircle";
 import IconSwapCircle from "@components/common/icons/IconSwapCircle";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
+import { QUERY_KEY } from "@query/query-keys";
 import { RepositionLiquidityFailedResponse, RepositionLiquiditySuccessResponse } from "@repositories/position/response";
 import {
   SwapRouteFailedResponse,
@@ -43,6 +46,8 @@ const RepositionBroadcastProgress: React.FC<RepositionBroadcastProgressProps> = 
   isSkipSwap,
 }) => {
   const { t } = useTranslation();
+  const { account, currentChainId } = useWallet();
+  const { invalidateQueryKey } = useInvalidateQueries();
 
   const [removePositionState, setRemovePositionState] = useState<ProgressStateType>("NONE");
   const [swapState, setSwapState] = useState<ProgressStateType>("NONE");
@@ -86,6 +91,10 @@ const RepositionBroadcastProgress: React.FC<RepositionBroadcastProgressProps> = 
       setRemovePositionState("BROADCAST");
       wait(async () => true, 1000).then(() => {
         setRemovePositionState("SUCCESS");
+        invalidateQueryKey("RepositionRemove", [
+          [QUERY_KEY.positions, currentChainId, account?.address],
+          [QUERY_KEY.positionSummary, currentChainId, account?.address],
+        ]);
         callback();
       });
     });
@@ -157,6 +166,10 @@ const RepositionBroadcastProgress: React.FC<RepositionBroadcastProgressProps> = 
       setAddPositionState("BROADCAST");
       wait(async () => true, 1000).then(() => {
         setAddPositionState("SUCCESS");
+        invalidateQueryKey("RepositionAdd", [
+          [QUERY_KEY.positions, currentChainId, account?.address],
+          [QUERY_KEY.positionSummary, currentChainId, account?.address],
+        ]);
         callback();
       });
     });

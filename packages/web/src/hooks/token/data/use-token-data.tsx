@@ -74,6 +74,22 @@ export const useTokenData = (showUnverified = true) => {
         .filter((token): token is TokenModel => token !== null),
     [enabledSwapExtensions, tokens],
   );
+  // Read from the current wallet queries, not the unkeyed atom updated after render.
+  const walletBalances = useMemo(() => {
+    const balanceMap: Record<string, number | string | null> = {};
+    tokens.forEach(token => {
+      if (isNativeTokenByType(token.type)) {
+        balanceMap[token.path] = gnotBalance ?? null;
+        return;
+      }
+
+      balanceMap[token.path] = grc20BalancesData?.data
+        ? grc20BalancesData.data.find(balance => balance.path === token.path)?.amount ?? "0"
+        : null;
+    });
+    return balanceMap;
+  }, [gnotBalance, grc20BalancesData, tokens]);
+
   const displayBalanceMap = useMemo(() => {
     const tokenBalanceMap: { [key in string]: number | null } = {};
     if (tokens.length === 0) return {};
@@ -352,9 +368,10 @@ export const useTokenData = (showUnverified = true) => {
     displayBalanceMap,
     displayBalanceStringMap,
     balances,
+    walletBalances,
     trendingTokens,
     hasBalanceData: gnotBalance != null && grc20BalancesData?.data != null,
-    isLoadingBalanceData: isLoadingGrc20Balances,
+    isLoadingBalanceData: isLoadingGrc20Balances || loading,
     hasTokenPriceData: tokenPricesData !== undefined,
     recentlyAddedTokens,
     getTokenSymbol,

@@ -7,6 +7,12 @@
     },
     "title": "{{symbol}}에 최적인 풀"
   },
+  "chart": {
+    "empty": "이 기간에 대한 가격 캔들이 없습니다.",
+    "error": "가격 캔들을 불러올 수 없습니다.",
+    "retry": "다시 시도",
+    "searchOlder": "이전 기록 검색"
+  },
   "description": {
     "empty": "토큰 정보 없음",
     "links": "링크",

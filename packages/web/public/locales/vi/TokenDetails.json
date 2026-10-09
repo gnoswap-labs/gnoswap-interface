@@ -7,6 +7,12 @@
     },
     "title": "Các Pool tốt nhất cho {{symbol}}"
   },
+  "chart": {
+    "empty": "Không có nến giá nào cho khoảng thời gian này.",
+    "error": "Không thể tải biểu đồ nến giá.",
+    "retry": "Thử lại",
+    "searchOlder": "Tìm kiếm lịch sử trước đây"
+  },
   "description": {
     "empty": "Không có thông tin về token",
     "links": "Liên kết",

@@ -1,4 +1,12 @@
 {
+  "chart": {
+    "empty": "该期间内没有价格K线。",
+    "error": "无法加载价格历史数据。",
+    "liquidity": "流动性",
+    "price": "价格",
+    "retry": "重试",
+    "searchOlder": "搜索历史记录"
+  },
   "gotoIncentivizeGuide": {
     "add": "想要为这个泳池增加奖励？",
     "boost": "想提高对该泳池的奖励？"

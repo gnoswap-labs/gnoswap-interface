@@ -115,6 +115,7 @@ export const usePoolAddLiquidityConfirmModal = ({
 
     invalidateQueryKey("AddLiquidity", [
       [QUERY_KEY.positions, currentChainId, address],
+      [QUERY_KEY.positionSummary, currentChainId, address],
       [QUERY_KEY.pools],
       [QUERY_KEY.poolDetail, poolPath],
       [QUERY_KEY.poolLiquidityTicks],

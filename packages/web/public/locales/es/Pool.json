@@ -1,4 +1,12 @@
 {
+  "chart": {
+    "empty": "No hay velas de precio en este periodo.",
+    "error": "No se ha podido cargar el historial de precios.",
+    "liquidity": "Liquidez",
+    "price": "Precio",
+    "retry": "Volver a intentarlo",
+    "searchOlder": "Buscar en el historial anterior"
+  },
   "gotoIncentivizeGuide": {
     "add": "¿Quieres sumar incentivos para esta piscina?",
     "boost": "¿Quieres aumentar los incentivos para esta piscina?"

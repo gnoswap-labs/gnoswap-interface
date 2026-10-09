@@ -13,6 +13,12 @@ const LOADING_SIZE_MAP = {
     mobileContainer: 30,
     mobileCircle: 22,
   },
+  CHART: {
+    container: 40,
+    circle: 32,
+    mobileContainer: 40,
+    mobileCircle: 32,
+  },
   MEDIUM: {
     container: 60,
     circle: 48,
@@ -24,11 +30,15 @@ const LOADING_SIZE_MAP = {
 const LoadingSpinner = ({
   className,
   size = "DEFAULT",
+  delay = 0,
 }: {
   className?: string;
-  size?: "DEFAULT" | "SMALL" | "MEDIUM";
+  size?: keyof typeof LOADING_SIZE_MAP;
+  delay?: number;
 }) => {
-  return <LoadingSpinnerWrapper className={className} {...LOADING_SIZE_MAP[size]} />;
+  return (
+    <LoadingSpinnerWrapper className={className} delay={delay} hollow={size === "CHART"} {...LOADING_SIZE_MAP[size]} />
+  );
 };
 
 export default LoadingSpinner;

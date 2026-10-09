@@ -25,6 +25,13 @@
     "switchNetwork": "グノランドへ移動",
     "walletLogin": "ウォレットログイン"
   },
+  "candleTooltip": {
+    "close": "閉じる",
+    "high": "高い",
+    "low": "低",
+    "open": "開く",
+    "volume": "巻数"
+  },
   "clickHere": "ここをクリック",
   "closed": "クローズド",
   "conjunction": {

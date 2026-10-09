@@ -1,0 +1,2 @@
+export const LOADING_INDICATOR_DELAY_MS = 1500;
+export const CHART_LOADING_DELAY_MS = 500;

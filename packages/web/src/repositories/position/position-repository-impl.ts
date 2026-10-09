@@ -39,6 +39,7 @@ import {
   PositionListResponse,
   PositionResponse,
   PositionRewardsResponse,
+  PositionSummaryResponse,
   RepositionLiquidityFailedResponse,
   RepositionLiquiditySuccessResponse,
 } from "./response";
@@ -161,6 +162,31 @@ export class PositionRepositoryImpl implements PositionRepository {
       throw new Error("Missing position rewards response");
     }
     return response.data.data;
+  };
+
+  getPositionSummaryByAddress = async (address: string, poolPath?: string): Promise<PositionSummaryResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await this.networkClient.get<{ data: PositionSummaryResponse }>({
+      url: "/users/" + address + "/position/summary" + (poolPath ? `?poolPath=${encodeURIComponent(poolPath)}` : ""),
+    });
+    const summary = response?.data?.data;
+    if (
+      !summary ||
+      typeof summary.stakedUsd !== "string" ||
+      typeof summary.unstakedUsd !== "string" ||
+      !/^\d+(?:\.\d+)?$/.test(summary.stakedUsd) ||
+      !/^\d+(?:\.\d+)?$/.test(summary.unstakedUsd) ||
+      !Number.isSafeInteger(summary.stakedCount) ||
+      summary.stakedCount < 0 ||
+      !Number.isSafeInteger(summary.unstakedCount) ||
+      summary.unstakedCount < 0
+    ) {
+      throw new Error("Invalid position summary response");
+    }
+    return summary;
   };
 
   sendClaim = async (request: ClaimRequest): Promise<WalletResponse<SendTransactionResponse<string[] | null>>> => {

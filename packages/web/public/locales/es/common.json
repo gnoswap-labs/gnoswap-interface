@@ -25,6 +25,13 @@
     "switchNetwork": "Cambiar a Gnolandia",
     "walletLogin": "Inicio de sesión en Wallet"
   },
+  "candleTooltip": {
+    "close": "Cerrar",
+    "high": "Alto",
+    "low": "Bajo",
+    "open": "Abrir",
+    "volume": "Volumen"
+  },
   "clickHere": "Haga clic aquí",
   "closed": "Cerrado",
   "conjunction": {
