@@ -5,11 +5,20 @@ Thank you for considering contributing to the Gnoswap Interface! We value and ap
 
 **Steps**
 1. Check existing issues or pull requests before submitting a new one to avoid duplicate submissions.
-2. Fork the Gnoscan repository.
-3. Create a new branch for your changes.
+2. Fork the Gnoswap Interface repository.
+3. Create a new branch from the latest `develop` branch for your changes.
 4. Make changes and commit them with a concise and descriptive message using the [Conventional Commits](https://www.conventionalcommits.org/) format. Please check spelling, grammar, and remove any trailing whitespace.
 5. Push your branch to your forked repository.
-6. Submit a pull request to our main branch.
+6. Submit a pull request with `develop` as the base branch.
+
+**Branch Policy**
+- `develop` is the default branch and deploys to the dev environment.
+- `stg` deploys to the stg environment (`develop` → `stg` pull requests).
+- `main` is the release candidate branch (`stg` → `main` pull requests) and does not deploy.
+
+**Release**
+- testnet and mainnet are deployed only by the `release` workflow, run from `main` by maintainers. It creates a `testnet-vX.Y.Z` or `mainnet-vX.Y.Z` tag, publishes release notes since the previous tag with the same prefix, and deploys that commit to Vercel.
+- Add the `skip-changelog` label to pull requests that should not appear in release notes.
 
 **Pull Request Title**
 Your pull request title must follow the conventional commits format and start with one of the following types:
