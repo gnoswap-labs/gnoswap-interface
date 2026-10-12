@@ -1,0 +1,187 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      prefix:
+        description: Tag prefix
+        required: true
+        type: choice
+        options:
+          - testnet
+          - mainnet
+      version:
+        description: Version (X.Y.Z)
+        required: true
+        type: string
+
+concurrency:
+  group: release-${{ inputs.prefix }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    name: Create tag and release notes
+    # Releases are allowed only from main or chain/*
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/chain/')
+    runs-on: ubuntu-latest
+    environment: release
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+      slack_ts: ${{ steps.slack.outputs.ts }}
+    steps:
+      - name: Issue release App token
+        id: app
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app.outputs.token }}
+
+      - name: Validate tag
+        id: tag
+        env:
+          PREFIX: ${{ inputs.prefix }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          if ! echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::Version must be X.Y.Z"; exit 1
+          fi
+          tag="${PREFIX}-v${VERSION}"
+          if git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
+            echo "::error::Tag ${tag} already exists"; exit 1
+          fi
+          # Previous tag with the same prefix
+          prev=$(git tag --list "${PREFIX}-v*" --sort=-v:refname \
+            | grep -E "^${PREFIX}-v[0-9]+\.[0-9]+\.[0-9]+$" | head -n1 || true)
+          if [ -n "$prev" ]; then
+            prev_ver="${prev#"${PREFIX}"-v}"
+            top=$(printf '%s\n%s\n' "$prev_ver" "$VERSION" | sort -V | tail -n1)
+            if [ "$top" != "$VERSION" ] || [ "$prev_ver" = "$VERSION" ]; then
+              echo "::error::${VERSION} must be higher than ${prev}"; exit 1
+            fi
+          fi
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          echo "prev=${prev}" >> "$GITHUB_OUTPUT"
+
+      - name: Push tag
+        env:
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          git tag "$TAG" "$GITHUB_SHA"
+          git push origin "refs/tags/${TAG}"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          TAG: ${{ steps.tag.outputs.tag }}
+          PREV: ${{ steps.tag.outputs.prev }}
+        run: |
+          args=(--verify-tag --title "$TAG" --generate-notes)
+          if [ -n "$PREV" ]; then args+=(--notes-start-tag "$PREV"); fi
+          gh release create "$TAG" "${args[@]}"
+
+      - name: Post to Slack
+        id: slack
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          TAG: ${{ steps.tag.outputs.tag }}
+          PREV: ${{ steps.tag.outputs.prev }}
+          SLACK_TOKEN: ${{ secrets.SLACK_RELEASE_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ vars.SLACK_RELEASE_CHANNEL_ID }}
+        run: |
+          if [ -z "$SLACK_TOKEN" ] || [ -z "$SLACK_CHANNEL" ]; then
+            echo "Slack is not configured, skipping"; exit 0
+          fi
+          url=$(gh release view "$TAG" --json url -q .url)
+          # GitHub markdown -> Slack mrkdwn
+          body=$(gh release view "$TAG" --json body -q .body \
+            | sed -E 's/^#+ (.*)$/*\1*/; s/\[([^]]+)\]\(([^)]+)\)/<\2|\1>/g' | head -c 2800)
+          header="*${GITHUB_REPOSITORY}* \`${TAG}\` (since: \`${PREV:-initial}\`) by ${GITHUB_ACTOR}"
+          res=$(jq -n --arg ch "$SLACK_CHANNEL" --arg h "$header" --arg b "${body:-No changes}" --arg u "$url" '{
+              channel: $ch, text: $h,
+              blocks: [
+                {type: "section", text: {type: "mrkdwn", text: $h}},
+                {type: "section", text: {type: "mrkdwn", text: $b}},
+                {type: "context", elements: [{type: "mrkdwn", text: ("<" + $u + "|Full release notes>")}]}
+              ]}' \
+            | curl -sS -X POST https://slack.com/api/chat.postMessage \
+                -H "Authorization: Bearer ${SLACK_TOKEN}" \
+                -H 'Content-Type: application/json; charset=utf-8' -d @-)
+          if [ "$(echo "$res" | jq -r .ok)" != "true" ]; then
+            echo "::warning::Slack post failed: $(echo "$res" | jq -r .error)"; exit 0
+          fi
+          echo "ts=$(echo "$res" | jq -r .ts)" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    name: Deploy to Vercel (${{ inputs.prefix }})
+    needs: prepare
+    runs-on: ubuntu-latest
+    outputs:
+      url: ${{ steps.deploy.outputs.url }}
+    env:
+      VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      PREFIX: ${{ inputs.prefix }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.tag }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Enable corepack
+        run: corepack enable
+
+      # mainnet -> Production, testnet -> custom environment "testnet"
+      - name: Pull Vercel settings
+        run: |
+          if [ "$PREFIX" = "mainnet" ]; then env=production; else env=testnet; fi
+          npx --yes vercel@63 pull --yes --environment="$env" --token "$VERCEL_TOKEN"
+
+      - name: Build
+        run: |
+          if [ "$PREFIX" = "mainnet" ]; then target=(--prod); else target=(--target=testnet); fi
+          npx --yes vercel@63 build "${target[@]}" --token "$VERCEL_TOKEN"
+
+      - name: Deploy
+        id: deploy
+        run: |
+          if [ "$PREFIX" = "mainnet" ]; then target=(--prod); else target=(--target=testnet); fi
+          url=$(npx --yes vercel@63 deploy --prebuilt "${target[@]}" --token "$VERCEL_TOKEN")
+          echo "url=${url}" >> "$GITHUB_OUTPUT"
+
+  notify:
+    name: Notify deploy result
+    needs: [prepare, deploy]
+    if: always() && needs.prepare.result == 'success' && needs.prepare.outputs.slack_ts != ''
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post result to Slack thread
+        env:
+          SLACK_TOKEN: ${{ secrets.SLACK_RELEASE_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ vars.SLACK_RELEASE_CHANNEL_ID }}
+          THREAD_TS: ${{ needs.prepare.outputs.slack_ts }}
+          RESULT: ${{ needs.deploy.result }}
+          DEPLOY_URL: ${{ needs.deploy.outputs.url }}
+          TAG: ${{ needs.prepare.outputs.tag }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ "$RESULT" = "success" ]; then status="deployed"; else status="deploy failed (${RESULT})"; fi
+          text="\`${TAG}\` ${status} <${RUN_URL}|run log>"
+          if [ -n "$DEPLOY_URL" ]; then text="${text} | <${DEPLOY_URL}|deployment>"; fi
+          jq -n --arg ch "$SLACK_CHANNEL" --arg ts "$THREAD_TS" --arg t "$text" \
+            '{channel: $ch, thread_ts: $ts, text: $t}' \
+          | curl -sS -X POST https://slack.com/api/chat.postMessage \
+              -H "Authorization: Bearer ${SLACK_TOKEN}" \
+              -H 'Content-Type: application/json; charset=utf-8' -d @- >/dev/null
