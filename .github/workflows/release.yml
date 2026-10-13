@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       prefix:
-        description: Tag prefix
+        description: Tag prefix (ignored when redeploying)
         required: true
         type: choice
         options:
@@ -12,11 +12,16 @@ on:
           - mainnet
       version:
         description: Version (X.Y.Z)
-        required: true
+        required: false
         type: string
+      redeploy:
+        description: Redeploy the existing tag selected in 'Use workflow from' (skips tag and release creation)
+        required: false
+        type: boolean
+        default: false
 
 concurrency:
-  group: release-${{ inputs.prefix }}
+  group: release-${{ inputs.redeploy && (startsWith(github.ref_name, 'mainnet-') && 'mainnet' || 'testnet') || inputs.prefix }}
   cancel-in-progress: false
 
 permissions:
@@ -25,12 +30,15 @@ permissions:
 jobs:
   prepare:
     name: Create tag and release notes
-    # Releases are allowed only from main or chain/*
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/chain/')
+    # New releases run from main or chain/*; redeploys run from a release tag
+    if: >-
+      (!inputs.redeploy && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/chain/'))) ||
+      (inputs.redeploy && github.ref_type == 'tag')
     runs-on: ubuntu-latest
     environment: release
     outputs:
       tag: ${{ steps.tag.outputs.tag }}
+      prefix: ${{ steps.tag.outputs.prefix }}
       slack_ts: ${{ steps.slack.outputs.ts }}
     steps:
       - name: Issue release App token
@@ -50,7 +58,28 @@ jobs:
         env:
           PREFIX: ${{ inputs.prefix }}
           VERSION: ${{ inputs.version }}
+          REDEPLOY: ${{ inputs.redeploy }}
         run: |
+          if [ "$REDEPLOY" = "true" ]; then
+            tag="$GITHUB_REF_NAME"
+            ref_prefix="${tag%-v*}"
+            ref_version="${tag##*-v}"
+            case "$ref_prefix" in
+              testnet|mainnet) ;;
+              *) echo "::error::${tag} is not a release tag (testnet-vX.Y.Z or mainnet-vX.Y.Z)"; exit 1 ;;
+            esac
+            if ! echo "$ref_version" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+              echo "::error::${tag} is not a release tag (version must be X.Y.Z)"; exit 1
+            fi
+            {
+              echo "tag=${tag}"
+              echo "prefix=${ref_prefix}"
+              echo "version=${ref_version}"
+              echo "prev="
+              echo "redeploy=true"
+            } >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           if ! echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
             echo "::error::Version must be X.Y.Z"; exit 1
           fi
@@ -68,10 +97,23 @@ jobs:
               echo "::error::${VERSION} must be higher than ${prev}"; exit 1
             fi
           fi
-          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
-          echo "prev=${prev}" >> "$GITHUB_OUTPUT"
+          # All tags of the same version must point to the same commit
+          for t in $(git tag --list "*-v${VERSION}"); do
+            c=$(git rev-parse "${t}^{commit}")
+            if [ "$c" != "$GITHUB_SHA" ]; then
+              echo "::error::${t} points to ${c:0:7}, not ${GITHUB_SHA:0:7}"; exit 1
+            fi
+          done
+          {
+            echo "tag=${tag}"
+            echo "prefix=${PREFIX}"
+            echo "version=${VERSION}"
+            echo "prev=${prev}"
+            echo "redeploy=false"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Push tag
+        if: steps.tag.outputs.redeploy != 'true'
         env:
           TAG: ${{ steps.tag.outputs.tag }}
         run: |
@@ -79,6 +121,7 @@ jobs:
           git push origin "refs/tags/${TAG}"
 
       - name: Create GitHub Release
+        if: steps.tag.outputs.redeploy != 'true'
         env:
           GH_TOKEN: ${{ steps.app.outputs.token }}
           TAG: ${{ steps.tag.outputs.tag }}
@@ -96,22 +139,30 @@ jobs:
           PREV: ${{ steps.tag.outputs.prev }}
           SLACK_TOKEN: ${{ secrets.SLACK_RELEASE_BOT_TOKEN }}
           SLACK_CHANNEL: ${{ vars.SLACK_RELEASE_CHANNEL_ID }}
+          REDEPLOY: ${{ steps.tag.outputs.redeploy }}
         run: |
           if [ -z "$SLACK_TOKEN" ] || [ -z "$SLACK_CHANNEL" ]; then
             echo "Slack is not configured, skipping"; exit 0
           fi
-          url=$(gh release view "$TAG" --json url -q .url)
-          # GitHub markdown -> Slack mrkdwn
-          body=$(gh release view "$TAG" --json body -q .body \
-            | sed -E 's/^#+ (.*)$/*\1*/; s/\[([^]]+)\]\(([^)]+)\)/<\2|\1>/g' | head -c 2800)
-          header="*${GITHUB_REPOSITORY}* \`${TAG}\` (since: \`${PREV:-initial}\`) by ${GITHUB_ACTOR}"
-          res=$(jq -n --arg ch "$SLACK_CHANNEL" --arg h "$header" --arg b "${body:-No changes}" --arg u "$url" '{
-              channel: $ch, text: $h,
-              blocks: [
-                {type: "section", text: {type: "mrkdwn", text: $h}},
-                {type: "section", text: {type: "mrkdwn", text: $b}},
-                {type: "context", elements: [{type: "mrkdwn", text: ("<" + $u + "|Full release notes>")}]}
-              ]}' \
+          if [ "$REDEPLOY" = "true" ]; then
+            payload=$(jq -n --arg ch "$SLACK_CHANNEL" \
+              --arg t "*${GITHUB_REPOSITORY}* \`${TAG}\` redeploy by ${GITHUB_ACTOR}" \
+              '{channel: $ch, text: $t}')
+          else
+            url=$(gh release view "$TAG" --json url -q .url)
+            # GitHub markdown -> Slack mrkdwn
+            body=$(gh release view "$TAG" --json body -q .body \
+              | sed -E 's/^#+ (.*)$/*\1*/; s/\[([^]]+)\]\(([^)]+)\)/<\2|\1>/g' | head -c 2800)
+            header="*${GITHUB_REPOSITORY}* \`${TAG}\` (since: \`${PREV:-initial}\`) by ${GITHUB_ACTOR}"
+            payload=$(jq -n --arg ch "$SLACK_CHANNEL" --arg h "$header" --arg b "${body:-No changes}" --arg u "$url" '{
+                channel: $ch, text: $h,
+                blocks: [
+                  {type: "section", text: {type: "mrkdwn", text: $h}},
+                  {type: "section", text: {type: "mrkdwn", text: $b}},
+                  {type: "context", elements: [{type: "mrkdwn", text: ("<" + $u + "|Full release notes>")}]}
+                ]}')
+          fi
+          res=$(echo "$payload" \
             | curl -sS -X POST https://slack.com/api/chat.postMessage \
                 -H "Authorization: Bearer ${SLACK_TOKEN}" \
                 -H 'Content-Type: application/json; charset=utf-8' -d @-)
@@ -121,7 +172,7 @@ jobs:
           echo "ts=$(echo "$res" | jq -r .ts)" >> "$GITHUB_OUTPUT"
 
   deploy:
-    name: Deploy to Vercel (${{ inputs.prefix }})
+    name: Deploy to Vercel (${{ needs.prepare.outputs.prefix }})
     needs: prepare
     runs-on: ubuntu-latest
     outputs:
@@ -130,7 +181,7 @@ jobs:
       VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      PREFIX: ${{ inputs.prefix }}
+      PREFIX: ${{ needs.prepare.outputs.prefix }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -143,22 +194,25 @@ jobs:
       - name: Enable corepack
         run: corepack enable
 
+      - name: Install Vercel CLI
+        run: npm install --global --ignore-scripts vercel@63.1.2
+
       # mainnet -> Production, testnet -> custom environment "testnet"
       - name: Pull Vercel settings
         run: |
           if [ "$PREFIX" = "mainnet" ]; then env=production; else env=testnet; fi
-          npx --yes vercel@63 pull --yes --environment="$env" --token "$VERCEL_TOKEN"
+          vercel pull --yes --environment="$env" --token "$VERCEL_TOKEN"
 
       - name: Build
         run: |
           if [ "$PREFIX" = "mainnet" ]; then target=(--prod); else target=(--target=testnet); fi
-          npx --yes vercel@63 build "${target[@]}" --token "$VERCEL_TOKEN"
+          vercel build "${target[@]}" --token "$VERCEL_TOKEN"
 
       - name: Deploy
         id: deploy
         run: |
           if [ "$PREFIX" = "mainnet" ]; then target=(--prod); else target=(--target=testnet); fi
-          url=$(npx --yes vercel@63 deploy --prebuilt "${target[@]}" --token "$VERCEL_TOKEN")
+          url=$(vercel deploy --prebuilt "${target[@]}" --token "$VERCEL_TOKEN")
           echo "url=${url}" >> "$GITHUB_OUTPUT"
 
   notify:
