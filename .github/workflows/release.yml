@@ -48,6 +48,19 @@ jobs:
           app-id: ${{ vars.RELEASE_APP_ID }}
           private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
 
+      - name: Check release permission
+        # Only service-managers team members can release
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          ORG: ${{ github.repository_owner }}
+          TEAM: ${{ vars.RELEASE_TEAM || 'service-managers' }}
+          ACTOR: ${{ github.triggering_actor }}
+        run: |
+          state=$(gh api "orgs/${ORG}/teams/${TEAM}/memberships/${ACTOR}" --jq .state 2>/dev/null || true)
+          if [ "$state" != "active" ]; then
+            echo "::error::${ACTOR} is not an active member of ${ORG}/${TEAM}"; exit 1
+          fi
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
