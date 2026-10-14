@@ -39,7 +39,7 @@ export const GovernanceSummaryWrapper = styled.div`
     background: none;
     color: inherit;
     font: inherit;
-    cursor: help;
+    cursor: default;
     &:hover {
       color: ${({ theme }) => theme.color.text07};
     }
