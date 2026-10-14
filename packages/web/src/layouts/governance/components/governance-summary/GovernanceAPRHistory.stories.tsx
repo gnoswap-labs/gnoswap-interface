@@ -17,6 +17,7 @@ export const Hover: Story = {
   args: {
     average: "5.84",
     dateLabel: "Date",
+    comparisonLabel: "vs 7D avg",
     locale: "en-US",
     days: [
       { date: "2026-10-14", apr: "6.02", estimated: true, asOf: "2026-10-14T09:00:00Z" },

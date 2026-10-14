@@ -9,10 +9,17 @@ interface GovernanceAPRHistoryProps {
   average: string;
   days: APRHistoryDay[];
   dateLabel: string;
+  comparisonLabel: string;
   locale: string;
 }
 
-const GovernanceAPRHistory: React.FC<GovernanceAPRHistoryProps> = ({ average, days, dateLabel, locale }) => {
+const GovernanceAPRHistory: React.FC<GovernanceAPRHistoryProps> = ({
+  average,
+  days,
+  dateLabel,
+  comparisonLabel,
+  locale,
+}) => {
   const weekday = new Intl.DateTimeFormat(locale, { weekday: "short", timeZone: "UTC" });
   const time = new Intl.DateTimeFormat(locale, {
     hour: "2-digit",
@@ -29,7 +36,7 @@ const GovernanceAPRHistory: React.FC<GovernanceAPRHistoryProps> = ({ average, da
           <tr>
             <th scope="col">{dateLabel}</th>
             <th scope="col">APR</th>
-            <th scope="col">Δ 7D</th>
+            <th scope="col">{comparisonLabel}</th>
           </tr>
         </thead>
         <tbody>
@@ -50,7 +57,7 @@ const GovernanceAPRHistory: React.FC<GovernanceAPRHistoryProps> = ({ average, da
                 <td>{displayedAPR.toFixed(2)}%</td>
                 <td>
                   {prefix}
-                  {difference.toFixed(2)} pp
+                  {difference.toFixed(2)}
                 </td>
               </tr>
             );

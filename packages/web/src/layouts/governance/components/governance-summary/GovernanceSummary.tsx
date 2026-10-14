@@ -203,6 +203,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
                     average={governanceSummary.apy}
                     days={governanceSummary.aprHistory}
                     dateLabel={t("Governance:myDel.tooltip.date")}
+                    comparisonLabel={t("Governance:summary.aprHistory.vs7dAvg", { defaultValue: "vs 7D avg" })}
                     locale={i18n.language || "en"}
                   />
                 }

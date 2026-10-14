@@ -10,7 +10,7 @@ import GovernanceSummary from "./GovernanceSummary";
 
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({
-    t: (key: string) => key,
+    t: (key: string, options?: { defaultValue?: string }) => options?.defaultValue ?? key,
     i18n: { language: "en-US" },
   }),
 }));
@@ -148,15 +148,16 @@ describe("GovernanceSummary Component", () => {
     );
 
     expect(screen.getByRole("button", { name: "5.84%" })).toBeDefined();
+    expect(screen.getByRole("columnheader", { name: "vs 7D avg" })).toBeDefined();
     const rows = screen.getAllByRole("row");
     expect(rows).toHaveLength(5);
     expect(rows[1]).toHaveTextContent("10/14 (Wed)");
     expect(rows[1]).toHaveTextContent("≈ 09:00 UTC");
     expect(rows[1]).toHaveTextContent("6.02%");
-    expect(rows[1]).toHaveTextContent("+0.18 pp");
-    expect(rows[2]).toHaveTextContent("+0.11 pp");
-    expect(rows[3]).toHaveTextContent("-0.04 pp");
-    expect(rows[4]).toHaveTextContent("0.00 pp");
+    expect(rows[1].querySelectorAll("td")[2]).toHaveTextContent(/^\+0\.18$/);
+    expect(rows[2].querySelectorAll("td")[2]).toHaveTextContent(/^\+0\.11$/);
+    expect(rows[3].querySelectorAll("td")[2]).toHaveTextContent(/^-0\.04$/);
+    expect(rows[4].querySelectorAll("td")[2]).toHaveTextContent(/^0\.00$/);
     expect(screen.queryByText("10/12 (Mon)")).toBeNull();
   });
 
