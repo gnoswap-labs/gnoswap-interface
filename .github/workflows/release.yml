@@ -1,0 +1,296 @@
+name: release
+
+on:
+  workflow_dispatch:
+    inputs:
+      prefix:
+        description: Tag prefix (ignored when redeploying)
+        required: true
+        type: choice
+        options:
+          - testnet
+          - mainnet
+      version:
+        description: Version (X.Y.Z)
+        required: false
+        type: string
+      redeploy:
+        description: Redeploy the existing tag selected in 'Use workflow from' (skips tag and release creation)
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: release-${{ inputs.redeploy && (startsWith(github.ref_name, 'mainnet-') && 'mainnet' || 'testnet') || inputs.prefix }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    name: Create tag and release notes
+    # New releases run from main or chain/*; redeploys run from a release tag
+    if: >-
+      (!inputs.redeploy && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/chain/'))) ||
+      (inputs.redeploy && github.ref_type == 'tag')
+    runs-on: ubuntu-latest
+    environment: release
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+      prefix: ${{ steps.tag.outputs.prefix }}
+      slack_ts: ${{ steps.slack.outputs.ts }}
+      slack_channel: ${{ steps.slack.outputs.channel }}
+      slack_text_b64: ${{ steps.slack.outputs.text_b64 }}
+    steps:
+      - name: Issue release App token
+        id: app
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+
+      - name: Check release permission
+        # Only service-managers team members can release
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          ORG: ${{ github.repository_owner }}
+          TEAM: ${{ vars.RELEASE_TEAM || 'service-managers' }}
+          ACTOR: ${{ github.triggering_actor }}
+        run: |
+          state=$(gh api "orgs/${ORG}/teams/${TEAM}/memberships/${ACTOR}" --jq .state 2>/dev/null || true)
+          if [ "$state" != "active" ]; then
+            echo "::error::${ACTOR} is not an active member of ${ORG}/${TEAM}"; exit 1
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.app.outputs.token }}
+
+      - name: Validate tag
+        id: tag
+        env:
+          PREFIX: ${{ inputs.prefix }}
+          VERSION: ${{ inputs.version }}
+          REDEPLOY: ${{ inputs.redeploy }}
+        run: |
+          if [ "$REDEPLOY" = "true" ]; then
+            tag="$GITHUB_REF_NAME"
+            ref_prefix="${tag%-v*}"
+            ref_version="${tag##*-v}"
+            case "$ref_prefix" in
+              testnet|mainnet) ;;
+              *) echo "::error::${tag} is not a release tag (testnet-vX.Y.Z or mainnet-vX.Y.Z)"; exit 1 ;;
+            esac
+            if ! echo "$ref_version" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+              echo "::error::${tag} is not a release tag (version must be X.Y.Z)"; exit 1
+            fi
+            {
+              echo "tag=${tag}"
+              echo "prefix=${ref_prefix}"
+              echo "version=${ref_version}"
+              echo "prev="
+              echo "redeploy=true"
+            } >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if ! echo "$VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "::error::Version must be X.Y.Z"; exit 1
+          fi
+          tag="${PREFIX}-v${VERSION}"
+          if git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
+            echo "::error::Tag ${tag} already exists"; exit 1
+          fi
+          # Previous tag with the same prefix
+          prev=$(git tag --list "${PREFIX}-v*" --sort=-v:refname \
+            | grep -E "^${PREFIX}-v[0-9]+\.[0-9]+\.[0-9]+$" | head -n1 || true)
+          if [ -n "$prev" ]; then
+            prev_ver="${prev#"${PREFIX}"-v}"
+            top=$(printf '%s\n%s\n' "$prev_ver" "$VERSION" | sort -V | tail -n1)
+            if [ "$top" != "$VERSION" ] || [ "$prev_ver" = "$VERSION" ]; then
+              echo "::error::${VERSION} must be higher than ${prev}"; exit 1
+            fi
+          fi
+          # All tags of the same version must point to the same commit
+          for t in $(git tag --list "*-v${VERSION}"); do
+            c=$(git rev-parse "${t}^{commit}")
+            if [ "$c" != "$GITHUB_SHA" ]; then
+              echo "::error::${t} points to ${c:0:7}, not ${GITHUB_SHA:0:7}"; exit 1
+            fi
+          done
+          {
+            echo "tag=${tag}"
+            echo "prefix=${PREFIX}"
+            echo "version=${VERSION}"
+            echo "prev=${prev}"
+            echo "redeploy=false"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Push tag
+        if: steps.tag.outputs.redeploy != 'true'
+        env:
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          git tag "$TAG" "$GITHUB_SHA"
+          git push origin "refs/tags/${TAG}"
+
+      - name: Create GitHub Release
+        if: steps.tag.outputs.redeploy != 'true'
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          TAG: ${{ steps.tag.outputs.tag }}
+          PREV: ${{ steps.tag.outputs.prev }}
+        run: |
+          args=(--verify-tag --title "$TAG" --generate-notes)
+          if [ -n "$PREV" ]; then args+=(--notes-start-tag "$PREV"); fi
+          gh release create "$TAG" "${args[@]}"
+
+      - name: Post to Slack
+        id: slack
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          TAG: ${{ steps.tag.outputs.tag }}
+          PREV: ${{ steps.tag.outputs.prev }}
+          PREFIX: ${{ steps.tag.outputs.prefix }}
+          REDEPLOY: ${{ steps.tag.outputs.redeploy }}
+          SLACK_TOKEN: ${{ secrets.SLACK_RELEASE_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ vars.SLACK_RELEASE_CHANNEL_ID }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ -z "$SLACK_TOKEN" ] || [ -z "$SLACK_CHANNEL" ]; then
+            echo "Slack is not configured, skipping"; exit 0
+          fi
+          release_url=$(gh release view "$TAG" --json url -q .url 2>/dev/null || true)
+          release_url="${release_url:-${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${TAG}}"
+          if [ "$REDEPLOY" = "true" ]; then
+            tag_line="- Tag: \`${TAG}\` (Redeploy)"
+            count="-"
+          else
+            if [ -n "$PREV" ]; then prev_label="\`${PREV}\`"; else prev_label="initial"; fi
+            tag_line="- Tag: \`${TAG}\` (${prev_label})"
+            if [ -n "$PREV" ]; then
+              count=$(git rev-list --count "${PREV}..${GITHUB_SHA}")
+            else
+              count=$(git rev-list --count "$GITHUB_SHA")
+            fi
+          fi
+          # $1: Deployment value
+          message() {
+            printf '%s\n' \
+              "[${GITHUB_REPOSITORY_OWNER}] ${GITHUB_REPOSITORY#*/} (${PREFIX})" \
+              "$tag_line" \
+              "- Change Commit: ${count}" \
+              "- Release Note: <${release_url}|Link>" \
+              "- Action Log: <${RUN_URL}|Link>" \
+              "- Deployment: $1"
+          }
+          post() {
+            curl -sS -X POST https://slack.com/api/chat.postMessage \
+              -H "Authorization: Bearer ${SLACK_TOKEN}" \
+              -H 'Content-Type: application/json; charset=utf-8' -d @- || true
+          }
+          res=$(jq -n --arg ch "$SLACK_CHANNEL" --arg t "$(message "Deploying")" \
+            '{channel: $ch, text: $t}' | post)
+          if [ "$(echo "$res" | jq -r .ok)" != "true" ]; then
+            echo "::warning::Slack post failed: $(echo "$res" | jq -r .error)"; exit 0
+          fi
+          ts=$(echo "$res" | jq -r .ts)
+          {
+            echo "ts=${ts}"
+            echo "channel=$(echo "$res" | jq -r .channel)"
+            # Main message template for the notify job
+            echo "text_b64=$(message "__DEPLOYMENT__" | base64 -w0)"
+          } >> "$GITHUB_OUTPUT"
+          if [ "$REDEPLOY" = "true" ]; then exit 0; fi
+          # Release notes in the thread (GitHub markdown -> Slack mrkdwn)
+          body=$(gh release view "$TAG" --json body -q .body \
+            | sed -E 's/^#+ (.*)$/*\1*/; s/\[([^]]+)\]\(([^)]+)\)/<\2|\1>/g')
+          if [ -z "$body" ]; then
+            body="No changes"
+          elif [ "${#body}" -gt 3500 ]; then
+            body="${body:0:3500}"$'\n'"… <${release_url}|View all>"
+          fi
+          res=$(jq -n --arg ch "$SLACK_CHANNEL" --arg ts "$ts" --arg t "$body" \
+            '{channel: $ch, thread_ts: $ts, text: $t}' | post)
+          if [ "$(echo "$res" | jq -r .ok)" != "true" ]; then
+            echo "::warning::Slack thread reply failed: $(echo "$res" | jq -r .error)"
+          fi
+
+  deploy:
+    name: Deploy to Vercel (${{ needs.prepare.outputs.prefix }})
+    needs: prepare
+    runs-on: ubuntu-latest
+    outputs:
+      url: ${{ steps.deploy.outputs.url }}
+    env:
+      VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      PREFIX: ${{ needs.prepare.outputs.prefix }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.tag }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - name: Install Vercel CLI
+        run: npm install --global --ignore-scripts vercel@63.1.2
+
+      # mainnet -> Production, testnet -> custom environment "testnet"
+      - name: Pull Vercel settings
+        run: |
+          if [ "$PREFIX" = "mainnet" ]; then env=production; else env=testnet; fi
+          vercel pull --yes --environment="$env" --token "$VERCEL_TOKEN"
+
+      - name: Build
+        run: |
+          if [ "$PREFIX" = "mainnet" ]; then target=(--prod); else target=(--target=testnet); fi
+          vercel build "${target[@]}" --token "$VERCEL_TOKEN"
+
+      - name: Deploy
+        id: deploy
+        run: |
+          if [ "$PREFIX" = "mainnet" ]; then target=(--prod); else target=(--target=testnet); fi
+          url=$(vercel deploy --prebuilt "${target[@]}" --token "$VERCEL_TOKEN")
+          echo "url=${url}" >> "$GITHUB_OUTPUT"
+
+  notify:
+    name: Notify deploy result
+    needs: [prepare, deploy]
+    if: always() && needs.prepare.result == 'success' && needs.prepare.outputs.slack_ts != ''
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Slack message
+        env:
+          SLACK_TOKEN: ${{ secrets.SLACK_RELEASE_BOT_TOKEN }}
+          SLACK_CHANNEL: ${{ needs.prepare.outputs.slack_channel }}
+          SLACK_TS: ${{ needs.prepare.outputs.slack_ts }}
+          TEXT_B64: ${{ needs.prepare.outputs.slack_text_b64 }}
+          RESULT: ${{ needs.deploy.result }}
+          DEPLOY_URL: ${{ needs.deploy.outputs.url }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ "$RESULT" = "success" ] && [ -n "$DEPLOY_URL" ]; then
+            host="${DEPLOY_URL#*://}"
+            deployment="<${DEPLOY_URL}|${host%%/*}>"
+          elif [ "$RESULT" = "success" ]; then
+            deployment="Deployed"
+          else
+            deployment="Failed (<${RUN_URL}|log>)"
+          fi
+          text=$(echo "$TEXT_B64" | base64 -d)
+          res=$(jq -n --arg ch "$SLACK_CHANNEL" --arg ts "$SLACK_TS" --arg t "$text" --arg d "$deployment" \
+              '{channel: $ch, ts: $ts, text: ($t | split("__DEPLOYMENT__") | join($d))}' \
+            | curl -sS -X POST https://slack.com/api/chat.update \
+                -H "Authorization: Bearer ${SLACK_TOKEN}" \
+                -H 'Content-Type: application/json; charset=utf-8' -d @- || true)
+          if [ "$(echo "$res" | jq -r .ok)" != "true" ]; then
+            echo "::warning::Slack update failed: $(echo "$res" | jq -r .error)"
+          fi
