@@ -317,7 +317,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
             <Tooltip
               placement="top"
               FloatingContent={
-                <ToolTipContentWrapper>{t("Governance:summary.apy.tooltip")}</ToolTipContentWrapper>
+                <ToolTipContentWrapper>{t("Governance:myDel.delModal.step3.aprTooltip")}</ToolTipContentWrapper>
               }
             >
               <IconInfo size={16} />

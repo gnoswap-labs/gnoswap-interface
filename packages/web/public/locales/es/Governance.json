@@ -81,7 +81,7 @@
         "title": "2. Introduzca el importe"
       },
       "step3": {
-        "aprTooltip": "La TAE estimada se calcula en función de las recompensas de la Tasa de Protocolo en tiempo real.",
+        "aprTooltip": "TAE estimada para los xGNS delegados: la media entre la TAE prevista para hoy y las TAE diarias de los últimos 6 días (UTC).\n\nRecompensas diarias previstas para hoy = recompensas por comisiones del protocolo registradas desde la medianoche (UTC) ÷ tiempo transcurrido × 24 horas. TAE diaria = (recompensas diarias por comisiones del protocolo × 365) ÷ valor en USD de todos los xGNS delegados.\n\nSolo se calculan la media de los días disponibles. La rentabilidad real varía en función de las comisiones del protocolo y del total delegado.",
         "currentlyDel": "Actualmente delegado",
         "estimatedAPR": "TAE estimada (7 días)",
         "newlyDel": "Nuevo Delegado",
