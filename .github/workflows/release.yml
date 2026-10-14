@@ -40,6 +40,8 @@ jobs:
       tag: ${{ steps.tag.outputs.tag }}
       prefix: ${{ steps.tag.outputs.prefix }}
       slack_ts: ${{ steps.slack.outputs.ts }}
+      slack_channel: ${{ steps.slack.outputs.channel }}
+      slack_text_b64: ${{ steps.slack.outputs.text_b64 }}
     steps:
       - name: Issue release App token
         id: app
@@ -150,39 +152,69 @@ jobs:
           GH_TOKEN: ${{ steps.app.outputs.token }}
           TAG: ${{ steps.tag.outputs.tag }}
           PREV: ${{ steps.tag.outputs.prev }}
+          PREFIX: ${{ steps.tag.outputs.prefix }}
+          REDEPLOY: ${{ steps.tag.outputs.redeploy }}
           SLACK_TOKEN: ${{ secrets.SLACK_RELEASE_BOT_TOKEN }}
           SLACK_CHANNEL: ${{ vars.SLACK_RELEASE_CHANNEL_ID }}
-          REDEPLOY: ${{ steps.tag.outputs.redeploy }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           if [ -z "$SLACK_TOKEN" ] || [ -z "$SLACK_CHANNEL" ]; then
             echo "Slack is not configured, skipping"; exit 0
           fi
+          release_url=$(gh release view "$TAG" --json url -q .url 2>/dev/null || true)
+          release_url="${release_url:-${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${TAG}}"
           if [ "$REDEPLOY" = "true" ]; then
-            payload=$(jq -n --arg ch "$SLACK_CHANNEL" \
-              --arg t "*${GITHUB_REPOSITORY}* \`${TAG}\` redeploy by ${GITHUB_ACTOR}" \
-              '{channel: $ch, text: $t}')
+            tag_line="- Tag: \`${TAG}\` (redeploy)"
+            count="-"
           else
-            url=$(gh release view "$TAG" --json url -q .url)
-            # GitHub markdown -> Slack mrkdwn
-            body=$(gh release view "$TAG" --json body -q .body \
-              | sed -E 's/^#+ (.*)$/*\1*/; s/\[([^]]+)\]\(([^)]+)\)/<\2|\1>/g' | head -c 2800)
-            header="*${GITHUB_REPOSITORY}* \`${TAG}\` (since: \`${PREV:-initial}\`) by ${GITHUB_ACTOR}"
-            payload=$(jq -n --arg ch "$SLACK_CHANNEL" --arg h "$header" --arg b "${body:-No changes}" --arg u "$url" '{
-                channel: $ch, text: $h,
-                blocks: [
-                  {type: "section", text: {type: "mrkdwn", text: $h}},
-                  {type: "section", text: {type: "mrkdwn", text: $b}},
-                  {type: "context", elements: [{type: "mrkdwn", text: ("<" + $u + "|Full release notes>")}]}
-                ]}')
+            tag_line="- Tag: \`${TAG}\` (\`${PREV:-initial}\`)"
+            if [ -n "$PREV" ]; then
+              count=$(git rev-list --count "${PREV}..${GITHUB_SHA}")
+            else
+              count=$(git rev-list --count "$GITHUB_SHA")
+            fi
           fi
-          res=$(echo "$payload" \
-            | curl -sS -X POST https://slack.com/api/chat.postMessage \
-                -H "Authorization: Bearer ${SLACK_TOKEN}" \
-                -H 'Content-Type: application/json; charset=utf-8' -d @-)
+          # $1: Deployment value
+          message() {
+            printf '%s\n' \
+              "[${GITHUB_REPOSITORY_OWNER}] ${GITHUB_REPOSITORY#*/} (${PREFIX})" \
+              "$tag_line" \
+              "- Change Commit: ${count}" \
+              "- Release Note: <${release_url}|Link>" \
+              "- Action Log: <${RUN_URL}|Link>" \
+              "- Deployment: $1"
+          }
+          post() {
+            curl -sS -X POST https://slack.com/api/chat.postMessage \
+              -H "Authorization: Bearer ${SLACK_TOKEN}" \
+              -H 'Content-Type: application/json; charset=utf-8' -d @- || true
+          }
+          res=$(jq -n --arg ch "$SLACK_CHANNEL" --arg t "$(message "Deploying")" \
+            '{channel: $ch, text: $t}' | post)
           if [ "$(echo "$res" | jq -r .ok)" != "true" ]; then
             echo "::warning::Slack post failed: $(echo "$res" | jq -r .error)"; exit 0
           fi
-          echo "ts=$(echo "$res" | jq -r .ts)" >> "$GITHUB_OUTPUT"
+          ts=$(echo "$res" | jq -r .ts)
+          {
+            echo "ts=${ts}"
+            echo "channel=$(echo "$res" | jq -r .channel)"
+            # Main message template for the notify job
+            echo "text_b64=$(message "__DEPLOYMENT__" | base64 -w0)"
+          } >> "$GITHUB_OUTPUT"
+          if [ "$REDEPLOY" = "true" ]; then exit 0; fi
+          # Release notes in the thread (GitHub markdown -> Slack mrkdwn)
+          body=$(gh release view "$TAG" --json body -q .body \
+            | sed -E 's/^#+ (.*)$/*\1*/; s/\[([^]]+)\]\(([^)]+)\)/<\2|\1>/g')
+          if [ -z "$body" ]; then
+            body="No changes"
+          elif [ "${#body}" -gt 3500 ]; then
+            body="${body:0:3500}"$'\n'"… <${release_url}|View all>"
+          fi
+          res=$(jq -n --arg ch "$SLACK_CHANNEL" --arg ts "$ts" --arg t "$body" \
+            '{channel: $ch, thread_ts: $ts, text: $t}' | post)
+          if [ "$(echo "$res" | jq -r .ok)" != "true" ]; then
+            echo "::warning::Slack thread reply failed: $(echo "$res" | jq -r .error)"
+          fi
 
   deploy:
     name: Deploy to Vercel (${{ needs.prepare.outputs.prefix }})
@@ -234,21 +266,30 @@ jobs:
     if: always() && needs.prepare.result == 'success' && needs.prepare.outputs.slack_ts != ''
     runs-on: ubuntu-latest
     steps:
-      - name: Post result to Slack thread
+      - name: Update Slack message
         env:
           SLACK_TOKEN: ${{ secrets.SLACK_RELEASE_BOT_TOKEN }}
-          SLACK_CHANNEL: ${{ vars.SLACK_RELEASE_CHANNEL_ID }}
-          THREAD_TS: ${{ needs.prepare.outputs.slack_ts }}
+          SLACK_CHANNEL: ${{ needs.prepare.outputs.slack_channel }}
+          SLACK_TS: ${{ needs.prepare.outputs.slack_ts }}
+          TEXT_B64: ${{ needs.prepare.outputs.slack_text_b64 }}
           RESULT: ${{ needs.deploy.result }}
           DEPLOY_URL: ${{ needs.deploy.outputs.url }}
-          TAG: ${{ needs.prepare.outputs.tag }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          if [ "$RESULT" = "success" ]; then status="deployed"; else status="deploy failed (${RESULT})"; fi
-          text="\`${TAG}\` ${status} <${RUN_URL}|run log>"
-          if [ -n "$DEPLOY_URL" ]; then text="${text} | <${DEPLOY_URL}|deployment>"; fi
-          jq -n --arg ch "$SLACK_CHANNEL" --arg ts "$THREAD_TS" --arg t "$text" \
-            '{channel: $ch, thread_ts: $ts, text: $t}' \
-          | curl -sS -X POST https://slack.com/api/chat.postMessage \
-              -H "Authorization: Bearer ${SLACK_TOKEN}" \
-              -H 'Content-Type: application/json; charset=utf-8' -d @- >/dev/null
+          if [ "$RESULT" = "success" ] && [ -n "$DEPLOY_URL" ]; then
+            host="${DEPLOY_URL#*://}"
+            deployment="<${DEPLOY_URL}|${host%%/*}>"
+          elif [ "$RESULT" = "success" ]; then
+            deployment="Deployed"
+          else
+            deployment="Failed (<${RUN_URL}|log>)"
+          fi
+          text=$(echo "$TEXT_B64" | base64 -d)
+          res=$(jq -n --arg ch "$SLACK_CHANNEL" --arg ts "$SLACK_TS" --arg t "$text" --arg d "$deployment" \
+              '{channel: $ch, ts: $ts, text: ($t | split("__DEPLOYMENT__") | join($d))}' \
+            | curl -sS -X POST https://slack.com/api/chat.update \
+                -H "Authorization: Bearer ${SLACK_TOKEN}" \
+                -H 'Content-Type: application/json; charset=utf-8' -d @- || true)
+          if [ "$(echo "$res" | jq -r .ok)" != "true" ]; then
+            echo "::warning::Slack update failed: $(echo "$res" | jq -r .error)"
+          fi
