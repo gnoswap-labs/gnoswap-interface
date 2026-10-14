@@ -207,6 +207,10 @@
     }
   },
   "summary": {
+    "aprHistory": {
+      "dailyApr": "APR (1D)",
+      "vs7dAvg": "so với TB 7D"
+    },
     "apr": {
       "title": "xGNS APR (7 ngày)"
     },

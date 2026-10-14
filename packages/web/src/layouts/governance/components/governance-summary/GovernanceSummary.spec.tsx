@@ -148,6 +148,7 @@ describe("GovernanceSummary Component", () => {
     );
 
     expect(screen.getByRole("button", { name: "5.84%" })).toBeDefined();
+    expect(screen.getByRole("columnheader", { name: "APR (1D)" })).toBeDefined();
     expect(screen.getByRole("columnheader", { name: "vs 7D avg" })).toBeDefined();
     const rows = screen.getAllByRole("row");
     expect(rows).toHaveLength(5);

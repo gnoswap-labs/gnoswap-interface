@@ -9,6 +9,7 @@ interface GovernanceAPRHistoryProps {
   average: string;
   days: APRHistoryDay[];
   dateLabel: string;
+  dailyAprLabel: string;
   comparisonLabel: string;
   locale: string;
 }
@@ -17,6 +18,7 @@ const GovernanceAPRHistory: React.FC<GovernanceAPRHistoryProps> = ({
   average,
   days,
   dateLabel,
+  dailyAprLabel,
   comparisonLabel,
   locale,
 }) => {
@@ -35,7 +37,7 @@ const GovernanceAPRHistory: React.FC<GovernanceAPRHistoryProps> = ({
         <thead>
           <tr>
             <th scope="col">{dateLabel}</th>
-            <th scope="col">APR</th>
+            <th scope="col">{dailyAprLabel}</th>
             <th scope="col">{comparisonLabel}</th>
           </tr>
         </thead>

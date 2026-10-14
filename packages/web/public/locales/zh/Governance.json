@@ -207,6 +207,10 @@
     }
   },
   "summary": {
+    "aprHistory": {
+      "dailyApr": "APR（1D）",
+      "vs7dAvg": "较7D均值"
+    },
     "apr": {
       "title": "xGNS APR（7天）"
     },
