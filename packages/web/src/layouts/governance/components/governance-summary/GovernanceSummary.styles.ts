@@ -33,6 +33,21 @@ export const GovernanceSummaryWrapper = styled.div`
       }
     }
   }
+  .apr-history-trigger {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: help;
+    &:hover {
+      color: ${({ theme }) => theme.color.text07};
+    }
+    &:focus-visible {
+      outline: 2px solid ${({ theme }) => theme.color.text07};
+      outline-offset: 3px;
+    }
+  }
 
   > .link-button {
     ${mixins.flexbox("row", "center", "center")};
