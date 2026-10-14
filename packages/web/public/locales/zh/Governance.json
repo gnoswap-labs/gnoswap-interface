@@ -83,7 +83,7 @@
       "step3": {
         "aprTooltip": "估计年利率根据协议费奖励实时计算。",
         "currentlyDel": "目前授权",
-        "estimatedAPR": "估计年利率",
+        "estimatedAPR": "预计年化利率（7天）",
         "newlyDel": "新代表",
         "title": "3.您的代表团",
         "votingPowerShare": "投票权份额"
@@ -208,10 +208,10 @@
   },
   "summary": {
     "apr": {
-      "title": "xGNS APR"
+      "title": "xGNS APR（7天）"
     },
     "apy": {
-      "tooltip": "根据协议费实时奖励估算的 xGNS 年利率。"
+      "tooltip": "委托 xGNS 的预计年化收益率（APR）：今日预计年化收益率与过去 6 天（UTC）每日年化收益率的平均值。\n\n今日预计日收益 = 自UTC午夜以来记录的协议手续费奖励 ÷ 已过去的时间 × 24小时。日年化收益率（APR）= (每日协议手续费奖励 × 365) ÷ 所有委托的xGNS的美元价值。\n\n仅对有效天数进行平均计算。实际收益会因协议手续费和总委托量而有所不同。"
     },
     "commPool": {
       "title": "社区游泳池",

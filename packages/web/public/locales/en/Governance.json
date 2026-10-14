@@ -83,7 +83,7 @@
       "step3": {
         "aprTooltip": "The estimated APR is calculated based  on the Protocol Fee rewards in real time.",
         "currentlyDel": "Currently Delegated",
-        "estimatedAPR": "Estimated APR",
+        "estimatedAPR": "Estimated APR (7D)",
         "newlyDel": "Newly Delegate",
         "title": "3. Your Delegation",
         "votingPowerShare": "Voting Power Share"
@@ -208,10 +208,10 @@
   },
   "summary": {
     "apr": {
-      "title": "xGNS APR"
+      "title": "xGNS APR (7D)"
     },
     "apy": {
-      "tooltip": "The estimated APR of xGNS based on the Protocol Fee rewards in real time."
+      "tooltip": "Estimated APR for delegated xGNS: the average of today's projected APR and the daily APRs from the previous 6 days (UTC).\n\nToday's projected daily rewards = protocol fee rewards recorded since UTC midnight ÷ elapsed time × 24 hours. Daily APR = (daily protocol fee rewards × 365) ÷ USD value of all delegated xGNS.\n\nOnly available days are averaged. Actual returns vary with protocol fees and total delegation."
     },
     "commPool": {
       "title": "Community Pool",
