@@ -164,10 +164,11 @@ jobs:
           release_url=$(gh release view "$TAG" --json url -q .url 2>/dev/null || true)
           release_url="${release_url:-${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${TAG}}"
           if [ "$REDEPLOY" = "true" ]; then
-            tag_line="- Tag: \`${TAG}\` (redeploy)"
+            tag_line="- Tag: \`${TAG}\` (Redeploy)"
             count="-"
           else
-            tag_line="- Tag: \`${TAG}\` (\`${PREV:-initial}\`)"
+            if [ -n "$PREV" ]; then prev_label="\`${PREV}\`"; else prev_label="initial"; fi
+            tag_line="- Tag: \`${TAG}\` (${prev_label})"
             if [ -n "$PREV" ]; then
               count=$(git rev-list --count "${PREV}..${GITHUB_SHA}")
             else
