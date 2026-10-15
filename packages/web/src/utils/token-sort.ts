@@ -16,7 +16,7 @@ export const customSort = (a: TokenModel, b: TokenModel) => {
   return indexA - indexB;
 };
 
-const DEFAULT_TOKEN_PATHS = [GNOT_TOKEN.path, GNS_TOKEN.path, WUGNOT_TOKEN.path];
+export const DEFAULT_TOKEN_PATHS = [GNOT_TOKEN.path, GNS_TOKEN.path, WUGNOT_TOKEN.path];
 
 export interface SelectTokenSortable extends TokenModel {
   usdValue: number;

@@ -12,7 +12,8 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { ThemeState, TokenState } from "@states/index";
 import { parseJson } from "@utils/common";
-import { ORDER, SelectTokenSortable, compareSelectTokens, customSort } from "@utils/token-sort";
+import { DEFAULT_TOKEN_PATHS, SelectTokenSortable, compareSelectTokens } from "@utils/token-sort";
+import { keepVerified } from "@utils/token-verification-filter";
 
 interface SelectTokenContainerProps {
   changeToken?: (token: TokenModel) => void;
@@ -21,8 +22,6 @@ interface SelectTokenContainerProps {
 }
 
 const EMPTY_ADDITIONAL_TOKENS: TokenModel[] = [];
-
-export { ORDER, customSort };
 
 const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   changeToken,
@@ -42,11 +41,17 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
     return [...tokens, ...additionalTokens.filter(token => !tokenPaths.has(token.path))];
   }, [additionalTokens, tokens]);
 
+  const visibleTokens = useMemo(
+    () => keepVerified(availableTokens, showUnverified),
+    [availableTokens, showUnverified],
+  );
+
+  // Resolve stored recents to current token models so verification status stays fresh.
   const recents = useMemo(() => {
-    const recentTokens = parseJson(recentsData ? recentsData : "[]");
-    return recentTokens.filter((recentToken: TokenModel) =>
-      availableTokens.some(token => token.path === recentToken.path),
-    );
+    const recentTokens: TokenModel[] = parseJson(recentsData ? recentsData : "[]");
+    return recentTokens
+      .map(recentToken => availableTokens.find(token => token.path === recentToken.path))
+      .filter((token): token is TokenModel => !!token);
   }, [availableTokens, recentsData]);
 
   const close = useCallback(() => {
@@ -67,12 +72,14 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   useEscCloseModal(close);
 
   const defaultTokens = useMemo(() => {
-    return [...availableTokens].sort(customSort).slice(0, 4);
-  }, [availableTokens]);
+    return DEFAULT_TOKEN_PATHS.map(path => visibleTokens.find(token => token.path === path)).filter(
+      (token): token is TokenModel => !!token,
+    );
+  }, [visibleTokens]);
 
   const filteredTokens = useMemo(() => {
     const lowerKeyword = keyword.toLowerCase();
-    const temp: SelectTokenSortable[] = availableTokens.map((item: TokenModel) => {
+    const temp: SelectTokenSortable[] = visibleTokens.map((item: TokenModel) => {
       const tokenBalance = displayBalanceStringMap[item.path] ?? displayBalanceStringMap[item.priceID];
       const balance = BigNumber(tokenBalance ?? "");
       if (balance.isNaN() || balance.isLessThanOrEqualTo(0)) {
@@ -88,7 +95,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
         token.symbol.toLowerCase().includes(lowerKeyword) ||
         token.path.toLowerCase().includes(lowerKeyword),
     );
-  }, [availableTokens, displayBalanceStringMap, keyword, tokenPrices]);
+  }, [visibleTokens, displayBalanceStringMap, keyword, tokenPrices]);
 
   const selectToken = useCallback(
     (token: TokenModel) => {

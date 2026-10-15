@@ -3,11 +3,11 @@ import IconSearch from "@components/common/icons/IconSearch";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { TokenModel } from "@models/token/token-model";
 import { getSwapExtensionByOriginPath } from "@resources/swap-extension";
-import { ORDER } from "@utils/token-sort";
 import { TokenState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
 import { removeDuplicatesByWrappedPath } from "@utils/common";
 import { formatTokenModelPath, formatTokenPath } from "@utils/token-utils";
+import { keepVerified } from "@utils/token-verification-filter";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -16,6 +16,8 @@ import IconNewTab from "../icons/IconNewTab";
 import MissingLogo from "../missing-logo/MissingLogo";
 import ShowUnverifiedTokensSwitch from "../show-unverified-tokens-switch/ShowUnverifiedTokensSwitch";
 import { Divider, SelectTokenWrapper, TokenInfoWrapper } from "./SelectToken.styles";
+
+const MAX_TOKEN_CHIPS = 4;
 
 export interface SelectTokenProps {
   keyword: string;
@@ -75,11 +77,8 @@ const SelectToken: React.FC<SelectTokenProps> = ({
 
   const onClickToken = useCallback(
     (token: TokenModel) => {
-      const current = [...recents, token].filter(item => !ORDER.includes(item.symbol));
-      const uniqueRecents = current.filter(
-        (item, index) => current.findIndex(other => other.path === item.path) === index,
-      );
-      setRecentsData(JSON.stringify(uniqueRecents.slice(-4)));
+      const nextRecents = [token, ...recents.filter(item => item.path !== token.path)].slice(0, MAX_TOKEN_CHIPS);
+      setRecentsData(JSON.stringify(nextRecents));
       changeToken(token);
     },
     [changeToken, recents, setRecentsData],
@@ -133,7 +132,11 @@ const SelectToken: React.FC<SelectTokenProps> = ({
     return breakpoint === DEVICE_TYPE.MOBILE ? 10 : 15;
   }, [breakpoint]);
 
-  const getTokensRecent = removeDuplicatesByWrappedPath([...defaultTokens, ...recents]);
+  // recents stays unfiltered so hidden tokens are not dropped from storage on the next selection.
+  const getTokensRecent = removeDuplicatesByWrappedPath(keepVerified([...recents, ...defaultTokens], showUnverified)).slice(
+    0,
+    MAX_TOKEN_CHIPS,
+  );
 
   return (
     <SelectTokenWrapper ref={myElementRef}>

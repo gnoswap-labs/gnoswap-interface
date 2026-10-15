@@ -122,7 +122,7 @@ describe("SelectToken Component", () => {
 
       fireEvent.click(container.querySelector(".token-list-wrapper .list")!);
 
-      expect(storedRecentPaths()).toEqual([recentToken.path, token.path]);
+      expect(storedRecentPaths()).toEqual([token.path, recentToken.path]);
     });
 
     it("stores a token once even when its balance fields changed", () => {
