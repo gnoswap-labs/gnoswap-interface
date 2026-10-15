@@ -57,7 +57,12 @@ const SwapInfoTransactionListContainer = () => {
   }
 
   return (
-    <SwapInfoTransactionList breakpoint={breakpoint} swapHistory={swapHistoryList} tokenPairParams={tokenPairParams} />
+    // Remount per token pair so page, snapshot and highlight state never carry over to another pair
+    <SwapInfoTransactionList
+      key={`${tokenPairParams.tokenAPath}-${tokenPairParams.tokenBPath}`}
+      breakpoint={breakpoint}
+      swapHistory={swapHistoryList}
+    />
   );
 };
 

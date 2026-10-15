@@ -23,7 +23,6 @@ jest.mock("@hooks/token/data/use-token-image", () => ({
   useTokenImage: () => ({ getTokenImage: () => null }),
 }));
 
-const tokenPairParams = { tokenAPath: "a", tokenBPath: "b" };
 const tx = (txHash: string): SwapHistoryItem => ({ ...mockSwapHistory[0], txHash });
 
 const highlightedHashes = (container: HTMLElement) =>
@@ -36,11 +35,7 @@ describe("SwapInfoTransactionListTable", () => {
   it("keeps later pages fixed while new swaps arrive and shows them again on page 1", () => {
     const view = (swapHistory: SwapHistoryItem[]) => (
       <GnoswapThemeProvider>
-        <SwapInfoTransactionListTable
-          breakpoint={DEVICE_TYPE.WEB}
-          swapHistory={swapHistory}
-          tokenPairParams={tokenPairParams}
-        />
+        <SwapInfoTransactionListTable breakpoint={DEVICE_TYPE.WEB} swapHistory={swapHistory} />
       </GnoswapThemeProvider>
     );
     const initial = Array.from({ length: 15 }, (_, i) => tx(`tx${i}`));
@@ -59,11 +54,7 @@ describe("SwapInfoTransactionListTable", () => {
   it("highlights only transactions that arrived since the last update", () => {
     const view = (swapHistory: SwapHistoryItem[]) => (
       <GnoswapThemeProvider>
-        <SwapInfoTransactionListTable
-          breakpoint={DEVICE_TYPE.WEB}
-          swapHistory={swapHistory}
-          tokenPairParams={tokenPairParams}
-        />
+        <SwapInfoTransactionListTable breakpoint={DEVICE_TYPE.WEB} swapHistory={swapHistory} />
       </GnoswapThemeProvider>
     );
 

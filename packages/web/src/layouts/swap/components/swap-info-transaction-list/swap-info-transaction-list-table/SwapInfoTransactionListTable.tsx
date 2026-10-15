@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import {
   MOBILE_TABLE_HEAD,
   TABLE_HEAD,
-  TokenPairParams,
 } from "@layouts/swap/containers/swap-info-transaction-list-container/SwapInfoTransactionListContainer";
 import {
   TRANSACTION_TD_WIDTH,
@@ -38,7 +37,6 @@ import DateTimeTooltip from "@components/common/date-time-tooltip/DateTimeToolti
 interface SwapInfoTransactionListTableProps {
   breakpoint: DEVICE_TYPE;
   swapHistory: SwapHistoryItem[];
-  tokenPairParams: TokenPairParams;
 }
 
 interface TransactionListTableRowProps {
@@ -81,16 +79,12 @@ const getNextUpdateInterval = (diffInSeconds: number): number => {
   }
 };
 
-const SwapInfoTransactionListTable = ({
-  breakpoint,
-  swapHistory,
-  tokenPairParams,
-}: SwapInfoTransactionListTableProps) => {
+const SwapInfoTransactionListTable = ({ breakpoint, swapHistory }: SwapInfoTransactionListTableProps) => {
   const { t } = useTranslation();
 
   const prevSwapHistoryRef = React.useRef<SwapHistoryItem[]>([]);
   const [newTransactions, setNewTransactions] = React.useState<Set<string>>(new Set());
-  const skipAnimationRef = React.useRef(true); // Skip animation on initial load or token pair change
+  const skipAnimationRef = React.useRef(true); // Skip animation on initial load
   const [currentPage, setCurrentPage] = React.useState(1);
   // Only page 1 updates live. Later pages keep the list from when the user left page 1, so rows don't shift while paging
   const [frozenHistory, setFrozenHistory] = React.useState<SwapHistoryItem[] | null>(null);
@@ -113,14 +107,6 @@ const SwapInfoTransactionListTable = ({
     setFrozenHistory(prev => (page === 1 ? null : (prev ?? swapHistory)));
     setCurrentPage(page);
   };
-
-  // Reset animation and page when changing token pairs
-  React.useEffect(() => {
-    skipAnimationRef.current = true;
-    setNewTransactions(new Set());
-    setCurrentPage(1);
-    setFrozenHistory(null);
-  }, [tokenPairParams]);
 
   // Detect and highlight new transactions
   React.useEffect(() => {
