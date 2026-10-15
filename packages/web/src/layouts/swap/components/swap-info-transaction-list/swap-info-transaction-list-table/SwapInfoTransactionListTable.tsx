@@ -129,6 +129,7 @@ const SwapInfoTransactionListTable = ({
 
     // Filter new transactions
     const newTxHashes = swapHistory.filter(item => !prevTxHashMap.has(item.txHash)).map(item => item.txHash);
+    prevSwapHistoryRef.current = swapHistory;
 
     if (newTxHashes.length > 0) {
       const newTxSet = new Set(newTxHashes);
@@ -141,8 +142,6 @@ const SwapInfoTransactionListTable = ({
       // Clean up timers when unmounting components
       return () => clearTimeout(timerId);
     }
-
-    prevSwapHistoryRef.current = swapHistory;
   }, [swapHistory]);
 
   const getTableHeaders = React.useMemo(
