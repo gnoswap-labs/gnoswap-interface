@@ -2,7 +2,6 @@ import BigNumber from "bignumber.js";
 import { useAtomValue } from "jotai";
 import React, { useCallback, useMemo, useState } from "react";
 
-import { GNOT_TOKEN, GNS_TOKEN } from "@common/values/token-constant";
 import SelectToken from "@components/common/select-token/SelectToken";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
@@ -13,7 +12,7 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { ThemeState, TokenState } from "@states/index";
 import { parseJson } from "@utils/common";
-import { ORDER, customSort } from "@utils/token-sort";
+import { ORDER, SelectTokenSortable, compareSelectTokens, customSort } from "@utils/token-sort";
 
 interface SelectTokenContainerProps {
   changeToken?: (token: TokenModel) => void;
@@ -21,49 +20,9 @@ interface SelectTokenContainerProps {
   additionalTokens?: TokenModel[];
 }
 
-export interface SortedProps extends TokenModel {
-  price: string;
-  tokenPrice: number;
-}
-
 const EMPTY_ADDITIONAL_TOKENS: TokenModel[] = [];
 
 export { ORDER, customSort };
-
-const handleSort = (list: SortedProps[]) => {
-  const gnot = list.find(a => a.path === GNOT_TOKEN.path);
-  const gns = list.find(a => a.path === GNS_TOKEN.path);
-  const valueOfBalance = list
-    .filter(a => a.price !== "-" && a.path !== GNOT_TOKEN.path && a.path !== GNS_TOKEN.path)
-    .sort((a, b) => {
-      const priceA = parseFloat(a.price.replace(/,/g, ""));
-      const priceB = parseFloat(b.price.replace(/,/g, ""));
-      return priceB - priceA;
-    });
-  const amountOfBalance = list
-    .filter(
-      a =>
-        a.price !== "-" &&
-        a.path !== GNOT_TOKEN.path &&
-        a.path !== GNS_TOKEN.path &&
-        !valueOfBalance.includes(a) &&
-        a.tokenPrice > 0,
-    )
-    .sort((a, b) => b.tokenPrice - a.tokenPrice);
-  const alphabest = list
-    .filter(
-      a =>
-        !amountOfBalance.includes(a) &&
-        a.path !== GNOT_TOKEN.path &&
-        a.path !== GNS_TOKEN.path &&
-        !valueOfBalance.includes(a),
-    )
-    .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
-  const rs = [];
-  if (gnot) rs.push(gnot);
-  if (gns) rs.push(gns);
-  return [...rs, ...valueOfBalance, ...amountOfBalance, ...alphabest];
-};
 
 const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   changeToken,
@@ -112,23 +71,16 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
 
   const filteredTokens = useMemo(() => {
     const lowerKeyword = keyword.toLowerCase();
-    const temp: SortedProps[] = availableTokens.map((item: TokenModel) => {
+    const temp: SelectTokenSortable[] = availableTokens.map((item: TokenModel) => {
       const tokenBalance = displayBalanceStringMap[item.path] ?? displayBalanceStringMap[item.priceID];
       const balance = BigNumber(tokenBalance ?? "");
-      if (!tokenBalance || balance.isNaN() || balance.isLessThanOrEqualTo(0)) {
-        return {
-          price: "-",
-          ...item,
-          tokenPrice: balance.isNaN() ? 0 : balance.toNumber(),
-        };
+      if (balance.isNaN() || balance.isLessThanOrEqualTo(0)) {
+        return { ...item, usdValue: 0, balance: 0 };
       }
-      return {
-        ...item,
-        price: balance.multipliedBy(tokenPrices[item.priceID]?.usd || "0").toFormat(),
-        tokenPrice: balance.toNumber(),
-      };
+      const usdValue = balance.multipliedBy(tokenPrices[item.priceID]?.usd || "0").toNumber();
+      return { ...item, usdValue: usdValue || 0, balance: balance.toNumber() };
     });
-    const sortedData = handleSort(temp);
+    const sortedData = temp.sort(compareSelectTokens);
     return sortedData.filter(
       token =>
         token.name.toLowerCase().includes(lowerKeyword) ||
