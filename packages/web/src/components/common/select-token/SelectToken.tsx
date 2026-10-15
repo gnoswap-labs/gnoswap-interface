@@ -14,6 +14,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next";
 import IconNewTab from "../icons/IconNewTab";
 import MissingLogo from "../missing-logo/MissingLogo";
+import ShowUnverifiedTokensSwitch from "../show-unverified-tokens-switch/ShowUnverifiedTokensSwitch";
 import { Divider, SelectTokenWrapper, TokenInfoWrapper } from "./SelectToken.styles";
 
 export interface SelectTokenProps {
@@ -28,6 +29,8 @@ export interface SelectTokenProps {
   breakpoint: DEVICE_TYPE;
   recents: TokenModel[];
   isSwitchNetwork: boolean;
+  showUnverified: boolean;
+  toggleShowUnverified: () => void;
 }
 
 const SelectToken: React.FC<SelectTokenProps> = ({
@@ -42,6 +45,8 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   breakpoint,
   recents = [],
   isSwitchNetwork,
+  showUnverified,
+  toggleShowUnverified,
 }) => {
   const { t } = useTranslation();
 
@@ -135,8 +140,11 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       <div className="content">
         <div className="header">
           <span>{t("common:selectPairBtn.modal.title")}</span>
-          <div className="close-wrap" onClick={onClickClose}>
-            <IconClose className="close-icon" />
+          <div className="header-actions">
+            <ShowUnverifiedTokensSwitch checked={showUnverified} onChange={toggleShowUnverified} />
+            <div className="close-wrap" onClick={onClickClose}>
+              <IconClose className="close-icon" />
+            </div>
           </div>
         </div>
         <div className="search-wrap">

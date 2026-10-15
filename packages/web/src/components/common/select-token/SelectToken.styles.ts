@@ -28,13 +28,18 @@ export const SelectTokenWrapper = styled.div`
     .header {
       ${mixins.flexbox("row", "center", "space-between")};
       width: 100%;
-      span {
+      > span {
         color: ${({ theme }) => theme.color.text02};
         ${fonts.body7}
         font-weight: 600;
         ${media.mobile} {
           ${fonts.body9}
         }
+      }
+
+      .header-actions {
+        ${mixins.flexbox("row", "center", "flex-end")};
+        gap: 16px;
       }
 
       .close-wrap {

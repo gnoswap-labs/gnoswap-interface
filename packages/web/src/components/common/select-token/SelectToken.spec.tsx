@@ -52,6 +52,8 @@ describe("SelectToken Component", () => {
     breakpoint: DEVICE_TYPE.WEB,
     recents: [],
     isSwitchNetwork: false,
+    showUnverified: false,
+    toggleShowUnverified: jest.fn(),
   };
 
   const renderSelectToken = (overrides?: Partial<SelectTokenProps>) =>
@@ -91,6 +93,21 @@ describe("SelectToken Component", () => {
 
     expect(mockGetRealmUrl).toHaveBeenCalledWith(extension.originTokenPath);
     expect(open).toHaveBeenCalledWith(`https://gnoscan.io/realms/details?path=${extension.originTokenPath}`, "_blank");
+  });
+
+  it("renders the show unverified tokens switch with the given state", () => {
+    renderSelectToken({ showUnverified: true });
+
+    expect(screen.getByRole("checkbox")).toBeChecked();
+  });
+
+  it("calls toggleShowUnverified when the switch is clicked", () => {
+    const toggleShowUnverified = jest.fn();
+    renderSelectToken({ toggleShowUnverified });
+
+    fireEvent.click(screen.getByRole("checkbox"));
+
+    expect(toggleShowUnverified).toHaveBeenCalledTimes(1);
   });
 
   describe("recent tokens", () => {

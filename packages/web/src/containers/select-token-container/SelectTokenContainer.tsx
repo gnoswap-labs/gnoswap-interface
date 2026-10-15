@@ -32,6 +32,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   const { breakpoint } = useWindowSize();
   const { tokens, tokenPrices, displayBalanceStringMap } = useTokenData(true);
   const [keyword, setKeyword] = useState("");
+  const [showUnverified, setShowUnverified] = useState(false);
   const clearModal = useClearModal();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const recentsData = useAtomValue(TokenState.selectRecents);
@@ -121,6 +122,8 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
       breakpoint={breakpoint}
       recents={recents}
       isSwitchNetwork={isSwitchNetwork}
+      showUnverified={showUnverified}
+      toggleShowUnverified={() => setShowUnverified(prev => !prev)}
     />
   );
 };
