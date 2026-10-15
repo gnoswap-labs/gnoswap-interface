@@ -81,9 +81,9 @@
         "title": "2. Nhập số tiền"
       },
       "step3": {
-        "aprTooltip": "Tỷ lệ phần trăm hàng năm (APR) ước tính được tính toán dựa trên phần thưởng Phí Giao thức theo thời gian thực.",
+        "aprTooltip": "Tỷ lệ APR ước tính cho xGNS được ủy quyền: là giá trị trung bình giữa tỷ lệ APR dự kiến hôm nay và các tỷ lệ APR hàng ngày trong 6 ngày trước đó (theo giờ UTC).\n\nPhần thưởng hàng ngày dự kiến hôm nay = tổng phần thưởng phí giao thức được ghi nhận kể từ nửa đêm theo giờ UTC ÷ thời gian đã trôi qua × 24 giờ. Tỷ suất sinh lời hàng năm (APR) = (phần thưởng phí giao thức hàng ngày × 365) ÷ giá trị bằng USD của toàn bộ xGNS được ủy quyền.\n\nChỉ tính trung bình các ngày có dữ liệu. Lợi nhuận thực tế có thể thay đổi tùy thuộc vào phí giao thức và tổng số xGNS được ủy quyền.",
         "currentlyDel": "Hiện đang được ủy quyền",
-        "estimatedAPR": "Tỷ lệ phần trăm hàng năm (APR) ước tính",
+        "estimatedAPR": "Tỷ lệ phần trăm hàng năm (APR) ước tính (7 ngày)",
         "newlyDel": "Đại biểu mới được bổ nhiệm",
         "title": "3. Đoàn đại biểu của quý vị",
         "votingPowerShare": "Tỷ lệ quyền biểu quyết"
@@ -207,11 +207,15 @@
     }
   },
   "summary": {
+    "aprHistory": {
+      "dailyApr": "APR (1D)",
+      "vs7dAvg": "so với TB 7D"
+    },
     "apr": {
-      "title": "xGNS APR"
+      "title": "xGNS APR (7 ngày)"
     },
     "apy": {
-      "tooltip": "Tỷ lệ phần trăm hàng năm (APR) ước tính của xGNS dựa trên phần thưởng Phí Giao thức theo thời gian thực."
+      "tooltip": "Tỷ lệ APR ước tính cho xGNS được ủy quyền: là giá trị trung bình giữa tỷ lệ APR dự kiến hôm nay và các tỷ lệ APR hàng ngày trong 6 ngày trước đó (theo giờ UTC).\n\nPhần thưởng hàng ngày dự kiến hôm nay = tổng phần thưởng phí giao thức được ghi nhận kể từ nửa đêm theo giờ UTC ÷ thời gian đã trôi qua × 24 giờ. Tỷ suất sinh lời hàng năm (APR) = (phần thưởng phí giao thức hàng ngày × 365) ÷ giá trị bằng USD của toàn bộ xGNS được ủy quyền.\n\nChỉ tính trung bình các ngày có dữ liệu. Lợi nhuận thực tế có thể thay đổi tùy thuộc vào phí giao thức và tổng số xGNS được ủy quyền."
     },
     "commPool": {
       "title": "Hồ bơi cộng đồng",

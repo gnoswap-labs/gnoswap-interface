@@ -1,3 +1,10 @@
+export interface GovernanceAPRHistory {
+  date: string;
+  apr: string;
+  estimated: boolean;
+  asOf?: string;
+}
+
 export interface GovernanceSummaryInfo {
   delegationInfo: {
     totalDelegationAmount: string;
@@ -7,6 +14,7 @@ export interface GovernanceSummaryInfo {
   delegatedRatio: string;
   apy: string;
   communityPoolUsd: string;
+  aprHistory?: GovernanceAPRHistory[];
 }
 
 export const nullGovernanceSummaryInfo: GovernanceSummaryInfo = {
@@ -18,4 +26,5 @@ export const nullGovernanceSummaryInfo: GovernanceSummaryInfo = {
   delegatedRatio: "0",
   apy: "0",
   communityPoolUsd: "0",
+  aprHistory: [],
 };
