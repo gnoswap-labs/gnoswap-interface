@@ -1,3 +1,5 @@
+import { SignArbitraryRequestParam, SignedArbitraryData } from "../protocols/wallet-sign";
+
 export interface Adena {
   AddEstablish: (name: string) => Promise<Response>;
   GetAccount: () => Promise<Response<AccountInfo>>;
@@ -6,6 +8,8 @@ export interface Adena {
     withNotification: boolean,
   ) => Promise<Response<AdenaSendTransactionResponse>>;
   Sign: (mesasage: SendTransactionRequestParam) => Promise<Response>;
+  /** Missing on extensions that predate SignArbitrary. */
+  SignArbitrary?: (request: SignArbitraryRequestParam) => Promise<Response<SignedArbitraryData>>;
   AddNetwork: (chain: AdenaAddNetworkRequestParam) => Promise<Response<AdenaAddNetworkResponse>>;
   SwitchNetwork: (chainId: string) => Promise<Response<AdenaSwitchNetworkResponse>>;
   On: (eventName: string, callback: (message: string) => void) => void;

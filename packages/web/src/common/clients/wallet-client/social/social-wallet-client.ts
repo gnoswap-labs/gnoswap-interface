@@ -28,6 +28,8 @@ import {
   DEFAULT_ACCOUNT_INFO,
   SendTransactionRequestParam,
   SendTransactionResponse,
+  SignArbitraryRequestParam,
+  SignedArbitraryData,
   SwitchNetworkResponse,
   WalletResponse,
   isContractMessage,
@@ -183,6 +185,22 @@ export class SocialWalletClient implements WalletClient {
     return {
       signed: signedTx,
       signature: [],
+    };
+  }
+
+  public async signArbitrary(request: SignArbitraryRequestParam): Promise<WalletResponse<SignedArbitraryData>> {
+    if (!this.sdk) {
+      throw new Error("Social wallet not initialized");
+    }
+
+    const response = await this.sdk.signArbitrary(request);
+
+    return {
+      code: response.code,
+      status: response.status,
+      type: response.type,
+      message: response.message,
+      data: (response.data as SignedArbitraryData | null) ?? null,
     };
   }
 
