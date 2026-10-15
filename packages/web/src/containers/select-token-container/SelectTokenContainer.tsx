@@ -29,7 +29,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   additionalTokens = EMPTY_ADDITIONAL_TOKENS,
 }) => {
   const { breakpoint } = useWindowSize();
-  const { tokens, tokenPrices, displayBalanceStringMap } = useTokenData(true);
+  const { tokens, displayBalanceStringMap, getTokenUSDPrice } = useTokenData(true);
   const [keyword, setKeyword] = useState("");
   const [showUnverified, setShowUnverified] = useState(false);
   const clearModal = useClearModal();
@@ -49,9 +49,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   // Resolve stored recents to current token models so verification status stays fresh.
   const recents = useMemo(() => {
     const recentTokens: TokenModel[] = parseJson(recentsData ? recentsData : "[]");
-    return recentTokens
-      .map(recentToken => availableTokens.find(token => token.path === recentToken.path))
-      .filter((token): token is TokenModel => !!token);
+    return recentTokens.flatMap(recentToken => availableTokens.find(token => token.path === recentToken.path) ?? []);
   }, [availableTokens, recentsData]);
 
   const close = useCallback(() => {
@@ -72,30 +70,32 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   useEscCloseModal(close);
 
   const defaultTokens = useMemo(() => {
-    return DEFAULT_TOKEN_PATHS.map(path => visibleTokens.find(token => token.path === path)).filter(
-      (token): token is TokenModel => !!token,
-    );
+    return DEFAULT_TOKEN_PATHS.flatMap(path => visibleTokens.find(token => token.path === path) ?? []);
   }, [visibleTokens]);
 
-  const filteredTokens = useMemo(() => {
-    const lowerKeyword = keyword.toLowerCase();
+  const sortedTokens = useMemo(() => {
     const temp: SelectTokenSortable[] = visibleTokens.map((item: TokenModel) => {
       const tokenBalance = displayBalanceStringMap[item.path] ?? displayBalanceStringMap[item.priceID];
       const balance = BigNumber(tokenBalance ?? "");
       if (balance.isNaN() || balance.isLessThanOrEqualTo(0)) {
         return { ...item, usdValue: 0, balance: 0 };
       }
-      const usdValue = balance.multipliedBy(tokenPrices[item.priceID]?.usd || "0").toNumber();
+      const usdValue = getTokenUSDPrice(item.priceID, balance.toString());
       return { ...item, usdValue: usdValue || 0, balance: balance.toNumber() };
     });
-    const sortedData = temp.sort(compareSelectTokens);
-    return sortedData.filter(
+    return temp.sort(compareSelectTokens);
+  }, [visibleTokens, displayBalanceStringMap, getTokenUSDPrice]);
+
+  // Sorting is kept separate so typing a keyword only filters.
+  const filteredTokens = useMemo(() => {
+    const lowerKeyword = keyword.toLowerCase();
+    return sortedTokens.filter(
       token =>
         token.name.toLowerCase().includes(lowerKeyword) ||
         token.symbol.toLowerCase().includes(lowerKeyword) ||
         token.path.toLowerCase().includes(lowerKeyword),
     );
-  }, [visibleTokens, displayBalanceStringMap, keyword, tokenPrices]);
+  }, [sortedTokens, keyword]);
 
   const selectToken = useCallback(
     (token: TokenModel) => {

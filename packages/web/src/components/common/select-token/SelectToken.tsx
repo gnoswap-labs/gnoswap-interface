@@ -136,7 +136,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   }, [breakpoint]);
 
   // recents stays unfiltered so hidden tokens are not dropped from storage on the next selection.
-  const getTokensRecent = removeDuplicatesByWrappedPath(keepVerified([...recents, ...defaultTokens], showUnverified)).slice(
+  const getTokensRecent = removeDuplicatesByWrappedPath([...keepVerified(recents, showUnverified), ...defaultTokens]).slice(
     0,
     MAX_TOKEN_CHIPS,
   );

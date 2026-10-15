@@ -85,7 +85,7 @@ describe("SelectTokenContainer unverified token filtering", () => {
     localStorage.clear();
     mockedUseTokenData.mockReturnValue({
       tokens: [verifiedToken, unverifiedToken],
-      tokenPrices: {},
+      getTokenUSDPrice: () => null,
       displayBalanceStringMap: {},
     });
   });
@@ -127,7 +127,7 @@ describe("SelectTokenContainer unverified token filtering", () => {
   it("hides held unverified tokens while the toggle is off", () => {
     mockedUseTokenData.mockReturnValue({
       tokens: [verifiedToken, unverifiedToken],
-      tokenPrices: {},
+      getTokenUSDPrice: () => null,
       displayBalanceStringMap: { [unverifiedToken.path]: "100" },
     });
     renderContainer();
@@ -158,7 +158,7 @@ describe("SelectTokenContainer token chips", () => {
     localStorage.clear();
     mockedUseTokenData.mockReturnValue({
       tokens: [tokenA, tokenB, tokenC, wugnot, gns, gnot, unverifiedToken],
-      tokenPrices: {},
+      getTokenUSDPrice: () => null,
       displayBalanceStringMap: {},
     });
   });
