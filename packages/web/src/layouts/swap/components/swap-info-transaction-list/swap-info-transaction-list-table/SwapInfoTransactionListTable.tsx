@@ -92,25 +92,34 @@ const SwapInfoTransactionListTable = ({
   const [newTransactions, setNewTransactions] = React.useState<Set<string>>(new Set());
   const skipAnimationRef = React.useRef(true); // Skip animation on initial load or token pair change
   const [currentPage, setCurrentPage] = React.useState(1);
+  // Only page 1 updates live. Later pages keep the list from when the user left page 1, so rows don't shift while paging
+  const [frozenHistory, setFrozenHistory] = React.useState<SwapHistoryItem[] | null>(null);
+  const displayedHistory = frozenHistory ?? swapHistory;
 
-  const totalPage = Math.ceil(swapHistory.length / PAGE_SIZE);
+  const totalPage = Math.ceil(displayedHistory.length / PAGE_SIZE);
   const pageStart = (currentPage - 1) * PAGE_SIZE;
 
   // A single tx can contain multiple swaps, so txHash alone is not a unique row key
   const rowKeys = React.useMemo(() => {
     const seen = new Map<string, number>();
-    return swapHistory.map(item => {
+    return displayedHistory.map(item => {
       const count = seen.get(item.txHash) ?? 0;
       seen.set(item.txHash, count + 1);
       return `${item.txHash}-${count}`;
     });
-  }, [swapHistory]);
+  }, [displayedHistory]);
+
+  const changePage = (page: number) => {
+    setFrozenHistory(prev => (page === 1 ? null : (prev ?? swapHistory)));
+    setCurrentPage(page);
+  };
 
   // Reset animation and page when changing token pairs
   React.useEffect(() => {
     skipAnimationRef.current = true;
     setNewTransactions(new Set());
     setCurrentPage(1);
+    setFrozenHistory(null);
   }, [tokenPairParams]);
 
   // Detect and highlight new transactions
@@ -166,7 +175,7 @@ const SwapInfoTransactionListTable = ({
       </TransactionListTableHeader>
 
       <TransactionListTableList>
-        {swapHistory.slice(pageStart, pageStart + PAGE_SIZE).map((item: SwapHistoryItem, idx) => {
+        {displayedHistory.slice(pageStart, pageStart + PAGE_SIZE).map((item: SwapHistoryItem, idx) => {
           return (
             <TransactionListTableRow
               key={rowKeys[pageStart + idx]}
@@ -183,7 +192,7 @@ const SwapInfoTransactionListTable = ({
           <Pagination
             currentPage={currentPage}
             totalPage={totalPage}
-            onPageChange={setCurrentPage}
+            onPageChange={changePage}
             siblingCount={breakpoint !== DEVICE_TYPE.MOBILE ? 2 : 1}
           />
         </TransactionListPaginationWrapper>

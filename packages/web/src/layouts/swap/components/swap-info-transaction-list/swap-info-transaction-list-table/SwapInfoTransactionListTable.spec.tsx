@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { SwapHistoryItem } from "@repositories/swap/response/swap-history-response";
@@ -29,7 +29,33 @@ const tx = (txHash: string): SwapHistoryItem => ({ ...mockSwapHistory[0], txHash
 const highlightedHashes = (container: HTMLElement) =>
   Array.from(container.querySelectorAll(".highlight a")).map(a => a.getAttribute("href")?.split("/").pop());
 
+const renderedHashes = (container: HTMLElement) =>
+  Array.from(container.querySelectorAll("a")).map(a => a.getAttribute("href")?.split("/").pop());
+
 describe("SwapInfoTransactionListTable", () => {
+  it("keeps later pages fixed while new swaps arrive and shows them again on page 1", () => {
+    const view = (swapHistory: SwapHistoryItem[]) => (
+      <GnoswapThemeProvider>
+        <SwapInfoTransactionListTable
+          breakpoint={DEVICE_TYPE.WEB}
+          swapHistory={swapHistory}
+          tokenPairParams={tokenPairParams}
+        />
+      </GnoswapThemeProvider>
+    );
+    const initial = Array.from({ length: 15 }, (_, i) => tx(`tx${i}`));
+
+    const { container, rerender } = render(view(initial));
+    fireEvent.click(screen.getByRole("button", { name: "2" }));
+    expect(renderedHashes(container)).toEqual(["tx10", "tx11", "tx12", "tx13", "tx14"]);
+
+    rerender(view([tx("new"), ...initial]));
+    expect(renderedHashes(container)).toEqual(["tx10", "tx11", "tx12", "tx13", "tx14"]);
+
+    fireEvent.click(screen.getByRole("button", { name: "1" }));
+    expect(renderedHashes(container)[0]).toBe("new");
+  });
+
   it("highlights only transactions that arrived since the last update", () => {
     const view = (swapHistory: SwapHistoryItem[]) => (
       <GnoswapThemeProvider>
