@@ -110,6 +110,25 @@ describe("SelectToken Component", () => {
     expect(toggleShowUnverified).toHaveBeenCalledTimes(1);
   });
 
+  it("limits the width of rows added after the first render", () => {
+    const addedToken: TokenModel = { ...token, name: "Added", path: "gno.land/r/demo/added", symbol: "ADD" };
+    const { container, rerender } = renderSelectToken();
+
+    rerender(
+      <JotaiProvider>
+        <GnoswapThemeProvider>
+          <SelectToken {...args} tokens={[token, addedToken]} />
+        </GnoswapThemeProvider>
+      </JotaiProvider>,
+    );
+
+    const rowMaxWidths = Array.from(container.querySelectorAll(".token-info-detail")).map(
+      row => getComputedStyle(row).maxWidth,
+    );
+    expect(rowMaxWidths).toHaveLength(2);
+    rowMaxWidths.forEach(maxWidth => expect(maxWidth).toMatch(/^calc\(.*0px\)$/));
+  });
+
   describe("recent tokens", () => {
     const recentToken: TokenModel = { ...token, name: "Recent", path: "gno.land/r/demo/recent", symbol: "RCT" };
     const storedRecentPaths = () =>

@@ -53,8 +53,11 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   const { t } = useTranslation();
 
   const myElementRef = useRef<HTMLDivElement | null>(null);
-  const priceRefs = useRef(tokens.map(() => React.createRef<HTMLSpanElement>()));
-  const tokenNameRef = useRef(tokens.map(() => React.createRef<HTMLSpanElement>()));
+  const priceRefs = useRef<React.RefObject<HTMLSpanElement>[]>([]);
+  const tokenNameRef = useRef<React.RefObject<HTMLSpanElement>[]>([]);
+  // Keep one ref per row, since the list grows when unverified tokens are shown.
+  priceRefs.current = tokens.map((_, index) => priceRefs.current[index] ?? React.createRef<HTMLSpanElement>());
+  tokenNameRef.current = tokens.map((_, index) => tokenNameRef.current[index] ?? React.createRef<HTMLSpanElement>());
   const [widthList, setWidthList] = useState<number[]>(tokens.map(() => 0));
   const [tokenNameWidthList, setTokenNameWidthList] = useState<number[]>(tokens.map(() => 0));
   const [, setRecentsData] = useAtom(TokenState.selectRecents);
