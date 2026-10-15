@@ -94,7 +94,17 @@ const SwapInfoTransactionListTable = ({
   const [currentPage, setCurrentPage] = React.useState(1);
 
   const totalPage = Math.ceil(swapHistory.length / PAGE_SIZE);
-  const pagedSwapHistory = swapHistory.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+  const pageStart = (currentPage - 1) * PAGE_SIZE;
+
+  // A single tx can contain multiple swaps, so txHash alone is not a unique row key
+  const rowKeys = React.useMemo(() => {
+    const seen = new Map<string, number>();
+    return swapHistory.map(item => {
+      const count = seen.get(item.txHash) ?? 0;
+      seen.set(item.txHash, count + 1);
+      return `${item.txHash}-${count}`;
+    });
+  }, [swapHistory]);
 
   // Reset animation and page when changing token pairs
   React.useEffect(() => {
@@ -157,10 +167,10 @@ const SwapInfoTransactionListTable = ({
       </TransactionListTableHeader>
 
       <TransactionListTableList>
-        {pagedSwapHistory.map((item: SwapHistoryItem) => {
+        {swapHistory.slice(pageStart, pageStart + PAGE_SIZE).map((item: SwapHistoryItem, idx) => {
           return (
             <TransactionListTableRow
-              key={item.txHash}
+              key={rowKeys[pageStart + idx]}
               data={item}
               breakpoint={breakpoint}
               isNewTransaction={newTransactions.has(item.txHash)}
