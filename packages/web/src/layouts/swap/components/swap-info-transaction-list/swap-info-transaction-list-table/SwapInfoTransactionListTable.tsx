@@ -27,7 +27,9 @@ import {
   TransactionListTableList,
   TransactionListTableRowWrapper,
   TokenPairWrapper,
+  TransactionListPaginationWrapper,
 } from "./SwapInfoTransactionListTable.styles";
+import Pagination from "@components/common/pagination/Pagination";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import IconRightArrow from "@components/common/icons/IconRightArrow";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -57,7 +59,7 @@ const TIME_THRESHOLDS = {
 };
 
 const HIGHLIGHT_DURATION = 1_000;
-const MAX_DISPLAY_TRANSACTIONS = 10;
+const PAGE_SIZE = 10;
 
 const getTableWidths = (breakpoint: DEVICE_TYPE) => {
   if (breakpoint === DEVICE_TYPE.MOBILE) {
@@ -89,11 +91,16 @@ const SwapInfoTransactionListTable = ({
   const prevSwapHistoryRef = React.useRef<SwapHistoryItem[]>([]);
   const [newTransactions, setNewTransactions] = React.useState<Set<string>>(new Set());
   const skipAnimationRef = React.useRef(true); // Skip animation on initial load or token pair change
+  const [currentPage, setCurrentPage] = React.useState(1);
 
-  // Reset animation when changing token pairs
+  const totalPage = Math.ceil(swapHistory.length / PAGE_SIZE);
+  const pagedSwapHistory = swapHistory.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
+  // Reset animation and page when changing token pairs
   React.useEffect(() => {
     skipAnimationRef.current = true;
     setNewTransactions(new Set());
+    setCurrentPage(1);
   }, [tokenPairParams]);
 
   // Detect and highlight new transactions
@@ -150,7 +157,7 @@ const SwapInfoTransactionListTable = ({
       </TransactionListTableHeader>
 
       <TransactionListTableList>
-        {swapHistory.slice(0, MAX_DISPLAY_TRANSACTIONS).map((item: SwapHistoryItem) => {
+        {pagedSwapHistory.map((item: SwapHistoryItem) => {
           return (
             <TransactionListTableRow
               key={item.txHash}
@@ -161,6 +168,17 @@ const SwapInfoTransactionListTable = ({
           );
         })}
       </TransactionListTableList>
+
+      {totalPage > 1 && (
+        <TransactionListPaginationWrapper>
+          <Pagination
+            currentPage={currentPage}
+            totalPage={totalPage}
+            onPageChange={setCurrentPage}
+            siblingCount={breakpoint !== DEVICE_TYPE.MOBILE ? 2 : 1}
+          />
+        </TransactionListPaginationWrapper>
+      )}
     </>
   );
 };

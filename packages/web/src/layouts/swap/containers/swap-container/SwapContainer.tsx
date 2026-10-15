@@ -1,7 +1,7 @@
 import { useAtomValue } from "jotai";
 import React, { useEffect, useMemo, useState } from "react";
 
-import { GNOT_TOKEN_DEFAULT } from "@common/values/token-constant";
+import { GNOT_TOKEN_DEFAULT, GNS_TOKEN } from "@common/values/token-constant";
 import useRouter from "@hooks/common/use-custom-router";
 import { useSwapHandler } from "@hooks/swap/data/use-swap-handler";
 import { useGetTokens } from "@query/token";
@@ -86,7 +86,7 @@ const SwapContainer: React.FC = () => {
     if (router.pathname !== router.asPath) return;
     setSwapValue({
       tokenA: GNOT_TOKEN_DEFAULT,
-      tokenB: null,
+      tokenB: GNS_TOKEN,
       type: "EXACT_IN",
     });
     setTokenAAmount("");
@@ -97,7 +97,7 @@ const SwapContainer: React.FC = () => {
     if (!query.from && !query.to) {
       setSwapValue({
         tokenA: GNOT_TOKEN_DEFAULT,
-        tokenB: null,
+        tokenB: GNS_TOKEN,
         type: "EXACT_IN",
       });
       setTokenAAmount("");
