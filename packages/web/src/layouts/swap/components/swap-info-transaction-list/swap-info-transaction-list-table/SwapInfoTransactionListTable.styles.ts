@@ -46,6 +46,8 @@ export const TransactionListTableList = styled.div`
 `;
 
 export const TransactionListPaginationWrapper = styled.div`
+  display: flex;
+  justify-content: center;
   width: 100%;
   padding: 12px 0 16px;
 `;
