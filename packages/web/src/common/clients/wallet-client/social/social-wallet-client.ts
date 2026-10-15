@@ -200,7 +200,7 @@ export class SocialWalletClient implements WalletClient {
       status: response.status,
       type: response.type,
       message: response.message,
-      data: (response.data as SignedArbitraryData | null) ?? null,
+      data: response.data ?? null,
     };
   }
 

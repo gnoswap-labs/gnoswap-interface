@@ -12,7 +12,14 @@ import {
 const ADDRESS = "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5";
 
 const PROOF: SignedArbitraryData = {
-  signed: { chain_id: "dev.gnoswap" },
+  signed: {
+    chain_id: "dev.gnoswap",
+    account_number: "0",
+    sequence: "0",
+    fee: { amount: [], gas: "0" },
+    msgs: [{ type: "sign/MsgSignData", value: { signer: ADDRESS, data: "e30=" } }],
+    memo: "",
+  },
   signature: {
     pubKey: { typeUrl: "/tm.PubKeySecp256k1", value: "A+FhNtsXHjLfSJk1lB8FbiL4mGPjc50Kt81J7EKDnJ2y" },
     signature: "AQ==",
