@@ -92,4 +92,31 @@ describe("SelectToken Component", () => {
     expect(mockGetRealmUrl).toHaveBeenCalledWith(extension.originTokenPath);
     expect(open).toHaveBeenCalledWith(`https://gnoscan.io/realms/details?path=${extension.originTokenPath}`, "_blank");
   });
+
+  describe("recent tokens", () => {
+    const recentToken: TokenModel = { ...token, name: "Recent", path: "gno.land/r/demo/recent", symbol: "RCT" };
+    const storedRecentPaths = () =>
+      JSON.parse(JSON.parse(localStorage.getItem("recentsSelect") ?? "\"\"") || "[]").map((item: TokenModel) => item.path);
+
+    beforeEach(() => localStorage.clear());
+
+    it("keeps recent tokens that are hidden from the list, such as by a search keyword", () => {
+      const { container } = renderSelectToken({ keyword: "bubble", recents: [recentToken], tokens: [token] });
+
+      fireEvent.click(container.querySelector(".token-list-wrapper .list")!);
+
+      expect(storedRecentPaths()).toEqual([recentToken.path, token.path]);
+    });
+
+    it("stores a token once even when its balance fields changed", () => {
+      const { container } = renderSelectToken({
+        recents: [{ ...token, balance: 0 } as TokenModel],
+        tokens: [{ ...token, balance: 1 } as TokenModel],
+      });
+
+      fireEvent.click(container.querySelector(".token-list-wrapper .list")!);
+
+      expect(storedRecentPaths()).toEqual([token.path]);
+    });
+  });
 });

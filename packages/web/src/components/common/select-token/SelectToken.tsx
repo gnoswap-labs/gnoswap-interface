@@ -71,21 +71,13 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   const onClickToken = useCallback(
     (token: TokenModel) => {
       const current = [...recents, token].filter(item => !ORDER.includes(item.symbol));
-      const filterData = current
-        .filter(recentToken => tokens.some(token => token.path === recentToken.path))
-        .filter((_item, index) => {
-          const _value = JSON.stringify(_item);
-          return (
-            index ===
-            current.findIndex(obj => {
-              return JSON.stringify(obj) === _value;
-            })
-          );
-        });
-      setRecentsData(JSON.stringify(filterData.slice(filterData.length <= 4 ? 0 : 1, filterData.length <= 4 ? 4 : 5)));
+      const uniqueRecents = current.filter(
+        (item, index) => current.findIndex(other => other.path === item.path) === index,
+      );
+      setRecentsData(JSON.stringify(uniqueRecents.slice(-4)));
       changeToken(token);
     },
-    [changeToken, close, recents],
+    [changeToken, recents, setRecentsData],
   );
 
   const onChangeSearchKeyword = useCallback(
