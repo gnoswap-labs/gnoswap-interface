@@ -14,9 +14,6 @@ export const formatLeaderboardPoint = (point: string | undefined): string => {
   return removeTrailingZeros(formattedPoint);
 };
 
-// Swap points per GNOT of router fee paid (the round swap rate).
-export const LEADERBOARD_SWAP_POINTS_PER_GNOT = 5;
-
 const toBigNumber = (value: string | undefined): BigNumber | null => {
   if (!value) return null;
   const parsed = BigNumber(value);
@@ -50,19 +47,4 @@ export const getGlobalCapRatio = (
   if (!walletCapped.isGreaterThan(0)) return null;
 
   return BigNumber.min(accepted.dividedBy(walletCapped), 1).toFixed(2);
-};
-
-// Router fees paid in GNOT, derived from the swap points before the cap.
-export const getSwapFeeGnot = (swapRawPoint: string | undefined): string | null => {
-  const raw = toBigNumber(swapRawPoint);
-  if (!raw) return null;
-  return raw.dividedBy(LEADERBOARD_SWAP_POINTS_PER_GNOT).toString();
-};
-
-// USD value of a GNOT amount at the given GNOT price, or null without a price.
-export const getGnotUsdValue = (gnotAmount: string | null, gnotUsdPrice: string | undefined): string | null => {
-  const amount = toBigNumber(gnotAmount ?? undefined);
-  const price = toBigNumber(gnotUsdPrice);
-  if (!amount || !price) return null;
-  return amount.multipliedBy(price).toString();
 };

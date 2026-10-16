@@ -114,7 +114,7 @@ describe("LeaderboardTableRow", () => {
     expect(screen.queryByText("#1100")).not.toBeInTheDocument();
   });
 
-  const renderRow = (data: Partial<LeaderboardUser>, gnotUsdPrice?: string) =>
+  const renderRow = (data: Partial<LeaderboardUser>) =>
     render(
       <GnoswapThemeProvider>
         <LeaderboardTableRow
@@ -122,28 +122,22 @@ describe("LeaderboardTableRow", () => {
           data={{ ...createLeaderboardUser(1), ...data }}
           tdWidths={[100, 100, 100, 100, 100, 100]}
           isMobile={false}
-          gnotUsdPrice={gnotUsdPrice}
         />
       </GnoswapThemeProvider>,
     );
 
-  it("shows the swap fees, the swap points before the cap, the cap and the counted points on hover", () => {
-    renderRow(
-      {
-        swapPoint: "123.456",
-        swapRawPoint: "900",
-        swapCapPoint: "4567.891",
-        positionStakingPoint: "1000",
-        gnsDelegationPoint: "1189.297",
-        referralPoint: "12.3",
-        totalPoint: "2335.053",
-      },
-      "0.0575",
-    );
+  it("shows the swap points before the cap, the cap and the counted points on hover", () => {
+    renderRow({
+      swapPoint: "123.456",
+      swapRawPoint: "900",
+      swapCapPoint: "4567.891",
+      positionStakingPoint: "1000",
+      gnsDelegationPoint: "1189.297",
+      referralPoint: "12.3",
+      totalPoint: "2335.053",
+    });
 
-    expect(screen.getByText("Leaderboard:list.column.swapFeesPaid")).toBeInTheDocument();
-    // 900 swap points before the cap are 180 GNOT of router fees.
-    expect(screen.getByText("180 GNOT (≈$10.35)")).toBeInTheDocument();
+    expect(screen.queryByText("Leaderboard:list.column.swapFeesPaid")).not.toBeInTheDocument();
     expect(screen.getByText("Leaderboard:list.column.swapRaw")).toBeInTheDocument();
     expect(screen.getByText("900")).toBeInTheDocument();
     expect(screen.getByText("Leaderboard:list.column.swapCap")).toBeInTheDocument();
@@ -152,12 +146,6 @@ describe("LeaderboardTableRow", () => {
     // The swap column, its counted row and the point composition show the accepted swap points.
     expect(screen.getAllByText("123.45")).toHaveLength(3);
     expect(screen.queryByText("Leaderboard:list.column.swapCapWarning")).not.toBeInTheDocument();
-  });
-
-  it("shows the swap fees in GNOT only without a GNOT price", () => {
-    renderRow({ swapPoint: "37.37", swapRawPoint: "37.37", swapCapPoint: "205403.55" });
-
-    expect(screen.getByText("7.47 GNOT")).toBeInTheDocument();
   });
 
   it("warns when the swap points before the cap exceed the cap", () => {

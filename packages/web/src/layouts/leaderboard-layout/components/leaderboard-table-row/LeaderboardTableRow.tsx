@@ -19,7 +19,6 @@ const LeaderboardTableRow = ({
   isMobile,
   isMe = false,
   rankOffset = 0,
-  gnotUsdPrice,
 }: {
   myAddress: string | undefined;
   data: LeaderboardUser;
@@ -27,7 +26,6 @@ const LeaderboardTableRow = ({
   isMobile: boolean;
   isMe?: boolean;
   rankOffset?: number;
-  gnotUsdPrice?: string;
 }) => {
   const Hover = isMe ? HoverSection : HoverOnBgSection;
   const TableWrapper = isMe ? WrapperHoverBackground : Wrapper;
@@ -80,12 +78,7 @@ const LeaderboardTableRow = ({
         {!isMobile && (
           <>
             <TableColumn tdWidth={tdWidths.at(2)} style={{ justifyContent: "flex-start" }}>
-              <SwapPoint
-                swapPoint={data.swapPoint}
-                swapRawPoint={data.swapRawPoint}
-                swapCapPoint={data.swapCapPoint}
-                gnotUsdPrice={gnotUsdPrice}
-              />
+              <SwapPoint swapPoint={data.swapPoint} swapRawPoint={data.swapRawPoint} swapCapPoint={data.swapCapPoint} />
             </TableColumn>
             <TableColumn tdWidth={tdWidths.at(3)}>{formatLeaderboardPoint(data.positionStakingPoint)}</TableColumn>
             <TableColumn tdWidth={tdWidths.at(4)}>{formatLeaderboardPoint(data.gnsDelegationPoint)}</TableColumn>

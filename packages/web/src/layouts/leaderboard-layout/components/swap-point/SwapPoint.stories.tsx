@@ -19,7 +19,6 @@ export const Default: Story = {
     swapPoint: "37.37",
     swapRawPoint: "37.37",
     swapCapPoint: "205403.55",
-    gnotUsdPrice: "0.0575",
   },
 };
 
@@ -28,6 +27,5 @@ export const CapReached: Story = {
     swapPoint: "5000",
     swapRawPoint: "6000",
     swapCapPoint: "5000",
-    gnotUsdPrice: "0.0575",
   },
 };

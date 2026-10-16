@@ -1,4 +1,4 @@
-import { getGlobalCapRatio, getGnotUsdValue, getSwapFeeGnot, isSwapCapReached } from "./leaderboard-utils";
+import { getGlobalCapRatio, isSwapCapReached } from "./leaderboard-utils";
 
 describe("isSwapCapReached", () => {
   it("is reached when the swap points before the cap exceed the cap", () => {
@@ -36,25 +36,5 @@ describe("getGlobalCapRatio", () => {
     expect(getGlobalCapRatio("0", "0", "500")).toBeNull();
     expect(getGlobalCapRatio("0", "900", "0")).toBeNull();
     expect(getGlobalCapRatio(undefined, "90", "500")).toBeNull();
-  });
-});
-
-describe("getSwapFeeGnot", () => {
-  it("divides the swap points before the cap by the swap points per GNOT", () => {
-    expect(getSwapFeeGnot("37.37")).toBe("7.474");
-  });
-
-  it("is null without swap points", () => {
-    expect(getSwapFeeGnot(undefined)).toBeNull();
-  });
-});
-
-describe("getGnotUsdValue", () => {
-  it("multiplies the GNOT amount by the GNOT price", () => {
-    expect(getGnotUsdValue("7.474", "0.0575")).toBe("0.429755");
-  });
-
-  it("is null without a price", () => {
-    expect(getGnotUsdValue("7.474", undefined)).toBeNull();
   });
 });

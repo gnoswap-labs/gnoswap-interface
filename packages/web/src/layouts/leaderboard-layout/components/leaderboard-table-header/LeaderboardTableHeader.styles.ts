@@ -66,8 +66,26 @@ export const TableHeaderTooltipContent = styled.div`
     margin-top: 8px;
   }
 
+  /* One blank line between the first line and the rest. */
+  p:first-of-type {
+    margin-bottom: 1.5em;
+  }
+
   strong {
     font-weight: 600;
+  }
+
+  .formula {
+    display: inline-block;
+    padding: 2px 6px;
+    border: 1px solid ${({ theme }) => theme.color.border02};
+    border-radius: 4px;
+    background-color: ${({ theme }) =>
+      theme.themeKey === "dark" ? theme.color.background06 : theme.color.background05};
+    color: ${({ theme }) => theme.color.text02};
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    line-height: 1.5;
   }
 
   li {

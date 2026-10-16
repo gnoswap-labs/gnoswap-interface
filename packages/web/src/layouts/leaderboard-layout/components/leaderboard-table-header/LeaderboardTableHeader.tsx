@@ -26,6 +26,7 @@ const LeaderboardTableHeader = ({ heads, headWidths }: { heads: TableHeadItem[];
                       p: <p />,
                       br: <br />,
                       strong: <strong />,
+                      formula: <code className="formula" />,
                     }}
                   />
                 </TableHeaderTooltipContent>
