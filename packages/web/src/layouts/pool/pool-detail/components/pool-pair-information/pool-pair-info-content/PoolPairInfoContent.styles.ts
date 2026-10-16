@@ -136,21 +136,6 @@ export const ContentWrapper = styled.div`
     .chart-tabs button {
       min-width: 0;
     }
-    .chart-ranges .chart-reset {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      span {
-        display: flex;
-      }
-      svg {
-        width: 18px;
-        height: 18px;
-      }
-      svg * {
-        fill: currentColor;
-      }
-    }
     .chart-pair button {
       display: flex;
       align-items: center;

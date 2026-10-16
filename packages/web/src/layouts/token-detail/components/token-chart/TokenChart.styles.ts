@@ -65,21 +65,6 @@ export const ChartControls = styled.div`
       color: ${({ theme }) => theme.color.text02};
     }
   }
-  .chart-reset {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    span {
-      display: flex;
-    }
-    svg {
-      width: 18px;
-      height: 18px;
-    }
-    svg * {
-      fill: currentColor;
-    }
-  }
   ${media.mobile} {
     height: 24px;
     width: calc(100% - 16px);

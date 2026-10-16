@@ -16,15 +16,23 @@ const mockTimeScale = {
   getVisibleLogicalRange: jest.fn().mockReturnValue({ from: -4.25, to: 9.75 }),
   setVisibleLogicalRange: jest.fn(),
   fitContent: jest.fn(),
+  scrollPosition: jest.fn().mockReturnValue(5),
+  scrollToPosition: jest.fn(),
+  height: jest.fn().mockReturnValue(28),
   subscribeVisibleLogicalRangeChange: jest.fn(),
   unsubscribeVisibleLogicalRangeChange: jest.fn(),
 };
 const mockSubscribeCrosshairMove = jest.fn();
 const mockRemove = jest.fn();
 const mockUnsubscribeCrosshairMove = jest.fn();
+const mockPriceScale = {
+  options: jest.fn().mockReturnValue({ autoScale: true }),
+  applyOptions: jest.fn(),
+  width: jest.fn().mockReturnValue(70),
+};
 const mockCreateChart = jest.fn().mockImplementation(() => ({
   addSeries: jest.fn().mockReturnValueOnce(mockCandles).mockReturnValueOnce(mockVolume),
-  priceScale: () => ({ applyOptions: jest.fn() }),
+  priceScale: () => mockPriceScale,
   timeScale: () => mockTimeScale,
   subscribeCrosshairMove: mockSubscribeCrosshairMove,
   unsubscribeCrosshairMove: mockUnsubscribeCrosshairMove,
@@ -48,7 +56,7 @@ let mockLanguage = "en";
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: mockLanguage, resolvedLanguage: mockLanguage } }),
 }));
-jest.mock("./PriceCandleChart.styles", () => ({ CandleTooltip: "div" }));
+jest.mock("./PriceCandleChart.styles", () => ({ CandleTooltip: "div", ChartNavigation: "div" }));
 jest.mock("@components/common/loading-spinner/LoadingSpinner", () => ({
   __esModule: true,
   default: () => <span />,
@@ -98,6 +106,11 @@ beforeEach(() => {
   mockLanguage = "en";
   mockCandles.barsInLogicalRange.mockReset().mockReturnValue({ barsBefore: Infinity });
   mockTimeScale.getVisibleLogicalRange.mockReturnValue({ from: -4.25, to: 9.75 });
+  mockTimeScale.scrollPosition.mockReset().mockReturnValue(5);
+  mockTimeScale.setVisibleLogicalRange.mockReset();
+  mockTimeScale.scrollToPosition.mockReset();
+  mockPriceScale.options.mockReset().mockReturnValue({ autoScale: true });
+  mockPriceScale.applyOptions.mockReset();
   jest.spyOn(Date, "now").mockReturnValue(300000000);
 });
 afterEach(() => {
@@ -186,28 +199,74 @@ it("portals candle details beyond clipping ancestors and keeps the measured tool
   expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
 });
 
-it("resets a panned chart to its initial window and refetches without retaining stale requests", async () => {
-  let finishOldPage!: (bars: PriceBar[]) => void;
-  const loadPage = jest
-    .fn()
-    .mockImplementationOnce(
-      () =>
-        new Promise<PriceBar[]>(resolve => {
-          finishOldPage = resolve;
-        }),
-    )
-    .mockResolvedValue(firstPage);
-  const { rerender } = render(<PriceCandleChart {...props} resetKey={0} loadPage={loadPage} />);
-  await waitFor(() => expect(loadPage).toHaveBeenCalledTimes(1));
-  mockTimeScale.setVisibleLogicalRange({ from: -30, to: -10 });
-  rerender(<PriceCandleChart {...props} resetKey={1} loadPage={loadPage} />);
-  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
-  expect(mockRemove).toHaveBeenCalledTimes(1);
-  expect(loadPage).toHaveBeenNthCalledWith(2, 282300, 300300);
-  expect(mockTimeScale.setVisibleLogicalRange).toHaveBeenLastCalledWith({ from: 0, to: 6 });
-  await act(async () => finishOldPage(olderPage));
-  expect(mockCandles.setData).toHaveBeenCalledTimes(1);
-});
+it.each([false, true])(
+  "derives navigation from the current view and restores it without reloading history (all=%s)",
+  async all => {
+    const defaultOffset = all ? 0 : 5;
+    let visible = { from: 0, to: 1 + defaultOffset };
+    const changeRange = (range: { from: number; to: number }) => {
+      visible = range;
+      mockTimeScale.getVisibleLogicalRange.mockReturnValue(range);
+      mockTimeScale.scrollPosition.mockReturnValue(range.to - 1);
+      mockTimeScale.subscribeVisibleLogicalRangeChange.mock.calls[0]?.[0](range);
+    };
+    mockTimeScale.setVisibleLogicalRange.mockImplementation(changeRange);
+    mockTimeScale.scrollToPosition.mockImplementation((offset: number) => {
+      const to = 1 + offset;
+      changeRange({ from: to - (visible.to - visible.from), to });
+    });
+    mockPriceScale.applyOptions.mockImplementation((options: { autoScale?: boolean }) => {
+      if (options.autoScale !== undefined) mockPriceScale.options.mockReturnValue({ autoScale: options.autoScale });
+    });
+    const loadPage = jest.fn().mockResolvedValue(firstPage);
+    render(<PriceCandleChart {...props} all={all} loadPage={loadPage} />);
+    await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+    const initial = { ...visible };
+    const reset = () => screen.queryByRole("button", { name: "Reset chart view" });
+    const latest = () => screen.queryByRole("button", { name: "Scroll to the most recent bar" });
+    await waitFor(() => expect(reset()).not.toBeInTheDocument());
+
+    act(() => changeRange({ from: initial.from - 20, to: initial.to - 20 }));
+    await waitFor(() => expect(latest()).toBeInTheDocument());
+    expect(reset()).toBeInTheDocument();
+    act(() => changeRange(initial));
+    await waitFor(() => expect(reset()).not.toBeInTheDocument());
+    expect(latest()).not.toBeInTheDocument();
+
+    const zoomed = { from: initial.to - (initial.to - initial.from) / 2, to: initial.to };
+    act(() => changeRange(zoomed));
+    await waitFor(() => expect(reset()).toBeInTheDocument());
+    expect(latest()).not.toBeInTheDocument();
+    act(() => changeRange({ from: zoomed.from - 20, to: zoomed.to - 20 }));
+    await waitFor(() => expect(latest()).toBeInTheDocument());
+    fireEvent.click(latest()!);
+    await waitFor(() => expect(latest()).not.toBeInTheDocument());
+    expect(reset()).toBeInTheDocument();
+    expect(visible).toEqual(zoomed);
+
+    fireEvent.click(reset()!);
+    await waitFor(() => expect(reset()).not.toBeInTheDocument());
+    expect(visible).toEqual(initial);
+
+    mockPriceScale.options.mockReturnValue({ autoScale: false });
+    fireEvent.pointerUp(document);
+    await waitFor(() => expect(reset()).toBeInTheDocument());
+    expect(latest()).not.toBeInTheDocument();
+    mockPriceScale.options.mockReturnValue({ autoScale: true });
+    fireEvent.pointerUp(document);
+    await waitFor(() => expect(reset()).not.toBeInTheDocument());
+
+    mockPriceScale.options.mockReturnValue({ autoScale: false });
+    fireEvent.pointerUp(document);
+    await waitFor(() => expect(reset()).toBeInTheDocument());
+    fireEvent.click(reset()!);
+    await waitFor(() => expect(reset()).not.toBeInTheDocument());
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    expect(loadPage).toHaveBeenCalledTimes(1);
+    expect(mockCandles.setData).toHaveBeenCalledTimes(1);
+    expect(mockRemove).not.toHaveBeenCalled();
+  },
+);
 
 it("preserves distinct token axis ticks when three significant digits would collapse them", async () => {
   const bar = { ...firstPage[0], open: 0.07, high: 0.07005, low: 0.06995, close: 0.07 };

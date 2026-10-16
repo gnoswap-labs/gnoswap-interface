@@ -9,7 +9,6 @@ import IconStar from "@components/common/icons/IconStar";
 import IconAdd from "@components/common/icons/IconAdd";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconRemove from "@components/common/icons/IconRemove";
-import IconRefresh from "@components/common/icons/IconRefresh";
 import IconSwap from "@components/common/icons/IconSwap";
 import IconTriangleArrowDownV2 from "@components/common/icons/IconTriangleArrowDownV2";
 import IconTriangleArrowUpV2 from "@components/common/icons/IconTriangleArrowUpV2";
@@ -100,7 +99,6 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const [chartMode, setChartMode] = useState<"price" | "liquidity">("price");
   const [chartRange, setChartRange] = useState<CandleRange>("1h");
   const [isChartReversed, setIsChartReversed] = useState(false);
-  const [resetKey, setResetKey] = useState(0);
   const chartBodyRef = useRef<HTMLDivElement>(null);
   const [chartWidth, setChartWidth] = useState(0);
   const fallbackGraphWidth = Math.min(width - (width > 767 ? 224 : 80), 1216);
@@ -572,18 +570,6 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               aria-label="Chart range"
               aria-hidden={chartMode !== "price"}
             >
-              <button
-                type="button"
-                className="chart-reset"
-                disabled={chartMode !== "price"}
-                aria-label="Reset chart"
-                title="Reset chart"
-                onClick={() => setResetKey(value => value + 1)}
-              >
-                <span aria-hidden="true">
-                  <IconRefresh />
-                </span>
-              </button>
               {CANDLE_RANGES.map(range => (
                 <button
                   key={range}
@@ -607,7 +593,6 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                   tokenB={pool.tokenB}
                   reversed={isChartReversed}
                   range={chartRange}
-                  resetKey={resetKey}
                 />
               ) : (
                 <LoadingChart role="status" aria-label="Loading price history">

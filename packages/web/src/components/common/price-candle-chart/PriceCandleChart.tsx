@@ -14,10 +14,12 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import IconGoToLatest from "@components/common/icons/IconGoToLatest";
+import IconRefresh from "@components/common/icons/IconRefresh";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { CHART_LOADING_DELAY_MS } from "@constants/loading.constant";
 
-import { CandleTooltip } from "./PriceCandleChart.styles";
+import { CandleTooltip, ChartNavigation } from "./PriceCandleChart.styles";
 
 export interface PriceBar {
   time: number;
@@ -35,7 +37,6 @@ interface Props {
   daily: boolean;
   all?: boolean;
   stopAtEmptyOlderPage?: boolean;
-  resetKey?: number;
   label: string;
   volumeSymbols: readonly [string, string?];
   priceLabel?: string;
@@ -54,7 +55,6 @@ export default function PriceCandleChart({
   daily,
   all = false,
   stopAtEmptyOlderPage = false,
-  resetKey,
   label,
   volumeSymbols,
   priceLabel,
@@ -69,6 +69,13 @@ export default function PriceCandleChart({
   const theme = useTheme();
   const chartElement = useRef<HTMLDivElement>(null);
   const searchOlder = useRef<(() => void) | null>(null);
+  const navigation = useRef<{ resetView: () => void; goToLatest: () => void } | null>(null);
+  const [navigationState, setNavigationState] = useState({
+    canReset: false,
+    canScrollToLatest: false,
+    right: 0,
+    bottom: 0,
+  });
   const [state, setState] = useState<"loading" | "ready" | "empty" | "error">("loading");
   const [pagingError, setPagingError] = useState(false);
   const [retry, setRetry] = useState(0);
@@ -115,6 +122,7 @@ export default function PriceCandleChart({
     setPagingError(false);
     setCanSearchOlder(true);
     setHovered(null);
+    setNavigationState({ canReset: false, canScrollToLatest: false, right: 0, bottom: 0 });
 
     async function initialize() {
       if (cancelled || !element) return;
@@ -166,6 +174,7 @@ export default function PriceCandleChart({
           borderColor: theme.color.border14,
           timeVisible: !daily,
           secondsVisible: false,
+          lockVisibleTimeRangeOnResize: true,
           tickMarkFormatter: (time: Time, type: TickMarkType) =>
             typeof time === "number" ? axisFormats[type].format(new Date(time * 1000)) : String(time),
         },
@@ -187,6 +196,7 @@ export default function PriceCandleChart({
             bottom: Math.min(0.24, attributionClearance / Math.max(height, 1)),
           },
         });
+        scheduleNavigationUpdate();
       });
       observer.observe(element);
       const candles = chart.addSeries(CandlestickSeries, {
@@ -220,6 +230,52 @@ export default function PriceCandleChart({
       let fetching = false;
       let initialWindowPending = true;
       let preloadFrame = 0;
+      let navigationFrame = 0;
+      let defaultLogicalSpan: number | null = null;
+      const defaultRightOffset = all ? 0 : 5;
+      // Ignore floating-point roundoff, not whether a gesture happened in the past.
+      const viewTolerance = 0.01;
+      const updateNavigation = () => {
+        if (cancelled) return;
+        const timeScale = chart.timeScale();
+        const range = timeScale.getVisibleLogicalRange();
+        const offset = timeScale.scrollPosition();
+        const next = {
+          canReset:
+            defaultLogicalSpan !== null &&
+            range !== null &&
+            (Math.abs(range.to - range.from - defaultLogicalSpan) > viewTolerance ||
+              Math.abs(offset - defaultRightOffset) > viewTolerance ||
+              !chart.priceScale("right").options().autoScale ||
+              !chart.priceScale("volume").options().autoScale),
+          canScrollToLatest: bars.length > 0 && offset < -viewTolerance,
+          right: chart.priceScale("right").width() + 8,
+          bottom: timeScale.height() + 8,
+        };
+        setNavigationState(previous =>
+          previous.canReset === next.canReset &&
+          previous.canScrollToLatest === next.canScrollToLatest &&
+          previous.right === next.right &&
+          previous.bottom === next.bottom
+            ? previous
+            : next,
+        );
+      };
+      const scheduleNavigationUpdate = () => {
+        if (navigationFrame || cancelled) return;
+        navigationFrame = window.requestAnimationFrame(() => {
+          navigationFrame = 0;
+          updateNavigation();
+        });
+      };
+      const setInitialView = () => {
+        const range = {
+          from: Math.max(0, bars.length - 30),
+          to: bars.length - 1 + defaultRightOffset,
+        };
+        defaultLogicalSpan = range.to - range.from;
+        chart.timeScale().setVisibleLogicalRange(range);
+      };
       const applyPriceFormat = () => {
         let smallestPrice = Infinity;
         for (const bar of bars) {
@@ -307,10 +363,7 @@ export default function PriceCandleChart({
               .timeScale()
               .setVisibleLogicalRange({ from: visible.from + older.length, to: visible.to + older.length });
           } else {
-            chart.timeScale().setVisibleLogicalRange({
-              from: Math.max(0, bars.length - 30),
-              to: all ? bars.length - 1 : bars.length + 4,
-            });
+            setInitialView();
           }
           setState("ready");
         } catch {
@@ -344,6 +397,9 @@ export default function PriceCandleChart({
             throw new Error("Invalid price history response");
           }
           const visible = chart.timeScale().getVisibleLogicalRange();
+          const followingLatest =
+            visible !== null && Math.abs(visible.to - (bars.length - 1) - defaultRightOffset) <= viewTolerance;
+          const previousLength = bars.length;
           const changed = latest.filter(bar => {
             const previous = barsByTime.get(bar.time);
             return (
@@ -370,12 +426,10 @@ export default function PriceCandleChart({
           bars = Array.from(barsByTime.values()).sort((a, b) => a.time - b.time);
           applyPriceFormat();
           if (visible) {
-            chart.timeScale().setVisibleLogicalRange(visible);
+            const shift = followingLatest ? bars.length - previousLength : 0;
+            chart.timeScale().setVisibleLogicalRange({ from: visible.from + shift, to: visible.to + shift });
           } else {
-            chart.timeScale().setVisibleLogicalRange({
-              from: Math.max(0, bars.length - 65) - 6,
-              to: bars.length + 4,
-            });
+            setInitialView();
           }
           setState("ready");
           setHovered(previous => {
@@ -400,6 +454,7 @@ export default function PriceCandleChart({
       let pointerStart: number | null = null;
       const armPaging = () => {
         userPanned = true;
+        scheduleNavigationUpdate();
       };
       const startPan = (event: PointerEvent) => {
         pointerStart = event.clientX;
@@ -407,9 +462,11 @@ export default function PriceCandleChart({
       const movePan = (event: PointerEvent) => {
         if (pointerStart !== null && event.buttons && Math.abs(event.clientX - pointerStart) > 8) userPanned = true;
         if (!event.buttons) pointerStart = null;
+        if (pointerStart !== null && event.buttons) scheduleNavigationUpdate();
       };
       const endPan = () => {
         pointerStart = null;
+        scheduleNavigationUpdate();
       };
       const hideTooltip = () => setHovered(null);
       element.addEventListener("pointerleave", hideTooltip);
@@ -420,8 +477,9 @@ export default function PriceCandleChart({
       element.addEventListener("wheel", armPaging, { capture: true, passive: true });
       element.addEventListener("pointerdown", startPan, { capture: true });
       element.addEventListener("pointermove", movePan, { capture: true });
-      element.addEventListener("pointerup", endPan);
+      document.addEventListener("pointerup", endPan);
       element.addEventListener("pointercancel", endPan);
+      element.addEventListener("dblclick", scheduleNavigationUpdate);
       const onCrosshairMove: Parameters<typeof chart.subscribeCrosshairMove>[0] = param => {
         if (typeof param.time !== "number" || !param.point || !param.seriesData.get(candles)) {
           setHovered(null);
@@ -441,6 +499,7 @@ export default function PriceCandleChart({
       };
       chart.subscribeCrosshairMove(onCrosshairMove);
       const onRange = (range: LogicalRange | null) => {
+        scheduleNavigationUpdate();
         if (
           !cancelled &&
           !exhausted &&
@@ -455,15 +514,35 @@ export default function PriceCandleChart({
         }
       };
       chart.timeScale().subscribeVisibleLogicalRangeChange(onRange);
+      navigation.current = {
+        goToLatest: () => {
+          userPanned = false;
+          setHovered(null);
+          chart.timeScale().scrollToPosition(defaultRightOffset, false);
+          scheduleNavigationUpdate();
+        },
+        resetView: () => {
+          if (defaultLogicalSpan === null) return;
+          userPanned = false;
+          setHovered(null);
+          chart.priceScale("right").applyOptions({ autoScale: true });
+          chart.priceScale("volume").applyOptions({ autoScale: true });
+          const to = bars.length - 1 + defaultRightOffset;
+          chart.timeScale().setVisibleLogicalRange({ from: to - defaultLogicalSpan, to });
+          scheduleNavigationUpdate();
+        },
+      };
       dispose = () => {
         window.clearInterval(refreshTimer);
         window.cancelAnimationFrame(preloadFrame);
+        window.cancelAnimationFrame(navigationFrame);
         document.removeEventListener("visibilitychange", refreshOnVisibility);
         element.removeEventListener("wheel", armPaging, true);
         element.removeEventListener("pointerdown", startPan, true);
         element.removeEventListener("pointermove", movePan, true);
-        element.removeEventListener("pointerup", endPan);
+        document.removeEventListener("pointerup", endPan);
         element.removeEventListener("pointercancel", endPan);
+        element.removeEventListener("dblclick", scheduleNavigationUpdate);
         element.removeEventListener("pointerleave", hideTooltip);
         document.removeEventListener("scroll", hideTooltip, true);
         window.removeEventListener("resize", hideTooltip);
@@ -482,6 +561,7 @@ export default function PriceCandleChart({
     return () => {
       cancelled = true;
       searchOlder.current = null;
+      navigation.current = null;
       dispose?.();
     };
   }, [
@@ -490,7 +570,6 @@ export default function PriceCandleChart({
     daily,
     all,
     stopAtEmptyOlderPage,
-    resetKey,
     locale,
     retry,
     theme,
@@ -515,6 +594,36 @@ export default function PriceCandleChart({
         }}
         style={{ touchAction: "pan-y", overscrollBehavior: "contain" }}
       />
+      {state === "ready" && (
+        <ChartNavigation style={{ right: navigationState.right, bottom: navigationState.bottom }}>
+          {navigationState.canReset && (
+            <button
+              type="button"
+              className="price-chart-reset"
+              aria-label="Reset chart view"
+              title="Reset chart view"
+              onClick={() => navigation.current?.resetView()}
+            >
+              <span aria-hidden="true">
+                <IconRefresh />
+              </span>
+            </button>
+          )}
+          {navigationState.canScrollToLatest && (
+            <button
+              type="button"
+              className="price-chart-latest"
+              aria-label="Scroll to the most recent bar"
+              title="Scroll to the most recent bar"
+              onClick={() => navigation.current?.goToLatest()}
+            >
+              <span aria-hidden="true">
+                <IconGoToLatest />
+              </span>
+            </button>
+          )}
+        </ChartNavigation>
+      )}
       {state !== "ready" && (
         <div
           className="price-chart-status"
