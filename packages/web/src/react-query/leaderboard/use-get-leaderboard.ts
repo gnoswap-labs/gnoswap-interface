@@ -8,7 +8,7 @@ export const useGetLeaderboard = (request: GetLeaderboardRequest) => {
   const { leaderboardRepository } = useGnoswapContext();
 
   return useQuery({
-    queryKey: [QUERY_KEY.leaderboardList, request.limit, request.page],
+    queryKey: [QUERY_KEY.leaderboardList, request.roundId, request.limit, request.page],
     queryFn: async () => {
       const data = await leaderboardRepository.getLeaderboard(request);
       return data;

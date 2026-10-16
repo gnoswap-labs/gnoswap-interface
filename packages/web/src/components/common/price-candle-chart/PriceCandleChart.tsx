@@ -157,6 +157,10 @@ export default function PriceCandleChart({
           // TradingView Lightweight Charts™
           // Copyright (с) 2025 TradingView, Inc. https://www.tradingview.com/
           attributionLogo: true,
+          panes: {
+            separatorColor: "transparent",
+            separatorHoverColor: "transparent",
+          },
         },
         grid: {
           vertLines: { color: theme.color.border02, visible: true },
@@ -165,7 +169,7 @@ export default function PriceCandleChart({
         rightPriceScale: {
           autoScale: true,
           borderColor: theme.color.border14,
-          scaleMargins: { top: 0.1, bottom: 0.25 },
+          scaleMargins: { top: 0.1, bottom: 0.1 },
         },
         localization: {
           locale,
@@ -185,19 +189,11 @@ export default function PriceCandleChart({
           vertLine: { labelBackgroundColor: theme.color.background05 },
           horzLine: { visible: true, labelVisible: true, labelBackgroundColor: theme.color.background05 },
         },
-        handleScroll: { mouseWheel: true, pressedMouseMove: true, horzTouchDrag: true, vertTouchDrag: false },
+        handleScroll: { mouseWheel: true, pressedMouseMove: true, horzTouchDrag: true, vertTouchDrag: true },
       });
-      // Leave space for the 19px attribution, its inset, and the time-axis height.
-      const attributionClearance = 36;
       const observer = new ResizeObserver(entries => {
         const { width, height } = entries[0].contentRect;
         chart.resize(width, height);
-        chart.priceScale("volume").applyOptions({
-          scaleMargins: {
-            top: height < 250 ? 0.6 : 0.78,
-            bottom: Math.min(0.24, attributionClearance / Math.max(height, 1)),
-          },
-        });
         scheduleNavigationUpdate();
       });
       observer.observe(element);
@@ -209,19 +205,22 @@ export default function PriceCandleChart({
         borderVisible: false,
         priceLineVisible: false,
       });
-      const volume = chart.addSeries(HistogramSeries, {
-        priceScaleId: "volume",
-        priceFormat: { type: "volume" },
-        priceLineVisible: false,
-        lastValueVisible: false,
-      });
-      chart.priceScale("volume").applyOptions({
-        scaleMargins: {
-          top: element.clientHeight < 250 ? 0.6 : 0.78,
-          bottom: Math.min(0.24, attributionClearance / Math.max(element.clientHeight, 1)),
+      const volume = chart.addSeries(
+        HistogramSeries,
+        {
+          priceFormat: { type: "volume" },
+          priceLineVisible: false,
+          lastValueVisible: false,
         },
-        visible: false,
+        1,
+      );
+      volume.priceScale().applyOptions({
+        scaleMargins: { top: 0.1, bottom: 0 },
+        entireTextOnly: true,
       });
+      const [pricePane, volumePane] = chart.panes();
+      pricePane.setStretchFactor(3);
+      volumePane.setStretchFactor(1);
       let bars: PriceBar[] = [];
       const barsByTime = new Map<number, PriceBar>();
       // The cursor is the exclusive boundary of the last requested window, not the
@@ -248,8 +247,8 @@ export default function PriceCandleChart({
             range !== null &&
             (Math.abs(range.to - range.from - defaultLogicalSpan) > viewTolerance ||
               Math.abs(offset - defaultRightOffset) > viewTolerance ||
-              !chart.priceScale("right").options().autoScale ||
-              !chart.priceScale("volume").options().autoScale),
+              !candles.priceScale().options().autoScale ||
+              !volume.priceScale().options().autoScale),
           canScrollToLatest: bars.length > 0 && offset < -viewTolerance,
           right: chart.priceScale("right").width() + 8,
           bottom: timeScale.height() + 8,
@@ -483,7 +482,11 @@ export default function PriceCandleChart({
       element.addEventListener("pointercancel", endPan);
       element.addEventListener("dblclick", scheduleNavigationUpdate);
       const onCrosshairMove: Parameters<typeof chart.subscribeCrosshairMove>[0] = param => {
-        if (typeof param.time !== "number" || !param.point || !param.seriesData.get(candles)) {
+        if (
+          typeof param.time !== "number" ||
+          !param.point ||
+          (!param.seriesData.has(candles) && !param.seriesData.has(volume))
+        ) {
           setHovered(null);
           return;
         }
@@ -492,7 +495,8 @@ export default function PriceCandleChart({
           setHovered(null);
           return;
         }
-        const bounds = element.getBoundingClientRect();
+        const bounds =
+          chart.panes()[param.paneIndex ?? 0].getHTMLElement()?.getBoundingClientRect() ?? element.getBoundingClientRect();
         const x = bounds.left + param.point.x;
         const y = bounds.top + param.point.y;
         setHovered(previous =>
@@ -527,8 +531,8 @@ export default function PriceCandleChart({
           if (defaultLogicalSpan === null) return;
           userPanned = false;
           setHovered(null);
-          chart.priceScale("right").applyOptions({ autoScale: true });
-          chart.priceScale("volume").applyOptions({ autoScale: true });
+          candles.priceScale().applyOptions({ autoScale: true });
+          volume.priceScale().applyOptions({ autoScale: true });
           const to = bars.length - 1 + defaultRightOffset;
           chart.timeScale().setVisibleLogicalRange({ from: to - defaultLogicalSpan, to });
           scheduleNavigationUpdate();
@@ -589,8 +593,8 @@ export default function PriceCandleChart({
             "--fill": theme.color.text01,
             "--stroke": theme.color.background28,
           },
-          // The rightmost cell of the chart pane is the price axis.
-          "& .tv-lightweight-charts tr:first-child > td:last-child": {
+          // The rightmost cell of each pane is its price axis.
+          "& .tv-lightweight-charts tr > td:last-child": {
             touchAction: "none",
           },
         }}

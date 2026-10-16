@@ -1,22 +1,37 @@
 {
   "banner": {
-    "description": "Khi bạn sử dụng mã giới thiệu, cả bạn và người bạn giới thiệu đều sẽ nhận được <strong>phần thưởng 10%.</strong>",
-    "title": "Nâng cao thứ hạng của bạn - <strong>Giới thiệu và kiếm tiền!</strong>"
+    "description": "Bạn và bạn bè mỗi người nhận <strong>10% điểm swap của người bạn đó.</strong>",
+    "title": "Tăng hạng – <strong>Giới thiệu & Nhận thưởng!</strong>"
   },
   "header": "Bảng xếp hạng",
   "list": {
     "column": {
+      "counted": "Được tính",
+      "delegatedGns": "Được ủy quyền",
+      "delegation": "Ủy quyền",
+      "globalCapRatio": "Tỷ lệ giới hạn chung",
+      "inRange": "{{n}} trong phạm vi",
       "points": "Điểm",
+      "pointsThisRound": "Số điểm trong vòng này",
       "position": "Vị trí",
+      "provisional": "tạm tính",
       "rank": "Xếp hạng",
       "referral": "Giới thiệu",
+      "stakedPositions": "Các vị thế được thế chấp",
       "staking": "Staking",
       "swap": "Hoán đổi",
+      "swapCap": "Giới hạn swap",
+      "swapCapWarning": "Stake hoặc ủy quyền thêm để nâng giới hạn.",
+      "swapRaw": "Trước giới hạn",
       "tooltip": {
+        "delegation": "<p>Số điểm cho GNS mà bạn đang ủy quyền.</p><p><formula>Giá trị ủy quyền (tính bằng GNOT) × số ngày × hệ số thời gian × 0,003<br/>Hệ số thời gian:<br/> - 0 ~ 10 ngày: ×1<br/> - 10 ~ 20 ngày: ×1,5<br/> - 20 ~ 30 ngày: ×1,75<br/> - 30 ngày trở lên: ×2</formula></p><p>GNS đang chờ trong giai đoạn giải phóng 7 ngày và GNS được gửi qua Launchpad sẽ không nhận được điểm.</p>",
+        "points": "<p>Tổng điểm</p><p><formula>Đặt cược + Ủy quyền + Hoán đổi + Giới thiệu</formula></p><p>Điểm được tính bằng GNOT, không phải USD.<br/><br/>Giới thiệu: 10% điểm hoán đổi của chính bạn, cộng thêm 10% điểm hoán đổi của mỗi người bạn.<br/><br/>Giới hạn toàn cầu: nếu tổng điểm hoán đổi của mọi người vượt quá tổng điểm staking + ủy quyền của mọi người, tất cả điểm hoán đổi sẽ giảm theo cùng một tỷ lệ. Được thiết lập vào cuối vòng.</p>",
         "position": "Phí hoán đổi được tính bằng USD. Chỉ được tính nếu nhóm đang nhận phần thưởng $GNS.",
-        "staking": "<ul><li>Phần thưởng staking được nhận bằng USD. Chỉ tính các phần thưởng nội bộ bằng $GNS.</li><li>Phí giao thức được nhận bằng USD. Chỉ tính khi token phần thưởng có giá bằng USD.</li></ul>",
+        "staking": "<p>Điểm tương ứng với giá trị bạn giữ trong các vị thế staking.</p><p><formula>Giá trị vị thế (tính bằng GNOT) × số ngày trong khoảng thời gian × hệ số thưởng thời gian × 0,003<br/>Hệ số thưởng thời gian:<br/> - 0 ~ 5 ngày: ×0<br/> - 5 ~ 10 ngày: ×1<br/> - 10 ~ 20 ngày: ×1.5<br/> - 20 ~ 30 ngày: ×1.75<br/> - 30 ngày trở lên: ×2</formula></p><p>Chỉ tính khi nằm trong phạm vi, trong các nhóm có phát xạ GNS nội bộ. Phạm vi hẹp hay rộng không ảnh hưởng. Việc rút staking sẽ khởi động lại thời gian thưởng.</p>",
+        "swap": "<p>Số điểm tương ứng với phí hoán đổi (phí router) mà bạn thanh toán.</p><p><formula>Phí hoán đổi đã thanh toán (tính bằng GNOT) × 5, tối đa là Giới hạn hoán đổi của bạn<br/>Giới hạn hoán đổi: Điểm ủy quyền × 3 + Điểm staking × 1</formula><br/>Không staking hoặc ủy quyền = không có điểm hoán đổi. Chỉ các giao dịch hoán đổi đi qua các pool có phát hành GNS nội bộ mới được tính.</p>",
         "volume": "Phí hoán đổi được thanh toán bằng USD. Chỉ được tính nếu nhóm đang nhận các phần thưởng nội bộ bằng $GNS."
       },
+      "total": "Tổng",
       "user": "Người dùng",
       "xGNS": "xGNS Staking"
     },
@@ -27,11 +42,12 @@
     "nextUpdateTime": "Lần cập nhật tiếp theo vào",
     "tooltip": {
       "hideToggleButton": "Tên người dùng hoặc địa chỉ của bạn sẽ được ẩn đi. Những người dùng khác sẽ không thể xem được vị trí của bạn.",
-      "nextUpdateTime": "Bảng xếp hạng được cập nhật mỗi giờ một lần."
+      "nextUpdateTime": "Cập nhật mỗi 10 phút. Điểm của giờ hiện tại là tạm tính cho đến khi giờ đó kết thúc."
     }
   },
   "subHeader": {
     "copyButton": "Sao chép mã giới thiệu của tôi",
-    "description": "Hãy leo lên bảng xếp hạng bằng cách tích lũy điểm thông qua việc trao đổi, cung cấp thanh khoản, staking hoặc mời bạn bè. Mọi hoạt động trên GnoSwap đều được tính điểm!"
+    "description": "Hãy leo lên bảng xếp hạng bằng cách tích lũy điểm thông qua các hoạt động như trao đổi, ủy quyền, staking tại<br/>hoặc mời bạn bè. Mọi hoạt động trên GnoSwap đều được tính điểm!",
+    "howPointsWork": "Cách tính điểm →"
   }
 }

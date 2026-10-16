@@ -264,6 +264,10 @@ export const ContentWrapper = styled.div`
       .price-chart-shell {
         height: 176px;
       }
+      /* Liquidity also fills Price's 24px range toolbar and its 8px gap. */
+      .liquidity-chart-loading {
+        height: 208px;
+      }
     }
     .position-header {
       display: flex;
@@ -336,11 +340,14 @@ export const ContentWrapper = styled.div`
     @media (max-width: 767px) {
       margin: 16px 12px;
       padding: 16px 12px;
-      .position-header {
+      .chart-actions-liquidity {
         position: absolute;
         top: 12px;
         right: 12px;
         width: auto;
+        .chart-ranges {
+          display: none;
+        }
       }
     }
   }

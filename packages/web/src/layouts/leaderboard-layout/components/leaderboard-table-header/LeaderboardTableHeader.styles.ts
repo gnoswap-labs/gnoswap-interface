@@ -54,9 +54,56 @@ export const TableHeader = styled.div<{ tdWidth: number }>`
 `;
 
 export const TableHeaderTooltipContent = styled.div`
-  max-width: 314px;
-  font-size: 14px;
-  line-height: 1.5;
+  width: 380px;
+  max-width: calc(100vw - 56px);
+  color: ${({ theme }) => theme.color.text02};
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+  text-align: left;
+
+  p {
+    margin: 0;
+  }
+
+  p + p {
+    margin-top: 12px;
+  }
+
+  p:first-of-type:not(:has(.formula)) {
+    color: ${({ theme }) => theme.color.text01};
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
+  strong {
+    font-weight: 600;
+  }
+
+  .formula {
+    display: block;
+    padding: 10px 12px;
+    border: 1px solid ${({ theme }) => theme.color.border02};
+    border-radius: 6px;
+    background-color: ${({ theme }) =>
+    theme.themeKey === "dark" ? theme.color.background06 : theme.color.background05};
+    color: ${({ theme }) => theme.color.text30};
+    font-family: inherit;
+    font-size: 13px;
+    font-style: italic;
+    font-weight: 500;
+    line-height: 1.6;
+
+    & + br {
+      display: none;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 10px;
+    }
+  }
 
   li {
     position: relative;
