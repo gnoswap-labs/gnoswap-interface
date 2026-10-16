@@ -13,7 +13,8 @@ interface PointCompositionProps {
   stakingPoint?: string;
   governancePoint: string;
   referralPoint: string;
-  // Wallet swap cap, shown for round leaderboards.
+  // Swap points before the caps and the wallet swap cap, shown for round leaderboards.
+  swapRawPoint?: string;
   swapCapPoint?: string;
   isMobile: boolean;
 }
@@ -25,6 +26,7 @@ const PointComposition = ({
   stakingPoint,
   governancePoint,
   referralPoint,
+  swapRawPoint,
   swapCapPoint,
   isMobile,
 }: PointCompositionProps) => {
@@ -38,12 +40,14 @@ const PointComposition = ({
       stakingPoint: stakingPoint === undefined ? undefined : formatLeaderboardPoint(stakingPoint),
       governancePoint: formatLeaderboardPoint(governancePoint),
       referralPoint: formatLeaderboardPoint(referralPoint),
+      swapRawPoint: swapRawPoint === undefined ? undefined : formatLeaderboardPoint(swapRawPoint),
       swapCapPoint: swapCapPoint === undefined ? undefined : formatLeaderboardPoint(swapCapPoint),
     };
-  }, [totalPoint, swapPoint, positionPoint, stakingPoint, governancePoint, referralPoint, swapCapPoint]);
+  }, [totalPoint, swapPoint, positionPoint, stakingPoint, governancePoint, referralPoint, swapRawPoint, swapCapPoint]);
 
   const pointItems = [
     { label: "Leaderboard:list.column.swap", value: displayPoints.swapPoint },
+    { label: "Leaderboard:list.column.swapRaw", value: displayPoints.swapRawPoint },
     { label: "Leaderboard:list.column.swapCap", value: displayPoints.swapCapPoint },
     { label: "Leaderboard:list.column.position", value: displayPoints.positionPoint },
     { label: "Leaderboard:list.column.staking", value: displayPoints.stakingPoint },

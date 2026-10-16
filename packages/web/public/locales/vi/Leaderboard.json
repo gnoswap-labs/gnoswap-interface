@@ -13,11 +13,12 @@
       "staking": "Staking",
       "swap": "Hoán đổi",
       "swapCap": "Giới hạn swap",
+      "swapRaw": "Swap (trước giới hạn)",
       "tooltip": {
-        "position": "Phí hoán đổi được tính bằng USD. Chỉ được tính nếu nhóm đang nhận phần thưởng $GNS.",
-        "staking": "<ul><li>Phần thưởng staking được nhận bằng USD. Chỉ tính các phần thưởng nội bộ bằng $GNS.</li><li>Phí giao thức được nhận bằng USD. Chỉ tính khi token phần thưởng có giá bằng USD.</li></ul>",
+        "position": "Điểm cho giá trị các vị thế đang stake khi nằm trong phạm vi, ở các pool nhận phát thải $GNS nội bộ, có trọng số theo thời gian stake.",
+        "staking": "Điểm cho giá trị GNS đã ủy quyền (xGNS) theo thời gian, có trọng số theo thời gian ủy quyền.",
         "swapCap": "Điểm swap không thể vượt quá giới hạn này.",
-        "volume": "Phí hoán đổi được thanh toán bằng USD. Chỉ được tính nếu nhóm đang nhận các phần thưởng nội bộ bằng $GNS."
+        "volume": "Điểm cho phí router đã trả trong các giao dịch swap chỉ đi qua các pool nhận phát thải $GNS nội bộ. Mỗi ví bị giới hạn theo điểm staking xGNS và điểm vị thế."
       },
       "user": "Người dùng",
       "xGNS": "xGNS Staking"

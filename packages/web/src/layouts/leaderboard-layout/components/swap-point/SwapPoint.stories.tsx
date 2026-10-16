@@ -17,6 +17,7 @@ type Story = StoryObj<typeof SwapPoint>;
 export const Default: Story = {
   args: {
     swapPoint: "1234.56",
+    swapRawPoint: "6000",
     swapCapPoint: "5000",
   },
 };

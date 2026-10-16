@@ -13,11 +13,12 @@
       "staking": "Jalonnement",
       "swap": "Échange",
       "swapCap": "Plafond de swap",
+      "swapRaw": "Swap (avant plafond)",
       "tooltip": {
-        "position": "Frais de swap facturés en USD. Ne s'appliquent que si le pool perçoit des récompenses en $GNS.",
-        "staking": "<ul><li>Rémunérations de staking perçues en USD. Seules les récompenses internes en $GNS sont prises en compte.</li><li>Frais de protocole perçus en USD. Ne sont pris en compte que si le jeton de récompense a un cours en USD.</li></ul>",
+        "position": "Points pour la valeur des positions stakées lorsqu'elles sont dans la plage, dans des pools recevant des émissions internes de $GNS, pondérés selon la durée de staking.",
+        "staking": "Points pour la valeur du GNS délégué (xGNS) dans le temps, pondérés selon la durée de délégation.",
         "swapCap": "Les points de swap ne peuvent pas dépasser ce plafond.",
-        "volume": "Frais de swap payés en USD. Ne sont pris en compte que si le pool bénéficie d'incitations internes en $GNS."
+        "volume": "Points pour les frais de routeur payés sur les swaps passant uniquement par des pools recevant des émissions internes de $GNS. Plafonnés par portefeuille selon ses points de staking xGNS et de positions."
       },
       "user": "Utilisateur",
       "xGNS": "Jalonnement xGNS"

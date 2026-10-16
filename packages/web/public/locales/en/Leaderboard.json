@@ -13,11 +13,12 @@
       "staking": "Staking",
       "swap": "Swap",
       "swapCap": "Swap Cap",
+      "swapRaw": "Swap (Before Cap)",
       "tooltip": {
-        "position": "Swap fees claimed in USD. Only counts if the pool is receiving $GNS incentives.",
-        "staking": "<ul><li>Position staking rewards claimed in USD. Only counts internal $GNS incentives.</li><li>Protocol fees claimed in USD. Only counts if the reward token has a USD price.</li></ul>",
+        "position": "Points for the value of staked positions while in range in pools receiving internal $GNS emissions, weighted by how long each position has been staked.",
+        "staking": "Points for the value of delegated GNS (xGNS) over time, weighted by how long it has been delegated.",
         "swapCap": "Swap points cannot exceed this cap.",
-        "volume": "Swap fees paid in USD. Only counts if the pool is receiving internal $GNS incentives."
+        "volume": "Points for router fees paid on swaps that route only through pools receiving internal $GNS emissions. Capped per wallet by its xGNS staking and position points."
       },
       "user": "User",
       "xGNS": "xGNS Staking"

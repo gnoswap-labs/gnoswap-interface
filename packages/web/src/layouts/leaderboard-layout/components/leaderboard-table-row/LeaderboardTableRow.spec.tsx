@@ -176,8 +176,10 @@ describe("LeaderboardTableRow", () => {
     );
 
     // The swap column shows the accepted swap points; its tooltip and the
-    // point composition both show the cap.
+    // point composition both show the swap points before the cap and the cap.
     expect(screen.getAllByText("123.45")).toHaveLength(2);
+    expect(screen.getAllByText("Leaderboard:list.column.swapRaw")).toHaveLength(2);
+    expect(screen.getAllByText("900")).toHaveLength(2);
     expect(screen.getAllByText("Leaderboard:list.column.swapCap")).toHaveLength(2);
     expect(screen.getAllByText("4,567.89")).toHaveLength(2);
     expect(screen.getByText("Leaderboard:list.column.tooltip.swapCap")).toBeInTheDocument();
@@ -202,6 +204,7 @@ describe("LeaderboardTableRow", () => {
 
     expect(screen.getByText(/^\$12\.5/)).toBeInTheDocument();
     expect(screen.queryByText("Leaderboard:list.column.swapCap")).not.toBeInTheDocument();
+    expect(screen.queryByText("Leaderboard:list.column.swapRaw")).not.toBeInTheDocument();
     expect(screen.getByText("Leaderboard:list.column.staking")).toBeInTheDocument();
   });
 });

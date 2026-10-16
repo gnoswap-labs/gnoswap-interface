@@ -13,11 +13,12 @@
       "staking": "Estacas",
       "swap": "Intercambiar",
       "swapCap": "Límite de swap",
+      "swapRaw": "Swap (antes del límite)",
       "tooltip": {
-        "position": "Las comisiones de intercambio se cobran en USD. Solo se tienen en cuenta si el pool recibe incentivos en $GNS.",
-        "staking": "<ul><li>Recompensas por staking reclamadas en USD. Solo se tienen en cuenta los incentivos internos en $GNS.</li><li>Las comisiones del protocolo se cobran en USD. Solo se tienen en cuenta si el token de recompensa tiene un precio en USD.</li></ul>",
+        "position": "Puntos por el valor de las posiciones en staking mientras están en rango en pools con emisiones internas de $GNS, ponderados según el tiempo en staking.",
+        "staking": "Puntos por el valor del GNS delegado (xGNS) a lo largo del tiempo, ponderados según el tiempo delegado.",
         "swapCap": "Los puntos de swap no pueden superar este límite.",
-        "volume": "Comisiones de intercambio pagadas en USD. Solo se tiene en cuenta si el pool recibe incentivos internos en $GNS."
+        "volume": "Puntos por las comisiones del router pagadas en swaps que solo pasan por pools con emisiones internas de $GNS. Limitados por billetera según sus puntos de staking de xGNS y de posiciones."
       },
       "user": "Usuario",
       "xGNS": "Estacas xGNS"

@@ -83,7 +83,15 @@ const LeaderboardTableRow = ({
         {!isMobile && (
           <>
             <TableColumn tdWidth={tdWidths.at(2)} style={{ justifyContent: "flex-start" }}>
-              {isRound ? <SwapPoint swapPoint={data.swapPoint} swapCapPoint={data.swapCapPoint} /> : displayValues.swap}
+              {isRound ? (
+                <SwapPoint
+                  swapPoint={data.swapPoint}
+                  swapRawPoint={data.swapRawPoint}
+                  swapCapPoint={data.swapCapPoint}
+                />
+              ) : (
+                displayValues.swap
+              )}
             </TableColumn>
             <TableColumn tdWidth={tdWidths.at(3)}>
               {isRound ? formatLeaderboardPoint(data.positionStakingPoint) : displayValues.position}
@@ -98,6 +106,7 @@ const LeaderboardTableRow = ({
             <PointComposition
               totalPoint={data.totalPoint}
               swapPoint={data.swapPoint ?? ""}
+              swapRawPoint={data.swapRawPoint ?? ""}
               swapCapPoint={data.swapCapPoint ?? ""}
               positionPoint={data.positionStakingPoint ?? ""}
               governancePoint={data.gnsDelegationPoint ?? ""}

@@ -7,10 +7,11 @@ import { ContentWrapper, Description, Flex, FontWeight500, Label, Wrapper } from
 
 interface SwapPointProps {
   swapPoint: string | undefined;
+  swapRawPoint: string | undefined;
   swapCapPoint: string | undefined;
 }
 
-const SwapPoint = ({ swapPoint, swapCapPoint }: SwapPointProps) => {
+const SwapPoint = ({ swapPoint, swapRawPoint, swapCapPoint }: SwapPointProps) => {
   const { t } = useTranslation();
 
   return (
@@ -19,6 +20,10 @@ const SwapPoint = ({ swapPoint, swapCapPoint }: SwapPointProps) => {
       FloatingContent={
         <Wrapper>
           <ContentWrapper>
+            <Flex>
+              <Label>{t("Leaderboard:list.column.swapRaw")}</Label>
+              <FontWeight500>{formatLeaderboardPoint(swapRawPoint)}</FontWeight500>
+            </Flex>
             <Flex>
               <Label>{t("Leaderboard:list.column.swapCap")}</Label>
               <FontWeight500>{formatLeaderboardPoint(swapCapPoint)}</FontWeight500>
