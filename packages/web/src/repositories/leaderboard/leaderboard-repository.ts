@@ -5,7 +5,7 @@ import { GetLeaderboardByAddressResponse } from "./response/get-leaderboard-by-a
 export interface LeaderboardRepository {
   getLeaderboard: (request: GetLeaderboardRequest) => Promise<GetLeaderboardResponse>;
 
-  getLeaderboardByAddress: (address: string) => Promise<GetLeaderboardByAddressResponse | null>;
+  getLeaderboardByAddress: (address: string, roundId?: number) => Promise<GetLeaderboardByAddressResponse | null>;
 
   updateLeaderboardHiddenState: (
     request: UpdateLeaderboardHiddenStateRequest,

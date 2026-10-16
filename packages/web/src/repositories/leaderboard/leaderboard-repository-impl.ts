@@ -1,3 +1,4 @@
+import axios from "axios";
 import { NetworkClient } from "@common/clients/network-client";
 import { CommonError } from "@common/errors";
 import { LeaderboardRepository } from "./leaderboard-repository";
@@ -8,6 +9,11 @@ import {
   nullLeaderboardInfo,
   UpdateLeaderboardHiddenStateResponse,
 } from "./response";
+
+const NOT_FOUND_STATUS = 404;
+
+const isNotFoundError = (error: unknown): boolean =>
+  axios.isAxiosError(error) && error.response?.status === NOT_FOUND_STATUS;
 
 export class LeaderboardRepositoryImpl implements LeaderboardRepository {
   private networkClient: NetworkClient | null;
@@ -22,14 +28,23 @@ export class LeaderboardRepositoryImpl implements LeaderboardRepository {
     }
 
     const queries = [
+      request.roundId !== undefined ? `roundId=${request.roundId}` : "",
       request.keyword !== undefined ? `keyword=${request.keyword}` : "",
       request.limit !== undefined ? `limit=${request.limit}` : "",
       request.page !== undefined ? `page=${request.page}` : "",
     ];
 
-    const response = await this.networkClient.get<{ data: GetLeaderboardResponse }>({
-      url: `/leaderboard?${queries.filter(query => !!query).join("&")}`,
-    });
+    const response = await this.networkClient
+      .get<{ data: GetLeaderboardResponse }>({
+        url: `/leaderboard/rounds/users?${queries.filter(query => !!query).join("&")}`,
+      })
+      // The API answers 404 when there is no active round (or the round does not exist).
+      .catch(error => {
+        if (isNotFoundError(error)) {
+          return null;
+        }
+        throw error;
+      });
 
     if (!response?.data?.data) {
       return nullLeaderboardInfo;
@@ -39,14 +54,26 @@ export class LeaderboardRepositoryImpl implements LeaderboardRepository {
     return data;
   };
 
-  public getLeaderboardByAddress = async (address: string): Promise<GetLeaderboardByAddressResponse | null> => {
+  public getLeaderboardByAddress = async (
+    address: string,
+    roundId?: number,
+  ): Promise<GetLeaderboardByAddressResponse | null> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
 
-    const response = await this.networkClient.get<{ data: GetLeaderboardByAddressResponse }>({
-      url: `/leaderboard/${address}`,
-    });
+    const query = roundId !== undefined ? `?roundId=${roundId}` : "";
+
+    const response = await this.networkClient
+      .get<{ data: GetLeaderboardByAddressResponse }>({
+        url: `/leaderboard/rounds/users/${address}${query}`,
+      })
+      .catch(error => {
+        if (isNotFoundError(error)) {
+          return null;
+        }
+        throw error;
+      });
 
     if (!response?.data?.data) {
       return null;
