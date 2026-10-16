@@ -13,9 +13,9 @@ jest.mock("./incentivized-pool-card/IncentivizedPoolCard", () => ({
 
 const pool = {} as IncentivizePoolCardInfoWithPriceGrade;
 
-const renderList = (width: number) => {
+const renderList = (width: number, poolCount = 1) => {
   const props: IncentivizedPoolCardListProps = {
-    incentivizedPools: [pool],
+    incentivizedPools: Array.from({ length: poolCount }, () => pool),
     loadMore: false,
     isPoolFetched: true,
     currentIndex: 1,
@@ -39,18 +39,13 @@ const renderList = (width: number) => {
 };
 
 describe("IncentivizedPoolCardList", () => {
-  it.each([390, 920])("does not include blank cards in the scroll track at %ipx", width => {
+  it.each([390, 920, 921, 1440])("renders only the actual pool at %ipx", width => {
     const track = renderList(width);
     expect(track?.children).toHaveLength(1);
   });
 
-  it("keeps the three-column tablet grid filled above the carousel breakpoint", () => {
-    const track = renderList(921);
-    expect(track?.children).toHaveLength(3);
-  });
-
-  it("preserves desktop blank cards to fill the grid", () => {
-    const track = renderList(1440);
-    expect(track?.children).toHaveLength(4);
+  it("does not fill the last desktop row when there are five pools", () => {
+    const track = renderList(1440, 5);
+    expect(track?.children).toHaveLength(5);
   });
 });

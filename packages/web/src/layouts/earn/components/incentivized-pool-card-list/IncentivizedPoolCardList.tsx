@@ -6,7 +6,7 @@ import { IncentivizePoolCardInfoWithPriceGrade } from "@models/pool/info/pool-ca
 
 import IncentivizedPoolCard from "./incentivized-pool-card/IncentivizedPoolCard";
 
-import { BlankIncentivizedCard, IncentivizedWrapper, PoolListWrapper } from "./IncentivizedPoolCardList.styles";
+import { IncentivizedWrapper, PoolListWrapper } from "./IncentivizedPoolCardList.styles";
 
 export interface IncentivizedPoolCardListProps {
   incentivizedPools: IncentivizePoolCardInfoWithPriceGrade[];
@@ -55,8 +55,6 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   const renderPoolList = () => {
     const hasData = !isLoading && incentivizedPools.length > 0;
     const showLoading = !isPoolFetched || isLoading;
-    const showBlank =
-      width > 920 && isPoolFetched && !isLoading && incentivizedPools.length > 0 && incentivizedPools.length < 4;
 
     return (
       <PoolListWrapper ref={divRef} onScroll={onScroll} $loading={isLoading}>
@@ -64,10 +62,6 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
           data.map((info, index) => (
             <IncentivizedPoolCard pool={info} key={index} routeItem={routeItem} themeKey={themeKey} />
           ))}
-        {showBlank &&
-          Array((width <= 1180 && width >= 920 ? 3 : 4) - incentivizedPools.length)
-            .fill(1)
-            .map((_, index) => <BlankIncentivizedCard key={index} />)}
         {showLoading &&
           Array.from({ length: 8 }).map((_, index) => (
             <span
