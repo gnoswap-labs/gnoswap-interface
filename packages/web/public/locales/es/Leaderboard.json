@@ -22,8 +22,10 @@
       "tooltip": {
         "delegation": "<p>Puntos por los GNS que mantienes delegados.</p><p><formula>Valor delegado (GNOT) × días × bono de tiempo × 0.003</formula></p><p>Bono de tiempo: primeros 10 días ×1 · 10–20d ×1.5 · 20–30d ×1.75 · 30d+ ×2<br/>Los GNS en el periodo de desvinculación de 7 días no generan puntos.</p>",
         "points": "<p><formula>Staking + Delegación + Swap + Referidos</formula></p><p>Referidos: el 10% de tus propios puntos de swap, más el 10% de los puntos de swap de cada amigo.<br/>Límite global: si los puntos de swap de todos superan la suma de los puntos de staking + delegación de todos, todos los puntos de swap se reducen en la misma proporción. Se fija al final de la ronda.</p>",
+        "position": "Las comisiones de intercambio se cobran en USD. Solo se tienen en cuenta si el pool recibe incentivos en $GNS.",
         "staking": "<p>Puntos por el valor que mantienes en posiciones en staking.</p><p><formula>Valor de la posición (GNOT) × días en rango × bono de tiempo × 0.003</formula></p><p>Bono de tiempo: primeros 5 días ×0 · 5–10d ×1 · 10–20d ×1.5 · 20–30d ×1.75 · 30d+ ×2<br/>Solo cuenta mientras está en rango, en pools con emisiones internas de GNS.<br/>Que el rango sea estrecho o amplio no importa. Retirar el staking reinicia el bono de tiempo.</p>",
-        "swap": "<p>Puntos por la comisión de swap que pagas a GnoSwap.</p><p><formula>Comisión de swap pagada (GNOT) × 5, hasta tu límite de swap</formula></p><p><formula>Límite de swap = puntos de delegación × 3 + puntos de staking × 1</formula><br/>Sin staking ni delegación no hay puntos de swap.<br/>Solo cuentan los swaps que pasan por pools con emisiones internas de GNS.</p>"
+        "swap": "<p>Puntos por la comisión de swap que pagas a GnoSwap.</p><p><formula>Comisión de swap pagada (GNOT) × 5, hasta tu límite de swap</formula></p><p><formula>Límite de swap = puntos de delegación × 3 + puntos de staking × 1</formula><br/>Sin staking ni delegación no hay puntos de swap.<br/>Solo cuentan los swaps que pasan por pools con emisiones internas de GNS.</p>",
+        "volume": "Comisiones de intercambio pagadas en USD. Solo se tiene en cuenta si el pool recibe incentivos internos en $GNS."
       },
       "total": "Total",
       "user": "Usuario",

@@ -22,8 +22,10 @@
       "tooltip": {
         "delegation": "<p>Points for the GNS you keep delegated.</p><p><formula>Delegated value (GNOT) × days × time bonus × 0.003</formula></p><p>Time bonus: first 10 days ×1 · 10–20d ×1.5 · 20–30d ×1.75 · 30d+ ×2<br/>GNS waiting in the 7-day unbonding period earns nothing.</p>",
         "points": "<p><formula>Staking + Delegation + Swap + Referral</formula></p><p>Referral: 10% of your own swap points, plus 10% of each friend's swap points.<br/>Global cap: if everyone's swap points add up to more than everyone's staking + delegation points, all swap points shrink by the same ratio. Set at round end.</p>",
+        "position": "Swap fees claimed in USD. Only counts if the pool is receiving $GNS incentives.",
         "staking": "<p>Points for the value you keep in staked positions.</p><p><formula>Position value (GNOT) × days in range × time bonus × 0.003</formula></p><p>Time bonus: first 5 days ×0 · 5–10d ×1 · 10–20d ×1.5 · 20–30d ×1.75 · 30d+ ×2<br/>Only counts while in range, in pools with internal GNS emissions.<br/>Narrow or wide range makes no difference. Unstaking restarts the time bonus.</p>",
-        "swap": "<p>Points for the swap fee you pay to GnoSwap.</p><p><formula>Swap fee paid (GNOT) × 5, up to your Swap Cap</formula></p><p><formula>Swap Cap = Delegation points × 3 + Staking points × 1</formula><br/>No staking or delegation = no swap points.<br/>Only swaps that go through pools with internal GNS emissions.</p>"
+        "swap": "<p>Points for the swap fee you pay to GnoSwap.</p><p><formula>Swap fee paid (GNOT) × 5, up to your Swap Cap</formula></p><p><formula>Swap Cap = Delegation points × 3 + Staking points × 1</formula><br/>No staking or delegation = no swap points.<br/>Only swaps that go through pools with internal GNS emissions.</p>",
+        "volume": "Swap fees paid in USD. Only counts if the pool is receiving internal $GNS incentives."
       },
       "total": "Total",
       "user": "User",

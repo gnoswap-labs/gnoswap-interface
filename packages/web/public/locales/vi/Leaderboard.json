@@ -22,8 +22,10 @@
       "tooltip": {
         "delegation": "<p>Điểm cho số GNS bạn tiếp tục ủy quyền.</p><p><formula>Giá trị ủy quyền (GNOT) × số ngày × thưởng thời gian × 0.003</formula></p><p>Thưởng thời gian: 10 ngày đầu ×1 · 10–20 ngày ×1.5 · 20–30 ngày ×1.75 · 30 ngày+ ×2<br/>GNS đang trong thời gian hủy ủy quyền 7 ngày không được tính điểm.</p>",
         "points": "<p><formula>Staking + Ủy quyền + Swap + Giới thiệu</formula></p><p>Giới thiệu: 10% điểm swap của chính bạn, cộng 10% điểm swap của mỗi người bạn.<br/>Giới hạn chung: nếu tổng điểm swap của mọi người vượt quá tổng điểm staking + ủy quyền của mọi người, tất cả điểm swap sẽ giảm theo cùng một tỷ lệ. Được chốt khi vòng kết thúc.</p>",
+        "position": "Phí hoán đổi được tính bằng USD. Chỉ được tính nếu nhóm đang nhận phần thưởng $GNS.",
         "staking": "<p>Điểm cho giá trị bạn giữ trong các vị thế đã stake.</p><p><formula>Giá trị vị thế (GNOT) × số ngày trong phạm vi × thưởng thời gian × 0.003</formula></p><p>Thưởng thời gian: 5 ngày đầu ×0 · 5–10 ngày ×1 · 10–20 ngày ×1.5 · 20–30 ngày ×1.75 · 30 ngày+ ×2<br/>Chỉ tính khi nằm trong phạm vi, ở các pool có phát thải GNS nội bộ.<br/>Phạm vi hẹp hay rộng không ảnh hưởng. Unstake sẽ bắt đầu lại thưởng thời gian.</p>",
-        "swap": "<p>Điểm cho phí swap bạn trả cho GnoSwap.</p><p><formula>Phí swap đã trả (GNOT) × 5, tối đa bằng giới hạn swap của bạn</formula></p><p><formula>Giới hạn swap = điểm ủy quyền × 3 + điểm staking × 1</formula><br/>Không stake hoặc ủy quyền thì không có điểm swap.<br/>Chỉ tính các giao dịch swap đi qua pool có phát thải GNS nội bộ.</p>"
+        "swap": "<p>Điểm cho phí swap bạn trả cho GnoSwap.</p><p><formula>Phí swap đã trả (GNOT) × 5, tối đa bằng giới hạn swap của bạn</formula></p><p><formula>Giới hạn swap = điểm ủy quyền × 3 + điểm staking × 1</formula><br/>Không stake hoặc ủy quyền thì không có điểm swap.<br/>Chỉ tính các giao dịch swap đi qua pool có phát thải GNS nội bộ.</p>",
+        "volume": "Phí hoán đổi được thanh toán bằng USD. Chỉ được tính nếu nhóm đang nhận các phần thưởng nội bộ bằng $GNS."
       },
       "total": "Tổng",
       "user": "Người dùng",

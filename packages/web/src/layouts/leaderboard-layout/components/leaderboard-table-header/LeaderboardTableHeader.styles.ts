@@ -54,21 +54,33 @@ export const TableHeader = styled.div<{ tdWidth: number }>`
 `;
 
 export const TableHeaderTooltipContent = styled.div`
-  max-width: 360px;
-  font-size: 14px;
-  line-height: 1.5;
+  width: 380px;
+  max-width: calc(100vw - 56px);
+  color: ${({ theme }) => theme.color.text02};
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+  text-align: left;
 
   p {
     margin: 0;
   }
 
   p + p {
-    margin-top: 8px;
+    margin-top: 12px;
   }
 
-  /* One blank line between the first line and the rest. */
-  p:first-of-type {
-    margin-bottom: 1.5em;
+  p:first-of-type:not(:has(.formula)) {
+    color: ${({ theme }) => theme.color.text01};
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5;
+  }
+
+  p + p:last-child {
+    padding-top: 12px;
+    border-top: 1px solid ${({ theme }) => theme.color.border02};
   }
 
   strong {
@@ -76,16 +88,25 @@ export const TableHeaderTooltipContent = styled.div`
   }
 
   .formula {
-    display: inline-block;
-    padding: 2px 6px;
+    display: block;
+    padding: 10px 12px;
     border: 1px solid ${({ theme }) => theme.color.border02};
-    border-radius: 4px;
+    border-radius: 6px;
     background-color: ${({ theme }) =>
       theme.themeKey === "dark" ? theme.color.background06 : theme.color.background05};
-    color: ${({ theme }) => theme.color.text02};
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: ${({ theme }) => theme.color.text01};
+    font-family: inherit;
     font-size: 13px;
-    line-height: 1.5;
+    font-weight: 500;
+    line-height: 1.6;
+
+    & + br {
+      display: none;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 10px;
+    }
   }
 
   li {
