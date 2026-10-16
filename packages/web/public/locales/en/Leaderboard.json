@@ -20,7 +20,7 @@
       "swapCapWarning": "Stake or delegate more to raise your cap.",
       "swapRaw": "Before cap",
       "tooltip": {
-        "delegation": "<p>Points for the GNS you keep delegated.</p><p><formula>Delegated value (GNOT) × days × time bonus × 0.003<br/>Time bonus:<br/> - 0 ~ 10 days: ×1<br/> - 10 ~ 20 days: ×1.5<br/> - 20 ~ 30 days: ×1.75<br/> - 30 days ~: ×2</formula></p><br/>GNS waiting in the 7-day unbonding period earns nothing.</p>",
+        "delegation": "<p>Points for the GNS you keep delegated.</p><p><formula>Delegated value (GNOT) × days × time bonus × 0.003<br/>Time bonus:<br/> - 0 ~ 10 days: ×1<br/> - 10 ~ 20 days: ×1.5<br/> - 20 ~ 30 days: ×1.75<br/> - 30 days ~: ×2</formula></p><br/>GNS waiting in the 7-day unbonding period and deposited GNS through launchpad earn no point.</p>",
         "points": "<p>Total Point</p><p><formula>Staking + Delegation + Swap + Referral</formula></p><p>Referral: 10% of your own swap points, plus 10% of each friend's swap points.<br/>Global cap: if everyone's swap points add up to more than everyone's staking + delegation points, all swap points shrink by the same ratio. Set at round end.</p>",
         "position": "Swap fees claimed in USD. Only counts if the pool is receiving $GNS incentives.",
         "staking": "<p>Points for the value you keep in staked positions.</p><p><formula>Position value (GNOT) × days in range × time bonus × 0.003<br/>Time bonus:<br/> - 0 ~ 5 days: ×0<br/> - 5 ~ 10 days: ×1<br/> - 10 ~ 20 days: ×1.5<br/> - 20 ~ 30 days: ×1.75<br/> - 30 days ~: ×2</formula></p>Only counts while in range, in pools with internal GNS emissions. Narrow or wide range makes no difference. Unstaking restarts the time bonus.</p>",
