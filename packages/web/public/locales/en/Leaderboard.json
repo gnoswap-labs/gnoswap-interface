@@ -6,27 +6,22 @@
   "header": "Leaderboard",
   "list": {
     "column": {
-      "counted": "Counted",
       "delegation": "Delegation",
-      "globalCapRatio": "Global cap ratio",
       "points": "Points",
       "position": "Position",
-      "provisional": "provisional",
       "rank": "Rank",
       "referral": "Referral",
       "staking": "Staking",
       "swap": "Swap",
       "swapCap": "Swap Cap",
-      "swapCapWarning": "Stake or delegate more to raise your cap.",
-      "swapFeesPaid": "Swap fees paid",
-      "swapRaw": "Before cap",
+      "swapRaw": "Swap (Before Cap)",
       "tooltip": {
         "delegation": "<p>Points for the GNS you keep delegated.<br/><strong>Delegated value (GNOT) × days × time bonus × 0.003</strong></p><p>Time bonus: first 10 days ×1 · 10–20d ×1.5 · 20–30d ×1.75 · 30d+ ×2<br/>GNS waiting in the 7-day unbonding period earns nothing.</p>",
         "points": "<p><strong>Staking + Delegation + Swap + Referral</strong></p><p>Referral: 10% of your own swap points, plus 10% of each friend's swap points.<br/>Global cap: if everyone's swap points add up to more than everyone's staking + delegation points, all swap points shrink by the same ratio. Set at round end.</p>",
         "staking": "<p>Points for the value you keep in staked positions.<br/><strong>Position value (GNOT) × days in range × time bonus × 0.003</strong></p><p>Time bonus: first 5 days ×0 · 5–10d ×1 · 10–20d ×1.5 · 20–30d ×1.75 · 30d+ ×2<br/>Only counts while in range, in pools with internal GNS emissions.<br/>Narrow or wide range makes no difference. Unstaking restarts the time bonus.</p>",
-        "swap": "<p>Points for the swap fee you pay to GnoSwap.<br/><strong>Swap fee paid (GNOT) × 5, up to your Swap Cap</strong></p><p>Swap Cap = Delegation points × 3 + Staking points × 1<br/>No staking or delegation = no swap points.<br/>Only swaps that go through pools with internal GNS emissions.</p>"
+        "swap": "<p>Points for the swap fee you pay to GnoSwap.<br/><strong>Swap fee paid (GNOT) × 5, up to your Swap Cap</strong></p><p>Swap Cap = Delegation points × 3 + Staking points × 1<br/>No staking or delegation = no swap points.<br/>Only swaps that go through pools with internal GNS emissions.</p>",
+        "swapCap": "Swap points cannot exceed this cap."
       },
-      "total": "Total",
       "user": "User",
       "xGNS": "xGNS Staking"
     },

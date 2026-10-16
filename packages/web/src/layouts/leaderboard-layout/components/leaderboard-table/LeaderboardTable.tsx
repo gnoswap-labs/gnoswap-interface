@@ -8,8 +8,6 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { LeaderboardUser } from "@repositories/leaderboard/response/common/types";
 import LeaderboardTableRow from "../leaderboard-table-row/LeaderboardTableRow";
 import { useConnection } from "@hooks/common/use-connection";
-import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
-import { useGetAllTokenPrices } from "@query/token";
 
 export default function LeaderboardTable({
   myAddress,
@@ -24,8 +22,6 @@ export default function LeaderboardTable({
 }) {
   const { connected } = useConnection();
   const { isTablet, isMobile } = useWindowSize();
-  const { data: tokenPrices = {} } = useGetAllTokenPrices();
-  const gnotUsdPrice = tokenPrices[WRAPPED_GNOT_PATH]?.usd;
 
   const widths = React.useMemo(() => {
     return (
@@ -42,7 +38,6 @@ export default function LeaderboardTable({
           tdWidths={widths}
           isMobile={isMobile}
           isMe={true}
-          gnotUsdPrice={gnotUsdPrice}
         />
       )}
       {leaderboardEntries.map(leader => (
@@ -53,7 +48,6 @@ export default function LeaderboardTable({
           tdWidths={widths}
           isMobile={isMobile}
           rankOffset={rankOffset}
-          gnotUsdPrice={gnotUsdPrice}
         />
       ))}
     </>
