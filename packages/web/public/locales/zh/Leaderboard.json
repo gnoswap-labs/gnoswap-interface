@@ -47,7 +47,6 @@
   },
   "subHeader": {
     "copyButton": "复制我的推荐",
-    "description": "通过进行代币交换、质押、委托或邀请好友来赚取积分，从而在排行榜上攀升。在 GnoSwap 上的每一项活动都计入积分！",
-    "howPointsWork": "积分规则 →"
+    "description": "通过进行代币交换、质押、委托或邀请好友来赚取积分，从而在排行榜上攀升。在 GnoSwap 上的每一项活动都计入积分！"
   }
 }

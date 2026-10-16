@@ -47,7 +47,6 @@
   },
   "subHeader": {
     "copyButton": "Copy My Referral",
-    "description": "Climb up the leaderboard by collecting points for swapping, staking, delegating, or inviting friends. Every activity on GnoSwap counts!",
-    "howPointsWork": "How points work →"
+    "description": "Climb up the leaderboard by collecting points for swapping, staking, delegating, or inviting friends. Every activity on GnoSwap counts!"
   }
 }

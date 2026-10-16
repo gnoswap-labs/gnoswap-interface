@@ -47,7 +47,6 @@
   },
   "subHeader": {
     "copyButton": "Copiar mi recomendación",
-    "description": "Sube en la clasificación acumulando puntos por intercambiar, hacer staking, delegar o invitar a amigos. ¡Cada actividad en GnoSwap cuenta!",
-    "howPointsWork": "Cómo funcionan los puntos →"
+    "description": "Sube en la clasificación acumulando puntos por intercambiar, hacer staking, delegar o invitar a amigos. ¡Cada actividad en GnoSwap cuenta!"
   }
 }

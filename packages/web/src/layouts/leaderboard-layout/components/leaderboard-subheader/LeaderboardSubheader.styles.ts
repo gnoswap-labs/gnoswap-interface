@@ -22,12 +22,3 @@ export const TitleWrapper = styled.div`
     width: 100%;
   }
 `;
-
-export const DocsLink = styled.a`
-  color: ${({ theme }) => theme.color.text04};
-  white-space: nowrap;
-
-  &:hover {
-    color: ${({ theme }) => theme.color.text03};
-  }
-`;
