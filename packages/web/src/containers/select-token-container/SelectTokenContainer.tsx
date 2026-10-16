@@ -2,7 +2,6 @@ import BigNumber from "bignumber.js";
 import { useAtomValue } from "jotai";
 import React, { useCallback, useMemo, useState } from "react";
 
-import { GNOT_TOKEN, GNS_TOKEN } from "@common/values/token-constant";
 import SelectToken from "@components/common/select-token/SelectToken";
 import { useClearModal } from "@hooks/common/use-clear-modal";
 import useEscCloseModal from "@hooks/common/use-esc-close-modal";
@@ -13,7 +12,8 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { ThemeState, TokenState } from "@states/index";
 import { parseJson } from "@utils/common";
-import { ORDER, customSort } from "@utils/token-sort";
+import { DEFAULT_TOKEN_PATHS, SelectTokenSortable, compareSelectTokens } from "@utils/token-sort";
+import { keepVerified } from "@utils/token-verification-filter";
 
 interface SelectTokenContainerProps {
   changeToken?: (token: TokenModel) => void;
@@ -21,49 +21,7 @@ interface SelectTokenContainerProps {
   additionalTokens?: TokenModel[];
 }
 
-export interface SortedProps extends TokenModel {
-  price: string;
-  tokenPrice: number;
-}
-
 const EMPTY_ADDITIONAL_TOKENS: TokenModel[] = [];
-
-export { ORDER, customSort };
-
-const handleSort = (list: SortedProps[]) => {
-  const gnot = list.find(a => a.path === GNOT_TOKEN.path);
-  const gns = list.find(a => a.path === GNS_TOKEN.path);
-  const valueOfBalance = list
-    .filter(a => a.price !== "-" && a.path !== GNOT_TOKEN.path && a.path !== GNS_TOKEN.path)
-    .sort((a, b) => {
-      const priceA = parseFloat(a.price.replace(/,/g, ""));
-      const priceB = parseFloat(b.price.replace(/,/g, ""));
-      return priceB - priceA;
-    });
-  const amountOfBalance = list
-    .filter(
-      a =>
-        a.price !== "-" &&
-        a.path !== GNOT_TOKEN.path &&
-        a.path !== GNS_TOKEN.path &&
-        !valueOfBalance.includes(a) &&
-        a.tokenPrice > 0,
-    )
-    .sort((a, b) => b.tokenPrice - a.tokenPrice);
-  const alphabest = list
-    .filter(
-      a =>
-        !amountOfBalance.includes(a) &&
-        a.path !== GNOT_TOKEN.path &&
-        a.path !== GNS_TOKEN.path &&
-        !valueOfBalance.includes(a),
-    )
-    .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
-  const rs = [];
-  if (gnot) rs.push(gnot);
-  if (gns) rs.push(gns);
-  return [...rs, ...valueOfBalance, ...amountOfBalance, ...alphabest];
-};
 
 const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   changeToken,
@@ -71,8 +29,9 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   additionalTokens = EMPTY_ADDITIONAL_TOKENS,
 }) => {
   const { breakpoint } = useWindowSize();
-  const { tokens, tokenPrices, displayBalanceStringMap } = useTokenData(true);
+  const { tokens, displayBalanceStringMap, getTokenUSDPrice } = useTokenData(true);
   const [keyword, setKeyword] = useState("");
+  const [showUnverified, setShowUnverified] = useState(false);
   const clearModal = useClearModal();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const recentsData = useAtomValue(TokenState.selectRecents);
@@ -82,11 +41,15 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
     return [...tokens, ...additionalTokens.filter(token => !tokenPaths.has(token.path))];
   }, [additionalTokens, tokens]);
 
+  const visibleTokens = useMemo(
+    () => keepVerified(availableTokens, showUnverified),
+    [availableTokens, showUnverified],
+  );
+
+  // Resolve stored recents to current token models so verification status stays fresh.
   const recents = useMemo(() => {
-    const recentTokens = parseJson(recentsData ? recentsData : "[]");
-    return recentTokens.filter((recentToken: TokenModel) =>
-      availableTokens.some(token => token.path === recentToken.path),
-    );
+    const recentTokens: TokenModel[] = parseJson(recentsData ? recentsData : "[]");
+    return recentTokens.flatMap(recentToken => availableTokens.find(token => token.path === recentToken.path) ?? []);
   }, [availableTokens, recentsData]);
 
   const close = useCallback(() => {
@@ -107,35 +70,32 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   useEscCloseModal(close);
 
   const defaultTokens = useMemo(() => {
-    return [...availableTokens].sort(customSort).slice(0, 4);
-  }, [availableTokens]);
+    return DEFAULT_TOKEN_PATHS.flatMap(path => visibleTokens.find(token => token.path === path) ?? []);
+  }, [visibleTokens]);
 
-  const filteredTokens = useMemo(() => {
-    const lowerKeyword = keyword.toLowerCase();
-    const temp: SortedProps[] = availableTokens.map((item: TokenModel) => {
+  const sortedTokens = useMemo(() => {
+    const temp: SelectTokenSortable[] = visibleTokens.map((item: TokenModel) => {
       const tokenBalance = displayBalanceStringMap[item.path] ?? displayBalanceStringMap[item.priceID];
       const balance = BigNumber(tokenBalance ?? "");
-      if (!tokenBalance || balance.isNaN() || balance.isLessThanOrEqualTo(0)) {
-        return {
-          price: "-",
-          ...item,
-          tokenPrice: balance.isNaN() ? 0 : balance.toNumber(),
-        };
+      if (balance.isNaN() || balance.isLessThanOrEqualTo(0)) {
+        return { ...item, usdValue: 0, balance: 0 };
       }
-      return {
-        ...item,
-        price: balance.multipliedBy(tokenPrices[item.priceID]?.usd || "0").toFormat(),
-        tokenPrice: balance.toNumber(),
-      };
+      const usdValue = getTokenUSDPrice(item.priceID, balance.toString());
+      return { ...item, usdValue: usdValue || 0, balance: balance.toNumber() };
     });
-    const sortedData = handleSort(temp);
-    return sortedData.filter(
+    return temp.sort(compareSelectTokens);
+  }, [visibleTokens, displayBalanceStringMap, getTokenUSDPrice]);
+
+  // Sorting is kept separate so typing a keyword only filters.
+  const filteredTokens = useMemo(() => {
+    const lowerKeyword = keyword.toLowerCase();
+    return sortedTokens.filter(
       token =>
         token.name.toLowerCase().includes(lowerKeyword) ||
         token.symbol.toLowerCase().includes(lowerKeyword) ||
         token.path.toLowerCase().includes(lowerKeyword),
     );
-  }, [availableTokens, displayBalanceStringMap, keyword, tokenPrices]);
+  }, [sortedTokens, keyword]);
 
   const selectToken = useCallback(
     (token: TokenModel) => {
@@ -169,6 +129,8 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
       breakpoint={breakpoint}
       recents={recents}
       isSwitchNetwork={isSwitchNetwork}
+      showUnverified={showUnverified}
+      toggleShowUnverified={() => setShowUnverified(prev => !prev)}
     />
   );
 };

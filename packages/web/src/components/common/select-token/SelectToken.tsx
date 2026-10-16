@@ -3,18 +3,21 @@ import IconSearch from "@components/common/icons/IconSearch";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { TokenModel } from "@models/token/token-model";
 import { getSwapExtensionByOriginPath } from "@resources/swap-extension";
-import { ORDER } from "@utils/token-sort";
 import { TokenState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
 import { removeDuplicatesByWrappedPath } from "@utils/common";
 import { formatTokenModelPath, formatTokenPath } from "@utils/token-utils";
+import { keepVerified } from "@utils/token-verification-filter";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import IconNewTab from "../icons/IconNewTab";
 import MissingLogo from "../missing-logo/MissingLogo";
+import ShowUnverifiedTokensSwitch from "../show-unverified-tokens-switch/ShowUnverifiedTokensSwitch";
 import { Divider, SelectTokenWrapper, TokenInfoWrapper } from "./SelectToken.styles";
+
+const MAX_TOKEN_CHIPS = 4;
 
 export interface SelectTokenProps {
   keyword: string;
@@ -28,6 +31,8 @@ export interface SelectTokenProps {
   breakpoint: DEVICE_TYPE;
   recents: TokenModel[];
   isSwitchNetwork: boolean;
+  showUnverified: boolean;
+  toggleShowUnverified: () => void;
 }
 
 const SelectToken: React.FC<SelectTokenProps> = ({
@@ -42,12 +47,17 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   breakpoint,
   recents = [],
   isSwitchNetwork,
+  showUnverified,
+  toggleShowUnverified,
 }) => {
   const { t } = useTranslation();
 
   const myElementRef = useRef<HTMLDivElement | null>(null);
-  const priceRefs = useRef(tokens.map(() => React.createRef<HTMLSpanElement>()));
-  const tokenNameRef = useRef(tokens.map(() => React.createRef<HTMLSpanElement>()));
+  const priceRefs = useRef<React.RefObject<HTMLSpanElement>[]>([]);
+  const tokenNameRef = useRef<React.RefObject<HTMLSpanElement>[]>([]);
+  // Keep one ref per row, since the list grows when unverified tokens are shown.
+  priceRefs.current = tokens.map((_, index) => priceRefs.current[index] ?? React.createRef<HTMLSpanElement>());
+  tokenNameRef.current = tokens.map((_, index) => tokenNameRef.current[index] ?? React.createRef<HTMLSpanElement>());
   const [widthList, setWidthList] = useState<number[]>(tokens.map(() => 0));
   const [tokenNameWidthList, setTokenNameWidthList] = useState<number[]>(tokens.map(() => 0));
   const [, setRecentsData] = useAtom(TokenState.selectRecents);
@@ -70,22 +80,11 @@ const SelectToken: React.FC<SelectTokenProps> = ({
 
   const onClickToken = useCallback(
     (token: TokenModel) => {
-      const current = [...recents, token].filter(item => !ORDER.includes(item.symbol));
-      const filterData = current
-        .filter(recentToken => tokens.some(token => token.path === recentToken.path))
-        .filter((_item, index) => {
-          const _value = JSON.stringify(_item);
-          return (
-            index ===
-            current.findIndex(obj => {
-              return JSON.stringify(obj) === _value;
-            })
-          );
-        });
-      setRecentsData(JSON.stringify(filterData.slice(filterData.length <= 4 ? 0 : 1, filterData.length <= 4 ? 4 : 5)));
+      const nextRecents = [token, ...recents.filter(item => item.path !== token.path)].slice(0, MAX_TOKEN_CHIPS);
+      setRecentsData(JSON.stringify(nextRecents));
       changeToken(token);
     },
-    [changeToken, close, recents],
+    [changeToken, recents, setRecentsData],
   );
 
   const onChangeSearchKeyword = useCallback(
@@ -136,15 +135,22 @@ const SelectToken: React.FC<SelectTokenProps> = ({
     return breakpoint === DEVICE_TYPE.MOBILE ? 10 : 15;
   }, [breakpoint]);
 
-  const getTokensRecent = removeDuplicatesByWrappedPath([...defaultTokens, ...recents]);
+  // recents stays unfiltered so hidden tokens are not dropped from storage on the next selection.
+  const getTokensRecent = removeDuplicatesByWrappedPath([...keepVerified(recents, showUnverified), ...defaultTokens]).slice(
+    0,
+    MAX_TOKEN_CHIPS,
+  );
 
   return (
     <SelectTokenWrapper ref={myElementRef}>
       <div className="content">
         <div className="header">
           <span>{t("common:selectPairBtn.modal.title")}</span>
-          <div className="close-wrap" onClick={onClickClose}>
-            <IconClose className="close-icon" />
+          <div className="header-actions">
+            <ShowUnverifiedTokensSwitch checked={showUnverified} onChange={toggleShowUnverified} />
+            <div className="close-wrap" onClick={onClickClose}>
+              <IconClose className="close-icon" />
+            </div>
           </div>
         </div>
         <div className="search-wrap">
