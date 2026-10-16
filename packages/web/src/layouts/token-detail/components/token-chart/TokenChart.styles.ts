@@ -1,3 +1,5 @@
+import { SelectTabWrapper } from "@components/common/select-tab-v2/SelectTabV2.styles";
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
 
@@ -11,6 +13,7 @@ export const TokenChartWrapper = styled.div`
   height: auto;
   padding: 23px;
   border-radius: 8px;
+  gap: 16px;
   ${media.mobile} {
     background-color: transparent;
     max-width: calc(100vw - 32px);
@@ -21,34 +24,28 @@ export const TokenChartWrapper = styled.div`
 `;
 
 export const ChartRegion = styled.div`
-  display: flow-root;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   min-width: 0;
-  background-color: ${({ theme }) => (theme.themeKey === "light" ? "transparent" : theme.color.background15)};
-  border-radius: 8px;
-
-  ${media.mobile} {
-    width: 100%;
-  }
+  width: 100%;
+  gap: 12px;
 `;
 
-export const ChartControls = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  height: 31px;
+export const ChartControls = styled(SelectTabWrapper)`
   width: fit-content;
   max-width: 100%;
-  margin: 8px 0;
-  gap: 0;
-  padding: 2px;
-  border: 1px solid ${({ theme }) => theme.color.border02};
-  border-radius: 4px;
-  background-color: ${({ theme }) => theme.color.background28};
+  border: none;
+
   button {
+    ${fonts.body10};
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex: 1;
-    min-width: 50px;
-    min-height: 0;
-    height: 100%;
+    min-width: 0;
+    width: 60px;
+    height: 37px;
     padding: 0 8px;
     border-radius: 4px;
     color: ${({ theme }) => theme.color.text04};
@@ -61,31 +58,33 @@ export const ChartControls = styled.div`
       outline-offset: -2px;
     }
     &[aria-pressed="true"] {
-      background: ${({ theme }) => theme.color.background05};
+      background-color: ${({ theme }) => theme.color.select};
       color: ${({ theme }) => theme.color.text02};
     }
   }
+
   ${media.mobile} {
-    height: 24px;
     width: 100%;
-    max-width: none;
-    margin: 8px 0;
     button {
+      ${fonts.body12};
       position: relative;
-      min-width: 0;
-      padding: 0;
-      font-size: 12px;
-      line-height: 18px;
+      height: 26px;
+      padding: 4px 8px;
       &::before {
         content: "";
         position: absolute;
-        inset: -12px 0;
+        inset: -9px 0;
       }
     }
   }
 `;
 
 export const CandleChartWrapper = styled.div`
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 8px;
+
   .price-chart-shell {
     position: relative;
     width: 100%;
