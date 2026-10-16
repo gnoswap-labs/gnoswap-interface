@@ -23,7 +23,7 @@ export const TokenChartWrapper = styled.div`
 export const ChartRegion = styled.div`
   display: flow-root;
   min-width: 0;
-  background-color: ${({ theme }) => theme.color.background15};
+  background-color: ${({ theme }) => (theme.themeKey === "light" ? "transparent" : theme.color.background15)};
   border-radius: 8px;
 
   ${media.mobile} {
@@ -37,8 +37,8 @@ export const ChartControls = styled.div`
   justify-content: flex-start;
   height: 31px;
   width: fit-content;
-  max-width: calc(100% - 24px);
-  margin: 8px 12px;
+  max-width: 100%;
+  margin: 8px 0;
   gap: 0;
   padding: 2px;
   border: 1px solid ${({ theme }) => theme.color.border02};
@@ -67,9 +67,9 @@ export const ChartControls = styled.div`
   }
   ${media.mobile} {
     height: 24px;
-    width: calc(100% - 16px);
+    width: 100%;
     max-width: none;
-    margin: 8px;
+    margin: 8px 0;
     button {
       position: relative;
       min-width: 0;
