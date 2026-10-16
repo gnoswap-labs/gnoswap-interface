@@ -215,9 +215,11 @@ export default function PriceCandleChart({
       // The cursor is the exclusive boundary of the last requested window, not the
       // first returned candle. Sparse and empty windows must still advance it.
       let cursor = (Math.floor(Date.now() / 1000 / interval) + 1) * interval;
-      const windowSeconds = Math.min(120 * interval, 30 * 86400);
+      const windowSeconds = Math.min(30 * interval, 30 * 86400);
       let exhausted = false;
       let fetching = false;
+      let initialBufferPending = true;
+      let preloadFrame = 0;
       const applyPriceFormat = () => {
         let smallestPrice = Infinity;
         for (const bar of bars) {
@@ -292,10 +294,7 @@ export default function PriceCandleChart({
               .setVisibleLogicalRange({ from: visible.from + older.length, to: visible.to + older.length });
           } else if (all) chart.timeScale().fitContent();
           else {
-            const visibleBars = Math.min(65, Math.max(20, Math.floor(element.clientWidth / 12)));
-            chart
-              .timeScale()
-              .setVisibleLogicalRange({ from: Math.max(0, bars.length - visibleBars), to: bars.length + 4 });
+            chart.timeScale().setVisibleLogicalRange({ from: Math.max(0, bars.length - 30), to: bars.length + 4 });
           }
           setState("ready");
         } catch {
@@ -305,7 +304,14 @@ export default function PriceCandleChart({
           }
         } finally {
           fetching = false;
-          if (!cancelled) onRange(chart.timeScale().getVisibleLogicalRange());
+          if (!cancelled) {
+            // setVisibleLogicalRange is applied on the chart's next render.
+            window.cancelAnimationFrame(preloadFrame);
+            preloadFrame = window.requestAnimationFrame(() => {
+              preloadFrame = 0;
+              if (!cancelled) onRange(chart.timeScale().getVisibleLogicalRange());
+            });
+          }
         }
       };
       searchOlder.current = () => void loadOlder();
@@ -373,7 +379,7 @@ export default function PriceCandleChart({
       };
       const refreshTimer = window.setInterval(() => void refreshLatest(), 5_000);
       document.addEventListener("visibilitychange", refreshOnVisibility);
-      // Programmatic setData/fitContent/resize also emit range changes. Page only after a user interaction.
+      // Preload one page initially; further pages require a user gesture.
       let userPanned = false;
       let pointerStart: number | null = null;
       const armPaging = () => {
@@ -419,13 +425,16 @@ export default function PriceCandleChart({
       };
       chart.subscribeCrosshairMove(onCrosshairMove);
       const onRange = (range: LogicalRange | null) => {
-        const preloadBars = range ? Math.max(30, Math.ceil(range.to - range.from)) : 30;
         if (
+          !cancelled &&
+          !exhausted &&
+          bars.length > 0 &&
           !fetching &&
-          userPanned &&
+          (initialBufferPending || userPanned) &&
           range &&
-          (candles.barsInLogicalRange(range)?.barsBefore ?? Infinity) < preloadBars
+          (candles.barsInLogicalRange(range)?.barsBefore ?? Infinity) < 30
         ) {
+          initialBufferPending = false;
           userPanned = false;
           void loadOlder();
         }
@@ -433,6 +442,7 @@ export default function PriceCandleChart({
       chart.timeScale().subscribeVisibleLogicalRangeChange(onRange);
       dispose = () => {
         window.clearInterval(refreshTimer);
+        window.cancelAnimationFrame(preloadFrame);
         document.removeEventListener("visibilitychange", refreshOnVisibility);
         element.removeEventListener("wheel", armPaging, true);
         element.removeEventListener("pointerdown", startPan, true);
