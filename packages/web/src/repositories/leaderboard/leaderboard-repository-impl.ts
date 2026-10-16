@@ -38,7 +38,7 @@ export class LeaderboardRepositoryImpl implements LeaderboardRepository {
       .get<{ data: GetLeaderboardResponse }>({
         url: `/leaderboard/rounds/users?${queries.filter(query => !!query).join("&")}`,
       })
-      // The API answers 404 when there is no active round (or the round does not exist).
+      // The API answers 404 when no round has started yet (or the round does not exist).
       .catch(error => {
         if (isNotFoundError(error)) {
           return null;
