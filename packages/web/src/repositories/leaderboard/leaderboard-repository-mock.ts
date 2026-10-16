@@ -32,6 +32,14 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
         stakingRewardsUsd: randomUsd(),
         swapFeeUsd: randomUsd(),
         totalPoint: (Math.floor(Math.random() * 10000000) + 1000000).toString(),
+        roundId: 1,
+        positionStakingPoint: randomPoint(),
+        gnsDelegationPoint: randomPoint(),
+        swapPoint: randomPoint(),
+        swapRawPoint: randomPoint(),
+        swapCapPoint: randomPoint(),
+        isProvisional: true,
+        usdDetail: { swapFeeUsd: randomUsd(), delegatedGnsUsd: randomUsd() },
       };
     };
 
@@ -80,6 +88,14 @@ export class LeaderboardRepositoryMock implements LeaderboardRepository {
         stakingRewardsUsd: randomUsd(),
         swapFeeUsd: randomUsd(),
         totalPoint: (Math.floor(Math.random() * 10000000) + 1000000).toString(),
+        roundId: 1,
+        positionStakingPoint: randomPoint(),
+        gnsDelegationPoint: randomPoint(),
+        swapPoint: randomPoint(),
+        swapRawPoint: randomPoint(),
+        swapCapPoint: randomPoint(),
+        isProvisional: true,
+        usdDetail: { swapFeeUsd: randomUsd(), delegatedGnsUsd: randomUsd() },
       },
     };
   };

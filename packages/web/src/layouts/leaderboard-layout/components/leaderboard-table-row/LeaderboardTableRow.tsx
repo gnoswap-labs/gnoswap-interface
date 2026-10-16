@@ -10,13 +10,7 @@ import PointComposition, { PointCompositionItem } from "../point-composition/Poi
 import SwapPoint from "../swap-point/SwapPoint";
 import UserColumn from "../user-column/UserColumn";
 import { LeaderboardUser } from "@repositories/leaderboard/response/common/types";
-import { formatLeaderboardPoint, isLeaderboardHidden, isRoundLeaderboardUser } from "@utils/leaderboard-utils";
-import { formatOtherPrice } from "@utils/new-number-utils";
-
-const formatUsdValue = (value: string | number | null) => {
-  if (value == null || value === "") return "-";
-  return formatOtherPrice(value, { isKMB: false });
-};
+import { formatLeaderboardPoint, isLeaderboardHidden } from "@utils/leaderboard-utils";
 
 const LeaderboardTableRow = ({
   myAddress,
@@ -35,41 +29,25 @@ const LeaderboardTableRow = ({
 }) => {
   const Hover = isMe ? HoverSection : HoverOnBgSection;
   const TableWrapper = isMe ? WrapperHoverBackground : Wrapper;
-  const isRound = isRoundLeaderboardUser(data);
 
-  const displayValues = React.useMemo(() => {
-    const stakingTotal =
-      data.stakingRewardsUsd && data.governanceRewardsUsd
-        ? Number(data.stakingRewardsUsd) + Number(data.governanceRewardsUsd)
-        : data.stakingRewardsUsd ?? data.governanceRewardsUsd ?? null;
-
-    return {
-      swap: formatUsdValue(data.swapFeeUsd),
-      position: formatUsdValue(data.providedLiquidityFeeUsd),
-      staking: formatUsdValue(stakingTotal),
-    };
-  }, [data.swapFeeUsd, data.providedLiquidityFeeUsd, data.stakingRewardsUsd, data.governanceRewardsUsd]);
-
-  const pointItems = React.useMemo<PointCompositionItem[]>(() => {
-    if (isRound) {
-      return [
-        { label: "Leaderboard:list.column.swap", point: data.swapPoint },
-        { label: "Leaderboard:list.column.swapRaw", point: data.swapRawPoint },
-        { label: "Leaderboard:list.column.swapCap", point: data.swapCapPoint },
-        { label: "Leaderboard:list.column.staking", point: data.positionStakingPoint },
-        { label: "Leaderboard:list.column.delegation", point: data.gnsDelegationPoint },
-        { label: "Leaderboard:list.column.referral", point: data.referralPoint },
-      ];
-    }
-
-    return [
-      { label: "Leaderboard:list.column.swap", point: data.paidSwapFeePoint },
-      { label: "Leaderboard:list.column.position", point: data.providedLiquidityFeePoint },
-      { label: "Leaderboard:list.column.staking", point: data.stakingRewardsPoint },
-      { label: "Leaderboard:list.column.xGNS", point: data.governanceRewardsPoint },
+  const pointItems = React.useMemo<PointCompositionItem[]>(
+    () => [
+      { label: "Leaderboard:list.column.swap", point: data.swapPoint },
+      { label: "Leaderboard:list.column.swapRaw", point: data.swapRawPoint },
+      { label: "Leaderboard:list.column.swapCap", point: data.swapCapPoint },
+      { label: "Leaderboard:list.column.staking", point: data.positionStakingPoint },
+      { label: "Leaderboard:list.column.delegation", point: data.gnsDelegationPoint },
       { label: "Leaderboard:list.column.referral", point: data.referralPoint },
-    ];
-  }, [isRound, data]);
+    ],
+    [
+      data.swapPoint,
+      data.swapRawPoint,
+      data.swapCapPoint,
+      data.positionStakingPoint,
+      data.gnsDelegationPoint,
+      data.referralPoint,
+    ],
+  );
 
   const displayRankNumber = React.useMemo(() => {
     const rank = Number(data.rank);
@@ -104,22 +82,10 @@ const LeaderboardTableRow = ({
         {!isMobile && (
           <>
             <TableColumn tdWidth={tdWidths.at(2)} style={{ justifyContent: "flex-start" }}>
-              {isRound ? (
-                <SwapPoint
-                  swapPoint={data.swapPoint}
-                  swapRawPoint={data.swapRawPoint}
-                  swapCapPoint={data.swapCapPoint}
-                />
-              ) : (
-                displayValues.swap
-              )}
+              <SwapPoint swapPoint={data.swapPoint} swapRawPoint={data.swapRawPoint} swapCapPoint={data.swapCapPoint} />
             </TableColumn>
-            <TableColumn tdWidth={tdWidths.at(3)}>
-              {isRound ? formatLeaderboardPoint(data.positionStakingPoint) : displayValues.position}
-            </TableColumn>
-            <TableColumn tdWidth={tdWidths.at(4)}>
-              {isRound ? formatLeaderboardPoint(data.gnsDelegationPoint) : displayValues.staking}
-            </TableColumn>
+            <TableColumn tdWidth={tdWidths.at(3)}>{formatLeaderboardPoint(data.positionStakingPoint)}</TableColumn>
+            <TableColumn tdWidth={tdWidths.at(4)}>{formatLeaderboardPoint(data.gnsDelegationPoint)}</TableColumn>
           </>
         )}
         <TableColumn tdWidth={tdWidths.at(isMobile ? 2 : 5)}>

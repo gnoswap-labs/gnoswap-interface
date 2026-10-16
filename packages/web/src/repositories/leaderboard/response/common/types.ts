@@ -23,18 +23,18 @@ export interface LeaderboardUser {
   stakingRewardsUsd: string;
   swapFeeUsd: string;
   totalPoint: string;
-  // Round leaderboard fields; roundId is absent or 0 for the legacy leaderboard.
-  roundId?: number;
-  positionStakingPoint?: string;
-  gnsDelegationPoint?: string;
+  // Round the points belong to.
+  roundId: number;
+  positionStakingPoint: string;
+  gnsDelegationPoint: string;
   // Accepted swap points after the wallet and global caps.
-  swapPoint?: string;
+  swapPoint: string;
   // Swap points before the caps.
-  swapRawPoint?: string;
+  swapRawPoint: string;
   // Wallet swap cap: GNS delegation points and position staking points weighted by the round multipliers.
-  swapCapPoint?: string;
-  isProvisional?: boolean;
-  usdDetail?: LeaderboardUsdDetail | null;
+  swapCapPoint: string;
+  isProvisional: boolean;
+  usdDetail: LeaderboardUsdDetail | null;
 }
 
 export interface LeaderboardUsdDetail {

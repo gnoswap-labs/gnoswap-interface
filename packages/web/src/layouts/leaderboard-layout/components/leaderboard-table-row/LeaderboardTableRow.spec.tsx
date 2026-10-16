@@ -49,6 +49,14 @@ const createLeaderboardUser = (rank: number): LeaderboardUser => ({
   stakingRewardsUsd: "0",
   swapFeeUsd: "0",
   totalPoint: "0",
+  roundId: 1,
+  positionStakingPoint: "0",
+  gnsDelegationPoint: "0",
+  swapPoint: "0",
+  swapRawPoint: "0",
+  swapCapPoint: "0",
+  isProvisional: true,
+  usdDetail: null,
 });
 
 const createApiLeaderboardUser = (rank: string): LeaderboardUser => {
@@ -106,61 +114,13 @@ describe("LeaderboardTableRow", () => {
     expect(screen.queryByText("#1100")).not.toBeInTheDocument();
   });
 
-  it("displays tiny positive USD values with the minimum USD label", () => {
-    render(
-      <GnoswapThemeProvider>
-        <LeaderboardTableRow
-          myAddress={undefined}
-          data={{
-            ...createLeaderboardUser(647),
-            governanceRewardsUsd: "0.0000003",
-            swapFeeUsd: "0.000000996805274021",
-            providedLiquidityFeeUsd: "0.000000969767947872",
-            stakingRewardsUsd: "0.0000006",
-            paidSwapFeePoint: "0.000000996805274021",
-            totalPoint: "0.000000996805274021",
-          }}
-          tdWidths={[100, 100, 100, 100, 100, 100]}
-          isMobile={false}
-        />
-      </GnoswapThemeProvider>,
-    );
-
-    expect(screen.getAllByText("<$0.01")).toHaveLength(3);
-    expect(screen.queryByText("$")).not.toBeInTheDocument();
-  });
-
-  it("does not expose USD precision below 0.01", () => {
-    render(
-      <GnoswapThemeProvider>
-        <LeaderboardTableRow
-          myAddress={undefined}
-          data={{
-            ...createLeaderboardUser(647),
-            swapFeeUsd: "0.009",
-            providedLiquidityFeeUsd: "0.009",
-            stakingRewardsUsd: "0.009",
-            governanceRewardsUsd: "0.009",
-          }}
-          tdWidths={[100, 100, 100, 100, 100, 100]}
-          isMobile={false}
-        />
-      </GnoswapThemeProvider>,
-    );
-
-    expect(screen.getAllByText("<$0.01")).toHaveLength(2);
-    expect(screen.queryByText("0.009")).not.toBeInTheDocument();
-    expect(screen.queryByText("$0.009")).not.toBeInTheDocument();
-  });
-
-  it("shows round swap points with the wallet swap cap on hover", () => {
+  it("shows swap points with the swap points before the cap and the cap on hover", () => {
     render(
       <GnoswapThemeProvider>
         <LeaderboardTableRow
           myAddress={undefined}
           data={{
             ...createLeaderboardUser(1),
-            roundId: 1,
             swapPoint: "123.456",
             swapRawPoint: "900",
             swapCapPoint: "4567.891",
@@ -185,29 +145,10 @@ describe("LeaderboardTableRow", () => {
     expect(screen.getByText("Leaderboard:list.column.tooltip.swapCap")).toBeInTheDocument();
     expect(screen.getAllByText("1,000")).toHaveLength(2);
     expect(screen.getAllByText("1,189.29")).toHaveLength(2);
-    // Round rows are Swap, Staking (position staking) and Delegation (GNS delegation).
+    // Staking is the position staking points and Delegation the GNS delegation points.
     expect(screen.getByText("Leaderboard:list.column.staking")).toBeInTheDocument();
     expect(screen.getByText("Leaderboard:list.column.delegation")).toBeInTheDocument();
     expect(screen.queryByText("Leaderboard:list.column.position")).not.toBeInTheDocument();
     expect(screen.queryByText("Leaderboard:list.column.xGNS")).not.toBeInTheDocument();
-    expect(screen.queryByText("<$0.01")).not.toBeInTheDocument();
-  });
-
-  it("keeps the legacy USD columns without the swap cap", () => {
-    render(
-      <GnoswapThemeProvider>
-        <LeaderboardTableRow
-          myAddress={undefined}
-          data={{ ...createLeaderboardUser(1), swapFeeUsd: "12.5" }}
-          tdWidths={[100, 100, 100, 100, 100, 100]}
-          isMobile={false}
-        />
-      </GnoswapThemeProvider>,
-    );
-
-    expect(screen.getByText(/^\$12\.5/)).toBeInTheDocument();
-    expect(screen.queryByText("Leaderboard:list.column.swapCap")).not.toBeInTheDocument();
-    expect(screen.queryByText("Leaderboard:list.column.swapRaw")).not.toBeInTheDocument();
-    expect(screen.getByText("Leaderboard:list.column.staking")).toBeInTheDocument();
   });
 });
