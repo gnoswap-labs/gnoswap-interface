@@ -81,7 +81,7 @@
         "title": "2. Saisir le montant"
       },
       "step3": {
-        "aprTooltip": "TAEG estimé pour les xGNS délégués : moyenne entre le TAEG prévu pour aujourd’hui et les TAEG quotidiens des 6 derniers jours (UTC).\n\nRécompenses quotidiennes prévues pour aujourd’hui = récompenses au titre des frais de protocole enregistrées depuis minuit UTC ÷ temps écoulé × 24 heures. Taux de rendement annuel (APR) quotidien = (récompenses quotidiennes au titre des frais de protocole × 365) ÷ valeur en USD de l’ensemble des xGNS délégués.\n\nSeuls les jours disponibles sont pris en compte dans le calcul de la moyenne. Les rendements réels varient en fonction des frais de protocole et du montant total délégué.",
+        "aprTooltip": "Taux annuel effectif global (TAEG) estimé pour les xGNS délégués, calculé en moyenne sur les 7 derniers jours.\n\nTAEG quotidien = (récompenses au titre des frais de protocole pour la journée × 365) ÷ valeur en USD de l'ensemble des xGNS délégués.\n\nLes rendements réels varient en fonction des frais de protocole et du montant total délégué.",
         "currentlyDel": "Actuellement délégué",
         "estimatedAPR": "TAEG estimé (7 jours)",
         "newlyDel": "Nouveau délégué",
@@ -215,7 +215,7 @@
       "title": "xGNS APR (7 jours)"
     },
     "apy": {
-      "tooltip": "TAEG estimé pour les xGNS délégués : moyenne entre le TAEG prévu pour aujourd’hui et les TAEG quotidiens des 6 derniers jours (UTC).\n\nRécompenses quotidiennes prévues pour aujourd’hui = récompenses au titre des frais de protocole enregistrées depuis minuit UTC ÷ temps écoulé × 24 heures. Taux de rendement annuel (APR) quotidien = (récompenses quotidiennes au titre des frais de protocole × 365) ÷ valeur en USD de l’ensemble des xGNS délégués.\n\nSeuls les jours disponibles sont pris en compte dans le calcul de la moyenne. Les rendements réels varient en fonction des frais de protocole et du montant total délégué."
+      "tooltip": "Taux annuel effectif global (TAEG) estimé pour les xGNS délégués, calculé en moyenne sur les 7 derniers jours.\n\nTAEG quotidien = (récompenses au titre des frais de protocole pour la journée × 365) ÷ valeur en USD de l'ensemble des xGNS délégués.\n\nLes rendements réels varient en fonction des frais de protocole et du montant total délégué."
     },
     "commPool": {
       "title": "Piscine communautaire",

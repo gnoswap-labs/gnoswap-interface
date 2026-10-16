@@ -78,11 +78,6 @@ export const TableHeaderTooltipContent = styled.div`
     line-height: 1.5;
   }
 
-  p + p:last-child {
-    padding-top: 12px;
-    border-top: 1px solid ${({ theme }) => theme.color.border02};
-  }
-
   strong {
     font-weight: 600;
   }
@@ -93,10 +88,11 @@ export const TableHeaderTooltipContent = styled.div`
     border: 1px solid ${({ theme }) => theme.color.border02};
     border-radius: 6px;
     background-color: ${({ theme }) =>
-      theme.themeKey === "dark" ? theme.color.background06 : theme.color.background05};
-    color: ${({ theme }) => theme.color.text01};
+    theme.themeKey === "dark" ? theme.color.background06 : theme.color.background05};
+    color: ${({ theme }) => theme.color.text30};
     font-family: inherit;
     font-size: 13px;
+    font-style: italic;
     font-weight: 500;
     line-height: 1.6;
 
