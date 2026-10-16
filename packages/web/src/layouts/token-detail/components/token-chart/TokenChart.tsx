@@ -80,8 +80,8 @@ const TokenChart: React.FC<TokenChartProps> = ({
           <button
             type="button"
             className="chart-reset"
-            aria-label={t("common:chartControls.reset")}
-            title={t("common:chartControls.reset")}
+            aria-label="Reset chart"
+            title="Reset chart"
             onClick={() => setResetKey(value => value + 1)}
           >
             <span aria-hidden="true">

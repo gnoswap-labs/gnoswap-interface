@@ -576,8 +576,8 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                 type="button"
                 className="chart-reset"
                 disabled={chartMode !== "price"}
-                aria-label={t("common:chartControls.reset")}
-                title={t("common:chartControls.reset")}
+                aria-label="Reset chart"
+                title="Reset chart"
                 onClick={() => setResetKey(value => value + 1)}
               >
                 <span aria-hidden="true">
