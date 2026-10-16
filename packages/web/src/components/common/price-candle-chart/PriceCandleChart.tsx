@@ -219,8 +219,17 @@ export default function PriceCandleChart({
       const windowSeconds = Math.min(120 * interval, 30 * 86400);
       let exhausted = false;
       let fetching = false;
-      const applyPriceFormat = (latest: number) => {
-        const precision = latest === 0 ? 2 : Math.max(2, Math.ceil(-Math.log10(Math.abs(latest))) + 4);
+      const applyPriceFormat = () => {
+        let smallestPrice = Infinity;
+        for (const bar of bars) {
+          for (const price of [bar.open, bar.high, bar.low, bar.close]) {
+            const magnitude = Math.abs(price);
+            if (Number.isFinite(magnitude) && magnitude > 0 && magnitude < smallestPrice) {
+              smallestPrice = magnitude;
+            }
+          }
+        }
+        const precision = Number.isFinite(smallestPrice) ? Math.max(2, Math.ceil(-Math.log10(smallestPrice)) + 4) : 2;
         candles.applyOptions({
           priceFormat: {
             type: "custom",
@@ -264,9 +273,9 @@ export default function PriceCandleChart({
           cursor = start;
           exhausted = cursor === 0;
           setCanSearchOlder(!exhausted);
-          applyPriceFormat(bars.length ? bars[bars.length - 1].close : older[older.length - 1].close);
           const visible = bars.length ? chart.timeScale().getVisibleLogicalRange() : null;
           bars = older.concat(bars);
+          applyPriceFormat();
           for (const bar of older) barsByTime.set(bar.time, bar);
           candles.setData(
             bars.map(({ time, open, high, low, close }) => ({ time: time as UTCTimestamp, open, high, low, close })),
@@ -315,7 +324,7 @@ export default function PriceCandleChart({
           const visible = chart.timeScale().getVisibleLogicalRange();
           for (const bar of latest) barsByTime.set(bar.time, bar);
           bars = Array.from(barsByTime.values()).sort((a, b) => a.time - b.time);
-          applyPriceFormat(bars[bars.length - 1].close);
+          applyPriceFormat();
           candles.setData(
             bars.map(({ time, open, high, low, close }) => ({ time: time as UTCTimestamp, open, high, low, close })),
           );

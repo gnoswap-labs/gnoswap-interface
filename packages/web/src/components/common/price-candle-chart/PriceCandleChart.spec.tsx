@@ -246,6 +246,27 @@ it.each([-0.07, 0])("retains nonpositive candle values and usable price incremen
   expect(minMove).toBeGreaterThan(0);
 });
 
+it.each(["wick", "earlier candle"])(
+  "preserves small axis prices with a zero latest close and a nonzero %s",
+  async source => {
+    const zero = { ...firstPage[0], open: 0, high: 0, low: 0, close: 0 };
+    const small = { ...zero, open: 0.000001, high: 0.000002, low: 0, close: 0 };
+    const page = source === "wick" ? [small] : [small, { ...zero, time: zero.time + 300 }];
+    render(
+      <PriceCandleChart
+        {...props}
+        formatCandlePrice={price => price.toFixed(2)}
+        loadPage={jest.fn().mockResolvedValue(page)}
+      />,
+    );
+    await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+    const axisFormat = mockCandles.applyOptions.mock.calls[0][0].priceFormat;
+    expect(axisFormat.minMove).toBeLessThanOrEqual(0.000001);
+    const labels = axisFormat.tickmarksFormatter([0, 0.000001, 0.000002]);
+    expect(labels.map(Number)).toEqual([0, 0.000001, 0.000002]);
+  },
+);
+
 it("keeps loaded candles and the visible range after an older page fails, then retries on the next pan", async () => {
   const loadPage = jest
     .fn()
