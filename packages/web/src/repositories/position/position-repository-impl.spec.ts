@@ -138,5 +138,9 @@ describe("PositionRepositoryImpl", () => {
     const repository = new PositionRepositoryImpl({ get } as unknown as NetworkClient, null, null);
     await expect(repository.getPositionRewardsByAddress("g1address")).resolves.toEqual(rewards);
     expect(get).toHaveBeenCalledWith({ url: "/users/g1address/position/reward" });
+    await expect(repository.getPositionRewardsByAddress("g1address", "gno.land/r/pool:a/b")).resolves.toEqual(rewards);
+    expect(get).toHaveBeenLastCalledWith({
+      url: "/users/g1address/position/reward?poolPath=gno.land%2Fr%2Fpool%3Aa%2Fb",
+    });
   });
 });
