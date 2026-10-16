@@ -21,6 +21,7 @@ export const TokenChartWrapper = styled.div`
 `;
 
 export const ChartRegion = styled.div`
+  display: flow-root;
   min-width: 0;
   background-color: ${({ theme }) => theme.color.background15};
   border-radius: 8px;
@@ -34,12 +35,21 @@ export const ChartControls = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 4px;
-  padding: 8px 12px;
+  height: 31px;
+  width: fit-content;
+  max-width: calc(100% - 24px);
+  margin: 8px 12px;
+  gap: 0;
+  padding: 2px;
+  border: 1px solid ${({ theme }) => theme.color.border02};
+  border-radius: 4px;
+  background-color: ${({ theme }) => theme.color.background28};
   button {
-    min-width: 44px;
-    min-height: 32px;
-    padding: 4px 8px;
+    flex: 1;
+    min-width: 50px;
+    min-height: 0;
+    height: 100%;
+    padding: 0 8px;
     border-radius: 4px;
     color: ${({ theme }) => theme.color.text04};
     &:hover,
@@ -56,9 +66,21 @@ export const ChartControls = styled.div`
     }
   }
   ${media.mobile} {
-    padding: 8px;
+    height: 24px;
+    width: calc(100% - 16px);
+    max-width: none;
+    margin: 8px;
     button {
-      min-height: 44px;
+      position: relative;
+      min-width: 0;
+      padding: 0;
+      font-size: 12px;
+      line-height: 18px;
+      &::before {
+        content: "";
+        position: absolute;
+        inset: -12px 0;
+      }
     }
   }
 `;

@@ -1,5 +1,7 @@
 import axios from "axios";
 import { NetworkClient } from "@common/clients/network-client";
+import { WalletClient } from "@common/clients/wallet-client";
+import { SignedArbitraryData } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { LeaderboardRepository } from "./leaderboard-repository";
 import { GetLeaderboardRequest, UpdateLeaderboardHiddenStateRequest } from "./request";
@@ -15,11 +17,29 @@ const NOT_FOUND_STATUS = 404;
 const isNotFoundError = (error: unknown): boolean =>
   axios.isAxiosError(error) && error.response?.status === NOT_FOUND_STATUS;
 
+/** Scopes a signature to the leaderboard hidden-state endpoint. Must match the API. */
+export const LEADERBOARD_SET_HIDDEN_ACTION = "leaderboard.setHidden";
+
+/**
+ * JSON message the account signs to change its leaderboard visibility.
+ * The API verifies the signature and reads the new state only from this payload.
+ */
+export const makeLeaderboardHiddenStateMessage = (address: string, hidden: boolean, issuedAt: Date) =>
+  JSON.stringify({
+    action: LEADERBOARD_SET_HIDDEN_ACTION,
+    address,
+    hidden,
+    // Unix seconds, not milliseconds.
+    issuedTimestamp: Math.floor(issuedAt.getTime() / 1000),
+  });
+
 export class LeaderboardRepositoryImpl implements LeaderboardRepository {
   private networkClient: NetworkClient | null;
+  private walletClient: WalletClient | null;
 
-  constructor(networkClient: NetworkClient | null) {
+  constructor(networkClient: NetworkClient | null, walletClient: WalletClient | null) {
     this.networkClient = networkClient;
+    this.walletClient = walletClient;
   }
 
   public getLeaderboard = async (request: GetLeaderboardRequest): Promise<GetLeaderboardResponse> => {
@@ -90,10 +110,23 @@ export class LeaderboardRepositoryImpl implements LeaderboardRepository {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
 
-    const response = await this.networkClient.put<{ hidden: boolean }, { data: { success: boolean } }>({
+    if (!this.walletClient) {
+      throw new CommonError("FAILED_INITIALIZE_WALLET");
+    }
+
+    const signResponse = await this.walletClient.signArbitrary({
+      signer: request.address,
+      data: makeLeaderboardHiddenStateMessage(request.address, request.request.hidden, new Date()),
+    });
+
+    if (signResponse.code !== 0 || !signResponse.data) {
+      throw new CommonError("FAILED_SIGN_MESSAGE");
+    }
+
+    const response = await this.networkClient.put<{ proof: SignedArbitraryData }, { data: { success: boolean } }>({
       url: `/leaderboard/${request.address}`,
       body: {
-        hidden: request.request.hidden,
+        proof: signResponse.data,
       },
     });
 
