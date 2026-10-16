@@ -158,8 +158,8 @@ export default function PriceCandleChart({
           // Copyright (с) 2025 TradingView, Inc. https://www.tradingview.com/
           attributionLogo: true,
           panes: {
-            separatorColor: theme.color.border02,
-            separatorHoverColor: theme.color.border03,
+            separatorColor: "transparent",
+            separatorHoverColor: "transparent",
           },
         },
         grid: {

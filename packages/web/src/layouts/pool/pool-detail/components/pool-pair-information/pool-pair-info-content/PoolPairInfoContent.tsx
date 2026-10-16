@@ -610,7 +610,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     currentSqrtPriceX96={currentSqrtPriceX96}
                     currentPrice={pool.price}
                     width={chartWidth || fallbackGraphWidth}
-                    height={isMobile ? 176 : 350}
+                    height={isMobile ? 208 : 350}
                     mouseover
                     themeKey={themeKey}
                     position="top"
@@ -620,7 +620,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     disableBlackBars={true}
                   />
                 ) : (
-                  <LoadingChart role="status" aria-label="Loading liquidity chart">
+                  <LoadingChart className="liquidity-chart-loading" role="status" aria-label="Loading liquidity chart">
                     <LoadingSpinner size="CHART" delay={CHART_LOADING_DELAY_MS} />
                   </LoadingChart>
                 )}
