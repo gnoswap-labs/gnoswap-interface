@@ -146,6 +146,8 @@ export default function PriceCandleChart({
           : { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" },
       );
       const negative = theme.color.red01;
+      const volumePositive = theme.color.chartVolumeUp;
+      const volumeNegative = theme.color.chartVolumeDown;
       const chart = createChart(element, {
         width: element.clientWidth,
         height: element.clientHeight,
@@ -355,7 +357,7 @@ export default function PriceCandleChart({
             bars.map(({ time, volume: value, open, close }) =>
               value === 0
                 ? { time: time as UTCTimestamp }
-                : { time: time as UTCTimestamp, value, color: close >= open ? positive : negative },
+                : { time: time as UTCTimestamp, value, color: close >= open ? volumePositive : volumeNegative },
             ),
           );
           if (visible) {
@@ -420,7 +422,7 @@ export default function PriceCandleChart({
             volume.update(
               value === 0
                 ? { time: time as UTCTimestamp }
-                : { time: time as UTCTimestamp, value, color: close >= open ? positive : negative },
+                : { time: time as UTCTimestamp, value, color: close >= open ? volumePositive : volumeNegative },
             );
           }
           bars = Array.from(barsByTime.values()).sort((a, b) => a.time - b.time);

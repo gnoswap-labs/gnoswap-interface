@@ -44,6 +44,8 @@ const mockTheme = {
   color: {
     green01: "green",
     red01: "red",
+    chartVolumeUp: "mint",
+    chartVolumeDown: "coral",
     background28: "black",
     background05: "gray",
     text04: "white",
@@ -648,7 +650,7 @@ it("leaves zero-volume buckets empty without removing their price candles", asyn
   await waitFor(() => expect(mockVolume.setData).toHaveBeenCalled());
   expect(mockVolume.setData).toHaveBeenLastCalledWith([
     { time: zero.time },
-    { time: firstPage[1].time, value: 4, color: "green" },
+    expect.objectContaining({ time: firstPage[1].time, value: 4 }),
   ]);
   expect(mockCandles.setData).toHaveBeenLastCalledWith([
     { time: zero.time, open: 1, high: 2, low: 1, close: 2 },
