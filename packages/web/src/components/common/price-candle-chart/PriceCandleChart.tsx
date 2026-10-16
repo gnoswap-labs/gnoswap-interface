@@ -472,6 +472,12 @@ export default function PriceCandleChart({
       <div
         ref={chartElement}
         className="price-chart-canvas"
+        css={{
+          "&.price-chart-canvas a#tv-attr-logo": {
+            "--fill": theme.color.text01,
+            "--stroke": theme.color.background28,
+          },
+        }}
         style={{ touchAction: "none", overscrollBehavior: "contain" }}
       />
       {state !== "ready" && (
