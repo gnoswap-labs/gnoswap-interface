@@ -7,7 +7,6 @@ import {
   createChart,
   HistogramSeries,
   TickMarkType,
-  type AutoscaleInfo,
   type LogicalRange,
   type Time,
   type UTCTimestamp,
@@ -157,7 +156,7 @@ export default function PriceCandleChart({
         rightPriceScale: {
           autoScale: true,
           borderColor: theme.color.border14,
-          scaleMargins: { top: 0.08, bottom: 0.24 },
+          scaleMargins: { top: 0.1, bottom: 0.25 },
         },
         localization: {
           locale,
@@ -198,22 +197,6 @@ export default function PriceCandleChart({
         wickDownColor: negative,
         borderVisible: false,
         priceLineVisible: false,
-        autoscaleInfoProvider: (original: () => AutoscaleInfo | null) => {
-          const info = original();
-          if (!info?.priceRange) return info;
-          const { minValue, maxValue } = info.priceRange;
-          // Expand only the viewport, never candle values. Native bounds include
-          // every visible wick and remain authoritative for larger moves.
-          const center = minValue / 2 + maxValue / 2;
-          const halfSpan = Math.abs(center) * 0.3;
-          return {
-            ...info,
-            priceRange: {
-              minValue: Math.min(minValue, center - halfSpan),
-              maxValue: Math.max(maxValue, center + halfSpan),
-            },
-          };
-        },
       });
       const volume = chart.addSeries(HistogramSeries, {
         priceScaleId: "volume",

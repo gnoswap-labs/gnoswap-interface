@@ -153,40 +153,6 @@ it("reveals the hovered candle's OHLC and both token volumes without a permanent
   expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
 });
 
-it.each([
-  [
-    { minValue: 99.9, maxValue: 100.1 },
-    { minValue: 70, maxValue: 130 },
-  ],
-  [
-    { minValue: 0.999, maxValue: 1.001 },
-    { minValue: 0.7, maxValue: 1.3 },
-  ],
-  [
-    { minValue: -100.1, maxValue: -99.9 },
-    { minValue: -130, maxValue: -70 },
-  ],
-  [
-    { minValue: -20, maxValue: 160 },
-    { minValue: -20, maxValue: 160 },
-  ],
-  [
-    { minValue: -1, maxValue: 1 },
-    { minValue: -1, maxValue: 1 },
-  ],
-  [
-    { minValue: 0, maxValue: 0 },
-    { minValue: 0, maxValue: 0 },
-  ],
-])("expands narrow visible prices without clipping native highs/lows: %j", async (priceRange, expected) => {
-  render(<PriceCandleChart {...props} loadPage={jest.fn().mockResolvedValue(firstPage)} />);
-  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
-  const autoscale = mockCreateChart.mock.results[0].value.addSeries.mock.calls[0][1].autoscaleInfoProvider;
-  const margins = { above: 2, below: 3 };
-  expect(autoscale(() => ({ priceRange, margins }))).toEqual({ priceRange: expected, margins });
-  expect(autoscale(() => null)).toBeNull();
-});
-
 it("portals candle details beyond clipping ancestors and keeps the measured tooltip inside the viewport", async () => {
   jest.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (this: HTMLElement) {
     return this.getAttribute("role") === "tooltip"
