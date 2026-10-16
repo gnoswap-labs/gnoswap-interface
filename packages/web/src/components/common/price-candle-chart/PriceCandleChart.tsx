@@ -218,7 +218,7 @@ export default function PriceCandleChart({
       const windowSeconds = Math.min(30 * interval, 30 * 86400);
       let exhausted = false;
       let fetching = false;
-      let initialBufferPending = true;
+      let initialWindowPending = true;
       let preloadFrame = 0;
       const applyPriceFormat = () => {
         let smallestPrice = Infinity;
@@ -251,16 +251,30 @@ export default function PriceCandleChart({
       const loadOlder = async () => {
         if (cancelled || exhausted || fetching || cursor <= 0) return;
         const end = cursor;
-        const start = Math.max(0, end - windowSeconds);
+        const start = Math.max(0, end - windowSeconds * (initialWindowPending ? 2 : 1));
+        initialWindowPending = false;
         fetching = true;
         if (bars.length) setPagingError(false);
         else setState("loading");
         try {
-          const older = await loadPage(start, end);
-          if (cancelled) return;
-          if (older.some(bar => bar.time < start || bar.time >= end)) {
-            throw new Error("Invalid price history response");
+          const windows: { start: number; end: number }[] = [];
+          for (let pageEnd = end; pageEnd > start; ) {
+            const pageStart = Math.max(start, pageEnd - 30 * 86400);
+            windows.push({ start: pageStart, end: pageEnd });
+            pageEnd = pageStart;
           }
+          const pages = await Promise.all(
+            windows.map(async window => {
+              const rows = await loadPage(window.start, window.end);
+              if (rows.some(bar => bar.time < window.start || bar.time >= window.end)) {
+                throw new Error("Invalid price history response");
+              }
+              return rows;
+            }),
+          );
+          if (cancelled) return;
+          const oldestPageEmpty = pages[pages.length - 1].length === 0;
+          const older = pages.reverse().flat();
           if (older.length === 0) {
             cursor = start;
             exhausted = cursor === 0 || (stopAtEmptyOlderPage && bars.length > 0);
@@ -272,7 +286,7 @@ export default function PriceCandleChart({
             throw new Error("Invalid price history response");
           }
           cursor = start;
-          exhausted = cursor === 0;
+          exhausted = cursor === 0 || (stopAtEmptyOlderPage && oldestPageEmpty);
           setCanSearchOlder(!exhausted);
           const visible = bars.length ? chart.timeScale().getVisibleLogicalRange() : null;
           bars = older.concat(bars);
@@ -292,9 +306,11 @@ export default function PriceCandleChart({
             chart
               .timeScale()
               .setVisibleLogicalRange({ from: visible.from + older.length, to: visible.to + older.length });
-          } else if (all) chart.timeScale().fitContent();
-          else {
-            chart.timeScale().setVisibleLogicalRange({ from: Math.max(0, bars.length - 30), to: bars.length + 4 });
+          } else {
+            chart.timeScale().setVisibleLogicalRange({
+              from: Math.max(0, bars.length - 30),
+              to: all ? bars.length - 1 : bars.length + 4,
+            });
           }
           setState("ready");
         } catch {
@@ -379,7 +395,7 @@ export default function PriceCandleChart({
       };
       const refreshTimer = window.setInterval(() => void refreshLatest(), 5_000);
       document.addEventListener("visibilitychange", refreshOnVisibility);
-      // Preload one page initially; further pages require a user gesture.
+      // The initial window includes its buffer; later pages require a user gesture.
       let userPanned = false;
       let pointerStart: number | null = null;
       const armPaging = () => {
@@ -430,11 +446,10 @@ export default function PriceCandleChart({
           !exhausted &&
           bars.length > 0 &&
           !fetching &&
-          (initialBufferPending || userPanned) &&
+          userPanned &&
           range &&
           (candles.barsInLogicalRange(range)?.barsBefore ?? Infinity) < 30
         ) {
-          initialBufferPending = false;
           userPanned = false;
           void loadOlder();
         }
