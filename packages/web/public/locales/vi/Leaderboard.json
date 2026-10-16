@@ -20,11 +20,11 @@
       "swapCapWarning": "Stake hoặc ủy quyền thêm để nâng giới hạn.",
       "swapRaw": "Trước giới hạn",
       "tooltip": {
-        "delegation": "<p>Số điểm cho GNS mà bạn đang ủy quyền.</p><p><formula>Giá trị ủy quyền (GNOT) × số ngày × hệ số thời gian × 0,003<br/>Hệ số thời gian:<br/> - 0 ~ 10 ngày: ×1<br/> - 10 ~ 20 ngày: ×1,5<br/> - 20 ~ 30 ngày: ×1,75<br/> - 30 ngày trở lên: ×2</formula></p><p>GNS đang chờ trong giai đoạn giải phóng 7 ngày và GNS được gửi qua Launchpad sẽ không nhận được điểm.</p>",
+        "delegation": "<p>Số điểm cho GNS mà bạn đang ủy quyền.</p><p><formula>Giá trị ủy quyền (tính bằng GNOT) × số ngày × hệ số thời gian × 0,003<br/>Hệ số thời gian:<br/> - 0 ~ 10 ngày: ×1<br/> - 10 ~ 20 ngày: ×1,5<br/> - 20 ~ 30 ngày: ×1,75<br/> - 30 ngày trở lên: ×2</formula></p><p>GNS đang chờ trong giai đoạn giải phóng 7 ngày và GNS được gửi qua Launchpad sẽ không nhận được điểm.</p>",
         "points": "<p>Tổng điểm</p><p><formula>Đặt cược + Ủy quyền + Hoán đổi + Giới thiệu</formula></p><p>Giới thiệu: 10% điểm hoán đổi của chính bạn, cộng thêm 10% điểm hoán đổi của mỗi người bạn.<br/>Giới hạn toàn cầu: nếu tổng điểm hoán đổi của mọi người vượt quá tổng điểm staking + ủy quyền của mọi người, tất cả điểm hoán đổi sẽ giảm theo cùng một tỷ lệ. Được thiết lập vào cuối vòng.</p>",
         "position": "Phí hoán đổi được tính bằng USD. Chỉ được tính nếu nhóm đang nhận phần thưởng $GNS.",
-        "staking": "<p>Điểm tương ứng với giá trị bạn giữ trong các vị thế staking.</p><p><formula>Giá trị vị thế (GNOT) × số ngày trong khoảng thời gian × phần thưởng thời gian × 0,003<br/>Phần thưởng thời gian:<br/> - 0 ~ 5 ngày: ×0<br/> - 5 ~ 10 ngày: ×1<br/> - 10 ~ 20 ngày: ×1.5<br/> - 20 ~ 30 ngày: ×1.75<br/> - 30 ngày trở lên: ×2</formula></p><p>Chỉ tính khi nằm trong phạm vi, trong các nhóm có phát xạ GNS nội bộ. Phạm vi hẹp hay rộng không ảnh hưởng. Việc rút staking sẽ khởi động lại thời gian thưởng.</p>",
-        "swap": "<p>Số điểm tương ứng với phí hoán đổi mà bạn trả cho GnoSwap.</p><p><formula>Phí hoán đổi đã thanh toán (GNOT) × 5, tối đa bằng Giới hạn hoán đổi của bạn<br/>Giới hạn hoán đổi: Điểm ủy quyền × 3 + Điểm staking × 1</formula><br/>Không có staking hoặc ủy quyền = không có điểm hoán đổi. Chỉ các giao dịch hoán đổi thông qua các pool có phát hành GNS nội bộ mới được tính.</p>",
+        "staking": "<p>Điểm tương ứng với giá trị bạn giữ trong các vị thế staking.</p><p><formula>Giá trị vị thế (tính bằng GNOT) × số ngày trong khoảng thời gian × hệ số thưởng thời gian × 0,003<br/>Hệ số thưởng thời gian:<br/> - 0 ~ 5 ngày: ×0<br/> - 5 ~ 10 ngày: ×1<br/> - 10 ~ 20 ngày: ×1.5<br/> - 20 ~ 30 ngày: ×1.75<br/> - 30 ngày trở lên: ×2</formula></p><p>Chỉ tính khi nằm trong phạm vi, trong các nhóm có phát xạ GNS nội bộ. Phạm vi hẹp hay rộng không ảnh hưởng. Việc rút staking sẽ khởi động lại thời gian thưởng.</p>",
+        "swap": "<p>Số điểm tương ứng với phí hoán đổi (phí router) mà bạn thanh toán.</p><p><formula>Phí hoán đổi đã thanh toán (tính bằng GNOT) × 5, tối đa là Giới hạn hoán đổi của bạn<br/>Giới hạn hoán đổi: Điểm ủy quyền × 3 + Điểm staking × 1</formula><br/>Không staking hoặc ủy quyền = không có điểm hoán đổi. Chỉ các giao dịch hoán đổi đi qua các pool có phát hành GNS nội bộ mới được tính.</p>",
         "volume": "Phí hoán đổi được thanh toán bằng USD. Chỉ được tính nếu nhóm đang nhận các phần thưởng nội bộ bằng $GNS."
       },
       "total": "Tổng",
@@ -43,7 +43,7 @@
   },
   "subHeader": {
     "copyButton": "Sao chép mã giới thiệu của tôi",
-    "description": "Kiếm điểm mỗi vòng bằng cách stake vị thế, ủy quyền GNS và swap.<br/>Giữ càng lâu, thưởng thời gian càng lớn. Điểm swap cần có staking hoặc ủy quyền.<br/>Điểm được tính bằng GNOT, không phải USD.",
+    "description": "Hãy leo lên bảng xếp hạng bằng cách tích lũy điểm thông qua việc trao đổi, cung cấp thanh khoản, staking hoặc mời bạn bè. Mọi hoạt động trên GnoSwap đều được tính điểm!",
     "howPointsWork": "Cách tính điểm →"
   }
 }

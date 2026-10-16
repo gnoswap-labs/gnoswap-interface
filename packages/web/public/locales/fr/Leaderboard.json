@@ -20,11 +20,11 @@
       "swapCapWarning": "Stakez ou déléguez davantage pour relever votre plafond.",
       "swapRaw": "Avant plafond",
       "tooltip": {
-        "delegation": "<p>Points attribués pour les GNS que vous continuez à déléguer.</p><p><formula>Valeur déléguée (GNOT) × nombre de jours × bonus de temps × 0,003<br/>Bonus de temps :<br/> - 0 à 10 jours : ×1<br/> - 10 à 20 jours : ×1,5<br/> - 20 à 30 jours : ×1,75<br/> - 30 jours et plus : ×2</formula></p><p>Les GNS en attente pendant la période de déblocage de 7 jours et les GNS déposés via Launchpad ne rapportent aucun point.</p>",
+        "delegation": "<p>Points attribués pour les GNS que vous continuez à déléguer.</p><p><formula>Valeur déléguée (en GNOT) × nombre de jours × bonus de temps × 0,003<br/>Bonus de temps :<br/> - 0 à 10 jours : ×1<br/> - 10 à 20 jours : ×1,5<br/> - 20 à 30 jours : ×1,75<br/> - 30 jours et plus : ×2</formula></p><p>Les GNS en attente pendant la période de déblocage de 7 jours et les GNS déposés via Launchpad ne rapportent aucun point.</p>",
         "points": "<p>Total des points</p><p><formula>Staking + Délégation + Échange + Parrainage</formula></p><p>Parrainage : 10 % de vos propres points d'échange, plus 10 % des points d'échange de chaque ami.<br/>Plafond global : si la somme des points d'échange de tous les participants dépasse la somme des points de staking et de délégation de tous les participants, tous les points d'échange sont réduits dans la même proportion. Calculé à la fin du cycle.</p>",
         "position": "Frais de swap facturés en USD. Ne s'appliquent que si le pool perçoit des récompenses en $GNS.",
-        "staking": "<p>Points attribués en fonction de la valeur de vos positions en staking.</p><p><formula>Valeur de la position (GNOT) × nombre de jours dans la fourchette × bonus de durée × 0,003<br/>Bonus de durée :<br/> - 0 à 5 jours : ×0<br/> - 5 à 10 jours : ×1<br/> - 10 à 20 jours : ×1,5<br/> - 20 à 30 jours : ×1,75<br/> - 30 jours et plus : ×2</formula></p><p>Ne compte que lorsque vous êtes à portée, dans des zones présentant des émissions GNS internes. La portée étroite ou large n’a aucune incidence. Le retrait de la mise en jeu réinitialise le bonus de temps.</p>",
-        "swap": "<p>Points correspondant aux frais d'échange que vous versez à GnoSwap.</p><p><formula>Frais de swap payés (GNOT) × 5, dans la limite de votre plafond de swap<br/>Plafond de swap : points de délégation × 3 + points de staking × 1</formula><br/>Pas de staking ni de délégation = pas de points de swap. Seuls les swaps passant par des pools générant des émissions internes de GNS sont pris en compte.</p>",
+        "staking": "<p>Points attribués en fonction de la valeur de vos positions en staking.</p><p><formula>Valeur de la position (en GNOT) × nombre de jours dans la fourchette × bonus de durée × 0,003<br/>Bonus de durée :<br/> - 0 à 5 jours : ×0<br/> - 5 à 10 jours : ×1<br/> - 10 à 20 jours : ×1,5<br/> - 20 à 30 jours : ×1,75<br/> - 30 jours et plus : ×2</formula></p><p>Ne compte que lorsque vous êtes à portée, dans des zones présentant des émissions GNS internes. La portée étroite ou large n’a aucune incidence. Le retrait de la mise en jeu réinitialise le bonus de temps.</p>",
+        "swap": "<p>Points correspondant aux frais de swap (frais de routeur) que vous payez.</p><p><formula>Frais de swap payés (en GNOT) × 5, dans la limite de votre plafond de swap<br/>Plafond de swap : points de délégation × 3 + points de staking × 1</formula><br/>Pas de staking ni de délégation = pas de points de swap. Seuls les swaps passant par des pools générant des émissions internes de GNS sont<formula>pris</formula> en compte.</p>",
         "volume": "Frais de swap payés en USD. Ne sont pris en compte que si le pool bénéficie d'incitations internes en $GNS."
       },
       "total": "Total",
@@ -43,7 +43,7 @@
   },
   "subHeader": {
     "copyButton": "Copier ma recommandation",
-    "description": "Gagnez des points à chaque manche en stakant des positions, en déléguant des GNS et en swappant.<br/>Plus vous conservez longtemps, plus votre bonus de durée est élevé. Les points de swap nécessitent du staking ou de la délégation.<br/>Les points sont mesurés en GNOT, pas en USD.",
+    "description": "Gravissez les échelons du classement en accumulant des points grâce aux échanges, à l'apport de liquidités, au staking ou en invitant des amis. Chaque action sur GnoSwap compte !",
     "howPointsWork": "Comment fonctionnent les points →"
   }
 }
