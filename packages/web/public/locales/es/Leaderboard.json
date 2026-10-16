@@ -7,13 +7,17 @@
   "list": {
     "column": {
       "counted": "Contabilizado",
+      "delegatedGns": "Delegado",
       "delegation": "Delegación",
       "globalCapRatio": "Ratio del límite global",
+      "inRange": "{{n}} dentro del rango",
       "points": "Puntos",
+      "pointsThisRound": "Puntos de esta ronda",
       "position": "Posición",
       "provisional": "provisional",
       "rank": "Rango",
       "referral": "Remisión",
+      "stakedPositions": "Posiciones con garantía",
       "staking": "Estacas",
       "swap": "Intercambiar",
       "swapCap": "Límite de swap",

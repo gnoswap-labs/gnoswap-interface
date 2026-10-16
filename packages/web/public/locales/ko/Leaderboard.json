@@ -7,13 +7,17 @@
   "list": {
     "column": {
       "counted": "반영",
+      "delegatedGns": "위임된",
       "delegation": "위임",
       "globalCapRatio": "글로벌 상한 비율",
+      "inRange": "{{n}} 범위 내",
       "points": "포인트",
+      "pointsThisRound": "이번 라운드의 점수",
       "position": "포지션",
       "provisional": "잠정",
       "rank": "순위",
       "referral": "추천",
+      "stakedPositions": "매수 포지션",
       "staking": "스테이킹",
       "swap": "스왑",
       "swapCap": "스왑 상한",
