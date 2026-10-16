@@ -46,7 +46,7 @@ export const ChartControls = styled.div`
   background-color: ${({ theme }) => theme.color.background28};
   button {
     flex: 1;
-    min-width: 40px;
+    min-width: 50px;
     min-height: 0;
     height: 100%;
     padding: 0 8px;
@@ -63,21 +63,6 @@ export const ChartControls = styled.div`
     &[aria-pressed="true"] {
       background: ${({ theme }) => theme.color.background05};
       color: ${({ theme }) => theme.color.text02};
-    }
-  }
-  .chart-reset {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    span {
-      display: flex;
-    }
-    svg {
-      width: 18px;
-      height: 18px;
-    }
-    svg * {
-      fill: currentColor;
     }
   }
   ${media.mobile} {

@@ -15,7 +15,6 @@ interface Props {
   tokenB: TokenModel;
   reversed: boolean;
   range: CandleRange;
-  resetKey?: number;
 }
 
 export type CandleRange = "5m" | "1h" | "4h" | "1d" | "All";
@@ -30,7 +29,7 @@ const INTERVALS: Record<CandleRange, number> = {
 const formatPoolCandlePrice = (value: number) =>
   formatTokenExchangeRate(value, { maxSignificantDigits: 6, minLimit: 0.000001 });
 
-export default function PoolPriceChart({ client, poolPath, tokenA, tokenB, reversed, range, resetKey }: Props) {
+export default function PoolPriceChart({ client, poolPath, tokenA, tokenB, reversed, range }: Props) {
   const { t } = useTranslation();
   const interval = INTERVALS[range];
   const loadPage = useCallback(
@@ -50,7 +49,6 @@ export default function PoolPriceChart({ client, poolPath, tokenA, tokenB, rever
   return (
     <PriceCandleChart
       identity={`${poolPath}:${range}:${reversed}`}
-      resetKey={resetKey}
       stopAtEmptyOlderPage
       interval={interval}
       daily={interval === 86400}

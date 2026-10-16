@@ -1,6 +1,71 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 
+export const ChartNavigation = styled.div`
+  position: absolute;
+  z-index: 3;
+  left: 8px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+
+  button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid ${({ theme }) => theme.color.border03};
+    border-radius: 6px;
+    background: ${({ theme }) => theme.color.background05};
+    color: ${({ theme }) => theme.color.text02};
+    cursor: pointer;
+    pointer-events: auto;
+    &::before {
+      content: "";
+      position: absolute;
+      inset: -6px;
+    }
+    &:hover {
+      color: ${({ theme }) => theme.color.text01};
+    }
+    &:focus-visible {
+      outline: 2px solid ${({ theme }) => theme.color.text02};
+      outline-offset: 2px;
+    }
+    span {
+      display: flex;
+      pointer-events: none;
+    }
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+  .price-chart-reset {
+    path {
+      fill: currentColor;
+    }
+  }
+  .price-chart-latest {
+    position: absolute;
+    right: 0;
+  }
+  @media (hover: none), (pointer: coarse) {
+    button {
+      width: 44px;
+      height: 44px;
+      &::before {
+        inset: 0;
+      }
+    }
+  }
+`;
+
 export const CandleTooltip = styled.div`
   ${fonts.body12}
   position: fixed;
@@ -8,7 +73,6 @@ export const CandleTooltip = styled.div`
   pointer-events: none;
   box-sizing: border-box;
   width: max-content;
-  min-width: min(250px, calc(100vw - 16px));
   max-width: calc(100vw - 16px);
   max-height: calc(100dvh - 16px);
   overflow: hidden;
@@ -23,7 +87,7 @@ export const CandleTooltip = styled.div`
   > div {
     display: flex;
     justify-content: space-between;
-    gap: 16px;
+    gap: 6px;
     & + div {
       margin-top: 2px;
     }
