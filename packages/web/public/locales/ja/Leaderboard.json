@@ -7,17 +7,13 @@
   "list": {
     "column": {
       "counted": "反映",
-      "delegatedGns": "委任中のGNS",
       "delegation": "委任",
       "globalCapRatio": "グローバル上限比率",
-      "inRange": "{{n}}件がレンジ内",
       "points": "ポイント",
-      "pointsThisRound": "今ラウンドのポイント",
       "position": "ポジション",
       "provisional": "暫定",
       "rank": "順位",
       "referral": "紹介",
-      "stakedPositions": "ステーキング中のポジション",
       "staking": "ステーキング",
       "swap": "スワップ",
       "swapCap": "スワップ上限",
@@ -47,7 +43,7 @@
   },
   "subHeader": {
     "copyButton": "私の紹介をコピーする",
-    "description": "スワップ、流動性の提供、ステーキング、友達の招待などでポイントを獲得し、ランキングを上昇させましょう。GnoSwapでのあらゆる活動がポイント対象となります！",
+    "description": "スワップ、ステーキング、デリゲーション、または友達の招待でポイントを獲得し、ランキングを上昇させましょう。GnoSwapでのあらゆるアクティビティがポイント対象となります！",
     "howPointsWork": "ポイントの仕組み →"
   }
 }

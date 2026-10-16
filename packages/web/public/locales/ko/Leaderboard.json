@@ -7,17 +7,13 @@
   "list": {
     "column": {
       "counted": "반영",
-      "delegatedGns": "위임 GNS",
       "delegation": "위임",
       "globalCapRatio": "글로벌 상한 비율",
-      "inRange": "{{n}}개 범위 내",
       "points": "포인트",
-      "pointsThisRound": "이번 라운드 포인트",
       "position": "포지션",
       "provisional": "잠정",
       "rank": "순위",
       "referral": "추천",
-      "stakedPositions": "스테이킹 포지션",
       "staking": "스테이킹",
       "swap": "스왑",
       "swapCap": "스왑 상한",
@@ -47,7 +43,7 @@
   },
   "subHeader": {
     "copyButton": "내 추천인 코드 복사",
-    "description": "스왑, 유동성 공급, 스테이킹 또는 친구 초대 등을 통해 포인트를 모아 순위표에서 순위를 높여보세요. GnoSwap에서의 모든 활동이 포인트로 적립됩니다!",
+    "description": "스왑, 스테이킹, 위임, 친구 초대 등을 통해 포인트를 모아 순위표에서 순위를 높여보세요. GnoSwap에서의 모든 활동이 포인트로 적립됩니다!",
     "howPointsWork": "포인트 계산 방식 →"
   }
 }

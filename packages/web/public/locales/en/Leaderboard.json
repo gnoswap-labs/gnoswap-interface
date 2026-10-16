@@ -7,17 +7,13 @@
   "list": {
     "column": {
       "counted": "Counted",
-      "delegatedGns": "Delegated GNS",
       "delegation": "Delegation",
       "globalCapRatio": "Global cap ratio",
-      "inRange": "{{n}} in range",
       "points": "Points",
-      "pointsThisRound": "Points this round",
       "position": "Position",
       "provisional": "provisional",
       "rank": "Rank",
       "referral": "Referral",
-      "stakedPositions": "Staked positions",
       "staking": "Staking",
       "swap": "Swap",
       "swapCap": "Swap Cap",
@@ -47,7 +43,7 @@
   },
   "subHeader": {
     "copyButton": "Copy My Referral",
-    "description": "Climb up the leaderboard by collecting points for swapping, providing liquidity, staking, or inviting friends. Every activity on GnoSwap counts!",
+    "description": "Climb up the leaderboard by collecting points for swapping, staking, delegating, or inviting friends. Every activity on GnoSwap counts!",
     "howPointsWork": "How points work →"
   }
 }

@@ -7,17 +7,13 @@
   "list": {
     "column": {
       "counted": "Comptabilisé",
-      "delegatedGns": "GNS délégués",
       "delegation": "Délégation",
       "globalCapRatio": "Ratio du plafond global",
-      "inRange": "{{n}} dans la plage",
       "points": "Points",
-      "pointsThisRound": "Points de ce round",
       "position": "Position",
       "provisional": "provisoire",
       "rank": "Rang",
       "referral": "Renvoi",
-      "stakedPositions": "Positions stakées",
       "staking": "Jalonnement",
       "swap": "Échange",
       "swapCap": "Plafond de swap",
@@ -47,7 +43,7 @@
   },
   "subHeader": {
     "copyButton": "Copier ma recommandation",
-    "description": "Gravissez les échelons du classement en accumulant des points grâce aux échanges, à l'apport de liquidités, au staking ou en invitant des amis. Chaque action sur GnoSwap compte !",
+    "description": "Grimpez dans le classement en accumulant des points grâce aux échanges, au staking, à la délégation ou en invitant des amis. Chaque activité sur GnoSwap compte !",
     "howPointsWork": "Comment fonctionnent les points →"
   }
 }

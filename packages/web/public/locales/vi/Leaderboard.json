@@ -7,17 +7,13 @@
   "list": {
     "column": {
       "counted": "Được tính",
-      "delegatedGns": "GNS đã ủy quyền",
       "delegation": "Ủy quyền",
       "globalCapRatio": "Tỷ lệ giới hạn chung",
-      "inRange": "{{n}} trong phạm vi",
       "points": "Điểm",
-      "pointsThisRound": "Điểm vòng này",
       "position": "Vị trí",
       "provisional": "tạm tính",
       "rank": "Xếp hạng",
       "referral": "Giới thiệu",
-      "stakedPositions": "Vị thế đang stake",
       "staking": "Staking",
       "swap": "Hoán đổi",
       "swapCap": "Giới hạn swap",
@@ -47,7 +43,7 @@
   },
   "subHeader": {
     "copyButton": "Sao chép mã giới thiệu của tôi",
-    "description": "Hãy leo lên bảng xếp hạng bằng cách tích lũy điểm thông qua việc trao đổi, cung cấp thanh khoản, staking hoặc mời bạn bè. Mọi hoạt động trên GnoSwap đều được tính điểm!",
+    "description": "Hãy leo lên bảng xếp hạng bằng cách tích lũy điểm thông qua các hoạt động như trao đổi, staking, ủy quyền hoặc mời bạn bè. Mọi hoạt động trên GnoSwap đều được tính điểm!",
     "howPointsWork": "Cách tính điểm →"
   }
 }
