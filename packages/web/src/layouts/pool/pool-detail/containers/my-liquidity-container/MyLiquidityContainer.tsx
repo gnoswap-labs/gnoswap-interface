@@ -12,6 +12,7 @@ import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetUsernameByAddress } from "@query/address";
+import { useGetPositionRewards } from "@query/positions";
 import { QUERY_KEY } from "@query/query-keys";
 import { DexEvent } from "@repositories/common";
 import { delay } from "@utils/common";
@@ -85,6 +86,11 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     },
   });
 
+  const { data: positionRewards, isInitialLoading: isLoadingPositionRewards } = useGetPositionRewards(
+    { address, poolPath: poolPath || undefined },
+    { enabled: !!address && !!poolPath },
+  );
+
   const activePositionData = isShowClosePosition ? allPositionData : openPositionData;
   const { positions, loading: isLoadingPosition, refetch: refetchPositions, totalPositionCount } = activePositionData;
 
@@ -115,6 +121,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
       [QUERY_KEY.tokenBalancesByAddress, address],
       [QUERY_KEY.positions, currentChainId, address],
       [QUERY_KEY.positionSummary, currentChainId, address],
+      [QUERY_KEY.positionRewards, currentChainId, address],
       [QUERY_KEY.poolLiquidityTicks],
     ]);
   }, [invalidateQueryKey, currentChainId, address]);
@@ -122,7 +129,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   const { claimAll, claim } = usePosition(loadedPositions.filter(item => !item.closed));
   const [loadingTransactionClaim, setLoadingTransactionClaim] = useState(false);
   const { openModal } = useTransactionConfirmModal();
-  const { tokenPrices, updateBalances, refetchGrc20Balances } = useTokenData(true);
+  const { tokens, tokenPrices, updateBalances, refetchGrc20Balances } = useTokenData(true);
 
   const { getMessage } = useMessage();
 
@@ -378,6 +385,9 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
       isHiddenAddPosition={!!((address && account?.address && address !== account?.address) || !account?.address)}
       showClosePositionButton={showClosePositionButton}
       tokenPrices={tokenPrices}
+      tokens={tokens}
+      positionRewards={positionRewards ?? null}
+      isLoadingPositionRewards={isLoadingPositionRewards}
       showViewMorePositions={showViewMorePositions}
       handleViewMorePositions={handleViewMorePositions}
     />
