@@ -6,16 +6,13 @@ import {
   Wrapper,
   WrapperHoverBackground,
 } from "./LeaderboardTableRow.styles";
-import PointComposition from "../point-composition/PointComposition";
+import PointComposition, { PointCompositionItem } from "../point-composition/PointComposition";
+import DelegationPoint from "../delegation-point/DelegationPoint";
+import StakingPoint from "../staking-point/StakingPoint";
+import SwapPoint from "../swap-point/SwapPoint";
 import UserColumn from "../user-column/UserColumn";
 import { LeaderboardUser } from "@repositories/leaderboard/response/common/types";
-import { isLeaderboardHidden } from "@utils/leaderboard-utils";
-import { formatOtherPrice } from "@utils/new-number-utils";
-
-const formatUsdValue = (value: string | number | null) => {
-  if (value == null || value === "") return "-";
-  return formatOtherPrice(value, { isKMB: false });
-};
+import { getGlobalCapRatio, isLeaderboardHidden } from "@utils/leaderboard-utils";
 
 const LeaderboardTableRow = ({
   myAddress,
@@ -35,18 +32,20 @@ const LeaderboardTableRow = ({
   const Hover = isMe ? HoverSection : HoverOnBgSection;
   const TableWrapper = isMe ? WrapperHoverBackground : Wrapper;
 
-  const displayValues = React.useMemo(() => {
-    const stakingTotal =
-      data.stakingRewardsUsd && data.governanceRewardsUsd
-        ? Number(data.stakingRewardsUsd) + Number(data.governanceRewardsUsd)
-        : data.stakingRewardsUsd ?? data.governanceRewardsUsd ?? null;
+  const pointItems = React.useMemo<PointCompositionItem[]>(
+    () => [
+      { label: "Leaderboard:list.column.staking", point: data.positionStakingPoint },
+      { label: "Leaderboard:list.column.delegation", point: data.gnsDelegationPoint },
+      { label: "Leaderboard:list.column.swap", point: data.swapPoint },
+      { label: "Leaderboard:list.column.referral", point: data.referralPoint },
+    ],
+    [data.positionStakingPoint, data.gnsDelegationPoint, data.swapPoint, data.referralPoint],
+  );
 
-    return {
-      swap: formatUsdValue(data.swapFeeUsd),
-      position: formatUsdValue(data.providedLiquidityFeeUsd),
-      staking: formatUsdValue(stakingTotal),
-    };
-  }, [data.swapFeeUsd, data.providedLiquidityFeeUsd, data.stakingRewardsUsd, data.governanceRewardsUsd]);
+  const globalCapRatio = React.useMemo(
+    () => getGlobalCapRatio(data.swapPoint, data.swapRawPoint, data.swapCapPoint),
+    [data.swapPoint, data.swapRawPoint, data.swapCapPoint],
+  );
 
   const displayRankNumber = React.useMemo(() => {
     const rank = Number(data.rank);
@@ -81,20 +80,22 @@ const LeaderboardTableRow = ({
         {!isMobile && (
           <>
             <TableColumn tdWidth={tdWidths.at(2)} style={{ justifyContent: "flex-start" }}>
-              {displayValues.swap}
+              <SwapPoint swapPoint={data.swapPoint} swapRawPoint={data.swapRawPoint} swapCapPoint={data.swapCapPoint} />
             </TableColumn>
-            <TableColumn tdWidth={tdWidths.at(3)}>{displayValues.position}</TableColumn>
-            <TableColumn tdWidth={tdWidths.at(4)}>{displayValues.staking}</TableColumn>
+            <TableColumn tdWidth={tdWidths.at(3)}>
+              <StakingPoint positionStakingPoint={data.positionStakingPoint} holdingDetail={data.holdingDetail} />
+            </TableColumn>
+            <TableColumn tdWidth={tdWidths.at(4)}>
+              <DelegationPoint gnsDelegationPoint={data.gnsDelegationPoint} holdingDetail={data.holdingDetail} />
+            </TableColumn>
           </>
         )}
         <TableColumn tdWidth={tdWidths.at(isMobile ? 2 : 5)}>
           <PointComposition
             totalPoint={data.totalPoint}
-            swapPoint={data.paidSwapFeePoint}
-            positionPoint={data.providedLiquidityFeePoint}
-            stakingPoint={data.stakingRewardsPoint}
-            governancePoint={data.governanceRewardsPoint}
-            referralPoint={data.referralPoint}
+            items={pointItems}
+            globalCapRatio={globalCapRatio}
+            isProvisional={data.isProvisional}
             isMobile={isMobile}
           />
         </TableColumn>

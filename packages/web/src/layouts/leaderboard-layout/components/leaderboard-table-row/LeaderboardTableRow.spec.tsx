@@ -4,8 +4,19 @@ import { LeaderboardVisibilityStatus, LeaderboardUser } from "@repositories/lead
 import LeaderboardTableRow from "./LeaderboardTableRow";
 
 jest.mock("@components/common/tooltip/Tooltip", () => {
-  return function MockTooltip({ children }: { readonly children: React.ReactNode }) {
-    return <>{children}</>;
+  return function MockTooltip({
+    children,
+    FloatingContent,
+  }: {
+    readonly children: React.ReactNode;
+    readonly FloatingContent?: React.ReactNode;
+  }) {
+    return (
+      <>
+        {children}
+        <div data-testid="tooltip-content">{FloatingContent}</div>
+      </>
+    );
   };
 });
 
@@ -38,6 +49,14 @@ const createLeaderboardUser = (rank: number): LeaderboardUser => ({
   stakingRewardsUsd: "0",
   swapFeeUsd: "0",
   totalPoint: "0",
+  roundId: 1,
+  positionStakingPoint: "0",
+  gnsDelegationPoint: "0",
+  swapPoint: "0",
+  swapRawPoint: "0",
+  swapCapPoint: "0",
+  isProvisional: true,
+  usdDetail: null,
 });
 
 const createApiLeaderboardUser = (rank: string): LeaderboardUser => {
@@ -95,41 +114,89 @@ describe("LeaderboardTableRow", () => {
     expect(screen.queryByText("#1100")).not.toBeInTheDocument();
   });
 
-  it("displays tiny positive USD values with the minimum USD label", () => {
+  const renderRow = (data: Partial<LeaderboardUser>) =>
     render(
       <GnoswapThemeProvider>
         <LeaderboardTableRow
           myAddress={undefined}
-          data={{
-            ...createLeaderboardUser(647),
-            governanceRewardsUsd: "0.0000003",
-            swapFeeUsd: "0.000000996805274021",
-            providedLiquidityFeeUsd: "0.000000969767947872",
-            stakingRewardsUsd: "0.0000006",
-            paidSwapFeePoint: "0.000000996805274021",
-            totalPoint: "0.000000996805274021",
-          }}
+          data={{ ...createLeaderboardUser(1), ...data }}
           tdWidths={[100, 100, 100, 100, 100, 100]}
           isMobile={false}
         />
       </GnoswapThemeProvider>,
     );
 
-    expect(screen.getAllByText("<$0.01")).toHaveLength(3);
-    expect(screen.queryByText("$")).not.toBeInTheDocument();
+  it("shows the swap points before the cap, the cap and the counted points on hover", () => {
+    renderRow({
+      swapPoint: "123.456",
+      swapRawPoint: "900",
+      swapCapPoint: "4567.891",
+      positionStakingPoint: "1000",
+      gnsDelegationPoint: "1189.297",
+      referralPoint: "12.3",
+      totalPoint: "2335.053",
+    });
+
+    expect(screen.queryByText("Leaderboard:list.column.swapFeesPaid")).not.toBeInTheDocument();
+    expect(screen.getByText("Leaderboard:list.column.swapRaw")).toBeInTheDocument();
+    expect(screen.getByText("900")).toBeInTheDocument();
+    expect(screen.getByText("Leaderboard:list.column.swapCap")).toBeInTheDocument();
+    expect(screen.getByText("4,567.89")).toBeInTheDocument();
+    expect(screen.getByText("Leaderboard:list.column.counted")).toBeInTheDocument();
+    // The swap column, its counted row and the point composition show the accepted swap points.
+    expect(screen.getAllByText("123.45")).toHaveLength(3);
+    expect(screen.queryByText("Leaderboard:list.column.swapCapWarning")).not.toBeInTheDocument();
   });
 
-  it("does not expose USD precision below 0.01", () => {
+  it("warns when the swap points before the cap exceed the cap", () => {
+    renderRow({ swapPoint: "50", swapRawPoint: "900", swapCapPoint: "50" });
+
+    expect(screen.getByText("Leaderboard:list.column.swapCapWarning")).toBeInTheDocument();
+  });
+
+  it("shows the point composition with the provisional global cap ratio and the total", () => {
+    renderRow({
+      swapPoint: "45",
+      swapRawPoint: "90",
+      swapCapPoint: "500",
+      positionStakingPoint: "1000",
+      gnsDelegationPoint: "1189.297",
+      referralPoint: "12.3",
+      totalPoint: "2246.597",
+      isProvisional: true,
+    });
+
+    expect(screen.getAllByText("1,000")).toHaveLength(2);
+    expect(screen.getAllByText("1,189.29")).toHaveLength(2);
+    expect(screen.getByText("12.3")).toBeInTheDocument();
+    expect(screen.getByText("Leaderboard:list.column.globalCapRatio")).toBeInTheDocument();
+    expect(screen.getByText("0.50 (Leaderboard:list.column.provisional)")).toBeInTheDocument();
+    expect(screen.getByText("Leaderboard:list.column.total")).toBeInTheDocument();
+    expect(screen.getAllByText("2,246.59")).toHaveLength(2);
+    // Staking is the position staking points and Delegation the GNS delegation points.
+    expect(screen.getByText("Leaderboard:list.column.staking")).toBeInTheDocument();
+    expect(screen.getByText("Leaderboard:list.column.delegation")).toBeInTheDocument();
+    expect(screen.queryByText("Leaderboard:list.column.position")).not.toBeInTheDocument();
+    expect(screen.queryByText("Leaderboard:list.column.xGNS")).not.toBeInTheDocument();
+  });
+
+  it("shows no global cap ratio without swap points to derive it from", () => {
+    renderRow({ isProvisional: false });
+
+    expect(screen.getByText("Leaderboard:list.column.globalCapRatio").nextSibling).toHaveTextContent("-");
+  });
+
+  it("shows the staking and delegation hovers when the API sends holding details", () => {
     render(
       <GnoswapThemeProvider>
         <LeaderboardTableRow
           myAddress={undefined}
           data={{
-            ...createLeaderboardUser(647),
-            swapFeeUsd: "0.009",
-            providedLiquidityFeeUsd: "0.009",
-            stakingRewardsUsd: "0.009",
-            governanceRewardsUsd: "0.009",
+            ...createLeaderboardUser(1),
+            positionStakingPoint: "760.2",
+            gnsDelegationPoint: "36516.42",
+            usdDetail: { swapFeeUsd: "0", delegatedGnsUsd: "35200" },
+            holdingDetail: { delegatedGnsAmount: "2500000000000", stakedPositionCount: 3, inRangePositionCount: 2 },
           }}
           tdWidths={[100, 100, 100, 100, 100, 100]}
           isMobile={false}
@@ -137,8 +204,24 @@ describe("LeaderboardTableRow", () => {
       </GnoswapThemeProvider>,
     );
 
-    expect(screen.getAllByText("<$0.01")).toHaveLength(2);
-    expect(screen.queryByText("0.009")).not.toBeInTheDocument();
-    expect(screen.queryByText("$0.009")).not.toBeInTheDocument();
+    expect(screen.getByText("Leaderboard:list.column.stakedPositions")).toBeInTheDocument();
+    expect(screen.getByText("Leaderboard:list.column.delegatedGns")).toBeInTheDocument();
+    expect(screen.getByText("2,500,000")).toBeInTheDocument();
+  });
+
+  it("shows only the points when the API sends no holding details", () => {
+    render(
+      <GnoswapThemeProvider>
+        <LeaderboardTableRow
+          myAddress={undefined}
+          data={createLeaderboardUser(1)}
+          tdWidths={[100, 100, 100, 100, 100, 100]}
+          isMobile={false}
+        />
+      </GnoswapThemeProvider>,
+    );
+
+    expect(screen.queryByText("Leaderboard:list.column.stakedPositions")).not.toBeInTheDocument();
+    expect(screen.queryByText("Leaderboard:list.column.delegatedGns")).not.toBeInTheDocument();
   });
 });
