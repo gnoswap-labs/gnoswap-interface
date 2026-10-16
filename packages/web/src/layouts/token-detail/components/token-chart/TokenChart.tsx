@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { NetworkClient } from "@common/clients/network-client";
+import IconRefresh from "@components/common/icons/IconRefresh";
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { CHART_LOADING_DELAY_MS } from "@constants/loading.constant";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
@@ -68,6 +69,7 @@ const TokenChart: React.FC<TokenChartProps> = ({
 }) => {
   const { t } = useTranslation();
   const [resolution, setResolution] = useState<CandleResolution>("1h");
+  const [resetKey, setResetKey] = useState(0);
   const canShowCandles = hasPrice && tokenInfo.priceInfo.priceGradeType !== TOKEN_PRICE_GRADE_TYPE.NONE;
 
   return (
@@ -75,6 +77,17 @@ const TokenChart: React.FC<TokenChartProps> = ({
       <TokenChartInfo {...tokenInfo} isEmpty={loading} loading={loading} />
       <ChartRegion>
         <ChartControls role="group" aria-label="Chart interval">
+          <button
+            type="button"
+            className="chart-reset"
+            aria-label={t("common:chartControls.reset")}
+            title={t("common:chartControls.reset")}
+            onClick={() => setResetKey(value => value + 1)}
+          >
+            <span aria-hidden="true">
+              <IconRefresh />
+            </span>
+          </button>
           {(["5m", "1h", "4h", "1d", "All"] as const).map(interval => (
             <button
               key={interval}
@@ -95,6 +108,7 @@ const TokenChart: React.FC<TokenChartProps> = ({
               tokenPath={candlePath}
               symbol={candleSymbol || tokenInfo.token.displaySymbol}
               resolution={resolution}
+              resetKey={resetKey}
             />
           ) : (
             <div className="price-chart-shell">

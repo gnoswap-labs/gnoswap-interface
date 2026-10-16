@@ -32,6 +32,9 @@
     "open": "Open",
     "volume": "Volume"
   },
+  "chartControls": {
+    "reset": "Reset chart view"
+  },
   "clickHere": "Click Here!",
   "closed": "Closed",
   "conjunction": {

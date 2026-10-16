@@ -32,6 +32,9 @@
     "open": "開く",
     "volume": "巻数"
   },
+  "chartControls": {
+    "reset": "チャート表示をリセット"
+  },
   "clickHere": "ここをクリック",
   "closed": "クローズド",
   "conjunction": {

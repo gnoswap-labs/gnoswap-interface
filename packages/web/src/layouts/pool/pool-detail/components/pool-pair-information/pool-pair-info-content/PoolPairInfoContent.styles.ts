@@ -40,16 +40,27 @@ export const ContentWrapper = styled.div`
       gap: 4px;
       white-space: nowrap;
     }
-    .chart-tabs {
-      grid-column: 1;
-      grid-row: 1;
-      width: 200px;
+    .chart-tabs,
+    .chart-ranges {
       height: 31px;
       padding: 2px;
       gap: 0;
       border: 1px solid ${({ theme }) => theme.color.border02};
       border-radius: 4px;
       background: ${({ theme }) => theme.color.background28};
+    }
+    .chart-tabs {
+      grid-column: 1;
+      grid-row: 1;
+      width: 200px;
+    }
+    .chart-actions {
+      display: grid;
+      grid-column: 3;
+      grid-row: 1;
+      justify-self: end;
+      align-items: center;
+      min-height: 32px;
     }
     .chart-pair {
       grid-column: 2;
@@ -65,9 +76,7 @@ export const ContentWrapper = styled.div`
       font-weight: 300;
     }
     .chart-ranges {
-      grid-column: 3;
-      grid-row: 1;
-      justify-self: end;
+      grid-area: 1 / 1;
     }
     .chart-ranges.hidden {
       visibility: hidden;
@@ -113,15 +122,34 @@ export const ContentWrapper = styled.div`
         color: ${({ theme }) => theme.color.text02};
       }
     }
-    .chart-tabs button {
+    .chart-tabs button,
+    .chart-ranges button {
       flex: 1;
-      min-width: 0;
+      min-width: 40px;
       min-height: 0;
       height: 100%;
       padding: 0;
       transition:
         background-color 180ms ease-out,
         color 180ms ease-out;
+    }
+    .chart-tabs button {
+      min-width: 0;
+    }
+    .chart-ranges .chart-reset {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      span {
+        display: flex;
+      }
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+      svg * {
+        fill: currentColor;
+      }
     }
     .chart-pair button {
       display: flex;
@@ -216,6 +244,10 @@ export const ContentWrapper = styled.div`
         width: 130px;
         align-self: flex-start;
       }
+      .chart-actions {
+        width: 100%;
+        min-height: 24px;
+      }
       .chart-pair {
         align-self: center;
         gap: 8px;
@@ -225,29 +257,21 @@ export const ContentWrapper = styled.div`
       .chart-ranges {
         width: 100%;
       }
-      .chart-ranges.hidden {
-        display: none;
-      }
       .chart-tabs button,
       .chart-ranges button {
         flex: 1;
         min-width: 0;
-        min-height: 20px;
-        height: 20px;
+        min-height: 0;
+        height: 100%;
         padding: 0;
         font-size: 12px;
-        line-height: 20px;
+        line-height: 18px;
         position: relative;
         &::before {
           content: "";
           position: absolute;
           inset: -12px 0;
         }
-      }
-      .chart-tabs button {
-        min-height: 0;
-        height: 100%;
-        line-height: 18px;
       }
       .chart-body {
         min-height: 176px;
@@ -260,8 +284,7 @@ export const ContentWrapper = styled.div`
       display: flex;
       justify-content: flex-end;
       width: 100%;
-      grid-column: 3;
-      grid-row: 1;
+      grid-area: 1 / 1;
       justify-self: end;
       .zoom-controller {
         ${mixins.flexbox("row", "center", "flex-end")};

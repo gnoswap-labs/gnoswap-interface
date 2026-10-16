@@ -32,6 +32,9 @@
     "open": "열기",
     "volume": "권"
   },
+  "chartControls": {
+    "reset": "차트 보기 초기화"
+  },
   "clickHere": "여기를 클릭하세요!",
   "closed": "닫힘",
   "conjunction": {

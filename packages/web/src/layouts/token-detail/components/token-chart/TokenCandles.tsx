@@ -15,9 +15,10 @@ interface Props {
   tokenPath: string;
   symbol: string;
   resolution: CandleResolution;
+  resetKey?: number;
 }
 
-export default function TokenCandles({ client, tokenPath, symbol, resolution }: Props) {
+export default function TokenCandles({ client, tokenPath, symbol, resolution, resetKey }: Props) {
   const { t } = useTranslation();
   const loadPage = useCallback(
     (start: number, end: number) => {
@@ -29,6 +30,7 @@ export default function TokenCandles({ client, tokenPath, symbol, resolution }: 
   return (
     <PriceCandleChart
       identity={`${tokenPath}:${resolution}`}
+      resetKey={resetKey}
       interval={INTERVALS[resolution]}
       daily={resolution === "1d" || resolution === "All"}
       all={resolution === "All"}
