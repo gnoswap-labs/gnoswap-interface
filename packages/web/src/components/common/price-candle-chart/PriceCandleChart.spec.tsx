@@ -14,10 +14,12 @@ const mockVolume = { setData: jest.fn() };
 const mockTimeScale = {
   getVisibleLogicalRange: jest.fn().mockReturnValue({ from: -4.25, to: 9.75 }),
   setVisibleLogicalRange: jest.fn(),
+  fitContent: jest.fn(),
   subscribeVisibleLogicalRangeChange: jest.fn(),
   unsubscribeVisibleLogicalRangeChange: jest.fn(),
 };
 const mockSubscribeCrosshairMove = jest.fn();
+const mockRemove = jest.fn();
 const mockUnsubscribeCrosshairMove = jest.fn();
 const mockCreateChart = jest.fn().mockImplementation(() => ({
   addSeries: jest.fn().mockReturnValueOnce(mockCandles).mockReturnValueOnce(mockVolume),
@@ -26,7 +28,7 @@ const mockCreateChart = jest.fn().mockImplementation(() => ({
   subscribeCrosshairMove: mockSubscribeCrosshairMove,
   unsubscribeCrosshairMove: mockUnsubscribeCrosshairMove,
   resize: jest.fn(),
-  remove: jest.fn(),
+  remove: mockRemove,
 }));
 
 const mockTheme = {
@@ -36,6 +38,7 @@ const mockTheme = {
     background28: "black",
     background05: "gray",
     text04: "white",
+    border03: "gray",
     border14: "gray",
   },
 };
@@ -56,6 +59,7 @@ jest.mock(
     HistogramSeries: "volume",
     TickMarkType: { Year: 0, Month: 1, DayOfMonth: 2, Time: 3, TimeWithSeconds: 4 },
     ColorType: { Solid: "solid" },
+    CrosshairMode: { Normal: 0 },
     createChart: (...args: unknown[]) => mockCreateChart(...args),
   }),
   { virtual: true },
@@ -149,6 +153,60 @@ it("reveals the hovered candle's OHLC and both token volumes without a permanent
   expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
 });
 
+it("portals candle details beyond clipping ancestors and keeps the measured tooltip inside the viewport", async () => {
+  jest.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (this: HTMLElement) {
+    return this.getAttribute("role") === "tooltip"
+      ? { left: 0, top: 0, width: 250, height: 150, right: 250, bottom: 150, x: 0, y: 0, toJSON() {} }
+      : { left: 700, top: 500, width: 300, height: 200, right: 1000, bottom: 700, x: 700, y: 500, toJSON() {} };
+  });
+  const { container } = render(
+    <div style={{ overflow: "hidden" }}>
+      <PriceCandleChart {...props} loadPage={jest.fn().mockResolvedValue(firstPage)} />
+    </div>,
+  );
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+  const onMove = mockSubscribeCrosshairMove.mock.calls[0][0];
+  act(() =>
+    onMove({
+      point: { x: 300, y: 200 },
+      time: firstPage[0].time,
+      seriesData: new Map([[mockCandles, firstPage[0]]]),
+    }),
+  );
+  const tooltip = screen.getByRole("tooltip");
+  expect(document.body).toContainElement(tooltip);
+  expect(container).not.toContainElement(tooltip);
+  expect(Number.parseFloat(tooltip.style.left)).toBeGreaterThanOrEqual(8);
+  expect(Number.parseFloat(tooltip.style.left) + 250).toBeLessThanOrEqual(window.innerWidth - 8);
+  expect(Number.parseFloat(tooltip.style.top) + 150).toBeLessThanOrEqual(window.innerHeight - 8);
+  fireEvent.scroll(window);
+  fireEvent.resize(window);
+  expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+});
+
+it("resets a panned chart to its initial window and refetches without retaining stale requests", async () => {
+  let finishOldPage!: (bars: PriceBar[]) => void;
+  const loadPage = jest
+    .fn()
+    .mockImplementationOnce(
+      () =>
+        new Promise<PriceBar[]>(resolve => {
+          finishOldPage = resolve;
+        }),
+    )
+    .mockResolvedValue(firstPage);
+  const { rerender } = render(<PriceCandleChart {...props} resetKey={0} loadPage={loadPage} />);
+  await waitFor(() => expect(loadPage).toHaveBeenCalledTimes(1));
+  mockTimeScale.setVisibleLogicalRange({ from: -30, to: -10 });
+  rerender(<PriceCandleChart {...props} resetKey={1} loadPage={loadPage} />);
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+  expect(mockRemove).toHaveBeenCalledTimes(1);
+  expect(loadPage).toHaveBeenNthCalledWith(2, 264300, 300300);
+  expect(mockTimeScale.setVisibleLogicalRange).toHaveBeenLastCalledWith({ from: 0, to: 6 });
+  await act(async () => finishOldPage(olderPage));
+  expect(mockCandles.setData).toHaveBeenCalledTimes(1);
+});
+
 it("preserves distinct token axis ticks when three significant digits would collapse them", async () => {
   const bar = { ...firstPage[0], open: 0.07, high: 0.07005, low: 0.06995, close: 0.07 };
   render(
@@ -164,6 +222,39 @@ it("preserves distinct token axis ticks when three significant digits would coll
   expect(axisFormat.formatter(0.07)).toBe("0.07");
   expect(axisFormat.tickmarksFormatter([0.06995, 0.07, 0.07005])).toEqual(["0.069950", "0.070000", "0.070050"]);
 });
+
+it.each([-0.07, 0])("retains nonpositive candle values and usable price increments (close=%s)", async close => {
+  const bar = { ...firstPage[0], open: close, high: close + 0.001, low: close - 0.001, close };
+  render(<PriceCandleChart {...props} loadPage={jest.fn().mockResolvedValue([bar])} />);
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+  expect(mockCandles.setData).toHaveBeenCalledWith([
+    { time: bar.time, open: bar.open, high: bar.high, low: bar.low, close },
+  ]);
+  const { minMove } = mockCandles.applyOptions.mock.calls[0][0].priceFormat;
+  expect(Number.isFinite(minMove)).toBe(true);
+  expect(minMove).toBeGreaterThan(0);
+});
+
+it.each(["wick", "earlier candle"])(
+  "preserves small axis prices with a zero latest close and a nonzero %s",
+  async source => {
+    const zero = { ...firstPage[0], open: 0, high: 0, low: 0, close: 0 };
+    const small = { ...zero, open: 0.000001, high: 0.000002, low: 0, close: 0 };
+    const page = source === "wick" ? [small] : [small, { ...zero, time: zero.time + 300 }];
+    render(
+      <PriceCandleChart
+        {...props}
+        formatCandlePrice={price => price.toFixed(2)}
+        loadPage={jest.fn().mockResolvedValue(page)}
+      />,
+    );
+    await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+    const axisFormat = mockCandles.applyOptions.mock.calls[0][0].priceFormat;
+    expect(axisFormat.minMove).toBeLessThanOrEqual(0.000001);
+    const labels = axisFormat.tickmarksFormatter([0, 0.000001, 0.000002]);
+    expect(labels.map(Number)).toEqual([0, 0.000001, 0.000002]);
+  },
+);
 
 it("keeps loaded candles and the visible range after an older page fails, then retries on the next pan", async () => {
   const loadPage = jest

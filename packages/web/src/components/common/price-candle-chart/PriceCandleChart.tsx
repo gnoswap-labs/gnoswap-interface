@@ -1,7 +1,9 @@
 import { useTheme } from "@emotion/react";
+import { FloatingPortal } from "@floating-ui/react";
 import {
   CandlestickSeries,
   ColorType,
+  CrosshairMode,
   createChart,
   HistogramSeries,
   TickMarkType,
@@ -9,7 +11,7 @@ import {
   type Time,
   type UTCTimestamp,
 } from "lightweight-charts";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
@@ -33,6 +35,7 @@ interface Props {
   daily: boolean;
   all?: boolean;
   stopAtEmptyOlderPage?: boolean;
+  resetKey?: number;
   label: string;
   volumeSymbols: readonly [string, string?];
   priceLabel?: string;
@@ -51,6 +54,7 @@ export default function PriceCandleChart({
   daily,
   all = false,
   stopAtEmptyOlderPage = false,
+  resetKey,
   label,
   volumeSymbols,
   priceLabel,
@@ -82,6 +86,26 @@ export default function PriceCandleChart({
     return (value: number) =>
       value !== 0 && Math.abs(value) < 1e-18 ? scientific.format(value) : decimal.format(value);
   }, [locale]);
+
+  const positionTooltip = useCallback(
+    (tooltip: HTMLDivElement | null) => {
+      if (!hovered || !tooltip) return;
+      const viewport = window.visualViewport;
+      const left = viewport?.offsetLeft ?? 0;
+      const top = viewport?.offsetTop ?? 0;
+      const width = viewport?.width ?? window.innerWidth;
+      const height = viewport?.height ?? window.innerHeight;
+      tooltip.style.minWidth = `${Math.min(250, Math.max(0, width - 16))}px`;
+      tooltip.style.maxWidth = `${Math.max(0, width - 16)}px`;
+      tooltip.style.maxHeight = `${Math.max(0, height - 16)}px`;
+      const bounds = tooltip.getBoundingClientRect();
+      const x = hovered.x + 16 + bounds.width <= left + width - 8 ? hovered.x + 16 : hovered.x - bounds.width - 16;
+      const y = hovered.y + 16 + bounds.height <= top + height - 8 ? hovered.y + 16 : hovered.y - bounds.height - 16;
+      tooltip.style.left = `${Math.max(left + 8, Math.min(x, left + width - bounds.width - 8))}px`;
+      tooltip.style.top = `${Math.max(top + 8, Math.min(y, top + height - bounds.height - 8))}px`;
+    },
+    [hovered],
+  );
 
   useEffect(() => {
     const element = chartElement.current;
@@ -126,12 +150,13 @@ export default function PriceCandleChart({
           attributionLogo: true,
         },
         grid: {
-          vertLines: { color: theme.color.border14 },
-          horzLines: { color: theme.color.border14 },
+          vertLines: { color: theme.color.border02, visible: true },
+          horzLines: { color: theme.color.border02, visible: true },
         },
         rightPriceScale: {
+          autoScale: true,
           borderColor: theme.color.border14,
-          scaleMargins: { top: 0.08, bottom: 0.24 },
+          scaleMargins: { top: 0.1, bottom: 0.25 },
         },
         localization: {
           locale,
@@ -146,14 +171,23 @@ export default function PriceCandleChart({
             typeof time === "number" ? axisFormats[type].format(new Date(time * 1000)) : String(time),
         },
         crosshair: {
+          mode: CrosshairMode.Normal,
           vertLine: { labelBackgroundColor: theme.color.background05 },
-          horzLine: { labelBackgroundColor: theme.color.background05 },
+          horzLine: { visible: true, labelVisible: true, labelBackgroundColor: theme.color.background05 },
         },
         handleScroll: { mouseWheel: true, pressedMouseMove: true, horzTouchDrag: true, vertTouchDrag: false },
       });
+      // Leave space for the 19px attribution, its inset, and the time-axis height.
+      const attributionClearance = 36;
       const observer = new ResizeObserver(entries => {
         const { width, height } = entries[0].contentRect;
         chart.resize(width, height);
+        chart.priceScale("volume").applyOptions({
+          scaleMargins: {
+            top: height < 250 ? 0.6 : 0.78,
+            bottom: Math.min(0.24, attributionClearance / Math.max(height, 1)),
+          },
+        });
       });
       observer.observe(element);
       const candles = chart.addSeries(CandlestickSeries, {
@@ -170,7 +204,13 @@ export default function PriceCandleChart({
         priceLineVisible: false,
         lastValueVisible: false,
       });
-      chart.priceScale("volume").applyOptions({ scaleMargins: { top: 0.78, bottom: 0 }, visible: false });
+      chart.priceScale("volume").applyOptions({
+        scaleMargins: {
+          top: element.clientHeight < 250 ? 0.6 : 0.78,
+          bottom: Math.min(0.24, attributionClearance / Math.max(element.clientHeight, 1)),
+        },
+        visible: false,
+      });
       let bars: PriceBar[] = [];
       const barsByTime = new Map<number, PriceBar>();
       // The cursor is the exclusive boundary of the last requested window, not the
@@ -179,8 +219,17 @@ export default function PriceCandleChart({
       const windowSeconds = Math.min(120 * interval, 30 * 86400);
       let exhausted = false;
       let fetching = false;
-      const applyPriceFormat = (latest: number) => {
-        const precision = Math.max(2, Math.ceil(-Math.log10(latest)) + 4);
+      const applyPriceFormat = () => {
+        let smallestPrice = Infinity;
+        for (const bar of bars) {
+          for (const price of [bar.open, bar.high, bar.low, bar.close]) {
+            const magnitude = Math.abs(price);
+            if (Number.isFinite(magnitude) && magnitude > 0 && magnitude < smallestPrice) {
+              smallestPrice = magnitude;
+            }
+          }
+        }
+        const precision = Number.isFinite(smallestPrice) ? Math.max(2, Math.ceil(-Math.log10(smallestPrice)) + 4) : 2;
         candles.applyOptions({
           priceFormat: {
             type: "custom",
@@ -224,9 +273,9 @@ export default function PriceCandleChart({
           cursor = start;
           exhausted = cursor === 0;
           setCanSearchOlder(!exhausted);
-          applyPriceFormat(bars.length ? bars[bars.length - 1].close : older[older.length - 1].close);
           const visible = bars.length ? chart.timeScale().getVisibleLogicalRange() : null;
           bars = older.concat(bars);
+          applyPriceFormat();
           for (const bar of older) barsByTime.set(bar.time, bar);
           candles.setData(
             bars.map(({ time, open, high, low, close }) => ({ time: time as UTCTimestamp, open, high, low, close })),
@@ -275,7 +324,7 @@ export default function PriceCandleChart({
           const visible = chart.timeScale().getVisibleLogicalRange();
           for (const bar of latest) barsByTime.set(bar.time, bar);
           bars = Array.from(barsByTime.values()).sort((a, b) => a.time - b.time);
-          applyPriceFormat(bars[bars.length - 1].close);
+          applyPriceFormat();
           candles.setData(
             bars.map(({ time, open, high, low, close }) => ({ time: time as UTCTimestamp, open, high, low, close })),
           );
@@ -327,6 +376,12 @@ export default function PriceCandleChart({
       const endPan = () => {
         pointerStart = null;
       };
+      const hideTooltip = () => setHovered(null);
+      element.addEventListener("pointerleave", hideTooltip);
+      document.addEventListener("scroll", hideTooltip, { capture: true, passive: true });
+      window.addEventListener("resize", hideTooltip);
+      window.visualViewport?.addEventListener("resize", hideTooltip);
+      window.visualViewport?.addEventListener("scroll", hideTooltip);
       element.addEventListener("wheel", armPaging, { capture: true, passive: true });
       element.addEventListener("pointerdown", startPan, { capture: true });
       element.addEventListener("pointermove", movePan, { capture: true });
@@ -342,8 +397,9 @@ export default function PriceCandleChart({
           setHovered(null);
           return;
         }
-        const x = Math.max(8, Math.min(param.point.x + 16, element.clientWidth - 288));
-        const y = Math.max(8, Math.min(param.point.y + 16, element.clientHeight - 212));
+        const bounds = element.getBoundingClientRect();
+        const x = bounds.left + param.point.x;
+        const y = bounds.top + param.point.y;
         setHovered(previous =>
           previous?.bar === bar && previous.x === x && previous.y === y ? previous : { bar, x, y },
         );
@@ -364,6 +420,11 @@ export default function PriceCandleChart({
         element.removeEventListener("pointermove", movePan, true);
         element.removeEventListener("pointerup", endPan);
         element.removeEventListener("pointercancel", endPan);
+        element.removeEventListener("pointerleave", hideTooltip);
+        document.removeEventListener("scroll", hideTooltip, true);
+        window.removeEventListener("resize", hideTooltip);
+        window.visualViewport?.removeEventListener("resize", hideTooltip);
+        window.visualViewport?.removeEventListener("scroll", hideTooltip);
         chart.timeScale().unsubscribeVisibleLogicalRangeChange(onRange);
         chart.unsubscribeCrosshairMove(onCrosshairMove);
         observer.disconnect();
@@ -379,11 +440,37 @@ export default function PriceCandleChart({
       searchOlder.current = null;
       dispose?.();
     };
-  }, [identity, interval, daily, all, stopAtEmptyOlderPage, locale, retry, theme, loadPage, formatCandlePrice]);
+  }, [
+    identity,
+    interval,
+    daily,
+    all,
+    stopAtEmptyOlderPage,
+    resetKey,
+    locale,
+    retry,
+    theme,
+    loadPage,
+    formatCandlePrice,
+  ]);
 
   return (
     <div className="price-chart-shell" aria-label={label}>
-      <div ref={chartElement} className="price-chart-canvas" />
+      <div
+        ref={chartElement}
+        className="price-chart-canvas"
+        css={{
+          "&.price-chart-canvas a#tv-attr-logo": {
+            "--fill": theme.color.text01,
+            "--stroke": theme.color.background28,
+          },
+          // The rightmost cell of the chart pane is the price axis.
+          "& .tv-lightweight-charts tr:first-child > td:last-child": {
+            touchAction: "none",
+          },
+        }}
+        style={{ touchAction: "pan-y", overscrollBehavior: "contain" }}
+      />
       {state !== "ready" && (
         <div
           className="price-chart-status"
@@ -414,37 +501,39 @@ export default function PriceCandleChart({
         </span>
       )}
       {hovered && (
-        <CandleTooltip role="tooltip" style={{ left: hovered.x, top: hovered.y }}>
-          <div>
-            <span>{t("common:candleTooltip.high")}</span>
-            <strong>{formatCandlePrice(hovered.bar.high)}</strong>
-          </div>
-          <div>
-            <span>{t("common:candleTooltip.low")}</span>
-            <strong>{formatCandlePrice(hovered.bar.low)}</strong>
-          </div>
-          <div>
-            <span>{t("common:candleTooltip.open")}</span>
-            <strong>{formatCandlePrice(hovered.bar.open)}</strong>
-          </div>
-          <div>
-            <span>{t("common:candleTooltip.close")}</span>
-            <strong>{formatCandlePrice(hovered.bar.close)}</strong>
-          </div>
-          <div>
-            <span>{t("common:candleTooltip.volume")}</span>
-            <strong>
-              {formatCandleNumber(hovered.bar.volume)} {volumeSymbols[0]}
-            </strong>
-          </div>
-          {hovered.bar.quoteVolume !== undefined && volumeSymbols[1] && (
-            <div className="quote-volume">
+        <FloatingPortal>
+          <CandleTooltip ref={positionTooltip} role="tooltip" style={{ left: hovered.x, top: hovered.y }}>
+            <div>
+              <span>{t("common:candleTooltip.high")}</span>
+              <strong>{formatCandlePrice(hovered.bar.high)}</strong>
+            </div>
+            <div>
+              <span>{t("common:candleTooltip.low")}</span>
+              <strong>{formatCandlePrice(hovered.bar.low)}</strong>
+            </div>
+            <div>
+              <span>{t("common:candleTooltip.open")}</span>
+              <strong>{formatCandlePrice(hovered.bar.open)}</strong>
+            </div>
+            <div>
+              <span>{t("common:candleTooltip.close")}</span>
+              <strong>{formatCandlePrice(hovered.bar.close)}</strong>
+            </div>
+            <div>
+              <span>{t("common:candleTooltip.volume")}</span>
               <strong>
-                {formatCandleNumber(hovered.bar.quoteVolume)} {volumeSymbols[1]}
+                {formatCandleNumber(hovered.bar.volume)} {volumeSymbols[0]}
               </strong>
             </div>
-          )}
-        </CandleTooltip>
+            {hovered.bar.quoteVolume !== undefined && volumeSymbols[1] && (
+              <div className="quote-volume">
+                <strong>
+                  {formatCandleNumber(hovered.bar.quoteVolume)} {volumeSymbols[1]}
+                </strong>
+              </div>
+            )}
+          </CandleTooltip>
+        </FloatingPortal>
       )}
       {priceLabel && <span className="price-chart-currency">{priceLabel}</span>}
     </div>
