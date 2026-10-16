@@ -31,13 +31,19 @@ export const TABLE_HEAD = {
     label: "Leaderboard:list.column.delegation",
     tooltip: "Leaderboard:list.column.tooltip.delegation",
   },
-  POINTS: { label: "Leaderboard:list.column.points" },
+  POINTS: {
+    label: "Leaderboard:list.column.points",
+    tooltip: "Leaderboard:list.column.tooltip.points",
+  },
 } as const;
 
 export const TABLE_HEAD_MOBILE = {
   INDEX: { label: "Leaderboard:list.column.rank" },
   USER: { label: "Leaderboard:list.column.user" },
-  POINTS: { label: "Leaderboard:list.column.points" },
+  POINTS: {
+    label: "Leaderboard:list.column.points",
+    tooltip: "Leaderboard:list.column.tooltip.points",
+  },
 } as const;
 
 export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;

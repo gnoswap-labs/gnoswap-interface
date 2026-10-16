@@ -20,7 +20,13 @@ const LeaderboardTableHeader = ({ heads, headWidths }: { heads: TableHeadItem[];
                 <TableHeaderTooltipContent>
                   <Trans
                     i18nKey={head.tooltip}
-                    components={{ ul: <ul style={{ margin: 0, paddingLeft: "16px" }} />, li: <li /> }}
+                    components={{
+                      ul: <ul style={{ margin: 0, paddingLeft: "16px" }} />,
+                      li: <li />,
+                      p: <p />,
+                      br: <br />,
+                      strong: <strong />,
+                    }}
                   />
                 </TableHeaderTooltipContent>
               }

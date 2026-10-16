@@ -54,9 +54,21 @@ export const TableHeader = styled.div<{ tdWidth: number }>`
 `;
 
 export const TableHeaderTooltipContent = styled.div`
-  max-width: 314px;
+  max-width: 360px;
   font-size: 14px;
   line-height: 1.5;
+
+  p {
+    margin: 0;
+  }
+
+  p + p {
+    margin-top: 8px;
+  }
+
+  strong {
+    font-weight: 600;
+  }
 
   li {
     position: relative;
