@@ -175,7 +175,7 @@ export default function PriceCandleChart({
           vertLine: { labelBackgroundColor: theme.color.background05 },
           horzLine: { visible: true, labelVisible: true, labelBackgroundColor: theme.color.background05 },
         },
-        handleScroll: { mouseWheel: true, pressedMouseMove: true, horzTouchDrag: true, vertTouchDrag: true },
+        handleScroll: { mouseWheel: true, pressedMouseMove: true, horzTouchDrag: true, vertTouchDrag: false },
       });
       // Leave space for the 19px attribution, its inset, and the time-axis height.
       const attributionClearance = 36;
@@ -376,11 +376,7 @@ export default function PriceCandleChart({
       const endPan = () => {
         pointerStart = null;
       };
-      const containTouch = (event: TouchEvent) => {
-        if (event.cancelable) event.preventDefault();
-      };
       const hideTooltip = () => setHovered(null);
-      element.addEventListener("touchmove", containTouch, { passive: false });
       element.addEventListener("pointerleave", hideTooltip);
       document.addEventListener("scroll", hideTooltip, { capture: true, passive: true });
       window.addEventListener("resize", hideTooltip);
@@ -424,7 +420,6 @@ export default function PriceCandleChart({
         element.removeEventListener("pointermove", movePan, true);
         element.removeEventListener("pointerup", endPan);
         element.removeEventListener("pointercancel", endPan);
-        element.removeEventListener("touchmove", containTouch);
         element.removeEventListener("pointerleave", hideTooltip);
         document.removeEventListener("scroll", hideTooltip, true);
         window.removeEventListener("resize", hideTooltip);
@@ -469,8 +464,12 @@ export default function PriceCandleChart({
             "--fill": theme.color.text01,
             "--stroke": theme.color.background28,
           },
+          // The rightmost cell of the chart pane is the price axis.
+          "& .tv-lightweight-charts tr:first-child > td:last-child": {
+            touchAction: "none",
+          },
         }}
-        style={{ touchAction: "none", overscrollBehavior: "contain" }}
+        style={{ touchAction: "pan-y", overscrollBehavior: "contain" }}
       />
       {state !== "ready" && (
         <div

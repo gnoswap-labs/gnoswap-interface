@@ -184,17 +184,6 @@ it("portals candle details beyond clipping ancestors and keeps the measured tool
   expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
 });
 
-it("contains touch movement only inside the chart and price scale", async () => {
-  const { container } = render(<PriceCandleChart {...props} loadPage={jest.fn().mockResolvedValue(firstPage)} />);
-  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
-  const chartTouch = new Event("touchmove", { bubbles: true, cancelable: true });
-  container.querySelector(".price-chart-canvas")!.dispatchEvent(chartTouch);
-  expect(chartTouch.defaultPrevented).toBe(true);
-  const pageTouch = new Event("touchmove", { bubbles: true, cancelable: true });
-  document.body.dispatchEvent(pageTouch);
-  expect(pageTouch.defaultPrevented).toBe(false);
-});
-
 it("resets a panned chart to its initial window and refetches without retaining stale requests", async () => {
   let finishOldPage!: (bars: PriceBar[]) => void;
   const loadPage = jest
