@@ -4,8 +4,19 @@ import { LeaderboardVisibilityStatus, LeaderboardUser } from "@repositories/lead
 import LeaderboardTableRow from "./LeaderboardTableRow";
 
 jest.mock("@components/common/tooltip/Tooltip", () => {
-  return function MockTooltip({ children }: { readonly children: React.ReactNode }) {
-    return <>{children}</>;
+  return function MockTooltip({
+    children,
+    FloatingContent,
+  }: {
+    readonly children: React.ReactNode;
+    readonly FloatingContent?: React.ReactNode;
+  }) {
+    return (
+      <>
+        {children}
+        <div data-testid="tooltip-content">{FloatingContent}</div>
+      </>
+    );
   };
 });
 
@@ -140,5 +151,57 @@ describe("LeaderboardTableRow", () => {
     expect(screen.getAllByText("<$0.01")).toHaveLength(2);
     expect(screen.queryByText("0.009")).not.toBeInTheDocument();
     expect(screen.queryByText("$0.009")).not.toBeInTheDocument();
+  });
+
+  it("shows round swap points with the wallet swap cap on hover", () => {
+    render(
+      <GnoswapThemeProvider>
+        <LeaderboardTableRow
+          myAddress={undefined}
+          data={{
+            ...createLeaderboardUser(1),
+            roundId: 1,
+            swapPoint: "123.456",
+            swapRawPoint: "900",
+            swapCapPoint: "4567.891",
+            positionStakingPoint: "1000",
+            gnsDelegationPoint: "1189.297",
+            referralPoint: "12.3",
+            totalPoint: "2335.053",
+          }}
+          tdWidths={[100, 100, 100, 100, 100, 100]}
+          isMobile={false}
+        />
+      </GnoswapThemeProvider>,
+    );
+
+    // The swap column shows the accepted swap points; its tooltip and the
+    // point composition both show the cap.
+    expect(screen.getAllByText("123.45")).toHaveLength(2);
+    expect(screen.getAllByText("Leaderboard:list.column.swapCap")).toHaveLength(2);
+    expect(screen.getAllByText("4,567.89")).toHaveLength(2);
+    expect(screen.getByText("Leaderboard:list.column.tooltip.swapCap")).toBeInTheDocument();
+    expect(screen.getAllByText("1,000")).toHaveLength(2);
+    expect(screen.getAllByText("1,189.29")).toHaveLength(2);
+    // Round leaderboards have no separate staking reward points.
+    expect(screen.queryByText("Leaderboard:list.column.staking")).not.toBeInTheDocument();
+    expect(screen.queryByText("<$0.01")).not.toBeInTheDocument();
+  });
+
+  it("keeps the legacy USD columns without the swap cap", () => {
+    render(
+      <GnoswapThemeProvider>
+        <LeaderboardTableRow
+          myAddress={undefined}
+          data={{ ...createLeaderboardUser(1), swapFeeUsd: "12.5" }}
+          tdWidths={[100, 100, 100, 100, 100, 100]}
+          isMobile={false}
+        />
+      </GnoswapThemeProvider>,
+    );
+
+    expect(screen.getByText(/^\$12\.5/)).toBeInTheDocument();
+    expect(screen.queryByText("Leaderboard:list.column.swapCap")).not.toBeInTheDocument();
+    expect(screen.getByText("Leaderboard:list.column.staking")).toBeInTheDocument();
   });
 });

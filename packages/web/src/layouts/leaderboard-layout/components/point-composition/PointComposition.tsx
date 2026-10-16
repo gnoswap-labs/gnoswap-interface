@@ -2,25 +2,21 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { numberToFormat } from "@utils/string-utils";
+import { formatLeaderboardPoint } from "@utils/leaderboard-utils";
 import { ContentWrapper, Flex, FontWeight500, FrontWeight, Label, Title, Wrapper } from "./PointComposition.styles";
-import { removeTrailingZeros } from "@utils/number-utils";
 
 interface PointCompositionProps {
   totalPoint: string;
   swapPoint: string;
   positionPoint: string;
-  stakingPoint: string;
+  // Omitted for round leaderboards, which have no separate staking reward points.
+  stakingPoint?: string;
   governancePoint: string;
   referralPoint: string;
+  // Wallet swap cap, shown for round leaderboards.
+  swapCapPoint?: string;
   isMobile: boolean;
 }
-
-const formatPoint = (point: string): string => {
-  if (!point) return "-";
-  const formattedPoint = numberToFormat(point, { decimals: 2, forceDecimals: true, truncateDecimals: true });
-  return removeTrailingZeros(formattedPoint);
-};
 
 const PointComposition = ({
   totalPoint,
@@ -29,28 +25,31 @@ const PointComposition = ({
   stakingPoint,
   governancePoint,
   referralPoint,
+  swapCapPoint,
   isMobile,
 }: PointCompositionProps) => {
   const { t } = useTranslation();
 
   const displayPoints = React.useMemo(() => {
     return {
-      totalPoint: formatPoint(totalPoint),
-      swapPoint: formatPoint(swapPoint),
-      positionPoint: formatPoint(positionPoint),
-      stakingPoint: formatPoint(stakingPoint),
-      governancePoint: formatPoint(governancePoint),
-      referralPoint: formatPoint(referralPoint),
+      totalPoint: formatLeaderboardPoint(totalPoint),
+      swapPoint: formatLeaderboardPoint(swapPoint),
+      positionPoint: formatLeaderboardPoint(positionPoint),
+      stakingPoint: stakingPoint === undefined ? undefined : formatLeaderboardPoint(stakingPoint),
+      governancePoint: formatLeaderboardPoint(governancePoint),
+      referralPoint: formatLeaderboardPoint(referralPoint),
+      swapCapPoint: swapCapPoint === undefined ? undefined : formatLeaderboardPoint(swapCapPoint),
     };
-  }, [totalPoint, swapPoint, positionPoint, stakingPoint, governancePoint, referralPoint]);
+  }, [totalPoint, swapPoint, positionPoint, stakingPoint, governancePoint, referralPoint, swapCapPoint]);
 
   const pointItems = [
     { label: "Leaderboard:list.column.swap", value: displayPoints.swapPoint },
+    { label: "Leaderboard:list.column.swapCap", value: displayPoints.swapCapPoint },
     { label: "Leaderboard:list.column.position", value: displayPoints.positionPoint },
     { label: "Leaderboard:list.column.staking", value: displayPoints.stakingPoint },
     { label: "Leaderboard:list.column.xGNS", value: displayPoints.governancePoint },
     { label: "Leaderboard:list.column.referral", value: displayPoints.referralPoint },
-  ];
+  ].filter((item): item is { label: string; value: string } => item.value !== undefined);
 
   return (
     <Tooltip

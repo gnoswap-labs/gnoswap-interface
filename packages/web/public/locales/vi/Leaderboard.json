@@ -12,9 +12,11 @@
       "referral": "Giới thiệu",
       "staking": "Staking",
       "swap": "Hoán đổi",
+      "swapCap": "Giới hạn swap",
       "tooltip": {
         "position": "Phí hoán đổi được tính bằng USD. Chỉ được tính nếu nhóm đang nhận phần thưởng $GNS.",
         "staking": "<ul><li>Phần thưởng staking được nhận bằng USD. Chỉ tính các phần thưởng nội bộ bằng $GNS.</li><li>Phí giao thức được nhận bằng USD. Chỉ tính khi token phần thưởng có giá bằng USD.</li></ul>",
+        "swapCap": "Điểm swap không thể vượt quá giới hạn này.",
         "volume": "Phí hoán đổi được thanh toán bằng USD. Chỉ được tính nếu nhóm đang nhận các phần thưởng nội bộ bằng $GNS."
       },
       "user": "Người dùng",

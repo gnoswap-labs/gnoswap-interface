@@ -12,9 +12,11 @@
       "referral": "Referral",
       "staking": "Staking",
       "swap": "Swap",
+      "swapCap": "Swap Cap",
       "tooltip": {
         "position": "Swap fees claimed in USD. Only counts if the pool is receiving $GNS incentives.",
         "staking": "<ul><li>Position staking rewards claimed in USD. Only counts internal $GNS incentives.</li><li>Protocol fees claimed in USD. Only counts if the reward token has a USD price.</li></ul>",
+        "swapCap": "Swap points cannot exceed this cap.",
         "volume": "Swap fees paid in USD. Only counts if the pool is receiving internal $GNS incentives."
       },
       "user": "User",

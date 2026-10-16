@@ -7,9 +7,10 @@ import {
   WrapperHoverBackground,
 } from "./LeaderboardTableRow.styles";
 import PointComposition from "../point-composition/PointComposition";
+import SwapPoint from "../swap-point/SwapPoint";
 import UserColumn from "../user-column/UserColumn";
 import { LeaderboardUser } from "@repositories/leaderboard/response/common/types";
-import { isLeaderboardHidden } from "@utils/leaderboard-utils";
+import { formatLeaderboardPoint, isLeaderboardHidden, isRoundLeaderboardUser } from "@utils/leaderboard-utils";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
 const formatUsdValue = (value: string | number | null) => {
@@ -34,6 +35,7 @@ const LeaderboardTableRow = ({
 }) => {
   const Hover = isMe ? HoverSection : HoverOnBgSection;
   const TableWrapper = isMe ? WrapperHoverBackground : Wrapper;
+  const isRound = isRoundLeaderboardUser(data);
 
   const displayValues = React.useMemo(() => {
     const stakingTotal =
@@ -81,22 +83,38 @@ const LeaderboardTableRow = ({
         {!isMobile && (
           <>
             <TableColumn tdWidth={tdWidths.at(2)} style={{ justifyContent: "flex-start" }}>
-              {displayValues.swap}
+              {isRound ? <SwapPoint swapPoint={data.swapPoint} swapCapPoint={data.swapCapPoint} /> : displayValues.swap}
             </TableColumn>
-            <TableColumn tdWidth={tdWidths.at(3)}>{displayValues.position}</TableColumn>
-            <TableColumn tdWidth={tdWidths.at(4)}>{displayValues.staking}</TableColumn>
+            <TableColumn tdWidth={tdWidths.at(3)}>
+              {isRound ? formatLeaderboardPoint(data.positionStakingPoint) : displayValues.position}
+            </TableColumn>
+            <TableColumn tdWidth={tdWidths.at(4)}>
+              {isRound ? formatLeaderboardPoint(data.gnsDelegationPoint) : displayValues.staking}
+            </TableColumn>
           </>
         )}
         <TableColumn tdWidth={tdWidths.at(isMobile ? 2 : 5)}>
-          <PointComposition
-            totalPoint={data.totalPoint}
-            swapPoint={data.paidSwapFeePoint}
-            positionPoint={data.providedLiquidityFeePoint}
-            stakingPoint={data.stakingRewardsPoint}
-            governancePoint={data.governanceRewardsPoint}
-            referralPoint={data.referralPoint}
-            isMobile={isMobile}
-          />
+          {isRound ? (
+            <PointComposition
+              totalPoint={data.totalPoint}
+              swapPoint={data.swapPoint ?? ""}
+              swapCapPoint={data.swapCapPoint ?? ""}
+              positionPoint={data.positionStakingPoint ?? ""}
+              governancePoint={data.gnsDelegationPoint ?? ""}
+              referralPoint={data.referralPoint}
+              isMobile={isMobile}
+            />
+          ) : (
+            <PointComposition
+              totalPoint={data.totalPoint}
+              swapPoint={data.paidSwapFeePoint}
+              positionPoint={data.providedLiquidityFeePoint}
+              stakingPoint={data.stakingRewardsPoint}
+              governancePoint={data.governanceRewardsPoint}
+              referralPoint={data.referralPoint}
+              isMobile={isMobile}
+            />
+          )}
         </TableColumn>
       </Hover>
     </TableWrapper>

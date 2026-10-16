@@ -12,9 +12,11 @@
       "referral": "Remisión",
       "staking": "Estacas",
       "swap": "Intercambiar",
+      "swapCap": "Límite de swap",
       "tooltip": {
         "position": "Las comisiones de intercambio se cobran en USD. Solo se tienen en cuenta si el pool recibe incentivos en $GNS.",
         "staking": "<ul><li>Recompensas por staking reclamadas en USD. Solo se tienen en cuenta los incentivos internos en $GNS.</li><li>Las comisiones del protocolo se cobran en USD. Solo se tienen en cuenta si el token de recompensa tiene un precio en USD.</li></ul>",
+        "swapCap": "Los puntos de swap no pueden superar este límite.",
         "volume": "Comisiones de intercambio pagadas en USD. Solo se tiene en cuenta si el pool recibe incentivos internos en $GNS."
       },
       "user": "Usuario",

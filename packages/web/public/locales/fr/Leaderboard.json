@@ -12,9 +12,11 @@
       "referral": "Renvoi",
       "staking": "Jalonnement",
       "swap": "Échange",
+      "swapCap": "Plafond de swap",
       "tooltip": {
         "position": "Frais de swap facturés en USD. Ne s'appliquent que si le pool perçoit des récompenses en $GNS.",
         "staking": "<ul><li>Rémunérations de staking perçues en USD. Seules les récompenses internes en $GNS sont prises en compte.</li><li>Frais de protocole perçus en USD. Ne sont pris en compte que si le jeton de récompense a un cours en USD.</li></ul>",
+        "swapCap": "Les points de swap ne peuvent pas dépasser ce plafond.",
         "volume": "Frais de swap payés en USD. Ne sont pris en compte que si le pool bénéficie d'incitations internes en $GNS."
       },
       "user": "Utilisateur",
