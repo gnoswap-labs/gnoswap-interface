@@ -81,9 +81,9 @@
         "title": "2. Nhập số tiền"
       },
       "step3": {
-        "aprTooltip": "Tỷ lệ phần trăm hàng năm (APR) ước tính được tính toán dựa trên phần thưởng Phí Giao thức theo thời gian thực.",
+        "aprTooltip": "Tỷ lệ APR ước tính cho xGNS được ủy quyền, tính trung bình trong 7 ngày qua.\n\nAPR hàng ngày = (phần thưởng từ phí giao thức trong ngày × 365) ÷ giá trị bằng USD của toàn bộ xGNS được ủy quyền.\n\nLợi nhuận thực tế thay đổi tùy theo phí giao thức và tổng số xGNS được ủy quyền.",
         "currentlyDel": "Hiện đang được ủy quyền",
-        "estimatedAPR": "Tỷ lệ phần trăm hàng năm (APR) ước tính",
+        "estimatedAPR": "Tỷ lệ phần trăm hàng năm (APR) ước tính (7 ngày)",
         "newlyDel": "Đại biểu mới được bổ nhiệm",
         "title": "3. Đoàn đại biểu của quý vị",
         "votingPowerShare": "Tỷ lệ quyền biểu quyết"
@@ -207,11 +207,15 @@
     }
   },
   "summary": {
+    "aprHistory": {
+      "dailyApr": "APR (1D)",
+      "vs7dAvg": "so với TB 7D"
+    },
     "apr": {
-      "title": "xGNS APR"
+      "title": "xGNS APR (7 ngày)"
     },
     "apy": {
-      "tooltip": "Tỷ lệ phần trăm hàng năm (APR) ước tính của xGNS dựa trên phần thưởng Phí Giao thức theo thời gian thực."
+      "tooltip": "Tỷ lệ APR ước tính cho xGNS được ủy quyền, tính trung bình trong 7 ngày qua.\n\nAPR hàng ngày = (phần thưởng từ phí giao thức trong ngày × 365) ÷ giá trị bằng USD của toàn bộ xGNS được ủy quyền.\n\nLợi nhuận thực tế thay đổi tùy theo phí giao thức và tổng số xGNS được ủy quyền."
     },
     "commPool": {
       "title": "Hồ bơi cộng đồng",

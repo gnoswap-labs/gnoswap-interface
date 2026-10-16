@@ -11,6 +11,7 @@ import TokenChip from "../token-chip/TokenChip";
 import Tooltip from "@components/common/tooltip/Tooltip";
 
 import { formatOtherPrice } from "@utils/new-number-utils";
+import GovernanceAPRHistory from "./GovernanceAPRHistory";
 import { GovernanceSummaryWrapper, GovernanceSummaryTooltipContent } from "./GovernanceSummary.styles";
 import { Divider } from "@components/common/divider/divider";
 import { rawToDisplayAmount, toNumberFormat } from "@utils/number-utils";
@@ -39,7 +40,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
   isLoading,
   onOpenVideoGuide,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { isMobile } = useWindowSize();
 
   const { getGnotPath } = useGnotToGnot();
@@ -192,10 +193,30 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
         />
         <InfoBox
           title={t("Governance:summary.apr.title")}
-          value={`${formatOtherPrice(governanceSummary.apy, {
-            isKMB: false,
-            usd: false,
-          })}%`}
+          value={
+            governanceSummary.aprHistory?.length ? (
+              <Tooltip
+                interactive
+                placement="top"
+                FloatingContent={
+                  <GovernanceAPRHistory
+                    average={governanceSummary.apy}
+                    days={governanceSummary.aprHistory}
+                    dateLabel={t("Governance:myDel.tooltip.date")}
+                    dailyAprLabel={t("Governance:summary.aprHistory.dailyApr", { defaultValue: "APR (1D)" })}
+                    comparisonLabel={t("Governance:summary.aprHistory.vs7dAvg", { defaultValue: "vs 7D avg" })}
+                    locale={i18n.language || "en"}
+                  />
+                }
+              >
+                <button type="button" className="apr-history-trigger">
+                  {formatOtherPrice(governanceSummary.apy, { isKMB: false, usd: false })}%
+                </button>
+              </Tooltip>
+            ) : (
+              `${formatOtherPrice(governanceSummary.apy, { isKMB: false, usd: false })}%`
+            )
+          }
           tooltip={t("Governance:summary.apy.tooltip")}
           isLoading={isLoading}
         />

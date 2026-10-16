@@ -1,3 +1,5 @@
+import type { GovernanceAPRHistory } from "../model/governance-summary-info";
+
 export interface GetGovernanceSummaryResponse {
   delegationInfo: {
     totalDelegationAmount: string;
@@ -7,4 +9,5 @@ export interface GetGovernanceSummaryResponse {
   delegatedRatio: string;
   apy: string;
   communityPoolUsd: string;
+  aprHistory?: GovernanceAPRHistory[];
 }

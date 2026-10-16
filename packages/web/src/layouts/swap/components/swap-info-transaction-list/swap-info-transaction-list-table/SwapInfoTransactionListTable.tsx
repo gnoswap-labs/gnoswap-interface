@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import {
   MOBILE_TABLE_HEAD,
   TABLE_HEAD,
-  TokenPairParams,
 } from "@layouts/swap/containers/swap-info-transaction-list-container/SwapInfoTransactionListContainer";
 import {
   TRANSACTION_TD_WIDTH,
@@ -27,7 +26,9 @@ import {
   TransactionListTableList,
   TransactionListTableRowWrapper,
   TokenPairWrapper,
+  TransactionListPaginationWrapper,
 } from "./SwapInfoTransactionListTable.styles";
+import Pagination from "@components/common/pagination/Pagination";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import IconRightArrow from "@components/common/icons/IconRightArrow";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
@@ -36,7 +37,6 @@ import DateTimeTooltip from "@components/common/date-time-tooltip/DateTimeToolti
 interface SwapInfoTransactionListTableProps {
   breakpoint: DEVICE_TYPE;
   swapHistory: SwapHistoryItem[];
-  tokenPairParams: TokenPairParams;
 }
 
 interface TransactionListTableRowProps {
@@ -57,7 +57,7 @@ const TIME_THRESHOLDS = {
 };
 
 const HIGHLIGHT_DURATION = 1_000;
-const MAX_DISPLAY_TRANSACTIONS = 10;
+const PAGE_SIZE = 10;
 
 const getTableWidths = (breakpoint: DEVICE_TYPE) => {
   if (breakpoint === DEVICE_TYPE.MOBILE) {
@@ -79,22 +79,34 @@ const getNextUpdateInterval = (diffInSeconds: number): number => {
   }
 };
 
-const SwapInfoTransactionListTable = ({
-  breakpoint,
-  swapHistory,
-  tokenPairParams,
-}: SwapInfoTransactionListTableProps) => {
+const SwapInfoTransactionListTable = ({ breakpoint, swapHistory }: SwapInfoTransactionListTableProps) => {
   const { t } = useTranslation();
 
   const prevSwapHistoryRef = React.useRef<SwapHistoryItem[]>([]);
   const [newTransactions, setNewTransactions] = React.useState<Set<string>>(new Set());
-  const skipAnimationRef = React.useRef(true); // Skip animation on initial load or token pair change
+  const skipAnimationRef = React.useRef(true); // Skip animation on initial load
+  const [currentPage, setCurrentPage] = React.useState(1);
+  // Only page 1 updates live. Later pages keep the list from when the user left page 1, so rows don't shift while paging
+  const [frozenHistory, setFrozenHistory] = React.useState<SwapHistoryItem[] | null>(null);
+  const displayedHistory = frozenHistory ?? swapHistory;
 
-  // Reset animation when changing token pairs
-  React.useEffect(() => {
-    skipAnimationRef.current = true;
-    setNewTransactions(new Set());
-  }, [tokenPairParams]);
+  const totalPage = Math.ceil(displayedHistory.length / PAGE_SIZE);
+  const pageStart = (currentPage - 1) * PAGE_SIZE;
+
+  // A single tx can contain multiple swaps, so txHash alone is not a unique row key
+  const rowKeys = React.useMemo(() => {
+    const seen = new Map<string, number>();
+    return displayedHistory.map(item => {
+      const count = seen.get(item.txHash) ?? 0;
+      seen.set(item.txHash, count + 1);
+      return `${item.txHash}-${count}`;
+    });
+  }, [displayedHistory]);
+
+  const changePage = (page: number) => {
+    setFrozenHistory(prev => (page === 1 ? null : (prev ?? swapHistory)));
+    setCurrentPage(page);
+  };
 
   // Detect and highlight new transactions
   React.useEffect(() => {
@@ -112,6 +124,7 @@ const SwapInfoTransactionListTable = ({
 
     // Filter new transactions
     const newTxHashes = swapHistory.filter(item => !prevTxHashMap.has(item.txHash)).map(item => item.txHash);
+    prevSwapHistoryRef.current = swapHistory;
 
     if (newTxHashes.length > 0) {
       const newTxSet = new Set(newTxHashes);
@@ -124,8 +137,6 @@ const SwapInfoTransactionListTable = ({
       // Clean up timers when unmounting components
       return () => clearTimeout(timerId);
     }
-
-    prevSwapHistoryRef.current = swapHistory;
   }, [swapHistory]);
 
   const getTableHeaders = React.useMemo(
@@ -150,10 +161,10 @@ const SwapInfoTransactionListTable = ({
       </TransactionListTableHeader>
 
       <TransactionListTableList>
-        {swapHistory.slice(0, MAX_DISPLAY_TRANSACTIONS).map((item: SwapHistoryItem) => {
+        {displayedHistory.slice(pageStart, pageStart + PAGE_SIZE).map((item: SwapHistoryItem, idx) => {
           return (
             <TransactionListTableRow
-              key={item.txHash}
+              key={rowKeys[pageStart + idx]}
               data={item}
               breakpoint={breakpoint}
               isNewTransaction={newTransactions.has(item.txHash)}
@@ -161,6 +172,17 @@ const SwapInfoTransactionListTable = ({
           );
         })}
       </TransactionListTableList>
+
+      {totalPage > 1 && (
+        <TransactionListPaginationWrapper>
+          <Pagination
+            currentPage={currentPage}
+            totalPage={totalPage}
+            onPageChange={changePage}
+            siblingCount={breakpoint !== DEVICE_TYPE.MOBILE ? 2 : 1}
+          />
+        </TransactionListPaginationWrapper>
+      )}
     </>
   );
 };

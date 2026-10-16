@@ -81,9 +81,9 @@
         "title": "2. 수량 입력"
       },
       "step3": {
-        "aprTooltip": "예상 APR은 실시간 프로토콜 수수료 보상을 기반으로 계산됩니다.",
+        "aprTooltip": "지난 7일간의 평균을 산출한 위임된 xGNS의 예상 연이율(APR).\n\n일일 APR = (해당 일의 프로토콜 수수료 보상 × 365) ÷ 위임된 전체 xGNS의 USD 가치.\n\n실제 수익률은 프로토콜 수수료 및 총 위임량에 따라 달라집니다.",
         "currentlyDel": "현재 위임",
-        "estimatedAPR": "예상 APR",
+        "estimatedAPR": "예상 연이율 (7일 기준)",
         "newlyDel": "신규 위임",
         "title": "3. 나의 위임",
         "votingPowerShare": "투표권 영향력"
@@ -207,11 +207,15 @@
     }
   },
   "summary": {
+    "aprHistory": {
+      "dailyApr": "APR (1D)",
+      "vs7dAvg": "7D 평균 대비"
+    },
     "apr": {
-      "title": "xGNS APR"
+      "title": "xGNS APR (7일)"
     },
     "apy": {
-      "tooltip": "프로토콜 수수료 기준 실시간 xGNS 예상 APR"
+      "tooltip": "지난 7일간의 평균을 산출한 위임된 xGNS의 예상 연이율(APR).\n\n일일 APR = (해당 일의 프로토콜 수수료 보상 × 365) ÷ 위임된 전체 xGNS의 USD 가치.\n\n실제 수익률은 프로토콜 수수료 및 총 위임량에 따라 달라집니다."
     },
     "commPool": {
       "title": "커뮤니티 풀",

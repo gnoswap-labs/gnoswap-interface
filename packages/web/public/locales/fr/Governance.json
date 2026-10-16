@@ -81,9 +81,9 @@
         "title": "2. Saisir le montant"
       },
       "step3": {
-        "aprTooltip": "Le TAEG estimé est calculé en temps réel sur la base de la rémunération des frais de protocole.",
+        "aprTooltip": "Taux annuel effectif global (TAEG) estimé pour les xGNS délégués, calculé en moyenne sur les 7 derniers jours.\n\nTAEG quotidien = (récompenses au titre des frais de protocole pour la journée × 365) ÷ valeur en USD de l'ensemble des xGNS délégués.\n\nLes rendements réels varient en fonction des frais de protocole et du montant total délégué.",
         "currentlyDel": "Actuellement délégué",
-        "estimatedAPR": "Estimation du TAEG",
+        "estimatedAPR": "TAEG estimé (7 jours)",
         "newlyDel": "Nouveau délégué",
         "title": "3. Votre délégation",
         "votingPowerShare": "Pouvoir de vote Action"
@@ -207,11 +207,15 @@
     }
   },
   "summary": {
+    "aprHistory": {
+      "dailyApr": "APR (1D)",
+      "vs7dAvg": "vs moy. 7D"
+    },
     "apr": {
-      "title": "xGNS APR"
+      "title": "xGNS APR (7 jours)"
     },
     "apy": {
-      "tooltip": "Le TAEG estimé de xGNS sur la base de la rémunération des frais de protocole en temps réel."
+      "tooltip": "Taux annuel effectif global (TAEG) estimé pour les xGNS délégués, calculé en moyenne sur les 7 derniers jours.\n\nTAEG quotidien = (récompenses au titre des frais de protocole pour la journée × 365) ÷ valeur en USD de l'ensemble des xGNS délégués.\n\nLes rendements réels varient en fonction des frais de protocole et du montant total délégué."
     },
     "commPool": {
       "title": "Piscine communautaire",

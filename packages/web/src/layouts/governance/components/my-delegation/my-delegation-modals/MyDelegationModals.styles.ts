@@ -322,6 +322,7 @@ export const MyDelegationModalWrapper = styled.div`
 export const ToolTipContentWrapper = styled.div`
   width: 268px;
   ${fonts.body12}
+  white-space: pre-line;
   color: ${({ theme }) => theme.color.text02};
 `;
 

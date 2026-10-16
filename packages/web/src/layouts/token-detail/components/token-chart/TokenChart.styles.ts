@@ -21,8 +21,9 @@ export const TokenChartWrapper = styled.div`
 `;
 
 export const ChartRegion = styled.div`
+  display: flow-root;
   min-width: 0;
-  background-color: ${({ theme }) => theme.color.background15};
+  background-color: ${({ theme }) => (theme.themeKey === "light" ? "transparent" : theme.color.background15)};
   border-radius: 8px;
 
   ${media.mobile} {
@@ -34,12 +35,21 @@ export const ChartControls = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 4px;
-  padding: 8px 12px;
+  height: 31px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 8px 0;
+  gap: 0;
+  padding: 2px;
+  border: 1px solid ${({ theme }) => theme.color.border02};
+  border-radius: 4px;
+  background-color: ${({ theme }) => theme.color.background28};
   button {
-    min-width: 44px;
-    min-height: 32px;
-    padding: 4px 8px;
+    flex: 1;
+    min-width: 50px;
+    min-height: 0;
+    height: 100%;
+    padding: 0 8px;
     border-radius: 4px;
     color: ${({ theme }) => theme.color.text04};
     &:hover,
@@ -56,9 +66,21 @@ export const ChartControls = styled.div`
     }
   }
   ${media.mobile} {
-    padding: 8px;
+    height: 24px;
+    width: 100%;
+    max-width: none;
+    margin: 8px 0;
     button {
-      min-height: 44px;
+      position: relative;
+      min-width: 0;
+      padding: 0;
+      font-size: 12px;
+      line-height: 18px;
+      &::before {
+        content: "";
+        position: absolute;
+        inset: -12px 0;
+      }
     }
   }
 `;

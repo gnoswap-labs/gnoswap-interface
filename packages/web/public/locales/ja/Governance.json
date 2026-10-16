@@ -81,9 +81,9 @@
         "title": "2.金額を入力"
       },
       "step3": {
-        "aprTooltip": "推定APRは、リアルタイムでプロトコルフィー報酬に基づいて計算されます。",
+        "aprTooltip": "過去7日間の平均値に基づく、委任済みxGNSの推定APR。\n\n1日あたりのAPR = （その日のプロトコル手数料報酬 × 365） ÷ 委任済みxGNS全体の米ドル換算額。\n\n実際の収益は、プロトコル手数料や委任総額によって変動します。",
         "currentlyDel": "現在委任されている",
-        "estimatedAPR": "推定APR",
+        "estimatedAPR": "推定年率（7日間）",
         "newlyDel": "新代表",
         "title": "3.あなたの委任",
         "votingPowerShare": "議決権 シェア"
@@ -207,11 +207,15 @@
     }
   },
   "summary": {
+    "aprHistory": {
+      "dailyApr": "APR（1D）",
+      "vs7dAvg": "7D平均比"
+    },
     "apr": {
-      "title": "xGNS APR"
+      "title": "xGNS APR（7日間）"
     },
     "apy": {
-      "tooltip": "プロトコル・フィー報酬に基づくxGNSの推定APRをリアルタイムで表示。"
+      "tooltip": "過去7日間の平均値に基づく、委任済みxGNSの推定APR。\n\n1日あたりのAPR = （その日のプロトコル手数料報酬 × 365） ÷ 委任済みxGNS全体の米ドル換算額。\n\n実際の収益率は、プロトコル手数料や委任総額によって変動します。"
     },
     "commPool": {
       "title": "コミュニティ・プール",

@@ -260,8 +260,8 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
   }, [gnoswapApiClient, walletClient, rpcProvider]);
 
   const leaderboardRepository = useMemo(() => {
-    return new LeaderboardRepositoryImpl(gnoswapApiClient);
-  }, [gnoswapApiClient]);
+    return new LeaderboardRepositoryImpl(gnoswapApiClient, walletClient);
+  }, [gnoswapApiClient, walletClient]);
 
   const statusRepository = useMemo(() => {
     return new StatusRepositoryImpl(gnoswapApiClient);

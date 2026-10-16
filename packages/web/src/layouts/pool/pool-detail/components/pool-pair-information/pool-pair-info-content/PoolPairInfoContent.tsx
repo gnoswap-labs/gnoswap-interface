@@ -539,30 +539,50 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               <IconSwap />
             </button>
           </div>
-          {chartMode === "liquidity" && !loadingBins && (
-            <div className="position-header">
-              <div className="zoom-controller">
-                <button
-                  type="button"
-                  disabled={!availInfo.availZoomOut}
-                  className={cx({ disabled: !availInfo.availZoomOut })}
-                  aria-label="Zoom out"
-                  onClick={onZoomOut}
-                >
-                  <IconRemove />
-                </button>
-                <button
-                  type="button"
-                  disabled={!availInfo.availZoomIn}
-                  className={cx({ disabled: !availInfo.availZoomIn })}
-                  aria-label="Zoom in"
-                  onClick={onZoomIn}
-                >
-                  <IconAdd />
-                </button>
+          <div className="chart-actions">
+            {chartMode === "liquidity" && !loadingBins && (
+              <div className="position-header">
+                <div className="zoom-controller">
+                  <button
+                    type="button"
+                    disabled={!availInfo.availZoomOut}
+                    className={cx({ disabled: !availInfo.availZoomOut })}
+                    aria-label="Zoom out"
+                    onClick={onZoomOut}
+                  >
+                    <IconRemove />
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!availInfo.availZoomIn}
+                    className={cx({ disabled: !availInfo.availZoomIn })}
+                    aria-label="Zoom in"
+                    onClick={onZoomIn}
+                  >
+                    <IconAdd />
+                  </button>
+                </div>
               </div>
+            )}
+            <div
+              className={chartMode === "price" ? "chart-ranges" : "chart-ranges hidden"}
+              role="group"
+              aria-label="Chart range"
+              aria-hidden={chartMode !== "price"}
+            >
+              {CANDLE_RANGES.map(range => (
+                <button
+                  key={range}
+                  type="button"
+                  disabled={chartMode !== "price"}
+                  aria-pressed={chartRange === range}
+                  onClick={() => setChartRange(range)}
+                >
+                  {range}
+                </button>
+              ))}
             </div>
-          )}
+          </div>
           <div className="chart-body" key={chartMode} ref={chartBodyRef}>
             {chartMode === "price" ? (
               !loading && gnoswapApiClient && poolPath ? (
@@ -606,24 +626,6 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                 )}
               </>
             )}
-          </div>
-          <div
-            className={chartMode === "price" ? "chart-ranges" : "chart-ranges hidden"}
-            role="group"
-            aria-label="Chart range"
-            aria-hidden={chartMode !== "price"}
-          >
-            {CANDLE_RANGES.map(range => (
-              <button
-                key={range}
-                type="button"
-                disabled={chartMode !== "price"}
-                aria-pressed={chartRange === range}
-                onClick={() => setChartRange(range)}
-              >
-                {range}
-              </button>
-            ))}
           </div>
         </div>
       </section>

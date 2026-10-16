@@ -81,9 +81,9 @@
         "title": "2. Introduzca el importe"
       },
       "step3": {
-        "aprTooltip": "La TAE estimada se calcula en función de las recompensas de la Tasa de Protocolo en tiempo real.",
+        "aprTooltip": "TAE estimada para los xGNS delegados, calculada como media de los últimos 7 días.\n\nTAE diaria = (recompensas por comisiones del protocolo del día × 365) ÷ valor en USD de todos los xGNS delegados.\n\nLos rendimientos reales varían en función de las comisiones del protocolo y del total delegado.",
         "currentlyDel": "Actualmente delegado",
-        "estimatedAPR": "TAE estimada",
+        "estimatedAPR": "TAE estimada (7 días)",
         "newlyDel": "Nuevo Delegado",
         "title": "3. Su delegación",
         "votingPowerShare": "Poder de voto Cuota"
@@ -207,11 +207,15 @@
     }
   },
   "summary": {
+    "aprHistory": {
+      "dailyApr": "APR (1D)",
+      "vs7dAvg": "vs media 7D"
+    },
     "apr": {
-      "title": "xGNS APR"
+      "title": "xGNS APR (7 días)"
     },
     "apy": {
-      "tooltip": "La TAE estimada de xGNS basada en las recompensas de la tasa de protocolo en tiempo real."
+      "tooltip": "TAE estimada para los xGNS delegados, calculada como media de los últimos 7 días.\n\nTAE diaria = (recompensas por comisiones del protocolo del día × 365) ÷ valor en USD de todos los xGNS delegados.\n\nLos rendimientos reales varían en función de las comisiones del protocolo y del total delegado."
     },
     "commPool": {
       "title": "Piscina comunitaria",
