@@ -1,26 +1,32 @@
 {
   "banner": {
-    "description": "使用推荐代码时，您和您的朋友都将获得<strong>10% 的奖金。</strong>",
-    "title": "提升您的排名 -<strong>推荐并赚钱！</strong>"
+    "description": "你和你的朋友各获得<strong>朋友兑换积分的 10%</strong>。",
+    "title": "提升排名 – <strong>推荐赚积分！</strong>"
   },
   "header": "排行榜",
   "list": {
     "column": {
+      "counted": "计入",
       "delegation": "委托",
+      "globalCapRatio": "全局上限比例",
       "points": "积分",
       "position": "职位",
+      "provisional": "暂定",
       "rank": "等级",
       "referral": "转介",
       "staking": "定标",
       "swap": "交换",
       "swapCap": "兑换上限",
-      "swapRaw": "兑换（上限前）",
+      "swapCapWarning": "增加质押或委托以提高上限。",
+      "swapFeesPaid": "已付兑换手续费",
+      "swapRaw": "上限前",
       "tooltip": {
-        "delegation": "委托 GNS（xGNS）的价值随时间累积的积分，委托时间越长权重越高。",
-        "staking": "质押仓位中锁定价值的积分。仅在仓位处于获得内部 $GNS 排放的池子的价格区间内时计算，质押时间越长权重越高。",
-        "swap": "仅经过获得内部 $GNS 排放的池子的兑换所支付的路由手续费积分。每个钱包的上限取决于其质押积分和委托积分。",
-        "swapCap": "兑换积分不能超过此上限。"
+        "delegation": "<p>按你保持委托的 GNS 计算积分。<br/><strong>委托价值（GNOT）× 天数 × 时间加成 × 0.003</strong></p><p>时间加成：前 10 天 ×1 · 10–20 天 ×1.5 · 20–30 天 ×1.75 · 30 天以上 ×2<br/>处于 7 天解绑期的 GNS 不计积分。</p>",
+        "points": "<p><strong>质押 + 委托 + 兑换 + 推荐</strong></p><p>推荐：你自己兑换积分的 10%，加上每位朋友兑换积分的 10%。<br/>全局上限：如果所有人的兑换积分总和超过所有人的质押 + 委托积分总和，所有兑换积分按相同比例缩减。在轮次结束时确定。</p>",
+        "staking": "<p>按你在已质押仓位中保持的价值计算积分。<br/><strong>仓位价值（GNOT）× 区间内天数 × 时间加成 × 0.003</strong></p><p>时间加成：前 5 天 ×0 · 5–10 天 ×1 · 10–20 天 ×1.5 · 20–30 天 ×1.75 · 30 天以上 ×2<br/>仅在有内部 GNS 排放的池中且处于区间内时计算。<br/>区间宽窄不影响积分。取消质押会重新开始计算时间加成。</p>",
+        "swap": "<p>按你支付给 GnoSwap 的兑换手续费计算积分。<br/><strong>已付兑换手续费（GNOT）× 5，最高不超过兑换上限</strong></p><p>兑换上限 = 委托积分 × 3 + 质押积分 × 1<br/>没有质押或委托就没有兑换积分。<br/>仅计算经过有内部 GNS 排放的池的兑换。</p>"
       },
+      "total": "总计",
       "user": "用户",
       "xGNS": "xGNS 定标"
     },
@@ -31,11 +37,12 @@
     "nextUpdateTime": "下一次更新在",
     "tooltip": {
       "hideToggleButton": "您的用户名或地址将被隐藏。其他用户将无法看到您的位置。",
-      "nextUpdateTime": "排行榜每小时更新一次。"
+      "nextUpdateTime": "每 10 分钟更新一次。当前小时的积分在该小时结束前为暂定值。"
     }
   },
   "subHeader": {
     "copyButton": "复制我的推荐",
-    "description": "通过交换、提供流动资金、押注或邀请好友收集积分，攀升排行榜。在 GnoSwap 上的每项活动都很重要！"
+    "description": "每轮通过质押仓位、委托 GNS 和兑换赚取积分。<br/>持有时间越长，时间加成越大。兑换积分需要质押或委托。<br/>积分以 GNOT 而非 USD 计算。",
+    "howPointsWork": "积分规则 →"
   }
 }

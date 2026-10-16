@@ -1,26 +1,32 @@
 {
   "banner": {
-    "description": "When you use a referral code, both you and your friend will receive a <strong>10% bonus.</strong>",
-    "title": "Boost Your Rank - <strong>Refer & Earn!</strong>"
+    "description": "You and your friend each get <strong>10% of the friend's swap points.</strong>",
+    "title": "Boost Your Rank – <strong>Refer & Earn!</strong>"
   },
   "header": "Leaderboard",
   "list": {
     "column": {
+      "counted": "Counted",
       "delegation": "Delegation",
+      "globalCapRatio": "Global cap ratio",
       "points": "Points",
       "position": "Position",
+      "provisional": "provisional",
       "rank": "Rank",
       "referral": "Referral",
       "staking": "Staking",
       "swap": "Swap",
       "swapCap": "Swap Cap",
-      "swapRaw": "Swap (Before Cap)",
+      "swapCapWarning": "Stake or delegate more to raise your cap.",
+      "swapFeesPaid": "Swap fees paid",
+      "swapRaw": "Before cap",
       "tooltip": {
-        "delegation": "Points for the value of delegated GNS (xGNS) over time, weighted by how long it has been delegated.",
-        "staking": "Points for the value locked in staked positions, counted only while the position is in range in a pool receiving internal $GNS emissions and weighted by how long it has been staked.",
-        "swap": "Points for router fees paid on swaps that route only through pools receiving internal $GNS emissions. Capped per wallet by its staking and delegation points.",
-        "swapCap": "Swap points cannot exceed this cap."
+        "delegation": "<p>Points for the GNS you keep delegated.<br/><strong>Delegated value (GNOT) × days × time bonus × 0.003</strong></p><p>Time bonus: first 10 days ×1 · 10–20d ×1.5 · 20–30d ×1.75 · 30d+ ×2<br/>GNS waiting in the 7-day unbonding period earns nothing.</p>",
+        "points": "<p><strong>Staking + Delegation + Swap + Referral</strong></p><p>Referral: 10% of your own swap points, plus 10% of each friend's swap points.<br/>Global cap: if everyone's swap points add up to more than everyone's staking + delegation points, all swap points shrink by the same ratio. Set at round end.</p>",
+        "staking": "<p>Points for the value you keep in staked positions.<br/><strong>Position value (GNOT) × days in range × time bonus × 0.003</strong></p><p>Time bonus: first 5 days ×0 · 5–10d ×1 · 10–20d ×1.5 · 20–30d ×1.75 · 30d+ ×2<br/>Only counts while in range, in pools with internal GNS emissions.<br/>Narrow or wide range makes no difference. Unstaking restarts the time bonus.</p>",
+        "swap": "<p>Points for the swap fee you pay to GnoSwap.<br/><strong>Swap fee paid (GNOT) × 5, up to your Swap Cap</strong></p><p>Swap Cap = Delegation points × 3 + Staking points × 1<br/>No staking or delegation = no swap points.<br/>Only swaps that go through pools with internal GNS emissions.</p>"
       },
+      "total": "Total",
       "user": "User",
       "xGNS": "xGNS Staking"
     },
@@ -31,11 +37,12 @@
     "nextUpdateTime": "Next update in",
     "tooltip": {
       "hideToggleButton": "Your username or address will be hidden. Other users will not be able to see your positions.",
-      "nextUpdateTime": "The leaderboard is updated on an hourly basis."
+      "nextUpdateTime": "Updates every 10 minutes. The current hour is provisional until it closes."
     }
   },
   "subHeader": {
     "copyButton": "Copy My Referral",
-    "description": "Climb up the leaderboard by collecting points for swapping, providing liquidity, staking, or inviting friends. Every activity on GnoSwap counts!"
+    "description": "Earn points every round by staking positions, delegating GNS, and swapping.<br/>The longer you hold, the bigger your time bonus. Swap points need staking or delegation.<br/>Points are measured in GNOT, not USD.",
+    "howPointsWork": "How points work →"
   }
 }

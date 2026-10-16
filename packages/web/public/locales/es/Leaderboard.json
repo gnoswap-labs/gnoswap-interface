@@ -1,26 +1,32 @@
 {
   "banner": {
-    "description": "Cuando utilices un código de recomendación, tanto tú como tu amigo recibiréis una <strong>bonificación del 10%.</strong>",
-    "title": "Mejora tu posición - <strong>¡Recomienda y gana!</strong>"
+    "description": "Tú y tu amigo reciben cada uno <strong>el 10% de los puntos de swap de tu amigo.</strong>",
+    "title": "Sube en el ranking – <strong>¡Invita y gana!</strong>"
   },
   "header": "Clasificación",
   "list": {
     "column": {
+      "counted": "Contabilizado",
       "delegation": "Delegación",
+      "globalCapRatio": "Ratio del límite global",
       "points": "Puntos",
       "position": "Posición",
+      "provisional": "provisional",
       "rank": "Rango",
       "referral": "Remisión",
       "staking": "Estacas",
       "swap": "Intercambiar",
       "swapCap": "Límite de swap",
-      "swapRaw": "Swap (antes del límite)",
+      "swapCapWarning": "Haz staking o delega más para aumentar tu límite.",
+      "swapFeesPaid": "Comisiones de swap pagadas",
+      "swapRaw": "Antes del límite",
       "tooltip": {
-        "delegation": "Puntos por el valor del GNS delegado (xGNS) a lo largo del tiempo, ponderados según el tiempo delegado.",
-        "staking": "Puntos por el valor bloqueado en posiciones en staking, contado solo mientras la posición está en rango en un pool con emisiones internas de $GNS y ponderado según el tiempo en staking.",
-        "swap": "Puntos por las comisiones del router pagadas en swaps que solo pasan por pools con emisiones internas de $GNS. Limitados por billetera según sus puntos de staking y de delegación.",
-        "swapCap": "Los puntos de swap no pueden superar este límite."
+        "delegation": "<p>Puntos por los GNS que mantienes delegados.<br/><strong>Valor delegado (GNOT) × días × bono de tiempo × 0.003</strong></p><p>Bono de tiempo: primeros 10 días ×1 · 10–20d ×1.5 · 20–30d ×1.75 · 30d+ ×2<br/>Los GNS en el periodo de desvinculación de 7 días no generan puntos.</p>",
+        "points": "<p><strong>Staking + Delegación + Swap + Referidos</strong></p><p>Referidos: el 10% de tus propios puntos de swap, más el 10% de los puntos de swap de cada amigo.<br/>Límite global: si los puntos de swap de todos superan la suma de los puntos de staking + delegación de todos, todos los puntos de swap se reducen en la misma proporción. Se fija al final de la ronda.</p>",
+        "staking": "<p>Puntos por el valor que mantienes en posiciones en staking.<br/><strong>Valor de la posición (GNOT) × días en rango × bono de tiempo × 0.003</strong></p><p>Bono de tiempo: primeros 5 días ×0 · 5–10d ×1 · 10–20d ×1.5 · 20–30d ×1.75 · 30d+ ×2<br/>Solo cuenta mientras está en rango, en pools con emisiones internas de GNS.<br/>Que el rango sea estrecho o amplio no importa. Retirar el staking reinicia el bono de tiempo.</p>",
+        "swap": "<p>Puntos por la comisión de swap que pagas a GnoSwap.<br/><strong>Comisión de swap pagada (GNOT) × 5, hasta tu límite de swap</strong></p><p>Límite de swap = puntos de delegación × 3 + puntos de staking × 1<br/>Sin staking ni delegación no hay puntos de swap.<br/>Solo cuentan los swaps que pasan por pools con emisiones internas de GNS.</p>"
       },
+      "total": "Total",
       "user": "Usuario",
       "xGNS": "Estacas xGNS"
     },
@@ -31,11 +37,12 @@
     "nextUpdateTime": "Próxima actualización en",
     "tooltip": {
       "hideToggleButton": "Tu nombre de usuario o dirección estarán ocultos. Otros usuarios no podrán ver tus posiciones.",
-      "nextUpdateTime": "La clasificación se actualiza cada hora."
+      "nextUpdateTime": "Se actualiza cada 10 minutos. La hora en curso es provisional hasta que se cierra."
     }
   },
   "subHeader": {
     "copyButton": "Copiar mi recomendación",
-    "description": "Asciende en la clasificación acumulando puntos por intercambiar, proporcionar liquidez, apostar o invitar a amigos. ¡Cada actividad en GnoSwap cuenta!"
+    "description": "Gana puntos en cada ronda haciendo staking de posiciones, delegando GNS y haciendo swaps.<br/>Cuanto más tiempo mantengas, mayor será tu bono de tiempo. Los puntos de swap requieren staking o delegación.<br/>Los puntos se miden en GNOT, no en USD.",
+    "howPointsWork": "Cómo funcionan los puntos →"
   }
 }
