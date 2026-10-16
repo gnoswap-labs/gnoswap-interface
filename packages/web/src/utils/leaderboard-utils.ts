@@ -58,14 +58,3 @@ export const formatGnsAmount = (baseAmount: string | undefined): string => {
   if (!amount) return "-";
   return formatLeaderboardPoint(amount.shiftedBy(-GNS_DECIMALS).toString());
 };
-
-// GNOT value of a USD amount at the GNOT USD price, or null without a usable price.
-export const getGnotValueOfUsd = (
-  usd: string | undefined,
-  gnotUsdPrice: string | number | undefined,
-): string | null => {
-  const value = toBigNumber(usd);
-  const price = toBigNumber(gnotUsdPrice === undefined ? undefined : String(gnotUsdPrice));
-  if (!value || !price || !price.isGreaterThan(0)) return null;
-  return value.dividedBy(price).toString();
-};

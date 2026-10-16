@@ -200,14 +200,13 @@ describe("LeaderboardTableRow", () => {
           }}
           tdWidths={[100, 100, 100, 100, 100, 100]}
           isMobile={false}
-          gnotUsdPrice="0.05"
         />
       </GnoswapThemeProvider>,
     );
 
     expect(screen.getByText("Leaderboard:list.column.stakedPositions")).toBeInTheDocument();
     expect(screen.getByText("Leaderboard:list.column.delegatedGns")).toBeInTheDocument();
-    expect(screen.getByText(/2,500,000 \(704,000 GNOT ≈ \$35,200/)).toBeInTheDocument();
+    expect(screen.getByText("2,500,000")).toBeInTheDocument();
   });
 
   it("shows only the points when the API sends no holding details", () => {

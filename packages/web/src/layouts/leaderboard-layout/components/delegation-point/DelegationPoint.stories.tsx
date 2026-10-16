@@ -18,16 +18,6 @@ export const Default: Story = {
   args: {
     gnsDelegationPoint: "36516.42",
     holdingDetail: { delegatedGnsAmount: "2500000000000", stakedPositionCount: 0, inRangePositionCount: 0 },
-    delegatedGnsUsd: "35200",
-    gnotUsdPrice: "0.0575",
-  },
-};
-
-export const WithoutGnotPrice: Story = {
-  args: {
-    gnsDelegationPoint: "36516.42",
-    holdingDetail: { delegatedGnsAmount: "2500000000000", stakedPositionCount: 0, inRangePositionCount: 0 },
-    delegatedGnsUsd: "35200",
   },
 };
 

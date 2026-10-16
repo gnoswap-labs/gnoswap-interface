@@ -21,7 +21,6 @@ const LeaderboardTableRow = ({
   isMobile,
   isMe = false,
   rankOffset = 0,
-  gnotUsdPrice,
 }: {
   myAddress: string | undefined;
   data: LeaderboardUser;
@@ -29,8 +28,6 @@ const LeaderboardTableRow = ({
   isMobile: boolean;
   isMe?: boolean;
   rankOffset?: number;
-  // GNOT USD price, used to show the delegated GNS value in GNOT.
-  gnotUsdPrice?: string | number;
 }) => {
   const Hover = isMe ? HoverSection : HoverOnBgSection;
   const TableWrapper = isMe ? WrapperHoverBackground : Wrapper;
@@ -89,12 +86,7 @@ const LeaderboardTableRow = ({
               <StakingPoint positionStakingPoint={data.positionStakingPoint} holdingDetail={data.holdingDetail} />
             </TableColumn>
             <TableColumn tdWidth={tdWidths.at(4)}>
-              <DelegationPoint
-                gnsDelegationPoint={data.gnsDelegationPoint}
-                holdingDetail={data.holdingDetail}
-                delegatedGnsUsd={data.usdDetail?.delegatedGnsUsd}
-                gnotUsdPrice={gnotUsdPrice}
-              />
+              <DelegationPoint gnsDelegationPoint={data.gnsDelegationPoint} holdingDetail={data.holdingDetail} />
             </TableColumn>
           </>
         )}
