@@ -6,6 +6,7 @@
   "header": "Tableau de bord",
   "list": {
     "column": {
+      "delegation": "Délégation",
       "points": "Points",
       "position": "Position",
       "rank": "Rang",
@@ -15,10 +16,10 @@
       "swapCap": "Plafond de swap",
       "swapRaw": "Swap (avant plafond)",
       "tooltip": {
-        "position": "Points pour la valeur des positions stakées lorsqu'elles sont dans la plage, dans des pools recevant des émissions internes de $GNS, pondérés selon la durée de staking.",
-        "staking": "Points pour la valeur du GNS délégué (xGNS) dans le temps, pondérés selon la durée de délégation.",
-        "swapCap": "Les points de swap ne peuvent pas dépasser ce plafond.",
-        "volume": "Points pour les frais de routeur payés sur les swaps passant uniquement par des pools recevant des émissions internes de $GNS. Plafonnés par portefeuille selon ses points de staking xGNS et de positions."
+        "delegation": "Points pour la valeur du GNS délégué (xGNS) dans le temps, pondérés selon la durée de délégation.",
+        "staking": "Points pour la valeur des positions stakées lorsqu'elles sont dans la plage, dans des pools recevant des émissions internes de $GNS, pondérés selon la durée de staking.",
+        "swap": "Points pour les frais de routeur payés sur les swaps passant uniquement par des pools recevant des émissions internes de $GNS. Plafonnés par portefeuille selon ses points de staking et de délégation.",
+        "swapCap": "Les points de swap ne peuvent pas dépasser ce plafond."
       },
       "user": "Utilisateur",
       "xGNS": "Jalonnement xGNS"

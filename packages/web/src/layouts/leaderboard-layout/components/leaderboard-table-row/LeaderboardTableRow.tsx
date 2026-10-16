@@ -6,7 +6,7 @@ import {
   Wrapper,
   WrapperHoverBackground,
 } from "./LeaderboardTableRow.styles";
-import PointComposition from "../point-composition/PointComposition";
+import PointComposition, { PointCompositionItem } from "../point-composition/PointComposition";
 import SwapPoint from "../swap-point/SwapPoint";
 import UserColumn from "../user-column/UserColumn";
 import { LeaderboardUser } from "@repositories/leaderboard/response/common/types";
@@ -49,6 +49,27 @@ const LeaderboardTableRow = ({
       staking: formatUsdValue(stakingTotal),
     };
   }, [data.swapFeeUsd, data.providedLiquidityFeeUsd, data.stakingRewardsUsd, data.governanceRewardsUsd]);
+
+  const pointItems = React.useMemo<PointCompositionItem[]>(() => {
+    if (isRound) {
+      return [
+        { label: "Leaderboard:list.column.swap", point: data.swapPoint },
+        { label: "Leaderboard:list.column.swapRaw", point: data.swapRawPoint },
+        { label: "Leaderboard:list.column.swapCap", point: data.swapCapPoint },
+        { label: "Leaderboard:list.column.staking", point: data.positionStakingPoint },
+        { label: "Leaderboard:list.column.delegation", point: data.gnsDelegationPoint },
+        { label: "Leaderboard:list.column.referral", point: data.referralPoint },
+      ];
+    }
+
+    return [
+      { label: "Leaderboard:list.column.swap", point: data.paidSwapFeePoint },
+      { label: "Leaderboard:list.column.position", point: data.providedLiquidityFeePoint },
+      { label: "Leaderboard:list.column.staking", point: data.stakingRewardsPoint },
+      { label: "Leaderboard:list.column.xGNS", point: data.governanceRewardsPoint },
+      { label: "Leaderboard:list.column.referral", point: data.referralPoint },
+    ];
+  }, [isRound, data]);
 
   const displayRankNumber = React.useMemo(() => {
     const rank = Number(data.rank);
@@ -102,28 +123,7 @@ const LeaderboardTableRow = ({
           </>
         )}
         <TableColumn tdWidth={tdWidths.at(isMobile ? 2 : 5)}>
-          {isRound ? (
-            <PointComposition
-              totalPoint={data.totalPoint}
-              swapPoint={data.swapPoint ?? ""}
-              swapRawPoint={data.swapRawPoint ?? ""}
-              swapCapPoint={data.swapCapPoint ?? ""}
-              positionPoint={data.positionStakingPoint ?? ""}
-              governancePoint={data.gnsDelegationPoint ?? ""}
-              referralPoint={data.referralPoint}
-              isMobile={isMobile}
-            />
-          ) : (
-            <PointComposition
-              totalPoint={data.totalPoint}
-              swapPoint={data.paidSwapFeePoint}
-              positionPoint={data.providedLiquidityFeePoint}
-              stakingPoint={data.stakingRewardsPoint}
-              governancePoint={data.governanceRewardsPoint}
-              referralPoint={data.referralPoint}
-              isMobile={isMobile}
-            />
-          )}
+          <PointComposition totalPoint={data.totalPoint} items={pointItems} isMobile={isMobile} />
         </TableColumn>
       </Hover>
     </TableWrapper>

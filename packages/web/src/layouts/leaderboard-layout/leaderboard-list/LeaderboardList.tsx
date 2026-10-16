@@ -19,17 +19,17 @@ export interface TableHeadItem {
 export const TABLE_HEAD = {
   INDEX: { label: "Leaderboard:list.column.rank" },
   USER: { label: "Leaderboard:list.column.user" },
-  VOLUME: {
+  SWAP: {
     label: "Leaderboard:list.column.swap",
-    tooltip: "Leaderboard:list.column.tooltip.volume",
-  },
-  POSITION: {
-    label: "Leaderboard:list.column.position",
-    tooltip: "Leaderboard:list.column.tooltip.position",
+    tooltip: "Leaderboard:list.column.tooltip.swap",
   },
   STAKING: {
     label: "Leaderboard:list.column.staking",
     tooltip: "Leaderboard:list.column.tooltip.staking",
+  },
+  DELEGATION: {
+    label: "Leaderboard:list.column.delegation",
+    tooltip: "Leaderboard:list.column.tooltip.delegation",
   },
   POINTS: { label: "Leaderboard:list.column.points" },
 } as const;

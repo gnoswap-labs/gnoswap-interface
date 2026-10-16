@@ -185,8 +185,11 @@ describe("LeaderboardTableRow", () => {
     expect(screen.getByText("Leaderboard:list.column.tooltip.swapCap")).toBeInTheDocument();
     expect(screen.getAllByText("1,000")).toHaveLength(2);
     expect(screen.getAllByText("1,189.29")).toHaveLength(2);
-    // Round leaderboards have no separate staking reward points.
-    expect(screen.queryByText("Leaderboard:list.column.staking")).not.toBeInTheDocument();
+    // Round rows are Swap, Staking (position staking) and Delegation (GNS delegation).
+    expect(screen.getByText("Leaderboard:list.column.staking")).toBeInTheDocument();
+    expect(screen.getByText("Leaderboard:list.column.delegation")).toBeInTheDocument();
+    expect(screen.queryByText("Leaderboard:list.column.position")).not.toBeInTheDocument();
+    expect(screen.queryByText("Leaderboard:list.column.xGNS")).not.toBeInTheDocument();
     expect(screen.queryByText("<$0.01")).not.toBeInTheDocument();
   });
 

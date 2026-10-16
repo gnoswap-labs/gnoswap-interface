@@ -15,11 +15,15 @@ export default meta;
 type Story = StoryObj<typeof PointComposition>;
 
 const commonArgs = {
-  points: "20000000",
-  swapPoint: "20000000",
-  positionPoint: "20000000",
-  stakingPoint: "20000000",
-  referralPoint: "20000000",
+  totalPoint: "20000000",
+  items: [
+    { label: "Leaderboard:list.column.swap", point: "20000000" },
+    { label: "Leaderboard:list.column.swapRaw", point: "30000000" },
+    { label: "Leaderboard:list.column.swapCap", point: "20000000" },
+    { label: "Leaderboard:list.column.staking", point: "20000000" },
+    { label: "Leaderboard:list.column.delegation", point: "20000000" },
+    { label: "Leaderboard:list.column.referral", point: "20000000" },
+  ],
 };
 
 export const Mobile: Story = {

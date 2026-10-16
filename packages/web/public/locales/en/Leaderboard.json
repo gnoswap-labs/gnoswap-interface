@@ -6,6 +6,7 @@
   "header": "Leaderboard",
   "list": {
     "column": {
+      "delegation": "Delegation",
       "points": "Points",
       "position": "Position",
       "rank": "Rank",
@@ -15,10 +16,10 @@
       "swapCap": "Swap Cap",
       "swapRaw": "Swap (Before Cap)",
       "tooltip": {
-        "position": "Points for the value of staked positions while in range in pools receiving internal $GNS emissions, weighted by how long each position has been staked.",
-        "staking": "Points for the value of delegated GNS (xGNS) over time, weighted by how long it has been delegated.",
-        "swapCap": "Swap points cannot exceed this cap.",
-        "volume": "Points for router fees paid on swaps that route only through pools receiving internal $GNS emissions. Capped per wallet by its xGNS staking and position points."
+        "delegation": "Points for the value of delegated GNS (xGNS) over time, weighted by how long it has been delegated.",
+        "staking": "Points for the value of staked positions while in range in pools receiving internal $GNS emissions, weighted by how long each position has been staked.",
+        "swap": "Points for router fees paid on swaps that route only through pools receiving internal $GNS emissions. Capped per wallet by its staking and delegation points.",
+        "swapCap": "Swap points cannot exceed this cap."
       },
       "user": "User",
       "xGNS": "xGNS Staking"

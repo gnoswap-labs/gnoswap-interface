@@ -6,6 +6,7 @@
   "header": "Clasificación",
   "list": {
     "column": {
+      "delegation": "Delegación",
       "points": "Puntos",
       "position": "Posición",
       "rank": "Rango",
@@ -15,10 +16,10 @@
       "swapCap": "Límite de swap",
       "swapRaw": "Swap (antes del límite)",
       "tooltip": {
-        "position": "Puntos por el valor de las posiciones en staking mientras están en rango en pools con emisiones internas de $GNS, ponderados según el tiempo en staking.",
-        "staking": "Puntos por el valor del GNS delegado (xGNS) a lo largo del tiempo, ponderados según el tiempo delegado.",
-        "swapCap": "Los puntos de swap no pueden superar este límite.",
-        "volume": "Puntos por las comisiones del router pagadas en swaps que solo pasan por pools con emisiones internas de $GNS. Limitados por billetera según sus puntos de staking de xGNS y de posiciones."
+        "delegation": "Puntos por el valor del GNS delegado (xGNS) a lo largo del tiempo, ponderados según el tiempo delegado.",
+        "staking": "Puntos por el valor de las posiciones en staking mientras están en rango en pools con emisiones internas de $GNS, ponderados según el tiempo en staking.",
+        "swap": "Puntos por las comisiones del router pagadas en swaps que solo pasan por pools con emisiones internas de $GNS. Limitados por billetera según sus puntos de staking y de delegación.",
+        "swapCap": "Los puntos de swap no pueden superar este límite."
       },
       "user": "Usuario",
       "xGNS": "Estacas xGNS"

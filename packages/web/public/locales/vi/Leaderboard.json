@@ -6,6 +6,7 @@
   "header": "Bảng xếp hạng",
   "list": {
     "column": {
+      "delegation": "Ủy quyền",
       "points": "Điểm",
       "position": "Vị trí",
       "rank": "Xếp hạng",
@@ -15,10 +16,10 @@
       "swapCap": "Giới hạn swap",
       "swapRaw": "Swap (trước giới hạn)",
       "tooltip": {
-        "position": "Điểm cho giá trị các vị thế đang stake khi nằm trong phạm vi, ở các pool nhận phát thải $GNS nội bộ, có trọng số theo thời gian stake.",
-        "staking": "Điểm cho giá trị GNS đã ủy quyền (xGNS) theo thời gian, có trọng số theo thời gian ủy quyền.",
-        "swapCap": "Điểm swap không thể vượt quá giới hạn này.",
-        "volume": "Điểm cho phí router đã trả trong các giao dịch swap chỉ đi qua các pool nhận phát thải $GNS nội bộ. Mỗi ví bị giới hạn theo điểm staking xGNS và điểm vị thế."
+        "delegation": "Điểm cho giá trị GNS đã ủy quyền (xGNS) theo thời gian, có trọng số theo thời gian ủy quyền.",
+        "staking": "Điểm cho giá trị các vị thế đang stake khi nằm trong phạm vi, ở các pool nhận phát thải $GNS nội bộ, có trọng số theo thời gian stake.",
+        "swap": "Điểm cho phí router đã trả trong các giao dịch swap chỉ đi qua các pool nhận phát thải $GNS nội bộ. Mỗi ví bị giới hạn theo điểm staking và điểm ủy quyền.",
+        "swapCap": "Điểm swap không thể vượt quá giới hạn này."
       },
       "user": "Người dùng",
       "xGNS": "xGNS Staking"
