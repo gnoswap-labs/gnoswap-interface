@@ -5,7 +5,7 @@ export const ChartNavigation = styled.div`
   position: absolute;
   z-index: 3;
   left: 8px;
-  height: 44px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -56,6 +56,7 @@ export const ChartNavigation = styled.div`
     right: 0;
   }
   @media (hover: none), (pointer: coarse) {
+    height: 28px;
     button {
       width: 28px;
       height: 28px;
