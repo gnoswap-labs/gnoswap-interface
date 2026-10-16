@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { useCallback, useMemo } from "react";
 
@@ -22,6 +23,7 @@ import {
   useRefetchGetPoolDetailByPath,
 } from "@query/pools";
 import { useGetPoolStakingListByAddress } from "@query/pools/use-get-pool-staking-list-by-address";
+import { QUERY_KEY } from "@query/query-keys";
 import { DexEvent } from "@repositories/common";
 import { EarnState } from "@states/index";
 
@@ -62,6 +64,7 @@ const IncentivizePoolModalContainer: React.FC<IncentivizePoolModalContainerProps
   const { refetch: refetchIncentivizePools } = useGetIncentivizePoolList();
   const { refetch: refetchPoolDetails } = useRefetchGetPoolDetailByPath(poolPath);
   const { refetch: refetchStakingList } = useGetPoolStakingListByAddress(address || "");
+  const queryClient = useQueryClient();
   const { data: incentiveCreationDepositGnsAmount = DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT } =
     useGetIncentiveCreationDeposit();
 
@@ -137,6 +140,7 @@ const IncentivizePoolModalContainer: React.FC<IncentivizePoolModalContainerProps
             refetchIncentivizePools();
             refetchPoolDetails();
             refetchStakingList();
+            queryClient.invalidateQueries({ queryKey: [QUERY_KEY.poolStakingList] });
           },
           onUpdate: async () => {
             updateBalances();
