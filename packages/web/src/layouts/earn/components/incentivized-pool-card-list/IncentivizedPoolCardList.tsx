@@ -55,7 +55,8 @@ const IncentivizedPoolCardList: React.FC<IncentivizedPoolCardListProps> = ({
   const renderPoolList = () => {
     const hasData = !isLoading && incentivizedPools.length > 0;
     const showLoading = !isPoolFetched || isLoading;
-    const showBlank = isPoolFetched && !isLoading && incentivizedPools.length > 0 && incentivizedPools.length < 4;
+    const showBlank =
+      width > 920 && isPoolFetched && !isLoading && incentivizedPools.length > 0 && incentivizedPools.length < 4;
 
     return (
       <PoolListWrapper ref={divRef} onScroll={onScroll} $loading={isLoading}>
