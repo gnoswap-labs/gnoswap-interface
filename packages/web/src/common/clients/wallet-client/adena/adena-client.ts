@@ -6,6 +6,8 @@ import {
   AccountInfo,
   SendTransactionRequestParam,
   SendTransactionResponse,
+  SignArbitraryRequestParam,
+  SignedArbitraryData,
   WalletResponse,
   isContractMessage,
   isRunMessage,
@@ -69,6 +71,23 @@ export class AdenaClient implements WalletClient {
   public async sign(): Promise<{ signed: Tx; signature: TxSignature[] }> {
     throw new Error("Sign method not implemented for Adena wallet");
   }
+
+  public signArbitrary = (request: SignArbitraryRequestParam): Promise<WalletResponse<SignedArbitraryData>> => {
+    const adena = this.getAdena();
+    if (!adena.SignArbitrary) {
+      return Promise.resolve({
+        // Same response the SDK returns for an extension without SignArbitrary.
+        code: 4005,
+        status: "failure",
+        type: "UNSUPPORTED_TYPE",
+        message: "Adena does not support the requested transaction type.",
+        data: null,
+      });
+    }
+
+    // No timeout: the user may take a while to review the message in the approval popup.
+    return adena.SignArbitrary(request);
+  };
 
   public addEstablishedSite = (sitename: string): Promise<WalletResponse> => {
     return createTimeout(this.getAdena().AddEstablish(sitename));

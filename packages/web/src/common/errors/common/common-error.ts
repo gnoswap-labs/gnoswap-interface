@@ -25,6 +25,10 @@ const ERROR_VALUE = {
     status: 405,
     type: "Failed to initialize social wallet",
   },
+  FAILED_SIGN_MESSAGE: {
+    status: 406,
+    type: "Failed to sign message",
+  },
 };
 
 type ErrorType = keyof typeof ERROR_VALUE;
