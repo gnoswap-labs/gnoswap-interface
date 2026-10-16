@@ -57,10 +57,19 @@ export const ChartNavigation = styled.div`
   }
   @media (hover: none), (pointer: coarse) {
     button {
-      width: 44px;
-      height: 44px;
+      width: 28px;
+      height: 28px;
       &::before {
-        inset: 0;
+        inset: auto;
+        top: 50%;
+        left: 50%;
+        width: 44px;
+        height: 44px;
+        transform: translate(-50%, -50%);
+      }
+      svg {
+        width: 16px;
+        height: 16px;
       }
     }
   }

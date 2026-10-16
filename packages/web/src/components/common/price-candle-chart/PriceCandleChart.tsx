@@ -185,17 +185,15 @@ export default function PriceCandleChart({
           vertLine: { labelBackgroundColor: theme.color.background05 },
           horzLine: { visible: true, labelVisible: true, labelBackgroundColor: theme.color.background05 },
         },
-        handleScroll: { mouseWheel: true, pressedMouseMove: true, horzTouchDrag: true, vertTouchDrag: false },
+        handleScroll: { mouseWheel: true, pressedMouseMove: true, horzTouchDrag: true, vertTouchDrag: true },
       });
-      // Leave space for the 19px attribution, its inset, and the time-axis height.
-      const attributionClearance = 36;
       const observer = new ResizeObserver(entries => {
         const { width, height } = entries[0].contentRect;
         chart.resize(width, height);
         chart.priceScale("volume").applyOptions({
           scaleMargins: {
             top: height < 250 ? 0.6 : 0.78,
-            bottom: Math.min(0.24, attributionClearance / Math.max(height, 1)),
+            bottom: 0,
           },
         });
         scheduleNavigationUpdate();
@@ -218,7 +216,7 @@ export default function PriceCandleChart({
       chart.priceScale("volume").applyOptions({
         scaleMargins: {
           top: element.clientHeight < 250 ? 0.6 : 0.78,
-          bottom: Math.min(0.24, attributionClearance / Math.max(element.clientHeight, 1)),
+          bottom: 0,
         },
         visible: false,
       });
