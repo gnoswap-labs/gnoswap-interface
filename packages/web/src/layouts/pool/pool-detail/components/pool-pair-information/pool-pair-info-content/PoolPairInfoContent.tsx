@@ -539,7 +539,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
               <IconSwap />
             </button>
           </div>
-          <div className="chart-actions">
+          <div className={cx("chart-actions", { "chart-actions-liquidity": chartMode === "liquidity" })}>
             {chartMode === "liquidity" && !loadingBins && (
               <div className="position-header">
                 <div className="zoom-controller">

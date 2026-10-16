@@ -336,11 +336,14 @@ export const ContentWrapper = styled.div`
     @media (max-width: 767px) {
       margin: 16px 12px;
       padding: 16px 12px;
-      .position-header {
+      .chart-actions-liquidity {
         position: absolute;
         top: 12px;
         right: 12px;
         width: auto;
+        .chart-ranges {
+          display: none;
+        }
       }
     }
   }
