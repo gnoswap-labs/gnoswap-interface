@@ -95,7 +95,6 @@ export default function PriceCandleChart({
       const top = viewport?.offsetTop ?? 0;
       const width = viewport?.width ?? window.innerWidth;
       const height = viewport?.height ?? window.innerHeight;
-      tooltip.style.minWidth = `${Math.min(250, Math.max(0, width - 16))}px`;
       tooltip.style.maxWidth = `${Math.max(0, width - 16)}px`;
       tooltip.style.maxHeight = `${Math.max(0, height - 16)}px`;
       const bounds = tooltip.getBoundingClientRect();
@@ -281,11 +280,11 @@ export default function PriceCandleChart({
             bars.map(({ time, open, high, low, close }) => ({ time: time as UTCTimestamp, open, high, low, close })),
           );
           volume.setData(
-            bars.map(({ time, volume: value, open, close }) => ({
-              time: time as UTCTimestamp,
-              value,
-              color: close >= open ? positive : negative,
-            })),
+            bars.map(({ time, volume: value, open, close }) =>
+              value === 0
+                ? { time: time as UTCTimestamp }
+                : { time: time as UTCTimestamp, value, color: close >= open ? positive : negative },
+            ),
           );
           if (visible) {
             chart
@@ -306,6 +305,7 @@ export default function PriceCandleChart({
           }
         } finally {
           fetching = false;
+          if (!cancelled) onRange(chart.timeScale().getVisibleLogicalRange());
         }
       };
       searchOlder.current = () => void loadOlder();
@@ -322,19 +322,31 @@ export default function PriceCandleChart({
             throw new Error("Invalid price history response");
           }
           const visible = chart.timeScale().getVisibleLogicalRange();
-          for (const bar of latest) barsByTime.set(bar.time, bar);
+          const changed = latest.filter(bar => {
+            const previous = barsByTime.get(bar.time);
+            return (
+              !previous ||
+              bar.open !== previous.open ||
+              bar.high !== previous.high ||
+              bar.low !== previous.low ||
+              bar.close !== previous.close ||
+              bar.volume !== previous.volume ||
+              bar.quoteVolume !== previous.quoteVolume
+            );
+          });
+          if (!changed.length) return;
+          for (const bar of changed) {
+            barsByTime.set(bar.time, bar);
+            const { time, open, high, low, close, volume: value } = bar;
+            candles.update({ time: time as UTCTimestamp, open, high, low, close });
+            volume.update(
+              value === 0
+                ? { time: time as UTCTimestamp }
+                : { time: time as UTCTimestamp, value, color: close >= open ? positive : negative },
+            );
+          }
           bars = Array.from(barsByTime.values()).sort((a, b) => a.time - b.time);
           applyPriceFormat();
-          candles.setData(
-            bars.map(({ time, open, high, low, close }) => ({ time: time as UTCTimestamp, open, high, low, close })),
-          );
-          volume.setData(
-            bars.map(({ time, volume: value, open, close }) => ({
-              time: time as UTCTimestamp,
-              value,
-              color: close >= open ? positive : negative,
-            })),
-          );
           if (visible) {
             chart.timeScale().setVisibleLogicalRange(visible);
           } else {
@@ -353,6 +365,7 @@ export default function PriceCandleChart({
           // A transient refresh failure must not replace an already loaded chart.
         } finally {
           fetching = false;
+          if (!cancelled) onRange(chart.timeScale().getVisibleLogicalRange());
         }
       };
       const refreshOnVisibility = () => {
@@ -406,7 +419,13 @@ export default function PriceCandleChart({
       };
       chart.subscribeCrosshairMove(onCrosshairMove);
       const onRange = (range: LogicalRange | null) => {
-        if (userPanned && range && (candles.barsInLogicalRange(range)?.barsBefore ?? Infinity) < 30) {
+        const preloadBars = range ? Math.max(30, Math.ceil(range.to - range.from)) : 30;
+        if (
+          !fetching &&
+          userPanned &&
+          range &&
+          (candles.barsInLogicalRange(range)?.barsBefore ?? Infinity) < preloadBars
+        ) {
           userPanned = false;
           void loadOlder();
         }

@@ -8,7 +8,6 @@ export const CandleTooltip = styled.div`
   pointer-events: none;
   box-sizing: border-box;
   width: max-content;
-  min-width: min(250px, calc(100vw - 16px));
   max-width: calc(100vw - 16px);
   max-height: calc(100dvh - 16px);
   overflow: hidden;
@@ -23,7 +22,7 @@ export const CandleTooltip = styled.div`
   > div {
     display: flex;
     justify-content: space-between;
-    gap: 16px;
+    gap: 6px;
     & + div {
       margin-top: 2px;
     }

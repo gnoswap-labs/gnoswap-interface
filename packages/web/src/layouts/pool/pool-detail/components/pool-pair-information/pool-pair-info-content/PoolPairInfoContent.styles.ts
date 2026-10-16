@@ -125,7 +125,7 @@ export const ContentWrapper = styled.div`
     .chart-tabs button,
     .chart-ranges button {
       flex: 1;
-      min-width: 40px;
+      min-width: 50px;
       min-height: 0;
       height: 100%;
       padding: 0;
