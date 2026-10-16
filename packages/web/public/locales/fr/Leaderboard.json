@@ -6,22 +6,27 @@
   "header": "Tableau de bord",
   "list": {
     "column": {
+      "counted": "Comptabilisé",
       "delegation": "Délégation",
+      "globalCapRatio": "Ratio du plafond global",
       "points": "Points",
       "position": "Position",
+      "provisional": "provisoire",
       "rank": "Rang",
       "referral": "Renvoi",
       "staking": "Jalonnement",
       "swap": "Échange",
       "swapCap": "Plafond de swap",
-      "swapRaw": "Swap (avant plafond)",
+      "swapCapWarning": "Stakez ou déléguez davantage pour relever votre plafond.",
+      "swapFeesPaid": "Frais de swap payés",
+      "swapRaw": "Avant plafond",
       "tooltip": {
         "delegation": "<p>Points pour les GNS que vous gardez délégués.<br/><strong>Valeur déléguée (GNOT) × jours × bonus de durée × 0.003</strong></p><p>Bonus de durée : 10 premiers jours ×1 · 10–20 j ×1.5 · 20–30 j ×1.75 · 30 j+ ×2<br/>Les GNS en période de déblocage de 7 jours ne rapportent rien.</p>",
         "points": "<p><strong>Staking + Délégation + Swap + Parrainage</strong></p><p>Parrainage : 10 % de vos propres points de swap, plus 10 % des points de swap de chaque ami.<br/>Plafond global : si la somme des points de swap de tous dépasse la somme des points de staking + délégation de tous, tous les points de swap sont réduits dans la même proportion. Fixé à la fin de la manche.</p>",
         "staking": "<p>Points pour la valeur que vous conservez dans des positions stakées.<br/><strong>Valeur de la position (GNOT) × jours dans la plage × bonus de durée × 0.003</strong></p><p>Bonus de durée : 5 premiers jours ×0 · 5–10 j ×1 · 10–20 j ×1.5 · 20–30 j ×1.75 · 30 j+ ×2<br/>Compté uniquement dans la plage, dans les pools avec émissions internes de GNS.<br/>Une plage étroite ou large ne change rien. Le unstaking remet le bonus de durée à zéro.</p>",
-        "swap": "<p>Points pour les frais de swap que vous payez à GnoSwap.<br/><strong>Frais de swap payés (GNOT) × 5, jusqu'à votre plafond de swap</strong></p><p>Plafond de swap = points de délégation × 3 + points de staking × 1<br/>Sans staking ni délégation, pas de points de swap.<br/>Seuls les swaps passant par des pools avec émissions internes de GNS comptent.</p>",
-        "swapCap": "Les points de swap ne peuvent pas dépasser ce plafond."
+        "swap": "<p>Points pour les frais de swap que vous payez à GnoSwap.<br/><strong>Frais de swap payés (GNOT) × 5, jusqu'à votre plafond de swap</strong></p><p>Plafond de swap = points de délégation × 3 + points de staking × 1<br/>Sans staking ni délégation, pas de points de swap.<br/>Seuls les swaps passant par des pools avec émissions internes de GNS comptent.</p>"
       },
+      "total": "Total",
       "user": "Utilisateur",
       "xGNS": "Jalonnement xGNS"
     },

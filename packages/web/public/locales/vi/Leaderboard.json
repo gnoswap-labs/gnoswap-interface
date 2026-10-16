@@ -6,22 +6,27 @@
   "header": "Bảng xếp hạng",
   "list": {
     "column": {
+      "counted": "Được tính",
       "delegation": "Ủy quyền",
+      "globalCapRatio": "Tỷ lệ giới hạn chung",
       "points": "Điểm",
       "position": "Vị trí",
+      "provisional": "tạm tính",
       "rank": "Xếp hạng",
       "referral": "Giới thiệu",
       "staking": "Staking",
       "swap": "Hoán đổi",
       "swapCap": "Giới hạn swap",
-      "swapRaw": "Swap (trước giới hạn)",
+      "swapCapWarning": "Stake hoặc ủy quyền thêm để nâng giới hạn.",
+      "swapFeesPaid": "Phí swap đã trả",
+      "swapRaw": "Trước giới hạn",
       "tooltip": {
         "delegation": "<p>Điểm cho số GNS bạn tiếp tục ủy quyền.<br/><strong>Giá trị ủy quyền (GNOT) × số ngày × thưởng thời gian × 0.003</strong></p><p>Thưởng thời gian: 10 ngày đầu ×1 · 10–20 ngày ×1.5 · 20–30 ngày ×1.75 · 30 ngày+ ×2<br/>GNS đang trong thời gian hủy ủy quyền 7 ngày không được tính điểm.</p>",
         "points": "<p><strong>Staking + Ủy quyền + Swap + Giới thiệu</strong></p><p>Giới thiệu: 10% điểm swap của chính bạn, cộng 10% điểm swap của mỗi người bạn.<br/>Giới hạn chung: nếu tổng điểm swap của mọi người vượt quá tổng điểm staking + ủy quyền của mọi người, tất cả điểm swap sẽ giảm theo cùng một tỷ lệ. Được chốt khi vòng kết thúc.</p>",
         "staking": "<p>Điểm cho giá trị bạn giữ trong các vị thế đã stake.<br/><strong>Giá trị vị thế (GNOT) × số ngày trong phạm vi × thưởng thời gian × 0.003</strong></p><p>Thưởng thời gian: 5 ngày đầu ×0 · 5–10 ngày ×1 · 10–20 ngày ×1.5 · 20–30 ngày ×1.75 · 30 ngày+ ×2<br/>Chỉ tính khi nằm trong phạm vi, ở các pool có phát thải GNS nội bộ.<br/>Phạm vi hẹp hay rộng không ảnh hưởng. Unstake sẽ bắt đầu lại thưởng thời gian.</p>",
-        "swap": "<p>Điểm cho phí swap bạn trả cho GnoSwap.<br/><strong>Phí swap đã trả (GNOT) × 5, tối đa bằng giới hạn swap của bạn</strong></p><p>Giới hạn swap = điểm ủy quyền × 3 + điểm staking × 1<br/>Không stake hoặc ủy quyền thì không có điểm swap.<br/>Chỉ tính các giao dịch swap đi qua pool có phát thải GNS nội bộ.</p>",
-        "swapCap": "Điểm swap không thể vượt quá giới hạn này."
+        "swap": "<p>Điểm cho phí swap bạn trả cho GnoSwap.<br/><strong>Phí swap đã trả (GNOT) × 5, tối đa bằng giới hạn swap của bạn</strong></p><p>Giới hạn swap = điểm ủy quyền × 3 + điểm staking × 1<br/>Không stake hoặc ủy quyền thì không có điểm swap.<br/>Chỉ tính các giao dịch swap đi qua pool có phát thải GNS nội bộ.</p>"
       },
+      "total": "Tổng",
       "user": "Người dùng",
       "xGNS": "xGNS Staking"
     },

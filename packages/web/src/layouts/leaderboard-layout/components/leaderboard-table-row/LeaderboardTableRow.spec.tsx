@@ -114,41 +114,87 @@ describe("LeaderboardTableRow", () => {
     expect(screen.queryByText("#1100")).not.toBeInTheDocument();
   });
 
-  it("shows swap points with the swap points before the cap and the cap on hover", () => {
+  const renderRow = (data: Partial<LeaderboardUser>, gnotUsdPrice?: string) =>
     render(
       <GnoswapThemeProvider>
         <LeaderboardTableRow
           myAddress={undefined}
-          data={{
-            ...createLeaderboardUser(1),
-            swapPoint: "123.456",
-            swapRawPoint: "900",
-            swapCapPoint: "4567.891",
-            positionStakingPoint: "1000",
-            gnsDelegationPoint: "1189.297",
-            referralPoint: "12.3",
-            totalPoint: "2335.053",
-          }}
+          data={{ ...createLeaderboardUser(1), ...data }}
           tdWidths={[100, 100, 100, 100, 100, 100]}
           isMobile={false}
+          gnotUsdPrice={gnotUsdPrice}
         />
       </GnoswapThemeProvider>,
     );
 
-    // The swap column shows the accepted swap points; its tooltip and the
-    // point composition both show the swap points before the cap and the cap.
-    expect(screen.getAllByText("123.45")).toHaveLength(2);
-    expect(screen.getAllByText("Leaderboard:list.column.swapRaw")).toHaveLength(2);
-    expect(screen.getAllByText("900")).toHaveLength(2);
-    expect(screen.getAllByText("Leaderboard:list.column.swapCap")).toHaveLength(2);
-    expect(screen.getAllByText("4,567.89")).toHaveLength(2);
-    expect(screen.getByText("Leaderboard:list.column.tooltip.swapCap")).toBeInTheDocument();
+  it("shows the swap fees, the swap points before the cap, the cap and the counted points on hover", () => {
+    renderRow(
+      {
+        swapPoint: "123.456",
+        swapRawPoint: "900",
+        swapCapPoint: "4567.891",
+        positionStakingPoint: "1000",
+        gnsDelegationPoint: "1189.297",
+        referralPoint: "12.3",
+        totalPoint: "2335.053",
+      },
+      "0.0575",
+    );
+
+    expect(screen.getByText("Leaderboard:list.column.swapFeesPaid")).toBeInTheDocument();
+    // 900 swap points before the cap are 180 GNOT of router fees.
+    expect(screen.getByText("180 GNOT (≈$10.35)")).toBeInTheDocument();
+    expect(screen.getByText("Leaderboard:list.column.swapRaw")).toBeInTheDocument();
+    expect(screen.getByText("900")).toBeInTheDocument();
+    expect(screen.getByText("Leaderboard:list.column.swapCap")).toBeInTheDocument();
+    expect(screen.getByText("4,567.89")).toBeInTheDocument();
+    expect(screen.getByText("Leaderboard:list.column.counted")).toBeInTheDocument();
+    // The swap column, its counted row and the point composition show the accepted swap points.
+    expect(screen.getAllByText("123.45")).toHaveLength(3);
+    expect(screen.queryByText("Leaderboard:list.column.swapCapWarning")).not.toBeInTheDocument();
+  });
+
+  it("shows the swap fees in GNOT only without a GNOT price", () => {
+    renderRow({ swapPoint: "37.37", swapRawPoint: "37.37", swapCapPoint: "205403.55" });
+
+    expect(screen.getByText("7.47 GNOT")).toBeInTheDocument();
+  });
+
+  it("warns when the swap points before the cap exceed the cap", () => {
+    renderRow({ swapPoint: "50", swapRawPoint: "900", swapCapPoint: "50" });
+
+    expect(screen.getByText("Leaderboard:list.column.swapCapWarning")).toBeInTheDocument();
+  });
+
+  it("shows the point composition with the provisional global cap ratio and the total", () => {
+    renderRow({
+      swapPoint: "45",
+      swapRawPoint: "90",
+      swapCapPoint: "500",
+      positionStakingPoint: "1000",
+      gnsDelegationPoint: "1189.297",
+      referralPoint: "12.3",
+      totalPoint: "2246.597",
+      isProvisional: true,
+    });
+
     expect(screen.getAllByText("1,000")).toHaveLength(2);
     expect(screen.getAllByText("1,189.29")).toHaveLength(2);
+    expect(screen.getByText("12.3")).toBeInTheDocument();
+    expect(screen.getByText("Leaderboard:list.column.globalCapRatio")).toBeInTheDocument();
+    expect(screen.getByText("0.50 (Leaderboard:list.column.provisional)")).toBeInTheDocument();
+    expect(screen.getByText("Leaderboard:list.column.total")).toBeInTheDocument();
+    expect(screen.getAllByText("2,246.59")).toHaveLength(2);
     // Staking is the position staking points and Delegation the GNS delegation points.
     expect(screen.getByText("Leaderboard:list.column.staking")).toBeInTheDocument();
     expect(screen.getByText("Leaderboard:list.column.delegation")).toBeInTheDocument();
     expect(screen.queryByText("Leaderboard:list.column.position")).not.toBeInTheDocument();
     expect(screen.queryByText("Leaderboard:list.column.xGNS")).not.toBeInTheDocument();
+  });
+
+  it("shows no global cap ratio without swap points to derive it from", () => {
+    renderRow({ isProvisional: false });
+
+    expect(screen.getByText("Leaderboard:list.column.globalCapRatio").nextSibling).toHaveTextContent("-");
   });
 });

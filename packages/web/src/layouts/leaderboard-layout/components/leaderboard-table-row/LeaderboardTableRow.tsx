@@ -10,7 +10,7 @@ import PointComposition, { PointCompositionItem } from "../point-composition/Poi
 import SwapPoint from "../swap-point/SwapPoint";
 import UserColumn from "../user-column/UserColumn";
 import { LeaderboardUser } from "@repositories/leaderboard/response/common/types";
-import { formatLeaderboardPoint, isLeaderboardHidden } from "@utils/leaderboard-utils";
+import { formatLeaderboardPoint, getGlobalCapRatio, isLeaderboardHidden } from "@utils/leaderboard-utils";
 
 const LeaderboardTableRow = ({
   myAddress,
@@ -19,6 +19,7 @@ const LeaderboardTableRow = ({
   isMobile,
   isMe = false,
   rankOffset = 0,
+  gnotUsdPrice,
 }: {
   myAddress: string | undefined;
   data: LeaderboardUser;
@@ -26,27 +27,24 @@ const LeaderboardTableRow = ({
   isMobile: boolean;
   isMe?: boolean;
   rankOffset?: number;
+  gnotUsdPrice?: string;
 }) => {
   const Hover = isMe ? HoverSection : HoverOnBgSection;
   const TableWrapper = isMe ? WrapperHoverBackground : Wrapper;
 
   const pointItems = React.useMemo<PointCompositionItem[]>(
     () => [
-      { label: "Leaderboard:list.column.swap", point: data.swapPoint },
-      { label: "Leaderboard:list.column.swapRaw", point: data.swapRawPoint },
-      { label: "Leaderboard:list.column.swapCap", point: data.swapCapPoint },
       { label: "Leaderboard:list.column.staking", point: data.positionStakingPoint },
       { label: "Leaderboard:list.column.delegation", point: data.gnsDelegationPoint },
+      { label: "Leaderboard:list.column.swap", point: data.swapPoint },
       { label: "Leaderboard:list.column.referral", point: data.referralPoint },
     ],
-    [
-      data.swapPoint,
-      data.swapRawPoint,
-      data.swapCapPoint,
-      data.positionStakingPoint,
-      data.gnsDelegationPoint,
-      data.referralPoint,
-    ],
+    [data.positionStakingPoint, data.gnsDelegationPoint, data.swapPoint, data.referralPoint],
+  );
+
+  const globalCapRatio = React.useMemo(
+    () => getGlobalCapRatio(data.swapPoint, data.swapRawPoint, data.swapCapPoint),
+    [data.swapPoint, data.swapRawPoint, data.swapCapPoint],
   );
 
   const displayRankNumber = React.useMemo(() => {
@@ -82,14 +80,25 @@ const LeaderboardTableRow = ({
         {!isMobile && (
           <>
             <TableColumn tdWidth={tdWidths.at(2)} style={{ justifyContent: "flex-start" }}>
-              <SwapPoint swapPoint={data.swapPoint} swapRawPoint={data.swapRawPoint} swapCapPoint={data.swapCapPoint} />
+              <SwapPoint
+                swapPoint={data.swapPoint}
+                swapRawPoint={data.swapRawPoint}
+                swapCapPoint={data.swapCapPoint}
+                gnotUsdPrice={gnotUsdPrice}
+              />
             </TableColumn>
             <TableColumn tdWidth={tdWidths.at(3)}>{formatLeaderboardPoint(data.positionStakingPoint)}</TableColumn>
             <TableColumn tdWidth={tdWidths.at(4)}>{formatLeaderboardPoint(data.gnsDelegationPoint)}</TableColumn>
           </>
         )}
         <TableColumn tdWidth={tdWidths.at(isMobile ? 2 : 5)}>
-          <PointComposition totalPoint={data.totalPoint} items={pointItems} isMobile={isMobile} />
+          <PointComposition
+            totalPoint={data.totalPoint}
+            items={pointItems}
+            globalCapRatio={globalCapRatio}
+            isProvisional={data.isProvisional}
+            isMobile={isMobile}
+          />
         </TableColumn>
       </Hover>
     </TableWrapper>

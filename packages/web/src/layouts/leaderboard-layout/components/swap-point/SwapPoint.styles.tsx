@@ -4,7 +4,7 @@ import { ContentWrapper, Flex, FontWeight500, Label, Wrapper } from "../point-co
 
 export { ContentWrapper, Flex, FontWeight500, Label, Wrapper };
 
-export const Description = styled.div`
-  max-width: 240px;
-  color: ${({ theme }) => theme.color.text04};
+export const Counted = styled(FontWeight500)<{ $highlighted: boolean }>`
+  color: ${({ theme, $highlighted }) => ($highlighted ? theme.color.text33 : "inherit")};
+  font-weight: ${({ $highlighted }) => ($highlighted ? 700 : 500)};
 `;
