@@ -81,7 +81,7 @@
         "title": "2. Introduzca el importe"
       },
       "step3": {
-        "aprTooltip": "TAE estimada para los xGNS delegados: la media entre la TAE prevista para hoy y las TAE diarias de los últimos 6 días (UTC).\n\nRecompensas diarias previstas para hoy = recompensas por comisiones del protocolo registradas desde la medianoche (UTC) ÷ tiempo transcurrido × 24 horas. TAE diaria = (recompensas diarias por comisiones del protocolo × 365) ÷ valor en USD de todos los xGNS delegados.\n\nSolo se calculan la media de los días disponibles. La rentabilidad real varía en función de las comisiones del protocolo y del total delegado.",
+        "aprTooltip": "TAE estimada para los xGNS delegados, calculada como media de los últimos 7 días.\n\nTAE diaria = (recompensas por comisiones del protocolo del día × 365) ÷ valor en USD de todos los xGNS delegados.\n\nLos rendimientos reales varían en función de las comisiones del protocolo y del total delegado.",
         "currentlyDel": "Actualmente delegado",
         "estimatedAPR": "TAE estimada (7 días)",
         "newlyDel": "Nuevo Delegado",
@@ -215,7 +215,7 @@
       "title": "xGNS APR (7 días)"
     },
     "apy": {
-      "tooltip": "TAE estimada para los xGNS delegados: la media entre la TAE prevista para hoy y las TAE diarias de los últimos 6 días (UTC).\n\nRecompensas diarias previstas para hoy = recompensas por comisiones del protocolo registradas desde la medianoche (UTC) ÷ tiempo transcurrido × 24 horas. TAE diaria = (recompensas diarias por comisiones del protocolo × 365) ÷ valor en USD de todos los xGNS delegados.\n\nSolo se calculan la media de los días disponibles. La rentabilidad real varía en función de las comisiones del protocolo y del total delegado."
+      "tooltip": "TAE estimada para los xGNS delegados, calculada como media de los últimos 7 días.\n\nTAE diaria = (recompensas por comisiones del protocolo del día × 365) ÷ valor en USD de todos los xGNS delegados.\n\nLos rendimientos reales varían en función de las comisiones del protocolo y del total delegado."
     },
     "commPool": {
       "title": "Piscina comunitaria",
