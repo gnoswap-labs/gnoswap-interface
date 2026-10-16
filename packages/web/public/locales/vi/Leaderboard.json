@@ -7,13 +7,17 @@
   "list": {
     "column": {
       "counted": "Được tính",
+      "delegatedGns": "GNS đã ủy quyền",
       "delegation": "Ủy quyền",
       "globalCapRatio": "Tỷ lệ giới hạn chung",
+      "inRange": "{{n}} trong phạm vi",
       "points": "Điểm",
+      "pointsThisRound": "Điểm vòng này",
       "position": "Vị trí",
       "provisional": "tạm tính",
       "rank": "Xếp hạng",
       "referral": "Giới thiệu",
+      "stakedPositions": "Vị thế đang stake",
       "staking": "Staking",
       "swap": "Hoán đổi",
       "swapCap": "Giới hạn swap",

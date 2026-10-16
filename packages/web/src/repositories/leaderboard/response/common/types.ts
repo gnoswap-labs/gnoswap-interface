@@ -5,7 +5,8 @@ export const LeaderboardVisibilityStatus = {
   VISIBLE: YN_TYPE.NO,
 } as const satisfies Record<string, YnType>;
 
-export type LeaderboardVisibilityStatus = (typeof LeaderboardVisibilityStatus)[keyof typeof LeaderboardVisibilityStatus];
+export type LeaderboardVisibilityStatus =
+  (typeof LeaderboardVisibilityStatus)[keyof typeof LeaderboardVisibilityStatus];
 
 export interface LeaderboardUser {
   accountAddress: string;
@@ -35,6 +36,15 @@ export interface LeaderboardUser {
   swapCapPoint: string;
   isProvisional: boolean;
   usdDetail: LeaderboardUsdDetail | null;
+  // Current holdings behind the points. Optional: older API responses omit it.
+  holdingDetail?: LeaderboardHoldingDetail | null;
+}
+
+export interface LeaderboardHoldingDetail {
+  // Currently delegated GNS in base units.
+  delegatedGnsAmount: string;
+  stakedPositionCount: number;
+  inRangePositionCount: number;
 }
 
 export interface LeaderboardUsdDetail {

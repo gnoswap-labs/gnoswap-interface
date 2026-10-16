@@ -7,13 +7,17 @@
   "list": {
     "column": {
       "counted": "计入",
+      "delegatedGns": "已委托 GNS",
       "delegation": "委托",
       "globalCapRatio": "全局上限比例",
+      "inRange": "{{n}} 个在区间内",
       "points": "积分",
+      "pointsThisRound": "本轮积分",
       "position": "职位",
       "provisional": "暂定",
       "rank": "等级",
       "referral": "转介",
+      "stakedPositions": "质押中的仓位",
       "staking": "定标",
       "swap": "交换",
       "swapCap": "兑换上限",

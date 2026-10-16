@@ -7,13 +7,17 @@
   "list": {
     "column": {
       "counted": "Counted",
+      "delegatedGns": "Delegated GNS",
       "delegation": "Delegation",
       "globalCapRatio": "Global cap ratio",
+      "inRange": "{{n}} in range",
       "points": "Points",
+      "pointsThisRound": "Points this round",
       "position": "Position",
       "provisional": "provisional",
       "rank": "Rank",
       "referral": "Referral",
+      "stakedPositions": "Staked positions",
       "staking": "Staking",
       "swap": "Swap",
       "swapCap": "Swap Cap",

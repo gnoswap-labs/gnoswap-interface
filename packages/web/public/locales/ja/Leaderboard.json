@@ -7,13 +7,17 @@
   "list": {
     "column": {
       "counted": "反映",
+      "delegatedGns": "委任中のGNS",
       "delegation": "委任",
       "globalCapRatio": "グローバル上限比率",
+      "inRange": "{{n}}件がレンジ内",
       "points": "ポイント",
+      "pointsThisRound": "今ラウンドのポイント",
       "position": "ポジション",
       "provisional": "暫定",
       "rank": "順位",
       "referral": "紹介",
+      "stakedPositions": "ステーキング中のポジション",
       "staking": "ステーキング",
       "swap": "スワップ",
       "swapCap": "スワップ上限",

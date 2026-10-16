@@ -7,13 +7,17 @@
   "list": {
     "column": {
       "counted": "Засчитано",
+      "delegatedGns": "Делегированные GNS",
       "delegation": "Делегирование",
       "globalCapRatio": "Коэффициент общего лимита",
+      "inRange": "{{n}} в диапазоне",
       "points": "Баллы",
+      "pointsThisRound": "Очки за раунд",
       "position": "Позиция",
       "provisional": "предварительно",
       "rank": "Рейтинг",
       "referral": "Направление",
+      "stakedPositions": "Застейканные позиции",
       "staking": "Ставки",
       "swap": "Обмен",
       "swapCap": "Лимит свопа",

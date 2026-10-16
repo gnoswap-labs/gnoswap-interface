@@ -7,10 +7,12 @@ import {
   WrapperHoverBackground,
 } from "./LeaderboardTableRow.styles";
 import PointComposition, { PointCompositionItem } from "../point-composition/PointComposition";
+import DelegationPoint from "../delegation-point/DelegationPoint";
+import StakingPoint from "../staking-point/StakingPoint";
 import SwapPoint from "../swap-point/SwapPoint";
 import UserColumn from "../user-column/UserColumn";
 import { LeaderboardUser } from "@repositories/leaderboard/response/common/types";
-import { formatLeaderboardPoint, getGlobalCapRatio, isLeaderboardHidden } from "@utils/leaderboard-utils";
+import { getGlobalCapRatio, isLeaderboardHidden } from "@utils/leaderboard-utils";
 
 const LeaderboardTableRow = ({
   myAddress,
@@ -19,6 +21,7 @@ const LeaderboardTableRow = ({
   isMobile,
   isMe = false,
   rankOffset = 0,
+  gnotUsdPrice,
 }: {
   myAddress: string | undefined;
   data: LeaderboardUser;
@@ -26,6 +29,8 @@ const LeaderboardTableRow = ({
   isMobile: boolean;
   isMe?: boolean;
   rankOffset?: number;
+  // GNOT USD price, used to show the delegated GNS value in GNOT.
+  gnotUsdPrice?: string | number;
 }) => {
   const Hover = isMe ? HoverSection : HoverOnBgSection;
   const TableWrapper = isMe ? WrapperHoverBackground : Wrapper;
@@ -80,8 +85,17 @@ const LeaderboardTableRow = ({
             <TableColumn tdWidth={tdWidths.at(2)} style={{ justifyContent: "flex-start" }}>
               <SwapPoint swapPoint={data.swapPoint} swapRawPoint={data.swapRawPoint} swapCapPoint={data.swapCapPoint} />
             </TableColumn>
-            <TableColumn tdWidth={tdWidths.at(3)}>{formatLeaderboardPoint(data.positionStakingPoint)}</TableColumn>
-            <TableColumn tdWidth={tdWidths.at(4)}>{formatLeaderboardPoint(data.gnsDelegationPoint)}</TableColumn>
+            <TableColumn tdWidth={tdWidths.at(3)}>
+              <StakingPoint positionStakingPoint={data.positionStakingPoint} holdingDetail={data.holdingDetail} />
+            </TableColumn>
+            <TableColumn tdWidth={tdWidths.at(4)}>
+              <DelegationPoint
+                gnsDelegationPoint={data.gnsDelegationPoint}
+                holdingDetail={data.holdingDetail}
+                delegatedGnsUsd={data.usdDetail?.delegatedGnsUsd}
+                gnotUsdPrice={gnotUsdPrice}
+              />
+            </TableColumn>
           </>
         )}
         <TableColumn tdWidth={tdWidths.at(isMobile ? 2 : 5)}>

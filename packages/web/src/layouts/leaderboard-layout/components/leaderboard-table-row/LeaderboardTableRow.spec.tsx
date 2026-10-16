@@ -185,4 +185,44 @@ describe("LeaderboardTableRow", () => {
 
     expect(screen.getByText("Leaderboard:list.column.globalCapRatio").nextSibling).toHaveTextContent("-");
   });
+
+  it("shows the staking and delegation hovers when the API sends holding details", () => {
+    render(
+      <GnoswapThemeProvider>
+        <LeaderboardTableRow
+          myAddress={undefined}
+          data={{
+            ...createLeaderboardUser(1),
+            positionStakingPoint: "760.2",
+            gnsDelegationPoint: "36516.42",
+            usdDetail: { swapFeeUsd: "0", delegatedGnsUsd: "35200" },
+            holdingDetail: { delegatedGnsAmount: "2500000000000", stakedPositionCount: 3, inRangePositionCount: 2 },
+          }}
+          tdWidths={[100, 100, 100, 100, 100, 100]}
+          isMobile={false}
+          gnotUsdPrice="0.05"
+        />
+      </GnoswapThemeProvider>,
+    );
+
+    expect(screen.getByText("Leaderboard:list.column.stakedPositions")).toBeInTheDocument();
+    expect(screen.getByText("Leaderboard:list.column.delegatedGns")).toBeInTheDocument();
+    expect(screen.getByText(/2,500,000 \(704,000 GNOT ≈ \$35,200/)).toBeInTheDocument();
+  });
+
+  it("shows only the points when the API sends no holding details", () => {
+    render(
+      <GnoswapThemeProvider>
+        <LeaderboardTableRow
+          myAddress={undefined}
+          data={createLeaderboardUser(1)}
+          tdWidths={[100, 100, 100, 100, 100, 100]}
+          isMobile={false}
+        />
+      </GnoswapThemeProvider>,
+    );
+
+    expect(screen.queryByText("Leaderboard:list.column.stakedPositions")).not.toBeInTheDocument();
+    expect(screen.queryByText("Leaderboard:list.column.delegatedGns")).not.toBeInTheDocument();
+  });
 });
