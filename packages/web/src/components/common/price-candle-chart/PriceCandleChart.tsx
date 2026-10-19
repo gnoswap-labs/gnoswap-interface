@@ -7,6 +7,7 @@ import {
   createChart,
   HistogramSeries,
   TickMarkType,
+  type AutoscaleInfo,
   type LogicalRange,
   type Time,
   type UTCTimestamp,
@@ -23,6 +24,8 @@ import { CandleTooltip, ChartNavigation } from "./PriceCandleChart.styles";
 
 const VOLUME_AREA_FRACTION = 0.22;
 const PRICE_VOLUME_GAP_FRACTION = 0.03;
+const PRICE_TOP_MARGIN_FRACTION = 0.1;
+const PRICE_BOTTOM_MARGIN_FRACTION = VOLUME_AREA_FRACTION + PRICE_VOLUME_GAP_FRACTION;
 
 export interface PriceBar {
   time: number;
@@ -169,7 +172,7 @@ export default function PriceCandleChart({
         rightPriceScale: {
           autoScale: true,
           borderColor: theme.color.border14,
-          scaleMargins: { top: 0.1, bottom: VOLUME_AREA_FRACTION + PRICE_VOLUME_GAP_FRACTION },
+          scaleMargins: { top: PRICE_TOP_MARGIN_FRACTION, bottom: 0 },
         },
         localization: {
           locale,
@@ -204,6 +207,18 @@ export default function PriceCandleChart({
         wickDownColor: negative,
         borderVisible: false,
         priceLineVisible: false,
+        autoscaleInfoProvider: (original: () => AutoscaleInfo | null) => {
+          const info = original();
+          if (!info?.priceRange) return info;
+          const range = info.priceRange;
+          // Include the volume reserve in the range, not a scale margin: scale
+          // margins extend below the range even when its minimum is zero.
+          const bottomPadding =
+            ((range.maxValue - range.minValue) * PRICE_BOTTOM_MARGIN_FRACTION) /
+            (1 - PRICE_TOP_MARGIN_FRACTION - PRICE_BOTTOM_MARGIN_FRACTION);
+          range.minValue = Math.max(0, range.minValue - bottomPadding);
+          return info;
+        },
       });
       const volume = chart.addSeries(HistogramSeries, {
         priceScaleId: "",
