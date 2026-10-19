@@ -23,9 +23,7 @@ import { CHART_LOADING_DELAY_MS } from "@constants/loading.constant";
 import { CandleTooltip, ChartNavigation } from "./PriceCandleChart.styles";
 
 const VOLUME_AREA_FRACTION = 0.22;
-const PRICE_VOLUME_GAP_FRACTION = 0.03;
 const PRICE_TOP_MARGIN_FRACTION = 0.1;
-const PRICE_BOTTOM_MARGIN_FRACTION = VOLUME_AREA_FRACTION + PRICE_VOLUME_GAP_FRACTION;
 
 export interface PriceBar {
   time: number;
@@ -164,6 +162,10 @@ export default function PriceCandleChart({
           // TradingView Lightweight Charts™
           // Copyright (с) 2025 TradingView, Inc. https://www.tradingview.com/
           attributionLogo: true,
+          panes: {
+            separatorColor: "transparent",
+            separatorHoverColor: "transparent",
+          },
         },
         grid: {
           vertLines: { color: theme.color.border02, visible: true },
@@ -211,24 +213,27 @@ export default function PriceCandleChart({
           const info = original();
           if (!info?.priceRange) return info;
           const range = info.priceRange;
-          // Include the volume reserve in the range, not a scale margin: scale
-          // margins extend below the range even when its minimum is zero.
-          const bottomPadding =
-            ((range.maxValue - range.minValue) * PRICE_BOTTOM_MARGIN_FRACTION) /
-            (1 - PRICE_TOP_MARGIN_FRACTION - PRICE_BOTTOM_MARGIN_FRACTION);
-          range.minValue = Math.max(0, range.minValue - bottomPadding);
+          range.minValue = Math.max(0, range.minValue);
           return info;
         },
       });
-      const volume = chart.addSeries(HistogramSeries, {
-        priceScaleId: "",
-        priceFormat: { type: "volume" },
-        priceLineVisible: false,
-        lastValueVisible: false,
-      });
+      const volume = chart.addSeries(
+        HistogramSeries,
+        {
+          priceScaleId: "",
+          priceFormat: { type: "volume" },
+          priceLineVisible: false,
+          lastValueVisible: false,
+        },
+        1,
+      );
       volume.priceScale().applyOptions({
-        scaleMargins: { top: 1 - VOLUME_AREA_FRACTION, bottom: 0 },
+        scaleMargins: { top: PRICE_TOP_MARGIN_FRACTION, bottom: 0 },
       });
+      chart.priceScale("right", 1).applyOptions({ borderVisible: false });
+      const [pricePane, volumePane] = chart.panes();
+      pricePane.setStretchFactor(1 - VOLUME_AREA_FRACTION);
+      volumePane.setStretchFactor(VOLUME_AREA_FRACTION);
       let bars: PriceBar[] = [];
       const barsByTime = new Map<number, PriceBar>();
       // The cursor is the exclusive boundary of the last requested window, not the
@@ -503,7 +508,8 @@ export default function PriceCandleChart({
           setHovered(null);
           return;
         }
-        const bounds = element.getBoundingClientRect();
+        const bounds =
+          chart.panes()[param.paneIndex ?? 0].getHTMLElement()?.getBoundingClientRect() ?? element.getBoundingClientRect();
         const x = bounds.left + param.point.x;
         const y = bounds.top + param.point.y;
         setHovered(previous =>

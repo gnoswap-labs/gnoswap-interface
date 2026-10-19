@@ -31,10 +31,15 @@ const mockPriceScale = {
   applyOptions: jest.fn(),
   width: jest.fn().mockReturnValue(70),
 };
+const mockPanes = [
+  { setStretchFactor: jest.fn(), getHTMLElement: jest.fn().mockReturnValue(null) },
+  { setStretchFactor: jest.fn(), getHTMLElement: jest.fn().mockReturnValue(null) },
+];
 const mockCreateChart = jest.fn().mockImplementation(() => ({
   addSeries: jest.fn().mockReturnValueOnce(mockCandles).mockReturnValueOnce(mockVolume),
   priceScale: () => mockPriceScale,
   timeScale: () => mockTimeScale,
+  panes: () => mockPanes,
   subscribeCrosshairMove: mockSubscribeCrosshairMove,
   unsubscribeCrosshairMove: mockUnsubscribeCrosshairMove,
   resize: jest.fn(),
