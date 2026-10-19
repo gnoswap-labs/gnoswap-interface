@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import React, { useCallback, useMemo, useState } from "react";
 
 import SelectToken from "@components/common/select-token/SelectToken";
@@ -31,7 +31,7 @@ const SelectTokenContainer: React.FC<SelectTokenContainerProps> = ({
   const { breakpoint } = useWindowSize();
   const { tokens, displayBalanceStringMap, getTokenUSDPrice } = useTokenData(true);
   const [keyword, setKeyword] = useState("");
-  const [showUnverified, setShowUnverified] = useState(false);
+  const [showUnverified, setShowUnverified] = useAtom(TokenState.showUnverifiedTokens);
   const clearModal = useClearModal();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const recentsData = useAtomValue(TokenState.selectRecents);

@@ -39,7 +39,7 @@ export const SelectTokenWrapper = styled.div`
 
       .header-actions {
         ${mixins.flexbox("row", "center", "flex-end")};
-        gap: 16px;
+        gap: 6px;
       }
 
       .close-wrap {

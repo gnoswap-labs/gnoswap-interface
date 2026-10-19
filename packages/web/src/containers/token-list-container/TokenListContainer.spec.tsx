@@ -1,5 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { createStore, Provider as JotaiProvider } from "jotai";
 
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { TokenModel } from "@models/token/token-model";
@@ -93,15 +94,18 @@ const unverifiedToken = makeToken({
   isVerified: false,
 });
 
-const renderContainer = () =>
+const renderContainer = (store = createStore()) =>
   render(
-    <GnoswapThemeProvider>
-      <TokenListContainer />
-    </GnoswapThemeProvider>,
+    <JotaiProvider store={store}>
+      <GnoswapThemeProvider>
+        <TokenListContainer />
+      </GnoswapThemeProvider>
+    </JotaiProvider>,
   );
 
 describe("TokenListContainer unverified token filtering", () => {
   beforeEach(() => {
+    localStorage.clear();
     useTokenData.mockImplementation((showUnverified: boolean) => ({
       tokens: showUnverified ? [verifiedToken, unverifiedToken] : [verifiedToken],
       tokenPrices: {},

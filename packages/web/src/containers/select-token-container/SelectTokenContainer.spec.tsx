@@ -60,17 +60,16 @@ const unverifiedToken = makeToken("UNV", false);
 
 const mockedUseTokenData = useTokenData as jest.Mock;
 
-const renderContainer = (recents: TokenModel[] = []) => {
-  const store = createStore();
+const renderContainer = (recents: TokenModel[] = [], store = createStore()) => {
   store.set(TokenState.selectRecents, JSON.stringify(recents));
-  render(
+  const result = render(
     <JotaiProvider store={store}>
       <GnoswapThemeProvider>
         <SelectTokenContainer changeToken={jest.fn()} />
       </GnoswapThemeProvider>
     </JotaiProvider>,
   );
-  return store;
+  return { store, ...result };
 };
 
 const listSymbols = () =>
@@ -103,6 +102,45 @@ describe("SelectTokenContainer unverified token filtering", () => {
     toggle();
 
     expect(listSymbols()).toEqual(["VER", "UNV"]);
+  });
+
+  it("keeps the preference when the modal closes and opens again", () => {
+    const { store, unmount } = renderContainer();
+    toggle();
+    unmount();
+
+    renderContainer([], store);
+
+    expect(screen.getByRole("checkbox")).toBeChecked();
+    expect(listSymbols()).toEqual(["VER", "UNV"]);
+  });
+
+  it("restores the saved preference in a fresh store and persists switching it off", () => {
+    const first = renderContainer();
+    toggle();
+    first.unmount();
+
+    const second = renderContainer();
+    expect(screen.getByRole("checkbox")).toBeChecked();
+    expect(listSymbols()).toEqual(["VER", "UNV"]);
+    toggle();
+    second.unmount();
+
+    renderContainer();
+    expect(screen.getByRole("checkbox")).not.toBeChecked();
+    expect(listSymbols()).toEqual(["VER"]);
+  });
+
+  it("uses the page preference and shares modal changes with the page", () => {
+    const store = createStore();
+    store.set(TokenState.showUnverifiedTokens, true);
+    renderContainer([], store);
+
+    expect(listSymbols()).toEqual(["VER", "UNV"]);
+    toggle();
+
+    expect(store.get(TokenState.showUnverifiedTokens)).toBe(false);
+    expect(listSymbols()).toEqual(["VER"]);
   });
 
   it("does not find unverified tokens by search while the toggle is off", () => {
@@ -139,7 +177,7 @@ describe("SelectTokenContainer unverified token filtering", () => {
   });
 
   it("keeps hidden unverified recent tokens when selecting a token while the toggle is off", () => {
-    const store = renderContainer([unverifiedToken]);
+    const { store } = renderContainer([unverifiedToken]);
 
     fireEvent.click(document.querySelector(".token-list-wrapper .list")!);
 
@@ -189,7 +227,7 @@ describe("SelectTokenContainer token chips", () => {
   });
 
   it("stores the selected token as the most recent one, including GNOT", () => {
-    const store = renderContainer([tokenA, tokenB, tokenC]);
+    const { store } = renderContainer([tokenA, tokenB, tokenC]);
 
     selectFromList("GNOT");
 
@@ -198,7 +236,7 @@ describe("SelectTokenContainer token chips", () => {
   });
 
   it("moves a selected recent token to the front and keeps at most four", () => {
-    const store = renderContainer([tokenA, tokenB, tokenC, gns]);
+    const { store } = renderContainer([tokenA, tokenB, tokenC, gns]);
 
     selectFromList("CCC");
     selectFromList("wugnot");

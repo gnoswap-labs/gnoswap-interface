@@ -147,7 +147,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
         <div className="header">
           <span>{t("common:selectPairBtn.modal.title")}</span>
           <div className="header-actions">
-            <ShowUnverifiedTokensSwitch checked={showUnverified} onChange={toggleShowUnverified} />
+            <ShowUnverifiedTokensSwitch checked={showUnverified} onChange={toggleShowUnverified} compact />
             <div className="close-wrap" onClick={onClickClose}>
               <IconClose className="close-icon" />
             </div>
