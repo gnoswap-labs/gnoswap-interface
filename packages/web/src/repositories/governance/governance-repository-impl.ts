@@ -8,6 +8,7 @@ import { PACKAGE_GOVERNANCE_STAKER_PATH } from "@constants/environment.constant"
 
 import {
   makeLaunchpadCollectEmissionRewardMessages,
+  makeMintAndDistributeGnsMessages,
   makeLaunchpadCollectProtocolFeeRewardMessages,
 } from "../launchpad/launchpad.message";
 import { GovernanceRepository } from "./governance-repository";
@@ -472,7 +473,9 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     const hasClaimableLaunchpadEmission = claimableLaunchpadRewards.some(
       reward => reward.type === ClaimableRewardType.EMISSION && BigNumber(reward.amount || 0).isGreaterThan(0),
     );
+    // Collect paths settle only already-minted emission, so mint pending GNS first.
     const messages = [
+      ...makeMintAndDistributeGnsMessages({ caller }),
       ...(hasClaimableGovernanceEmission ? makeCollectEmissionRewardMessages({ caller }) : []),
       ...makeCollectProtocolFeeRewardMessages({
         tokenPaths: getClaimableProtocolFeeTokenPaths(claimableGovernanceRewards),

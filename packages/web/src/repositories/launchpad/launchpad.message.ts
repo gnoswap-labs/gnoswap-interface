@@ -4,7 +4,12 @@ import {
   makeTransactionMessagesWithApproves,
   TokenApproveMessageInfo,
 } from "@common/clients/wallet-client/transaction-messages";
-import { GNS_TOKEN_PATH, PACKAGE_LAUNCHPAD_ADDRESS, PACKAGE_LAUNCHPAD_PATH } from "@constants/environment.constant";
+import {
+  GNS_TOKEN_PATH,
+  PACKAGE_EMISSION_PATH,
+  PACKAGE_LAUNCHPAD_ADDRESS,
+  PACKAGE_LAUNCHPAD_PATH,
+} from "@constants/environment.constant";
 import { TokenModel } from "@models/token/token-model";
 
 enum TransactionMessageFunctionType {
@@ -14,6 +19,7 @@ enum TransactionMessageFunctionType {
   CollectProtocolFee = "CollectProtocolFee",
   CollectEmissionReward = "CollectEmissionReward",
   CollectProtocolFeeReward = "CollectProtocolFeeReward",
+  MintAndDistributeGns = "MintAndDistributeGns",
 }
 
 export function makeDepositGNSMessageWithApproves(
@@ -180,6 +186,18 @@ export function makeLaunchpadCollectEmissionRewardMessages({ caller }: { caller:
       packagePath: PACKAGE_LAUNCHPAD_PATH,
       send: "",
       func: TransactionMessageFunctionType.CollectEmissionReward,
+      args: [],
+      caller,
+    }),
+  ];
+}
+
+export function makeMintAndDistributeGnsMessages({ caller }: { caller: string }): TransactionMessage[] {
+  return [
+    makeTransactionMessage({
+      packagePath: PACKAGE_EMISSION_PATH,
+      send: "",
+      func: TransactionMessageFunctionType.MintAndDistributeGns,
       args: [],
       caller,
     }),
