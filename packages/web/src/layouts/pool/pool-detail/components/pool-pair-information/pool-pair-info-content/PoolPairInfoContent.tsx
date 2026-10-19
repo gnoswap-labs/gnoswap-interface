@@ -620,7 +620,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                     disableBlackBars={true}
                   />
                 ) : (
-                  <LoadingChart className="liquidity-chart-loading" role="status" aria-label="Loading liquidity chart">
+                  <LoadingChart role="status" aria-label="Loading liquidity chart">
                     <LoadingSpinner size="CHART" delay={CHART_LOADING_DELAY_MS} />
                   </LoadingChart>
                 )}

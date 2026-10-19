@@ -211,8 +211,9 @@ export const ContentWrapper = styled.div`
     }
     @media (max-width: 767px) {
       &.chart-panel {
-        display: flex;
-        align-items: stretch;
+        grid-template-columns: auto minmax(0, 1fr);
+        grid-template-rows: minmax(24px, auto) 24px auto;
+        align-items: center;
         margin: 0;
         padding: 12px;
         gap: 8px;
@@ -226,18 +227,25 @@ export const ContentWrapper = styled.div`
         background: ${({ theme }) => theme.color.background28};
       }
       .chart-tabs {
-        width: 130px;
-        align-self: flex-start;
+        width: 110px;
       }
       .chart-actions {
+        grid-column: 1 / -1;
+        grid-row: 2;
         width: 100%;
         min-height: 24px;
       }
       .chart-pair {
-        align-self: center;
-        gap: 8px;
-        font-size: 14px;
-        line-height: 20px;
+        justify-self: end;
+        gap: 4px;
+        font-size: 12px;
+        line-height: 18px;
+        span {
+          min-width: 0;
+        }
+        > :not(span) {
+          flex-shrink: 0;
+        }
       }
       .chart-ranges {
         width: 100%;
@@ -259,13 +267,10 @@ export const ContentWrapper = styled.div`
         }
       }
       .chart-body {
-        min-height: 176px;
+        grid-row: 3;
+        min-height: 208px;
       }
       .price-chart-shell {
-        height: 176px;
-      }
-      /* Liquidity also fills Price's 24px range toolbar and its 8px gap. */
-      .liquidity-chart-loading {
         height: 208px;
       }
     }
@@ -341,9 +346,7 @@ export const ContentWrapper = styled.div`
       margin: 16px 12px;
       padding: 16px 12px;
       .chart-actions-liquidity {
-        position: absolute;
-        top: 12px;
-        right: 12px;
+        justify-self: end;
         width: auto;
         .chart-ranges {
           display: none;
@@ -504,7 +507,7 @@ export const LoadingChart = styled.div`
   background-color: transparent;
   border-radius: 8px;
   ${media.mobile} {
-    height: 176px;
+    height: 208px;
   }
 `;
 
