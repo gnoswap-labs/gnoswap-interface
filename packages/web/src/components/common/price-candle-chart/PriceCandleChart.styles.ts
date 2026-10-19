@@ -82,11 +82,15 @@ export const CandleTooltip = styled.div`
   z-index: 1000;
   pointer-events: none;
   box-sizing: border-box;
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: 24px;
+  row-gap: 4px;
   width: max-content;
   max-width: calc(100vw - 16px);
   max-height: calc(100dvh - 16px);
   overflow: hidden;
-  padding: 12px 14px;
+  padding: 12px 16px;
   border: 1px solid ${({ theme }) => theme.color.border03};
   border-radius: 12px;
   background: ${({ theme }) => theme.color.background05};
@@ -95,15 +99,10 @@ export const CandleTooltip = styled.div`
   font-variant-numeric: tabular-nums;
 
   > div {
-    display: flex;
-    justify-content: space-between;
-    gap: 6px;
-    & + div {
-      margin-top: 2px;
-    }
+    display: contents;
   }
-  .quote-volume {
-    justify-content: flex-end;
+  .quote-volume strong {
+    grid-column: 2;
   }
   strong {
     min-width: 0;
