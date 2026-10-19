@@ -137,6 +137,7 @@ describe("SelectToken Component", () => {
     beforeEach(() => localStorage.clear());
 
     it("keeps recent tokens that are hidden from the list, such as by a search keyword", () => {
+      localStorage.setItem("recentsSelect", JSON.stringify(JSON.stringify([recentToken])));
       const { container } = renderSelectToken({ keyword: "bubble", recents: [recentToken], tokens: [token] });
 
       fireEvent.click(container.querySelector(".token-list-wrapper .list")!);
@@ -145,6 +146,7 @@ describe("SelectToken Component", () => {
     });
 
     it("stores a token once even when its balance fields changed", () => {
+      localStorage.setItem("recentsSelect", JSON.stringify(JSON.stringify([token])));
       const { container } = renderSelectToken({
         recents: [{ ...token, balance: 0 } as TokenModel],
         tokens: [{ ...token, balance: 1 } as TokenModel],

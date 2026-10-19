@@ -184,6 +184,17 @@ describe("SelectTokenContainer unverified token filtering", () => {
     const storedPaths = JSON.parse(store.get(TokenState.selectRecents)).map((token: TokenModel) => token.path);
     expect(storedPaths).toEqual([verifiedToken.path, unverifiedToken.path]);
   });
+
+  it("preserves unavailable recent tokens when another token is selected", () => {
+    const unavailableToken = makeToken("MISSING", true);
+    const { store } = renderContainer([unavailableToken]);
+    expect(chipSymbols()).not.toContain("MISSING");
+
+    fireEvent.click(document.querySelector(".token-list-wrapper .list")!);
+
+    const storedPaths = JSON.parse(store.get(TokenState.selectRecents)).map((token: TokenModel) => token.path);
+    expect(storedPaths).toEqual([verifiedToken.path, unavailableToken.path]);
+  });
 });
 
 describe("SelectTokenContainer token chips", () => {

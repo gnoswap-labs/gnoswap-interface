@@ -5,7 +5,7 @@ import { TokenModel } from "@models/token/token-model";
 import { getSwapExtensionByOriginPath } from "@resources/swap-extension";
 import { TokenState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
-import { removeDuplicatesByWrappedPath } from "@utils/common";
+import { parseJson, removeDuplicatesByWrappedPath } from "@utils/common";
 import { formatTokenModelPath, formatTokenPath } from "@utils/token-utils";
 import { keepVerified } from "@utils/token-verification-filter";
 import BigNumber from "bignumber.js";
@@ -80,11 +80,14 @@ const SelectToken: React.FC<SelectTokenProps> = ({
 
   const onClickToken = useCallback(
     (token: TokenModel) => {
-      const nextRecents = [token, ...recents.filter(item => item.path !== token.path)].slice(0, MAX_TOKEN_CHIPS);
-      setRecentsData(JSON.stringify(nextRecents));
+      setRecentsData(previous => {
+        const storedRecents: TokenModel[] = parseJson(previous || "[]");
+        const nextRecents = [token, ...storedRecents.filter(item => item.path !== token.path)].slice(0, MAX_TOKEN_CHIPS);
+        return JSON.stringify(nextRecents);
+      });
       changeToken(token);
     },
-    [changeToken, recents, setRecentsData],
+    [changeToken, setRecentsData],
   );
 
   const onChangeSearchKeyword = useCallback(
@@ -135,7 +138,7 @@ const SelectToken: React.FC<SelectTokenProps> = ({
     return breakpoint === DEVICE_TYPE.MOBILE ? 10 : 15;
   }, [breakpoint]);
 
-  // recents stays unfiltered so hidden tokens are not dropped from storage on the next selection.
+  // The container resolves recents for display; selection updates the complete stored history.
   const getTokensRecent = removeDuplicatesByWrappedPath([...keepVerified(recents, showUnverified), ...defaultTokens]).slice(
     0,
     MAX_TOKEN_CHIPS,
