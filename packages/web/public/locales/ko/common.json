@@ -185,7 +185,7 @@
   "swapUrlCopied": "스왑 URL 복사 완료!",
   "tokenList": {
     "showUnverifiedTokens": "확인되지 않은 토큰 표시",
-    "unverified": "미인증",
+    "unverified": "확인되지 않음",
     "unverifiedTokensTooltip": "Gno.land 토큰 리소스에 등록되지 않은 토큰은 필터링됩니다.",
     "verifyToken": "토큰을 확인하세요"
   },

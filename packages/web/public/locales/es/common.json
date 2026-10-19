@@ -186,7 +186,7 @@
   "swapUrlCopied": "Intercambiar URL ¡Copiado!",
   "tokenList": {
     "showUnverifiedTokens": "Mostrar tokens no verificados",
-    "unverified": "No verificados",
+    "unverified": "Sin verificar",
     "unverifiedTokensTooltip": "Se filtran los tokens que no están registrados en «Token Resources» de Gno.land.",
     "verifyToken": "Verifica tu token"
   },
