@@ -157,10 +157,6 @@ export default function PriceCandleChart({
           // TradingView Lightweight Charts™
           // Copyright (с) 2025 TradingView, Inc. https://www.tradingview.com/
           attributionLogo: true,
-          panes: {
-            separatorColor: "transparent",
-            separatorHoverColor: "transparent",
-          },
         },
         grid: {
           vertLines: { color: theme.color.border02, visible: true },
@@ -169,7 +165,7 @@ export default function PriceCandleChart({
         rightPriceScale: {
           autoScale: true,
           borderColor: theme.color.border14,
-          scaleMargins: { top: 0.1, bottom: 0.1 },
+          scaleMargins: { top: 0.1, bottom: 0.25 },
         },
         localization: {
           locale,
@@ -205,22 +201,15 @@ export default function PriceCandleChart({
         borderVisible: false,
         priceLineVisible: false,
       });
-      const volume = chart.addSeries(
-        HistogramSeries,
-        {
-          priceFormat: { type: "volume" },
-          priceLineVisible: false,
-          lastValueVisible: false,
-        },
-        1,
-      );
-      volume.priceScale().applyOptions({
-        scaleMargins: { top: 0.1, bottom: 0 },
-        entireTextOnly: true,
+      const volume = chart.addSeries(HistogramSeries, {
+        priceScaleId: "",
+        priceFormat: { type: "volume" },
+        priceLineVisible: false,
+        lastValueVisible: false,
       });
-      const [pricePane, volumePane] = chart.panes();
-      pricePane.setStretchFactor(3);
-      volumePane.setStretchFactor(1);
+      volume.priceScale().applyOptions({
+        scaleMargins: { top: 0.78, bottom: 0 },
+      });
       let bars: PriceBar[] = [];
       const barsByTime = new Map<number, PriceBar>();
       // The cursor is the exclusive boundary of the last requested window, not the
@@ -495,8 +484,7 @@ export default function PriceCandleChart({
           setHovered(null);
           return;
         }
-        const bounds =
-          chart.panes()[param.paneIndex ?? 0].getHTMLElement()?.getBoundingClientRect() ?? element.getBoundingClientRect();
+        const bounds = element.getBoundingClientRect();
         const x = bounds.left + param.point.x;
         const y = bounds.top + param.point.y;
         setHovered(previous =>
@@ -593,7 +581,7 @@ export default function PriceCandleChart({
             "--fill": theme.color.text01,
             "--stroke": theme.color.background28,
           },
-          // The rightmost cell of each pane is its price axis.
+          // The rightmost cell is the price axis.
           "& .tv-lightweight-charts tr > td:last-child": {
             touchAction: "none",
           },
