@@ -25,6 +25,25 @@ export const UnverifiedTokensInfoWrapper = styled.div`
   }
 `;
 
+export const UnverifiedTokensSwitchWrapper = styled.div<{ compact: boolean }>`
+  ${({ compact }) =>
+    compact &&
+    `
+      .switch-button {
+        gap: 6px;
+        white-space: nowrap;
+      }
+
+      label:not(:first-child) {
+        margin-left: -2px;
+      }
+    `}
+
+  ${UnverifiedTokensInfoWrapper} {
+    ${({ compact }) => compact && "margin-right: 0;"}
+  }
+`;
+
 export const UnverifiedTokensTooltipContent = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   gap: 16px;
