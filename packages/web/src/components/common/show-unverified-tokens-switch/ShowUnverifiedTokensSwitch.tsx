@@ -60,7 +60,7 @@ const ShowUnverifiedTokensSwitch: React.FC<ShowUnverifiedTokensSwitchProps> = ({
             ? t("common:tokenList.unverified", { defaultValue: "Unverified" })
             : t("common:tokenList.showUnverifiedTokens", { defaultValue: "Show unverified tokens" })
         }
-        labelExtra={isCompactMobile ? undefined : unverifiedTokensInfo}
+        labelExtra={unverifiedTokensInfo}
         labelExtraPosition="before"
       />
     </UnverifiedTokensSwitchWrapper>
