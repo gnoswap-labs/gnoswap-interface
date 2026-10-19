@@ -4,6 +4,7 @@ jest.mock("@constants/environment.constant", () => ({
   PACKAGE_GOVERNANCE_PATH: "governance_path",
   PACKAGE_GOVERNANCE_STAKER_ADDRESS: "governance_staker_address",
   PACKAGE_GOVERNANCE_STAKER_PATH: "governance_staker_path",
+  PACKAGE_EMISSION_PATH: "emission_path",
   PACKAGE_LAUNCHPAD_PATH: "launchpad_path",
   WRAPPED_GNOT_PATH: "wrapped_gnot_path",
 }));
@@ -56,6 +57,12 @@ describe("GovernanceRepositoryImpl", () => {
           messages: [
             expect.objectContaining({
               caller: "caller",
+              pkg_path: "emission_path",
+              func: "MintAndDistributeGns",
+              args: [],
+            }),
+            expect.objectContaining({
+              caller: "caller",
               pkg_path: "launchpad_path",
               func: "CollectProtocolFeeReward",
               args: ["token_a"],
@@ -90,6 +97,12 @@ describe("GovernanceRepositoryImpl", () => {
       expect(walletClient.sendTransaction).toHaveBeenCalledWith(
         expect.objectContaining({
           messages: [
+            expect.objectContaining({
+              caller: "caller",
+              pkg_path: "emission_path",
+              func: "MintAndDistributeGns",
+              args: [],
+            }),
             expect.objectContaining({
               caller: "caller",
               pkg_path: "governance_staker_path",

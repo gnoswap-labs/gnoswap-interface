@@ -52,6 +52,8 @@ export const PACKAGE_LAUNCHPAD_PATH = process.env.NEXT_PUBLIC_PACKAGE_LAUNCHPAD_
 
 export const PACKAGE_LAUNCHPAD_ADDRESS = getAddressByPackagePath(PACKAGE_LAUNCHPAD_PATH);
 
+export const PACKAGE_EMISSION_PATH = process.env.NEXT_PUBLIC_PACKAGE_EMISSION_PATH || "gno.land/r/gnoswap/emission";
+
 // Webpage Config
 export const BLOCKED_PAGES = process.env.NEXT_PUBLIC_BLOCKED_PAGES?.split(",") || [];
 export const REPOSITION_ENABLED = process.env.NEXT_PUBLIC_REPOSITION_ENABLED !== "false";
