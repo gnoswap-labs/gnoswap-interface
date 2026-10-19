@@ -21,6 +21,9 @@ import { CHART_LOADING_DELAY_MS } from "@constants/loading.constant";
 
 import { CandleTooltip, ChartNavigation } from "./PriceCandleChart.styles";
 
+const VOLUME_AREA_FRACTION = 0.22;
+const PRICE_VOLUME_GAP_FRACTION = 0.03;
+
 export interface PriceBar {
   time: number;
   open: number;
@@ -104,6 +107,7 @@ export default function PriceCandleChart({
       const height = viewport?.height ?? window.innerHeight;
       tooltip.style.maxWidth = `${Math.max(0, width - 16)}px`;
       tooltip.style.maxHeight = `${Math.max(0, height - 16)}px`;
+      tooltip.style.left = `${left + 8}px`;
       const bounds = tooltip.getBoundingClientRect();
       const x = hovered.x + 16 + bounds.width <= left + width - 8 ? hovered.x + 16 : hovered.x - bounds.width - 16;
       const y = hovered.y + 16 + bounds.height <= top + height - 8 ? hovered.y + 16 : hovered.y - bounds.height - 16;
@@ -165,7 +169,7 @@ export default function PriceCandleChart({
         rightPriceScale: {
           autoScale: true,
           borderColor: theme.color.border14,
-          scaleMargins: { top: 0.1, bottom: 0.25 },
+          scaleMargins: { top: 0.1, bottom: VOLUME_AREA_FRACTION + PRICE_VOLUME_GAP_FRACTION },
         },
         localization: {
           locale,
@@ -208,7 +212,7 @@ export default function PriceCandleChart({
         lastValueVisible: false,
       });
       volume.priceScale().applyOptions({
-        scaleMargins: { top: 0.78, bottom: 0 },
+        scaleMargins: { top: 1 - VOLUME_AREA_FRACTION, bottom: 0 },
       });
       let bars: PriceBar[] = [];
       const barsByTime = new Map<number, PriceBar>();
