@@ -135,7 +135,7 @@ describe("MyLiquidityContent cumulative claims", () => {
     const extraToken: TokenModel = {
       ...usdc,
       path: "gno.land/r/demo/extra",
-      priceID: "EXTRA",
+      priceID: usdc.priceID,
       symbol: "EXTRA",
       displaySymbol: "EXTRA",
     };

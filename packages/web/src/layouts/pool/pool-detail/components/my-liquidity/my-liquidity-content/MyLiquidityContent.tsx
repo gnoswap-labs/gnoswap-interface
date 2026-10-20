@@ -25,7 +25,7 @@ import { formatOtherPrice, formatPoolPairAmount } from "@utils/new-number-utils"
 import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { buildClaimedRewardInfo } from "@utils/position-reward-utils";
 import { mapToDisplayRewardType } from "@utils/reward-utils";
-import { calculateTokenDepositRatio, sortDisplayRewards } from "@utils/pool-utils";
+import { calculateTokenDepositRatio, sortDisplayRewards, sortTokensByPoolOrder } from "@utils/pool-utils";
 
 import {
   AmountDisplayWrapper,
@@ -212,25 +212,23 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       ...position.claimedRewards.map(reward => reward.rewardToken),
     ]);
     const rewardInfo = buildClaimedRewardInfo(positionRewards.claimed, [...positionTokens, ...tokens]);
-    if (!positionData) {
+    if (!positionData?.tokenA?.path || !positionData?.tokenB?.path) {
       return rewardInfo;
     }
 
-    const sortedInfoMap = sortDisplayRewards(
-      {
-        SWAP_FEE: Object.fromEntries(rewardInfo.SWAP_FEE.map(reward => [reward.token.path, reward])),
-        INTERNAL_REWARD: Object.fromEntries(rewardInfo.INTERNAL_REWARD.map(reward => [reward.token.path, reward])),
-        EXTERNAL_REWARD: Object.fromEntries(rewardInfo.EXTERNAL_REWARD.map(reward => [reward.token.path, reward])),
-        NONE: Object.fromEntries(rewardInfo.NONE.map(reward => [reward.token.path, reward])),
-      },
-      positionData,
-    );
-
     return {
-      SWAP_FEE: Object.values(sortedInfoMap.SWAP_FEE),
-      INTERNAL_REWARD: Object.values(sortedInfoMap.INTERNAL_REWARD),
-      EXTERNAL_REWARD: Object.values(sortedInfoMap.EXTERNAL_REWARD),
-      NONE: Object.values(sortedInfoMap.NONE),
+      SWAP_FEE: sortTokensByPoolOrder(rewardInfo.SWAP_FEE, positionData.tokenA.path, positionData.tokenB.path),
+      INTERNAL_REWARD: sortTokensByPoolOrder(
+        rewardInfo.INTERNAL_REWARD,
+        positionData.tokenA.path,
+        positionData.tokenB.path,
+      ),
+      EXTERNAL_REWARD: sortTokensByPoolOrder(
+        rewardInfo.EXTERNAL_REWARD,
+        positionData.tokenA.path,
+        positionData.tokenB.path,
+      ),
+      NONE: sortTokensByPoolOrder(rewardInfo.NONE, positionData.tokenA.path, positionData.tokenB.path),
     };
   }, [canShowData, positionData, positionRewards, positions, tokens]);
 
