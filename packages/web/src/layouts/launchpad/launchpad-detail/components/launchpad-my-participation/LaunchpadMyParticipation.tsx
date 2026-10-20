@@ -24,7 +24,6 @@ interface LaunchpadMyParticipationProps {
   isSwitchNetwork: boolean;
   isFetched: boolean;
   isLoading: boolean;
-  status: string;
 
   claimAll: (participationInfos: LaunchpadParticipationModel[]) => void;
   refetch: () => Promise<void>;
@@ -38,7 +37,6 @@ const LaunchpadMyParticipation = ({
   isSwitchNetwork,
   isFetched,
   isLoading,
-  status,
   claimAll,
   refetch,
 }: LaunchpadMyParticipationProps) => {
@@ -87,10 +85,6 @@ const LaunchpadMyParticipation = ({
         <LaunchpadMyParticipationSkeleton />
       </MyParticipationWrapper>
     );
-  }
-
-  if (!isLoading && isFetched && status === "UPCOMING") {
-    return <></>;
   }
 
   if (!isWalletConnected || isSwitchNetwork) {
