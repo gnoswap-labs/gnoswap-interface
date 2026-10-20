@@ -3,10 +3,15 @@ import { safeParseTime } from "./time.utils";
 
 const MILLISECONDS_PER_SECOND = 1000;
 
-export const getClaimableTime = (claimableThresholdSeconds?: number) => {
+// Rewards become claimable after the threshold from max(now, startTime), capped at endTime.
+export const getClaimableTime = (claimableThresholdSeconds?: number, startTime?: string, endTime?: string) => {
   if (claimableThresholdSeconds == null) return;
 
-  return new Date(Date.now() + claimableThresholdSeconds * MILLISECONDS_PER_SECOND);
+  const startTimestamp = safeParseTime(startTime) ?? 0;
+  const endTimestamp = safeParseTime(endTime);
+  const claimableTimestamp = Math.max(Date.now(), startTimestamp) + claimableThresholdSeconds * MILLISECONDS_PER_SECOND;
+
+  return new Date(endTimestamp == null ? claimableTimestamp : Math.min(claimableTimestamp, endTimestamp));
 };
 
 export const getClaimableDays = (poolTier: string): number => {

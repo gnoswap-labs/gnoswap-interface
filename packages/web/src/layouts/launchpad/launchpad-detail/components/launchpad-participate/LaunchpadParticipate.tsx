@@ -73,7 +73,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
     hideConditionTooltip,
   } = useLaunchpadHandler();
 
-  const claimableTimeStamp = getClaimableTime(poolInfo?.claimableThreshold);
+  const claimableTimeStamp = getClaimableTime(poolInfo?.claimableThreshold, poolInfo?.startTime, poolInfo?.endTime);
   const claimableTimeFormat = claimableTimeStamp ? getDateUtcToLocal(claimableTimeStamp).value : "-";
 
   // Initialize Page State
@@ -88,26 +88,6 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
   }, [showConditionTooltip, hideConditionTooltip, depositConditions.length]);
 
   const buttonRender = React.useCallback(() => {
-    if (status === "UPCOMING") {
-      return (
-        <div className="participate-button-wrapper">
-          <DepositButton
-            isAvailableDeposit={isAvailableDeposit}
-            isSwitchNetwork={isSwitchNetwork}
-            isWalletConnected={isWalletConnected}
-            status={status}
-            isDepositAllowed={isDepositAllowed}
-            text={depositButtonText}
-            openConnectWallet={openConnectWallet}
-            switchNetwork={switchNetwork}
-            openLaunchpadDepositAction={() => {
-              setIsOpenDepositConfirmModal(true);
-            }}
-          />
-        </div>
-      );
-    }
-
     if (isLoading) {
       return (
         <div className="participate-button-wrapper">
@@ -249,16 +229,8 @@ const DepositButton: React.FC<DepositButtonProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  if (status !== "ONGOING") {
-    const getProjectStatus = (type: PROJECT_STATUS_TYPE) => {
-      switch (type) {
-        case PROJECT_STATUS_TYPE.UPCOMING:
-          return t("Launchpad:common.upcoming");
-        case PROJECT_STATUS_TYPE.ENDED:
-          return t("Launchpad:common.ended");
-      }
-    };
-    return <Button text={getProjectStatus(status)} style={{ ...defaultStyle, hierarchy: ButtonHierarchy.Gray }} />;
+  if (status === PROJECT_STATUS_TYPE.ENDED) {
+    return <Button text={t("Launchpad:common.ended")} style={{ ...defaultStyle, hierarchy: ButtonHierarchy.Gray }} />;
   }
 
   if (!isWalletConnected) {

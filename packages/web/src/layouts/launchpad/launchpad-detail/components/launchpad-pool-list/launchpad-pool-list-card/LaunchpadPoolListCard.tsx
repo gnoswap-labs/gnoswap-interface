@@ -37,6 +37,8 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({ data, idx
     return currentPoolId === data.id;
   }, [currentPoolId, data.id]);
 
+  const isSelectable = data.status !== "ENDED";
+
   const aprStr = data.apr ? (
     <>
       {Number(data.apr) > 100 && "✨"}
@@ -50,10 +52,10 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({ data, idx
     <CardWrapper
       className={cx({
         active: isActiveCard,
-        ongoing: data.status === "ONGOING",
+        selectable: isSelectable,
       })}
       onClick={() => {
-        if (data.status === "ONGOING") {
+        if (isSelectable) {
           selectProjectPool(data.id);
         }
       }}

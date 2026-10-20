@@ -16,7 +16,7 @@ export const CardWrapper = styled.div`
   ${media.mobile} {
     min-width: 280px;
   }
-  &.ongoing {
+  &.selectable {
     cursor: pointer;
     &:hover {
       background: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.background05Hover : theme.color.hover01)};

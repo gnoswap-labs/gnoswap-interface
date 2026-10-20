@@ -236,7 +236,6 @@ const LaunchpadDetail: React.FC = () => {
     <LaunchpadDetailLayout
       breakpoint={breakpoint}
       header={<HeaderContainer />}
-      status={projectDetailData?.status || ""}
       breadcrumbs={
         <BreadcrumbsContainer listBreadcrumb={breadcrumbsSteps} isLoading={isLoadingProjectDetail} w="102px" />
       }
@@ -278,7 +277,6 @@ const LaunchpadDetail: React.FC = () => {
       myParticipation={
         <LaunchpadMyParticipationContainer
           poolInfos={projectDetailData?.pools || []}
-          status={projectDetailData?.status || ""}
           data={myParticipationData || []}
           refetch={refetchClaimAll}
           rewardInfo={projectRewardInfo}

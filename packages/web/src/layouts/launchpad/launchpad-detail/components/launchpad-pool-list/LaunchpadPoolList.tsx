@@ -42,7 +42,7 @@ const LaunchpadPoolList: React.FC<LaunchpadPoolListProps> = ({
   }, [sortedPools, sortedPools.length, setSelectLaunchpadPool]);
 
   React.useEffect(() => {
-    if (sortedPools && status === "ONGOING" && isInitialMount.current) {
+    if (sortedPools.length > 0 && status && status !== "ENDED" && isInitialMount.current) {
       defaultSelectPool();
       isInitialMount.current = false;
     }
