@@ -57,20 +57,19 @@ export function invalidateSwapPools(queryClient: QueryClient, poolPaths: readonl
   const encryptedPaths = new Set(poolPaths.map(encryptId));
 
   return queryClient.invalidateQueries({
-    predicate: ({ queryKey }) => {
-      const [key, path] = queryKey;
+    predicate: ({ queryKey: [key, path] }) => {
+      if (key === QUERY_KEY.rpcPools) return Array.isArray(path) && path.some(poolPath => paths.has(poolPath));
+      if (typeof path !== "string") return false;
       switch (key) {
         case QUERY_KEY.poolSqrtPriceX96:
         case QUERY_KEY.poolLiquidity:
         case QUERY_KEY.poolTicks:
         case QUERY_KEY.poolLiquidityTicks:
-          return typeof path === "string" && paths.has(path);
+          return paths.has(path);
         case QUERY_KEY.poolFromDb:
         case QUERY_KEY.poolDetail:
         case QUERY_KEY.prices:
-          return typeof path === "string" && encryptedPaths.has(path);
-        case QUERY_KEY.rpcPools:
-          return Array.isArray(path) && path.some(poolPath => paths.has(poolPath));
+          return encryptedPaths.has(path);
         default:
           return false;
       }

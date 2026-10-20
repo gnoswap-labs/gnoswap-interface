@@ -1179,7 +1179,7 @@ export const useSwapHandler = () => {
     openTransactionConfirmModal();
 
     // Snapshot the submitted paths before later quotes can change the route.
-    const swappedPoolPaths = [...new Set(estimatedRoutes.flatMap(route => route.pools.map(pool => pool.poolPath)))];
+    const swappedPoolPaths = estimatedRoutes.flatMap(route => route.pools.map(pool => pool.poolPath));
 
     swap(estimatedRoutes, swapAmount)
       .then(response => {
@@ -1206,13 +1206,13 @@ export const useSwapHandler = () => {
                 await Promise.all([
                   refetchGrc20Balances(),
                   updateBalances(),
-                  status === "SUCCESS" ? invalidateSwapPools(queryClient, swappedPoolPaths) : Promise.resolve(),
+                  status === "SUCCESS" && invalidateSwapPools(queryClient, swappedPoolPaths),
                 ]);
               },
               onEmit: async status => {
                 await Promise.all([
                   refetchGrc20Balances(),
-                  status === "SUCCESS" ? invalidateSwapPools(queryClient, swappedPoolPaths) : Promise.resolve(),
+                  status === "SUCCESS" && invalidateSwapPools(queryClient, swappedPoolPaths),
                 ]);
               },
             });
