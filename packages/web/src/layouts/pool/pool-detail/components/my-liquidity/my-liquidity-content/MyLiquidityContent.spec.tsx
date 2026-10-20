@@ -131,6 +131,82 @@ describe("MyLiquidityContent cumulative claims", () => {
     expect(within(container).queryByRole("button", { name: "Pool:position.card.btn.claimAll" })).toBeNull();
   });
 
+  it.each([false, true])("orders claimed and claimable by pool and keeps historical rows (closed=%s)", closed => {
+    const extraToken: TokenModel = {
+      ...usdc,
+      path: "gno.land/r/demo/extra",
+      priceID: "EXTRA",
+      symbol: "EXTRA",
+      displaySymbol: "EXTRA",
+    };
+    const summary: PositionRewardsResponse = {
+      ...rewards,
+      claimed: {
+        ...rewards.claimed,
+        swapFee: [
+          { tokenPath: "gno.land/r/demo/orphan", amount: "9000000", usdValue: "4" },
+          rewards.claimed.swapFee[1],
+          { tokenPath: extraToken.path, amount: "2000000", usdValue: "3" },
+          rewards.claimed.swapFee[0],
+        ],
+      },
+      totalUsd: {
+        ...rewards.totalUsd,
+        claimed: { ...rewards.totalUsd.claimed, swapFee: "19", total: "31" },
+      },
+    };
+    const { container } = render(
+      <MyLiquidityContent
+        {...baseProps}
+        tokens={[usdc, atom, extraToken]}
+        positionRewards={summary}
+        positions={[
+          {
+            ...position,
+            closed,
+            rewards: [atom, usdc].map(token => ({
+              rewardToken: { ...token, rewardType: "SWAP_FEE" as const },
+              totalAmount: "1000000",
+              claimableAmount: "1000000",
+              claimableUsd: "3",
+              apr: null,
+            })),
+          },
+        ]}
+      />,
+      { wrapper },
+    );
+    const claimedSection = container.querySelectorAll("section")[1];
+    const claimableSection = container.querySelectorAll("section")[2];
+
+    expect(Array.from(claimedSection.querySelectorAll(".coin-info .position"), row => row.textContent)).toEqual([
+      "USDC",
+      "ATOM",
+      "EXTRA",
+      "orphan",
+      "USDC",
+      "delisted",
+    ]);
+    expect(Array.from(claimableSection.querySelectorAll(".coin-info .position"), row => row.textContent)).toEqual([
+      "USDC",
+      "ATOM",
+    ]);
+    expect(claimedSection.querySelector(".content-value")).toHaveTextContent("$31");
+    expect(within(claimedSection).getAllByText("$19")).toHaveLength(2);
+    expect(within(claimedSection).getByText("123.456789")).toBeInTheDocument();
+    expect(within(claimedSection).getByText("1.23")).toBeInTheDocument();
+    expect(within(claimedSection).getByText("EXTRA", { selector: "span.position" }).closest(".list")).toHaveTextContent(
+      "2",
+    );
+    expect(
+      within(claimedSection).getByText("orphan", { selector: "span.position" }).closest(".list"),
+    ).toHaveTextContent("-");
+    expect(
+      within(claimedSection).getByText("delisted", { selector: "span.position" }).closest(".list"),
+    ).toHaveTextContent("-");
+    expect(within(claimedSection).getByText("$7")).toBeInTheDocument();
+  });
+
   it("keeps cumulative claims stable when list pagination, closed positions, and live prices change", () => {
     const { container, rerender } = render(<MyLiquidityContent {...baseProps} positions={[position]} />, { wrapper });
     const claimedSection = container.querySelectorAll("section")[1];

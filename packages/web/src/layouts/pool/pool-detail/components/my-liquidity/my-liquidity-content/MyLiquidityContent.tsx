@@ -211,8 +211,28 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
       ...position.pool.rewardTokens,
       ...position.claimedRewards.map(reward => reward.rewardToken),
     ]);
-    return buildClaimedRewardInfo(positionRewards.claimed, [...positionTokens, ...tokens]);
-  }, [canShowData, positionRewards, positions, tokens]);
+    const rewardInfo = buildClaimedRewardInfo(positionRewards.claimed, [...positionTokens, ...tokens]);
+    if (!positionData) {
+      return rewardInfo;
+    }
+
+    const sortedInfoMap = sortDisplayRewards(
+      {
+        SWAP_FEE: Object.fromEntries(rewardInfo.SWAP_FEE.map(reward => [reward.token.path, reward])),
+        INTERNAL_REWARD: Object.fromEntries(rewardInfo.INTERNAL_REWARD.map(reward => [reward.token.path, reward])),
+        EXTERNAL_REWARD: Object.fromEntries(rewardInfo.EXTERNAL_REWARD.map(reward => [reward.token.path, reward])),
+        NONE: Object.fromEntries(rewardInfo.NONE.map(reward => [reward.token.path, reward])),
+      },
+      positionData,
+    );
+
+    return {
+      SWAP_FEE: Object.values(sortedInfoMap.SWAP_FEE),
+      INTERNAL_REWARD: Object.values(sortedInfoMap.INTERNAL_REWARD),
+      EXTERNAL_REWARD: Object.values(sortedInfoMap.EXTERNAL_REWARD),
+      NONE: Object.values(sortedInfoMap.NONE),
+    };
+  }, [canShowData, positionData, positionRewards, positions, tokens]);
 
   const isShowClaimedRewardInfoTooltip = useMemo(() => {
     return (
@@ -224,9 +244,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [claimedRewardInfo]);
 
   const claimedRewardsUSD =
-    canShowData && positionRewards
-      ? formatOtherPrice(positionRewards.totalUsd.claimed.total, { isKMB: false })
-      : "-";
+    canShowData && positionRewards ? formatOtherPrice(positionRewards.totalUsd.claimed.total, { isKMB: false }) : "-";
 
   const unclaimedRewardInfo = useMemo((): PositionRewardForTooltip[] | null => {
     if (!canShowData) {
@@ -358,21 +376,24 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
     const claimableUsdValue = claimableRewardInfo
       ? Object.values(claimableRewardInfo)
           .flatMap(item => item)
-          .reduce((accum: null | number, current) => {
-            if ((accum === null || accum === undefined) && current.usd === null) {
-              return null;
-            }
+          .reduce(
+            (accum: null | number, current) => {
+              if ((accum === null || accum === undefined) && current.usd === null) {
+                return null;
+              }
 
-            if (accum === null || accum === undefined) {
-              return current.usd;
-            }
+              if (accum === null || accum === undefined) {
+                return current.usd;
+              }
 
-            if (current.usd === null) {
-              return accum;
-            }
+              if (current.usd === null) {
+                return accum;
+              }
 
-            return accum + current.usd;
-          }, null as number | null)
+              return accum + current.usd;
+            },
+            null as number | null,
+          )
       : null;
 
     return formatOtherPrice(claimableUsdValue, { isKMB: false });
@@ -428,9 +449,7 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   }, [depositRatio]);
 
   const feeClaimed =
-    canShowData && positionRewards
-      ? formatOtherPrice(positionRewards.totalUsd.claimed.swapFee, { isKMB: false })
-      : "-";
+    canShowData && positionRewards ? formatOtherPrice(positionRewards.totalUsd.claimed.swapFee, { isKMB: false }) : "-";
 
   const feeClaim = useMemo(() => {
     const swapFeeReward = claimableRewardInfo?.SWAP_FEE;
@@ -523,7 +542,9 @@ const MyLiquidityContent: React.FC<MyLiquidityContentProps> = ({
   const rewardClaimed =
     canShowData && positionRewards
       ? formatOtherPrice(
-          BigNumber(positionRewards.totalUsd.claimed.internalReward).plus(positionRewards.totalUsd.claimed.externalReward),
+          BigNumber(positionRewards.totalUsd.claimed.internalReward).plus(
+            positionRewards.totalUsd.claimed.externalReward,
+          ),
           { isKMB: false },
         )
       : "-";
