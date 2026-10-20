@@ -6,6 +6,9 @@ _Note: Gnoswap is in active development and not yet in production, and we welcom
 ## Project Overview
 This repository hosts the codebase for the Gnoswap interface, which enables users to interact with Gnoswap. The interface is built using TypeScript and is designed to be user-friendly, secure, and accessible, despite having complex mechanisms such as concentrated liquidity and staking as part of its core service.
 
+### Post-swap pool cache refresh
+Successful swaps invalidate price and liquidity caches only for pools in the submitted route, including multi-hop and split routes. RPC batch queries refresh when they contain an affected pool; unrelated pools and the global pool list remain cached. Transaction confirmation and indexing completion trigger additional invalidation so active views can refresh again after indexed data catches up. Failed transactions do not invalidate pool caches.
+
 ## Development Setup
 The Node.js version is 20.10.0.  
 We recommend using [nvm](https://github.com/nvm-sh/nvm).

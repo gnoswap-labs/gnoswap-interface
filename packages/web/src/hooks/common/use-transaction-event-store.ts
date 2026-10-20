@@ -3,6 +3,7 @@ import React from "react";
 import axios from "axios";
 
 import { GNOT_TOKEN } from "@common/values/token-constant";
+import type { EventStatus } from "@common/modules/event-store/types";
 import type { IGrc20TransferHistoryResponse } from "@repositories/token/response/balance-by-address-response";
 import type { PositionModel } from "@models/position/position-model";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
@@ -119,8 +120,8 @@ export const useTransactionEventStore = () => {
       tokenBAmount?: string;
       target?: string;
     };
-    onUpdate?: () => Promise<void>;
-    onEmit?: () => Promise<void>;
+    onUpdate?: (status: EventStatus) => Promise<void>;
+    onEmit?: (status: EventStatus) => Promise<void>;
     onSuccess?: () => Promise<void>;
   }) {
     if (!txHash) {
@@ -143,7 +144,7 @@ export const useTransactionEventStore = () => {
         const messageType = event.status === "SUCCESS" ? "success" : "error";
         const message = getMessage(action, messageType, formatData(event.data), txHash);
         enqueue(message, makeSnackbarConfig(messageType, TX_RESULT_SNACKBAR_TIMEOUT));
-        await onUpdate();
+        await onUpdate(event.status);
 
         if (visibleEmitResult && event.status === "SUCCESS") {
           // Show updating snackbar after TX_RESULT_SNACKBAR_TIMEOUT
@@ -175,7 +176,7 @@ export const useTransactionEventStore = () => {
         onEmitCommon();
 
         if (onEmit) {
-          await onEmit();
+          await onEmit(event.status);
         }
 
         if (visibleEmitResult && updatingSnackbarEnqueued) {

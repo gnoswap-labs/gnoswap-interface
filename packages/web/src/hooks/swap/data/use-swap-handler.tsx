@@ -41,7 +41,7 @@ import { matchInputNumber } from "@utils/number-utils";
 import { isAmountLessThanTokenMinimum, makeDisplayTokenAmount } from "@utils/token-utils";
 import { isEmptyObject } from "@utils/validation-utils";
 
-import { handleAmount } from "./use-swap-handler.utils";
+import { handleAmount, invalidateSwapPools } from "./use-swap-handler.utils";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
@@ -1178,6 +1178,9 @@ export const useSwapHandler = () => {
     broadcastLoading(getMessage(DexEvent.SWAP, "pending", broadcastMessage));
     openTransactionConfirmModal();
 
+    // Snapshot the submitted paths before later quotes can change the route.
+    const swappedPoolPaths = [...new Set(estimatedRoutes.flatMap(route => route.pools.map(pool => pool.poolPath)))];
+
     swap(estimatedRoutes, swapAmount)
       .then(response => {
         if (response) {
@@ -1199,17 +1202,24 @@ export const useSwapHandler = () => {
                   tokenBAmount: makeDisplayTokenAmount(tokenB, BigNumber(amount1).abs().toString())?.toString() || "0",
                 };
               },
-              onUpdate: async () => {
-                await refetchGrc20Balances();
-                await updateBalances();
+              onUpdate: async status => {
+                await Promise.all([
+                  refetchGrc20Balances(),
+                  updateBalances(),
+                  status === "SUCCESS" ? invalidateSwapPools(queryClient, swappedPoolPaths) : Promise.resolve(),
+                ]);
               },
-              onEmit: async () => {
-                await refetchGrc20Balances();
+              onEmit: async status => {
+                await Promise.all([
+                  refetchGrc20Balances(),
+                  status === "SUCCESS" ? invalidateSwapPools(queryClient, swappedPoolPaths) : Promise.resolve(),
+                ]);
               },
             });
           }
 
           if (response.code === 0) {
+            void invalidateSwapPools(queryClient, swappedPoolPaths);
             const responseData = response?.data as SwapRouteSuccessResponse;
             openTransactionConfirmModal();
             broadcastSuccess(getMessage(DexEvent.SWAP, "success", broadcastMessage, responseData.hash), onFinishSwap);

@@ -1,6 +1,9 @@
+import { QueryClient } from "@tanstack/react-query";
 import BigNumber from "bignumber.js";
 
 import { TokenModel } from "@models/token/token-model";
+import { QUERY_KEY } from "@query/query-keys";
+import { encryptId } from "@utils/common";
 
 function getDecimalLength(value: string) {
   return value.includes(".") ? value.split(".")[1].length : 0;
@@ -47,4 +50,30 @@ export function handleAmount(changed: string, token: TokenModel | null, previous
   }
 
   return { isValid: true, value };
+}
+
+export function invalidateSwapPools(queryClient: QueryClient, poolPaths: readonly string[]) {
+  const paths = new Set(poolPaths);
+  const encryptedPaths = new Set(poolPaths.map(encryptId));
+
+  return queryClient.invalidateQueries({
+    predicate: ({ queryKey }) => {
+      const [key, path] = queryKey;
+      switch (key) {
+        case QUERY_KEY.poolSqrtPriceX96:
+        case QUERY_KEY.poolLiquidity:
+        case QUERY_KEY.poolTicks:
+        case QUERY_KEY.poolLiquidityTicks:
+          return typeof path === "string" && paths.has(path);
+        case QUERY_KEY.poolFromDb:
+        case QUERY_KEY.poolDetail:
+        case QUERY_KEY.prices:
+          return typeof path === "string" && encryptedPaths.has(path);
+        case QUERY_KEY.rpcPools:
+          return Array.isArray(path) && path.some(poolPath => paths.has(poolPath));
+        default:
+          return false;
+      }
+    },
+  });
 }
