@@ -1,4 +1,5 @@
 import { CLAIMABLE_DAYS } from "@common/values";
+import { LaunchpadPoolModel } from "@models/launchpad";
 import { safeParseTime } from "./time.utils";
 
 const MILLISECONDS_PER_SECOND = 1000;
@@ -24,4 +25,9 @@ export function isLaunchpadPoolEnded(endTime: string | null | undefined): boolea
     return false;
   }
   return Date.now() >= endTimestamp;
+}
+
+// The contract rejects deposits into ended tiers and tiers without a reward allocation.
+export function isLaunchpadPoolDepositable(pool: Pick<LaunchpadPoolModel, "status" | "allocation">): boolean {
+  return pool.status !== "ENDED" && Number(pool.allocation) > 0;
 }

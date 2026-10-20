@@ -8,7 +8,7 @@ import { useLaunchpadHandler } from "@hooks/launchpad/data/use-launchpad-handler
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { GNS_TOKEN } from "@common/values/token-constant";
 import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
-import { getClaimableTime } from "@utils/launchpad-get-claimable";
+import { getClaimableTime, isLaunchpadPoolDepositable } from "@utils/launchpad-get-claimable";
 import { getDateUtcToLocal } from "@common/utils/date-util";
 import { PROJECT_STATUS_TYPE } from "@common/values";
 
@@ -74,6 +74,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
   } = useLaunchpadHandler();
 
   const claimableTimeStamp = getClaimableTime(poolInfo?.claimableThreshold, poolInfo?.startTime, poolInfo?.endTime);
+  const isPoolDepositable = !!poolInfo && isLaunchpadPoolDepositable(poolInfo);
   const claimableTimeFormat = claimableTimeStamp ? getDateUtcToLocal(claimableTimeStamp).value : "-";
 
   // Initialize Page State
@@ -103,6 +104,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
           isSwitchNetwork={isSwitchNetwork}
           isWalletConnected={isWalletConnected}
           status={status}
+          isPoolDepositable={isPoolDepositable}
           isDepositAllowed={isDepositAllowed}
           text={depositButtonText}
           openConnectWallet={openConnectWallet}
@@ -113,7 +115,7 @@ const LaunchpadParticipate: React.FC<LaunchpadParticipateProps> = ({
         />
       </div>
     );
-  }, [status, isLoading, depositButtonText]);
+  }, [status, isLoading, depositButtonText, isPoolDepositable]);
 
   return (
     <LaunchpadParticipateWrapper>
@@ -209,6 +211,7 @@ interface DepositButtonProps {
   isSwitchNetwork: boolean;
   isAvailableDeposit: boolean;
   status: string;
+  isPoolDepositable: boolean;
   isDepositAllowed: boolean;
 
   openConnectWallet: () => void;
@@ -222,6 +225,7 @@ const DepositButton: React.FC<DepositButtonProps> = ({
   openConnectWallet,
   isSwitchNetwork,
   status,
+  isPoolDepositable,
   isDepositAllowed,
   isAvailableDeposit,
   switchNetwork,
@@ -239,6 +243,15 @@ const DepositButton: React.FC<DepositButtonProps> = ({
 
   if (isSwitchNetwork) {
     return <Button text={text} style={defaultStyle} onClick={switchNetwork} />;
+  }
+
+  if (!isPoolDepositable) {
+    return (
+      <Button
+        text={t("Launchpad:common.button.selectPool")}
+        style={{ ...defaultStyle, hierarchy: ButtonHierarchy.Gray }}
+      />
+    );
   }
 
   if (!isAvailableDeposit) {

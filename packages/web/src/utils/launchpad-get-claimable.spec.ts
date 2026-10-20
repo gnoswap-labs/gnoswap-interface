@@ -1,4 +1,4 @@
-import { getClaimableTime } from "./launchpad-get-claimable";
+import { getClaimableTime, isLaunchpadPoolDepositable } from "./launchpad-get-claimable";
 
 describe("getClaimableTime", () => {
   const now = new Date("2026-05-13T00:00:00.000Z").getTime();
@@ -35,5 +35,20 @@ describe("getClaimableTime", () => {
 
   it("returns undefined when threshold is missing", () => {
     expect(getClaimableTime()).toBeUndefined();
+  });
+});
+
+describe("isLaunchpadPoolDepositable", () => {
+  it("allows upcoming and ongoing pools with a reward allocation", () => {
+    expect(isLaunchpadPoolDepositable({ status: "UPCOMING", allocation: 100 })).toBe(true);
+    expect(isLaunchpadPoolDepositable({ status: "ONGOING", allocation: 100 })).toBe(true);
+  });
+
+  it("rejects ended pools", () => {
+    expect(isLaunchpadPoolDepositable({ status: "ENDED", allocation: 100 })).toBe(false);
+  });
+
+  it("rejects pools without a reward allocation", () => {
+    expect(isLaunchpadPoolDepositable({ status: "UPCOMING", allocation: 0 })).toBe(false);
   });
 });

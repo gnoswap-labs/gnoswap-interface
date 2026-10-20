@@ -25,6 +25,10 @@ export const CardWrapper = styled.div`
       background: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.background05Hover : theme.color.hover01)};
       border: 1px solid var(--border-gradient, #869dff);
     }
+    &:focus-visible {
+      outline: 2px solid #869dff;
+      outline-offset: 2px;
+    }
   }
 
   .card-header {
