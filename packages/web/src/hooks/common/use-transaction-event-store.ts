@@ -57,7 +57,7 @@ export const useTransactionEventStore = () => {
   const { eventStore, tokenRepository, poolRepository, positionRepository } = useGnoswapContext();
   const { hasBadgeSnackbar, enqueue, dequeue, change } = useSnackbar();
   const router = useCustomRouter();
-  const { fetchWugnotBalance, unwrapAll } = useWrap();
+  const { fetchWugnotBalance, fetchWugnotBalanceSnapshot, unwrapAll } = useWrap();
   const { getMessage, getReceiveWugnotMessage, getStakePositionMessage } = useMessage();
   const { refetch: refetchNotifications } = useGetNotifications();
 
@@ -267,10 +267,14 @@ export const useTransactionEventStore = () => {
       if (signal.aborted) return;
 
       if (wugnotBalance && wugnotBalance.updatedBlockHeight >= transactionHeight) {
-        const balance = new BigNumber(wugnotBalance.amount);
+        // A row's height can reflect only an earlier effect in this block; query its committed snapshot.
+        const snapshotAmount = await fetchWugnotBalanceSnapshot(wugnotBalance.updatedBlockHeight);
+        if (signal.aborted || snapshotAmount === null) return;
+
+        const balance = new BigNumber(snapshotAmount);
         if (!balance.isFinite() || balance.isLessThanOrEqualTo(0)) return;
 
-        const tokenAAmount = (makeDisplayTokenAmount(GNOT_TOKEN, wugnotBalance.amount) || 0).toLocaleString("en-US", {
+        const tokenAAmount = (makeDisplayTokenAmount(GNOT_TOKEN, snapshotAmount) || 0).toLocaleString("en-US", {
           maximumFractionDigits: GNOT_TOKEN.decimals,
         });
         enqueue(

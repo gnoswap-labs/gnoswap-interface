@@ -70,6 +70,7 @@ describe("useTransactionEventStore", () => {
     });
     (useWrap as jest.Mock).mockReturnValue({
       fetchWugnotBalance: jest.fn(),
+      fetchWugnotBalanceSnapshot: jest.fn(),
       unwrapAll: jest.fn(),
     });
     (useWallet as jest.Mock).mockReturnValue({ account: null });
@@ -115,11 +116,16 @@ describe("useTransactionEventStore", () => {
       getReceiveWugnotMessage,
       getStakePositionMessage: jest.fn(),
     });
+    let snapshotAmount = "0";
+    const fetchBalance =
+      typeof balance === "string" ? jest.fn().mockResolvedValue({ amount: balance, updatedBlockHeight: 100 }) : balance;
     (useWrap as jest.Mock).mockReturnValue({
-      fetchWugnotBalance:
-        typeof balance === "string"
-          ? jest.fn().mockResolvedValue({ amount: balance, updatedBlockHeight: 100 })
-          : balance,
+      fetchWugnotBalance: async () => {
+        const result = await fetchBalance();
+        snapshotAmount = result?.amount || "0";
+        return result;
+      },
+      fetchWugnotBalanceSnapshot: jest.fn(async () => snapshotAmount),
       unwrapAll: jest.fn(),
     });
     const Probe = () => {
