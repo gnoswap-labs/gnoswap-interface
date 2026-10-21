@@ -116,7 +116,10 @@ describe("useTransactionEventStore", () => {
       getStakePositionMessage: jest.fn(),
     });
     (useWrap as jest.Mock).mockReturnValue({
-      fetchWugnotBalance: typeof balance === "string" ? jest.fn().mockResolvedValue(balance) : balance,
+      fetchWugnotBalance:
+        typeof balance === "string"
+          ? jest.fn().mockResolvedValue({ amount: balance, updatedBlockHeight: 100 })
+          : balance,
       unwrapAll: jest.fn(),
     });
     const Probe = () => {
@@ -127,7 +130,12 @@ describe("useTransactionEventStore", () => {
       return null;
     };
     const { unmount } = render(<Probe />);
-    return { onEmit: eventStore.addEvent.mock.calls[0][2], getReceiveWugnotMessage, unmount };
+    return {
+      onEmit: (event: { status: string; data: string[]; emitNumber?: number | null }) =>
+        eventStore.addEvent.mock.calls[0][2]({ emitNumber: 100, ...event }),
+      getReceiveWugnotMessage,
+      unmount,
+    };
   }
 
   it("shows one receive badge when transfers arrive after an initially empty projection", async () => {
@@ -164,41 +172,62 @@ describe("useTransactionEventStore", () => {
     }
   });
 
-  it("waits for a positive balance before showing a 0.01 wGNOT receive badge", async () => {
+  it.each([99, undefined])("waits for the transaction block instead of accepting balance height %s", async height => {
     jest.useFakeTimers();
     try {
       const getTransfers = jest.fn().mockResolvedValue({
-        data: [{ fromAddress: "g1other", toAddress: "g1user", tokenAmount: "10000" }],
+        data: [{ fromAddress: "g1other", toAddress: "g1user", tokenAmount: "2000000" }],
       });
-      const fetchBalance = jest.fn().mockResolvedValueOnce("0").mockResolvedValue("10000");
+      const fetchBalance = jest
+        .fn()
+        .mockResolvedValueOnce({ amount: "10000000", updatedBlockHeight: height })
+        .mockResolvedValue({ amount: "12000000", updatedBlockHeight: 100 });
       const { onEmit, getReceiveWugnotMessage } = setupTransferEvent(getTransfers, fetchBalance);
       await onEmit({ status: "SUCCESS", data: [] });
       await Promise.resolve();
-      expect(fetchBalance).toHaveBeenCalledTimes(1);
       expect(getReceiveWugnotMessage).not.toHaveBeenCalled();
       await (
         jest as typeof jest & { advanceTimersByTimeAsync: (ms: number) => Promise<void> }
       ).advanceTimersByTimeAsync(1_200);
-      expect(fetchBalance).toHaveBeenCalledTimes(2);
-      expect(getReceiveWugnotMessage).toHaveBeenCalledWith(txHash, "0.01", expect.any(Function));
+      expect(getReceiveWugnotMessage).toHaveBeenCalledWith(txHash, "12", expect.any(Function));
     } finally {
       jest.useRealTimers();
     }
   });
 
-  it("does not show a zero-balance badge if the wallet balance never catches up", async () => {
+  it("does not show stale positive balances when indexing never reaches the transaction block", async () => {
     jest.useFakeTimers();
     try {
       const getTransfers = jest.fn().mockResolvedValue({
-        data: [{ fromAddress: "g1other", toAddress: "g1user", tokenAmount: "10000" }],
+        data: [{ fromAddress: "g1other", toAddress: "g1user", tokenAmount: "2000000" }],
       });
-      const fetchBalance = jest.fn().mockResolvedValue("0");
+      const fetchBalance = jest.fn().mockResolvedValue({ amount: "10000000", updatedBlockHeight: 99 });
       const { onEmit, getReceiveWugnotMessage } = setupTransferEvent(getTransfers, fetchBalance);
       await onEmit({ status: "SUCCESS", data: [] });
       await (
         jest as typeof jest & { advanceTimersByTimeAsync: (ms: number) => Promise<void> }
       ).advanceTimersByTimeAsync(10_000);
-      expect(fetchBalance).toHaveBeenCalledTimes(7);
+      expect(getReceiveWugnotMessage).not.toHaveBeenCalled();
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it("stops without a badge when a later block has already consumed the received balance", async () => {
+    jest.useFakeTimers();
+    try {
+      const getTransfers = jest.fn().mockResolvedValue({
+        data: [{ fromAddress: "g1other", toAddress: "g1user", tokenAmount: "2000000" }],
+      });
+      const fetchBalance = jest
+        .fn()
+        .mockResolvedValueOnce({ amount: "0", updatedBlockHeight: 101 })
+        .mockResolvedValue({ amount: "12000000", updatedBlockHeight: 102 });
+      const { onEmit, getReceiveWugnotMessage } = setupTransferEvent(getTransfers, fetchBalance);
+      await onEmit({ status: "SUCCESS", data: [] });
+      await (
+        jest as typeof jest & { advanceTimersByTimeAsync: (ms: number) => Promise<void> }
+      ).advanceTimersByTimeAsync(10_000);
       expect(getReceiveWugnotMessage).not.toHaveBeenCalled();
     } finally {
       jest.useRealTimers();

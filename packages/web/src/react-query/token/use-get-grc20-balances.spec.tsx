@@ -9,7 +9,7 @@ import { useGetGrc20Balances } from "./use-get-grc20-balances";
 const getGrc20BalancesByAddress = jest.fn();
 const wallet = { currentChainId: "chain-a" };
 const balances: IBalancesByAddressResponse = {
-  data: [{ path: "gno.land/r/demo/usdc", amount: "100" }],
+  data: [{ path: "gno.land/r/demo/usdc", amount: "100", updatedBlockHeight: 100 }],
   message: "success",
 };
 

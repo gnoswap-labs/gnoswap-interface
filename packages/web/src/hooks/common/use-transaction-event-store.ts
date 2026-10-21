@@ -192,7 +192,13 @@ export const useTransactionEventStore = () => {
           wugnotCheckStarted = true;
           const controller = new AbortController();
           activeTransferChecksRef.current.add(controller);
-          void enqueueWugnotChangeEvent(txHash, account.address, receiveWugnotSnackbarConfig, controller.signal)
+          void enqueueWugnotChangeEvent(
+            txHash,
+            account.address,
+            event.emitNumber,
+            receiveWugnotSnackbarConfig,
+            controller.signal,
+          )
             .catch(console.error)
             .finally(() => activeTransferChecksRef.current.delete(controller));
         }
@@ -215,9 +221,11 @@ export const useTransactionEventStore = () => {
   async function enqueueWugnotChangeEvent(
     txHash: string,
     address: string,
+    transactionHeight: number | null,
     config: SnackbarOptions,
     signal: AbortSignal,
   ) {
+    if (transactionHeight === null || transactionHeight <= 0) return;
     const deadline = Date.now() + WUGNOT_TRANSFER_RETRY_DEADLINE;
     let transferHistory: IGrc20TransferHistoryResponse["data"] = [];
     while (!signal.aborted) {
@@ -258,9 +266,11 @@ export const useTransactionEventStore = () => {
       const wugnotBalance = await fetchWugnotBalance();
       if (signal.aborted) return;
 
-      const balance = new BigNumber(wugnotBalance);
-      if (balance.isFinite() && balance.isGreaterThan(0)) {
-        const tokenAAmount = (makeDisplayTokenAmount(GNOT_TOKEN, wugnotBalance) || 0).toLocaleString("en-US", {
+      if (wugnotBalance && wugnotBalance.updatedBlockHeight >= transactionHeight) {
+        const balance = new BigNumber(wugnotBalance.amount);
+        if (!balance.isFinite() || balance.isLessThanOrEqualTo(0)) return;
+
+        const tokenAAmount = (makeDisplayTokenAmount(GNOT_TOKEN, wugnotBalance.amount) || 0).toLocaleString("en-US", {
           maximumFractionDigits: GNOT_TOKEN.decimals,
         });
         enqueue(
@@ -270,7 +280,7 @@ export const useTransactionEventStore = () => {
         return;
       }
 
-      // The transfer projection can precede the wallet balance; never display a stale zero.
+      // A positive balance can still predate this transaction; wait for its block to be reflected.
       if (deadline - Date.now() < WUGNOT_TRANSFER_RETRY_INTERVAL) return;
       await waitForWugnotRetry(signal);
     }

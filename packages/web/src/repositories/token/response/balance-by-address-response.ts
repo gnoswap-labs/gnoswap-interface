@@ -6,6 +6,7 @@ export interface IBalancesByAddressResponse {
 export interface Balance {
   path: string;
   amount: string;
+  updatedBlockHeight: number;
 }
 
 export interface IGrc20TransferHistoryResponse {

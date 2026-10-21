@@ -11,11 +11,7 @@ export const useWrap = () => {
 
   const fetchWugnotBalance = useCallback(async () => {
     const balances = await tokenRepository.getGrc20BalancesByAddress(account?.address || "");
-    if (!balances) {
-      return "0";
-    }
-
-    return balances.data.find(balance => balance.path === WRAPPED_GNOT_PATH)?.amount || "0";
+    return balances?.data.find(balance => balance.path === WRAPPED_GNOT_PATH);
   }, [tokenRepository, account?.address]);
 
   const unwrap = useCallback(
@@ -38,7 +34,7 @@ export const useWrap = () => {
   const unwrapAll = useCallback(async () => {
     const wugnotBalance = await fetchWugnotBalance();
 
-    return unwrap(wugnotBalance);
+    return unwrap(wugnotBalance?.amount || "0");
   }, [unwrap, fetchWugnotBalance]);
 
   return {
