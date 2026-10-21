@@ -86,10 +86,11 @@ export class TokenRepositoryMock implements TokenRepository {
   };
 
   /* eslint-disable @typescript-eslint/no-unused-vars */
-  public getGrc20BalancesByAddress = async (address: string): Promise<IBalancesByAddressResponse> => {
+  public getGrc20BalancesByAddress = async (address: string, txHash?: string): Promise<IBalancesByAddressResponse> => {
     return {
       data: [],
       message: "",
+      ...(txHash === undefined ? {} : { accountBalanceApplied: false, balanceChanges: [] }),
     };
   };
 

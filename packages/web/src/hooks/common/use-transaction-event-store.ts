@@ -4,7 +4,6 @@ import axios from "axios";
 
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import type { EventStatus } from "@common/modules/event-store/types";
-import type { IGrc20TransferHistoryResponse } from "@repositories/token/response/balance-by-address-response";
 import type { PositionModel } from "@models/position/position-model";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { PAGE_PATH } from "@constants/page.constant";
@@ -25,16 +24,15 @@ const TX_RESULT_SNACKBAR_TIMEOUT = 4_000;
 const UPDATING_SNACKBAR_TIMEOUT = 60_000;
 const BADGE_SNACKBAR_TIMEOUT = 0;
 const WUGNOT_CHANGE_THRESHOLD = 10000;
-// The activity API caches empty transfer projections for one second after a block is emitted.
-const WUGNOT_TRANSFER_RETRY_INTERVAL = 1_200;
-const WUGNOT_TRANSFER_RETRY_DEADLINE = 8_000;
+const WUGNOT_RECEIPT_RETRY_INTERVAL = 1_200;
+const WUGNOT_RECEIPT_RETRY_DEADLINE = 8_000;
 
 function waitForWugnotRetry(signal: AbortSignal): Promise<void> {
   const { promise, resolve } = Promise.withResolvers<void>();
   const timer = setTimeout(() => {
     signal.removeEventListener("abort", onAbort);
     resolve();
-  }, WUGNOT_TRANSFER_RETRY_INTERVAL);
+  }, WUGNOT_RECEIPT_RETRY_INTERVAL);
   function onAbort() {
     clearTimeout(timer);
     resolve();
@@ -57,7 +55,7 @@ export const useTransactionEventStore = () => {
   const { eventStore, tokenRepository, poolRepository, positionRepository } = useGnoswapContext();
   const { hasBadgeSnackbar, enqueue, dequeue, change } = useSnackbar();
   const router = useCustomRouter();
-  const { fetchWugnotBalance, fetchWugnotBalanceSnapshot, unwrapAll } = useWrap();
+  const { unwrapAll } = useWrap();
   const { getMessage, getReceiveWugnotMessage, getStakePositionMessage } = useMessage();
   const { refetch: refetchNotifications } = useGetNotifications();
 
@@ -192,13 +190,7 @@ export const useTransactionEventStore = () => {
           wugnotCheckStarted = true;
           const controller = new AbortController();
           activeTransferChecksRef.current.add(controller);
-          void enqueueWugnotChangeEvent(
-            txHash,
-            account.address,
-            event.emitNumber,
-            receiveWugnotSnackbarConfig,
-            controller.signal,
-          )
+          void enqueueWugnotChangeEvent(txHash, account.address, receiveWugnotSnackbarConfig, controller.signal)
             .catch(console.error)
             .finally(() => activeTransferChecksRef.current.delete(controller));
         }
@@ -221,71 +213,36 @@ export const useTransactionEventStore = () => {
   async function enqueueWugnotChangeEvent(
     txHash: string,
     address: string,
-    transactionHeight: number | null,
     config: SnackbarOptions,
     signal: AbortSignal,
   ) {
-    if (transactionHeight === null || transactionHeight <= 0) return;
-    const deadline = Date.now() + WUGNOT_TRANSFER_RETRY_DEADLINE;
-    let transferHistory: IGrc20TransferHistoryResponse["data"] = [];
-    while (!signal.aborted) {
-      try {
-        transferHistory = (await tokenRepository.getGrc20TransferHistoryByTxHash(txHash, WRAPPED_GNOT_PATH)).data;
-      } catch (error) {
-        console.error(error);
-        return;
-      }
+    const deadline = Date.now() + WUGNOT_RECEIPT_RETRY_DEADLINE;
+    while (!signal.aborted && Date.now() < deadline) {
+      const balances = await tokenRepository.getGrc20BalancesByAddress(address, txHash);
+      if (signal.aborted || Date.now() >= deadline) return;
 
-      if (signal.aborted) return;
-      if (transferHistory.length > 0) break;
-      // Only retry an empty projection, and never start a request at or past the deadline.
-      if (deadline - Date.now() < WUGNOT_TRANSFER_RETRY_INTERVAL) return;
-      await waitForWugnotRetry(signal);
-    }
-    if (signal.aborted) return;
+      if (balances.accountBalanceApplied === true) {
+        const delta = balances.balanceChanges?.find(change => change.path === WRAPPED_GNOT_PATH)?.amount;
+        const wugnotChange = new BigNumber(delta ?? "0");
+        if (!wugnotChange.isFinite() || wugnotChange.isLessThan(WUGNOT_CHANGE_THRESHOLD)) return;
 
-    const wugnotChange = transferHistory.reduce((acc, history): BigNumber => {
-      const amount = new BigNumber(history.tokenAmount);
-
-      if (address === history.fromAddress) {
-        return acc.minus(amount);
-      }
-
-      if (address === history.toAddress) {
-        return acc.plus(amount);
-      }
-
-      return acc;
-    }, BigNumber(0));
-
-    if (wugnotChange.isLessThan(WUGNOT_CHANGE_THRESHOLD)) {
-      return;
-    }
-
-    while (!signal.aborted) {
-      const wugnotBalance = await fetchWugnotBalance();
-      if (signal.aborted) return;
-
-      if (wugnotBalance && wugnotBalance.updatedBlockHeight >= transactionHeight) {
-        // A row's height can reflect only an earlier effect in this block; query its committed snapshot.
-        const snapshotAmount = await fetchWugnotBalanceSnapshot(wugnotBalance.updatedBlockHeight);
-        if (signal.aborted || snapshotAmount === null) return;
-
-        const balance = new BigNumber(snapshotAmount);
+        const wugnotBalance = balances.data.find(balance => balance.path === WRAPPED_GNOT_PATH);
+        if (!wugnotBalance) return;
+        const balance = new BigNumber(wugnotBalance.amount);
         if (!balance.isFinite() || balance.isLessThanOrEqualTo(0)) return;
 
-        const tokenAAmount = (makeDisplayTokenAmount(GNOT_TOKEN, snapshotAmount) || 0).toLocaleString("en-US", {
+        const tokenAAmount = (makeDisplayTokenAmount(GNOT_TOKEN, wugnotBalance.amount) || 0).toLocaleString("en-US", {
           maximumFractionDigits: GNOT_TOKEN.decimals,
         });
         enqueue(
-          getReceiveWugnotMessage(txHash, tokenAAmount, () => unwrapAll()),
+          getReceiveWugnotMessage(txHash, tokenAAmount, () => unwrapAll(txHash)),
           config,
         );
         return;
       }
 
-      // A positive balance can still predate this transaction; wait for its block to be reflected.
-      if (deadline - Date.now() < WUGNOT_TRANSFER_RETRY_INTERVAL) return;
+      // Pending (or a server without receipt support) never exposes an unverified balance.
+      if (deadline - Date.now() < WUGNOT_RECEIPT_RETRY_INTERVAL) return;
       await waitForWugnotRetry(signal);
     }
   }

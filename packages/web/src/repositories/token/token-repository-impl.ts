@@ -117,12 +117,12 @@ export class TokenRepositoryImpl implements TokenRepository {
     return response.data.data;
   };
 
-  public getGrc20BalancesByAddress = async (address: string): Promise<IBalancesByAddressResponse> => {
+  public getGrc20BalancesByAddress = async (address: string, txHash?: string): Promise<IBalancesByAddressResponse> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
     const response = await this.networkClient.get<IBalancesByAddressResponse>({
-      url: `/users/${address}/balances`,
+      url: `/users/${address}/balances${txHash === undefined ? "" : `?txHash=${encodeURIComponent(txHash)}`}`,
     });
     return response.data;
   };

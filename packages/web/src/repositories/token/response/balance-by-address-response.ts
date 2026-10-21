@@ -1,6 +1,8 @@
 export interface IBalancesByAddressResponse {
   data: Balance[];
   message: string;
+  accountBalanceApplied?: boolean;
+  balanceChanges?: { path: string; amount: string }[];
 }
 
 export interface Balance {

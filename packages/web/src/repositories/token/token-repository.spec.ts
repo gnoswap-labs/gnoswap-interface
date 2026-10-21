@@ -38,6 +38,44 @@ describe("getTokens", () => {
   });
 });
 
+describe("getGrc20BalancesByAddress", () => {
+  it("leaves the latest-balance request unchanged", async () => {
+    const response = { message: "", data: [{ path: "token", amount: "10", updatedBlockHeight: 100 }] };
+    const get = jest.fn().mockResolvedValue({ data: response });
+    const repository = new TokenRepositoryImpl({ get } as unknown as NetworkClient, localStorageClient);
+
+    await expect(repository.getGrc20BalancesByAddress("g1user")).resolves.toEqual(response);
+    expect(get).toHaveBeenCalledWith({ url: "/users/g1user/balances" });
+  });
+
+  it.each(["7a", "ebKeJB6fEOh9BO2MJk1+aNdPmR5BEjVBavhbb42ZL/4="])(
+    "requests receipt mode with an encoded hash %s and preserves its top-level fields",
+    async txHash => {
+      const response = {
+        message: "",
+        data: [{ path: "token", amount: "12", updatedBlockHeight: 100 }],
+        accountBalanceApplied: true,
+        balanceChanges: [{ path: "token", amount: "-2" }],
+      };
+      const get = jest.fn().mockResolvedValue({ data: response });
+      const repository = new TokenRepositoryImpl({ get } as unknown as NetworkClient, localStorageClient);
+
+      await expect(repository.getGrc20BalancesByAddress("g1user", txHash)).resolves.toEqual(response);
+      expect(get).toHaveBeenCalledWith({ url: `/users/g1user/balances?txHash=${encodeURIComponent(txHash)}` });
+    },
+  );
+
+  it("keeps the mock in pending receipt mode instead of inventing completion", async () => {
+    await expect(tokenRepository.getGrc20BalancesByAddress("g1user", "tx")).resolves.toEqual({
+      message: "",
+      data: [],
+      accountBalanceApplied: false,
+      balanceChanges: [],
+    });
+    await expect(tokenRepository.getGrc20BalancesByAddress("g1user")).resolves.toEqual({ message: "", data: [] });
+  });
+});
+
 describe("token display metadata", () => {
   it("preserves the wrapped token symbol while exposing its extension display symbol", async () => {
     const extension = swapExtensions[0];

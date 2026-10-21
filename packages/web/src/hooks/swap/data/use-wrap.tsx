@@ -1,39 +1,20 @@
 import { GNOT_TOKEN } from "@common/values/token-constant";
-import { WRAPPED_GNOT_PACKAGE_PATH, WRAPPED_GNOT_PATH } from "@constants/environment.constant";
+import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { evaluateExpressionToIntegerString, makeABCIParams } from "@utils/rpc-utils";
 import BigNumber from "bignumber.js";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 
 export const useWrap = () => {
-  const { swapRouterRepository, tokenRepository, rpcProvider } = useGnoswapContext();
+  const { swapRouterRepository, tokenRepository } = useGnoswapContext();
   const { account } = useWallet();
-
-  const fetchWugnotBalance = useCallback(async () => {
-    const balances = await tokenRepository.getGrc20BalancesByAddress(account?.address || "");
-    return balances?.data.find(balance => balance.path === WRAPPED_GNOT_PATH);
-  }, [tokenRepository, account?.address]);
-
-  const fetchWugnotBalanceSnapshot = useCallback(
-    async (height?: number) => {
-      if (!rpcProvider || !account) return null;
-      if (height !== undefined && (!Number.isSafeInteger(height) || height <= 0)) return null;
-
-      const result = await rpcProvider.evaluateExpression(
-        WRAPPED_GNOT_PACKAGE_PATH,
-        makeABCIParams("BalanceOf", [account.address]),
-        height,
-      );
-      return evaluateExpressionToIntegerString(result);
-    },
-    [rpcProvider, account],
-  );
+  const currentAddressRef = useRef(account?.address);
+  currentAddressRef.current = account?.address;
 
   const unwrap = useCallback(
     async (tokenAmount: string) => {
       const rawTokenAmount = BigNumber(tokenAmount);
-      if (rawTokenAmount.isNaN() || rawTokenAmount.isLessThan(1000)) {
+      if (!rawTokenAmount.isFinite() || rawTokenAmount.isLessThan(1000)) {
         return null;
       }
 
@@ -47,15 +28,22 @@ export const useWrap = () => {
     [swapRouterRepository],
   );
 
-  const unwrapAll = useCallback(async () => {
-    const wugnotBalance = await fetchWugnotBalanceSnapshot();
+  const unwrapAll = useCallback(
+    async (txHash: string) => {
+      const address = account?.address;
+      if (!txHash || !address || currentAddressRef.current !== address) return null;
 
-    return unwrap(wugnotBalance || "0");
-  }, [unwrap, fetchWugnotBalanceSnapshot]);
+      const balances = await tokenRepository.getGrc20BalancesByAddress(address, txHash);
+      if (currentAddressRef.current !== address || balances.accountBalanceApplied !== true) return null;
+
+      const wugnotBalance = balances.data.find(balance => balance.path === WRAPPED_GNOT_PATH);
+      if (!wugnotBalance) return null;
+      return unwrap(wugnotBalance.amount);
+    },
+    [account?.address, tokenRepository, unwrap],
+  );
 
   return {
-    fetchWugnotBalance,
-    fetchWugnotBalanceSnapshot,
     unwrap,
     unwrapAll,
   };
