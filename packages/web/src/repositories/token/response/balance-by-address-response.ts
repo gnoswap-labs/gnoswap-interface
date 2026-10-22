@@ -5,10 +5,21 @@ export interface IBalancesByAddressResponse {
   balanceChanges?: { path: string; amount: string }[];
 }
 
+export type IBalancesByAddressWireResponse =
+  | IBalancesByAddressResponse
+  | {
+      message: string;
+      data: {
+        applied: boolean;
+        balances: Balance[];
+        balanceChanges: { path: string; amount: string }[];
+      };
+    };
+
 export interface Balance {
   path: string;
   amount: string;
-  updatedBlockHeight: number;
+  updatedBlockHeight?: number;
 }
 
 export interface IGrc20TransferHistoryResponse {

@@ -9,7 +9,10 @@ import { useSnackbar } from "@hooks/common/use-snackbar";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { DexEvent, DexEventType } from "@repositories/common";
 import { TokenRepositoryImpl } from "@repositories/token/token-repository-impl";
-import { IBalancesByAddressResponse } from "@repositories/token/response/balance-by-address-response";
+import {
+  IBalancesByAddressResponse,
+  IBalancesByAddressWireResponse,
+} from "@repositories/token/response/balance-by-address-response";
 import { useTransactionEventStore } from "./use-transaction-event-store";
 
 jest.mock("@hooks/common/use-gnoswap-context", () => ({ useGnoswapContext: jest.fn() }));
@@ -39,7 +42,28 @@ function applied(amount = "12000000", delta = "2000000"): IBalancesByAddressResp
   };
 }
 
-function setup(response: IBalancesByAddressResponse = applied()) {
+function nestedApplied(amount = "12000000", delta = "2000000") {
+  return {
+    message: "Success",
+    data: {
+      applied: true,
+      balances: [{ path: WRAPPED_GNOT_PATH, amount, updatedBlockHeight: 100 }],
+      balanceChanges: [{ path: WRAPPED_GNOT_PATH, amount: delta }],
+    },
+  };
+}
+
+const nestedPending = {
+  message: "Success",
+  data: { applied: false, balances: [], balanceChanges: [] },
+};
+
+const legacyBalances = {
+  message: "Success",
+  data: [{ path: WRAPPED_GNOT_PATH, amount: "12000000" }],
+};
+
+function setup(response: IBalancesByAddressWireResponse = nestedApplied()) {
   const enqueue = jest.fn();
   const sendUnwrapToken = jest.fn().mockResolvedValue({ code: 0 });
   const evaluateExpression = jest.fn();
@@ -108,14 +132,26 @@ describe("unwrap guidance account-balance receipts", () => {
   it.each([
     { scenario: "an earlier positive balance in the same block", amount: "10000000" },
     { scenario: "only the outgoing half of a split transaction", amount: "8000000" },
-  ])("waits for a receipt despite $scenario", async ({ amount }) => {
+    {
+      scenario: "a nested pending receipt with an earlier positive balance",
+      amount: "10000000",
+      nested: true,
+    },
+    {
+      scenario: "a nested pending receipt with only the outgoing half",
+      amount: "8000000",
+      nested: true,
+    },
+  ])("waits for a receipt despite $scenario", async ({ amount, nested }) => {
     // Defensive legacy/partial projection: even a positive row at the TX height is not proof.
-    const probe = setup({ ...applied(amount), accountBalanceApplied: false, balanceChanges: [] });
+    const response = nestedApplied(amount);
+    response.data.applied = false;
+    const probe = setup(nested ? response : { ...applied(amount), accountBalanceApplied: false, balanceChanges: [] });
     await probe.confirm();
     expect(probe.receiveBadges()).toEqual([]);
     expect(probe.get).toHaveBeenCalledWith({ url: receiptUrl });
 
-    probe.get.mockResolvedValue({ data: applied() });
+    probe.get.mockResolvedValue({ data: nested ? nestedApplied() : applied() });
     await advance(1_200);
     expect(probe.receiveBadges()).toHaveLength(1);
     expect(probe.receiveBadges()[0][0].description).toBe("12");
@@ -211,7 +247,7 @@ describe("unwrap guidance account-balance receipts", () => {
 
   it("does not show a receipt that resolves after unmount", async () => {
     const probe = setup();
-    const response = Promise.withResolvers<{ data: IBalancesByAddressResponse }>();
+    const response = Promise.withResolvers<{ data: IBalancesByAddressWireResponse }>();
     probe.get.mockReturnValue(response.promise);
     await probe.confirm();
     probe.unmount();
@@ -222,7 +258,7 @@ describe("unwrap guidance account-balance receipts", () => {
 
   it("does not display an in-flight receipt that resolves past the pending deadline", async () => {
     const probe = setup();
-    const response = Promise.withResolvers<{ data: IBalancesByAddressResponse }>();
+    const response = Promise.withResolvers<{ data: IBalancesByAddressWireResponse }>();
     probe.get.mockReturnValue(response.promise);
     await probe.confirm();
     await advance(8_000);
@@ -256,22 +292,48 @@ describe("unwrap guidance account-balance receipts", () => {
     }
   });
 
-  it("re-fetches the same receipt on click and unwraps its exact full current amount", async () => {
-    const probe = setup();
-    await probe.confirm();
-    probe.get.mockResolvedValue({ data: applied("13000001") });
-    await probe.receiveBadges()[0][0].onClick();
-    expect(probe.get).toHaveBeenCalledTimes(2);
-    expect(probe.get).toHaveBeenLastCalledWith({ url: receiptUrl });
-    expect(probe.sendUnwrapToken).toHaveBeenCalledWith(expect.objectContaining({ tokenAmount: "13.000001" }));
-    probe.expectNoBalanceRpc();
-  });
+  it.each([
+    { format: "nested", initial: nestedApplied(), refreshed: nestedApplied("13000001") },
+    { format: "transitional", initial: applied(), refreshed: applied("13000001") },
+  ])(
+    "re-fetches the $format receipt on click and unwraps its exact full current amount",
+    async ({ initial, refreshed }) => {
+      const probe = setup(initial);
+      await probe.confirm();
+      expect(probe.receiveBadges()).toHaveLength(1);
+      expect(probe.receiveBadges()[0][0].description).toBe("12");
+      probe.get.mockResolvedValue({ data: refreshed });
+      await probe.receiveBadges()[0][0].onClick();
+      expect(probe.get).toHaveBeenCalledTimes(2);
+      expect(probe.get).toHaveBeenLastCalledWith({ url: receiptUrl });
+      expect(probe.sendUnwrapToken).toHaveBeenCalledWith(expect.objectContaining({ tokenAmount: "13.000001" }));
+      probe.expectNoBalanceRpc();
+    },
+  );
 
   it.each([
     { scenario: "pending", receipt: pending },
     { scenario: "missing proof", receipt: { ...applied(), accountBalanceApplied: undefined } },
     { scenario: "zero current balance", receipt: applied("0") },
     { scenario: "missing current token", receipt: { ...applied(), data: [] } },
+    { scenario: "nested pending", receipt: nestedPending },
+    {
+      scenario: "nested pending with a positive partial balance",
+      receipt: {
+        message: "Success",
+        data: {
+          applied: false,
+          balances: [{ path: WRAPPED_GNOT_PATH, amount: "8000000", updatedBlockHeight: 100 }],
+          balanceChanges: [{ path: WRAPPED_GNOT_PATH, amount: "2000000" }],
+        },
+      },
+    },
+    { scenario: "legacy bare balances without metadata", receipt: legacyBalances },
+    { scenario: "nested zero current balance", receipt: nestedApplied("0") },
+    {
+      scenario: "nested missing current token",
+      receipt: { message: "Success", data: { ...nestedApplied().data, balances: [] } },
+    },
   ])("suppresses click submission for $scenario", async ({ receipt }) => {
     const probe = setup();
     await probe.confirm();
@@ -297,7 +359,7 @@ describe("unwrap guidance account-balance receipts", () => {
   it("suppresses submission if the account changes during the click receipt query", async () => {
     const probe = setup();
     await probe.confirm();
-    const response = Promise.withResolvers<{ data: IBalancesByAddressResponse }>();
+    const response = Promise.withResolvers<{ data: IBalancesByAddressWireResponse }>();
     probe.get.mockReturnValue(response.promise);
     const clicking = probe.receiveBadges()[0][0].onClick();
     (useWallet as jest.Mock).mockReturnValue({ account: { address: "g1another" } });
@@ -313,6 +375,31 @@ describe("unwrap guidance account-balance receipts", () => {
     const error = new Error("receipt read failed");
     probe.get.mockRejectedValue(error);
     await expect(probe.receiveBadges()[0][0].onClick()).rejects.toThrow(error);
+    expect(probe.sendUnwrapToken).not.toHaveBeenCalled();
+    probe.expectNoBalanceRpc();
+  });
+
+  it("never authorizes guidance from a legacy bare array with a positive ordinary balance", async () => {
+    const probe = setup(legacyBalances);
+    await probe.confirm();
+    await advance(8_000);
+    expect(probe.receiveBadges()).toEqual([]);
+    expect(probe.sendUnwrapToken).not.toHaveBeenCalled();
+    probe.expectNoBalanceRpc();
+  });
+
+  it.each([
+    { scenario: "zero current balance", receipt: nestedApplied("0") },
+    {
+      scenario: "missing current token",
+      receipt: { message: "Success", data: { ...nestedApplied().data, balances: [] } },
+    },
+    { scenario: "pending", receipt: nestedPending },
+  ])("does not show nested receipt guidance for $scenario", async ({ receipt }) => {
+    const probe = setup(receipt);
+    await probe.confirm();
+    await advance(8_000);
+    expect(probe.receiveBadges()).toEqual([]);
     expect(probe.sendUnwrapToken).not.toHaveBeenCalled();
     probe.expectNoBalanceRpc();
   });

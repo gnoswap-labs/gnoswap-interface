@@ -17,7 +17,11 @@ import { TokenSearchLogModel } from "@models/token/token-search-log-model";
 import { customSort } from "@utils/token-sort";
 import { formatDisplayTokenSymbol } from "@utils/token-utils";
 import mockedExchangeRateGraph from "./mock/token-exchange-rate-graph.json";
-import { IBalancesByAddressResponse, IGrc20TransferHistoryResponse } from "./response/balance-by-address-response";
+import {
+  IBalancesByAddressResponse,
+  IBalancesByAddressWireResponse,
+  IGrc20TransferHistoryResponse,
+} from "./response/balance-by-address-response";
 import { TokenExchangeRateGraphResponse } from "./response/token-exchange-rate-response";
 
 const normalizeTokenDisplay = <T extends Pick<ITokenResponse, "path" | "symbol" | "displaySymbol">>(token: T): T => ({
@@ -121,10 +125,19 @@ export class TokenRepositoryImpl implements TokenRepository {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
-    const response = await this.networkClient.get<IBalancesByAddressResponse>({
+    const response = await this.networkClient.get<IBalancesByAddressWireResponse>({
       url: `/users/${address}/balances${txHash === undefined ? "" : `?txHash=${encodeURIComponent(txHash)}`}`,
     });
-    return response.data;
+    const body = response.data;
+    if (Array.isArray(body.data)) {
+      return body as IBalancesByAddressResponse;
+    }
+    return {
+      message: body.message,
+      data: body.data.balances,
+      accountBalanceApplied: body.data.applied,
+      balanceChanges: body.data.balanceChanges,
+    };
   };
 
   public getGrc20TransferHistoryByTxHash = async (
