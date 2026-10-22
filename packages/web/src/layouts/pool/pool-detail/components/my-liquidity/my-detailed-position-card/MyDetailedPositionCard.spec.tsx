@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 
+import { initialPool } from "@models/pool/pool-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
@@ -23,6 +24,9 @@ jest.mock("@hooks/common/use-window-size", () => ({
 jest.mock("@hooks/pool/data/use-pool-liquidity-segments-by-path", () => ({
   usePoolLiquiditySegmentsByPath: () => ({ liquiditySegments: [], isLoading: true }),
 }));
+jest.mock("@query/positions/use-get-position-rewards-by-id", () => ({
+  useGetPositionRewardsById: () => ({ data: undefined, isInitialLoading: false }),
+}));
 jest.mock("@hooks/token/data/use-gnot-wugnot", () => ({
   useGnotToGnot: () => ({ getGnotPath: (token: TokenModel) => token }),
 }));
@@ -34,12 +38,22 @@ it("shows the pool spot rate rather than the quantized current-tick rate, in eit
   const price = 0.0000794548;
   const tokenA = { path: "a", symbol: "GNOT", displaySymbol: "GNOT", decimals: 6, priceID: "a" } as TokenModel;
   const tokenB = { path: "b", symbol: "GNS", displaySymbol: "GNS", decimals: 6, priceID: "b" } as TokenModel;
-  const position = {
+  const position: PoolPositionModel = {
     id: 111,
     lpTokenId: "111",
     poolPath: "a:b:3000",
     closed: false,
     staked: false,
+    owner: "",
+    feeTier: "FEE_3000",
+    unclaimedFeeAAmount: "0",
+    unclaimedFeeBAmount: "0",
+    apr: "0",
+    stakedAt: "",
+    usdValue: 0,
+    tokenUri: "",
+    totalDailyRewardsUsd: "0",
+    stakedUsdValue: "0",
     liquidity: 0n,
     tokenABalance: "0",
     tokenBBalance: "0",
@@ -49,8 +63,8 @@ it("shows the pool spot rate rather than the quantized current-tick rate, in eit
     claimedRewards: [],
     tickLower: -95000,
     tickUpper: -94000,
-    pool: { tokenA, tokenB, price, currentTick: priceToTick(price), fee: "FEE_3000" },
-  } as PoolPositionModel;
+    pool: { ...initialPool, tokenA, tokenB, price, currentTick: priceToTick(price), fee: "FEE_3000" },
+  };
 
   render(
     <JotaiProvider>

@@ -46,6 +46,8 @@ export interface PositionRepository {
 
   getPositionRewardsByAddress: (address: string, poolPath?: string) => Promise<PositionRewardsResponse | null>;
 
+  getPositionRewardsByAddressAndId: (address: string, positionId: string) => Promise<PositionRewardsResponse>;
+
   getPositionSummaryByAddress: (address: string, poolPath?: string) => Promise<PositionSummaryResponse>;
 
   getPositionById: (lpTokenId: string, timeout?: number) => Promise<PositionModel>;

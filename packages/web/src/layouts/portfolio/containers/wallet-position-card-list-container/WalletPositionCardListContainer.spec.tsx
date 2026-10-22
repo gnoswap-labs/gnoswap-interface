@@ -16,7 +16,7 @@ jest.mock("jotai", () => ({
 
 jest.mock("@components/common/my-position-card-list/MyPositionCardList", () => ({
   __esModule: true,
-  default: () => <div data-testid="my-position-card-list" />,
+  default: ({ address }: { address?: string }) => <div data-testid="my-position-card-list" data-address={address} />,
 }));
 
 jest.mock("@hooks/common/use-custom-router", () => ({
@@ -52,15 +52,8 @@ jest.mock("@hooks/token/data/use-gnot-wugnot", () => {
   };
 });
 
-jest.mock("@query/token", () => {
-  const tokenPrices = {};
-  return {
-    useGetAllTokenPrices: () => ({ data: tokenPrices }),
-  };
-});
-
 jest.mock("@hooks/wallet/data/use-wallet", () => {
-  const wallet = { connected: true };
+  const wallet = { connected: true, account: { address: "g1recipient" } };
   return {
     useWallet: () => wallet,
   };
@@ -120,5 +113,6 @@ describe("WalletPositionCardListContainer", () => {
 
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
     expect(screen.getByTestId("my-position-card-list")).toBeInTheDocument();
+    expect(screen.getByTestId("my-position-card-list")).toHaveAttribute("data-address", "g1recipient");
   });
 });

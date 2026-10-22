@@ -38,11 +38,13 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePoolLiquiditySegmentsByPath } from "@hooks/pool/data/use-pool-liquidity-segments-by-path";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
+import { useGetPositionRewardsById } from "@query/positions/use-get-position-rewards-by-id";
 import { ThemeState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
 import { isGNOTPath } from "@utils/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { makeRouteUrl } from "@utils/page.utils";
+import { buildClaimedRewardInfo } from "@utils/position-reward-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
 import { makeDisplayTokenAmount } from "@utils/token-utils";
@@ -74,16 +76,6 @@ interface MyDetailedPositionCardProps {
   claim: (position: PoolPositionModel) => void;
 }
 
-const sumRewardUsd = (rewards: PositionRewardForTooltip[]): number | null => {
-  return rewards.reduce<number | null>((accum, current) => {
-    if (accum === null || current.usd === null) {
-      return null;
-    }
-
-    return accum + current.usd;
-  }, 0);
-};
-
 const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   position,
   isStakable,
@@ -108,6 +100,10 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   const [zoomLevel, setZoomLevel] = useState<number>(LIQUIDITY_GRAPH_INITIAL_ZOOM_LEVEL);
   const visibleTickRange = useMemo(() => LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES[zoomLevel], [zoomLevel]);
   const isClosed = position.closed;
+  const { data: positionRewards, isInitialLoading: isLoadingPositionRewards } = useGetPositionRewardsById(
+    { address, positionId: position.lpTokenId },
+    { enabled: !loading },
+  );
 
   const isDisplay = useMemo(() => {
     const tokenAPrice = isGNOTPath(position.pool?.tokenA.path)
@@ -357,85 +353,30 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     return isOwnerAddress && positionWithClaimableRewards.rewards.length > 0;
   }, [isOwnerAddress, positionWithClaimableRewards.rewards]);
 
-  const claimedRewardInfo = useMemo((): { [key in DisplayRewardType]: PositionRewardForTooltip[] } | null => {
-    // Nothing claimed yet: list the position's reward tokens at zero so the tooltip matches Claimable Rewards.
-    if (position.claimedRewards.length === 0) {
-      if (!totalRewardInfo) {
-        return null;
-      }
-
-      const toZero = (rewards: PositionRewardForTooltip[]) => rewards.map(reward => ({ ...reward, amount: 0, usd: 0 }));
-      return {
-        SWAP_FEE: toZero(totalRewardInfo.SWAP_FEE),
-        EXTERNAL_REWARD: toZero(totalRewardInfo.EXTERNAL_REWARD),
-        INTERNAL_REWARD: toZero(totalRewardInfo.INTERNAL_REWARD),
-        NONE: toZero(totalRewardInfo.NONE),
-      };
+  const claimedRewardInfo = useMemo(() => {
+    if (!positionRewards) {
+      return null;
     }
 
-    const claimedRewardInfo = position.claimedRewards.reduce<{
-      [key in DisplayRewardType]: PositionRewardForTooltip[];
-    }>(
-      (accum, current) => {
-        const rewardType = current.rewardToken.rewardType as RewardType;
-        const displayRewardType = mapToDisplayRewardType(rewardType);
-        const tokenPrice = tokenPrices[current.rewardToken.priceID]?.usd
-          ? Number(tokenPrices[current.rewardToken.priceID]?.usd)
-          : null;
-        const index = accum[displayRewardType].findIndex(item => item.token.priceID === current.rewardToken.priceID);
-        const amount = current.claimedAmount ? Number(current.claimedAmount) : null;
-        const usd = amount !== null && tokenPrice !== null ? amount * tokenPrice : null;
+    const rewardInfo = buildClaimedRewardInfo(positionRewards.claimed, [
+      tokenA,
+      tokenB,
+      ...position.pool.rewardTokens,
+      ...position.rewards.map(reward => reward.rewardToken),
+      ...position.claimedRewards.map(reward => reward.rewardToken),
+    ]);
 
-        if (index !== -1) {
-          const existReward = accum[displayRewardType][index];
-          accum[displayRewardType][index] = {
-            ...existReward,
-            amount:
-              existReward.amount !== null && amount !== null
-                ? existReward.amount + amount
-                : existReward.amount ?? amount,
-            usd: existReward.usd !== null && usd !== null ? existReward.usd + usd : null,
-          };
-        } else {
-          accum[displayRewardType].push({
-            rewardType: displayRewardType,
-            token: current.rewardToken,
-            amount,
-            usd,
-            accumulatedRewardOf1d: null,
-            accumulatedRewardOf1dUsd: null,
-          });
-        }
-        return accum;
-      },
-      {
-        SWAP_FEE: [],
-        EXTERNAL_REWARD: [],
-        INTERNAL_REWARD: [],
-        NONE: [],
-      },
-    );
+    return {
+      SWAP_FEE: sortTokensByPoolOrder(rewardInfo.SWAP_FEE, tokenA.path, tokenB.path),
+      INTERNAL_REWARD: sortTokensByPoolOrder(rewardInfo.INTERNAL_REWARD, tokenA.path, tokenB.path),
+      EXTERNAL_REWARD: sortTokensByPoolOrder(rewardInfo.EXTERNAL_REWARD, tokenA.path, tokenB.path),
+      NONE: rewardInfo.NONE,
+    };
+  }, [positionRewards, position.pool.rewardTokens, position.rewards, position.claimedRewards, tokenA, tokenB]);
 
-    Object.keys(claimedRewardInfo).forEach(key => {
-      const rewardType = key as DisplayRewardType;
-      if (claimedRewardInfo[rewardType].length > 0) {
-        claimedRewardInfo[rewardType] = sortTokensByPoolOrder(claimedRewardInfo[rewardType], tokenA.path, tokenB.path);
-      }
-    });
-
-    return claimedRewardInfo;
-  }, [position.claimedRewards, totalRewardInfo, tokenPrices, tokenA.path, tokenB.path]);
-
-  const totalClaimedRewards = useMemo(() => {
-    if (position.totalClaimedUsd !== "") {
-      return formatOtherPrice(position.totalClaimedUsd, { isKMB: false });
-    }
-
-    const rewards = Object.values(claimedRewardInfo ?? {}).flatMap(item => item);
-    const totalClaimedUsd = rewards.length === 0 ? 0 : sumRewardUsd(rewards);
-
-    return formatOtherPrice(totalClaimedUsd, { isKMB: false });
-  }, [claimedRewardInfo, position.totalClaimedUsd]);
+  const totalClaimedRewards = positionRewards
+    ? formatOtherPrice(positionRewards.totalUsd.claimed.total, { isKMB: false })
+    : "-";
 
   const stringPrice = useMemo(() => {
     if (isSwap) {
@@ -802,21 +743,24 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       </div>
       <div className="info-box">
         <span className="symbol-text">{t("Pool:position.card.claimedReward.title")}</span>
-        {!isClosed && isShowClaimedRewardInfoTooltip && !loading ? (
+        {isShowClaimedRewardInfoTooltip && !loading && !isLoadingPositionRewards ? (
           <Tooltip
             placement="top"
+            interactive
             FloatingContent={
               <div>
                 <RewardTooltipContent rewardInfo={claimedRewardInfo} sortByUsd={false} />
               </div>
             }
           >
-            <span className="content-text">{totalClaimedRewards}</span>
+            <span className="content-text" tabIndex={0}>
+              {totalClaimedRewards}
+            </span>
           </Tooltip>
         ) : (
-          !loading && <span className="content-text disabled">{totalClaimedRewards}</span>
+          !loading && !isLoadingPositionRewards && <span className="content-text disabled">{totalClaimedRewards}</span>
         )}
-        {loading && (
+        {(loading || isLoadingPositionRewards) && (
           <PulseSkeletonWrapper height={39} mobileHeight={25}>
             <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
           </PulseSkeletonWrapper>

@@ -10,7 +10,6 @@ import { isMaxTick, isMinTick, makeDisplayPrice } from "@utils/pool-utils";
 import IconStrokeArrowUp from "../../icons/IconStrokeArrowUp";
 import IconStrokeArrowDown from "../../icons/IconStrokeArrowDown";
 import LoadingSpinner from "../../loading-spinner/LoadingSpinner";
-import { TokenPriceModel } from "@models/token/token-price-model";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import IconStar from "../../icons/IconStar";
 import IconLpToken from "../../icons/IconLpToken";
@@ -21,6 +20,10 @@ import { QUERY_PARAMETER } from "@constants/page.constant";
 import { usePrefetchNavigation } from "@hooks/common/use-prefetch-navigation";
 import { usePoolLiquiditySegmentsByPath } from "@hooks/pool/data/use-pool-liquidity-segments-by-path";
 import { LIQUIDITY_GRAPH_BIN_COUNT, LIQUIDITY_GRAPH_DEFAULT_VISIBLE_TICK_RANGE } from "@constants/graph.constant";
+import RewardTooltipContent from "@components/common/reward-tooltip-content/RewardTooltipContent";
+import Tooltip from "@components/common/tooltip/Tooltip";
+import { useGetPositionRewardsById } from "@query/positions/use-get-position-rewards-by-id";
+import { buildClaimedRewardInfo } from "@utils/position-reward-utils";
 
 interface MyPositionCardProps {
   address?: string | null;
@@ -29,7 +32,6 @@ interface MyPositionCardProps {
   mobile: boolean;
   currentIndex?: number;
   themeKey: "dark" | "light";
-  tokenPrices: Record<string, TokenPriceModel>;
 }
 
 export function estimateTick(tick: number, width: number) {
@@ -232,7 +234,6 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   movePoolDetail,
   currentIndex,
   themeKey,
-  tokenPrices,
 }) => {
   const { t } = useTranslation();
 
@@ -240,6 +241,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const GRAPH_HEIGHT = 80;
   const { pool } = position;
   const { tokenA, tokenB } = pool;
+  const { data: positionRewards } = useGetPositionRewardsById({
+    address: address || "",
+    positionId: position.lpTokenId,
+  });
   const [isHiddenStart] = useState(false);
   const [viewMyRange, setViewMyRange] = useState(false);
 
@@ -296,30 +301,23 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return formatOtherPrice(result);
   }, [position.rewards]);
 
-  const claimedRewardsUSD = useMemo(() => {
-    if (position.totalClaimedUsd !== "") {
-      return formatOtherPrice(position.totalClaimedUsd);
+  const claimedRewardsUSD = positionRewards ? formatOtherPrice(positionRewards.totalUsd.claimed.total) : "-";
+
+  const claimedRewardInfo = useMemo(() => {
+    if (!positionRewards) {
+      return null;
     }
 
-    const result = position.claimedRewards.reduce((acc: number | null, current) => {
-      const tokenPrice = tokenPrices?.[current.rewardToken.priceID]?.usd
-        ? Number(tokenPrices?.[current.rewardToken.priceID]?.usd)
-        : null;
-      if (acc === -1 || tokenPrice === null) return -1;
+    return buildClaimedRewardInfo(positionRewards.claimed, [
+      tokenA,
+      tokenB,
+      ...pool.rewardTokens,
+      ...position.rewards.map(reward => reward.rewardToken),
+      ...position.claimedRewards.map(reward => reward.rewardToken),
+    ]);
+  }, [positionRewards, tokenA, tokenB, pool.rewardTokens, position.rewards, position.claimedRewards]);
 
-      if (acc === null && !current.claimedAmount) {
-        return null;
-      }
-
-      if (acc === null) return Number(current.claimedAmount) * tokenPrice;
-
-      return acc + Number(current.claimedAmount) * tokenPrice;
-    }, null);
-
-    if (result === null || result === -1) return "-";
-
-    return formatOtherPrice(result);
-  }, [position.claimedRewards, position.totalClaimedUsd, tokenPrices]);
+  const hasClaimedRewards = claimedRewardInfo && Object.values(claimedRewardInfo).some(rewards => rewards.length > 0);
 
   const handleMouseEnter = useCallback(() => {
     prefetch();
@@ -378,7 +376,23 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
               <span className="label-text">{t("Earn:positions.card.claimRewards")}</span>
             </div>
             <div className="list-content">
-              <span>{claimedRewardsUSD}</span>
+              {hasClaimedRewards ? (
+                <Tooltip
+                  placement="top"
+                  interactive
+                  FloatingContent={
+                    <div onClick={event => event.stopPropagation()}>
+                      <RewardTooltipContent rewardInfo={claimedRewardInfo} />
+                    </div>
+                  }
+                >
+                  <span tabIndex={0} onClick={event => event.stopPropagation()}>
+                    {claimedRewardsUSD}
+                  </span>
+                </Tooltip>
+              ) : (
+                <span>{claimedRewardsUSD}</span>
+              )}
               <span>{claimableUSD}</span>
             </div>
           </div>

@@ -2,7 +2,6 @@ import React from "react";
 
 import { AccountModel } from "@models/account/account-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { TokenPriceModel } from "@models/token/token-price-model";
 
 import EarnMyPositionNoLiquidity from "./earn-my-positions-no-liquidity/EarnMyPositionNoLiquidity";
 import EarnMyPositionsUnconnected from "./earn-my-positions-unconnected/EarnMyPositionsUnconnected";
@@ -33,7 +32,6 @@ export interface EarnMyPositionContentProps {
   onClickLoadMore?: () => void;
   themeKey: "dark" | "light";
   account: AccountModel | null;
-  tokenPrices: Record<string, TokenPriceModel>;
   highestApr: number;
   currentPage?: number;
   totalPage?: number;
@@ -65,7 +63,6 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
   onClickLoadMore,
   themeKey,
   account,
-  tokenPrices,
   highestApr,
   currentPage,
   totalPage,
@@ -105,7 +102,6 @@ const EarnMyPositionsContent: React.FC<EarnMyPositionContentProps> = ({
       loadMore={loadMore}
       onClickLoadMore={onClickLoadMore}
       themeKey={themeKey}
-      tokenPrices={tokenPrices}
       currentPage={currentPage}
       totalPage={totalPage}
       movePage={movePage}
