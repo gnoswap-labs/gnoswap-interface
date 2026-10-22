@@ -52,6 +52,8 @@ describe("SelectToken Component", () => {
     breakpoint: DEVICE_TYPE.WEB,
     recents: [],
     isSwitchNetwork: false,
+    showUnverified: false,
+    toggleShowUnverified: jest.fn(),
   };
 
   const renderSelectToken = (overrides?: Partial<SelectTokenProps>) =>
@@ -91,5 +93,68 @@ describe("SelectToken Component", () => {
 
     expect(mockGetRealmUrl).toHaveBeenCalledWith(extension.originTokenPath);
     expect(open).toHaveBeenCalledWith(`https://gnoscan.io/realms/details?path=${extension.originTokenPath}`, "_blank");
+  });
+
+  it("renders the show unverified tokens switch with the given state", () => {
+    renderSelectToken({ showUnverified: true });
+
+    expect(screen.getByRole("checkbox")).toBeChecked();
+  });
+
+  it("calls toggleShowUnverified when the switch is clicked", () => {
+    const toggleShowUnverified = jest.fn();
+    renderSelectToken({ toggleShowUnverified });
+
+    fireEvent.click(screen.getByRole("checkbox"));
+
+    expect(toggleShowUnverified).toHaveBeenCalledTimes(1);
+  });
+
+  it("limits the width of rows added after the first render", () => {
+    const addedToken: TokenModel = { ...token, name: "Added", path: "gno.land/r/demo/added", symbol: "ADD" };
+    const { container, rerender } = renderSelectToken();
+
+    rerender(
+      <JotaiProvider>
+        <GnoswapThemeProvider>
+          <SelectToken {...args} tokens={[token, addedToken]} />
+        </GnoswapThemeProvider>
+      </JotaiProvider>,
+    );
+
+    const rowMaxWidths = Array.from(container.querySelectorAll(".token-info-detail")).map(
+      row => getComputedStyle(row).maxWidth,
+    );
+    expect(rowMaxWidths).toHaveLength(2);
+    rowMaxWidths.forEach(maxWidth => expect(maxWidth).toMatch(/^calc\(.*0px\)$/));
+  });
+
+  describe("recent tokens", () => {
+    const recentToken: TokenModel = { ...token, name: "Recent", path: "gno.land/r/demo/recent", symbol: "RCT" };
+    const storedRecentPaths = () =>
+      JSON.parse(JSON.parse(localStorage.getItem("recentsSelect") ?? "\"\"") || "[]").map((item: TokenModel) => item.path);
+
+    beforeEach(() => localStorage.clear());
+
+    it("keeps recent tokens that are hidden from the list, such as by a search keyword", () => {
+      localStorage.setItem("recentsSelect", JSON.stringify(JSON.stringify([recentToken])));
+      const { container } = renderSelectToken({ keyword: "bubble", recents: [recentToken], tokens: [token] });
+
+      fireEvent.click(container.querySelector(".token-list-wrapper .list")!);
+
+      expect(storedRecentPaths()).toEqual([token.path, recentToken.path]);
+    });
+
+    it("stores a token once even when its balance fields changed", () => {
+      localStorage.setItem("recentsSelect", JSON.stringify(JSON.stringify([token])));
+      const { container } = renderSelectToken({
+        recents: [{ ...token, balance: 0 } as TokenModel],
+        tokens: [{ ...token, balance: 1 } as TokenModel],
+      });
+
+      fireEvent.click(container.querySelector(".token-list-wrapper .list")!);
+
+      expect(storedRecentPaths()).toEqual([token.path]);
+    });
   });
 });

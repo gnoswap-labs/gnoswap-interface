@@ -163,7 +163,7 @@ export const useLaunchpadHandler = () => {
       return;
     }
 
-    const isWithdrawable = isLaunchpadPoolEnded(participationInfo.endTime);
+    const isWithdrawable = isLaunchpadPoolEnded(participationInfo.endTime) && !participationInfo.withdrawn;
 
     // Calculate the USD value of the Deposited USD available for withdrawal.
     const depositAmount = isWithdrawable ? participationInfo.depositAmount : 0;
@@ -219,7 +219,7 @@ export const useLaunchpadHandler = () => {
 
     const { endedPoolDepositIDs, activePoolDepositIDs } = participationInfos.reduce<DepositIDGroups>(
       (groups, info) => {
-        if (isLaunchpadPoolEnded(info.endTime)) {
+        if (isLaunchpadPoolEnded(info.endTime) && !info.withdrawn) {
           groups.endedPoolDepositIDs.push(info.depositID);
         } else {
           groups.activePoolDepositIDs.push(info.depositID);

@@ -12,6 +12,8 @@ import { type TokenPairInfo } from "@models/token/token-pair-info";
 import { TOKEN_PRICE_GRADE_TYPE } from "@models/token/token-price-grade";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { useGetTokens } from "@query/token";
+import { TokenState } from "@states/index";
+import { useAtom } from "jotai";
 import { checkPositivePrice } from "@utils/common";
 import { formatOtherPrice, formatPrice } from "@utils/new-number-utils";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -143,7 +145,7 @@ const TokenListContainer: React.FC = () => {
   const [tokenType, setTokenType] = useState<TOKEN_TYPE>(TOKEN_TYPE.ALL);
   const [page, setPage] = useState(0);
   const [keyword, setKeyword] = useState("");
-  const [showUnverifiedTokens, setShowUnverifiedTokens] = useState(false);
+  const [showUnverifiedTokens, setShowUnverifiedTokens] = useAtom(TokenState.showUnverifiedTokens);
   const [sortOption, setSortOption] = useState<SortOption>({
     key: TABLE_HEAD.VOLUME,
     direction: "desc",
@@ -195,7 +197,7 @@ const TokenListContainer: React.FC = () => {
   const toggleShowUnverifiedTokens = useCallback(() => {
     setShowUnverifiedTokens(prev => !prev);
     setPage(0);
-  }, []);
+  }, [setShowUnverifiedTokens]);
 
   const isSortOption = useCallback((head: TABLE_HEAD) => {
     const disableItems = [TABLE_HEAD.MOST_LIQUID_POOL.toString(), TABLE_HEAD.LAST_7_DAYS.toString()];

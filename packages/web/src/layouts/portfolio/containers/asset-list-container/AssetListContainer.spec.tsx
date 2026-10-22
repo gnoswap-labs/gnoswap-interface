@@ -1,5 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { createStore, Provider as JotaiProvider } from "jotai";
 
 import { GNOT_TOKEN_DEFAULT, GNS_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
@@ -146,9 +147,11 @@ const displayBalanceMap: Record<string, number> = {
 
 const renderContainer = () =>
   render(
-    <GnoswapThemeProvider>
-      <AssetListContainer />
-    </GnoswapThemeProvider>,
+    <JotaiProvider store={createStore()}>
+      <GnoswapThemeProvider>
+        <AssetListContainer />
+      </GnoswapThemeProvider>
+    </JotaiProvider>,
   );
 
 const setTokens = (tokens: TokenModel[]) => {
@@ -177,6 +180,7 @@ const getVisibleRows = () => screen.getAllByTestId("asset-row").map(row => row.t
 
 describe("AssetListContainer unverified token filtering", () => {
   beforeEach(() => {
+    localStorage.clear();
     setTokens(ALL_TEST_TOKENS);
     setBalanceMap();
   });

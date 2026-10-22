@@ -193,7 +193,10 @@ it("portals candle details beyond clipping ancestors and keeps the measured tool
     onMove({
       point: { x: 300, y: 200 },
       time: firstPage[0].time,
-      seriesData: new Map([[mockCandles, firstPage[0]]]),
+      seriesData: new Map([
+        [mockCandles, firstPage[0]],
+        [mockVolume, { time: firstPage[0].time, value: firstPage[0].volume }],
+      ]),
     }),
   );
   const tooltip = screen.getByRole("tooltip");
@@ -205,30 +208,6 @@ it("portals candle details beyond clipping ancestors and keeps the measured tool
   fireEvent.scroll(window);
   fireEvent.resize(window);
   expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
-});
-
-it("shows candle details when hovering volume and anchors the tooltip to the lower pane", async () => {
-  const pane = document.createElement("div");
-  jest.spyOn(pane, "getBoundingClientRect").mockReturnValue({
-    left: 20, top: 300, width: 300, height: 50, right: 320, bottom: 350, x: 20, y: 300, toJSON() {},
-  });
-  mockPanes[1].getHTMLElement.mockReturnValueOnce(pane);
-  render(<PriceCandleChart {...props} loadPage={jest.fn().mockResolvedValue(firstPage)} />);
-  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
-  act(() =>
-    mockSubscribeCrosshairMove.mock.calls[0][0]({
-      point: { x: 80, y: 20 },
-      paneIndex: 1,
-      time: firstPage[0].time,
-      seriesData: new Map([[mockVolume, { time: firstPage[0].time, value: firstPage[0].volume }]]),
-    }),
-  );
-  const tooltip = screen.getByRole("tooltip");
-  expect(Array.from(tooltip.querySelectorAll("strong"), node => node.textContent)).toEqual([
-    "2", "1", "1", "2", "3 GNOT",
-  ]);
-  expect(Number.parseFloat(tooltip.style.top)).toBeGreaterThanOrEqual(320);
-  expect(Number.parseFloat(tooltip.style.top)).toBeLessThan(window.innerHeight - 8);
 });
 
 it.each([false, true])(

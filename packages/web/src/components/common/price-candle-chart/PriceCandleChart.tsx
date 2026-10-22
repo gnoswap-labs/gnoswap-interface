@@ -7,6 +7,7 @@ import {
   createChart,
   HistogramSeries,
   TickMarkType,
+  type AutoscaleInfo,
   type LogicalRange,
   type Time,
   type UTCTimestamp,
@@ -20,6 +21,9 @@ import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { CHART_LOADING_DELAY_MS } from "@constants/loading.constant";
 
 import { CandleTooltip, ChartNavigation } from "./PriceCandleChart.styles";
+
+const VOLUME_AREA_FRACTION = 0.22;
+const PRICE_TOP_MARGIN_FRACTION = 0.1;
 
 export interface PriceBar {
   time: number;
@@ -104,6 +108,7 @@ export default function PriceCandleChart({
       const height = viewport?.height ?? window.innerHeight;
       tooltip.style.maxWidth = `${Math.max(0, width - 16)}px`;
       tooltip.style.maxHeight = `${Math.max(0, height - 16)}px`;
+      tooltip.style.left = `${left + 8}px`;
       const bounds = tooltip.getBoundingClientRect();
       const x = hovered.x + 16 + bounds.width <= left + width - 8 ? hovered.x + 16 : hovered.x - bounds.width - 16;
       const y = hovered.y + 16 + bounds.height <= top + height - 8 ? hovered.y + 16 : hovered.y - bounds.height - 16;
@@ -169,7 +174,7 @@ export default function PriceCandleChart({
         rightPriceScale: {
           autoScale: true,
           borderColor: theme.color.border14,
-          scaleMargins: { top: 0.1, bottom: 0.1 },
+          scaleMargins: { top: PRICE_TOP_MARGIN_FRACTION, bottom: 0 },
         },
         localization: {
           locale,
@@ -204,10 +209,18 @@ export default function PriceCandleChart({
         wickDownColor: negative,
         borderVisible: false,
         priceLineVisible: false,
+        autoscaleInfoProvider: (original: () => AutoscaleInfo | null) => {
+          const info = original();
+          if (!info?.priceRange) return info;
+          const range = info.priceRange;
+          range.minValue = Math.max(0, range.minValue);
+          return info;
+        },
       });
       const volume = chart.addSeries(
         HistogramSeries,
         {
+          priceScaleId: "",
           priceFormat: { type: "volume" },
           priceLineVisible: false,
           lastValueVisible: false,
@@ -215,12 +228,12 @@ export default function PriceCandleChart({
         1,
       );
       volume.priceScale().applyOptions({
-        scaleMargins: { top: 0.1, bottom: 0 },
-        entireTextOnly: true,
+        scaleMargins: { top: PRICE_TOP_MARGIN_FRACTION, bottom: 0 },
       });
+      chart.priceScale("right", 1).applyOptions({ borderVisible: false });
       const [pricePane, volumePane] = chart.panes();
-      pricePane.setStretchFactor(3);
-      volumePane.setStretchFactor(1);
+      pricePane.setStretchFactor(1 - VOLUME_AREA_FRACTION);
+      volumePane.setStretchFactor(VOLUME_AREA_FRACTION);
       let bars: PriceBar[] = [];
       const barsByTime = new Map<number, PriceBar>();
       // The cursor is the exclusive boundary of the last requested window, not the
@@ -593,7 +606,7 @@ export default function PriceCandleChart({
             "--fill": theme.color.text01,
             "--stroke": theme.color.background28,
           },
-          // The rightmost cell of each pane is its price axis.
+          // The rightmost cell is the price axis.
           "& .tv-lightweight-charts tr > td:last-child": {
             touchAction: "none",
           },

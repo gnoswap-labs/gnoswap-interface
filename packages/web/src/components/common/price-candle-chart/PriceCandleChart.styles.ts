@@ -82,11 +82,14 @@ export const CandleTooltip = styled.div`
   z-index: 1000;
   pointer-events: none;
   box-sizing: border-box;
-  width: max-content;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: fit-content;
   max-width: calc(100vw - 16px);
   max-height: calc(100dvh - 16px);
   overflow: hidden;
-  padding: 12px 14px;
+  padding: 12px 16px;
   border: 1px solid ${({ theme }) => theme.color.border03};
   border-radius: 12px;
   background: ${({ theme }) => theme.color.background05};
@@ -96,10 +99,11 @@ export const CandleTooltip = styled.div`
 
   > div {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    gap: 6px;
-    & + div {
-      margin-top: 2px;
+    gap: 24px;
+    > span {
+      flex-shrink: 0;
     }
   }
   .quote-volume {
@@ -108,6 +112,7 @@ export const CandleTooltip = styled.div`
   strong {
     min-width: 0;
     color: ${({ theme }) => theme.color.text02};
+    font-family: ui-monospace, monospace;
     font-weight: 500;
     text-align: right;
     overflow-wrap: anywhere;

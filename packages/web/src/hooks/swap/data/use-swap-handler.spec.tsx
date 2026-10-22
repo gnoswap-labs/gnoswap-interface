@@ -1,4 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
+import { QueryClient } from "@tanstack/react-query";
+import { ERROR_VALUE } from "@common/errors/adena";
+import { QUERY_KEY } from "@query/query-keys";
 import { createStore, Provider } from "jotai";
 import { ReactNode } from "react";
 
@@ -9,6 +12,9 @@ import { useSwapHandler } from "./use-swap-handler";
 
 const mockGetRoutes = jest.fn();
 const mockUpdateBalances = jest.fn();
+const mockQueryClient = new QueryClient({ defaultOptions: { queries: { retry: false, cacheTime: Infinity } } });
+const mockSendSwap = jest.fn();
+const mockEnqueueEvent = jest.fn();
 const mockPrice = { usd: 1, priceGradeType: "NONE" };
 const mockTokenA: TokenModel = {
   type: "GRC20",
@@ -66,7 +72,7 @@ jest.mock("@adena-wallet/sdk", () => ({
 jest.mock("react-i18next", () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 jest.mock("@tanstack/react-query", () => ({
   ...jest.requireActual("@tanstack/react-query"),
-  useQueryClient: () => ({ removeQueries: jest.fn() }),
+  useQueryClient: () => mockQueryClient,
 }));
 jest.mock("@query/router", () => ({
   useGetRoutes: (...args: unknown[]) => mockGetRoutes(...args),
@@ -74,13 +80,22 @@ jest.mock("@query/router", () => ({
 }));
 jest.mock("@hooks/common/use-custom-router", () => () => ({ query: { path: "gns" }, pathname: "/token" }));
 jest.mock("@hooks/common/use-gnoswap-context", () => ({
-  useGnoswapContext: () => ({ swapRouterRepository: {} }),
+  useGnoswapContext: () => ({
+    swapRouterRepository: { sendExactInSwapRoute: mockSendSwap, sendExactOutSwapRoute: mockSendSwap },
+  }),
 }));
 jest.mock("@hooks/common/use-referral", () => ({
   useReferral: () => ({ getNextReferralAddress: () => null, removeReferrerFromLocalStorage: jest.fn() }),
 }));
 jest.mock("@hooks/common/use-prevent-scroll", () => ({ usePreventScroll: jest.fn() }));
-jest.mock("@hooks/common/use-broadcast-handler", () => ({ useBroadcastHandler: () => ({}) }));
+jest.mock("@hooks/common/use-broadcast-handler", () => ({
+  useBroadcastHandler: () => ({
+    broadcastLoading: jest.fn(),
+    broadcastSuccess: jest.fn(),
+    broadcastError: jest.fn(),
+    broadcastRejected: jest.fn(),
+  }),
+}));
 jest.mock("@hooks/common/use-message", () => ({ useMessage: () => ({ getMessage: jest.fn() }) }));
 jest.mock("@hooks/common/use-slippage", () => ({
   useSlippage: () => ({ slippage: 0.5, changeSlippage: jest.fn() }),
@@ -89,7 +104,7 @@ jest.mock("@hooks/common/use-transaction-confirm-modal", () => ({
   useTransactionConfirmModal: () => ({ openModal: jest.fn() }),
 }));
 jest.mock("@hooks/common/use-transaction-event-store", () => ({
-  useTransactionEventStore: () => ({ enqueueEvent: jest.fn() }),
+  useTransactionEventStore: () => ({ enqueueEvent: mockEnqueueEvent }),
 }));
 jest.mock("@hooks/wallet/ui/use-connect-wallet-modal", () => ({
   useConnectWalletModal: () => ({ openModal: jest.fn() }),
@@ -134,6 +149,9 @@ describe("useSwapHandler quote consistency", () => {
     jest.useFakeTimers();
     mockGetRoutes.mockReset();
     mockUpdateBalances.mockClear();
+    mockQueryClient.clear();
+    mockSendSwap.mockReset();
+    mockEnqueueEvent.mockReset();
     mockGetRoutes.mockReturnValue({ data: undefined, error: null, isLoading: false, isRefetching: false });
     mockDisplayBalanceStringMap = {
       [mockTokenA.path]: "1000000000000",
@@ -145,7 +163,10 @@ describe("useSwapHandler quote consistency", () => {
     mockTokens = [mockTokenA, mockTokenB, mockWrappedBubble];
   });
 
-  afterEach(() => jest.useRealTimers());
+  afterEach(() => {
+    mockQueryClient.clear();
+    jest.useRealTimers();
+  });
 
   it("changes only the selected side when choosing a wrapped extension token", () => {
     const { result, unmount } = renderSwapHandler("EXACT_IN", mockTokenA, null);
@@ -358,5 +379,118 @@ describe("useSwapHandler quote consistency", () => {
     expect(result.current.swapSummaryInfo?.swapRate).toBe(0);
     expect(result.current.isAvailSwap).toBe(false);
     unmount();
+  });
+});
+
+describe("useSwapHandler pool cache lifecycle", () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+    mockQueryClient.clear();
+  });
+
+  afterEach(() => {
+    mockQueryClient.clear();
+    jest.useRealTimers();
+  });
+
+  it.each(["EXACT_IN", "EXACT_OUT"] as const)(
+    "invalidates submitted multi-hop and split routes for %s without touching unused pools",
+    async type => {
+      const paths = ["a:b:3000", "b:c:3000", "a:c:500"];
+      const unusedPath = "a:b:500";
+      const pool = (poolPath: string) => ({
+        poolPath,
+        tokenA: mockTokenA.path,
+        tokenB: mockTokenB.path,
+        fee: 3000,
+        price: 1,
+        tokenABalance: 100,
+        tokenBBalance: 100,
+      });
+      const routes = [
+        { quote: 50, amountIn: 1000000n, amountOut: 1000000n, pools: paths.slice(0, 2).map(pool) },
+        { quote: 50, amountIn: 1000000n, amountOut: 1000000n, pools: [pool(paths[2]), pool(paths[0])] },
+      ];
+      mockGetRoutes.mockReturnValue({
+        data: { ...oldQuote, estimatedRoutes: routes },
+        error: null,
+        isLoading: false,
+        isRefetching: false,
+      });
+      mockEnqueueEvent.mockClear();
+      const { promise, resolve: resolveSwap } = Promise.withResolvers<{ code: number; data: { hash: string } }>();
+      mockSendSwap.mockReturnValue(promise);
+      [...paths, unusedPath].forEach(path => mockQueryClient.setQueryData([QUERY_KEY.poolSqrtPriceX96, path], 100n));
+      const { result, unmount } = renderSwapHandler(type);
+      try {
+        act(() => {
+          if (type === "EXACT_IN") result.current.changeTokenAAmount("1");
+          else result.current.changeTokenBAmount("1");
+        });
+        act(() => jest.advanceTimersByTime(1_000));
+        act(() => result.current.executeSwap(result.current.swapTokenInfo, "1"));
+        expect(mockQueryClient.getQueryState([QUERY_KEY.poolSqrtPriceX96, paths[0]])?.isInvalidated).toBe(false);
+        // A newer quote must not change the pool snapshot belonging to this transaction.
+        routes[0].pools = [pool(unusedPath)];
+        await act(async () => resolveSwap({ code: 0, data: { hash: "swap-hash" } }));
+        paths.forEach(path =>
+          expect(mockQueryClient.getQueryState([QUERY_KEY.poolSqrtPriceX96, path])?.isInvalidated).toBe(true),
+        );
+        expect(mockQueryClient.getQueryState([QUERY_KEY.poolSqrtPriceX96, unusedPath])?.isInvalidated).toBe(false);
+
+        const event = mockEnqueueEvent.mock.calls[0][0];
+        paths.forEach(path => mockQueryClient.setQueryData([QUERY_KEY.poolSqrtPriceX96, path], 110n));
+        await act(async () => event.onEmit("SUCCESS"));
+        paths.forEach(path =>
+          expect(mockQueryClient.getQueryState([QUERY_KEY.poolSqrtPriceX96, path])?.isInvalidated).toBe(true),
+        );
+      } finally {
+        unmount();
+      }
+    },
+  );
+
+  it("does not invalidate pools for failed transactions but refreshes on later confirmed success", async () => {
+    const path = "a:b:3000";
+    mockGetRoutes.mockReturnValue({
+      data: {
+        ...oldQuote,
+        estimatedRoutes: [
+          {
+            quote: 100,
+            amountIn: 1000000n,
+            amountOut: 1000000n,
+            pools: [{ poolPath: path, tokenA: mockTokenA.path, tokenB: mockTokenB.path, fee: 3000, price: 1 }],
+          },
+        ],
+      },
+      error: null,
+      isLoading: false,
+      isRefetching: false,
+    });
+    mockEnqueueEvent.mockClear();
+    mockSendSwap.mockResolvedValue({
+      code: ERROR_VALUE.TRANSACTION_FAILED.status,
+      type: ERROR_VALUE.TRANSACTION_FAILED.type,
+      data: { hash: "pending-hash" },
+    });
+    const key = [QUERY_KEY.poolSqrtPriceX96, path];
+    mockQueryClient.setQueryData(key, 100n);
+    const { result, unmount } = renderSwapHandler();
+    try {
+      act(() => result.current.changeTokenAAmount("1"));
+      act(() => jest.advanceTimersByTime(1_000));
+      await act(async () => result.current.executeSwap(result.current.swapTokenInfo, "1"));
+      const event = mockEnqueueEvent.mock.calls[0][0];
+      await act(async () => {
+        await event.onUpdate("FAILED");
+        await event.onEmit("FAILED");
+      });
+      expect(mockQueryClient.getQueryState(key)?.isInvalidated).toBe(false);
+      await act(async () => event.onUpdate("SUCCESS"));
+      expect(mockQueryClient.getQueryState(key)?.isInvalidated).toBe(true);
+    } finally {
+      unmount();
+    }
   });
 });

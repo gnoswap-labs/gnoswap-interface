@@ -1,6 +1,7 @@
 import BigNumber from "bignumber.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ValuesType } from "utility-types";
+import { useAtom } from "jotai";
 
 import { GNOT_TOKEN, GNOT_TOKEN_DEFAULT, GNS_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
 import AssetReceiveModal from "@components/wallet/asset-receive-modal/AssetReceiveModal";
@@ -14,6 +15,7 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { useGetAvgBlockTime } from "@query/address";
 import { useGetTokens } from "@query/token";
+import { TokenState } from "@states/index";
 import { checkGnotPath } from "@utils/common";
 import { formatPoolPairAmount, formatPrice } from "@utils/new-number-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
@@ -71,7 +73,7 @@ const AssetListContainer: React.FC = () => {
 
   const [address] = useState("");
   const [assetType, setAssetType] = useState<ASSET_FILTER_TYPE>(ASSET_FILTER_TYPE.ALL);
-  const [showUnverifiedTokens, setShowUnverifiedTokens] = useState(false);
+  const [showUnverifiedTokens, setShowUnverifiedTokens] = useAtom(TokenState.showUnverifiedTokens);
   const [keyword, setKeyword] = useState("");
   const [extended, setExtened] = useState(true);
   const [hasLoader] = useState(false);
@@ -324,8 +326,8 @@ const AssetListContainer: React.FC = () => {
   }, []);
 
   const toggleShowUnverifiedTokens = useCallback(() => {
-    setShowUnverifiedTokens(!showUnverifiedTokens);
-  }, [showUnverifiedTokens]);
+    setShowUnverifiedTokens(prev => !prev);
+  }, [setShowUnverifiedTokens]);
 
   const toggleExtended = useCallback(() => {
     setExtened(!extended);

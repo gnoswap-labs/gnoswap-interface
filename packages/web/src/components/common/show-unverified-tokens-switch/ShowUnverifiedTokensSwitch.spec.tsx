@@ -30,4 +30,21 @@ describe("ShowUnverifiedTokensSwitch", () => {
     fireEvent.click(toggle);
     expect(onChange).toHaveBeenCalledTimes(1);
   });
+
+  it("keeps the verification tooltip available with the compact mobile label", async () => {
+    const originalWidth = window.innerWidth;
+    Object.defineProperty(window, "innerWidth", { configurable: true, value: 375 });
+    try {
+      const { container } = renderSwitch({ compact: true });
+
+      expect(screen.getByLabelText("common:tokenList.unverified")).toBeInTheDocument();
+      const trigger = container.querySelector(".base-tooltip-wrapper");
+      expect(trigger?.querySelector("svg")).not.toBeNull();
+      fireEvent.mouseEnter(trigger!);
+
+      expect(await screen.findByText("common:tokenList.unverifiedTokensTooltip")).toBeInTheDocument();
+    } finally {
+      Object.defineProperty(window, "innerWidth", { configurable: true, value: originalWidth });
+    }
+  });
 });
