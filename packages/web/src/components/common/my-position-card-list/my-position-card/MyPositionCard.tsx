@@ -241,10 +241,11 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
   const GRAPH_HEIGHT = 80;
   const { pool } = position;
   const { tokenA, tokenB } = pool;
-  const { data: positionRewards } = useGetPositionRewardsById({
-    address: address || "",
-    positionId: position.lpTokenId,
-  });
+  const [isClaimedTooltipOpen, setIsClaimedTooltipOpen] = useState(false);
+  const { data: positionRewards, isInitialLoading: isLoadingPositionRewards } = useGetPositionRewardsById(
+    { address: address || "", positionId: position.lpTokenId },
+    { enabled: isClaimedTooltipOpen },
+  );
   const [isHiddenStart] = useState(false);
   const [viewMyRange, setViewMyRange] = useState(false);
 
@@ -301,7 +302,10 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     return formatOtherPrice(result);
   }, [position.rewards]);
 
-  const claimedRewardsUSD = positionRewards ? formatOtherPrice(positionRewards.totalUsd.claimed.total) : "-";
+  const claimedRewardsUSD =
+    position.totalClaimedUsd !== "" && position.totalClaimedUsd != null
+      ? formatOtherPrice(position.totalClaimedUsd)
+      : "-";
 
   const claimedRewardInfo = useMemo(() => {
     if (!positionRewards) {
@@ -317,7 +321,7 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
     ]);
   }, [positionRewards, tokenA, tokenB, pool.rewardTokens, position.rewards, position.claimedRewards]);
 
-  const hasClaimedRewards = claimedRewardInfo && Object.values(claimedRewardInfo).some(rewards => rewards.length > 0);
+  const hasClaimedRewards = position.claimedRewards.length > 0;
 
   const handleMouseEnter = useCallback(() => {
     prefetch();
@@ -380,9 +384,16 @@ const MyPositionCard: React.FC<MyPositionCardProps> = ({
                 <Tooltip
                   placement="top"
                   interactive
+                  onChangeOpen={setIsClaimedTooltipOpen}
                   FloatingContent={
                     <div onClick={event => event.stopPropagation()}>
-                      <RewardTooltipContent rewardInfo={claimedRewardInfo} />
+                      {claimedRewardInfo ? (
+                        <RewardTooltipContent rewardInfo={claimedRewardInfo} />
+                      ) : isLoadingPositionRewards ? (
+                        <LoadingSpinner size="SMALL" />
+                      ) : (
+                        <span>-</span>
+                      )}
                     </div>
                   }
                 >

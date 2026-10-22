@@ -100,9 +100,10 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   const [zoomLevel, setZoomLevel] = useState<number>(LIQUIDITY_GRAPH_INITIAL_ZOOM_LEVEL);
   const visibleTickRange = useMemo(() => LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES[zoomLevel], [zoomLevel]);
   const isClosed = position.closed;
+  const [isClaimedTooltipOpen, setIsClaimedTooltipOpen] = useState(false);
   const { data: positionRewards, isInitialLoading: isLoadingPositionRewards } = useGetPositionRewardsById(
     { address, positionId: position.lpTokenId },
-    { enabled: !loading },
+    { enabled: !loading && isClaimedTooltipOpen },
   );
 
   const isDisplay = useMemo(() => {
@@ -374,9 +375,10 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     };
   }, [positionRewards, position.pool.rewardTokens, position.rewards, position.claimedRewards, tokenA, tokenB]);
 
-  const totalClaimedRewards = positionRewards
-    ? formatOtherPrice(positionRewards.totalUsd.claimed.total, { isKMB: false })
-    : "-";
+  const totalClaimedRewards =
+    position.totalClaimedUsd !== "" && position.totalClaimedUsd != null
+      ? formatOtherPrice(position.totalClaimedUsd, { isKMB: false })
+      : "-";
 
   const stringPrice = useMemo(() => {
     if (isSwap) {
@@ -533,14 +535,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     }
   }, [zoomLevel, availInfo.availZoomOut]);
 
-  const isShowClaimedRewardInfoTooltip = useMemo(() => {
-    return (
-      claimedRewardInfo !== null &&
-      (claimedRewardInfo?.EXTERNAL_REWARD.length !== 0 ||
-        claimedRewardInfo?.INTERNAL_REWARD.length !== 0 ||
-        claimedRewardInfo?.SWAP_FEE.length !== 0)
-    );
-  }, [claimedRewardInfo]);
+  const isShowClaimedRewardInfoTooltip = position.claimedRewards.length > 0;
 
   const isShowTotalRewardInfo = useMemo(() => {
     return (
@@ -743,13 +738,20 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       </div>
       <div className="info-box">
         <span className="symbol-text">{t("Pool:position.card.claimedReward.title")}</span>
-        {isShowClaimedRewardInfoTooltip && !loading && !isLoadingPositionRewards ? (
+        {isShowClaimedRewardInfoTooltip && !loading ? (
           <Tooltip
             placement="top"
             interactive
+            onChangeOpen={setIsClaimedTooltipOpen}
             FloatingContent={
               <div>
-                <RewardTooltipContent rewardInfo={claimedRewardInfo} sortByUsd={false} />
+                {claimedRewardInfo ? (
+                  <RewardTooltipContent rewardInfo={claimedRewardInfo} sortByUsd={false} />
+                ) : isLoadingPositionRewards ? (
+                  <LoadingSpinner size="SMALL" />
+                ) : (
+                  <span>-</span>
+                )}
               </div>
             }
           >
@@ -758,9 +760,9 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
             </span>
           </Tooltip>
         ) : (
-          !loading && !isLoadingPositionRewards && <span className="content-text disabled">{totalClaimedRewards}</span>
+          !loading && <span className="content-text disabled">{totalClaimedRewards}</span>
         )}
-        {(loading || isLoadingPositionRewards) && (
+        {loading && (
           <PulseSkeletonWrapper height={39} mobileHeight={25}>
             <span css={pulseSkeletonStyle({ w: "170px", h: 22 })} />
           </PulseSkeletonWrapper>

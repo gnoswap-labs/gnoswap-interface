@@ -39,7 +39,7 @@ const renderRewards = (props = { address: "g1recipient", positionId: "42" }) => 
   );
   return {
     queryClient,
-    ...renderHook(input => useGetPositionRewardsById(input, { refetchInterval: false }), {
+    ...renderHook(input => useGetPositionRewardsById(input), {
       wrapper,
       initialProps: props,
     }),
@@ -64,21 +64,24 @@ describe("useGetPositionRewardsById", () => {
     expect(result.current.data?.claimed.swapFee[0].amount).toBe("123456789");
   });
 
-  it.each(["address", "positionId", "chain"])("does not retain another scope's history when %s changes", async scope => {
-    getPositionRewardsByAddressAndId.mockResolvedValueOnce(rewards);
-    const { result, rerender } = renderRewards();
-    await waitFor(() => expect(result.current.data).toEqual(rewards));
+  it.each(["address", "positionId", "chain"])(
+    "does not retain another scope's history when %s changes",
+    async scope => {
+      getPositionRewardsByAddressAndId.mockResolvedValueOnce(rewards);
+      const { result, rerender } = renderRewards();
+      await waitFor(() => expect(result.current.data).toEqual(rewards));
 
-    getPositionRewardsByAddressAndId.mockReturnValue(new Promise(() => {}));
-    if (scope === "chain") wallet.currentChainId = "another-chain";
-    rerender({
-      address: scope === "address" ? "g1another" : "g1recipient",
-      positionId: scope === "positionId" ? "43" : "42",
-    });
+      getPositionRewardsByAddressAndId.mockReturnValue(new Promise(() => {}));
+      if (scope === "chain") wallet.currentChainId = "another-chain";
+      rerender({
+        address: scope === "address" ? "g1another" : "g1recipient",
+        positionId: scope === "positionId" ? "43" : "42",
+      });
 
-    await waitFor(() => expect(result.current.isInitialLoading).toBe(true));
-    expect(result.current.data).toBeUndefined();
-  });
+      await waitFor(() => expect(result.current.isInitialLoading).toBe(true));
+      expect(result.current.data).toBeUndefined();
+    },
+  );
 
   it("refreshes position histories with the existing address-level claim invalidation", async () => {
     getPositionRewardsByAddressAndId.mockResolvedValue(rewards);
@@ -86,7 +89,10 @@ describe("useGetPositionRewardsById", () => {
     await waitFor(() => expect(result.current.data).toEqual(rewards));
     const secondPositionKey = [QUERY_KEY.positionRewards, "gnoland1", "g1recipient", "position", "43"];
     queryClient.setQueryData(secondPositionKey, rewards);
-    const updated = { ...rewards, totalUsd: { ...rewards.totalUsd, claimed: { ...rewards.totalUsd.claimed, total: "17" } } };
+    const updated = {
+      ...rewards,
+      totalUsd: { ...rewards.totalUsd, claimed: { ...rewards.totalUsd.claimed, total: "17" } },
+    };
     getPositionRewardsByAddressAndId.mockResolvedValue(updated);
 
     await act(async () => {
@@ -95,6 +101,59 @@ describe("useGetPositionRewardsById", () => {
 
     await waitFor(() => expect(result.current.data?.totalUsd.claimed.total).toBe("17"));
     expect(queryClient.getQueryState(secondPositionKey)?.isInvalidated).toBe(true);
+  });
+
+  it("reuses fresh history on remount and never polls while mounted", async () => {
+    getPositionRewardsByAddressAndId.mockResolvedValue(rewards);
+    const { result, queryClient, unmount } = renderRewards();
+    await waitFor(() => expect(result.current.data).toEqual(rewards));
+    unmount();
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    );
+    const remounted = renderHook(() => useGetPositionRewardsById({ address: "g1recipient", positionId: "42" }), {
+      wrapper,
+    });
+    expect(remounted.result.current.data).toEqual(rewards);
+    expect(getPositionRewardsByAddressAndId).toHaveBeenCalledTimes(1);
+
+    jest.useFakeTimers();
+    try {
+      await act(async () => {
+        jest.advanceTimersByTime(10 * 60_000);
+      });
+      expect(getPositionRewardsByAddressAndId).toHaveBeenCalledTimes(1);
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it("defers invalidated closed-tooltip history until it is needed again", async () => {
+    getPositionRewardsByAddressAndId.mockResolvedValue(rewards);
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    );
+    const { result, rerender } = renderHook(
+      enabled => useGetPositionRewardsById({ address: "g1recipient", positionId: "42" }, { enabled }),
+      { wrapper, initialProps: false },
+    );
+    expect(getPositionRewardsByAddressAndId).not.toHaveBeenCalled();
+    rerender(true);
+    await waitFor(() => expect(result.current.data).toEqual(rewards));
+    rerender(false);
+    await act(async () => {
+      await queryClient.invalidateQueries([QUERY_KEY.positionRewards, "gnoland1", "g1recipient"]);
+    });
+    expect(getPositionRewardsByAddressAndId).toHaveBeenCalledTimes(1);
+    const updated = {
+      ...rewards,
+      totalUsd: { ...rewards.totalUsd, claimed: { ...rewards.totalUsd.claimed, total: "17" } },
+    };
+    getPositionRewardsByAddressAndId.mockResolvedValue(updated);
+    rerender(true);
+    await waitFor(() => expect(result.current.data?.totalUsd.claimed.total).toBe("17"));
+    expect(getPositionRewardsByAddressAndId).toHaveBeenCalledTimes(2);
   });
 
   it("leaves failed history unavailable, rather than pretending nothing was claimed", async () => {

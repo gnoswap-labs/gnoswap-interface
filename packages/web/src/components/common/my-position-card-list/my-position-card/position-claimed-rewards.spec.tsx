@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Provider as JotaiProvider } from "jotai";
 import React, { ReactNode } from "react";
 
@@ -11,6 +12,7 @@ import { TokenPriceModel } from "@models/token/token-price-model";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { PositionRewardsResponse } from "@repositories/position/response";
 import { DEVICE_TYPE } from "@styles/media";
+import { QUERY_KEY } from "@query/query-keys";
 
 import MyPositionCard from "./MyPositionCard";
 
@@ -50,28 +52,13 @@ jest.mock("@layouts/pool/pool-detail/components/my-liquidity/my-detailed-positio
   __esModule: true,
   default: () => null,
 }));
-jest.mock("@layouts/pool/pool-detail/components/my-liquidity/my-detailed-position-card/manage-button/ManageButton", () => ({
-  __esModule: true,
-  default: () => null,
-}));
-// Inspect the real tooltip content without relying on jsdom floating-element positioning.
-jest.mock("@components/common/tooltip/Tooltip", () => ({
-  __esModule: true,
-  default: ({
-    children,
-    FloatingContent,
-    forcedClose,
-  }: {
-    children: ReactNode;
-    FloatingContent: ReactNode;
-    forcedClose?: boolean;
-  }) => (
-    <>
-      {children}
-      {!forcedClose && <div role="tooltip">{FloatingContent}</div>}
-    </>
-  ),
-}));
+jest.mock(
+  "@layouts/pool/pool-detail/components/my-liquidity/my-detailed-position-card/manage-button/ManageButton",
+  () => ({
+    __esModule: true,
+    default: () => null,
+  }),
+);
 
 const usdc: TokenModel = {
   path: "gno.land/r/demo/usdc",
@@ -85,7 +72,14 @@ const usdc: TokenModel = {
   logoURI: "",
   decimals: 6,
 };
-const atom: TokenModel = { ...usdc, path: "gno.land/r/demo/atom", priceID: "ATOM", symbol: "ATOM", displaySymbol: "ATOM", decimals: 18 };
+const atom: TokenModel = {
+  ...usdc,
+  path: "gno.land/r/demo/atom",
+  priceID: "ATOM",
+  symbol: "ATOM",
+  displaySymbol: "ATOM",
+  decimals: 18,
+};
 const rewards: PositionRewardsResponse = {
   claimed: {
     swapFee: [
@@ -120,9 +114,17 @@ const position: PoolPositionModel = {
   unclaimedFeeBAmount: "0",
   apr: "1",
   stakedAt: "",
-  rewards: [{ rewardToken: { ...usdc, rewardType: "SWAP_FEE" }, totalAmount: "7", claimableAmount: "7", claimableUsd: "7", apr: null }],
+  rewards: [
+    {
+      rewardToken: { ...usdc, rewardType: "SWAP_FEE" },
+      totalAmount: "7",
+      claimableAmount: "7",
+      claimableUsd: "7",
+      apr: null,
+    },
+  ],
   claimedRewards: [{ rewardType: "SWAP_FEE", rewardToken: { ...usdc, rewardType: "SWAP_FEE" }, claimedAmount: "999" }],
-  totalClaimedUsd: "999",
+  totalClaimedUsd: "24",
   usdValue: 50,
   tokenUri: "",
   totalDailyRewardsUsd: "0",
@@ -132,7 +134,7 @@ const position: PoolPositionModel = {
 };
 
 type Variant = "detailed" | "common";
-const renderCard = (variant: Variant, closed = false) => {
+const renderCard = (variant: Variant, closed = false, empty = false) => {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   const wrapper = ({ children }: { children: ReactNode }) => (
     <QueryClientProvider client={queryClient}>
@@ -141,8 +143,15 @@ const renderCard = (variant: Variant, closed = false) => {
       </JotaiProvider>
     </QueryClientProvider>
   );
-  const card = (address = "g1pastrecipient", id = "42", price = "1000") => {
-    const scopedPosition = { ...position, closed, id: Number(id), lpTokenId: id };
+  const card = (address = "g1pastrecipient", id = "42", price = "1000", total = "24") => {
+    const scopedPosition = {
+      ...position,
+      closed,
+      id: Number(id),
+      lpTokenId: id,
+      totalClaimedUsd: empty ? "0" : total,
+      claimedRewards: empty ? [] : position.claimedRewards,
+    };
     return variant === "detailed" ? (
       <MyDetailedPositionCard
         position={scopedPosition}
@@ -157,16 +166,26 @@ const renderCard = (variant: Variant, closed = false) => {
         claim={claim}
       />
     ) : (
-      <MyPositionCard position={scopedPosition} address={address} movePoolDetail={jest.fn()} mobile={false} themeKey="light" />
+      <MyPositionCard
+        position={scopedPosition}
+        address={address}
+        movePoolDetail={jest.fn()}
+        mobile={false}
+        themeKey="light"
+      />
     );
   };
   const rendered = render(card(), { wrapper });
   return {
     ...rendered,
-    rerenderCard: (address = "g1pastrecipient", id = "42", price = "1000") => rendered.rerender(card(address, id, price)),
+    queryClient,
+    rerenderCard: (address = "g1pastrecipient", id = "42", price = "1000", total = "24") =>
+      rendered.rerender(card(address, id, price, total)),
     claimedRegion: () => {
-      const label = screen.getByText(variant === "detailed" ? "Pool:position.card.claimedReward.title" : "Earn:positions.card.claimedRewards");
-      return variant === "detailed" ? label.parentElement! : label.parentElement!.nextElementSibling as HTMLElement;
+      const label = screen.getByText(
+        variant === "detailed" ? "Pool:position.card.claimedReward.title" : "Earn:positions.card.claimedRewards",
+      );
+      return variant === "detailed" ? label.parentElement! : (label.parentElement!.nextElementSibling as HTMLElement);
     },
   };
 };
@@ -178,52 +197,97 @@ describe.each<Variant>(["detailed", "common"])("%s position claimed rewards", va
   });
   afterEach(() => jest.restoreAllMocks());
 
-  it.each([false, true])("shows captured USD and raw-token decimals even after transfer or closure (closed=%s)", async closed => {
+  it.each([false, true])("uses the list total, fetching captured token USD only on hover (closed=%s)", async closed => {
     getPositionRewardsByAddressAndId.mockResolvedValue(rewards);
     const { claimedRegion, rerenderCard } = renderCard(variant, closed);
 
-    await waitFor(() => expect(within(claimedRegion()).getByText("$24")).toBeInTheDocument());
+    expect(within(claimedRegion()).getByText("$24")).toBeInTheDocument();
+    expect(getPositionRewardsByAddressAndId).not.toHaveBeenCalled();
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+    await userEvent.hover(within(claimedRegion()).getByText("$24"));
+    const tooltip = await screen.findByRole("tooltip");
+    await waitFor(() => expect(tooltip).toHaveTextContent("$12"));
     expect(getPositionRewardsByAddressAndId).toHaveBeenCalledWith("g1pastrecipient", "42");
-    const tooltip = within(claimedRegion()).getByRole("tooltip");
-    expect(tooltip).toHaveTextContent("$12");
     expect(tooltip).toHaveTextContent("$5");
     expect(tooltip).toHaveTextContent("$7");
     expect(within(tooltip).getByText("123.456789")).toBeInTheDocument();
     expect(within(tooltip).getByText("1.23")).toBeInTheDocument();
     expect(within(tooltip).getByText("delisted")).toBeInTheDocument();
-    expect(claimedRegion()).not.toHaveTextContent("$999");
 
     rerenderCard("g1pastrecipient", "42", "9000");
     expect(within(claimedRegion()).getByText("$24")).toBeInTheDocument();
     expect(tooltip).toHaveTextContent("$12");
+    expect(getPositionRewardsByAddressAndId).toHaveBeenCalledTimes(1);
   });
 
-  it.each(["recipient", "position"])("removes the previous history while another %s loads or fails", async scope => {
-    getPositionRewardsByAddressAndId.mockResolvedValueOnce(rewards);
-    const { claimedRegion, rerenderCard } = renderCard(variant);
-    await waitFor(() => expect(within(claimedRegion()).getByText("$24")).toBeInTheDocument());
-
-    getPositionRewardsByAddressAndId.mockRejectedValue(new Error("history offline"));
-    rerenderCard(scope === "recipient" ? "g1another" : "g1pastrecipient", scope === "position" ? "43" : "42");
-    expect(within(claimedRegion()).queryByText("$24")).not.toBeInTheDocument();
-    expect(within(claimedRegion()).queryByRole("tooltip")).not.toBeInTheDocument();
-    await waitFor(() => expect(within(claimedRegion()).getByText("-")).toBeInTheDocument());
-    expect(claimedRegion()).not.toHaveTextContent("$999");
-  });
-
-  it("distinguishes a successful empty history from an unavailable one", async () => {
+  it("loads details on keyboard focus and refreshes an open tooltip after claim/remove invalidation", async () => {
+    getPositionRewardsByAddressAndId.mockResolvedValue(rewards);
+    const { claimedRegion, queryClient } = renderCard(variant);
+    fireEvent.focus(within(claimedRegion()).getByText("$24"));
+    const tooltip = await screen.findByRole("tooltip");
+    await waitFor(() => expect(tooltip).toHaveTextContent("$12"));
     getPositionRewardsByAddressAndId.mockResolvedValue({
       ...rewards,
-      claimed: { swapFee: [], internalReward: [], externalReward: [] },
-      totalUsd: {
-        ...rewards.totalUsd,
-        claimed: { swapFee: "0", internalReward: "0", externalReward: "0", total: "0" },
-      },
+      claimed: { ...rewards.claimed, swapFee: [{ tokenPath: usdc.path, amount: "2000000", usdValue: "18" }] },
     });
-    const { claimedRegion } = renderCard(variant);
+    await act(async () => {
+      await queryClient.invalidateQueries([QUERY_KEY.positionRewards, "gnoland1", "g1pastrecipient"]);
+    });
+    await waitFor(() => expect(tooltip).toHaveTextContent("$18"));
+    expect(within(claimedRegion()).getByText("$24")).toBeInTheDocument();
+  });
 
-    await waitFor(() => expect(within(claimedRegion()).getByText("$0")).toBeInTheDocument());
-    expect(within(claimedRegion()).queryByRole("tooltip")).not.toBeInTheDocument();
-    expect(claimedRegion()).not.toHaveTextContent("$999");
+  it.each(["recipient", "position"])(
+    "never exposes another %s's token history while details load or fail",
+    async scope => {
+      getPositionRewardsByAddressAndId.mockResolvedValueOnce(rewards);
+      const { claimedRegion, rerenderCard } = renderCard(variant);
+      await userEvent.hover(within(claimedRegion()).getByText("$24"));
+      await waitFor(() => expect(screen.getByRole("tooltip")).toHaveTextContent("123.456789"));
+
+      getPositionRewardsByAddressAndId.mockRejectedValue(new Error("history offline"));
+      rerenderCard(
+        scope === "recipient" ? "g1another" : "g1pastrecipient",
+        scope === "position" ? "43" : "42",
+        "1000",
+        "31",
+      );
+      expect(within(claimedRegion()).getByText("$31")).toBeInTheDocument();
+      expect(screen.getByRole("tooltip")).not.toHaveTextContent("123.456789");
+      await waitFor(() => expect(screen.getByRole("tooltip")).toHaveTextContent("-"));
+      expect(screen.getByRole("tooltip")).not.toHaveTextContent("$0");
+    },
+  );
+
+  it("keeps the known list total when the detail lookup fails, rather than inventing zero", async () => {
+    getPositionRewardsByAddressAndId.mockRejectedValue(new Error("history offline"));
+    const { claimedRegion } = renderCard(variant);
+    await userEvent.hover(within(claimedRegion()).getByText("$24"));
+    await waitFor(() => expect(screen.getByRole("tooltip")).toHaveTextContent("-"));
+    expect(within(claimedRegion()).getByText("$24")).toBeInTheDocument();
+    expect(screen.getByRole("tooltip")).not.toHaveTextContent("$0");
+  });
+
+  it("shows a successful empty list total without making a details request", () => {
+    const { claimedRegion } = renderCard(variant, false, true);
+    expect(within(claimedRegion()).getByText("$0")).toBeInTheDocument();
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+    expect(getPositionRewardsByAddressAndId).not.toHaveBeenCalled();
+  });
+
+  it("does not request per-card details on remount or with elapsed polling intervals", async () => {
+    const { claimedRegion, unmount } = renderCard(variant);
+    expect(within(claimedRegion()).getByText("$24")).toBeInTheDocument();
+    unmount();
+    renderCard(variant);
+    jest.useFakeTimers();
+    try {
+      await act(async () => {
+        jest.advanceTimersByTime(3 * 60_000);
+      });
+      expect(getPositionRewardsByAddressAndId).not.toHaveBeenCalled();
+    } finally {
+      jest.useRealTimers();
+    }
   });
 });

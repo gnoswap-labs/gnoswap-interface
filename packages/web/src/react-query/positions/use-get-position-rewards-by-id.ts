@@ -19,8 +19,7 @@ export const useGetPositionRewardsById = (
   const { currentChainId, availNetwork } = useWallet();
 
   return useQuery<PositionRewardsResponse, Error>({
-    refetchInterval: 60_000,
-    refetchOnMount: true,
+    staleTime: 5 * 60_000,
     refetchOnReconnect: true,
     ...options,
     // Share the address prefix so existing claim/remove invalidations refresh every position too.
