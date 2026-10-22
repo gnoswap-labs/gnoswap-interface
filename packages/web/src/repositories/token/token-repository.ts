@@ -8,7 +8,11 @@ import {
   TokenPriceListResponse,
   TokenSearchLogListResponse,
 } from "./response";
-import { IBalancesByAddressResponse, IGrc20TransferHistoryResponse } from "./response/balance-by-address-response";
+import {
+  IBalancesByAddressResponse,
+  IGrc20BalanceReceiptResponse,
+  IGrc20TransferHistoryResponse,
+} from "./response/balance-by-address-response";
 import { TokenExchangeRateGraphResponse } from "./response/token-exchange-rate-response";
 
 export interface TokenRepository {
@@ -32,7 +36,9 @@ export interface TokenRepository {
 
   getExchangeRateGraph: () => Promise<TokenExchangeRateGraphResponse>;
 
-  getGrc20BalancesByAddress: (address: string, txHash?: string) => Promise<IBalancesByAddressResponse>;
+  getGrc20BalancesByAddress: (address: string) => Promise<IBalancesByAddressResponse>;
+
+  getGrc20BalanceReceiptByAddress: (address: string, txHash: string) => Promise<IGrc20BalanceReceiptResponse>;
 
   getGrc20TransferHistoryByTxHash: (txHash: string, tokenPath: string) => Promise<IGrc20TransferHistoryResponse>;
 }

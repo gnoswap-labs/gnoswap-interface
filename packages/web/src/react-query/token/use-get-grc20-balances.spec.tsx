@@ -53,7 +53,7 @@ describe("useGetGrc20Balances wallet cache identity", () => {
     const { result } = renderBalances();
     await waitFor(() => expect(result.current.data).toEqual(response));
     expect(result.current.data?.data[0].amount).toBe("12000000");
-    expect(result.current.data?.accountBalanceApplied).toBeUndefined();
+    expect(result.current.data).not.toHaveProperty("accountBalanceApplied");
     expect(get).toHaveBeenCalledWith({ url: "/users/g1first/balances" });
   });
 

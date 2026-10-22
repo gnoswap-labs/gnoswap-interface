@@ -218,7 +218,7 @@ export const useTransactionEventStore = () => {
   ) {
     const deadline = Date.now() + WUGNOT_RECEIPT_RETRY_DEADLINE;
     while (!signal.aborted && Date.now() < deadline) {
-      const balances = await tokenRepository.getGrc20BalancesByAddress(address, txHash);
+      const balances = await tokenRepository.getGrc20BalanceReceiptByAddress(address, txHash);
       if (signal.aborted || Date.now() >= deadline) return;
 
       if (balances.accountBalanceApplied === true) {
@@ -241,7 +241,7 @@ export const useTransactionEventStore = () => {
         return;
       }
 
-      // Pending (or a server without receipt support) never exposes an unverified balance.
+      // Pending receipts never expose an unverified balance.
       if (deadline - Date.now() < WUGNOT_RECEIPT_RETRY_INTERVAL) return;
       await waitForWugnotRetry(signal);
     }

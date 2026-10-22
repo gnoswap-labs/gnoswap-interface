@@ -19,7 +19,8 @@ import { formatDisplayTokenSymbol } from "@utils/token-utils";
 import mockedExchangeRateGraph from "./mock/token-exchange-rate-graph.json";
 import {
   IBalancesByAddressResponse,
-  IBalancesByAddressWireResponse,
+  IGrc20BalanceReceiptResponse,
+  IGrc20BalanceReceiptWireResponse,
   IGrc20TransferHistoryResponse,
 } from "./response/balance-by-address-response";
 import { TokenExchangeRateGraphResponse } from "./response/token-exchange-rate-response";
@@ -121,17 +122,27 @@ export class TokenRepositoryImpl implements TokenRepository {
     return response.data.data;
   };
 
-  public getGrc20BalancesByAddress = async (address: string, txHash?: string): Promise<IBalancesByAddressResponse> => {
+  public getGrc20BalancesByAddress = async (address: string): Promise<IBalancesByAddressResponse> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
-    const response = await this.networkClient.get<IBalancesByAddressWireResponse>({
-      url: `/users/${address}/balances${txHash === undefined ? "" : `?txHash=${encodeURIComponent(txHash)}`}`,
+    const response = await this.networkClient.get<IBalancesByAddressResponse>({
+      url: `/users/${address}/balances`,
+    });
+    return response.data;
+  };
+
+  public getGrc20BalanceReceiptByAddress = async (
+    address: string,
+    txHash: string,
+  ): Promise<IGrc20BalanceReceiptResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+    const response = await this.networkClient.get<IGrc20BalanceReceiptWireResponse>({
+      url: `/users/${address}/balances/receipts?txHash=${encodeURIComponent(txHash)}`,
     });
     const body = response.data;
-    if (Array.isArray(body.data)) {
-      return body as IBalancesByAddressResponse;
-    }
     return {
       message: body.message,
       data: body.data.balances,

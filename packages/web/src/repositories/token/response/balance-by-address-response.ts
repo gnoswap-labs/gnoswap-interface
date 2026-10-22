@@ -1,20 +1,21 @@
 export interface IBalancesByAddressResponse {
   data: Balance[];
   message: string;
-  accountBalanceApplied?: boolean;
-  balanceChanges?: { path: string; amount: string }[];
 }
 
-export type IBalancesByAddressWireResponse =
-  | IBalancesByAddressResponse
-  | {
-      message: string;
-      data: {
-        applied: boolean;
-        balances: Balance[];
-        balanceChanges: { path: string; amount: string }[];
-      };
-    };
+export interface IGrc20BalanceReceiptResponse extends IBalancesByAddressResponse {
+  accountBalanceApplied: boolean;
+  balanceChanges: { path: string; amount: string }[];
+}
+
+export interface IGrc20BalanceReceiptWireResponse {
+  message: string;
+  data: {
+    applied: boolean;
+    balances: Balance[];
+    balanceChanges: { path: string; amount: string }[];
+  };
+}
 
 export interface Balance {
   path: string;

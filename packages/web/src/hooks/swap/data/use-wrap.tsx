@@ -33,7 +33,7 @@ export const useWrap = () => {
       const address = account?.address;
       if (!txHash || !address || currentAddressRef.current !== address) return null;
 
-      const balances = await tokenRepository.getGrc20BalancesByAddress(address, txHash);
+      const balances = await tokenRepository.getGrc20BalanceReceiptByAddress(address, txHash);
       if (currentAddressRef.current !== address || balances.accountBalanceApplied !== true) return null;
 
       const wugnotBalance = balances.data.find(balance => balance.path === WRAPPED_GNOT_PATH);
