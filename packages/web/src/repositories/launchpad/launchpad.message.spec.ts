@@ -5,6 +5,7 @@ jest.mock("@constants/environment.constant", () => ({
   PACKAGE_LAUNCHPAD_PATH: "launchpad_path",
 }));
 
+import { GNS_TOKEN } from "@common/values/token-constant";
 import type { TokenModel } from "@models/token/token-model";
 import {
   makeCollectProtocolFeeMessage,
@@ -16,17 +17,9 @@ describe("launchpad.message.ts", () => {
     const caller = "caller";
     const fetchAllowance = jest.fn(async () => 0);
     const gnsToken: TokenModel = {
+      ...GNS_TOKEN,
       path: "gns_token_path",
       pkgPath: "gns_package_path",
-      type: "GRC20",
-      chainId: "dev.gnoswap",
-      name: "GnoSwap",
-      symbol: "GNS",
-      displaySymbol: "GNS",
-      decimals: 6,
-      logoURI: "",
-      createdAt: "",
-      priceID: "gns_token_path",
       routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
     };
 

@@ -12,7 +12,6 @@ const useDelayLoading = (loadingProp = false, delay = DELAY_LOADING) => {
         setLoading(true);
       } else {
         setLoading(false);
-        clearTimeout(loadingTimeout);
       }
     }, delay); // Delay in ms before the loading animation shows up
 
