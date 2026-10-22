@@ -6,22 +6,19 @@ const useDelayLoading = (loadingProp = false, delay = DELAY_LOADING) => {
   const [loading, setLoading] = useState(loadingProp);
 
   useEffect(() => {
-    let loadingTimeout: NodeJS.Timeout | null = null;
     // Set up the timeout to show the loading animation
-    loadingTimeout = setTimeout(() => {
+    const loadingTimeout = setTimeout(() => {
       if (loadingProp) {
         setLoading(true);
       } else {
         setLoading(false);
-        loadingTimeout && clearTimeout(loadingTimeout);
+        clearTimeout(loadingTimeout);
       }
     }, delay); // Delay in ms before the loading animation shows up
 
     // Clean up the timeout if the component unmounts
     return () => {
-      if (loadingTimeout) {
-        clearTimeout(loadingTimeout);
-      }
+      clearTimeout(loadingTimeout);
     };
   }, [loadingProp, delay]);
 

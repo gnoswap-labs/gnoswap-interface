@@ -15,11 +15,20 @@ describe("launchpad.message.ts", () => {
   it("approves launchpad deposits with the exact deposit amount", async () => {
     const caller = "caller";
     const fetchAllowance = jest.fn(async () => 0);
-    const gnsToken = {
+    const gnsToken: TokenModel = {
       path: "gns_token_path",
       pkgPath: "gns_package_path",
+      type: "GRC20",
+      chainId: "dev.gnoswap",
+      name: "GnoSwap",
+      symbol: "GNS",
+      displaySymbol: "GNS",
+      decimals: 6,
+      logoURI: "",
+      createdAt: "",
+      priceID: "gns_token_path",
       routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
-    } as TokenModel;
+    };
 
     const messages = await makeDepositGNSMessageWithApproves(
       { poolId: "pool-1", gnsToken, gnsTokenAmount: 456000000n, caller, referrerAddress: null },

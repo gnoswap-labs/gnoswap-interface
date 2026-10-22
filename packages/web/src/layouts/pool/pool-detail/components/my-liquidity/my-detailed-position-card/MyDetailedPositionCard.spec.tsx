@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 
+import { initialPool } from "@models/pool/pool-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
@@ -32,25 +33,64 @@ jest.mock("./manage-button/ManageButton", () => ({ __esModule: true, default: ()
 
 it("shows the pool spot rate rather than the quantized current-tick rate, in either direction", () => {
   const price = 0.0000794548;
-  const tokenA = { path: "a", symbol: "GNOT", displaySymbol: "GNOT", decimals: 6, priceID: "a" } as TokenModel;
-  const tokenB = { path: "b", symbol: "GNS", displaySymbol: "GNS", decimals: 6, priceID: "b" } as TokenModel;
-  const position = {
+  const tokenA: TokenModel = {
+    path: "a",
+    type: "GRC20",
+    chainId: "gno.land",
+    name: "GNOT",
+    symbol: "GNOT",
+    displaySymbol: "GNOT",
+    decimals: 6,
+    logoURI: "",
+    createdAt: "",
+    priceID: "a",
+  };
+  const tokenB: TokenModel = {
+    path: "b",
+    type: "GRC20",
+    chainId: "gno.land",
+    name: "GNS",
+    symbol: "GNS",
+    displaySymbol: "GNS",
+    decimals: 6,
+    logoURI: "",
+    createdAt: "",
+    priceID: "b",
+  };
+  const position: PoolPositionModel = {
     id: 111,
     lpTokenId: "111",
     poolPath: "a:b:3000",
-    closed: false,
     staked: false,
+    owner: "",
+    tickLower: -95000,
+    tickUpper: -94000,
     liquidity: 0n,
     tokenABalance: "0",
     tokenBBalance: "0",
     positionUsdValue: "0",
-    totalClaimedUsd: "0",
+    unclaimedFeeAAmount: "0",
+    unclaimedFeeBAmount: "0",
+    apr: "0",
+    stakedAt: "",
     rewards: [],
     claimedRewards: [],
-    tickLower: -95000,
-    tickUpper: -94000,
-    pool: { tokenA, tokenB, price, currentTick: priceToTick(price), fee: "FEE_3000" },
-  } as PoolPositionModel;
+    closed: false,
+    totalClaimedUsd: "0",
+    usdValue: 0,
+    tokenUri: "",
+    totalDailyRewardsUsd: "0",
+    stakedUsdValue: "0",
+    feeTier: "FEE_3000",
+    pool: {
+      ...initialPool,
+      poolPath: "a:b:3000",
+      tokenA,
+      tokenB,
+      price,
+      currentTick: priceToTick(price),
+    },
+  };
 
   render(
     <JotaiProvider>
