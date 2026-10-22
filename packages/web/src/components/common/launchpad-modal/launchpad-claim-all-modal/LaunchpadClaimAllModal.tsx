@@ -111,7 +111,7 @@ const LaunchpadClaimAllModal = ({
                         type={"CLAIMABLE"}
                       />
                     </div>
-                    {endTimeReached && (
+                    {endTimeReached && !item.withdrawn && (
                       <div className="data-row">
                         <div className="key">{t("Launchpad:modal.claimAll.col.depositAmount")}</div>
                         <LaunchpadClaimAmountField
