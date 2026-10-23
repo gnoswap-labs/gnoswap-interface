@@ -59,17 +59,18 @@ const Snackbar: FC<SnackbarProps> = ({
 
   useEffect(() => {
     if (timeout === 0) return;
+    let animationTimeout: NodeJS.Timeout | undefined;
 
     const autoCloseTimeout = setTimeout(() => {
       setTypeAnimation("closing");
-      const animationTimeout = setTimeout(() => {
+      animationTimeout = setTimeout(() => {
         if (isClosed.current === false) onClose?.(id);
       }, 500);
-      return () => clearTimeout(animationTimeout);
     }, timeout);
 
     return () => {
       clearTimeout(autoCloseTimeout);
+      clearTimeout(animationTimeout);
     };
   }, [onClose, timeout, id]);
 

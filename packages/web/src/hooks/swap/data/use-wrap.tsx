@@ -11,8 +11,8 @@ export const useWrap = () => {
   const currentAddressRef = useRef(account?.address);
   currentAddressRef.current = account?.address;
 
-  const unwrap = useCallback(
-    async (tokenAmount: string) => {
+  const sendUnwrap = useCallback(
+    async (tokenAmount: string, withNotification: boolean) => {
       const rawTokenAmount = BigNumber(tokenAmount);
       if (!rawTokenAmount.isFinite() || rawTokenAmount.isLessThan(1000)) {
         return null;
@@ -23,10 +23,12 @@ export const useWrap = () => {
       return swapRouterRepository.sendUnwrapToken({
         token: GNOT_TOKEN,
         tokenAmount: displayTokenAmount,
+        withNotification,
       });
     },
     [swapRouterRepository],
   );
+  const unwrap = useCallback((tokenAmount: string) => sendUnwrap(tokenAmount, false), [sendUnwrap]);
 
   const unwrapAll = useCallback(
     async (txHash: string) => {
@@ -41,9 +43,9 @@ export const useWrap = () => {
       // Notifications outlive this hook, so its render-updated ref alone cannot identify the signer.
       const signerAddress = await walletClient?.getAddress();
       if (signerAddress !== address || currentAddressRef.current !== address) return null;
-      return unwrap(wugnotBalance.amount);
+      return sendUnwrap(wugnotBalance.amount, true);
     },
-    [account?.address, tokenRepository, unwrap, walletClient],
+    [account?.address, tokenRepository, sendUnwrap, walletClient],
   );
 
   return {
