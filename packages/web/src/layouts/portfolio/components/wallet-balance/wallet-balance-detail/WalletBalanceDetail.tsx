@@ -18,6 +18,7 @@ import {
 } from "@repositories/position/response";
 import { AmountConverter } from "@services/converters/common/amount";
 import { DEVICE_TYPE } from "@styles/media";
+import { buildClaimedRewardInfo } from "@utils/position-reward-utils";
 
 import StakedPostionsTooltipContent from "./sateked-positions-tooltip/StakedPositinosTooltipContent";
 import WalletBalanceDetailInfo from "./wallet-balance-detail-info/WalletBalanceDetailInfo";
@@ -152,10 +153,10 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
 
     return {
       claimableRewardInfo: buildRewardInfo(positionRewards.claimable),
-      claimedRewardInfo: buildRewardInfo(positionRewards.claimed),
+      claimedRewardInfo: buildClaimedRewardInfo(positionRewards.claimed, tokens),
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [positionRewards, tokenByPath]);
+  }, [positionRewards, tokenByPath, tokens]);
 
   const hasInfo = (data: { [key in DisplayRewardType]: PositionRewardForTooltip[] }): boolean => {
     return data.SWAP_FEE.length > 0 || data.INTERNAL_REWARD.length > 0 || data.EXTERNAL_REWARD.length > 0;

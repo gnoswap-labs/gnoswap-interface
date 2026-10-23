@@ -193,7 +193,7 @@ it("portals candle details beyond clipping ancestors and keeps the measured tool
     onMove({
       point: { x: 300, y: 200 },
       time: firstPage[0].time,
-      seriesData: new Map([
+      seriesData: new Map<typeof mockCandles | typeof mockVolume, PriceBar | { time: number; value: number }>([
         [mockCandles, firstPage[0]],
         [mockVolume, { time: firstPage[0].time, value: firstPage[0].volume }],
       ]),

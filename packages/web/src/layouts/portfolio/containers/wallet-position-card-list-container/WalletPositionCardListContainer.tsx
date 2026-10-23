@@ -10,7 +10,6 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePoolData } from "@hooks/pool/data/use-pool-data";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { useGetAllTokenPrices } from "@query/token";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { ThemeState } from "@states/index";
@@ -30,7 +29,7 @@ const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerP
   const router = useRouter();
   const [mobile, setMobile] = useState(false);
   const { width } = useWindowSize();
-  const { connected } = useWallet();
+  const { connected, account } = useWallet();
   const [page, setPage] = useState(1);
 
   const limit = useMemo(() => {
@@ -59,7 +58,6 @@ const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerP
   const { pools, loading } = usePoolData();
   const themeKey = useAtomValue(ThemeState.themeKey);
   const divRef = useRef<HTMLDivElement | null>(null);
-  const { data: tokenPrices = {} } = useGetAllTokenPrices();
 
   const [isViewMorePositions, setIsViewMorePositions] = useState(false);
 
@@ -284,6 +282,7 @@ const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerP
 
   return (
     <MyPositionCardList
+      address={account?.address}
       positions={mappedData}
       loadMore={!isViewMorePositions}
       isFetched={isPositionDataAvailable}
@@ -298,7 +297,6 @@ const WalletPositionCardListContainer: React.FC<WalletPositionCardListContainerP
       themeKey={themeKey}
       divRef={divRef}
       onScroll={handleScroll}
-      tokenPrices={tokenPrices}
       onClickLoadMore={handleClickLoadMore}
       currentPage={page}
       totalPage={totalPage}

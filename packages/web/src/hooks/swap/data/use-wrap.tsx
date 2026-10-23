@@ -3,25 +3,18 @@ import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import BigNumber from "bignumber.js";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 
 export const useWrap = () => {
   const { swapRouterRepository, tokenRepository } = useGnoswapContext();
-  const { account } = useWallet();
-
-  const fetchWugnotBalance = useCallback(async () => {
-    const balances = await tokenRepository.getGrc20BalancesByAddress(account?.address || "");
-    if (!balances) {
-      return "0";
-    }
-
-    return balances.data.find(balance => balance.path === WRAPPED_GNOT_PATH)?.amount || "0";
-  }, [tokenRepository, account?.address]);
+  const { account, walletClient } = useWallet();
+  const currentAddressRef = useRef(account?.address);
+  currentAddressRef.current = account?.address;
 
   const unwrap = useCallback(
     async (tokenAmount: string) => {
       const rawTokenAmount = BigNumber(tokenAmount);
-      if (rawTokenAmount.isNaN() || rawTokenAmount.isLessThan(1000)) {
+      if (!rawTokenAmount.isFinite() || rawTokenAmount.isLessThan(1000)) {
         return null;
       }
 
@@ -35,14 +28,25 @@ export const useWrap = () => {
     [swapRouterRepository],
   );
 
-  const unwrapAll = useCallback(async () => {
-    const wugnotBalance = await fetchWugnotBalance();
+  const unwrapAll = useCallback(
+    async (txHash: string) => {
+      const address = account?.address;
+      if (!txHash || !address || currentAddressRef.current !== address) return null;
 
-    return unwrap(wugnotBalance);
-  }, [unwrap, fetchWugnotBalance]);
+      const balances = await tokenRepository.getGrc20BalanceReceiptByAddress(address, txHash);
+      if (currentAddressRef.current !== address || balances.accountBalanceApplied !== true) return null;
+
+      const wugnotBalance = balances.data.find(balance => balance.path === WRAPPED_GNOT_PATH);
+      if (!wugnotBalance) return null;
+      // Notifications outlive this hook, so its render-updated ref alone cannot identify the signer.
+      const signerAddress = await walletClient?.getAddress();
+      if (signerAddress !== address || currentAddressRef.current !== address) return null;
+      return unwrap(wugnotBalance.amount);
+    },
+    [account?.address, tokenRepository, unwrap, walletClient],
+  );
 
   return {
-    fetchWugnotBalance,
     unwrap,
     unwrapAll,
   };

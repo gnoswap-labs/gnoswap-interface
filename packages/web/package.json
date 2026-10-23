@@ -11,6 +11,7 @@
     "build:stg": "dotenv -e .env.staging next build",
     "start": "next start",
     "lint": "next lint",
+    "typecheck": "tsc --noEmit --incremental false",
     "format": "prettier --write src",
     "i18n:download": "i18nexus pull",
     "test": "jest --watch",

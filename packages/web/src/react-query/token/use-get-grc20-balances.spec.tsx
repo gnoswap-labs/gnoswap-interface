@@ -2,6 +2,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import React from "react";
 
+import { NetworkClient } from "@common/clients/network-client";
+import { MockStorageClient } from "@common/clients/storage-client/mock-storage-client";
+import { TokenRepositoryImpl } from "@repositories/token/token-repository-impl";
 import { IBalancesByAddressResponse } from "@repositories/token/response/balance-by-address-response";
 import { QUERY_KEY } from "../query-keys";
 import { useGetGrc20Balances } from "./use-get-grc20-balances";
@@ -9,7 +12,7 @@ import { useGetGrc20Balances } from "./use-get-grc20-balances";
 const getGrc20BalancesByAddress = jest.fn();
 const wallet = { currentChainId: "chain-a" };
 const balances: IBalancesByAddressResponse = {
-  data: [{ path: "gno.land/r/demo/usdc", amount: "100" }],
+  data: [{ path: "gno.land/r/demo/usdc", amount: "100", updatedBlockHeight: 100 }],
   message: "success",
 };
 
@@ -36,6 +39,22 @@ describe("useGetGrc20Balances wallet cache identity", () => {
   beforeEach(() => {
     wallet.currentChainId = "chain-a";
     getGrc20BalancesByAddress.mockReset().mockResolvedValue(balances);
+  });
+
+  it("renders ordinary legacy balances without receipt proof or block-height metadata through the real repository", async () => {
+    const response: IBalancesByAddressResponse = {
+      message: "Success",
+      data: [{ path: "gno.land/r/demo/usdc", amount: "12000000" }],
+    };
+    const get = jest.fn().mockResolvedValue({ data: response });
+    const repository = new TokenRepositoryImpl({ get } as unknown as NetworkClient, new MockStorageClient("LOCAL"));
+    getGrc20BalancesByAddress.mockImplementation(repository.getGrc20BalancesByAddress);
+
+    const { result } = renderBalances();
+    await waitFor(() => expect(result.current.data).toEqual(response));
+    expect(result.current.data?.data[0].amount).toBe("12000000");
+    expect(result.current.data).not.toHaveProperty("accountBalanceApplied");
+    expect(get).toHaveBeenCalledWith({ url: "/users/g1first/balances" });
   });
 
   it("retains same-wallet data during an address-prefix invalidation", async () => {
