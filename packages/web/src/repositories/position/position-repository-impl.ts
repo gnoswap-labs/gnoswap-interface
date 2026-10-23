@@ -147,7 +147,7 @@ export class PositionRepositoryImpl implements PositionRepository {
     return { positions, totalCount };
   };
 
-  getPositionRewardsByAddress = async (address: string): Promise<PositionRewardsResponse> => {
+  getPositionRewardsByAddress = async (address: string, poolPath?: string): Promise<PositionRewardsResponse> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -155,7 +155,25 @@ export class PositionRepositoryImpl implements PositionRepository {
     const response = await this.networkClient.get<{
       data: PositionRewardsResponse;
     }>({
-      url: "/users/" + address + "/position/reward",
+      url: "/users/" + address + "/position/reward" + (poolPath ? `?poolPath=${encodeURIComponent(poolPath)}` : ""),
+    });
+
+    if (!response?.data?.data) {
+      throw new Error("Missing position rewards response");
+    }
+    return response.data.data;
+  };
+
+  getPositionRewardsByAddressAndId = async (
+    address: string,
+    positionId: string,
+  ): Promise<PositionRewardsResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await this.networkClient.get<{ data: PositionRewardsResponse }>({
+      url: `/users/${encodeURIComponent(address)}/position/${encodeURIComponent(positionId)}/reward`,
     });
 
     if (!response?.data?.data) {

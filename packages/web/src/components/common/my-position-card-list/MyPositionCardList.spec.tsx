@@ -55,7 +55,6 @@ describe("MyPositionCardList", () => {
         showLoadMore={false}
         width={1440}
         themeKey="light"
-        tokenPrices={{}}
         currentPage={3}
         totalPage={3}
         movePage={jest.fn()}

@@ -227,7 +227,8 @@ jobs:
       VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-      PREFIX: ${{ needs.prepare.outputs.prefix }}
+      # Not PREFIX: npm reads it as the global prefix and installs the CLI outside PATH
+      RELEASE_PREFIX: ${{ needs.prepare.outputs.prefix }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -246,18 +247,18 @@ jobs:
       # mainnet -> Production, testnet -> custom environment "testnet"
       - name: Pull Vercel settings
         run: |
-          if [ "$PREFIX" = "mainnet" ]; then env=production; else env=testnet; fi
+          if [ "$RELEASE_PREFIX" = "mainnet" ]; then env=production; else env=testnet; fi
           vercel pull --yes --environment="$env" --token "$VERCEL_TOKEN"
 
       - name: Build
         run: |
-          if [ "$PREFIX" = "mainnet" ]; then target=(--prod); else target=(--target=testnet); fi
+          if [ "$RELEASE_PREFIX" = "mainnet" ]; then target=(--prod); else target=(--target=testnet); fi
           vercel build "${target[@]}" --token "$VERCEL_TOKEN"
 
       - name: Deploy
         id: deploy
         run: |
-          if [ "$PREFIX" = "mainnet" ]; then target=(--prod); else target=(--target=testnet); fi
+          if [ "$RELEASE_PREFIX" = "mainnet" ]; then target=(--prod); else target=(--target=testnet); fi
           url=$(vercel deploy --prebuilt "${target[@]}" --token "$VERCEL_TOKEN")
           echo "url=${url}" >> "$GITHUB_OUTPUT"
 

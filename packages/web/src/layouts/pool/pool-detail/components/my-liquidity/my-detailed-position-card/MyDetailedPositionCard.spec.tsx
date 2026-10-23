@@ -24,6 +24,9 @@ jest.mock("@hooks/common/use-window-size", () => ({
 jest.mock("@hooks/pool/data/use-pool-liquidity-segments-by-path", () => ({
   usePoolLiquiditySegmentsByPath: () => ({ liquiditySegments: [], isLoading: true }),
 }));
+jest.mock("@query/positions/use-get-position-rewards-by-id", () => ({
+  useGetPositionRewardsById: () => ({ data: undefined, isInitialLoading: false }),
+}));
 jest.mock("@hooks/token/data/use-gnot-wugnot", () => ({
   useGnotToGnot: () => ({ getGnotPath: (token: TokenModel) => token }),
 }));
