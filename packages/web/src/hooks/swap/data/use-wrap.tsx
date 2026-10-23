@@ -7,7 +7,7 @@ import { useCallback, useRef } from "react";
 
 export const useWrap = () => {
   const { swapRouterRepository, tokenRepository } = useGnoswapContext();
-  const { account } = useWallet();
+  const { account, walletClient } = useWallet();
   const currentAddressRef = useRef(account?.address);
   currentAddressRef.current = account?.address;
 
@@ -38,9 +38,12 @@ export const useWrap = () => {
 
       const wugnotBalance = balances.data.find(balance => balance.path === WRAPPED_GNOT_PATH);
       if (!wugnotBalance) return null;
+      // Notifications outlive this hook, so its render-updated ref alone cannot identify the signer.
+      const signerAddress = await walletClient?.getAddress();
+      if (signerAddress !== address || currentAddressRef.current !== address) return null;
       return unwrap(wugnotBalance.amount);
     },
-    [account?.address, tokenRepository, unwrap],
+    [account?.address, tokenRepository, unwrap, walletClient],
   );
 
   return {

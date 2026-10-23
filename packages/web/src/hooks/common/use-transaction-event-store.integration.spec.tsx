@@ -44,6 +44,7 @@ function setup(response: IGrc20BalanceReceiptWireResponse = applied()) {
   const sendUnwrapToken = jest.fn().mockResolvedValue({ code: 0 });
   const evaluateExpression = jest.fn();
   const abciQuery = jest.fn();
+  const getAddress = jest.fn().mockResolvedValue("g1user");
   const get = jest.fn().mockResolvedValue({ data: response });
   const tokenRepository = new TokenRepositoryImpl({ get } as unknown as NetworkClient, new MockStorageClient("LOCAL"));
   const eventStore = new TransactionEventStore({
@@ -51,7 +52,7 @@ function setup(response: IGrc20BalanceReceiptWireResponse = applied()) {
       data: { result: { height: "100", tx_result: { ResponseBase: {} } } },
     }),
   });
-  (useWallet as jest.Mock).mockReturnValue({ account: { address: "g1user" } });
+  (useWallet as jest.Mock).mockReturnValue({ account: { address: "g1user" }, walletClient: { getAddress } });
   (useSnackbar as jest.Mock).mockReturnValue({ enqueue });
   (useGnoswapContext as jest.Mock).mockReturnValue({
     eventStore,
@@ -62,6 +63,7 @@ function setup(response: IGrc20BalanceReceiptWireResponse = applied()) {
   const { result, unmount, rerender } = renderHook(() => useTransactionEventStore());
   return {
     get,
+    getAddress,
     sendUnwrapToken,
     unmount,
     rerender,
@@ -298,6 +300,40 @@ describe("unwrap guidance account-balance receipts", () => {
     expect(probe.get).toHaveBeenLastCalledWith({ url: receiptUrl });
     expect(probe.sendUnwrapToken).not.toHaveBeenCalled();
     probe.expectNoBalanceRpc();
+  });
+
+  it.each(["g1another", null])("suppresses an unmounted notification when the actual signer is %s", async signer => {
+    const probe = setup();
+    await probe.confirm();
+    const onClick = probe.receiveBadges()[0][0].onClick;
+    probe.unmount();
+    probe.getAddress.mockResolvedValue(signer);
+    await onClick();
+    expect(probe.sendUnwrapToken).not.toHaveBeenCalled();
+  });
+
+  it("checks the actual signer after the receipt resolves even when the host has unmounted", async () => {
+    const probe = setup();
+    await probe.confirm();
+    const onClick = probe.receiveBadges()[0][0].onClick;
+    probe.unmount();
+    const response = Promise.withResolvers<{ data: IGrc20BalanceReceiptWireResponse }>();
+    probe.get.mockReturnValue(response.promise);
+    const clicking = onClick();
+    probe.getAddress.mockResolvedValue("g1another");
+    response.resolve({ data: applied() });
+    await clicking;
+    expect(probe.sendUnwrapToken).not.toHaveBeenCalled();
+  });
+
+  it("still unwraps the freshly fetched amount after unmount when the actual signer matches", async () => {
+    const probe = setup();
+    await probe.confirm();
+    const onClick = probe.receiveBadges()[0][0].onClick;
+    probe.unmount();
+    probe.get.mockResolvedValue({ data: applied("13000001") });
+    await onClick();
+    expect(probe.sendUnwrapToken).toHaveBeenCalledWith(expect.objectContaining({ tokenAmount: "13.000001" }));
   });
 
   it("suppresses click submission after the account disconnects", async () => {
