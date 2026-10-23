@@ -9,8 +9,19 @@ import {
   makeRepositionSwapAmounts,
   makeRepositionSwapEstimateRequest,
 } from "./reposition-utils";
+import * as swapUtils from "./swap-utils";
 import { priceToTick } from "./swap-utils";
 import { makeDisplayTokenAmountString, makeRawTokenAmount } from "./token-utils";
+
+// Passthrough mocks so individual tests can override deposit amounts
+jest.mock("./swap-utils", () => {
+  const actual = jest.requireActual("./swap-utils");
+  return {
+    ...actual,
+    getDepositAmountsByAmountA: jest.fn(actual.getDepositAmountsByAmountA),
+    getDepositAmountsByAmountB: jest.fn(actual.getDepositAmountsByAmountB),
+  };
+});
 
 const createToken = (symbol: string, decimals = 6): TokenModel => ({
   path: `gno.land/r/demo/${symbol.toLowerCase()}`,
@@ -125,5 +136,17 @@ describe("reposition amounts precision", () => {
 
     expect(amounts.amountA).toBe("0");
     expect(amounts.amountB).toBe(BigNumber(LARGE_BALANCE).plus("0.000001").toFixed());
+  });
+});
+
+describe("getRepositionAmountsByPriceRange NaN guard", () => {
+  it("returns zero amounts when both deposit amounts are zero", () => {
+    (swapUtils.getDepositAmountsByAmountA as jest.Mock)
+      .mockReturnValueOnce({ amountA: 0, amountB: 0 })
+      .mockReturnValueOnce({ amountA: 0, amountB: 0 });
+
+    const amounts = getRepositionAmountsByPriceRange(1, sqrtPriceX96, 0.5, 2, 0.5, 2, "1000", "1000");
+
+    expect(amounts).toEqual({ amountA: "0", amountB: "0" });
   });
 });
