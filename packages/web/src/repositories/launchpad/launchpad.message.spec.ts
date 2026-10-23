@@ -5,6 +5,7 @@ jest.mock("@constants/environment.constant", () => ({
   PACKAGE_LAUNCHPAD_PATH: "launchpad_path",
 }));
 
+import { GNS_TOKEN } from "@common/values/token-constant";
 import type { TokenModel } from "@models/token/token-model";
 import {
   makeCollectProtocolFeeMessage,
@@ -15,11 +16,12 @@ describe("launchpad.message.ts", () => {
   it("approves launchpad deposits with the exact deposit amount", async () => {
     const caller = "caller";
     const fetchAllowance = jest.fn(async () => 0);
-    const gnsToken = {
+    const gnsToken: TokenModel = {
+      ...GNS_TOKEN,
       path: "gns_token_path",
       pkgPath: "gns_package_path",
       routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
-    } as TokenModel;
+    };
 
     const messages = await makeDepositGNSMessageWithApproves(
       { poolId: "pool-1", gnsToken, gnsTokenAmount: 456000000n, caller, referrerAddress: null },

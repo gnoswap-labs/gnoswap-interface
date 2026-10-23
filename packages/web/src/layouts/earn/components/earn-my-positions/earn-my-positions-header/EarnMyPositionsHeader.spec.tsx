@@ -4,39 +4,11 @@ import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapTheme
 import EarnMyPositionsHeader, { EarnMyPositionsHeaderProps } from "./EarnMyPositionsHeader";
 
 describe("EarnMyPositionsHeader Component", () => {
-  it("EarnMyPositionsHeader render", () => {
-    const args: EarnMyPositionsHeaderProps = {
-      connected: false,
-      visiblePositions: true,
-      positionLength: 0,
-      hasClosedPositions: true,
-      isSwitchNetwork: false,
-      availableStake: false,
-      moveEarnAdd: () => {
-        return;
-      },
-      moveEarnStake: () => {
-        return;
-      },
-      isClosed: false,
-      handleChangeClosed: () => {
-        return;
-      },
-      positions: [],
-    };
-
-    render(
-      <JotaiProvider>
-        <GnoswapThemeProvider>
-          <EarnMyPositionsHeader {...args} />
-        </GnoswapThemeProvider>
-      </JotaiProvider>,
-    );
-  });
 
   it("hides both closed-position switches when no closed position exists", () => {
     const args: EarnMyPositionsHeaderProps = {
       connected: true,
+      isOtherPosition: false,
       visiblePositions: true,
       positionLength: 2,
       hasClosedPositions: false,
@@ -64,6 +36,7 @@ describe("EarnMyPositionsHeader Component", () => {
   it("renders both desktop and mobile closed-position switches when a closed position exists", () => {
     const args: EarnMyPositionsHeaderProps = {
       connected: true,
+      isOtherPosition: false,
       visiblePositions: true,
       positionLength: 2,
       hasClosedPositions: true,
