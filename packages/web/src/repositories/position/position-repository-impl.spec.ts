@@ -143,4 +143,13 @@ describe("PositionRepositoryImpl", () => {
       url: "/users/g1address/position/reward?poolPath=gno.land%2Fr%2Fpool%3Aa%2Fb",
     });
   });
+
+  it("does not turn an unavailable position reward response into an empty claim history", async () => {
+    const get = jest.fn().mockResolvedValue({ data: {} });
+    const repository = new PositionRepositoryImpl({ get } as unknown as NetworkClient, null, null);
+
+    await expect(repository.getPositionRewardsByAddressAndId("g1recipient", "42")).rejects.toThrow(
+      "Missing position rewards response",
+    );
+  });
 });

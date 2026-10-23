@@ -49,8 +49,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
   });
 
   const { totalCount: totalPositionCount = 0, positions: rawPositions = [] } = data ?? {};
-  // Keep a previous result available while a filter-specific query is transitioning,
-  // but never treat a completed failed request as an empty result.
+  // Never treat a completed failed request as an empty result.
   const hasPositionData = data !== undefined;
   const isPositionDataAvailable = hasPositionData;
 
