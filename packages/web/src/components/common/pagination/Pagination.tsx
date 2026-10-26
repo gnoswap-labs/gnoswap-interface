@@ -11,6 +11,7 @@ interface PaginationProps {
   disabled?: boolean;
   siblingCount?: number;
   boundaryCount?: number;
+  compact?: boolean;
 }
 
 const getLabel = (item: string | number) => {
@@ -33,6 +34,7 @@ const Pagination: React.FC<PaginationProps> = ({
   disabled,
   siblingCount = 2,
   boundaryCount = 1,
+  compact = false,
 }) => {
   const startPages = useMemo(() => range(1, Math.min(boundaryCount, totalPage)), [boundaryCount, totalPage]);
 
@@ -41,19 +43,31 @@ const Pagination: React.FC<PaginationProps> = ({
     [boundaryCount, totalPage],
   );
 
-  const siblingsStart = Math.max(Math.min(currentPage - siblingCount, totalPage - siblingCount * 2), boundaryCount + 1);
+  // Reuse missing sibling/ellipsis slots near either edge so the control count stays fixed.
+  const siblingsStart = Math.max(
+    Math.min(currentPage - siblingCount, totalPage - boundaryCount - siblingCount * 2 - 1),
+    boundaryCount + 2,
+  );
 
   const siblingsEnd = Math.min(
-    Math.max(currentPage + siblingCount, boundaryCount + siblingCount * 2),
-    endPages.length > 0 ? endPages[0] - 1 : totalPage - 1,
+    Math.max(currentPage + siblingCount, boundaryCount + siblingCount * 2 + 2),
+    endPages.length > 0 ? endPages[0] - 2 : totalPage - 1,
   );
 
   const pageList = [
     "prev",
     ...startPages,
-    ...(siblingsStart > boundaryCount + 1 ? ["start-ellipsis"] : []),
+    ...(siblingsStart > boundaryCount + 2
+      ? ["start-ellipsis"]
+      : boundaryCount + 1 < totalPage - boundaryCount
+      ? [boundaryCount + 1]
+      : []),
     ...range(siblingsStart, siblingsEnd),
-    ...(siblingsEnd < totalPage - boundaryCount ? ["end-ellipsis"] : []),
+    ...(siblingsEnd < totalPage - boundaryCount - 1
+      ? ["end-ellipsis"]
+      : totalPage - boundaryCount > boundaryCount
+      ? [totalPage - boundaryCount]
+      : []),
     ...endPages,
     "next",
   ];
@@ -83,7 +97,7 @@ const Pagination: React.FC<PaginationProps> = ({
     <PaginationWrapper>
       {paginationDetailsObject.map(({ key, disabled, selected, onClick, item }) => (
         <PaginationItem key={key}>
-          <Button className={cx({ selected: selected })} disabled={disabled} onClick={onClick}>
+          <Button className={cx({ selected: selected })} disabled={disabled} onClick={onClick} compact={compact}>
             {getLabel(item)}
           </Button>
         </PaginationItem>

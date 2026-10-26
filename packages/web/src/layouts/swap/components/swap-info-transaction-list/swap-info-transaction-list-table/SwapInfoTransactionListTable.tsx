@@ -179,7 +179,8 @@ const SwapInfoTransactionListTable = ({ breakpoint, swapHistory }: SwapInfoTrans
             currentPage={currentPage}
             totalPage={totalPage}
             onPageChange={changePage}
-            siblingCount={breakpoint !== DEVICE_TYPE.MOBILE ? 2 : 1}
+            siblingCount={breakpoint !== DEVICE_TYPE.MOBILE ? 1 : 0}
+            compact={breakpoint === DEVICE_TYPE.MOBILE}
           />
         </TransactionListPaginationWrapper>
       )}
