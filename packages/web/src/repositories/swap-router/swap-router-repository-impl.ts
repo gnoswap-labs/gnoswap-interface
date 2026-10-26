@@ -201,7 +201,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   public sendUnwrapToken = async (request: UnwrapTokenRequest): Promise<WalletResponse<{ hash: string }>> => {
     const address = await this.getAddress();
 
-    const { gasFee, gasUsed, withNotification, ...requests } = request;
+    const { gasFee, gasUsed, withNotification, isVisibleResult, ...requests } = request;
 
     const messages = makeUnwrapTokenMessages({ ...requests, caller: address });
 
@@ -215,6 +215,7 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
         memo: "",
       }),
       ...(withNotification !== undefined && { withNotification }),
+      ...(isVisibleResult !== undefined && { isVisibleResult }),
     };
 
     return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {

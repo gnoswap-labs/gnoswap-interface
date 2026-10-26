@@ -20,8 +20,10 @@ export interface SendTransactionRequestParam {
   gasFee: number;
   gasWanted?: number;
   memo?: string;
-  /** Adena-only result notification; other wallet clients may ignore this option. */
+  /** Adena-only desktop notification; other wallet clients may ignore this option. */
   withNotification?: boolean;
+  /** Adena-only result screen; independent of desktop notifications. */
+  isVisibleResult?: boolean;
 }
 
 /**

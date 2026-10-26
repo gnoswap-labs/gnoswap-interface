@@ -96,10 +96,10 @@ export class AdenaClient implements WalletClient {
   public sendTransaction = <T = string[]>(
     transaction: SendTransactionRequestParam,
   ): Promise<WalletResponse<SendTransactionResponse<T | null>>> => {
-    const { withNotification = false, ...transactionRequest } = transaction;
+    const { withNotification = false, isVisibleResult = false, ...transactionRequest } = transaction;
     const options: ContractOptions = {
       withNotification,
-      isVisibleResult: withNotification,
+      isVisibleResult,
     };
     const request = {
       ...transactionRequest,

@@ -5,6 +5,7 @@ export interface UnwrapTokenRequest {
 
   tokenAmount: string;
   withNotification?: boolean;
+  isVisibleResult?: boolean;
 
   gasFee?: string;
 
