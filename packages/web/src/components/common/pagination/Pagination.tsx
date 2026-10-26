@@ -11,6 +11,7 @@ interface PaginationProps {
   disabled?: boolean;
   siblingCount?: number;
   boundaryCount?: number;
+  compact?: boolean;
 }
 
 const getLabel = (item: string | number) => {
@@ -33,6 +34,7 @@ const Pagination: React.FC<PaginationProps> = ({
   disabled,
   siblingCount = 2,
   boundaryCount = 1,
+  compact = false,
 }) => {
   const startPages = useMemo(() => range(1, Math.min(boundaryCount, totalPage)), [boundaryCount, totalPage]);
 
@@ -83,7 +85,7 @@ const Pagination: React.FC<PaginationProps> = ({
     <PaginationWrapper>
       {paginationDetailsObject.map(({ key, disabled, selected, onClick, item }) => (
         <PaginationItem key={key}>
-          <Button className={cx({ selected: selected })} disabled={disabled} onClick={onClick}>
+          <Button className={cx({ selected: selected })} disabled={disabled} onClick={onClick} compact={compact}>
             {getLabel(item)}
           </Button>
         </PaginationItem>
