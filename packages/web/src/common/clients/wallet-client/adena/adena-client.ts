@@ -14,7 +14,7 @@ import {
 } from "../protocols";
 import { AddNetworkRequestParam, AddNetworkResponse, SwitchNetworkResponse } from "../protocols/wallet-network";
 import { WalletClient } from "../wallet-client";
-import { Adena } from "./adena";
+import { Adena, ContractOptions } from "./adena";
 import { parseTransactionResponse } from "./adena-client.util";
 
 export class AdenaClient implements WalletClient {
@@ -97,6 +97,10 @@ export class AdenaClient implements WalletClient {
     transaction: SendTransactionRequestParam,
   ): Promise<WalletResponse<SendTransactionResponse<T | null>>> => {
     const { withNotification = false, ...transactionRequest } = transaction;
+    const options: ContractOptions = {
+      withNotification,
+      isVisibleResult: withNotification,
+    };
     const request = {
       ...transactionRequest,
       messages: transactionRequest.messages.map(message => {
@@ -122,7 +126,7 @@ export class AdenaClient implements WalletClient {
     };
     return createTimeout<WalletResponse<SendTransactionResponse<T | null>>>(
       this.getAdena()
-        .DoContract(request, withNotification)
+        .DoContract(request, options)
         .then(response => {
           console.log("Injection Response", response);
           return parseTransactionResponse(response) as WalletResponse<SendTransactionResponse<T | null>>;

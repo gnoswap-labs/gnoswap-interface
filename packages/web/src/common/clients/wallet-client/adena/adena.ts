@@ -1,11 +1,16 @@
 import { SignArbitraryRequestParam, SignedArbitraryData } from "../protocols/wallet-sign";
 
+export interface ContractOptions {
+  withNotification?: boolean;
+  isVisibleResult?: boolean;
+}
+
 export interface Adena {
   AddEstablish: (name: string) => Promise<Response>;
   GetAccount: () => Promise<Response<AccountInfo>>;
   DoContract: (
     mesasage: SendTransactionRequestParam,
-    withNotification: boolean,
+    options?: ContractOptions,
   ) => Promise<Response<AdenaSendTransactionResponse>>;
   Sign: (mesasage: SendTransactionRequestParam) => Promise<Response>;
   /** Missing on extensions that predate SignArbitrary. */
