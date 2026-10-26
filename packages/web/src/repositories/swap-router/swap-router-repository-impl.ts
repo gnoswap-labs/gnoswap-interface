@@ -214,8 +214,8 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
         gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
         memo: "",
       }),
-      ...(withNotification !== undefined && { withNotification }),
-      ...(isVisibleResult !== undefined && { isVisibleResult }),
+      withNotification,
+      isVisibleResult,
     };
 
     return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {

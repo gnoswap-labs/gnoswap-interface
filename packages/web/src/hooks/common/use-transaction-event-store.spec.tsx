@@ -1,5 +1,5 @@
 import React from "react";
-import { act, render, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 import { DexEvent } from "@repositories/common";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
@@ -205,6 +205,76 @@ describe("useTransactionEventStore", () => {
     expect(getReceipt).toHaveBeenCalledTimes(1);
     expect(getReceiveWugnotMessage).not.toHaveBeenCalled();
     expect(enqueue.mock.calls.filter(([, config]) => config.type === "receive-wugnot")).toHaveLength(0);
+  });
+
+  it("keeps the committed account receipt valid when another account render is abandoned", async () => {
+    const { promise: receipt, resolve } = Promise.withResolvers<IGrc20BalanceReceiptResponse>();
+    const { promise: suspendedAccount } = Promise.withResolvers<void>();
+    const getReceipt = jest.fn().mockReturnValue(receipt);
+    const accountContext = React.createContext("g1user");
+    const attemptedOtherAccount = jest.fn();
+    (useGnoswapContext as jest.Mock).mockReturnValue({
+      eventStore,
+      tokenRepository: { getGrc20BalanceReceiptByAddress: getReceipt },
+      poolRepository: {},
+      positionRepository: {},
+    });
+    (useWallet as jest.Mock).mockImplementation(() => ({
+      account: { address: React.useContext(accountContext) },
+    }));
+    (useMessage as jest.Mock).mockReturnValue({
+      getMessage: jest.fn().mockReturnValue({ txHash }),
+      getReceiveWugnotMessage: jest.fn().mockReturnValue({ title: "Receive WUGNOT" }),
+      getStakePositionMessage: jest.fn(),
+    });
+    const Probe = () => {
+      const address = React.useContext(accountContext);
+      const { enqueueEvent } = useTransactionEventStore();
+      React.useEffect(() => {
+        enqueueEvent({ txHash, action: DexEvent.SWAP, checkWugnotTransfer: true });
+      }, []);
+      return <span>{address}</span>;
+    };
+    const SuspendOtherAccount = () => {
+      if (React.useContext(accountContext) === "g1other") {
+        attemptedOtherAccount();
+        throw suspendedAccount;
+      }
+      return null;
+    };
+    const Controls = () => {
+      const [address, setAddress] = React.useState("g1user");
+      return (
+        <>
+          <button onClick={() => React.startTransition(() => setAddress("g1other"))}>switch account</button>
+          <button onClick={() => setAddress("g1user")}>keep current account</button>
+          <accountContext.Provider value={address}>
+            <React.Suspense fallback={<span>switching account</span>}>
+              <Probe />
+              <SuspendOtherAccount />
+            </React.Suspense>
+          </accountContext.Provider>
+        </>
+      );
+    };
+    render(<Controls />);
+    const onEmit = eventStore.addEvent.mock.calls[0][2];
+    await act(async () => {
+      await onEmit({ status: "SUCCESS", data: [] });
+    });
+    expect(getReceipt).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByRole("button", { name: "switch account" }));
+    expect(attemptedOtherAccount).toHaveBeenCalled();
+    expect(screen.getByText("g1user")).toBeVisible();
+    fireEvent.click(screen.getByRole("button", { name: "keep current account" }));
+    await act(async () => {
+      resolve(appliedReceipt);
+      await receipt;
+    });
+    expect(enqueue).toHaveBeenCalledWith(
+      { title: "Receive WUGNOT" },
+      expect.objectContaining({ type: "receive-wugnot", accountAddress: "g1user" }),
+    );
   });
 
   it("does not check an old transaction receipt after switching accounts, disconnecting, and reconnecting", async () => {

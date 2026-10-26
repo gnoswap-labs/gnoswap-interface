@@ -26,6 +26,7 @@ const BADGE_SNACKBAR_TIMEOUT = 0;
 const WUGNOT_CHANGE_THRESHOLD = 10000;
 const WUGNOT_RECEIPT_RETRY_INTERVAL = 1_200;
 const WUGNOT_RECEIPT_RETRY_DEADLINE = 8_000;
+const useCommitEffect = typeof window === "undefined" ? React.useEffect : React.useLayoutEffect;
 
 function waitForWugnotRetry(signal: AbortSignal): Promise<void> {
   const { promise, resolve } = Promise.withResolvers<void>();
@@ -59,15 +60,21 @@ export const useTransactionEventStore = () => {
   const { getMessage, getReceiveWugnotMessage, getStakePositionMessage } = useMessage();
   const { refetch: refetchNotifications } = useGetNotifications();
 
-  // Keep a live account generation so receipt checks stay stale after A → B → A transitions.
-  const accountScopeRef = React.useRef({ address: account?.address, generation: 0 });
-  if (accountScopeRef.current.address !== account?.address) {
-    accountScopeRef.current = {
+  // Keep account generations in React state so abandoned renders cannot invalidate committed receipts.
+  const [renderedAccountScope, setRenderedAccountScope] = React.useState({
+    address: account?.address,
+    generation: 0,
+  });
+  if (renderedAccountScope.address !== account?.address) {
+    setRenderedAccountScope({
       address: account?.address,
-      generation: accountScopeRef.current.generation + 1,
-    };
+      generation: renderedAccountScope.generation + 1,
+    });
   }
-  const renderedAccountScope = accountScopeRef.current;
+  const accountScopeRef = React.useRef(renderedAccountScope);
+  useCommitEffect(() => {
+    accountScopeRef.current = renderedAccountScope;
+  }, [renderedAccountScope]);
   const mountedRef = React.useRef(false);
   const activeTransferChecksRef = React.useRef<Set<AbortController>>(new Set());
 

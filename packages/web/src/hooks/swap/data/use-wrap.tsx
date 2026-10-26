@@ -29,10 +29,7 @@ export const useWrap = () => {
     },
     [swapRouterRepository],
   );
-  const unwrap = useCallback(
-    (tokenAmount: string) => sendUnwrap(tokenAmount, { withNotification: false, isVisibleResult: false }),
-    [sendUnwrap],
-  );
+  const unwrap = useCallback((tokenAmount: string) => sendUnwrap(tokenAmount, {}), [sendUnwrap]);
 
   const unwrapAll = useCallback(
     async (txHash: string) => {
