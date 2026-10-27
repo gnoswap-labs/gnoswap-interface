@@ -201,18 +201,22 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
   public sendUnwrapToken = async (request: UnwrapTokenRequest): Promise<WalletResponse<{ hash: string }>> => {
     const address = await this.getAddress();
 
-    const { gasFee, gasUsed, ...requests } = request;
+    const { gasFee, gasUsed, withNotification, isVisibleResult, ...requests } = request;
 
     const messages = makeUnwrapTokenMessages({ ...requests, caller: address });
 
     const gasWanted = this.calculateGasWanted(Number(gasUsed));
 
-    const sendTransactionParams = generateSendTransactionParams({
-      messages,
-      gasWanted,
-      gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
-      memo: "",
-    });
+    const sendTransactionParams = {
+      ...generateSendTransactionParams({
+        messages,
+        gasWanted,
+        gasFee: Number(gasFee) || DEFAULT_GAS_FEE,
+        memo: "",
+      }),
+      withNotification,
+      isVisibleResult,
+    };
 
     return withTransactionGuard(this.walletClient, sendTransactionParams, updatedSendTransactionParams => {
       return this.walletClient!.sendTransaction(updatedSendTransactionParams || sendTransactionParams);
