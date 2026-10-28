@@ -36,7 +36,7 @@ import { useCopy } from "@hooks/common/use-copy";
 import useRouter from "@hooks/common/use-custom-router";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePoolLiquiditySegmentsByPath } from "@hooks/pool/data/use-pool-liquidity-segments-by-path";
-import { PoolPositionModel } from "@models/position/pool-position-model";
+import { DisplayPoolPositionModel, PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { useGetPositionRewardsById } from "@query/positions/use-get-position-rewards-by-id";
 import { ThemeState } from "@states/index";
@@ -63,7 +63,7 @@ import {
 } from "./MyDetailedPositionCard.styles";
 
 interface MyDetailedPositionCardProps {
-  position: PoolPositionModel;
+  position: DisplayPoolPositionModel;
   isStakable: boolean;
   breakpoint: DEVICE_TYPE;
   loading: boolean;
@@ -700,7 +700,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
 
           {!isHiddenAddPosition && connected && (
             <ManageButton
-              position={position}
+              position={position.rawPosition}
               inRange={inRange}
               isClosed={isClosed}
               isStaked={position.staked}

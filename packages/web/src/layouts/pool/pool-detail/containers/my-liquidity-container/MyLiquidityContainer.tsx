@@ -20,7 +20,7 @@ import { formatOtherPrice } from "@utils/new-number-utils";
 
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { PoolPositionModel } from "@models/position/pool-position-model";
+import { DisplayPoolPositionModel, PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionConverter } from "@services/converters/position";
 import MyLiquidity from "../../components/my-liquidity/MyLiquidity";
 
@@ -140,7 +140,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     return Boolean(address) && address !== account?.address;
   }, [account?.address, address]);
 
-  const accountPositions: PoolPositionModel[] = useMemo(() => {
+  const accountPositions: DisplayPoolPositionModel[] = useMemo(() => {
     if (!address || !poolPath) return [];
 
     const filteredPositions = loadedPositions.filter(position => position.poolPath === poolPath);

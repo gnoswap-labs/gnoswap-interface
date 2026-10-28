@@ -70,14 +70,23 @@ function renderDecrease(selected: PoolPositionModel, prefilled: boolean) {
   const store = createStore();
   if (prefilled) store.set(IncreaseState.selectedPosition, selected);
   (usePositionData as jest.Mock).mockReturnValue({ positions: [selected], refetch: jest.fn() });
-  return renderHook(useDecreaseHandle, {
+  const hook = renderHook(useDecreaseHandle, {
     wrapper: ({ children }: React.PropsWithChildren) => <Provider store={store}>{children}</Provider>,
   });
+  return { ...hook, store };
 }
 
 describe("decrease position balance units", () => {
-  it.each([false, true])("normalizes raw balances and USD with a prefilled position: %s", prefilled => {
-    const { result } = renderDecrease(position, prefilled);
+  it.each([
+    { source: "a query-loaded position", prefilled: false },
+    { source: "the selected-position state", prefilled: true },
+  ])("normalizes raw balances and USD from $source", ({ prefilled }) => {
+    const { result, store } = renderDecrease(position, prefilled);
+    expect(store.get(IncreaseState.selectedPosition)).toBe(position);
+    expect(store.get(IncreaseState.selectedPosition)).toMatchObject({
+      tokenABalance: "196678919822",
+      tokenBBalance: "813141175833",
+    });
     expect(result.current.pooledTokenInfos).toMatchObject({
       tokenABalance: "196678.919822",
       tokenBBalance: "813141.175833",
