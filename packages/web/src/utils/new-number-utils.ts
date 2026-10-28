@@ -56,7 +56,7 @@ export const formatPoolPairAmount = (
 
   const [integerValue, fractionValue] = stringValue.split(".");
   if (fractionValue) {
-    const fractionString = Number(`0.${fractionValue}`).toString().split(".")[1];
+    const fractionString = fractionValue.replace(/0+$/, "");
     if (fractionString) return `${integerValue}.${fractionString}`;
     return integerValue;
   } else return stringValue;
