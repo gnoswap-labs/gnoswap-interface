@@ -47,7 +47,6 @@ import { makeRouteUrl } from "@utils/page.utils";
 import { buildClaimedRewardInfo } from "@utils/position-reward-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { isClaimableReward, mapToDisplayRewardType } from "@utils/reward-utils";
 import { calculateTokenDepositRatio, makeDisplayPrice, sortTokensByPoolOrder } from "@utils/pool-utils";
 
@@ -162,25 +161,6 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     return true;
   }, [position]);
 
-  const getTokenPrice = useCallback(
-    (priceId: string) => {
-      return tokenPrices?.[priceId]?.usd;
-    },
-    [tokenPrices],
-  );
-
-  const tokenABalanceUSD = useMemo(() => {
-    const tokenAUSD = Number(getTokenPrice(tokenA.priceID) || "1");
-    const tokenABalance = makeDisplayTokenAmount(tokenA, position.tokenABalance) || 0;
-    return tokenAUSD * tokenABalance;
-  }, [getTokenPrice, position.tokenABalance, tokenA]);
-
-  const tokenBBalanceUSD = useMemo(() => {
-    const tokenBUSD = Number(getTokenPrice(tokenB.priceID) || "1");
-    const tokenBBalance = makeDisplayTokenAmount(tokenB, position.tokenBBalance) || 0;
-    return tokenBUSD * tokenBBalance;
-  }, [getTokenPrice, position.tokenBBalance, tokenB]);
-
   const positionBalanceUSD = useMemo(() => {
     if (!isDisplay || !position.positionUsdValue) {
       return "-";
@@ -225,13 +205,11 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       {
         token: tokenA,
         balance: Number(position.tokenABalance),
-        balanceUSD: tokenABalanceUSD,
         percent: depositRatioStrOfTokenA,
       },
       {
         token: tokenB,
         balance: Number(position.tokenBBalance),
-        balanceUSD: tokenBBalanceUSD,
         percent: depositRatioStrOfTokenB,
       },
     ];
@@ -239,10 +217,9 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     position.tokenABalance,
     position.tokenBBalance,
     tokenA,
-    tokenABalanceUSD,
     tokenB,
-    tokenBBalanceUSD,
-    position.pool,
+    depositRatioStrOfTokenA,
+    depositRatioStrOfTokenB,
   ]);
 
   const totalRewardInfo = useMemo((): { [key in DisplayRewardType]: PositionRewardForTooltip[] } | null => {

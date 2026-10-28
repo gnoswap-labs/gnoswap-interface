@@ -381,7 +381,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
                       />
                       {formatPoolPairAmount(pool.tokenBBalance, {
                         isKMB: false,
-                        decimals: pool.tokenA.decimals,
+                        decimals: pool.tokenB.decimals,
                       })}
                       <span>{pool?.tokenB?.displaySymbol || ""}</span>{" "}
                     </TokenAmountTooltipContentWrapper>
