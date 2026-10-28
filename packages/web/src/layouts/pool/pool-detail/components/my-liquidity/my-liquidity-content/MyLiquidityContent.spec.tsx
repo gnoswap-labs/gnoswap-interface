@@ -297,3 +297,22 @@ describe("MyLiquidityContent cumulative claims", () => {
     expect(container.querySelectorAll("section")[1].querySelector(".content-value")).toHaveTextContent("-");
   });
 });
+
+it.each(["1.123456789", "1.000000123"])(
+  "preserves token B balance %s in the balance tooltip when token A has six decimals",
+  tokenBBalance => {
+    const tokenB = { ...atom, decimals: 9 };
+    const mixedDecimalPosition = {
+      ...position,
+      tokenABalance: "2.654321",
+      tokenBBalance,
+      pool: { ...position.pool, tokenB },
+    };
+    const { container } = render(
+      <MyLiquidityContent {...baseProps} positions={[mixedDecimalPosition]} tokens={[usdc, tokenB]} />,
+      { wrapper },
+    );
+    expect(within(container).getByText(tokenBBalance, { exact: true })).toBeInTheDocument();
+    expect(within(container).getByText("2.654321", { exact: true })).toBeInTheDocument();
+  },
+);

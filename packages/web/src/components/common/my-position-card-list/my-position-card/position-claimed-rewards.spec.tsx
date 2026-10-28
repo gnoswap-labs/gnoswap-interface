@@ -154,7 +154,7 @@ const renderCard = (variant: Variant, closed = false, empty = false) => {
     };
     return variant === "detailed" ? (
       <MyDetailedPositionCard
-        position={scopedPosition}
+        position={{ ...scopedPosition, rawPosition: scopedPosition }}
         address={address}
         isStakable={false}
         breakpoint={DEVICE_TYPE.WEB}

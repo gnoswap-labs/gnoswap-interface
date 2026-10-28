@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 
 import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
-import { PoolPositionModel } from "@models/position/pool-position-model";
+import { DisplayPoolPositionModel, PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
 import { TokenModel } from "@models/token/token-model";
 import { PositionRewardsResponse } from "@repositories/position/response";
@@ -19,8 +19,8 @@ interface MyLiquidityProps {
   isOwnerAddress: boolean;
   addressName: string;
   isOtherPosition: boolean;
-  openedPosition: PoolPositionModel[];
-  closedPosition: PoolPositionModel[];
+  openedPosition: DisplayPoolPositionModel[];
+  closedPosition: DisplayPoolPositionModel[];
   totalPositionCount: number;
   breakpoint: DEVICE_TYPE;
   connected: boolean;
@@ -131,7 +131,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
       {((connected && !isSwitchNetwork) || isOtherPosition) &&
         (breakpoint !== DEVICE_TYPE.MOBILE ? (
           <>
-            {showedPositions.map((position: PoolPositionModel, index: number) => (
+            {showedPositions.map((position, index) => (
               <MyDetailedPositionCard
                 key={index.toString() + position.id}
                 position={position}
@@ -152,7 +152,7 @@ const MyLiquidity: React.FC<MyLiquidityProps> = ({
             <HorizontalScrollWrapper loading={loading} onScroll={onScroll} ref={divRef}>
               <div className="slider-wrap clearfix">
                 <div className={"box-slider full-width"}>
-                  {showedPositions.map((position: PoolPositionModel, index: number) => (
+                  {showedPositions.map((position, index) => (
                     <MyDetailedPositionCard
                       key={index.toString() + position.id}
                       position={position}

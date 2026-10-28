@@ -1,6 +1,6 @@
 import { AmountConverter } from "@services/converters/common/amount";
 
-import { PoolPositionModel } from "@models/position/pool-position-model";
+import { DisplayPoolPositionModel, PoolPositionModel } from "@models/position/pool-position-model";
 import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { TokenModel } from "@models/token/token-model";
 
@@ -15,7 +15,7 @@ export class PositionConverter {
    * @param positions - array of pool positions to convert (can be null/undefined)
    * @returns array of positions with converted amounts (empty array if input is invalid)
    */
-  static convertPositions(positions: PoolPositionModel[] | null | undefined): PoolPositionModel[] {
+  static convertPositions(positions: PoolPositionModel[] | null | undefined): DisplayPoolPositionModel[] {
     if (!positions || !Array.isArray(positions)) return [];
 
     return [...positions].map((position: PoolPositionModel) => this.convertSinglePosition(position));
@@ -29,11 +29,10 @@ export class PositionConverter {
    * @returns position with all amounts converted to display format
    *
    */
-  private static convertSinglePosition(position: PoolPositionModel): PoolPositionModel {
-    if (!position) return position;
-
+  private static convertSinglePosition(position: PoolPositionModel): DisplayPoolPositionModel {
     return {
       ...position,
+      rawPosition: position,
       tokenABalance: AmountConverter.convertSingle(position.pool?.tokenA, position.tokenABalance || 0),
       tokenBBalance: AmountConverter.convertSingle(position.pool?.tokenB, position.tokenBBalance || 0),
 
