@@ -174,7 +174,8 @@ export default function PriceCandleChart({
         rightPriceScale: {
           autoScale: true,
           borderColor: theme.color.border14,
-          scaleMargins: { top: PRICE_TOP_MARGIN_FRACTION, bottom: 0 },
+          scaleMargins: { top: PRICE_TOP_MARGIN_FRACTION, bottom: 0.25 },
+          ensureEdgeTickMarksVisible: true,
         },
         localization: {
           locale,
