@@ -19,10 +19,11 @@ interface StatusBadgeProps {
   breakpoint: DEVICE_TYPE;
   status: string;
   time: number | null;
+  executableTime?: number | null;
   twoline?: boolean;
 }
 
-const StatusBadge: React.FC<StatusBadgeProps> = ({ breakpoint, status, time, twoline }) => {
+const StatusBadge: React.FC<StatusBadgeProps> = ({ breakpoint, status, time, executableTime, twoline }) => {
   const { t } = useTranslation();
 
   const getContent = () => {
@@ -86,6 +87,13 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ breakpoint, status, time, two
       const text = t(i18nKey, { rel_time: relTime });
       return breakpoint === DEVICE_TYPE.MOBILE ? text : `${text} (${timeString})`;
     };
+
+    const isAwaitingExecution = status === "PASSED" && !!executableTime && executableTime > Date.now();
+    if (isAwaitingExecution) {
+      const votingEndedText = getFormattedTimeInfo("Governance:proposal.time.ended", "").trim();
+      const executableTimeString = dayjs(executableTime).format("YYYY-MM-DD, HH:mm:ss");
+      return `${votingEndedText}, ${t("Governance:proposal.time.executableOn")} (${executableTimeString})`;
+    }
 
     switch (status) {
       case "UPCOMING":

@@ -175,6 +175,7 @@
       "end": "{{rel_time}} 투표 종료",
       "ended": "투표 종료됨 {{rel_time}}",
       "executable": "제안서 실행 가능 {{rel_time}}",
+      "executableOn": "실행 가능 시간",
       "executed": "제안 철회 {{rel_time}}",
       "expired": "제안 만료 {{rel_time}}",
       "h": "{{time}}시간 후",

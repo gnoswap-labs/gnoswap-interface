@@ -175,6 +175,7 @@
       "end": "Fin du vote {{rel_time}}",
       "ended": "Vote terminé {{rel_time}}",
       "executable": "Proposition exécutable {{rel_time}}",
+      "executableOn": "Exécutable le",
       "executed": "Proposition excutée {{rel_time}}",
       "expired": "Proposition expirée {{rel_time}}",
       "h": "dans {{time}}h",
