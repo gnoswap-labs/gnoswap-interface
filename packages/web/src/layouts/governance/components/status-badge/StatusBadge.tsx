@@ -91,8 +91,15 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ breakpoint, status, time, exe
     const isAwaitingExecution = status === "PASSED" && !!executableTime && executableTime > Date.now();
     if (isAwaitingExecution) {
       const votingEndedText = getFormattedTimeInfo("Governance:proposal.time.ended", "").trim();
+      const remainingMinutes = Math.max(1, Math.round(dayjs(executableTime).diff(dayjs(), "minute", true)));
+      const executableText =
+        remainingMinutes < 60
+          ? t("Governance:proposal.time.executableInMinutes", { count: remainingMinutes })
+          : t("Governance:proposal.time.executableInHours", { count: Math.round(remainingMinutes / 60) });
       const executableTimeString = dayjs(executableTime).format("YYYY-MM-DD, HH:mm:ss");
-      return `${votingEndedText}, ${t("Governance:proposal.time.executableOn")} (${executableTimeString})`;
+      return breakpoint === DEVICE_TYPE.MOBILE
+        ? `${votingEndedText}, ${executableText}`
+        : `${votingEndedText}, ${executableText} (${executableTimeString})`;
     }
 
     switch (status) {
