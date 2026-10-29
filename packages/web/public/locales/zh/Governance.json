@@ -175,7 +175,7 @@
       "end": "投票结束{{rel_time}}",
       "ended": "投票结束{{rel_time}}",
       "executable": "提案可执行时间 {{rel_time}}",
-      "executableOn": "可执行时间",
+      "executableOn": "可在以下平台上运行",
       "executed": "撤销提案{{rel_time}}",
       "expired": "提案已过期{{rel_time}}",
       "h": "在{{time}}h",

@@ -37,8 +37,8 @@
       "6months": "6 Months"
     },
     "time": {
-      "days_other": "{{count}} days",
       "days_one": "{{count}} day",
+      "days_other": "{{count}} days",
       "daysHoursOrHoursMinutes": "{{time1}} {{time2}}",
       "hours_one": "{{count}} hour",
       "hours_other": "{{count}} hours",
