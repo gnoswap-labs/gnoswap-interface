@@ -227,7 +227,7 @@ export const ContentWrapper = styled.div`
         background: ${({ theme }) => theme.color.background28};
       }
       .chart-tabs {
-        width: 110px;
+        width: 130px;
       }
       .chart-actions {
         grid-column: 1 / -1;
