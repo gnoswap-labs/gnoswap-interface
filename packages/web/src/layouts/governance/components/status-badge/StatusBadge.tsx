@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import relative from "dayjs/plugin/relativeTime";
 import duration from "dayjs/plugin/duration";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import IconCircleInCancel from "@components/common/icons/IconCircleInCancel";
@@ -25,6 +25,21 @@ interface StatusBadgeProps {
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({ breakpoint, status, time, executableTime, twoline }) => {
   const { t } = useTranslation();
+  const [now, setNow] = useState(Date.now());
+
+  const isAwaitingExecution = status === "PASSED" && !!executableTime && executableTime > now;
+
+  useEffect(() => {
+    setNow(Date.now());
+    if (status !== "PASSED" || !executableTime) return;
+
+    const intervalId = setInterval(() => {
+      const currentTime = Date.now();
+      setNow(currentTime);
+      if (currentTime >= executableTime) clearInterval(intervalId);
+    }, 60 * 1000);
+    return () => clearInterval(intervalId);
+  }, [status, executableTime]);
 
   const getContent = () => {
     switch (status) {
@@ -88,14 +103,15 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ breakpoint, status, time, exe
       return breakpoint === DEVICE_TYPE.MOBILE ? text : `${text} (${timeString})`;
     };
 
-    const isAwaitingExecution = status === "PASSED" && !!executableTime && executableTime > Date.now();
     if (isAwaitingExecution) {
       const votingEndedText = getFormattedTimeInfo("Governance:proposal.time.ended", "").trim();
-      const remainingMinutes = Math.max(1, Math.round(dayjs(executableTime).diff(dayjs(), "minute", true)));
+      const remainingMinutes = Math.max(1, Math.round(dayjs(executableTime).diff(now, "minute", true)));
       const executableText =
         remainingMinutes < 60
           ? t("Governance:proposal.time.executableInMinutes", { count: remainingMinutes })
-          : t("Governance:proposal.time.executableInHours", { count: Math.round(remainingMinutes / 60) });
+          : t("Governance:proposal.time.executableInHours", {
+              count: Math.round(dayjs(executableTime).diff(now, "hour", true)),
+            });
       const executableTimeString = dayjs(executableTime).format("YYYY-MM-DD, HH:mm:ss");
       return breakpoint === DEVICE_TYPE.MOBILE
         ? `${votingEndedText}, ${executableText}`

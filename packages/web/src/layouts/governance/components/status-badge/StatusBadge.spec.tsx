@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import dayjs from "dayjs";
 import i18next from "i18next";
 import { Provider as JotaiProvider } from "jotai";
@@ -64,6 +64,8 @@ describe("StatusBadge executable time", () => {
     [24 * HOUR - MINUTE, "Executable in 24 hours"],
     [HOUR + 40 * MINUTE, "Executable in 2 hours"],
     [HOUR + 20 * MINUTE, "Executable in 1 hour"],
+    [HOUR + 29 * MINUTE + 30 * 1000, "Executable in 1 hour"],
+    [HOUR + 30 * MINUTE, "Executable in 2 hours"],
     [59 * MINUTE + 40 * 1000, "Executable in 1 hour"],
     [30 * MINUTE, "Executable in 30 minutes"],
     [30 * 1000, "Executable in 1 minute"],
@@ -74,6 +76,35 @@ describe("StatusBadge executable time", () => {
     expect(
       screen.getByText(`Voting Ended (${formatTime(VOTING_END)}), ${expected} (${formatTime(executableTime)})`),
     ).toBeTruthy();
+  });
+
+  it("updates the remaining time while the page stays open", () => {
+    const { rerender } = renderBadge({ breakpoint: DEVICE_TYPE.MOBILE, executableTime: NOW + 30 * MINUTE });
+    expect(screen.getByText("Voting Ended, Executable in 30 minutes")).toBeTruthy();
+
+    act(() => {
+      jest.advanceTimersByTime(10 * MINUTE);
+    });
+    rerender(
+      <JotaiProvider>
+        <GnoswapThemeProvider>
+          <I18nextProvider i18n={i18n}>
+            <StatusBadge
+              breakpoint={DEVICE_TYPE.MOBILE}
+              status="PASSED"
+              time={VOTING_END}
+              executableTime={NOW + 30 * MINUTE}
+            />
+          </I18nextProvider>
+        </GnoswapThemeProvider>
+      </JotaiProvider>,
+    );
+    expect(screen.getByText("Voting Ended, Executable in 20 minutes")).toBeTruthy();
+
+    act(() => {
+      jest.advanceTimersByTime(20 * MINUTE);
+    });
+    expect(screen.getByText("Voting Ended")).toBeTruthy();
   });
 
   it("hides absolute times on mobile", () => {
