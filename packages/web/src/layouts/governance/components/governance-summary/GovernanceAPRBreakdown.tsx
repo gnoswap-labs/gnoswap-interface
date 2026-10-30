@@ -22,7 +22,7 @@ import React, { useId, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Content as FloatingContent } from "@components/common/tooltip/Tooltip.styles";
-import { formatXgnsApr, useXgnsAprCopy } from "@layouts/governance/xgns-apr/xgns-apr";
+import { formatXgnsApr, UNAVAILABLE_APR, useXgnsAprCopy } from "@layouts/governance/xgns-apr/xgns-apr";
 import type { GovernanceAPRHistory as APRHistoryDay } from "@repositories/governance";
 import { ThemeState } from "@states/index";
 import { Z_INDEX } from "@styles/zIndex";
@@ -33,15 +33,13 @@ import GovernanceAPRValue from "./GovernanceAPRValue";
 
 export interface GovernanceAPRBreakdownProps {
   /** Estimated total xGNS APR (`apy` from the summary API). */
-  totalApr: string;
+  totalApr?: string;
   /** Protocol fee APR, 7D average. Missing renders an em dash; never derived from the total. */
   protocolFeeApr?: string;
   /** GNS emission APR, 7D average. Missing renders an em dash. */
   emissionApr?: string;
   /** Daily total APR rows and reward components; history is offered only when rows exist. */
   aprHistory?: APRHistoryDay[];
-  /** Overrides the active i18n language (isolated previews without an i18n instance). */
-  language?: string;
 }
 
 const GovernanceAPRBreakdown: React.FC<GovernanceAPRBreakdownProps> = ({
@@ -49,10 +47,9 @@ const GovernanceAPRBreakdown: React.FC<GovernanceAPRBreakdownProps> = ({
   protocolFeeApr,
   emissionApr,
   aprHistory,
-  language,
 }) => {
   const { i18n } = useTranslation();
-  const tApr = useXgnsAprCopy(language);
+  const tApr = useXgnsAprCopy();
   const theme = useTheme();
   const themeKey = useAtomValue(ThemeState.themeKey);
 
@@ -77,6 +74,7 @@ const GovernanceAPRBreakdown: React.FC<GovernanceAPRBreakdownProps> = ({
   ]);
 
   const unavailableLabel = tApr("unavailable");
+  const formattedTotal = formatXgnsApr(totalApr);
   const hasHistory = (aprHistory?.length ?? 0) > 0;
 
   const components = [
@@ -97,15 +95,15 @@ const GovernanceAPRBreakdown: React.FC<GovernanceAPRBreakdownProps> = ({
             type="button"
             className="apr-history-trigger"
             ref={refs.setReference}
-            aria-label={tApr("history")}
+            aria-label={`${formattedTotal === UNAVAILABLE_APR ? unavailableLabel : formattedTotal} ${tApr("history")}`}
             aria-expanded={isHistoryOpen}
             aria-controls={isHistoryOpen ? historyPanelId : undefined}
             {...getReferenceProps()}
           >
-            <GovernanceAPRValue value={formatXgnsApr(totalApr)} unavailableLabel={unavailableLabel} />
+            <GovernanceAPRValue value={formattedTotal} unavailableLabel={unavailableLabel} />
           </button>
         ) : (
-          <GovernanceAPRValue value={formatXgnsApr(totalApr)} unavailableLabel={unavailableLabel} />
+          <GovernanceAPRValue value={formattedTotal} unavailableLabel={unavailableLabel} />
         )}
       </span>
       <dl className="apr-components">
@@ -157,7 +155,7 @@ const GovernanceAPRBreakdown: React.FC<GovernanceAPRBreakdownProps> = ({
                         feeLabel={tApr("fees")}
                         emissionLabel={tApr("emissionShort")}
                         unavailableLabel={unavailableLabel}
-                        locale={language ?? (i18n?.language || "en")}
+                        locale={i18n.language}
                       />
                       <p className="apr-disclosure">{tApr("disclosure")}</p>
                     </GovernanceAPRHistoryPanel>

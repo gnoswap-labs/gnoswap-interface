@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -19,13 +20,10 @@ const APR_COPY_KEYS = {
 export const UNAVAILABLE_APR = "—";
 
 /** Uses the Governance namespace downloaded from i18nexus, including in previews. */
-export const useXgnsAprCopy = (language?: string) => {
+export const useXgnsAprCopy = () => {
   const { t } = useTranslation(["Governance", "common"]);
 
-  return useCallback(
-    (key: keyof typeof APR_COPY_KEYS): string => t(APR_COPY_KEYS[key], { lng: language }),
-    [t, language],
-  );
+  return useCallback((key: keyof typeof APR_COPY_KEYS): string => t(APR_COPY_KEYS[key]), [t]);
 };
 
 /**
@@ -35,7 +33,7 @@ export const useXgnsAprCopy = (language?: string) => {
 export const formatXgnsApr = (value?: string | number | null): string => {
   if (value === undefined || value === null) return UNAVAILABLE_APR;
   if (typeof value === "string" && value.trim() === "") return UNAVAILABLE_APR;
-  const parsed = Number(value);
-  if (!Number.isFinite(parsed)) return UNAVAILABLE_APR;
-  return `${parsed.toFixed(2)}%`;
+  const parsed = new BigNumber(value);
+  if (!parsed.isFinite()) return UNAVAILABLE_APR;
+  return `${parsed.decimalPlaces(2, BigNumber.ROUND_DOWN).toFixed(2)}%`;
 };

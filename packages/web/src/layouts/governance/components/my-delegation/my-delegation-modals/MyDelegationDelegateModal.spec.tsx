@@ -61,7 +61,7 @@ const delegatees: VerifiedDelegateInfo[] = [
 ];
 
 describe("MyDelegationDelegateModal", () => {
-  const renderModal = () => {
+  const renderModal = (apy: string | undefined, selectDelegate = true) => {
     useWallet.mockReturnValue({ account: { address: CUSTOM_ADDRESS } });
     useTokenAmountInput.mockReturnValue({
       token: null,
@@ -86,7 +86,7 @@ describe("MyDelegationDelegateModal", () => {
           <MyDelegationDelegateModal
             currentDelegatedDisplayAmount={0}
             totalDelegatedDisplayAmount={10000}
-            apy={5}
+            apy={apy}
             delegatees={currentDelegatees}
             isWalletConnected={true}
             connectWallet={jest.fn()}
@@ -99,7 +99,7 @@ describe("MyDelegationDelegateModal", () => {
     const { container, rerender } = render(modal(delegatees));
 
     // Move from MAIN into the delegatee selector stage.
-    fireEvent.click(screen.getByText("Select"));
+    if (selectDelegate) fireEvent.click(screen.getByText("Select"));
 
     // The voting power row has no accessible name of its own; scope to its value cell.
     const votingPowerValue = () => container.querySelector(".delegatee-info-rows .value.no-wrap");
@@ -116,7 +116,7 @@ describe("MyDelegationDelegateModal", () => {
   };
 
   it("shows the verified delegate's current aggregate votingPower after the list refetches", () => {
-    const { votingPowerValue, refetchDelegatees } = renderModal();
+    const { votingPowerValue, refetchDelegatees } = renderModal("5");
 
     fireEvent.click(screen.getByText("Onbloc"));
     // Percentage is derived from the same aggregate value: 5,000 / 10,000 * 100 = 50%.
@@ -127,7 +127,7 @@ describe("MyDelegationDelegateModal", () => {
   });
 
   it("uses the verified list votingPower when a verified address is typed into Self-Delegate", () => {
-    const { votingPowerValue } = renderModal();
+    const { votingPowerValue } = renderModal("5");
 
     typeSelfAddress(ONBLOC_ADDRESS);
 
@@ -136,11 +136,20 @@ describe("MyDelegationDelegateModal", () => {
   });
 
   it("uses received voting power for an unverified self-selected address", () => {
-    const { votingPowerValue } = renderModal();
+    const { votingPowerValue } = renderModal("5");
 
     typeSelfAddress(CUSTOM_ADDRESS);
 
     // 1 / 10,000 * 100 = 0.01%.
     expect(votingPowerValue()).toHaveTextContent(/^1 xGNS \(0\.01%\)$/);
+  });
+
+  it.each<[string | undefined, string]>([
+    [undefined, "—"],
+    ["0", "0.00%"],
+  ])("keeps missing total APR distinct from zero (%s)", (apy, expected) => {
+    renderModal(apy, false);
+    const totalRow = screen.getByText("Governance:myDel.delModal.step3.estimatedAPR").closest(".info-rows");
+    expect(totalRow?.querySelector(".value")).toHaveTextContent(expected);
   });
 });

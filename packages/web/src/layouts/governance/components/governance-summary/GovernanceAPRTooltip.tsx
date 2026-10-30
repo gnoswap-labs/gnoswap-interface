@@ -22,19 +22,15 @@ const TooltipCopy = styled.span`
 `;
 
 interface GovernanceAPRTooltipProps {
-  language?: string;
   translationKey?: "summary.apy.tooltip" | "myDel.delModal.step3.aprTooltip";
 }
 
-const GovernanceAPRTooltip: React.FC<GovernanceAPRTooltipProps> = ({
-  language,
-  translationKey = "summary.apy.tooltip",
-}) => {
+const GovernanceAPRTooltip: React.FC<GovernanceAPRTooltipProps> = ({ translationKey = "summary.apy.tooltip" }) => {
   const { t } = useTranslation("Governance");
 
   return (
     <TooltipCopy>
-      {t(translationKey, { lng: language })
+      {t(translationKey)
         .split("\n\n")
         .map((paragraph, index) => (
           <span key={paragraph} className={index === 1 ? "apr-formula" : undefined}>

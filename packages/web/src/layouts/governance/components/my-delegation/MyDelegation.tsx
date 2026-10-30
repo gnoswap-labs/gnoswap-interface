@@ -35,7 +35,7 @@ import {
 
 interface MyDelegationProps {
   totalDelegatedAmount: number;
-  apy: number;
+  apy?: string;
   protocolFeeApr?: string;
   emissionApr?: string;
   myDelegationInfo: MyDelegationInfo;

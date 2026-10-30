@@ -41,7 +41,7 @@ import GovernanceAPRTooltip from "../../governance-summary/GovernanceAPRTooltip"
 interface MyDelegationDelegateModalProps {
   currentDelegatedDisplayAmount: number;
   totalDelegatedDisplayAmount: number;
-  apy: number;
+  apy?: string;
   protocolFeeApr?: string;
   emissionApr?: string;
   delegatees: VerifiedDelegateInfo[];

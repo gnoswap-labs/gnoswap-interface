@@ -19,6 +19,7 @@ import { DelegationItemInfo, nullDelegationItemInfo } from "@repositories/govern
 import { formatOtherPrice } from "@utils/new-number-utils";
 
 import UndelegateSelect from "./undelegate-selector/UndelegateSelect";
+import { formatXgnsApr } from "../../../xgns-apr/xgns-apr";
 
 import {
   MyDelegationModalWrapper,
@@ -29,7 +30,7 @@ import {
 interface MyDelegationUndelegateModalProps {
   currentDelegatedAmount: number;
   totalDelegatedAmount: number;
-  apy: number;
+  apy?: string;
   delegatedInfos: DelegationItemInfo[];
   isWalletConnected: boolean;
   onSubmit: (fromName: string, fromAddress: string, amount: string) => void;
@@ -157,14 +158,11 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
               <IconInfo size={16} />
             </Tooltip>
           </div>
-          <div className="value">{`${formatOtherPrice(apy, {
-            isKMB: false,
-            usd: false,
-          })}% -> ${
-            currentDelegatedAmount <= Number(gnsAmountInput.amount)
-              ? 0
-              : formatOtherPrice(apy, { isKMB: false, usd: false })
-          }%`}</div>
+          <div className="value">
+            {`${formatXgnsApr(apy)} -> ${
+              currentDelegatedAmount <= Number(gnsAmountInput.amount) ? formatXgnsApr("0") : formatXgnsApr(apy)
+            }`}
+          </div>
         </div>
       </article>
       <WarningCard

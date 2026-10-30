@@ -214,7 +214,7 @@
   },
   "summary": {
     "aprBreakdown": {
-      "disclosure": "Le taux annuel effectif global (TAEG) d'aujourd'hui est inclus dans la moyenne sur 7 jours calculée à partir de 06h00 UTC.",
+      "disclosure": "L’APR des frais d’aujourd’hui est inclus dans la moyenne sur 7 jours à partir de 06:00 UTC.",
       "emission": "Émissions de GNS",
       "emissionShort": "Émission",
       "history": "Consulter l'historique des taux annuels effectifs globaux (TAEG)",

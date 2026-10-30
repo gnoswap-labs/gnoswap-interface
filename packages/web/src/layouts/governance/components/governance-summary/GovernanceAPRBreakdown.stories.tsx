@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import { fonts } from "@constants/font.constant";
 import { useXgnsAprCopy } from "@layouts/governance/xgns-apr/xgns-apr";
@@ -41,23 +42,26 @@ const StandaloneCard = styled.div`
   }
 `;
 
-const SampleLabel: React.FC<{ language?: string }> = ({ language }) => (
-  <span className="sample-label">
-    {language === "ko" ? "샘플 · 로컬 프리뷰 — 실제 운영 수치가 아닙니다" : SAMPLE_APR_PREVIEW_LABEL}
-  </span>
-);
+const SampleLabel: React.FC = () => {
+  const { i18n } = useTranslation();
+  return (
+    <span className="sample-label">
+      {i18n.language === "ko" ? "샘플 · 로컬 프리뷰 — 실제 운영 수치가 아닙니다" : SAMPLE_APR_PREVIEW_LABEL}
+    </span>
+  );
+};
 
 const APRInfoBox: React.FC<GovernanceAPRBreakdownProps & { isLoading?: boolean }> = ({
   isLoading = false,
   ...props
 }) => {
-  const tApr = useXgnsAprCopy(props.language);
+  const tApr = useXgnsAprCopy();
 
   return (
     <InfoBox
       title={tApr("title")}
       value={<GovernanceAPRBreakdown {...props} />}
-      tooltip={<GovernanceAPRTooltip language={props.language} />}
+      tooltip={<GovernanceAPRTooltip />}
       isLoading={isLoading}
     />
   );
@@ -70,31 +74,23 @@ const APRInfoBox: React.FC<GovernanceAPRBreakdownProps & { isLoading?: boolean }
 const SummaryRowStage: React.FC<GovernanceAPRBreakdownProps & { isLoading?: boolean }> = ({
   isLoading = false,
   ...props
-}) => (
-  <PreviewFrame>
-    <SampleLabel language={props.language} />
-    <GovernanceSummaryWrapper>
-      <div className="info-wrapper">
-        <InfoBox
-          title={props.language === "ko" ? "총 위임량" : "Total Delegated"}
-          value="1,234,567 GNS"
-          isLoading={isLoading}
-        />
-        <InfoBox
-          title={props.language === "ko" ? "GNS 위임 비율" : "GNS Delegated Ratio"}
-          value="38.2%"
-          isLoading={isLoading}
-        />
-        <APRInfoBox {...props} isLoading={isLoading} />
-        <InfoBox
-          title={props.language === "ko" ? "커뮤니티 풀" : "Community Pool"}
-          value="$1,234,567"
-          isLoading={isLoading}
-        />
-      </div>
-    </GovernanceSummaryWrapper>
-  </PreviewFrame>
-);
+}) => {
+  const { i18n } = useTranslation();
+  const isKorean = i18n.language === "ko";
+  return (
+    <PreviewFrame>
+      <SampleLabel />
+      <GovernanceSummaryWrapper>
+        <div className="info-wrapper">
+          <InfoBox title={isKorean ? "총 위임량" : "Total Delegated"} value="1,234,567 GNS" isLoading={isLoading} />
+          <InfoBox title={isKorean ? "GNS 위임 비율" : "GNS Delegated Ratio"} value="38.2%" isLoading={isLoading} />
+          <APRInfoBox {...props} isLoading={isLoading} />
+          <InfoBox title={isKorean ? "커뮤니티 풀" : "Community Pool"} value="$1,234,567" isLoading={isLoading} />
+        </div>
+      </GovernanceSummaryWrapper>
+    </PreviewFrame>
+  );
+};
 
 const meta = {
   title: "governance/GovernanceAPRBreakdown",
@@ -103,9 +99,6 @@ const meta = {
   args: {
     ...SAMPLE_XGNS_APR,
     aprHistory: SAMPLE_XGNS_APR_HISTORY,
-  },
-  argTypes: {
-    language: { control: "inline-radio", options: ["en", "ko"] },
   },
   render: args => <SummaryRowStage {...args} />,
 } satisfies Meta<typeof GovernanceAPRBreakdown>;
@@ -118,13 +111,13 @@ export const SamplePreview: Story = {};
 
 /** Same sample with the fee history popover opened through the real button. */
 export const SampleHistoryOpen: Story = {
-  play: async ({ canvasElement }) => {
+  play: ({ canvasElement }) => {
     canvasElement.querySelector<HTMLButtonElement>(".apr-history-trigger")?.click();
   },
 };
 
 export const SamplePreviewKorean: Story = {
-  args: { language: "ko" },
+  globals: { locale: "ko" },
 };
 
 /** Mobile viewport (414px): the summary row stacks and the APR rows must not overflow. */
@@ -152,6 +145,10 @@ export const Zero: Story = {
 /** Components missing from the API render as an em dash; nothing is derived from the total. */
 export const MissingComponents: Story = {
   args: { totalApr: SAMPLE_XGNS_APR.totalApr, protocolFeeApr: undefined, emissionApr: undefined, aprHistory: [] },
+};
+
+export const MissingTotal: Story = {
+  args: { totalApr: undefined },
 };
 
 /** Existing summary loading skeleton. */

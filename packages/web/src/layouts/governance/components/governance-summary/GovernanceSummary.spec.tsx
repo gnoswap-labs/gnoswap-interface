@@ -167,6 +167,7 @@ describe("GovernanceSummary Component", () => {
     });
 
     const trigger = screen.getByRole("button", { name: /APR history/ });
+    expect(trigger).toHaveAccessibleName(/12\.34%/);
     expect(trigger).toHaveAttribute("aria-expanded", "false");
     expect(screen.queryByRole("table")).toBeNull();
     fireEvent.click(trigger);
@@ -176,6 +177,14 @@ describe("GovernanceSummary Component", () => {
     fireEvent.keyDown(document, { key: "Escape" });
     expect(trigger).toHaveAttribute("aria-expanded", "false");
     expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("announces an unavailable total when opening history without a valid headline APR", () => {
+    renderGovernanceSummary({
+      apy: "",
+      aprHistory: [{ date: "2026-10-14", apr: "12.52", estimated: false }],
+    });
+    expect(screen.getByRole("button", { name: /Not available.*APR history/ })).toBeDefined();
   });
 
   it("does not offer a history action before the API supplies daily rows", () => {

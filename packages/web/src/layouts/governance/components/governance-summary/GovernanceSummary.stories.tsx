@@ -15,11 +15,9 @@ import GovernanceSummary from "./GovernanceSummary";
  */
 const localTokenContext = {
   tokenRepository: {
-    getTokens: async () => ({ tokens: [] }),
-    getTokenPrices: async () => ({ data: [] }),
-    getTokenByPath: async (path: string) => {
-      throw new Error(`No local token metadata for ${path}`);
-    },
+    getTokens: () => Promise.resolve({ tokens: [] }),
+    getTokenPrices: () => Promise.resolve({ data: [] }),
+    getTokenByPath: (path: string) => Promise.reject(new Error(`No local token metadata for ${path}`)),
   },
 } as unknown as React.ContextType<typeof GnoswapContext>;
 
