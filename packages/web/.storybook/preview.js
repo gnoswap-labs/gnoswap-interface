@@ -6,6 +6,8 @@ import { createInstance } from "i18next";
 import { I18nextProvider } from "react-i18next";
 import enGovernance from "../public/locales/en/Governance.json";
 import koGovernance from "../public/locales/ko/Governance.json";
+import enCommon from "../public/locales/en/common.json";
+import koCommon from "../public/locales/ko/common.json";
 
 const storyI18n = createInstance();
 storyI18n.init({
@@ -14,8 +16,8 @@ storyI18n.init({
   initImmediate: false,
   interpolation: { escapeValue: false },
   resources: {
-    en: { Governance: enGovernance },
-    ko: { Governance: koGovernance },
+    en: { Governance: enGovernance, common: enCommon },
+    ko: { Governance: koGovernance, common: koCommon },
   },
 });
 

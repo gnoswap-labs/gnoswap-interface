@@ -81,9 +81,9 @@
         "title": "2. Introduzca el importe"
       },
       "step3": {
-        "aprTooltip": "TAE estimada para los xGNS delegados, calculada como media de los últimos 7 días.\n\nTAE diaria = (recompensas por comisiones del protocolo del día × 365) ÷ valor en USD de todos los xGNS delegados.\n\nLos rendimientos reales varían en función de las comisiones del protocolo y del total delegado.",
+        "aprTooltip": "TAE estimada para los xGNS delegados, calculada como media de los últimos 7 días.\n\nTAE diaria = (recompensas por comisiones + recompensas por emisión del día) × 365 ÷ valor en USD de todos los GNS delegados.\n\nLos rendimientos reales varían en función de las comisiones del protocolo, la emisión y el total de la delegación.",
         "currentlyDel": "Actualmente delegado",
-        "estimatedAPR": "TAE estimada (7 días)",
+        "estimatedAPR": "xGNS APR (7 días)",
         "newlyDel": "Nuevo Delegado",
         "title": "3. Su delegación",
         "votingPowerShare": "Poder de voto Cuota"
@@ -212,32 +212,24 @@
   },
   "summary": {
     "aprBreakdown": {
-      "dailyApr": "Total",
-      "date": "Fecha",
       "disclosure": "La TAE de hoy se incluye en la media de 7 días a partir de las 06:00 UTC.",
       "emission": "Emisión de GNS",
-      "emissionPeriod": "Media de 7D",
-      "emissionPeriodShort": "7D",
       "emissionShort": "Emisión",
       "history": "Ver el historial de la TAE",
-      "historyTitle": "Historial de la APR de xGNS (7 días)",
+      "period": "Media de 7D",
+      "periodShort": "7D",
       "protocolFees": "Tasas de protocolo",
-      "protocolFeesPeriod": "Media de 7D",
-      "protocolFeesPeriodShort": "7D",
-      "protocolFeesShort": "Tarifas",
-      "title": "xGNS APR (7 días)",
-      "tooltip": "TAE estimada para los xGNS delegados, calculada como media de los últimos 7 días.\n\nTAE diaria = (recompensas por comisiones + recompensas por emisión del día) × 365 ÷ valor en USD de todos los GNS delegados.\n\nLos rendimientos reales varían en función de las comisiones del protocolo, la emisión y el total de la delegación.",
       "unavailable": "No disponible"
     },
     "aprHistory": {
-      "dailyApr": "APR (1D)",
+      "dailyApr": "Total",
       "vs7dAvg": "vs media 7D"
     },
     "apr": {
       "title": "xGNS APR (7 días)"
     },
     "apy": {
-      "tooltip": "TAE estimada para los xGNS delegados, calculada como media de los últimos 7 días.\n\nTAE diaria = (recompensas por comisiones del protocolo del día × 365) ÷ valor en USD de todos los xGNS delegados.\n\nLos rendimientos reales varían en función de las comisiones del protocolo y del total delegado."
+      "tooltip": "TAE estimada para los xGNS delegados, calculada como media de los últimos 7 días.\n\nTAE diaria = (recompensas por comisiones + recompensas por emisión del día) × 365 ÷ valor en USD de todos los GNS delegados.\n\nLos rendimientos reales varían en función de las comisiones del protocolo, la emisión y el total de la delegación."
     },
     "commPool": {
       "title": "Piscina comunitaria",

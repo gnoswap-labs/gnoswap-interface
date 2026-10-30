@@ -13,14 +13,15 @@ import GovernanceSummary from "./GovernanceSummary";
 jest.mock("react-i18next", () => {
   const { createInstance } = jest.requireActual("i18next");
   const governance = jest.requireActual("../../../../../public/locales/en/Governance.json");
+  const common = jest.requireActual("../../../../../public/locales/en/common.json");
   const i18n = createInstance();
   i18n.init({
     lng: "en",
     initImmediate: false,
-    resources: { en: { Governance: governance } },
+    resources: { en: { Governance: governance, common } },
   });
   return {
-    useTranslation: (namespace?: string) => ({
+    useTranslation: (namespace?: string | string[]) => ({
       t: namespace ? i18n.getFixedT("en", namespace) : (key: string) => key,
       i18n,
     }),

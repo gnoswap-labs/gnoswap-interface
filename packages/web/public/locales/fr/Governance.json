@@ -81,9 +81,9 @@
         "title": "2. Saisir le montant"
       },
       "step3": {
-        "aprTooltip": "Taux annuel effectif global (TAEG) estimé pour les xGNS délégués, calculé en moyenne sur les 7 derniers jours.\n\nTAEG quotidien = (récompenses au titre des frais de protocole pour la journée × 365) ÷ valeur en USD de l'ensemble des xGNS délégués.\n\nLes rendements réels varient en fonction des frais de protocole et du montant total délégué.",
+        "aprTooltip": "TAEG estimé pour les xGNS délégués, calculé en moyenne sur les 7 derniers jours.\n\nTAEG quotidien = (récompenses sous forme de frais + récompenses d'émission pour la journée) × 365 ÷ valeur en USD de l'ensemble des GNS délégués.\n\nLes rendements réels varient en fonction des frais du protocole, de l'émission et du montant total des délégations.",
         "currentlyDel": "Actuellement délégué",
-        "estimatedAPR": "TAEG estimé (7 jours)",
+        "estimatedAPR": "xGNS APR (7 jours)",
         "newlyDel": "Nouveau délégué",
         "title": "3. Votre délégation",
         "votingPowerShare": "Pouvoir de vote Action"
@@ -214,32 +214,24 @@
   },
   "summary": {
     "aprBreakdown": {
-      "dailyApr": "Total",
-      "date": "Date",
       "disclosure": "Le taux annuel effectif global (TAEG) d'aujourd'hui est inclus dans la moyenne sur 7 jours calculée à partir de 06h00 UTC.",
       "emission": "Émissions de GNS",
-      "emissionPeriod": "Moyenne sur 7 jours",
-      "emissionPeriodShort": "7D",
       "emissionShort": "Émission",
       "history": "Consulter l'historique des taux annuels effectifs globaux (TAEG)",
-      "historyTitle": "Historique de l'APR xGNS (7 jours)",
+      "period": "Moyenne sur 7 jours",
+      "periodShort": "7D",
       "protocolFees": "Frais de protocole",
-      "protocolFeesPeriod": "Moyenne sur 7 jours",
-      "protocolFeesPeriodShort": "7D",
-      "protocolFeesShort": "Frais",
-      "title": "xGNS APR (7 jours)",
-      "tooltip": "TAEG estimé pour les xGNS délégués, calculé en moyenne sur les 7 derniers jours.\n\nTAEG quotidien = (récompenses sous forme de frais + récompenses d'émission pour la journée) × 365 ÷ valeur en USD de l'ensemble des GNS délégués.\n\nLes rendements réels varient en fonction des frais du protocole, de l'émission et du montant total délégué.",
       "unavailable": "Indisponible"
     },
     "aprHistory": {
-      "dailyApr": "APR (1D)",
+      "dailyApr": "Total",
       "vs7dAvg": "vs moy. 7D"
     },
     "apr": {
       "title": "xGNS APR (7 jours)"
     },
     "apy": {
-      "tooltip": "Taux annuel effectif global (TAEG) estimé pour les xGNS délégués, calculé en moyenne sur les 7 derniers jours.\n\nTAEG quotidien = (récompenses au titre des frais de protocole pour la journée × 365) ÷ valeur en USD de l'ensemble des xGNS délégués.\n\nLes rendements réels varient en fonction des frais de protocole et du montant total délégué."
+      "tooltip": "TAEG estimé pour les xGNS délégués, calculé en moyenne sur les 7 derniers jours.\n\nTAEG quotidien = (récompenses sous forme de frais + récompenses d'émission pour la journée) × 365 ÷ valeur en USD de l'ensemble des GNS délégués.\n\nLes rendements réels varient en fonction des frais du protocole, de l'émission et du montant total délégué."
     },
     "commPool": {
       "title": "Piscine communautaire",

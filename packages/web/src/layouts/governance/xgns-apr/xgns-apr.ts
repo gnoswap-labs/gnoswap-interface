@@ -1,32 +1,29 @@
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
-type XgnsAprCopyKey =
-  | "title"
-  | "tooltip"
-  | "protocolFees"
-  | "protocolFeesPeriod"
-  | "emission"
-  | "emissionPeriod"
-  | "protocolFeesShort"
-  | "protocolFeesPeriodShort"
-  | "emissionShort"
-  | "emissionPeriodShort"
-  | "history"
-  | "historyTitle"
-  | "date"
-  | "dailyApr"
-  | "unavailable"
-  | "disclosure";
+const APR_COPY_KEYS = {
+  title: "Governance:summary.apr.title",
+  protocolFees: "Governance:summary.aprBreakdown.protocolFees",
+  emission: "Governance:summary.aprBreakdown.emission",
+  emissionShort: "Governance:summary.aprBreakdown.emissionShort",
+  period: "Governance:summary.aprBreakdown.period",
+  periodShort: "Governance:summary.aprBreakdown.periodShort",
+  fees: "common:barChart.fees",
+  history: "Governance:summary.aprBreakdown.history",
+  date: "Governance:myDel.tooltip.date",
+  dailyApr: "Governance:summary.aprHistory.dailyApr",
+  unavailable: "Governance:summary.aprBreakdown.unavailable",
+  disclosure: "Governance:summary.aprBreakdown.disclosure",
+} as const;
 
 export const UNAVAILABLE_APR = "—";
 
 /** Uses the Governance namespace downloaded from i18nexus, including in previews. */
 export const useXgnsAprCopy = (language?: string) => {
-  const { t } = useTranslation("Governance");
+  const { t } = useTranslation(["Governance", "common"]);
 
   return useCallback(
-    (key: XgnsAprCopyKey): string => t(`summary.aprBreakdown.${key}`, { lng: language }),
+    (key: keyof typeof APR_COPY_KEYS): string => t(APR_COPY_KEYS[key], { lng: language }),
     [t, language],
   );
 };

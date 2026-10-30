@@ -81,9 +81,9 @@
         "title": "2. Nhập số tiền"
       },
       "step3": {
-        "aprTooltip": "Tỷ lệ APR ước tính cho xGNS được ủy quyền, tính trung bình trong 7 ngày qua.\n\nAPR hàng ngày = (phần thưởng từ phí giao thức trong ngày × 365) ÷ giá trị bằng USD của toàn bộ xGNS được ủy quyền.\n\nLợi nhuận thực tế thay đổi tùy theo phí giao thức và tổng số xGNS được ủy quyền.",
+        "aprTooltip": "Tỷ lệ APR ước tính cho xGNS được ủy quyền, tính trung bình trong 7 ngày qua.\n\nAPR hàng ngày = (phần thưởng từ phí + phần thưởng phát hành trong ngày) × 365 ÷ giá trị bằng USD của toàn bộ GNS được ủy quyền.\n\nLợi nhuận thực tế thay đổi tùy thuộc vào phí giao thức, lượng phát hành và tổng số GNS được ủy quyền.",
         "currentlyDel": "Hiện đang được ủy quyền",
-        "estimatedAPR": "Tỷ lệ phần trăm hàng năm (APR) ước tính (7 ngày)",
+        "estimatedAPR": "xGNS APR (7 ngày)",
         "newlyDel": "Đại biểu mới được bổ nhiệm",
         "title": "3. Đoàn đại biểu của quý vị",
         "votingPowerShare": "Tỷ lệ quyền biểu quyết"
@@ -210,32 +210,24 @@
   },
   "summary": {
     "aprBreakdown": {
-      "dailyApr": "Tổng cộng",
-      "date": "Ngày",
       "disclosure": "Lãi suất hàng năm (APR) của khoản phí hôm nay đã được tính vào mức trung bình 7 ngày kể từ 06:00 UTC.",
       "emission": "Phát hành GNS",
-      "emissionPeriod": "Trung bình 7D",
-      "emissionPeriodShort": "7D",
       "emissionShort": "Phát hành",
       "history": "Xem lịch sử lãi suất hàng năm (APR)",
-      "historyTitle": "Lịch sử APR của xGNS (7 ngày)",
+      "period": "Trung bình 7D",
+      "periodShort": "7D",
       "protocolFees": "Phí giao thức",
-      "protocolFeesPeriod": "Trung bình 7D",
-      "protocolFeesPeriodShort": "7D",
-      "protocolFeesShort": "Phí",
-      "title": "xGNS APR (7 ngày)",
-      "tooltip": "Tỷ lệ APR ước tính cho xGNS được ủy quyền, tính trung bình trong 7 ngày qua.\n\nAPR hàng ngày = (phần thưởng từ phí + phần thưởng phát hành trong ngày) × 365 ÷ giá trị bằng USD của toàn bộ GNS được ủy quyền.\n\nLợi nhuận thực tế thay đổi tùy thuộc vào phí giao thức, lượng phát hành và tổng số GNS được ủy quyền.",
       "unavailable": "Không có sẵn"
     },
     "aprHistory": {
-      "dailyApr": "APR (1D)",
+      "dailyApr": "Tổng cộng",
       "vs7dAvg": "so với TB 7D"
     },
     "apr": {
       "title": "xGNS APR (7 ngày)"
     },
     "apy": {
-      "tooltip": "Tỷ lệ APR ước tính cho xGNS được ủy quyền, tính trung bình trong 7 ngày qua.\n\nAPR hàng ngày = (phần thưởng từ phí giao thức trong ngày × 365) ÷ giá trị bằng USD của toàn bộ xGNS được ủy quyền.\n\nLợi nhuận thực tế thay đổi tùy theo phí giao thức và tổng số xGNS được ủy quyền."
+      "tooltip": "Tỷ lệ APR ước tính cho xGNS được ủy quyền, tính trung bình trong 7 ngày qua.\n\nAPR hàng ngày = (phần thưởng từ phí + phần thưởng phát hành trong ngày) × 365 ÷ giá trị bằng USD của toàn bộ GNS được ủy quyền.\n\nLợi nhuận thực tế thay đổi tùy thuộc vào phí giao thức, lượng phát hành và tổng số GNS được ủy quyền."
     },
     "commPool": {
       "title": "Hồ bơi cộng đồng",

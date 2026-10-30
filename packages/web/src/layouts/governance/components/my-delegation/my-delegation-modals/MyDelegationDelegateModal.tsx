@@ -321,12 +321,12 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
         </div>
         <div className="info-rows">
           <div className="label">
-            {tApr("title")}
+            {t("Governance:myDel.delModal.step3.estimatedAPR")}
             <Tooltip
               placement="top"
               FloatingContent={
                 <ToolTipContentWrapper>
-                  <GovernanceAPRTooltip />
+                  <GovernanceAPRTooltip translationKey="myDel.delModal.step3.aprTooltip" />
                 </ToolTipContentWrapper>
               }
             >
@@ -339,14 +339,14 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           <div className="apr-breakdown-row">
             <div className="apr-breakdown-label">
               <span className="name">{tApr("protocolFees")}</span>
-              <span className="period">{tApr("protocolFeesPeriod")}</span>
+              <span className="period">{tApr("period")}</span>
             </div>
             <div className="apr-breakdown-value">{formatXgnsApr(protocolFeeApr)}</div>
           </div>
           <div className="apr-breakdown-row">
             <div className="apr-breakdown-label">
               <span className="name">{tApr("emission")}</span>
-              <span className="period">{tApr("emissionPeriod")}</span>
+              <span className="period">{tApr("period")}</span>
             </div>
             <div className="apr-breakdown-value">{formatXgnsApr(emissionApr)}</div>
           </div>

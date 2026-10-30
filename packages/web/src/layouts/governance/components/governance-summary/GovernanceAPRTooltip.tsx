@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import React from "react";
 
-import { useXgnsAprCopy } from "@layouts/governance/xgns-apr/xgns-apr";
+import { useTranslation } from "react-i18next";
 
 const TooltipCopy = styled.span`
   display: flex;
@@ -21,12 +21,20 @@ const TooltipCopy = styled.span`
   }
 `;
 
-const GovernanceAPRTooltip: React.FC<{ language?: string }> = ({ language }) => {
-  const tApr = useXgnsAprCopy(language);
+interface GovernanceAPRTooltipProps {
+  language?: string;
+  translationKey?: "summary.apy.tooltip" | "myDel.delModal.step3.aprTooltip";
+}
+
+const GovernanceAPRTooltip: React.FC<GovernanceAPRTooltipProps> = ({
+  language,
+  translationKey = "summary.apy.tooltip",
+}) => {
+  const { t } = useTranslation("Governance");
 
   return (
     <TooltipCopy>
-      {tApr("tooltip")
+      {t(translationKey, { lng: language })
         .split("\n\n")
         .map((paragraph, index) => (
           <span key={paragraph} className={index === 1 ? "apr-formula" : undefined}>

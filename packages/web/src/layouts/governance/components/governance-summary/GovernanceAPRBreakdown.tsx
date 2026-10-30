@@ -82,11 +82,11 @@ const GovernanceAPRBreakdown: React.FC<GovernanceAPRBreakdownProps> = ({
   const components = [
     {
       key: "protocolFees",
-      label: tApr("protocolFeesShort"),
-      period: tApr("protocolFeesPeriodShort"),
+      label: tApr("fees"),
+      period: tApr("periodShort"),
       value: protocolFeeApr,
     },
-    { key: "emission", label: tApr("emissionShort"), period: tApr("emissionPeriodShort"), value: emissionApr },
+    { key: "emission", label: tApr("emissionShort"), period: tApr("periodShort"), value: emissionApr },
   ] as const;
 
   return (
@@ -149,12 +149,12 @@ const GovernanceAPRBreakdown: React.FC<GovernanceAPRBreakdownProps> = ({
                   />
                   <FloatingContent themeKey={themeKey}>
                     <GovernanceAPRHistoryPanel>
-                      <h3 id={historyTitleId}>{tApr("historyTitle")}</h3>
+                      <h3 id={historyTitleId}>{tApr("title")}</h3>
                       <GovernanceAPRHistory
                         days={aprHistory}
                         dateLabel={tApr("date")}
                         dailyAprLabel={tApr("dailyApr")}
-                        feeLabel={tApr("protocolFeesShort")}
+                        feeLabel={tApr("fees")}
                         emissionLabel={tApr("emissionShort")}
                         unavailableLabel={unavailableLabel}
                         locale={language ?? (i18n?.language || "en")}
