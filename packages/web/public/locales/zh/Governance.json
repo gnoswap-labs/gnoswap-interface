@@ -209,6 +209,24 @@
     }
   },
   "summary": {
+    "aprBreakdown": {
+      "dailyApr": "总计",
+      "date": "日期",
+      "disclosure": "今天的费用年利率已计入自协调世界时（UTC）06:00起的7天平均值中。",
+      "emission": "GNS排放",
+      "emissionPeriod": "7天平均值",
+      "emissionPeriodShort": "7D",
+      "emissionShort": "排放",
+      "history": "查看APR历史记录",
+      "historyTitle": "xGNS APR 历史数据（7天）",
+      "protocolFees": "协议费用",
+      "protocolFeesPeriod": "7天平均值",
+      "protocolFeesPeriodShort": "7D",
+      "protocolFeesShort": "费用",
+      "title": "xGNS APR（7天）",
+      "tooltip": "委托 xGNS 的预计年化收益率（APR），基于过去 7 天的平均值。\n\n每日年化收益率（APR）=（当日手续费奖励 + 当日发行奖励）× 365 ÷ 所有委托 GNS 的美元价值。\n\n实际收益会因协议手续费、发行量及总委托量而有所不同。",
+      "unavailable": "暂无"
+    },
     "aprHistory": {
       "dailyApr": "APR（1D）",
       "vs7dAvg": "较7D均值"

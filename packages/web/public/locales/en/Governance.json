@@ -211,6 +211,24 @@
     }
   },
   "summary": {
+    "aprBreakdown": {
+      "dailyApr": "Total",
+      "date": "Date",
+      "disclosure": "Today's fee APR is included in the 7D average from 06:00 UTC.",
+      "emission": "GNS emission",
+      "emissionPeriod": "7D average",
+      "emissionPeriodShort": "7D",
+      "emissionShort": "Emission",
+      "history": "View APR history",
+      "historyTitle": "xGNS APR history (7D)",
+      "protocolFees": "Protocol fees",
+      "protocolFeesPeriod": "7D average",
+      "protocolFeesPeriodShort": "7D",
+      "protocolFeesShort": "Fees",
+      "title": "xGNS APR (7D)",
+      "tooltip": "Estimated APR for delegated xGNS, averaged over the last 7 days.\n\nDaily APR = (fee rewards + emission rewards for the day) × 365 ÷ USD value of all delegated GNS.\n\nActual returns vary with protocol fees, emission, and total delegation.",
+      "unavailable": "Not available"
+    },
     "aprHistory": {
       "dailyApr": "APR (1D)",
       "vs7dAvg": "vs 7D avg"

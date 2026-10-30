@@ -1,6 +1,8 @@
 export interface GovernanceAPRHistory {
   date: string;
   apr: string;
+  protocolFeeApr?: string;
+  emissionApr?: string;
   estimated: boolean;
   asOf?: string;
 }
@@ -13,6 +15,8 @@ export interface GovernanceSummaryInfo {
   };
   delegatedRatio: string;
   apy: string;
+  protocolFeeApr?: string;
+  emissionApr?: string;
   communityPoolUsd: string;
   aprHistory?: GovernanceAPRHistory[];
 }

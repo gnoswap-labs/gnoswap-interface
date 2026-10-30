@@ -35,10 +35,15 @@ import {
 } from "./MyDelegationModals.styles";
 import { rawToDisplayAmount } from "@utils/number-utils";
 
+import { formatXgnsApr, useXgnsAprCopy } from "../../../xgns-apr/xgns-apr";
+import GovernanceAPRTooltip from "../../governance-summary/GovernanceAPRTooltip";
+
 interface MyDelegationDelegateModalProps {
   currentDelegatedDisplayAmount: number;
   totalDelegatedDisplayAmount: number;
   apy: number;
+  protocolFeeApr?: string;
+  emissionApr?: string;
   delegatees: VerifiedDelegateInfo[];
   isWalletConnected: boolean;
   connectWallet: () => void;
@@ -50,6 +55,8 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   currentDelegatedDisplayAmount,
   totalDelegatedDisplayAmount,
   apy,
+  protocolFeeApr,
+  emissionApr,
   delegatees,
   isWalletConnected,
   connectWallet,
@@ -58,6 +65,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
 }) => {
   const Modal = useMemo(() => withLocalModal(MyDelegationModalWrapper, setIsOpen), [setIsOpen]);
   const { t } = useTranslation();
+  const tApr = useXgnsAprCopy();
   const selfDelegateName = t("Governance:myDel.delModal.selectDel.self.chip");
   const defaultDelegateeInfo = { ...nullVerifiedDelegateInfo };
 
@@ -313,22 +321,34 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
         </div>
         <div className="info-rows">
           <div className="label">
-            {t("Governance:myDel.delModal.step3.estimatedAPR")}
+            {tApr("title")}
             <Tooltip
               placement="top"
               FloatingContent={
-                <ToolTipContentWrapper>{t("Governance:myDel.delModal.step3.aprTooltip")}</ToolTipContentWrapper>
+                <ToolTipContentWrapper>
+                  <GovernanceAPRTooltip />
+                </ToolTipContentWrapper>
               }
             >
               <IconInfo size={16} />
             </Tooltip>
           </div>
-          <div className="value">
-            {formatOtherPrice(apy, {
-              isKMB: false,
-              usd: false,
-            })}
-            %
+          <div className="value">{formatXgnsApr(apy)}</div>
+        </div>
+        <div className="apr-breakdown">
+          <div className="apr-breakdown-row">
+            <div className="apr-breakdown-label">
+              <span className="name">{tApr("protocolFees")}</span>
+              <span className="period">{tApr("protocolFeesPeriod")}</span>
+            </div>
+            <div className="apr-breakdown-value">{formatXgnsApr(protocolFeeApr)}</div>
+          </div>
+          <div className="apr-breakdown-row">
+            <div className="apr-breakdown-label">
+              <span className="name">{tApr("emission")}</span>
+              <span className="period">{tApr("emissionPeriod")}</span>
+            </div>
+            <div className="apr-breakdown-value">{formatXgnsApr(emissionApr)}</div>
           </div>
         </div>
       </article>

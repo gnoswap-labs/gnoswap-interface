@@ -209,6 +209,24 @@
     }
   },
   "summary": {
+    "aprBreakdown": {
+      "dailyApr": "합계",
+      "date": "날짜",
+      "disclosure": "오늘의 Fee APR은 UTC 06:00부터 7일 평균에 포함됩니다.",
+      "emission": "GNS 에미션",
+      "emissionPeriod": "최근 7일 평균",
+      "emissionPeriodShort": "7D",
+      "emissionShort": "에미션",
+      "history": "APR 내역 보기",
+      "historyTitle": "xGNS APR 기록 (7일)",
+      "protocolFees": "프로토콜 피",
+      "protocolFeesPeriod": "최근 7일 평균",
+      "protocolFeesPeriodShort": "7D",
+      "protocolFeesShort": "피",
+      "title": "xGNS APR (7일)",
+      "tooltip": "위임한 xGNS의 최근 7일 평균 예상 APR입니다.\n\n일별 APR = (해당 일의 수수료 보상 + 에미션 보상) × 365 ÷ 전체 위임 GNS의 USD 가치.\n\n실제 수익률은 프로토콜 피, 에미션 및 총 위임량에 따라 달라집니다.",
+      "unavailable": "이용 불가"
+    },
     "aprHistory": {
       "dailyApr": "APR (1D)",
       "vs7dAvg": "7D 평균 대비"

@@ -209,6 +209,24 @@
     }
   },
   "summary": {
+    "aprBreakdown": {
+      "dailyApr": "Tổng cộng",
+      "date": "Ngày",
+      "disclosure": "Lãi suất hàng năm (APR) của khoản phí hôm nay đã được tính vào mức trung bình 7 ngày kể từ 06:00 UTC.",
+      "emission": "Phát hành GNS",
+      "emissionPeriod": "Trung bình 7D",
+      "emissionPeriodShort": "7D",
+      "emissionShort": "Phát hành",
+      "history": "Xem lịch sử lãi suất hàng năm (APR)",
+      "historyTitle": "Lịch sử APR của xGNS (7 ngày)",
+      "protocolFees": "Phí giao thức",
+      "protocolFeesPeriod": "Trung bình 7D",
+      "protocolFeesPeriodShort": "7D",
+      "protocolFeesShort": "Phí",
+      "title": "xGNS APR (7 ngày)",
+      "tooltip": "Tỷ lệ APR ước tính cho xGNS được ủy quyền, tính trung bình trong 7 ngày qua.\n\nAPR hàng ngày = (phần thưởng từ phí + phần thưởng phát hành trong ngày) × 365 ÷ giá trị bằng USD của toàn bộ GNS được ủy quyền.\n\nLợi nhuận thực tế thay đổi tùy thuộc vào phí giao thức, lượng phát hành và tổng số GNS được ủy quyền.",
+      "unavailable": "Không có sẵn"
+    },
     "aprHistory": {
       "dailyApr": "APR (1D)",
       "vs7dAvg": "so với TB 7D"

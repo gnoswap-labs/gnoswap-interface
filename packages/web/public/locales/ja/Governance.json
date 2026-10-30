@@ -209,6 +209,24 @@
     }
   },
   "summary": {
+    "aprBreakdown": {
+      "dailyApr": "合計",
+      "date": "日付",
+      "disclosure": "本日の手数料年率（APR）は、UTC 06:00 からの 7 日間の平均値に含まれています。",
+      "emission": "GNSエミッション",
+      "emissionPeriod": "7日移動平均",
+      "emissionPeriodShort": "7D",
+      "emissionShort": "エミッション",
+      "history": "APRの履歴を表示する",
+      "historyTitle": "xGNS APRの推移（7日間）",
+      "protocolFees": "プロトコル手数料",
+      "protocolFeesPeriod": "7日移動平均",
+      "protocolFeesPeriodShort": "7D",
+      "protocolFeesShort": "手数料",
+      "title": "xGNS APR（7日間）",
+      "tooltip": "過去7日間の平均値に基づく、デリゲートされたxGNSの推定APR。\n\n1日あたりのAPR = （その日の手数料報酬 + 発行報酬） × 365 ÷ デリゲートされたGNS全体の米ドル換算額。\n\n実際の収益率は、プロトコル手数料、発行量、およびデリゲート総額によって変動します。",
+      "unavailable": "利用不可"
+    },
     "aprHistory": {
       "dailyApr": "APR（1D）",
       "vs7dAvg": "7D平均比"

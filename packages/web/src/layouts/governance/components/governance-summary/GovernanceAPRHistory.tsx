@@ -1,25 +1,29 @@
 import React from "react";
-import BigNumber from "bignumber.js";
 
 import type { GovernanceAPRHistory as APRHistoryDay } from "@repositories/governance";
+import { formatXgnsApr } from "@layouts/governance/xgns-apr/xgns-apr";
 
 import { GovernanceAPRHistoryContent } from "./GovernanceAPRHistory.styles";
+import GovernanceAPRValue from "./GovernanceAPRValue";
 
 interface GovernanceAPRHistoryProps {
-  average: string;
+  /** Daily total APR with protocol-fee and emission components. */
   days: APRHistoryDay[];
   dateLabel: string;
   dailyAprLabel: string;
-  comparisonLabel: string;
+  feeLabel: string;
+  emissionLabel: string;
+  unavailableLabel: string;
   locale: string;
 }
 
 const GovernanceAPRHistory: React.FC<GovernanceAPRHistoryProps> = ({
-  average,
   days,
   dateLabel,
   dailyAprLabel,
-  comparisonLabel,
+  feeLabel,
+  emissionLabel,
+  unavailableLabel,
   locale,
 }) => {
   const weekday = new Intl.DateTimeFormat(locale, { weekday: "short", timeZone: "UTC" });
@@ -29,7 +33,6 @@ const GovernanceAPRHistory: React.FC<GovernanceAPRHistoryProps> = ({
     hour12: false,
     timeZone: "UTC",
   });
-  const displayedAverage = new BigNumber(average).decimalPlaces(2, BigNumber.ROUND_DOWN);
 
   return (
     <GovernanceAPRHistoryContent>
@@ -37,29 +40,31 @@ const GovernanceAPRHistory: React.FC<GovernanceAPRHistoryProps> = ({
         <thead>
           <tr>
             <th scope="col">{dateLabel}</th>
+            <th scope="col">{feeLabel}</th>
+            <th scope="col">{emissionLabel}</th>
             <th scope="col">{dailyAprLabel}</th>
-            <th scope="col">{comparisonLabel}</th>
           </tr>
         </thead>
         <tbody>
-          {days.map(({ date, apr, estimated, asOf }) => {
+          {days.map(({ date, apr, protocolFeeApr, emissionApr, estimated, asOf }) => {
             const day = new Date(`${date}T00:00:00Z`);
-            const displayedAPR = new BigNumber(apr).decimalPlaces(2, BigNumber.ROUND_DOWN);
-            const difference = displayedAPR.minus(displayedAverage);
-            const prefix = difference.isGreaterThan(0) ? "+" : "";
 
             return (
               <tr key={date}>
-                <td>
+                <th scope="row">
                   <time dateTime={date}>
                     {date.slice(5).replace("-", "/")} ({weekday.format(day)})
                   </time>
                   {estimated && <span className="estimate">≈{asOf && ` ${time.format(new Date(asOf))} UTC`}</span>}
-                </td>
-                <td>{displayedAPR.toFixed(2)}%</td>
+                </th>
                 <td>
-                  {prefix}
-                  {difference.toFixed(2)}
+                  <GovernanceAPRValue value={formatXgnsApr(protocolFeeApr)} unavailableLabel={unavailableLabel} />
+                </td>
+                <td>
+                  <GovernanceAPRValue value={formatXgnsApr(emissionApr)} unavailableLabel={unavailableLabel} />
+                </td>
+                <td>
+                  <GovernanceAPRValue value={formatXgnsApr(apr)} unavailableLabel={unavailableLabel} />
                 </td>
               </tr>
             );

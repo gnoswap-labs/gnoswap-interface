@@ -66,6 +66,8 @@ const MyDelegationContainer: React.FC<MyDelegationContainerProps> = ({
     <MyDelegation
       totalDelegatedAmount={Number(governanceSummaryInfo?.delegationInfo.totalDelegationAmount) || 0}
       apy={Number(governanceSummaryInfo?.apy) || 0}
+      protocolFeeApr={governanceSummaryInfo?.protocolFeeApr}
+      emissionApr={governanceSummaryInfo?.emissionApr}
       myDelegationInfo={myDelegationInfo ?? nullMyDelegationInfo}
       myDelegates={myDelegates ?? nullMyDelegatesInfo}
       myUnDelegates={myUnDelegates ?? nullMyUnDelegatesInfo}
