@@ -35,7 +35,9 @@ import {
 
 interface MyDelegationProps {
   totalDelegatedAmount: number;
-  apy: number;
+  apy?: string;
+  protocolFeeApr?: string;
+  emissionApr?: string;
   myDelegationInfo: MyDelegationInfo;
   myDelegates: MyDelegatesInfo;
   myUnDelegates: MyUnDelegatesInfo;
@@ -59,6 +61,8 @@ interface MyDelegationProps {
 const MyDelegation: React.FC<MyDelegationProps> = ({
   totalDelegatedAmount,
   apy,
+  protocolFeeApr,
+  emissionApr,
   myDelegationInfo,
   myDelegates,
   myUnDelegates,
@@ -441,6 +445,8 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
           currentDelegatedDisplayAmount={currentDelegatedDisplayAmount}
           totalDelegatedDisplayAmount={totalDelegatedDisplayAmount}
           apy={apy}
+          protocolFeeApr={protocolFeeApr}
+          emissionApr={emissionApr}
           delegatees={delegatees}
           isWalletConnected={isWalletConnected}
           connectWallet={connectWallet}

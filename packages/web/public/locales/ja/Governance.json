@@ -81,9 +81,9 @@
         "title": "2.金額を入力"
       },
       "step3": {
-        "aprTooltip": "過去7日間の平均値に基づく、委任済みxGNSの推定APR。\n\n1日あたりのAPR = （その日のプロトコル手数料報酬 × 365） ÷ 委任済みxGNS全体の米ドル換算額。\n\n実際の収益は、プロトコル手数料や委任総額によって変動します。",
+        "aprTooltip": "過去7日間の平均値に基づく、デリゲートされたxGNSの推定APR。\n\n1日あたりのAPR = （その日の手数料報酬 + 発行報酬） × 365 ÷ デリゲートされた全GNSの米ドル換算額。\n\n実際の収益率は、プロトコル手数料、発行量、およびデリゲート総額によって変動します。",
         "currentlyDel": "現在委任されている",
-        "estimatedAPR": "推定年率（7日間）",
+        "estimatedAPR": "xGNS APR（7日間）",
         "newlyDel": "新代表",
         "title": "3.あなたの委任",
         "votingPowerShare": "議決権 シェア"
@@ -209,15 +209,25 @@
     }
   },
   "summary": {
+    "aprBreakdown": {
+      "disclosure": "本日の手数料年率（APR）は、UTC 06:00 からの 7 日間の平均値に含まれています。",
+      "emission": "GNSエミッション",
+      "emissionShort": "エミッション",
+      "history": "APRの履歴を表示する",
+      "period": "7日移動平均",
+      "periodShort": "7D",
+      "protocolFees": "プロトコル手数料",
+      "unavailable": "利用不可"
+    },
     "aprHistory": {
-      "dailyApr": "APR（1D）",
+      "dailyApr": "合計",
       "vs7dAvg": "7D平均比"
     },
     "apr": {
       "title": "xGNS APR（7日間）"
     },
     "apy": {
-      "tooltip": "過去7日間の平均値に基づく、委任済みxGNSの推定APR。\n\n1日あたりのAPR = （その日のプロトコル手数料報酬 × 365） ÷ 委任済みxGNS全体の米ドル換算額。\n\n実際の収益率は、プロトコル手数料や委任総額によって変動します。"
+      "tooltip": "過去7日間の平均値に基づく、デリゲートされたxGNSの推定APR。\n\n1日あたりのAPR = （その日の手数料報酬 + 発行報酬） × 365 ÷ デリゲートされた全GNSの米ドル換算額。\n\n実際の収益率は、プロトコル手数料、発行量、およびデリゲート総額によって変動します。"
     },
     "commPool": {
       "title": "コミュニティ・プール",
