@@ -28,7 +28,7 @@ export const nullGovernanceSummaryInfo: GovernanceSummaryInfo = {
     launchpadDelegationAmount: "0",
   },
   delegatedRatio: "0",
-  apy: "0",
+  apy: "",
   communityPoolUsd: "0",
   aprHistory: [],
 };

@@ -20,27 +20,38 @@ interface GovernanceAPRHistoryProps {
 const HISTORY_DAY_COUNT = 7;
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
-/** Today (UTC) followed by the previous six UTC dates, latest first, as YYYY-MM-DD. */
-const getHistoryDates = (now: number): string[] => {
-  const today = new Date(now);
-  const todayUtc = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+/** Latest API date (or today UTC if no valid API date exists) and the previous six UTC dates. */
+const getHistoryDates = (now: number, latestDate?: string): string[] => {
+  const anchor = latestDate ? new Date(`${latestDate}T00:00:00.000Z`) : new Date(now);
+  anchor.setUTCHours(0, 0, 0, 0);
+  const anchorUtc = anchor.getTime();
 
   return Array.from({ length: HISTORY_DAY_COUNT }, (_, index) =>
-    new Date(todayUtc - index * MS_PER_DAY).toISOString().slice(0, 10),
+    new Date(anchorUtc - index * MS_PER_DAY).toISOString().slice(0, 10),
   );
 };
 
+const isValidHistoryDate = (date: string): boolean => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return false;
+
+  const parsed = new Date(`${date}T00:00:00.000Z`);
+  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === date;
+};
+
 /**
- * Always lists the fixed UTC window. Dates the API did not return stay blank so they render as
- * unavailable; nothing is averaged or zero-filled here.
+ * Lists seven consecutive UTC dates latest first. Dates the API did not return stay blank so they
+ * render as unavailable; nothing is averaged or zero-filled here.
  */
 const toHistoryRows = (days: APRHistoryDay[], now: number): APRHistoryDay[] => {
   const byDate = new Map<string, APRHistoryDay>();
+  let latestDate: string | undefined;
   for (const day of days) {
+    if (!isValidHistoryDate(day.date)) continue;
     if (!byDate.has(day.date)) byDate.set(day.date, day);
+    if (latestDate === undefined || day.date > latestDate) latestDate = day.date;
   }
 
-  return getHistoryDates(now).map(date => byDate.get(date) ?? { date, apr: "", estimated: false });
+  return getHistoryDates(now, latestDate).map(date => byDate.get(date) ?? { date, apr: "", estimated: false });
 };
 
 const GovernanceAPRHistory: React.FC<GovernanceAPRHistoryProps> = ({

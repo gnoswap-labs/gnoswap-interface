@@ -33,7 +33,8 @@ export const useXgnsAprCopy = () => {
 export const formatXgnsApr = (value?: string | number | null): string => {
   if (value === undefined || value === null) return UNAVAILABLE_APR;
   if (typeof value === "string" && value.trim() === "") return UNAVAILABLE_APR;
-  const parsed = new BigNumber(value);
+  const parsed = new BigNumber(typeof value === "string" ? value.replace(/,/g, "") : value);
   if (!parsed.isFinite()) return UNAVAILABLE_APR;
-  return `${parsed.decimalPlaces(2, BigNumber.ROUND_DOWN).toFixed(2)}%`;
+  if (parsed.gt(0) && parsed.lt(0.01)) return "<0.01%";
+  return `${parsed.toFormat(2, BigNumber.ROUND_DOWN)}%`;
 };

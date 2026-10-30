@@ -5,7 +5,7 @@ import { ThemeProvider } from "@emotion/react";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
 
-import { GovernanceSummaryInfo } from "@repositories/governance";
+import { GovernanceSummaryInfo, nullGovernanceSummaryInfo } from "@repositories/governance";
 import { getTheme } from "@utils/theme-utils";
 
 import GovernanceSummary from "./GovernanceSummary";
@@ -112,15 +112,12 @@ const baseGovernanceSummary: GovernanceSummaryInfo = {
   communityPoolUsd: "0",
 };
 
-const renderGovernanceSummary = (overrides: Partial<GovernanceSummaryInfo> = {}) => {
+const renderGovernanceSummaryInfo = (governanceSummary: GovernanceSummaryInfo) => {
   render(
     <JotaiProvider>
       <ThemeProvider theme={getTheme("dark")}>
         <GovernanceSummary
-          governanceSummary={{
-            ...baseGovernanceSummary,
-            ...overrides,
-          }}
+          governanceSummary={governanceSummary}
           governanceCommunityPoolBalances={[]}
           isLoading={false}
           onOpenVideoGuide={jest.fn()}
@@ -128,6 +125,13 @@ const renderGovernanceSummary = (overrides: Partial<GovernanceSummaryInfo> = {})
       </ThemeProvider>
     </JotaiProvider>,
   );
+};
+
+const renderGovernanceSummary = (overrides: Partial<GovernanceSummaryInfo> = {}) => {
+  renderGovernanceSummaryInfo({
+    ...baseGovernanceSummary,
+    ...overrides,
+  });
 };
 
 describe("GovernanceSummary Component", () => {
@@ -147,6 +151,19 @@ describe("GovernanceSummary Component", () => {
     expect(screen.getByText("3.21%")).toBeDefined();
     expect(screen.getByText("0.00%")).toBeDefined();
     expect(screen.getAllByText("Not available")).toHaveLength(1);
+  });
+
+  it("renders null summary APR values as unavailable", () => {
+    renderGovernanceSummaryInfo(nullGovernanceSummaryInfo);
+
+    expect(screen.getAllByText("Not available")).toHaveLength(3);
+    expect(screen.queryByText("0.00%")).toBeNull();
+  });
+
+  it("renders a real zero total APR as 0.00%", () => {
+    renderGovernanceSummary({ apy: "0" });
+
+    expect(screen.getByText("0.00%")).toBeDefined();
   });
 
   it("opens daily APR history on click and dismisses it with Escape", async () => {

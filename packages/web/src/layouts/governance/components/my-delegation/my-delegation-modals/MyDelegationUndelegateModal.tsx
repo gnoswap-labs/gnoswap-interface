@@ -82,9 +82,8 @@ const MyDelegationUndelegateModal: React.FC<MyDelegationUndelegateModalProps> = 
       remainingAmount,
       newVotingWeight: newTotalDelegated > 0 ? (remainingAmount * 100) / newTotalDelegated : 0,
       currentVotingWeight: totalDelegatedAmount > 0 ? (currentDelegatedAmount * 100) / totalDelegatedAmount : 0,
-      newApy: remainingAmount > 0 ? apy : 0,
     };
-  }, [gnsAmountInput.amount, currentDelegatedAmount, totalDelegatedAmount, apy]);
+  }, [gnsAmountInput.amount, currentDelegatedAmount, totalDelegatedAmount]);
 
   const handleSubmit = () => {
     onSubmit(selectedDelegatedInfo.name, selectedDelegatedInfo.address, gnsAmountInput.amount);

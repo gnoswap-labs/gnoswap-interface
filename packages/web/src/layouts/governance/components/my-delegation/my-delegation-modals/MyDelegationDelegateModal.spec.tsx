@@ -146,6 +146,7 @@ describe("MyDelegationDelegateModal", () => {
 
   it.each<[string | undefined, string]>([
     [undefined, "—"],
+    ["", "—"],
     ["0", "0.00%"],
   ])("keeps missing total APR distinct from zero (%s)", (apy, expected) => {
     renderModal(apy, false);
