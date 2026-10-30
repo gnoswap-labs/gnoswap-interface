@@ -12,20 +12,32 @@ export const SAMPLE_XGNS_APR = {
   emissionApr: "7.78",
 } as const;
 
-/** Daily scheduled-accrual APR components. The emission step models a historical ratio change. */
-export const SAMPLE_XGNS_APR_HISTORY: GovernanceAPRHistory[] = [
-  {
-    date: "2026-10-29",
-    apr: "14.31",
-    protocolFeeApr: "4.81",
-    emissionApr: "9.50",
-    estimated: true,
-    asOf: "2026-10-29T09:00:00Z",
-  },
-  { date: "2026-10-28", apr: "14.23", protocolFeeApr: "4.73", emissionApr: "9.50", estimated: false },
-  { date: "2026-10-27", apr: "13.99", protocolFeeApr: "4.49", emissionApr: "9.50", estimated: false },
-  { date: "2026-10-26", apr: "13.88", protocolFeeApr: "4.38", emissionApr: "9.50", estimated: false },
-  { date: "2026-10-25", apr: "10.06", protocolFeeApr: "4.56", emissionApr: "5.50", estimated: false },
-  { date: "2026-10-24", apr: "10.12", protocolFeeApr: "4.62", emissionApr: "5.50", estimated: false },
-  { date: "2026-10-23", apr: "9.79", protocolFeeApr: "4.33", emissionApr: "5.46", estimated: false },
-];
+const SAMPLE_HISTORY_VALUES = [
+  { apr: "14.31", protocolFeeApr: "4.81", emissionApr: "9.50" },
+  { apr: "14.23", protocolFeeApr: "4.73", emissionApr: "9.50" },
+  { apr: "13.99", protocolFeeApr: "4.49", emissionApr: "9.50" },
+  { apr: "13.88", protocolFeeApr: "4.38", emissionApr: "9.50" },
+  { apr: "10.06", protocolFeeApr: "4.56", emissionApr: "5.50" },
+  { apr: "10.12", protocolFeeApr: "4.62", emissionApr: "5.50" },
+  { apr: "9.79", protocolFeeApr: "4.33", emissionApr: "5.46" },
+] as const;
+
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+/** UTC date (YYYY-MM-DD) `daysAgo` days before today, so the sample always fills the current window. */
+export const getSampleUtcDate = (daysAgo: number): string => {
+  const now = new Date();
+  const todayUtc = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  return new Date(todayUtc - daysAgo * MS_PER_DAY).toISOString().slice(0, 10);
+};
+
+/**
+ * Daily scheduled-accrual APR components for today and the previous six UTC dates, latest first.
+ * The emission step models a historical ratio change.
+ */
+export const SAMPLE_XGNS_APR_HISTORY: GovernanceAPRHistory[] = SAMPLE_HISTORY_VALUES.map((values, daysAgo) => {
+  const date = getSampleUtcDate(daysAgo);
+  return daysAgo === 0
+    ? { date, ...values, estimated: true, asOf: `${date}T09:00:00Z` }
+    : { date, ...values, estimated: false };
+});

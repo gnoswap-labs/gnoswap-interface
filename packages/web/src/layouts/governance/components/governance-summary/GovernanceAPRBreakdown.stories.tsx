@@ -137,7 +137,7 @@ export const Standalone: Story = {
   ),
 };
 
-/** Legitimate zero values render as 0.00%. No daily rows, so no history action. */
+/** Legitimate zero values render as 0.00%; the seven-day table remains reachable without daily rows. */
 export const Zero: Story = {
   args: { totalApr: "0", protocolFeeApr: "0", emissionApr: "0", aprHistory: [] },
 };
@@ -149,6 +149,10 @@ export const MissingComponents: Story = {
 
 export const MissingTotal: Story = {
   args: { totalApr: undefined },
+};
+
+export const NoAPRData: Story = {
+  args: { totalApr: "", protocolFeeApr: "", emissionApr: "", aprHistory: [] },
 };
 
 /** Existing summary loading skeleton. */

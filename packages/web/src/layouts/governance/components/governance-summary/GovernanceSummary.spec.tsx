@@ -187,10 +187,14 @@ describe("GovernanceSummary Component", () => {
     expect(screen.getByRole("button", { name: /Not available.*APR history/ })).toBeDefined();
   });
 
-  it("does not offer a history action before the API supplies daily rows", () => {
-    renderGovernanceSummary();
+  it("keeps all seven UTC dates reachable when the API supplies no daily rows", async () => {
+    renderGovernanceSummary({ apy: "" });
 
-    expect(screen.queryByRole("button", { name: /APR history/ })).toBeNull();
-    expect(screen.queryByRole("table")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: /Not available.*APR history/ }));
+    const dialog = await screen.findByRole("dialog");
+    const table = within(dialog).getByRole("table");
+    expect(within(table).getAllByRole("row")).toHaveLength(8);
+    expect(within(table).getAllByText("—")).toHaveLength(21);
+    expect(within(table).queryByText("0.00%")).toBeNull();
   });
 });

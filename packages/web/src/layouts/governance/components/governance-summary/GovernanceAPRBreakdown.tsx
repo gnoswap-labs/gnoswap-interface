@@ -38,7 +38,7 @@ export interface GovernanceAPRBreakdownProps {
   protocolFeeApr?: string;
   /** GNS emission APR, 7D average. Missing renders an em dash. */
   emissionApr?: string;
-  /** Daily total APR rows and reward components; history is offered only when rows exist. */
+  /** Daily total APR rows; missing UTC dates remain visible as unavailable in the seven-day table. */
   aprHistory?: APRHistoryDay[];
 }
 
@@ -46,7 +46,7 @@ const GovernanceAPRBreakdown: React.FC<GovernanceAPRBreakdownProps> = ({
   totalApr,
   protocolFeeApr,
   emissionApr,
-  aprHistory,
+  aprHistory = [],
 }) => {
   const { i18n } = useTranslation();
   const tApr = useXgnsAprCopy();
@@ -75,7 +75,6 @@ const GovernanceAPRBreakdown: React.FC<GovernanceAPRBreakdownProps> = ({
 
   const unavailableLabel = tApr("unavailable");
   const formattedTotal = formatXgnsApr(totalApr);
-  const hasHistory = (aprHistory?.length ?? 0) > 0;
 
   const components = [
     {
@@ -90,21 +89,17 @@ const GovernanceAPRBreakdown: React.FC<GovernanceAPRBreakdownProps> = ({
   return (
     <GovernanceAPRBreakdownWrapper className="apr-breakdown">
       <span className="apr-total">
-        {hasHistory ? (
-          <button
-            type="button"
-            className="apr-history-trigger"
-            ref={refs.setReference}
-            aria-label={`${formattedTotal === UNAVAILABLE_APR ? unavailableLabel : formattedTotal} ${tApr("history")}`}
-            aria-expanded={isHistoryOpen}
-            aria-controls={isHistoryOpen ? historyPanelId : undefined}
-            {...getReferenceProps()}
-          >
-            <GovernanceAPRValue value={formattedTotal} unavailableLabel={unavailableLabel} />
-          </button>
-        ) : (
+        <button
+          type="button"
+          className="apr-history-trigger"
+          ref={refs.setReference}
+          aria-label={`${formattedTotal === UNAVAILABLE_APR ? unavailableLabel : formattedTotal} ${tApr("history")}`}
+          aria-expanded={isHistoryOpen}
+          aria-controls={isHistoryOpen ? historyPanelId : undefined}
+          {...getReferenceProps()}
+        >
           <GovernanceAPRValue value={formattedTotal} unavailableLabel={unavailableLabel} />
-        )}
+        </button>
       </span>
       <dl className="apr-components">
         {components.map(({ key, label, period, value }) => (
@@ -119,52 +114,48 @@ const GovernanceAPRBreakdown: React.FC<GovernanceAPRBreakdownProps> = ({
           </div>
         ))}
       </dl>
-      {hasHistory && aprHistory && (
-        <>
-          {isHistoryOpen && (
-            <FloatingPortal>
-              <FloatingFocusManager context={context} modal={false} initialFocus={-1}>
-                <div
-                  ref={refs.setFloating}
-                  id={historyPanelId}
-                  aria-labelledby={historyTitleId}
-                  style={{
-                    position: strategy,
-                    top: y ?? 0,
-                    left: x ?? 0,
-                    visibility: x == null ? "hidden" : "visible",
-                    zIndex: Z_INDEX.modalTooltip,
-                  }}
-                  {...getFloatingProps()}
-                >
-                  <FloatingArrow
-                    ref={arrowRef}
-                    context={context}
-                    fill={theme.color.background02}
-                    width={20}
-                    height={14}
-                    tipRadius={4}
+      {isHistoryOpen && (
+        <FloatingPortal>
+          <FloatingFocusManager context={context} modal={false} initialFocus={-1}>
+            <div
+              ref={refs.setFloating}
+              id={historyPanelId}
+              aria-labelledby={historyTitleId}
+              style={{
+                position: strategy,
+                top: y ?? 0,
+                left: x ?? 0,
+                visibility: x == null ? "hidden" : "visible",
+                zIndex: Z_INDEX.modalTooltip,
+              }}
+              {...getFloatingProps()}
+            >
+              <FloatingArrow
+                ref={arrowRef}
+                context={context}
+                fill={theme.color.background02}
+                width={20}
+                height={14}
+                tipRadius={4}
+              />
+              <FloatingContent themeKey={themeKey}>
+                <GovernanceAPRHistoryPanel>
+                  <h3 id={historyTitleId}>{tApr("title")}</h3>
+                  <GovernanceAPRHistory
+                    days={aprHistory}
+                    dateLabel={tApr("date")}
+                    dailyAprLabel={tApr("dailyApr")}
+                    feeLabel={tApr("fees")}
+                    emissionLabel={tApr("emissionShort")}
+                    unavailableLabel={unavailableLabel}
+                    locale={i18n.language}
                   />
-                  <FloatingContent themeKey={themeKey}>
-                    <GovernanceAPRHistoryPanel>
-                      <h3 id={historyTitleId}>{tApr("title")}</h3>
-                      <GovernanceAPRHistory
-                        days={aprHistory}
-                        dateLabel={tApr("date")}
-                        dailyAprLabel={tApr("dailyApr")}
-                        feeLabel={tApr("fees")}
-                        emissionLabel={tApr("emissionShort")}
-                        unavailableLabel={unavailableLabel}
-                        locale={i18n.language}
-                      />
-                      <p className="apr-disclosure">{tApr("disclosure")}</p>
-                    </GovernanceAPRHistoryPanel>
-                  </FloatingContent>
-                </div>
-              </FloatingFocusManager>
-            </FloatingPortal>
-          )}
-        </>
+                  <p className="apr-disclosure">{tApr("disclosure")}</p>
+                </GovernanceAPRHistoryPanel>
+              </FloatingContent>
+            </div>
+          </FloatingFocusManager>
+        </FloatingPortal>
       )}
     </GovernanceAPRBreakdownWrapper>
   );
