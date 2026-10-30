@@ -132,13 +132,15 @@ describe("StatusBadge executable time", () => {
   });
 
   it.each([
-    ["ko", 3 * HOUR, "3시간 후 실행 가능"],
-    ["ru", 2 * HOUR, "Можно исполнить через 2 часа"],
-    ["ru", 5 * MINUTE, "Можно исполнить через 5 минут"],
+    ["ko", 3 * HOUR, koGovernance.proposal.time.executableInHours_other.replace("{{count}}", "3")],
+    ["ru", 2 * HOUR, ruGovernance.proposal.time.executableInHours_few.replace("{{count}}", "2")],
+    ["ru", 5 * MINUTE, ruGovernance.proposal.time.executableInMinutes_many.replace("{{count}}", "5")],
   ])("uses localized plural forms in %s", (lng, remaining, expected) => {
     i18n.changeLanguage(lng);
     renderBadge({ breakpoint: DEVICE_TYPE.MOBILE, executableTime: NOW + remaining });
 
-    expect(screen.getByText(new RegExp(`, ${expected}$`))).toBeTruthy();
+    expect(
+      screen.getByText(`${i18n.t("Governance:proposal.time.ended", { rel_time: "" }).trim()}, ${expected}`),
+    ).toBeTruthy();
   });
 });
