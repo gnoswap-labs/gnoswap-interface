@@ -6,3 +6,8 @@ export interface PoolPositionModel extends PositionModel {
   feeTier: SwapFeeTierType;
   pool: PoolModel;
 }
+
+/** Display amounts for cards, with the unconverted source retained for position actions. */
+export interface DisplayPoolPositionModel extends PoolPositionModel {
+  rawPosition: PoolPositionModel;
+}

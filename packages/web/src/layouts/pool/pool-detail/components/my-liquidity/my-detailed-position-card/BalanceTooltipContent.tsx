@@ -11,7 +11,6 @@ import { BalanceTooltipContentWrapper } from "./BalanceTooltipContent.styles";
 export interface PositionBalanceInfo {
   token: TokenModel;
   balance: number;
-  balanceUSD: number;
   percent: string;
 }
 

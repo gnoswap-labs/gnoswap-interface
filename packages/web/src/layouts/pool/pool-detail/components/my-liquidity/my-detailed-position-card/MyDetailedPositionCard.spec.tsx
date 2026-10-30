@@ -5,6 +5,7 @@ import { initialPool } from "@models/pool/pool-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenModel } from "@models/token/token-model";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
+import { PositionConverter } from "@services/converters/position";
 import { DEVICE_TYPE } from "@styles/media";
 import { priceToTick } from "@utils/swap-utils";
 
@@ -99,7 +100,7 @@ it("shows the pool spot rate rather than the quantized current-tick rate, in eit
     <JotaiProvider>
       <GnoswapThemeProvider>
         <MyDetailedPositionCard
-          position={position}
+          position={PositionConverter.convertPositions([position])[0]}
           isStakable={false}
           breakpoint={DEVICE_TYPE.WEB}
           loading={false}

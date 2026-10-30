@@ -175,6 +175,8 @@
       "end": "Kết thúc bỏ phiếu {{rel_time}}",
       "ended": "Cuộc bỏ phiếu đã kết thúc {{rel_time}}",
       "executable": "Thời gian thực hiện đề xuất {{rel_time}}",
+      "executableInHours_other": "Có thể thực thi trong {{count}} giờ",
+      "executableInMinutes_other": "Có thể thực thi trong {{count}} phút",
       "executed": "Đề xuất đã được thực hiện {{rel_time}}",
       "expired": "Đề xuất đã hết hạn {{rel_time}}",
       "h": "trong {{time}}h",

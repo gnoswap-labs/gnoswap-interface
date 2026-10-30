@@ -212,6 +212,11 @@ const ViewProposalModal: React.FC<ViewProposalModalProps> = ({
               breakpoint={breakpoint}
               status={proposalDetail.status}
               time={safeParseTime(proposalDetail.statusTime)}
+              executableTime={
+                proposalDetail.proposalType !== PROPOSAL_TYPE.PROPOSAL_TEXT
+                  ? safeParseTime(proposalDetail.executableTime)
+                  : null
+              }
               twoline={false}
             />
           </div>
