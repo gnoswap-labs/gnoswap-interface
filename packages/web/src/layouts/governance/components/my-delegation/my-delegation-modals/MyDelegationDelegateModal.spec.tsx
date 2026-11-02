@@ -3,6 +3,7 @@ import { Provider as JotaiProvider } from "jotai";
 
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { VerifiedDelegateInfo } from "@repositories/governance";
+import { UNAVAILABLE_APR } from "@layouts/governance/xgns-apr/xgns-apr";
 
 import MyDelegationDelegateModal from "./MyDelegationDelegateModal";
 
@@ -145,8 +146,8 @@ describe("MyDelegationDelegateModal", () => {
   });
 
   it.each<[string | undefined, string]>([
-    [undefined, "—"],
-    ["", "—"],
+    [undefined, UNAVAILABLE_APR],
+    ["", UNAVAILABLE_APR],
     ["0", "0.00%"],
   ])("keeps missing total APR distinct from zero (%s)", (apy, expected) => {
     renderModal(apy, false);

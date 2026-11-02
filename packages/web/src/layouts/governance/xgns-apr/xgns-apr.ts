@@ -17,7 +17,7 @@ const APR_COPY_KEYS = {
   disclosure: "Governance:summary.aprBreakdown.disclosure",
 } as const;
 
-export const UNAVAILABLE_APR = "—";
+export const UNAVAILABLE_APR = "-";
 
 /** Uses the Governance namespace downloaded from i18nexus, including in previews. */
 export const useXgnsAprCopy = () => {
@@ -27,7 +27,7 @@ export const useXgnsAprCopy = () => {
 };
 
 /**
- * Formats an optional APR string. Missing/blank/non-numeric values render as an em dash
+ * Formats an optional APR string. Missing/blank/non-numeric values render as the standard dash
  * (never derived from the total); a legitimate zero renders as 0.00%.
  */
 export const formatXgnsApr = (value?: string | number | null): string => {

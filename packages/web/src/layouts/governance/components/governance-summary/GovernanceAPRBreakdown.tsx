@@ -34,9 +34,9 @@ import GovernanceAPRValue from "./GovernanceAPRValue";
 export interface GovernanceAPRBreakdownProps {
   /** Estimated total xGNS APR (`apy` from the summary API). */
   totalApr?: string;
-  /** Protocol fee APR, 7D average. Missing renders an em dash; never derived from the total. */
+  /** Protocol fee APR, 7D average. Missing renders a dash; never derived from the total. */
   protocolFeeApr?: string;
-  /** GNS emission APR, 7D average. Missing renders an em dash. */
+  /** GNS emission APR, 7D average. Missing renders a dash. */
   emissionApr?: string;
   /** Daily total APR rows; missing UTC dates remain visible as unavailable in the seven-day table. */
   aprHistory?: APRHistoryDay[];

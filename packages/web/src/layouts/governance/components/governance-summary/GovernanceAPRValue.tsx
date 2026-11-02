@@ -16,7 +16,7 @@ const VisuallyHidden = styled.span`
 `;
 
 interface GovernanceAPRValueProps {
-  /** Formatted value; the unavailable em dash is announced as `unavailableLabel`. */
+  /** Formatted value; the unavailable dash is announced as `unavailableLabel`. */
   value: string;
   unavailableLabel: string;
 }

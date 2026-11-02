@@ -23,7 +23,7 @@ type Story = StoryObj<typeof GovernanceAPRHistory>;
 
 export const SampleDailyHistory: Story = {};
 
-/** Dates without API data stay in the fixed seven-day window as an em dash; nothing is averaged or zero-filled. */
+/** Dates without API data stay in the seven-day window as a dash; nothing is averaged or zero-filled. */
 export const MissingDates: Story = {
   args: {
     days: SAMPLE_XGNS_APR_HISTORY.filter((_, daysAgo) => daysAgo !== 1 && daysAgo !== 2 && daysAgo !== 5),

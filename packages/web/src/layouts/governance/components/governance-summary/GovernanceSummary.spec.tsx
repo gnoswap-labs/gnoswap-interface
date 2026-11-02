@@ -191,6 +191,7 @@ describe("GovernanceSummary Component", () => {
     const dialog = await screen.findByRole("dialog");
     expect(trigger).toHaveAttribute("aria-expanded", "true");
     expect(within(dialog).getByRole("table")).toBeDefined();
+    expect(within(dialog).getByText("12.52%")).toBeDefined();
     fireEvent.keyDown(document, { key: "Escape" });
     expect(trigger).toHaveAttribute("aria-expanded", "false");
     expect(screen.queryByRole("dialog")).toBeNull();
@@ -211,7 +212,7 @@ describe("GovernanceSummary Component", () => {
     const dialog = await screen.findByRole("dialog");
     const table = within(dialog).getByRole("table");
     expect(within(table).getAllByRole("row")).toHaveLength(8);
-    expect(within(table).getAllByText("—")).toHaveLength(21);
+    expect(within(table).getAllByText("Not available")).toHaveLength(21);
     expect(within(table).queryByText("0.00%")).toBeNull();
   });
 });

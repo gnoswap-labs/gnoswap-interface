@@ -142,7 +142,7 @@ export const Zero: Story = {
   args: { totalApr: "0", protocolFeeApr: "0", emissionApr: "0", aprHistory: [] },
 };
 
-/** Components missing from the API render as an em dash; nothing is derived from the total. */
+/** Components missing from the API render as a dash; nothing is derived from the total. */
 export const MissingComponents: Story = {
   args: { totalApr: SAMPLE_XGNS_APR.totalApr, protocolFeeApr: undefined, emissionApr: undefined, aprHistory: [] },
 };
