@@ -10,7 +10,7 @@ import { InfoBoxTooltipContent, GovernanceDetailInfoWrapper } from "./InfoBox.st
 interface GovernanceDetailInfoProps {
   title: string;
   value: ReactNode;
-  tooltip?: string;
+  tooltip?: ReactNode;
   isLoading: boolean;
   titleButton?: {
     text: ReactNode;

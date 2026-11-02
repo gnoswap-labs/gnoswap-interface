@@ -1,6 +1,8 @@
 export interface GovernanceAPRHistory {
   date: string;
   apr: string;
+  protocolFeeApr?: string;
+  emissionApr?: string;
   estimated: boolean;
   asOf?: string;
 }
@@ -13,6 +15,8 @@ export interface GovernanceSummaryInfo {
   };
   delegatedRatio: string;
   apy: string;
+  protocolFeeApr?: string;
+  emissionApr?: string;
   communityPoolUsd: string;
   aprHistory?: GovernanceAPRHistory[];
 }
@@ -24,7 +28,7 @@ export const nullGovernanceSummaryInfo: GovernanceSummaryInfo = {
     launchpadDelegationAmount: "0",
   },
   delegatedRatio: "0",
-  apy: "0",
+  apy: "",
   communityPoolUsd: "0",
   aprHistory: [],
 };

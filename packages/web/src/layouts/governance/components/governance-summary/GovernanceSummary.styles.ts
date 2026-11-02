@@ -32,20 +32,9 @@ export const GovernanceSummaryWrapper = styled.div`
         cursor: default;
       }
     }
-  }
-  .apr-history-trigger {
-    padding: 0;
-    border: 0;
-    background: none;
-    color: inherit;
-    font: inherit;
-    cursor: default;
-    &:hover {
-      color: ${({ theme }) => theme.color.text07};
-    }
-    &:focus-visible {
-      outline: 2px solid ${({ theme }) => theme.color.text07};
-      outline-offset: 3px;
+    .value:has(> .apr-breakdown) {
+      flex: 1 1 auto;
+      min-width: 0;
     }
   }
 
