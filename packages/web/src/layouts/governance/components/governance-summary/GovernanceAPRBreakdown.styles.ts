@@ -93,12 +93,6 @@ export const GovernanceAPRHistoryPanel = styled.section`
   width: min(340px, calc(100vw - 48px));
   gap: 8px;
 
-  h3 {
-    margin: 0;
-    ${fonts.body11};
-    color: ${({ theme }) => theme.color.text02};
-  }
-
   .apr-disclosure {
     margin: 0;
     ${fonts.p4};

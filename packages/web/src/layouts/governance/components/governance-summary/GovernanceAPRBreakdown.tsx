@@ -55,7 +55,6 @@ const GovernanceAPRBreakdown: React.FC<GovernanceAPRBreakdownProps> = ({
 
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const arrowRef = useRef(null);
-  const historyTitleId = useId();
   const historyPanelId = useId();
 
   const { refs, strategy, x, y, context } = useFloating({
@@ -120,7 +119,7 @@ const GovernanceAPRBreakdown: React.FC<GovernanceAPRBreakdownProps> = ({
             <div
               ref={refs.setFloating}
               id={historyPanelId}
-              aria-labelledby={historyTitleId}
+              aria-label={tApr("history")}
               style={{
                 position: strategy,
                 top: y ?? 0,
@@ -140,7 +139,6 @@ const GovernanceAPRBreakdown: React.FC<GovernanceAPRBreakdownProps> = ({
               />
               <FloatingContent themeKey={themeKey}>
                 <GovernanceAPRHistoryPanel>
-                  <h3 id={historyTitleId}>{tApr("title")}</h3>
                   <GovernanceAPRHistory
                     days={aprHistory}
                     dateLabel={tApr("date")}
