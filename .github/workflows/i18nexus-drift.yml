@@ -30,7 +30,7 @@ jobs:
           node-version-file: .nvmrc
 
       - name: Install trusted, locked dependencies without build scripts
-        run: corepack yarn install --immutable --mode=skip-builds
+        run: corepack yarn install --immutable --mode=skip-build
 
       - name: Fetch PR objects without checking them out
         env:
