@@ -82,6 +82,24 @@ unrelated to your task. Keep changes scoped to the requested namespaces and
 verify affected keys across all supported languages. Do not reconstruct locale
 files from individual MCP responses or invent missing translations.
 
+#### PR translation drift checks
+
+The **i18nexus Sync Check** workflow compares PR locale JSON with the latest official
+download. It ignores formatting and object-key order. Drift is advisory: one bot
+comment lists affected files and explains how to sync. Later checks update that
+comment, including when the drift is resolved; clean PRs do not receive a new comment.
+Download or comparison errors fail the check rather than reporting a false match.
+
+For intentional string changes, update i18nexus first, run `npm run i18n:download`,
+review `git diff -- packages/web/public/locales`, and commit/push the relevant locale
+changes. Do not fix drift by hand-editing generated JSON.
+
+Maintainers must configure the `I18NEXUS_API_KEY` repository Actions secret; no PAT
+is needed. The workflow uses `pull_request_target` to support fork PR comments,
+executes only trusted base-branch code, and reads PR locale blobs without checking
+out or executing PR code. It starts handling PR events after the workflow is merged
+into the base repository; this initial setup PR cannot trigger the new workflow.
+
 #### MCP clients
 
 Start clients from this checkout's root so they discover the project configuration:
