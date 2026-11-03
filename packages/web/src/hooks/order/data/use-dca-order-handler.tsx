@@ -39,7 +39,7 @@ import {
   getOrderButtonState,
   hasDirectPoolForPair,
   isDcaAmountTooLow,
-  MIN_DCA_EXECUTION_COUNT,
+  isExecutionCountWithinLimit,
 } from "./use-order-handler.utils";
 import { useOrderTransaction } from "./use-order-transaction";
 
@@ -102,7 +102,23 @@ export const useDcaOrderHandler = () => {
     [config?.maxExecutionCount, minAmountPerExecution, sellAmountRaw],
   );
 
-  const executionCount = Math.max(MIN_DCA_EXECUTION_COUNT, Math.floor(Number(executionCountInput)) || 0);
+  /**
+   * The realm's own cap. The input can hold any count (a shared link or restored
+   * state sets it without the blur clamp), so the effective count is clamped to
+   * it before anything is quoted, scheduled, confirmed or sent. The sell-based
+   * cap `floor(sell / minAmountPerExecution)` needs no clamp here: above it one
+   * execution sells less than the minimum, which AMOUNT_TOO_LOW already blocks.
+   */
+  const realmMaxExecutionCount = config?.maxExecutionCount ?? DEFAULT_MAX_DCA_EXECUTION_COUNT;
+  const executionCount = clampExecutionCount(Math.floor(Number(executionCountInput)), realmMaxExecutionCount);
+
+  // Bring a restored count above the realm cap back into the field once the config is known.
+  useEffect(() => {
+    if (!config) return;
+    if (Number(executionCountInput) > realmMaxExecutionCount) {
+      setExecutionCountInput(`${realmMaxExecutionCount}`);
+    }
+  }, [config, executionCountInput, realmMaxExecutionCount, setExecutionCountInput]);
 
   const amountPerExecutionRaw = useMemo(() => {
     if (!tokenA) return "0";
@@ -209,6 +225,7 @@ export const useDcaOrderHandler = () => {
   const createRequest: CreateDcaOrderRequest | null = useMemo(() => {
     // An unchecked pair (pool list still loading) is never submitted.
     if (buttonState !== "PLACE_ORDER" || !tokenA || !tokenB || !schedule || hasDirectPool !== true) return null;
+    if (!isExecutionCountWithinLimit(executionCount, realmMaxExecutionCount)) return null;
     return {
       inputToken: tokenA,
       outputToken: tokenB,
@@ -217,7 +234,17 @@ export const useDcaOrderHandler = () => {
       amountPerExecution: amountPerExecutionRaw,
       executionCount,
     };
-  }, [amountPerExecutionRaw, buttonState, executionCount, hasDirectPool, interval, schedule, tokenA, tokenB]);
+  }, [
+    amountPerExecutionRaw,
+    buttonState,
+    executionCount,
+    hasDirectPool,
+    interval,
+    realmMaxExecutionCount,
+    schedule,
+    tokenA,
+    tokenB,
+  ]);
 
   const debouncedCreateRequest = useDebounce(createRequest, INPUT_DEBOUNCE_MS);
   const { data: networkFee, isFetching: isFetchingNetworkFee } = useEstimateOrderNetworkFee(
@@ -330,6 +357,7 @@ export const useDcaOrderHandler = () => {
 
     // The slot can roll over while the modal was open, so the schedule is read again right before sending.
     if (hasDirectPool !== true) return;
+    if (!isExecutionCountWithinLimit(executionCount, realmMaxExecutionCount)) return;
     const latestSchedule = (await refetchSchedule()).data ?? schedule;
     if (!latestSchedule) return;
 
@@ -363,6 +391,7 @@ export const useDcaOrderHandler = () => {
     hasDirectPool,
     interval,
     orderRepository,
+    realmMaxExecutionCount,
     refetchSchedule,
     schedule,
     setSellAmount,

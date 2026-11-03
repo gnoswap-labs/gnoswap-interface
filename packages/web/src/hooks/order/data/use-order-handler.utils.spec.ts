@@ -11,6 +11,7 @@ import {
   getOrderButtonState,
   hasDirectPoolForPair,
   isDcaAmountTooLow,
+  isExecutionCountWithinLimit,
   isLimitAmountTooLow,
   isOrderButtonActionable,
   OrderButtonStateParams,
@@ -223,5 +224,12 @@ describe("use-order-handler.utils", () => {
       expect(getOrderButtonState({ ...ready, isPoolCheckFailed: true })).toBe("POOL_CHECK_FAILED");
       expect(isOrderButtonActionable("POOL_CHECK_FAILED")).toBe(true);
     });
+  });
+
+  it("accepts only DCA counts within [2, maxExecutionCount]", () => {
+    expect(isExecutionCountWithinLimit(10, 10)).toBe(true);
+    expect(isExecutionCountWithinLimit(11, 10)).toBe(false);
+    expect(isExecutionCountWithinLimit(1, 10)).toBe(false);
+    expect(isExecutionCountWithinLimit(2.5, 10)).toBe(false);
   });
 });

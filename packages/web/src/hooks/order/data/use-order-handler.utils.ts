@@ -144,6 +144,11 @@ export function calculateMaxExecutionCount(
   return BigNumber.min(maxExecutionCount, sell.dividedToIntegerBy(min)).toNumber();
 }
 
+/** Whether a DCA count is one the realm accepts: `[2, maxExecutionCount]`. */
+export function isExecutionCountWithinLimit(count: number, maxExecutionCount: number): boolean {
+  return Number.isInteger(count) && count >= MIN_DCA_EXECUTION_COUNT && count <= maxExecutionCount;
+}
+
 /** Clamps an `Over` value into `[2, max]`. A max below 2 still allows 2 so the form can say why. */
 export function clampExecutionCount(count: number, maxExecutionCount: number): number {
   if (!Number.isFinite(count)) return MIN_DCA_EXECUTION_COUNT;

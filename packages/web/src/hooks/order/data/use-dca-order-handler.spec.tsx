@@ -1,4 +1,4 @@
-import { act, renderHook } from "@testing-library/react";
+import { act, render, renderHook } from "@testing-library/react";
 import BigNumber from "bignumber.js";
 import { Provider as JotaiProvider } from "jotai";
 import React from "react";
@@ -10,19 +10,39 @@ import { useDcaOrderHandler } from "./use-dca-order-handler";
 
 jest.mock("react-i18next", () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 jest.mock("@hooks/common/use-debounce", () => ({ __esModule: true, default: <T,>(value: T) => value }));
-jest.mock("@hooks/common/use-gnoswap-context", () => ({ useGnoswapContext: () => ({ orderRepository: {} }) }));
+const mockSendCreateDcaOrder = jest.fn().mockResolvedValue({ code: 0 });
+const mockState: {
+  config: { maxExecutionCount: number; minAmountPerExecution: string } | undefined;
+  scheduleCounts: number[];
+  renderConfirm: (() => React.ReactNode) | null;
+  confirmProps: { summary: { executionCount: number }; confirm: () => void } | null;
+} = { config: undefined, scheduleCounts: [], renderConfirm: null, confirmProps: null };
+
+jest.mock("@hooks/common/use-gnoswap-context", () => ({
+  useGnoswapContext: () => ({
+    orderRepository: { sendCreateDcaOrder: mockSendCreateDcaOrder, makeCreateDcaOrderMessages: jest.fn() },
+  }),
+}));
 jest.mock("@hooks/common/use-slippage", () => ({ useSlippage: () => ({ slippage: 0.5, changeSlippage: jest.fn() }) }));
 jest.mock("@hooks/wallet/ui/use-connect-wallet-modal", () => ({
   useConnectWalletModal: () => ({ openModal: jest.fn() }),
 }));
 jest.mock("@components/order/confirm-dca-order-modal/ConfirmDcaOrderModal", () => ({
   __esModule: true,
-  default: () => null,
+  default: (props: NonNullable<typeof mockState.confirmProps>) => {
+    mockState.confirmProps = props;
+    return null;
+  },
 }));
 jest.mock("../ui/use-confirm-order-modal", () => ({
-  useConfirmOrderModal: () => ({ openModal: jest.fn(), closeModal: jest.fn() }),
+  useConfirmOrderModal: (renderModal: () => React.ReactNode) => {
+    mockState.renderConfirm = renderModal;
+    return { openModal: jest.fn(), closeModal: jest.fn() };
+  },
 }));
-jest.mock("./use-order-transaction", () => ({ useOrderTransaction: () => ({ submit: jest.fn() }) }));
+jest.mock("./use-order-transaction", () => ({
+  useOrderTransaction: () => ({ submit: ({ send }: { send: () => Promise<unknown> }) => send() }),
+}));
 jest.mock("./use-order-form-common", () => ({
   getOrderButtonText: (state: string, _: unknown, placeOrderText: string) =>
     state === "PLACE_ORDER" ? placeOrderText : state,
@@ -41,12 +61,12 @@ jest.mock("./use-order-form-common", () => ({
   }),
 }));
 jest.mock("@query/order", () => ({
-  useGetDcaConfig: () => ({ data: undefined, isLoading: false }),
-  useGetDcaSchedule: () => ({
-    data: { slotOffset: 0, firstExecutionAt: 1, estimatedEndAt: 2 },
-    isFetching: false,
-    refetch: jest.fn(),
-  }),
+  useGetDcaConfig: () => ({ data: mockState.config, isLoading: false }),
+  useGetDcaSchedule: (request: { executionCount: number } | null) => {
+    if (request) mockState.scheduleCounts.push(request.executionCount);
+    const data = { slotOffset: 0, firstExecutionAt: 1, estimatedEndAt: 2 };
+    return { data, isFetching: false, refetch: () => Promise.resolve({ data }) };
+  },
   useEstimateOrderNetworkFee: () => ({ data: undefined, isFetching: false }),
 }));
 // The router always finds a (possibly multi-hop) route.
@@ -128,5 +148,53 @@ describe("useDcaOrderHandler direct pool requirement", () => {
       act(() => result.current.onClickButton());
       expect(refetch).toHaveBeenCalledTimes(1);
     });
+  });
+});
+
+describe("useDcaOrderHandler execution count cap", () => {
+  beforeEach(() => {
+    jest.mocked(useGetPoolList).mockReturnValue({ data: pools, isError: false } as ReturnType<typeof useGetPoolList>);
+    mockState.config = { maxExecutionCount: 10, minAmountPerExecution: "1" };
+    mockState.scheduleCounts = [];
+    mockState.renderConfirm = null;
+    mockState.confirmProps = null;
+    mockSendCreateDcaOrder.mockClear();
+  });
+
+  afterEach(() => {
+    mockState.config = undefined;
+  });
+
+  it("never schedules, confirms or sends a restored count above the realm max", async () => {
+    const result = renderWithPair(tokenB);
+
+    // A shared link restores `count` straight into the state, without the input's blur clamp.
+    act(() => result.current.setExecutionCountInput("11"));
+
+    expect(result.current.executionCountInput).toBe("10");
+    expect(result.current.buttonState).toBe("PLACE_ORDER");
+    expect(Math.max(...mockState.scheduleCounts)).toBeLessThanOrEqual(10);
+
+    render(<>{mockState.renderConfirm?.()}</>);
+    expect(mockState.confirmProps?.summary.executionCount).toBe(10);
+
+    await act(async () => {
+      mockState.confirmProps?.confirm();
+      await Promise.resolve();
+    });
+    expect(mockSendCreateDcaOrder).toHaveBeenCalledTimes(1);
+    expect(mockSendCreateDcaOrder.mock.calls[0][0]).toMatchObject({ executionCount: 10 });
+  });
+
+  it("blocks a count above the sell-based cap as Amount Too Low", () => {
+    const { result } = renderHook(() => useDcaOrderHandler(), { wrapper });
+    act(() => result.current.changeTokenA(tokenA));
+    act(() => result.current.changeTokenB(tokenB));
+    // 0.000005 A is 5 raw units: with a 1-unit minimum at most 5 executions fit.
+    act(() => result.current.changeSellAmount("0.000005"));
+    act(() => result.current.setExecutionCountInput("8"));
+
+    expect(result.current.maxExecutionCount).toBe(5);
+    expect(result.current.buttonState).toBe("AMOUNT_TOO_LOW");
   });
 });
