@@ -3,6 +3,8 @@ import BigNumber from "bignumber.js";
 import { GnoProvider, SimulateTxResult } from "@common/clients/gno-provider/gno-provider";
 import { Tx } from "@gnolang/tm2-js-client";
 
+import { TransactionMessage } from "@common/clients/wallet-client/protocols";
+
 import { WalletClient } from "@common/clients/wallet-client";
 import { CommonError } from "@common/errors";
 import { DEFAULT_GAS_WANTED } from "@common/values";
@@ -27,6 +29,7 @@ import {
   MaxNativeAmount,
   MaxNativeAmountRequest,
   NativeAmountReserve,
+  TransactionFeeEstimate,
   TransactionGasService,
 } from "./transaction-gas-service";
 
@@ -122,6 +125,32 @@ export class TransactionGasServiceImpl implements TransactionGasService {
       };
     } catch {
       return fallback;
+    }
+  }
+
+  public async estimateTransactionFee(messages: TransactionMessage[]): Promise<TransactionFeeEstimate | null> {
+    if (!this.rpcProvider || !this.transactionService || messages.length === 0) return null;
+
+    try {
+      const [gasPrice, signer] = await Promise.all([this.getGasPrices(), this.getSigner()]);
+      const document = await this.transactionService.createDocument({ messages, memo: "", account: signer.account });
+      const { gasUsed, storageDeposit } = await this.rpcProvider.simulateTx(
+        documentToDefaultTx(withGasFee(document, DEFAULT_GAS_WANTED, Number(OFFERED_GAS_FEE)), signer.publicKey),
+      );
+
+      const gasFee = BigNumber(gasUsed)
+        .multipliedBy(gasPrice || MINIMUM_GAS_PRICE)
+        .toFixed(0, BigNumber.ROUND_CEIL);
+      const deposit = BigNumber(storageDeposit).toFixed(0, BigNumber.ROUND_CEIL);
+
+      return {
+        gasUsed: Number(gasUsed),
+        gasFee,
+        storageDeposit: deposit,
+        total: BigNumber(gasFee).plus(deposit).toFixed(0),
+      };
+    } catch {
+      return null;
     }
   }
 

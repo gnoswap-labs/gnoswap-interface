@@ -38,6 +38,18 @@ export interface MaxNativeAmount {
   simulated: boolean;
 }
 
+/** What a transaction costs its signer, measured by simulation. Every amount is an integer ugnot string. */
+export interface TransactionFeeEstimate {
+  /** Gas the simulation burned. */
+  gasUsed: number;
+  /** Gas used priced at the current gas price. */
+  gasFee: string;
+  /** Storage deposit the transaction locks. */
+  storageDeposit: string;
+  /** Sum of the gas fee and the storage deposit. */
+  total: string;
+}
+
 export interface TransactionGasService {
   getGasPrices: () => Promise<number | null>;
 
@@ -54,4 +66,10 @@ export interface TransactionGasService {
    * for both costs, and the result is verified once it is known.
    */
   estimateMaxNativeAmount(request: MaxNativeAmountRequest): Promise<MaxNativeAmount>;
+
+  /**
+   * Simulates the messages as the connected signer and prices the gas burned
+   * plus the storage deposit locked. Null when the transaction cannot be simulated.
+   */
+  estimateTransactionFee(messages: TransactionMessage[]): Promise<TransactionFeeEstimate | null>;
 }
