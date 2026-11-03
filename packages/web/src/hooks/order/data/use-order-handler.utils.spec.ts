@@ -6,6 +6,8 @@ import {
   clampExecutionCount,
   getAvailableDcaIntervals,
   getAvailableExpiryOptions,
+  getDcaMinAmountPerExecution,
+  getLimitMinMakingAmount,
   getOrderButtonState,
   isDcaAmountTooLow,
   isLimitAmountTooLow,
@@ -168,5 +170,24 @@ describe("use-order-handler.utils", () => {
       "thirtyDays",
     ]);
     expect(getAvailableExpiryOptions(7200, 604800).map(item => item.key)).toEqual(["oneDay", "oneWeek"]);
+  });
+
+  describe("native GNOT wrap minimum", () => {
+    it("raises the limit minimum to the wrap minimum for native GNOT only", () => {
+      expect(getLimitMinMakingAmount("100", true, 1000)).toBe("1000");
+      expect(getLimitMinMakingAmount("5000", true, 1000)).toBe("5000");
+      expect(getLimitMinMakingAmount("100", false, 1000)).toBe("100");
+      expect(isLimitAmountTooLow("500", "500", getLimitMinMakingAmount("100", true, 1000))).toBe(true);
+    });
+
+    it("requires the native GNOT DCA deposit to reach the wrap minimum", () => {
+      // 2 executions × 500 = 1000 is the smallest deposit that can be wrapped.
+      expect(getDcaMinAmountPerExecution("1", true, 2, 1000)).toBe("500");
+      expect(getDcaMinAmountPerExecution("1", true, 3, 1000)).toBe("334");
+      expect(getDcaMinAmountPerExecution("1000", true, 3, 1000)).toBe("1000");
+      expect(getDcaMinAmountPerExecution("1", false, 2, 1000)).toBe("1");
+      expect(isDcaAmountTooLow("499", getDcaMinAmountPerExecution("1", true, 2, 1000))).toBe(true);
+      expect(isDcaAmountTooLow("500", getDcaMinAmountPerExecution("1", true, 2, 1000))).toBe(false);
+    });
   });
 });

@@ -3,6 +3,7 @@ import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { MIN_GNOT_DEPOSIT_AMOUNT } from "@common/clients/wallet-client/transaction-messages";
 import ConfirmLimitOrderModal from "@components/order/confirm-limit-order-modal/ConfirmLimitOrderModal";
 import useDebounce from "@hooks/common/use-debounce";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
@@ -18,7 +19,7 @@ import { DexEvent } from "@repositories/common";
 import { CreateLimitOrderRequest } from "@repositories/order/request";
 import { OrderState, SwapState } from "@states/index";
 import { formatOrderDateTime, trimFractionZeros } from "@utils/order-format-utils";
-import { makeDisplayTokenAmountString, makeRawTokenAmount } from "@utils/token-utils";
+import { isNativeTokenPath, makeDisplayTokenAmountString, makeRawTokenAmount } from "@utils/token-utils";
 
 import { useConfirmOrderModal } from "../ui/use-confirm-order-modal";
 import { getOrderButtonText, useOrderFormCommon } from "./use-order-form-common";
@@ -29,6 +30,7 @@ import {
   DEFAULT_MIN_MAKING_AMOUNT,
   formatLimitPriceInput,
   getAvailableExpiryOptions,
+  getLimitMinMakingAmount,
   getOrderButtonState,
   isLimitAmountTooLow,
   MAX_LIMIT_SLIPPAGE_BPS,
@@ -125,12 +127,17 @@ export const useLimitOrderHandler = () => {
   const sellUsd = useMemo(() => calculateUsdValue(sellAmount, getUsdPrice(tokenA)), [getUsdPrice, sellAmount, tokenA]);
   const buyUsd = useMemo(() => calculateUsdValue(buyAmount, getUsdPrice(tokenB)), [buyAmount, getUsdPrice, tokenB]);
 
-  const makingAmount = tokenA ? makeRawTokenAmount(tokenA, sellAmount || "0") ?? "0" : "0";
+  const makingAmount = tokenA ? (makeRawTokenAmount(tokenA, sellAmount || "0") ?? "0") : "0";
   const takingAmount =
     tokenA && tokenB && isValidPrice ? calculateTakingAmount(makingAmount, limitPrice, tokenA, tokenB) : "0";
 
   // The Limit realm's own minimums: `minMakingAmount` raw input and a positive `takingAmount`.
-  const minMakingAmount = config?.minMakingAmount || DEFAULT_MIN_MAKING_AMOUNT;
+  // Native GNOT must also reach the wrap minimum, or no Deposit could be built.
+  const minMakingAmount = getLimitMinMakingAmount(
+    config?.minMakingAmount || DEFAULT_MIN_MAKING_AMOUNT,
+    !!tokenA && isNativeTokenPath(tokenA.path),
+    MIN_GNOT_DEPOSIT_AMOUNT,
+  );
   const isAmountTooLow =
     BigNumber(makingAmount).isGreaterThan(0) && isLimitAmountTooLow(makingAmount, takingAmount, minMakingAmount);
   const minTradingText = tokenA

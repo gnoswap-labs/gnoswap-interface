@@ -183,6 +183,39 @@ describe("order.message.ts", () => {
       expect(messages[1]).toMatchObject({ func: "Deposit", send: "5000000ugnot" });
       expect(messages[2]).toMatchObject({ func: "CreateOrder" });
     });
+
+    it("refuses a native GNOT amount below the wrap minimum instead of dropping the Deposit", async () => {
+      const fetchAllowance = jest.fn().mockResolvedValue(0);
+
+      await expect(
+        makeCreateLimitOrderMessagesWithApproves(
+          {
+            tokenIn: gnotToken,
+            tokenOut: gnsToken,
+            makingAmount: "500",
+            takingAmount: "500",
+            slippageBps: 1000,
+            expiresAt: 1745866400,
+            caller,
+          },
+          fetchAllowance,
+        ),
+      ).rejects.toThrow("wrap minimum");
+      await expect(
+        makeCreateDcaOrderMessagesWithApproves(
+          {
+            inputToken: gnotToken,
+            outputToken: gnsToken,
+            interval: 60,
+            slotOffset: 0,
+            amountPerExecution: "499",
+            executionCount: 2,
+            caller,
+          },
+          fetchAllowance,
+        ),
+      ).rejects.toThrow("wrap minimum");
+    });
   });
 
   it("builds cancel messages for both order types", () => {

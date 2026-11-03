@@ -57,6 +57,8 @@ export function getDcaDepositAmount(amountPerExecution: string, executionCount: 
 /**
  * The order realms escrow GRC20 only, so native GNOT is wrapped first in the
  * same transaction and the wrapped token is approved to the order realm.
+ * Throws when the amount is below the wrap minimum: without the Deposit the
+ * order would escrow existing wugnot (or fail) instead of the selected GNOT.
  */
 function makeWrapMessages(token: TokenModel, rawAmount: string, caller: string): TransactionMessage[] {
   if (!isNativeTokenPath(token.path)) {
@@ -64,7 +66,10 @@ function makeWrapMessages(token: TokenModel, rawAmount: string, caller: string):
   }
 
   const depositMessage = makeDepositGNOTMessage(rawAmount, caller);
-  return depositMessage ? [depositMessage] : [];
+  if (!depositMessage) {
+    throw new Error(`Native ${token.symbol} order amount ${rawAmount} is below the wrap minimum.`);
+  }
+  return [depositMessage];
 }
 
 export async function makeCreateDcaOrderMessagesWithApproves(

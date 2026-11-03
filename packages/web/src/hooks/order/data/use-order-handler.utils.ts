@@ -119,6 +119,36 @@ export function calculateAmountPerExecution(rawTotalAmount: string, executionCou
   return total.dividedToIntegerBy(executionCount).toFixed(0);
 }
 
+/**
+ * Native GNOT is wrapped before it is escrowed, and the wrap needs at least
+ * `minDepositAmount` raw units (MIN_GNOT_DEPOSIT_AMOUNT). For a native input
+ * the limit realm's `minMakingAmount` is raised to that minimum.
+ */
+export function getLimitMinMakingAmount(
+  minMakingAmount: string,
+  isNativeInput: boolean,
+  minDepositAmount: BigNumber.Value,
+): string {
+  if (!isNativeInput) return minMakingAmount;
+  return BigNumber.max(minMakingAmount, minDepositAmount).toFixed(0);
+}
+
+/**
+ * The DCA deposit is `amountPerExecution × executionCount`. For a native input
+ * it must reach the wrap minimum, so each execution has to sell at least
+ * `ceil(minDepositAmount / executionCount)` raw units, or the realm minimum if higher.
+ */
+export function getDcaMinAmountPerExecution(
+  minAmountPerExecution: string,
+  isNativeInput: boolean,
+  executionCount: number,
+  minDepositAmount: BigNumber.Value,
+): string {
+  if (!isNativeInput || !executionCount || executionCount <= 0) return minAmountPerExecution;
+  const wrapMinimum = BigNumber(minDepositAmount).dividedBy(executionCount).integerValue(BigNumber.ROUND_CEIL);
+  return BigNumber.max(minAmountPerExecution, wrapMinimum).toFixed(0);
+}
+
 /** A DCA order is too small when one execution sells less than the realm's `minAmountPerExecution`. */
 export function isDcaAmountTooLow(
   rawAmountPerExecution: string,

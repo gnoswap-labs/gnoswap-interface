@@ -3,6 +3,7 @@ import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
+import { MIN_GNOT_DEPOSIT_AMOUNT } from "@common/clients/wallet-client/transaction-messages";
 import ConfirmDcaOrderModal from "@components/order/confirm-dca-order-modal/ConfirmDcaOrderModal";
 import useDebounce from "@hooks/common/use-debounce";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
@@ -21,7 +22,7 @@ import { CreateDcaOrderRequest } from "@repositories/order/request";
 import { OrderState, SwapState } from "@states/index";
 import { formatBps, formatOrderDateTime, trimFractionZeros } from "@utils/order-format-utils";
 import { getSwapTokenPath } from "@utils/swap-route-utils";
-import { makeDisplayTokenAmountString, makeRawTokenAmount } from "@utils/token-utils";
+import { isNativeTokenPath, makeDisplayTokenAmountString, makeRawTokenAmount } from "@utils/token-utils";
 
 import { useConfirmOrderModal } from "../ui/use-confirm-order-modal";
 import { getOrderButtonText, useOrderFormCommon } from "./use-order-form-common";
@@ -33,6 +34,7 @@ import {
   DEFAULT_MAX_DCA_EXECUTION_COUNT,
   DEFAULT_MIN_AMOUNT_PER_EXECUTION,
   getAvailableDcaIntervals,
+  getDcaMinAmountPerExecution,
   getOrderButtonState,
   isDcaAmountTooLow,
   MIN_DCA_EXECUTION_COUNT,
@@ -84,7 +86,7 @@ export const useDcaOrderHandler = () => {
 
   const minAmountPerExecution = config?.minAmountPerExecution || DEFAULT_MIN_AMOUNT_PER_EXECUTION;
   const sellUsd = useMemo(() => calculateUsdValue(sellAmount, getUsdPrice(tokenA)), [getUsdPrice, sellAmount, tokenA]);
-  const sellAmountRaw = tokenA ? makeRawTokenAmount(tokenA, sellAmount || "0") ?? "0" : "0";
+  const sellAmountRaw = tokenA ? (makeRawTokenAmount(tokenA, sellAmount || "0") ?? "0") : "0";
 
   const maxExecutionCount = useMemo(
     () =>
@@ -149,11 +151,18 @@ export const useDcaOrderHandler = () => {
   } = useGetDcaSchedule(scheduleRequest);
 
   // The DCA realm's own minimum: each execution must sell `minAmountPerExecution` raw units.
+  // A native GNOT deposit must also reach the wrap minimum, or no Deposit could be built.
+  const minOrderAmountPerExecution = getDcaMinAmountPerExecution(
+    minAmountPerExecution,
+    !!tokenA && isNativeTokenPath(tokenA.path),
+    executionCount,
+    MIN_GNOT_DEPOSIT_AMOUNT,
+  );
   const isAmountTooLow =
-    BigNumber(sellAmount || 0).isGreaterThan(0) && isDcaAmountTooLow(amountPerExecutionRaw, minAmountPerExecution);
+    BigNumber(sellAmount || 0).isGreaterThan(0) && isDcaAmountTooLow(amountPerExecutionRaw, minOrderAmountPerExecution);
   const minTradingText = tokenA
     ? t("Swap:dca.minTrading", {
-        amount: toDisplayAmount(tokenA, minAmountPerExecution),
+        amount: toDisplayAmount(tokenA, minOrderAmountPerExecution),
         symbol: tokenA.displaySymbol,
       })
     : "";
