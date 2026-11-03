@@ -24,7 +24,6 @@ interface LaunchpadMyParticipationProps {
   isSwitchNetwork: boolean;
   isFetched: boolean;
   isLoading: boolean;
-  status: string;
 
   claimAll: (participationInfos: LaunchpadParticipationModel[]) => void;
   refetch: () => Promise<void>;
@@ -38,7 +37,6 @@ const LaunchpadMyParticipation = ({
   isSwitchNetwork,
   isFetched,
   isLoading,
-  status,
   claimAll,
   refetch,
 }: LaunchpadMyParticipationProps) => {
@@ -73,6 +71,7 @@ const LaunchpadMyParticipation = ({
         claimableTime: item.claimableTime,
         claimableRewardAmount: rawToDisplayAmount(item.claimableRewardAmount, rewardInfo.rewardTokenDecimals),
         depositAmount: rawToDisplayAmount(item.depositAmount, GNS_TOKEN.decimals),
+        withdrawn: item.withdrawn,
       });
     });
   }, [data, rewardInfo.rewardTokenDecimals]);
@@ -87,10 +86,6 @@ const LaunchpadMyParticipation = ({
         <LaunchpadMyParticipationSkeleton />
       </MyParticipationWrapper>
     );
-  }
-
-  if (!isLoading && isFetched && status === "UPCOMING") {
-    return <></>;
   }
 
   if (!isWalletConnected || isSwitchNetwork) {

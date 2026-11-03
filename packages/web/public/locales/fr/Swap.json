@@ -27,6 +27,7 @@
   "priceImpactWarn": "Un impact important sur les prix ! Votre transaction peut entraîner une forte variation de prix.",
   "swapButton": {
     "amtLow": "Montant trop faible",
+    "balanceUnavailable": "Solde indisponible",
     "enterAmount": "Saisir le montant",
     "insuffiLiq": "Liquidité insuffisante",
     "review": "Révision",

@@ -18,6 +18,8 @@ export const MOBILE_TABLE_HEAD = {
   Swap: "Swap:header",
 };
 
+const SWAP_HISTORY_LIMIT = 100;
+
 export interface TokenPairParams {
   tokenAPath: string;
   tokenBPath: string;
@@ -39,9 +41,12 @@ const SwapInfoTransactionListContainer = () => {
 
   const isTokenPairSelected = Boolean(tokenA?.path && tokenB?.path);
 
-  const { data: swapHistory } = useGetSwapHistory(tokenPairParams, {
-    enabled: isTokenPairSelected,
-  });
+  const { data: swapHistory } = useGetSwapHistory(
+    { ...tokenPairParams, limit: SWAP_HISTORY_LIMIT },
+    {
+      enabled: isTokenPairSelected,
+    },
+  );
 
   const swapHistoryList = React.useMemo(() => {
     return SwapConverter.convertSwapHistory(swapHistory);
@@ -52,7 +57,12 @@ const SwapInfoTransactionListContainer = () => {
   }
 
   return (
-    <SwapInfoTransactionList breakpoint={breakpoint} swapHistory={swapHistoryList} tokenPairParams={tokenPairParams} />
+    // Remount per token pair so page, snapshot and highlight state never carry over to another pair
+    <SwapInfoTransactionList
+      key={`${tokenPairParams.tokenAPath}-${tokenPairParams.tokenBPath}`}
+      breakpoint={breakpoint}
+      swapHistory={swapHistoryList}
+    />
   );
 };
 

@@ -1,19 +1,19 @@
 import { NetworkClient } from "@common/clients/network-client";
 import { WalletClient } from "@common/clients/wallet-client";
-import { SendTransactionResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
+import { SendTransactionResponse, TransactionMessage, WalletResponse } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
 import { PACKAGE_STAKER_PATH } from "@constants/environment.constant";
 import { PositionHistoryMapper } from "@models/position/mapper/position-history-mapper";
 import { PositionMapper } from "@models/position/mapper/position-mapper";
-import { IPositionHistoryModel } from "@models/position/position-history-model";
 import { PositionModel } from "@models/position/position-model";
 import { ActivityResponse } from "@repositories/activity/responses/activity-responses";
 import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
+import { IncreaseLiquidityMessagesRequest } from "./request/increase-liquidity-request";
 
 import { getGRC20Allowance } from "@common/clients/gno-provider";
 import { GnoProvider } from "@gnolang/gno-js-client";
-import { PositionRepository } from "./position-repository";
+import { GetPositionsByAddressOptions, PositionRepository } from "./position-repository";
 import {
   makeClaimAllMessageWithApprovesByIds,
   makeClaimMessageWithApproves,
@@ -32,16 +32,22 @@ import { UnstakePositionsRequest } from "./request/unstake-positions-request";
 import {
   DecreaseLiquidityFailedResponse,
   DecreaseLiquiditySuccessResponse,
+  GetPositionHistoryResult,
+  GetPositionsByAddressResult,
   IncreaseLiquidityFailedResponse,
   IncreaseLiquiditySuccessResponse,
   PositionListResponse,
   PositionResponse,
   PositionRewardsResponse,
+  PositionSummaryResponse,
   RepositionLiquidityFailedResponse,
   RepositionLiquiditySuccessResponse,
 } from "./response";
 import { ClaimRequest } from "./request/claim-request";
 import { withTransactionGuard, generateSendTransactionParams } from "@utils/transaction-utils";
+
+const ALL_POSITIONS_PAGE_SIZE = 50;
+const ALL_POSITIONS_MAX_PAGES = 100;
 
 export class PositionRepositoryImpl implements PositionRepository {
   private networkClient: NetworkClient | null;
@@ -54,19 +60,23 @@ export class PositionRepositoryImpl implements PositionRepository {
     this.walletClient = walletClient;
   }
 
-  getPositionHistory = async (lpTokenId: string): Promise<IPositionHistoryModel[]> => {
+  getPositionHistory = async (lpTokenId: string, page = 1, limit = 20): Promise<GetPositionHistoryResult> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
     const response = await this.networkClient.get<{
       data: ActivityResponse;
+      totalCount: number;
     }>({
-      url: "/positions/" + lpTokenId + "/history",
+      url: `/positions/${lpTokenId}/history?page=${page}&limit=${limit}`,
     });
-    return PositionHistoryMapper.fromList(response.data.data);
+    return {
+      history: PositionHistoryMapper.fromList(response.data.data),
+      totalCount: response.data.totalCount,
+    };
   };
 
-  getPositionById = async (lpTokenId: string): Promise<PositionModel> => {
+  getPositionById = async (lpTokenId: string, timeout?: number): Promise<PositionModel> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -74,21 +84,15 @@ export class PositionRepositoryImpl implements PositionRepository {
       data: PositionResponse;
     }>({
       url: "/positions/" + lpTokenId,
+      timeout,
     });
     return PositionMapper.from(response.data.data);
   };
 
   getPositionsByAddress = async (
     address: string,
-    options?: {
-      poolPath?: string;
-      page?: number;
-      limit?: number;
-      /** API option: when true, include closed positions in the server response. */
-      withClosed?: boolean;
-      withAvailableStake?: boolean;
-    },
-  ): Promise<{ positions: PositionModel[]; totalCount: number }> => {
+    options?: GetPositionsByAddressOptions,
+  ): Promise<GetPositionsByAddressResult> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -98,6 +102,7 @@ export class PositionRepositoryImpl implements PositionRepository {
       options?.limit !== undefined ? `limit=${options.limit}` : "",
       options?.withClosed !== undefined ? `withClosed=${options.withClosed}` : "",
       options?.withAvailableStake !== undefined ? `withAvailableStake=${options.withAvailableStake}` : "",
+      options?.stakedOnly !== undefined ? `stakedOnly=${options.stakedOnly}` : "",
     ];
     const queryString = queries.filter(item => !!item).join("&");
 
@@ -107,18 +112,42 @@ export class PositionRepositoryImpl implements PositionRepository {
       url: "/users/" + address + "/position" + (queryString ? `?${queryString}` : ""),
     });
 
-    if (!response?.data?.data) {
-      return { positions: [], totalCount: 0 };
+    const positionList = response?.data?.data;
+    if (!Array.isArray(positionList?.positions) || typeof positionList.totalCount !== "number") {
+      throw new Error("Invalid position list response");
     }
 
-    const { positions, totalCount } = response.data.data;
     return {
-      positions: PositionMapper.fromList(positions),
-      totalCount,
+      positions: PositionMapper.fromList(positionList.positions),
+      totalCount: positionList.totalCount,
     };
   };
 
-  getPositionRewardsByAddress = async (address: string): Promise<PositionRewardsResponse | null> => {
+  getAllPositionsByAddress = async (
+    address: string,
+    options?: Omit<GetPositionsByAddressOptions, "page" | "limit">,
+  ): Promise<GetPositionsByAddressResult> => {
+    const positions: PositionModel[] = [];
+    let totalCount = 0;
+
+    for (let page = 1; page <= ALL_POSITIONS_MAX_PAGES; page++) {
+      const result = await this.getPositionsByAddress(address, {
+        ...options,
+        page,
+        limit: ALL_POSITIONS_PAGE_SIZE,
+      });
+      positions.push(...result.positions);
+      totalCount = result.totalCount;
+
+      if (result.positions.length < ALL_POSITIONS_PAGE_SIZE || positions.length >= totalCount) {
+        break;
+      }
+    }
+
+    return { positions, totalCount };
+  };
+
+  getPositionRewardsByAddress = async (address: string, poolPath?: string): Promise<PositionRewardsResponse> => {
     if (!this.networkClient) {
       throw new CommonError("FAILED_INITIALIZE_PROVIDER");
     }
@@ -126,10 +155,56 @@ export class PositionRepositoryImpl implements PositionRepository {
     const response = await this.networkClient.get<{
       data: PositionRewardsResponse;
     }>({
-      url: "/users/" + address + "/position/reward",
+      url: "/users/" + address + "/position/reward" + (poolPath ? `?poolPath=${encodeURIComponent(poolPath)}` : ""),
     });
 
-    return response?.data?.data ?? null;
+    if (!response?.data?.data) {
+      throw new Error("Missing position rewards response");
+    }
+    return response.data.data;
+  };
+
+  getPositionRewardsByAddressAndId = async (
+    address: string,
+    positionId: string,
+  ): Promise<PositionRewardsResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await this.networkClient.get<{ data: PositionRewardsResponse }>({
+      url: `/users/${encodeURIComponent(address)}/position/${encodeURIComponent(positionId)}/reward`,
+    });
+
+    if (!response?.data?.data) {
+      throw new Error("Missing position rewards response");
+    }
+    return response.data.data;
+  };
+
+  getPositionSummaryByAddress = async (address: string, poolPath?: string): Promise<PositionSummaryResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await this.networkClient.get<{ data: PositionSummaryResponse }>({
+      url: "/users/" + address + "/position/summary" + (poolPath ? `?poolPath=${encodeURIComponent(poolPath)}` : ""),
+    });
+    const summary = response?.data?.data;
+    if (
+      !summary ||
+      typeof summary.stakedUsd !== "string" ||
+      typeof summary.unstakedUsd !== "string" ||
+      !/^\d+(?:\.\d+)?$/.test(summary.stakedUsd) ||
+      !/^\d+(?:\.\d+)?$/.test(summary.unstakedUsd) ||
+      !Number.isSafeInteger(summary.stakedCount) ||
+      summary.stakedCount < 0 ||
+      !Number.isSafeInteger(summary.unstakedCount) ||
+      summary.unstakedCount < 0
+    ) {
+      throw new Error("Invalid position summary response");
+    }
+    return summary;
   };
 
   sendClaim = async (request: ClaimRequest): Promise<WalletResponse<SendTransactionResponse<string[] | null>>> => {
@@ -264,6 +339,16 @@ export class PositionRepositoryImpl implements PositionRepository {
     });
   };
 
+  makeIncreaseLiquidityMessages = async (request: IncreaseLiquidityMessagesRequest): Promise<TransactionMessage[]> => {
+    if (this.rpcProvider === null) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+
+    return makeIncreaseLiquidityMessagesWithApproves(request, (packagePath, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    );
+  };
+
   increaseLiquidity = async (
     request: IncreaseLiquidityRequest,
   ): Promise<WalletResponse<IncreaseLiquiditySuccessResponse | IncreaseLiquidityFailedResponse | null>> => {
@@ -271,15 +356,9 @@ export class PositionRepositoryImpl implements PositionRepository {
       throw new CommonError("FAILED_INITIALIZE_WALLET");
     }
 
-    if (this.rpcProvider === null) {
-      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
-    }
-
     const { gasFee, gasUsed, ...requests } = request;
 
-    const messages = await makeIncreaseLiquidityMessagesWithApproves({ ...requests }, (packagePath, owner, spender) =>
-      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
-    );
+    const messages = await this.makeIncreaseLiquidityMessages(requests);
 
     const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
 

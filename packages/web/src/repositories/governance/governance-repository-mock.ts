@@ -2,6 +2,7 @@ import { WalletResponse } from "@common/clients/wallet-client/protocols";
 
 import { GovernanceRepository } from "./governance-repository";
 import {
+  ClaimableRewards,
   CommunityPoolBalancesInfo,
   GovernanceSummaryInfo,
   MyDelegatesInfo,
@@ -46,7 +47,7 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
 
   public getMyDelegation = async (request: GetMyDelegationRequest): Promise<MyDelegationInfo> => {
     console.log(request);
-    const result = MockGovernanceMyDelegationResponse;
+    const result = MockGovernanceMyDelegationResponse as MyDelegationInfo;
     return new Promise(resolve => setTimeout(resolve, 500)).then(() => result);
   };
 
@@ -137,9 +138,11 @@ export class GovernanceRepositoryMock implements GovernanceRepository {
   };
 
   public sendCollectReward = async (
-    claimGovernanceRewards: boolean,
-    claimLaunchpadRewards: boolean,
+    claimableGovernanceRewards: ClaimableRewards[],
+    claimableLaunchpadRewards: ClaimableRewards[],
   ): Promise<WalletResponse<{ hash: string }>> => {
-    throw new Error(`Mock sendCollectReward : ${claimGovernanceRewards}, ${claimLaunchpadRewards}`);
+    throw new Error(
+      `Mock sendCollectReward : ${claimableGovernanceRewards.length}, ${claimableLaunchpadRewards.length}`,
+    );
   };
 }

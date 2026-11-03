@@ -17,6 +17,10 @@ interface UseGetPositionsByAddressProps {
   /** API option: when true, include closed positions in the server response. */
   withClosed?: boolean;
   withAvailableStake?: boolean;
+  /** API option: when true, only include staked positions. */
+  stakedOnly?: boolean;
+  /** When true, fetch every page instead of a single `page` / `limit` window. */
+  fetchAll?: boolean;
 }
 
 export const useGetPositionsByAddress = (
@@ -27,7 +31,7 @@ export const useGetPositionsByAddress = (
   >,
 ) => {
   const { positionRepository } = useGnoswapContext();
-  const { account, currentChainId, availNetwork } = useWallet();
+  const { account, currentChainId } = useWallet();
 
   const address = useMemo(() => {
     return props?.address || account?.address || "";
@@ -47,27 +51,37 @@ export const useGetPositionsByAddress = (
       props?.limit,
       props?.withClosed,
       props?.withAvailableStake,
+      props?.stakedOnly,
+      props?.fetchAll,
     ],
     async () => {
-      if (!availNetwork || !address) {
+      if (!address) {
         return { positions: [], totalCount: 0 };
       }
 
-      return await positionRepository
-        .getPositionsByAddress(address, {
-          poolPath: poolPath ? encodeURIComponent(poolPath) : undefined,
+      const filterOptions = {
+        poolPath: poolPath ? encodeURIComponent(poolPath) : undefined,
+        withClosed: props?.withClosed,
+        withAvailableStake: props?.withAvailableStake,
+        stakedOnly: props?.stakedOnly,
+      };
+
+      try {
+        if (props?.fetchAll) {
+          return await positionRepository.getAllPositionsByAddress(address, filterOptions);
+        }
+        return await positionRepository.getPositionsByAddress(address, {
+          ...filterOptions,
           page: props?.page,
           limit: props?.limit,
-          withClosed: props?.withClosed,
-          withAvailableStake: props?.withAvailableStake,
-        })
-        .catch(e => {
-          console.error(e);
-          return { positions: [], totalCount: 0 };
         });
+      } catch (error) {
+        console.error("Failed to fetch positions:", error);
+        throw error;
+      }
     },
     {
-      keepPreviousData: true,
+      keepPreviousData: false,
       refetchInterval: REFETCH_INTERVAL,
       refetchOnMount: true,
       refetchOnReconnect: true,

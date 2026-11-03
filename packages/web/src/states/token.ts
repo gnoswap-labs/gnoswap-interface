@@ -13,6 +13,8 @@ export const tokenPrices = atom<Record<string, TokenPriceModel>>({});
 
 export const balances = atom<Record<string, number | null>>({});
 
+export const showUnverifiedTokens = atomWithStorage("showUnverifiedTokens", false);
+
 export const swap = atom<TokenSwapModel>({
   tokenA: null,
   tokenB: null,

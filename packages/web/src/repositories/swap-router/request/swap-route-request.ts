@@ -6,7 +6,7 @@ export interface DrySwapRequest {
 
   outputToken: TokenModel;
 
-  tokenAmount: number;
+  tokenAmount: string;
 
   exactType: "EXACT_IN" | "EXACT_OUT";
 
@@ -16,7 +16,7 @@ export interface DrySwapRequest {
 
   originAmount: number;
 
-  tokenAmountLimit: number;
+  tokenAmountLimit: string;
 }
 
 export interface SwapRouteRequest {
@@ -24,7 +24,7 @@ export interface SwapRouteRequest {
 
   outputToken: TokenModel;
 
-  tokenAmount: number;
+  tokenAmount: string;
 
   estimatedRoutes: EstimatedRoute[];
 
@@ -32,7 +32,7 @@ export interface SwapRouteRequest {
 
   originAmount: number;
 
-  tokenAmountLimit: number;
+  tokenAmountLimit: string;
 
   deadline: number;
 
@@ -42,3 +42,6 @@ export interface SwapRouteRequest {
 
   gasUsed?: string;
 }
+
+/** A swap route request without the gas figures, which only the send path needs. */
+export type SwapRouteMessagesRequest = Omit<SwapRouteRequest, "gasFee" | "gasUsed">;

@@ -2,55 +2,32 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { numberToFormat } from "@utils/string-utils";
+import { formatLeaderboardPoint } from "@utils/leaderboard-utils";
 import { ContentWrapper, Flex, FontWeight500, FrontWeight, Label, Title, Wrapper } from "./PointComposition.styles";
-import { removeTrailingZeros } from "@utils/number-utils";
+
+export interface PointCompositionItem {
+  // i18n key of the row label.
+  label: string;
+  point: string | undefined;
+}
 
 interface PointCompositionProps {
   totalPoint: string;
-  swapPoint: string;
-  positionPoint: string;
-  stakingPoint: string;
-  governancePoint: string;
-  referralPoint: string;
+  items: PointCompositionItem[];
+  // Global cap ratio of the round, or null when it cannot be derived.
+  globalCapRatio: string | null;
+  isProvisional: boolean;
   isMobile: boolean;
 }
 
-const formatPoint = (point: string): string => {
-  if (!point) return "-";
-  const formattedPoint = numberToFormat(point, { decimals: 2, forceDecimals: true, truncateDecimals: true });
-  return removeTrailingZeros(formattedPoint);
-};
-
-const PointComposition = ({
-  totalPoint,
-  swapPoint,
-  positionPoint,
-  stakingPoint,
-  governancePoint,
-  referralPoint,
-  isMobile,
-}: PointCompositionProps) => {
+const PointComposition = ({ totalPoint, items, globalCapRatio, isProvisional, isMobile }: PointCompositionProps) => {
   const { t } = useTranslation();
 
-  const displayPoints = React.useMemo(() => {
-    return {
-      totalPoint: formatPoint(totalPoint),
-      swapPoint: formatPoint(swapPoint),
-      positionPoint: formatPoint(positionPoint),
-      stakingPoint: formatPoint(stakingPoint),
-      governancePoint: formatPoint(governancePoint),
-      referralPoint: formatPoint(referralPoint),
-    };
-  }, [totalPoint, swapPoint, positionPoint, stakingPoint, governancePoint, referralPoint]);
-
-  const pointItems = [
-    { label: "Leaderboard:list.column.swap", value: displayPoints.swapPoint },
-    { label: "Leaderboard:list.column.position", value: displayPoints.positionPoint },
-    { label: "Leaderboard:list.column.staking", value: displayPoints.stakingPoint },
-    { label: "Leaderboard:list.column.xGNS", value: displayPoints.governancePoint },
-    { label: "Leaderboard:list.column.referral", value: displayPoints.referralPoint },
-  ];
+  const displayGlobalCapRatio = React.useMemo(() => {
+    if (!globalCapRatio) return "-";
+    if (!isProvisional) return globalCapRatio;
+    return `${globalCapRatio} (${t("Leaderboard:list.column.provisional")})`;
+  }, [globalCapRatio, isProvisional, t]);
 
   return (
     <Tooltip
@@ -59,19 +36,27 @@ const PointComposition = ({
         <Wrapper>
           {!isMobile && <Title>Point Composition</Title>}
           <ContentWrapper>
-            {pointItems.map(item => {
+            {items.map(item => {
               return (
                 <Flex key={item.label}>
                   <Label>{t(item.label)}</Label>
-                  <FontWeight500>{item.value}</FontWeight500>
+                  <FontWeight500>{formatLeaderboardPoint(item.point)}</FontWeight500>
                 </Flex>
               );
             })}
+            <Flex>
+              <Label>{t("Leaderboard:list.column.globalCapRatio")}</Label>
+              <FontWeight500>{displayGlobalCapRatio}</FontWeight500>
+            </Flex>
+            <Flex>
+              <Label>{t("Leaderboard:list.column.total")}</Label>
+              <FontWeight500>{formatLeaderboardPoint(totalPoint)}</FontWeight500>
+            </Flex>
           </ContentWrapper>
         </Wrapper>
       }
     >
-      <FrontWeight>{displayPoints.totalPoint}</FrontWeight>
+      <FrontWeight>{formatLeaderboardPoint(totalPoint)}</FrontWeight>
     </Tooltip>
   );
 };

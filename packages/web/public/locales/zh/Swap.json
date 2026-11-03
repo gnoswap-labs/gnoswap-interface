@@ -27,6 +27,7 @@
   "priceImpactWarn": "价格影响大！您的交易可能导致价格急剧变化。",
   "swapButton": {
     "amtLow": "金额太低",
+    "balanceUnavailable": "余额不足",
     "enterAmount": "输入金额",
     "insuffiLiq": "流动性不足",
     "review": "评论",

@@ -7,6 +7,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 import Swap from "@layouts/swap/Swap";
 import { SwapSEOContainer } from "@containers/seo-header-container";
+import { formatDisplayTokenSymbol } from "@utils/token-utils";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -22,8 +23,13 @@ export default function Page() {
   const seoInfo = useMemo(() => SEOInfo["/swap"], []);
 
   const title = useMemo(
-    () => seoInfo.title([swapInfo.tokenA?.symbol, swapInfo.tokenB?.symbol].filter(item => item) as string[]),
-    [seoInfo, swapInfo.tokenA?.symbol, swapInfo.tokenB?.symbol],
+    () =>
+      seoInfo.title(
+        [swapInfo.tokenA, swapInfo.tokenB].flatMap(token =>
+          token ? [formatDisplayTokenSymbol(token.symbol, token.path)] : [],
+        ),
+      ),
+    [seoInfo, swapInfo.tokenA, swapInfo.tokenB],
   );
 
   return (

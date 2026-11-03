@@ -1,22 +1,37 @@
 {
   "banner": {
-    "description": "Cuando utilices un código de recomendación, tanto tú como tu amigo recibiréis una <strong>bonificación del 10%.</strong>",
-    "title": "Mejora tu posición - <strong>¡Recomienda y gana!</strong>"
+    "description": "Tú y tu amigo reciben cada uno <strong>el 10% de los puntos de swap de tu amigo.</strong>",
+    "title": "Sube en el ranking – <strong>¡Invita y gana!</strong>"
   },
   "header": "Clasificación",
   "list": {
     "column": {
+      "counted": "Contabilizado",
+      "delegatedGns": "Delegado",
+      "delegation": "Delegación",
+      "globalCapRatio": "Ratio del límite global",
+      "inRange": "{{n}} dentro del rango",
       "points": "Puntos",
+      "pointsThisRound": "Puntos de esta ronda",
       "position": "Posición",
+      "provisional": "provisional",
       "rank": "Rango",
       "referral": "Remisión",
+      "stakedPositions": "Posiciones con garantía",
       "staking": "Estacas",
       "swap": "Intercambiar",
+      "swapCap": "Límite de swap",
+      "swapCapWarning": "Haz staking o delega más para aumentar tu límite.",
+      "swapRaw": "Antes del límite",
       "tooltip": {
+        "delegation": "<p>Puntos por el GNS que mantienes delegado.</p><p><formula>Valor delegado (en GNOT) × días × bonificación de tiempo × 0,003<br/>Bonificación de tiempo:<br/> - 0 ~ 10 días: ×1<br/> - De 10 a 20 días: ×1,5<br/> - De 20 a 30 días: ×1,75<br/> - A partir de 30 días: ×2</formula></p><p>Los GNS en espera durante el periodo de desbloqueo de 7 días y los GNS depositados a través de Launchpad no otorgan puntos.</p>",
+        "points": "<p>Puntos totales</p><p><formula>Staking + Delegación + Intercambio + Referencias</formula></p><p>Los puntos se miden en GNOT, no en USD.<br/><br/>Recomendación: el 10 % de tus propios puntos de intercambio, más el 10 % de los puntos de intercambio de cada amigo.<br/><br/>Límite global: si la suma de los puntos de intercambio de todos supera la suma de los puntos de staking y delegación de todos, todos los puntos de intercambio se reducen en la misma proporción. Se establece al final de la ronda.</p>",
         "position": "Las comisiones de intercambio se cobran en USD. Solo se tienen en cuenta si el pool recibe incentivos en $GNS.",
-        "staking": "<ul><li>Recompensas por staking reclamadas en USD. Solo se tienen en cuenta los incentivos internos en $GNS.</li><li>Las comisiones del protocolo se cobran en USD. Solo se tienen en cuenta si el token de recompensa tiene un precio en USD.</li></ul>",
+        "staking": "<p>Puntos por el valor que mantienes en posiciones apostadas.</p><p><formula>Valor de la posición (en GNOT) × días en el rango × bonificación de tiempo × 0,003<br/>Bonificación de tiempo:<br/> - 0 a 5 días: ×0<br/> - 5 a 10 días: ×1<br/> - 10 ~ 20 días: ×1,5<br/> - 20 ~ 30 días: ×1,75<br/> - 30 días o más: ×2</formula></p><p>Solo cuenta mientras se esté dentro del alcance, en zonas con emisiones internas de GNS. No importa si el alcance es estrecho o amplio. Al retirar la apuesta, se reinicia la bonificación de tiempo.</p>",
+        "swap": "<p>Puntos correspondientes a la comisión de intercambio (comisión del router) que pagas.</p><p><formula>Comisión de intercambio pagada (en GNOT) × 5, hasta tu límite de intercambio<br/>Límite de intercambio: Puntos de delegación × 3 + Puntos de staking × 1</formula><br/>Si no hay staking ni delegación, no hay puntos de intercambio. Solo se tienen en cuenta los intercambios que se realizan a través de pools con emisiones internas de GNS.</p>",
         "volume": "Comisiones de intercambio pagadas en USD. Solo se tiene en cuenta si el pool recibe incentivos internos en $GNS."
       },
+      "total": "Total",
       "user": "Usuario",
       "xGNS": "Estacas xGNS"
     },
@@ -27,11 +42,12 @@
     "nextUpdateTime": "Próxima actualización en",
     "tooltip": {
       "hideToggleButton": "Tu nombre de usuario o dirección estarán ocultos. Otros usuarios no podrán ver tus posiciones.",
-      "nextUpdateTime": "La clasificación se actualiza cada hora."
+      "nextUpdateTime": "Se actualiza cada 10 minutos. La hora en curso es provisional hasta que se cierra."
     }
   },
   "subHeader": {
     "copyButton": "Copiar mi recomendación",
-    "description": "Asciende en la clasificación acumulando puntos por intercambiar, proporcionar liquidez, apostar o invitar a amigos. ¡Cada actividad en GnoSwap cuenta!"
+    "description": "Sube en la clasificación acumulando puntos por intercambiar, delegar,<br/>hacer staking o invitar a amigos. ¡Cada actividad en GnoSwap cuenta!",
+    "howPointsWork": "Cómo funcionan los puntos →"
   }
 }

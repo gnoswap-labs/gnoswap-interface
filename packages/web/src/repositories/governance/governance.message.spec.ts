@@ -6,30 +6,61 @@ jest.mock("@constants/environment.constant", () => ({
   PACKAGE_GOVERNANCE_STAKER_PATH: "governance_staker_path",
 }));
 
-import { makeExpectedApproveRunMessage } from "@common/clients/wallet-client/transaction-messages/run.test-fixtures";
-import { makeDelegateMessagesWithApproves } from "@repositories/governance/governance.message";
+import type { TokenModel } from "@models/token/token-model";
+import { makeDelegateMessagesWithApproves, makeUnDelegateMessages } from "@repositories/governance/governance.message";
 
 describe("governance.message.ts", () => {
   it("approves delegation with the exact delegated amount", async () => {
     const caller = "caller";
     const fetchAllowance = jest.fn(async () => 0);
+    const gnsToken: TokenModel = {
+      path: "gns_token_path",
+      pkgPath: "gns_package_path",
+      type: "GRC20",
+      chainId: "dev.gnoswap",
+      name: "GnoSwap",
+      symbol: "GNS",
+      displaySymbol: "GNS",
+      decimals: 6,
+      logoURI: "",
+      createdAt: "",
+      priceID: "gns_token_path",
+      routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
+    };
 
     const messages = await makeDelegateMessagesWithApproves(
-      { to: "validator", amount: "123000000", caller, referrerAddress: null },
+      { to: "validator", gnsToken, amount: "123000000", caller, referrerAddress: null },
       fetchAllowance,
     );
 
-    expect(messages[0]).toEqual(
-      makeExpectedApproveRunMessage({
-        caller,
-        approves: [{ tokenPath: "gns_token_path", spenderAddress: "governance_staker_address", amount: "123000000" }],
-      }),
-    );
+    expect(messages[0]).toMatchObject({
+      caller,
+      pkg_path: "gns_package_path",
+      func: "Approve",
+      args: ["governance_staker_address", "123000000"],
+    });
     expect(messages[1]).toMatchObject({
       caller,
       pkg_path: "governance_staker_path",
       func: "Delegate",
       args: ["validator", "123000000", ""],
     });
+  });
+
+  it("creates a single Undelegate message without collecting rewards", () => {
+    const caller = "caller";
+
+    const messages = makeUnDelegateMessages({ to: "validator", amount: "123000000", caller });
+
+    expect(messages).toEqual([
+      {
+        caller,
+        send: "",
+        pkg_path: "governance_staker_path",
+        func: "Undelegate",
+        args: ["validator", "123000000"],
+        gasFee: undefined,
+      },
+    ]);
   });
 });

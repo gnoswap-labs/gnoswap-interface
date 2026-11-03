@@ -1,7 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 
-import { DEVICE_TYPE } from "@styles/media";
-
 import StakingContentCard from "./StakingContentCard";
 
 const meta = {
@@ -15,12 +13,12 @@ type Story = StoryObj<typeof StakingContentCard>;
 
 export const ActiveStaking: Story = {
   args: {
-    breakpoint: DEVICE_TYPE.WEB,
+    loading: false,
   },
 };
 
 export const UnActiveStaking: Story = {
   args: {
-    breakpoint: DEVICE_TYPE.WEB,
+    loading: false,
   },
 };

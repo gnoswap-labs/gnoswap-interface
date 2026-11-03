@@ -6,13 +6,15 @@ import {
   AccountInfo,
   SendTransactionRequestParam,
   SendTransactionResponse,
+  SignArbitraryRequestParam,
+  SignedArbitraryData,
   WalletResponse,
   isContractMessage,
   isRunMessage,
 } from "../protocols";
 import { AddNetworkRequestParam, AddNetworkResponse, SwitchNetworkResponse } from "../protocols/wallet-network";
 import { WalletClient } from "../wallet-client";
-import { Adena } from "./adena";
+import { Adena, ContractOptions } from "./adena";
 import { parseTransactionResponse } from "./adena-client.util";
 
 export class AdenaClient implements WalletClient {
@@ -70,6 +72,23 @@ export class AdenaClient implements WalletClient {
     throw new Error("Sign method not implemented for Adena wallet");
   }
 
+  public signArbitrary = (request: SignArbitraryRequestParam): Promise<WalletResponse<SignedArbitraryData>> => {
+    const adena = this.getAdena();
+    if (!adena.SignArbitrary) {
+      return Promise.resolve({
+        // Same response the SDK returns for an extension without SignArbitrary.
+        code: 4005,
+        status: "failure",
+        type: "UNSUPPORTED_TYPE",
+        message: "Adena does not support the requested transaction type.",
+        data: null,
+      });
+    }
+
+    // No timeout: the user may take a while to review the message in the approval popup.
+    return adena.SignArbitrary(request);
+  };
+
   public addEstablishedSite = (sitename: string): Promise<WalletResponse> => {
     return createTimeout(this.getAdena().AddEstablish(sitename));
   };
@@ -77,9 +96,14 @@ export class AdenaClient implements WalletClient {
   public sendTransaction = <T = string[]>(
     transaction: SendTransactionRequestParam,
   ): Promise<WalletResponse<SendTransactionResponse<T | null>>> => {
+    const { withNotification = false, isVisibleResult = false, ...transactionRequest } = transaction;
+    const options: ContractOptions = {
+      withNotification,
+      isVisibleResult,
+    };
     const request = {
-      ...transaction,
-      messages: transaction.messages.map(message => {
+      ...transactionRequest,
+      messages: transactionRequest.messages.map(message => {
         if (isContractMessage(message)) {
           return {
             type: "/vm.m_call",
@@ -97,12 +121,12 @@ export class AdenaClient implements WalletClient {
           value: message,
         };
       }),
-      gasWanted: transaction.gasWanted || DEFAULT_GAS_WANTED,
-      memo: transaction.memo || this.defaultMemo || "",
+      gasWanted: transactionRequest.gasWanted || DEFAULT_GAS_WANTED,
+      memo: transactionRequest.memo || this.defaultMemo || "",
     };
     return createTimeout<WalletResponse<SendTransactionResponse<T | null>>>(
       this.getAdena()
-        .DoContract(request, false)
+        .DoContract(request, options)
         .then(response => {
           console.log("Injection Response", response);
           return parseTransactionResponse(response) as WalletResponse<SendTransactionResponse<T | null>>;

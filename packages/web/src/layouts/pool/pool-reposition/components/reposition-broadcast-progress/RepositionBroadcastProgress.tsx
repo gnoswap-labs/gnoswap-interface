@@ -5,7 +5,10 @@ import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import IconAddPositionCircle from "@components/common/icons/IconAddPositionCircle";
 import IconRemovePositionCircle from "@components/common/icons/IconRemovePositionCircle";
 import IconSwapCircle from "@components/common/icons/IconSwapCircle";
+import { useInvalidateQueries } from "@hooks/common/use-invalidate-queries";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
+import { QUERY_KEY } from "@query/query-keys";
 import { RepositionLiquidityFailedResponse, RepositionLiquiditySuccessResponse } from "@repositories/position/response";
 import {
   SwapRouteFailedResponse,
@@ -15,8 +18,6 @@ import { wait } from "@utils/common";
 
 import { RepositionBroadcastProgressWrapper } from "./RepositionBroadcastProgress.styles";
 import RepositionBroadcastProgressState, { ProgressStateType } from "./RepositionBroadcastProgressState";
-import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
-import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 
 export interface RepositionBroadcastProgressProps {
   tokenA: TokenModel;
@@ -25,7 +26,6 @@ export interface RepositionBroadcastProgressProps {
   removePosition: () => Promise<WalletResponse | null>;
   swapRemainToken: () => Promise<WalletResponse<SwapRouteSuccessResponse | SwapRouteFailedResponse> | null>;
   reposition: (
-    rpcProvider: GnoProvider | null,
     swapToken: TokenModel | null,
     swapAmount: string | null,
   ) => Promise<WalletResponse<RepositionLiquiditySuccessResponse | RepositionLiquidityFailedResponse> | null>;
@@ -46,7 +46,8 @@ const RepositionBroadcastProgress: React.FC<RepositionBroadcastProgressProps> = 
   isSkipSwap,
 }) => {
   const { t } = useTranslation();
-  const { rpcProvider } = useGnoswapContext();
+  const { account, currentChainId } = useWallet();
+  const { invalidateQueryKey } = useInvalidateQueries();
 
   const [removePositionState, setRemovePositionState] = useState<ProgressStateType>("NONE");
   const [swapState, setSwapState] = useState<ProgressStateType>("NONE");
@@ -90,6 +91,10 @@ const RepositionBroadcastProgress: React.FC<RepositionBroadcastProgressProps> = 
       setRemovePositionState("BROADCAST");
       wait(async () => true, 1000).then(() => {
         setRemovePositionState("SUCCESS");
+        invalidateQueryKey("RepositionRemove", [
+          [QUERY_KEY.positions, currentChainId, account?.address],
+          [QUERY_KEY.positionSummary, currentChainId, account?.address],
+        ]);
         callback();
       });
     });
@@ -142,7 +147,7 @@ const RepositionBroadcastProgress: React.FC<RepositionBroadcastProgressProps> = 
       return;
     }
 
-    reposition(rpcProvider, swapResult?.resultToken || null, swapResult?.resultAmount || null).then(response => {
+    reposition(swapResult?.resultToken || null, swapResult?.resultAmount || null).then(response => {
       if (!response) {
         setAddPositionState("FAIL");
         return;
@@ -161,6 +166,10 @@ const RepositionBroadcastProgress: React.FC<RepositionBroadcastProgressProps> = 
       setAddPositionState("BROADCAST");
       wait(async () => true, 1000).then(() => {
         setAddPositionState("SUCCESS");
+        invalidateQueryKey("RepositionAdd", [
+          [QUERY_KEY.positions, currentChainId, account?.address],
+          [QUERY_KEY.positionSummary, currentChainId, account?.address],
+        ]);
         callback();
       });
     });

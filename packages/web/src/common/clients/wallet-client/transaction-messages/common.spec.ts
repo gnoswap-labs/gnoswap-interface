@@ -1,4 +1,5 @@
 import {
+  makeTokenApproveMessages,
   makeTransactionMessage,
   makeTransactionMessagesWithApproves,
   TokenApproveMessageInfo,
@@ -28,10 +29,30 @@ describe("makeTransactionMessagesWithApproves", () => {
     },
   ];
 
-  it("adds approve reset messages after transactions by default", async () => {
+  it("omits approve reset messages by default", async () => {
     const fetchAllowance = jest.fn(async () => 0);
 
     const messages = await makeTransactionMessagesWithApproves([transactionMessage], approveInfos, fetchAllowance);
+
+    expect(messages).toEqual([
+      makeExpectedApproveRunMessage({
+        caller,
+        approves: [{ tokenPath, spenderAddress: targetAddress, amount: "100" }],
+      }),
+      transactionMessage,
+    ]);
+  });
+
+  it("adds approve reset messages after transactions when reset is enabled", async () => {
+    const fetchAllowance = jest.fn(async () => 0);
+
+    const messages = await makeTransactionMessagesWithApproves(
+      [transactionMessage],
+      approveInfos,
+      fetchAllowance,
+      undefined,
+      true,
+    );
 
     expect(messages).toEqual([
       makeExpectedApproveRunMessage({
@@ -46,7 +67,13 @@ describe("makeTransactionMessagesWithApproves", () => {
   it("resets existing allowances even when a new approve message is skipped", async () => {
     const fetchAllowance = jest.fn(async () => 2);
 
-    const messages = await makeTransactionMessagesWithApproves([transactionMessage], approveInfos, fetchAllowance, 1);
+    const messages = await makeTransactionMessagesWithApproves(
+      [transactionMessage],
+      approveInfos,
+      fetchAllowance,
+      1,
+      true,
+    );
 
     expect(messages).toEqual([
       transactionMessage,
@@ -75,6 +102,7 @@ describe("makeTransactionMessagesWithApproves", () => {
       approveInfosWithMixedAllowances,
       fetchAllowance,
       1,
+      true,
     );
 
     expect(messages).toEqual([
@@ -129,6 +157,8 @@ describe("makeTransactionMessagesWithApproves", () => {
         },
       ],
       fetchAllowance,
+      undefined,
+      true,
     );
 
     expect(messages).toEqual([
@@ -140,6 +170,94 @@ describe("makeTransactionMessagesWithApproves", () => {
       makeExpectedApproveRunMessage({
         caller,
         approves: [{ tokenPath: ibcTokenPath, spenderAddress: targetAddress, amount: "0" }],
+      }),
+    ]);
+  });
+
+  it("uses resource route metadata for approve and reset messages", async () => {
+    const tokenPath = "gno.land/r/example/factory.FOO";
+    const fetchAllowance = jest.fn(async () => 0);
+    const routes = {
+      funcs: {
+        approve: { name: "SetAllowance", args: ["FOO", "$owner", "$spender", "$amount"] },
+      },
+    };
+
+    const messages = await makeTransactionMessagesWithApproves(
+      [transactionMessage],
+      [
+        {
+          tokenPath,
+          pkgPath: "gno.land/r/example/factory",
+          routes,
+          targetAddress,
+          amount: "100",
+          caller,
+        },
+      ],
+      fetchAllowance,
+      undefined,
+      true,
+    );
+
+    expect(messages).toEqual([
+      makeTransactionMessage({
+        caller,
+        send: "",
+        packagePath: "gno.land/r/example/factory",
+        func: "SetAllowance",
+        args: ["FOO", caller, targetAddress, "100"],
+      }),
+      transactionMessage,
+      makeTransactionMessage({
+        caller,
+        send: "",
+        packagePath: "gno.land/r/example/factory",
+        func: "SetAllowance",
+        args: ["FOO", caller, targetAddress, "0"],
+      }),
+    ]);
+  });
+});
+
+describe("makeTokenApproveMessages", () => {
+  const caller = "caller";
+  const targetAddress = "target";
+  const wugnotTokenKey = "gno.land/r/gnoland/wugnot.wugnot";
+
+  it("keeps tokens with routes as MsgCall and batches the rest into run messages in order", () => {
+    const messages = makeTokenApproveMessages([
+      { tokenPath: "token_a", targetAddress, amount: "1", caller },
+      { tokenPath: "token_b", targetAddress, amount: "2", caller },
+      {
+        tokenPath: wugnotTokenKey,
+        pkgPath: "gno.land/r/gnoland/wugnot",
+        routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
+        targetAddress,
+        amount: "3",
+        caller,
+      },
+      { tokenPath: "token_c", targetAddress, amount: "4", caller },
+    ]);
+
+    expect(messages).toEqual([
+      makeExpectedApproveRunMessage({
+        caller,
+        approves: [
+          { tokenPath: "token_a", spenderAddress: targetAddress, amount: "1" },
+          { tokenPath: "token_b", spenderAddress: targetAddress, amount: "2" },
+        ],
+      }),
+      makeTransactionMessage({
+        caller,
+        send: "",
+        packagePath: "gno.land/r/gnoland/wugnot",
+        func: "Approve",
+        args: [targetAddress, "3"],
+      }),
+      makeExpectedApproveRunMessage({
+        caller,
+        approves: [{ tokenPath: "token_c", spenderAddress: targetAddress, amount: "4" }],
       }),
     ]);
   });

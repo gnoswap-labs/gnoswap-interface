@@ -1,20 +1,30 @@
-import React from "react";
+import React, { useId } from "react";
 import { useTranslation } from "react-i18next";
 
 import IconInfo from "@components/common/icons/IconInfo";
 import IconNewTab from "@components/common/icons/IconNewTab";
 import Switch from "@components/common/switch/Switch";
 import Tooltip from "@components/common/tooltip/Tooltip";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { DEVICE_TYPE } from "@styles/media";
 
-import { UnverifiedTokensInfoWrapper, UnverifiedTokensTooltipContent } from "./ShowUnverifiedTokensSwitch.styles";
+import {
+  UnverifiedTokensInfoWrapper,
+  UnverifiedTokensSwitchWrapper,
+  UnverifiedTokensTooltipContent,
+} from "./ShowUnverifiedTokensSwitch.styles";
 
 export interface ShowUnverifiedTokensSwitchProps {
   checked: boolean;
   onChange: () => void;
+  compact?: boolean;
 }
 
-const ShowUnverifiedTokensSwitch: React.FC<ShowUnverifiedTokensSwitchProps> = ({ checked, onChange }) => {
+const ShowUnverifiedTokensSwitch: React.FC<ShowUnverifiedTokensSwitchProps> = ({ checked, onChange, compact = false }) => {
   const { t } = useTranslation();
+  const id = useId();
+  const { breakpoint } = useWindowSize();
+  const isCompactMobile = compact && breakpoint === DEVICE_TYPE.MOBILE;
 
   const unverifiedTokensTooltip = (
     <UnverifiedTokensTooltipContent>
@@ -39,15 +49,21 @@ const ShowUnverifiedTokensSwitch: React.FC<ShowUnverifiedTokensSwitchProps> = ({
   );
 
   return (
-    <Switch
-      id="show-unverified-tokens"
-      checked={checked}
-      onChange={onChange}
-      hasLabel={true}
-      labelText={t("common:tokenList.showUnverifiedTokens", { defaultValue: "Show unverified tokens" })}
-      labelExtra={unverifiedTokensInfo}
-      labelExtraPosition="before"
-    />
+    <UnverifiedTokensSwitchWrapper compact={compact}>
+      <Switch
+        id={`show-unverified-tokens-${id}`}
+        checked={checked}
+        onChange={onChange}
+        hasLabel={true}
+        labelText={
+          isCompactMobile
+            ? t("common:tokenList.unverified", { defaultValue: "Unverified" })
+            : t("common:tokenList.showUnverifiedTokens", { defaultValue: "Show unverified tokens" })
+        }
+        labelExtra={unverifiedTokensInfo}
+        labelExtraPosition="before"
+      />
+    </UnverifiedTokensSwitchWrapper>
   );
 };
 

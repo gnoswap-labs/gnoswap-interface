@@ -25,6 +25,13 @@
     "switchNetwork": "Gnoland로 전환",
     "walletLogin": "지갑 로그인"
   },
+  "candleTooltip": {
+    "close": "닫기",
+    "high": "높음",
+    "low": "낮음",
+    "open": "열기",
+    "volume": "권"
+  },
   "clickHere": "여기를 클릭하세요!",
   "closed": "닫힘",
   "conjunction": {
@@ -178,6 +185,7 @@
   "swapUrlCopied": "스왑 URL 복사 완료!",
   "tokenList": {
     "showUnverifiedTokens": "확인되지 않은 토큰 표시",
+    "unverified": "확인되지 않음",
     "unverifiedTokensTooltip": "Gno.land 토큰 리소스에 등록되지 않은 토큰은 필터링됩니다.",
     "verifyToken": "토큰을 확인하세요"
   },

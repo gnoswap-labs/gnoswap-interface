@@ -11,6 +11,9 @@ import TokenChip from "../token-chip/TokenChip";
 import Tooltip from "@components/common/tooltip/Tooltip";
 
 import { formatOtherPrice } from "@utils/new-number-utils";
+import { useXgnsAprCopy } from "@layouts/governance/xgns-apr/xgns-apr";
+import GovernanceAPRBreakdown from "./GovernanceAPRBreakdown";
+import GovernanceAPRTooltip from "./GovernanceAPRTooltip";
 import { GovernanceSummaryWrapper, GovernanceSummaryTooltipContent } from "./GovernanceSummary.styles";
 import { Divider } from "@components/common/divider/divider";
 import { rawToDisplayAmount, toNumberFormat } from "@utils/number-utils";
@@ -40,6 +43,7 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
   onOpenVideoGuide,
 }) => {
   const { t } = useTranslation();
+  const tApr = useXgnsAprCopy();
   const { isMobile } = useWindowSize();
 
   const { getGnotPath } = useGnotToGnot();
@@ -191,12 +195,16 @@ const GovernanceSummary: React.FC<GovernanceSummaryProps> = ({
           isLoading={isLoading}
         />
         <InfoBox
-          title={t("Governance:summary.apr.title")}
-          value={`${formatOtherPrice(governanceSummary.apy, {
-            isKMB: false,
-            usd: false,
-          })}%`}
-          tooltip={t("Governance:summary.apy.tooltip")}
+          title={tApr("title")}
+          value={
+            <GovernanceAPRBreakdown
+              totalApr={governanceSummary.apy}
+              protocolFeeApr={governanceSummary.protocolFeeApr}
+              emissionApr={governanceSummary.emissionApr}
+              aprHistory={governanceSummary.aprHistory}
+            />
+          }
+          tooltip={<GovernanceAPRTooltip />}
           isLoading={isLoading}
         />
         <InfoBox

@@ -25,7 +25,7 @@ import SnackbarProvider from "@providers/snackbar-provider/SnackbarProvider";
 import SocialWalletProvider from "@providers/social-wallet-provider";
 
 import nextI18nextConfig from "next-i18next.config";
-import Custom500 from "./500";
+import Custom500 from "@layouts/custom-500/Custom500";
 
 function App({ Component, pageProps }: AppProps) {
   const { i18n } = useTranslation();

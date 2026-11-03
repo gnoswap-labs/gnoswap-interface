@@ -1,10 +1,28 @@
 name: Test
 on:
   push:
-    branches: [develop, main]
+    branches: [develop, staging, main]
   pull_request:
 
 jobs:
+  typecheck-web:
+    name: Run type checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+      - run: yarn install --immutable
+      - run: yarn workspace @gnoswap-labs/web typecheck
+
+  lint-web:
+    name: Run lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/setup
+      - run: yarn install --immutable
+      - run: yarn workspace @gnoswap-labs/web lint
+
   sonar-acitons:
     name: Scan project by Sonar Cloud
     runs-on: ubuntu-latest

@@ -1,22 +1,37 @@
 {
   "banner": {
-    "description": "When you use a referral code, both you and your friend will receive a <strong>10% bonus.</strong>",
-    "title": "Boost Your Rank - <strong>Refer & Earn!</strong>"
+    "description": "You and your friend each get <strong>10% of the friend's swap points.</strong>",
+    "title": "Boost Your Rank – <strong>Refer & Earn!</strong>"
   },
   "header": "Leaderboard",
   "list": {
     "column": {
+      "counted": "Counted",
+      "delegatedGns": "Delegated",
+      "delegation": "Delegation",
+      "globalCapRatio": "Global cap ratio",
+      "inRange": "{{n}} in range",
       "points": "Points",
+      "pointsThisRound": "Points this round",
       "position": "Position",
+      "provisional": "provisional",
       "rank": "Rank",
       "referral": "Referral",
+      "stakedPositions": "Staked positions",
       "staking": "Staking",
       "swap": "Swap",
+      "swapCap": "Swap Cap",
+      "swapCapWarning": "Stake or delegate more to raise your cap.",
+      "swapRaw": "Before cap",
       "tooltip": {
+        "delegation": "<p>Points for the GNS you keep delegated.</p><p><formula>Delegated value (In GNOT) × days × time bonus × 0.003<br/>Time bonus:<br/> - 0 ~ 10 days: ×1<br/> - 10 ~ 20 days: ×1.5<br/> - 20 ~ 30 days: ×1.75<br/> - 30 days ~: ×2</formula></p><p>GNS waiting in the 7-day unbonding period and deposited GNS through launchpad earn no point.</p>",
+        "points": "<p>Total Point</p><p><formula>Staking + Delegation + Swap + Referral</formula></p><p>Points are measured in GNOT, not USD.<br/><br/>Referral: 10% of your own swap points, plus 10% of each friend's swap points.<br/><br/>Global cap: if everyone's swap points add up to more than everyone's staking + delegation points, all swap points shrink by the same ratio. Set at round end.</p>",
         "position": "Swap fees claimed in USD. Only counts if the pool is receiving $GNS incentives.",
-        "staking": "<ul><li>Position staking rewards claimed in USD. Only counts internal $GNS incentives.</li><li>Protocol fees claimed in USD. Only counts if the reward token has a USD price.</li></ul>",
+        "staking": "<p>Points for the value you keep in staked positions.</p><p><formula>Position value (In GNOT) × days in range × time bonus × 0.003<br/>Time bonus:<br/> - 0 ~ 5 days: ×0<br/> - 5 ~ 10 days: ×1<br/> - 10 ~ 20 days: ×1.5<br/> - 20 ~ 30 days: ×1.75<br/> - 30 days ~: ×2</formula></p><p>Only counts while in range, in pools with internal GNS emissions. Narrow or wide range makes no difference. Unstaking restarts the time bonus.</p>",
+        "swap": "<p>Points for the swap fee (router fee) you pay.</p><p><formula>Swap fee paid (In GNOT) × 5, up to your Swap Cap<br/>Swap Cap: Delegation points × 3 + Staking points × 1</formula><br/>No staking or delegation = no swap points. Only swaps that go through pools with internal GNS emissions.</p>",
         "volume": "Swap fees paid in USD. Only counts if the pool is receiving internal $GNS incentives."
       },
+      "total": "Total",
       "user": "User",
       "xGNS": "xGNS Staking"
     },
@@ -27,11 +42,12 @@
     "nextUpdateTime": "Next update in",
     "tooltip": {
       "hideToggleButton": "Your username or address will be hidden. Other users will not be able to see your positions.",
-      "nextUpdateTime": "The leaderboard is updated on an hourly basis."
+      "nextUpdateTime": "Updates every 10 minutes. The current hour is provisional until it closes."
     }
   },
   "subHeader": {
     "copyButton": "Copy My Referral",
-    "description": "Climb up the leaderboard by collecting points for swapping, providing liquidity, staking, or inviting friends. Every activity on GnoSwap counts!"
+    "description": "Climb up the leaderboard by collecting points for swapping, delegating,<br/>staking, or inviting friends. Every activity on GnoSwap counts!",
+    "howPointsWork": "How points work →"
   }
 }

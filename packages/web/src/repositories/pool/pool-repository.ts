@@ -1,14 +1,15 @@
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { IncentivizePoolModel, PoolModel } from "@models/pool/pool-model";
-import { AddLiquidityRequest } from "./request/add-liquidity-request";
+import { AddLiquidityMessagesRequest, AddLiquidityRequest } from "./request/add-liquidity-request";
 import { CreatePoolRequest } from "./request/create-pool-request";
 import { CreateExternalIncentiveRequest } from "./request/create-external-incentive-request";
 import { CollectExternalIncentivePenaltyRequest } from "./request/collect-external-incentive-penalty-request";
 import { RemoveExternalIncentiveRequest } from "./request/remove-external-incentive-request";
 import { AddLiquidityFailedResponse, AddLiquiditySuccessResponse } from "./response/add-liquidity-response";
 import { CreatePoolFailedResponse, CreatePoolSuccessResponse } from "./response/create-pool-response";
-import { SendTransactionResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
+import { SendTransactionResponse, TransactionMessage, WalletResponse } from "@common/clients/wallet-client/protocols";
 import { PoolStakingModel } from "@models/pool/pool-staking";
+import { PoolStakingSummaryModel } from "@models/pool/pool-staking-summary";
 import { PoolPricesResponse } from "./response";
 import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import { PoolLiquidityTickModel } from "@models/pool/pool-liquidity-model";
@@ -38,6 +39,9 @@ export interface PoolRepository {
     request: CreatePoolRequest,
   ) => Promise<WalletResponse<CreatePoolSuccessResponse | CreatePoolFailedResponse>>;
 
+  /** The messages `addLiquidity` would broadcast, approvals included. */
+  makeAddLiquidityMessages: (request: AddLiquidityMessagesRequest) => Promise<TransactionMessage[]>;
+
   addLiquidity: (
     request: AddLiquidityRequest,
   ) => Promise<WalletResponse<AddLiquiditySuccessResponse | AddLiquidityFailedResponse>>;
@@ -55,6 +59,8 @@ export interface PoolRepository {
   getPoolStakingList: (poolPath: string) => Promise<PoolStakingModel[]>;
 
   getPoolStakingListByAddress: (address: string) => Promise<PoolStakingModel[]>;
+
+  getPoolStakingSummary: (poolPath: string) => Promise<PoolStakingSummaryModel | null>;
 
   getPoolLiquidity: (poolPath: string) => Promise<string>;
 

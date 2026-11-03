@@ -5,6 +5,7 @@ import { LaunchpadState } from "@states/index";
 import { ProjectRewardInfoModel } from "../../LaunchpadDetail";
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { getTierNumber } from "@utils/launchpad-get-tier-number";
+import { isLaunchpadPoolDepositable } from "@utils/launchpad-get-claimable";
 
 import { LaunchpadPoolListWrapper } from "./LaunchpadPoolList.styles";
 import LaunchpadPoolListCard from "./launchpad-pool-list-card/LaunchpadPoolListCard";
@@ -34,15 +35,11 @@ const LaunchpadPoolList: React.FC<LaunchpadPoolListProps> = ({
   }, [pools]);
 
   const defaultSelectPool = React.useCallback(() => {
-    if (sortedPools) {
-      if (sortedPools.length > 0) {
-        setSelectLaunchpadPool(sortedPools[0]?.id);
-      }
-    }
-  }, [sortedPools, sortedPools.length, setSelectLaunchpadPool]);
+    setSelectLaunchpadPool(sortedPools.find(isLaunchpadPoolDepositable)?.id ?? null);
+  }, [sortedPools, setSelectLaunchpadPool]);
 
   React.useEffect(() => {
-    if (sortedPools && status === "ONGOING" && isInitialMount.current) {
+    if (sortedPools.length > 0 && status && status !== "ENDED" && isInitialMount.current) {
       defaultSelectPool();
       isInitialMount.current = false;
     }

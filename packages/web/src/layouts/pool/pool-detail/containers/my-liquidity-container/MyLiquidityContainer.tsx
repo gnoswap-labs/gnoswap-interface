@@ -12,15 +12,15 @@ import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetUsernameByAddress } from "@query/address";
+import { useGetPositionRewards } from "@query/positions";
 import { QUERY_KEY } from "@query/query-keys";
 import { DexEvent } from "@repositories/common";
 import { delay } from "@utils/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
 
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
-import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { PoolPositionModel } from "@models/position/pool-position-model";
+import { DisplayPoolPositionModel, PoolPositionModel } from "@models/position/pool-position-model";
 import { PositionConverter } from "@services/converters/position";
 import MyLiquidity from "../../components/my-liquidity/MyLiquidity";
 
@@ -36,7 +36,6 @@ interface MyLiquidityContainerProps {
 }
 
 const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable, addressContext }) => {
-  const { rpcProvider } = useGnoswapContext();
   const { urlAddress, connectAddress } = addressContext;
 
   const address = useMemo(() => {
@@ -87,13 +86,13 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     },
   });
 
+  const { data: positionRewards, isInitialLoading: isLoadingPositionRewards } = useGetPositionRewards(
+    { address, poolPath: poolPath || undefined },
+    { enabled: !!address && !!poolPath },
+  );
+
   const activePositionData = isShowClosePosition ? allPositionData : openPositionData;
-  const {
-    positions,
-    loading: isLoadingPosition,
-    refetch: refetchPositions,
-    totalPositionCount,
-  } = activePositionData;
+  const { positions, loading: isLoadingPosition, refetch: refetchPositions, totalPositionCount } = activePositionData;
 
   const loadedPositions = useMemo<PoolPositionModel[]>(() => {
     if (!address || !poolPath) {
@@ -121,6 +120,8 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     invalidateQueryKey("MyLiquidity, Claim", [
       [QUERY_KEY.tokenBalancesByAddress, address],
       [QUERY_KEY.positions, currentChainId, address],
+      [QUERY_KEY.positionSummary, currentChainId, address],
+      [QUERY_KEY.positionRewards, currentChainId, address],
       [QUERY_KEY.poolLiquidityTicks],
     ]);
   }, [invalidateQueryKey, currentChainId, address]);
@@ -128,7 +129,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   const { claimAll, claim } = usePosition(loadedPositions.filter(item => !item.closed));
   const [loadingTransactionClaim, setLoadingTransactionClaim] = useState(false);
   const { openModal } = useTransactionConfirmModal();
-  const { tokenPrices, updateBalances, refetchGrc20Balances } = useTokenData(true);
+  const { tokens, tokenPrices, updateBalances, refetchGrc20Balances } = useTokenData(true);
 
   const { getMessage } = useMessage();
 
@@ -139,7 +140,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     return Boolean(address) && address !== account?.address;
   }, [account?.address, address]);
 
-  const accountPositions: PoolPositionModel[] = useMemo(() => {
+  const accountPositions: DisplayPoolPositionModel[] = useMemo(() => {
     if (!address || !poolPath) return [];
 
     const filteredPositions = loadedPositions.filter(position => position.poolPath === poolPath);
@@ -202,7 +203,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
       broadcastLoading(getMessage(DexEvent.CLAIM_FEE, "pending", messageData));
 
       setLoadingTransactionClaim(true);
-      claim(rpcProvider, position).then(response => {
+      claim(position).then(response => {
         if (response) {
           if (response.code === 0 || response.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
             enqueueEvent({
@@ -257,7 +258,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
 
     setLoadingTransactionClaim(true);
     const claimAllInput = buildClaimAllInputFromPositions(openedPosition.filter(item => !item.closed));
-    claimAll({ rpcProvider, input: claimAllInput }).then(response => {
+    claimAll({ input: claimAllInput }).then(response => {
       if (response) {
         if (response.code === 0 || response.code === ERROR_VALUE.TRANSACTION_FAILED.status) {
           enqueueEvent({
@@ -333,18 +334,8 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
 
   const haveNotClosedPosition = useMemo(() => openedPosition.length > 0, [openedPosition.length]);
 
-  const showClosePositionButton = useMemo(() => {
-    if (!connectedWallet || isSwitchNetwork) {
-      return false;
-    }
-    return allPositionData.isFetchedPosition && openPositionData.isFetchedPosition && hasMeaningfulClosedToggle;
-  }, [
-    allPositionData.isFetchedPosition,
-    connectedWallet,
-    hasMeaningfulClosedToggle,
-    isSwitchNetwork,
-    openPositionData.isFetchedPosition,
-  ]);
+  const showClosePositionButton =
+    allPositionData.isFetchedPosition && openPositionData.isFetchedPosition && hasMeaningfulClosedToggle;
 
   const isShowRemovePositionButton = useMemo(() => {
     if (!connectedWallet || isSwitchNetwork) {
@@ -394,6 +385,9 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
       isHiddenAddPosition={!!((address && account?.address && address !== account?.address) || !account?.address)}
       showClosePositionButton={showClosePositionButton}
       tokenPrices={tokenPrices}
+      tokens={tokens}
+      positionRewards={positionRewards ?? null}
+      isLoadingPositionRewards={isLoadingPositionRewards}
       showViewMorePositions={showViewMorePositions}
       handleViewMorePositions={handleViewMorePositions}
     />

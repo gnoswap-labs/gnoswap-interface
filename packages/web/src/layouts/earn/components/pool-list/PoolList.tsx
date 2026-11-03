@@ -13,6 +13,7 @@ import { PoolListWrapper } from "./PoolList.styles";
 interface TokenListProps {
   pools: PoolListInfo[];
   isFetched: boolean;
+  isError: boolean;
   poolType?: POOL_TYPE;
   changePoolType: (newType: string) => void;
   search: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -34,6 +35,7 @@ interface TokenListProps {
 const PoolList: React.FC<TokenListProps> = ({
   pools,
   isFetched,
+  isError,
   poolType = POOL_TYPE.ALL,
   changePoolType,
   search,
@@ -66,6 +68,7 @@ const PoolList: React.FC<TokenListProps> = ({
       <PoolListTable
         pools={pools}
         isFetched={isFetched}
+        isError={isError}
         sort={sort}
         sortOption={sortOption}
         isSortOption={isSortOption}

@@ -307,6 +307,12 @@ export const TransactionConfirmModalWrapper = styled.div`
             }
           }
         }
+        &[href] {
+          align-self: center;
+          &:hover .open-logo * {
+            fill: ${({ theme }) => theme.color.icon07};
+          }
+        }
       }
     }
     .close-button {

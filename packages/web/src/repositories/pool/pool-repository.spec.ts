@@ -76,10 +76,16 @@ beforeEach(() => {
 });
 
 describe("getPools", () => {
-  it("success", async () => {
-    const pools = await poolRepository.getPools();
+  it("returns an empty list only when the API explicitly returns an empty list", async () => {
+    const repository = new PoolRepositoryImpl(new MockNetworkClient({ data: [] }), null, null);
 
-    expect(pools).not.toBeNull();
+    await expect(repository.getPools()).resolves.toEqual([]);
+  });
+
+  it("rejects a successful response without pool data", async () => {
+    const repository = new PoolRepositoryImpl(new MockNetworkClient({ meta: {} }), null, null);
+
+    await expect(repository.getPools()).rejects.toThrow("Invalid pool list response");
   });
 });
 

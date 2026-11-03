@@ -1,3 +1,4 @@
+import BigNumber from "bignumber.js";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useQuery } from "@tanstack/react-query";
 import React, { useCallback, useMemo, useRef, useState } from "react";
@@ -5,6 +6,8 @@ import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { useProposalDraft } from "@hooks/governance/ui/use-proposal-draft";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { useGetGrc20Balances } from "@query/token";
 import { GNS_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import FormInput from "@components/common/form-input/FormInput";
@@ -80,7 +83,6 @@ const BoxContent: React.FC<BoxContentProps> = ({ label, children, ...props }) =>
 export interface CreateProposalModalProps {
   breakpoint: DEVICE_TYPE;
   setIsOpenCreateModal: (opened: boolean) => void;
-  myVotingWeight: number;
   proposalCreationThreshold: number;
   executablePackages: {
     pkgName: string;
@@ -113,7 +115,6 @@ export interface CreateProposalModalProps {
 const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   breakpoint,
   setIsOpenCreateModal,
-  myVotingWeight,
   proposalCreationThreshold,
   executablePackages,
   executableFunctions,
@@ -122,6 +123,13 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   proposeParamChangeProposal,
 }) => {
   const { t } = useTranslation();
+  const { account } = useWallet();
+  const { data: balances, isSuccess: isBalanceLoaded } = useGetGrc20Balances(account?.address || null, {
+    enabled: !!account?.address,
+  });
+  const xGnsBalance = balances?.data.find(balance => balance.path === XGNS_TOKEN.path)?.amount ?? "0";
+  const hasInsufficientXGns =
+    isBalanceLoaded && BigNumber(xGnsBalance).shiftedBy(-XGNS_TOKEN.decimals).isLessThan(proposalCreationThreshold);
   const [type, setType] = useState<string>(ProposalOption.TEXT);
   const modalBodyRef = useRef<HTMLDivElement>(null);
 
@@ -252,7 +260,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
   );
 
   const isDisableSubmit = useMemo(() => {
-    if (!isDirty || !isValid || myVotingWeight < proposalCreationThreshold) {
+    if (!isDirty || !isValid || !isBalanceLoaded || hasInsufficientXGns) {
       return true;
     }
 
@@ -268,7 +276,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
     }
 
     return false;
-  }, [isDirty, isValid, paramErrors, proposalCreationThreshold, myVotingWeight, type, control._formValues.variable]);
+  }, [isDirty, isValid, paramErrors, isBalanceLoaded, hasInsufficientXGns, type, control._formValues.variable]);
 
   const getParameterPlaceholder = useCallback(
     (item: { pkgPath: string; func: string }): string => {
@@ -534,9 +542,7 @@ const CreateProposalModal: React.FC<CreateProposalModalProps> = ({
         <Button
           disabled={isDisableSubmit}
           text={t(
-            myVotingWeight < proposalCreationThreshold
-              ? "Governance:createModal.submit.insuffiXGNS"
-              : "Governance:createModal.submit.ok",
+            hasInsufficientXGns ? "Governance:createModal.submit.insuffiXGNS" : "Governance:createModal.submit.ok",
           )}
           className="btn-submit"
           style={{

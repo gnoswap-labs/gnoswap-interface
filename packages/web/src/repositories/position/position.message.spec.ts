@@ -1,7 +1,4 @@
-import {
-  isTransactionRunMessage,
-  type TransactionMessage,
-} from "@common/clients/wallet-client/transaction-messages/common";
+import type { TransactionMessage } from "@common/clients/wallet-client/transaction-messages/common";
 import type { RewardType } from "@constants/option.constant";
 import type { PoolPositionModel } from "@models/position/pool-position-model";
 import type { PositionModel } from "@models/position/position-model";
@@ -67,6 +64,12 @@ const createTokenModel = (
   };
 };
 
+const routedNativeGnot = createTokenModel("ugnot", "Native", {
+  wrappedPath: "wugnot",
+  pkgPath: "wugnot_package",
+  routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
+});
+
 const createReward = ({ rewardType, rewardTokenPath, claimableAmount }: RewardOverrides): RewardModel => {
   const rewardToken: RewardModel["rewardToken"] = {
     ...createTokenModel(rewardTokenPath, rewardTokenPath === "ugnot" ? "Native" : "GRC20"),
@@ -128,34 +131,6 @@ const splitMessagesByApproveReset = (
     txMessages: messages.slice(approveCount, messages.length - resetCount),
     resetMessages: resetCount > 0 ? messages.slice(messages.length - resetCount) : [],
   };
-};
-
-// Approves are MsgRun messages, so the matching reset is the same ephemeral
-// package with the approved amount rewritten to 0.
-const APPROVE_AMOUNT_PATTERN = /, \d+\)$/gm;
-
-const toResetApproveMessage = (message: TransactionMessage): TransactionMessage => {
-  if (!isTransactionRunMessage(message)) {
-    throw new Error("Approve message must be a run message");
-  }
-
-  const [file] = message.package.files;
-
-  if (!file.body.match(APPROVE_AMOUNT_PATTERN)) {
-    throw new Error("Approve message must include an approved amount");
-  }
-
-  return {
-    ...message,
-    package: {
-      ...message.package,
-      files: [{ ...file, body: file.body.replace(APPROVE_AMOUNT_PATTERN, ", 0)") }],
-    },
-  };
-};
-
-const expectResetMessages = (resetMessages: TransactionMessage[], approveMessages: TransactionMessage[]) => {
-  expect(resetMessages).toEqual(approveMessages.map(toResetApproveMessage));
 };
 
 describe("position.message.ts", () => {
@@ -358,7 +333,7 @@ describe("position.message.ts", () => {
   });
 
   describe("makeUnStakePositionsMessagesWithApproves", () => {
-    it("creates one UnStakeToken per position without token approve messages", async () => {
+    it("creates UnStakeToken followed by CollectReward per position without token approve messages", async () => {
       const caller = "caller";
 
       const positions: PoolPositionModel[] = [
@@ -390,7 +365,23 @@ describe("position.message.ts", () => {
           caller,
           send: "",
           pkg_path: "staker_path",
+          func: "CollectReward",
+          args: ["lp1"],
+          gasFee: undefined,
+        },
+        {
+          caller,
+          send: "",
+          pkg_path: "staker_path",
           func: "UnStakeToken",
+          args: ["lp2"],
+          gasFee: undefined,
+        },
+        {
+          caller,
+          send: "",
+          pkg_path: "staker_path",
+          func: "CollectReward",
           args: ["lp2"],
           gasFee: undefined,
         },
@@ -424,7 +415,7 @@ describe("position.message.ts", () => {
         fetchAllowance,
       );
 
-      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 1);
+      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 1, 0);
 
       expect(approveMessages).toEqual([
         makeExpectedApproveRunMessage({
@@ -454,7 +445,42 @@ describe("position.message.ts", () => {
           gasFee: undefined,
         },
       ]);
-      expectResetMessages(resetMessages, approveMessages);
+      expect(resetMessages).toHaveLength(0);
+    });
+
+    it("uses wrapped GNOT route metadata for native GNOT approvals", async () => {
+      const messages = await makeIncreaseLiquidityMessagesWithApproves(
+        {
+          lpTokenId: "lp1",
+          tokenA: routedNativeGnot,
+          tokenB: createTokenModel("tokenB_path"),
+          tokenAAmount: 1.25,
+          tokenBAmount: 0,
+          caller: "caller",
+          slippage: 0,
+          deadline: "deadline",
+        },
+        jest.fn(async () => 0),
+      );
+
+      expect(messages).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            pkg_path: "wugnot_package",
+            func: "Approve",
+            args: ["pool_address", "1250000"],
+          }),
+        ]),
+      );
+      expect(messages).not.toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            pkg_path: "wugnot_package",
+            func: "Approve",
+            args: ["pool_address", "0"],
+          }),
+        ]),
+      );
     });
   });
 
@@ -528,7 +554,7 @@ describe("position.message.ts", () => {
         fetchAllowance,
       );
 
-      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 1);
+      const { approveMessages, txMessages, resetMessages } = splitMessagesByApproveReset(messages, 1, 0);
 
       expect(approveMessages).toEqual([
         makeExpectedApproveRunMessage({
@@ -558,7 +584,44 @@ describe("position.message.ts", () => {
           gasFee: undefined,
         },
       ]);
-      expectResetMessages(resetMessages, approveMessages);
+      expect(resetMessages).toHaveLength(0);
+    });
+
+    it("uses wrapped GNOT route metadata for native GNOT approvals", async () => {
+      const messages = await makeRepositionLiquidityMessagesWithApproves(
+        {
+          lpTokenId: "lp1",
+          tokenA: routedNativeGnot,
+          tokenB: createTokenModel("tokenB_path"),
+          tokenAAmount: "1.25",
+          tokenBAmount: "0",
+          minTick: -10,
+          maxTick: 10,
+          slippage: 0,
+          caller: "caller",
+          deadline: "deadline",
+        },
+        jest.fn(async () => 0),
+      );
+
+      expect(messages).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            pkg_path: "wugnot_package",
+            func: "Approve",
+            args: ["pool_address", "1250000"],
+          }),
+        ]),
+      );
+      expect(messages).not.toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            pkg_path: "wugnot_package",
+            func: "Approve",
+            args: ["pool_address", "0"],
+          }),
+        ]),
+      );
     });
   });
 

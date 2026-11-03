@@ -7,7 +7,6 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePoolData } from "@hooks/pool/data/use-pool-data";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
-import { useGetAllTokenPrices } from "@query/token";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { PoolPositionModel } from "@models/position/pool-position-model";
@@ -31,7 +30,6 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
 }) => {
   const router = useCustomRouter();
   const { connected, connectAdenaClient, isSwitchNetwork, switchNetwork, account } = useWallet();
-  const { data: tokenPrices = {} } = useGetAllTokenPrices();
   const { isFetchedPools, loading: isLoadingPool, pools } = usePoolData();
   const { width } = useWindowSize();
   const { openModal } = useConnectWalletModal();
@@ -69,7 +67,9 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
   });
   const {
     isError,
+    hasPositionData,
     isFetchedPosition,
+    isFetchingWithoutData,
     loading: isLoadingPosition,
     positions,
     totalPositionCount,
@@ -322,15 +322,19 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
 
   return (
     <EarnMyPositions
-      address={address}
+      address={address || account?.address}
       addressName={addressName}
       isOtherPosition={!!isOtherPosition}
       visiblePositions={visiblePositions}
-      positionLength={totalPositionCount}
+      positionLength={hasPositionData ? totalPositionCount : undefined}
       connected={connected}
       availableStake={true}
       connect={connect}
-      loading={isLoadingPool || (connected ? isLoadingPosition || !isFetchedPosition : false)}
+      loading={
+        isLoadingPool ||
+        ((isOtherPosition || connected) &&
+          (isLoadingPosition || isFetchingWithoutData || (!isFetchedPosition && !isError)))
+      }
       loadingPositionCardList={loadingPositionCardList}
       fetched={isFetchedPools && isFetchedPosition}
       isError={isError}
@@ -354,7 +358,6 @@ const EarnMyPositionContainer: React.FC<EarnMyPositionContainerProps> = ({
       isClosed={isClosed}
       hasClosedPositions={hasClosedPositions}
       handleChangeClosed={handleChangeClosed}
-      tokenPrices={tokenPrices}
       highestApr={highestApr}
       onOpenVideoGuide={onOpenVideoGuide}
       currentPage={page}

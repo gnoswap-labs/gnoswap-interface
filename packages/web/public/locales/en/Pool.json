@@ -1,4 +1,12 @@
 {
+  "chart": {
+    "empty": "No price candles in this period.",
+    "error": "Could not load price history.",
+    "liquidity": "Liquidity",
+    "price": "Price",
+    "retry": "Retry",
+    "searchOlder": "Search older history"
+  },
   "gotoIncentivizeGuide": {
     "add": "Want to add up incentives for this pool?",
     "boost": "Want to boost up incentives for this pool?"
@@ -74,7 +82,7 @@
       "stake": "Stake Position",
       "unstake": "Unstake Position"
     },
-    "intro": "Stake you position to earn rewards up to",
+    "intro": "Stake your position to earn rewards up to",
     "keepStakingNote": {
       "four": "Receiving max rewards ✨",
       "one": "Create your first position to get started ⛵",
@@ -92,9 +100,11 @@
       "subtitle_max": "Receiving Max Rewards",
       "subtitleTooltip": "During this staking period, you will only receive {{percent}} of your maximum staking rewards. Keep your position staked to increase your rewards.",
       "subtitleTooltip_max": "During this staking period, you will receive maximum staking rewards. Keep your position staked to maintain your rewards.",
-      "title": "Stake less than {{days}} days",
-      "title_max": "Stake more than {{days}} days"
+      "title": "Staked less than {{days}} days",
+      "title_max": "Staked more than {{days}} days"
     },
+    "positionCount_one": "{{count}} position",
+    "positionCount_other": "{{count}} positions",
     "title": "Staking",
     "tooltip": {
       "hoverGuide": "Hover to view details",
@@ -104,7 +114,8 @@
         "remainingAmt": "Remaining Amount",
         "startDate": "Start Date"
       }
-    }
+    },
+    "totalStaked": "Total Staked"
   },
   "wanttoaddup": "Want to boost up incentives for this pool?"
 }

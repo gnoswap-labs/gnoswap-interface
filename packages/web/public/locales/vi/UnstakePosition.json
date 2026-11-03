@@ -39,7 +39,7 @@
   "unclaimed": "Chưa có người nhận",
   "unclaimedRewards": "Phần thưởng chưa có người nhận",
   "warning": {
-    "content": "Thao tác này sẽ đặt lại hoàn toàn tiến trình staking của bạn. Sau khi thực hiện staking lại, bạn sẽ phải đợi 30 ngày mới bắt đầu nhận được phần thưởng staking tối đa. Hãy đảm bảo rằng bạn đã hiểu rõ cách thức hoạt động của giai đoạn khởi động trước khi hủy staking.",
+    "content": "Thao tác này sẽ đặt lại hoàn toàn tiến trình staking của bạn. Sau khi thực hiện staking lại, bạn sẽ phải đợi 45 ngày mới bắt đầu nhận được phần thưởng staking tối đa. Hãy đảm bảo rằng bạn đã hiểu rõ cách thức hoạt động của giai đoạn khởi động trước khi hủy staking.",
     "title": "Tiến trình staking của bạn sẽ được đặt lại"
   }
 }

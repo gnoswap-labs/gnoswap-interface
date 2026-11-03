@@ -4,6 +4,16 @@ import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
+export const MyDelNotice = styled.p`
+  width: 100%;
+  padding: 16px;
+  border-radius: 8px;
+  color: ${({ theme }) => theme.color.text33};
+  background-color: ${({ theme }) => theme.color.background30};
+  border: 1px solid ${({ theme }) => theme.color.border20};
+  ${fonts.body12};
+`;
+
 export const MyDelegationModalWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   min-width: 328px;
@@ -31,14 +41,17 @@ export const MyDelegationModalWrapper = styled.div`
 
   &.selector-box {
     > .modal-wrapper {
+      gap: 16px;
       overflow: auto;
       max-height: 85dvh;
     }
-  }
 
-  &.large-gap {
-    > .modal-wrapper {
-      gap: 24px;
+    .modal-content-header {
+      margin-bottom: 0;
+    }
+
+    .button-confirm {
+      margin-top: 0;
     }
   }
 
@@ -192,6 +205,45 @@ export const MyDelegationModalWrapper = styled.div`
       }
     }
 
+    .apr-breakdown {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      width: 100%;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid ${({ theme }) => theme.color.border02};
+      background-color: ${({ theme }) => theme.color.background06};
+
+      .apr-breakdown-row {
+        ${mixins.flexbox("row", "flex-start", "space-between")};
+        width: 100%;
+        gap: 8px;
+      }
+
+      .apr-breakdown-label {
+        ${mixins.flexbox("column", "flex-start", "flex-start")};
+        min-width: 0;
+        gap: 2px;
+
+        .name {
+          color: ${({ theme }) => theme.color.text04};
+          ${fonts.body13}
+        }
+
+        .period {
+          color: ${({ theme }) => theme.color.text07};
+          ${fonts.body12}
+        }
+      }
+
+      .apr-breakdown-value {
+        flex-shrink: 0;
+        text-align: end;
+        color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : "#596782")};
+        ${fonts.body13}
+      }
+    }
+
     .delegatee-info-rows {
       flex-shrink: 0;
       width: 100%;
@@ -309,16 +361,16 @@ export const MyDelegationModalWrapper = styled.div`
 export const ToolTipContentWrapper = styled.div`
   width: 268px;
   ${fonts.body12}
+  white-space: pre-line;
   color: ${({ theme }) => theme.color.text02};
 `;
 
 export const MyDelWarningContentWrapper = styled.div`
   ${mixins.flexbox("column", "flex-start")}
   margin: -4px 0;
-  gap: 24px;
+  gap: 16px;
 
   .learn-more-box {
-    margin-top: 4px;
     ${mixins.flexbox("row", "center")}
     font-weight: 600;
     cursor: pointer;

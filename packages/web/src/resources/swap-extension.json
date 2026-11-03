@@ -1,0 +1,55 @@
+[
+  {
+    "grc20WrappedTokenPath": "gno.land/r/g1leu8d2vsplhehcfkjg50mwgdpxdkt8tztu95wr/wbubble.BUBBLE",
+    "grc20WrappedPackagePath": "gno.land/r/g1leu8d2vsplhehcfkjg50mwgdpxdkt8tztu95wr/wbubble",
+    "wrappedTokenInfo": {
+      "displaySymbol": "wBUBBLE"
+    },
+    "originTokenPath": "gno.land/r/g1leu8d2vsplhehcfkjg50mwgdpxdkt8tztu95wr/bubble",
+    "originTokenInfo": {
+      "name": "BUBBLE",
+      "symbol": "BUBBLE",
+      "decimals": 6,
+      "logoUrl": ""
+    },
+    "originRoutes": {
+      "balance": {
+        "function": "BalanceOf",
+        "inputs": ["$address"]
+      },
+      "approve": {
+        "function": "Approve",
+        "inputs": ["$spender", "$amount"]
+      },
+      "transfer": {
+        "function": "Transfer",
+        "inputs": ["$to", "$amount"]
+      },
+      "transferFrom": {
+        "function": "TransferFrom",
+        "inputs": ["$from", "$to", "$amount"]
+      }
+    },
+    "executions": {
+      "wrap": [
+        {
+          "function": "Approve",
+          "packagePath": "$originTokenPath",
+          "inputs": ["$wrappedTokenAddress", "$amount"]
+        },
+        {
+          "function": "Wrap",
+          "packagePath": "$grc20WrappedPackagePath",
+          "inputs": ["$amount"]
+        }
+      ],
+      "unwrap": [
+        {
+          "function": "Unwrap",
+          "packagePath": "$grc20WrappedPackagePath",
+          "inputs": ["$amount"]
+        }
+      ]
+    }
+  }
+]

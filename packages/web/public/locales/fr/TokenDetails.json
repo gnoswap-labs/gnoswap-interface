@@ -7,6 +7,12 @@
     },
     "title": "Meilleures Pools pour {{symbol}}"
   },
+  "chart": {
+    "empty": "Il n'y a pas de chandeliers de cours disponibles pour cet intervalle.",
+    "error": "Impossible de charger les chandeliers de cours.",
+    "retry": "Réessayer",
+    "searchOlder": "Rechercher dans l'historique antérieur"
+  },
   "description": {
     "empty": "Pas d'information sur les jetons",
     "links": "Liens",

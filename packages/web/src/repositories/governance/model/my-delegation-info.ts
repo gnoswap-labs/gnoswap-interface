@@ -6,12 +6,22 @@ export interface MyDelegationInfo {
   claimableLaunchpadRewardUsd: string;
   unDelegatedAmount: string;
   withdrawableAmount: string;
-  votingWeight: string;
+  delegatedAmount: string;
+  /** Active voting power delegated TO this address by others (incoming, not outgoing). */
+  votingPower: string;
 }
+
+export const ClaimableRewardType = {
+  EMISSION: "EMISSION",
+  PROTOCOL_FEE: "PROTOCOL_FEE",
+} as const;
+
+export type ClaimableRewardType = (typeof ClaimableRewardType)[keyof typeof ClaimableRewardType];
 
 export interface ClaimableRewards {
   amount: string;
   path: string;
+  type: ClaimableRewardType;
 }
 
 export const nullMyDelegationInfo: MyDelegationInfo = {
@@ -22,5 +32,6 @@ export const nullMyDelegationInfo: MyDelegationInfo = {
   claimableLaunchpadRewardUsd: "0",
   unDelegatedAmount: "0",
   withdrawableAmount: "0",
-  votingWeight: "0",
+  delegatedAmount: "0",
+  votingPower: "0",
 };

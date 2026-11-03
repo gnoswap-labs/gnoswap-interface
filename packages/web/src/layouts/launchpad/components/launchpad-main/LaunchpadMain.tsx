@@ -79,7 +79,7 @@ const LaunchpadMain: React.FC<LaunchpadMainProps> = ({ data, isLoading, breakpoi
             />
           </span>
           <span className="launchpad-guide-button">
-            <Link href={EXT_URL.DOCS.ROOT} target="_blank">
+            <Link href={EXT_URL.LAUNCHPAD.SUBMIT_PROJECT} target="_blank">
               <Button
                 text={t("Launchpad:main.button.submitProject")}
                 style={defaultStyle}

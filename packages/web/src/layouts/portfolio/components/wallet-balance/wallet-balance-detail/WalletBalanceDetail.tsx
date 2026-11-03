@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
@@ -7,16 +7,18 @@ import RewardTooltipContent, {
   PositionRewardForTooltip,
 } from "@components/common/reward-tooltip-content/RewardTooltipContent";
 import { DisplayRewardType } from "@constants/option.constant";
-import { PositionModel } from "@models/position/position-model";
 import { TokenModel } from "@models/token/token-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
+import { useGetStakedPositionsInfinite } from "@query/positions/use-get-staked-positions-infinite";
 import {
   PositionRewardTokenAmount,
   PositionRewardsGroupResponse,
   PositionRewardsResponse,
+  PositionSummaryResponse,
 } from "@repositories/position/response";
 import { AmountConverter } from "@services/converters/common/amount";
 import { DEVICE_TYPE } from "@styles/media";
+import { buildClaimedRewardInfo } from "@utils/position-reward-utils";
 
 import StakedPostionsTooltipContent from "./sateked-positions-tooltip/StakedPositinosTooltipContent";
 import WalletBalanceDetailInfo from "./wallet-balance-detail-info/WalletBalanceDetailInfo";
@@ -30,6 +32,7 @@ export interface BalanceDetailInfo {
   claimableRewards: string;
   loadingBalance: boolean;
   loadingPositions: boolean;
+  loadingRewards: boolean;
   totalClaimedRewards: string;
 }
 
@@ -40,8 +43,8 @@ export interface WalletBalanceDetailProps {
   claimAll: () => void;
   breakpoint: DEVICE_TYPE;
   loadngTransactionClaim: boolean;
-  positions: PositionModel[];
   positionRewards: PositionRewardsResponse | null;
+  positionSummary: PositionSummaryResponse | null;
   tokens: TokenModel[];
   tokenPrices: Record<string, TokenPriceModel>;
 }
@@ -68,11 +71,40 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
   breakpoint,
   isSwitchNetwork,
   loadngTransactionClaim,
-  positions,
   positionRewards,
+  positionSummary,
   tokens,
 }) => {
   const { t } = useTranslation();
+  const [stakedTooltipActive, setStakedTooltipActive] = useState(false);
+  const canShowStakedTooltip =
+    connected && !isSwitchNetwork && balanceDetailInfo.stakedLP !== "-" && (positionSummary?.stakedCount ?? 0) > 0;
+  const stakedPositions = useGetStakedPositionsInfinite({ enabled: canShowStakedTooltip && stakedTooltipActive });
+  const { positions, data, hasNextPage, isFetching, isError, fetchNextPage } = stakedPositions;
+
+  // Filtered raw pages must advance even before there is any floating content to measure.
+  useEffect(() => {
+    if (
+      canShowStakedTooltip &&
+      stakedTooltipActive &&
+      positions.length === 0 &&
+      data &&
+      hasNextPage &&
+      !isFetching &&
+      !isError
+    ) {
+      void fetchNextPage();
+    }
+  }, [
+    canShowStakedTooltip,
+    stakedTooltipActive,
+    positions.length,
+    data,
+    hasNextPage,
+    isFetching,
+    isError,
+    fetchNextPage,
+  ]);
 
   const tokenByPath = useMemo(() => {
     const map: Record<string, TokenModel> = {};
@@ -81,19 +113,6 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
     });
     return map;
   }, [tokens]);
-
-  const stakedPositions = useMemo(() => {
-    if (!positions || positions.length === 0) return [];
-
-    return positions
-      .filter(item => item.staked && !item.closed)
-      .map(item => ({
-        lpId: item.lpTokenId,
-        totalValue: item.stakedUsdValue,
-        stakedDate: item.stakedAt,
-        tokenUri: item.tokenUri,
-      }));
-  }, [positions]);
 
   const buildRewardInfo = (group: PositionRewardsGroupResponse) => {
     const result = emptyTooltipInfo();
@@ -134,19 +153,19 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
 
     return {
       claimableRewardInfo: buildRewardInfo(positionRewards.claimable),
-      claimedRewardInfo: buildRewardInfo(positionRewards.claimed),
+      claimedRewardInfo: buildClaimedRewardInfo(positionRewards.claimed, tokens),
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [positionRewards, tokenByPath]);
+  }, [positionRewards, tokenByPath, tokens]);
 
   const hasInfo = (data: { [key in DisplayRewardType]: PositionRewardForTooltip[] }): boolean => {
     return data.SWAP_FEE.length > 0 || data.INTERNAL_REWARD.length > 0 || data.EXTERNAL_REWARD.length > 0;
   };
 
   const isClaimableAll = useMemo(() => {
-    if (balanceDetailInfo.loadingPositions) return false;
+    if (balanceDetailInfo.loadingRewards) return false;
     return hasInfo(claimableRewardInfo);
-  }, [claimableRewardInfo, balanceDetailInfo.loadingPositions]);
+  }, [claimableRewardInfo, balanceDetailInfo.loadingRewards]);
 
   return (
     <WalletBalanceDetailWrapper>
@@ -167,12 +186,19 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         connected={connected}
         isSwitchNetwork={isSwitchNetwork}
         valueTooltip={
-          stakedPositions.length > 0 ? <StakedPostionsTooltipContent poolStakings={stakedPositions} /> : undefined
+          canShowStakedTooltip ? (
+            <StakedPostionsTooltipContent count={positionSummary?.stakedCount ?? 0} query={stakedPositions} />
+          ) : undefined
         }
+        interactiveValueTooltip
+        valueTooltipReady={stakedPositions.positions.length > 0}
+        valueTooltipActive={stakedTooltipActive}
+        valueTooltipScope={stakedPositions.scopeKey}
+        onValueTooltipInteractionChange={setStakedTooltipActive}
         breakpoint={breakpoint}
       />
       <WalletBalanceDetailInfo
-        loading={balanceDetailInfo.loadingPositions}
+        loading={balanceDetailInfo.loadingRewards}
         title={t("Wallet:overral.totalClaimed.label")}
         value={balanceDetailInfo.totalClaimedRewards}
         tooltip={t("Wallet:overral.totalClaimed.tooltip")}
@@ -182,7 +208,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
         breakpoint={breakpoint}
       />
       <WalletBalanceDetailInfo
-        loading={balanceDetailInfo.loadingPositions}
+        loading={balanceDetailInfo.loadingRewards}
         title={t("Wallet:overral.claimableReward.label")}
         tooltip={t("Wallet:overral.claimableReward.tooltip")}
         value={balanceDetailInfo.claimableRewards}
@@ -201,7 +227,7 @@ const WalletBalanceDetail: React.FC<WalletBalanceDetailProps> = ({
               }}
               text={loadngTransactionClaim ? "" : t("Wallet:overral.claimAll.btn")}
               onClick={claimAll}
-              disabled={!connected || isSwitchNetwork || !isClaimableAll || balanceDetailInfo.loadingPositions}
+              disabled={!connected || isSwitchNetwork || !isClaimableAll || balanceDetailInfo.loadingRewards}
               leftIcon={loadngTransactionClaim ? <LoadingSpinner className="loading-button" /> : undefined}
             />
           ) : undefined

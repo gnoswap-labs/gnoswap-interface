@@ -17,8 +17,18 @@ import { TokenSearchLogModel } from "@models/token/token-search-log-model";
 import { customSort } from "@utils/token-sort";
 import { formatDisplayTokenSymbol } from "@utils/token-utils";
 import mockedExchangeRateGraph from "./mock/token-exchange-rate-graph.json";
-import { IBalancesByAddressResponse, IGrc20TransferHistoryResponse } from "./response/balance-by-address-response";
+import {
+  IBalancesByAddressResponse,
+  IGrc20BalanceReceiptResponse,
+  IGrc20BalanceReceiptWireResponse,
+  IGrc20TransferHistoryResponse,
+} from "./response/balance-by-address-response";
 import { TokenExchangeRateGraphResponse } from "./response/token-exchange-rate-response";
+
+const normalizeTokenDisplay = <T extends Pick<ITokenResponse, "path" | "symbol" | "displaySymbol">>(token: T): T => ({
+  ...token,
+  displaySymbol: formatDisplayTokenSymbol(token.symbol, token.path),
+});
 
 export class TokenRepositoryImpl implements TokenRepository {
   private networkClient: NetworkClient | null;
@@ -41,10 +51,7 @@ export class TokenRepositoryImpl implements TokenRepository {
     const response = await this.networkClient.get<{ data: ITokenResponse }>({
       url: `/token-metas/${tempPath}`,
     });
-    return {
-      ...response.data.data,
-      displaySymbol: formatDisplayTokenSymbol(response.data.data.symbol),
-    };
+    return normalizeTokenDisplay(response.data.data);
   };
 
   public getTokens = async (showUnverified: boolean): Promise<TokenListResponse> => {
@@ -59,10 +66,7 @@ export class TokenRepositoryImpl implements TokenRepository {
     }
     const tokens =
       response?.data?.data
-        .map(token => ({
-          ...token,
-          displaySymbol: formatDisplayTokenSymbol(token.symbol),
-        }))
+        .map(normalizeTokenDisplay)
         .sort(customSort) || [];
     return { tokens };
   };
@@ -102,14 +106,8 @@ export class TokenRepositoryImpl implements TokenRepository {
       ...response.data.data,
       bestPools: response.data.data.bestPools.map(pool => ({
         ...pool,
-        tokenA: {
-          ...pool.tokenA,
-          displaySymbol: formatDisplayTokenSymbol(pool.tokenA.symbol),
-        },
-        tokenB: {
-          ...pool.tokenB,
-          displaySymbol: formatDisplayTokenSymbol(pool.tokenB.symbol),
-        },
+        tokenA: normalizeTokenDisplay(pool.tokenA),
+        tokenB: normalizeTokenDisplay(pool.tokenB),
       })),
     };
   };
@@ -132,6 +130,25 @@ export class TokenRepositoryImpl implements TokenRepository {
       url: `/users/${address}/balances`,
     });
     return response.data;
+  };
+
+  public getGrc20BalanceReceiptByAddress = async (
+    address: string,
+    txHash: string,
+  ): Promise<IGrc20BalanceReceiptResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+    const response = await this.networkClient.get<IGrc20BalanceReceiptWireResponse>({
+      url: `/users/${address}/balances/receipts?txHash=${encodeURIComponent(txHash)}`,
+    });
+    const body = response.data;
+    return {
+      message: body.message,
+      data: body.data.balances,
+      accountBalanceApplied: body.data.applied,
+      balanceChanges: body.data.balanceChanges,
+    };
   };
 
   public getGrc20TransferHistoryByTxHash = async (

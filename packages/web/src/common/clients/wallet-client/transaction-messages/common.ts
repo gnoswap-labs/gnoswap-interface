@@ -5,9 +5,11 @@ import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { TransactionMessageError } from "@common/errors";
 import { DEFAULT_ALLOWANCE_LIMIT } from "@common/values";
 import { PACKAGE_NFT_PATH, WRAPPED_GNOT_PACKAGE_PATH } from "@constants/environment.constant";
+import { Grc20Routes } from "@models/token/token-model";
 import { MAX_INT64_STR } from "@utils/math.utils";
 
-import { GRC20ApproveRunMessageInfo, makeGRC20ApproveRunMessage, TransactionRunMessage } from "./run";
+import { resolveGrc20Route } from "./grc20-route";
+import { gnoInt64Literal, GRC20ApproveRunMessageInfo, makeGRC20ApproveRunMessage, TransactionRunMessage } from "./run";
 
 export interface TransactionBankMessage {
   from_address: string;
@@ -47,6 +49,8 @@ export interface TokenApproveMessageInfo {
   targetAddress: string;
   amount: string | bigint | number;
   caller: string;
+  pkgPath?: string;
+  routes?: Grc20Routes;
 }
 
 export function makeBankSendGNOTMessage({
@@ -92,45 +96,79 @@ export function makeTransactionMessage({
   };
 }
 
+export function makeTokenApproveMessage(approveInfo: TokenApproveMessageInfo): TransactionMessage {
+  const amountLiteral = gnoInt64Literal(approveInfo.amount);
+  const route = resolveGrc20Route(
+    { path: approveInfo.tokenPath, pkgPath: approveInfo.pkgPath, routes: approveInfo.routes },
+    "approve",
+    {
+      $owner: approveInfo.caller,
+      $spender: approveInfo.targetAddress,
+      $amount: amountLiteral,
+    },
+  );
+
+  if (route) {
+    return makeTransactionMessage({
+      caller: approveInfo.caller,
+      send: "",
+      packagePath: route.packagePath,
+      func: route.func,
+      args: route.args,
+    });
+  }
+
+  return makeGRC20ApproveRunMessage({
+    approves: [
+      { tokenPath: approveInfo.tokenPath, spenderAddress: approveInfo.targetAddress, amount: approveInfo.amount },
+    ],
+    caller: approveInfo.caller,
+  });
+}
+
 /**
  * Batches a block of approves into as few `MsgRun` messages as possible.
  *
  * Approves are emitted consecutively, so every adjacent run sharing a caller
  * collapses into a single ephemeral package instead of one message each.
+ * Tokens with a GRC20 method spec are sent as a direct `MsgCall` instead.
  */
-export function makeTokenApproveMessages(approveInfos: TokenApproveMessageInfo[]): TransactionRunMessage[] {
-  const approveGroups: { caller: string; approves: GRC20ApproveRunMessageInfo[] }[] = [];
+export function makeTokenApproveMessages(approveInfos: TokenApproveMessageInfo[]): TransactionMessage[] {
+  const messages: TransactionMessage[] = [];
+  let currentRunGroup: { caller: string; approves: GRC20ApproveRunMessageInfo[] } | null = null;
+
+  const flushRunGroup = () => {
+    if (currentRunGroup) {
+      messages.push(makeGRC20ApproveRunMessage(currentRunGroup));
+      currentRunGroup = null;
+    }
+  };
 
   for (const approveInfo of approveInfos) {
+    const approveMessage = makeTokenApproveMessage(approveInfo);
+    if (isTransactionCallMessage(approveMessage)) {
+      flushRunGroup();
+      messages.push(approveMessage);
+      continue;
+    }
+
     const approve: GRC20ApproveRunMessageInfo = {
       tokenPath: approveInfo.tokenPath,
       spenderAddress: approveInfo.targetAddress,
       amount: approveInfo.amount,
     };
-    const currentGroup = approveGroups[approveGroups.length - 1];
 
-    if (currentGroup && currentGroup.caller === approveInfo.caller) {
-      currentGroup.approves.push(approve);
+    if (currentRunGroup && currentRunGroup.caller === approveInfo.caller) {
+      currentRunGroup.approves.push(approve);
     } else {
-      approveGroups.push({ caller: approveInfo.caller, approves: [approve] });
+      flushRunGroup();
+      currentRunGroup = { caller: approveInfo.caller, approves: [approve] };
     }
   }
 
-  return approveGroups.map(approveGroup =>
-    makeGRC20ApproveRunMessage({ approves: approveGroup.approves, caller: approveGroup.caller }),
-  );
-}
+  flushRunGroup();
 
-export function makeTokenApproveMessage(
-  tokenPath: string,
-  targetAddress: string,
-  amount: string | bigint | number,
-  caller: string,
-): TransactionRunMessage {
-  return makeGRC20ApproveRunMessage({
-    approves: [{ tokenPath, spenderAddress: targetAddress, amount }],
-    caller,
-  });
+  return messages;
 }
 
 export function makeNFTApproveMessage(
@@ -162,7 +200,16 @@ export function makeDepositGNOTMessage(amount: string | number | null, caller: s
   });
 }
 
-type SumApproveMessageType = { [key in string]: { [key in string]: { amount: string; caller: string } } };
+type SumApproveMessageType = {
+  [tokenPath: string]: {
+    [targetAddress: string]: {
+      amount: string;
+      caller: string;
+      pkgPath?: string;
+      routes?: Grc20Routes;
+    };
+  };
+};
 
 // Without `fetchAllowance` every approve message is kept, which is what the swap
 // simulation wants: it must not query an allowance it never broadcasts.
@@ -171,7 +218,7 @@ export async function makeTransactionMessagesWithApproves(
   approveInfos: TokenApproveMessageInfo[],
   fetchAllowance?: (packagePath: string, owner: string, spender: string) => Promise<number>,
   allowanceLimit: number = DEFAULT_ALLOWANCE_LIMIT,
-  withReset: boolean = true,
+  withReset: boolean = false,
 ): Promise<TransactionMessage[]> {
   if (!Array.isArray(transactionMessages)) {
     throw new TransactionMessageError("FAILED_PARSE_APPROVE_MESSAGE", transactionMessages);
@@ -208,6 +255,8 @@ export async function makeTransactionMessagesWithApproves(
       accumulated[current.tokenPath][current.targetAddress] = {
         amount: "0",
         caller: current.caller,
+        pkgPath: current.pkgPath,
+        routes: current.routes,
       };
     }
 
@@ -229,6 +278,8 @@ export async function makeTransactionMessagesWithApproves(
         targetAddress,
         amount: messageInfo.amount,
         caller: messageInfo.caller,
+        pkgPath: messageInfo.pkgPath,
+        routes: messageInfo.routes,
       })),
   );
 
@@ -242,6 +293,8 @@ export async function makeTransactionMessagesWithApproves(
               targetAddress: messageInfo.targetAddress,
               amount: messageInfo.amount,
               caller: messageInfo.caller,
+              pkgPath: messageInfo.pkgPath,
+              routes: messageInfo.routes,
               allowance,
             }))
             .catch(e => {

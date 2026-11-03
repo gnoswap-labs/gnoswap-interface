@@ -29,15 +29,21 @@ import DelegateeChip from "./delegatee-chip/DelegateeChip";
 
 import {
   MyDelegationModalWrapper,
+  MyDelNotice,
   MyDelWarningContentWrapper,
   ToolTipContentWrapper,
 } from "./MyDelegationModals.styles";
 import { rawToDisplayAmount } from "@utils/number-utils";
 
+import { formatXgnsApr, useXgnsAprCopy } from "../../../xgns-apr/xgns-apr";
+import GovernanceAPRTooltip from "../../governance-summary/GovernanceAPRTooltip";
+
 interface MyDelegationDelegateModalProps {
   currentDelegatedDisplayAmount: number;
   totalDelegatedDisplayAmount: number;
-  apy: number;
+  apy?: string;
+  protocolFeeApr?: string;
+  emissionApr?: string;
   delegatees: VerifiedDelegateInfo[];
   isWalletConnected: boolean;
   connectWallet: () => void;
@@ -49,6 +55,8 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   currentDelegatedDisplayAmount,
   totalDelegatedDisplayAmount,
   apy,
+  protocolFeeApr,
+  emissionApr,
   delegatees,
   isWalletConnected,
   connectWallet,
@@ -57,6 +65,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
 }) => {
   const Modal = useMemo(() => withLocalModal(MyDelegationModalWrapper, setIsOpen), [setIsOpen]);
   const { t } = useTranslation();
+  const tApr = useXgnsAprCopy();
   const selfDelegateName = t("Governance:myDel.delModal.selectDel.self.chip");
   const defaultDelegateeInfo = { ...nullVerifiedDelegateInfo };
 
@@ -110,22 +119,28 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
     return isValidAddress(selectedDelegateAddress);
   }, [selectedDelegateAddress]);
 
+  // Look up the verified entry from the latest list (not the tmpDelegatee snapshot),
+  // also when a verified address is typed into Self-Delegate, so refetches are reflected.
+  const selectedVerifiedDelegate = useMemo(() => {
+    if (selectedDelegateAddress === "") {
+      return undefined;
+    }
+    return delegatees.find(item => item.address === selectedDelegateAddress);
+  }, [delegatees, selectedDelegateAddress]);
+
   const { data: selectedDelegateDelegationInfo } = useGetMyDelegation(
     {
       address: selectedDelegateAddress,
     },
     {
-      enabled: isValidSelectedDelegateAddress,
+      enabled: isValidSelectedDelegateAddress && !selectedVerifiedDelegate,
     },
   );
 
-  const selectedDelegateVotingPowerRaw = useMemo(() => {
-    if (selectedDelegateDelegationInfo?.votingWeight) {
-      return selectedDelegateDelegationInfo.votingWeight;
-    }
-
-    return tmpDelegatee.votingPower;
-  }, [selectedDelegateDelegationInfo?.votingWeight, tmpDelegatee.votingPower]);
+  // Verified delegates carry aggregate voting power in the list; other addresses use
+  // their received voting weight, which stays 0 until that address's summary loads.
+  const selectedDelegateVotingPowerRaw =
+    selectedVerifiedDelegate?.votingPower ?? selectedDelegateDelegationInfo?.votingPower ?? "0";
 
   const votingPowerPercentage = useMemo(() => {
     const displayVotingPower = toDisplayVotingPowerFromRaw(selectedDelegateVotingPowerRaw);
@@ -265,6 +280,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           changeToken={() => {}}
           style={{ padding: "16px" }}
         />
+        <MyDelNotice>{t("Governance:myDel.delModal.step2.notice")}</MyDelNotice>
       </article>
 
       <article>
@@ -309,18 +325,30 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
             <Tooltip
               placement="top"
               FloatingContent={
-                <ToolTipContentWrapper>{t("Governance:myDel.delModal.step3.aprTooltip")}</ToolTipContentWrapper>
+                <ToolTipContentWrapper>
+                  <GovernanceAPRTooltip translationKey="myDel.delModal.step3.aprTooltip" />
+                </ToolTipContentWrapper>
               }
             >
               <IconInfo size={16} />
             </Tooltip>
           </div>
-          <div className="value">
-            {formatOtherPrice(apy, {
-              isKMB: false,
-              usd: false,
-            })}
-            %
+          <div className="value">{formatXgnsApr(apy)}</div>
+        </div>
+        <div className="apr-breakdown">
+          <div className="apr-breakdown-row">
+            <div className="apr-breakdown-label">
+              <span className="name">{tApr("protocolFees")}</span>
+              <span className="period">{tApr("period")}</span>
+            </div>
+            <div className="apr-breakdown-value">{formatXgnsApr(protocolFeeApr)}</div>
+          </div>
+          <div className="apr-breakdown-row">
+            <div className="apr-breakdown-label">
+              <span className="name">{tApr("emission")}</span>
+              <span className="period">{tApr("period")}</span>
+            </div>
+            <div className="apr-breakdown-value">{formatXgnsApr(emissionApr)}</div>
           </div>
         </div>
       </article>
@@ -475,6 +503,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
           )}
         </div>
       </article>
+      <MyDelNotice>{t("Governance:myDel.delModal.selectDel.notice")}</MyDelNotice>
       <Button
         onClick={() => {
           if (tmpDelegatee.address === "") {
@@ -496,7 +525,7 @@ const MyDelegationDelegateModal: React.FC<MyDelegationDelegateModalProps> = ({
   );
 
   return (
-    <Modal className={stage === "MAIN" ? "" : "large-gap selector-box"}>
+    <Modal className={stage === "MAIN" ? "" : "selector-box"}>
       <div className="modal-wrapper">{stage === "MAIN" ? showDelegateInfo() : showDelegateeSelector()}</div>
     </Modal>
   );

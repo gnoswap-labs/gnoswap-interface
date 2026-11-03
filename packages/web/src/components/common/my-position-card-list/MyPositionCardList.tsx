@@ -3,7 +3,6 @@ import React, { useMemo } from "react";
 import LoadMoreButton from "@components/common/load-more-button/LoadMoreButton";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { TokenPriceModel } from "@models/token/token-price-model";
 import { DEVICE_TYPE } from "@styles/media";
 
 import MyPositionCard from "./my-position-card/MyPositionCard";
@@ -29,7 +28,6 @@ interface MyPositionCardListProps {
   showLoadMore: boolean;
   width: number;
   themeKey: "dark" | "light";
-  tokenPrices: Record<string, TokenPriceModel>;
   currentPage?: number;
   totalPage?: number;
   movePage: (page: number) => void;
@@ -53,7 +51,6 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
   width,
   themeKey,
   showLoadMore,
-  tokenPrices,
   currentPage,
   totalPage,
   movePage,
@@ -80,7 +77,6 @@ const MyPositionCardList: React.FC<MyPositionCardListProps> = ({
           positions.map((position, idx) => (
             <MyPositionCard
               address={address}
-              tokenPrices={tokenPrices}
               currentIndex={idx}
               position={position}
               key={position.lpTokenId}

@@ -1,6 +1,7 @@
 import BigNumber from "bignumber.js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ValuesType } from "utility-types";
+import { useAtom } from "jotai";
 
 import { GNOT_TOKEN, GNOT_TOKEN_DEFAULT, GNS_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
 import AssetReceiveModal from "@components/wallet/asset-receive-modal/AssetReceiveModal";
@@ -9,12 +10,12 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import { useLoading } from "@hooks/common/use-loading";
 import { usePreventScroll } from "@hooks/common/use-prevent-scroll";
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { usePositionData } from "@hooks/pool/data/use-position-data";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
 import { useGetAvgBlockTime } from "@query/address";
 import { useGetTokens } from "@query/token";
+import { TokenState } from "@states/index";
 import { checkGnotPath } from "@utils/common";
 import { formatPoolPairAmount, formatPrice } from "@utils/new-number-utils";
 import { makeRawTokenAmount } from "@utils/token-utils";
@@ -72,7 +73,7 @@ const AssetListContainer: React.FC = () => {
 
   const [address] = useState("");
   const [assetType, setAssetType] = useState<ASSET_FILTER_TYPE>(ASSET_FILTER_TYPE.ALL);
-  const [showUnverifiedTokens, setShowUnverifiedTokens] = useState(false);
+  const [showUnverifiedTokens, setShowUnverifiedTokens] = useAtom(TokenState.showUnverifiedTokens);
   const [keyword, setKeyword] = useState("");
   const [extended, setExtened] = useState(true);
   const [hasLoader] = useState(false);
@@ -90,13 +91,8 @@ const AssetListContainer: React.FC = () => {
   const { isLoadingTokens } = useLoading();
   const { data: blockTimeData } = useGetAvgBlockTime();
   const { data: { tokens = [] } = {} } = useGetTokens(showUnverifiedTokens);
-  const { loading: loadingPositions } = usePositionData({
-    withClosed: false,
-  });
 
   const [sendAssetAmount, setSendAssetAmount] = useState("");
-
-  const isLoadingPosition = useMemo(() => connected && loadingPositions, [connected, loadingPositions]);
 
   const changeTokenDeposit = useCallback((token: TokenModel) => {
     setDepositInfo(token);
@@ -121,7 +117,8 @@ const AssetListContainer: React.FC = () => {
     }
   }, [isClickOutside, keyword]);
 
-  const { displayBalanceMap, balances, tokenPrices, isFetched, updateBalances } = useTokenData(showUnverifiedTokens);
+  const { displayBalanceMap, balances, tokenPrices, hasBalanceData, hasTokenPriceData, isFetched, updateBalances } =
+    useTokenData(showUnverifiedTokens);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -163,15 +160,9 @@ const AssetListContainer: React.FC = () => {
           if (!connected || isSwitchNetwork) {
             return "-";
           }
-
-          if (
-            !tokenPrice ||
-            Number.isNaN(tokenPrice) ||
-            !tokenPrices[checkGnotPath(item?.path)]?.usd ||
-            !balances[item.priceID]
-          ) {
-            return "$0";
-          }
+          if (!hasBalanceData || !hasTokenPriceData || tokenPrice == null || Number.isNaN(tokenPrice)) return "-";
+          if (BigNumber(tokenPrice).isZero()) return "$0";
+          if (tokenPrices[checkGnotPath(item.path)]?.usd == null) return "-";
 
           return formatPrice(
             BigNumber(tokenPrice)
@@ -184,7 +175,7 @@ const AssetListContainer: React.FC = () => {
         })();
 
         const balance = (() => {
-          if (isSwitchNetwork || !displayBalanceMap[item.path]) return "-";
+          if (isSwitchNetwork || !hasBalanceData || !displayBalanceMap[item.path]) return "-";
 
           return formatPoolPairAmount(displayBalanceMap[item.path], {
             isKMB: false,
@@ -206,6 +197,8 @@ const AssetListContainer: React.FC = () => {
       .filter(asset => filterType(asset, assetType));
   }, [
     balances,
+    hasBalanceData,
+    hasTokenPriceData,
     displayBalanceMap,
     isSwitchNetwork,
     tokenPrices,
@@ -227,15 +220,9 @@ const AssetListContainer: React.FC = () => {
           if (!connected || isSwitchNetwork) {
             return "-";
           }
-
-          if (
-            !tokenPrice ||
-            Number.isNaN(tokenPrice) ||
-            !tokenPrices[checkGnotPath(item?.path)]?.usd ||
-            !balances[item.priceID]
-          ) {
-            return "$0";
-          }
+          if (!hasBalanceData || !hasTokenPriceData || tokenPrice == null || Number.isNaN(tokenPrice)) return "-";
+          if (BigNumber(tokenPrice).isZero()) return "$0";
+          if (tokenPrices[checkGnotPath(item.path)]?.usd == null) return "-";
 
           return formatPrice(
             BigNumber(tokenPrice)
@@ -248,7 +235,7 @@ const AssetListContainer: React.FC = () => {
         })();
 
         const balance = (() => {
-          if (isSwitchNetwork || !displayBalanceMap[item.path]) return "-";
+          if (isSwitchNetwork || !hasBalanceData || !displayBalanceMap[item.path]) return "-";
 
           return formatPoolPairAmount(displayBalanceMap[item.path], {
             isKMB: false,
@@ -315,6 +302,8 @@ const AssetListContainer: React.FC = () => {
     sortOption?.direction,
     extended,
     balances,
+    hasBalanceData,
+    hasTokenPriceData,
     tokenPrices,
     displayBalanceMap,
     assetType,
@@ -337,8 +326,8 @@ const AssetListContainer: React.FC = () => {
   }, []);
 
   const toggleShowUnverifiedTokens = useCallback(() => {
-    setShowUnverifiedTokens(!showUnverifiedTokens);
-  }, [showUnverifiedTokens]);
+    setShowUnverifiedTokens(prev => !prev);
+  }, [setShowUnverifiedTokens]);
 
   const toggleExtended = useCallback(() => {
     setExtened(!extended);
@@ -429,9 +418,7 @@ const AssetListContainer: React.FC = () => {
     <>
       <AssetList
         assets={[...fixedTokens, ...filteredTokens]}
-        isFetched={
-          isFetched && !isLoadingTokens && !isLoadingPosition && !(isEmptyObject(balances) && account?.address)
-        }
+        isFetched={isFetched && !isLoadingTokens && !(isEmptyObject(balances) && account?.address)}
         assetType={assetType}
         showUnverifiedTokens={showUnverifiedTokens}
         keyword={keyword}

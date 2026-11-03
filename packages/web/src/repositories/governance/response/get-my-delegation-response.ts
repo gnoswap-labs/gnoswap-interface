@@ -8,5 +8,7 @@ export interface GetMyDelegationResponse {
   claimableLaunchpadRewardUsd: string;
   unDelegatedAmount: string;
   withdrawableAmount: string;
-  votingWeight: string;
+  delegatedAmount: string;
+  /** Active voting power delegated TO this address by others (incoming, not outgoing). */
+  votingPower: string;
 }

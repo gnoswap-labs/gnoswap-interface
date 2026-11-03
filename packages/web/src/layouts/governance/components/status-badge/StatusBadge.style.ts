@@ -52,7 +52,7 @@ export const StatusBadgeWrapper = styled.div`
 
   .time {
     ${mixins.flexbox("row", "center", "center")};
-    height: 18px;
+    min-height: 18px;
     gap: 6px;
     ${fonts.p4};
     line-height: 18px;

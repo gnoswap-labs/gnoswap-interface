@@ -45,6 +45,13 @@ export const TransactionListTableList = styled.div`
   padding-bottom: 4px;
 `;
 
+export const TransactionListPaginationWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 12px 0 16px;
+`;
+
 export const TransactionListTableRow = styled.div`
   display: flex;
   align-items: center;

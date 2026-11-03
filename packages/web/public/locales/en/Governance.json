@@ -37,6 +37,7 @@
       "execute": "Execute",
       "noVoteWeight": "Insufficient Voting Weight",
       "requireSelect": "Select Voting Option",
+      "tryAgain": "Try Again",
       "vote": "Vote"
     },
     "content": {
@@ -62,6 +63,7 @@
       "selectDel": {
         "address": "Address",
         "description": "Description",
+        "notice": "Your delegate votes on your behalf with the voting power you delegate. To vote on proposals yourself, choose Self-Delegate.",
         "selectBtn": "Select",
         "self": {
           "chip": "Self-Delegate",
@@ -75,12 +77,13 @@
         "tooltip": "Delegates are community leaders who are selected to make governance decisions on behalf of GNS holders."
       },
       "step2": {
+        "notice": "You'll receive 1 xGNS for each GNS you delegate.",
         "title": "2. Enter Amount"
       },
       "step3": {
-        "aprTooltip": "The estimated APR is calculated based  on the Protocol Fee rewards in real time.",
+        "aprTooltip": "Estimated APR for delegated xGNS, averaged over the last 7 days.\n\nDaily APR = (fee rewards + emission rewards for the day) × 365 ÷ USD value of all delegated GNS.\n\nActual returns vary with protocol fees, emission, and total delegation.",
         "currentlyDel": "Currently Delegated",
-        "estimatedAPR": "Estimated APR",
+        "estimatedAPR": "xGNS APR (7D)",
         "newlyDel": "Newly Delegate",
         "title": "3. Your Delegation",
         "votingPowerShare": "Voting Power Share"
@@ -89,8 +92,8 @@
         "select": "Select a Delegate"
       },
       "warning": {
-        "description": "A lock-up period of 7 days is triggered once you undelegate your xGNS. During this period, the locked xGNS tokens will be ineligible to receive protocol rewards and have no voting powers. Be sure to understand the lock-up period before you proceed to delegate.",
-        "title": "Delegation will lock your funds for 7 days"
+        "description": "When you undelegate, your xGNS is locked for 7 days before you can withdraw it. During that time it earns no rewards and has no voting power.",
+        "title": "Undelegating takes 7 days"
       }
     },
     "login": {
@@ -138,13 +141,13 @@
         "title": "3. Your Balance"
       },
       "warning": {
-        "description": "A lock-up period of 7 days is triggered once you undelegate your xGNS. During this period, the locked xGNS tokens will be ineligible to receive protocol rewards and have no voting powers. Be sure to understand the lock-up period before you proceed to undelegate.",
-        "title": "Undelegation will lock your funds for 7 days"
+        "description": "When you undelegate, your xGNS is locked for 7 days before you can withdraw it. During that time it earns no rewards and has no voting power.",
+        "title": "Undelegating takes 7 days"
       }
     },
     "votingWeight": {
       "title": "Delegation",
-      "tooltip": "The amount of xGNS you have delegated, which represents your voting weight in the Gnoswap Governance."
+      "tooltip": "The total xGNS you've delegated. You can only vote with xGNS you've self-delegated. For the rest, your delegates vote on your behalf."
     }
   },
   "proposalList": {
@@ -172,6 +175,10 @@
       "end": "Voting Ends {{rel_time}}",
       "ended": "Voting Ended {{rel_time}}",
       "executable": "Proposal Executable {{rel_time}}",
+      "executableInHours_one": "Executable in {{count}} hour",
+      "executableInHours_other": "Executable in {{count}} hours",
+      "executableInMinutes_one": "Executable in {{count}} minute",
+      "executableInMinutes_other": "Executable in {{count}} minutes",
       "executed": "Proposal Excuted {{rel_time}}",
       "expired": "Proposal Expired {{rel_time}}",
       "h": "in {{time}}h",
@@ -204,11 +211,25 @@
     }
   },
   "summary": {
+    "aprBreakdown": {
+      "disclosure": "Today's fee APR is included in the 7D average from 06:00 UTC.",
+      "emission": "GNS emission",
+      "emissionShort": "Emission",
+      "history": "View APR history",
+      "period": "7D average",
+      "periodShort": "7D",
+      "protocolFees": "Protocol fees",
+      "unavailable": "Not available"
+    },
+    "aprHistory": {
+      "dailyApr": "Total",
+      "vs7dAvg": "vs 7D avg"
+    },
     "apr": {
-      "title": "xGNS APR"
+      "title": "xGNS APR (7D)"
     },
     "apy": {
-      "tooltip": "The estimated APR of xGNS based on the Protocol Fee rewards in real time."
+      "tooltip": "Estimated APR for delegated xGNS, averaged over the last 7 days.\n\nDaily APR = (fee rewards + emission rewards for the day) × 365 ÷ USD value of all delegated GNS.\n\nActual returns vary with protocol fees, emission, and total delegation."
     },
     "commPool": {
       "title": "Community Pool",

@@ -10,9 +10,12 @@ import { pulseSkeletonStyle } from "@constants/skeleton.constant";
 import { useIntersectionObserver } from "@hooks/common/use-interaction-observer";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
+import { PoolStakingSummaryModel } from "@models/pool/pool-staking-summary";
 import { PoolStakingModel } from "@models/pool/pool-staking";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { DEVICE_TYPE } from "@styles/media";
+import { toUnitFormat } from "@utils/number-utils";
+import { getStakingPeriodType } from "@utils/stake-position-utils";
 import { getUniqueRewardTokensWithMultipleRewardTypes } from "@utils/token-utils";
 
 import IncentivizeTokenDetailTooltipContent from "./incentivized-token-detail-tooltip-content/IncentivizeTokenDetailTooltipContent";
@@ -29,6 +32,8 @@ interface StakingContentProps {
   loading: boolean;
   pool: PoolDetailModel | null;
   poolStakings: PoolStakingModel[];
+  stakingSummary: PoolStakingSummaryModel | null;
+  stakingSummaryLoading: boolean;
   hasPoolStaking: boolean;
 }
 
@@ -39,8 +44,6 @@ const TEXT_BTN = [
   "Pool:staking.keepStakingNote.four",
 ];
 
-const DAY_TIME = 24 * 60 * 60 * 1000;
-
 const StakingContent: React.FC<StakingContentProps> = ({
   totalApr,
   stakedPosition,
@@ -50,6 +53,8 @@ const StakingContent: React.FC<StakingContentProps> = ({
   loading,
   pool,
   poolStakings,
+  stakingSummary,
+  stakingSummaryLoading,
   hasPoolStaking,
 }) => {
   const { getGnotPath } = useGnotToGnot();
@@ -105,23 +110,13 @@ const StakingContent: React.FC<StakingContentProps> = ({
       [key in StakingPeriodType]: PoolPositionModel[];
     }>(
       (accum, current) => {
-        const stakedTime = new Date(current.stakedAt).getTime();
-        const difference = (new Date().getTime() - stakedTime) / DAY_TIME;
-        let periodType: StakingPeriodType = "MAX";
-        if (difference < 5) {
-          periodType = "5D";
-        } else if (difference < 10) {
-          periodType = "10D";
-        } else if (difference < 30) {
-          periodType = "30D";
-        }
-        accum[periodType].push(current);
+        accum[getStakingPeriodType(current.stakedAt)].push(current);
         return accum;
       },
       {
         "5D": [],
-        "10D": [],
-        "30D": [],
+        "15D": [],
+        "45D": [],
         MAX: [],
       },
     );
@@ -201,8 +196,25 @@ const StakingContent: React.FC<StakingContentProps> = ({
         )}
       </div>
       <div className="staking-wrap">
-        <span>{t("Pool:staking.myStake")}</span>
+        <div className="staking-header">
+          <div className="staking-header-left" />
+          <div className="staking-header-columns">
+            <span className="my-staking-title">{t("Pool:staking.myStake")}</span>
+            <div className="total-staked-title">
+              <span>{t("Pool:staking.totalStaked")}</span>
+              {stakingSummary && (
+                <span>
+                  {`${toUnitFormat(stakingSummary.totalStakedUsd, true, true)} · ${t("Pool:staking.positionCount", {
+                    count: stakingSummary.totalPositionCount,
+                  })}`}
+                </span>
+              )}
+            </div>
+            <div className="apr-title" />
+          </div>
+        </div>
         {STAKING_PERIOS.map((period, index) => {
+          const tierSummary = stakingSummary?.tiers.find(tier => tier.period === period);
           return period === "MAX" ? (
             <SummuryApr
               loading={loading}
@@ -212,6 +224,8 @@ const StakingContent: React.FC<StakingContentProps> = ({
               positions={stakingPositionMap[period]}
               checkPoints={checkPoints}
               breakpoint={breakpoint}
+              tierSummary={tierSummary}
+              tierSummaryLoading={stakingSummaryLoading}
             />
           ) : (
             <StakingContentCard
@@ -219,9 +233,10 @@ const StakingContent: React.FC<StakingContentProps> = ({
               stakingApr={pool?.stakingApr}
               period={period}
               positions={stakingPositionMap[period]}
-              breakpoint={breakpoint}
               loading={loading}
               checkPoints={checkPoints}
+              tierSummary={tierSummary}
+              tierSummaryLoading={stakingSummaryLoading}
             />
           );
         })}

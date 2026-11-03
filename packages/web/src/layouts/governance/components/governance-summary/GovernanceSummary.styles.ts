@@ -32,6 +32,10 @@ export const GovernanceSummaryWrapper = styled.div`
         cursor: default;
       }
     }
+    .value:has(> .apr-breakdown) {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
   }
 
   > .link-button {

@@ -37,6 +37,7 @@
       "execute": "Exécuter",
       "noVoteWeight": "Poids de vote insuffisant",
       "requireSelect": "Sélectionner l'option de vote",
+      "tryAgain": "Réessayer",
       "vote": "Vote"
     },
     "content": {
@@ -62,6 +63,7 @@
       "selectDel": {
         "address": "Adresse",
         "description": "Description",
+        "notice": "Votre délégué vote en votre nom en utilisant les droits de vote que vous lui avez délégués. Pour voter vous-même sur les propositions, sélectionnez « Délégation à soi-même ».",
         "selectBtn": "Sélectionner",
         "self": {
           "chip": "Autodélégué",
@@ -75,12 +77,13 @@
         "tooltip": "Les délégués sont des dirigeants communautaires sélectionnés pour prendre des décisions de gouvernance au nom des détenteurs de GNS."
       },
       "step2": {
+        "notice": "Vous recevrez 1 xGNS pour chaque GNS que vous délégerez.",
         "title": "2. Saisir le montant"
       },
       "step3": {
-        "aprTooltip": "Le TAEG estimé est calculé en temps réel sur la base de la rémunération des frais de protocole.",
+        "aprTooltip": "TAEG estimé pour les xGNS délégués, calculé en moyenne sur les 7 derniers jours.\n\nTAEG quotidien = (récompenses sous forme de frais + récompenses d'émission pour la journée) × 365 ÷ valeur en USD de l'ensemble des GNS délégués.\n\nLes rendements réels varient en fonction des frais du protocole, de l'émission et du montant total des délégations.",
         "currentlyDel": "Actuellement délégué",
-        "estimatedAPR": "Estimation du TAEG",
+        "estimatedAPR": "xGNS APR (7 jours)",
         "newlyDel": "Nouveau délégué",
         "title": "3. Votre délégation",
         "votingPowerShare": "Pouvoir de vote Action"
@@ -89,8 +92,8 @@
         "select": "Sélectionner un délégué"
       },
       "warning": {
-        "description": "Une période de blocage de 7 jours est déclenchée lorsque vous déléguez vos xGNS. Pendant cette période, les jetons xGNS bloqués ne pourront pas recevoir de récompenses du protocole et n'auront pas de droit de vote. Assurez-vous de bien comprendre la période de blocage avant de procéder à la délégation.",
-        "title": "La délégation bloquera vos fonds pendant 7 jours"
+        "description": "Lorsque vous annulez une délégation, votre xGNS est bloqué pendant 7 jours avant que vous ne puissiez le retirer. Pendant cette période, il ne génère aucune récompense et ne dispose d'aucun droit de vote.",
+        "title": "La révocation d'une délégation prend 7 jours"
       }
     },
     "login": {
@@ -115,7 +118,7 @@
     "undel": {
       "btn": "Réclamation",
       "title": "La non-délégation",
-      "tooltip": "Montant des xGNS non délégués qui pourront être réclamés en GNS après la période de blocage."
+      "tooltip": "La quantité de xGNS non délégués qui pourra être réclamée dans GNS à l'issue de la période de blocage."
     },
     "undelegate": "Non-délégué",
     "undelModal": {
@@ -138,13 +141,13 @@
         "title": "3. Votre équilibre"
       },
       "warning": {
-        "description": "Une période de blocage de 7 jours est déclenchée lorsque vous déléguez vos xGNS. Pendant cette période, les jetons xGNS bloqués ne pourront pas recevoir de récompenses protocolaires et n'auront pas de droit de vote. Assurez-vous de bien comprendre la période de blocage avant de procéder à la délégation.",
-        "title": "L'undelegation bloque vos fonds pendant 7 jours."
+        "description": "Lorsque vous annulez une délégation, votre xGNS est bloqué pendant 7 jours avant que vous ne puissiez le retirer. Pendant cette période, il ne génère aucune récompense et ne dispose d'aucun droit de vote.",
+        "title": "La révocation d'une délégation prend 7 jours"
       }
     },
     "votingWeight": {
       "title": "Délégation",
-      "tooltip": "La quantité de xGNS que vous avez déléguée, qui représente votre poids de vote dans la gouvernance de Gnoswap."
+      "tooltip": "Le total des xGNS que vous avez délégués. Vous ne pouvez voter qu'avec les xGNS que vous vous êtes vous-même délégués. Pour le reste, ce sont vos délégués qui votent en votre nom."
     }
   },
   "proposalList": {
@@ -172,6 +175,12 @@
       "end": "Fin du vote {{rel_time}}",
       "ended": "Vote terminé {{rel_time}}",
       "executable": "Proposition exécutable {{rel_time}}",
+      "executableInHours_one": "Exécutable dans {{count}} heure",
+      "executableInHours_many": "Exécutable dans {{count}} heures",
+      "executableInHours_other": "Exécutable dans {{count}} heures",
+      "executableInMinutes_one": "Exécutable dans {{count}} minute",
+      "executableInMinutes_many": "Exécutable dans {{count}} minutes",
+      "executableInMinutes_other": "Exécutable dans {{count}} minutes",
       "executed": "Proposition excutée {{rel_time}}",
       "expired": "Proposition expirée {{rel_time}}",
       "h": "dans {{time}}h",
@@ -204,11 +213,25 @@
     }
   },
   "summary": {
+    "aprBreakdown": {
+      "disclosure": "L’APR des frais d’aujourd’hui est inclus dans la moyenne sur 7 jours à partir de 06:00 UTC.",
+      "emission": "Émissions de GNS",
+      "emissionShort": "Émission",
+      "history": "Consulter l'historique des taux annuels effectifs globaux (TAEG)",
+      "period": "Moyenne sur 7 jours",
+      "periodShort": "7D",
+      "protocolFees": "Frais de protocole",
+      "unavailable": "Indisponible"
+    },
+    "aprHistory": {
+      "dailyApr": "Total",
+      "vs7dAvg": "vs moy. 7D"
+    },
     "apr": {
-      "title": "xGNS APR"
+      "title": "xGNS APR (7 jours)"
     },
     "apy": {
-      "tooltip": "Le TAEG estimé de xGNS sur la base de la rémunération des frais de protocole en temps réel."
+      "tooltip": "TAEG estimé pour les xGNS délégués, calculé en moyenne sur les 7 derniers jours.\n\nTAEG quotidien = (récompenses sous forme de frais + récompenses d'émission pour la journée) × 365 ÷ valeur en USD de l'ensemble des GNS délégués.\n\nLes rendements réels varient en fonction des frais du protocole, de l'émission et du montant total délégué."
     },
     "commPool": {
       "title": "Piscine communautaire",

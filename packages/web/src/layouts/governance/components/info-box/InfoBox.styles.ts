@@ -142,6 +142,7 @@ export const InfoBoxTooltipContent = styled.div`
   width: auto;
   max-width: calc(300px - 32px);
   ${fonts.body12};
+  white-space: pre-line;
   background-color: ${({ theme }) => theme.color.background02};
   color: ${({ theme }) => theme.color.text02};
 `;

@@ -39,7 +39,7 @@
   "unclaimed": "No reclamado",
   "unclaimedRewards": "Recompensas no reclamadas",
   "warning": {
-    "content": "Esto reiniciará completamente su progreso de apuesta. Una vez que vuelvas a apostar, tendrás que esperar 30 días para empezar a recibir las recompensas máximas por apostar. Asegúrese de entender cómo funciona el periodo de calentamiento antes de volver a apostar.",
+    "content": "Esto restablecerá por completo tu progreso en el staking. Una vez que vuelvas a realizar el staking, tendrás que esperar 45 días para empezar a recibir las recompensas máximas por staking. Asegúrate de comprender cómo funciona el periodo de calentamiento antes de retirar tu staking.",
     "title": "Se reiniciará el progreso de sus apuestas"
   }
 }

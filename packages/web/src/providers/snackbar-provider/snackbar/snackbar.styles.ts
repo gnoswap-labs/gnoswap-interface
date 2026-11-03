@@ -121,7 +121,8 @@ export const SnackbarWrapper = styled.div`
           ${fonts.p2}
         }
       }
-      a,.link {
+      a,
+      .link {
         ${mixins.flexbox("row", "center", "flex-start")};
         ${fonts.body11}
         width: fit-content;
@@ -168,6 +169,14 @@ export const SnackbarWrapper = styled.div`
         border-radius: 0;
 
         .nft-image {
+          width: 32px;
+          height: 32px;
+          min-width: 32px;
+          ${media.mobile} {
+            width: 20px;
+            height: 20px;
+            min-width: 20px;
+          }
           object-fit: contain;
         }
       }

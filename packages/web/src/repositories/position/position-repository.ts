@@ -1,8 +1,8 @@
-import { SendTransactionResponse, WalletResponse } from "@common/clients/wallet-client/protocols";
-import { IPositionHistoryModel } from "@models/position/position-history-model";
+import { SendTransactionResponse, TransactionMessage, WalletResponse } from "@common/clients/wallet-client/protocols";
 import { PositionModel } from "@models/position/position-model";
 
 import { DecreaseLiquidityRequest, IncreaseLiquidityRequest, RepositionLiquidityRequest } from "./request";
+import { IncreaseLiquidityMessagesRequest } from "./request/increase-liquidity-request";
 import { ClaimAllRequest } from "./request/claim-all-request";
 import { ClaimRequest } from "./request/claim-request";
 import { RemoveLiquidityRequest } from "./request/remove-liquidity-request";
@@ -11,30 +11,46 @@ import { UnstakePositionsRequest } from "./request/unstake-positions-request";
 import {
   DecreaseLiquidityFailedResponse,
   DecreaseLiquiditySuccessResponse,
+  GetPositionHistoryResult,
   GetPositionsByAddressResult,
   IncreaseLiquidityFailedResponse,
   IncreaseLiquiditySuccessResponse,
   PositionRewardsResponse,
+  PositionSummaryResponse,
   RepositionLiquidityFailedResponse,
   RepositionLiquiditySuccessResponse,
 } from "./response";
 
+export interface GetPositionsByAddressOptions {
+  poolPath?: string;
+  page?: number;
+  limit?: number;
+  /** API option: when true, include closed positions in the server response. */
+  withClosed?: boolean;
+  withAvailableStake?: boolean;
+  /** API option: when true, only include staked positions. */
+  stakedOnly?: boolean;
+}
+
 export interface PositionRepository {
   getPositionsByAddress: (
     address: string,
-    options?: {
-      poolPath?: string;
-      page?: number;
-      limit?: number;
-      /** API option: when true, include closed positions in the server response. */
-      withClosed?: boolean;
-      withAvailableStake?: boolean;
-    },
+    options?: GetPositionsByAddressOptions,
   ) => Promise<GetPositionsByAddressResult>;
 
-  getPositionRewardsByAddress: (address: string) => Promise<PositionRewardsResponse | null>;
+  /** Fetches every page of `getPositionsByAddress` and merges the results. */
+  getAllPositionsByAddress: (
+    address: string,
+    options?: Omit<GetPositionsByAddressOptions, "page" | "limit">,
+  ) => Promise<GetPositionsByAddressResult>;
 
-  getPositionById: (lpTokenId: string) => Promise<PositionModel>;
+  getPositionRewardsByAddress: (address: string, poolPath?: string) => Promise<PositionRewardsResponse | null>;
+
+  getPositionRewardsByAddressAndId: (address: string, positionId: string) => Promise<PositionRewardsResponse>;
+
+  getPositionSummaryByAddress: (address: string, poolPath?: string) => Promise<PositionSummaryResponse>;
+
+  getPositionById: (lpTokenId: string, timeout?: number) => Promise<PositionModel>;
 
   sendClaim: (request: ClaimRequest) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
 
@@ -45,6 +61,9 @@ export interface PositionRepository {
   unstakePositions: (
     request: UnstakePositionsRequest,
   ) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
+
+  /** The messages `increaseLiquidity` would broadcast, approvals included. */
+  makeIncreaseLiquidityMessages: (request: IncreaseLiquidityMessagesRequest) => Promise<TransactionMessage[]>;
 
   increaseLiquidity: (
     request: IncreaseLiquidityRequest,
@@ -62,7 +81,7 @@ export interface PositionRepository {
     request: RemoveLiquidityRequest,
   ) => Promise<WalletResponse<SendTransactionResponse<string[] | null>>>;
 
-  getPositionHistory: (lpTokenId: string) => Promise<IPositionHistoryModel[]>;
+  getPositionHistory: (lpTokenId: string, page?: number, limit?: number) => Promise<GetPositionHistoryResult>;
 
   getUnstakingFee: () => Promise<number>;
 }

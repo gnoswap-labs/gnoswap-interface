@@ -19,25 +19,31 @@ export interface TableHeadItem {
 export const TABLE_HEAD = {
   INDEX: { label: "Leaderboard:list.column.rank" },
   USER: { label: "Leaderboard:list.column.user" },
-  VOLUME: {
+  SWAP: {
     label: "Leaderboard:list.column.swap",
-    tooltip: "Leaderboard:list.column.tooltip.volume",
-  },
-  POSITION: {
-    label: "Leaderboard:list.column.position",
-    tooltip: "Leaderboard:list.column.tooltip.position",
+    tooltip: "Leaderboard:list.column.tooltip.swap",
   },
   STAKING: {
     label: "Leaderboard:list.column.staking",
     tooltip: "Leaderboard:list.column.tooltip.staking",
   },
-  POINTS: { label: "Leaderboard:list.column.points" },
+  DELEGATION: {
+    label: "Leaderboard:list.column.delegation",
+    tooltip: "Leaderboard:list.column.tooltip.delegation",
+  },
+  POINTS: {
+    label: "Leaderboard:list.column.points",
+    tooltip: "Leaderboard:list.column.tooltip.points",
+  },
 } as const;
 
 export const TABLE_HEAD_MOBILE = {
   INDEX: { label: "Leaderboard:list.column.rank" },
   USER: { label: "Leaderboard:list.column.user" },
-  POINTS: { label: "Leaderboard:list.column.points" },
+  POINTS: {
+    label: "Leaderboard:list.column.points",
+    tooltip: "Leaderboard:list.column.tooltip.points",
+  },
 } as const;
 
 export type TABLE_HEAD = ValuesType<typeof TABLE_HEAD>;

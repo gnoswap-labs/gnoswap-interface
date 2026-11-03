@@ -85,11 +85,52 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
     }
   }
   .staking-wrap {
-    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    display: grid;
+    grid-template-columns: 380px minmax(min-content, 1fr) minmax(250px, 335px) minmax(min-content, max-content);
+    align-items: center;
     width: 100%;
     gap: 8px;
+    ${media.tablet} {
+      grid-template-columns: 260px minmax(min-content, 1fr) minmax(250px, 335px) minmax(min-content, max-content);
+    }
+    ${media.tabletMiddle} {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+    }
     ${media.mobile} {
       gap: 16px;
+    }
+    .staking-header,
+    .staking-header-columns {
+      display: contents;
+      ${media.tabletMiddle} {
+        display: flex;
+      }
+    }
+    .staking-header {
+      ${media.tabletMiddle} {
+        width: 100%;
+      }
+    }
+    .staking-header-left {
+      ${media.tabletMiddle} {
+        display: none;
+      }
+    }
+    .my-staking-title {
+      white-space: nowrap;
+    }
+    .total-staked-title {
+      ${mixins.flexbox("row", "center", "space-between")};
+      gap: 8px;
+      white-space: nowrap;
+      ${media.tabletMiddle} {
+        display: none;
+      }
+    }
+    .apr-title {
+      ${media.tabletMiddle} {
+        display: none;
+      }
     }
 
     span {
@@ -104,29 +145,32 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
     }
   }
   .empty-content {
-    max-width: 350px;
-    min-width: 350px;
-    flex: 1;
+    flex: 0 0 388px;
+    ${media.tablet} {
+      flex-basis: 268px;
+    }
     ${media.tabletMiddle} {
-      min-width: 32px;
+      flex-basis: 32px;
     }
   }
   .button-wrap {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;
+    > button {
+      flex: 1;
+      min-width: 0;
+    }
     .loading-button {
     }
     .loading-wrapper {
       ${mixins.flexbox("row", "center", "center")};
-      width: 100%;
-      max-width: 900px;
+      flex: 1;
       background-color: ${({ theme }) => theme.color.backgroundOpacity2};
       border-radius: 8px;
       padding: 12px 16px;
       text-align: center;
     }
     .change-weight {
-      max-width: 900px;
       cursor: default;
       border: 1px solid ${({ theme }) => theme.color.border14};
       span {
@@ -139,7 +183,6 @@ export const StakingContentWrapper = styled.div<StakingContentProps>`
       gap: 20px;
     }
     .receive-button {
-      max-width: 900px;
       cursor: default;
       background: ${({ theme }) => theme.color.background21};
       border: 1px solid ${({ theme }) => theme.color.border16};

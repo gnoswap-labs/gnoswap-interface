@@ -5,6 +5,8 @@ import { media } from "@styles/media";
 
 export const wrapper = (theme: Theme) => css`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
+  width: 100%;
+  min-width: 0;
   h3 {
     color: ${theme.color.text01};
     ${fonts.body11};
@@ -15,6 +17,8 @@ export const wrapper = (theme: Theme) => css`
   }
   .contract-path {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
+    width: 100%;
+    min-width: 0;
     margin-bottom: 24px;
     gap: 12px;
     h4 {
@@ -23,9 +27,18 @@ export const wrapper = (theme: Theme) => css`
     }
     button {
       margin-left: 0;
+      max-width: 100%;
+      min-height: 24px;
+      height: auto;
+      text-align: left;
+      > span {
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
     }
     .icon-wrapper {
       position: relative;
+      flex-shrink: 0;
       ${mixins.flexbox("row", "center", "flex-start")};
     }
     ${media.mobile} {

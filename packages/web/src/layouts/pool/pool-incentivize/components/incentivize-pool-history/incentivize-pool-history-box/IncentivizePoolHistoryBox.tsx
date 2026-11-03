@@ -18,7 +18,6 @@ import IconInfo from "@components/common/icons/IconInfo";
 import IconOpenLink from "@components/common/icons/IconOpenLink";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
-import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useRemoveExternalIncentive } from "@query/pools/use-remove-external-incentive";
 import { historyTooltipContent, IncentivizePoolHistoryBoxWrapper } from "./IncentivizePoolHistoryBox.styles";
@@ -30,7 +29,6 @@ interface IncentivizePoolHistoryBoxProps {
 
 const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHistoryBoxProps) => {
   const { t } = useTranslation();
-  const { rpcProvider } = useGnoswapContext();
 
   const { rewardToken, incentiveId } = stakingData;
 
@@ -110,17 +108,16 @@ const IncentivizePoolHistoryBox = ({ stakingData, poolPath }: IncentivizePoolHis
     }
 
     if (isExternalIncentiveRefunded) {
-      void collectExternalIncentivePenalty({ rpcProvider });
+      void collectExternalIncentivePenalty();
       return;
     }
 
-    void removeExternalIncentive({ rpcProvider });
+    void removeExternalIncentive();
   }, [
     collectExternalIncentivePenalty,
     isClaimDisabled,
     isExternalIncentiveRefunded,
     removeExternalIncentive,
-    rpcProvider,
   ]);
 
   const renderDataMapping = () => {

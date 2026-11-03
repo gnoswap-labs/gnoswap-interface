@@ -16,7 +16,7 @@ export interface EarnMyPositionsHeaderProps {
   addressName?: string;
   isOtherPosition: boolean;
   visiblePositions: boolean;
-  positionLength: number;
+  positionLength?: number;
   connected: boolean;
   isSwitchNetwork: boolean;
   availableStake: boolean;
@@ -73,15 +73,21 @@ const EarnMyPositionsHeader: React.FC<EarnMyPositionsHeaderProps> = ({
             <span className="name" onClick={onClickAddressPosition}>
               {addressName}
             </span>
-            <span>{`${t("Earn:positions.title", {
-              context: "other",
-            })} (${positionLength.toLocaleString()})`}</span>
+            <span>
+              {t("Earn:positions.title", { context: "other" })}
+              {positionLength !== undefined && ` (${positionLength.toLocaleString()})`}
+            </span>
           </>
         );
       }
 
       if (connected) {
-        return <span>{`${t("Earn:positions.title")} (${positionLength.toLocaleString()})`}</span>;
+        return (
+          <span>
+            {t("Earn:positions.title")}
+            {positionLength !== undefined && ` (${positionLength.toLocaleString()})`}
+          </span>
+        );
       }
 
       return <span>{t("Earn:positions.title")}</span>;

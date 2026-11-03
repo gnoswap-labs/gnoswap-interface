@@ -16,20 +16,14 @@ import { TokenModel } from "@models/token/token-model";
 import { DexEvent } from "@repositories/common";
 import { CommonState } from "@states/index";
 
-import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
-import { fetchAllowance } from "@common/clients/wallet-client/transaction-messages";
-import { CommonError } from "@common/errors";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
-import { useNetworkFee } from "@hooks/common/use-network-fee";
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
-import { getGasUsed } from "@hooks/gas";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { QUERY_KEY } from "@query/query-keys";
-import { makeIncreaseLiquidityMessagesWithApproves } from "@repositories/position/position.message";
 import { IncreaseLiquidityRequest } from "@repositories/position/request";
 import { delay } from "@utils/common";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
+import { makeDisplayTokenAmount, withTokenRouteMetadata } from "@utils/token-utils";
 import IncreasePositionModalContainer from "../../../layouts/pool/pool-increase-liquidity/containers/increase-position-modal-container/IncreasePositionModalContainer";
 
 export interface Props {
@@ -69,11 +63,10 @@ export const useIncreasePositionModal = ({
   const { walletClient, currentChainId } = useWallet();
   const { broadcastRejected, broadcastSuccess, broadcastLoading, broadcastError } = useBroadcastHandler();
   const { enqueueEvent } = useTransactionEventStore();
-  const { estimateNetworkFee } = useNetworkFee(null);
   const { invalidateQueryKey } = useInvalidateQueries();
 
   const router = useRouter();
-  const { positionRepository, transactionService } = useGnoswapContext();
+  const { positionRepository } = useGnoswapContext();
   const { address } = useAddress();
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
   const [, setModalContent] = useAtom(CommonState.modalContent);
@@ -81,12 +74,13 @@ export const useIncreasePositionModal = ({
   const poolPath = selectedPosition?.poolPath || "";
 
   // Refetch functions
-  const { updateBalances } = useTokenData(true);
+  const { tokens, isFetched: isFetchedTokens, updateBalances } = useTokenData(true);
 
   const handleRefreshData = useCallback(async () => {
     invalidateQueryKey("IncreasePosition", [
       [QUERY_KEY.pools],
       [QUERY_KEY.positions, currentChainId, address],
+      [QUERY_KEY.positionSummary, currentChainId, address],
       [QUERY_KEY.poolDetail, poolPath],
       [QUERY_KEY.poolLiquidityTicks],
     ]);
@@ -121,37 +115,12 @@ export const useIncreasePositionModal = ({
     };
   }, [swapFeeTier, tokenA, tokenAAmountInput, tokenBAmountInput, tokenB]);
 
-  const buildAdenaWalletAction = async (request: IncreaseLiquidityRequest) => {
+  const buildWalletAction = async (request: IncreaseLiquidityRequest) => {
     return await positionRepository.increaseLiquidity(request).catch(() => null);
   };
 
-  const buildSocialWalletAction = async (rpcProvider: GnoProvider | null, request: IncreaseLiquidityRequest) => {
-    if (!rpcProvider) {
-      console.log("IncreaseLiquidity: ", new CommonError("FAILED_INITIALIZE_GNO_PROVIDER"));
-      return null;
-    }
-
-    const getAllowance = (packagePath: string, owner: string, spender: string) => {
-      return fetchAllowance(rpcProvider, packagePath, owner, spender);
-    };
-
-    const txMessages = await makeIncreaseLiquidityMessagesWithApproves(request, getAllowance);
-
-    const txDoc = await transactionService.createDocument({ messages: txMessages });
-    await transactionService.createTransaction(txDoc);
-
-    const { currentGasInfo, networkFee } = await estimateNetworkFee(txDoc);
-    const requestWithGasInfo: IncreaseLiquidityRequest = {
-      ...request,
-      gasFee: networkFee?.amount,
-      gasUsed: getGasUsed(currentGasInfo).toString(),
-    };
-
-    return await positionRepository.increaseLiquidity(requestWithGasInfo).catch(() => null);
-  };
-
-  const increaseLiquidity = async ({ rpcProvider }: { rpcProvider: GnoProvider | null }) => {
-    if (!address || !selectedPosition) {
+  const increaseLiquidity = async () => {
+    if (!address || !selectedPosition || !isFetchedTokens) {
       return false;
     }
 
@@ -178,8 +147,8 @@ export const useIncreasePositionModal = ({
     const deadline = (Math.floor(Date.now() / 1000) + 60 * 5).toString();
     const request: IncreaseLiquidityRequest = {
       lpTokenId: selectedPosition.id.toString(),
-      tokenA: tokenA,
-      tokenB: tokenB,
+      tokenA: withTokenRouteMetadata(tokenA, tokens),
+      tokenB: withTokenRouteMetadata(tokenB, tokens),
       tokenAAmount: Number(tokenAAmountInput.amount),
       tokenBAmount: Number(tokenBAmountInput.amount),
       slippage: slippage,
@@ -187,9 +156,7 @@ export const useIncreasePositionModal = ({
       deadline,
     };
 
-    const result = await (walletType === "ADENA"
-      ? buildAdenaWalletAction(request)
-      : buildSocialWalletAction(rpcProvider, request));
+    const result = await buildWalletAction(request);
 
     if (result) {
       if (result.code === 0 || result.code === ERROR_VALUE.TRANSACTION_FAILED.status) {

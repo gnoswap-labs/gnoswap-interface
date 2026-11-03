@@ -35,6 +35,10 @@ export const EXT_URL = {
     ROOT: "https://github.com/gnoswap-labs",
     CONTRACTS: "https://github.com/gnoswap-labs/gnoswap",
   },
+  LAUNCHPAD: {
+    SUBMIT_PROJECT:
+      "https://docs.google.com/forms/d/e/1FAIpQLSf8ZIBfQF8fPAKiWXyHjgpznD_lZ75tLtROqA0IzHJ4YJbNZQ/viewform",
+  },
   AUDIT: "https://github.com/gnoswap-labs/gnoswap/tree/main/audits",
   BRIDGE: "https://bridge.onbloc.xyz/",
 } as const;

@@ -2,24 +2,28 @@ import IconClose from "@components/common/icons/IconCancel";
 import IconSearch from "@components/common/icons/IconSearch";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { TokenModel } from "@models/token/token-model";
-import { ORDER } from "@utils/token-sort";
+import { getSwapExtensionByOriginPath } from "@resources/swap-extension";
 import { TokenState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
-import { removeDuplicatesByWrappedPath } from "@utils/common";
-import { formatTokenModelPath } from "@utils/token-utils";
+import { parseJson, removeDuplicatesByWrappedPath } from "@utils/common";
+import { formatTokenModelPath, formatTokenPath } from "@utils/token-utils";
+import { keepVerified } from "@utils/token-verification-filter";
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import IconNewTab from "../icons/IconNewTab";
 import MissingLogo from "../missing-logo/MissingLogo";
+import ShowUnverifiedTokensSwitch from "../show-unverified-tokens-switch/ShowUnverifiedTokensSwitch";
 import { Divider, SelectTokenWrapper, TokenInfoWrapper } from "./SelectToken.styles";
+
+const MAX_TOKEN_CHIPS = 4;
 
 export interface SelectTokenProps {
   keyword: string;
   defaultTokens: TokenModel[];
   tokens: TokenModel[];
-  tokenPrices: { [key in string]: number | null };
+  tokenPrices: { [key in string]: string | number | null };
   changeKeyword: (keyword: string) => void;
   changeToken: (token: TokenModel) => void;
   close: () => void;
@@ -27,6 +31,8 @@ export interface SelectTokenProps {
   breakpoint: DEVICE_TYPE;
   recents: TokenModel[];
   isSwitchNetwork: boolean;
+  showUnverified: boolean;
+  toggleShowUnverified: () => void;
 }
 
 const SelectToken: React.FC<SelectTokenProps> = ({
@@ -41,25 +47,30 @@ const SelectToken: React.FC<SelectTokenProps> = ({
   breakpoint,
   recents = [],
   isSwitchNetwork,
+  showUnverified,
+  toggleShowUnverified,
 }) => {
   const { t } = useTranslation();
 
   const myElementRef = useRef<HTMLDivElement | null>(null);
-  const priceRefs = useRef(tokens.map(() => React.createRef<HTMLSpanElement>()));
-  const tokenNameRef = useRef(tokens.map(() => React.createRef<HTMLSpanElement>()));
+  const priceRefs = useRef<React.RefObject<HTMLSpanElement>[]>([]);
+  const tokenNameRef = useRef<React.RefObject<HTMLSpanElement>[]>([]);
+  // Keep one ref per row, since the list grows when unverified tokens are shown.
+  priceRefs.current = tokens.map((_, index) => priceRefs.current[index] ?? React.createRef<HTMLSpanElement>());
+  tokenNameRef.current = tokens.map((_, index) => tokenNameRef.current[index] ?? React.createRef<HTMLSpanElement>());
   const [widthList, setWidthList] = useState<number[]>(tokens.map(() => 0));
   const [tokenNameWidthList, setTokenNameWidthList] = useState<number[]>(tokens.map(() => 0));
   const [, setRecentsData] = useAtom(TokenState.selectRecents);
-  const { getGnoscanUrl, getTokenUrl } = useGnoscanUrl();
+  const { getGnoscanUrl, getRealmUrl, getTokenUrl } = useGnoscanUrl();
 
   const getTokenPrice = useCallback(
     (token: TokenModel) => {
-      const tokenPrice = tokenPrices[token.path];
-      if (!tokenPrice || tokenPrice === null || Number.isNaN(tokenPrice) || isSwitchNetwork) {
+      const balance = BigNumber(tokenPrices[token.path] ?? "");
+      if (balance.isNaN() || balance.isLessThanOrEqualTo(0) || isSwitchNetwork) {
         return "-";
       }
 
-      return BigNumber(tokenPrice).toFormat();
+      return balance.toFormat();
     },
     [tokenPrices, isSwitchNetwork],
   );
@@ -69,22 +80,14 @@ const SelectToken: React.FC<SelectTokenProps> = ({
 
   const onClickToken = useCallback(
     (token: TokenModel) => {
-      const current = [...recents, token].filter(item => !ORDER.includes(item.symbol));
-      const filterData = current
-        .filter(recentToken => tokens.some(token => token.path === recentToken.path))
-        .filter((_item, index) => {
-          const _value = JSON.stringify(_item);
-          return (
-            index ===
-            current.findIndex(obj => {
-              return JSON.stringify(obj) === _value;
-            })
-          );
-        });
-      setRecentsData(JSON.stringify(filterData.slice(filterData.length <= 4 ? 0 : 1, filterData.length <= 4 ? 4 : 5)));
+      setRecentsData(previous => {
+        const storedRecents: TokenModel[] = parseJson(previous || "[]");
+        const nextRecents = [token, ...storedRecents.filter(item => item.path !== token.path)].slice(0, MAX_TOKEN_CHIPS);
+        return JSON.stringify(nextRecents);
+      });
       changeToken(token);
     },
-    [changeToken, close, recents],
+    [changeToken, setRecentsData],
   );
 
   const onChangeSearchKeyword = useCallback(
@@ -122,26 +125,35 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       e.stopPropagation();
       if (token.path === "ugnot") {
         window.open(getGnoscanUrl(), "_blank");
+      } else if (getSwapExtensionByOriginPath(token.path)) {
+        window.open(getRealmUrl(token.path), "_blank");
       } else {
         window.open(getTokenUrl(token.path), "_blank");
       }
     },
-    [getGnoscanUrl, getTokenUrl],
+    [getGnoscanUrl, getRealmUrl, getTokenUrl],
   );
 
   const length = useMemo(() => {
     return breakpoint === DEVICE_TYPE.MOBILE ? 10 : 15;
   }, [breakpoint]);
 
-  const getTokensRecent = removeDuplicatesByWrappedPath([...defaultTokens, ...recents]);
+  // The container resolves recents for display; selection updates the complete stored history.
+  const getTokensRecent = removeDuplicatesByWrappedPath([...keepVerified(recents, showUnverified), ...defaultTokens]).slice(
+    0,
+    MAX_TOKEN_CHIPS,
+  );
 
   return (
     <SelectTokenWrapper ref={myElementRef}>
       <div className="content">
         <div className="header">
           <span>{t("common:selectPairBtn.modal.title")}</span>
-          <div className="close-wrap" onClick={onClickClose}>
-            <IconClose className="close-icon" />
+          <div className="header-actions">
+            <ShowUnverifiedTokensSwitch checked={showUnverified} onChange={toggleShowUnverified} compact />
+            <div className="close-wrap" onClick={onClickClose}>
+              <IconClose className="close-icon" />
+            </div>
           </div>
         </div>
         <div className="search-wrap">
@@ -178,7 +190,9 @@ const SelectToken: React.FC<SelectTokenProps> = ({
       <div className={`token-list-wrapper ${tokens.length === 0 ? "token-list-wrapper-auto-height" : ""}`}>
         {tokens.length > 0 &&
           tokens.map((token, index) => {
-            const displayTokenPath = formatTokenModelPath(token);
+            const displayTokenPath = getSwapExtensionByOriginPath(token.path)
+              ? formatTokenPath(token.path, false)
+              : formatTokenModelPath(token);
             return (
               <div className="list" key={index} onClick={() => onClickToken(token)}>
                 <div className="token-info">

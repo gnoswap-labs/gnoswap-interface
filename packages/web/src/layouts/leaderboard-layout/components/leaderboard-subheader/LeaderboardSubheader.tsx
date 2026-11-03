@@ -1,5 +1,5 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 import { VIDEO_GUIDE_TYPES } from "@constants/video-guide.constant";
 
@@ -30,7 +30,8 @@ const LeaderboardSubheader = ({
       <TitleWrapper>
         <FontSize16>
           <P as="span" color="text04">
-            {t("Leaderboard:subHeader.description")}&nbsp;
+            <Trans i18nKey="Leaderboard:subHeader.description" components={{ br: <br /> }} />
+            &nbsp;
           </P>
           <VideoGuideTrigger text={`${t("common:guide.learnMore")} ▶`} onClick={handleOpenVideoGuide} />
         </FontSize16>

@@ -26,6 +26,9 @@ type Story = StoryObj<typeof MyLiquidityContent>;
 export const Default: Story = {
   args: {
     breakpoint: DEVICE_TYPE.WEB,
+    tokens: [],
+    positionRewards: null,
+    isLoadingPositionRewards: false,
   },
 };
 

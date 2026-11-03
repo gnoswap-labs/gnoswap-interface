@@ -10,6 +10,7 @@ import {
   PACKAGE_GOVERNANCE_STAKER_ADDRESS,
   PACKAGE_GOVERNANCE_STAKER_PATH,
 } from "@constants/environment.constant";
+import { TokenModel } from "@models/token/token-model";
 import { makeProposalVariablesQuery } from "@utils/governance-utils";
 
 enum TransactionMessageFunctionType {
@@ -23,7 +24,8 @@ enum TransactionMessageFunctionType {
   Undelegate = "Undelegate",
   Redelegate = "Redelegate",
   CollectUnDelegatedGNS = "CollectUndelegatedGns",
-  CollectReward = "CollectReward",
+  CollectProtocolFeeReward = "CollectProtocolFeeReward",
+  CollectEmissionReward = "CollectEmissionReward",
 }
 
 export function makeProposalTextMessages({
@@ -158,11 +160,13 @@ export function makeExecuteMessages({
 export function makeDelegateMessagesWithApproves(
   {
     to,
+    gnsToken,
     amount,
     caller,
     referrerAddress,
   }: {
     to: string;
+    gnsToken: TokenModel;
     amount: string;
     caller: string;
     referrerAddress: string | null;
@@ -180,6 +184,8 @@ export function makeDelegateMessagesWithApproves(
   const approveMessageInfos: TokenApproveMessageInfo[] = [
     {
       tokenPath: GNS_TOKEN_PATH,
+      pkgPath: gnsToken.pkgPath,
+      routes: gnsToken.routes,
       targetAddress: PACKAGE_GOVERNANCE_STAKER_ADDRESS,
       amount,
       caller,
@@ -198,7 +204,7 @@ export function makeUnDelegateMessages({
   amount: string;
   caller: string;
 }): TransactionMessage[] {
-  const delegateTransactionMessage = makeTransactionMessage({
+  const undelegateTransactionMessage = makeTransactionMessage({
     packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
     send: "",
     func: TransactionMessageFunctionType.Undelegate,
@@ -206,17 +212,19 @@ export function makeUnDelegateMessages({
     caller,
   });
 
-  return [delegateTransactionMessage];
+  return [undelegateTransactionMessage];
 }
 
 export function makeReDelegateMessagesWithApproves(
   {
     from,
+    gnsToken,
     to,
     amount,
     caller,
   }: {
     from: string;
+    gnsToken: TokenModel;
     to: string;
     amount: string;
     caller: string;
@@ -234,6 +242,8 @@ export function makeReDelegateMessagesWithApproves(
   const approveMessageInfos: TokenApproveMessageInfo[] = [
     {
       tokenPath: GNS_TOKEN_PATH,
+      pkgPath: gnsToken.pkgPath,
+      routes: gnsToken.routes,
       targetAddress: PACKAGE_GOVERNANCE_STAKER_ADDRESS,
       amount,
       caller,
@@ -255,14 +265,32 @@ export function makeCollectUnDelegatedGNSMessages({ caller }: { caller: string }
   return [collectUnDelegateGNSTransactionMessage];
 }
 
-export function makeCollectRewardMessages({ caller }: { caller: string }): TransactionMessage[] {
-  const collectUnDelegateGNSTransactionMessage = makeTransactionMessage({
-    packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
-    send: "",
-    func: TransactionMessageFunctionType.CollectReward,
-    args: [],
-    caller,
-  });
+export function makeCollectProtocolFeeRewardMessages({
+  tokenPaths,
+  caller,
+}: {
+  tokenPaths: string[];
+  caller: string;
+}): TransactionMessage[] {
+  return tokenPaths.map(tokenPath =>
+    makeTransactionMessage({
+      packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
+      send: "",
+      func: TransactionMessageFunctionType.CollectProtocolFeeReward,
+      args: [tokenPath],
+      caller,
+    }),
+  );
+}
 
-  return [collectUnDelegateGNSTransactionMessage];
+export function makeCollectEmissionRewardMessages({ caller }: { caller: string }): TransactionMessage[] {
+  return [
+    makeTransactionMessage({
+      packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
+      send: "",
+      func: TransactionMessageFunctionType.CollectEmissionReward,
+      args: [],
+      caller,
+    }),
+  ];
 }

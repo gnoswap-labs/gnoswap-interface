@@ -89,6 +89,7 @@ interface TooltipProps {
   scroll?: boolean;
   useBasicZIndex?: boolean;
   onChangeOpen?: (open: boolean) => void;
+  interactive?: boolean;
 }
 
 const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
@@ -103,10 +104,11 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
   scroll = false,
   useBasicZIndex = false,
   onChangeOpen = undefined,
+  interactive = false,
 }) => {
   const theme = useTheme();
   const themeKey = useAtomValue(ThemeState.themeKey);
-  const { open, refs, strategy, x, y, context, arrowRef } = useTooltip({
+  const { open, refs, strategy, x, y, context, arrowRef, getReferenceProps, getFloatingProps } = useTooltip({
     placement,
   });
   const childrenRef = useMergeRefs([refs.setReference]);
@@ -167,6 +169,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
     <>
       <BaseTooltipWrapper
         ref={childrenRef}
+        {...(interactive ? getReferenceProps() : {})}
         data-state={open && forcedClose ? "open" : "closed"}
         style={{
           display: "flex",
@@ -180,6 +183,7 @@ const Tooltip: React.FC<React.PropsWithChildren<TooltipProps>> = ({
         {showTooltip && (
           <div
             ref={floatingRef}
+            {...(interactive ? getFloatingProps() : {})}
             style={{
               position: strategy,
               top: y ?? 0,

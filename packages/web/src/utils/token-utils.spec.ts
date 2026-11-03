@@ -1,5 +1,6 @@
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import { TokenModel } from "@models/token/token-model";
+import { swapExtensions } from "@resources/swap-extension";
 import {
   formatDisplayTokenName,
   formatDisplayTokenSymbol,
@@ -10,6 +11,7 @@ import {
   isNativeTokenPath,
   makeDisplayTokenAmount,
   makeRawTokenAmount,
+  withTokenRouteMetadata,
 } from "./token-utils";
 
 const DEFAULT_TOKEN: TokenModel = {
@@ -26,6 +28,30 @@ const DEFAULT_TOKEN: TokenModel = {
   createdAt: "",
 };
 
+
+describe("withTokenRouteMetadata", () => {
+  it("uses metadata from the token matching the wrapped transaction path", () => {
+    const nativeToken: TokenModel = {
+      ...DEFAULT_TOKEN,
+      path: "ugnot",
+      type: "Native",
+      wrappedPath: "wugnot",
+    };
+    const wrappedToken: TokenModel = {
+      ...DEFAULT_TOKEN,
+      path: "wugnot",
+      pkgPath: "wugnot_package",
+      routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
+    };
+
+    expect(withTokenRouteMetadata(nativeToken, [wrappedToken])).toEqual({
+      ...nativeToken,
+      pkgPath: wrappedToken.pkgPath,
+      routes: wrappedToken.routes,
+    });
+  });
+});
+
 describe("format display token symbol", () => {
   it("should keep token symbols with 9 or fewer characters", () => {
     expect(formatDisplayTokenSymbol("GNOT")).toBe("GNOT");
@@ -37,6 +63,13 @@ describe("format display token symbol", () => {
     expect(formatDisplayTokenSymbol("ibc/488D610A5FB7878660703092A35BC4E7D0C88E2EA71174337AA317A22C05177F")).toBe(
       "ibc/488D6...",
     );
+  });
+
+  it("uses extension metadata for a wrapped token display symbol", () => {
+    const extension = swapExtensions[0];
+
+    expect(formatDisplayTokenSymbol("BUBBLE", extension.grc20WrappedTokenPath)).toBe("wBUBBLE");
+    expect(formatDisplayTokenSymbol("BUBBLE", extension.originTokenPath)).toBe("BUBBLE");
   });
 });
 

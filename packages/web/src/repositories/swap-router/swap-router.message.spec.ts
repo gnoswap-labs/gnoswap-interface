@@ -5,6 +5,8 @@ import {
 import type { TransactionMessage } from "@common/clients/wallet-client/transaction-messages/common";
 import type { EstimatedRoute } from "@models/swap/swap-route-info";
 import type { TokenModel } from "@models/token/token-model";
+import { createOriginToken, swapExtensions } from "@resources/swap-extension";
+import { getAddressByPackagePath } from "@utils/package-utils";
 
 jest.mock("@constants/environment.constant", () => ({
   PACKAGE_GRC20_REGISTRY_PATH: "grc20reg_path",
@@ -14,9 +16,12 @@ jest.mock("@constants/environment.constant", () => ({
   WRAPPED_GNOT_PACKAGE_PATH: "wugnot",
 }));
 
+
 import {
   makeExactInSwapRouteMessageWithApproves,
   makeExactOutSwapRouteMessageWithApproves,
+  makeUnwrapTokenMessages,
+  makeWrapTokenMessages,
 } from "@repositories/swap-router/swap-router.message";
 
 const createTokenModel = (path: string, overrides?: Partial<TokenModel>): TokenModel => ({
@@ -32,6 +37,19 @@ const createTokenModel = (path: string, overrides?: Partial<TokenModel>): TokenM
   priceID: path,
   ...overrides,
 });
+
+const routedNativeGnot = createTokenModel("ugnot", {
+  type: "Native",
+  wrappedPath: "wugnot",
+  pkgPath: "wugnot_package",
+  routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
+});
+
+const bubbleExtension = swapExtensions[0];
+const wrappedBubbleToken = createTokenModel(bubbleExtension.grc20WrappedTokenPath, {
+  pkgPath: bubbleExtension.grc20WrappedPackagePath,
+});
+const bubbleToken = createOriginToken(bubbleExtension, wrappedBubbleToken);
 
 const route: EstimatedRoute = {
   quote: 1,
@@ -52,11 +70,45 @@ const route: EstimatedRoute = {
 
 const splitMessages = (messages: TransactionMessage[], approveCount: number) => ({
   approveMessages: messages.slice(0, approveCount),
-  txMessages: messages.slice(approveCount, messages.length - approveCount),
-  resetMessages: messages.slice(messages.length - approveCount),
+  txMessages: messages.slice(approveCount),
 });
 
 describe("swap-router.message.ts", () => {
+  it("keeps the exact raw amount in swap args and approval for a balance above Number.MAX_SAFE_INTEGER", async () => {
+    // Regression: on-chain USDC balance 62667447936264477 (6 decimals)
+    const caller = "caller";
+    const inputToken = createTokenModel("token_in");
+    const outputToken = createTokenModel("token_out");
+    const fetchAllowance = jest.fn(async () => 0);
+
+    const messages = await makeExactInSwapRouteMessageWithApproves(
+      {
+        inputToken,
+        outputToken,
+        tokenAmount: "62667447936.264477",
+        estimatedRoutes: [route],
+        tokenAmountLimit: "2",
+        deadline: 123,
+        caller,
+        referrerAddress: null,
+      },
+      fetchAllowance,
+    );
+
+    const { approveMessages, txMessages } = splitMessages(messages, 1);
+
+    expect(approveMessages).toEqual([
+      makeExpectedApproveRunMessage({
+        caller,
+        approves: [{ tokenPath: "token_in", spenderAddress: "router_address", amount: "62667447936264477" }],
+      }),
+    ]);
+    expect(txMessages[0]).toMatchObject({
+      func: "ExactInSwapRoute",
+      args: ["token_in", "token_out", "62667447936264477", "token_in:token_out:3000", "1", "2000000", "123", ""],
+    });
+  });
+
   it("approves only input token for exact-in swaps using exact input amount", async () => {
     const caller = "caller";
     const inputToken = createTokenModel("token_in");
@@ -67,9 +119,9 @@ describe("swap-router.message.ts", () => {
       {
         inputToken,
         outputToken,
-        tokenAmount: 1.25,
+        tokenAmount: "1.25",
         estimatedRoutes: [route],
-        tokenAmountLimit: 2,
+        tokenAmountLimit: "2",
         deadline: 123,
         caller,
         referrerAddress: null,
@@ -77,7 +129,7 @@ describe("swap-router.message.ts", () => {
       fetchAllowance,
     );
 
-    const { approveMessages, txMessages, resetMessages } = splitMessages(messages, 1);
+    const { approveMessages, txMessages } = splitMessages(messages, 1);
 
     expect(approveMessages).toEqual([
       makeExpectedApproveRunMessage({
@@ -91,12 +143,7 @@ describe("swap-router.message.ts", () => {
       func: "ExactInSwapRoute",
       args: ["token_in", "token_out", "1250000", "token_in:token_out:3000", "1", "2000000", "123", ""],
     });
-    expect(resetMessages).toEqual([
-      makeExpectedApproveRunMessage({
-        caller,
-        approves: [{ tokenPath: "token_in", spenderAddress: "router_address", amount: "0" }],
-      }),
-    ]);
+    expect(messages.some(message => getRunMessageBody(message).includes("address(\"router_address\"), 0)"))).toBe(false);
     expect(messages.some(message => getRunMessageBody(message).includes("address(\"pool_address\")"))).toBe(false);
     expect(messages.some(message => getRunMessageBody(message).includes("grc20reg.Approve(0, cur, \"token_out\""))).toBe(
       false,
@@ -113,9 +160,9 @@ describe("swap-router.message.ts", () => {
       {
         inputToken,
         outputToken,
-        tokenAmount: 2,
+        tokenAmount: "2",
         estimatedRoutes: [route],
-        tokenAmountLimit: 1.25,
+        tokenAmountLimit: "1.25",
         deadline: 123,
         caller,
         referrerAddress: null,
@@ -123,7 +170,7 @@ describe("swap-router.message.ts", () => {
       fetchAllowance,
     );
 
-    const { approveMessages, txMessages, resetMessages } = splitMessages(messages, 1);
+    const { approveMessages, txMessages } = splitMessages(messages, 1);
 
     expect(approveMessages).toEqual([
       makeExpectedApproveRunMessage({
@@ -137,15 +184,117 @@ describe("swap-router.message.ts", () => {
       func: "ExactOutSwapRoute",
       args: ["token_in", "token_out", "2000000", "token_in:token_out:3000", "1", "1250000", "123", ""],
     });
-    expect(resetMessages).toEqual([
-      makeExpectedApproveRunMessage({
-        caller,
-        approves: [{ tokenPath: "token_in", spenderAddress: "router_address", amount: "0" }],
-      }),
-    ]);
+    expect(messages.some(message => getRunMessageBody(message).includes("address(\"router_address\"), 0)"))).toBe(false);
     expect(messages.some(message => getRunMessageBody(message).includes("address(\"pool_address\")"))).toBe(false);
     expect(messages.some(message => getRunMessageBody(message).includes("grc20reg.Approve(0, cur, \"token_out\""))).toBe(
       false,
     );
+  });
+
+  it("uses wrapped GNOT route metadata for native GNOT swap approvals", async () => {
+    const caller = "caller";
+    const inputToken = routedNativeGnot;
+    const outputToken = createTokenModel("token_out");
+    const fetchAllowance = jest.fn(async () => 0);
+
+    const exactInMessages = await makeExactInSwapRouteMessageWithApproves(
+      {
+        inputToken,
+        outputToken,
+        tokenAmount: "1",
+        estimatedRoutes: [route],
+        tokenAmountLimit: "2",
+        deadline: 123,
+        caller,
+        referrerAddress: null,
+      },
+      fetchAllowance,
+    );
+    const exactOutMessages = await makeExactOutSwapRouteMessageWithApproves(
+      {
+        inputToken,
+        outputToken,
+        tokenAmount: "2",
+        estimatedRoutes: [route],
+        tokenAmountLimit: "1.25",
+        deadline: 123,
+        caller,
+        referrerAddress: null,
+      },
+      fetchAllowance,
+    );
+
+    const resetApproveMessage = expect.arrayContaining([
+      expect.objectContaining({
+        pkg_path: "wugnot_package",
+        func: "Approve",
+        args: ["router_address", "0"],
+      }),
+    ]);
+
+    expect(exactInMessages).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          pkg_path: "wugnot_package",
+          func: "Approve",
+          args: ["router_address", "1000000"],
+        }),
+      ]),
+    );
+    expect(exactInMessages).not.toEqual(resetApproveMessage);
+    expect(exactOutMessages).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          pkg_path: "wugnot_package",
+          func: "Approve",
+          args: ["router_address", "1250000"],
+        }),
+      ]),
+    );
+    expect(exactOutMessages).not.toEqual(resetApproveMessage);
+  });
+
+  it("wraps Bubble with an approval followed by the wrapper call", () => {
+    const messages = makeWrapTokenMessages({
+      token: bubbleToken,
+      tokenAmount: "1.25",
+      caller: "caller",
+    });
+
+    expect(messages).toEqual([
+      expect.objectContaining({
+        caller: "caller",
+        send: "",
+        pkg_path: bubbleExtension.originTokenPath,
+        func: "Approve",
+        args: [getAddressByPackagePath(bubbleExtension.grc20WrappedPackagePath), "1250000"],
+      }),
+      expect.objectContaining({
+        caller: "caller",
+        send: "",
+        pkg_path: bubbleExtension.grc20WrappedPackagePath,
+        func: "Wrap",
+        args: ["1250000"],
+      }),
+    ]);
+  });
+
+
+  it("unwraps wBUBBLE through its wrapper realm", () => {
+    const messages = makeUnwrapTokenMessages({
+      token: wrappedBubbleToken,
+      tokenAmount: "1.25",
+      caller: "caller",
+    });
+
+    expect(messages).toEqual([
+      expect.objectContaining({
+        caller: "caller",
+        send: "",
+        pkg_path: bubbleExtension.grc20WrappedPackagePath,
+        func: "Unwrap",
+        args: ["1250000"],
+      }),
+    ]);
   });
 });

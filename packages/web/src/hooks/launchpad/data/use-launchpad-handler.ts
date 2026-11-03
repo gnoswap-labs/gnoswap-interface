@@ -59,7 +59,8 @@ export const useLaunchpadHandler = () => {
   const selectPoolId = useAtomValue(LaunchpadState.selectLaunchpadPool);
 
   const { connected: connectedWallet, account, isSwitchNetwork, switchNetwork } = useWallet();
-  const { displayBalanceMap, tokens } = useTokenData(true);
+  const { displayBalanceMap, tokens, isFetched: isFetchedTokens } = useTokenData(true);
+  const gnsToken = useMemo(() => tokens.find(token => token.path === GNS_TOKEN.path) ?? GNS_TOKEN, [tokens]);
 
   const { launchpadRepository } = useGnoswapContext();
   const { data: tokenPriceMap } = useGetAllTokenPrices();
@@ -68,7 +69,7 @@ export const useLaunchpadHandler = () => {
   const { data: myDelegationInfo } = useGetMyDelegation({
     address: account?.address || "",
   });
-  const xGnsBalance = myDelegationInfo?.votingWeight;
+  const xGnsBalance = myDelegationInfo?.delegatedAmount;
 
   const [openedConfirmModal] = useState(false);
   const { processTx } = useBroadcastHandler();
@@ -111,7 +112,7 @@ export const useLaunchpadHandler = () => {
    * @param emitCallback A callback function that runs when a transaction send event is successfully fired. You can proceed to update data with refetch.
    */
   const deposit = (projectPoolID: string, depositAmount: string, emitCallback: () => Promise<void>) => {
-    if (!account) {
+    if (!account || !isFetchedTokens) {
       return;
     }
 
@@ -129,6 +130,7 @@ export const useLaunchpadHandler = () => {
       () =>
         launchpadRepository.depositLaunchpadPoolBy(
           projectPoolID,
+          gnsToken,
           BigInt(unitAmount),
           account.address,
           currentReferralAddress,
@@ -161,7 +163,7 @@ export const useLaunchpadHandler = () => {
       return;
     }
 
-    const isWithdrawable = isLaunchpadPoolEnded(participationInfo.endTime);
+    const isWithdrawable = isLaunchpadPoolEnded(participationInfo.endTime) && !participationInfo.withdrawn;
 
     // Calculate the USD value of the Deposited USD available for withdrawal.
     const depositAmount = isWithdrawable ? participationInfo.depositAmount : 0;
@@ -217,7 +219,7 @@ export const useLaunchpadHandler = () => {
 
     const { endedPoolDepositIDs, activePoolDepositIDs } = participationInfos.reduce<DepositIDGroups>(
       (groups, info) => {
-        if (isLaunchpadPoolEnded(info.endTime)) {
+        if (isLaunchpadPoolEnded(info.endTime) && !info.withdrawn) {
           groups.endedPoolDepositIDs.push(info.depositID);
         } else {
           groups.activePoolDepositIDs.push(info.depositID);

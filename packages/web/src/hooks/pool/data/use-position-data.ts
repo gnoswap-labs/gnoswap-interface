@@ -14,13 +14,17 @@ export interface UsePositionDataOption {
   /** API option: when true, include closed positions in the server response. */
   withClosed?: boolean;
   withAvailableStake?: boolean;
+  /** API option: when true, only include staked positions. */
+  stakedOnly?: boolean;
+  /** When true, fetch every page instead of a single `page` / `limit` window. */
+  fetchAll?: boolean;
   scopeId?: string;
   queryOption?: UseQueryOptions<PositionModel[], Error, PositionModel[], QueryKey>;
 }
 
 export const usePositionData = (options?: UsePositionDataOption) => {
   const { account, connected: walletConnected } = useWallet();
-  const { pools, loading: isLoadingPool, isFetchedPools } = usePoolData();
+  const { pools, loading: isLoadingPool, isFetchedPools, isError: isPoolError } = usePoolData();
 
   const fetchedAddress = useMemo(() => {
     return options?.address || account?.address;
@@ -31,6 +35,7 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     refetch,
     isError,
     isFetched: isFetchedPosition,
+    isFetching: isFetchingPosition,
     isLoading: isLoadingPosition,
   } = useGetPositionsByAddress({
     address: fetchedAddress as string,
@@ -39,13 +44,14 @@ export const usePositionData = (options?: UsePositionDataOption) => {
     limit: options?.limit,
     withClosed: options?.withClosed,
     withAvailableStake: options?.withAvailableStake,
+    stakedOnly: options?.stakedOnly,
+    fetchAll: options?.fetchAll,
   });
 
   const { totalCount: totalPositionCount = 0, positions: rawPositions = [] } = data ?? {};
-  // React Query keeps the previous result while a filter-specific query is transitioning.
-  // Keep that result available for rendering without changing the meaning of isFetchedPosition.
+  // Never treat a completed failed request as an empty result.
   const hasPositionData = data !== undefined;
-  const isPositionDataAvailable = isFetchedPosition || hasPositionData;
+  const isPositionDataAvailable = hasPositionData;
 
   const { isLoading: isCommonLoading } = useLoading();
 
@@ -92,13 +98,15 @@ export const usePositionData = (options?: UsePositionDataOption) => {
 
   return {
     availableStake,
-    isError,
+    isError: isError || isPoolError,
+    hasPositionData,
+    isFetchingWithoutData: isFetchingPosition && data === undefined,
     positions,
     totalPositionCount,
     refetch,
     checkStakedPool,
     getPositions,
-    isFetchedPosition: isFetchedPosition && isFetchedPoolPositions,
+    isFetchedPosition: isFetchedPosition && hasPositionData && isFetchedPoolPositions,
     isPositionDataAvailable: isPositionDataAvailable && isFetchedPoolPositions,
     loading,
     isLoadingPool,

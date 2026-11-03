@@ -20,6 +20,10 @@ export interface SendTransactionRequestParam {
   gasFee: number;
   gasWanted?: number;
   memo?: string;
+  /** Adena-only desktop notification; other wallet clients may ignore this option. */
+  withNotification?: boolean;
+  /** Adena-only result screen; independent of desktop notifications. */
+  isVisibleResult?: boolean;
 }
 
 /**
@@ -39,6 +43,8 @@ export interface TransactionMessageOfBankMsgSend {
 export interface TransactionMessageOfContract {
   caller: string;
   send: string;
+  /** Funds locked for storage, as "<amount><denom>". Omit for no deposit. */
+  max_deposit?: string;
   pkg_path: string;
   func: string;
   args: (string | number | boolean)[] | null;
@@ -67,6 +73,8 @@ export interface TransactionMessageOfRunPackage {
 export interface TransactionMessageOfRun {
   caller: string;
   send: string;
+  /** Funds locked for storage, as "<amount><denom>". Omit for no deposit. */
+  max_deposit?: string;
   package: TransactionMessageOfRunPackage;
 }
 

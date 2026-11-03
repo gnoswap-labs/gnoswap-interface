@@ -3,6 +3,7 @@ import {
   WalletAccountMethod,
   WalletEventMethod,
   WalletNetworkMethod,
+  WalletSignMethod,
   WalletStatusMethod,
   WalletTransactionMethod,
 } from "./protocols";
@@ -10,6 +11,7 @@ import {
 export interface WalletClient
   extends WalletStatusMethod,
     WalletTransactionMethod,
+    WalletSignMethod,
     WalletAccountMethod,
     WalletNetworkMethod,
     WalletEventMethod {

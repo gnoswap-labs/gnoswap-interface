@@ -1,6 +1,7 @@
+import { SelectTabWrapper } from "@components/common/select-tab-v2/SelectTabV2.styles";
+import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
-import mixins from "@styles/mixins";
 
 export const TokenChartWrapper = styled.div`
   display: flex;
@@ -12,53 +13,136 @@ export const TokenChartWrapper = styled.div`
   height: auto;
   padding: 23px;
   border-radius: 8px;
+  gap: 16px;
   ${media.mobile} {
     background-color: transparent;
+    max-width: calc(100vw - 32px);
     border: none;
     padding: 0;
     gap: 16px;
   }
-  .chart-tab-wrapper {
-  }
-
-  .chart-graph-wrapper {
-  }
 `;
 
-export const LoadingChart = styled.div`
-  ${mixins.flexbox("row", "center", "center")}
+export const ChartRegion = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
   width: 100%;
-  height: 361px;
-  background-color: ${({ theme }) => theme.color.background15};
-  border-radius: 8px;
-  > div {
-    &::before {
-      background-color: ${({ theme }) => theme.color.background01};
+  gap: 12px;
+`;
+
+export const ChartControls = styled(SelectTabWrapper)`
+  width: fit-content;
+  max-width: 100%;
+  border: none;
+
+  button {
+    ${fonts.body10};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+    width: 60px;
+    height: 37px;
+    padding: 0 8px;
+    border-radius: 4px;
+    color: ${({ theme }) => theme.color.text04};
+    &:hover,
+    &:focus-visible {
+      color: ${({ theme }) => theme.color.text02};
     }
-    &::after {
-      ${mixins.positionCenter()};
-      content: "";
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      @media (min-width: 769px) {
-        background-color: ${({ theme }) => theme.color.background15};
+    &:focus-visible {
+      outline: 2px solid ${({ theme }) => theme.color.text02};
+      outline-offset: -2px;
+    }
+    &[aria-pressed="true"] {
+      background-color: ${({ theme }) => theme.color.select};
+      color: ${({ theme }) => theme.color.text02};
+    }
+  }
+
+  ${media.mobile} {
+    width: 100%;
+    button {
+      ${fonts.body12};
+      position: relative;
+      height: 26px;
+      padding: 4px 8px;
+      &::before {
+        content: "";
+        position: absolute;
+        inset: -9px 0;
       }
     }
   }
-  ${media.mobile} {
-    height: 282px;
-  }
 `;
 
-export const ChartNotFound = styled.div`
-  ${mixins.flexbox("row", "center", "center")}
+export const CandleChartWrapper = styled.div`
   width: 100%;
-  height: 361px;
-  background-color: ${({ theme }) => theme.color.background15};
+  min-width: 0;
+  overflow: hidden;
   border-radius: 8px;
-  color: ${({ theme }) => theme.color.text04};
+
+  .price-chart-shell {
+    position: relative;
+    width: 100%;
+    height: 350px;
+    background: ${({ theme }) => theme.color.background15};
+    color: ${({ theme }) => theme.color.text04};
+  }
+  .price-chart-currency {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    font-size: 11px;
+    color: ${({ theme }) => theme.color.text04};
+    pointer-events: none;
+  }
+  .price-chart-canvas {
+    width: 100%;
+    height: 100%;
+  }
+  .price-chart-status {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-content: center;
+    gap: 8px;
+    padding: 12px;
+    text-align: center;
+    background: ${({ theme }) => theme.color.background15};
+    color: ${({ theme }) => theme.color.text02};
+  }
+  .price-chart-status button {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px;
+    text-decoration: underline;
+    color: ${({ theme }) => theme.color.text02};
+    &:focus-visible {
+      outline: 2px solid ${({ theme }) => theme.color.text02};
+    }
+  }
+  .price-chart-paging {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    z-index: 3;
+    font-size: 11px;
+    color: ${({ theme }) => theme.color.text04};
+  }
+  .price-chart-paging-error {
+    color: ${({ theme }) => theme.color.red01};
+  }
   ${media.mobile} {
-    height: 252px;
+    .price-chart-shell {
+      height: 300px;
+    }
   }
 `;

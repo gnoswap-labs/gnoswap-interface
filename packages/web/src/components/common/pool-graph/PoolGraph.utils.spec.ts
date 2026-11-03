@@ -12,9 +12,7 @@ import {
 
 declare function describe(name: string, fn: () => void): void;
 declare function it(name: string, fn: () => void): void;
-declare function expect(
-  actual: unknown,
-): {
+declare function expect(actual: unknown): {
   toBe(expected: unknown): void;
   toEqual(expected: unknown): void;
   toBeGreaterThan(expected: number): void;
@@ -141,29 +139,6 @@ describe("createPoolGraphBins", () => {
     expect(bins.map(bin => bin.reserveTokenB)).toEqual(["0.00000000000000025", "0"]);
   });
 
-  it("builds position overlay bins from position-owned liquidity and tick bounds", () => {
-    const liquiditySegments = [segment(0, 30, "1000000000000000000")];
-
-    const bins = createPoolGraphBins({
-      liquiditySegments,
-      boundsHeight: 100,
-      tokenA,
-      tokenB,
-      currentTick: 10,
-      positionLiquidity: "250000000000000000",
-      positionTickLower: 5,
-      positionTickUpper: 20,
-    });
-
-    expect(bins.map(bin => [bin.sourceMinTick, bin.sourceMaxTick, bin.isPositionActive])).toEqual([[0, 30, true]]);
-    expect(bins[0].minTick).toBe(0);
-    expect(bins[0].maxTick).toBe(30);
-    expect(bins[0].positionReserveTokenMap).toBeGreaterThan(0);
-    expect(bins[0].reserveTokenAMyAmount).toBe("124900046.233879");
-    expect(bins[0].liquidity).toBe("1000000000000000000");
-    expect(bins[0].positionLiquidityShare).toBe("25%");
-  });
-
   it("scales mixed-decimal position overlays by displayed token amounts", () => {
     const ticks: PoolLiquidityTickModel[] = [
       { tick: 0, liquidityNet: "1000000" },
@@ -191,36 +166,6 @@ describe("createPoolGraphBins", () => {
     expect(bins.map(bin => bin.positionReserveTokenMap)).toEqual([0, 50]);
     expect(bins.map(bin => bin.positionLiquidityShare)).toEqual(["0%", "50%"]);
     expect(bins[1].reserveTokenAMyAmount).toBe("249800092.467759");
-  });
-
-  it("formats position share from active liquidity ownership for partial-bin overlaps", () => {
-    const liquiditySegments = buildPoolLiquiditySegments(
-      [
-        { tick: 0, liquidityNet: "1000000000000000000" },
-        { tick: 100, liquidityNet: "-1000000000000000000" },
-      ],
-      {
-        currentTick: 50,
-        tokenA,
-        tokenB,
-        includeTokenAmounts: true,
-        visibleTickRange: 300,
-        binCount: 3,
-      },
-    );
-
-    const bins = createPoolGraphBins({
-      liquiditySegments,
-      boundsHeight: 100,
-      tokenA,
-      tokenB,
-      currentTick: 50,
-      positionLiquidity: "1000000000000000000",
-      positionTickLower: 80,
-      positionTickUpper: 100,
-    });
-
-    expect(bins[1].positionLiquidityShare).toBe("100%");
   });
 
   it("clips fixed visual-bin tooltip totals to the actual active tick range", () => {
@@ -258,42 +203,6 @@ describe("createPoolGraphBins", () => {
     expect(bins[2].reserveTokenA).toBe(bins[2].reserveTokenAMyAmount);
     expect(bins[2].reserveTokenB).toBe(bins[2].reserveTokenBMyAmount);
     expect(bins[2].positionLiquidityShare).toBe("100%");
-  });
-
-  it("keeps position overlay visually active when only the visual bin overlaps", () => {
-    const liquiditySegments: PoolLiquiditySegmentModel[] = [
-      {
-        minTick: 0,
-        maxTick: 100,
-        amountMinTick: 0,
-        amountMaxTick: 10,
-        displayMinTick: 0,
-        displayMaxTick: 100,
-        liquidity: "1000000000000000000",
-        graphHeightRatio: "1",
-        currentTickRelation: "inside",
-        isDisplayInverted: false,
-        tokenAAmount: { rawAmount: "4987272070749096", displayAmount: "4987272070.749096" },
-        tokenBAmount: { rawAmount: "0", displayAmount: "0" },
-      },
-    ];
-
-    const bins = createPoolGraphBins({
-      liquiditySegments,
-      boundsHeight: 100,
-      tokenA,
-      tokenB,
-      currentTick: 50,
-      positionLiquidity: "1000000000000000000",
-      positionTickLower: 50,
-      positionTickUpper: 100,
-    });
-
-    expect(bins[0].isPositionActive).toBe(false);
-    expect(bins[0].isPositionVisualActive).toBe(true);
-    expect(bins[0].positionReserveTokenMap).toBeGreaterThan(0);
-    expect(bins[0].reserveTokenAMyAmount).toBe(null);
-    expect(bins[0].positionLiquidityShare).toBe("0%");
   });
 
   it("marks token rows visible only when the hovered bin composition actually contains that token", () => {

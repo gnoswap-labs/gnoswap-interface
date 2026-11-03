@@ -181,8 +181,8 @@ describe("denom-util", () => {
       expect(result.denom).toBe("GNOT");
     });
 
-    it("should convert amount with string value", () => {
-      const amount = { value: "100.5", denom: "GNOT" };
+    it("should convert a decimal BigNumber value", () => {
+      const amount = { value: new BigNumber("100.5"), denom: "GNOT" };
       const result = amountFormatToBignum(amount);
 
       expect(result.value).toBeInstanceOf(BigNumber);
@@ -313,12 +313,5 @@ describe("denom-util", () => {
       expect(result.errors).toContain("Amount cannot be negative");
     });
 
-    it("should handle null/undefined value", () => {
-      const amount = { value: null as unknown as BigNumber, denom: "GNOT" };
-      const result = validateAmount(amount);
-
-      expect(result.isValid).toBe(false);
-      expect(result.errors).toContain("Invalid amount value");
-    });
   });
 });

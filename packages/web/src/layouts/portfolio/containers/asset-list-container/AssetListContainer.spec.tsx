@@ -1,5 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { createStore, Provider as JotaiProvider } from "jotai";
 
 import { GNOT_TOKEN_DEFAULT, GNS_TOKEN, WUGNOT_TOKEN } from "@common/values/token-constant";
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
@@ -38,7 +39,7 @@ jest.mock("@hooks/wallet/data/use-wallet", () => ({
 }));
 
 jest.mock("@hooks/pool/data/use-position-data", () => ({
-  usePositionData: () => ({ loading: false }),
+  usePositionData: jest.fn(),
 }));
 
 jest.mock("@hooks/wallet/data/useSendAsset", () => ({
@@ -77,9 +78,9 @@ jest.mock("@hooks/common/use-prevent-scroll", () => ({
 
 jest.mock("@layouts/portfolio/components/asset-list/asset-list-table/asset-info/AssetInfo", () => ({
   __esModule: true,
-  default: ({ asset }: { asset: { name: string; symbol: string } }) => (
+  default: ({ asset }: { asset: { name: string; symbol: string; price: string } }) => (
     <div data-testid="asset-row">
-      {asset.name} ({asset.symbol})
+      {asset.name} ({asset.symbol}) <span data-testid="asset-price">{asset.price}</span>
     </div>
   ),
 }));
@@ -88,6 +89,8 @@ jest.mock("@layouts/portfolio/components/asset-list/asset-list-table/asset-info/
 const { useGetTokens } = require("@query/token");
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { useTokenData } = require("@hooks/token/data/use-token-data");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { usePositionData } = require("@hooks/pool/data/use-position-data");
 
 const makeToken = (overrides: Partial<TokenModel>): TokenModel => ({
   path: "gno.land/r/demo/token",
@@ -144,9 +147,11 @@ const displayBalanceMap: Record<string, number> = {
 
 const renderContainer = () =>
   render(
-    <GnoswapThemeProvider>
-      <AssetListContainer />
-    </GnoswapThemeProvider>,
+    <JotaiProvider store={createStore()}>
+      <GnoswapThemeProvider>
+        <AssetListContainer />
+      </GnoswapThemeProvider>
+    </JotaiProvider>,
   );
 
 const setTokens = (tokens: TokenModel[]) => {
@@ -162,6 +167,8 @@ const setBalanceMap = () => {
       displayBalanceMap,
       balances: { ugnot: 1 },
       tokenPrices: {},
+      hasBalanceData: true,
+      hasTokenPriceData: true,
       isFetched: true,
       updateBalances: jest.fn(),
     };
@@ -173,6 +180,7 @@ const getVisibleRows = () => screen.getAllByTestId("asset-row").map(row => row.t
 
 describe("AssetListContainer unverified token filtering", () => {
   beforeEach(() => {
+    localStorage.clear();
     setTokens(ALL_TEST_TOKENS);
     setBalanceMap();
   });
@@ -192,6 +200,12 @@ describe("AssetListContainer unverified token filtering", () => {
     expect(useTokenData).toHaveBeenLastCalledWith(false);
     expect(screen.getByText(/VerifiedBal/)).toBeInTheDocument();
     expect(screen.queryByText(/UnverifiedBal/)).not.toBeInTheDocument();
+  });
+
+  it("does not request positions while loading assets", () => {
+    renderContainer();
+
+    expect(usePositionData).not.toHaveBeenCalled();
   });
 
   it("shows unverified assets when the toggle is switched on", () => {
@@ -218,6 +232,38 @@ describe("AssetListContainer unverified token filtering", () => {
       const shouldShow = visible.includes(name);
       expect(rows.some(row => row?.includes(name))).toBe(shouldShow);
     }
+  });
+  it("distinguishes failed balance or price queries from known zero", () => {
+    const walletData = {
+      displayBalanceMap,
+      balances: { [GNOT_TOKEN_DEFAULT.priceID]: "0", [verifiedZero.priceID]: "0", [verifiedWithBalance.priceID]: 100 },
+      tokenPrices: { [verifiedWithBalance.path]: { usd: "2" } },
+      isFetched: true,
+      updateBalances: jest.fn(),
+    };
+    useTokenData.mockReturnValue({ ...walletData, hasBalanceData: false, hasTokenPriceData: true });
+    const { rerender } = renderContainer();
+    const refresh = () =>
+      rerender(
+        <GnoswapThemeProvider>
+          <AssetListContainer />
+        </GnoswapThemeProvider>,
+      );
+    const allPricesUnavailable = () => screen.getAllByTestId("asset-price").every(price => price.textContent === "-");
+    expect(allPricesUnavailable()).toBe(true);
+
+    useTokenData.mockReturnValue({ ...walletData, hasBalanceData: true, hasTokenPriceData: false });
+    refresh();
+    expect(allPricesUnavailable()).toBe(true);
+
+    useTokenData.mockReturnValue({ ...walletData, hasBalanceData: true, hasTokenPriceData: true });
+    refresh();
+    const rows = getVisibleRows();
+    expect(rows.some(row => row?.includes(GNOT_TOKEN_DEFAULT.name) && row.includes("$0"))).toBe(true);
+    expect(rows.some(row => row?.includes(verifiedZero.name) && row.includes("$0"))).toBe(true);
+    expect(
+      screen.getAllByTestId("asset-price").some(price => price.textContent !== "-" && price.textContent !== "$0"),
+    ).toBe(true);
   });
 
   it("keeps type and search filters working with the toggle on", () => {

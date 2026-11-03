@@ -1,5 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import { css } from "@emotion/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
+
+import GnoswapServiceProvider from "@providers/gnoswap-service-provider/GnoswapServiceProvider";
+import { SocialWalletProvider } from "@providers/social-wallet-provider/SocialWalletProvider";
 
 import MyDetailedPositionCard from "./MyDetailedPositionCard";
 import { DEVICE_TYPE } from "@styles/media";
@@ -12,6 +17,18 @@ const meta = {
     backgrounds: { default: "light" },
   },
   decorators: [
+    function WithPositionServices(Story) {
+      const [queryClient] = useState(() => new QueryClient());
+      return (
+        <QueryClientProvider client={queryClient}>
+          <GnoswapServiceProvider>
+            <SocialWalletProvider>
+              <Story />
+            </SocialWalletProvider>
+          </GnoswapServiceProvider>
+        </QueryClientProvider>
+      );
+    },
     (Story: React.ComponentType) => (
       <div css={wrapper}>
         <Story />

@@ -9,7 +9,7 @@ import { getTierDuration } from "@utils/launchpad-get-tier-number";
 import { LaunchpadPoolModel } from "@models/launchpad";
 import { ProjectRewardInfoModel } from "@layouts/launchpad/launchpad-detail/LaunchpadDetail";
 import { toNumberFormat } from "@utils/number-utils";
-import { getClaimableDays } from "@utils/launchpad-get-claimable";
+import { getClaimableDays, isLaunchpadPoolDepositable } from "@utils/launchpad-get-claimable";
 
 import { Divider } from "@components/common/divider/divider";
 import { CardWrapper } from "./LaunchpadPoolListCard.styles";
@@ -37,6 +37,14 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({ data, idx
     return currentPoolId === data.id;
   }, [currentPoolId, data.id]);
 
+  const isSelectable = isLaunchpadPoolDepositable(data);
+
+  const handleSelect = React.useCallback(() => {
+    if (isSelectable) {
+      selectProjectPool(data.id);
+    }
+  }, [isSelectable, selectProjectPool, data.id]);
+
   const aprStr = data.apr ? (
     <>
       {Number(data.apr) > 100 && "✨"}
@@ -50,11 +58,17 @@ const LaunchpadPoolListCard: React.FC<LaunchpadPoolListCardProps> = ({ data, idx
     <CardWrapper
       className={cx({
         active: isActiveCard,
-        ongoing: data.status === "ONGOING",
+        selectable: isSelectable,
       })}
-      onClick={() => {
-        if (data.status === "ONGOING") {
-          selectProjectPool(data.id);
+      role="button"
+      tabIndex={isSelectable ? 0 : -1}
+      aria-pressed={isActiveCard}
+      aria-disabled={!isSelectable}
+      onClick={handleSelect}
+      onKeyDown={event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          handleSelect();
         }
       }}
     >

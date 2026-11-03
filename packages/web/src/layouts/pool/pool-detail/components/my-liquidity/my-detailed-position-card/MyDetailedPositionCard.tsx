@@ -10,6 +10,7 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconAdd from "@components/common/icons/IconAdd";
 import IconInfo from "@components/common/icons/IconInfo";
 import IconLinkPage from "@components/common/icons/IconLinkPage";
+import IconLpToken from "@components/common/icons/IconLpToken";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import IconRemove from "@components/common/icons/IconRemove";
 import IconStaking from "@components/common/icons/IconStaking";
@@ -35,16 +36,17 @@ import { useCopy } from "@hooks/common/use-copy";
 import useRouter from "@hooks/common/use-custom-router";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePoolLiquiditySegmentsByPath } from "@hooks/pool/data/use-pool-liquidity-segments-by-path";
-import { PoolPositionModel } from "@models/position/pool-position-model";
+import { DisplayPoolPositionModel, PoolPositionModel } from "@models/position/pool-position-model";
 import { TokenPriceModel } from "@models/token/token-price-model";
+import { useGetPositionRewardsById } from "@query/positions/use-get-position-rewards-by-id";
 import { ThemeState } from "@states/index";
 import { DEVICE_TYPE } from "@styles/media";
 import { isGNOTPath } from "@utils/common";
 import { formatOtherPrice } from "@utils/new-number-utils";
 import { makeRouteUrl } from "@utils/page.utils";
+import { buildClaimedRewardInfo } from "@utils/position-reward-utils";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 import { isEndTickBy, tickToPrice, tickToPriceStr } from "@utils/swap-utils";
-import { makeDisplayTokenAmount } from "@utils/token-utils";
 import { isClaimableReward, mapToDisplayRewardType } from "@utils/reward-utils";
 import { calculateTokenDepositRatio, makeDisplayPrice, sortTokensByPoolOrder } from "@utils/pool-utils";
 
@@ -60,7 +62,7 @@ import {
 } from "./MyDetailedPositionCard.styles";
 
 interface MyDetailedPositionCardProps {
-  position: PoolPositionModel;
+  position: DisplayPoolPositionModel;
   isStakable: boolean;
   breakpoint: DEVICE_TYPE;
   loading: boolean;
@@ -72,16 +74,6 @@ interface MyDetailedPositionCardProps {
 
   claim: (position: PoolPositionModel) => void;
 }
-
-const sumRewardUsd = (rewards: PositionRewardForTooltip[]): number | null => {
-  return rewards.reduce<number | null>((accum, current) => {
-    if (accum === null || current.usd === null) {
-      return null;
-    }
-
-    return accum + current.usd;
-  }, 0);
-};
 
 const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   position,
@@ -107,6 +99,11 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   const [zoomLevel, setZoomLevel] = useState<number>(LIQUIDITY_GRAPH_INITIAL_ZOOM_LEVEL);
   const visibleTickRange = useMemo(() => LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES[zoomLevel], [zoomLevel]);
   const isClosed = position.closed;
+  const [isClaimedTooltipOpen, setIsClaimedTooltipOpen] = useState(false);
+  const { data: positionRewards, isInitialLoading: isLoadingPositionRewards } = useGetPositionRewardsById(
+    { address, positionId: position.lpTokenId },
+    { enabled: !loading && isClaimedTooltipOpen },
+  );
 
   const isDisplay = useMemo(() => {
     const tokenAPrice = isGNOTPath(position.pool?.tokenA.path)
@@ -164,25 +161,6 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     return true;
   }, [position]);
 
-  const getTokenPrice = useCallback(
-    (priceId: string) => {
-      return tokenPrices?.[priceId]?.usd;
-    },
-    [tokenPrices],
-  );
-
-  const tokenABalanceUSD = useMemo(() => {
-    const tokenAUSD = Number(getTokenPrice(tokenA.priceID) || "1");
-    const tokenABalance = makeDisplayTokenAmount(tokenA, position.tokenABalance) || 0;
-    return tokenAUSD * tokenABalance;
-  }, [getTokenPrice, position.tokenABalance, tokenA]);
-
-  const tokenBBalanceUSD = useMemo(() => {
-    const tokenBUSD = Number(getTokenPrice(tokenB.priceID) || "1");
-    const tokenBBalance = makeDisplayTokenAmount(tokenB, position.tokenBBalance) || 0;
-    return tokenBUSD * tokenBBalance;
-  }, [getTokenPrice, position.tokenBBalance, tokenB]);
-
   const positionBalanceUSD = useMemo(() => {
     if (!isDisplay || !position.positionUsdValue) {
       return "-";
@@ -227,13 +205,11 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       {
         token: tokenA,
         balance: Number(position.tokenABalance),
-        balanceUSD: tokenABalanceUSD,
         percent: depositRatioStrOfTokenA,
       },
       {
         token: tokenB,
         balance: Number(position.tokenBBalance),
-        balanceUSD: tokenBBalanceUSD,
         percent: depositRatioStrOfTokenB,
       },
     ];
@@ -241,10 +217,9 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     position.tokenABalance,
     position.tokenBBalance,
     tokenA,
-    tokenABalanceUSD,
     tokenB,
-    tokenBBalanceUSD,
-    position.pool,
+    depositRatioStrOfTokenA,
+    depositRatioStrOfTokenB,
   ]);
 
   const totalRewardInfo = useMemo((): { [key in DisplayRewardType]: PositionRewardForTooltip[] } | null => {
@@ -356,80 +331,35 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     return isOwnerAddress && positionWithClaimableRewards.rewards.length > 0;
   }, [isOwnerAddress, positionWithClaimableRewards.rewards]);
 
-  const claimedRewardInfo = useMemo((): { [key in DisplayRewardType]: PositionRewardForTooltip[] } | null => {
-    if (position.claimedRewards.length === 0) {
+  const claimedRewardInfo = useMemo(() => {
+    if (!positionRewards) {
       return null;
     }
 
-    const claimedRewardInfo = position.claimedRewards.reduce<{
-      [key in DisplayRewardType]: PositionRewardForTooltip[];
-    }>(
-      (accum, current) => {
-        const rewardType = current.rewardToken.rewardType as RewardType;
-        const displayRewardType = mapToDisplayRewardType(rewardType);
-        const tokenPrice = tokenPrices[current.rewardToken.priceID]?.usd
-          ? Number(tokenPrices[current.rewardToken.priceID]?.usd)
-          : null;
-        const index = accum[displayRewardType].findIndex(item => item.token.priceID === current.rewardToken.priceID);
-        const amount = current.claimedAmount ? Number(current.claimedAmount) : null;
-        const usd = amount !== null && tokenPrice !== null ? amount * tokenPrice : null;
+    const rewardInfo = buildClaimedRewardInfo(positionRewards.claimed, [
+      tokenA,
+      tokenB,
+      ...position.pool.rewardTokens,
+      ...position.rewards.map(reward => reward.rewardToken),
+      ...position.claimedRewards.map(reward => reward.rewardToken),
+    ]);
 
-        if (index !== -1) {
-          const existReward = accum[displayRewardType][index];
-          accum[displayRewardType][index] = {
-            ...existReward,
-            amount:
-              existReward.amount !== null && amount !== null
-                ? existReward.amount + amount
-                : existReward.amount ?? amount,
-            usd: existReward.usd !== null && usd !== null ? existReward.usd + usd : null,
-          };
-        } else {
-          accum[displayRewardType].push({
-            rewardType: displayRewardType,
-            token: current.rewardToken,
-            amount,
-            usd,
-            accumulatedRewardOf1d: null,
-            accumulatedRewardOf1dUsd: null,
-          });
-        }
-        return accum;
-      },
-      {
-        SWAP_FEE: [],
-        EXTERNAL_REWARD: [],
-        INTERNAL_REWARD: [],
-        NONE: [],
-      },
-    );
+    return {
+      SWAP_FEE: sortTokensByPoolOrder(rewardInfo.SWAP_FEE, tokenA.path, tokenB.path),
+      INTERNAL_REWARD: sortTokensByPoolOrder(rewardInfo.INTERNAL_REWARD, tokenA.path, tokenB.path),
+      EXTERNAL_REWARD: sortTokensByPoolOrder(rewardInfo.EXTERNAL_REWARD, tokenA.path, tokenB.path),
+      NONE: rewardInfo.NONE,
+    };
+  }, [positionRewards, position.pool.rewardTokens, position.rewards, position.claimedRewards, tokenA, tokenB]);
 
-    Object.keys(claimedRewardInfo).forEach(key => {
-      const rewardType = key as DisplayRewardType;
-      if (claimedRewardInfo[rewardType].length > 0) {
-        claimedRewardInfo[rewardType] = sortTokensByPoolOrder(claimedRewardInfo[rewardType], tokenA.path, tokenB.path);
-      }
-    });
-
-    return claimedRewardInfo;
-  }, [position.claimedRewards, tokenPrices, tokenA.path, tokenB.path]);
-
-  const totalClaimedRewards = useMemo(() => {
-    if (position.totalClaimedUsd !== "") {
-      return formatOtherPrice(position.totalClaimedUsd, { isKMB: false });
-    }
-
-    const rewards = Object.values(claimedRewardInfo ?? {}).flatMap(item => item);
-    const totalClaimedUsd = rewards.length === 0 ? 0 : sumRewardUsd(rewards);
-
-    return formatOtherPrice(totalClaimedUsd, { isKMB: false });
-  }, [claimedRewardInfo, position.totalClaimedUsd]);
+  const totalClaimedRewards =
+    position.totalClaimedUsd !== "" && position.totalClaimedUsd != null
+      ? formatOtherPrice(position.totalClaimedUsd, { isKMB: false })
+      : "-";
 
   const stringPrice = useMemo(() => {
-    const price = tickToPrice(position?.pool?.currentTick);
-
     if (isSwap) {
-      const displayPrice = makeDisplayPrice(1 / price, tokenB, tokenA);
+      const displayPrice = makeDisplayPrice(1 / position.pool.price, tokenB, tokenA);
       return (
         <>
           1 {tokenB?.displaySymbol || ""} ={" "}
@@ -441,7 +371,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         </>
       );
     }
-    const displayPrice = makeDisplayPrice(price, tokenA, tokenB);
+    const displayPrice = makeDisplayPrice(position.pool.price, tokenA, tokenB);
     return (
       <>
         1 {tokenA?.displaySymbol || ""} ={" "}
@@ -452,7 +382,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
         {tokenB?.displaySymbol || ""}
       </>
     );
-  }, [isSwap, tokenA, tokenB, position?.pool?.currentTick]);
+  }, [isSwap, tokenA, tokenB, position.pool.price]);
 
   const isFullRange = useMemo(() => {
     const isMinEndTick = isEndTickBy(position.tickLower, position.pool.fee);
@@ -582,14 +512,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     }
   }, [zoomLevel, availInfo.availZoomOut]);
 
-  const isShowClaimedRewardInfoTooltip = useMemo(() => {
-    return (
-      claimedRewardInfo !== null &&
-      (claimedRewardInfo?.EXTERNAL_REWARD.length !== 0 ||
-        claimedRewardInfo?.INTERNAL_REWARD.length !== 0 ||
-        claimedRewardInfo?.SWAP_FEE.length !== 0)
-    );
-  }, [claimedRewardInfo]);
+  const isShowClaimedRewardInfoTooltip = position.claimedRewards.length > 0;
 
   const isShowTotalRewardInfo = useMemo(() => {
     return (
@@ -631,7 +554,13 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
               )}
               {!loading && (
                 <div className="coin-info">
-                  <MissingLogo url={position.tokenUri} symbol={`ID #${position.id}`} width={36} mobileWidth={24} />
+                  <MissingLogo
+                    url={position.tokenUri}
+                    fallback={<IconLpToken />}
+                    symbol={`ID #${position.id}`}
+                    width={36}
+                    mobileWidth={24}
+                  />
                 </div>
               )}
               {!loading && (
@@ -669,7 +598,13 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
               )}
               {!loading && (
                 <div className="coin-info">
-                  <MissingLogo url={position.tokenUri} symbol={`ID #${position.id}`} width={36} mobileWidth={24} />
+                  <MissingLogo
+                    url={position.tokenUri}
+                    fallback={<IconLpToken />}
+                    symbol={`ID #${position.id}`}
+                    width={36}
+                    mobileWidth={24}
+                  />
                 </div>
               )}
               {!loading && (
@@ -742,7 +677,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
 
           {!isHiddenAddPosition && connected && (
             <ManageButton
-              position={position}
+              position={position.rawPosition}
               inRange={inRange}
               isClosed={isClosed}
               isStaked={position.staked}
@@ -780,16 +715,26 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
       </div>
       <div className="info-box">
         <span className="symbol-text">{t("Pool:position.card.claimedReward.title")}</span>
-        {!isClosed && isShowClaimedRewardInfoTooltip && !loading ? (
+        {isShowClaimedRewardInfoTooltip && !loading ? (
           <Tooltip
             placement="top"
+            interactive
+            onChangeOpen={setIsClaimedTooltipOpen}
             FloatingContent={
               <div>
-                <RewardTooltipContent rewardInfo={claimedRewardInfo} sortByUsd={false} />
+                {claimedRewardInfo ? (
+                  <RewardTooltipContent rewardInfo={claimedRewardInfo} sortByUsd={false} />
+                ) : isLoadingPositionRewards ? (
+                  <LoadingSpinner size="SMALL" />
+                ) : (
+                  <span>-</span>
+                )}
               </div>
             }
           >
-            <span className="content-text">{totalClaimedRewards}</span>
+            <span className="content-text" tabIndex={0}>
+              {totalClaimedRewards}
+            </span>
           </Tooltip>
         ) : (
           !loading && <span className="content-text disabled">{totalClaimedRewards}</span>
@@ -806,7 +751,6 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
           <div className="info-box-flex">
             <Tooltip
               placement="top"
-              forcedClose={!isClaimable}
               FloatingContent={
                 <div>{totalRewardInfo && <RewardTooltipContent rewardInfo={totalRewardInfo} sortByUsd={false} />}</div>
               }
@@ -830,7 +774,6 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
   const cardGraph = (
     <div className="position-wrapper-chart">
       <div className="position-header">
-        <div>{t("business:currentPrice")}</div>
         <div className="swap-price">
           {!loading && (
             <MissingLogo

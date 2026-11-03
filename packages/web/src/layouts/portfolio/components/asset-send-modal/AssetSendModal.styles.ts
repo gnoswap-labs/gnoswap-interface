@@ -237,19 +237,35 @@ export const AssetSendContent = styled.div`
       justify-content: center;
       gap: 4px;
       .balance-max-button {
-        box-sizing: content-box;
+        /* The wrapper is the target and the badge is only what is drawn, so the
+           area that responds can be comfortable without the pill growing with
+           it. The negative margins hand the row back the height and spacing the
+           padding took, and 6px above stays inside the 8px gap so the token
+           selector keeps its own clicks. It is lifted over the row it reaches
+           into, so the part hanging past the badge is what takes the click. */
+        position: relative;
+        z-index: 1;
         display: flex;
-        justify-content: center;
         align-items: center;
-        padding: 1px 6px;
-        height: 14px;
-        border-radius: 36px;
-        background: rgba(0, 89, 255, 0.2);
-        font-size: 11px;
-        font-weight: 500;
-        color: #007aff;
+        justify-content: center;
+        padding: 6px 10px;
+        margin: -6px -10px;
         cursor: pointer;
-        &:hover {
+
+        .max-badge {
+          box-sizing: content-box;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 1px 6px;
+          height: 14px;
+          border-radius: 36px;
+          background: rgba(0, 89, 255, 0.2);
+          font-size: 11px;
+          font-weight: 500;
+          color: #007aff;
+        }
+        &:hover .max-badge {
           background: ${({ theme }) => (theme.themeKey === "dark" ? "rgba(0, 89, 255, 0.1)" : "rgba(0, 89, 255, 0.3)")};
         }
       }
@@ -260,6 +276,9 @@ export const AssetSendContent = styled.div`
     width: 100%;
     ${fonts.body1};
     color: ${({ theme }) => theme.color.text01};
+    &.amount-pending::placeholder {
+      opacity: 0.5;
+    }
     ${media.mobile} {
       ${fonts.body5}
     }

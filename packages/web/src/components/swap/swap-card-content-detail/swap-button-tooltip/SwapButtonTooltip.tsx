@@ -32,14 +32,6 @@ const SwapButtonTooltip: React.FC<WalletBalanceDetailInfoProps> = ({ swapSummary
     return `${toNumberFormat(amount || 0, token.decimals)} ${currency}`;
   }, [swapSummaryInfo]);
 
-  const gasFeeStr = useMemo(() => {
-    const { amount, currency } = swapSummaryInfo.gasFee;
-
-    if (Number(swapSummaryInfo.gasFee) < 0.01) return "<$0.01";
-
-    return `${toNumberFormat(amount)} ${currency}`;
-  }, [swapSummaryInfo.gasFee]);
-
   const TooltipFloatingContent = useMemo(() => {
     return (
       <SwapButtonTooltipWrap>
@@ -51,13 +43,9 @@ const SwapButtonTooltip: React.FC<WalletBalanceDetailInfoProps> = ({ swapSummary
           <span>{guaranteedTypeStr}</span>
           <span>{guaranteedStr}</span>
         </div>
-        <div className="tooltip-list">
-          <span>{t("Swap:swapInfo.gasFee")}</span>
-          <span>{gasFeeStr}</span>
-        </div>
       </SwapButtonTooltipWrap>
     );
-  }, [gasFeeStr, guaranteedStr, guaranteedTypeStr, priceImpactStr, t]);
+  }, [guaranteedStr, guaranteedTypeStr, priceImpactStr, t]);
 
   return (
     <Tooltip placement="top" FloatingContent={TooltipFloatingContent}>

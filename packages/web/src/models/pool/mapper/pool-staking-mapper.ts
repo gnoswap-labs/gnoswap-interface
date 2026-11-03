@@ -18,7 +18,7 @@ export class PoolStakingMapper {
       incentiveType: poolStaking.incentiveType as INCENTIVE_TYPE,
       rewardToken: {
         ...poolStaking.rewardToken,
-        displaySymbol: formatDisplayTokenSymbol(poolStaking.rewardToken.symbol),
+        displaySymbol: formatDisplayTokenSymbol(poolStaking.rewardToken.symbol, poolStaking.rewardToken.path),
       },
     };
   }

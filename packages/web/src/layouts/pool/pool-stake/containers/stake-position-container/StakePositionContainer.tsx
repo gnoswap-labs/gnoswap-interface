@@ -28,6 +28,7 @@ const StakePositionContainer: React.FC<StakePositionContainerProps> = ({ onOpenV
     poolPath: poolPath || undefined,
     withClosed: false,
     withAvailableStake: true,
+    fetchAll: true,
   });
   const [checkedList, setCheckedList] = useState<number[]>(positionId ? [Number(positionId)] : []);
 

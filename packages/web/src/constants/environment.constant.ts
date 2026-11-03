@@ -6,6 +6,7 @@ export const SUPPORT_CHAIN_IDS = process.env.NEXT_PUBLIC_SUPPORT_CHAIN_IDS?.spli
 export const DEFAULT_CHAIN_NAME = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_NAME || "";
 export const DEFAULT_CHAIN_ID = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || "";
 export const DEFAULT_CHAIN_RPC_URL = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_RPC_URL || "";
+export const DEFAULT_CHAIN_FALLBACK_RPC_URL = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_FALLBACK_RPC_URL || undefined;
 export const DEFAULT_CHAIN_WS_URL = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_WS_URL || "";
 export const DEFAULT_CHAIN_API_URL = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_API_URL || "";
 export const DEFAULT_CHAIN_ROUTER_URL = process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ROUTER_URL || "";
@@ -39,7 +40,7 @@ export const PACKAGE_COMMON_PATH = process.env.NEXT_PUBLIC_PACKAGE_COMMON_PATH |
 
 /** GRC20 registry realm used by `MsgRun` messages to move token balances. */
 export const PACKAGE_GRC20_REGISTRY_PATH =
-  process.env.NEXT_PUBLIC_PACKAGE_GRC20_REGISTRY_PATH || "gno.land/r/demo/defi/grc20reg";
+  process.env.NEXT_PUBLIC_PACKAGE_GRC20_REGISTRY_PATH || "gno.land/r/nt/grc20reg/v0";
 
 export const PACKAGE_GOVERNANCE_PATH = process.env.NEXT_PUBLIC_PACKAGE_GOVERNANCE_PATH || "";
 
@@ -51,8 +52,11 @@ export const PACKAGE_LAUNCHPAD_PATH = process.env.NEXT_PUBLIC_PACKAGE_LAUNCHPAD_
 
 export const PACKAGE_LAUNCHPAD_ADDRESS = getAddressByPackagePath(PACKAGE_LAUNCHPAD_PATH);
 
+export const PACKAGE_EMISSION_PATH = process.env.NEXT_PUBLIC_PACKAGE_EMISSION_PATH || "gno.land/r/gnoswap/emission";
+
 // Webpage Config
 export const BLOCKED_PAGES = process.env.NEXT_PUBLIC_BLOCKED_PAGES?.split(",") || [];
+export const REPOSITION_ENABLED = process.env.NEXT_PUBLIC_REPOSITION_ENABLED !== "false";
 export const GNOSCAN_OFFICIAL_CHAIN_IDS = process.env.NEXT_PUBLIC_GNOSCAN_OFFICIAL_CHAIN_IDS?.split(",") || [];
 export const UMAMI_SCRIPT_URL = process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL;
 export const UMAMI_WEBSITE_ID = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;

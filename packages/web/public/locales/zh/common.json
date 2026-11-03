@@ -25,6 +25,13 @@
     "switchNetwork": "转到糯米地",
     "walletLogin": "钱包登录"
   },
+  "candleTooltip": {
+    "close": "关闭",
+    "high": "高",
+    "low": "低",
+    "open": "打开",
+    "volume": "卷"
+  },
   "clickHere": "点击此处！",
   "closed": "关闭",
   "conjunction": {
@@ -178,6 +185,7 @@
   "swapUrlCopied": "已复制的交换 URL！",
   "tokenList": {
     "showUnverifiedTokens": "显示未验证的代币",
+    "unverified": "未经核实",
     "unverifiedTokensTooltip": "未在 Gno.land 代币资源中注册的代币会被过滤掉。",
     "verifyToken": "验证您的令牌"
   },

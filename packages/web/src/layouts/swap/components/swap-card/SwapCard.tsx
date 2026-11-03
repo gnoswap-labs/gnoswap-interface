@@ -12,6 +12,8 @@ import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { TokenModel } from "@models/token/token-model";
 
+import { MaxNativeAmountParams } from "@hooks/gas";
+
 import SwapCardContent from "./swap-card-content/SwapCardContent";
 import SwapCardHeader from "./swap-card-header/SwapCardHeader";
 
@@ -23,6 +25,8 @@ interface SwapCardProps {
   swapTokenInfo: SwapTokenInfo;
   swapSummaryInfo: SwapSummaryInfo | null;
   swapRouteInfos: SwapRouteInfo[];
+  additionalTokenATokens?: TokenModel[];
+  additionalTokenBTokens?: TokenModel[];
   isAvailSwap: boolean;
   swapButtonText: string;
   submitted: boolean;
@@ -31,7 +35,6 @@ interface SwapCardProps {
   themeKey: "dark" | "light";
   isSwitchNetwork: boolean;
   isLoading: boolean;
-  isLoadingGasInfo: boolean;
   isSameToken: boolean;
   isRefetching: boolean;
 
@@ -51,6 +54,7 @@ interface SwapCardProps {
   switchNetwork: () => void;
   setSwapRateAction: (type: SwapRateAction) => void;
   priceImpactStatus: PriceImpactStatus;
+  makeMaxAmountMessages?: MaxNativeAmountParams["makeMessages"];
 }
 
 const SwapCard: React.FC<SwapCardProps> = ({
@@ -59,6 +63,8 @@ const SwapCard: React.FC<SwapCardProps> = ({
   swapTokenInfo,
   swapSummaryInfo,
   swapRouteInfos,
+  additionalTokenATokens,
+  additionalTokenBTokens,
   isAvailSwap,
   swapButtonText,
   changeTokenA,
@@ -75,11 +81,11 @@ const SwapCard: React.FC<SwapCardProps> = ({
   isSwitchNetwork,
   switchNetwork,
   isLoading,
-  isLoadingGasInfo,
   setSwapRateAction,
   priceImpactStatus,
   isSameToken,
   isRefetching,
+  makeMaxAmountMessages,
 }) => {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -102,6 +108,8 @@ const SwapCard: React.FC<SwapCardProps> = ({
         swapTokenInfo={swapTokenInfo}
         swapSummaryInfo={swapSummaryInfo}
         swapRouteInfos={swapRouteInfos}
+        additionalTokenATokens={additionalTokenATokens}
+        additionalTokenBTokens={additionalTokenBTokens}
         changeTokenA={changeTokenA}
         changeTokenAAmount={changeTokenAAmount}
         changeTokenB={changeTokenB}
@@ -109,13 +117,13 @@ const SwapCard: React.FC<SwapCardProps> = ({
         switchSwapDirection={switchSwapDirection}
         connectedWallet={connectedWallet}
         isLoading={isLoading}
-        isLoadingGasInfo={isLoadingGasInfo}
         setSwapRateAction={setSwapRateAction}
         isSwitchNetwork={isSwitchNetwork}
         priceImpactStatus={priceImpactStatus}
         isSameToken={isSameToken}
         isRefetching={isRefetching}
         resetEstimatedLiquidity={resetEstimatedLiquidity}
+        makeMaxAmountMessages={makeMaxAmountMessages}
       />
       {shouldShowPriceImpactWarning && (
         <SwapWarningSection>

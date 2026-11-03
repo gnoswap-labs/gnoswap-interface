@@ -10,6 +10,7 @@ import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { useTokenPricing } from "@hooks/token/data/use-token-pricing";
 import {
+  ClaimableRewards,
   DelegationItemInfo,
   MyDelegatesInfo,
   MyDelegationInfo,
@@ -34,7 +35,9 @@ import {
 
 interface MyDelegationProps {
   totalDelegatedAmount: number;
-  apy: number;
+  apy?: string;
+  protocolFeeApr?: string;
+  emissionApr?: string;
   myDelegationInfo: MyDelegationInfo;
   myDelegates: MyDelegatesInfo;
   myUnDelegates: MyUnDelegatesInfo;
@@ -48,12 +51,18 @@ interface MyDelegationProps {
   delegateGNS: (toName: string, toAddress: string, amount: string) => void;
   undelegateGNS: (fromName: string, fromAddress: string, amount: string) => void;
   collectUndelegated: (amount: string) => void;
-  collectReward: (usdValue: string, claimGovernanceRewards: boolean, claimLaunchpadRewards: boolean) => void;
+  collectReward: (
+    usdValue: string,
+    claimableGovernanceRewards: ClaimableRewards[],
+    claimableLaunchpadRewards: ClaimableRewards[],
+  ) => void;
 }
 
 const MyDelegation: React.FC<MyDelegationProps> = ({
   totalDelegatedAmount,
   apy,
+  protocolFeeApr,
+  emissionApr,
   myDelegationInfo,
   myDelegates,
   myUnDelegates,
@@ -121,15 +130,21 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   const hasMyUnDelegates = myUnDelegatesInfo.length > 0;
 
   const rewardInfo = useMemo(() => {
-    return [...myDelegationInfo.claimableGovernanceRewards, ...myDelegationInfo.claimableLaunchpadRewards]
-      .map(reward => {
-        const tokenInfo = tokens.find(token => token.path === reward.path);
-        const displayAmount = rawToDisplayAmount(reward.amount, tokenInfo?.decimals || 0);
-        const usdValue = getTokenUSDPrice(reward.path, displayAmount) || 0;
+    const amountByPath = new Map<string, BigNumber>();
+    [...myDelegationInfo.claimableGovernanceRewards, ...myDelegationInfo.claimableLaunchpadRewards].forEach(reward => {
+      const prevAmount = amountByPath.get(reward.path) ?? BigNumber(0);
+      amountByPath.set(reward.path, prevAmount.plus(reward.amount || 0));
+    });
+
+    return Array.from(amountByPath.entries())
+      .map(([path, rawAmount]) => {
+        const tokenInfo = tokens.find(token => token.path === path);
+        const displayAmount = rawToDisplayAmount(rawAmount.toFixed(), tokenInfo?.decimals || 0);
+        const usdValue = getTokenUSDPrice(path, displayAmount) || 0;
         const unwrappedTokenInfo = { ...tokenInfo, ...getGnotPath(tokenInfo) };
 
         return {
-          ...reward,
+          path,
           amount: displayAmount,
           tokenPath: unwrappedTokenInfo.path,
           usdValue,
@@ -152,8 +167,8 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
   }, [myDelegationInfo.claimableGovernanceRewardUsd, myDelegationInfo.claimableLaunchpadRewardUsd]);
 
   const currentDelegatedDisplayAmount = useMemo(() => {
-    return rawToDisplayAmount(myDelegationInfo.votingWeight, XGNS_TOKEN.decimals);
-  }, [myDelegationInfo.votingWeight]);
+    return rawToDisplayAmount(myDelegationInfo.delegatedAmount, XGNS_TOKEN.decimals);
+  }, [myDelegationInfo.delegatedAmount]);
 
   const totalDelegatedDisplayAmount = useMemo(() => {
     return rawToDisplayAmount(totalDelegatedAmount, XGNS_TOKEN.decimals);
@@ -310,7 +325,7 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                 >
                   <div className={visibleInfoTooltip ? "value-wrapper-for-hover" : "value-wrapper"}>
                     {activatedDelegateInfoTab
-                      ? formatOtherPrice(rawToDisplayAmount(myDelegationInfo.votingWeight, XGNS_TOKEN.decimals), {
+                      ? formatOtherPrice(currentDelegatedDisplayAmount, {
                           isKMB: false,
                           usd: false,
                         })
@@ -399,8 +414,8 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
                           formatOtherPrice(totalClaimableRewardUsd, {
                             isKMB: false,
                           }),
-                          myDelegationInfo.claimableGovernanceRewards.length > 0,
-                          myDelegationInfo.claimableLaunchpadRewards.length > 0,
+                          myDelegationInfo.claimableGovernanceRewards,
+                          myDelegationInfo.claimableLaunchpadRewards,
                         );
                       },
                       disabled: !visibleRewardInfoTooltip,
@@ -430,6 +445,8 @@ const MyDelegation: React.FC<MyDelegationProps> = ({
           currentDelegatedDisplayAmount={currentDelegatedDisplayAmount}
           totalDelegatedDisplayAmount={totalDelegatedDisplayAmount}
           apy={apy}
+          protocolFeeApr={protocolFeeApr}
+          emissionApr={emissionApr}
           delegatees={delegatees}
           isWalletConnected={isWalletConnected}
           connectWallet={connectWallet}

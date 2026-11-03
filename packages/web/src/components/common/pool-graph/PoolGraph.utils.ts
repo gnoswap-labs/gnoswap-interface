@@ -78,31 +78,12 @@ export const getPoolGraphTooltipTick = (bin: Pick<ReservedBin, "sourceMinTick" |
   return bin.sourceMinTick;
 };
 
-const formatLiquiditySharePercent = (
-  positionLiquidity: string | number | null | undefined,
-  poolLiquidity: string,
-): string => {
-  if (!positionLiquidity) {
+const formatLiquiditySharePercent = (positionValue: BigNumber, poolValue: BigNumber): string => {
+  if (!positionValue.isGreaterThan(0) || !poolValue.isGreaterThan(0)) {
     return "0%";
   }
 
-  const positionLiquidityValue = BigInt(positionLiquidity.toString());
-  const poolLiquidityValue = BigInt(poolLiquidity);
-
-  if (positionLiquidityValue <= 0n || poolLiquidityValue <= 0n) {
-    return "0%";
-  }
-
-  const scaledPercent = (positionLiquidityValue * 10_000n + poolLiquidityValue / 2n) / poolLiquidityValue;
-  const integerPart = scaledPercent / 100n;
-  const fractionalPart = scaledPercent % 100n;
-
-  if (fractionalPart === 0n) {
-    return `${integerPart.toString()}%`;
-  }
-
-  const fractionalText = fractionalPart.toString().padStart(2, "0").replace(/0+$/, "");
-  return `${integerPart.toString()}.${fractionalText}%`;
+  return `${positionValue.dividedBy(poolValue).times(100).decimalPlaces(2, BigNumber.ROUND_HALF_UP).toString()}%`;
 };
 
 export const formatPoolGraphTooltipPrice = (tick: number, baseToken: TokenModel, quoteToken: TokenModel): string => {
@@ -222,25 +203,9 @@ export const createPoolGraphBins = ({
     const displayMaxTick = useInvertedDisplay ? -segment.minTick : segment.maxTick;
     const normalizedMinTick = Math.min(displayMinTick, displayMaxTick);
     const normalizedMaxTick = Math.max(displayMinTick, displayMaxTick);
-    const amountBounds = { minTick: segment.amountMinTick, maxTick: segment.amountMaxTick };
-    const amountOverlapBounds = getPositionOverlapBounds(amountBounds, positionTickLower, positionTickUpper);
     const visualOverlapBounds = getPositionOverlapBounds(segment, positionTickLower, positionTickUpper);
-    const isPositionActive = amountOverlapBounds !== null;
-    const isPositionVisualActive = visualOverlapBounds !== null;
+    const isPositionActive = visualOverlapBounds !== null;
     const positionAmounts =
-      amountOverlapBounds && positionLiquidity
-        ? derivePoolLiquidityTokenAmounts({
-            liquidity: positionLiquidity.toString(),
-            minTick: amountOverlapBounds.minTick,
-            maxTick: amountOverlapBounds.maxTick,
-            currentTick: currentTick ?? amountOverlapBounds.minTick,
-            currentSqrtPriceX96: currentSqrtPriceX96 ?? undefined,
-            currentPrice: currentPrice ?? undefined,
-            tokenA,
-            tokenB,
-          })
-        : null;
-    const positionVisualAmounts =
       visualOverlapBounds && positionLiquidity
         ? derivePoolLiquidityTokenAmounts({
             liquidity: positionLiquidity.toString(),
@@ -273,12 +238,12 @@ export const createPoolGraphBins = ({
       positionAmounts?.tokenBAmount.displayAmount,
       useInvertedDisplay,
     );
-    const positionHeight = positionVisualAmounts
+    const positionHeight = positionAmounts
       ? getDisplayHeight(
           {
             graphHeightRatio: "0",
-            tokenAAmount: positionVisualAmounts.tokenAAmount,
-            tokenBAmount: positionVisualAmounts.tokenBAmount,
+            tokenAAmount: positionAmounts.tokenAAmount,
+            tokenBAmount: positionAmounts.tokenBAmount,
           },
           tokenBPerTokenA,
         )
@@ -286,9 +251,7 @@ export const createPoolGraphBins = ({
     const positionHeightRatio = maxPoolDisplayHeight.isGreaterThan(0)
       ? BigNumber.min(positionHeight.dividedBy(maxPoolDisplayHeight), 1).toNumber()
       : 0;
-    const positionLiquidityShare = isPositionActive
-      ? formatLiquiditySharePercent(positionLiquidity, segment.liquidity)
-      : "0%";
+    const positionLiquidityShare = formatLiquiditySharePercent(positionHeight, displayHeights[index]);
 
     return {
       minTick: normalizedMinTick,
@@ -310,7 +273,6 @@ export const createPoolGraphBins = ({
       reserveTokenA,
       reserveTokenB,
       isPositionActive,
-      isPositionVisualActive,
     };
   });
 };

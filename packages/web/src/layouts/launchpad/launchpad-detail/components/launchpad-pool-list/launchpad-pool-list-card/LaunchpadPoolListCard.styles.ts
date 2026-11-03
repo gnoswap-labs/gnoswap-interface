@@ -16,7 +16,7 @@ export const CardWrapper = styled.div`
   ${media.mobile} {
     min-width: 280px;
   }
-  &.ongoing {
+  &.selectable {
     cursor: pointer;
     &:hover {
       background: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.background05Hover : theme.color.hover01)};
@@ -24,6 +24,10 @@ export const CardWrapper = styled.div`
     &.active {
       background: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.background05Hover : theme.color.hover01)};
       border: 1px solid var(--border-gradient, #869dff);
+    }
+    &:focus-visible {
+      outline: 2px solid #869dff;
+      outline-offset: 2px;
     }
   }
 

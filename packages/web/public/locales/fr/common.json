@@ -25,6 +25,13 @@
     "switchNetwork": "Passer à Gnoland",
     "walletLogin": "Connexion au portefeuille"
   },
+  "candleTooltip": {
+    "close": "Fermer",
+    "high": "Élevé",
+    "low": "Faible",
+    "open": "Ouvrir",
+    "volume": "Volume"
+  },
   "clickHere": "Cliquez ici !",
   "closed": "Fermé",
   "conjunction": {
@@ -180,6 +187,7 @@
   "swapUrlCopied": "Échange d'URL copiées !",
   "tokenList": {
     "showUnverifiedTokens": "Afficher les jetons non vérifiés",
+    "unverified": "Non vérifié",
     "unverifiedTokensTooltip": "Les jetons non enregistrés sur Gno.land Token Resources sont filtrés.",
     "verifyToken": "Vérifiez votre jeton"
   },

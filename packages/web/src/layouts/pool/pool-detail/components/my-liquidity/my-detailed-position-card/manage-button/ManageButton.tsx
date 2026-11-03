@@ -1,6 +1,7 @@
 import { useAtom } from "jotai";
 import { useTranslation } from "react-i18next";
 
+import { REPOSITION_ENABLED } from "@constants/environment.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { PoolPositionModel } from "@models/position/pool-position-model";
 import { IncreaseState } from "@states/index";
@@ -59,7 +60,7 @@ const ManageButton: React.FC<ManageButtonProps> = ({ position, inRange, isClosed
     return [
       ...base,
       POSITION_ACTION.REMOVE,
-      POSITION_ACTION.REPOSITION,
+      ...(REPOSITION_ENABLED ? [POSITION_ACTION.REPOSITION] : []),
       POSITION_ACTION.INCREASE,
       POSITION_ACTION.DECREASE,
     ];

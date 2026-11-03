@@ -4,6 +4,7 @@ import { TokenModel } from "@models/token/token-model";
 export interface CreatePoolRequest {
   tokenA: TokenModel;
   tokenB: TokenModel;
+  gnsToken: TokenModel;
   feeTier: SwapFeeTierType;
   tokenAAmount: string;
   tokenBAmount: string;

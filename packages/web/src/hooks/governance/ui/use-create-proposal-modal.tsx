@@ -6,7 +6,6 @@ import CreateProposalModal from "../../../layouts/governance/components/proposal
 
 export interface CreateProposalModalOpenOption {
   breakpoint: DEVICE_TYPE;
-  myVotingWeight: number;
   proposalCreationThreshold: number;
   executablePackages: {
     pkgName: string;

@@ -1,4 +1,5 @@
 import {
+  evaluateExpressionToIntegerString,
   evaluateExpressionToNumber,
   evaluateExpressionToObject,
   evaluateExpressionToStrings,
@@ -13,6 +14,16 @@ const DEV_RPC_UINT256_RESPONSE = "(\"7912525539738091750091588668\" string)";
 describe("evaluateExpressionToNumber", () => {
   it("parses the router.GetSwapFee dev RPC response", () => {
     expect(evaluateExpressionToNumber(DEV_RPC_NUMBER_RESPONSE)).toBe(15);
+  });
+});
+
+describe("evaluateExpressionToIntegerString", () => {
+  it("preserves an int64 balance above Number.MAX_SAFE_INTEGER", () => {
+    expect(evaluateExpressionToIntegerString("(62667447936264477 int64)")).toBe("62667447936264477");
+  });
+
+  it("returns null for a non-integer response", () => {
+    expect(evaluateExpressionToIntegerString("(\"62667447936264477\" string)")).toBeNull();
   });
 });
 

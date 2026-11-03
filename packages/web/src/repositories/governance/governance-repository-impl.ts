@@ -1,11 +1,20 @@
+import axios from "axios";
+import BigNumber from "bignumber.js";
 import { NetworkClient } from "@common/clients/network-client";
 import { WalletClient } from "@common/clients/wallet-client";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 import { PACKAGE_GOVERNANCE_STAKER_PATH } from "@constants/environment.constant";
 
+import {
+  makeLaunchpadCollectEmissionRewardMessages,
+  makeMintAndDistributeGnsMessages,
+  makeLaunchpadCollectProtocolFeeRewardMessages,
+} from "../launchpad/launchpad.message";
 import { GovernanceRepository } from "./governance-repository";
 import {
+  ClaimableRewardType,
+  ClaimableRewards,
   GovernanceSummaryInfo,
   MyDelegatesInfo,
   MyDelegationInfo,
@@ -59,7 +68,8 @@ import { DEFAULT_GAS_FEE } from "@common/values";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import {
   makeCancelMessages,
-  makeCollectRewardMessages,
+  makeCollectEmissionRewardMessages,
+  makeCollectProtocolFeeRewardMessages,
   makeCollectUnDelegatedGNSMessages,
   makeDelegateMessagesWithApproves,
   makeExecuteMessages,
@@ -70,7 +80,23 @@ import {
   makeUnDelegateMessages,
   makeVoteMessages,
 } from "./governance.message";
-import { makeCollectProtocolFeeMessage } from "../launchpad/launchpad.message";
+
+function getClaimableProtocolFeeTokenPaths(rewards: ClaimableRewards[]): string[] {
+  const tokenPaths = new Set<string>();
+
+  for (const reward of rewards) {
+    if (reward.type === ClaimableRewardType.PROTOCOL_FEE && BigNumber(reward.amount || 0).isGreaterThan(0)) {
+      tokenPaths.add(reward.path);
+    }
+  }
+
+  return [...tokenPaths];
+}
+
+const NOT_FOUND_STATUS = 404;
+
+const isNotFoundError = (error: unknown): boolean =>
+  axios.isAxiosError(error) && error.response?.status === NOT_FOUND_STATUS;
 
 export class GovernanceRepositoryImpl implements GovernanceRepository {
   private networkClient: NetworkClient | null;
@@ -217,9 +243,13 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
       }>({
         url: `governance/proposals/${request.proposalId}?${queries.filter(item => !!item).join("&")}`,
       })
-      .catch(e => {
-        console.error(e);
-        return null;
+      // The API answers a missing proposal with 404. Every other failure is propagated
+      // so callers can tell a transient error apart from a proposal that does not exist.
+      .catch(error => {
+        if (isNotFoundError(error)) {
+          return null;
+        }
+        throw error;
       });
 
     if (!response?.data?.data) {
@@ -433,13 +463,29 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
   };
 
   public sendCollectReward = async (
-    claimGovernanceRewards: boolean,
-    claimLaunchpadRewards: boolean,
+    claimableGovernanceRewards: ClaimableRewards[],
+    claimableLaunchpadRewards: ClaimableRewards[],
   ): Promise<WalletResponse<{ hash: string }>> => {
     const caller = await this.getAddress();
+    const hasClaimableGovernanceEmission = claimableGovernanceRewards.some(
+      reward => reward.type === ClaimableRewardType.EMISSION && BigNumber(reward.amount || 0).isGreaterThan(0),
+    );
+    const hasClaimableLaunchpadEmission = claimableLaunchpadRewards.some(
+      reward => reward.type === ClaimableRewardType.EMISSION && BigNumber(reward.amount || 0).isGreaterThan(0),
+    );
+    // Collect paths settle only already-minted emission, so mint pending GNS first.
     const messages = [
-      ...(claimGovernanceRewards ? makeCollectRewardMessages({ caller }) : []),
-      ...(claimLaunchpadRewards ? makeCollectProtocolFeeMessage({ caller }) : []),
+      ...makeMintAndDistributeGnsMessages({ caller }),
+      ...(hasClaimableGovernanceEmission ? makeCollectEmissionRewardMessages({ caller }) : []),
+      ...makeCollectProtocolFeeRewardMessages({
+        tokenPaths: getClaimableProtocolFeeTokenPaths(claimableGovernanceRewards),
+        caller,
+      }),
+      ...(hasClaimableLaunchpadEmission ? makeLaunchpadCollectEmissionRewardMessages({ caller }) : []),
+      ...makeLaunchpadCollectProtocolFeeRewardMessages({
+        tokenPaths: getClaimableProtocolFeeTokenPaths(claimableLaunchpadRewards),
+        caller,
+      }),
     ];
 
     const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });

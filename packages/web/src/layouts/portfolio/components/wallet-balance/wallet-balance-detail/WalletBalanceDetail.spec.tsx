@@ -22,6 +22,15 @@ jest.mock("react-i18next", () => ({
   }),
 }));
 
+jest.mock("@query/positions/use-get-staked-positions-infinite", () => ({
+  useGetStakedPositionsInfinite: () => ({ positions: [] }),
+}));
+
+jest.mock("./sateked-positions-tooltip/StakedPositinosTooltipContent", () => ({
+  __esModule: true,
+  default: () => null,
+}));
+
 jest.mock("@components/common/tooltip/Tooltip", () => ({
   __esModule: true,
   default: ({
@@ -83,6 +92,7 @@ describe("WalletBalanceDetail Component", () => {
       claimableRewards: "$1213.23",
       loadingBalance: false,
       loadingPositions: false,
+      loadingRewards: false,
       totalClaimedRewards: "$1213.23",
     },
     connected: true,
@@ -92,8 +102,8 @@ describe("WalletBalanceDetail Component", () => {
     breakpoint: DEVICE_TYPE.WEB,
     isSwitchNetwork: false,
     loadngTransactionClaim: false,
-    positions: [],
     positionRewards: null,
+    positionSummary: null,
     tokens: [],
     tokenPrices: {},
   };
@@ -153,5 +163,30 @@ describe("WalletBalanceDetail Component", () => {
     expect(screen.getByText("123.456789")).toBeInTheDocument();
     expect(screen.getByText("1.23")).toBeInTheDocument();
     expect(screen.getByText("7.654321")).toBeInTheDocument();
+  });
+
+  it("preserves historical USD and the token row when current metadata is unavailable", () => {
+    renderWalletBalanceDetail({
+      balanceDetailInfo: { ...baseProps.balanceDetailInfo, totalClaimedRewards: "7" },
+      positionRewards: {
+        claimed: {
+          swapFee: [],
+          internalReward: [],
+          externalReward: [{ tokenPath: "gno.land/r/demo/delisted", amount: "9000000", usdValue: "7" }],
+        },
+        claimable: { swapFee: [], internalReward: [], externalReward: [] },
+        positionsWithSwapFee: [],
+        positionsWithStakingReward: [],
+        totalUsd: {
+          claimed: { swapFee: "0", internalReward: "0", externalReward: "7", total: "7" },
+          claimable: { swapFee: "0", internalReward: "0", externalReward: "0", total: "0" },
+        },
+      },
+    });
+
+    expect(screen.getByText("delisted")).toBeInTheDocument();
+    expect(screen.getByText("delisted").closest(".list")).toHaveTextContent("-");
+    expect(screen.getAllByText("$7")).toHaveLength(2);
+    expect(screen.queryByRole("button", { name: "Wallet:overral.claimAll.btn" })).toBeNull();
   });
 });

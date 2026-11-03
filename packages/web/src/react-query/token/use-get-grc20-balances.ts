@@ -1,6 +1,7 @@
 import { UseQueryOptions, useQuery } from "@tanstack/react-query";
 
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
 
 import { QUERY_KEY } from "../query-keys";
 import { IBalancesByAddressResponse } from "@repositories/token/response/balance-by-address-response";
@@ -13,9 +14,10 @@ export const useGetGrc20Balances = (
   options?: UseQueryOptions<IBalancesByAddressResponse, Error>,
 ) => {
   const { tokenRepository } = useGnoswapContext();
+  const { currentChainId } = useWallet();
 
   return useQuery<IBalancesByAddressResponse, Error>({
-    queryKey: [QUERY_KEY.tokenBalancesByAddress, address || ""],
+    queryKey: [QUERY_KEY.tokenBalancesByAddress, address || "", currentChainId],
     queryFn: () => {
       if (!address) {
         throw new AccountError("NOT_FOUNT_ADDRESS");
@@ -23,6 +25,7 @@ export const useGetGrc20Balances = (
       return tokenRepository.getGrc20BalancesByAddress(address);
     },
     refetchInterval: REFETCH_INTERVAL,
+    keepPreviousData: false,
     ...options,
   });
 };

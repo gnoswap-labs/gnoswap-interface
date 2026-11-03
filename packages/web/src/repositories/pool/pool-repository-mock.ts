@@ -8,6 +8,7 @@ import { PoolLiquidityTickModel } from "@models/pool/pool-liquidity-model";
 import { IncentivizePoolModel, IPoolDetailResponse, PoolModel } from "@models/pool/pool-model";
 import { PoolRPCModel } from "@models/pool/pool-rpc-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
+import { PoolStakingSummaryModel } from "@models/pool/pool-staking-summary";
 import PoolDetailDataByPath from "./mock/pool-detai-by-path.json";
 import PoolDetailData from "./mock/pool-detail.json";
 import rpcPools from "./mock/rpc-pools.json";
@@ -42,6 +43,10 @@ export class PoolRepositoryMock implements PoolRepository {
     return [];
   };
 
+  getPoolStakingSummary = async (): Promise<PoolStakingSummaryModel | null> => {
+    return null;
+  };
+
   getLatestBlockHeight = async (): Promise<string> => {
     return "";
   };
@@ -68,6 +73,10 @@ export class PoolRepositoryMock implements PoolRepository {
 
   createPool = async () => {
     throw new Error("Not implements");
+  };
+
+  makeAddLiquidityMessages = async () => {
+    throw new Error("Mock makeAddLiquidityMessages");
   };
 
   addLiquidity = async () => {

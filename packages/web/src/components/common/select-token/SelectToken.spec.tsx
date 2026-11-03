@@ -1,46 +1,160 @@
-import { render } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { Provider as JotaiProvider } from "jotai";
-import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
-import SelectToken, { SelectTokenProps } from "./SelectToken";
 import React from "react";
+
+import { TokenModel } from "@models/token/token-model";
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
+import { swapExtensions } from "@resources/swap-extension";
 import { DEVICE_TYPE } from "@styles/media";
 
-// Mock @adena-wallet/sdk
+import SelectToken, { SelectTokenProps } from "./SelectToken";
+
+const mockGetGnoscanUrl = jest.fn(() => "https://gnoscan.io/");
+const mockGetRealmUrl = jest.fn((path: string) => `https://gnoscan.io/realms/details?path=${path}`);
+const mockGetTokenUrl = jest.fn((path: string) => `https://gnoscan.io/tokens/${path}`);
+
 jest.mock("@adena-wallet/sdk", () => ({
   makeMsgCallMessage: jest.fn(),
   makeMsgSendMessage: jest.fn(),
   TransactionBuilder: jest.fn(),
 }));
+jest.mock("@hooks/common/use-gnoscan-url", () => ({
+  useGnoscanUrl: () => ({
+    getGnoscanUrl: mockGetGnoscanUrl,
+    getRealmUrl: mockGetRealmUrl,
+    getTokenUrl: mockGetTokenUrl,
+  }),
+}));
 
 describe("SelectToken Component", () => {
-  const modalRef = React.createRef();
-  it("SelectToken render", () => {
-    const args: SelectTokenProps = {
-      keyword: "",
-      defaultTokens: [],
-      tokens: [],
-      tokenPrices: {},
-      changeKeyword: () => {
-        return;
-      },
-      changeToken: () => {
-        return;
-      },
-      close: () => {
-        return;
-      },
-      themeKey: "dark",
-      modalRef,
-      breakpoint: DEVICE_TYPE.WEB,
-      recents: [],
-    };
+  const extension = swapExtensions[0];
+  const token: TokenModel = {
+    type: "Native",
+    chainId: "portal-loop",
+    createdAt: "",
+    name: "Bubble",
+    path: extension.originTokenPath,
+    decimals: 6,
+    symbol: "BUBBLE",
+    displaySymbol: "BUBBLE",
+    logoURI: "",
+    priceID: extension.grc20WrappedTokenPath,
+  };
+  const args: SelectTokenProps = {
+    keyword: "",
+    defaultTokens: [],
+    tokens: [token],
+    tokenPrices: {},
+    changeKeyword: jest.fn(),
+    changeToken: jest.fn(),
+    close: jest.fn(),
+    themeKey: "dark",
+    breakpoint: DEVICE_TYPE.WEB,
+    recents: [],
+    isSwitchNetwork: false,
+    showUnverified: false,
+    toggleShowUnverified: jest.fn(),
+  };
 
+  const renderSelectToken = (overrides?: Partial<SelectTokenProps>) =>
     render(
       <JotaiProvider>
         <GnoswapThemeProvider>
-          <SelectToken {...args} />
+          <SelectToken {...args} {...overrides} />
         </GnoswapThemeProvider>
       </JotaiProvider>,
     );
+
+  it("renders", () => {
+    renderSelectToken();
+  });
+
+  it("shows an origin realm path instead of the native coin label", () => {
+    renderSelectToken();
+
+    expect(screen.getByText(extension.originTokenPath.replace(/^gno\.land\//, ""))).toBeInTheDocument();
+    expect(screen.queryByText("Native Coin")).not.toBeInTheDocument();
+  });
+
+  it.each([
+    ["0", "-"],
+    ["1.5", "1.5"],
+  ])("renders a %s balance as %s", (balance, expected) => {
+    renderSelectToken({ tokenPrices: { [token.path]: balance } });
+
+    expect(screen.getByText(expected)).toBeInTheDocument();
+  });
+
+  it("opens an origin realm in Gnoscan", () => {
+    const open = jest.spyOn(window, "open").mockImplementation();
+    const { container } = renderSelectToken();
+
+    fireEvent.click(container.querySelector(".token-path")!);
+
+    expect(mockGetRealmUrl).toHaveBeenCalledWith(extension.originTokenPath);
+    expect(open).toHaveBeenCalledWith(`https://gnoscan.io/realms/details?path=${extension.originTokenPath}`, "_blank");
+  });
+
+  it("renders the show unverified tokens switch with the given state", () => {
+    renderSelectToken({ showUnverified: true });
+
+    expect(screen.getByRole("checkbox")).toBeChecked();
+  });
+
+  it("calls toggleShowUnverified when the switch is clicked", () => {
+    const toggleShowUnverified = jest.fn();
+    renderSelectToken({ toggleShowUnverified });
+
+    fireEvent.click(screen.getByRole("checkbox"));
+
+    expect(toggleShowUnverified).toHaveBeenCalledTimes(1);
+  });
+
+  it("limits the width of rows added after the first render", () => {
+    const addedToken: TokenModel = { ...token, name: "Added", path: "gno.land/r/demo/added", symbol: "ADD" };
+    const { container, rerender } = renderSelectToken();
+
+    rerender(
+      <JotaiProvider>
+        <GnoswapThemeProvider>
+          <SelectToken {...args} tokens={[token, addedToken]} />
+        </GnoswapThemeProvider>
+      </JotaiProvider>,
+    );
+
+    const rowMaxWidths = Array.from(container.querySelectorAll(".token-info-detail")).map(
+      row => getComputedStyle(row).maxWidth,
+    );
+    expect(rowMaxWidths).toHaveLength(2);
+    rowMaxWidths.forEach(maxWidth => expect(maxWidth).toMatch(/^calc\(.*0px\)$/));
+  });
+
+  describe("recent tokens", () => {
+    const recentToken: TokenModel = { ...token, name: "Recent", path: "gno.land/r/demo/recent", symbol: "RCT" };
+    const storedRecentPaths = () =>
+      JSON.parse(JSON.parse(localStorage.getItem("recentsSelect") ?? "\"\"") || "[]").map((item: TokenModel) => item.path);
+
+    beforeEach(() => localStorage.clear());
+
+    it("keeps recent tokens that are hidden from the list, such as by a search keyword", () => {
+      localStorage.setItem("recentsSelect", JSON.stringify(JSON.stringify([recentToken])));
+      const { container } = renderSelectToken({ keyword: "bubble", recents: [recentToken], tokens: [token] });
+
+      fireEvent.click(container.querySelector(".token-list-wrapper .list")!);
+
+      expect(storedRecentPaths()).toEqual([token.path, recentToken.path]);
+    });
+
+    it("stores a token once even when its balance fields changed", () => {
+      localStorage.setItem("recentsSelect", JSON.stringify(JSON.stringify([token])));
+      const { container } = renderSelectToken({
+        recents: [{ ...token, balance: 0 } as TokenModel],
+        tokens: [{ ...token, balance: 1 } as TokenModel],
+      });
+
+      fireEvent.click(container.querySelector(".token-list-wrapper .list")!);
+
+      expect(storedRecentPaths()).toEqual([token.path]);
+    });
   });
 });

@@ -26,7 +26,7 @@ const PoolListContainer: React.FC = () => {
   const [searchIcon, setSearchIcon] = useState(false);
   const [breakpoint] = useAtom(CommonState.breakpoint);
   const router = useCustomRouter();
-  const { poolListInfos, isFetchedPools } = usePoolData();
+  const { poolListInfos, isFetchedPools, isError } = usePoolData();
   const [componentRef, isClickOutside, setIsInside] = useClickOutside();
   const { data: tokenPrices = {} } = useGetAllTokenPrices();
 
@@ -250,6 +250,7 @@ const PoolListContainer: React.FC = () => {
     <PoolList
       pools={paginatedPools}
       isFetched={isFetchedPools}
+      isError={isError}
       poolType={poolType}
       changePoolType={changePoolType}
       search={handleSearch}

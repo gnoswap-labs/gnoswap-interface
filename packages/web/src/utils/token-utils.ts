@@ -3,6 +3,7 @@ import { GNOT_TOKEN } from "@common/values/token-constant";
 import { RewardType } from "@constants/option.constant";
 import { RewardTokenModel } from "@models/position/reward-model";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
+import { getSwapExtensionByWrappedPath } from "@resources/swap-extension";
 import { OnchainToken } from "@repositories/activity/responses/activity-responses";
 import BigNumber from "bignumber.js";
 import { formatOtherPrice } from "./new-number-utils";
@@ -14,10 +15,26 @@ export interface RewardTokenModelWithMultipleTypes extends Omit<RewardTokenModel
 
 export const TOKEN_DISPLAY_MAX_LENGTH = 9;
 
-export function formatDisplayTokenSymbol(symbol: string): string {
-  if (symbol.length <= TOKEN_DISPLAY_MAX_LENGTH) return symbol;
+export function withTokenRouteMetadata(token: TokenModel, currentTokens: TokenModel[]): TokenModel {
+  const transactionPath = token.wrappedPath || token.path;
+  const currentToken = currentTokens.find(candidate => candidate.path === transactionPath);
+  if (!currentToken) {
+    return token;
+  }
 
-  return `${symbol.slice(0, TOKEN_DISPLAY_MAX_LENGTH)}...`;
+  return {
+    ...token,
+    pkgPath: currentToken.pkgPath,
+    routes: currentToken.routes,
+  };
+}
+
+export function formatDisplayTokenSymbol(symbol: string, path?: string): string {
+  const extension = getSwapExtensionByWrappedPath(path);
+  const displaySymbol = extension?.wrappedTokenInfo.displaySymbol ?? symbol;
+  if (displaySymbol.length <= TOKEN_DISPLAY_MAX_LENGTH) return displaySymbol;
+
+  return `${displaySymbol.slice(0, TOKEN_DISPLAY_MAX_LENGTH)}...`;
 }
 
 export function formatDisplayTokenName(name: string): string {
@@ -51,6 +68,27 @@ export function makeDisplayTokenAmount(
   }
 
   return number.shiftedBy(-token.decimals).toNumber();
+}
+
+/**
+ * Converts a raw token amount to its display amount as a decimal string.
+ * Unlike makeDisplayTokenAmount, this never goes through a JS number, so raw
+ * amounts above Number.MAX_SAFE_INTEGER keep every digit.
+ */
+export function makeDisplayTokenAmountString(
+  token: Pick<TokenModel | OnchainToken, "decimals">,
+  amount: bigint | string | number | null | undefined,
+): string | null {
+  if (amount === null || amount === undefined || amount === "") {
+    return null;
+  }
+
+  const number = BigNumber(amount.toString());
+  if (number.isNaN()) {
+    return null;
+  }
+
+  return number.shiftedBy(-token.decimals).toFixed();
 }
 
 export function isAmountLessThanTokenMinimum(

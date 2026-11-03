@@ -44,6 +44,7 @@ export enum QUERY_KEY {
   poolWithdrawalFee = "pool_withdrawal_fee",
   unstakingFee = "unstaking_fee",
   poolStakingList = "pool_staking_list",
+  poolStakingSummary = "pool_staking_summary",
   lastedBlockHeight = "lasted_block_height",
   removeExternalIncentive = "remove_external_incentive",
   poolLiquidity = "pool_liquidity",
@@ -55,6 +56,7 @@ export enum QUERY_KEY {
   // positions
   positions = "positions",
   positionRewards = "positionRewards",
+  positionSummary = "positionSummary",
   positionHistory = "positionHistory",
   poolPositions = "poolPositions",
   estimateReposition = "estimateReposition",
@@ -72,6 +74,7 @@ export enum QUERY_KEY {
   chain = "chain",
   tokenByPath = "token",
   tokenBalancesByAddress = "balances",
+  swapExtensionBalance = "swap_extension_balance",
 
   // launchpad
   launchpadSummary = "launchpad_summary",
@@ -82,7 +85,6 @@ export enum QUERY_KEY {
 
   // gas
   gasPrice = "gas_price",
-  gasInfo = "gas_info",
 
   // faucet
   faucetNativeIsSupported = "faucetNative/isSupported",

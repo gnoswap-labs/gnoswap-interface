@@ -140,6 +140,8 @@ export interface ThemeColorType {
   red01: string;
   red02: string;
   redOpacity: string;
+  chartVolumeUp: string;
+  chartVolumeDown: string;
   select: string;
   redDark: string;
   greenDark: string;

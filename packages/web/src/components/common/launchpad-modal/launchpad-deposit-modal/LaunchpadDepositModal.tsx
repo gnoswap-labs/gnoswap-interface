@@ -52,7 +52,7 @@ const LaunchpadDepositModal = ({
 
   const Modal = React.useMemo(() => withLocalModal(LaunchpadDepositModalWrapper, setIsOpen), [setIsOpen]);
 
-  const claimableTime = getClaimableTime(poolInfo?.claimableThreshold);
+  const claimableTime = getClaimableTime(poolInfo?.claimableThreshold, poolInfo?.startTime, poolInfo?.endTime);
 
   const poolDuration = getTierNumber(poolInfo?.poolTier);
 

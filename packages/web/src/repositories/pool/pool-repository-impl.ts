@@ -4,6 +4,7 @@ import { WalletClient } from "@common/clients/wallet-client";
 import {
   SendTransactionResponse,
   SendTransactionSuccessResponse,
+  TransactionMessage,
   WalletResponse,
 } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
@@ -14,10 +15,12 @@ import { CHART_DAY_SCOPE_TYPE } from "@constants/option.constant";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { PoolMapper } from "@models/pool/mapper/pool-mapper";
 import { PoolStakingMapper } from "@models/pool/mapper/pool-staking-mapper";
+import { PoolStakingSummaryMapper } from "@models/pool/mapper/pool-staking-summary-mapper";
 import { PoolDetailModel } from "@models/pool/pool-detail-model";
 import { PoolLiquidityTickModel } from "@models/pool/pool-liquidity-model";
 import { IncentivizePoolModel, PoolModel } from "@models/pool/pool-model";
 import { PoolStakingModel } from "@models/pool/pool-staking";
+import { PoolStakingSummaryModel } from "@models/pool/pool-staking-summary";
 import {
   evaluateExpressionToNumber,
   evaluateExpressionToObject,
@@ -40,7 +43,7 @@ import {
   makePositionMintMessageWithApproves,
   makeRemoveExternalIncentiveMessageWithApproves,
 } from "./pool.message";
-import { AddLiquidityRequest } from "./request/add-liquidity-request";
+import { AddLiquidityMessagesRequest, AddLiquidityRequest } from "./request/add-liquidity-request";
 import { CollectExternalIncentivePenaltyRequest } from "./request/collect-external-incentive-penalty-request";
 import { CreateExternalIncentiveRequest } from "./request/create-external-incentive-request";
 import { CreatePoolRequest } from "./request/create-pool-request";
@@ -49,6 +52,7 @@ import { AddLiquidityFailedResponse, AddLiquiditySuccessResponse } from "./respo
 import { CreatePoolFailedResponse, CreatePoolSuccessResponse } from "./response/create-pool-response";
 import { PoolLiquidityTickResponse } from "./response/pool-liquidity-ticks-response";
 import { PoolStakingResponse } from "./response/pool-staking-response";
+import { PoolStakingSummaryResponse } from "./response/pool-staking-summary-response";
 
 export class PoolRepositoryImpl implements PoolRepository {
   private networkClient: NetworkClient | null;
@@ -136,7 +140,7 @@ export class PoolRepositoryImpl implements PoolRepository {
     const response = await this.networkClient.get<{
       data: PoolStakingResponse[];
     }>({
-      url: `/staking/${poolPath}?all=true`,
+      url: `/staking/${poolPath}`,
     });
     const pools = response?.data?.data ? response.data.data.map(PoolStakingMapper.fromResponse) : [];
     return pools;
@@ -153,6 +157,18 @@ export class PoolRepositoryImpl implements PoolRepository {
     });
     const pools = response?.data?.data ? response.data.data.map(PoolStakingMapper.fromResponse) : [];
     return pools;
+  };
+
+  getPoolStakingSummary = async (poolPath: string): Promise<PoolStakingSummaryModel | null> => {
+    if (!this.networkClient) {
+      return null;
+    }
+    const response = await this.networkClient.get<{
+      data: PoolStakingSummaryResponse;
+    }>({
+      url: `/staking/${poolPath}/summary`,
+    });
+    return response?.data?.data ? PoolStakingSummaryMapper.fromResponse(response.data.data) : null;
   };
 
   getWithdrawalFee = async (): Promise<number> => {
@@ -205,13 +221,15 @@ export class PoolRepositoryImpl implements PoolRepository {
 
   getPools = async (): Promise<PoolModel[]> => {
     if (!this.networkClient) {
-      return [];
+      throw new Error("Pool API unavailable");
     }
     const response = await this.networkClient.get<PoolListResponse>({
       url: "/pools",
     });
-    const pools = response?.data?.data ? response.data.data.map(PoolMapper.fromResponse) : [];
-    return pools;
+    if (!Array.isArray(response?.data?.data)) {
+      throw new Error("Invalid pool list response");
+    }
+    return response.data.data.map(PoolMapper.fromResponse);
   };
 
   getIncentivizePools = async (address?: string): Promise<IncentivizePoolModel[]> => {
@@ -385,28 +403,22 @@ export class PoolRepositoryImpl implements PoolRepository {
     });
   };
 
-  addLiquidity = async (
-    request: AddLiquidityRequest,
-  ): Promise<WalletResponse<AddLiquiditySuccessResponse | AddLiquidityFailedResponse>> => {
+  makeAddLiquidityMessages = async (request: AddLiquidityMessagesRequest): Promise<TransactionMessage[]> => {
     if (!this.rpcProvider) {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }
 
-    const { gasFee, gasUsed, caller, ...requests } = request;
-    const makeTxMessageRequests = {
-      caller,
-      ...requests,
-    };
-
-    /**
-     * Add Position Mint message
-     */
-    const mintMessages = await makePositionMintMessageWithApproves(
-      makeTxMessageRequests,
-      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    return makePositionMintMessageWithApproves(request, (packagePath, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
+  };
 
-    const messages = [...mintMessages];
+  addLiquidity = async (
+    request: AddLiquidityRequest,
+  ): Promise<WalletResponse<AddLiquiditySuccessResponse | AddLiquidityFailedResponse>> => {
+    const { gasFee, gasUsed, ...requests } = request;
+
+    const messages = await this.makeAddLiquidityMessages(requests);
 
     const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
 

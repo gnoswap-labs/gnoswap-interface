@@ -40,7 +40,7 @@ const WalletMyPositionsHeader: React.FC<WalletMyPositionsHeaderProps> = ({ toggl
 
   return (
     <div css={wrapper}>
-      {totalPositionCount > 0 && <h2>{`${t("Wallet:myPosi")} (${totalPositionCount.toLocaleString()})`}</h2>}
+      <h2>{`${t("Wallet:myPosi")} (${totalPositionCount.toLocaleString()})`}</h2>
       {hasClosedPositions && (
         <Switch
           checked={isClosed}
