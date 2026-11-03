@@ -49,6 +49,7 @@
   "order": {
     "active": "Activas",
     "cancelOrder": "Cancelar orden",
+    "claimOrder": "Reclamar",
     "connectWallet": "Conecta tu billetera para ver tus órdenes.",
     "expiresAt": "Expira el",
     "limitPrice": "Precio límite",

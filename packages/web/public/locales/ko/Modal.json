@@ -196,6 +196,14 @@
       },
       "title": "래핑"
     },
+    "dcaClaim": {
+      "status": {
+        "error": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 수령 실패</div>",
+        "pending": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 수령 중</div>",
+        "success": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 수령 완료</div>"
+      },
+      "title": "DCA 주문 수령"
+    },
     "dcaOrder": {
       "status": {
         "error": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBSymbol}}</span> 주문 실패</div>",

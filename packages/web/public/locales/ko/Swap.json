@@ -49,6 +49,7 @@
   "order": {
     "active": "진행 중",
     "cancelOrder": "주문 취소",
+    "claimOrder": "수령하기",
     "connectWallet": "주문을 보려면 지갑을 연결해 주세요.",
     "expiresAt": "만료 일시",
     "limitPrice": "지정가",

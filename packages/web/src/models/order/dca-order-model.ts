@@ -44,6 +44,16 @@ export interface DcaOrderModel {
   purchasedAmount: string;
   /** What a stop would refund. */
   remainingAmount: string;
+  /** Output already paid to the owner. */
+  claimedAmount: string;
+  /** Output accrued but not yet paid to the owner. */
+  claimableAmount: string;
+  /**
+   * True when every round executed but the output is still unpaid: the order
+   * left the active list, yet the owner must Claim to receive the output and
+   * finalize it on-chain.
+   */
+  canClaim: boolean;
   /** Average output per input. Null until something executed. */
   priceRate: string | null;
   /** Unix seconds. */

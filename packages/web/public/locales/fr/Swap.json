@@ -49,6 +49,7 @@
   "order": {
     "active": "Actifs",
     "cancelOrder": "Annuler l'ordre",
+    "claimOrder": "Réclamer",
     "connectWallet": "Veuillez connecter votre portefeuille pour voir vos ordres.",
     "expiresAt": "Expire le",
     "limitPrice": "Prix limite",

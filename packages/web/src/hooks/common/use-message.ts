@@ -157,6 +157,12 @@ export const useMessage = () => {
             success: t("Modal:confirm.dcaStop.status.success", data),
             error: t("Modal:confirm.dcaStop.status.error", data),
           };
+        case DexEvent.DCA_CLAIM:
+          return {
+            pending: t("Modal:confirm.dcaClaim.status.pending", data),
+            success: t("Modal:confirm.dcaClaim.status.success", data),
+            error: t("Modal:confirm.dcaClaim.status.error", data),
+          };
         case DexEvent.LIMIT_ORDER:
           return {
             pending: t("Modal:confirm.limitOrder.status.pending", data),
@@ -243,6 +249,8 @@ export const useMessage = () => {
           return t("Modal:confirm.dcaOrder.title");
         case DexEvent.DCA_STOP:
           return t("Modal:confirm.dcaStop.title");
+        case DexEvent.DCA_CLAIM:
+          return t("Modal:confirm.dcaClaim.title");
         case DexEvent.LIMIT_ORDER:
           return t("Modal:confirm.limitOrder.title");
         case DexEvent.LIMIT_CANCEL:

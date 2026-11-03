@@ -49,6 +49,7 @@
   "order": {
     "active": "Активные",
     "cancelOrder": "Отменить ордер",
+    "claimOrder": "Получить",
     "connectWallet": "Подключите кошелёк, чтобы увидеть свои ордера.",
     "expiresAt": "Истекает",
     "limitPrice": "Лимитная цена",

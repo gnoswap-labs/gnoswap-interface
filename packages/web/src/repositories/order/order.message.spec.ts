@@ -14,6 +14,7 @@ import {
   getDcaDepositAmount,
   makeCancelDcaOrderMessages,
   makeCancelLimitOrderMessages,
+  makeClaimDcaOrderMessages,
   makeCreateDcaOrderMessagesWithApproves,
   makeCreateLimitOrderMessagesWithApproves,
 } from "./order.message";
@@ -190,6 +191,12 @@ describe("order.message.ts", () => {
     ]);
     expect(makeCancelLimitOrderMessages({ orderId: "7", caller })).toEqual([
       expect.objectContaining({ pkg_path: "limit_path", func: "CancelOrder", args: ["7"] }),
+    ]);
+  });
+
+  it("builds the DCA claim message", () => {
+    expect(makeClaimDcaOrderMessages({ orderId: "42", caller })).toEqual([
+      expect.objectContaining({ pkg_path: "dca_path", func: "Claim", args: ["42"], send: "" }),
     ]);
   });
 });

@@ -100,6 +100,9 @@ export class OrderRepositoryDevMock extends OrderRepositoryImpl {
   public sendCancelDcaOrder = async (request: CancelOrderRequest): Promise<WalletResponse<{ hash: string }>> =>
     this.rejectFixtureMutation(request.orderId);
 
+  public sendClaimDcaOrder = async (request: CancelOrderRequest): Promise<WalletResponse<{ hash: string }>> =>
+    this.rejectFixtureMutation(request.orderId);
+
   public sendCancelLimitOrder = async (request: CancelOrderRequest): Promise<WalletResponse<{ hash: string }>> =>
     this.rejectFixtureMutation(request.orderId);
 

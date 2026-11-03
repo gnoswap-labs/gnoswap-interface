@@ -37,6 +37,7 @@ export const DexEvent = {
   // order
   DCA_ORDER: "DCA_ORDER",
   DCA_STOP: "DCA_STOP",
+  DCA_CLAIM: "DCA_CLAIM",
   LIMIT_ORDER: "LIMIT_ORDER",
   LIMIT_CANCEL: "LIMIT_CANCEL",
   // faucet

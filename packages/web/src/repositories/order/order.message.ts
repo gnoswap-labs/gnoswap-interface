@@ -20,6 +20,7 @@ import { isNativeTokenPath } from "@utils/token-utils";
 enum OrderMessageFunctionType {
   CreateOrder = "CreateOrder",
   CancelOrder = "CancelOrder",
+  Claim = "Claim",
 }
 
 type FetchAllowance = (packagePath: string, owner: string, spender: string) => Promise<number>;
@@ -112,6 +113,28 @@ export function makeCancelDcaOrderMessages({
       packagePath: PACKAGE_DCA_ORDER_PATH,
       send: "",
       func: OrderMessageFunctionType.CancelOrder,
+      args: [orderId],
+      caller,
+    }),
+  ];
+}
+
+/**
+ * Pays a DCA order's accrued output to its owner. Once every round executed,
+ * the realm also finalizes the order in the same call.
+ */
+export function makeClaimDcaOrderMessages({
+  orderId,
+  caller,
+}: {
+  orderId: string;
+  caller: string;
+}): TransactionMessage[] {
+  return [
+    makeTransactionMessage({
+      packagePath: PACKAGE_DCA_ORDER_PATH,
+      send: "",
+      func: OrderMessageFunctionType.Claim,
       args: [orderId],
       caller,
     }),

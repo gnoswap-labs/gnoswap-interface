@@ -196,6 +196,14 @@
       },
       "title": "Envolver"
     },
+    "dcaClaim": {
+      "status": {
+        "error": "<div>Error al reclamar <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "pending": "<div>Reclamando <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "success": "<div>Reclamado <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>"
+      },
+      "title": "Reclamar orden DCA"
+    },
     "dcaOrder": {
       "status": {
         "error": "<div>Error al ordenar <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> por <span>{{tokenBSymbol}}</span></div>",

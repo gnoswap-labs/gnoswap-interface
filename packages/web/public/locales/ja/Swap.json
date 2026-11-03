@@ -49,6 +49,7 @@
   "order": {
     "active": "アクティブ",
     "cancelOrder": "注文をキャンセル",
+    "claimOrder": "受け取る",
     "connectWallet": "注文を表示するにはウォレットを接続してください。",
     "expiresAt": "有効期限",
     "limitPrice": "指値価格",

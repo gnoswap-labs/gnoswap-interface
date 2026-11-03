@@ -196,6 +196,14 @@
       },
       "title": "ラップ"
     },
+    "dcaClaim": {
+      "status": {
+        "error": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> の受け取りに失敗しました</div>",
+        "pending": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> を受け取り中</div>",
+        "success": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> を受け取りました</div>"
+      },
+      "title": "DCA注文の受け取り"
+    },
     "dcaOrder": {
       "status": {
         "error": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> で <span>{{tokenBSymbol}}</span> の注文に失敗しました</div>",

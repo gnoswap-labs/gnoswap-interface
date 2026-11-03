@@ -196,6 +196,14 @@
       },
       "title": "Bọc"
     },
+    "dcaClaim": {
+      "status": {
+        "error": "<div>Không thể nhận <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "pending": "<div>Đang nhận <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "success": "<div>Đã nhận <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>"
+      },
+      "title": "Nhận lệnh DCA"
+    },
     "dcaOrder": {
       "status": {
         "error": "<div>Đặt lệnh <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> lấy <span>{{tokenBSymbol}}</span> thất bại</div>",

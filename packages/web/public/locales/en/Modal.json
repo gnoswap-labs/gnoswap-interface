@@ -196,6 +196,14 @@
       },
       "title": "Wrap"
     },
+    "dcaClaim": {
+      "status": {
+        "error": "<div>Failed to claim <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "pending": "<div>Claiming <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "success": "<div>Claimed <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>"
+      },
+      "title": "Claim DCA Order"
+    },
     "dcaOrder": {
       "status": {
         "error": "<div>Failed to order <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>",

@@ -113,6 +113,24 @@ describe("order-mapper", () => {
     expect(cancelled.nextExecutionAt).toBeNull();
   });
 
+  it("keeps a completed DCA order claimable until its output is paid", () => {
+    const completed = { ...dcaItem, status: "COMPLETED" as const, remainingCount: 0, nextExecutionAt: null };
+
+    const unclaimed = mapDcaOrderItemToModel({ ...completed, claimedAmount: "0", claimableAmount: "450" }, tokens);
+    expect(unclaimed.isActive).toBe(false);
+    expect(unclaimed.canClaim).toBe(true);
+    expect(unclaimed.claimableAmount).toBe("0.00045");
+    expect(unclaimed.claimedAmount).toBe("0");
+
+    const claimed = mapDcaOrderItemToModel({ ...completed, claimedAmount: "450", claimableAmount: "0" }, tokens);
+    expect(claimed.canClaim).toBe(false);
+    expect(claimed.claimedAmount).toBe("0.00045");
+
+    // An active order pays its accrued output through Stop; a cancelled one already paid it.
+    expect(mapDcaOrderItemToModel(dcaItem, tokens).canClaim).toBe(false);
+    expect(mapDcaOrderItemToModel({ ...dcaItem, status: "CANCELLED" }, tokens).canClaim).toBe(false);
+  });
+
   it("maps a limit order with its limit price and fill rate", () => {
     const item: LimitOrderItem = {
       orderId: "7",

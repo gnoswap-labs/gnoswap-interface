@@ -49,6 +49,7 @@
   "order": {
     "active": "Active",
     "cancelOrder": "Cancel Order",
+    "claimOrder": "Claim",
     "connectWallet": "Please connect your wallet to view your order.",
     "expiresAt": "Expires At",
     "limitPrice": "Limit Price",

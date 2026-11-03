@@ -116,6 +116,10 @@ export class OrderRepositoryMock implements OrderRepository {
     return this.delay(MOCK_TX_RESPONSE);
   }
 
+  sendClaimDcaOrder(): Promise<WalletResponse<{ hash: string }>> {
+    return this.delay(MOCK_TX_RESPONSE);
+  }
+
   sendCreateLimitOrder(): Promise<WalletResponse<{ hash: string }>> {
     return this.delay(MOCK_TX_RESPONSE);
   }

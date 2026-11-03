@@ -49,6 +49,7 @@
   "order": {
     "active": "进行中",
     "cancelOrder": "取消订单",
+    "claimOrder": "领取",
     "connectWallet": "请连接钱包以查看您的订单。",
     "expiresAt": "到期时间",
     "limitPrice": "限价",

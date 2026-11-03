@@ -196,6 +196,14 @@
       },
       "title": "包装"
     },
+    "dcaClaim": {
+      "status": {
+        "error": "<div>领取 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 失败</div>",
+        "pending": "<div>正在领取 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "success": "<div>已领取 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>"
+      },
+      "title": "领取DCA订单"
+    },
     "dcaOrder": {
       "status": {
         "error": "<div>以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 下单购买 <span>{{tokenBSymbol}}</span> 失败</div>",

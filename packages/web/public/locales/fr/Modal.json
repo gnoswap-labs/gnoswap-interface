@@ -196,6 +196,14 @@
       },
       "title": "Enveloppe"
     },
+    "dcaClaim": {
+      "status": {
+        "error": "<div>Échec de la réclamation de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "pending": "<div>Réclamation de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "success": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> réclamé</div>"
+      },
+      "title": "Réclamer l'ordre DCA"
+    },
     "dcaOrder": {
       "status": {
         "error": "<div>Échec de l'ordre de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBSymbol}}</span></div>",

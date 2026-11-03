@@ -52,6 +52,8 @@ export interface OrderRepository {
 
   sendCancelDcaOrder(request: CancelOrderRequest): Promise<WalletResponse<{ hash: string }>>;
 
+  sendClaimDcaOrder(request: CancelOrderRequest): Promise<WalletResponse<{ hash: string }>>;
+
   sendCreateLimitOrder(request: CreateLimitOrderRequest): Promise<WalletResponse<{ hash: string }>>;
 
   sendCancelLimitOrder(request: CancelOrderRequest): Promise<WalletResponse<{ hash: string }>>;

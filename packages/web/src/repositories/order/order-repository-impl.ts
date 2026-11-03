@@ -12,6 +12,7 @@ import { OrderRepository } from "./order-repository";
 import {
   makeCancelDcaOrderMessages,
   makeCancelLimitOrderMessages,
+  makeClaimDcaOrderMessages,
   makeCreateDcaOrderMessagesWithApproves,
   makeCreateLimitOrderMessagesWithApproves,
 } from "./order.message";
@@ -117,6 +118,11 @@ export class OrderRepositoryImpl implements OrderRepository {
   public sendCancelDcaOrder = async (request: CancelOrderRequest): Promise<WalletResponse<{ hash: string }>> => {
     const caller = await this.getAddress();
     return this.sendTransaction(makeCancelDcaOrderMessages({ orderId: request.orderId, caller }), request);
+  };
+
+  public sendClaimDcaOrder = async (request: CancelOrderRequest): Promise<WalletResponse<{ hash: string }>> => {
+    const caller = await this.getAddress();
+    return this.sendTransaction(makeClaimDcaOrderMessages({ orderId: request.orderId, caller }), request);
   };
 
   public sendCreateLimitOrder = async (request: CreateLimitOrderRequest): Promise<WalletResponse<{ hash: string }>> => {

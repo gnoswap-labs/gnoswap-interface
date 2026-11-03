@@ -49,6 +49,7 @@
   "order": {
     "active": "Đang hoạt động",
     "cancelOrder": "Hủy lệnh",
+    "claimOrder": "Nhận",
     "connectWallet": "Vui lòng kết nối ví để xem lệnh của bạn.",
     "expiresAt": "Hết hạn lúc",
     "limitPrice": "Giá giới hạn",

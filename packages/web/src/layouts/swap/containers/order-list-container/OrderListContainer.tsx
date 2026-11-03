@@ -33,7 +33,7 @@ const OrderListContainer: React.FC<OrderListContainerProps> = ({ kind }) => {
   const { isMobile } = useWindowSize();
   const { getTxUrl } = useGnoscanUrl();
   const { tokenPrices } = useTokenData(true);
-  const { openStopDcaOrder, openCancelLimitOrder } = useStopOrderHandler();
+  const { openStopDcaOrder, openCancelLimitOrder, claimDcaOrder } = useStopOrderHandler();
   const { orderRepository } = useGnoswapContext();
   const actionsDisabled = !orderRepository.canMutateOrders;
   const [tab, setTab] = useAtom(OrderState.orderListTab);
@@ -80,6 +80,7 @@ const OrderListContainer: React.FC<OrderListContainerProps> = ({ kind }) => {
           )}
           txUrl={getTxUrl(order.createdTxHash)}
           onClickStop={openStopDcaOrder}
+          onClickClaim={claimDcaOrder}
           actionsDisabled={actionsDisabled}
           renderHistory={item => <DcaOrderHistoryContainer order={item} />}
         />

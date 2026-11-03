@@ -196,6 +196,14 @@
       },
       "title": "Обертывание"
     },
+    "dcaClaim": {
+      "status": {
+        "error": "<div>Не удалось получить <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "pending": "<div>Получение <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "success": "<div>Получено <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>"
+      },
+      "title": "Получить по DCA-ордеру"
+    },
     "dcaOrder": {
       "status": {
         "error": "<div>Не удалось разместить ордер <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> на <span>{{tokenBSymbol}}</span></div>",

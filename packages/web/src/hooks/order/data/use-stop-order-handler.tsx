@@ -166,5 +166,24 @@ export const useStopOrderHandler = () => {
     [canMutateOrders],
   );
 
-  return { openStopDcaOrder, openCancelLimitOrder };
+  /** Pays a completed DCA order's unclaimed output; the realm finalizes the order in the same call. */
+  const claimDcaOrder = useCallback(
+    (order: DcaOrderModel) => {
+      if (!canMutateOrders || !order.canClaim) return;
+
+      const orderId = order.orderId;
+      submit({
+        action: DexEvent.DCA_CLAIM,
+        messageData: {
+          tokenASymbol: order.outputToken.displaySymbol,
+          tokenBSymbol: order.inputToken.displaySymbol,
+          tokenAAmount: formatOrderFullAmount(order.claimableAmount, order.outputToken.decimals),
+        },
+        send: () => orderRepository.sendClaimDcaOrder({ orderId }),
+      });
+    },
+    [canMutateOrders, orderRepository, submit],
+  );
+
+  return { openStopDcaOrder, openCancelLimitOrder, claimDcaOrder };
 };
