@@ -17,7 +17,8 @@ import { GovernanceRepository, GovernanceRepositoryImpl } from "@repositories/go
 import { LaunchpadRepository, LaunchpadRepositoryImpl } from "@repositories/launchpad";
 import { LeaderboardRepository, LeaderboardRepositoryImpl } from "@repositories/leaderboard";
 import { NotificationRepository, NotificationRepositoryImpl } from "@repositories/notification";
-import { OrderRepository, OrderRepositoryImpl } from "@repositories/order";
+import { OrderRepository } from "@repositories/order";
+import { OrderRepositoryDevMock } from "@repositories/order/order-repository-dev-mock";
 import { PoolRepository, PoolRepositoryImpl } from "@repositories/pool";
 import { PositionRepository, PositionRepositoryImpl } from "@repositories/position";
 import { StatusRepository, StatusRepositoryImpl } from "@repositories/status";
@@ -274,7 +275,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
   }, [gnoswapApiClient, walletClient, rpcProvider]);
 
   const orderRepository = useMemo(() => {
-    return new OrderRepositoryImpl(gnoswapApiClient, walletClient, rpcProvider);
+    return new OrderRepositoryDevMock(gnoswapApiClient, walletClient, rpcProvider);
   }, [gnoswapApiClient, walletClient, rpcProvider]);
 
   const transactionService = useMemo(() => {
