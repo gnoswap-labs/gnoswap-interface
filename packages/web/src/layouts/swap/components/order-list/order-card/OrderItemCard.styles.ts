@@ -47,7 +47,9 @@ export const OrderItemCardWrapper = styled.div`
 
   .card-metrics {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    /* Purchased carries the amount and the return, so it gets the widest column;
+       Price Rate sizes to its value. Every value stays on one line. */
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) max-content;
     width: 100%;
     gap: 8px;
   }
@@ -70,7 +72,7 @@ export const OrderItemCardWrapper = styled.div`
     }
     .metric-value {
       ${mixins.flexbox("row", "center", "flex-start")};
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       max-width: 100%;
       gap: 4px;
       ${fonts.body9};
@@ -79,6 +81,7 @@ export const OrderItemCardWrapper = styled.div`
         ${fonts.body12};
       }
       .value-text {
+        min-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -86,6 +89,8 @@ export const OrderItemCardWrapper = styled.div`
     }
     .roi {
       ${fonts.p2};
+      flex-shrink: 0;
+      white-space: nowrap;
       color: ${({ theme }) => theme.color.green01};
       &.negative {
         color: ${({ theme }) => theme.color.red01};
