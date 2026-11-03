@@ -18,6 +18,7 @@ export const SwapCardHeaderWrapper = styled.div`
   .swap-type-tab {
     .swap-type-button {
       padding: 6px 20px;
+      cursor: pointer;
       ${media.mobile} {
         padding: 5px 14px;
       }

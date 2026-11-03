@@ -1,38 +1,29 @@
 import { useAtomValue } from "jotai";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback } from "react";
 
 import useRouter from "@hooks/common/use-custom-router";
 import { SWAP_CARD_TYPE, SwapCardType, toSwapCardType } from "@models/order/order-type";
-import { SwapState, ThemeState } from "@states/index";
+import { useGetDcaConfig, useGetLimitConfig } from "@query/order";
+import { SwapState } from "@states/index";
 
-import OrderCardSkeleton from "../../components/order-form/OrderCardSkeleton";
-import { SwapCardWrapper } from "../../components/swap-card/SwapCard.styles";
-import SwapCardHeader from "../../components/swap-card/swap-card-header/SwapCardHeader";
 import DcaOrderContainer from "../dca-order-container/DcaOrderContainer";
 import LimitOrderContainer from "../limit-order-container/LimitOrderContainer";
 import SwapCardContainer from "../swap-card-container/SwapCardContainer";
 
-/** How long the skeleton covers the card after switching between Swap, DCA and Limit. */
-const TAB_SWITCH_SKELETON_MS = 300;
-
-const noop = () => undefined;
-
-/** Switches the swap card between Swap, DCA and Limit through the `type` query parameter. */
+/**
+ * Switches the swap card between Swap, DCA and Limit through the `type` query parameter.
+ *
+ * A card shows its skeleton only while the realm config it needs is loading. Both
+ * configs are fetched here, whatever the selected tab, so switching tabs renders
+ * the next card at once instead of flashing a skeleton between two renders.
+ */
 const SwapContainer: React.FC = () => {
   const router = useRouter();
-  const themeKey = useAtomValue(ThemeState.themeKey);
   const swapValue = useAtomValue(SwapState.swap);
   const swapType = toSwapCardType(router.query.type);
-  const [switching, setSwitching] = useState(false);
-  const previousType = useRef(swapType);
 
-  useEffect(() => {
-    if (previousType.current === swapType) return;
-    previousType.current = swapType;
-    setSwitching(true);
-    const timer = setTimeout(() => setSwitching(false), TAB_SWITCH_SKELETON_MS);
-    return () => clearTimeout(timer);
-  }, [swapType]);
+  useGetDcaConfig();
+  useGetLimitConfig();
 
   const changeSwapType = useCallback(
     (type: SwapCardType) => {
@@ -46,23 +37,6 @@ const SwapContainer: React.FC = () => {
     },
     [router, swapType, swapValue.tokenA?.path, swapValue.tokenB?.path],
   );
-
-  if (switching) {
-    return (
-      <SwapCardWrapper>
-        <SwapCardHeader
-          copied={false}
-          copyURL={noop}
-          slippage={0}
-          changeSlippage={noop}
-          themeKey={themeKey}
-          swapType={swapType}
-          changeSwapType={changeSwapType}
-        />
-        <OrderCardSkeleton />
-      </SwapCardWrapper>
-    );
-  }
 
   switch (swapType) {
     case SWAP_CARD_TYPE.DCA:

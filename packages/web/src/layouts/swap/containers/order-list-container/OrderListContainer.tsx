@@ -39,8 +39,16 @@ const OrderListContainer: React.FC<OrderListContainerProps> = ({ kind }) => {
   const address = connected ? account?.address ?? "" : "";
   const request = { address, status: tab, page, size: ORDER_PAGE_SIZE };
 
-  const dcaOrders = useGetDcaOrders(request, { enabled: kind === "dca" && !!address });
-  const limitOrders = useGetLimitOrders(request, { enabled: kind === "limit" && !!address });
+  // Both lists stay loaded so switching between DCA and Limit shows the cached list at once;
+  // only the visible one keeps polling.
+  const dcaOrders = useGetDcaOrders(request, {
+    enabled: !!address,
+    ...(kind !== "dca" && { refetchInterval: false }),
+  });
+  const limitOrders = useGetLimitOrders(request, {
+    enabled: !!address,
+    ...(kind !== "limit" && { refetchInterval: false }),
+  });
   const { data, isLoading } = kind === "dca" ? dcaOrders : limitOrders;
 
   useEffect(() => setPage(1), [kind, tab, address]);
