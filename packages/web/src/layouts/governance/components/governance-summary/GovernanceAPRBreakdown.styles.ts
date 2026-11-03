@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 
+import { Content as FloatingContent } from "@components/common/tooltip/Tooltip.styles";
 import { fonts } from "@constants/font.constant";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
@@ -86,6 +87,12 @@ export const GovernanceAPRBreakdownWrapper = styled.div`
     }
   }
 
+`;
+
+export const GovernanceAPRHistoryTooltipContent = styled(FloatingContent)`
+  max-height: var(--apr-history-available-height);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 `;
 
 export const GovernanceAPRHistoryPanel = styled.section`
