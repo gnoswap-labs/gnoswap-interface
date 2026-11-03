@@ -15,6 +15,35 @@ export function toSwapCardType(value: unknown): SwapCardType {
   return isSwapCardType(value) ? value : SWAP_CARD_TYPE.SWAP;
 }
 
+/**
+ * The swap card modes this deployment offers. DCA and Limit are each enabled
+ * only when their order realm path is configured; Swap is always available.
+ */
+export function getEnabledSwapCardTypes({
+  dcaOrderPath,
+  limitOrderPath,
+}: {
+  dcaOrderPath: string;
+  limitOrderPath: string;
+}): SwapCardType[] {
+  return [
+    SWAP_CARD_TYPE.SWAP,
+    ...(dcaOrderPath ? [SWAP_CARD_TYPE.DCA] : []),
+    ...(limitOrderPath ? [SWAP_CARD_TYPE.LIMIT] : []),
+  ];
+}
+
+/** Like `toSwapCardType`, but a disabled mode falls back to Swap. */
+export function toEnabledSwapCardType(value: unknown, enabledTypes: SwapCardType[]): SwapCardType {
+  const type = toSwapCardType(value);
+  return enabledTypes.includes(type) ? type : SWAP_CARD_TYPE.SWAP;
+}
+
+/** Whether any order mode is enabled; without one the swap page has no order UI at all. */
+export function hasOrderSwapCardTypes(enabledTypes: SwapCardType[]): boolean {
+  return enabledTypes.some(type => type !== SWAP_CARD_TYPE.SWAP);
+}
+
 export type OrderListTab = "active" | "past";
 
 export type OrderKind = "dca" | "limit";

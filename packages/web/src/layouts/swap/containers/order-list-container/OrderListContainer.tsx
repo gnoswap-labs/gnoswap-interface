@@ -1,6 +1,7 @@
 import { useAtom } from "jotai";
 import React, { useCallback, useEffect, useState } from "react";
 
+import { ENABLED_SWAP_CARD_TYPES } from "@constants/order.constant";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
@@ -9,7 +10,7 @@ import { useStopOrderHandler } from "@hooks/order/data/use-stop-order-handler";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { calculateOrderRoi } from "@models/order/mapper/order-mapper";
-import { OrderKind, OrderListTab, SWAP_CARD_TYPE, toSwapCardType } from "@models/order/order-type";
+import { OrderKind, OrderListTab, SWAP_CARD_TYPE, toEnabledSwapCardType } from "@models/order/order-type";
 import { TokenModel } from "@models/token/token-model";
 import { useGetDcaOrders, useGetLimitOrders } from "@query/order";
 import { OrderState } from "@states/index";
@@ -45,11 +46,11 @@ const OrderListContainer: React.FC<OrderListContainerProps> = ({ kind }) => {
   // Both lists stay loaded so switching between DCA and Limit shows the cached list at once;
   // only the visible one keeps polling.
   const dcaOrders = useGetDcaOrders(request, {
-    enabled: !!address,
+    enabled: !!address && ENABLED_SWAP_CARD_TYPES.includes(SWAP_CARD_TYPE.DCA),
     ...(kind !== "dca" && { refetchInterval: false }),
   });
   const limitOrders = useGetLimitOrders(request, {
-    enabled: !!address,
+    enabled: !!address && ENABLED_SWAP_CARD_TYPES.includes(SWAP_CARD_TYPE.LIMIT),
     ...(kind !== "limit" && { refetchInterval: false }),
   });
   const { data, isLoading } = kind === "dca" ? dcaOrders : limitOrders;
@@ -119,7 +120,8 @@ const OrderListContainer: React.FC<OrderListContainerProps> = ({ kind }) => {
 /** Shows the order list under the DCA and Limit cards; the Swap card has none. */
 const SwapOrderListContainer: React.FC = () => {
   const router = useRouter();
-  const swapType = toSwapCardType(router.query.type);
+  // A disabled mode falls back to Swap, which has no order list.
+  const swapType = toEnabledSwapCardType(router.query.type, ENABLED_SWAP_CARD_TYPES);
 
   if (swapType === SWAP_CARD_TYPE.SWAP) return null;
   return <OrderListContainer kind={swapType} />;

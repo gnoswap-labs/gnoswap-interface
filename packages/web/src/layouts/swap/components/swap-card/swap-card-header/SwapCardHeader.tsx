@@ -6,6 +6,7 @@ import IconPolygon from "@components/common/icons/IconPolygon";
 import IconSettings from "@components/common/icons/IconSettings";
 import SelectTab from "@components/common/select-tab/SelectTab";
 import SettingMenuModal from "@components/common/setting-menu-modal/SettingMenuModal";
+import { ENABLED_SWAP_CARD_TYPES } from "@constants/order.constant";
 import { SWAP_CARD_TYPE, SwapCardType } from "@models/order/order-type";
 
 import { CopyTooltip, SettingMenuButton, SwapCardHeaderWrapper } from "./SwapCardHeader.styles";
@@ -19,6 +20,8 @@ interface SwapCardHeaderProps {
   /** Shows the Swap | DCA | Limit tabs in place of the title when given. */
   swapType?: SwapCardType;
   changeSwapType?: (type: SwapCardType) => void;
+  /** Tabs to offer. Defaults to the modes enabled by the configured order realms. */
+  swapTypes?: SwapCardType[];
 }
 const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
   copied,
@@ -28,16 +31,18 @@ const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
   themeKey,
   swapType,
   changeSwapType,
+  swapTypes = ENABLED_SWAP_CARD_TYPES,
 }) => {
   const { t } = useTranslation();
 
   const swapTypeTabs = useMemo(
-    () => [
-      { key: SWAP_CARD_TYPE.SWAP, display: t("Swap:tab.swap") },
-      { key: SWAP_CARD_TYPE.DCA, display: t("Swap:tab.dca") },
-      { key: SWAP_CARD_TYPE.LIMIT, display: t("Swap:tab.limit") },
-    ],
-    [t],
+    () =>
+      [
+        { key: SWAP_CARD_TYPE.SWAP, display: t("Swap:tab.swap") },
+        { key: SWAP_CARD_TYPE.DCA, display: t("Swap:tab.dca") },
+        { key: SWAP_CARD_TYPE.LIMIT, display: t("Swap:tab.limit") },
+      ].filter(tab => swapTypes.includes(tab.key)),
+    [swapTypes, t],
   );
   const [openedSetting, setOpenedSetting] = useState(false);
 
@@ -51,7 +56,7 @@ const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
 
   return (
     <SwapCardHeaderWrapper>
-      {swapType && changeSwapType ? (
+      {swapType && changeSwapType && swapTypeTabs.length > 1 ? (
         <div className="swap-type-tab">
           <SelectTab
             selectType={swapType}

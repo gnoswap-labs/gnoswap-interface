@@ -17,8 +17,9 @@ import { ThemeState } from "@states/index";
 import SwapCard from "../../components/swap-card/SwapCard";
 
 interface SwapCardContainerProps {
-  swapType: SwapCardType;
-  changeSwapType: (type: SwapCardType) => void;
+  /** Omitted when no order mode is enabled, so the card keeps its plain Swap title. */
+  swapType?: SwapCardType;
+  changeSwapType?: (type: SwapCardType) => void;
 }
 
 const SwapCardContainer: React.FC<SwapCardContainerProps> = ({ swapType, changeSwapType }) => {

@@ -1,8 +1,9 @@
 import { useAtomValue } from "jotai";
 import React, { useCallback } from "react";
 
+import { ENABLED_SWAP_CARD_TYPES, IS_ORDER_ENABLED } from "@constants/order.constant";
 import useRouter from "@hooks/common/use-custom-router";
-import { SWAP_CARD_TYPE, SwapCardType, toSwapCardType } from "@models/order/order-type";
+import { SWAP_CARD_TYPE, SwapCardType, toEnabledSwapCardType } from "@models/order/order-type";
 import { useGetDcaConfig, useGetLimitConfig } from "@query/order";
 import { SwapState } from "@states/index";
 
@@ -16,14 +17,22 @@ import SwapCardContainer from "../swap-card-container/SwapCardContainer";
  * A card shows its skeleton only while the realm config it needs is loading. Both
  * configs are fetched here, whatever the selected tab, so switching tabs renders
  * the next card at once instead of flashing a skeleton between two renders.
+ *
+ * DCA and Limit are only offered when their realm path is configured. With
+ * neither configured, the page renders the plain swap card as before.
  */
 const SwapContainer: React.FC = () => {
+  if (!IS_ORDER_ENABLED) return <SwapCardContainer />;
+  return <SwapWithOrdersContainer />;
+};
+
+const SwapWithOrdersContainer: React.FC = () => {
   const router = useRouter();
   const swapValue = useAtomValue(SwapState.swap);
-  const swapType = toSwapCardType(router.query.type);
+  const swapType = toEnabledSwapCardType(router.query.type, ENABLED_SWAP_CARD_TYPES);
 
-  useGetDcaConfig();
-  useGetLimitConfig();
+  useGetDcaConfig({ enabled: ENABLED_SWAP_CARD_TYPES.includes(SWAP_CARD_TYPE.DCA) });
+  useGetLimitConfig({ enabled: ENABLED_SWAP_CARD_TYPES.includes(SWAP_CARD_TYPE.LIMIT) });
 
   const changeSwapType = useCallback(
     (type: SwapCardType) => {

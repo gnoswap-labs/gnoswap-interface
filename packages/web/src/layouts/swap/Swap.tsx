@@ -1,5 +1,6 @@
 import React from "react";
 
+import { IS_ORDER_ENABLED } from "@constants/order.constant";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import SwapLayout from "./SwapLayout";
 import OrderListContainer from "./containers/order-list-container/OrderListContainer";
@@ -13,7 +14,7 @@ const Swap: React.FC = () => {
     <SwapLayout
       header={<HeaderContainer />}
       swap={<SwapContainer />}
-      orders={<OrderListContainer />}
+      orders={IS_ORDER_ENABLED ? <OrderListContainer /> : undefined}
       chart={<SwapInfoChartContainer />}
       info={<SwapInfoTransactionListContainer />}
       footer={<Footer />}
