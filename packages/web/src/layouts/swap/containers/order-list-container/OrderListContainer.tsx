@@ -2,6 +2,7 @@ import { useAtom } from "jotai";
 import React, { useCallback, useEffect, useState } from "react";
 
 import useRouter from "@hooks/common/use-custom-router";
+import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useStopOrderHandler } from "@hooks/order/data/use-stop-order-handler";
@@ -33,10 +34,12 @@ const OrderListContainer: React.FC<OrderListContainerProps> = ({ kind }) => {
   const { getTxUrl } = useGnoscanUrl();
   const { tokenPrices } = useTokenData(true);
   const { openStopDcaOrder, openCancelLimitOrder } = useStopOrderHandler();
+  const { orderRepository } = useGnoswapContext();
+  const actionsDisabled = !orderRepository.canMutateOrders;
   const [tab, setTab] = useAtom(OrderState.orderListTab);
   const [page, setPage] = useState(1);
 
-  const address = connected ? account?.address ?? "" : "";
+  const address = connected ? (account?.address ?? "") : "";
   const request = { address, status: tab, page, size: ORDER_PAGE_SIZE };
 
   // Both lists stay loaded so switching between DCA and Limit shows the cached list at once;
@@ -77,6 +80,7 @@ const OrderListContainer: React.FC<OrderListContainerProps> = ({ kind }) => {
           )}
           txUrl={getTxUrl(order.createdTxHash)}
           onClickStop={openStopDcaOrder}
+          actionsDisabled={actionsDisabled}
           renderHistory={item => <DcaOrderHistoryContainer order={item} />}
         />
       ));
@@ -88,6 +92,7 @@ const OrderListContainer: React.FC<OrderListContainerProps> = ({ kind }) => {
         order={order}
         txUrl={getTxUrl(order.createdTxHash)}
         onClickCancel={openCancelLimitOrder}
+        actionsDisabled={actionsDisabled}
         renderHistory={item => <LimitOrderHistoryContainer order={item} />}
       />
     ));

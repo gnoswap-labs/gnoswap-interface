@@ -28,12 +28,17 @@ export const OrderMetrics: React.FC<{ metrics: OrderMetric[] }> = ({ metrics }) 
   </div>
 );
 
-export const OrderStopButton: React.FC<{ text: string; onClick: () => void }> = ({ text, onClick }) => (
+export const OrderStopButton: React.FC<{ text: string; onClick: () => void; disabled?: boolean }> = ({
+  text,
+  onClick,
+  disabled = false,
+}) => (
   <Button
     text={text}
-    style={{ fullWidth: true, hierarchy: ButtonHierarchy.Primary }}
+    style={{ fullWidth: true, hierarchy: disabled ? ButtonHierarchy.Gray : ButtonHierarchy.Primary }}
     className="button-stop"
     onClick={onClick}
+    disabled={disabled}
   />
 );
 

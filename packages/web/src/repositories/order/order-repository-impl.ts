@@ -39,6 +39,8 @@ import {
 export const DEFAULT_ORDER_PAGE_SIZE = 10;
 
 export class OrderRepositoryImpl implements OrderRepository {
+  public readonly canMutateOrders: boolean = true;
+
   private networkClient: NetworkClient | null;
   private walletClient: WalletClient | null;
   private rpcProvider: GnoProvider | null;

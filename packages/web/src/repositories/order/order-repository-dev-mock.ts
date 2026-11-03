@@ -1,8 +1,15 @@
+import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { CommonError } from "@common/errors";
 
-import { devDcaFixtures, devDcaSchedule, devLimitFixtures, DEV_DCA_CONFIG, DEV_LIMIT_CONFIG } from "./mock/dev-gnoswap-order-mock";
+import {
+  devDcaFixtures,
+  devDcaSchedule,
+  devLimitFixtures,
+  DEV_DCA_CONFIG,
+  DEV_LIMIT_CONFIG,
+} from "./mock/dev-gnoswap-order-mock";
 import { OrderRepositoryImpl } from "./order-repository-impl";
-import { GetDcaScheduleRequest, GetOrderHistoryRequest, GetOrdersRequest } from "./request";
+import { CancelOrderRequest, GetDcaScheduleRequest, GetOrderHistoryRequest, GetOrdersRequest } from "./request";
 import {
   DcaConfigResponse,
   DcaExecutionItem,
@@ -22,11 +29,15 @@ const LIMIT_ACTIVE_STATUSES: LimitOrderItem["status"][] = ["OPEN", "PARTIALLY_FI
 
 /**
  * Temporary order repository for dev.gnoswap while order-api is not deployed.
- * Reads return dev.gnoswap based fixtures; order transactions still go to the
- * order realms through OrderRepositoryImpl. Remove this file and its provider
- * wiring (revert the commit that added it) once order-api is live.
+ * Reads return dev.gnoswap based fixtures. Creating an order still goes to the
+ * order realms through OrderRepositoryImpl, but mutations of an existing order
+ * are disabled: the fixture order IDs are not the owner's on-chain orders, so
+ * a Stop/Cancel would hit a different (or missing) order. Remove this file and
+ * its provider wiring (revert the commit that added it) once order-api is live.
  */
 export class OrderRepositoryDevMock extends OrderRepositoryImpl {
+  public readonly canMutateOrders = false;
+
   private owner = "";
 
   private delay<T>(value: T): Promise<T> {
@@ -85,4 +96,14 @@ export class OrderRepositoryDevMock extends OrderRepositoryImpl {
     const fixture = devLimitFixtures(this.owner).find(item => item.order.orderId === request.orderId);
     return this.delay(this.paginate(fixture?.fills ?? [], request.page, request.size));
   };
+
+  public sendCancelDcaOrder = async (request: CancelOrderRequest): Promise<WalletResponse<{ hash: string }>> =>
+    this.rejectFixtureMutation(request.orderId);
+
+  public sendCancelLimitOrder = async (request: CancelOrderRequest): Promise<WalletResponse<{ hash: string }>> =>
+    this.rejectFixtureMutation(request.orderId);
+
+  private rejectFixtureMutation(orderId: string): never {
+    throw new Error(`Order ${orderId} is a fixture; order mutations are disabled while fixtures are served.`);
+  }
 }

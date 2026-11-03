@@ -15,6 +15,8 @@ export interface LimitOrderItemCardProps {
   order: LimitOrderModel;
   txUrl: string;
   onClickCancel: (order: LimitOrderModel) => void;
+  /** Keeps the order actions disabled, e.g. while the order list is served from fixtures. */
+  actionsDisabled?: boolean;
   renderHistory: (order: LimitOrderModel) => React.ReactNode;
 }
 
@@ -26,7 +28,13 @@ const STATUS_LABEL_KEY: Record<LimitOrderModel["status"], string> = {
   EXPIRED: "Swap:order.status.expired",
 };
 
-const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({ order, txUrl, onClickCancel, renderHistory }) => {
+const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
+  order,
+  txUrl,
+  onClickCancel,
+  actionsDisabled = false,
+  renderHistory,
+}) => {
   const { t } = useTranslation();
   const { tokenIn, tokenOut } = order;
 
@@ -78,7 +86,13 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({ order, txUrl, o
           <span className="value">{formatOrderDateTime(order.expiresAt)}</span>
         </div>
       )}
-      {order.isActive && <OrderStopButton text={t("Swap:order.cancelOrder")} onClick={() => onClickCancel(order)} />}
+      {order.isActive && (
+        <OrderStopButton
+          text={t("Swap:order.cancelOrder")}
+          onClick={() => onClickCancel(order)}
+          disabled={actionsDisabled}
+        />
+      )}
       <OrderHistoryToggle
         visible={BigNumber(order.filledInput).isGreaterThan(0)}
         renderHistory={() => renderHistory(order)}

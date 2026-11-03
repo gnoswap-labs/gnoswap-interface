@@ -15,10 +15,19 @@ export interface DcaOrderItemCardProps {
   roi: { text: string; isNegative: boolean } | null;
   txUrl: string;
   onClickStop: (order: DcaOrderModel) => void;
+  /** Keeps the order actions disabled, e.g. while the order list is served from fixtures. */
+  actionsDisabled?: boolean;
   renderHistory: (order: DcaOrderModel) => React.ReactNode;
 }
 
-const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({ order, roi, txUrl, onClickStop, renderHistory }) => {
+const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
+  order,
+  roi,
+  txUrl,
+  onClickStop,
+  actionsDisabled = false,
+  renderHistory,
+}) => {
   const { t } = useTranslation();
   const { inputToken, outputToken } = order;
 
@@ -63,7 +72,13 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({ order, roi, txUrl, 
       </div>
       <OrderProgressBar progress={order.progress} overview={overview} />
       <OrderMetrics metrics={metrics} />
-      {order.isActive && <OrderStopButton text={t("Swap:order.stopOrder")} onClick={() => onClickStop(order)} />}
+      {order.isActive && (
+        <OrderStopButton
+          text={t("Swap:order.stopOrder")}
+          onClick={() => onClickStop(order)}
+          disabled={actionsDisabled}
+        />
+      )}
       <OrderHistoryToggle visible={order.executedCount > 0} renderHistory={() => renderHistory(order)} />
     </OrderItemCardWrapper>
   );

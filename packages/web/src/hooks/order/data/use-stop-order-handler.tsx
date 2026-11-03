@@ -145,15 +145,26 @@ export const useStopOrderHandler = () => {
     openModal();
   }, [openModal, summary]);
 
-  const openStopDcaOrder = useCallback((order: DcaOrderModel) => {
-    pendingOpen.current = true;
-    setSelected({ kind: "dca", order });
-  }, []);
+  // Fixture orders are not the owner's on-chain orders, so they never reach the stop flow.
+  const canMutateOrders = orderRepository.canMutateOrders;
 
-  const openCancelLimitOrder = useCallback((order: LimitOrderModel) => {
-    pendingOpen.current = true;
-    setSelected({ kind: "limit", order });
-  }, []);
+  const openStopDcaOrder = useCallback(
+    (order: DcaOrderModel) => {
+      if (!canMutateOrders) return;
+      pendingOpen.current = true;
+      setSelected({ kind: "dca", order });
+    },
+    [canMutateOrders],
+  );
+
+  const openCancelLimitOrder = useCallback(
+    (order: LimitOrderModel) => {
+      if (!canMutateOrders) return;
+      pendingOpen.current = true;
+      setSelected({ kind: "limit", order });
+    },
+    [canMutateOrders],
+  );
 
   return { openStopDcaOrder, openCancelLimitOrder };
 };
