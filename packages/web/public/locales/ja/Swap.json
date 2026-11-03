@@ -15,6 +15,7 @@
     "minTrading": "1回あたりの最低取引量は{{amount}} {{symbol}}です",
     "networkGasFee": "ネットワークガス代",
     "networkGasFeeTooltip": "この注文を出すためのガス代とストレージデポジットです。各取引はキーパーが実行するため、追加のガス代はかかりません。",
+    "noDirectPool": "直接プールなし",
     "orders": "回",
     "over": "回数",
     "overTooltip": "注文の一部として実行される個別取引の回数です。",

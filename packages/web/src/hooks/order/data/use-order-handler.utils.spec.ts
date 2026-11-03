@@ -9,6 +9,7 @@ import {
   getDcaMinAmountPerExecution,
   getLimitMinMakingAmount,
   getOrderButtonState,
+  hasDirectPoolForPair,
   isDcaAmountTooLow,
   isLimitAmountTooLow,
   isOrderButtonActionable,
@@ -188,6 +189,34 @@ describe("use-order-handler.utils", () => {
       expect(getDcaMinAmountPerExecution("1", false, 2, 1000)).toBe("1");
       expect(isDcaAmountTooLow("499", getDcaMinAmountPerExecution("1", true, 2, 1000))).toBe(true);
       expect(isDcaAmountTooLow("500", getDcaMinAmountPerExecution("1", true, 2, 1000))).toBe(false);
+    });
+  });
+
+  describe("direct pool requirement", () => {
+    const pools = [
+      { poolPath: "gno.land/r/gnoland/wugnot:gno.land/r/gnoswap/gns:3000" },
+      { poolPath: "gno.land/r/gnoswap/gns:gno.land/r/demo/usdc:500" },
+    ];
+
+    it("finds a pool of the pair at any fee tier, in either token order", () => {
+      expect(hasDirectPoolForPair(pools, "gno.land/r/gnoland/wugnot", "gno.land/r/gnoswap/gns")).toBe(true);
+      expect(hasDirectPoolForPair(pools, "gno.land/r/demo/usdc", "gno.land/r/gnoswap/gns")).toBe(true);
+    });
+
+    it("does not count a multi-hop route as a direct pool", () => {
+      // wugnot -> gns -> usdc is routable, but no wugnot/usdc pool exists.
+      expect(hasDirectPoolForPair(pools, "gno.land/r/gnoland/wugnot", "gno.land/r/demo/usdc")).toBe(false);
+      expect(hasDirectPoolForPair([], "a", "b")).toBe(false);
+      expect(hasDirectPoolForPair(pools, "gno.land/r/gnoswap/gns", "gno.land/r/gnoswap/gns")).toBe(false);
+    });
+
+    it("blocks Place Order without a direct pool even when liquidity is routable", () => {
+      expect(getOrderButtonState({ ...ready, hasDirectPool: false })).toBe("NO_DIRECT_POOL");
+      expect(isOrderButtonActionable("NO_DIRECT_POOL")).toBe(false);
+      expect(getOrderButtonState({ ...ready, hasLiquidity: false, hasDirectPool: false })).toBe(
+        "INSUFFICIENT_LIQUIDITY",
+      );
+      expect(getOrderButtonState(ready)).toBe("PLACE_ORDER");
     });
   });
 });

@@ -15,6 +15,7 @@ import { SWAP_CARD_TYPE } from "@models/order/order-type";
 import { DcaOrderSummary } from "@models/order/order-summary";
 import { TokenModel } from "@models/token/token-model";
 import { useEstimateOrderNetworkFee, useGetDcaConfig, useGetDcaSchedule } from "@query/order";
+import { useGetPoolList } from "@query/pools";
 import { useGetRoutes } from "@query/router";
 import { DexEvent } from "@repositories/common";
 import { getDcaDepositAmount } from "@repositories/order/order.message";
@@ -36,6 +37,7 @@ import {
   getAvailableDcaIntervals,
   getDcaMinAmountPerExecution,
   getOrderButtonState,
+  hasDirectPoolForPair,
   isDcaAmountTooLow,
   MIN_DCA_EXECUTION_COUNT,
 } from "./use-order-handler.utils";
@@ -43,6 +45,8 @@ import { useOrderTransaction } from "./use-order-transaction";
 
 const INPUT_DEBOUNCE_MS = 300;
 const QUOTE_REFETCH_INTERVAL = 10_000;
+/** The pool list only answers whether a pair has a pool, which rarely changes. */
+const POOL_LIST_STALE_TIME = 60_000;
 
 export const useDcaOrderHandler = () => {
   const { t } = useTranslation();
@@ -126,6 +130,21 @@ export const useDcaOrderHandler = () => {
   );
 
   const hasLiquidity = !isSameToken && routes?.status !== "NO_LIQUIDITY";
+
+  // The DCA realm only swaps in a pool of this exact pair (any fee tier) and rejects
+  // CreateOrder without one, even when the router finds a multi-hop route.
+  // Reuses the app-wide pool list query; null while it has not loaded yet.
+  const { data: pools, isError: isPoolListError } = useGetPoolList({
+    refetchInterval: false,
+    staleTime: POOL_LIST_STALE_TIME,
+  });
+  const hasDirectPool: boolean | null = useMemo(() => {
+    if (!tokenA || !tokenB || isSameToken) return null;
+    // Without the pool list the pair cannot be checked; the realm still rejects a bad pair.
+    if (isPoolListError) return true;
+    if (!pools) return null;
+    return hasDirectPoolForPair(pools, getSwapTokenPath(tokenA), getSwapTokenPath(tokenB));
+  }, [isPoolListError, isSameToken, pools, tokenA, tokenB]);
   const rate = useMemo(() => {
     if (!tokenB || routes?.status !== "SUCCESS") return null;
     const output = makeDisplayTokenAmountString(tokenB, routes.amount);
@@ -175,13 +194,15 @@ export const useDcaOrderHandler = () => {
     amount: sellAmount,
     balance: tokenABalance,
     hasLiquidity,
+    hasDirectPool: hasDirectPool !== false,
     isAmountTooLow,
   });
 
   const buttonText = getOrderButtonText(buttonState, t, t("Swap:dca.placeOrder"));
 
   const createRequest: CreateDcaOrderRequest | null = useMemo(() => {
-    if (buttonState !== "PLACE_ORDER" || !tokenA || !tokenB || !schedule) return null;
+    // An unchecked pair (pool list still loading) is never submitted.
+    if (buttonState !== "PLACE_ORDER" || !tokenA || !tokenB || !schedule || hasDirectPool !== true) return null;
     return {
       inputToken: tokenA,
       outputToken: tokenB,
@@ -190,7 +211,7 @@ export const useDcaOrderHandler = () => {
       amountPerExecution: amountPerExecutionRaw,
       executionCount,
     };
-  }, [amountPerExecutionRaw, buttonState, executionCount, interval, schedule, tokenA, tokenB]);
+  }, [amountPerExecutionRaw, buttonState, executionCount, hasDirectPool, interval, schedule, tokenA, tokenB]);
 
   const debouncedCreateRequest = useDebounce(createRequest, INPUT_DEBOUNCE_MS);
   const { data: networkFee, isFetching: isFetchingNetworkFee } = useEstimateOrderNetworkFee(
@@ -302,6 +323,7 @@ export const useDcaOrderHandler = () => {
     if (!tokenA || !tokenB) return;
 
     // The slot can roll over while the modal was open, so the schedule is read again right before sending.
+    if (hasDirectPool !== true) return;
     const latestSchedule = (await refetchSchedule()).data ?? schedule;
     if (!latestSchedule) return;
 
@@ -332,6 +354,7 @@ export const useDcaOrderHandler = () => {
   }, [
     amountPerExecutionRaw,
     executionCount,
+    hasDirectPool,
     interval,
     orderRepository,
     refetchSchedule,
@@ -349,7 +372,7 @@ export const useDcaOrderHandler = () => {
       summary ? (
         <ConfirmDcaOrderModal
           summary={summary}
-          isLoading={isFetchingSchedule || !schedule}
+          isLoading={isFetchingSchedule || !schedule || hasDirectPool === null}
           confirm={() => {
             closeConfirmModalRef.current();
             void placeOrder();
@@ -359,7 +382,7 @@ export const useDcaOrderHandler = () => {
       ) : (
         <></>
       ),
-    [isFetchingSchedule, placeOrder, schedule, summary],
+    [hasDirectPool, isFetchingSchedule, placeOrder, schedule, summary],
   );
 
   const { openModal, closeModal } = useConfirmOrderModal(renderConfirmModal);

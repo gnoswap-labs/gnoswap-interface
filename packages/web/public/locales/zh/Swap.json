@@ -15,6 +15,7 @@
     "minTrading": "每笔订单最低交易数量为 {{amount}} {{symbol}}",
     "networkGasFee": "网络 Gas 费",
     "networkGasFeeTooltip": "下此订单所需的 Gas 费和存储押金。每笔交易由 Keeper 执行，您无需支付额外 Gas 费。",
+    "noDirectPool": "无直接流动池",
     "orders": "次",
     "over": "次数",
     "overTooltip": "作为订单一部分将被触发的单笔交易次数。",
