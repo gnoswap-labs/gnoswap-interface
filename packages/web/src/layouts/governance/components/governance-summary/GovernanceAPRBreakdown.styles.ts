@@ -92,7 +92,6 @@ export const GovernanceAPRBreakdownWrapper = styled.div`
 export const GovernanceAPRHistoryTooltipContent = styled(FloatingContent)`
   max-height: var(--apr-history-available-height);
   overflow-y: auto;
-  overscroll-behavior: contain;
 `;
 
 export const GovernanceAPRHistoryPanel = styled.section`

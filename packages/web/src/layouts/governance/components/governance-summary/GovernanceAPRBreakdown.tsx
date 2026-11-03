@@ -59,6 +59,7 @@ const GovernanceAPRBreakdown: React.FC<GovernanceAPRBreakdownProps> = ({
 
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const arrowRef = useRef(null);
+  const historyContentRef = useRef<HTMLDivElement>(null);
   const historyPanelId = useId();
 
   const { refs, strategy, x, y, context } = useFloating({
@@ -74,6 +75,10 @@ const GovernanceAPRBreakdown: React.FC<GovernanceAPRBreakdownProps> = ({
         padding: 8,
         apply({ availableHeight, elements }) {
           elements.floating.style.setProperty("--apr-history-available-height", `${Math.max(0, availableHeight)}px`);
+          const content = historyContentRef.current;
+          if (content) {
+            content.style.overscrollBehaviorY = content.scrollHeight > content.clientHeight ? "contain" : "auto";
+          }
         },
       }),
       arrow({ element: arrowRef }),
@@ -152,7 +157,7 @@ const GovernanceAPRBreakdown: React.FC<GovernanceAPRBreakdownProps> = ({
                 height={14}
                 tipRadius={4}
               />
-              <GovernanceAPRHistoryTooltipContent themeKey={themeKey}>
+              <GovernanceAPRHistoryTooltipContent ref={historyContentRef} themeKey={themeKey}>
                 <GovernanceAPRHistoryPanel>
                   <GovernanceAPRHistory
                     days={aprHistory}
