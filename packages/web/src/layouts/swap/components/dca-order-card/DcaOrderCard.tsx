@@ -11,7 +11,7 @@ import { DcaOrderSummary } from "@models/order/order-summary";
 import { TokenModel } from "@models/token/token-model";
 
 import OrderCardSkeleton from "../order-form/OrderCardSkeleton";
-import { OrderFieldRow } from "../order-form/OrderForm.styles";
+import { OrderFieldRow, OrderToBuySection } from "../order-form/OrderForm.styles";
 import OrderFormButton from "../order-form/OrderFormButton";
 import OrderSellInput from "../order-form/OrderSellInput";
 import { SwapCardWrapper } from "../swap-card/SwapCard.styles";
@@ -120,14 +120,14 @@ const DcaOrderCard: React.FC<DcaOrderCardProps> = ({
               </div>
             </div>
           </OrderSellInput>
-          <div className="second-section">
+          <OrderToBuySection className="second-section">
             <div className="amount-container">
               <span className="amount-text">{t("Swap:dca.toBuy")}</span>
               <div className="token-selector">
                 <SelectPairButton token={tokenB} changeToken={changeTokenB} />
               </div>
             </div>
-          </div>
+          </OrderToBuySection>
           <OrderFieldRow>
             <DcaIntervalSelect interval={interval} options={intervalOptions} changeInterval={changeInterval} />
             <DcaCountInput

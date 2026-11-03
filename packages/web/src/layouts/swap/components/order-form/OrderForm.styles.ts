@@ -3,6 +3,18 @@ import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
+/**
+ * The DCA "To Buy" section. It shares the swap card's `.second-section` look but
+ * has no amount row, so it keeps the designed height and centers its content.
+ * The doubled class outranks the swap card's nested `.second-section` rule.
+ */
+export const OrderToBuySection = styled.div`
+  &&.second-section {
+    min-height: 97px;
+    justify-content: center;
+  }
+`;
+
 /** Inputs below the token sections of the DCA and limit forms. */
 export const OrderFieldRow = styled.div`
   ${mixins.flexbox("row", "stretch", "flex-start")};
