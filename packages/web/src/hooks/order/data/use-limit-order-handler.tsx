@@ -112,9 +112,26 @@ export const useLimitOrderHandler = () => {
     return formatLimitPriceInput(BigNumber(output).dividedBy(quoteAmount)) || null;
   }, [quoteAmount, routes, tokenB]);
 
+  /**
+   * The pair whose limit price is already initialized. The market price only
+   * seeds the field once per pair; after that an empty field is the user's
+   * edit (e.g. select-all → delete before typing) and must stay empty.
+   */
+  const pricedPairKey = useRef<string | null>(null);
+  const pairKey = tokenA && tokenB ? `${tokenA.path}|${tokenB.path}` : null;
+
   useEffect(() => {
-    if (!limitPrice && marketPrice) setLimitPrice(marketPrice);
-  }, [limitPrice, marketPrice, setLimitPrice]);
+    if (!pairKey || pricedPairKey.current === pairKey) return;
+    if (limitPrice) {
+      // A price already set for this pair (URL, restored state) counts as initialized.
+      pricedPairKey.current = pairKey;
+      return;
+    }
+    if (marketPrice) {
+      pricedPairKey.current = pairKey;
+      setLimitPrice(marketPrice);
+    }
+  }, [limitPrice, marketPrice, pairKey, setLimitPrice]);
 
   const isValidPrice = BigNumber(limitPrice || 0).isGreaterThan(0);
 
@@ -236,6 +253,8 @@ export const useLimitOrderHandler = () => {
    * of truth again: a kept Buy input would no longer match `sell × price`.
    */
   const resetPairInputs = useCallback(() => {
+    // Re-seed from the market price even when the resulting pair is unchanged.
+    pricedPairKey.current = null;
     setLimitPrice("");
     setEditedSide("sell");
     setBuyInput("");

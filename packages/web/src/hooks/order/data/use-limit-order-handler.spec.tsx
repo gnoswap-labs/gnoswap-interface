@@ -105,4 +105,32 @@ describe("useLimitOrderHandler", () => {
     const expectedBuy = BigNumber(result.current.sellAmount).multipliedBy(result.current.limitPrice);
     expect(BigNumber(result.current.buyAmount).isEqualTo(expectedBuy)).toBe(true);
   });
+
+  it("keeps a cleared limit price empty until the user types a new one", async () => {
+    const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
+
+    act(() => result.current.changeTokenA(tokenA));
+    act(() => result.current.changeTokenB(tokenB));
+    await waitFor(() => expect(result.current.limitPrice).toBe("10"));
+
+    act(() => result.current.changeLimitPrice(""));
+    // Give the seeding effect a chance to run again.
+    await act(async () => Promise.resolve());
+    expect(result.current.limitPrice).toBe("");
+
+    act(() => result.current.changeLimitPrice("12"));
+    expect(result.current.limitPrice).toBe("12");
+  });
+
+  it("seeds the market price again for a new pair", async () => {
+    const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
+
+    act(() => result.current.changeTokenA(tokenA));
+    act(() => result.current.changeTokenB(tokenB));
+    await waitFor(() => expect(result.current.limitPrice).toBe("10"));
+
+    act(() => result.current.changeLimitPrice(""));
+    act(() => result.current.changeTokenB(tokenC));
+    await waitFor(() => expect(result.current.limitPrice).toBe("20"));
+  });
 });
