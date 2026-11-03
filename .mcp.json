@@ -2,8 +2,8 @@
   "mcpServers": {
     "i18nexus": {
       "type": "stdio",
-      "command": "sh",
-      "args": ["-c", "exec node \"$(git rev-parse --show-toplevel)/scripts/i18nexus.mjs\" mcp"]
+      "command": "node",
+      "args": ["scripts/i18nexus.mjs", "mcp"]
     }
   }
 }
