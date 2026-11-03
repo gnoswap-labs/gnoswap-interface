@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/can1357/oh-my-pi/main/packages/coding-agent/src/config/mcp-schema.json",
+  "mcpServers": {
+    "i18nexus": {
+      "type": "stdio",
+      "command": "sh",
+      "args": ["-c", "exec node \"$(git rev-parse --show-toplevel)/scripts/i18nexus.mjs\" mcp"]
+    }
+  }
+}

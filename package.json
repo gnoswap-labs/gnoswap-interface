@@ -4,6 +4,7 @@
     "packages/*"
   ],
   "scripts": {
+    "i18n:download": "node scripts/i18nexus.mjs pull",
     "install:clean": "yarn cache clean && yarn install",
     "dev": "ultra --recursive dev",
     "storybook": "yarn workspace @gnoswap-labs/web storybook",
@@ -21,12 +22,14 @@
     "@babel/core": "7.21.0",
     "@babel/runtime": "7.21.0",
     "@eslint/eslintrc": "^3.3.1",
+    "@i18nexus/mcp": "1.2.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
     "@yarnpkg/sdks": "3.0.0-rc.40",
     "babel-loader": "9.1.2",
     "eslint": "8.56.0",
     "husky": "^9.1.4",
+    "i18nexus-cli": "3.8.2",
     "lint-staged": "^15.2.7",
     "prettier": "2.8.4",
     "typescript": "^5.5.4",
