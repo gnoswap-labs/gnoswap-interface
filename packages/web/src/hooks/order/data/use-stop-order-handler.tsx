@@ -18,6 +18,11 @@ import { formatOrderFullAmount } from "@utils/order-format-utils";
 import { useConfirmOrderModal } from "../ui/use-confirm-order-modal";
 import { useOrderTransaction } from "./use-order-transaction";
 
+const LIMIT_STATUS_LABEL_KEY: Partial<Record<LimitOrderModel["status"], string>> = {
+  PARTIALLY_FILLED: "Swap:order.status.partiallyFilled",
+  EXPIRED: "Swap:order.status.expired",
+};
+
 type SelectedOrder = { kind: "dca"; order: DcaOrderModel } | { kind: "limit"; order: LimitOrderModel };
 
 /** Opens the Confirm Stop Order modal for a DCA order, or its cancel variant for a limit order, and sends it. */
@@ -71,8 +76,7 @@ export const useStopOrderHandler = () => {
       kind: "limit",
       inputToken: tokenIn,
       outputToken: tokenOut,
-      statusLabel:
-        order.status === "PARTIALLY_FILLED" ? t("Swap:order.status.partiallyFilled") : t("Swap:order.ongoing"),
+      statusLabel: t(LIMIT_STATUS_LABEL_KEY[order.status] ?? "Swap:order.ongoing"),
       purchasedAmountUsd: formatUsd(tokenOut, order.userOutput),
       soldAmount: formatOrderFullAmount(order.filledInput, tokenIn.decimals),
       soldAmountUsd: formatUsd(tokenIn, order.filledInput),
@@ -159,7 +163,7 @@ export const useStopOrderHandler = () => {
 
   const openCancelLimitOrder = useCallback(
     (order: LimitOrderModel) => {
-      if (!canMutateOrders) return;
+      if (!canMutateOrders || !order.canCancel) return;
       pendingOpen.current = true;
       setSelected({ kind: "limit", order });
     },

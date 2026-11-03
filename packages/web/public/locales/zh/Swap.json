@@ -65,6 +65,7 @@
     "purchased": "买入",
     "purchasedAmount": "已买入数量",
     "rate": "成交价",
+    "refundOrder": "退款",
     "remainingAmount": "剩余数量",
     "remainingTrades": "剩余交易",
     "sold": "卖出",

@@ -28,6 +28,12 @@ export interface LimitOrderModel {
   remainingInput: string;
   refundedInput: string;
   userOutput: string;
+  /**
+   * True while input is still escrowed in the realm. An EXPIRED order keeps
+   * its input until a cleanup or the owner's CancelOrder refunds it, so this,
+   * not the status, decides whether the cancel/refund action is offered.
+   */
+  canCancel: boolean;
   /** Output per input the order asks for. */
   limitPrice: string | null;
   /** Average output per input actually received. Null until a fill. */

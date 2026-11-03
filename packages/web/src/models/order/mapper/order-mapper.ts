@@ -125,6 +125,19 @@ export function mapDcaOrderItemToModel(item: DcaOrderItem, tokens: TokenModel[])
   };
 }
 
+/**
+ * Whether the owner can still get the escrowed input back with CancelOrder.
+ * The realm accepts it while the order has remaining input, including after
+ * expiry until the order is cleaned up (cleanup sets refundedInput).
+ */
+export function canCancelLimitOrder(
+  item: Pick<LimitOrderItem, "status" | "remainingInput" | "refundedInput">,
+): boolean {
+  if (!BigNumber(item.remainingInput ?? 0).isGreaterThan(0)) return false;
+  if (ACTIVE_LIMIT_ORDER_STATUSES.includes(item.status)) return true;
+  return item.status === "EXPIRED" && BigNumber(item.refundedInput ?? 0).isLessThanOrEqualTo(0);
+}
+
 export function mapLimitOrderItemToModel(item: LimitOrderItem, tokens: TokenModel[]): LimitOrderModel {
   const tokenIn = resolveOrderToken(item.tokenIn, tokens);
   const tokenOut = resolveOrderToken(item.tokenOut, tokens);
@@ -141,6 +154,7 @@ export function mapLimitOrderItemToModel(item: LimitOrderItem, tokens: TokenMode
     remainingInput: toDisplayAmount(tokenIn, item.remainingInput),
     refundedInput: toDisplayAmount(tokenIn, item.refundedInput),
     userOutput: toDisplayAmount(tokenOut, item.userOutput),
+    canCancel: canCancelLimitOrder(item),
     limitPrice: calculatePriceRate(tokenIn, tokenOut, item.makingAmount, item.takingAmount),
     priceRate: calculatePriceRate(tokenIn, tokenOut, item.filledInput, item.userOutput),
     progress: item.status === "COMPLETED" ? 100 : calculateProgress(item.filledInput, item.makingAmount),

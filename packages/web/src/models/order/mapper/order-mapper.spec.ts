@@ -10,6 +10,7 @@ import {
   calculateOrderRoi,
   calculatePriceRate,
   calculateProgress,
+  canCancelLimitOrder,
   mapDcaOrderItemToModel,
   mapLimitOrderItemToModel,
   resolveOrderToken,
@@ -160,5 +161,19 @@ describe("order-mapper", () => {
     expect(order.priceRate).toBe("1.271");
     expect(order.progress).toBeCloseTo(33.333, 2);
     expect(mapLimitOrderItemToModel({ ...item, status: "EXPIRED" }, tokens).isActive).toBe(false);
+  });
+
+  it("offers the limit cancel/refund while input is still escrowed, even after expiry", () => {
+    const base = { remainingInput: "2000000", refundedInput: "0" };
+
+    expect(canCancelLimitOrder({ ...base, status: "OPEN" })).toBe(true);
+    expect(canCancelLimitOrder({ ...base, status: "PARTIALLY_FILLED" })).toBe(true);
+    // Expired but not yet cleaned up: the realm still refunds through CancelOrder.
+    expect(canCancelLimitOrder({ ...base, status: "EXPIRED" })).toBe(true);
+    // Already refunded by cleanup, or nothing left to refund.
+    expect(canCancelLimitOrder({ status: "EXPIRED", remainingInput: "0", refundedInput: "2000000" })).toBe(false);
+    expect(canCancelLimitOrder({ status: "EXPIRED", remainingInput: "2000000", refundedInput: "2000000" })).toBe(false);
+    expect(canCancelLimitOrder({ ...base, status: "CANCELLED" })).toBe(false);
+    expect(canCancelLimitOrder({ status: "COMPLETED", remainingInput: "0", refundedInput: "0" })).toBe(false);
   });
 });

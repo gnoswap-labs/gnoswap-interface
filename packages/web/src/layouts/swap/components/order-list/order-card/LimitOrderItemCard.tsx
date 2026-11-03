@@ -86,9 +86,9 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
           <span className="value">{formatOrderDateTime(order.expiresAt)}</span>
         </div>
       )}
-      {order.isActive && (
+      {order.canCancel && (
         <OrderStopButton
-          text={t("Swap:order.cancelOrder")}
+          text={t(order.isActive ? "Swap:order.cancelOrder" : "Swap:order.refundOrder")}
           onClick={() => onClickCancel(order)}
           disabled={actionsDisabled}
         />
