@@ -195,6 +195,38 @@
         "success": "<div>Wrapped <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> and <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>"
       },
       "title": "Wrap"
+    },
+    "dcaOrder": {
+      "status": {
+        "error": "<div>Failed to order <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Ordering <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Ordered <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "DCA Order"
+    },
+    "dcaStop": {
+      "status": {
+        "error": "<div>Failed to stop <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Stopping <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Stopped <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Stop DCA Order"
+    },
+    "limitOrder": {
+      "status": {
+        "error": "<div>Failed to order <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Ordering <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Ordered <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Limit Order"
+    },
+    "limitCancel": {
+      "status": {
+        "error": "<div>Failed to cancel <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Cancelling <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Cancelled <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Cancel Limit Order"
     }
   },
   "connectWallet": {
@@ -317,5 +349,24 @@
     },
     "desc": "By connecting a wallet, you agree and consent to our <1>Terms of Use</1> and <3>Privacy Policy</3>.",
     "title": "Wallet Login"
+  },
+  "confirmPlaceOrder": {
+    "actualAmount": "Only {{amount}} {{symbol}} is ordered so every trade sells the same amount.",
+    "confirm": "Confirm Place Order",
+    "title": "Confirm Place Order"
+  },
+  "confirmLimitOrder": {
+    "confirm": "Confirm Limit Order",
+    "title": "Confirm Limit Order"
+  },
+  "confirmStopOrder": {
+    "cancelConfirm": "Confirm Cancel Order",
+    "cancelNote": "Cancel a limit order, you cannot restart the same order and only the unfilled amount is returned to you. Filled amounts are not affected.",
+    "cancelTitle": "Confirm Cancel Order",
+    "confirm": "Confirm Stop Order",
+    "importantNote": "Important Note",
+    "note": "Stop a DCA order, you cannot restart the same order and only the remaining amounts are returned to you. To continue DCA, you need to create a new DCA order.",
+    "orderDetails": "Order Details",
+    "title": "Confirm Stop Order"
   }
 }

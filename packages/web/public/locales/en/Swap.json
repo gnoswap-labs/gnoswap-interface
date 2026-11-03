@@ -7,8 +7,76 @@
     },
     "title": "Confirm Swap"
   },
+  "dca": {
+    "amountPerOrder": "Amount per Order",
+    "estimatedEndDate": "Estimated End Date",
+    "every": "Every",
+    "everyTooltip": "The estimated time that will elapse between each trade in your order. The actual time may vary depending on the block time.",
+    "minTrading": "Minimum trading $50 per order",
+    "networkGasFee": "Network Gas Fee",
+    "networkGasFeeTooltip": "The gas fee and storage deposit for placing this order. Each trade is executed by a keeper at no extra gas cost to you.",
+    "orders": "Orders",
+    "over": "Over",
+    "overTooltip": "The number of individual trades that will be triggered as part of your order.",
+    "placeOrder": "Place Order",
+    "routerFee": "Router Fee",
+    "routerFeeTooltip": "The fee charged on each trade executed by the order. It is paid in the output token.",
+    "toBuy": "To Buy",
+    "unit": {
+      "day": "Day",
+      "hour": "Hour",
+      "minute": "Minute",
+      "month": "Month",
+      "week": "Week"
+    }
+  },
   "fetchingPrice": "Fetching Best Price...",
   "header": "Swap",
+  "limit": {
+    "expiry": "Expiry",
+    "expiryOption": {
+      "oneDay": "1 Day",
+      "oneHour": "1 Hour",
+      "oneWeek": "1 Week",
+      "thirtyDays": "30 Days"
+    },
+    "limitPrice": "Limit Price",
+    "market": "Market",
+    "minTrading": "Minimum trading $50",
+    "slippage": "Max. Slippage",
+    "startToOrder": "Start to Order"
+  },
+  "order": {
+    "active": "Active",
+    "cancelOrder": "Cancel Order",
+    "connectWallet": "Please connect your wallet to view your order.",
+    "expiresAt": "Expires At",
+    "limitPrice": "Limit Price",
+    "nextTrade": "Next Trade",
+    "noOrders": "No orders found.",
+    "ongoing": "Ongoing",
+    "order": "Order",
+    "orderHistory": "Order History",
+    "overview": "Overview",
+    "past": "Past",
+    "paused": "Order Paused",
+    "priceRate": "Price Rate",
+    "purchased": "Purchased",
+    "purchasedAmount": "Purchased Amount",
+    "rate": "Rate",
+    "remainingAmount": "Remaining Amount",
+    "remainingTrades": "Remaining Trades",
+    "sold": "Sold",
+    "soldAmount": "Sold Amount",
+    "status": {
+      "cancelled": "Cancelled",
+      "completed": "Completed",
+      "expired": "Expired",
+      "partiallyFilled": "Partially Filled"
+    },
+    "stopOrder": "Stop Order",
+    "time": "Time"
+  },
   "poolInfo": {
     "addPosBtn": "Add Position",
     "col": {
@@ -48,5 +116,10 @@
       "swapFee": "The percentage of fees charged on each trade that goes to the protocol. It is paid in the output token and is already factored into the quote."
     }
   },
-  "swapURLCopied": "Swap URL Copied!"
+  "swapURLCopied": "Swap URL Copied!",
+  "tab": {
+    "dca": "DCA",
+    "limit": "Limit",
+    "swap": "Swap"
+  }
 }

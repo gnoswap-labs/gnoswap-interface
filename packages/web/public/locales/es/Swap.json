@@ -7,8 +7,76 @@
     },
     "title": "Confirmar intercambio"
   },
+  "dca": {
+    "amountPerOrder": "Cantidad por orden",
+    "estimatedEndDate": "Fecha de fin estimada",
+    "every": "Cada",
+    "everyTooltip": "El tiempo estimado que transcurrirá entre cada operación de tu orden. El tiempo real puede variar según el tiempo de bloque.",
+    "minTrading": "Mínimo de $50 por orden",
+    "networkGasFee": "Comisión de gas de red",
+    "networkGasFeeTooltip": "La comisión de gas y el depósito de almacenamiento para crear esta orden. Cada operación la ejecuta un keeper sin coste de gas adicional para ti.",
+    "orders": "Órdenes",
+    "over": "Durante",
+    "overTooltip": "El número de operaciones individuales que se ejecutarán como parte de tu orden.",
+    "placeOrder": "Crear orden",
+    "routerFee": "Comisión del router",
+    "routerFeeTooltip": "La comisión cobrada en cada operación ejecutada por la orden. Se paga en el token de salida.",
+    "toBuy": "Comprar",
+    "unit": {
+      "day": "Día",
+      "hour": "Hora",
+      "minute": "Minuto",
+      "month": "Mes",
+      "week": "Semana"
+    }
+  },
   "fetchingPrice": "Obteniendo el mejor precio...",
   "header": "Intercambiar",
+  "limit": {
+    "expiry": "Vencimiento",
+    "expiryOption": {
+      "oneDay": "1 día",
+      "oneHour": "1 hora",
+      "oneWeek": "1 semana",
+      "thirtyDays": "30 días"
+    },
+    "limitPrice": "Precio límite",
+    "market": "Mercado",
+    "minTrading": "Mínimo de $50",
+    "slippage": "Deslizamiento máx.",
+    "startToOrder": "Crear orden"
+  },
+  "order": {
+    "active": "Activas",
+    "cancelOrder": "Cancelar orden",
+    "connectWallet": "Conecta tu billetera para ver tus órdenes.",
+    "expiresAt": "Expira el",
+    "limitPrice": "Precio límite",
+    "nextTrade": "Próxima operación",
+    "noOrders": "No se encontraron órdenes.",
+    "ongoing": "En curso",
+    "order": "Orden",
+    "orderHistory": "Historial de órdenes",
+    "overview": "Resumen",
+    "past": "Anteriores",
+    "paused": "Órdenes en pausa",
+    "priceRate": "Precio medio",
+    "purchased": "Comprado",
+    "purchasedAmount": "Cantidad comprada",
+    "rate": "Tasa",
+    "remainingAmount": "Cantidad restante",
+    "remainingTrades": "Operaciones restantes",
+    "sold": "Vendido",
+    "soldAmount": "Cantidad vendida",
+    "status": {
+      "cancelled": "Cancelada",
+      "completed": "Completada",
+      "expired": "Expirada",
+      "partiallyFilled": "Parcialmente ejecutada"
+    },
+    "stopOrder": "Detener orden",
+    "time": "Hora"
+  },
   "poolInfo": {
     "addPosBtn": "Añadir posición",
     "col": {
@@ -48,5 +116,10 @@
       "swapFee": "El porcentaje de las comisiones cobradas en cada operación que va al protocolo. Se paga en el token de salida y ya se tiene en cuenta en la cotización."
     }
   },
-  "swapURLCopied": "Intercambiar URL ¡Copiado!"
+  "swapURLCopied": "Intercambiar URL ¡Copiado!",
+  "tab": {
+    "dca": "DCA",
+    "limit": "Límite",
+    "swap": "Swap"
+  }
 }

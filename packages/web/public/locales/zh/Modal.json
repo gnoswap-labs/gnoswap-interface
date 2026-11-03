@@ -195,6 +195,38 @@
         "success": "<div>包裹 <span>{{tokenAAmount}}</span><span>{{tokenASymbol}}</span>和 <span>{{tokenBAmount}}</span><span>{{tokenBSymbol}}</span></div>"
       },
       "title": "包装"
+    },
+    "dcaOrder": {
+      "status": {
+        "error": "<div>以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 下单购买 <span>{{tokenBSymbol}}</span> 失败</div>",
+        "pending": "<div>正在以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 下单购买 <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>已以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 下单购买 <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "DCA 订单"
+    },
+    "dcaStop": {
+      "status": {
+        "error": "<div>停止以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 购买 <span>{{tokenBSymbol}}</span> 的订单失败</div>",
+        "pending": "<div>正在停止以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 购买 <span>{{tokenBSymbol}}</span> 的订单</div>",
+        "success": "<div>已停止以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 购买 <span>{{tokenBSymbol}}</span> 的订单</div>"
+      },
+      "title": "停止 DCA 订单"
+    },
+    "limitOrder": {
+      "status": {
+        "error": "<div>以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 下单购买 <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span> 失败</div>",
+        "pending": "<div>正在以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 下单购买 <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>已以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 下单购买 <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "限价订单"
+    },
+    "limitCancel": {
+      "status": {
+        "error": "<div>取消以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 购买 <span>{{tokenBSymbol}}</span> 的订单失败</div>",
+        "pending": "<div>正在取消以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 购买 <span>{{tokenBSymbol}}</span> 的订单</div>",
+        "success": "<div>已取消以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 购买 <span>{{tokenBSymbol}}</span> 的订单</div>"
+      },
+      "title": "取消限价订单"
     }
   },
   "connectWallet": {
@@ -317,5 +349,24 @@
     },
     "desc": "连接钱包即表示您同意并遵守我们的<1>使用条款</1>和<3>隐私政策</3>。",
     "title": "钱包登录"
+  },
+  "confirmPlaceOrder": {
+    "actualAmount": "为使每笔交易卖出相同数量，仅下单 {{amount}} {{symbol}}。",
+    "confirm": "确认下单",
+    "title": "确认下单"
+  },
+  "confirmLimitOrder": {
+    "confirm": "确认限价订单",
+    "title": "确认限价订单"
+  },
+  "confirmStopOrder": {
+    "cancelConfirm": "确认取消订单",
+    "cancelNote": "取消限价订单后无法重新启动同一订单，仅退还未成交数量。已成交数量不受影响。",
+    "cancelTitle": "确认取消订单",
+    "confirm": "确认停止订单",
+    "importantNote": "重要提示",
+    "note": "停止 DCA 订单后无法重新启动同一订单，仅退还剩余数量。如需继续 DCA，请创建新的 DCA 订单。",
+    "orderDetails": "订单详情",
+    "title": "确认停止订单"
   }
 }

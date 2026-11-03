@@ -195,6 +195,38 @@
         "success": "<div>Enveloppé <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> et <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>"
       },
       "title": "Enveloppe"
+    },
+    "dcaOrder": {
+      "status": {
+        "error": "<div>Échec de l'ordre de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Ordre de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBSymbol}}</span> en cours</div>",
+        "success": "<div>Ordre de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBSymbol}}</span> placé</div>"
+      },
+      "title": "Ordre DCA"
+    },
+    "dcaStop": {
+      "status": {
+        "error": "<div>Échec de l'arrêt de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Arrêt de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBSymbol}}</span> en cours</div>",
+        "success": "<div>Ordre de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBSymbol}}</span> arrêté</div>"
+      },
+      "title": "Arrêter l'ordre DCA"
+    },
+    "limitOrder": {
+      "status": {
+        "error": "<div>Échec de l'ordre de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Ordre de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span> en cours</div>",
+        "success": "<div>Ordre de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span> placé</div>"
+      },
+      "title": "Ordre limite"
+    },
+    "limitCancel": {
+      "status": {
+        "error": "<div>Échec de l'annulation de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Annulation de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBSymbol}}</span> en cours</div>",
+        "success": "<div>Ordre de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBSymbol}}</span> annulé</div>"
+      },
+      "title": "Annuler l'ordre limite"
     }
   },
   "connectWallet": {
@@ -317,5 +349,24 @@
     },
     "desc": "En connectant un portefeuille, vous acceptez nos <1>conditions d'utilisation</1> et notre <3>politique de confidentialité</3>.",
     "title": "Connexion au portefeuille"
+  },
+  "confirmPlaceOrder": {
+    "actualAmount": "Seuls {{amount}} {{symbol}} sont engagés afin que chaque transaction vende le même montant.",
+    "confirm": "Confirmer l'ordre",
+    "title": "Confirmer l'ordre"
+  },
+  "confirmLimitOrder": {
+    "confirm": "Confirmer l'ordre limite",
+    "title": "Confirmer l'ordre limite"
+  },
+  "confirmStopOrder": {
+    "cancelConfirm": "Confirmer l'annulation",
+    "cancelNote": "Si vous annulez un ordre limite, vous ne pourrez pas le relancer et seul le montant non exécuté vous sera restitué. Les montants exécutés ne sont pas affectés.",
+    "cancelTitle": "Confirmer l'annulation de l'ordre",
+    "confirm": "Confirmer l'arrêt",
+    "importantNote": "Remarque importante",
+    "note": "Si vous arrêtez un ordre DCA, vous ne pourrez pas le relancer et seuls les montants restants vous seront restitués. Pour continuer le DCA, créez un nouvel ordre DCA.",
+    "orderDetails": "Détails de l'ordre",
+    "title": "Confirmer l'arrêt de l'ordre"
   }
 }

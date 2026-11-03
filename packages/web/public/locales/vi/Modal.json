@@ -195,6 +195,38 @@
         "success": "<div>Được bọc <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> và <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>"
       },
       "title": "Bọc"
+    },
+    "dcaOrder": {
+      "status": {
+        "error": "<div>Đặt lệnh <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> lấy <span>{{tokenBSymbol}}</span> thất bại</div>",
+        "pending": "<div>Đang đặt lệnh <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> lấy <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Đã đặt lệnh <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> lấy <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Lệnh DCA"
+    },
+    "dcaStop": {
+      "status": {
+        "error": "<div>Dừng lệnh <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> lấy <span>{{tokenBSymbol}}</span> thất bại</div>",
+        "pending": "<div>Đang dừng lệnh <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> lấy <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Đã dừng lệnh <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> lấy <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Dừng lệnh DCA"
+    },
+    "limitOrder": {
+      "status": {
+        "error": "<div>Đặt lệnh <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> lấy <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span> thất bại</div>",
+        "pending": "<div>Đang đặt lệnh <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> lấy <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Đã đặt lệnh <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> lấy <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Lệnh giới hạn"
+    },
+    "limitCancel": {
+      "status": {
+        "error": "<div>Hủy lệnh <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> lấy <span>{{tokenBSymbol}}</span> thất bại</div>",
+        "pending": "<div>Đang hủy lệnh <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> lấy <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Đã hủy lệnh <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> lấy <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Hủy lệnh giới hạn"
     }
   },
   "connectWallet": {
@@ -317,5 +349,24 @@
     },
     "desc": "Khi kết nối ví, bạn đồng ý và chấp nhận <1>Điều khoản sử dụng</1> và <3>Chính sách bảo mật</3> của chúng tôi.",
     "title": "Đăng nhập bằng ví"
+  },
+  "confirmPlaceOrder": {
+    "actualAmount": "Chỉ {{amount}} {{symbol}} được đặt lệnh để mỗi giao dịch bán cùng một số lượng.",
+    "confirm": "Xác nhận đặt lệnh",
+    "title": "Xác nhận đặt lệnh"
+  },
+  "confirmLimitOrder": {
+    "confirm": "Xác nhận lệnh giới hạn",
+    "title": "Xác nhận lệnh giới hạn"
+  },
+  "confirmStopOrder": {
+    "cancelConfirm": "Xác nhận hủy lệnh",
+    "cancelNote": "Khi hủy lệnh giới hạn, bạn không thể khởi động lại cùng lệnh đó và chỉ số lượng chưa khớp được hoàn trả. Số lượng đã khớp không bị ảnh hưởng.",
+    "cancelTitle": "Xác nhận hủy lệnh",
+    "confirm": "Xác nhận dừng lệnh",
+    "importantNote": "Lưu ý quan trọng",
+    "note": "Khi dừng lệnh DCA, bạn không thể khởi động lại cùng lệnh đó và chỉ số lượng còn lại được hoàn trả. Để tiếp tục DCA, bạn cần tạo lệnh DCA mới.",
+    "orderDetails": "Chi tiết lệnh",
+    "title": "Xác nhận dừng lệnh"
   }
 }

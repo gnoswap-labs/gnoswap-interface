@@ -7,8 +7,76 @@
     },
     "title": "Confirmer l'échange"
   },
+  "dca": {
+    "amountPerOrder": "Montant par ordre",
+    "estimatedEndDate": "Date de fin estimée",
+    "every": "Chaque",
+    "everyTooltip": "Le temps estimé entre chaque transaction de votre ordre. Le temps réel peut varier selon le temps de bloc.",
+    "minTrading": "Minimum de 50 $ par ordre",
+    "networkGasFee": "Frais de gas réseau",
+    "networkGasFeeTooltip": "Les frais de gas et le dépôt de stockage pour placer cet ordre. Chaque transaction est exécutée par un keeper sans frais de gas supplémentaires pour vous.",
+    "orders": "Ordres",
+    "over": "Sur",
+    "overTooltip": "Le nombre de transactions individuelles qui seront déclenchées dans le cadre de votre ordre.",
+    "placeOrder": "Passer l'ordre",
+    "routerFee": "Frais du routeur",
+    "routerFeeTooltip": "Les frais prélevés sur chaque transaction exécutée par l'ordre. Ils sont payés dans le jeton de sortie.",
+    "toBuy": "À acheter",
+    "unit": {
+      "day": "Jour",
+      "hour": "Heure",
+      "minute": "Minute",
+      "month": "Mois",
+      "week": "Semaine"
+    }
+  },
   "fetchingPrice": "Recherche du meilleur prix...",
   "header": "Échange",
+  "limit": {
+    "expiry": "Expiration",
+    "expiryOption": {
+      "oneDay": "1 jour",
+      "oneHour": "1 heure",
+      "oneWeek": "1 semaine",
+      "thirtyDays": "30 jours"
+    },
+    "limitPrice": "Prix limite",
+    "market": "Marché",
+    "minTrading": "Minimum de 50 $",
+    "slippage": "Glissement max.",
+    "startToOrder": "Passer l'ordre"
+  },
+  "order": {
+    "active": "Actifs",
+    "cancelOrder": "Annuler l'ordre",
+    "connectWallet": "Veuillez connecter votre portefeuille pour voir vos ordres.",
+    "expiresAt": "Expire le",
+    "limitPrice": "Prix limite",
+    "nextTrade": "Prochaine transaction",
+    "noOrders": "Aucun ordre trouvé.",
+    "ongoing": "En cours",
+    "order": "Ordre",
+    "orderHistory": "Historique des ordres",
+    "overview": "Aperçu",
+    "past": "Passés",
+    "paused": "Ordres suspendus",
+    "priceRate": "Prix moyen",
+    "purchased": "Acheté",
+    "purchasedAmount": "Montant acheté",
+    "rate": "Taux",
+    "remainingAmount": "Montant restant",
+    "remainingTrades": "Transactions restantes",
+    "sold": "Vendu",
+    "soldAmount": "Montant vendu",
+    "status": {
+      "cancelled": "Annulé",
+      "completed": "Terminé",
+      "expired": "Expiré",
+      "partiallyFilled": "Partiellement exécuté"
+    },
+    "stopOrder": "Arrêter l'ordre",
+    "time": "Heure"
+  },
   "poolInfo": {
     "addPosBtn": "Ajouter une position",
     "col": {
@@ -48,5 +116,10 @@
       "swapFee": "Le pourcentage des frais facturés sur chaque transaction qui revient au protocole. Il est payé dans le jeton de sortie et est déjà pris en compte dans la cotation."
     }
   },
-  "swapURLCopied": "Échange d'URL copiées !"
+  "swapURLCopied": "Échange d'URL copiées !",
+  "tab": {
+    "dca": "DCA",
+    "limit": "Limite",
+    "swap": "Swap"
+  }
 }

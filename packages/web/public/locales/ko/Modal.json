@@ -195,6 +195,38 @@
         "success": "<div>래핑됨 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 및 <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>"
       },
       "title": "래핑"
+    },
+    "dcaOrder": {
+      "status": {
+        "error": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBSymbol}}</span> 주문 실패</div>",
+        "pending": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBSymbol}}</span> 주문 중</div>",
+        "success": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBSymbol}}</span> 주문 완료</div>"
+      },
+      "title": "DCA 주문"
+    },
+    "dcaStop": {
+      "status": {
+        "error": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBSymbol}}</span> 주문 중지 실패</div>",
+        "pending": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBSymbol}}</span> 주문 중지 중</div>",
+        "success": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBSymbol}}</span> 주문 중지 완료</div>"
+      },
+      "title": "DCA 주문 중지"
+    },
+    "limitOrder": {
+      "status": {
+        "error": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span> 주문 실패</div>",
+        "pending": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span> 주문 중</div>",
+        "success": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span> 주문 완료</div>"
+      },
+      "title": "지정가 주문"
+    },
+    "limitCancel": {
+      "status": {
+        "error": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBSymbol}}</span> 주문 취소 실패</div>",
+        "pending": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBSymbol}}</span> 주문 취소 중</div>",
+        "success": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBSymbol}}</span> 주문 취소 완료</div>"
+      },
+      "title": "지정가 주문 취소"
     }
   },
   "connectWallet": {
@@ -317,5 +349,24 @@
     },
     "desc": "지갑을 연결하면 <1>이용 약관</1> 및 <3>개인정보 처리방침</3>에 동의하는 것으로 간주됩니다. ",
     "title": "지갑 로그인"
+  },
+  "confirmPlaceOrder": {
+    "actualAmount": "모든 거래가 같은 수량을 판매하도록 {{amount}} {{symbol}}만 주문됩니다.",
+    "confirm": "주문 확인",
+    "title": "주문 확인"
+  },
+  "confirmLimitOrder": {
+    "confirm": "지정가 주문 확인",
+    "title": "지정가 주문 확인"
+  },
+  "confirmStopOrder": {
+    "cancelConfirm": "주문 취소 확인",
+    "cancelNote": "지정가 주문을 취소하면 같은 주문을 다시 시작할 수 없으며 체결되지 않은 수량만 반환됩니다. 이미 체결된 수량에는 영향이 없습니다.",
+    "cancelTitle": "주문 취소 확인",
+    "confirm": "주문 중지 확인",
+    "importantNote": "중요 안내",
+    "note": "DCA 주문을 중지하면 같은 주문을 다시 시작할 수 없으며 남은 수량만 반환됩니다. DCA를 계속하려면 새 DCA 주문을 생성해야 합니다.",
+    "orderDetails": "주문 상세",
+    "title": "주문 중지 확인"
   }
 }

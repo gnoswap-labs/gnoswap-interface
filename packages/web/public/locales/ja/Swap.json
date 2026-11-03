@@ -7,8 +7,76 @@
     },
     "title": "スワップ確認"
   },
+  "dca": {
+    "amountPerOrder": "1回あたりの数量",
+    "estimatedEndDate": "予想終了日",
+    "every": "間隔",
+    "everyTooltip": "注文内の各取引の間に経過する予想時間です。実際の時間はブロック時間によって異なる場合があります。",
+    "minTrading": "1回あたりの最低取引額は$50です",
+    "networkGasFee": "ネットワークガス代",
+    "networkGasFeeTooltip": "この注文を出すためのガス代とストレージデポジットです。各取引はキーパーが実行するため、追加のガス代はかかりません。",
+    "orders": "回",
+    "over": "回数",
+    "overTooltip": "注文の一部として実行される個別取引の回数です。",
+    "placeOrder": "注文する",
+    "routerFee": "ルーター手数料",
+    "routerFeeTooltip": "注文によって実行される各取引に課される手数料です。出力トークンで支払われます。",
+    "toBuy": "購入",
+    "unit": {
+      "day": "日",
+      "hour": "時間",
+      "minute": "分",
+      "month": "月",
+      "week": "週"
+    }
+  },
   "fetchingPrice": "最良の価格を取得しています...",
   "header": "スワップ",
+  "limit": {
+    "expiry": "有効期間",
+    "expiryOption": {
+      "oneDay": "1日",
+      "oneHour": "1時間",
+      "oneWeek": "1週間",
+      "thirtyDays": "30日"
+    },
+    "limitPrice": "指値価格",
+    "market": "成行",
+    "minTrading": "最低取引額は$50です",
+    "slippage": "最大スリッページ",
+    "startToOrder": "注文を開始"
+  },
+  "order": {
+    "active": "アクティブ",
+    "cancelOrder": "注文をキャンセル",
+    "connectWallet": "注文を表示するにはウォレットを接続してください。",
+    "expiresAt": "有効期限",
+    "limitPrice": "指値価格",
+    "nextTrade": "次回の取引",
+    "noOrders": "注文はありません。",
+    "ongoing": "進行中",
+    "order": "注文",
+    "orderHistory": "注文履歴",
+    "overview": "概要",
+    "past": "過去",
+    "paused": "注文一時停止中",
+    "priceRate": "平均約定価格",
+    "purchased": "購入",
+    "purchasedAmount": "購入数量",
+    "rate": "レート",
+    "remainingAmount": "残り数量",
+    "remainingTrades": "残りの取引",
+    "sold": "売却",
+    "soldAmount": "売却数量",
+    "status": {
+      "cancelled": "キャンセル済み",
+      "completed": "完了",
+      "expired": "期限切れ",
+      "partiallyFilled": "一部約定"
+    },
+    "stopOrder": "注文を停止",
+    "time": "時間"
+  },
   "poolInfo": {
     "addPosBtn": "ポジション追加",
     "col": {
@@ -48,5 +116,10 @@
       "swapFee": "各取引で課金される手数料のうち、プロトコルに支払われる割合。これは出力トークンで支払われ、すでに見積もりに織り込まれています。"
     }
   },
-  "swapURLCopied": "コピーされたURLを入れ替える！"
+  "swapURLCopied": "コピーされたURLを入れ替える！",
+  "tab": {
+    "dca": "DCA",
+    "limit": "指値",
+    "swap": "スワップ"
+  }
 }

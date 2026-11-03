@@ -195,6 +195,38 @@
         "success": "<div>Завернутый <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> и <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>"
       },
       "title": "Обертывание"
+    },
+    "dcaOrder": {
+      "status": {
+        "error": "<div>Не удалось разместить ордер <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> на <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Размещение ордера <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> на <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Ордер <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> на <span>{{tokenBSymbol}}</span> размещён</div>"
+      },
+      "title": "DCA-ордер"
+    },
+    "dcaStop": {
+      "status": {
+        "error": "<div>Не удалось остановить ордер <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> на <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Остановка ордера <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> на <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Ордер <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> на <span>{{tokenBSymbol}}</span> остановлен</div>"
+      },
+      "title": "Остановка DCA-ордера"
+    },
+    "limitOrder": {
+      "status": {
+        "error": "<div>Не удалось разместить ордер <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> на <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Размещение ордера <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> на <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Ордер <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> на <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span> размещён</div>"
+      },
+      "title": "Лимитный ордер"
+    },
+    "limitCancel": {
+      "status": {
+        "error": "<div>Не удалось отменить ордер <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> на <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Отмена ордера <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> на <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Ордер <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> на <span>{{tokenBSymbol}}</span> отменён</div>"
+      },
+      "title": "Отмена лимитного ордера"
     }
   },
   "connectWallet": {
@@ -317,5 +349,24 @@
     },
     "desc": "Подключая кошелек, вы принимаете и соглашаетесь с нашими <1>Условиями использования</1> и <3>Политикой конфиденциальности</3>.",
     "title": "Вход в кошелек"
+  },
+  "confirmPlaceOrder": {
+    "actualAmount": "Размещается только {{amount}} {{symbol}}, чтобы каждая сделка продавала одинаковую сумму.",
+    "confirm": "Подтвердить ордер",
+    "title": "Подтверждение ордера"
+  },
+  "confirmLimitOrder": {
+    "confirm": "Подтвердить лимитный ордер",
+    "title": "Подтверждение лимитного ордера"
+  },
+  "confirmStopOrder": {
+    "cancelConfirm": "Подтвердить отмену",
+    "cancelNote": "После отмены лимитного ордера его нельзя возобновить, вам вернётся только неисполненная часть. Исполненные объёмы не затрагиваются.",
+    "cancelTitle": "Подтверждение отмены",
+    "confirm": "Подтвердить остановку",
+    "importantNote": "Важно",
+    "note": "После остановки DCA-ордера его нельзя возобновить, вам вернутся только оставшиеся средства. Чтобы продолжить DCA, создайте новый DCA-ордер.",
+    "orderDetails": "Детали ордера",
+    "title": "Подтверждение остановки"
   }
 }

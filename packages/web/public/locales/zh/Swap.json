@@ -7,8 +7,76 @@
     },
     "title": "确认交换"
   },
+  "dca": {
+    "amountPerOrder": "每笔订单数量",
+    "estimatedEndDate": "预计结束日期",
+    "every": "每",
+    "everyTooltip": "订单中每笔交易之间的预计间隔时间。实际时间可能因出块时间而有所不同。",
+    "minTrading": "每笔订单最低交易额为 $50",
+    "networkGasFee": "网络 Gas 费",
+    "networkGasFeeTooltip": "下此订单所需的 Gas 费和存储押金。每笔交易由 Keeper 执行，您无需支付额外 Gas 费。",
+    "orders": "次",
+    "over": "次数",
+    "overTooltip": "作为订单一部分将被触发的单笔交易次数。",
+    "placeOrder": "下单",
+    "routerFee": "路由费",
+    "routerFeeTooltip": "订单执行的每笔交易收取的费用，以输出代币支付。",
+    "toBuy": "买入",
+    "unit": {
+      "day": "天",
+      "hour": "小时",
+      "minute": "分钟",
+      "month": "月",
+      "week": "周"
+    }
+  },
   "fetchingPrice": "正在获取最佳价格...",
   "header": "交换",
+  "limit": {
+    "expiry": "有效期",
+    "expiryOption": {
+      "oneDay": "1 天",
+      "oneHour": "1 小时",
+      "oneWeek": "1 周",
+      "thirtyDays": "30 天"
+    },
+    "limitPrice": "限价",
+    "market": "市价",
+    "minTrading": "最低交易额为 $50",
+    "slippage": "最大滑点",
+    "startToOrder": "开始下单"
+  },
+  "order": {
+    "active": "进行中",
+    "cancelOrder": "取消订单",
+    "connectWallet": "请连接钱包以查看您的订单。",
+    "expiresAt": "到期时间",
+    "limitPrice": "限价",
+    "nextTrade": "下次交易",
+    "noOrders": "暂无订单。",
+    "ongoing": "进行中",
+    "order": "订单",
+    "orderHistory": "订单记录",
+    "overview": "概览",
+    "past": "历史",
+    "paused": "订单已暂停",
+    "priceRate": "平均成交价",
+    "purchased": "买入",
+    "purchasedAmount": "已买入数量",
+    "rate": "成交价",
+    "remainingAmount": "剩余数量",
+    "remainingTrades": "剩余交易",
+    "sold": "卖出",
+    "soldAmount": "已卖出数量",
+    "status": {
+      "cancelled": "已取消",
+      "completed": "已完成",
+      "expired": "已过期",
+      "partiallyFilled": "部分成交"
+    },
+    "stopOrder": "停止订单",
+    "time": "时间"
+  },
   "poolInfo": {
     "addPosBtn": "增加职位",
     "col": {
@@ -48,5 +116,10 @@
       "swapFee": "在每笔交易中，协议收取的费用百分比。它以输出代币的形式支付，并已计入报价中。"
     }
   },
-  "swapURLCopied": "已复制的交换 URL！"
+  "swapURLCopied": "已复制的交换 URL！",
+  "tab": {
+    "dca": "DCA",
+    "limit": "限价",
+    "swap": "兑换"
+  }
 }

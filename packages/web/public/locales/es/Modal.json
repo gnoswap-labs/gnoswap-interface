@@ -195,6 +195,38 @@
         "success": "<div>Envuelto <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> y <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>"
       },
       "title": "Envolver"
+    },
+    "dcaOrder": {
+      "status": {
+        "error": "<div>Error al ordenar <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> por <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Ordenando <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> por <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Orden de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> por <span>{{tokenBSymbol}}</span> creada</div>"
+      },
+      "title": "Orden DCA"
+    },
+    "dcaStop": {
+      "status": {
+        "error": "<div>Error al detener <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> por <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Deteniendo <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> por <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Orden de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> por <span>{{tokenBSymbol}}</span> detenida</div>"
+      },
+      "title": "Detener orden DCA"
+    },
+    "limitOrder": {
+      "status": {
+        "error": "<div>Error al ordenar <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> por <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Ordenando <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> por <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Orden de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> por <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span> creada</div>"
+      },
+      "title": "Orden límite"
+    },
+    "limitCancel": {
+      "status": {
+        "error": "<div>Error al cancelar <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> por <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Cancelando <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> por <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Orden de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> por <span>{{tokenBSymbol}}</span> cancelada</div>"
+      },
+      "title": "Cancelar orden límite"
     }
   },
   "connectWallet": {
@@ -317,5 +349,24 @@
     },
     "desc": "Al conectar un monedero, acepta y consiente nuestras <1>Condiciones de uso</1> y <3>Política de privacidad</3>.",
     "title": "Iniciar sesión en billetera"
+  },
+  "confirmPlaceOrder": {
+    "actualAmount": "Solo se ordenan {{amount}} {{symbol}} para que cada operación venda la misma cantidad.",
+    "confirm": "Confirmar orden",
+    "title": "Confirmar orden"
+  },
+  "confirmLimitOrder": {
+    "confirm": "Confirmar orden límite",
+    "title": "Confirmar orden límite"
+  },
+  "confirmStopOrder": {
+    "cancelConfirm": "Confirmar cancelación",
+    "cancelNote": "Si cancelas una orden límite, no podrás reiniciarla y solo se te devolverá el importe no ejecutado. Los importes ya ejecutados no se ven afectados.",
+    "cancelTitle": "Confirmar cancelación",
+    "confirm": "Confirmar detención",
+    "importantNote": "Nota importante",
+    "note": "Si detienes una orden DCA, no podrás reiniciarla y solo se te devolverán los importes restantes. Para continuar con DCA, debes crear una nueva orden DCA.",
+    "orderDetails": "Detalles de la orden",
+    "title": "Confirmar detención"
   }
 }

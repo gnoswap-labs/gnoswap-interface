@@ -7,8 +7,76 @@
     },
     "title": "Xác nhận hoán đổi"
   },
+  "dca": {
+    "amountPerOrder": "Số lượng mỗi lệnh",
+    "estimatedEndDate": "Ngày kết thúc dự kiến",
+    "every": "Mỗi",
+    "everyTooltip": "Thời gian ước tính giữa mỗi giao dịch trong lệnh của bạn. Thời gian thực tế có thể thay đổi tùy theo thời gian khối.",
+    "minTrading": "Giao dịch tối thiểu $50 mỗi lệnh",
+    "networkGasFee": "Phí gas mạng",
+    "networkGasFeeTooltip": "Phí gas và tiền ký quỹ lưu trữ để đặt lệnh này. Mỗi giao dịch được keeper thực hiện mà bạn không phải trả thêm phí gas.",
+    "orders": "Lệnh",
+    "over": "Số lần",
+    "overTooltip": "Số lượng giao dịch riêng lẻ sẽ được thực hiện trong lệnh của bạn.",
+    "placeOrder": "Đặt lệnh",
+    "routerFee": "Phí router",
+    "routerFeeTooltip": "Phí tính trên mỗi giao dịch do lệnh thực hiện. Được trả bằng token đầu ra.",
+    "toBuy": "Mua",
+    "unit": {
+      "day": "Ngày",
+      "hour": "Giờ",
+      "minute": "Phút",
+      "month": "Tháng",
+      "week": "Tuần"
+    }
+  },
   "fetchingPrice": "Đang lấy giá tốt nhất...",
   "header": "Hoán đổi",
+  "limit": {
+    "expiry": "Thời hạn",
+    "expiryOption": {
+      "oneDay": "1 ngày",
+      "oneHour": "1 giờ",
+      "oneWeek": "1 tuần",
+      "thirtyDays": "30 ngày"
+    },
+    "limitPrice": "Giá giới hạn",
+    "market": "Thị trường",
+    "minTrading": "Giao dịch tối thiểu $50",
+    "slippage": "Trượt giá tối đa",
+    "startToOrder": "Bắt đầu đặt lệnh"
+  },
+  "order": {
+    "active": "Đang hoạt động",
+    "cancelOrder": "Hủy lệnh",
+    "connectWallet": "Vui lòng kết nối ví để xem lệnh của bạn.",
+    "expiresAt": "Hết hạn lúc",
+    "limitPrice": "Giá giới hạn",
+    "nextTrade": "Giao dịch tiếp theo",
+    "noOrders": "Không có lệnh nào.",
+    "ongoing": "Đang diễn ra",
+    "order": "Lệnh",
+    "orderHistory": "Lịch sử lệnh",
+    "overview": "Tổng quan",
+    "past": "Đã kết thúc",
+    "paused": "Tạm dừng đặt lệnh",
+    "priceRate": "Giá trung bình",
+    "purchased": "Đã mua",
+    "purchasedAmount": "Số lượng đã mua",
+    "rate": "Tỷ giá",
+    "remainingAmount": "Số lượng còn lại",
+    "remainingTrades": "Giao dịch còn lại",
+    "sold": "Đã bán",
+    "soldAmount": "Số lượng đã bán",
+    "status": {
+      "cancelled": "Đã hủy",
+      "completed": "Hoàn tất",
+      "expired": "Đã hết hạn",
+      "partiallyFilled": "Khớp một phần"
+    },
+    "stopOrder": "Dừng lệnh",
+    "time": "Thời gian"
+  },
   "poolInfo": {
     "addPosBtn": "Thêm vị trí",
     "col": {
@@ -48,5 +116,10 @@
       "swapFee": "Tỷ lệ phần trăm phí được tính trên mỗi giao dịch và được chuyển cho giao thức. Khoản phí này được thanh toán bằng token đầu ra và đã được tính sẵn vào mức giá chào."
     }
   },
-  "swapURLCopied": "Đã sao chép URL!"
+  "swapURLCopied": "Đã sao chép URL!",
+  "tab": {
+    "dca": "DCA",
+    "limit": "Giới hạn",
+    "swap": "Hoán đổi"
+  }
 }

@@ -7,8 +7,76 @@
     },
     "title": "스왑 확인"
   },
+  "dca": {
+    "amountPerOrder": "1회 주문 수량",
+    "estimatedEndDate": "예상 종료일",
+    "every": "주기",
+    "everyTooltip": "주문의 각 거래 사이에 경과할 예상 시간입니다. 실제 시간은 블록 시간에 따라 달라질 수 있습니다.",
+    "minTrading": "주문당 최소 거래 금액은 $50입니다",
+    "networkGasFee": "네트워크 가스 수수료",
+    "networkGasFeeTooltip": "이 주문을 등록하는 데 필요한 가스 수수료와 스토리지 예치금입니다. 각 거래는 키퍼가 실행하므로 추가 가스 비용이 들지 않습니다.",
+    "orders": "회",
+    "over": "횟수",
+    "overTooltip": "주문의 일부로 실행될 개별 거래의 횟수입니다.",
+    "placeOrder": "주문하기",
+    "routerFee": "라우터 수수료",
+    "routerFeeTooltip": "주문으로 실행되는 각 거래에 부과되는 수수료입니다. 출력 토큰으로 지불됩니다.",
+    "toBuy": "구매할 토큰",
+    "unit": {
+      "day": "일",
+      "hour": "시간",
+      "minute": "분",
+      "month": "월",
+      "week": "주"
+    }
+  },
   "fetchingPrice": "최적 가격을 조회중...",
   "header": "스왑",
+  "limit": {
+    "expiry": "만료",
+    "expiryOption": {
+      "oneDay": "1일",
+      "oneHour": "1시간",
+      "oneWeek": "1주",
+      "thirtyDays": "30일"
+    },
+    "limitPrice": "지정가",
+    "market": "시장가",
+    "minTrading": "최소 거래 금액은 $50입니다",
+    "slippage": "최대 슬리피지",
+    "startToOrder": "주문 시작"
+  },
+  "order": {
+    "active": "진행 중",
+    "cancelOrder": "주문 취소",
+    "connectWallet": "주문을 보려면 지갑을 연결해 주세요.",
+    "expiresAt": "만료 일시",
+    "limitPrice": "지정가",
+    "nextTrade": "다음 거래",
+    "noOrders": "주문이 없습니다.",
+    "ongoing": "진행 중",
+    "order": "주문",
+    "orderHistory": "주문 내역",
+    "overview": "개요",
+    "past": "종료",
+    "paused": "주문 일시 중지",
+    "priceRate": "평균 체결가",
+    "purchased": "구매",
+    "purchasedAmount": "구매 수량",
+    "rate": "체결가",
+    "remainingAmount": "잔여 수량",
+    "remainingTrades": "남은 거래",
+    "sold": "판매",
+    "soldAmount": "판매 수량",
+    "status": {
+      "cancelled": "취소됨",
+      "completed": "완료",
+      "expired": "만료됨",
+      "partiallyFilled": "부분 체결"
+    },
+    "stopOrder": "주문 중지",
+    "time": "시간"
+  },
   "poolInfo": {
     "addPosBtn": "포지션 추가",
     "col": {
@@ -48,5 +116,10 @@
       "swapFee": "각 거래에 대해 프로토콜에 부과되는 수수료 비율입니다.\n스왑된 토큰으로 지불되며, 예상 견적에 미리 적용되어 있습니다."
     }
   },
-  "swapURLCopied": "스왑 URL 복사 완료!"
+  "swapURLCopied": "스왑 URL 복사 완료!",
+  "tab": {
+    "dca": "DCA",
+    "limit": "지정가",
+    "swap": "스왑"
+  }
 }
