@@ -79,6 +79,7 @@ const renderCard = (props: Partial<DcaOrderCardProps> = {}) => {
     summary,
     buttonState: "PLACE_ORDER",
     buttonText: "Place Order",
+    minTradingText: "Minimum 0.000001 GNS per order",
     onClickButton: jest.fn(),
   };
 
@@ -116,7 +117,7 @@ describe("DcaOrderCard", () => {
 
     const button = screen.getByRole("button", { name: "Amount Too Low" });
     expect(button).toBeDisabled();
-    expect(screen.getByText("Swap:dca.minTrading")).toBeInTheDocument();
+    expect(screen.getByText("Minimum 0.000001 GNS per order")).toBeInTheDocument();
     fireEvent.click(button);
     expect(onClickButton).not.toHaveBeenCalled();
   });

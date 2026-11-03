@@ -53,6 +53,8 @@ export interface DcaOrderCardProps {
   summary: DcaOrderSummary | null;
   buttonState: OrderButtonState;
   buttonText: string;
+  /** Shown under an `Amount Too Low` button: the realm's minimum order. */
+  minTradingText: string;
   onClickButton: () => void;
 }
 
@@ -85,6 +87,7 @@ const DcaOrderCard: React.FC<DcaOrderCardProps> = ({
   summary,
   buttonState,
   buttonText,
+  minTradingText,
   onClickButton,
 }) => {
   const { t } = useTranslation();
@@ -143,7 +146,7 @@ const DcaOrderCard: React.FC<DcaOrderCardProps> = ({
       <OrderFormButton
         state={buttonState}
         text={buttonText}
-        minTradingText={t("Swap:dca.minTrading")}
+        minTradingText={minTradingText}
         onClick={onClickButton}
       />
     </SwapCardWrapper>

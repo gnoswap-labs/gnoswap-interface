@@ -58,6 +58,7 @@ export const Default: Story = {
     summary: { ...STORY_DCA_ORDER_SUMMARY, sellAmount: "1500", executionCount: 2, amountPerOrder: "750" },
     buttonState: "PLACE_ORDER",
     buttonText: "Place Order",
+    minTradingText: "Minimum 0.000001 GNS per order",
     onClickButton: fn(),
   },
 };

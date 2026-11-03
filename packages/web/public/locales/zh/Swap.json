@@ -12,7 +12,7 @@
     "estimatedEndDate": "预计结束日期",
     "every": "每",
     "everyTooltip": "订单中每笔交易之间的预计间隔时间。实际时间可能因出块时间而有所不同。",
-    "minTrading": "每笔订单最低交易额为 $50",
+    "minTrading": "每笔订单最低交易数量为 {{amount}} {{symbol}}",
     "networkGasFee": "网络 Gas 费",
     "networkGasFeeTooltip": "下此订单所需的 Gas 费和存储押金。每笔交易由 Keeper 执行，您无需支付额外 Gas 费。",
     "orders": "次",
@@ -42,7 +42,7 @@
     },
     "limitPrice": "限价",
     "market": "市价",
-    "minTrading": "最低交易额为 $50",
+    "minTrading": "最低交易数量为 {{amount}} {{symbol}}",
     "slippage": "最大滑点",
     "startToOrder": "开始下单"
   },

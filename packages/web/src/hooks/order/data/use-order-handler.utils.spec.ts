@@ -83,19 +83,20 @@ describe("use-order-handler.utils", () => {
   });
 
   describe("calculateMaxExecutionCount", () => {
-    it("allows one execution per $50 of the sell amount", () => {
-      expect(calculateMaxExecutionCount(200)).toBe(4);
-      expect(calculateMaxExecutionCount(249.99)).toBe(4);
-      expect(calculateMaxExecutionCount(99)).toBe(1);
+    it("allows one execution per minAmountPerExecution raw units", () => {
+      expect(calculateMaxExecutionCount("400", 1000, "100")).toBe(4);
+      expect(calculateMaxExecutionCount("499", 1000, "100")).toBe(4);
+      expect(calculateMaxExecutionCount("99", 1000, "100")).toBe(0);
     });
 
     it("never exceeds the contract's execution cap", () => {
-      expect(calculateMaxExecutionCount(1_000_000, 1000)).toBe(1000);
-      expect(calculateMaxExecutionCount(1_000, 10)).toBe(10);
+      expect(calculateMaxExecutionCount("1000000", 1000)).toBe(1000);
+      expect(calculateMaxExecutionCount("1000", 10)).toBe(10);
     });
 
-    it("falls back to the cap without a price", () => {
-      expect(calculateMaxExecutionCount(null, 1000)).toBe(1000);
+    it("falls back to the cap without an amount", () => {
+      expect(calculateMaxExecutionCount("", 1000)).toBe(1000);
+      expect(calculateMaxExecutionCount("0", 1000)).toBe(1000);
     });
   });
 
@@ -122,12 +123,13 @@ describe("use-order-handler.utils", () => {
     });
   });
 
-  it("flags DCA orders under $50 per execution", () => {
-    expect(isDcaAmountTooLow(200, 4)).toBe(false);
-    expect(isDcaAmountTooLow(200, 5)).toBe(true);
-    expect(isDcaAmountTooLow(null, 5)).toBe(false);
-    expect(isLimitAmountTooLow(49.99)).toBe(true);
-    expect(isLimitAmountTooLow(50)).toBe(false);
+  it("flags orders under the realms' raw minimums", () => {
+    expect(isDcaAmountTooLow("1", "1")).toBe(false);
+    expect(isDcaAmountTooLow("0", "1")).toBe(true);
+    expect(isDcaAmountTooLow("99", "100")).toBe(true);
+    expect(isLimitAmountTooLow("100", "1", "100")).toBe(false);
+    expect(isLimitAmountTooLow("99", "1", "100")).toBe(true);
+    expect(isLimitAmountTooLow("100", "0", "100")).toBe(true);
   });
 
   it("converts slippage to basis points capped at 10%", () => {

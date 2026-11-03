@@ -28,7 +28,6 @@
     "executionFeeBps": 15,
     "routerFeeBps": 15,
     "minExecutionGapRate": 5000,
-    "minOrderUsd": "50",
     "halted": {
       "execute": false,
       "withdraw": false

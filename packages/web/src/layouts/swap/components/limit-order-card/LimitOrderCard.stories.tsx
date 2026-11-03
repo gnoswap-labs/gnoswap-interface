@@ -62,6 +62,7 @@ export const Default: Story = {
     changeExpiry: fn(),
     buttonState: "PLACE_ORDER",
     buttonText: "Start to Order",
+    minTradingText: "Minimum 0.0001 GNS",
     onClickButton: fn(),
   },
 };

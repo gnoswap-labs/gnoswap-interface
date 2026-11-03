@@ -4,8 +4,12 @@ import { DCA_INTERVAL_UNITS, DcaIntervalUnit } from "@models/order/dca-order-mod
 import { LIMIT_EXPIRY_OPTIONS, LimitExpiryKey } from "@models/order/limit-order-model";
 import { TokenModel } from "@models/token/token-model";
 
-/** Smallest order the UI accepts, per DCA execution or per limit order, in USD. */
-export const DEFAULT_MIN_ORDER_USD = 50;
+/**
+ * The realms' v0 minimums in raw input units, used until their config loads:
+ * DCA `minAmountPerExecution` and Limit `minMakingAmount`.
+ */
+export const DEFAULT_MIN_AMOUNT_PER_EXECUTION = "1";
+export const DEFAULT_MIN_MAKING_AMOUNT = "100";
 export const MIN_DCA_EXECUTION_COUNT = 2;
 export const DEFAULT_DCA_EXECUTION_COUNT = MIN_DCA_EXECUTION_COUNT;
 export const DEFAULT_MAX_DCA_EXECUTION_COUNT = 1000;
@@ -83,16 +87,21 @@ export function calculateUsdValue(amount: string, usdPrice: BigNumber.Value | nu
 }
 
 /**
- * The largest `Over` value: every execution must be worth at least the minimum
- * order, and the contract caps the count. `min(maxExecutionCount, floor(sellUsd / 50))`.
+ * The largest `Over` value the DCA realm accepts: each execution must sell at
+ * least `minAmountPerExecution` raw units, and the count is capped by
+ * `maxExecutionCount`. `min(maxExecutionCount, floor(sellRaw / minAmountPerExecution))`.
  */
 export function calculateMaxExecutionCount(
-  sellUsd: number | null,
+  rawSellAmount: string,
   maxExecutionCount = DEFAULT_MAX_DCA_EXECUTION_COUNT,
-  minOrderUsd = DEFAULT_MIN_ORDER_USD,
+  minAmountPerExecution = DEFAULT_MIN_AMOUNT_PER_EXECUTION,
 ): number {
-  if (sellUsd === null || !Number.isFinite(sellUsd) || minOrderUsd <= 0) return maxExecutionCount;
-  return Math.min(maxExecutionCount, Math.floor(sellUsd / minOrderUsd));
+  const sell = BigNumber(rawSellAmount || 0);
+  const min = BigNumber(minAmountPerExecution);
+  if (!sell.isFinite() || sell.isLessThanOrEqualTo(0) || !min.isFinite() || min.isLessThanOrEqualTo(0)) {
+    return maxExecutionCount;
+  }
+  return BigNumber.min(maxExecutionCount, sell.dividedToIntegerBy(min)).toNumber();
 }
 
 /** Clamps an `Over` value into `[2, max]`. A max below 2 still allows 2 so the form can say why. */
@@ -110,19 +119,27 @@ export function calculateAmountPerExecution(rawTotalAmount: string, executionCou
   return total.dividedToIntegerBy(executionCount).toFixed(0);
 }
 
-/** A DCA order is too small when one execution is worth less than the minimum order. */
+/** A DCA order is too small when one execution sells less than the realm's `minAmountPerExecution`. */
 export function isDcaAmountTooLow(
-  sellUsd: number | null,
-  executionCount: number,
-  minOrderUsd = DEFAULT_MIN_ORDER_USD,
+  rawAmountPerExecution: string,
+  minAmountPerExecution = DEFAULT_MIN_AMOUNT_PER_EXECUTION,
 ): boolean {
-  if (sellUsd === null || executionCount <= 0) return false;
-  return sellUsd / executionCount < minOrderUsd;
+  return BigNumber(rawAmountPerExecution || 0).isLessThan(minAmountPerExecution);
 }
 
-export function isLimitAmountTooLow(sellUsd: number | null, minOrderUsd = DEFAULT_MIN_ORDER_USD): boolean {
-  if (sellUsd === null) return false;
-  return sellUsd < minOrderUsd;
+/**
+ * A limit order is too small when it escrows less than the realm's `minMakingAmount`,
+ * or when its target output rounds down to zero (the realm requires a positive `takingAmount`).
+ */
+export function isLimitAmountTooLow(
+  rawMakingAmount: string,
+  rawTakingAmount: string,
+  minMakingAmount = DEFAULT_MIN_MAKING_AMOUNT,
+): boolean {
+  return (
+    BigNumber(rawMakingAmount || 0).isLessThan(minMakingAmount) ||
+    BigNumber(rawTakingAmount || 0).isLessThanOrEqualTo(0)
+  );
 }
 
 /** The swap slippage setting (percent) as basis points, capped to what the limit realm accepts. */

@@ -12,7 +12,7 @@
     "estimatedEndDate": "予想終了日",
     "every": "間隔",
     "everyTooltip": "注文内の各取引の間に経過する予想時間です。実際の時間はブロック時間によって異なる場合があります。",
-    "minTrading": "1回あたりの最低取引額は$50です",
+    "minTrading": "1回あたりの最低取引量は{{amount}} {{symbol}}です",
     "networkGasFee": "ネットワークガス代",
     "networkGasFeeTooltip": "この注文を出すためのガス代とストレージデポジットです。各取引はキーパーが実行するため、追加のガス代はかかりません。",
     "orders": "回",
@@ -42,7 +42,7 @@
     },
     "limitPrice": "指値価格",
     "market": "成行",
-    "minTrading": "最低取引額は$50です",
+    "minTrading": "最低取引量は{{amount}} {{symbol}}です",
     "slippage": "最大スリッページ",
     "startToOrder": "注文を開始"
   },

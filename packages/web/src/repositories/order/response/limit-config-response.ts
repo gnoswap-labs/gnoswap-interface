@@ -8,7 +8,5 @@ export interface LimitConfigResponse {
   executionFeeBps: number;
   routerFeeBps: number;
   maxSlippageBps: number;
-  /** USD amount as a decimal string. */
-  minOrderUsd: string;
   halted: OrderHaltedStatus;
 }

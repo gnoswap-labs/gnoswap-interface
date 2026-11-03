@@ -12,7 +12,7 @@
     "estimatedEndDate": "Estimated End Date",
     "every": "Every",
     "everyTooltip": "The estimated time that will elapse between each trade in your order. The actual time may vary depending on the block time.",
-    "minTrading": "Minimum trading $50 per order",
+    "minTrading": "Minimum {{amount}} {{symbol}} per order",
     "networkGasFee": "Network Gas Fee",
     "networkGasFeeTooltip": "The gas fee and storage deposit for placing this order. Each trade is executed by a keeper at no extra gas cost to you.",
     "orders": "Orders",
@@ -42,7 +42,7 @@
     },
     "limitPrice": "Limit Price",
     "market": "Market",
-    "minTrading": "Minimum trading $50",
+    "minTrading": "Minimum {{amount}} {{symbol}}",
     "slippage": "Max. Slippage",
     "startToOrder": "Start to Order"
   },

@@ -31,7 +31,7 @@ import {
   calculateUsdValue,
   clampExecutionCount,
   DEFAULT_MAX_DCA_EXECUTION_COUNT,
-  DEFAULT_MIN_ORDER_USD,
+  DEFAULT_MIN_AMOUNT_PER_EXECUTION,
   getAvailableDcaIntervals,
   getOrderButtonState,
   isDcaAmountTooLow,
@@ -82,21 +82,26 @@ export const useDcaOrderHandler = () => {
     }
   }, [interval, intervalOptions, setInterval]);
 
-  const minOrderUsd = Number(config?.minOrderUsd) || DEFAULT_MIN_ORDER_USD;
+  const minAmountPerExecution = config?.minAmountPerExecution || DEFAULT_MIN_AMOUNT_PER_EXECUTION;
   const sellUsd = useMemo(() => calculateUsdValue(sellAmount, getUsdPrice(tokenA)), [getUsdPrice, sellAmount, tokenA]);
+  const sellAmountRaw = tokenA ? makeRawTokenAmount(tokenA, sellAmount || "0") ?? "0" : "0";
 
   const maxExecutionCount = useMemo(
     () =>
-      calculateMaxExecutionCount(sellUsd, config?.maxExecutionCount ?? DEFAULT_MAX_DCA_EXECUTION_COUNT, minOrderUsd),
-    [config?.maxExecutionCount, minOrderUsd, sellUsd],
+      calculateMaxExecutionCount(
+        sellAmountRaw,
+        config?.maxExecutionCount ?? DEFAULT_MAX_DCA_EXECUTION_COUNT,
+        minAmountPerExecution,
+      ),
+    [config?.maxExecutionCount, minAmountPerExecution, sellAmountRaw],
   );
 
   const executionCount = Math.max(MIN_DCA_EXECUTION_COUNT, Math.floor(Number(executionCountInput)) || 0);
 
   const amountPerExecutionRaw = useMemo(() => {
     if (!tokenA) return "0";
-    return calculateAmountPerExecution(makeRawTokenAmount(tokenA, sellAmount || "0") ?? "0", executionCount);
-  }, [executionCount, sellAmount, tokenA]);
+    return calculateAmountPerExecution(sellAmountRaw, executionCount);
+  }, [executionCount, sellAmountRaw, tokenA]);
 
   const amountPerExecution = tokenA ? toDisplayAmount(tokenA, amountPerExecutionRaw) : "0";
 
@@ -143,11 +148,15 @@ export const useDcaOrderHandler = () => {
     refetch: refetchSchedule,
   } = useGetDcaSchedule(scheduleRequest);
 
-  const isAmountTooLow = useMemo(() => {
-    if (isDcaAmountTooLow(sellUsd, executionCount, minOrderUsd)) return true;
-    if (!config?.minAmountPerExecution || !BigNumber(sellAmount || 0).isGreaterThan(0)) return false;
-    return BigNumber(amountPerExecutionRaw).isLessThan(config.minAmountPerExecution);
-  }, [amountPerExecutionRaw, config?.minAmountPerExecution, executionCount, minOrderUsd, sellAmount, sellUsd]);
+  // The DCA realm's own minimum: each execution must sell `minAmountPerExecution` raw units.
+  const isAmountTooLow =
+    BigNumber(sellAmount || 0).isGreaterThan(0) && isDcaAmountTooLow(amountPerExecutionRaw, minAmountPerExecution);
+  const minTradingText = tokenA
+    ? t("Swap:dca.minTrading", {
+        amount: toDisplayAmount(tokenA, minAmountPerExecution),
+        symbol: tokenA.displaySymbol,
+      })
+    : "";
 
   const buttonState = getOrderButtonState({
     connected,
@@ -381,6 +390,7 @@ export const useDcaOrderHandler = () => {
     isLoadingDetail: isFetchingNetworkFee,
     buttonState,
     buttonText,
+    minTradingText,
     copied,
     slippage,
     changeSlippage,

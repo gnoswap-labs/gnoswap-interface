@@ -15,7 +15,5 @@ export interface DcaConfigResponse {
   executionFeeBps: number;
   routerFeeBps: number;
   minExecutionGapRate: number;
-  /** USD amount as a decimal string. */
-  minOrderUsd: string;
   halted: OrderHaltedStatus;
 }

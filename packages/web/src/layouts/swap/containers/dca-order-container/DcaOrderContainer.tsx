@@ -63,6 +63,7 @@ const DcaOrderContainer: React.FC<DcaOrderContainerProps> = ({ swapType, changeS
       summary={handler.summary}
       buttonState={handler.buttonState}
       buttonText={handler.buttonText}
+      minTradingText={handler.minTradingText}
       onClickButton={handler.onClickButton}
     />
   );

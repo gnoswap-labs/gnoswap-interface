@@ -1,6 +1,5 @@
 import { cx } from "@emotion/css";
 import React, { useCallback, useState } from "react";
-import { useTranslation } from "react-i18next";
 
 import { isAmount } from "@common/utils/data-check-util";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
@@ -58,6 +57,8 @@ export interface LimitOrderCardProps {
 
   buttonState: OrderButtonState;
   buttonText: string;
+  /** Shown under an `Amount Too Low` button: the realm's minimum order. */
+  minTradingText: string;
   onClickButton: () => void;
 }
 
@@ -96,9 +97,9 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
   changeExpiry,
   buttonState,
   buttonText,
+  minTradingText,
   onClickButton,
 }) => {
-  const { t } = useTranslation();
   const [buyFocused, setBuyFocused] = useState(false);
   const buyBalanceDisplay = useTokenBalanceDisplay(tokenBBalance, connectedWallet);
 
@@ -182,7 +183,7 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
       <OrderFormButton
         state={buttonState}
         text={buttonText}
-        minTradingText={t("Swap:limit.minTrading")}
+        minTradingText={minTradingText}
         onClick={onClickButton}
       />
     </SwapCardWrapper>

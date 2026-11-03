@@ -7,7 +7,6 @@
     "executionFeeBps": 15,
     "routerFeeBps": 15,
     "maxSlippageBps": 1000,
-    "minOrderUsd": "50",
     "halted": {
       "execute": false,
       "withdraw": false

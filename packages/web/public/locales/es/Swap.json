@@ -12,7 +12,7 @@
     "estimatedEndDate": "Fecha de fin estimada",
     "every": "Cada",
     "everyTooltip": "El tiempo estimado que transcurrirá entre cada operación de tu orden. El tiempo real puede variar según el tiempo de bloque.",
-    "minTrading": "Mínimo de $50 por orden",
+    "minTrading": "Mínimo de {{amount}} {{symbol}} por orden",
     "networkGasFee": "Comisión de gas de red",
     "networkGasFeeTooltip": "La comisión de gas y el depósito de almacenamiento para crear esta orden. Cada operación la ejecuta un keeper sin coste de gas adicional para ti.",
     "orders": "Órdenes",
@@ -42,7 +42,7 @@
     },
     "limitPrice": "Precio límite",
     "market": "Mercado",
-    "minTrading": "Mínimo de $50",
+    "minTrading": "Mínimo de {{amount}} {{symbol}}",
     "slippage": "Deslizamiento máx.",
     "startToOrder": "Crear orden"
   },

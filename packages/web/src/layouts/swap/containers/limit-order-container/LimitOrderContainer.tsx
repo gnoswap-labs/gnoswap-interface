@@ -67,6 +67,7 @@ const LimitOrderContainer: React.FC<LimitOrderContainerProps> = ({ swapType, cha
       changeExpiry={handler.changeExpiry}
       buttonState={handler.buttonState}
       buttonText={handler.buttonText}
+      minTradingText={handler.minTradingText}
       onClickButton={handler.onClickButton}
     />
   );

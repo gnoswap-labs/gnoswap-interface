@@ -26,7 +26,7 @@ import {
   applyLimitPricePreset,
   calculateTakingAmount,
   calculateUsdValue,
-  DEFAULT_MIN_ORDER_USD,
+  DEFAULT_MIN_MAKING_AMOUNT,
   formatLimitPriceInput,
   getAvailableExpiryOptions,
   getOrderButtonState,
@@ -129,13 +129,16 @@ export const useLimitOrderHandler = () => {
   const takingAmount =
     tokenA && tokenB && isValidPrice ? calculateTakingAmount(makingAmount, limitPrice, tokenA, tokenB) : "0";
 
-  const minOrderUsd = Number(config?.minOrderUsd) || DEFAULT_MIN_ORDER_USD;
-  const isAmountTooLow = useMemo(() => {
-    if (isLimitAmountTooLow(sellUsd, minOrderUsd)) return true;
-    if (BigNumber(takingAmount).isLessThanOrEqualTo(0) && BigNumber(makingAmount).isGreaterThan(0)) return true;
-    if (!config?.minMakingAmount) return false;
-    return BigNumber(makingAmount).isLessThan(config.minMakingAmount);
-  }, [config?.minMakingAmount, makingAmount, minOrderUsd, sellUsd, takingAmount]);
+  // The Limit realm's own minimums: `minMakingAmount` raw input and a positive `takingAmount`.
+  const minMakingAmount = config?.minMakingAmount || DEFAULT_MIN_MAKING_AMOUNT;
+  const isAmountTooLow =
+    BigNumber(makingAmount).isGreaterThan(0) && isLimitAmountTooLow(makingAmount, takingAmount, minMakingAmount);
+  const minTradingText = tokenA
+    ? t("Swap:limit.minTrading", {
+        amount: makeDisplayTokenAmountString(tokenA, minMakingAmount) ?? minMakingAmount,
+        symbol: tokenA.displaySymbol,
+      })
+    : "";
 
   const buttonState = getOrderButtonState({
     connected,
@@ -393,6 +396,7 @@ export const useLimitOrderHandler = () => {
     isLoadingConfig,
     buttonState,
     buttonText,
+    minTradingText,
     copied,
     slippage,
     changeSlippage,
