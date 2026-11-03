@@ -6,7 +6,9 @@ module.exports = {
     node: true,
   },
   parser: "@typescript-eslint/parser",
+  plugins: ["@typescript-eslint"],
   extends: ["next", "prettier", "plugin:storybook/recommended"],
+  root: true,
   rules: {
     "linebreak-style": ["error", "unix"],
     quotes: ["error", "double"],
@@ -25,6 +27,7 @@ module.exports = {
     "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/no-empty-function": "warn",
     "@typescript-eslint/no-empty-interface": "warn",
+    "@next/next/no-html-link-for-pages": "off",
   },
   settings: {
     "import/external-module-folders": [".yarn"],

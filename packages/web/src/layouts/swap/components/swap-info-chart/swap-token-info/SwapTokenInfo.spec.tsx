@@ -25,6 +25,7 @@ jest.mock("@hooks/common/use-gnoscan-url", () => ({
   }),
 }));
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const mockUseGetTokenPrices = jest.fn((_path: string) => ({
   data: { usd: "0.19", priceGradeType: "NONE", last7d: [] },
   isLoading: false,
