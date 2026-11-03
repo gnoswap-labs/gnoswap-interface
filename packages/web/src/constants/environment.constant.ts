@@ -54,12 +54,11 @@ export const PACKAGE_LAUNCHPAD_ADDRESS = getAddressByPackagePath(PACKAGE_LAUNCHP
 
 export const PACKAGE_EMISSION_PATH = process.env.NEXT_PUBLIC_PACKAGE_EMISSION_PATH || "gno.land/r/gnoswap/emission";
 
-export const PACKAGE_DCA_ORDER_PATH = process.env.NEXT_PUBLIC_PACKAGE_DCA_ORDER_PATH || "gno.land/r/gnoswap/order/dca";
+export const PACKAGE_DCA_ORDER_PATH = process.env.NEXT_PUBLIC_PACKAGE_DCA_ORDER_PATH || "";
 
 export const PACKAGE_DCA_ORDER_ADDRESS = getAddressByPackagePath(PACKAGE_DCA_ORDER_PATH);
 
-export const PACKAGE_LIMIT_ORDER_PATH =
-  process.env.NEXT_PUBLIC_PACKAGE_LIMIT_ORDER_PATH || "gno.land/r/gnoswap/order/limit";
+export const PACKAGE_LIMIT_ORDER_PATH = process.env.NEXT_PUBLIC_PACKAGE_LIMIT_ORDER_PATH || "";
 
 export const PACKAGE_LIMIT_ORDER_ADDRESS = getAddressByPackagePath(PACKAGE_LIMIT_ORDER_PATH);
 
