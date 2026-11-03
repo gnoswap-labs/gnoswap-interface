@@ -53,7 +53,6 @@ export const DEV_DCA_CONFIG: DcaConfigResponse = {
   executionFeeBps: FEE_BPS,
   routerFeeBps: FEE_BPS,
   minExecutionGapRate: 5000,
-  minOrderUsd: "50",
   halted: { execute: false, withdraw: false },
 };
 
@@ -64,7 +63,6 @@ export const DEV_LIMIT_CONFIG: LimitConfigResponse = {
   executionFeeBps: FEE_BPS,
   routerFeeBps: FEE_BPS,
   maxSlippageBps: 1000,
-  minOrderUsd: "50",
   halted: { execute: false, withdraw: false },
 };
 
