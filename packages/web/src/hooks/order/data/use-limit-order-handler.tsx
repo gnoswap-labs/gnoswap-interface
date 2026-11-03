@@ -231,36 +231,44 @@ export const useLimitOrderHandler = () => {
     tokenB,
   ]);
 
-  // A new pair starts again from its market price.
+  /**
+   * A new pair starts again from its market price, so Sell becomes the source
+   * of truth again: a kept Buy input would no longer match `sell × price`.
+   */
+  const resetPairInputs = useCallback(() => {
+    setLimitPrice("");
+    setEditedSide("sell");
+    setBuyInput("");
+  }, [setLimitPrice]);
+
   const changeTokenA = useCallback(
     (token: TokenModel) => {
-      setLimitPrice("");
+      resetPairInputs();
       setSwapValue(prev => ({
         ...prev,
         tokenA: token,
         tokenB: prev.tokenB?.path === token.path ? prev.tokenA : prev.tokenB,
       }));
     },
-    [setLimitPrice, setSwapValue],
+    [resetPairInputs, setSwapValue],
   );
 
   const changeTokenB = useCallback(
     (token: TokenModel) => {
-      setLimitPrice("");
+      resetPairInputs();
       setSwapValue(prev => ({
         ...prev,
         tokenB: token,
         tokenA: prev.tokenA?.path === token.path ? prev.tokenB : prev.tokenA,
       }));
     },
-    [setLimitPrice, setSwapValue],
+    [resetPairInputs, setSwapValue],
   );
 
   const switchTokens = useCallback(() => {
-    setLimitPrice("");
+    resetPairInputs();
     setSwapValue(prev => ({ ...prev, tokenA: prev.tokenB, tokenB: prev.tokenA }));
-    setEditedSide("sell");
-  }, [setLimitPrice, setSwapValue]);
+  }, [resetPairInputs, setSwapValue]);
 
   const changeSellAmount = useCallback(
     (value: string) => {
