@@ -9,6 +9,7 @@ import {
   offset,
   safePolygon,
   shift,
+  size,
   useClick,
   useDismiss,
   useFloating,
@@ -21,14 +22,17 @@ import { useAtomValue } from "jotai";
 import React, { useId, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { Content as FloatingContent } from "@components/common/tooltip/Tooltip.styles";
 import { formatXgnsApr, UNAVAILABLE_APR, useXgnsAprCopy } from "@layouts/governance/xgns-apr/xgns-apr";
 import type { GovernanceAPRHistory as APRHistoryDay } from "@repositories/governance";
 import { ThemeState } from "@states/index";
 import { Z_INDEX } from "@styles/zIndex";
 
 import GovernanceAPRHistory from "./GovernanceAPRHistory";
-import { GovernanceAPRBreakdownWrapper, GovernanceAPRHistoryPanel } from "./GovernanceAPRBreakdown.styles";
+import {
+  GovernanceAPRBreakdownWrapper,
+  GovernanceAPRHistoryPanel,
+  GovernanceAPRHistoryTooltipContent,
+} from "./GovernanceAPRBreakdown.styles";
 import GovernanceAPRValue from "./GovernanceAPRValue";
 
 export interface GovernanceAPRBreakdownProps {
@@ -55,6 +59,7 @@ const GovernanceAPRBreakdown: React.FC<GovernanceAPRBreakdownProps> = ({
 
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const arrowRef = useRef(null);
+  const historyContentRef = useRef<HTMLDivElement>(null);
   const historyPanelId = useId();
 
   const { refs, strategy, x, y, context } = useFloating({
@@ -62,7 +67,22 @@ const GovernanceAPRBreakdown: React.FC<GovernanceAPRBreakdownProps> = ({
     onOpenChange: setIsHistoryOpen,
     placement: "bottom-start",
     whileElementsMounted: autoUpdate,
-    middleware: [offset(14), flip({ padding: 8 }), shift({ padding: 8 }), arrow({ element: arrowRef })],
+    middleware: [
+      offset(14),
+      flip({ padding: 8 }),
+      shift({ padding: 8 }),
+      size({
+        padding: 8,
+        apply({ availableHeight, elements }) {
+          elements.floating.style.setProperty("--apr-history-available-height", `${Math.max(0, availableHeight)}px`);
+          const content = historyContentRef.current;
+          if (content) {
+            content.style.overscrollBehaviorY = content.scrollHeight > content.clientHeight ? "contain" : "auto";
+          }
+        },
+      }),
+      arrow({ element: arrowRef }),
+    ],
   });
   const { getReferenceProps, getFloatingProps } = useInteractions([
     useHover(context, { move: false, handleClose: safePolygon() }),
@@ -137,7 +157,7 @@ const GovernanceAPRBreakdown: React.FC<GovernanceAPRBreakdownProps> = ({
                 height={14}
                 tipRadius={4}
               />
-              <FloatingContent themeKey={themeKey}>
+              <GovernanceAPRHistoryTooltipContent ref={historyContentRef} themeKey={themeKey}>
                 <GovernanceAPRHistoryPanel>
                   <GovernanceAPRHistory
                     days={aprHistory}
@@ -150,7 +170,7 @@ const GovernanceAPRBreakdown: React.FC<GovernanceAPRBreakdownProps> = ({
                   />
                   <p className="apr-disclosure">{tApr("disclosure")}</p>
                 </GovernanceAPRHistoryPanel>
-              </FloatingContent>
+              </GovernanceAPRHistoryTooltipContent>
             </div>
           </FloatingFocusManager>
         </FloatingPortal>

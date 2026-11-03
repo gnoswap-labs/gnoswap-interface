@@ -125,6 +125,19 @@ export const SampleMobile: Story = {
   globals: { viewport: { value: "mobile2", isRotated: false } },
 };
 
+export const ShortMobileHistory: Story = {
+  parameters: { layout: "fullscreen" },
+  render: () => (
+    <iframe
+      title="APR history at 375 x 450"
+      width={375}
+      height={450}
+      style={{ border: 0 }}
+      src="./iframe.html?id=governance-governanceaprbreakdown--sample-history-open&viewMode=story"
+    />
+  ),
+};
+
 /** The APR component alone on the summary card surface. */
 export const Standalone: Story = {
   render: args => (
