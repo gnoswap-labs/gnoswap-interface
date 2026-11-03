@@ -1,10 +1,12 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import IconLink from "@components/common/icons/IconLink";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import IconSettings from "@components/common/icons/IconSettings";
+import SelectTab from "@components/common/select-tab/SelectTab";
 import SettingMenuModal from "@components/common/setting-menu-modal/SettingMenuModal";
+import { SWAP_CARD_TYPE, SwapCardType } from "@models/order/order-type";
 
 import { CopyTooltip, SettingMenuButton, SwapCardHeaderWrapper } from "./SwapCardHeader.styles";
 
@@ -14,9 +16,29 @@ interface SwapCardHeaderProps {
   slippage: number;
   changeSlippage: (value: number) => void;
   themeKey: "dark" | "light";
+  /** Shows the Swap | DCA | Limit tabs in place of the title when given. */
+  swapType?: SwapCardType;
+  changeSwapType?: (type: SwapCardType) => void;
 }
-const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({ copied, copyURL, slippage, changeSlippage, themeKey }) => {
+const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
+  copied,
+  copyURL,
+  slippage,
+  changeSlippage,
+  themeKey,
+  swapType,
+  changeSwapType,
+}) => {
   const { t } = useTranslation();
+
+  const swapTypeTabs = useMemo(
+    () => [
+      { key: SWAP_CARD_TYPE.SWAP, display: t("Swap:tab.swap") },
+      { key: SWAP_CARD_TYPE.DCA, display: t("Swap:tab.dca") },
+      { key: SWAP_CARD_TYPE.LIMIT, display: t("Swap:tab.limit") },
+    ],
+    [t],
+  );
   const [openedSetting, setOpenedSetting] = useState(false);
 
   const openSetting = useCallback(() => {
@@ -29,7 +51,18 @@ const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({ copied, copyURL, slippa
 
   return (
     <SwapCardHeaderWrapper>
-      <h2>{t("Swap:header")}</h2>
+      {swapType && changeSwapType ? (
+        <div className="swap-type-tab">
+          <SelectTab
+            selectType={swapType}
+            list={swapTypeTabs}
+            onClick={type => changeSwapType(type as SwapCardType)}
+            buttonClassName="swap-type-button"
+          />
+        </div>
+      ) : (
+        <h2>{t("Swap:header")}</h2>
+      )}
       <div className="button-wrap">
         <div className="setting-wrap" onClick={copyURL}>
           <IconLink className="setting-icon" />

@@ -2,6 +2,7 @@ import React from "react";
 
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import SwapLayout from "./SwapLayout";
+import OrderListContainer from "./containers/order-list-container/OrderListContainer";
 import SwapContainer from "./containers/swap-container/SwapContainer";
 import SwapInfoChartContainer from "./containers/swap-info-chart-container/SwapInfoChartContainer";
 import SwapInfoTransactionListContainer from "./containers/swap-info-transaction-list-container/SwapInfoTransactionListContainer";
@@ -12,6 +13,7 @@ const Swap: React.FC = () => {
     <SwapLayout
       header={<HeaderContainer />}
       swap={<SwapContainer />}
+      orders={<OrderListContainer />}
       chart={<SwapInfoChartContainer />}
       info={<SwapInfoTransactionListContainer />}
       footer={<Footer />}

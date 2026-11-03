@@ -1,0 +1,134 @@
+import { fonts } from "@constants/font.constant";
+import styled from "@emotion/styled";
+import { media } from "@styles/media";
+import mixins from "@styles/mixins";
+
+export const OrderItemCardWrapper = styled.div`
+  ${mixins.flexbox("column", "flex-start", "flex-start")};
+  width: 100%;
+  padding: 15px;
+  gap: 12px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background-color: ${({ theme }) => theme.color.background20};
+  ${media.mobile} {
+    padding: 11px;
+    gap: 10px;
+  }
+
+  /* Active orders are outlined; past ones are not. */
+  &.active {
+    border-color: ${({ theme }) => theme.color.border15};
+  }
+
+  .card-header {
+    ${mixins.flexbox("row", "center", "space-between")};
+    width: 100%;
+    gap: 8px;
+  }
+
+  .card-status {
+    ${mixins.flexbox("row", "center", "flex-end")};
+    flex-shrink: 0;
+    gap: 4px;
+    ${fonts.p2};
+    color: ${({ theme }) => theme.color.text04};
+    &.ongoing {
+      color: ${({ theme }) => theme.color.green01};
+      &::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: ${({ theme }) => theme.color.green01};
+      }
+    }
+  }
+
+  .card-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    gap: 8px;
+  }
+
+  .metric {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    min-width: 0;
+    gap: 4px;
+    &:last-of-type {
+      align-items: flex-end;
+      text-align: right;
+    }
+    .metric-label {
+      ${fonts.p2};
+      color: ${({ theme }) => theme.color.text04};
+      white-space: nowrap;
+      ${media.mobile} {
+        ${fonts.p3};
+      }
+    }
+    .metric-value {
+      ${mixins.flexbox("row", "center", "flex-start")};
+      flex-wrap: wrap;
+      max-width: 100%;
+      gap: 4px;
+      ${fonts.body9};
+      color: ${({ theme }) => theme.color.text02};
+      ${media.mobile} {
+        ${fonts.body12};
+      }
+      .value-text {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+    .roi {
+      ${fonts.p2};
+      color: ${({ theme }) => theme.color.green01};
+      &.negative {
+        color: ${({ theme }) => theme.color.red01};
+      }
+      ${media.mobile} {
+        ${fonts.p3};
+      }
+    }
+  }
+
+  .card-sub-info {
+    ${mixins.flexbox("row", "center", "space-between")};
+    width: 100%;
+    ${fonts.p2};
+    color: ${({ theme }) => theme.color.text04};
+    .value {
+      color: ${({ theme }) => theme.color.text02};
+    }
+  }
+
+  .button-stop {
+    height: 33px;
+    span {
+      ${fonts.p1};
+    }
+  }
+
+  .history-toggle {
+    ${mixins.flexbox("row", "center", "center")};
+    align-self: center;
+    gap: 4px;
+    ${fonts.p2};
+    color: ${({ theme }) => theme.color.text04};
+    cursor: pointer;
+    .icon-arrow {
+      width: 16px;
+      height: 16px;
+      * {
+        fill: ${({ theme }) => theme.color.icon03};
+      }
+    }
+    &:hover {
+      color: ${({ theme }) => theme.color.text02};
+    }
+  }
+`;

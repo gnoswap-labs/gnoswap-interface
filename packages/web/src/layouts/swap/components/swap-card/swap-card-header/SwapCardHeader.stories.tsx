@@ -31,6 +31,14 @@ export const Default: Story = {
   },
 };
 
+export const WithOrderTabs: Story = {
+  args: {
+    ...Default.args,
+    swapType: "dca",
+    changeSwapType: fn(),
+  },
+};
+
 const wrapper = () => css`
   display: flex;
   width: 100%;

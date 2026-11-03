@@ -15,6 +15,15 @@ export const SwapCardHeaderWrapper = styled.div`
     color: ${({ theme }) => theme.color.text02};
   }
 
+  .swap-type-tab {
+    .swap-type-button {
+      padding: 6px 20px;
+      ${media.mobile} {
+        padding: 5px 14px;
+      }
+    }
+  }
+
   .button-wrap {
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 15px;
