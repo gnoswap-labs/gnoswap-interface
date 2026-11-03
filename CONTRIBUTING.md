@@ -52,8 +52,8 @@ chmod 600 .env
 Add the two variables from the root `.env.example` using a secure editor. The file
 must be owned by your account, be a regular file rather than a symlink, and have
 mode `0600`. Keep it Git-ignored and never commit credentials or use `NEXT_PUBLIC_`
-variables for these secrets. To share credentials across worktrees, pass them
-explicitly through the launching environment rather than relying on file discovery.
+variables for these secrets. For shared runtime credentials, pass them explicitly
+through the launching environment rather than relying on file discovery.
 
 You can instead supply credentials through the launching shell or client
 environment. A GUI client may not inherit your terminal's environment, and a
@@ -61,6 +61,12 @@ client may load additional environment configuration before starting the server.
 The launcher's ENV-first rule applies to the environment it actually receives.
 Changing credentials requires restarting the MCP server or client; it does not
 update an already-running server.
+
+Worktree tools that support `.worktreeinclude` can copy the source checkout's
+ignored root `.env` into a new worktree. Keep the source file at mode `0600`.
+This is an optional, one-time copy, not ongoing synchronization. Otherwise,
+create `.env` in the new checkout or supply credentials through ENV as described
+above. The runtime launcher reads only its own checkout's `.env`.
 
 #### Download translations
 
