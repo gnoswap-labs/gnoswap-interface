@@ -16,6 +16,7 @@
     "networkGasFee": "Network Gas Fee",
     "networkGasFeeTooltip": "The gas fee and storage deposit for placing this order. Each trade is executed by a keeper at no extra gas cost to you.",
     "noDirectPool": "No Direct Pool",
+    "poolCheckFailed": "Retry Pool Check",
     "orders": "Orders",
     "over": "Over",
     "overTooltip": "The number of individual trades that will be triggered as part of your order.",

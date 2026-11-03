@@ -16,6 +16,7 @@
     "networkGasFee": "Frais de gas réseau",
     "networkGasFeeTooltip": "Les frais de gas et le dépôt de stockage pour placer cet ordre. Chaque transaction est exécutée par un keeper sans frais de gas supplémentaires pour vous.",
     "noDirectPool": "Aucun pool direct",
+    "poolCheckFailed": "Réessayer la vérification du pool",
     "orders": "Ordres",
     "over": "Sur",
     "overTooltip": "Le nombre de transactions individuelles qui seront déclenchées dans le cadre de votre ordre.",

@@ -218,5 +218,10 @@ describe("use-order-handler.utils", () => {
       );
       expect(getOrderButtonState(ready)).toBe("PLACE_ORDER");
     });
+
+    it("blocks an unverified pair and lets the button retry the pool check", () => {
+      expect(getOrderButtonState({ ...ready, isPoolCheckFailed: true })).toBe("POOL_CHECK_FAILED");
+      expect(isOrderButtonActionable("POOL_CHECK_FAILED")).toBe(true);
+    });
   });
 });

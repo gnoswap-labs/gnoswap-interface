@@ -33,6 +33,7 @@ export type OrderButtonState =
   | "INSUFFICIENT_BALANCE"
   | "INSUFFICIENT_LIQUIDITY"
   | "NO_DIRECT_POOL"
+  | "POOL_CHECK_FAILED"
   | "AMOUNT_TOO_LOW"
   | "PLACE_ORDER";
 
@@ -52,6 +53,12 @@ export interface OrderButtonStateParams {
    * multi-hop router quote is not enough. Omitted for orders that route freely.
    */
   hasDirectPool?: boolean;
+  /**
+   * True when the pool list failed to load and no cached list can tell whether
+   * the pair has a pool. The order stays blocked (the realm would reject it) and
+   * the button retries the check.
+   */
+  isPoolCheckFailed?: boolean;
   isAmountTooLow: boolean;
 }
 
@@ -64,6 +71,7 @@ export function getOrderButtonState({
   balance,
   hasLiquidity,
   hasDirectPool = true,
+  isPoolCheckFailed = false,
   isAmountTooLow,
 }: OrderButtonStateParams): OrderButtonState {
   if (!connected) return "WALLET_LOGIN";
@@ -78,6 +86,7 @@ export function getOrderButtonState({
   if (!balanceBN.isFinite() || amountBN.isGreaterThan(balanceBN)) return "INSUFFICIENT_BALANCE";
 
   if (!hasLiquidity) return "INSUFFICIENT_LIQUIDITY";
+  if (isPoolCheckFailed) return "POOL_CHECK_FAILED";
   if (!hasDirectPool) return "NO_DIRECT_POOL";
   if (isAmountTooLow) return "AMOUNT_TOO_LOW";
 
@@ -85,7 +94,9 @@ export function getOrderButtonState({
 }
 
 export function isOrderButtonActionable(state: OrderButtonState) {
-  return state === "WALLET_LOGIN" || state === "SWITCH_NETWORK" || state === "PLACE_ORDER";
+  return (
+    state === "WALLET_LOGIN" || state === "SWITCH_NETWORK" || state === "POOL_CHECK_FAILED" || state === "PLACE_ORDER"
+  );
 }
 
 /**

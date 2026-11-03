@@ -16,6 +16,7 @@
     "networkGasFee": "Comisión de gas de red",
     "networkGasFeeTooltip": "La comisión de gas y el depósito de almacenamiento para crear esta orden. Cada operación la ejecuta un keeper sin coste de gas adicional para ti.",
     "noDirectPool": "Sin pool directo",
+    "poolCheckFailed": "Reintentar verificación del pool",
     "orders": "Órdenes",
     "over": "Durante",
     "overTooltip": "El número de operaciones individuales que se ejecutarán como parte de tu orden.",

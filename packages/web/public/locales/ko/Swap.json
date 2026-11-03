@@ -16,6 +16,7 @@
     "networkGasFee": "네트워크 가스 수수료",
     "networkGasFeeTooltip": "이 주문을 등록하는 데 필요한 가스 수수료와 스토리지 예치금입니다. 각 거래는 키퍼가 실행하므로 추가 가스 비용이 들지 않습니다.",
     "noDirectPool": "직접 연결된 풀 없음",
+    "poolCheckFailed": "풀 확인 다시 시도",
     "orders": "회",
     "over": "횟수",
     "overTooltip": "주문의 일부로 실행될 개별 거래의 횟수입니다.",

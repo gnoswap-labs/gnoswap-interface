@@ -100,4 +100,33 @@ describe("useDcaOrderHandler direct pool requirement", () => {
     expect(result.current.buttonState).toBe("NO_DIRECT_POOL");
     expect(result.current.buttonText).toBe("NO_DIRECT_POOL");
   });
+
+  describe("when the pool list fails to load", () => {
+    it("keeps blocking a multi-hop-only pair with a cached list", () => {
+      jest.mocked(useGetPoolList).mockReturnValue({
+        data: pools,
+        isError: true,
+        refetch: jest.fn(),
+      } as unknown as ReturnType<typeof useGetPoolList>);
+
+      expect(renderWithPair(tokenC).current.buttonState).toBe("NO_DIRECT_POOL");
+      expect(renderWithPair(tokenB).current.buttonState).toBe("PLACE_ORDER");
+    });
+
+    it("blocks the order and retries the check without a cached list", () => {
+      const refetch = jest.fn();
+      jest.mocked(useGetPoolList).mockReturnValue({
+        data: undefined,
+        isError: true,
+        refetch,
+      } as unknown as ReturnType<typeof useGetPoolList>);
+
+      const result = renderWithPair(tokenC);
+      expect(result.current.buttonState).toBe("POOL_CHECK_FAILED");
+      expect(result.current.buttonText).toBe("POOL_CHECK_FAILED");
+
+      act(() => result.current.onClickButton());
+      expect(refetch).toHaveBeenCalledTimes(1);
+    });
+  });
 });

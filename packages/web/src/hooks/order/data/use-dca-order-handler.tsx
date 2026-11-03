@@ -134,17 +134,22 @@ export const useDcaOrderHandler = () => {
   // The DCA realm only swaps in a pool of this exact pair (any fee tier) and rejects
   // CreateOrder without one, even when the router finds a multi-hop route.
   // Reuses the app-wide pool list query; null while it has not loaded yet.
-  const { data: pools, isError: isPoolListError } = useGetPoolList({
+  const {
+    data: pools,
+    isError: isPoolListError,
+    refetch: refetchPools,
+  } = useGetPoolList({
     refetchInterval: false,
     staleTime: POOL_LIST_STALE_TIME,
   });
+  // null while the pair cannot be checked yet. A failed refresh keeps any cached
+  // list, which still answers the check; without one the order stays blocked
+  // rather than signing a CreateOrder the realm may reject.
   const hasDirectPool: boolean | null = useMemo(() => {
-    if (!tokenA || !tokenB || isSameToken) return null;
-    // Without the pool list the pair cannot be checked; the realm still rejects a bad pair.
-    if (isPoolListError) return true;
-    if (!pools) return null;
+    if (!tokenA || !tokenB || isSameToken || !pools) return null;
     return hasDirectPoolForPair(pools, getSwapTokenPath(tokenA), getSwapTokenPath(tokenB));
-  }, [isPoolListError, isSameToken, pools, tokenA, tokenB]);
+  }, [isSameToken, pools, tokenA, tokenB]);
+  const isPoolCheckFailed = hasDirectPool === null && isPoolListError && !!tokenA && !!tokenB && !isSameToken;
   const rate = useMemo(() => {
     if (!tokenB || routes?.status !== "SUCCESS") return null;
     const output = makeDisplayTokenAmountString(tokenB, routes.amount);
@@ -195,6 +200,7 @@ export const useDcaOrderHandler = () => {
     balance: tokenABalance,
     hasLiquidity,
     hasDirectPool: hasDirectPool !== false,
+    isPoolCheckFailed,
     isAmountTooLow,
   });
 
@@ -396,6 +402,9 @@ export const useDcaOrderHandler = () => {
       case "SWITCH_NETWORK":
         switchNetwork();
         return;
+      case "POOL_CHECK_FAILED":
+        void refetchPools();
+        return;
       case "PLACE_ORDER":
         // Refresh the slot and end date the modal shows.
         void refetchSchedule();
@@ -404,7 +413,7 @@ export const useDcaOrderHandler = () => {
       default:
         return;
     }
-  }, [buttonState, openConnectWallet, openModal, refetchSchedule, switchNetwork]);
+  }, [buttonState, openConnectWallet, openModal, refetchPools, refetchSchedule, switchNetwork]);
 
   return {
     tokenA,

@@ -16,6 +16,7 @@
     "networkGasFee": "Phí gas mạng",
     "networkGasFeeTooltip": "Phí gas và tiền ký quỹ lưu trữ để đặt lệnh này. Mỗi giao dịch được keeper thực hiện mà bạn không phải trả thêm phí gas.",
     "noDirectPool": "Không có pool trực tiếp",
+    "poolCheckFailed": "Thử kiểm tra pool lại",
     "orders": "Lệnh",
     "over": "Số lần",
     "overTooltip": "Số lượng giao dịch riêng lẻ sẽ được thực hiện trong lệnh của bạn.",
