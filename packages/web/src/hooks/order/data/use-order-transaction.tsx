@@ -10,7 +10,7 @@ import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confir
 import { useTransactionEventStore } from "@hooks/common/use-transaction-event-store";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { QUERY_KEY } from "@query/query-keys";
-import { DexEventType } from "@repositories/common";
+import { DexEvent, DexEventType } from "@repositories/common";
 
 export interface OrderMessageData {
   tokenASymbol: string;
@@ -26,6 +26,13 @@ interface SubmitOrderTransactionParams {
   /** Called once the wallet accepted the transaction. */
   onBroadcast?: () => void;
 }
+
+/**
+ * Actions that pay escrowed input or accrued output back to the owner. A
+ * wrapped-GNOT side arrives as WUGNOT, so these check the receipt for it and
+ * offer the unwrap notice, as the swap does.
+ */
+const ORDER_PAYOUT_ACTIONS: DexEventType[] = [DexEvent.DCA_STOP, DexEvent.DCA_CLAIM, DexEvent.LIMIT_CANCEL];
 
 const ORDER_QUERY_KEYS = [
   QUERY_KEY.dcaOrders,
@@ -64,6 +71,7 @@ export const useOrderTransaction = () => {
             enqueueEvent({
               txHash: response?.data?.hash,
               action,
+              checkWugnotTransfer: ORDER_PAYOUT_ACTIONS.includes(action),
               formatData: () => messageData,
               onUpdate: async () => {
                 await Promise.all([refetchGrc20Balances(), updateBalances(), invalidateOrders()]);
