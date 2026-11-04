@@ -125,11 +125,16 @@ describe("OrderListContainer", () => {
     expect(listOptions.every(options => options.refetchOnMount === "always")).toBe(true);
   });
 
-  it("polls the visible Active list as often as the swap history, and not the hidden kind", () => {
-    renderContainer("limit", { active: 1, past: 0 });
+  it.each(["active", "past"] as const)(
+    "polls the visible %s list as often as the swap history, and not the hidden kind",
+    tab => {
+      renderContainer("limit", { active: 1, past: 1 });
+      if (tab === "past") fireEvent.click(screen.getByText("Swap:order.past"));
 
-    const lastListCall = (mock: jest.Mock) => mock.mock.calls.filter(([request]) => request.size > 1).pop();
-    expect(lastListCall(mockUseGetLimitOrders)?.[1].refetchInterval).toBe(5_000);
-    expect(lastListCall(mockUseGetDcaOrders)?.[1].refetchInterval).toBe(false);
-  });
+      const lastListCall = (mock: jest.Mock) => mock.mock.calls.filter(([request]) => request.size > 1).pop();
+      expect(lastListCall(mockUseGetLimitOrders)?.[0].status).toBe(tab);
+      expect(lastListCall(mockUseGetLimitOrders)?.[1].refetchInterval).toBe(5_000);
+      expect(lastListCall(mockUseGetDcaOrders)?.[1].refetchInterval).toBe(false);
+    },
+  );
 });

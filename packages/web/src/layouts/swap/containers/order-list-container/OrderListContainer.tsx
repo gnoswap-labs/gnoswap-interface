@@ -93,22 +93,17 @@ const OrderListPages: React.FC<OrderListPagesProps> = ({ kind, tab, changeTab, c
   const request = { address, status: tab, page, size: ORDER_PAGE_SIZE };
 
   // Both lists stay loaded so switching between DCA and Limit shows the cached list at once;
-  // only the visible one keeps polling, as often as the swap history while on Active. Each tab
-  // switch remounts this list, and it refetches then even when cached (the app default skips
-  // refetch on mount).
-  const pollInterval = (orderKind: OrderKind) => {
-    if (kind !== orderKind) return { refetchInterval: false as const };
-    return tab === "active" ? { refetchInterval: SWAP_HISTORY_REFETCH_INTERVAL } : {};
-  };
+  // only the visible one keeps polling, as often as the swap history. Each tab switch remounts
+  // this list, and it refetches then even when cached (the app default skips refetch on mount).
   const dcaOrders = useGetDcaOrders(request, {
     enabled: !!address && ENABLED_SWAP_CARD_TYPES.includes(SWAP_CARD_TYPE.DCA),
     refetchOnMount: "always",
-    ...pollInterval("dca"),
+    refetchInterval: kind === "dca" ? SWAP_HISTORY_REFETCH_INTERVAL : false,
   });
   const limitOrders = useGetLimitOrders(request, {
     enabled: !!address && ENABLED_SWAP_CARD_TYPES.includes(SWAP_CARD_TYPE.LIMIT),
     refetchOnMount: "always",
-    ...pollInterval("limit"),
+    refetchInterval: kind === "limit" ? SWAP_HISTORY_REFETCH_INTERVAL : false,
   });
   const { data, isLoading } = kind === "dca" ? dcaOrders : limitOrders;
 
