@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 
@@ -86,5 +86,32 @@ describe("OrderListContainer", () => {
     renderContainer("dca", {}, false);
 
     expect(screen.getByText("Swap:order.connectWallet")).toBeInTheDocument();
+  });
+
+  it("opens the first page of the other tab, never its page of the previous tab", () => {
+    const requests: { status: string; page: number; size: number }[] = [];
+    mockUseWallet.mockReturnValue({ connected: true, account: { address: "g1owner" } });
+    mockUseGetDcaOrders.mockReturnValue({ data: undefined, isLoading: true });
+    mockUseGetLimitOrders.mockImplementation((request: { status: string; page: number; size: number }) => {
+      requests.push(request);
+      return {
+        data: { items: [], pageInfo: { currentPage: request.page, totalItems: 20, totalPages: 2 } },
+        isLoading: false,
+      };
+    });
+    render(
+      <GnoswapThemeProvider>
+        <OrderListContainer kind="limit" />
+      </GnoswapThemeProvider>,
+    );
+
+    fireEvent.click(screen.getByText("Swap:order.past"));
+    fireEvent.click(screen.getByRole("button", { name: "2" }));
+    requests.length = 0;
+    fireEvent.click(screen.getByText("Swap:order.active"));
+
+    const pages = requests.filter(request => request.size > 1);
+    expect(pages.length).toBeGreaterThan(0);
+    expect(pages.every(request => request.status === "active" && request.page === 1)).toBe(true);
   });
 });

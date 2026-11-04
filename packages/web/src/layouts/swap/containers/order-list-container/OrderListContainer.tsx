@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import { ENABLED_SWAP_CARD_TYPES } from "@constants/order.constant";
 import useRouter from "@hooks/common/use-custom-router";
@@ -37,13 +37,58 @@ interface OrderListContainerProps {
 /** The connected account's DCA or limit orders, newest first, regardless of the selected tokens. */
 const OrderListContainer: React.FC<OrderListContainerProps> = ({ kind }) => {
   const { connected, account } = useWallet();
+  const [tab, setTab] = useAtom(OrderState.orderListTab);
+
+  const address = connected ? account?.address ?? "" : "";
+
+  // The list only appears once the account has an order of this kind, active or past.
+  // One-item pages of both tabs give their totals whichever tab is open.
+  const totalRequest = (status: OrderListTab) => ({ address, status, page: 1, size: 1 });
+  const totalOptions = (orderKind: OrderKind, cardType: SwapCardType) => ({
+    enabled: !!address && kind === orderKind && ENABLED_SWAP_CARD_TYPES.includes(cardType),
+    keepPreviousData: false,
+  });
+  const activeDcaTotal = useGetDcaOrders(totalRequest("active"), totalOptions("dca", SWAP_CARD_TYPE.DCA));
+  const pastDcaTotal = useGetDcaOrders(totalRequest("past"), totalOptions("dca", SWAP_CARD_TYPE.DCA));
+  const activeLimitTotal = useGetLimitOrders(totalRequest("active"), totalOptions("limit", SWAP_CARD_TYPE.LIMIT));
+  const pastLimitTotal = useGetLimitOrders(totalRequest("past"), totalOptions("limit", SWAP_CARD_TYPE.LIMIT));
+  const [activeTotal, pastTotal] = kind === "dca" ? [activeDcaTotal, pastDcaTotal] : [activeLimitTotal, pastLimitTotal];
+  const hasOrders = hasAnyOrder(activeTotal.data?.pageInfo.totalItems, pastTotal.data?.pageInfo.totalItems);
+
+  const changeTab = useCallback((next: OrderListTab) => setTab(next), [setTab]);
+
+  // Without a wallet the tabs stay as a prompt; with one, an account without orders shows no list.
+  if (connected && hasOrders !== true) return null;
+
+  // Remounted per kind, tab and account: the page starts at 1, and a page of the other tab is never
+  // kept on screen as the previous data while this tab's first page loads.
+  return (
+    <OrderListPages
+      key={`${kind}-${tab}-${address}`}
+      kind={kind}
+      tab={tab}
+      changeTab={changeTab}
+      connected={connected}
+      address={address}
+    />
+  );
+};
+
+interface OrderListPagesProps {
+  kind: OrderKind;
+  tab: OrderListTab;
+  changeTab: (tab: OrderListTab) => void;
+  connected: boolean;
+  address: string;
+}
+
+/** One tab's orders, a page at a time. */
+const OrderListPages: React.FC<OrderListPagesProps> = ({ kind, tab, changeTab, connected, address }) => {
   const { isMobile } = useWindowSize();
   const { getTxUrl } = useGnoscanUrl();
   const { openStopDcaOrder, openCancelLimitOrder, claimDcaOrder } = useStopOrderHandler();
-  const [tab, setTab] = useAtom(OrderState.orderListTab);
   const [page, setPage] = useState(1);
 
-  const address = connected ? (account?.address ?? "") : "";
   const request = { address, status: tab, page, size: ORDER_PAGE_SIZE };
 
   // Both lists stay loaded so switching between DCA and Limit shows the cached list at once;
@@ -57,25 +102,6 @@ const OrderListContainer: React.FC<OrderListContainerProps> = ({ kind }) => {
     ...(kind !== "limit" && { refetchInterval: false }),
   });
   const { data, isLoading } = kind === "dca" ? dcaOrders : limitOrders;
-
-  // The list only appears once the account has an order of this kind, active or past.
-  // One-item pages of both tabs give their totals whichever tab is open.
-  const totalRequest = (status: OrderListTab) => ({ address, status, page: 1, size: 1 });
-  const totalOptions = (orderKind: OrderKind, cardType: SwapCardType) => ({
-    enabled: !!address && kind === orderKind && ENABLED_SWAP_CARD_TYPES.includes(cardType),
-    keepPreviousData: false,
-  });
-  const activeDcaTotal = useGetDcaOrders(totalRequest("active"), totalOptions("dca", SWAP_CARD_TYPE.DCA));
-  const pastDcaTotal = useGetDcaOrders(totalRequest("past"), totalOptions("dca", SWAP_CARD_TYPE.DCA));
-  const activeLimitTotal = useGetLimitOrders(totalRequest("active"), totalOptions("limit", SWAP_CARD_TYPE.LIMIT));
-  const pastLimitTotal = useGetLimitOrders(totalRequest("past"), totalOptions("limit", SWAP_CARD_TYPE.LIMIT));
-  const [activeTotal, pastTotal] =
-    kind === "dca" ? [activeDcaTotal, pastDcaTotal] : [activeLimitTotal, pastLimitTotal];
-  const hasOrders = hasAnyOrder(activeTotal.data?.pageInfo.totalItems, pastTotal.data?.pageInfo.totalItems);
-
-  useEffect(() => setPage(1), [kind, tab, address]);
-
-  const changeTab = useCallback((next: OrderListTab) => setTab(next), [setTab]);
 
   const items = (() => {
     if (kind === "dca") {
@@ -102,9 +128,6 @@ const OrderListContainer: React.FC<OrderListContainerProps> = ({ kind }) => {
       />
     ));
   })();
-
-  // Without a wallet the tabs stay as a prompt; with one, an account without orders shows no list.
-  if (connected && hasOrders !== true) return null;
 
   return (
     <OrderList
