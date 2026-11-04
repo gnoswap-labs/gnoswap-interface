@@ -52,7 +52,7 @@ const OrderList: React.FC<OrderListProps> = ({
       return (
         <div className="order-empty">
           <IconLinkOff className="empty-icon" />
-          <span>{t("Swap:order.connectWallet")}</span>
+          <span className="connect-wallet-text">{t("Swap:order.connectWallet")}</span>
         </div>
       );
     }
@@ -70,8 +70,10 @@ const OrderList: React.FC<OrderListProps> = ({
   return (
     <OrderListWrapper>
       <SelectTab selectType={tab} list={tabs} onClick={key => changeTab(key as OrderListTab)} />
-      <span className="order-list-title">{t("Swap:order.order")}</span>
-      <div className="order-items">{content}</div>
+      <div className="order-list-body">
+        <span className="order-list-title">{t("Swap:order.order")}</span>
+        <div className="order-items">{content}</div>
+      </div>
       {connectedWallet && totalPages > 1 && (
         <div className="pagination">
           <Pagination
