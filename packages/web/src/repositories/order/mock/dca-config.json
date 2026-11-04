@@ -31,6 +31,10 @@
     "halted": {
       "execute": false,
       "withdraw": false
-    }
+    },
+    "whitelistedPools": [
+      "gno.land/r/gnoland/wugnot:gno.land/r/gnoswap/gns:500",
+      "gno.land/r/gnoland/wugnot:gno.land/r/gnoswap/gns:3000"
+    ]
   }
 }

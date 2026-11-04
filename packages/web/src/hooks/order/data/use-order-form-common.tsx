@@ -115,8 +115,8 @@ export function getOrderButtonText(state: OrderButtonState, t: (key: string) => 
       return t("common:btn.insuffiBal");
     case "INSUFFICIENT_LIQUIDITY":
       return t("Swap:swapButton.insuffiLiq");
-    case "NO_DIRECT_POOL":
-      return t("Swap:dca.noDirectPool");
+    case "NO_WHITELISTED_POOL":
+      return t("Swap:dca.noWhitelistedPool");
     case "POOL_CHECK_FAILED":
       return t("Swap:dca.poolCheckFailed");
     case "AMOUNT_TOO_LOW":

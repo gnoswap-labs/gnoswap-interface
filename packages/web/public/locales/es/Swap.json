@@ -15,7 +15,7 @@
     "minTrading": "Mínimo de {{amount}} {{symbol}} por orden",
     "networkGasFee": "Comisión de gas de red",
     "networkGasFeeTooltip": "La comisión de gas y el depósito de almacenamiento para crear esta orden. Cada operación la ejecuta un keeper sin coste de gas adicional para ti.",
-    "noDirectPool": "Sin pool directo",
+    "noWhitelistedPool": "Par no admitido",
     "poolCheckFailed": "Reintentar verificación del pool",
     "orders": "Órdenes",
     "over": "Durante",

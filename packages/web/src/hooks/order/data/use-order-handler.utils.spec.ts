@@ -10,6 +10,7 @@ import {
   getLimitMinMakingAmount,
   getOrderButtonState,
   hasDirectPoolForPair,
+  hasWhitelistedPoolForPair,
   isDcaAmountTooLow,
   isExecutionCountWithinLimit,
   isLimitAmountTooLow,
@@ -193,28 +194,34 @@ describe("use-order-handler.utils", () => {
     });
   });
 
-  describe("direct pool requirement", () => {
+  describe("whitelisted pool requirement", () => {
     const pools = [
-      { poolPath: "gno.land/r/gnoland/wugnot:gno.land/r/gnoswap/gns:3000" },
-      { poolPath: "gno.land/r/gnoswap/gns:gno.land/r/demo/usdc:500" },
+      "gno.land/r/gnoland/wugnot:gno.land/r/gnoswap/gns:3000",
+      "gno.land/r/gnoswap/gns:gno.land/r/demo/usdc:500",
     ];
 
-    it("finds a pool of the pair at any fee tier, in either token order", () => {
-      expect(hasDirectPoolForPair(pools, "gno.land/r/gnoland/wugnot", "gno.land/r/gnoswap/gns")).toBe(true);
-      expect(hasDirectPoolForPair(pools, "gno.land/r/demo/usdc", "gno.land/r/gnoswap/gns")).toBe(true);
+    it("finds a whitelisted pool of the pair at any fee tier, in either token order", () => {
+      expect(hasWhitelistedPoolForPair(pools, "gno.land/r/gnoland/wugnot", "gno.land/r/gnoswap/gns")).toBe(true);
+      expect(hasWhitelistedPoolForPair(pools, "gno.land/r/demo/usdc", "gno.land/r/gnoswap/gns")).toBe(true);
     });
 
-    it("does not count a multi-hop route as a direct pool", () => {
+    it("checks a pool list the same way when no whitelist is reported", () => {
+      const poolList = pools.map(poolPath => ({ poolPath }));
+      expect(hasDirectPoolForPair(poolList, "gno.land/r/gnoswap/gns", "gno.land/r/gnoland/wugnot")).toBe(true);
+      expect(hasDirectPoolForPair([{ poolPath: null }], "a", "b")).toBe(false);
+    });
+
+    it("does not count a multi-hop route as a whitelisted pool", () => {
       // wugnot -> gns -> usdc is routable, but no wugnot/usdc pool exists.
-      expect(hasDirectPoolForPair(pools, "gno.land/r/gnoland/wugnot", "gno.land/r/demo/usdc")).toBe(false);
-      expect(hasDirectPoolForPair([], "a", "b")).toBe(false);
-      expect(hasDirectPoolForPair(pools, "gno.land/r/gnoswap/gns", "gno.land/r/gnoswap/gns")).toBe(false);
+      expect(hasWhitelistedPoolForPair(pools, "gno.land/r/gnoland/wugnot", "gno.land/r/demo/usdc")).toBe(false);
+      expect(hasWhitelistedPoolForPair([], "a", "b")).toBe(false);
+      expect(hasWhitelistedPoolForPair(pools, "gno.land/r/gnoswap/gns", "gno.land/r/gnoswap/gns")).toBe(false);
     });
 
-    it("blocks Place Order without a direct pool even when liquidity is routable", () => {
-      expect(getOrderButtonState({ ...ready, hasDirectPool: false })).toBe("NO_DIRECT_POOL");
-      expect(isOrderButtonActionable("NO_DIRECT_POOL")).toBe(false);
-      expect(getOrderButtonState({ ...ready, hasLiquidity: false, hasDirectPool: false })).toBe(
+    it("blocks Place Order without a whitelisted pool even when liquidity is routable", () => {
+      expect(getOrderButtonState({ ...ready, hasWhitelistedPool: false })).toBe("NO_WHITELISTED_POOL");
+      expect(isOrderButtonActionable("NO_WHITELISTED_POOL")).toBe(false);
+      expect(getOrderButtonState({ ...ready, hasLiquidity: false, hasWhitelistedPool: false })).toBe(
         "INSUFFICIENT_LIQUIDITY",
       );
       expect(getOrderButtonState(ready)).toBe("PLACE_ORDER");

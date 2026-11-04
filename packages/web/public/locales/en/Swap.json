@@ -15,7 +15,7 @@
     "minTrading": "Minimum {{amount}} {{symbol}} per order",
     "networkGasFee": "Network Gas Fee",
     "networkGasFeeTooltip": "The gas fee and storage deposit for placing this order. Each trade is executed by a keeper at no extra gas cost to you.",
-    "noDirectPool": "No Direct Pool",
+    "noWhitelistedPool": "Pair Not Supported",
     "poolCheckFailed": "Retry Pool Check",
     "orders": "Orders",
     "over": "Over",

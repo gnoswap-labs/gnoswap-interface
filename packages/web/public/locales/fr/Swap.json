@@ -15,7 +15,7 @@
     "minTrading": "Minimum de {{amount}} {{symbol}} par ordre",
     "networkGasFee": "Frais de gas réseau",
     "networkGasFeeTooltip": "Les frais de gas et le dépôt de stockage pour placer cet ordre. Chaque transaction est exécutée par un keeper sans frais de gas supplémentaires pour vous.",
-    "noDirectPool": "Aucun pool direct",
+    "noWhitelistedPool": "Paire non prise en charge",
     "poolCheckFailed": "Réessayer la vérification du pool",
     "orders": "Ordres",
     "over": "Sur",

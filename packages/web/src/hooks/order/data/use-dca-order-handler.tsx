@@ -38,6 +38,7 @@ import {
   getDcaMinAmountPerExecution,
   getOrderButtonState,
   hasDirectPoolForPair,
+  hasWhitelistedPoolForPair,
   isDcaAmountTooLow,
   isExecutionCountWithinLimit,
 } from "./use-order-handler.utils";
@@ -45,6 +46,8 @@ import { useOrderTransaction } from "./use-order-transaction";
 
 const INPUT_DEBOUNCE_MS = 300;
 const QUOTE_REFETCH_INTERVAL = 10_000;
+/** The DCA keeper syncs the pool whitelist with the market every minute. */
+const CONFIG_REFETCH_INTERVAL = 60_000;
 /** The pool list only answers whether a pair has a pool, which rarely changes. */
 const POOL_LIST_STALE_TIME = 60_000;
 
@@ -77,7 +80,12 @@ export const useDcaOrderHandler = () => {
     formatNetworkFee,
   } = useOrderFormCommon(tokenA, tokenB);
 
-  const { data: config, isLoading: isLoadingConfig } = useGetDcaConfig();
+  const {
+    data: config,
+    isLoading: isLoadingConfig,
+    isError: isConfigError,
+    refetch: refetchConfig,
+  } = useGetDcaConfig({ refetchInterval: CONFIG_REFETCH_INTERVAL });
 
   const intervalOptions = useMemo(() => getAvailableDcaIntervals(config?.allowedIntervals), [config]);
 
@@ -147,9 +155,14 @@ export const useDcaOrderHandler = () => {
 
   const hasLiquidity = !isSameToken && routes?.status !== "NO_LIQUIDITY";
 
-  // The DCA realm only swaps in a pool of this exact pair (any fee tier) and rejects
-  // CreateOrder without one, even when the router finds a multi-hop route.
-  // Reuses the app-wide pool list query; null while it has not loaded yet.
+  // The DCA realm only swaps in a whitelisted pool of this exact pair (any fee tier)
+  // and rejects CreateOrder without one, even when the router finds a multi-hop
+  // route. The keeper adds and removes pools as the market moves; the order-api
+  // indexes the realm's whitelist events into the DCA config.
+  const whitelistedPools = config?.whitelistedPools;
+  // An order-api from before the whitelist omits it; the pair then only needs a
+  // pool of its own, read from the app-wide pool list.
+  const isLegacyConfig = !!config && !Array.isArray(whitelistedPools);
   const {
     data: pools,
     isError: isPoolListError,
@@ -157,15 +170,25 @@ export const useDcaOrderHandler = () => {
   } = useGetPoolList({
     refetchInterval: false,
     staleTime: POOL_LIST_STALE_TIME,
+    enabled: isLegacyConfig,
   });
   // null while the pair cannot be checked yet. A failed refresh keeps any cached
   // list, which still answers the check; without one the order stays blocked
   // rather than signing a CreateOrder the realm may reject.
-  const hasDirectPool: boolean | null = useMemo(() => {
-    if (!tokenA || !tokenB || isSameToken || !pools) return null;
-    return hasDirectPoolForPair(pools, getSwapTokenPath(tokenA), getSwapTokenPath(tokenB));
-  }, [isSameToken, pools, tokenA, tokenB]);
-  const isPoolCheckFailed = hasDirectPool === null && isPoolListError && !!tokenA && !!tokenB && !isSameToken;
+  const hasWhitelistedPool: boolean | null = useMemo(() => {
+    if (!tokenA || !tokenB || isSameToken) return null;
+    const inputTokenPath = getSwapTokenPath(tokenA);
+    const outputTokenPath = getSwapTokenPath(tokenB);
+    if (whitelistedPools) return hasWhitelistedPoolForPair(whitelistedPools, inputTokenPath, outputTokenPath);
+    if (isLegacyConfig && pools) return hasDirectPoolForPair(pools, inputTokenPath, outputTokenPath);
+    return null;
+  }, [isLegacyConfig, isSameToken, pools, tokenA, tokenB, whitelistedPools]);
+  const isPoolCheckFailed =
+    hasWhitelistedPool === null &&
+    (isLegacyConfig ? isPoolListError : isConfigError) &&
+    !!tokenA &&
+    !!tokenB &&
+    !isSameToken;
   const rate = useMemo(() => {
     if (!tokenB || routes?.status !== "SUCCESS") return null;
     const output = makeDisplayTokenAmountString(tokenB, routes.amount);
@@ -215,7 +238,7 @@ export const useDcaOrderHandler = () => {
     amount: sellAmount,
     balance: tokenABalance,
     hasLiquidity,
-    hasDirectPool: hasDirectPool !== false,
+    hasWhitelistedPool: hasWhitelistedPool !== false,
     isPoolCheckFailed,
     isAmountTooLow,
   });
@@ -223,8 +246,8 @@ export const useDcaOrderHandler = () => {
   const buttonText = getOrderButtonText(buttonState, t, t("Swap:dca.placeOrder"));
 
   const createRequest: CreateDcaOrderRequest | null = useMemo(() => {
-    // An unchecked pair (pool list still loading) is never submitted.
-    if (buttonState !== "PLACE_ORDER" || !tokenA || !tokenB || !schedule || hasDirectPool !== true) return null;
+    // An unchecked pair (whitelist still loading) is never submitted.
+    if (buttonState !== "PLACE_ORDER" || !tokenA || !tokenB || !schedule || hasWhitelistedPool !== true) return null;
     if (!isExecutionCountWithinLimit(executionCount, realmMaxExecutionCount)) return null;
     return {
       inputToken: tokenA,
@@ -238,7 +261,7 @@ export const useDcaOrderHandler = () => {
     amountPerExecutionRaw,
     buttonState,
     executionCount,
-    hasDirectPool,
+    hasWhitelistedPool,
     interval,
     realmMaxExecutionCount,
     schedule,
@@ -356,7 +379,7 @@ export const useDcaOrderHandler = () => {
     if (!tokenA || !tokenB) return;
 
     // The slot can roll over while the modal was open, so the schedule is read again right before sending.
-    if (hasDirectPool !== true) return;
+    if (hasWhitelistedPool !== true) return;
     if (!isExecutionCountWithinLimit(executionCount, realmMaxExecutionCount)) return;
     const latestSchedule = (await refetchSchedule()).data ?? schedule;
     if (!latestSchedule) return;
@@ -388,7 +411,7 @@ export const useDcaOrderHandler = () => {
   }, [
     amountPerExecutionRaw,
     executionCount,
-    hasDirectPool,
+    hasWhitelistedPool,
     interval,
     orderRepository,
     realmMaxExecutionCount,
@@ -407,7 +430,7 @@ export const useDcaOrderHandler = () => {
       summary ? (
         <ConfirmDcaOrderModal
           summary={summary}
-          isLoading={isFetchingSchedule || !schedule || hasDirectPool === null}
+          isLoading={isFetchingSchedule || !schedule || hasWhitelistedPool === null}
           confirm={() => {
             closeConfirmModalRef.current();
             void placeOrder();
@@ -417,7 +440,7 @@ export const useDcaOrderHandler = () => {
       ) : (
         <></>
       ),
-    [hasDirectPool, isFetchingSchedule, placeOrder, schedule, summary],
+    [hasWhitelistedPool, isFetchingSchedule, placeOrder, schedule, summary],
   );
 
   const { openModal, closeModal } = useConfirmOrderModal(renderConfirmModal);
@@ -432,7 +455,7 @@ export const useDcaOrderHandler = () => {
         switchNetwork();
         return;
       case "POOL_CHECK_FAILED":
-        void refetchPools();
+        void (isLegacyConfig ? refetchPools() : refetchConfig());
         return;
       case "PLACE_ORDER":
         // Refresh the slot and end date the modal shows.
@@ -442,7 +465,16 @@ export const useDcaOrderHandler = () => {
       default:
         return;
     }
-  }, [buttonState, openConnectWallet, openModal, refetchPools, refetchSchedule, switchNetwork]);
+  }, [
+    buttonState,
+    isLegacyConfig,
+    openConnectWallet,
+    openModal,
+    refetchConfig,
+    refetchPools,
+    refetchSchedule,
+    switchNetwork,
+  ]);
 
   return {
     tokenA,

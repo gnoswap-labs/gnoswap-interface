@@ -32,7 +32,7 @@ export type OrderButtonState =
   | "ENTER_AMOUNT"
   | "INSUFFICIENT_BALANCE"
   | "INSUFFICIENT_LIQUIDITY"
-  | "NO_DIRECT_POOL"
+  | "NO_WHITELISTED_POOL"
   | "POOL_CHECK_FAILED"
   | "AMOUNT_TOO_LOW"
   | "PLACE_ORDER";
@@ -48,15 +48,16 @@ export interface OrderButtonStateParams {
   balance: string;
   hasLiquidity: boolean;
   /**
-   * False when the pair has no pool of its own. The DCA realm swaps each round
-   * in one of the pair's pools and rejects CreateOrder without one, so a
-   * multi-hop router quote is not enough. Omitted for orders that route freely.
+   * False when none of the pair's pools is on the DCA realm's whitelist. The
+   * realm swaps each round in one of the pair's whitelisted pools and rejects
+   * CreateOrder without one, so a multi-hop router quote is not enough.
+   * Omitted for orders that route freely.
    */
-  hasDirectPool?: boolean;
+  hasWhitelistedPool?: boolean;
   /**
-   * True when the pool list failed to load and no cached list can tell whether
-   * the pair has a pool. The order stays blocked (the realm would reject it) and
-   * the button retries the check.
+   * True when the whitelist failed to load and no cached list can tell whether
+   * the pair has a whitelisted pool. The order stays blocked (the realm would
+   * reject it) and the button retries the check.
    */
   isPoolCheckFailed?: boolean;
   isAmountTooLow: boolean;
@@ -70,7 +71,7 @@ export function getOrderButtonState({
   amount,
   balance,
   hasLiquidity,
-  hasDirectPool = true,
+  hasWhitelistedPool = true,
   isPoolCheckFailed = false,
   isAmountTooLow,
 }: OrderButtonStateParams): OrderButtonState {
@@ -87,7 +88,7 @@ export function getOrderButtonState({
 
   if (!hasLiquidity) return "INSUFFICIENT_LIQUIDITY";
   if (isPoolCheckFailed) return "POOL_CHECK_FAILED";
-  if (!hasDirectPool) return "NO_DIRECT_POOL";
+  if (!hasWhitelistedPool) return "NO_WHITELISTED_POOL";
   if (isAmountTooLow) return "AMOUNT_TOO_LOW";
 
   return "PLACE_ORDER";
@@ -100,18 +101,35 @@ export function isOrderButtonActionable(state: OrderButtonState) {
 }
 
 /**
- * Whether a pool exists for exactly this pair, at any fee tier: the DCA realm's
- * `getCandidatePools(inputToken, outputToken)`. Paths are the realm (wrapped)
- * paths; a pool path is `token0:token1:fee` with the tokens sorted.
+ * Whether a pool exists for exactly this pair, at any fee tier. Used instead of
+ * the whitelist when the order-api does not report one yet.
  */
 export function hasDirectPoolForPair(
   pools: { poolPath?: string | null }[],
   inputTokenPath: string,
   outputTokenPath: string,
 ): boolean {
+  return hasWhitelistedPoolForPair(
+    pools.map(pool => pool.poolPath ?? ""),
+    inputTokenPath,
+    outputTokenPath,
+  );
+}
+
+/**
+ * Whether the DCA realm whitelists a pool of exactly this pair, at any fee tier:
+ * the realm's `getCandidatePools(inputToken, outputToken)`. Only existing pools
+ * can be whitelisted. Paths are the realm (wrapped) paths; a pool path is
+ * `token0:token1:fee` with the tokens sorted.
+ */
+export function hasWhitelistedPoolForPair(
+  whitelistedPoolPaths: string[],
+  inputTokenPath: string,
+  outputTokenPath: string,
+): boolean {
   if (!inputTokenPath || !outputTokenPath || inputTokenPath === outputTokenPath) return false;
-  return pools.some(pool => {
-    const [token0, token1] = (pool.poolPath ?? "").split(":");
+  return whitelistedPoolPaths.some(poolPath => {
+    const [token0, token1] = poolPath.split(":");
     return (
       (token0 === inputTokenPath && token1 === outputTokenPath) ||
       (token0 === outputTokenPath && token1 === inputTokenPath)
