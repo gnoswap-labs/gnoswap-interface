@@ -9,7 +9,14 @@ import { useGetPoolList } from "@query/pools";
 import { useDcaOrderHandler } from "./use-dca-order-handler";
 
 jest.mock("react-i18next", () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
-jest.mock("@hooks/common/use-debounce", () => ({ __esModule: true, default: <T,>(value: T) => value }));
+// Debounce is skipped unless a test opts into the real one.
+jest.mock("@hooks/common/use-debounce", () => {
+  const actual = jest.requireActual("@hooks/common/use-debounce");
+  return {
+    __esModule: true,
+    default: <T,>(value: T, delay: number) => (mockState.realDebounce ? actual.default(value, delay) : value),
+  };
+});
 const mockSendCreateDcaOrder = jest.fn().mockResolvedValue({ code: 0 });
 const mockState: {
   config:
@@ -23,6 +30,8 @@ const mockState: {
   configError: boolean;
   refetchConfig: jest.Mock;
   scheduleCounts: number[];
+  scheduleIntervals: number[];
+  realDebounce: boolean;
   /** Answers the schedule refetch made right before sending; resolves at once by default. */
   refetchSchedule: (() => Promise<unknown>) | null;
   balance: string;
@@ -35,6 +44,8 @@ const mockState: {
   configError: false,
   refetchConfig: jest.fn(),
   scheduleCounts: [],
+  scheduleIntervals: [],
+  realDebounce: false,
   refetchSchedule: null,
   balance: "1000",
   modalOpened: false,
@@ -91,9 +102,11 @@ jest.mock("@query/order", () => ({
     isError: mockState.configError,
     refetch: mockState.refetchConfig,
   }),
-  useGetDcaSchedule: (request: { executionCount: number } | null) => {
+  useGetDcaSchedule: (request: { executionCount: number; interval: number } | null) => {
     if (request) mockState.scheduleCounts.push(request.executionCount);
-    const data = { slotOffset: 0, firstExecutionAt: 1, estimatedEndAt: 2 };
+    if (request) mockState.scheduleIntervals.push(request.interval);
+    // A slot in [0, interval) of the requested interval.
+    const data = { slotOffset: request?.interval === 86400 ? 3600 : 0, firstExecutionAt: 1, estimatedEndAt: 2 };
     return { data, isFetching: false, refetch: mockState.refetchSchedule ?? (() => Promise.resolve({ data })) };
   },
   useEstimateOrderNetworkFee: () => ({ data: undefined, isFetching: false }),
@@ -371,5 +384,57 @@ describe("useDcaOrderHandler confirmation", () => {
     });
 
     expect(mockSendCreateDcaOrder).not.toHaveBeenCalled();
+  });
+});
+
+describe("useDcaOrderHandler schedule of the current form", () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+    mockState.realDebounce = true;
+    mockState.configError = false;
+    mockState.config = { maxExecutionCount: 10, minAmountPerExecution: "1", whitelistedPools };
+    mockPoolList({ data: undefined, isError: false });
+    mockState.scheduleIntervals = [];
+    mockState.confirmProps = null;
+    mockSendCreateDcaOrder.mockClear();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+    mockState.realDebounce = false;
+    mockState.config = undefined;
+  });
+
+  const confirm = async () => {
+    render(<>{mockState.renderConfirm?.()}</>);
+    await act(async () => {
+      mockState.confirmProps?.confirm();
+      await Promise.resolve();
+    });
+  };
+
+  it("never confirms or sends a slot scheduled for the previous interval", async () => {
+    const { result } = renderHook(() => useDcaOrderHandler(), { wrapper });
+    act(() => result.current.changeTokenA(tokenA));
+    act(() => result.current.changeTokenB(tokenB));
+    act(() => result.current.changeSellAmount("10"));
+    act(() => result.current.setExecutionCountInput("2"));
+    act(() => result.current.changeInterval(86400));
+    act(() => jest.advanceTimersByTime(300));
+    expect(mockState.scheduleIntervals.at(-1)).toBe(86400);
+
+    // Day's slot is 3600; switching to Minute leaves it attached until the debounce settles.
+    act(() => result.current.changeInterval(60));
+    expect(mockState.scheduleIntervals.at(-1)).toBe(86400);
+    expect(result.current.buttonState).toBe("PLACE_ORDER");
+
+    await confirm();
+    expect(mockState.confirmProps?.isLoading).toBe(true);
+    expect(mockSendCreateDcaOrder).not.toHaveBeenCalled();
+
+    act(() => jest.advanceTimersByTime(300));
+    await confirm();
+    expect(mockSendCreateDcaOrder).toHaveBeenCalledTimes(1);
+    expect(mockSendCreateDcaOrder.mock.calls[0][0]).toMatchObject({ interval: 60, slotOffset: 0 });
   });
 });

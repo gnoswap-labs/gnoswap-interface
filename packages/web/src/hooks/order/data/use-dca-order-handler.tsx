@@ -45,6 +45,9 @@ import { useOrderTransaction } from "./use-order-transaction";
 
 const INPUT_DEBOUNCE_MS = 300;
 
+/** The realm accepts a slot offset in [0, interval). */
+const isSlotWithinInterval = (slotOffset: number, interval: number) => slotOffset >= 0 && slotOffset < interval;
+
 /** Whether two requests place the same order; the slot is read at send time. */
 const isSameDcaOrder = (a: CreateDcaOrderRequest, b: CreateDcaOrderRequest) =>
   a.inputToken.path === b.inputToken.path &&
@@ -202,22 +205,30 @@ export const useDcaOrderHandler = () => {
     return BigNumber(output).dividedBy(quoteAmount).toFixed();
   }, [quoteAmount, routes, tokenB]);
 
-  const scheduleRequest = useDebounce(
-    tokenA && tokenB && !isSameToken
-      ? {
-          inputToken: getSwapTokenPath(tokenA),
-          outputToken: getSwapTokenPath(tokenB),
-          interval,
-          executionCount,
-        }
-      : null,
-    INPUT_DEBOUNCE_MS,
+  const currentScheduleRequest = useMemo(
+    () =>
+      tokenA && tokenB && !isSameToken
+        ? {
+            inputToken: getSwapTokenPath(tokenA),
+            outputToken: getSwapTokenPath(tokenB),
+            interval,
+            executionCount,
+          }
+        : null,
+    [executionCount, interval, isSameToken, tokenA, tokenB],
   );
+  const scheduleRequest = useDebounce(currentScheduleRequest, INPUT_DEBOUNCE_MS);
   const {
     data: schedule,
     isFetching: isFetchingSchedule,
+    isPreviousData: isPreviousSchedule,
     refetch: refetchSchedule,
   } = useGetDcaSchedule(scheduleRequest);
+  // The slot belongs to the interval, pair and count it was scheduled for. While the
+  // debounced request lags the form, or the query still shows the previous request's
+  // data, the schedule is not this form's and nothing is confirmed or sent with it.
+  const isScheduleCurrent =
+    !isPreviousSchedule && JSON.stringify(scheduleRequest) === JSON.stringify(currentScheduleRequest);
 
   // The DCA realm's own minimum: each execution must sell `minAmountPerExecution` raw units.
   // A native GNOT deposit must also reach the wrap minimum, or no Deposit could be built.
@@ -254,6 +265,7 @@ export const useDcaOrderHandler = () => {
   const createRequest: CreateDcaOrderRequest | null = useMemo(() => {
     // An unchecked pair (whitelist still loading) is never submitted.
     if (buttonState !== "PLACE_ORDER" || !tokenA || !tokenB || !schedule || hasWhitelistedPool !== true) return null;
+    if (!isScheduleCurrent) return null;
     if (!isExecutionCountWithinLimit(executionCount, realmMaxExecutionCount)) return null;
     return {
       inputToken: tokenA,
@@ -269,6 +281,7 @@ export const useDcaOrderHandler = () => {
     executionCount,
     hasWhitelistedPool,
     interval,
+    isScheduleCurrent,
     realmMaxExecutionCount,
     schedule,
     tokenA,
@@ -392,8 +405,9 @@ export const useDcaOrderHandler = () => {
     if (!request) return;
 
     // The slot can roll over while the modal was open, so the schedule is read again right before sending.
+    // `request` exists only while the attached schedule query is this request's, so the refetch is too.
     const latestSchedule = (await refetchSchedule()).data ?? schedule;
-    if (!latestSchedule) return;
+    if (!latestSchedule || !isSlotWithinInterval(latestSchedule.slotOffset, request.interval)) return;
     // The form can stop being valid while the schedule refreshes.
     const current = createRequestRef.current;
     if (!current || !isSameDcaOrder(current, request)) return;
