@@ -60,6 +60,7 @@ export const useLimitOrderHandler = () => {
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
   const [sellAmount, setSellAmount] = useAtom(OrderState.limitSellAmount);
   const [limitPrice, setLimitPrice] = useAtom(OrderState.limitPrice);
+  const [pricedPairKey, setPricedPairKey] = useAtom(OrderState.limitPricePairKey);
   const [expiry, setExpiry] = useAtom(OrderState.limitExpiry);
   const [buyInput, setBuyInput] = useState("");
   const [editedSide, setEditedSide] = useState<EditedSide>("sell");
@@ -113,25 +114,33 @@ export const useLimitOrderHandler = () => {
   }, [quoteAmount, routes, tokenB]);
 
   /**
-   * The pair whose limit price is already initialized. The market price only
-   * seeds the field once per pair; after that an empty field is the user's
-   * edit (e.g. select-all → delete before typing) and must stay empty.
+   * The market price only seeds the field once per pair; after that an empty
+   * field is the user's edit (e.g. select-all → delete before typing) and must
+   * stay empty. The pair the price belongs to is kept with the price, because
+   * Swap and DCA can change the shared pair while this form is not mounted.
    */
-  const pricedPairKey = useRef<string | null>(null);
   const pairKey = tokenA && tokenB ? `${tokenA.path}|${tokenB.path}` : null;
 
   useEffect(() => {
-    if (!pairKey || pricedPairKey.current === pairKey) return;
+    if (!pairKey || pricedPairKey === pairKey) return;
+    if (limitPrice && pricedPairKey === null) {
+      // A typed or restored (URL) price not bound to a pair yet belongs to this one.
+      setPricedPairKey(pairKey);
+      return;
+    }
     if (limitPrice) {
-      // A price already set for this pair (URL, restored state) counts as initialized.
-      pricedPairKey.current = pairKey;
+      // The price of another pair: start this pair again from its market price.
+      setLimitPrice("");
+      setEditedSide("sell");
+      setBuyInput("");
+      setPricedPairKey(null);
       return;
     }
     if (marketPrice) {
-      pricedPairKey.current = pairKey;
+      setPricedPairKey(pairKey);
       setLimitPrice(marketPrice);
     }
-  }, [limitPrice, marketPrice, pairKey, setLimitPrice]);
+  }, [limitPrice, marketPrice, pairKey, pricedPairKey, setLimitPrice, setPricedPairKey]);
 
   const isValidPrice = BigNumber(limitPrice || 0).isGreaterThan(0);
 
@@ -286,11 +295,11 @@ export const useLimitOrderHandler = () => {
    */
   const resetPairInputs = useCallback(() => {
     // Re-seed from the market price even when the resulting pair is unchanged.
-    pricedPairKey.current = null;
+    setPricedPairKey(null);
     setLimitPrice("");
     setEditedSide("sell");
     setBuyInput("");
-  }, [setLimitPrice]);
+  }, [setLimitPrice, setPricedPairKey]);
 
   const changeTokenA = useCallback(
     (token: TokenModel) => {
@@ -347,6 +356,15 @@ export const useLimitOrderHandler = () => {
       setLimitPrice(value);
     },
     [setLimitPrice],
+  );
+
+  /** A price from a shared link, for the pair the link restores rather than the one held before. */
+  const restoreLimitPrice = useCallback(
+    (value: string) => {
+      setPricedPairKey(null);
+      setLimitPrice(value);
+    },
+    [setLimitPrice, setPricedPairKey],
   );
 
   const stepPrice = useCallback(
@@ -479,7 +497,7 @@ export const useLimitOrderHandler = () => {
     stepPrice,
     applyPreset,
     changeExpiry: setExpiry,
-    setLimitPrice,
+    setLimitPrice: restoreLimitPrice,
     onClickButton,
   };
 };

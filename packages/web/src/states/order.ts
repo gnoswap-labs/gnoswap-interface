@@ -19,6 +19,13 @@ export const limitSellAmount = atom<string>("");
 /** Output per input. Empty until the market price is known. */
 export const limitPrice = atom<string>("");
 
+/**
+ * The `tokenA|tokenB` pair `limitPrice` belongs to, or null when it has not
+ * been bound to a pair yet (a typed or restored price). The token pair is
+ * shared with Swap and DCA, which can change it while Limit is not mounted.
+ */
+export const limitPricePairKey = atom<string | null>(null);
+
 /** Seconds until the order expires. */
 export const limitExpiry = atom<number>(DEFAULT_LIMIT_EXPIRY);
 

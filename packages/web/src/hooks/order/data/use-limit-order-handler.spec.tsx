@@ -1,10 +1,11 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import BigNumber from "bignumber.js";
-import { Provider as JotaiProvider } from "jotai";
+import { createStore, Provider as JotaiProvider } from "jotai";
 import React from "react";
 
 import type { TokenModel } from "@models/token/token-model";
 import { useGetRoutes } from "@query/router";
+import { SwapState } from "@states/index";
 
 import { useLimitOrderHandler } from "./use-limit-order-handler";
 
@@ -147,5 +148,59 @@ describe("useLimitOrderHandler", () => {
 
     expect(result.current.slippage).toBe(10);
     expect(result.current.maxSlippage).toBe(10);
+  });
+
+  describe("a price kept while the form is not mounted", () => {
+    const renderInStore = (store: ReturnType<typeof createStore>) =>
+      renderHook(() => useLimitOrderHandler(), {
+        wrapper: ({ children }: { children: React.ReactNode }) => <JotaiProvider store={store}>{children}</JotaiProvider>,
+      });
+
+    const priceAtoB = async (store: ReturnType<typeof createStore>, price: string) => {
+      const first = renderInStore(store);
+      act(() => first.result.current.changeTokenA(tokenA));
+      act(() => first.result.current.changeTokenB(tokenB));
+      await waitFor(() => expect(first.result.current.limitPrice).toBe("10"));
+      act(() => first.result.current.changeLimitPrice(price));
+      act(() => first.result.current.changeSellAmount("10"));
+      first.unmount();
+    };
+
+    it("is reseeded from the market price when another mode changed the pair", async () => {
+      const store = createStore();
+      await priceAtoB(store, "10");
+
+      // Swap or DCA changes the shared output token to C (A/C market price 20).
+      store.set(SwapState.swap, prev => ({ ...prev, tokenB: tokenC }));
+      const { result } = renderInStore(store);
+
+      await waitFor(() => expect(result.current.limitPrice).toBe("20"));
+      expect(result.current.buyAmount).toBe("200");
+    });
+
+    it("is kept when the pair is unchanged", async () => {
+      const store = createStore();
+      await priceAtoB(store, "12");
+
+      const { result } = renderInStore(store);
+      await act(async () => Promise.resolve());
+
+      expect(result.current.limitPrice).toBe("12");
+      expect(result.current.buyAmount).toBe("120");
+    });
+
+    it("keeps a shared link's price for the pair the link restores", async () => {
+      const store = createStore();
+      await priceAtoB(store, "12");
+
+      const { result } = renderInStore(store);
+      act(() => {
+        store.set(SwapState.swap, prev => ({ ...prev, tokenB: tokenC }));
+        result.current.setLimitPrice("15");
+      });
+      await act(async () => Promise.resolve());
+
+      expect(result.current.limitPrice).toBe("15");
+    });
   });
 });
