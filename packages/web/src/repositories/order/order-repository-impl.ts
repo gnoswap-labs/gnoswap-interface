@@ -123,7 +123,10 @@ export class OrderRepositoryImpl implements OrderRepository {
 
   public sendClaimDcaOrder = async (request: CancelOrderRequest): Promise<WalletResponse<{ hash: string }>> => {
     const caller = await this.getAddress();
-    return this.sendTransaction(makeClaimDcaOrderMessages({ orderId: request.orderId, caller }), request);
+    return this.sendTransaction(
+      makeClaimDcaOrderMessages({ orderId: request.orderId, caller, packagePath: request.packagePath }),
+      request,
+    );
   };
 
   public sendCreateLimitOrder = async (request: CreateLimitOrderRequest): Promise<WalletResponse<{ hash: string }>> => {

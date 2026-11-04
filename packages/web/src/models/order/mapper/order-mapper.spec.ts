@@ -154,7 +154,7 @@ describe("order-mapper", () => {
       expect(resolveOrderRealm(earlierDca, currentDca)).toEqual({ packagePath: earlierDca, isCurrentRealm: false });
     });
 
-    it("lets an earlier realm's DCA order be stopped but not claimed", () => {
+    it("lets a completed earlier realm's DCA order be claimed", () => {
       const completed = { ...dcaItem, status: "COMPLETED" as const, claimableAmount: "450" };
 
       const current = mapDcaOrderItemToModel({ ...completed, packagePath: currentDca }, tokens);
@@ -164,7 +164,7 @@ describe("order-mapper", () => {
       const earlier = mapDcaOrderItemToModel({ ...completed, packagePath: earlierDca }, tokens);
       expect(earlier.packagePath).toBe(earlierDca);
       expect(earlier.isCurrentRealm).toBe(false);
-      expect(earlier.canClaim).toBe(false);
+      expect(earlier.canClaim).toBe(true);
     });
   });
 

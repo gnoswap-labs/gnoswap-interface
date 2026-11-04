@@ -175,7 +175,7 @@ export const useStopOrderHandler = () => {
     (order: DcaOrderModel) => {
       if (!order.canClaim) return;
 
-      const orderId = order.orderId;
+      const { orderId, packagePath } = order;
       submit({
         action: DexEvent.DCA_CLAIM,
         messageData: {
@@ -183,7 +183,7 @@ export const useStopOrderHandler = () => {
           tokenBSymbol: order.inputToken.displaySymbol,
           tokenAAmount: formatOrderFullAmount(order.claimableAmount, order.outputToken.decimals),
         },
-        send: () => orderRepository.sendClaimDcaOrder({ orderId }),
+        send: () => orderRepository.sendClaimDcaOrder({ orderId, packagePath }),
       });
     },
     [orderRepository, submit],

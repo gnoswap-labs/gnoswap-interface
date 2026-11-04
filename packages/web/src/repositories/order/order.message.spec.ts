@@ -241,4 +241,10 @@ describe("order.message.ts", () => {
       expect.objectContaining({ pkg_path: "dca_path", func: "Claim", args: ["42"], send: "" }),
     ]);
   });
+
+  it("claims an earlier realm's DCA order in that realm", () => {
+    expect(
+      makeClaimDcaOrderMessages({ orderId: "42", caller, packagePath: "gno.land/r/gnoswap/test/order/dca" }),
+    ).toEqual([expect.objectContaining({ pkg_path: "gno.land/r/gnoswap/test/order/dca", func: "Claim", args: ["42"] })]);
+  });
 });

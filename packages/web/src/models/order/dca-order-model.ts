@@ -31,7 +31,7 @@ export interface DcaOrderModel {
   packagePath: string;
   /**
    * Whether the order lives in the DCA realm this app places orders in.
-   * An order of an earlier realm deployment can only be stopped, in its own realm.
+   * An order of an earlier realm deployment is stopped or claimed in its own realm.
    */
   isCurrentRealm: boolean;
   status: DcaOrderStatus;
