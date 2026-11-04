@@ -11,16 +11,23 @@ import { QUERY_KEY } from "../query-keys";
 const REFETCH_INTERVAL = 10_000;
 
 export const useGetDcaExecutions = (
-  request: { orderId: string; page: number; size?: number; inputToken: TokenModel; outputToken: TokenModel },
+  request: {
+    orderId: string;
+    packagePath?: string;
+    page: number;
+    size?: number;
+    inputToken: TokenModel;
+    outputToken: TokenModel;
+  },
   options?: UseQueryOptions<OrderPagedResponse<OrderHistoryModel>, Error>,
 ) => {
   const { orderRepository } = useGnoswapContext();
-  const { orderId, page, size, inputToken, outputToken } = request;
+  const { orderId, packagePath, page, size, inputToken, outputToken } = request;
 
   return useQuery<OrderPagedResponse<OrderHistoryModel>, Error>({
-    queryKey: [QUERY_KEY.dcaExecutions, orderId, page, size],
+    queryKey: [QUERY_KEY.dcaExecutions, packagePath, orderId, page, size],
     queryFn: async () => {
-      const response = await orderRepository.getDcaExecutions({ orderId, page, size });
+      const response = await orderRepository.getDcaExecutions({ orderId, packagePath, page, size });
       return {
         ...response,
         items: response.items.map(item => mapDcaExecutionToHistory(item, inputToken, outputToken)),

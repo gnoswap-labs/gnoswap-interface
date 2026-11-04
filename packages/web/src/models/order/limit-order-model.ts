@@ -18,6 +18,10 @@ export const ACTIVE_LIMIT_ORDER_STATUSES: LimitOrderStatus[] = ["OPEN", "PARTIAL
 /** A limit order with token decimals applied. Amounts are decimal strings in display units. */
 export interface LimitOrderModel {
   orderId: string;
+  /** Proxy realm path of the Limit contract that holds the order. */
+  packagePath: string;
+  /** Whether the order lives in the Limit realm this app sends transactions to; see DcaOrderModel. */
+  isCurrentRealm: boolean;
   status: LimitOrderStatus;
   isActive: boolean;
   tokenIn: TokenModel;

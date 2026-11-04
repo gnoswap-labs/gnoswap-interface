@@ -27,6 +27,13 @@ export function getDcaIntervalUnit(interval: number): DcaIntervalUnit | null {
 /** A DCA order with token decimals applied. Amounts are decimal strings in display units. */
 export interface DcaOrderModel {
   orderId: string;
+  /** Proxy realm path of the DCA contract that holds the order. */
+  packagePath: string;
+  /**
+   * Whether the order lives in the DCA realm this app sends transactions to.
+   * Orders of an earlier realm deployment are shown read-only.
+   */
+  isCurrentRealm: boolean;
   status: DcaOrderStatus;
   isActive: boolean;
   inputToken: TokenModel;

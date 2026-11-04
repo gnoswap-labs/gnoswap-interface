@@ -36,6 +36,7 @@ export const useStopOrderHandler = () => {
   // The modal reads the order again so the refund it shows is current.
   const { data: latestDcaOrder, isFetching: isFetchingDcaOrder } = useGetDcaOrder(
     selected?.kind === "dca" ? selected.order.orderId : null,
+    selected?.kind === "dca" ? selected.order.packagePath : undefined,
   );
 
   const formatUsd = useCallback(
@@ -51,7 +52,10 @@ export const useStopOrderHandler = () => {
     if (!selected) return null;
 
     if (selected.kind === "dca") {
-      const order = latestDcaOrder?.orderId === selected.order.orderId ? latestDcaOrder : selected.order;
+      const order =
+        latestDcaOrder?.orderId === selected.order.orderId && latestDcaOrder.packagePath === selected.order.packagePath
+          ? latestDcaOrder
+          : selected.order;
       const { inputToken, outputToken } = order;
       return {
         kind: "dca",

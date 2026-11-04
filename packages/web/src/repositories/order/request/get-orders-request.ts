@@ -9,6 +9,8 @@ export interface GetOrdersRequest {
 
 export interface GetOrderHistoryRequest {
   orderId: string;
+  /** Realm of the order; the order-api defaults to the current realm. */
+  packagePath?: string;
   page: number;
   size?: number;
 }

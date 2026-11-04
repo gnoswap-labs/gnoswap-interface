@@ -1,6 +1,7 @@
 import BigNumber from "bignumber.js";
 
 import { GNOT_TOKEN } from "@common/values/token-constant";
+import { PACKAGE_DCA_ORDER_PATH, PACKAGE_LIMIT_ORDER_PATH } from "@constants/environment.constant";
 import { TokenModel } from "@models/token/token-model";
 import { DcaExecutionItem, DcaOrderItem, LimitFillItem, LimitOrderItem } from "@repositories/order/response";
 import { isGNOTPath } from "@utils/common";
@@ -77,13 +78,24 @@ export function parseReturnRate(rate: string | null | undefined): number | null 
   return Number.isFinite(value) ? value : null;
 }
 
+/**
+ * The realm of an order: the one the order-api reports, or the current realm
+ * for an order-api from before realm-scoped orders.
+ */
+export function resolveOrderRealm(packagePath: string | undefined, currentPackagePath: string) {
+  const realm = packagePath || currentPackagePath;
+  return { packagePath: realm, isCurrentRealm: realm === currentPackagePath };
+}
+
 export function mapDcaOrderItemToModel(item: DcaOrderItem, tokens: TokenModel[]): DcaOrderModel {
   const inputToken = resolveOrderToken(item.inputToken, tokens);
   const outputToken = resolveOrderToken(item.outputToken, tokens);
   const isActive = item.status === "ACTIVE";
+  const realm = resolveOrderRealm(item.packagePath, PACKAGE_DCA_ORDER_PATH);
 
   return {
     orderId: item.orderId,
+    ...realm,
     status: item.status,
     isActive,
     inputToken,
@@ -101,7 +113,9 @@ export function mapDcaOrderItemToModel(item: DcaOrderItem, tokens: TokenModel[])
     remainingAmount: toDisplayAmount(inputToken, item.remainingAmount),
     claimedAmount: toDisplayAmount(outputToken, item.claimedAmount),
     claimableAmount: toDisplayAmount(outputToken, item.claimableAmount),
-    canClaim: item.status === "COMPLETED" && BigNumber(item.claimableAmount ?? 0).isGreaterThan(0),
+    // Claim is sent to the current realm, so an earlier realm's order cannot be claimed here.
+    canClaim:
+      realm.isCurrentRealm && item.status === "COMPLETED" && BigNumber(item.claimableAmount ?? 0).isGreaterThan(0),
     priceRate: calculatePriceRate(inputToken, outputToken, item.soldAmount, item.purchasedAmount),
     returnRate: parseReturnRate(item.returnRate),
     nextExecutionAt: isActive ? item.nextExecutionAt : null,
@@ -128,9 +142,11 @@ export function canCancelLimitOrder(
 export function mapLimitOrderItemToModel(item: LimitOrderItem, tokens: TokenModel[]): LimitOrderModel {
   const tokenIn = resolveOrderToken(item.tokenIn, tokens);
   const tokenOut = resolveOrderToken(item.tokenOut, tokens);
+  const realm = resolveOrderRealm(item.packagePath, PACKAGE_LIMIT_ORDER_PATH);
 
   return {
     orderId: item.orderId,
+    ...realm,
     status: item.status,
     isActive: ACTIVE_LIMIT_ORDER_STATUSES.includes(item.status),
     tokenIn,
@@ -141,7 +157,7 @@ export function mapLimitOrderItemToModel(item: LimitOrderItem, tokens: TokenMode
     remainingInput: toDisplayAmount(tokenIn, item.remainingInput),
     refundedInput: toDisplayAmount(tokenIn, item.refundedInput),
     userOutput: toDisplayAmount(tokenOut, item.userOutput),
-    canCancel: canCancelLimitOrder(item),
+    canCancel: realm.isCurrentRealm && canCancelLimitOrder(item),
     limitPrice: calculatePriceRate(tokenIn, tokenOut, item.makingAmount, item.takingAmount),
     priceRate: calculatePriceRate(tokenIn, tokenOut, item.filledInput, item.userOutput),
     progress: item.status === "COMPLETED" ? 100 : calculateProgress(item.filledInput, item.makingAmount),

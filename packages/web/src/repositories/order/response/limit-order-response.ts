@@ -3,6 +3,8 @@ export type LimitOrderStatus = "OPEN" | "PARTIALLY_FILLED" | "COMPLETED" | "CANC
 /** A limit order as returned by the list and detail endpoints. Amounts are raw integer strings. */
 export interface LimitOrderItem {
   orderId: string;
+  /** Proxy realm path of the Limit contract that holds the order; see DcaOrderItem.packagePath. */
+  packagePath?: string;
   owner: string;
   status: LimitOrderStatus;
   tokenIn: string;

@@ -65,14 +65,14 @@ export class OrderRepositoryImpl implements OrderRepository {
     );
   };
 
-  public getDcaOrder = async (orderId: string): Promise<DcaOrderItem> => {
-    return this.get<DcaOrderItem>(`orders/dca/${encodeURIComponent(orderId)}`);
+  public getDcaOrder = async (orderId: string, packagePath?: string): Promise<DcaOrderItem> => {
+    return this.get<DcaOrderItem>(`orders/dca/${encodeURIComponent(orderId)}${this.makeRealmQuery(packagePath)}`);
   };
 
   public getDcaExecutions = async (request: GetOrderHistoryRequest): Promise<OrderPagedResponse<DcaExecutionItem>> => {
-    const { orderId, ...params } = request;
+    const { orderId, packagePath, ...params } = request;
     return this.get<OrderPagedResponse<DcaExecutionItem>>(
-      `orders/dca/${encodeURIComponent(orderId)}/executions${this.makePageQuery(params)}`,
+      `orders/dca/${encodeURIComponent(orderId)}/executions${this.makePageQuery(params, packagePath)}`,
     );
   };
 
@@ -87,14 +87,14 @@ export class OrderRepositoryImpl implements OrderRepository {
     );
   };
 
-  public getLimitOrder = async (orderId: string): Promise<LimitOrderItem> => {
-    return this.get<LimitOrderItem>(`orders/limit/${encodeURIComponent(orderId)}`);
+  public getLimitOrder = async (orderId: string, packagePath?: string): Promise<LimitOrderItem> => {
+    return this.get<LimitOrderItem>(`orders/limit/${encodeURIComponent(orderId)}${this.makeRealmQuery(packagePath)}`);
   };
 
   public getLimitOrderFills = async (request: GetOrderHistoryRequest): Promise<OrderPagedResponse<LimitFillItem>> => {
-    const { orderId, ...params } = request;
+    const { orderId, packagePath, ...params } = request;
     return this.get<OrderPagedResponse<LimitFillItem>>(
-      `orders/limit/${encodeURIComponent(orderId)}/fills${this.makePageQuery(params)}`,
+      `orders/limit/${encodeURIComponent(orderId)}/fills${this.makePageQuery(params, packagePath)}`,
     );
   };
 
@@ -142,8 +142,20 @@ export class OrderRepositoryImpl implements OrderRepository {
     return response.data.data;
   }
 
-  private makePageQuery({ status, page, size }: { status?: string; page: number; size?: number }) {
-    return makeQueryParameter({ status, page, size: size ?? DEFAULT_ORDER_PAGE_SIZE });
+  private makePageQuery(
+    { status, page, size }: { status?: string; page: number; size?: number },
+    packagePath?: string,
+  ) {
+    return makeQueryParameter({
+      status,
+      page,
+      size: size ?? DEFAULT_ORDER_PAGE_SIZE,
+      packagePath: packagePath ? encodeURIComponent(packagePath) : undefined,
+    });
+  }
+
+  private makeRealmQuery(packagePath?: string) {
+    return makeQueryParameter({ packagePath: packagePath ? encodeURIComponent(packagePath) : undefined });
   }
 
   private fetchAllowance = (packagePath: string, owner: string, spender: string): Promise<number> => {

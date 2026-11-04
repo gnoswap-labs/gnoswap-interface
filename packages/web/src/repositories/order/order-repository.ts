@@ -26,7 +26,8 @@ export interface OrderRepository {
 
   getDcaOrders(request: GetOrdersRequest): Promise<OrderPagedResponse<DcaOrderItem>>;
 
-  getDcaOrder(orderId: string): Promise<DcaOrderItem>;
+  /** `packagePath` selects the order's realm; the order-api defaults to the current one. */
+  getDcaOrder(orderId: string, packagePath?: string): Promise<DcaOrderItem>;
 
   getDcaExecutions(request: GetOrderHistoryRequest): Promise<OrderPagedResponse<DcaExecutionItem>>;
 
@@ -34,7 +35,7 @@ export interface OrderRepository {
 
   getLimitOrders(request: GetOrdersRequest): Promise<OrderPagedResponse<LimitOrderItem>>;
 
-  getLimitOrder(orderId: string): Promise<LimitOrderItem>;
+  getLimitOrder(orderId: string, packagePath?: string): Promise<LimitOrderItem>;
 
   getLimitOrderFills(request: GetOrderHistoryRequest): Promise<OrderPagedResponse<LimitFillItem>>;
 

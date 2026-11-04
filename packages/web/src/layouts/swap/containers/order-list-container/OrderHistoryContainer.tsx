@@ -15,6 +15,7 @@ export const DcaOrderHistoryContainer: React.FC<{ order: DcaOrderModel }> = ({ o
   const [page, setPage] = useState(1);
   const { data } = useGetDcaExecutions({
     orderId: order.orderId,
+    packagePath: order.packagePath,
     page,
     size: HISTORY_PAGE_SIZE,
     inputToken: order.inputToken,
@@ -42,6 +43,7 @@ export const LimitOrderHistoryContainer: React.FC<{ order: LimitOrderModel }> = 
   const [page, setPage] = useState(1);
   const { data } = useGetLimitOrderFills({
     orderId: order.orderId,
+    packagePath: order.packagePath,
     page,
     size: HISTORY_PAGE_SIZE,
     tokenIn: order.tokenIn,

@@ -7,13 +7,17 @@ import { useGetTokens } from "@query/token";
 
 import { QUERY_KEY } from "../query-keys";
 
-export const useGetDcaOrder = (orderId: string | null, options?: UseQueryOptions<DcaOrderModel, Error>) => {
+export const useGetDcaOrder = (
+  orderId: string | null,
+  packagePath?: string,
+  options?: UseQueryOptions<DcaOrderModel, Error>,
+) => {
   const { orderRepository } = useGnoswapContext();
   const { data: { tokens = [] } = {} } = useGetTokens(true);
 
   return useQuery<DcaOrderModel, Error>({
-    queryKey: [QUERY_KEY.dcaOrder, orderId, tokens.length],
-    queryFn: async () => mapDcaOrderItemToModel(await orderRepository.getDcaOrder(orderId!), tokens),
+    queryKey: [QUERY_KEY.dcaOrder, packagePath, orderId, tokens.length],
+    queryFn: async () => mapDcaOrderItemToModel(await orderRepository.getDcaOrder(orderId!, packagePath), tokens),
     enabled: !!orderId,
     ...options,
   });

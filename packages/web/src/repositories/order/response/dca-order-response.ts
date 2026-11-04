@@ -3,6 +3,12 @@ export type DcaOrderStatus = "ACTIVE" | "COMPLETED" | "CANCELLED";
 /** A DCA order as returned by the list and detail endpoints. Amounts are raw integer strings. */
 export interface DcaOrderItem {
   orderId: string;
+  /**
+   * Proxy realm path of the DCA contract that holds the order. Order IDs
+   * restart when the realm is redeployed, so an order is identified by both.
+   * Absent from order-api versions before realm-scoped orders.
+   */
+  packagePath?: string;
   owner: string;
   status: DcaOrderStatus;
   inputToken: string;
