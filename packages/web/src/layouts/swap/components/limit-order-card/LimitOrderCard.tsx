@@ -6,6 +6,7 @@ import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import IconWallet from "@components/common/icons/IconWallet";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import { OrderSelectOption } from "@components/order/order-select-box/OrderSelectBox";
+import { MaxNativeAmountParams } from "@hooks/gas";
 import { OrderButtonState } from "@hooks/order/data/use-order-handler.utils";
 import { useTokenBalanceDisplay } from "@hooks/token/ui/use-token-balance-display";
 import { SwapCardType } from "@models/order/order-type";
@@ -35,6 +36,9 @@ export interface LimitOrderCardProps {
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
   tokenABalance: string;
+  /** See OrderSellInput: prices Max on GNOT against this order's own messages. */
+  makeMaxAmountMessages?: MaxNativeAmountParams["makeMessages"];
+  maxAmountDependsOn?: readonly unknown[];
   tokenBBalance: string;
   sellAmount: string;
   sellAmountUsd: string;
@@ -77,6 +81,8 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
   tokenA,
   tokenB,
   tokenABalance,
+  makeMaxAmountMessages,
+  maxAmountDependsOn,
   tokenBBalance,
   sellAmount,
   sellAmountUsd,
@@ -136,6 +142,8 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
             connectedWallet={connectedWallet}
             changeToken={changeTokenA}
             changeAmount={changeSellAmount}
+            makeMaxAmountMessages={makeMaxAmountMessages}
+            maxAmountDependsOn={maxAmountDependsOn}
           >
             <div className="arrow">
               <div className="shape" onClick={switchTokens} role="button" aria-label="Switch tokens">

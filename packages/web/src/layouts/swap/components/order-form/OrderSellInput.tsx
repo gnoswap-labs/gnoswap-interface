@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { isAmount } from "@common/utils/data-check-util";
 import IconWallet from "@components/common/icons/IconWallet";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
-import { useMaxNativeAmount } from "@hooks/gas";
+import { MaxNativeAmountParams, useMaxNativeAmount } from "@hooks/gas";
 import { useTokenBalanceDisplay } from "@hooks/token/ui/use-token-balance-display";
 import { TokenModel } from "@models/token/token-model";
 
@@ -20,6 +20,13 @@ interface OrderSellInputProps {
   connectedWallet: boolean;
   changeToken: (token: TokenModel) => void;
   changeAmount: (value: string) => void;
+  /**
+   * Builds the order's messages for a candidate raw amount, so Max on GNOT
+   * reserves the order's storage and measured cost, not only the flat fee.
+   */
+  makeMaxAmountMessages?: MaxNativeAmountParams["makeMessages"];
+  /** The order terms the Max estimate is priced for (pair, count, price...). */
+  maxAmountDependsOn?: readonly unknown[];
   className?: string;
   children?: React.ReactNode;
 }
@@ -33,13 +40,21 @@ const OrderSellInput: React.FC<OrderSellInputProps> = ({
   connectedWallet,
   changeToken,
   changeAmount,
+  makeMaxAmountMessages,
+  maxAmountDependsOn = [],
   className = "first-section",
   children,
 }) => {
   const { t } = useTranslation();
   const [focused, setFocused] = useState(false);
   const balanceDisplay = useTokenBalanceDisplay(balance, connectedWallet);
-  const { getMaxAmount, loading: loadingMaxAmount, pendingBalance } = useMaxNativeAmount({ token, amount });
+  const { getMaxAmount, loading: loadingMaxAmount, pendingBalance } = useMaxNativeAmount({
+    token,
+    amount,
+    // The order terms decide what the transaction costs, and the balance is what
+    // the answer was subtracted from; an answer for others is not written back.
+    dependsOn: [...maxAmountDependsOn, balance],
+  });
 
   const hasBalance = connectedWallet && balance !== "-" && BigNumber(balance.replace(/,/g, "")).isGreaterThan(0);
 
@@ -58,9 +73,9 @@ const OrderSellInput: React.FC<OrderSellInputProps> = ({
   );
 
   const onClickMax = useCallback(async () => {
-    const spendable = await getMaxAmount({ balance });
+    const spendable = await getMaxAmount({ balance, makeMessages: makeMaxAmountMessages });
     if (spendable !== null) changeAmount(spendable);
-  }, [balance, changeAmount, getMaxAmount]);
+  }, [balance, changeAmount, getMaxAmount, makeMaxAmountMessages]);
 
   const displayAmount = useMemo(
     () => (amount.includes("e") ? BigNumber(amount).toFixed(token?.decimals ?? 0) : amount),

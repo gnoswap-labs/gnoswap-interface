@@ -205,6 +205,34 @@ export const useLimitOrderHandler = () => {
       : null,
   );
 
+  /**
+   * The CreateOrder messages for a native making amount of `rawAmount` at the
+   * current price (the market price until one is set), so Max reserves the
+   * storage and measured cost of this order. Built regardless of the button state.
+   */
+  const maxAmountPrice = isValidPrice ? limitPrice : marketPrice;
+  const makeMaxAmountMessages = useCallback(
+    async (rawAmount: string) => {
+      if (!tokenA || !tokenB || isSameToken || !maxAmountPrice) return [];
+      const maxTakingAmount = calculateTakingAmount(rawAmount, maxAmountPrice, tokenA, tokenB);
+      if (!BigNumber(maxTakingAmount).isGreaterThan(0)) return [];
+      return orderRepository.makeCreateLimitOrderMessages({
+        tokenIn: tokenA,
+        tokenOut: tokenB,
+        makingAmount: rawAmount,
+        takingAmount: maxTakingAmount,
+        slippageBps,
+        expiresAt: Math.floor(Date.now() / 1000) + expiry,
+      });
+    },
+    [expiry, isSameToken, maxAmountPrice, orderRepository, slippageBps, tokenA, tokenB],
+  );
+  // What else the Max estimate was priced for, so an answer for another order is not written back.
+  const maxAmountDependsOn = useMemo(
+    () => [tokenB?.path, maxAmountPrice, expiry, slippageBps],
+    [expiry, maxAmountPrice, slippageBps, tokenB?.path],
+  );
+
   const expiryLabel = useCallback(
     (duration: number) => {
       const option = LIMIT_EXPIRY_OPTIONS.find(item => item.duration === duration);
@@ -417,6 +445,8 @@ export const useLimitOrderHandler = () => {
     tokenA,
     tokenB,
     tokenABalance,
+    makeMaxAmountMessages,
+    maxAmountDependsOn,
     tokenBBalance,
     connected,
     sellAmount,

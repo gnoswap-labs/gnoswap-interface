@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
+import { MaxNativeAmountParams } from "@hooks/gas";
 import { OrderButtonState } from "@hooks/order/data/use-order-handler.utils";
 import { DcaIntervalUnit } from "@models/order/dca-order-model";
 import { SwapCardType } from "@models/order/order-type";
@@ -33,6 +34,9 @@ export interface DcaOrderCardProps {
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
   tokenABalance: string;
+  /** See OrderSellInput: prices Max on GNOT against this order's own messages. */
+  makeMaxAmountMessages?: MaxNativeAmountParams["makeMessages"];
+  maxAmountDependsOn?: readonly unknown[];
   sellAmount: string;
   sellAmountUsd: string;
   changeTokenA: (token: TokenModel) => void;
@@ -67,6 +71,8 @@ const DcaOrderCard: React.FC<DcaOrderCardProps> = ({
   tokenA,
   tokenB,
   tokenABalance,
+  makeMaxAmountMessages,
+  maxAmountDependsOn,
   sellAmount,
   sellAmountUsd,
   changeTokenA,
@@ -110,6 +116,8 @@ const DcaOrderCard: React.FC<DcaOrderCardProps> = ({
             connectedWallet={connectedWallet}
             changeToken={changeTokenA}
             changeAmount={changeSellAmount}
+            makeMaxAmountMessages={makeMaxAmountMessages}
+            maxAmountDependsOn={maxAmountDependsOn}
           >
             <div className="arrow">
               <div className="shape" onClick={switchTokens} role="button" aria-label="Switch tokens">

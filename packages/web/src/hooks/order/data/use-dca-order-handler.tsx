@@ -307,6 +307,30 @@ export const useDcaOrderHandler = () => {
     debouncedCreateRequest ? () => orderRepository.makeCreateDcaOrderMessages(debouncedCreateRequest) : null,
   );
 
+  /**
+   * The CreateOrder messages for a native deposit of `rawAmount`, split over the
+   * current count, so Max reserves the storage and measured cost of this order.
+   * Built regardless of the button state: Max is pressed before an amount is set.
+   */
+  const makeMaxAmountMessages = useCallback(
+    async (rawAmount: string) => {
+      if (!tokenA || !tokenB || isSameToken) return [];
+      const perExecution = calculateAmountPerExecution(rawAmount, executionCount);
+      if (!BigNumber(perExecution).isGreaterThan(0)) return [];
+      return orderRepository.makeCreateDcaOrderMessages({
+        inputToken: tokenA,
+        outputToken: tokenB,
+        interval,
+        slotOffset: schedule?.slotOffset ?? 0,
+        amountPerExecution: perExecution,
+        executionCount,
+      });
+    },
+    [executionCount, interval, isSameToken, orderRepository, schedule?.slotOffset, tokenA, tokenB],
+  );
+  // What else the Max estimate was priced for, so an answer for another order is not written back.
+  const maxAmountDependsOn = useMemo(() => [tokenB?.path, interval, executionCount], [executionCount, interval, tokenB?.path]);
+
   const summary: DcaOrderSummary | null = useMemo(() => {
     if (!tokenA || !tokenB) return null;
     const formattedRate = formatRate(rate);
@@ -500,6 +524,8 @@ export const useDcaOrderHandler = () => {
     tokenA,
     tokenB,
     tokenABalance,
+    makeMaxAmountMessages,
+    maxAmountDependsOn,
     connected,
     sellAmount,
     sellAmountUsd: formatUsd(sellUsd),
