@@ -34,8 +34,6 @@ export const Default: Story = {
     changeSwapType: fn(),
     copied: false,
     copyURL: fn(),
-    slippage: 0.5,
-    changeSlippage: fn(),
     themeKey: "dark",
     isLoading: false,
     connectedWallet: true,

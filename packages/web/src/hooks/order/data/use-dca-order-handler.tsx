@@ -7,7 +7,6 @@ import { MIN_GNOT_DEPOSIT_AMOUNT } from "@common/clients/wallet-client/transacti
 import ConfirmDcaOrderModal from "@components/order/confirm-dca-order-modal/ConfirmDcaOrderModal";
 import useDebounce from "@hooks/common/use-debounce";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { useSlippage } from "@hooks/common/use-slippage";
 import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { DcaIntervalUnit, getDcaIntervalUnit } from "@models/order/dca-order-model";
 import { toDisplayAmount } from "@models/order/mapper/order-mapper";
@@ -54,7 +53,6 @@ const POOL_LIST_STALE_TIME = 60_000;
 export const useDcaOrderHandler = () => {
   const { t } = useTranslation();
   const { orderRepository } = useGnoswapContext();
-  const { slippage, changeSlippage } = useSlippage();
   const { openModal: openConnectWallet } = useConnectWalletModal();
   const { submit } = useOrderTransaction();
 
@@ -494,8 +492,6 @@ export const useDcaOrderHandler = () => {
     buttonText,
     minTradingText,
     copied,
-    slippage,
-    changeSlippage,
     copyURL,
     changeTokenA,
     changeTokenB,

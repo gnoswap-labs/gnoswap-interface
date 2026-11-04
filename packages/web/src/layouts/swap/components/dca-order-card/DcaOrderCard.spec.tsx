@@ -55,8 +55,6 @@ const renderCard = (props: Partial<DcaOrderCardProps> = {}) => {
     changeSwapType: jest.fn(),
     copied: false,
     copyURL: jest.fn(),
-    slippage: 0.5,
-    changeSlippage: jest.fn(),
     themeKey: "dark",
     isLoading: false,
     connectedWallet: true,
@@ -128,6 +126,13 @@ describe("DcaOrderCard", () => {
 
     fireEvent.blur(screen.getByLabelText("Swap:dca.over"));
     expect(commitExecutionCount).toHaveBeenCalled();
+  });
+
+  it("offers no slippage setting, which a DCA order does not take", () => {
+    const { container } = renderCard();
+
+    // Only the copy-link control remains in the header.
+    expect(container.querySelectorAll(".setting-wrap")).toHaveLength(1);
   });
 
   it("shows a skeleton while the config loads", () => {

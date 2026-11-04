@@ -26,8 +26,6 @@ export interface DcaOrderCardProps {
   changeSwapType: (type: SwapCardType) => void;
   copied: boolean;
   copyURL: () => void;
-  slippage: number;
-  changeSlippage: (value: number) => void;
   themeKey: "dark" | "light";
   isLoading: boolean;
 
@@ -63,8 +61,6 @@ const DcaOrderCard: React.FC<DcaOrderCardProps> = ({
   changeSwapType,
   copied,
   copyURL,
-  slippage,
-  changeSlippage,
   themeKey,
   isLoading,
   connectedWallet,
@@ -98,8 +94,6 @@ const DcaOrderCard: React.FC<DcaOrderCardProps> = ({
       <SwapCardHeader
         copied={copied}
         copyURL={copyURL}
-        slippage={slippage}
-        changeSlippage={changeSlippage}
         themeKey={themeKey}
         swapType={swapType}
         changeSwapType={changeSwapType}

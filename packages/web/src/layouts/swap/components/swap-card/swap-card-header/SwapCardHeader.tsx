@@ -14,8 +14,9 @@ import { CopyTooltip, SettingMenuButton, SwapCardHeaderWrapper } from "./SwapCar
 interface SwapCardHeaderProps {
   copied: boolean;
   copyURL: () => void;
-  slippage: number;
-  changeSlippage: (value: number) => void;
+  /** The slippage setting. Omitted where the order takes no user slippage (DCA). */
+  slippage?: number;
+  changeSlippage?: (value: number) => void;
   themeKey: "dark" | "light";
   /** Shows the Swap | DCA | Limit tabs in place of the title when given. */
   swapType?: SwapCardType;
@@ -80,14 +81,16 @@ const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
             </CopyTooltip>
           )}
         </div>
-        <SettingMenuButton>
-          <div className="setting-wrap" onClick={openSetting}>
-            <IconSettings className="setting-icon" />
-          </div>
-          {openedSetting && (
-            <SettingMenuModal slippage={slippage} changeSlippage={changeSlippage} close={closeSetting} />
-          )}
-        </SettingMenuButton>
+        {slippage !== undefined && changeSlippage && (
+          <SettingMenuButton>
+            <div className="setting-wrap" onClick={openSetting}>
+              <IconSettings className="setting-icon" />
+            </div>
+            {openedSetting && (
+              <SettingMenuModal slippage={slippage} changeSlippage={changeSlippage} close={closeSetting} />
+            )}
+          </SettingMenuButton>
+        )}
       </div>
     </SwapCardHeaderWrapper>
   );
