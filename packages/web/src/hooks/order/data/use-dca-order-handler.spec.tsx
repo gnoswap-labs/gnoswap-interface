@@ -12,17 +12,33 @@ jest.mock("react-i18next", () => ({ useTranslation: () => ({ t: (key: string) =>
 jest.mock("@hooks/common/use-debounce", () => ({ __esModule: true, default: <T,>(value: T) => value }));
 const mockSendCreateDcaOrder = jest.fn().mockResolvedValue({ code: 0 });
 const mockState: {
-  config: { maxExecutionCount?: number; minAmountPerExecution?: string; whitelistedPools?: string[] } | undefined;
+  config:
+    | {
+        maxExecutionCount?: number;
+        minAmountPerExecution?: string;
+        whitelistedPools?: string[];
+        halted?: { execute: boolean };
+      }
+    | undefined;
   configError: boolean;
   refetchConfig: jest.Mock;
   scheduleCounts: number[];
+  /** Answers the schedule refetch made right before sending; resolves at once by default. */
+  refetchSchedule: (() => Promise<unknown>) | null;
+  balance: string;
+  modalOpened: boolean;
+  closeModal: jest.Mock;
   renderConfirm: (() => React.ReactNode) | null;
-  confirmProps: { summary: { executionCount: number }; confirm: () => void } | null;
+  confirmProps: { summary: { executionCount: number }; isLoading?: boolean; confirm: () => void } | null;
 } = {
   config: undefined,
   configError: false,
   refetchConfig: jest.fn(),
   scheduleCounts: [],
+  refetchSchedule: null,
+  balance: "1000",
+  modalOpened: false,
+  closeModal: jest.fn(),
   renderConfirm: null,
   confirmProps: null,
 };
@@ -45,7 +61,7 @@ jest.mock("@components/order/confirm-dca-order-modal/ConfirmDcaOrderModal", () =
 jest.mock("../ui/use-confirm-order-modal", () => ({
   useConfirmOrderModal: (renderModal: () => React.ReactNode) => {
     mockState.renderConfirm = renderModal;
-    return { openModal: jest.fn(), closeModal: jest.fn() };
+    return { opened: mockState.modalOpened, openModal: jest.fn(), closeModal: mockState.closeModal };
   },
 }));
 jest.mock("./use-order-transaction", () => ({
@@ -61,7 +77,7 @@ jest.mock("./use-order-form-common", () => ({
     copied: false,
     copyUrl: jest.fn(),
     getUsdPrice: () => null,
-    tokenABalance: "1000",
+    tokenABalance: mockState.balance,
     isSameToken: false,
     formatUsd: () => "-",
     formatRate: () => ({ text: "-", usd: "-" }),
@@ -78,7 +94,7 @@ jest.mock("@query/order", () => ({
   useGetDcaSchedule: (request: { executionCount: number } | null) => {
     if (request) mockState.scheduleCounts.push(request.executionCount);
     const data = { slotOffset: 0, firstExecutionAt: 1, estimatedEndAt: 2 };
-    return { data, isFetching: false, refetch: () => Promise.resolve({ data }) };
+    return { data, isFetching: false, refetch: mockState.refetchSchedule ?? (() => Promise.resolve({ data })) };
   },
   useEstimateOrderNetworkFee: () => ({ data: undefined, isFetching: false }),
 }));
@@ -272,5 +288,88 @@ describe("useDcaOrderHandler execution count cap", () => {
 
     expect(result.current.maxExecutionCount).toBe(5);
     expect(result.current.buttonState).toBe("AMOUNT_TOO_LOW");
+  });
+});
+
+describe("useDcaOrderHandler confirmation", () => {
+  beforeEach(() => {
+    mockState.configError = false;
+    mockState.config = { maxExecutionCount: 10, minAmountPerExecution: "1", whitelistedPools };
+    mockPoolList({ data: undefined, isError: false });
+    mockState.balance = "1000";
+    mockState.modalOpened = true;
+    mockState.closeModal = jest.fn();
+    mockState.refetchSchedule = null;
+    mockState.confirmProps = null;
+    mockSendCreateDcaOrder.mockClear();
+  });
+
+  afterEach(() => {
+    mockState.config = undefined;
+    mockState.balance = "1000";
+    mockState.modalOpened = false;
+    mockState.refetchSchedule = null;
+  });
+
+  /** A 10 A / 2 round order (5 A per round) with its confirmation open. */
+  const openConfirmation = () => {
+    const hook = renderHook(() => useDcaOrderHandler(), { wrapper });
+    act(() => hook.result.current.changeTokenA(tokenA));
+    act(() => hook.result.current.changeTokenB(tokenB));
+    act(() => hook.result.current.changeSellAmount("10"));
+    act(() => hook.result.current.setExecutionCountInput("2"));
+    expect(hook.result.current.buttonState).toBe("PLACE_ORDER");
+    return hook;
+  };
+
+  const confirm = async () => {
+    render(<>{mockState.renderConfirm?.()}</>);
+    await act(async () => {
+      mockState.confirmProps?.confirm();
+      await Promise.resolve();
+    });
+  };
+
+  it("sends a valid order", async () => {
+    openConfirmation();
+    await confirm();
+    expect(mockSendCreateDcaOrder).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
+    ["the balance drops", "INSUFFICIENT_BALANCE", () => (mockState.balance = "0")],
+    ["execution is halted", "ORDER_PAUSED", () => (mockState.config = { ...mockState.config, halted: { execute: true } })],
+    [
+      "the per-round minimum rises above the round amount",
+      "AMOUNT_TOO_LOW",
+      () => (mockState.config = { ...mockState.config, minAmountPerExecution: "6000000" }),
+    ],
+  ])("closes the confirmation and sends nothing once %s", async (_, state, change) => {
+    const { result, rerender } = openConfirmation();
+
+    change();
+    rerender();
+    expect(result.current.buttonState).toBe(state);
+    expect(mockState.closeModal).toHaveBeenCalled();
+
+    await confirm();
+    expect(mockState.confirmProps?.isLoading).toBe(true);
+    expect(mockSendCreateDcaOrder).not.toHaveBeenCalled();
+  });
+
+  it("sends nothing when the form turns invalid while the schedule refreshes", async () => {
+    let resolveSchedule: (value: unknown) => void = () => undefined;
+    mockState.refetchSchedule = () => new Promise(resolve => (resolveSchedule = resolve));
+    const { rerender } = openConfirmation();
+
+    await confirm();
+    mockState.balance = "0";
+    rerender();
+    await act(async () => {
+      resolveSchedule({ data: { slotOffset: 0, firstExecutionAt: 1, estimatedEndAt: 2 } });
+      await Promise.resolve();
+    });
+
+    expect(mockSendCreateDcaOrder).not.toHaveBeenCalled();
   });
 });

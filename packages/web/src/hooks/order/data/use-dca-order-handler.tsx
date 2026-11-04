@@ -44,6 +44,14 @@ import {
 import { useOrderTransaction } from "./use-order-transaction";
 
 const INPUT_DEBOUNCE_MS = 300;
+
+/** Whether two requests place the same order; the slot is read at send time. */
+const isSameDcaOrder = (a: CreateDcaOrderRequest, b: CreateDcaOrderRequest) =>
+  a.inputToken.path === b.inputToken.path &&
+  a.outputToken.path === b.outputToken.path &&
+  a.interval === b.interval &&
+  a.amountPerExecution === b.amountPerExecution &&
+  a.executionCount === b.executionCount;
 const QUOTE_REFETCH_INTERVAL = 10_000;
 /** The DCA keeper syncs the pool whitelist with the market every minute. */
 const CONFIG_REFETCH_INTERVAL = 60_000;
@@ -373,53 +381,40 @@ export const useDcaOrderHandler = () => {
     [copyUrl, executionCount, interval, sellAmount, tokenA?.path, tokenB?.path],
   );
 
+  // The request of the latest render, to recheck the form after an await.
+  const createRequestRef = useRef(createRequest);
+  createRequestRef.current = createRequest;
+
   const placeOrder = useCallback(async () => {
-    if (!tokenA || !tokenB) return;
+    // Only a form that can be placed right now is sent: Place Order state
+    // (balance, halt, minimum, whitelist) and the count within the realm cap.
+    const request = createRequest;
+    if (!request) return;
 
     // The slot can roll over while the modal was open, so the schedule is read again right before sending.
-    if (hasWhitelistedPool !== true) return;
-    if (!isExecutionCountWithinLimit(executionCount, realmMaxExecutionCount)) return;
     const latestSchedule = (await refetchSchedule()).data ?? schedule;
     if (!latestSchedule) return;
+    // The form can stop being valid while the schedule refreshes.
+    const current = createRequestRef.current;
+    if (!current || !isSameDcaOrder(current, request)) return;
 
     const orderedAmount = makeDisplayTokenAmountString(
-      tokenA,
-      getDcaDepositAmount(amountPerExecutionRaw, executionCount),
+      request.inputToken,
+      getDcaDepositAmount(request.amountPerExecution, request.executionCount),
     );
     const messageData = {
-      tokenASymbol: tokenA.displaySymbol,
-      tokenBSymbol: tokenB.displaySymbol,
-      tokenAAmount: trimFractionZeros(BigNumber(orderedAmount ?? "0").toFormat(tokenA.decimals)),
+      tokenASymbol: request.inputToken.displaySymbol,
+      tokenBSymbol: request.outputToken.displaySymbol,
+      tokenAAmount: trimFractionZeros(BigNumber(orderedAmount ?? "0").toFormat(request.inputToken.decimals)),
     };
 
     submit({
       action: DexEvent.DCA_ORDER,
       messageData,
-      send: () =>
-        orderRepository.sendCreateDcaOrder({
-          inputToken: tokenA,
-          outputToken: tokenB,
-          interval,
-          slotOffset: latestSchedule.slotOffset,
-          amountPerExecution: amountPerExecutionRaw,
-          executionCount,
-        }),
+      send: () => orderRepository.sendCreateDcaOrder({ ...request, slotOffset: latestSchedule.slotOffset }),
       onBroadcast: () => setSellAmount(""),
     });
-  }, [
-    amountPerExecutionRaw,
-    executionCount,
-    hasWhitelistedPool,
-    interval,
-    orderRepository,
-    realmMaxExecutionCount,
-    refetchSchedule,
-    schedule,
-    setSellAmount,
-    submit,
-    tokenA,
-    tokenB,
-  ]);
+  }, [createRequest, orderRepository, refetchSchedule, schedule, setSellAmount, submit]);
 
   const closeConfirmModalRef = useRef<() => void>(() => undefined);
 
@@ -428,7 +423,7 @@ export const useDcaOrderHandler = () => {
       summary ? (
         <ConfirmDcaOrderModal
           summary={summary}
-          isLoading={isFetchingSchedule || !schedule || hasWhitelistedPool === null}
+          isLoading={isFetchingSchedule || !createRequest}
           confirm={() => {
             closeConfirmModalRef.current();
             void placeOrder();
@@ -438,11 +433,17 @@ export const useDcaOrderHandler = () => {
       ) : (
         <></>
       ),
-    [hasWhitelistedPool, isFetchingSchedule, placeOrder, schedule, summary],
+    [createRequest, isFetchingSchedule, placeOrder, summary],
   );
 
-  const { openModal, closeModal } = useConfirmOrderModal(renderConfirmModal);
+  const { opened: isConfirmOpened, openModal, closeModal } = useConfirmOrderModal(renderConfirmModal);
   closeConfirmModalRef.current = closeModal;
+
+  // An open confirmation closes once the form can no longer be placed (balance,
+  // halt, minimum, ...); the button then tells why.
+  useEffect(() => {
+    if (isConfirmOpened && buttonState !== "PLACE_ORDER") closeModal();
+  }, [buttonState, closeModal, isConfirmOpened]);
 
   const onClickButton = useCallback(() => {
     switch (buttonState) {
