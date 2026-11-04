@@ -114,4 +114,22 @@ describe("OrderListContainer", () => {
     expect(pages.length).toBeGreaterThan(0);
     expect(pages.every(request => request.status === "active" && request.page === 1)).toBe(true);
   });
+
+  it("refetches the opened tab's list even when it is cached", () => {
+    renderContainer("limit", { active: 1, past: 0 });
+
+    const listOptions = mockUseGetLimitOrders.mock.calls
+      .filter(([request]) => request.size > 1)
+      .map(([, options]) => options);
+    expect(listOptions.length).toBeGreaterThan(0);
+    expect(listOptions.every(options => options.refetchOnMount === "always")).toBe(true);
+  });
+
+  it("polls the visible Active list as often as the swap history, and not the hidden kind", () => {
+    renderContainer("limit", { active: 1, past: 0 });
+
+    const lastListCall = (mock: jest.Mock) => mock.mock.calls.filter(([request]) => request.size > 1).pop();
+    expect(lastListCall(mockUseGetLimitOrders)?.[1].refetchInterval).toBe(5_000);
+    expect(lastListCall(mockUseGetDcaOrders)?.[1].refetchInterval).toBe(false);
+  });
 });

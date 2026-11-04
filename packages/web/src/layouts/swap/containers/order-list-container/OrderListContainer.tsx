@@ -2,6 +2,7 @@ import { useAtom } from "jotai";
 import React, { useCallback, useState } from "react";
 
 import { ENABLED_SWAP_CARD_TYPES } from "@constants/order.constant";
+import { SWAP_HISTORY_REFETCH_INTERVAL } from "@constants/swap.constant";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { useWindowSize } from "@hooks/common/use-window-size";
@@ -92,14 +93,22 @@ const OrderListPages: React.FC<OrderListPagesProps> = ({ kind, tab, changeTab, c
   const request = { address, status: tab, page, size: ORDER_PAGE_SIZE };
 
   // Both lists stay loaded so switching between DCA and Limit shows the cached list at once;
-  // only the visible one keeps polling.
+  // only the visible one keeps polling, as often as the swap history while on Active. Each tab
+  // switch remounts this list, and it refetches then even when cached (the app default skips
+  // refetch on mount).
+  const pollInterval = (orderKind: OrderKind) => {
+    if (kind !== orderKind) return { refetchInterval: false as const };
+    return tab === "active" ? { refetchInterval: SWAP_HISTORY_REFETCH_INTERVAL } : {};
+  };
   const dcaOrders = useGetDcaOrders(request, {
     enabled: !!address && ENABLED_SWAP_CARD_TYPES.includes(SWAP_CARD_TYPE.DCA),
-    ...(kind !== "dca" && { refetchInterval: false }),
+    refetchOnMount: "always",
+    ...pollInterval("dca"),
   });
   const limitOrders = useGetLimitOrders(request, {
     enabled: !!address && ENABLED_SWAP_CARD_TYPES.includes(SWAP_CARD_TYPE.LIMIT),
-    ...(kind !== "limit" && { refetchInterval: false }),
+    refetchOnMount: "always",
+    ...pollInterval("limit"),
   });
   const { data, isLoading } = kind === "dca" ? dcaOrders : limitOrders;
 
