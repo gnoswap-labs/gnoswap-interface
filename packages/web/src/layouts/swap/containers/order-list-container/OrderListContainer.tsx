@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import { ENABLED_SWAP_CARD_TYPES } from "@constants/order.constant";
 import useRouter from "@hooks/common/use-custom-router";
-import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useStopOrderHandler } from "@hooks/order/data/use-stop-order-handler";
@@ -35,8 +34,6 @@ const OrderListContainer: React.FC<OrderListContainerProps> = ({ kind }) => {
   const { getTxUrl } = useGnoscanUrl();
   const { tokenPrices } = useTokenData(true);
   const { openStopDcaOrder, openCancelLimitOrder, claimDcaOrder } = useStopOrderHandler();
-  const { orderRepository } = useGnoswapContext();
-  const actionsDisabled = !orderRepository.canMutateOrders;
   const [tab, setTab] = useAtom(OrderState.orderListTab);
   const [page, setPage] = useState(1);
 
@@ -82,7 +79,6 @@ const OrderListContainer: React.FC<OrderListContainerProps> = ({ kind }) => {
           txUrl={getTxUrl(order.createdTxHash)}
           onClickStop={openStopDcaOrder}
           onClickClaim={claimDcaOrder}
-          actionsDisabled={actionsDisabled}
           renderHistory={item => <DcaOrderHistoryContainer order={item} />}
         />
       ));
@@ -94,7 +90,6 @@ const OrderListContainer: React.FC<OrderListContainerProps> = ({ kind }) => {
         order={order}
         txUrl={getTxUrl(order.createdTxHash)}
         onClickCancel={openCancelLimitOrder}
-        actionsDisabled={actionsDisabled}
         renderHistory={item => <LimitOrderHistoryContainer order={item} />}
       />
     ));

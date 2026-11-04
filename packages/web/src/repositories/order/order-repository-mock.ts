@@ -32,8 +32,6 @@ const MOCK_TX_RESPONSE: WalletResponse<{ hash: string }> = {
 
 /** Serves the order-api fixtures in `./mock` so the order UI works without a backend. */
 export class OrderRepositoryMock implements OrderRepository {
-  public readonly canMutateOrders = true;
-
   private static LOADING_DURATION = 500;
 
   private delay<T>(value: T): Promise<T> {

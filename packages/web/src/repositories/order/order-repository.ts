@@ -20,12 +20,6 @@ import {
 } from "./response";
 
 export interface OrderRepository {
-  /**
-   * False while order reads come from fixtures: the displayed order IDs are not
-   * the owner's on-chain orders, so order-specific mutations must stay off.
-   */
-  readonly canMutateOrders: boolean;
-
   getDcaConfig(): Promise<DcaConfigResponse>;
 
   getDcaSchedule(request: GetDcaScheduleRequest): Promise<DcaScheduleResponse>;

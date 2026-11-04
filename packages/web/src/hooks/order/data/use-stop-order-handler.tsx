@@ -149,31 +149,27 @@ export const useStopOrderHandler = () => {
     openModal();
   }, [openModal, summary]);
 
-  // Fixture orders are not the owner's on-chain orders, so they never reach the stop flow.
-  const canMutateOrders = orderRepository.canMutateOrders;
-
   const openStopDcaOrder = useCallback(
     (order: DcaOrderModel) => {
-      if (!canMutateOrders) return;
       pendingOpen.current = true;
       setSelected({ kind: "dca", order });
     },
-    [canMutateOrders],
+    [],
   );
 
   const openCancelLimitOrder = useCallback(
     (order: LimitOrderModel) => {
-      if (!canMutateOrders || !order.canCancel) return;
+      if (!order.canCancel) return;
       pendingOpen.current = true;
       setSelected({ kind: "limit", order });
     },
-    [canMutateOrders],
+    [],
   );
 
   /** Pays a completed DCA order's unclaimed output; the realm finalizes the order in the same call. */
   const claimDcaOrder = useCallback(
     (order: DcaOrderModel) => {
-      if (!canMutateOrders || !order.canClaim) return;
+      if (!order.canClaim) return;
 
       const orderId = order.orderId;
       submit({
@@ -186,7 +182,7 @@ export const useStopOrderHandler = () => {
         send: () => orderRepository.sendClaimDcaOrder({ orderId }),
       });
     },
-    [canMutateOrders, orderRepository, submit],
+    [orderRepository, submit],
   );
 
   return { openStopDcaOrder, openCancelLimitOrder, claimDcaOrder };

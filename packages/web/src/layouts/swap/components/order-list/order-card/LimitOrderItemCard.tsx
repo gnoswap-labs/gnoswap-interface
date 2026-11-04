@@ -16,7 +16,6 @@ export interface LimitOrderItemCardProps {
   txUrl: string;
   onClickCancel: (order: LimitOrderModel) => void;
   /** Keeps the order actions disabled, e.g. while the order list is served from fixtures. */
-  actionsDisabled?: boolean;
   renderHistory: (order: LimitOrderModel) => React.ReactNode;
 }
 
@@ -32,7 +31,6 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
   order,
   txUrl,
   onClickCancel,
-  actionsDisabled = false,
   renderHistory,
 }) => {
   const { t } = useTranslation();
@@ -90,7 +88,6 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
         <OrderStopButton
           text={t(order.isActive ? "Swap:order.cancelOrder" : "Swap:order.refundOrder")}
           onClick={() => onClickCancel(order)}
-          disabled={actionsDisabled}
         />
       )}
       <OrderHistoryToggle

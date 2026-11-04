@@ -18,7 +18,6 @@ export interface DcaOrderItemCardProps {
   /** Pays unclaimed output of an order whose rounds all executed. */
   onClickClaim: (order: DcaOrderModel) => void;
   /** Keeps the order actions disabled, e.g. while the order list is served from fixtures. */
-  actionsDisabled?: boolean;
   renderHistory: (order: DcaOrderModel) => React.ReactNode;
 }
 
@@ -28,7 +27,6 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
   txUrl,
   onClickStop,
   onClickClaim,
-  actionsDisabled = false,
   renderHistory,
 }) => {
   const { t } = useTranslation();
@@ -79,7 +77,6 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
         <OrderStopButton
           text={t("Swap:order.stopOrder")}
           onClick={() => onClickStop(order)}
-          disabled={actionsDisabled}
         />
       )}
       {/* Completion does not pay out: the output stays claimable until the owner (or a keeper) claims it. */}
@@ -87,7 +84,6 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
         <OrderStopButton
           text={t("Swap:order.claimOrder")}
           onClick={() => onClickClaim(order)}
-          disabled={actionsDisabled}
         />
       )}
       <OrderHistoryToggle visible={order.executedCount > 0} renderHistory={() => renderHistory(order)} />
