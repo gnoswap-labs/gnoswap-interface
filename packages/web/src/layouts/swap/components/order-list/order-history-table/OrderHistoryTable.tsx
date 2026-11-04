@@ -11,7 +11,7 @@ import Pagination from "@components/common/pagination/Pagination";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { OrderHistoryModel } from "@models/order/order-type";
 import { TokenModel } from "@models/token/token-model";
-import { formatOrderAmount, formatOrderRoi } from "@utils/order-format-utils";
+import { formatOrderAmount } from "@utils/order-format-utils";
 
 import { OrderHistoryTableWrapper } from "./OrderHistoryTable.styles";
 
@@ -76,35 +76,29 @@ const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
         <span className="cell">{t("Swap:order.sold")}</span>
         <span className="cell">{t("Swap:order.purchased")}</span>
       </div>
-      {items.map(item => {
-        const roundReturn = formatOrderRoi(item.returnRate ?? null);
-        return (
-          <div key={item.key} className={cx("history-row", { highlight: highlighted.has(item.key) })}>
-            <span className="cell left">
-              <DateTimeTooltip date={new Date(item.time * 1000)}>
-                <span>{formatHistoryTime(item.time, now)}</span>
-              </DateTimeTooltip>
-              <Link className="time-link" href={getTxUrl(item.txHash)} target="_blank" aria-label="Transaction link">
-                <IconOpenLink size="10px" className="path-link-icon" />
-              </Link>
-            </span>
-            <span className="cell">
-              <span>{item.rate === null ? "-" : formatOrderAmount(item.rate)}</span>
-            </span>
-            <span className="cell">
-              <span>{formatOrderAmount(item.soldAmount)}</span>
-              <MissingLogo symbol={inputToken.symbol} url={inputToken.logoURI} width={compact ? 12 : 14} />
-            </span>
-            <span className="cell">
-              <span>{formatOrderAmount(item.purchasedAmount)}</span>
-              <MissingLogo symbol={outputToken.symbol} url={outputToken.logoURI} width={compact ? 12 : 14} />
-              {roundReturn && (
-                <span className={cx("return", { negative: roundReturn.isNegative })}>{roundReturn.text}</span>
-              )}
-            </span>
-          </div>
-        );
-      })}
+      {items.map(item => (
+        <div key={item.key} className={cx("history-row", { highlight: highlighted.has(item.key) })}>
+          <span className="cell left">
+            <DateTimeTooltip date={new Date(item.time * 1000)}>
+              <span>{formatHistoryTime(item.time, now)}</span>
+            </DateTimeTooltip>
+            <Link className="time-link" href={getTxUrl(item.txHash)} target="_blank" aria-label="Transaction link">
+              <IconOpenLink size="10px" className="path-link-icon" />
+            </Link>
+          </span>
+          <span className="cell">
+            <span>{item.rate === null ? "-" : formatOrderAmount(item.rate)}</span>
+          </span>
+          <span className="cell">
+            <span>{formatOrderAmount(item.soldAmount)}</span>
+            <MissingLogo symbol={inputToken.symbol} url={inputToken.logoURI} width={compact ? 12 : 14} />
+          </span>
+          <span className="cell">
+            <span>{formatOrderAmount(item.purchasedAmount)}</span>
+            <MissingLogo symbol={outputToken.symbol} url={outputToken.logoURI} width={compact ? 12 : 14} />
+          </span>
+        </div>
+      ))}
       {totalPages > 1 && (
         <div className="pagination">
           <Pagination

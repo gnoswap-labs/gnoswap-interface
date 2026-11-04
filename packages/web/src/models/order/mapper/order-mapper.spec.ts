@@ -13,7 +13,6 @@ import {
   calculatePriceRate,
   calculateProgress,
   canCancelLimitOrder,
-  mapDcaExecutionToHistory,
   mapDcaOrderItemToModel,
   resolveOrderRealm,
   mapLimitOrderItemToModel,
@@ -114,20 +113,9 @@ describe("order-mapper", () => {
     expect(order.returnRate).toBeNull();
   });
 
-  it("takes the DCA order and round returns from the order-api", () => {
+  it("takes the DCA order return from the order-api", () => {
     expect(mapDcaOrderItemToModel({ ...dcaItem, returnRate: "3.4483" }, tokens).returnRate).toBe(3.4483);
     expect(mapDcaOrderItemToModel({ ...dcaItem, returnRate: null }, tokens).returnRate).toBeNull();
-
-    const execution = {
-      round: 7,
-      executedAt: 700,
-      txHash: "tx7",
-      soldAmount: "1000000",
-      purchasedAmount: "2500000",
-      poolPath: "pool",
-    };
-    expect(mapDcaExecutionToHistory({ ...execution, returnRate: "-1.5" }, gns, gns).returnRate).toBe(-1.5);
-    expect(mapDcaExecutionToHistory(execution, gns, gns).returnRate).toBeNull();
   });
 
   it("shows completed orders as full and cancelled ones at their real progress", () => {

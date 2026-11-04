@@ -182,7 +182,6 @@ export function mapDcaExecutionToHistory(
     rate: calculatePriceRate(inputToken, outputToken, item.soldAmount, item.purchasedAmount),
     soldAmount: toDisplayAmount(inputToken, item.soldAmount),
     purchasedAmount: toDisplayAmount(outputToken, item.purchasedAmount),
-    returnRate: parseReturnRate(item.returnRate),
   };
 }
 

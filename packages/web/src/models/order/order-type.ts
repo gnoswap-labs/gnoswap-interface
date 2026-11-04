@@ -60,6 +60,4 @@ export interface OrderHistoryModel {
   soldAmount: string;
   /** Display amount of the output token. */
   purchasedAmount: string;
-  /** DCA only: return of the round against the one-off swap, in percent. Null when unknown. */
-  returnRate?: number | null;
 }
