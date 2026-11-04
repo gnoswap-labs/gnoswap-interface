@@ -7,7 +7,7 @@ import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useStopOrderHandler } from "@hooks/order/data/use-stop-order-handler";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
-import { OrderKind, OrderListTab, SWAP_CARD_TYPE, toEnabledSwapCardType } from "@models/order/order-type";
+import { OrderKind, OrderListTab, SWAP_CARD_TYPE, SwapCardType, toEnabledSwapCardType } from "@models/order/order-type";
 import { useGetDcaOrders, useGetLimitOrders } from "@query/order";
 import { OrderState } from "@states/index";
 import { formatOrderRoi } from "@utils/order-format-utils";
@@ -18,6 +18,17 @@ import OrderList from "../../components/order-list/OrderList";
 import { DcaOrderHistoryContainer, LimitOrderHistoryContainer } from "./OrderHistoryContainer";
 
 const ORDER_PAGE_SIZE = 10;
+
+/**
+ * Whether the account has any order of the kind, from the totals of its Active
+ * and Past lists. Unknown until both totals load, so an account without orders
+ * never flashes an empty list.
+ */
+export const hasAnyOrder = (activeTotal?: number, pastTotal?: number): boolean | undefined => {
+  if (activeTotal === undefined || pastTotal === undefined) return undefined;
+
+  return activeTotal + pastTotal > 0;
+};
 
 interface OrderListContainerProps {
   kind: OrderKind;
@@ -46,6 +57,21 @@ const OrderListContainer: React.FC<OrderListContainerProps> = ({ kind }) => {
     ...(kind !== "limit" && { refetchInterval: false }),
   });
   const { data, isLoading } = kind === "dca" ? dcaOrders : limitOrders;
+
+  // The list only appears once the account has an order of this kind, active or past.
+  // One-item pages of both tabs give their totals whichever tab is open.
+  const totalRequest = (status: OrderListTab) => ({ address, status, page: 1, size: 1 });
+  const totalOptions = (orderKind: OrderKind, cardType: SwapCardType) => ({
+    enabled: !!address && kind === orderKind && ENABLED_SWAP_CARD_TYPES.includes(cardType),
+    keepPreviousData: false,
+  });
+  const activeDcaTotal = useGetDcaOrders(totalRequest("active"), totalOptions("dca", SWAP_CARD_TYPE.DCA));
+  const pastDcaTotal = useGetDcaOrders(totalRequest("past"), totalOptions("dca", SWAP_CARD_TYPE.DCA));
+  const activeLimitTotal = useGetLimitOrders(totalRequest("active"), totalOptions("limit", SWAP_CARD_TYPE.LIMIT));
+  const pastLimitTotal = useGetLimitOrders(totalRequest("past"), totalOptions("limit", SWAP_CARD_TYPE.LIMIT));
+  const [activeTotal, pastTotal] =
+    kind === "dca" ? [activeDcaTotal, pastDcaTotal] : [activeLimitTotal, pastLimitTotal];
+  const hasOrders = hasAnyOrder(activeTotal.data?.pageInfo.totalItems, pastTotal.data?.pageInfo.totalItems);
 
   useEffect(() => setPage(1), [kind, tab, address]);
 
@@ -76,6 +102,9 @@ const OrderListContainer: React.FC<OrderListContainerProps> = ({ kind }) => {
       />
     ));
   })();
+
+  // Without a wallet the tabs stay as a prompt; with one, an account without orders shows no list.
+  if (connected && hasOrders !== true) return null;
 
   return (
     <OrderList
