@@ -10,7 +10,7 @@ export const OrderItemCardWrapper = styled.div`
   gap: 12px;
   border-radius: 8px;
   border: 1px solid transparent;
-  background-color: ${({ theme }) => theme.color.background20};
+  background-color: ${({ theme }) => theme.color.background06};
   ${media.mobile} {
     padding: 11px;
     gap: 10px;
@@ -30,18 +30,19 @@ export const OrderItemCardWrapper = styled.div`
   .card-status {
     ${mixins.flexbox("row", "center", "flex-end")};
     flex-shrink: 0;
-    gap: 4px;
+    gap: 6px;
     ${fonts.p2};
-    color: ${({ theme }) => theme.color.text04};
+    color: ${({ theme }) => theme.color.text05};
+    /* The status dot takes the status color: gray for past orders, green while ongoing. */
+    &::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: currentColor;
+    }
     &.ongoing {
       color: ${({ theme }) => theme.color.green01};
-      &::before {
-        content: "";
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background-color: ${({ theme }) => theme.color.green01};
-      }
     }
   }
 
@@ -123,13 +124,13 @@ export const OrderItemCardWrapper = styled.div`
     align-self: center;
     gap: 4px;
     ${fonts.p2};
-    color: ${({ theme }) => theme.color.text04};
+    color: ${({ theme }) => theme.color.text05};
     cursor: pointer;
     .icon-arrow {
       width: 16px;
       height: 16px;
       * {
-        fill: ${({ theme }) => theme.color.icon03};
+        fill: ${({ theme }) => theme.color.icon05};
       }
     }
     &:hover {

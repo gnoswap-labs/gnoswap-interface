@@ -10,6 +10,7 @@ export const OrderListWrapper = styled.div`
   gap: 16px;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
+  background-color: ${({ theme }) => theme.color.background01};
   ${media.mobile} {
     padding: 12px;
     gap: 12px;

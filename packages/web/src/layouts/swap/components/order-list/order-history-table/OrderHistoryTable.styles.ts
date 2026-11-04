@@ -8,7 +8,8 @@ export const OrderHistoryTableWrapper = styled.div`
   width: 100%;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
-  background-color: ${({ theme }) => theme.color.background20};
+  /* Sits on the card's own background; only the borders set it apart. */
+  background-color: transparent;
   overflow: hidden;
 
   .history-row {
