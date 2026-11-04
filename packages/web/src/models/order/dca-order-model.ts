@@ -56,6 +56,11 @@ export interface DcaOrderModel {
   canClaim: boolean;
   /** Average output per input. Null until something executed. */
   priceRate: string | null;
+  /**
+   * Return of the fills against swapping the whole deposit at once when the
+   * order was placed, in percent. Null without a reference or before a round.
+   */
+  returnRate: number | null;
   /** Unix seconds. */
   nextExecutionAt: number | null;
   createdAt: number;

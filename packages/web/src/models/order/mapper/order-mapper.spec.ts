@@ -7,10 +7,11 @@ import type { TokenModel } from "@models/token/token-model";
 import type { DcaOrderItem, LimitOrderItem } from "@repositories/order/response";
 
 import {
-  calculateOrderRoi,
+  parseReturnRate,
   calculatePriceRate,
   calculateProgress,
   canCancelLimitOrder,
+  mapDcaExecutionToHistory,
   mapDcaOrderItemToModel,
   mapLimitOrderItemToModel,
   resolveOrderToken,
@@ -85,11 +86,13 @@ describe("order-mapper", () => {
     expect(calculateProgress(1, 0)).toBe(0);
   });
 
-  it("computes the cumulative return at current prices", () => {
-    expect(calculateOrderRoi("100", "110", "1", "1")).toBeCloseTo(10);
-    expect(calculateOrderRoi("100", "90", "1", "1")).toBeCloseTo(-10);
-    expect(calculateOrderRoi("0", "0", "1", "1")).toBe(0);
-    expect(calculateOrderRoi("100", "110", null, "1")).toBeNull();
+  it("reads the order-api return rate, null when the API has none", () => {
+    expect(parseReturnRate("3.4483")).toBe(3.4483);
+    expect(parseReturnRate("-5.0000")).toBe(-5);
+    expect(parseReturnRate(null)).toBeNull();
+    expect(parseReturnRate(undefined)).toBeNull();
+    expect(parseReturnRate("")).toBeNull();
+    expect(parseReturnRate("x")).toBeNull();
   });
 
   it("maps a DCA order to display units", () => {
@@ -104,6 +107,24 @@ describe("order-mapper", () => {
     expect(order.amountPerExecution).toBe("750");
     expect(order.priceRate).toBe("1.04");
     expect(order.progress).toBe(6.5);
+    // An order-api without the return leaves it unknown.
+    expect(order.returnRate).toBeNull();
+  });
+
+  it("takes the DCA order and round returns from the order-api", () => {
+    expect(mapDcaOrderItemToModel({ ...dcaItem, returnRate: "3.4483" }, tokens).returnRate).toBe(3.4483);
+    expect(mapDcaOrderItemToModel({ ...dcaItem, returnRate: null }, tokens).returnRate).toBeNull();
+
+    const execution = {
+      round: 7,
+      executedAt: 700,
+      txHash: "tx7",
+      soldAmount: "1000000",
+      purchasedAmount: "2500000",
+      poolPath: "pool",
+    };
+    expect(mapDcaExecutionToHistory({ ...execution, returnRate: "-1.5" }, gns, gns).returnRate).toBe(-1.5);
+    expect(mapDcaExecutionToHistory(execution, gns, gns).returnRate).toBeNull();
   });
 
   it("shows completed orders as full and cancelled ones at their real progress", () => {

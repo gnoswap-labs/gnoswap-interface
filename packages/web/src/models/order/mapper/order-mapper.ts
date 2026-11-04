@@ -70,25 +70,11 @@ export function calculateProgress(part: BigNumber.Value, total: BigNumber.Value)
   return Math.min(100, Math.max(0, progress));
 }
 
-/**
- * Cumulative return at current prices: `(purchased × P_out − sold × P_in) / (sold × P_in) × 100`.
- * Execution-time prices are not recorded, so current prices are the agreed basis.
- */
-export function calculateOrderRoi(
-  soldAmount: BigNumber.Value,
-  purchasedAmount: BigNumber.Value,
-  inputUsdPrice: BigNumber.Value | null | undefined,
-  outputUsdPrice: BigNumber.Value | null | undefined,
-): number | null {
-  if (inputUsdPrice === null || inputUsdPrice === undefined) return null;
-  if (outputUsdPrice === null || outputUsdPrice === undefined) return null;
-
-  const soldValue = BigNumber(soldAmount).multipliedBy(inputUsdPrice);
-  const purchasedValue = BigNumber(purchasedAmount).multipliedBy(outputUsdPrice);
-  if (!soldValue.isFinite() || !purchasedValue.isFinite()) return null;
-  if (soldValue.isLessThanOrEqualTo(0)) return 0;
-
-  return purchasedValue.minus(soldValue).dividedBy(soldValue).multipliedBy(100).toNumber();
+/** A return rate from the order-api as a number. Null when absent or not a number. */
+export function parseReturnRate(rate: string | null | undefined): number | null {
+  if (rate === null || rate === undefined || rate === "") return null;
+  const value = Number(rate);
+  return Number.isFinite(value) ? value : null;
 }
 
 export function mapDcaOrderItemToModel(item: DcaOrderItem, tokens: TokenModel[]): DcaOrderModel {
@@ -117,6 +103,7 @@ export function mapDcaOrderItemToModel(item: DcaOrderItem, tokens: TokenModel[])
     claimableAmount: toDisplayAmount(outputToken, item.claimableAmount),
     canClaim: item.status === "COMPLETED" && BigNumber(item.claimableAmount ?? 0).isGreaterThan(0),
     priceRate: calculatePriceRate(inputToken, outputToken, item.soldAmount, item.purchasedAmount),
+    returnRate: parseReturnRate(item.returnRate),
     nextExecutionAt: isActive ? item.nextExecutionAt : null,
     createdAt: item.createdAt,
     closedAt: item.closedAt,
@@ -178,6 +165,7 @@ export function mapDcaExecutionToHistory(
     rate: calculatePriceRate(inputToken, outputToken, item.soldAmount, item.purchasedAmount),
     soldAmount: toDisplayAmount(inputToken, item.soldAmount),
     purchasedAmount: toDisplayAmount(outputToken, item.purchasedAmount),
+    returnRate: parseReturnRate(item.returnRate),
   };
 }
 

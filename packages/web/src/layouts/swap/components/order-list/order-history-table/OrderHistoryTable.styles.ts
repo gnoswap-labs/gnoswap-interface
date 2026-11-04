@@ -60,6 +60,15 @@ export const OrderHistoryTableWrapper = styled.div`
     }
   }
 
+  .cell .return {
+    flex-shrink: 0;
+    overflow: visible;
+    color: ${({ theme }) => theme.color.green01};
+    &.negative {
+      color: ${({ theme }) => theme.color.red01};
+    }
+  }
+
   .time-link {
     ${mixins.flexbox("row", "center", "center")};
     flex-shrink: 0;

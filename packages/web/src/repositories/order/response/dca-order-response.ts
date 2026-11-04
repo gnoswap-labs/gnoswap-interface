@@ -27,6 +27,16 @@ export interface DcaOrderItem {
   closedAt: number | null;
   closedTxHash: string | null;
   refundedAmount: string;
+  /**
+   * Output of swapping the whole deposit at once when the order was placed.
+   * Null when the realm did not quote it; absent from order-api versions
+   * before the return.
+   */
+  referenceAmountOut?: string | null;
+  /** The one-off swap's output for the input sold so far (raw). Null before the first round. */
+  referencePurchasedAmount?: string | null;
+  /** Return of the fills against the one-off swap, in percent, e.g. `"1.2345"`. */
+  returnRate?: string | null;
 }
 
 /** One executed round of a DCA order. Amounts are raw integer strings. */
@@ -38,4 +48,8 @@ export interface DcaExecutionItem {
   soldAmount: string;
   purchasedAmount: string;
   poolPath: string;
+  /** The one-off swap's output for one round's input (raw). */
+  referencePurchasedAmount?: string | null;
+  /** Return of the round against the one-off swap, in percent. */
+  returnRate?: string | null;
 }

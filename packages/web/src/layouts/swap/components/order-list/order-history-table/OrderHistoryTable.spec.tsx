@@ -78,6 +78,16 @@ describe("OrderHistoryTable", () => {
     expect(screen.getByText("2.5M")).toBeInTheDocument();
   });
 
+  it("shows each round's return against the one-off swap when known", () => {
+    renderTable({
+      items: [row(1, { returnRate: 3.4483 }), row(2, { returnRate: -1.25 }), row(3, { returnRate: null }), row(4)],
+    });
+
+    expect(screen.getByText("▴ 3.44%")).toBeInTheDocument();
+    expect(screen.getByText("▾ 1.25%")).toHaveClass("negative");
+    expect(screen.getAllByText(/^[▴▾] /)).toHaveLength(2);
+  });
+
   it("links every row to its transaction on Gnoscan", () => {
     const { container } = renderTable({ items: [row(1), row(2)] });
 
