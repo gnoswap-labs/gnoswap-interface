@@ -50,6 +50,13 @@ function floorToDecimals(value: BigNumber.Value, decimals: number): string {
   return number.decimalPlaces(decimals, BigNumber.ROUND_DOWN).toFixed();
 }
 
+/** Drops the digits a token cannot hold (`0.1234567` → `0.123456` for 6 decimals); other input is kept as is. */
+function truncateToDecimals(value: string, decimals: number): string {
+  const [, fraction] = value.split(".");
+  if (!fraction || fraction.length <= decimals) return value;
+  return BigNumber(value).decimalPlaces(decimals, BigNumber.ROUND_DOWN).toFixed();
+}
+
 export const useLimitOrderHandler = () => {
   const { t } = useTranslation();
   const { orderRepository } = useGnoswapContext();
@@ -153,9 +160,20 @@ export const useLimitOrderHandler = () => {
   const sellUsd = useMemo(() => calculateUsdValue(sellAmount, getUsdPrice(tokenA)), [getUsdPrice, sellAmount, tokenA]);
   const buyUsd = useMemo(() => calculateUsdValue(buyAmount, getUsdPrice(tokenB)), [buyAmount, getUsdPrice, tokenB]);
 
+  // A sell amount restored from a link, or kept from a token with more decimals, can hold digits the
+  // input token cannot represent; trim them so the form shows what will be sent.
+  useEffect(() => {
+    if (!tokenA || !sellAmount) return;
+    const truncated = truncateToDecimals(sellAmount, tokenA.decimals);
+    if (truncated !== sellAmount) setSellAmount(truncated);
+  }, [sellAmount, setSellAmount, tokenA]);
+
   const makingAmount = tokenA ? (makeRawTokenAmount(tokenA, sellAmount || "0") ?? "0") : "0";
   const takingAmount =
     tokenA && tokenB && isValidPrice ? calculateTakingAmount(makingAmount, limitPrice, tokenA, tokenB) : "0";
+  const hasRawAmounts = BigNumber(makingAmount).isGreaterThan(0) && BigNumber(takingAmount).isGreaterThan(0);
+  /** The sell amount as sent: the raw making amount in display units. */
+  const sentSellAmount = tokenA ? (makeDisplayTokenAmountString(tokenA, makingAmount) ?? "0") : "0";
 
   // The Limit realm's own minimums: `minMakingAmount` raw input and a positive `takingAmount`.
   // Native GNOT must also reach the wrap minimum, or no Deposit could be built.
@@ -164,8 +182,12 @@ export const useLimitOrderHandler = () => {
     !!tokenA && isNativeTokenPath(tokenA.path),
     MIN_GNOT_DEPOSIT_AMOUNT,
   );
+  // Checked on the raw amounts whenever a positive amount is entered: one that rounds down to a
+  // raw 0 (or a raw 0 output) must not reach Place Order.
   const isAmountTooLow =
-    BigNumber(makingAmount).isGreaterThan(0) && isLimitAmountTooLow(makingAmount, takingAmount, minMakingAmount);
+    BigNumber(sellAmount || 0).isGreaterThan(0) &&
+    isValidPrice &&
+    isLimitAmountTooLow(makingAmount, takingAmount, minMakingAmount);
   const minTradingText = tokenA
     ? t("Swap:limit.minTrading", {
         amount: makeDisplayTokenAmountString(tokenA, minMakingAmount) ?? minMakingAmount,
@@ -194,9 +216,9 @@ export const useLimitOrderHandler = () => {
   const maxSlippage = BigNumber(maxSlippageBps).dividedBy(100).toNumber();
 
   const createRequest = useMemo((): Omit<CreateLimitOrderRequest, "expiresAt"> | null => {
-    if (buttonState !== "PLACE_ORDER" || !tokenA || !tokenB) return null;
+    if (buttonState !== "PLACE_ORDER" || !tokenA || !tokenB || !hasRawAmounts) return null;
     return { tokenIn: tokenA, tokenOut: tokenB, makingAmount, takingAmount, slippageBps };
-  }, [buttonState, makingAmount, slippageBps, takingAmount, tokenA, tokenB]);
+  }, [buttonState, hasRawAmounts, makingAmount, slippageBps, takingAmount, tokenA, tokenB]);
 
   const debouncedCreateRequest = useDebounce(createRequest, INPUT_DEBOUNCE_MS);
   const { data: networkFee } = useEstimateOrderNetworkFee(
@@ -260,7 +282,7 @@ export const useLimitOrderHandler = () => {
     return {
       tokenIn: tokenA,
       tokenOut: tokenB,
-      sellAmount: sellAmount || "0",
+      sellAmount: sentSellAmount,
       sellAmountUsd: formatUsd(sellUsd),
       buyAmount: makeDisplayTokenAmountString(tokenB, takingAmount) ?? "0",
       buyAmountUsd: formatUsd(buyUsd),
@@ -281,8 +303,8 @@ export const useLimitOrderHandler = () => {
     isValidPrice,
     limitPrice,
     networkFee,
-    sellAmount,
     sellUsd,
+    sentSellAmount,
     slippageBps,
     takingAmount,
     tokenA,
@@ -403,7 +425,7 @@ export const useLimitOrderHandler = () => {
     const messageData = {
       tokenASymbol: tokenA.displaySymbol,
       tokenBSymbol: tokenB.displaySymbol,
-      tokenAAmount: trimFractionZeros(BigNumber(sellAmount).toFormat(tokenA.decimals)),
+      tokenAAmount: trimFractionZeros(BigNumber(sentSellAmount).toFormat(tokenA.decimals)),
       tokenBAmount: trimFractionZeros(
         BigNumber(makeDisplayTokenAmountString(tokenB, takingAmount) ?? 0).toFormat(tokenB.decimals),
       ),
@@ -423,7 +445,7 @@ export const useLimitOrderHandler = () => {
         setEditedSide("sell");
       },
     });
-  }, [createRequest, expiry, orderRepository, sellAmount, setSellAmount, submit, takingAmount, tokenA, tokenB]);
+  }, [createRequest, expiry, orderRepository, sentSellAmount, setSellAmount, submit, takingAmount, tokenA, tokenB]);
 
   const closeConfirmModalRef = useRef<() => void>(() => undefined);
 

@@ -203,4 +203,33 @@ describe("useLimitOrderHandler", () => {
       expect(result.current.limitPrice).toBe("15");
     });
   });
+
+  describe("a positive amount below the token's precision", () => {
+    it("does not reach Place Order when the raw amounts round down to 0", async () => {
+      const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
+      act(() => result.current.changeTokenA(tokenA));
+      act(() => result.current.changeTokenB(tokenB));
+      await waitFor(() => expect(result.current.limitPrice).toBe("10"));
+
+      // A shared link restores amount=0.0000001&price=1 for 6-decimal tokens.
+      act(() => {
+        result.current.setLimitPrice("1");
+        result.current.changeSellAmount("0.0000001");
+      });
+      await act(async () => Promise.resolve());
+
+      expect(result.current.buttonState).not.toBe("PLACE_ORDER");
+    });
+
+    it("keeps only the digits the input token can hold", async () => {
+      const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
+      act(() => result.current.changeTokenA(tokenA));
+      act(() => result.current.changeTokenB(tokenB));
+      await waitFor(() => expect(result.current.limitPrice).toBe("10"));
+
+      act(() => result.current.changeSellAmount("100.1234567"));
+      await waitFor(() => expect(result.current.sellAmount).toBe("100.123456"));
+      expect(result.current.buttonState).toBe("PLACE_ORDER");
+    });
+  });
 });
