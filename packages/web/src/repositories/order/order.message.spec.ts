@@ -227,6 +227,15 @@ describe("order.message.ts", () => {
     ]);
   });
 
+  it("cancels an earlier realm's order in that realm", () => {
+    expect(
+      makeCancelDcaOrderMessages({ orderId: "42", caller, packagePath: "gno.land/r/gnoswap/test/order/dca" }),
+    ).toEqual([expect.objectContaining({ pkg_path: "gno.land/r/gnoswap/test/order/dca", func: "CancelOrder" })]);
+    expect(
+      makeCancelLimitOrderMessages({ orderId: "7", caller, packagePath: "gno.land/r/gnoswap/test/order/limit" }),
+    ).toEqual([expect.objectContaining({ pkg_path: "gno.land/r/gnoswap/test/order/limit", func: "CancelOrder" })]);
+  });
+
   it("builds the DCA claim message", () => {
     expect(makeClaimDcaOrderMessages({ orderId: "42", caller })).toEqual([
       expect.objectContaining({ pkg_path: "dca_path", func: "Claim", args: ["42"], send: "" }),

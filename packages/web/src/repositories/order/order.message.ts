@@ -109,13 +109,16 @@ export async function makeCreateDcaOrderMessagesWithApproves(
 export function makeCancelDcaOrderMessages({
   orderId,
   caller,
+  packagePath,
 }: {
   orderId: string;
   caller: string;
+  /** Realm of the order; an earlier realm deployment's order is cancelled there. */
+  packagePath?: string;
 }): TransactionMessage[] {
   return [
     makeTransactionMessage({
-      packagePath: PACKAGE_DCA_ORDER_PATH,
+      packagePath: packagePath || PACKAGE_DCA_ORDER_PATH,
       send: "",
       func: OrderMessageFunctionType.CancelOrder,
       args: [orderId],
@@ -182,13 +185,16 @@ export async function makeCreateLimitOrderMessagesWithApproves(
 export function makeCancelLimitOrderMessages({
   orderId,
   caller,
+  packagePath,
 }: {
   orderId: string;
   caller: string;
+  /** Realm of the order; an earlier realm deployment's order is cancelled there. */
+  packagePath?: string;
 }): TransactionMessage[] {
   return [
     makeTransactionMessage({
-      packagePath: PACKAGE_LIMIT_ORDER_PATH,
+      packagePath: packagePath || PACKAGE_LIMIT_ORDER_PATH,
       send: "",
       func: OrderMessageFunctionType.CancelOrder,
       args: [orderId],

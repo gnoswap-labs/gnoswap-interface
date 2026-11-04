@@ -115,7 +115,10 @@ export class OrderRepositoryImpl implements OrderRepository {
 
   public sendCancelDcaOrder = async (request: CancelOrderRequest): Promise<WalletResponse<{ hash: string }>> => {
     const caller = await this.getAddress();
-    return this.sendTransaction(makeCancelDcaOrderMessages({ orderId: request.orderId, caller }), request);
+    return this.sendTransaction(
+      makeCancelDcaOrderMessages({ orderId: request.orderId, caller, packagePath: request.packagePath }),
+      request,
+    );
   };
 
   public sendClaimDcaOrder = async (request: CancelOrderRequest): Promise<WalletResponse<{ hash: string }>> => {
@@ -130,7 +133,10 @@ export class OrderRepositoryImpl implements OrderRepository {
 
   public sendCancelLimitOrder = async (request: CancelOrderRequest): Promise<WalletResponse<{ hash: string }>> => {
     const caller = await this.getAddress();
-    return this.sendTransaction(makeCancelLimitOrderMessages({ orderId: request.orderId, caller }), request);
+    return this.sendTransaction(
+      makeCancelLimitOrderMessages({ orderId: request.orderId, caller, packagePath: request.packagePath }),
+      request,
+    );
   };
 
   private async get<T>(url: string): Promise<T> {

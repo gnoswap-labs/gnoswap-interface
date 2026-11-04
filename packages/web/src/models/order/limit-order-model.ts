@@ -20,7 +20,7 @@ export interface LimitOrderModel {
   orderId: string;
   /** Proxy realm path of the Limit contract that holds the order. */
   packagePath: string;
-  /** Whether the order lives in the Limit realm this app sends transactions to; see DcaOrderModel. */
+  /** Whether the order lives in the Limit realm this app places orders in; see DcaOrderModel. */
   isCurrentRealm: boolean;
   status: LimitOrderStatus;
   isActive: boolean;

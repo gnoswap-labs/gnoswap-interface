@@ -102,20 +102,20 @@ export const useStopOrderHandler = () => {
     };
 
     if (selected.kind === "dca") {
-      const orderId = selected.order.orderId;
+      const { orderId, packagePath } = selected.order;
       submit({
         action: DexEvent.DCA_STOP,
         messageData,
-        send: () => orderRepository.sendCancelDcaOrder({ orderId }),
+        send: () => orderRepository.sendCancelDcaOrder({ orderId, packagePath }),
       });
       return;
     }
 
-    const orderId = selected.order.orderId;
+    const { orderId, packagePath } = selected.order;
     submit({
       action: DexEvent.LIMIT_CANCEL,
       messageData,
-      send: () => orderRepository.sendCancelLimitOrder({ orderId }),
+      send: () => orderRepository.sendCancelLimitOrder({ orderId, packagePath }),
     });
   }, [orderRepository, selected, submit, summary]);
 

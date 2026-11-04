@@ -30,4 +30,9 @@ export interface CreateLimitOrderRequest extends OrderGasRequest {
 
 export interface CancelOrderRequest extends OrderGasRequest {
   orderId: string;
+  /**
+   * Realm of the order. An order of an earlier realm deployment is cancelled
+   * in that realm; defaults to the current one.
+   */
+  packagePath?: string;
 }

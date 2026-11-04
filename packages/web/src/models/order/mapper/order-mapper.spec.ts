@@ -166,7 +166,7 @@ describe("order-mapper", () => {
       expect(resolveOrderRealm(earlierDca, currentDca)).toEqual({ packagePath: earlierDca, isCurrentRealm: false });
     });
 
-    it("keeps an earlier realm's DCA order read-only", () => {
+    it("lets an earlier realm's DCA order be stopped but not claimed", () => {
       const completed = { ...dcaItem, status: "COMPLETED" as const, claimableAmount: "450" };
 
       const current = mapDcaOrderItemToModel({ ...completed, packagePath: currentDca }, tokens);
@@ -209,11 +209,12 @@ describe("order-mapper", () => {
     expect(order.priceRate).toBe("1.271");
     expect(order.progress).toBeCloseTo(33.333, 2);
     expect(mapLimitOrderItemToModel({ ...item, status: "EXPIRED" }, tokens).isActive).toBe(false);
-    // An earlier realm's order cannot be cancelled here: CancelOrder goes to the current realm.
+    // An earlier realm's order is still cancelled, in its own realm.
     expect(order.canCancel).toBe(true);
     const earlier = mapLimitOrderItemToModel({ ...item, packagePath: "gno.land/r/gnoswap/test/order/limit" }, tokens);
     expect(earlier.isCurrentRealm).toBe(false);
-    expect(earlier.canCancel).toBe(false);
+    expect(earlier.packagePath).toBe("gno.land/r/gnoswap/test/order/limit");
+    expect(earlier.canCancel).toBe(true);
   });
 
   it("offers the limit cancel/refund while input is still escrowed, even after expiry", () => {

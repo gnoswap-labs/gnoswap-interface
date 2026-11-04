@@ -73,7 +73,7 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
       </div>
       <OrderProgressBar progress={order.progress} overview={overview} />
       <OrderMetrics metrics={metrics} />
-      {order.isActive && order.isCurrentRealm && (
+      {order.isActive && (
         <OrderStopButton
           text={t("Swap:order.stopOrder")}
           onClick={() => onClickStop(order)}

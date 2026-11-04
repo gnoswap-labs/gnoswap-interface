@@ -113,7 +113,7 @@ export function mapDcaOrderItemToModel(item: DcaOrderItem, tokens: TokenModel[])
     remainingAmount: toDisplayAmount(inputToken, item.remainingAmount),
     claimedAmount: toDisplayAmount(outputToken, item.claimedAmount),
     claimableAmount: toDisplayAmount(outputToken, item.claimableAmount),
-    // Claim is sent to the current realm, so an earlier realm's order cannot be claimed here.
+    // An earlier realm's order can only be cancelled here, not claimed.
     canClaim:
       realm.isCurrentRealm && item.status === "COMPLETED" && BigNumber(item.claimableAmount ?? 0).isGreaterThan(0),
     priceRate: calculatePriceRate(inputToken, outputToken, item.soldAmount, item.purchasedAmount),
@@ -157,7 +157,8 @@ export function mapLimitOrderItemToModel(item: LimitOrderItem, tokens: TokenMode
     remainingInput: toDisplayAmount(tokenIn, item.remainingInput),
     refundedInput: toDisplayAmount(tokenIn, item.refundedInput),
     userOutput: toDisplayAmount(tokenOut, item.userOutput),
-    canCancel: realm.isCurrentRealm && canCancelLimitOrder(item),
+    // Cancelled in the order's own realm, so an earlier realm's order can still be cancelled.
+    canCancel: canCancelLimitOrder(item),
     limitPrice: calculatePriceRate(tokenIn, tokenOut, item.makingAmount, item.takingAmount),
     priceRate: calculatePriceRate(tokenIn, tokenOut, item.filledInput, item.userOutput),
     progress: item.status === "COMPLETED" ? 100 : calculateProgress(item.filledInput, item.makingAmount),

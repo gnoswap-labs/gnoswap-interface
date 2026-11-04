@@ -30,8 +30,8 @@ export interface DcaOrderModel {
   /** Proxy realm path of the DCA contract that holds the order. */
   packagePath: string;
   /**
-   * Whether the order lives in the DCA realm this app sends transactions to.
-   * Orders of an earlier realm deployment are shown read-only.
+   * Whether the order lives in the DCA realm this app places orders in.
+   * An order of an earlier realm deployment can only be stopped, in its own realm.
    */
   isCurrentRealm: boolean;
   status: DcaOrderStatus;
