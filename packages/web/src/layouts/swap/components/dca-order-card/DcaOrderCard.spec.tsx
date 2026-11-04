@@ -45,6 +45,7 @@ const summary: DcaOrderSummary = {
   amountPerOrder: "750",
   estimatedEndDate: "2026-11-03 20:35:36",
   routerFee: "0.15%",
+  executionFee: "0.1%",
   networkGasFee: "0.002451 GNOT",
   networkGasFeeUsd: "$0.12",
 };
@@ -99,6 +100,8 @@ describe("DcaOrderCard", () => {
     expect(screen.getByText("Swap:dca.over")).toBeInTheDocument();
     expect(screen.getByText("750 GNS")).toBeInTheDocument();
     expect(screen.getByText("2026-11-03 20:35:36")).toBeInTheDocument();
+    expect(screen.getByText("Swap:dca.executionFee")).toBeInTheDocument();
+    expect(screen.getByText("0.1%")).toBeInTheDocument();
   });
 
   it("places the order from the primary button", () => {

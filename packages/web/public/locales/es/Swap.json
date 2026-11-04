@@ -21,6 +21,8 @@
     "over": "Durante",
     "overTooltip": "El número de operaciones individuales que se ejecutarán como parte de tu orden.",
     "placeOrder": "Crear orden",
+    "executionFee": "Comisión de ejecución",
+    "executionFeeTooltip": "La comisión que la orden DCA descuenta del resultado de cada operación ejecutada. La tasa mostrada ya la descuenta.",
     "routerFee": "Comisión del router",
     "routerFeeTooltip": "La comisión cobrada en cada operación ejecutada por la orden. Se paga en el token de salida.",
     "toBuy": "Comprar",

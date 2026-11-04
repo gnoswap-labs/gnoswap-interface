@@ -36,6 +36,12 @@ const ConfirmDcaOrderModal: React.FC<ConfirmDcaOrderModalProps> = ({ summary, is
         value: summary.routerFee,
       },
       {
+        key: "executionFee",
+        label: t("Swap:dca.executionFee"),
+        tooltip: t("Swap:dca.executionFeeTooltip"),
+        value: summary.executionFee,
+      },
+      {
         key: "networkGasFee",
         label: t("Swap:dca.networkGasFee"),
         tooltip: t("Swap:dca.networkGasFeeTooltip"),

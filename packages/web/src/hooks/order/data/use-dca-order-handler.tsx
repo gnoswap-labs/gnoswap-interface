@@ -44,6 +44,7 @@ import {
 import { useOrderTransaction } from "./use-order-transaction";
 
 const INPUT_DEBOUNCE_MS = 300;
+const BPS_DENOMINATOR = 10_000;
 
 /** The realm accepts a slot offset in [0, interval). */
 const isSlotWithinInterval = (slotOffset: number, interval: number) => slotOffset >= 0 && slotOffset < interval;
@@ -198,12 +199,16 @@ export const useDcaOrderHandler = () => {
     !!tokenA &&
     !!tokenB &&
     !isSameToken;
+  // What the owner receives per input: the realm deducts its execution fee from
+  // the router output of each execution before crediting the order.
+  const executionFeeBps = config?.executionFeeBps ?? 0;
   const rate = useMemo(() => {
     if (!tokenB || routes?.status !== "SUCCESS") return null;
     const output = makeDisplayTokenAmountString(tokenB, routes.amount);
     if (!output) return null;
-    return BigNumber(output).dividedBy(quoteAmount).toFixed();
-  }, [quoteAmount, routes, tokenB]);
+    const ownerOutput = BigNumber(output).multipliedBy(BPS_DENOMINATOR - executionFeeBps).dividedBy(BPS_DENOMINATOR);
+    return ownerOutput.dividedBy(quoteAmount).toFixed();
+  }, [executionFeeBps, quoteAmount, routes, tokenB]);
 
   const currentScheduleRequest = useMemo(
     () =>
@@ -319,12 +324,14 @@ export const useDcaOrderHandler = () => {
       amountPerOrder: trimFractionZeros(BigNumber(amountPerExecution).toFormat(tokenA.decimals, BigNumber.ROUND_DOWN)),
       estimatedEndDate: formatOrderDateTime(schedule?.estimatedEndAt),
       routerFee: formatBps(config?.routerFeeBps),
+      executionFee: formatBps(config?.executionFeeBps),
       networkGasFee: fee.text,
       networkGasFeeUsd: fee.usd,
     };
   }, [
     actualSellAmount,
     amountPerExecution,
+    config?.executionFeeBps,
     config?.routerFeeBps,
     executionCount,
     formatNetworkFee,

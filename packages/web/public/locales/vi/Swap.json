@@ -21,6 +21,8 @@
     "over": "Số lần",
     "overTooltip": "Số lượng giao dịch riêng lẻ sẽ được thực hiện trong lệnh của bạn.",
     "placeOrder": "Đặt lệnh",
+    "executionFee": "Phí thực thi",
+    "executionFeeTooltip": "Phí mà lệnh DCA khấu trừ từ đầu ra của mỗi giao dịch được thực hiện. Tỷ giá hiển thị đã trừ phí này.",
     "routerFee": "Phí router",
     "routerFeeTooltip": "Phí tính trên mỗi giao dịch do lệnh thực hiện. Được trả bằng token đầu ra.",
     "toBuy": "Mua",

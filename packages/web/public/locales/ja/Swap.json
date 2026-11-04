@@ -21,6 +21,8 @@
     "over": "回数",
     "overTooltip": "注文の一部として実行される個別取引の回数です。",
     "placeOrder": "注文する",
+    "executionFee": "実行手数料",
+    "executionFeeTooltip": "DCA注文が実行された各取引の出力から差し引く手数料です。表示レートはこの手数料を差し引いた値です。",
     "routerFee": "ルーター手数料",
     "routerFeeTooltip": "注文によって実行される各取引に課される手数料です。出力トークンで支払われます。",
     "toBuy": "購入",

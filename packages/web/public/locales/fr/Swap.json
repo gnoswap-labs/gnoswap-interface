@@ -21,6 +21,8 @@
     "over": "Sur",
     "overTooltip": "Le nombre de transactions individuelles qui seront déclenchées dans le cadre de votre ordre.",
     "placeOrder": "Passer l'ordre",
+    "executionFee": "Frais d'exécution",
+    "executionFeeTooltip": "Les frais que l'ordre DCA déduit de la sortie de chaque transaction exécutée. Le taux affiché est net de ces frais.",
     "routerFee": "Frais du routeur",
     "routerFeeTooltip": "Les frais prélevés sur chaque transaction exécutée par l'ordre. Ils sont payés dans le jeton de sortie.",
     "toBuy": "À acheter",

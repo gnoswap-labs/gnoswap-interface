@@ -21,6 +21,8 @@
     "over": "Over",
     "overTooltip": "The number of individual trades that will be triggered as part of your order.",
     "placeOrder": "Place Order",
+    "executionFee": "Execution Fee",
+    "executionFeeTooltip": "The fee the DCA order deducts from the output of each executed trade. The rate shown is after this fee.",
     "routerFee": "Router Fee",
     "routerFeeTooltip": "The fee charged on each trade executed by the order. It is paid in the output token.",
     "toBuy": "To Buy",

@@ -19,6 +19,8 @@ export interface DcaOrderSummary {
   amountPerOrder: string;
   estimatedEndDate: string;
   routerFee: string;
+  /** The DCA realm's fee on each execution's output; `rate` is already net of it. */
+  executionFee: string;
   networkGasFee: string;
   networkGasFeeUsd: string;
 }

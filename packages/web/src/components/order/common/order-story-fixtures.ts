@@ -18,6 +18,7 @@ export const STORY_DCA_ORDER_SUMMARY: DcaOrderSummary = {
   amountPerOrder: "1,200",
   estimatedEndDate: "2026-11-03 20:35:36",
   routerFee: "0.15%",
+  executionFee: "0.15%",
   networkGasFee: "0.002451 GNOT",
   networkGasFeeUsd: "$0.12",
 };

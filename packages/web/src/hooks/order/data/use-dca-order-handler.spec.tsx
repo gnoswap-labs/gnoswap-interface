@@ -25,6 +25,8 @@ const mockState: {
         minAmountPerExecution?: string;
         whitelistedPools?: string[];
         halted?: { execute: boolean };
+        executionFeeBps?: number;
+        routerFeeBps?: number;
       }
     | undefined;
   configError: boolean;
@@ -91,7 +93,7 @@ jest.mock("./use-order-form-common", () => ({
     tokenABalance: mockState.balance,
     isSameToken: false,
     formatUsd: () => "-",
-    formatRate: () => ({ text: "-", usd: "-" }),
+    formatRate: (rate: string | null) => ({ text: rate ?? "-", usd: "-" }),
     formatNetworkFee: () => ({ text: "-", usd: "-" }),
   }),
 }));
@@ -436,5 +438,23 @@ describe("useDcaOrderHandler schedule of the current form", () => {
     await confirm();
     expect(mockSendCreateDcaOrder).toHaveBeenCalledTimes(1);
     expect(mockSendCreateDcaOrder.mock.calls[0][0]).toMatchObject({ interval: 60, slotOffset: 0 });
+  });
+});
+
+describe("useDcaOrderHandler execution fee", () => {
+  afterEach(() => {
+    mockState.config = undefined;
+  });
+
+  it("quotes the owner rate net of the execution fee and shows the fee", () => {
+    mockState.configError = false;
+    mockState.config = { whitelistedPools, executionFeeBps: 15, routerFeeBps: 15 };
+    mockPoolList({ data: undefined, isError: false });
+
+    // The router returns 5 B for one 5 A execution; the realm keeps 0.15% of it.
+    const result = renderWithPair(tokenB);
+    act(() => result.current.setExecutionCountInput("2"));
+
+    expect(result.current.summary).toMatchObject({ rate: "0.9985", executionFee: "0.15%", routerFee: "0.15%" });
   });
 });

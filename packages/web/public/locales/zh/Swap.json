@@ -21,6 +21,8 @@
     "over": "次数",
     "overTooltip": "作为订单一部分将被触发的单笔交易次数。",
     "placeOrder": "下单",
+    "executionFee": "执行费",
+    "executionFeeTooltip": "DCA 订单从每笔已执行交易的输出中扣除的费用。显示的汇率已扣除此费用。",
     "routerFee": "路由费",
     "routerFeeTooltip": "订单执行的每笔交易收取的费用，以输出代币支付。",
     "toBuy": "买入",
