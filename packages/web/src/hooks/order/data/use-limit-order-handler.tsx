@@ -53,7 +53,7 @@ function floorToDecimals(value: BigNumber.Value, decimals: number): string {
 export const useLimitOrderHandler = () => {
   const { t } = useTranslation();
   const { orderRepository } = useGnoswapContext();
-  const { slippage, changeSlippage } = useSlippage();
+  const { slippage, changeSlippage } = useSlippage({ resetOnMount: false });
   const { openModal: openConnectWallet } = useConnectWalletModal();
   const { submit } = useOrderTransaction();
 
