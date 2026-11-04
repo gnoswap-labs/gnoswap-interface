@@ -254,6 +254,13 @@
       },
       "claimed": "Заявлено",
       "claimedDeposit": "Заявленный депозит",
+      "dcaOrdered": "DCA размещён",
+      "dcaSwapped": "DCA обменян",
+      "dcaStopped": "DCA остановлен",
+      "limitOrdered": "Лимит размещён",
+      "limitSwapped": "Лимит исполнен",
+      "limitCancelled": "Лимит отменён",
+      "limitExpired": "Лимит истёк",
       "createproposal": {
         "status": {
           "success": "Создано"

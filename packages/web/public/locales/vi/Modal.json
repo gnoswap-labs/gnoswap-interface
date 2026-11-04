@@ -254,6 +254,13 @@
       },
       "claimed": "Được tuyên bố",
       "claimedDeposit": "Tiền gửi được yêu cầu",
+      "dcaOrdered": "Đã đặt DCA",
+      "dcaSwapped": "Đã hoán đổi DCA",
+      "dcaStopped": "Đã dừng DCA",
+      "limitOrdered": "Đã đặt lệnh giới hạn",
+      "limitSwapped": "Đã khớp lệnh giới hạn",
+      "limitCancelled": "Đã hủy lệnh giới hạn",
+      "limitExpired": "Lệnh giới hạn đã hết hạn",
       "createproposal": {
         "status": {
           "success": "Được tạo"

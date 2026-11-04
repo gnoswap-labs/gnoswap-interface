@@ -254,6 +254,13 @@
       },
       "claimed": "請求済み",
       "claimedDeposit": "保証金請求",
+      "dcaOrdered": "DCA注文済み",
+      "dcaSwapped": "DCAスワップ済み",
+      "dcaStopped": "DCA停止済み",
+      "limitOrdered": "指値注文済み",
+      "limitSwapped": "指値スワップ済み",
+      "limitCancelled": "指値キャンセル済み",
+      "limitExpired": "指値期限切れ",
       "createproposal": {
         "status": {
           "success": "作成"

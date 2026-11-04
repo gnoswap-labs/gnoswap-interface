@@ -254,6 +254,13 @@
       },
       "claimed": "已申请",
       "claimedDeposit": "申请存款",
+      "dcaOrdered": "DCA 已下单",
+      "dcaSwapped": "DCA 已兑换",
+      "dcaStopped": "DCA 已停止",
+      "limitOrdered": "限价已下单",
+      "limitSwapped": "限价已成交",
+      "limitCancelled": "限价已取消",
+      "limitExpired": "限价已过期",
       "createproposal": {
         "status": {
           "success": "创建"

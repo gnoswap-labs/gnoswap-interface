@@ -254,6 +254,13 @@
       },
       "claimed": "Reclamado",
       "claimedDeposit": "Depósito reclamado",
+      "dcaOrdered": "DCA ordenado",
+      "dcaSwapped": "DCA intercambiado",
+      "dcaStopped": "DCA detenido",
+      "limitOrdered": "Límite ordenado",
+      "limitSwapped": "Límite intercambiado",
+      "limitCancelled": "Límite cancelado",
+      "limitExpired": "Límite expirado",
       "createproposal": {
         "status": {
           "success": "Creado"

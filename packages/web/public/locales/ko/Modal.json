@@ -254,6 +254,13 @@
       },
       "claimed": "청구됨",
       "claimedDeposit": "청구된 예치금",
+      "dcaOrdered": "DCA 주문됨",
+      "dcaSwapped": "DCA 스왑됨",
+      "dcaStopped": "DCA 중지됨",
+      "limitOrdered": "지정가 주문됨",
+      "limitSwapped": "지정가 스왑됨",
+      "limitCancelled": "지정가 취소됨",
+      "limitExpired": "지정가 만료됨",
       "createproposal": {
         "status": {
           "success": "생성됨"

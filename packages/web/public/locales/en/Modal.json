@@ -254,6 +254,13 @@
       },
       "claimed": "Claimed",
       "claimedDeposit": "Claimed Deposit",
+      "dcaOrdered": "DCA Ordered",
+      "dcaSwapped": "DCA Swapped",
+      "dcaStopped": "DCA Stopped",
+      "limitOrdered": "Limit Ordered",
+      "limitSwapped": "Limit Swapped",
+      "limitCancelled": "Limit Cancelled",
+      "limitExpired": "Limit Expired",
       "createproposal": {
         "status": {
           "success": "Created"
