@@ -21,6 +21,18 @@ jest.mock("@query/order", () => ({
   useGetLimitOrders: (...args: unknown[]) => mockUseGetLimitOrders(...args),
 }));
 jest.mock("@constants/order.constant", () => ({ ENABLED_SWAP_CARD_TYPES: ["swap", "dca", "limit"] }));
+jest.mock("../../components/order-list/order-card/DcaOrderItemCard", () => ({
+  __esModule: true,
+  default: ({ order }: { order: { packagePath: string; orderId: string } }) => (
+    <div data-testid="order-card">{`${order.packagePath}:${order.orderId}`}</div>
+  ),
+}));
+jest.mock("../../components/order-list/order-card/LimitOrderItemCard", () => ({
+  __esModule: true,
+  default: ({ order }: { order: { packagePath: string; orderId: string } }) => (
+    <div data-testid="order-card">{`${order.packagePath}:${order.orderId}`}</div>
+  ),
+}));
 
 type Totals = { active?: number; past?: number };
 
@@ -137,4 +149,29 @@ describe("OrderListContainer", () => {
       expect(lastListCall(mockUseGetDcaOrders)?.[1].refetchInterval).toBe(false);
     },
   );
+
+  it.each(["dca", "limit"] as const)("keys %s cards by realm and order ID", kind => {
+    const consoleError = jest.spyOn(console, "error").mockImplementation(() => undefined);
+    const items = [
+      { orderId: "1", packagePath: "gno.land/r/gnoswap/test/order/" + kind },
+      { orderId: "1", packagePath: "gno.land/r/gnoswap/test3/order/" + kind },
+    ];
+    const page = { data: { items, pageInfo: { currentPage: 1, totalItems: 2, totalPages: 1 } }, isLoading: false };
+    mockUseWallet.mockReturnValue({ connected: true, account: { address: "g1owner" } });
+    const mockOrders = kind === "dca" ? mockUseGetDcaOrders : mockUseGetLimitOrders;
+    const mockOther = kind === "dca" ? mockUseGetLimitOrders : mockUseGetDcaOrders;
+    mockOrders.mockReturnValue(page);
+    mockOther.mockReturnValue({ data: undefined, isLoading: true });
+
+    render(
+      <GnoswapThemeProvider>
+        <OrderListContainer kind={kind} />
+      </GnoswapThemeProvider>,
+    );
+
+    expect(screen.getAllByTestId("order-card")).toHaveLength(2);
+    const duplicateKeyWarnings = consoleError.mock.calls.filter(args => String(args[0]).includes("same key"));
+    consoleError.mockRestore();
+    expect(duplicateKeyWarnings).toHaveLength(0);
+  });
 });

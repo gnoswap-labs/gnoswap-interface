@@ -107,11 +107,12 @@ const OrderListPages: React.FC<OrderListPagesProps> = ({ kind, tab, changeTab, c
   });
   const { data, isLoading } = kind === "dca" ? dcaOrders : limitOrders;
 
+  // Order IDs restart with each realm deployment, so a card is identified by its realm and ID.
   const items = (() => {
     if (kind === "dca") {
       return (dcaOrders.data?.items ?? []).map(order => (
         <DcaOrderItemCard
-          key={order.orderId}
+          key={`${order.packagePath}:${order.orderId}`}
           order={order}
           roi={formatOrderRoi(order.returnRate)}
           txUrl={getTxUrl(order.createdTxHash)}
@@ -124,7 +125,7 @@ const OrderListPages: React.FC<OrderListPagesProps> = ({ kind, tab, changeTab, c
 
     return (limitOrders.data?.items ?? []).map(order => (
       <LimitOrderItemCard
-        key={order.orderId}
+        key={`${order.packagePath}:${order.orderId}`}
         order={order}
         txUrl={getTxUrl(order.createdTxHash)}
         onClickCancel={openCancelLimitOrder}
