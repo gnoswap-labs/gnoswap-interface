@@ -16,9 +16,17 @@ interface SettingMenuModalProps {
   changeSlippage: (value: number) => void;
   close: () => void;
   className?: string;
+  /** Highest tolerance (percent) the editor accepts; values above it are saved as it. */
+  maxSlippage?: number;
 }
 
-const SettingMenuModal: React.FC<SettingMenuModalProps> = ({ slippage, changeSlippage, close, className }) => {
+const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
+  slippage,
+  changeSlippage,
+  close,
+  className,
+  maxSlippage = MAX_SLIPPAGE,
+}) => {
   const [tmpSlippage, setTmpSlippage] = useState<string>(slippage.toString());
   const settingMenuRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -35,14 +43,14 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({ slippage, changeSli
 
   const closeWithUpdate = useCallback(() => {
     if (inputRef && inputRef.current) {
-      if (Number(inputRef.current.value) > MAX_SLIPPAGE) {
-        changeSlippage(MAX_SLIPPAGE);
+      if (Number(inputRef.current.value) > maxSlippage) {
+        changeSlippage(maxSlippage);
       } else {
         changeSlippage(Number(inputRef.current.value));
       }
     }
     close();
-  }, [close, changeSlippage]);
+  }, [close, changeSlippage, maxSlippage]);
 
   const TooltipFloatingContent = (
     <ModalTooltipWrap>
@@ -77,16 +85,16 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({ slippage, changeSli
         if (value === "") {
           changeSlippage(MIN_SLIPPAGE);
           setTmpSlippage(MIN_SLIPPAGE.toString());
-        } else if (Number(value) > MAX_SLIPPAGE) {
-          changeSlippage(MAX_SLIPPAGE);
-          setTmpSlippage(MAX_SLIPPAGE.toString());
+        } else if (Number(value) > maxSlippage) {
+          changeSlippage(maxSlippage);
+          setTmpSlippage(maxSlippage.toString());
         } else {
           changeSlippage(Number(value));
         }
         close();
       }
     },
-    [changeSlippage, setTmpSlippage, close],
+    [changeSlippage, setTmpSlippage, close, maxSlippage],
   );
 
   return (

@@ -17,6 +17,8 @@ interface SwapCardHeaderProps {
   /** The slippage setting. Omitted where the order takes no user slippage (DCA). */
   slippage?: number;
   changeSlippage?: (value: number) => void;
+  /** Highest tolerance (percent) the settings editor accepts. Defaults to the swap maximum. */
+  maxSlippage?: number;
   themeKey: "dark" | "light";
   /** Shows the Swap | DCA | Limit tabs in place of the title when given. */
   swapType?: SwapCardType;
@@ -29,6 +31,7 @@ const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
   copyURL,
   slippage,
   changeSlippage,
+  maxSlippage,
   themeKey,
   swapType,
   changeSwapType,
@@ -87,7 +90,12 @@ const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
               <IconSettings className="setting-icon" />
             </div>
             {openedSetting && (
-              <SettingMenuModal slippage={slippage} changeSlippage={changeSlippage} close={closeSetting} />
+              <SettingMenuModal
+                slippage={slippage}
+                changeSlippage={changeSlippage}
+                maxSlippage={maxSlippage}
+                close={closeSetting}
+              />
             )}
           </SettingMenuButton>
         )}

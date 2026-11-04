@@ -178,7 +178,11 @@ export const useLimitOrderHandler = () => {
 
   const buttonText = getOrderButtonText(buttonState, t, t("Swap:limit.startToOrder"));
 
-  const slippageBps = toLimitSlippageBps(slippage, config?.maxSlippageBps ?? MAX_LIMIT_SLIPPAGE_BPS);
+  const maxSlippageBps = config?.maxSlippageBps ?? MAX_LIMIT_SLIPPAGE_BPS;
+  const slippageBps = toLimitSlippageBps(slippage, maxSlippageBps);
+  // The settings show the tolerance actually confirmed and sent, and accept no more than the realm does.
+  const effectiveSlippage = BigNumber(slippageBps).dividedBy(100).toNumber();
+  const maxSlippage = BigNumber(maxSlippageBps).dividedBy(100).toNumber();
 
   const createRequest = useMemo((): Omit<CreateLimitOrderRequest, "expiresAt"> | null => {
     if (buttonState !== "PLACE_ORDER" || !tokenA || !tokenB) return null;
@@ -462,7 +466,8 @@ export const useLimitOrderHandler = () => {
     buttonText,
     minTradingText,
     copied,
-    slippage,
+    slippage: effectiveSlippage,
+    maxSlippage,
     changeSlippage,
     copyURL,
     changeTokenA,

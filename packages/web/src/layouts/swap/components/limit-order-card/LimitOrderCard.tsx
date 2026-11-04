@@ -27,8 +27,11 @@ export interface LimitOrderCardProps {
   changeSwapType: (type: SwapCardType) => void;
   copied: boolean;
   copyURL: () => void;
+  /** The effective tolerance (percent), already capped to the Limit realm maximum. */
   slippage: number;
   changeSlippage: (value: number) => void;
+  /** The Limit realm's maximum tolerance (percent). */
+  maxSlippage: number;
   themeKey: "dark" | "light";
   isLoading: boolean;
 
@@ -75,6 +78,7 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
   copyURL,
   slippage,
   changeSlippage,
+  maxSlippage,
   themeKey,
   isLoading,
   connectedWallet,
@@ -126,6 +130,7 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
         copyURL={copyURL}
         slippage={slippage}
         changeSlippage={changeSlippage}
+        maxSlippage={maxSlippage}
         themeKey={themeKey}
         swapType={swapType}
         changeSwapType={changeSwapType}

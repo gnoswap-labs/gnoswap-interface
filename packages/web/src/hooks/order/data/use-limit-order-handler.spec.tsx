@@ -11,7 +11,10 @@ import { useLimitOrderHandler } from "./use-limit-order-handler";
 jest.mock("react-i18next", () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 jest.mock("@hooks/common/use-debounce", () => ({ __esModule: true, default: <T,>(value: T) => value }));
 jest.mock("@hooks/common/use-gnoswap-context", () => ({ useGnoswapContext: () => ({ orderRepository: {} }) }));
-jest.mock("@hooks/common/use-slippage", () => ({ useSlippage: () => ({ slippage: 0.5, changeSlippage: jest.fn() }) }));
+let mockSlippage = 0.5;
+jest.mock("@hooks/common/use-slippage", () => ({
+  useSlippage: () => ({ slippage: mockSlippage, changeSlippage: jest.fn() }),
+}));
 jest.mock("@hooks/wallet/ui/use-connect-wallet-modal", () => ({
   useConnectWalletModal: () => ({ openModal: jest.fn() }),
 }));
@@ -40,8 +43,9 @@ jest.mock("./use-order-form-common", () => ({
     formatNetworkFee: () => ({ text: "-", usd: "-" }),
   }),
 }));
+let mockLimitConfig: { maxSlippageBps?: number } | undefined;
 jest.mock("@query/order", () => ({
-  useGetLimitConfig: () => ({ data: undefined, isLoading: false }),
+  useGetLimitConfig: () => ({ data: mockLimitConfig, isLoading: false }),
   useEstimateOrderNetworkFee: () => ({ data: undefined }),
 }));
 jest.mock("@query/router", () => ({ useGetRoutes: jest.fn() }));
@@ -75,6 +79,8 @@ const wrapper = ({ children }: { children: React.ReactNode }) => <JotaiProvider>
 
 describe("useLimitOrderHandler", () => {
   beforeEach(() => {
+    mockSlippage = 0.5;
+    mockLimitConfig = undefined;
     jest.mocked(useGetRoutes).mockImplementation(request => {
       if (!request?.inputToken || !request.outputToken || !request.tokenAmount) {
         return { data: undefined } as ReturnType<typeof useGetRoutes>;
@@ -132,5 +138,14 @@ describe("useLimitOrderHandler", () => {
     act(() => result.current.changeLimitPrice(""));
     act(() => result.current.changeTokenB(tokenC));
     await waitFor(() => expect(result.current.limitPrice).toBe("20"));
+  });
+
+  it("shows the tolerance capped to the realm maximum, the one confirmed and sent", () => {
+    mockSlippage = 30;
+    mockLimitConfig = { maxSlippageBps: 1000 };
+    const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
+
+    expect(result.current.slippage).toBe(10);
+    expect(result.current.maxSlippage).toBe(10);
   });
 });

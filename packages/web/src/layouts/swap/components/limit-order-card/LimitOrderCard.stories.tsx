@@ -30,6 +30,7 @@ export const Default: Story = {
     copied: false,
     copyURL: fn(),
     slippage: 0.5,
+    maxSlippage: 10,
     changeSlippage: fn(),
     themeKey: "dark",
     isLoading: false,

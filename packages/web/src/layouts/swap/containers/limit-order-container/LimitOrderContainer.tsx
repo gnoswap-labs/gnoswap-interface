@@ -41,6 +41,7 @@ const LimitOrderContainer: React.FC<LimitOrderContainerProps> = ({ swapType, cha
       copyURL={handler.copyURL}
       slippage={handler.slippage}
       changeSlippage={handler.changeSlippage}
+      maxSlippage={handler.maxSlippage}
       themeKey={themeKey}
       isLoading={handler.isLoadingConfig}
       connectedWallet={handler.connected}
