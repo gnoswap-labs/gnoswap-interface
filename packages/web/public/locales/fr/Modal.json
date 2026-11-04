@@ -367,18 +367,14 @@
   },
   "confirmPlaceOrder": {
     "actualAmount": "Seuls {{amount}} {{symbol}} sont engagés afin que chaque transaction vende le même montant.",
-    "confirm": "Confirmer l'ordre",
     "title": "Confirmer l'ordre"
   },
   "confirmLimitOrder": {
-    "confirm": "Confirmer l'ordre limite",
     "title": "Confirmer l'ordre limite"
   },
   "confirmStopOrder": {
-    "cancelConfirm": "Confirmer l'annulation",
     "cancelNote": "Si vous annulez un ordre limite, vous ne pourrez pas le relancer et seul le montant non exécuté vous sera restitué. Les montants exécutés ne sont pas affectés.",
     "cancelTitle": "Confirmer l'annulation de l'ordre",
-    "confirm": "Confirmer l'arrêt",
     "importantNote": "Remarque importante",
     "note": "Si vous arrêtez un ordre DCA, vous ne pourrez pas le relancer et seuls les montants restants vous seront restitués. Pour continuer le DCA, créez un nouvel ordre DCA.",
     "orderDetails": "Détails de l'ordre",

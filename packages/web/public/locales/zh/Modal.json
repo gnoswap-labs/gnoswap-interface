@@ -367,18 +367,14 @@
   },
   "confirmPlaceOrder": {
     "actualAmount": "为使每笔交易卖出相同数量，仅下单 {{amount}} {{symbol}}。",
-    "confirm": "确认下单",
     "title": "确认下单"
   },
   "confirmLimitOrder": {
-    "confirm": "确认限价订单",
     "title": "确认限价订单"
   },
   "confirmStopOrder": {
-    "cancelConfirm": "确认取消订单",
     "cancelNote": "取消限价订单后无法重新启动同一订单，仅退还未成交数量。已成交数量不受影响。",
     "cancelTitle": "确认取消订单",
-    "confirm": "确认停止订单",
     "importantNote": "重要提示",
     "note": "停止 DCA 订单后无法重新启动同一订单，仅退还剩余数量。如需继续 DCA，请创建新的 DCA 订单。",
     "orderDetails": "订单详情",

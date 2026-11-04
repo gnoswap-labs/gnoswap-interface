@@ -35,7 +35,7 @@ const ConfirmLimitOrderModal: React.FC<ConfirmLimitOrderModalProps> = ({
       { key: "slippage", label: t("Swap:limit.slippage"), value: summary.slippage },
       {
         key: "networkGasFee",
-        label: t("Swap:dca.networkGasFee"),
+        label: t("Swap:swapInfo.gasFee"),
         value: (
           <>
             {summary.networkGasFee}
@@ -80,7 +80,7 @@ const ConfirmLimitOrderModal: React.FC<ConfirmLimitOrderModalProps> = ({
       </div>
 
       <Button
-        text={t("Modal:confirmLimitOrder.confirm")}
+        text={t("Modal:confirmLimitOrder.title")}
         style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
         className="button-confirm"
         onClick={confirm}

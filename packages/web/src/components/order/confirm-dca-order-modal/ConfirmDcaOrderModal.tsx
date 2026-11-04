@@ -43,7 +43,7 @@ const ConfirmDcaOrderModal: React.FC<ConfirmDcaOrderModalProps> = ({ summary, is
       },
       {
         key: "networkGasFee",
-        label: t("Swap:dca.networkGasFee"),
+        label: t("Swap:swapInfo.gasFee"),
         tooltip: t("Swap:dca.networkGasFeeTooltip"),
         value: (
           <>
@@ -122,7 +122,7 @@ const ConfirmDcaOrderModal: React.FC<ConfirmDcaOrderModalProps> = ({ summary, is
       )}
 
       <Button
-        text={t("Modal:confirmPlaceOrder.confirm")}
+        text={t("Modal:confirmPlaceOrder.title")}
         style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
         className="button-confirm"
         onClick={confirm}

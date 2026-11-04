@@ -48,7 +48,7 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
         label: t("Swap:order.purchasedAmount"),
         value: `${formatOrderAmount(order.userOutput)} ${tokenOut.displaySymbol}`,
       },
-      { key: "limitPrice", label: t("Swap:order.limitPrice"), value: formatOrderRate(order.limitPrice) },
+      { key: "limitPrice", label: t("Swap:limit.limitPrice"), value: formatOrderRate(order.limitPrice) },
     ],
     [order, t, tokenIn.displaySymbol, tokenOut.displaySymbol],
   );

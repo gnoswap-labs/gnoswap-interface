@@ -367,18 +367,14 @@
   },
   "confirmPlaceOrder": {
     "actualAmount": "모든 거래가 같은 수량을 판매하도록 {{amount}} {{symbol}}만 주문됩니다.",
-    "confirm": "주문 확인",
     "title": "주문 확인"
   },
   "confirmLimitOrder": {
-    "confirm": "지정가 주문 확인",
     "title": "지정가 주문 확인"
   },
   "confirmStopOrder": {
-    "cancelConfirm": "주문 취소 확인",
     "cancelNote": "지정가 주문을 취소하면 같은 주문을 다시 시작할 수 없으며 체결되지 않은 수량만 반환됩니다. 이미 체결된 수량에는 영향이 없습니다.",
     "cancelTitle": "주문 취소 확인",
-    "confirm": "주문 중지 확인",
     "importantNote": "중요 안내",
     "note": "DCA 주문을 중지하면 같은 주문을 다시 시작할 수 없으며 남은 수량만 반환됩니다. DCA를 계속하려면 새 DCA 주문을 생성해야 합니다.",
     "orderDetails": "주문 상세",

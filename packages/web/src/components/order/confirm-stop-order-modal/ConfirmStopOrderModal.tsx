@@ -118,7 +118,7 @@ const ConfirmStopOrderModal: React.FC<ConfirmStopOrderModalProps> = ({
       />
 
       <Button
-        text={isDca ? t("Modal:confirmStopOrder.confirm") : t("Modal:confirmStopOrder.cancelConfirm")}
+        text={isDca ? t("Modal:confirmStopOrder.title") : t("Modal:confirmStopOrder.cancelTitle")}
         style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
         className="button-confirm"
         onClick={confirm}

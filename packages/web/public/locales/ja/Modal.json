@@ -367,18 +367,14 @@
   },
   "confirmPlaceOrder": {
     "actualAmount": "各取引が同じ数量を売却するよう、{{amount}} {{symbol}} のみが注文されます。",
-    "confirm": "注文を確定",
     "title": "注文の確認"
   },
   "confirmLimitOrder": {
-    "confirm": "指値注文を確定",
     "title": "指値注文の確認"
   },
   "confirmStopOrder": {
-    "cancelConfirm": "注文キャンセルを確定",
     "cancelNote": "指値注文をキャンセルすると同じ注文を再開することはできず、未約定の数量のみが返却されます。約定済みの数量には影響しません。",
     "cancelTitle": "注文キャンセルの確認",
-    "confirm": "注文停止を確定",
     "importantNote": "重要なお知らせ",
     "note": "DCA注文を停止すると同じ注文を再開することはできず、残りの数量のみが返却されます。DCAを続けるには新しいDCA注文を作成する必要があります。",
     "orderDetails": "注文詳細",

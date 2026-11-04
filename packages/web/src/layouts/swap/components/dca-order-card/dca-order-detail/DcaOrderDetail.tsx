@@ -41,7 +41,7 @@ const DcaOrderDetail: React.FC<DcaOrderDetailProps> = ({ summary, defaultOpened 
       },
       {
         key: "networkGasFee",
-        label: t("Swap:dca.networkGasFee"),
+        label: t("Swap:swapInfo.gasFee"),
         tooltip: t("Swap:dca.networkGasFeeTooltip"),
         value: `${summary.networkGasFee} (${summary.networkGasFeeUsd})`,
       },
