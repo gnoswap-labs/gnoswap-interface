@@ -174,4 +174,37 @@ describe("OrderListContainer", () => {
     consoleError.mockRestore();
     expect(duplicateKeyWarnings).toHaveLength(0);
   });
+
+  it.each(["dca", "limit"] as const)("returns a %s list to its last page when the open page runs past it", kind => {
+    const requests: { page: number; size: number }[] = [];
+    let remaining = 11;
+    mockUseWallet.mockReturnValue({ connected: true, account: { address: "g1owner" } });
+    const mockOrders = kind === "dca" ? mockUseGetDcaOrders : mockUseGetLimitOrders;
+    const mockOther = kind === "dca" ? mockUseGetLimitOrders : mockUseGetDcaOrders;
+    mockOther.mockReturnValue({ data: undefined, isLoading: true });
+    mockOrders.mockImplementation((request: { page: number; size: number }) => {
+      requests.push(request);
+      const pages = remaining === 11 ? 2 : 1;
+      return {
+        data: { items: [], pageInfo: { currentPage: request.page, totalItems: remaining, totalPages: pages } },
+        isLoading: false,
+        isPreviousData: false,
+      };
+    });
+    const view = () => (
+      <GnoswapThemeProvider>
+        <OrderListContainer kind={kind} />
+      </GnoswapThemeProvider>
+    );
+    const { rerender } = render(view());
+    fireEvent.click(screen.getByRole("button", { name: "2" }));
+
+    // The last order of page 2 leaves the list.
+    remaining = 10;
+    requests.length = 0;
+    rerender(view());
+
+    const lastListRequest = requests.filter(request => request.size > 1).pop();
+    expect(lastListRequest?.page).toBe(1);
+  });
 });

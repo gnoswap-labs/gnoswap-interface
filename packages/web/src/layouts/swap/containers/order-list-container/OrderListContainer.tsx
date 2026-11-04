@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { ENABLED_SWAP_CARD_TYPES } from "@constants/order.constant";
 import { SWAP_HISTORY_REFETCH_INTERVAL } from "@constants/swap.constant";
@@ -105,7 +105,14 @@ const OrderListPages: React.FC<OrderListPagesProps> = ({ kind, tab, changeTab, c
     refetchOnMount: "always",
     refetchInterval: kind === "limit" ? SWAP_HISTORY_REFETCH_INTERVAL : false,
   });
-  const { data, isLoading } = kind === "dca" ? dcaOrders : limitOrders;
+  const { data, isLoading, isPreviousData } = kind === "dca" ? dcaOrders : limitOrders;
+
+  // Orders leaving the list can shrink it below the open page; go back to its last page.
+  const lastPage = Math.max(data?.pageInfo.totalPages ?? 1, 1);
+  const isOutOfRange = !!data && !isPreviousData && page > lastPage;
+  useEffect(() => {
+    if (isOutOfRange) setPage(lastPage);
+  }, [isOutOfRange, lastPage]);
 
   // Order IDs restart with each realm deployment, so a card is identified by its realm and ID.
   const items = (() => {
