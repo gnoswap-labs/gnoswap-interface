@@ -33,16 +33,6 @@ const ConfirmLimitOrderModal: React.FC<ConfirmLimitOrderModalProps> = ({
       { key: "expiry", label: t("Swap:limit.expiry"), value: summary.expiry },
       { key: "expiresAt", label: t("Swap:order.expiresAt"), value: summary.expiresAt },
       { key: "slippage", label: t("Swap:limit.slippage"), value: summary.slippage },
-      {
-        key: "networkGasFee",
-        label: t("Swap:swapInfo.gasFee"),
-        value: (
-          <>
-            {summary.networkGasFee}
-            <span className="notice-text">({summary.networkGasFeeUsd})</span>
-          </>
-        ),
-      },
     ],
     [summary, t],
   );

@@ -13,7 +13,7 @@ import { toDisplayAmount } from "@models/order/mapper/order-mapper";
 import { SWAP_CARD_TYPE } from "@models/order/order-type";
 import { DcaOrderSummary } from "@models/order/order-summary";
 import { TokenModel } from "@models/token/token-model";
-import { useEstimateOrderNetworkFee, useGetDcaConfig, useGetDcaSchedule } from "@query/order";
+import { useGetDcaConfig, useGetDcaSchedule } from "@query/order";
 import { useGetPoolList } from "@query/pools";
 import { useGetRoutes } from "@query/router";
 import { DexEvent } from "@repositories/common";
@@ -87,7 +87,6 @@ export const useDcaOrderHandler = () => {
     isSameToken,
     formatUsd,
     formatRate,
-    formatNetworkFee,
   } = useOrderFormCommon(tokenA, tokenB);
 
   const {
@@ -293,20 +292,6 @@ export const useDcaOrderHandler = () => {
     tokenB,
   ]);
 
-  const debouncedCreateRequest = useDebounce(createRequest, INPUT_DEBOUNCE_MS);
-  const { data: networkFee, isFetching: isFetchingNetworkFee } = useEstimateOrderNetworkFee(
-    [
-      SWAP_CARD_TYPE.DCA,
-      debouncedCreateRequest?.inputToken.path,
-      debouncedCreateRequest?.outputToken.path,
-      debouncedCreateRequest?.interval,
-      debouncedCreateRequest?.slotOffset,
-      debouncedCreateRequest?.amountPerExecution,
-      debouncedCreateRequest?.executionCount,
-    ],
-    debouncedCreateRequest ? () => orderRepository.makeCreateDcaOrderMessages(debouncedCreateRequest) : null,
-  );
-
   // Max prices the order with its scheduled slot, so it waits for the schedule of the
   // current request: while the debounce lags or the query shows the previous request's
   // slot, a CreateOrder built from it would fail simulation and fall back to the flat fee.
@@ -344,7 +329,6 @@ export const useDcaOrderHandler = () => {
   const summary: DcaOrderSummary | null = useMemo(() => {
     if (!tokenA || !tokenB) return null;
     const formattedRate = formatRate(rate);
-    const fee = formatNetworkFee(networkFee);
     return {
       inputToken: tokenA,
       outputToken: tokenB,
@@ -359,8 +343,6 @@ export const useDcaOrderHandler = () => {
       estimatedEndDate: formatOrderDateTime(schedule?.estimatedEndAt),
       routerFee: formatBps(config?.routerFeeBps),
       executionFee: formatBps(config?.executionFeeBps),
-      networkGasFee: fee.text,
-      networkGasFeeUsd: fee.usd,
     };
   }, [
     actualSellAmount,
@@ -368,11 +350,9 @@ export const useDcaOrderHandler = () => {
     config?.executionFeeBps,
     config?.routerFeeBps,
     executionCount,
-    formatNetworkFee,
     formatRate,
     formatUsd,
     interval,
-    networkFee,
     rate,
     schedule?.estimatedEndAt,
     sellAmount,
@@ -546,7 +526,6 @@ export const useDcaOrderHandler = () => {
     maxExecutionCount,
     summary,
     isLoadingConfig,
-    isLoadingDetail: isFetchingNetworkFee,
     buttonState,
     buttonText,
     minTradingText,

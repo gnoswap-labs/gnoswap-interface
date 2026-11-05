@@ -1,16 +1,13 @@
 import BigNumber from "bignumber.js";
 import { useCallback, useMemo, useState } from "react";
 
-import { GNOT_TOKEN } from "@common/values/token-constant";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
-import { TransactionFeeEstimate } from "@services/transaction-gas/transaction-gas-service";
 import { checkGnotPath } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
-import { formatOrderRate, trimFractionZeros } from "@utils/order-format-utils";
+import { formatOrderRate } from "@utils/order-format-utils";
 import { getSwapTokenPath } from "@utils/swap-route-utils";
-import { makeDisplayTokenAmountString } from "@utils/token-utils";
 
 import { OrderButtonState } from "./use-order-handler.utils";
 
@@ -59,18 +56,6 @@ export const useOrderFormCommon = (tokenA: TokenModel | null, tokenB: TokenModel
     [getUsdPrice, tokenA, tokenB],
   );
 
-  const formatNetworkFee = useCallback(
-    (estimate: TransactionFeeEstimate | null | undefined) => {
-      if (!estimate) return { text: "-", usd: "-" };
-      const amount = makeDisplayTokenAmountString(GNOT_TOKEN, estimate.total) ?? "0";
-      const gnotUsd = getUsdPrice(GNOT_TOKEN);
-      return {
-        text: `${trimFractionZeros(BigNumber(amount).toFormat(6, BigNumber.ROUND_UP))} ${GNOT_TOKEN.displaySymbol}`,
-        usd: gnotUsd === null ? "-" : formatPrice(BigNumber(amount).multipliedBy(gnotUsd).toNumber()),
-      };
-    },
-    [getUsdPrice],
-  );
 
   const copyUrl = useCallback(async (query: Record<string, string | number | null | undefined>) => {
     const params = Object.entries(query)
@@ -95,7 +80,6 @@ export const useOrderFormCommon = (tokenA: TokenModel | null, tokenB: TokenModel
     isSameToken,
     formatUsd,
     formatRate,
-    formatNetworkFee,
   };
 };
 

@@ -15,7 +15,6 @@
     "executionFee": "Execution Fee",
     "executionFeeTooltip": "The fee the DCA order deducts from the output of each executed trade. The rate shown is after this fee.",
     "minTrading": "Minimum {{amount}} {{symbol}} per order",
-    "networkGasFeeTooltip": "The gas fee and storage deposit for placing this order. Each trade is executed by a keeper at no extra gas cost to you.",
     "noWhitelistedPool": "Pair Not Supported",
     "orders": "Orders",
     "over": "Over",

@@ -19,8 +19,6 @@ export const STORY_DCA_ORDER_SUMMARY: DcaOrderSummary = {
   estimatedEndDate: "2026-11-03 20:35:36",
   routerFee: "0.15%",
   executionFee: "0.15%",
-  networkGasFee: "0.002451 GNOT",
-  networkGasFeeUsd: "$0.12",
 };
 
 export const STORY_LIMIT_ORDER_SUMMARY: LimitOrderSummary = {
@@ -34,8 +32,6 @@ export const STORY_LIMIT_ORDER_SUMMARY: LimitOrderSummary = {
   expiry: "1 Day",
   expiresAt: "2026-11-04 20:35:36",
   slippage: "0.5%",
-  networkGasFee: "0.002451 GNOT",
-  networkGasFeeUsd: "$0.12",
 };
 
 export const STORY_STOP_ORDER_SUMMARY: StopOrderSummary = {

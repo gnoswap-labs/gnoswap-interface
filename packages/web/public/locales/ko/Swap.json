@@ -15,7 +15,6 @@
     "executionFee": "집행 수수료",
     "executionFeeTooltip": "DCA 주문이 체결된 각 거래의 수익에서 공제하는 수수료입니다. 표시된 비율은 이 수수료를 공제한 후의 수치입니다.",
     "minTrading": "주문당 최소 {{amount}} {{symbol}} ",
-    "networkGasFeeTooltip": "이 주문을 제출하는 데 드는 가스 수수료 및 보관 보증금입니다. 각 거래는 키퍼에 의해 체결되며, 귀하에게 추가 가스 비용이 발생하지 않습니다.",
     "noWhitelistedPool": "해당 조합은 지원되지 않습니다",
     "orders": "주문",
     "over": "끝",

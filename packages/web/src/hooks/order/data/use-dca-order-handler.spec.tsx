@@ -95,7 +95,6 @@ jest.mock("./use-order-form-common", () => ({
     isSameToken: false,
     formatUsd: () => "-",
     formatRate: (rate: string | null) => ({ text: rate ?? "-", usd: "-" }),
-    formatNetworkFee: () => ({ text: "-", usd: "-" }),
   }),
 }));
 jest.mock("@query/order", () => ({
@@ -112,7 +111,6 @@ jest.mock("@query/order", () => ({
     const data = { slotOffset: request?.interval === 86400 ? 3600 : 0, firstExecutionAt: 1, estimatedEndAt: 2 };
     return { data, isFetching: false, refetch: mockState.refetchSchedule ?? (() => Promise.resolve({ data })) };
   },
-  useEstimateOrderNetworkFee: () => ({ data: undefined, isFetching: false }),
 }));
 jest.mock("@query/pools", () => ({ useGetPoolList: jest.fn() }));
 // The router always finds a (possibly multi-hop) route.

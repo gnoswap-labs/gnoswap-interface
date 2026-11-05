@@ -51,7 +51,6 @@ jest.mock("./use-order-form-common", () => ({
     isSameToken: false,
     formatUsd: () => "-",
     formatRate: () => ({ text: "-", usd: "-" }),
-    formatNetworkFee: () => ({ text: "-", usd: "-" }),
   }),
 }));
 jest.mock("@query/order", () => ({
@@ -62,7 +61,6 @@ jest.mock("@query/order", () => ({
     refetch: jest.fn(),
   }),
   useGetLimitConfig: () => ({ data: undefined, isLoading: false }),
-  useEstimateOrderNetworkFee: () => ({ data: undefined, isFetching: false }),
 }));
 jest.mock("@query/pools", () => ({ useGetPoolList: () => ({ data: undefined, isError: false, refetch: jest.fn() }) }));
 // One input unit buys two output units.

@@ -32,9 +32,6 @@ export const DcaOrderDetailWrapper = styled.div`
     flex-shrink: 0;
     gap: 4px;
     color: ${({ theme }) => theme.color.text04};
-    .icon-gas * {
-      fill: ${({ theme }) => theme.color.icon03};
-    }
     .icon-arrow {
       width: 16px;
       height: 16px;

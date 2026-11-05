@@ -92,7 +92,6 @@ export enum QUERY_KEY {
   limitConfig = "limit_config",
   limitOrders = "limit_orders",
   limitOrderFills = "limit_order_fills",
-  orderNetworkFee = "order_network_fee",
 
   // gas
   gasPrice = "gas_price",

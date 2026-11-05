@@ -15,7 +15,6 @@
     "executionFee": "Comisión de ejecución",
     "executionFeeTooltip": "La comisión que la orden DCA deduce del importe de cada operación ejecutada. La tasa que se muestra es la resultante tras aplicar esta comisión.",
     "minTrading": "{{amount}} o mínimo de {{symbol}} por pedido",
-    "networkGasFeeTooltip": "La comisión de gas y el depósito de garantía para realizar este pedido. Cada operación la ejecuta un «keeper» sin que ello te suponga ningún coste adicional de gas.",
     "noWhitelistedPool": "Par no compatible",
     "orders": "Pedidos",
     "over": "Más de",

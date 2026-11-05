@@ -6,4 +6,3 @@ export * from "./use-get-dca-executions";
 export * from "./use-get-limit-config";
 export * from "./use-get-limit-orders";
 export * from "./use-get-limit-order-fills";
-export * from "./use-estimate-order-network-fee";

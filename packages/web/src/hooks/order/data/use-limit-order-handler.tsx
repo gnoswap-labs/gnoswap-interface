@@ -13,7 +13,7 @@ import { LIMIT_EXPIRY_OPTIONS } from "@models/order/limit-order-model";
 import { SWAP_CARD_TYPE } from "@models/order/order-type";
 import { LimitOrderSummary } from "@models/order/order-summary";
 import { TokenModel } from "@models/token/token-model";
-import { useEstimateOrderNetworkFee, useGetLimitConfig } from "@query/order";
+import { useGetLimitConfig } from "@query/order";
 import { useGetRoutes } from "@query/router";
 import { DexEvent } from "@repositories/common";
 import { CreateLimitOrderRequest } from "@repositories/order/request";
@@ -87,7 +87,6 @@ export const useLimitOrderHandler = () => {
     isSameToken,
     formatUsd,
     formatRate,
-    formatNetworkFee,
   } = useOrderFormCommon(tokenA, tokenB);
 
   const { data: config, isLoading: isLoadingConfig } = useGetLimitConfig();
@@ -220,26 +219,6 @@ export const useLimitOrderHandler = () => {
     return { tokenIn: tokenA, tokenOut: tokenB, makingAmount, takingAmount, slippageBps };
   }, [buttonState, hasRawAmounts, makingAmount, slippageBps, takingAmount, tokenA, tokenB]);
 
-  const debouncedCreateRequest = useDebounce(createRequest, INPUT_DEBOUNCE_MS);
-  const { data: networkFee } = useEstimateOrderNetworkFee(
-    [
-      SWAP_CARD_TYPE.LIMIT,
-      debouncedCreateRequest?.tokenIn.path,
-      debouncedCreateRequest?.tokenOut.path,
-      debouncedCreateRequest?.makingAmount,
-      debouncedCreateRequest?.takingAmount,
-      debouncedCreateRequest?.slippageBps,
-      expiry,
-    ],
-    debouncedCreateRequest
-      ? () =>
-          orderRepository.makeCreateLimitOrderMessages({
-            ...debouncedCreateRequest,
-            expiresAt: Math.floor(Date.now() / 1000) + expiry,
-          })
-      : null,
-  );
-
   /**
    * The CreateOrder messages for a native making amount of `rawAmount` at the
    * current price (the market price until one is set), so Max reserves the
@@ -278,7 +257,6 @@ export const useLimitOrderHandler = () => {
 
   const summary: LimitOrderSummary | null = useMemo(() => {
     if (!tokenA || !tokenB) return null;
-    const fee = formatNetworkFee(networkFee);
     return {
       tokenIn: tokenA,
       tokenOut: tokenB,
@@ -290,19 +268,15 @@ export const useLimitOrderHandler = () => {
       expiry: expiryLabel(expiry),
       expiresAt: formatOrderDateTime(Math.floor(Date.now() / 1000) + expiry),
       slippage: `${trimFractionZeros(BigNumber(slippageBps).dividedBy(100).toFixed(2))}%`,
-      networkGasFee: fee.text,
-      networkGasFeeUsd: fee.usd,
     };
   }, [
     buyUsd,
     expiry,
     expiryLabel,
-    formatNetworkFee,
     formatRate,
     formatUsd,
     isValidPrice,
     limitPrice,
-    networkFee,
     sellUsd,
     sentSellAmount,
     slippageBps,

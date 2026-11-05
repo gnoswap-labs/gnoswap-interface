@@ -15,7 +15,6 @@
     "executionFee": "执行费",
     "executionFeeTooltip": "DCA指令从每笔已成交交易的收益中扣除的费用。所示费率已扣除该费用。",
     "minTrading": "每笔订单的最低金额为{{amount}} ，{{symbol}} ",
-    "networkGasFeeTooltip": "下达此订单所需的 gas 费和存储押金。每笔交易均由保管人执行，您无需支付额外的 gas 费。",
     "noWhitelistedPool": "该货币对不支持",
     "orders": "订单",
     "over": "结束",

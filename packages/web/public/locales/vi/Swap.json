@@ -15,7 +15,6 @@
     "executionFee": "Phí thực hiện",
     "executionFeeTooltip": "Phí mà lệnh DCA khấu trừ từ số tiền thu được từ mỗi giao dịch đã thực hiện. Tỷ lệ được hiển thị là sau khi đã trừ phí này.",
     "minTrading": "Số lượng tối thiểu {{amount}} {{symbol}} cho mỗi đơn hàng",
-    "networkGasFeeTooltip": "Phí gas và khoản đặt cọc lưu trữ để thực hiện lệnh này. Mỗi giao dịch đều được thực hiện bởi một người quản lý mà bạn không phải chịu thêm chi phí gas nào.",
     "noWhitelistedPool": "Cặp này không được hỗ trợ",
     "orders": "Đơn hàng",
     "over": "Hết",

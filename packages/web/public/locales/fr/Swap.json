@@ -15,7 +15,6 @@
     "executionFee": "Frais d'exécution",
     "executionFeeTooltip": "Les frais que l'ordre DCA prélève sur le produit de chaque transaction exécutée. Le taux indiqué s'entend après déduction de ces frais.",
     "minTrading": "{{amount}} s minimales : {{symbol}} par commande",
-    "networkGasFeeTooltip": "Les frais de gaz et la caution de stockage liés à cette commande. Chaque transaction est exécutée par un « keeper » sans frais de gaz supplémentaires pour vous.",
     "noWhitelistedPool": "Paire non prise en charge",
     "orders": "Commandes",
     "over": "Plus de",

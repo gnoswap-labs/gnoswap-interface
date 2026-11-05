@@ -15,7 +15,6 @@
     "executionFee": "執行手数料",
     "executionFeeTooltip": "DCA注文が、約定した各取引の利益から差し引く手数料です。表示されているレートは、この手数料が差し引かれた後のものです。",
     "minTrading": "1注文あたりの最低注文数量：{{amount}} 、{{symbol}} ",
-    "networkGasFeeTooltip": "この注文を行うためのガス料金と保管保証金です。各取引はキーパーによって執行されるため、お客様には追加のガス料金はかかりません。",
     "noWhitelistedPool": "この組み合わせはサポートされていません",
     "orders": "注文",
     "over": "以上",

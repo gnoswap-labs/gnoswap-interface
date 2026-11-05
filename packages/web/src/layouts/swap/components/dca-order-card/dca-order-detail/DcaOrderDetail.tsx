@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
-import { IconGasFilled } from "@components/common/icons/IconsGasFilled";
 import OrderInfoRows, { OrderInfoRow } from "@components/order/order-info-rows/OrderInfoRows";
 import { DcaOrderSummary } from "@models/order/order-summary";
 
@@ -39,12 +38,6 @@ const DcaOrderDetail: React.FC<DcaOrderDetailProps> = ({ summary, defaultOpened 
         tooltip: t("Swap:dca.executionFeeTooltip"),
         value: summary.executionFee,
       },
-      {
-        key: "networkGasFee",
-        label: t("Swap:swapInfo.gasFee"),
-        tooltip: t("Swap:dca.networkGasFeeTooltip"),
-        value: `${summary.networkGasFee} (${summary.networkGasFeeUsd})`,
-      },
     ],
     [summary, t],
   );
@@ -56,8 +49,6 @@ const DcaOrderDetail: React.FC<DcaOrderDetailProps> = ({ summary, defaultOpened 
           {summary.rate} <span className="rate-usd">({summary.rateUsd})</span>
         </span>
         <span className="gas-info">
-          <IconGasFilled className="icon-gas" />
-          {summary.networkGasFeeUsd}
           {opened ? <IconArrowUp className="icon-arrow" /> : <IconArrowDown className="icon-arrow" />}
         </span>
       </div>

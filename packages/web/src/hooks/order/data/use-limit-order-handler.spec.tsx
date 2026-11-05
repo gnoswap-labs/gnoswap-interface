@@ -41,13 +41,11 @@ jest.mock("./use-order-form-common", () => ({
     isSameToken: false,
     formatUsd: () => "-",
     formatRate: () => ({ text: "-", usd: "-" }),
-    formatNetworkFee: () => ({ text: "-", usd: "-" }),
   }),
 }));
 let mockLimitConfig: { maxSlippageBps?: number } | undefined;
 jest.mock("@query/order", () => ({
   useGetLimitConfig: () => ({ data: mockLimitConfig, isLoading: false }),
-  useEstimateOrderNetworkFee: () => ({ data: undefined }),
 }));
 jest.mock("@query/router", () => ({ useGetRoutes: jest.fn() }));
 

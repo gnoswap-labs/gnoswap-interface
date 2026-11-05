@@ -21,8 +21,6 @@ export interface DcaOrderSummary {
   routerFee: string;
   /** The DCA realm's fee on each execution's output; `rate` is already net of it. */
   executionFee: string;
-  networkGasFee: string;
-  networkGasFeeUsd: string;
 }
 
 /** Everything the limit confirm modal shows, already formatted. */
@@ -37,8 +35,6 @@ export interface LimitOrderSummary {
   expiry: string;
   expiresAt: string;
   slippage: string;
-  networkGasFee: string;
-  networkGasFeeUsd: string;
 }
 
 /** Everything the stop / cancel confirm modal shows, already formatted. */

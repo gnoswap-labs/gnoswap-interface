@@ -41,17 +41,6 @@ const ConfirmDcaOrderModal: React.FC<ConfirmDcaOrderModalProps> = ({ summary, is
         tooltip: t("Swap:dca.executionFeeTooltip"),
         value: summary.executionFee,
       },
-      {
-        key: "networkGasFee",
-        label: t("Swap:swapInfo.gasFee"),
-        tooltip: t("Swap:dca.networkGasFeeTooltip"),
-        value: (
-          <>
-            {summary.networkGasFee}
-            <span className="notice-text">({summary.networkGasFeeUsd})</span>
-          </>
-        ),
-      },
     ],
     [inputToken.displaySymbol, summary, t],
   );
