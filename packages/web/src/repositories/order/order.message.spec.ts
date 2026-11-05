@@ -107,10 +107,15 @@ describe("order.message.ts", () => {
       });
 
       expect(messages).toHaveLength(3);
-      // The approve is a MsgRun against the wrapped token.
-      expect(messages[0]).toHaveProperty("package");
-      expect(JSON.stringify(messages[0])).toContain("gno.land/r/gnoland/wugnot");
-      expect(JSON.stringify(messages[0])).toContain("dca_address");
+      // The wrapped token is approved by a MsgCall on the wugnot realm, not a MsgRun:
+      // the chain only simulates a MsgRun with a signature, so Max could not price it.
+      expect(messages[0]).not.toHaveProperty("package");
+      expect(messages[0]).toMatchObject({
+        caller,
+        pkg_path: "gno.land/r/gnoland/wugnot",
+        func: "Approve",
+        args: ["dca_address", "3000000"],
+      });
       expect(messages[1]).toMatchObject({
         caller,
         send: "3000000ugnot",
@@ -180,6 +185,12 @@ describe("order.message.ts", () => {
       });
 
       expect(messages).toHaveLength(3);
+      expect(messages[0]).not.toHaveProperty("package");
+      expect(messages[0]).toMatchObject({
+        pkg_path: "gno.land/r/gnoland/wugnot",
+        func: "Approve",
+        args: ["limit_address", "5000000"],
+      });
       expect(messages[1]).toMatchObject({ func: "Deposit", send: "5000000ugnot" });
       expect(messages[2]).toMatchObject({ func: "CreateOrder" });
     });

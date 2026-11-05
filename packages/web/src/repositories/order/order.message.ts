@@ -12,8 +12,9 @@ import {
   PACKAGE_DCA_ORDER_PATH,
   PACKAGE_LIMIT_ORDER_ADDRESS,
   PACKAGE_LIMIT_ORDER_PATH,
+  WRAPPED_GNOT_PACKAGE_PATH,
 } from "@constants/environment.constant";
-import { TokenModel } from "@models/token/token-model";
+import { Grc20Routes, TokenModel } from "@models/token/token-model";
 import { getSwapTokenPath } from "@utils/swap-route-utils";
 import { isNativeTokenPath } from "@utils/token-utils";
 
@@ -24,6 +25,25 @@ enum OrderMessageFunctionType {
 }
 
 type FetchAllowance = (packagePath: string, owner: string, spender: string) => Promise<number>;
+
+
+/**
+ * The wugnot realm's own MsgCall approve. A native input is escrowed as wugnot, and
+ * approving it by MsgCall rather than the MsgRun fallback keeps the order keyless to
+ * simulate: the chain demands a signature to simulate any transaction carrying a
+ * MsgRun, so Max and fee estimates of a native order could never be priced.
+ */
+const WUGNOT_APPROVE_ROUTES: Grc20Routes = {
+  funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } },
+};
+
+/** The package and routes that approve what an order escrows of `token`. */
+function escrowApproveRoute(token: TokenModel): Pick<TokenApproveMessageInfo, "pkgPath" | "routes"> {
+  if (isNativeTokenPath(token.path)) {
+    return { pkgPath: WRAPPED_GNOT_PACKAGE_PATH, routes: WUGNOT_APPROVE_ROUTES };
+  }
+  return { pkgPath: token.pkgPath, routes: token.routes };
+}
 
 export interface CreateDcaOrderMessageRequest {
   inputToken: TokenModel;
@@ -95,8 +115,7 @@ export async function makeCreateDcaOrderMessagesWithApproves(
   const approveInfos: TokenApproveMessageInfo[] = [
     {
       tokenPath: inputTokenPath,
-      pkgPath: inputToken.pkgPath,
-      routes: inputToken.routes,
+      ...escrowApproveRoute(inputToken),
       targetAddress: PACKAGE_DCA_ORDER_ADDRESS,
       amount: depositAmount,
       caller,
@@ -174,8 +193,7 @@ export async function makeCreateLimitOrderMessagesWithApproves(
   const approveInfos: TokenApproveMessageInfo[] = [
     {
       tokenPath: tokenInPath,
-      pkgPath: tokenIn.pkgPath,
-      routes: tokenIn.routes,
+      ...escrowApproveRoute(tokenIn),
       targetAddress: PACKAGE_LIMIT_ORDER_ADDRESS,
       amount: makingAmount,
       caller,
