@@ -47,6 +47,7 @@ const DcaOrderContainer: React.FC<DcaOrderContainerProps> = ({ swapType, changeS
       tokenABalance={handler.tokenABalance}
       makeMaxAmountMessages={handler.makeMaxAmountMessages}
       maxAmountDependsOn={handler.maxAmountDependsOn}
+      isMaxAmountReady={handler.isMaxAmountReady}
       sellAmount={handler.sellAmount}
       sellAmountUsd={handler.sellAmountUsd}
       changeTokenA={handler.changeTokenA}

@@ -100,6 +100,8 @@ describe("order Max amount messages", () => {
     act(() => result.current.changeTokenA(tokenA));
     act(() => result.current.changeTokenB(tokenB));
     act(() => result.current.setExecutionCountInput("4"));
+    // The mocked schedule's slot 120 belongs to a Day interval, not the default Minute.
+    act(() => result.current.changeInterval(86400));
 
     // Max is pressed before any amount is typed.
     await expect(result.current.makeMaxAmountMessages("9000003")).resolves.toEqual([{ func: "CreateOrder" }]);
@@ -112,7 +114,8 @@ describe("order Max amount messages", () => {
         executionCount: 4,
       }),
     );
-    expect(result.current.maxAmountDependsOn).toEqual([tokenB.path, result.current.interval, 4]);
+    // The scheduled group and slot are part of what the estimate was priced for.
+    expect(result.current.maxAmountDependsOn).toEqual([tokenB.path, result.current.interval, 4, undefined, 120]);
 
     // A deposit too small to give each execution a unit builds nothing.
     await expect(result.current.makeMaxAmountMessages("3")).resolves.toEqual([]);

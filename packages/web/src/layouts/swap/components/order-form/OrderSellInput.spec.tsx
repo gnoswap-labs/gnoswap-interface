@@ -73,4 +73,16 @@ describe("OrderSellInput Max", () => {
 
     expect(changeAmount).not.toHaveBeenCalled();
   });
+
+  it("waits on GNOT Max until the order terms it prices are settled", () => {
+    const makeMaxAmountMessages = jest.fn().mockResolvedValue([]);
+    const { rerender } = renderInput({ makeMaxAmountMessages, maxAmountReady: false });
+
+    expect(screen.getByRole("button")).toBeDisabled();
+    fireEvent.click(screen.getByRole("button"));
+    expect(mockEstimateMaxNativeAmount).not.toHaveBeenCalled();
+
+    rerender({ makeMaxAmountMessages, maxAmountReady: true });
+    expect(screen.getByRole("button")).toBeEnabled();
+  });
 });

@@ -307,6 +307,13 @@ export const useDcaOrderHandler = () => {
     debouncedCreateRequest ? () => orderRepository.makeCreateDcaOrderMessages(debouncedCreateRequest) : null,
   );
 
+  // Max prices the order with its scheduled slot, so it waits for the schedule of the
+  // current request: while the debounce lags or the query shows the previous request's
+  // slot, a CreateOrder built from it would fail simulation and fall back to the flat fee.
+  const maxSchedule =
+    isScheduleCurrent && schedule && isSlotWithinInterval(schedule.slotOffset, interval) ? schedule : null;
+  const isMaxAmountReady = !!maxSchedule;
+
   /**
    * The CreateOrder messages for a native deposit of `rawAmount`, split over the
    * current count, so Max reserves the storage and measured cost of this order.
@@ -314,22 +321,25 @@ export const useDcaOrderHandler = () => {
    */
   const makeMaxAmountMessages = useCallback(
     async (rawAmount: string) => {
-      if (!tokenA || !tokenB || isSameToken) return [];
+      if (!tokenA || !tokenB || isSameToken || !maxSchedule) return [];
       const perExecution = calculateAmountPerExecution(rawAmount, executionCount);
       if (!BigNumber(perExecution).isGreaterThan(0)) return [];
       return orderRepository.makeCreateDcaOrderMessages({
         inputToken: tokenA,
         outputToken: tokenB,
         interval,
-        slotOffset: schedule?.slotOffset ?? 0,
+        slotOffset: maxSchedule.slotOffset,
         amountPerExecution: perExecution,
         executionCount,
       });
     },
-    [executionCount, interval, isSameToken, orderRepository, schedule?.slotOffset, tokenA, tokenB],
+    [executionCount, interval, isSameToken, maxSchedule, orderRepository, tokenA, tokenB],
   );
-  // What else the Max estimate was priced for, so an answer for another order is not written back.
-  const maxAmountDependsOn = useMemo(() => [tokenB?.path, interval, executionCount], [executionCount, interval, tokenB?.path]);
+  // What else the Max estimate was priced for, so an answer for another order or slot is not written back.
+  const maxAmountDependsOn = useMemo(
+    () => [tokenB?.path, interval, executionCount, maxSchedule?.groupId, maxSchedule?.slotOffset],
+    [executionCount, interval, maxSchedule?.groupId, maxSchedule?.slotOffset, tokenB?.path],
+  );
 
   const summary: DcaOrderSummary | null = useMemo(() => {
     if (!tokenA || !tokenB) return null;
@@ -526,6 +536,7 @@ export const useDcaOrderHandler = () => {
     tokenABalance,
     makeMaxAmountMessages,
     maxAmountDependsOn,
+    isMaxAmountReady,
     connected,
     sellAmount,
     sellAmountUsd: formatUsd(sellUsd),

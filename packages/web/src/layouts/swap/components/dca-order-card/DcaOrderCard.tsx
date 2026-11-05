@@ -37,6 +37,8 @@ export interface DcaOrderCardProps {
   /** See OrderSellInput: prices Max on GNOT against this order's own messages. */
   makeMaxAmountMessages?: MaxNativeAmountParams["makeMessages"];
   maxAmountDependsOn?: readonly unknown[];
+  /** False until the schedule of the current request is loaded; Max on GNOT waits for it. */
+  isMaxAmountReady?: boolean;
   sellAmount: string;
   sellAmountUsd: string;
   changeTokenA: (token: TokenModel) => void;
@@ -73,6 +75,7 @@ const DcaOrderCard: React.FC<DcaOrderCardProps> = ({
   tokenABalance,
   makeMaxAmountMessages,
   maxAmountDependsOn,
+  isMaxAmountReady,
   sellAmount,
   sellAmountUsd,
   changeTokenA,
@@ -118,6 +121,7 @@ const DcaOrderCard: React.FC<DcaOrderCardProps> = ({
             changeAmount={changeSellAmount}
             makeMaxAmountMessages={makeMaxAmountMessages}
             maxAmountDependsOn={maxAmountDependsOn}
+            maxAmountReady={isMaxAmountReady}
           >
             <div className="arrow">
               <div className="shape" onClick={switchTokens} role="button" aria-label="Switch tokens">

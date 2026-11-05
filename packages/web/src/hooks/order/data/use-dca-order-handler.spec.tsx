@@ -18,6 +18,7 @@ jest.mock("@hooks/common/use-debounce", () => {
   };
 });
 const mockSendCreateDcaOrder = jest.fn().mockResolvedValue({ code: 0 });
+const mockMakeCreateDcaOrderMessages = jest.fn().mockResolvedValue([]);
 const mockState: {
   config:
     | {
@@ -58,7 +59,7 @@ const mockState: {
 
 jest.mock("@hooks/common/use-gnoswap-context", () => ({
   useGnoswapContext: () => ({
-    orderRepository: { sendCreateDcaOrder: mockSendCreateDcaOrder, makeCreateDcaOrderMessages: jest.fn() },
+    orderRepository: { sendCreateDcaOrder: mockSendCreateDcaOrder, makeCreateDcaOrderMessages: mockMakeCreateDcaOrderMessages },
   }),
 }));
 jest.mock("@hooks/wallet/ui/use-connect-wallet-modal", () => ({
@@ -438,6 +439,33 @@ describe("useDcaOrderHandler schedule of the current form", () => {
     await confirm();
     expect(mockSendCreateDcaOrder).toHaveBeenCalledTimes(1);
     expect(mockSendCreateDcaOrder.mock.calls[0][0]).toMatchObject({ interval: 60, slotOffset: 0 });
+  });
+
+  it("prices native Max only with the schedule of the current request", async () => {
+    const { result } = renderHook(() => useDcaOrderHandler(), { wrapper });
+    act(() => result.current.changeTokenA(tokenA));
+    act(() => result.current.changeTokenB(tokenB));
+    act(() => result.current.setExecutionCountInput("2"));
+    act(() => result.current.changeInterval(86400));
+    act(() => jest.advanceTimersByTime(300));
+    expect(result.current.isMaxAmountReady).toBe(true);
+    const daySubject = result.current.maxAmountDependsOn;
+
+    // Minute is chosen; Day's slot 3600 stays attached until the debounce settles.
+    act(() => result.current.changeInterval(60));
+    expect(result.current.isMaxAmountReady).toBe(false);
+    const makeMessages = mockMakeCreateDcaOrderMessages as jest.Mock;
+    makeMessages.mockClear();
+    await expect(result.current.makeMaxAmountMessages("10000000")).resolves.toEqual([]);
+    expect(makeMessages).not.toHaveBeenCalled();
+
+    act(() => jest.advanceTimersByTime(300));
+    expect(result.current.isMaxAmountReady).toBe(true);
+    // The slot is part of what the estimate was priced for.
+    expect(result.current.maxAmountDependsOn).not.toEqual(daySubject);
+    expect(result.current.maxAmountDependsOn).toContain(0);
+    await result.current.makeMaxAmountMessages("10000000");
+    expect(makeMessages).toHaveBeenCalledWith(expect.objectContaining({ interval: 60, slotOffset: 0 }));
   });
 });
 

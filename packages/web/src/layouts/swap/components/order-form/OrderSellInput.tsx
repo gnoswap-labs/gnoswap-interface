@@ -8,7 +8,7 @@ import IconWallet from "@components/common/icons/IconWallet";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import { MaxNativeAmountParams, useMaxNativeAmount } from "@hooks/gas";
 import { useTokenBalanceDisplay } from "@hooks/token/ui/use-token-balance-display";
-import { TokenModel } from "@models/token/token-model";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
 
 const LEADING_ZERO_REGEX = /^0+(?=\d)|(\.\d*)$/g;
 
@@ -27,6 +27,11 @@ interface OrderSellInputProps {
   makeMaxAmountMessages?: MaxNativeAmountParams["makeMessages"];
   /** The order terms the Max estimate is priced for (pair, count, price...). */
   maxAmountDependsOn?: readonly unknown[];
+  /**
+   * False while the order terms Max would price are not settled (DCA: the schedule
+   * of the current request). Max on GNOT waits; other tokens need no estimate.
+   */
+  maxAmountReady?: boolean;
   className?: string;
   children?: React.ReactNode;
 }
@@ -42,6 +47,7 @@ const OrderSellInput: React.FC<OrderSellInputProps> = ({
   changeAmount,
   makeMaxAmountMessages,
   maxAmountDependsOn = [],
+  maxAmountReady = true,
   className = "first-section",
   children,
 }) => {
@@ -57,6 +63,7 @@ const OrderSellInput: React.FC<OrderSellInputProps> = ({
   });
 
   const hasBalance = connectedWallet && balance !== "-" && BigNumber(balance.replace(/,/g, "")).isGreaterThan(0);
+  const waitsForMaxTerms = !maxAmountReady && !!token && isNativeToken(token);
 
   const onChangeAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,9 +80,10 @@ const OrderSellInput: React.FC<OrderSellInputProps> = ({
   );
 
   const onClickMax = useCallback(async () => {
+    if (waitsForMaxTerms) return;
     const spendable = await getMaxAmount({ balance, makeMessages: makeMaxAmountMessages });
     if (spendable !== null) changeAmount(spendable);
-  }, [balance, changeAmount, getMaxAmount, makeMaxAmountMessages]);
+  }, [balance, changeAmount, getMaxAmount, makeMaxAmountMessages, waitsForMaxTerms]);
 
   const displayAmount = useMemo(
     () => (amount.includes("e") ? BigNumber(amount).toFixed(token?.decimals ?? 0) : amount),
@@ -106,7 +114,7 @@ const OrderSellInput: React.FC<OrderSellInputProps> = ({
           {connectedWallet && <IconWallet />}
           <span className="balance-text">{balanceDisplay}</span>
           {hasBalance && (
-            <button className="balance-max-button" onClick={onClickMax} disabled={loadingMaxAmount}>
+            <button className="balance-max-button" onClick={onClickMax} disabled={loadingMaxAmount || waitsForMaxTerms}>
               <span className="max-badge">{t("common:max")}</span>
             </button>
           )}
