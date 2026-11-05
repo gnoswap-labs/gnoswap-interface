@@ -39,7 +39,6 @@
   },
   "pageHeader": {
     "addPosi": "Добавить позицию",
-    "dashboard": "Посетите сайт",
     "decreaseLiqui": "Снижение ликвидности",
     "earn": "Заработать",
     "incentivzePool": "Стимулировать бассейн",
@@ -49,10 +48,6 @@
     "stakePosition": "Положение кола",
     "unstakePosition": "Не занимать позицию",
     "wallet": "Портфолио"
-  },
-  "positionHistoryAction": {
-    "claimFees": "Претензионные сборы",
-    "create": "Создать"
   },
   "positionPriceRangeInfo": {
     "capEff": {
@@ -85,12 +80,7 @@
     "internal_reward": "Внутренние вознаграждения",
     "swap_fee": "Комиссионные за своп"
   },
-  "selectAToken": "Выберите маркер",
   "staked": "Ставки",
-  "stakingIncentiveType": {
-    "external": "Внешний",
-    "internal": "Внутренний"
-  },
   "switchGnoland": "Переключитесь на Гноланд",
   "token": "Токен",
   "unstakingFee": {

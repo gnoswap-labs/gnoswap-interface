@@ -39,7 +39,6 @@
   },
   "pageHeader": {
     "addPosi": "Añadir posición",
-    "dashboard": "Explore",
     "decreaseLiqui": "Disminución de la liquidez",
     "earn": "Gane",
     "incentivzePool": "Incentivar la piscina",
@@ -49,10 +48,6 @@
     "stakePosition": "Posición de la estaca",
     "unstakePosition": "Anular posición",
     "wallet": "Cartera"
-  },
-  "positionHistoryAction": {
-    "claimFees": "Tasas de reclamación",
-    "create": "Cree"
   },
   "positionPriceRangeInfo": {
     "capEff": {
@@ -85,12 +80,7 @@
     "internal_reward": "Recompensas internas",
     "swap_fee": "Tasas de intercambio"
   },
-  "selectAToken": "Seleccione una ficha",
   "staked": "Estacado",
-  "stakingIncentiveType": {
-    "external": "Exterior",
-    "internal": "Interno"
-  },
   "switchGnoland": "Cambiar a Gnolandia",
   "token": "Ficha",
   "unstakingFee": {

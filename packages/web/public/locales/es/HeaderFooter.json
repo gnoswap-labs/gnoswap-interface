@@ -1,6 +1,4 @@
 {
-  "addPosi": "Añadir posición",
-  "copied": "¡Copiado!",
   "developersSection": {
     "item": {
       "audit": "Auditoría",
@@ -23,14 +21,12 @@
     },
     "title": "Características"
   },
-  "gnoBridge": "Puente de Gno",
   "governance": "Gobernanza",
   "governanceSection": {
     "item": {
       "dashboard": "Explore",
       "forum": "Foro",
       "proposals": "Propuestas",
-      "vote": "Vote",
       "xgns": "xGNS"
     },
     "title": "Gobernanza"
@@ -41,7 +37,6 @@
       "aboutUs": "Quiénes somos",
       "faq": "PREGUNTAS FRECUENTES",
       "projectOnboarding": "Incorporación",
-      "twitter": "Twitter (X)",
       "userGuide": "Guía del usuario"
     },
     "title": "Ayuda"
@@ -61,7 +56,6 @@
     "title": "Política"
   },
   "portfolio": "Cartera",
-  "projectOnboarding": "Incorporación de proyectos",
   "receive": "Reciba",
   "referralSection": {
     "banner": {
@@ -84,9 +78,7 @@
       }
     }
   },
-  "stakePosi": "Posición de la estaca",
   "swap": "Intercambiar",
   "switchNetwork": "Cambiar Red",
-  "theFastest": "el ecosistema de más rápido crecimiento que aspira a construir la fuente de liquidez más profunda en Gnoland.",
   "theme": "Tema"
 }

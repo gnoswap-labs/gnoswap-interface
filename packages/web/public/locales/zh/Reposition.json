@@ -30,18 +30,6 @@
       "title": "2.选择新范围"
     }
   },
-  "overralInfo": {
-    "label": {
-      "capitalEffi": "资本效率",
-      "depositR": "存款比率",
-      "feeApr": "费用 四月"
-    },
-    "tooltip": {
-      "capitalEffi": "根据您的区间集中度计算的乘数。这表示与相同资金的全范围头寸相比，您能获得的奖励要多得多。",
-      "depositR": "两种代币的存款比例根据当前价格和设定的价格范围确定。",
-      "feeApr": "掉期费用的估计年利率根据所选头寸的价格范围计算。"
-    }
-  },
   "repos": {
     "action": {
       "exit": "退出",

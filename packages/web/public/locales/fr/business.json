@@ -39,7 +39,6 @@
   },
   "pageHeader": {
     "addPosi": "Ajouter une position",
-    "dashboard": "Explorer",
     "decreaseLiqui": "Diminution de la liquidité",
     "earn": "Gagner",
     "incentivzePool": "Incitation à la mise en commun",
@@ -49,10 +48,6 @@
     "stakePosition": "Position de l'enjeu",
     "unstakePosition": "Déblocage de la position",
     "wallet": "Le portefeuille"
-  },
-  "positionHistoryAction": {
-    "claimFees": "Frais de réclamation",
-    "create": "Créer"
   },
   "positionPriceRangeInfo": {
     "capEff": {
@@ -85,12 +80,7 @@
     "internal_reward": "Récompenses internes",
     "swap_fee": "Frais de swap"
   },
-  "selectAToken": "Sélectionner un jeton",
   "staked": "Piquetage",
-  "stakingIncentiveType": {
-    "external": "Externe",
-    "internal": "Interne"
-  },
   "switchGnoland": "Passer à Gnoland",
   "token": "Jeton",
   "unstakingFee": {

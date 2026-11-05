@@ -56,10 +56,6 @@
         "title": "Recompensas reclamadas",
         "title_total": "Total de recompensas reclamadas"
       },
-      "dailyEarn": {
-        "title": "Ganancias diarias",
-        "title_total": "Ingresos diarios totales"
-      },
       "fee": "Tasas",
       "history": {
         "col": {
@@ -116,6 +112,5 @@
       }
     },
     "totalStaked": "Total apostado"
-  },
-  "wanttoaddup": "¿Quieres aumentar los incentivos para esta piscina?"
+  }
 }

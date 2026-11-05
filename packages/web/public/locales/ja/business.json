@@ -39,7 +39,6 @@
   },
   "pageHeader": {
     "addPosi": "ポジション追加",
-    "dashboard": "エクスペリエンス",
     "decreaseLiqui": "流動性の低下",
     "earn": "稼ぐ",
     "incentivzePool": "プールにインセンティブを付与する",
@@ -49,10 +48,6 @@
     "stakePosition": "ステークポジション",
     "unstakePosition": "ポジションを外す",
     "wallet": "ポートフォリオ"
-  },
-  "positionHistoryAction": {
-    "claimFees": "請求手数料",
-    "create": "作成"
   },
   "positionPriceRangeInfo": {
     "capEff": {
@@ -85,12 +80,7 @@
     "internal_reward": "社内報奨金",
     "swap_fee": "スワップ料"
   },
-  "selectAToken": "トークンを選択",
   "staked": "ステイクド",
-  "stakingIncentiveType": {
-    "external": "外部",
-    "internal": "内部"
-  },
   "switchGnoland": "グノランドへ移動",
   "token": "トークン",
   "unstakingFee": {

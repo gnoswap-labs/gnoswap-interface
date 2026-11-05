@@ -1,6 +1,4 @@
 {
-  "addAct": "Thêm",
-  "adds": "Thêm",
   "day": "Ngày",
   "fees": "Phí",
   "govOver": {
@@ -52,8 +50,7 @@
       "tooltip": {
         "community": "Hồ bơi cộng đồng",
         "devOps": "DevOps",
-        "liquiStaking": "Cổ phần hóa thanh khoản",
-        "title": "Giảm thiểu khí thải"
+        "liquiStaking": "Cổ phần hóa thanh khoản"
       }
     },
     "circulSup": {
@@ -75,15 +72,9 @@
       "tooltip": "Tổng nguồn cung tối đa của GNS."
     }
   },
-  "swapAct": "Hoán đổi",
-  "swaps": "Hợp đồng hoán đổi",
   "title": "Khám phá",
   "totalVolChart": {
     "title": "Tổng khối lượng",
     "totalFee": "Tổng phí"
-  },
-  "totalvolumeFees": "Phí",
-  "tradingVolume": "Khối lượng giao dịch",
-  "unstakeAct": "Rút tiền đặt cược",
-  "unstakes": "Gỡ cọc"
+  }
 }

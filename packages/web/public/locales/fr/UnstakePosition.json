@@ -3,15 +3,7 @@
     "selectPosi": "Sélectionner la position"
   },
   "confStakeModal": {
-    "btn": "Confirmer la position de désengagement",
     "positionLst": "Postes à pourvoir",
-    "stakingReward": {
-      "apr": {
-        "label": "Piquetage APR",
-        "tooltip": "La fourchette estimée du TAEG est calculée en appliquant un multiplicateur dynamique à votre position mise, sur la base de la durée de mise."
-      },
-      "title": "Récompenses pour le jalonnement"
-    },
     "title": "Confirmer la position de désengagement",
     "unstakingFee": {
       "tooltip": "Le pourcentage des frais prélevés sur la récompense de mise de la position réclamée (et non sur le principal) qui va au protocole."
@@ -22,10 +14,8 @@
     }
   },
   "overview": {
-    "collectAsSwitch": "Collecter en tant que WGNOT",
     "pooled": "Mise en commun",
-    "totalAmt": "Montant total",
-    "unclaimed": "Récompense non réclamée"
+    "totalAmt": "Montant total"
   },
   "positionList": {
     "item": {
@@ -34,9 +24,7 @@
       }
     }
   },
-  "rewards": "Récompenses",
   "title": "Déblocage de la position",
-  "unclaimed": "Non réclamé",
   "unclaimedRewards": "Récompenses non réclamées",
   "warning": {
     "content": "Cela réinitialisera complètement votre progression de staking. Une fois que vous aurez recommencé à staker, vous devrez attendre 45 jours avant de commencer à percevoir les récompenses de staking maximales. Assurez-vous de bien comprendre le fonctionnement de la période de préchauffage avant de mettre fin à votre staking.",

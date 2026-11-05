@@ -1,9 +1,7 @@
 {
   "bestPool": {
     "col": {
-      "apr": "年利率",
-      "pool": "游泳池",
-      "tvl": "TVL"
+      "pool": "游泳池"
     },
     "title": "{{symbol}}最佳游泳池"
   },
@@ -28,7 +26,6 @@
       "col": {
         "fee": "费用 (24小时)",
         "marketCap": "市值",
-        "tvl": "TVL",
         "volume": "容量（24 小时）"
       },
       "title": "市场信息"

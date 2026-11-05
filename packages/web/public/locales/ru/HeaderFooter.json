@@ -1,6 +1,4 @@
 {
-  "addPosi": "Добавить позицию",
-  "copied": "Скопировано!",
   "developersSection": {
     "item": {
       "audit": "Аудит",
@@ -23,14 +21,12 @@
     },
     "title": "Функции"
   },
-  "gnoBridge": "Мост Гно",
   "governance": "Управление",
   "governanceSection": {
     "item": {
       "dashboard": "Посетите сайт",
       "forum": "Форум",
       "proposals": "Предложения",
-      "vote": "Голосуйте",
       "xgns": "xGNS"
     },
     "title": "Управление"
@@ -41,7 +37,6 @@
       "aboutUs": "О нас",
       "faq": "ЧАСТО ЗАДАВАЕМЫЕ ВОПРОСЫ",
       "projectOnboarding": "Онбординг",
-      "twitter": "Twitter (X)",
       "userGuide": "Руководство пользователя"
     },
     "title": "Помощь"
@@ -61,7 +56,6 @@
     "title": "Политика"
   },
   "portfolio": "Портфолио",
-  "projectOnboarding": "Ввод в действие проекта",
   "receive": "Получить",
   "referralSection": {
     "banner": {
@@ -84,9 +78,7 @@
       }
     }
   },
-  "stakePosi": "Положение кола",
   "swap": "Обмен",
   "switchNetwork": "Сменить сеть",
-  "theFastest": "самая быстрорастущая экосистема, стремящаяся создать самый глубокий источник ликвидности на Гноланде.",
   "theme": "Тема"
 }

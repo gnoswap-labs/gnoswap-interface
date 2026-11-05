@@ -27,14 +27,8 @@
     "ongoing": "En curso",
     "status": {
       "ended": "Finalizado",
-      "endsInOneMinute": "Termina en 1 minuto",
       "ongoing": "Termina en {{time}}",
       "upcoming": "Próximamente en {{time}}"
-    },
-    "tierDuration": {
-      "1month": "1 mes",
-      "3months": "3 meses",
-      "6months": "6 meses"
     },
     "time": {
       "days_one": "{{count}} día",
@@ -146,7 +140,6 @@
     "unconnect": "Conecte su monedero<br/>para ver su participación."
   },
   "participate": {
-    "balance": "Saldo",
     "col": {
       "depositAmount": "Importe del depósito",
       "endDate": "Fecha final",

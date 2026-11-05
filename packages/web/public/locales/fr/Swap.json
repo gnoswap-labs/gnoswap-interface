@@ -8,27 +8,27 @@
     "title": "Confirmer l'échange"
   },
   "dca": {
-    "amountPerOrder": "Montant par ordre",
-    "estimatedEndDate": "Date de fin estimée",
+    "amountPerOrder": "Montant par commande",
+    "estimatedEndDate": "Date de fin prévue",
     "every": "Chaque",
-    "everyTooltip": "Le temps estimé entre chaque transaction de votre ordre. Le temps réel peut varier selon le temps de bloc.",
-    "minTrading": "Minimum de {{amount}} {{symbol}} par ordre",
-    "networkGasFeeTooltip": "Les frais de gas et le dépôt de stockage pour placer cet ordre. Chaque transaction est exécutée par un keeper sans frais de gas supplémentaires pour vous.",
-    "noWhitelistedPool": "Paire non prise en charge",
-    "poolCheckFailed": "Réessayer la vérification du pool",
-    "orders": "Ordres",
-    "over": "Sur",
-    "overTooltip": "Le nombre de transactions individuelles qui seront déclenchées dans le cadre de votre ordre.",
-    "placeOrder": "Passer l'ordre",
+    "everyTooltip": "Le délai estimé entre chaque transaction de votre ordre. Le délai réel peut varier en fonction de la durée du bloc.",
     "executionFee": "Frais d'exécution",
-    "executionFeeTooltip": "Les frais que l'ordre DCA déduit de la sortie de chaque transaction exécutée. Le taux affiché est net de ces frais.",
-    "routerFee": "Frais du routeur",
-    "routerFeeTooltip": "Les frais prélevés sur chaque transaction exécutée par l'ordre. Ils sont payés dans le jeton de sortie.",
-    "toBuy": "À acheter",
+    "executionFeeTooltip": "Les frais que l'ordre DCA prélève sur le produit de chaque transaction exécutée. Le taux indiqué s'entend après déduction de ces frais.",
+    "minTrading": "{{amount}} s minimales : {{symbol}} par commande",
+    "networkGasFeeTooltip": "Les frais de gaz et la caution de stockage liés à cette commande. Chaque transaction est exécutée par un « keeper » sans frais de gaz supplémentaires pour vous.",
+    "noWhitelistedPool": "Paire non prise en charge",
+    "orders": "Commandes",
+    "over": "Plus de",
+    "overTooltip": "Le nombre de transactions individuelles qui seront exécutées dans le cadre de votre ordre.",
+    "placeOrder": "Passer une commande",
+    "poolCheckFailed": "Vérification du pool de tentatives",
+    "routerFee": "Frais de routeur",
+    "routerFeeTooltip": "Les frais prélevés sur chaque transaction exécutée dans le cadre de l'ordre. Ils sont payés dans le jeton de sortie.",
+    "toBuy": "Acheter",
     "unit": {
       "day": "Jour",
       "hour": "Heure",
-      "minute": "Minute",
+      "minute": "Procès-verbal",
       "month": "Mois",
       "week": "Semaine"
     }
@@ -36,7 +36,7 @@
   "fetchingPrice": "Recherche du meilleur prix...",
   "header": "Échange",
   "limit": {
-    "expiry": "Expiration",
+    "expiry": "Date d'expiration",
     "expiryOption": {
       "oneDay": "1 jour",
       "oneHour": "1 heure",
@@ -45,40 +45,40 @@
     },
     "limitPrice": "Prix limite",
     "market": "Marché",
-    "minTrading": "Minimum de {{amount}} {{symbol}}",
-    "slippage": "Glissement max.",
-    "startToOrder": "Passer l'ordre"
+    "minTrading": "{{amount}} minimale {{symbol}}",
+    "slippage": "Glissement maximal",
+    "startToOrder": "Commencer la commande"
   },
   "order": {
-    "active": "Actifs",
-    "cancelOrder": "Annuler l'ordre",
-    "claimOrder": "Réclamer",
-    "connectWallet": "Veuillez connecter votre portefeuille pour voir vos ordres.",
-    "expiresAt": "Expire le",
+    "active": "Actif",
+    "cancelOrder": "Annuler la commande",
+    "claimOrder": "Allégation",
+    "connectWallet": "Veuillez connecter votre portefeuille pour consulter votre commande.",
+    "expiresAt": "Date d'expiration :",
     "nextTrade": "Prochaine transaction",
-    "noOrders": "Aucun ordre trouvé.",
+    "noOrders": "Aucune commande trouvée.",
     "ongoing": "En cours",
-    "order": "Ordre",
-    "orderHistory": "Historique des ordres",
-    "overview": "Aperçu",
-    "past": "Passés",
-    "paused": "Ordres suspendus",
-    "priceRate": "Prix moyen",
+    "order": "Commande",
+    "orderHistory": "Historique des commandes",
+    "overview": "Présentation générale",
+    "past": "Passé",
+    "paused": "Commande en attente",
+    "priceRate": "Tarif",
     "purchased": "Acheté",
-    "purchasedAmount": "Montant acheté",
+    "purchasedAmount": "Montant de l'achat",
     "rate": "Taux",
-    "refundOrder": "Rembourser",
+    "refundOrder": "Remboursement",
     "remainingAmount": "Montant restant",
-    "remainingTrades": "Transactions restantes",
+    "remainingTrades": "Opérations restantes",
     "sold": "Vendu",
-    "soldAmount": "Montant vendu",
+    "soldAmount": "Montant de la vente",
     "status": {
       "cancelled": "Annulé",
       "completed": "Terminé",
-      "expired": "Expiré",
-      "partiallyFilled": "Partiellement exécuté"
+      "expired": "Périmé",
+      "partiallyFilled": "Partiellement rempli"
     },
-    "stopOrder": "Arrêter l'ordre",
+    "stopOrder": "Ordre stop",
     "time": "Heure"
   },
   "poolInfo": {
@@ -124,6 +124,6 @@
   "tab": {
     "dca": "DCA",
     "limit": "Limite",
-    "swap": "Swap"
+    "swap": "Échange"
   }
 }

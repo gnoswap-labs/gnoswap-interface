@@ -1,9 +1,4 @@
 {
-  "allSwitch": "All",
-  "bal": "Balance",
-  "brand": {
-    "introduction": "<span>Swap</span> and <span>Earn</span><br/>On GnoSwap\n"
-  },
   "followOur": "Follow our simple guide to start building liquidity for your project.",
   "highest": "Highest APRs",
   "keyStatCard": {
@@ -13,13 +8,9 @@
     "toDashBoardBtnText": "Go to Explore",
     "totalValueLocked": "Total Value Locked"
   },
-  "liquidityCol": "Liquidity",
   "lookingTo": "Looking to get started on GnoSwap?",
-  "newList": "New Listings",
   "projectOnb": "Project Onboarding Guide",
   "search": "Search",
-  "swapComp": "Swap",
-  "swapNowBtn": "Go to Swap",
   "theFirst": "The first Concentrated Liquidity AMM DEX built using Gnolang",
   "theOne": "the One-stop Gno.land DeFi Platform",
   "tokenList": {

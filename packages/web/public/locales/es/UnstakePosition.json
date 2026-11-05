@@ -3,15 +3,7 @@
     "selectPosi": "Seleccionar posición"
   },
   "confStakeModal": {
-    "btn": "Confirmar posición",
     "positionLst": "Puestos",
-    "stakingReward": {
-      "apr": {
-        "label": "Estaca APR",
-        "tooltip": "La TAE estimada se calcula aplicando un multiplicador dinámico a su posición apostada, en función de la duración de la apuesta."
-      },
-      "title": "Recompensas de las apuestas"
-    },
     "title": "Confirmar posición",
     "unstakingFee": {
       "tooltip": "Porcentaje de las comisiones cobradas sobre la recompensa de la posición reclamada (no sobre el capital) que se destina al protocolo."
@@ -22,10 +14,8 @@
     }
   },
   "overview": {
-    "collectAsSwitch": "Recoger como WGNOT",
     "pooled": "Puesta en común",
-    "totalAmt": "Importe total",
-    "unclaimed": "Recompensa no reclamada"
+    "totalAmt": "Importe total"
   },
   "positionList": {
     "item": {
@@ -34,9 +24,7 @@
       }
     }
   },
-  "rewards": "Recompensas",
   "title": "Anular posición",
-  "unclaimed": "No reclamado",
   "unclaimedRewards": "Recompensas no reclamadas",
   "warning": {
     "content": "Esto restablecerá por completo tu progreso en el staking. Una vez que vuelvas a realizar el staking, tendrás que esperar 45 días para empezar a recibir las recompensas máximas por staking. Asegúrate de comprender cómo funciona el periodo de calentamiento antes de retirar tu staking.",

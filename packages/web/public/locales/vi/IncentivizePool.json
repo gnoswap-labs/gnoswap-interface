@@ -64,9 +64,6 @@
       }
     },
     "history": {
-      "button": {
-        "claim": "Yêu cầu"
-      },
       "label": {
         "claimableUnvestedAmount": "Số tiền chưa được hưởng có thể yêu cầu thanh toán",
         "depositAmount": "Số tiền đặt cọc",
@@ -88,9 +85,6 @@
     }
   },
   "liquidity": "Khả năng thanh khoản",
-  "rewards": "Phần thưởng",
-  "selectToken": "Chọn một mã thông báo",
-  "setReward": "Đặt số tiền thưởng",
   "submitBtn": {
     "amtTooLow": "Số tiền quá thấp",
     "enterAmt": "Nhập số tiền",

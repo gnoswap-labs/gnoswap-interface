@@ -30,18 +30,6 @@
       "title": "2. Chọn “Phạm vi mới”"
     }
   },
-  "overralInfo": {
-    "label": {
-      "capitalEffi": "Hiệu quả sử dụng vốn",
-      "depositR": "Tỷ lệ dự trữ bắt buộc",
-      "feeApr": "Phí tháng 4"
-    },
-    "tooltip": {
-      "capitalEffi": "Hệ số nhân được tính dựa trên mức độ tập trung của danh mục đầu tư của bạn. Chỉ số này cho biết bạn có thể kiếm được thêm bao nhiêu phần thưởng so với một danh mục đầu tư đa dạng hoàn toàn với cùng mức vốn.",
-      "depositR": "Tỷ lệ ký quỹ của hai loại token này được xác định dựa trên giá hiện tại và phạm vi giá đã đặt.",
-      "feeApr": "Tỷ lệ phần trăm hàng năm (APR) ước tính từ phí hoán đổi được tính toán dựa trên phạm vi giá đã chọn của vị thế."
-    }
-  },
   "repos": {
     "action": {
       "exit": "Thoát",

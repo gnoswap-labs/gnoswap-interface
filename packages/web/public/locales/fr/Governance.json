@@ -33,8 +33,6 @@
     },
     "btn": {
       "alreadyVoted": "Déjà voté",
-      "changeNetwork": "Passer à Gnoland",
-      "execute": "Exécuter",
       "noVoteWeight": "Poids de vote insuffisant",
       "requireSelect": "Sélectionner l'option de vote",
       "tryAgain": "Réessayer",
@@ -127,8 +125,7 @@
         "select": {
           "amount": "Montant"
         },
-        "title": "1. Sélectionnez votre délégué",
-        "tooltip": "Les délégués sont des dirigeants communautaires sélectionnés pour prendre des décisions de gouvernance au nom des détenteurs de GNS."
+        "title": "1. Sélectionnez votre délégué"
       },
       "step2": {
         "title": "2. Saisir le montant"
@@ -183,8 +180,6 @@
       "executableInMinutes_other": "Exécutable dans {{count}} minutes",
       "executed": "Proposition excutée {{rel_time}}",
       "expired": "Proposition expirée {{rel_time}}",
-      "h": "dans {{time}}h",
-      "m": "dans {{time}}m",
       "start": "Début du vote {{rel_time}}"
     },
     "tooltip": {
@@ -224,8 +219,7 @@
       "unavailable": "Indisponible"
     },
     "aprHistory": {
-      "dailyApr": "Total",
-      "vs7dAvg": "vs moy. 7D"
+      "dailyApr": "Total"
     },
     "apr": {
       "title": "xGNS APR (7 jours)"

@@ -64,9 +64,6 @@
       }
     },
     "history": {
-      "button": {
-        "claim": "청구하기"
-      },
       "label": {
         "claimableUnvestedAmount": "청구 가능한 미투자 금액",
         "depositAmount": "예치 수량",
@@ -88,9 +85,6 @@
     }
   },
   "liquidity": "유동성",
-  "rewards": "리워드",
-  "selectToken": "토큰을 선택하세요",
-  "setReward": "보상 수량 설정",
   "submitBtn": {
     "amtTooLow": "수량이 너무 적음",
     "enterAmt": "수량을 입력하세요",

@@ -17,12 +17,7 @@
   "fees": "Fees",
   "liquidity": "Liquidity",
   "overview": {
-    "collectAsSwitch": "Collect as WGNOT",
     "pooled": "Pooled",
-    "stakingApr": {
-      "label": "Staking APR",
-      "tooltip": "The estimated APR range is calculated by applying a dynamic multiplier to your staked position, based on the staking duration."
-    },
     "unclaimed": "Unclaimed Fee"
   },
   "posi": "Positions",

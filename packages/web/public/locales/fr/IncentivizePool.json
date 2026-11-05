@@ -64,9 +64,6 @@
       }
     },
     "history": {
-      "button": {
-        "claim": "Réclamation"
-      },
       "label": {
         "claimableUnvestedAmount": "Montant réclamable non acquis",
         "depositAmount": "Montant du dépôt",
@@ -88,9 +85,6 @@
     }
   },
   "liquidity": "Liquidité",
-  "rewards": "Récompenses",
-  "selectToken": "Sélectionner un jeton",
-  "setReward": "Fixer le montant de la récompense",
   "submitBtn": {
     "amtTooLow": "Montant trop faible",
     "enterAmt": "Saisir le montant",

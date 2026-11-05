@@ -39,7 +39,6 @@
   },
   "pageHeader": {
     "addPosi": "Add Position",
-    "dashboard": "Explore",
     "decreaseLiqui": "Decrease Liquidity",
     "earn": "Earn",
     "incentivzePool": "Incentivize Pool",
@@ -49,10 +48,6 @@
     "stakePosition": "Stake Position",
     "unstakePosition": "Unstake Position",
     "wallet": "Portfolio"
-  },
-  "positionHistoryAction": {
-    "claimFees": "Claim Fees",
-    "create": "Create"
   },
   "positionPriceRangeInfo": {
     "capEff": {
@@ -85,12 +80,7 @@
     "internal_reward": "Internal Rewards",
     "swap_fee": "Swap Fees"
   },
-  "selectAToken": "Select a token\n",
   "staked": "Staked",
-  "stakingIncentiveType": {
-    "external": "External",
-    "internal": "Internal"
-  },
   "switchGnoland": "Switch to Gnoland",
   "token": "Token",
   "unstakingFee": {

@@ -33,8 +33,6 @@
     },
     "btn": {
       "alreadyVoted": "Ya ha votado",
-      "changeNetwork": "Cambiar a Gnolandia",
-      "execute": "Ejecute",
       "noVoteWeight": "Insuficiente peso electoral",
       "requireSelect": "Seleccione la opción de voto",
       "tryAgain": "Inténtalo de nuevo",
@@ -127,8 +125,7 @@
         "select": {
           "amount": "Importe"
         },
-        "title": "1. Seleccione su delegado",
-        "tooltip": "Los delegados son líderes de la comunidad seleccionados para tomar decisiones de gobierno en nombre de los titulares de GNS."
+        "title": "1. Seleccione su delegado"
       },
       "step2": {
         "title": "2. Introduzca el importe"
@@ -181,8 +178,6 @@
       "executableInMinutes_other": "Se ejecuta en {{count}} minutos",
       "executed": "Propuesta Excusada {{rel_time}}",
       "expired": "Propuesta caducada {{rel_time}}",
-      "h": "en {{time}}h",
-      "m": "en {{time}}m",
       "start": "Comienza la votación {{rel_time}}"
     },
     "tooltip": {
@@ -222,8 +217,7 @@
       "unavailable": "No disponible"
     },
     "aprHistory": {
-      "dailyApr": "Total",
-      "vs7dAvg": "vs media 7D"
+      "dailyApr": "Total"
     },
     "apr": {
       "title": "xGNS APR (7 días)"

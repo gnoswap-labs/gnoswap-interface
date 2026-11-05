@@ -1,6 +1,4 @@
 {
-  "addAct": "Agregar",
-  "adds": "Agrega",
   "day": "Día",
   "fees": "Honorarios",
   "govOver": {
@@ -52,8 +50,7 @@
       "tooltip": {
         "community": "Piscina comunitaria",
         "devOps": "DevOps",
-        "liquiStaking": "Estacas de liquidez",
-        "title": "Emisiones en bloque"
+        "liquiStaking": "Estacas de liquidez"
       }
     },
     "circulSup": {
@@ -75,15 +72,9 @@
       "tooltip": "El suministro máximo de fichas de GNS."
     }
   },
-  "swapAct": "Intercambio",
-  "swaps": "Permutas",
   "title": "Explore",
   "totalVolChart": {
     "title": "Volumen total",
     "totalFee": "Tasas totales"
-  },
-  "totalvolumeFees": "Tasas",
-  "tradingVolume": "Volumen de comercio",
-  "unstakeAct": "Desapuesta",
-  "unstakes": "Desapuestas"
+  }
 }

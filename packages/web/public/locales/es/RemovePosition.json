@@ -17,12 +17,7 @@
   "fees": "Honorarios",
   "liquidity": "Liquidez",
   "overview": {
-    "collectAsSwitch": "Recoger como WGNOT",
     "pooled": "agrupado",
-    "stakingApr": {
-      "label": "Estaca APR",
-      "tooltip": "La TAE estimada se calcula aplicando un multiplicador dinámico a su posición apostada, en función de la duración de la apuesta."
-    },
     "unclaimed": "Tasa no reclamada"
   },
   "posi": "Posiciones",

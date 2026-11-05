@@ -27,14 +27,8 @@
     "ongoing": "継続中",
     "status": {
       "ended": "終了",
-      "endsInOneMinute": "1分で終了",
       "ongoing": "終了{{time}}",
       "upcoming": "今後の予定{{time}}"
-    },
-    "tierDuration": {
-      "1month": "1ヶ月",
-      "3months": "3ヶ月",
-      "6months": "6ヶ月"
     },
     "time": {
       "days_other": "{{count}} 日",
@@ -141,7 +135,6 @@
     "unconnect": "ウォレットを<br/>に接続し、参加状況をご確認ください。"
   },
   "participate": {
-    "balance": "バランス",
     "col": {
       "depositAmount": "預金額",
       "endDate": "終了日",

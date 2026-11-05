@@ -1,6 +1,4 @@
 {
-  "addAct": "添加",
-  "adds": "添加",
   "day": "天",
   "fees": "费用",
   "govOver": {
@@ -52,8 +50,7 @@
       "tooltip": {
         "community": "社区游泳池",
         "devOps": "DevOps",
-        "liquiStaking": "流动资金定额",
-        "title": "区块排放"
+        "liquiStaking": "流动资金定额"
       }
     },
     "circulSup": {
@@ -75,15 +72,9 @@
       "tooltip": "GNS 的最大令牌供应量。"
     }
   },
-  "swapAct": "交换",
-  "swaps": "掉期",
   "title": "探索",
   "totalVolChart": {
     "title": "总容积",
     "totalFee": "总费用"
-  },
-  "totalvolumeFees": "费用",
-  "tradingVolume": "交易量",
-  "unstakeAct": "取消质押",
-  "unstakes": "取消质押"
+  }
 }

@@ -1,14 +1,11 @@
 {
   "action": {
-    "balance": "Balance",
     "cancel": "Cancel",
     "close": "Close",
     "copy": "Copy",
-    "earn": "Earn",
     "swap": "Swap"
   },
   "all": "All",
-  "available": "Available",
   "balanceChange": {
     "currentBalance": "Current Balance",
     "defaultTitle": "3. Balance Changes",
@@ -22,7 +19,6 @@
     "amountTooLow": "Amount Too Low",
     "enterAmount": "Enter Amount",
     "insuffiBal": "Insufficient Balance",
-    "switchNetwork": "Switch to Gnoland",
     "walletLogin": "Wallet Login"
   },
   "candleTooltip": {
@@ -73,7 +69,6 @@
       "title": "How Does Staking Work?"
     }
   },
-  "imporNote": "Important Note",
   "learnMore": "Learn More",
   "localTimeComp": {
     "tooltip": "*Based on your local time"
@@ -98,14 +93,6 @@
   "noDataFound": "No data found",
   "noProposalFound": "No proposal found",
   "per": "per",
-  "poolGraph": {
-    "tooltip": {
-      "positionAmt": "Position's Amt.",
-      "priceRange": "Price Range",
-      "quote": "Quote",
-      "totalAmt": "Total Amt."
-    }
-  },
   "price": "Price",
   "reset": "Reset",
   "search": "Search",

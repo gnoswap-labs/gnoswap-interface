@@ -68,6 +68,30 @@
       },
       "title": "申请 GNS"
     },
+    "dcaClaim": {
+      "status": {
+        "error": "<div>领取失败 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "pending": "<div>声称 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "success": "<div>已申领 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>"
+      },
+      "title": "申请DCA命令"
+    },
+    "dcaOrder": {
+      "status": {
+        "error": "<div>订购失败 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 为 <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>订购 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 用于 <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>已下单 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 用于 <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "DCA命令"
+    },
+    "dcaStop": {
+      "status": {
+        "error": "<div>无法停止 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>停止 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 为了 <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>停止 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 停下 <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "中止DCA命令"
+    },
     "delegate": {
       "status": {
         "error": "<div>授权失败 <span>{{tokenAAmount}}</span><span>{{tokenASymbol}}</span>给 <span>{{target}}</span></div>",
@@ -109,6 +133,22 @@
         "title": "提交的交易",
         "viewTx": "查看交易"
       }
+    },
+    "limitCancel": {
+      "status": {
+        "error": "<div>取消失败 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>取消 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 用于 <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>已取消 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 因 <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "取消限价单"
+    },
+    "limitOrder": {
+      "status": {
+        "error": "<div>订购失败 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 为 <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>订购 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 用于 <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>已下单 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 用于 <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "限价单"
     },
     "propose": {
       "status": {
@@ -195,47 +235,22 @@
         "success": "<div>包裹 <span>{{tokenAAmount}}</span><span>{{tokenASymbol}}</span>和 <span>{{tokenBAmount}}</span><span>{{tokenBSymbol}}</span></div>"
       },
       "title": "包装"
-    },
-    "dcaClaim": {
-      "status": {
-        "error": "<div>领取 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 失败</div>",
-        "pending": "<div>正在领取 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
-        "success": "<div>已领取 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>"
-      },
-      "title": "领取DCA订单"
-    },
-    "dcaOrder": {
-      "status": {
-        "error": "<div>以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 下单购买 <span>{{tokenBSymbol}}</span> 失败</div>",
-        "pending": "<div>正在以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 下单购买 <span>{{tokenBSymbol}}</span></div>",
-        "success": "<div>已以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 下单购买 <span>{{tokenBSymbol}}</span></div>"
-      },
-      "title": "DCA 订单"
-    },
-    "dcaStop": {
-      "status": {
-        "error": "<div>停止以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 购买 <span>{{tokenBSymbol}}</span> 的订单失败</div>",
-        "pending": "<div>正在停止以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 购买 <span>{{tokenBSymbol}}</span> 的订单</div>",
-        "success": "<div>已停止以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 购买 <span>{{tokenBSymbol}}</span> 的订单</div>"
-      },
-      "title": "停止 DCA 订单"
-    },
-    "limitOrder": {
-      "status": {
-        "error": "<div>以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 下单购买 <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span> 失败</div>",
-        "pending": "<div>正在以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 下单购买 <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
-        "success": "<div>已以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 下单购买 <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>"
-      },
-      "title": "限价订单"
-    },
-    "limitCancel": {
-      "status": {
-        "error": "<div>取消以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 购买 <span>{{tokenBSymbol}}</span> 的订单失败</div>",
-        "pending": "<div>正在取消以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 购买 <span>{{tokenBSymbol}}</span> 的订单</div>",
-        "success": "<div>已取消以 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 购买 <span>{{tokenBSymbol}}</span> 的订单</div>"
-      },
-      "title": "取消限价订单"
     }
+  },
+  "confirmLimitOrder": {
+    "title": "确认限价单"
+  },
+  "confirmPlaceOrder": {
+    "actualAmount": "仅下单了{{amount}} {{symbol}} ，因此每笔交易卖出的数量都相同。",
+    "title": "确认下单"
+  },
+  "confirmStopOrder": {
+    "cancelNote": "取消限价单后，您无法重新下达同一笔订单，系统仅将未成交部分退还给您。已成交部分不受影响。",
+    "cancelTitle": "确认 取消订单",
+    "importantNote": "重要说明",
+    "note": "一旦停止DCA订单，您将无法重新启动同一订单，系统只会将剩余金额退还给您。若要继续进行DCA，您需要创建一个新的DCA订单。",
+    "orderDetails": "订单详情",
+    "title": "确认止损单"
   },
   "connectWallet": {
     "failed": {
@@ -254,18 +269,14 @@
       },
       "claimed": "已申请",
       "claimedDeposit": "申请存款",
-      "dcaOrdered": "DCA 已下单",
-      "dcaSwapped": "DCA 已兑换",
-      "dcaStopped": "DCA 已停止",
-      "limitOrdered": "限价已下单",
-      "limitSwapped": "限价已成交",
-      "limitCancelled": "限价已取消",
-      "limitExpired": "限价已过期",
       "createproposal": {
         "status": {
           "success": "创建"
         }
       },
+      "dcaOrdered": "DCA下令",
+      "dcaStopped": "DCA 已停止",
+      "dcaSwapped": "DCA 已更换",
       "decreased": "减少",
       "delegate": {
         "status": {
@@ -281,6 +292,10 @@
       "feesClaimed": "索赔费用",
       "incentivized": "激励",
       "increased": "增加",
+      "limitCancelled": "限额已取消",
+      "limitExpired": "限时优惠已过期",
+      "limitOrdered": "限价单",
+      "limitSwapped": "限价单已换边",
       "proposal": "建议",
       "received": "已收到",
       "removed": "已删除",
@@ -311,7 +326,6 @@
     },
     "title": "通知"
   },
-  "pop": "热门代币",
   "search": {
     "mostLiquiPools": "液体最多的水池",
     "pools": "游泳池",
@@ -359,25 +373,7 @@
     "understand": "我明白"
   },
   "walletLogin": {
-    "btn": {
-      "connect": "钱包连接"
-    },
     "desc": "连接钱包即表示您同意并遵守我们的<1>使用条款</1>和<3>隐私政策</3>。",
     "title": "钱包登录"
-  },
-  "confirmPlaceOrder": {
-    "actualAmount": "为使每笔交易卖出相同数量，仅下单 {{amount}} {{symbol}}。",
-    "title": "确认下单"
-  },
-  "confirmLimitOrder": {
-    "title": "确认限价订单"
-  },
-  "confirmStopOrder": {
-    "cancelNote": "取消限价订单后无法重新启动同一订单，仅退还未成交数量。已成交数量不受影响。",
-    "cancelTitle": "确认取消订单",
-    "importantNote": "重要提示",
-    "note": "停止 DCA 订单后无法重新启动同一订单，仅退还剩余数量。如需继续 DCA，请创建新的 DCA 订单。",
-    "orderDetails": "订单详情",
-    "title": "确认停止订单"
   }
 }

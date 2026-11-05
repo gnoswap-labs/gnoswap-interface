@@ -1,23 +1,14 @@
 {
   "confModal": {
     "balanceChanges": "Изменения в балансе",
-    "btn": "Подтвердить Снижение ликвидности",
-    "currentBalance": "Текущий баланс",
     "decreasingAmount": "Уменьшающаяся сумма",
-    "fees": "Тарифы",
-    "newBalance": "New Balance",
-    "pooled": "Объединенный",
     "positionDetails": "Подробности о должности",
     "title": "Подтвердить Снижение ликвидности",
     "tooltip": {
       "withdrawalFee": "Процент комиссионных, взимаемых с заявленной позиции (не с основной суммы), который идет на протокол."
-    },
-    "unclaimed": "Невостребованные"
+    }
   },
   "form": {
-    "collectWugnot": {
-      "switch": "Собирать как WGNOT"
-    },
     "decreaseAmount": {
       "label": "2. Уменьшающаяся сумма"
     },

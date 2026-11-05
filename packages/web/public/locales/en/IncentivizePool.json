@@ -64,9 +64,6 @@
       }
     },
     "history": {
-      "button": {
-        "claim": "Claim"
-      },
       "label": {
         "claimableUnvestedAmount": "Claimable Unvested Amount",
         "depositAmount": "Deposit Amount",
@@ -88,9 +85,6 @@
     }
   },
   "liquidity": "Liquidity",
-  "rewards": "Rewards",
-  "selectToken": "Select A Token",
-  "setReward": "Set Reward Amount",
   "submitBtn": {
     "amtTooLow": "Amount Too Low",
     "enterAmt": "Enter Amount",

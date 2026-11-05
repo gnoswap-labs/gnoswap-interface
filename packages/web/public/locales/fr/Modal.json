@@ -68,6 +68,30 @@
       },
       "title": "Réclamation GNS"
     },
+    "dcaClaim": {
+      "status": {
+        "error": "<div>Échec de la demande <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "pending": "<div>Réclamer <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "success": "<div>Déclaré <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>"
+      },
+      "title": "Demande d'ordonnance DCA"
+    },
+    "dcaOrder": {
+      "status": {
+        "error": "<div>Échec de la commande <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> pour <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Commande <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> pour <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Commandé <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> pour <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Arrêté de la DCA"
+    },
+    "dcaStop": {
+      "status": {
+        "error": "<div>Impossible de s'arrêter <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> à <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>S'arrêter <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> pour <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Arrêté <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> pour <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Ordonnance de suspension de la DCA"
+    },
     "delegate": {
       "status": {
         "error": "<div>Échec de la délégation <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> à <span>{{target}}</span></div>",
@@ -109,6 +133,22 @@
         "title": "Transaction soumise",
         "viewTx": "Voir la transaction"
       }
+    },
+    "limitCancel": {
+      "status": {
+        "error": "<div>Échec de l'annulation <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> pour <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Annulation <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> pour <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Annulé <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> pour <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Annuler un ordre à cours limité"
+    },
+    "limitOrder": {
+      "status": {
+        "error": "<div>Échec de la commande <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> pour <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Commande <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> pour <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Commandé <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> pour <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Ordre à cours limité"
     },
     "propose": {
       "status": {
@@ -195,47 +235,22 @@
         "success": "<div>Enveloppé <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> et <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>"
       },
       "title": "Enveloppe"
-    },
-    "dcaClaim": {
-      "status": {
-        "error": "<div>Échec de la réclamation de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
-        "pending": "<div>Réclamation de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
-        "success": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> réclamé</div>"
-      },
-      "title": "Réclamer l'ordre DCA"
-    },
-    "dcaOrder": {
-      "status": {
-        "error": "<div>Échec de l'ordre de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBSymbol}}</span></div>",
-        "pending": "<div>Ordre de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBSymbol}}</span> en cours</div>",
-        "success": "<div>Ordre de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBSymbol}}</span> placé</div>"
-      },
-      "title": "Ordre DCA"
-    },
-    "dcaStop": {
-      "status": {
-        "error": "<div>Échec de l'arrêt de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBSymbol}}</span></div>",
-        "pending": "<div>Arrêt de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBSymbol}}</span> en cours</div>",
-        "success": "<div>Ordre de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBSymbol}}</span> arrêté</div>"
-      },
-      "title": "Arrêter l'ordre DCA"
-    },
-    "limitOrder": {
-      "status": {
-        "error": "<div>Échec de l'ordre de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
-        "pending": "<div>Ordre de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span> en cours</div>",
-        "success": "<div>Ordre de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span> placé</div>"
-      },
-      "title": "Ordre limite"
-    },
-    "limitCancel": {
-      "status": {
-        "error": "<div>Échec de l'annulation de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBSymbol}}</span></div>",
-        "pending": "<div>Annulation de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBSymbol}}</span> en cours</div>",
-        "success": "<div>Ordre de <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> contre <span>{{tokenBSymbol}}</span> annulé</div>"
-      },
-      "title": "Annuler l'ordre limite"
     }
+  },
+  "confirmLimitOrder": {
+    "title": "Confirmer l'ordre à cours limité"
+  },
+  "confirmPlaceOrder": {
+    "actualAmount": "Seul l'ordre « {{amount}} » ( {{symbol}} ) est passé, de sorte que chaque transaction vende le même montant.",
+    "title": "Confirmer la commande"
+  },
+  "confirmStopOrder": {
+    "cancelNote": "Si vous annulez un ordre à cours limité, vous ne pouvez pas repasser le même ordre et seul le montant non exécuté vous est restitué. Les montants déjà exécutés ne sont pas concernés.",
+    "cancelTitle": "Confirmer Annuler la commande",
+    "importantNote": "Remarque importante",
+    "note": "Si vous interrompez un ordre DCA, vous ne pouvez pas relancer le même ordre et seuls les montants restants vous sont remboursés. Pour poursuivre le DCA, vous devez créer un nouvel ordre DCA.",
+    "orderDetails": "Détails de la commande",
+    "title": "Confirmer l'ordre stop"
   },
   "connectWallet": {
     "failed": {
@@ -254,18 +269,14 @@
       },
       "claimed": "Réclamé",
       "claimedDeposit": "Dépôt réclamé",
-      "dcaOrdered": "DCA commandé",
-      "dcaSwapped": "DCA échangé",
-      "dcaStopped": "DCA arrêté",
-      "limitOrdered": "Limite commandée",
-      "limitSwapped": "Limite échangée",
-      "limitCancelled": "Limite annulée",
-      "limitExpired": "Limite expirée",
       "createproposal": {
         "status": {
           "success": "Créée"
         }
       },
+      "dcaOrdered": "Commande DCA",
+      "dcaStopped": "DCA interrompu",
+      "dcaSwapped": "DCA remplacé",
       "decreased": "Diminué",
       "delegate": {
         "status": {
@@ -281,6 +292,10 @@
       "feesClaimed": "Honoraires réclamés",
       "incentivized": "Incitation",
       "increased": "Augmenté",
+      "limitCancelled": "Limite annulée",
+      "limitExpired": "Limite dépassée",
+      "limitOrdered": "Ordre à cours limité",
+      "limitSwapped": "Limite modifiée",
       "proposal": "Proposition",
       "received": "Reçu",
       "removed": "Supprimé",
@@ -311,7 +326,6 @@
     },
     "title": "Notification"
   },
-  "pop": "Jetons populaires",
   "search": {
     "mostLiquiPools": "Pools les plus liquides",
     "pools": "Pools",
@@ -359,25 +373,7 @@
     "understand": "Je comprends"
   },
   "walletLogin": {
-    "btn": {
-      "connect": "Connexion au portefeuille"
-    },
     "desc": "En connectant un portefeuille, vous acceptez nos <1>conditions d'utilisation</1> et notre <3>politique de confidentialité</3>.",
     "title": "Connexion au portefeuille"
-  },
-  "confirmPlaceOrder": {
-    "actualAmount": "Seuls {{amount}} {{symbol}} sont engagés afin que chaque transaction vende le même montant.",
-    "title": "Confirmer l'ordre"
-  },
-  "confirmLimitOrder": {
-    "title": "Confirmer l'ordre limite"
-  },
-  "confirmStopOrder": {
-    "cancelNote": "Si vous annulez un ordre limite, vous ne pourrez pas le relancer et seul le montant non exécuté vous sera restitué. Les montants exécutés ne sont pas affectés.",
-    "cancelTitle": "Confirmer l'annulation de l'ordre",
-    "importantNote": "Remarque importante",
-    "note": "Si vous arrêtez un ordre DCA, vous ne pourrez pas le relancer et seuls les montants restants vous seront restitués. Pour continuer le DCA, créez un nouvel ordre DCA.",
-    "orderDetails": "Détails de l'ordre",
-    "title": "Confirmer l'arrêt de l'ordre"
   }
 }

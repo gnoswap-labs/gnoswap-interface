@@ -68,6 +68,30 @@
       },
       "title": "GNS 청구하기"
     },
+    "dcaClaim": {
+      "status": {
+        "error": "<div>수령에 실패했습니다 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "pending": "<div>주장하다 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "success": "<div>주장된 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>"
+      },
+      "title": "DCA 명령 청구"
+    },
+    "dcaOrder": {
+      "status": {
+        "error": "<div>주문 실패 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> ~에 대해 <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>주문 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> ~용 <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>주문됨 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> ~을(를) 위해 <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "DCA 명령"
+    },
+    "dcaStop": {
+      "status": {
+        "error": "<div>중지하지 못했습니다 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>정지 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> ~을 위해 <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>중지됨 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> ~을 위해 <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "DCA 명령 중지"
+    },
     "delegate": {
       "status": {
         "error": "<div>위임 실패 <span>{{target}}</span>에 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
@@ -109,6 +133,22 @@
         "title": "트랜잭션이 전송되었습니다.",
         "viewTx": "트랜잭션 보기"
       }
+    },
+    "limitCancel": {
+      "status": {
+        "error": "<div>취소에 실패했습니다 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 다음에 대해 <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>취소 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> ~에 대한 <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>취소됨 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> ~ 때문에 <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "지정가 주문 취소"
+    },
+    "limitOrder": {
+      "status": {
+        "error": "<div>주문 실패 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> ~에 대해 <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>주문 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> ~용 <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>주문됨 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> ~을(를) 위해 <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "지정가 주문"
     },
     "propose": {
       "status": {
@@ -195,47 +235,22 @@
         "success": "<div>래핑됨 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 및 <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>"
       },
       "title": "래핑"
-    },
-    "dcaClaim": {
-      "status": {
-        "error": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 수령 실패</div>",
-        "pending": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 수령 중</div>",
-        "success": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 수령 완료</div>"
-      },
-      "title": "DCA 주문 수령"
-    },
-    "dcaOrder": {
-      "status": {
-        "error": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBSymbol}}</span> 주문 실패</div>",
-        "pending": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBSymbol}}</span> 주문 중</div>",
-        "success": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBSymbol}}</span> 주문 완료</div>"
-      },
-      "title": "DCA 주문"
-    },
-    "dcaStop": {
-      "status": {
-        "error": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBSymbol}}</span> 주문 중지 실패</div>",
-        "pending": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBSymbol}}</span> 주문 중지 중</div>",
-        "success": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBSymbol}}</span> 주문 중지 완료</div>"
-      },
-      "title": "DCA 주문 중지"
-    },
-    "limitOrder": {
-      "status": {
-        "error": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span> 주문 실패</div>",
-        "pending": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span> 주문 중</div>",
-        "success": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span> 주문 완료</div>"
-      },
-      "title": "지정가 주문"
-    },
-    "limitCancel": {
-      "status": {
-        "error": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBSymbol}}</span> 주문 취소 실패</div>",
-        "pending": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBSymbol}}</span> 주문 취소 중</div>",
-        "success": "<div><span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 으로 <span>{{tokenBSymbol}}</span> 주문 취소 완료</div>"
-      },
-      "title": "지정가 주문 취소"
     }
+  },
+  "confirmLimitOrder": {
+    "title": "지정가 주문 확인"
+  },
+  "confirmPlaceOrder": {
+    "actualAmount": "{{amount}} {{symbol}} 만 주문되어 있으므로, 모든 거래에서 동일한 수량이 매도됩니다.",
+    "title": "주문 확정"
+  },
+  "confirmStopOrder": {
+    "cancelNote": "지정가 주문을 취소하면 동일한 주문을 다시 제출할 수 없으며, 미체결된 수량만 반환됩니다. 체결된 수량에는 영향을 미치지 않습니다.",
+    "cancelTitle": "주문 확인/취소",
+    "importantNote": "중요 공지",
+    "note": "DCA 주문을 중지하면 동일한 주문을 다시 시작할 수 없으며, 잔여 금액만 환불됩니다. DCA를 계속 진행하려면 새로운 DCA 주문을 생성해야 합니다.",
+    "orderDetails": "주문 내역",
+    "title": "정지 주문 확인"
   },
   "connectWallet": {
     "failed": {
@@ -254,18 +269,14 @@
       },
       "claimed": "청구됨",
       "claimedDeposit": "청구된 예치금",
-      "dcaOrdered": "DCA 주문됨",
-      "dcaSwapped": "DCA 스왑됨",
-      "dcaStopped": "DCA 중지됨",
-      "limitOrdered": "지정가 주문됨",
-      "limitSwapped": "지정가 스왑됨",
-      "limitCancelled": "지정가 취소됨",
-      "limitExpired": "지정가 만료됨",
       "createproposal": {
         "status": {
           "success": "생성됨"
         }
       },
+      "dcaOrdered": "DCA 명령",
+      "dcaStopped": "DCA 중단됨",
+      "dcaSwapped": "DCA 교체됨",
       "decreased": "일부 해지됨",
       "delegate": {
         "status": {
@@ -281,6 +292,10 @@
       "feesClaimed": "청구된 수수료",
       "incentivized": "인센티브 제공",
       "increased": "추가됨",
+      "limitCancelled": "한도 취소됨",
+      "limitExpired": "유효기간 만료",
+      "limitOrdered": "지정가 주문",
+      "limitSwapped": "한도 변경됨",
       "proposal": "제안서",
       "received": "받음",
       "removed": "해지됨",
@@ -311,7 +326,6 @@
     },
     "title": "알림"
   },
-  "pop": "인기 토큰",
   "search": {
     "mostLiquiPools": "최고 유동성 풀",
     "pools": "풀",
@@ -359,25 +373,7 @@
     "understand": "이해했습니다."
   },
   "walletLogin": {
-    "btn": {
-      "connect": "지갑 연결"
-    },
     "desc": "지갑을 연결하면 <1>이용 약관</1> 및 <3>개인정보 처리방침</3>에 동의하는 것으로 간주됩니다. ",
     "title": "지갑 로그인"
-  },
-  "confirmPlaceOrder": {
-    "actualAmount": "모든 거래가 같은 수량을 판매하도록 {{amount}} {{symbol}}만 주문됩니다.",
-    "title": "주문 확인"
-  },
-  "confirmLimitOrder": {
-    "title": "지정가 주문 확인"
-  },
-  "confirmStopOrder": {
-    "cancelNote": "지정가 주문을 취소하면 같은 주문을 다시 시작할 수 없으며 체결되지 않은 수량만 반환됩니다. 이미 체결된 수량에는 영향이 없습니다.",
-    "cancelTitle": "주문 취소 확인",
-    "importantNote": "중요 안내",
-    "note": "DCA 주문을 중지하면 같은 주문을 다시 시작할 수 없으며 남은 수량만 반환됩니다. DCA를 계속하려면 새 DCA 주문을 생성해야 합니다.",
-    "orderDetails": "주문 상세",
-    "title": "주문 중지 확인"
   }
 }
