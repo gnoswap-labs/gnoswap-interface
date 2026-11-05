@@ -3,13 +3,11 @@ import React, { useEffect, useMemo, useRef } from "react";
 import Footer from "@components/common/footer/Footer";
 import { VIDEO_GUIDE_TYPES } from "@constants/video-guide.constant";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import useCustomRouter from "@hooks/common/use-custom-router";
-import useUrlParam from "@hooks/common/use-url-param";
 import { useVideoGuide } from "@hooks/common/use-video-guide";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
+import { usePoolDetailRoute } from "@hooks/pool/ui/use-pool-detail-route";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetPoolDetailByPath, useGetPoolStakingListByPoolPath } from "@query/pools";
-import { isValidAddress } from "@utils/validation-utils";
 
 import VideoGuideModal from "@components/common/video-guide-modal/VideoGuideModal";
 import { isValidVideoGuideType } from "@utils/video-guide.utils";
@@ -19,7 +17,7 @@ import StakingContainer from "./containers/staking-container/StakingContainer";
 import PoolLayout from "./PoolLayout";
 
 const PoolDetail: React.FC = () => {
-  const router = useCustomRouter();
+  const { poolPath, address: routeAddress, hash, targetPositionId } = usePoolDetailRoute();
 
   const {
     currentGuide,
@@ -29,17 +27,9 @@ const PoolDetail: React.FC = () => {
   } = useVideoGuide(VIDEO_GUIDE_TYPES.STAKING);
 
   const { account } = useWallet();
-  const poolPath = router.getPoolPath();
+  const urlAddress = routeAddress || "";
   const jumpFlagRef = useRef(false);
   const { data } = useGetPoolDetailByPath(poolPath);
-
-  const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({ addr: undefined });
-
-  const urlAddress = useMemo(() => {
-    if (!initializedData?.addr) return "";
-
-    return isValidAddress(initializedData.addr) ? initializedData.addr : "";
-  }, [initializedData?.addr]);
 
   const connectAddress = useMemo(() => {
     return account?.address || "";
@@ -54,7 +44,7 @@ const PoolDetail: React.FC = () => {
   }, [urlAddress, connectAddress]);
 
   const { isFetchedPosition, loading, positions } = usePositionData({
-    address: urlAddress ?? connectAddress,
+    address: urlAddress || connectAddress,
     poolPath,
     withClosed: false,
     fetchAll: true,
@@ -98,7 +88,7 @@ const PoolDetail: React.FC = () => {
     }
 
     // Numeric position anchors are handled after the liquidity list has loaded its target card.
-    if (hash && /^\d+$/.test(hash)) return;
+    if (targetPositionId) return;
 
     const element = document.getElementById("liquidity-wrapper");
     if (element && isElementInDOM(element)) {
@@ -111,7 +101,7 @@ const PoolDetail: React.FC = () => {
       jumpFlagRef.current = true;
       setTimeout(handleScroll, 100);
     }
-  }, [loading, isFetchedPosition, hash, isStakable]);
+  }, [loading, isFetchedPosition, hash, isStakable, targetPositionId]);
 
   useEffect(() => {
     jumpFlagRef.current = false;

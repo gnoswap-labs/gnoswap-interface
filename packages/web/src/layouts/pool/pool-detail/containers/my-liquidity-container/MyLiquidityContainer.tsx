@@ -9,6 +9,7 @@ import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confir
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { buildClaimAllInputFromPositions, usePosition } from "@hooks/pool/data/use-position";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
+import { usePoolDetailRoute } from "@hooks/pool/ui/use-pool-detail-route";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetUsernameByAddress } from "@query/address";
@@ -44,15 +45,13 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   }, [urlAddress, connectAddress]);
 
   const router = useRouter();
-  const hash = router.asPath.split("#")[1] || "";
-  const targetPositionId = /^\d+$/.test(hash) ? hash : "";
+  const { poolPath, targetPositionId } = usePoolDetailRoute();
   const scrolledPositionRef = useRef("");
   const divRef = useRef<HTMLDivElement | null>(null);
   const { breakpoint } = useWindowSize();
   const { connected: connectedWallet, isSwitchNetwork, account, currentChainId } = useWallet();
   const [currentIndex, setCurrentIndex] = useState(1);
   const [positionLimit, setPositionLimit] = useState(DEFAULT_POSITION_LIMIT);
-  const poolPath = router.getPoolPath();
   const normalizedAddress = useMemo(() => (address || "").toLowerCase(), [address]);
   const [isShowClosePosition, setIsShowClosedPosition] = useState(!!targetPositionId);
   const [hasLoadedPositionOnce, setHasLoadedPositionOnce] = useState(false);
