@@ -97,10 +97,10 @@ const PoolDetail: React.FC = () => {
       return;
     }
 
-    // The target card may not be rendered yet when it is outside the paginated liquidity list.
-    const hasPosition = positions.some(item => item.id.toString() === hash);
-    const positionElement = hasPosition ? document.getElementById(hash as string) : null;
-    const element = isElementInDOM(positionElement) ? positionElement : document.getElementById("liquidity-wrapper");
+    // Numeric position anchors are handled after the liquidity list has loaded its target card.
+    if (hash && /^\d+$/.test(hash)) return;
+
+    const element = document.getElementById("liquidity-wrapper");
     if (element && isElementInDOM(element)) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
     }

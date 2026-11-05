@@ -1,5 +1,6 @@
 import React from "react";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useRouter } from "next/router";
 
 import { DEFAULT_I18N_NS, SEOInfo } from "@constants/common.constant";
 import { SwapFeeTierInfoMap } from "@constants/option.constant";
@@ -14,6 +15,9 @@ import { isValidAddress } from "@utils/validation-utils";
 
 import { EarnPoolSEOContainer } from "@containers/seo-header-container";
 import PoolDetail from "@layouts/pool/pool-detail/PoolDetail";
+import Custom404 from "@layouts/custom-404/Custom404";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
+import { useGetPositionById } from "@query/positions/use-get-position-by-id";
 
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
@@ -24,6 +28,41 @@ export async function getStaticProps({ locale }: { locale: string }) {
 }
 
 export default function Page() {
+  const router = useCustomRouter();
+  const positionId = router.getPositionId();
+
+  return positionId !== null ? <PositionPoolRedirect positionId={positionId} /> : <PoolPage key={router.asPath} />;
+}
+
+function PositionPoolRedirect({ positionId }: { positionId: string }) {
+  const router = useRouter();
+  const isValidId = /^\d+$/.test(positionId);
+  const { data: position, isError } = useGetPositionById(positionId, { enabled: isValidId });
+
+  React.useEffect(() => {
+    if (!router.isReady || !position) return;
+
+    const query = { ...router.query };
+    delete query.positionId;
+    void router.replace(
+      {
+        pathname: router.pathname,
+        query: { ...query, poolPath: position.poolPath, addr: position.owner },
+        hash: position.lpTokenId,
+      },
+      undefined,
+      { shallow: true, scroll: false },
+    );
+  }, [router, position]);
+
+  if (!isValidId || isError) {
+    return <Custom404 />;
+  }
+
+  return <LoadingSpinner />;
+}
+
+function PoolPage() {
   const router = useCustomRouter();
   const { account } = useWallet();
   const poolPath = router.getPoolPath();
