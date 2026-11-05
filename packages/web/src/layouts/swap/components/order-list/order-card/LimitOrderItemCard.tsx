@@ -5,7 +5,13 @@ import { useTranslation } from "react-i18next";
 
 import OrderPairLabel from "@components/order/order-pair-label/OrderPairLabel";
 import { LimitOrderModel } from "@models/order/limit-order-model";
-import { formatOrderAmount, formatOrderDate, formatOrderDateTime, formatOrderRate } from "@utils/order-format-utils";
+import {
+  formatOrderAmount,
+  formatOrderDate,
+  formatOrderDateTime,
+  formatOrderFullAmount,
+  formatOrderRate,
+} from "@utils/order-format-utils";
 
 import OrderProgressBar from "../order-progress-bar/OrderProgressBar";
 import { OrderItemCardWrapper } from "./OrderItemCard.styles";
@@ -57,11 +63,17 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
     () =>
       order.isActive
         ? [
-            { label: t("Swap:order.priceRate"), value: formatOrderRate(order.priceRate) },
+            {
+              label: t("Swap:order.soldAmount"),
+              value: `${formatOrderFullAmount(order.filledInput, tokenIn.decimals)} / ${formatOrderFullAmount(
+                order.makingAmount,
+                tokenIn.decimals,
+              )} ${tokenIn.displaySymbol} (${formatOrderAmount(order.progress)}%)`,
+            },
             { label: t("Swap:order.expiresAt"), value: formatOrderDateTime(order.expiresAt) },
           ]
         : undefined,
-    [order.expiresAt, order.isActive, order.priceRate, t],
+    [order.expiresAt, order.filledInput, order.isActive, order.makingAmount, order.progress, t, tokenIn],
   );
 
   return (
