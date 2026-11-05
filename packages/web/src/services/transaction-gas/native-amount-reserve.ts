@@ -8,6 +8,7 @@ import {
   NATIVE_AMOUNT_RESERVE_BUFFER,
   PROBE_HEADROOM_CAP,
   PROBE_HEADROOM_RATIO,
+  PROBE_RETREAT_RATIOS,
   SMALL_BALANCE_PROBE_DIVISOR,
   STORAGE_DEPOSIT_BUFFER_MULTIPLIER,
 } from "@common/values";
@@ -74,10 +75,10 @@ export function isSubFeeBalance(balance: BigNumber.Value, offeredGasFee: string)
 /**
  * Step 1. Amounts to measure at, in order of preference.
  *
- * | Balance            | Measured at                      | Retry              |
- * | ------------------ | -------------------------------- | ------------------ |
- * | over the fee       | `balance - min(5 GNOT, 10%)`     | `balance - 10%`    |
- * | fee or under       | `balance / 100`                  | none               |
+ * | Balance            | Measured at                      | Retry                                     |
+ * | ------------------ | -------------------------------- | ----------------------------------------- |
+ * | over the fee       | `balance - min(5 GNOT, 10%)`     | `balance - 10%`, then `/2`, then `/10`    |
+ * | fee or under       | `balance / 100`                  | none                                      |
  *
  * A balance that can bear the fee is measured just below its ceiling, holding
  * back a share rather than a flat figure: both costs fall with the amount, so a
@@ -118,8 +119,13 @@ export function planProbes(
 function holdBacks(balance: BigNumber): string[] {
   const proportional = ceilToUgnot(balance.multipliedBy(PROBE_HEADROOM_RATIO));
   const capped = BigNumber.minimum(PROBE_HEADROOM_CAP, proportional).toFixed(0);
+  const nearCeiling = capped === proportional ? [capped] : [capped, proportional];
+  // Deeper retreats, for a balance whose costs outgrow the tenth held back above.
+  const retreats = PROBE_RETREAT_RATIOS.map(ratio => ceilToUgnot(balance.multipliedBy(ratio))).filter(holdBack =>
+    BigNumber(holdBack).isGreaterThan(proportional),
+  );
 
-  return capped === proportional ? [capped] : [capped, proportional];
+  return [...nearCeiling, ...retreats];
 }
 
 /**

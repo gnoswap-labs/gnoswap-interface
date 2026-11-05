@@ -43,14 +43,25 @@ describe("isSubFeeBalance", () => {
 
 describe("planProbes", () => {
   it("measures a balance over the fee just below its ceiling, holding back a tenth", () => {
-    // 10% of 20 GNOT is under the 5 GNOT cap, so the share applies.
-    expect(plan(20_000_000)).toEqual([{ amount: "18000000", gasFee: REALISTIC_GAS_FEE }]);
+    // 10% of 20 GNOT is under the 5 GNOT cap, so the share applies; half and a tenth are the retreats.
+    expect(plan(20_000_000)).toEqual([
+      { amount: "18000000", gasFee: REALISTIC_GAS_FEE },
+      { amount: "10000000", gasFee: REALISTIC_GAS_FEE },
+      { amount: "2000000", gasFee: REALISTIC_GAS_FEE },
+    ]);
+  });
+
+  it("retreats to half and a tenth of a small balance whose costs outgrow the tenth held back", () => {
+    // 4.99 GNOT: a 1 GNOT fee plus a ~1.1 GNOT DCA storage deposit cannot fit in 0.5 GNOT.
+    expect(plan(4_998_973).map(step => step.amount)).toEqual(["4499075", "2499486", "499897"]);
   });
 
   it("caps the hold-back on a large balance, and keeps the wider share as a retry", () => {
     expect(plan(10_000_000_000)).toEqual([
       { amount: "9995000000", gasFee: REALISTIC_GAS_FEE },
       { amount: "9000000000", gasFee: REALISTIC_GAS_FEE },
+      { amount: "5000000000", gasFee: REALISTIC_GAS_FEE },
+      { amount: "1000000000", gasFee: REALISTIC_GAS_FEE },
     ]);
   });
 
@@ -61,7 +72,7 @@ describe("planProbes", () => {
 
   it("offers the whole hold-back as the fee when the realistic one exceeds it", () => {
     // 10% of 3 GNOT is 0.3 GNOT, under the 2 GNOT a 2e9 ceiling would cost.
-    expect(plan(3_000_000)).toEqual([{ amount: "2700000", gasFee: "300000" }]);
+    expect(plan(3_000_000)[0]).toEqual({ amount: "2700000", gasFee: "300000" });
   });
 
   it("plans nothing for a balance too small to leave an amount", () => {

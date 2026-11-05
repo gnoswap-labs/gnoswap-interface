@@ -190,6 +190,29 @@ describe("TransactionGasServiceImpl.estimateMaxNativeAmount", () => {
     expect(max.simulated).toBe(true);
   });
 
+  it("prices a small balance whose fee and storage deposit outgrow the probe near its ceiling", async () => {
+    // 4.99 GNOT, a 1 GNOT fee and a 1.1156 GNOT storage deposit: dev.gnoswap's DCA order.
+    const balance = 4_998_973;
+    const storageDeposit = 1_115_600;
+    let lastAmount = 0;
+    const makeMessages = jest.fn().mockImplementation((amount: string) => {
+      lastAmount = Number(amount);
+      return [{}];
+    });
+    const simulateTx = jest.fn().mockImplementation(async () => {
+      if (lastAmount + Number(OFFERED_GAS_FEE) + storageDeposit > balance) throw new Error("insufficient coins");
+      return result(153_000_000, storageDeposit);
+    });
+    const { service } = makeService(simulateTx);
+
+    const max = await service.estimateMaxNativeAmount(request(balance, makeMessages));
+
+    expect(max.simulated).toBe(true);
+    // The fee floor, the deposit padded by half, and the buffer are held back.
+    expect(max.amount).toBe(`${balance - Number(OFFERED_GAS_FEE) - storageDeposit * 1.5 - RESERVE_BUFFER}`);
+    expect(Number(max.amount) + Number(OFFERED_GAS_FEE) + storageDeposit).toBeLessThanOrEqual(balance);
+  });
+
   it("falls back to the offered fee when no probe can be simulated", async () => {
     const simulateTx = jest.fn().mockRejectedValue(new Error("unknown request"));
     const { service } = makeService(simulateTx);
