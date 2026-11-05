@@ -45,7 +45,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   }, [urlAddress, connectAddress]);
 
   const router = useRouter();
-  const { poolPath, targetPositionId } = usePoolDetailRoute();
+  const { poolPath, targetPositionId, isPositionLink } = usePoolDetailRoute();
   const scrolledPositionRef = useRef("");
   const divRef = useRef<HTMLDivElement | null>(null);
   const { breakpoint } = useWindowSize();
@@ -53,7 +53,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
   const [currentIndex, setCurrentIndex] = useState(1);
   const [positionLimit, setPositionLimit] = useState(DEFAULT_POSITION_LIMIT);
   const normalizedAddress = useMemo(() => (address || "").toLowerCase(), [address]);
-  const [isShowClosePosition, setIsShowClosedPosition] = useState(!!targetPositionId);
+  const [isShowClosePosition, setIsShowClosedPosition] = useState(isPositionLink);
   const [hasLoadedPositionOnce, setHasLoadedPositionOnce] = useState(false);
 
   const positionScopeIdPrefix = useMemo(() => {
@@ -83,7 +83,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     page: 1,
     limit: positionLimit,
     withClosed: true,
-    fetchAll: !!targetPositionId,
+    fetchAll: isPositionLink,
     scopeId: `${positionScopeIdPrefix}-all`,
     queryOption: {
       enabled: !!poolPath,
@@ -95,7 +95,7 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
     { enabled: !!address && !!poolPath },
   );
 
-  const activePositionData = isShowClosePosition ? allPositionData : openPositionData;
+  const activePositionData = isPositionLink || isShowClosePosition ? allPositionData : openPositionData;
   const { positions, loading: isLoadingPosition, refetch: refetchPositions, totalPositionCount } = activePositionData;
 
   const loadedPositions = useMemo<PoolPositionModel[]>(() => {
@@ -110,8 +110,8 @@ const MyLiquidityContainer: React.FC<MyLiquidityContainerProps> = ({ isStakable,
 
   useEffect(() => {
     scrolledPositionRef.current = "";
-    setIsShowClosedPosition(!!targetPositionId);
-  }, [address, poolPath, targetPositionId]);
+    setIsShowClosedPosition(isPositionLink);
+  }, [address, poolPath, targetPositionId, isPositionLink]);
 
   useEffect(() => {
     if (!isLoadingPosition) {

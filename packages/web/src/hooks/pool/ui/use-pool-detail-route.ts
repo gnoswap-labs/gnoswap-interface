@@ -18,6 +18,7 @@ export function usePoolDetailRoute() {
     poolPath: position?.poolPath ?? router.getPoolPath(),
     address: position?.owner ?? (urlAddress && isValidAddress(urlAddress) ? urlAddress : undefined),
     targetPositionId: position?.lpTokenId ?? (/^\d+$/.test(hash) ? hash : ""),
+    isPositionLink: position !== null,
     hash,
   };
 }

@@ -29,7 +29,7 @@ export const PoolDetailLoading: React.FC = () => (
 );
 
 const PoolDetail: React.FC = () => {
-  const { poolPath, address: routeAddress, hash, targetPositionId } = usePoolDetailRoute();
+  const { poolPath, address: routeAddress, hash, isPositionLink } = usePoolDetailRoute();
 
   const {
     currentGuide,
@@ -99,10 +99,11 @@ const PoolDetail: React.FC = () => {
       return;
     }
 
-    // Numeric position anchors are handled after the liquidity list has loaded its target card.
-    if (targetPositionId) return;
+    // Position-ID links wait for their exhaustive list; legacy hashes keep the section fallback.
+    if (isPositionLink) return;
 
-    const element = document.getElementById("liquidity-wrapper");
+    const positionElement = hash ? document.getElementById(hash) : null;
+    const element = positionElement || document.getElementById("liquidity-wrapper");
     if (element && isElementInDOM(element)) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
@@ -113,7 +114,7 @@ const PoolDetail: React.FC = () => {
       jumpFlagRef.current = true;
       setTimeout(handleScroll, 100);
     }
-  }, [loading, isFetchedPosition, hash, isStakable, targetPositionId]);
+  }, [loading, isFetchedPosition, hash, isStakable, isPositionLink]);
 
   useEffect(() => {
     jumpFlagRef.current = false;
@@ -132,7 +133,7 @@ const PoolDetail: React.FC = () => {
         isStaking={isStakable}
       />
       {isOpenVideoGuide && isValidVideoGuideType(currentGuide) && (
-        <VideoGuideModal videoType={currentGuide} setIsOpen={closeVideoGuide} />
+        <VideoGuideModal videoType={currentGuide} setIsOpen={closeVideoGuide} poolPath={poolPath} />
       )}
     </>
   );
