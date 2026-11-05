@@ -10,9 +10,8 @@ import { formatAddress } from "@utils/string-utils";
 import { makeSwapFeeTier } from "@utils/swap-utils";
 
 import { EarnPoolSEOContainer } from "@containers/seo-header-container";
-import PoolDetail from "@layouts/pool/pool-detail/PoolDetail";
+import PoolDetail, { PoolDetailLoading } from "@layouts/pool/pool-detail/PoolDetail";
 import Custom404 from "@layouts/custom-404/Custom404";
-import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { useGetPositionById } from "@query/positions/use-get-position-by-id";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 
@@ -44,7 +43,12 @@ function PositionPoolPage({ positionId }: { positionId: string }) {
   }
 
   if (!position) {
-    return <LoadingSpinner />;
+    return (
+      <>
+        <EarnPoolSEOContainer />
+        <PoolDetailLoading />
+      </>
+    );
   }
 
   return (

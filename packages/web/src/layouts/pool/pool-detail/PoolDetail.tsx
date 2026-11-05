@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef } from "react";
 
 import Footer from "@components/common/footer/Footer";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { VIDEO_GUIDE_TYPES } from "@constants/video-guide.constant";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
 import { useVideoGuide } from "@hooks/common/use-video-guide";
@@ -15,6 +16,17 @@ import MyLiquidityContainer from "./containers/my-liquidity-container/MyLiquidit
 import PoolPairInformationContainer from "./containers/pool-pair-information-container/PoolPairInformationContainer";
 import StakingContainer from "./containers/staking-container/StakingContainer";
 import PoolLayout from "./PoolLayout";
+import { PoolLayoutWrapper, PoolLoadingMain } from "./PoolLayout.styles";
+
+export const PoolDetailLoading: React.FC = () => (
+  <PoolLayoutWrapper>
+    <HeaderContainer />
+    <PoolLoadingMain role="status" aria-label="Loading position" aria-busy="true">
+      <LoadingSpinner />
+    </PoolLoadingMain>
+    <Footer />
+  </PoolLayoutWrapper>
+);
 
 const PoolDetail: React.FC = () => {
   const { poolPath, address: routeAddress, hash, targetPositionId } = usePoolDetailRoute();
