@@ -6,6 +6,7 @@ import {
   CrosshairMode,
   createChart,
   HistogramSeries,
+  LineStyle,
   TickMarkType,
   type AutoscaleInfo,
   type LogicalRange,
@@ -209,7 +210,8 @@ export default function PriceCandleChart({
         wickUpColor: positive,
         wickDownColor: negative,
         borderVisible: false,
-        priceLineVisible: false,
+        priceLineVisible: true,
+        priceLineStyle: LineStyle.Dashed,
         autoscaleInfoProvider: (original: () => AutoscaleInfo | null) => {
           const info = original();
           if (!info?.priceRange) return info;
@@ -247,7 +249,7 @@ export default function PriceCandleChart({
       let preloadFrame = 0;
       let navigationFrame = 0;
       let defaultLogicalSpan: number | null = null;
-      const defaultRightOffset = all ? 0 : 5;
+      const defaultRightOffset = all ? 0 : 2;
       // Ignore floating-point roundoff, not whether a gesture happened in the past.
       const viewTolerance = 0.01;
       const updateNavigation = () => {
