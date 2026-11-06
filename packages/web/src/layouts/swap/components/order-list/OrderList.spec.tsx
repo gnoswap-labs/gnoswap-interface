@@ -27,8 +27,9 @@ describe("OrderList", () => {
   it("keeps the tabs and asks to connect a wallet when none is connected", () => {
     renderList({ connectedWallet: false });
 
-    expect(screen.getByText("Swap:order.active")).toBeInTheDocument();
-    expect(screen.getByText("Swap:order.past")).toBeInTheDocument();
+    const [openTab, pastTab] = screen.getAllByRole("button");
+    expect(openTab).toBeDisabled();
+    expect(pastTab).toBeEnabled();
     expect(screen.getByText("Swap:order.connectWallet")).toBeInTheDocument();
     expect(screen.queryByText("order card")).not.toBeInTheDocument();
   });
@@ -43,11 +44,11 @@ describe("OrderList", () => {
     expect(screen.getByText("Swap:order.noOrders")).toBeInTheDocument();
   });
 
-  it("switches between Active and Past", () => {
+  it("switches between open and past orders", () => {
     const changeTab = jest.fn();
     renderList({ changeTab });
 
-    fireEvent.click(screen.getByText("Swap:order.past"));
+    fireEvent.click(screen.getAllByRole("button").find(button => !button.hasAttribute("disabled"))!);
     expect(changeTab).toHaveBeenCalledWith("past");
   });
 });

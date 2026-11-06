@@ -49,7 +49,7 @@
     "startToOrder": "Commencer la commande"
   },
   "order": {
-    "active": "Actif",
+    "active": "Commandes en cours",
     "cancelOrder": "Annuler la commande",
     "claimOrder": "Allégation",
     "connectWallet": "Veuillez connecter votre portefeuille pour consulter votre commande.",
@@ -60,7 +60,7 @@
     "order": "Commande",
     "orderHistory": "Historique des commandes",
     "overview": "Présentation générale",
-    "past": "Passé",
+    "past": "Commandes précédentes",
     "paused": "Commande en attente",
     "priceRate": "Tarif",
     "purchased": "Acheté",

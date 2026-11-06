@@ -24,7 +24,7 @@ export interface OrderListProps {
   children?: React.ReactNode;
 }
 
-/** Active / Past order lists under the order card. Keeps the tabs even without a wallet. */
+/** Open / Past orders under the order card. Keeps the tabs even without a wallet. */
 const OrderList: React.FC<OrderListProps> = ({
   tab,
   changeTab,
@@ -71,7 +71,6 @@ const OrderList: React.FC<OrderListProps> = ({
     <OrderListWrapper>
       <SelectTab selectType={tab} list={tabs} onClick={key => changeTab(key as OrderListTab)} />
       <div className="order-list-body">
-        <span className="order-list-title">{t("Swap:order.order")}</span>
         <div className="order-items">{content}</div>
       </div>
       {connectedWallet && totalPages > 1 && (

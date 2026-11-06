@@ -49,7 +49,7 @@
     "startToOrder": "Empezar a hacer el pedido"
   },
   "order": {
-    "active": "Activo",
+    "active": "Pedidos pendientes",
     "cancelOrder": "Cancelar pedido",
     "claimOrder": "Reclamación",
     "connectWallet": "Conecta tu monedero para ver tu pedido.",
@@ -60,7 +60,7 @@
     "order": "Pedido",
     "orderHistory": "Historial de pedidos",
     "overview": "Resumen",
-    "past": "Pasado",
+    "past": "Pedidos anteriores",
     "paused": "Pedido en espera",
     "priceRate": "Tarifa",
     "purchased": "Comprado",

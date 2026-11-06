@@ -22,11 +22,6 @@ export const OrderListWrapper = styled.div`
     gap: 4px;
   }
 
-  .order-list-title {
-    ${fonts.body12};
-    color: ${({ theme }) => theme.color.text04};
-  }
-
   .order-items {
     ${mixins.flexbox("column", "flex-start", "flex-start")};
     width: 100%;

@@ -49,7 +49,7 @@
     "startToOrder": "주문 시작하기"
   },
   "order": {
-    "active": "활성",
+    "active": "진행 중인 주문",
     "cancelOrder": "주문 취소",
     "claimOrder": "주장",
     "connectWallet": "주문을 확인하시려면 지갑을 연결해 주세요.",
@@ -60,7 +60,7 @@
     "order": "주문",
     "orderHistory": "주문 내역",
     "overview": "개요",
-    "past": "과거",
+    "past": "이전 주문 내역",
     "paused": "주문 일시 중지됨",
     "priceRate": "가격 요율",
     "purchased": "구매함",

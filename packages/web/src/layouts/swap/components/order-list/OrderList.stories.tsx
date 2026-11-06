@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import { fn, userEvent, within } from "@storybook/test";
 import { createInstance } from "i18next";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { I18nextProvider } from "react-i18next";
 
 import { STORY_GNOT_TOKEN, STORY_GNS_TOKEN } from "@components/order/common/order-story-fixtures";
@@ -111,6 +111,34 @@ type Story = StoryObj<typeof PastOrderList>;
 export const PastWithHistory: Story = {
   play: async ({ canvasElement }) => {
     await userEvent.click(within(canvasElement).getByRole("button", { name: /Order History/ }));
+  },
+};
+
+export const Empty: Story = {
+  render: function EmptyOrderList() {
+    const [tab, setTab] = useState<"active" | "past">("active");
+    const i18n = useMemo(() => {
+      const instance = createInstance();
+      instance.init({ lng: "en", initImmediate: false, resources: { en: { Swap: enSwap } } });
+      return instance;
+    }, []);
+
+    return (
+      <I18nextProvider i18n={i18n}>
+        <div css={wrapper}>
+          <OrderList
+            tab={tab}
+            changeTab={setTab}
+            connectedWallet
+            isLoading={false}
+            isEmpty
+            currentPage={1}
+            totalPages={1}
+            changePage={fn()}
+          />
+        </div>
+      </I18nextProvider>
+    );
   },
 };
 

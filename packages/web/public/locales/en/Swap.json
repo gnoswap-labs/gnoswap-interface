@@ -49,7 +49,7 @@
     "startToOrder": "Start to Order"
   },
   "order": {
-    "active": "Active",
+    "active": "Open Orders",
     "cancelOrder": "Cancel Order",
     "claimOrder": "Claim",
     "connectWallet": "Please connect your wallet to view your order.",
@@ -60,7 +60,7 @@
     "order": "Order",
     "orderHistory": "Order History",
     "overview": "Overview",
-    "past": "Past",
+    "past": "Past Orders",
     "paused": "Order Paused",
     "priceRate": "Price Rate",
     "purchased": "Purchased",

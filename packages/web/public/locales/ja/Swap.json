@@ -49,7 +49,7 @@
     "startToOrder": "注文を開始する"
   },
   "order": {
-    "active": "アクティブ",
+    "active": "未決済注文",
     "cancelOrder": "注文をキャンセルする",
     "claimOrder": "主張",
     "connectWallet": "ご注文内容を確認するには、ウォレットを接続してください。",
@@ -60,7 +60,7 @@
     "order": "注文",
     "orderHistory": "注文履歴",
     "overview": "概要",
-    "past": "過去",
+    "past": "過去の注文",
     "paused": "注文が一時停止されました",
     "priceRate": "価格・料金",
     "purchased": "購入済み",

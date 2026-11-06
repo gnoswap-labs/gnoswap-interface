@@ -49,7 +49,7 @@
     "startToOrder": "Bắt đầu đặt hàng"
   },
   "order": {
-    "active": "Hoạt động",
+    "active": "Đơn hàng đang mở",
     "cancelOrder": "Hủy đơn hàng",
     "claimOrder": "Yêu cầu",
     "connectWallet": "Vui lòng kết nối ví của bạn để xem đơn hàng.",
@@ -60,7 +60,7 @@
     "order": "Đơn hàng",
     "orderHistory": "Lịch sử đơn hàng",
     "overview": "Tổng quan",
-    "past": "Quá khứ",
+    "past": "Các đơn hàng trước đây",
     "paused": "Đơn hàng đang bị tạm dừng",
     "priceRate": "Mức giá",
     "purchased": "Đã mua",
