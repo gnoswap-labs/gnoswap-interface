@@ -20,7 +20,6 @@ import { PulseSkeletonWrapper } from "@components/common/pulse-skeleton/PulseSke
 import Tooltip from "@components/common/tooltip/Tooltip";
 import { CHART_LOADING_DELAY_MS } from "@constants/loading.constant";
 import { pulseSkeletonStyle } from "@constants/skeleton.constant";
-import useCustomRouter from "@hooks/common/use-custom-router";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
@@ -84,7 +83,7 @@ const PoolPairInfoContent: React.FC<PoolPairInfoContentProps> = ({
   const { t } = useTranslation();
   const { getGnotPath } = useGnotToGnot();
   const { gnoswapApiClient } = useGnoswapContext();
-  const poolPath = useCustomRouter().getPoolPath();
+  const poolPath = pool.poolPath;
 
   const { priceStyle: tokenAPriceStyle, shouldShowPriceWarning: tokenAShouldShowPriceWarning } = useTokenPriceInfo({
     priceGradeType: pool.tokenAPriceGrade,

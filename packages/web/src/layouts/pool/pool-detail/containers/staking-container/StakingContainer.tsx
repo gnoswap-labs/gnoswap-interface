@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { StakingPeriodType } from "@constants/option.constant";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
-import useUrlParam from "@hooks/common/use-url-param";
+import { usePoolDetailRoute } from "@hooks/pool/ui/use-pool-detail-route";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePoolData } from "@hooks/pool/data/use-pool-data";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
@@ -16,7 +16,6 @@ import {
 } from "@query/pools";
 import { formatRate } from "@utils/new-number-utils";
 import { getStakingPeriodType } from "@utils/stake-position-utils";
-import { isValidAddress } from "@utils/validation-utils";
 
 import Staking from "../../components/staking/Staking";
 import { PoolConverter } from "@services/converters/pool";
@@ -27,25 +26,13 @@ interface StakingContainerProps {
 }
 
 const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking, onOpenVideoGuide }) => {
-  const { account } = useWallet();
   const { breakpoint } = useWindowSize();
   const [mobile, setMobile] = useState(false);
-  const { connected: connectedWallet, isSwitchNetwork } = useWallet();
+  const { connected: connectedWallet, isSwitchNetwork, account } = useWallet();
   const { loading: isLoadingPool } = usePoolData();
   const [type, setType] = useState(3);
-  const { initializedData } = useUrlParam<{ addr: string | undefined }>({
-    addr: account?.address,
-  });
   const router = useCustomRouter();
-  const poolPath = router.getPoolPath();
-
-  const address = useMemo(() => {
-    const address = initializedData?.addr;
-    if (!address || !isValidAddress(address)) {
-      return undefined;
-    }
-    return address;
-  }, [initializedData]);
+  const { poolPath, address } = usePoolDetailRoute();
 
   const { positions: allPositions, loading: isLoadingPosition } = usePositionData({
     address,
@@ -119,12 +106,12 @@ const StakingContainer: React.FC<StakingContainerProps> = ({ hasPoolStaking, onO
   }, [pool?.stakingApr]);
 
   const handleClickStakeRedirect = useCallback(() => {
-    router.movePageWithPoolPath("POOL_STAKE", router.getPoolPath() || "");
-  }, [router]);
+    router.movePageWithPoolPath("POOL_STAKE", poolPath || "");
+  }, [router, poolPath]);
 
   const handleClickUnStakeRedirect = useCallback(() => {
-    router.movePageWithPoolPath("POOL_UNSTAKE", router.getPoolPath() || "");
-  }, [router]);
+    router.movePageWithPoolPath("POOL_UNSTAKE", poolPath || "");
+  }, [router, poolPath]);
 
   useEffect(() => {
     handleResize();

@@ -523,23 +523,14 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
     );
   }, [totalRewardInfo]);
 
-  const getPoolLink = useCallback(
-    (isDirect: boolean) => {
-      const hash = isDirect ? position.id : undefined;
-      return (
-        window.location.host +
-        makeRouteUrl(
-          PAGE_PATH.POOL,
-          {
-            [QUERY_PARAMETER.POOL_PATH]: position.poolPath,
-            [QUERY_PARAMETER.ADDRESS]: address,
-          },
-          hash,
-        )
-      );
-    },
-    [position, address],
-  );
+  const copyPositionLink = () => {
+    setCopy(
+      window.location.origin +
+        makeRouteUrl(PAGE_PATH.POOL, {
+          [QUERY_PARAMETER.POSITION_ID]: position.lpTokenId,
+        }),
+    );
+  };
 
   const cardHeader = (
     <div className="box-title">
@@ -566,16 +557,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
               {!loading && (
                 <div className="link-page">
                   <span className="product-id">ID #{position.id}</span>
-                  <div
-                    onClick={() => {
-                      if (isClosed) {
-                        setCopy(getPoolLink(false));
-                        return;
-                      }
-
-                      setCopy(getPoolLink(true));
-                    }}
-                  >
+                  <div onClick={copyPositionLink}>
                     <IconLinkPage className="icon-link" />
                     {copied && (
                       <CopyTooltip>
@@ -610,15 +592,7 @@ const MyDetailedPositionCard: React.FC<MyDetailedPositionCardProps> = ({
               {!loading && (
                 <div className="link-page">
                   <span className="product-id">ID #{position.id}</span>
-                  <div
-                    onClick={() => {
-                      if (isClosed) {
-                        setCopy(getPoolLink(false));
-                        return;
-                      }
-                      setCopy(getPoolLink(true));
-                    }}
-                  >
+                  <div onClick={copyPositionLink}>
                     <IconLinkPage className="icon-link" />
                     {copied && (
                       <CopyTooltip>
