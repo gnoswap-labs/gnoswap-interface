@@ -4,7 +4,7 @@
     "i18nexus": {
       "type": "stdio",
       "command": "node",
-      "args": ["scripts/i18nexus.mjs", "mcp"]
+      "args": ["packages/web/scripts/i18nexus.mjs", "mcp"]
     }
   }
 }

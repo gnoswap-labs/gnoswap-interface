@@ -46,7 +46,7 @@ jobs:
             echo "::error::Set the I18NEXUS_API_KEY repository secret to enable translation drift checks."
             exit 1
           fi
-          npm run i18n:download -- --path "$I18NEXUS_EXPORT_DIR"
+          corepack yarn workspace @gnoswap-labs/web i18n:download --path "$I18NEXUS_EXPORT_DIR"
 
       - name: Compare PR locale data and update drift comment
         uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7

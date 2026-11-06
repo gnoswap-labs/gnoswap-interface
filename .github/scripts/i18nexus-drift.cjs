@@ -115,7 +115,7 @@ module.exports = async ({ github, context, core }) => {
       "2. From the checkout root, download and review the authoritative translations:",
       "",
       "```sh",
-      "npm run i18n:download",
+      "yarn workspace @gnoswap-labs/web i18n:download",
       "git diff -- packages/web/public/locales",
       "```",
       "",

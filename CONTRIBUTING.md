@@ -19,9 +19,9 @@ Install the workspace dependencies before downloading translations or starting M
 yarn install --immutable
 ```
 
-CLI/MCP versions are managed in the root `package.json` and `yarn.lock`. The shared
-launcher, `scripts/i18nexus.mjs`, runs those installed packages without downloading
-tools at startup. Use the root npm script for downloads.
+CLI/MCP versions are managed in `packages/web/package.json` and the root `yarn.lock`.
+The shared launcher, `packages/web/scripts/i18nexus.mjs`, runs those installed
+packages without downloading tools at startup. Use the web workspace script for downloads.
 
 #### Credentials
 
@@ -33,23 +33,23 @@ tools at startup. Use the root npm script for downloads.
 The launcher selects each credential independently:
 
 1. A nonempty environment variable inherited by the launcher wins.
-2. Missing or whitespace-only values fall back to **this checkout's root `.env`**.
+2. Missing or whitespace-only values fall back to **this checkout's `packages/web/.env.local`**.
 
-The checkout root is determined by the launcher's location, not the shell's
-working directory. Each linked worktree uses its own root `.env`; the launcher
-never searches the main checkout, another worktree, or parent directories.
-It does not load `packages/web/.env` or other application environment files.
+The web package directory is determined by the launcher's location, not the shell's
+working directory. Each linked worktree uses its own `packages/web/.env.local`; the
+launcher never searches the main checkout, another worktree, or parent directories.
+It does not read the tracked application `.env` or other environment files.
 
-To use the file fallback, create or update `.env` **in the checkout you are using**.
-Preserve any existing entries:
+To use the file fallback, create or update `packages/web/.env.local` **in the checkout
+you are using**. Preserve any existing entries:
 
 ```sh
 cd /path/to/your-checkout
-(umask 077; touch .env)
-chmod 600 .env
+(umask 077; touch packages/web/.env.local)
+chmod 600 packages/web/.env.local
 ```
 
-Add the two variables from the root `.env.example` using a secure editor. The file
+Add the two i18nexus variables from `packages/web/.env.example` using a secure editor. The file
 must be owned by your account, be a regular file rather than a symlink, and have
 mode `0600`. Keep it Git-ignored and never commit credentials or use `NEXT_PUBLIC_`
 variables for these secrets. For shared runtime credentials, pass them explicitly
@@ -63,22 +63,22 @@ Changing credentials requires restarting the MCP server or client; it does not
 update an already-running server.
 
 Worktree tools that support `.worktreeinclude` can copy the source checkout's
-ignored root `.env` into a new worktree. Keep the source file at mode `0600`.
+ignored `packages/web/.env.local` into a new worktree. Keep the source file at mode `0600`.
 This is an optional, one-time copy, not ongoing synchronization. Otherwise,
-create `.env` in the new checkout or supply credentials through ENV as described
-above. The runtime launcher reads only its own checkout's `.env`.
+create `packages/web/.env.local` in the new checkout or supply credentials through ENV
+as described above. The runtime launcher reads only its own checkout's web `.env.local`.
 
 #### Download translations
 
 Run from the checkout where you want to update locale files:
 
 ```sh
-npm run i18n:download -- --help
-npm run i18n:download
+yarn workspace @gnoswap-labs/web i18n:download --help
+yarn workspace @gnoswap-labs/web i18n:download
 ```
 
-Pass official CLI options after `--`, for example
-`npm run i18n:download -- --ver <version>`. The CLI runs in `packages/web`, so
+Append official CLI options, for example
+`yarn workspace @gnoswap-labs/web i18n:download --ver <version>`. The CLI runs in `packages/web`, so
 relative `--path` values resolve from that directory. The launcher excludes the
 PAT from downloads and disables the CLI's automatic dotenv loading. Help does
 not require credentials and receives neither credential.
@@ -96,7 +96,7 @@ comment lists affected files and explains how to sync. Later checks update that
 comment, including when the drift is resolved; clean PRs do not receive a new comment.
 Download or comparison errors fail the check rather than reporting a false match.
 
-For intentional string changes, update i18nexus first, run `npm run i18n:download`,
+For intentional string changes, update i18nexus first, run `yarn workspace @gnoswap-labs/web i18n:download`,
 review `git diff -- packages/web/public/locales`, and commit/push the relevant locale
 changes. Do not fix drift by hand-editing generated JSON.
 
@@ -122,9 +122,9 @@ For OMP launched from a nested directory, use:
 omp --cwd "$(git rev-parse --show-toplevel)"
 ```
 
-All three definitions start `scripts/i18nexus.mjs mcp` and share the same credential
-selection rules. Host-managed GUI/ACP sessions may need MCP configuration supplied
-by the host instead of repository discovery.
+All three definitions start `packages/web/scripts/i18nexus.mjs mcp` and share the
+same credential selection rules. Host-managed GUI/ACP sessions may need MCP
+configuration supplied by the host instead of repository discovery.
 
 A listed or connected server alone does not prove authentication. Check project
 metadata, then PAT scope when protected operations are needed. Without a PAT,
