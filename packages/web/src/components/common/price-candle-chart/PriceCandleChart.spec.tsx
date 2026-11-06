@@ -48,8 +48,10 @@ const mockCreateChart = jest.fn().mockImplementation(() => ({
 
 const mockTheme = {
   color: {
-    green01: "green",
-    red01: "red",
+    chartCandleUp: "green",
+    chartCandleDown: "red",
+    chartWickUp: "teal",
+    chartWickDown: "rose",
     chartVolumeUp: "mint",
     chartVolumeDown: "coral",
     background28: "black",
@@ -77,7 +79,7 @@ jest.mock(
     TickMarkType: { Year: 0, Month: 1, DayOfMonth: 2, Time: 3, TimeWithSeconds: 4 },
     ColorType: { Solid: "solid" },
     CrosshairMode: { Normal: 0 },
-    LineStyle: { Dashed: 2 },
+    LineStyle: { Dotted: 1 },
     createChart: (...args: unknown[]) => mockCreateChart(...args),
   }),
   { virtual: true },
