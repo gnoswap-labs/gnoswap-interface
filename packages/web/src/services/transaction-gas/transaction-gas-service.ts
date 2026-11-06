@@ -26,15 +26,13 @@ export interface MaxNativeAmountRequest {
   gasFee?: string;
   /** Execution ceiling the transaction will carry. */
   gasWanted?: number;
-  /** Reserve to fall back on when the action cannot be simulated, in ugnot. */
-  fallbackReserve?: string;
 }
 
 export interface MaxNativeAmount {
   /** Largest amount the action can spend, in ugnot. */
   amount: string;
   reserve: NativeAmountReserve;
-  /** False when the reserve came from {@link MaxNativeAmountRequest.fallbackReserve}. */
+  /** Whether a simulation was used to price the reserve. */
   simulated: boolean;
 }
 
@@ -64,6 +62,9 @@ export interface TransactionGasService {
    * an action doing more work for a larger amount writes more of it. So the
    * action is simulated to measure the deposit, at an amount that leaves room
    * for both costs, and the result is verified once it is known.
+   *
+   * Positive amounts require a successful simulation. Rejects when the action
+   * cannot be measured; an insufficient balance may still resolve to zero.
    */
   estimateMaxNativeAmount(request: MaxNativeAmountRequest): Promise<MaxNativeAmount>;
 

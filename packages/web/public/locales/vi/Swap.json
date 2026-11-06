@@ -101,6 +101,7 @@
     "balanceUnavailable": "Không có số dư",
     "enterAmount": "Nhập số tiền",
     "insuffiLiq": "Thiếu thanh khoản",
+    "retryMaxCalculation": "Tính lại số lượng tối đa",
     "review": "Đánh giá",
     "selectToken": "Chọn một mã thông báo",
     "swap": "Hoán đổi",

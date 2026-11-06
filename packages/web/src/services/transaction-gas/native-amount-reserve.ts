@@ -15,7 +15,7 @@ import {
 import { GasToken } from "@common/values/token-constant";
 import { makeRawTokenAmount } from "@utils/token-utils";
 
-import { MaxNativeAmount, NativeAmountReserve } from "./transaction-gas-service";
+import { NativeAmountReserve } from "./transaction-gas-service";
 
 /**
  * How much native balance an action has to leave behind, and therefore the
@@ -213,16 +213,5 @@ export function describeWithheld(
     ...reserve,
     buffer: BigNumber.maximum(withheld.minus(measured), 0).toFixed(0),
     total: withheld.toFixed(0),
-  };
-}
-
-/** The answer when nothing could be measured: only the certain cost is held back. */
-export function fallbackMaxNativeAmount(balance: BigNumber.Value, reserve: BigNumber.Value): MaxNativeAmount {
-  const total = ceilToUgnot(reserve);
-
-  return {
-    amount: toUgnot(BigNumber.maximum(BigNumber(balance).minus(total), 0)),
-    reserve: { gasFee: total, storageDeposit: "0", buffer: "0", total },
-    simulated: false,
   };
 }

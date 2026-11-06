@@ -1,15 +1,15 @@
 import BigNumber from "bignumber.js";
-import React from "react";
+import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
-import { MaxNativeAmountParams } from "@hooks/gas";
+import { MaxNativeAmountParams, useMaxNativeAmount } from "@hooks/gas";
 import { OrderButtonState } from "@hooks/order/data/use-order-handler.utils";
 import { DcaIntervalUnit } from "@models/order/dca-order-model";
 import { SwapCardType } from "@models/order/order-type";
 import { DcaOrderSummary } from "@models/order/order-summary";
-import { TokenModel } from "@models/token/token-model";
+import { isNativeToken, TokenModel } from "@models/token/token-model";
 
 import OrderCardSkeleton from "../order-form/OrderCardSkeleton";
 import { OrderFieldRow, OrderToBuySection } from "../order-form/OrderForm.styles";
@@ -34,8 +34,12 @@ export interface DcaOrderCardProps {
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
   tokenABalance: string;
-  /** See OrderSellInput: prices Max on GNOT against this order's own messages. */
+  /**
+   * Builds the order's messages for a candidate raw amount, so Max on GNOT
+   * reserves the order's storage and measured cost, not only the flat fee.
+   */
   makeMaxAmountMessages?: MaxNativeAmountParams["makeMessages"];
+  /** The order terms the Max estimate is priced for (pair, interval, count, slot). */
   maxAmountDependsOn?: readonly unknown[];
   /** False until the schedule of the current request is loaded; Max on GNOT waits for it. */
   isMaxAmountReady?: boolean;
@@ -74,8 +78,8 @@ const DcaOrderCard: React.FC<DcaOrderCardProps> = ({
   tokenB,
   tokenABalance,
   makeMaxAmountMessages,
-  maxAmountDependsOn,
-  isMaxAmountReady,
+  maxAmountDependsOn = [],
+  isMaxAmountReady = true,
   sellAmount,
   sellAmountUsd,
   changeTokenA,
@@ -98,6 +102,39 @@ const DcaOrderCard: React.FC<DcaOrderCardProps> = ({
   const { t } = useTranslation();
   const showDetail = !!summary && !!tokenA && !!tokenB && BigNumber(sellAmount || 0).isGreaterThan(0);
 
+  // Max is worked out here rather than in the sell field, so the order button
+  // waits on, and retries, the same estimate as the field's own Max.
+  const {
+    getMaxAmount,
+    loading: loadingMaxAmount,
+    pendingBalance,
+    failed: maxAmountFailed,
+    resetError: resetMaxAmountError,
+  } = useMaxNativeAmount({
+    token: tokenA,
+    amount: sellAmount,
+    // The order terms decide what the transaction costs, and the balance is what
+    // the answer was subtracted from; an answer for others is not written back.
+    dependsOn: [...maxAmountDependsOn, tokenABalance],
+  });
+  // Max on GNOT prices the order's slot, so it waits for the schedule; other tokens need no estimate.
+  const waitsForMaxTerms = !isMaxAmountReady && !!tokenA && isNativeToken(tokenA);
+
+  const fillMaxAmount = useCallback(async () => {
+    if (waitsForMaxTerms) return;
+    const spendable = await getMaxAmount({ balance: tokenABalance, makeMessages: makeMaxAmountMessages });
+    if (spendable !== null) changeSellAmount(spendable);
+  }, [changeSellAmount, getMaxAmount, makeMaxAmountMessages, tokenABalance, waitsForMaxTerms]);
+
+  // A typed amount replaces whatever Max was doing: a failure it offered to retry, or an answer still out.
+  const typeSellAmount = useCallback(
+    (value: string) => {
+      resetMaxAmountError();
+      changeSellAmount(value);
+    },
+    [changeSellAmount, resetMaxAmountError],
+  );
+
   return (
     <SwapCardWrapper>
       <SwapCardHeader
@@ -118,10 +155,11 @@ const DcaOrderCard: React.FC<DcaOrderCardProps> = ({
             balance={tokenABalance}
             connectedWallet={connectedWallet}
             changeToken={changeTokenA}
-            changeAmount={changeSellAmount}
-            makeMaxAmountMessages={makeMaxAmountMessages}
-            maxAmountDependsOn={maxAmountDependsOn}
-            maxAmountReady={isMaxAmountReady}
+            changeAmount={typeSellAmount}
+            onClickMax={fillMaxAmount}
+            loadingMaxAmount={loadingMaxAmount}
+            pendingBalance={pendingBalance}
+            maxAmountReady={!waitsForMaxTerms}
           >
             <div className="arrow">
               <div className="shape" onClick={switchTokens} role="button" aria-label="Switch tokens">
@@ -154,6 +192,10 @@ const DcaOrderCard: React.FC<DcaOrderCardProps> = ({
         text={buttonText}
         minTradingText={minTradingText}
         onClick={onClickButton}
+        onClickMax={fillMaxAmount}
+        loadingMaxAmount={loadingMaxAmount}
+        maxAmountReady={!waitsForMaxTerms}
+        maxAmountFailed={maxAmountFailed}
       />
     </SwapCardWrapper>
   );

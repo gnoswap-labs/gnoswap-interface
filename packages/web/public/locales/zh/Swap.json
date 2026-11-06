@@ -101,6 +101,7 @@
     "balanceUnavailable": "余额不足",
     "enterAmount": "输入金额",
     "insuffiLiq": "流动性不足",
+    "retryMaxCalculation": "重新计算最大数量",
     "review": "评论",
     "selectToken": "选择令牌",
     "swap": "交换",

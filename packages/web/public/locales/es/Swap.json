@@ -101,6 +101,7 @@
     "balanceUnavailable": "Saldo no disponible",
     "enterAmount": "Introduzca el importe",
     "insuffiLiq": "Liquidez insuficiente",
+    "retryMaxCalculation": "Recalcular el importe máximo",
     "review": "Consulte",
     "selectToken": "Seleccione una ficha",
     "swap": "Intercambiar",

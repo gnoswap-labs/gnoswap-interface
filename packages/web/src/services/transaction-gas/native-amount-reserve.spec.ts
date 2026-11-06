@@ -2,7 +2,6 @@ import {
   bisectToward,
   cappedSpendable,
   describeWithheld,
-  fallbackMaxNativeAmount,
   gasFeeFloor,
   isSubFeeBalance,
   OFFERED_GAS_FEE,
@@ -25,12 +24,6 @@ const reserve = (gasFee: string, storageDeposit = "0"): NativeAmountReserve => (
   storageDeposit,
   buffer: RESERVE_BUFFER,
   total: `${Number(gasFee) + Number(storageDeposit) + Number(RESERVE_BUFFER)}`,
-});
-
-describe("OFFERED_GAS_FEE", () => {
-  it("is the flat fee a send path offers, in ugnot", () => {
-    expect(OFFERED_GAS_FEE).toBe("1000000");
-  });
 });
 
 describe("isSubFeeBalance", () => {
@@ -150,21 +143,5 @@ describe("describeWithheld", () => {
 
     expect(described.total).toBe("5000000");
     expect(described.buffer).toBe("3500000");
-  });
-});
-
-describe("fallbackMaxNativeAmount", () => {
-  it("holds back only the reserve it was given", () => {
-    const fallback = fallbackMaxNativeAmount("100000000", OFFERED_GAS_FEE);
-
-    expect(fallback).toEqual({
-      amount: "99000000",
-      reserve: { gasFee: "1000000", storageDeposit: "0", buffer: "0", total: "1000000" },
-      simulated: false,
-    });
-  });
-
-  it("offers nothing when the reserve exhausts the balance", () => {
-    expect(fallbackMaxNativeAmount("500000", OFFERED_GAS_FEE).amount).toBe("0");
   });
 });

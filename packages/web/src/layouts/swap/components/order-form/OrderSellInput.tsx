@@ -6,9 +6,8 @@ import { useTranslation } from "react-i18next";
 import { isAmount } from "@common/utils/data-check-util";
 import IconWallet from "@components/common/icons/IconWallet";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
-import { MaxNativeAmountParams, useMaxNativeAmount } from "@hooks/gas";
 import { useTokenBalanceDisplay } from "@hooks/token/ui/use-token-balance-display";
-import { isNativeToken, TokenModel } from "@models/token/token-model";
+import { TokenModel } from "@models/token/token-model";
 
 const LEADING_ZERO_REGEX = /^0+(?=\d)|(\.\d*)$/g;
 
@@ -19,18 +18,18 @@ interface OrderSellInputProps {
   balance: string;
   connectedWallet: boolean;
   changeToken: (token: TokenModel) => void;
+  /** Called with what the user types; Max fills the field through `onClickMax` instead. */
   changeAmount: (value: string) => void;
   /**
-   * Builds the order's messages for a candidate raw amount, so Max on GNOT
-   * reserves the order's storage and measured cost, not only the flat fee.
+   * Fills in the most the balance can sell. The form works it out rather than
+   * the field, so that its order button waits on, and can retry, the same estimate.
    */
-  makeMaxAmountMessages?: MaxNativeAmountParams["makeMessages"];
-  /** The order terms the Max estimate is priced for (pair, count, price...). */
-  maxAmountDependsOn?: readonly unknown[];
-  /**
-   * False while the order terms Max would price are not settled (DCA: the schedule
-   * of the current request). Max on GNOT waits; other tokens need no estimate.
-   */
+  onClickMax: () => void;
+  /** True while Max is being worked out. */
+  loadingMaxAmount: boolean;
+  /** The whole balance, shown in place of the amount while Max is worked out. */
+  pendingBalance: string | null;
+  /** False while Max waits on order terms that are not settled yet (DCA on GNOT: the schedule). */
   maxAmountReady?: boolean;
   className?: string;
   children?: React.ReactNode;
@@ -45,8 +44,9 @@ const OrderSellInput: React.FC<OrderSellInputProps> = ({
   connectedWallet,
   changeToken,
   changeAmount,
-  makeMaxAmountMessages,
-  maxAmountDependsOn = [],
+  onClickMax,
+  loadingMaxAmount,
+  pendingBalance,
   maxAmountReady = true,
   className = "first-section",
   children,
@@ -54,16 +54,8 @@ const OrderSellInput: React.FC<OrderSellInputProps> = ({
   const { t } = useTranslation();
   const [focused, setFocused] = useState(false);
   const balanceDisplay = useTokenBalanceDisplay(balance, connectedWallet);
-  const { getMaxAmount, loading: loadingMaxAmount, pendingBalance } = useMaxNativeAmount({
-    token,
-    amount,
-    // The order terms decide what the transaction costs, and the balance is what
-    // the answer was subtracted from; an answer for others is not written back.
-    dependsOn: [...maxAmountDependsOn, balance],
-  });
 
   const hasBalance = connectedWallet && balance !== "-" && BigNumber(balance.replace(/,/g, "")).isGreaterThan(0);
-  const waitsForMaxTerms = !maxAmountReady && !!token && isNativeToken(token);
 
   const onChangeAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,12 +70,6 @@ const OrderSellInput: React.FC<OrderSellInputProps> = ({
     },
     [changeAmount, token],
   );
-
-  const onClickMax = useCallback(async () => {
-    if (waitsForMaxTerms) return;
-    const spendable = await getMaxAmount({ balance, makeMessages: makeMaxAmountMessages });
-    if (spendable !== null) changeAmount(spendable);
-  }, [balance, changeAmount, getMaxAmount, makeMaxAmountMessages, waitsForMaxTerms]);
 
   const displayAmount = useMemo(
     () => (amount.includes("e") ? BigNumber(amount).toFixed(token?.decimals ?? 0) : amount),
@@ -114,7 +100,7 @@ const OrderSellInput: React.FC<OrderSellInputProps> = ({
           {connectedWallet && <IconWallet />}
           <span className="balance-text">{balanceDisplay}</span>
           {hasBalance && (
-            <button className="balance-max-button" onClick={onClickMax} disabled={loadingMaxAmount || waitsForMaxTerms}>
+            <button className="balance-max-button" onClick={onClickMax} disabled={loadingMaxAmount || !maxAmountReady}>
               <span className="max-badge">{t("common:max")}</span>
             </button>
           )}

@@ -101,6 +101,7 @@
     "balanceUnavailable": "Balance Unavailable",
     "enterAmount": "Enter Amount",
     "insuffiLiq": "Insufficient Liquidity",
+    "retryMaxCalculation": "Retry Max Calculation",
     "review": "Review",
     "selectToken": "Select a Token",
     "swap": "Swap",

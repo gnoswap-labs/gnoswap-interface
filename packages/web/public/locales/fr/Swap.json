@@ -101,6 +101,7 @@
     "balanceUnavailable": "Solde indisponible",
     "enterAmount": "Saisir le montant",
     "insuffiLiq": "Liquidité insuffisante",
+    "retryMaxCalculation": "Recalculer le montant maximal",
     "review": "Révision",
     "selectToken": "Sélectionner un jeton",
     "swap": "Échange",

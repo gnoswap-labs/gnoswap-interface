@@ -101,6 +101,7 @@
     "balanceUnavailable": "Баланс недоступен",
     "enterAmount": "Введите сумму",
     "insuffiLiq": "Недостаточная ликвидность",
+    "retryMaxCalculation": "Пересчитать максимальную сумму",
     "review": "Обзор",
     "selectToken": "Выберите токен",
     "swap": "Обмен",

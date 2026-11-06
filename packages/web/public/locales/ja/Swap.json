@@ -101,6 +101,7 @@
     "balanceUnavailable": "残高がありません",
     "enterAmount": "金額を入力",
     "insuffiLiq": "不十分な流動性",
+    "retryMaxCalculation": "最大数量を再計算",
     "review": "レビュー",
     "selectToken": "トークンの選択",
     "swap": "スワップ",

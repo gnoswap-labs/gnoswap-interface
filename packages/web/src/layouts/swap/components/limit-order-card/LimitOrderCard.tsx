@@ -6,7 +6,7 @@ import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import IconWallet from "@components/common/icons/IconWallet";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
 import { OrderSelectOption } from "@components/order/order-select-box/OrderSelectBox";
-import { MaxNativeAmountParams } from "@hooks/gas";
+import { MaxNativeAmountParams, useMaxNativeAmount } from "@hooks/gas";
 import { OrderButtonState } from "@hooks/order/data/use-order-handler.utils";
 import { useTokenBalanceDisplay } from "@hooks/token/ui/use-token-balance-display";
 import { SwapCardType } from "@models/order/order-type";
@@ -39,8 +39,12 @@ export interface LimitOrderCardProps {
   tokenA: TokenModel | null;
   tokenB: TokenModel | null;
   tokenABalance: string;
-  /** See OrderSellInput: prices Max on GNOT against this order's own messages. */
+  /**
+   * Builds the order's messages for a candidate raw amount, so Max on GNOT
+   * reserves the order's storage and measured cost, not only the flat fee.
+   */
   makeMaxAmountMessages?: MaxNativeAmountParams["makeMessages"];
+  /** The order terms the Max estimate is priced for (pair, price, expiry, slippage). */
   maxAmountDependsOn?: readonly unknown[];
   tokenBBalance: string;
   sellAmount: string;
@@ -86,7 +90,7 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
   tokenB,
   tokenABalance,
   makeMaxAmountMessages,
-  maxAmountDependsOn,
+  maxAmountDependsOn = [],
   tokenBBalance,
   sellAmount,
   sellAmountUsd,
@@ -113,14 +117,46 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
   const [buyFocused, setBuyFocused] = useState(false);
   const buyBalanceDisplay = useTokenBalanceDisplay(tokenBBalance, connectedWallet);
 
+  // Max is worked out here rather than in the sell field, so the order button
+  // waits on, and retries, the same estimate as the field's own Max.
+  const {
+    getMaxAmount,
+    loading: loadingMaxAmount,
+    pendingBalance,
+    failed: maxAmountFailed,
+    resetError: resetMaxAmountError,
+  } = useMaxNativeAmount({
+    token: tokenA,
+    amount: sellAmount,
+    // The order terms decide what the transaction costs, and the balance is what
+    // the answer was subtracted from; an answer for others is not written back.
+    dependsOn: [...maxAmountDependsOn, tokenABalance],
+  });
+
+  const fillMaxAmount = useCallback(async () => {
+    const spendable = await getMaxAmount({ balance: tokenABalance, makeMessages: makeMaxAmountMessages });
+    if (spendable !== null) changeSellAmount(spendable);
+  }, [changeSellAmount, getMaxAmount, makeMaxAmountMessages, tokenABalance]);
+
+  // A typed amount replaces whatever Max was doing: a failure it offered to retry, or an answer still out.
+  const typeSellAmount = useCallback(
+    (value: string) => {
+      resetMaxAmountError();
+      changeSellAmount(value);
+    },
+    [changeSellAmount, resetMaxAmountError],
+  );
+
   const onChangeBuyAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
       if (value !== "" && !isAmount(value)) return;
       if (tokenB && (value.split(".")[1]?.length ?? 0) > tokenB.decimals) return;
+      // Buy sets the amount sold, so typing it replaces Max as much as typing Sell does.
+      resetMaxAmountError();
       changeBuyAmount(value.replace(LEADING_ZERO_REGEX, "$1"));
     },
-    [changeBuyAmount, tokenB],
+    [changeBuyAmount, resetMaxAmountError, tokenB],
   );
 
   return (
@@ -146,9 +182,10 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
             balance={tokenABalance}
             connectedWallet={connectedWallet}
             changeToken={changeTokenA}
-            changeAmount={changeSellAmount}
-            makeMaxAmountMessages={makeMaxAmountMessages}
-            maxAmountDependsOn={maxAmountDependsOn}
+            changeAmount={typeSellAmount}
+            onClickMax={fillMaxAmount}
+            loadingMaxAmount={loadingMaxAmount}
+            pendingBalance={pendingBalance}
           >
             <div className="arrow">
               <div className="shape" onClick={switchTokens} role="button" aria-label="Switch tokens">
@@ -198,6 +235,9 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
         text={buttonText}
         minTradingText={minTradingText}
         onClick={onClickButton}
+        onClickMax={fillMaxAmount}
+        loadingMaxAmount={loadingMaxAmount}
+        maxAmountFailed={maxAmountFailed}
       />
     </SwapCardWrapper>
   );
