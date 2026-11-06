@@ -43,7 +43,8 @@ export const useStopOrderHandler = () => {
     (token: TokenModel, amount: BigNumber.Value | null) => {
       const price = tokenPrices[checkGnotPath(token.priceID)]?.usd ?? tokenPrices[checkGnotPath(token.path)]?.usd;
       if (price === undefined || price === null || amount === null) return "-";
-      return formatPrice(BigNumber(amount).multipliedBy(price).toNumber());
+      const usdAmount = BigNumber(amount).multipliedBy(price);
+      return usdAmount.isFinite() ? formatPrice(usdAmount) : "-";
     },
     [tokenPrices],
   );
