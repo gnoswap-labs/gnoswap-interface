@@ -22,12 +22,16 @@
       "claimFees": "索赔费用",
       "claimRewards": "申请奖励",
       "create": "创建",
+      "dcaOrder": "DCA命令",
+      "dcaSwap": "DCA 互换",
       "decrease": "减少",
       "delegate": "代表",
       "deposit": "存款",
       "execute": "执行",
       "incentivize": "激励",
       "increase": "增加",
+      "limitOrder": "限价单",
+      "limitSwap": "限价掉期",
       "remove": "移除",
       "reposition": "重新定位",
       "stake": "利害关系",
@@ -39,7 +43,6 @@
   },
   "pageHeader": {
     "addPosi": "增加职位",
-    "dashboard": "探索",
     "decreaseLiqui": "降低流动性",
     "earn": "赚取",
     "incentivzePool": "激励泳池",
@@ -49,10 +52,6 @@
     "stakePosition": "桩位",
     "unstakePosition": "解除立场",
     "wallet": "投资组合"
-  },
-  "positionHistoryAction": {
-    "claimFees": "索赔费用",
-    "create": "创建"
   },
   "positionPriceRangeInfo": {
     "capEff": {
@@ -85,12 +84,7 @@
     "internal_reward": "内部奖励",
     "swap_fee": "交换费"
   },
-  "selectAToken": "选择令牌",
   "staked": "已标记",
-  "stakingIncentiveType": {
-    "external": "外部",
-    "internal": "内部"
-  },
   "switchGnoland": "转到糯米地",
   "token": "代币",
   "unstakingFee": {

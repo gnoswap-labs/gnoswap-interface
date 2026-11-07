@@ -3,11 +3,20 @@ import { CommonState } from "@states/index";
 import { useCallback, useEffect } from "react";
 import { DEFAULT_SLIPPAGE } from "@constants/option.constant";
 
-export const useSlippage = () => {
+interface UseSlippageOptions {
+  /**
+   * Resets the shared setting to the default when the consumer mounts. The
+   * Swap, DCA and Limit forms share one selection across their tabs and opt
+   * out, so switching modes keeps the user's tolerance.
+   */
+  resetOnMount?: boolean;
+}
+
+export const useSlippage = ({ resetOnMount = true }: UseSlippageOptions = {}) => {
   const [slippage, setSlippage] = useAtom(CommonState.slippage || 0);
 
   useEffect(() => {
-    setSlippage(DEFAULT_SLIPPAGE);
+    if (resetOnMount) setSlippage(DEFAULT_SLIPPAGE);
   }, []);
 
   const changeSlippage = useCallback(

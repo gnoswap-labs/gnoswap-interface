@@ -3,8 +3,6 @@
     "title": {
       "default": "Nền tảng DeFi Gno.land một cửa | GnoSwap",
       "earn": "Kiếm tiền | GnoSwap",
-      "earnAdd": "Thêm vị trí tuyển dụng vào {{tokenASymbol}}/{{tokenBSymbol}} {{feeTier}}",
-      "earnAddDefault": "Thêm vị thế vào các nhóm GnoSwap",
       "explore": "Khám phá | GnoSwap",
       "governance": "Quản trị | GnoSwap",
       "launchpad": "Launchpad | GnoSwap",

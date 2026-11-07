@@ -7,8 +7,79 @@
     },
     "title": "确认交换"
   },
+  "dca": {
+    "amountPerOrder": "每笔订单金额",
+    "estimatedEndDate": "预计结束日期",
+    "every": "每个",
+    "everyTooltip": "您订单中每次交易之间预计间隔的时间。实际时间可能会因区块时间而有所不同。",
+    "executionFee": "执行费",
+    "executionFeeTooltip": "DCA指令从每笔已成交交易的收益中扣除的费用。所示费率已扣除该费用。",
+    "minTrading": "每笔订单的最低金额为{{amount}} ，{{symbol}} ",
+    "noWhitelistedPool": "该货币对不支持",
+    "orders": "订单",
+    "over": "结束",
+    "overTooltip": "作为您的订单的一部分，将被触发的单笔交易数量。",
+    "placeOrder": "下单",
+    "poolCheckFailed": "重试池检查",
+    "routerFee": "路由器费用",
+    "routerFeeTooltip": "该费用按该订单执行的每笔交易收取，并以产出代币支付。",
+    "toBuy": "购买",
+    "unit": {
+      "day": "天",
+      "hour": "小时",
+      "minute": "会议纪要",
+      "month": "月份",
+      "week": "周"
+    }
+  },
   "fetchingPrice": "正在获取最佳价格...",
   "header": "交换",
+  "limit": {
+    "expiry": "到期日",
+    "expiryOption": {
+      "oneDay": "1天",
+      "oneHour": "1 小时",
+      "oneWeek": "1周",
+      "thirtyDays": "30天"
+    },
+    "limitPrice": "限价",
+    "market": "市场",
+    "minTrading": "{{amount}} 以上{{symbol}}",
+    "slippage": "最大滑点",
+    "startToOrder": "开始下单"
+  },
+  "order": {
+    "active": "未结订单",
+    "cancelOrder": "取消订单",
+    "claimOrder": "主张",
+    "connectWallet": "请将您的钱包连接到本平台，以便查看您的订单。",
+    "expiresAt": "到期时间",
+    "nextTrade": "下一笔交易",
+    "noOrders": "未找到任何订单。",
+    "ongoing": "进行中",
+    "order": "订单",
+    "orderHistory": "订单历史",
+    "overview": "概述",
+    "past": "历史订单",
+    "paused": "订单已暂停",
+    "priceRate": "价格费率",
+    "purchased": "已购买",
+    "purchasedAmount": "购买金额",
+    "rate": "评分",
+    "refundOrder": "退款",
+    "remainingAmount": "剩余金额",
+    "remainingTrades": "剩余交易",
+    "sold": "已售出",
+    "soldAmount": "已售金额",
+    "status": {
+      "cancelled": "已取消",
+      "completed": "已完成",
+      "expired": "已过期",
+      "partiallyFilled": "部分已填入"
+    },
+    "stopOrder": "止损单",
+    "time": "时间"
+  },
   "poolInfo": {
     "addPosBtn": "增加职位",
     "col": {
@@ -30,6 +101,7 @@
     "balanceUnavailable": "余额不足",
     "enterAmount": "输入金额",
     "insuffiLiq": "流动性不足",
+    "retryMaxCalculation": "重新计算最大数量",
     "review": "评论",
     "selectToken": "选择令牌",
     "swap": "交换",
@@ -48,5 +120,10 @@
       "swapFee": "在每笔交易中，协议收取的费用百分比。它以输出代币的形式支付，并已计入报价中。"
     }
   },
-  "swapURLCopied": "已复制的交换 URL！"
+  "swapURLCopied": "已复制的交换 URL！",
+  "tab": {
+    "dca": "DCA",
+    "limit": "上限",
+    "swap": "交换"
+  }
 }

@@ -62,5 +62,15 @@ export const PROBE_HEADROOM_RATIO = 0.1 as const;
  */
 export const SMALL_BALANCE_PROBE_DIVISOR = 100 as const;
 
+/**
+ * Further shares of the balance to hold back when the probes just below the
+ * ceiling cannot be afforded: on a balance of a few GNOT, a fee plus a storage
+ * deposit can take more than the tenth those probes hold back, so they all fail
+ * and the answer would fall back to the flat fee alone. Gas and the deposit
+ * barely move with the amount, so a measurement at half or a tenth of the
+ * balance still prices the maximum.
+ */
+export const PROBE_RETREAT_RATIOS = [0.5, 0.9] as const;
+
 export const MINIMUM_GNOT_SWAP_AMOUNT = 0.001;
 export const DEFAULT_INCENTIVE_CREATION_DEPOSIT_GNS_AMOUNT = "100000000000" as const;

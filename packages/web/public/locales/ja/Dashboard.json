@@ -1,6 +1,4 @@
 {
-  "addAct": "追加",
-  "adds": "追加",
   "day": "日",
   "fees": "料金",
   "govOver": {
@@ -52,8 +50,7 @@
       "tooltip": {
         "community": "コミュニティ・プール",
         "devOps": "デブオプス",
-        "liquiStaking": "流動性ステーキング",
-        "title": "ブロック・エミッション"
+        "liquiStaking": "流動性ステーキング"
       }
     },
     "circulSup": {
@@ -75,15 +72,9 @@
       "tooltip": "GNSの最大トークン供給量。"
     }
   },
-  "swapAct": "スワップ",
-  "swaps": "スワップ",
   "title": "エクスペリエンス",
   "totalVolChart": {
     "title": "総量",
     "totalFee": "料金合計"
-  },
-  "totalvolumeFees": "料金",
-  "tradingVolume": "取引量",
-  "unstakeAct": "アンステーク",
-  "unstakes": "アンステークス"
+  }
 }

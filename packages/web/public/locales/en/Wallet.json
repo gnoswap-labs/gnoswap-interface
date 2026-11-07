@@ -30,7 +30,6 @@
     "enterAddr": {
       "input": "Enter Address"
     },
-    "estNetFee": "Estimated Network Fee",
     "network": {
       "label": "Network",
       "tooltip": "The network of the token to be sent."

@@ -22,12 +22,16 @@
       "claimFees": "請求手数料",
       "claimRewards": "報酬請求",
       "create": "作成",
+      "dcaOrder": "DCA命令",
+      "dcaSwap": "DCAスワップ",
       "decrease": "減少",
       "delegate": "代議員",
       "deposit": "デポジット",
       "execute": "実行する",
       "incentivize": "インセンティブを与える",
       "increase": "増加",
+      "limitOrder": "指値注文",
+      "limitSwap": "リミット・スワップ",
       "remove": "削除",
       "reposition": "再配置",
       "stake": "Stake",
@@ -39,7 +43,6 @@
   },
   "pageHeader": {
     "addPosi": "ポジション追加",
-    "dashboard": "エクスペリエンス",
     "decreaseLiqui": "流動性の低下",
     "earn": "稼ぐ",
     "incentivzePool": "プールにインセンティブを付与する",
@@ -49,10 +52,6 @@
     "stakePosition": "ステークポジション",
     "unstakePosition": "ポジションを外す",
     "wallet": "ポートフォリオ"
-  },
-  "positionHistoryAction": {
-    "claimFees": "請求手数料",
-    "create": "作成"
   },
   "positionPriceRangeInfo": {
     "capEff": {
@@ -85,12 +84,7 @@
     "internal_reward": "社内報奨金",
     "swap_fee": "スワップ料"
   },
-  "selectAToken": "トークンを選択",
   "staked": "ステイクド",
-  "stakingIncentiveType": {
-    "external": "外部",
-    "internal": "内部"
-  },
   "switchGnoland": "グノランドへ移動",
   "token": "トークン",
   "unstakingFee": {

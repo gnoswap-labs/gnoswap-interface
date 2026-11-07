@@ -68,6 +68,30 @@
       },
       "title": "Yêu cầu GNS"
     },
+    "dcaClaim": {
+      "status": {
+        "error": "<div>Không thể nhận <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "pending": "<div>Tuyên bố <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "success": "<div>Được cho là <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>"
+      },
+      "title": "Yêu cầu thực thi Lệnh của DCA"
+    },
+    "dcaOrder": {
+      "status": {
+        "error": "<div>Không thể đặt hàng <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> cho <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Đặt hàng <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> cho <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Đã đặt hàng <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> để <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Lệnh của DCA"
+    },
+    "dcaStop": {
+      "status": {
+        "error": "<div>Không thể dừng lại <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> cho <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Dừng lại <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> để <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Đã dừng lại <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> để <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Lệnh đình chỉ của DCA"
+    },
     "delegate": {
       "status": {
         "error": "<div>Không thể ủy quyền <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> cho <span>{{target}}</span></div>",
@@ -109,6 +133,22 @@
         "title": "Giao dịch đã được gửi",
         "viewTx": "Xem giao dịch"
       }
+    },
+    "limitCancel": {
+      "status": {
+        "error": "<div>Không thể hủy <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> cho <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Hủy bỏ <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> cho <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Đã hủy <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> vì <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Hủy lệnh giới hạn"
+    },
+    "limitOrder": {
+      "status": {
+        "error": "<div>Không thể đặt hàng <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> cho <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Đặt hàng <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> cho <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Đã đặt hàng <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> để <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Lệnh giới hạn"
     },
     "propose": {
       "status": {
@@ -197,6 +237,21 @@
       "title": "Bọc"
     }
   },
+  "confirmLimitOrder": {
+    "title": "Xác nhận lệnh giới hạn"
+  },
+  "confirmPlaceOrder": {
+    "actualAmount": "Chỉ có lệnh “ {{amount}} ” ( {{symbol}} ) được đặt sao cho mỗi giao dịch đều bán ra cùng một lượng.",
+    "title": "Xác nhận đặt hàng"
+  },
+  "confirmStopOrder": {
+    "cancelNote": "Khi hủy lệnh giới hạn, bạn không thể đặt lại lệnh đó và chỉ phần số lượng chưa được khớp mới được hoàn lại cho bạn. Phần số lượng đã được khớp sẽ không bị ảnh hưởng.",
+    "cancelTitle": "Xác nhận Hủy đơn hàng",
+    "importantNote": "Lưu ý quan trọng",
+    "note": "Khi hủy lệnh DCA, bạn không thể tiếp tục thực hiện lại lệnh đó và chỉ số tiền còn lại mới được hoàn lại cho bạn. Để tiếp tục thực hiện DCA, bạn cần tạo một lệnh DCA mới.",
+    "orderDetails": "Chi tiết đơn hàng",
+    "title": "Xác nhận lệnh dừng lỗ"
+  },
   "connectWallet": {
     "failed": {
       "desc": "Lỗi kết nối. Vui lòng thử lại.",
@@ -219,6 +274,9 @@
           "success": "Được tạo"
         }
       },
+      "dcaOrdered": "DCA đã ra lệnh",
+      "dcaStopped": "DCA đã ngừng hoạt động",
+      "dcaSwapped": "Đã hoán đổi DCA",
       "decreased": "Giảm",
       "delegate": {
         "status": {
@@ -234,6 +292,10 @@
       "feesClaimed": "Các khoản phí được yêu cầu thanh toán",
       "incentivized": "Có chính sách khuyến khích",
       "increased": "Tăng",
+      "limitCancelled": "Giới hạn đã bị hủy",
+      "limitExpired": "Thời hạn đã hết hiệu lực",
+      "limitOrdered": "Lệnh giới hạn",
+      "limitSwapped": "Đã hoán đổi giới hạn",
       "proposal": "Đề xuất",
       "received": "Đã nhận",
       "removed": "Đã xóa",
@@ -264,7 +326,6 @@
     },
     "title": "Thông báo"
   },
-  "pop": "Các token phổ biến",
   "search": {
     "mostLiquiPools": "Các bể lỏng nhất",
     "pools": "Hồ bơi",
@@ -312,9 +373,6 @@
     "understand": "Tôi hiểu rồi"
   },
   "walletLogin": {
-    "btn": {
-      "connect": "Wallet Connect"
-    },
     "desc": "Khi kết nối ví, bạn đồng ý và chấp nhận <1>Điều khoản sử dụng</1> và <3>Chính sách bảo mật</3> của chúng tôi.",
     "title": "Đăng nhập bằng ví"
   }

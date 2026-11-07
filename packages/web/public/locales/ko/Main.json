@@ -1,9 +1,4 @@
 {
-  "allSwitch": "전체",
-  "bal": "잔액",
-  "brand": {
-    "introduction": "<span>스왑</span> 및 <span>획득</span><br/>GnoSwap에서"
-  },
   "followOur": "가이드를 따라 당신의 프로젝트를 위한 유동성을 구성해보세요",
   "highest": "최고 APR",
   "keyStatCard": {
@@ -13,13 +8,9 @@
     "toDashBoardBtnText": "Explore 이동",
     "totalValueLocked": "총 예치 자산"
   },
-  "liquidityCol": "유동성",
   "lookingTo": "Gnoswap이 처음이신가요?",
-  "newList": "신규 상장",
   "projectOnb": "프로젝트 온보딩 가이드",
   "search": "검색",
-  "swapComp": "스왑",
-  "swapNowBtn": "스왑으로 이동",
   "theFirst": "Gnolang으로 만들어진 최초의 Concentrated Liquidity AMM DEX",
   "theOne": "원스톱 그노랜드 DeFi 플랫폼",
   "tokenList": {

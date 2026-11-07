@@ -7,3 +7,4 @@ export * as EarnState from "./earn";
 export * as IncreaseState from "./increase";
 export * as LaunchpadState from "./launchpad";
 export * as ReferralState from "./referral";
+export * as OrderState from "./order";

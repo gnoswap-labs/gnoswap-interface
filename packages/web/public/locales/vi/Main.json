@@ -1,9 +1,4 @@
 {
-  "allSwitch": "Tất cả",
-  "bal": "Số dư",
-  "brand": {
-    "introduction": "<span>Trao đổi</span> và <span>kiếm</span><br/>trên GnoSwap\n"
-  },
   "followOur": "Hãy làm theo hướng dẫn đơn giản của chúng tôi để bắt đầu xây dựng thanh khoản cho dự án của bạn.",
   "highest": "Tỷ lệ phần trăm hàng năm (APR) cao nhất",
   "keyStatCard": {
@@ -13,13 +8,9 @@
     "toDashBoardBtnText": "Truy cập mục Khám phá",
     "totalValueLocked": "Tổng giá trị được khóa"
   },
-  "liquidityCol": "Khả năng thanh khoản",
   "lookingTo": "Bạn đang muốn bắt đầu sử dụng GnoSwap?",
-  "newList": "Các tin đăng mới",
   "projectOnb": "Hướng dẫn tham gia dự án",
   "search": "Tìm kiếm",
-  "swapComp": "Hoán đổi",
-  "swapNowBtn": "Đi đến Hoán đổi",
   "theFirst": "Sàn giao dịch phi tập trung (DEX) AMM với tính thanh khoản tập trung đầu tiên được xây dựng bằng ngôn ngữ lập trình Go",
   "theOne": "Nền tảng DeFi Gno.land một điểm dừng",
   "tokenList": {

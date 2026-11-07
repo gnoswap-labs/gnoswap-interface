@@ -1,6 +1,4 @@
 {
-  "addAct": "Добавлять",
-  "adds": "Добавляет",
   "day": "День",
   "fees": "Сборы",
   "govOver": {
@@ -52,8 +50,7 @@
       "tooltip": {
         "community": "Общий бассейн",
         "devOps": "DevOps",
-        "liquiStaking": "Ставки на ликвидность",
-        "title": "Блочные выбросы"
+        "liquiStaking": "Ставки на ликвидность"
       }
     },
     "circulSup": {
@@ -75,15 +72,9 @@
       "tooltip": "Максимальный запас токенов GNS."
     }
   },
-  "swapAct": "Менять",
-  "swaps": "Свопы",
   "title": "Посетите сайт",
   "totalVolChart": {
     "title": "Общий объем",
     "totalFee": "Общие сборы"
-  },
-  "totalvolumeFees": "Тарифы",
-  "tradingVolume": "Объем торгов",
-  "unstakeAct": "снять ставку",
-  "unstakes": "Ставки"
+  }
 }

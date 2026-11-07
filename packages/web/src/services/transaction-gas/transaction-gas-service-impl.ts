@@ -3,6 +3,8 @@ import BigNumber from "bignumber.js";
 import { GnoProvider, SimulateTxResult } from "@common/clients/gno-provider/gno-provider";
 import { Tx } from "@gnolang/tm2-js-client";
 
+import { TransactionMessage } from "@common/clients/wallet-client/protocols";
+
 import { WalletClient } from "@common/clients/wallet-client";
 import { CommonError } from "@common/errors";
 import { DEFAULT_GAS_WANTED } from "@common/values";
@@ -13,7 +15,6 @@ import {
   bisectToward,
   cappedSpendable,
   describeWithheld,
-  fallbackMaxNativeAmount,
   gasFeeFloor,
   MINIMUM_GAS_PRICE,
   NARROW_ATTEMPTS,
@@ -27,6 +28,7 @@ import {
   MaxNativeAmount,
   MaxNativeAmountRequest,
   NativeAmountReserve,
+  TransactionFeeEstimate,
   TransactionGasService,
 } from "./transaction-gas-service";
 
@@ -84,44 +86,74 @@ export class TransactionGasServiceImpl implements TransactionGasService {
   /** Runs the process laid out in `native-amount-reserve.ts`. */
   public async estimateMaxNativeAmount(request: MaxNativeAmountRequest): Promise<MaxNativeAmount> {
     const { balance, makeMessages, gasWanted = DEFAULT_GAS_WANTED } = request;
-
     const offeredGasFee = request.gasFee ?? OFFERED_GAS_FEE;
-    // Without a measurement the offered fee is the only certain cost.
-    const fallback = fallbackMaxNativeAmount(balance, request.fallbackReserve ?? offeredGasFee);
 
-    if (!this.rpcProvider || !this.transactionService) return fallback;
+    if (!this.rpcProvider) {
+      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+    if (!this.transactionService) {
+      throw new Error("Cannot estimate maximum native amount without a transaction service");
+    }
+
+    const context: EstimateContext = {
+      balance: BigNumber(balance),
+      makeMessages,
+      gasWanted,
+      gasPrice: (await this.getGasPrices()) || MINIMUM_GAS_PRICE,
+      feeFloor: gasFeeFloor(balance, offeredGasFee),
+      // Resolved once so the simulations below don't each ask the wallet.
+      ...(await this.getSigner()),
+    };
+
+    // 1-2. Measure at the first planned amount the balance can carry.
+    const plan = planProbes(balance, offeredGasFee, gasWanted, context.gasPrice);
+    const measured = await this.measure(context, plan);
+    if (!measured) {
+      // No positive integer probe can be formed from this balance.
+      return {
+        amount: "0",
+        reserve: { gasFee: offeredGasFee, storageDeposit: "0", buffer: "0", total: offeredGasFee },
+        simulated: false,
+      };
+    }
+
+    // 3-4. Price the reserve, then climb toward the ceiling from there.
+    const narrowed = await this.narrow(context, measured);
+
+    // 5. Respect both the amount a simulation accepted and the priced reserve.
+    const amount = BigNumber.maximum(cappedSpendable(context.balance, narrowed.amount, narrowed.reserve), 0).toFixed(0);
+
+    // 6. Report what is really held back.
+    return {
+      amount,
+      reserve: describeWithheld(context.balance, amount, narrowed.reserve),
+      simulated: true,
+    };
+  }
+
+  public async estimateTransactionFee(messages: TransactionMessage[]): Promise<TransactionFeeEstimate | null> {
+    if (!this.rpcProvider || !this.transactionService || messages.length === 0) return null;
 
     try {
-      const context: EstimateContext = {
-        balance: BigNumber(balance),
-        makeMessages,
-        gasWanted,
-        gasPrice: (await this.getGasPrices()) || MINIMUM_GAS_PRICE,
-        feeFloor: gasFeeFloor(balance, offeredGasFee),
-        // Resolved once so the simulations below don't each ask the wallet.
-        ...(await this.getSigner()),
-      };
+      const [gasPrice, signer] = await Promise.all([this.getGasPrices(), this.getSigner()]);
+      const document = await this.transactionService.createDocument({ messages, memo: "", account: signer.account });
+      const { gasUsed, storageDeposit } = await this.rpcProvider.simulateTx(
+        documentToDefaultTx(withGasFee(document, DEFAULT_GAS_WANTED, Number(OFFERED_GAS_FEE)), signer.publicKey),
+      );
 
-      // 1-2. Measure at the first planned amount the balance can carry.
-      const plan = planProbes(balance, offeredGasFee, gasWanted, context.gasPrice);
-      const measured = await this.measure(context, plan);
-      if (!measured) return fallback;
+      const gasFee = BigNumber(gasUsed)
+        .multipliedBy(gasPrice || MINIMUM_GAS_PRICE)
+        .toFixed(0, BigNumber.ROUND_CEIL);
+      const deposit = BigNumber(storageDeposit).toFixed(0, BigNumber.ROUND_CEIL);
 
-      // 3-4. Price the reserve, then climb toward the ceiling from there.
-      const narrowed = await this.narrow(context, measured);
-
-      // 5. Respect both the amount a simulation accepted and the priced reserve.
-      const amount = cappedSpendable(context.balance, narrowed.amount, narrowed.reserve);
-      if (BigNumber(amount).isLessThanOrEqualTo(0)) return fallback;
-
-      // 6. Report what is really held back.
       return {
-        amount,
-        reserve: describeWithheld(context.balance, amount, narrowed.reserve),
-        simulated: true,
+        gasUsed: Number(gasUsed),
+        gasFee,
+        storageDeposit: deposit,
+        total: BigNumber(gasFee).plus(deposit).toFixed(0),
       };
     } catch {
-      return fallback;
+      return null;
     }
   }
 
@@ -130,14 +162,19 @@ export class TransactionGasServiceImpl implements TransactionGasService {
    * A step the balance cannot carry after all is skipped for the next one.
    */
   private async measure(context: EstimateContext, plan: ProbeStep[]): Promise<Measurement | null> {
+    let lastFailure: unknown;
+    let failed = false;
+
     for (const step of plan) {
       try {
         return { amount: step.amount, simulation: await this.simulate(context, step.amount, step.gasFee) };
-      } catch {
-        continue;
+      } catch (error) {
+        lastFailure = error;
+        failed = true;
       }
     }
 
+    if (failed) throw lastFailure;
     return null;
   }
 
@@ -173,15 +210,16 @@ export class TransactionGasServiceImpl implements TransactionGasService {
 
   /** Dry-runs the action's own messages for one amount. */
   private async simulate(context: EstimateContext, amount: string, gasFee: string): Promise<SimulateTxResult> {
-    if (!this.rpcProvider || !this.transactionService) {
+    if (!this.rpcProvider) {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    }
+    if (!this.transactionService) {
+      throw new Error("Cannot estimate maximum native amount without a transaction service");
     }
 
     const messages = await context.makeMessages(amount);
-    // An action that cannot build its messages for this amount has nothing to
-    // measure, so the caller's fallback reserve is the honest answer.
-    if (messages.length === 0) {
-      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
+    if (!Array.isArray(messages) || messages.length === 0) {
+      throw new Error("Cannot estimate maximum native amount because the action produced no messages");
     }
 
     const document = await this.transactionService.createDocument({

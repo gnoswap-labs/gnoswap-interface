@@ -7,8 +7,79 @@
     },
     "title": "スワップ確認"
   },
+  "dca": {
+    "amountPerOrder": "1注文あたりの数量",
+    "estimatedEndDate": "終了予定日",
+    "every": "すべての",
+    "everyTooltip": "注文内の各取引の間に経過すると見込まれる時間です。実際の時間は、ブロック時間によって異なる場合があります。",
+    "executionFee": "執行手数料",
+    "executionFeeTooltip": "DCA注文が、約定した各取引の利益から差し引く手数料です。表示されているレートは、この手数料が差し引かれた後のものです。",
+    "minTrading": "1注文あたりの最低注文数量：{{amount}} 、{{symbol}} ",
+    "noWhitelistedPool": "この組み合わせはサポートされていません",
+    "orders": "注文",
+    "over": "以上",
+    "overTooltip": "注文の一環として発動される個別の取引の数。",
+    "placeOrder": "注文する",
+    "poolCheckFailed": "リトライプールの確認",
+    "routerFee": "ルーター利用料",
+    "routerFeeTooltip": "その注文によって執行された各取引に対して課される手数料です。これは、出力トークンで支払われます。",
+    "toBuy": "購入する",
+    "unit": {
+      "day": "日",
+      "hour": "時間",
+      "minute": "議事録",
+      "month": "月",
+      "week": "週"
+    }
+  },
   "fetchingPrice": "最良の価格を取得しています...",
   "header": "スワップ",
+  "limit": {
+    "expiry": "有効期限",
+    "expiryOption": {
+      "oneDay": "1日",
+      "oneHour": "1時間",
+      "oneWeek": "1週間",
+      "thirtyDays": "30日間"
+    },
+    "limitPrice": "指値",
+    "market": "市場",
+    "minTrading": "{{amount}} 以上{{symbol}}",
+    "slippage": "最大スリッページ",
+    "startToOrder": "注文を開始する"
+  },
+  "order": {
+    "active": "未決済注文",
+    "cancelOrder": "注文をキャンセルする",
+    "claimOrder": "主張",
+    "connectWallet": "ご注文内容を確認するには、ウォレットを接続してください。",
+    "expiresAt": "有効期限",
+    "nextTrade": "次の取引",
+    "noOrders": "注文が見つかりませんでした。",
+    "ongoing": "進行中",
+    "order": "注文",
+    "orderHistory": "注文履歴",
+    "overview": "概要",
+    "past": "過去の注文",
+    "paused": "注文が一時停止されました",
+    "priceRate": "価格・料金",
+    "purchased": "購入済み",
+    "purchasedAmount": "購入金額",
+    "rate": "レート",
+    "refundOrder": "返金",
+    "remainingAmount": "残額",
+    "remainingTrades": "残りの取引",
+    "sold": "販売済み",
+    "soldAmount": "販売額",
+    "status": {
+      "cancelled": "中止",
+      "completed": "完了",
+      "expired": "有効期限切れ",
+      "partiallyFilled": "一部埋まっている"
+    },
+    "stopOrder": "ストップ注文",
+    "time": "時間"
+  },
   "poolInfo": {
     "addPosBtn": "ポジション追加",
     "col": {
@@ -30,6 +101,7 @@
     "balanceUnavailable": "残高がありません",
     "enterAmount": "金額を入力",
     "insuffiLiq": "不十分な流動性",
+    "retryMaxCalculation": "最大数量を再計算",
     "review": "レビュー",
     "selectToken": "トークンの選択",
     "swap": "スワップ",
@@ -48,5 +120,10 @@
       "swapFee": "各取引で課金される手数料のうち、プロトコルに支払われる割合。これは出力トークンで支払われ、すでに見積もりに織り込まれています。"
     }
   },
-  "swapURLCopied": "コピーされたURLを入れ替える！"
+  "swapURLCopied": "コピーされたURLを入れ替える！",
+  "tab": {
+    "dca": "DCA",
+    "limit": "上限",
+    "swap": "スワップ"
+  }
 }

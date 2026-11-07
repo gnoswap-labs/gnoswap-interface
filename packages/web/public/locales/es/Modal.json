@@ -68,6 +68,30 @@
       },
       "title": "Reclamación GNS"
     },
+    "dcaClaim": {
+      "status": {
+        "error": "<div>No se ha podido canjear <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "pending": "<div>Reclamar <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "success": "<div>Reclamado <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>"
+      },
+      "title": "Reclamar la resolución de la DCA"
+    },
+    "dcaOrder": {
+      "status": {
+        "error": "<div>No se ha podido realizar el pedido <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> para <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Cómo hacer un pedido <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> para <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Pedido <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> para <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Orden de la DCA"
+    },
+    "dcaStop": {
+      "status": {
+        "error": "<div>No se ha podido detener <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> en <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Detener <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> para <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Detenido <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> por <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Orden de suspensión de la DCA"
+    },
     "delegate": {
       "status": {
         "error": "<div>No se ha podido delegar <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> a <span>{{target}}</span></div>",
@@ -109,6 +133,22 @@
         "title": "Transacción presentada",
         "viewTx": "Ver transacción"
       }
+    },
+    "limitCancel": {
+      "status": {
+        "error": "<div>No se ha podido cancelar <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> para <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Cancelación <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> para <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Cancelado <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> por <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Cancelar orden limitada"
+    },
+    "limitOrder": {
+      "status": {
+        "error": "<div>No se ha podido realizar el pedido <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> para <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Cómo hacer un pedido <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> para <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Pedido <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> para <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Orden limitada"
     },
     "propose": {
       "status": {
@@ -197,6 +237,21 @@
       "title": "Envolver"
     }
   },
+  "confirmLimitOrder": {
+    "title": "Confirmar orden limitada"
+  },
+  "confirmPlaceOrder": {
+    "actualAmount": "Solo se realiza una orden en {{amount}} {{symbol}} para que cada operación venda la misma cantidad.",
+    "title": "Confirmar pedido"
+  },
+  "confirmStopOrder": {
+    "cancelNote": "Si cancelas una orden limitada, no podrás volver a introducir la misma orden y solo se te devolverá el importe no ejecutado. Los importes ejecutados no se ven afectados.",
+    "cancelTitle": "Confirmar Cancelar pedido",
+    "importantNote": "Nota importante",
+    "note": "Si detienes una orden de DCA, no podrás reanudar la misma orden y solo se te devolverán los importes restantes. Para continuar con el DCA, debes crear una nueva orden de DCA.",
+    "orderDetails": "Detalles del pedido",
+    "title": "Confirmar orden de stop"
+  },
   "connectWallet": {
     "failed": {
       "desc": "El intento de conexión ha fallado. Inténtalo de nuevo.",
@@ -219,6 +274,9 @@
           "success": "Creado"
         }
       },
+      "dcaOrdered": "Orden de la DCA",
+      "dcaStopped": "DCA suspendido",
+      "dcaSwapped": "DCA intercambiado",
       "decreased": "Disminución de",
       "delegate": {
         "status": {
@@ -234,6 +292,10 @@
       "feesClaimed": "Tasas reclamadas",
       "incentivized": "Incentivado",
       "increased": "Aumento de",
+      "limitCancelled": "Límite cancelado",
+      "limitExpired": "El plazo ha vencido",
+      "limitOrdered": "Orden con límite",
+      "limitSwapped": "Límite intercambiado",
       "proposal": "Propuesta",
       "received": "Recibido",
       "removed": "Eliminado",
@@ -264,7 +326,6 @@
     },
     "title": "Notificación"
   },
-  "pop": "Fichas populares",
   "search": {
     "mostLiquiPools": "Piscinas más líquidas",
     "pools": "Piscinas",
@@ -312,9 +373,6 @@
     "understand": "Comprendo"
   },
   "walletLogin": {
-    "btn": {
-      "connect": "Billetera Connect"
-    },
     "desc": "Al conectar un monedero, acepta y consiente nuestras <1>Condiciones de uso</1> y <3>Política de privacidad</3>.",
     "title": "Iniciar sesión en billetera"
   }

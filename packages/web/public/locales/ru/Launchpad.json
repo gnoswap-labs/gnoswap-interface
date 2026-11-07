@@ -27,14 +27,8 @@
     "ongoing": "Продолжение",
     "status": {
       "ended": "Окончание",
-      "endsInOneMinute": "Заканчивается через 1 минуту",
       "ongoing": "Заканчивается в {{time}}",
       "upcoming": "Предстоящий в {{time}}"
-    },
-    "tierDuration": {
-      "1month": "1 месяц",
-      "3months": "3 месяца",
-      "6months": "6 месяцев"
     },
     "time": {
       "days_one": "{{count}} день",
@@ -156,7 +150,6 @@
     "unconnect": "Пожалуйста, подключите свой кошелек<br/>, чтобы увидеть свое участие."
   },
   "participate": {
-    "balance": "Баланс",
     "col": {
       "depositAmount": "Сумма депозита",
       "endDate": "Дата окончания",

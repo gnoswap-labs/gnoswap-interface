@@ -1,0 +1,10 @@
+{
+  "message": "success",
+  "data": {
+    "groupId": "gno.land/r/gnoswap/gns:gno.land/r/gnoland/wugnot:3600:0",
+    "slotOffset": 0,
+    "groupActive": true,
+    "firstExecutionAt": 1793667600,
+    "estimatedEndAt": 1794384000
+  }
+}

@@ -56,10 +56,6 @@
         "title": "수령한 보상",
         "title_total": "청구된 보상 총액"
       },
-      "dailyEarn": {
-        "title": "일일 수익",
-        "title_total": "일일 총 수익"
-      },
       "fee": "수수료",
       "history": {
         "col": {
@@ -116,6 +112,5 @@
       }
     },
     "totalStaked": "총 스테이킹량"
-  },
-  "wanttoaddup": "해당 풀에 인센티브를 추가하고 싶으신가요?"
+  }
 }

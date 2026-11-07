@@ -7,8 +7,79 @@
     },
     "title": "Confirmer l'échange"
   },
+  "dca": {
+    "amountPerOrder": "Montant par commande",
+    "estimatedEndDate": "Date de fin prévue",
+    "every": "Chaque",
+    "everyTooltip": "Le délai estimé entre chaque transaction de votre ordre. Le délai réel peut varier en fonction de la durée du bloc.",
+    "executionFee": "Frais d'exécution",
+    "executionFeeTooltip": "Les frais que l'ordre DCA prélève sur le produit de chaque transaction exécutée. Le taux indiqué s'entend après déduction de ces frais.",
+    "minTrading": "{{amount}} s minimales : {{symbol}} par commande",
+    "noWhitelistedPool": "Paire non prise en charge",
+    "orders": "Commandes",
+    "over": "Plus de",
+    "overTooltip": "Le nombre de transactions individuelles qui seront exécutées dans le cadre de votre ordre.",
+    "placeOrder": "Passer une commande",
+    "poolCheckFailed": "Vérification du pool de tentatives",
+    "routerFee": "Frais de routeur",
+    "routerFeeTooltip": "Les frais prélevés sur chaque transaction exécutée dans le cadre de l'ordre. Ils sont payés dans le jeton de sortie.",
+    "toBuy": "Acheter",
+    "unit": {
+      "day": "Jour",
+      "hour": "Heure",
+      "minute": "Procès-verbal",
+      "month": "Mois",
+      "week": "Semaine"
+    }
+  },
   "fetchingPrice": "Recherche du meilleur prix...",
   "header": "Échange",
+  "limit": {
+    "expiry": "Date d'expiration",
+    "expiryOption": {
+      "oneDay": "1 jour",
+      "oneHour": "1 heure",
+      "oneWeek": "1 semaine",
+      "thirtyDays": "30 jours"
+    },
+    "limitPrice": "Prix limite",
+    "market": "Marché",
+    "minTrading": "{{amount}} minimale {{symbol}}",
+    "slippage": "Glissement maximal",
+    "startToOrder": "Commencer la commande"
+  },
+  "order": {
+    "active": "Commandes en cours",
+    "cancelOrder": "Annuler la commande",
+    "claimOrder": "Allégation",
+    "connectWallet": "Veuillez connecter votre portefeuille pour consulter votre commande.",
+    "expiresAt": "Date d'expiration :",
+    "nextTrade": "Prochaine transaction",
+    "noOrders": "Aucune commande trouvée.",
+    "ongoing": "En cours",
+    "order": "Commande",
+    "orderHistory": "Historique des commandes",
+    "overview": "Présentation générale",
+    "past": "Commandes précédentes",
+    "paused": "Commande en attente",
+    "priceRate": "Tarif",
+    "purchased": "Acheté",
+    "purchasedAmount": "Montant de l'achat",
+    "rate": "Taux",
+    "refundOrder": "Remboursement",
+    "remainingAmount": "Montant restant",
+    "remainingTrades": "Opérations restantes",
+    "sold": "Vendu",
+    "soldAmount": "Montant de la vente",
+    "status": {
+      "cancelled": "Annulé",
+      "completed": "Terminé",
+      "expired": "Périmé",
+      "partiallyFilled": "Partiellement rempli"
+    },
+    "stopOrder": "Ordre stop",
+    "time": "Heure"
+  },
   "poolInfo": {
     "addPosBtn": "Ajouter une position",
     "col": {
@@ -30,6 +101,7 @@
     "balanceUnavailable": "Solde indisponible",
     "enterAmount": "Saisir le montant",
     "insuffiLiq": "Liquidité insuffisante",
+    "retryMaxCalculation": "Recalculer le montant maximal",
     "review": "Révision",
     "selectToken": "Sélectionner un jeton",
     "swap": "Échange",
@@ -48,5 +120,10 @@
       "swapFee": "Le pourcentage des frais facturés sur chaque transaction qui revient au protocole. Il est payé dans le jeton de sortie et est déjà pris en compte dans la cotation."
     }
   },
-  "swapURLCopied": "Échange d'URL copiées !"
+  "swapURLCopied": "Échange d'URL copiées !",
+  "tab": {
+    "dca": "DCA",
+    "limit": "Limite",
+    "swap": "Échange"
+  }
 }

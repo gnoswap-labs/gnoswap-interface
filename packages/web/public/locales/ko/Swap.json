@@ -7,8 +7,79 @@
     },
     "title": "스왑 확인"
   },
+  "dca": {
+    "amountPerOrder": "주문당 금액",
+    "estimatedEndDate": "예상 종료일",
+    "every": "모든",
+    "everyTooltip": "주문 내 각 거래 사이에 소요될 것으로 예상되는 시간입니다. 실제 시간은 블록 시간에 따라 달라질 수 있습니다.",
+    "executionFee": "집행 수수료",
+    "executionFeeTooltip": "DCA 주문이 체결된 각 거래의 수익에서 공제하는 수수료입니다. 표시된 비율은 이 수수료를 공제한 후의 수치입니다.",
+    "minTrading": "주문당 최소 {{amount}} {{symbol}} ",
+    "noWhitelistedPool": "해당 조합은 지원되지 않습니다",
+    "orders": "주문",
+    "over": "끝",
+    "overTooltip": "주문의 일환으로 실행될 개별 거래의 수입니다.",
+    "placeOrder": "주문하기",
+    "poolCheckFailed": "재시도 풀 확인",
+    "routerFee": "라우터 수수료",
+    "routerFeeTooltip": "해당 주문으로 체결된 각 거래에 부과되는 수수료입니다. 이 수수료는 출력 토큰으로 지급됩니다.",
+    "toBuy": "구매하기",
+    "unit": {
+      "day": "날",
+      "hour": "시간",
+      "minute": "분",
+      "month": "월",
+      "week": "주"
+    }
+  },
   "fetchingPrice": "최적 가격을 조회중...",
   "header": "스왑",
+  "limit": {
+    "expiry": "만료일",
+    "expiryOption": {
+      "oneDay": "1일",
+      "oneHour": "1시간",
+      "oneWeek": "1주",
+      "thirtyDays": "30일"
+    },
+    "limitPrice": "한도 가격",
+    "market": "시장",
+    "minTrading": "최소 {{amount}} {{symbol}}",
+    "slippage": "최대 슬리피지",
+    "startToOrder": "주문 시작하기"
+  },
+  "order": {
+    "active": "진행 중인 주문",
+    "cancelOrder": "주문 취소",
+    "claimOrder": "주장",
+    "connectWallet": "주문을 확인하시려면 지갑을 연결해 주세요.",
+    "expiresAt": "만료일",
+    "nextTrade": "다음 거래",
+    "noOrders": "주문이 없습니다.",
+    "ongoing": "진행 중",
+    "order": "주문",
+    "orderHistory": "주문 내역",
+    "overview": "개요",
+    "past": "이전 주문 내역",
+    "paused": "주문 일시 중지됨",
+    "priceRate": "가격 요율",
+    "purchased": "구매함",
+    "purchasedAmount": "구매 금액",
+    "rate": "요율",
+    "refundOrder": "환불",
+    "remainingAmount": "잔액",
+    "remainingTrades": "남은 거래",
+    "sold": "판매 완료",
+    "soldAmount": "판매 금액",
+    "status": {
+      "cancelled": "취소됨",
+      "completed": "완료됨",
+      "expired": "만료됨",
+      "partiallyFilled": "일부만 채워짐"
+    },
+    "stopOrder": "정지 주문",
+    "time": "시간"
+  },
   "poolInfo": {
     "addPosBtn": "포지션 추가",
     "col": {
@@ -30,6 +101,7 @@
     "balanceUnavailable": "잔액 없음",
     "enterAmount": "수량 입력",
     "insuffiLiq": "유동성 부족",
+    "retryMaxCalculation": "최대 수량 재계산",
     "review": "리뷰",
     "selectToken": "토큰 선택",
     "swap": "스왑",
@@ -48,5 +120,10 @@
       "swapFee": "각 거래에 대해 프로토콜에 부과되는 수수료 비율입니다.\n스왑된 토큰으로 지불되며, 예상 견적에 미리 적용되어 있습니다."
     }
   },
-  "swapURLCopied": "스왑 URL 복사 완료!"
+  "swapURLCopied": "스왑 URL 복사 완료!",
+  "tab": {
+    "dca": "DCA",
+    "limit": "한도",
+    "swap": "스왑"
+  }
 }

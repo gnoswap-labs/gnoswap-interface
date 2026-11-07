@@ -17,12 +17,7 @@
   "fees": "수수료",
   "liquidity": "유동성",
   "overview": {
-    "collectAsSwitch": "WGNOT으로 받기",
     "pooled": "제공된",
-    "stakingApr": {
-      "label": "스테이킹 APR ",
-      "tooltip": "예상 APR 범위는 스테이킹 기간 및 스테이킹 포지션에 대한 배율을 적용하여 계산됩니다."
-    },
     "unclaimed": "미청구 수수료"
   },
   "posi": "포지션",

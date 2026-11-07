@@ -1,6 +1,4 @@
 {
-  "addAct": "추가",
-  "adds": "추가",
   "day": "일",
   "fees": "수수료",
   "govOver": {
@@ -52,8 +50,7 @@
       "tooltip": {
         "community": "커뮤니티 풀",
         "devOps": "데브옵스",
-        "liquiStaking": "유동성 스테이킹",
-        "title": "블록 보상"
+        "liquiStaking": "유동성 스테이킹"
       }
     },
     "circulSup": {
@@ -75,15 +72,9 @@
       "tooltip": "GNS 최대 공급량"
     }
   },
-  "swapAct": "스왑",
-  "swaps": "스왑",
   "title": "탐색",
   "totalVolChart": {
     "title": "총 거래량",
     "totalFee": "총 수수료"
-  },
-  "totalvolumeFees": "수수료",
-  "tradingVolume": "거래량",
-  "unstakeAct": "언스테이킹",
-  "unstakes": "언스테이킹"
+  }
 }

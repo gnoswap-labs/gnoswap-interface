@@ -1,0 +1,40 @@
+{
+  "message": "success",
+  "data": {
+    "allowedIntervals": [
+      {
+        "interval": 60,
+        "slotStep": 60
+      },
+      {
+        "interval": 3600,
+        "slotStep": 3600
+      },
+      {
+        "interval": 86400,
+        "slotStep": 3600
+      },
+      {
+        "interval": 604800,
+        "slotStep": 86400
+      },
+      {
+        "interval": 2592000,
+        "slotStep": 86400
+      }
+    ],
+    "minAmountPerExecution": "1",
+    "maxExecutionCount": 1000,
+    "executionFeeBps": 15,
+    "routerFeeBps": 15,
+    "minExecutionGapRate": 5000,
+    "halted": {
+      "execute": false,
+      "withdraw": false
+    },
+    "whitelistedPools": [
+      "gno.land/r/gnoland/wugnot:gno.land/r/gnoswap/gns:500",
+      "gno.land/r/gnoland/wugnot:gno.land/r/gnoswap/gns:3000"
+    ]
+  }
+}

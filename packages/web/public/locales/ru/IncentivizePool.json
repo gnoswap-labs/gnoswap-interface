@@ -64,9 +64,6 @@
       }
     },
     "history": {
-      "button": {
-        "claim": "Заявление"
-      },
       "label": {
         "claimableUnvestedAmount": "Сумма, на которую можно претендовать и которая не была выплачена",
         "depositAmount": "Сумма депозита",
@@ -88,9 +85,6 @@
     }
   },
   "liquidity": "Ликвидность",
-  "rewards": "Награды",
-  "selectToken": "Выберите токен",
-  "setReward": "Установить сумму вознаграждения",
   "submitBtn": {
     "amtTooLow": "Сумма слишком мала",
     "enterAmt": "Введите сумму",

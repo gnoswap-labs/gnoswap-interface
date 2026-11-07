@@ -1,9 +1,7 @@
 {
   "bestPool": {
     "col": {
-      "apr": "APR",
-      "pool": "Pool",
-      "tvl": "TVL"
+      "pool": "Pool"
     },
     "title": "Best Pools for {{symbol}}"
   },
@@ -28,7 +26,6 @@
       "col": {
         "fee": "Fees (24h)",
         "marketCap": "Market Cap",
-        "tvl": "TVL",
         "volume": "Volume (24h)"
       },
       "title": "Market Information"

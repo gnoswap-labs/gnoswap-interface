@@ -30,7 +30,6 @@
     "enterAddr": {
       "input": "Introduzca la dirección"
     },
-    "estNetFee": "Tasa de red estimada",
     "network": {
       "label": "Red",
       "tooltip": "La red de la ficha que se va a enviar."

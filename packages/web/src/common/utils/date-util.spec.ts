@@ -329,6 +329,17 @@ describe("date-util", () => {
       expect(formatDisplayTime(1209600)).toBe(">7d ago");
     });
 
+    it("should count days up to a year when capped at a year", () => {
+      expect(formatDisplayTime(604800, { capAtYear: true })).toBe("7d ago");
+      expect(formatDisplayTime(86400 * 364, { capAtYear: true })).toBe("364d ago");
+      expect(formatDisplayTime(86400 * 365, { capAtYear: true })).toBe(">1y ago");
+    });
+
+    it("should never go below one second when requested", () => {
+      expect(formatDisplayTime(0, { minOneSecond: true })).toBe("1s ago");
+      expect(formatDisplayTime(5, { minOneSecond: true })).toBe("5s ago");
+    });
+
     it("should handle negative values with absolute difference", () => {
       expect(formatDisplayTime(-30)).toBe("30s ago");
       expect(formatDisplayTime(-3600)).toBe("1h ago");

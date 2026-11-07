@@ -64,9 +64,6 @@
       }
     },
     "history": {
-      "button": {
-        "claim": "クレーム"
-      },
       "label": {
         "claimableUnvestedAmount": "請求可能な未投資額",
         "depositAmount": "預金額",
@@ -88,9 +85,6 @@
     }
   },
   "liquidity": "流動性",
-  "rewards": "報酬",
-  "selectToken": "トークンを選択",
-  "setReward": "報酬額の設定",
   "submitBtn": {
     "amtTooLow": "金額が低すぎる",
     "enterAmt": "金額を入力",

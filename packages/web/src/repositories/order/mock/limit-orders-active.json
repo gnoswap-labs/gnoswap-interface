@@ -1,0 +1,52 @@
+{
+  "message": "success",
+  "data": {
+    "items": [
+      {
+        "orderId": "7",
+        "owner": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5",
+        "status": "PARTIALLY_FILLED",
+        "tokenIn": "gno.land/r/gnoswap/gns",
+        "tokenOut": "gno.land/r/gnoland/wugnot",
+        "makingAmount": "300000000",
+        "takingAmount": "381480000",
+        "slippageBps": 50,
+        "executionFeeRate": 15,
+        "filledInput": "100000000",
+        "remainingInput": "200000000",
+        "refundedInput": "0",
+        "userOutput": "127100000",
+        "createdAt": 1793660400,
+        "expiresAt": 1793746800,
+        "createdTxHash": "mockLimitCreatedTx7",
+        "closedAt": null,
+        "closedTxHash": null
+      },
+      {
+        "orderId": "6",
+        "owner": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5",
+        "status": "OPEN",
+        "tokenIn": "gno.land/r/gnoland/wugnot",
+        "tokenOut": "gno.land/r/gnoswap/gns",
+        "makingAmount": "120000000",
+        "takingAmount": "100000000",
+        "slippageBps": 50,
+        "executionFeeRate": 15,
+        "filledInput": "0",
+        "remainingInput": "120000000",
+        "refundedInput": "0",
+        "userOutput": "0",
+        "createdAt": 1793663400,
+        "expiresAt": 1794268200,
+        "createdTxHash": "mockLimitCreatedTx6",
+        "closedAt": null,
+        "closedTxHash": null
+      }
+    ],
+    "pageInfo": {
+      "currentPage": 1,
+      "totalItems": 2,
+      "totalPages": 1
+    }
+  }
+}

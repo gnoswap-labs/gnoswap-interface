@@ -27,14 +27,8 @@
     "ongoing": "En cours",
     "status": {
       "ended": "Fin du contrat",
-      "endsInOneMinute": "Fin dans 1 minute",
       "ongoing": "Se termine en {{time}}",
       "upcoming": "Prochainement en {{time}}"
-    },
-    "tierDuration": {
-      "1month": "1 mois",
-      "3months": "3 mois",
-      "6months": "6 mois"
     },
     "time": {
       "days_many": "{{count}} jours",
@@ -151,7 +145,6 @@
     "unconnect": "Veuillez connecter votre portefeuille<br/>pour voir votre participation."
   },
   "participate": {
-    "balance": "Équilibre",
     "col": {
       "depositAmount": "Montant du dépôt",
       "endDate": "Date de fin",

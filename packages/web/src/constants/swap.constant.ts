@@ -10,3 +10,6 @@ export const MAX_TICK = 887272 as const;
 export const X96 = 7.9228163e28 as const;
 export const Q96 = 79228162514264337593543950336n as const;
 export const Q128 = 340282366920938463463374607431768211456n as const;
+
+/** How often the swap history polls; the visible order list follows it. */
+export const SWAP_HISTORY_REFETCH_INTERVAL = 5_000;
