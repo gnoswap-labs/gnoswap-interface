@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "i18nexus": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["packages/web/scripts/i18nexus.mjs", "mcp"]
+    }
+  }
+}

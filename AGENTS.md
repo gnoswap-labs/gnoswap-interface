@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Gnoswap Interface is a DEX (decentralized exchange) frontend powered by Gno.land. It's a Next.js 15 monorepo using Yarn Berry 4.10.3 workspaces, with the main application in `packages/web/`.
+Gnoswap Interface is a DEX (decentralized exchange) frontend powered by Gno.land. It's a Next.js 15 monorepo using Yarn workspaces, with the main application in `packages/web/`.
 
 ## Commands
 
@@ -29,7 +29,7 @@ yarn workspace @gnoswap-labs/web format   # Prettier
 yarn storybook              # Start on port 6006
 ```
 
-**Node.js**: v20 (see `.nvmrc`). Installed via nvm; corepack enables Yarn 4.10.3.
+Use the Node version in `.nvmrc` and the Yarn version in `package.json#packageManager` (via corepack).
 
 ## Architecture
 
@@ -102,7 +102,11 @@ packages/web/src/
 ## i18n
 
 - i18next with Next.js (`next-i18next`), 8 locales (en default)
-- Translation files in `public/locales/<lang>/`
+- i18nexus is authoritative. Use authenticated official MCP for lookup/authoring; confirm project, namespace, and exact full key, reuse existing keys, and preserve placeholders, plurals, and newlines. Remote edits require task authorization; read back saved values. Missing tools, PAT, or project access are blockers, not permission to bypass.
+- Start agents normally from this checkout's root and trust project MCP when prompted. From a nested directory, use `omp --cwd "$(git rev-parse --show-toplevel)"`. Requires Node >=22.15 on macOS/Linux; protected MCP operations require PAT. Host-managed ACP sessions need host-provided MCP configuration.
+- Credentials: nonempty process ENV wins per key; only missing values fall back to this checkout's `packages/web/.env.local`, resolved from the launcher's location (owned regular nonsymlink, `0600`, Git-ignored). Never search the main checkout, other worktrees, or parent directories for credentials. Never print secrets or use machine-config credential files; shared credentials must be passed explicitly through ENV.
+- Optional worktree bootstrap: `.worktreeinclude` selects only the source checkout's ignored `packages/web/.env.local` for creation tools that support it. This is a one-time copy, not ongoing synchronization or a runtime fallback. Otherwise configure the new checkout's web `.env.local` or ENV explicitly. Keep the source file at `0600`; the launcher still reads only its own checkout's web `.env.local`.
+- Tools and download script are owned by `packages/web/package.json`; sync with `yarn workspace @gnoswap-labs/web i18n:download [CLI options]`. Relative output paths resolve from `packages/web`. Pull strips PAT; help strips both credentials. Keep complete official JSON in `packages/web/public/locales/<lang>/<namespace>.json`, preserving requested version/filters/layout/formatting. Never invent translations, hand-edit generated JSON, or rebuild it from MCP payloads; scope diffs and verify affected keys across all supported locales.
 - Pages export `getStaticProps` with `serverSideTranslations(locale, namespaces)`
 - Client uses chained backend: LocalStorage cache (1hr TTL) → HTTP fetch
 

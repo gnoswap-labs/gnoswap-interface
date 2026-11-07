@@ -1,0 +1,4 @@
+[mcp_servers.i18nexus]
+command = "node"
+args = ["packages/web/scripts/i18nexus.mjs", "mcp"]
+env_vars = ["I18NEXUS_API_KEY", "I18NEXUS_PERSONAL_ACCESS_TOKEN"]
