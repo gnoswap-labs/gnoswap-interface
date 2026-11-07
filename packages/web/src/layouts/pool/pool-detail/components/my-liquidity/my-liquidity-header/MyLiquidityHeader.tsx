@@ -6,7 +6,7 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconLinkPage from "@components/common/icons/IconLinkPage";
 import IconPolygon from "@components/common/icons/IconPolygon";
 import Switch from "@components/common/switch/Switch";
-import useCustomRouter from "@hooks/common/use-custom-router";
+import { usePoolDetailRoute } from "@hooks/pool/ui/use-pool-detail-route";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { ThemeState } from "@states/index";
 
@@ -45,8 +45,7 @@ const MyLiquidityHeader: React.FC<MyLiquidityHeaderProps> = ({
   isLoadingPositionsById,
   isSwitchNetwork,
 }) => {
-  const router = useCustomRouter();
-  const poolPath = router.getPoolPath();
+  const { poolPath } = usePoolDetailRoute();
   const [copied, setCopied] = useState(false);
   const themeKey = useAtomValue(ThemeState.themeKey);
   const { getAccountUrl } = useGnoscanUrl();

@@ -336,3 +336,6 @@ export const getLangCode = (code: string) => {
 };
 
 export const DEFAULT_I18N_NS = ["HeaderFooter", "common", "business", "Modal", "Error", "Metatag(title)"];
+
+// Social login (Web3Auth) is temporarily disabled due to a security incident.
+export const IS_SOCIAL_LOGIN_DISABLED = true;

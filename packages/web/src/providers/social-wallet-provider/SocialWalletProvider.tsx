@@ -13,6 +13,7 @@ import {
   SOCIAL_WALLET_MODAL_SHOWN_IN_SESSION,
 } from "@states/common";
 import { SocialLoginType } from "src/types/wallet.types";
+import { IS_SOCIAL_LOGIN_DISABLED } from "@constants/common.constant";
 import { useConnectedSocialWalletModal } from "@hooks/wallet/ui/use-connected-social-wallet-modal";
 // import { useConnectWalletErrorModal } from "@hooks/wallet/ui/use-connect-wallet-error-modal";
 
@@ -60,6 +61,10 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
 
   const connectSocialWalletClient = useCallback(
     async (loginType: SocialLoginType, email?: string) => {
+      if (IS_SOCIAL_LOGIN_DISABLED) {
+        resetSocialWalletState();
+        return;
+      }
       if (connectingState !== "initial") {
         setConnectingState("loading");
       }
@@ -75,6 +80,7 @@ export const SocialWalletProvider = ({ children }: { children: React.ReactNode }
   );
 
   const connect = async (loginType: SocialWalletLoginType, email?: string) => {
+    if (IS_SOCIAL_LOGIN_DISABLED) return;
     let timeoutId: NodeJS.Timeout;
     if (connectingState === "loading") return;
 

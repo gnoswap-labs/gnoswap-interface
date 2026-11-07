@@ -6,6 +6,7 @@ import {
   CrosshairMode,
   createChart,
   HistogramSeries,
+  LineStyle,
   TickMarkType,
   type AutoscaleInfo,
   type LogicalRange,
@@ -131,7 +132,7 @@ export default function PriceCandleChart({
 
     async function initialize() {
       if (cancelled || !element) return;
-      const positive = theme.color.green01;
+      const positive = theme.color.chartCandleUp;
       const dateFormat = (options: Intl.DateTimeFormatOptions) =>
         new Intl.DateTimeFormat(locale, { ...options, timeZone: "UTC", hourCycle: "h23" });
       const axisFormats = {
@@ -150,7 +151,7 @@ export default function PriceCandleChart({
           ? { year: "numeric", month: "short", day: "numeric" }
           : { year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" },
       );
-      const negative = theme.color.red01;
+      const negative = theme.color.chartCandleDown;
       const volumePositive = theme.color.chartVolumeUp;
       const volumeNegative = theme.color.chartVolumeDown;
       const chart = createChart(element, {
@@ -206,10 +207,14 @@ export default function PriceCandleChart({
       const candles = chart.addSeries(CandlestickSeries, {
         upColor: positive,
         downColor: negative,
-        wickUpColor: positive,
-        wickDownColor: negative,
-        borderVisible: false,
-        priceLineVisible: false,
+        wickUpColor: theme.color.chartWickUp,
+        wickDownColor: theme.color.chartWickDown,
+        borderVisible: true,
+        borderUpColor: positive,
+        borderDownColor: negative,
+        priceLineVisible: true,
+        priceLineStyle: LineStyle.Dotted,
+        priceLineWidth: 1,
         autoscaleInfoProvider: (original: () => AutoscaleInfo | null) => {
           const info = original();
           if (!info?.priceRange) return info;
@@ -247,7 +252,7 @@ export default function PriceCandleChart({
       let preloadFrame = 0;
       let navigationFrame = 0;
       let defaultLogicalSpan: number | null = null;
-      const defaultRightOffset = all ? 0 : 5;
+      const defaultRightOffset = all ? 0 : 2;
       // Ignore floating-point roundoff, not whether a gesture happened in the past.
       const viewTolerance = 0.01;
       const updateNavigation = () => {

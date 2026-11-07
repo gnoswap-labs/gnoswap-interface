@@ -4,6 +4,7 @@ import { cx } from "@emotion/css";
 import { PoolLayoutWrapper } from "./PoolLayout.styles";
 import useRouter from "@hooks/common/use-custom-router";
 import { useTranslation } from "react-i18next";
+import { usePoolDetailRoute } from "@hooks/pool/ui/use-pool-detail-route";
 
 interface PoolLayoutProps {
   header: React.ReactNode;
@@ -24,7 +25,7 @@ const PoolLayout: React.FC<PoolLayoutProps> = ({
 }) => {
   const router = useRouter();
   const { t } = useTranslation();
-  const poolPath = router.getPoolPath();
+  const { poolPath } = usePoolDetailRoute();
 
   const onClickIncentivize = () => {
     if (!poolPath) {

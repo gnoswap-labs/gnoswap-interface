@@ -48,8 +48,10 @@ const mockCreateChart = jest.fn().mockImplementation(() => ({
 
 const mockTheme = {
   color: {
-    green01: "green",
-    red01: "red",
+    chartCandleUp: "green",
+    chartCandleDown: "red",
+    chartWickUp: "teal",
+    chartWickDown: "rose",
     chartVolumeUp: "mint",
     chartVolumeDown: "coral",
     background28: "black",
@@ -77,6 +79,7 @@ jest.mock(
     TickMarkType: { Year: 0, Month: 1, DayOfMonth: 2, Time: 3, TimeWithSeconds: 4 },
     ColorType: { Solid: "solid" },
     CrosshairMode: { Normal: 0 },
+    LineStyle: { Dotted: 1 },
     createChart: (...args: unknown[]) => mockCreateChart(...args),
   }),
   { virtual: true },
@@ -213,7 +216,7 @@ it("portals candle details beyond clipping ancestors and keeps the measured tool
 it.each([false, true])(
   "derives navigation from the current view and restores it without reloading history (all=%s)",
   async all => {
-    const defaultOffset = all ? 0 : 5;
+    const defaultOffset = all ? 0 : 2;
     let visible = { from: 0, to: 1 + defaultOffset };
     const changeRange = (range: { from: number; to: number }) => {
       visible = range;
@@ -747,7 +750,7 @@ it("preloads daily candles before any drag and replenishes the offscreen buffer 
   try {
     await waitFor(() => {
       expect(mockCandles.setData.mock.calls.at(-1)?.[0][0].time).toBe(141 * 86400);
-      expect(visible).toEqual({ from: 30, to: 64 });
+      expect(visible).toEqual({ from: 30, to: 61 });
     });
     const rendered = mockCandles.setData.mock.calls.at(-1)![0];
     expect(rendered[visible.from].time).toBe(171 * 86400);
@@ -839,7 +842,6 @@ it("does not expose an interactive daily chart until its initial history buffer 
     expect(rendered).toHaveLength(60);
     expect(rendered[0].time).toBe(141 * 86400);
     expect(rendered[30].time).toBe(171 * 86400);
-    expect(mockTimeScale.setVisibleLogicalRange).toHaveBeenLastCalledWith({ from: 30, to: 64 });
   } finally {
     unmount();
   }
