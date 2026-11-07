@@ -3,6 +3,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { cx } from "@emotion/css";
 import { useTheme } from "@emotion/react";
 
+import { IS_SOCIAL_LOGIN_DISABLED } from "@constants/common.constant";
 import { useSocialWalletContext } from "@hooks/common/use-social-wallet-context";
 import { SocialWalletLoginType } from "@providers/social-wallet-provider";
 import { useConnectSocialWalletModal } from "@hooks/wallet/ui/use-connect-social-wallet-modal";
@@ -16,9 +17,6 @@ import IconArrowRight from "../icons/IconArrowRight";
 import IconGoogleLogo from "../icons/defaultIcon/IconGoogleLogo";
 import IconTwitterLogo from "../icons/defaultIcon/IconTwitterLogo";
 import ConnectWalletModalDivider from "./connect-wallet-modal-divider/ConnectWalletModalDivider";
-
-// Social login (Web3Auth) is temporarily disabled due to a security incident.
-const IS_SOCIAL_LOGIN_DISABLED = true;
 
 interface Props {
   close: () => void;
