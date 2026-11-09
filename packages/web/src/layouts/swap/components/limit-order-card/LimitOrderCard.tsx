@@ -1,7 +1,5 @@
-import { cx } from "@emotion/css";
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 
-import { isAmount } from "@common/utils/data-check-util";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import IconWallet from "@components/common/icons/IconWallet";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
@@ -54,7 +52,6 @@ export interface LimitOrderCardProps {
   changeTokenA: (token: TokenModel) => void;
   changeTokenB: (token: TokenModel) => void;
   changeSellAmount: (value: string) => void;
-  changeBuyAmount: (value: string) => void;
   switchTokens: () => void;
 
   limitPrice: string;
@@ -72,8 +69,6 @@ export interface LimitOrderCardProps {
   minTradingText: string;
   onClickButton: () => void;
 }
-
-const LEADING_ZERO_REGEX = /^0+(?=\d)|(\.\d*)$/g;
 
 const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
   swapType,
@@ -99,7 +94,6 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
   changeTokenA,
   changeTokenB,
   changeSellAmount,
-  changeBuyAmount,
   switchTokens,
   limitPrice,
   marketPrice,
@@ -114,7 +108,6 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
   minTradingText,
   onClickButton,
 }) => {
-  const [buyFocused, setBuyFocused] = useState(false);
   const buyBalanceDisplay = useTokenBalanceDisplay(tokenBBalance, connectedWallet);
 
   // Max is worked out here rather than in the sell field, so the order button
@@ -145,18 +138,6 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
       changeSellAmount(value);
     },
     [changeSellAmount, resetMaxAmountError],
-  );
-
-  const onChangeBuyAmount = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      if (value !== "" && !isAmount(value)) return;
-      if (tokenB && (value.split(".")[1]?.length ?? 0) > tokenB.decimals) return;
-      // Buy sets the amount sold, so typing it replaces Max as much as typing Sell does.
-      resetMaxAmountError();
-      changeBuyAmount(value.replace(LEADING_ZERO_REGEX, "$1"));
-    },
-    [changeBuyAmount, resetMaxAmountError, tokenB],
   );
 
   return (
@@ -193,18 +174,15 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
               </div>
             </div>
           </OrderSellInput>
-          <div className={cx("second-section", { "is-focused": buyFocused })}>
+          <div className="second-section">
             <div className="amount-container">
               <input
                 className="amount-text"
                 value={buyAmount}
-                onChange={onChangeBuyAmount}
-                onFocus={() => setBuyFocused(true)}
-                onBlur={() => setBuyFocused(false)}
+                readOnly
                 placeholder="0"
                 autoComplete="off"
                 spellCheck="false"
-                inputMode="decimal"
               />
               <div className="token-selector">
                 <SelectPairButton token={tokenB} changeToken={changeTokenB} />

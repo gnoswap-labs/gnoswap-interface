@@ -93,14 +93,14 @@ describe("useLimitOrderHandler", () => {
   it.each([
     ["changeTokenB", (handler: ReturnType<typeof useLimitOrderHandler>) => handler.changeTokenB(tokenC)],
     ["changeTokenA", (handler: ReturnType<typeof useLimitOrderHandler>) => handler.changeTokenA(tokenD)],
-  ])("drops an edited Buy amount on %s so Buy follows Sell at the new price", async (_, changeToken) => {
+  ])("recalculates the estimated Buy amount on %s using the new pair's price", async (_, changeToken) => {
     const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
 
     act(() => result.current.changeTokenA(tokenA));
     act(() => result.current.changeTokenB(tokenB));
     await waitFor(() => expect(result.current.limitPrice).toBe("10"));
 
-    act(() => result.current.changeBuyAmount("100"));
+    act(() => result.current.changeSellAmount("10"));
     expect(result.current.sellAmount).toBe("10");
     expect(result.current.buyAmount).toBe("100");
 

@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 import { MIN_GNOT_DEPOSIT_AMOUNT } from "@common/clients/wallet-client/transaction-messages";
@@ -42,8 +42,6 @@ import { useOrderTransaction } from "./use-order-transaction";
 const INPUT_DEBOUNCE_MS = 300;
 const QUOTE_REFETCH_INTERVAL = 10_000;
 
-type EditedSide = "sell" | "buy";
-
 function floorToDecimals(value: BigNumber.Value, decimals: number): string {
   const number = BigNumber(value);
   if (!number.isFinite() || number.isLessThanOrEqualTo(0)) return "";
@@ -69,8 +67,6 @@ export const useLimitOrderHandler = () => {
   const [limitPrice, setLimitPrice] = useAtom(OrderState.limitPrice);
   const [pricedPairKey, setPricedPairKey] = useAtom(OrderState.limitPricePairKey);
   const [expiry, setExpiry] = useAtom(OrderState.limitExpiry);
-  const [buyInput, setBuyInput] = useState("");
-  const [editedSide, setEditedSide] = useState<EditedSide>("sell");
 
   const tokenA = swapValue.tokenA ?? null;
   const tokenB = swapValue.tokenB ?? null;
@@ -137,8 +133,6 @@ export const useLimitOrderHandler = () => {
     if (limitPrice) {
       // The price of another pair: start this pair again from its market price.
       setLimitPrice("");
-      setEditedSide("sell");
-      setBuyInput("");
       setPricedPairKey(null);
       return;
     }
@@ -151,10 +145,9 @@ export const useLimitOrderHandler = () => {
   const isValidPrice = BigNumber(limitPrice || 0).isGreaterThan(0);
 
   const buyAmount = useMemo(() => {
-    if (editedSide === "buy") return buyInput;
     if (!tokenB || !isValidPrice || !sellAmount) return "";
     return floorToDecimals(BigNumber(sellAmount).multipliedBy(limitPrice), tokenB.decimals);
-  }, [buyInput, editedSide, isValidPrice, limitPrice, sellAmount, tokenB]);
+  }, [isValidPrice, limitPrice, sellAmount, tokenB]);
 
   const sellUsd = useMemo(() => calculateUsdValue(sellAmount, getUsdPrice(tokenA)), [getUsdPrice, sellAmount, tokenA]);
   const buyUsd = useMemo(() => calculateUsdValue(buyAmount, getUsdPrice(tokenB)), [buyAmount, getUsdPrice, tokenB]);
@@ -285,16 +278,11 @@ export const useLimitOrderHandler = () => {
     tokenB,
   ]);
 
-  /**
-   * A new pair starts again from its market price, so Sell becomes the source
-   * of truth again: a kept Buy input would no longer match `sell × price`.
-   */
+  /** A new pair starts again from its market price. */
   const resetPairInputs = useCallback(() => {
     // Re-seed from the market price even when the resulting pair is unchanged.
     setPricedPairKey(null);
     setLimitPrice("");
-    setEditedSide("sell");
-    setBuyInput("");
   }, [setLimitPrice, setPricedPairKey]);
 
   const changeTokenA = useCallback(
@@ -326,29 +314,9 @@ export const useLimitOrderHandler = () => {
     setSwapValue(prev => ({ ...prev, tokenA: prev.tokenB, tokenB: prev.tokenA }));
   }, [resetPairInputs, setSwapValue]);
 
-  const changeSellAmount = useCallback(
-    (value: string) => {
-      setEditedSide("sell");
-      setSellAmount(value);
-    },
-    [setSellAmount],
-  );
-
-  /** Editing Buy keeps the limit price and moves the sell amount: `sell = buy / limitPrice`. */
-  const changeBuyAmount = useCallback(
-    (value: string) => {
-      setEditedSide("buy");
-      setBuyInput(value);
-      if (!tokenA || !isValidPrice) return;
-      setSellAmount(value ? floorToDecimals(BigNumber(value).dividedBy(limitPrice), tokenA.decimals) : "");
-    },
-    [isValidPrice, limitPrice, setSellAmount, tokenA],
-  );
-
   const changeLimitPrice = useCallback(
     (value: string) => {
       if (value !== "" && !/^\d*\.?\d*$/.test(value)) return;
-      setEditedSide("sell");
       setLimitPrice(value);
     },
     [setLimitPrice],
@@ -365,7 +333,6 @@ export const useLimitOrderHandler = () => {
 
   const stepPrice = useCallback(
     (direction: 1 | -1) => {
-      setEditedSide("sell");
       setLimitPrice(prev => stepLimitPrice(prev || marketPrice || "", direction));
     },
     [marketPrice, setLimitPrice],
@@ -374,7 +341,6 @@ export const useLimitOrderHandler = () => {
   const applyPreset = useCallback(
     (percent: number) => {
       if (!marketPrice) return;
-      setEditedSide("sell");
       setLimitPrice(percent === 0 ? marketPrice : applyLimitPricePreset(marketPrice, percent));
     },
     [marketPrice, setLimitPrice],
@@ -415,8 +381,6 @@ export const useLimitOrderHandler = () => {
         }),
       onBroadcast: () => {
         setSellAmount("");
-        setBuyInput("");
-        setEditedSide("sell");
       },
     });
   }, [createRequest, expiry, orderRepository, sentSellAmount, setSellAmount, submit, takingAmount, tokenA, tokenB]);
@@ -487,8 +451,7 @@ export const useLimitOrderHandler = () => {
     changeTokenA,
     changeTokenB,
     switchTokens,
-    changeSellAmount,
-    changeBuyAmount,
+    changeSellAmount: setSellAmount,
     changeLimitPrice,
     stepPrice,
     applyPreset,

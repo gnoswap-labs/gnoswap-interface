@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Provider as JotaiProvider } from "jotai";
 
 import { GNOT_TOKEN } from "@common/values/token-constant";
@@ -44,7 +45,6 @@ const PRICED = { amount: "8500000", reserve: {}, simulated: true };
 /** A GNOT sell field holding 10 with nothing typed yet, whose Max prices the order's own messages. */
 const renderCard = (props: Partial<LimitOrderCardProps> = {}) => {
   const changeSellAmount = jest.fn();
-  const changeBuyAmount = jest.fn();
   const defaults: LimitOrderCardProps = {
     swapType: "limit",
     changeSwapType: jest.fn(),
@@ -69,7 +69,6 @@ const renderCard = (props: Partial<LimitOrderCardProps> = {}) => {
     changeTokenA: jest.fn(),
     changeTokenB: jest.fn(),
     changeSellAmount,
-    changeBuyAmount,
     switchTokens: jest.fn(),
     limitPrice: "1.25",
     marketPrice: "1.25",
@@ -95,14 +94,23 @@ const renderCard = (props: Partial<LimitOrderCardProps> = {}) => {
 
   return {
     changeSellAmount,
-    changeBuyAmount,
     rerender: (overrides: Partial<LimitOrderCardProps>) => view.rerender(element(overrides)),
   };
 };
 
 const maxButton = () => screen.getByRole("button", { name: "common:max" });
-/** Sell and Buy are the first two fields of the form, in that order. */
-const buyInput = () => screen.getAllByRole("textbox")[1];
+
+it("keeps the estimated Buy amount read-only without changing the sell amount", async () => {
+  const user = userEvent.setup();
+  const { changeSellAmount } = renderCard({ sellAmount: "10", buyAmount: "12.5" });
+  const buyAmount = screen.getByDisplayValue("12.5");
+
+  await user.type(buyAmount, "999");
+
+  expect(buyAmount).toHaveValue("12.5");
+  expect(screen.getByDisplayValue("10")).toHaveValue("10");
+  expect(changeSellAmount).not.toHaveBeenCalled();
+});
 
 describe("LimitOrderCard Max", () => {
   beforeEach(() => mockEstimateMaxNativeAmount.mockReset());
@@ -144,31 +152,5 @@ describe("LimitOrderCard Max", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Start to Order" }));
     expect(onClickButton).toHaveBeenCalledTimes(1);
-  });
-
-  // Without a limit price, Buy does not move the sell amount, so only the typing itself replaces Max.
-  it("ends a failed Max when the user types an amount to buy", async () => {
-    mockEstimateMaxNativeAmount.mockRejectedValue(new Error("RPC unavailable"));
-    const { changeBuyAmount } = renderCard({ limitPrice: "" });
-
-    fireEvent.click(maxButton());
-    await screen.findByRole("button", { name: RETRY_MAX });
-    fireEvent.change(buyInput(), { target: { value: "5" } });
-
-    expect(changeBuyAmount).toHaveBeenCalledWith("5");
-    expect(screen.queryByRole("button", { name: RETRY_MAX })).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Enter Amount" })).toBeDisabled();
-  });
-
-  it("does not write Max over an amount to buy typed while it was out", async () => {
-    const estimate = Promise.withResolvers<typeof PRICED>();
-    mockEstimateMaxNativeAmount.mockReturnValue(estimate.promise);
-    const { changeSellAmount } = renderCard({ limitPrice: "" });
-
-    fireEvent.click(maxButton());
-    fireEvent.change(buyInput(), { target: { value: "5" } });
-    await act(async () => estimate.resolve(PRICED));
-
-    expect(changeSellAmount).not.toHaveBeenCalled();
   });
 });
