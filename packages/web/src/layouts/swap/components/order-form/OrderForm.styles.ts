@@ -10,7 +10,7 @@ import mixins from "@styles/mixins";
  */
 export const OrderToBuySection = styled.div`
   &&.second-section {
-    min-height: 97px;
+    min-height: 67px;
     justify-content: center;
   }
 
