@@ -169,7 +169,7 @@ const DcaOrderCard: React.FC<DcaOrderCardProps> = ({
           </OrderSellInput>
           <OrderToBuySection className="second-section">
             <div className="amount-container">
-              <span className="amount-text">{t("Swap:dca.toBuy")}</span>
+              <span className="buy-label">{t("Swap:dca.toBuy")}</span>
               <div className="token-selector">
                 <SelectPairButton token={tokenB} changeToken={changeTokenB} />
               </div>

@@ -23,7 +23,7 @@
     "poolCheckFailed": "リトライプールの確認",
     "routerFee": "ルーター利用料",
     "routerFeeTooltip": "その注文によって執行された各取引に対して課される手数料です。これは、出力トークンで支払われます。",
-    "toBuy": "購入する",
+    "toBuy": "購入",
     "unit": {
       "day": "日",
       "hour": "時間",

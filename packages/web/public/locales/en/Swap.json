@@ -23,7 +23,7 @@
     "poolCheckFailed": "Retry Pool Check",
     "routerFee": "Router Fee",
     "routerFeeTooltip": "The fee charged on each trade executed by the order. It is paid in the output token.",
-    "toBuy": "To Buy",
+    "toBuy": "Buy",
     "unit": {
       "day": "Day",
       "hour": "Hour",

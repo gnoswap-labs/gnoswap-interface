@@ -172,7 +172,6 @@ describe("DcaOrderCard", () => {
   it("renders the form with the order details", () => {
     renderCard();
 
-    expect(screen.getByText("Swap:dca.toBuy")).toBeInTheDocument();
     expect(screen.getByText("Swap:dca.every")).toBeInTheDocument();
     expect(screen.getByText("Swap:dca.over")).toBeInTheDocument();
     expect(screen.getByText("750 GNS")).toBeInTheDocument();

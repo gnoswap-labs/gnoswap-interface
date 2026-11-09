@@ -23,7 +23,7 @@
     "poolCheckFailed": "Kiểm tra nhóm thử lại",
     "routerFee": "Phí sử dụng bộ định tuyến",
     "routerFeeTooltip": "Phí được tính trên mỗi giao dịch được thực hiện theo lệnh. Phí này được thanh toán bằng token đầu ra.",
-    "toBuy": "Để mua",
+    "toBuy": "Mua",
     "unit": {
       "day": "Ngày",
       "hour": "Giờ",

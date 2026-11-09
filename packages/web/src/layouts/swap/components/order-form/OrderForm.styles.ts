@@ -4,7 +4,7 @@ import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 /**
- * The DCA "To Buy" section. It shares the swap card's `.second-section` look but
+ * The DCA Buy section. It shares the swap card's `.second-section` look but
  * has no amount row, so it keeps the designed height and centers its content.
  * The doubled class outranks the swap card's nested `.second-section` rule.
  */
@@ -12,6 +12,11 @@ export const OrderToBuySection = styled.div`
   &&.second-section {
     min-height: 97px;
     justify-content: center;
+  }
+
+  .buy-label {
+    ${fonts.body9};
+    color: ${({ theme }) => theme.color.text04};
   }
 `;
 
