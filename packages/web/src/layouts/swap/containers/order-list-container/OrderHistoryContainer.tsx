@@ -13,7 +13,7 @@ const HISTORY_PAGE_SIZE = 10;
 export const DcaOrderHistoryContainer: React.FC<{ order: DcaOrderModel }> = ({ order }) => {
   const { isMobile } = useWindowSize();
   const [page, setPage] = useState(1);
-  const { data } = useGetDcaExecutions({
+  const { data, isPreviousData } = useGetDcaExecutions({
     orderId: order.orderId,
     packagePath: order.packagePath,
     page,
@@ -32,6 +32,7 @@ export const DcaOrderHistoryContainer: React.FC<{ order: DcaOrderModel }> = ({ o
       currentPage={page}
       totalPages={data.pageInfo.totalPages}
       changePage={setPage}
+      isPreviousData={isPreviousData}
       compact={isMobile}
     />
   );
@@ -41,7 +42,7 @@ export const DcaOrderHistoryContainer: React.FC<{ order: DcaOrderModel }> = ({ o
 export const LimitOrderHistoryContainer: React.FC<{ order: LimitOrderModel }> = ({ order }) => {
   const { isMobile } = useWindowSize();
   const [page, setPage] = useState(1);
-  const { data } = useGetLimitOrderFills({
+  const { data, isPreviousData } = useGetLimitOrderFills({
     orderId: order.orderId,
     packagePath: order.packagePath,
     page,
@@ -60,6 +61,7 @@ export const LimitOrderHistoryContainer: React.FC<{ order: LimitOrderModel }> = 
       currentPage={page}
       totalPages={data.pageInfo.totalPages}
       changePage={setPage}
+      isPreviousData={isPreviousData}
       compact={isMobile}
     />
   );

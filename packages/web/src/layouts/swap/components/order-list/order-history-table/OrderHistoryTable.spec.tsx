@@ -125,6 +125,32 @@ describe("OrderHistoryTable", () => {
     expect(container.querySelectorAll(".highlight")).toHaveLength(1);
   });
 
+  it.each([false, true])("keeps history backgrounds stable across pages (retained data: %s)", retainPreviousData => {
+    const table = (page: number, dataPage = page, isPreviousData = false) => (
+      <GnoswapThemeProvider>
+        <OrderHistoryTable
+          items={Array.from({ length: 10 }, (_, index) => row((dataPage - 1) * 10 + index))}
+          inputToken={token("GNS")}
+          outputToken={token("GNOT")}
+          currentPage={page}
+          totalPages={10}
+          isPreviousData={isPreviousData}
+          changePage={jest.fn()}
+        />
+      </GnoswapThemeProvider>
+    );
+    const { container, rerender } = render(table(1));
+    if (retainPreviousData) rerender(table(10, 1, true));
+    rerender(table(10));
+    expect(container.querySelectorAll(".highlight")).toHaveLength(0);
+    if (retainPreviousData) {
+      rerender(table(1, 10, true));
+      expect(container.querySelectorAll(".highlight")).toHaveLength(0);
+    }
+    rerender(table(1));
+    expect(container.querySelectorAll(".highlight")).toHaveLength(0);
+  });
+
   it("shows one time unit between 1s ago and >1y ago", () => {
     const now = NOW * 1000;
     expect(formatHistoryTime(NOW, now)).toBe("1s ago");

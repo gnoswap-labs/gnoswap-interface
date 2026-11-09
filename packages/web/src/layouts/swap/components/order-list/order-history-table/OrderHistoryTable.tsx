@@ -25,6 +25,7 @@ export interface OrderHistoryTableProps {
   currentPage: number;
   totalPages: number;
   changePage: (page: number) => void;
+  isPreviousData?: boolean;
   compact?: boolean;
 }
 
@@ -41,13 +42,14 @@ const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
   currentPage,
   totalPages,
   changePage,
+  isPreviousData = false,
   compact = false,
 }) => {
   const { t } = useTranslation();
   const { getTxUrl } = useGnoscanUrl();
   const [now, setNow] = useState(() => Date.now());
   const [highlighted, setHighlighted] = useState<Set<string>>(new Set());
-  const previousKeys = useRef<Set<string> | null>(null);
+  const previousSnapshot = useRef<{ page: number; keys: Set<string> } | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), CLOCK_INTERVAL);
@@ -55,18 +57,25 @@ const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
   }, []);
 
   useEffect(() => {
+    if (isPreviousData) {
+      setHighlighted(new Set());
+      return;
+    }
     const keys = new Set(items.map(item => item.key));
-    const previous = previousKeys.current;
-    previousKeys.current = keys;
-    // Nothing is new on the first render or on another page.
-    if (!previous || currentPage !== 1) return;
+    const previous = previousSnapshot.current;
+    previousSnapshot.current = { page: currentPage, keys };
+    // Only a refresh of the same first page can contain newly arrived rows.
+    if (!previous || previous.page !== currentPage || currentPage !== 1) {
+      setHighlighted(new Set());
+      return;
+    }
 
-    const added = items.filter(item => !previous.has(item.key)).map(item => item.key);
-    if (added.length === 0) return;
+    const added = items.filter(item => !previous.keys.has(item.key)).map(item => item.key);
     setHighlighted(new Set(added));
+    if (added.length === 0) return;
     const timer = setTimeout(() => setHighlighted(new Set()), HIGHLIGHT_DURATION);
     return () => clearTimeout(timer);
-  }, [currentPage, items]);
+  }, [currentPage, isPreviousData, items]);
 
   return (
     <OrderHistoryTableWrapper>
