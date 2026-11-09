@@ -31,7 +31,7 @@ export const OrderField = styled.div`
   ${mixins.flexbox("column", "flex-start", "flex-start")};
   flex: 1;
   min-width: 0;
-  padding: 15px;
+  padding: 15px 23px;
   gap: 8px;
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.color.border02};
