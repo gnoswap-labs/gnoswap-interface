@@ -44,7 +44,7 @@
       "oneWeek": "1週間",
       "thirtyDays": "30日間"
     },
-    "instantFillWarning": "トリガー価格は市場価格からわずか{{percent}} ％の差であり、注文が即座に約定する可能性があります。",
+    "instantFillWarning": "トリガー価格は市場価格であり、注文が即座に約定する可能性があります。",
     "limitPrice": "指値",
     "market": "市場",
     "minTrading": "{{amount}} 以上{{symbol}}",

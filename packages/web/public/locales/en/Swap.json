@@ -44,7 +44,7 @@
       "oneWeek": "1 Week",
       "thirtyDays": "30 Days"
     },
-    "instantFillWarning": "Trigger price is only {{percent}}% from market and your order may instantly fill.",
+    "instantFillWarning": "Trigger price is at market and your order may instantly fill.",
     "limitPrice": "Limit Price",
     "market": "Market",
     "minTrading": "Minimum {{amount}} {{symbol}}",

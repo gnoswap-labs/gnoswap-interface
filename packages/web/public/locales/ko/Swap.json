@@ -44,7 +44,7 @@
       "oneWeek": "1주",
       "thirtyDays": "30일"
     },
-    "instantFillWarning": "주문 가격과 시장가의 차이가 {{percent}}%에 불과해 즉시 체결될 수 있습니다.",
+    "instantFillWarning": "트리거 가격은 시세와 동일하며, 주문이 즉시 체결될 수 있습니다.",
     "limitPrice": "한도 가격",
     "market": "시장",
     "minTrading": "최소 {{amount}} {{symbol}}",

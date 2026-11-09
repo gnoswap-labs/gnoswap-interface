@@ -20,13 +20,9 @@ const renderWarning = (value: string, marketPrice: string | null) =>
   );
 
 describe("LimitPriceWarning", () => {
-  it.each([
-    ["100", "0"],
-    ["100.5", "0.5"],
-    ["101", "1"],
-  ])("warns at a trigger price of %s and displays its market distance", (value, percent) => {
-    renderWarning(value, "100");
-    expect(screen.getByRole("status")).toHaveTextContent(`${percent}%`);
+  it("warns when the trigger equals the market price", () => {
+    renderWarning("100", "100");
+    expect(screen.getByRole("status")).toHaveTextContent(i18n.t("Swap:limit.instantFillWarning"));
   });
 
   it("warns even when the trigger is far below the market price", () => {
@@ -35,6 +31,9 @@ describe("LimitPriceWarning", () => {
   });
 
   it.each([
+    ["100.000001", "100"],
+    ["100.5", "100"],
+    ["101", "100"],
     ["101.000001", "100"],
     ["105", "100"],
     ["", "100"],

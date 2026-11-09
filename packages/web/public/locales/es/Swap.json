@@ -44,7 +44,7 @@
       "oneWeek": "1 semana",
       "thirtyDays": "30 días"
     },
-    "instantFillWarning": "El precio de activación está a solo un {{percent}}% del precio de mercado, por lo que tu orden podría ejecutarse al instante.",
+    "instantFillWarning": "El precio de activación es el del mercado y es posible que tu orden se ejecute al instante.",
     "limitPrice": "Precio límite",
     "market": "Mercado",
     "minTrading": "{{amount}} mínimo {{symbol}}",

@@ -11,8 +11,6 @@ interface LimitPriceWarningProps {
   marketPrice: string | null;
 }
 
-const NEAR_MARKET_THRESHOLD_PERCENT = 1;
-
 const LimitPriceWarning: React.FC<LimitPriceWarningProps> = ({ value, marketPrice }) => {
   const { t } = useTranslation();
   const price = BigNumber(value);
@@ -20,12 +18,9 @@ const LimitPriceWarning: React.FC<LimitPriceWarningProps> = ({ value, marketPric
 
   if (!price.isFinite() || !market.isFinite() || price.lte(0) || market.lte(0)) return null;
 
-  const differencePercent = price.dividedBy(market).minus(1).multipliedBy(100);
-  if (differencePercent.gt(NEAR_MARKET_THRESHOLD_PERCENT)) return null;
+  if (price.gt(market)) return null;
 
-  const text = differencePercent.lt(0)
-    ? t("Swap:limit.belowMarketWarning")
-    : t("Swap:limit.instantFillWarning", { percent: differencePercent.decimalPlaces(2).toFixed() });
+  const text = price.lt(market) ? t("Swap:limit.belowMarketWarning") : t("Swap:limit.instantFillWarning");
 
   return (
     <LimitPriceWarningWrapper role="status">

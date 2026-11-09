@@ -44,7 +44,7 @@
       "oneWeek": "1 tuần",
       "thirtyDays": "30 ngày"
     },
-    "instantFillWarning": "Giá kích hoạt chỉ cách giá thị trường {{percent}}%, và lệnh của bạn có thể được khớp ngay lập tức.",
+    "instantFillWarning": "Giá kích hoạt là giá thị trường và lệnh của bạn có thể được khớp ngay lập tức.",
     "limitPrice": "Giá giới hạn",
     "market": "Thị trường",
     "minTrading": "{{amount}} tối thiểu {{symbol}}",

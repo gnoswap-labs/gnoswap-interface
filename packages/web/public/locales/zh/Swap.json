@@ -44,7 +44,7 @@
       "oneWeek": "1周",
       "thirtyDays": "30天"
     },
-    "instantFillWarning": "触发价与市场价仅相差 {{percent}}%，您的订单可能会立即成交。",
+    "instantFillWarning": "触发价为市价，您的订单可能会立即成交。",
     "limitPrice": "限价",
     "market": "市场",
     "minTrading": "{{amount}} 以上{{symbol}}",

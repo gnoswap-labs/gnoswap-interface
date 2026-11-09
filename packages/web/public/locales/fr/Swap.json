@@ -44,7 +44,7 @@
       "oneWeek": "1 semaine",
       "thirtyDays": "30 jours"
     },
-    "instantFillWarning": "Le prix de déclenchement ne s’écarte du prix du marché que de {{percent}} % ; votre ordre pourrait être exécuté immédiatement.",
+    "instantFillWarning": "Le cours de déclenchement correspond au cours du marché et votre ordre peut être exécuté instantanément.",
     "limitPrice": "Prix limite",
     "market": "Marché",
     "minTrading": "{{amount}} minimale {{symbol}}",
