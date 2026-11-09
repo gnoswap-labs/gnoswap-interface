@@ -58,8 +58,8 @@ const OrderListContainer: React.FC<OrderListContainerProps> = ({ kind }) => {
 
   const changeTab = useCallback((next: OrderListTab) => setTab(next), [setTab]);
 
-  // Without a wallet the tabs stay as a prompt; with one, an account without orders shows no list.
-  if (connected && hasOrders !== true) return null;
+  // Show the list only for a connected account with an active or past order.
+  if (!connected || hasOrders !== true) return null;
 
   // Remounted per kind, tab and account: the page starts at 1, and a page of the other tab is never
   // kept on screen as the previous data while this tab's first page loads.

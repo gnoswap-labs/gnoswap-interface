@@ -85,19 +85,21 @@ describe("OrderListContainer", () => {
   });
 
   it.each([
-    ["an active order", { active: 1, past: 0 }],
-    ["only past orders", { active: 0, past: 2 }],
-  ])("keeps the list with its tabs when the account has %s", (_, totals) => {
-    renderContainer("dca", totals);
+    ["dca", "an active order", { active: 1, past: 0 }],
+    ["dca", "only past orders", { active: 0, past: 2 }],
+    ["limit", "an active order", { active: 1, past: 0 }],
+    ["limit", "only past orders", { active: 0, past: 2 }],
+  ] as const)("keeps the %s list with its tabs when the account has %s", (kind, _, totals) => {
+    renderContainer(kind, totals);
 
     expect(screen.getByText("Swap:order.active")).toBeInTheDocument();
     expect(screen.getByText("Swap:order.past")).toBeInTheDocument();
   });
 
-  it("keeps the connect-wallet prompt without a wallet", () => {
-    renderContainer("dca", {}, false);
+  it.each(["dca", "limit"] as const)("shows no %s list without a wallet", kind => {
+    const { container } = renderContainer(kind, {}, false);
 
-    expect(screen.getByText("Swap:order.connectWallet")).toBeInTheDocument();
+    expect(container).toBeEmptyDOMElement();
   });
 
   it("opens the first page of the other tab, never its page of the previous tab", () => {
