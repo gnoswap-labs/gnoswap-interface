@@ -35,8 +35,8 @@
   "fetchingPrice": "最良の価格を取得しています...",
   "header": "スワップ",
   "limit": {
-    "expiresIn": "注文の有効期間",
-    "sellWhen": "1 {{symbol}} が次の価格に達したら売却",
+    "belowMarketWarning": "トリガー価格は市場価格を下回っているため、注文が即座に約定する可能性があります。",
+    "expiresIn": "残り",
     "expiry": "有効期限",
     "expiryOption": {
       "oneDay": "1日",
@@ -44,9 +44,11 @@
       "oneWeek": "1週間",
       "thirtyDays": "30日間"
     },
+    "instantFillWarning": "トリガー価格は市場価格からわずか{{percent}} ％の差であり、注文が即座に約定する可能性があります。",
     "limitPrice": "指値",
     "market": "市場",
     "minTrading": "{{amount}} 以上{{symbol}}",
+    "sellWhen": "1 {{symbol}} が次の価格に達したら売却",
     "slippage": "最大スリッページ",
     "startToOrder": "注文を開始する"
   },

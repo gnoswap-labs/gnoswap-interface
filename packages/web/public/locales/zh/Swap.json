@@ -35,8 +35,8 @@
   "fetchingPrice": "正在获取最佳价格...",
   "header": "交换",
   "limit": {
-    "expiresIn": "订单有效期",
-    "sellWhen": "当 1 {{symbol}} 达到以下价格时卖出",
+    "belowMarketWarning": "触发价低于市场价，您的订单可能会立即成交。",
+    "expiresIn": "到期时间：",
     "expiry": "到期日",
     "expiryOption": {
       "oneDay": "1天",
@@ -44,9 +44,11 @@
       "oneWeek": "1周",
       "thirtyDays": "30天"
     },
+    "instantFillWarning": "触发价与市场价仅相差 {{percent}}%，您的订单可能会立即成交。",
     "limitPrice": "限价",
     "market": "市场",
     "minTrading": "{{amount}} 以上{{symbol}}",
+    "sellWhen": "当 1 {{symbol}} 达到以下价格时卖出",
     "slippage": "最大滑点",
     "startToOrder": "开始下单"
   },

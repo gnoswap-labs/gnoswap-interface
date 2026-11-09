@@ -35,8 +35,8 @@
   "fetchingPrice": "Recherche du meilleur prix...",
   "header": "Échange",
   "limit": {
+    "belowMarketWarning": "Le cours de déclenchement est inférieur au cours du marché et votre ordre pourrait être exécuté immédiatement.",
     "expiresIn": "Expire dans",
-    "sellWhen": "Vendre quand 1 {{symbol}} atteint",
     "expiry": "Date d'expiration",
     "expiryOption": {
       "oneDay": "1 jour",
@@ -44,9 +44,11 @@
       "oneWeek": "1 semaine",
       "thirtyDays": "30 jours"
     },
+    "instantFillWarning": "Le prix de déclenchement ne s’écarte du prix du marché que de {{percent}} % ; votre ordre pourrait être exécuté immédiatement.",
     "limitPrice": "Prix limite",
     "market": "Marché",
     "minTrading": "{{amount}} minimale {{symbol}}",
+    "sellWhen": "Vendre quand 1 {{symbol}} atteint",
     "slippage": "Glissement maximal",
     "startToOrder": "Commencer la commande"
   },

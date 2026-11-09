@@ -106,3 +106,13 @@ export const LimitPricePresets = styled.div`
     }
   }
 `;
+
+export const LimitPriceWarningWrapper = styled.div`
+  width: 100%;
+  margin-top: 8px;
+
+  > div {
+    padding: 8px 12px;
+    ${fonts.body12};
+  }
+`;

@@ -35,8 +35,8 @@
   "fetchingPrice": "Fetching Best Price...",
   "header": "Swap",
   "limit": {
+    "belowMarketWarning": "Trigger price is below market and your order may instantly fill.",
     "expiresIn": "Expires in",
-    "sellWhen": "Sell when 1 {{symbol}} reaches",
     "expiry": "Expiry",
     "expiryOption": {
       "oneDay": "1 Day",
@@ -44,9 +44,11 @@
       "oneWeek": "1 Week",
       "thirtyDays": "30 Days"
     },
+    "instantFillWarning": "Trigger price is only {{percent}}% from market and your order may instantly fill.",
     "limitPrice": "Limit Price",
     "market": "Market",
     "minTrading": "Minimum {{amount}} {{symbol}}",
+    "sellWhen": "Sell when 1 {{symbol}} reaches",
     "slippage": "Max. Slippage",
     "startToOrder": "Start to Order"
   },

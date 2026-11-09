@@ -18,6 +18,7 @@ import { ContentWrapper } from "../swap-card/swap-card-content/SwapCardContent.s
 import SwapCardHeader from "../swap-card/swap-card-header/SwapCardHeader";
 import LimitExpirySelect from "./limit-expiry-select/LimitExpirySelect";
 import LimitPriceInput from "./limit-price-input/LimitPriceInput";
+import LimitPriceWarning from "./limit-price-input/LimitPriceWarning";
 
 export interface LimitOrderCardProps {
   swapType: SwapCardType;
@@ -204,6 +205,7 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
             stepPrice={stepPrice}
             applyPreset={applyPreset}
           />
+          <LimitPriceWarning value={limitPrice} marketPrice={marketPrice} />
           <LimitExpirySelect expiry={expiry} options={expiryOptions} changeExpiry={changeExpiry} />
         </ContentWrapper>
       )}

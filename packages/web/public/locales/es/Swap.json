@@ -35,8 +35,8 @@
   "fetchingPrice": "Obteniendo el mejor precio...",
   "header": "Intercambiar",
   "limit": {
+    "belowMarketWarning": "El precio de activación está por debajo del precio de mercado y es posible que tu orden se ejecute al instante.",
     "expiresIn": "Caduca en",
-    "sellWhen": "Vender cuando 1 {{symbol}} alcance",
     "expiry": "Caducidad",
     "expiryOption": {
       "oneDay": "1 día",
@@ -44,9 +44,11 @@
       "oneWeek": "1 semana",
       "thirtyDays": "30 días"
     },
+    "instantFillWarning": "El precio de activación está a solo un {{percent}}% del precio de mercado, por lo que tu orden podría ejecutarse al instante.",
     "limitPrice": "Precio límite",
     "market": "Mercado",
     "minTrading": "{{amount}} mínimo {{symbol}}",
+    "sellWhen": "Vender cuando 1 {{symbol}} alcance",
     "slippage": "Deslizamiento máximo",
     "startToOrder": "Empezar a hacer el pedido"
   },

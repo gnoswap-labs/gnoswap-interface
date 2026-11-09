@@ -35,8 +35,8 @@
   "fetchingPrice": "최적 가격을 조회중...",
   "header": "스왑",
   "limit": {
-    "expiresIn": "주문 유효기간",
-    "sellWhen": "1 {{symbol}} 가격이 다음에 도달하면 매도",
+    "belowMarketWarning": "트리거 가격이 시장가보다 낮으므로, 귀하의 주문이 즉시 체결될 수 있습니다.",
+    "expiresIn": "만료까지 남은 기간:",
     "expiry": "만료일",
     "expiryOption": {
       "oneDay": "1일",
@@ -44,9 +44,11 @@
       "oneWeek": "1주",
       "thirtyDays": "30일"
     },
+    "instantFillWarning": "주문 가격과 시장가의 차이가 {{percent}}%에 불과해 즉시 체결될 수 있습니다.",
     "limitPrice": "한도 가격",
     "market": "시장",
     "minTrading": "최소 {{amount}} {{symbol}}",
+    "sellWhen": "1 {{symbol}} 가격이 다음에 도달하면 매도",
     "slippage": "최대 슬리피지",
     "startToOrder": "주문 시작하기"
   },
