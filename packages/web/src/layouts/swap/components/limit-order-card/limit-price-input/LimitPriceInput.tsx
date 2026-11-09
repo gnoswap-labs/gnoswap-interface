@@ -5,6 +5,8 @@ import IconAdd from "@components/common/icons/IconAdd";
 import IconRemove from "@components/common/icons/IconRemove";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { LIMIT_PRICE_PRESETS } from "@hooks/order/data/use-order-handler.utils";
+import { formatPrice } from "@utils/new-number-utils";
+import { subscriptFormat } from "@utils/number-utils";
 
 import { LimitPriceControl, LimitPriceField, LimitPricePresets } from "./LimitPriceInput.styles";
 
@@ -36,6 +38,9 @@ const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
 }) => {
   const { t } = useTranslation();
   const hasPrice = !!value;
+  const displayMarketPrice = marketPrice?.startsWith("0.")
+    ? subscriptFormat(marketPrice)
+    : formatPrice(marketPrice, { usd: false });
 
   return (
     <LimitPriceField>
@@ -91,8 +96,8 @@ const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
         </div>
       </LimitPriceControl>
       <LimitPricePresets>
-        <span className="market-price">
-          {t("Swap:limit.market")} {marketPrice ?? "-"} {outputSymbol}
+        <span className="market-price" title={`${t("Swap:limit.market")} ${marketPrice ?? "-"} ${outputSymbol}`}>
+          {t("Swap:limit.market")} {displayMarketPrice ?? "-"} {outputSymbol}
         </span>
         <div className="preset-buttons">
           <button type="button" className="preset-button" onClick={() => applyPreset(0)} disabled={!marketPrice}>

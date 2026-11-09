@@ -68,6 +68,16 @@ export const Default: Story = {
   },
 };
 
+export const SmallMarketPrice: Story = {
+  ...Default,
+  args: { ...Default.args, marketPrice: "0.0000044053" },
+};
+
+export const LargeMarketPrice: Story = {
+  ...Default,
+  args: { ...Default.args, marketPrice: "74309.7" },
+};
+
 export const AmountTooLow: Story = {
   ...Default,
   args: { ...Default.args, sellAmount: "10", buttonState: "AMOUNT_TOO_LOW", buttonText: "Amount Too Low" },

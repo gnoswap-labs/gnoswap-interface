@@ -102,20 +102,22 @@ export const LimitPriceControl = styled.div`
 export const LimitPricePresets = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
   width: 100%;
+  flex-wrap: wrap;
   gap: 8px;
 
   .market-price {
-    ${fonts.p4};
+    ${fonts.p6};
     color: ${({ theme }) => theme.color.text04};
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    max-width: 100%;
+    overflow-wrap: anywhere;
   }
 
   .preset-buttons {
     display: flex;
     flex-shrink: 0;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    max-width: 100%;
     margin-left: auto;
     gap: 4px;
   }
