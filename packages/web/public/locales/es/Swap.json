@@ -35,6 +35,8 @@
   "fetchingPrice": "Obteniendo el mejor precio...",
   "header": "Intercambiar",
   "limit": {
+    "expiresIn": "Caduca en",
+    "sellWhen": "Vender cuando 1 {{symbol}} alcance",
     "expiry": "Caducidad",
     "expiryOption": {
       "oneDay": "1 día",

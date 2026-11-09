@@ -35,6 +35,8 @@
   "fetchingPrice": "Recherche du meilleur prix...",
   "header": "Échange",
   "limit": {
+    "expiresIn": "Expire dans",
+    "sellWhen": "Vendre quand 1 {{symbol}} atteint",
     "expiry": "Date d'expiration",
     "expiryOption": {
       "oneDay": "1 jour",

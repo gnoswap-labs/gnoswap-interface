@@ -35,6 +35,8 @@
   "fetchingPrice": "最良の価格を取得しています...",
   "header": "スワップ",
   "limit": {
+    "expiresIn": "注文の有効期間",
+    "sellWhen": "1 {{symbol}} が次の価格に達したら売却",
     "expiry": "有効期限",
     "expiryOption": {
       "oneDay": "1日",

@@ -2,6 +2,22 @@ import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
+import { OrderField } from "../../order-form/OrderForm.styles";
+
+export const LimitPriceField = styled(OrderField)`
+  width: 100%;
+  gap: 12px;
+  padding: 16px 23px;
+
+  .sell-when {
+    ${fonts.body12};
+    color: ${({ theme }) => theme.color.text02};
+  }
+
+  ${media.mobile} {
+    padding: 12px;
+  }
+`;
 
 export const LimitPriceControl = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
@@ -11,8 +27,8 @@ export const LimitPriceControl = styled.div`
   .step-button {
     ${mixins.flexbox("row", "center", "center")};
     flex-shrink: 0;
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     border-radius: 4px;
     background-color: ${({ theme }) => theme.color.background13};
     cursor: pointer;
@@ -35,7 +51,7 @@ export const LimitPriceControl = styled.div`
   .price-input {
     width: 100%;
     min-width: 0;
-    text-align: center;
+    text-align: left;
     ${fonts.body3};
     color: ${({ theme }) => theme.color.text01};
     background: transparent;
@@ -43,18 +59,41 @@ export const LimitPriceControl = styled.div`
       ${fonts.body7};
     }
   }
+
+  .quote-token {
+    ${fonts.body9};
+    color: ${({ theme }) => theme.color.text04};
+  }
+
+  .price-steps {
+    display: flex;
+    flex-shrink: 0;
+    gap: 4px;
+  }
 `;
 
 export const LimitPricePresets = styled.div`
-  ${mixins.flexbox("row", "center", "center")};
+  ${mixins.flexbox("row", "center", "space-between")};
   flex-wrap: wrap;
   width: 100%;
-  gap: 4px;
+  gap: 8px;
+
+  .market-price {
+    ${fonts.body12};
+    color: ${({ theme }) => theme.color.text04};
+    overflow-wrap: anywhere;
+  }
+
+  .preset-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
 
   .preset-button {
-    padding: 2px 8px;
-    border-radius: 36px;
-    ${fonts.p6};
+    padding: 4px 8px;
+    border-radius: 4px;
+    ${fonts.p2};
     color: ${({ theme }) => theme.color.text10};
     background-color: ${({ theme }) => theme.color.background13};
     cursor: pointer;

@@ -11,7 +11,6 @@ import { SwapCardType } from "@models/order/order-type";
 import { TokenModel } from "@models/token/token-model";
 
 import OrderCardSkeleton from "../order-form/OrderCardSkeleton";
-import { OrderFieldRow } from "../order-form/OrderForm.styles";
 import OrderFormButton from "../order-form/OrderFormButton";
 import OrderSellInput from "../order-form/OrderSellInput";
 import { SwapCardWrapper } from "../swap-card/SwapCard.styles";
@@ -196,16 +195,16 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
               </div>
             </div>
           </div>
-          <OrderFieldRow>
-            <LimitPriceInput
-              value={limitPrice}
-              marketPrice={marketPrice}
-              changeValue={changeLimitPrice}
-              stepPrice={stepPrice}
-              applyPreset={applyPreset}
-            />
-            <LimitExpirySelect expiry={expiry} options={expiryOptions} changeExpiry={changeExpiry} />
-          </OrderFieldRow>
+          <LimitPriceInput
+            inputSymbol={tokenA?.displaySymbol ?? "-"}
+            outputSymbol={tokenB?.displaySymbol ?? "-"}
+            value={limitPrice}
+            marketPrice={marketPrice}
+            changeValue={changeLimitPrice}
+            stepPrice={stepPrice}
+            applyPreset={applyPreset}
+          />
+          <LimitExpirySelect expiry={expiry} options={expiryOptions} changeExpiry={changeExpiry} />
         </ContentWrapper>
       )}
       <OrderFormButton

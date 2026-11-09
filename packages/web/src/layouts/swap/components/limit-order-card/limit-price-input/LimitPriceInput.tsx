@@ -5,10 +5,11 @@ import IconAdd from "@components/common/icons/IconAdd";
 import IconRemove from "@components/common/icons/IconRemove";
 import { LIMIT_PRICE_PRESETS } from "@hooks/order/data/use-order-handler.utils";
 
-import { OrderField } from "../../order-form/OrderForm.styles";
-import { LimitPriceControl, LimitPricePresets } from "./LimitPriceInput.styles";
+import { LimitPriceControl, LimitPriceField, LimitPricePresets } from "./LimitPriceInput.styles";
 
 interface LimitPriceInputProps {
+  inputSymbol: string;
+  outputSymbol: string;
   value: string;
   marketPrice: string | null;
   changeValue: (value: string) => void;
@@ -20,6 +21,8 @@ interface LimitPriceInputProps {
 
 /** Output per input the order asks for, with −/+ steps and Market / +1% / +5% / +10% presets. */
 const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
+  inputSymbol,
+  outputSymbol,
   value,
   marketPrice,
   changeValue,
@@ -30,18 +33,9 @@ const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
   const hasPrice = !!value;
 
   return (
-    <OrderField className="centered wide">
-      <span className="field-label">{t("Swap:limit.limitPrice")}</span>
+    <LimitPriceField>
+      <span className="sell-when">{t("Swap:limit.sellWhen", { symbol: inputSymbol })}</span>
       <LimitPriceControl>
-        <button
-          type="button"
-          className="step-button"
-          onClick={() => stepPrice(-1)}
-          disabled={!hasPrice}
-          aria-label="Decrease limit price"
-        >
-          <IconRemove />
-        </button>
         <input
           className="price-input"
           value={value}
@@ -51,33 +45,50 @@ const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
           autoComplete="off"
           aria-label={t("Swap:limit.limitPrice")}
         />
-        <button
-          type="button"
-          className="step-button"
-          onClick={() => stepPrice(1)}
-          disabled={!hasPrice}
-          aria-label="Increase limit price"
-        >
-          <IconAdd />
-        </button>
-      </LimitPriceControl>
-      <LimitPricePresets>
-        <button type="button" className="preset-button" onClick={() => applyPreset(0)} disabled={!marketPrice}>
-          {t("Swap:limit.market")}
-        </button>
-        {LIMIT_PRICE_PRESETS.map(percent => (
+        <span className="quote-token">{outputSymbol}</span>
+        <div className="price-steps">
           <button
             type="button"
-            key={percent}
-            className="preset-button"
-            onClick={() => applyPreset(percent)}
-            disabled={!marketPrice}
+            className="step-button"
+            onClick={() => stepPrice(-1)}
+            disabled={!hasPrice}
+            aria-label="Decrease limit price"
           >
-            {`+${percent}%`}
+            <IconRemove />
           </button>
-        ))}
+          <button
+            type="button"
+            className="step-button"
+            onClick={() => stepPrice(1)}
+            disabled={!hasPrice}
+            aria-label="Increase limit price"
+          >
+            <IconAdd />
+          </button>
+        </div>
+      </LimitPriceControl>
+      <LimitPricePresets>
+        <span className="market-price">
+          {t("Swap:limit.market")} {marketPrice ?? "-"} {outputSymbol}
+        </span>
+        <div className="preset-buttons">
+          <button type="button" className="preset-button" onClick={() => applyPreset(0)} disabled={!marketPrice}>
+            {t("Swap:limit.market")}
+          </button>
+          {LIMIT_PRICE_PRESETS.map(percent => (
+            <button
+              type="button"
+              key={percent}
+              className="preset-button"
+              onClick={() => applyPreset(percent)}
+              disabled={!marketPrice}
+            >
+              {`+${percent}%`}
+            </button>
+          ))}
+        </div>
       </LimitPricePresets>
-    </OrderField>
+    </LimitPriceField>
   );
 };
 

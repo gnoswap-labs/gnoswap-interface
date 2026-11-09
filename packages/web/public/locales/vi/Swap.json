@@ -35,6 +35,8 @@
   "fetchingPrice": "Đang lấy giá tốt nhất...",
   "header": "Hoán đổi",
   "limit": {
+    "expiresIn": "Hết hạn sau",
+    "sellWhen": "Bán khi 1 {{symbol}} đạt",
     "expiry": "Hạn sử dụng",
     "expiryOption": {
       "oneDay": "1 ngày",

@@ -81,4 +81,5 @@ const wrapper = () => css`
 
 const cardWrap = () => css`
   width: 500px;
+  max-width: 100%;
 `;

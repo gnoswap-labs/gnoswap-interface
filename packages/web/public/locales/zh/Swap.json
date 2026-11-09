@@ -35,6 +35,8 @@
   "fetchingPrice": "正在获取最佳价格...",
   "header": "交换",
   "limit": {
+    "expiresIn": "订单有效期",
+    "sellWhen": "当 1 {{symbol}} 达到以下价格时卖出",
     "expiry": "到期日",
     "expiryOption": {
       "oneDay": "1天",

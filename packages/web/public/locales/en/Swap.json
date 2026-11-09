@@ -35,6 +35,8 @@
   "fetchingPrice": "Fetching Best Price...",
   "header": "Swap",
   "limit": {
+    "expiresIn": "Expires in",
+    "sellWhen": "Sell when 1 {{symbol}} reaches",
     "expiry": "Expiry",
     "expiryOption": {
       "oneDay": "1 Day",

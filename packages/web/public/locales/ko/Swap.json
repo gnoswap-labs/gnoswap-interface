@@ -35,6 +35,8 @@
   "fetchingPrice": "최적 가격을 조회중...",
   "header": "스왑",
   "limit": {
+    "expiresIn": "주문 유효기간",
+    "sellWhen": "1 {{symbol}} 가격이 다음에 도달하면 매도",
     "expiry": "만료일",
     "expiryOption": {
       "oneDay": "1일",

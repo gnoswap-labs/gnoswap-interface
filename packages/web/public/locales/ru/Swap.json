@@ -35,6 +35,8 @@
   "fetchingPrice": "Получение лучшей цены...",
   "header": "Обмен",
   "limit": {
+    "expiresIn": "Истекает через",
+    "sellWhen": "Продать, когда 1 {{symbol}} достигнет",
     "expiry": "Срок действия",
     "expiryOption": {
       "oneDay": "1 день",

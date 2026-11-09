@@ -1,9 +1,10 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import OrderSelectBox, { OrderSelectOption } from "@components/order/order-select-box/OrderSelectBox";
+import { OrderSelectOption } from "@components/order/order-select-box/OrderSelectBox";
+import ChartScopeSelectTab from "@layouts/pool/pool-add/components/additional-info/exchange-rate-graph/chart-scope-select-tab/ChartScopeSelectTab";
 
-import { OrderField } from "../../order-form/OrderForm.styles";
+import { LimitExpiryRow } from "./LimitExpirySelect.styles";
 
 interface LimitExpirySelectProps {
   expiry: number;
@@ -11,15 +12,30 @@ interface LimitExpirySelectProps {
   changeExpiry: (duration: number) => void;
 }
 
+const SHORT_EXPIRY_LABELS: Record<number, string> = {
+  3_600: "1H",
+  86_400: "1D",
+  604_800: "1W",
+  2_592_000: "30D",
+};
+
 /** How long the order stays open. Options outside the configured duration range are hidden. */
 const LimitExpirySelect: React.FC<LimitExpirySelectProps> = ({ expiry, options, changeExpiry }) => {
   const { t } = useTranslation();
 
   return (
-    <OrderField className="centered">
-      <span className="field-label">{t("Swap:limit.expiry")}</span>
-      <OrderSelectBox value={expiry} options={options} onChange={changeExpiry} />
-    </OrderField>
+    <LimitExpiryRow>
+      <span className="expiry-label">{t("Swap:limit.expiresIn")}</span>
+      <ChartScopeSelectTab
+        size="MEDIUM"
+        selected={String(expiry)}
+        list={options.map(option => ({
+          key: String(option.value),
+          display: SHORT_EXPIRY_LABELS[option.value] ?? option.label,
+        }))}
+        onChange={value => changeExpiry(Number(value))}
+      />
+    </LimitExpiryRow>
   );
 };
 
