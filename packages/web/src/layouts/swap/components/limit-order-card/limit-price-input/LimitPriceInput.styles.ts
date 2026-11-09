@@ -14,6 +14,14 @@ export const LimitPriceField = styled(OrderField)`
     color: ${({ theme }) => theme.color.text02};
   }
 
+  .sell-token {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
   ${media.mobile} {
     padding: 12px;
   }

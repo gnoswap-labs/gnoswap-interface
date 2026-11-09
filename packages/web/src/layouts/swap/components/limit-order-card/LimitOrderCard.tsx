@@ -198,6 +198,7 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
           </div>
           <LimitPriceInput
             inputSymbol={tokenA?.displaySymbol ?? "-"}
+            inputLogoURI={tokenA?.logoURI}
             outputSymbol={tokenB?.displaySymbol ?? "-"}
             value={limitPrice}
             marketPrice={marketPrice}

@@ -1,14 +1,16 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 import IconAdd from "@components/common/icons/IconAdd";
 import IconRemove from "@components/common/icons/IconRemove";
+import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { LIMIT_PRICE_PRESETS } from "@hooks/order/data/use-order-handler.utils";
 
 import { LimitPriceControl, LimitPriceField, LimitPricePresets } from "./LimitPriceInput.styles";
 
 interface LimitPriceInputProps {
   inputSymbol: string;
+  inputLogoURI?: string;
   outputSymbol: string;
   value: string;
   marketPrice: string | null;
@@ -22,6 +24,7 @@ interface LimitPriceInputProps {
 /** Output per input the order asks for, with −/+ steps and Market / +1% / +5% / +10% presets. */
 const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
   inputSymbol,
+  inputLogoURI,
   outputSymbol,
   value,
   marketPrice,
@@ -34,7 +37,21 @@ const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
 
   return (
     <LimitPriceField>
-      <span className="sell-when">{t("Swap:limit.sellWhen", { symbol: inputSymbol })}</span>
+      <span className="sell-when">
+        <Trans
+          defaults={t("Swap:limit.sellWhen", { symbol: "<token/>" })}
+          components={{
+            token: (
+              <span className="sell-token">
+                <span aria-hidden="true">
+                  <MissingLogo symbol={inputSymbol} url={inputLogoURI} width={16} mobileWidth={16} />
+                </span>
+                {inputSymbol}
+              </span>
+            ),
+          }}
+        />
+      </span>
       <LimitPriceControl>
         <input
           className="price-input"
