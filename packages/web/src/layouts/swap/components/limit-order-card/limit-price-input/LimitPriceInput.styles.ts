@@ -32,6 +32,43 @@ export const LimitPriceControl = styled.div`
   width: 100%;
   gap: 8px;
 
+  .price-quote {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .price-usd {
+    ${fonts.body12};
+    color: ${({ theme }) => theme.color.text04};
+    flex-shrink: 0;
+    max-width: 45%;
+    overflow-wrap: anywhere;
+  }
+
+  .price-input {
+    width: auto;
+    max-width: 100%;
+    min-width: 0;
+    field-sizing: content;
+    text-align: left;
+    ${fonts.body3};
+    color: ${({ theme }) => theme.color.text01};
+    background: transparent;
+    ${media.mobile} {
+      ${fonts.body7};
+    }
+  }
+
+  .quote-token {
+    ${fonts.body9};
+    color: ${({ theme }) => theme.color.text04};
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
   .step-button {
     ${mixins.flexbox("row", "center", "center")};
     flex-shrink: 0;
@@ -55,24 +92,6 @@ export const LimitPriceControl = styled.div`
       opacity: 0.5;
     }
   }
-
-  .price-input {
-    width: 100%;
-    min-width: 0;
-    text-align: left;
-    ${fonts.body3};
-    color: ${({ theme }) => theme.color.text01};
-    background: transparent;
-    ${media.mobile} {
-      ${fonts.body7};
-    }
-  }
-
-  .quote-token {
-    ${fonts.body9};
-    color: ${({ theme }) => theme.color.text04};
-  }
-
   .price-steps {
     display: flex;
     flex-shrink: 0;
@@ -82,26 +101,29 @@ export const LimitPriceControl = styled.div`
 
 export const LimitPricePresets = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
-  flex-wrap: wrap;
   width: 100%;
   gap: 8px;
 
   .market-price {
-    ${fonts.body12};
+    ${fonts.p4};
     color: ${({ theme }) => theme.color.text04};
-    overflow-wrap: anywhere;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .preset-buttons {
     display: flex;
-    flex-wrap: wrap;
+    flex-shrink: 0;
+    margin-left: auto;
     gap: 4px;
   }
 
   .preset-button {
-    padding: 4px 8px;
+    padding: 4px 6px;
     border-radius: 4px;
-    ${fonts.p2};
+    ${fonts.p4};
     color: ${({ theme }) => theme.color.text10};
     background-color: ${({ theme }) => theme.color.background13};
     cursor: pointer;

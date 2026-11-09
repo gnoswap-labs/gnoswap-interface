@@ -27,6 +27,7 @@ jest.mock("../ui/use-confirm-order-modal", () => ({
   useConfirmOrderModal: () => ({ openModal: jest.fn(), closeModal: jest.fn() }),
 }));
 jest.mock("./use-order-transaction", () => ({ useOrderTransaction: () => ({ submit: jest.fn() }) }));
+const mockGetUsdPrice = jest.fn<string | null, [TokenModel | null]>(() => null);
 jest.mock("./use-order-form-common", () => ({
   getOrderButtonText: (_: string, __: unknown, placeOrderText: string) => placeOrderText,
   useOrderFormCommon: () => ({
@@ -35,11 +36,11 @@ jest.mock("./use-order-form-common", () => ({
     switchNetwork: jest.fn(),
     copied: false,
     copyUrl: jest.fn(),
-    getUsdPrice: () => null,
+    getUsdPrice: (token: TokenModel | null) => mockGetUsdPrice(token),
     tokenABalance: "1000",
     tokenBBalance: "1000",
     isSameToken: false,
-    formatUsd: () => "-",
+    formatUsd: (value: number | null) => (value === null ? "-" : `$${value}`),
     formatRate: () => ({ text: "-", usd: "-" }),
   }),
 }));
@@ -80,6 +81,7 @@ describe("useLimitOrderHandler", () => {
   beforeEach(() => {
     mockSlippage = 0.5;
     mockLimitConfig = undefined;
+    mockGetUsdPrice.mockReset().mockReturnValue(null);
     jest.mocked(useGetRoutes).mockImplementation(request => {
       if (!request?.inputToken || !request.outputToken || !request.tokenAmount) {
         return { data: undefined } as ReturnType<typeof useGetRoutes>;
@@ -88,6 +90,29 @@ describe("useLimitOrderHandler", () => {
       const amount = BigNumber(request.tokenAmount).multipliedBy(price).shiftedBy(6).toFixed(0);
       return { data: { status: "SUCCESS", amount } } as unknown as ReturnType<typeof useGetRoutes>;
     });
+  });
+
+  it("updates the USD estimate with the output token price without changing the order ratio", async () => {
+    mockGetUsdPrice.mockImplementation(token => (token?.path === tokenB.path ? "2" : "99"));
+    const { result, rerender } = renderHook(() => useLimitOrderHandler(), { wrapper });
+    act(() => result.current.changeTokenA(tokenA));
+    act(() => result.current.changeTokenB(tokenB));
+    await waitFor(() => expect(result.current.limitPrice).toBe("10"));
+    act(() => result.current.changeSellAmount("3"));
+    expect(result.current.limitPriceUsd).toBe("$20");
+    expect(result.current.buyAmount).toBe("30");
+
+    mockGetUsdPrice.mockReturnValue("1");
+    rerender();
+    expect(result.current.limitPriceUsd).toBe("$10");
+    expect(result.current.limitPrice).toBe("10");
+    expect(result.current.buyAmount).toBe("30");
+
+    mockGetUsdPrice.mockReturnValue(null);
+    rerender();
+    expect(result.current.limitPriceUsd).toBe("-");
+    act(() => result.current.changeLimitPrice(""));
+    expect(result.current.limitPriceUsd).toBe("-");
   });
 
   it.each([

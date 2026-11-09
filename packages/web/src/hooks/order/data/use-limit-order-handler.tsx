@@ -436,6 +436,7 @@ export const useLimitOrderHandler = () => {
     buyAmount,
     buyAmountUsd: formatUsd(buyUsd),
     limitPrice,
+    limitPriceUsd: formatUsd(isValidPrice ? calculateUsdValue(limitPrice, getUsdPrice(tokenB)) : null),
     marketPrice,
     expiry,
     expiryOptions: expiryOptions.map(option => ({ value: option.duration, label: expiryLabel(option.duration) })),

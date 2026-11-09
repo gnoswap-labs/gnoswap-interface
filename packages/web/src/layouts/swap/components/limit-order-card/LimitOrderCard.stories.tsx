@@ -48,6 +48,7 @@ export const Default: Story = {
     changeSellAmount: fn(),
     switchTokens: fn(),
     limitPrice: "1.2716",
+    limitPriceUsd: "$1",
     marketPrice: "1.2716",
     changeLimitPrice: fn(),
     stepPrice: fn(),

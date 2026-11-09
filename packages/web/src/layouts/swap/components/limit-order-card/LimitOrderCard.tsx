@@ -55,6 +55,7 @@ export interface LimitOrderCardProps {
   switchTokens: () => void;
 
   limitPrice: string;
+  limitPriceUsd: string;
   marketPrice: string | null;
   changeLimitPrice: (value: string) => void;
   stepPrice: (direction: 1 | -1) => void;
@@ -96,6 +97,7 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
   changeSellAmount,
   switchTokens,
   limitPrice,
+  limitPriceUsd,
   marketPrice,
   changeLimitPrice,
   stepPrice,
@@ -201,6 +203,7 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
             inputLogoURI={tokenA?.logoURI}
             outputSymbol={tokenB?.displaySymbol ?? "-"}
             value={limitPrice}
+            valueUsd={limitPriceUsd}
             marketPrice={marketPrice}
             changeValue={changeLimitPrice}
             stepPrice={stepPrice}

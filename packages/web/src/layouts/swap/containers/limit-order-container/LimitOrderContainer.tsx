@@ -60,6 +60,7 @@ const LimitOrderContainer: React.FC<LimitOrderContainerProps> = ({ swapType, cha
       changeSellAmount={handler.changeSellAmount}
       switchTokens={handler.switchTokens}
       limitPrice={handler.limitPrice}
+      limitPriceUsd={handler.limitPriceUsd}
       marketPrice={handler.marketPrice}
       changeLimitPrice={handler.changeLimitPrice}
       stepPrice={handler.stepPrice}

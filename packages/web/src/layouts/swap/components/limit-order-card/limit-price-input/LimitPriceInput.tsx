@@ -13,6 +13,7 @@ interface LimitPriceInputProps {
   inputLogoURI?: string;
   outputSymbol: string;
   value: string;
+  valueUsd: string;
   marketPrice: string | null;
   changeValue: (value: string) => void;
   /** Moves the price by one step (0.1%) up or down. */
@@ -27,6 +28,7 @@ const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
   inputLogoURI,
   outputSymbol,
   value,
+  valueUsd,
   marketPrice,
   changeValue,
   stepPrice,
@@ -53,16 +55,20 @@ const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
         />
       </span>
       <LimitPriceControl>
-        <input
-          className="price-input"
-          value={value}
-          onChange={e => changeValue(e.target.value)}
-          placeholder="0"
-          inputMode="decimal"
-          autoComplete="off"
-          aria-label={t("Swap:limit.limitPrice")}
-        />
-        <span className="quote-token">{outputSymbol}</span>
+        <div className="price-quote">
+          <input
+            className="price-input"
+            value={value}
+            size={Math.max(value.length, 1)}
+            onChange={e => changeValue(e.target.value)}
+            placeholder="0"
+            inputMode="decimal"
+            autoComplete="off"
+            aria-label={t("Swap:limit.limitPrice")}
+          />
+          <span className="quote-token">{outputSymbol}</span>
+          <span className="price-usd">{valueUsd === "-" ? "(-)" : `(≈ ${valueUsd})`}</span>
+        </div>
         <div className="price-steps">
           <button
             type="button"
