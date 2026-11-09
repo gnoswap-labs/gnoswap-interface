@@ -106,6 +106,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
   &.left {
     flex-shrink: 0;
     justify-content: flex-start;
+    white-space: nowrap;
   }
 
   .path-link-icon {
@@ -123,6 +124,7 @@ export const TableColumn = styled.div<{ tdWidth: number }>`
     &.left {
       width: auto;
       flex: 1;
+      min-width: max-content;
     }
     &:last-child {
       width: auto;

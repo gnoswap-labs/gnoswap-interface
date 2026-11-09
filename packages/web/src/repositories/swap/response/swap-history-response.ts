@@ -16,4 +16,6 @@ export interface SwapHistoryItem {
   time: string;
 
   txHash: string;
+
+  tradeType: "SWAP" | "DCA" | "LIMIT";
 }
