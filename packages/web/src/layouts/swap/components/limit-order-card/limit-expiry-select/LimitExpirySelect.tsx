@@ -27,7 +27,7 @@ const LimitExpirySelect: React.FC<LimitExpirySelectProps> = ({ expiry, options, 
     <LimitExpiryRow>
       <span className="expiry-label">{t("Swap:limit.expiresIn")}</span>
       <ChartScopeSelectTab
-        size="MEDIUM"
+        size="SMALL"
         selected={String(expiry)}
         list={options.map(option => ({
           key: String(option.value),

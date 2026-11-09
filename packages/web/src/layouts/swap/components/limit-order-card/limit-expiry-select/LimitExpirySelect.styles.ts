@@ -24,12 +24,5 @@ export const LimitExpiryRow = styled.div`
   ${media.mobile} {
     flex-wrap: wrap;
     gap: 8px;
-
-    .tab-button {
-      width: auto;
-      min-width: 38px;
-      padding: 6px 10px;
-      height: 32px;
-    }
   }
 `;
