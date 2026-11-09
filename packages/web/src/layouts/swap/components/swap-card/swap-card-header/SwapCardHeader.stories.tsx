@@ -36,7 +36,7 @@ export const WithOrderTabs: Story = {
     ...Default.args,
     swapType: "dca",
     changeSwapType: fn(),
-    swapTypes: ["swap", "dca", "limit"],
+    swapTypes: ["swap", "limit", "dca"],
   },
 };
 

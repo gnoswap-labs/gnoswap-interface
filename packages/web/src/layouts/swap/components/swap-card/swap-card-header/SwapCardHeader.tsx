@@ -20,7 +20,7 @@ interface SwapCardHeaderProps {
   /** Highest tolerance (percent) the settings editor accepts. Defaults to the swap maximum. */
   maxSlippage?: number;
   themeKey: "dark" | "light";
-  /** Shows the Swap | DCA | Limit tabs in place of the title when given. */
+  /** Shows the Swap | Limit | DCA tabs in place of the title when given. */
   swapType?: SwapCardType;
   changeSwapType?: (type: SwapCardType) => void;
   /** Tabs to offer. Defaults to the modes enabled by the configured order realms. */
@@ -43,8 +43,8 @@ const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
     () =>
       [
         { key: SWAP_CARD_TYPE.SWAP, display: t("Swap:tab.swap") },
-        { key: SWAP_CARD_TYPE.DCA, display: t("Swap:tab.dca") },
         { key: SWAP_CARD_TYPE.LIMIT, display: t("Swap:tab.limit") },
+        { key: SWAP_CARD_TYPE.DCA, display: t("Swap:tab.dca") },
       ].filter(tab => swapTypes.includes(tab.key)),
     [swapTypes, t],
   );
