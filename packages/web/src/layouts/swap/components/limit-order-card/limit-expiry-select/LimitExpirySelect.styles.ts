@@ -7,7 +7,7 @@ export const LimitExpiryRow = styled.div`
   ${mixins.flexbox("row", "center", "space-between")};
   width: 100%;
   gap: 12px;
-  padding: 12px 0 0;
+  padding: 12px 0;
 
   .expiry-label {
     ${fonts.body12};

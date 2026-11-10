@@ -30,11 +30,26 @@ const ConfirmLimitOrderModal: React.FC<ConfirmLimitOrderModalProps> = ({
   const rows: OrderInfoRow[] = useMemo(
     () => [
       { key: "limitPrice", label: t("Swap:limit.limitPrice"), value: summary.limitPrice },
-      { key: "expiry", label: t("Swap:limit.expiry"), value: summary.expiry },
-      { key: "expiresAt", label: t("Swap:order.expiresAt"), value: summary.expiresAt },
-      { key: "slippage", label: t("Swap:limit.slippage"), value: summary.slippage },
+      {
+        key: "expiresAt",
+        label: t("Swap:order.expiresAt"),
+        value: summary.expiresAt,
+      },
+      { key: "slippage", label: t("Swap:swapInfo.slippageSet"), value: summary.slippage },
+      {
+        key: "minimumReceived",
+        label: t("Swap:swapInfo.minReceived"),
+        tooltip: t("Swap:limit.minimumReceivedTooltip"),
+        value: summary.minimumReceived ? `${summary.minimumReceived} ${tokenOut.displaySymbol}` : "-",
+      },
+      {
+        key: "executionFee",
+        label: t("Swap:dca.executionFee"),
+        tooltip: t("Swap:limit.executionFeeTooltip"),
+        value: summary.executionFee,
+      },
     ],
-    [summary, t],
+    [summary, t, tokenOut.displaySymbol],
   );
 
   return (

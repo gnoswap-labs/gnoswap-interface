@@ -42,6 +42,7 @@
   "header": "Swap",
   "limit": {
     "belowMarketWarning": "Trigger price is below market and your order may instantly fill.",
+    "executionFeeTooltip": "The fee deducted from the output of each filled trade. Minimum received is shown after this fee.",
     "expiresIn": "Expires in",
     "expiry": "Expiry",
     "expiryOption": {
@@ -54,6 +55,7 @@
     "limitPrice": "Limit Price",
     "market": "Market",
     "marketPrice": "Market Price:",
+    "minimumReceivedTooltip": "Minimum output you receive after execution fees, based on your limit price and selected slippage. Shown for a full fill; partial fills use the same ratio and round up per fill.",
     "minTrading": "Minimum {{amount}} {{symbol}}",
     "sellWhen": "Sell when 1 {{symbol}} reaches",
     "slippage": "Max. Slippage",

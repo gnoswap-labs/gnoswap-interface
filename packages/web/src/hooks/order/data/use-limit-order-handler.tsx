@@ -18,13 +18,14 @@ import { useGetRoutes } from "@query/router";
 import { DexEvent } from "@repositories/common";
 import { CreateLimitOrderRequest } from "@repositories/order/request";
 import { OrderState, SwapState } from "@states/index";
-import { formatOrderDateTime, trimFractionZeros } from "@utils/order-format-utils";
+import { formatBps, formatOrderDateTime, trimFractionZeros } from "@utils/order-format-utils";
 import { isNativeTokenPath, makeDisplayTokenAmountString, makeRawTokenAmount } from "@utils/token-utils";
 
 import { useConfirmOrderModal } from "../ui/use-confirm-order-modal";
 import { getOrderButtonText, useOrderFormCommon } from "./use-order-form-common";
 import {
   applyLimitPricePreset,
+  calculateLimitMinimumReceived,
   calculateTakingAmount,
   calculateUsdValue,
   DEFAULT_MIN_MAKING_AMOUNT,
@@ -212,6 +213,14 @@ export const useLimitOrderHandler = () => {
   // The settings show the tolerance actually confirmed and sent, and accept no more than the realm does.
   const effectiveSlippage = BigNumber(slippageBps).dividedBy(100).toNumber();
   const maxSlippage = BigNumber(maxSlippageBps).dividedBy(100).toNumber();
+  const executionFee = formatBps(config?.executionFeeBps);
+  const minimumReceived = useMemo(
+    () =>
+      tokenB && hasRawAmounts
+        ? makeDisplayTokenAmountString(tokenB, calculateLimitMinimumReceived(takingAmount, slippageBps)) ?? ""
+        : "",
+    [hasRawAmounts, slippageBps, takingAmount, tokenB],
+  );
 
   const createRequest = useMemo((): Omit<CreateLimitOrderRequest, "expiresAt"> | null => {
     if (buttonState !== "PLACE_ORDER" || !tokenA || !tokenB || !hasRawAmounts) return null;
@@ -263,19 +272,21 @@ export const useLimitOrderHandler = () => {
       sellAmountUsd: formatUsd(sellUsd),
       buyAmount: makeDisplayTokenAmountString(tokenB, takingAmount) ?? "0",
       buyAmountUsd: formatUsd(buyUsd),
+      minimumReceived,
       limitPrice: formatRate(isValidPrice ? limitPrice : null).text,
-      expiry: expiryLabel(expiry),
       expiresAt: formatOrderDateTime(Math.floor(Date.now() / 1000) + expiry),
       slippage: `${trimFractionZeros(BigNumber(slippageBps).dividedBy(100).toFixed(2))}%`,
+      executionFee,
     };
   }, [
     buyUsd,
     expiry,
-    expiryLabel,
+    executionFee,
     formatRate,
     formatUsd,
     isValidPrice,
     limitPrice,
+    minimumReceived,
     sellUsd,
     sentSellAmount,
     slippageBps,
@@ -446,6 +457,8 @@ export const useLimitOrderHandler = () => {
     sellAmountUsd: formatUsd(sellUsd),
     buyAmount,
     buyAmountUsd: formatUsd(buyUsd),
+    minimumReceived,
+    executionFee,
     limitPrice,
     limitPriceUsd: formatUsd(isValidPrice ? calculateUsdValue(limitPrice, getUsdPrice(tokenB)) : null),
     marketPrice,

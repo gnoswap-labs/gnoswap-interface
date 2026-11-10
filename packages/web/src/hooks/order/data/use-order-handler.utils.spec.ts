@@ -1,6 +1,7 @@
 import {
   applyLimitPricePreset,
   calculateAmountPerExecution,
+  calculateLimitMinimumReceived,
   calculateMaxExecutionCount,
   calculateTakingAmount,
   clampExecutionCount,
@@ -148,6 +149,24 @@ describe("use-order-handler.utils", () => {
     expect(calculateTakingAmount("3000000", "1.2716", { decimals: 6 }, { decimals: 6 })).toBe("3814800");
     expect(calculateTakingAmount("1000000", "0.5", { decimals: 6 }, { decimals: 8 })).toBe("50000000");
     expect(calculateTakingAmount("1", "0.5", { decimals: 0 }, { decimals: 0 })).toBe("0");
+  });
+
+  describe("calculateLimitMinimumReceived", () => {
+    it("rounds the owner-net floor up instead of promising an amount below the contract minimum", () => {
+      expect(calculateLimitMinimumReceived("152", 50)).toBe("152");
+      expect(calculateLimitMinimumReceived("152", 1000)).toBe("137");
+      expect(calculateLimitMinimumReceived("1", 9999)).toBe("1");
+    });
+
+    it("preserves raw precision above the JavaScript safe integer range", () => {
+      expect(calculateLimitMinimumReceived("1000000000000000001", 50)).toBe("995000000000000001");
+    });
+
+    it("keeps the exact target at zero slippage and supports the full allowed tolerance range", () => {
+      expect(calculateLimitMinimumReceived("152", 0)).toBe("152");
+      expect(calculateLimitMinimumReceived("152", 10_000)).toBe("0");
+      expect(calculateLimitMinimumReceived("0", 50)).toBe("0");
+    });
   });
 
   it("steps and presets the limit price", () => {

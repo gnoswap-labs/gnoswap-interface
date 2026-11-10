@@ -10,6 +10,8 @@ import enCommon from "../public/locales/en/common.json";
 import koCommon from "../public/locales/ko/common.json";
 import enSwap from "../public/locales/en/Swap.json";
 import koSwap from "../public/locales/ko/Swap.json";
+import enModal from "../public/locales/en/Modal.json";
+import koModal from "../public/locales/ko/Modal.json";
 
 export const initialGlobals = { locale: "en" };
 
@@ -47,8 +49,8 @@ export const decorators = [
         initImmediate: false,
         interpolation: { escapeValue: false },
         resources: {
-          en: { Governance: enGovernance, common: enCommon, Swap: enSwap },
-          ko: { Governance: koGovernance, common: koCommon, Swap: koSwap },
+          en: { Governance: enGovernance, common: enCommon, Swap: enSwap, Modal: enModal },
+          ko: { Governance: koGovernance, common: koCommon, Swap: koSwap, Modal: koModal },
         },
       });
       return instance;

@@ -30,10 +30,12 @@ export interface LimitOrderSummary {
   sellAmountUsd: string;
   buyAmount: string;
   buyAmountUsd: string;
+  /** The least output the owner receives after execution fees at the selected slippage, for a full fill. */
+  minimumReceived: string;
   limitPrice: string;
-  expiry: string;
   expiresAt: string;
   slippage: string;
+  executionFee: string;
 }
 
 /** Everything the stop / cancel confirm modal shows, already formatted. */

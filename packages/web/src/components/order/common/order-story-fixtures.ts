@@ -27,10 +27,11 @@ export const STORY_LIMIT_ORDER_SUMMARY: LimitOrderSummary = {
   sellAmountUsd: "$1,541.55",
   buyAmount: "1960.24",
   buyAmountUsd: "$1,541.55",
+  minimumReceived: "1950.4388",
   limitPrice: "1 GNS = 1.2716 GNOT",
-  expiry: "1 Day",
   expiresAt: "2026-11-04 20:35:36",
   slippage: "0.5%",
+  executionFee: "0.15%",
 };
 
 export const STORY_STOP_ORDER_SUMMARY: StopOrderSummary = {

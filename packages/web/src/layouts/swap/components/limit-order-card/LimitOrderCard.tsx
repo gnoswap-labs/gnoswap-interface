@@ -1,8 +1,10 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import IconWallet from "@components/common/icons/IconWallet";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
+import { OrderInfoRow } from "@components/order/order-info-rows/OrderInfoRows";
 import { OrderSelectOption } from "@components/order/order-select-box/OrderSelectBox";
 import { MaxNativeAmountParams, useMaxNativeAmount } from "@hooks/gas";
 import { OrderButtonState } from "@hooks/order/data/use-order-handler.utils";
@@ -17,6 +19,7 @@ import { SwapCardWrapper } from "../swap-card/SwapCard.styles";
 import { ContentWrapper } from "../swap-card/swap-card-content/SwapCardContent.styles";
 import SwapCardHeader from "../swap-card/swap-card-header/SwapCardHeader";
 import LimitExpirySelect from "./limit-expiry-select/LimitExpirySelect";
+import { LimitOrderInfoRows } from "./LimitOrderCard.styles";
 import LimitPriceInput from "./limit-price-input/LimitPriceInput";
 import LimitPriceWarning from "./limit-price-input/LimitPriceWarning";
 
@@ -49,6 +52,8 @@ export interface LimitOrderCardProps {
   sellAmountUsd: string;
   buyAmount: string;
   buyAmountUsd: string;
+  minimumReceived: string;
+  executionFee: string;
   changeTokenA: (token: TokenModel) => void;
   changeTokenB: (token: TokenModel) => void;
   changeSellAmount: (value: string) => void;
@@ -93,6 +98,8 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
   sellAmountUsd,
   buyAmount,
   buyAmountUsd,
+  minimumReceived,
+  executionFee,
   changeTokenA,
   changeTokenB,
   changeSellAmount,
@@ -112,7 +119,26 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
   minTradingText,
   onClickButton,
 }) => {
+  const { t } = useTranslation();
   const buyBalanceDisplay = useTokenBalanceDisplay(tokenBBalance, connectedWallet);
+  const infoRows: OrderInfoRow[] = useMemo(
+    () => [
+      { key: "slippage", label: t("Swap:swapInfo.slippageSet"), value: `${slippage}%` },
+      {
+        key: "minimumReceived",
+        label: t("Swap:swapInfo.minReceived"),
+        tooltip: t("Swap:limit.minimumReceivedTooltip"),
+        value: minimumReceived && tokenB ? `${minimumReceived} ${tokenB.displaySymbol}` : "-",
+      },
+      {
+        key: "executionFee",
+        label: t("Swap:dca.executionFee"),
+        tooltip: t("Swap:limit.executionFeeTooltip"),
+        value: executionFee,
+      },
+    ],
+    [executionFee, minimumReceived, slippage, t, tokenB],
+  );
 
   // Max is worked out here rather than in the sell field, so the order button
   // waits on, and retries, the same estimate as the field's own Max.
@@ -214,6 +240,7 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
           />
           <LimitPriceWarning value={limitPrice} marketPrice={marketPrice} />
           <LimitExpirySelect expiry={expiry} options={expiryOptions} changeExpiry={changeExpiry} />
+          <LimitOrderInfoRows rows={infoRows} />
         </ContentWrapper>
       )}
       <OrderFormButton

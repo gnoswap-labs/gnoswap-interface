@@ -66,6 +66,8 @@ const renderCard = (props: Partial<LimitOrderCardProps> = {}) => {
     sellAmountUsd: "-",
     buyAmount: "",
     buyAmountUsd: "-",
+    minimumReceived: "",
+    executionFee: "-",
     changeTokenA: jest.fn(),
     changeTokenB: jest.fn(),
     changeSellAmount,

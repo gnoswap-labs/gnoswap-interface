@@ -5,7 +5,13 @@ import { fn } from "@storybook/test";
 import React from "react";
 
 import { STORY_GNOT_TOKEN, STORY_GNS_TOKEN } from "@components/order/common/order-story-fixtures";
-import { applyLimitPricePreset, stepLimitPrice } from "@hooks/order/data/use-order-handler.utils";
+import {
+  applyLimitPricePreset,
+  calculateLimitMinimumReceived,
+  calculateTakingAmount,
+  stepLimitPrice,
+  toLimitSlippageBps,
+} from "@hooks/order/data/use-order-handler.utils";
 import { formatPrice } from "@utils/new-number-utils";
 import globalStyle from "@styles/globalStyle";
 import { getTheme } from "@utils/theme-utils";
@@ -48,6 +54,8 @@ export const Default: Story = {
     sellAmountUsd: "$1,541.55",
     buyAmount: "1960.235",
     buyAmountUsd: "$1,541.55",
+    minimumReceived: "1950.433825",
+    executionFee: "0.15%",
     changeTokenA: fn(),
     changeTokenB: fn(),
     changeSellAmount: fn(),
@@ -89,9 +97,23 @@ export const InteractivePresets: Story = {
         ? applyLimitPricePreset(args.marketPrice, selectedPreset)
         : customPrice;
     const outputUsd = BigNumber(args.buyAmountUsd.replace(/[$,]/g, "")).dividedBy(args.buyAmount);
-    const buyAmount = BigNumber(args.sellAmount)
-      .multipliedBy(limitPrice || 0)
-      .toFixed(args.tokenB?.decimals ?? 6);
+    const outputToken = args.tokenB ?? STORY_GNOT_TOKEN;
+    const rawTakingAmount = calculateTakingAmount(
+      BigNumber(args.sellAmount || 0)
+        .shiftedBy((args.tokenA ?? STORY_GNS_TOKEN).decimals)
+        .toFixed(0, BigNumber.ROUND_FLOOR),
+      limitPrice,
+      args.tokenA ?? STORY_GNS_TOKEN,
+      outputToken,
+    );
+    const buyAmount = BigNumber(rawTakingAmount).shiftedBy(-outputToken.decimals).toFixed();
+    const minimumReceived = BigNumber(rawTakingAmount).isGreaterThan(0)
+      ? BigNumber(
+          calculateLimitMinimumReceived(rawTakingAmount, toLimitSlippageBps(args.slippage, args.maxSlippage * 100)),
+        )
+          .shiftedBy(-outputToken.decimals)
+          .toFixed()
+      : "";
 
     return (
       <div css={wrapper}>
@@ -103,6 +125,7 @@ export const InteractivePresets: Story = {
             limitPriceUsd={limitPrice ? formatPrice(BigNumber(limitPrice).multipliedBy(outputUsd)) : "-"}
             buyAmount={buyAmount}
             buyAmountUsd={formatPrice(BigNumber(buyAmount).multipliedBy(outputUsd))}
+            minimumReceived={minimumReceived}
             changeLimitPrice={price => {
               setSelectedPreset(null);
               setLimitPrice(price);
@@ -143,6 +166,7 @@ export const SmallMarketPrice: Story = {
     sellAmountUsd: "$1",
     buyAmount: "4.4053",
     buyAmountUsd: "$1",
+    minimumReceived: "4.383274",
     limitPrice: "0.0000044053",
     limitPriceUsd: "$0.000001",
     marketPrice: "0.0000044053",
