@@ -1,9 +1,14 @@
-import { css } from "@emotion/react";
+import BigNumber from "bignumber.js";
+import { css, Global, ThemeProvider } from "@emotion/react";
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import { fn } from "@storybook/test";
 import React from "react";
 
 import { STORY_GNOT_TOKEN, STORY_GNS_TOKEN } from "@components/order/common/order-story-fixtures";
+import { applyLimitPricePreset, stepLimitPrice } from "@hooks/order/data/use-order-handler.utils";
+import { formatPrice } from "@utils/new-number-utils";
+import globalStyle from "@styles/globalStyle";
+import { getTheme } from "@utils/theme-utils";
 
 import LimitOrderCard from "./LimitOrderCard";
 
@@ -68,9 +73,63 @@ export const Default: Story = {
   },
 };
 
+export const InteractivePresets: Story = {
+  ...Default,
+  args: { ...Default.args, limitPrice: applyLimitPricePreset(Default.args?.marketPrice ?? "1", 10) },
+  render: function InteractivePresets(args) {
+    const [limitPrice, setLimitPrice] = React.useState(args.limitPrice);
+    const outputUsd = BigNumber(args.buyAmountUsd.replace(/[$,]/g, "")).dividedBy(args.buyAmount);
+    const buyAmount = BigNumber(args.sellAmount)
+      .multipliedBy(limitPrice || 0)
+      .toFixed(args.tokenB?.decimals ?? 6);
+
+    return (
+      <div css={wrapper}>
+        <div css={cardWrap}>
+          <LimitOrderCard
+            {...args}
+            limitPrice={limitPrice}
+            limitPriceUsd={limitPrice ? formatPrice(BigNumber(limitPrice).multipliedBy(outputUsd)) : "-"}
+            buyAmount={buyAmount}
+            buyAmountUsd={formatPrice(BigNumber(buyAmount).multipliedBy(outputUsd))}
+            changeLimitPrice={setLimitPrice}
+            stepPrice={direction => setLimitPrice(price => stepLimitPrice(price, direction))}
+            applyPreset={percent => {
+              if (args.marketPrice) setLimitPrice(applyLimitPricePreset(args.marketPrice, percent));
+            }}
+          />
+        </div>
+      </div>
+    );
+  },
+};
+
+export const InteractivePresetsLight: Story = {
+  ...InteractivePresets,
+  decorators: [
+    Story => (
+      <ThemeProvider theme={getTheme("light")}>
+        <Global styles={globalStyle} />
+        <Story />
+      </ThemeProvider>
+    ),
+  ],
+  args: { ...InteractivePresets.args, themeKey: "light" },
+};
+
 export const SmallMarketPrice: Story = {
   ...Default,
-  args: { ...Default.args, marketPrice: "0.0000044053" },
+  args: {
+    ...Default.args,
+    tokenABalance: "1000000",
+    sellAmount: "1000000",
+    sellAmountUsd: "$1",
+    buyAmount: "4.4053",
+    buyAmountUsd: "$1",
+    limitPrice: "0.0000044053",
+    limitPriceUsd: "$0.000001",
+    marketPrice: "0.0000044053",
+  },
 };
 
 export const LargeMarketPrice: Story = {

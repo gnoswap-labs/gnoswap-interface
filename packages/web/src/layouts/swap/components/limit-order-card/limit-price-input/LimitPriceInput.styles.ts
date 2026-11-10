@@ -135,6 +135,11 @@ export const LimitPricePresets = styled.div`
     &:hover:not(:disabled) {
       color: ${({ theme }) => theme.color.text02};
     }
+    &[aria-pressed="true"] {
+      background-color: ${({ theme }) => theme.color.select};
+      color: ${({ theme }) => theme.color.text02};
+      box-shadow: inset 0 0 0 1px ${({ theme }) => theme.color.border15};
+    }
     &:disabled {
       cursor: default;
       opacity: 0.5;

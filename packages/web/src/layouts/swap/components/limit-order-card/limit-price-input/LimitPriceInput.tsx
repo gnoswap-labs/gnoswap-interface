@@ -1,10 +1,11 @@
+import BigNumber from "bignumber.js";
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
 
 import IconAdd from "@components/common/icons/IconAdd";
 import IconRemove from "@components/common/icons/IconRemove";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { LIMIT_PRICE_PRESETS } from "@hooks/order/data/use-order-handler.utils";
+import { applyLimitPricePreset, LIMIT_PRICE_PRESETS } from "@hooks/order/data/use-order-handler.utils";
 import { formatPrice } from "@utils/new-number-utils";
 import { subscriptFormat } from "@utils/number-utils";
 
@@ -38,6 +39,12 @@ const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
 }) => {
   const { t } = useTranslation();
   const hasPrice = !!value;
+  const selectedPreset =
+    marketPrice && BigNumber(marketPrice).isGreaterThan(0)
+      ? [0, ...LIMIT_PRICE_PRESETS].find(percent =>
+          BigNumber(value).isEqualTo(percent === 0 ? marketPrice : applyLimitPricePreset(marketPrice, percent)),
+        )
+      : undefined;
   const displayMarketPrice = marketPrice?.startsWith("0.")
     ? subscriptFormat(marketPrice)
     : formatPrice(marketPrice, { usd: false });
@@ -100,7 +107,13 @@ const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
           {t("Swap:limit.market")} {displayMarketPrice ?? "-"} {outputSymbol}
         </span>
         <div className="preset-buttons">
-          <button type="button" className="preset-button" onClick={() => applyPreset(0)} disabled={!marketPrice}>
+          <button
+            type="button"
+            className="preset-button"
+            aria-pressed={selectedPreset === 0}
+            onClick={() => applyPreset(0)}
+            disabled={!marketPrice}
+          >
             {t("Swap:limit.market")}
           </button>
           {LIMIT_PRICE_PRESETS.map(percent => (
@@ -108,6 +121,7 @@ const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
               type="button"
               key={percent}
               className="preset-button"
+              aria-pressed={selectedPreset === percent}
               onClick={() => applyPreset(percent)}
               disabled={!marketPrice}
             >

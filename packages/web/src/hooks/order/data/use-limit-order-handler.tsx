@@ -116,7 +116,7 @@ export const useLimitOrderHandler = () => {
   }, [quoteAmount, routes, tokenB]);
 
   /**
-   * The market price only seeds the field once per pair; after that an empty
+   * Market +10% only seeds the field once per pair; after that an empty
    * field is the user's edit (e.g. select-all → delete before typing) and must
    * stay empty. The pair the price belongs to is kept with the price, because
    * Swap and DCA can change the shared pair while this form is not mounted.
@@ -131,14 +131,14 @@ export const useLimitOrderHandler = () => {
       return;
     }
     if (limitPrice) {
-      // The price of another pair: start this pair again from its market price.
+      // The price of another pair: start again from its market price +10%.
       setLimitPrice("");
       setPricedPairKey(null);
       return;
     }
     if (marketPrice) {
       setPricedPairKey(pairKey);
-      setLimitPrice(marketPrice);
+      setLimitPrice(applyLimitPricePreset(marketPrice, 10));
     }
   }, [limitPrice, marketPrice, pairKey, pricedPairKey, setLimitPrice, setPricedPairKey]);
 

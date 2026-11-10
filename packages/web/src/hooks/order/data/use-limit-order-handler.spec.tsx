@@ -97,7 +97,8 @@ describe("useLimitOrderHandler", () => {
     const { result, rerender } = renderHook(() => useLimitOrderHandler(), { wrapper });
     act(() => result.current.changeTokenA(tokenA));
     act(() => result.current.changeTokenB(tokenB));
-    await waitFor(() => expect(result.current.limitPrice).toBe("10"));
+    await waitFor(() => expect(result.current.limitPrice).toBe("11"));
+    act(() => result.current.changeLimitPrice("10"));
     act(() => result.current.changeSellAmount("3"));
     expect(result.current.limitPriceUsd).toBe("$20");
     expect(result.current.buyAmount).toBe("30");
@@ -123,14 +124,14 @@ describe("useLimitOrderHandler", () => {
 
     act(() => result.current.changeTokenA(tokenA));
     act(() => result.current.changeTokenB(tokenB));
-    await waitFor(() => expect(result.current.limitPrice).toBe("10"));
+    await waitFor(() => expect(result.current.limitPrice).toBe("11"));
 
     act(() => result.current.changeSellAmount("10"));
     expect(result.current.sellAmount).toBe("10");
-    expect(result.current.buyAmount).toBe("100");
+    expect(result.current.buyAmount).toBe("110");
 
     act(() => changeToken(result.current));
-    await waitFor(() => expect(["20", "40"]).toContain(result.current.limitPrice));
+    await waitFor(() => expect(["22", "44"]).toContain(result.current.limitPrice));
 
     const expectedBuy = BigNumber(result.current.sellAmount).multipliedBy(result.current.limitPrice);
     expect(BigNumber(result.current.buyAmount).isEqualTo(expectedBuy)).toBe(true);
@@ -141,7 +142,7 @@ describe("useLimitOrderHandler", () => {
 
     act(() => result.current.changeTokenA(tokenA));
     act(() => result.current.changeTokenB(tokenB));
-    await waitFor(() => expect(result.current.limitPrice).toBe("10"));
+    await waitFor(() => expect(result.current.limitPrice).toBe("11"));
 
     act(() => result.current.changeLimitPrice(""));
     // Give the seeding effect a chance to run again.
@@ -152,16 +153,16 @@ describe("useLimitOrderHandler", () => {
     expect(result.current.limitPrice).toBe("12");
   });
 
-  it("seeds the market price again for a new pair", async () => {
+  it("seeds market +10% again for a new pair", async () => {
     const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
 
     act(() => result.current.changeTokenA(tokenA));
     act(() => result.current.changeTokenB(tokenB));
-    await waitFor(() => expect(result.current.limitPrice).toBe("10"));
+    await waitFor(() => expect(result.current.limitPrice).toBe("11"));
 
     act(() => result.current.changeLimitPrice(""));
     act(() => result.current.changeTokenB(tokenC));
-    await waitFor(() => expect(result.current.limitPrice).toBe("20"));
+    await waitFor(() => expect(result.current.limitPrice).toBe("22"));
   });
 
   it("shows the tolerance capped to the realm maximum, the one confirmed and sent", () => {
@@ -183,7 +184,7 @@ describe("useLimitOrderHandler", () => {
       const first = renderInStore(store);
       act(() => first.result.current.changeTokenA(tokenA));
       act(() => first.result.current.changeTokenB(tokenB));
-      await waitFor(() => expect(first.result.current.limitPrice).toBe("10"));
+      await waitFor(() => expect(first.result.current.limitPrice).toBe("11"));
       act(() => first.result.current.changeLimitPrice(price));
       act(() => first.result.current.changeSellAmount("10"));
       first.unmount();
@@ -197,8 +198,8 @@ describe("useLimitOrderHandler", () => {
       store.set(SwapState.swap, prev => ({ ...prev, tokenB: tokenC }));
       const { result } = renderInStore(store);
 
-      await waitFor(() => expect(result.current.limitPrice).toBe("20"));
-      expect(result.current.buyAmount).toBe("200");
+      await waitFor(() => expect(result.current.limitPrice).toBe("22"));
+      expect(result.current.buyAmount).toBe("220");
     });
 
     it("is kept when the pair is unchanged", async () => {
@@ -232,7 +233,7 @@ describe("useLimitOrderHandler", () => {
       const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
       act(() => result.current.changeTokenA(tokenA));
       act(() => result.current.changeTokenB(tokenB));
-      await waitFor(() => expect(result.current.limitPrice).toBe("10"));
+      await waitFor(() => expect(result.current.limitPrice).toBe("11"));
 
       // A shared link restores amount=0.0000001&price=1 for 6-decimal tokens.
       act(() => {
@@ -248,7 +249,7 @@ describe("useLimitOrderHandler", () => {
       const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
       act(() => result.current.changeTokenA(tokenA));
       act(() => result.current.changeTokenB(tokenB));
-      await waitFor(() => expect(result.current.limitPrice).toBe("10"));
+      await waitFor(() => expect(result.current.limitPrice).toBe("11"));
 
       act(() => result.current.changeSellAmount("100.1234567"));
       await waitFor(() => expect(result.current.sellAmount).toBe("100.123456"));
