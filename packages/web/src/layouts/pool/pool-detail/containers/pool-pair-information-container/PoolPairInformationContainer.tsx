@@ -10,6 +10,7 @@ import useCustomRouter from "@hooks/common/use-custom-router";
 import { useWindowSize } from "@hooks/common/use-window-size";
 import { usePoolLiquiditySegmentsByPath } from "@hooks/pool/data/use-pool-liquidity-segments-by-path";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
+import { usePoolDetailRoute } from "@hooks/pool/ui/use-pool-detail-route";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
 import { useGetPoolDetailByPath, useGetPoolSqrtPriceX96 } from "@query/pools";
 import { useGetAllTokenPrices } from "@query/token";
@@ -28,7 +29,7 @@ const PoolPairInformationContainer: React.FC<PoolPairInformationContainerProps> 
   const [zoomLevel, setZoomLevel] = React.useState<number>(LIQUIDITY_GRAPH_INITIAL_ZOOM_LEVEL);
   const router = useCustomRouter();
   const { getGnotPath } = useGnotToGnot();
-  const poolPath = router.getPoolPath();
+  const { poolPath } = usePoolDetailRoute();
   const { isMobile } = useWindowSize();
   const { data, isLoading: loading } = useGetPoolDetailByPath(poolPath as string, {
     enabled: !!poolPath,

@@ -62,6 +62,14 @@ export const ConnectWalletModalWrapper = styled.div`
 
       .email-section {
         width: 100%;
+        &.disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          input,
+          button {
+            cursor: not-allowed;
+          }
+        }
         height: 57px;
         display: flex;
         align-items: center;
@@ -116,6 +124,10 @@ export const ConnectWalletModalWrapper = styled.div`
         .button-connect {
           gap: 8px;
           height: 57px;
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
           &.dark {
             background-color: ${({ theme }) => (theme.themeKey === "dark" ? "" : "#E0E8F480")};
             &:hover {

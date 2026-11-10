@@ -57,10 +57,11 @@ const swapSummaryInfo: SwapSummaryInfo = {
   swapRateAction: SwapRateAction.BTOA,
   swapRate1USD: 20,
   protocolFee: "0.15%",
-  routerFee: 0.15,
+  routerFeeAmountRaw: "2851",
+  tokenBPriceUSD: 20,
 };
 
-const renderModal = (isWrapOrUnwrap: boolean) =>
+const renderModal = (isWrapOrUnwrap: boolean, summary: SwapSummaryInfo = swapSummaryInfo) =>
   render(
     <JotaiProvider>
       <GnoswapThemeProvider>
@@ -73,7 +74,7 @@ const renderModal = (isWrapOrUnwrap: boolean) =>
           isLoading={false}
           isRefetching={false}
           swapTokenInfo={swapTokenInfo}
-          swapSummaryInfo={swapSummaryInfo}
+          swapSummaryInfo={summary}
           estimatedAmount="1.898308"
           setSwapRateAction={jest.fn()}
           swap={jest.fn()}
@@ -95,5 +96,31 @@ describe("ConfirmSwapModal details", () => {
     const { container } = renderModal(false);
 
     expect(container.querySelector(".gas-info .price-impact")).toBeInTheDocument();
+  });
+
+  it("shows the router fee the quote reports, in the output token's units and price", () => {
+    const { container } = renderModal(false);
+
+    // 0.002851 GNS at $20
+    expect(container.querySelector(".protocol .white-text")).toHaveTextContent("$0.05");
+  });
+
+  it("charges the router fee to the output token for an exact-out swap", () => {
+    const { container } = renderModal(false, {
+      ...swapSummaryInfo,
+      swapDirection: "EXACT_OUT",
+      tokenB: { ...tokenB, decimals: 8 },
+      routerFeeAmountRaw: "12345678",
+      tokenBPriceUSD: null,
+    });
+
+    expect(container.querySelector(".protocol .white-text")).toHaveTextContent("0.12345678 GNS");
+  });
+
+  it("shows a dash instead of a fee worked out from the rate when the quote has none", () => {
+    const { container } = renderModal(false, { ...swapSummaryInfo, routerFeeAmountRaw: null });
+
+    expect(container.querySelector(".protocol .white-text")).toHaveTextContent(/^-$/);
+    expect(container.querySelector(".protocol")).toHaveTextContent("(0.15%)");
   });
 });

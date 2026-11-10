@@ -18,6 +18,7 @@ import { base64ToUint8Array, Provider, Tx, TxSignature } from "@gnolang/tm2-js-c
 import { createTimeout } from "@common/utils/client-util";
 import { DEFAULT_GAS_WANTED } from "@common/values";
 import { DEFAULT_CHAIN_ID } from "@constants/environment.constant";
+import { IS_SOCIAL_LOGIN_DISABLED } from "@constants/common.constant";
 import { SocialLoginType, WalletType } from "src/types/wallet.types";
 import { AdenaSendTransactionSuccessResponse } from "../adena/adena";
 import { parseTransactionResponse } from "../adena/adena-client.util";
@@ -119,6 +120,9 @@ export class SocialWalletClient implements WalletClient {
   }
 
   public async initSocialWallet(loginType: SocialLoginType, email?: string) {
+    if (IS_SOCIAL_LOGIN_DISABLED) {
+      throw new Error("Social login is disabled");
+    }
     const config = getSocialWalletConfig(loginType, email);
     const provider = await this.createSocialWalletProvider(loginType, config);
     this.provider = provider;
@@ -329,7 +333,7 @@ export class SocialWalletClient implements WalletClient {
   };
 
   public static async createSocialWalletClient(loginType: SocialLoginType, email?: string) {
-    if (typeof window === "undefined") {
+    if (typeof window === "undefined" || IS_SOCIAL_LOGIN_DISABLED) {
       return null;
     }
 

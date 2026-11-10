@@ -5,7 +5,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { ERROR_VALUE } from "@common/errors/adena";
-import { ERROR_VALUE as SWAP_ERROR_VALUE } from "@common/errors/swap";
 import { MINIMUM_GNOT_SWAP_AMOUNT } from "@common/values";
 import ConfirmSwapModal from "@components/swap/confirm-swap-modal/ConfirmSwapModal";
 import { PAGE_PATH } from "@constants/page.constant";
@@ -187,6 +186,7 @@ export const useSwapHandler = () => {
     isSameToken,
     estimatedRoutes,
     estimatedAmount,
+    estimatedFeeAmountRaw,
     tokenAmountLimit,
     swapState,
     swap,
@@ -281,6 +281,14 @@ export const useSwapHandler = () => {
     }
     return BigNumber(quotedTokenBAmount).multipliedBy(tokenPrices[checkGnotPath(tokenB.priceID)].usd).toNumber();
   }, [quotedTokenBAmount, tokenB, tokenPrices]);
+
+  const tokenBPriceUSD = useMemo(() => {
+    if (!tokenB) {
+      return null;
+    }
+    const price = BigNumber(tokenPrices[checkGnotPath(tokenB.priceID)]?.usd);
+    return price.isFinite() && price.isGreaterThan(0) ? price.toNumber() : null;
+  }, [tokenB, tokenPrices]);
 
   const getValidUSDValue = useCallback(
     (token: TokenModel) => {
@@ -550,7 +558,6 @@ export const useSwapHandler = () => {
         : getTokenUSDPrice(checkGnotPath(tokenB.path), 1) || 1;
 
     const protocolFee = `${(swapFee || 0) / 100}%`;
-    const routerFee = (swapFee || 0) / 100;
 
     if (isSameToken) {
       return {
@@ -566,8 +573,10 @@ export const useSwapHandler = () => {
         },
         swapRateAction,
         swapRate1USD,
-        protocolFee,
-        routerFee,
+        // Wrapping and unwrapping never go through the router, so there is no router fee
+        protocolFee: "0%",
+        routerFeeAmountRaw: "0",
+        tokenBPriceUSD,
       };
     }
 
@@ -601,7 +610,8 @@ export const useSwapHandler = () => {
       swapRate1USD,
       direction: type,
       protocolFee,
-      routerFee,
+      routerFeeAmountRaw: estimatedFeeAmountRaw,
+      tokenBPriceUSD,
     };
   }, [
     tokenA,
@@ -617,6 +627,8 @@ export const useSwapHandler = () => {
     priceImpact,
     formatPriceImpact,
     swapFee,
+    estimatedFeeAmountRaw,
+    tokenBPriceUSD,
   ]);
 
   const isAvailSwap = useMemo(() => {
@@ -1240,12 +1252,8 @@ export const useSwapHandler = () => {
           hash: response?.data?.hash || "",
         });
       })
-      .catch(e => {
-        if (e.status === SWAP_ERROR_VALUE.DRY_SWAP_DEVIATION_EXCEEDED.status) {
-          broadcastError(BROADCAST_ERROR_VALUE.SLIPPAGE_EXCEEDED);
-        } else {
-          broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
-        }
+      .catch(() => {
+        broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
         setSwapResult({
           success: false,
           hash: "",

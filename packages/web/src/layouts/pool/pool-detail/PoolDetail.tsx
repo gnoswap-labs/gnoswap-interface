@@ -1,15 +1,14 @@
 import React, { useEffect, useMemo, useRef } from "react";
 
 import Footer from "@components/common/footer/Footer";
+import LoadingSpinner from "@components/common/loading-spinner/LoadingSpinner";
 import { VIDEO_GUIDE_TYPES } from "@constants/video-guide.constant";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
-import useCustomRouter from "@hooks/common/use-custom-router";
-import useUrlParam from "@hooks/common/use-url-param";
 import { useVideoGuide } from "@hooks/common/use-video-guide";
 import { usePositionData } from "@hooks/pool/data/use-position-data";
+import { usePoolDetailRoute } from "@hooks/pool/ui/use-pool-detail-route";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { useGetPoolDetailByPath, useGetPoolStakingListByPoolPath } from "@query/pools";
-import { isValidAddress } from "@utils/validation-utils";
 
 import VideoGuideModal from "@components/common/video-guide-modal/VideoGuideModal";
 import { isValidVideoGuideType } from "@utils/video-guide.utils";
@@ -17,9 +16,20 @@ import MyLiquidityContainer from "./containers/my-liquidity-container/MyLiquidit
 import PoolPairInformationContainer from "./containers/pool-pair-information-container/PoolPairInformationContainer";
 import StakingContainer from "./containers/staking-container/StakingContainer";
 import PoolLayout from "./PoolLayout";
+import { PoolLayoutWrapper, PoolLoadingMain } from "./PoolLayout.styles";
+
+export const PoolDetailLoading: React.FC = () => (
+  <PoolLayoutWrapper>
+    <HeaderContainer />
+    <PoolLoadingMain role="status" aria-label="Loading position" aria-busy="true">
+      <LoadingSpinner />
+    </PoolLoadingMain>
+    <Footer />
+  </PoolLayoutWrapper>
+);
 
 const PoolDetail: React.FC = () => {
-  const router = useCustomRouter();
+  const { poolPath, address: routeAddress, hash, isPositionLink } = usePoolDetailRoute();
 
   const {
     currentGuide,
@@ -29,17 +39,9 @@ const PoolDetail: React.FC = () => {
   } = useVideoGuide(VIDEO_GUIDE_TYPES.STAKING);
 
   const { account } = useWallet();
-  const poolPath = router.getPoolPath();
+  const urlAddress = routeAddress || "";
   const jumpFlagRef = useRef(false);
   const { data } = useGetPoolDetailByPath(poolPath);
-
-  const { initializedData, hash } = useUrlParam<{ addr: string | undefined }>({ addr: undefined });
-
-  const urlAddress = useMemo(() => {
-    if (!initializedData?.addr) return "";
-
-    return isValidAddress(initializedData.addr) ? initializedData.addr : "";
-  }, [initializedData?.addr]);
 
   const connectAddress = useMemo(() => {
     return account?.address || "";
@@ -54,7 +56,7 @@ const PoolDetail: React.FC = () => {
   }, [urlAddress, connectAddress]);
 
   const { isFetchedPosition, loading, positions } = usePositionData({
-    address: urlAddress ?? connectAddress,
+    address: urlAddress || connectAddress,
     poolPath,
     withClosed: false,
     fetchAll: true,
@@ -97,10 +99,11 @@ const PoolDetail: React.FC = () => {
       return;
     }
 
-    // The target card may not be rendered yet when it is outside the paginated liquidity list.
-    const hasPosition = positions.some(item => item.id.toString() === hash);
-    const positionElement = hasPosition ? document.getElementById(hash as string) : null;
-    const element = isElementInDOM(positionElement) ? positionElement : document.getElementById("liquidity-wrapper");
+    // Position-ID links wait for their exhaustive list; legacy hashes keep the section fallback.
+    if (isPositionLink) return;
+
+    const positionElement = hash ? document.getElementById(hash) : null;
+    const element = positionElement || document.getElementById("liquidity-wrapper");
     if (element && isElementInDOM(element)) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
@@ -111,7 +114,7 @@ const PoolDetail: React.FC = () => {
       jumpFlagRef.current = true;
       setTimeout(handleScroll, 100);
     }
-  }, [loading, isFetchedPosition, hash, isStakable]);
+  }, [loading, isFetchedPosition, hash, isStakable, isPositionLink]);
 
   useEffect(() => {
     jumpFlagRef.current = false;
@@ -130,7 +133,7 @@ const PoolDetail: React.FC = () => {
         isStaking={isStakable}
       />
       {isOpenVideoGuide && isValidVideoGuideType(currentGuide) && (
-        <VideoGuideModal videoType={currentGuide} setIsOpen={closeVideoGuide} />
+        <VideoGuideModal videoType={currentGuide} setIsOpen={closeVideoGuide} poolPath={poolPath} />
       )}
     </>
   );
