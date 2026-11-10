@@ -45,6 +45,7 @@
     "instantFillWarning": "El precio de activación es el del mercado y es posible que tu orden se ejecute al instante.",
     "limitPrice": "Precio límite",
     "market": "Mercado",
+    "marketPrice": "Precio de mercado:",
     "minTrading": "{{amount}} mínimo {{symbol}}",
     "sellWhen": "Vender cuando 1 {{symbol}} alcance",
     "slippage": "Deslizamiento máximo",

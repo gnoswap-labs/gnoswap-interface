@@ -45,6 +45,7 @@
     "instantFillWarning": "トリガー価格は市場価格であり、注文が即座に約定する可能性があります。",
     "limitPrice": "指値",
     "market": "市場",
+    "marketPrice": "市場価格：",
     "minTrading": "{{amount}} 以上{{symbol}}",
     "sellWhen": "1 {{symbol}} が次の価格に達したら売却",
     "slippage": "最大スリッページ",

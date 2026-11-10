@@ -45,6 +45,7 @@
     "instantFillWarning": "트리거 가격은 시세와 동일하며, 주문이 즉시 체결될 수 있습니다.",
     "limitPrice": "한도 가격",
     "market": "시장",
+    "marketPrice": "시장 가격:",
     "minTrading": "최소 {{amount}} {{symbol}}",
     "sellWhen": "1 {{symbol}} 가격이 다음에 도달하면 매도",
     "slippage": "최대 슬리피지",

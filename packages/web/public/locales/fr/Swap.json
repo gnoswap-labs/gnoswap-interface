@@ -45,6 +45,7 @@
     "instantFillWarning": "Le cours de déclenchement correspond au cours du marché et votre ordre peut être exécuté instantanément.",
     "limitPrice": "Prix limite",
     "market": "Marché",
+    "marketPrice": "Prix du marché :",
     "minTrading": "{{amount}} minimale {{symbol}}",
     "sellWhen": "Vendre quand 1 {{symbol}} atteint",
     "slippage": "Glissement maximal",

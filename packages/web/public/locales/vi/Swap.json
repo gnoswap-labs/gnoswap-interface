@@ -45,6 +45,7 @@
     "instantFillWarning": "Giá kích hoạt là giá thị trường và lệnh của bạn có thể được khớp ngay lập tức.",
     "limitPrice": "Giá giới hạn",
     "market": "Thị trường",
+    "marketPrice": "Giá thị trường:",
     "minTrading": "{{amount}} tối thiểu {{symbol}}",
     "sellWhen": "Bán khi 1 {{symbol}} đạt",
     "slippage": "Mức trượt tối đa",

@@ -45,6 +45,7 @@
     "instantFillWarning": "触发价为市价，您的订单可能会立即成交。",
     "limitPrice": "限价",
     "market": "市场",
+    "marketPrice": "市场价格：",
     "minTrading": "{{amount}} 以上{{symbol}}",
     "sellWhen": "当 1 {{symbol}} 达到以下价格时卖出",
     "slippage": "最大滑点",

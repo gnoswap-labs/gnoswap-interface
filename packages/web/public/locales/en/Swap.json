@@ -45,6 +45,7 @@
     "instantFillWarning": "Trigger price is at market and your order may instantly fill.",
     "limitPrice": "Limit Price",
     "market": "Market",
+    "marketPrice": "Market Price:",
     "minTrading": "Minimum {{amount}} {{symbol}}",
     "sellWhen": "Sell when 1 {{symbol}} reaches",
     "slippage": "Max. Slippage",

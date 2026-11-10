@@ -98,8 +98,8 @@ const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
         </div>
       </LimitPriceControl>
       <LimitPricePresets>
-        <span className="market-price" title={`${t("Swap:limit.market")} ${marketPrice ?? "-"} ${outputSymbol}`}>
-          {t("Swap:limit.market")} {displayMarketPrice ?? "-"} {outputSymbol}
+        <span className="market-price" title={`${t("Swap:limit.marketPrice")} ${marketPrice ?? "-"} ${outputSymbol}`}>
+          {t("Swap:limit.marketPrice")} {displayMarketPrice ?? "-"} {outputSymbol}
         </span>
         <div className="preset-buttons">
           <button
