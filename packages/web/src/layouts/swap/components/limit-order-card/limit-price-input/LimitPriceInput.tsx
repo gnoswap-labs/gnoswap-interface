@@ -1,11 +1,10 @@
-import BigNumber from "bignumber.js";
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
 
 import IconAdd from "@components/common/icons/IconAdd";
 import IconRemove from "@components/common/icons/IconRemove";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
-import { applyLimitPricePreset, LIMIT_PRICE_PRESETS } from "@hooks/order/data/use-order-handler.utils";
+import { LIMIT_PRICE_PRESETS } from "@hooks/order/data/use-order-handler.utils";
 import { formatPrice } from "@utils/new-number-utils";
 import { subscriptFormat } from "@utils/number-utils";
 
@@ -18,6 +17,7 @@ interface LimitPriceInputProps {
   value: string;
   valueUsd: string;
   marketPrice: string | null;
+  selectedPreset: number | null;
   changeValue: (value: string) => void;
   /** Moves the price by one step (0.1%) up or down. */
   stepPrice: (direction: 1 | -1) => void;
@@ -33,18 +33,13 @@ const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
   value,
   valueUsd,
   marketPrice,
+  selectedPreset,
   changeValue,
   stepPrice,
   applyPreset,
 }) => {
   const { t } = useTranslation();
   const hasPrice = !!value;
-  const selectedPreset =
-    marketPrice && BigNumber(marketPrice).isGreaterThan(0)
-      ? [0, ...LIMIT_PRICE_PRESETS].find(percent =>
-          BigNumber(value).isEqualTo(percent === 0 ? marketPrice : applyLimitPricePreset(marketPrice, percent)),
-        )
-      : undefined;
   const displayMarketPrice = marketPrice?.startsWith("0.")
     ? subscriptFormat(marketPrice)
     : formatPrice(marketPrice, { usd: false });

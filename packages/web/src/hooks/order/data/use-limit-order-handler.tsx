@@ -66,6 +66,7 @@ export const useLimitOrderHandler = () => {
   const [sellAmount, setSellAmount] = useAtom(OrderState.limitSellAmount);
   const [limitPrice, setLimitPrice] = useAtom(OrderState.limitPrice);
   const [pricedPairKey, setPricedPairKey] = useAtom(OrderState.limitPricePairKey);
+  const [pricePreset, setPricePreset] = useAtom(OrderState.limitPricePreset);
   const [expiry, setExpiry] = useAtom(OrderState.limitExpiry);
 
   const tokenA = swapValue.tokenA ?? null;
@@ -115,16 +116,19 @@ export const useLimitOrderHandler = () => {
     return formatLimitPriceInput(BigNumber(output).dividedBy(quoteAmount)) || null;
   }, [quoteAmount, routes, tokenB]);
 
-  /**
-   * Market +10% only seeds the field once per pair; after that an empty
-   * field is the user's edit (e.g. select-all → delete before typing) and must
-   * stay empty. The pair the price belongs to is kept with the price, because
-   * Swap and DCA can change the shared pair while this form is not mounted.
-   */
+  // Preserve manual prices (including an empty edit), but keep presets tied to
+  // fresh router quotes. Pair ownership survives switching to Swap or DCA.
   const pairKey = tokenA && tokenB ? `${tokenA.path}|${tokenB.path}` : null;
 
   useEffect(() => {
-    if (!pairKey || pricedPairKey === pairKey) return;
+    if (!pairKey) return;
+    if (pricedPairKey === pairKey) {
+      if (pricePreset !== null && marketPrice) {
+        const nextPrice = pricePreset === 0 ? marketPrice : applyLimitPricePreset(marketPrice, pricePreset);
+        if (nextPrice !== limitPrice) setLimitPrice(nextPrice);
+      }
+      return;
+    }
     if (limitPrice && pricedPairKey === null) {
       // A typed or restored (URL) price not bound to a pair yet belongs to this one.
       setPricedPairKey(pairKey);
@@ -134,13 +138,15 @@ export const useLimitOrderHandler = () => {
       // The price of another pair: start again from its market price +10%.
       setLimitPrice("");
       setPricedPairKey(null);
+      setPricePreset(10);
       return;
     }
     if (marketPrice) {
       setPricedPairKey(pairKey);
+      setPricePreset(10);
       setLimitPrice(applyLimitPricePreset(marketPrice, 10));
     }
-  }, [limitPrice, marketPrice, pairKey, pricedPairKey, setLimitPrice, setPricedPairKey]);
+  }, [limitPrice, marketPrice, pairKey, pricePreset, pricedPairKey, setLimitPrice, setPricePreset, setPricedPairKey]);
 
   const isValidPrice = BigNumber(limitPrice || 0).isGreaterThan(0);
 
@@ -283,7 +289,8 @@ export const useLimitOrderHandler = () => {
     // Re-seed from the market price even when the resulting pair is unchanged.
     setPricedPairKey(null);
     setLimitPrice("");
-  }, [setLimitPrice, setPricedPairKey]);
+    setPricePreset(10);
+  }, [setLimitPrice, setPricePreset, setPricedPairKey]);
 
   const changeTokenA = useCallback(
     (token: TokenModel) => {
@@ -317,33 +324,37 @@ export const useLimitOrderHandler = () => {
   const changeLimitPrice = useCallback(
     (value: string) => {
       if (value !== "" && !/^\d*\.?\d*$/.test(value)) return;
+      setPricePreset(null);
       setLimitPrice(value);
     },
-    [setLimitPrice],
+    [setLimitPrice, setPricePreset],
   );
 
   /** A price from a shared link, for the pair the link restores rather than the one held before. */
   const restoreLimitPrice = useCallback(
     (value: string) => {
       setPricedPairKey(null);
+      setPricePreset(null);
       setLimitPrice(value);
     },
-    [setLimitPrice, setPricedPairKey],
+    [setLimitPrice, setPricePreset, setPricedPairKey],
   );
 
   const stepPrice = useCallback(
     (direction: 1 | -1) => {
+      setPricePreset(null);
       setLimitPrice(prev => stepLimitPrice(prev || marketPrice || "", direction));
     },
-    [marketPrice, setLimitPrice],
+    [marketPrice, setLimitPrice, setPricePreset],
   );
 
   const applyPreset = useCallback(
     (percent: number) => {
       if (!marketPrice) return;
+      setPricePreset(percent);
       setLimitPrice(percent === 0 ? marketPrice : applyLimitPricePreset(marketPrice, percent));
     },
-    [marketPrice, setLimitPrice],
+    [marketPrice, setLimitPrice, setPricePreset],
   );
 
   const copyURL = useCallback(
@@ -438,6 +449,7 @@ export const useLimitOrderHandler = () => {
     limitPrice,
     limitPriceUsd: formatUsd(isValidPrice ? calculateUsdValue(limitPrice, getUsdPrice(tokenB)) : null),
     marketPrice,
+    selectedPreset: pricePreset,
     expiry,
     expiryOptions: expiryOptions.map(option => ({ value: option.duration, label: expiryLabel(option.duration) })),
     isLoadingConfig,

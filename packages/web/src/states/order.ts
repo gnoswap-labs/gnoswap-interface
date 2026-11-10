@@ -19,6 +19,9 @@ export const limitSellAmount = atom<string>("");
 /** Output per input. Empty until the market price is known. */
 export const limitPrice = atom<string>("");
 
+/** Percentage over the live router quote; null keeps a manually entered price. */
+export const limitPricePreset = atom<number | null>(10);
+
 /**
  * The `tokenA|tokenB` pair `limitPrice` belongs to, or null when it has not
  * been bound to a pair yet (a typed or restored price). The token pair is

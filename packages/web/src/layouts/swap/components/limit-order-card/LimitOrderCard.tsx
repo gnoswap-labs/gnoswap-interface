@@ -57,6 +57,7 @@ export interface LimitOrderCardProps {
   limitPrice: string;
   limitPriceUsd: string;
   marketPrice: string | null;
+  selectedPreset: number | null;
   changeLimitPrice: (value: string) => void;
   stepPrice: (direction: 1 | -1) => void;
   applyPreset: (percent: number) => void;
@@ -99,6 +100,7 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
   limitPrice,
   limitPriceUsd,
   marketPrice,
+  selectedPreset,
   changeLimitPrice,
   stepPrice,
   applyPreset,
@@ -205,6 +207,7 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
             value={limitPrice}
             valueUsd={limitPriceUsd}
             marketPrice={marketPrice}
+            selectedPreset={selectedPreset}
             changeValue={changeLimitPrice}
             stepPrice={stepPrice}
             applyPreset={applyPreset}

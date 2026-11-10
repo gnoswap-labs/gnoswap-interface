@@ -55,6 +55,7 @@ export const Default: Story = {
     limitPrice: "1.2716",
     limitPriceUsd: "$1",
     marketPrice: "1.2716",
+    selectedPreset: 0,
     changeLimitPrice: fn(),
     stepPrice: fn(),
     applyPreset: fn(),
@@ -75,9 +76,18 @@ export const Default: Story = {
 
 export const InteractivePresets: Story = {
   ...Default,
-  args: { ...Default.args, limitPrice: applyLimitPricePreset(Default.args?.marketPrice ?? "1", 10) },
+  args: {
+    ...Default.args,
+    limitPrice: applyLimitPricePreset(Default.args?.marketPrice ?? "1", 10),
+    selectedPreset: 10,
+  },
   render: function InteractivePresets(args) {
-    const [limitPrice, setLimitPrice] = React.useState(args.limitPrice);
+    const [customPrice, setLimitPrice] = React.useState(args.limitPrice);
+    const [selectedPreset, setSelectedPreset] = React.useState(args.selectedPreset);
+    const limitPrice =
+      selectedPreset !== null && args.marketPrice
+        ? applyLimitPricePreset(args.marketPrice, selectedPreset)
+        : customPrice;
     const outputUsd = BigNumber(args.buyAmountUsd.replace(/[$,]/g, "")).dividedBy(args.buyAmount);
     const buyAmount = BigNumber(args.sellAmount)
       .multipliedBy(limitPrice || 0)
@@ -89,13 +99,20 @@ export const InteractivePresets: Story = {
           <LimitOrderCard
             {...args}
             limitPrice={limitPrice}
+            selectedPreset={selectedPreset}
             limitPriceUsd={limitPrice ? formatPrice(BigNumber(limitPrice).multipliedBy(outputUsd)) : "-"}
             buyAmount={buyAmount}
             buyAmountUsd={formatPrice(BigNumber(buyAmount).multipliedBy(outputUsd))}
-            changeLimitPrice={setLimitPrice}
-            stepPrice={direction => setLimitPrice(price => stepLimitPrice(price, direction))}
+            changeLimitPrice={price => {
+              setSelectedPreset(null);
+              setLimitPrice(price);
+            }}
+            stepPrice={direction => {
+              setSelectedPreset(null);
+              setLimitPrice(stepLimitPrice(limitPrice, direction));
+            }}
             applyPreset={percent => {
-              if (args.marketPrice) setLimitPrice(applyLimitPricePreset(args.marketPrice, percent));
+              if (args.marketPrice) setSelectedPreset(percent);
             }}
           />
         </div>

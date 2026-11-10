@@ -73,6 +73,7 @@ const renderCard = (props: Partial<LimitOrderCardProps> = {}) => {
     limitPrice: "1.25",
     limitPriceUsd: "-",
     marketPrice: "1.25",
+    selectedPreset: 0,
     changeLimitPrice: jest.fn(),
     stepPrice: jest.fn(),
     applyPreset: jest.fn(),
@@ -111,25 +112,6 @@ it("keeps the estimated Buy amount read-only without changing the sell amount", 
   expect(buyAmount).toHaveValue("12.5");
   expect(screen.getByDisplayValue("10")).toHaveValue("10");
   expect(changeSellAmount).not.toHaveBeenCalled();
-});
-
-it("tracks preset selection from the price and clears it for custom prices or a changed market", () => {
-  const { rerender } = renderCard({ limitPrice: "1.2500", marketPrice: "1.25" });
-  expect(screen.getByRole("button", { name: "Swap:limit.market" })).toHaveAttribute("aria-pressed", "true");
-  expect(screen.getAllByRole("button", { pressed: true })).toHaveLength(1);
-
-  rerender({ limitPrice: "1.3125" });
-  expect(screen.getByRole("button", { name: "+5%" })).toHaveAttribute("aria-pressed", "true");
-  expect(screen.getAllByRole("button", { pressed: true })).toHaveLength(1);
-
-  rerender({ limitPrice: "1.3" });
-  expect(screen.queryByRole("button", { pressed: true })).not.toBeInTheDocument();
-
-  rerender({ limitPrice: "1.3125", marketPrice: "2" });
-  expect(screen.queryByRole("button", { pressed: true })).not.toBeInTheDocument();
-
-  rerender({ limitPrice: "", marketPrice: null });
-  expect(screen.queryByRole("button", { pressed: true })).not.toBeInTheDocument();
 });
 
 describe("LimitOrderCard Max", () => {

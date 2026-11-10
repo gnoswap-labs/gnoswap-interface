@@ -92,6 +92,61 @@ describe("useLimitOrderHandler", () => {
     });
   });
 
+  it("uses fresh amount-dependent router quotes for presets but preserves manually edited prices", async () => {
+    let liveRate = "8";
+    jest.mocked(useGetRoutes).mockImplementation(request => {
+      if (!request?.inputToken || !request.outputToken || !request.tokenAmount) {
+        return { data: undefined } as ReturnType<typeof useGetRoutes>;
+      }
+      const rate = BigNumber(request.tokenAmount).isGreaterThan(10) ? liveRate : "10";
+      const amount = BigNumber(request.tokenAmount).multipliedBy(rate).shiftedBy(6).toFixed(0);
+      return { data: { status: "SUCCESS", amount } } as unknown as ReturnType<typeof useGetRoutes>;
+    });
+    const { result, rerender } = renderHook(() => useLimitOrderHandler(), { wrapper });
+    act(() => result.current.changeTokenA(tokenA));
+    act(() => result.current.changeTokenB(tokenB));
+    await waitFor(() => expect(result.current.limitPrice).toBe("11"));
+
+    act(() => result.current.changeSellAmount("20"));
+    await waitFor(() => expect(result.current.marketPrice).toBe("8"));
+    await waitFor(() => expect(result.current.limitPrice).toBe("8.8"));
+    expect(result.current.buyAmount).toBe("176");
+    expect(result.current.selectedPreset).toBe(10);
+
+    act(() => result.current.applyPreset(0));
+    liveRate = "7";
+    rerender();
+    await waitFor(() => expect(result.current.limitPrice).toBe("7"));
+    expect(result.current.buyAmount).toBe("140");
+    expect(result.current.selectedPreset).toBe(0);
+
+    act(() => result.current.applyPreset(5));
+    act(() => result.current.changeSellAmount("30"));
+    liveRate = "6";
+    rerender();
+    await waitFor(() => expect(result.current.limitPrice).toBe("6.3"));
+    expect(result.current.buyAmount).toBe("189");
+    expect(result.current.selectedPreset).toBe(5);
+
+    // Even typing the exact preset price explicitly switches to a fixed price.
+    act(() => result.current.changeLimitPrice("6.3"));
+    liveRate = "5";
+    act(() => result.current.changeSellAmount("40"));
+    expect(result.current.marketPrice).toBe("5");
+    expect(result.current.limitPrice).toBe("6.3");
+    expect(result.current.buyAmount).toBe("252");
+    expect(result.current.selectedPreset).toBeNull();
+
+    act(() => result.current.applyPreset(10));
+    act(() => result.current.stepPrice(1));
+    liveRate = "4";
+    act(() => result.current.changeSellAmount("50"));
+    expect(result.current.marketPrice).toBe("4");
+    expect(result.current.limitPrice).toBe("5.5055");
+    expect(result.current.buyAmount).toBe("275.275");
+    expect(result.current.selectedPreset).toBeNull();
+  });
+
   it("updates the USD estimate with the output token price without changing the order ratio", async () => {
     mockGetUsdPrice.mockImplementation(token => (token?.path === tokenB.path ? "2" : "99"));
     const { result, rerender } = renderHook(() => useLimitOrderHandler(), { wrapper });
@@ -177,7 +232,9 @@ describe("useLimitOrderHandler", () => {
   describe("a price kept while the form is not mounted", () => {
     const renderInStore = (store: ReturnType<typeof createStore>) =>
       renderHook(() => useLimitOrderHandler(), {
-        wrapper: ({ children }: { children: React.ReactNode }) => <JotaiProvider store={store}>{children}</JotaiProvider>,
+        wrapper: ({ children }: { children: React.ReactNode }) => (
+          <JotaiProvider store={store}>{children}</JotaiProvider>
+        ),
       });
 
     const priceAtoB = async (store: ReturnType<typeof createStore>, price: string) => {
@@ -189,6 +246,22 @@ describe("useLimitOrderHandler", () => {
       act(() => first.result.current.changeSellAmount("10"));
       first.unmount();
     };
+
+    it("keeps the chosen preset when returning to the same pair", async () => {
+      const store = createStore();
+      const first = renderInStore(store);
+      act(() => first.result.current.changeTokenA(tokenA));
+      act(() => first.result.current.changeTokenB(tokenB));
+      await waitFor(() => expect(first.result.current.limitPrice).toBe("11"));
+      act(() => first.result.current.applyPreset(5));
+      first.unmount();
+
+      const { result } = renderInStore(store);
+      act(() => result.current.changeSellAmount("20"));
+      await waitFor(() => expect(result.current.limitPrice).toBe("10.5"));
+      expect(result.current.selectedPreset).toBe(5);
+      expect(result.current.buyAmount).toBe("210");
+    });
 
     it("is reseeded from the market price when another mode changed the pair", async () => {
       const store = createStore();
@@ -225,6 +298,10 @@ describe("useLimitOrderHandler", () => {
       await act(async () => Promise.resolve());
 
       expect(result.current.limitPrice).toBe("15");
+      expect(result.current.selectedPreset).toBeNull();
+      act(() => result.current.changeSellAmount("20"));
+      expect(result.current.limitPrice).toBe("15");
+      expect(result.current.buyAmount).toBe("300");
     });
   });
 
