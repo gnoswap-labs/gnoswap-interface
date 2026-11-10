@@ -11,18 +11,28 @@ import { OrderPairLabelWrapper } from "./OrderPairLabel.styles";
 interface OrderPairLabelProps {
   inputToken: TokenModel;
   outputToken: TokenModel;
+  /** Formatted input amount shown before the input symbol. */
+  inputAmount?: string;
   /** Gnoscan link of the order, shown as an external link icon. */
   linkUrl?: string;
   logoSize?: number;
 }
 
-/** `[logo] GNS → GNOT [link]`, the heading of an order. */
-const OrderPairLabel: React.FC<OrderPairLabelProps> = ({ inputToken, outputToken, linkUrl, logoSize = 20 }) => {
+/** `[logo] (amount) GNS → GNOT [link]`, the heading of an order. */
+const OrderPairLabel: React.FC<OrderPairLabelProps> = ({
+  inputToken,
+  outputToken,
+  inputAmount,
+  linkUrl,
+  logoSize = 20,
+}) => {
+  const inputSymbol = inputToken.displaySymbol || inputToken.symbol;
+
   return (
     <OrderPairLabelWrapper>
       <MissingLogo symbol={inputToken.symbol} url={inputToken.logoURI} width={logoSize} mobileWidth={16} />
       <span className="pair-symbols">
-        {inputToken.displaySymbol || inputToken.symbol}
+        {inputAmount ? `${inputAmount} ${inputSymbol}` : inputSymbol}
         <IconRightArrow className="pair-arrow" />
         {outputToken.displaySymbol || outputToken.symbol}
       </span>

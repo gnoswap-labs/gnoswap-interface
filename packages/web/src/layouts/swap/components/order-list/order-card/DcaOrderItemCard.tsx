@@ -64,7 +64,12 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
   return (
     <OrderItemCardWrapper className={cx({ active: order.isActive })}>
       <div className="card-header">
-        <OrderPairLabel inputToken={inputToken} outputToken={outputToken} linkUrl={txUrl} />
+        <OrderPairLabel
+          inputToken={inputToken}
+          outputToken={outputToken}
+          inputAmount={formatOrderAmount(order.depositAmount)}
+          linkUrl={txUrl}
+        />
         {order.isActive ? (
           <span className="card-status ongoing">{t("Swap:order.ongoing")}</span>
         ) : (
