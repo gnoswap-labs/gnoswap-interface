@@ -13,7 +13,6 @@ export interface DcaConfigResponse {
   minAmountPerExecution: string;
   maxExecutionCount: number;
   executionFeeBps: number;
-  routerFeeBps: number;
   minExecutionGapRate: number;
   halted: OrderHaltedStatus;
   /**

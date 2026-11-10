@@ -26,7 +26,6 @@
     "minAmountPerExecution": "1",
     "maxExecutionCount": 1000,
     "executionFeeBps": 15,
-    "routerFeeBps": 15,
     "minExecutionGapRate": 5000,
     "halted": {
       "execute": false,

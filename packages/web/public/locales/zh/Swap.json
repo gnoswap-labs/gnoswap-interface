@@ -21,8 +21,6 @@
     "overTooltip": "作为您的订单的一部分，将被触发的单笔交易数量。",
     "placeOrder": "下单",
     "poolCheckFailed": "重试池检查",
-    "routerFee": "路由器费用",
-    "routerFeeTooltip": "该费用按该订单执行的每笔交易收取，并以产出代币支付。",
     "toBuy": "购买",
     "unit": {
       "day": "天",

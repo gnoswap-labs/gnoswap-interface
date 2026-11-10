@@ -13,7 +13,7 @@ interface DcaOrderDetailProps {
   defaultOpened?: boolean;
 }
 
-/** Collapsible rate and order details: Amount per Order, Estimated End Date, Router Fee, Execution Fee, Network Gas Fee. */
+/** Collapsible rate and order details: Amount per Order, Estimated End Date, Execution Fee, Network Gas Fee. */
 const DcaOrderDetail: React.FC<DcaOrderDetailProps> = ({ summary, defaultOpened = true }) => {
   const { t } = useTranslation();
   const [opened, setOpened] = useState(defaultOpened);
@@ -26,12 +26,6 @@ const DcaOrderDetail: React.FC<DcaOrderDetailProps> = ({ summary, defaultOpened 
         value: `${summary.amountPerOrder} ${summary.inputToken.displaySymbol}`,
       },
       { key: "estimatedEndDate", label: t("Swap:dca.estimatedEndDate"), value: summary.estimatedEndDate },
-      {
-        key: "routerFee",
-        label: t("Swap:dca.routerFee"),
-        tooltip: t("Swap:dca.routerFeeTooltip"),
-        value: summary.routerFee,
-      },
       {
         key: "executionFee",
         label: t("Swap:dca.executionFee"),

@@ -27,7 +27,6 @@ const mockState: {
         whitelistedPools?: string[];
         halted?: { execute: boolean };
         executionFeeBps?: number;
-        routerFeeBps?: number;
       }
     | undefined;
   configError: boolean;
@@ -474,13 +473,13 @@ describe("useDcaOrderHandler execution fee", () => {
 
   it("quotes the owner rate net of the execution fee and shows the fee", () => {
     mockState.configError = false;
-    mockState.config = { whitelistedPools, executionFeeBps: 15, routerFeeBps: 15 };
+    mockState.config = { whitelistedPools, executionFeeBps: 15 };
     mockPoolList({ data: undefined, isError: false });
 
     // The router returns 5 B for one 5 A execution; the realm keeps 0.15% of it.
     const result = renderWithPair(tokenB);
     act(() => result.current.setExecutionCountInput("2"));
 
-    expect(result.current.summary).toMatchObject({ rate: "0.9985", executionFee: "0.15%", routerFee: "0.15%" });
+    expect(result.current.summary).toMatchObject({ rate: "0.9985", executionFee: "0.15%" });
   });
 });

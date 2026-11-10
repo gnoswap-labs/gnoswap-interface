@@ -30,12 +30,6 @@ const ConfirmDcaOrderModal: React.FC<ConfirmDcaOrderModalProps> = ({ summary, is
       },
       { key: "estimatedEndDate", label: t("Swap:dca.estimatedEndDate"), value: summary.estimatedEndDate },
       {
-        key: "routerFee",
-        label: t("Swap:dca.routerFee"),
-        tooltip: t("Swap:dca.routerFeeTooltip"),
-        value: summary.routerFee,
-      },
-      {
         key: "executionFee",
         label: t("Swap:dca.executionFee"),
         tooltip: t("Swap:dca.executionFeeTooltip"),

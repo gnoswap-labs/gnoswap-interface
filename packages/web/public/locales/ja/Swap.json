@@ -21,8 +21,6 @@
     "overTooltip": "注文の一環として発動される個別の取引の数。",
     "placeOrder": "注文する",
     "poolCheckFailed": "リトライプールの確認",
-    "routerFee": "ルーター利用料",
-    "routerFeeTooltip": "その注文によって執行された各取引に対して課される手数料です。これは、出力トークンで支払われます。",
     "toBuy": "購入",
     "unit": {
       "day": "日",

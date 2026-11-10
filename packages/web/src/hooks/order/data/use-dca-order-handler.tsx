@@ -341,14 +341,12 @@ export const useDcaOrderHandler = () => {
       rateUsd: formattedRate.usd,
       amountPerOrder: trimFractionZeros(BigNumber(amountPerExecution).toFormat(tokenA.decimals, BigNumber.ROUND_DOWN)),
       estimatedEndDate: formatOrderDateTime(schedule?.estimatedEndAt),
-      routerFee: formatBps(config?.routerFeeBps),
       executionFee: formatBps(config?.executionFeeBps),
     };
   }, [
     actualSellAmount,
     amountPerExecution,
     config?.executionFeeBps,
-    config?.routerFeeBps,
     executionCount,
     formatRate,
     formatUsd,

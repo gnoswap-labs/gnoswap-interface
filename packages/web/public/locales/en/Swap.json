@@ -21,8 +21,6 @@
     "overTooltip": "The number of individual trades that will be triggered as part of your order.",
     "placeOrder": "Place Order",
     "poolCheckFailed": "Retry Pool Check",
-    "routerFee": "Router Fee",
-    "routerFeeTooltip": "The fee charged on each trade executed by the order. It is paid in the output token.",
     "toBuy": "Buy",
     "unit": {
       "day": "Day",

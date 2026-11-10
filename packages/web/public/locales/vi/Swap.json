@@ -21,8 +21,6 @@
     "overTooltip": "Số lượng các giao dịch riêng lẻ sẽ được thực hiện trong khuôn khổ lệnh của bạn.",
     "placeOrder": "Đặt hàng",
     "poolCheckFailed": "Kiểm tra nhóm thử lại",
-    "routerFee": "Phí sử dụng bộ định tuyến",
-    "routerFeeTooltip": "Phí được tính trên mỗi giao dịch được thực hiện theo lệnh. Phí này được thanh toán bằng token đầu ra.",
     "toBuy": "Mua",
     "unit": {
       "day": "Ngày",

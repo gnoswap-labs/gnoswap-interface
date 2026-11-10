@@ -21,8 +21,6 @@
     "overTooltip": "El número de operaciones individuales que se ejecutarán como parte de tu orden.",
     "placeOrder": "Realizar pedido",
     "poolCheckFailed": "Comprobación del grupo de reintentos",
-    "routerFee": "Cuota del router",
-    "routerFeeTooltip": "La comisión que se cobra por cada operación ejecutada mediante la orden. Se abona en el token de salida.",
     "toBuy": "Comprar",
     "unit": {
       "day": "Día",

@@ -21,8 +21,6 @@
     "overTooltip": "주문의 일환으로 실행될 개별 거래의 수입니다.",
     "placeOrder": "주문하기",
     "poolCheckFailed": "재시도 풀 확인",
-    "routerFee": "라우터 수수료",
-    "routerFeeTooltip": "해당 주문으로 체결된 각 거래에 부과되는 수수료입니다. 이 수수료는 출력 토큰으로 지급됩니다.",
     "toBuy": "구매하기",
     "unit": {
       "day": "날",
