@@ -41,8 +41,7 @@ const DcaOrderSentence: React.FC<DcaOrderSentenceProps> = ({ summary }) => {
         />
       </div>
       <div className="market-price">
-        {t("Swap:dca.marketPrice")}: <span className="highlight">{summary.rate}</span>{" "}
-        <span>({summary.rateUsd})</span>
+        {t("Swap:dca.marketPrice")}: {summary.rate} ({summary.rateUsd})
       </div>
     </DcaOrderSentenceWrapper>
   );

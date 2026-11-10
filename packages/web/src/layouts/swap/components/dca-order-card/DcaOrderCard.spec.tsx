@@ -173,7 +173,7 @@ describe("DcaOrderCard", () => {
 
     expect(screen.getByText("Swap:dca.every")).toBeInTheDocument();
     expect(screen.getByText("Swap:dca.over")).toBeInTheDocument();
-    expect(screen.getByText("1 GNS = 1.04 GNOT")).toBeInTheDocument();
+    expect(screen.getByText(/1 GNS = 1\.04 GNOT/)).toBeInTheDocument();
     expect(screen.getByText("2026-11-03 20:35:36")).toBeInTheDocument();
     expect(screen.getByText("Swap:dca.executionFee")).toBeInTheDocument();
     // Placing an order shows no network gas fee.
