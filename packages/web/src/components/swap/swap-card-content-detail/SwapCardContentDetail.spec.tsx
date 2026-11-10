@@ -57,9 +57,10 @@ const swapSummaryInfo: SwapSummaryInfo = {
     amount: 45124,
     currency: "GNOT",
   },
-  protocolFee: "0.15",
+  protocolFee: "0.15%",
   swapRateAction: SwapRateAction.ATOB,
-  routerFee: 0,
+  routerFeeAmountRaw: "30",
+  tokenBPriceUSD: 0.25,
 };
 
 const swapTokenInfo: SwapTokenInfo = {

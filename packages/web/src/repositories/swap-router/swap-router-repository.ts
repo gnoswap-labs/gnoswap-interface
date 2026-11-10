@@ -1,7 +1,7 @@
 import { TransactionMessage, WalletResponse } from "@common/clients/wallet-client/protocols";
 
 import { GetRoutesRequest } from "./request/get-routes-request";
-import { DrySwapRequest, SwapRouteMessagesRequest, SwapRouteRequest } from "./request/swap-route-request";
+import { SwapRouteMessagesRequest, SwapRouteRequest } from "./request/swap-route-request";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
 import { WrapTokenMessagesRequest, WrapTokenRequest } from "./request/wrap-token-request";
 import { GetRoutesResponse } from "./response/get-routes-response";
@@ -9,8 +9,6 @@ import { SwapRouteFailedResponse, SwapRouteSuccessResponse } from "./response/sw
 
 export interface SwapRouterRepository {
   getRoutes: (request: GetRoutesRequest) => Promise<GetRoutesResponse>;
-
-  getDrySwap: (request: DrySwapRequest) => Promise<number>;
 
   /**
    * The messages `sendExactInSwapRoute` would broadcast, approvals and the

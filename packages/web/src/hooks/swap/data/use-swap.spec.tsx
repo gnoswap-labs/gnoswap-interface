@@ -58,8 +58,8 @@ describe("useSwap quotes and amount precision", () => {
     useGetRoutesMock.mockReturnValue({
       data: {
         estimatedRoutes: [{ quote: 100, amountIn: 0n, amountOut: 0n, pools: [] }],
-        originAmount: 0,
         amount: "1000000",
+        feeAmount: "1500",
         status: "SUCCESS",
       },
       isLoading: false,
@@ -71,8 +71,8 @@ describe("useSwap quotes and amount precision", () => {
     getRoutes.mockReset();
     getRoutes.mockResolvedValue({
       estimatedRoutes: [{ quote: 100, amountIn: 0n, amountOut: 0n, pools: [] }],
-      originAmount: 0,
       amount: "2000000",
+      feeAmount: "3000",
       status: "SUCCESS",
     });
     makeExactInSwapRouteMessages.mockClear();
@@ -135,8 +135,8 @@ describe("useSwap quotes and amount precision", () => {
     useGetRoutesMock.mockImplementation(({ tokenAmount }) => ({
       data: {
         estimatedRoutes: [{ quote: 100, amountIn: 0n, amountOut: 0n, pools: [] }],
-        originAmount: 0,
         amount: tokenAmount === "111" ? "200158845" : "1898308",
+        feeAmount: tokenAmount === "111" ? "300689" : "2851",
         status: "SUCCESS",
       },
       isLoading: false,
@@ -151,15 +151,18 @@ describe("useSwap quotes and amount precision", () => {
     act(() => result.current.updateSwapAmount("1"));
     act(() => jest.advanceTimersByTime(1_000));
     expect(result.current.estimatedAmount).toBe("1.898308");
+    expect(result.current.estimatedFeeAmountRaw).toBe("2851");
 
     act(() => result.current.updateSwapAmount("111"));
     expect(result.current.swapState).toBe("LOADING");
     expect(result.current.estimatedAmount).toBeNull();
+    expect(result.current.estimatedFeeAmountRaw).toBeNull();
     expect(result.current.estimatedRoutes).toBeNull();
 
     act(() => jest.advanceTimersByTime(1_000));
     expect(result.current.swapState).toBe("SUCCESS");
     expect(result.current.estimatedAmount).toBe("200.158845");
+    expect(result.current.estimatedFeeAmountRaw).toBe("300689");
   });
 
   it("rounds the exact-out maximum input up at an atomic-unit boundary", async () => {
@@ -167,8 +170,8 @@ describe("useSwap quotes and amount precision", () => {
     useGetRoutesMock.mockReturnValue({
       data: {
         estimatedRoutes: [{ quote: 100, amountIn: 0n, amountOut: 0n, pools: [] }],
-        originAmount: 0,
         amount: "1",
+        feeAmount: "0",
         status: "SUCCESS",
       },
       isLoading: false,
@@ -199,6 +202,86 @@ describe("useSwap quotes and amount precision", () => {
     );
   });
 
+  it("applies slippage to the final exact-in quote without taking the router fee off it again", () => {
+    useGetRoutesMock.mockReturnValue({
+      data: {
+        estimatedRoutes: [{ quote: 100, amountIn: 0n, amountOut: 0n, pools: [] }],
+        amount: "2000000",
+        feeAmount: "3000",
+        status: "SUCCESS",
+      },
+      isLoading: false,
+      isRefetching: false,
+      error: null,
+    });
+
+    const { result } = renderHook(() =>
+      useSwap({ tokenA: createToken("USDC"), tokenB: createToken("ATOM"), direction: "EXACT_IN", slippage: 0.5 }),
+    );
+
+    act(() => result.current.updateSwapAmount("1"));
+    act(() => jest.advanceTimersByTime(1_000));
+
+    // 2 ATOM is what the user receives; the 0.003 ATOM fee is already out of it
+    expect(result.current.estimatedAmount).toBe("2");
+    expect(result.current.estimatedFeeAmountRaw).toBe("3000");
+    expect(result.current.tokenAmountLimit).toBe("1.99");
+  });
+
+  it("keeps the router fee in output units for an exact-out quote, which is the input to pay", () => {
+    useGetRoutesMock.mockReturnValue({
+      data: {
+        estimatedRoutes: [{ quote: 100, amountIn: 0n, amountOut: 0n, pools: [] }],
+        amount: "1500000",
+        feeAmount: "4500",
+        status: "SUCCESS",
+      },
+      isLoading: false,
+      isRefetching: false,
+      error: null,
+    });
+
+    const { result } = renderHook(() =>
+      useSwap({ tokenA: createToken("USDC"), tokenB: createToken("ATOM"), direction: "EXACT_OUT", slippage: 0.5 }),
+    );
+
+    act(() => result.current.updateSwapAmount("1"));
+    act(() => jest.advanceTimersByTime(1_000));
+
+    // 1.5 USDC, fee included, pays for the 1 ATOM; the fee itself is 0.0045 ATOM
+    expect(result.current.estimatedAmount).toBe("1.5");
+    expect(result.current.estimatedFeeAmountRaw).toBe("4500");
+    expect(result.current.tokenAmountLimit).toBe("1.5075");
+  });
+
+  it.each([
+    ["reports a true zero fee as zero", "0", "0"],
+    ["has no fee when the quote lacks one", undefined, null],
+    ["ignores a fee that is not a raw integer", "1.5", null],
+  ])("%s", (_name, feeAmount, expected) => {
+    useGetRoutesMock.mockReturnValue({
+      data: {
+        estimatedRoutes: [{ quote: 100, amountIn: 0n, amountOut: 0n, pools: [] }],
+        amount: "2000000",
+        feeAmount,
+        status: "SUCCESS",
+      },
+      isLoading: false,
+      isRefetching: false,
+      error: null,
+    });
+
+    const { result } = renderHook(() =>
+      useSwap({ tokenA: createToken("USDC"), tokenB: createToken("ATOM"), direction: "EXACT_IN", slippage: 0.5 }),
+    );
+
+    act(() => result.current.updateSwapAmount("1"));
+    act(() => jest.advanceTimersByTime(1_000));
+
+    expect(result.current.estimatedAmount).toBe("2");
+    expect(result.current.estimatedFeeAmountRaw).toBe(expected);
+  });
+
   it("builds the max-amount messages from routes looked up for that amount", async () => {
     const { result } = renderHook(() =>
       useSwap({ tokenA: createToken("USDC"), tokenB: createToken("ATOM"), direction: "EXACT_IN", slippage: 0.5 }),
@@ -216,7 +299,7 @@ describe("useSwap quotes and amount precision", () => {
   });
 
   it("builds no max-amount messages when the amount has no route", async () => {
-    getRoutes.mockResolvedValue({ estimatedRoutes: [], originAmount: 0, amount: "0", status: "NO_LIQUIDITY" });
+    getRoutes.mockResolvedValue({ estimatedRoutes: [], amount: "0", feeAmount: "0", status: "NO_LIQUIDITY" });
 
     const { result } = renderHook(() =>
       useSwap({ tokenA: createToken("USDC"), tokenB: createToken("ATOM"), direction: "EXACT_IN", slippage: 0.5 }),
