@@ -11,7 +11,7 @@ export const DcaOrderDetailWrapper = styled.div`
   background: ${({ theme }) => theme.color.background20};
 
   .detail-header {
-    ${mixins.flexbox("row", "center", "space-between")};
+    ${mixins.flexbox("row", "flex-start", "space-between")};
     width: 100%;
     padding: 15px;
     gap: 8px;
@@ -22,14 +22,12 @@ export const DcaOrderDetailWrapper = styled.div`
       padding: 11px;
       ${fonts.p2};
     }
-    .rate-usd {
-      color: ${({ theme }) => theme.color.text04};
-    }
   }
 
   .gas-info {
     ${mixins.flexbox("row", "center", "flex-end")};
     flex-shrink: 0;
+    height: 24px;
     gap: 4px;
     color: ${({ theme }) => theme.color.text04};
     .icon-arrow {

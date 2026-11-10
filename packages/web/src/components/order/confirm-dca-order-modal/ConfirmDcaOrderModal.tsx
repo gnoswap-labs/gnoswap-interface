@@ -3,13 +3,12 @@ import { useTranslation } from "react-i18next";
 
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
-import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { DcaOrderSummary } from "@models/order/order-summary";
 
-import { OrderField } from "../common/OrderField.styles";
 import { OrderModalWrapper } from "../common/OrderModal.styles";
-import OrderInfoRows, { OrderInfoRow, OrderInfoTooltip } from "../order-info-rows/OrderInfoRows";
+import DcaOrderSentence from "../dca-order-sentence/DcaOrderSentence";
+import OrderInfoRows, { OrderInfoRow } from "../order-info-rows/OrderInfoRows";
 
 export interface ConfirmDcaOrderModalProps {
   summary: DcaOrderSummary;
@@ -20,15 +19,10 @@ export interface ConfirmDcaOrderModalProps {
 
 const ConfirmDcaOrderModal: React.FC<ConfirmDcaOrderModalProps> = ({ summary, isLoading = false, confirm, close }) => {
   const { t } = useTranslation();
-  const { inputToken, outputToken } = summary;
+  const { inputToken } = summary;
 
   const rows: OrderInfoRow[] = useMemo(
     () => [
-      {
-        key: "amountPerOrder",
-        label: t("Swap:dca.amountPerOrder"),
-        value: `${summary.amountPerOrder} ${inputToken.displaySymbol}`,
-      },
       { key: "estimatedEndDate", label: t("Swap:dca.estimatedEndDate"), value: summary.estimatedEndDate },
       {
         key: "executionFee",
@@ -37,7 +31,7 @@ const ConfirmDcaOrderModal: React.FC<ConfirmDcaOrderModalProps> = ({ summary, is
         value: summary.executionFee,
       },
     ],
-    [inputToken.displaySymbol, summary, t],
+    [summary, t],
   );
 
   return (
@@ -51,47 +45,7 @@ const ConfirmDcaOrderModal: React.FC<ConfirmDcaOrderModalProps> = ({ summary, is
 
       <div className="modal-section-group">
         <div className="modal-section">
-          <div className="modal-section-row">
-            <span className="amount-text">{summary.sellAmount}</span>
-            <TokenBadge symbol={inputToken.displaySymbol} logoURI={inputToken.logoURI} />
-          </div>
-          <span className="sub-text">{summary.sellAmountUsd}</span>
-          <div className="arrow">
-            <IconSwapArrowDown className="shape-icon" />
-          </div>
-        </div>
-        <div className="modal-section">
-          <div className="modal-section-row">
-            <span className="amount-text">{t("Swap:dca.toBuy")}</span>
-            <TokenBadge symbol={outputToken.displaySymbol} logoURI={outputToken.logoURI} />
-          </div>
-        </div>
-        <div className="modal-split">
-          <OrderField>
-            <span className="field-label">
-              {t("Swap:dca.every")}
-              <OrderInfoTooltip content={t("Swap:dca.everyTooltip")} />
-            </span>
-            <div className="field-value">
-              <span className="field-text">1</span>
-              <span className="field-badge">{t(`Swap:dca.unit.${summary.intervalUnit}`)}</span>
-            </div>
-          </OrderField>
-          <OrderField>
-            <span className="field-label">
-              {t("Swap:dca.over")}
-              <OrderInfoTooltip content={t("Swap:dca.overTooltip")} />
-            </span>
-            <div className="field-value">
-              <span className="field-text">{summary.executionCount}</span>
-              <span className="field-badge">{t("Swap:dca.orders")}</span>
-            </div>
-          </OrderField>
-        </div>
-        <div className="modal-section">
-          <span className="sub-text">
-            {summary.rate} <span className="notice-text">({summary.rateUsd})</span>
-          </span>
+          <DcaOrderSentence summary={summary} />
         </div>
         <div className="modal-section">
           <OrderInfoRows rows={rows} />

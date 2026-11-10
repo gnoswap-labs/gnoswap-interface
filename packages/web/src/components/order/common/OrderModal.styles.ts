@@ -76,19 +76,6 @@ export const OrderModalWrapper = styled.div`
     gap: 8px;
   }
 
-  .modal-split {
-    ${mixins.flexbox("row", "stretch", "flex-start")};
-    width: 100%;
-    gap: 2px;
-    /* Order fields align with the modal sections' padding. */
-    & > * {
-      padding: 15px;
-      ${media.mobile} {
-        padding: 11px;
-      }
-    }
-  }
-
   .amount-text {
     ${fonts.body1};
     color: ${({ theme }) => theme.color.text02};
