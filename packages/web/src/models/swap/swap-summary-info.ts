@@ -23,9 +23,17 @@ export interface SwapSummaryInfo {
 
   swapRate1USD: number;
 
+  /** Router fee rate shown beside the fee label, e.g. "0.15%". */
   protocolFee: string;
 
-  routerFee: number;
+  /**
+   * Router fee of this swap as the quote's raw `feeAmount`: an integer in raw units of the OUTPUT token
+   * (`tokenB`) for both exact modes. `null` when the quote does not provide one.
+   */
+  routerFeeAmountRaw: string | null;
+
+  /** USD price of one `tokenB`; `null` when it has none. */
+  tokenBPriceUSD: number | null;
 }
 
 export function swapDirectionToGuaranteedType(swapDirection: SwapDirectionType) {

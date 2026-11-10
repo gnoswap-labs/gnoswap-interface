@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
+import { TokenModel } from "@models/token/token-model";
 import { tickToSqrtPriceX96 } from "./math.utils";
 import {
   BroadcastMessageData,
   calculateSlippageLimitAmount,
   feeBoostRateByPrices,
+  formatRouterFeeStr,
   getSwappedTokenData,
   isEndTickBy,
   priceToBoundedTick,
@@ -394,5 +396,66 @@ describe("calculateSlippageLimitAmount", () => {
     expect(calculateSlippageLimitAmount("abc", 0.5, "EXACT_IN", 6)).toBe("0");
     expect(calculateSlippageLimitAmount("1", NaN, "EXACT_IN", 6)).toBe("0");
     expect(calculateSlippageLimitAmount("0", 0.5, "EXACT_OUT", 6)).toBe("0");
+  });
+});
+
+describe("formatRouterFeeStr", () => {
+  const createToken = (symbol: string, decimals: number): TokenModel => ({
+    type: "GRC20",
+    chainId: "dev.gnoswap",
+    createdAt: "2026-05-19T00:00:00Z",
+    name: symbol,
+    path: `gno.land/r/demo/${symbol.toLowerCase()}`,
+    decimals,
+    symbol,
+    displaySymbol: symbol,
+    logoURI: "",
+    priceID: `gno.land/r/demo/${symbol.toLowerCase()}`,
+  });
+  const gns = createToken("GNS", 6);
+  const summary = (routerFeeAmountRaw: string | null, tokenBPriceUSD: number | null, tokenB = gns) => ({
+    tokenB,
+    routerFeeAmountRaw,
+    tokenBPriceUSD,
+  });
+
+  it("converts the raw fee with the output token decimals", () => {
+    // The pools output 122068791; the router keeps floor(122068791 * 15 / 10000) = 183103 raw units
+    expect(formatRouterFeeStr(summary("183103", null))).toBe("0.183103 GNS");
+    expect(formatRouterFeeStr(summary("12345678", null, createToken("WBTC", 8)))).toBe("0.12345678 WBTC");
+    expect(formatRouterFeeStr(summary("94001171904396000", null))).toBe("94,001,171,904.396 GNS");
+  });
+
+  it("prices the fee in dollars with the output token price", () => {
+    expect(formatRouterFeeStr(summary("183103", 20))).toBe("$3.66");
+    expect(formatRouterFeeStr(summary("1500000000", 2.5))).toBe("$3,750");
+  });
+
+  it("does not round a tiny dollar fee down to a plain amount", () => {
+    expect(formatRouterFeeStr(summary("1", 1))).toBe("<$0.01");
+    expect(formatRouterFeeStr(summary("10000", 1))).toBe("$0.01");
+  });
+
+  it("charges the fee to the output token in exact-out mode, where the quoted amount is the input", () => {
+    const exactOut = {
+      tokenA: createToken("USDC", 18),
+      tokenB: gns,
+      swapDirection: "EXACT_OUT" as const,
+      routerFeeAmountRaw: "150000",
+      tokenBPriceUSD: null,
+    };
+
+    expect(formatRouterFeeStr(exactOut)).toBe("0.15 GNS");
+  });
+
+  it("shows a true zero fee as zero", () => {
+    expect(formatRouterFeeStr(summary("0", 20))).toBe("$0");
+    expect(formatRouterFeeStr(summary("0", null))).toBe("0 GNS");
+  });
+
+  it("shows a dash when the quote has no usable fee amount", () => {
+    expect(formatRouterFeeStr(null)).toBe("-");
+    expect(formatRouterFeeStr(summary(null, 20))).toBe("-");
+    expect(formatRouterFeeStr(summary("not a number", 20))).toBe("-");
   });
 });

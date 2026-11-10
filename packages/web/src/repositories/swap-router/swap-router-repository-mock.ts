@@ -12,17 +12,13 @@ export class SwapRouterRepositoryMock implements SwapRouterRepository {
     return {
       estimatedRoutes: [],
       amount: "0",
+      feeAmount: "0",
       status: "NO_LIQUIDITY",
-      originAmount: 0,
     };
   };
 
   public sendSwapRoute = async () => {
     throw new Error("Mock sendSwapRoute");
-  };
-
-  public getDrySwap = async () => {
-    throw new Error("Mcok drySwapRoute");
   };
 
   public makeExactInSwapRouteMessages = async () => {

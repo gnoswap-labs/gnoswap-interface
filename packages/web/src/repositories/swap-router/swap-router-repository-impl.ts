@@ -11,12 +11,11 @@ import { makeRawTokenAmount } from "@utils/token-utils";
 import { getSwapTokenPath } from "@utils/swap-route-utils";
 
 import { getGRC20Allowance } from "@common/clients/gno-provider";
-import { drySwap } from "@common/clients/gno-provider/methods/dry-swap";
 import { DEFAULT_GAS_FEE, DEFAULT_GAS_WANTED } from "@common/values";
 import { GnoProvider } from "@gnolang/gno-js-client";
 import { generateSendTransactionParams, withTransactionGuard } from "@utils/transaction-utils";
 import { GetRoutesRequest } from "./request/get-routes-request";
-import { DrySwapRequest, SwapRouteMessagesRequest, SwapRouteRequest } from "./request/swap-route-request";
+import { SwapRouteMessagesRequest, SwapRouteRequest } from "./request/swap-route-request";
 import { UnwrapTokenRequest } from "./request/unwrap-token-request";
 import { WrapTokenMessagesRequest, WrapTokenRequest } from "./request/wrap-token-request";
 import { GetRoutesResponse } from "./response/get-routes-response";
@@ -84,19 +83,6 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     return response.data;
   };
 
-  public getDrySwap = async (request: DrySwapRequest): Promise<number> => {
-    if (!this.rpcProvider) {
-      throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
-    }
-
-    // Discuss if needed
-    if (!PACKAGE_ROUTER_PATH) {
-      throw new CommonError("FAILED_INITIALIZE_ENVIRONMENT");
-    }
-
-    return await drySwap(this.rpcProvider, PACKAGE_ROUTER_PATH, request);
-  };
-
   private calculateGasWanted(gasUsed?: number): number {
     if (!gasUsed || isNaN(Number(gasUsed)) || Number(gasUsed) <= 0) {
       return DEFAULT_GAS_WANTED;
@@ -112,9 +98,8 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const address = await this.getAddress();
 
-    return makeExactInSwapRouteMessageWithApproves(
-      { ...request, caller: address },
-      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    return makeExactInSwapRouteMessageWithApproves({ ...request, caller: address }, (packagePath, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
   };
 
@@ -125,9 +110,8 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const address = await this.getAddress();
 
-    return makeExactOutSwapRouteMessageWithApproves(
-      { ...request, caller: address },
-      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    return makeExactOutSwapRouteMessageWithApproves({ ...request, caller: address }, (packagePath, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
     );
   };
 
@@ -250,48 +234,5 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
     }
 
     return address;
-  }
-
-  // Kept for reuse: the swap flow no longer runs this check before broadcasting.
-  private async validateAndGetDrySwap(request: SwapRouteRequest, exactType: "EXACT_IN" | "EXACT_OUT"): Promise<number> {
-    const drySwapRequest: DrySwapRequest = {
-      inputToken: request.inputToken,
-      outputToken: request.outputToken,
-      tokenAmount: request.tokenAmount,
-      estimatedRoutes: request.estimatedRoutes,
-      slippage: request.slippage,
-      originAmount: request.originAmount,
-      tokenAmountLimit: request.tokenAmountLimit,
-      exactType,
-    };
-
-    const drySwapAmount = await this.getDrySwap(drySwapRequest);
-
-    this.validateSwapRouteEstimation(drySwapRequest.originAmount, drySwapAmount, drySwapRequest.slippage);
-
-    return drySwapAmount;
-  }
-
-  private validateSwapRouteEstimation(apiEstimatedAmount: number, drySwapAmount: number, slippage: number): void {
-    const estimationDiff = Math.abs(
-      new BigNumber(apiEstimatedAmount).minus(drySwapAmount).div(apiEstimatedAmount).toNumber(),
-    );
-
-    if (estimationDiff > slippage) {
-      this.logSwapRouteEstimationComparison(apiEstimatedAmount, drySwapAmount, estimationDiff);
-      throw new SwapError("DRY_SWAP_DEVIATION_EXCEEDED");
-    }
-  }
-
-  private logSwapRouteEstimationComparison(
-    apiEstimatedAmount: number,
-    drySwapAmount: number,
-    estimationDiff: number,
-  ): void {
-    console.log("=== Swap Estimation Comparison ===");
-    console.log("API Estimated Amount:", apiEstimatedAmount.toString());
-    console.log("Dry Swap Amount:", drySwapAmount.toString());
-    console.log(`Estimation Diff Rate: ${(estimationDiff * 100).toFixed(4)}%`);
-    console.log("==================================");
   }
 }

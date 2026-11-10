@@ -2,7 +2,6 @@ import BigNumber from "bignumber.js";
 import { SwapFeeTierInfoMap, SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
 import { MAX_TICK, MIN_TICK, Q96 } from "@constants/swap.constant";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
-import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import {
   getAmount0ForLiquidity,
   getAmount1ForLiquidity,
@@ -287,32 +286,33 @@ export function getDepositAmountsByLiquidity(
   };
 }
 
-export function formatRouterFeeStr(swapSummaryInfo: SwapSummaryInfo | null, swapTokenInfo: SwapTokenInfo | null) {
-  if (!swapSummaryInfo || !swapTokenInfo) return "-";
+type RouterFeeSummary = Pick<SwapSummaryInfo, "tokenB" | "routerFeeAmountRaw" | "tokenBPriceUSD">;
 
-  if (swapSummaryInfo.routerFee == null) {
-    return swapSummaryInfo.protocolFee;
+/** Below this a USD fee is shown as "<$0.01" instead of an amount that would round to nothing. */
+const MIN_DISPLAYED_FEE_USD = 0.01;
+
+/**
+ * The router fee as shown to the user, taken from the quote's raw `feeAmount`: units of the OUTPUT token
+ * (`tokenB`) for both exact modes. It is the USD value when `tokenB` has a price, otherwise the token amount.
+ *
+ * The amount is never derived from the fee rate or from the quoted amounts. A quote without a fee amount
+ * shows "-"; a fee of exactly zero shows zero.
+ */
+export function formatRouterFeeStr(swapSummaryInfo: RouterFeeSummary | null): string {
+  if (!swapSummaryInfo || swapSummaryInfo.routerFeeAmountRaw === null) return "-";
+
+  const { routerFeeAmountRaw, tokenB, tokenBPriceUSD } = swapSummaryInfo;
+  const feeAmount = BigNumber(routerFeeAmountRaw).shiftedBy(-tokenB.decimals);
+  if (!feeAmount.isFinite()) return "-";
+
+  if (tokenBPriceUSD === null) {
+    return `${toNumberFormat(feeAmount, tokenB.decimals)} ${tokenB.displaySymbol}`;
   }
 
-  const tokenAmount = swapTokenInfo.tokenBAmount;
-  const tokenUSD = swapTokenInfo.tokenBUSD;
-  const tokenSymbol = swapTokenInfo.tokenB?.displaySymbol;
-  const tokenDecimals = swapTokenInfo.tokenBDecimals;
+  const feeUSD = feeAmount.multipliedBy(tokenBPriceUSD);
+  if (feeUSD.isZero()) return "$0";
 
-  if (!tokenAmount) {
-    return swapSummaryInfo.protocolFee;
-  }
-
-  const feeRate = swapSummaryInfo.routerFee / 100;
-
-  if (tokenUSD != null) {
-    const feeAmountUSD = BigNumber(tokenUSD).multipliedBy(feeRate).toNumber();
-    return feeAmountUSD < 0.01 ? "<$0.01" : `$${toNumberFormat(feeAmountUSD, 2)}`;
-  }
-
-  const feeAmount = BigNumber(tokenAmount).multipliedBy(feeRate).toNumber();
-  const decimals = tokenDecimals || 6;
-  return `${toNumberFormat(feeAmount, decimals)} ${tokenSymbol || ""}`;
+  return feeUSD.isLessThan(MIN_DISPLAYED_FEE_USD) ? "<$0.01" : `$${toNumberFormat(feeUSD, 2)}`;
 }
 
 export type BroadcastMessageData = {
