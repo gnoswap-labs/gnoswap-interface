@@ -7,6 +7,7 @@ import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { DcaOrderSummary } from "@models/order/order-summary";
 
+import { OrderField } from "../common/OrderField.styles";
 import { OrderModalWrapper } from "../common/OrderModal.styles";
 import OrderInfoRows, { OrderInfoRow, OrderInfoTooltip } from "../order-info-rows/OrderInfoRows";
 
@@ -66,24 +67,26 @@ const ConfirmDcaOrderModal: React.FC<ConfirmDcaOrderModalProps> = ({ summary, is
           </div>
         </div>
         <div className="modal-split">
-          <div className="modal-section">
-            <span className="sub-text">
-              {t("Swap:dca.every")} <OrderInfoTooltip content={t("Swap:dca.everyTooltip")} />
+          <OrderField>
+            <span className="field-label">
+              {t("Swap:dca.every")}
+              <OrderInfoTooltip content={t("Swap:dca.everyTooltip")} />
             </span>
-            <div className="modal-section-row">
-              <span className="amount-text">1</span>
-              <span className="token-badge no-logo">{t(`Swap:dca.unit.${summary.intervalUnit}`)}</span>
+            <div className="field-value">
+              <span className="field-text">1</span>
+              <span className="field-badge">{t(`Swap:dca.unit.${summary.intervalUnit}`)}</span>
             </div>
-          </div>
-          <div className="modal-section">
-            <span className="sub-text">
-              {t("Swap:dca.over")} <OrderInfoTooltip content={t("Swap:dca.overTooltip")} />
+          </OrderField>
+          <OrderField>
+            <span className="field-label">
+              {t("Swap:dca.over")}
+              <OrderInfoTooltip content={t("Swap:dca.overTooltip")} />
             </span>
-            <div className="modal-section-row">
-              <span className="amount-text">{summary.executionCount}</span>
-              <span className="token-badge no-logo">{t("Swap:dca.orders")}</span>
+            <div className="field-value">
+              <span className="field-text">{summary.executionCount}</span>
+              <span className="field-badge">{t("Swap:dca.orders")}</span>
             </div>
-          </div>
+          </OrderField>
         </div>
         <div className="modal-section">
           <span className="sub-text">

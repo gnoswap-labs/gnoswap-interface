@@ -80,9 +80,12 @@ export const OrderModalWrapper = styled.div`
     ${mixins.flexbox("row", "stretch", "flex-start")};
     width: 100%;
     gap: 2px;
-    .modal-section {
-      flex: 1;
-      min-width: 0;
+    /* Order fields align with the modal sections' padding. */
+    & > * {
+      padding: 15px;
+      ${media.mobile} {
+        padding: 11px;
+      }
     }
   }
 
@@ -112,9 +115,6 @@ export const OrderModalWrapper = styled.div`
     ${fonts.body9};
     color: ${({ theme }) => theme.color.text02};
     background-color: ${({ theme }) => theme.color.background13};
-    &.no-logo {
-      padding: 5px 12px;
-    }
   }
 
   .arrow {
